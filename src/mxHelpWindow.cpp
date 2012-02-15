@@ -207,10 +207,9 @@ void mxHelpWindow::OnSearch(wxCommandEvent &event) {
 		if (fname.Find('#')!=wxNOT_FOUND)
 			fname = fname.BeforeFirst('#');
 		bool already=false;
-		unsigned int i,ik,fc=0;
 		fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,fname));
 		if (!already && fname.Len()) {
-			for (i=0;i<searched.GetCount();i++)
+			for (unsigned int i=0;i<searched.GetCount();i++)
 				if (searched[i]==fname) {
 					already=true;
 					break;
@@ -218,8 +217,9 @@ void mxHelpWindow::OnSearch(wxCommandEvent &event) {
 			memset(bfound,0,kc);
 			wxTextFile fil(fname);
 			fil.Open();
+			unsigned int fc=0;
 			for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
-				for (ik=0;ik<kc;ik++) {
+				for (unsigned int ik=0;ik<kc;ik++) {
 					if (bfound[ik]==0 && str.MakeUpper().Contains(keywords[ik])) {
 						fc++; bfound[ik]=1;
 					}
@@ -233,7 +233,7 @@ void mxHelpWindow::OnSearch(wxCommandEvent &event) {
 			fil.Close();
 		}
 		searched.Add(fname);
-		it++;
+		++it;
 	}
 	aresults.Sort();
 	for (unsigned int i=0;i<aresults.GetCount();i++)
@@ -260,8 +260,7 @@ void mxHelpWindow::OnTree(wxTreeEvent &event) {
 	wxTreeItemId item = event.GetItem();
 	tree->Expand(item);
 	HashStringTreeItem::iterator it = items.begin();
-	while (it!=items.end() && it->second != item)
-		it++;
+	while (it!=items.end() && it->second != item) ++it;
 	if (it==items.end()) return;
 	wxString fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,it->first));
 	if (fname.Len())

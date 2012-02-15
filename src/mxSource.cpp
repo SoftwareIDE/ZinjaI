@@ -337,9 +337,8 @@ void mxSource::OnEditGotoMark (wxCommandEvent &event) {
 }
 
 void mxSource::OnEditMarkLines (wxCommandEvent &event) {
-	int ss,se;
-	int min=LineFromPosition(ss=GetSelectionStart());
-	int max=LineFromPosition(se=GetSelectionEnd());
+	int min=LineFromPosition(GetSelectionStart());
+	int max=LineFromPosition(GetSelectionEnd());
 	if (max==min) {
 		if (MarkerGet(min)&1<<mxSTC_MARK_USER)
 			MarkerDelete(min,mxSTC_MARK_USER);
@@ -928,7 +927,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						if (p==wxSTC_INVALID_POSITION)
 								return;
 						p--;
-						while (p>=0 && (c=GetCharAt(p)==' ' || c=='\t'  || c=='\r'  || c=='\n' || (s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR))
+						while (p>=0 && ((c=GetCharAt(p))==' ' || c=='\t'  || c=='\r'  || c=='\n' || (s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR))
 							p--;
 					}
 					bool baux; e=0;
@@ -1353,7 +1352,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	}
 }
 
-void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour foreground, const wxColour background, int fontStyle){
+void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle){
 	wxFont font (fontSize, wxMODERN, wxNORMAL, wxNORMAL, false, fontName);
 	StyleSetFont (idx, font);
 	/*if (foreground)*/ StyleSetForeground (idx, foreground);
@@ -1472,9 +1471,8 @@ void mxSource::MoveCursorTo(long pos, bool focus) {
 
 void mxSource::OnIndentSelection(wxCommandEvent &event) {
 	main_window->SetStatusText(wxString(_T("Indentando...")));
-	int ss,se;
-	int min = LineFromPosition(ss=GetSelectionStart());
-	int max = LineFromPosition(se=GetSelectionEnd());
+	int min = LineFromPosition(GetSelectionStart());
+	int max = LineFromPosition(GetSelectionEnd());
 //  int pfl = PositionFromLine(min);
 //  int dind = ss-GetLineIndentPosition(min);
 	Indent(min,max);
@@ -2791,8 +2789,9 @@ void mxSource::ShowCallTip(int p, wxString str, bool fix_pos) {
 	int x2 = PointFromPosition(p+1).x;
 	char c = GetCharAt(p);
 	if (x1!=x2 && c!='\n' && c!='\t' && c!='\r') {
-		int ac=0, l=str.Len(), ll = (GetSize().GetWidth()-x1)/(x2-x1)-1;
+		int l=str.Len(), ll = (GetSize().GetWidth()-x1)/(x2-x1)-1;
 		if (ll>5) {
+			int ac=0;
 			for (int i = 0;i<l; i++) {
 				if (str[i]=='\n') ac=0;
 				else {
@@ -3200,7 +3199,7 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 }
 
 bool mxSource::IsEmptyLine(int l, bool ignore_comments, bool ignore_preproc) {
-	int p=PositionFromLine(l), s, pf=l==GetLineCount()-1?GetLength():PositionFromLine(l+1);
+	int p=PositionFromLine(l), s, pf=(l==GetLineCount()-1)?GetLength():PositionFromLine(l+1);
 	char c;
 	while (p<pf) {
 		if ( ! ( II_IS_4(p,' ','\t','\n','\r') 

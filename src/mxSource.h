@@ -73,7 +73,7 @@ public:
 	void SetPageText(wxString ptext);
 	void ShowBaloon(wxString text, int pos = -1);
 	
-	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour foreground, const wxColour background, int fontStyle);
+	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle);
 	void SetColours(bool also_style=true);
 	bool IsComment(int pos);
 	bool IsEmptyLine(int l, bool ignore_comments=true, bool ignore_preproc=true);

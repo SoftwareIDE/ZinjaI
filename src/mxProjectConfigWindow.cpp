@@ -414,7 +414,7 @@ void mxProjectConfigWindow::OnRenameConfigButton(wxCommandEvent &event) {
 **/
 void mxProjectConfigWindow::LoadValues() {
 
-	if (configuration && !configuration->bakup) configuration->bakup = new project_configuration(*configuration);
+	if (configuration->bakup) configuration->bakup = new project_configuration(*configuration);
 	
 	linking_extra_options->SetValue(configuration->linking_extra);
 	linking_libraries_dirs->SetValue(configuration->libraries_dirs );

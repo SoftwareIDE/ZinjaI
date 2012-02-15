@@ -87,8 +87,8 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 //			utils->ParameterReplace(args,_T("${TEMP_DIR}"),project->temp_folder_short);
 //			args<<" "<<utils->Split(project->active_configuration->macros,_T("-D"));
 //			if (config->Init.max_jobs>0) args<<" -j "<<config->Init.max_jobs;
-		cerr<<"*"<<args<<"*\n";
-		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<</*"--template \'[{file}:{line}] ({severity}) {message}\'"*/" --enable=all --file-list="<<utils->Quotize(list)<<args);
+//		cerr<<"*"<<args<<"*\n";
+		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<<" --inline-suppr --template \'[{file}:{line}] ({severity},{id}) {message}\' --enable=all --file-list="<<utils->Quotize(list)<<args);
 		
 	}
 }

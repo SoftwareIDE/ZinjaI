@@ -56,12 +56,13 @@ void mxValgrindOuput::LoadOutputCppCheck() {
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (all.find(str)!=all.end()) continue;
 		all.insert(str);
-		wxString tag=str.AfterFirst(']').AfterFirst('(').BeforeFirst(')');
-		if (tag=="error") { AppendItem(error,str); cerr++; }
-		else if (tag=="performance") { AppendItem(performance,str); cperf++; }
-		else if (tag=="warning") { AppendItem(warning,str); cwar++; }
-		else if (tag=="information") { AppendItem(information,str); cinf++; }
-		else if (tag=="style") { AppendItem(style,str); csty++; }
+		wxString tag=str.AfterFirst(']').AfterFirst('(').BeforeFirst(',');
+		wxString s_str=str.BeforeFirst(']')+"]"+str.AfterFirst(']').BeforeFirst('(')+"("+str.AfterFirst(']').AfterFirst('(').AfterFirst(',');
+		if (tag=="error") { AppendItem(error,s_str); cerr++; }
+		else if (tag=="performance") { AppendItem(performance,s_str); cperf++; }
+		else if (tag=="warning") { AppendItem(warning,s_str); cwar++; }
+		else if (tag=="information") { AppendItem(information,s_str); cinf++; }
+		else if (tag=="style") { AppendItem(style,s_str); csty++; }
 		else { AppendItem(other,str); coth++; }
 	}
 	

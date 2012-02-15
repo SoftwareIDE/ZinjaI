@@ -48,11 +48,12 @@ mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_AN
 	combo=new wxComboBox(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY);
 	bottomSizer->Add(combo,sizers->BA5_Center);
 	
-	int sel=-1, i=0;
+	int sel=-1;
 	wxDir dir(DIR_PLUS_FILE(config->zinjai_dir,"colours"));
 	if ( dir.IsOpened() ) {
 		wxString filename, spec;
 		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
+		int i=0;
 		while ( cont ) {
 			combo->Append(filename);
 			if (filename==config->Init.colour_theme) 

@@ -4200,6 +4200,7 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	wxString res = mxGetTextFromUser(_T("Comando:"), _T("Comandos internos") , what, this);
 	if (res=="kboom") {
 		int *p=NULL;
+		// cppcheck-suppress nullPointer
 		cout<<*p;
 	}
 	if (debug->debugging && res.Len()) debug->DoThat(what=res);

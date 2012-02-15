@@ -738,24 +738,24 @@ void mxFlowCanvas::Draw(wxPaintDC &dc, draw_data &draw, int x, int y) {
 	while (it_a!=ed_a) {
 		dc.SetPen(*(it_a->pen));
 		dc.DrawEllipse(x+it_a->x,y+it_a->y,it_a->w,it_a->h);
-		it_a++;
+		++it_a;
 	}
 	list<fc_line>::iterator it_l=draw.lines.begin(), ed_l=draw.lines.end();
 	while (it_l!=ed_l) {
 		dc.SetPen(*(it_l->pen));
 		dc.DrawLine(x+it_l->x1,y+it_l->y1,x+it_l->x2,y+it_l->y2);
-		it_l++;
+		++it_l;
 	}
 	list<fc_text>::iterator it_t=draw.texts.begin(), ed_t=draw.texts.end();
 	while (it_t!=ed_t) {
 		dc.SetTextForeground(*(it_t->colour));
 		dc.DrawText(it_t->text,x+it_t->x,y+it_t->y);
-		it_t++;
+		++it_t;
 	}
 	list<draw_data>::iterator it_d=draw.draws.begin(), ed_d=draw.draws.end();
 	while (it_d!=ed_d) {
 		Draw(dc,*it_d, x, y);
-		it_d++;
+		++it_d;
 	}
 }
 

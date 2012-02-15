@@ -406,8 +406,8 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 
 int HelpManager::GetStandardHelp(wxString keyword, wxString &content) {
 	HashStringString::iterator it;
-	int count=0;
 	if ((it=quick_help_hash.find(keyword))!=quick_help_hash.end()) {
+		int count=0;
 		wxString files = it->second+_T("\n");
 		while (files.Len()) {
 			wxString fname = files.BeforeFirst('\n');
@@ -446,12 +446,12 @@ wxString HelpManager::GetQuickHelp(wxString keyword) {
 bool HelpManager::IsHelpForType(wxString what, wxString &link) {
 	what = code_helper->UnMacro(what);
 	while (what.Len() && (what.Last()=='*' || what.Last()==']' || what.Last()==' ')) {
-		if (what.Last()==']')
+		if (what.Last()==']') {
 			while (what.Len() && what.Last()!='[')
 				what.RemoveLast();
 			if (what.Len())
 				what.RemoveLast();
-		else
+		} else
 			what.RemoveLast();
 	}
 	link=what;

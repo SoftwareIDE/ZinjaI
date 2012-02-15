@@ -73,6 +73,7 @@ void mxSingleton::OnSocket(wxSocketEvent &evt) {
 		if (data) {
 			if (calls_count+1==max_count) {
 				max_count*=2;
+				// cppcheck-suppress memleakOnRealloc
 				data = (singleton_data*)realloc(data,sizeof(singleton_data)*max_count);
 			}	
 		} else {

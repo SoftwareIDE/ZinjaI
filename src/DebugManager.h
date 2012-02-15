@@ -58,7 +58,7 @@ struct breakinfo {
 struct inspectlist {
 	wxString name; ///< nombre de la tabla de inspecciones
 	wxArrayString vars; ///< lista de expresiones a inspeccionar
-	inspectlist(const wxString aname):name(aname){}
+	inspectlist(const wxString &aname):name(aname){}
 };
 
 //! Información acerca de una inspección en el depurador
@@ -84,7 +84,7 @@ struct inspectinfo {
 	inspectinfo() {
 		freezed = frameless = false;
 	}
-	inspectinfo(const wxString aname, const wxString atype, const wxString aexpr) {
+	inspectinfo(const wxString &aname, const wxString &atype, const wxString &aexpr) {
 		name = aname; 
 		expr = aexpr; 
 		type = atype; 

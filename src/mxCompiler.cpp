@@ -295,7 +295,6 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 		num_all++;
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
 		if (num_all<config->Init.max_errors) {
-			bool flag;
 //		if (compile_and_run.parsing_flag==2) {
 //			compile_and_run.parsing_flag=0;
 //			if (wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)))
@@ -308,6 +307,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 			if (config->Init.beautify_compiler_errors) UnSTD(nice_error_line);
 			
 			if (error_line.Last()!=',' && ( error_line.Last()!=':' || error_line.Find(_T(": error: "))!=wxNOT_FOUND || wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)) || error_line.StartsWith(EN_COMPOUT_LINKER_WARNING)) ) {
+				bool flag;
 				if ( (flag=(wxNOT_FOUND!=error_line.First(_T(ES_NSTANTIATED_FROM)) || wxNOT_FOUND!=error_line.First(_T(EN_NSTANTIATED_FROM)))) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_WITHIN_THIS_CONTEXT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WITHIN_THIS_CONTEXT)) ) {
 					if (!flag && error_line.Right(4)!=_T("here")) {
 						if (compile_and_run->parsing_flag==1) {

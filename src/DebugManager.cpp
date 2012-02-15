@@ -270,7 +270,7 @@ void DebugManager::ResetDebuggingStuff() {
 	
 	
 	list<mxExternInspection*>::iterator i1=extern_list.begin();
-	while (i1!=extern_list.end()) if ((*i1)->SetOutdated()) i1=extern_list.erase(i1); else i1++;
+	while (i1!=extern_list.end()) if ((*i1)->SetOutdated()) i1=extern_list.erase(i1); else ++i1;
 	
 	
 //	explorer_list.clear();
@@ -634,7 +634,7 @@ bool DebugManager::DeleteBreakPoint(wxString fname, int line) {
 			break_list.erase(it1);
 			return true;
 		}
-		it1++;
+		++it1;
 	}
 	return false;
 }
@@ -818,10 +818,10 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 			int j=0, l=s.Len();
 			const wxChar * choa = s.c_str();
 			// choa+j = level="0",args={{name="...
-			while (choa[j]!='{' && choa[j]!='[' && j<l)	j++; j++;
+			while (j<l && choa[j]!='{' && choa[j]!='[')	j++; j++;
 			// choa+j = {name="...
 			while (j<l) {
-				while (choa[j]!='{' && choa[j]!='[' && j<l)
+				while (j<l && choa[j]!='{' && choa[j]!='[')
 					j++;
 				if (j==l)
 					break;
@@ -1823,7 +1823,7 @@ bool DebugManager::UpdateInspection() {
 					}
 				} else do_inspect=true;
 			} else do_inspect=true;
-			if (do_inspect) (*i1)->Update(); i1++;
+			if (do_inspect) (*i1)->Update(); ++i1;
 		}
 //		SendCommand(_T("-gdb-set print repeats 100"));
 	}

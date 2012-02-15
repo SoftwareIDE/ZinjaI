@@ -718,12 +718,14 @@ wxString mxUtils::GetOnePath(wxString orig_path, wxString project_path, wxString
 	wxString theone(DIR_PLUS_FILE(orig_path,fname));
 	if (wxFileName::FileExists(theone))
 		return theone;
-	unsigned int hi=0;
-	if (header_dirs.GetCount()) do {
-		theone = DIR_PLUS_FILE(DIR_PLUS_FILE(project_path,header_dirs[hi++]),fname);
-		if (wxFileName::FileExists(theone))
-			return theone;
-	} while (hi<header_dirs.GetCount());
+	if (header_dirs.GetCount()) {
+		unsigned int hi=0;
+		do {
+			theone = DIR_PLUS_FILE(DIR_PLUS_FILE(project_path,header_dirs[hi++]),fname);
+			if (wxFileName::FileExists(theone))
+				return theone;
+		} while (hi<header_dirs.GetCount());
+	}
 	return _T("");
 }
 

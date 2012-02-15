@@ -581,7 +581,7 @@ bool Parser::Parse(bool show_progress) {
 	int progress_total=0,progress_now=0;
 	if (show_progress) {
 		list<parserAction>::iterator it=actions.begin();
-		while (it!=actions.end()) { progress_total++; it++; }
+		while (it!=actions.end()) { ++progress_total; ++it; }
 		if (progress_total>0) main_window->SetStatusProgress(0);
 	}
 	
@@ -686,7 +686,7 @@ void Parser::UnregisterSource(mxSource *src) {
 				it->str=src->source_filename.GetFullPath();
 			}
 		}
-		it++;
+		++it;
 	}
 }
 

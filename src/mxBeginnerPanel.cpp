@@ -171,7 +171,7 @@ void mxBeginnerPanel::OnButtonFor(wxCommandEvent &evt) {
 		else
 			str<<opt_for_var->GetValue()<<menor<<opt_for_to->GetValue()<<_T(";");
 	} else if (bstep) {
-		if (bstep>0)
+		if (step>0)
 			str<<opt_for_var->GetValue()<<menor<<opt_for_to->GetValue()<<_T(";");
 		else
 			str<<opt_for_var->GetValue()<<mayor<<opt_for_to->GetValue()<<_T(";");

@@ -45,8 +45,8 @@ mxInspectionMatrix::mxInspectionMatrix(int inspection_num) : mxExternInspection(
 	}
 
 	wxArrayString names;
-	int llaves=0, l=data.Len();
-	int dim1=1,dim2=1,p1=0;
+	int l=data.Len();
+	int dim1=1,dim2=1;
 	const wxChar *cdata=data.c_str();
 	const wxChar *inidata=cdata;
 	const wxChar *enddata=cdata+data.Len();
@@ -69,6 +69,8 @@ mxInspectionMatrix::mxInspectionMatrix(int inspection_num) : mxExternInspection(
 		}
 		if (last_zero) dim1++;
 	} else {
+		int p1=0;
+		int llaves=0;
 		bool comillas=false;
 		while (cdata<enddata) {
 			if (comillas) {
@@ -176,8 +178,7 @@ void mxInspectionMatrix::Update() {
 	debug->SetFullOutput(true);
 	wxString data = is_vo?debug->InspectExpression(expression):debug->GetMacroOutput(expression);
 	debug->SetFullOutput(false);
-	int llaves=0, l=data.Len();
-	int dim1=1,dim2=1,p1=0;
+	int l=data.Len();
 	bool comillas=false;
 	const wxChar *cdata=data.c_str();
 	const wxChar *inidata=cdata;
@@ -202,6 +203,7 @@ void mxInspectionMatrix::Update() {
 			grid->SetCellValue(p,0,wxString()<<_T("\\000"));
 		}
 	} else {
+		int dim1=1,dim2=1,p1=0, llaves=0;
 		while (cdata<enddata) {
 			if (comillas) {
 				switch (*cdata) {

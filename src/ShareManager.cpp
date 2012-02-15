@@ -110,7 +110,7 @@ void ShareManager::Delete(mxSource *source) {
 			data.erase(it);
 			it=data.begin();
 		} else
-			it++;
+			++it;
 	}
 }
 

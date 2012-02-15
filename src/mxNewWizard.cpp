@@ -761,12 +761,11 @@ void mxNewWizard::CreatePanelTemplates() {
 	panel_templates = new wxPanel(this,wxID_ANY);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	int n=0;
-	
 	wxArrayString templates;
 
 	wxDir dir(config->Files.templates_dir);
     if ( dir.IsOpened() ) {
+		int n=0;
 		wxString filename;
 		wxString name, local_name, name_prefix;
 		name_prefix = wxString(_T("// !Z! Name_"))<<config->Init.language_file<<_T(":");
@@ -930,10 +929,10 @@ void mxNewWizard::CreatePanelProject2() {
 	templates.Add(LANG(NEWWIZARD_TEMPLATE_MAIN,"<incluir archivo y funcion main>"));
 	if (project_templates[0]==config->Files.default_project)
 		project_default=0;
-	int n=1;
 	wxString name;
 	wxDir dir(config->Files.templates_dir);
     if ( dir.IsOpened() ) {
+		int n=1;
 		wxString filename;
 		wxString full;
 		wxString spec;

@@ -2249,12 +2249,12 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	}
 	
 	wxArrayString array;
-	int n = utils->Split(doxygen->extra_files,array,true,false);
+	utils->Split(doxygen->extra_files,array,true,false);
 	for (unsigned int i=0;i<array.GetCount();i++)
 		input.Add(array[i]);
 	
 	array.Clear();
-	n = utils->Split(doxygen->exclude_files,array,true,false);
+	utils->Split(doxygen->exclude_files,array,true,false);
 	for (unsigned int i=0;i<array.GetCount();i++) {
 		for (unsigned int j=0;i<input.GetCount();j++) {
 #if defined(_WIN32) || defined(__WIN32__)

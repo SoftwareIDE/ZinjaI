@@ -588,8 +588,8 @@ bool CodeHelper::AutocompleteAutocode(mxSource *source, wxString typed, int max_
 	while (it!=autocoder->list.end()) {
 		wxString &aux=it->first;
 		CH_COMPARE(typed,aux,i,l,max_str_dist);
-		if (i==l) { t++; comp_array.Add(it->first); }
-		it++;
+		if (i==l) { ++t; comp_array.Add(it->first); }
+		++it;
 	}
 	
 	// mostrar la lista final
