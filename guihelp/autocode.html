@@ -1,0 +1,56 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Plantillas de Auto-Código</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Esta funcionalidad permite escribir código más rápidamente. Cuando el programador ingresa la llamada a una plantilla (igual que escribir una llamada a una función) y presiona la tecla TAB, zinjai reemplaza automáticamente la llamada por un fragmento de código predefinido. Se definene y actúan de forma muy similar a como lo hacen las macros de preprocesador (las que se definen con la directiva #define). Por ejemplo, pruebe escribir en un programa "fori(10)" y presionar inmediatamente después la tecla TAB. Verá que zinjai reemplaza ese fragmento de código por "for (int i=0;i&lt;10;i++) {  }" y coloca el cursor entre las llaves. <BR>
+&nbsp;&nbsp;&nbsp; El nombre del autocódigo sigue las mismas reglas que los nombres de variables y funciones (empezar con letra o guion bajo, contener solo letras, numeros y/o guion bajo). Las plantillas pueden tener argumentos como (en el ejemplo el argumento es 10, y se utiliza para definir la condición de parada del for), o no (en cuyo caso no es necesario colocar los paréntesis). Cada argumento de la plantilla puede ser cualquier texto siempre y cuando tenga balanceada la cantidad de paréntesis que abren y cierran el mismo. Para invocarlos simplemente se ingresa la llamada y se presiona luego de esta la tecla TAB.<BR>
+&nbsp;&nbsp;&nbsp; Los autocódigos se definen en un archivo de texto de forma similar a como se definen las macros de preprocesador. El archivo se configura desde la pestaña <A href="preferences.html#asistencias">Asistencias</A> del diálogo de <A href="preferences.html">Preferencias</A>.<BR>
+<BR><BR>
+<B>Formato del archivo con las definiciones de Auto-Código</B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; El archivo donde se definen las plantillas de autocódigo es un archivo de texto. Para introducir un autocódigo se utiliza la palabra clave #autocode al comienzo de una linea (sin espacios ni tabulaciones). Todo lo que contenga el archivo antes de la primer declaración de autocódigo será considerado comentario. Una declaración puede tomar dos formas:<BR>
+<code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #autocode nombre(argumentos) // descripción<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;codigo<BR>
+</code>
+ó<BR>
+<code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #autocode nombre(argumentos) código<BR>
+</code>
+donde:<BR>
+&nbsp;&nbsp;* el nombre cumple las reglas de nombre de variable o función (contener solo, letras, numeros y guiones bajos, y no comenzar con números)<BR>
+&nbsp;&nbsp;* los nombres de los argumentos cumplen las mismas reglas que para el nombre del autocódigo y se separan con comas (,). Si el autocódigo no requiere argumentos se pueden omitir los paréntesis<BR>
+&nbsp;&nbsp;* todo comentario luego del nombre o argumentos será considerado descripción del autocódigo y no se utilizará en el reemplazo. Cualquier otro comentario será parte del código del autocódigo y se incluirá al realizar el reemplazo.<BR>
+&nbsp;&nbsp;* el código puede ser cualquier texto y puede ocupar una o más lineas. Las apariciones de los identificadores de los argumetos (como palabras completas, no como partes de palabras) se reemplazarán por los que ingrese el usuario al utilizar el autocódigo. Opcionalmente se puede preceder el nombre con un signo numeral (#) para concatenarlo a una palabra, o dos signos de numeral (##) para convertirlo en cadena de caracteres (agregando comillas). Se puede incluir la palabra clave "#here" para indicar donde debe colocarse el cursor de texto luego del reemplazo. Las lineas en blanco finales (antes del proximo autocódigo) se ignoran.<BR>
+<BR><BR>
+<B>Ejemplos de definición autocódigo:</B><BR>
+<BR><code>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #define ifel<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;if (#here) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;} else {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #define fori(N) for(int i=0;i&lt;N;i++) { #here }<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #define word(p) char p[]=##p;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #define integ(i,v) int entero_#i=v;<BR>
+</code><BR>
+&nbsp;&nbsp;&nbsp; El primero no recibe paramétros y se reemplaza con la estructura del if. El segundo recibe un parámetro que reemplazará a N en el código. El tercero recibe un parámetro que utiliza a la vez como identificador y como cadena de caracteres. El cuarto utiliza el primer parámetro para formar un nombre de variable anteponiendo el prefijo "entero_", y el segundo como valor inicial para la variable. Los siguientes ejemplos muestran como se invocarían estas plantillas y qué resultado se obtendría en cada caso:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <table border=1><TR><TD>Texto typeado</TD><TD>Código que se obtiene</TD></TR>
+<TR><TD>ifel </TD><TD> if () {<BR>
+<BR>
+         } else {<BR>
+<BR>
+         }</TD></TR>
+
+<TR><TD>fori(2*x) </TD><TD> for(int i=0;i&lt;2*x;i++) {  }</TD></TR>
+
+<TR><TD>word(hola) </TD><TD> char hola[]="hola";</TD></TR>
+
+<TR><TD>integ(x,0) </TD><TD> int entero_x=0;</TD></TR></TABLE>
+<BR>
+<BR>Nota: a diferencia del uso de macros de preprocesador, los autocódigos no se reemplazan recursivamente.<BR>
+</BODY></HTML>
+<BR>

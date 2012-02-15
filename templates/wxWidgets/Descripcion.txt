@@ -1,0 +1,15 @@
+Este es un proyecto base para trabajar con la librería wxWidgets. Solo define
+la clase Aplication, pero no crea ninguna ventana. Estan definidas las opciones 
+de enlazado para los componentes más comunes para que pueda compilar su proyecto.
+
+Para utilizar componentes adicionales debe agregar las librerías necesarias
+en Ejecucion->Opciones...->Enlazado->Librearias a enlazar
+ Componentes AUI, agregar "wx_gtk2_aui-2.8"(GNU/Linux) o "wxmsw28_aui"(Windows)
+ OpenGL, "wx_gtk2_gl-2.8,GL,GLU"(GNU/Linux) o "wxmsw28_gl,opengl32,glu32"(Windows)
+ Graficos SVG, "wx_gtk2_svg-2.8"(GNU/Linux) o "wxmsw28_svg"(Windows)
+ 
+En la distribución para windows, la documentación acerca de las funciones y 
+clases de wxWidgets se encuentra en formato HTML en el subdirectorio 
+MinGW/wx/docs dentro del directorio de ZinjaI. Se puede acceder rápidamente a 
+ella con la opción "Ayuda wxWidgets..." del submenu "Diseñar Interfases" del 
+menu "Herramientas".

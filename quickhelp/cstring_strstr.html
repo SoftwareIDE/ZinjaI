@@ -1,0 +1,27 @@
+<B>Función <I>strstr</I></B>
+<BR><BR>
+Busca una cadena dentro de otra.
+<BR><BR>
+Prototipos: <BR>
+<UL>
+<LI><I>const char * strstr ( const char * str1, const *str2 );</I></LI>
+<LI><I>char * strstr ( char * str1, const char *str2  );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstring&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Busca la cadena apuntada por <I>str2</I> dentro de la cadena apuntada por <I>str1</I> y devuelve un puntero a la primer ocurrencia si la encuentra, o NULL en caso contrario.<BR>
+<BR><BR>
+<A href="example:cstring_strstr.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp; // Reemplazar "Hola" por "Chau" en el cstring cadena
+&nbsp;&nbsp;&nbsp; char cadena[256]="Y el compilador suicida dijo: \"Hola Mundo!\"\n";<BR>
+&nbsp;&nbsp;&nbsp; char *res=strstr(cadena,"Hola");<BR>
+&nbsp;&nbsp;&nbsp; if (res!=NULL)<BR>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; strncpy(res,"Chau",4);<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstring.html">Cabecera <I>cstring</I></A>: Contiene funciones para el manejo de cadenas de caracteres c y arreglos.
+<LI><A href="quickfile:cstring_strchr.html">Función <I>strchr</I></A>: Busca la primer ocurrencia de un caracter dentro una cadena.
+<LI><A href="quickfile:cstring_strrchr.html">Función <I>strrchr</I></A>: Busca la última ocurrencia de un caracter dentro una cadena.
+</UL>

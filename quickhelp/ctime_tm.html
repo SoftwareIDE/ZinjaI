@@ -1,0 +1,35 @@
+<B>Estructura <I>tm</I></B>
+<BR><BR>
+Contiene una fecha y hora determinada separada en sus componentes.
+<BR><BR>
+Miembros: <BR>
+<UL>
+<LI>int tm_sec</LI>
+<LI>int tm_min</LI>
+<LI>int tm_hour</LI>
+<LI>int tm_mday</LI>
+<LI>int tm_mon</LI>
+<LI>int tm_year</LI>
+<LI>int tm_wday</LI>
+<LI>int tm_yday</LI>
+<LI>int tm_isdst</LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;ctime&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Este tipo de dato está pensado para representar fechas y horas determinadas separando los componentes de las mismas. La hora se divide en los miembros <I>tm_hour</I>, <I>tm_min</I> y <I>tm_sec</I> que representan horas, minutos y segundos respectivamente (de 0 a 23 para la hora, y de 0 a 59 para minutos y segundos). La fecha se divide en <I>tm_mday</I>, <I>tm_mon</I> y <I>tm_year</I> que representan el dia del mes, la cantidad de meses transcurridos desde enero y la cantidad de años transcurridos desde 1900 respectivamente (de 1 a 31 para el dia y de 0 a 11 para el mes). Además, e <I>tm_wday</I> indica el dia de la semana (de 0 a 6 correspondiendose con domingo a sabado), <I>tm_yday</I> indica el dia dentro del año (de 0 a 365) y <I>tm_isdst</I> indica si la hora de verano esta activa o no (es positivo cuando esta activa, cero cuando no, y negativo si se desconoce).<BR>
+<BR><BR>
+<A href="example:ctime_tm.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp; time_t t1 = time(NULL);<BR>
+&nbsp;&nbsp;&nbsp; tm *ptm2 = localtime( &t1 );<BR>
+&nbsp;&nbsp;&nbsp; char * dias[] = { "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" };<BR>
+&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Hoy es " &lt;&lt; dias[ptm2->tm_wday] &lt;&lt; endl;<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:ctime.html">Cabecera <I>ctime</I></A>: Contiene funciones y estructuras para el manejo de fechas y horas.</LI>
+<LI><A href="quickfile:ctime_time.html">Función <I>time</I></A>: Devuelve la fecha/hora actual en segundos.</LI>
+<LI><A href="quickfile:ctime_time_t.html">Tipo <I>time_t</I></A>: Representa una fecha y hora determinada en segundos.</LI>
+<LI><A href="quickfile:ctime_clock_t.html">Tipo <I>clock_t</I></A>: Representa una cantidad de ticks del reloj.</LI>
+<LI><A href="quickfile:ctime_mktime.html">Función <I>mktime</I></A>: Convierte una fecha y hora de una estructura <I>tm</I> al tipo <I>time_t</I>.</LI>
+</UL>

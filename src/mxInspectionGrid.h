@@ -1,0 +1,118 @@
+#ifndef MXINSPECTIONGRID_H
+#define MXINSPECTIONGRID_H
+#include <wx/grid.h>
+#include <wx/dc.h>
+#include <wx/dnd.h>
+
+enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COL_FORMAT,IG_COL_WATCH,IG_COLS_COUNT};
+
+
+class mxInspectionGrid;
+
+class mxInspectionDropTarget : public wxDropTarget {
+	mxInspectionGrid *grid;
+	wxTextDataObject *data;
+public:
+	mxInspectionDropTarget(mxInspectionGrid *agrid);
+	bool OnDrop(wxCoord x, wxCoord y);
+	wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def);
+	wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def);
+//	void OnLeave();
+//	wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
+};
+
+class mxPlusCellRenderer : public wxGridCellStringRenderer {
+public:
+	virtual void Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect& rect, int row, int col, bool isSelected) {
+		wxRect rect2=rect; 
+		rect2.x+=20; rect2.width-=20;
+		wxGridCellStringRenderer::Draw(grid, attr, dc, rect2, row, col, isSelected);
+		rect2.x-=20; rect2.width=20;
+		dc.DrawRectangle(rect2);
+		dc.SetPen(*wxMEDIUM_GREY_PEN);
+		rect2.x+=3;
+		rect2.y+=(rect2.height-14)/2;
+		rect2.width=rect2.height=13;
+		dc.DrawRectangle(rect2);
+		dc.DrawLine(rect2.x+2,rect2.y+rect2.height/2,rect2.x+rect2.width-2,rect2.y+rect2.height/2);
+		dc.DrawLine(rect2.x+rect2.width/2,rect2.y+2,rect2.x+rect2.width/2,rect2.y+rect2.height-2);
+	}
+};
+
+/**
+* @brief Representa a la grilla del panel de inspecciones
+**/
+class mxInspectionGrid : public wxGrid {
+private:
+	bool created;
+	int selected_row;
+	bool ignore_changing;
+	int old_size;
+	float cols_sizes[IG_COLS_COUNT];
+	bool *cols_visibles;
+//	int cols_marginal;
+	wxColour disable_colour;
+	wxColour default_colour;
+	wxColour change_colour;
+	wxColour special_colour;
+	wxColour freeze_colour;
+	DECLARE_EVENT_TABLE();
+public:
+	mxInspectionGrid(wxWindow *parent, wxWindowID id);
+	void AddRow(int cant=1);
+	void AppendInspections(wxArrayString &vars);
+	~mxInspectionGrid();
+	void OnKey(wxKeyEvent &event);
+	void OnSelectCell(wxGridEvent &event);
+	void OnCellChange(wxGridEvent &event);
+	void OnDoubleClick(wxGridEvent &event);
+	void OnLabelPopup(wxGridEvent &event);
+	void OnRightClick(wxGridEvent &event);
+	void OnFreeze(wxCommandEvent &evt);
+	void OnPasteFromClipboard(wxCommandEvent &evt);
+	void OnCopyFromSelecction(wxCommandEvent &evt);
+	void OnBreakClassOrArray(wxCommandEvent &evt);
+	void OnDuplicate(wxCommandEvent &evt);
+	void OnReScope(wxCommandEvent &evt);
+	void OnExploreExpression(wxCommandEvent &evt);
+	void OnExploreAll(wxCommandEvent &evt);
+	void OnShowInText(wxCommandEvent &evt);
+	void OnShowInTable(wxCommandEvent &evt);
+	void OnCopyData(wxCommandEvent &evt);
+	void OnCopyExpression(wxCommandEvent &evt);
+	void OnClearAll(wxCommandEvent &evt);
+	void OnClearOne(wxCommandEvent &evt);
+	void OnWatchNo(wxCommandEvent &evt);
+	void OnWatchRead(wxCommandEvent &evt);
+	void OnWatchWrite(wxCommandEvent &evt);
+	void OnWatchReadWrite(wxCommandEvent &evt);
+	void OnFormatNatural(wxCommandEvent &evt);
+	void OnFormatDecimal(wxCommandEvent &evt);
+	void OnFormatOctal(wxCommandEvent &evt);
+	void OnFormatHexadecimal(wxCommandEvent &evt);
+	void OnFormatBinary(wxCommandEvent &evt);
+	int ShouldDivide(int row, wxString expr, bool frameless=false);
+	void OnResize(wxSizeEvent &evt);
+	void OnColResize(wxGridSizeEvent &evt);
+	void OnShowHideCol(wxCommandEvent &evt);
+	void OnsAVE(wxCommandEvent &evt);
+	void OnSaveTable(wxCommandEvent &evt);
+	void OnLoadTable(wxCommandEvent &evt);
+	void OnManageTables(wxCommandEvent &evt);
+	void OnSetFrameless(wxCommandEvent &evt);
+	void OnShowAppart(wxCommandEvent &evt);
+	void OnCopyAll(wxCommandEvent &evt);
+	void OnCellEditorShown(wxGridEvent &evt);
+	void OnCellEditorHidden(wxGridEvent &evt);
+	void HightlightChange(int r);
+	void HightlightSpecial(int r);
+	void HightlightDisable(int r);
+	void HightlightNone(int r);
+	void HightlightFreeze(int r);
+	void ResetChangeHightlights();
+	bool ModifyExpresion(int r, wxString expr);
+	
+	
+};
+
+#endif

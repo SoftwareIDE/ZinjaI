@@ -1,0 +1,16 @@
+#include <iostream>
+#include <ctime>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+	srand(time(0));
+	time_t t1 = time(0);
+	int n1 = rand()%1000, n2 = rand()%1000, r;
+	cout<<"Cuanto es "<<n1<<"+"<<n2<<"? ";
+	cin>>r;
+	time_t t2 = time(0);
+	cout<<"Usted tardo "<<difftime(t2,t1)<<" segundos en calcular el resultado"<<endl;
+	cout<<"y la respuesta es "<<(n1+n2==r?"correcta!":"incorrecta!")<<endl;
+	return 0;
+}
+

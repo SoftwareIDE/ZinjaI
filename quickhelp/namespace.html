@@ -1,0 +1,21 @@
+<B><I>namespace</I></B>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Los espacios de nombres en C++ son un concepto que permite agrupar un conjunto de declaraciones bajo un ámbito común e independiente. Utilizando la sintaxis <I>namespace nombre { ... }</I> se puede declarar clases, variables o funciones como pertenecientes a este scope(denominado por <I>nombre<I>). Ej:<BR> 
+<BR><code>
+&nbsp;&nbsp;&nbsp; namespace mi_espacio {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int funcion1();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int funcion2();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float var1;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; float var2;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class clase1;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+</code><BR>
+&nbsp;&nbsp;&nbsp; Para utilizar los elementos de este espacio de nombres se debe utlizar el operador de resolución de scope (::) o la directiva <I>using</I>. Ej:<BR>
+<BR><code>
+&nbsp;&nbsp;&nbsp; int a = mi_espacio::funcion1();<BR>
+</code><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Dado que todas las clases y funciones del lenguaje ANSI/ISO C++ actual están definidas dentro de un espacio de nombres denominado <I>std</I>, es muy común que la primer linea a continuación de la lista de <I>#include</I>s sea <I>using namespace std;</I>.<BR>
+<BR>
+Vea tambien: <LI><A href="quickfile:using.html">using</A>.<BR>

@@ -1,0 +1,21 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Estructura repetitiva: <I>while</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Esta estructura permite repetir un conjunto de acciones mientras una condición resulte verdadera. La condición debe ser una expresión de tipo lógico (<I>bool</I>) que se coloca entre paréntisis justo después de la palabra clave <I>while</I>. Dentro de la estructura se deben incluir acciones que modifiquen la condición para evitar lazos infinitos (o utilizar la palabra clave <I>break</I>). Esta condición se evalúa al comienzo del bucle, por lo que si resultara false en la primera evaluación, las acciones dentro del bucle no se ejecutarían nunca.<BR>
+<BR><BR>
+Ejemplo: buscar un número (n) dentro de un arreglo de 8 elementos:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int i=0, arreglo[8]={2,5,3,7,8,5,1,0};<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Ingrese el numero a buscar:";<BR>
+&nbsp;&nbsp;&nbsp; cin&gt;&gt;n;<BR>
+&nbsp;&nbsp;&nbsp; while (arreglo[i]!=n &amp;&amp; i&lt;8) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i++;<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+&nbsp;&nbsp;&nbsp; if (i==8)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"No se encuentra"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; else<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Se encuentra en la posicion "&lt;&lt;i&lt;&lt;endl;<BR>
+</CODE><BR>
+La variable <I>i</I> se usa para recorrer el arreglo. El contenido del lazo (incrementar <I>i</I>) se ejecuta mientras i no contenga la posición del número que se busca y queden elementos por recorrer. Al salir del lazo, la condición resulta falsa. Dado que es una condición compuesta puede ser falsa por dos motivos: se econtró el número (no se cumple la primer parte, <I>arreglo[i]!=n</I>) o se terminó de recorrer todo el arreglo (no se cumple la segunda parte, <I>i&lt;n</I>).
+<BR>
+</BODY></HTML>

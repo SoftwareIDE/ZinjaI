@@ -1,0 +1,26 @@
+<B>Función <I>calloc</I></B>
+<BR><BR>
+Reserva e inicializa  dinámicamente memoria para un arreglo.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>void *calloc( size_t cant, size_t tam );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstdlib&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Reserva un bloque de memoria cuyo tamaño en bytes está dado por el producto entre <I>cant</I> y <I>tam</I>, por lo que se utiliza normalmente para crear un arreglo de <I>cant</I> elementos donde cada elemento ocupa <I>tam</I> bytes). Además inicializa cada byte de dicha memoria con 0. Devuelve un puntero de tipo <I>void*</I> al comienzo del bloque, o <I>NULL</I> cuando no ha podido reservarlo. Normalmente el puntero deberá ser convertido (casting) al tipo de dato requerido. Esta memoria deberá ser liberada con <I>free</I> cuando ya no se utilice.
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; int *arreglo = (int*) calloc(100,sizeof(int));<BR>
+&nbsp;&nbsp;&nbsp; /* ... */<BR>
+&nbsp;&nbsp;&nbsp; free (arreglo);<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstdlib.html">Cabecera <I>cstdlib</I></A>: Contiene funciones generales, incluyendo funciones para el manejo de memoria, conversion de tipos, control de proceso, etc.
+<LI><A href="quickfile:cstdlib_malloc.html">Función <I>malloc</I></A>: Reserva dinámicamente un bloque de memoria.
+<LI><A href="quickfile:cstdlib_realloc.html">Función <I>realloc</I></A>: Cambia el tamaño de un bloque de memoria reservado dinámicamente.
+<LI><A href="quickfile:cstdlib_free.html">Función <I>free</I></A>: Libera un bloque de memoria reservado dinámicamente.
+</UL>
+

@@ -1,0 +1,16 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Iterative structure: <I>do...while</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; This control structure will execute some code repeatedly while a given condition remains false. It means that when evaluating the logic expression that controls the loop results in false, the same block of code will be excuted again and again. The beginning of that structure is defined by the keyword <I>do</I>. Then cames the actions to run, and finally the condition preceded by the keyword <I>while</I>. Given that such condition is evaluated at the end, if it results to be true the first time, the actions inside the loop will be executed once anyway. Remember that inside the loop, there must be some action that modifies the condition's value to avoid infinite loops (or use a break <I>statement</I>).<BR>
+<BR><BR>
+Example: Validating an input data, that must be a number between 0 and 10:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int d;<BR>
+&nbsp;&nbsp;&nbsp; do { <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Enter the number (0...10): ";<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cin&gt;&gt;d;<BR>
+&nbsp;&nbsp;&nbsp; } while (d&gt;=0 &amp;&amp; d&lt;=10);<BR>
+</CODE><BR>
+The code inside the loop ask the user for a number. This will be done at least once. If the number entered is correct (that is the condition), it will exit the loop, but if it is not, it will ask again.<BR>
+<BR>
+</BODY></HTML>

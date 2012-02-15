@@ -1,0 +1,18 @@
+GPP=i686-apple-darwin8-g++
+FLAGS=-O2 `/opt/mac/wx/bin/wx-config --cppflags`
+LIBS=-lwx_mac_stc-2.8-i686-apple-darwin8 `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8`
+OBJS_DIR=../../../../release.m32
+
+all: ../../MacOS/zinjai 
+
+include Makefile.common
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}
+
+clean: bin-clean
+	rm -rf ${OBJS} ../../MacOS/zinjai cbrowser
+
+../../MacOS/zinjai: ${OBJS_DIR} ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+

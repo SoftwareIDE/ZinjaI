@@ -1,0 +1,42 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<TABLE WIDTH="100%"><TR><TD>
+<B>Parte 1: Paso 2</B>
+</TD><TD ALIGN="right">
+<A href="t0100.html">0</A>&nbsp;
+<A href="t0101.html">1</A>&nbsp;
+<A href="t0102.html">2</A>&nbsp;
+<A href="t0103.html">3</A>&nbsp;
+<A href="t0104.html">4</A>&nbsp;
+<A href="t0105.html">5</A>
+</TD></TR></TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Lo siguiente que haremos será escribir el programa. Una forma de resolver el ejercicio se presenta a continuación:<BR><BR>
+<CENTER><TABLE bgcolor="#FFFFEE" border=1><TR><TD><code>
+int main(int argc, char *argv[]) {<BR>
+&nbsp;&nbsp;&nbsp;float a,b,c;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Ingrese los coeficientes A, B y C: ";<BR>
+&nbsp;&nbsp;&nbsp;cin&gt;&gt;a&gt;&gt;b&gt;&gt;c;<BR>
+&nbsp;&nbsp;&nbsp;float det = b*b-4*a*c;<BR>
+&nbsp;&nbsp;&nbsp;if (det&lt;0) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float p_real = -b/(2*a);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float p_imag = sqrt(-det)/(2*a);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Las raices son: "&lt;&lt;p_real&lt;&lt;"+"&lt;&lt;p_imag&lt;&lt;"i y "&lt;&lt;p_real&lt;&lt;"-"&lt;&lt;p_imag&lt;&lt;"i"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;} else {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float raiz1 = (-b+sqrt(det))/(2*a);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float raiz2 = (-b-sqrt(det))/(2*a);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Las raices son: "&lt;&lt;raiz1&lt;&lt;" y "&lt;&lt;raiz2&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;return 0;</code><BR>
+}
+</TD></TR></TABLE></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp;No copie y pegue este segmento de código, sino que escriba usted mismo las lineas que faltan dentro de la función <I>main</I>. Mientras escribe, no se preocupe por el sangrado de las mismas, observe como <I>ZinjaI</I> acomoda el cursor en el lugar adecuado cada vez que presiona <I>enter</I>.<BR>
+<BR>
+<CENTER><IMG src="t010201.png"></CENTER><BR>
+<BR>
+<CENTER><A href="t0101.html">Volver...</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A href="t0103.html">Continuar...</A></CENTER>
+<BR><BR>
+</BODY>
+</HTML>

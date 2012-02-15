@@ -1,0 +1,3335 @@
+HTMLEXPORT_STATUS
+Exportando...
+GENERAL_READY
+Listo
+CONFIG_KONSOLE_PROBLEM
+La aplicacion terminal que se ha encontrado instalada\nes konsole 4.x. Esta version puede generear algunas\nmolestias al ejecutar sus programas, y problemas mayores\npara depurarlos. Se recomienda instalar xterm. Luego\nseleccionela en el campo \"Comando del Terminal\" de la\nseccion \"Rutas 2\" del cuadro de \"Preferencias\" (desde\nel menu archivo).
+CONFIG_TERMINAL
+Terminal de ejecucion
+CONFIG_NO_TERMINAL_FOUND
+No se ha encontrado una terminal conocida.\nInstale xterm, konsole, lxterminal o gnome-terminal;\nluego configure el parametro \"Comando del Terminal\"\nen la seccion \"Rutas 2\" del cuadro de \"Preferencias\".
+CONFIG_COMPILER_NOT_FOUND
+No se ha encontrado el compilador (g++). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
+CONFIG_COMPILER
+Compilador C++
+CONFIG_DEBUGGER_NOT_FOUND
+No se ha encontrado el depurador (gdb). Debe instalarlo con\nel gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
+CONFIG_DEBUGGER
+Depurador
+PROJMNGR_WXFB_NOT_FOUND
+El proyecto utiliza wxFormBuilder, pero este software\nno se ecuentra correctamente instalado/configurado en\nsu pc. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicacion en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
+GENERAL_WARNING
+Advertencia
+GENERAL_DONT_REMEMBER_AGAIN
+No volver a recordar
+MAINW_DOXYGEN_MISSING
+Doxygen no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+MAINW_CPPCHECK_MISSING
+CppCheck no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+DEBUG_MUST_WAIT_FOR_PARSER
+Debe esperar a que se termine de actualizar el arbol de simbolos para comenzar la depuracion.
+DEBUG_STATUS_STARTING
+Iniciando depuracion...
+DEBUG_ERROR_STARTING_SPACES
+Error al iniciar el proceso. Puede intentar mover el ejecutable o el proyecto a una ruta sin espacios.
+GENERAL_ERROR
+Error
+DEBUG_ERROR_STARTING
+Error al iniciar el proceso.
+OSD_STARTING_DEBUGGER
+Iniciando depuracion...
+GENERA_CONSOLE_CAPTION
+ZinjaI - Consola de Ejecucion
+DEBUG_ERROR_WITH_TERMINAL
+Ha ocurrido un error al iniciar la terminal para la ejecucion.\nCompruebe que el campo \"Comando del terminal\" de la pestana\n\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto.
+DEBUG_NO_SYMBOLS
+El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depurarcion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar).
+DEBUG_ERROR_STATING_GDB
+Ha ocurrido un error al ejecutar el depurador.
+DEBUG_ERROR_STARTING_GDB_LINUX
+Si el depurador (gdb) no se encuentra instalado\nen su systema debe instalarlo con el gestor de\npaquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
+DEBUG_STATUS_ATTACHING_TO
+Depurador adjuntado al proceso 
+OSD_LOADING_CORE_DUMP
+Cargando volcado de memoria...
+DEBUG_STATUS_RUNNING
+Ejecutando...
+DEBUG_STATUS_UNKNOWN
+Estado desconocido
+DEBUG_STATUS_BREAK
+El programa alcanzo un punto de interrupcion
+DEBUG_STATUS_WATCH
+El programa se interrumpio por un WatchPoint: 
+DEBUG_STATUS_WATCH_OUT
+El WatchPoint ha dejado de ser valido: 
+DEBUG_STATUS_LOCATION_REACHED
+El programa alcanzo la ubicacion seleccionada
+DEBUG_STATUS_FUNCTION_ENDED_RETVAL
+Valor de retorno: 
+DEBUG_STATUS_FUNCTION_ENDED
+La funcion ha finalizado.
+DEBUG_STATUS_STEP_DONE
+Paso avanzado
+DEBUG_STATUS_ENDED_NORMALLY
+El programa finalizo con normalidad
+DEBUG_STATUS_EXIT_WITH_CODE
+El programa finalizo con el codigo de salida 
+DEBUG_STATUS_TRAP
+El programa se interrumpio para ceder el control al depurador
+DEBUG_STATUS_ABNORMAL_INTERRUPTION
+El programa se interrumpio anormalmente ( 
+DEBUG_STATUS_TERMINAL_CLOSED
+La terminal del programa ha sido cerrada
+DEBUG_STATUS_PREFIX
+  Depuracion: 
+INSPECTGRID_TYPE_STRUCT
+estructura
+INSPECTGRID_TYPE_ARRAY
+arreglo
+INSPECTGRID_FORMAT_NATURAL
+natural
+INSPECTGRID_OUT_OF_SCOPE
+<<< Fuera de Scope >>>
+DEBUG_INSPECTION_NOT_AVAILABLE
+<<<No Disponible>>>
+DEBUG_ERROR_REVERSE
+Ha ocurrido un error al intentar activar esta caracteristica.\nPara utilizarla debe instalar gdb version 7.0 o superior.\nAdema, no todas las plataformas soportan este tipo de ejecucion.
+DEBUG_REVERSE_DISABLED
+Solo se puede retroceder la ejecucion hasta el punto en donde la ejecucion hacia atras fue habilitada.\nActualmente esta caracteristica no esta habilitada. Utilice el comando \"Habilitar Ejecucion Hacia Atras\"\ndel menu de Depuracion para habilitarla.
+THREADS_NO_THREADS
+<<No hay hilos>>
+THREADS_NO_INFO
+<<Informacion no disponible>>
+PARSERHELP_UNION
+Union
+PARSERHELP_CLASS
+Clase
+PARSERHELP_DEFINED_IN
+Definida en
+PARSERHELP_IN_LINE
+en la linea
+PARSERHELP_GENERIC_CLASS
+Clase generica: 
+PARSERHELP_THIS_ONE_INHERITS_FROM
+Hereda de:
+PARSERHELP_OTHER_ONE_INHERIT_FROM
+hereda de
+PARSERHELP_ONE_CLASS_INHERITS_FROM_PRE
+La clase
+PARSERHELP_ONE_CLASS_INHERITS_FROM_POST
+hereda de
+PARSERHELP_MANY_CLASSES_INHERIT_FROM_PRE
+Las clases
+PARSERHELP_MANY_CLASSES_INHERIT_FROM_POST
+heredan de
+PARSERHELP_NAMESPACE
+Espacio de Nombre
+PARSERHELP_OWN_ATTRBUTES
+Atributos propios:
+PARSERHELP_VARIABLES
+Variables:
+PARSERHELP_NO_OWN_ATTRIBUTE_FOUND
+No se declararon atributos propios.
+PARSERHELP_OWN_METHODS
+Metodos propios:
+PARSERHELP_FUNCTIONS
+Funciones:
+PARSERHELP_NO_OWN_METHOD_FOUND
+No se declararon metodos propios.
+PARSERHELP_DOXY_DESC
+Informacion en comentarios tipo Doxygen:
+PARSERHELP_NO_DOXYGEN
+No se encontro informacion de comentarios tipo Doxygen.
+PARSERHELP_CONSTRUCTOR_FROM_CLASS_PRE
+Constructor
+PARSERHELP_CONSTRUCTOR_FROM_CLASS_POST
+de la clase
+PARSERHELP_DESTRUCTOR_FROM_CLASS_PRE
+Destructor
+PARSERHELP_DESTRUCTOR_FROM_CLASS_POST
+de la clase
+PARSERHELP_METHOD_FROM_CLASS_PRE
+Metodo
+PARSERHELP_METHOD_FROM_CLASS_POST
+de la clase
+PARSERHELP_VISIBILITY_PUBLIC
+Visibilidad: Publico
+PARSERHELP_VISIBILITY_PRIVATE
+Visibilidad: Privado
+PARSERHELP_VISIBILITY_PROTECTED
+Visibilidad: Protegido
+PARSERHELP_PROTOTYPE
+Prototipo:
+PARSERHELP_DECLARED_IN_PRE
+Declarado en
+PARSERHELP_DECLARED_IN_POST
+en la linea
+PARSERHELP_DEFINED_IN_PRE
+Definido en
+PARSERHELP_DEFINED_IN_POST
+en la linea
+PARSERHELP_FUNCTION
+Funcion
+PARSERHELP_ATTRIBUTE_FROM_CLASS_PRE
+Atributo
+PARSERHELP_ATTRIBUTE_FROM_CLASS_POST
+de la clase
+PARSERHELP_VISIBILITY_DECLARATION
+Declaracion:
+PARSERHELP_GLOBAL_VAR
+Variable Global
+PARSERHELP_DECLARATION
+Declaracion:
+PARSERHELP_TYPEDEF
+Typedef
+PARSERHELP_MACRO
+Macro
+PARSERHELP_DEFINED_AS
+Definida como:
+PARSERHELP_SYMBOLS_FOUND
+Simbolos encontrados:
+SYMBOLS_MACROS
+Macros y Typedefs
+SYMBOLS_GLOBALS
+Variables Globales
+SYMBOLS_FUNCTIONS
+Funciones
+SYMBOLS_CLASSES
+Clases
+SYMBOLS_POPUP_TITLE
+<Visor de Simbolos>
+SYMBOLS_POPUP_GOTO_DEF
+Ir a De&finicion
+SYMBOLS_POPUP_GOTO_DEC
+Ir a De&claracion
+SYMBOLS_POPUP_UPDATE_TREE
+&Actualizar arbol
+SYMBOLS_POPUP_GENERATE_INDEX
+&Generar indice para autocompletado...
+MENUITEM_EDIT_FIND
+&Buscar...
+PARSER_PARSING_FILE_PRE
+Analizando \"
+PARSER_PARSING_FILE_POST
+\"...
+OSD_LOADING_PROJECT_PRE
+Abriendo 
+OSD_LOADING_PROJECT_POST
+...
+PROJMNGR_OPENING
+Abriendo
+PROJMNGR_CHANGE_PROFILE_OPENNING_PRE
+Parece que esta abriendo un proyecto que tiene seleccionado un perfil\nde compilacion y ejecucion para otro sistema operativo: \"
+PROJMNGR_CHANGE_PROFILE_OPENNING_MID
+\"\n ¿Desea cambiar el perfil activo por: \"
+PROJMNGR_CHANGE_PROFILE_OPENNING_POST
+\"?
+PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK
+Seleccionar otro perfil de la lista
+PROJMNGR_CHANGE_PROFILE_OPENNING_CHOICE
+Seleccione el perfil a activar
+PROJMNGR_CONFIRM_REPLACE
+Ya existe un archivo con ese nombre. Desea Reemplazarlo?
+PROJMNGR_CONFIRM_DETTACH_ALSO_PRE
+¿Desea quitar tambien el archivo \"
+PROJMNGR_CONFIRM_DETTACH_ALSO_POST
+\" del proyecto?
+PROJMNGR_DELETE_FROM_DISK
+Eliminar el archivo del disco
+PROJMNGR_CONFIRM_DETTACH_FILE
+¿Desea quitar el archivo del proyecto?
+PROJMNGR_FUTURE_SOURCE_PRE
+El fuente 
+PROJMNGR_FUTURE_SOURCE_POST
+ tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.
+PROJMNGR_FUTURE_OBJECT_PRE
+El objeto 
+PROJMNGR_FUTURE_OBJECT_POST
+ tenia fecha de modificacion en el futuro. Se recompilara el fuente.
+PROJMNGR_NO_LIB_FOR_THAT_SOURCE_PRE
+El fuente \"
+PROJMNGR_NO_LIB_FOR_THAT_SOURCE_POST
+\" no esta asociado a ninguna biblioteca.
+PROJMNGR_LIB_WITHOUT_SOURCES_PRE
+La biblioteca \"
+PROJMNGR_LIB_WITHOUT_SOURCES_POST
+\" no tiene ningun fuente asociado.
+PROJMNGR_ICON_NOT_FOUND
+No se ha encontrado el icono del ejecutable.
+PROJMNGR_MANIFEST_NOT_FOUND
+No se ha encontrado el archivo manifest.xml.
+PROJMNGR_COMPILING
+Compilando
+PROJMNGR_STEP_FROM_PRE
+paso 
+PROJMNGR_STEP_FROM_PORT
+ de 
+PROJMNGR_RUNNING
+Ejecutando
+PROJMNGR_LINKING
+Enlazando \"
+PROJMNGR_RUNNING_NO_EXE
+Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas.
+PROJMNGR_REGENERATING_WXFB
+Regenerando proyecto wxFormBuilder...
+PROJMNGR_REGENERATING_ERROR_1
+No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?
+PROJMNGR_REGENERATING_ERROR_2
+No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").
+PROJMNGR_REGENERATING_ERROR_3
+No se pudo actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?
+PROJMNGR_REGENERATING_ERROR_4
+No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).
+OSD_GENERATING_GRAPH
+Generando grafo...
+PROJMNGR_PROJECT_GRAPH_BYTES
+ bytes
+PROJMNGR_PROJECT_GRAPH_LINES
+ linea(s)
+PROJMNGR_PROJECT_GRAPH_SYMBOLS
+ simbolo(s)
+PROJMNGR_PROJECT_GRAPH_TITLE
+Grafo de Proyecto
+OSD_WXFB_AUTOREGEN
+Actualizando clases wxFormBuilder...
+PROJECT_DIRNOTFOUND_CREATE_PRE
+El directorio \"
+PROJECT_DIRNOTFOUND_CREATE_POST
+\" no existe. Desea crearlo?
+PROJECT_CANT_CREATE_DIR
+No se pudo crear el directorio.
+PROJECT_INVALID_CLASS_NAME
+El nombre de la clase no puede incluir ni espacios ni operadores
+PROJECT_WXFB_NEWFILE_EXISTS
+Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?
+OPENSHARED_ERROR_GETTING_SOURCE
+Ha ocurrido un error al intentar obtener el fuente. Pruebe actualizar la lista de fuentes compartidos.
+ERRORRECOVERY_OOPS_MESSAGE
+Ha ocurrido un error grave y ZinjaI se cerrara.\nPor suerte, se han podido guardar todos sus\narchivos y proyectos para recuperarlos la proxima\nproxima vez que inicie el entorno.
+ABOUT_CAPTION
+Acerca de...
+ABOUT_CLOSE
+Cerrar
+APP_CREATE_ICON_QUESTION
+Desea crear un acceso rapido para ZinjaI en su escritorio?
+APP_WELCOME_TO_ZINJAI
+Bienvenido a ZinjaI
+ARGUMENTS_CAPTION
+Argumentos para la ejecucion
+ARGUMENTS_ARGUMENTS
+Argumentos para la ejecucion:
+GENERAL_DONT_ASK_AGAIN
+no volver a preguntar
+GENERAL_OK_BUTTON
+&Aceptar
+ARGUMENTS_WITHOUT_ARGUMENTS
+&Sin Argumentos
+GENERAL_CANCEL_BUTTON
+&Cancelar
+GENERAL_POPUP_EDIT_AS_TEXT
+editar como texto
+GENERAL_POPUP_EDIT_AS_LIST
+editar como list
+GENERAL_POPUP_REPLACE_ALL_WITH_FILE
+reemplazar todo por archivo
+GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE
+reemplazar seleccion por archivo
+GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER
+reemplazar todo por directorio
+GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER
+reemplazar seleccion por directorio
+GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE
+Reemplazar todo por archivo:
+GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE
+Reemplazar seleccion por archivo:
+GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER
+Reemplazar todo por directorio:
+GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER
+Reemplazar seleccion por directorio:
+BACKTRACE_LEVEL
+Nivel
+BACKTRACE_FUNCTION
+Funcion
+BACKTRACE_FILE
+Archivo
+BACKTRACE_LINE
+Linea
+BACKTRACE_ARGS
+Argumentos
+MAINW_FILE_NOT_FOUND
+No se encontro el archivo:
+BACKTRACE_UPDATE
+Actualizar
+BACKTRACE_GOTO_PRE
+Ir a 
+BACKTRACE_GOTO_POST
+ : 
+BACKTRACE_BLACKLIST_THIS_ONE
+Evitar detenerse este fuente (para step in)
+BACKTRACE_INSPECT_ARGS
+Inspeccionar Argumentos
+BACKTRACE_EXPLORE_ARGS
+Explorar Argumentos
+BACKTRACE_INSPECT_LOCALS
+Inspeccionar Variables Locales
+BACKTRACE_EXPLORE_LOCALS
+Explorar Variables Locales
+BACKTRACE_SHRINK_LEVEL
+Encoger  Columna \"Nivel\"
+BACKTRACE_SHRINK_FUNCTION
+Encoger  Columna \"Funcion\"
+BACKTRACE_SHRINK_FILE
+Encoger  Columna \"Archivo\"
+BACKTRACE_SHRINK_LINE
+Encoger  Columna \"Linea\"
+BACKTRACE_SHRINK_ARGS
+Encoger Columna \"Argumentos\"
+BEGPANEL_CONTROL_STRUCTURES
+Estructuras de Control
+BEGPANEL_SHOW_QUICKHELP
+Mostrar ayuda rapida
+BEGPANEL_OPTIONS_IF
+Opciones: if
+BEGPANEL_IF_CONDITION
+Condicion
+BEGPANEL_IF_INCLUDE_FALSE
+Incluir acciones por falso
+BEGPANEL_APPLY
+Aplicar
+BEGPANEL_OPTIONS_FOR
+Opciones: for
+BEGPANEL_FOR_COUNTER
+Contador
+BEGPANEL_FOR_DECLARE_COUNTER
+Declarar contador
+BEGPANEL_FOR_FROM
+Desde
+BEGPANEL_FOR_TO
+Hasta
+BEGPANEL_FOR_INCLUDE_LAST
+Incluir el ultimo valor
+BEGPANEL_INCREMENT
+Incremento
+BEGPANEL_OPTIONS_WHILE
+Opciones: while
+BEGPANEL_WHILE_CONDITION
+Condicion
+BEGPANEL_OPTIONES_DO
+Opciones: do
+BEGPANEL_DO_CONDITION
+Condicion
+BEGPANEL_OPTIONS_SWITCH
+Opciones: switch
+BEGPANEL_SWITCH_EXPRESSION
+Expresion
+BEGPANEL_SWITCH_NUM_CASES
+Cantidad de casos
+BEGPANEL_SWITCH_INCLUDE_DEFAULT
+Incluir default
+BREAKLIST_CAPTION
+Lista de Break/Watch points
+BREAKLIST_NUMBER
+Numero
+BREAKLIST_TYPE
+Tipo
+BREAKLIST_LOCATION_EXPRESSION
+Ubicacion/Expresion
+BREAKLIST_STATE
+Estado
+BREAKLIST_CONDITION
+Condicion
+BREAKLIST_COUNTER
+Conteo
+BREAKLIST_CLOSE
+&Cerrar
+BREAKLIST_GO_TO
+&Ir A...
+BREAKLIST_EDIT
+&Editar...
+BREAKLIST_DELETE
+E&liminar
+BREAKLIST_CLEAN
+&Limpiar
+BREAKLIST_LINE
+linea
+BREAKLIST_ERROR_LOCATION
+error (ubicacion)
+BREAKLIST_ERROR_CONDITION
+error (condicion)
+BREAKLIST_ONCE
+una vez
+BREAKLIST_ENABLED
+habilitado
+BREAKLIST_DISABLED
+deshabilitado
+BREAKLIS_LINE
+linea
+BREAKOPTS_CAPTION
+Propiedades del Breakpoint
+BREAKOPTS_FILE
+Archivo
+BREAKOPTS_LINE
+Linea
+BREAKOPTS_INSERT
+Insertar punto de interrupcion
+BREAKOPTS_ENABLE
+Habilitar punto de interrupcion
+BREAKOPTS_ONCE
+Interrumpir solo una vez
+BREAKOPTS_IGNORE_TIMES_PRE
+Ignorar
+BREAKOPTS_IGNORE_TIMES_POST
+veces
+BREAKOPTS_HIT_TIMES_PRE
+Se ha alcanzado
+BREAKOPTS_HIT_TIMES_POST
+veces
+BREAKOPTS_CONDITION
+Condicion
+BREAKOPTS_ERROR_PLACING_BREAKPOINT
+Error al colocar breakpoint
+BREAKOPTS_INVALID_CONDITION
+La condicion actual no es valida
+COLORS_CAPTION
+Definir Colores
+GENERAL_APPLY_BUTTON
+A&plicar
+COLOURS_ESCHEME
+Esquema:
+COLOURS_CUSTOM
+<personalizado>
+COLOURS_TIP_OPEN
+Cargar un esquema de colores personalizado desde un archivo .zcs
+COLOURS_TIP_SAVE
+Guardar un esquema de colores personalizado en un archivo .zcs
+COLOURS_FRONT
+Color de Frente
+COLOURS_BACK
+Color de Fondo
+COLOURS_ITALIC
+Cursiva
+COLOURS_BOLD
+Negrita
+COLORS_HELP
+Puede ingresar los colores con formato HTML o utilizando el boton de los tres punto para inciar un selector grafico. El formato html es \"#ABCDEF\" donde AB, CD y EF son los valores en notación hexadecimal para R, G y B.
+COLORS_ID_DEFAULT
+Texto por defecto
+COLORS_ID_IDENTIFIER
+Identificadores
+COLORS_ID_NUMBER
+Numero
+COLORS_ID_WORD
+Palabra clave
+COLORS_ID_WORD2
+Tipo de dato funtamental
+COLORS_ID_STRING
+Cadena de caracteres
+COLORS_ID_STRINGEOL
+Cadena sin finalizar
+COLORS_ID_CHARACTER
+Caracter
+COLORS_ID_OPERATOR
+Operador
+COLORS_ID_BRACELIGHT
+Llave/parentesis/corchete resaltado
+COLORS_ID_BRACEBAD
+Llave/parentesis/corchete incorrecto
+COLORS_ID_PREPROCESSOR
+Directiva de preprocesador
+COLORS_ID_COMMENT
+Comentario /* */
+COLORS_ID_COMMENTLINE
+Comentario //
+COLORS_ID_COMMENTDOC
+Comentario Doxygen /** **/
+COLORS_ID_COMMENTLINEDOC
+Comentario Doxygen ///
+COLORS_ID_COMMENTDOCKEYWORD
+Palabra clave Doxygen
+COLORS_ID_COMMENTDOCKEYWORDERROR
+Palabra clave Doxygen incorrecta
+COLORS_ID_CALLTIP
+Ayuda emergente
+COLORS_ID_LINENUMBER
+Numero de linea
+COLORS_ID_FOLD
+Indicadores de plegado
+COLORS_ID_FOLD_TRAMA
+Margen para indicadores de plegado
+COLORS_ID_INDENTGUIDE
+Guia de indentado
+COLORS_ID_SELBACKGROUND
+Seleccion
+COLORS_ID_CURRENT_LINE
+Linea actual
+COLORS_ID_USER_LINE
+Linea resaltada
+COLORS_ID_CARET
+Cursor de texto
+GENERAL_OPEN
+Abrir
+GENERAL_SAVE
+Guardar
+COMPILECONF_COMPILER_ARGS
+Parametros extra para el compilador
+COMPILECONF_WORKDIR
+Directorio de trabajo
+COMPILECONF_RUNNING_ARGS
+Argumentos para la ejecucion
+COMPILECONF_ALWAYS_ASK_ARGS
+Siempre pedir argumentos al ejecutar
+COMPILECONF_WAIT_KEY
+Esperar una tecla luego de la ejecucion
+COMPILECONF_SOURCE_CLOSED
+El fuente en cual se debe aplicar esta configuracion ha sido cerrado.
+COMPILECONF_INVALID_WORKDIR
+El directorio de trabajo no es valido.
+COMPILECONF_WORKDIR_DLG
+Directorio de trabajo:
+COMPILECONF_SELECT_TEMPLATE
+Seleccione una plantilla de la cual copiar los argumentos
+COMPILECONF_COMPILER_ARGS_DLG
+Parametros para la comopilacion
+COMPILECONF_POPUP_DEFAULT
+valores por defecto
+COMPILECONF_POPUP_COPY_FROM_TEMPLATE
+copiar de plantilla...
+GENERAL_PREPARING_BUILDING
+Preparando compilacion...
+MAINW_COMPILATION_INTERRUPTED
+Compilacion interrumpida.
+MAINW_BINARY_ALREADY_UPDATED
+El binario ya esta actualizado.
+GENERAL_RUNNING_DOTS
+Ejecutando...
+MAINW_COMPILER_OUTPUT_PARSING_ERROR
+ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\nPuede que algun error no se muestre correctamente en el arbol. Para ver la salida\ncompleta haga click con el boton derecho del raton en cualquier elemento del arbol\ny seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\nenviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar
+MAINW_CT_ERRORS
+Errores
+MAINW_CT_WARNINGS
+Advertencias
+MAINW_COMPILING_DONE_TIME_PRE
+Compilacion finalizada ( tiempo transcurrido: 
+MAINW_COMPILING_DONE_POST_SECONDS
+ segundos ).
+MAINW_COMPILING_DONE_MID_ONE_MINUTE
+un minuto y 
+MAINW_COMPILING_DONE_MID_MINUTES
+ minutos y 
+MAINW_COMPILING_DONE
+Compilacion finalizada.
+MAINW_COMPILING_DOTS
+Compilando...
+MAINW_WARNING_NO_EXCUTABLE_PERMISSION
+El binario no tiene permisos de ejecución.
+CUSTOM_TOOLS_CAPTION
+Herramientas Personalizables
+CUSTOM_TOOLS_ITEM
+Herramienta 
+CUSTOM_TOOLS_COMBO
+Herramienta a editar
+CUSTOM_TOOLS_NAME
+Nombre
+CUSTOM_TOOLS_COMMAND
+Comando
+CUSTOM_TOOLS_WORKDIR
+Directorio de trabajo
+CUSTOM_TOOLS_CONSOLE_WINDOWS
+Ocultar ventana
+CUSTOM_TOOLS_CONSOLE_LINUX
+Correr en terminal
+CUSTOM_TOOLS_ONTOOLBAR_LINUX
+Mostrar en la barra de herramientas
+CUSTOM_TOOLS_TEST
+&Ejecutar
+CUSTOM_TOOLS_SHOW_TOOLBAR
+La barra de herramientas \"Herramientas\" no esta visible.\n¿Desea activarla para ver los controles personalizados?
+DIFF_CAPTION
+Comparar archivos
+DIFF_COMPARE
+&Comparar
+DIFF_SOURCE_A
+Archivo A
+DIFF_SOURCE_B
+Archivo B
+DIFF_IGNORE_EXTRA_WHITESPACE
+Ignorar espacios extras
+DIFF_IGNORE_EMPTY_LINES
+Ignorar lineas en blanco
+DIFF_NO_CASE_SENSITIVE
+Ignorar mayusculas y minusculas
+DIFF_SHOW_TOOLBOX
+Mostrar barra de herramientas
+DIFF_SHOW_SIDEMAP
+Mostrar mapa lateral
+DIFF_LINES_NOT_IN_OTHER_FILE
+<<Estas lineas no se encuentran en el otro archivo>>
+DIFF_FILES_EQUAL
+Los archivos son iguales
+DOXYCONF_CAPTION
+Configuracion Doxygen
+DOXYCONF_BASIC_OPTIONS
+Opciones Basicas
+DOXYCONF_MORE_OPTIONS
+Mas Opciones
+DOXYCONF_EXTRA_TAB
+Campos Adicionales
+DOXYCONF_LANG_ES
+Espanol
+DOXYCONF_PROJECT_NAME
+Nombre del Proyecto
+DOXYCONF_PROJECT_VER
+Version del proyecto
+DOXYCONF_DEST_DIR
+Directorio destino
+DOXYCONF_FILES_NONE
+Ninguno
+DOXYCONF_FILES_CPP
+Fuentes
+DOXYCONF_FILES_HEADERS
+Cabeceras
+DOXYCONF_FILES_H_AND_CPP
+Fuentes y Cabeceras
+DOXYCONF_WICH_FILES
+Archivos a procesar
+DOXYCONF_EXTRA_FILES
+Archivos adicionales a procesar
+DOXYCONF_FILES_TO_EXCLUDE
+Archivos a excluir al procesar
+DOXYCONF_SAVE_WITH_PROJECT
+Guardar con el proyecto
+DOXYCONF_EXTRA_LABEL
+El texto de este campo se agregara sin cambios en el\nDoxyfile. Puede utilizarlo para definir parametros\nno contemplados en este cuadro de dialogo.
+DOXYCONF_LANG_EN
+Ingles
+DOXYCONF_LANG
+Idioma
+DOXYCONF_BASE_DIR
+Directorio base
+DOXYCONF_ENABLE_PREPROC
+Habilitar preprocesado
+DOXYCONF_EXTRA_PRIVATE
+Incluir metodos/atributos privados
+DOXYCONF_EXTRA_STATIC
+Incluir funciones/variables static
+DOXYCONF_ONLY_DOC_ENTITIES
+Extraer solo las entidades documentadas
+DOXYCONF_GENERATE_LATEX
+Generar documentacion Latex
+DOXYCONF_GENERATE_HTML
+Generar documentacion HTML
+DOXYCONF_SHOW_NAV_TREE
+Mostrar arbol de navegacion (para doc HTML)
+DOXYCONF_INCLUDE_SEARCH_ENGINE
+Incluir motor de busquedas (para doc HTML, requiere PHP)
+DOXYCONF_USE_IN_QUICKHELP
+Utilizar en ayuda rapida
+DRAWCLASSES_CAPTION
+Dibujar relaciones entre clases
+GENERAL_CLOSE_BUTTON
+&Cerrar
+DRAWCLASSES_RELATED_NONE
+No incluir
+DRAWCLASSES_RELATED_DIRECT
+Incluir solo las relacionadas directamente
+DRAWCLASSES_RELATED_ALL
+Incluir todas la relacionadas
+DRAWCLASSES_RELATED
+Clases externas
+DRAWCLASSES_GENERADOR
+Generador
+DRAWCLASSES_WICH_ALL
+<todas las clases>
+DRAWCLASSES_DRAW_FROM
+Dibujar relaciones de:
+DRAWCLASSES_FILES_ALL
+<todos los archivos>
+DRAWCLASSES_FROM_FILE
+Dibujar relaciones de:
+DRAWCLASSES_WHAT_NAME
+Solo Nombre
+DRAWCLASSES_WHAT_PUBLIC_NAME
+Atributos y Metodos Publicos (solo nombre)
+DRAWCLASSES_WHAT_PUBLIC_FULL
+Atributos y Metodos Publicos (prototipo completo)
+DRAWCLASSES_WHAT_ALL_NAME
+Todos los Atributos y Metodos (solo nombre)
+DRAWCLASSES_WHAT_ALL_FULL
+Todos los Atributos y Metodos (prototipo completo)
+DRAWCLASSES_WHAT
+Mostrar en cada clase
+DRAWCLASSES_WHERE_SHOW
+Visualizar
+DRAWCLASSES_WHERE_PNG
+Guardar como imagen png
+DRAWCLASSES_WHERE_JPG
+Guardar como imagen jpg
+DRAWCLASSES_WHERE_BMP
+Guardar como imagen bmp
+DRAWCLASSES_WHERE_PDF
+Guardar como documento pdf
+DRAWCLASSES_WHERE_PS
+Guardar como documento ps
+DRAWCLASSES_WHERE_SVG
+Guardar como dibujo svg
+DRAWCLASSES_WHERE_DIA
+Guardar como diagrama dia
+DRAWCLASSES_WHERE
+Resultado
+DRAWCLASSES_NO_COINCIDENCE_FOR_CLASS
+No se encontraron clases para las condiciones seleccionadas.
+DRAW_CLASSES_SAVE
+Guardar grafo
+DRAW_CLASSES_TITLE
+Jerarquia de Clases
+ENUMEDITOR_MOVE_UP
+Mover Arriba
+ENUMEDITOR_MOVE_DOWN
+Mover Abajo
+ENUMEDITOR_EDIT
+Editar...
+ENUMEDITOR_ADD
+Agregar...
+ENUMEDITOR_REMOVE
+Quitar
+ENUMEDITOR_NEW_ITEM
+Nuevo item
+ENUMEDITOR_EDIT_ITEM
+Editar item
+ERRORRECOVERY_CAPTION
+Recuperacion ante errores
+ERRORRECOVERY_ALL
+Todos
+ERRORRECOVERY_SELECTED
+Seleccionados
+ERRORRECOVERY_NONE
+Ninguno
+ERRORRECOVERY_PAR1_LINE1
+ZinjaI no se cerro correctamente durante su ultima ejecucion.
+ERRORRECOVERY_PAR1_LINE2
+Algunos archivos en los que trabajaba fueron guardados
+ERRORRECOVERY_PAR1_LINE3
+automaticamente, y ahora puede recuperarlos.
+ERRORRECOVERY_PAR2_LINE1
+Seleccione que archivos desea recuperar (se abriran como
+ERRORRECOVERY_PAR2_LINE2
+archivos sin titulo, utilice guardar como para guardarlos
+ERRORRECOVERY_PAR2_LINE3
+efectivamente).
+ERRORRECOVERY_PROJECT_MESSAGE
+ZinjaI no se cerro correctamente durante su ultima ejecucion.\nEl proyecto en el que trabajaba fue guardado automaticamente.\nDesea recuperarlo? (Atencion: al abrir el proyecto recuperado\npodria sobreescribir la version en disco del proyecto y sus\narchivos. Se guardara una copia de su archivo de proyecto actual\nantes de reescribirlo con la version restaurada)
+ERRORRECOVERY_PROJECT_PROBLEM
+Ha ocurrido un error al intentar recuperar el proyecto.
+EXEINFO_CAPTION
+Propiedades del Ejecutable
+EXEINFO_NOT_FOUND
+No se encontro ejecutable. Compile el programa para crearlo.
+EXEINFO_STRIP
+&Strip
+EXEINFO_GENERAL
+General
+EXEINFO_DEPS
+Dependencias
+EXEINFO_LOCATION
+Ubicacion
+EXEINFO_SIZE
+Tamaño
+EXEINFO_LAST_MOD_DATE
+Fecha ultima modifiacion
+EXEINFO_UPDATED
+Actualizado
+EXEINFO_YES
+Si
+EXEINFO_NO
+No
+EXEINFO_WAIT_FOR_PARSER
+No se puede determinar el tipo mientras el parser esta analizando fuentes
+EXEINFO_FILE_TYPE
+Tipo de Archivo
+EXTRASTEP_NAME
+Nombre
+EXTRASTEP_COMMAND
+Comando
+EXTRASTEP_DEPS
+Dependencias
+EXTRASTEP_OUTPUT
+Archivo de salida
+EXTRASTEP_BEFORE_SOURCES
+Antes de compilar los fuentes
+EXTRASTEP_BEFORE_LIBS
+Antes de generar las bibliotecas
+EXTRASTEP_BEFORE_EXECUTABLE
+Antes de enlazar el ejecutable
+EXTRASTEP_AFTER_LINKING
+Despues de enlazar el ejecutable
+EXTRASTEP_LOCATION_ON_SEQ
+Ubicacion en la secuencia
+EXTRASTEP_LINK_FORCE_RELINK
+Enlazar el archivo de salida en el ejecutable
+EXTRASTEP_DELETE_ON_CLEAN
+Eliminar al limpiar el proyecto
+EXTRASTEP_CHECK_EXIT_CODE
+Verificar codigo de salida
+EXTRASTEP_HIDE_RUNNING_WINDOW
+Ocultar ventana de ejecucion
+EXTRASTEP_NAME_MISSING
+Debe completar el nombre del paso.
+EXTRASTEP_COMMAND_MISSING
+Debe completar el comando del paso.
+EXTRASTEP_NAME_REPEATED
+Ya existe otro paso con ese nombre.
+FIND_CAPTION
+Buscar
+FIND_SEARCH_FOR
+Texto a buscar:
+REPLACE_WITH
+Reemplazar por:
+FIND_WHOLE_WORD
+Solo palabras completas
+FIND_BEGINNING_OF_WORD
+Solo al comienzo de la palabra
+FIND_MATCH_CASE
+Distinguir mayusculas y minusculas
+FIND_IGNORE_COMMENTS
+Ignorar comentarios
+FIND_USE_REGULAR_EXPRESSIONS
+Es una expresion regular
+FIND_SELECTION
+Seleccion
+FIND_CURRENT_FILE
+Archivo actual
+FIND_ALL_OPENED_FILES
+Todos los Archivos Abiertos
+FIND_ALL_PROJECT_SOURCES
+Todos los Fuentes del Proyecto
+FIND_ALL_PROJECT_HEADERS
+Todas las Cabeceras del Proyecto
+FIND_ALL_PROJECT_OTHERS
+Todos los Otros Archivos del Proyecto
+FIND_ALL_PROJECT_FILES
+Todos los Archivos del Proyecto
+FIND_FIND_SCOPE
+Buscar en
+FIND_CLOSE_AFTER_FIND
+Cerrar este dialogo despues de encontrar
+FIND_REPLACE
+Reemplazar
+FIND_REPLACE_ALL
+Reemplazar Todo
+FIND_FIND_NEXT
+Buscar Siguiente
+FIND_FIND_PREVIOUS
+Buscar Anterior
+FIND_CANCEL
+Cancelar
+FIND_FIND
+Buscar
+FIND_NO_PROJECT
+No hay ningun proyecto abierto actualmente.
+FIND_NOT_FOUND_PRE
+La cadena \"
+FIND_NOT_FOUND_POST
+\" no se encontro.
+FIND_FIND_CAPTION
+Buscar
+FIND_NO_FILE
+No hay ningun archivo abierto actualmente.
+FIND_CANT_REPLACE_IN_PRE
+No es posible realizar reemplazos en \"
+FIND_CANT_REPLACE_IN_POST
+\",\nesta opcion aun no esta disponible.
+FIND_NO_REPLACE_DONE
+No se realizo ningun reemplazo.
+FIND_REPLACE_CAPTION
+Reemplazar
+FIND_ONE_REPLACE_DONE
+Se realizo un remplazo.
+FIND_MANY_REPLACES_PRE
+Se realizaron 
+FIND_MANY_REPLACES_POST
+ reemplazos.
+FIND_FIND_IN_FILES
+Buscar en archivos
+FIND_IN_FILES_RESULT
+Resultados para la busqueda:
+FIND_IN_FILES_NOT_FOUND
+No se encontraron coincidencias
+FIND_IN_FILES_CAPTION
+Buscar en archivos
+FIND_LINE
+linea
+GOTOFILE_CAPTION
+Ir a...
+GENERAL_GOTO_BUTTON
+  &Ir  
+GOTOFILE_CASE_SENSITIVE
+&Distinguir mayusculas y minusculas
+GOTOFILE_ENTER_FILENAME
+Ingrese parte del nombre del archivo que desea abrir:
+GOTOFILE_NO_RESULTS
+<<no se encontraron coincidencias>>
+GOTOFUNCTION_CAPTION
+Ir a...
+GOTOFUNCTION_CASE_SENSITIVE
+&Distinguir mayusculas y minusculas
+GOTOFUNCTION_ENTER_FUNC_NAME
+Ingrese el nombre de la funcion, clase o metodo:
+GOTOFUNCTION_NO_RESULTS
+<<no se encontraron coincidencias>>
+GOTOLINE_CAPTION
+Ir a linea
+GOTOLINE_YOURE_HERE_PRE
+Estas en la linea  
+GOTOLINE_YOURE_HERE_POST
+  de  
+XDG_CAPTION
+Iconos lanzadores
+XDG_NO_XDG
+Debe instalar xdg-utils para tener acceso todas las funcionalidades
+XDG_FIRST_TIME
+Desea crear un icono para acceder a ZinjaI desde el menu del sistema o el escritorio?
+XDG_CREATE_DESKTOP
+Crear un icono en el escritorio
+XDG_CREATE_MENU
+Crear un icono en el menu (en la categoria Programacion/Desarrollo)
+INSPECTGRID_LEVEL
+Nivel
+INSPECTGRID_EXPRESSION
+Expresion
+INSPECTGRID_TYPE
+Tipo
+INSPECTGRID_VALUE
+Valor
+INSPECTGRID_FORMAT
+Formato
+INSPECTGRID_WATCH
+WatchPoint
+INSPECTGRID_ERROR_OFFLINE_MODIFY
+Error al modificar la inspeccion.
+INSPECTGRID_NO_DEBUGGER_RUNNING
+Actualmente no se esta depurando ningun programa.\nPara comenzar la depuracion utilice la opcion \"Iniciar\" del menu \"Depuracion\".
+INSPECTGRID_CANT_MODIFY_WHILE_RUNNING
+Debe interrumpir la ejecucion para poder modificar las inspecciones.
+INSPECTGRID_WATCH_WRITE
+lectura
+INSPECTGRID_COULDNOT_RESCOPE_FOR_MODIFY
+La expresion no pudo ser evaluada en el ambito actual para su modificacion.
+INSPECTGRID_NO_MODIFIABLE_EXPRESSION
+La expresion no puede ser modificada.
+INSPECTGRID_FORMAT_OCTAL
+octal
+INSPECTGRID_FORMAT_DECIMAL
+decimal
+INSPECTGRID_FORMAT_BINARY
+binario
+INSPECTGRID_FORMAT_HEXADECIMAL
+hexadecimal
+INSPECTGRID_WATCH_NO
+no
+INSPECTGRID_WATCH_READ_WRITE
+lectura y escritura
+INSPECTGRID_WATCH_READ
+lectura
+INSPECTGRID_SHRINK_LEVEL
+Encoger  Columna \"Nivel\"
+INSPECTGRID_SHRINK_EXPRESSION
+Encoger  Columna \"Expresion\"
+INSPECTGRID_SHRINK_TYPE
+Encoger  Columna \"Tipo\"
+INSPECTGRID_SHRINK_VALUE
+Encoger  Columna \"Valor\"
+INSPECTGRID_SHRINK_FORMAT
+Encoger Columna \"Formato\"
+INSPECTGRID_SHRINK_WATCH
+Encoger Columna \"WatchPoint\"
+INSPECTGRID_POPUP_SPLIT_CLASS
+&Separar clase en atributos
+INSPECTGRID_POPUP_SPLIT_ARRAY
+&Separar arreglo en elementos
+INSPECTGRID_POPUP_SHOW_IN_TABLE
+&Mostrar en tabla separada
+INSPECTGRID_POPUP_SHOW_IN_TEXT
+&Mostrar en ventana separada
+INSPECTGRID_POPUP_EXPLORE
+&Explorar datos
+INSPECTGRID_POPUP_SET_CURRENT_FRAME
+Evaluar en el &ambito actual
+INSPECTGRID_POPUP_SET_NO_FRAME
+&Independizar del ambito
+INSPECTGRID_POPUP_EXPLORE_ALL
+Explorar &todos los datos
+INSPECTGRID_POPUP_DUPLICATE_EXPRESSION
+Duplicar Inspeccion
+INSPECTGRID_POPUP_COPY_EXPRESSION
+Copiar E&xpresion
+INSPECTGRID_POPUP_COPY_DATA
+&Copiar Valor
+INSPECTGRID_POPUP_UNFREEZE_VALUE
+Desco&ngelar Valor
+INSPECTGRID_POPUP_FREEZE_VALUE
+Co&ngelar Valor
+INSPECTGRID_POPUP_COPY_ALL
+Copiar Toda la Ta&bla
+INSPECTGRID_POPUP_COPY_FROM_SELECTION
+Insertar Expresion Desde la &Seleccion
+INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD
+Pegar Expresion Desde el &Portapapeles
+INSPECTGRID_POPUP_DELETE
+Eliminar Inspeccion
+INSPECTGRID_POPUP_CLEAN_TABLE
+&Limpiar Tabla de Inspeccion
+INSPECTGRID_POPUP_SAVE_TABLE
+&Guardar Lista de Inspecciones...
+INSPECTGRID_POPUP_LOAD_TABLE
+Ca&rgar Lista de Inspecciones...
+INSPECTGRID_POPUP_MANAGE_TABLES
+Administrar Listas de Inspecciones...
+INSPECTGRID_DEBUGGING_HAS_ENDED
+La sesion de depuracion ha finalizado.
+INSPECTGRID_DEBUGGER_ERROR
+Ha ocurrido un error en el depurador.
+INSPECTGRID_INCORRECT_EXPRESSION
+La expresion ingresada no es correcta.
+INSPECTGRID_MODIFY_CAPTION
+Modificar Expresion
+INSPECTGRID_CANT_EVALUATE
+No se puede evaluar la expresion:\n
+INSPECTGRID_ERROR_OFFLINE_DELETE
+Error al eliminar inspecciones.
+INSPECTEXPLORER_CAPTION
+Explorador de Inspecciones
+INSPECTGRID_TABLE_NAME
+Nombre de la lista:
+INSPECTGRID_LOAD_TABLE
+Cargar Lista:
+INSPECTGRID_INSPECTIONS_TABLE
+Lista de Inspecciones
+INSPECTGRID_DELETE_TABLE
+Eliminar Lista:
+INSPECTGRID_CONFIRM_DELETE_TABLE_PRE
+Desea eliminar la lista \"
+INSPECTGRID_CONFIRM_DELETE_TABLE_POST
+\"?
+GENERAL_CONFIRM
+Confirmacion
+IMATRIX_ENTER_NUM
+Ingrese la cantidad de elementos a mostrar
+IMATRIX_OBSOLETE
+Tabla obsoleta
+LIBTOBUILD_CAPTION
+Generar biblioteca
+LIBTOBUILD_NAME
+Nombre
+LIBTOBUILD_DIR
+Directorio de salida
+LIBTOBUILD_FILE
+Archivo de salida
+LIBTOBUILD_EXTRA_LINK
+Opciones de enlazado
+LIBTOBUILD_DYNAMIC
+Dinamica
+LIBTOBUILD_STATIC
+Estatica
+LIBTOBUILD_TYPE
+Tipo de biblioteca
+LIBTOBUILD_SOURCES_IN
+Fuentes a incluir
+LIBTOBUILD_SOURCES_OUT
+Fuentes a excluir
+LIBTOBUILD_DEFAULT
+Biblioteca por defecto para nuevos fuentes
+LIBTOBUILD_NAME_MISSING
+Debe completar el nombre.
+LIBTOBUILD_NAME_REPEATED
+Ya existe una biblioteca con ese nombre.
+LONGTEXT_MORE_OPTIONS
+Mas opciones...
+LISTSHARED_CAPTION
+Lista de Archivos Compartidos
+LISTSHARED_LIST_LABEL
+Lista de fuentes compartidos: 
+LISTSHARED_REMOVE
+&Quitar de la lista
+LISTSHARED_SELECT_SOMETHING
+Debe seleccionar uno o más fuentes compartidos de la lista.
+UNTITLED
+sin_titulo_
+MAINW_INITIALIZING
+Inicializando...
+CAPTION_EXPLORER_TREE
+Explorador de Archivos
+CAPTION_PROJECT_TREE
+Arbol de Archivos
+CAPTION_SYMBOLS_TREE
+Arbol de Simbolos
+CAPTION_COMPILER_OUTPUT
+Resultados de la Compilacion
+CAPTION_QUIKHELP
+Ayuda Rapida
+CAPTION_INSPECTIONS
+Inspecciones
+MAINW_AUTOHIDE_INSPECTIONS
+Inspecciones
+CAPTION_BACKTRACE
+Trazado Inverso
+MAINW_AUTOHIDE_BACKTRACE
+Trazado Inverso
+CAPTION_THREADLIST
+Hilos de Ejecucion
+MAINW_AUTOHIDE_THREADS
+Hilos
+CAPTION_DEBUGGER_LOG
+Mensajes del Depurador
+MAINW_AUTOHIDE_DEBUG_LOG
+Log Depurador
+CAPTION_TOOLBAR_FILE
+Archivo
+CAPTION_TOOLBAR_EDIT
+Edicion
+CAPTION_TOOLBAR_VIEW
+Ver
+CAPTION_TOOLBAR_TOOLS
+Herramientas
+CAPTION_TOOLBAR_RUN
+Ejecucion
+CAPTION_TOOLBAR_MISC
+Miscelanea
+CAPTION_TOOLBAR_FIND
+Busqueda
+CAPTION_TOOLBAR_DEBUG
+Depuracion
+CAPTION_TOOLBAR_STATUS
+Status Toolbar
+CAPTION_TOOLBAR_DIFF
+Diff
+MAINW_PROJECT_FILE_POPUP_ADD
+&Agregar Archivo...
+MAINW_PROJECT_FILE_POPUP_ADD_MULTI
+&Agregar Múltiples Archivos...
+MAINW_PROJECT_FILE_POPUP_OPEN_ALL
+Abrir &Todos
+MAINW_PROJECT_FILE_POPUP_SHOW_FILE
+&Mostrar Archivo
+MAINW_PROJECT_FILE_POPUP_RENAME
+&Renombrar Archivo...
+MAINW_PROJECT_FILE_POPUP_DETACH
+&Quitar Archivo
+MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST
+Compilar &Primero
+MAINW_PROJECT_FILE_POPUP_RECOMPILE
+Recompilar A&hora
+MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES
+Mover a &Fuentes
+MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS
+Mover a &Cabeceras
+MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS
+Mover a &Otros
+MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER
+Abrir carpeta contenedora...
+MAINW_PROJECT_FILE_POPUP_PROPERTIES
+Propiedades...
+MAINW_PROJECT_FILE_POPUP_TOGGLE_FULL_PATH_OFF
+Mostrar solo nombres de archivos
+MAINW_PROJECT_FILE_POPUP_TOGGLE_FULL_PATH_ON
+Mostrar rutas relativas completas
+MAINW_OPEN_LAST_COMPILER_OUTPUT
+Abrir ultima salida
+MAINW_OPENING
+Abriendo
+MAINW_PROBLEM_RENAMING
+No se pudo renombrar el archivo
+MAINW_CREATE_FILE_QUESTION
+El archivo no existe, desea crearlo?
+MAINW_SAVE_PROJECT_BEFORE_CLOSING
+Desea guardar los cambios del proyecto antes de cerrarlo?
+MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE
+Guardar cambios siempre al cerrar un proyecto
+MAINW_SAVE_CHANGES_BEFORE_EXIT_QUESTION
+Hay cambios sin guardar. Desea guardarlos antes de salir?
+QUICKHELP_WORDS_TO_SEARCH
+Palabra a buscar:
+CAPTION_QUICKHELP
+Ayuda Rapida
+MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT
+Agregar al proyecto
+MAINW_PROJECT_FILE_POPUP_OPEN_H
+&Abrir complementario...\tF12
+MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER
+Explorar carpeta contenedora
+MAINW_PROJECT_FILE_POPUP_SAVE
+&Guardar\tCtrl+S
+MAINW_PROJECT_FILE_POPUP_SAVE_AS
+G&uardar Como...\tCtrl+Shift+S
+MAINW_PROJECT_FILE_POPUP_RELOAD
+&Recargar\tCtrl+Shift+R
+MAINW_PROJECT_FILE_POPUP_CLOSE
+&Cerrar\tCtrl+W
+MAINW_PROJECT_FILE_POPUP_CLOSE_ALL_BUT_ONE
+Cerrar &todas las demas\tCtrl+Alt+W
+MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION
+Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?
+MAINW_ASK_CLOSE_SHARED
+El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?
+MAINW_SHARE_AFTER_CLOSE
+Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo.
+MENUITEM_FILE_NEW
+&Nuevo...
+MENUITEM_FILE_NEW_PROJECT
+&Nuevo Proyecto...
+MENUITEM_FILE_OPEN
+&Abrir...
+MENUITEM_FILE_RECENT_SOURCES
+Fuentes Abiertos Recientemente
+MENUITEM_FILE_RECENT_PROJECTS
+Proyectos Abiertos Recientemente
+MENUITEM_FILE_OPEN_H
+Abrir &h/cpp complementario
+MENUITEM_FILE_OPEN_SELECTED
+Abrir Se&leccionado
+MENUITEM_FILE_SAVE
+&Guardar
+MENUITEM_FILE_SAVE_AS
+G&uardar Como...
+MENUITEM_FILE_SAVE_ALL
+Guardar &Todo...
+MENUITEM_FILE_SAVE_PROJECT
+Guar&dar Proyecto
+MENUITEM_FILE_EXPORT_HTML
+Exportar a HTML...
+MENUITEM_FILE_PRINT
+&Imprimir...
+MENUITEM_FILE_RELOAD
+&Recargar
+MENUITEM_FILE_CLOSE
+&Cerrar
+MENUITEM_FILE_CLOSE_ALL
+Cerrar &Todo
+MENUITEM_FILE_CLOSE_PROJECT
+Cerrar Pro&yecto
+MENUITEM_FILE_PROJECT_CONFIG
+&Configuracion del Proyecto...
+MENUITEM_FILE_PREFERENCES
+&Preferencias...
+MENUITEM_FILE_EXIT
+&Salir
+MENU_FILE_RECENT_MORE
+Mas...
+MENUITEM_FILE
+&Archivo
+MENUITEM_EDIT_UNDO
+&Deshacer
+MENUITEM_EDIT_REDO
+&Rehacer
+MENUITEM_EDIT_CUT
+C&ortar
+MENUITEM_EDIT_COPY
+&Copiar
+MENUITEM_EDIT_PASTE
+&Pegar
+MENUITEM_EDIT_LINES_UP
+Mover Hacia Arriba
+MENUITEM_EDIT_LINES_DOWN
+Mover Hacia Abajo
+MENUITEM_EDIT_DUPLICATE_LINES
+&Duplicar Linea(s)
+MENUITEM_EDIT_DELETE_LINES
+&Eliminar Linea(s)
+MENUITEM_EDIT_GOTO_FUNCTION
+&Ir a Funcion/Clase/Metodo...
+MENUITEM_EDIT_GOTO_FILE
+&Ir a Archivo...
+MENUITEM_EDIT_GOTO_LINE
+&Ir a Linea...
+MENUITEM_EDIT_FIND_PREV
+Buscar &Anterior
+MENUITEM_EDIT_FIND_NEXT
+Buscar &Siguiente
+MENUITEM_EDIT_REPLACE
+&Reemplazar...
+MENUITEM_EDIT_INSERT_INCLUDE
+Insertar #include Correspondiente
+MENUITEM_EDIT_COMMENT
+Comentar
+MENUITEM_EDIT_UNCOMMENT
+Descomentar
+MENUITEM_EDIT_INDENT
+Indentar Blo&que
+MENUITEM_EDIT_BRACEMATCH
+Seleccionar Blo&que
+MENUITEM_EDIT_SELECT_ALL
+&Seleccionar Todo
+MENUITEM_EDIT_HIGHLIGHT_LINES
+&Resaltar Linea(s)/Quitar Resaltado
+MENUITEM_EDIT_FIND_HIGHLIGHTS
+Buscar &Resaltado
+MENUITEM_EDIT_LIST_HIGHLIGHTS
+&Listar Lineas Resaltadas
+MENUITEM_EDIT_FORCE_AUTOCOMPLETE
+Autocompletar
+MENUITEM_EDIT
+&Editar
+MENUITEM_VIEW_SPLIT_VIEW
+&Duplicar vista
+MENUITEM_VIEW_LINE_WRAP
+&Ajuste de linea
+MENUITEM_VIEW_WHITE_SPACES
+Mostrar espacios y caracteres de &fin de linea
+MENUITEM_VIEW_SYNTAX_HIGHLIGHT
+&Colorear Sintaxis
+MENUITEM_VIEW_FOLDING
+Plegado
+MENUITEM_VIEW_FULLSCREEN
+Ver a Pantalla &Completa
+MENUITEM_VIEW_BEGINNER_PANEL
+Mostrar Panel de Mini-Plantillas
+MENUITEM_VIEW_LEFT_PANELS
+&Mostrar Panel de Arboles
+MENUITEM_VIEW_PROJECT_TREE
+&Mostrar Arbol de &Proyecto
+MENUITEM_VIEW_EXPLORER_TREE
+Mostrar &Explorardor de Archivos
+MENUITEM_VIEW_SYMBOLS_TREE
+Mostrar Arbol de &Simbolos
+MENUITEM_VIEW_COMPILER_TREE
+&Mostrar Resultados de la Compilacion
+MENUITEM_VIEW_UPDATE_SYMBOLS
+&Actualizar Arbol de Simbolos
+MENUITEM_VIEW_TOOLBAR_FILE
+&Mostrar Barra de Herramientas Archivo
+MENUITEM_VIEW_TOOLBAR_EDIT
+&Mostrar Barra de Herramientas Edicion
+MENUITEM_VIEW_TOOLBAR_VIEW
+&Mostrar Barra de Herramientas Ver
+MENUITEM_VIEW_TOOLBAR_FIND
+&Mostrar Barra de Busqueda Rapida
+MENUITEM_VIEW_TOOLBAR_RUN
+&Mostrar Barra de Herramientas Ejecucion
+MENUITEM_VIEW_TOOLBAR_TOOLS
+&Mostrar Barra de Herramientas Herramientas
+MENUITEM_VIEW_TOOLBAR_DEBUG
+&Mostrar Barra de Herramientas Depuracion
+MENUITEM_VIEW_TOOLBAR_MISC
+&Mostrar Barra de Herramientas Miscelanea
+MENUITEM_VIEW_PREV_ERROR
+&Ir a error anterior
+MENUITEM_VIEW_NEXT_ERROR
+&Ir a siguiente error
+MENUITEM_VIEW_PREV_SOURCE
+&Fuente anterior
+MENUITEM_VIEW_NEXT_SOURCE
+&Fuente siguiente
+MENUITEM_VIEW
+Ver
+MENUITEM_FOLD_FOLD_THIS_LINE
+Plegar en esta linea
+MENUITEM_FOLD_UNFOLD_THIS_LINE
+Desplegar en esta linea
+MENUITEM_FOLD_FOLD_LEVEL_1
+Plegar el primer nivel
+MENUITEM_FOLD_FOLD_LEVEL_2
+Plegar el segundo nivel
+MENUITEM_FOLD_FOLD_LEVEL_3
+Plegar el tercer nivel
+MENUITEM_FOLD_FOLD_LEVEL_4
+Plegar el cuarto nivel
+MENUITEM_FOLD_FOLD_LEVEL_5
+Plegar el quinto nivel
+MENUITEM_FOLD_FOLD_ALL_LEVELS
+Plegar todos los niveles
+MENUITEM_FOLD_UNFOLD_LEVEL_1
+Desplegar el primer nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_2
+Desplegar el segundo nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_3
+Desplegar el tercer nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_4
+Desplegar el cuarto nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_5
+Desplegar el quinto nivel
+MENUITEM_FOLD_UNFOLD_ALL_LEVELS
+Desplegar todos los niveles
+MENUITEM_RUN_RUN
+&Ejecutar...
+MENUITEM_RUN_OLD
+Ejecutar (sin recompilar)...
+MENUITEM_RUN_COMPILE
+&Compilar
+MENUITEM_RUN_BUILD
+Co&nstruir
+MENUITEM_RUN_CLEAN
+&Limpiar
+MENUITEM_RUN_STOP
+&Detener
+MENUITEM_RUN_OPTIONS
+&Opciones...
+MENUITEM_RUN
+E&jecucion
+MENUITEM_DEBUG_START
+&Iniciar/Continuar
+MENUITEM_DEBUG_ATTACH
+Ad&juntar...
+MENUITEM_DEBUG_PAUSE
+Interrum&pir
+MENUITEM_DEBUG_STOP
+&Detener
+MENUITEM_DEBUG_STEP_IN
+Step &In
+MENUITEM_DEBUG_STEP_OVER
+Step &Over
+MENUITEM_DEBUG_STEP_OUT
+Step O&ut
+MENUITEM_DEBUG_RETURN
+&Return
+MENUITEM_DEBUG_RUN_UNTIL
+Ejecutar &Hasta el Cursor
+MENUITEM_DEBUG_JUMP
+Continuar Desde Aqui
+MENUITEM_DEBUG_ENABLE_INVERSE
+Habilitar Ejecucion Hacia Atras
+MENUITEM_DEBUG_INVERSE
+Ejecutar Hacia Atras
+MENUITEM_DEBUG_INSPECT
+Panel de In&speccion
+MENUITEM_DEBUG_BACKTRACE
+&Trazado Inverso
+MENUITEM_DEBUG_THREADLIST
+&Hilos de Ejecucion
+MENUITEM_DEBUG_LIST_BREAKPOINTS
+&Listar Watch/Break points...
+MENUITEM_DEBUG_TOGGLE_BREAKPOINT
+&Agregar/quitar Breakpoint
+MENUITEM_DEBUG_BREAKPOINT_OPTIONS
+&Opciones del Breakpoint...
+MENUITEM_DEBUG_INSERT_WATCHPOINT
+&Agregar Watchpoint...
+MENUITEM_DEBUG_FUNCTION_BREAKPOINT
+&Insertar Breakpoint en Funcion...
+MENUITEM_DEBUG_SHOW_LOG_PANEL
+&Mostrar mensajes del depurador
+MENUITEM_DEBUG_LOAD_CORE_DUMP
+Cargar &Volcado de Memoria...
+MENUITEM_DEBUG_DO_THAT
+DO_THAT
+MENUITEM_DEBUG
+&Depuracion
+MENUITEM_TOOLS_DRAW_FLOWCHART
+Dibujar Diagrama de &Flujo...
+MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
+Dibujar &Jerarquia de Clases...
+MENUITEM_TOOLS_CODE_COPY_FROM_H
+Implementar Metodos/Funciones faltantes...\tCtrl+Shift+H
+MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
+&Alinear Comentarios...
+MENUITEM_TOOLS_COMMENTS_COMMENT
+&Comentar
+MENUITEM_TOOLS_COMMENTS_UNCOMMENT
+&Descomentar
+MENUITEM_TOOLS_COMMENTS_DELETE_COMMENTS
+&Eliminar Comentarios
+MENUITEM_TOOLS_COMMENTS
+Coment&arios
+MENUITEM_TOOLS_PREPROC_EXPAND_MACROS
+Expandir Macros
+MENUITEM_TOOLS_PREPROC_MARK_VALID
+Marcar Lineas No Compiladas
+MENUITEM_TOOLS_PREPROC_UNMARK_ALL
+Borrar Marcas
+MENUITEM_TOOLS_PREPROC_HELP
+Ayuda...
+MENUITEM_TOOLS_PREPROC
+Preprocesador
+MENUITEM_TOOLS_GENERATE_MAKEFILE
+&Generar Makefile...
+MENUITEM_TOOLS_OPEN_TERMINAL
+Abrir Co&nsola...
+MENUITEM_TOOLS_EXE_INFO
+&Propiedades del Ejecutable...
+MENUITEM_TOOLS_PROJECT_STATISTICS
+E&stadisticas del Proyecto...
+MENUITEM_TOOLS_DRAW_PROJECT
+Grafo del Proyecto...
+MENUITEM_TOOLS_SHARE_OPEN
+&Abrir compartido...
+MENUITEM_TOOLS_SHARE_SHARE
+&Compartir actual...
+MENUITEM_TOOLS_SHARE_LIST
+&Ver lista de compartidos propios...
+MENUITEM_TOOLS_SHARE_HELP
+A&yuda...
+MENUITEM_TOOLS_SHARE
+Compartir Archivos en la &Red Local
+MENUITEM_TOOLS_DIFF_TWO
+&Dos fuentes abiertos...
+MENUITEM_TOOLS_DIFF_DISK
+&Fuente actual contra archivo en disco...
+MENUITEM_TOOLS_DIFF_HIMSELF
+&Cambios en fuente actual contra su version en disco...
+MENUITEM_TOOLS_DIFF_PREV
+Ir a Diferencia Anterior
+MENUITEM_TOOLS_DIFF_NEXT
+Ir a Siguiente Diferencia
+MENUITEM_TOOLS_DIFF_SHOW
+Mostrar Cambio
+MENUITEM_TOOLS_DIFF_APPLY
+Apl&icar Cambio
+MENUITEM_TOOLS_DIFF_DISCARD
+De&scartar Cambio
+MENUITEM_TOOLS_DIFF_CLEAR
+&Borrar Marcas
+MENUITEM_TOOLS_DIFF_HELP
+A&yuda...
+MENUITEM_TOOLS_DIFF
+&Comparar Archivos (diff)
+MENUITEM_TOOLS_DOXYGEN_GENERATE
+&Generar...
+MENUITEM_TOOLS_DOXYGEN_CONFIGURE
+&Configurar...
+MENUITEM_TOOLS_DOXYGEN_VIEW
+&Ver...
+MENUITEM_TOOLS_DOXYGE_HELP
+A&yuda...
+MENUITEM_TOOLS_DOXYGEN
+Generar &Documentacion (doxygen)
+MENUITEM_TOOLS_WXFB_ACTIVATE
+Activar &Integracion wxFormBuilder
+MENUITEM_TOOLS_WXFB_AUTO
+Regenerar y Actualizar Automaticamente
+MENUITEM_TOOLS_WXFB_NEW_RESOURCE
+&Adjuntar un Nuevo Projecto wxFB...
+MENUITEM_TOOLS_WXFB_LOAD_RESOURCE
+&Adjuntar un Proyecto wxFB Existente...
+MENUITEM_TOOLS_WXFB_REGENERATE
+&Regenerar Proyectos wxFB
+MENUITEM_TOOLS_WXFB_INHERIT
+&Generar Clase Heredada...
+MENUITEM_TOOLS_WXFB_UPDATE_INHERIT
+Act&ualizar Clase Heredada...
+MENUITEM_TOOLS_WXFB_REFERENCE
+Referencia &wxWidgets...
+MENUITEM_TOOLS_WXFB_HELP
+A&yuda wxFB...
+MENUITEM_TOOLS_WXFB
+Diseñar &Interfases (wxFormBuilder)
+MENUITEM_TOOLS_CPPCHECK_RUN
+Iniciar...
+MENUITEM_TOOLS_CPPCHECK_VIEW
+Mostrar Panel de Resultados
+MENUITEM_TOOLS_CPPCHECK_HELP
+A&yuda...
+MENUITEM_TOOLS_CPPCHECK
+Analisis Estatico (cppcheck)
+MENUITEM_TOOLS_GPROF_ACTIVATE
+Activar
+MENUITEM_TOOLS_GPROF_DOT
+dot
+MENUITEM_TOOLS_GPROF_FDP
+fdp
+MENUITEM_TOOLS_GPROF_LAYOUT
+Algoritmo de Dibujo
+MENUITEM_TOOLS_GPROF_SHOW
+Visualizar Resultados (grafo)...
+MENUITEM_TOOLS_GPROF_LIST
+Listar Resultados (texto)
+MENUITEM_TOOLS_GPROF_HELP
+A&yuda...
+MENUITEM_TOOLS_GPROF
+Perfil de &Ejecucion (gprof)
+MENUITEM_TOOLS_VALGRIND_RUN
+Ejecutar...
+MENUITEM_TOOLS_VALGRIND_VIEW
+Mostrar Panel de Resultados
+MENUITEM_TOOLS_VALGRIND_HELP
+A&yuda...
+MENUITEM_TOOLS_VALGRIND
+Analisis Dinamico (valgrind)
+MENUITEM_TOOLS_CUSTOM_TOOLS
+Herramientas Personalizables
+MENUITEM_TOOLS_CUSTOM_SETTINGS
+&Configurar...
+MENUITEM_TOOLS_CUSTOM_HELP
+A&yuda...
+MENUITEM_TOOLS
+&Herramientas
+MENUITEM_HELP_ABOUT
+Acerca de...
+MENUITEM_HELP_TUTORIALS
+Tutoriales...
+MENUITEM_HELP_ZINJAI
+Ayuda sobre ZinjaI...
+MENUITEM_HELP_CPP
+Ayuda sobre C++...
+MENUITEM_HELP_TIPS
+&Mostrar sugerencia...
+MENUITEM_HELP_OPINION
+Opina sobre ZinjaI...
+MENUITEM_HELP_UPDATES
+&Buscar actualizaciones...
+MENUITEM_HELP
+A&yuda
+MAIN_WINDOW_NO_ICON_SIZE_PRE
+El tema de iconos seleccionado no tiene iconos del tamano elegido (
+MAIN_WINDOW_NO_ICON_SIZE_POST
+)\nSe utilizaran los iconos del tamano predeterminado (16x16).\nPara modificarlo utilice el cuadro de Preferencias (menu Archivo).
+TOOLBAR_CAPTION_TOOLS_DIFF_PREV
+Diferencia Anterior
+TOOLBAR_DESC_TOOLS_DIFF_PREV
+Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior
+TOOLBAR_CAPTION_TOOLS_DIFF_NEXT
+Siguiente Diferencia
+TOOLBAR_DESC_TOOLS_DIFF_NEXT
+Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia
+TOOLBAR_CAPTION_TOOLS_DIFF_SHOW
+Mostrar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_SHOW
+Herramientas -> Comparar Archivos -> Mostrar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_APPLY
+Aplicar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_APPLY
+Herramientas -> Comparar Archivos -> Aplicar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD
+Descartar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_DISCARD
+Herramientas -> Comparar Archivos -> Descartar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
+Borrar Marcas de Comparacion
+TOOLBAR_DESC_TOOLS_DIFF_CLEAR
+Herramientas -> Comparar Archivos -> Borrar Marcas
+TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART
+Dibujar Diagrama de Flujo...
+TOOLBAR_DESC_TOOLS_DRAW_FLOWCHART
+Herramientas -> Dibujar Diagrama de Flujo...
+TOOLBAR_CAPTION_TOOLS_DRAW_CLASS_HIERARCHY
+Dibujar Jerarquia de Clases...
+TOOLBAR_DESC_TOOLS_DRAW_CLASS_HIERARCHY
+Herramientas -> Dibujar Jerarquia de Clases...
+TOOLBAR_CAPTION_TOOLS_COPY_CODE_FROM_H
+Implementar Metodos/Funciones Faltantes...
+TOOLBAR_DESC_TOOLS_COPY_CODE_FROM_H
+Herramientas -> Implementar Metodos/Funciones Faltantes...
+TOOLBAR_CAPTION_TOOLS_COMMENTS_ALIGN_COMMENTS
+Alinear Comentarios...
+TOOLBAR_TOOLS_DESC_COMMENTS_ALIGN_COMMENTS
+Herramientas -> Comentarios -> Alinear Comentarios...
+TOOLBAR_CAPTION_TOOLS_COMMENTS_DELETE_COMMENTS
+Eliminar Comentarios
+TOOLBAR_DESC_TOOLS_COMMENTS_DELETE_COMMENTS
+Herramientas -> Comtearios -> Eliminar Comentarios
+TOOLBAR_CAPTION_TOOLS_PREPROC_MARK_VALID
+Marcar Lineas No Compiladas
+TOOLBAR_DESC_TOOLS_PREPROC_MARK_VALID
+Herramientas -> Preprocesador -> Marcar Lineas No Compiladas
+TOOLBAR_CAPTION_TOOLS_PREPROC_UNMARK_ALL
+Borrar Marcas
+TOOLBAR_DESC_TOOLS_PREPROC_UNMARK_ALL
+Herramientas -> Preprocesador -> Borrar Marcas
+TOOLBAR_CAPTION_TOOLS_PREPROC_EXPAND_MACROS
+Expandir Macros
+TOOLBAR_DESC_TOOLS_PREPROC_EXPAND_MACROS
+Herramientas -> Preprocesador -> Expandir Macros
+TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE
+Generar Makefile...
+TOOLBAR_DESC_TOOLS_GENERATE_MAKEFILE
+Herramientas -> Generar Makefile...
+TOOLBAR_CAPTION_TOOLS_OPEN_TERMINAL
+Abrir terminal...
+TOOLBAR_DESC_OPEN_TERMINAL
+Herramientas -> Abrir consola...
+TOOLBAR_CAPTION_TOOLS_EXE_INFO
+Propiedades del Ejecutable...
+TOOLBAR_DESC_EXE_INFO
+Herramientas -> Propiedades del Ejecutable...
+TOOLBAR_CAPTION_TOOLS_PROY_STATS
+Estadisticas del Proyecto...
+TOOLBAR_DESC_PROY_STATS
+Herramientas -> Estadisticas del Proyecto...
+TOOLBAR_CAPTION_TOOLS_DRAW_PROJECT
+Grafo del Proyecto...
+TOOLBAR_DESC_TOOLS_DRAW_PROJECT
+Herramientas -> Grafo del Proyecto...
+TOOLBAR_CAPTION_TOOLS_SHARE_OPEN
+Abrir Archivo Compartido...
+TOOLBAR_DESC_TOOLS_SHARE_OPEN
+Herramientas -> Compartir Archivos en la Red Local -> Abrir Compartido...
+TOOLBAR_CAPTION_TOOLS_SHARE_SHARE
+Compartir Fuente...
+TOOLBAR_DESC_TOOLS_SHARE_SHARE
+Herramientas -> Compartir Archivos en la Red Local -> Compartir Actual...
+TOOLBAR_CAPTION_TOOLS_SHARE_LIST
+Listar Compartidos Propios...
+TOOLBAR_DESC_TOOLS_SHARE_LIST
+Herramientas -> Compartir Archivos en la Red Local -> Listar Compartidos Propios...
+TOOLBAR_CAPTION_TOOLS_DIFF_TWO
+Compara Dos Fuentes Abiertos...
+TOOLBAR_DESC_TOOLS_DIFF_TWO
+Herramientas -> Comparar Archivos -> Dos Fuentes Abiertos
+TOOLBAR_CAPTION_TOOLS_DIFF_DISK
+Comparar Fuente con Archivo en Disco...
+TOOLBAR_DESC_TOOLS_DIFF_DISK
+Herramientas -> Comparar Archivos -> Fuente Actual Contra Archivo en Disco
+TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF
+Comparar Cambios en el Fuente con su Version en Disco...
+TOOLBAR_DESC_TOOLS_DIFF_HIMSELF
+Herramientas -> Comparar Archivos -> Fuente Actual Contra Version en Disco
+TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE
+Generar Documentacion Doxygen...
+TOOLBAR_DESC_TOOLS_DOXYGEN_GENERATE
+Herramientas -> Generar Documentacion -> Generar...
+TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE
+Configurar Documentacion Doxygen...
+TOOLBAR_DESC_TOOLS_DOXYGEN_CONFIGURE
+Herramientas -> Generar Documentacion -> Configurar...
+TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW
+Ver Documentacion Doxygen...
+TOOLBAR_DESC_TOOLS_DOXYGEN_VIEW
+Herramientas -> Generar Documentacion -> Ver...
+TOOLBAR_CAPTION_TOOLS_WXFB_ACTIVATE
+Activar Integracion wxFormBuilder
+TOOLBAR_DESC_TOOLS_WXFB_ACTIVATE
+Herramientas -> wxFormBuilder -> Activar Integracion wxFormBuilder
+TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE
+Adjuntar un Nuevo Proyecto wxFB
+TOOLBAR_DESC_TOOLS_WXFB_NEW_RESOURCE
+Herramientas -> wxFormBuilder -> Adjuntar un Nuevo Proyecto wxFB
+TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE
+Adjuntar un Proyecto wxFB Existente
+TOOLBAR_DESC_TOOLS_WXFB_LOAD_RESOURCE
+Herramientas -> wxFormBuilder -> Adjuntar un Proyecto wxFB Existente
+TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE
+Regenerar Proyectos wxFB
+TOOLBAR_DESC_TOOLS_WXFB_REGENERATE
+Herramientas -> wxFormBuilder -> Regenerar Proyectos wxFB
+TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT
+Generar Clase Heredada...
+TOOLBAR_DESC_TOOLS_WXFB_INHERIT
+Herramientas -> wxFormBuilder -> Generar Clase Heredada...
+TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT
+Actualizar Clase Heredada...
+TOOLBAR_DESC_TOOLS_WXFB_UPDATE_INHERIT
+Herramientas -> wxFormBuilder -> Actualizar Clase Heredada...
+TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE
+Referencia wxWidgets...
+TOOLBAR_DESC_TOOLS_WXFB_REFERENCE
+Herramientas -> wxFormBuilder -> Referencia wxWidgets...
+TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN
+Comenzar Analisis Estatico
+TOOLBAR_DESC_TOOLS_CPPCHECK_RUN
+Herramientas -> Analisis Dimanico -> Ejecutar...
+TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW
+Mostrar Resultados del Analisis Estatico
+TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW
+Herramientas -> Analisis Dimanico -> Mostrar Panel de Resultados
+TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE
+Activar Perfilado de Ejecucion
+TOOLBAR_DESC_TOOLS_GPROF_ACTIVATE
+Herramientas -> Perfil de Ejecucion -> Activar
+TOOLBAR_CAPTION_TOOLS_GPROF_SHOW
+Graficar Resultados del Perfilado de Ejecucion
+TOOLBAR_DESC_TOOLS_GPROF_SHOW
+Herramientas -> Perfil de Ejecucion -> Visualizar Resultados (grafo)...
+TOOLBAR_CAPTION_TOOLS_GPROF_LIST
+Listar Resultados del Perfilado de Ejecucion
+TOOLBAR_DESC_TOOLS_GPROF_LIST
+Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)...
+TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN
+Ejecutar Para Analisis Dinamico
+TOOLBAR_DESC_TOOLS_VALGRIND_RUN
+Herramientas -> Analisis Dimanico -> Ejecutar...
+TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW
+Mostrar Resultados del Analisis Dinamico
+TOOLBAR_DESC_TOOLS_VALGRIND_VIEW
+Herramientas -> Analisis Dimanico -> Mostrar Panel de Resultados
+TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
+Herramienta Personalizada 
+CUSTOM_TOOLS_NOT_CONFIGURED
+no configurada
+TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
+Configurar Herramientas Personalizadas
+TOOLBAR_DESC_TOOLS_CUSTOM_SETTINGS
+Herramientas -> Herramientas Personalizadas -> Configurar...
+TOOLBAR_CAPTION_VIEW_SPLIT_VIEW
+Duplicar Vista
+TOOLBAR_DESC_VIEW_SPLIT_VIEW
+
+TOOLBAR_CAPTION_VIEW_LINE_WRAP
+Ajuste de Linea
+TOOLBAR_DESC_VIEW_LINE_WRAP
+
+TOOLBAR_CAPTION_VIEW_WHITE_SPACES
+Mostrar espacios y caracteres de de fin de linea
+TOOLBAR_DESC_VIEW_WHITE_SPACES
+
+TOOLBAR_CAPTION_VIEW_SYNTAX_HIGHLIGHT
+Colorear Sintaxis
+TOOLBAR_DESC_VIEW_SYNTAX_HIGHLIGHT
+
+TOOLBAR_CAPTION_VIEW_SYMBOLS_TREE
+Arbol de simbolos
+TOOLBAR_DESC_VIEW_SYMBOLS_TREE
+
+TOOLBAR_CAPTION_VIEW_EXPLORER_TREE
+Explorador de Archivos
+TOOLBAR_DESC_VIEW_EXPLORER_TREE
+
+TOOLBAR_CAPTION_VIEW_PROJECT_TREE
+Arbol de Proyecto
+TOOLBAR_DESC_VIEW_PROJECT_TREE
+
+TOOLBAR_CAPTION_VIEW_COMPILER_TREE
+Resultados de La Compilacion
+TOOLBAR_DESC_VIEW_COMPILER_TREE
+
+TOOLBAR_CAPTION_VIEW_FULLSCREEN
+Pantalla Completa
+TOOLBAR_DESC_VIEW_FULLSCREEN
+
+TOOLBAR_CAPTION_VIEW_BEGINNER_PANEL
+Panel de Asistencias
+TOOLBAR_DESC_VIEW_BEGINER_PANEL
+
+TOOLBAR_CAPTION_VIEW_PREV_ERROR
+Ir a Error Anterior
+TOOLBAR_DESC_VIEW_PREV_ERROR
+
+TOOLBAR_CAPTION_VIEW_NEXT_ERROR
+Ir a siguiente error
+TOOLBAR_DESC_VIEW_NEXT_ERROR
+
+TOOLBAR_CAPTION_FOLD_ALL_LEVELS
+Plegar Todos los Niveles
+TOOLBAR_DESC_FOLD_ALL_LEVELS
+
+TOOLBAR_CAPTION_FOLD_LEVEL_1
+Plegar el Primer Nivel
+TOOLBAR_DESC_FOLD_LEVEL_1
+
+TOOLBAR_CAPTION_FOLD_LEVEL_2
+Plegar el Segundo Nivel
+TOOLBAR_DESC_FOLD_LEVEL_2
+
+TOOLBAR_CAPTION_FOLD_LEVEL_3
+Plegar el Tercer Nivel
+TOOLBAR_DESC_FOLD_LEVEL_3
+
+TOOLBAR_CAPTION_UNFOLD_ALL_LEVELS
+Desplegar Todos los Niveles
+TOOLBAR_DESC_UNFOLD_ALL_LEVELS
+
+TOOLBAR_CAPTION_UNFOLD_LEVEL_1
+Desplegar el Primer Nivel
+TOOLBAR_DESC_UNFOLD_LEVEL_1
+
+TOOLBAR_CAPTION_UNFOLD_LEVEL_2
+Desplegar el Segundo Nivel
+TOOLBAR_DESC_UNFOLD_LEVEL_2
+
+TOOLBAR_CAPTION_UNFOLD_LEVEL_3
+Desplegar el Tercer Nivel
+TOOLBAR_DESC_UNFOLD_LEVEL_3
+
+TOOLBAR_CAPTION_FILE_NEW
+Nuevo...
+TOOLBAR_DESC_FILE_NEW
+Archivo -> Nuevo...
+TOOLBAR_CAPTION_FILE_NEW_PROJECT
+Nuevo Proyecto...
+TOOLBAR_DESC_FILE_NEW_PROJECT
+Archivo -> Nuevo Proyecto...
+TOOLBAR_CAPTION_FILE_OPEN
+Abrir...
+TOOLBAR_DESC_FILE_OPEN
+Archivo -> Abrir...
+TOOLBAR_CAPTION_FILE_RECENT_SOURCES
+Fuentes Recientes...
+TOOLBAR_DESC_FILE_RECENT_SOURCES
+Archivo -> Fuentes Abiertos Recientemente...
+TOOLBAR_CAPTION_FILE_RECENT_PROJECTS
+Proyectos Recientes...
+TOOLBAR_DESC_FILE_RECENT_PROJECTS
+Archivo -> Proyectos Abiertos Recientemete...
+TOOLBAR_CAPTION_FILE_OPEN_H
+Abrir h/cpp Complementario
+TOOLBAR_DESC_FILE_OPEN_H
+Abrir h/cpp Complementario
+TOOLBAR_CAPTION_FILE_OPEN_SELECTED
+Abrir Seleccionado
+TOOLBAR_DESC_FILE_OPEN_SELECTED
+Archivo -> Abrir Seleccionado
+TOOLBAR_CAPTION_FILE_SAVE
+Guardar
+TOOLBAR_DESC_FILE_SABE
+Archivo -> Guardar
+TOOLBAR_CAPTION_FILE_SAVE_AS
+Guardar Como...
+TOOLBAR_DESC_FILE_SAVE_AS
+Archivo -> Guardar Como...
+TOOLBAR_CAPTION_FILE_SAVE_ALL
+Guardar Todo
+TOOLBAR_DESC_FILE_SAVE_ALL
+Archivo -> Guardar Todo
+TOOLBAR_CAPTION_FILE_SAVE_PROJECT
+Guardar Proyecto
+TOOLBAR_DESC_FILE_SAVE_PROJECT
+Archivo -> Guardar Proyecto
+TOOLBAR_CAPTION_FILE_EXPORT_HTML
+Exportar a HTML...
+TOOLBAR_DESC_FILE_EXPORT_HTML
+Archivo -> Exportar a HTML...
+TOOLBAR_CAPTION_FILE_PRINT
+Imprimir...
+TOOLBAR_DESC_FILE_PRINT
+Archivo -> Imprimir...
+TOOLBAR_CAPTION_FILE_RELOAD
+Recargar
+TOOLBAR_DESC_FILE_RELOAD
+Archivo -> Recargar
+TOOLBAR_CAPTION_FILE_CLOSE
+Cerrar
+TOOLBAR_DESC_FILE_CLOSE
+Archivo -> Cerrar
+TOOLBAR_CAPTION_FILE_CLOSE_ALL
+Cerrar Todo
+TOOLBAR_DESC_FILE_CLOSE_ALL
+Archivo -> Cerrar Todo
+TOOLBAR_CAPTION_FILE_CLOSE_PROJECT
+Cerrar Proyecto
+TOOLBAR_DESC_FILE_CLOSE_PROJECT
+Archivo -> Cerrar Proyecto
+TOOLBAR_CAPTION_FILE_PROJECT_CONFIG
+Configuracion de proyecto...
+TOOLBAR_DESC_FILE_PROJECT_CONFIG
+Archivo -> Configuracion del Proyecto...
+TOOLBAR_CAPTION_FILE_PREFERENCES
+Preferencias...
+TOOLBAR_DESC_FILE_PREFERENCES
+Archivo -> Preferencias...
+TOOLBAR_CAPTION_HELP_TUTORIALS
+Tutoriales...
+TOOLBAR_DESC_HELP_TUTORIALS
+Ayuda -> Tutoriales...
+TOOLBAR_CAPTION_HELP_ZINJAI
+Ayuda Sobre ZinjaI...
+TOOLBAR_DESC_HELP_ZINJAI
+Ayuda -> Ayuda sobre ZinjaI...
+TOOLBAR_CAPTION_HELP_CPP
+Ayuda Sobre C++...
+TOOLBAR_DESC_HELP_CPP
+Ayuda -> Ayuda sobre C++...
+TOOLBAR_CAPTION_HELP_TIPS
+Sugerencias...
+TOOLBAR_DESC_HELP_TIPS
+Ayuda -> Mostrar Sugerencias...
+TOOLBAR_CAPTION_HELP_ABOUT
+Acerca de...
+TOOLBAR_DESC_HELP_ABOUT
+Ayuda -> Acerca de...
+TOOLBAR_DESC_HELP_OPINION
+Ayuda -> Opina sobre ZinjaI...
+TOOLBAR_CAPTION_HELP_UPDATES
+Buscar Actualizaciones...
+TOOLBAR_DESC_HELP_UPDATES
+Ayuda -> Buscar Actualizaciones...
+TOOLBAR_CAPTION_FILE_EXIT
+Salir
+TOOLBAR_DESC_FILE_EXIT
+Archivo -> Salir
+TOOLBAR_CAPTION_EDIT_UNDO
+Deshacer
+TOOLBAR_DESC_EDIT_UNDO
+Editar -> Deshacer
+TOOLBAR_CAPTION_EDIT_REDO
+Rehacer
+TOOLBAR_DESC_EDIT_REDO
+Editar -> Rehacer
+TOOLBAR_CAPTION_EDIT_COPY
+Copiar
+TOOLBAR_DESC_EDIT_COPY
+Editar -> Copiar
+TOOLBAR_CAPTION_EDIT_CUT
+Cortar
+TOOLBAR_DESC_EDIT_CUT
+Editar -> Cortar
+TOOLBAR_CAPTION_EDIT_PASTE
+Pegar
+TOOLBAR_DESC_EDIT_PASTE
+Editar -> Pegar
+TOOLBAR_CAPTION_EDIT_LINES_UP
+Mover Hacia Arriba
+TOOLBAR_DESC_EDIT_LINES_UP
+Editar -> Mover Hacia Arriba
+TOOLBAR_CAPTION_EDIT_LINES_DOWN
+Mover Hacia Abajo
+TOOLBAR_DESC_EDIT_LINES_DOWN
+Editar -> Mover Hacia Abajo
+TOOLBAR_CAPTION_EDIT_DUPLICATE_LINES
+Duplicar Linea(s)
+TOOLBAR_DESC_EDIT_DUPLICATE_LINES
+Editar -> Duplicar Linea(s)
+TOOLBAR_CAPTION_EDIT_DELETE_LINES
+Eliminar Linea(s)
+TOOLBAR_DESC_EDIT_DELETE_LINES
+Editar -> Eliminar Linea(s)
+TOOLBAR_CAPTION_EDIT_GOTO_LINE
+Ir a Linea...
+TOOLBAR_DESC_EDIT_GOTO_LINE
+Editar -> Ir a linea...
+TOOLBAR_CAPTION_EDIT_GOTO_FUNCTION
+Ir a Clase/Metodo/Funcion...
+TOOLBAR_DESC_EDIT_GOTO_FUNCTION
+Editar -> Ir a Clase/Metodo/Funcion...
+TOOLBAR_CAPTION_EDIT_GOTO_FILE
+Ir a Archivo...
+TOOLBAR_DESC_EDIT_GOTO_FILE
+Editar -> Ir a Archivo...
+TOOLBAR_CAPTION_EDIT_FIND
+Buscar...
+TOOLBAR_DESC_EDIT_FIND
+Editar -> Buscar...
+TOOLBAR_CAPTION_EDIT_FIND_PREV
+Buscar anterior
+TOOLBAR_DESC_EDIT_FIND_PREV
+Editar -> Buscar Anterior
+TOOLBAR_CAPTION_EDIT_FIND_NEXT
+Buscar siguiente
+TOOLBAR_DESC_EDIT_FIND_NEXT
+Editar -> Buscar Siguiente
+TOOLBAR_CAPTION_EDIT_REPLACE
+Reemplazar...
+TOOLBAR_DESC_EDIT_REPLACE
+Editar -> Reemplazar...
+TOOLBAR_CAPTION_EDIT_INSERT_INCLUDE
+Insertar #include Correspondiente
+TOOLBAR_DESC_EDIT_INSERT_INCLUDE
+Editar -> Insertar #include Correspondiente
+TOOLBAR_CAPTION_EDIT_COMMENT
+Comentar
+TOOLBAR_DESC_EDIT_COMMNENT
+Editar -> Comentar
+TOOLBAR_CAPTION_EDIT_UNCOMMENT
+Descomentar
+TOOLBAR_DESC_EDIT_UNCOMMENT
+Editar -> Descomentar
+TOOLBAR_CAPTION_EDIT_INDENT
+Indentar
+TOOLBAR_DESC_EDIT_INDENT
+Editar -> Indentar
+TOOLBAR_CAPTION_EDIT_BRACEMATCH
+Seleccionar Bloque
+TOOLBAR_DESC_EDIT_BRACEMATCH
+Editar -> Seleccionar Bloque
+TOOLBAR_CAPTION_EDIT_SELECT_ALL
+Seleccionar Todo
+TOOLBAR_DESC_EDIT_SELECT_ALL
+Editar -> Seleccionar Todo
+TOOLBAR_CAPTION_EDIT_HIGHLIGHT_LINES
+Resaltar Linea(s)/Quitar Resaltado
+TOOLBAR_DESC_EDIT_HIGHLIGHT_LINES
+Editar -> Resaltar Linea(s)/Quitar Resaltado
+TOOLBAR_CAPTION_EDIT_FIND_HIGHLIGHTS
+Buscar Resaltado
+TOOLBAR_DESC_EDIT_FIND_HIGHLIGHTS
+Editar -> Buscar Resaltado
+TOOLBAR_CAPTION_EDIT_LIST_HIGHLIGHTS
+Listar Lineas Resaltadas
+TOOLBAR_DESC_EDIT_LIST_HIGHLIGHTS
+Editar -> Listar Lineas Resaltadas
+TOOLBAR_CAPTION_EDIT_FORCE_AUTOCOMPLETE
+Autocompletar
+TOOLBAR_DESC_EDIT_FORCE_AUTOCOMPLETE
+Editar -> Autocompletar
+TOOLBAR_CAPTION_DEBUG_START
+Comenzar/Continuar Depuracion
+TOOLBAR_DESC_DEBUG_START
+Depurar -> Comenzar/Continuar
+TOOLBAR_CAPTION_DEBUG_PAUSE
+Interrumpir Ejecucion en Depuracion
+TOOLBAR_DESC_DEBUG_PAUSE
+Depurar -> Interrumpir
+TOOLBAR_CAPTION_DEBUG_STOP
+Detener Depuracion
+TOOLBAR_DESC_DEBUG_STOP
+Depurar -> Detener
+TOOLBAR_CAPTION_DEBUG_STEP_IP
+Step In
+TOOLBAR_DESC_DEBUG_STEP_IN
+Depurar -> Step In
+TOOLBAR_CAPTION_DEBUG_STEP_OVER
+Step Over
+TOOLBAR_DESC_DEBUG_STEP_OVER
+Depurar -> Step Over
+TOOLBAR_CAPTION_DEBUG_STEP_OUT
+Step Out
+TOOLBAR_DESC_DEBUG_STEP_OUT
+Depurar -> Step Out
+TOOLBAR_CAPTION_DEBUG_RUN_UNTIL
+Ejecutar Hasta El Cursor
+TOOLBAR_DESC_DEBUG_RUN_UNTIL
+Depurar -> Ejecutar Hasta el Cursos
+TOOLBAR_CAPTION_DEBUG_RETURN
+Return
+TOOLBAR_DESC_DEBUG_RETURN
+Depurar -> Return
+TOOLBAR_CAPTION_DEBUG_JUMP
+Continuar desde aqui
+TOOLBAR_DESC_DEBUG_JUMP
+Depurar -> Continuar Desde Aqui
+TOOLBAR_CAPTION_DEBUG_ENABLE_INVERSE
+Habilitar Ejecucion Hacia Atras
+TOOLBAR_DESC_DEBUG_ENABLE_INVERSE
+Depurar -> Habilitar Ejecucion Hacia Atras
+TOOLBAR_CAPTION_DEBUG_INVERSE
+Ejecutar Hacia Atras
+TOOLBAR_DESC_DEBUG_INVERSE
+Depurar -> Ejecutar Hacia Atras...
+TOOLBAR_CAPTION_INSPECT
+Panel de Inspecciones
+TOOLBAR_DESC_INSPECT
+Depurar -> Panel de Inspecciones
+TOOLBAR_CAPTION_BACKTRACE
+Trazado Inverso
+TOOLBAR_DESC_BACKTRACE
+Depurar -> Trazado Inverso
+TOOLBAR_CAPTION_THREADLIST
+Hilos de Ejecucion
+TOOLBAR_DESC_THREADLIST
+Depurar -> Hilos de Ejecucion
+TOOLBAR_CAPTION_DEBUG_TOGGLE_BREAKPOINT
+Agregar/Quitar Breakpointo
+TOOLBAR_DESC_DEBUG_TOGGLE_BREAKPOINT
+Agregar/Quitar Breakpoint
+TOOLBAR_CAPTION_DEBUG_BREAKPOINT_OPTIONS
+Opciones del Breakpoint...
+TOOLBAR_DESC_DEBUG_BREAKPOINT_OPTIONS
+Depurar -> Opciones del Breakpoint...
+TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS
+Listar Watch/Break points...
+TOOLBAR_DESC_DEBUG_LIST_BREAKPOINTS
+Depurar -> Listar Watch/Break points...
+TOOLBAR_CAPTION_DEBUG_SHOW_LOG_PANEL
+Mostrar Mensajes del Depurador
+TOOLBAR_DESC_DEBUG_SHOW_LOG_PANEL
+Depurar -> Mostrar Mensajes del Depurador...
+TOOLBAR_CAPTION_RUN_COMPILE
+Compilar
+TOOLBAR_DESC_RUN_COMPILE
+Ejecucion -> Compilar
+TOOLBAR_CAPTION_RUN_RUN
+Guardar, Compilar y Ejecutar...
+TOOLBAR_DESC_RUN_RUN
+Ejecucion -> Guardar, Compilar y Ejecutar
+TOOLBAR_CAPTION_RUN_OLD
+Ejecutar Sin Recompilar...
+TOOLBAR_DESC_RUN_OLD
+Ejecucion -> Ejecutar Sin Recompilar
+TOOLBAR_CAPTION_RUN_STOP
+Detener
+TOOLBAR_DESC_RUN_STOP
+Ejecucion -> Detener
+TOOLBAR_CAPTION_RUN_CLEAN
+Limpiar
+TOOLBAR_DESC_RUN_CLEAN
+Ejecucion -> Limpiar
+TOOLBAR_CAPTION_RUN_OPTIONS
+Opciones de compilacion y ejecucion...
+TOOLBAR_DESC_RUN_OPTIONS
+Ejecucion -> Opciones...
+TOOLBAR_CAPTION_DEBUG_RUN
+Depurar
+TOOLBAR_DESC_DEBUG_RUN
+Depurar -> Iniciar
+TOOLBAR_CAPTION_DEBUG_ATTACH
+Attachear Depurador
+TOOLBAR_DESC_DEBUG_ATTACH
+Depurar -> Adjuntar
+TOOLBAR_CAPTION_DEBUG_CORE_DUMP
+Cargar Volcado de Memoria
+TOOLBAR_DESC_DEBUG_CORE_DUMP
+Depurar -> Cargar Volcado de Memoria
+TOOLBAR_FIND_TEXT
+Texto a Buscar
+TOOLBAR_FIND_CAPTION
+Busqueda Rapida
+TOOLBAR_FIND_BUTTON
+Buscar siguiente
+MAINW_QUICKHELP_INIT
+Coloca el cursor de texto sobre una palabra y presona Shift+F1 para ver la ayuda en este cuadro.
+MAINW_AUTOHIDE_QUICKHELP
+Ayuda/Busqueda
+CAPTION_PROJECT_SYMBOLS_TREE
+Arbol de Simbolos
+CAPTION_PROJECT_PROJECT_TREE
+Arbol de Proyecto
+MAINW_AUTOHIDE_EXPLORER
+Explorador
+MAINW_PT_SOURCES
+Fuentes
+MAINW_PT_HEADERS
+Cabeceras
+MAINW_PT_OTHERS
+Otros
+MAINW_AUTOHIDE_PROJECT
+Proyecto
+MAINW_AUTOHIDE_SYMBOLS
+Simbolos
+MAINW_CT_ALL
+Toda la salida
+MAINW_AUTOHIDE_COMPILER
+Compilador
+MAINW_STATUS_RUN_FINISHED
+Ejecucion Finalizada
+MAINW_COULDNOT_LAUNCH_PROCESS
+No se pudo lanzar el proceso
+MAINW_COULDNOT_RUN
+No se pudo lanzar la ejecucion!
+MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION_PRE
+Esta intentando ejecutar un archivo de cabecera.\nDesea ejecutar en su lugar 
+MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION_POST
+?
+MAINW_RUN_HEADER_QUESTION
+Esta intentando ejecutar un archivo de cabecera. Desea continuar?
+MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
+Desea guardar los cambios del proyecto anterior antes de cerrarlo?
+MAINW_CHANGE_CLOSE_ALL_QUESTION
+Hay cambios sin guardar. Se cerraran todos los archivos. Desea Continuar?
+MAINW_COULD_NOT_EXPORT_HTML
+No se pudo guardar el archivo
+MAINW_CHANGES_CONFIRM_RELOAD
+Hay Cambios sin guardar, desea recargar igualmente la version del disco?
+MAINW_FULLSCREEN_OUT_TIP
+Presione F11 para salir del modo pantalla completa
+WXFB_OPENING
+Abriendo wxFormBuilder...
+MAINW_FILE_NOT_EXISTS
+El archivo no existe.
+MAINW_ASK_SAVE_PREVIOUS_PROJECT
+Desea guardar los cambios del proyecto anterior antes de cerrarlo?
+MAINW_CLOSE_ALL_BEFORE_PROJECT_QUESTION
+Desea cerrar todos los archivos que no pertenecen al proyecto?
+MAINW_CLOSE_ALL_BEFORE_PROJECT_CHECK
+Siempre cerrar los demas archivos al abrir un proyecto
+MAINW_SAVE_CHANGES_QUESTION
+Hay cambios sin guardar. Desea guardarlos?
+MAINW_ADD_TO_PROJECT_QUESTION
+Desea agregar el archivo al proyecto?
+MAINW_ADD_TO_PROJECT_CHECK
+Hacer lo mismo para todos
+MAINW_ERROR_PRITING
+Ha ocurrido un error al intentar imprimir
+MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT
+No puede abrir un ejemplo mientras trabaja en un proyecto.\nCierre el proyecto e intente nuevamente.
+MAINW_NO_EXTENSION_ADD_CPP_QUESTION
+No ha definido una extension en el nombre de archivo indicado.\nSi es un codigo fuente se recomienda utilizar la extension cpp\npara que el compilador pueda identificar el lenguaje.\nDesea agregar la extension cpp al nombre?
+MAINW_ALWAYS_APPEND_EXTENSION
+Siempre agregar la extension sin preguntar.
+MAINW_INSERT_HEADIR_NO_WORD
+Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir.
+MAINW_INSERT_HEADIR_CPP
+ esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera.
+MAINW_NO_HEADER_FOR_PRE
+No se encontro cabecera correspondiente a \"
+MAINW_NO_HEADER_FOR_POST
+\"
+DEBUG_THREAD_SYSTEM_INCOMPLETE
+El manejo de hilos en la depuracion aun esta en construccion.\nPuede que los niveles en las inspecciones no se correspondan con\nel trazado inverso al cambiar de hilo.
+DEBUG_RETURN_VALUE
+Valor de retorno:
+DEBUG_RETURN_FROM_FUNCTION
+Salir de la funcion
+MENUITEM_SAVE_CORE_DUMP
+Guardar &Volcado de Memoria...
+MENUITEM_LOAD_CORE_DUMP
+Cargar &Volcado de Memoria...
+MAINW_EXPLORER_POPUP_CHANGE_PATH
+&Cambiar Ubicacion...
+MAINW_EXPLORER_POPUP_LEVEL_UP
+&Subir un Nivel
+MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE
+Tomar Ubicacion del Archivo Abierto
+MAINW_EXPLORER_POPUP_OPEN_ALL
+&Abrir Todos los Archivos
+MAINW_EXPLORER_POPUP_OPEN_SOURCES
+Abrir &Todos los Fuentes
+MAINW_EXPLORER_POPUP_UPDATE
+Ac&tualizar
+MAINW_EXPLORER_POPUP_OPEN_FILE
+&Abrir archivo
+MAINW_EXPLORER_POPUP_EXPAND
+&Expandir
+MAINW_EXPLORER_POPUP_SET_AS_ROOT
+Utilizar Como &Raiz
+MAINW_EXPLORER_POPUP_SHOW_ALL
+&Mostrar Todos los Archivos
+MAINW_EXPLORER_POPUP_SHOW_SOURCES
+&Mostrar Solo los Fuentes
+MAINW_EXPLORER_SELECT_PATH
+Seleccione la ubicacion:
+CAPTION_TOOLS_RESULTS_PANEL
+Panel de resultados
+MAINW_BEGGINERS_PANEL
+Asistencias
+MAINW_CANNOT_SPLIT_VIEW
+No se puede duplicar archivos sin nombre
+MAINW_VALGRIND_MISSING
+Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+MAINW_GPROF_OUTPUT_MISSING
+No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda.
+MAINW_GPROF_EDGE_THERSHOLD
+Eliminar arcos bajo este umbral (%):
+MAINW_GPROF_ASK_TITLE
+Perfil de Ejecucion
+MAINW_GPROF_NODE_THERSHOLD
+Eliminar nodos bajo este umbral (%):
+MAINW_GPROF_STATUS_ANALIZING
+Analizando informacion de perfilado...
+MAINW_GPROF_DRAWING
+Dibujando grafo...
+MAINW_GPROF_SHOWING
+Mostrando resultados...
+MAINW_GPROF_GRAPH_TITLE
+Informacion de Profiling
+MAINW_CUSTOM_TOOL_UNDEFINED
+Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
+MAINW_CODETOOLS_NO_HEADER_FOUND
+No se pudo determinar el archivo de cabecera asociado.
+MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION
+No se encontraron funciones/metodos sin implementar.
+MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS
+Seleccione las funciones/metodos a implementar:
+MAINW_PREPROC_OSD
+Preprocesando...
+MAINW_PREPROC_ERROR
+No se pudo preprocesar correctamente el fuente.
+MAKEFILE_CAPTION
+Generar Makefile
+MAKEFILE_PROFILE
+Perfil
+MAKEFILE_REPLACE_MINGW
+Reemplazar \"${MINGW_DIR}\" con
+MAKEFILE_EXPAND_SUBCOMMANDS
+Expandir subcomandos (comandos entre acentos).
+MAKEFILE_DESTINATION_FILE
+Destino
+MAKEFILE_TYPE_FULL
+Completo
+MAKEFILE_TYPE_CONFIG
+Por partes: configuracion
+MAKEFILE_TYPE_OBJECTS
+Por partes: objetos
+MAKEFILE_TYPE
+Formato
+MAKEFILE_GENERATE
+Generar
+GENERAL_NO_BUTTON
+ &No 
+GENERAL_YES_BUTTON
+ &Si 
+MULTIFILE_CAPTION
+Agregar Archivos al Proyecto
+MULTIFILE_DIR
+1) Seleccione el directorio donde buscar los archivos
+MULTIFILE_SUBDIRS
+buscar tambien en subdirectorios
+MULTIFILE_FILTER
+2) Ingrese un filtro para los nombres de archivos
+MULTIFILE_FIND
+ Buscar 
+MULTIFILE_LIST
+Seleccione los archivos a agregar
+MAINW_PT_AUTO
+<determinar por extension>
+MULTIFILE_WHERE
+Agregar en categoría
+MULTIFILE_CONFIRM_ADD_PRE
+¿Desea agregar 
+MULTIFILE_CONFIRM_ADD_POST
+ archivos al proyecto?
+OSD_ADDING_FILES
+Agregando archivos...
+MULTIFILE_DIR_CAPTION
+Directorio donde buscar
+MULTIFILE_POPUP_ALL
+marcar todos
+MULTIFILE_POPUP_NONE
+desmarcar todos
+MULTIFILE_POPUP_INVERT
+invertir marcados
+CAPTION_NEW_FILE_WIZARD
+Nuevo Archivo
+NEWWIZARD_NEXT
+ Siguiente 
+NEWWIZARD_CANCEL
+ Cancelar 
+NEWWIZARD_CREATE
+ Crear 
+NEWWIZARD_CONTINUE
+ Continuar 
+NEWWIZARD_FILENAME
+Nombre del archivo:
+NEWWIZARD_CLASSNAME
+Nombre de la clase:
+NEWWIZARD_DIRECTORY_NOT_FOUND_PRE
+El directorio \"
+NEWWIZARD_DIRECTORY_NOT_FOUND_POST
+\" no existe. Desea crearlo?
+GENERIC_ERROR
+Error
+NEWWIZARD_ERROR_MKDIR
+No se pudo crear el directorio.
+NEWWIZARD_CLASSNAME_MISSNG
+Debe introducir el nombre de la clase
+NEWWIZARD_INVALID_CLASSNAME
+El nombre de la clase no puede incluir ni espacios ni operadores
+NEWWIZARD_FILE_EXISTS
+Ya existe un archivo con ese nombre
+NEWWIZARD_FILENAME_MISSING
+Debe introducir el nombre del archivo
+NEWWIZARD_PROJECT_NAME_MISSING
+Debe establecer un nombre de proyecto.
+NEWWIZARD_PROJECT_LOCATION_MISSING
+Debe establecer un ubicacion para el proyecto.
+NEWWIZARD_INVALID_LOCATION
+La ubicacion seleccionada no es valida.
+NEWWIZARD_PROJECT_DIR_IS_FILE
+No se puede crear el proyecto porque ya existe un archivo con ese nombre en la ubicacion seleccionada. Elimine el archivo o modifique el nombre.
+NEWWIZARD_CONFIRM_REPLACE
+Ya existe un proyecto en esa ubicacion y con ese nombre. Desea reemplazarlo?
+GENERIC_WARNING
+Aviso
+NEWWIZARD_CONFIRM_OVERWRITE_DIR
+Ya existe un directorio en esa ubicacion y con ese nombre. Desea utilizarlo de todos modos para el proyecto?
+NEWWIZARD_ERROR_ON_FILE_COPY
+Error al copiar los archivos del proyecto. Compruebe que la ubicacion sea correcta.
+NEWWIZARD_EMPTY_FILE
+Archivo en Blanco
+NEWWIZARD_USE_TEMPLATE
+Utilizar Plantilla
+NEWWIZARD_TEMPLATE_WIZARD
+Asistente de Plantilla 
+NEWWIZARD_PROYECT
+Proyecto
+NEWWIZARD_FILETYPE
+Tipo de Archivo:
+NEWWIZARD_TIP_EMPTY
+Crea un nuevo archivo completamente en blanco.
+NEWWIZARD_TIP_TEMPLATE
+Crea un nuevo archivo con un esqueleto basico de programa (crea la funcion main e incluye cabeceras acordes al tipo de programa seleccionado).
+NEWWIZARD_TIP_WIZARD
+Permite seleccionar que tipo de funciones y contenedores quiere utilizar .
+NEWWIZARD_TIP_PROJECT
+Crea un nuevo proyecto. A diferencia de un programa simple, el proyecto puede constar de mas de un archivo fuente y guarda tambien otras configuraciones como bibliotecas utilizadas, parametros para el compilador, etc.
+NEWWIZARD_SOURCE
+Archivo Fuente 
+NEWWIZARD_HEADER
+Archivo Cabecera 
+NEWWIZARD_OTHER
+Otro Archivo 
+NEWWIZARD_CLASs
+Clase 
+NEWWIZARD_TIP_SOURCE
+Crea un nuevo archivo fuente en blanco.
+NEWWIZARD_TIP_HEADER
+Crea un nuevo archivo de cabecera en blanco.
+NEWWIZARD_TIP_OTHER
+Crea un nuevo archivo en blanco.
+NEWWIZARD_TIP_CLASS
+Crea dos archivos correspondientes a una clase\n(un archivo fuente y un archivo de cabecera)\ny completa una plantilla de clase.
+NEWWIZARD_INCLUDE
+Incluir
+NEWWIZARD_DEFAULT_CONSTRUCTOR
+Ctor. por Defecto
+NEWWIZARD_TIP_DEFAULT_COSNTRUCTOR
+Incluye un constructor que no recibe ningun parametro.
+NEWWIZARD_COPY_CONSTRUCTOR
+Ctor. de Copia
+NEWWIZARD_TIP_COPY_CONSTRUCTOR
+Incluye un destructor de copia (recibe un objeto de su misma clase).
+NEWWIZARD_DESTRUCTOR
+Destructor
+NEWWIZARD_TIP_DESTRUCTOR
+Incluye un destructor para la clase.
+NEWWIZARD_INHERIT_FROM
+Heredar de
+NEWWIZARD_BACK
+ Volver 
+NEWWIZARD_SET_DEFAULT
+Guardar como predeterminada
+NEWWIZARD_CHOOSE_TEMPLATE
+Seleccione una plantilla:
+NEWWIZARD_PROJECT_FILENAME
+Nombre del Archivo de Proyecto:
+NEWWIZARD_MYPROJECT
+MiProyecto
+NEWWIZARD_PROJECT_PATH
+Ubicacion del Proyecto:
+NEWWIZARD_PROJECTS_DIR
+Directorio de Proyectos
+NEWWIZARD_CURRENT_DIR
+Directorio Actual
+NEWWIZARD_LAST_DIR
+Ultimo Directorio Utilizado
+NEWWIZARD_OTHER_PATH
+Otro
+NEWWIZARD_PATH
+Ubicacion:
+NEWWIZARD_NEW_FOLDER
+Crear un nuevo directorio
+NEWWIZARD_TEMPLATE_EMPTY
+<proyecto en blanco>
+NEWWIZARD_TEMPLATE_MAIN
+<incluir archivo y funcion main>
+NEWWIZARD_USE_OPEN_FILES
+Utilizar los archivos abiertos
+NEWWIZARD_USE_DIR_FILES
+Utilizar los archivos del directorio de proyecto
+NEWWIZARD_CHOOSE_PATH
+Seleccione la ubicacion:
+NEWWIZARD_FINAL_PATH
+Destino final: 
+NEWWIZARD_CREATE_FILE
+Crear Archivo
+WILDCARD_ANY
+Todos los archivos
+WILDCARD_SOURCES
+Fuentes
+WILDCARD_HEADERS
+Cabeceras
+RECENT_CAPTION
+Archivos Recientes...
+RECENT_CLEAN
+&Limpiar Lista
+RECENT_DELETE
+&Quitar de la Lista
+RECENT_ENTER_FILENAME
+Ingrese parte del nombre del archivo que desea abrir:
+RECENT_NO_RESULTS
+<<no se encontraron coincidencias>>
+RECENT_CONFIRM_CLEAR_PROJECT_HISTORY
+Desea eliminar la lista de proyectos recientes?
+RECENT_CONFIRM_CLEAR_FILE_HISTORY
+Desea eliminar la lista de archivos recientes?
+OPENSHARED_CAPTION
+Abrir Compartido
+OPENSHARED_HOSTNAME_OR_ADDRESS
+Nombre/Direccion del host: 
+OPENSHARED_UPDATE_LIST_BUTTON
+&Actualizar lista
+OPENSHARED_GET_SOURCE_BUTTON
+&Obtener fuente
+OPENSHARED_ENTER_HOSTNAME_OR_IP
+Debe introducir primero el nombre de host o el IP de la pc que esta compartiendo el archivo.
+OPENSHARED_HOST_NOT_FOUND
+No se encontro el host especificado.
+OPENSHARED_GET_SHARED_LIST_FIRST
+Debe obtener la lista de fuentes compartidas primero. Para ello ingrese el nombre de host\no el IP de la pc que esta compartiendo el archivo y seleccione \"Actualizar lista\".
+OPENSHARED_SELECT_ONE_FIRST
+Debe seleccionar un fuente de la lista primero.
+OPINION_CAPTION
+Envia tu mensaje
+OPINION_TEXT
+Desde esta ventana puedes enviar un mensaje directamente al desarrollador de ZinjaI.\nPuedes utilizar este espacio para sugerir mejoras, comentar que te gusta y que no del\nentorno, reportar errores, o cualquier otro comentario. Los mensajes de los usuarios\nsirven para saber que aspectos de ZinjaI son utiles y funcionan bien, y que cosas se\ndeben mejorar, agregar o quitar, y son tenidos en cuenta para el desarrollo de nuevas\nversiones.
+OPINION_EMAIL
+Si esperas recibir alguna respuesta directa no olvides incluir tu email en el mensaje.
+OPINION_SEND_BUTTON
+Enviar
+UPDATE_CONF_PROXY
+Conf. Proxy...
+OPINION_MESSAGE_SENT
+El mensaje ha sido enviado correctamente.\nGracias por aportar su opinion.
+OPINION_SENT_CAPTION
+Mensaje enviado
+OPINION_MESSAGE_EMPTY
+No se puede enviar un mensaje en blanco.
+OPINION_SENDING_OSD
+Enviando mensaje...
+OPINION_ADDRESS_ERROR
+No se pudo contactar al servidor. Puede deberse a problemas\nde conexion o la presencia de un proxie. Si el problema persiste\npuede enviar el mensaje desde su navegador accediendo a la\nseccion Contactos del sitio web de ZinjaI.\nhttp://zinjai.sourceforge.net
+UPDATE_PROXY_ASK
+Ingrese la direccion del proxy ( ej: 192.168.0.120:3128 ):
+UPDATE_CAPTION
+Buscar Actualizaciones
+LAUNCH_STANDAR_OUTPUT
+Salida estandar
+LAUNCH_ERROR_OUTPUT
+Salida de errores
+LAUNCH_STATUS_STARTING
+Estado: Comenzando
+GENERA_STOP_BUTTON
+Detener
+LAUNCH_STATUS_RUNNING
+Estado: Ejecutando
+LAUNCH_STATUS_EXITCODE
+Estado: Codigo de salida: 
+LAUNCH_STATUS_FINISH
+Estado: Terminado
+PREFERENCES_CAPTION
+Preferencias
+PREFERENCES_QUICK_HELP
+Ayuda Rapida
+PREFERENCES_GENERAL
+General
+PREFERENCES_SIMPLE_PROGRAM
+Programa/Proyecto
+PREFERENCES_STYLE
+Estilo
+PREFERENCES_ASSISTANCES
+Asistencias
+PREFERENCES_ICON_THEME
+Tema de Iconos
+PREFERENCES_TOOLBARS
+Barras de Herram.
+PREFERENCES_DEBUGGING
+Depuracion
+PREFERENCES_PATHS_1
+Rutas 1
+PREFERENCES_PATHS_2
+Rutas 2
+PREFERENCES_GENERAL_GUI_LANGUAGE
+Idioma de la interfaz (*)
+PREFERENCES_GENERAL_SHOW_SPLASH
+Mostrar Splash mientras se carga el entorno
+PREFERENCES_GENERAL_SHOW_TOOLTIPS
+Mostrar sugerencias al inicio
+PREFERENCES_GENERAL_SHOW_WELCOME_PANEL
+Mostrar panel de bienvenida
+PREFERENCES_GENERAL_SHOW_HELP_TABS
+Mostrar pestanas de ayuda en dialogos (*)
+PREFERENCES_GENERAL_HISTORY_LEN
+Archivos en el historial
+PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_STARTUP
+Mostrar el explorador de archivos al iniciar
+PREFERENCES_GENERAL_GROUP_TREES
+Agrupar arboles en un solo panel (*)
+PREFERENCES_GENERAL_AUTOHIDE_PANELS
+Ocultar paneles automaticamente (experimental - *)
+PREFERENCES_SINGLETON
+Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos
+PREFERENCES_GENERAL_CHECK_FOR_UPDATES
+Verificar si existen nuevas versiones al iniciar
+PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT
+Mostrar errores de compilacion en Espanol (Ver Ayuda!) (*)
+PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON
+Crear/Actualizar icono de ZinjaI en el escritorio
+PREFERENCES_CREATE_ICONS
+Crear/Actualizar accesos directos en el escritorio/menu del sistema
+PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME
+(*) tendra efecto la proxima vez que inicie ZinjaI
+PREFERENCES_DEBUG_ALLOW_EDITION
+Permitir editar los fuentes durante la depuracion
+PREFERENCES_DEBUG_REORGANIZE_PANELS
+Reacomodar los paneles al iniciar/finalizar la depuracion
+PREFERENCES_DEBUG_INSPECTIONS_PANEL_ON_RIGHT
+Colocar el panel de inspecciones a la derecha (*)
+PREFERENCES_DEBUG_SHOW_THREAD_LIST
+Mostrar lista de hilos de ejecucion
+PREFERENCES_DEBUG_SHOW_DEBUGGER_LOG
+Mostrar el panel de mensajes del depurador
+PREFERENCES_DEBUG_ORGANIZE_TOOLBARS
+Reacomodar las barras de herramienta al iniciar/finalizar la depuracion
+PREFERENCES_DEBUG_AUTOUPDATE_BACKTRACE
+Actualizar automaticamente el panel de trazado inverso en cada paso
+PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
+Cargar toda la informacion de depuracion antes de comenzar
+PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
+Cargar informacion de depuracion de librerias externas
+PREFERENCES_DEBUG_RECOMPILE_AUTOMATICALLY
+Recompilar automaticamente antes de depurar si es necesario
+PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION
+Salir del modo depuracion si el programa finaliza normalmente
+PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER
+Siempre ejecutar en el depurador
+PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
+Mostrar ZinjaI cuando se interrumpe la ejecucion
+PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS
+Utilizar colores en la tabla de inspecciones
+PREFERENCES_DEBUG_GDB_MACROS_FILE
+Archivo de definiciones de macros para gdb
+PREFERENCES_DEBUG_SOURCES_BLACKLIST
+Fuentes a evitar (para el step in)
+PREFERENCES_TOOLBARS_WICH
+Barra de herramientas a utilizar:
+PREFERENCES_TOOLBARS_FILE
+Archivo
+PREFERENCES_TOOLBARS_MODIFY
+Modificar...
+PREFERENCES_TOOLBARS_EDIT
+Editar
+PREFERENCES_TOOLBARS_VIEW
+Ver
+PREFERENCES_TOOLBARS_RUN
+Ejecucion
+PREFERENCES_TOOLBARS_DEBUG
+Depuracion
+PREFERENCES_TOOLBARS_TOOLS
+Herramientas
+PREFERENCES_TOOLBARS_MISC
+Miscelanea
+PREFERENCES_TOOLBARS_FIND
+Busqueda
+PREFERENCES_TOOLBARS_RESET
+Reestablecer configuracion por defecto
+PREFERENCES_TOOLBAR_ICON_SIZE
+Tamaño de icono
+PREFERENCES_SIMPLE_CREATE_EMPTY_FILE
+Crear archivo en blanco
+PREFERENCES_SIMPLE_CREATE_FROM_TEMPLATE
+Crear a partir de plantilla
+PREFERENCES_SIMPLE_SHOW_WIZARD
+Mostrar Asistente
+PREFERENCES_SIMPLE_NEW_ACTION
+Accion para Nuevo Archivo
+PREFERENCES_SIMPLE_TEMPLATES_FOLDER
+Carpeta de plantillas (necesita reiniciar)
+PREFERENCES_SIMPLE_EXTRA_COMPILER_ARGUMENTS
+Parametros extra para el compilador
+PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING
+Esperar una tecla luego de la ejecucion
+PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
+Siempre pedir argumentos al ejecutar
+PREFERENCES_SIMPLE_ADD_CPP_EXTENSION
+Agregar la extension cpp si se omite al guardar
+PREFERENCES_SIMPLE_RUN_LAST_CPP_INSTEAD_HEADER
+Ejecutar el ultimo cpp si se intenta ejecutar una cabecera
+PREFERENCES_GENERAL_MAX_JOBS
+Cantidad de pasos en paralelo al compilar
+PREFERENCES_STOP_COMPILING_ON_ERROR
+Detener la compilación de un proyecto al encontrar el primer error
+PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE
+Guardar siempre el proyeto al salir
+PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING
+Cerrar todos los demas archivos al abrir un proyecto
+PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
+Mostrar el explorador de archivos al abrir un proyecto
+PREFERENCES_STYLE_SINTAX_HIGHLIGHT
+Colorear sintaxis
+PREFERENCES_STYLE_INVERTED_COLOURS
+Colores inversos (fondo negro)
+PREFERENCES_STYLE_LINE_WRAP
+Ajuste de linea dinamico
+PREFERENCES_STYLE_WRAP_NONE
+Nunca
+PREFERENCES_STYLE_WRAP_ALL_BUT_SOURCES
+Todos menos fuentes
+PREFERENCES_STYLE_WRAP_ALWAYS
+Siempre
+PREFERENCES_STYLE_SHOW_EOF_AND_WHITE_SPACES
+Mostrar espacios y caracteres de fin de linea
+PREFERENCES_STYLE_SHOW_LINE_NUMBERS
+Mostrar numeros de linea
+PREFERENCES_STYLE_ENABLE_CODE_FOLDING
+Habilitar plegado de codigo
+PREFERENCES_STYLE_TAB_WIDTH
+Ancho del tabulado
+PREFERENCES_STYLE_SPACES_INTEAD_TABS
+Colocar espacios en lugar de tabs
+PREFERENCES_STYLE_SCREEN_FONT_SIZE
+Tamaño de la fuente en pantalla
+PREFERENCES_STYLE_PRINTING_FONT_SIZE
+Tamaño de la fuente para impresion
+PREFERENCES_STYLE_HIDE_MENUS_ON_FULLSCREEN
+Ocultar barra de menues al pasar a pantalla completa
+PREFERENCES_STYLE_HIDE_TOOLBARS_ON_FULLSCREEN
+Ocultar barras de herramientas al pasar a pantalla completa
+PREFERENCES_STYLE_HIDE_PANELS_ON_FULLSCREEN
+Ocultar paneles al pasar a pantalla completa
+PREFERENCES_WRITING_INTELLIGENT_EDITING
+Edicion inteligente
+PREFERENCES_WRITING_AUTOCLOSE_BRACKETS
+Cerrar llaves automaticamente al presionar Enter
+PREFERENCES_WRITING_AUTOCLOSE_STUFF
+Siempre cerrar llaves, parentesis y comillas al ingresar
+PREFERENCES_WRITING_INDENT_ON_PASTE
+Corregir indentado al pegar
+PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE
+Controlar que quede una linea en blanco al final de cada archivo
+PREFERENCES_WRITING_SHOW_TOOLTIPS_FOR_VAR_TYPES
+Utilizar tooltips para identificar tipos de variables
+PREFERENCES_WRITING_ENABLE_AUTOCOMPLETION
+Utilizar autocompletado mientras escribe
+PREFERENCES_WRITING_ENABLE_CALLTIPS
+Mostrar ayuda de llamadas a funciones y metodos
+PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS
+Simplificar mensajes de error del compilador
+PREFERENCES_WRITTING_AUTOCODES_FILE
+Archivo de definiciones de plantillas de auto-codigo
+PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES
+Indices de autocompletado a utilizar
+PREFERENCES_SKIN_AVAILABLE_THEMES
+Temas disponibles
+PREFERENCES_SKIN_DEFAULT_THEME
+<Tema por defecto>
+PREFERENCES_SKIN_APPLY
+Aplicar
+PREFERENCES_PATHS_QUICKHELP
+Ubicacion de la ayuda rapida
+PREFERENCES_PATHS_AUTOCOMP
+Ubicacion de los indices de autocompletado
+PREFERENCES_PATHS_TEMP
+Directorio temporal
+PREFERENCES_PATHS_MINGW
+Directorio de MinGW (requiere reiniciar ZinjaI)
+PREFERENCES_PATHS_PROJECTS
+Directorio de proyectos
+PREFERENCES_PATHS_WXWIDGETS_HELP_INDEX
+Indice de ayuda wxWidgets
+PREFERENCES_COMMANDS_GPP
+Comando del compilador C++
+PREFERENCES_COMMANDS_GCC
+Comando del compilador C
+PREFERENCES_COMMANDS_GDB
+Comando del depurador
+PREFERENCES_COMMANDS_CONSOLE
+Comando de la terminal
+PREFERENCES_COMMANDS_EXPLORER
+Comando del explorador de archivos
+PREFERENCES_COMMANDS_IMAGE_VIEWER
+Comando del visor de imagenes
+PREFERENCES_COMMANDS_BROWSER
+Comando del navegador Web
+PREFERENCES_COMMANDS_DOXYGEN
+Ubicacion del ejecutable de Doxygen
+PREFERENCES_COMMANDS_WXFORMBUILDER
+Ubicacion del ejecutable de wxFormBuilder
+PREFERENCES_COMMANDS_VALGRIND
+Ubicacion del ejecutable de Valgrind
+PREFERENCES_COMMANDS_CPPCHECK
+Ubicacion del ejecutable de CppCheck
+PREFERENCES_OPEN_FILE
+&Buscar archivo...
+PREFERENCES_EDIT_FILE
+&Editar archivo...
+PREFERENCES_EDIT_TOOLBAR_FILE_CAPTION
+Barra de Herramientas Archivo
+PREFERENCES_EDIT_TOOLBAR_EDIT_CAPTION
+Barra de Herramientas \"Edicion\"
+PREFERENCES_EDIT_TOOLBAR_MISC_CAPTION
+Barra de Herramientas \"Miscelanea\"
+TOOLBAR_CAPTION_HELP_OPINION
+Opina sobre ZinjaI...
+PREFERENCES_EDIT_TOOLBAR_VIEW_CAPTION
+Barra de Herramientas \"ver\"
+PREFERENCES_EDIT_TOOLBAR_TOOLS_CAPTION
+Barra de Herramientas \"Herramientas\"
+TOOLBAR_CAPTION_TOOLS_COMMENTS_COPY_CODE_FROM_H
+Implementar Metodos/Funciones Faltantes...
+TOOLBAR_CAPTION_TOOLS_PROJECT_STATISTICS
+Estadisticas del Proyecto...
+PREFERENCES_EDIT_TOOLBAR_DEBUG_CAPTION
+Barra de Herramientas \"Depuracion\"
+PREFERENCES_EDIT_TOOLBAR_RUN_CAPTION
+Barra de Herramientas \"Ejecucion\"
+LANG_MAX_JOBS_TIP_PRE
+Este campo define la cantidad de objetos que se compilan en simultaneo al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad de nucleos, o la mitad son valores recomendables. Consulte la ayuda para más detalles. ZinjaI detecta en el sistema actual 
+LANG_MAX_JOBS_TIP_POST
+ nucleos
+PROJECTCONFIG_CAPTION
+Opciones de Compilacion y Ejecucion
+PROJECTCONFIG_USE_PROFILE
+Utilizar
+PROJECTCONFIG_NEW_PROFILE
+Nuevo
+PROJECTCONFIG_RENAME_PROFILE
+Renombrar
+PROJECTCONFIG_DELETE_PROFILE
+Eliminar
+PROJECTCONFIG_HELP
+Ayuda
+PROJECTCONFIG_GENERAL
+General
+PROJECTCONFIG_COMPILING
+Compilacion
+PROJECTCONFIG_LINKING
+Enlazado
+PROJECTCONFIG_SEQUENCE
+Secuencia
+PROJECTCONFIG_LIBRARIES
+Biblioteca
+PROJECTCONFIG_LINKING_EXTRA_ARGS
+Parametros extra para el enlazado
+PROJECTCONFIG_LINKING_EXTRA_PATHS
+Directorios adicionales para buscar bibliotecas
+PROJECTCONFIG_LINKING_EXTRA_LIBS
+Bibliotecas a enlazar
+PROJECTCONFIG_LINKING_STRIP
+\"Stripear\" el ejecutable
+PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM
+Es un programa de consola
+PROJECTCONFIG_LINKING_FORCE_RELINK
+Reenlazar obligatoriamente en la proxima compilacion/ejecucion
+PROJECTCONFIG_GENERAL_ICON_PATH
+Icono del ejecutable (solo Windows)
+PROJECTCONFIG_GENERAL_MANIFEST_PATH
+Archivo manifest.xml (solo Windows)
+PROJECTCONFIG_GENERAL_EXE_PATH
+Ubicacion del ejecutable
+PROJECTCONFIG_GENERAL_WORKDIR
+Directorio de trabajo
+PROJECTCONFIG_GENERAL_ASK_ARGS
+Siempre pedir argumentos al ejecutar
+PROJECTCONFIG_GENERAL_RUNNING_ARGS
+Argumentos para la ejecucion
+PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER
+Nunca
+PROJECTCONFIG_GENERAL_WAIT_KEY_ERROR
+En caso de error
+PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS
+Siempre
+PROJECTCONFIG_GENERAL_WAIT_KEY
+Esperar una tecla luego de la ejecucion
+PROJECTCONFIG_GENERAL_TEMP_FOLDER
+Directorio para archivos temporales e intermedios
+PROJECTCONFIG_COMPILING_EXTRA_ARGS
+Parametros extra para la compilacion
+PROJECTCONFIG_COMPILING_MACROS
+Macros a definir
+PROJECTCONFIG_COMPILING_EXTRA_PATHS
+Directorios adicionales para buscar cabeceras
+PROJECTCONFIG_COMPILING_ONLY_ANSI
+Limitar solo al estandard ANSI
+PROJECTCONFIG_COMPILING_WARNINGS_NONE
+Ninguna
+PROJECTCONFIG_COMPILING_WARNINGS_DEFAULT
+Predeterminadas
+PROJECTCONFIG_COMPILING_WARNINGS_ALL
+Todas
+PROJECTCONFIG_COMPILING_WARNINGS
+Nivel de advertencias
+PROJECTCONFIG_COMPILING_DEBUG_NONE
+Ninguna
+PROJECTCONFIG_COMPILING_DEBUG_LEVEL_1
+Nivel 1
+PROJECTCONFIG_COMPILING_DEBUG_LEVEL_2
+Nivel 2
+PROJECTCONFIG_COMPILING_DEBUG_LEVEL_3
+Nivel 3
+PROJECTCONFIG_COMPILING_DEBUG
+Informacion de depuracion
+PROJECTCONFIG_COMPILING_PROFILING
+Generar informacion de \"profiling\"
+PROJECTCONFIG_COMPILING_OPTIM_NONE
+Ninguna
+PROJECTCONFIG_COMPILING_OPTIM_LEVEL_1
+Nivel 1
+PROJECTCONFIG_COMPILING_OPTIM_LEVEL_2
+Nivel 2
+PROJECTCONFIG_COMPILING_OPTIM_LEVEL_3
+Nivel 3
+PROJECTCONFIG_COMPILING_OPTIM_SIZE
+Reducir Tamaño
+PROJECTCONFIG_COMPILING_OPTIM
+Nivel de optimizacion
+PROJECTCONFIG_PROFILE_NAME
+Nombre:
+PROJECTCONFIG_ADD_PROFILE
+Agregar configuracion:
+PROJECTCONFIG_PROFILE_NAME_REPEATED
+Ya existe otra configuracion con ese nombre
+PROJECTCONFIG_CANT_DELETE_LAST_PROFILE
+No puedes eliminar la unica configuracion existente
+PROJECTCONFIG_CONFIRM_DELETE_PRE
+Seguro que desea eliminar la configuracion 
+PROJECTCONFIG_PROFILE_NEW_NAME
+Nuevo nombre:
+PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_PRE
+Desea establecer la configuracion \"
+PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_POST
+\" como la configuracion a utilizar?
+PROJECTCONFIG_CURRENT_PROFILE
+Configuracion activa
+PROJECTCONFIG_EXE_NAME_MISSING
+No se ha definido ubicacion (primer campo en \"General\") para el ejecutable.\n Este campo no puede quedar vacio.
+PROJECTCONFIG_STEPS_COMPILATION_SEQUENCE
+Secuencia de compilacion:
+PROJECTCONFIG_STEPS_ADD
+Agregar
+PROJECTCONFIG_STEPS_EDIT
+Editar
+PROJECTCONFIG_STEPS_RUN
+Ejecutar
+PROJECTCONFIG_STEPS_DELETE
+Quitar
+PROJECTCONFIG_STEPS_MOVE_UP
+Subir
+PROJECTCONFIG_STEPS_MOVE_DOWN
+Bajar
+PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_1
+Nota: estos cambios se aplican inmediatamente,
+PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_2
+aunque luego seleccione cancelar
+PROJECTCONFIG_LIBS_TO_GENERATE
+Bibliotecas a generar
+PROJECTCONFIG_LIBS_ADD
+Agregar
+PROJECTCONFIG_LIBS_EDIT
+Editar
+PROJECTCONFIG_LIBS_DELETE
+Quitar
+PROJECTCONFIG_LIBS_NOEXEC
+Generar solo bibliotecas (no generar ejecutable)
+PROJECTCONFIG_ASK_DELETE_STEP
+Eliminar el paso: 
+PROJECTCONFIG_STEPS_COMPILE_SOURCES
+**Compilar Fuentes del Proyecto**
+PROJECTCONFIG_STEPS_LINK_LIBS
+**Generar Bibliotecas**
+PROJECTCONFIG_STEPS_LINK_EXE
+**Enlazar Ejecutable**
+PROJECTCONFIG_ASK_DELETE_LIB
+Eliminar la biblioteca: 
+PROJECTGENERAL_CAPTION
+Configuracion de Proyecto
+PROJECTGENERAL_NAME
+Nombre del proyecto
+PROJECTGENERAL_CUSTOM_TABS
+Utilizar tabulado propio
+PROJECTGENERAL_TAB_WIDTH
+Ancho del tabulado
+PROJECTGENERAL_TAB_SPACE
+Colocar espacios en lugar de tabs
+PROJECTGENERAL_AUTOCOMP_EXTRA
+Indices de autocompletado adicionales
+PROJECTGENERAL_COMPILE_AND_RUN
+ Compilacion y Ejecucion... 
+PROJECTGENERAL_DOXYGEN
+ Opciones Doxygen... 
+PROJECTGENERAL_ACTIVATE_WXFORMBUILDER
+Activar integracion con wxFormBuilder
+PROJECTGENERAL_INDEXES
+Indices:
+PROJECTGENERAL_AUTOCOMPLETION
+Autocompletado
+PROJECTGENERAL_FILE_NOT_EXISTS
+El archivo no existe
+PROYSTATS_CAPTION
+Estadisticas del Proyecto
+PROYSTATS_NUM_TOTAL
+Archivos en el Proyecto
+PROYSTATS_NUM_HEADERS
+Cabeceras
+PROYSTATS_NUM_SOURCES
+Fuentes
+PROYSTATS_NUM_OTHERS
+Otros
+PROYSTATS_DISK_USAGE
+Tamaño en Disco (*)
+PROYSTATS_LINES
+Lineas de Codigo
+PROYSTATS_NUM_CLASSES
+Clases Definidas
+PROYSTATS_NUM_FUNCTIONS
+Funciones Definidas
+PROYSTATS_NUM_GLOBALS
+Objetos Globales
+PROYSTATS_NUM_MACROS
+Macros de Preprocesador
+PROYSTATS_NOTE_DISK_USAGE
+(*) no incluye binarios ni temporales
+SHARESOURCE_CAPTION
+Compartir Archivo
+SHARESOURCE_SHARE_WITHOUT_MODIFICATIONS
+Compartir sin modificaciones
+SHARESOURCE_ENTER_NAME
+Ingrese el nombre con el que desea compartir el archivo,\no seleccione uno de la lista para reemplazarlo: 
+SHARESOURCE_SHARE_BUTTON
+Compartir
+SHARESOURCE_YOUR_HOSTNAME
+Para que otros puedan descargar este codigo nesecitaran identificar tu PC.\n   Tu nombre de host es: 
+SHARESOURCE_EMPTY_SHARING_NAME
+Debe ingresar un nombre para compartir el archivo.
+SHARESOURCE_NAME_TOO_LONG
+El nombre no puede tener mas de 255 caracteres.
+SHARESOURCE_COULDNT_START_SERVER
+No se pudo inciar el servidor. Compruebe que el puerto este correctamente configuardo y libre.
+SHARESOURCE_SOURCE_ALREADY_EXISTS_REPLACE
+Ya existe un archivo compartido con ese nombre. Desea reemplazarlo?
+DEBUG_NO_BREAKPOINT_ON_EMPTY_LINE
+Los puntos de interrupcion no pueden colocarse en lineas vacias\n que contengan solo comentarios o directivas de preprocesador
+DEBUG_BREAKPOINT_CAPTION
+Puntos de Interrupcion
+DEBUG_NO_BREAKPOINT_WHILE_RUNNING
+No puede colocar o modificar un breakpoint mientras el programa esta\nejecutandose. Pause la depuracion (con el comando \"Interrumpir\" del menu\n\"Depuracion\") o espere a que la misma se interrumpa para realizar esta accion.
+SOURCE_TIP_NO_DEREFERENCE
+Tip: Probablemente no deba desreferenciar este objeto.
+SOURCE_TIP_DO_DEREFERENCE
+Tip: Probablemente deba desreferenciar este objeto.
+SOURCE_UNCOMMENTED_FOR_HEADER_PRE
+Descomentada linea 
+SOURCE_UNCOMMENTED_FOR_HEADER_MID
+: \"#include 
+SOURCE_UNCOMMENTED_FOR_HEADER_POST
+\".
+SOURCE_ADDED_HEADER_PRE
+Agregada cabecera 
+SOURCE_ADDED_HEADER_POST
+ 
+SOURCE_ADDED_USING_NAMESPACE_STD
+Agregado \"using namespace std;\"
+SOURCE_HEADER_WAS_ALREADY
+Sin cambios, ya estaba la cabecera 
+SOURCE_POPUP_UNDO
+&Deshacer
+SOURCE_POPUP_REDO
+&Rehacer
+SOURCE_POPUP_CUT
+C&ortar
+SOURCE_POPUP_COPY
+&Copiar
+SOURCE_POPUP_PASTE
+&Pegar
+SOURCE_POPUP_DUPLICATE_LINES
+&Duplicar Linea(s)
+SOURCE_POPUP_DELETE_LINES
+&Eliminar Linea(s)
+SOURCE_POPUP_COMMENT_LINES
+&Comentar
+SOURCE_POPUP_UNCOMMENT_LINES
+&Descomentar
+SOURCE_POPUP_INDENTE
+&Indentar Blo&que
+SOURCE_POPUP_SELECT_BLOCK
+&Seleccionar Bloque
+SOURCE_POPUP_SELECT_ALL
+Seleccionar &Todo
+SOURCE_POPUP_HIGHLIGHT_LINES
+&Resaltar Linea(s)
+SOURCE_POPUP_FIND_SYMBOL
+&Buscar en el Arbol de Simbolos...
+SOURCE_POPUP_HELP_ON_PRE
+Ayuda sobre \"
+SOURCE_POPUP_HELP_ON_POST
+\"...
+SOURCE_POPUP_INSERT_INCLUDE_PRE
+Insertar #incl&ude correspondiente a \"
+SOURCE_POPUP_INSERT_INCLUDE_POST
+\"
+SOURCE_POPUP_OPEN_SELECTED_PRE
+&Abrir \"
+SOURCE_POPUP_OPEN_SELECTED_POST
+\"
+SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION
+No se encontraron elementos para autocompletar el ambito 
+SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION
+No se pudo determinar el ambito a autocompletar
+SOURCE_CANT_AUTOCOMPLETE_HERE
+No se puede autocompletar en este punto
+MAINW_DIFF_NO_MORE
+No se encontraron mas cambios
+SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD
+El archivo fue modificado por otro programa.\nDesea recargarlo para obtener las modificaciones?
+DEBUG_CANT_EDIT_WHILE_DEBUGGING
+Por defecto, no se puede modificar el fuente mientras se encuentra\ndepurando un programa, ya que de esta forma pierde la relación que\nexiste entre la información que brinda el depurador a partir del\narchivo binario, y el fuente que está visualizando. Puede configurar\neste comportamiento en la seccion Depuracion del cuadro de\nPreferencias (desde menu Archivo)
+DEBUG_ALLOW_EDIT_WHILE_DEBUGGING
+Permitir editar igualemente
+THREADS_ID
+Id
+THREADS_FUNCTION
+Funcion
+THREADS_FILE
+Archivo
+THREADS_LINE
+Linea
+TIPS_WELCOME
+Bienvenido a ZinjaI 
+TIP_EMAIL
+Correo
+TIPS_CAPTION
+Sugerencias del dia
+TIPS_DB_NOT_FOUND
+Error: No se pudo abrir el archivo de sugerencias
+TIPS_SHOW_AT_START
+Mostrar sugerencias al inicio   
+TIPS_OTHER
+Otra
+TIPS_CLOSE
+Cerrar
+TOOLBAREDITOR_SELECT_ICONS
+Seleccione los iconos que desea en la barra:
+UPDATE_CHECK_AT_STARTUP
+Verificar siempre al iniciar
+UPDATE_PROXY_DIR
+Direccion Proxy: 
+UPDATE_PROXY_PORT
+   Puerto: 
+UPDATE_CONSULTING_WEB
+Consultando web...
+UPDATE_GOTO_SITE
+Ir al &sitio...
+UPDATE_ERROR_CONNECTING
+Error al conectarse al servidor.
+UPDATE_CONSULTING_STATUS
+Buscar actualizaciones: Consultando...
+UPDATE_ERROR_CONNECTING_STATUS
+Buscar actualizaciones: Error al conectarse al servidor.
+UPDATE_NO_NEW_VERSION_STATUS
+Buscar actualizaciones: No hay versiones nuevas disponibles.
+UPDATE_NO_NEW_VERSION
+No hay nuevas versiones disponibles.
+UPDATE_NEW_VERSION_IN_SITE_PRE
+Hay una nueva version disponible en\nhttp://zinjai.sourceforge.net (
+UPDATE_NEW_VERSION_IN_SITE_POST
+)
+UTILS_FUTURE_FILE_PRE
+El archivo incluido 
+UTILS_FUTURE_SOURCE_POST
+ tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.
+FILE_EXISTS_ASK_REPLACE_PRE
+El archivo \"
+FILE_EXISTS_ASK_REPLACE_POST
+\" ya existe. Desea reemplazarlo?
+CONFIG_EXPLORER_PROBLEM
+No se ha definido el explorador de archivos a utilizar\nPuede configurar el mismo en la pestana \"Rutas 2\" del\ncuadro de Preferencias (menu Archivo->Preferencias).
+CONFIG_EXPLORER
+Explorador de archivos
+GENERAL_POPUP_INSERT_TEXT
+editar como texto...
+GENERAL_POPUP_INSERT_LIST
+editar como lista...
+GENERAL_POPUP_INSERT_FILE
+insertar archivo...
+GENERAL_POPUP_REPLACE_INSERT_DIR
+insertar directorio...
+GENERAL_POPUP_INSERT_OUTPUT
+insertar archivo de salida
+GENERAL_POPUP_INSERT_DEPS
+insertar lista de dependencias
+GENERAL_POPUP_INSERT_TEMP_DIR
+insertar directorio de temporales
+GENERAL_POPUP_INSERT_MINGW_DIR
+insertar directorio del compilador
+GENERAL_POPUP_INSERT_PROJECT_PATH
+insertar directorio del proyecto
+GENERAL_POPUP_INSERT_PROJECT_BIN
+insertar ruta del ejecutable
+GENERAL_POPUP_INSERT_CURRENT_FILE
+insertar archivo actual
+GENERAL_POPUP_INSERT_CURRENT_DIR
+insertar directorio del archivo actual
+GENERAL_POPUP_INSERT_WORKDIR
+insertar el directorio de trabajo
+GENERAL_POPUP_INSERT_ZINJAI_DIR
+insertar el directorio de instalacion de ZinjaI
+GENERAL_POPUP_INSERT_BROWSER
+insertar comando del navegador
+GENERAL_WAIT_PARSER
+Debe esperar a que se terminen de analizar todos los fuentes.
+VALGRIND_OUTPUT_MISSING
+No se encontro el archivo de salida.\nPara saber como generarla consulte la ayuda.
+VALGRIND_RELOAD_TREE
+Recargar
+VALGRIND_OPEN_OUTPUT_FILE
+Abrir salida completa
+VALGRIND_DELETE_FROM_TREE
+Eliminar Items
+WXFB_CAPTION_NEWCLASS
+wxFB - Generar Clase Heredada
+WXFB_CAPTION_UPDATE
+wxFB - Actualizar Clase Heredada
+WXFB_NO_WXFB_CLASSES
+No se encontraron clases generadas por wxFormsBuilder.
+WXFB_GENERATE_INHERITED_CLASS
+Heredar Clase wxFormsBuilder
+WXFB_BASECLASS
+Clase base:
+WXFB_INHERITEDCLASS
+Clase heredada:
+WXFB_CLASSNAME_MISSING
+Debe introducir el nombre de la clase
+END

@@ -1,0 +1,22 @@
+<B><I>using</I></B>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; La palabra clave <I>using<I> se utiliza para indicarle al compilador que vamos a utilizar determinados elementos. Se puede utilizar para indicar un elemento en particular, o todo un conjunto de ellos. La caracteristica de estos elementos es que se encuentran definidos dentro de un espacio de nombres, por lo que en principio no podrían ser utilizados sin incluir al llamarlos su espacio de nombres mediante el operador de resolución de scope (::). Ej:<BR>
+<BR><code>
+&nbsp;&nbsp;&nbsp; std::cout&lt;&lt;"Hola Mundo"&lt;&lt;std::endl;<BR>
+</code><BR>
+&nbsp;&nbsp;&nbsp; Al utilzar la sintaxis <I>using name espacio::elemento</I> se le indica al compilador que se utilizará ese elemento de dicho espacio; por lo que cuando invoquemos al elemento, si no lo encuentra en el espacio donde fue invocado, utilizará el que se encuentra en el espacio anteriormente definido. Ej:<BR>
+<BR><code>
+&nbsp;&nbsp;&nbsp; using std::cout;<BR>
+&nbsp;&nbsp;&nbsp; ...<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Hola Mundo"&lt;&lt;std::endl;<BR>
+</code><BR>
+&nbsp;&nbsp;&nbsp; Finalmente, la forma más comun de utilizar es <I>using namespace espacio</I>. De esta forma le indicamos al compilador que podemos utilizar cualquier elemento dentro de ese espacio. Ej:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; using namespace std;<BR>
+&nbsp;&nbsp;&nbsp; ...<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Hola Mundo"&lt;&lt;endl;<BR>
+</CODE><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Dado que todas las clases y funciones del lenguaje ANSI/ISO C++ actual están definidas dentro de un espacio de nombres denominado <I>std</I>, es muy común que la primer linea a continuación de la lista de <I>#include</I>s sea <I>using namespace std;</I>.<BR>
+<BR>
+Vea tambien: <LI><A href="quickfile:namespace.html">namespace</A>.<BR>

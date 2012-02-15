@@ -1,0 +1,1776 @@
+<HTML><HEAD><TITLE>Manpage of GCC</TITLE>
+</HEAD><BODY>
+<A NAME="lbAO">&nbsp;</A>
+<H2>Options That Control Optimization</H2>
+
+<A NAME="ixAMY"></A>
+These options control various sorts of optimizations.
+<P>
+
+Without any optimization option, the compiler's goal is to reduce the
+cost of compilation and to make debugging produce the expected
+results.  Statements are independent: if you stop the program with a
+breakpoint between statements, you can then assign a new value to any
+variable or change the program counter to any other statement in the
+function and get exactly the results you would expect from the source
+code.
+<P>
+
+Turning on optimization flags makes the compiler attempt to improve
+the performance and/or code size at the expense of compilation time
+and possibly the ability to debug the program.
+<P>
+
+The compiler performs optimization based on the knowledge it has of
+the program.  Using the <B>-funit-at-a-time</B> flag will allow the
+compiler to consider information gained from later functions in the
+file when compiling a function.  Compiling multiple files at once to a
+single output file (and using <B>-funit-at-a-time</B>) will allow
+the compiler to use information gained from all of the files when
+compiling each of them.
+<P>
+
+Not all optimizations are controlled directly by a flag.  Only
+optimizations that have a flag are listed.
+<DL COMPACT>
+<DT><B>-O</B><DD>
+<A NAME="ixAMZ"></A>
+
+<DT><B>-O1</B><DD>
+<A NAME="ixANA"></A>
+
+Optimize.  Optimizing compilation takes somewhat more time, and a lot
+more memory for a large function.
+
+
+<P>
+
+
+With <B>-O</B>, the compiler tries to reduce code size and execution
+time, without performing any optimizations that take a great deal of
+compilation time.
+
+
+<P>
+
+
+<B>-O</B> turns on the following optimization flags:
+<B>-fdefer-pop 
+-fmerge-constants 
+-fthread-jumps 
+-floop-optimize 
+-fif-conversion 
+-fif-conversion2 
+-fdelayed-branch 
+-fguess-branch-probability 
+-fcprop-registers</B>
+
+
+<P>
+
+
+<B>-O</B> also turns on <B>-fomit-frame-pointer</B> on machines
+where doing so does not interfere with debugging.
+<DT><B>-O2</B><DD>
+<A NAME="ixANB"></A>
+Optimize even more.  <FONT SIZE="-1">GCC</FONT> performs nearly all supported optimizations
+that do not involve a space-speed tradeoff.  The compiler does not
+perform loop unrolling or function inlining when you specify <B>-O2</B>.
+As compared to <B>-O</B>, this option increases both compilation time
+and the performance of the generated code.
+
+
+<P>
+
+
+<B>-O2</B> turns on all optimization flags specified by <B>-O</B>.  It
+also turns on the following optimization flags:
+<B>-fforce-mem 
+-foptimize-sibling-calls 
+-fstrength-reduce 
+-fcse-follow-jumps  -fcse-skip-blocks 
+-frerun-cse-after-loop  -frerun-loop-opt 
+-fgcse  -fgcse-lm  -fgcse-sm  -fgcse-las 
+-fdelete-null-pointer-checks 
+-fexpensive-optimizations 
+-fregmove 
+-fschedule-insns  -fschedule-insns2 
+-fsched-interblock  -fsched-spec 
+-fcaller-saves 
+-fpeephole2 
+-freorder-blocks  -freorder-functions 
+-fstrict-aliasing 
+-funit-at-a-time 
+-falign-functions  -falign-jumps 
+-falign-loops  -falign-labels 
+-fcrossjumping</B>
+
+
+<P>
+
+
+Please note the warning under <B>-fgcse</B> about
+invoking <B>-O2</B> on programs that use computed gotos.
+<DT><B>-O3</B><DD>
+<A NAME="ixANC"></A>
+Optimize yet more.  <B>-O3</B> turns on all optimizations specified by
+<B>-O2</B> and also turns on the <B>-finline-functions</B>,
+<B>-fweb</B>, <B>-frename-registers</B> and <B>-funswitch-loops</B>
+options.
+<DT><B>-O0</B><DD>
+<A NAME="ixAND"></A>
+Do not optimize.  This is the default.
+<DT><B>-Os</B><DD>
+<A NAME="ixANE"></A>
+Optimize for size.  <B>-Os</B> enables all <B>-O2</B> optimizations that
+do not typically increase code size.  It also performs further
+optimizations designed to reduce code size.
+
+
+<P>
+
+
+<B>-Os</B> disables the following optimization flags:
+<B>-falign-functions  -falign-jumps  -falign-loops 
+-falign-labels  -freorder-blocks  -fprefetch-loop-arrays</B>
+
+
+<P>
+
+
+If you use multiple <B>-O</B> options, with or without level numbers,
+the last such option is the one that is effective.
+</DL>
+<P>
+
+Options of the form <B>-f</B><I>flag</I> specify machine-independent
+flags.  Most flags have both positive and negative forms; the negative
+form of <B>-ffoo</B> would be <B>-fno-foo</B>.  In the table
+below, only one of the forms is listed---the one you typically will
+use.  You can figure out the other form by either removing <B>no-</B>
+or adding it.
+<P>
+
+The following options control specific optimizations.  They are either
+activated by <B>-O</B> options or are related to ones that are.  You
+can use the following flags in the rare cases when ``fine-tuning'' of
+optimizations to be performed is desired.
+<DL COMPACT>
+<DT><B>-fno-default-inline</B><DD>
+<A NAME="ixANF"></A>
+Do not make member functions inline by default merely because they are
+defined inside the class scope (C<FONT SIZE="-2">++</FONT> only).  Otherwise, when you specify
+<B>-O</B>, member functions defined inside class scope are compiled
+inline by default; i.e., you don't need to add <B>inline</B> in front of
+the member function name.
+<DT><B>-fno-defer-pop</B><DD>
+<A NAME="ixANG"></A>
+Always pop the arguments to each function call as soon as that function
+returns.  For machines which must pop arguments after a function call,
+the compiler normally lets arguments accumulate on the stack for several
+function calls and pops them all at once.
+
+
+<P>
+
+
+Disabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fforce-mem</B><DD>
+<A NAME="ixANH"></A>
+Force memory operands to be copied into registers before doing
+arithmetic on them.  This produces better code by making all memory
+references potential common subexpressions.  When they are not common
+subexpressions, instruction combination should eliminate the separate
+register-load.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fforce-addr</B><DD>
+<A NAME="ixANI"></A>
+Force memory address constants to be copied into registers before
+doing arithmetic on them.  This may produce better code just as
+<B>-fforce-mem</B> may.
+<DT><B>-fomit-frame-pointer</B><DD>
+<A NAME="ixANJ"></A>
+Don't keep the frame pointer in a register for functions that
+don't need one.  This avoids the instructions to save, set up and
+restore frame pointers; it also makes an extra register available
+in many functions.  <B>It also makes debugging impossible on
+some machines.</B>
+
+
+<P>
+
+
+On some machines, such as the <FONT SIZE="-1">VAX</FONT>, this flag has no effect, because
+the standard calling sequence automatically handles the frame pointer
+and nothing is saved by pretending it doesn't exist.  The
+machine-description macro <TT>&quot;FRAME_POINTER_REQUIRED&quot;</TT> controls
+whether a target machine supports this flag.  
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-foptimize-sibling-calls</B><DD>
+<A NAME="ixANK"></A>
+Optimize sibling and tail recursive calls.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fno-inline</B><DD>
+<A NAME="ixANL"></A>
+Don't pay attention to the <TT>&quot;inline&quot;</TT> keyword.  Normally this option
+is used to keep the compiler from expanding any functions inline.
+Note that if you are not optimizing, no functions can be expanded inline.
+<DT><B>-finline-functions</B><DD>
+<A NAME="ixANM"></A>
+Integrate all simple functions into their callers.  The compiler
+heuristically decides which functions are simple enough to be worth
+integrating in this way.
+
+
+<P>
+
+
+If all calls to a given function are integrated, and the function is
+declared <TT>&quot;static&quot;</TT>, then the function is normally not output as
+assembler code in its own right.
+
+
+<P>
+
+
+Enabled at level <B>-O3</B>.
+<DT><B>-finline-limit=</B><I>n</I><DD>
+<A NAME="ixANN"></A>
+By default, <FONT SIZE="-1">GCC</FONT> limits the size of functions that can be inlined.  This flag
+allows the control of this limit for functions that are explicitly marked as
+inline (i.e., marked with the inline keyword or defined within the class
+definition in c++).  <I>n</I> is the size of functions that can be inlined in
+number of pseudo instructions (not counting parameter handling).  The default
+value of <I>n</I> is 600.
+Increasing this value can result in more inlined code at
+the cost of compilation time and memory consumption.  Decreasing usually makes
+the compilation faster and less code will be inlined (which presumably
+means slower programs).  This option is particularly useful for programs that
+use inlining heavily such as those based on recursive templates with C<FONT SIZE="-2">++</FONT>.
+
+
+<P>
+
+
+Inlining is actually controlled by a number of parameters, which may be
+specified individually by using <B>--param</B> <I>name</I><B>=</B><I>value</I>.
+The <B>-finline-limit=</B><I>n</I> option sets some of these parameters
+as follows:
+<DL COMPACT><DT><DD>
+
+
+<P>
+
+
+
+
+<PRE>
+ @item max-inline-insns-single
+  is set to I&lt;n&gt;/2.
+ @item max-inline-insns-auto
+  is set to I&lt;n&gt;/2.
+ @item min-inline-insns
+  is set to 130 or I&lt;n&gt;/4, whichever is smaller.
+ @item max-inline-insns-rtl
+  is set to I&lt;n&gt;.
+
+</PRE>
+
+
+</DL>
+
+<DL COMPACT><DT><DD>
+
+
+<P>
+
+
+See below for a documentation of the individual
+parameters controlling inlining.
+
+
+<P>
+
+
+<I>Note:</I> pseudo instruction represents, in this particular context, an
+abstract measurement of function's size.  In no way, it represents a count
+of assembly instructions and as such its exact meaning might change from one
+release to an another.
+</DL>
+
+<DT><B>-fkeep-inline-functions</B><DD>
+<A NAME="ixANO"></A>
+Even if all calls to a given function are integrated, and the function
+is declared <TT>&quot;static&quot;</TT>, nevertheless output a separate run-time
+callable version of the function.  This switch does not affect
+<TT>&quot;extern inline&quot;</TT> functions.
+<DT><B>-fkeep-static-consts</B><DD>
+<A NAME="ixANP"></A>
+Emit variables declared <TT>&quot;static const&quot;</TT> when optimization isn't turned
+on, even if the variables aren't referenced.
+
+
+<P>
+
+
+<FONT SIZE="-1">GCC</FONT> enables this option by default.  If you want to force the compiler to
+check if the variable was referenced, regardless of whether or not
+optimization is turned on, use the <B>-fno-keep-static-consts</B> option.
+<DT><B>-fmerge-constants</B><DD>
+<A NAME="ixANQ"></A>
+Attempt to merge identical constants (string constants and floating point
+constants) across compilation units.
+
+
+<P>
+
+
+This option is the default for optimized compilation if the assembler and
+linker support it.  Use <B>-fno-merge-constants</B> to inhibit this
+behavior.
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fmerge-all-constants</B><DD>
+<A NAME="ixANR"></A>
+Attempt to merge identical constants and identical variables.
+
+
+<P>
+
+
+This option implies <B>-fmerge-constants</B>.  In addition to
+<B>-fmerge-constants</B> this considers e.g. even constant initialized
+arrays or initialized constant variables with integral or floating point
+types.  Languages like C or C<FONT SIZE="-2">++</FONT> require each non-automatic variable to
+have distinct location, so using this option will result in non-conforming
+behavior.
+<DT><B>-fnew-ra</B><DD>
+<A NAME="ixANS"></A>
+Use a graph coloring register allocator.  Currently this option is meant
+only for testing.  Users should not specify this option, since it is not
+yet ready for production use.
+<DT><B>-fno-branch-count-reg</B><DD>
+<A NAME="ixANT"></A>
+Do not use ``decrement and branch'' instructions on a count register,
+but instead generate a sequence of instructions that decrement a
+register, compare it against zero, then branch based upon the result.
+This option is only meaningful on architectures that support such
+instructions, which include x86, PowerPC, <FONT SIZE="-1">IA-64</FONT> and S/390.
+
+
+<P>
+
+
+The default is <B>-fbranch-count-reg</B>, enabled when
+<B>-fstrength-reduce</B> is enabled.
+<DT><B>-fno-function-cse</B><DD>
+<A NAME="ixANU"></A>
+Do not put function addresses in registers; make each instruction that
+calls a constant function contain the function's address explicitly.
+
+
+<P>
+
+
+This option results in less efficient code, but some strange hacks
+that alter the assembler output may be confused by the optimizations
+performed when this option is not used.
+
+
+<P>
+
+
+The default is <B>-ffunction-cse</B>
+<DT><B>-fno-zero-initialized-in-bss</B><DD>
+<A NAME="ixANV"></A>
+If the target supports a <FONT SIZE="-1">BSS</FONT> section, <FONT SIZE="-1">GCC</FONT> by default puts variables that
+are initialized to zero into <FONT SIZE="-1">BSS</FONT>.  This can save space in the resulting
+code.
+
+
+<P>
+
+
+This option turns off this behavior because some programs explicitly
+rely on variables going to the data section.  E.g., so that the
+resulting executable can find the beginning of that section and/or make
+assumptions based on that.
+
+
+<P>
+
+
+The default is <B>-fzero-initialized-in-bss</B>.
+<DT><B>-fstrength-reduce</B><DD>
+<A NAME="ixANW"></A>
+Perform the optimizations of loop strength reduction and
+elimination of iteration variables.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fthread-jumps</B><DD>
+<A NAME="ixANX"></A>
+Perform optimizations where we check to see if a jump branches to a
+location where another comparison subsumed by the first is found.  If
+so, the first branch is redirected to either the destination of the
+second branch or a point immediately following it, depending on whether
+the condition is known to be true or false.
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fcse-follow-jumps</B><DD>
+<A NAME="ixANY"></A>
+In common subexpression elimination, scan through jump instructions
+when the target of the jump is not reached by any other path.  For
+example, when <FONT SIZE="-1">CSE</FONT> encounters an <TT>&quot;if&quot;</TT> statement with an
+<TT>&quot;else&quot;</TT> clause, <FONT SIZE="-1">CSE</FONT> will follow the jump when the condition
+tested is false.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fcse-skip-blocks</B><DD>
+<A NAME="ixANZ"></A>
+This is similar to <B>-fcse-follow-jumps</B>, but causes <FONT SIZE="-1">CSE</FONT> to
+follow jumps which conditionally skip over blocks.  When <FONT SIZE="-1">CSE</FONT>
+encounters a simple <TT>&quot;if&quot;</TT> statement with no else clause,
+<B>-fcse-skip-blocks</B> causes <FONT SIZE="-1">CSE</FONT> to follow the jump around the
+body of the <TT>&quot;if&quot;</TT>.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-frerun-cse-after-loop</B><DD>
+<A NAME="ixAOA"></A>
+Re-run common subexpression elimination after loop optimizations has been
+performed.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-frerun-loop-opt</B><DD>
+<A NAME="ixAOB"></A>
+Run the loop optimizer twice.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fgcse</B><DD>
+<A NAME="ixAOC"></A>
+Perform a global common subexpression elimination pass.
+This pass also performs global constant and copy propagation.
+
+
+<P>
+
+
+<I>Note:</I> When compiling a program using computed gotos, a <FONT SIZE="-1">GCC</FONT>
+extension, you may get better runtime performance if you disable
+the global common subexpression elimination pass by adding
+<B>-fno-gcse</B> to the command line.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fgcse-lm</B><DD>
+<A NAME="ixAOD"></A>
+When <B>-fgcse-lm</B> is enabled, global common subexpression elimination will
+attempt to move loads which are only killed by stores into themselves.  This
+allows a loop containing a load/store sequence to be changed to a load outside
+the loop, and a copy/store within the loop.
+
+
+<P>
+
+
+Enabled by default when gcse is enabled.
+<DT><B>-fgcse-sm</B><DD>
+<A NAME="ixAOE"></A>
+When <B>-fgcse-sm</B> is enabled, a store motion pass is run after
+global common subexpression elimination.  This pass will attempt to move
+stores out of loops.  When used in conjunction with <B>-fgcse-lm</B>,
+loops containing a load/store sequence can be changed to a load before
+the loop and a store after the loop.
+
+
+<P>
+
+
+Enabled by default when gcse is enabled.
+<DT><B>-fgcse-las</B><DD>
+<A NAME="ixAOF"></A>
+When <B>-fgcse-las</B> is enabled, the global common subexpression
+elimination pass eliminates redundant loads that come after stores to the
+same memory location (both partial and full redundancies).
+
+
+<P>
+
+
+Enabled by default when gcse is enabled.
+<DT><B>-floop-optimize</B><DD>
+<A NAME="ixAOG"></A>
+Perform loop optimizations: move constant expressions out of loops, simplify
+exit test conditions and optionally do strength-reduction and loop unrolling as
+well.
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fcrossjumping</B><DD>
+<A NAME="ixAOH"></A>
+Perform cross-jumping transformation. This transformation unifies equivalent code and save code size. The
+resulting code may or may not perform better than without cross-jumping.
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fif-conversion</B><DD>
+<A NAME="ixAOI"></A>
+Attempt to transform conditional jumps into branch-less equivalents.  This
+include use of conditional moves, min, max, set flags and abs instructions, and
+some tricks doable by standard arithmetics.  The use of conditional execution
+on chips where it is available is controlled by <TT>&quot;if-conversion2&quot;</TT>.
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fif-conversion2</B><DD>
+<A NAME="ixAOJ"></A>
+Use conditional execution (where available) to transform conditional jumps into
+branch-less equivalents.
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fdelete-null-pointer-checks</B><DD>
+<A NAME="ixAOK"></A>
+Use global dataflow analysis to identify and eliminate useless checks
+for null pointers.  The compiler assumes that dereferencing a null
+pointer would have halted the program.  If a pointer is checked after
+it has already been dereferenced, it cannot be null.
+
+
+<P>
+
+
+In some environments, this assumption is not true, and programs can
+safely dereference null pointers.  Use
+<B>-fno-delete-null-pointer-checks</B> to disable this optimization
+for programs which depend on that behavior.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fexpensive-optimizations</B><DD>
+<A NAME="ixAOL"></A>
+Perform a number of minor optimizations that are relatively expensive.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-foptimize-register-move</B><DD>
+<A NAME="ixAOM"></A>
+
+<DT><B>-fregmove</B><DD>
+<A NAME="ixAON"></A>
+
+Attempt to reassign register numbers in move instructions and as
+operands of other simple instructions in order to maximize the amount of
+register tying.  This is especially helpful on machines with two-operand
+instructions.
+
+
+<P>
+
+
+Note <B>-fregmove</B> and <B>-foptimize-register-move</B> are the same
+optimization.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fdelayed-branch</B><DD>
+<A NAME="ixAOO"></A>
+If supported for the target machine, attempt to reorder instructions
+to exploit instruction slots available after delayed branch
+instructions.
+
+
+<P>
+
+
+Enabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fschedule-insns</B><DD>
+<A NAME="ixAOP"></A>
+If supported for the target machine, attempt to reorder instructions to
+eliminate execution stalls due to required data being unavailable.  This
+helps machines that have slow floating point or memory load instructions
+by allowing other instructions to be issued until the result of the load
+or floating point instruction is required.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fschedule-insns2</B><DD>
+<A NAME="ixAOQ"></A>
+Similar to <B>-fschedule-insns</B>, but requests an additional pass of
+instruction scheduling after register allocation has been done.  This is
+especially useful on machines with a relatively small number of
+registers and where memory load instructions take more than one cycle.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fno-sched-interblock</B><DD>
+<A NAME="ixAOR"></A>
+Don't schedule instructions across basic blocks.  This is normally
+enabled by default when scheduling before register allocation, i.e.
+with <B>-fschedule-insns</B> or at <B>-O2</B> or higher.
+<DT><B>-fno-sched-spec</B><DD>
+<A NAME="ixAOS"></A>
+Don't allow speculative motion of non-load instructions.  This is normally
+enabled by default when scheduling before register allocation, i.e.
+with <B>-fschedule-insns</B> or at <B>-O2</B> or higher.
+<DT><B>-fsched-spec-load</B><DD>
+<A NAME="ixAOT"></A>
+Allow speculative motion of some load instructions.  This only makes
+sense when scheduling before register allocation, i.e. with
+<B>-fschedule-insns</B> or at <B>-O2</B> or higher.
+<DT><B>-fsched-spec-load-dangerous</B><DD>
+<A NAME="ixAOU"></A>
+Allow speculative motion of more load instructions.  This only makes
+sense when scheduling before register allocation, i.e. with
+<B>-fschedule-insns</B> or at <B>-O2</B> or higher.
+<DT><B>-fsched-stalled-insns=</B><I>n</I><DD>
+<A NAME="ixAOV"></A>
+Define how many insns (if any) can be moved prematurely from the queue
+of stalled insns into the ready list, during the second scheduling pass.
+<DT><B>-fsched-stalled-insns-dep=</B><I>n</I><DD>
+<A NAME="ixAOW"></A>
+Define how many insn groups (cycles) will be examined for a dependency
+on a stalled insn that is candidate for premature removal from the queue
+of stalled insns.  Has an effect only during the second scheduling pass,
+and only if <B>-fsched-stalled-insns</B> is used and its value is not zero.
+<DT><B>-fsched2-use-superblocks</B><DD>
+<A NAME="ixAOX"></A>
+When scheduling after register allocation, do use superblock scheduling
+algorithm.  Superblock scheduling allows motion across basic block boundaries
+resulting on faster schedules.  This option is experimental, as not all machine
+descriptions used by <FONT SIZE="-1">GCC</FONT> model the <FONT SIZE="-1">CPU</FONT> closely enough to avoid unreliable
+results from the algorithm.
+
+
+<P>
+
+
+This only makes sense when scheduling after register allocation, i.e. with
+<B>-fschedule-insns2</B> or at <B>-O2</B> or higher.
+<DT><B>-fsched2-use-traces</B><DD>
+<A NAME="ixAOY"></A>
+Use <B>-fsched2-use-superblocks</B> algorithm when scheduling after register
+allocation and additionally perform code duplication in order to increase the
+size of superblocks using tracer pass.  See <B>-ftracer</B> for details on
+trace formation.
+
+
+<P>
+
+
+This mode should produce faster but significantly longer programs.  Also
+without <TT>&quot;-fbranch-probabilities&quot;</TT> the traces constructed may not match the
+reality and hurt the performance.  This only makes
+sense when scheduling after register allocation, i.e. with
+<B>-fschedule-insns2</B> or at <B>-O2</B> or higher.
+<DT><B>-fcaller-saves</B><DD>
+<A NAME="ixAOZ"></A>
+Enable values to be allocated in registers that will be clobbered by
+function calls, by emitting extra instructions to save and restore the
+registers around such calls.  Such allocation is done only when it
+seems to result in better code than would otherwise be produced.
+
+
+<P>
+
+
+This option is always enabled by default on certain machines, usually
+those which have no call-preserved registers to use instead.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fmove-all-movables</B><DD>
+<A NAME="ixAPA"></A>
+Forces all invariant computations in loops to be moved
+outside the loop.
+<DT><B>-freduce-all-givs</B><DD>
+<A NAME="ixAPB"></A>
+Forces all general-induction variables in loops to be
+strength-reduced.
+
+
+<P>
+
+
+<I>Note:</I> When compiling programs written in Fortran,
+<B>-fmove-all-movables</B> and <B>-freduce-all-givs</B> are enabled
+by default when you use the optimizer.
+
+
+<P>
+
+
+These options may generate better or worse code; results are highly
+dependent on the structure of loops within the source code.
+
+
+<P>
+
+
+These two options are intended to be removed someday, once
+they have helped determine the efficacy of various
+approaches to improving loop optimizations.
+
+
+<P>
+
+
+Please contact &lt;<B><A HREF="mailto:gcc@gcc.gnu.org">gcc@gcc.gnu.org</A></B>&gt;, and describe how use of
+these options affects the performance of your production code.
+Examples of code that runs <I>slower</I> when these options are
+<I>enabled</I> are very valuable.
+<DT><B>-fno-peephole</B><DD>
+<A NAME="ixAPC"></A>
+
+<DT><B>-fno-peephole2</B><DD>
+<A NAME="ixAPD"></A>
+
+Disable any machine-specific peephole optimizations.  The difference
+between <B>-fno-peephole</B> and <B>-fno-peephole2</B> is in how they
+are implemented in the compiler; some targets use one, some use the
+other, a few use both.
+
+
+<P>
+
+
+<B>-fpeephole</B> is enabled by default.
+<B>-fpeephole2</B> enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fno-guess-branch-probability</B><DD>
+<A NAME="ixAPE"></A>
+Do not guess branch probabilities using a randomized model.
+
+
+<P>
+
+
+Sometimes <FONT SIZE="-1">GCC</FONT> will opt to use a randomized model to guess branch
+probabilities, when none are available from either profiling feedback
+(<B>-fprofile-arcs</B>) or <B>__builtin_expect</B>.  This means that
+different runs of the compiler on the same program may produce different
+object code.
+
+
+<P>
+
+
+In a hard real-time system, people don't want different runs of the
+compiler to produce code that has different behavior; minimizing
+non-determinism is of paramount import.  This switch allows users to
+reduce non-determinism, possibly at the expense of inferior
+optimization.
+
+
+<P>
+
+
+The default is <B>-fguess-branch-probability</B> at levels
+<B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-freorder-blocks</B><DD>
+<A NAME="ixAPF"></A>
+Reorder basic blocks in the compiled function in order to reduce number of
+taken branches and improve code locality.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>.
+<DT><B>-freorder-functions</B><DD>
+<A NAME="ixAPG"></A>
+Reorder basic blocks in the compiled function in order to reduce number of
+taken branches and improve code locality. This is implemented by using special
+subsections <TT>&quot;.text.hot&quot;</TT> for most frequently executed functions and
+<TT>&quot;.text.unlikely&quot;</TT> for unlikely executed functions.  Reordering is done by
+the linker so object file format must support named sections and linker must
+place them in a reasonable way.
+
+
+<P>
+
+
+Also profile feedback must be available in to make this option effective.  See
+<B>-fprofile-arcs</B> for details.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fstrict-aliasing</B><DD>
+<A NAME="ixAPH"></A>
+Allows the compiler to assume the strictest aliasing rules applicable to
+the language being compiled.  For C (and C<FONT SIZE="-2">++</FONT>), this activates
+optimizations based on the type of expressions.  In particular, an
+object of one type is assumed never to reside at the same address as an
+object of a different type, unless the types are almost the same.  For
+example, an <TT>&quot;unsigned int&quot;</TT> can alias an <TT>&quot;int&quot;</TT>, but not a
+<TT>&quot;void*&quot;</TT> or a <TT>&quot;double&quot;</TT>.  A character type may alias any other
+type.
+
+
+<P>
+
+
+Pay special attention to code like this:
+
+
+<P>
+
+
+
+
+<PRE>
+        union a_union {
+          int i;
+          double d;
+        };
+
+</PRE>
+
+
+
+
+<P>
+
+
+
+
+<PRE>
+        int f() {
+          a_union t;
+          t.d = 3.0;
+          return t.i;
+        }
+
+</PRE>
+
+
+
+
+<P>
+
+
+The practice of reading from a different union member than the one most
+recently written to (called ``type-punning'') is common.  Even with
+<B>-fstrict-aliasing</B>, type-punning is allowed, provided the memory
+is accessed through the union type.  So, the code above will work as
+expected.  However, this code might not:
+
+
+<P>
+
+
+
+
+<PRE>
+        int f() {
+          a_union t;
+          int* ip;
+          t.d = 3.0;
+          ip = &amp;t.i;
+          return *ip;
+        }
+
+</PRE>
+
+
+
+
+<P>
+
+
+Every language that wishes to perform language-specific alias analysis
+should define a function that computes, given an <TT>&quot;tree&quot;</TT>
+node, an alias set for the node.  Nodes in different alias sets are not
+allowed to alias.  For an example, see the C front-end function
+<TT>&quot;c_get_alias_set&quot;</TT>.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-falign-functions</B><DD>
+<A NAME="ixAPI"></A>
+
+<DT><B>-falign-functions=</B><I>n</I><DD>
+<A NAME="ixAPJ"></A>
+
+Align the start of functions to the next power-of-two greater than
+<I>n</I>, skipping up to <I>n</I> bytes.  For instance,
+<B>-falign-functions=32</B> aligns functions to the next 32-byte
+boundary, but <B>-falign-functions=24</B> would align to the next
+32-byte boundary only if this can be done by skipping 23 bytes or less.
+
+
+<P>
+
+
+<B>-fno-align-functions</B> and <B>-falign-functions=1</B> are
+equivalent and mean that functions will not be aligned.
+
+
+<P>
+
+
+Some assemblers only support this flag when <I>n</I> is a power of two;
+in that case, it is rounded up.
+
+
+<P>
+
+
+If <I>n</I> is not specified or is zero, use a machine-dependent default.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>.
+<DT><B>-falign-labels</B><DD>
+<A NAME="ixAPK"></A>
+
+<DT><B>-falign-labels=</B><I>n</I><DD>
+<A NAME="ixAPL"></A>
+
+Align all branch targets to a power-of-two boundary, skipping up to
+<I>n</I> bytes like <B>-falign-functions</B>.  This option can easily
+make code slower, because it must insert dummy operations for when the
+branch target is reached in the usual flow of the code.
+
+
+<P>
+
+
+<B>-fno-align-labels</B> and <B>-falign-labels=1</B> are
+equivalent and mean that labels will not be aligned.
+
+
+<P>
+
+
+If <B>-falign-loops</B> or <B>-falign-jumps</B> are applicable and
+are greater than this value, then their values are used instead.
+
+
+<P>
+
+
+If <I>n</I> is not specified or is zero, use a machine-dependent default
+which is very likely to be <B>1</B>, meaning no alignment.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>.
+<DT><B>-falign-loops</B><DD>
+<A NAME="ixAPM"></A>
+
+<DT><B>-falign-loops=</B><I>n</I><DD>
+<A NAME="ixAPN"></A>
+
+Align loops to a power-of-two boundary, skipping up to <I>n</I> bytes
+like <B>-falign-functions</B>.  The hope is that the loop will be
+executed many times, which will make up for any execution of the dummy
+operations.
+
+
+<P>
+
+
+<B>-fno-align-loops</B> and <B>-falign-loops=1</B> are
+equivalent and mean that loops will not be aligned.
+
+
+<P>
+
+
+If <I>n</I> is not specified or is zero, use a machine-dependent default.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>.
+<DT><B>-falign-jumps</B><DD>
+<A NAME="ixAPO"></A>
+
+<DT><B>-falign-jumps=</B><I>n</I><DD>
+<A NAME="ixAPP"></A>
+
+Align branch targets to a power-of-two boundary, for branch targets
+where the targets can only be reached by jumping, skipping up to <I>n</I>
+bytes like <B>-falign-functions</B>.  In this case, no dummy operations
+need be executed.
+
+
+<P>
+
+
+<B>-fno-align-jumps</B> and <B>-falign-jumps=1</B> are
+equivalent and mean that loops will not be aligned.
+
+
+<P>
+
+
+If <I>n</I> is not specified or is zero, use a machine-dependent default.
+
+
+<P>
+
+
+Enabled at levels <B>-O2</B>, <B>-O3</B>.
+<DT><B>-frename-registers</B><DD>
+<A NAME="ixAPQ"></A>
+Attempt to avoid false dependencies in scheduled code by making use
+of registers left over after register allocation.  This optimization
+will most benefit processors with lots of registers.  It can, however,
+make debugging impossible, since variables will no longer stay in
+a ``home register''.
+<DT><B>-fweb</B><DD>
+<A NAME="ixAPR"></A>
+Constructs webs as commonly used for register allocation purposes and assign
+each web individual pseudo register.  This allows the register allocation pass
+to operate on pseudos directly, but also strengthens several other optimization
+passes, such as <FONT SIZE="-1">CSE</FONT>, loop optimizer and trivial dead code remover.  It can,
+however, make debugging impossible, since variables will no longer stay in a
+``home register''.
+
+
+<P>
+
+
+Enabled at levels <B>-O3</B>.
+<DT><B>-fno-cprop-registers</B><DD>
+<A NAME="ixAPS"></A>
+After register allocation and post-register allocation instruction splitting,
+we perform a copy-propagation pass to try to reduce scheduling dependencies
+and occasionally eliminate the copy.
+
+
+<P>
+
+
+Disabled at levels <B>-O</B>, <B>-O2</B>, <B>-O3</B>, <B>-Os</B>.
+<DT><B>-fprofile-generate</B><DD>
+<A NAME="ixAPT"></A>
+Enable options usually used for instrumenting application to produce
+profile useful for later recompilation with profile feedback based
+optimization.  You must use <TT>&quot;-fprofile-generate&quot;</TT> both when
+compiling and when linking your program.
+
+
+<P>
+
+
+The following options are enabled: <TT>&quot;-fprofile-arcs&quot;</TT>, <TT>&quot;-fprofile-values&quot;</TT>, <TT>&quot;-fvpt&quot;</TT>.
+<DT><B>-fprofile-use</B><DD>
+<A NAME="ixAPU"></A>
+Enable profile feedback directed optimizations, and optimizations
+generally profitable only with profile feedback available.
+
+
+<P>
+
+
+The following options are enabled: <TT>&quot;-fbranch-probabilities&quot;</TT>,
+<TT>&quot;-fvpt&quot;</TT>, <TT>&quot;-funroll-loops&quot;</TT>, <TT>&quot;-fpeel-loops&quot;</TT>, <TT>&quot;-ftracer&quot;</TT>.
+</DL>
+<P>
+
+The following options control compiler behavior regarding floating
+point arithmetic.  These options trade off between speed and
+correctness.  All must be specifically enabled.
+<DL COMPACT>
+<DT><B>-ffloat-store</B><DD>
+<A NAME="ixAPV"></A>
+Do not store floating point variables in registers, and inhibit other
+options that might change whether a floating point value is taken from a
+register or memory.
+
+
+<P>
+
+
+This option prevents undesirable excess precision on machines such as
+the 68000 where the floating registers (of the 68881) keep more
+precision than a <TT>&quot;double&quot;</TT> is supposed to have.  Similarly for the
+x86 architecture.  For most programs, the excess precision does only
+good, but a few programs rely on the precise definition of <FONT SIZE="-1">IEEE</FONT> floating
+point.  Use <B>-ffloat-store</B> for such programs, after modifying
+them to store all pertinent intermediate computations into variables.
+<DT><B>-ffast-math</B><DD>
+<A NAME="ixAPW"></A>
+Sets <B>-fno-math-errno</B>, <B>-funsafe-math-optimizations</B>, <B>-fno-trapping-math</B>, <B>-ffinite-math-only</B>,
+<B>-fno-rounding-math</B> and <B>-fno-signaling-nans</B>.
+
+
+<P>
+
+
+This option causes the preprocessor macro <TT>&quot;__FAST_MATH__&quot;</TT> to be defined.
+
+
+<P>
+
+
+This option should never be turned on by any <B>-O</B> option since
+it can result in incorrect output for programs which depend on
+an exact implementation of <FONT SIZE="-1">IEEE</FONT> or <FONT SIZE="-1">ISO</FONT> rules/specifications for
+math functions.
+<DT><B>-fno-math-errno</B><DD>
+<A NAME="ixAPX"></A>
+Do not set <FONT SIZE="-1">ERRNO</FONT> after calling math functions that are executed
+with a single instruction, e.g., sqrt.  A program that relies on
+<FONT SIZE="-1">IEEE</FONT> exceptions for math error handling may want to use this flag
+for speed while maintaining <FONT SIZE="-1">IEEE</FONT> arithmetic compatibility.
+
+
+<P>
+
+
+This option should never be turned on by any <B>-O</B> option since
+it can result in incorrect output for programs which depend on
+an exact implementation of <FONT SIZE="-1">IEEE</FONT> or <FONT SIZE="-1">ISO</FONT> rules/specifications for
+math functions.
+
+
+<P>
+
+
+The default is <B>-fmath-errno</B>.
+<DT><B>-funsafe-math-optimizations</B><DD>
+<A NAME="ixAPY"></A>
+Allow optimizations for floating-point arithmetic that (a) assume
+that arguments and results are valid and (b) may violate <FONT SIZE="-1">IEEE</FONT> or
+<FONT SIZE="-1">ANSI</FONT> standards.  When used at link-time, it may include libraries
+or startup files that change the default <FONT SIZE="-1">FPU</FONT> control word or other
+similar optimizations.
+
+
+<P>
+
+
+This option should never be turned on by any <B>-O</B> option since
+it can result in incorrect output for programs which depend on
+an exact implementation of <FONT SIZE="-1">IEEE</FONT> or <FONT SIZE="-1">ISO</FONT> rules/specifications for
+math functions.
+
+
+<P>
+
+
+The default is <B>-fno-unsafe-math-optimizations</B>.
+<DT><B>-ffinite-math-only</B><DD>
+<A NAME="ixAPZ"></A>
+Allow optimizations for floating-point arithmetic that assume
+that arguments and results are not NaNs or +-Infs.
+
+
+<P>
+
+
+This option should never be turned on by any <B>-O</B> option since
+it can result in incorrect output for programs which depend on
+an exact implementation of <FONT SIZE="-1">IEEE</FONT> or <FONT SIZE="-1">ISO</FONT> rules/specifications.
+
+
+<P>
+
+
+The default is <B>-fno-finite-math-only</B>.
+<DT><B>-fno-trapping-math</B><DD>
+<A NAME="ixAQA"></A>
+Compile code assuming that floating-point operations cannot generate
+user-visible traps.  These traps include division by zero, overflow,
+underflow, inexact result and invalid operation.  This option implies
+<B>-fno-signaling-nans</B>.  Setting this option may allow faster
+code if one relies on ``non-stop'' <FONT SIZE="-1">IEEE</FONT> arithmetic, for example.
+
+
+<P>
+
+
+This option should never be turned on by any <B>-O</B> option since
+it can result in incorrect output for programs which depend on
+an exact implementation of <FONT SIZE="-1">IEEE</FONT> or <FONT SIZE="-1">ISO</FONT> rules/specifications for
+math functions.
+
+
+<P>
+
+
+The default is <B>-ftrapping-math</B>.
+<DT><B>-frounding-math</B><DD>
+<A NAME="ixAQB"></A>
+Disable transformations and optimizations that assume default floating
+point rounding behavior.  This is round-to-zero for all floating point
+to integer conversions, and round-to-nearest for all other arithmetic
+truncations.  This option should be specified for programs that change
+the <FONT SIZE="-1">FP</FONT> rounding mode dynamically, or that may be executed with a
+non-default rounding mode.  This option disables constant folding of
+floating point expressions at compile-time (which may be affected by
+rounding mode) and arithmetic transformations that are unsafe in the
+presence of sign-dependent rounding modes.
+
+
+<P>
+
+
+The default is <B>-fno-rounding-math</B>.
+
+
+<P>
+
+
+This option is experimental and does not currently guarantee to
+disable all <FONT SIZE="-1">GCC</FONT> optimizations that are affected by rounding mode.
+Future versions of <FONT SIZE="-1">GCC</FONT> may provide finer control of this setting
+using C99's <TT>&quot;FENV_ACCESS&quot;</TT> pragma.  This command line option
+will be used to specify the default state for <TT>&quot;FENV_ACCESS&quot;</TT>.
+<DT><B>-fsignaling-nans</B><DD>
+<A NAME="ixAQC"></A>
+Compile code assuming that <FONT SIZE="-1">IEEE</FONT> signaling NaNs may generate user-visible
+traps during floating-point operations.  Setting this option disables
+optimizations that may change the number of exceptions visible with
+signaling NaNs.  This option implies <B>-ftrapping-math</B>.
+
+
+<P>
+
+
+This option causes the preprocessor macro <TT>&quot;__SUPPORT_SNAN__&quot;</TT> to
+be defined.
+
+
+<P>
+
+
+The default is <B>-fno-signaling-nans</B>.
+
+
+<P>
+
+
+This option is experimental and does not currently guarantee to
+disable all <FONT SIZE="-1">GCC</FONT> optimizations that affect signaling NaN behavior.
+<DT><B>-fsingle-precision-constant</B><DD>
+<A NAME="ixAQD"></A>
+Treat floating point constant as single precision constant instead of
+implicitly converting it to double precision constant.
+</DL>
+<P>
+
+The following options control optimizations that may improve
+performance, but are not enabled by any <B>-O</B> options.  This
+section includes experimental options that may produce broken code.
+<DL COMPACT>
+<DT><B>-fbranch-probabilities</B><DD>
+<A NAME="ixAQE"></A>
+After running a program compiled with <B>-fprofile-arcs</B>, you can compile it a second time using
+<B>-fbranch-probabilities</B>, to improve optimizations based on
+the number of times each branch was taken.  When the program
+compiled with <B>-fprofile-arcs</B> exits it saves arc execution
+counts to a file called <I>sourcename.gcda</I> for each source
+file  The information in this data file is very dependent on the
+structure of the generated code, so you must use the same source code
+and the same optimization options for both compilations.
+
+
+<P>
+
+
+With <B>-fbranch-probabilities</B>, <FONT SIZE="-1">GCC</FONT> puts a
+<B></B><FONT SIZE="-1"><B>REG_BR_PROB</B></FONT><B></B> note on each <B></B><FONT SIZE="-1"><B>JUMP_INSN</B></FONT><B></B> and <B></B><FONT SIZE="-1"><B>CALL_INSN</B></FONT><B></B>.
+These can be used to improve optimization.  Currently, they are only
+used in one place: in <I>reorg.c</I>, instead of guessing which path a
+branch is mostly to take, the <B></B><FONT SIZE="-1"><B>REG_BR_PROB</B></FONT><B></B> values are used to
+exactly determine which path is taken more often.
+<DT><B>-fprofile-values</B><DD>
+<A NAME="ixAQF"></A>
+If combined with <B>-fprofile-arcs</B>, it adds code so that some
+data about values of expressions in the program is gathered.
+
+
+<P>
+
+
+With <B>-fbranch-probabilities</B>, it reads back the data gathered
+from profiling values of expressions and adds <B></B><FONT SIZE="-1"><B>REG_VALUE_PROFILE</B></FONT><B></B>
+notes to instructions for their later usage in optimizations.
+<DT><B>-fvpt</B><DD>
+<A NAME="ixAQG"></A>
+If combined with <B>-fprofile-arcs</B>, it instructs the compiler to add
+a code to gather information about values of expressions.
+
+
+<P>
+
+
+With <B>-fbranch-probabilities</B>, it reads back the data gathered
+and actually performs the optimizations based on them.
+Currently the optimizations include specialization of division operation
+using the knowledge about the value of the denominator.
+<DT><B>-fnew-ra</B><DD>
+<A NAME="ixAQH"></A>
+Use a graph coloring register allocator.  Currently this option is meant
+for testing, so we are interested to hear about miscompilations with
+<B>-fnew-ra</B>.
+<DT><B>-ftracer</B><DD>
+<A NAME="ixAQI"></A>
+Perform tail duplication to enlarge superblock size. This transformation
+simplifies the control flow of the function allowing other optimizations to do
+better job.
+<DT><B>-funit-at-a-time</B><DD>
+<A NAME="ixAQJ"></A>
+Parse the whole compilation unit before starting to produce code.
+This allows some extra optimizations to take place but consumes more
+memory.
+<DT><B>-funroll-loops</B><DD>
+<A NAME="ixAQK"></A>
+Unroll loops whose number of iterations can be determined at compile time or
+upon entry to the loop.  <B>-funroll-loops</B> implies
+<B>-frerun-cse-after-loop</B>.  It also turns on complete loop peeling
+(i.e. complete removal of loops with small constant number of iterations).
+This option makes code larger, and may or may not make it run faster.
+<DT><B>-funroll-all-loops</B><DD>
+<A NAME="ixAQL"></A>
+Unroll all loops, even if their number of iterations is uncertain when
+the loop is entered.  This usually makes programs run more slowly.
+<B>-funroll-all-loops</B> implies the same options as
+<B>-funroll-loops</B>.
+<DT><B>-fpeel-loops</B><DD>
+<A NAME="ixAQM"></A>
+Peels the loops for that there is enough information that they do not
+roll much (from profile feedback).  It also turns on complete loop peeling
+(i.e. complete removal of loops with small constant number of iterations).
+<DT><B>-funswitch-loops</B><DD>
+<A NAME="ixAQN"></A>
+Move branches with loop invariant conditions out of the loop, with duplicates
+of the loop on both branches (modified according to result of the condition).
+<DT><B>-fold-unroll-loops</B><DD>
+<A NAME="ixAQO"></A>
+Unroll loops whose number of iterations can be determined at compile
+time or upon entry to the loop, using the old loop unroller whose loop
+recognition is based on notes from frontend.  <B>-fold-unroll-loops</B> implies
+both <B>-fstrength-reduce</B> and <B>-frerun-cse-after-loop</B>.  This
+option makes code larger, and may or may not make it run faster.
+<DT><B>-fold-unroll-all-loops</B><DD>
+<A NAME="ixAQP"></A>
+Unroll all loops, even if their number of iterations is uncertain when
+the loop is entered. This is done using the old loop unroller whose loop
+recognition is based on notes from frontend.  This usually makes programs run more slowly.
+<B>-fold-unroll-all-loops</B> implies the same options as
+<B>-fold-unroll-loops</B>.
+<DT><B>-funswitch-loops</B><DD>
+<A NAME="ixAQQ"></A>
+Move branches with loop invariant conditions out of the loop, with duplicates
+of the loop on both branches (modified according to result of the condition).
+<DT><B>-funswitch-loops</B><DD>
+<A NAME="ixAQR"></A>
+Move branches with loop invariant conditions out of the loop, with duplicates
+of the loop on both branches (modified according to result of the condition).
+<DT><B>-fprefetch-loop-arrays</B><DD>
+<A NAME="ixAQS"></A>
+If supported by the target machine, generate instructions to prefetch
+memory to improve the performance of loops that access large arrays.
+
+
+<P>
+
+
+Disabled at level <B>-Os</B>.
+<DT><B>-ffunction-sections</B><DD>
+<A NAME="ixAQT"></A>
+
+<DT><B>-fdata-sections</B><DD>
+<A NAME="ixAQU"></A>
+
+Place each function or data item into its own section in the output
+file if the target supports arbitrary sections.  The name of the
+function or the name of the data item determines the section's name
+in the output file.
+
+
+<P>
+
+
+Use these options on systems where the linker can perform optimizations
+to improve locality of reference in the instruction space.  Most systems
+using the <FONT SIZE="-1">ELF</FONT> object format and <FONT SIZE="-1">SPARC</FONT> processors running Solaris 2 have
+linkers with such optimizations.  <FONT SIZE="-1">AIX</FONT> may have these optimizations in
+the future.
+
+
+<P>
+
+
+Only use these options when there are significant benefits from doing
+so.  When you specify these options, the assembler and linker will
+create larger object and executable files and will also be slower.
+You will not be able to use <TT>&quot;gprof&quot;</TT> on all systems if you
+specify this option and you may have problems with debugging if
+you specify both this option and <B>-g</B>.
+<DT><B>-fbranch-target-load-optimize</B><DD>
+<A NAME="ixAQV"></A>
+Perform branch target register load optimization before prologue / epilogue
+threading.
+The use of target registers can typically be exposed only during reload,
+thus hoisting loads out of loops and doing inter-block scheduling needs
+a separate optimization pass.
+<DT><B>-fbranch-target-load-optimize2</B><DD>
+<A NAME="ixAQW"></A>
+Perform branch target register load optimization after prologue / epilogue
+threading.
+<DT><B>--param</B> <I>name</I><B>=</B><I>value</I><DD>
+<A NAME="ixAQX"></A>
+In some places, <FONT SIZE="-1">GCC</FONT> uses various constants to control the amount of
+optimization that is done.  For example, <FONT SIZE="-1">GCC</FONT> will not inline functions
+that contain more that a certain number of instructions.  You can
+control some of these constants on the command-line using the
+<B>--param</B> option.
+
+
+<P>
+
+
+The names of specific parameters, and the meaning of the values, are
+tied to the internals of the compiler, and are subject to change
+without notice in future releases.
+
+
+<P>
+
+
+In each case, the <I>value</I> is an integer.  The allowable choices for
+<I>name</I> are given in the following table:
+<DL COMPACT><DT><DD>
+<DL COMPACT>
+<DT><B>max-crossjump-edges</B><DD>
+<A NAME="ixAQY"></A>
+The maximum number of incoming edges to consider for crossjumping.
+The algorithm used by <B>-fcrossjumping</B> is O(N^2) in
+the number of edges incoming to each block.  Increasing values mean
+more aggressive optimization, making the compile time increase with
+probably small improvement in executable size.
+<DT><B>max-delay-slot-insn-search</B><DD>
+<A NAME="ixAQZ"></A>
+The maximum number of instructions to consider when looking for an
+instruction to fill a delay slot.  If more than this arbitrary number of
+instructions is searched, the time savings from filling the delay slot
+will be minimal so stop searching.  Increasing values mean more
+aggressive optimization, making the compile time increase with probably
+small improvement in executable run time.
+<DT><B>max-delay-slot-live-search</B><DD>
+<A NAME="ixARA"></A>
+When trying to fill delay slots, the maximum number of instructions to
+consider when searching for a block with valid live register
+information.  Increasing this arbitrarily chosen value means more
+aggressive optimization, increasing the compile time.  This parameter
+should be removed when the delay slot code is rewritten to maintain the
+control-flow graph.
+<DT><B>max-gcse-memory</B><DD>
+<A NAME="ixARB"></A>
+The approximate maximum amount of memory that will be allocated in
+order to perform the global common subexpression elimination
+optimization.  If more memory than specified is required, the
+optimization will not be done.
+<DT><B>max-gcse-passes</B><DD>
+<A NAME="ixARC"></A>
+The maximum number of passes of <FONT SIZE="-1">GCSE</FONT> to run.
+<DT><B>max-pending-list-length</B><DD>
+<A NAME="ixARD"></A>
+The maximum number of pending dependencies scheduling will allow
+before flushing the current state and starting over.  Large functions
+with few branches or calls can create excessively large lists which
+needlessly consume memory and resources.
+<DT><B>max-inline-insns-single</B><DD>
+<A NAME="ixARE"></A>
+Several parameters control the tree inliner used in gcc.
+This number sets the maximum number of instructions (counted in <FONT SIZE="-1">GCC</FONT>'s
+internal representation) in a single function that the tree inliner
+will consider for inlining.  This only affects functions declared
+inline and methods implemented in a class declaration (C<FONT SIZE="-2">++</FONT>).
+The default value is 500.
+<DT><B>max-inline-insns-auto</B><DD>
+<A NAME="ixARF"></A>
+When you use <B>-finline-functions</B> (included in <B>-O3</B>),
+a lot of functions that would otherwise not be considered for inlining
+by the compiler will be investigated.  To those functions, a different
+(more restrictive) limit compared to functions declared inline can
+be applied.
+The default value is 100.
+<DT><B>large-function-insns</B><DD>
+<A NAME="ixARG"></A>
+The limit specifying really large functions.  For functions greater than this
+limit inlining is constrained by <B>--param large-function-growth</B>.
+This parameter is useful primarily to avoid extreme compilation time caused by non-linear
+algorithms used by the backend.
+This parameter is ignored when <B>-funit-at-a-time</B> is not used.
+The default value is 3000.
+<DT><B>large-function-growth</B><DD>
+<A NAME="ixARH"></A>
+Specifies maximal growth of large function caused by inlining in percents.
+This parameter is ignored when <B>-funit-at-a-time</B> is not used.
+The default value is 200.
+<DT><B>inline-unit-growth</B><DD>
+<A NAME="ixARI"></A>
+Specifies maximal overall growth of the compilation unit caused by inlining.
+This parameter is ignored when <B>-funit-at-a-time</B> is not used.
+The default value is 150.
+<DT><B>max-inline-insns-rtl</B><DD>
+<A NAME="ixARJ"></A>
+For languages that use the <FONT SIZE="-1">RTL</FONT> inliner (this happens at a later stage
+than tree inlining), you can set the maximum allowable size (counted
+in <FONT SIZE="-1">RTL</FONT> instructions) for the <FONT SIZE="-1">RTL</FONT> inliner with this parameter.
+The default value is 600.
+<DT><B>max-unrolled-insns</B><DD>
+<A NAME="ixARK"></A>
+The maximum number of instructions that a loop should have if that loop
+is unrolled, and if the loop is unrolled, it determines how many times
+the loop code is unrolled.
+<DT><B>max-average-unrolled-insns</B><DD>
+<A NAME="ixARL"></A>
+The maximum number of instructions biased by probabilities of their execution
+that a loop should have if that loop is unrolled, and if the loop is unrolled,
+it determines how many times the loop code is unrolled.
+<DT><B>max-unroll-times</B><DD>
+<A NAME="ixARM"></A>
+The maximum number of unrollings of a single loop.
+<DT><B>max-peeled-insns</B><DD>
+<A NAME="ixARN"></A>
+The maximum number of instructions that a loop should have if that loop
+is peeled, and if the loop is peeled, it determines how many times
+the loop code is peeled.
+<DT><B>max-peel-times</B><DD>
+<A NAME="ixARO"></A>
+The maximum number of peelings of a single loop.
+<DT><B>max-completely-peeled-insns</B><DD>
+<A NAME="ixARP"></A>
+The maximum number of insns of a completely peeled loop.
+<DT><B>max-completely-peel-times</B><DD>
+<A NAME="ixARQ"></A>
+The maximum number of iterations of a loop to be suitable for complete peeling.
+<DT><B>max-unswitch-insns</B><DD>
+<A NAME="ixARR"></A>
+The maximum number of insns of an unswitched loop.
+<DT><B>max-unswitch-level</B><DD>
+<A NAME="ixARS"></A>
+The maximum number of branches unswitched in a single loop.
+<DT><B>hot-bb-count-fraction</B><DD>
+<A NAME="ixART"></A>
+Select fraction of the maximal count of repetitions of basic block in program
+given basic block needs to have to be considered hot.
+<DT><B>hot-bb-frequency-fraction</B><DD>
+<A NAME="ixARU"></A>
+Select fraction of the maximal frequency of executions of basic block in
+function given basic block needs to have to be considered hot
+<DT><B>tracer-dynamic-coverage</B><DD>
+<A NAME="ixARV"></A>
+
+<DT><B>tracer-dynamic-coverage-feedback</B><DD>
+<A NAME="ixARW"></A>
+
+This value is used to limit superblock formation once the given percentage of
+executed instructions is covered.  This limits unnecessary code size
+expansion.
+
+
+<P>
+
+
+The <B>tracer-dynamic-coverage-feedback</B> is used only when profile
+feedback is available.  The real profiles (as opposed to statically estimated
+ones) are much less balanced allowing the threshold to be larger value.
+<DT><B>tracer-max-code-growth</B><DD>
+<A NAME="ixARX"></A>
+Stop tail duplication once code growth has reached given percentage.  This is
+rather hokey argument, as most of the duplicates will be eliminated later in
+cross jumping, so it may be set to much higher values than is the desired code
+growth.
+<DT><B>tracer-min-branch-ratio</B><DD>
+<A NAME="ixARY"></A>
+Stop reverse growth when the reverse probability of best edge is less than this
+threshold (in percent).
+<DT><B>tracer-min-branch-ratio</B><DD>
+<A NAME="ixARZ"></A>
+
+<DT><B>tracer-min-branch-ratio-feedback</B><DD>
+<A NAME="ixASA"></A>
+
+Stop forward growth if the best edge do have probability lower than this
+threshold.
+
+
+<P>
+
+
+Similarly to <B>tracer-dynamic-coverage</B> two values are present, one for
+compilation for profile feedback and one for compilation without.  The value
+for compilation with profile feedback needs to be more conservative (higher) in
+order to make tracer effective.
+<DT><B>max-cse-path-length</B><DD>
+<A NAME="ixASB"></A>
+Maximum number of basic blocks on path that cse considers.
+<DT><B>max-last-value-rtl</B><DD>
+<A NAME="ixASC"></A>
+The maximum size measured as number of RTLs that can be recorded in an
+expression in combiner for a pseudo register as last known value of that
+register.  The default is 10000.
+<DT><B>ggc-min-expand</B><DD>
+<A NAME="ixASD"></A>
+<FONT SIZE="-1">GCC</FONT> uses a garbage collector to manage its own memory allocation.  This
+parameter specifies the minimum percentage by which the garbage
+collector's heap should be allowed to expand between collections.
+Tuning this may improve compilation speed; it has no effect on code
+generation.
+
+
+<P>
+
+
+The default is 30% + 70% * (<FONT SIZE="-1">RAM/1GB</FONT>) with an upper bound of 100% when
+<FONT SIZE="-1">RAM</FONT> &gt;= 1GB.  If <TT>&quot;getrlimit&quot;</TT> is available, the notion of ``<FONT SIZE="-1">RAM</FONT>'' is
+the smallest of actual <FONT SIZE="-1">RAM</FONT>, <FONT SIZE="-1">RLIMIT_RSS</FONT>, <FONT SIZE="-1">RLIMIT_DATA</FONT> and <FONT SIZE="-1">RLIMIT_AS</FONT>.  If
+<FONT SIZE="-1">GCC</FONT> is not able to calculate <FONT SIZE="-1">RAM</FONT> on a particular platform, the lower
+bound of 30% is used.  Setting this parameter and
+<B>ggc-min-heapsize</B> to zero causes a full collection to occur at
+every opportunity.  This is extremely slow, but can be useful for
+debugging.
+<DT><B>ggc-min-heapsize</B><DD>
+<A NAME="ixASE"></A>
+Minimum size of the garbage collector's heap before it begins bothering
+to collect garbage.  The first collection occurs after the heap expands
+by <B>ggc-min-expand</B>% beyond <B>ggc-min-heapsize</B>.  Again,
+tuning this may improve compilation speed, and has no effect on code
+generation.
+
+
+<P>
+
+
+The default is <FONT SIZE="-1">RAM/8</FONT>, with a lower bound of 4096 (four megabytes) and an
+upper bound of 131072 (128 megabytes).  If <TT>&quot;getrlimit&quot;</TT> is
+available, the notion of ``<FONT SIZE="-1">RAM</FONT>'' is the smallest of actual <FONT SIZE="-1">RAM</FONT>,
+<FONT SIZE="-1">RLIMIT_RSS</FONT>, <FONT SIZE="-1">RLIMIT_DATA</FONT> and <FONT SIZE="-1">RLIMIT_AS</FONT>.  If <FONT SIZE="-1">GCC</FONT> is not able to calculate
+<FONT SIZE="-1">RAM</FONT> on a particular platform, the lower bound is used.  Setting this
+parameter very large effectively disables garbage collection.  Setting
+this parameter and <B>ggc-min-expand</B> to zero causes a full
+collection to occur at every opportunity.
+<DT><B>max-reload-search-insns</B><DD>
+<A NAME="ixASF"></A>
+The maximum number of instruction reload should look backward for equivalent
+register.  Increasing values mean more aggressive optimization, making the
+compile time increase with probably slightly better performance.  The default
+value is 100.
+<DT><B>max-cselib-memory-location</B><DD>
+<A NAME="ixASG"></A>
+The maximum number of memory locations cselib should take into acount.
+Increasing values mean more aggressive optimization, making the compile time
+increase with probably slightly better performance.  The default value is 500.
+<DT><B>reorder-blocks-duplicate</B><DD>
+<A NAME="ixASH"></A>
+
+<DT><B>reorder-blocks-duplicate-feedback</B><DD>
+<A NAME="ixASI"></A>
+
+Used by basic block reordering pass to decide whether to use unconditional
+branch or duplicate the code on its destination.  Code is duplicated when its
+estimated size is smaller than this value multiplied by the estimated size of
+unconditional jump in the hot spots of the program.
+
+
+<P>
+
+
+The <B>reorder-block-duplicate-feedback</B> is used only when profile
+feedback is available and may be set to higher values than
+<B>reorder-block-duplicate</B> since information about the hot spots is more
+accurate.
+</DL>
+</DL>
+
+<DL COMPACT><DT><DD>
+</DL>
+
+</DL>
+</BODY>
+</HTML>

@@ -1,0 +1,20 @@
+<B>Directiva de preprocesador: <I>#include</I></B>
+<BR><BR>
+Incluye el código de otro archivo.
+<BR><BR>
+Utilización: <BR>
+<UL>
+<LI><I>#include "nombre_archivo.h"</I></LI>
+<LI><I>#include &lt;nombre_archivo.h&gt;</I></LI>
+</UL>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Indica al preprocesador del compilador que debe reemplazar esa linea por el contenido del archivo indicado por <I>nombre_archivo</I>. Si el nombre del archivo se encuentra entre comillas, el compilador buscará dicho archivo en la mimsa carpeta que el fuente que contiene la directiva <I>#include</I>, y si no lo encuentra lo buscará luego entre las cabeceras estándar del sistema. Si el nombre del archivo está entre signos menor y mayor, el compilador buscará el archivo directamente entre las cabeceras estándar del sistema. 
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; #include "miClase.h"<BR>
+&nbsp;&nbsp;&nbsp; #include &lt;iostream&gt;<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:preprocessor.html">Directivas de Preprocesador</A>.
+</UL>

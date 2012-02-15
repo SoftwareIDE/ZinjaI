@@ -1,0 +1,21 @@
+GPP=g++
+
+all: ../updatem.bin ../runner.bin ../graphviz/draw.bin ../graphviz/viewer.bin ../zinjai
+
+clean:
+	rm -f ../updatem.bin ../runner.bin ../graphviz/draw.bin ../graphviz/viewer.bin ../zinjai
+
+../runner.bin: runner.cpp
+	${GPP} -O2 runner.cpp -o $@
+
+../updatem.bin: updatem.cpp zockets.cpp zockets.h
+	${GPP} -O2 updatem.cpp zockets.cpp -o $@
+
+../graphviz/viewer.bin: viewer.cpp
+	${GPP} -Dcimg_use_png viewer.cpp -o $@ -lpthread -lX11 -O2 -lpng -fpermissive
+
+../graphviz/draw.bin: draw.cpp
+	${GPP} draw.cpp -o $@
+
+../zinjai: launcher.cpp
+	${GPP} launcher.cpp -O2 -o $@

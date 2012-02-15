@@ -1,0 +1,96 @@
+
+<GL/glu.h>
+
+	GLU_AUTO_LOAD_MATRIX
+	GLU_BEGIN
+	GLU_CCW
+	GLU_CULLING
+	GLU_CW
+	GLU_DISPLAY_MODE
+	GLU_EDGE_FLAG
+	GLU_END
+	GLU_ERROR
+	GLU_EXTERIOR
+	GLU_FILL
+	GLU_FLAT
+	GLU_INSIDE
+	GLU_INTERIOR
+	GLU_LINE
+	GLU_MAP1_TRIM_2
+	GLU_MAP1_TRIM_3
+	GLU_NONE
+	GLU_OUTSIDE
+	GLU_POINT
+	GLU_SAMPLING_TOLERANCE
+	GLU_SILHOUETTE
+	GLU_SMOOTH
+	GLU_UNKNOWN
+	GLU_VERTEX
+	GLUnurbsObj* gluNewNurbsRenderer(void void)
+	GLUquadricObj* gluNewQuadric(void void)
+	GLUtriangulatorObj *gluNewTess(void void)
+	GL_ALPHA
+	GL_BITMAP
+	GL_BLUE
+	GL_BYTE
+	GL_COLOR_INDEX
+	GL_DEPTH_COMPONENT
+	GL_FLOAT
+	GL_GREEN
+	GL_INT
+	GL_LUMINANCE
+	GL_LUMINANCE_ALPHA
+	GL_MAP1_COLOR_4
+	GL_MAP2_VERTEX_3
+	GL_MAP2_VERTEX_4
+	GL_RED
+	GL_RGB
+	GL_RGBA
+	GL_SHORT
+	GL_STENCIL_INDEX
+	GL_TEXTURE_1D
+	GL_TEXTURE_2D
+	GL_UNSIGNED_BYTE
+	GL_UNSIGNED_INT
+	GL_UNSIGNED_SHORT
+	and GLU_AUTO_LOAD_MATRIX
+	const GLubyte* gluErrorString(GLenum errorCode)
+	int gluBuild1DMipmaps(GLenum target, GLint components, GLint width, GLenum format, GLenum type, const void *data)
+	int gluBuild2DMipmaps(GLenum target, GLint components, GLint width, GLint height, GLenum format, GLenum type, const void *data)
+	int gluProject(GLdouble objx, GLdouble objy, GLdouble objz, const GLdouble modelMatrix[16], const GLdouble projMatrix[16], const GLint viewport[4], GLdouble *winx, GLdouble *winy, GLdouble *winz)
+	int gluScaleImage(GLenum format, GLint widthin, GLint heightin, GLenum typein, const void *datain, GLint widthout, GLint heightout, GLenum typeout, void *dataout)
+	int gluUnProject(GLdouble winx, GLdouble winy, GLdouble winz, const GLdouble modelMatrix[16], const GLdouble projMatrix[16], const GLint viewport[4], GLdouble *objx, GLdouble *objy, GLdouble *objz)
+	void gluBeginCurve(GLUnurbsObj *nobj)
+	void gluBeginPolygon(GLUtriangulatorObj *tobj)
+	void gluBeginSurface(GLUnurbsObj *nobj)
+	void gluBeginTrim(GLUnurbsObj *nobj)
+	void gluCylinder(GLUquadricObj *qobj, GLdouble baseRadius, GLdouble topRadius, GLdouble height, GLint slices, GLint stacks)
+	void gluDeleteNurbsRenderer(GLUnurbsObj *nobj)
+	void gluDeleteQuadric(GLUquadricObj *state)
+	void gluDeleteTess(GLUtriangulatorObj *tobj)
+	void gluDisk(GLUquadricObj *qobj, GLdouble innerRadius, GLdouble outerRadius, GLint slices, GLint loops)
+	void gluEndCurve(GLUnurbsObj *nobj)
+	void gluEndPolygon(GLUtriangulatorObj *tobj)
+	void gluEndSurface(GLUnurbsObj *nobj)
+	void gluEndTrim(GLUnurbsObj *nobj)
+	void gluGetNurbsProperty(GLUnurbsObj *nobj, GLenum property, GLfloat *value)
+	void gluLoadSamplingMatrices(GLUnurbsObj *nobj, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4])
+	void gluLookAt(GLdouble eyex, GLdouble eyey, GLdouble eyez, GLdouble centerx, GLdouble centery, GLdouble centerz, GLdouble upx, GLdouble upy, GLdouble upz)
+	void gluNextContour(GLUtriangulatorObj *tobj, GLenum type)
+	void gluNurbsCallback(GLUnurbsObj *nobj, GLenum which, void (*fn)() )
+	void gluNurbsCurve(GLUnurbsObj *nobj, GLint nknots, GLfloat *knot, GLint stride, GLfloat *ctlarray, GLint order, GLenum type)
+	void gluNurbsProperty(GLUnurbsObj *nobj, GLenum property, GLfloat value)
+	void gluNurbsSurface(GLUnurbsObj *nobj, GLint sknot_count, GLfloat *sknot, GLint tknot_count, GLfloat *tknot, GLint s_stride, GLint t_stride, GLfloat *ctlarray, GLint sorder, GLint torder, GLenum type)
+	void gluOrtho2D(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top)
+	void gluPartialDisk(GLUquadricObj *qobj, GLdouble innerRadius, GLdouble outerRadius, GLint slices, GLint loops, GLdouble startAngle, GLdouble sweepAngle)
+	void gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
+	void gluPickMatrix(GLdouble x, GLdouble y, GLdouble width, GLdouble height, GLint viewport[4])
+	void gluPwlCurve(GLUnurbsObj *nobj, GLint count, GLfloat *array, GLint stride, GLenum type)
+	void gluQuadricCallback(GLUquadricObj *qobj, GLenum which, void (*fn)() )
+	void gluQuadricDrawStyle(GLUquadricObj *quadObject, GLenum drawStyle)
+	void gluQuadricNormals(GLUquadricObj *quadObject, GLenum normals)
+	void gluQuadricOrientation(GLUquadricObj *quadObject, GLenum orientation)
+	void gluQuadricTexture(GLUquadricObj *quadObject, GLboolean textureCoords)
+	void gluSphere(GLUquadricObj *qobj, GLdouble radius, GLint slices, GLint stacks)
+	void gluTessCallback(GLUtriangulatorObj *tobj, GLenum which, void (*fn)() )
+	void gluTessVertex(GLUtriangulatorObj *tobj, GLdouble v[3], void *data)

@@ -1,0 +1,16 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Estructura repetitiva: <I>for</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Esta estructura permite repetir un conjunto de acciones mientras se cumpla una condición, pero agregando también algún tipo de inicialización y de actualización, generalmente para la variable de control de la condición de salida. Es decir, permite definir una inicialización que se ejecuta antes de la primera iteración, una condición para que el bucle continúe, y una actualización que se ejecuta luego de cada iteración. Esta estructura es ideal cuando se conoce de antemano la cantidad de iteraciones a realizar (por ejemplo, para recorrer alguna estructura de datos o contenedor lineal como un arreglo).<BR>
+&nbsp;&nbsp;&nbsp; El comienzo del ciclo se indica con la palabra clave <I>for</I>, a continuación se colocan entre paréntesis y separadas por punto y coma (;) las tres partes que controlan la repetición: incialización, condición (el bucle continúa mientras sea verdadera) y actualización. Seguidamente va el bloque de instrucciones a ejecutar en cada iteración. La inicialización puede incluir la declaración de variables (cuyo ámbito será solo el interior del bucle). Si la condición es falsa al comenzar el bucle, las acciones que contiene no se ejecutarán nunca. La actualización se ejecuta siempre al final de bucle, antes de volver a evaluar la condición.<BR>
+<BR><BR>
+Ejemplo: Calcular un promedio de N enteros de un arreglo A<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; float sum = 0;<BR>
+&nbsp;&nbsp;&nbsp; for (int i=0;i&lt;N;i++) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sum+=A[i];<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+&nbsp;&nbsp;&nbsp; float prom = sum/N;<BR>
+</CODE><BR>
+La incialización asigna a la variable <I>i</I>, que se utilizará como contador, cero. Luego de cada iteración, la actualización incrementa el contador. El bucle se repetirá hasta que <I>i</I> sea igual a <I>N</I> (cuando deja de cumplirse la condición <I>i&lt;N</I>). Es decir, las acciones del bucle se ejecutarán con siguientes valores para <I>i</I>: <I>0,1,2,...,N-1</I>. Fuera del bucle la variable <I>i</I> ya no existe (si se declara antes del <I>for</I> y no en la inicialización, al salir contiene el valor <I>N</I>).
+</BODY></HTML>

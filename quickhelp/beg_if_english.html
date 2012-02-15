@@ -1,0 +1,29 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Conditional structure: <I>if...else</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; This structure lets you run a certain block of code once only if a given condition is true. It also lets you define an alternative block of code to run once only if the condition is false. It means that you set a logic expression (<I>bool</I>), and if this expression results true, the first code is executed and the second (if exists) is skipped; but if the expression is false, the second code is executed and the firt one is skipped. To use this estructure, you must write the keyword <I>if</I> followed by the condition surrounded by parenthesis. After that goes the code to run when its true, and optionally the keyword <I>else</I> and the code to run when its false.<BR>
+<BR><BR>
+Example 1: Calculating the absolute value of <I>n</I>:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int n;<BR>
+&nbsp;&nbsp;&nbsp; cin&gt;&gt;n;<BR>
+&nbsp;&nbsp;&nbsp; if (n&lt;0) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; n=-n;<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Abs is: "&lt;&lt;n&lt;&lt;endl;<BR>
+</CODE><BR>
+When you apply abs to a negative number (condition is true), it becames its positive opposite (<I>n=-n</I>). But if the number was positive (condition was false), it remains unchanged (there's no <I>else</I> clause).<BR>
+<BR><BR>
+Example 2: Finding out if a number is odd or even:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int n;<BR>
+&nbsp;&nbsp;&nbsp; cin&gt;&gt;n;<BR>
+&nbsp;&nbsp;&nbsp; if (n%2==0) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"The number is even."&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; } else {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"The number is odd."&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+</CODE><BR>
+The condition asks if the reminder of dividing the number by 2 is 0. The program while evaluate that condition and display only one of the two messages according to its result.<BR>
+<BR>
+</BODY></HTML>

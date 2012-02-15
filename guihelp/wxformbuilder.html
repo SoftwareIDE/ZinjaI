@@ -1,0 +1,17 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Diseño de Interfases con wxFormBuilder</B><BR><BR>
+Esta sección de la ayuda aún se encuentra incompleta. A continuación se describen rápidamente sólo los aspectos básicos de esta funcionalidad.<BR><BR>
+&nbsp;&nbsp;&nbsp; <I>wxFormBuilder</I> es una herramienta que permite diseñar de forma rápida y visual interfases basadas en la biblioteca wxWidgets. Esta herramienta puede generar dos tipos de archivos útiles desde <I>ZinjaI</I>: archivos de recursos xml y codigo fuente c++. Los archivos de recursos incluyen la definición de todos los componentes visuales; para utilizarlos el usuario debe llamar a funciones de wxWidgets que permiten leerlos, crearlos, y obtener punteros a los mismos.<BR>
+<BR>
+<CENTER><IMG src="wxformbuilder.png"></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp;El código fuente que genera corresponde a clases que representan a las ventanas y en sus constructores incluyen el código necesario para crear todos los componentes visuales, los cuales se referenciarán más tarde median punteros colocados como atributos en estas clases. Incluyen como métodos virtuales los correspondientes a los eventos de la ventana y sus controles. De esta forma, el programador sólo debe heredar de estas clases y sobreescribir sólamente los métodos que desee. Cuando algo se modifica en el proyecto <I>wxFormBuilder</I>, al compilar <I>ZinjaI</I> lo invocará para regenerar automáticamente estas clases bases, por lo que el usuario no debe modificarlas manualmente, sino sólo utilizarlas para heredar sus propias clases.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;Entonces, cuando un proyecto <I>ZinjaI</I> se configura para utilizar <I>wxFormBuilder</I> (desde el menú <I>Herramientas</I>), se añade un paso adicional a la compilación (regenerar los fuentes de las clases bases si el diseño de la interfaz fue modificado) y se asocia dicha herramienta a los archivos de extensión <I>fbp</I> (se abre automáticamente el editor al hacer doble click sobre los mismos en el árbol de archivos).<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;De esta forma, el diseño de una aplicación visual se simplifica considerablemente. El programador debe incluir un nuevo proyecto <I>wxFormBuilder</I> en el proyecto <I>ZinjaI</I> (desde el menú </I>Herramientas</I>, o utilizando la plantilla de proyecto correspondiente). Luego debe diseñar su interfaz con <I>wxFormBuilder</I>, para heredar las clases para sus ventanas y sobreescribir el comportamiento de los métodos. Para generar las clases heredadas puede usar la opción correspondiente del menú <I>Herramientas</I> de <I>ZinjaI</I> y simplificar aún más el proceso.<BR>
+<BR>
+<B>Importante</B>: <I>wxFormBuilder</I> no se incluye en el instalador de <I>ZinjaI</I>, sino que debe instalarse por separado. Puede obtenerse en <A href="http://wxformbuilder.org/">wxformbuilder.org</A>. Si la instalación del mismo no es estándar, debe configurar el comando para invocarlo (incluyendo el path completo de ser necesario) en la pestaña <I>Rutas 2</I> del diálogo de <I>Preferencias</I>.<BR>
+<BR>
+</BODY></HTML>

@@ -1,0 +1,151 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<TABLE WIDTH="100%"><TR><TD>
+<B>Parte 1: Paso 1</B>
+</TD><TD ALIGN="right">
+<A href="t0200.html">0</A>&nbsp;
+<A href="t0201.html">1</A>&nbsp;
+<A href="t0202.html">2</A>&nbsp;
+<A href="t0203.html">3</A>&nbsp;
+<A href="t0204.html">4</A>&nbsp;
+<A href="t0205.html">5</A>&nbsp;
+<A href="t0206.html">6</A>&nbsp;
+<A href="t0207.html">7</A>&nbsp;
+<A href="t0208.html">8</A>&nbsp;
+<A href="t0209.html">9</A>&nbsp;
+<A href="t0210.html">10</A>
+</TD></TR></TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;En primer lugar cree un nuevo programa en blanco (o si utilizó una plantilla presione <I>Ctrl+A</I> para seleccionar todo el contenido y luego <I>Supr</I> para eliminarlo). <BR>
+<BR>
+&nbsp;&nbsp;&nbsp; A continuación copie y pegue el siguiente código. Para copiar seleccionelo y utilize el botón correspondiente de la barra de herramientas que se encuentra en la parte superior de esta ventana. Para pegar puede seleccionar la opción <I>Pegar</I> del menú <I>Editar</I> o presionar <I>Ctrl+V</I>. Observe que a pesar de que el texto copiado no está correctamente indentado (esto es, no tiene los margenes de acuerdo al anidamiento de los bloques de código), <I>ZinjaI</I> reacomoda el código al pegarlo generando las tabulaciones correspondientes. (Si necesita hacer esto con un bloque de código ya ingresado puede seleccionarlo y presionar <I>Ctrl+I</I>).<BR><BR>
+<CENTER><TABLE bgcolor="#FFFFEE" border=1><TR><TD><CODE>
+#include &lt;iostream&gt;<BR>
+using namespace std;<BR>
+&nbsp;<BR>
+#define MAX_ALUMNOS 100<BR>
+#define MAX_NOTAS 30<BR>
+&nbsp;<BR>
+class Curso {<BR>
+&nbsp;<BR>
+string nombres[MAX_ALUMNOS];<BR>
+int notas[MAX_ALUMNOS,MAX_NOTAS];<BR>
+int cant_notas[MAX_ALUMNOS];<BR>
+float promedios[MAX_ALUMNOS];<BR>
+int cant_alumnos;<BR>
+&nbsp;<BR>
+public:<BR>
+&nbsp;<BR>
+Curso() {<BR>
+cant_alumnos = 0;<BR>
+}<BR>
+&nbsp;<BR>
+void CargarDato(string nombre, int nota) {<BR>
+int i;<BR>
+for (i=0; i&lt;cant_alumnos; i++) {<BR>
+if (nombres[i]==nombre) {<BR>
+notas[i,cant_notas[i]]]=nota;<BR>
+cant_notas[i]++;<BR>
+break;<BR>
+}<BR>
+}<BR>
+if (i==cant_alumnos) {<BR>
+nombres[cant_alumnos] = nombre;<BR>
+notas[cant_alumnos,0] = nota;<BR>
+cant_notas[cant_alumnos] = 1;<BR>
+cant_alumnos++;<BR>
+}<BR>
+}<BR>
+&nbsp;<BR>
+void CalcularPromedios() {<BR>
+for (int i=0; i&lt;cant_alumnos; i++) {<BR>
+float suma = 0;<BR>
+for (int j=0;j&lt;cant_notas[i];j++) {<BR>
+suma+=notas[i,j];<BR>
+}<BR>
+promedios[i]=suma/cant_notas[i];<BR>
+}<BR>
+}<BR>
+&nbsp;<BR>
+int CantidadAlumnos() {<BR>
+return cant_alumnos;<BR>
+}<BR>
+&nbsp;<BR>
+int CantidadNotas(int i) {<BR>
+return cant_notas[i];<BR>
+}<BR>
+&nbsp;<BR>
+float VerPromedio(int i) {<BR>
+return promedios[i];<BR>
+}<BR>
+&nbsp;<BR>
+string VerNombre(int i) {<BR>
+return nombres[i];<BR>
+}<BR>
+&nbsp;<BR>
+float VerNota(int i, int j) {<BR>
+return notas[i,j];<BR>
+}<BR>
+&nbsp;<BR>
+};<BR>
+&nbsp;<BR>
+void main() {<BR>
+&nbsp;<BR>
+Curso oCurso;<BR>
+&nbsp;<BR>
+string nombre;<BR>
+int nota;<BR>
+cout&lt;&lt;"Ingrese el nombre: ";<BR>
+getline(cin,nombre);<BR>
+while (nombre!="") {<BR>
+cout&lt;&lt;"Ingrese la nota: ";<BR>
+cin&gt;&gt;nota;<BR>
+cin.ignore(255,'\n');<BR>
+oCurso.CargarDato(nombre,nota);<BR>
+cout&lt;&lt;"Ingrese el nombre: ";<BR>
+getline(cin,nombre);<BR>
+}<BR>
+&nbsp;<BR>
+//oCurso.CargarDato("Torvalds, Linus", 10);<BR>
+//oCurso.CargarDato("Gates, William",7);<BR>
+//oCurso.CargarDato("Allen, Paul",8);<BR>
+//oCurso.CargarDato("Wozniack, Steve",4);<BR>
+//oCurso.CargarDato("Norton, Peter",4);<BR>
+//oCurso.CargarDato("Jobs, Steve",8);<BR>
+//oCurso.CargarDato("Stallman, Richard",10);<BR>
+//oCurso.CargarDato("Gates, William",4);<BR>
+//oCurso.CargarDato("Allen, Paul",6);<BR>
+//oCurso.CargarDato("Wozniack, Steve", 9);<BR>
+//oCurso.CargarDato("Torvalds, Linus", 9);<BR>
+//oCurso.CargarDato("Stallman, Richard",8);<BR>
+//oCurso.CargarDato("Norton, Peter",2);<BR>
+//oCurso.CargarDato("Stallman, Richard",10);<BR>
+//oCurso.CargarDato("Wozniack, Steve",10);<BR>
+//oCurso.CargarDato("Jobs, Steve",9);<BR>
+&nbsp;<BR>
+oCurso.CalcularPromedios();<BR>
+&nbsp;<BR>
+cout&lt;&lt;endl&lt;&lt;"&nbsp;&nbsp;&nbsp;&nbsp;Nombre&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Promedio"&lt;&lt;endl;<BR>
+cout&lt;&lt;setprecision(2)&lt;&lt;fixed&lt;&lt;setfill('_');<BR>
+for (int i=0;i&lt;oCurso.CantidadAlumnos();i++) {<BR>
+cout&lt;&lt;setfill(' ')&lt;&lt;right&lt;&lt;setw(3)&lt;&lt;i+1&lt;&lt;"__"<BR>
+&lt;&lt;setfill('_')&lt;&lt;left&lt;&lt;setw(20)&lt;&lt;oCurso.VerNombre(i)<BR>
+&lt;&lt;right&lt;&lt;setw(6)&lt;&lt;oCurso.VerNota(i)&lt;&lt;endl;<BR>
+}<BR>
+&nbsp;<BR>
+}
+</CODE></TD></TR></TABLE></CENTER><BR>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Puede utilizar las opciones de plegado (los + y - en el margen izquierdo que permitan ocultar o mostrar bloques de código) para visualizar rápidamente la estructura del archivo. Presione <I>Ctrl+1</I> para plegar todos los bloques más externos. De esta forma visualizará los nombres de clases y funciones (en este caso "Curso" y "main"). A continuación despliegue la clase "Curso" haciendo click en el + de su izquierda y presione <I>Ctrl+2</I> para plegar todos los bloques segundos en la jerarquía. De esta forma visualizará los nombres de los métodos de la clase. Para desplegarlos a todos juntos presione <I>Alt+2</I>.<BR>
+<BR>
+<BR>
+<CENTER><IMG src="t020101.png"></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para volver a desplegar todos los niveles y subniveles al mismo y visualizar el código completo presione <I>Alt+0</I>.<BR>
+<BR>
+<CENTER><A href="t0200.html">Volver...</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A href="t0202.html">Continuar...</A></CENTER>
+<BR><BR>
+</BODY>
+</HTML>

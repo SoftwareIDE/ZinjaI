@@ -1,0 +1,894 @@
+<HTML><HEAD><TITLE>Manpage of GCC</TITLE>
+</HEAD><BODY>
+<A NAME="lbAP"></A>
+<H2>Options Controlling the Preprocessor</H2>
+
+<A NAME="ixASJ"></A>
+These options control the C preprocessor, which is run on each C source
+file before actual compilation.
+<P>
+
+If you use the <B>-E</B> option, nothing is done except preprocessing.
+Some of these options make sense only together with <B>-E</B> because
+they cause the preprocessor output to be unsuitable for actual
+compilation.
+
+
+<P>
+
+
+<DL COMPACT><DT><DD>
+You can use <B>-Wp,</B><I>option</I> to bypass the compiler driver
+and pass <I>option</I> directly through to the preprocessor.  If
+<I>option</I> contains commas, it is split into multiple options at the
+commas.  However, many options are modified, translated or interpreted
+by the compiler driver before being passed to the preprocessor, and
+<B>-Wp</B> forcibly bypasses this phase.  The preprocessor's direct
+interface is undocumented and subject to change, so whenever possible
+you should avoid using <B>-Wp</B> and let the driver handle the
+options instead.
+</DL>
+
+<DL COMPACT>
+<DT><B>-Xpreprocessor</B> <I>option</I><DD>
+<A NAME="ixASK"></A>
+Pass <I>option</I> as an option to the preprocessor.  You can use this to
+supply system-specific preprocessor options which <FONT SIZE="-1">GCC</FONT> does not know how to
+recognize.
+
+
+<P>
+
+
+If you want to pass an option that takes an argument, you must use
+<B>-Xpreprocessor</B> twice, once for the option and once for the argument.
+<DT><B>-D</B> <I>name</I><DD>
+<A NAME="ixASL"></A>
+Predefine <I>name</I> as a macro, with definition <TT>1</TT>.
+<DT><B>-D</B> <I>name</I><B>=</B><I>definition</I><DD>
+<A NAME="ixASM"></A>
+Predefine <I>name</I> as a macro, with definition <I>definition</I>.
+The contents of <I>definition</I> are tokenized and processed as if
+they appeared during translation phase three in a <B>#define</B>
+directive.  In particular, the definition will be truncated by
+embedded newline characters.
+
+
+<P>
+
+
+If you are invoking the preprocessor from a shell or shell-like
+program you may need to use the shell's quoting syntax to protect
+characters such as spaces that have a meaning in the shell syntax.
+
+
+<P>
+
+
+If you wish to define a function-like macro on the command line, write
+its argument list with surrounding parentheses before the equals sign
+(if any).  Parentheses are meaningful to most shells, so you will need
+to quote the option.  With <B>sh</B> and <B>csh</B>,
+<B>-D'</B><I>name</I><B>(</B><I>args...</I><B>)=</B><I>definition</I><B>'</B> works.
+
+
+<P>
+
+
+<B>-D</B> and <B>-U</B> options are processed in the order they
+are given on the command line.  All <B>-imacros</B> <I>file</I> and
+<B>-include</B> <I>file</I> options are processed after all
+<B>-D</B> and <B>-U</B> options.
+<DT><B>-U</B> <I>name</I><DD>
+<A NAME="ixASN"></A>
+Cancel any previous definition of <I>name</I>, either built in or
+provided with a <B>-D</B> option.
+<DT><B>-undef</B><DD>
+<A NAME="ixASO"></A>
+Do not predefine any system-specific or GCC-specific macros.  The
+standard predefined macros remain defined.
+<DT><B>-I</B> <I>dir</I><DD>
+<A NAME="ixASP"></A>
+Add the directory <I>dir</I> to the list of directories to be searched
+for header files.
+Directories named by <B>-I</B> are searched before the standard
+system include directories.  If the directory <I>dir</I> is a standard
+system include directory, the option is ignored to ensure that the
+default search order for system directories and the special treatment
+of system headers are not defeated
+.
+<DT><B>-o</B> <I>file</I><DD>
+<A NAME="ixASQ"></A>
+Write output to <I>file</I>.  This is the same as specifying <I>file</I>
+as the second non-option argument to <B>cpp</B>.  <B>gcc</B> has a
+different interpretation of a second non-option argument, so you must
+use <B>-o</B> to specify the output file.
+<DT><B>-Wall</B><DD>
+<A NAME="ixASR"></A>
+Turns on all optional warnings which are desirable for normal code.
+At present this is <B>-Wcomment</B>, <B>-Wtrigraphs</B>,
+<B>-Wmultichar</B> and a warning about integer promotion causing a
+change of sign in <TT>&quot;#if&quot;</TT> expressions.  Note that many of the
+preprocessor's warnings are on by default and have no options to
+control them.
+<DT><B>-Wcomment</B><DD>
+<A NAME="ixASS"></A>
+
+<DT><B>-Wcomments</B><DD>
+<A NAME="ixAST"></A>
+
+Warn whenever a comment-start sequence <B>/*</B> appears in a <B>/*</B>
+comment, or whenever a backslash-newline appears in a <B>//</B> comment.
+(Both forms have the same effect.)
+<DT><B>-Wtrigraphs</B><DD>
+<A NAME="ixASU"></A>
+@anchor{Wtrigraphs}
+Most trigraphs in comments cannot affect the meaning of the program.
+However, a trigraph that would form an escaped newline (<B>??/</B> at
+the end of a line) can, by changing where the comment begins or ends.
+Therefore, only trigraphs that would form escaped newlines produce
+warnings inside a comment.
+
+
+<P>
+
+
+This option is implied by <B>-Wall</B>.  If <B>-Wall</B> is not
+given, this option is still enabled unless trigraphs are enabled.  To
+get trigraph conversion without warnings, but get the other
+<B>-Wall</B> warnings, use <B>-trigraphs -Wall -Wno-trigraphs</B>.
+<DT><B>-Wtraditional</B><DD>
+<A NAME="ixASV"></A>
+Warn about certain constructs that behave differently in traditional and
+<FONT SIZE="-1">ISO</FONT> C.  Also warn about <FONT SIZE="-1">ISO</FONT> C constructs that have no traditional C
+equivalent, and problematic constructs which should be avoided.
+<DT><B>-Wimport</B><DD>
+<A NAME="ixASW"></A>
+Warn the first time <B>#import</B> is used.
+<DT><B>-Wundef</B><DD>
+<A NAME="ixASX"></A>
+Warn whenever an identifier which is not a macro is encountered in an
+<B>#if</B> directive, outside of <B>defined</B>.  Such identifiers are
+replaced with zero.
+<DT><B>-Wunused-macros</B><DD>
+<A NAME="ixASY"></A>
+Warn about macros defined in the main file that are unused.  A macro
+is <I>used</I> if it is expanded or tested for existence at least once.
+The preprocessor will also warn if the macro has not been used at the
+time it is redefined or undefined.
+
+
+<P>
+
+
+Built-in macros, macros defined on the command line, and macros
+defined in include files are not warned about.
+
+
+<P>
+
+
+<B>Note:</B> If a macro is actually used, but only used in skipped
+conditional blocks, then <FONT SIZE="-1">CPP</FONT> will report it as unused.  To avoid the
+warning in such a case, you might improve the scope of the macro's
+definition by, for example, moving it into the first skipped block.
+Alternatively, you could provide a dummy use with something like:
+
+
+<P>
+
+
+
+
+<PRE>
+        #if defined the_macro_causing_the_warning
+        #endif
+
+</PRE>
+
+
+<DT><B>-Wendif-labels</B><DD>
+<A NAME="ixASZ"></A>
+Warn whenever an <B>#else</B> or an <B>#endif</B> are followed by text.
+This usually happens in code of the form
+
+
+<P>
+
+
+
+
+<PRE>
+        #if FOO
+        ...
+        #else FOO
+        ...
+        #endif FOO
+
+</PRE>
+
+
+
+
+<P>
+
+
+The second and third <TT>&quot;FOO&quot;</TT> should be in comments, but often are not
+in older programs.  This warning is on by default.
+<DT><B>-Werror</B><DD>
+<A NAME="ixATA"></A>
+Make all warnings into hard errors.  Source code which triggers warnings
+will be rejected.
+<DT><B>-Wsystem-headers</B><DD>
+<A NAME="ixATB"></A>
+Issue warnings for code in system headers.  These are normally unhelpful
+in finding bugs in your own code, therefore suppressed.  If you are
+responsible for the system library, you may want to see them.
+<DT><B>-w</B><DD>
+<A NAME="ixATC"></A>
+Suppress all warnings, including those which <FONT SIZE="-1">GNU</FONT> <FONT SIZE="-1">CPP</FONT> issues by default.
+<DT><B>-pedantic</B><DD>
+<A NAME="ixATD"></A>
+Issue all the mandatory diagnostics listed in the C standard.  Some of
+them are left out by default, since they trigger frequently on harmless
+code.
+<DT><B>-pedantic-errors</B><DD>
+<A NAME="ixATE"></A>
+Issue all the mandatory diagnostics, and make all mandatory diagnostics
+into errors.  This includes mandatory diagnostics that <FONT SIZE="-1">GCC</FONT> issues
+without <B>-pedantic</B> but treats as warnings.
+<DT><B>-M</B><DD>
+<A NAME="ixATF"></A>
+Instead of outputting the result of preprocessing, output a rule
+suitable for <B>make</B> describing the dependencies of the main
+source file.  The preprocessor outputs one <B>make</B> rule containing
+the object file name for that source file, a colon, and the names of all
+the included files, including those coming from <B>-include</B> or
+<B>-imacros</B> command line options.
+
+
+<P>
+
+
+Unless specified explicitly (with <B>-MT</B> or <B>-MQ</B>), the
+object file name consists of the basename of the source file with any
+suffix replaced with object file suffix.  If there are many included
+files then the rule is split into several lines using <B>\</B>-newline.
+The rule has no commands.
+
+
+<P>
+
+
+This option does not suppress the preprocessor's debug output, such as
+<B>-dM</B>.  To avoid mixing such debug output with the dependency
+rules you should explicitly specify the dependency output file with
+<B>-MF</B>, or use an environment variable like
+<B></B><FONT SIZE="-1"><B>DEPENDENCIES_OUTPUT</B></FONT><B></B>.  Debug output
+will still be sent to the regular output stream as normal.
+
+
+<P>
+
+
+Passing <B>-M</B> to the driver implies <B>-E</B>, and suppresses
+warnings with an implicit <B>-w</B>.
+<DT><B>-MM</B><DD>
+<A NAME="ixATG"></A>
+Like <B>-M</B> but do not mention header files that are found in
+system header directories, nor header files that are included,
+directly or indirectly, from such a header.
+
+
+<P>
+
+
+This implies that the choice of angle brackets or double quotes in an
+<B>#include</B> directive does not in itself determine whether that
+header will appear in <B>-MM</B> dependency output.  This is a
+slight change in semantics from <FONT SIZE="-1">GCC</FONT> versions 3.0 and earlier.
+
+
+<P>
+
+
+@anchor{dashMF}
+<DT><B>-MF</B> <I>file</I><DD>
+<A NAME="ixATH"></A>
+When used with <B>-M</B> or <B>-MM</B>, specifies a
+file to write the dependencies to.  If no <B>-MF</B> switch is given
+the preprocessor sends the rules to the same place it would have sent
+preprocessed output.
+
+
+<P>
+
+
+When used with the driver options <B>-MD</B> or <B>-MMD</B>,
+<B>-MF</B> overrides the default dependency output file.
+<DT><B>-MG</B><DD>
+<A NAME="ixATI"></A>
+In conjunction with an option such as <B>-M</B> requesting
+dependency generation, <B>-MG</B> assumes missing header files are
+generated files and adds them to the dependency list without raising
+an error.  The dependency filename is taken directly from the
+<TT>&quot;#include&quot;</TT> directive without prepending any path.  <B>-MG</B>
+also suppresses preprocessed output, as a missing header file renders
+this useless.
+
+
+<P>
+
+
+This feature is used in automatic updating of makefiles.
+<DT><B>-MP</B><DD>
+<A NAME="ixATJ"></A>
+This option instructs <FONT SIZE="-1">CPP</FONT> to add a phony target for each dependency
+other than the main file, causing each to depend on nothing.  These
+dummy rules work around errors <B>make</B> gives if you remove header
+files without updating the <I>Makefile</I> to match.
+
+
+<P>
+
+
+This is typical output:
+
+
+<P>
+
+
+
+
+<PRE>
+        test.o: test.c test.h
+
+</PRE>
+
+
+
+
+<P>
+
+
+
+
+<PRE>
+        test.h:
+
+</PRE>
+
+
+<DT><B>-MT</B> <I>target</I><DD>
+<A NAME="ixATK"></A>
+Change the target of the rule emitted by dependency generation.  By
+default <FONT SIZE="-1">CPP</FONT> takes the name of the main input file, including any path,
+deletes any file suffix such as <B>.c</B>, and appends the platform's
+usual object suffix.  The result is the target.
+
+
+<P>
+
+
+An <B>-MT</B> option will set the target to be exactly the string you
+specify.  If you want multiple targets, you can specify them as a single
+argument to <B>-MT</B>, or use multiple <B>-MT</B> options.
+
+
+<P>
+
+
+For example, <B>-MT&nbsp;'$(objpfx)foo.o'</B> might give
+
+
+<P>
+
+
+
+
+<PRE>
+        $(objpfx)foo.o: foo.c
+
+</PRE>
+
+
+<DT><B>-MQ</B> <I>target</I><DD>
+<A NAME="ixATL"></A>
+Same as <B>-MT</B>, but it quotes any characters which are special to
+Make.  <B>-MQ&nbsp;'$(objpfx)foo.o'</B> gives
+
+
+<P>
+
+
+
+
+<PRE>
+        $$(objpfx)foo.o: foo.c
+
+</PRE>
+
+
+
+
+<P>
+
+
+The default target is automatically quoted, as if it were given with
+<B>-MQ</B>.
+<DT><B>-MD</B><DD>
+<A NAME="ixATM"></A>
+<B>-MD</B> is equivalent to <B>-M -MF</B> <I>file</I>, except that
+<B>-E</B> is not implied.  The driver determines <I>file</I> based on
+whether an <B>-o</B> option is given.  If it is, the driver uses its
+argument but with a suffix of <I>.d</I>, otherwise it take the
+basename of the input file and applies a <I>.d</I> suffix.
+
+
+<P>
+
+
+If <B>-MD</B> is used in conjunction with <B>-E</B>, any
+<B>-o</B> switch is understood to specify the dependency output file
+(but <TT>@pxref</TT>{dashMF,,-MF}), but if used without <B>-E</B>, each <B>-o</B>
+is understood to specify a target object file.
+
+
+<P>
+
+
+Since <B>-E</B> is not implied, <B>-MD</B> can be used to generate
+a dependency output file as a side-effect of the compilation process.
+<DT><B>-MMD</B><DD>
+<A NAME="ixATN"></A>
+Like <B>-MD</B> except mention only user header files, not system
+-header files.
+<DT><B>-fpch-deps</B><DD>
+<A NAME="ixATO"></A>
+When using precompiled headers, this flag
+will cause the dependency-output flags to also list the files from the
+precompiled header's dependencies.  If not specified only the
+precompiled header would be listed and not the files that were used to
+create it because those files are not consulted when a precompiled
+header is used.
+<DT><B>-x c</B><DD>
+<A NAME="ixATP"></A>
+
+<DT><B>-x c++</B><DD>
+<A NAME="ixATQ"></A>
+<DT><B>-x objective-c</B><DD>
+<A NAME="ixATR"></A>
+<DT><B>-x assembler-with-cpp</B><DD>
+<A NAME="ixATS"></A>
+
+Specify the source language: C, C<FONT SIZE="-2">++</FONT>, Objective-C, or assembly.  This has
+nothing to do with standards conformance or extensions; it merely
+selects which base syntax to expect.  If you give none of these options,
+cpp will deduce the language from the extension of the source file:
+<B>.c</B>, <B>.cc</B>, <B>.m</B>, or <B>.S</B>.  Some other common
+extensions for C<FONT SIZE="-2">++</FONT> and assembly are also recognized.  If cpp does not
+recognize the extension, it will treat the file as C; this is the most
+generic mode.
+
+
+<P>
+
+
+<B>Note:</B> Previous versions of cpp accepted a <B>-lang</B> option
+which selected both the language and the standards conformance level.
+This option has been removed, because it conflicts with the <B>-l</B>
+option.
+<DT><B>-std=</B><I>standard</I><DD>
+<A NAME="ixATT"></A>
+
+<DT><B>-ansi</B><DD>
+<A NAME="ixATU"></A>
+
+Specify the standard to which the code should conform.  Currently <FONT SIZE="-1">CPP</FONT>
+knows about C and C<FONT SIZE="-2">++</FONT> standards; others may be added in the future.
+
+
+<P>
+
+
+<I>standard</I>
+may be one of:
+<DL COMPACT><DT><DD>
+<DL COMPACT>
+<DT>iso9899:1990<DD>
+
+
+<A NAME="ixATV"></A>
+
+<DT>c89<DD>
+
+
+<A NAME="ixATW"></A>
+
+The <FONT SIZE="-1">ISO</FONT> C standard from 1990.  <B>c89</B> is the customary shorthand for
+this version of the standard.
+
+
+<P>
+
+
+The <B>-ansi</B> option is equivalent to <B>-std=c89</B>.
+<DT>iso9899:199409<DD>
+
+
+<A NAME="ixATX"></A>
+The 1990 C standard, as amended in 1994.
+<DT>iso9899:1999<DD>
+
+
+<A NAME="ixATY"></A>
+
+<DT>c99<DD>
+
+
+<A NAME="ixATZ"></A>
+<DT>iso9899:199x<DD>
+
+
+<A NAME="ixAUA"></A>
+<DT>c9x<DD>
+
+
+<A NAME="ixAUB"></A>
+
+The revised <FONT SIZE="-1">ISO</FONT> C standard, published in December 1999.  Before
+publication, this was known as C9X.
+<DT>gnu89<DD>
+
+
+<A NAME="ixAUC"></A>
+The 1990 C standard plus <FONT SIZE="-1">GNU</FONT> extensions.  This is the default.
+<DT>gnu99<DD>
+
+
+<A NAME="ixAUD"></A>
+
+<DT>gnu9x<DD>
+
+
+<A NAME="ixAUE"></A>
+
+The 1999 C standard plus <FONT SIZE="-1">GNU</FONT> extensions.
+<DT>c++98<DD>
+
+
+<A NAME="ixAUF"></A>
+The 1998 <FONT SIZE="-1">ISO</FONT> C<FONT SIZE="-2">++</FONT> standard plus amendments.
+<DT>gnu++98<DD>
+
+
+<A NAME="ixAUG"></A>
+The same as <B>-std=c++98</B> plus <FONT SIZE="-1">GNU</FONT> extensions.  This is the
+default for C<FONT SIZE="-2">++</FONT> code.
+</DL>
+</DL>
+
+<DL COMPACT><DT><DD>
+</DL>
+
+<DT><B>-I-</B><DD>
+<A NAME="ixAUH"></A>
+Split the include path.  Any directories specified with <B>-I</B>
+options before <B>-I-</B> are searched only for headers requested with
+<TT>&quot;#include&nbsp;&quot;</TT>file<TT>&quot;&quot;</TT>; they are not searched for
+<TT>&quot;#include&nbsp;&lt;</TT>file<TT>&gt;&quot;</TT>.  If additional directories are
+specified with <B>-I</B> options after the <B>-I-</B>, those
+directories are searched for all <B>#include</B> directives.
+
+
+<P>
+
+
+In addition, <B>-I-</B> inhibits the use of the directory of the current
+file directory as the first search directory for <TT>&quot;#include&nbsp;&quot;</TT>file<TT>&quot;&quot;</TT>.
+<DT><B>-nostdinc</B><DD>
+<A NAME="ixAUI"></A>
+Do not search the standard system directories for header files.
+Only the directories you have specified with <B>-I</B> options
+(and the directory of the current file, if appropriate) are searched.
+<DT><B>-nostdinc++</B><DD>
+<A NAME="ixAUJ"></A>
+Do not search for header files in the C<FONT SIZE="-2">++</FONT>-specific standard directories,
+but do still search the other standard directories.  (This option is
+used when building the C<FONT SIZE="-2">++</FONT> library.)
+<DT><B>-include</B> <I>file</I><DD>
+<A NAME="ixAUK"></A>
+Process <I>file</I> as if <TT>&quot;#include &quot;file&quot;&quot;</TT> appeared as the first
+line of the primary source file.  However, the first directory searched
+for <I>file</I> is the preprocessor's working directory <I>instead of</I>
+the directory containing the main source file.  If not found there, it
+is searched for in the remainder of the <TT>&quot;#include &quot;...&quot;&quot;</TT> search
+chain as normal.
+
+
+<P>
+
+
+If multiple <B>-include</B> options are given, the files are included
+in the order they appear on the command line.
+<DT><B>-imacros</B> <I>file</I><DD>
+<A NAME="ixAUL"></A>
+Exactly like <B>-include</B>, except that any output produced by
+scanning <I>file</I> is thrown away.  Macros it defines remain defined.
+This allows you to acquire all the macros from a header without also
+processing its declarations.
+
+
+<P>
+
+
+All files specified by <B>-imacros</B> are processed before all files
+specified by <B>-include</B>.
+<DT><B>-idirafter</B> <I>dir</I><DD>
+<A NAME="ixAUM"></A>
+Search <I>dir</I> for header files, but do it <I>after</I> all
+directories specified with <B>-I</B> and the standard system directories
+have been exhausted.  <I>dir</I> is treated as a system include directory.
+<DT><B>-iprefix</B> <I>prefix</I><DD>
+<A NAME="ixAUN"></A>
+Specify <I>prefix</I> as the prefix for subsequent <B>-iwithprefix</B>
+options.  If the prefix represents a directory, you should include the
+final <B>/</B>.
+<DT><B>-iwithprefix</B> <I>dir</I><DD>
+<A NAME="ixAUO"></A>
+
+<DT><B>-iwithprefixbefore</B> <I>dir</I><DD>
+<A NAME="ixAUP"></A>
+
+Append <I>dir</I> to the prefix specified previously with
+<B>-iprefix</B>, and add the resulting directory to the include search
+path.  <B>-iwithprefixbefore</B> puts it in the same place <B>-I</B>
+would; <B>-iwithprefix</B> puts it where <B>-idirafter</B> would.
+<DT><B>-isystem</B> <I>dir</I><DD>
+<A NAME="ixAUQ"></A>
+Search <I>dir</I> for header files, after all directories specified by
+<B>-I</B> but before the standard system directories.  Mark it
+as a system directory, so that it gets the same special treatment as
+is applied to the standard system directories.
+<DT><B>-fdollars-in-identifiers</B><DD>
+<A NAME="ixAUR"></A>
+@anchor{fdollars-in-identifiers}
+Accept <B>$</B> in identifiers.
+<DT><B>-fpreprocessed</B><DD>
+<A NAME="ixAUS"></A>
+Indicate to the preprocessor that the input file has already been
+preprocessed.  This suppresses things like macro expansion, trigraph
+conversion, escaped newline splicing, and processing of most directives.
+The preprocessor still recognizes and removes comments, so that you can
+pass a file preprocessed with <B>-C</B> to the compiler without
+problems.  In this mode the integrated preprocessor is little more than
+a tokenizer for the front ends.
+
+
+<P>
+
+
+<B>-fpreprocessed</B> is implicit if the input file has one of the
+extensions <B>.i</B>, <B>.ii</B> or <B>.mi</B>.  These are the
+extensions that <FONT SIZE="-1">GCC</FONT> uses for preprocessed files created by
+<B>-save-temps</B>.
+<DT><B>-ftabstop=</B><I>width</I><DD>
+<A NAME="ixAUT"></A>
+Set the distance between tab stops.  This helps the preprocessor report
+correct column numbers in warnings or errors, even if tabs appear on the
+line.  If the value is less than 1 or greater than 100, the option is
+ignored.  The default is 8.
+<DT><B>-fexec-charset=</B><I>charset</I><DD>
+<A NAME="ixAUU"></A>
+Set the execution character set, used for string and character
+constants.  The default is <FONT SIZE="-1">UTF-8</FONT>.  <I>charset</I> can be any encoding
+supported by the system's <TT>&quot;iconv&quot;</TT> library routine.
+<DT><B>-fwide-exec-charset=</B><I>charset</I><DD>
+<A NAME="ixAUV"></A>
+Set the wide execution character set, used for wide string and
+character constants.  The default is <FONT SIZE="-1">UTF-32</FONT> or <FONT SIZE="-1">UTF-16</FONT>, whichever
+corresponds to the width of <TT>&quot;wchar_t&quot;</TT>.  As with
+<B>-ftarget-charset</B>, <I>charset</I> can be any encoding supported
+by the system's <TT>&quot;iconv&quot;</TT> library routine; however, you will have
+problems with encodings that do not fit exactly in <TT>&quot;wchar_t&quot;</TT>.
+<DT><B>-finput-charset=</B><I>charset</I><DD>
+<A NAME="ixAUW"></A>
+Set the input character set, used for translation from the character
+set of the input file to the source character set used by <FONT SIZE="-1">GCC</FONT>. If the
+locale does not specify, or <FONT SIZE="-1">GCC</FONT> cannot get this information from the
+locale, the default is <FONT SIZE="-1">UTF-8</FONT>. This can be overridden by either the locale
+or this command line option. Currently the command line option takes
+precedence if there's a conflict. <I>charset</I> can be any encoding
+supported by the system's <TT>&quot;iconv&quot;</TT> library routine.
+<DT><B>-fworking-directory</B><DD>
+<A NAME="ixAUX"></A>
+Enable generation of linemarkers in the preprocessor output that will
+let the compiler know the current working directory at the time of
+preprocessing.  When this option is enabled, the preprocessor will
+emit, after the initial linemarker, a second linemarker with the
+current working directory followed by two slashes.  <FONT SIZE="-1">GCC</FONT> will use this
+directory, when it's present in the preprocessed input, as the
+directory emitted as the current working directory in some debugging
+information formats.  This option is implicitly enabled if debugging
+information is enabled, but this can be inhibited with the negated
+form <B>-fno-working-directory</B>.  If the <B>-P</B> flag is
+present in the command line, this option has no effect, since no
+<TT>&quot;#line&quot;</TT> directives are emitted whatsoever.
+<DT><B>-fno-show-column</B><DD>
+<A NAME="ixAUY"></A>
+Do not print column numbers in diagnostics.  This may be necessary if
+diagnostics are being scanned by a program that does not understand the
+column numbers, such as <B>dejagnu</B>.
+<DT><B>-A</B> <I>predicate</I><B>=</B><I>answer</I><DD>
+<A NAME="ixAUZ"></A>
+Make an assertion with the predicate <I>predicate</I> and answer
+<I>answer</I>.  This form is preferred to the older form <B>-A</B>
+<I>predicate</I><B>(</B><I>answer</I><B>)</B>, which is still supported, because
+it does not use shell special characters.
+<DT><B>-A -</B><I>predicate</I><B>=</B><I>answer</I><DD>
+<A NAME="ixAVA"></A>
+Cancel an assertion with the predicate <I>predicate</I> and answer
+<I>answer</I>.
+<DT><B>-dCHARS</B><DD>
+<A NAME="ixAVB"></A>
+<I></I><FONT SIZE="-1"><I>CHARS</I></FONT><I></I> is a sequence of one or more of the following characters,
+and must not be preceded by a space.  Other characters are interpreted
+by the compiler proper, or reserved for future versions of <FONT SIZE="-1">GCC</FONT>, and so
+are silently ignored.  If you specify characters whose behavior
+conflicts, the result is undefined.
+<DL COMPACT><DT><DD>
+<DL COMPACT>
+<DT><B>M</B><DD>
+<A NAME="ixAVC"></A>
+Instead of the normal output, generate a list of <B>#define</B>
+directives for all the macros defined during the execution of the
+preprocessor, including predefined macros.  This gives you a way of
+finding out what is predefined in your version of the preprocessor.
+Assuming you have no file <I>foo.h</I>, the command
+
+
+<P>
+
+
+
+
+<PRE>
+        touch foo.h; cpp -dM foo.h
+
+</PRE>
+
+
+
+
+<P>
+
+
+will show all the predefined macros.
+<DT><B>D</B><DD>
+<A NAME="ixAVD"></A>
+Like <B>M</B> except in two respects: it does <I>not</I> include the
+predefined macros, and it outputs <I>both</I> the <B>#define</B>
+directives and the result of preprocessing.  Both kinds of output go to
+the standard output file.
+<DT><B>N</B><DD>
+<A NAME="ixAVE"></A>
+Like <B>D</B>, but emit only the macro names, not their expansions.
+<DT><B>I</B><DD>
+<A NAME="ixAVF"></A>
+Output <B>#include</B> directives in addition to the result of
+preprocessing.
+</DL>
+</DL>
+
+<DL COMPACT><DT><DD>
+</DL>
+
+<DT><B>-P</B><DD>
+<A NAME="ixAVG"></A>
+Inhibit generation of linemarkers in the output from the preprocessor.
+This might be useful when running the preprocessor on something that is
+not C code, and will be sent to a program which might be confused by the
+linemarkers.
+<DT><B>-C</B><DD>
+<A NAME="ixAVH"></A>
+Do not discard comments.  All comments are passed through to the output
+file, except for comments in processed directives, which are deleted
+along with the directive.
+
+
+<P>
+
+
+You should be prepared for side effects when using <B>-C</B>; it
+causes the preprocessor to treat comments as tokens in their own right.
+For example, comments appearing at the start of what would be a
+directive line have the effect of turning that line into an ordinary
+source line, since the first token on the line is no longer a <B>#</B>.
+<DT><B>-CC</B><DD>
+<A NAME="ixAVI"></A>
+Do not discard comments, including during macro expansion.  This is
+like <B>-C</B>, except that comments contained within macros are
+also passed through to the output file where the macro is expanded.
+
+
+<P>
+
+
+In addition to the side-effects of the <B>-C</B> option, the
+<B>-CC</B> option causes all C<FONT SIZE="-2">++</FONT>-style comments inside a macro
+to be converted to C-style comments.  This is to prevent later use
+of that macro from inadvertently commenting out the remainder of
+the source line.
+
+
+<P>
+
+
+The <B>-CC</B> option is generally used to support lint comments.
+<DT><B>-traditional-cpp</B><DD>
+<A NAME="ixAVJ"></A>
+Try to imitate the behavior of old-fashioned C preprocessors, as
+opposed to <FONT SIZE="-1">ISO</FONT> C preprocessors.
+<DT><B>-trigraphs</B><DD>
+<A NAME="ixAVK"></A>
+Process trigraph sequences.
+These are three-character sequences, all starting with <B>??</B>, that
+are defined by <FONT SIZE="-1">ISO</FONT> C to stand for single characters.  For example,
+<B>??/</B> stands for <B>\</B>, so <B>'??/n'</B> is a character
+constant for a newline.  By default, <FONT SIZE="-1">GCC</FONT> ignores trigraphs, but in
+standard-conforming modes it converts them.  See the <B>-std</B> and
+<B>-ansi</B> options.
+
+
+<P>
+
+
+The nine trigraphs and their replacements are
+
+
+<P>
+
+
+
+
+<PRE>
+        Trigraph:       ??(  ??)  ??&lt;  ??&gt;  ??=  ??/  ??'  ??!  ??-
+        Replacement:      [    ]    {    }    #    \    ^    |    ~
+
+</PRE>
+
+
+<DT><B>-remap</B><DD>
+<A NAME="ixAVL"></A>
+Enable special code to work around file systems which only permit very
+short file names, such as <FONT SIZE="-1">MS-DOS</FONT>.
+<DT><B>--help</B><DD>
+<A NAME="ixAVM"></A>
+
+<DT><B>--target-help</B><DD>
+<A NAME="ixAVN"></A>
+
+Print text describing all the command line options instead of
+preprocessing anything.
+<DT><B>-v</B><DD>
+<A NAME="ixAVO"></A>
+Verbose mode.  Print out <FONT SIZE="-1">GNU</FONT> <FONT SIZE="-1">CPP</FONT>'s version number at the beginning of
+execution, and report the final form of the include path.
+<DT><B>-H</B><DD>
+<A NAME="ixAVP"></A>
+Print the name of each header file used, in addition to other normal
+activities.  Each name is indented to show how deep in the
+<B>#include</B> stack it is.  Precompiled header files are also
+printed, even if they are found to be invalid; an invalid precompiled
+header file is printed with <B>...x</B> and a valid one with <B>...!</B> .
+<DT><B>-version</B><DD>
+<A NAME="ixAVQ"></A>
+
+<DT><B>--version</B><DD>
+<A NAME="ixAVR"></A>
+
+Print out <FONT SIZE="-1">GNU</FONT> <FONT SIZE="-1">CPP</FONT>'s version number.  With one dash, proceed to
+preprocess as normal.  With two dashes, exit immediately.
+</DL>
+</BODY>
+</HTML>

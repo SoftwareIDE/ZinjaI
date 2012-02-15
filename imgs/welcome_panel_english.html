@@ -1,0 +1,35 @@
+<HTML><HEAD><TITLE>ZinaI Welcome Page</TITLE></HEAD><BODY>
+<HR><CENTER>
+<TABLE><TR>
+<TD><img src="zinjai-32x32.png">&nbsp;</TD><TD>
+&nbsp;<FONT size=+1><B>Welcome to ZinjaI ${ZVERSION}</B></FONT>&nbsp;
+</TD><TD>&nbsp;<img src="zinjai-32x32.png"></TD></TR></TABLE>
+</CENTER><HR>
+<table><TR><TD>
+<UL>
+<LI><FONT size=+1><A href="new_simple"><img src="24/nuevo.png">&nbsp;&nbsp;<B>Create simple program</B></A></FONT>: Start working on a program or exercise quickly without neither creating projects nor definifing any settings. Just choose a template and start writting your code.<BR></LI>
+<LI><FONT size=+1><A href="new_project"><img src="24/proyecto.png">&nbsp;&nbsp;<B>Create new project</B></A></FONT>: If you need to write a more complex program you may want to create a project. Projects can handle several source files, custom compiling settings, advance extra options, external tools integration, and more.<BR></LI>
+<LI><FONT size=+1><A href="open_file"><img src="24/abrir.png">&nbsp;&nbsp;<B>Open and existing file or project</B></A></FONT>:<UL>
+<LI><B>Recent files</B>: (<A href="recent_files">more...</A>)<OL>
+<LI><FONT size=+1><A href="open:${FILE:01}">${FILE:01}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${FILE:02}">${FILE:02}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${FILE:03}">${FILE:03}</A></FONT></LI>
+</OL></LI>
+<LI><B>Recent projects</B>: (<A href="recent_projects">more...</A>)<OL>
+<LI><FONT size=+1><A href="open:${PROJECT:01}">${PROJECT:01}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${PROJECT:02}">${PROJECT:02}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${PROJECT:03}">${PROJECT:03}</A></FONT></LI>
+</OL></LI>
+</UL>
+</LI>
+</UL>
+</TD><TD></TD></TR></TABLE>
+<HR>
+<TABLE><TR><TD><A href="tip"><img src="htmltip.png"></A></TD><TD>
+<B>&nbsp;Do you know that...?</B><BR>${TIP}
+</TD></TR></TABLE>
+<HR>
+<FONT size=-2>
+If you don't want to see this screen again <A href="never_again">click here</A>: next time you'll find a new empty program from your default template instead.
+</FONT>
+</BODY></HTML>

@@ -1,0 +1,26 @@
+	<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Perfilado de Ejecución</B><BR><BR>
+&nbsp;&nbsp;&nbsp; La generación de un perfil de ejecución ("profiling" en inglés) permite obtener información acerca de cuantas veces se realizaron llamadas a cada función, desde donde se las llamó, cuanto tiempo consumieron ejecutandose, etc. Un uso frecuente para toda esta información es encontrar los puntos crítico de un programa y centrar en ellos los esfuerzos de optimización.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para poder realizar el análisis se debe:<UL>
+<LI>Compilar el programa de forma que genere información de depuración: esto se hace pasándole a gcc el parámetro "-pg" tanto para la compilación como para el enlazado. Es necesario recompilar los objetos luego de aplicar el parámetro. ZinjaI puede hacer esto automáticamente con la opción <I>Activar</I> del submenú <I>Perfil de ejecucion</I> del menú <I>Herramientas</I>. Esta opción agregará "-pg" a las opciones de compilación si se trata de un programa simple, o activará la opción correspondiente en la configuración de proyecto si se trata de uno. Puede deshacer manualmente estas modificaciones desde los diálogos <A href="compile_config.html">Opciones de Compilación y Ejecución</A> o <A href="project_config.html">Opciones de Compilación y Ejecución de Proyecto</A>.</LI>
+<LI>Ejecutar el programa: cada vez que ejecute un programa compilado con las opciones de profiling, el mismo generará en su directorio de trabajo un archivo llamado "gmon.out" con la información recopilada durante la ejecución.</LI>
+<LI>Visualizar la información generada: Con la opción <I>Visualizar resultados...</I> del submenú <I>Perfil de ejecucion</I> del menú <I>Herramientas</I> puede observar la información recopilada durante la ejecución en forma de grafo (este grafo se genera internamente con las herramientas gprof, gprof2dot y graphviz).</LI>
+</UL><BR>
+<BR>
+La información generada se presenta según las siguientes convenciones:<UL>
+<LI>Cada nodo representa una función. El texto escrito dentro del nodo indica:<UL>
+<LI>Primer linea: El nombre de la función.</LI>
+<LI>Segunda linea: Tiempos de ejecución. El primer tiempo es el tiempo total de ejecución (tiempo en que se ejecutó la función incluyendo el tiempo de las demás funciones llamadas desde la misma) y el tiempo propio de la función (tiempo en que se ejecutó el código de la función, pero sin contar el tiempo consumido en llamadas a otras funciones dentro de esta).</LI>
+<LI>Tercer linea: Cantidad de veces que la función fue llamada (incluyendo llamadas recursivas).</LI>
+</UL>
+<LI>Las aristas representan llamadas de una función a otra y su rotulo indica el porcentaje de tiempo de ejecución (respecto al tiempo total en que corrió la aplicación) transferido de una función a otra y la cantidad de veces que se realizo dicha llamada.</LI>
+<LI>El color de los elementos indica cuanto tiempo consumieron en relación al total. Los elementos rojos son los que consumieron mayor tiempo de ejecución, mientras que los azules son los que menos.</LI>
+</UL><BR>
+<BR>
+Nota: En algunas situaciones algunas funciones se ejecutan tan rápidamente que pueden no aparecer en el grafo, ya que la precisión de <I>gprof</I> es limitada.
+<BR>
+Nota: Para realizar un perfil de ejecución relacionado al uso de memoria puede utilizar <A href="valgrind.html">Valgrind</A> (solo disponible para <I>GNU/Linux</I>).
+<BR>
+</BODY></HTML>

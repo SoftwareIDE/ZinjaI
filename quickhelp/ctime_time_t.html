@@ -1,0 +1,27 @@
+<B>Tipo <I>time_t</I></B>
+<BR><BR>
+Representa una fecha y hora determinada en segundos.
+<BR><BR>
+Se encuentra en: <I>&lt;ctime&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Este tipo de dato esta pensado para representar fechas y horas determinadas y soportar operaciones aritmeticas entre ellas. Se utiliza en funciones de la libreria ctime. En la mayoría de los compiladores se representa como un entero que contiene la cantidad de segundos transcurridos desde las 0 horas del 1 de Enero de 1970.<BR>
+<BR><BR>
+<A href="example:ctime_time_t.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp;time_t t1 = time(NULL), t2=time(NULL);<BR>
+&nbsp;&nbsp;&nbsp;while(true) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Pasaron "&lt;&lt;t2-t1&lt;&lt;" segundos.\n";<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while(time(NULL)==t2)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t2=time(NULL);<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:ctime.html">Cabecera <I>ctime</I></A>: Contiene funciones y estructuras para el manejo de fechas y horas.</LI>
+<LI><A href="quickfile:ctime_time.html">Función <I>time</I></A>: Devuelve la fecha/hora actual en segundos.</LI>
+<LI><A href="quickfile:ctime_tm.html">Estructura <I>tm</I></A>: Contiene una fecha y hora determinada separada en sus componentes.</LI>
+<LI><A href="quickfile:ctime_clock_t.html">Tipo <I>clock_t</I></A>: Representa una cantidad de ticks del reloj.</LI>
+<LI><A href="quickfile:ctime_localtime.html">Función <I>localtime</I></A>: Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> local.</LI>
+<LI><A href="quickfile:ctime_gmtime.html">Función <I>gmtime</I></A>: Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> UTC.</LI>
+<LI><A href="quickfile:ctime_mktime.html">Función <I>mktime</I></A>: Convierte una fecha y hora de una estructura <I>tm</I> al tipo <I>time_t</I>.</LI>
+</UL>

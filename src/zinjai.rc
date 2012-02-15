@@ -1,0 +1,8 @@
+#include "winuser.h"
+0 ICON "..\\imgs\\zinjai.ico"
+1 ICON "..\\imgs\\filetype_h.ico"
+2 ICON "..\\imgs\\filetype_c.ico"
+3 ICON "..\\imgs\\filetype_cpp.ico"
+4 ICON "..\\imgs\\filetype_zpr.ico"
+1 RT_MANIFEST "manifest.xml"
+

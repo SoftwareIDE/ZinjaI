@@ -1,0 +1,25 @@
+<B>Función <I>srand</I></B>
+<BR><BR>
+Inicializa el generador de números pseudo-aleatorios.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>void srand ( unsigned int seed );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstdlib&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Inicializa el generador de números aleatorios utilizando la semilla <I>seed</I>. Si se utiliza dos veces la misma semilla ambas sucesiones de números aleatorios serán identicas. Si se utiliza una semilla diferente se espera que la sucesión sea completamente diferente.<BR>
+&nbsp;&nbsp;&nbsp; Un uso frecuente consiste es inicializar el generador de números aleatorios con la hora actual en segundos (<I>time(NULL)</I>), función que se encuentra en <I>&lt;ctime&gt;</I>).
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; srand(time(NULL));<BR>
+&nbsp;&nbsp;&nbsp; for (int i=0;i++;i&lt;10)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;rand()&lt;&lt;" ";<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstdlib.html">Cabecera <I>cstdlib</I></A>: Contiene funciones generales, incluyendo funciones para el manejo de memoria, conversion de tipos, control de proceso, etc.
+<LI><A href="quickfile:cstdlib_rand.html">Función <I>rand</I></A>: genera un número pseudo-aleatorio.
+<LI><A href="quickfile:ctime_time.html">Función <I>time</I></A>: devuelve la fecha/hora actual en segundos.
+</UL>

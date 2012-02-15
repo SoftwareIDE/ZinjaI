@@ -1,0 +1,61 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Menú Ejecucion</B><BR><BR>
+<UL>
+<LI><A href="#ejecutar">Ejecutar...</A></LI>
+<LI><A href="#compilar">Compilar</A></LI>
+<LI><A href="#propiedades_del_ejecutable">Propiedades del Ejecutable...</A></LI>
+<LI><A href="#limpiar">Limpiar</A></LI>
+<LI><A href="#detener">Detener</A></LI>
+<LI><A href="#opciones">Opciones...</A></LI>
+</UL>
+<BR><BR>
+
+
+<A name="ejecutar"><HR></A>
+<B>Menú Ejecucion: Ejecutar...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Ejecuta un programa, guardando y compilando previamente si es necesario. Para detalles de cuando se considera necesario guardar o recompilar vea la ayuda de la opción <I>Compilar...</I> de este menú.<BR>
+&nbsp;&nbsp;&nbsp; El programa es ejecutado en su directorio de trabajo. El directorio de trabajo por defecto de un nuevo archivo es el directorio de documentos del usuario. Cuando el archivo se guarda por primera vez, el directorio de trabajo pasa a ser el directorio donde el archivo se guardó. Este se puede modificar desde el cuadro de <I>Opciones de Compilacion y Ejecución</I> (<I>Ejecución->Opciones</I>). También en dicho cuadro se puede configurar los argumentos que se le pasan al programa al ejecutarlo (en la casilla <I>Argumentos para la ejecució</I>). Estos argumentos pueden estar fijos, o ser solicitados nuevamente en cada ejecución (si se activa la opción <I>siempre pedir argumentos al ejecutar</I> en el mismo cuadro de diálogo). Estos argumentos son los que recibe típicamente la función <I>main</I> del programa en los parámetros <I>argc</I> y <I>argv</I>.<BR>
+&nbsp;&nbsp;&nbsp; Los parámetros que reciben el compilador y el enlazador tambien pueden modificarse desde las <I>opciones de compilación y ejecución</I>. Si la compilación no es exitosa, los errores se presentan en el panel de <I>Resultados de la compilación</I>.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="panel_compiler_results.html">Resultados de la compilación</A>, <A href="compile_config.html">Diálogo de Opciones de Compilación y Ejecución</A>, <A href="project_config.html">Diálogo de Opciones de Compilación y Ejecución de proyecto</A>, <A href="#opciones">Menú Ejecucion: Opciones...</A>, <A href="#compilar">Menú Ejecucion: Compilar...</A><BR>
+<BR>
+
+<A name="compilar"><HR></A>
+<B>Menú Ejecucion: Compilar</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Si se esta trabajando sobre un proyecto, guarda todos los archivos pertenecientes al proyecto abiertos que hayan sido modificados, se recompilan todos los objetos que hayan sido modificados desde la ultima ejecución (para esto se comparan las fechas de los fuentes y las cabeceras que estos incluyen con las fechas de los objetos), y se enlaza nuevamente el ejecutable de ser necesario (para esto se comparan las fechas de los objetos y el ejecutable). Luego se ejecuta el programa en cuestión.<BR>
+&nbsp;&nbsp;&nbsp; Si no se estaba trabajando en un proyecto, guarda el archivo actual y lo compila de ser necesario. Cuando el archivo actual tiene un nombre, ya fue compilado y no fue modificado ni el archivo fuente ni las cabeceras que este incluye, el programa se ejecuta directamente sin ser recompilado. Cuando el archivo no tiene titulo (nunca fue guardado) siempre se guarda en un archivo temporal y se vuelve a compilar, independientemente de que haya o no sido modificado desde su última compilación.<BR>
+&nbsp;&nbsp;&nbsp; Cabe destacar que puede darse el caso en que un fuente no haya sido modificado desde su última compilación, pero una de las cabeceras que éste incluye, o que sus cabeceras incluyen sí haya sido modificada, en cuyo caso ZinjaI lo detecta y vuelve a compilar el archivo en cuestión. En este analisis sólo se tienen en cuenta las cabeceras específicas del programa/proyecto, no las cabeceras de librerías estándar, ya que se supone que estas no deben ser modificadas.<BR>
+&nbsp;&nbsp;&nbsp; Los parámetros que reciben el compilador y el enlazador tambien pueden modificarse desde las <I>opciones de compilación y ejecución</I>. Si la compilación no es exitosa, los errores se presentan en el panel de <I>Resultados de la compilación</I>.<BR>
+&nbsp;&nbsp;&nbsp; En el caso de un proyecto, los objetos se generan en el directorio indicado en la opción <I>Directorio para archivos temporales e intermedios</I> de la pestaña <I>General</I> del cuadro de <I>Opciones de Compilación y Ejecución</I> de proyecto, mientras que el ejecutable se coloca en el archivo indicado en la opción <I>Ubicación del ejecutable</I> del mismo cuadro. En el caso de un archivo simple, si este tiene nombre el ejecutable es un archivo con el mismo nombre pero diferente extensión (<I>.exe</I> en Windows, <I>.bin</I> en Linux); mientras que si no tiene nombre se coloca en un archivo temporal. Para archivos simples no se generan objetos intermedios.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="panel_compiler_results.html">Resultados de la compilación</A>, <A href="compile_config.html">Diálogo de Opciones de Compilación y Ejecución</A>, <A href="project_config.html">Diálogo de Opciones de Compilación y Ejecución de proyecto</A>, <A href="#opciones">Menú Ejecucion: Opciones...</A>, <A href="#ejecutar">Menú Ejecucion: Ejecutar...</A><BR>
+<BR>
+
+<A name="limpiar"><HR></A>
+<B>Menú Ejecucion: Limpiar</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Elimina todos los objetos intermedios compilados y el ejecutable enlazado. Esta opción sólo está disponible para proyectos.<BR>
+<BR>
+
+<A name="detener"><HR></A>
+<B>Menú Ejecucion: Detener</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Detiene la compilación o ejecución en curso.<BR>
+<BR>
+
+<A name="opciones"><HR></A>
+<B>Menú Ejecucion: Opciones</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra un cuadro de diálogo que permite especificar opciones de compilación y ejecución (como directorio de trabajo, argumentos para el programa, opciones del compilador, librerías para el enlazado, etc) Este diálogo es diferente cuando se trata de un archivo simple y cuando se trata de un proyecto. En el primer caso muestra una pocas opciones básicas que no se guardan con el fuente, en el segundo permite modificar una mayor cantidad de opciones que serán guardadas en el archivo de proyecto.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="panel_compiler_results.html">Resultados de la compilación</A>, <A href="compile_config.html">Diálogo de Opciones de Compilación y Ejecución</A>, <A href="project_config.html">Diálogo de Opciones de Compilación y Ejecución de proyecto</A>, <A href="#opciones">Menú Ejecucion: Opciones...</A>, <A href="#compilar">Menú Ejecucion: Compilar...</A><BR>
+<BR>
+
+<A name="generar_makefile"><HR></A>
+<B>Menú Ejecucion: Generar Makefile...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Permite generar automáticamente un archivo <I>Makefile</I> a partir de la composición y configuración de un proyecto. Un archivo <I>Makefile</I> es un archivo que contiene las reglas y comandos necesarios para construir el programa y es utilizado por la herramienta GNU <I>make</I> para tal fin. Dicho archivo incluye además información sobre las relaciones entre los archivos y los objetos (qué obejto depende de qué archivo fuente y cuales cabeceras), lo que permite recompilar lo mínimo necesario cuando se modifica el código.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="makefile.html">Dialogo Generar Makefile</A><BR>
+<BR>
+
+<HR>
+
+</BODY></HTML>

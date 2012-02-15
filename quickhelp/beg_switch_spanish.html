@@ -1,0 +1,24 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Estructura condicional de selección múltiple: <I>switch</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Esta estructura permite definir un conjunto de dos o más bloques de código. Cuál de ellos se ejecute depende del valor de una expresión numérica, ya que cada bloque está asociado a uno o más posibles valores para dicha expresión. El comienzo de la estructura se indica con la palabra clave <I>switch</I> y a continuación la expresión numérica entre paréntesis. Luego, entre llaves, se colocan los posibles valores para el resultado de la expresión y las acciones asociadas, de la siguiente manera: primero la palabra clave <I>case</I>, luego el posible valor numérico seguido de dos puntos (:) y a continuación las acciones para este caso, finalizando con la sentencia <I>break;</I>. Al llegar a esta estructura en la ejecución de un programa, se evalúa la expresión numérica y se compara con cada valor introducido con <I>case</I> en el orden en que aparecen en el código hasta encontrar una coincidencia. Cuando se encuentra una coincidencia, se ejecutan todas las acciones que se encuentran a continuación hasta encontrar un <I>break</I> o finalizar la estructura condicional. Esto quiere decir que si en las acciones asociadas a un caso particular no se incluye el <I>break;</I> al final, al entrar en ese caso se ejecutan las acciones luego del mismo, y se continúa ejecutando las acciones de el/los casos siguientes hasta encontrar un <I>break</I>. La utilidad de esto radica en poder definir un mismo grupo de acciones para más de un caso. Además, se puede incluir el caso especial <I>default</I> (introduciendo simplemente la palabra <I>default</I> seguida de dos puntos) al final de la estructura, con acciones a ejecutar cuando ninguno de los casos anteriores coincide con el valor de la expresión.<BR>
+<BR><BR>
+Ejemplo:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; switch (num) {<BR>
+&nbsp;&nbsp;&nbsp; case 1:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selección: 1"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; case 2: case 3: case 4;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selección: 2, 3 o 4"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; case 5:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selección: 5"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; default:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selección: mayor a 5"&lt;&lt;endl<BR>
+&nbsp;&nbsp;&nbsp; };<BR>
+</CODE><BR>
+<BR>
+<BR>
+</BODY></HTML>

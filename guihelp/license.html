@@ -1,0 +1,23 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<BR><BR><BR>
+&nbsp;&nbsp;&nbsp; ZinjaI es <I>Software Libre</I> y se distribuye gratuitamente bajo <A href="gpl.html">licencia GPL</A>, por lo que está permitida su copia o distribución bajo los criterios de la misma. Ha sido desarrollado por <I>Pablo Novara</I> en el marco de una <I>Beca de Iniciación a la Investigación Científica</I> otorgada por la <I>Universidad Nacional del Litoral</I> (Argentina).<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Si tiene preguntas, sugerencias, o ha encontrado errores, puede descargar actualizaciones desde <A href="http://zinjai.sourceforge.net"><B>zinjai.sourceforge.net</B></A> o escribir a <A href="mailto:zaskar_84@yahoo.com.ar"><B>zaskar_84@yahoo.com.ar</B></A>.
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; El codigo fuente de <I>ZinjaI</I> se encuentra en el directorio <I>src</I>, y pueden ser compilados con este mismo entorno utilizando el archivo de proyecto <I>zinjai.zpr</I> o mediante el Makefile correspondiente.<BR><BR>
+&nbsp;&nbsp;&nbsp; Los componentes del paquete que no han sido desarrollados, sino que han sido tomados de otros proyectos son:<UL>
+<LI><B>MinGW</B> (<A href="http://www.mingw.org">www.mingw.org/</A>): Una colección de archivos de cabecera y librerias para Windows combinadas con un conjunto de herramientas GNU que permite compilar nativamente programas para Windows. Se encuentra en el directorio <I>MinGW</I>, aunque junto con otros archivo ajenos a este componente.</LI>
+<LI><B>wxWidgets</B> (<A href="http://www.wxwidgets.org/">www.wxwidgets.org</A>): Es un framework de desarrollo multiplataforma para C++ orientado objetos que incluye entre otras cosas una gran cantidad de componentes visuales. Esta librería se utilizó para desarrollar este proyecto, y se incluye en la carpeta <I>MinGW/wx</I> una versión compilada especialmente para este fin a partir de los códigos fuentes oficiales de la versión 2.8.4 de la misma, que contiene además su documentacion y el componente extra wxStyledText.</LI>
+<LI><B>cbrowser</B>: El parser utilizado para armar el árbol de símbolos fue tomado del proyecto SourceNavigator, modificado y recompilado para incluirse en este paquete. Los fuentes originales se pueden encontrar en <A href="http://sourcenav.sourceforge.net/">sourcenav.sourceforge.net</A>, mientras que la versión modificada se encuentra en la carpeta <I>Parser</I>.</LI>
+<LI><B>graphviz</B>: Un conjunto de herramientas para la generación y visualización de grafos. <I>ZinjaI</I> solo utiliza dos de sus componentes (dot y fdp), los cuales se encuentran en el directorio <I>graphviz</I> (junto con otros archivos externos). El software completo se puede encontrar en <A href="http://www.graphviz.org">www.graphviz.org</A> y se distribuye bajo <A href="cpl.html">Common Public License</A>.</LI>
+<LI><B>diff y file</B>: Dos herramientas GNU libres utilizadas por ZinjaI (<I>diff</I> compara dos archivos, <I>file</I> adivina el tipo de un archivo). Ambos ejecutables, junto con sus dependencias se encuentran también en el directorio <I>MinGW</I>.</LI>
+<LI><B>doxygen</B>: Programa para la generación automática de documentación a partir del código y/o sus comentarios. Si bien <I>ZinjaI</I> presenta facilidades para utilizar <I>Doxygen</I> en sus proyectos, éste no se distribuye ni instala junto con <I>ZinjaI</I>, sino que debe obtenerse por separado en <A href="http://www.doxygen.org">www.doxygen.org</A>.</LI>
+<LI><B>gprof2dot</B>: Programa generar un grafo (formato dot para graphviz) a partir de la información de salida gprof. El progreama se encuentra en el directorio graphvis/gprof2dot. En la versión GNU/Linux se incluye el fuente y el usuario deberá tener instalado un intérprete de python en el sistema. En la versión para Windows se incluye un ejecutable generado con py2exe. Puede obtenerse en <A href="http://code.google.com/p/google-gprof2dot">http://code.google.com/p/google-gprof2dot</A>. Su licensia es la <A href="apache2.html">licencia de Apache versión 2.0</A>.</LI>
+<LI><B>wxFormBuilder</B>: Diseñador visual de interfases de usuario basado en wxWidgets. Permite generar automáticamente el código de las interfases o un archivo de recursos. Este programa no se distribuye ni instala junto con <I>ZinjaI</I>, sino que debe obtenerse por separado en <A href="http://wxformbuilder.org/">wxformbuilder.org</A>.</LI>
+</UL>
+<BR>
+<BR>
+</BODY>
+</HTML>

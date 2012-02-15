@@ -1,0 +1,76 @@
+<iterator>
+	class iterator
+	class iterator_traits
+	
+	template <class InputIterator, class Distance> void advance (InputIterator& i, Distance n);
+
+	template<class InputIterator> typename iterator_traits<InputIterator>::difference_type distance (InputIterator first, InputIterator last);
+	
+	template <class Container> back_insert_iterator<Container> back_inserter (Container& x);
+	
+	template <class Container> front_insert_iterator<Container> front_inserter (Container& x);
+	
+	template <class Container, class Inserter> insert_iterator<Container> inserter (Container& x, Inserter i);
+	
+	template <class Iterator> class reverse_iterator;
+	
+	class back_insert_iterator public iterator
+		explicit back_insert_iterator (Container& x);
+		back_insert_iterator<Container>& operator= (typename Container::const_reference value);
+		back_insert_iterator<Container>& operator* ();
+		back_insert_iterator<Container>& operator++ ();
+		back_insert_iterator<Container> operator++ (int);
+		
+	class front_insert_iterator public iterator
+		explicit front_insert_iterator (Container& x);
+		front_insert_iterator<Container>& operator= (typename Container::const_reference value);
+		front_insert_iterator<Container>& operator* ();
+		front_insert_iterator<Container>& operator++ ();
+		front_insert_iterator<Container> operator++ (int);
+	
+		
+	class insert_iterator : public iterator
+		explicit insert_iterator (Container& x, typename Container::iterator i);
+		insert_iterator<Container>& operator= (typename Container::const_reference value);
+		insert_iterator<Container>& operator* ();
+		insert_iterator<Container>& operator++ ();
+		insert_iterator<Container> operator++ (int);
+
+	class istream_iterator public iterator
+		istream_iterator() : in_stream(0);
+		istream_iterator(istream_type& s) : in_stream(&s);
+		istream_iterator(const istream_iterator<T,charT,traits,Distance>& x);
+		const T& operator*() const;
+		const T* operator->() const;
+		istream_iterator<T,charT,traits,Distance>& operator++();
+		istream_iterator<T,charT,traits,Distance> operator++(int);
+
+	class ostream_iterator public iterator
+		ostream_iterator(ostream_type& s);
+		ostream_iterator(ostream_type& s, const charT* delimiter);
+		ostream_iterator(const ostream_iterator<T,charT,traits>& x);
+		ostream_iterator<T,charT,traits>& operator= (const T& value);
+		ostream_iterator<T,charT,traits>& operator*();
+		ostream_iterator<T,charT,traits>& operator++();
+		ostream_iterator<T,charT,traits>& operator++(int);
+		
+	class istreambuf_iterator public iterator
+		istreambuf_iterator();
+		istreambuf_iterator(istream_type& s);
+		istreambuf_iterator(streambuf_type* s);
+		istreambuf_iterator(const proxy& p);
+		charT operator*() const;
+		istreambuf_iterator<charT,traits>& operator++();
+		proxy operator++(int);
+		bool equal (istreambuf_iterator& b) const;
+	
+	class ostreambuf_iterator public iterator
+		ostreambuf_iterator(ostream_type& s);
+		ostreambuf_iterator(streambuf_type* s);
+		ostreambuf_iterator& operator= (charT c);
+		ostreambuf_iterator& operator*();
+		ostreambuf_iterator& operator++();
+		ostreambuf_iterator& operator++(int);
+		
+		bool failed() const;
+		

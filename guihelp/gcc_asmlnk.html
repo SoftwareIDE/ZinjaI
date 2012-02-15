@@ -1,0 +1,253 @@
+<HTML><HEAD><TITLE>Manpage of GCC</TITLE>
+</HEAD><BODY>
+<A NAME="lbAQ">&nbsp;</A>
+<H2>Passing Options to the Assembler</H2>
+
+<A NAME="ixAVS"></A>
+You can pass options to the assembler.
+<DL COMPACT>
+<DT><B>-Wa,</B><I>option</I><DD>
+<A NAME="ixAVT"></A>
+Pass <I>option</I> as an option to the assembler.  If <I>option</I>
+contains commas, it is split into multiple options at the commas.
+<DT><B>-Xassembler</B> <I>option</I><DD>
+<A NAME="ixAVU"></A>
+Pass <I>option</I> as an option to the assembler.  You can use this to
+supply system-specific assembler options which <FONT SIZE="-1">GCC</FONT> does not know how to
+recognize.
+
+
+<P>
+
+
+If you want to pass an option that takes an argument, you must use
+<B>-Xassembler</B> twice, once for the option and once for the argument.
+</DL>
+<A NAME="lbAR">&nbsp;</A>
+<H2>Options for Linking</H2>
+
+<A NAME="ixAVV"></A>
+These options come into play when the compiler links object files into
+an executable output file.  They are meaningless if the compiler is
+not doing a link step.
+<DL COMPACT>
+<DT><I>object-file-name</I><DD>
+<A NAME="ixAVW"></A>
+A file name that does not end in a special recognized suffix is
+considered to name an object file or library.  (Object files are
+distinguished from libraries by the linker according to the file
+contents.)  If linking is done, these object files are used as input
+to the linker.
+<DT><B>-c</B><DD>
+<A NAME="ixAVX"></A>
+
+<DT><B>-S</B><DD>
+<A NAME="ixAVY"></A>
+<DT><B>-E</B><DD>
+<A NAME="ixAVZ"></A>
+
+If any of these options is used, then the linker is not run, and
+object file names should not be used as arguments.  
+<DT><B>-l</B><I>library</I><DD>
+<A NAME="ixAWA"></A>
+
+<DT><B>-l</B> <I>library</I><DD>
+<A NAME="ixAWB"></A>
+
+Search the library named <I>library</I> when linking.  (The second
+alternative with the library as a separate argument is only for
+<FONT SIZE="-1">POSIX</FONT> compliance and is not recommended.)
+
+
+<P>
+
+
+It makes a difference where in the command you write this option; the
+linker searches and processes libraries and object files in the order they
+are specified.  Thus, <B>foo.o -lz bar.o</B> searches library <B>z</B>
+after file <I>foo.o</I> but before <I>bar.o</I>.  If <I>bar.o</I> refers
+to functions in <B>z</B>, those functions may not be loaded.
+
+
+<P>
+
+
+The linker searches a standard list of directories for the library,
+which is actually a file named <I>liblibrary.a</I>.  The linker
+then uses this file as if it had been specified precisely by name.
+
+
+<P>
+
+
+The directories searched include several standard system directories
+plus any that you specify with <B>-L</B>.
+
+
+<P>
+
+
+Normally the files found this way are library files---archive files
+whose members are object files.  The linker handles an archive file by
+scanning through it for members which define symbols that have so far
+been referenced but not defined.  But if the file that is found is an
+ordinary object file, it is linked in the usual fashion.  The only
+difference between using an <B>-l</B> option and specifying a file name
+is that <B>-l</B> surrounds <I>library</I> with <B>lib</B> and <B>.a</B>
+and searches several directories.
+<DT><B>-lobjc</B><DD>
+<A NAME="ixAWC"></A>
+You need this special case of the <B>-l</B> option in order to
+link an Objective-C program.
+<DT><B>-nostartfiles</B><DD>
+<A NAME="ixAWD"></A>
+Do not use the standard system startup files when linking.
+The standard system libraries are used normally, unless <B>-nostdlib</B>
+or <B>-nodefaultlibs</B> is used.
+<DT><B>-nodefaultlibs</B><DD>
+<A NAME="ixAWE"></A>
+Do not use the standard system libraries when linking.
+Only the libraries you specify will be passed to the linker.
+The standard startup files are used normally, unless <B>-nostartfiles</B>
+is used.  The compiler may generate calls to memcmp, memset, and memcpy
+for System V (and <FONT SIZE="-1">ISO</FONT> C) environments or to bcopy and bzero for
+<FONT SIZE="-1">BSD</FONT> environments.  These entries are usually resolved by entries in
+libc.  These entry points should be supplied through some other
+mechanism when this option is specified.
+<DT><B>-nostdlib</B><DD>
+<A NAME="ixAWF"></A>
+Do not use the standard system startup files or libraries when linking.
+No startup files and only the libraries you specify will be passed to
+the linker.  The compiler may generate calls to memcmp, memset, and memcpy
+for System V (and <FONT SIZE="-1">ISO</FONT> C) environments or to bcopy and bzero for
+<FONT SIZE="-1">BSD</FONT> environments.  These entries are usually resolved by entries in
+libc.  These entry points should be supplied through some other
+mechanism when this option is specified.
+
+
+<P>
+
+
+One of the standard libraries bypassed by <B>-nostdlib</B> and
+<B>-nodefaultlibs</B> is <I>libgcc.a</I>, a library of internal subroutines
+that <FONT SIZE="-1">GCC</FONT> uses to overcome shortcomings of particular machines, or special
+needs for some languages.
+
+
+<P>
+
+
+In most cases, you need <I>libgcc.a</I> even when you want to avoid
+other standard libraries.  In other words, when you specify <B>-nostdlib</B>
+or <B>-nodefaultlibs</B> you should usually specify <B>-lgcc</B> as well.
+This ensures that you have no unresolved references to internal <FONT SIZE="-1">GCC</FONT>
+library subroutines.  (For example, <B>__main</B>, used to ensure C<FONT SIZE="-2">++</FONT>
+constructors will be called.)
+<DT><B>-pie</B><DD>
+<A NAME="ixAWG"></A>
+Produce a position independent executable on targets which support it.
+For predictable results, you must also specify the same set of options
+that were used to generate code (<B>-fpie</B>, <B>-fPIE</B>,
+or model suboptions) when you specify this option.
+<DT><B>-s</B><DD>
+<A NAME="ixAWH"></A>
+Remove all symbol table and relocation information from the executable.
+<DT><B>-static</B><DD>
+<A NAME="ixAWI"></A>
+On systems that support dynamic linking, this prevents linking with the shared
+libraries.  On other systems, this option has no effect.
+<DT><B>-shared</B><DD>
+<A NAME="ixAWJ"></A>
+Produce a shared object which can then be linked with other objects to
+form an executable.  Not all systems support this option.  For predictable
+results, you must also specify the same set of options that were used to
+generate code (<B>-fpic</B>, <B>-fPIC</B>, or model suboptions)
+when you specify this option.[1]
+<DT><B>-shared-libgcc</B><DD>
+<A NAME="ixAWK"></A>
+
+<DT><B>-static-libgcc</B><DD>
+<A NAME="ixAWL"></A>
+
+On systems that provide <I>libgcc</I> as a shared library, these options
+force the use of either the shared or static version respectively.
+If no shared version of <I>libgcc</I> was built when the compiler was
+configured, these options have no effect.
+
+
+<P>
+
+
+There are several situations in which an application should use the
+shared <I>libgcc</I> instead of the static version.  The most common
+of these is when the application wishes to throw and catch exceptions
+across different shared libraries.  In that case, each of the libraries
+as well as the application itself should use the shared <I>libgcc</I>.
+
+
+<P>
+
+
+Therefore, the G++ and <FONT SIZE="-1">GCJ</FONT> drivers automatically add
+<B>-shared-libgcc</B> whenever you build a shared library or a main
+executable, because C<FONT SIZE="-2">++</FONT> and Java programs typically use exceptions, so
+this is the right thing to do.
+
+
+<P>
+
+
+If, instead, you use the <FONT SIZE="-1">GCC</FONT> driver to create shared libraries, you may
+find that they will not always be linked with the shared <I>libgcc</I>.
+If <FONT SIZE="-1">GCC</FONT> finds, at its configuration time, that you have a non-GNU linker
+or a <FONT SIZE="-1">GNU</FONT> linker that does not support option <B>--eh-frame-hdr</B>,
+it will link the shared version of <I>libgcc</I> into shared libraries
+by default.  Otherwise, it will take advantage of the linker and optimize
+away the linking with the shared version of <I>libgcc</I>, linking with
+the static version of libgcc by default.  This allows exceptions to
+propagate through such shared libraries, without incurring relocation
+costs at library load time.
+
+
+<P>
+
+
+However, if a library or main executable is supposed to throw or catch
+exceptions, you must link it using the G++ or <FONT SIZE="-1">GCJ</FONT> driver, as appropriate
+for the languages used in the program, or using the option
+<B>-shared-libgcc</B>, such that it is linked with the shared
+<I>libgcc</I>.
+<DT><B>-symbolic</B><DD>
+<A NAME="ixAWM"></A>
+Bind references to global symbols when building a shared object.  Warn
+about any unresolved references (unless overridden by the link editor
+option <B>-Xlinker -z -Xlinker defs</B>).  Only a few systems support
+this option.
+<DT><B>-Xlinker</B> <I>option</I><DD>
+<A NAME="ixAWN"></A>
+Pass <I>option</I> as an option to the linker.  You can use this to
+supply system-specific linker options which <FONT SIZE="-1">GCC</FONT> does not know how to
+recognize.
+
+
+<P>
+
+
+If you want to pass an option that takes an argument, you must use
+<B>-Xlinker</B> twice, once for the option and once for the argument.
+For example, to pass <B>-assert definitions</B>, you must write
+<B>-Xlinker -assert -Xlinker definitions</B>.  It does not work to write
+<B>-Xlinker ``-assert definitions''</B>, because this passes the entire
+string as a single argument, which is not what the linker expects.
+<DT><B>-Wl,</B><I>option</I><DD>
+<A NAME="ixAWO"></A>
+Pass <I>option</I> as an option to the linker.  If <I>option</I> contains
+commas, it is split into multiple options at the commas.
+<DT><B>-u</B> <I>symbol</I><DD>
+<A NAME="ixAWP"></A>
+Pretend the symbol <I>symbol</I> is undefined, to force linking of
+library modules to define it.  You can use <B>-u</B> multiple times with
+different symbols to force loading of additional library modules.
+</DL>
+</BODY>
+</HTML>

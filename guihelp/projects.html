@@ -1,0 +1,36 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<A name="project"/><BR>
+<B>Sobre el manejo de Proyectos en ZinjaI...</B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Si bien <I>ZinjaI</I> se desarrolló inicialmente con la simplicidad como uno de los requerimientos más importantes, prevee también su utilización para el desarrollo de proyectos de mayor complejidad. Prueba de ello es el hecho de que el mismo <I>ZinjaI</I> es utilizado para su propio desarrollo (cada versión se utiliza para desarrollar la siguiente). El manejo de proyectos surge como una forma de dar al usuario mayor potencia y flexibilidad, sin perder la posibilidad de realizar un ejercicio o programa simple rápidamente. Por esto, los programas simples se compilan en una sola linea sin necesidad de configurar absolutamente nada ni de incluirlos en ningun proyecto (solo abrir/escribir y compilar), mientras que la creación de un proyecto requiere algunos pasos adicionales, pero presenta las siguientes ventajas:<BR>
+<A name="config"/><BR>
+<B>Configuración de Proyecto</B></A><BR><BR>
+&nbsp;&nbsp;&nbsp; La configuración del proyecto es mucho más extensa y especializada</B> que la configuración de un programa simple. Esta incluye diferentes opciones en relación a la compilación, enlazado y ejecución del mismo. Ver <A href="project_config.html">Diálogo Opciones de Compilación y Ejecución de Proyecto</A>.<BR><BR>
+&nbsp;&nbsp;&nbsp; Además, en un proyecto se pueden especificar más de una configuración. Esto permite definir como usualmente se hace en muchas otras IDEs una configuración para utilizar durante el desarrollo (modo <I>Debug</I>) y otra diferente para generar el ejecutable final (modo <I>Release</I>). Sin embargo, la cantidad de configuraciones es arbitraria, por lo que no debe limitarse solo a dos, pudiendo así armar configuraciones según diferentes criterios (Release/Debug, Sistema Operativo, Versión de las librerías, etc) o combinaciones de los mismo.<BR>
+<A name="portability"/><BR>
+<B>Portabilidad del Proyecto</B></A><BR><BR>
+&nbsp;&nbsp;&nbsp; La portabilidad de un proyecto es una de los aspectos más cuidados en el manejo interno del mismo. Por portabilidad se refiere a la posibilidad de simplemente copiar la carpeta del mismo y abrirlo en otra PC (con igual o diferente sistema operativo, actualmente <I>Win32</I> y <I>GNU/Linux</I>) y poder editarlo y compilarlo con la menor cantidad de cambios posibles, o en muchos casos sin ningún tipo de modificación. Además de poder generar diferentes configuraciones para diferentes sistemas operativos, <I>ZinjaI</I> realiza internamente otras adaptaciones requeridas tales como:<UL>
+<LI>la capacidad de detectar y reemplazar automáticamente el caracter de separación en las rutas de archivos</LI>
+<LI>la capacidad de tomar indistantemente los caracteres de fin de linea utilizados por uno u otro sistema operativo</LI>
+<LI>la inclusión de configuraciones para ambas plataformas en los proyecto plantilla incluidos</LI>
+<LI>las consideraciones especiales en la generación de <I>Makefiles</I> (ver <A href="makefile.html">Diálogo Generar Makefile</A>)</LI>
+<LI>las consideraciones necesarias al construir los comandos de compilación y ejecución</LI>
+<LI>la elección de un compilador, depurador y demás herramientas necesarias disponibles gratuitamente para un gran número de arquitecturas (gcc,gdb,etc)</LI>
+<LI>la relativización de todos los paths de archivos pertenecientes al proyecto (todas las rutas se almacenan de forma relativa a la carpeta del proyecto siempre que se pueda)</LI>
+<LI>la utilización en su desarrollo de un lenguaje C++ estandar y librerías portables de gran aceptación (como <I>wxWidgets</I>)
+<LI>etc.</LI>
+</UL>
+<BR>
+<A name="templates"/><BR>
+<B>Utilización de Plantillas de Proyecto</B></A><BR><BR>
+&nbsp;&nbsp;&nbsp; ZinjaI permite crear un nuevo proyecto a partir de una plantilla. Cualquier subdirectorio que se encuentre en el directorio de plantillas (ver <A href="preferences.html">Diálogo de Preferencias</A>) será tomado como plantilla de proyecto. Crear un proyecto a partir de una plantilla implica copiar el contenido de la carpeta del proyecto plantilla a la carpeta del nuevo proyecto. Este contenido puede incluir archivos fuentes, cabeceras u otros incluidos en el proyecto, todas las configuraciones del mismo, etc. Para crear una nueva plantilla, simplemente cree un nuevo proyecto y copie el directorio correspondiente al directorio de plantillas (puede que deba reiniciar <I>ZinjaI</I> luego). Se incluyen alguna plantillas de ejemplo (proyecto que utilice las librerías <I>wxWidgets</I>, y proyecto que utilice <I>OpenGL</I>).<BR>
+<BR>
+<B>Temas relacionados</B>
+<UL>
+<LI><A href="project_building_sequence.html">Secuencia de compilación de un proyecto</A></LI>
+<LI><A href="libs_generation.html">Creación de bibliotecas</A></LI>
+</UL>
+<BR><BR>
+</BODY>
+</HTML>

@@ -1,0 +1,21 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Diálogo <I>Herramientas Personalizables</I></B><BR><BR>
+&nbsp;&nbsp;&nbsp; <I>ZinjaI</I> permite definir hasta diez herramientas personalizadas. Es decir, comandos del menu y/o botones de la barra de herramientas que ejecutan programas o abren documentos definidos por el usuario. Esta pensado para generar accesos rapidas a herramientas auxiliares del proceso de desarrollo, o documentacion y referencias especificas.<BR>
+<BR>
+<CENTER><IMG src="custom_tools.png"></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para agregar o definir una herramienta debe utilizar el item <I>Configurar</I> del submenu <I>Herramientas Personalizables</I> del menu <A href="menu_herramientas.html">Herramientas</A>. Esta accion abre el cuadro de dialogo de configuracion de las herramientas. Otra forma mas directa de acceder a este cuadro para modificar una de estas herramientas es haciendo click con el boton derecho sobre la misma en la barra de herramientas.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; El cuadro presenta en la parte superior una lista desplegable para alternar entre cada una de las diez herramientas (0 a 9). Cuando selecciona alli una herramienta puede ver o modificar los demas campos afectando a la misma. Al aceptar los cambios se modifican todas las herramientas que editadas, no solo la que esta visible en ese momento.<BR>
+&nbsp;&nbsp;&nbsp; Por cada herramienta puede definir:<UL>
+<LI>Nombre: es el texto que aparece en el menu con el que se identifica a la herramienta. Puede ser cualquier cadena.</LI>
+<LI>Comando: es el comando a ejecutar. Para confeccionar el comando puede utilizar variables como ${MINGW_DIR} para referirse al directorio de instalacion del compilador (solo Windows), ${CURRENT_SOURCE} para referirse a la ruto completa del fuente que zinjai este mostrando al momento de ejecutar el comando, ${PROJECT_PATH} para referirse a la carpeta del projecto abierto, ${PROJECT_BIN} para referirse al ejecutable del projecto y ${BROWSER} para referirse al navegador configurado en <I>ZinjaI</I>.</LI>
+<LI>Correr en terminal (solo en GNU/Linux): indica si debe ejecutarse esta comando en una consola y esta debe ser visible. Para ello se usa el comando de terminal definido en la pestaña <A href="preferences.html#rutas2">Rutas 2</A> del cuadro de <A href="preferences.html">Preferencias</A></LI>
+<LI>Ocultar ventana (solo Windows): indica si la ventana del programa a ejecutar debe ocultarse. Esto es util, por ejemplo, para ejecutar programas de consola sin que se vea la ventana de la terminal.</LI>
+<LI>Mostrar en la barra de herramientas: indica si debe agrgarse el icono a la barra de herramientas <I>Herramientas</I>. En caso contrario solo se mostrar en el menu <I>Herramientas</I>. Notar que la barra de herramientas <I>Herramientas</I> debe estar visible. Si no la ve puede activarla desde el cuadro de <A href="preferences.html">Preferencias</A> o desde el <A href="menu_ver.html">menu Ver</A>.</LI>
+</UL>
+
+<BR><BR>
+
+</BODY></HTML>

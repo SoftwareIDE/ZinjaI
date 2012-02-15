@@ -1,0 +1,17 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Diálogo <I>Generar Biblioteca</I></B><BR><BR>
+<BR>
+<CENTER><IMG src="lib_to_build.png"></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Este diálogo permite configurar la generación de una biblioteca (para obtener más informacion acerca del proceso completo y la generación bibliotecas en proyectos de <I>ZinjaI</I> consulte <A href="libs_generation.html">Creación de Bibliotecas</A>). Las opciones asociadas a una biblioteca a generar son:<UL>
+<OL>
+<LI><B>Nombre</B>: el nombre de la biblioteca define el nombre del archivo de la misma. Este se forma anteponiendo el prefijo <I>lib</I> y añadiendo la extensión adecuada al final (varía segun sistema operativo y tipo de enlazado).</LI>
+<LI><B>Directorio de salida</B>: indica en que directorio se colocará la biblioteca (el archivo binario).</LI>
+<LI><B>Opciones de enlazado</B>: estos argumentos se utilizan al enlazar los objetos de los fuentes para construir la biblioteca (los parámetros de la pestaña <I>Enlazado</I> del cuadro de <I>Opciones de Compilación y Ejecución de Proyecto</I> sólo se aplican al ejecutable, no a las bibliotecas). Vea <A href="gcc_index.html">Ayuda del compilador utilizado</A>.</LI>
+<LI><B>Tipo de biblioteca</B>: define si la bibioteca será enlazada dinámica o estáticamente.</LI>
+<LI><B>Fuentes a Incluir/Excluir</B>: estas listas indican qué archivos fuentes deben considerarse (compilarse y enlazarse) al construir la biblioteca. Los botones en medio de las listas permiten pasar fuentes de una a otra.</LI>
+<LI><B>Biblioteca por defecto</B>: esta casilla sólo puede estar activa para una biblioteca. Cuando se añada un archivo fuente nuevo al proyecto, si alguna biblioteca tiene esta opción activada, el nuevo fuente pasa a formar parte de la lista <I>Fuentes a Incluir</I> para esa biblioteca.</LI>
+</UL>
+<BR>
+</BODY></HTML>

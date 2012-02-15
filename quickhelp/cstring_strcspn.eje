@@ -1,0 +1,16 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+	char s[256];
+	cout<<"Ingrese una cadena: ";
+	cin.getline(s,256);
+	int p = strcspn(s,"012345689");
+	if (s[p]=='\0') 
+		cout<<"No hay numeros en esta cadena.\n";
+	else
+		cout<<"El primer numero esta en la posicion "<<p<<".\n";
+	return 0;
+}
+

@@ -1,0 +1,60 @@
+SRC=/mnt/ex/zinjai
+
+make -j 2 -C $SRC/src -f Makefile.wine || exit 1
+make -j 2 -C $SRC/src_extras -f Makefile.wine || exit 1
+make -j 2 -C $SRC/parser -f Makefile.wine || exit 1
+
+cp -u $SRC/readme.txt zinjai/
+cp -u $SRC/compiling.txt fuentes/
+cp -u $SRC/Makefile fuentes/
+cp -u $SRC/lsdeps.exe zinjai/
+cp -u $SRC/lsdeps.exe zinjai/
+cp -u $SRC/runner.exe zinjai/
+cp -u $SRC/zinjai.exe zinjai/
+cp -u $SRC/shellexecute.exe zinjai/
+cp -u $SRC/updatem.exe zinjai/
+cp -u $SRC/src_extras/* fuentes/src_extras
+cp -u $SRC/quickhelp/* zinjai/quickhelp/
+cp -u $SRC/guihelp/* zinjai/guihelp/
+cp -u $SRC/imgs/*.png zinjai/imgs/
+cp -u $SRC/imgs/*.html zinjai/imgs/
+cp -u $SRC/src/* fuentes/src/
+cp -u $SRC/colours/* zinjai/colours/
+cp -u $SRC/zinjai.zpr fuentes/
+cp -u $SRC/imgs/descripcion.txt zinjai/imgs/
+cp -u $SRC/imgs/*.ico fuentes/imgs/
+cp -u $SRC/imgs/24/* zinjai/imgs/24/
+cp -u $SRC/imgs/16/* zinjai/imgs/16/
+cp -u $SRC/imgs/32/* zinjai/imgs/32/
+cp -u $SRC/imgs/art.svg fuentes/imgs/
+cp -u $SRC/imgs/logos.svg fuentes/imgs/
+cp -u $SRC/debug_macros.gdb zinjai/
+cp -ru $SRC/skins/* zinjai/skins/
+cp -ru $SRC/lang/*.pre zinjai/lang/
+cp $SRC/lang/*.txt zinjai/lang/
+rm -f zinjai/lang/spanish.*
+cp $SRC/lang/*.sgn zinjai/lang/
+cp $SRC/lang/*.src fuentes/lang/
+cp $SRC/lang/spanish.pre fuentes/lang/
+cp $SRC/lang/tools/extract_enum.cpp fuentes/lang/tools/
+cp -ru $SRC/lang/tools/mxLangTool fuentes/lang/tools/
+cp -u $SRC/lang/tools/mxLangTool.exe fuentes/lang/tools/
+rm -rf fuentes/lang/tools/mxLangTool/debug.lnx
+rm -rf fuentes/lang/tools/mxLangTool/release.lnx
+rm -rf fuentes/lang/tools/mxLangTool/release.w32
+rm -rf fuentes/lang/tools/mxLangTool/debug.w32
+
+cp -ru $SRC/parser/* fuentes/parser/
+rm -rf $SRC/parser/release.lnx
+rm -rf $SRC/parser/debug.lnx
+rm -rf $SRC/parser/release.w32
+rm -rf $SRC/parser/debug.w32
+
+cp -ru fuentes/src_extras/*.nsh .
+rm -rf $SRC/src_extras/wxWidgets
+rm -rf $SRC/src_extras/*.bin
+
+nsis /DPRODUCT_VERSION\=`cat fuentes/src/version.h | head -n 1 | cut -d ' ' -f 3` zinjai.nsh || exit 1
+
+echo
+echo All done

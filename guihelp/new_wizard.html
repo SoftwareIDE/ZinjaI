@@ -1,0 +1,63 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Asistente para Nuevo Archivo o Proyecto</B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Este cuadro de diálogo permite crear un nuevo archivo o proyecto. Se accede a él mediante la opción <I>Nuevo...</I> del menú <I>Archivo</I>. <BR>
+&nbsp;&nbsp;&nbsp; Cuando se está trabajando sobre un proyecto, este asistente se inicia en la hoja <I><A href="#on_project">Archivo para Proyecto</A></I>, mientras que si no se está editando un proyecto, se inicia en la hoja <I><A href="#start">Nuevo</A></I>. Si este asistente no aparece puede que <I>ZinjaI</I> esté configurado para crear directamente un archivo en blanco o utilizar la plantilla predeterminda. Puede cambiar esta configuración en la pestaña <A href="preferences.html#general">General</A> del cuadro de diálogo <A href="preferences.html">Preferencias</A>Tambien se puede ir directamente a la hoja proyecto mediante la opción <I>Nuevo Proyecto...</I> del menú <I>Archivo</I>.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Las posibles hojas que muestra este asistente son:
+<UL>
+<LI><A href="#start">Hoja Nuevo</A></LI>
+<LI><A href="#templates">Hoja Nuevo Desde Plantilla</A></LI>
+<!---<LI><A href="#wizard">Hojas Asistente de Plantilla</A></LI>-->
+<LI><A href="#project">Hojas Proyecto</A></LI>
+<LI><A href="#on_project">Hoja Archivo para Proyecto</A></LI>
+</UL><BR><BR>
+
+<A name="start"><HR></A>
+<B>Hoja <I>Nuevo</I></B><BR><BR>
+<CENTER><IMG src="new_wizard_start.png"></CENTER>
+&nbsp;&nbsp;&nbsp; Esta hoja se muestra cuando no se está trabajando en un proyecto. Permite crear un nuevo archivo simple, o un nuevo proyecto. Muestra las posibles opciones para luego continuar en la hoja que corresponda según su elección. Las posibilidades son:
+<UL>
+<LI><I>Archivo en Blanco</I>: crea un nuevo archivo completamente en blanco de inmediato al aceptar.</LI>
+<LI><I>Utilizar Plantilla</I>: Crea un nuevo archivo con un esqueleto basico de programa (crea la funcion main e incluye librerias acordes al tipo de programa seleccionado). Al aceptar lleva a la hoja <A href="#templates">Nuevo Desde Plantilla</A>.</LI>
+<!--<LI><I>Asistente de Plantilla</I>: Permite construir su propia plantilla seleccionando que tipo de funciones y contenedores va a utilizar. Al aceptar lleva a la hoja <A href="#wizard">Asistente de Plantilla</A>.</LI>-->
+<LI><I>Proyecto</I>: Crea un nuevo proyecto. A diferencia de un programa simple, el proyecto puede constar de mas de un archivo fuente y guarda tambien otras configuraciones como librerias utilizadas, parametros para el compilador, etc. Al aceptar lleva a la hoja <A href="#project">Nuevo Proyecto</A>.</LI>
+</UL>
+<BR><BR>
+
+<A name="templates"><HR></A>
+<B>Hoja <I>Nuevo Desde Plantilla</I></B><BR><BR>
+<CENTER><IMG src="new_wizard_templates.png"></CENTER>
+&nbsp;&nbsp;&nbsp; Esta hoja permite crear un archivo para un programa simple a partir de una de las plantillas existentes. Es decir, en lugar de crear un archivo en blanco, se crea un archivo con determinado contenido de acuerdo a la plantilla seleccionada. Por ejemplo, una plantilla puede definir la función <I>main</I>, incluir un conjunto de cabeceras e inicializar determinadas variables. Las plantillas además, pueden predefinir argumentos para el compilador. La lista de plantillas disponibles se está conformada por los archivos que se encuentran en el directorio de plantillas especificado en la pestaña <A href="preferences.html#programa_simple">Programa Simple</A> del cuadro de dialogo de <A href="preferences.html">Preferencias</A>; por lo que el usuario puede añadir nuevas plantillas guardando archivos en dicho directorio. Ver <A href="simple_programs.html#templates">Plantillas de Codigo</A>).
+&nbsp;&nbsp;&nbsp; Además de permitir crear un programa a partir de una plantilla, esta hoja tembien permite determinar cual será la plantilla por defecto. Para ello debe seleccionar el checkbox "Guardar como predeterminada".
+<BR><BR>
+
+<!---<A name="wizard"><HR></A>
+<B>Hojas <I>Asistente de Plantilla</I></B><BR><BR>
+&nbsp;&nbsp;&nbsp; Estas hojas permiten generar dinámicamente una plantilla en base a las opciones que va seleccionando el usuario. Por ejemplo, si el usuario selecciona la opción "utilizar numeros aleatorios" la plantilla generada incluirá la cabecera <I>cstdio</I> (donde se declara la función <I>rand()</I>), e inicializará la semilla del generador colocando la instrucción <I>srand(time(NULL));</I> en las primeras líneas de la función <I>main</I>.<BR>
+&nbsp;&nbsp;&nbsp; Actualmente el asistente cuenta de dos hojas, una presentando opciones generales, y otra presentando opciones específicas de las librerías <I>STL</I>.
+<BR><BR>-->
+
+<A name="project"><HR></A>
+<B>Hojas <I>Proyecto</I></B><BR><BR>
+<CENTER><IMG src="new_wizard_project1.png"></CENTER>
+&nbsp;&nbsp;&nbsp; Estas hoja permiten crear un nuevo <A href="projects.html">proyecto</A>. El proyecto consiste inicialmente en un archivo de configuración de proyecto de extensión <I>.zpr</I>. El nombre de este archivo está definido por el nombre ingresado en el cuadro de texto "Nombre del archivo de proyecto", y la ruta del mismo por el cuadro de texto "Ubicación del proyecto". Esta ruta puede ser absoluta (comenzar con "C:\" o "/") o relativa a la carpeta de instalación de <I>ZinjaI</I>. El valor por defecto de este campo se puede definir en la pestaña <A href="preferences.html#rutas">Rutas</A> del diálogo <A href="preferences.html">Preferencias</A>. Es común ubicar el archivo de proyecto junto con todos los fuentes que lo componen en un directorio separado, por lo que si el checkbox "Crear un nuevo directorio" está marcado, se creará un directorio dentro de la ruta definida como ubicación del proyecto, con el mismo nombre que el archivo de proyecto, dentro de la cual se guardarán este archivo y los posibles fuentes que incluya la plantilla seleccionada. 
+<CENTER><IMG src="new_wizard_project2.png"></CENTER>
+&nbsp;&nbsp;&nbsp; En la lista de plantillas, la opción "&lt;proyecto en blanco&gt;" solo creará el archivo de proyecto, la opción "&lt;incluir archivo y funcion main&gt;" además agregará un primer archivo "main.cpp" (este archivo se crea en la carpeta del proyecto) donde se declará una función <I>main</I> vacía. Las demás opciones de la lista de plantillas se conforman por los subdirectorios que se encuentren en la ruta de plantillas de proyectos (es la misma que la ruta de plantillas de programas simples, definida en la pestaña <A href="preferences.html#programa_simple">Programa Simple</A> del cuadro de dialogo de <A href="preferences.html">Preferencias</A>), y si se selecciona una de estas, se creará una copia exacta de dicho proyecto en la ubicación del nuevo proyecto.
+<BR><BR>
+
+<A name="on_project"><HR></A>
+<B>Hoja <I>Archivo Para Proyecto</I></B><BR><BR>
+<CENTER><IMG src="new_wizard_onproject.png"></CENTER>
+&nbsp;&nbsp;&nbsp; Esta hoja se muestra sólo cuando se selecciona la opción <I>Nuevo</I> del menú <I>Archivo</I> mientras se trabaja en un proyecto. Permite agregar uno a más nuevos archivos al proyecto:<UL>
+<LI>La opicón <B>Archivo Fuente</B> crea un nuevo archivo en blanco en la ruta especificada en "Nombre del archivo" y lo agrega como un fuente al proyecto. Si el nombre del archivo no incluye una extensión, <I>Zinjai</I> le agrega la extensión <I>cpp</I>. La retua puede ser absolluta, o relativa al directorio del proyecto. </LI>
+<LI>La opicón <B>Archivo Cabecera</B> crea un nuevo archivo en la ruta especificada en "Nombre del archivo" y lo agrega como un cabecera al proyecto. El archivo contendrá inicialmente las directivas de preprocesador que habitualmente se utilizan para evitar redefiniciones si esta cabecera se incluye más de una vez (el nombre la constante de preprocesador que se utliza para ello se determina por el nombre del archivo en mayúsuclas más un guion bajo y la letra H). Si el nombre del archivo no incluye una extensión, <I>Zinjai</I> le agrega la extensión <I>h</I>. La ruta puede ser absoluta, o relativa al directorio del proyecto. </LI>
+<LI>La opicón <B>Otro Archivo</B>: crea un nuevo archivo en blanco en la ruta especificada en "Nombre del archivo" y lo agrega al proyecto en la rama <I>otros</I> del árbol de proyecto. La ruta puede ser absoluta, o relativa al directorio del proyecto. </LI>
+<LI>La opción <B>Clase</B> crea dos nuevos archivos (un <I>cpp</I> y un <I>h</I>, que contendrán una clase de con el mismo nombre que el archivo. El archivo cabecera incluirá la declaración de la clase, y el contenido inicial especificado (constructores, destructor, declaración de herencia). El archivo fuente incluirá la declaración de estos métodos, vacios. El nombre del archivo puede ser una ruta relativa al directorio del proyecto o absoluta, pero no debe incluir extensión, ya que zinjai agregará ".cpp" para el fuente y ".h" para la cabecera.</LI>
+</UL>
+<BR><BR>
+<HR>
+<BR>
+</BODY>
+</HTML>

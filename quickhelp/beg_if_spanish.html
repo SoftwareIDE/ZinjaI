@@ -1,0 +1,30 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Estructura condicional: <I>if...else</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Esta estructura permite ejecutar una vez un bloque de código sólo si se cumple una condición dada. Además, opcionalmente permite establecer otro bloque de código a ejecutarse sólo si la condición no se cumple. Es decir, se evalúa una expresión lógica (<I>bool</I>) y de acuerdo a su resultado se ejecuta un bloque u otro (este último puede ser nulo). La estructura se indica mediante la palabra clave <I>if</I>. A continuación se coloca la expresión lógica entre paréntesis y luego las acciones a ejecutar si resulta verdadera. Opcionalmente, se puede colocar a continuación las acciones a ejecutar si la condición resulta falsa precedidas por la palabra clave <I>else</I>.<BR>
+<BR><BR>
+Ejemplo 1: Determinar el valor absoluto de un número:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int n;<BR>
+&nbsp;&nbsp;&nbsp; cin&gt;&gt;n;<BR>
+&nbsp;&nbsp;&nbsp; if (n&lt;0) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; n=-n;<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"El valor absoluto es: "&lt;&lt;n&lt;&lt;endl;<BR>
+</CODE><BR>
+Cuando se le aplica el valor absoluta a un número negativo (cuando la condición <I>n&lt0</I> es verdadera), este se convierte en positivo (su opuesto, <I>n=-n</I>). Si el número dado ya era positivo (la condición resulta falsa), no se modifica (no hay cláusula <I>else</I>).
+<BR>
+<BR><BR>
+Ejemplo 2: Determinar si un número es par o impar:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int n;<BR>
+&nbsp;&nbsp;&nbsp; cin&gt;&gt;n;<BR>
+&nbsp;&nbsp;&nbsp; if (n%2==0) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"El numero es par."&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; } else {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"El numero es impar."&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+</CODE><BR>
+La condición pregunta si el resto de dividir al número por 2 es 0. El programa evaluará la condición y mostrará solo uno de los dos mensajes, dependiente de su resultado.<BR>
+<BR>
+</BODY></HTML>

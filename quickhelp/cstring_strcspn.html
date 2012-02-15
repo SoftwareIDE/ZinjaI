@@ -1,0 +1,31 @@
+<B>Función <I>strcspn</I></B>
+<BR><BR>
+Busca en una cadena el primer caracater perteneciente a un conjunto dado.
+<BR><BR>
+Prototipos: <BR>
+<UL>
+<LI><I>int strcspn ( const char * str1, const *str2 );</I></LI>
+<LI><I>int strcspn ( char * str1, const char *str2  );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstring&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Recorre la cadena <I>str1</I> buscando en ella alguno de los caracteres que componen la cadena <I>str2</I>. Si encuentra alguno retorna la posición del mismo, si no encuentra ninguno retorna el largo de la cadena (la posición del caracter de terminación de la cadena).<BR>
+&nbsp;&nbsp;&nbsp; La diferencia frente a la función <I>strchr</I> consiste en que, además de poder buscar más de un caracter, <I>strcspn</I> devuelve la posición (un entero con el índice del caracter dentro del arreglo de caracteres), mientras que <I>strchr</I> devuelve un puntero (que puede interpretarse como un cstring que comienza donde se encontró el caracter).<BR>
+<BR><BR>
+<A href="example:cstring_strcspn.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp;char s[256];<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Ingrese una cadena: ";<BR>
+&nbsp;&nbsp;&nbsp;cin.getline(s,256);<BR>
+&nbsp;&nbsp;&nbsp;int p = strcspn(s,"012345689");<BR>
+&nbsp;&nbsp;&nbsp;if (s[p]=='\0') <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;"No hay numeros en esta cadena.\n";<BR>
+&nbsp;&nbsp;&nbsp;else<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;v"El primer numero esta en la posicion "&lt;&lt;p&lt;&lt;".\n";<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstring.html">Cabecera <I>cstring</I></A>: Contiene funciones para el manejo de cadenas de caracteres c y arreglos.
+<LI><A href="quickfile:cstring_strchr.html">Función <I>strchr</I></A>: Busca la primer ocurrencia de un caracter dentro una cadena.
+<LI><A href="quickfile:cstring_strrchr.html">Función <I>strrchr</I></A>: Busca la última ocurrencia de un caracter dentro una cadena.
+</UL>

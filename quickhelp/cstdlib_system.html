@@ -1,0 +1,39 @@
+<B>Función <I>system</I></B>
+<BR><BR>
+Ejecuta un comando o programa externo.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>int system ( const char* cmd );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstdlib&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Invoca al intérprete de comandos del sistema operativo para ejecutar el comando especificado en <I>cmd</I>  (una cadena de caracteres c). Devuelve el codigo de salida del programa/comando ejecutado (normalmente 0 indica exito, otro valor indica error), o -1 si no pudo ejecutarlo. Notar que esta ejecución es síncrona, es decir, que el programa esperará a que termine de ejecutarse el comando.
+<BR><BR>
+<A href="example:cstdlib_system.eje">Ejemplo</A>:<BR><CODE>
+&nbsp;&nbsp;&nbsp; string archivo;<BR>
+&nbsp;&nbsp;&nbsp; system("dir");<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Ingrese el nombre de un archivo: ";<BR>
+&nbsp;&nbsp;&nbsp; getline(cin,archivo);<BR>
+&nbsp;&nbsp;&nbsp; int ret;<BR>
+&nbsp;&nbsp;&nbsp; if (archivo=="")<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ret = system("notepad.exe");<BR>
+&nbsp;&nbsp;&nbsp; else<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ret = system((string("notepad.exe ")+archivo).c_str());<BR>
+&nbsp;&nbsp;&nbsp; switch (ret) {<BR>
+&nbsp;&nbsp;&nbsp; case 0:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Programa lanzado correctamente"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; case -1:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Error al lanzar el programa"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; default:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"El programa se ejecutó y devolvió: "&lt;&lt;ret&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstdlib.html">Cabecera <I>cstdlib</I></A>: Contiene funciones generales, incluyendo funciones para el manejo de memoria, conversion de tipos, control de proceso, etc.
+<LI><A href="quickfile:cstdlib_getenv.html">Función <I>getenv</I></A>: devuelve el valor de una variable de entorno.
+</UL>

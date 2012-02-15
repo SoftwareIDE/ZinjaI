@@ -1,0 +1,37 @@
+OBJS=${OBJS_DIR}/longstr.o ${OBJS_DIR}/fileutils.o ${OBJS_DIR}/strs.o ${OBJS_DIR}/parser.o ${OBJS_DIR}/srchtbl.o ${OBJS_DIR}/cplex.o ${OBJS_DIR}/cpkeyw.o ${OBJS_DIR}/macread.o ${OBJS_DIR}/macro.o ${OBJS_DIR}/token.o ${OBJS_DIR}/expr.o ${OBJS_DIR}/process.o ${OBJS_DIR}/cparser.o ${OBJS_DIR}/skeleton.o
+
+${OBJS_DIR}/cplex.o: cpp/cpplib/cplex.c
+	${GCC} ${OPTS} -c cpp/cpplib/cplex.c -o $@
+${OBJS_DIR}/cpkeyw.o: cpp/cpplib/cpkeyw.c
+	${GCC} ${OPTS} -c cpp/cpplib/cpkeyw.c -o $@
+${OBJS_DIR}/macread.o: cpp/cpplib/macread.c
+	${GCC} ${OPTS} -c cpp/cpplib/macread.c -o $@
+${OBJS_DIR}/macro.o: cpp/cpplib/macro.c
+	${GCC} ${OPTS} -c cpp/cpplib/macro.c -o $@
+${OBJS_DIR}/token.o: cpp/cpplib/token.c
+	${GCC} ${OPTS} -c cpp/cpplib/token.c -o $@
+${OBJS_DIR}/expr.o: cpp/cpplib/expr.c
+	${GCC} ${OPTS} -c cpp/cpplib/expr.c -o $@
+${OBJS_DIR}/process.o: cpp/cpplib/process.c
+	${GCC} ${OPTS} -c cpp/cpplib/process.c -o $@
+
+
+${OBJS_DIR}/parser.o: common/parser.c
+	${GCC} ${OPTS} -O2 -c common/parser.c -o $@
+${OBJS_DIR}/srchtbl.o: common/srchtbl.c
+	${GCC} ${OPTS} -c common/srchtbl.c -o $@
+
+
+${OBJS_DIR}/longstr.o: misc/longstr.c
+	${GCC} ${OPTS} -c misc/longstr.c -o $@
+${OBJS_DIR}/fileutils.o: misc/fileutils.c
+	${GCC} ${OPTS} -c misc/fileutils.c -o $@
+${OBJS_DIR}/strs.o: misc/strs.c
+	${GCC} ${OPTS} -c misc/strs.c -o $@
+	
+
+${OBJS_DIR}/cparser.o: cpp/cparser.c
+	${GCC} ${OPTS} -c cpp/cparser.c -o $@
+${OBJS_DIR}/skeleton.o: cpp/skeleton.c
+	${GCC} ${OPTS} -c cpp/skeleton.c -o $@
+

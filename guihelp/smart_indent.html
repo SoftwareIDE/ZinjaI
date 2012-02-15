@@ -1,0 +1,21 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Edición Inteligente</B><BR><BR>
+&nbsp;&nbsp;&nbsp; La edición inteleigente es una asistencia que ofrece ZinjaI mientras usted escribe su código. Su principal funcionalidad es el indentado automático. Si usted tiene </I>Edición Inteligente<I> activado su código se se irá indentando automáticamente mientras lo escribe, sin necesidad de que utilice la tecla de tabulación. Las reglas para el indentado son:<BR>
+<UL>
+<LI>Cada vez que se abre una llave se incrementa un nivel el indentado.
+<LI>Cuando una instrucción ocupa más de una línea las lineas adicionales (todas menos la primera) presentarán un nivel más de indentado.
+<LI>Cuando se introducen los dos puntos luego de las palabras claves <I>public</I>, <I>protected</I>, <I>private</I>, <I>case</I> o <I>default</I> estas se indentarán de acuerdo a la llave que abre el bloque en el cual están insertas (si la sintaxis es correcta este bloque debería ser la clase, estructura, o el <I>switch</I> según corresponda).
+<LI>Cuando se pulsa enter luego de un <I>if</I>, <I>else</I>, <I>for</I>, <I>do</I> o <I>while</I> que no abra una bloque de código (no tiene una llave a continuación), la siguiente línea presentará un nivel de indentado mayor. Esto es válido tambien cuando se anindan unos dentro de otros.
+<LI>Cuando se escribe la palabra clave <I>else</I> ésta se alinea automáticamente de acuerdo al <I>if</I> al cual pertenezca. Esto se debe a que cuando hay multiples <I>if</I>s anidados sin sus correspondientes llaves, el cursor se ubica luego de la sentencia para el <I>true</I> a la altura del primer <I>if</I> lo cual resulta correcto si la siguiente linea es una instucción fuera de los bloques condicionales, pero puede no ser la altura a la que iría el <I>else</I>.
+<LI>Cuando una línea comienza con una llave que cierra un bloque de código esta se alínea automáticamente de acuerdo a la llave que abre el correspondiente bloque.
+<LI>Cuando se escribe una directiva de preprocesador esta se alinea automáticamente a la izquierada (sin indentado).
+<LI>Luego de un comentario, o una llave que cierra un bloque, se mantiene el indentado.
+<LI>Cuando una linea comienza con una llave que abre un bloque de código, la misma se ubica al mismo nivel que la línea anterior.
+</UL><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Puede aplicar estas reglas en un bloque de código ya escrito para reacomodar su indentado utilizando la opción <A href="menu_editar.html#indentar_bloque">Indentar Bloque</A> del menú <A href="menu_editar.html">Edicion</A>.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Otra característica adicional es que cuando se presiona enter luego de abrir un bloque (con una llave), si Zinaji detecta (tomando por referencia el indentado) que se está abriendo un bloque nuevo, autómaticamente agrega la llave complementaria en la línea siguiente a la línea introducida por el enter. Ademas, si la llave abría la definición de atributos y métodos de una clase o estructura, se agrega el carcater punto y coma a continuación de la nueva llave.<BR>
+<BR>
+</BODY></HTML>

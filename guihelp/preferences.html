@@ -1,0 +1,130 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Diálogo <I>Preferencias</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Esta ventana permite configurar el aspecto y comportamiento general de ZinjaI. Para acceder a ella puede utilizar la opción <I>Preferencias</I> del menú <I>Archivo</I> o el atajo de teclado <I>Ctrl+P</I>. Las opciones se encuentran agrupadas de la siguiente forma:<BR><BR>
+
+<A name="general"><BR></A>
+<B>Pestaña General</B>: Muestra algunas opciones sobre el comportamiento del sistema.<UL>
+	<LI><B>Idioma de la interfaz</B>: Permite alternar el idioma entre español e ingles. Este idioma solo se aplica en la interfaz de <I>ZinjaI</I>, no en los mensajes del compilador. Deber reiniciar el entorno para que el cambio tenga efecto.</LI>
+	<LI><B>Mostrar Splash mientras se carga el entorno</B>: Si está activada se muestra una pantalla con el logo del programa mientras se carga el entorno.</LI>
+	<LI><B>Mostrar sugerencias al inicio</B>: Permite mostrar un cuadro de sugerencias cada vez que ingresa al sistema. Las sugerencias refieren mayormente al uso del entorno y presentan tips para facilitar y agilizar el desarrollo. Si se utiliza el <I>Panel de Bienvenida</I>, la ventana de sugerencia no aparecerá y esta opcion no tendrá ningún efecto, ya las sugerencias se muestran en la parte inferior de dicho panel.</LI>
+	<LI><B>Mostrar panel de bienvenida</B>: al iniciar, muestra en el área de código un panel con opciones para abrir archivos/proyectos recientes o crear nuevos</LI>
+	<LI><B>Mostrar pestañas de ayuda en diálogos</B>: Muestra una pestaña o cuadro de ayuda adicional en algunos diálogos como <I>Preferencias</I>, <I>Opciones de Compilación y Ejecución de Proyectos</I>, <I>Asistente Para Nuevo Archivo/Proyecto</I>, etc.</LI>
+	<LI><B>Archivos en el historial</B>: Determina el número de archivos que se mostrarán en el submenú <A href="menu_archivo.html#abiertos_recientemente">Abiertos Recientemente</A> del menú <A href="menu_archivo.html">Archivo</A>. Cualquiera sea el número seleccionado, el verdadero historial de <I>ZinjaI</I> guarda 50 archivos y 50 proyectos. Para acceder a las listas completas puede utilizar el item <I>Mas...</I> del los submenues de archivos y proyectos recientes del <A href="menu_archivo.html">Menu Archivo</A>, o el link correspondiente en el panel de bienvenida.</LI>
+	<LI><B>Mostrar el explorador de archivos al iniciar</B>: Si esta opción está activada, cuando se inicie <I>ZinjaI</I> se desplegará automáticamente el <A href="panel_explorer.html">panel del Explorador de Archivos</A>, mostrando el árbol de archivos y subdirectorios del último directorio trabajado (en el cual se guardó o abrió algún archivo).</A></LI>
+	<LI><B>Agrupar arboles en un solo panel</B>: .</A></LI>
+	<LI><B>Ocultar paneles automaticamente</B>: .</A></LI>
+	<LI><B>Utilizar una sola instancia de ZinjaI</B>: .</A></LI>
+	<LI><B>Verificar si  existen nuevas versiones al iniciar</B>: Si esta activado, cada vez que ingrese a <I>ZinjaI</I> este intentará conectar a travez de Internet con su sitio web para verificar si existen nuevas versiones, y en caso afirmativo advertirá al usuario. Advertencia: Esta opción puede demorar varios segundos el inicio de <I>ZinjaI</I> si su red no se encuentra correctamente configurada o la resolución de dominios es considerablemente lenta.</LI>
+	<LI><B>Mostrar errores de compilacion en Español</B> (solo GNU/Linux): .</A></LI>
+	<LI><B>Crear/Actualizar icono de ZinjaI en el escritorio</B> (solo GNU/Linux): .</A></LI>
+</UL><BR><BR>
+	
+<A name="programa_simple"><BR></A>
+<B>Pestaña Programa/Proyecto</B>: Muestra opciones relacionadas a la creación, ejecución de programas simples y proyectos.<UL>
+	<LI><B>Accion para nuevo archivo</B>: Configura el comportamiento de la opción <I>Nuevo...</I> del menú <I>Archivo</I>. Las posibles son:<UL>
+		<LI><B>Mostrar asistente</B>: muestra el asistente para nuevo archivo. Ver <A href="new_wizard.html">Díalogo Asistente Para Nuevo Archivo</A>.</LI>
+		<LI><B>Crear a partir de plantilla</B>: Crea un nuevo archivo a partir de la plantilla predeterminada. Esta plantilla se configura en la hoja <A href="new_wizard.html#templates">Nuevo desde Plantilla<A> del diálogo <I>Asistente Para Nuevo Archivo</I>.</LI>
+		<LI><B>Crear archivo en blanco</B>: Crea un nuevo archivo/programa completamente en vacío.</LI>
+	</UL></LI>
+	<LI><B>Carpeta de plantillas</B>: Especifica el directorio en la que el sistema buscará las plantillas de programas para mostrar en la hoja <A href="new_wizard.html#templates">Nuevo Desde Plantilla</A> del <I>Asitente Para Nuevo Archivo</I>. Este directorio es el mismo que se utiliza para buscar las plantillas de proyecto para la hoja <A href="new_wizard.html#project">Projecto</A> del mismo asitente. Vea tambien <A href="simple_programs.html#templates">Plantillas de Codigo</A> y <A href="projects.html#templates">Plantillas de Proyectos</A>.</LI>
+	<LI><B>Parametros extra para el compilador</B>*: Permite especificar parametros adicionales para que <I>ZinjaI</I> utilice en la compilación. Por defecto, el valor es "-Wall -pedantic-errors" (para mostrar todos los warnings y ajustarse al estándar). El único parámetro que siempre se utiliza aunque no se explicite es "-g" el cual indica al compilador que debe incluir información de depuración en el ejecutable. Vea también <A href="gcc_index.html">Ayuda del Compilador Utilizado</A>.</LI>
+	<LI><B>Esperar una tecla luego de la ejecucion</B>*: Indica que se debe esperar a que el usuario presiones enter luego de finalizar la ejecución del programa para evitar que la ventana del mismo se cierre inmediatamente sin poder ver los resultados.</LI>
+	<LI><B>Siempre pedir argumentos al ejecutar</B>*: Permite hacer que <I>ZinjaI</I> solicite los argumentos que debe pasarle al ejecutable antes de cada ejecución. En caso contrario, se utilizarán siempre los mismos (se configuran en el <A href="compile_config.html">Diálogo Opciones de Compilación y Ejecución</A> y por defecto se encuentran vacíos).</LI>
+	<LI><B>Agregar la extensión cpp si se omite al guardar</B>: Si esta activo, cuando se intente guardar un archivo sin extensión <I>Zinjai</LI> añadirá automáticamente y sin pedir confirmación la extensión cpp al nombre del mismo. En caso contrario, se preguntará al usuario.</LI>
+	<LI><B>Ejecutar el ultimo cpp si se intenta ejecutar una cabecera</B>: Si esta activo, cuando se intente ejecutar un archivo de cabecera (por ejemplo, al presionar <I>F9</I> teniendo seleccionado un <I>.h</I>), se intentará en realidad volver a ejecutar el último cpp ejecutado. Esto se debe a que en general no tiene sentido intentar ejecutar un archivo de cabecera ya que no debería contener a un programa.</LI>
+	<LI><B>Cantidad de pasos en paralelo al compilar</B>: Define cuantas instancias de gcc se pueden lanzar en paralelo en la etapa de compilación. Esto permite reducir los tiempos de compilación de un proyecto en PCs multicore.</LI>
+	<LI><B>Detener la compilación de un proyecto al encontrar el primer error</B>: .</LI>
+	<LI><B>Guardar siempre el proyecto al salir</B>: Guarda automáticamente un proyecto al cerrarlo sin preguntar. Si esta opción no está activada <I>ZinjaI</I> preguntará si desea guardarlo cada vez que cierre un proyecto que haya sufrido modificaciones.</LI>
+<LI><B>Cerrar todos los demas archivos al abrir un proyecto</B>: Cuando se crea o abre un proyecto <I>ZinjaI</I> puede cerrar automáticamente todos los fuentes y otros archivos que se encuentren abiertos antes de abrir el proyecto si esta opción está activada. En caso contrario, se preguntará al usuario antes de hacerlo.</LI>-->
+	<LI><B>Mostrar el explorador de archivos al abrir un proyecto</B>: Si esta opción está activada, cuando se abra un proyecto, <I>ZinjaI</I> desplegará automáticamente el <A href="panel_explorer.html">panel del Explorador de Archivos</A> mostrando el árbol de archivos y subdirectorios del directorio del proyecto en lugar del panel del <A href="panel_project_tree.html">Arbol de Archivos</A></LI>
+</UL><BR><BR>
+* Estas opciones son las utilizadas por defecto al crear un nuevo programa simple, pero pueden ser modificadas para cada programa en particular utilizando el <A href="compile_config.html">Diálogo Opciones de Compilación y Ejecución</A>.<BR>
+<BR>
+
+<A name="estilo"><BR></A>
+<B>Pestaña Estilo</B>: Permite definir el formato en que se visualiza el código fuente.<UL>
+	<LI><B>Colorear sintaxis</B>: Remaraca los distintos elementos del código fuente (operadores, constantes, palabras clave, comentarios, etc) con diferentes colores y atributos para facilitar su lectura. Ver <A href="syntax_colours.html">Coloreado de Sintaxis</A>.</LI>
+	<LI><B>Coloreares inversos</B>: Esta opción cambia el esquema de colores para el coloreado de sintaxis, por un esquema para fondo negro.</LI>
+	<LI><B>Ajuste de linea dinamico</B>: Muestra en varios renglones una linea si es más ancha que el área de código actual. Se indica con una flecha en comienzo de cada renglón que continúa una linea anterior.</LI>
+	<LI><B>Mostrar espacios y caracteres de fin de linea</B>: .</LI>
+	<LI><B>Mostrar numeros de linea</B>: Muestra los números de línea en del código fuente en el márgen izquierdo del área de código.</LI>
+	<LI><B>Habilitar plegado de codigo</B>: Muestra las marcas de plegado de código en el margen izquierdo del área de código. Ver <A href="code_folding.html">Plegado de Código</A>.</LI>
+	<LI><B>Ancho del tabulado</B>: Define a cuantos espacios en blanco equivale el caracter de tabulación (tecla TAB). Esta correspondencia es sólo para la visualización, ya que en los archivos fuente se guarda el caracter de tabulación y no los espacios en blanco.</LI>
+	<LI><B>Colocar espacios en lugar de tabs</B>: .</LI>
+	<LI><B>Tamaño de la fuente en pantalla</B>: Define el tamaño con que se mostrarán los códigos fuentes. Este tamaño no afecta las fuentes de los paneles ni menúes. Es además, independiente del zoom que el usuario puede realizar sobre un fuente en particular con la tecla <I>Control</I> y la rueda del mouse.</LI>
+	<LI><B>Tamaño de la fuente para impresion</B>: .</LI>
+	<LI><B>Ocultar barra de menues al pasar a pantalla completa</B>: Define si permanece o no visible la barra de menues cuando se visualiza un fuente a pantalla completa (con la opción <A href="menu_ver.html#ver_a_pantalla_completa">Ver a pantalla completa</A> del menu <A href="menu_ver.html">Ver</A>.</LI>
+	<LI><B>Ocultar barras de herramientas al pasar a pantalla completa</B>: Define si permanecen o no visibles las barras de herramientas cuando se visualiza un fuente a pantalla completa (con la opción <A href="menu_ver.html#ver_a_pantalla_completa">Ver a pantalla completa</A> del menu <A href="menu_ver.html">Ver</A>.</LI>
+	<LI><B>Ocultar paneles al pasar a pantalla completa</B>: Define si permanecen o no visibles los paneles que puedan estar mostrandose en el momento de pasar a pantallas completa (con la opción <A href="menu_ver.html#ver_a_pantalla_completa">Ver a pantalla completa</A> del menu <A href="menu_ver.html">Ver</A>. Notar que aunque esta opción esté activada, una vez ingresado al modo pantalla completa puede utilizar los comandos del menú <A href="menu_ver.html">Ver</A> para volver a mostrar un panel.</LI>
+</UL><BR><BR>
+
+<A name="asistencias"><BR></A>
+<B>Pestaña Asistencias</B>: Permite activar y desactivar las diferentes ayudas que <I>ZinjaI</I> ofrece a la hora de escribir un código.<UL>
+	<LI><B>Edicion inteligente</B>: Esta opción le permite escribir su código sin preocuparse por el indentado del mismo, ya que <I>ZinjaI</I> lo realiza automáticamente. Ver <A href="smart_indent.html">Edicion Inteligente</A></LI>
+	<LI><B>Cerrar llaves automaticamente</B>: Si esta ayuda esta activada <I>ZinjaI</I> inserta automáticamente una llave que cierra si usted presiona enter luego de ingresar una llave que abre un bloque. Se inserta también un punto y coma luego de la llave si la llave insertada corresponde al bloque de una clase o estructura.</LI>
+	<LI><B>Corregir indentado al pegar</B>: hace que <I>ZinjaI</I> reajuste el indentado del bloque de código pegado según las reglas del indentado inteligente cuando se pega un texto con <I>Ctrl+V</I>. Notar que si se utiliza el atajo de teclado alternativo para pegar <I>Shift+Insert</I> estas reglas no se aplican.</LI>
+	<LI><B>Controlar que quede una linea en blanco al final de cada archivo</B>: si esta opción está activada, antes de compilar un fuente, <I>ZinjaI</I> verificará que la última línea del archivo esté vacia, agregando automáticamente un enter al final de no ser así. Esto evita que el compilador arroje la advertencia "no new line at end of file".</LI>
+	<LI><B>Utilizar tooltips para identificar tipos de variables</B>: Con esta opción <I>ZinjaI</I> mostrará un globo de ayuda (tooltip) con el tipo de una variable si usted deja el mouse sobre el nombre de la misma durante un segundo y medio. Puede ocurrir que no se muestre nada si el sistema no reconoce el nombre de variable, o que se muestre su contenido en lgar de su tipo si se está depurando el programa.</LI>
+	<LI><B>Utilizar autocompletado mientras escribe</B>: Muestra los menúes con sugerencias de autocompletado cuando escribe su código. Ver <A href="autocompletion.html">Autocompletado</A>.</LI>
+	<LI><B>Mostrar ayuda de llamadas a funciones y metodos</B>: Muestras las ayudas de llamadas mientras escribe su código. Ver <A href="calltips.html">Ayuda Para Llamadas</A>.</LI>
+	<LI><B>Indices de autocompletado a utilizar</B>: Permite selecionar las bases de dato que se utilizarán para mostrar las listas de autocompletado y las ayudas de llamadas a funciones. Estas listas se encuentran en un directorio determinado por la opción <I>Ubicacion de los Indices de Autocompletado</I> de la pestaña <I>Rutas</I> de este mismo diálogo.</LI>
+</UL><BR><BR>
+
+
+
+
+<A name="temas"><BR></A>
+<B>Temas de Iconos</B>: Permite variar el aspecto de <I>Zinjai</I> utilizando un conjunto de imagenes diferentes. Seleccione el tema que desee, haga click en aplicar y reinicie <I>ZinjaI</I> para completar el cambio. Puede encontrar información acerca de cómo armar su propio tema en el archivo <I>readme.txt</I> del subdirectorio <I>skins</I> dentro de la instalacion de <I>ZinjaI</I>.
+<BR><BR>
+
+<A name="barras"><BR></A>
+<B>Barras de herramientas</B>: Permite seleccionar qué barras de herramientas serán visibles y qué subconjunte de comandos contendra cada una de ellas. Además, permite elegir el tamaño de los iconos utilizados. Los tamaños disponibles pueden variar segun el tema de iconos seleccionado.
+<BR><BR>
+
+<A name="depuracion"><BR></A>
+<B>Pestaña Depuracion</B>: Define el comportamiento del entorno durante la depuración de un programa/proyecto<UL>
+	<LI><B>Permitir editar los fuentes durante la depuracion</B>: si esta opción no está seleccionada cada vez que comienza la depuración los archivos abiertos pasan a modo solo lectura, por lo cual no se podrán modificar hasta que no finalice la depuración. Esto puede ser útil para garantizar la coherencia entre el programa en ejecución y el código que se está mostrando.</LI>
+	<LI><B>Reacomodar los paneles al inciar/finalizar la depuracion</B>: Esta muestra automáticamente los paneles de <I>Trazado Inverso</I> en <I>Inspección</I> al iniciar la depuración y oculta los demás paneles que puedan encontrarse en la parte inferior de la ventana (como resultados de la compilación, ayuda rápida, etc). Cuando la depuración finaliza, se restaura la vista anterior; es decir, se ocultan los paneles de depuración y se vuelven a mostrar los paneles que estaban antes de comenzar el proceso.</LI>
+	<LI><B>Colocar el panel de inspecciones a la derecha</B>: Muestra el panel de inspecciones acoplado en la parte derecha de la ventana principal, en lugar de colocarlo abajo.</LI>
+	<LI><B>Mostar lista de hilos de ejecucion</B>: Muestra un panel adicional con la lista de hilos de ejecución. Utílicelo sólo para depurar aplicaciones paralelas de memoria compartida. En otro caso, el panel no es útil y su actualización producir pequeñas demoras.</LI>
+	<LI><B>Mostrar el panel de mensajes del depurador</B>: El panel de mensajes del depurador permite ver las advertencias y los avisos de gdb. En este panel verá mensajes indicando, por ejemplo, la creación o destrucción de hilos, el cargado de bibliotecas externas, etc.</LI>
+	<LI><B>Reacomodar las barras de herramientas al inciar/finalizar la depuracion</B>: Esta opción oculta las barras de herramientas de <I>Archivos</I>, <I>Edición</I>, <I>Busqueda</I> y <I>Miscelánea</I>; y muestra la barra de herramientas de <I>Depuración</I> al comenzar la misma. Cuando la depuración finaliza, automáticamente se restauran las barras que estaban visbles antes de comenzar.</LI>
+	<LI><B>Cargar toda la información de depuración antes de comenzar</B>: El depurador puede cargar y analizar toda la información contenida en el ejecutable antes de comenzar la ejecución, o ir cargando bajo demanda a medida que el proceso avanza.</LI>
+	<LI><B>Cargar informacion de bibliotecas externas</B>: Si un programa enlaza con bibliotecas externas y estas contienen información de depuración, utilice esta opción para determinar si dicha información debe cargarse o no para depurar. Usualmente, a menos que se esté depurando la biblioteca específicamente, conviene no cargarla para evitar así mayores demoras en el inicio de la depuración.</LI>
+	<LI><B>Recompilar automaticamente antes de depurar si es necesario</B>: Si esta opción está activada, se verifica que el ejecutable que se va a depurar esté actualizado en relación a los fuentes antes de comenzar, y se recompila si es necesario. Si esta opción no está activada, el depurador intenta cargar el ejecutable sin realizar ninguna verificación. En este caso, el usuario es el responsable de generar y actualizar el mismo mediante las opciones <I>Compilar</I> o <I>Ejecutar...</I> del menú <I>Ejecucion</I>.</LI>
+	<LI><B>Salir del modo depuracion si el programa finaliza normalmente</B>: Esta opción detiene inmediatamente la depuración cuando el programa depurado finaliza correctamente (es decir, que no se interrumpió por violación de segmento u otro error), restaurando el modo normal de trabajo, ya que una vez finalizada la ejecución el depurador ya no puede proporcionar ninguna información nueva al usuario.</LI>
+	<LI><B>Siempre ejecutar en el depurador</B>: Si selecciona esta opción su programa/proyecto se ejecutará en modo depuración aún cuando utilice la opción <I>Ejecutar...</I> del menú <I>Ejecución</I>.</LI>
+	<LI><B>Mostrar ZinjaI cuando se interrumpe la ejecucion</B>: Si esta opción está seleccionada, cuando se interrumpe la ejecución durante la depuración (porque se alcanzó un punto de interrupción o porque le programa recibió una semal, por ejemplo), se muestra (pasandole el foco) automáticamente la ventana de <I>ZinjaI</I> (ya que generalmente queda detrás de la ventana del programa que se estaba depurando).</LI>
+	<LI><B>Utilizar colores en la tabla de inspecciones</B>: .</LI>
+	<LI><B>Archivo de definiciones de macros para gdb</B>: .</LI>
+	<LI><B>Fuentes a evitar para el step-in</B>: .</LI>
+</UL><BR><BR>
+
+
+<A name="rutas1"><BR></A>
+<B>Pestaña Rutas</B>: Configura los directorios en que <I>ZinjaI</I> busca sus archivos u otros programas complementarios, y el directorio temporal. Estas rutas deberían configurarse automáticamente la primera vez que se inicia el sistema. Si se especifican rutas relativas se considera como directorio de referencia el directorio donde se instaló/ejecutó <I>ZinjaI</I>.<UL>
+	<LI><B>Ubicacion de la ayuda rapida</B>: Directorio en que <I>ZinjaI</I> busca los archivos de la ayuda rápida (indice, contenidos y ejemplos). Por defecto el valor es "quickhelp".</LI>
+	<LI><B>Ubicacion de los indices de autocompletado</B>: Directorio en que <I>ZinjaI</I> busca los indices para el autocompletado y las ayudas de llamadas a funciones. Todos los archivos de este directorio conforman la lista de indices para autocompletado (ver <I>Indices de autocompletado a utilizar</I> en la pestaña <I>Asistencias</I> de este mismo diálogo).</LI>
+	<LI><B>Directorio temporal</B>: Ubicación donde <I>ZinjaI</I> escribe archivos temporales (como por ejemplo fuentes y ejecutables  para compilar programas sin nombre). Por defecto se crea un directorio "zinjai" o ".zinjai" en el <I>home</I> del usuario (normalmente "/home/ususario/.zinjai" en GNU/Linux, o "c:\Documents and Settings\Usuario\zinjai" en Windows). En esta misma ubicación <I>ZinjaI</I> guarda su archivo de configuración.</LI>
+	<LI><B>Directorio proyectos</B>: Valor por defecto para la ubicación de nuevos proyectos. Este valor aparece en el campo "Ubicacion del proyecto" del <A href="new_wizard.html#projetc">Asistente Para Nuevo Archivo</I>, y puede ser igualmente modificado antes de crear el mismo.</LI>
+	<LI><B>Directorio de MinGW</B> (solo Windows): Directorio de la instalación de <I>MinGW</I> a utilizar. Por defecto se utiliza un subdirectorio "mingw" dentro del directorio donde se instaló <I>ZinjaI</I> en sistemas Windows. Esta opción solo aparece en sistemas Windows.</LI>
+<!--	<LI><B>Directorio de imagenes</B>: Directorio de donde <I>ZinjaI</I> cargará todas las imágenes que utilice para su interfase. Podría considerarse el directorio del <I>skin</I>. El valor por defecto es "imgs", pero podría utilizarse cualquier otro directorio que contenga al menos las imágenes de los árboles y fondos, respetando los tamaños.</LI>-->
+</UL><BR><BR>
+
+<A name="rutas2"><BR></A>
+<B>Pestaña Rutas</B>: Configura los comandos que <I>ZinjaI</I> utilza para llamar a otros programas que se comunican con la IDE, como el compilador, el depurador, el visor de imagenes, etc. Estas rutas deberían configurarse automáticamente la primera vez que se inicia el sistema. Si se especifican rutas relativas se considera como directorio de referencia el directorio donde se instaló/ejecutó <I>ZinjaI</I>.<UL>
+	<LI><B>Comando del compilador C++</B>:Comando con que <I>ZinjaI</I> compila programas C++. En sistemas GNU/Linux el valor por defecto es "g++", aunque puede quere utilizar "g++-x.x" para utilizar otra versión disponible en el sistema. En plataformas Windows valor por defecto es "mingw32-g++", ya que se utiliza la versión provista por <I>MinGW</I>, y no requiere el camino completo si l ruta "Directorio de MinGW" está correctamente especificada.</LI>
+	<LI><B>Comando del compilador C</B>: Comando con que <I>ZinjaI</I> compila programas C. En sistemas GNU/Linux el valor por defecto es "gcc", aunque puede quere utilizar "gcc-x.x" para utilizar otra versión disponible en el sistema. En plataformas Windows valor por defecto es "mingw32-gcc", ya que se utiliza la versión provista por <I>MinGW</I>, y no requiere el camino completo si l ruta "Directorio de MinGW" está correctamente especificada.</LI>
+	<LI><B>Comando del depurador</B>: Ubicación del depurador a utilizar. Por defecto toma los valores "gdb", y no es necesario cambiarlo si la ruta "Directorio de MinGW" está correctamente especificada.</LI>
+<!--	<LI><B>Comando del parser</B>: Ruta del programa que se utiliza para parsear los códigos fuentes para generar el <I>Árbol de Símbolos</I>. Por defecto el comando es "cbrowser.exe" y "./cbrowser" para sistemas Windows y GNU/Linux respectivamente.</LI>-->
+	<LI><B>Comando de la terminal</B>: Especifica el comando que debe utilizar para lanzar un programa en una nueva terminal (esto es útil en sistemas GNU/Linux ya que por defecto los procesos hijos de un programa corren en su misma terminal en lugar de generar una nueva ventana). Este campo debería estar vacío en plataformas Windows, y tomar un valor como "xterm -e" o "konsole -e" en GNU/Linux (puede hacer click en el botón de los tres puntos para que <I>ZinjaI</I> intente determinar que terminales se encuentran en el sistema y muestre una lista de opciones).</LI>
+	<LI><B>Comando del visor de imagenes</B>: Especifica el programa que se debe utilizar para desplegar determinado gráficos (como por ejemplo, los dibujos de jerarquía de clases).</LI>
+	<LI><B>Comando del navegador Web</B>: Especifica con que programa se abrirán las paginas Web que se requieran (por ejemplo, los enlaces de la ayuda, o la documentación generada por <I>Doxygen</I>). Por defecto el valor es "firefox" en GNU/Linux, y "shellexecute.exe" en Windows (esto equivale al browser por defecto del sistema).</LI>
+	<LI><B>Ubicación del ejecutable de Doxygen</B>: Especifica como llamar al ejecutable de <I>Doxygen</I> para generar la documentación. Notar que <I>Doxygen</I>, no se distribuye con <I>ZinjaI</I>, sino que debe ser descargado e instalado por separado.</LI>
+	<LI><B>Ubicación del ejecutable de wxFormBuilder</B>: Especifica como llamar al ejecutable de <I>wxFormBuilder</I> para generar el código de las interfases visuales. Notar que <I>wxFormBuilder</I>, no se distribuye con <I>ZinjaI</I>, sino que debe ser descargado e instalado por separado.</LI>
+</UL><BR><BR>
+
+</BODY>
+</HTML>

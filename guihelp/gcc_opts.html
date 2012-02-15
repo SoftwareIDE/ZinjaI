@@ -1,0 +1,651 @@
+<HTML><HEAD><TITLE>Manpage of GCC</TITLE>
+</HEAD><BODY>
+<H2>OPTIONS</H2>
+
+<A NAME="lbAF">&nbsp;</A>
+<H2>Option Summary</H2>
+
+<A NAME="ixAAF"></A>
+Here is a summary of all the options, grouped by type.  Explanations are
+in the following sections.
+<DL COMPACT>
+<DT><I>Overall Options</I><DD>
+<A NAME="ixAAG"></A>
+<B>-c  -S  -E  -o</B> <I>file</I>  <B>-pipe  -pass-exit-codes  
+-x</B> <I>language</I>  <B>-v  -###  --help  --target-help  --version</B>
+<DT><I>C Language Options</I><DD>
+<A NAME="ixAAH"></A>
+<B>-ansi  -std=</B><I>standard</I>  <B>-aux-info</B> <I>filename</I> 
+<B>-fno-asm  -fno-builtin  -fno-builtin-</B><I>function</I> 
+<B>-fhosted  -ffreestanding  -fms-extensions 
+-trigraphs  -no-integrated-cpp  -traditional  -traditional-cpp 
+-fallow-single-precision  -fcond-mismatch 
+-fsigned-bitfields  -fsigned-char 
+-funsigned-bitfields  -funsigned-char 
+-fwritable-strings</B>
+<DT><I>C<FONT SIZE="-2">++</FONT> Language Options</I><DD>
+<A NAME="ixAAI"></A>
+<B>-fabi-version=</B><I>n</I>  <B>-fno-access-control  -fcheck-new 
+-fconserve-space  -fno-const-strings 
+-fno-elide-constructors 
+-fno-enforce-eh-specs 
+-ffor-scope  -fno-for-scope  -fno-gnu-keywords 
+-fno-implicit-templates 
+-fno-implicit-inline-templates 
+-fno-implement-inlines  -fms-extensions 
+-fno-nonansi-builtins  -fno-operator-names 
+-fno-optional-diags  -fpermissive 
+-frepo  -fno-rtti  -fstats  -ftemplate-depth-</B><I>n</I> 
+<B>-fuse-cxa-atexit  -fno-weak  -nostdinc++ 
+-fno-default-inline  -Wabi  -Wctor-dtor-privacy 
+-Wnon-virtual-dtor  -Wreorder 
+-Weffc++  -Wno-deprecated 
+-Wno-non-template-friend  -Wold-style-cast 
+-Woverloaded-virtual  -Wno-pmf-conversions 
+-Wsign-promo</B>
+<DT><I>Objective-C Language Options</I><DD>
+<A NAME="ixAAJ"></A>
+<B>-fconstant-string-class=</B><I>class-name</I> 
+<B>-fgnu-runtime  -fnext-runtime 
+-fno-nil-receivers 
+-fobjc-exceptions 
+-freplace-objc-classes 
+-fzero-link 
+-gen-decls 
+-Wno-protocol  -Wselector -Wundeclared-selector</B>
+<DT><I>Language Independent Options</I><DD>
+<A NAME="ixAAK"></A>
+<B>-fmessage-length=</B><I>n</I>  
+<B>-fdiagnostics-show-location=</B>[<B>once</B>|<B>every-line</B>]
+<DT><I>Warning Options</I><DD>
+<A NAME="ixAAL"></A>
+<B>-fsyntax-only  -pedantic  -pedantic-errors 
+-w  -Wextra  -Wall  -Waggregate-return 
+-Wcast-align  -Wcast-qual  -Wchar-subscripts  -Wcomment 
+-Wconversion  -Wno-deprecated-declarations 
+-Wdisabled-optimization  -Wno-div-by-zero  -Wendif-labels 
+-Werror  -Werror-implicit-function-declaration 
+-Wfloat-equal  -Wformat  -Wformat=2 
+-Wno-format-extra-args -Wformat-nonliteral 
+-Wformat-security  -Wformat-y2k 
+-Wimplicit  -Wimplicit-function-declaration  -Wimplicit-int 
+-Wimport  -Wno-import  -Winit-self  -Winline 
+-Wno-invalid-offsetof  -Winvalid-pch 
+-Wlarger-than-</B><I>len</I>  <B>-Wlong-long 
+-Wmain  -Wmissing-braces 
+-Wmissing-format-attribute  -Wmissing-noreturn 
+-Wno-multichar  -Wnonnull  -Wpacked  -Wpadded 
+-Wparentheses  -Wpointer-arith  -Wredundant-decls 
+-Wreturn-type  -Wsequence-point  -Wshadow 
+-Wsign-compare  -Wstrict-aliasing 
+-Wswitch  -Wswitch-default  -Wswitch-enum 
+-Wsystem-headers  -Wtrigraphs  -Wundef  -Wuninitialized 
+-Wunknown-pragmas  -Wunreachable-code 
+-Wunused  -Wunused-function  -Wunused-label  -Wunused-parameter 
+-Wunused-value  -Wunused-variable  -Wwrite-strings</B>
+<DT><I>C-only Warning Options</I><DD>
+<A NAME="ixAAM"></A>
+<B>-Wbad-function-cast  -Wmissing-declarations 
+-Wmissing-prototypes  -Wnested-externs  -Wold-style-definition 
+-Wstrict-prototypes  -Wtraditional 
+-Wdeclaration-after-statement</B>
+<DT><I>Debugging Options</I><DD>
+<A NAME="ixAAN"></A>
+<B>-d</B><I>letters</I>  <B>-dumpspecs  -dumpmachine  -dumpversion 
+-fdump-unnumbered  -fdump-translation-unit</B>[<B>-</B><I>n</I>] 
+<B>-fdump-class-hierarchy</B>[<B>-</B><I>n</I>] 
+<B>-fdump-tree-original</B>[<B>-</B><I>n</I>]  
+<B>-fdump-tree-optimized</B>[<B>-</B><I>n</I>] 
+<B>-fdump-tree-inlined</B>[<B>-</B><I>n</I>] 
+<B>-feliminate-dwarf2-dups -feliminate-unused-debug-types 
+-feliminate-unused-debug-symbols -fmem-report -fprofile-arcs 
+-frandom-seed=</B><I>string</I> <B>-fsched-verbose=</B><I>n</I> 
+<B>-ftest-coverage  -ftime-report 
+-g  -g</B><I>level</I>  <B>-gcoff -gdwarf-2 
+-ggdb  -gstabs  -gstabs+  -gvms  -gxcoff  -gxcoff+ 
+-p  -pg  -print-file-name=</B><I>library</I>  <B>-print-libgcc-file-name 
+-print-multi-directory  -print-multi-lib 
+-print-prog-name=</B><I>program</I>  <B>-print-search-dirs  -Q 
+-save-temps  -time</B>
+<DT><I>Optimization Options</I><DD>
+<A NAME="ixAAO"></A>
+<B>-falign-functions=</B><I>n</I>  <B>-falign-jumps=</B><I>n</I> 
+<B>-falign-labels=</B><I>n</I>  <B>-falign-loops=</B><I>n</I>  
+<B>-fbranch-probabilities -fprofile-values -fvpt -fbranch-target-load-optimize 
+-fbranch-target-load-optimize2 -fcaller-saves  -fcprop-registers 
+-fcse-follow-jumps  -fcse-skip-blocks  -fdata-sections 
+-fdelayed-branch  -fdelete-null-pointer-checks 
+-fexpensive-optimizations  -ffast-math  -ffloat-store 
+-fforce-addr  -fforce-mem  -ffunction-sections 
+-fgcse  -fgcse-lm  -fgcse-sm  -fgcse-las  -floop-optimize 
+-fcrossjumping  -fif-conversion  -fif-conversion2 
+-finline-functions  -finline-limit=</B><I>n</I>  <B>-fkeep-inline-functions 
+-fkeep-static-consts  -fmerge-constants  -fmerge-all-constants 
+-fmove-all-movables  -fnew-ra  -fno-branch-count-reg 
+-fno-default-inline  -fno-defer-pop 
+-fno-function-cse  -fno-guess-branch-probability 
+-fno-inline  -fno-math-errno  -fno-peephole  -fno-peephole2 
+-funsafe-math-optimizations  -ffinite-math-only 
+-fno-trapping-math  -fno-zero-initialized-in-bss 
+-fomit-frame-pointer  -foptimize-register-move 
+-foptimize-sibling-calls  -fprefetch-loop-arrays 
+-fprofile-generate -fprofile-use 
+-freduce-all-givs  -fregmove  -frename-registers 
+-freorder-blocks  -freorder-functions 
+-frerun-cse-after-loop  -frerun-loop-opt 
+-frounding-math -fschedule-insns  -fschedule-insns2 
+-fno-sched-interblock  -fno-sched-spec  -fsched-spec-load 
+-fsched-spec-load-dangerous  
+-fsched-stalled-insns=</B><I>n</I> <B>-sched-stalled-insns-dep=</B><I>n</I> 
+<B>-fsched2-use-superblocks 
+-fsched2-use-traces  -fsignaling-nans 
+-fsingle-precision-constant  
+-fstrength-reduce  -fstrict-aliasing  -ftracer  -fthread-jumps 
+-funroll-all-loops  -funroll-loops  -fpeel-loops 
+-funswitch-loops  -fold-unroll-loops  -fold-unroll-all-loops 
+--param</B> <I>name</I><B>=</B><I>value</I>
+<B>-O  -O0  -O1  -O2  -O3  -Os</B>
+<DT><I>Preprocessor Options</I><DD>
+<A NAME="ixAAP"></A>
+<B>-A</B><I>question</I><B>=</B><I>answer</I> 
+<B>-A-</B><I>question</I>[<B>=</B><I>answer</I>] 
+<B>-C  -dD  -dI  -dM  -dN 
+-D</B><I>macro</I>[<B>=</B><I>defn</I>]  <B>-E  -H 
+-idirafter</B> <I>dir</I> 
+<B>-include</B> <I>file</I>  <B>-imacros</B> <I>file</I> 
+<B>-iprefix</B> <I>file</I>  <B>-iwithprefix</B> <I>dir</I> 
+<B>-iwithprefixbefore</B> <I>dir</I>  <B>-isystem</B> <I>dir</I> 
+<B>-M  -MM  -MF  -MG  -MP  -MQ  -MT  -nostdinc  
+-P  -fworking-directory  -remap 
+-trigraphs  -undef  -U</B><I>macro</I>  <B>-Wp,</B><I>option</I> 
+<B>-Xpreprocessor</B> <I>option</I>
+<DT><I>Assembler Option</I><DD>
+<A NAME="ixAAQ"></A>
+<B>-Wa,</B><I>option</I>  <B>-Xassembler</B> <I>option</I>
+<DT><I>Linker Options</I><DD>
+<A NAME="ixAAR"></A>
+<I>object-file-name</I>  <B>-l</B><I>library</I> 
+<B>-nostartfiles  -nodefaultlibs  -nostdlib -pie 
+-s  -static  -static-libgcc  -shared  -shared-libgcc  -symbolic 
+-Wl,</B><I>option</I>  <B>-Xlinker</B> <I>option</I> 
+<B>-u</B> <I>symbol</I>
+<DT><I>Directory Options</I><DD>
+<A NAME="ixAAS"></A>
+<B>-B</B><I>prefix</I>  <B>-I</B><I>dir</I>  <B>-I-  -L</B><I>dir</I>  <B>-specs=</B><I>file</I>
+<DT><I>Target Options</I><DD>
+<A NAME="ixAAT"></A>
+<B>-V</B> <I>version</I>  <B>-b</B> <I>machine</I>
+<DT><I>Machine Dependent Options</I><DD>
+<A NAME="ixAAU"></A>
+<I>M680x0 Options</I>
+<B>-m68000  -m68020  -m68020-40  -m68020-60  -m68030  -m68040 
+-m68060  -mcpu32  -m5200  -m68881  -mbitfield  -mc68000  -mc68020   
+-mnobitfield  -mrtd  -mshort  -msoft-float  -mpcrel 
+-malign-int  -mstrict-align  -msep-data  -mno-sep-data 
+-mshared-library-id=n  -mid-shared-library  -mno-id-shared-library</B>
+
+
+<P>
+
+
+<I>M68hc1x Options</I>
+<B>-m6811  -m6812  -m68hc11  -m68hc12   -m68hcs12 
+-mauto-incdec  -minmax  -mlong-calls  -mshort 
+-msoft-reg-count=</B><I>count</I>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>VAX</I></FONT><I> Options</I>
+<B>-mg  -mgnu  -munix</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>SPARC</I></FONT><I> Options</I>
+<B>-mcpu=</B><I>cpu-type</I> 
+<B>-mtune=</B><I>cpu-type</I> 
+<B>-mcmodel=</B><I>code-model</I> 
+<B>-m32  -m64  -mapp-regs  -mno-app-regs 
+-mfaster-structs  -mno-faster-structs 
+-mflat  -mno-flat  -mfpu  -mno-fpu 
+-mhard-float  -msoft-float 
+-mhard-quad-float  -msoft-quad-float 
+-mimpure-text  -mno-impure-text  -mlittle-endian 
+-mstack-bias  -mno-stack-bias 
+-munaligned-doubles  -mno-unaligned-doubles 
+-mv8plus  -mno-v8plus  -mvis  -mno-vis 
+-mcypress  -mf930  -mf934 
+-msparclite  -msupersparc  -mv8
+-threads -pthreads</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>ARM</I></FONT><I> Options</I>
+<B>-mapcs-frame  -mno-apcs-frame 
+-mapcs-26  -mapcs-32 
+-mapcs-stack-check  -mno-apcs-stack-check 
+-mapcs-float  -mno-apcs-float 
+-mapcs-reentrant  -mno-apcs-reentrant 
+-msched-prolog  -mno-sched-prolog 
+-mlittle-endian  -mbig-endian  -mwords-little-endian 
+-malignment-traps  -mno-alignment-traps 
+-msoft-float  -mhard-float  -mfpe 
+-mthumb-interwork  -mno-thumb-interwork 
+-mcpu=</B><I>name</I>  <B>-march=</B><I>name</I>  <B>-mfpe=</B><I>name</I>  
+<B>-mstructure-size-boundary=</B><I>n</I> 
+<B>-mabort-on-noreturn 
+-mlong-calls  -mno-long-calls 
+-msingle-pic-base  -mno-single-pic-base 
+-mpic-register=</B><I>reg</I> 
+<B>-mnop-fun-dllimport 
+-mcirrus-fix-invalid-insns -mno-cirrus-fix-invalid-insns 
+-mpoke-function-name 
+-mthumb  -marm 
+-mtpcs-frame  -mtpcs-leaf-frame 
+-mcaller-super-interworking  -mcallee-super-interworking</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>MN10300</I></FONT><I> Options</I>
+<B>-mmult-bug  -mno-mult-bug 
+-mam33  -mno-am33 
+-mam33-2  -mno-am33-2 
+-mno-crt0  -mrelax</B>
+
+
+<P>
+
+
+<I>M32R/D Options</I>
+<B>-m32r2 -m32rx -m32r 
+-mdebug 
+-malign-loops -mno-align-loops 
+-missue-rate=</B><I>number</I> 
+<B>-mbranch-cost=</B><I>number</I> 
+<B>-mmodel=</B><I>code-size-model-type</I> 
+<B>-msdata=</B><I>sdata-type</I> 
+<B>-mno-flush-func -mflush-func=</B><I>name</I> 
+<B>-mno-flush-trap -mflush-trap=</B><I>number</I> 
+<B>-G</B> <I>num</I>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>RS/6000</I></FONT><I> and PowerPC Options</I>
+<B>-mcpu=</B><I>cpu-type</I> 
+<B>-mtune=</B><I>cpu-type</I> 
+<B>-mpower  -mno-power  -mpower2  -mno-power2 
+-mpowerpc  -mpowerpc64  -mno-powerpc 
+-maltivec  -mno-altivec 
+-mpowerpc-gpopt  -mno-powerpc-gpopt 
+-mpowerpc-gfxopt  -mno-powerpc-gfxopt 
+-mnew-mnemonics  -mold-mnemonics 
+-mfull-toc   -mminimal-toc  -mno-fp-in-toc  -mno-sum-in-toc 
+-m64  -m32  -mxl-compat  -mno-xl-compat  -mpe 
+-malign-power  -malign-natural 
+-msoft-float  -mhard-float  -mmultiple  -mno-multiple 
+-mstring  -mno-string  -mupdate  -mno-update 
+-mfused-madd  -mno-fused-madd  -mbit-align  -mno-bit-align 
+-mstrict-align  -mno-strict-align  -mrelocatable 
+-mno-relocatable  -mrelocatable-lib  -mno-relocatable-lib 
+-mtoc  -mno-toc  -mlittle  -mlittle-endian  -mbig  -mbig-endian 
+-mdynamic-no-pic 
+-mprioritize-restricted-insns=</B><I>priority</I> 
+<B>-msched-costly-dep=</B><I>dependence_type</I> 
+<B>-minsert-sched-nops=</B><I>scheme</I> 
+<B>-mcall-sysv  -mcall-netbsd 
+-maix-struct-return  -msvr4-struct-return 
+-mabi=altivec  -mabi=no-altivec 
+-mabi=spe  -mabi=no-spe 
+-misel=yes  -misel=no 
+-mspe=yes  -mspe=no 
+-mfloat-gprs=yes  -mfloat-gprs=no 
+-mprototype  -mno-prototype 
+-msim  -mmvme  -mads  -myellowknife  -memb  -msdata 
+-msdata=</B><I>opt</I>  <B>-mvxworks  -mwindiss  -G</B> <I>num</I>  <B>-pthread</B>
+
+
+<P>
+
+
+<I>Darwin Options</I>
+<B>-all_load  -allowable_client  -arch  -arch_errors_fatal 
+-arch_only  -bind_at_load  -bundle  -bundle_loader 
+-client_name  -compatibility_version  -current_version 
+-dependency-file  -dylib_file  -dylinker_install_name 
+-dynamic  -dynamiclib  -exported_symbols_list 
+-filelist  -flat_namespace  -force_cpusubtype_ALL 
+-force_flat_namespace  -headerpad_max_install_names 
+-image_base  -init  -install_name  -keep_private_externs 
+-multi_module  -multiply_defined  -multiply_defined_unused 
+-noall_load  -nofixprebinding -nomultidefs  -noprebind  -noseglinkedit 
+-pagezero_size  -prebind  -prebind_all_twolevel_modules 
+-private_bundle  -read_only_relocs  -sectalign 
+-sectobjectsymbols  -whyload  -seg1addr 
+-sectcreate  -sectobjectsymbols  -sectorder 
+-seg_addr_table  -seg_addr_table_filename  -seglinkedit 
+-segprot  -segs_read_only_addr  -segs_read_write_addr 
+-single_module  -static  -sub_library  -sub_umbrella 
+-twolevel_namespace  -umbrella  -undefined 
+-unexported_symbols_list  -weak_reference_mismatches 
+-whatsloaded</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>MIPS</I></FONT><I> Options</I>
+<B>-EL  -EB  -march=</B><I>arch</I>  <B>-mtune=</B><I>arch</I> 
+<B>-mips1  -mips2  -mips3  -mips4  -mips32  -mips32r2  -mips64 
+-mips16  -mno-mips16  -mabi=</B><I>abi</I>  <B>-mabicalls  -mno-abicalls 
+-mxgot  -mno-xgot  -membedded-pic  -mno-embedded-pic 
+-mgp32  -mgp64  -mfp32  -mfp64  -mhard-float  -msoft-float 
+-msingle-float  -mdouble-float  -mint64  -mlong64  -mlong32 
+-G</B><I>num</I>  <B>-membedded-data  -mno-embedded-data 
+-muninit-const-in-rodata  -mno-uninit-const-in-rodata 
+-msplit-addresses  -mno-split-addresses  
+-mexplicit-relocs  -mno-explicit-relocs  
+-mrnames  -mno-rnames 
+-mcheck-zero-division  -mno-check-zero-division 
+-mmemcpy  -mno-memcpy  -mlong-calls  -mno-long-calls 
+-mmad  -mno-mad  -mfused-madd  -mno-fused-madd  -nocpp 
+-mfix-sb1  -mno-fix-sb1  -mflush-func=</B><I>func</I> 
+<B>-mno-flush-func  -mbranch-likely  -mno-branch-likely</B>
+
+
+<P>
+
+
+<I>i386 and x86-64 Options</I>
+<B>-mtune=</B><I>cpu-type</I>  <B>-march=</B><I>cpu-type</I> 
+<B>-mfpmath=</B><I>unit</I> 
+<B>-masm=</B><I>dialect</I>  <B>-mno-fancy-math-387 
+-mno-fp-ret-in-387  -msoft-float  -msvr3-shlib 
+-mno-wide-multiply  -mrtd  -malign-double 
+-mpreferred-stack-boundary=</B><I>num</I> 
+<B>-mmmx  -msse  -msse2 -msse3 -m3dnow 
+-mthreads  -mno-align-stringops  -minline-all-stringops 
+-mpush-args  -maccumulate-outgoing-args  -m128bit-long-double 
+-m96bit-long-double  -mregparm=</B><I>num</I>  <B>-momit-leaf-frame-pointer 
+-mno-red-zone -mno-tls-direct-seg-refs 
+-mcmodel=</B><I>code-model</I> 
+<B>-m32  -m64</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>HPPA</I></FONT><I> Options</I>
+<B>-march=</B><I>architecture-type</I> 
+<B>-mbig-switch  -mdisable-fpregs  -mdisable-indexing 
+-mfast-indirect-calls  -mgas  -mgnu-ld   -mhp-ld 
+-mjump-in-delay -mlinker-opt -mlong-calls 
+-mlong-load-store  -mno-big-switch  -mno-disable-fpregs 
+-mno-disable-indexing  -mno-fast-indirect-calls  -mno-gas 
+-mno-jump-in-delay  -mno-long-load-store 
+-mno-portable-runtime  -mno-soft-float 
+-mno-space-regs  -msoft-float  -mpa-risc-1-0 
+-mpa-risc-1-1  -mpa-risc-2-0  -mportable-runtime 
+-mschedule=</B><I>cpu-type</I>  <B>-mspace-regs  -msio  -mwsio 
+-nolibdld  -static  -threads</B>
+
+
+<P>
+
+
+<I>Intel 960 Options</I>
+<B>-m</B><I>cpu-type</I>  <B>-masm-compat  -mclean-linkage 
+-mcode-align  -mcomplex-addr  -mleaf-procedures 
+-mic-compat  -mic2.0-compat  -mic3.0-compat 
+-mintel-asm  -mno-clean-linkage  -mno-code-align 
+-mno-complex-addr  -mno-leaf-procedures 
+-mno-old-align  -mno-strict-align  -mno-tail-call 
+-mnumerics  -mold-align  -msoft-float  -mstrict-align 
+-mtail-call</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>DEC</I></FONT><I> Alpha Options</I>
+<B>-mno-fp-regs  -msoft-float  -malpha-as  -mgas 
+-mieee  -mieee-with-inexact  -mieee-conformant 
+-mfp-trap-mode=</B><I>mode</I>  <B>-mfp-rounding-mode=</B><I>mode</I> 
+<B>-mtrap-precision=</B><I>mode</I>  <B>-mbuild-constants 
+-mcpu=</B><I>cpu-type</I>  <B>-mtune=</B><I>cpu-type</I> 
+<B>-mbwx  -mmax  -mfix  -mcix 
+-mfloat-vax  -mfloat-ieee 
+-mexplicit-relocs  -msmall-data  -mlarge-data 
+-msmall-text  -mlarge-text 
+-mmemory-latency=</B><I>time</I>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>DEC</I></FONT><I> Alpha/VMS Options</I>
+<B>-mvms-return-codes</B>
+
+
+<P>
+
+
+<I>H8/300 Options</I>
+<B>-mrelax  -mh  -ms  -mn  -mint32  -malign-300</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>SH</I></FONT><I> Options</I>
+<B>-m1  -m2  -m2e  -m3  -m3e 
+-m4-nofpu  -m4-single-only  -m4-single  -m4 
+-m5-64media  -m5-64media-nofpu 
+-m5-32media  -m5-32media-nofpu 
+-m5-compact  -m5-compact-nofpu 
+-mb  -ml  -mdalign  -mrelax 
+-mbigtable  -mfmovd  -mhitachi  -mnomacsave 
+-mieee  -misize  -mpadstruct  -mspace 
+-mprefergot  -musermode</B>
+
+
+<P>
+
+
+<I>System V Options</I>
+<B>-Qy  -Qn  -YP,</B><I>paths</I>  <B>-Ym,</B><I>dir</I>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>ARC</I></FONT><I> Options</I>
+<B>-EB  -EL 
+-mmangle-cpu  -mcpu=</B><I>cpu</I>  <B>-mtext=</B><I>text-section</I> 
+<B>-mdata=</B><I>data-section</I>  <B>-mrodata=</B><I>readonly-data-section</I>
+
+
+<P>
+
+
+<I>TMS320C3x/C4x Options</I>
+<B>-mcpu=</B><I>cpu</I>  <B>-mbig  -msmall  -mregparm  -mmemparm 
+-mfast-fix  -mmpyi  -mbk  -mti  -mdp-isr-reload 
+-mrpts=</B><I>count</I>  <B>-mrptb  -mdb  -mloop-unsigned 
+-mparallel-insns  -mparallel-mpy  -mpreserve-float</B>
+
+
+<P>
+
+
+<I>V850 Options</I>
+<B>-mlong-calls  -mno-long-calls  -mep  -mno-ep 
+-mprolog-function  -mno-prolog-function  -mspace 
+-mtda=</B><I>n</I>  <B>-msda=</B><I>n</I>  <B>-mzda=</B><I>n</I> 
+<B>-mapp-regs  -mno-app-regs 
+-mdisable-callt  -mno-disable-callt 
+-mv850e1 
+-mv850e 
+-mv850  -mbig-switch</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>NS32K</I></FONT><I> Options</I>
+<B>-m32032  -m32332  -m32532  -m32081  -m32381 
+-mmult-add  -mnomult-add  -msoft-float  -mrtd  -mnortd 
+-mregparam  -mnoregparam  -msb  -mnosb 
+-mbitfield  -mnobitfield  -mhimem  -mnohimem</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>AVR</I></FONT><I> Options</I>
+<B>-mmcu=</B><I>mcu</I>  <B>-msize  -minit-stack=</B><I>n</I>  <B>-mno-interrupts 
+-mcall-prologues  -mno-tablejump  -mtiny-stack</B>
+
+
+<P>
+
+
+<I>MCore Options</I>
+<B>-mhardlit  -mno-hardlit  -mdiv  -mno-div  -mrelax-immediates 
+-mno-relax-immediates  -mwide-bitfields  -mno-wide-bitfields 
+-m4byte-functions  -mno-4byte-functions  -mcallgraph-data 
+-mno-callgraph-data  -mslow-bytes  -mno-slow-bytes  -mno-lsim 
+-mlittle-endian  -mbig-endian  -m210  -m340  -mstack-increment</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>MMIX</I></FONT><I> Options</I>
+<B>-mlibfuncs  -mno-libfuncs  -mepsilon  -mno-epsilon  -mabi=gnu 
+-mabi=mmixware  -mzero-extend  -mknuthdiv  -mtoplevel-symbols 
+-melf  -mbranch-predict  -mno-branch-predict  -mbase-addresses 
+-mno-base-addresses  -msingle-exit  -mno-single-exit</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>IA-64</I></FONT><I> Options</I>
+<B>-mbig-endian  -mlittle-endian  -mgnu-as  -mgnu-ld  -mno-pic 
+-mvolatile-asm-stop  -mb-step  -mregister-names  -mno-sdata 
+-mconstant-gp  -mauto-pic  -minline-float-divide-min-latency 
+-minline-float-divide-max-throughput 
+-minline-int-divide-min-latency 
+-minline-int-divide-max-throughput  
+-minline-sqrt-min-latency -minline-sqrt-max-throughput 
+-mno-dwarf2-asm -mearly-stop-bits 
+-mfixed-range=</B><I>register-range</I> <B>-mtls-size=</B><I>tls-size</I> 
+<B>-mtune=</B><I>cpu-type</I> <B>-mt -pthread -milp32 -mlp64</B>
+
+
+<P>
+
+
+<I>D30V Options</I>
+<B>-mextmem  -mextmemory  -monchip  -mno-asm-optimize 
+-masm-optimize  -mbranch-cost=</B><I>n</I>  <B>-mcond-exec=</B><I>n</I>
+
+
+<P>
+
+
+<I>S/390 and zSeries Options</I>
+<B>-mtune=</B><I>cpu-type</I>  <B>-march=</B><I>cpu-type</I> 
+<B>-mhard-float  -msoft-float  -mbackchain  -mno-backchain 
+-msmall-exec  -mno-small-exec  -mmvcle -mno-mvcle 
+-m64  -m31  -mdebug  -mno-debug  -mesa  -mzarch  -mfused-madd  -mno-fused-madd</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>CRIS</I></FONT><I> Options</I>
+<B>-mcpu=</B><I>cpu</I>  <B>-march=</B><I>cpu</I>  <B>-mtune=</B><I>cpu</I> 
+<B>-mmax-stack-frame=</B><I>n</I>  <B>-melinux-stacksize=</B><I>n</I> 
+<B>-metrax4  -metrax100  -mpdebug  -mcc-init  -mno-side-effects 
+-mstack-align  -mdata-align  -mconst-align 
+-m32-bit  -m16-bit  -m8-bit  -mno-prologue-epilogue  -mno-gotplt 
+-melf  -maout  -melinux  -mlinux  -sim  -sim2 
+-mmul-bug-workaround  -mno-mul-bug-workaround</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>PDP-11</I></FONT><I> Options</I>
+<B>-mfpu  -msoft-float  -mac0  -mno-ac0  -m40  -m45  -m10 
+-mbcopy  -mbcopy-builtin  -mint32  -mno-int16 
+-mint16  -mno-int32  -mfloat32  -mno-float64 
+-mfloat64  -mno-float32  -mabshi  -mno-abshi 
+-mbranch-expensive  -mbranch-cheap 
+-msplit  -mno-split  -munix-asm  -mdec-asm</B>
+
+
+<P>
+
+
+<I>Xstormy16 Options</I>
+<B>-msim</B>
+
+
+<P>
+
+
+<I>Xtensa Options</I>
+<B>-mconst16 -mno-const16 
+-mfused-madd  -mno-fused-madd 
+-mtext-section-literals  -mno-text-section-literals 
+-mtarget-align  -mno-target-align 
+-mlongcalls  -mno-longcalls</B>
+
+
+<P>
+
+
+<I></I><FONT SIZE="-1"><I>FRV</I></FONT><I> Options</I>
+<B>-mgpr-32  -mgpr-64  -mfpr-32  -mfpr-64 
+-mhard-float  -msoft-float 
+-malloc-cc  -mfixed-cc  -mdword  -mno-dword 
+-mdouble  -mno-double 
+-mmedia  -mno-media  -mmuladd  -mno-muladd 
+-mlibrary-pic  -macc-4 -macc-8 
+-mpack  -mno-pack  -mno-eflags  -mcond-move  -mno-cond-move 
+-mscc  -mno-scc  -mcond-exec  -mno-cond-exec 
+-mvliw-branch  -mno-vliw-branch 
+-mmulti-cond-exec  -mno-multi-cond-exec  -mnested-cond-exec 
+-mno-nested-cond-exec  -mtomcat-stats 
+-mcpu=</B><I>cpu</I>
+<DT><I>Code Generation Options</I><DD>
+<A NAME="ixAAV"></A>
+<B>-fcall-saved-</B><I>reg</I>  <B>-fcall-used-</B><I>reg</I> 
+<B>-ffixed-</B><I>reg</I>  <B>-fexceptions 
+-fnon-call-exceptions  -funwind-tables 
+-fasynchronous-unwind-tables 
+-finhibit-size-directive  -finstrument-functions 
+-fno-common  -fno-ident 
+-fpcc-struct-return  -fpic  -fPIC -fpie -fPIE 
+-freg-struct-return  -fshared-data  -fshort-enums 
+-fshort-double  -fshort-wchar 
+-fverbose-asm  -fpack-struct  -fstack-check 
+-fstack-limit-register=</B><I>reg</I>  <B>-fstack-limit-symbol=</B><I>sym</I> 
+<B>-fargument-alias  -fargument-noalias 
+-fargument-noalias-global  -fleading-underscore 
+-ftls-model=</B><I>model</I> 
+<B>-ftrapv  -fwrapv  -fbounds-check</B>
+</DL>
+</BODY>
+</HTML>

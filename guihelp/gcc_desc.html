@@ -1,0 +1,45 @@
+<HTML><HEAD><TITLE>Manpage of GCC</TITLE>
+</HEAD><BODY>
+<A NAME="lbAD">&nbsp;</A>
+<H2>DESCRIPTION</H2>
+
+<A NAME="ixAAD"></A>
+When you invoke <FONT SIZE="-1">GCC</FONT>, it normally does preprocessing, compilation,
+assembly and linking.  The ``overall options'' allow you to stop this
+process at an intermediate stage.  For example, the <B>-c</B> option
+says not to run the linker.  Then the output consists of object files
+output by the assembler.
+<P>
+
+Other options are passed on to one stage of processing.  Some options
+control the preprocessor and others the compiler itself.  Yet other
+options control the assembler and linker; most of these are not
+documented here, since you rarely need to use any of them.
+<P>
+
+Most of the command line options that you can use with <FONT SIZE="-1">GCC</FONT> are useful
+for C programs; when an option is only useful with another language
+(usually C<FONT SIZE="-2">++</FONT>), the explanation says so explicitly.  If the description
+for a particular option does not mention a source language, you can use
+that option with all supported languages.
+<P>
+
+The <B>gcc</B> program accepts options and file names as operands.  Many
+options have multi-letter names; therefore multiple single-letter options
+may <I>not</I> be grouped: <B>-dr</B> is very different from <B>-d&nbsp;-r</B>.
+<P>
+
+You can mix options and other arguments.  For the most part, the order
+you use doesn't matter.  Order does matter when you use several options
+of the same kind; for example, if you specify <B>-L</B> more than once,
+the directories are searched in the order specified.
+<P>
+
+Many options have long names starting with <B>-f</B> or with
+<B>-W</B>---for example, <B>-fforce-mem</B>,
+<B>-fstrength-reduce</B>, <B>-Wformat</B> and so on.  Most of
+these have both positive and negative forms; the negative form of
+<B>-ffoo</B> would be <B>-fno-foo</B>.  This manual documents
+only one of these two forms, whichever one is not the default.
+</BODY>
+</HTML>

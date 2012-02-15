@@ -1,0 +1,67 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Secuencia de Compilación y Ejecución de un Proyecto</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp;A continuación se describe detalladamente el proceso de construcción de un proceso. Es decir, todo lo que ocurre detrás del IDE cuando el proyecto se compila.<BR>
+<BR>
+<BR>&nbsp;&nbsp;&nbsp;La secuencia de pasos es la siguiente:<OL>
+	<LI>Se verifica qué pasos hay que ejecutar. Las reglas para ello son:<UL>
+		<LI>Un proyecto wxFormBuilder se recompila (es decir, se regeneran los funentes con las ventanas que éste define) si:<UL>
+			<LI>los fuentes de salida no existen</LI>
+			<LI>el archivo auxiliar que indica la fecha de la úlitma compilación (.flg) no existe</LI>
+			<LI>el archivo auxiliar existe, pero tiene fecha de modificación mayor a la de algún archivo de salida (.cpp o .h asociodo)</LI>
+		</UL></LI>
+		<LI>Un paso adicional (pestaña Secuencia en las opciones de proyecto) se ejecuta cuando:<UL>
+			<LI>no tiene definido su archivo de salida</LI>
+			<LI>su archivo de salida está definido, pero no existe</LI>
+			<LI>su archivo de salida y sus dependencias estan definidas, y alguno de los archivos de la lista de dependencias tiene fecha de modificación mayor a  la del archivo de salida</LI>
+		</UL></LI>
+		<LI>Un archivo fuente del proyecto se recompila cuando:<UL>
+			<LI>el archivo objeto asociados no existe</LI>
+			<LI>el archivo se encuentra abierto y ha sido modificado</LI>
+			<LI>alguna de las cabeceras que este archivo incluye (y recursivamente) se encuentran ha sido modificada</LI>
+			<LI>el archivo objeto asociado tiene fecha de modificación posterior a la del fuente</LI>
+			<LI>el archivo fuente y/o el objeto asociado tienen fecha de modificación en el futuro (posterior a la fecha actual)</LI>
+			<LI>se determinó que se debía ejecutar algun paso adicional que tiene por archivo de salida a dicho fuente</LI>
+			<LI>el archivo estaba asociado a una biblioteca, pero ya no, o al contrario (sólo en <I>GNU/Linux</I> dado que los parámetros para la compilación pueden cambian).</LI>
+		</UL></LI>
+		<LI>Una biblioteca se reenlaza cuando:<UL>
+			<LI>tiene definida la opción para forzar el reenlazado en su configuración</LI>
+			<LI>se alteró la comfiguración de la misma desde el cuadro de configuración de la misma (por ejemplo, cambió de estática a dinámica)</LI>
+			<LI>se determinó previamente que alguno de los fuentes que la componen debe ser recompilado</LI>
+			<LI>alguno de los objetos que la componen tiene fecha de modificación más reciente</LI>
+		</UL></LI>
+		<LI>El ícono para el ejecutable (solo en <I>Microsoft Windows</I>) se recompila (mediante un archivo de recursos) cuando:<UL>
+			<LI>no existe el archivo de recursos (temporal autogenerado por <I>ZinjaI</I>) y/o no existe su correspondiente archivo objeto</LI>
+			<LI>el archivo del ícono tiene fecha de modificación más reciente que el archivo objeto del recurso</LI>
+			<LI>el ícono definido para la aplicación no es el mismo que el indicado en el archivo de recursos</LI>
+		</UL></LI>
+		<LI>El ejecutable se reenlaza cuando:<UL>
+			<LI>el ejecutable no existe</LI>
+			<LI>se especificó que debía reenlazarse obligadamente (pestaña <I>Enlazado</I> del cuadro de configuración de proyecto)</LI>
+			<LI>se determinó anteriormente que alguno de los fuentes que lo generan debía recompilarse</LI>
+			<LI>se determinó anteriormente que alguna de las bibliotecas que genera el proyecto debía reenlazarse</LI>
+			<LI>se determinó anteriormente que debía ejecutarse alguno de los pasos adicionales previos al enlazado del ejecutable</LI>
+			<LI>alguno de los objetos que lo componen tiene fecha de modificación más reciente</LI>
+			<LI>el archivo objeto del ícono (solo en <I>Microsoft Windows</I>) debe ser regenerado, o tiene fecha de modificación más reciente</LI>
+		</UL></LI>
+	</UL>
+	<LI>Si hay algún paso (compilación, enlazado, adicional, etc) que deba ejecutarse, lo hacen en el siguiente orden:<OL>
+		<LI>se analiza la configuración del proyecto. Es decir, se componen los argumentos que se utilizarán al compilar o ensamblar: esto incluye parsear todos los campos de la configuración de proyecto, ejecutar los subcomandos (ingresados entre acentos, ej: `wx-config --cppflags`) y reemplazar las variables (${MINGW_DIR}, ${TEMP_DIR}, etc).</LI>
+		<LI>se recompilan los proyectos de wxFormBuilder</LI>
+		<LI>se ejecutan los pasos adicionales ubicados antes de la compilación de fuentes del proyecto</LI>
+		<LI>se compilan los fuentes del proyecto, tanto los destinados a bibliotecas, como los que van directo al ejecutable</LI>
+		<LI>se ejecutan los pasos adicionales ubicados entre la compilación de los fuentes y la generación de bibliotecas</LI>
+		<LI>se enlazan las bibliotecas que debe generar el proyecto: para este enlazado sólo se utilizan los argumentos definidos para dicha biblioteca, no los generales del proyecto</LI>
+		<LI>se ejecutan los pasos adicionales ubicados entre la generación de bibliotecas y el enlazado el ejecutable</LI>
+		<LI>se enlaza el ejecutable (a menos que el proyecto genere sólo bibliotecas): para conformar el ejecutable se enlazan todos los fuentes que no estén asociados a ninguna biblioteca y los archivos de salida de todas las bibliotecas que tengan al menos un fuente asociado</LI>
+		<LI>se ejecutan los pasos adicionales definidos luego de el enlazado del ejecutable</LI>
+	</OL>
+</OL>
+<BR><BR>
+</OL>
+<BR><BR>
+&nbsp;&nbsp;&nbsp;Siempre puede analizar qué comandos en verdad se ejecutaron tras una compilación haciendo click con el botón derecho del mouse en el <I>Arbol de Resultados de la Compilación</I> y seleccionando la opción <I>Abrir última salida</I> del menú contextual. Aquí observará los comandos ejecutados (precedidos por el signo &gt;) y la salida que cada uno de ellos arrojó a continuación.
+<BR><BR>
+</BODY>
+</HTML>

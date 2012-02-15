@@ -1,0 +1,17 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Diálogo <I>Opciones de Compilacion y Ejecucion</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Este cuadro de diálogo permite configurar la forma en que se compila y se ejecuta un programa simple (un unico cpp, no un proyecto). Se accede a él mediante la opción <A href="menu_ejecucion.html#opciones">Opciones...</A> del menú <A href="menu_ejecucion.html">Ejecución</I>. Las opciones disponibles son:<BR><BR><UL>
+<LI><B>Parametros extra para el compilador</B>: Este cuadro de texto permite ingresar parámetros que serán anexados al comando de compilación, para modificar su comportamiento. Para una lista detallada de las opciones disponibles consulte la <A href="gcc_index.html">ayuda del compilador</A>. Nota: el parámetro "-g" (que incluye información de depuración en el ejecutable) siempre se utiliza como primer parámetro para programas simples aunque no se explicite en este campo.<BR></LI>
+<LI><B>Directorio de trabajo</B>: Aquí puede especificar la ruta completa en donde debe ejecutarse su programa. Cuando se crea un archivo nuevo el directorio de trabajo por defecto es el directorio base del usuario (por ejemplo "C:\Documents and settings\Usuario" en Windows, o "/home/usuario" en Linux). Cuando se abre un fuente, se toma como directorio de trabajo inicial el directorio del archivo fuente.<BR></LI>
+<LI><B>Argumentos para la ejecucion</B>: Estos argumentos son los que recibirá el programa al ejecutarse mediante los parámetros <I>argc</I>(cantidad) y <I>argv</I>(valores) de la función <I>main</I>. Para mayor información sobre como procesar estos argumentos consulte la ayuda rápida de la función <I>main</I>.<BR></LI>
+<LI><B>Siempre pedir argumentos al ejecutar</B>: Esta opción hace que ZinjaI presente un pequeño diálogo con un cuadro de texto preguntando que argumentos utilizar cada vez que se ejecute el programa. Si se cancel dicho cuadro, el programa se ejecuta sin recibir ningún argumento.<BR></LI>
+<LI><B>Esperar una tecla luego de la ejecucion</B>: Evita que la ventana en la que se ejecuto el programa se cierre inmediatamente finalizado el mismo.<BR></LI>
+</UL>
+&nbsp;&nbsp;&nbsp; Los valores por defecto de los cuatro últimos items pueden configurarse en la pestaña <A href="preferences.html#programa_simple">Programa Simple</A> del <A href="preferences.html">Dialogo de Preferencias</A>.<BR>
+<BR>
+Nota: si intenta accedera éste cuadro de diálogo con un proyecto abierto, en su lugar encontrará el cuadro <A href="project_config.html">Diálogo Opciones de Compilación y Ejecución de Proyecto</A>.<BR>
+<BR>
+</BODY>
+</HTML>

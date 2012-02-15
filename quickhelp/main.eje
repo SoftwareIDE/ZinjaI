@@ -1,0 +1,16 @@
+// Para poder introducir facilmente los argumentos presiones "Alt+F9" y
+// active la casilla "Siempre pedir argumentos al ejecutar".
+
+#include <iostream>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+	if (argc==1) {
+		cerr<<"Error: se necesita al menos un argumento!\n";
+		return 1;
+	}
+	cout<<"Ejecutable: "<<argv[0]<<endl;
+	for (int i=1;i<argc;i++)
+		cout<<"Argumento "<<i<<": "<<argv[i]<<endl;
+	return 0;
+}

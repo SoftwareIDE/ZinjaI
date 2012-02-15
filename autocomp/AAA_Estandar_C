@@ -1,0 +1,331 @@
+<cmath>
+	double cos ( double x );
+	float cos ( float x );
+	long double cos ( long double x );
+	double sin ( double x );
+	float sin ( float x );
+	long double sin ( long double x );
+	double tan ( double x );
+	float tan ( float x );
+	long double tan ( long double x );
+	double acos ( double x );
+	float acos ( float x );
+	long double acos ( long double x );
+	double asin ( double x );
+	float asin ( float x );
+	long double asin ( long double x );
+	double atan ( double x );
+	float atan ( float x );
+	long double atan ( long double x );
+	double atan2 ( double y, double x );
+	long double atan2 ( long double y, long double x );
+	float atan2 ( float y, float x );
+	double cosh ( double x );
+	float cosh ( float x );
+	long double cosh ( long double x );
+	double sinh ( double x );
+	float sinh ( float x );
+	long double sinh ( long double x );
+	double tanh ( double x );
+	float tanh ( float x );
+	long double tanh ( long double x );
+	double exp ( double x );
+	float exp ( float x );
+	long double exp ( long double x );
+	double frexp ( double x, int * exp );
+	float frexp ( float x, int * exp );
+	long double frexp ( long double x, int * exp );
+	double ldexp ( double x, int exp );
+	float ldexp ( float x, int exp );
+	long double ldexp ( long double x, int exp );
+	double log ( double x );
+	float log ( float x );
+	long double log ( long double x );
+	double log10 ( double x );
+	float log10 ( float x );
+	long double log10 ( long double x );
+	double modf ( long double x, long double * intpart );
+	long double modf ( long double x, long double * intpart );
+	float modf ( float x, float * intpart );
+	double pow ( double base, double exponent );
+	long double pow ( long double base, long double exponent );
+	float pow ( float base, float exponent );
+	double sqrt ( double x );
+	float sqrt ( float x );
+	long double sqrt ( long double x );
+	double ceil ( double x );
+	float ceil ( float x );
+	long double ceil ( long double x );
+	double fabs ( double x );
+	float fabs ( float x );
+	long double fabs ( long double x );
+	double floor ( double x );
+	float floor ( float x );
+	long double floor ( long double x );
+	double fmod ( double numerator, double denominator );
+	float fmod ( float numerator, float denominator );
+	long double fmod ( long double numerator, long double denominator );
+	M_PI
+
+<cstring>
+	void * memcpy ( void * destination, const void * source, size_t num );
+	void * memmove ( void * destination, const void * source, size_t num );
+	void * memset ( void * ptr, int value, size_t num );
+	int memcmp ( const void * ptr1, const void * ptr2, size_t num );
+	void * memchr ( void * ptr, int value, size_t num );
+	char * strcpy ( char * destination, const char * source );
+	char * strncpy ( char * destination, const char * source, size_t num );
+	char * strcat ( char * destination, const char * source );
+	char * strncat ( char * destination, char * source, size_t num );
+	int strcmp ( const char * str1, const char * str2 );
+	int strcoll ( const char * str1, const char * str2 );
+	int strncmp ( const char * str1, const char * str2, size_t num );
+	size_t strxfrm ( char * destination, const char * source, size_t num );
+	const void * memchr ( const void * ptr, int value, size_t num );
+	const char * strchr ( const char * str, int character );
+	char * strchr ( char * str, int character );
+	size_t strcspn ( const char * str1, const char * str2 );
+	const char * strpbrk ( const char * str1, const char * str2 );
+	char * strpbrk ( char * str1, const char * str2 );
+	const char * strrchr ( const char * str, int character );
+	char * strrchr ( char * str, int character );
+	size_t strspn ( const char * str1, const char * str2 );
+	const char * strstr ( const char * str1, const char * str2 );
+	char * strstr ( char * str1, const char * str2 );
+	char * strtok ( char * str, const char * delimiters );
+	char * strerror ( int errnum );
+	size_t strlen ( const char * str );
+	size_t
+
+<cstdlib>
+	double atof ( const char * str );
+	int atoi ( const char * str );
+	long int atol ( const char * str );
+	double strtod ( const char * str, char ** endptr );
+	long int strtol ( const char * str, char ** endptr, int base );
+	unsigned long int strtoul ( const char * str, char ** endptr, int base );
+	int rand ( void );
+	void srand ( unsigned int seed );
+	void * calloc ( size_t num, size_t size );
+	void free ( void * ptr );
+	void * malloc ( size_t size );
+	void * realloc ( void * ptr, size_t size );
+	void abort ( void );
+	int atexit ( void ( * function ) (void) );
+	void exit ( int status );
+	char * getenv ( const char * name );
+	int system ( const char * command );
+	void * bsearch ( const void * key, const void * base, size_t num, size_t size, int ( * comparator ) ( const void *, const void * ) );
+	void qsort ( void * base, size_t num, size_t size, int ( * comparator ) ( const void *, const void * ) );
+	int abs ( int n );
+	long abs ( long n );
+	div_t div ( int numerator, int denominator );
+	ldiv_t div ( long numerator, long denominator );
+	long int labs ( long int n );
+	ldiv_t ldiv ( long int numerator, long int denominator );
+	int mblen ( const char * pmb, size_t max );
+	int mbtowc ( wchar_t * pwc, const char * pmb, size_t max );
+	int wctomb ( char * pmb, wchar_t character );
+	size_t mbstowcs ( wchar_t * wcstr, const char * mbstr, size_t max );
+	size_t wcstombs ( char * mbstr, const wchar_t * wcstr, size_t max );
+
+	size_t
+	class ldiv_t
+		long quot;
+		long rem;
+	EXIT_FAILURE
+	EXIT_SUCCESS
+	MB_CUR_MAX
+	NULL
+	RAND_MAX
+	
+
+<cstdio>
+	int remove ( const char * filename );
+	int rename ( const char * oldname, const char * newname );
+	FILE * tmpfile ( void );
+	char * tmpnam ( char * str );
+	int fclose ( FILE * stream );
+	int fflush ( FILE * stream );
+	FILE * fopen ( const char * filename, const char * mode );
+	FILE * freopen ( const char * filename, const char * mode, FILE * stream );
+	void setbuf ( FILE * stream, char * buffer );
+	int setvbuf ( FILE * stream, char * buffer, int mode, size_t size );
+	int fprintf ( FILE * stream, const char * format, ... );
+	int fscanf ( FILE * stream, const char * format, ... );
+	int printf ( const char * format, ... );
+	int  scanf ( const char * format, ... );
+	int sprintf ( char * str, const char * format, ... );
+	int sscanf ( char * str, const char * format, ...);
+	int vfprintf ( FILE * stream, const char * format, va_list arg );
+	int vprintf ( const char * format, va_list arg )
+	int vsprintf (char * str, const char * format, va_list arg );
+	int fgetc ( FILE * stream );
+	char * fgets ( char * str, int num, FILE * stream );
+	int fputc ( int character, FILE * stream );
+	int fputs ( const char * str, FILE * stream );
+	int getc ( FILE * stream );
+	int getchar ( void );
+	char * gets ( char * str );
+	int putc ( int character, FILE * stream );
+	int putchar ( int character );
+	int puts ( const char * str );
+	int ungetc ( int character, FILE * stream );
+	size_t fread ( void * ptr, size_t size, size_t count, FILE * stream );
+	size_t fwrite ( const void * ptr, size_t size, size_t count, FILE * stream );
+	int fgetpos ( FILE * stream, fpos_t * position );
+	int fseek ( FILE * stream, long int offset, int origin );
+	int fsetpos ( FILE * stream, const fpos_t * pos );
+	long int ftell ( FILE * stream );
+	void rewind ( FILE * rewind );
+	void clearerr ( FILE * stream );
+	int feof ( FILE * stream );
+	int ferror ( FILE * stream );
+	void perror ( const char * str );
+	EOF
+	FILENAME_MAX
+	NULL
+	TMP_MAX
+	FILE
+	fpos_t
+	size_t
+	
+
+<ctime>
+	clock_t clock ( void );
+	double difftime ( time_t time2, time_t time1 );
+	time_t mktime ( struct tm * timeptr );
+	time_t time ( time_t * timer );
+	char * asctime ( const struct tm * timeptr );
+	char * ctime ( const time_t * timer );
+	tm * gmtime ( const time_t * timer );
+	tm * localtime ( const time_t * timer );
+	size_t strftime ( char * ptr, size_t maxsize, const char * format, const struct tm * timeptr );
+	CLOCKS_PER_SEC
+	clock_t
+	size_t
+	time_t
+	class tm
+		int tm_sec;
+		int tm_min;
+		int tm_hour;
+		int tm_mday;
+		int tm_mon;
+		int tm_year;
+		int tm_wday;
+		int tm_yday;
+		int tm_isdst;
+
+<cassert>
+	void assert (int expression);
+
+<cctype>
+	int toupper ( int c );
+	int tolower ( int c );
+	int isxdigit ( int c );
+	int isupper ( int c );
+	int isspace ( int c );
+	int ispunct ( int c );
+	int isprint ( int c );
+	int islower ( int c );
+	int isgraph ( int c );
+	int isdigit ( int c );
+	int iscntrl ( int c );
+	int isalpha ( int c );
+	int isalnum ( int c );
+
+<cerrno>
+	int errno
+
+<cfloat>
+	FLT_RADIX
+	FLT_MANT_DIG
+	DBL_MANT_DIG
+	LDBL_MANT_DIG
+	FLT_DIG
+	DBL_DIG
+	LDBL_DIG
+	FLT_MIN_EXP
+	DBL_MIN_EXP
+	LDBL_MIN_EXP
+	FLT_MIN_10_EXP
+	DBL_MIN_10_EXP
+	LDBL_MIN_10_EXP
+	FLT_MAX_EXP
+	DBL_MAX_EXP
+	LDBL_MAX_EXP
+	FLT_MAX_10_EXP
+	DBL_MAX_10_EXP
+	LDBL_MAX_10_EXP
+	FLT_MAX
+	DBL_MAX
+	LDBL_MAX
+	FLT_EPSILON
+	DBL_EPSILON
+	LDBL_EPSILON
+	FLT_MIN
+	DBL_MIN
+	LDBL_MIN
+
+<climits>
+	CHAR_BIT
+	SCHAR_MIN
+	SCHAR_MAX
+	UCHAR_MAX
+	CHAR_MIN
+	CHAR_MAX
+	MB_LEN_MAX
+	SHRT_MIN
+	SHRT_MAX
+	USHRT_MAX
+	INT_MIN
+	INT_MAX
+	UINT_MAX
+	LONG_MIN
+	LONG_MAX
+	ULONG_MAX
+
+<clocale>
+	char * setlocale ( int category, const char * locale );
+	lconv * localeconv (void);
+	class lconv
+		char * decimal_point
+		char * thousands_sep
+		char * grouping
+		char * int_curr_symbol
+		char * currency_symbol
+		char * mon_decimal_point
+		char * mon_thousands_sep
+		char * mon_grouping
+		char * positive_sign
+		char * negative_sign
+		char int_frac_digits
+		char frac_digits
+		char p_cs_precedes
+		char n_cs_precedes
+		char p_sep_by_space
+		char n_sep_by_space
+		char p_sign_posn
+		char p_sign_posn
+
+<csetjmp>
+	void longjmp (jmp_buf env, int val);
+	int setjmp ( jmp_buf env );
+	jmp_buf
+
+<csignal>
+	signal(int sig, void (*func)(int));
+	int raise (signal sig);
+	sig_atomic_t
+
+<cstdarg>
+	void va_end ( va_list ap );
+	type va_arg ( va_list ap, type );
+	void va_start ( va_list ap, paramN );
+	va_list
+
+<cstddef>
+	NULL
+	offsetof (type,member)
+	size_t
+	ptrdiff_t

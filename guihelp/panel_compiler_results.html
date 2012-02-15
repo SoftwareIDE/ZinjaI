@@ -1,0 +1,14 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Panel <I>Resultados de la Compilación</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; El panel de resultados de la compilación presenta información acerca del proceso de compilación. Se despliega automáticamente cada vez que se compila un programa. Se encuentran en el nivel superior cuatro items:<UL>
+<LI>El primer ítem del árbol siempre contiene el estado actual del proceso. Es decir, indica si se está preparando la compilación, compilando, enlazando, ejecutando, o si el proceso ya ha finalizado.</LI>
+<LI>En las carpetas <I>Errores</I> y <I>Advertencias</I> se ubican los errores que el compilador o enlazador pueda haber encontrado durante el proceso. Estos errores se presentan según las reglas de <A href="compiler_output.html">Análisis de la salida del compilador</A>, por lo que se encuentran reacomodados, filtrados y en algunos casos agrupados como subítems dentro de otros.</LI>
+<LI>En la carpeta <I>Toda la salida</I> muestra la salida textual del compilador. Esta información resulta en la mayoría de los casos redundante con respeto a la información presentada en <I>Errores</I> y <I>Advertencias</I>. Cuando se trabaja con proyectos, el contenido de esta carpeta se constituye por un conjunto de ítems que representan cada una de las acciones de compilación realizadas, llevando por texto el comando ejecutado. La salida textual del compilador se presenta como subítems de cada uno de estos items.</LI>
+</UL><BR><BR>
+<CENTER><IMG src="compiler_output.png"/></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; La diferencia entre errores y advertencias radica principalmente en que los errores impiden la compilación (sintaxis incorrecta, definiciones incompletas, archivos o librerías no encontrados, etc), mientras que las advertencias no (construcciones sintacticamente correctas pero desaconsejables, variables no utilizadas o sentencias de código sin efecto, conversiones omitidas, etc). El nivel de advertencias en la compilación de proyectos puede configurarse desde las pestaña <A href="project_config.html#compilacion">Compilacion</A> del díalogo <A href="project_config.html">Opciones de compilacion y ejecucion de proyectos</A>.<BR><BR>
+&nbsp;&nbsp;&nbsp; Puede dirigirse rápidamente a la línea de código que generó un error o una advertencia haciendo doble click sobre el ítem correspondiente en el árbol. Además, ZinajI intentará seleccionar dentro de esa línea la palabra en particular a la cual el error hace referencia.<BR><BR>
+</BODY></HTML>

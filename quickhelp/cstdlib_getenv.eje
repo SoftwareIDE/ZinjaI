@@ -1,0 +1,13 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+	char *valor;
+	valor = getenv("PATH");
+	if (valor)
+		cout<<"PATH = "<<valor<<endl;
+	else
+		cout<<"La variable PATH no esta definida"<<endl;
+	return 0;
+}

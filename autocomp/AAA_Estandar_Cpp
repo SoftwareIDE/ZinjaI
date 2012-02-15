@@ -1,0 +1,357 @@
+<ios>
+	
+	class ios_base
+		protected ios_base::ios_base ();
+		private ios_base::ios_base (const ios_base&);
+		fmtflags ios_base::flags ( ) const;
+		fmtflags ios_base::flags ( fmtflags fmtfl );
+		fmtflags ios_base::setf ( fmtflags fmtfl );
+		fmtflags ios_base::setf ( fmtflags fmtfl, fmtflags mask );
+		void ios_base::unsetf ( fmtflags mask );
+		streamsize ios_base::precision ( ) const;
+		streamsize ios_base::precision ( streamsize prec );
+		streamsize ios_base::width ( ) const;
+		streamsize ios_base::width ( streamsize wide );
+		locale ios_base::imbue ( const locale& loc );
+		locale ios_base::getloc ( ) const;
+		int ios_base::xalloc ( );
+		long& ios_base::iword (int idx);
+		void* & ios_base::pword (int idx);
+		void ios_base::register_callback ( event_callback fn, int index );
+		bool ios_base::sync_with_stdio ( bool sync = true );
+	
+	class ios public ios_base
+	  	public explicit ios::ios (streambuf * sb);
+		protected ios::ios ( );
+		bool ios::good ( ) const; 
+		bool ios::eof ( ) const;
+		bool ios::fail ( ) const;
+		bool ios::bad ( ) const;
+		bool ios::operator ! ( ) const;
+		operator ios::void * ( ) const;
+		iostate ios::rdstate ( ) const;
+		void ios::setstate ( iostate state );
+		void ios::clear ( iostate state = goodbit ); 
+		ios& ios::copyfmt ( const ios& rhs );
+		char ios::fill ( ) const;
+		char ios::fill ( char fillch );
+		iostate ios::exceptions ( ) const;
+		void ios::exceptions ( iostate except );
+		locale ios::imbue ( const locale& loc );
+		ostream* ios::tie ( ) const;
+		ostream* ios::tie ( ostream* tiestr );
+		streambuf* ios::rdbuf ( ) const;
+		streambuf* ios::rdbuf ( streambuf* sb );
+		char ios::narrow ( char c, char dfault ) const;
+		char ios::widen ( char c ) const;
+		in
+		out
+		binary
+		trunc
+		beg
+		end
+		cur
+		ate
+		app
+		
+<iostream>
+
+	class ostream public ios
+		explicit ostream::ostream (streambuf * sb);
+		ostream& ostream::operator<< (bool& val );
+		ostream& ostream::operator<< (short& val );
+		ostream& ostream::operator<< (unsigned short& val );
+		ostream& ostream::operator<< (int& val );
+		ostream& ostream::operator<< (unsigned int& val );
+		ostream& ostream::operator<< (long& val );
+		ostream& ostream::operator<< (unsigned long& val );
+		ostream& ostream::operator<< (float& val );
+		ostream& ostream::operator<< (double& val );
+		ostream& ostream::operator<< (long double& val );
+		ostream& ostream::operator<< (void*& val );
+		ostream& ostream::operator<< (streambuf* sb );
+		ostream& ostream::operator<< (ostream& ( *pf )(ostream&));
+		ostream& ostream::operator<< (ios& ( *pf )(ios&));
+		ostream& ostream::operator<< (ios_base& ( *pf )(ios_base&));
+		ostream& ostream::put ( char c );
+		ostream& ostream::write ( const char* s , streamsize n );
+		streampos ostream::tellp ( );
+		ostream& ostream::seekp ( streampos pos );
+		ostream& ostream::seekp ( streamoff off, ios_base::seekdir dir );
+		ostream& ostream::flush ( );
+	ostream& operator<< (ostream& out, char c );
+	ostream& operator<< (ostream& out, signed char c );
+	ostream& operator<< (ostream& out, unsigned char c );
+	ostream& operator<< (ostream& out, const char* s );
+	ostream& operator<< (ostream& out, const signed char* s );
+	ostream& operator<< (ostream& out, const unsigned char* s );
+	
+	class istream public ios
+		explicit istream::istream (streambuf * sb);
+		istream& istream::operator>> (bool& val );
+		istream& istream::operator>> (short& val );
+		istream& istream::operator>> (unsigned short& val );
+		istream& istream::operator>> (int& val );
+		istream& istream::operator>> (unsigned int& val );
+		istream& istream::operator>> (long& val );
+		istream& istream::operator>> (unsigned long& val );
+		istream& istream::operator>> (float& val );
+		istream& istream::operator>> (double& val );
+		istream& istream::operator>> (long double& val );
+		istream& istream::operator>> (void*& val );
+		istream& istream::operator>> (streambuf* sb );
+		istream& istream::operator>> (istream& ( *pf )(istream&));
+		istream& istream::operator>> (ios& ( *pf )(ios&));
+		istream& istream::operator>> (ios_base& ( *pf )(ios_base&));
+		streamsize istream::gcount ( ) const;
+		int istream::get();
+		istream& istream::get ( char& c );
+		istream& istream::get ( char* s, streamsize n );
+		istream& istream::get ( char* s, streamsize n, char delim );
+		istream& istream::get ( streambuf& sb);
+		istream& istream::get ( streambuf& sb, char delim );
+		istream& istream::getline (char* s, streamsize n );
+		istream& istream::getline (char* s, streamsize n, char delim );
+		istream& istream::ignore ( streamsize n = 1, int delim = EOF );
+		int istream::peek ( );
+		istream& istream::read ( char* s, streamsize n );
+		streamsize istream::readsome ( char* s, streamsize n );
+		istream& istream::putback ( char c );
+		istream& istream::unget ( );
+		streampos istream::tellg ( );
+		istream& istream::seekg ( streampos pos );
+		istream& istream::seekg ( streamoff off, ios_base::seekdir dir );
+		int istream::sync ( );
+	istream& operator>> (istream& is, char& ch );
+	istream& operator>> (istream& is, signed char& ch );
+	istream& operator>> (istream& is, unsigned char& ch );
+	istream& operator>> (istream& is, char* str );
+	istream& operator>> (istream& is, signed char* str );
+	istream& operator>> (istream& is, unsigned char* str );	
+		
+	class iostream public istream public ostream
+		explicit iostream::iostream (streambuf * sb);
+	
+	istream cin;
+	ostream cout;
+	ostream cerr;
+	ostream clog;
+	
+	
+<iomanip>
+
+	istream& ws ( istream& is );
+	ios_base& uppercase ( ios_base& str );
+	ios_base& unitbuf ( ios_base& str );
+	ios_base& skipws ( ios_base& str );
+	ios_base& showpos ( ios_base& str );
+	ios_base& showpoint ( ios_base& str );
+	ios_base& showbase ( ios_base& str );
+	smanip setw ( int n );
+	smanip setprecision ( int n );
+	smanip setiosflags ( ios_base::fmtflags mask );
+	smanip setfill ( char c );
+	smanip setbase ( int base );
+	ios_base& scientific ( ios_base& str );
+	ios_base& right ( ios_base& str );
+	smanip resetiosflags ( ios_base::fmtflags mask );
+	ios_base& oct ( ios_base& str );
+	ios_base& nouppercase ( ios_base& str );
+	ios_base& nounitbuf ( ios_base& str );
+	ios_base& noskipws ( ios_base& str );
+	ios_base& noshowpos ( ios_base& str );
+	ios_base& noshowpoint ( ios_base& str );
+	ios_base& noshowbase ( ios_base& str );
+	ios_base& noboolalpha ( ios_base& str );
+	ios_base& left ( ios_base& str );
+	ios_base& internal ( ios_base& str );
+	ios_base& hex ( ios_base& str );
+	ostream& flush ( ostream& os );
+	ios_base& fixed ( ios_base& str );
+	ostream& ends ( ostream& os );
+	ostream& endl ( ostream& os );
+	ios_base& dec ( ios_base& str );
+	ios_base& boolalpha ( ios_base& str );
+	
+	
+	
+<fstream>
+	class ifstream public istream
+		ifstream::ifstream ( );
+		explicit ifstream::ifstream ( const char * filename, ios_base::openmode mode = ios_base::in );
+		filebuf* ifstream::rdbuf ( ) const;
+		bool ifstream::is_open ( );
+		void ifstream::open ( const char * filename, ios_base::openmode mode = ios_base::in );
+		void ifstream::close ( );
+	
+	class ofstream public ostream
+		void ofstream::close ( );
+		void ofstream::open ( const char * filename, ios_base::openmode mode = ios_base::out );
+		bool ofstream::is_open ( );
+		filebuf* ofstream::rdbuf ( ) const;
+		ofstream::ofstream ( );
+		explicit ofstream::ofstream ( const char * filename, ios_base::openmode mode = ios_base::out );
+	
+	class fstream public iostream
+		void fstream::open ( const char * filename, ios_base::openmode mode = ios_base::in | ios_base::out );
+		bool fstream::is_open ( );
+		filebuf* fstream::rdbuf ( ) const;
+		fstream::fstream ( );
+		explicit fstream::fstream ( const char * filename, ios_base::openmode mode = ios_base::in | ios_base::out );
+		void fstream::close ( );
+	
+	
+<sstream>
+
+	class istringstream public istream
+		explicit istringstream::istringstream ( openmode which = ios_base::in );
+		explicit istringstream::istringstream ( const string & str, openmode which = ios_base::in );
+		stringbuf* istringstream::rdbuf ( ) const;
+		string istringstream::str ( ) const;
+		void istringstream::str ( const string & s );
+		
+	class ostringstream public ostream
+		string ostringstream::str ( ) const;
+		void ostringstream::str ( const string & s );
+		stringbuf* ostringstream::rdbuf ( ) const;
+		explicit ostringstream::ostringstream ( openmode which = ios_base::out );
+		explicit ostringstream::ostringstream ( const string & str, openmode which = ios_base::out );
+	
+	class stringstream public iostream
+		string stringstream::str ( ) const;
+		void stringstream::str ( const string & s );
+		stringbuf* stringstream::rdbuf ( ) const;
+		explicit stringstream::stringstream ( openmode which = ios_base::out|ios_base::in );
+		explicit stringstream::stringstream ( const string & str, openmode which = ios_base::out|ios_base::in );
+		
+	class stringbuf
+		int stringbuf::overflow ( int c = EOF );
+		int stringbuf::pbackfail ( int c = EOF );
+		int stringbuf::underflow ( );
+		streampos stringbuf::seekpos ( streampos sp, ios_base::openmode which = ios_base::in | ios_base::out );
+		streampos stringbuf::seekoff ( streamoff off, ios_base::seekdir way, ios_base::openmode which = ios_base::in | ios_base::out );
+		streambuf* stringbuf::setbuf ( char* s, streamsize n);
+		string stringbuf::str ( ) const;
+		void stringbuf::str ( const string & s );
+		explicit stringbuf::stringbuf ( ios_base::openmode which = ios_base::in | ios_base::out );
+		explicit stringbuf::stringbuf ( const string& str, ios_base::openmode which = ios_base::in | ios_base::out );
+	
+	
+<string>
+
+	istream& getline ( istream& is, string& str, char delim );
+	istream& getline ( istream& is, string& str );
+
+	class string
+		int string::compare ( const string& str ) const;
+		int string::compare ( const char* s ) const;
+		int string::compare ( size_t pos1, size_t n1, const string& str ) const;
+		int string::compare ( size_t pos1, size_t n1, const char* s) const;
+		int string::compare ( size_t pos1, size_t n1, const string& str, size_t pos2, size_t n2 ) const;
+		int string::compare ( size_t pos1, size_t n1, const char* s, size_t n2) const;
+		string string::substr ( size_t pos = 0, size_t n = npos ) const;
+		size_t string::find_last_not_of ( const string& str, size_t pos = npos ) const;
+		size_t string::find_last_not_of ( const char* s, size_t pos, size_t n ) const;
+		size_t string::find_last_not_of ( const char* s, size_t pos = npos ) const;
+		size_t string::find_last_not_of ( char c, size_t pos = npos ) const;
+		size_t string::find_first_not_of ( const string& str, size_t pos = 0 ) const;
+		size_t string::find_first_not_of ( const char* s, size_t pos, size_t n ) const;
+		size_t string::find_first_not_of ( const char* s, size_t pos = 0 ) const;
+		size_t string::find_first_not_of ( char c, size_t pos = 0 ) const;
+		size_t string::find_last_of ( const string& str, size_t pos = npos ) const;
+		size_t string::find_last_of ( const char* s, size_t pos, size_t n ) const;
+		size_t string::find_last_of ( const char* s, size_t pos = npos ) const;
+		size_t string::find_last_of ( char c, size_t pos = npos ) const;	
+		size_t string::find_first_of ( const string& str, size_t pos = 0 ) const;
+		size_t string::find_first_of ( const char* s, size_t pos, size_t n ) const;
+		size_t string::find_first_of ( const char* s, size_t pos = 0 ) const;
+		size_t string::find_first_of ( char c, size_t pos = 0 ) const;
+		size_t string::find ( const string& str, size_t pos = npos ) const;
+		size_t string::find ( const char* s, size_t pos, size_t n ) const;
+		size_t string::find ( const char* s, size_t pos = npos ) const;
+		size_t string::find ( char c, size_t pos = npos ) const;
+		size_t string::find ( const string& str, size_t pos = 0 ) const;
+		size_t string::find ( const char* s, size_t pos, size_t n ) const;
+		size_t string::find ( const char* s, size_t pos = 0 ) const;
+		size_t string::find ( char c, size_t pos = 0 ) const;
+		allocator<char> string::get_allocator( ) const;
+		const char* string::data() const;
+		const char* string::c_str ( ) const;
+		void swap ( string& str );
+		size_t string::copy ( char* s, size_t n, size_t pos = 0) const;
+		string& string::replace ( size_t pos1, size_t n1,   const string& str );
+		string& string::replace ( iterator i1, iterator i2, const string& str );
+		string& string::replace ( size_t pos1, size_t n1, const string& str, size_t pos2, size_t n2 );
+		string& string::replace ( size_t pos1, size_t n1,   const char* s, size_t n2 );
+		string& string::replace ( iterator i1, iterator i2, const char* s, size_t n2 );
+		string& string::replace ( size_t pos1, size_t n1,   const char* s );
+		string& string::replace ( iterator i1, iterator i2, const char* s );
+		string& string::replace ( size_t pos1, size_t n1,   size_t n2, char c );
+		string& string::replace ( iterator i1, iterator i2, size_t n2, char c );
+		template<class InputIterator> string& string::replace ( iterator i1, iterator i2, InputIterator j1, InputIterator j2 );
+		string& string::erase ( size_t pos = 0, size_t n = npos );
+		iterator string::erase ( iterator position );
+		iterator string::erase ( iterator first, iterator last );
+		string& string::insert ( size_t pos1, const string& str );
+		string& string::insert ( size_t pos1, const string& str, size_t pos2, size_t n );
+		string& string::insert ( size_t pos1, const char* s, size_t n);
+		string& string::insert ( size_t pos1, const char* s );
+		string& string::insert ( size_t pos1, size_t n, char c );
+		iterator string::insert ( iterator p, char c );
+		void string::insert ( iterator p, size_t n, char c );
+		template<class InputIterator> void string::insert ( iterator p, InputIterator first, InputIterator last );
+		string& string::assign ( const string& str );
+		string& string::assign ( const string&, size_t pos, size_t n );
+		string& string::assign ( const char* s, size_t n );
+		string& string::assign ( const char* s );
+		string& string::assign ( size_t n, char c );
+		template <class InputIterator> string& string::assign ( InputIterator first, InputIterator last );
+		void string::push_back ( char c );
+		string& string::append ( const string& str );
+		string& string::append ( const string& str, size_t pos, size_t n );
+		string& string::append ( const char* s, size_t n );
+		string& string::append ( const char* s );
+		string& string::append ( size_t n, char c );
+		template <class InputIterator> string& append ( InputIterator first, InputIterator last );
+		string& string::operator+= ( const string& str );
+		string& string::operator+= ( const char* s );
+		string& string::operator+= ( char c );
+		const char& string::at ( size_t pos ) const;
+		char& string::at ( size_t pos );
+		const char& string::operator[] ( size_t pos ) const;
+		char& string::operator[] ( size_t pos );
+		bool string::empty ( ) const;
+		void string::clear();
+		void string::reserve ( size_t res_arg=0 );
+		size_t string::capacity ( ) const;
+		void string::resize ( size_t n, char c );
+		void string::resize ( size_t n );
+		size_t string::max_size ( ) const;
+		size_t string::length() const;
+		size_t string::size() const;
+		reverse_iterator string::rend();
+		const_reverse_iterator string::rend() const;
+		reverse_iterator string::rbegin();
+		const_reverse_iterator string::rbegin() const;
+		iterator string::end();
+		const_iterator string::end() const;
+		iterator string::begin();
+		const_iterator string::begin() const;
+		string& string::operator= ( const string& str );
+		string& string::operator= ( const char* s );
+		string& string::operator= ( char c );
+		explicit string::string ( );
+		string::string ( const string& str );
+		string::string ( const string& str, size_t pos, size_t n = npos );
+		string::string ( const char * s, size_t n );
+		string::string ( const char * s );
+		string::string ( size_t n, char c );
+		template<class InputIterator> string::string (InputIterator begin, InputIterator end);
+		size_t string::npos;
+
+<typeinfo>	
+	class type_info
+		bool operator== (const type_info& rhs) const;
+		bool operator!= (const type_info& rhs) const;
+		bool before (const type_info& rhs) const;
+		const char* name() const;

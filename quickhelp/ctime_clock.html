@@ -1,0 +1,31 @@
+<B>Función <I>clock</I></B>
+<BR><BR>
+Devuelve la cantidad de ticks de reloj transcurridos desde el inicio del programa.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>clock_t clock ( void );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;ctime&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Devuelve la cantidad de ticks de reloj transcurridos desde el inicio del programa. Para convertir esta cuenta a segundos se utiliza la macro <I>CLOCKS_PER_SEC<I>, ya que la cantidad de ticks por segundos varía según arquitectura y sistema operativo. En algunos sistema esta cuenta puede no incrementarse durante los tiempos en que el proceso permanece bloqueado (por ejemplo, a la espera de una entrada de usuario o de la liberación de un recurso).<BR>
+<BR><BR>
+<A href="example:ctime_clock.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp; long int nro;<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Ingrese un nro:";<BR>
+&nbsp;&nbsp;&nbsp; cin&gt;&gt;nro;<BR>
+&nbsp;&nbsp;&nbsp; clock_t t1 = clock();<BR>
+&nbsp;&nbsp;&nbsp; for (long int i=0;i&lt;10000;i++)<BR>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for (long int j=0;j&lt;nro;j++)<BR>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ;<BR>
+&nbsp;&nbsp;&nbsp; clock_t t2 = clock();<BR>
+&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Contar diez mil veces hasta " &lt;&lt; nro &lt;&lt; " toma " &lt;&lt; float(t2-t1)/CLOCKS_PER_SEC &lt;&lt; " segundos.";<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:ctime.html">Cabecera <I>ctime</I></A>: Contiene funciones y estructuras para el manejo de fechas y horas.</LI>
+<LI><A href="quickfile:ctime_time.html">Función <I>time</I></A>: Devuelve la fecha/hora actual en segundos.</LI>
+<LI><A href="quickfile:ctime_clock_t.html">Tipo <I>clock_t</I></A>: Representa una cantidad de ticks del reloj.</LI>
+<LI><A href="quickfile:ctime_clocks_per_sec.html">Macro <I>CLOCKS_PER_SEC</I></A>: Define la cantidad de ticks de reloj por segundo.</LI>
+</UL>

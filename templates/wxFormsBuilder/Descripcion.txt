@@ -1,0 +1,34 @@
+Este ejemplo utiliza la herramienta visual wxFormBuilder(wxFB) para "dibujar" 
+las interfases. Se incluye un proyecto wxFB y una ventana a modo de ejemplo. 
+Hay dos formas de utilizar wxFB: mediante archivos de recursos xrc o mediante 
+la generación de código. 
+
+   Este ejemplo utiliza el metodo de generación de código. Los archivos 
+Ventanas.cpp y Ventanas.h se generan automáticamente mediante wxFB. Estos 
+archivos definen clases correspondientes a las ventanas del proyecto. Estas 
+clases crean y acomodan todos los controles, y definen metodos virtuales para 
+cada uno de los eventos. El usuario no debería editar estos archivos. El usuario 
+debe generar sus ventanas heredando de estas clases y sobreescribiendo los 
+metodos correspondientes a los eventos de interés. El ejemplo es la clase 
+VentanaPrincipal, que hereda de la clase Frame0 definida en el proyecto wxFB 
+(ver VentanaPrincipal.h y VentanaPrincipal.cpp).
+   Para editar las ventanas bases abra el archivo Ventanas.fbp (haciendo doble 
+click sobre el mismo en el arbol de proyectos, categoría Otros). ZinjaI 
+detectará los cambios en los componentes wxFormBuilder y regenerará el código
+de las clases correspondientes automáticamente al recibir el foco.
+
+   La utilización de archivos de recursos es más flexible y permite modificar la
+interfaz sin recompilar, pero requiere mayor esfuerzo en la implementación.
+
+   Puede acceder a la documentación acerca de las funciones y clases de 
+wxWidgets mediante la opción "Ayuda de wxWidgets" del submenú "Diseñar 
+Interfases" del menú "Herramientas".
+
+   wxFormsBuilder no se incluye en ZinjaI, por lo que debe instalarlo por 
+separado si aún no lo hizo, y especificar donde se instaló en la pestaña
+"Rutas" del cuadro de Preferencias. La ayuda de wxWidgets solo se incluye
+en el instalador de ZinjaI para Windows (si ha seleccionado wxWidgets durante
+la instalación). Para descargar lo que falte visite http://www.wxwidgets.org y
+http://wxformbuilder.org. Se puede acceder rápidamente a ella con la opción 
+"Ayuda wxWidgets..." del submenu "Diseñar Interfases" del menu "Herramientas".
+

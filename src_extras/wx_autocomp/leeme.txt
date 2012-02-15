@@ -1,0 +1,2 @@
+Scripts y programas auxiliares para construir el indice de autocompletado de wxWidgets a partir de su documentación en html.
+Se invoca todo desde do.sh pasandole el directorio que contiene los htmls, y genera un archivo wxWidgets con el indice.

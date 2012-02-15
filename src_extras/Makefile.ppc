@@ -1,0 +1,15 @@
+GPP=powerpc-apple-darwin8-g++
+
+all: ../updatem.bin ../runner.bin ../mac-terminal-wrapper.bin
+
+clean:
+	rm -f ../updatem.bin ../runner.bin ../mac-terminal-wrapper.bin
+
+../runner.bin: runner.cpp
+	${GPP} -O2 runner.cpp -o $@
+
+../updatem.bin: updatem.cpp zockets.cpp zockets.h
+	${GPP} -O2 updatem.cpp zockets.cpp -o $@
+
+../mac-terminal-wrapper.bin: mac-terminal-wrapper.cpp
+	${GPP} -O2 mac-terminal-wrapper.cpp -o $@

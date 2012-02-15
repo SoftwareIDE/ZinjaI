@@ -1,0 +1,35 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<TABLE WIDTH="100%"><TR><TD>
+<B>Parte 2: Paso 7</B>
+</TD><TD ALIGN="right">
+<A href="t0200.html">0</A>&nbsp;
+<A href="t0201.html">1</A>&nbsp;
+<A href="t0202.html">2</A>&nbsp;
+<A href="t0203.html">3</A>&nbsp;
+<A href="t0204.html">4</A>&nbsp;
+<A href="t0205.html">5</A>&nbsp;
+<A href="t0206.html">6</A>&nbsp;
+<A href="t0207.html">7</A>&nbsp;
+<A href="t0208.html">8</A>&nbsp;
+<A href="t0209.html">9</A>&nbsp;
+<A href="t0210.html">10</A>
+</TD></TR></TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Finalmente, resta solucionar el error de la línea 110. En esta línea se realiza una llamada a "VerNota" pasándole un parámetro entero cuando esta función en realidad recibe dos. Esto se puede comprobar colocando el cursor sobre "VerNota" y presionando <I>Shift+F1</I>.<BR>
+<BR>
+<CENTER><IMG src="t020701.png"></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Ahora la ayuda rápida muestra un resúmen de las funciones, clases o metodos que coincidan con este nombre, informando en este caso que ver nota es un método de la clase Curso que recibe dos enteros como argumentos. Haga click sobre el enlace "Curso" en la primera línea de esta ayuda para visualizar la ayuda rápida correspondiente a la clase curso. Observe el resúmen de métodos que esta clase implementa. <BR>
+<BR>
+<CENTER><IMG src="t020702.png"></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; De acuerdo a la lógica del problema, podemos concluir que el método que en realidad deberíamos llamar en lugar de "VerNota" es "VerPromedio". Reemplace el nombre del método en el código. Puede notar que el compilador arroja junto con el mensaje de error una lista de prototipos de posibles funciones o metodos candidatos, la cual puede visualizar haciendo click sobre el mas correspondiente al error en el árbol de errores. <I>ZinjaI</I> oculta inicialmente esta y otras informaciones para mostrar una lista de errores limpia y concreta (ver <A href="compiler_output.html">Análisis de la salida del compilador</A>).<BR>
+<BR>
+<CENTER><IMG src="t020703.png"></CENTER><BR>
+<BR>
+<CENTER><A href="t0206.html">Volver...</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A href="t0208.html">Continuar...</A></CENTER>
+<BR><BR>
+</BODY>
+</HTML>

@@ -1,0 +1,29 @@
+<B>Función <I>pow</I></B>
+<BR><BR>
+Calcula una potenciación.
+<BR><BR>
+Prototipos: <BR>
+<UL>
+<LI><I>double pow ( double b, double e );</I></LI>
+<LI><I>float pow ( float b, float y );</I></LI>
+<LI><I>long double pow ( long double b, long double e );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cmath&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Calcula la potencia <I>e</I>-esima de <I>b</I> (b^e). <I>b</I> es la base y <I>e</I> el exponente.<BR>
+&nbsp;&nbsp;&nbsp; Tambien se puede utilizar para calcular raices, dado que el exponente puede no ser entero (la raiz i-esima de b es b^(1/i) ).<BR>
+&nbsp;&nbsp;&nbsp; En algunas circunstancias el compilador puede no llegar a determinar cual de las sobrecargas de esta función utilizar. En caso de ambigüedad, existen las funciones <I>powf</I> y <I>powl</I> para forzar los datos a tipos <I>double</I> y <I>long double</I> respectivamente, aunque estas dos funciones no son estandar.<BR>
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; float x = pow(2.f,10);<BR>
+&nbsp;&nbsp;&nbsp; float raiz_cubica = pow(2,1.f/3);<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cmath.html">Cabecera <I>cmath</I></A>Contiene funciones para calcular operaciones y transformaciones matemáticas comunes.
+<LI><A href="quickfile:cmath_exp.html">Función <I>exp</I></A>: Calcula la funcion de exponencial en <I>x</I>.
+<LI><A href="quickfile:cmath_log.html">Función <I>log</I></A>: Calcula el logaritmo natural de <I>x</I>.
+<LI><A href="quickfile:cmath_log10.html">Función <I>log10</I></A>: Calcula el logaritmo en base 10 de <I>x</I>.
+<LI><A href="quickfile:cmath_sqrt.html">Función <I>sqrt</I></A>: Calcula la raiz cuadrada de <I>x</I>.
+</UL>

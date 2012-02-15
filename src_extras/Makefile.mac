@@ -1,0 +1,16 @@
+GPP=i686-apple-darwin8-g++
+
+all: ../mac-terminal-wrapper.bin ../runner.bin ../updatem.bin
+
+../mac-terminal-wrapper.bin: mac-terminal-wrapper.cpp
+	${GPP} -O2 mac-terminal-wrapper.cpp -o $@
+
+../runner.bin: runner.cpp
+	${GPP} -O2 runner.cpp -o $@
+
+../updatem.bin: updatem.cpp zockets.cpp zockets.h
+	${GPP} -O2 updatem.cpp zockets.cpp -o $@
+
+clean:
+	rm -rf ../zinjai mac-terminal-wrapper.bin ../runner.bin ../updatem.bin
+

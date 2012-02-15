@@ -1,0 +1,16 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Estructura repetitiva: <I>do...while</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Esta estructura de control permite repetir un conjunto de acciones hasta que una condición resulte falsa. Es decir, mientras la evaluación de una expresión lógica (<I>bool</I>) arroje falso, las acciones dentro del lazo continuarán repitiendose. El comienzo de la estructura se marca con la palabra reservada <I>do</I>. La condición se coloca al final de la estructura precedida por la palabra <I>while</I>, y se evalúa simpre luego de ejecutar las acciones contenidas en el lazo, por lo que dichas acciones se ejecutarán siempre al menos una vez aunque la expresión resulta verdadera en la primera evaluación. Dentro de la estructura se deben incluir acciones que modifiquen la condición para evitar lazos infinitos (o utilizar la palabra clave <I>break</I>).<BR>
+<BR><BR>
+Ejemplo: Validar la lectura de un dato que debe estar entre 0 y 10:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int d;<BR>
+&nbsp;&nbsp;&nbsp; do { <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Ingrese un numero entre 0 y 10: ";<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cin&gt;&gt;d;<BR>
+&nbsp;&nbsp;&nbsp; } while (d&gt;=0 &amp;&amp; d&lt;=10);<BR>
+</CODE><BR>
+El codigo dentro del lazo (pedir el dato al usuario) se ejecuta mientras hasta que el dato ingresado sea correcto (condición del <I>do...while</I>). Además, siempre se ejecuta al menos una vez, siempre se leerá el dato.<BR>
+<BR>
+</BODY></HTML>

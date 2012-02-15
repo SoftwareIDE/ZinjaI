@@ -1,0 +1,34 @@
+<B>Manipulador <I>setw</I></B>
+<BR><BR>
+Define el ancho de campo para la siguiente inserción.
+<BR><BR>
+Prototipos: <BR>
+<UL>
+<LI><I>smanip setw ( int n );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;iomanip&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Define el ancho de campo para la siguiente inserción (equivale a llamar al metodo <I>width</I> de la clase <I>ios_base</I> con <I>n</I> como argumento). El ancho de campo representa la minima cantidad de caracters que se escribiran en la proxima inserción. Es decir, que cuando se inserte contenido al flujo, si la longitud del contenido es menor a <I>n</I> se rellenará hasta que su longitud sea efectivamente igual a <I>n</I>. El caracter con que se rellena se puede definir con el manipulador <I>setfill</I> y la posición en la que se inserta dicho caracter puede definirse con los manipuladores <I>rigth</I>, <I>internal</I> y <I>left</I>.<BR>
+<BR><BR>
+<A href="example:iomanip_setw.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp;int a[]={-100, -10,-1,10,100};<BR>
+&nbsp;&nbsp;&nbsp;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"  left | internal | right "&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;setfill('-')&lt;&lt;setw(26)&lt;&lt;""&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;setfill(' ');<BR>
+&nbsp;&nbsp;&nbsp;	<BR>
+&nbsp;&nbsp;&nbsp;for (int i=0; i&lt;5;i++) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;" "&lt;&lt;setw(5)&lt;&lt;left&lt;&lt;a[i]&lt;&lt;" |  ";<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;setw(6)&lt;&lt;internal&lt;&lt;a[i]&lt;&lt;"  | ";<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;setw(5)&lt;&lt;right&lt;&lt;a[i]&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:iomanip.html">Cabecera <I>iomanip</I></A>: Contiene manipuladores de flujo para dar formato a flujos de salida.</LI>
+<LI><A href="quickfile:iostream.html">Cabecera <I>iostream</I></A>: Contiene clases y objetos para el manejo de flujos de entrada y salida.</A>
+<LI><A href="quickfile:iostream_ostream.html">Clase <I>ostream</I></A>: Modela un flujo de salida genéricos.</LI>
+<LI><A href="quickfile:iostream_ofstream.html">Clase <I>ofstream</I></A>: Modela un flujo de salida hacia un archivo.</LI>
+<LI><A href="quickfile:iostream_cout.html">Objeto <I>cout</I></A>: Representa el flujo de salida estándar.</LI>
+</UL>

@@ -1,0 +1,26 @@
+GPP=g++ -fshow-column
+GCC=gcc
+FLAGS= -O2 `wx-config --cppflags --unicode=no`
+LIBS= -s  `wx-config --libs` 
+OBJS=release.lnx/Application.o release.lnx/mxWindow.o release.lnx/LangFile.o 
+
+all: release.lnx ../mxLangTool.bin
+
+clean:
+	rm -rf ${OBJS} ../mxLangTool.bin
+
+../mxLangTool.bin: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+release.lnx:
+	mkdir release.lnx
+
+release.lnx/Application.o: Application.cpp Application.h mxWindow.h
+	${GPP} ${FLAGS} -c Application.cpp -o $@
+
+release.lnx/mxWindow.o: mxWindow.cpp mxWindow.h
+	${GPP} ${FLAGS} -c mxWindow.cpp -o $@
+
+release.lnx/LangFile.o: LangFile.cpp LangFile.h
+	${GPP} ${FLAGS} -c LangFile.cpp -o $@
+

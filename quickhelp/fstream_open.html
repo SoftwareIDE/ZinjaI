@@ -1,0 +1,24 @@
+<B>Función <I>strcmp</I></B>
+<BR><BR>
+Compara cadenas.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>int strcmp ( const char * str1, const char * str2 );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstring&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Compara las cadenas apuntadas por <I>str1</I> y <I>str2</I>, comparando caracter a caracter desde el comienzo de ambas hasta encontrar una diferencia o el caracter de terminación. Si las cadenas son iguales devuelve cero, o un valor distinto de cero si son diferentes. En este último caso, un valor positivo indica que el primer caracter en que se diferencian las cadenas es mayor en <I>str1</I> que en <I>str2</I>, mientras que un valor negativo indica lo contrario.
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; char cadena1[256]="Hola "<BR>
+&nbsp;&nbsp;&nbsp; char cadena2[256];<BR>
+&nbsp;&nbsp;&nbsp; cin.getline(cadena2,256);<BR>
+&nbsp;&nbsp;&nbsp; bool son_iguales=strcmp(cadena1,cadena2);<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstring.html">Cabecera <I>cstring</I></A>: Contiene funciones para el manejo de cadenas de caracteres c y arreglos.
+<LI><A href="quickfile:cstring_strncmp.html">Función <I>strncmp</I></A>: Compara partes de cadenas.
+</UL>

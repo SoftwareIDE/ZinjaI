@@ -1,0 +1,51 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<TABLE WIDTH="100%"><TR><TD>
+<A name="parte1"/><BR>
+<B>Parte 3: Visualización de Estructuras de Datos</B>
+</TD><TD ALIGN="right">
+<A href="t0500.html">0</A>&nbsp;
+<A href="t0501.html">1</A>&nbsp;
+<A href="t0502.html">2</A>&nbsp;
+<A href="t0503.html">3</A>&nbsp;
+<A href="t0504.html">4</A>
+</TD></TR></TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; En la tercera parte del conjunto de tutoriales relacionados a la depuración de programas, se presentan algunas funcionalidades adicionales del panel de inspección que permiten trabajar más cómodamente con estructuras de datos (clases, arreglos, etc.). Para ello, se utilizará el siguiente programa ejemplo:<BR><BR>
+<CENTER><TABLE bgcolor="#FFFFEE" border=1><TR><TD><CODE>
+#include &lt;iostream&gt;<BR>
+#include &lt;iomanip&gt;<BR>
+using namespace std;<BR>
+&nbsp;<BR>
+struct registro {<BR>
+&nbsp;&nbsp;&nbsp;int n1,n2;<BR>
+&nbsp;&nbsp;&nbsp;double d;<BR>
+};<BR>
+&nbsp;<BR>
+void mostrar(registro *arreglo, int n) {<BR>
+&nbsp;&nbsp;&nbsp;for (int i=0;i&lt;n;i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;i&lt;&lt;right<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;setw(5)&lt;&lt;arreglo[i].n1&lt;&lt;"  "<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;setw(4)&lt;&lt;arreglo[i].n2&lt;&lt;"  "<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;arreglo[i].d&lt;&lt;endl;<BR>
+}<BR>
+&nbsp;<BR>
+int main(int argc, char *argv[]) {<BR>
+&nbsp;&nbsp;&nbsp;registro lista[10];<BR>
+&nbsp;&nbsp;&nbsp;for (int i=0;i&lt;10;i++) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lista[i].n1=rand()%1000;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lista[i].n2=rand()%1000;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lista[i].d=double(rand()%1000)/1000;<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;mostrar(lista,10);<BR>
+&nbsp;&nbsp;&nbsp;return 0;<BR>
+}
+</CODE></TD></TR></TABLE></CENTER><BR>
+<BR>
+<CENTER>Puede cargar este código en un nuevo programa haciendo <A href="foropen:t0501.cpp">click aquí</A>.</CENTER>
+<BR><BR>
+<CENTER><A href="t0501.html">Comenzar...</A></CENTER>
+<BR><BR>
+</BODY>
+</HTML>

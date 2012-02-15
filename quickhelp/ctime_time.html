@@ -1,0 +1,23 @@
+<B>Función <I>time</I></B>
+<BR><BR>
+Devuelve la fecha/hora actual en segundos.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>time_t time ( time_t *timer );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;ctime&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Devuelve la cantidad de tiempo transcurrido desde el 1 de Enero de 1970 UTC hasta el momento actual en una variable de tipo <I>time_t</I> y asigna el mismo valor a la variable de gual tipo apuntada por el puntero <I>timer</I>.<BR>
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"La cantidad de días transcurridas desde el 1 de Enero de 1970 es: "&lt;&lt;time(NULL)/24/60/60;<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:ctime.html">Cabecera <I>ctime</I></A>: Contiene funciones y estructuras para el manejo de fechas y horas.</LI>
+<LI><A href="quickfile:ctime_time_t.html">Tipo <I>time_t</I></A>: Representa una fecha y hora determinada en segundos.</LI>
+<LI><A href="quickfile:ctime_localtime.html">Función <I>localtime</I></A>: Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> local.</LI>
+<LI><A href="quickfile:ctime_gmtime.html">Función <I>gmtime</I></A>: Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> UTC.</LI>
+</UL>

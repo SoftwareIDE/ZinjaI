@@ -1,0 +1,25 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Diálogos <I>Buscar</I> y <I>Reemplazar</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; En realidad ambos diálogos son el mismo. Depende de como se lo invoque se muestran u ocultan los elementos específicos para reemplazar. Estos diálogos permiten al usuario buscar una o más ocurrencias de un texto en uno o varios archivos y eventualmente reemplazarlas por otro texto.<BR><BR>
+&nbsp;&nbsp;&nbsp; Las opciones que se pueden configurar para la busqueda y/o el reemplazo son:<BR><BR>
+<UL>
+<LI><B>Solo palabras completas</B>: Indica que no se deben considerar ocurrencias del texto que sean partes de una palabra mayor. Por ejemplo, si se busca "win" con esta opción activada, las ocurrencias dentro de las palabras "windows", "win32", o "cygwin" no serán consideradas.<BR></LI>
+<LI><B>Solo al comienzo de la palabra</B>: Indica que la expresión ingresada debe encontrarse al comienzo de una palabra para que sea considerada una ocurrencia válida. Por ejemplo, si se busca "win" con esta opción activada la cadena "win32" arrojará una coincidencia, pero la cadena "cygwin" no.<BR></LI>
+<LI><B>Distinguir entre mayúsculas y minúsculas</B>: Si esta opción está activada se busca textualmente el texto ingresado, mientras que si no lo está se busca con variaciones de mayúsculas y minúsculas tambien. Por ejemplo, si se busca "Linux", con esta opción activada la cadena "linux" no se considerará un ocurrencia, mientras que si está activada sí lo hará, al igual que "LINUX", "lInUx", "LInuX", etc.<BR></LI>
+<LI><B>Es una expresión regular</B>: Las expresiones regulares son una poderosa herramienta que permite buscar y/o reemplazar cadenas con gran flexibilidad. Por ejemplo podrían reemplazarse las cadenas "mostrar1(x)", "mostrar2(y)", "mostrar3(z)" por las cadenas "mostrar(1,x)","mostrar(2,y)","mostrar(3,z)" en una misma acción. Al activar esta opción las cadenas ingresadas tanta en el texto a buscar como en el texto para reemplazar serán consideradas expresiones regulares. Para mayor detalle de cómo se conforman las expresiones regulares vea <A href="regexp.html">Expresiones Regulares</A>. Cuando se busca con expresiones regulares siempre se busca hacia adelante, aunque selecciones <I>Buscar Anterior</I>.<BR></LI>
+<LI><B>Buscar en ...</B>: Permite seleccionar donde realizar la busqueda. Las posibles opciones son:<UL>
+<LI><I>Seleccion</I>: buscará en el texto seleccionado dentro del archivo actual, o en todo el archivo si no hay selección</LI>
+<LI><I>Archivo Actual</I>: buscará en todo el archivo que se esté editando actualmente</LI>
+<LI>Todos los Archivos Abiertos<I></I>: buscará en todos los archivos que estén abiertos (editándose) actualmente.</LI>
+<LI><I>Todos los Fuentes del Proyecto</I>: buscará en todos los archivos fuentes (normalmente los .c,.cpp,c++,.cxx,...) de un proyecto que se encuentren en la rama <I>Fuente</I> del árbol de proyecto (estén o no abiertos en ese momento).</LI>
+<LI><I>Todas las Cabeceras del Proyecto</I>: buscará en todos los archivos de cabecera (normalmente los .h,.hpp,.h++,.hxx,...) de un proyecto que se encuentren en la rama <I>Cabeceras</I> del árbol de proyecto (estén o no abiertos en ese momento).</LI>
+<LI><I>Todos los Otroas Archivos del Proyecto</I>: buscará en todos los archivos de un proyecto que se encuentren en la rama <I>Otros</I> del árbol de proyecto (estén o no abiertos en ese momento).</LI>
+<LI><I>Todos los Archivos del Proyecto</I>: buscará en todos los archivos de un proyecto(fuentes, cabeceras y otros, estén o no abiertos en ese momento).</LI>
+</UL>
+Nota: cuando se busca en alguna de las cuatro ultimas opciones (las que involucran al arbol de proyectos), se busca en los archivos guardados en el disco, por lo que no se tienen en cuentan los cambios realizados si alguno o algunos de estos archivos estan abiertos y han sido modificados sin ser guardados posteriormente. Además, para estas opciones no son válidas las opciones "<I>Solo palabras completas</I>" y "<I>Solo al comienzo de la palabra</I>", "<I>Distinguir mayusculas y minusculas</I>" y "<I>Es una expresion regular</I>", por lo que se buscará siempre en cualquier parte del archivo, distinguiendo mayusculas y minusculas y no considerandose el texto ingresado como expresion regular. Además, bajo estas modalidades no es posible efectuar reemplazos.<BR>
+<LI><B>Cerrar este dialogo despues de encontrar</B>: Cuando esta casilla está activada el diálogo buscar se oculta automáticamente luego de un búsqueda exitosa (es decir, si se encuentran coincidencias).</LI>
+</UL>
+</BODY>
+</HTML>

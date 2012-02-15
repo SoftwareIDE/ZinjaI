@@ -1,0 +1,29 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<TABLE WIDTH="100%"><TR><TD>
+<B>Parte 2: Paso 2</B>
+</TD><TD ALIGN="right">
+<A href="t0400.html">0</A>&nbsp;
+<A href="t0401.html">1</A>&nbsp;
+<A href="t0402.html">2</A>&nbsp;
+<A href="t0403.html">3</A>&nbsp;
+<A href="t0404.html">4</A>&nbsp;
+<A href="t0405.html">5</A>&nbsp;
+<A href="t0406.html">6</A>
+</TD></TR></TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;La linea que corresponde ejecutar a continuación contiene la llamada a la función potencia, por lo que en realidad, la próxima linea de código a ejecutar debería ser la primer línea de la función potencia (primero hay que evaluarla para luego poder mostrar el resultado). En estos casos, tenemos dos formas de continuar la ejecución: <I>step over</I> y <I>step in</I>.
+<UL>
+<LI>La primera (<I>step over</I>, con la tecla <I>F7</I>) es la que utilizamos hasta ahora, avanza a la siguiente linea dentro del ámbito actual. En este caso, avanzará a la siguiente linea del <I>main</I>, realizando la evaluación de la función y mostrando el resultado en un solo paso.</LI>
+<LI>La segunda forma de avanzar (<I>step in</I>, con <I>F6</I>), nos permite meternos dentro de la función. Es decir, si presionamos <I>F6</I> el depurador avanzará hasta la primer línea de la función <I>potencia</I>, y nos permitirá analizar qué ocurre dentro de la misma.</LI>
+</UL><BR>
+<BR>
+&nbsp;&nbsp;&nbsp;Presione <I>F6</I> y observe el contenido del panel de trazado inverso (abajo a la derecha, <I>backtrace</I> en Inglés). En este panel tenemos en la primer linea la función actual y el punto donde realmente estamos detenidos en la ejecución, y en las otras lineas podemos observar cómo se llegó a este punto, y qué otras funciones estan "esperando" a que se resuelva esta llamada para poder continuar. En este caso, la primer línea indicará la función <I>potencia</I> y la segunda la función <I>main</I>.<BR>
+<BR>
+<CENTER><IMG src="t040201.png"></CENTER><BR>
+<BR>
+<CENTER><A href="t0401.html">Volver...</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A href="t0403.html">Continuar...</A></CENTER>
+<BR><BR>
+</BODY>
+</HTML>

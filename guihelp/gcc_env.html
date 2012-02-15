@@ -1,0 +1,329 @@
+<HTML><HEAD><TITLE>Manpage of GCC</TITLE>
+</HEAD><BODY>
+<A NAME="lbAW">&nbsp;</A>
+<H2>ENVIRONMENT</H2>
+
+<A NAME="ixCGN"></A>
+This section describes several environment variables that affect how <FONT SIZE="-1">GCC</FONT>
+operates.  Some of them work by specifying directories or prefixes to use
+when searching for various kinds of files.  Some are used to specify other
+aspects of the compilation environment.
+<P>
+
+Note that you can also specify places to search using options such as
+<B>-B</B>, <B>-I</B> and <B>-L</B>.  These
+take precedence over places specified using environment variables, which
+in turn take precedence over those specified by the configuration of <FONT SIZE="-1">GCC</FONT>.
+<DL COMPACT>
+<DT><B></B><FONT SIZE="-1"><B>LANG</B></FONT><B></B><DD>
+<A NAME="ixCGO"></A>
+
+<DT><B></B><FONT SIZE="-1"><B>LC_CTYPE</B></FONT><B></B><DD>
+<A NAME="ixCGP"></A>
+<DT><B></B><FONT SIZE="-1"><B>LC_MESSAGES</B></FONT><B></B><DD>
+<A NAME="ixCGQ"></A>
+<DT><B></B><FONT SIZE="-1"><B>LC_ALL</B></FONT><B></B><DD>
+<A NAME="ixCGR"></A>
+
+These environment variables control the way that <FONT SIZE="-1">GCC</FONT> uses
+localization information that allow <FONT SIZE="-1">GCC</FONT> to work with different
+national conventions.  <FONT SIZE="-1">GCC</FONT> inspects the locale categories
+<B></B><FONT SIZE="-1"><B>LC_CTYPE</B></FONT><B></B> and <B></B><FONT SIZE="-1"><B>LC_MESSAGES</B></FONT><B></B> if it has been configured to do
+so.  These locale categories can be set to any value supported by your
+installation.  A typical value is <B>en_GB.UTF-8</B> for English in the United
+Kingdom encoded in <FONT SIZE="-1">UTF-8</FONT>.
+
+
+<P>
+
+
+The <B></B><FONT SIZE="-1"><B>LC_CTYPE</B></FONT><B></B> environment variable specifies character
+classification.  <FONT SIZE="-1">GCC</FONT> uses it to determine the character boundaries in
+a string; this is needed for some multibyte encodings that contain quote
+and escape characters that would otherwise be interpreted as a string
+end or escape.
+
+
+<P>
+
+
+The <B></B><FONT SIZE="-1"><B>LC_MESSAGES</B></FONT><B></B> environment variable specifies the language to
+use in diagnostic messages.
+
+
+<P>
+
+
+If the <B></B><FONT SIZE="-1"><B>LC_ALL</B></FONT><B></B> environment variable is set, it overrides the value
+of <B></B><FONT SIZE="-1"><B>LC_CTYPE</B></FONT><B></B> and <B></B><FONT SIZE="-1"><B>LC_MESSAGES</B></FONT><B></B>; otherwise, <B></B><FONT SIZE="-1"><B>LC_CTYPE</B></FONT><B></B>
+and <B></B><FONT SIZE="-1"><B>LC_MESSAGES</B></FONT><B></B> default to the value of the <B></B><FONT SIZE="-1"><B>LANG</B></FONT><B></B>
+environment variable.  If none of these variables are set, <FONT SIZE="-1">GCC</FONT>
+defaults to traditional C English behavior.
+<DT><B></B><FONT SIZE="-1"><B>TMPDIR</B></FONT><B></B><DD>
+<A NAME="ixCGS"></A>
+If <B></B><FONT SIZE="-1"><B>TMPDIR</B></FONT><B></B> is set, it specifies the directory to use for temporary
+files.  <FONT SIZE="-1">GCC</FONT> uses temporary files to hold the output of one stage of
+compilation which is to be used as input to the next stage: for example,
+the output of the preprocessor, which is the input to the compiler
+proper.
+<DT><B></B><FONT SIZE="-1"><B>GCC_EXEC_PREFIX</B></FONT><B></B><DD>
+<A NAME="ixCGT"></A>
+If <B></B><FONT SIZE="-1"><B>GCC_EXEC_PREFIX</B></FONT><B></B> is set, it specifies a prefix to use in the
+names of the subprograms executed by the compiler.  No slash is added
+when this prefix is combined with the name of a subprogram, but you can
+specify a prefix that ends with a slash if you wish.
+
+
+<P>
+
+
+If <B></B><FONT SIZE="-1"><B>GCC_EXEC_PREFIX</B></FONT><B></B> is not set, <FONT SIZE="-1">GCC</FONT> will attempt to figure out
+an appropriate prefix to use based on the pathname it was invoked with.
+
+
+<P>
+
+
+If <FONT SIZE="-1">GCC</FONT> cannot find the subprogram using the specified prefix, it
+tries looking in the usual places for the subprogram.
+
+
+<P>
+
+
+The default value of <B></B><FONT SIZE="-1"><B>GCC_EXEC_PREFIX</B></FONT><B></B> is
+<I>prefix/lib/gcc/</I> where <I>prefix</I> is the value
+of <TT>&quot;prefix&quot;</TT> when you ran the <I>configure</I> script.
+
+
+<P>
+
+
+Other prefixes specified with <B>-B</B> take precedence over this prefix.
+
+
+<P>
+
+
+This prefix is also used for finding files such as <I>crt0.o</I> that are
+used for linking.
+
+
+<P>
+
+
+In addition, the prefix is used in an unusual way in finding the
+directories to search for header files.  For each of the standard
+directories whose name normally begins with <B>/usr/local/lib/gcc</B>
+(more precisely, with the value of <B></B><FONT SIZE="-1"><B>GCC_INCLUDE_DIR</B></FONT><B></B>), <FONT SIZE="-1">GCC</FONT> tries
+replacing that beginning with the specified prefix to produce an
+alternate directory name.  Thus, with <B>-Bfoo/</B>, <FONT SIZE="-1">GCC</FONT> will search
+<I>foo/bar</I> where it would normally search <I>/usr/local/lib/bar</I>.
+These alternate directories are searched first; the standard directories
+come next.
+<DT><B></B><FONT SIZE="-1"><B>COMPILER_PATH</B></FONT><B></B><DD>
+<A NAME="ixCGU"></A>
+The value of <B></B><FONT SIZE="-1"><B>COMPILER_PATH</B></FONT><B></B> is a colon-separated list of
+directories, much like <B></B><FONT SIZE="-1"><B>PATH</B></FONT><B></B>.  <FONT SIZE="-1">GCC</FONT> tries the directories thus
+specified when searching for subprograms, if it can't find the
+subprograms using <B></B><FONT SIZE="-1"><B>GCC_EXEC_PREFIX</B></FONT><B></B>.
+<DT><B></B><FONT SIZE="-1"><B>LIBRARY_PATH</B></FONT><B></B><DD>
+<A NAME="ixCGV"></A>
+The value of <B></B><FONT SIZE="-1"><B>LIBRARY_PATH</B></FONT><B></B> is a colon-separated list of
+directories, much like <B></B><FONT SIZE="-1"><B>PATH</B></FONT><B></B>.  When configured as a native compiler,
+<FONT SIZE="-1">GCC</FONT> tries the directories thus specified when searching for special
+linker files, if it can't find them using <B></B><FONT SIZE="-1"><B>GCC_EXEC_PREFIX</B></FONT><B></B>.  Linking
+using <FONT SIZE="-1">GCC</FONT> also uses these directories when searching for ordinary
+libraries for the <B>-l</B> option (but directories specified with
+<B>-L</B> come first).
+<DT><B></B><FONT SIZE="-1"><B>LANG</B></FONT><B></B><DD>
+<A NAME="ixCGW"></A>
+This variable is used to pass locale information to the compiler.  One way in
+which this information is used is to determine the character set to be used
+when character literals, string literals and comments are parsed in C and C<FONT SIZE="-2">++</FONT>.
+When the compiler is configured to allow multibyte characters,
+the following values for <B></B><FONT SIZE="-1"><B>LANG</B></FONT><B></B> are recognized:
+<DL COMPACT><DT><DD>
+<DL COMPACT>
+<DT><B>C-JIS</B><DD>
+<A NAME="ixCGX"></A>
+Recognize <FONT SIZE="-1">JIS</FONT> characters.
+<DT><B>C-SJIS</B><DD>
+<A NAME="ixCGY"></A>
+Recognize <FONT SIZE="-1">SJIS</FONT> characters.
+<DT><B>C-EUCJP</B><DD>
+<A NAME="ixCGZ"></A>
+Recognize <FONT SIZE="-1">EUCJP</FONT> characters.
+</DL>
+</DL>
+
+<DL COMPACT><DT><DD>
+
+
+<P>
+
+
+If <B></B><FONT SIZE="-1"><B>LANG</B></FONT><B></B> is not defined, or if it has some other value, then the
+compiler will use mblen and mbtowc as defined by the default locale to
+recognize and translate multibyte characters.
+</DL>
+
+</DL>
+<P>
+
+Some additional environments variables affect the behavior of the
+preprocessor.
+<DL COMPACT>
+<DT><B></B><FONT SIZE="-1"><B>CPATH</B></FONT><B></B><DD>
+<A NAME="ixCHA"></A>
+
+<DT><B>C_INCLUDE_PATH</B><DD>
+<A NAME="ixCHB"></A>
+<DT><B></B><FONT SIZE="-1"><B>CPLUS_INCLUDE_PATH</B></FONT><B></B><DD>
+<A NAME="ixCHC"></A>
+<DT><B></B><FONT SIZE="-1"><B>OBJC_INCLUDE_PATH</B></FONT><B></B><DD>
+<A NAME="ixCHD"></A>
+
+Each variable's value is a list of directories separated by a special
+character, much like <B></B><FONT SIZE="-1"><B>PATH</B></FONT><B></B>, in which to look for header files.
+The special character, <TT>&quot;PATH_SEPARATOR&quot;</TT>, is target-dependent and
+determined at <FONT SIZE="-1">GCC</FONT> build time.  For Microsoft Windows-based targets it is a
+semicolon, and for almost all other targets it is a colon.
+
+
+<P>
+
+
+<B></B><FONT SIZE="-1"><B>CPATH</B></FONT><B></B> specifies a list of directories to be searched as if
+specified with <B>-I</B>, but after any paths given with <B>-I</B>
+options on the command line.  This environment variable is used
+regardless of which language is being preprocessed.
+
+
+<P>
+
+
+The remaining environment variables apply only when preprocessing the
+particular language indicated.  Each specifies a list of directories
+to be searched as if specified with <B>-isystem</B>, but after any
+paths given with <B>-isystem</B> options on the command line.
+
+
+<P>
+
+
+In all these variables, an empty element instructs the compiler to
+search its current working directory.  Empty elements can appear at the
+beginning or end of a path.  For instance, if the value of
+<B></B><FONT SIZE="-1"><B>CPATH</B></FONT><B></B> is <TT>&quot;:/special/include&quot;</TT>, that has the same
+effect as <B>-I.&nbsp;-I/special/include</B>.
+<DT><B></B><FONT SIZE="-1"><B>DEPENDENCIES_OUTPUT</B></FONT><B></B><DD>
+<A NAME="ixCHE"></A>
+If this variable is set, its value specifies how to output
+dependencies for Make based on the non-system header files processed
+by the compiler.  System header files are ignored in the dependency
+output.
+
+
+<P>
+
+
+The value of <B></B><FONT SIZE="-1"><B>DEPENDENCIES_OUTPUT</B></FONT><B></B> can be just a file name, in
+which case the Make rules are written to that file, guessing the target
+name from the source file name.  Or the value can have the form
+<I>file</I><B> </B><I>target</I>, in which case the rules are written to
+file <I>file</I> using <I>target</I> as the target name.
+
+
+<P>
+
+
+In other words, this environment variable is equivalent to combining
+the options <B>-MM</B> and <B>-MF</B>,
+with an optional <B>-MT</B> switch too.
+<DT><B></B><FONT SIZE="-1"><B>SUNPRO_DEPENDENCIES</B></FONT><B></B><DD>
+<A NAME="ixCHF"></A>
+This variable is the same as <B></B><FONT SIZE="-1"><B>DEPENDENCIES_OUTPUT</B></FONT><B></B> (see above),
+except that system header files are not ignored, so it implies
+<B>-M</B> rather than <B>-MM</B>.  However, the dependence on the
+main input file is omitted.
+</DL>
+<A NAME="lbAX">&nbsp;</A>
+<H2>BUGS</H2>
+
+<A NAME="ixCHG"></A>
+For instructions on reporting bugs, see
+&lt;<B><A HREF="http://gcc.gnu.org/bugs.html">http://gcc.gnu.org/bugs.html</A></B>&gt;.  Use of the <B>gccbug</B>
+script to report bugs is recommended.
+<A NAME="lbAY">&nbsp;</A>
+<H2>FOOTNOTES</H2>
+
+<A NAME="ixCHH"></A>
+<DL COMPACT>
+<DT>1.<DD>
+On some systems, <B>gcc -shared</B>
+needs to build supplementary stub code for constructors to work.  On
+multi-libbed systems, <B>gcc -shared</B> must select the correct support
+libraries to link against.  Failing to supply the correct flags may lead
+to subtle defects.  Supplying them in cases where they are not necessary
+is innocuous.
+</DL>
+<A NAME="lbAZ">&nbsp;</A>
+
+<H2>AUTHOR</H2>
+
+<A NAME="ixCHJ"></A>
+See the Info entry for <B>gcc</B>, or
+&lt;<B><A HREF="http://gcc.gnu.org/onlinedocs/gcc/Contributors.html">http://gcc.gnu.org/onlinedocs/gcc/Contributors.html</A></B>&gt;,
+for contributors to <FONT SIZE="-1">GCC</FONT>.
+<A NAME="lbBB">&nbsp;</A>
+<H2>COPYRIGHT</H2>
+
+<A NAME="ixCHK"></A>
+Copyright (c) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997,
+1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
+<P>
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the <FONT SIZE="-1">GNU</FONT> Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``<FONT SIZE="-1">GNU</FONT> General Public License'' and ``Funding
+Free Software'', the Front-Cover texts being (a) (see below), and with
+the Back-Cover Texts being (b) (see below).  A copy of the license is
+included in the <I><A HREF="http://localhost/cgi-bin/man/man2html?7+gfdl">gfdl</A></I>(7) man page.
+<P>
+
+(a) The <FONT SIZE="-1">FSF</FONT>'s Front-Cover Text is:
+<P>
+
+
+
+<PRE>
+     A GNU Manual
+
+</PRE>
+
+
+<P>
+
+(b) The <FONT SIZE="-1">FSF</FONT>'s Back-Cover Text is:
+<P>
+
+
+
+<PRE>
+     You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development.
+
+</PRE>
+
+
+<P>
+<HR>
+This document was created by
+<A HREF="http://localhost/cgi-bin/man/man2html">man2html</A>,
+using the manual pages.<BR>
+Time: 12:38:40 GMT, October 25, 2007
+</BODY>
+</HTML>

@@ -1,0 +1,26 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Creación de Bibliotecas</B><BR><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <I>ZinjaI</I> permite generar bibliotecas a partir de sus proyectos. Una biblioteca es conjunto de funciones y/o clases englobadas en uno más archivos para ser reutilizadas en otros proyectos. Para utilizar una biblioteca en otro proyecto se requerirá el archivo objeto de la misma (que contiene las funciones y clases compiladas y será incluido al enlazar el ejecutable), y los archivos de cabecera (que indican qué hay dentro de los objetos para poder compilar los fuentes que hacen referencia a estas funciones). <I>ZinjaI</I> facilita la generación de los archivos objeto. Éstos pueden ser de dos tipos:<UL>
+<LI>Bibliotecas dinámicas: estas bibliotecas son compartidas por más de un ejecutable. Es decir, se guarda una copia de esta biblioteca, y uno o más ejecutables buscan este archivo para utilizarla. Con éste método, cuando se quiere copiar el programa a otra PC, se debe copiar tanto el ejecutable como la biblioteca. Estos archivos tienen la extensión <I>.dll</I> en <I>Microsoft Windows</I>, y <I>.so</I> en <I>GNU/Linux</I>.</LI>
+<LI>Bibliotecas estáticas: estas bibliotecas son incluidas dentro de un ejecutable. La desventaja es que los ejecutables son más grandes y, si varios ejecutables la utilizan, cada uno tendrá su copia; pero como ventaja, el ejecutable no requiere ningún otro archivo para correr correctamente, y se garantiza que utiliza la versión adecuada de la biblioteca en cuestión. Estos archivos tienen la extensión <I>.lib</I> en <I>Microsoft Windows</I>, y <I>.a</I> en <I>GNU/Linux</I>.</LI><BR>
+</UL><BR>
+&nbsp;&nbsp;&nbsp; Por lo general, todo proyecto de ZinjaI definirá generará un archivo ejecutable, aún cuando el objetivo del proyecto sea construir una biblioteca; ya que el usuario podrá utilizar este ejecutable para verificar el correcto funcionamiento de la misma. De esta forma, en la lista de archivos fuentes asociados a un proyecto, algunos se utilizarán para generar la biblioteca, mientras que otros sólo contendrán al programa cliente que se utiliza para probarla. Es por esto, que cada biblioteca definida en un proyecto tiene un conjunto de fuentes asociados (cada fuente sólo puede estar asociado a una biblioteca a la vez). Los fuentes que no estén asociados a ninguna biblioteca sólo se utilizarán para generar el ejecutable de prueba.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para definir qué bibliotecas generar y qué fuentes asociar a cada una de ellas (así como también el tipo, nombre, ubicación, etc.), debe acceder a la pestaña <A href="project_config.html#biblioteca">Biblioteca</A> del cuadro de diálogo <A href="project_config.html#biblioteca">Opciones de Compilación y Ejecución de Proyecto</A>. Desde allí puede definir tantas bibliotecas como desee, y cada una será asociada a un perfil de configuración (puede además definir que no desea generar el ejecutable de prueba, sino sólo la biblioteca).<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para la compilación de los fuentes que componen una biblioteca, se utilizan los mismos parámetros que para cualquier otro fuente del proyecto (enlazado <A href="project_config.html#compilacion">Biblioteca</A> del cuadro de diálogo <A href="project_config.html#biblioteca">Opciones de Compilación y Ejecución de Proyecto</A>) y eventualmente algún argumento adicional necesario para este tipo de objetos (<I>-fPIC</I> en <I>GNU/Linux</I>); sin embargo, para el enlazado, no se utilizan la configuración común del proyecto, sino que sólo la de la biblioteca.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Resumiendo, el proceso básico para crear una biblioteca es:<OL>
+<LI>Crear un proyecto</LI>
+<LI>Codificar las clases/funciones que compondrán la biblioteca</LI>
+<LI>Codificar un programa cliente en uno o más archivos fuente diferentes de los que contienen las clases/funciones para la biblioteca</LI>
+<LI>Ir a la configuración de proyecto y agregar una nueva biblioteca en la pestañan <I>Biblioteca</I></LI>
+<LI>Especificar el nombre, tipo, y qué subconjunto de fuentes debe incluirse en la misma</LI>
+<LI>Compilar y ejecutar para probar</LI>
+</OL><BR>
+<BR>
+Nota: para comprender en detalle cómo el proceso de compilación de un proyecto cuando éste incluye bibliotecas puede consultar <A href="project_building_sequence.html">Secuencia de Compilación de Proyecto</A>.
+<BR>
+</BODY></HTML>

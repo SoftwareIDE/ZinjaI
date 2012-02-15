@@ -1,0 +1,16 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Iterative structure: <I>for</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; This structure allows the excution of a group of actions while a condition remains true, but includes also initialization and updating actions, ussually involving a control variable for the condition. It means that it allows the programmer to introduce an extra initialization action to be executed before entering the loop, and an extra updating action to be execute after each iteration. This makes this structure very suitable for situations where the number of iteration is known (for instance, traversing a linear structure or container, like a vector or an array)<BR>
+&nbsp;&nbsp;&nbsp; The structure's beginning is marked with the keyword <I>for</I>. After that goes the initialization, the condition and the updating action, separed with semicolon (;) and surrounded by parenthesis. Then goes the action to be repeated on each iteration. The initialization can involve some variable declaration (whoose scope is only inside the loop). If the condition is false before getting into the loop, the actions inside it won't be executed. The updating statement is executed always at the end of an iteration and before evaluating the condition again.<BR>
+<BR><BR>
+Example: Calculating the average from an array A with N elements:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; float sum = 0;<BR>
+&nbsp;&nbsp;&nbsp; for (int i=0;i&lt;N;i++) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sum+=A[i];<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+&nbsp;&nbsp;&nbsp; float aver = sum/N;<BR>
+</CODE><BR>
+The incializacion declares the variable <I>i</I>(counter) and set it to zero. Then, after each iteration, the updating increments that counter. The loop will run until <I>i</I> gets to <I>N</I> (when the condition <I>i&lt;N</I> becomes false). It means that actions inside the structure will be executed for the following <I>i</I> values: <I>0,1,2,...,N-1</I>. Outside the loop, the variable <I>i</I> will not exists anymore (if that variable is declared before the <I>for</I> and not in the initialization, when exiting the loop its value must be <I>N</I>).
+</BODY></HTML>

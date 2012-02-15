@@ -1,0 +1,15 @@
+#include <iostream>
+#include <ctime>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+	time_t t1 = time(NULL), t2=time(NULL);
+		while(true) {
+		cout << "Pasaron " << t2-t1 << " segundos.\n";
+		while(time(NULL)==t2)
+			;
+		t2=time(NULL);
+	}
+	return 0;
+}
+

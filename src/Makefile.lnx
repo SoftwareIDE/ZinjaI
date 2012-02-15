@@ -1,0 +1,19 @@
+GPP=g++
+GCC=gcc-4.2.4
+FLAGS=-O2 `wx-config --cppflags --unicode=no`
+LIBS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs` 
+OBJS_DIR=../release.lnx
+
+all: ../zinjai.bin
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../zinjai.bin
+	rm -f core
+
+../zinjai.bin: ${OBJS_DIR} ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}

@@ -1,0 +1,16 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Análisis Dinámico</B><BR><BR>
+&nbsp;&nbsp;&nbsp; El analisis dinamico en <I>ZinjaI</I> permite detectar errores en la gestión de memoria de un programa. <I>ZinjaI</I> en realidad no realiza este análisis, sino que delega la tarea a <I>Valgrind</I>, y luego muestra sus resultados en un panel especial organizados en árbol. <I>Valgrind</I> es un conjunto de herramientas libres que ayuda en la depuración de problemas de memoria y rendimiento de programas. De este conjunto, <I>ZinjaI</I> por ahora sólo interactúa con <I>Memcheck</I>. Esta herramienta modifica el ejecutable (en <I>RAM</I>, no en disco) introduciendo código que permite detectar el uso de memoria no inicializada, la lectura o escritura en porciones de memoria que fueron previamente liberados, la lectura/escritura fuera de los límites en la memoria dinámica, fugas de memoria, etc.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para realizar el analisis dinámico de un programa, debe ejecutarlo utilizando el comando <I>Ejecutar</I> del submenú <I>Análisis Dinámico</I> del menú <I>Herramientas</I>. En este tipo de ejecución, notará una pérdida de rendimiento debido a los cambios realizados por <I>Valgrind</I>. Cuando finaliza la ejecución de su programa, <I>Valgrind</I> genera una informe con los errores detectados (en realidad se va generando durante la ejecución, por lo que se puede consultar el estado parcial). Para visualizar estos resultados utilice la opción <I>Mostrar Panel de Resultados</I> del submenú <I>Análisis Dinámico</I> del menú <I>Herramientas</I>.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Debe notar que a diferencia del perfilado de ejecución realizado con <A href="gprof.html">gprof</A>, para el correcto funcionamiento de <I>Valgrind</I> sólo es necesario que el ejecutable contenga información de depuración, pero no es necesario modificarlo en ningún otro sentido.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para instalar <I>Valgrind</I> en <I>GNU/Linux</I> puede utilizar el gestor de paquetes de su distribución, o descargarlo desde <A href="http://www.valgrind.org">www.valgrind.org</A>. Dado que esta herramienta no está disponible para sistemas <I>Microsoft Windows</I>, la versión para <I>Windows</I> de <I>ZinjaI</I> no contendrá este submenú en <I>Herramientas</I>.<BR>
+<BR>
+<BR>
+Nota: Para realizar un perfil de ejecución relacionado a los tiempos de ejecución el árbol de llamadas entre métodos/funciones utilice <A href="gprof.html">gprof</A>.
+<BR>
+
+</BODY></HTML>

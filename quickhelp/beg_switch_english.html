@@ -1,0 +1,24 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Multiple selection conditional structure: <I>switch</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; This structure allows the definition of two or more blocks of code. Wich one of them is executed depends on some numerical expression, because each block is attached to some possible numercal value. The beggining of the structure is indicated by the keyword <I>switch</I> and followed by the numerical expresion to evaluate (surrounded by parenthesis). Then, inside braces ({}), came the possible values (also numerical expresions), each of them with a block of code attached as follows: first the keyword <I>case</I>, then the value and a colon (:), then the actions to be performed when the expresion's value matches this case, and then a <I>break;</I> statement. When the program reaches that point, the expresion is evaluated, and compared to the posible cases in the same order as the appear in the source code. When a value matches, the actions after it are executed until the program reaches the end of the structure, or until it reaches a <I>break;</I> statement. That means that if there is no <I>break</I> after the actions for a case, when the program run into this case, it will follow with all the cases after that one until it finds a <I>break</I>. This is usefull when you want to attach the same actions to more than one possible values. There is also an especial case, introduced by the keyword <I>default</I> followed directly by a colon, that can be at the end and contains the actions to be executed when none of the previous cases match the expression's value.<BR>
+<BR><BR>
+Example:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; switch (num) {<BR>
+&nbsp;&nbsp;&nbsp; case 1:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selection: 1"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; case 2: case 3: case 4;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selection: 2, 3 or 4"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; case 5:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selection: 5"&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+&nbsp;&nbsp;&nbsp; default:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Selection: greater than 5"&lt;&lt;endl<BR>
+&nbsp;&nbsp;&nbsp; };<BR>
+</CODE><BR>
+<BR>
+<BR>
+</BODY></HTML>

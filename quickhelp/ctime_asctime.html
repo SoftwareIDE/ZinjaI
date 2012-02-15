@@ -1,0 +1,28 @@
+<B>Función <I>asctime</I></B>
+<BR><BR>
+Convierte una fecha y hora contenidas en una estructura <I>tm</I> a una cadena de caracteres.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>char * asctime ( const struct tm * timeptr );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;ctime&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Interpreta el contenido de la estructura apuntada por <I>timeptr</I> y devuelve una cadena de caracteres conteniendo la misma fecha en un formato legible. El formato en que se escribe la fecha en la cadena de caracteres es: "Ddd Mmm DD HH:MM:SS AAAA"; donde Ddd es el dia de la semana abreviado y en inglés; Mmm es el nombre del mes abreviado y en inglés; dd es el número del dia; hh, mm y ss son horas, minutos y segundos respectivamente; y AAAA es el año. La cadena finaliza con un caracter de fin de linea ('\n').<BR>
+&nbsp;&nbsp;&nbsp; El arreglo en el cual almacena la cadena y al cual apunta el puntero que retorna es un arreglo estático utilizado también por la función <I>ctime</I>, por lo que cualquier llamada a una de estas funciones modificará su contenido.<BR>
+<BR><BR>
+<A href="example:ctime_asctime.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp; time_t t1 = time(0);<BR>
+&nbsp;&nbsp;&nbsp; tm *t2 = localtime( &t1 );<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Fecha actual: "&lt;&lt;asctime(t2)&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; return 0;<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:ctime.html">Cabecera <I>ctime</I></A>: Contiene funciones y estructuras para el manejo de fechas y horas.</LI>
+<LI><A href="quickfile:ctime_ctime.html">Función <I>ctime</I></A>: Convierte una fecha y hora contenidas en una variable de tipo <I>time_t</I> a una cadena de caracteres.</LI>
+<LI><A href="quickfile:ctime_time.html">Función <I>time</I></A>: Devuelve la fecha/hora actual en segundos.</LI>
+<LI><A href="quickfile:ctime_localtime.html">Función <I>localtime</I></A>: Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> local.</LI>
+<LI><A href="quickfile:ctime_gmtime.html">Función <I>gmtime</I></A>: Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> UTC.</LI>
+</UL>

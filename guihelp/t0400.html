@@ -1,0 +1,42 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<TABLE WIDTH="100%"><TR><TD>
+<B>Parte 2: Funciones y Ámbitos</B>
+</TD><TD ALIGN="right">
+<A href="t0400.html">0</A>&nbsp;
+<A href="t0401.html">1</A>&nbsp;
+<A href="t0402.html">2</A>&nbsp;
+<A href="t0403.html">3</A>&nbsp;
+<A href="t0404.html">4</A>&nbsp;
+<A href="t0405.html">5</A>&nbsp;
+<A href="t0406.html">6</A>
+</TD></TR></TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; En el segundo tutorial relacionado a la depuración de programas, se enseña a trabajar con llamadas a funciones/métodos, entendiendo el trazado inverso, y prestando especial atención al ámbito de validez de las variables locales de las funciones involucradas. Para ello, se utilizará el siguiente programa ejemplo:<BR><BR>
+<CENTER><TABLE bgcolor="#FFFFEE" border=1><TR><TD><CODE>
+#include &lt;iostream&gt;<BR>
+using namespace std;<BR>
+&nbsp;<BR>
+int potencia(int base, int expo) {<BR>
+&nbsp;&nbsp;&nbsp;if (expo==0) return 1;<BR>
+&nbsp;&nbsp;&nbsp;else return base*potencia(base,expo-1);<BR>
+}<BR>
+&nbsp;<BR>
+int main(int argc, char *argv[]) {<BR>
+&nbsp;&nbsp;&nbsp;int b,e;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Ingrese la base: ";<BR>
+&nbsp;&nbsp;&nbsp;cin&gt;&gt;b;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Ingrese el exponente: ";<BR>
+&nbsp;&nbsp;&nbsp;cin&gt;&gt;e;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Resultado: "&lt;&lt;potencia(b,e)&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp;return 0;<BR>
+}
+</CODE></TD></TR></TABLE></CENTER><BR>
+<BR>
+<CENTER>Puede cargar este código en un nuevo programa haciendo <A href="foropen:t0401.cpp">click aquí</A>.</CENTER>
+<BR><BR>
+<CENTER><A href="t0401.html">Comenzar...</A></CENTER>
+<BR><BR>
+</BODY>
+</HTML>

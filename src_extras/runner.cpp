@@ -1,0 +1,216 @@
+#include<cstring>
+#include<iostream>
+#if defined(__WIN32__)
+#define eternal_nothing while (true) Sleep(10000)
+#include<io.h>
+#include<windows.h>
+#include <conio.h>
+#else
+#include<cstdlib>
+#if !defined(__APPLE__)
+#include<wait.h>
+#endif
+#include <termios.h>
+#include <unistd.h>
+#define eternal_nothing while (true) sleep(10)
+#endif
+
+using namespace std;
+
+
+const char *lang_debug_finished[] = {
+	"<< La depuracion ha finalizado >>",
+	"<< Debugging session has finished >>"
+};
+
+const char *lang_program_finished[] = {
+	"<< El programa ha finalizado: codigo de salida: ",
+	"<< Program finished: exit code: "
+};
+
+const char *lang_program_finished_abnormal[] = {
+	"<< El programa ha finalizado anormalmente: signal ",
+	"<< Abnormal program termination: signal "
+};
+
+const char *lang_press_key_to_close[] = {
+	"<< Presione enter para cerrar esta ventana >>",
+	"<< Press enter to close this window >>"
+};
+
+const char *lang_error_running[] = {
+	"Error ejecuntado: ",
+	"Error running: "
+};
+
+const char *lang_error_creating_process[] = {
+	"Error al crear proceso: ",
+	"Error creating process: "
+};
+
+int lang_idx=0;
+
+// void on_quit(int sig) {
+// 	cerr<<endl<<endl<<lang_debug_finished[lang_idx]<<endl<<lang_press_key_to_close[lang_idx];
+// 	cout<<"\033[?25l"<<flush;
+// 	struct termios oldt,newt;
+// 	tcgetattr( STDIN_FILENO, &oldt );
+// 	newt = oldt;
+// 	newt.c_lflag &= ~( ICANON | ECHO );
+// 	tcsetattr( STDIN_FILENO, TCSANOW, &newt );
+// 	char buf[256];
+// 	read(STDIN_FILENO,buf,255);
+// 	tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
+// 	exit(0);
+// }
+
+int main(int argc, char *argv[]) {
+	
+	bool tty=false;
+	string tty_fout;
+	int waitkey=0;
+	string dir;
+	bool dir_done=false;
+	int cmd_start=1;
+	
+	for (int i=1;i<argc;i++) {
+		if (strcmp(argv[i],"-tty")==0) {
+			tty=true;
+			tty_fout=argv[++i];
+		} else if (strcmp(argv[i],"-waitkey-onerror")==0) {
+			waitkey=1;
+		} else if (strcmp(argv[i],"-waitkey")==0) {
+			waitkey=2;
+		} else if (strcmp(argv[i],"-lang")==0) {
+			i++;
+			if (strcmp(argv[i],"english")==0)
+				lang_idx=1;
+		} else if (dir_done) {
+			cmd_start=i;
+			break;
+		} else {
+			dir_done=true;
+			dir=argv[i];
+		}
+	}
+
+	if (tty) { // guarda la direccion de la terminal en un archivo y entra en loop infinito (terminal para depuracion)
+//		if (waitkey) signal(2,on_quit);
+		system((string("tty >")+tty_fout).c_str());
+		eternal_nothing;
+	}
+	
+	if (cmd_start) {
+		chdir(dir.c_str());
+		
+#if defined(_WIN32) || defined(__WIN32__)
+
+		string command;
+		command+="\"";
+		command+=argv[cmd_start];
+		command+="\" ";
+		for (int i=cmd_start+1;i<argc;i++) {
+			command+="\"";
+			command+=argv[i];
+			command+="\" ";
+		}
+
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+		
+		ZeroMemory( &si, sizeof(si) );
+		si.cb = sizeof(si);
+		ZeroMemory( &pi, sizeof(pi) );
+		
+		// Start the child process.
+		if( !CreateProcess( NULL, // No module name (use command line).
+			(char*)command.c_str(), // Command line.
+			NULL,             // Process handle not inheritable.
+			NULL,             // Thread handle not inheritable.
+			FALSE,            // Set handle inheritance to FALSE.
+			0,                // No creation flags.
+			NULL,             // Use parent's environment block.
+			NULL,             // Use parent's starting directory.
+			&si,              // Pointer to STARTUPINFO structure.
+			&pi )             // Pointer to PROCESS_INFORMATION structure.
+			)
+		{
+			cerr<<lang_error_creating_process[lang_idx]<<command<<endl;
+			cin.get();
+			return 1;
+		}
+		
+		// Wait until child process exits.
+		WaitForSingleObject( pi.hProcess, INFINITE );
+		
+		DWORD ret;
+		GetExitCodeProcess(pi.hProcess, &ret);
+		
+		// Close process and thread handles.
+		CloseHandle( pi.hProcess );
+		CloseHandle( pi.hThread );
+		if (waitkey==2 || (waitkey==1 && ret!=0)) {
+			cerr<<endl<<endl<<lang_program_finished[lang_idx]<<ret<<" >>"<<endl<<lang_press_key_to_close[lang_idx];
+			getch();
+		}
+#else
+
+		int child_status,margc=0;
+		
+		char **margv= new char*[argc-cmd_start+1];
+		for (int i=cmd_start;i<argc;i++) {
+			margv[margc++]=argv[i];
+		}
+		margv[margc]=NULL;
+		
+		pid_t child_pid;
+		child_pid=fork();
+		if (child_pid==0) {
+			execvp(margv[0],margv);
+			cerr<<lang_error_running[lang_idx]<<margv[0]<<endl;
+			cin.get();
+			return 1;
+		}
+		
+		int ret=0;
+		
+		waitpid(child_pid,&child_status,0);
+		if (WIFEXITED(child_status)) {
+			ret=WEXITSTATUS(child_status);
+			if (waitkey==2 || (waitkey==1 && ret!=0)) {
+				cerr<<endl<<endl<<lang_program_finished[lang_idx]<<ret<<" >>"<<endl<<lang_press_key_to_close[lang_idx];
+				waitkey=2;
+			}
+		} else {
+			if (waitkey>0) {
+				cerr<<endl<<endl<<lang_program_finished_abnormal[lang_idx]<<WTERMSIG(child_status)<<" >>"<<endl<<lang_press_key_to_close[lang_idx];
+				waitkey=2;
+			}
+		}
+		if (waitkey==2) {
+			cout<<"\033[?25l"<<flush;
+			struct termios oldt,newt;
+			tcgetattr( STDIN_FILENO, &oldt );
+			newt = oldt;
+			newt.c_lflag &= ~( ICANON | ECHO );
+			tcsetattr( STDIN_FILENO, TCSANOW, &newt );
+			char buf[256];
+			read(STDIN_FILENO,buf,255);
+			tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
+		}
+#endif
+
+//		int ret = system(command.c_str());
+//#if !defined(_WIN32) && !defined(__WIN32__)
+//		if (ret&0xFF) {
+//			if (waitkey) cerr<<endl<<endl<<"<< El programa ha finalizado anormalmente: signal "<<int(ret&0xFF)<<" >>";
+//		} else {
+//			ret>>=8;
+//#endif
+//			if (waitkey) cerr<<endl<<endl<<"<< El programa ha finalizado: codigo de salida: "<<ret<<" >>"<<endl<<"<< Presione enter para cerrar esta ventana >>";
+//#if !defined(_WIN32) && !defined(__WIN32__)
+
+		return ret;
+	}
+	return 0;
+}

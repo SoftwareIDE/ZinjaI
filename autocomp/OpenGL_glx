@@ -1,0 +1,47 @@
+
+<GL/glx>
+		
+	Bool glXIsDirect(Display *dpy, GLXContext ctx)
+	Bool glXMakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx)
+	Bool glXQueryExtension(Display *dpy, int *errorBase, int *eventBase)
+	Bool glXQueryVersion(Display *dpy, int *major, int *minor)
+	GLXContext glXCreateContext(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct)
+	GLXContext glXGetCurrentContext(void void)
+	GLXDrawable glXGetCurrentDrawable(void void)
+	GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis, Pixmap pixmap)
+	GLX_ACCUM_ALPHA_SIZE
+	GLX_ACCUM_BLUE_SIZE
+	GLX_ACCUM_GREEN_SIZE
+	GLX_ACCUM_RED_SIZE
+	GLX_ALPHA_SIZE
+	GLX_AUX_BUFFERS
+	GLX_BAD_ATTRIB
+	GLX_BAD_CONTEXT
+	GLX_BAD_CONTEXT_STATE
+	GLX_BAD_CURRENT_WINDOW
+	GLX_BAD_DRAWABLE
+	GLX_BAD_PIXMAP
+	GLX_BAD_SCREEN
+	GLX_BAD_VISUAL
+	GLX_BLUE_SIZE
+	GLX_BUFFER_SIZE
+	GLX_DEPTH_SIZE
+	GLX_DOUBLEBUFFER
+	GLX_GREEN_SIZE
+	GLX_LEVEL
+	GLX_NO_EXTENSION
+	GLX_RED_SIZE
+	GLX_RGBA
+	GLX_STENCIL_SIZE
+	GLX_STEREO
+	GLX_USE_GL
+	XVisualInfo* glXChooseVisual(Display *dpy, int screen, int *attribList)
+	int glXGetConfig(Display *dpy, XVisualInfo *vis, int attrib, int *value)
+	void glXCopyContext(Display *dpy, GLXContext src, GLXContext dst, GLuint mask)
+	void glXDestroyContext(Display *dpy, GLXContext ctx)
+	void glXDestroyGLXPixmap(Display *dpy, GLXPixmap pix)
+	void glXSwapBuffers(Display *dpy, GLXDrawable drawable)
+	void glXUseXFont(Font font, int first, int count, int listBase)
+	void glXWaitGL(void void)
+	void glXWaitX(void void)
+

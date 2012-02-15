@@ -1,0 +1,25 @@
+<B>Función <I>strncpy</I></B>
+<BR><BR>
+Copia parte de una cadena en otra.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>char * strncpy ( char * destination, const char * source , size_t n );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstring&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Copia los <I>n</I> primeros caracteres de la cadena apuntada por <I>source</I> a la cadena apuntada por <I>destination</I>. Si <I>n</I> es mayor que la longitud de la cadena apuntada por <I>source</I> la diferencia se rellena con ceros. El caracter de terminación no se agrega implícitamente, por lo <I>destination</I> sólo tendrá el caracter de terminación si <I>n</I> es mayor que la longitud de <I>source</I>.<BR>
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; char cadena1[]="Hola Mundo!\n";<BR>
+&nbsp;&nbsp;&nbsp; char cadena2[40];<BR>
+&nbsp;&nbsp;&nbsp; // copiar "Hola" de cadena1 a cadena2<BR>
+&nbsp;&nbsp;&nbsp; strcpy(cadena2,cadena1,4);<BR>
+&nbsp;&nbsp;&nbsp; char cadena2[4]='\0';<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstring.html">Cabecera <I>cstring</I></A>: Contiene funciones para el manejo de cadenas de caracteres c y arreglos.
+<LI><A href="quickfile:cstring_strcpy.html">Función <I>strcpy</I></A>: Copia una cadena en otra. 
+</UL>

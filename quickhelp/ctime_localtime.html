@@ -1,0 +1,27 @@
+<B>Función <I>localtime</I></B>
+<BR><BR>
+Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> local.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI>struct tm * localtime ( const time_t * timer );</LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;ctime&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Convierte la fecha y hora apuntada por timer (en segundos) a su equivalente para la estructura tm (dividida en componentes). La fecha y hora resultantes son, a diferencia de las retornadas por gmtime, fechas y horas locales. Devuelve un puntero a una estructura de tipo tm. Esta estructura esta alocada estáticamente y es compartida pos las funciones gmtime y localtime, por lo que cualquier llamada a cualquiera de ellas la sobreescribirá.<BR>
+<BR><BR>
+<A href="example:ctime_localtime.eje">Ejemplo:</A><BR><CODE>
+&nbsp;&nbsp;&nbsp; time_t t1 = time(NULL);<BR>
+&nbsp;&nbsp;&nbsp; tm *ptm2 = localtime( &t1 );<BR>
+&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Fecha actual (local): " &lt;&lt; ptm2-&gt;tm_mday &lt;&lt; "/" &lt;&lt; ptm2-&gt;tm_mon+1 &lt;&lt; "/" &lt;&lt; ptm2-&gt;tm_year+1900 &lt;&lt; endl;<BR>
+&nbsp;&nbsp;&nbsp; cout &lt;&lt;"Hora actual (local): " &lt;&lt; ptm2-&gt;tm_hour &lt;&lt; ":" &lt;&lt; ptm2-&gt;tm_min &lt;&lt; ":" &lt;&lt; ptm2-&gt;tm_sec &lt;&lt; endl;<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:ctime.html">Cabecera <I>ctime</I></A>: Contiene funciones y estructuras para el manejo de fechas y horas.</LI>
+<LI><A href="quickfile:ctime_time.html">Función <I>time</I></A>: Devuelve la fecha/hora actual en segundos.</LI>
+<LI><A href="quickfile:ctime_gmtime.html">Función <I>gmtime</I></A>: Convierte una fecha y hora <I>time_t</I> a una fecha y hora <I>tm</I> UTC.</LI>
+<LI><A href="quickfile:ctime_time_t.html">Tipo <I>time_t</I></A>: Representa una fecha y hora determinada en segundos.</LI>
+<LI><A href="quickfile:ctime_tm.html">Tipo <I>tm</I></A>: Contiene una fecha y hora determinada separada en sus componentes.</LI>
+</UL>

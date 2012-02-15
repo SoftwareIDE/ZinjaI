@@ -1,0 +1,175 @@
+#include "mxUpdatesChecker.h"
+#include "ids.h"
+#include "mxMainWindow.h"
+#include "mxUtils.h"
+#include "ConfigManager.h"
+#include "mxBitmapButton.h"
+#include "mxHelpWindow.h"
+#include "mxSizers.h"
+#include "Language.h"
+#include <wx/bitmap.h>
+#include "mxArt.h"
+
+BEGIN_EVENT_TABLE(mxUpdatesChecker, wxDialog)
+	EVT_SOCKET(mxID_SOCKET_UPDATES,mxUpdatesChecker::OnSocketEvent)
+	EVT_BUTTON(wxID_CANCEL,mxUpdatesChecker::OnCloseButton)
+	EVT_BUTTON(wxID_OK,mxUpdatesChecker::OnChangesButton)
+	EVT_CLOSE(mxUpdatesChecker::OnClose)
+END_EVENT_TABLE()
+	
+mxUpdatesChecker::mxUpdatesChecker(bool show) : wxDialog(main_window, wxID_ANY, LANG(UPDATE_CAPTION,"Buscar Actualizaciones"), wxDefaultPosition, wxSize(450,150) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+
+	wxBoxSizer *iSizer = new wxBoxSizer(wxHORIZONTAL);
+	
+	the_socket = NULL;
+	this->show = show;
+	done=false;
+	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	check = new wxCheckBox(this,wxID_ANY,LANG(UPDATE_CHECK_AT_STARTUP,"Verificar siempre al iniciar"));
+	check->SetValue(config->Init.check_for_updates);
+	
+	text = new wxStaticText(this,wxID_ANY,LANG(UPDATE_CONSULTING_WEB,"Consultando web..."),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE|wxST_NO_AUTORESIZE);
+	mySizer->AddStretchSpacer();
+	mySizer->Add(text,sizers->BA5_Exp0);
+	mySizer->AddStretchSpacer();
+	mySizer->Add(check,sizers->BA5);
+	
+	close_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CLOSE_BUTTON,"&Cerrar"));
+	changes_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(UPDATE_GOTO_SITE,"Ir al &sitio"));
+	buttonSizer->Add(changes_button,sizers->BA5_Right);
+	buttonSizer->Add(close_button,sizers->BA5_Right);
+	mySizer->Add(buttonSizer,sizers->Right);
+	
+	iSizer->Add(new wxStaticBitmap(this,wxID_ANY, wxBitmap(SKIN_FILE(_T("upgrade.png")), wxBITMAP_TYPE_PNG)),sizers->BA10);
+	iSizer->Add(mySizer,sizers->Exp1);
+	SetSizer(iSizer);
+	changes_button->Hide();
+	if (show) { 
+		Show();
+		close_button->SetFocus();
+	} else {
+		main_window->GetStatusBar()->SetStatusText(LANG(UPDATE_CONSULTING_STATUS,"Buscar actualizaciones: Consultando..."));
+	}
+	wxYield();
+	
+	
+	wxIPV4address adrs;
+//#ifdef DEBUG
+//	if (!adrs.Hostname(_T("127.0.0.1"))) {
+//#else
+	if (!adrs.Hostname(_T("zinjai.sourceforge.net"))) {
+//#endif
+		if (!show) {
+			main_window->GetStatusBar()->SetStatusText(LANG(UPDATE_SERVER_NOT_FOUND_STATUS,"Buscar actualizaciones: No se pudo contactar al servidor."));
+			Destroy();
+		} else {
+			text->SetLabel(LANG(UPDATE_SERVER_NOT_FOUND,"No se pudo contactar al servidor."));
+			GetSizer()->Layout();
+		}
+	} else {
+		adrs.Service(80);
+		the_socket = new wxSocketClient(wxSOCKET_NOWAIT);
+		the_socket->SetEventHandler(*(GetEventHandler()), mxID_SOCKET_UPDATES);
+		the_socket->SetNotify(wxSOCKET_CONNECTION_FLAG|wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG);
+		the_socket->Notify(true);
+		the_socket->Connect(adrs,false);
+	}
+}
+
+void mxUpdatesChecker::OnSocketEvent(wxSocketEvent &event) {
+	if (event.GetSocket()!=the_socket) return;
+	if (event.GetSocketEvent()==wxSOCKET_LOST) {
+		if (show) {
+			if (!done) 
+				text->SetLabel(LANG(UPDATE_ERROR_CONNECTING,"Error al conectarse al servidor."));
+			GetSizer()->Layout();
+		} else {
+			main_window->GetStatusBar()->SetStatusText(LANG(UPDATE_ERROR_CONNECTING_STATUS,"Buscar actualizaciones: Error al conectarse al servidor."));
+		}
+		the_socket->Notify(false);
+		the_socket->Destroy();
+		the_socket=NULL;
+	} else if (event.GetSocketEvent()==wxSOCKET_CONNECTION) {
+		done=true;
+//#ifdef DEBUG
+//		the_socket->Write("GET /version HTTP/1.1\nhost:127.0.0.1\n\n",51);
+//#else
+#if defined(__WIN32__)
+		the_socket->Write("GET /version-windows HTTP/1.1\nhost:zinjai.sourceforge.net\n\n",59);
+#elif defined(__APPLE__)
+		the_socket->Write("GET /version-mac HTTP/1.1\nhost:zinjai.sourceforge.net\n\n",55);
+#else
+		the_socket->Write("GET /version-linux HTTP/1.1\nhost:zinjai.sourceforge.net\n\n",57);
+#endif
+//#endif
+	} else if (event.GetSocketEvent()==wxSOCKET_INPUT) {
+		wxChar read_chars[1024];
+		the_socket->Read(read_chars,1024);
+		read_chars[the_socket->LastCount()]='\0';
+		wxString str(read_chars);
+		int p = str.Find(_T("ZVERSION="));
+		if (p!=wxNOT_FOUND) {
+			long l=0;
+			str.Mid(p+9,8).ToLong(&l);
+			if (l>config->Init.version) {
+				if (!show) 
+					main_window->GetStatusBar()->SetStatusText(LANG(UPDATE_NEW_VERSION_STATUS,"Buscar actualizaciones: Nueva version disponible en http://zinjai.sourceforge.net"));
+				wxString str;
+				str<<LANG(UPDATE_NEW_VERSION_IN_SITE_PRE,"Hay una nueva version disponible en\nhttp://zinjai.sourceforge.net (")<<l<<LANG(UPDATE_NEW_VERSION_IN_SITE_POST,")");
+				text->SetLabel(str);
+				changes_button->Show();
+				GetSizer()->Layout();
+				Show();
+				changes_button->SetFocus();
+			} else {
+				if (show) {
+					text->SetLabel(LANG(UPDATE_NO_NEW_VERSION,"No hay nuevas versiones disponibles."));
+					GetSizer()->Layout();
+				} else {
+					main_window->GetStatusBar()->SetStatusText(LANG(UPDATE_NO_NEW_VERSION_STATUS,"Buscar actualizaciones: No hay versiones nuevas disponibles."));
+					Destroy();
+				}
+			}
+		} else {
+			if (show) {
+				text->SetLabel(LANG(UPDATE_ERROR_IN_COMUNNICATION,"Se ha producido un error en la comunicacion."));
+				GetSizer()->Layout();
+			} else {
+				main_window->GetStatusBar()->SetStatusText(LANG(UPDATE_ERROR_IN_COMUNNICATION_STATUS,"Buscar actualizaciones: Se ha producido un error en la comunicacion."));
+				Destroy();
+			}
+		}
+		if (the_socket) {
+			the_socket->Notify(false);
+			the_socket->Destroy();
+			the_socket=NULL;
+		}
+	}
+}
+
+void mxUpdatesChecker::OnClose(wxCloseEvent &evt) {
+	config->Init.check_for_updates = check->GetValue();
+	if (the_socket) {
+		the_socket->Notify(false);
+		the_socket->Destroy();
+		the_socket=NULL;
+	}
+	Destroy();
+}
+
+void mxUpdatesChecker::OnCloseButton(wxCommandEvent &evt) {
+	Close();
+}
+
+void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
+//#ifdef DEBUG
+//	wxExecute(config->Files.browser_command+_T(" http://127.0.0.1/zinjai"));
+//#else
+	if (config->Init.language_file=="spanish")
+		utils->OpenInBrowser(_T("http://zinjai.sourceforge.net?page=descargas.php"));
+	else
+		utils->OpenInBrowser(_T("http://zinjai.sourceforge.net?page=descargas_en.php"));
+//#endif
+	Close();
+}

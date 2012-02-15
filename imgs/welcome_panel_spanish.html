@@ -1,0 +1,35 @@
+<HTML><HEAD><TITLE>ZinaI Welcome Page</TITLE></HEAD><BODY>
+<HR><CENTER>
+<TABLE><TR>
+<TD><img src="zinjai-32x32.png">&nbsp;</TD><TD>
+&nbsp;<FONT size=+1><B>Bienvenido a ZinjaI ${ZVERSION}</B></FONT>&nbsp;
+</TD><TD>&nbsp;<img src="zinjai-32x32.png"></TD></TR></TABLE>
+</CENTER><HR>
+<table><TR><TD>
+<UL>
+<LI><FONT size=+1><A href="new_simple"><img src="24/nuevo.png"></A>&nbsp;&nbsp;<A href="new_simple"><B>Crear un programa simple</B></A></FONT>: Comenzar a trabajar en un programa o ejercicio rápidamente sin tener que crear archivos ni carpetas, ni definir configuraciones. Con esta opción, simplemente seleccione una plantilla para utilizar de base y comience a programar.<BR></LI>
+<LI><FONT size=+1><A href="new_project"><img src="24/proyecto.png"></A>&nbsp;&nbsp;<A href="new_project"><B>Crear un nuevo proyecto</B></A></FONT>: Para los desarrollos más complejos, deberá utilizar un proyecto. Los proyectos permiten compilar múltiples fuentes, establecer perfiles con opciones avanzadas de compilación y enlazado, integrar herramientas externas, etc.<BR></LI>
+<LI><FONT size=+1><A href="open_file"><img src="24/abrir.png"></A>&nbsp;&nbsp;<A href="open_file"><B>Abrir un archivo fuente o proyecto existente</B></A></FONT>:<UL>
+<LI><B>Últimos archivos utilizados</B>: (<A href="recent_files">ver más...</A>)<OL>
+<LI><FONT size=+1><A href="open:${FILE:01}">${FILE:01}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${FILE:02}">${FILE:02}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${FILE:03}">${FILE:03}</A></FONT></LI>
+</OL></LI>
+<LI><B>Últimos proyectos utilizados</B>: (<A href="recent_projects">ver más...</A>)<OL>
+<LI><FONT size=+1><A href="open:${PROJECT:01}">${PROJECT:01}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${PROJECT:02}">${PROJECT:02}</A></FONT></LI>
+<LI><FONT size=+1><A href="open:${PROJECT:03}">${PROJECT:03}</A></FONT></LI>
+</OL></LI>
+</UL>
+</LI>
+</UL>
+</TD><TD></TD></TR></TABLE>
+<HR>
+<TABLE><TR><TD><A href="tip"><img src="htmltip.png"></A></TD><TD>
+<B>&nbsp;¿Sabías que?</B><BR>${TIP}
+</TD></TR></TABLE>
+<HR>
+<FONT size=-2>
+Si no quieres volver a ver este panel al inciar haz <A href="never_again">click aqui</A>: en lugar de este panel, ZinjaI iniciará mostrando un programa en blanco utilizando la plantilla por defecto para que comiences a trabajar.
+</FONT>
+</BODY></HTML>

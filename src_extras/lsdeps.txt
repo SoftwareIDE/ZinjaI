@@ -1,0 +1,2 @@
+Este programa se basa en el codigo de Import Table Viewer 0.1 de Ashkbiz Danehkar (www.ntcore.com), publicado bajo lisencia GPL.
+Los archivos itlib.h, itlib.cpp, peliberr.cpp, peliberr.h y stdafx.h han sido extraidos directamente y sin cambios de dicho proyecto.

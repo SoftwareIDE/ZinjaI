@@ -1,0 +1,16 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Diálogo <I>Agregar/Editar Paso de Compilacion Personalizado</I></B><BR><BR>
+&nbsp;&nbsp;&nbsp; <I>ZinjaI</I> permite personalizar el proceso de compilación introduciendo pasos adicionales en la secuencia estándar. Para ello debe utilizar la pestaña <A href="project_config.html#secuencia">Secuencia</A> del diálogo <A href="project_config.html">Opciones de Compilacion y Ejecucion de Proyecto</A>. El diálogo <I>Agregar/Editar Paso de Compilacion Personalizado</I> permite definir las propiedades y funcionalidades de estos pasos adicionales.<BR>
+<BR>
+<CENTER><IMG src="compile_extra_step.png"></CENTER><BR>
+<BR>
+<UL>
+<LI>Cuando se prepara el proceso de compilación, <I>ZinjaI</I> compara las dependencias de cada paso personalizado con su archivo de salida y determina en base las fechas de modificación de cada uno si debe realizarlo o no. Si un paso no tiene dependencias, solo verifica si existe el archivo de salida. Si un paso no tiene archivo de salida se ejecuta siempre (en toda compilación y/o ejecución). Además, si el archivo de salida es uno de los fuentes del proyecto, este tambien se recompilará incondicionalmente. </LI>
+<LI>En el comando correspondiente a un paso sen pueden usar las variables MINGW_DIR (solo en la versión para Windows) para hacer referencia al directorio donde <I>ZinjaI</I> busca a MinGW (ej: "${MINGW_DIR}\qt\bin\moc window.h o moc_window.cpp") y TEMP_DIR para hacer referencia al directorio de archivos temporales (objetos intermedios) del proyecto. Se debe considerar como directorio de trabajo para cualquier comando o argumento el directorio del proyecto.</LI>
+<LI>La opción <I>verificar código de salida</I> determina si <I>ZinjaI</I> utiliza el código de retorno del comando a ejecutar para determinar si la ejecución fue exitosa (en cuyo caso la compilación continúa normalmente) o no (en cuyo caso la compilación se interrumpe).</LI>
+<LI>La lista con las posibles ubicaciones para el paso solo aparece al añadir un paso nuevo. Para mover un paso existente debe utilizar los botones <I>Subir>/I> y <I>Bajar</I> de la pestaña <I>Secuencia</I> del diálogo <A href="project_config.html">Opciones de Compilacion y Ejecucion de Proyecto</A>.</LI>
+</UL>
+<BR><BR>
+
+</BODY></HTML>

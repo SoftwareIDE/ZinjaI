@@ -1,0 +1,118 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Menú Herramientas</B><BR><BR>
+<UL>
+<LI><A href="#diagrama_flujo">Dibujar Diagrama de Flujo...</A></LI>
+<LI><A href="#jerarquia_de_clases">Dibujar Jerarquia de Clases...</A></LI>
+<LI>Comentarios<UL>
+	<LI><A href="#comentarios_alinear">Alinear...</A></LI>
+	<LI><A href="#comentarios_comentar">Comentar</A></LI>
+	<LI><A href="#comentarios_descomentar">Descomentar</A></LI>
+	<LI><A href="#comentarios_eliminar">Eliminar Comentarios</A></LI>
+</UL></LI>
+<LI><A href="#generar_makefile">Generar Makefile...</A></LI>
+<LI><A href="#abrir_consola">Abrir Consola...</A></LI>
+<LI><A href="#propiedades_ejecutable">Propiedades del Ejecutable...</A></LI>
+<LI><A href="#estadisticas_proyecto">Estadísticas del Proyecto...</A></LI>
+<LI><A href="#grafo_proyecto">Grafo del Proyecto...</A></LI>
+<LI>Compartir Archivos en la Red Local<UL>
+	<LI><A href="#share_abrir_compartido">Abrir compartido...</A></LI>
+	<LI><A href="#share_compartir">Compartir...</A></LI>
+</UL></LI>
+<LI>Comparar Archivos<UL>
+	<LI><A href="#diff_dos_fuentes">Dos fuentes abiertos...</A></LI>
+	<LI><A href="#diff_fuente_contra_archivo">Fuente actual contra archivo en disco...</A></LI>
+	<LI><A href="#diff_cambios">Cambios en fuente actual contra su version en disco...</A></LI>
+	<LI><A href="#diff_mostrar_cambio">Mostrar Cambio</A></LI>
+	<LI><A href="#diff_aplicar_cambio">Aplicar Cambio</A></LI>
+	<LI><A href="#diff_descartar_cambio">Descartar Cambio</A></LI>
+	<LI><A href="#diff_borrar_marcas">Borrar Marcas</A></LI>
+</UL></LI>
+<LI>Generar Documentacion<UL>
+	<LI><A href="#doxy_configurar">Configurar...</A></LI>
+	<LI><A href="#doxy_generar">Generar...</A></LI>
+	<LI><A href="#doxy_ver">Ver...</A></LI>
+</UL></LI>
+<LI>Diseñar Interfases<UL>
+	<LI><A href="#wxfb_activar">Activar Integración</A></LI>
+	<LI><A href="#wxfb_agregar_proyecto">Agregar Proyecto...</A></LI>
+	<LI><A href="#wxfb_regenerar_proyectos">Regenerar Proyectos</A></LI>
+	<LI><A href="#wxfb_heredar_clase">Generar Clase Heredada...</A></LI>
+	<LI><A href="#wxfb_actulizar_clase">Actualizar Clase Heredada...</A></LI>
+</UL></LI>
+<LI>Perfil de Ejecución<UL>
+	<LI><A href="#gprof_activar">Activar</A></LI>
+	<LI><A href="#gprof_algoritmo">Algoritmo de Visualización</A></LI>
+	<LI><A href="#gprof_grafo">Visualizar Resultados</A></LI>
+	<LI><A href="#gprof_lista">Listar Resultados</A></LI>
+</UL></LI>
+<LI>Análisis Dinámico<UL>
+	<LI><A href="#valgrind_ejecutar">Ejecutar...</A></LI>
+	<LI><A href="#valgrind_mostrar_panel">Mostrar Panel de Resultados</A></LI>
+</UL></LI>
+</UL>
+<BR><BR>
+
+<A name="diagrama_flujo"><HR></A>
+<B>Menú Ejecucion: Dibujar Diagrama de Flujo...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra una ventana con el dibujo de un diagrama de flujo que representa el bloque de código más interno en donde se encontraba el cursor. El cursor debe estar dentro de un bloque de código válido (se determinan por las llaves {}). En esta ventana se pueden utilizar la rueda del mouse para agrandar o achicar el dibujo y el botón izquierdo para desplazarlo.<BR>
+&nbsp;&nbsp;&nbsp; Nota: La implementación actual de esta funcionalidad no se encuentra finalizada, aún no es capaz de dibujar correctamente la estructuras condicional <I>switch</I>.<BR>
+<BR>
+
+<A name="jerarquia_de_clases"><HR></A>
+<B>Menú Ejecucion: Dibujar Jerarquia de Clases...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra el díalogo de <I>Dibujar Jerarquía de Clases</I>, el cual permite generar una representación gráfica de la jerarquía de clases de uno o más fuentes.<BR><BR>
+&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="draw_classes.html">Diálogo Dibujar Jerarquía de Clases</A><BR>
+<BR>
+
+<A name="share_abrir_compartido"><HR></A>
+<B>Menú Archivo: Compartir Archivos en la Red Local: Abrir compartido...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Permite abrir un archivo que se está editando en otra PC (tambien utilizando <I>ZinjaI</I>). Muestra el diálogo <I>Abrir compartido</I>, en la cual, conociendo el IP o HostName de la otra PC, podemos seleecionar y transferir un fuente. El fuente recibido se abre como un nuevo archivo sin título. Esta opción, junto con <I>Compartir</I>, permiten intercambiar fuentes rápidamente a travez de una LAN.<BR><BR>
+&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="open_shared.html">Diálogo Abrir Compartido</A>, <A href="#compartir">Menú Herramientas: Compartir... </A><BR>
+<BR>
+
+<A name="share_compartir"><HR></A>
+<B>Menú Archivo: Compartir Archivos en la Red Local: Compartir...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra el cuadro de diálogo <I>Compartir Fuente</I>, el cual permite compartir el archivo actual a travez de una LAN (red interna). Un archivo compartido es un archivo disponible para ser descargado desde otras PCs. Hay dos formas en las cuales se comparte un archivo: puede compartirse sin modificaciones, es decir, que el archivo se descargará en las otras PCs exáctamente como estaba al momento de comenzar a compartirlo; o puede compartirse con modificaciones, es decir que siempre se descargará la versión actualizada del mismo. Para ser descargado en otra PC, sólo necesitará conocer el nombre de la PC que comparte el archivo (el cual se muestra en el diálogo <I>Compartir Fuente</I>. Cada archivo compartido se identifica por un nombre ficticio que se especifica en dicho diálogo y puede o no coincidir con el nombre real del mismo.<BR><BR>
+&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="share_source.html">Diálogo Compartir Fuente</A>, <A href="#abrir_compartido">Menú Herraminetas: Abrir Compartido... </A><BR>
+<BR>
+
+
+<A name="diff_dos_fuentes"><HR></A>
+<B>Menú Archivo: Comparar Archivos: Dos fuentes abiertos...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="diff_fuente_contra_archivo"><HR></A>
+<B>Menú Archivo: Comparar Archivos: Fuente actual contra archivo en disco...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="diff_cambios"><HR></A>
+<B>Menú Archivo: Comparar Archivos: Cambios en fuente actual contra su version en disco...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="diff_borrar_marcas"><HR></A>
+<B>Menú Archivo: Comparar Archivos: Borrar marcas</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="doxy_configurar"><HR></A>
+<B>Menú Archivo: Generar Documentacio: Configurar...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="doxy_generar"><HR></A>
+<B>Menú Archivo: Generar Documentacio: Generar...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="doxy_ver"><HR></A>
+<B>Menú Archivo: Generar Documentacio: Ver...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<HR>
+
+</BODY></HTML>

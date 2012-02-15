@@ -1,0 +1,39 @@
+#define PAF_FILE 0
+#define PAF_TYPE_DEF 1
+#define PAF_CLASS_DEF 2
+#define PAF_MBR_FUNC_DEF 3
+#define PAF_MBR_VAR_DEF 4
+#define PAF_ENUM_DEF 5
+#define PAF_CONS_DEF 6
+#define PAF_MACRO_DEF 7
+#define PAF_FUNC_DEF 8
+#define PAF_SUBR_DEF 9
+#define PAF_GLOB_VAR_DEF 10
+#define PAF_COMMON_DEF 11
+#define PAF_COMMON_MBR_VAR_DEF 12
+#define PAF_CLASS_INHERIT 13
+#define PAF_FILE_SYMBOLS 14
+#define PAF_CROSS_REF_BY 15
+#define PAF_CROSS_REF 16
+#define PAF_MBR_FUNC_DCL 17
+#define PAF_FUNC_DCL 18
+#define PAF_ENUM_CONST_DEF 19
+#define PAF_UNION_DEF 20
+#define PAF_FRIEND_DCL 21
+#define PAF_NAMESPACE_DEF 22
+#define PAF_EXCEPTION_DEF 23
+#define PAF_LOCAL_VAR_DEF 24
+#define PAF_VAR_DCL 25
+#define PAF_INCLUDE_DEF 26
+#define PAF_COMMENT_DEF 27
+#define PAF_CROSS_REF_CPP 28
+#define PAF_REF_UNDEFINED 29
+#define PAF_CROSS_REF_FILE 30
+
+#define PAF_PRIVATE             0x000001
+#define PAF_PROTECTED           0x000002
+#define PAF_PUBLIC              0x000004
+#define PAF_STATIC              0x000008
+#define PAF_VIRTUAL             0x001000
+
+#define PAF_CONST_OR_VOLATILE   0x080000 // agregado por zaskar

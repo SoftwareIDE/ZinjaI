@@ -1,0 +1,21 @@
+<HTML><HEAD><TITLE>ZinjaI's Help</TITLE></HEAD><BODY>
+<B>Iterative structure: <I>while</I></B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; This structure allows the execution of a set of actions iterativelly while a given condition remains true. That condition must result in a logic (<I>bool</I>) value. In order to avoid infinite loops, the structure's actions must include some action that modifies the condition's value (or use the statement <I>break</I>). The condition is evaluated at the beginning of the structure, so if it turns to be false the first time, the actions inside the structure will not be executed.<BR>
+<BR><BR>
+Example: Finding a number (n) in an array with 8 elementos:<BR>
+<BR><CODE>
+&nbsp;&nbsp;&nbsp; int i=0, array[8]={2,5,3,7,8,5,1,0};<BR>
+&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Enter the number to search:";<BR>
+&nbsp;&nbsp;&nbsp; cin&gt;&gt;n;<BR>
+&nbsp;&nbsp;&nbsp; while (array[i]!=n &amp;&amp; i&lt;8) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i++;<BR>
+&nbsp;&nbsp;&nbsp; }<BR>
+&nbsp;&nbsp;&nbsp; if (i==8)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Not found."&lt;&lt;endl;<BR>
+&nbsp;&nbsp;&nbsp; else<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout&lt;&lt;"Found in position "&lt;&lt;i&lt;&lt;endl;<BR>
+</CODE><BR>
+Variable <I>i</I> is used to traverese the array. The loop content (to increment <I>i</I>) is runned while <I>i</I> doesn't hold the position of the number y while there are more elements to traverse. The program exits the loop when the condition becomes false. As it is a compound condition, it can happend in two situations: the number was found (so firs part, <I>arreglo[i]!=n</I>, is false), or all the elements where traverse (so second part, <I>i&lt;n</I>, is false).
+<BR>
+</BODY></HTML>

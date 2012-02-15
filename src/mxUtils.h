@@ -1,0 +1,244 @@
+/**
+ * La clase mxUtils define funciones varias de utileria para ser usadas
+ * desde otras clases. Su instancia es "utils". Ademas define algunas
+ * macros comunes para el manejo de listas enlazadas baratas, y alguna
+ * que otra constante.
+ **/
+
+
+#ifndef MXUTILS_H
+#define MXUTILS_H
+
+#include <wx/string.h>
+#include <wx/filename.h>
+#include <wx/treebase.h>
+
+#if !defined(_WIN32) && !defined(__WIN32__)
+#define WILDCARD_SOURCE "*.cpp;*.c;*.c++;*.cxx;*.CPP;*.C;*.C++;*.CXX;*.cc;*.CC"
+#define WILDCARD_HEADER "*.h;*.hpp;*.hxx;*.H;*.HPP;*.HXX;*.hh;*.HH"
+#define WILDCARD_PROJECT "*.zpr;*.ZPR"
+#define WILDCARD_WXFB "*.fbp;*.FBP"
+#else
+#define WILDCARD_SOURCE "*.cpp;*.c;*.c++;*.cxx;*.cc"
+#define WILDCARD_HEADER "*.h;*.hpp;*.hxx;*.hh"
+#define WILDCARD_PROJECT "*.zpr"
+#define WILDCARD_WXFB "*.fbp"
+#endif
+#define WILDCARD_CPP WILDCARD_SOURCE";"WILDCARD_HEADER
+#define WILDCARD_CPP_EXT WILDCARD_SOURCE";"WILDCARD_HEADER";"WILDCARD_PROJECT
+#define WILDCARD_ALL "*"
+
+class wxBoxSizer;
+class wxTextCtrl;
+class wxStaticText;
+class wxMenuItem;
+class wxMenu;
+class wxWindow;
+class wxCheckBox;
+class wxToolBar;
+class wxComboBox;
+class wxButton;
+class wxBitmapButton;
+
+#ifdef DEBUG
+extern wxString debug_string;
+#define DEBUG_QH_SET(lala) debug_string=_T(""); debug_string<<utils->ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
+#define DEBUG_QH_ADD(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(debug_string);
+#define DEBUG_QH_ADDNL(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<_T("<BR> "); main_window->ShowInQuickHelpPanel(debug_string);
+#if defined(_WIN32) || defined(__WIN32__)
+#include <wx/msgdlg.h>
+#define DEBUG_INFO(info) wxMessageBox(wxString()<<info);
+#else
+#include <iostream>
+using namespace std;
+#define DEBUG_INFO(info) cerr<<info<<endl;
+#endif
+#endif
+
+#define DIR_PLUS_FILE utils->JoinDirAndFile
+
+#if defined(_WIN32) || defined(__WIN32__)
+#define BINARY_EXTENSION ".exe"
+#else
+#define BINARY_EXTENSION ".bin"
+#endif
+
+WX_DECLARE_STRING_HASH_MAP( wxString, HashStringString );
+WX_DECLARE_STRING_HASH_MAP( wxTreeItemId, HashStringTreeItem );
+
+/*
+* macros auxiliares para trabajar con mis listas enlazadas made in home
+**/
+/** @brief eliminar un item de una lista doblemente enlazada **/
+#define ML_REMOVE(item) if ((item->prev->next=item->next)!=NULL) item->next->prev=item->prev;
+/** @brief while (hay un item mas) **/
+#define ML_WHILE(item) while(item->next!=NULL)
+/** @brief avanzar al siguiente item **/
+#define ML_NEXT(item) item=item->next;
+/** @brief iterar por una lista (de primer elemento ficticio) **/
+#define ML_ITERATE(item) while(item->next && (item=item->next))
+/** @brief vaciar una lista (dejando al primer item ficticio) **/
+#define ML_CLEAN(first) if (first->next) { typeof(first) ml_aifc; typeof(first) item=first->next; first->next=NULL; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
+/** @brief eliminar una lista (incluyendo al primer item ficticio) **/
+#define ML_FREE(item) { typeof(item) ml_aifc; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
+
+#define ABORT_IF_PARSING \
+	if (parser->working) { \
+		mxMessageDialog(main_window,LANG(GENERAL_WAIT_PARSER,"Debe esperar a que se terminen de analizar todos los fuentes."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal(); \
+		return; \
+	}
+
+
+/**
+* @brief Clase para contener funciones varias de uso general
+**/
+class mxUtils {
+public:
+	
+	/**
+	* @name funciones varias
+	**/
+	/*@{*/
+	
+	//! Agrega comillas si la cadena tiene un espacio, sino no
+	wxString Quotize(const wxString &what);
+	
+	//! Elimina los elementos repetidos de un wxArrayString
+	void Purgue(wxArrayString &array, bool sort=true);
+	
+	//! Compara dos wxArrayString elemento a elemento
+	bool Compare(const wxArrayString &array1, const wxArrayString &array2, bool check_case=true);
+	
+	/** @brief Compara el final de una cadena con otra **/
+	bool EndsWithNC(wxString s1, wxString s2);
+	
+	/** @brief Quita espacios del comienzo de una cadena **/
+	wxString LeftTrim(wxString str);
+	
+	/** @brief Concatena una ruta y un nombre de archivo **/
+	wxString JoinDirAndFile(wxString dir, wxString fil);
+	
+	/** @brief Convierte un path absoluto en relativo **/
+	wxString Relativize(wxString fname, wxString path);
+	
+	/// @brief Concatena una cadena en una linea reemplazando
+	wxString Text2Line(wxString &text);
+	/// @brief Divide una linea en una cadena en una cadena con varias
+	wxString Line2Text(wxString &line);
+	
+	// copia una cadena wx en una cadena c
+	void strcpy(wxChar *cstr, wxString wstr);
+	void strcpy(wxChar *cstr, wxChar *wstr);
+	//! Ordena una wxArrayString mediante QuickSort
+	void SortArrayString(wxArrayString &array, int inf=-1, int sup=-1);
+	// devuelve verdadero si el dato value empieza con '1','V','v','T','t','S' o 's'
+	bool ToInt(wxString &value, int &what);
+	bool IsTrue(wxString &value);
+	wxString UnSplit(wxArrayString &array, wxString sep=_T(" "), bool add_quotes=true);
+	wxString Split(wxString str, wxString pre);
+	int Split(wxString str, wxArrayString &array, bool coma_splits=true,bool keep_quotes=true);
+	int Execute(wxString path, wxString command, int sync);
+	int Execute(wxString path, wxString command, int sync, wxProcess *&process);
+	bool XCopy(wxString src, wxString dst, bool ask=true, bool replace=false);
+	//! Ejecuta los comandos entre acentos de una cadena y los reemplaza por su salida (simi Makefile)
+	wxString ExecComas(wxString where, wxString line);
+	//! Ejecuta un comando de forma sincrónica y devuelve en una cadena su salida
+	wxString GetOutput(wxString command, bool also_error=false);
+	//! Devuelve una cadena convertida a HTML
+	wxString ToHtml(wxString text, bool full=false);
+	// reemplaza una cadena por otra, pero agregando comillas si necesita para mantener el parametro como uno solo
+	void ParameterReplace(wxString &str, wxString from, wxString to);
+//	void MakeDesktopIcon(wxString desk_dir);
+	
+	/** @brief Distancia entre cadenas **/
+	int Levenshtein(const char *s1, int N1, const char *s2, int N2);
+
+	/** @brief Busca el archivo complementario(cpp<->h) **/
+	wxString GetComplementaryFile(wxFileName the_one, char force_ext='*');
+	/*@}*/
+	
+	
+	/**
+	* @name para colocar controles en los cuadros de configuracion
+	**/
+	/*@{*/
+	wxStaticText *last_label; ///< guarda la ultima etiqueta que se uso en alguno de los AddAlgo
+	wxButton *last_button; ///< guarda el ultimo boton colocado por AddDirCtrl
+	wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value=false, wxWindowID id = wxID_ANY,bool margin=false);
+	wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value=_T(""));
+	wxTextCtrl *AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value=_T(""));
+	wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value=_T(""), bool margin=false);
+	wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString tail, bool margin=false);
+	wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value=0,bool margin=false);
+	wxTextCtrl *AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text = _T("..."),bool margin=false);
+	wxComboBox *AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID = wxID_ANY,bool margin=false);
+	wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text);
+	wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, bool margin=false);
+	/*@}*/
+	
+	/**
+	* @name para agregar items a los menues y barras de herramientas
+	**/
+	/*@{*/
+	wxMenuItem *AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, wxString filename, int where=-1);
+	wxMenuItem *AddCheckToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, bool value);
+	void AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text, wxItemKind=wxITEM_NORMAL);
+	wxMenuItem *AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, wxString caption, wxString help, wxString filename);
+	/*@}*/
+	
+private:
+	// estructura auxiliar para llevar la cuenta de cuales ya se revisaron
+	struct fi_file_item {
+		wxString name;
+		fi_file_item *next;
+		fi_file_item (wxString n) {
+			name=n;
+			next=NULL;
+		}
+		fi_file_item () {
+			name=_T("");
+			next=NULL;
+		}
+	};
+public:
+	/**
+	* @name para el manejo de "dependencias" (que hs incluye un cpp)
+	**/
+	/*@{*/
+	/** @brief funcion interna que busca "inclusiones" (\#include...) en un fuente **/
+	void FindIncludes(wxString path, wxString filename, fi_file_item *first, wxArrayString &header_dirs, bool recursive=true);
+	/** @brief Busca las dependencias de un fuente (para el makefile?)**/
+	wxString FindIncludes(wxFileName filename, wxString path, wxArrayString &header_dirs);
+	/// @brief Devuelve una lista de includes directos (no recursivo) como wxArrayString (para el grafo del proyecto)
+	void FindIncludes(wxArrayString &dest, wxFileName filename, wxString path, wxArrayString &header_dirs);
+
+	wxString GetOnePath(wxString orig_path, wxString project_path, wxString fname, wxArrayString &dirs);
+	// devuelve verdadero si alguno de los archivos incluidos por filename es mas nuevo que bin_date
+	bool AreIncludesUpdated(wxDateTime bin_date, wxFileName filename);
+	bool AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs);
+	/*@}*/
+	
+	/// Busca los programas ejecutados desde zinjai
+	void GetRunningChilds(wxArrayString &childs);
+	
+	/// Abre una pagina en el navegador configurado
+	void OpenInBrowser(wxString url);
+	
+	/// Abre una carpeta en el explorador de archivos configurado
+	void OpenFolder(wxString path);
+	
+	wxString UrlEncode(wxString str);
+	
+	/// popups para cuadros de texto con boton de "..."
+	void ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxString options, wxString path="");
+	void ProcessTextPopup(int id, wxWindow *parent=NULL, wxTextCtrl *t=NULL, wxString path="", wxString title="", bool replace=false, bool comma_splits=false);
+	
+	/// devuelve 's' para source, 'h' para header, 'o' para others, 'z' para proyectos
+	char GetFileType(wxString name, bool recognize_projects=true);
+};
+
+
+extern mxUtils *utils;
+
+#endif
+

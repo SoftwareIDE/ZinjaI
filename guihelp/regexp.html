@@ -1,0 +1,55 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Expresiones Regulares</B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Las expresiones regulares aportan un mayor nivel de flexibilidad para las búsquedas y los reemplazos. Cuando se utilizan expresiones regulares, hay un conjunto de caracateres que tienen significados especiales y permiten representar en una expresion a un gran numero de expresiones diferentes.<BR><BR>
+&nbsp;&nbsp;&nbsp; Los caracteres que se interpretan de forma especial para el texto a buscar son:<BR>
+<BR><TABLE>
+<TR><TD>.</TD><TD>El punto equivale a un caracter cualquiera</TD></TR>
+<TR><TD>\&lt;</TD><TD>Indica el comienzo de una palabra.</TD></TR>
+<TR><TD>\&gt;</TD><TD>Indica el final de una palabra.</TD></TR>
+<TR><TD>[...]</TD><TD>Reemplaza a un caracter perteneciente al conjunto especificado mediante su listado ([abcd]) y/o por rangos ([a-d]).</TD></TR>
+<TR><TD>[^...]</TD><TD>Reemplaza a un caracter que no pertenece al conjunto especificado. Por ejemplo "[^A-Za-z]" indica que el caracter no debe ser una letra.</TD></TR>
+<TR><TD>^</TD><TD>Representa el comienzo de una linea.</TD></TR>
+<TR><TD>$</TD><TD>Representa el final de una linea.</TD></TR>
+<TR><TD>*</TD><TD>Implica la repeteción cero o más veces del caracter que lo precede. Por ejemplo "10*1" puede representar a "11", "101", "1001", "10001", etc.</TD></TR>
+<TR><TD>+</TD><TD>Implica la repeteción una o más veces del caracter que lo precede. Por ejemplo "10+1" puede representar a "101", "1001", "10001", etc.<TR><TD>\(</TD><TD>Es marca el comienzo de una region marcada para utilizar en el reemplazo. Ver ejemplos de reemplazos más abajo.</TD></TR>
+<TR><TD>\)</TD><TD>Esto marca el final de una regiona marcada para utilizar en el reemplazo. Ver ejemplos de reemplazos más abajo.</TD></TR>
+<TR><TD>\n</TD><TD>Esto representa a el contenido original de una región marcada para utlizar en el reemplazo. Ver ejemplos de reemplazos más abajo.</TD></TR>
+</TD></TR>
+</TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Los caracteres que se interpretan de forma especial para el texto con que reemplazar son:<BR>
+<BR><TABLE>
+<TR><TD>\n</TD><TD>Esto representa a el contenido original de una región marcada para utlizar en el reemplazo. Ver ejemplos de reemplazos más abajo.</TD></TR>
+</TD></TR>
+</TABLE>
+<BR>
+<BR>
+<BR>
+<B>Ejemplos de búsquedas:</B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Cadenas que varian en un caracter cualquiera</B>: para buscar las cadenas "glVertex2v", "glVertex3v" y "glVertex4v", debería buscar utilzando la expresión "glVertex.v". El punto indica que en esa posición puede haber cualquier caracter.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Cadenas que varian en un caracter específico</B>: para buscar las cadenas "claseA", "claseB" y "claseC", sin incluir la cadena "clase" debería buscar utilzando la expresión "clase[ABC]". Los corchetes indican que cualquier caracter del conjunto puede ocupar esa posición.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Cadenas que varian mas de un caracter</B>: para buscar las cadenas "VerA", "VerAA", "VerADA", "VerB", "VerBEB" y "VerARGB", sin incluir la cadena "VerAC", ni "VerBBAC", ni "VerC" podría buscar utilzando las expresiones "Ver[ABD-Z]*\&gt;" o "Ver[^C]*\&gt;". El asterisco indica que el caracter anterior (que cualquier letra menos una C) puede aparecer (cualquiera de ellos, incluyendo combinaciones de los mismos) cero o mas veces. El "\&gt;" indica el final de la palabra, para evitar seleccionar el fragmento "VerA" dentro de "VerAC".<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Expresiones entre comillas</B>: para buscar todas las expresiones entre comillas de un archivo puede utilizar la expresión ".*" (las comillas son parte de la expresion). El .* reemplaza a cualquier texto que aparezca entre las comillas, ya que el punto indica cualquier caracter y el asterisco que ese caracter (cualquier) puede repetirse cero o mas veces (recordar que esto sería como repetir el ., no el caracter encontrado, por lo que representa cualquier cadena de caracteres, sean estos iguales o no).<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Palabras que empiezan con "Mar"</B>: para buscar todas las palabras que empiezan con "Mar" se puede utilizar la expresión "\&lt;Mar". El "\&lt;" indica el comienzo de la palabra.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Directivas de preprocesador"</B>: para buscar directivas de preprocesador (lineas que empiezan con #), podemos utilizar la expresion "^#". El acento ^ indica el comienzo de la línea, evitando incluir en la búsqueda otras ocurrencias del caracter #, por ejemplo en cadenas de texto.<BR>
+<BR>
+<BR>
+<B>Ejemplos de Reemplazos:</B><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Eliminar todos los comentarios simples</B>: para eliminar todos los comentarios simples (aquellos que se indican con //) de un fuente podemos reemplazar "//.*$" por "". Es decir reemplazamos desde // hasta el final de la linea (indicado con $), sin importar lo que esté en medio (indicado con .*) por una cadena vacia.<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; <B>Poner correctamente los indices de matrices</B>: un error frecuente para quienes estan acostumbrados a otros lenguajes es poner los indices de una matriz como "[i,j]" en lugar de "[i][j]". Dado que "i" y "j" pueden ser expresiones cuales quiera, para reemplazar correctamente estas ocurrencias es necesario utilizar expresiones regulares. Un par de expresiones posible serían: "\[\([^,]+\),\([^,]+\)\]" para buscar y "[\1][\2]" para reemplazar. En la expresion a buscar marcamos dos partes para luego utilizar en el reemplazo: se delimitan con \( y \), y luego se utilizan con \x, siendo x un nro del 1 al 9. Dentro de cada parte incluimos cualquier conjunto de uno o mas caracteres que no incluya una coma (ya que esta es la que delimita ambas partes). Finalmente, las barras \ antes del primer y último corchete en la expresión a buscar indican que esos corchetes no deben tomarse como caracteres especiales de la sintaxis de expresiones regulares, sino que deben buscarse literalmente. <BR>
+<BR>
+<BR>
+<BR>
+</BODY>
+</HTML>

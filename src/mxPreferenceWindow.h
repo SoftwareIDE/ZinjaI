@@ -1,0 +1,225 @@
+#ifndef MX_PREFERENCE_WINDOW_H
+#define MX_PREFERENCE_WINDOW_H
+
+#include <wx/dialog.h>
+
+#define TERM_LX "lxterminal -T \"${TITLE}\" -e"
+//#define TERM_XFCE "xfterm4 -e"
+#define TERM_XTERM "xterm -T \"${TITLE}\" -e"
+#define TERM_KDE3 "konsole --nomenubar --notoolbar -T \"${TITLE}\" -e"
+#define TERM_KDE4 "konsole -e"
+#define TERM_GNOME "gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x"
+
+class wxCheckBox;
+class wxComboBox;
+class wxTextCtrl;
+class wxAuiNotebook;
+class wxListbook;
+class wxListBox;
+class wxPanel;
+class wxCheckListBox;
+class mxToolbarEditor;
+class wxStaticBitmap;
+
+class mxPreferenceWindow : public wxDialog {
+
+	wxCheckBox *toolbars_wich_file;
+	wxCheckBox *toolbars_wich_find;
+	wxCheckBox *toolbars_wich_edit;
+	wxCheckBox *toolbars_wich_view;
+	wxCheckBox *toolbars_wich_run;
+	wxCheckBox *toolbars_wich_debug;
+	wxCheckBox *toolbars_wich_misc;
+	wxCheckBox *toolbars_wich_tools;
+	mxToolbarEditor *toolbar_editor_file;
+	mxToolbarEditor *toolbar_editor_edit;
+	mxToolbarEditor *toolbar_editor_tools;
+	mxToolbarEditor *toolbar_editor_misc;
+	mxToolbarEditor *toolbar_editor_debug;
+	mxToolbarEditor *toolbar_editor_run;
+	mxToolbarEditor *toolbar_editor_view;
+	
+	wxCheckBox *init_show_extra_panels;
+	wxCheckBox *init_left_panels;
+	wxCheckBox *init_check_for_updates;
+	wxCheckBox *init_always_add_extension;
+	wxCheckBox *init_show_welcome;
+	wxCheckBox *init_show_tip_on_startup;
+	wxCheckBox *init_autohide_toolbars_fs;
+	wxCheckBox *init_autohide_panels_fs;
+	wxCheckBox *init_autohide_menus_fs;
+	wxCheckBox *init_show_splash;
+	wxComboBox *init_lang_file;
+	wxComboBox *init_new_file;
+	wxComboBox *init_wrap_mode;
+	wxCheckBox *init_lang_es;
+	wxCheckBox *init_save_project;
+	wxCheckBox *init_show_explorer_tree;
+	wxCheckBox *init_prefer_explorer_tree;
+	wxCheckBox *init_close_files_for_project;
+	wxTextCtrl *init_max_jobs;
+	wxTextCtrl *init_history_len;
+	wxCheckBox *init_stop_compiling_on_error;
+	wxCheckBox *init_autohide_panels;
+	wxCheckBox *init_singleton;
+	wxCheckBox *running_dont_run_headers;
+	wxCheckBox *running_wait_for_key;
+	wxCheckBox *running_always_ask_args;
+	wxTextCtrl *running_compiler_options;
+	wxTextCtrl *files_autocode;
+	wxTextCtrl *files_temp_dir;
+	wxTextCtrl *files_compiler_command;
+	wxTextCtrl *files_compiler_c_command;
+	wxTextCtrl *files_explorer_command;
+	wxTextCtrl *files_terminal_command;
+	wxTextCtrl *files_img_browser_command;
+//	wxTextCtrl *files_skin_dir;
+//	wxTextCtrl *files_parser_command;
+//	wxTextCtrl *files_runner_command;
+	wxTextCtrl *files_debugger_command;
+	wxTextCtrl *files_project_folder;
+	wxTextCtrl *files_wxfb_command;
+	wxTextCtrl *files_valgrind_command;
+	wxTextCtrl *files_cppcheck_command;
+	wxTextCtrl *files_doxygen_command;
+	wxTextCtrl *files_browser_command;
+	wxTextCtrl *help_wxhelp_index;
+	wxTextCtrl *help_quickhelp_dir;
+	wxTextCtrl *help_autocomp_dir;
+	wxCheckListBox *help_autocomp_indexes;
+	wxCheckBox *source_bracketInsertion;
+	wxCheckBox *source_syntaxEnable;
+	wxCheckBox *source_indentPaste;
+	wxTextCtrl *source_tabWidth;
+	wxCheckBox *source_tabUseSpaces;
+	wxCheckBox *source_foldEnable;
+	wxCheckBox *source_whiteSpace;
+//	wxCheckBox *source_wrapMode;
+	wxCheckBox *source_lineNumber;
+	wxCheckBox *source_callTips;
+	wxCheckBox *source_avoidNoNewLineWarning;
+	wxCheckBox *source_smartIndent;
+	wxCheckBox *source_autocloseStuff;
+	wxCheckBox *source_autoCompletion;
+	wxCheckBox *source_toolTips;
+	wxCheckBox *init_beautifyCompilerErrors;
+//	wxCheckBox *source_parser_completion;
+//	wxCheckBox *source_parser_calltips;
+//	wxCheckBox *source_std_completion;
+//	wxCheckBox *source_std_calltips;
+	wxTextCtrl *styles_print_size;
+	wxTextCtrl *styles_font_size;
+	wxCheckBox *styles_dark;
+	wxTextCtrl *files_default_template;
+	wxTextCtrl *files_templates_dir;
+	wxCheckBox *debug_allow_edition;
+	wxCheckBox *debug_autohide_panels;
+	wxCheckBox *debug_autohide_toolbars;
+//	wxCheckBox *debug_autoupdate_backtrace;
+	wxCheckBox *debug_compile_again;
+	wxCheckBox *debug_close_on_normal_exit;
+	wxCheckBox *debug_always_debug;
+	wxCheckBox *debug_raise_main_window;
+	wxCheckBox *debug_select_modified_inspections;
+	wxCheckBox *debug_show_thread_panel;
+	wxCheckBox *debug_show_log_panel;
+	wxCheckBox *debug_inspections_on_right;
+	wxCheckBox *debug_auto_solibs;
+	wxCheckBox *debug_readnow;
+	wxTextCtrl *debug_macros_file;
+	wxTextCtrl *debug_blacklist;
+#if defined(_WIN32) || defined(__WIN32__)
+	wxTextCtrl *files_mingw_dir;
+#else
+//	wxCheckBox *desktop_icon;
+#endif
+	
+	wxComboBox *toolbar_icon_size;
+	
+	wxArrayString skin_paths;
+	wxTextCtrl *skin_text;
+	wxListBox *skin_list;
+	wxStaticBitmap *skin_image;
+	wxPanel *panel_toolbars;
+
+public:
+
+	wxListbook *notebook;
+
+	mxPreferenceWindow(wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
+	wxPanel *CreateGeneralPanel (wxListbook *notebook);
+	wxPanel *CreateSimplePanel (wxListbook *notebook);
+	wxPanel *CreateStylePanel (wxListbook *notebook);
+	wxPanel *CreateWritingPanel (wxListbook *notebook);
+	wxPanel *CreatePathsPanel (wxListbook *notebook);
+	wxPanel *CreateCommandsPanel (wxListbook *notebook);
+	wxPanel *CreateToolbarsPanel (wxListbook *notebook);
+	wxPanel *CreateSkinPanel (wxListbook *notebook);
+	wxPanel *CreateDebugPanel (wxListbook *notebook);
+	wxPanel *CreateQuickHelpPanel (wxListbook *notebook);
+	void OnWxHelpButton(wxCommandEvent &event);
+	void OnSkinList(wxCommandEvent &event);
+	void OnSkinButton(wxCommandEvent &event);
+	void OnAutocompButton(wxCommandEvent &event);
+	void OnQuickhelpButton(wxCommandEvent &event);
+	void OnTemplatesButton(wxCommandEvent &event);
+	void OnProjectButton(wxCommandEvent &event);
+	void OnTempButton(wxCommandEvent &event);
+#if defined(_WIN32) || defined(__WIN32__)
+	void OnMingwButton(wxCommandEvent &event);
+#else
+	void OnExplorerButton(wxCommandEvent &event);
+	void OnExplorerNautilus(wxCommandEvent &event);
+	void OnExplorerDolphin(wxCommandEvent &event);
+	void OnExplorerThunar(wxCommandEvent &event);
+	void OnExplorerKonqueror(wxCommandEvent &event);
+	void OnTerminalButton(wxCommandEvent &event);
+	void OnTerminalLX(wxCommandEvent &event);
+//	void OnTerminalXfce(wxCommandEvent &event);
+	void OnTerminalXTerm(wxCommandEvent &event);
+	void OnTerminalKonsole(wxCommandEvent &event);
+	void OnTerminalGnomeTerminal(wxCommandEvent &event);
+#endif
+	void OnOkButton(wxCommandEvent &event);
+	void OnCancelButton(wxCommandEvent &event);
+	void OnHelpButton(wxCommandEvent &event);
+	void OnColoursButton(wxCommandEvent &event);
+	void OnMaxJobsButton(wxCommandEvent &event);
+	void OnGppButton(wxCommandEvent &event);
+	void OnGccButton(wxCommandEvent &event);
+	void OnGdbButton(wxCommandEvent &event);
+	void OnImgBrowserButton(wxCommandEvent &event);
+	void OnBrowserButton(wxCommandEvent &event);
+	void OnValgrindButton(wxCommandEvent &event);
+	void OnCppCheckButton(wxCommandEvent &event);
+	void OnWxfbButton(wxCommandEvent &event);
+	void OnDoxygenButton(wxCommandEvent &event);
+	void OnDebugMacrosOpen(wxCommandEvent &event);
+	void OnDebugMacrosEdit(wxCommandEvent &event);
+	void OnDebugMacrosButton(wxCommandEvent &event);
+	void OnAutocodesOpen(wxCommandEvent &event);
+	void OnAutocodesEdit(wxCommandEvent &event);
+	void OnAutocodesButton(wxCommandEvent &event);
+	void OnDebugBlacklistButton(wxCommandEvent &event);
+	void OnToolbarsFile(wxCommandEvent &evt);
+	void OnToolbarsView(wxCommandEvent &evt);
+	void OnToolbarsEdit(wxCommandEvent &evt);
+	void OnToolbarsMisc(wxCommandEvent &evt);
+	void OnToolbarsTools(wxCommandEvent &evt);
+	void OnToolbarsDebug(wxCommandEvent &evt);
+	void OnToolbarsRun(wxCommandEvent &evt);
+	void OnToolbarsReset(wxCommandEvent &evt);
+	void OnXdgButton(wxCommandEvent &evt);
+	void OnClose(wxCloseEvent &event);
+	void SetToolbarPage();
+	void ShowUp();
+	void ResetChanges();
+
+private:
+	DECLARE_EVENT_TABLE()
+
+};
+
+extern mxPreferenceWindow *preference_window;
+
+#endif

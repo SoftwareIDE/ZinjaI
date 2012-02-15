@@ -1,0 +1,9 @@
+#include <iostream>
+#include <ctime>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+	time_t t1 = time(0);
+	cout<<"Fecha actual: "<<ctime(&t1)<<endl;
+	return 0;
+}

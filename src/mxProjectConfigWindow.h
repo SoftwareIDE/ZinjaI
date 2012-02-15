@@ -1,0 +1,128 @@
+#ifndef MX_PROJECT_CONFIG_WINDOW_H
+#define MX_PROJECT_CONFIG_WINDOW_H
+
+#include <wx/dialog.h>
+#include "ProjectManager.h"
+#include <wx/listctrl.h>
+
+class wxCheckBox;
+class wxComboBox;
+class wxTextCtrl;
+class wxNotebook;
+class wxPanel;
+class wxListBox;
+
+class mxProjectConfigWindow : public wxDialog {
+	
+	friend class mxLibToBuildWindow;
+	
+	static int last_page_index;
+	wxNotebook *notebook;
+	bool discard;
+	
+	wxTextCtrl *text_for_edit;
+	bool comma_splits_for_edit;
+	wxString last_dir;
+
+	wxListBox *steps_list;
+		
+	wxComboBox *configuration_name;
+	project_configuration *configuration;
+//	wxTextCtrl *project_name;
+
+	// pestana general
+	wxTextCtrl *general_working_folder;
+	wxCheckBox *general_always_ask_args;
+	wxTextCtrl *general_args;
+	wxComboBox *general_wait_for_key;
+	
+	wxTextCtrl *general_temp_folder;
+	wxTextCtrl *general_output_file;
+	wxTextCtrl *linking_icon;
+	wxTextCtrl *linking_manifest;
+	
+	// pestana compilacion
+	wxTextCtrl *compiling_macros;
+	wxTextCtrl *compiling_extra_options;
+	wxTextCtrl *compiling_headers_dirs;
+	wxComboBox *compiling_warnings_level;
+	wxCheckBox *compiling_enable_profiling;
+	wxCheckBox *compiling_ansi_compliance;
+	wxComboBox *compiling_debug_level;
+	wxComboBox *compiling_optimization_level;
+
+	// pestana enlazado
+	//wxTextCtrl *linking_resource_file;
+	wxTextCtrl *linking_extra_options;
+	wxTextCtrl *linking_libraries_dirs;
+	wxTextCtrl *linking_libraries;
+	wxCheckBox *linking_strip_executable;
+	wxCheckBox *linking_force_relink;
+	wxCheckBox *linking_console_program;
+	
+	// pestaña bibliotecas
+	wxListBox *libtobuild_list;
+	wxCheckBox *libtobuild_noexec;
+	
+	wxWindow *noexe_controls[30];
+
+public:
+
+	mxProjectConfigWindow(wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
+	wxPanel *CreateQuickHelpPanel (wxNotebook *notebook);
+	wxPanel *CreateGeneralPanel (wxNotebook *notebook);
+	wxPanel *CreateCompilingPanel (wxNotebook *notebook);
+	wxPanel *CreateLinkingPanel (wxNotebook *notebook);
+	wxPanel *CreateStepsPanel (wxNotebook *notebook);
+	wxPanel *CreateLibsPanel (wxNotebook *notebook);
+	void OnManifestDirButton(wxCommandEvent &event);
+	void OnIconDirButton(wxCommandEvent &event);
+	void OnTempDirButton(wxCommandEvent &event);
+	void OnWorkingDirButton(wxCommandEvent &event);
+	void OnAddConfigButton(wxCommandEvent &event);
+	void OnSelectConfigButton(wxCommandEvent &event);
+	void OnRemoveConfigButton(wxCommandEvent &event);
+	void OnRenameConfigButton(wxCommandEvent &event);
+	void OnHelpButton(wxCommandEvent &event);
+	void OnOkButton(wxCommandEvent &event);
+	bool SaveValues();
+	void DiscardChanges();
+	void OnCancelButton(wxCommandEvent &event);
+	void OnClose(wxCloseEvent &event);
+	void LoadValues();
+	void OnSelectConfigInCombo(wxCommandEvent &event);
+	void OnArgsAddFile(wxCommandEvent &evt);
+	void OnArgsAddDir(wxCommandEvent &evt);
+	void OnArgsReplaceFile(wxCommandEvent &evt);
+	void OnArgsReplaceDir(wxCommandEvent &evt);
+	void OnArgsEditList(wxCommandEvent &evt);
+	void OnArgsEditText(wxCommandEvent &evt);
+	void OnGeneralArgsButton(wxCommandEvent &evt);
+	void OnCompilingExtraOptionsButton(wxCommandEvent &evt);
+	void OnCompilingHeadersDirsButton(wxCommandEvent &evt);
+	void OnCompilingMacrosButton(wxCommandEvent &evt);
+	void OnLinkingExtraOptionsButton(wxCommandEvent &evt);
+	void OnLinkingLibrariesButton(wxCommandEvent &evt);
+	void OnLinkingLibrariesDirsButton(wxCommandEvent &evt);
+	void OnGeneralExePathButton(wxCommandEvent &evt);
+	void OnStepsUp(wxCommandEvent &evt);
+	void OnStepsDown(wxCommandEvent &evt);
+	void OnStepsAdd(wxCommandEvent &evt);
+	void OnStepsDel(wxCommandEvent &evt);
+	void OnStepsRun(wxCommandEvent &evt);
+	void OnStepsEdit(wxCommandEvent &evt);
+	void OnLibsAdd(wxCommandEvent &evt);
+	void OnLibsEdit(wxCommandEvent &evt);
+	void OnLibsDel(wxCommandEvent &evt);
+	void ReloadSteps(wxString selection=_T(""));
+	void ReloadLibs(wxString selection=_T(""));
+	void OnSelectLibrary(wxListEvent &evt);
+	void SelectLibrary(int idx);
+	void OnLibsNoExe(wxCommandEvent &evt);
+	void SetOnlyLib(bool val);
+private:
+	DECLARE_EVENT_TABLE()
+};
+
+
+#endif

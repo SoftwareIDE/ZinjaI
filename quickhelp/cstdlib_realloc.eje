@@ -1,0 +1,21 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+int main(int argc, char *argv[]) {
+	string archivo;
+	int *arreglo = (int*) malloc(10*sizeof(int));
+	for (int i=0;i<10;i++)
+		arreglo[i]=i;
+	cout<<"Direccion original: "<<arreglo<<endl;
+	for (int i=0;i<10;i++)
+		cout<<arreglo[i]<<" ";
+	cout<<endl;
+	arreglo = (int*) realloc(arreglo, 2000*sizeof(int));
+	cout<<"Nueva direccion: "<<arreglo<<endl;
+	for (int i=0;i<20;i++)
+		cout<<arreglo[i]<<" ";
+	cout<<"..."<<endl;
+	free (arreglo);
+	return 0;
+}

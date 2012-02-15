@@ -1,0 +1,43 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<TABLE WIDTH="100%"><TR><TD>
+<B>Parte 1: Control Básico e Inspección de Variables</B>
+</TD><TD ALIGN="right">
+<A href="t0300.html">0</A>&nbsp;
+<A href="t0301.html">1</A>&nbsp;
+<A href="t0302.html">2</A>&nbsp;
+<A href="t0303.html">3</A>&nbsp;
+<A href="t0304.html">4</A>&nbsp;
+<A href="t0305.html">5</A>&nbsp;
+<A href="t0306.html">6</A>
+</TD></TR></TABLE>
+<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; En este primer tutorial relacionado a la depuración de programas, se van a ilustrar los mecanismos básicos para ejecutar e interrumpir el programa, así como también la inspección de variables. Para ello, se utilizará el siguiente programa ejemplo:<BR><BR>
+<CENTER><TABLE bgcolor="#FFFFEE" border=1><TR><TD><CODE>
+#include &lt;iostream&gt;<BR>
+using namespace std;<BR>
+&nbsp;<BR>
+int main(int argc, char *argv[]) {<BR>
+&nbsp;&nbsp;&nbsp;unitbuf(cout);<BR>
+&nbsp;&nbsp;&nbsp;int cant,n;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Cantidad de datos: ";<BR>
+&nbsp;&nbsp;&nbsp;cin&gt;&gt;cant;<BR>
+&nbsp;&nbsp;&nbsp;double sum=0;<BR>
+&nbsp;&nbsp;&nbsp;for (int i=0;i&lt;cant;i++) {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Ingrese el dato "&lt;&lt;i&lt;&lt;": ";<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cin&gt;&gt;n;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum+=n;<BR>
+&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;double prom = sum/cant;<BR>
+&nbsp;&nbsp;&nbsp;cout&lt;&lt;"Promedio: "&lt;&lt;prom;<BR>
+&nbsp;&nbsp;&nbsp;return 0;<BR>
+}
+</CODE></TD></TR></TABLE></CENTER><BR>
+<BR>
+<CENTER>Puede cargar este código en un nuevo programa haciendo <A href="foropen:t0301.cpp">click aquí</A>.</CENTER>
+<BR><BR>
+<CENTER><A href="t0301.html">Comenzar...</A></CENTER>
+<BR><BR>
+</BODY>
+</HTML>

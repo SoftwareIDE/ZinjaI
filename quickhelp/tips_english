@@ -1,0 +1,58 @@
+&nbsp;&nbsp;&nbsp; If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
+&nbsp;&nbsp;&nbsp; This version fixes many bugs and introduces some small improvements such as simplified compiler output for templates and other common unreadable errors (mainly related to string and stl), some new tools related to C++ preprocessor in "Tools" menu. To read the complete changelog hit F1.
+&nbsp;&nbsp;&nbsp; These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
+
+&nbsp;&nbsp;&nbsp; You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.
+&nbsp;&nbsp;&nbsp; You can go to the line that generated a warning/error by double-clicking on it. ZinjaI will use a red (or yellow if its no sure) underline to show you the word the error make reference to.
+&nbsp;&nbsp;&nbsp; You can move, or even detach from main window any panel ol toolbar just dragging them from its tilebar.
+&nbsp;&nbsp;&nbsp; You can reorganize your tabs (files opened) just dragging them. You can also make visible more than one if you drag them to a window's border.
+&nbsp;&nbsp;&nbsp; You can select a whole logic block (defined by braces) with the shortcut Ctrl+M.
+&nbsp;&nbsp;&nbsp; If your program nees command line arguments, you can tell ZinjaI to ask you for them before every execution. To do that you must use the option "Always ask for arguments" from Compilation's and Execution's dialog (Run->Configure..., or Alt+F9)
+&nbsp;&nbsp;&nbsp; You can quickly open a file that your code refer to (for instance, an include) placing the text cursor over it an pressing Ctrl+Intro.
+&nbsp;&nbsp;&nbsp; You can share your code to other PCs over your LAN with the commands "Share" and "Open Shared" from "Tools" menu.
+&nbsp;&nbsp;&nbsp; El arbol de simbolos (menu <I>Ver</I> o tecla <I>F2</I>) te permite listar todas las macros, clases y funciones definidas en tu programa. En el caso de las clases, el color de los inconos de sus metodos y atributos indica su alcance (rojo=privado, amarillo=protegido, verde=publico). Ademas puedes elegir incluir o no en el listado los simbolos de los archivos que incluye (mediante <I>#include</I>) tu fuente, haciendo click con el boton derecho sobre el arbol.
+&nbsp;&nbsp;&nbsp; When you run a program with F9 key, if the source code was modified, it is saved a compiled again automatically before running. So, you should never need to do it yourself.
+&nbsp;&nbsp;&nbsp; You can find and see macro definition from your code by placing the text cursor over its name and pressing Ctrl+F1..
+&nbsp;&nbsp;&nbsp; You comment and uncomment lines with the shortcuts Ctrl+D and Ctrl+Shift+D (you don't need to select the whole line).
+&nbsp;&nbsp;&nbsp; Puedes escribir tu codigo mas rapida y comodamente si actualizas el arbol de simbolos, ya que cuando se actualiza el arbol de simbolos, la informacion que se obtiene se utiliza tambien se utiliza para generar las ayudas de autocompletado y tips de llamadas a funciones.
+&nbsp;&nbsp;&nbsp; If your Symbol's Tree is up to date (F2 key), you can use Shit+F1 shortcut to obtain information about some elements defined in your code (global variables, classes, functions, macros).
+&nbsp;&nbsp;&nbsp; Smart indention (<I>File-&gt;Preferences...-&gt;Writing-&gt;Smart indention) allows you to write code faster without thinking about indention. ZinjaI will decide how to indent your code will you write it. But if you already have bad intented code, you can select it and correct it automaticaly with <I>Ctrl+I</I>shortcut, or the item <I>Indent Selected Lines</I> from <I>Edit</I> menu.
+&nbsp;&nbsp;&nbsp; Las herramientas de <I>Indentar bloque</I>, <I>Seleccionar bloque</I>, y las opciones de plegado de código pueden ser útiles para verificar si las llaves estan correctamente colocadas, por ejemplo, seleccionando o plegando un bloque para ver si concuerda con lo esperado.
+&nbsp;&nbsp;&nbsp; Puedes identificar rapidamente todas las funciones de un archivo utilizando el plegado de codigo. Por ejemplo, presionando <I>Ctrl+1</I> puedes cerrar todas las clases y funciones y ver asi solo sus nombres. Presionando <I>Ctrl+2</I> puedes cerrar el segundo nivel (por ejemplo, todos los metodos implementados junto con la delcaración de la clase), etc. Para volver a desplegarlos utiliza <I>Alt+1</I>, <I>Alt+2</I>, etc. Para plegar o desplegar todos los niveles al mismo tiempo utilza <I>Ctrl+0</I> y <I>Alt+0</I> respectivamente.
+&nbsp;&nbsp;&nbsp; ZinjaI can automatically find and add to your code with #include line you need for a keyword that represents a funcion, class or macro. To do that, place your text carret on the keywrod and press Ctrl+H.
+&nbsp;&nbsp;&nbsp; Si pegas un bloque de codigo utilizando <I>Ctrl+C</I> teniendo la opcion <I>Corregir Indentado al Pegar</I> de la pestaña <I>Asitencias</I> del dialogo de <I>Preferencias</I>, ZinjaI ajusta automaticamente el indentando del bloque de codigo copiado de acuerdo al nuevo contexto en el cual es insertado.
+&nbsp;&nbsp;&nbsp; You can open one or more files by draging them to ZinjaI's window.
+&nbsp;&nbsp;&nbsp; You can highlight lines in your code with Ctrl+B keys. Later, you can go to highlighted lines very fast with Ctrl+Shift+B.
+&nbsp;&nbsp;&nbsp; Para dirigirte rapidamente a la declaración de una clase/funcion/macro/metodo/atributo puedes invocar a la ayuda rápida (<I>Shift+F1</I>) y seleccionar el hipervinculo a la declaracion y/o definicion en la misma.
+&nbsp;&nbsp;&nbsp; You can duplicate code lines just selecting them and pressing Ctrl+L (if its the current one, there is no need to select it). You can also delete them with Ctrl+Shift+L.
+&nbsp;&nbsp;&nbsp; You can go to fullscreen mode and hide all panels with F11 key.
+&nbsp;&nbsp;&nbsp; You can quickly go to a class/method/function definition with Ctrl+Shift+G shortcut.
+&nbsp;&nbsp;&nbsp; You can quickly go to a file with Ctrl+Shift+F shortcut.
+&nbsp;&nbsp;&nbsp; You can move some lines of code up or down with Ctrl+T and Ctrl+Shift+T shortcuts (to move just the current line, you don't need to select it).
+&nbsp;&nbsp;&nbsp; You can force autocompletion menu with Ctrl+Space shortcut.
+&nbsp;&nbsp;&nbsp; Puedes utilizar el panel del Explorador de Archivos (menu <I>Ver</I>), para acceder rápidamente al contenido de un directorio, y tener su árbol de archivos y subdirectorios siempre presente.
+&nbsp;&nbsp;&nbsp; You can see the properties of your executable file (size, date, filetype, ...) with option "Executable File Properties" from "Tools" menu. In that window, you can also strip off debbuging symbols to reduce its size.
+&nbsp;&nbsp;&nbsp; You can move to a symbol definition by clicking over its name in the source code holding Ctrl key down.
+&nbsp;&nbsp;&nbsp; Puedes consultar la ayuda rápida sobre cualquier elemento del código fuente haciendo click sobre el mismo con la tecla <I>Alt</I> presionada, o utilizando el atajo de teclado <I>Alt+F1</I>.
+&nbsp;&nbsp;&nbsp; You can walk through compilation's errors and warning with the shortcuts Ctrl+&lt; y Ctrl+&gt;.
+&nbsp;&nbsp;&nbsp; Se cambiar la apariencia de <I>ZinjaI</I> utilizando un "tema" diferente (menú <I>Archivo</I>-&gt;<I>Preferencias...</I>-&gt;<I>Tema de Iconos</I>).
+
+&nbsp;&nbsp;&nbsp; You can display a whole array or matrix, in a special dialog by clicking with right button over its inspection and selecting "Show in its own table" from the popup menu.
+&nbsp;&nbsp;&nbsp; You can split one complex inspection (array, struct, class) into multiple sub-inspections that will represent its elements/attributes, by double-clicking on its value in inspection panel.
+&nbsp;&nbsp;&nbsp; Puede explorar  una inspección de una estructura de datos (un arreglo, una clase, etc.) para observar su composición en una estrucutra jerárquica haciendo click con el botón derecho sobre la misma y seleccionando la opción "Explorar inspección".
+&nbsp;&nbsp;&nbsp; You can set advanced breakpoint's properties by clicking on its mark (the red circle in the margin) holding Ctrl key.
+
+&nbsp;&nbsp;&nbsp; This software is still under development. If you find a bug, or something you'd like to see changed, you can write to <I>zaskar_84@yahoo.com.ar</I>, or leave a message in <I>Contact</I> web site's section (<I>http://zinjai.sourceforge.net</I>).
+&nbsp;&nbsp;&nbsp; If you have a direct internet conection you can check for updates by clicking the <I>Check for updates...</I> option in <I>Help</I> menu.
+
+&nbsp;&nbsp;&nbsp; You can set shortcuts or toolbar buttons to launch your preferred tools or documents quickly from "Custom tools" submenu in "Tools" menu. <A href="help:custom_tools.html">Read more...</A>
+
+&nbsp;&nbsp;&nbsp; If you dont want to see lateral and bottom panels all the time, you can make them hide automatically, leaving only their names visible, so you can unfold them by moving the mouse over those names. In order to try that, enable the option <I>Autohide Panels</I> from <I>General</I> section in <I>Preferences</I> dialog and restart <I>ZinjaI</I>.
+
+&nbsp;&nbsp;&nbsp; You can type functions/methods' prototypes in a .h file and ask ZinjaI to generate automatically the asociated implemntation base code (empty methods/functions' definitions) with command "Implement missing Methods/Functions..." from "Tools" menu.
+&nbsp;&nbsp;&nbsp; In a big or messy code, you can ask where you are (wich file, line, class, method, function) by hitting <I>Ctrl+Alt+Space</I> shortcut.
+&nbsp;&nbsp;&nbsp; You can define <A href="help:autocode.html">autocodes</A> (pieces of code defined similar to C macros) and use them to speed up your writting without. ZinjaI will replace and expand them for you when you hit <I>Tab</I> key.
+&nbsp;&nbsp;&nbsp; You can see <A href="help:autocode.html">autocodes</A> list or invoke autocode's autocompletion with <I>Ctrl+Shift+Space</I> shortcut.
+&nbsp;&nbsp;&nbsp; You can close all code tabs but the active one with <I>Ctrl+Alt+W</I> shortcut.
+&nbsp;&nbsp;&nbsp; In help you can find a table that summarizes most of the <A href="help:atajos.html">keyboard shorcuts</A> that you can try learn to develop faster.
+

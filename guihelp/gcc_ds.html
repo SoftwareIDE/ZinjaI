@@ -1,0 +1,150 @@
+<HTML><HEAD><TITLE>Manpage of GCC</TITLE>
+</HEAD><BODY>
+<A NAME="lbAS">&nbsp;</A>
+<H2>Options for Directory Search</H2>
+
+<A NAME="ixAWQ"></A>
+These options specify directories to search for header files, for
+libraries and for parts of the compiler:
+<DL COMPACT>
+<DT><B>-I</B><I>dir</I><DD>
+<A NAME="ixAWR"></A>
+Add the directory <I>dir</I> to the head of the list of directories to be
+searched for header files.  This can be used to override a system header
+file, substituting your own version, since these directories are
+searched before the system header file directories.  However, you should
+not use this option to add directories that contain vendor-supplied
+system header files (use <B>-isystem</B> for that).  If you use more than
+one <B>-I</B> option, the directories are scanned in left-to-right
+order; the standard system directories come after.
+
+
+<P>
+
+
+If a standard system include directory, or a directory specified with
+<B>-isystem</B>, is also specified with <B>-I</B>, the <B>-I</B>
+option will be ignored.  The directory will still be searched but as a
+system directory at its normal position in the system include chain.
+This is to ensure that <FONT SIZE="-1">GCC</FONT>'s procedure to fix buggy system headers and
+the ordering for the include_next directive are not inadvertently changed.
+If you really need to change the search order for system directories,
+use the <B>-nostdinc</B> and/or <B>-isystem</B> options.
+<DT><B>-I-</B><DD>
+<A NAME="ixAWS"></A>
+Any directories you specify with <B>-I</B> options before the <B>-I-</B>
+option are searched only for the case of <B>#include &quot;</B><I>file</I><B>&quot;</B>;
+they are not searched for <B>#include &lt;</B><I>file</I><B>&gt;</B>.
+
+
+<P>
+
+
+If additional directories are specified with <B>-I</B> options after
+the <B>-I-</B>, these directories are searched for all <B>#include</B>
+directives.  (Ordinarily <I>all</I> <B>-I</B> directories are used
+this way.)
+
+
+<P>
+
+
+In addition, the <B>-I-</B> option inhibits the use of the current
+directory (where the current input file came from) as the first search
+directory for <B>#include &quot;</B><I>file</I><B>&quot;</B>.  There is no way to
+override this effect of <B>-I-</B>.  With <B>-I.</B> you can specify
+searching the directory which was current when the compiler was
+invoked.  That is not exactly the same as what the preprocessor does
+by default, but it is often satisfactory.
+
+
+<P>
+
+
+<B>-I-</B> does not inhibit the use of the standard system directories
+for header files.  Thus, <B>-I-</B> and <B>-nostdinc</B> are
+independent.
+<DT><B>-L</B><I>dir</I><DD>
+<A NAME="ixAWT"></A>
+Add directory <I>dir</I> to the list of directories to be searched
+for <B>-l</B>.
+<DT><B>-B</B><I>prefix</I><DD>
+<A NAME="ixAWU"></A>
+This option specifies where to find the executables, libraries,
+include files, and data files of the compiler itself.
+
+
+<P>
+
+
+The compiler driver program runs one or more of the subprograms
+<I>cpp</I>, <I>cc1</I>, <I>as</I> and <I>ld</I>.  It tries
+<I>prefix</I> as a prefix for each program it tries to run, both with and
+without <I>machine</I><B>/</B><I>version</I><B>/</B>.
+
+
+<P>
+
+
+For each subprogram to be run, the compiler driver first tries the
+<B>-B</B> prefix, if any.  If that name is not found, or if <B>-B</B>
+was not specified, the driver tries two standard prefixes, which are
+<I>/usr/lib/gcc/</I> and <I>/usr/local/lib/gcc/</I>.  If neither of
+those results in a file name that is found, the unmodified program
+name is searched for using the directories specified in your
+<B></B><FONT SIZE="-1"><B>PATH</B></FONT><B></B> environment variable.
+
+
+<P>
+
+
+The compiler will check to see if the path provided by the <B>-B</B>
+refers to a directory, and if necessary it will add a directory
+separator character at the end of the path.
+
+
+<P>
+
+
+<B>-B</B> prefixes that effectively specify directory names also apply
+to libraries in the linker, because the compiler translates these
+options into <B>-L</B> options for the linker.  They also apply to
+includes files in the preprocessor, because the compiler translates these
+options into <B>-isystem</B> options for the preprocessor.  In this case,
+the compiler appends <B>include</B> to the prefix.
+
+
+<P>
+
+
+The run-time support file <I>libgcc.a</I> can also be searched for using
+the <B>-B</B> prefix, if needed.  If it is not found there, the two
+standard prefixes above are tried, and that is all.  The file is left
+out of the link if it is not found by those means.
+
+
+<P>
+
+
+Another way to specify a prefix much like the <B>-B</B> prefix is to use
+the environment variable <B></B><FONT SIZE="-1"><B>GCC_EXEC_PREFIX</B></FONT><B></B>.  
+
+
+<P>
+
+
+As a special kludge, if the path provided by <B>-B</B> is
+<I>[dir/]stageN/</I>, where <I>N</I> is a number in the range 0 to
+9, then it will be replaced by <I>[dir/]include</I>.  This is to help
+with boot-strapping the compiler.
+<DT><B>-specs=</B><I>file</I><DD>
+<A NAME="ixAWV"></A>
+Process <I>file</I> after the compiler reads in the standard <I>specs</I>
+file, in order to override the defaults that the <I>gcc</I> driver
+program uses when determining what switches to pass to <I>cc1</I>,
+<I>cc1plus</I>, <I>as</I>, <I>ld</I>, etc.  More than one
+<B>-specs=</B><I>file</I> can be specified on the command line, and they
+are processed in order, from left to right.
+</DL>
+</BODY>
+</HTML>

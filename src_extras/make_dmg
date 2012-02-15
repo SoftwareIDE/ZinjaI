@@ -1,0 +1,78 @@
+echo Updating Files...
+
+cp -u /mnt/ex/zinjai/compiling.txt zinjai.app/Contents/Resources/
+cp -u /mnt/ex/zinjai/readme.txt zinjai.app/Contents/Resources/
+cp -u /mnt/ex/zinjai/src_extras/* zinjai.app/Contents/Resources/src_extras/
+cp -u /mnt/ex/zinjai/autocomp/* zinjai.app/Contents/Resources/autocomp/
+cp -u /mnt/ex/zinjai/colours/* zinjai.app/Contents/Resources/colours/
+cp -u /mnt/ex/zinjai/quickhelp/* zinjai.app/Contents/Resources/quickhelp/
+cp -u /mnt/ex/zinjai/guihelp/* zinjai.app/Contents/Resources/guihelp/
+cp -u /mnt/ex/zinjai/imgs/*.png zinjai.app/Contents/Resources/imgs/
+cp -u /mnt/ex/zinjai/imgs/*.html zinjai.app/Contents/Resources/imgs/
+cp -u /mnt/ex/zinjai/src/* zinjai.app/Contents/Resources/src/
+cp -u /mnt/ex/zinjai/zinjai.zpr zinjai.app/Contents/Resources/
+cp -u /mnt/ex/zinjai/imgs/descripcion.txt zinjai.app/Contents/Resources/imgs/
+cp -u /mnt/ex/zinjai/imgs/*.ico zinjai.app/Contents/Resources/imgs/
+cp -u /mnt/ex/zinjai/imgs/16/* zinjai.app/Contents/Resources/imgs/16/
+cp -u /mnt/ex/zinjai/imgs/24/* zinjai.app/Contents/Resources/imgs/24/
+cp -u /mnt/ex/zinjai/imgs/32/* zinjai.app/Contents/Resources/imgs/32/
+cp -u /mnt/ex/zinjai/imgs/art.svg zinjai.app/Contents/Resources/imgs/
+cp -u /mnt/ex/zinjai/imgs/logos.svg zinjai.app/Contents/Resources/imgs/
+cp -u /mnt/ex/zinjai/debug_macros.gdb zinjai.app/Contents/Resources/
+cp -ru /mnt/ex/zinjai/skins/* zinjai.app/Contents/Resources/skins/
+cp -ru /mnt/ex/zinjai/lang/*.pre zinjai.app/Contents/Resources/lang/
+cp /mnt/ex/zinjai/lang/*.txt zinjai.app/Contents/Resources/lang/
+cp -u /mnt/ex/zinjai/parser/* zinjai.app/Contents/Resources/parser/
+cp -ru /mnt/ex/zinjai/parser/common/* zinjai.app/Contents/Resources/parser/common/
+cp -ru /mnt/ex/zinjai/parser/cpp/* zinjai.app/Contents/Resources/parser/cpp/
+cp -ru /mnt/ex/zinjai/parser/hyper/* zinjai.app/Contents/Resources/parser/hyper/
+cp -ru /mnt/ex/zinjai/parser/misc/* zinjai.app/Contents/Resources/parser/misc/
+rm -f zinjai.app/Contents/Resources/graphviz/*.bin
+rm -f zinjai.app/Contents/Resources/graphviz/bin/*
+rm -f zinjai.app/Contents/Resources/graphviz/lib/*
+rm -f zinjai.app/Contents/Resources/graphviz/lib/graphviz/*
+rm -f zinjai.app/Contents/Resources/lang/spanish.*
+rm -f zinjai.app/Contents/Resources/lang/tools/mxLangTool/mxLangTool.exe
+cp /mnt/ex/zinjai/lang/*.sgn zinjai.app/Contents/Resources/lang/
+cp /mnt/ex/zinjai/lang/*.src zinjai.app/Contents/Resources/lang/
+cp /mnt/ex/zinjai/lang/spanish.pre zinjai.app/Contents/Resources/lang/
+cp /mnt/ex/zinjai/lang/tools/extract_enum.cpp zinjai.app/Contents/Resources/lang/tools/
+cp -ru /mnt/ex/zinjai/lang/tools/mxLangTool zinjai.app/Contents/Resources/lang/tools/
+cp -u /mnt/ex/zinjai/lang/tools/mxLangTool.exe zinjai.app/Contents/Resources/lang/tools/
+echo Compiling...
+export PATH=/opt/mac/bin:/opt/mac/wx/bin:$PATH
+
+if mount|grep mnt; then sudo umount mnt; fi
+dd if=/dev/zero of=zinjai-ppc.dmg bs=512k count=78
+mkfs.hfsplus -v ZinjaI zinjai-ppc.dmg
+sudo mount -o loop zinjai-ppc.dmg mnt || exit 1
+rm -f zinjai.app/Contents/MacOS/zinjai
+rm -f zinjai.app/Contents/Resources/cbrowser
+rm -f zinjai.app/Contents/Resources/runner.bin
+rm -f zinjai.app/Contents/Resources/mac-terminal-wrapper.bin
+rm -f zinjai.app/Contents/Resources/updatem.bin
+make -f Makefile.ppc -C zinjai.app/Contents/Resources/src || exit 1
+make -f Makefile.ppc -C zinjai.app/Contents/Resources/src_extras || exit 1
+make -f Makefile.ppc -C zinjai.app/Contents/Resources/parser || exit 1
+echo Creating Package...
+sudo cp -r zinjai.app mnt/ || exit 1
+sudo umount mnt
+
+if mount|grep mnt; then sudo umount mnt; fi
+dd if=/dev/zero of=zinjai-m32.dmg bs=512k count=78
+mkfs.hfsplus -v ZinjaI zinjai-m32.dmg
+sudo mount -o loop zinjai-m32.dmg mnt || exit 1
+rm -f zinjai.app/Contents/MacOS/zinjai
+rm -f zinjai.app/Contents/Resources/cbrowser
+rm -f zinjai.app/Contents/Resources/runner.bin
+rm -f zinjai.app/Contents/Resources/mac-terminal-wrapper.bin
+rm -f zinjai.app/Contents/Resources/updatem.bin
+make -f Makefile.m32 -C zinjai.app/Contents/Resources/src || exit 1
+make -f Makefile.m32 -C zinjai.app/Contents/Resources/src_extras || exit 1
+make -f Makefile.m32 -C zinjai.app/Contents/Resources/parser || exit 1
+echo Creating Package...
+sudo cp -r zinjai.app mnt/ || exit 1
+sudo umount mnt
+
+echo
+echo All done.

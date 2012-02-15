@@ -1,0 +1,24 @@
+<B>Función <I>strcpy</I></B>
+<BR><BR>
+Copia una cadena en otra.
+<BR><BR>
+Prototipo: <BR>
+<UL>
+<LI><I>char * strcpy ( char * destination, const char * source );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cstring&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Copia la cadena apuntada por <I>source</I> a la cadena apuntada por <I>destination</I>, incluyendo el caracter de terminación (<I>'\0'</I>), y devuelve <I>destination</I>.<BR>
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; char cadena1[]="Hola Mundo!\n";<BR>
+&nbsp;&nbsp;&nbsp; char cadena2[40];<BR>
+&nbsp;&nbsp;&nbsp; // copiar cadena1 en cadena2<BR>
+&nbsp;&nbsp;&nbsp; strcpy(cadena2,cadena1);<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cstring.html">Cabecera <I>cstring</I></A>: Contiene funciones para el manejo de cadenas de caracteres c y arreglos.
+<LI><A href="quickfile:cstring_strncpy.html">Función <I>strncpy</I></A>: Copia parte de una cadena en otra.
+</UL>

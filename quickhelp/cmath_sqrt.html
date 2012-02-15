@@ -1,0 +1,27 @@
+<B>Función <I>sqrt</I></B>
+<BR><BR>
+Calcula una raiz cuadrada.
+<BR><BR>
+Prototipos: <BR>
+<UL>
+<LI><I>double sqrt ( double x );</I></LI>
+<LI><I>float sqrt ( float x );</I></LI>
+<LI><I>long double sqrt ( long double x );</I></LI>
+</UL>
+<BR><BR>
+Se encuentra en: <I>&lt;cmath&gt;</I>
+<BR><BR>
+&nbsp;&nbsp;&nbsp; Calcula la raiz cuadrada de <I>x</I>. <I>x</I> debe ser positivo. Si <I>x</I> es negativo el resultado es el valor especial <I>IND<I>.<BR>
+&nbsp;&nbsp;&nbsp; En algunas circunstancias el compilador puede no llegar a determinar cual de las sobrecargas de esta función utilizar. En caso de ambigüedad, existen las funciones <I>sqrtf</I> y <I>sqrtl</I> para forzar los datos a tipos <I>double</I> y <I>long double</I> respectivamente, aunque estas dos funciones no son estandar.<BR>
+&nbsp;&nbsp;&nbsp; Para calcular otras raices utilice la funcion <I>pow</I> (considerando que la raiz i-esima de b es b^(1/i) ).
+<BR><BR>
+Ejemplo:<BR><CODE>
+&nbsp;&nbsp;&nbsp; float raiz_de_2 = sqrt(2);<BR>
+&nbsp;&nbsp;&nbsp; float cinco = sqrt(25);<BR>
+</CODE><BR><BR>
+Vea tambien: <BR>
+<UL>
+<LI><A href="quickfile:cmath.html">Cabecera <I>cmath</I></A>Contiene funciones para calcular operaciones y transformaciones matemáticas comunes.
+<LI><A href="quickfile:cmath_pow.html">Función <I>pow</I></A>: Calcula una potenciación.
+<LI><A href="quickfile:cmath_log.html">Función <I>log</I></A>: Calcula el logaritmo natural de <I>x</I>.
+</UL>

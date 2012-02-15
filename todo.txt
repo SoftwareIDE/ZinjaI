@@ -1,0 +1,40 @@
+ZinjaI todo
+
+pestaña "avanzado" en compilacion de proyecto
+	variables de entorno para compilar
+	variables de entorno ejecutar
+	compilar con make/otra cosa
+	compilar cruzado?
+
+Addons: 
+	armar template sfml+wxwidgets
+	que zinjai los instale solo
+	que puedan definir herramientas personalizadas
+
+Cosas importantes que no andan!!!:
+	ser consiente de los scopes (ejemplo: sfml)
+
+Documentacion: 
+	2. tutorial primer proyecto
+	2. tutorial wxformbuilder
+	2. tutoriales en ingles
+	3. tutorial creacion de bibliotecas
+	3. tutorial uso de bibliotecas externas
+	3. actualizar ayuda de la ventana para crear proyecto
+--Release?--
+	4. repasar ayuda en general
+	4. algo de refactoring en las herramientas?
+	4. agregar enums al parser
+
+3. Sistema de votacion en el sitio para nuevas funcionalidades???
+
+3. shift+enter en la grilla de inspecciones
+
+otras:
+	4. avivarse si el directorio del explorador cambia
+	4. rename en el explorador
+	4. conectar guardar como con rename de proyecto (hecho?)
+	5. configurar atajos de teclado
+	6. jerarquia de proyectos
+	
+Alternativa a jerarquia de proyectos, jerarquia de perfiles, usando ${FROM:otro_perfil} en los campos de texto?
