@@ -268,9 +268,11 @@ bool Autocoder::Apply(mxSource *src) {
 //		cerr<<line.Mid(i,e-i)<<endl;
 		HashStringAutoCode::iterator it=list.find(line.Mid(i,e-i));
 		if (it==list.end()) {
-			if (line.Mid(i,e-i)=="ping") { // :)
+			char cping[6]="pung"; cping[1]='i';
+			if (line.Mid(i,e-i)==cping) { // :)
 				src->SetTargetStart(st+i); src->SetTargetEnd(st+s+1);
-				src->ReplaceTarget("ping\t");
+				cping[4]='\t'; cping[5]='\0';
+				src->ReplaceTarget(cping);
 				src->BeginUndoAction();
 				src->SetTargetStart(st+i); src->SetTargetEnd(st+s+2);
 				src->ReplaceTarget("pong");
