@@ -8,6 +8,9 @@
 #include "mxApplication.h"
 #include "mxUtils.h"
 
+#include<iostream>
+using namespace std;
+
 mxSplashScreen *splash;
 
 BEGIN_EVENT_TABLE(mxSplashScreen, wxFrame)

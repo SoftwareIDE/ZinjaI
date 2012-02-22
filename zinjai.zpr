@@ -27,7 +27,7 @@ marker=143
 marker=97
 [source]
 path=src/mxMainWindow.cpp
-cursor=240350
+cursor=233916
 breakpoint=4118
 breakpoint=4114
 breakpoint=2871
@@ -68,9 +68,10 @@ path=src/mxNewWizard.cpp
 cursor=35935
 [source]
 path=src/ProjectManager.cpp
-cursor=86091
-marker=1127
+cursor=0
 marker=1290
+marker=1127
+open=true
 [source]
 path=src/CodeHelper.cpp
 cursor=17370
@@ -94,7 +95,7 @@ path=src/mxAboutWindow.cpp
 cursor=993
 [source]
 path=src/mxApplication.cpp
-cursor=48
+cursor=1384
 [source]
 path=src/mxCompileConfigWindow.cpp
 cursor=4226
@@ -161,10 +162,10 @@ path=src/mxMakefileDialog.cpp
 cursor=3405
 [source]
 path=src/mxArt.cpp
-cursor=2529
+cursor=823
 [source]
 path=src/mxBitmapButton.cpp
-cursor=188
+cursor=1621
 [source]
 path=src/mxMessageDialog.cpp
 cursor=3577
@@ -306,7 +307,6 @@ marker=392
 [source]
 path=src/Autocoder.cpp
 cursor=10017
-open=true
 [source]
 path=src/mxIconInstaller.cpp
 cursor=662
@@ -589,7 +589,7 @@ path=src/mxListSharedWindow.h
 cursor=223
 [other]
 path=guihelp/ChangeLog.html
-cursor=134
+cursor=260
 open=true
 [other]
 path=quickhelp/tips_spanish
@@ -629,6 +629,9 @@ cursor=387
 [other]
 path=src/lang_index_macros.h
 cursor=16866
+[other]
+path=ProjectManager.txt
+cursor=0
 [config]
 name=Linux_Debug
 working_folder=/mnt/ex/zinjai

@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.36543762"
-     inkscape:cx="19634.72"
-     inkscape:cy="-700.3593"
+     inkscape:zoom="0.51680684"
+     inkscape:cx="19604.726"
+     inkscape:cy="-695.25456"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -7850,7 +7850,7 @@
          inkscape:export-ydpi="30.056633" />
     </g>
     <text
-       transform="matrix(0.7439407,0,0,0.7439407,5033.2519,430.66853)"
+       transform="matrix(0.73786953,0,0,0.73786953,5597.2511,440.77795)"
        id="text3467"
        y="1685.043"
        x="20580.525"
@@ -7866,17 +7866,17 @@
          style="text-align:end;text-anchor:end;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none">v20111116</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:40.65383148px;font-style:normal;font-weight:normal;text-align:end;text-anchor:end;fill:#ffffa7;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="20343.709"
-       y="1684.2406"
+       style="font-size:40.32206345px;font-style:normal;font-weight:normal;text-align:end;text-anchor:end;fill:#ffffa7;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="20782.762"
+       y="1684.1199"
        id="text3471"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/splashv2.png"
        inkscape:export-xdpi="30.056633"
        inkscape:export-ydpi="30.056633"><tspan
          sodipodi:role="line"
          id="tspan3473"
-         x="20343.709"
-         y="1684.2406">v20111116</tspan></text>
+         x="20782.762"
+         y="1684.1199">v20111116</tspan></text>
     <path
        id="path22177"
        d="m 21090.222,2152.25 171.653,0 0,-114.75 c -53.532,41.9357 -111.919,79.0168 -171.653,114.75 z"
@@ -10641,6 +10641,6 @@
          sodipodi:role="line"
          x="20507.828"
          y="2124.3049"
-         id="tspan3893">#define VERSION 20120213</tspan></text>
+         id="tspan3893">#define VERSION 20120222</tspan></text>
   </g>
 </svg>

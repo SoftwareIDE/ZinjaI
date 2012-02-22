@@ -28,8 +28,8 @@
 using namespace std;
 
 #ifdef DEBUG
-//#define DEBUG_MANAGER_LOG_TALK
-#define DEBUG_LOG_FILE "/mnt/rm/debug.log"
+// #define DEBUG_MANAGER_LOG_TALK
+#define DEBUG_LOG_FILE "debug.log"
 #endif
 
 #define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
