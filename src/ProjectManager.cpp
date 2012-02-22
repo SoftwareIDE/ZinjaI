@@ -1223,11 +1223,14 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 				rc_redo=true;
 			else if (!rc_redo) {
 				wxTextFile fil(rc_file.GetFullPath());
+				fil.Open();
 				wxString cont; int i=0; 
 				rc_redo=rc_text.GetCount()!=fil.GetLineCount();
-				if (!rc_redo)
+				if (!rc_redo) {
+					int i=0;
 					for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() )
-						if (rc_text[i]!=str) rc_redo=true;
+						if (rc_text[i++]!=str) rc_redo=true;
+				}
 				fil.Close();
 			}
 			if (rc_redo) {
