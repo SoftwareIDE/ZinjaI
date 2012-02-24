@@ -35,5 +35,6 @@
 #define PAF_PUBLIC              0x000004
 #define PAF_STATIC              0x000008
 #define PAF_VIRTUAL             0x001000
+#define PAF_VIRTUAL_PURE        0x008000
 
 #define PAF_CONST_OR_VOLATILE   0x080000 // agregado por zaskar

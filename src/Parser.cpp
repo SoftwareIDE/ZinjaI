@@ -419,10 +419,6 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				aux=PARSER_PARTE(0);
 				key=PARSER_PARTE_NB(6);
 				props=0;
-				if (key.Left(8)==_T("virtual ")) {
-					key=key.Mid(8);
-					props=PD_CONST_VIRTUAL;
-				}
 				PARSER_PARTE(2).ToLong(&line);
 				name=PARSER_PARTE(1);
 				par=PARSER_PARTE_NB(7);
@@ -438,6 +434,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 					postype--;
 					auxtype*=16;
 				}
+				if (dectype&PAF_VIRTUAL) { props|=PD_CONST_VIRTUAL; key.Replace("virtual ","",false); }
 				if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
 				else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
 				else props|=PD_CONST_PUBLIC;
@@ -449,10 +446,6 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				aux=PARSER_PARTE(0);
 				key=PARSER_PARTE_NB(6);
 				props=0;
-				if (key.Left(8)==_T("virtual ")) {
-					key=key.Mid(8);
-					props=PD_CONST_VIRTUAL;
-				}
 				PARSER_PARTE(2).ToLong(&line);
 				name=PARSER_PARTE(1);
 				par=PARSER_PARTE_NB(7);
@@ -468,6 +461,8 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 					postype--;
 					auxtype*=16;
 				}
+				if (dectype&PAF_VIRTUAL) { props|=PD_CONST_VIRTUAL; key.Replace("virtual ","",false); }
+				if (dectype&PAF_VIRTUAL_PURE) props|=PD_CONST_VIRTUAL_PURE;
 				if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
 				else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
 				else props|=PD_CONST_PUBLIC;
@@ -480,6 +475,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				name=PARSER_PARTE(1);
 				PARSER_PARTE(2).ToLong(&line);
 				key=PARSER_PARTE_NB(6);
+				props=0;
 				if (key.Left(9)==_T("volatile ")) {
 					key=key.Mid(9);
 					props=PD_CONST_VOLATILE;

@@ -31,6 +31,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define PD_CONST_DESTRUCTOR 64
 #define PD_CONST_CONST 128
 #define PD_CONST_VOLATILE 256
+#define PD_CONST_VIRTUAL_PURE 512
 
 // macros para cargar el autocompletado estandar
 
@@ -571,7 +572,7 @@ struct pd_ref { // para la lista de cosas asociadas a un archivo o clase
 };
 
 
-struct pd_func { // funciones y metodos (se diferencian por properties=0)
+struct pd_func { // funciones y metodos (las func no tienen por space una clase, space==NULL || space->file_def==NULL, el segundo es namespace)
 	HashStringParserFunction::iterator hash_it; // hay un hash por nombre de funcion para encontrar rapido si ya estan definidas o no
 	wxTreeItemId item; // este es el item del arbol de simbolos para borrarlo/actualizarlo rapidamente, o para recuperar
 	wxTreeItemId image; // es el icono que va en el arbol
@@ -582,9 +583,9 @@ struct pd_func { // funciones y metodos (se diferencian por properties=0)
 	pd_file *file_def; // archivo donde se definio
 	int line_def; // linea donde se definio
 	pd_ref *ref_def; // la referencia que la apunta (dentro del archivo)
-	unsigned char props_def; // visibilidad/static/virtual/¿common/etc?
-	unsigned char props_dec; // visibilidad/static/virtual/¿common/etc?
-	unsigned int properties;
+	unsigned short props_def; // visibilidad/static/virtual/¿common/etc?
+	unsigned short props_dec; // visibilidad/static/virtual/¿common/etc?
+	unsigned short properties;
 	wxString name; // nombre pelado
 	wxString proto; // prototipo completo
 	wxString full_proto; // prototipo completo
@@ -656,7 +657,7 @@ struct pd_var {
 	wxString full_proto;
 	pd_file *file;
 	pd_ref *ref;
-	unsigned int properties;
+	unsigned short properties;
 	int line;
 	pd_var(wxTreeItemId fitem, pd_var *aprev, pd_file *afile, int aline, wxString &aname, wxString &atype, wxString &aproto, pd_var *anext, pd_class *aspace = NULL, wxString afullproto=_T("")) {
 		space=aspace;
@@ -686,7 +687,7 @@ struct pd_var {
 struct pd_inherit {
 	wxString father;
 	wxString son;
-	int properties;
+	short properties;
 	pd_inherit *next;
 	pd_inherit *prev;
 	pd_inherit(pd_inherit *aprev, wxString afather, wxString ason, int aproperties ,pd_inherit *anext) {

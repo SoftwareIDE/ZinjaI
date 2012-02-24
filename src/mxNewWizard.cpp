@@ -294,6 +294,7 @@ void mxNewWizard::OnProjectCreate() {
 				}
 			h_file.AddLine(wxString(_T("class "))+name+inherits+_T(" {"));
 			h_file.AddLine(_T("private:"));
+			h_file.AddLine(_T("protected:"));
 			h_file.AddLine(_T("public:"));
 			if (onproject_const_def->GetValue())
 				h_file.AddLine(wxString(_T("\t"))+name+_T("();"));

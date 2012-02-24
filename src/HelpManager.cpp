@@ -186,18 +186,19 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 			one_method<<"virtual ";
 		one_method<<utils->ToHtml(afunc->proto);
 		if (afunc->properties&PD_CONST_CONST) one_method<<" const";
+		if (afunc->properties&PD_CONST_VIRTUAL_PURE) one_method<<" = 0";
 		one_method<<"</A></LI>";
 		afunc = afunc->next;
 		methods=one_method+methods;
 	}
 	if (methods.Len())
 		if (aclass->file)
-			content<<LANG(PARSERHELP_OWN_METHODS,"Metodos propios:")<<_T("<BR><UL>")<<methods<<_T("</UL><BR>");
+			content<<LANG(PARSERHELP_OWN_METHODS,"Métodos propios:")<<_T("<BR><UL>")<<methods<<_T("</UL><BR>");
 		else
 			content<<LANG(PARSERHELP_FUNCTIONS,"Funciones:")<<_T("<BR><UL>")<<methods<<_T("</UL><BR>");
 	else
 		if (aclass->file)
-			content<<LANG(PARSERHELP_NO_OWN_METHOD_FOUND,"No se declararon metodos propios.")<<_T("<BR><BR>");
+			content<<LANG(PARSERHELP_NO_OWN_METHOD_FOUND,"No se declararon métodos propios.")<<_T("<BR><BR>");
 	
 	if (ReloadDoxyIndex()) {
 		wxString dox, link = GetDoxyInfo(aclass, dox);
@@ -220,8 +221,8 @@ void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_PRE,"Destructor")<<_T(" <I>")<<utils->ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
 			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_PRE,"Destructor")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<utils->ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
 		} else {
-			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Metodo")<<_T(" <I>")<<utils->ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
-			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Metodo")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<utils->ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
+			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Método")<<_T(" <I>")<<utils->ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
+			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Método")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<utils->ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
 		}
 		if (afunc->properties&PD_CONST_PUBLIC)
 			content<<LANG(PARSERHELP_VISIBILITY_PUBLIC,"Visibilidad: Publico")<<_T("<BR><BR>");
@@ -230,9 +231,8 @@ void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 		else if (afunc->properties&PD_CONST_PROTECTED)
 			content<<LANG(PARSERHELP_VISIBILITY_PROTECTED,"Visibilidad: Protegido")<<_T("<BR><BR>");
 		content<<LANG(PARSERHELP_PROTOTYPE,"Prototipo:")<<_T(" <BR><UL><LI>");
-		if (afunc->properties&PD_CONST_VIRTUAL) 
-			content<<_T("virtual ");
-		content<<proto<<(afunc->properties&PD_CONST_CONST?" const":"")<<_T("</LI></UL><BR><BR>");
+		if (afunc->properties&PD_CONST_VIRTUAL) content<<_T("virtual ");
+		content<<proto<<(afunc->properties&PD_CONST_CONST?" const":"")<<(afunc->properties&PD_CONST_VIRTUAL_PURE?" = 0":"")<<_T("</LI></UL><BR><BR>");
 		if (afunc->file_dec)
 			content<<LANG(PARSERHELP_DECLARED_IN_PRE,"Declarado en")<<_T(" \"<A href=\"gotoline:")<<afunc->file_dec->name<<_T(":")<<afunc->line_dec<<_T("\">")<<afunc->file_dec->name<<_T("</A>\" ")<<LANG(PARSERHELP_DECLARED_IN_POST,"en la linea")<<_T(" ")<<afunc->line_dec<<_T("<BR><BR>");
 		if (afunc->file_def)
