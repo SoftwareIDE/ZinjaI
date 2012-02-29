@@ -389,7 +389,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 					delete compile_and_run; return;
 				}
 				if (project->compile_was_ok) { // si esta todo listo, informar el resultado
-					if (!project->active_configuration->dont_generate_exe) CheckForExecutablePermision(project->GetExePath());
+					if (compile_and_run->linking && !project->active_configuration->dont_generate_exe) CheckForExecutablePermision(project->GetExePath());
 					main_window->SetStatusProgress(0);
 					time_t elapsed_time = time(NULL)-project->compile_startup_time;
 					if (elapsed_time>5) {

@@ -1475,6 +1475,7 @@ long int ProjectManager::Link(compile_and_run_struct_single *compile_and_run, li
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	compile_and_run->special_output=false;
+	compile_and_run->linking=true; // para que cuando termine sepa que enlazo, para verificar llamar a compiler->CheckForExecutablePermision
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);

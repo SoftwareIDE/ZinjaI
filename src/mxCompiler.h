@@ -22,7 +22,7 @@ struct compile_and_run_struct_single {
 	bool compiling; ///< indica si esta compilando/enlazando o ejecutando
 	wxString step_label; ///< nombre del paso especial que se esta ejecutando (para los extra step, usar con special_output)
 	bool special_output; ///< indica que la salida no debe parsearse como si fuera de gcc
-	bool linking; ///< indica si esta compilando o enlazando (cuando compiling=true)
+	bool linking; ///< indica si esta compilando o enlazando (cuando compiling=true, parece que solo se usa para llamar a mxCompiler::CheckForExecutablePermision)
 	wxProcess *process; ///< puntero al proceso en ejecucion
 	long int pid; ///< process id del proceso en ejecucion, 0 si no se pudo lanzar
 	bool run_after_compile; ///< indica si hay que ejecutar cuando termine de compilar y enlazar
