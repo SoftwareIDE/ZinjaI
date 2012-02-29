@@ -484,11 +484,16 @@ bool ConfigManager::Load() {
 		} 
 	}
 	
-	if (Init.version<20120208 && !Init.forced_linker_options.Contains("-static-libstdc++")) Init.forced_linker_options<<" -static-libstdc++";
 	if (Init.version<20110418) Debug.select_modified_inspections=true;
 	if (Init.version<20110420) Init.check_for_updates=true;
 	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");
 	if (Init.version<20101112 && Help.autocomp_indexes.Len()) Help.autocomp_indexes<<",STL_Iteradores";
+#if defined(__WIN32__)
+	if (Init.version<20120208 && !Init.forced_linker_options.Contains("-static-libstdc++")) Init.forced_linker_options<<" -static-libstdc++";
+#else
+	// " -static-libstdc++" estaba por error, solo se deberia haber agregado en windows, pero por error el if de arriba estaba fuera del #ifdef
+	if (Init.version<20120229 && Init.forced_linker_options.Contains(" -static-libstdc++")) Init.forced_linker_options.Replace(" -static-libstdc++","",false);
+#endif
 	if (Init.version<20100828) {
 #if defined(__WIN32__)
 		Init.forced_compiler_options<<_T(" --show-column");
