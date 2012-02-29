@@ -5042,7 +5042,7 @@ void mxMainWindow::ShowWelcome(bool show) {
 		pns.Show();
 	}
 	aui_manager.Update();
-	if (show) welcome_panel->SetFocus();
+	if ((welcome_panel->is_visible=show)) welcome_panel->SetFocus();
 }
 
 void mxMainWindow::OnActivate (wxActivateEvent &event) {

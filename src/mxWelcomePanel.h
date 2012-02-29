@@ -6,7 +6,10 @@
 class mxWelcomePanel : public wxHtmlWindow {
 private:
 	wxTextFile file;
+	bool is_visible;
+	friend class mxMainWindow; // para que modifique is_visible
 public:
+	bool IsVisible();
 	mxWelcomePanel(wxWindow *parent);
 	~mxWelcomePanel();
 	void Reload();

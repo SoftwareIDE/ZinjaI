@@ -4,6 +4,7 @@
 #include <wx/aui/aui.h>
 #include "mxMainWindow.h"
 #include <iostream>
+#include "mxWelcomePanel.h"
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxHidenPanel,wxPanel)
@@ -66,8 +67,13 @@ void mxHidenPanel::ToggleDock() {
 void mxHidenPanel::ShowFloat() {
 	wxAuiPaneInfo &pane = main_window->aui_manager.GetPane(control);
 	int px,py,pw,ph,ax,ay,aw,ah;
-	main_window->notebook_sources->GetScreenPosition(&px,&py);
-	main_window->notebook_sources->GetSize(&pw,&ph);
+	if (welcome_panel && welcome_panel->IsVisible()) {
+		welcome_panel->GetScreenPosition(&px,&py);
+		welcome_panel->GetSize(&pw,&ph);
+	} else {
+		main_window->notebook_sources->GetScreenPosition(&px,&py);
+		main_window->notebook_sources->GetSize(&pw,&ph);
+	}
 	GetScreenPosition(&ax,&ay);
 	GetSize(&aw,&ah);
 	if (pos==0) {
