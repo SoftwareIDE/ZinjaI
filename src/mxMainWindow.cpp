@@ -2063,13 +2063,13 @@ void mxMainWindow::OnNotebookPanelsChanged(wxAuiNotebookEvent& event) {
 
 wxAuiNotebook *mxMainWindow::CreateLeftPanels() {
 	explorer_tree.treeCtrl=symbols_tree.treeCtrl=project_tree.treeCtrl=NULL;
-	wxSize client_size = GetClientSize();
+//	wxSize client_size = GetClientSize();
 	left_panels = new wxAuiNotebook(this, mxID_LEFT_PANELS, wxDefaultPosition, wxSize(200,400), wxAUI_NB_BOTTOM | wxNO_BORDER);
 	return left_panels;
 }
 
 wxAuiNotebook *mxMainWindow::CreateNotebookSources() {
-	wxSize client_size = GetClientSize();
+//	wxSize client_size = GetClientSize();
 	notebook_sources = new wxAuiNotebook(this, mxID_NOTEBOOK_SOURCES, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxNO_BORDER | wxAUI_NB_WINDOWLIST_BUTTON);
 //	wxBitmap page_bmp = wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16));
 	return notebook_sources;

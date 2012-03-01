@@ -12,6 +12,8 @@ struct singleton_data {
 
 class mxSingleton: public wxEvtHandler {
 private:
+	wxArrayString to_open; ///< para encolar pedidos que llegan antes de inicializar main_window
+	bool ready; ///< para saber cuando dejar de encolar en to_open y empezar a abrir directamente
 	wxSocketServer *server;
 	singleton_data *data;
 	int calls_count, max_count, gid;
@@ -21,6 +23,7 @@ public:
 	void Stop();
 	void OnSocket(wxSocketEvent &evt);
 	void LocalOpen(wxString fname);
+	void ProcessToOpenQueue();
 	bool RemoteOpen(wxString fname);
 	bool IsRunning();
 	~mxSingleton();

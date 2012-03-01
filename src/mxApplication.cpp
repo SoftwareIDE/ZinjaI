@@ -243,6 +243,8 @@ bool mxApplication::OnInit() {
 	// si estaba abriendo un proyecto el usuario puede haber cerrado la ventana antes de que el parser termine
 	if (!main_window) return false;
 	
+	if (singleton) singleton->ProcessToOpenQueue();
+	
 	if (tips_window) tips_window->Raise();
 	
 	SHOW_MILLIS("Checking recovery system...");

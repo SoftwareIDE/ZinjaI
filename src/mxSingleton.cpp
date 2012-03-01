@@ -14,7 +14,7 @@ mxSingleton::mxSingleton():server(NULL) {
 	calls_count=0;
 	data=NULL;
 	gid=0;
-	
+	ready=false;
 }
 
 mxSingleton::~mxSingleton() {
@@ -56,7 +56,22 @@ bool mxSingleton::RemoteOpen(wxString fname) {
 }
 
 void mxSingleton::LocalOpen(wxString fname) {
-	main_window->OpenFileFromGui(fname);
+	if (!ready) { 
+		to_open.Add(fname);
+	} else {
+		main_window->OpenFileFromGui(fname);
+		main_window->Raise();
+	}
+}
+
+void mxSingleton::ProcessToOpenQueue() {
+	ready=true;
+	int n=to_open.GetCount();
+	if (!n) return;
+	for(int i=0;i<n;i++) { 
+		main_window->OpenFileFromGui(to_open[i]);
+	}
+	to_open.Clear();
 	main_window->Raise();
 }
 
