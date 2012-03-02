@@ -1807,8 +1807,9 @@ bool DebugManager::UpdateInspection() {
 	
 	list<mxExternInspection*>::iterator i1=extern_list.begin(), i2=extern_list.end();
 	if (i1!=i2) {
-		/// @todo: para que estaba aca el print repeats
-//		SendCommand(_T("-gdb-set print repeats 0")); 
+		// el print-repeats se desactiva para que las otras ventanas puedan mostrar todo, 
+		// y despues se activa ya que en la tabla de inspecciones no entran muchos datos seguro
+		SendCommand(_T("-gdb-set print repeats 0")); 
 		while (i1!=i2) {
 			bool do_inspect=false;
 			if ((*i1)->frame.Len()) {
@@ -1825,7 +1826,7 @@ bool DebugManager::UpdateInspection() {
 			} else do_inspect=true;
 			if (do_inspect) (*i1)->Update(); ++i1;
 		}
-//		SendCommand(_T("-gdb-set print repeats 100"));
+		SendCommand(_T("-gdb-set print repeats 100"));
 	}
 	
 //	list<mxInspectionMatrix*>::iterator i1=matrix_list.begin(), i2=matrix_list.end();

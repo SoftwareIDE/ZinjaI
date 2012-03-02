@@ -1,3 +1,12 @@
+/** 
+* @file ProjectManager.h
+* @brief Definición de la clase ProjectManager y otras relacionadas
+*
+* ProjectManager, compile_extra_step, doxygen_configuration, project_library, 
+* project_configuration, break_line_item, marked_line_item, file_item,
+* compile_step, linking_info
+**/
+
 #ifndef PROJECT_MANAGER_H
 #define PROJECT_MANAGER_H
 
@@ -17,9 +26,21 @@
 #endif
 class mxSource;
 
-enum ces_pos {CES_BEFORE_SOURCES=0, CES_BEFORE_LIBS, CES_BEFORE_EXECUTABLE, CES_AFTER_LINKING, CES_COUNT};
+/// Posibles ubicaciones para un paso de compilación adicional en el proceso de construcción de un proceso
+enum ces_pos {
+	CES_BEFORE_SOURCES=0, ///< al principio de todo, antes de compilar los fuentes
+	CES_BEFORE_LIBS, ///< luego de compilar los fuentes, pero antes de enlazar las bibliotecas que genera el proyecto
+	CES_BEFORE_EXECUTABLE, ///< luego de compilar los fuentes y enlazar las bibliotecas que genera el proyecto, pero antes de enlazar el ejecutable
+	CES_AFTER_LINKING, ///< al final de todo, luego enlazar el ejecutable
+	CES_COUNT ///< cantidad de posibles ubicaciones
+};
 
-enum makefile_type {MKTYPE_FULL,MKTYPE_OBJS,MKTYPE_CONFIG};
+/// Posibles tipos de Makefiles a generar
+enum makefile_type {
+	MKTYPE_FULL, ///< el Makefile común, que contiene todo lo necesario
+	MKTYPE_OBJS, ///< uno que contine solo las reglas de los objetos, que no depende del perfil de compilación (y se llama siempre Makefile.common), es para incluir desde otro Makefile
+	MKTYPE_CONFIG ///< el que define las variables que dependen del perfil de compilación, y incluye al otro makefile que contiene la parte comun a todos los perfiles
+	};
 
 struct compile_and_run_struct_single;
 
@@ -30,15 +51,17 @@ struct compile_and_run_struct_single;
 * Es contenida por la configuración, en forma de lista doblemente enlazada ad-hoc (sin primer nodo ficticio)
 **/
 struct compile_extra_step {
-	wxString deps, out, command, name;
-	int pos;
+	wxString deps; ///< archivos de los que depende este paso, puede incluir variables a reemplazar, para poder comparar y saber cuando no es necesario volver a ejecutarlo
+	wxString out; ///< archivo de salida de este paso, puede incluir variables a reemplazar, para poder comparar y saber cuando no es necesario volver a ejecutarlo, si esta en blanco se ejecuta siempre
+	wxString command; ///< comando que se ejecuta en este paso, puede incluir variables a reemplazar
+	wxString name; ///< nombre del paso, solo para mostrar en la interfaz
+	int pos; ///< un valor posible de ces_pos, indica donde va este paso en el proceso de construcción completo
 	compile_extra_step *next, *prev;
-	bool done;
 	bool check_retval; ///< si debe verificar que el comando retorne 0 para saber si continuar o abortar la compilacion
 	bool hide_window; ///< si debe ocultar la ventana/consola donde se ejecuta
 	bool delete_on_clean; ///< si debe eliminar este archivo al hacer un clean del proyecto
 	bool link_output; ///< si debe agregar el archivo de salida a la lista de objetos a enlazar
-	compile_extra_step():deps(_T("")),out(_T("")),command(_T("")),name(_T("<noname>")),pos(0),next(NULL),prev(NULL),done(false),check_retval(false),hide_window(true),delete_on_clean(true),link_output(false) {}
+	compile_extra_step():deps(_T("")),out(_T("")),command(_T("")),name(_T("<noname>")),pos(0),next(NULL),prev(NULL),check_retval(false),hide_window(true),delete_on_clean(true),link_output(false) {}
 };
 
 /** 
@@ -389,20 +412,28 @@ public:
 	void SetSourceExtras(mxSource *source, file_item *item=NULL);
 	/// Determina si el archivo item usa alguna de las macros de la lista macros
 	bool DependsOnMacro(file_item *item, wxArrayString &macros);
+	/// Guarda todo y marca cuales archivos hay que recompilar, devuelve falso si no hay que compilar ninguno ni reenlazar el ejecutable
 	bool PrepareForBuilding(file_item *only_one=NULL);
+	/// Ejecuta el próximo paso para la construcción del proyecto
 	long int CompileNext(compile_and_run_struct_single *compile_and_run, wxString &object_name);
+	/// Compila el archivo de recursos temporal del proyecto (generado por PrepareForBuilding), se invoca a través de CompileNext, no directamente
 	long int CompileIcon(compile_and_run_struct_single *compile_and_run, wxString icon_file);
-	long int CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename);
+	/// Ejecuta un paso de compilación de un fuente del proyecto en la construcción de un proceso, se invoca a través de CompileNext, o del otro CompileFile, no directamente
 	long int CompileFile(compile_and_run_struct_single *compile_and_run, file_item *item);
+	/// Ejecuta un paso compilación adicional, se invoca a través de CompileNext, no directamente
 	long int CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step);
-	long int CompileItem(compile_and_run_struct_single *compile_and_run, wxTreeItemId &tree_item);
+	/// Ejecuta el paso de enlazado en la construcción de un proceso, se invoca a través de CompileNext, no directamente
 	long int Link(compile_and_run_struct_single *compile_and_run, linking_info *info);
 	long int Run(compile_and_run_struct_single *compile_and_run);
 	bool RenameFile(wxTreeItemId &tree_item, wxString new_name);
+	/// Compila un solo fuente del proyecto, preparando la configuración, fuera del proceso de construcción general
+	long int CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename);
 	bool MoveFile(wxTreeItemId &tree_item, char where);
 	bool DeleteFile(wxTreeItemId &tree_item, bool also=false);
 	file_item *AddFile (char where, wxFileName name, bool sort_tree=true);
+	/// Genera un makefile para el proyecto a partir de active_configuration
 	void ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, makefile_type mktype);
+	/// Parsea la configuración del proyecto (active_configuration) para generar los argumentos necesarios para invocar al compilador
 	void AnalizeConfig(wxString path, bool exec_comas, wxString mingw_dir, bool force=true);
 	/// Regenera uno o todos los proyecto wxFormBuilder
 	bool WxfbGenerate(bool show_osd=false, file_item *cual=NULL);

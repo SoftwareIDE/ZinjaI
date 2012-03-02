@@ -1,3 +1,8 @@
+/** 
+* @file ProjectManager.cpp
+* @brief Implementación de los métodos de la clase ProjectManager
+**/
+
 #include "ProjectManager.h"
 #include "mxUtils.h"
 
@@ -1003,7 +1008,12 @@ bool ProjectManager::DependsOnMacro(file_item *item, wxArrayString &macros) {
 }
 
 
-/// @brief guarda todo y marca cuales archivos hay que recompilar, devuelve falso si no hay que compilar ninguno ni relinkar el ejecutable
+/**
+* Si only_one es NULL se analiza todo el proyecto (fuentes, bibliotecas, pasos 
+* adicionales, ejecutable, etc). Si no es NULL se analiza solo lo relacionado 
+* a ese archivo en particular, para recompilar un solo objeto manualmente desde
+* el menú contextual del arbol de proyecto.
+**/
 bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 	
 	bool retval=false, relink_exe=false;
@@ -1311,10 +1321,10 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 }
 
 /** 
-Guarda todos los archivos del proyecto que esten abiertos y eventualmente tambien
-el archivo de configuración de proyecto. Si se indica guardar tambien este archivo,
-pero el proyecto no ha cambiado, no lo reescribe.
-@param save_project determina si también se debe guardar el archivo de configuración de proyecto
+* Guarda todos los archivos del proyecto que esten abiertos y eventualmente tambien
+* el archivo de configuración de proyecto. Si se indica guardar tambien este archivo,
+* pero el proyecto no ha cambiado, no lo reescribe.
+* @param save_project determina si también se debe guardar el archivo de configuración de proyecto
 **/
 void ProjectManager::SaveAll(bool save_project) {
 	file_item *item;
@@ -1376,18 +1386,6 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 }
 
 
-long int ProjectManager::CompileItem(compile_and_run_struct_single *compile_and_run, wxTreeItemId &tree_item) {
-//	AnalizeConfig(path,true,config->mingw_real_path);
-	// crear el directorio para los objetos si no existe
-	if (!wxFileName::DirExists(temp_folder))
-		wxFileName::Mkdir(temp_folder,0777,wxPATH_MKDIR_FULL);
-	file_item *item=FindFromItem(tree_item);
-	if (item)
-		return CompileFile (compile_and_run, item);
-	else
-		return 0;
-}
-
 long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename) {
 	AnalizeConfig(path,true,config->mingw_real_path);
 	// crear el directorio para los objetos si no existe
@@ -1403,8 +1401,17 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 
 }
 
-// compila un fuente o enlaza el ejecutable si ya estan todos los objetos listos
-// devuelve el pid del proceso que lanzo para compilar/enlazar o 0 si ya no queda nada por hacer 
+/** 
+* Compila un fuente o enlaza el ejecutable si ya estan todos los objetos listos.
+* El paso que ejecuta es el primero de la lista (first_compile_step), y además 
+* lo saca de esta lista. Puede fallar si ya no quedan pasos o si hay otros pasos
+* en paralelos que deben finalizar antes de continuar (esto es cuando el próximo
+* paso es de tipo CNS_BARRIER). Se encarga además de lanzar otros pasos en paralelo 
+* si es el primero de un conjunto paralelizable (lo cual se indica en la propiedad 
+* start_parallel del paso). Devuelve el pid del proceso que lanzo para 
+* compilar/enlazar o 0 en caso contrario. Coloca el nombre corto del paso que 
+* está ejecutando en caption para que se muestre en la interfaz.
+**/
 long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_run, wxString &caption) {
 
 	if (first_compile_step && first_compile_step->type==CNS_BARRIER) {
@@ -1432,7 +1439,6 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 			delete ((wxString*)step->what);
 			break;
 		case CNS_SOURCE:
-//			caption=wxString(LANG(PROJMNGR_COMPILING,"Compilando"))<<_T(" \"")<<((file_item*)step->what)->name<<_T("\"...");
 			compile_and_run->pid = CompileFile(compile_and_run,(file_item*)step->what);
 			// ver si hay que lanzar otra en paralelo
 			if (step->start_parallel) {
@@ -1819,6 +1825,33 @@ void ProjectManager::Clean() {
 }
 
 
+/**
+* Cuando se invoca al compilador se requiere una lista de argumentos que dependen
+* directa o indirectamente de varios campos del cuadro de Opciones de Compilación 
+* y Ejecución del Proyecto. No es cómodo convertir estos campos en argumentos
+* para gcc cada vez que se los necesita, y además tampoco es eficiente, ya que por
+* ejemplo puede requerir ejecutar comandos externos como pkg-config, y se los
+* necesita al menos una vez por cada objeto a generar en el proyecto. Esta función
+* se encarga de hacerlo una vez antes de compilar y guardar los resultados en los
+* atributos de esta clase marcados como "temporales".
+* @param path        es el directorio de base a utilizar para todas las rutas
+*                    relativas. Én la salida de esta función se utiliza este path
+*                    para convertirlas en absolutas. Usualmente será la carpeta
+*                    del proyecto, pero a la hora de generar el makefile se deja 
+*                    en blanco, para que se mantengan relativas.
+* @param exec_comas  indica si se deben reemplazar las cadenas entre acentos
+*                    en los campos de argumentos adicionales o si se dejan 
+*                    como estan (al compilar en zinjai se ejecutan, al generar
+*                    el makefile suele ser convieniente dejarlos para que 
+*                    los ejecute make).
+* @param mignw_dir   indica con que valor se deben reemplazar las ocurrencias de
+*                    la variable ${MINGW_DIR} en las opciones. Es el valor real
+*                    al compilar en zinjai, pero conviene queda como variable
+*                    al generar el makefile.
+* @param force       hay un bool config_analized que indica que la configuración
+*                    ya está actualizada, cuyo caso no hace nada. Este bool sirve
+*                    para omitir esa comprobación y hacer el proceso obligatoriamente.
+**/
 void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString mingw_dir, bool force) { // parse active_configuration to generate the parts of the command line
 	
 	if (!force && config_analized) return;
