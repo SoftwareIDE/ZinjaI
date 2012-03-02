@@ -309,6 +309,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU_RANGE(mxID_CUSTOM_TOOL_0, mxID_CUSTOM_TOOL_9,mxMainWindow::OnToolsCustomTool)
 	EVT_MENU(mxID_TOOLS_CUSTOM_SETTINGS, mxMainWindow::OnToolsCustomSettings)
 	EVT_MENU(mxID_TOOLS_CUSTOM_HELP, mxMainWindow::OnToolsCustomHelp)
+	EVT_MENU(mxID_TOOLS_INSTALL_COMPLEMENTS, mxMainWindow::OnToolsInstallComplements)
 	
 	EVT_MENU(mxID_HELP_OPINION, mxMainWindow::OnHelpOpinion)
 	EVT_MENU(mxID_HELP_TUTORIAL, mxMainWindow::OnHelpTutorial)
@@ -1732,6 +1733,8 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_SETTINGS,"&Configurar..."),_T(""),_T(""),ipre+_T("customToolsSettings.png"));
 	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));	
 	UpdateCustomTools();
+	
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_INSTALL_COMPLEMENTS, LANG(MENUITEM_TOOLS_INSTALL_COMPLEMENTS,"Instalar Complementos..."),_T(""),_T("Permite instalar un complemento ya descargado para ZinjaI"),ipre+_T("updates.png"));
 	
 	menu.menu->Append(menu.tools, LANG(MENUITEM_TOOLS,"&Herramientas"));
 

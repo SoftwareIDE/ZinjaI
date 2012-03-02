@@ -49,7 +49,7 @@ void mxEnumerationEditor::CreateCommonStuff(wxString value, bool comma_splits) {
 	wxButton *button_delete = new wxButton(this,mxID_ENUMED_DELETE,LANG(ENUMEDITOR_REMOVE,"Quitar"));
 	
 	wxButton *button_ok = new mxBitmapButton(this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	wxButton *button_cancel = new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancel"));
+	wxButton *button_cancel = new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	right_sizer->Add(button_up,sizers->BA5_Exp0);
 	right_sizer->Add(button_down,sizers->BA5_Exp0);
 	right_sizer->Add(button_edit,sizers->BA5_Exp0);

@@ -255,6 +255,8 @@ public:
 	void OnToolsPreprocHelp ( wxCommandEvent &event );
 	void ToolsPreproc( int id_command );
 	
+	void OnToolsInstallComplements( wxCommandEvent &event );
+	
 	void OnHelpOpinion (wxCommandEvent &event);
 	void OnHelpTutorial (wxCommandEvent &event);
 	void OnHelpAbout (wxCommandEvent &event);

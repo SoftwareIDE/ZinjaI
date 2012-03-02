@@ -979,7 +979,7 @@ bool ProjectManager::DeleteFile(wxTreeItemId &tree_item, bool also) {
 	return false;
 }
 
-/// @brief determina si el archivo usa alguna de las macros de la lista
+
 bool ProjectManager::DependsOnMacro(file_item *item, wxArrayString &macros) {
 	wxTextFile fil(DIR_PLUS_FILE(path,item->name));
 	if (fil.Exists()) {
@@ -2142,13 +2142,19 @@ bool ProjectManager::Debug() {
 	return ret;
 }
 
+/**
+* Una vez inicializado gdb, esta función invoca a través de DebugManager los 
+* comandos  necesarios para cargar todos los breakpoints definidos en todos los 
+* archivos del proyecto. Setea además las propiedades de cada uno. Se debe 
+* llamar antes de comenzar la ejecución.
+**/
 int ProjectManager::SetBreakpoints() {
 	int cuantos = 0;
 	file_item *item;
 	mxSource *source;
 	break_line_item *breakpoint;
 //	wxString path = wxFileName(this->path).GetShortPath();
-	// guardar los fuentes
+	// fuentes
 	item = first_source;
 	ML_ITERATE(item) {
 		if ((source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name)))) {
@@ -2175,7 +2181,7 @@ int ProjectManager::SetBreakpoints() {
 			}
 		}
 	}
-	// guardar las cabeceras
+	// cabeceras
 	item = first_header;
 	ML_ITERATE(item) {
 		if ( (source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name)))) {

@@ -53,7 +53,7 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 	wxBitmapButton *help_button = new wxBitmapButton(this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
 	butSizer->Add(help_button,sizers->BA5);
 	butSizer->AddStretchSpacer();
-	wxBitmapButton *cancel_button = new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancel"));
+	wxBitmapButton *cancel_button = new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	butSizer->Add(cancel_button,sizers->BA5);
 	wxBitmapButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
 	butSizer->Add(ok_button,sizers->BA5);

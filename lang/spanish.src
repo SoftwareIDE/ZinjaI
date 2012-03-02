@@ -131,11 +131,11 @@ Variables:
 PARSERHELP_NO_OWN_ATTRIBUTE_FOUND
 No se declararon atributos propios.
 PARSERHELP_OWN_METHODS
-Metodos propios:
+Métodos propios:
 PARSERHELP_FUNCTIONS
 Funciones:
 PARSERHELP_NO_OWN_METHOD_FOUND
-No se declararon metodos propios.
+No se declararon métodos propios.
 PARSERHELP_DOXY_DESC
 Informacion en comentarios tipo Doxygen:
 PARSERHELP_NO_DOXYGEN
@@ -149,7 +149,7 @@ Destructor
 PARSERHELP_DESTRUCTOR_FROM_CLASS_POST
 de la clase
 PARSERHELP_METHOD_FROM_CLASS_PRE
-Metodo
+Método
 PARSERHELP_METHOD_FROM_CLASS_POST
 de la clase
 PARSERHELP_VISIBILITY_PUBLIC
@@ -622,6 +622,16 @@ MAINW_COMPILING_DOTS
 Compilando...
 MAINW_WARNING_NO_EXCUTABLE_PERMISSION
 El binario no tiene permisos de ejecución.
+COMPLEMENTS_CAPTION
+Instalación de Complementos
+COMPLEMENTS_DOWNLOAD
+&Descargar...
+COMPLEMENTS_INSTALL
+Instalar...
+COMPLEMENTS_WHATIS
+Los complementos consisten en packs de archivos adicionales\npara ZinjaI, que pueden incluir bibliotecas, documentación,\ntemas de íconos, plantillas de proyectos, indices para el \nautocompletado, etc.
+COMPLEMENTS_INSTRUCCIONS
+Para instalar un complemento debe descargarlo desde la\nsección de descargas del sitio de ZinjaI (haga click\nen el botón \"Descargar...\" para ir al sitio), presionar\n\"Instalar...\" y seleccionar el archivo descargado.\n
 CUSTOM_TOOLS_CAPTION
 Herramientas Personalizables
 CUSTOM_TOOLS_ITEM
@@ -1517,7 +1527,7 @@ Dibujar Diagrama de &Flujo...
 MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
 Dibujar &Jerarquia de Clases...
 MENUITEM_TOOLS_CODE_COPY_FROM_H
-Implementar Metodos/Funciones faltantes...\tCtrl+Shift+H
+Implementar Metodos/Funciones faltantes...
 MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
 &Alinear Comentarios...
 MENUITEM_TOOLS_COMMENTS_COMMENT
@@ -1648,6 +1658,8 @@ MENUITEM_TOOLS_CUSTOM_SETTINGS
 &Configurar...
 MENUITEM_TOOLS_CUSTOM_HELP
 A&yuda...
+MENUITEM_TOOLS_INSTALL_COMPLEMENTS
+Instalar Complementos...
 MENUITEM_TOOLS
 &Herramientas
 MENUITEM_HELP_ABOUT

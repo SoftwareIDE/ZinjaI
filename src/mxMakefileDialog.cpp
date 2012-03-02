@@ -45,7 +45,7 @@ mxMakefileDialog::mxMakefileDialog(wxWindow* parent, wxWindowID id, const wxPoin
 	split_values.Add(LANG(MAKEFILE_TYPE_OBJECTS,"Por partes: objetos"));
 	split_type = utils->AddComboBox(mySizer,this,LANG(MAKEFILE_TYPE,"Formato"),split_values,0);
 	
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancel"));
+	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(MAKEFILE_GENERATE,"Generar"));
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
 

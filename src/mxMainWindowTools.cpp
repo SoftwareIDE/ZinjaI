@@ -29,6 +29,7 @@
 #include "mxExeInfo.h"
 #include "mxColoursEditor.h"
 #include "mxListSharedWindow.h"
+#include "mxComplementInstallerWindow.h"
 
 /// @brief Lanza cppcheck sobre los fuentes del proyecto en una mxOutputWindow
 void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
@@ -1021,4 +1022,8 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		ret.RemoveLast();
 		src->ShowCallTip(src->PositionFromLine(l0?l0-1:0),ret,false);
 	}		
+}
+
+void mxMainWindow::OnToolsInstallComplements(wxCommandEvent &evt) {
+	new mxComplementInstallerWindow(this);
 }

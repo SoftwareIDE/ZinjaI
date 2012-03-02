@@ -228,11 +228,11 @@ class project_library;
 struct file_item { // para armar las listas (doblemente enlazadas) de archivos del proyecto
 	wxString name;
 	wxTreeItemId item;
-	file_item *prev;
-	break_line_item *breakpoints; ///< primer item de la lista de breakpoints del fuente (sin primer elemento ficticio)
-	marked_line_item *markers; ///< primer item de la lista de lineas resaltadas del fuente (sin primer elemento ficticio)
+	file_item *prev, *next; ///< para enlazar los nodos de la lista
+	break_line_item *breakpoints; ///< primer item de la lista de breakpoints del fuente (sin primer elemento ficticio, se asigna con GetSourceExtras)
+	marked_line_item *markers; ///< primer item de la lista de lineas resaltadas del fuente (sin primer elemento ficticio, se asigna con GetSourceExtras)
 	bool force_recompile; ///< indica se debe recompilar independientemente de la fecha de modificacion (por ejemplo, si lo va a modificar un paso adicional)
-	int cursor; ///< posicion del cursor en el texto
+	int cursor; ///< posicion del cursor en el texto (se asigna con GetSourceExtras)
 	project_library *lib; ///< a que biblioteca pertenece (no siempre es correcto, se rehace con analize_config)
 	
 	file_item (file_item *p, wxString &n, wxTreeItemId &i) {
@@ -275,7 +275,6 @@ struct file_item { // para armar las listas (doblemente enlazadas) de archivos d
 	~file_item() {
 		ClearExtras(true);
 	}
-	file_item *next;
 };
 
 enum ces_type{CNS_VOID,CNS_SOURCE,CNS_BARRIER,CNS_EXTRA,CNS_LINK,CNS_ICON};
@@ -384,8 +383,11 @@ public:
 	//! guarda todos los archivos del proyecto que esten abiertos
 	void SaveAll(bool save_project=true);
 	
+	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un mxSource a un file_item del proyecto
 	void GetSourceExtras(mxSource *source, file_item *item=NULL);
+	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un file_item del proyecto a un mxSource
 	void SetSourceExtras(mxSource *source, file_item *item=NULL);
+	/// Determina si el archivo item usa alguna de las macros de la lista macros
 	bool DependsOnMacro(file_item *item, wxArrayString &macros);
 	bool PrepareForBuilding(file_item *only_one=NULL);
 	long int CompileNext(compile_and_run_struct_single *compile_and_run, wxString &object_name);
@@ -413,6 +415,7 @@ public:
 	void Clean();
 	bool Debug();
 	wxString GetPath();
+	/// Carga todos los breakpoints del proyecto en gdb
 	int SetBreakpoints();
 	wxString GetExePath();
 	

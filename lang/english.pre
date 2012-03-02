@@ -624,6 +624,16 @@ MAINW_COMPILING_DOTS
 Compiling...
 MAINW_WARNING_NO_EXCUTABLE_PERMISSION
 Binary file doesn't have execute permission
+COMPLEMENTS_CAPTION
+Install Complements
+COMPLEMENTS_DOWNLOAD
+&Download...
+COMPLEMENTS_INSTALL
+&Install...
+COMPLEMENTS_WHATIS
+Complements are additional files packed for ZinjaI that\ncan include libraries, documentation, icon themes, project\ntemplates, autocompletion indexes, and more.
+COMPLEMENTS_INSTRUCCIONS
+In order to install a complement you must: 1) download the\ncomplement file from ZinjaI's web site (use "Download..."\nbutton to open the site); 2) click on "Install..." button;\n3) select the downloaded file.
 CUSTOM_TOOLS_CAPTION
 Custom Tools
 CUSTOM_TOOLS_ITEM
@@ -1650,6 +1660,8 @@ MENUITEM_TOOLS_CUSTOM_SETTINGS
 Settings...
 MENUITEM_TOOLS_CUSTOM_HELP
 Help...
+MENUITEM_TOOLS_INSTALL_COMPLEMENTS
+Install Complements...
 MENUITEM_TOOLS
 &Tools
 MENUITEM_HELP_ABOUT

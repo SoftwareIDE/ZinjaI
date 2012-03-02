@@ -45,7 +45,7 @@ mxShareSourceWindow::mxShareSourceWindow(mxSource *source, wxString name, wxWind
 	mySizer->Add(freeze_check,sizers->BA5_Exp0);
 
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
-	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancel"));
+	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(SHARESOURCE_SHARE_BUTTON,"Compartir"));
 	ok_button->SetDefault();
 	
