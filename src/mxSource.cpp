@@ -252,7 +252,13 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 	
 	SetDropTarget(new mxDropTarget(this));
 	UsePopUp(false);
-	SetBufferedDraw (false);
+#ifndef __WIN32__
+	// el default para BufferedDraw es true, pero por alguna razón en algun momento
+	// lo puse en false, tal vez por velocidad o problemas de refresco
+	// en gtk parece no cambiar nada, pero en windows genera un flickering molesto
+	// (para verlo solo basta pararse al comienzo de una linea con codigo y esperar)
+	SetBufferedDraw(false); 
+#endif
 //	SetTwoPhaseDraw (false);
 	SetMouseDwellTime(1500); // mis tooltips bizarros (con showbaloon = calltip)
 	
