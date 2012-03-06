@@ -89,7 +89,9 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 //			args<<" "<<utils->Split(project->active_configuration->macros,_T("-D"));
 //			if (config->Init.max_jobs>0) args<<" -j "<<config->Init.max_jobs;
 //		cerr<<"*"<<args<<"*\n";
-		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<<" --inline-suppr --template \'[{file}:{line}] ({severity},{id}) {message}\' --enable=all --file-list="<<utils->Quotize(list)<<args);
+		static wxString cppargs="--inline-suppr --enable=all"; /// @todo: reemplazar por un dialogo adhoc, y de paso evitar que agregen argumentos como --template, tal vez tambien linkar con un menu en el panel de resultado para agregar los --suppress
+		cppargs=wxGetTextFromUser("Argumentos adicionales para cppcheck: ","CppCheck",cppargs,this);
+		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \'[{file}:{line}] ({severity},{id}) {message}\' --file-list="<<utils->Quotize(list)<<args);
 		
 	}
 }
