@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE(mxComplementInstallerWindow, wxDialog)
 	EVT_CLOSE(mxComplementInstallerWindow::OnClose)
 END_EVENT_TABLE()
 
-mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDialog(parent,wxID_ANY,LANG(COMPLEMENTS_CAPTION,"Instalación de Complementos")) {
+mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDialog(parent,wxID_ANY,LANG(COMPLEMENTS_CAPTION,"Instalación de Complementos"),wxDefaultPosition,wxDefaultSize) {
 	
 	wxBoxSizer *iSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *tSizer = new wxBoxSizer(wxVERTICAL);
