@@ -33,8 +33,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.6103724"
-     inkscape:cx="1189.0086"
-     inkscape:cy="1835.436"
+     inkscape:cx="1135.9647"
+     inkscape:cy="-605.06573"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showguides="true"
@@ -9700,11 +9700,11 @@
     <image
        sodipodi:absref="/mnt/ex/zinjai/imgs/abrir.png"
        xlink:href="abrir.png"
-       y="323.35617"
-       x="73.929314"
-       id="image2222"
+       width="16"
        height="14"
-       width="16" />
+       id="image2222"
+       x="73.929314"
+       y="323.35617" />
     <g
        id="g15880"
        transform="matrix(1.7922095,0,0,1.7922095,1957.2655,219.96573)">
@@ -10544,14 +10544,14 @@
     <image
        sodipodi:absref="/mnt/ex/zinjai/imgs/buscar.png"
        xlink:href="buscar.png"
-       y="492.85358"
-       x="32.96143"
-       id="image3727"
-       height="11.071428"
-       width="11.535714"
-       inkscape:export-filename="/mnt/sh/zinjai/imgs/IrAMarca.png"
+       inkscape:export-ydpi="93.66082"
        inkscape:export-xdpi="93.66082"
-       inkscape:export-ydpi="93.66082" />
+       inkscape:export-filename="/mnt/sh/zinjai/imgs/IrAMarca.png"
+       width="11.535714"
+       height="11.071428"
+       id="image3727"
+       x="32.96143"
+       y="492.85358" />
     <g
        id="g5667"
        transform="matrix(1.9561793,0,0,1.9561793,-1374.3043,-1353.9819)">
@@ -11334,15 +11334,15 @@
         <image
            sodipodi:absref="/mnt/ex/zinjai/imgs/ejecutar.png"
            xlink:href="ejecutar.png"
-           transform="matrix(1.6881603,0,0,1.6881603,-94.98297,35.836553)"
-           inkscape:export-ydpi="88.25"
-           inkscape:export-xdpi="88.25"
-           inkscape:export-filename="/mnt/sh/zinjai/imgs/depurar.png"
-           width="15"
-           height="14"
-           id="image3581"
+           y="70.18618"
            x="126.72401"
-           y="70.18618" />
+           id="image3581"
+           height="14"
+           width="15"
+           inkscape:export-filename="/mnt/sh/zinjai/imgs/depurar.png"
+           inkscape:export-xdpi="88.25"
+           inkscape:export-ydpi="88.25"
+           transform="matrix(1.6881603,0,0,1.6881603,-94.98297,35.836553)" />
         <path
            sodipodi:nodetypes="csssssssc"
            id="path3500"
@@ -22854,28 +22854,32 @@
          y="1738.2092"
          x="1104.1796"
          sodipodi:role="line"
-         id="tspan3623">   mostrar panel - cppcheck_view.png</tspan><tspan
+         id="tspan3851">   configurar - cppcheck_config.pnh</tspan><tspan
          y="1788.2092"
          x="1104.1796"
          sodipodi:role="line"
-         id="tspan4012">implementar metodos faltantes - code_copy_from_h.png</tspan><tspan
+         id="tspan3623">   mostrar panel - cppcheck_view.png</tspan><tspan
          y="1838.2092"
          x="1104.1796"
          sodipodi:role="line"
-         id="tspan3770">Preprocesador - preproc.png</tspan><tspan
+         id="tspan4012">implementar metodos faltantes - code_copy_from_h.png</tspan><tspan
          y="1888.2092"
          x="1104.1796"
          sodipodi:role="line"
-         id="tspan3772">   marcar Lineas no Compiladas - preproc_mark_valid.png</tspan><tspan
+         id="tspan3770">Preprocesador - preproc.png</tspan><tspan
          y="1938.2092"
          x="1104.1796"
          sodipodi:role="line"
-         id="tspan3774">   borrar todas las marcas - preproc_unmark_all.png</tspan><tspan
+         id="tspan3772">   marcar Lineas no Compiladas - preproc_mark_valid.png</tspan><tspan
          y="1988.2092"
          x="1104.1796"
          sodipodi:role="line"
-         id="tspan3776">   expandir macros - preproc_expand_macros.png</tspan><tspan
+         id="tspan3774">   borrar todas las marcas - preproc_unmark_all.png</tspan><tspan
          y="2038.2092"
+         x="1104.1796"
+         sodipodi:role="line"
+         id="tspan3776">   expandir macros - preproc_expand_macros.png</tspan><tspan
+         y="2088.2092"
          x="1104.1796"
          sodipodi:role="line"
          id="tspan3625" /></text>
@@ -26252,7 +26256,7 @@
     <g
        id="g3998"
        inkscape:label="Layer 1"
-       transform="matrix(0.06132866,0,0,0.06132866,1031.9673,1685.6709)">
+       transform="matrix(0.06132866,0,0,0.06132866,1031.9673,1733.6709)">
       <path
          inkscape:export-ydpi="11"
          inkscape:export-xdpi="11"
@@ -26287,7 +26291,7 @@
            sodipodi:role="line">++</tspan></text>
     </g>
     <g
-       transform="matrix(0.839304,-0.2967202,0.2967202,0.839304,1003.304,1704.2993)"
+       transform="matrix(0.839304,-0.2967202,0.2967202,0.839304,1003.304,1752.2993)"
        id="g3701"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/valgrind_view.png"
        inkscape:export-xdpi="15.181717"
@@ -26336,7 +26340,7 @@
        width="36.547398"
        height="36.547398"
        x="1043.4362"
-       y="1706.026"
+       y="1754.026"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/16/cppcheck_view.png"
        inkscape:export-xdpi="39.400002"
        inkscape:export-ydpi="39.400002" />
@@ -26381,7 +26385,7 @@
        inkscape:export-ydpi="39.400002"
        inkscape:export-xdpi="39.400002"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/16/copy_code_from_h.png"
-       y="1760.026"
+       y="1808.026"
        x="1043.4362"
        height="36.547398"
        width="36.547398"
@@ -26392,7 +26396,7 @@
        xml:space="preserve"
        style="font-size:21.86640167px;font-style:normal;font-weight:normal;fill:#000080;fill-opacity:1;stroke:#000080;stroke-width:0.53600001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;font-family:Bitstream Vera Sans"
        x="964.18494"
-       y="1925.2487"
+       y="1977.2274"
        id="text6782-62"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/diff_source_file.png"
        inkscape:export-xdpi="39.65691"
@@ -26400,7 +26404,7 @@
          sodipodi:role="line"
          id="tspan6784-6"
          x="964.18494"
-         y="1925.2487"
+         y="1977.2274"
          style="fill:#000080;stroke:#000080;stroke-width:0.53600001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;font-family:Hobbit SF"
          dy="0 0 0 0 -0.50000036">{   }</tspan></text>
     <text
@@ -26408,13 +26412,13 @@
        inkscape:export-xdpi="109.15"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/unfoldAll.png"
        id="text8623-1"
-       y="1794.8943"
+       y="1842.8806"
        x="1060.0825"
        style="font-size:30.00574493px;font-style:normal;font-weight:normal;fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:1.34850526;stroke-miterlimit:4;stroke-dasharray:none;font-family:Bitstream Vera Sans"
        xml:space="preserve"
        transform="scale(0.99972007,1.00028)"><tspan
          style="fill:#ff0000;stroke:#000000;stroke-width:1.34850526;stroke-miterlimit:4;stroke-dasharray:none;font-family:Hobbit SF"
-         y="1794.8943"
+         y="1842.8806"
          x="1060.0825"
          id="tspan8625-8"
          sodipodi:role="line">+</tspan></text>
@@ -26423,13 +26427,13 @@
        inkscape:export-xdpi="39.65691"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/diff_source_file.png"
        id="text4520"
-       y="1920.3728"
+       y="1972.3516"
        x="964.18494"
        style="font-size:21.86640167px;font-style:normal;font-weight:normal;fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:0.53600001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;font-family:Bitstream Vera Sans"
        xml:space="preserve"
        transform="scale(1.0828924,0.92345279)"><tspan
          style="fill:#4d4d4d;stroke:#4d4d4d;stroke-width:0.53600001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;font-family:Hobbit SF"
-         y="1920.3728"
+         y="1972.3516"
          x="964.18494"
          id="tspan4522"
          sodipodi:role="line"> ...</tspan></text>
@@ -26745,7 +26749,7 @@
        width="36.547398"
        height="36.547398"
        x="1043.4362"
-       y="1812.026"
+       y="1860.026"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/preproc.png"
        inkscape:export-xdpi="78.800003"
        inkscape:export-ydpi="78.800003" />
@@ -26753,7 +26757,7 @@
        inkscape:export-ydpi="78.800003"
        inkscape:export-xdpi="78.800003"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/preproc_mark_valid.png"
-       y="1862.026"
+       y="1910.026"
        x="1043.4362"
        height="36.547398"
        width="36.547398"
@@ -26765,7 +26769,7 @@
        width="36.547398"
        height="36.547398"
        x="1043.4362"
-       y="1912.026"
+       y="1960.026"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/preproc_unmark_all.png"
        inkscape:export-xdpi="78.800003"
        inkscape:export-ydpi="78.800003" />
@@ -26773,14 +26777,14 @@
        inkscape:export-ydpi="78.801857"
        inkscape:export-xdpi="78.801857"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/preproc_expand_macros.png"
-       y="1962.026"
+       y="2010.026"
        x="1043.4362"
        height="36.547398"
        width="36.547398"
        id="rect3795"
        style="opacity:0.75;fill:none;stroke:none" />
     <g
-       transform="matrix(2.7159946,0,0,2.7159946,745.7443,832.13172)"
+       transform="matrix(2.7159946,0,0,2.7159946,745.7443,880.13172)"
        id="g4803">
       <path
          style="font-size:xx-small;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#008000;fill-opacity:1;stroke:#000000;stroke-width:0.2556003;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;font-family:Sans;-inkscape-font-specification:Sans"
@@ -26796,7 +26800,7 @@
     </g>
     <g
        id="g4816"
-       transform="translate(117.84131,183.23273)">
+       transform="translate(117.84131,231.23273)">
       <path
          inkscape:connector-curvature="0"
          inkscape:export-ydpi="39.721596"
@@ -26817,7 +26821,7 @@
     </g>
     <g
        id="g4828"
-       transform="matrix(2.7159946,0,0,2.7159946,745.7443,782.13175)">
+       transform="matrix(2.7159946,0,0,2.7159946,745.7443,830.13175)">
       <path
          inkscape:connector-curvature="0"
          id="path4830"
@@ -26834,7 +26838,7 @@
        inkscape:export-ydpi="63.896694"
        inkscape:export-xdpi="63.896694"
        inkscape:export-filename="/mnt/hda7/zinjai/imgs/limpiar.png"
-       transform="matrix(2.9050487,0,0,2.8620882,-302.6542,1101.3257)"
+       transform="matrix(2.9050487,0,0,2.8620882,-302.6542,1149.3257)"
        id="g2228-7">
       <path
          style="fill:none;stroke:#800000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -26856,7 +26860,7 @@
          inkscape:connector-curvature="0" />
     </g>
     <g
-       transform="matrix(2.7159946,0,0,2.7159946,746.36527,733.0269)"
+       transform="matrix(2.7159946,0,0,2.7159946,746.36527,781.0269)"
        id="g4834">
       <path
          style="font-size:xx-small;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#008000;fill-opacity:1;stroke:#000000;stroke-width:0.2556003;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;font-family:Sans;-inkscape-font-specification:Sans"
@@ -26872,7 +26876,7 @@
     </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:6.11658478;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 1046.1448,1883.2614 31.5959,-0.9383"
+       d="m 1046.1448,1931.2614 31.5959,-0.9383"
        id="path5018"
        inkscape:connector-curvature="0" />
     <rect
@@ -27222,7 +27226,7 @@
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <g
        id="g4840"
-       transform="matrix(3.1037725,0,0,3.1037725,703.2977,519.03223)">
+       transform="matrix(3.1037725,0,0,3.1037725,703.2977,567.03223)">
       <path
          inkscape:connector-curvature="0"
          id="path4842"
@@ -27265,5 +27269,61 @@
        width="36.547398"
        id="rect4823"
        style="opacity:0.75;fill:none;stroke:none" />
+    <rect
+       inkscape:export-ydpi="59.101292"
+       inkscape:export-xdpi="59.101292"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/24/cppcheck_config.png"
+       y="1705.5419"
+       x="1043.4362"
+       height="36.547398"
+       width="36.547398"
+       id="rect3853"
+       style="opacity:0.75;fill:none;stroke:none" />
+    <g
+       transform="matrix(0.06132866,0,0,0.06132866,1031.9673,1682.6709)"
+       inkscape:label="Layer 1"
+       id="g3855">
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#88aa00;fill-rule:evenodd;stroke:#000000;stroke-width:15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="M 281.32066,754.05345 375.15294,803.62872 568.98505,643.6798 669.42062,696.6271 381.01904,897.12934 213.62961,802.29906 281.32066,754.05345 z"
+         id="path3857"
+         sodipodi:nodetypes="ccccccc"
+         inkscape:export-xdpi="11"
+         inkscape:export-ydpi="11" />
+      <text
+         xml:space="preserve"
+         style="font-size:514.91314697px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#9797ff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Serif;-inkscape-font-specification:Serif Bold"
+         x="196.03725"
+         y="682.00787"
+         id="text3859"
+         transform="scale(0.9554481,1.0466293)"><tspan
+           sodipodi:role="line"
+           id="tspan3861"
+           x="196.03725"
+           y="682.00787"
+           style="fill:#9797ff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:15;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">c</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:263.74542236px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#9797ff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:15.00000095;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:AlMothnna;-inkscape-font-specification:AlMothnna Bold"
+         x="645.09247"
+         y="460.08163"
+         id="text3863"
+         transform="scale(0.7224756,1.3841297)"><tspan
+           sodipodi:role="line"
+           id="tspan3865"
+           x="645.09247"
+           y="460.08163"
+           style="fill:#9797ff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:15.00000095;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">++</tspan></text>
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       inkscape:export-ydpi="32.41"
+       inkscape:export-xdpi="32.41"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/wxfb_activate.png"
+       sodipodi:nodetypes="czsscc"
+       id="path8523-0-3-4-9-0"
+       d="m 1066.0132,1732.1856 c -10.5337,-9.8323 -10.3358,-2.3996 -5.4619,1.7668 4.6875,4.0072 3.3516,3.451 6.2136,3.8302 0.803,0.1063 2.3921,-0.3439 2.5879,-1.918 1.2769,-10.2666 9.2364,-17.9813 7.9372,-19.1103 -5.5849,-1.2606 -9.7694,9.3347 -11.2768,15.4313 z"
+       style="fill:#ffd800;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.98799998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
 </svg>

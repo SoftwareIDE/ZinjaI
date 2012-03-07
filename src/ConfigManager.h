@@ -309,6 +309,7 @@ struct cfgToolBars {
 		bool gprof_show_graph;
 		bool gprof_list_output;
 		bool cppcheck_run;
+		bool cppcheck_config;
 		bool cppcheck_view;
 #if !defined(__WIN32__)
 		bool valgrind_run;

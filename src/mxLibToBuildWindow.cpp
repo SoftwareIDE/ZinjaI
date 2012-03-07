@@ -48,8 +48,8 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 		
 	wxSizer *src_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *szsrc_buttons = new wxBoxSizer(wxVERTICAL);
-	szsrc_buttons->Add(new wxButton(this,mxID_LIBS_IN,">>>"),sizers->BA10_Exp0);
-	szsrc_buttons->Add(new wxButton(this,mxID_LIBS_OUT,"<<<"),sizers->BA10_Exp0);
+	szsrc_buttons->Add(new wxButton(this,mxID_LIBS_IN,">>>",wxDefaultPosition,wxSize(50,-1)),sizers->BA10_Exp0);
+	szsrc_buttons->Add(new wxButton(this,mxID_LIBS_OUT,"<<<",wxDefaultPosition,wxSize(50,-1)),sizers->BA10_Exp0);
 	wxSizer *szsrc_in = new wxBoxSizer(wxVERTICAL);
 	szsrc_in->Add(new wxStaticText(this,wxID_ANY,LANG(LIBTOBUILD_SOURCES_IN,"Fuentes a incluir")),sizers->Exp0);
 	sources_in = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);

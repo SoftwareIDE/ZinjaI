@@ -627,11 +627,35 @@ Instalación de Complementos
 COMPLEMENTS_DOWNLOAD
 &Descargar...
 COMPLEMENTS_INSTALL
-Instalar...
+&Instalar...
 COMPLEMENTS_WHATIS
 Los complementos consisten en packs de archivos adicionales\npara ZinjaI, que pueden incluir bibliotecas, documentación,\ntemas de íconos, plantillas de proyectos, indices para el \nautocompletado, etc.
 COMPLEMENTS_INSTRUCCIONS
-Para instalar un complemento debe descargarlo desde la\nsección de descargas del sitio de ZinjaI (haga click\nen el botón \"Descargar...\" para ir al sitio), presionar\n\"Instalar...\" y seleccionar el archivo descargado.\n
+Para instalar un complemento debe: 1) descargarlo desde la\nsección de descargas del sitio de ZinjaI (haga click\nen el botón \"Descargar...\" para ir al sitio); 2) presionar\n\"Instalar...\"; 3) seleccionar el archivo descargado.\n
+CPPCHECK_COPY_FROM_CONFIG
+Copy configuration (preprocessor macros) from compiling options
+CPPCHECK_CONFIG_D
+  Configurations to check
+CPPCHECK_CONFIG_U
+  Configurations to hide
+CPPCHECK_STYLE
+Additional checks
+CPPCHECK_PLATFORM
+Specific platforms
+CPPCHECK_STANDARD
+Standard related checks
+CPPCHECK_SUPPRESS_IDS
+Suppressions
+CPPCHECK_SUPPRESS_FILE
+Supressions list file
+CPPCHECK_INLINE_SUPPR
+Enable inline suppressions
+CPPCHECK_SAVE
+Save this setup in the project
+CPPCHECK_SOURCES_IN
+Files to analize
+CPPCHECK_SOURCES_OUT
+Files to exclude
 CUSTOM_TOOLS_CAPTION
 Herramientas Personalizables
 CUSTOM_TOOLS_ITEM
@@ -1622,6 +1646,8 @@ MENUITEM_TOOLS_WXFB
 Diseñar &Interfases (wxFormBuilder)
 MENUITEM_TOOLS_CPPCHECK_RUN
 Iniciar...
+MENUITEM_TOOLS_CPPCHECK_CONFIG
+Configurar...
 MENUITEM_TOOLS_CPPCHECK_VIEW
 Mostrar Panel de Resultados
 MENUITEM_TOOLS_CPPCHECK_HELP
@@ -1823,13 +1849,17 @@ Referencia wxWidgets...
 TOOLBAR_DESC_TOOLS_WXFB_REFERENCE
 Herramientas -> wxFormBuilder -> Referencia wxWidgets...
 TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN
-Comenzar Analisis Estatico
+Comenzar Analisis Estatico...
 TOOLBAR_DESC_TOOLS_CPPCHECK_RUN
-Herramientas -> Analisis Dimanico -> Ejecutar...
+Herramientas -> Analisis Estatico -> Iniciar...
+TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG
+Configurar Analisis Estatico...
+TOOLBAR_DESC_TOOLS_CPPCHECK_CONFIG
+Herramientas -> Analisis Estatico-> Configurar...
 TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW
 Mostrar Resultados del Analisis Estatico
 TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW
-Herramientas -> Analisis Dimanico -> Mostrar Panel de Resultados
+Herramientas -> Analisis Estatico -> Mostrar Panel de Resultados
 TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE
 Activar Perfilado de Ejecucion
 TOOLBAR_DESC_TOOLS_GPROF_ACTIVATE
@@ -1845,11 +1875,11 @@ Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)...
 TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN
 Ejecutar Para Analisis Dinamico
 TOOLBAR_DESC_TOOLS_VALGRIND_RUN
-Herramientas -> Analisis Dimanico -> Ejecutar...
+Herramientas -> Analisis Dinámico -> Ejecutar...
 TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW
 Mostrar Resultados del Analisis Dinamico
 TOOLBAR_DESC_TOOLS_VALGRIND_VIEW
-Herramientas -> Analisis Dimanico -> Mostrar Panel de Resultados
+Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados
 TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
 Herramienta Personalizada 
 CUSTOM_TOOLS_NOT_CONFIGURED
@@ -3104,10 +3134,10 @@ PROJECTGENERAL_DOXYGEN
  Opciones Doxygen... 
 PROJECTGENERAL_ACTIVATE_WXFORMBUILDER
 Activar integracion con wxFormBuilder
-PROJECTGENERAL_INDEXES
-Indices:
 PROJECTGENERAL_AUTOCOMPLETION
 Autocompletado
+PROJECTGENERAL_INDEXES
+Indices:
 PROJECTGENERAL_FILE_NOT_EXISTS
 El archivo no existe
 PROYSTATS_CAPTION

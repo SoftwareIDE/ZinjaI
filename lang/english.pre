@@ -634,6 +634,30 @@ COMPLEMENTS_WHATIS
 Complements are additional files packed for ZinjaI that\ncan include libraries, documentation, icon themes, project\ntemplates, autocompletion indexes, and more.
 COMPLEMENTS_INSTRUCCIONS
 In order to install a complement you must: 1) download the\ncomplement file from ZinjaI's web site (use "Download..."\nbutton to open the site); 2) click on "Install..." button;\n3) select the downloaded file.
+CPPCHECK_COPY_FROM_CONFIG
+Copy configuration (preprocessor macros) from compiling options
+CPPCHECK_CONFIG_D
+  Configurations to check
+CPPCHECK_CONFIG_U
+  Configurations to hide
+CPPCHECK_STYLE
+Additional checks
+CPPCHECK_PLATFORM
+Specific platforms
+CPPCHECK_STANDARD
+Standard related checks
+CPPCHECK_SUPPRESS_IDS
+Suppressions
+CPPCHECK_SUPPRESS_FILE
+Supressions list file
+CPPCHECK_INLINE_SUPPR
+Enable inline suppressions
+CPPCHECK_SAVE
+Save this setup in the project
+CPPCHECK_SOURCES_IN
+Files to analize
+CPPCHECK_SOURCES_OUT
+Files to exclude
 CUSTOM_TOOLS_CAPTION
 Custom Tools
 CUSTOM_TOOLS_ITEM
@@ -1624,6 +1648,8 @@ MENUITEM_TOOLS_WXFB
 GUI Designer (wxFormBuilder)
 MENUITEM_TOOLS_CPPCHECK_RUN
 Start...
+MENUITEM_TOOLS_CPPCHECK_CONFIG
+Configure...
 MENUITEM_TOOLS_CPPCHECK_VIEW
 Show Result's Panel
 MENUITEM_TOOLS_CPPCHECK_HELP
@@ -1828,6 +1854,10 @@ TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN
 Start Static Analysis
 TOOLBAR_DESC_TOOLS_CPPCHECK_RUN
 Tools -> Static Analysis -> Start...
+TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG
+Configure Static Analysis...
+TOOLBAR_DESC_TOOLS_CPPCHECK_CONFIG
+Tools -> Static Analysis -> Configure...
 TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW
 Show Static Analysis Result's Panels
 TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW
@@ -3106,10 +3136,10 @@ PROJECTGENERAL_DOXYGEN
  Doxygen's Settings...
 PROJECTGENERAL_ACTIVATE_WXFORMBUILDER
 Activate wxFormBuilder integration
-PROJECTGENERAL_INDEXES
-Indexes:
 PROJECTGENERAL_AUTOCOMPLETION
 Autocompletion
+PROJECTGENERAL_INDEXES
+Indexes:
 PROJECTGENERAL_FILE_NOT_EXISTS
 File does not exist
 PROYSTATS_CAPTION

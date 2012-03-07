@@ -432,6 +432,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("custom_tool_9",Toolbars.tools.custom[9]);
 #if !defined(__WIN32__)
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_run);
+				else CFG_BOOL_READ(Toolbars,tools.cppcheck_config);
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_view);
 				else CFG_BOOL_READ(Toolbars,tools.valgrind_run);
 				else CFG_BOOL_READ(Toolbars,tools.valgrind_view);
@@ -822,6 +823,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("custom_tool_8",Toolbars.tools.custom[8]);
 	CFG_BOOL_WRITE_DN("custom_tool_9",Toolbars.tools.custom[9]);
 	CFG_BOOL_WRITE(Toolbars,tools.cppcheck_run);
+	CFG_BOOL_WRITE(Toolbars,tools.cppcheck_config);
 	CFG_BOOL_WRITE(Toolbars,tools.cppcheck_view);
 #if !defined(__WIN32__)
 	CFG_BOOL_WRITE(Toolbars,tools.valgrind_run);
@@ -1206,6 +1208,7 @@ void ConfigManager::LoadToolBarsDefaults() {
 	Toolbars.tools.gprof_show_graph=false;
 	Toolbars.tools.gprof_list_output=false;
 	Toolbars.tools.cppcheck_run=false;
+	Toolbars.tools.cppcheck_config=false;
 	Toolbars.tools.cppcheck_view=false;
 #if !defined(__WIN32__)
 	Toolbars.tools.valgrind_run=false;

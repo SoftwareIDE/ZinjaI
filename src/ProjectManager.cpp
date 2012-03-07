@@ -53,6 +53,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	
 	project=this;
 	parser->CleanAll();
+	cppcheck=NULL;
 	doxygen=NULL;
 	auto_wxfb=true; use_wxfb=false;
 	version_required=0;
@@ -133,7 +134,11 @@ ProjectManager::ProjectManager(wxFileName name) {
 					extra_step = new compile_extra_step;
 					active_configuration->extra_steps=extra_step;
 				}
-			} else if (section==_T("doxygen") && !doxygen) { doxygen=new doxygen_configuration(project_name); }
+			} else if (section==_T("cppcheckk") && !cppcheck) { 
+				cppcheck=new cppcheck_configuration();
+			} else if (section==_T("doxygen") && !doxygen) { 
+				doxygen=new doxygen_configuration(project_name);
+			}
 		} else {
 			// separar clave y valor, y arreglar valor si es un path
 			key=str.BeforeFirst('=');
@@ -281,6 +286,17 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_BOOL_READ_DN("preprocess",doxygen->preprocess);
 				else CFG_BOOL_READ_DN("extra_static",doxygen->extra_static);
 				else CFG_BOOL_READ_DN("extra_private",doxygen->extra_private);
+			} else if (section==_T("cppcheck")) {
+				CFG_BOOL_READ_DN("copy_from_config",cppcheck->copy_from_config);
+				else CFG_GENERIC_READ_DN("config_d",cppcheck->config_d);
+				else CFG_GENERIC_READ_DN("config_u",cppcheck->config_u);
+				else CFG_GENERIC_READ_DN("style",cppcheck->style);
+				else CFG_GENERIC_READ_DN("platform",cppcheck->platform);
+				else CFG_GENERIC_READ_DN("standard",cppcheck->standard);
+				else CFG_GENERIC_READ_DN("supress_file",cppcheck->suppress_file);
+				else CFG_GENERIC_READ_DN("supress_ids",cppcheck->suppress_ids);
+				else CFG_GENERIC_READ_DN("exclude_list",cppcheck->exclude_list);
+				else CFG_BOOL_READ_DN("inline_suppr",cppcheck->inline_suppr);
 			} else if (section==_T("inspections")) {
 				if (key==_T("name")) {
 					if (value==_T("<current_inspections>"))
@@ -768,6 +784,20 @@ bool ProjectManager::Save () {
 		CFG_BOOL_WRITE_DN("html_searchengine",doxygen->html_searchengine);
 		CFG_BOOL_WRITE_DN("html_navtree",doxygen->html_navtree);
 		CFG_BOOL_WRITE_DN("latex",doxygen->latex);
+	}
+	
+	if (cppcheck && cppcheck->save_in_project) {
+		fil.AddLine(_T("[cppcheck]"));
+		CFG_BOOL_WRITE_DN("copy_from_config",cppcheck->copy_from_config);
+		CFG_GENERIC_WRITE_DN("config_d",cppcheck->config_d);
+		CFG_GENERIC_WRITE_DN("config_u",cppcheck->config_u);
+		CFG_GENERIC_WRITE_DN("style",cppcheck->style);
+		CFG_GENERIC_WRITE_DN("platform",cppcheck->platform);
+		CFG_GENERIC_WRITE_DN("standard",cppcheck->standard);
+		CFG_GENERIC_WRITE_DN("suppress_file",cppcheck->suppress_file);
+		CFG_GENERIC_WRITE_DN("suppress_ids",cppcheck->suppress_ids);
+		CFG_GENERIC_WRITE_DN("inline_suppr",cppcheck->inline_suppr);
+		CFG_GENERIC_WRITE_DN("exclude_list",cppcheck->exclude_list);
 	}
 	
 	// guardar inspecciones actuales y tablas guardadas

@@ -69,7 +69,7 @@ struct compile_extra_step {
 * 
 * Estructura que representa la información para configurar doxygen. El archivo Doxyfile se regenera
 * cada vez que hay que generar la documentación, a partir de esta estructura. Existe, cuanto mucho 
-* una instancia (para el proyecto en curso). Se referencia con el puntero doxygen_configuration de
+* una instancia (para el proyecto en curso). Se referencia con el puntero doxygen de
 * ProjectManager, que puede ser NULL si no se ha definido la configuarción Doxygen para dicho proyecto
 * Si el puntero es valido, y el atributo save es true, se graba en el archivo de proyecto
 **/
@@ -115,6 +115,35 @@ struct doxygen_configuration {
 	
 	static wxString get_tag_index();
 	
+};
+
+/** 
+* @brief Configuración para CppCheck de un proyecto
+* 
+* Estructura que representa la información para configurar cppcheck. Existe, cuanto mucho 
+* una instancia (para el proyecto en curso). Se referencia con el puntero cppcheck de
+* ProjectManager, que puede ser NULL si no se ha definido la configuarción Doxygen para dicho proyecto
+* Si el puntero es valido, y el atributo save es true, se graba en el archivo de proyecto
+**/
+struct cppcheck_configuration {
+	bool copy_from_config; ///< indica si las configuraciones (-D -U) se toman del campo de macros de active_configuration, o de config_d y config_u
+	wxString config_d; ///< macros a definir para el analisis (-D...)
+	wxString config_u; ///< macros a no definir para el analisis (-U...)
+	wxString style; ///< verificaciones adicionales (--enable=...)
+	wxString platform; ///< verificaciones especificas para una plataforma (--platform=...)
+	wxString standard; ///< verificaciones especificas para un standard (--std=...)
+	wxString suppress_file; ///< archivo con lista de supresiones (--suppressions-list=)
+	wxString suppress_ids; ///< lista de supresiones (--suppress=...)
+	bool inline_suppr; ///< activar supresiones inline (--inline-suppr)
+	wxString exclude_list; ///< lista de archivos del proyecto que no seran analizados
+	bool save_in_project; ///< indica si hay que guardar esta configuración en el archivo de proyecto
+	//! inicializa la configuración con los valores por defecto
+	cppcheck_configuration() {
+		copy_from_config=true;
+		style="all";
+		inline_suppr=true;
+		save_in_project=false;
+	}
 };
 
 
@@ -358,6 +387,7 @@ public:
 	bool generating_wxfb; ///< indica si la generacion o actualizacion esta en proceso
 	bool wxfb_ask; ///< indica si avisar cuando no encuentra el ejecutable del wxFormBuilder
 	wxArrayString wxfbHeaders;
+	cppcheck_configuration *cppcheck; ///< configuracion para ejecutar cppcheck, NULL si no esta definido en el proyecto
 	doxygen_configuration *doxygen; ///< configuracion para el Doxyfile, NULL si no esta definido en el proyecto
 	project_configuration *active_configuration; ///< puntero a la configuracion activa
 	project_configuration *configurations[100]; ///< arreglo de configuraciones, ver configurations_count

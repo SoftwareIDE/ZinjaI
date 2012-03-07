@@ -13,6 +13,7 @@
 #include "mxMessageDialog.h"
 #include "Language.h"
 #include "Autocoder.h"
+#include "mxMultipleChoiceEditor.h"
 
 BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(wxID_OK,mxProjectGeneralConfig::OnOkButton)
@@ -129,9 +130,6 @@ void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {
 	wxDir dir(config->Help.autocomp_dir);
 	if ( dir.IsOpened() ) {
 		wxArrayString autocomp_array;
-		wxArrayString splitted_array;
-		wxArrayInt selection;
-		utils->Split(project_autocomp->GetValue(),splitted_array);
 		wxString filename;
 		wxString spec;
 		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
@@ -139,25 +137,7 @@ void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {
 			autocomp_array.Add(filename);
 			cont = dir.GetNext(&filename);
 		}
-		autocomp_array.Sort();
-		for (unsigned int i=0;i<splitted_array.GetCount();i++) {
-			int p=autocomp_array.Index(splitted_array[i]);
-			if (p!=wxNOT_FOUND) selection.Add(p);
-		}
-		if (wxGetMultipleChoices(selection,LANG(PROJECTGENERAL_INDEXES,"Indices:"),LANG(PROJECTGENERAL_AUTOCOMPLETION,"Autocompletado"),autocomp_array,this)>=0) {
-			wxString res;
-			if (autocomp_array[selection[0]].Contains(wxChar(' '))) 
-				res=wxString(_T("\""))<<autocomp_array[selection[0]]<<_T("\"");
-			else
-				res=autocomp_array[selection[0]];
-			for (unsigned int i=1;i<selection.GetCount();i++) {
-				if (autocomp_array[selection[i]].Contains(wxChar(' '))) 
-					res<<_T(" \"")<<autocomp_array[selection[i]]<<_T("\"");
-				else
-					res<<_T(" ")<<autocomp_array[selection[i]];
-			}
-			project_autocomp->SetValue(res);
-		}
+		mxMultipleChoiceEditor(this,LANG(PROJECTGENERAL_AUTOCOMPLETION,"Autocompletado"),LANG(PROJECTGENERAL_INDEXES,"Indices:"),project_autocomp,autocomp_array);
 	}
 	
 }
