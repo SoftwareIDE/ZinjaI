@@ -20,6 +20,7 @@ END_EVENT_TABLE()
 
 mxDoxyDialog::mxDoxyDialog() : wxDialog(main_window, wxID_ANY, LANG(DOXYCONF_CAPTION,"Configuracion Doxygen"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
+	if (!project->doxygen) project->doxygen = new doxygen_configuration(project->project_name);
 	dox = project->doxygen;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
@@ -58,9 +59,6 @@ mxDoxyDialog::~mxDoxyDialog() {
 
 void mxDoxyDialog::OnOkButton(wxCommandEvent &evt) {
 	if (!project) { Close(); return; }
-	if (!project->doxygen) 
-		project->doxygen = new doxygen_configuration(project->project_name);
-	dox = project->doxygen;
 	dox->destdir = destdir_ctrl->GetValue();
 	dox->do_cpps = base_files_ctrl->GetSelection()==2 || base_files_ctrl->GetSelection()==3;
 	dox->do_headers = base_files_ctrl->GetSelection()==1 || base_files_ctrl->GetSelection()==3;
@@ -99,9 +97,9 @@ wxPanel *mxDoxyDialog::CreateGeneralPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
-	name_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_NAME,"Nombre del Proyecto"),dox?dox->name:project->project_name);
-	version_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_VER,"Version del proyecto"),dox?dox->version:_T(""));
-	destdir_ctrl = utils->AddDirCtrl(sizer,panel,LANG(DOXYCONF_DEST_DIR,"Directorio destino"),dox?dox->destdir:_T("docs"),mxID_DOXYDIALOG_DEST);
+	name_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_NAME,"Nombre del Proyecto"),dox->name);
+	version_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_VER,"Version del proyecto"),dox->version);
+	destdir_ctrl = utils->AddDirCtrl(sizer,panel,LANG(DOXYCONF_DEST_DIR,"Directorio destino"),dox->destdir,mxID_DOXYDIALOG_DEST);
 	
 	int idx;
 	wxArrayString array1;
@@ -118,10 +116,10 @@ wxPanel *mxDoxyDialog::CreateGeneralPanel (wxNotebook *notebook) {
 		idx = 3;
 	base_files_ctrl = utils->AddComboBox(sizer,panel,LANG(DOXYCONF_WICH_FILES,"Archivos a procesar"),array1,idx);
 	
-	extra_files_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_EXTRA_FILES,"Archivos adicionales a procesar"),dox?dox->extra_files:_T(""));
-	exclude_files_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_FILES_TO_EXCLUDE,"Archivos a excluir al procesar"),dox?dox->exclude_files:_T(""));
+	extra_files_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_EXTRA_FILES,"Archivos adicionales a procesar"),dox->extra_files);
+	exclude_files_ctrl = utils->AddTextCtrl(sizer,panel,LANG(DOXYCONF_FILES_TO_EXCLUDE,"Archivos a excluir al procesar"),dox->exclude_files);
 	
-	save_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_SAVE_WITH_PROJECT,"Guardar con el proyecto"),dox?dox->save:true);
+	save_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_SAVE_WITH_PROJECT,"Guardar con el proyecto"),dox->save);
 	
 	panel->SetSizer(sizer);
 	return panel;
@@ -133,7 +131,7 @@ wxPanel *mxDoxyDialog::CreateExtraPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
-	extra_conf = new wxTextCtrl(panel,wxID_ANY,dox?dox->extra_conf:_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
+	extra_conf = new wxTextCtrl(panel,wxID_ANY,dox->extra_conf,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
 	utils->AddStaticText(sizer,panel,LANG(DOXYCONF_EXTRA_LABEL,"El texto de este campo se agregara sin cambios en el\n"
 																 "Doxyfile. Puede utilizarlo para definir parametros\n"
 																 "no contemplados en este cuadro de dialogo."));
@@ -156,17 +154,17 @@ wxPanel *mxDoxyDialog::CreateMorePanel (wxNotebook *notebook) {
 	if (!dox || dox->lang==_T("Spanish")) idx = 0; else idx=1;
 	lang_ctrl = utils->AddComboBox(sizer,panel,LANG(DOXYCONF_LANG,"Idioma"),array2,idx);
 
-	base_path_ctrl = utils->AddDirCtrl(sizer,panel,LANG(DOXYCONF_BASE_DIR,"Directorio base"),dox?dox->base_path:_T(""),mxID_DOXYDIALOG_BASE);
+	base_path_ctrl = utils->AddDirCtrl(sizer,panel,LANG(DOXYCONF_BASE_DIR,"Directorio base"),dox->base_path,mxID_DOXYDIALOG_BASE);
 	
-	preprocess_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_ENABLE_PREPROC,"Habilitar preprocesado"),dox?dox->preprocess:false);
-	private_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_PRIVATE,"Incluir metodos/atributos privados"),dox?dox->extra_private:false);
-	static_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_STATIC,"Incluir funciones/variables static"),dox?dox->extra_static:false);
-	hideundocs_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_ONLY_DOC_ENTITIES,"Extraer solo las entidades documentadas"),dox?dox->hideundocs:false);
-	latex_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_LATEX,"Generar documentacion Latex"),dox?dox->latex:false);
-	html_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_HTML,"Generar documentacion HTML"),dox?dox->html:true);
-	html_navtree_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_SHOW_NAV_TREE,"Mostrar arbol de navegacion (para doc HTML)"),dox?dox->html_navtree:false);
-	html_searchengine_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_INCLUDE_SEARCH_ENGINE,"Incluir motor de busquedas (para doc HTML, requiere PHP)"),dox?dox->html_searchengine:false);
-	use_in_quickhelp_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_USE_IN_QUICKHELP,"Utilizar en ayuda rapida"),dox?dox->use_in_quickhelp:false);
+	preprocess_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_ENABLE_PREPROC,"Habilitar preprocesado"),dox->preprocess);
+	private_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_PRIVATE,"Incluir metodos/atributos privados"),dox->extra_private);
+	static_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_STATIC,"Incluir funciones/variables static"),dox->extra_static);
+	hideundocs_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_ONLY_DOC_ENTITIES,"Extraer solo las entidades documentadas"),dox->hideundocs);
+	latex_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_LATEX,"Generar documentacion Latex"),dox->latex);
+	html_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_HTML,"Generar documentacion HTML"),dox->html);
+	html_navtree_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_SHOW_NAV_TREE,"Mostrar arbol de navegacion (para doc HTML)"),dox->html_navtree);
+	html_searchengine_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_INCLUDE_SEARCH_ENGINE,"Incluir motor de busquedas (para doc HTML, requiere PHP)"),dox->html_searchengine);
+	use_in_quickhelp_ctrl = utils->AddCheckBox(sizer,panel,LANG(DOXYCONF_USE_IN_QUICKHELP,"Utilizar en ayuda rapida"),dox->use_in_quickhelp);
 	
 	panel->SetSizer(sizer);
 	return panel;

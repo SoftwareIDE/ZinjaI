@@ -30,12 +30,20 @@
 #include "mxColoursEditor.h"
 #include "mxListSharedWindow.h"
 #include "mxComplementInstallerWindow.h"
+#include "mxCppCheckConfigDialog.h"
+
+/// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
+void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
+	new mxCppCheckConfigDialog(this);
+}
 
 /// @brief Lanza cppcheck sobre los fuentes del proyecto en una mxOutputWindow
 void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	if (!config->CheckCppCheckPresent()) return;
 	if (project) {
 		ABORT_IF_PARSING;
+		
+		if (!project->cppcheck) project->cppcheck=new cppcheck_configuration;
 		
 		mxOutputView *cppcheck = new mxOutputView(_T("CppCheck"),"",DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")),'c');
 		project->SaveAll(false);
@@ -52,18 +60,19 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		}
 		flist.Close();
 		
+		wxString args; // -D..., -I...., -U....
+		// lo que sale de las opciones de compilacion
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
 		wxArrayString array;
-		wxString args;
 		utils->Split(project->compiling_options,array,false,true);
 		for (unsigned int i=0;i<array.GetCount();i++) {
-			if (array[i].StartsWith("-D")) {
+			if (project->cppcheck->copy_from_config && array[i].StartsWith("-D")) {
 				if (array[i].Len()==2) {
 					args<<" -D "<<array[++i];
 				} else {
 					args<<" -D "<<array[i].Mid(2);
 				}
-			} else if (array[i].StartsWith("\"-D")) {
+			} else if (project->cppcheck->copy_from_config && array[i].StartsWith("\"-D")) {
 				if (array[i]=="\"-D\"")
 					args<<" -D "<<array[++i];
 				else
@@ -82,16 +91,20 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 						args<<" -I \""<<array[++i].Mid(3);
 				}
 		}
+		// lo que se define project->cppcheck
+		if (!project->cppcheck->copy_from_config) {
+			args<<utils->Split(project->cppcheck->config_d,"-D")<<" "<<utils->Split(project->cppcheck->config_u,"-U");
+		}
 		
-//			args<<" "<<utils->Split(project->active_configuration->headers_dirs,_T("-I"));
-//			utils->ParameterReplace(args,_T("${MINGW_DIR}"),config->Files.mingw_dir);
-//			utils->ParameterReplace(args,_T("${TEMP_DIR}"),project->temp_folder_short);
-//			args<<" "<<utils->Split(project->active_configuration->macros,_T("-D"));
-//			if (config->Init.max_jobs>0) args<<" -j "<<config->Init.max_jobs;
-//		cerr<<"*"<<args<<"*\n";
-		static wxString cppargs="--inline-suppr --enable=all"; /// @todo: reemplazar por un dialogo adhoc, y de paso evitar que agregen argumentos como --template, tal vez tambien linkar con un menu en el panel de resultado para agregar los --suppress
-		cppargs=wxGetTextFromUser("Argumentos adicionales para cppcheck: ","CppCheck",cppargs,this);
-		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \'[{file}:{line}] ({severity},{id}) {message}\' --file-list="<<utils->Quotize(list)<<args);
+		static wxString cppargs;
+		cppargs<<utils->Split(project->cppcheck->style,"--enable=")<<" ";
+		cppargs<<utils->Split(project->cppcheck->platform,"--platform=")<<" ";
+		cppargs<<utils->Split(project->cppcheck->standard,"--std=")<<" ";
+		cppargs<<utils->Split(project->cppcheck->suppress_ids,"--suppress=")<<" ";
+		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list=\""<<project->cppcheck->suppress_file<<"\" ";
+		if (project->cppcheck->inline_suppr) cppargs<<"--inline-suppr ";
+		
+		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \'[{file}:{line}] ({severity},{id}) {message}\' "<<cppargs<<" "<<args<<" --file-list="<<utils->Quotize(list));
 		
 	}
 }
@@ -102,7 +115,7 @@ void mxMainWindow::OnToolsCppCheckView(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsCppCheckHelp(wxCommandEvent &event) {
-	SHOW_HELP(_T("cppcheck.html"));	
+	SHOW_HELP("cppcheck.html");	
 }
 
 void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {

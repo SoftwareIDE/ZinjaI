@@ -299,6 +299,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_ALIGN_COMMENTS, mxMainWindow::OnToolsAlignComments)
 	EVT_MENU(mxID_TOOLS_REMOVE_COMMENTS, mxMainWindow::OnToolsRemoveComments)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_RUN, mxMainWindow::OnToolsCppCheckRun)
+	EVT_MENU(mxID_TOOLS_CPPCHECK_CONFIG, mxMainWindow::OnToolsCppCheckConfig)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_VIEW, mxMainWindow::OnToolsCppCheckView)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_HELP, mxMainWindow::OnToolsCppCheckHelp)
 #if !defined(_WIN32) && !defined(__WIN32__)
@@ -1699,6 +1700,7 @@ void mxMainWindow::CreateMenus() {
 
 	wxMenu *cppcheck_menu = new wxMenu;
 	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_RUN, LANG(MENUITEM_TOOLS_CPPCHECK_RUN,"Iniciar..."),_T(""),_T(""),ipre+_T("cppcheck_run.png"));
+	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_CONFIG, LANG(MENUITEM_TOOLS_CPPCHECK_CONFIG,"Configurar..."),_T(""),_T(""),ipre+_T("cppcheck_config.png"));
 	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_VIEW, LANG(MENUITEM_TOOLS_CPPCHECK_VIEW,"Mostrar Panel de Resultados"),_T(""),_T(""),ipre+_T("cppcheck_view.png"));
 	cppcheck_menu->AppendSeparator();
 	utils->AddItemToMenu(cppcheck_menu,mxID_TOOLS_CPPCHECK_HELP, LANG(MENUITEM_TOOLS_CPPCHECK_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));
@@ -1830,14 +1832,15 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		if (config->Toolbars.tools.wxfb_inherit) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
 		if (config->Toolbars.tools.wxfb_update_inherit) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_UPDATE_INHERIT,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT,"Actualizar Clase Heredada..."),ipre+_T("wxfb_update_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_UPDATE_INHERIT,"Herramientas -> wxFormBuilder -> Actualizar Clase Heredada..."));
 		if (config->Toolbars.tools.wxfb_help_wx) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_HELP_WX,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
-		if (config->Toolbars.tools.cppcheck_run) utils->AddTool(toolbar_tools,mxID_TOOLS_CPPCHECK_RUN,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN,"Comenzar Analisis Estatico"),ipre+_T("cppcheck_run.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_RUN,"Herramientas -> Analisis Dimanico -> Ejecutar..."));
-		if (config->Toolbars.tools.cppcheck_view) utils->AddTool(toolbar_tools,mxID_TOOLS_CPPCHECK_VIEW,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW,"Mostrar Resultados del Analisis Estatico"),ipre+_T("cppcheck_view.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW,"Herramientas -> Analisis Dimanico -> Mostrar Panel de Resultados"));
+		if (config->Toolbars.tools.cppcheck_run) utils->AddTool(toolbar_tools,mxID_TOOLS_CPPCHECK_RUN,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN,"Comenzar Analisis Estatico..."),ipre+_T("cppcheck_run.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_RUN,"Herramientas -> Analisis Estatico -> Iniciar..."));
+		if (config->Toolbars.tools.cppcheck_config) utils->AddTool(toolbar_tools,mxID_TOOLS_CPPCHECK_CONFIG,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG,"Configurar Analisis Estatico..."),ipre+_T("cppcheck_config.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_CONFIG,"Herramientas -> Analisis Estatico-> Configurar..."));
+		if (config->Toolbars.tools.cppcheck_view) utils->AddTool(toolbar_tools,mxID_TOOLS_CPPCHECK_VIEW,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW,"Mostrar Resultados del Analisis Estatico"),ipre+_T("cppcheck_view.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW,"Herramientas -> Analisis Estatico -> Mostrar Panel de Resultados"));
 		if (config->Toolbars.tools.gprof_activate) utils->AddTool(toolbar_tools,mxID_TOOLS_GPROF_SET,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE,"Activar Perfilado de Ejecucion"),ipre+_T("comp_for_prog.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_ACTIVATE,"Herramientas -> Perfil de Ejecucion -> Activar"));
 		if (config->Toolbars.tools.gprof_show_graph) utils->AddTool(toolbar_tools,mxID_TOOLS_GPROF_SHOW,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_SHOW,"Graficar Resultados del Perfilado de Ejecucion"),ipre+_T("showgprof.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_SHOW,"Herramientas -> Perfil de Ejecucion -> Visualizar Resultados (grafo)..."));
 		if (config->Toolbars.tools.gprof_list_output) utils->AddTool(toolbar_tools,mxID_TOOLS_GPROF_LIST,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_LIST,"Listar Resultados del Perfilado de Ejecucion"),ipre+_T("listgprof.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_LIST,"Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)..."));
 #if !defined(__WIN32__)
-		if (config->Toolbars.tools.valgrind_run) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_RUN,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN,"Ejecutar Para Analisis Dinamico"),ipre+_T("valgrind_run.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_RUN,"Herramientas -> Analisis Dimanico -> Ejecutar..."));
-		if (config->Toolbars.tools.valgrind_view) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_VIEW,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW,"Mostrar Resultados del Analisis Dinamico"),ipre+_T("valgrind_view.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_VIEW,"Herramientas -> Analisis Dimanico -> Mostrar Panel de Resultados"));
+		if (config->Toolbars.tools.valgrind_run) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_RUN,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN,"Ejecutar Para Analisis Dinamico"),ipre+_T("valgrind_run.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_RUN,"Herramientas -> Analisis Dinámico -> Ejecutar..."));
+		if (config->Toolbars.tools.valgrind_view) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_VIEW,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW,"Mostrar Resultados del Analisis Dinamico"),ipre+_T("valgrind_view.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_VIEW,"Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados"));
 #endif
 		for (int i=0;i<10;i++) {
 			if (config->Toolbars.tools.custom[i]) {

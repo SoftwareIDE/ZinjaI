@@ -237,6 +237,7 @@ public:
 	void OnToolsGprofDot(wxCommandEvent &event);
 	void OnToolsGprofFdp(wxCommandEvent &event);
 	void OnToolsCppCheckRun(wxCommandEvent &event);
+	void OnToolsCppCheckConfig(wxCommandEvent &event);
 	void OnToolsCppCheckView(wxCommandEvent &event);
 	void OnToolsCppCheckHelp(wxCommandEvent &event);
 #if !defined(_WIN32) && !defined(__WIN32__)

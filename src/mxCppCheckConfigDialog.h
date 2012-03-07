@@ -1,0 +1,51 @@
+#ifndef MXCPPCHECKCONFIGDIALOG_H
+#define MXCPPCHECKCONFIGDIALOG_H
+#include <wx/dialog.h>
+
+class wxListBox;
+class wxPanel;
+class wxCheckBox;
+class wxTextCtrl;
+class wxNotebook;
+class cppcheck_configuration;
+
+class mxCppCheckConfigDialog : public wxDialog {
+private:
+	wxListBox *sources_in, *sources_out;
+	wxCheckBox *copy_from_config;
+	wxTextCtrl *config_d;
+	wxTextCtrl *config_u;
+	wxTextCtrl *style;
+	wxTextCtrl *platform;
+	wxTextCtrl *standard;
+	wxTextCtrl *suppress_file;
+	wxTextCtrl *suppress_ids;
+	wxCheckBox *inline_suppr;
+	wxCheckBox *save_in_project;
+	cppcheck_configuration *ccc;
+protected:
+public:
+	mxCppCheckConfigDialog(wxWindow *parent);
+	wxPanel *CreateGeneralPanel(wxNotebook *notebook);
+	wxPanel *CreateFilesPanel(wxNotebook *notebook);
+	
+	void OnCheckCopyConfig(wxCommandEvent &evt);
+	void OnButtonConfigD(wxCommandEvent &evt);
+	void OnButtonConfigU(wxCommandEvent &evt);
+	void OnButtonStyle(wxCommandEvent &evt);
+	void OnButtonPlatform(wxCommandEvent &evt);
+	void OnButtonStandard(wxCommandEvent &evt);
+	void OnButtonSuppressFile(wxCommandEvent &evt);
+	void OnButtonSuppressIds(wxCommandEvent &evt);
+	void OnButtonIncludeFile(wxCommandEvent &evt);
+	void OnButtonExcludeFile(wxCommandEvent &evt);
+	void OnButtonOk(wxCommandEvent &evt);
+	void OnButtonCancel(wxCommandEvent &evt);
+	void OnButtonHelp(wxCommandEvent &evt);
+	void OnClose(wxCloseEvent &evt);
+
+	DECLARE_EVENT_TABLE();
+};
+
+#endif
+

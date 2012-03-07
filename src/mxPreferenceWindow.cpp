@@ -1218,6 +1218,7 @@ void mxPreferenceWindow::OnToolbarsTools(wxCommandEvent &evt) {
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_SHOW,"Graficar Resultados del Perfilado de Ejecucion..."),_T("showgprof.png"),config->Toolbars.tools.gprof_show_graph);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_LIST,"Listar Resultados del Perfilado de Ejecucion"),_T("listgprof.png"),config->Toolbars.tools.gprof_list_output);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN,"Ejecutar Para Analisis Estatico"),_T("cppcheck_run.png"),config->Toolbars.tools.cppcheck_run);
+		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG,"Configurar Analisis Estatico"),_T("cppcheck_config.png"),config->Toolbars.tools.cppcheck_config);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW,"Mostrar Resultados del Analisis Dinamico"),_T("cppcheck_view.png"),config->Toolbars.tools.cppcheck_view);
 #if !defined(_WIN32) && !defined(__WIN32__)
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN,"Ejecutar Para Analisis Dinamico"),_T("valgrind_run.png"),config->Toolbars.tools.valgrind_run);
