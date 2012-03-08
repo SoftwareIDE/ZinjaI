@@ -34,7 +34,7 @@
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
 void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
-	new mxCppCheckConfigDialog(this);
+	if (project) new mxCppCheckConfigDialog(this);
 }
 
 /// @brief Lanza cppcheck sobre los fuentes del proyecto en una mxOutputWindow
@@ -103,7 +103,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		cppargs<<utils->Split(project->cppcheck->platform,"--platform=")<<" ";
 		cppargs<<utils->Split(project->cppcheck->standard,"--std=")<<" ";
 		cppargs<<utils->Split(project->cppcheck->suppress_ids,"--suppress=")<<" ";
-		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list=\""<<project->cppcheck->suppress_file<<"\" ";
+		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list="<<utils->Quotize(DIR_PLUS_FILE(project->path,project->cppcheck->suppress_file))<<" ";
 		if (project->cppcheck->inline_suppr) cppargs<<"--inline-suppr ";
 		
 		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \'[{file}:{line}] ({severity},{id}) {message}\' "<<cppargs<<" "<<args<<" --file-list="<<utils->Quotize(list));

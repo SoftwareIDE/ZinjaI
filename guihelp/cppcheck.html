@@ -1,0 +1,13 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Análisis Estático</B><BR><BR>
+&nbsp;&nbsp;&nbsp; El analisis estático en <I>ZinjaI</I> permite detectar varios errores. Este tipo de análisis se basa en inspeccionar el código fuente de un proyecto, sin necesidad de ejecutarlo ni compilarlo. <I>ZinjaI</I> en realidad no realiza este análisis, sino que delega la tarea a <I>CppCheck</I>, y luego muestra sus resultados en un panel especial organizados en categorías. Para instalar <I>CppCheck</I> puede utilizar el gestor de paquetes de su distribución (si utiliza <I>GNU/Linux</I>), o descargarlo desde <A href="http://cppcheck.sourceforge.net">cppcheck.sourceforge.net</A>. Esta herramienta permite detectar una gran variedad de errores, y genera además advertencias sobre construcciones que no son necesariamente erróneas, pero que podrían clarificarse (similares a los warnings de la compilación).<BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Para realizar el analisis estático de un programa, debe ejecutarlo utilizando el comando <I>Iniciar...</I> del submenú <I>Análisis Estático</I> del menú <I>Herramientas</I>. Se abrirá una nueva ventana en donde prodrá ir viendo la salida de CppCheck mientras este se ejecuta. Cuando el análisis se complete, esta ventana se cerrará y se acoplará en la ventana principal de <I>ZinjaI</I> un nuevo panel que presentará los resultados organizados en categorías. Si cierra este panel, para visualizarlo nuevamente sin ejecutar otra vez el análisis utilice la opción <I>Mostrar Panel de Resultados</I> del submenú <I>Análisis Estáticos</I> del menú <I>Herramientas</I>.<BR>
+<BR>
+<CENTER><IMG src="cppcheck.png"></CENTER><BR>
+<BR>
+&nbsp;&nbsp;&nbsp; Puede configurar el tipo de análisis y omitir selectivamente algunos errores o fuentes completos utilizando el cuadro de <A href="cppcheck_config.html">Configuración del Análisis Estático</A>.<BR>
+<BR>
+<BR>
+</BODY></HTML>

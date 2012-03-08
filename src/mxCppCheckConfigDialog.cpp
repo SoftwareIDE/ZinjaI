@@ -62,7 +62,7 @@ mxCppCheckConfigDialog::mxCppCheckConfigDialog(wxWindow *parent) : wxDialog(pare
 	SetSizerAndFit(mySizer);
 	
 	SetFocus();
-	ShowModal();
+	Show();
 	
 }
 
@@ -176,7 +176,9 @@ void mxCppCheckConfigDialog::OnButtonStandard (wxCommandEvent & evt) {
 }
 
 void mxCppCheckConfigDialog::OnButtonSuppressFile (wxCommandEvent & evt) {
-	
+	wxFileDialog dlg(this,_T("Ubicacion del ejecutable:"),DIR_PLUS_FILE(project->path,suppress_file->GetValue()));
+	if (wxID_OK==dlg.ShowModal())
+		suppress_file->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 void mxCppCheckConfigDialog::OnButtonSuppressIds (wxCommandEvent & evt) {
@@ -208,6 +210,7 @@ void mxCppCheckConfigDialog::OnClose (wxCloseEvent & evt) {
 }
 
 void mxCppCheckConfigDialog::OnButtonOk (wxCommandEvent & evt) {
+	if (!project) return;
 	ccc->exclude_list.Clear();
 	for (unsigned int i=0;i<sources_out->GetCount();i++)
 		ccc->exclude_list<<utils->Quotize(sources_out->GetString(i))<<" ";

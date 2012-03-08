@@ -67,6 +67,7 @@
 		0 inspection_matrix.html Diálogo Matriz de Inspecciones
 		0 breaks_list.html Diálogo Lista de Break/Watch points
 		0 break_options.html Diálogo Propiedades del Breakpoint
+		0 cppcheck_config.html Diálogo de Configuración del Análisis Estático
 	0 caracteristicas.html Special Features
 		0 writing_help.html Ayudas en la Escritura
 			0 smart_indent.html Edicion Inteligente
@@ -100,6 +101,7 @@
 			0 doxygen.html Generación de Documentación (doxygen)
 			0 gprof.html Perfiles de Ejecución (gprof)
 			0 valgrind.html Análisis Dinámico (Valgrind)
+			0 cppcheck.html Análisis Estático (CppCheck)
 			0 wxformbuilder.html Diseño Rápido de Interfases (wxFormBuilder)
 	0 debug.html Debugging
 		0 debug_info.html Informacion de Depuracion
