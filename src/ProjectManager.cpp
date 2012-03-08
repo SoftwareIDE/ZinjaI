@@ -294,8 +294,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_GENERIC_READ_DN("style",cppcheck->style);
 				else CFG_GENERIC_READ_DN("platform",cppcheck->platform);
 				else CFG_GENERIC_READ_DN("standard",cppcheck->standard);
-				else CFG_GENERIC_READ_DN("supress_file",cppcheck->suppress_file);
-				else CFG_GENERIC_READ_DN("supress_ids",cppcheck->suppress_ids);
+				else CFG_GENERIC_READ_DN("suppress_file",cppcheck->suppress_file);
+				else CFG_GENERIC_READ_DN("suppress_ids",cppcheck->suppress_ids);
 				else CFG_GENERIC_READ_DN("exclude_list",cppcheck->exclude_list);
 				else CFG_BOOL_READ_DN("inline_suppr",cppcheck->inline_suppr);
 			} else if (section==_T("inspections")) {

@@ -95,7 +95,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		}
 		// lo que se define project->cppcheck
 		if (!project->cppcheck->copy_from_config) {
-			args<<utils->Split(project->cppcheck->config_d,"-D")<<" "<<utils->Split(project->cppcheck->config_u,"-U");
+			args<<" "<<utils->Split(project->cppcheck->config_d,"-D")<<" "<<utils->Split(project->cppcheck->config_u,"-U");
 		}
 		
 		static wxString cppargs;
