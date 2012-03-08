@@ -28,7 +28,7 @@ BEGIN_EVENT_TABLE(mxCppCheckConfigDialog,wxDialog)
 	EVT_BUTTON(mxID_CPPCHECK_EXCLUDE_FILE,mxCppCheckConfigDialog::OnButtonExcludeFile)
 	EVT_BUTTON(wxID_OK,mxCppCheckConfigDialog::OnButtonOk)
 	EVT_BUTTON(wxID_CANCEL,mxCppCheckConfigDialog::OnButtonCancel)
-	EVT_BUTTON(mxID_HELP,mxCppCheckConfigDialog::OnButtonHelp)
+	EVT_BUTTON(mxID_HELP_BUTTON,mxCppCheckConfigDialog::OnButtonHelp)
 	EVT_CLOSE(mxCppCheckConfigDialog::OnClose)
 END_EVENT_TABLE()
 
