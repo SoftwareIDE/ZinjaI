@@ -134,8 +134,9 @@ ProjectManager::ProjectManager(wxFileName name) {
 					extra_step = new compile_extra_step;
 					active_configuration->extra_steps=extra_step;
 				}
-			} else if (section==_T("cppcheckk") && !cppcheck) { 
+			} else if (section==_T("cppcheck") && !cppcheck) { 
 				cppcheck=new cppcheck_configuration();
+				cppcheck->save_in_project=true;
 			} else if (section==_T("doxygen") && !doxygen) { 
 				doxygen=new doxygen_configuration(project_name);
 			}

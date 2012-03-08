@@ -54,7 +54,7 @@ mxCppCheckConfigDialog::mxCppCheckConfigDialog(wxWindow *parent) : wxDialog(pare
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
 	notebook->AddPage(CreateGeneralPanel(notebook), "General");
-//	notebook->AddPage(CreateFilesPanel(notebook), "Files");
+	notebook->AddPage(CreateFilesPanel(notebook), "Files");
 	
 	mySizer->Add(notebook,sizers->Exp1);
 	mySizer->Add(bottomSizer,sizers->Exp0);
@@ -72,7 +72,7 @@ wxPanel *mxCppCheckConfigDialog::CreateGeneralPanel(wxNotebook *notebook) {
 	
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	
-	copy_from_config = utils->AddCheckBox(mySizer,panel,LANG(CPPCHECK_COPY_FROM_CONFIG,"Copiar configuración (macros definidas) de las opciones del proyecto"),true,ccc->copy_from_config);
+	copy_from_config = utils->AddCheckBox(mySizer,panel,LANG(CPPCHECK_COPY_FROM_CONFIG,"Copiar configuración (macros definidas) de las opciones del proyecto"),ccc->copy_from_config,mxID_CPPCHECK_COPYCONFIG);
 	config_d = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_D,"  Configuraciones a verificar"),ccc->config_d,mxID_CPPCHECK_CONFIG_D,"...",false);
 	config_u = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_U,"  Configuraciones a saltear"),ccc->config_u,mxID_CPPCHECK_CONFIG_U,"...",false);
 	
@@ -115,8 +115,15 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	src_sizer->Add(szsrc_buttons,sizers->Center);
 	src_sizer->Add(szsrc_in,sizers->Exp1);
 	
+	wxArrayString array;
+	utils->Split(ccc->exclude_list,array,true,false);
 	file_item *fi=project->first_source;
-	ML_ITERATE(fi) { sources_in->Append(fi->name); }
+	ML_ITERATE(fi) {
+		if (array.Index(fi->name)==wxNOT_FOUND)
+			sources_in->Append(fi->name);
+		else 
+			sources_out->Append(fi->name);
+	}
 	
 	panel->SetSizer(src_sizer);
 	return panel;
@@ -193,7 +200,7 @@ void mxCppCheckConfigDialog::OnButtonExcludeFile (wxCommandEvent & evt) {
 			sources_out->Append(sources_in->GetString(i));
 			sources_out->Select(sources_out->FindString(sources_in->GetString(i)));
 			sources_in->Delete(i);
-		}	
+		}
 }
 
 void mxCppCheckConfigDialog::OnClose (wxCloseEvent & evt) {
@@ -201,7 +208,9 @@ void mxCppCheckConfigDialog::OnClose (wxCloseEvent & evt) {
 }
 
 void mxCppCheckConfigDialog::OnButtonOk (wxCommandEvent & evt) {
-//	wxListBox *sources_in, *sources_out;
+	ccc->exclude_list.Clear();
+	for (unsigned int i=0;i<sources_out->GetCount();i++)
+		ccc->exclude_list<<utils->Quotize(sources_out->GetString(i))<<" ";
 	ccc->copy_from_config=copy_from_config->GetValue();
 	ccc->config_d=config_d->GetValue();
 	ccc->config_u=config_u->GetValue();

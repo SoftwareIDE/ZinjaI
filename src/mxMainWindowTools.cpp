@@ -48,15 +48,17 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		mxOutputView *cppcheck = new mxOutputView(_T("CppCheck"),"",DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")),'c');
 		project->SaveAll(false);
 		
-		wxArrayString files;
-//			project->GetFileList(files,'h',false);
-		project->GetFileList(files,'s',false);
+		wxArrayString files,exclude_list;
+		utils->Split(project->cppcheck->exclude_list,exclude_list,true,false);
+		project->GetFileList(files,'s',true);
 		wxString list(DIR_PLUS_FILE(config->temp_dir,"cppcheck.lst"));
 		wxFile flist(list,wxFile::write);
 		char el='\n';
 		for (unsigned int i=0;i<files.GetCount();i++) {
-			flist.Write(utils->Quotize(files[i]));
-			flist.Write((void*)&el,1);
+			if (exclude_list.Index(files[i])==wxNOT_FOUND) {
+				flist.Write(utils->Quotize(DIR_PLUS_FILE(project->path,files[i])));
+				flist.Write((void*)&el,1);
+			}
 		}
 		flist.Close();
 		

@@ -7,7 +7,7 @@ class wxScrolledWindow;
 class wxCheckBox;
 class wxToolBar;
 
-#define MAX_TOOLBAR_BUTTONS 50
+#define MAX_TOOLBAR_BUTTONS 100
 
 class mxToolbarEditor : public wxDialog {
 private:
