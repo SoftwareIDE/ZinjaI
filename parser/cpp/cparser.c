@@ -5302,6 +5302,9 @@ extern void skip_expression( void )
             return;
          }
          break;
+		case 0: // eof
+			niveau--;
+			return;
       }
       step( 1 );
    }
