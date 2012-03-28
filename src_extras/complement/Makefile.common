@@ -1,0 +1,14 @@
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/mxInfoWindow.o ${OBJS_DIR}/ComplementArchive.o ${OBJS_DIR}/mxCreateComplementWindow.o 
+
+${OBJS_DIR}/Application.o: Application.cpp Application.h mxInfoWindow.h ComplementArchive.h mxCreateComplementWindow.h
+	${GPP} ${FLAGS} -c Application.cpp -o $@
+
+${OBJS_DIR}/mxInfoWindow.o: mxInfoWindow.cpp mxInfoWindow.h ComplementArchive.h Application.h
+	${GPP} ${FLAGS} -c mxInfoWindow.cpp -o $@
+
+${OBJS_DIR}/ComplementArchive.o: ComplementArchive.cpp ComplementArchive.h Application.h
+	${GPP} ${FLAGS} -c ComplementArchive.cpp -o $@
+
+${OBJS_DIR}/mxCreateComplementWindow.o: mxCreateComplementWindow.cpp mxCreateComplementWindow.h ComplementArchive.h Application.h
+	${GPP} ${FLAGS} -c mxCreateComplementWindow.cpp -o $@
+

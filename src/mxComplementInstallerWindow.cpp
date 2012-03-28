@@ -7,6 +7,13 @@
 #include "mxSizers.h"
 #include "mxHelpWindow.h"
 #include "ConfigManager.h"
+#include "mxMessageDialog.h"
+#include <wx/file.h>
+#include <cstdio>
+#include <fstream>
+#include <cstring>
+#include <iostream>
+using namespace std;
 
 BEGIN_EVENT_TABLE(mxComplementInstallerWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxComplementInstallerWindow::OnOkButton)
@@ -48,7 +55,6 @@ mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDia
 		"\"Instalar...\"; 3) seleccionar el archivo descargado.\n"
 		));
 	
-	
 	iSizer->Add(new wxStaticBitmap(this,wxID_ANY, wxBitmap(SKIN_FILE(_T("upgrade.png")), wxBITMAP_TYPE_PNG)),sizers->BA10);
 	iSizer->Add(tSizer,sizers->Exp1);
 	mySizer->Add(iSizer,sizers->Exp1);
@@ -64,6 +70,13 @@ mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDia
 }
 
 void mxComplementInstallerWindow::OnOkButton (wxCommandEvent & evt) {
+	
+	wxFileDialog dlg (this, LANG(COMPLEMENTS_CAPTION,"Instalación de Complementos"), config->Files.last_dir, _T(" "), _T("Complement files (zip)|*.zip;*.ZIP|Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (dlg.ShowModal() == wxID_OK) {
+		wxFileName fname=dlg.GetPath();
+		config->Files.last_dir=fname.GetPath();
+		Install(dlg.GetPath());
+	}
 	Hide();
 	Destroy();
 }
@@ -85,5 +98,80 @@ void mxComplementInstallerWindow::OnCancelButton (wxCommandEvent & evt) {
 
 void mxComplementInstallerWindow::OnClose (wxCloseEvent & evt) {
 	Destroy();
+}
+
+void mxComplementInstallerWindow::Install(wxString fname) {
+	bool writable=true;
+	wxString wtestf=DIR_PLUS_FILE(config->zinjai_dir,"complement.tmp");
+	if (wxFileName::FileExists(wtestf)) {
+		remove(wtestf.c_str());
+		if (wxFileName::FileExists(wtestf)) writable=false;
+	}
+	if (writable) {
+		ofstream of(wtestf.c_str(),ios::trunc);
+		of<<"temporary file for testing writability"<<endl;
+		of.close();
+		if (!wxFileName::FileExists(wtestf)) writable=false;
+	}
+	wxRemoveFile(wtestf);
+	
+	wxString caller,installer=
+#ifdef __WIN32__
+			"complement.exe"
+#else
+			"complement.bin"
+#endif
+		;
+	
+	if (!writable) {
+		if (mxMessageDialog(this,LANG(COMPLEMENTS_SUDO_WARNING,"ZinjaI está instalado en un directorio para el cual su usuario no\n"
+							 "tiene permisos de escritura. Se le solicitará confirmación y/o contraseña\n"
+							 "de root/administrador para continuar con la instalación. ¿Continuar?"),
+							 LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_INFO).ShowModal()==mxMD_NO)
+			return;
+#ifdef __WIN32__
+		caller = DIR_PLUS_FILE(config->zinjai_dir,"complement_wrap.exe");
+#else
+		wxString gksu = utils->GetOutput("gksu --version",true);
+		if (gksu.Contains("--message"))
+			caller = "gksu";
+		else {
+			caller<<config->Files.terminal_command;
+			caller.Replace("${TITLE}",LANG(COMPLEMENTS_CAPTION,"Instalacion de Complementos"));
+			caller<<" "<<utils->Quotize(DIR_PLUS_FILE(config->zinjai_dir,"complement_wrap.bin"));
+		}
+#endif
+	}
+	
+	wxCopyFile(DIR_PLUS_FILE(config->zinjai_dir,installer),DIR_PLUS_FILE(config->temp_dir,installer),true);
+	wxString command = utils->Quotize(DIR_PLUS_FILE(config->temp_dir,installer))+" --lang="+config->Init.language_file+" "+utils->Quotize(DIR_PLUS_FILE(config->zinjai_dir,""))+" "+utils->Quotize(fname);
+#ifdef __WIN32__
+	if (!writable) {
+		char *cmd=new char[command.Len()+1];
+		char *ccaller=new char[caller.Len()+1];
+		strcpy(cmd,command.c_str());
+		strcpy(ccaller,caller.c_str());
+			
+		SHELLEXECUTEINFO sinfo;
+		memset(&sinfo, 0, sizeof(SHELLEXECUTEINFO));
+		sinfo.cbSize       = sizeof(SHELLEXECUTEINFO);
+		sinfo.fMask        = 0;
+		sinfo.hwnd         = NULL;
+		sinfo.lpFile       = ccaller;
+		sinfo.lpParameters = cmd;
+		sinfo.lpVerb       = "runas"; // <<-- this is what makes a UAC prompt show up
+		sinfo.nShow        = SW_NORMAL;
+		// The only way to get a UAC prompt to show up
+		// is by calling ShellExecuteEx() with the correct
+		// SHELLEXECUTEINFO struct.  Non privlidged applications
+		// cannot open/start a UAC prompt by simply spawning
+		// a process that has the correct XML manifest.
+		BOOL result = ShellExecuteEx(&sinfo);
+		
+	} else
+#endif
+	cerr<<endl<<(caller.Len()?caller+" "+utils->EscapeString(command,true):command)<<endl;
+	cin.get();
+	wxExecute(caller.Len()?caller+" "+utils->EscapeString(command,true):command);
 }
 

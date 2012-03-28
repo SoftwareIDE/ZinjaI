@@ -103,6 +103,8 @@ public:
 	//! Agrega comillas si la cadena tiene un espacio, sino no
 	wxString Quotize(const wxString &what);
 	
+	wxString EscapeString(wxString str, bool add_comillas=false);
+	
 	//! Elimina los elementos repetidos de un wxArrayString
 	void Purgue(wxArrayString &array, bool sort=true);
 	

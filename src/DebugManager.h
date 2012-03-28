@@ -150,7 +150,7 @@ private:
 	wxString SendCommand(wxString command);
 	wxString SendCommand(wxString cmd1,wxString cmd2);
 	wxString SendCommand(wxString command, int i);
-	wxString EscapeString(wxString str, bool add_comillas=false);
+//	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
 	wxString RewriteExpressionForBreaking(wxString expr);
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
 public:

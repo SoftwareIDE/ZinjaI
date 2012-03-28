@@ -4,9 +4,11 @@ WINDRES=wine "${MINGW_DIR}"/bin/windres
 FLAGS=-O2 -s -static-libgcc -static-libstdc++
 
 all: ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/viewerw.exe ../graphviz/draw.exe ../graphviz/viewer.exe
+	make -f Makefile.wine -C complement
 
 clean:
 	rm -f ../release.w32/xmlres.o ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/viewer.exe ../graphviz/viewerw.exe ../graphviz/draw.exe
+	make -f Makefile.wine -C complement clean
 
 ../release.w32:
 	mkdir ../release.w32

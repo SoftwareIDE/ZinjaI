@@ -1,9 +1,12 @@
 GPP=i686-apple-darwin8-g++
 
 all: ../updatem.bin ../runner.bin ../mac-terminal-wrapper.bin
+	make -f Makefile.m32 -C complement
 
 clean:
 	rm -f ../updatem.bin ../runner.bin ../mac-terminal-wrapper.bin
+	make -f Makefile.m32 -C complement clean
+
 
 ../runner.bin: runner.cpp
 	${GPP} -O2 runner.cpp -o $@

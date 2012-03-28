@@ -4,9 +4,11 @@ WINDRES=windres
 FLAGS=-static-libgcc -O2 -s -static-libstdc++
 
 all: ..\updatem.exe ..\runner.exe ..\shellexecute.exe ..\lsdeps.exe ..\graphviz\viewerw.exe ..\graphviz\draw.exe ..\graphviz\viewer.exe
+	mingw32-make -f Makefile.w32 -C complement
 
 clean:
 	del ..\release.w32\xmlres.o ..\updatem.exe ..\runner.exe ..\shellexecute.exe ..\lsdeps.exe ..\graphviz\viewer.exe ..\graphviz\viewerw.exe ..\graphviz\draw.exe
+	mingw32-make -f Makefile.w32 -C complement clean
 
 ..\release.w32:
 	mkdir ..\release.w32

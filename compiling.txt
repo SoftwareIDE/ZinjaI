@@ -4,14 +4,20 @@ Building Zinjai
  For building ZinjaI you will need g++ and wxWidgets 2.8 or higher compiled in ANSI mode. Note that
  most common GNU/Linux distribution offer the UNICODE version in their repositories, so you may  
  have to compile it manually from source code. Just use follow regular steps (./configure; make; sudo 
- make install) adding --enable-ansi --disable-unicode arguments when  running configure and also run 
- make and sudo make install in contrib/src/stc for building its Scintilla extension. ZinjaI's Windows
- installer includes a suitable wxWidgets version, so you won't need anything else.
+ make install) adding --enable-ansi --disable-unicode arguments when running configure. If you're 
+ compiling wxWidgets 2.8 you should also run make and sudo make install in contrib/src/stc, if you're 
+ compiling 2.9 version you should add --enable-scintilla, for building its Scintilla extension. 
+ ZinjaI's Windows installer includes a suitable wxWidgets version, so you won't need anything else.
 
- You can use Makefiles in directories src, src_extra and parser to build ZinjaI's executable files. 
- src contains the GUI and most important part, parser contains the parser that the GUI uses to build
- sysmbols tree and src_extra contains some other tools and wrappers, some of them essential for the
- GUI to run your programs. The available makefiles in each of this directories are:
+ You can use Makefiles in directories src, src_extra and parser to build ZinjaI's executable files, 
+ or a global Makefile in zinjai directory that compiles everything. The latter is easier one.
+ Run "make linux-clean" and "make linux" for deleting the downloaded binaries and compiling new ones 
+ in GNU/Linux. On Windows systems replace make with mingw32-make and linux with win32.
+ 
+ If you want to compile only one module, src contains the GUI and most important part, parser contains
+ the parser that the GUI uses to build sysmbols tree and src_extra contains some other tools and 
+ wrappers, some of them essential for the  GUI to run your programs. The available makefiles in each 
+ of this directories are:
     Makefile.lnx: for building GNU/Linux version with gcc
     Makefile.w32: for building Windows version with MinGW
     Makefile.mac: for building MacOS version

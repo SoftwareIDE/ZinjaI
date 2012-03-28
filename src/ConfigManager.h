@@ -135,7 +135,7 @@ struct cfgInit {
 	wxString forced_compiler_options; ///< opciones que se anteponene a cualquier compilacion
 	wxString forced_linker_options; ///< opciones que se anteponene a cualquier enlazado (para poder poner -static-libgcc y evitar el dll)
 	int max_errors; ///< numero maximo de items el las ramas del arbol de resultados de la compilacion
-	wxString language_file; ///< archivo de internacionalizacion a utilizar (.pre)
+	wxString language_file; ///< archivo de internacionalizacion a utilizar (.pre, pero se guarda sin extension)
 	int wrap_mode; ///< indica el ajuste de linea (0=no, 1=fuentes, 2=todos), conf global
 	bool singleton; ///< indica si al inciarse con argumentos, los programas simples deben buscar si hay otra instancia de zinjai
 	bool stop_compiling_on_error; ///< detener compilacion de un proyecto al encontrar un error

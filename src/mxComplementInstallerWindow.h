@@ -28,6 +28,8 @@ public:
 	void OnCancelButton(wxCommandEvent &evt);
 	/// @brief Destruye (quita de la memoria) la ventana cuando de cierra
 	void OnClose(wxCloseEvent &evt);
+	/// @brief Instala el complemento invocanto al instalador externo
+	void Install(wxString fname);
 	DECLARE_EVENT_TABLE();
 };
 

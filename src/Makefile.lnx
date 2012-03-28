@@ -1,5 +1,4 @@
 GPP=g++
-GCC=gcc-4.2.4
 FLAGS=-O2 `wx-config --cppflags --unicode=no`
 LIBS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs` 
 OBJS_DIR=../release.lnx

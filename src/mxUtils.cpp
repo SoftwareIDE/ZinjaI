@@ -976,11 +976,31 @@ void mxUtils::OpenFolder(wxString path) {
 	}
 }
 
+
 wxString mxUtils::Quotize(const wxString &what) {
 	if (what.Find(' ')!=wxNOT_FOUND)
 		return wxString(_T("\""))<<what<<_T("\"");
 	else
 		return what;
+}
+
+wxString mxUtils::EscapeString(wxString str, bool add_comillas) {
+	int i=0, l=str.Len();
+	if (add_comillas) {
+		i=1;
+		str.Prepend(wxChar('\"'));
+		l++;
+	}
+	while(i!=l) {
+		if (str[i]=='\\' || str[i]=='\"') {
+			str=str.Mid(0,i)+wxChar('\\')+str.Mid(i);
+			i++; l++;
+		}
+		i++;
+	}
+	if (add_comillas)
+		str.Append('\"');
+	return str;
 }
 
 

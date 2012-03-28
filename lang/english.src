@@ -221,7 +221,7 @@ Opening
 PROJMNGR_CHANGE_PROFILE_OPENNING_PRE
 I seems that you are openning a project that has an active compiling\nand running profile for some other operative system: "
 PROJMNGR_CHANGE_PROFILE_OPENNING_MID
-" Do you want to change active profile to "
+"\nDo you want to change active profile to "
 PROJMNGR_CHANGE_PROFILE_OPENNING_POST
 "?
 PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK
@@ -632,6 +632,8 @@ COMPLEMENTS_WHATIS
 Complements are additional files packed for ZinjaI that\ncan include libraries, documentation, icon themes, project\ntemplates, autocompletion indexes, and more.
 COMPLEMENTS_INSTRUCCIONS
 In order to install a complement you must: 1) download the\ncomplement file from ZinjaI's web site (use "Download..."\nbutton to open the site); 2) click on "Install..." button;\n3) select the downloaded file.
+COMPLEMENTS_SUDO_WARNING
+ZinjaI is installed in a directory where your user cannot write.\nIn order to continue with the installation, a confirmation and/or\nroot password will be requested. ¿Continue?
 CPPCHECK_COPY_FROM_CONFIG
 Copy configuration (preprocessor macros) from compiling options
 CPPCHECK_CONFIG_D

@@ -12,7 +12,7 @@ clean:
 	rm -rf ${OBJS} ../zinjai.exe ${OBJS_DIR}/icon.o
 
 
-${OBJS_DIR}/icon.o: zinjai.rc
+${OBJS_DIR}/icon.o: zinjai.rc manifest.xml
 	wine "${MINGW_DIR}"/bin/windres -i zinjai.rc -o $@
 
 ../zinjai.exe: ${OBJS_DIR} ${OBJS} ${OBJS_DIR}/icon.o

@@ -14,6 +14,8 @@ cp -u $SRC/zinjai.exe zinjai/
 cp -u $SRC/shellexecute.exe zinjai/
 cp -u $SRC/updatem.exe zinjai/
 cp -u $SRC/src_extras/* fuentes/src_extras
+cp -u $SRC/src_extras/complement/* fuentes/src_extras/complement
+cp -u $SRC/src_extras/wx_autocomp/* fuentes/src_extras/wx_autocomp
 cp -u $SRC/quickhelp/* zinjai/quickhelp/
 cp -u $SRC/guihelp/* zinjai/guihelp/
 cp -u $SRC/imgs/*.png zinjai/imgs/

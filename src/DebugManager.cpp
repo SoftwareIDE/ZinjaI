@@ -208,7 +208,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		command<<_T(" -tty=/dev/null");
 #endif
 	if (args.Len())
-		command<<_T(" --args \"")<<exe<<_T("\" ")<</*EscapeString(*/args/*)*/;	
+		command<<_T(" --args \"")<<exe<<_T("\" ")<</*utils->EscapeString(*/args/*)*/;	
 	else
 		command<<_T(" \"")<<exe<<_T("\"");	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
@@ -232,7 +232,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		if (!config->Debug.auto_solibs) SendCommand(_T("set auto-solib-add off"));
 		SetFullOutput(false);
 //		SendCommand(_T(BACKTRACE_MACRO));
-		SendCommand(wxString(_T("-environment-cd "))<<EscapeString(workdir,true));
+		SendCommand(wxString(_T("-environment-cd "))<<utils->EscapeString(workdir,true));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		return true;
 	} else  {
@@ -671,10 +671,10 @@ int DebugManager::SetBreakPoint(wxString file, int line) {
 wxString DebugManager::InspectExpression(wxString var, bool pretty) {
 	if (waiting || !debugging) return _T("");
 	if (!pretty) {
-		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),EscapeString(var,true)),_T("value") ,true,true);
+		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),utils->EscapeString(var,true)),_T("value") ,true,true);
 	} else {
 		SendCommand("-gdb-set print pretty on");
-		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),EscapeString(var,true)),_T("value") ,true,true);
+		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),utils->EscapeString(var,true)),_T("value") ,true,true);
 		SendCommand("-gdb-set print pretty off");
 		return ret;
 	}
@@ -1420,7 +1420,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		inspection_grid->HightlightChange(num);
 	if (num==inspections_count || force_new) {
 		wxString ans,value;
-		if (is_vo) ans = SendCommand(_T("-var-create - * "),EscapeString(expr,true));
+		if (is_vo) ans = SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
 		inspectinfo ii(
 			is_vo?GetValueFromAns(ans,_T("name"),true):expr.Mid(1),
 			is_vo?GetValueFromAns(ans,_T("type"),true):wxString(_T("<cmd>")),
@@ -1492,7 +1492,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		ModifyInspectionWatch(num,false,false);
 		// para modificar una expresion se crea una nueva y destruye la anterior
 		wxString ans,value;
-		if (is_vo) ans = SendCommand(_T("-var-create - * "),EscapeString(expr,true));
+		if (is_vo) ans = SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
 		inspectinfo ii(
 			is_vo?GetValueFromAns(ans,_T("name"),true):expr.Mid(1),
 			is_vo?GetValueFromAns(ans,_T("type"),true):wxString(_T("<cmd>")),
@@ -1600,7 +1600,7 @@ bool DebugManager::DeleteInspection(int num) {
 
 bool DebugManager::ModifyInspectionValue(int num, wxString value) {
 	if (!debugging || waiting) return false;
-	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+_T(" ")+EscapeString(value,true));
+	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+_T(" ")+utils->EscapeString(value,true));
 	if (ans.Mid(1,4)==_T("done"))
 		UpdateInspection();
 	return ans.Mid(1,4)==_T("done");
@@ -2037,28 +2037,28 @@ bool DebugManager::BreakCompoundInspection(int n) {
 	return true;
 }
 
-wxString DebugManager::EscapeString(wxString str, bool add_comillas) {
-	int i=0, l=str.Len();
-	if (add_comillas) {
-		i=1;
-		str.Prepend(wxChar('\"'));
-		l++;
-	}
-	while(i!=l) {
-		if (str[i]=='\\' || str[i]=='\"') {
-			str=str.Mid(0,i)+wxChar('\\')+str.Mid(i);
-			i++; l++;
-		}
-		i++;
-	}
-	if (add_comillas)
-		str.Append('\"');
-	return str;
-}
+//wxString DebugManager::utils->EscapeString(wxString str, bool add_comillas) {
+//	int i=0, l=str.Len();
+//	if (add_comillas) {
+//		i=1;
+//		str.Prepend(wxChar('\"'));
+//		l++;
+//	}
+//	while(i!=l) {
+//		if (str[i]=='\\' || str[i]=='\"') {
+//			str=str.Mid(0,i)+wxChar('\\')+str.Mid(i);
+//			i++; l++;
+//		}
+//		i++;
+//	}
+//	if (add_comillas)
+//		str.Append('\"');
+//	return str;
+//}
 
 
 bool DebugManager::CreateVO(wxString expr, wxString &name, wxString &type, int &children) {
-	wxString ans = SendCommand(_T("-var-create - * "),EscapeString(expr,true));
+	wxString ans = SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
 //	if (ans.Left(5)!=_T("^done")) DEBUG_INFO("ans");
 	if (ans.Left(5)!=_T("^done")) return false;
 	name = GetValueFromAns(ans,_T("name"),true);
@@ -2269,7 +2269,7 @@ bool DebugManager::ModifyInspectionWatch(int num, bool read, bool write) {
 			wxString cmd(_T("-break-watch "));
 			if (read && write) cmd<<_T("-a ");
 			else if (read) cmd<<_T("-r ");
-			wxString ans = GetValueFromAns(SendCommand(cmd,EscapeString(ii.expr,true)).AfterFirst('{'),_T("number"),true);
+			wxString ans = GetValueFromAns(SendCommand(cmd,utils->EscapeString(ii.expr,true)).AfterFirst('{'),_T("number"),true);
 			if (ans.Len()) {
 				long l;
 				ans.ToLong(&l);
@@ -2344,8 +2344,8 @@ void DebugManager::SetBreakPointOptions(int num, int ignore_count) {
 
 bool DebugManager::SetBreakPointOptions(int num, wxString condition) {
 	wxString cmd(_T("-break-condition "));
-//	cmd<<num<<_T(" \"")<<EscapeString(condition)<<_T("\"");
-	cmd<<num<<_T(" ")<<EscapeString(condition);
+//	cmd<<num<<_T(" \"")<<utils->EscapeString(condition)<<_T("\"");
+	cmd<<num<<_T(" ")<<utils->EscapeString(condition);
 	wxString ans = SendCommand(cmd);
 	bool success = ans.Len()>4 && ans.Mid(1,4)==_T("done");
 	if (!success) SendCommand(_T("-break-delete "),num);

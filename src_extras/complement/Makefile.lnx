@@ -1,0 +1,21 @@
+GPP=g++
+FLAGS=-O2 `wx-config --cppflags --unicode=no`
+LIBS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs` 
+OBJS_DIR=../../release.lnx/complement
+
+all: ../../complement.bin ../../complement_wrap.bin
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../../complement.bin ../../complement_wrap.bin
+	rm -f core
+
+../../complement.bin: ${OBJS_DIR} ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+../../complement_wrap.bin: complement_wrap.cpp
+	${GPP} complement_wrap.cpp -O2 -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}

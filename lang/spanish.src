@@ -632,26 +632,28 @@ COMPLEMENTS_WHATIS
 Los complementos consisten en packs de archivos adicionales\npara ZinjaI, que pueden incluir bibliotecas, documentación,\ntemas de íconos, plantillas de proyectos, indices para el \nautocompletado, etc.
 COMPLEMENTS_INSTRUCCIONS
 Para instalar un complemento debe: 1) descargarlo desde la\nsección de descargas del sitio de ZinjaI (haga click\nen el botón \"Descargar...\" para ir al sitio); 2) presionar\n\"Instalar...\"; 3) seleccionar el archivo descargado.\n
+COMPLEMENTS_SUDO_WARNING
+ZinjaI está instalado en un directorio para el cual su usuario no\ntiene permisos de escritura. Se le solicitará confirmación y/o contraseña\nde root/administrador para continuar con la instalación. ¿Continuar?
 CPPCHECK_COPY_FROM_CONFIG
-Copy configuration (preprocessor macros) from compiling options
+Copiar configuración (macros definidas) de las opciones del proyecto
 CPPCHECK_CONFIG_D
-  Configurations to check
+  Configuraciones a verificar
 CPPCHECK_CONFIG_U
-  Configurations to hide
+  Configuraciones a saltear
 CPPCHECK_STYLE
-Additional checks
+Verificaciones adicionales
 CPPCHECK_PLATFORM
-Specific platforms
+Verificaciones especificas de una plataforma
 CPPCHECK_STANDARD
-Standard related checks
+Verificaciones especificas de un estándar
 CPPCHECK_SUPPRESS_IDS
-Suppressions
+Supresiones
 CPPCHECK_SUPPRESS_FILE
-Supressions list file
+Archivo con lista de supresiones
 CPPCHECK_INLINE_SUPPR
-Enable inline suppressions
+Habilitar supresiones inline
 CPPCHECK_SAVE
-Save this setup in the project
+Guardar esta configuración con el proyecto
 CPPCHECK_SOURCES_IN
 Files to analize
 CPPCHECK_SOURCES_OUT

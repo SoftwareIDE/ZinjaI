@@ -6,3 +6,6 @@ bool mxApplication::OnInit() {
 	
 	return true;
 }
+
+IMPLEMENT_APP(mxApplication)
+

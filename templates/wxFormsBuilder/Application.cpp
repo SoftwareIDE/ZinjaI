@@ -10,3 +10,6 @@ bool mxApplication::OnInit() {
 	new VentanaPrincipal(NULL);
 	return true;
 }
+
+IMPLEMENT_APP(mxApplication)
+

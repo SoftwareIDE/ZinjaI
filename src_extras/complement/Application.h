@@ -3,6 +3,8 @@
 
 #include <wx/app.h>
 
+extern bool spanish;
+
 class mxApplication : public wxApp {
 public:
 	virtual bool OnInit();
