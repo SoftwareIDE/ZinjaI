@@ -38,9 +38,9 @@ mxCreateComplementWindow *create_win=NULL;
 enum STEPS_CREATE {STEP_ASKING,STEP_ANALYSING,STEP_BUILDING,STEP_DONE,STEP_ABORTING};
 
 // devuelve true si el compresor puede seguir, false si debe abortar
-bool callback_create(wxString message) {
+bool callback_create(wxString message, int progress) {
 	if (message.Len()) create_win->Notify(message);
-	return create_win->step!=STEP_ABORTING || wxYES!=wxMessageBox(spanish?"¿Desea interrumpir el proceso?":"Abort the process?",spanish?"Generación de Complementos":"Complement Generation",wxYES_NO);
+	return create_win->GetStep()!=STEP_ABORTING || wxYES!=wxMessageBox(spanish?"¿Desea interrumpir el proceso?":"Abort the process?",spanish?"Generación de Complementos":"Complement Generation",wxYES_NO);
 }
 	
 
@@ -237,13 +237,17 @@ void mxCreateComplementWindow::OnButtonFolder (wxCommandEvent & evt) {
 			text_es->SetValue(info.desc_spanish);
 			close->SetValue(info.closereq);
 			version->SetValue(wxString()<<info.reqver);
-			dest->SetValue(folder->GetValue()+".zip");
+			dest->SetValue(folder->GetValue()+".zcp");
 		}
 	}
 }
 
 void mxCreateComplementWindow::OnButtonDest (wxCommandEvent & evt) {
-	wxFileDialog dlg(this,spanish?"Archivo a generar:":"File to generate:","",dest->GetValue(),"*.zip;*.ZIP",wxFD_SAVE);
+	wxFileDialog dlg(this,spanish?"Archivo a generar:":"File to generate:","",dest->GetValue(),"*.zcp;*.ZCP",wxFD_SAVE);
 	if (wxID_OK==dlg.ShowModal()) { dest->SetValue(dlg.GetPath()); }
+}
+
+int mxCreateComplementWindow::GetStep ( ) {
+	return step;
 }
 

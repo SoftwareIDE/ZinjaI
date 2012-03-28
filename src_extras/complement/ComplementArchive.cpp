@@ -40,7 +40,8 @@ static wxString FixSlashes(wxString orig) {
 	return ret;
 }
 
-bool GetFilesAndDesc(bool (*callback)(wxString message), const wxString aZipFile, wxArrayString &files, wxString &desc) {
+bool GetFilesAndDesc(bool (*callback)(wxString message, int progress), const wxString aZipFile, int &fcount, int &dcount, wxString &desc) {
+	dcount=fcount=0;
 	wxZipEntry *entry = new wxZipEntry;
 	wxFileInputStream in(aZipFile);
 	if (!in) return false;
@@ -49,14 +50,13 @@ bool GetFilesAndDesc(bool (*callback)(wxString message), const wxString aZipFile
 		wxString name = FixSlashes(entry->GetName());
 		if (!entry->IsDir()) {
 			zip.OpenEntry(*entry);
-			files.Add(name);
-			if (!callback("")) return true;
+			if (!callback("",0)) return true;
 			if (name==_DESC_FILE) {
 				if (!zip.CanRead()) return false;
 				wxStringOutputStream os(&desc);
 				zip.Read(os);
-			}
-		}
+			} else fcount++;
+		} else dcount++;
 	}
 	return true;
 }
@@ -73,7 +73,7 @@ static bool legal_name(wxString name) { // por seguridad, para que no escriba na
 		);
 }
 
-bool CreateDirectories(bool (*callback)(wxString message), const wxString aZipFile, const wxString aTargetDir="") {
+bool CreateDirectories(bool (*callback)(wxString message, int progress), const wxString aZipFile, const wxString aTargetDir="") {
 	wxZipEntry *entry = new wxZipEntry;
 	wxFileInputStream in(aZipFile);
 	if (!in) return false;
@@ -84,17 +84,17 @@ bool CreateDirectories(bool (*callback)(wxString message), const wxString aZipFi
 			if (legal_name(name)) {
 				name = aTargetDir + name;
 				if (!wxFileName::DirExists(name)) {
-					if (!callback(wxString(spanish?"Creando directorio ":"Creating directory ")<<name)) return true;
+					if (!callback(wxString(spanish?"Creando directorio ":"Creating directory ")<<name,1)) return true;
 					wxFileName::Mkdir(name, 0777, wxPATH_MKDIR_FULL);
 				}
 			} else
-				if (!callback(wxString(spanish?"Nombre de directorio incorrecto: ":"Wrong directory name: ")<<name)) return true;
+				if (!callback(wxString(spanish?"Nombre de directorio incorrecto: ":"Wrong directory name: ")<<name,1)) return true;
 		}
 	}
 	return true;
 }
 
-bool ExtractFiles(bool (*callback)(wxString message), const wxString aZipFile, const wxString aTargetDir) {
+bool ExtractFiles(bool (*callback)(wxString message, int progress), const wxString aZipFile, const wxString aTargetDir) {
 	wxZipEntry *entry = new wxZipEntry;
 	wxFileInputStream in(aZipFile);
 	if (!in) return false;
@@ -107,12 +107,12 @@ bool ExtractFiles(bool (*callback)(wxString message), const wxString aZipFile, c
 				name = aTargetDir + name;
 				zip.OpenEntry(*entry);
 				if (!zip.CanRead()) return false;
-				if (!callback(wxString(spanish?"Descomprimiendo archivo ":"Uncompressing file ")<<name)) return true;
+				if (!callback(wxString(spanish?"Descomprimiendo archivo ":"Uncompressing file ")<<name,2)) return true;
 				wxFileOutputStream file(name);
 				if (!file) return false;
 				zip.Read(file);
 			} else
-				if (!callback(wxString(spanish?"Nombre de archivo incorrecto: ":"Wrong file name: ")<<name)) return true;
+				if (!callback(wxString(spanish?"Nombre de archivo incorrecto: ":"Wrong file name: ")<<name,2)) return true;
 		}
 	}
 	return true;
@@ -125,13 +125,13 @@ static wxString GetDir(wxString aTargetDir, wxString file) {
 	else return "";
 }
 
-bool CreateZip(bool (*callback)(wxString message), const wxString aZipFile, const wxString aTargetDir, const wxArrayString &files) {
+bool CreateZip(bool (*callback)(wxString message, int progress), const wxString aZipFile, const wxString aTargetDir, const wxArrayString &files) {
 	wxFFileOutputStream out(aZipFile);
 	wxZipOutputStream zip(out);
 	wxArrayString dirs;
 	for(unsigned int i=0;i<files.GetCount();i++) {
 		wxString dir=GetDir(aTargetDir,files[i]);
-		if (!callback(wxString(spanish?"Agregando ":"Adding ")<<files[i])) return true;
+		if (!callback(wxString(spanish?"Agregando ":"Adding ")<<files[i],1)) return true;
 		if (dir.Len() && dirs.Index(dir)==wxNOT_FOUND) {
 			wxZipEntry *entry=new wxZipEntry(dir);
 			entry->SetIsDir(true);

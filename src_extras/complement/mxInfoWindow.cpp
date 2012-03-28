@@ -21,9 +21,10 @@ mxInfoWindow *info_win=NULL;
 enum STEPS_INFO {STEP_READING_INFO,STEP_SHOWING_INFO,STEP_CREATING_DIRS,STEP_CREATING_FILES,STEP_DONE,STEP_ABORTING};
 
 // devuelve true si el descompresor puede seguir, false si debe abortar
-bool callback_info(wxString message) {
+bool callback_info(wxString message, int progress) {
+	if (progress) info_win->Progress(progress);
 	if (message.Len()) info_win->Notify(message);
-	return info_win->step!=STEP_ABORTING || wxYES!=wxMessageBox(spanish?"¿Desea interrumpir la instalación?":"Abort instalation?",spanish?"Instalación de Complementos":"Complement installer",wxYES_NO);
+	return info_win->GetStep()!=STEP_ABORTING || wxYES!=wxMessageBox(spanish?"¿Desea interrumpir la instalación?":"Abort instalation?",spanish?"Instalación de Complementos":"Complement installer",wxYES_NO);
 }
 	
 	
@@ -48,6 +49,9 @@ mxInfoWindow::mxInfoWindow(wxString _dest, wxString _file):wxFrame(NULL,wxID_ANY
 	text->SetMinSize(wxSize(400,200));
 	sizer->Add(text,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 	
+	gauge = new wxGauge(this,wxID_ANY,1);
+	sizer->Add(gauge,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
+	
 	wxBoxSizer *but_sizer = new wxBoxSizer(wxHORIZONTAL);
 	but_ok = new wxButton(this,wxID_OK,spanish?"Instalar...":"Install...");
 	but_cancel = new wxButton(this,wxID_CANCEL,spanish?"Cancelar":"Cancel");
@@ -62,12 +66,13 @@ mxInfoWindow::mxInfoWindow(wxString _dest, wxString _file):wxFrame(NULL,wxID_ANY
 	wxYield();
 
 	wxFileSystem::AddHandler(new wxArchiveFSHandler);
-	wxArrayString files;
-	wxString desc;
-	if (!GetFilesAndDesc(callback_info,file,files,desc)) { wxMessageBox(spanish?"Ha ocurrido un error durante la instalación (GetFilesAndDesc).":"There was a error installing the complement (GetFilesAndDesc)"); Close(); return; }
+	wxString desc; int fcount,dcount;
+	if (!GetFilesAndDesc(callback_info,file,fcount,dcount,desc)) { wxMessageBox(spanish?"Ha ocurrido un error durante la instalación (GetFilesAndDesc).":"There was a error installing the complement (GetFilesAndDesc)"); Close(); return; }
 	if (step==STEP_ABORTING) { Close(); return; }
 	desc_split(desc,info);
 	text->SetValue(spanish?info.desc_spanish:info.desc_english);
+	gauge->SetRange(fcount*2+dcount);
+	gauge->SetValue(0);
 	but_ok->Enable(true);
 	but_ok->SetFocus(); 
 	step=STEP_SHOWING_INFO;
@@ -92,6 +97,7 @@ void mxInfoWindow::OnButtonOk (wxCommandEvent & evt) {
 			SetBins(info.bins,dest);
 		}
 #endif
+		Progress(1);
 		Notify(spanish?"Instalación Finalizada":"Instalation completed.");
 		but_cancel->Enable(false);
 		but_ok->Enable(true);
@@ -115,3 +121,12 @@ void mxInfoWindow::Notify(const wxString &message) {
 	text->SetSelection(i,i);
 	wxYield();
 }
+
+void mxInfoWindow::Progress (int progress) {
+	gauge->SetValue(info_win->gauge->GetValue()+progress);
+}
+
+int mxInfoWindow::GetStep ( ) {
+	return step;
+}
+

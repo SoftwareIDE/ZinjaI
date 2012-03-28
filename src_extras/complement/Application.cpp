@@ -12,7 +12,6 @@ bool mxApplication::OnInit() {
 	wxString zpath,fname;
 	for(int i=1;i<argc;i++) { 
 		wxString argvi(argv[i]);
-		wxMessageBox(argvi);
 		if (argvi.StartsWith("--lang=")) {
 			spanish=argvi=="--lang=spanish";
 		} else {

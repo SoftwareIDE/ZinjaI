@@ -4,6 +4,7 @@
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include "ComplementArchive.h"
+#include <wx/gauge.h>
 
 class mxInfoWindow : public wxFrame {
 private:
@@ -12,7 +13,7 @@ private:
 	wxTextCtrl *text;
 	wxButton *but_ok;
 	wxButton *but_cancel;
-	friend bool callback_info(wxString message);
+	wxGauge *gauge;
 protected:
 public:
 	mxInfoWindow(wxString _dest, wxString _file);
@@ -20,6 +21,8 @@ public:
 	void OnButtonCancel(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);
 	void Notify(const wxString &message);
+	void Progress(int progress);
+	int GetStep();
 	DECLARE_EVENT_TABLE();
 };
 

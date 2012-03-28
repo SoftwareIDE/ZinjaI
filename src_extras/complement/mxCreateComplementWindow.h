@@ -19,7 +19,6 @@ private:
 	wxButton *but_create;
 	wxButton *but_cancel;
 	complement_info info;
-	friend bool callback_create(wxString message);
 protected:
 public:
 	mxCreateComplementWindow();
@@ -29,6 +28,7 @@ public:
 	void OnButtonDest(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);
 	void Notify(const wxString &message);
+	int GetStep();
 	DECLARE_EVENT_TABLE();
 };
 
