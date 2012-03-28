@@ -44,7 +44,7 @@ mxInfoWindow::mxInfoWindow(wxString _dest, wxString _file):wxFrame(NULL,wxID_ANY
 	wxStaticText *stext = new wxStaticText(this,wxID_ANY,spanish?"Información del complemento:":"Complement information:");
 	sizer->Add(stext,wxSizerFlags().Proportion(0).Expand().Border(wxALL,5));
 	
-	text = new wxTextCtrl(this,wxID_ANY,(spanish?"Leyendo ":"Reading ")+file,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL);
+	text = new wxTextCtrl(this,wxID_ANY,(spanish?"Leyendo ":"Reading ")+file,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	text->SetMinSize(wxSize(400,200));
 	sizer->Add(text,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 	

@@ -11,7 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=../Fuckultad/Poo/answers/2009-p1
-current_source=src/DebugManager.cpp
+current_source=src/mxComplementInstallerWindow.cpp
 path_char=/
 [source]
 path=src/mxColoursEditor.cpp
@@ -319,7 +319,7 @@ path=src/mxListSharedWindow.cpp
 cursor=2452
 [source]
 path=src/mxComplementInstallerWindow.cpp
-cursor=4380
+cursor=5487
 open=true
 [source]
 path=src/mxCppCheckConfigDialog.cpp

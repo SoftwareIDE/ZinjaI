@@ -89,17 +89,17 @@ mxCreateComplementWindow::mxCreateComplementWindow():wxFrame(NULL,wxID_ANY,spani
 	
 	wxStaticText *stext_en = new wxStaticText(this,wxID_ANY,spanish?"Descripción del complemento (ingles):":"Complement's description (english):");
 	sizer->Add(stext_en,wxSizerFlags().Proportion(0).Expand().Border(wxTOP|wxLEFT|wxRIGHT,5));
-	text_en = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxHSCROLL);
+	text_en = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
 	text_en->SetMinSize(wxSize(400,150));
 	sizer->Add(text_en,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 	
 	wxStaticText *stext_es = new wxStaticText(this,wxID_ANY,spanish?"Descripción del complemento (español):":"Complement's description (spanish):");
 	sizer->Add(stext_es,wxSizerFlags().Proportion(0).Expand().Border(wxTOP|wxLEFT|wxRIGHT,5));
-	text_es = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxHSCROLL);
+	text_es = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
 	text_es->SetMinSize(wxSize(400,150));
 	sizer->Add(text_es,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 	
-	text = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxHSCROLL);
+	text = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	text->SetMinSize(wxSize(400,200)); sizer->Add(text,wxSizerFlags().Proportion(1).Expand().Border(wxALL,5));
 	text->Hide();
 	
@@ -200,7 +200,7 @@ void mxCreateComplementWindow::OnButtonCreate (wxCommandEvent & evt) {
 		if (step==STEP_ABORTING) { _return; }
 		
 		Notify(spanish?"Generación Finalizada.":"Generation completed.");
-		step==STEP_DONE; but_create->SetLabel(spanish?"Aceptar":"Ok"); but_cancel->SetLabel(spanish?"Cerrar":"Close");
+		step=STEP_DONE; but_create->SetLabel(spanish?"Aceptar":"Ok"); but_cancel->SetLabel(spanish?"Cerrar":"Close"); but_create->Enable();
 	}
 }
 
