@@ -86,6 +86,8 @@ bool CreateDirectories(bool (*callback)(wxString message, int progress), const w
 				if (!wxFileName::DirExists(name)) {
 					if (!callback(wxString(spanish?"Creando directorio ":"Creating directory ")<<name,1)) return true;
 					wxFileName::Mkdir(name, 0777, wxPATH_MKDIR_FULL);
+				} else {
+					if (!callback(wxString(spanish?"Ya existe el directorio ":"Directory exists ")<<name,1)) return true;
 				}
 			} else
 				if (!callback(wxString(spanish?"Nombre de directorio incorrecto: ":"Wrong directory name: ")<<name,1)) return true;
