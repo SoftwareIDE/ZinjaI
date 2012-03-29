@@ -290,7 +290,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 			nice_error_line=error_line;
 		
 		compile_and_run->full_output.Add(error_line);
-		if (compile_and_run->special_output || error_line.Len()==0 || !compile_and_run->last_all_item.IsOk()) 
+		if (compile_and_run->special_output || error_line.Len()==0) 
 			continue;
 		num_all++;
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
