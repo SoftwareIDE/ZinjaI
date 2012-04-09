@@ -741,9 +741,9 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 			} else {
 				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,func);
 	//			frames_addrs[c]=SendCommand(_T("info frame "),frames_nums[c]).BeforeFirst(':').AfterLast(' ');
-				wxString fname = GetValueFromAns(s,_T("fullname"),true);
+				wxString fname = GetValueFromAns(s,_T("fullname"),true,true);
 				if (!fname.Len())
-					fname = GetValueFromAns(s,_T("file"),true);
+					fname = GetValueFromAns(s,_T("file"),true,true);
 				fname.Replace(_T("\\\\"),sep,true);
 				fname.Replace(_T("//"),sep,true);
 				fname.Replace(wrong_sep,sep,true);
@@ -1248,8 +1248,10 @@ wxString DebugManager::GetValueFromAns(wxString ans, wxString key, bool crop, bo
 				int l=ret.Len(),i=0,d=0;
 				while (i<l) {
 					if (ret[i+d]=='\\') { 
-						if (ans[i+d+1]=='n') 
-							ans[i+d+1]='\n';
+						if (ret[i+d+1]=='n') 
+							ret[i+d+1]='\n';
+						else if (ret[i+d+1]<='9' && ret[i+d+1]>='0' && i+3<l && ret[i+d+2]<='9' && ret[i+d+2]>='0' && ret[i+d+3]<='9' && ret[i+d+3]>='0')
+							{ ret[i+d+3]=(ret[i+d+1]-'0')*8*8+(ret[i+d+2]-'0')*8+(ret[i+d+3]-'0'); d+=2; l-=2; }
 						d++; l--;
 						ret[i]=ret[i+d];
 						i++;
