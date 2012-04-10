@@ -37,6 +37,7 @@ using namespace std;
 DebugManager *debug;
 
 DebugManager::DebugManager() {
+	pause_fake_num = -1;
 	current_handle = -1;
 	last_backtrace_size = 0;
 	inspections_count = 0;
@@ -267,7 +268,7 @@ void DebugManager::ResetDebuggingStuff() {
 	utils->Split(config->Debug.blacklist,black_list,true,false);
 	stopping=false;
 	gui_is_prepared = false;
-	
+	pause_line=-1;
 	
 	list<mxExternInspection*>::iterator i1=extern_list.begin();
 	while (i1!=extern_list.end()) if ((*i1)->SetOutdated()) i1=extern_list.erase(i1); else ++i1;
@@ -548,6 +549,20 @@ void DebugManager::HowDoesItRuns() {
 		else
 			state_text=wxString(LANG(DEBUG_STATUS_EXIT_WITH_CODE,"El programa finalizo con el codigo de salida "))<<GetValueFromAns(ans,_T("exit-code"),true);
 	} else if (how==_T("signal-received")) {
+		if (pause_line!=-1) {
+			if (pause_file.Len()) {
+				int n=SetBreakPoint(pause_file,pause_line);
+				if (n!=-1) {
+					mxSource *src=pause_source?pause_source:main_window->FindSource(pause_file);
+					if (src) src->EnableDelayedBreakPoint(pause_line,pause_fake_num);
+				}
+			} else {
+				DeleteBreakPoint(pause_line);
+			}
+			pause_line=-1;
+			Continue();
+			return;
+		}
 		if (GetValueFromAns(ans,_T("signal-meaning"),true)==_T("Trace/breakpoint trap")) {
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text=LANG(DEBUG_STATUS_TRAP,"El programa se interrumpio para ceder el control al depurador");
@@ -570,9 +585,9 @@ void DebugManager::HowDoesItRuns() {
 	}
 #endif
 	if (mark) {
-		wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true);
+		wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true,true);
 		if (!fname.Len())
-			fname = GetSubValueFromAns(ans,_T("frame"),_T("file"),true);
+			fname = GetSubValueFromAns(ans,_T("frame"),_T("file"),true,true);
 		fname.Replace(_T("//"),sep);
 		fname.Replace(_T("\\\\"),sep);
 		fname.Replace(wrong_sep,sep);
@@ -622,7 +637,7 @@ void DebugManager::DeleteBreakPoint(int num) {
 }
 
 bool DebugManager::DeleteBreakPoint(wxString fname, int line) {
-	if (waiting || !debugging) return false;
+	if (/*waiting || */!debugging) return false;
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') 
 			fname[i]='/';
@@ -630,8 +645,14 @@ bool DebugManager::DeleteBreakPoint(wxString fname, int line) {
 	breakinfo bi(0,fname,line);
 	while (it1!=it2) {
 		if ((*it1)==bi) {
-			SendCommand(_T("-break-delete "),it1->n);
-			break_list.erase(it1);
+			if (debugging && waiting) {
+				pause_file="";
+				pause_line=it1->n; 
+				Pause();
+			} else {
+				SendCommand(_T("-break-delete "),it1->n);
+				break_list.erase(it1);
+			}
 			return true;
 		}
 		++it1;
@@ -639,9 +660,28 @@ bool DebugManager::DeleteBreakPoint(wxString fname, int line) {
 	return false;
 }
 
+int DebugManager::SetLiveBreakPoint(mxSource *src, int line) {
+	wxString file=src->sin_titulo?src->temp_filename.GetFullPath():src->source_filename.GetFullPath();
+	if (debugging && waiting) { 
+		pause_file=file;
+		pause_line=line; 
+		pause_source=src; 
+		Pause();
+		return --pause_fake_num;
+	} else 
+		return SetBreakPoint(file,line);
+}
+
+/**
+* Coloca un pto de interrupción en gdb
+*
+* Le pide al depurador agregar un pto de interrupción. Esta función se usa tanto 
+* para proyectos como programas simples, y se llama desde mxSource::OnMarginClick,
+* DebugManager::HowDoesItRuns y ProjectManager::SetBreakpoints.
+* Esos método se encargan de los break_line_item y los markers normalmente.
+* Si logra colocar el bp retorna su id, sino -1.
+**/
 int DebugManager::SetBreakPoint(wxString file, int line) {
-//	if (waiting && debug) Pause();
-//	while (waiting) { wxYield(); }
 	if (waiting || !debugging) return 0;
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<file.Len();i++) // corregir las barras en windows para que no sean caracter de escape
@@ -2703,8 +2743,8 @@ bool DebugManager::ToggleInspectionFreeze(int n) {
 }
 
 void DebugManager::UnregisterSource(mxSource *src) {
-	if (current_source==src)
-		current_source=NULL;
+	if (current_source==src) current_source=NULL;
+	if (pause_source==src) pause_source=NULL;
 }
 
 bool DebugManager::OffLineInspectionModify(int i, wxString value) {

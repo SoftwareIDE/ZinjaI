@@ -117,6 +117,7 @@ public:
 	void SetFolded(int level, bool folded);
 	// stc
 	void OnMarginClick (wxStyledTextEvent &event);
+	void EnableDelayedBreakPoint(int line, int num);
 	void OnCharAdded  (wxStyledTextEvent &event);
 	void OnUpdateUI (wxStyledTextEvent &event);
 	void OnKillFocus (wxFocusEvent &event);

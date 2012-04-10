@@ -270,6 +270,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 
 
 mxSource::~mxSource () {
+	
 	if (diff_brother) diff_brother->SetDiffBrother(NULL); diff_brother=NULL;
 	while (first_diff_info) delete first_diff_info;
 	
@@ -542,7 +543,7 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
             ToggleFold (lineClick);
         }
     } else {
-		if (!debug->running) {
+//		if (!debug->running) {
 			break_line_item *bitem;
 			if (event.GetModifiers()&wxSTC_SCMOD_SHIFT || event.GetModifiers()&wxSTC_SCMOD_CTRL) {
 				int l = LineFromPosition (event.GetPosition());
@@ -583,7 +584,7 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 					}
 					int n=0;
 					if (debug->debugging) 
-						n=debug->SetBreakPoint(sin_titulo?temp_filename.GetFullPath():source_filename.GetFullPath(),l);
+						n=debug->SetLiveBreakPoint(this,l);
 					if (n!=-1) {
 						// agregar el item al principio de la lista
 						bitem = new break_line_item(l,NULL,first_break_item);
@@ -596,17 +597,18 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 							bro=bro->next_source_with_same_file;
 						}
 						// marcar en el margen del source_share
-						bitem->handle=MarkerAdd(l, mxSTC_MARK_BREAKPOINT);
+						bitem->handle=MarkerAdd(l, n<0?mxSTC_MARK_BAD_BREAKPOINT:mxSTC_MARK_BREAKPOINT);
 						bitem->num=n;
+						if (n<0) bitem->enabled=false;
 					}
 				}
 			}
-		} else {
-			mxMessageDialog(main_window,LANG(DEBUG_NO_BREAKPOINT_WHILE_RUNNING,"No puede colocar o modificar un breakpoint mientras el programa esta\n"
-																			   "ejecutandose. Pause la depuracion (con el comando \"Interrumpir\" del menu\n"
-																			   "\"Depuracion\") o espere a que la misma se interrumpa para realizar esta accion."),LANG(DEBUG_BREAKPOINT_CAPTION,"Puntos de Interrupcion"),mxMD_INFO|mxMD_OK).ShowModal();
-							
-		}
+//		} else {
+//			mxMessageDialog(main_window,LANG(DEBUG_NO_BREAKPOINT_WHILE_RUNNING,"No puede colocar o modificar un breakpoint mientras el programa esta\n"
+//																			   "ejecutandose. Pause la depuracion (con el comando \"Interrumpir\" del menu\n"
+//																			   "\"Depuracion\") o espere a que la misma se interrumpa para realizar esta accion."),LANG(DEBUG_BREAKPOINT_CAPTION,"Puntos de Interrupcion"),mxMD_INFO|mxMD_OK).ShowModal();
+//							
+//		}
 	}
 }
 
@@ -3418,4 +3420,17 @@ void mxSource::SetColours(bool also_style) {
 	
 	if (also_style) SetStyle(config_source.syntaxEnable);
 	
+}
+
+/**
+* Para se llamada desde DebugManager::HowDoesItRuns cuando hay que colocar un breakpoint pausando la ejecución
+**/
+void mxSource::EnableDelayedBreakPoint(int line, int num) {
+	break_line_item *bitem = first_break_item;
+	while (bitem && bitem->num!=num)
+		bitem = bitem->next;
+	if (bitem) {
+		MarkerDeleteHandle(bitem->handle);
+		bitem->handle=MarkerAdd(bitem->line,mxSTC_MARK_BREAKPOINT);
+	}
 }

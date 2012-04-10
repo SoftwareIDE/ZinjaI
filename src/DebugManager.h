@@ -153,6 +153,10 @@ private:
 //	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
 	wxString RewriteExpressionForBreaking(wxString expr);
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
+	wxString pause_file; ///< si se pausó para colocar un breakpoint y continuar, aca va el nombre de archivo, si se paso para remover uno esta en blanco y es lo que marca el caso
+	int pause_line; ///< si se pausó para colocar/sacar un breakpoint y continuar, aca va el nro de linea/id del bp, si es -1 indica que es una pause comun
+	int pause_fake_num; ///< si se pausó para colocar un breakpoint y continuar, aca va el id de breakpoint que se le dio al break_line_item
+	mxSource *pause_source; ///< si se pausó para colocar un breakpoint y continuar, aca va el puntero al mxsource que lo genero
 public:
 	wxString last_command, last_answer;
 	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible, stopping, really_running;
@@ -178,6 +182,7 @@ public:
 	void CloseSource(mxSource *source);
 	void SetStateText(wxString text, bool refresh=false);
 	int SetBreakPoints(mxSource *source, wxString path=_T(""));
+	int SetLiveBreakPoint(mxSource *src, int line);
 	int SetBreakPoint(wxString file, int line);
 	void SetBreakPointEnable(int num, bool enable, bool once=false);
 	void SetBreakPointOptions(int num, int ignore_count);
