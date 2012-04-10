@@ -554,7 +554,7 @@ void DebugManager::HowDoesItRuns() {
 				int n=SetBreakPoint(pause_file,pause_line);
 				if (n!=-1) {
 					mxSource *src=pause_source?pause_source:main_window->FindSource(pause_file);
-					if (src) src->EnableDelayedBreakPoint(pause_line,pause_fake_num);
+					if (src) src->EnableDelayedBreakPoint(pause_line,pause_fake_num,n);
 				}
 			} else {
 				DeleteBreakPoint(pause_line);
@@ -632,8 +632,18 @@ void DebugManager::HowDoesItRuns() {
 }
 
 void DebugManager::DeleteBreakPoint(int num) {
-	if (!debugging || waiting) return;
-	SendCommand(_T("-break-delete "),num);
+	if (!debugging) return;
+	if (waiting) { // si esta ejecutando, anotar para sacar y mandar a pausar
+		pause_file="";
+		pause_line=num; 
+		Pause();
+	} else {
+		// sacarlo de la lista que lleva el debug manager
+		list<breakinfo>::iterator it1=break_list.begin(), it2=break_list.end();
+		while (it1!=it2 && it1->n!=num) it1++; if (it1!=it2) break_list.erase(it1);
+		// decirle a gdb que lo saque
+		SendCommand(_T("-break-delete "),num);
+	}
 }
 
 bool DebugManager::DeleteBreakPoint(wxString fname, int line) {
@@ -645,14 +655,7 @@ bool DebugManager::DeleteBreakPoint(wxString fname, int line) {
 	breakinfo bi(0,fname,line);
 	while (it1!=it2) {
 		if ((*it1)==bi) {
-			if (debugging && waiting) {
-				pause_file="";
-				pause_line=it1->n; 
-				Pause();
-			} else {
-				SendCommand(_T("-break-delete "),it1->n);
-				break_list.erase(it1);
-			}
+			DeleteBreakPoint(it1->n);
 			return true;
 		}
 		++it1;
@@ -2386,7 +2389,6 @@ void DebugManager::SetBreakPointOptions(int num, int ignore_count) {
 
 bool DebugManager::SetBreakPointOptions(int num, wxString condition) {
 	wxString cmd(_T("-break-condition "));
-//	cmd<<num<<_T(" \"")<<utils->EscapeString(condition)<<_T("\"");
 	cmd<<num<<_T(" ")<<utils->EscapeString(condition);
 	wxString ans = SendCommand(cmd);
 	bool success = ans.Len()>4 && ans.Mid(1,4)==_T("done");

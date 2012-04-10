@@ -3425,11 +3425,12 @@ void mxSource::SetColours(bool also_style) {
 /**
 * Para se llamada desde DebugManager::HowDoesItRuns cuando hay que colocar un breakpoint pausando la ejecución
 **/
-void mxSource::EnableDelayedBreakPoint(int line, int num) {
+void mxSource::EnableDelayedBreakPoint(int line, int fake_num, int num) {
 	break_line_item *bitem = first_break_item;
-	while (bitem && bitem->num!=num)
+	while (bitem && bitem->num!=fake_num)
 		bitem = bitem->next;
 	if (bitem) {
+		bitem->line=MarkerLineFromHandle(bitem->handle); bitem->num=num;
 		MarkerDeleteHandle(bitem->handle);
 		bitem->handle=MarkerAdd(bitem->line,mxSTC_MARK_BREAKPOINT);
 	}
