@@ -2159,8 +2159,8 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		p_ocur = p = FindText(p_from, p_to, key, wxSTC_FIND_WHOLEWORD|wxSTC_FIND_MATCHCASE);
 		if (p!=wxSTC_INVALID_POSITION) { // si se encuentra la palabra
 			// retroceder al comienzo de la instruccion
-			p_to=p_ocur;
-			while (p>0 && (!II_IS_5(p,'}','{','(',';',':') || (aux_bool=II_SHOULD_IGNORE(p)) ) ) {
+			p_to=p_ocur; aux_bool=false;
+			while (p>0 && ( !II_IS_5(p,'}','{','(',';',':') || (aux_bool=II_SHOULD_IGNORE(p)) ) ) {
 				if (!aux_bool && c==')') {
 					p = BraceMatch(p);
 					if (p==wxSTC_INVALID_POSITION)
@@ -2689,7 +2689,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 		} else 
 			ShowBaloon(LANG(SOURCE_CANT_AUTOCOMPLETE_HERE,"No se puede autocompletar en este punto"));
 	} else {
-		int s,e=GetCurrentPos()-1,ctp;
+		int s,e=GetCurrentPos()-1,ctp=0; // el cero en ctp es solo para silenciar un warning
 		char c;
 		if (chr=='(') {
 			ctp=e;

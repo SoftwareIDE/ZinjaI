@@ -823,7 +823,7 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 	int arglev;
 	const wxChar * chag = args_list.c_str();
 //cerr<<"CHAG="<<endl<<chag<<endl<<endl;
-	bool comillas = false, cm_dtype;
+	bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
 	i=args_list.Find(_T("stack-args="));
 	if (i==wxNOT_FOUND) {
 		for (int c=0;c<fdepth;c++)
