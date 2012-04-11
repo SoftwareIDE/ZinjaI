@@ -12,7 +12,7 @@
 
 bool dbp_checked=false;
 bool dbp_present=false;
-typedef BOOL (*dbp_proto)(HANDLE);
+typedef BOOL WINAPI (*dbp_proto)(HANDLE);
 dbp_proto dbp_function;
 
 bool winLoadDBP() {
