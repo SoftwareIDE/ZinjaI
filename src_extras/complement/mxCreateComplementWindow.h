@@ -16,15 +16,17 @@ private:
 	wxTextCtrl *text;
 	wxTextCtrl *version;
 	wxCheckBox *close;
+	wxCheckBox *reset;
 	wxButton *but_create;
 	wxButton *but_cancel;
 	complement_info info;
 protected:
 public:
-	mxCreateComplementWindow();
+	mxCreateComplementWindow(wxString path);
 	void OnButtonCreate(wxCommandEvent &evt);
 	void OnButtonCancel(wxCommandEvent &evt);
 	void OnButtonFolder(wxCommandEvent &evt);
+	void SetFolder(wxString path);
 	void OnButtonDest(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);
 	void Notify(const wxString &message);

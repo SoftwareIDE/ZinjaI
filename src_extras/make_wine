@@ -11,6 +11,8 @@ cp -u $SRC/lsdeps.exe zinjai/
 cp -u $SRC/lsdeps.exe zinjai/
 cp -u $SRC/runner.exe zinjai/
 cp -u $SRC/zinjai.exe zinjai/
+cp -u $SRC/complement.exe zinjai/
+cp -u $SRC/complement_wrap.exe zinjai/
 cp -u $SRC/shellexecute.exe zinjai/
 cp -u $SRC/updatem.exe zinjai/
 cp -u $SRC/src_extras/* fuentes/src_extras

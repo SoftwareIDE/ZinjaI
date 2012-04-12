@@ -26,7 +26,7 @@ bool mxApplication::OnInit() {
 	if (fname.Len())
 		new mxInfoWindow(zpath,fname);
 	else
-		new mxCreateComplementWindow();
+		new mxCreateComplementWindow(zpath);
 	return true;
 }
 

@@ -172,6 +172,7 @@ bool desc_split(const wxString &atext, complement_info & info) {
 			if (key=="desc_english") { if (info.desc_english.Len()) info.desc_english+="\n"; info.desc_english+=value; }
 			else if (key=="desc_spanish") { if (info.desc_spanish.Len()) info.desc_spanish+="\n"; info.desc_spanish+=value; }
 			else if (key=="bin") info.bins.Add(value);
+			else if (key=="reset") { info.resetreq = (value=="1" || value.Upper().StartsWith("T")); }
 			else if (key=="close") { info.closereq = (value=="1" || value.Upper().StartsWith("T")); }
 			else if (key=="reqver") { return value.ToLong(&info.reqver); }
 		}
@@ -193,6 +194,7 @@ bool desc_merge(const complement_info & info, wxString & text) {
 	text<<Multilineze("desc_spanish",info.desc_spanish)<<"\n";
 	for (unsigned int i=0;i<info.bins.GetCount();i++)
 		text<<"bin="<<info.bins[i]<<"\n";
+	text<<"reset="<<(info.resetreq?"1":"0")<<"\n";
 	text<<"close="<<(info.closereq?"1":"0")<<"\n";
 	text<<"reqver="<<info.reqver<<"\n";
 	text<<"end\n";

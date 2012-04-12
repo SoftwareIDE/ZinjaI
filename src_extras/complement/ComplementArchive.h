@@ -7,10 +7,11 @@ struct complement_info {
 	wxString desc_english; // english description
 	wxString desc_spanish; // spanish description
 	wxArrayString bins; // files to set executable permission
-	bool closereq;
-	long reqver;
+	bool resetreq; // requires restarting zinjai after installation
+	bool closereq; // requires closing zinjai before intallation
+	long reqver; // minimun zinjai's version required
 	long files; // cantidad de archivos, para la barra de progreso, solo al descomprimir
-	complement_info():closereq(false),reqver(0),files(0){}
+	complement_info():resetreq(true),closereq(false),reqver(0),files(0){}
 };
 bool desc_split(const wxString &text, complement_info &info);
 bool desc_merge(const complement_info &info, wxString &text);

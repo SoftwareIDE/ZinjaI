@@ -1,5 +1,5 @@
 &nbsp;&nbsp;&nbsp; Si es la primera vez que utiliza este entorno puede presionar la tecla F1 para acceder a la ayuda y los tutoriales.
-&nbsp;&nbsp;&nbsp; En esta versión se corrigieron muchos errores y se implementaron algunas mejoras como la simplificación de mensajes de error del compilador relacionados a templates u otros mensajes ilegibles (que involucran strings o elementos de la STL) y algunas herramientas nuevas relacionadas al preprocesador de C++ en el menú "Herramientas". Para ver la lista completa de cambios presione F1.
+&nbsp;&nbsp;&nbsp; En esta versión se corrigieron muchos errores y se agregaron algunas nuevas funcionalidades como un instalador de complementos, la posibilidad de colocar y eliminar puntos de interrupción sin pausar la ejecución, un cuadro de diálogo para configurar cppheck, y otras mejoras menores en la interfaz. Para ver la lista completa de cambios presione F1.
 &nbsp;&nbsp;&nbsp; Estas sugerencias suelen ser molestas para muchos usuarios! <BR> Puedes desactivarlas haciendo click en el checkbox "<I>Mostrar sugerencias al inicio</I>" de esta misma ventana.
 
 &nbsp;&nbsp;&nbsp; Puedes cambiar el tamaño del código rápidamente manteniendo presionada la tecla Control y girando la rueda del mouse, presionando la tecla <I>Control</I> y las teclas <I>+</I> o <I>-</I> del teclado numérico.

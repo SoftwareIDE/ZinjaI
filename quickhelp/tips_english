@@ -1,5 +1,5 @@
 &nbsp;&nbsp;&nbsp; If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-&nbsp;&nbsp;&nbsp; This version fixes many bugs and introduces some small improvements such as simplified compiler output for templates and other common unreadable errors (mainly related to string and stl), some new tools related to C++ preprocessor in "Tools" menu. To read the complete changelog hit F1.
+&nbsp;&nbsp;&nbsp; This version fixes many bugs and introduces some new features such as a complement installer, the possibility to insert or remove breakpoints without pausing execution, a configuration dialog for cppcheck, and some minor interfase improvements. To read the complete changelog hit F1.
 &nbsp;&nbsp;&nbsp; These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 &nbsp;&nbsp;&nbsp; You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.
