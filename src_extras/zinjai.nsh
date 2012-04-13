@@ -3,7 +3,7 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "ZinjaI"
 #!define PRODUCT_VERSION "20081014"
-!define PRODUCT_PUBLISHER "PIPEH"
+#!define PRODUCT_PUBLISHER "PIPEH"
 !define PRODUCT_WEB_SITE "http://zinjai.sourceforge.net"
 
 SetCompressor lzma

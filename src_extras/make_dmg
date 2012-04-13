@@ -45,10 +45,12 @@ echo Compiling...
 export PATH=/opt/mac/bin:/opt/mac/wx/bin:$PATH
 
 if mount|grep mnt; then sudo umount mnt; fi
-dd if=/dev/zero of=zinjai-ppc.dmg bs=512k count=78
+dd if=/dev/zero of=zinjai-ppc.dmg bs=512k count=90
 mkfs.hfsplus -v ZinjaI zinjai-ppc.dmg
 sudo mount -o loop zinjai-ppc.dmg mnt || exit 1
 rm -f zinjai.app/Contents/MacOS/zinjai
+rm -f zinjai.app/Contents/Resources/complement.bin
+rm -f zinjai.app/Contents/Resources/complement_wrap.bin
 rm -f zinjai.app/Contents/Resources/cbrowser
 rm -f zinjai.app/Contents/Resources/runner.bin
 rm -f zinjai.app/Contents/Resources/mac-terminal-wrapper.bin
@@ -61,10 +63,12 @@ sudo cp -r zinjai.app mnt/ || exit 1
 sudo umount mnt
 
 if mount|grep mnt; then sudo umount mnt; fi
-dd if=/dev/zero of=zinjai-m32.dmg bs=512k count=78
+dd if=/dev/zero of=zinjai-m32.dmg bs=512k count=90
 mkfs.hfsplus -v ZinjaI zinjai-m32.dmg
 sudo mount -o loop zinjai-m32.dmg mnt || exit 1
 rm -f zinjai.app/Contents/MacOS/zinjai
+rm -f zinjai.app/Contents/Resources/complement.bin
+rm -f zinjai.app/Contents/Resources/complement_wrap.bin
 rm -f zinjai.app/Contents/Resources/cbrowser
 rm -f zinjai.app/Contents/Resources/runner.bin
 rm -f zinjai.app/Contents/Resources/mac-terminal-wrapper.bin
