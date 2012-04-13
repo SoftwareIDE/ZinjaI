@@ -55,7 +55,6 @@ void FindFiles(wxArrayString &array, wxString where, wxString sub, wxArrayString
 		bool cont = fil.GetFirst(&filename, "*" , wxDIR_FILES);
 		while ( cont ) {
 			array.Add(sub+sep+filename);
-			cerr<<where+"*"+"*"+array.Last()<<endl;
 			if (wxFileName::IsFileExecutable(where+array.Last()))
 				bins.Add(array.Last());
 			cont = fil.GetNext(&filename);
@@ -244,6 +243,7 @@ int mxCreateComplementWindow::GetStep ( ) {
 }
 
 void mxCreateComplementWindow::SetFolder (wxString where) {
+	info=complement_info();
 	folder->SetValue(where);
 	if (where.EndsWith(sep)) where.RemoveLast();
 	if (wxFileName::FileExists(where+sep+"temp"+sep+"desc.ini")) {

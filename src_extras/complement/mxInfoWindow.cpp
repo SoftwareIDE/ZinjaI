@@ -99,6 +99,10 @@ void mxInfoWindow::OnButtonOk (wxCommandEvent & evt) {
 #endif
 		Progress(1);
 		Notify(spanish?"Instalación Finalizada":"Instalation completed.");
+		if (info.resetreq)
+			wxMessageBox(spanish?"Los cambios tendrán efecto la próxima vez que inicie ZinjaI.":"Changes will apply next time you start ZinjaI.");
+		else 
+			wxMessageBox(spanish?"La instalación ha finalizado correctamente.":"Installation successfully completed.");
 		but_cancel->Enable(false);
 		but_ok->Enable(true);
 		but_ok->SetLabel(spanish?"Cerrar":"Close");
