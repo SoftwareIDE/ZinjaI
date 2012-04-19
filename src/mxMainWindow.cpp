@@ -4978,7 +4978,9 @@ void mxMainWindow::SetOpenedFileName(wxString name) {
 void mxMainWindow::OnKeyEvent(wxWindow *who, wxKeyEvent &evt) {
 	if (who==project_tree.treeCtrl && project) {
 		project_tree.selected_item = project_tree.treeCtrl->GetSelection();
-		if (evt.GetKeyCode()==WXK_MENU) {
+		if (config->Init.autohiding_panels && evt.GetKeyCode()==WXK_ESCAPE && !autohide_handlers[ATH_PROJECT]->IsDocked() ) {
+			autohide_handlers[ATH_PROJECT]->Hide();
+		} else if (evt.GetKeyCode()==WXK_MENU) {
 			wxTreeEvent te;
 			te.SetItem(project_tree.selected_item);
 			wxRect r;
@@ -4997,9 +4999,11 @@ void mxMainWindow::OnKeyEvent(wxWindow *who, wxKeyEvent &evt) {
 			if (evt.GetKeyCode()==WXK_DELETE) OnProjectTreeDelete(cmd);
 			else evt.Skip();
 		}
-	} if (who==explorer_tree.treeCtrl) {
+	} else if (who==explorer_tree.treeCtrl) {
 		explorer_tree.selected_item=explorer_tree.treeCtrl->GetSelection();
-		if (evt.GetKeyCode()==WXK_MENU) {
+		if (config->Init.autohiding_panels && evt.GetKeyCode()==WXK_ESCAPE && !autohide_handlers[ATH_EXPLORER]->IsDocked() ) {
+			autohide_handlers[ATH_EXPLORER]->Hide();
+		} else if (evt.GetKeyCode()==WXK_MENU) {
 			wxTreeEvent te;
 			te.SetItem(explorer_tree.selected_item);
 			wxRect r;
