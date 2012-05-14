@@ -393,22 +393,19 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Indices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
 	help_autocomp_indexes = new wxCheckListBox(panel,mxID_AUTOCOMP_LIST,wxDefaultPosition,wxSize(100,100),0,NULL,wxLB_SORT);
-	wxDir dir(config->Help.autocomp_dir);
-	if ( dir.IsOpened() ) {
-		wxArrayString autocomp_array;
-		utils->Split(config->Help.autocomp_indexes,autocomp_array);
-		wxString filename;
-		wxString spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		int n;
-		while ( cont ) {
-			n = help_autocomp_indexes->Append(filename);
-			if (autocomp_array.Index(filename)!=wxNOT_FOUND)
-				help_autocomp_indexes->Check(n,true);
-			cont = dir.GetNext(&filename);
-		}	
-	}
 	
+	wxArrayString autocomp_array_all, autocomp_array_user;
+	utils->GetFilesFromDir(autocomp_array_all,config->Help.autocomp_dir);
+	utils->GetFilesFromDir(autocomp_array_all,DIR_PLUS_FILE(config->home_dir,"autocomp"));
+	utils->Split(config->Help.autocomp_indexes,autocomp_array_user);
+	utils->Unique(autocomp_array_all,true);
+	utils->Unique(autocomp_array_user,true);
+	
+	for (unsigned int i=0;i<autocomp_array_all.GetCount();i++) {
+		int n=help_autocomp_indexes->Append(autocomp_array_all[i]);
+		if (autocomp_array_user.Index(autocomp_array_all[i])!=wxNOT_FOUND) 
+			help_autocomp_indexes->Check(n,true);
+	}
 	sizer->Add(help_autocomp_indexes,sizers->BA5_DL_Exp1);
 
 	panel->SetSizerAndFit(sizer);

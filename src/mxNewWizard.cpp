@@ -462,7 +462,7 @@ void mxNewWizard::ProjectCreate() {
 		project_file.Write();
 		project_file.Close();
 	} else {
-		wxString ofull=DIR_PLUS_FILE(config->Files.templates_dir,project_templates[cual]);
+		wxString ofull=utils->WichOne(project_templates[cual],DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,false);
 		if (custom_files) { // si usa los archivos actuales, copiar solo el archivo de proyecto
 			wxString str;
 			wxTextFile fin(DIR_PLUS_FILE(ofull,project_templates[cual]+"."+_T(PROJECT_EXT))); fin.Open();
@@ -763,42 +763,35 @@ void mxNewWizard::CreatePanelTemplates() {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
 	wxArrayString templates;
-
-	wxDir dir(config->Files.templates_dir);
-    if ( dir.IsOpened() ) {
-		int n=0;
-		wxString filename;
-		wxString name, local_name, name_prefix;
-		name_prefix = wxString(_T("// !Z! Name_"))<<config->Init.language_file<<_T(":");
-		wxString spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		while ( cont ) {
-			name = filename;
-			local_name = _T("");
-			filename = DIR_PLUS_FILE(config->Files.templates_dir,name);
-			wxTextFile file(filename);
-			file.Open();
-			if (file.IsOpened()) { 
-				// buscar si tiene nombre
-				wxString line = file.GetFirstLine();
-				while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
-					if (line.StartsWith(_T("// !Z! Name:"))) {
-						name = line.Mid(12).Trim(false).Trim(true);
-					} else if (line.StartsWith(name_prefix)) {
-						local_name = line.Mid(13+config->Init.language_file.Len()).Trim(false).Trim(true);
-						break;
-					}
-					line = file.GetNextLine();
+	utils->GetFilesFromDir(templates,config->Files.templates_dir);
+	utils->GetFilesFromDir(templates,DIR_PLUS_FILE(config->home_dir,"templates"));
+	utils->Unique(templates,true);
+	
+	for (unsigned int i=0; i<templates.GetCount();i++) {
+		wxString name_prefix = wxString(_T("// !Z! Name_"))<<config->Init.language_file<<_T(":");
+		wxString name = templates[i];
+		wxString local_name = _T("");
+		wxString filename = utils->WichOne(name,DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,true);
+		wxTextFile file(filename);
+		file.Open();
+		if (file.IsOpened()) { 
+			// buscar si tiene nombre
+			wxString line = file.GetFirstLine();
+			while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
+				if (line.StartsWith(_T("// !Z! Name:"))) {
+					name = line.Mid(12).Trim(false).Trim(true);
+				} else if (line.StartsWith(name_prefix)) {
+					local_name = line.Mid(13+config->Init.language_file.Len()).Trim(false).Trim(true);
+					break;
 				}
-				if (local_name.Len()) name=local_name;
-				file.Close();
-				file_templates.Add(filename); // para uso interno
-				templates.Add(name); // para mostrar en el dialogo
-				if (filename==config->Files.default_template)
-					templates_default = n;
-				n++;
+				line = file.GetNextLine();
 			}
-			cont = dir.GetNext(&filename);
+			if (local_name.Len()) name=local_name;
+			file.Close();
+			file_templates.Add(filename); // para uso interno
+			templates[i]=name; // para mostrar en el dialogo
+			if (filename==config->Files.default_template)
+				templates_default = i;
 		}	
 	}
 
@@ -922,7 +915,6 @@ void mxNewWizard::CreatePanelProject2() {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
 	wxArrayString templates;
-	wxArrayString templates_descs;
 	project_default=1;
 	project_templates.Add(_T("<null>"));
 	project_templates.Add(_T("<main>"));
@@ -930,36 +922,30 @@ void mxNewWizard::CreatePanelProject2() {
 	templates.Add(LANG(NEWWIZARD_TEMPLATE_MAIN,"<incluir archivo y funcion main>"));
 	if (project_templates[0]==config->Files.default_project)
 		project_default=0;
-	wxString name;
-	wxDir dir(config->Files.templates_dir);
-    if ( dir.IsOpened() ) {
-		int n=1;
-		wxString filename;
-		wxString full;
-		wxString spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_DIRS);
-		while ( cont ) {
-			n++;
-			name = filename;
-			full = DIR_PLUS_FILE(config->Files.templates_dir,name);
-			if (filename==config->Files.default_project)
-				project_default=n;
-			if (wxFileName::FileExists(DIR_PLUS_FILE(full,name+_T(".zpr")))) {
-				wxTextFile file(DIR_PLUS_FILE(full,name+"."+_T(PROJECT_EXT)));
-				file.Open();
-				for (wxString line=file.GetFirstLine();!file.Eof();line=file.GetNextLine()) {
-					if (line.Left(13)==_T("project_name=")) {
-						name = line.Mid(13).Trim(true).Trim(false);
-						break;
-					}
+	
+	wxArrayString templates_array;
+	utils->GetFilesFromDir(templates_array,config->Files.templates_dir,false);
+	utils->GetFilesFromDir(templates_array,DIR_PLUS_FILE(config->home_dir,"templates"),false);
+	utils->Unique(templates_array,true);
+	
+	for(unsigned int i=0;i<templates_array.GetCount();i++) {
+		wxString name = templates_array[i];
+		wxString full = utils->WichOne(name,DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,false);
+		if (wxFileName::FileExists(DIR_PLUS_FILE(full,name+_T(".zpr")))) {
+			if (name==config->Files.default_project) project_default=i;
+			wxTextFile file(DIR_PLUS_FILE(full,name+"."+_T(PROJECT_EXT)));
+			file.Open();
+			for (wxString line=file.GetFirstLine();!file.Eof();line=file.GetNextLine()) {
+				if (line.Left(13)==_T("project_name=")) {
+					name = line.Mid(13).Trim(true).Trim(false);
+					break;
 				}
-				file.Close();
-				project_templates.Add(filename);
-				templates.Add(name);
 			}
-			cont = dir.GetNext(&filename);
-		}	
-	}
+			file.Close();
+			project_templates.Add(templates_array[i]);
+			templates.Add(name);
+		}
+	}	
 
 	sizer->Add(new wxStaticText(panel_project_2,wxID_ANY,LANG(NEWWIZARD_USE_TEMPLATE,"Utilizar plantilla"),wxDefaultPosition,wxDefaultSize),sizers->BT10);
 	project_list = new wxListBox(panel_project_2,wxID_ANY,wxDefaultPosition, wxDefaultSize, templates);

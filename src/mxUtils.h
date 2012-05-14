@@ -237,6 +237,13 @@ public:
 	
 	/// devuelve 's' para source, 'h' para header, 'o' para others, 'z' para proyectos
 	char GetFileType(wxString name, bool recognize_projects=true);
+	
+	/// returns the list of files/subdirs from a directory (not recursive, add to the array without clearing first)
+	int GetFilesFromDir(wxArrayString &array, wxString path, bool files=true);
+	/// returns the list of files subdirectories from a directory (not recursive, add to the array without clearing first)
+	int Unique(wxArrayString &array, bool do_sort=false);
+	/// looks for file in path1 and path2, and returns the first ocurrence, or and empty string if not found
+	wxString WichOne(wxString file, wxString path1, wxString path2, bool is_file=true);
 };
 
 

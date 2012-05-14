@@ -1168,3 +1168,39 @@ char mxUtils::GetFileType(wxString name, bool recognize_projects) {
 
 #define _dummy_macro_for_extract_enum_bin \
 	LANG(GENERAL_WAIT_PARSER,"Debe esperar a que se terminen de analizar todos los fuentes."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+
+int mxUtils::GetFilesFromDir (wxArrayString & array, wxString path, bool files) {
+	int n=0;
+	wxDir dir(path);
+	if ( dir.IsOpened() ) {
+		wxString filename, spec;
+		bool cont = dir.GetFirst(&filename, spec , files?wxDIR_FILES:wxDIR_DIRS);
+		while ( cont ) {
+			n++; array.Add(filename);
+			cont = dir.GetNext(&filename);
+		}	
+	}
+	return n;
+}
+
+int mxUtils::Unique (wxArrayString &array, bool do_sort) {
+	if (do_sort) array.Sort();
+	int n=array.GetCount(),d=0,i=1;
+	while (i<n) {
+		if (array[i]==array[i-1]) d++;
+		else if (d) array[i-d]=array[i];
+		i++;
+	}
+	if (d) array.RemoveAt(n-d,d);
+	return d;
+}
+
+wxString mxUtils::WichOne(wxString file, wxString path1, wxString path2, bool is_file) {
+	wxString res=DIR_PLUS_FILE(path1,file);
+	if (is_file) { if (wxFileExists(res)) return res; }
+	else { if (wxDirExists(res)) return res; }
+	res=DIR_PLUS_FILE(path2,file);
+	if (is_file) { if (wxFileExists(res)) return res; }
+	else { if (wxDirExists(res)) return res; }
+	return "";
+}

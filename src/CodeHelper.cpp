@@ -788,9 +788,10 @@ void CodeHelper::ResetStdData() {
 }
 
 bool CodeHelper::LoadData(wxString index) {
-	wxTextFile fil(DIR_PLUS_FILE(config->Help.autocomp_dir,index));
+	wxString filepath=utils->WichOne(index,DIR_PLUS_FILE(config->home_dir,"autocomp"),config->Help.autocomp_dir,true);
+	if (!filepath.Len()) return false;
+	wxTextFile fil(filepath);
 	actual_indexes.Add(index);
-	if (!fil.Exists()) return false;
 	fil.Open();
 	wxString header;
 	unsigned int tabs;

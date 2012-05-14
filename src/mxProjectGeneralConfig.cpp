@@ -126,19 +126,13 @@ void mxProjectGeneralConfig::OnHelpButton(wxCommandEvent &event) {
 }
 
 void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {
+
+	wxArrayString autocomp_array_all;
+	utils->GetFilesFromDir(autocomp_array_all,config->Help.autocomp_dir);
+	utils->GetFilesFromDir(autocomp_array_all,DIR_PLUS_FILE(config->home_dir,"autocomp"));
+	utils->Unique(autocomp_array_all,true);
 	
-	wxDir dir(config->Help.autocomp_dir);
-	if ( dir.IsOpened() ) {
-		wxArrayString autocomp_array;
-		wxString filename;
-		wxString spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		while ( cont ) {
-			autocomp_array.Add(filename);
-			cont = dir.GetNext(&filename);
-		}
-		mxMultipleChoiceEditor(this,LANG(PROJECTGENERAL_AUTOCOMPLETION,"Autocompletado"),LANG(PROJECTGENERAL_INDEXES,"Indices:"),project_autocomp,autocomp_array);
-	}
+	mxMultipleChoiceEditor(this,LANG(PROJECTGENERAL_AUTOCOMPLETION,"Autocompletado"),LANG(PROJECTGENERAL_INDEXES,"Indices:"),project_autocomp,autocomp_array_all);
 	
 }
 

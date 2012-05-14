@@ -8,7 +8,6 @@ pestaña "avanzado" en compilacion de proyecto
 
 Addons: 
 	armar template sfml+wxwidgets
-	que zinjai los instale solo
 	que puedan definir herramientas personalizadas
 
 Cosas importantes que no andan!!!:
