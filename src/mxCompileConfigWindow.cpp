@@ -28,7 +28,6 @@ BEGIN_EVENT_TABLE(mxCompileConfigWindow, wxDialog)
 	EVT_BUTTON(mxID_COMPILE_OPTIONS_COMP_EXTRA,mxCompileConfigWindow::OnButtonCompilerOptions)
 	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxCompileConfigWindow::OnArgsReplaceDir)
 	EVT_MENU(mxID_ARGS_DEFAULT,mxCompileConfigWindow::OnArgsDefault)
-	EVT_MENU(mxID_ARGS_FROM_TEMPLATE,mxCompileConfigWindow::OnArgsFromTemplate)
 	EVT_MENU(mxID_ARGS_ADD_DIR,mxCompileConfigWindow::OnArgsAddDir)
 	EVT_MENU(mxID_ARGS_REPLACE_FILE,mxCompileConfigWindow::OnArgsReplaceFile)
 	EVT_MENU(mxID_ARGS_ADD_FILE,mxCompileConfigWindow::OnArgsAddFile)
@@ -179,47 +178,6 @@ void mxCompileConfigWindow::OnArgsDefault(wxCommandEvent &evt) {
 	compiler_options_ctrl->SetValue(config->Running.compiler_options);
 }
 
-void mxCompileConfigWindow::OnArgsFromTemplate(wxCommandEvent &evt) {
-	
-	wxArrayString opts_list, templates;
-	
-	wxDir dir(config->Files.templates_dir);
-	if ( dir.IsOpened() ) {
-		wxString filename,options,name,spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		while ( cont ) {
-			name = filename;
-			options = _T("");
-			filename = DIR_PLUS_FILE(config->Files.templates_dir,name);
-			wxTextFile file(filename);
-			file.Open();
-			if (file.IsOpened()) { 
-				// buscar si tiene nombre
-				wxString line = file.GetFirstLine();
-				while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
-					if (line.Left(15)==_T("// !Z! Options:")) {
-						options = line.Mid(15).Trim(false).Trim(true);
-					}
-					if (line.Left(12)==_T("// !Z! Name:")) {
-						name = line.Mid(12).Trim(false).Trim(true);
-					}
-					line = file.GetNextLine();
-				}
-				file.Close();
-				if (options.Len()) {
-					opts_list.Add(options); // para uso interno
-					templates.Add(name); // para mostrar en el dialogo
-				}
-			}
-			cont = dir.GetNext(&filename);
-		}	
-	}
-	
-	int res = wxGetSingleChoiceIndex(LANG(COMPILECONF_SELECT_TEMPLATE,"Seleccione una plantilla de la cual copiar los argumentos"),LANG(COMPILECONF_COMPILER_ARGS_DLG,"Parametros para la comopilacion"),templates,this);
-	if (res!=-1) compiler_options_ctrl->SetValue(opts_list[res]);
-	
-}
-
 void mxCompileConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
 	wxString sel = text_for_edit->GetStringSelection();
 	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER,"Reemplazar seleccion por directorio:"),sel.Len()?sel:last_dir);
@@ -249,38 +207,35 @@ void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {
 	menu.AppendSeparator();
 	menu.Append(mxID_ARGS_DEFAULT,LANG(COMPILECONF_POPUP_DEFAULT,"valores por defecto"));
 //	menu.Append(mxID_ARGS_FROM_TEMPLATE,LANG(COMPILECONF_POPUP_COPY_FROM_TEMPLATE,"copiar de plantilla..."));
-	
+
 	wxMenu *templates=new wxMenu; opts_list.Clear();
-	wxDir dir(config->Files.templates_dir);
-	if ( dir.IsOpened() ) {
-		wxString filename,options,name,spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		while ( cont ) {
-			name = filename;
-			options = _T("");
-			filename = DIR_PLUS_FILE(config->Files.templates_dir,name);
-			wxTextFile file(filename);
-			file.Open();
-			if (file.IsOpened()) { 
-				// buscar si tiene nombre
-				wxString line = file.GetFirstLine();
-				while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
-					if (line.Left(15)==_T("// !Z! Options:")) {
-						options = line.Mid(15).Trim(false).Trim(true);
-					}
-					if (line.Left(12)==_T("// !Z! Name:")) {
-						name = line.Mid(12).Trim(false).Trim(true);
-					}
-					line = file.GetNextLine();
+	wxArrayString templates_list;
+	utils->GetFilesFromDir(templates_list,config->Files.templates_dir);
+	utils->GetFilesFromDir(templates_list,DIR_PLUS_FILE(config->home_dir,"templates"));
+	utils->Unique(templates_list,true);
+	for(unsigned int i=0;i<templates_list.GetCount();i++) {
+		wxString name=templates_list[i], options;
+		wxString filename = utils->WichOne(name,DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,true);
+		wxTextFile file(filename);
+		file.Open();
+		if (file.IsOpened()) { 
+			// buscar si tiene nombre
+			wxString line = file.GetFirstLine();
+			while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
+				if (line.Left(15)==_T("// !Z! Options:")) {
+					options = line.Mid(15).Trim(false).Trim(true);
 				}
-				file.Close();
-				if (options.Len()) {
-					templates->Append(mxID_LAST_ID+opts_list.GetCount(),name); // para mostrar en el dialogo
-					opts_list.Add(options); // para uso interno
+				if (line.Left(12)==_T("// !Z! Name:")) {
+					name = line.Mid(12).Trim(false).Trim(true);
 				}
+				line = file.GetNextLine();
 			}
-			cont = dir.GetNext(&filename);
-		}	
+			file.Close();
+			if (options.Len()) {
+				templates->Append(mxID_LAST_ID+opts_list.GetCount(),name); // para mostrar en el dialogo
+				opts_list.Add(options); // para uso interno
+			}
+		}
 	}
 	if (opts_list.GetCount()) menu.AppendSubMenu(templates,LANG(COMPILECONF_POPUP_COPY_FROM_TEMPLATE,"copiar de plantilla..."));
 	PopupMenu(&menu);

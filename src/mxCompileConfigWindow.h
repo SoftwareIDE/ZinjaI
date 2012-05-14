@@ -35,7 +35,6 @@ public:
 	void OnArgsAddFile(wxCommandEvent &evt);
 	void OnArgsReplaceFile(wxCommandEvent &evt);
 	void OnArgsDefault(wxCommandEvent &evt);
-	void OnArgsFromTemplate(wxCommandEvent &evt);
 	void OnArgsFromTemplateV2(wxCommandEvent &evt);
 	void OnArgsAddDir(wxCommandEvent &evt);
 	void OnArgsReplaceDir(wxCommandEvent &evt);
