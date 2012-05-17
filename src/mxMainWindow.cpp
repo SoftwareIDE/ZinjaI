@@ -1304,7 +1304,7 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 		menu.Append(mxID_FILE_OPEN_H, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_H,"&Abrir complementario...\tF12"));
 	menu.Append(mxID_FILE_OPEN_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER,"Abrir carpeta contenedora..."));
 	menu.Append(mxID_FILE_EXPLORE_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER,"Explorar carpeta contenedora"));
-	menu.Append(mxID_FILE_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"&Propiedades..."));
+	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));
 	menu.Append(wxID_SAVE, LANG(MAINW_PROJECT_FILE_POPUP_SAVE,"&Guardar\tCtrl+S"));
 	if (!project)
 		menu.Append(wxID_SAVEAS, LANG(MAINW_PROJECT_FILE_POPUP_SAVE_AS,"G&uardar Como...\tCtrl+Shift+S"));
@@ -1312,6 +1312,7 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 	menu.Append(wxID_CLOSE, LANG(MAINW_PROJECT_FILE_POPUP_CLOSE,"&Cerrar\tCtrl+W"));
 	if (notebook_sources->GetPageCount()>1)
 		menu.Append(mxID_FILE_CLOSE_ALL_BUT_ONE, LANG(MAINW_PROJECT_FILE_POPUP_CLOSE_ALL_BUT_ONE,"Cerrar &todas las demas\tCtrl+Alt+W"));
+	menu.Append(mxID_FILE_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"&Propiedades..."));
 	notebook_sources->PopupMenu(&menu);
 }
 
