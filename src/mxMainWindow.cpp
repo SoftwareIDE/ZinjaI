@@ -440,17 +440,17 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	else
 		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_INSPECTIONS] = new mxHidenPanel(this,inspection_ctrl,config->Debug.inspections_on_right?2:1,LANG(MAINW_AUTOHIDE_INSPECTIONS,"Inspecciones"));
+		autohide_handlers[ATH_INSPECTIONS] = new mxHidenPanel(this,inspection_ctrl,config->Debug.inspections_on_right?HP_RIGHT:HP_BOTTOM,LANG(MAINW_AUTOHIDE_INSPECTIONS,"Inspecciones"));
 	aui_manager.AddPane((wxGrid*)(backtrace_ctrl = new mxBacktraceGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("backtrace").Caption(LANG(CAPTION_BACKTRACE,"Trazado Inverso")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(1).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_BACKTRACE] = new mxHidenPanel(this,backtrace_ctrl,1,LANG(MAINW_AUTOHIDE_BACKTRACE,"Trazado Inverso"));
+		autohide_handlers[ATH_BACKTRACE] = new mxHidenPanel(this,backtrace_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_BACKTRACE,"Trazado Inverso"));
 	aui_manager.AddPane((wxGrid*)(threadlist_ctrl = new mxThreadGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("threadlist").Caption(LANG(CAPTION_THREADLIST,"Hilos de Ejecucion")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_THREADS] = new mxHidenPanel(this,threadlist_ctrl,1,LANG(MAINW_AUTOHIDE_THREADS,"Hilos"));
+		autohide_handlers[ATH_THREADS] = new mxHidenPanel(this,threadlist_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_THREADS,"Hilos"));
 	aui_manager.AddPane(CreateNotebookSources(), wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
 	aui_manager.AddPane(debug_log_panel=new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_HSCROLL),wxAuiPaneInfo().Name("quick_help").Bottom().Caption(LANG(CAPTION_DEBUGGER_LOG,"Mensajes del Depurador")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_DEBUG_LOG] = new mxHidenPanel(this,debug_log_panel,1,LANG(MAINW_AUTOHIDE_DEBUG_LOG,"Log Depurador"));
+		autohide_handlers[ATH_DEBUG_LOG] = new mxHidenPanel(this,debug_log_panel,HP_BOTTOM,LANG(MAINW_AUTOHIDE_DEBUG_LOG,"Log Depurador"));
 	
 	if (config->Init.autohiding_panels) {
 		aui_manager.AddPane(autohide_handlers[ATH_COMPILER], wxAuiPaneInfo().CaptionVisible(false).Bottom().Position(1).Show());
@@ -2053,7 +2053,7 @@ wxHtmlWindow* mxMainWindow::CreateQuickHelp(wxWindow* parent) {
     quick_help->SetPage(LANG(MAINW_QUICKHELP_INIT,"Coloca el cursor de texto sobre una palabra y presona Shift+F1 para ver la ayuda en este cuadro."));
 	
 	if (config->Init.autohiding_panels) {
-		autohide_handlers[ATH_QUICKHELP] = new mxHidenPanel(this,quick_help,1,LANG(MAINW_AUTOHIDE_QUICKHELP,"Ayuda/Busqueda"));
+		autohide_handlers[ATH_QUICKHELP] = new mxHidenPanel(this,quick_help,HP_BOTTOM,LANG(MAINW_AUTOHIDE_QUICKHELP,"Ayuda/Busqueda"));
 	}
 	
     return quick_help;
@@ -2099,7 +2099,7 @@ wxTreeCtrl* mxMainWindow::CreateExplorerTree() {
 	explorer_tree.show_only_sources = false;
 	
 	if (config->Init.autohiding_panels) {
-		autohide_handlers[ATH_EXPLORER] = new mxHidenPanel(this,explorer_tree.treeCtrl,0,LANG(MAINW_AUTOHIDE_EXPLORER,"Explorador"));
+		autohide_handlers[ATH_EXPLORER] = new mxHidenPanel(this,explorer_tree.treeCtrl,HP_LEFT,LANG(MAINW_AUTOHIDE_EXPLORER,"Explorador"));
 	}
 	
 	return explorer_tree.treeCtrl;
@@ -2131,7 +2131,7 @@ wxTreeCtrl* mxMainWindow::CreateProjectTree() {
 	project_tree.treeCtrl->ExpandAll();
 	
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_PROJECT] = new mxHidenPanel(this,project_tree.treeCtrl,0,LANG(MAINW_AUTOHIDE_PROJECT,"Proyecto"));
+		autohide_handlers[ATH_PROJECT] = new mxHidenPanel(this,project_tree.treeCtrl,HP_LEFT,LANG(MAINW_AUTOHIDE_PROJECT,"Proyecto"));
 	
 	return project_tree.treeCtrl;
 }
@@ -2161,7 +2161,7 @@ wxTreeCtrl* mxMainWindow::CreateSymbolsTree() {
 //	symbols_tree.treeCtrl->AddRoot(_T("Simbolos encontrados"), 0);
 	
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_SYMBOL] = new mxHidenPanel(this,symbols_tree.treeCtrl,0,LANG(MAINW_AUTOHIDE_SYMBOLS,"Simbolos"));
+		autohide_handlers[ATH_SYMBOL] = new mxHidenPanel(this,symbols_tree.treeCtrl,HP_LEFT,LANG(MAINW_AUTOHIDE_SYMBOLS,"Simbolos"));
 	
 	return symbols_tree.treeCtrl;
 }
@@ -2196,7 +2196,7 @@ wxTreeCtrl* mxMainWindow::CreateCompilerTree() {
 	items.Add(compiler_tree.all);
 	
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_COMPILER] = new mxHidenPanel(this,compiler_tree.treeCtrl,1,LANG(MAINW_AUTOHIDE_COMPILER,"Compilador"));
+		autohide_handlers[ATH_COMPILER] = new mxHidenPanel(this,compiler_tree.treeCtrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_COMPILER,"Compilador"));
 
 	return compiler_tree.treeCtrl;
 }
@@ -4501,8 +4501,8 @@ void mxMainWindow::OnWhereAmI(wxCommandEvent &event) {
 			if (!src->sin_titulo) {
 				wxFileName fname=src->source_filename;
 				fname.Normalize();
-				where<<fname.GetFullPath()<<" - "<<LANG(FIND_LINE,"linea")<<" "<<src->GetCurrentLine()<<" col "<<
-					src->GetCurrentPos()-src->PositionFromLine(src->GetCurrentLine())<<"\n";
+				where<<fname.GetFullPath()<<" - "<<LANG(FIND_LINE,"linea")<<" "<<src->GetCurrentLine()+1<<" col "<<
+					src->GetCurrentPos()-src->PositionFromLine(src->GetCurrentLine())+1<<"\n";
 			}
 			where<<src->WhereAmI();
 			src->ShowBaloon(where);
@@ -5379,7 +5379,7 @@ void mxMainWindow::ShowExplorerTreePanel() {
 void mxMainWindow::CreateBeginnersPanel() {
 	beginner_panel = new mxBeginnerPanel(this);
 	if (config->Init.autohiding_panels) {
-		autohide_handlers[ATH_BEGINNERS] = new mxHidenPanel(this,beginner_panel,2,LANG(MAINW_BEGGINERS_PANEL,"Asistencias"));
+		autohide_handlers[ATH_BEGINNERS] = new mxHidenPanel(this,beginner_panel,HP_RIGHT,LANG(MAINW_BEGGINERS_PANEL,"Asistencias"));
 		aui_manager.AddPane(autohide_handlers[ATH_BEGINNERS], wxAuiPaneInfo().CaptionVisible(false).Right().Position(0).Show());
 	}
 	aui_manager.AddPane(beginner_panel, wxAuiPaneInfo().Name(_T("beginner_panel")).Caption(LANG(MAINW_BEGGINERS_PANEL,"Panel de Asistencias")).Right().Hide());

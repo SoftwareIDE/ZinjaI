@@ -28,9 +28,9 @@ int mxHidenPanel::used_left_bottom=0;
 	
 bool mxHidenPanel::ignore_autohide=false;	
 	
-mxHidenPanel::mxHidenPanel(wxWindow *parent, wxWindow *acontrol, int apos, wxString alabel):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxSize(15,15)) {
+mxHidenPanel::mxHidenPanel(wxWindow *parent, wxWindow *acontrol, hp_pos apos, wxString alabel):wxPanel(parent,wxID_ANY,wxDefaultPosition,wxSize(15,15)) {
 	label=alabel; selected=false; control=acontrol; pos=apos; forced_show=mouse_in=false; showing=false;
-	if (pos!=1) { 
+	if (pos!=HP_BOTTOM) { 
 		unsigned int i=1; 
 		while (i<label.Len()) { 
 			label=label.Mid(0,i)+"\n"+label.Mid(i); 
@@ -46,7 +46,7 @@ void mxHidenPanel::OnPaint(wxPaintEvent &evt) {
 	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_3DSHADOW:(mouse_in||showing?wxSYS_COLOUR_3DHIGHLIGHT:wxSYS_COLOUR_3DFACE)));
 	dc.Clear();
 	dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-//	if (pos==1)
+//	if (pos==HP_BOTTOM)
 //		dc.DrawText(label,0,0);
 	int w,h;
 	GetClientSize(&w,&h);
@@ -76,13 +76,13 @@ void mxHidenPanel::ShowFloat() {
 	}
 	GetScreenPosition(&ax,&ay);
 	GetSize(&aw,&ah);
-	if (pos==0) {
+	if (pos==HP_LEFT) {
 		px=ax+aw;
 		pw/=4;
 		if (used_bottom && used_bottom_left<px+pw) ph-=used_bottom;
 		used_left=pw;
 		used_left_bottom=px+ph;
-	} else if (pos==1) {
+	} else if (pos==HP_BOTTOM) {
 		ph/=3;
 		py=ay-ph/*-aui_manager.GetArtProvider()->GetMetric(wxAUI_DOCKART_CAPTION_SIZE)*/;
 		if (used_left && used_left_bottom>px) { pw-=used_left; px+=used_left; }
@@ -90,7 +90,7 @@ void mxHidenPanel::ShowFloat() {
 		used_bottom=ph;
 		used_bottom_left=px;
 		used_bottom_right=px+pw;
-	} else if (pos==2) {
+	} else if (pos==HP_RIGHT) {
 		pw/=control==(wxWindow*)main_window->inspection_ctrl?3:4;
 		px=ax-pw;
 		if (used_bottom && used_bottom_right>px) ph-=used_bottom;
@@ -114,18 +114,18 @@ void mxHidenPanel::ShowDock() {
 	pane.Row(5);
 	pane.Position(5);
 	pane.Dock();
-	if (pos==0) pane.Left();
-	else if (pos==1) pane.Bottom();
-	else if (pos==2) pane.Right();
+	if (pos==HP_LEFT) pane.Left();
+	else if (pos==HP_BOTTOM) pane.Bottom();
+	else if (pos==HP_RIGHT) pane.Right();
 	showing=true;
 	main_window->aui_manager.Update();
 	selected=true; Refresh();
 }
 
 void mxHidenPanel::Hide() {
-	if (pos==0) used_left=0;
-	if (pos==1) used_bottom=0;
-	if (pos==2) used_right=0;
+	if (pos==HP_LEFT) used_left=0;
+	if (pos==HP_BOTTOM) used_bottom=0;
+	if (pos==HP_RIGHT) used_right=0;
 	timer->Stop();
 	selected=false; mouse_in=false; forced_show=false;
 	main_window->aui_manager.GetPane(control).Hide();

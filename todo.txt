@@ -1,14 +1,14 @@
 ZinjaI todo
 
 pestaña "avanzado" en compilacion de proyecto
-	variables de entorno para compilar
-	variables de entorno ejecutar
-	compilar con make/otra cosa
-	compilar cruzado?
+	variables de entorno para compilar y para ejecutar
+	algun super menu (pestaña en preferencias y combo en genereal de opciones de compilacion?) para elegir el "toolchain" (gcc-versiones, wine+gcc, makefile, clang, personalizado, etc)
+	alguna forma de ejecutar indirectamente (ejemplo: bibliotecas, o comvida)
 
 Addons: 
 	armar template sfml+wxwidgets
 	que puedan definir herramientas personalizadas
+	que se instalen system-wide o user-wide
 
 Cosas importantes que no andan!!!:
 	ser consiente de los scopes (ejemplo: sfml)
