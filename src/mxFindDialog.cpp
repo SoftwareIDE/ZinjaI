@@ -128,6 +128,10 @@ void mxFindDialog::ShowFind(mxSource *source) {
 void mxFindDialog::ShowReplace(mxSource *source) {
   replace_mode=true;
   check_close->SetValue(false);
+	if (combo_scope->GetSelection()>1) {
+		combo_scope->SetSelection(1);
+		wxCommandEvent cmd; OnComboScope(cmd);
+	}
 	if (combo_replace->GetCount()>1)
 		combo_replace->SetSelection(combo_find->GetCount()-2);
 	if (source) {
