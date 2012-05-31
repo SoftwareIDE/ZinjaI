@@ -23,8 +23,8 @@ cursor=5207
 [source]
 path=src/mxHidenPanel.cpp
 cursor=1118
-marker=103
 marker=149
+marker=103
 [source]
 path=src/mxMainWindow.cpp
 cursor=45629
@@ -67,8 +67,8 @@ cursor=36108
 [source]
 path=src/ProjectManager.cpp
 cursor=82975
-marker=1168
 marker=1334
+marker=1168
 [source]
 path=src/CodeHelper.cpp
 cursor=28890
@@ -79,8 +79,8 @@ marker=528
 [source]
 path=src/HelpManager.cpp
 cursor=28348
-marker=243
 marker=617
+marker=243
 [source]
 path=src/ShareManager.cpp
 cursor=5417
@@ -155,8 +155,8 @@ cursor=239
 [source]
 path=src/mxInspectionGrid.cpp
 cursor=3567
-marker=616
 marker=111
+marker=616
 [source]
 path=src/mxBacktraceGrid.cpp
 cursor=1055
@@ -291,8 +291,8 @@ breakpoint=26
 [source]
 path=src/mxInspectionPrint.cpp
 cursor=894
-breakpoint=26
 breakpoint=16
+breakpoint=26
 [source]
 path=src/mxExternInspection.cpp
 cursor=735

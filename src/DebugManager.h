@@ -270,7 +270,7 @@ public:
 	void ThreadListClean();
 	void SelectThread(wxString id);
 	
-	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print repeats ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
+	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print elements ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
 	void SetFullOutput(bool on=false);
 };
 

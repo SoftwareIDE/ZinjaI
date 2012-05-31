@@ -478,6 +478,7 @@ void DebugManager::HowDoesItRuns() {
 	MarkCurrentPoint();
 	really_running = true;
 	wxString ans = WaitAnswer(), state_text=LANG(DEBUG_STATUS_UNKNOWN,"Estado desconocido");
+
 	really_running = false;
 	if (!process || stopping) return;
 	int st_pos = ans.Find(_T("*stopped"));
@@ -1854,7 +1855,7 @@ bool DebugManager::UpdateInspection() {
 	if (i1!=i2) {
 		// el print-repeats se desactiva para que las otras ventanas puedan mostrar todo, 
 		// y despues se activa ya que en la tabla de inspecciones no entran muchos datos seguro
-		SendCommand(_T("-gdb-set print repeats 0")); 
+		SetFullOutput(true);
 		while (i1!=i2) {
 			bool do_inspect=false;
 			if ((*i1)->frame.Len()) {
@@ -1871,12 +1872,12 @@ bool DebugManager::UpdateInspection() {
 			} else do_inspect=true;
 			if (do_inspect) (*i1)->Update(); ++i1;
 		}
-		SendCommand(_T("-gdb-set print repeats 100"));
+		SetFullOutput(false);
 	}
 	
 //	list<mxInspectionMatrix*>::iterator i1=matrix_list.begin(), i2=matrix_list.end();
 //	if (i1!=i2) {
-//		SendCommand(_T("-gdb-set print repeats 0"));
+//		SendCommand(_T("-gdb-set print elements 0"));
 //		while (i1!=i2) { 
 //			bool do_inspect=false;
 //			if ((*i1)->frame!=my_frame) {
@@ -1892,7 +1893,7 @@ bool DebugManager::UpdateInspection() {
 //			if (do_inspect)
 //				(*i1)->UpdateTable(); i1++;
 //		}
-//		SendCommand(_T("-gdb-set print repeats 10"));
+//		SendCommand(_T("-gdb-set print elements 10"));
 //	}
 	if (my_frame!=current_frame) SendCommand(_T("-stack-select-frame "),current_frame_num);
 	
@@ -2835,9 +2836,12 @@ void DebugManager::SelectThread(wxString id) {
 }
 
 void DebugManager::SetFullOutput (bool on) {
-	if (on)
+	if (on) {
 		SendCommand(_T("set print repeats 0"));
-	else
+		SendCommand(_T("set print elements 0"));
+	} else {
 		SendCommand(_T("set print repeats 100"));
+		SendCommand(_T("set print elements 100"));
+	}
 }
 
