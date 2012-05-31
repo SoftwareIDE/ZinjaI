@@ -37,6 +37,7 @@ using namespace std;
 DebugManager *debug;
 
 DebugManager::DebugManager() {
+	show_breakpoint_error=true;
 	pause_fake_num = -1;
 	current_handle = -1;
 	last_backtrace_size = 0;
@@ -455,7 +456,6 @@ bool DebugManager::Run() {
 	if (waiting || !debugging) return false;
 	running = true;
 	wxString ans = SendCommand(_T("-exec-run"));
-//	cerr<<endl<<ans.Mid(1,7).c_str()<<"*"<<endl;
 	if (ans.Contains(_T("^running"))) {
 		SetStateText(LANG(DEBUG_STATUS_RUNNING,"Ejecutando..."));
 		HowDoesItRuns();
@@ -993,19 +993,20 @@ wxString DebugManager::WaitAnswer() {
 		while (buffer[c]!='\0') {
 			if (first || buffer[c]=='\r' || buffer[c]=='\n') {
 				if (on_warn) {
+					// si estabamos en un warning (mensaje para el debug_log_panel, o interesante para analizar por el DebugManager)
 					buffer[c]='\0';
 					warn<<buffer+iwarn;
-					if (warn[0]=='=' || warn.StartsWith(_T("&\"warning:"))) {
+					if (warn.StartsWith("&\"Error in re-setting breakpoint ")) {
+						long bn=-1;	if (warn.Mid(33).BeforeFirst(':').ToLong(&bn)) BadBreakpoint(bn);
+					} else if (warn[0]=='=' || warn.StartsWith("&\"warning:") ) {
 						if (warn[0]=='&') warn=warn.Mid(2,warn.Len()-3);
-//						cerr<<"***"<<warn<<"***"<<endl;
 						main_window->AddToDebugLog(warn);
 					} 
-//					else cerr<<"+++***"<<warn<<"***"<<endl;
-					warn.clear();
-					i=iwarn; c++;
+					// eliminar el warning del buffer
+					warn.clear(); i=iwarn; c++;
 					while (buffer[c]!='\0')
 						buffer[i++]=buffer[c++];
-					buffer[c=i]='\0';
+					buffer[i]='\0'; c=iwarn;
 				} else {
 					if (!first) c++; else first=false;
 				}
@@ -1146,13 +1147,8 @@ int DebugManager::SetBreakPoints(mxSource *source, wxString path) {
 					bitem->handle = source->MarkerAdd(l, mxSTC_MARK_BREAKPOINT);
 			}
 			
-		} else { // si no se pudo colocar
-			if (!bitem->error) {
-				bitem->error=true;
-				source->MarkerDeleteHandle(bitem->handle);
-				bitem->handle = source->MarkerAdd(l, mxSTC_MARK_BAD_BREAKPOINT);
-			}
-		}
+		} else 
+			BadBreakpoint(bitem,source,l);
 		bitem = bitem->next;
 	}
 	return cont;
@@ -2447,7 +2443,6 @@ bool DebugManager::FindBreakInfoFromNumber(int num, break_line_item *&bitem, mxS
 			file = file->next;
 		}
 	}
-// 	DEBUG_INFO("FindBreakInfoFromNumber: FALSE!!!");
 	return false;
 }
 
@@ -2843,5 +2838,45 @@ void DebugManager::SetFullOutput (bool on) {
 		SendCommand(_T("set print repeats 100"));
 		SendCommand(_T("set print elements 100"));
 	}
+}
+
+void DebugManager::BadBreakpoint(int num) {
+	list<breakinfo>::iterator it=break_list.begin();
+	while (it!=break_list.end()) {
+		if (it->n==num) {
+			mxSource *src=main_window->FindSource(it->fname);
+			if (src) {
+				break_line_item *bitem=src->first_break_item;
+				while (bitem && src->MarkerLineFromHandle(bitem->handle)!=it->line)
+					bitem = bitem->next;
+				if (bitem) BadBreakpoint(bitem,src,it->line); else ShowBreakPointErrorMessage();
+			} else ShowBreakPointErrorMessage();
+			return;
+		}
+		it++;
+	}
+}
+
+void DebugManager::BadBreakpoint(break_line_item *bitem, mxSource *source, int line) {
+	ShowBreakPointErrorMessage();
+	if (!bitem->error) {
+		bitem->error=true;
+		source->MarkerDeleteHandle(bitem->handle);
+		bitem->handle = source->MarkerAdd(line,mxSTC_MARK_BAD_BREAKPOINT);
+	}
+}
+
+void DebugManager::ShowBreakPointErrorMessage ( ) {
+	if (!show_breakpoint_error) return;
+	int res=mxMessageDialog(main_window,
+		LANG(DEBUG_BAD_BREAKPOINT_WARNING,
+		"El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n"
+		"* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n"
+		"* Información de depuración desactualizada o inexistente. Intente recompilar completamente\n"
+		"  el programa/proyecto, utilizando el item Limpiar del menu Ejecucion antes de depurar.\n"
+		"* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n"
+		"  espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.")
+		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
+	if (res&mxMD_CHECKED) show_breakpoint_error=false;
 }
 

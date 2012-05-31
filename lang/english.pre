@@ -102,6 +102,8 @@ THREADS_NO_THREADS
 <<No threads>>
 THREADS_NO_INFO
 <<Thread info not available>>
+DEBUG_BAD_BREAKPOINT_WARNING
+Some breakpoints could not been setted by the debugger. Posible causes are:\n* Some breakpoints are placed in files that do not belong to the project.\n* Missing or outdated debugging information. Use Clean item from Run menu before\n  debugging.\n* Spaces or special characters in files' paths. If that is the case, try moving\n  the project or renaming the directories.
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS
@@ -588,14 +590,12 @@ COMPILECONF_INVALID_WORKDIR
 Working directory is not valid.
 COMPILECONF_WORKDIR_DLG
 Working directory:
-COMPILECONF_SELECT_TEMPLATE
-Select a template to copy arguments
-COMPILECONF_COMPILER_ARGS_DLG
-Extra arguments for compilation
 COMPILECONF_POPUP_DEFAULT
 default value
 COMPILECONF_POPUP_COPY_FROM_TEMPLATE
 copy from template...
+COMPILECONF_COMPILER_ARGS_DLG
+Extra arguments for compilation
 GENERAL_PREPARING_BUILDING
 Preparing for compiling...
 MAINW_COMPILATION_INTERRUPTED
@@ -1294,6 +1294,8 @@ MAINW_PROJECT_FILE_POPUP_OPEN_H
 Open Header/Source
 MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER
 Explore containing folder
+MENUITEM_VIEW_SPLIT_VIEW
+&Duplicate view
 MAINW_PROJECT_FILE_POPUP_SAVE
 Sa&ve
 MAINW_PROJECT_FILE_POPUP_SAVE_AS
@@ -1406,8 +1408,6 @@ MENUITEM_EDIT_FORCE_AUTOCOMPLETE
 Show Autocompletion
 MENUITEM_EDIT
 &Edit
-MENUITEM_VIEW_SPLIT_VIEW
-&Duplicate view
 MENUITEM_VIEW_LINE_WRAP
 Line Wrap
 MENUITEM_VIEW_WHITE_SPACES

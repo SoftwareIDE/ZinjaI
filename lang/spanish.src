@@ -100,6 +100,8 @@ THREADS_NO_THREADS
 <<No hay hilos>>
 THREADS_NO_INFO
 <<Informacion no disponible>>
+DEBUG_BAD_BREAKPOINT_WARNING
+El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n* Información de depuración desactualizada o inexistente. Intente recompilar completamente\n  el programa/proyecto, utilizando el item Limpiar del menu Ejecucion antes de depurar.\n* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n  espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS
@@ -586,14 +588,12 @@ COMPILECONF_INVALID_WORKDIR
 El directorio de trabajo no es valido.
 COMPILECONF_WORKDIR_DLG
 Directorio de trabajo:
-COMPILECONF_SELECT_TEMPLATE
-Seleccione una plantilla de la cual copiar los argumentos
-COMPILECONF_COMPILER_ARGS_DLG
-Parametros para la comopilacion
 COMPILECONF_POPUP_DEFAULT
 valores por defecto
 COMPILECONF_POPUP_COPY_FROM_TEMPLATE
 copiar de plantilla...
+COMPILECONF_COMPILER_ARGS_DLG
+Parametros extra para el compilador
 GENERAL_PREPARING_BUILDING
 Preparando compilacion...
 MAINW_COMPILATION_INTERRUPTED
@@ -1292,6 +1292,8 @@ MAINW_PROJECT_FILE_POPUP_OPEN_H
 &Abrir complementario...\tF12
 MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER
 Explorar carpeta contenedora
+MENUITEM_VIEW_SPLIT_VIEW
+&Duplicar vista
 MAINW_PROJECT_FILE_POPUP_SAVE
 &Guardar\tCtrl+S
 MAINW_PROJECT_FILE_POPUP_SAVE_AS
@@ -1404,8 +1406,6 @@ MENUITEM_EDIT_FORCE_AUTOCOMPLETE
 Autocompletar
 MENUITEM_EDIT
 &Editar
-MENUITEM_VIEW_SPLIT_VIEW
-&Duplicar vista
 MENUITEM_VIEW_LINE_WRAP
 &Ajuste de linea
 MENUITEM_VIEW_WHITE_SPACES
@@ -3189,7 +3189,7 @@ Los puntos de interrupcion no pueden colocarse en lineas vacias\n que contengan 
 DEBUG_BREAKPOINT_CAPTION
 Puntos de Interrupcion
 DEBUG_NO_BREAKPOINT_WHILE_RUNNING
-No puede colocar o modificar un breakpoint mientras el programa esta\nejecutandose. Pause la depuracion (con el comando \"Interrumpir\" del menu\n\"Depuracion\") o espere a que la misma se interrumpa para realizar esta accion.
+No puede colocar o modificar un breakpoint mientras el programa esta\n
 SOURCE_TIP_NO_DEREFERENCE
 Tip: Probablemente no deba desreferenciar este objeto.
 SOURCE_TIP_DO_DEREFERENCE
