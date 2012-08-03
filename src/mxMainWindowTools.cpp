@@ -31,6 +31,7 @@
 #include "mxListSharedWindow.h"
 #include "mxComplementInstallerWindow.h"
 #include "mxCppCheckConfigDialog.h"
+#include "mxValgrindConfigDialog.h"
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
 void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
@@ -147,9 +148,12 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 		return;
 	} else config->Init.valgrind_seen=true;
 	
+	if (!valgrind_config) valgrind_config=new mxValgrindConfigDialog;
+	if (valgrind_config->ShowModal()==0) return;
+	
 	wxString val_file = DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out"));
 	val_file.Replace(_T(" "),_T("\\ "));
-	compiler->valgrind_cmd = config->Files.valgrind_command+_T(" --leak-check=full --log-file=")+val_file;
+	compiler->valgrind_cmd = config->Files.valgrind_command+" "<<valgrind_config->GetArgs()<<" --log-file="+val_file;
 	OnRunRun(event);
 	compiler->valgrind_cmd="";
 }

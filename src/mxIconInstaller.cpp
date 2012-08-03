@@ -21,19 +21,17 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,LANG(XDG
 	
 	xdg_not_found=icon_installed=false;
 	
-//		xdg_not_found=true;
 	wxString res = utils->GetOutput("xdg-desktop-menu --version");
 	if (!res.Len()||res.Find("bash")!=wxNOT_FOUND) { 
 		if (!first_run) 
 			mxMessageDialog(NULL,LANG(XDG_NO_XDG,"Debe instalar xdg-utils para tener acceso todas las funcionalidades"),LANG(XDG_CAPTION,"Iconos lanzadores"), mxMD_OK|mxMD_INFO).ShowModal();
-//		Destroy(); 
 		xdg_not_found=true;
-		return;
+//		return;
 	}
 	
 	wxBoxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
-	if (first_run) sizer->Add(new wxStaticText(this,wxID_ANY,LANG(XDG_FIRST_TIME,"Desea crear un icono para acceder a ZinjaI desde el menu del sistema o el escritorio?")),sizers->BA5_Exp0);
+	if (first_run) sizer->Add(new wxStaticText(this,wxID_ANY,LANG(XDG_FIRST_TIME,"¿Desea crear un icono para acceder a ZinjaI desde el menu del sistema o el escritorio?")),sizers->BA5_Exp0);
 	
 	desktop = utils->AddCheckBox(sizer,this,LANG(XDG_CREATE_DESKTOP,"Crear un icono en el escritorio"),false);
 	menu = utils->AddCheckBox(sizer,this,LANG(XDG_CREATE_MENU,"Crear un icono en el menu (en la categoria Programacion/Desarrollo)"),!xdg_not_found);
@@ -117,7 +115,7 @@ void mxIconInstaller::InstallDesktop ( bool menu ) {
 		wxExecute(wxString("xdg-desktop-icon install --novendor \"")<<desk_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 }
 
-void mxIconInstaller::InstallMimeZpr() {
+void mxIconInstaller::InstallMimeZpr() { // todavia no se usa
 	wxString mime_type="text/zinjai-zpr";
 	wxString mime_desc="ZinjaI project";
 	wxString icon="zinjai-zpr.png";
@@ -128,7 +126,7 @@ void mxIconInstaller::InstallMimeZpr() {
 	InstallMime(mime_type,mime_desc,icon,exts);
 }
 
-void mxIconInstaller::InstallMimeSource() {
+void mxIconInstaller::InstallMimeSource() { // todavia no se usa
 	{
 		wxString mime_type="text/zinjai-c";
 		wxString mime_desc="C source file";

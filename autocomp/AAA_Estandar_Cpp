@@ -355,3 +355,49 @@
 		bool operator!= (const type_info& rhs) const;
 		bool before (const type_info& rhs) const;
 		const char* name() const;
+<limit>
+	class numeric_limits
+		static const bool is_specialized 
+		static T min()
+		static T max()
+		static const int  digits
+		static const int  digits10
+		static const bool is_signed 
+		static const bool is_integer 
+		static const bool is_exact 
+		static const int radix
+		static T epsilon()
+		static T round_error()
+
+		static const int  min_exponent
+		static const int  min_exponent10
+		static const int  max_exponent
+		static const int  max_exponent10
+
+		static const bool has_infinity 
+		static const bool has_quiet_NaN 
+		static const bool has_signaling_NaN 
+		static const float_denorm_style has_denorm
+		static const bool has_denorm_loss 
+		static T infinity()
+		static T quiet_NaN()
+		static T signaling_NaN()
+		static T denorm_min()
+
+		static const bool is_iec559 
+		static const bool is_bounded 
+		static const bool is_modulo 
+
+		static const bool traps 
+		static const bool tinyness_before 
+		static const float_round_style round_style
+		
+	round_toward_zero
+	round_to_nearest
+	round_toward_infinity
+	round_toward_neg_infinity
+	round_indeterminate, 
+	denorm_absent	
+	denorm_present
+	denorm_indeterminate
+

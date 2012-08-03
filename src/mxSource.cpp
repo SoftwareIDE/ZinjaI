@@ -1213,9 +1213,19 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		if (chr==':') {
 			int p=GetCurrentPos();
 			if (p>1 && GetCharAt(p-2)==':') {
-				p=p-2;
+				p=p-3;
 				int s; char c;
 				II_BACK(p,II_IS_NOTHING_2(p));
+				if ((c=GetCharAt(p))=='>') {
+					int lc=1;
+					while (p-- && lc) {
+						c=GetCharAt(p);
+						if (c=='>' && !II_IS_NOTHING_4(p)) lc++;
+						else if (c=='<' && !II_IS_NOTHING_4(p)) lc--;
+					}
+					II_BACK(p,II_IS_NOTHING_2(p));
+					if (p<0) p=0;
+				}
 				wxString key=GetTextRange(WordStartPosition(p,true),WordEndPosition(p,true));
 				if (key.Len()!=0)
 					code_helper->AutocompleteScope(this,key,_T(""),false,false);
@@ -2630,9 +2640,19 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 	}
 	
 	if (chr==':' && p>1 && GetCharAt(p-2)==':') {
-		p-=2;
+		p-=3;
 		int s; char c;
 		II_BACK(p,II_IS_NOTHING_2(p));
+		if ((c=GetCharAt(p))=='>') {
+			int lc=1;
+			while (p-- && lc) {
+				c=GetCharAt(p);
+				if (c=='>' && !II_IS_NOTHING_4(p)) lc++;
+				else if (c=='<' && !II_IS_NOTHING_4(p)) lc--;
+			}
+			II_BACK(p,II_IS_NOTHING_2(p));
+			if (p<0) p=0;
+		}
 		wxString key=GetTextRange(WordStartPosition(p,true),WordEndPosition(p,true));
 		if (key.Len()!=0) {
 			if (!code_helper->AutocompleteScope(this,key,_T(""),false,false))

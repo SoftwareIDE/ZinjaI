@@ -2050,7 +2050,7 @@ void mxMainWindow::OnEditNeedFocus (wxCommandEvent &event) {
 
 wxHtmlWindow* mxMainWindow::CreateQuickHelp(wxWindow* parent) {
     quick_help = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
-    quick_help->SetPage(LANG(MAINW_QUICKHELP_INIT,"Coloca el cursor de texto sobre una palabra y presona Shift+F1 para ver la ayuda en este cuadro."));
+    quick_help->SetPage(LANG(MAINW_QUICKHELP_INIT,"Coloca el cursor de texto sobre una palabra y presiona Shift+F1 para ver la ayuda en este cuadro."));
 	
 	if (config->Init.autohiding_panels) {
 		autohide_handlers[ATH_QUICKHELP] = new mxHidenPanel(this,quick_help,HP_BOTTOM,LANG(MAINW_AUTOHIDE_QUICKHELP,"Ayuda/Busqueda"));
@@ -4205,11 +4205,13 @@ void mxMainWindow::OnDebugStepOut ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	static wxString what;
 	wxString res = mxGetTextFromUser(_T("Comando:"), _T("Comandos internos") , what, this);
-	if (res=="kboom") {
+	if (res=="errorsave") {
+		er_sigsev(11);
+	} else if (res=="kboom") {
 		int *p=NULL;
 		// cppcheck-suppress nullPointer
 		cout<<*p;
-	}
+	} else
 	if (debug->debugging && res.Len()) debug->DoThat(what=res);
 }
 

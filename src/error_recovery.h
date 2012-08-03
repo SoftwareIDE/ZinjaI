@@ -5,7 +5,6 @@ using namespace std;
 
 class mxSource;
 
-extern char *error_file;
 
 struct er_source_register {
 	mxSource *src;
@@ -23,6 +22,8 @@ void er_unregister_source(mxSource *src);
 
 void er_init(const char *dir);
 void er_uninit();
+
+void er_sigsev(int sig);
 	
 #endif
 

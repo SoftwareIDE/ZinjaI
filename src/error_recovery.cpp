@@ -12,7 +12,6 @@
 #include "mxCompiler.h"
 using namespace std;
 
-char *error_file;
 string er_dir;
 er_source_register *er_first_source;
 
