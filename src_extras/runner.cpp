@@ -64,6 +64,24 @@ int lang_idx=0;
 // 	exit(0);
 // }
 
+#if defined(_WIN32) || defined(__WIN32__)
+#else
+// esto es para que al enviar una señal en la terminal del runner (por ejemplo ctrl+c) se reenvie al hijo
+// hay 2 casos especiales, sigusr2 que la usa zinjai para indicar que debe matar al proceso hijo, cuando
+// se hace click en stop, porque si se mata la terminal y los hijos manejan sighup sin salir quedan
+// andando huerfanos, y la otra es sighup que se recibe cuando se quiere cerrar la terminal desde el gestor de ventanas
+pid_t child_pid=0;
+bool received_sighup=false;
+void forward_signal(int s) {
+	if (s==SIGHUP) received_sighup=true;
+	else if (s==SIGUSR2) {
+		received_sighup=true;
+		s=SIGKILL;
+	}
+//	if (child_pid) kill(child_pid,s); // no hace falta, xterm parece que envia a todos los "hijos?"
+}
+#endif
+
 int main(int argc, char *argv[]) {
 	
 	bool tty=false;
@@ -163,7 +181,7 @@ int main(int argc, char *argv[]) {
 		}
 		margv[margc]=NULL;
 		
-		pid_t child_pid;
+//		pid_t child_pid;
 		child_pid=fork();
 		if (child_pid==0) {
 			execvp(margv[0],margv);
@@ -173,8 +191,9 @@ int main(int argc, char *argv[]) {
 		}
 		
 		int ret=0;
-		
+for(int i=0;i<32;i++) { signal(i,forward_signal); }
 		waitpid(child_pid,&child_status,0);
+for(int i=0;i<32;i++) { signal(i,NULL); }
 		if (WIFEXITED(child_status)) {
 			ret=WEXITSTATUS(child_status);
 			if (waitkey==2 || (waitkey==1 && ret!=0)) {
@@ -187,7 +206,7 @@ int main(int argc, char *argv[]) {
 				waitkey=2;
 			}
 		}
-		if (waitkey==2) {
+		if (!received_sighup&&waitkey==2) {
 			cout<<"\033[?25l"<<flush;
 			struct termios oldt,newt;
 			tcgetattr( STDIN_FILENO, &oldt );
