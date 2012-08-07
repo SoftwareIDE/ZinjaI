@@ -15,6 +15,7 @@
 #define eternal_nothing while (true) sleep(10)
 #endif
 
+#include <fstream>
 using namespace std;
 
 
@@ -73,12 +74,17 @@ int lang_idx=0;
 pid_t child_pid=0;
 bool received_sighup=false;
 void forward_signal(int s) {
-	if (s==SIGHUP) received_sighup=true;
-	else if (s==SIGUSR2) {
+	ofstream of("/home/zaskar/.zinjai/signals.txt",ios::app);
+	of<<endl<<s<<" "<<getppid()<<"  "<<kill(getppid(),0)<<endl;
+	of.close();
+	if (s==SIGHUP) {
+		received_sighup=true;
+		if (child_pid && kill(getppid(),0)) kill(child_pid,SIGKILL);
+	} else if (s==SIGUSR2) {
 		received_sighup=true;
 		s=SIGKILL;
 	}
-//	if (child_pid) kill(child_pid,s); // no hace falta, xterm parece que envia a todos los "hijos?"
+	//if (child_pid) kill(child_pid,s); // no hace falta, xterm parece que envia a todos los "hijos?"
 }
 #endif
 
