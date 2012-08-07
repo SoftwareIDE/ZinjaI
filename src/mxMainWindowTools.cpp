@@ -1043,7 +1043,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		ret.RemoveLast();
 		src->ShowCallTip(src->PositionFromLine(l0?l0-1:0),ret,false);
 	}
-	src->SetFocus();
+//	src->SetFocus();
 }
 
 void mxMainWindow::OnToolsInstallComplements(wxCommandEvent &evt) {

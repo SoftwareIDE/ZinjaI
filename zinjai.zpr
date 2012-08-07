@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=../Fuckultad/Poo/answers/2009-p1
-current_source=src/winStuff.h
+current_source=src/mxMainWindowTools.cpp
 path_char=/
 [source]
 path=src/mxColoursEditor.cpp
@@ -296,7 +296,7 @@ path=src/mxExternInspection.cpp
 cursor=735
 [source]
 path=src/mxMainWindowTools.cpp
-cursor=39099
+cursor=38971
 open=true
 [source]
 path=src/mxListSharedWindow.cpp
