@@ -80,9 +80,6 @@ void forward_signal(int s) {
 	if (s==SIGHUP) {
 		received_sighup=true;
 		if (child_pid && kill(getppid(),0)) kill(child_pid,SIGKILL);
-	} else if (s==SIGUSR2) {
-		received_sighup=true;
-		s=SIGKILL;
 	}
 	//if (child_pid) kill(child_pid,s); // no hace falta, xterm parece que envia a todos los "hijos?"
 }
