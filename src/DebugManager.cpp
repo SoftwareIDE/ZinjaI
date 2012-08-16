@@ -1175,8 +1175,6 @@ int DebugManager::SetBreakPoints(mxSource *source, wxString path) {
 * @param cline numero de line en Base 1
 * @param cmark tipo de marcador: -1 (ninguna), mxSTC_MARK_EXECPOINT (verde), mxSTC_MARK_FUNCCALL (amarillo), mxSTC_MARK_STOP (rojo)
 **/
-
-
 bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 	if (cmark!=-1) {
 		if (current_source) {
@@ -1428,7 +1426,7 @@ bool DebugManager::RunUntil(wxString fname, int line) {
 		wxString ans = SendCommand(_T("advance *"),adr); // aca estaba exec-until pero until solo funciona en un mismo frame, advance se los salta sin problemas
 		if (ans.SubString(1,5)==_T("error"))
 			return false;
-		HowDoesItRuns();
+		HowDoesItRuns(); /// @todo: guardar adr para comparar en HowDoesItRuns y saber si realmente llego o no a ese punto (siempre dice que si, aunque termine el programa sin pasar por ahi)
 		running = false;
 		return true;
 	}

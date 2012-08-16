@@ -4189,7 +4189,7 @@ void mxMainWindow::OnDebugBreakpointOptions ( wxCommandEvent &event ) {
 		mxSource *source=CURRENT_SOURCE;
 		int l = source->LineFromPosition (source->GetCurrentPos());
 		if (!debug->debugging || !debug->waiting)
-			new mxBreakOptions(source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath(),l,source);
+			new mxBreakOptions(source->GetPathForDebugger(),l,source);
 	}
 }
 
