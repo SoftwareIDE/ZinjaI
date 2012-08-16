@@ -1388,7 +1388,7 @@ bool DebugManager::RunUntil(wxString fname, int line) {
 	running = true;
 	wxString adr = GetAddress(fname,line);
 	if (adr.Len()) {
-		wxString ans = SendCommand(_T("advance *"),adr);
+		wxString ans = SendCommand(_T("advance *"),adr); // aca estaba exec-until pero until solo funciona en un mismo frame, advance se los salta sin problemas
 		if (ans.SubString(1,5)==_T("error"))
 			return false;
 		HowDoesItRuns();
