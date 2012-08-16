@@ -103,7 +103,7 @@ THREADS_NO_THREADS
 THREADS_NO_INFO
 <<Thread info not available>>
 DEBUG_BAD_BREAKPOINT_WARNING
-Some breakpoints could not been setted by the debugger. Posible causes are:\n* Some breakpoints are placed in files that do not belong to the project.\n* Missing or outdated debugging information. Use Clean item from Run menu before\n  debugging.\n* Spaces or special characters in files' paths. If that is the case, try moving\n  the project or renaming the directories.
+Some breakpoints could not been setted by the debugger. Posible causes are:\n* Some breakpoints are placed in files that do not belong to the project.\n* Some breakpoints are placed in lines that don't gerate executable code (comments, empty lines, ...)\n* Missing or outdated debugging information. Use Clean item from Run menu before\n  debugging.\n* Spaces or special characters in files' paths. If that is the case, try moving\n  the project or renaming the directories.
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS

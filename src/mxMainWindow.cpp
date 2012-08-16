@@ -4157,7 +4157,7 @@ void mxMainWindow::OnDebugJump ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugRunUntil ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		debug->RunUntil(source->source_filename.GetFullPath(),source->GetCurrentLine()+1);
+		debug->RunUntil(source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath(),source->GetCurrentLine()+1);
 	}
 }
 

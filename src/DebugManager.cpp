@@ -684,9 +684,17 @@ int DebugManager::SetLiveBreakPoint(mxSource *src, int line) {
 * DebugManager::HowDoesItRuns y ProjectManager::SetBreakpoints.
 * Esos método se encargan de los break_line_item y los markers normalmente.
 * Si logra colocar el bp retorna su id, sino -1.
+*
+* Antes de colocar el breakpoint se fija si es una direccion valida, porque
+* sino gdb lo coloca más adelante sin avisar.
+*
+* @param fname ruta del archivo, con cualquier barra (si es windows corrige)
+* @param line número de linea en base 0
 **/
 int DebugManager::SetBreakPoint(wxString file, int line) {
 	if (waiting || !debugging) return 0;
+	wxString adr = GetAddress(file,line+1);
+	if (!adr.Len()) return -1;
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<file.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (file[i]=='\\') 
@@ -1348,7 +1356,18 @@ void DebugManager::BacktraceClean() {
 //	return true;
 // }
 
+/**
+* @brief Busca la dirección de memoria donde empiezan las instrucciones de una linea particular del codigo fuente
+*
+* Si gdb no reconoce la ubicacion devuelve una cadena vacia. Esta funcion sirve 
+* entre otras cosas para saber si es una ubicación válida, por ejemplo para
+* verificar antes de colocar los puntos de interrupción.
+*
+* @param fname ruta del archivo, con cualquier barra (si es windows corrige)
+* @param line número de linea en base 1
+**/
 wxString DebugManager::GetAddress(wxString fname, int line) {
+	cerr<<"LINE: "<<line<<endl;
 	if (waiting || !debugging) return _T("");
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
@@ -2872,6 +2891,7 @@ void DebugManager::ShowBreakPointErrorMessage ( ) {
 		LANG(DEBUG_BAD_BREAKPOINT_WARNING,
 		"El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n"
 		"* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n"
+		"* Algún breakpoint fue una linea que no genera codigo ejecutable (ej: comentario).\n"
 		"* Información de depuración desactualizada o inexistente. Intente recompilar completamente\n"
 		"  el programa/proyecto, utilizando el item Limpiar del menu Ejecucion antes de depurar.\n"
 		"* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n"
