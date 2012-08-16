@@ -823,12 +823,14 @@ bool mxInspectionGrid::CanDrop() {
 }
 
 void mxInspectionGrid::OnClick(wxGridEvent &event) {
-	event.Skip();
-	can_drop=false;
-	wxTextDataObject my_data(GetCellValue(event.GetRow(),event.GetCol()));
-	wxDropSource dragSource(this);
-	dragSource.SetData(my_data);
-	wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
-	can_drop=true;
+	if (event.AltDown()) {
+		SelectRow(event.GetRow());
+		can_drop=false;
+		wxTextDataObject my_data(GetCellValue(event.GetRow(),event.GetCol()));
+		wxDropSource dragSource(this);
+		dragSource.SetData(my_data);
+		wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
+		can_drop=true;
+	} else event.Skip();
 }
 
