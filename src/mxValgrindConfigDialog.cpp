@@ -18,7 +18,7 @@ BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 	EVT_CLOSE(mxValgrindConfigDialog::OnClose)
 END_EVENT_TABLE()
 	
-mxValgrindConfigDialog::mxValgrindConfigDialog():wxDialog(main_window,wxID_ANY,"Valgrind Setup") {
+mxValgrindConfigDialog::mxValgrindConfigDialog():wxDialog(main_window,wxID_ANY,"Valgrind Setup",wxDefaultPosition,wxDefaultSize) {
 	wxBoxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
 	wxArrayString tools;
