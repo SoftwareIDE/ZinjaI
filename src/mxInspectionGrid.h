@@ -44,6 +44,7 @@ public:
 **/
 class mxInspectionGrid : public wxGrid {
 private:
+	bool can_drop; // para evitar hacer drag y drop sobre si misma
 	bool created;
 	int selected_row;
 	bool ignore_changing;
@@ -67,6 +68,7 @@ public:
 	void OnCellChange(wxGridEvent &event);
 	void OnDoubleClick(wxGridEvent &event);
 	void OnLabelPopup(wxGridEvent &event);
+	void OnClick(wxGridEvent &event);
 	void OnRightClick(wxGridEvent &event);
 	void OnFreeze(wxCommandEvent &evt);
 	void OnPasteFromClipboard(wxCommandEvent &evt);
@@ -111,8 +113,7 @@ public:
 	void HightlightFreeze(int r);
 	void ResetChangeHightlights();
 	bool ModifyExpresion(int r, wxString expr);
-	
-	
+	bool CanDrop();
 };
 
 #endif

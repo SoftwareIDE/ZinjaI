@@ -17,6 +17,7 @@
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_GRID_CELL_CHANGE(mxInspectionGrid::OnCellChange)
 	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
+	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
 	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionGrid::OnDoubleClick)
 	EVT_GRID_CELL_RIGHT_CLICK(mxInspectionGrid::OnRightClick)
 	EVT_MENU(mxID_INSPECTION_FREEZE,mxInspectionGrid::OnFreeze)
@@ -80,6 +81,7 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent, wxWindowID id ):wxGrid(pare
 	special_colour = wxColour(0,150,0);
 	freeze_colour = wxColour(0,100,200);
 	
+	can_drop=true;
 	ignore_changing=true;
 	created=false;
 	CreateGrid(0,IG_COLS_COUNT);
@@ -781,6 +783,7 @@ void mxInspectionGrid::OnCopyAll(wxCommandEvent &evt) {
 }
 
 wxDragResult mxInspectionDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
+	if (!grid->CanDrop()) return wxDragCancel;
 	int ux,uy,vx,vy;
 	grid->GetScrollPixelsPerUnit(&ux,&uy);
 	grid->GetViewStart(&vx,&vy);
@@ -800,13 +803,13 @@ bool mxInspectionDropTarget::OnDrop(wxCoord x, wxCoord y) {
 }
 
 wxDragResult mxInspectionDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult ref) {
+	if (!grid->CanDrop()) return wxDragCancel;
 	int ux,uy,vx,vy;
 	grid->GetScrollPixelsPerUnit(&ux,&uy);
 	grid->GetViewStart(&vx,&vy);
 	int r=grid->YToRow(y+vy*uy-grid->GetColLabelSize());
 	if (r==wxNOT_FOUND) return wxDragCancel;
-	GetData();
-	if (r!=wxNOT_FOUND) grid->SelectRow(r);
+	GetData(); grid->SelectRow(r);
 	wxString str=data->GetText();
 	if (!str.size()) return wxDragCancel;
 	str.Replace("\n"," ");
@@ -814,3 +817,18 @@ wxDragResult mxInspectionDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult r
 	grid->ModifyExpresion(r,str);
 	return wxDragCopy;
 }
+
+bool mxInspectionGrid::CanDrop() {
+	return can_drop;
+}
+
+void mxInspectionGrid::OnClick(wxGridEvent &event) {
+	event.Skip();
+	can_drop=false;
+	wxTextDataObject my_data(GetCellValue(event.GetRow(),event.GetCol()));
+	wxDropSource dragSource(this);
+	dragSource.SetData(my_data);
+	wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
+	can_drop=true;
+}
+
