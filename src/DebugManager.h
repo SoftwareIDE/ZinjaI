@@ -178,7 +178,7 @@ public:
 	bool Return(wxString what);
 	void Pause();
 	void Continue();
-	bool MarkCurrentPoint(wxString cf=_T(""), int cline=0, int cmark=0);
+	bool MarkCurrentPoint(wxString cf=_T(""), int cline=-1, int cmark=-1);
 	void HowDoesItRuns();
 	void CloseSource(mxSource *source);
 	void SetStateText(wxString text, bool refresh=false);

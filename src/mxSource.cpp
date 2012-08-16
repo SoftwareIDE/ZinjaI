@@ -3455,3 +3455,11 @@ void mxSource::EnableDelayedBreakPoint(int line, int fake_num, int num) {
 		bitem->handle=MarkerAdd(bitem->line,mxSTC_MARK_BREAKPOINT);
 	}
 }
+
+/**
+* @brief Returns the full path of the file as debugger knows it (temp_filename if untitled, source_filename else)
+**/
+wxString mxSource::GetPathForDebugger() {
+	if (sin_titulo) return temp_filename.GetFullPath();
+	else return source_filename.GetFullPath();
+}

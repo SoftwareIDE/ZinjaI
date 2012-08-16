@@ -193,6 +193,8 @@ public:
 
 	bool ApplyAutotext();
 	
+	wxString GetPathForDebugger();
+	
 private:
 	
 	// margin variables

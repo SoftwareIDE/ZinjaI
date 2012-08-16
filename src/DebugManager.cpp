@@ -693,7 +693,7 @@ int DebugManager::SetLiveBreakPoint(mxSource *src, int line) {
 **/
 int DebugManager::SetBreakPoint(wxString file, int line) {
 	if (waiting || !debugging) return 0;
-	wxString adr = GetAddress(file,line+1);
+	wxString adr = GetAddress(file,line);
 	if (!adr.Len()) return -1;
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<file.Len();i++) // corregir las barras en windows para que no sean caracter de escape
@@ -1162,8 +1162,23 @@ int DebugManager::SetBreakPoints(mxSource *source, wxString path) {
 	return cont;
 }
 
+/**
+* @brief Marca el punto actual del código donde se encuentra el depurador
+*
+* Marca el punto donde se encuentra en el frame actual, borrando la marca anterior
+* si es que había. Si se invoca sin argumentos borra la marca anterior y nada mas.
+* La marca es la flecha en el margen, verde para ejecucion normal y en el frame
+* interior, amarillo para otro frame, rojo cuando se detuvo por un problema
+* irrecuperable, como un segfault.
+*
+* @param cfile path completo del archivo
+* @param cline numero de line en Base 1
+* @param cmark tipo de marcador: -1 (ninguna), mxSTC_MARK_EXECPOINT (verde), mxSTC_MARK_FUNCCALL (amarillo), mxSTC_MARK_STOP (rojo)
+**/
+
+
 bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
-	if (cmark) {
+	if (cmark!=-1) {
 		if (current_source) {
 			if (current_handle!=-1) 
 				current_source->MarkerDeleteHandle(current_handle);
@@ -1344,18 +1359,6 @@ void DebugManager::BacktraceClean() {
 	last_backtrace_size = 0;
 }
 
-//bool DebugManager::RunUntil(wxString fname, int line) {
-//	if (waiting || !debugging) return false;
-//	running = true;
-//	MarkCurrentPoint();
-//	wxString ans = SendCommand(wxString(_T("-exec-until \""))<<fname<<_T(":")<<line<<_T("\""));
-//	if (ans.SubString(1,5)==_T("error"))
-//		return false;
-//	HowDoesItRuns();
-//	running = false;
-//	return true;
-// }
-
 /**
 * @brief Busca la dirección de memoria donde empiezan las instrucciones de una linea particular del codigo fuente
 *
@@ -1364,17 +1367,16 @@ void DebugManager::BacktraceClean() {
 * verificar antes de colocar los puntos de interrupción.
 *
 * @param fname ruta del archivo, con cualquier barra (si es windows corrige)
-* @param line número de linea en base 1
+* @param line número de linea en base 0
 **/
 wxString DebugManager::GetAddress(wxString fname, int line) {
-	cerr<<"LINE: "<<line<<endl;
 	if (waiting || !debugging) return _T("");
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') 
 			fname[i]='/';
 #endif
-	wxString ans = SendCommand(wxString(_T("info line \""))<<fname<<_T(":")<<line<<_T("\""));
+	wxString ans = SendCommand(wxString(_T("info line \""))<<fname<<_T(":")<<line+1<<_T("\""));
 	int r=ans.Find(_T("starts at"));
 	if (r!=wxNOT_FOUND) {
 		ans=ans.Mid(r);
@@ -1385,6 +1387,12 @@ wxString DebugManager::GetAddress(wxString fname, int line) {
 	return _T("");
 }
 
+/**
+* @brief Hace un salto sin miramientos a alguna linea de código
+*
+* @param fname ruta del archivo, con cualquier barra (si es windows corrige)
+* @param line número de linea en base 0
+**/
 bool DebugManager::Jump(wxString fname, int line) {
 	if (waiting || !debugging) return false;
 	running = true;
@@ -1392,7 +1400,7 @@ bool DebugManager::Jump(wxString fname, int line) {
 	if (adr.Len()) {
 		wxString ans=SendCommand(_T("-gdb-set $pc="),adr);
 		if (ans.SubString(1,5)!=_T("error")) {
-			MarkCurrentPoint(fname,line,mxSTC_MARK_EXECPOINT);
+			MarkCurrentPoint(fname,line+1,mxSTC_MARK_EXECPOINT);
 			Backtrace(true);
 			running = false;
 			return true;
@@ -1402,6 +1410,16 @@ bool DebugManager::Jump(wxString fname, int line) {
 	return false;
 }
 
+/**
+* @brief Busca la dirección de memoria donde empiezan las instrucciones de una linea particular del codigo fuente
+*
+* Si gdb no reconoce la ubicacion devuelve una cadena vacia. Esta funcion sirve 
+* entre otras cosas para saber si es una ubicación válida, por ejemplo para
+* verificar antes de colocar los puntos de interrupción.
+*
+* @param fname ruta del archivo, con cualquier barra (si es windows corrige)
+* @param line número de linea en base 0
+**/
 bool DebugManager::RunUntil(wxString fname, int line) {
 	if (waiting || !debugging) return false;
 	running = true;
