@@ -67,8 +67,11 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		// lo que sale de las opciones de compilacion
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
 		wxArrayString array;
+		
 		utils->Split(project->compiling_options,array,false,true);
+		wxString lala;
 		for (unsigned int i=0;i<array.GetCount();i++) {
+			lala=array[i];
 			if (project->cppcheck->copy_from_config && array[i].StartsWith("-D")) {
 				if (array[i].Len()==2) {
 					args<<" -D "<<array[++i];
@@ -79,27 +82,27 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 				if (array[i]=="\"-D\"")
 					args<<" -D "<<array[++i];
 				else
-					args<<" -D \""<<array[++i].Mid(3);
-			} else 
-				if (array[i].StartsWith("-I")) {
-					if (array[i].Len()==2) {
-						args<<" -I "<<array[++i];
-					} else {
-						args<<" -I "<<array[i].Mid(2);
-					}
-				} else if (array[i].StartsWith("\"-I")) {
-					if (array[i]=="\"-I\"")
-						args<<" -I "<<array[++i];
-					else
-						args<<" -I \""<<array[++i].Mid(3);
+					args<<" -D \""<<array[i].Mid(3);
+			} else if (array[i].StartsWith("-I")) {
+				if (array[i].Len()==2) {
+					args<<" -I "<<array[++i];
+				} else {
+					args<<" -I "<<array[i].Mid(2);
 				}
+			} else if (array[i].StartsWith("\"-I")) {
+				if (array[i]=="\"-I\"")
+					args<<" -I "<<array[++i];
+				else
+					args<<" -I \""<<array[i].Mid(3);
+			}
+			cerr<<lala;
 		}
 		// lo que se define project->cppcheck
-		if (!project->cppcheck->copy_from_config) {
+		if (project->cppcheck->copy_from_config) {
 			args<<" "<<utils->Split(project->cppcheck->config_d,"-D")<<" "<<utils->Split(project->cppcheck->config_u,"-U");
 		}
 		
-		static wxString cppargs;
+		wxString cppargs;
 		cppargs<<utils->Split(project->cppcheck->style,"--enable=")<<" ";
 		cppargs<<utils->Split(project->cppcheck->platform,"--platform=")<<" ";
 		cppargs<<utils->Split(project->cppcheck->standard,"--std=")<<" ";
