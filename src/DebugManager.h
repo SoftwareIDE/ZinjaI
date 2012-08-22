@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 #include <wx/ffile.h>
+#include "BreakPointInfo.h"
 using namespace std;
 
 #define BACKTRACE_SIZE 100
@@ -13,10 +14,10 @@ class mxInspectionGrid;
 class mxIEItemData;
 class wxGrid;
 class file_item;
-class break_line_item;
 class mxInspectionMatrix;
 class mxInspectionExplorer;
 class mxExternInspection;
+class mxBreakList;
 
 enum {	DI_NONE, 
 		DI_CLASS, // clase A
@@ -124,10 +125,7 @@ private:
 	bool stepping_in;
 	bool inverse_exec;
 	bool gui_is_prepared;
-	list<breakinfo> break_list;
 	list<mxExternInspection*> extern_list;
-//	list<mxInspectionMatrix*> matrix_list;
-//	list<mxInspectionExplorer*> explorer_list;
 	wxString current_frame, current_frame_num;
 	wxString frames_addrs[BACKTRACE_SIZE];
 	wxString frames_nums[BACKTRACE_SIZE];
@@ -154,10 +152,7 @@ private:
 //	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
 	wxString RewriteExpressionForBreaking(wxString expr);
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
-	wxString pause_file; ///< si se pausó para colocar un breakpoint y continuar, aca va el nombre de archivo, si se paso para remover uno esta en blanco y es lo que marca el caso
-	int pause_line; ///< si se pausó para colocar/sacar un breakpoint y continuar, aca va el nro de linea/id del bp, si es -1 indica que es una pause comun
-	int pause_fake_num; ///< si se pausó para colocar un breakpoint y continuar, aca va el id de breakpoint que se le dio al break_line_item
-	mxSource *pause_source; ///< si se pausó para colocar un breakpoint y continuar, aca va el puntero al mxsource que lo genero
+	BreakPointInfo *pause_breakpoint; ///< puntero al breakpoint que hay que agregar/sacar en una pausa, para el usuario los modifica durante la ejecución
 public:
 	wxString last_command, last_answer;
 	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible, stopping, really_running;
@@ -182,15 +177,14 @@ public:
 	void HowDoesItRuns();
 	void CloseSource(mxSource *source);
 	void SetStateText(wxString text, bool refresh=false);
-	int SetBreakPoints(mxSource *source, wxString path=_T(""));
-	int SetLiveBreakPoint(mxSource *src, int line);
-	int SetBreakPoint(wxString file, int line);
+	void SetBreakPoints(mxSource *source);
+	int SetLiveBreakPoint(BreakPointInfo *_bpi);
+	int SetBreakPoint(BreakPointInfo *_bpi);
 	void SetBreakPointEnable(int num, bool enable, bool once=false);
 	void SetBreakPointOptions(int num, int ignore_count);
 	bool SetBreakPointOptions(int num, wxString condition);
 	int GetBreakHitCount(int num);
-	void DeleteBreakPoint(int num);
-	bool DeleteBreakPoint(wxString file, int line);
+	void DeleteBreakPoint(BreakPointInfo *_bpi);
 	wxString GetValueFromAns(wxString ans, wxString key, bool crop = false, bool fix_slash=false);
 	wxString GetSubValueFromAns(wxString ans, wxString key1, wxString key2, bool crop=false, bool fix_slash=false);
 	wxString InspectExpression(wxString var, bool pretty=false);
@@ -221,9 +215,8 @@ public:
 	bool GetArgs (wxArrayString &args, wxString level);
 	bool GetLocals (wxArrayString &locals, wxString level);
 	void MakeRoomForInspections(int pos, int cant);
-	void UpdateBreakList(wxGrid *grid);
-	bool FindBreakInfoFromNumber(int bn,break_line_item *&bitem, mxSource *&source, file_item *&file);
-	bool FindBreakInfoFromData(wxString fname, int line, break_line_item *&bitem, mxSource *&source, file_item *&file);
+	void PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints);
+//	BreakPointInfo *FindBreakInfoFromNumber(int _id, bool use_gdb_id=true);
 	void RegisterExternInspection(mxExternInspection* ei);
 	void UnRegisterExternInspection(mxExternInspection* ei);
 //	void RegisterMatrix(mxInspectionMatrix* matrix);
@@ -274,10 +267,6 @@ public:
 	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print elements ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
 	void SetFullOutput(bool on=false);
 	
-	/// @brief marca un breakpoint como no colocado (punto gris en lugar de rojo en la interfaz)
-	void BadBreakpoint(int num);
-	/// @brief marca un breakpoint como no colocado (punto gris en lugar de rojo en la interfaz)
-	void BadBreakpoint(break_line_item *bitem, mxSource *sourcem, int line);
 	/// @brief muestra un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint (se controla con show_breakpoint_error)
 	void ShowBreakPointErrorMessage();
 };

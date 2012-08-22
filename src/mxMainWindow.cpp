@@ -4187,9 +4187,18 @@ void mxMainWindow::OnDebugToggleBreakpoint ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugBreakpointOptions ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
+		if (!debug->debugging || !debug->waiting) return;
 		int l = source->LineFromPosition (source->GetCurrentPos());
-		if (!debug->debugging || !debug->waiting)
-			new mxBreakOptions(source->GetPathForDebugger(),l,source);
+		
+		// buscar si habia un breakpoint en esa linea
+		BreakPointInfo *bpi = *source->breaklist;
+		while (bpi && source->MarkerLineFromHandle(bpi->marker_handle)!=l) bpi = bpi->Next();
+		
+		if (!bpi) { // si no habia, lo crea
+			bpi=new BreakPointInfo(source,l);
+			if (debug->debugging) debug->SetBreakPoint(bpi);
+		}
+		new mxBreakOptions(bpi); // muestra el dialogo de opciones del bp
 	}
 }
 

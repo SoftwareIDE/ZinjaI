@@ -5,6 +5,7 @@
 
 #include "ProjectManager.h"
 #include "mxUtils.h"
+#include "BreakPointInfo.h"
 
 #include <wx/textfile.h>
 #include <wx/treectrl.h>
@@ -102,6 +103,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 #endif
 	wxString section, key, value;
 	file_item *last_file = NULL;
+	BreakPointInfo *last_breakpoint = NULL;
 	long l;
 	compile_extra_step *extra_step=NULL;
 	project_library *lib_to_build=NULL;
@@ -240,25 +242,18 @@ ProjectManager::ProjectManager(wxFileName name) {
 						last_file->markers = new marked_line_item(l,last_file->markers);
 				} else if (key==_T("breakpoint")) {
 					value.ToLong(&l);
-					if (last_file) {
-						break_line_item *bitem = new break_line_item(l,NULL,last_file->breakpoints);
-						if (last_file->breakpoints)
-							last_file->breakpoints->prev = bitem;
-						last_file->breakpoints = bitem;
-					}
+					if (last_file && l>=0) {
+						last_breakpoint=new BreakPointInfo(last_file,l);
+					} else last_breakpoint=NULL;
 				} else if (key==_T("breakpoint_ignore")) {
 					value.ToLong(&l);
-					if (last_file->breakpoints)
-						last_file->breakpoints->ignore_count=l;
+					if (last_breakpoint) last_breakpoint->ignore_count=l;
 				} else if (key==_T("breakpoint_only_once")) {
-					if (last_file->breakpoints)
-						last_file->breakpoints->only_once=utils->IsTrue(value);
+					if (last_breakpoint) last_breakpoint->only_once=utils->IsTrue(value);
 				} else if (key==_T("enabled")) {
-					if (last_file->breakpoints)
-						last_file->breakpoints->enabled=utils->IsTrue(value);
+					if (last_breakpoint) last_breakpoint->enabled=utils->IsTrue(value);
 				} else if (key==_T("breakpoint_condition")) {
-					if (last_file->breakpoints)
-						last_file->breakpoints->cond=value;
+					if (last_breakpoint) last_breakpoint->cond=value;
 				} else if (key==_T("open") && utils->IsTrue(value)) {
 					if (files_to_open>0)
 						main_window->SetStatusProgress((100*(++num_files_opened))/files_to_open);
@@ -613,87 +608,38 @@ bool ProjectManager::Save () {
 #endif
 	// agregar la lista de fuentes pertenecientes al proyecto
 	marked_line_item *marker;
-	break_line_item *breakpoint;
-	item = first_source;
-	ML_ITERATE(item) {
-		fil.AddLine(_T("[source]"));
-		CFG_GENERIC_WRITE_DN("path",item->name);
-		source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name));
-		if (source)
-			GetSourceExtras(source,item);
-		CFG_GENERIC_WRITE_DN("cursor",item->cursor);
-		breakpoint = item->breakpoints;
-		while (breakpoint) {
-			if (breakpoint->line>=0) { 
-				CFG_GENERIC_WRITE_DN("breakpoint",breakpoint->line);
-				if (!breakpoint->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
-				if (breakpoint->only_once) CFG_BOOL_WRITE_DN("breakpoint_only_once",true);
-				if (breakpoint->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoint->ignore_count);
-				if (breakpoint->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoint->cond);
-//				breakpoint->enabled=true; // que hace esto aca?
+	BreakPointInfo *breakpoint;
+	wxString section;
+	for(int i=0;i<3;i++) { 
+		if (i==0) { item = first_source; section="[source]"; }
+		else if (i==1) { item = first_header; section="[header]"; }
+		else if (i==2) { item = first_other; section="[other]"; }
+		ML_ITERATE(item) {
+			fil.AddLine(section);
+			CFG_GENERIC_WRITE_DN("path",item->name);
+			source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name));
+			if (source) GetSourceExtras(source,item);
+			CFG_GENERIC_WRITE_DN("cursor",item->cursor);
+			breakpoint = item->breaklist;
+			while (breakpoint) {
+				if (breakpoint->line_number>=0) { 
+					CFG_GENERIC_WRITE_DN("breakpoint",breakpoint->line_number);
+					if (!breakpoint->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
+					if (breakpoint->only_once) CFG_BOOL_WRITE_DN("breakpoint_only_once",true);
+					if (breakpoint->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoint->ignore_count);
+					if (breakpoint->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoint->cond);
+	//				breakpoint->enabled=true; // que hace esto aca?
+				}
+				breakpoint = breakpoint->Next();
 			}
-			breakpoint = breakpoint->next;
-		}
-		marker = item->markers;
-		while (marker) {
-			CFG_GENERIC_WRITE_DN("marker",marker->line);
-			marker = marker->next;
-		}
-		if (source)
-			fil.AddLine(_T("open=true"));
-	}
-	
-	// agregar la lista de cabeceras pertenecientes al proyecto
-	item = first_header;
-	ML_ITERATE(item) {
-		fil.AddLine(_T("[header]"));
-		CFG_GENERIC_WRITE_DN("path",item->name);
-		source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name));
-		if (source)
-			GetSourceExtras(source,item);
-		CFG_GENERIC_WRITE_DN("cursor",item->cursor);
-		breakpoint = item->breakpoints;
-		while (breakpoint) {
-			if (breakpoint->line>=0) { 
-				CFG_GENERIC_WRITE_DN("breakpoint",breakpoint->line);
-				if (!breakpoint->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
-				if (breakpoint->only_once) CFG_BOOL_WRITE_DN("breakpoint_only_once",true);
-				if (breakpoint->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoint->ignore_count);
-				if (breakpoint->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoint->cond);
-				//				breakpoint->enabled=true; // que hace esto aca?
+			marker = item->markers;
+			while (marker) {
+				CFG_GENERIC_WRITE_DN("marker",marker->line);
+				marker = marker->next;
 			}
-			breakpoint = breakpoint->next;
+			if (source)
+				fil.AddLine(_T("open=true"));
 		}
-		marker = item->markers;
-		while (marker) {
-			CFG_GENERIC_WRITE_DN("marker",marker->line);
-			marker = marker->next;
-		}
-		if (source)
-			fil.AddLine(_T("open=true"));
-	}
-	
-	// agregar la lista de otros archivos pertenecientes al proyecto
-	item = first_other;
-	ML_ITERATE(item) {
-		fil.AddLine(_T("[other]"));
-		CFG_GENERIC_WRITE_DN("path",item->name);
-		source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name));
-		if (source)
-			GetSourceExtras(source,item);
-		CFG_GENERIC_WRITE_DN("cursor",item->cursor);
-		breakpoint = item->breakpoints;
-		while (breakpoint) {
-			CFG_GENERIC_WRITE_DN("breakpoint",breakpoint->line);
-			breakpoint = breakpoint->next;
-		}
-		marker = item->markers;
-		while (marker) {
-			CFG_GENERIC_WRITE_DN("marker",marker->line);
-			marker = marker->next;
-		}
-		if (source)
-			fil.AddLine(_T("open=true"));
 	}
 	
 	for (int i=0;i<configurations_count;i++) {
@@ -2042,28 +1988,22 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 }
 
 void ProjectManager::GetSourceExtras(mxSource *source, file_item *item) {
-	if (!item)
-		item = FindFromItem(source->treeId);
-	if (item) {
-		// sincronizar el puntero al primer item y reacomodar los nros de linea
-		item->breakpoints = source->first_break_item;
-		break_line_item *bitem = item->breakpoints;
-		while (bitem) {
-			bitem->line = source->MarkerLineFromHandle(bitem->handle);
-			bitem = bitem->next;
-		}
-		// guardar los bookmarks
-		int l = source->GetLineCount();
-		item->ClearExtras();
-		int m;
-		for (int i=0;i<l;i++) {
-			m = source->MarkerGet(i);
-			if (m&1<<mxSTC_MARK_USER)
-				item->markers = new marked_line_item (i,item->markers);
-		}
-		// guardar otras cosas
-		item->cursor = source->GetCurrentPos();
+	if (!item) item = FindFromItem(source->treeId);
+	if (!item) return;
+	// reacomodar los nros de linea de los pts de interrupcion
+	BreakPointInfo *bitem=item->breaklist;
+	while (bitem) {	bitem->UpdateLineNumber(); bitem=bitem->Next(); }
+	// guardar los bookmarks
+	int l = source->GetLineCount();
+	item->ClearExtras();
+	int m;
+	for (int i=0;i<l;i++) {
+		m = source->MarkerGet(i);
+		if (m&1<<mxSTC_MARK_USER)
+			item->markers = new marked_line_item (i,item->markers);
 	}
+	// guardar otras cosas
+	item->cursor = source->GetCurrentPos();
 }
 
 void ProjectManager::SetSourceExtras(mxSource *source, file_item *item) {
@@ -2102,13 +2042,9 @@ void ProjectManager::SetSourceExtras(mxSource *source, file_item *item) {
 			source->treeId = item->item;
 	}
 	if (item) {
-		source->first_break_item = item->breakpoints;
+		if (source->own_breaks) delete source->breaklist;
+		source->breaklist = &item->breaklist;
 		source->own_breaks = false;
-		break_line_item *breakpoint = item->breakpoints;
-		while (breakpoint) {
-			breakpoint->handle = source->MarkerAdd(breakpoint->line, breakpoint->enabled&&!breakpoint->error?mxSTC_MARK_BREAKPOINT:mxSTC_MARK_BAD_BREAKPOINT);
-			breakpoint = breakpoint->next;
-		}
 		marked_line_item *marker = item->markers;
 		while (marker) {
 			source->MarkerAdd(marker->line, mxSTC_MARK_USER);
@@ -2212,68 +2148,18 @@ bool ProjectManager::Debug() {
 * archivos del proyecto. Setea además las propiedades de cada uno. Se debe 
 * llamar antes de comenzar la ejecución.
 **/
-int ProjectManager::SetBreakpoints() {
-	int cuantos = 0;
-	file_item *item;
-	mxSource *source;
-	break_line_item *breakpoint;
-//	wxString path = wxFileName(this->path).GetShortPath();
-	// fuentes
-	item = first_source;
-	ML_ITERATE(item) {
-		if ((source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name)))) {
-			debug->SetBreakPoints(source,path);
-		} else {
-			breakpoint = item->breakpoints;
-			wxString fname( DIR_PLUS_FILE(path,item->name) );
-			while (breakpoint) {
-				if ( ( breakpoint->num = debug->SetBreakPoint(fname,breakpoint->line) )!=-1 ) {
-					cuantos++;
-					breakpoint->error=false;
-					// setear las opciones adicionales
-					if (breakpoint->ignore_count)
-						debug->SetBreakPointOptions(breakpoint->num,breakpoint->ignore_count);
-					if (breakpoint->cond.Len()) {
-						if ( ! (breakpoint->valid_cond = debug->SetBreakPointOptions(breakpoint->num,breakpoint->cond)) )
-							breakpoint->error=true;
-					}
-					if (breakpoint->only_once)
-						debug->SetBreakPointEnable(breakpoint->num,true,true);
-				} else
-					breakpoint->error=true;
-				breakpoint = breakpoint->next;
+void ProjectManager::SetBreakpoints() {
+	for(int i=0;i<2;i++) { 
+		file_item *item=i==0?first_source:first_header;
+		ML_ITERATE(item) {
+			BreakPointInfo *bpi=item->breaklist;
+			while (bpi) {
+				bpi->UpdateLineNumber();
+				debug->SetBreakPoint(bpi);
+				bpi->Next();
 			}
 		}
 	}
-	// cabeceras
-	item = first_header;
-	ML_ITERATE(item) {
-		if ( (source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name)))) {
-			debug->SetBreakPoints(source,path);
-		} else {
-			breakpoint = item->breakpoints;
-			wxString fname( DIR_PLUS_FILE(path,item->name) );
-			while (breakpoint) {
-				if ( ( breakpoint->num = debug->SetBreakPoint(fname,breakpoint->line) )!=-1 ) {
-					breakpoint->error=false;
-					cuantos++;
-					// setear las opciones adicionales
-					if (breakpoint->ignore_count)
-						debug->SetBreakPointOptions(breakpoint->num,breakpoint->ignore_count);
-					if (breakpoint->cond.Len()) {
-						if ( ! (breakpoint->valid_cond = debug->SetBreakPointOptions(breakpoint->num,breakpoint->cond)) )
-							breakpoint->error=true;
-					}
-					if (breakpoint->only_once)
-						debug->SetBreakPointEnable(breakpoint->num,true,true);
-				} else
-					breakpoint->error=true;
-				breakpoint = breakpoint->next;
-			}
-		}
-	}
-	
-	return 0;
 }
 
 bool ProjectManager::GenerateDoxyfile(wxString fname) {

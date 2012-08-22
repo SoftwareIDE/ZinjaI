@@ -24,6 +24,7 @@
 #define MoveFile MoveFileA
 #define DeleteFile DeleteFileA
 #endif
+#include "BreakPointInfo.h"
 class mxSource;
 
 /// Posibles ubicaciones para un paso de compilación adicional en el proceso de construcción de un proceso
@@ -243,20 +244,6 @@ struct project_configuration {
 	}
 };
 
-//! Información acerca de un punto de interrupción en un fuente
-struct break_line_item {
-	int handle, num, line;
-	break_line_item *next, *prev;
-	bool enabled, error,valid_cond, only_once;
-	int ignore_count;
-	wxString cond;
-	break_line_item(int ln, break_line_item *prv, break_line_item *nxt=NULL) {
-		next=nxt; prev=prv; ignore_count=0;
-		line=ln; enabled=true; error=false;
-		valid_cond=true; only_once=false;
-	}
-};
-
 //! Información acerca de una linea de código resaltada por el usuario
 struct marked_line_item {
 	int line;
@@ -281,7 +268,7 @@ struct file_item { // para armar las listas (doblemente enlazadas) de archivos d
 	wxString name;
 	wxTreeItemId item;
 	file_item *prev, *next; ///< para enlazar los nodos de la lista
-	break_line_item *breakpoints; ///< primer item de la lista de breakpoints del fuente (sin primer elemento ficticio, se asigna con GetSourceExtras)
+	BreakPointInfo *breaklist; ///< primer item de la lista de breakpoints del fuente (se asigna con GetSourceExtras)
 	marked_line_item *markers; ///< primer item de la lista de lineas resaltadas del fuente (sin primer elemento ficticio, se asigna con GetSourceExtras)
 	bool force_recompile; ///< indica se debe recompilar independientemente de la fecha de modificacion (por ejemplo, si lo va a modificar un paso adicional)
 	int cursor; ///< posicion del cursor en el texto (se asigna con GetSourceExtras)
@@ -290,7 +277,7 @@ struct file_item { // para armar las listas (doblemente enlazadas) de archivos d
 	file_item (file_item *p, wxString &n, wxTreeItemId &i) {
 		force_recompile=false;
 		cursor=0;
-		breakpoints=NULL;
+		breaklist=NULL;
 		markers=NULL;
 		name=n;
 		item=i;
@@ -300,22 +287,13 @@ struct file_item { // para armar las listas (doblemente enlazadas) de archivos d
 	file_item () {
 		force_recompile=false;
 		name=_T("");
-		breakpoints=NULL;
+		breaklist=NULL;
 		markers=NULL;
 		cursor=0;
 		next=NULL;
 		prev=NULL;
 	}
 	void ClearExtras(bool all=false) {
-		if (all) { // solo se borran si se destruye el archivo... pero no cuando se "recolocan" los extras en el fuente
-			break_line_item *bit = breakpoints, *bit2;
-			while (bit) {
-				bit2=bit->next;
-				delete bit;
-				bit=bit2;
-			}
-			breakpoints=NULL;
-		}
 		marked_line_item *mit = markers, *mit2;
 		while (mit) {
 			mit2=mit->next;
@@ -325,6 +303,7 @@ struct file_item { // para armar las listas (doblemente enlazadas) de archivos d
 		markers=NULL;
 	}
 	~file_item() {
+		delete_autolist(breaklist);
 		ClearExtras(true);
 	}
 };
@@ -477,7 +456,7 @@ public:
 	bool Debug();
 	wxString GetPath();
 	/// Carga todos los breakpoints del proyecto en gdb
-	int SetBreakpoints();
+	void SetBreakpoints();
 	wxString GetExePath();
 	
 	/** @brief Agrega una biblioteca a construir de una configuración **/

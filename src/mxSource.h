@@ -18,7 +18,7 @@
 
 class wxString;
 class wxTreeItemId;
-class break_line_item;
+class BreakPointInfo;
 class DiffInfo;
 
 enum MXS_MARKER {
@@ -43,7 +43,7 @@ public:
 	
 	int last_s1, last_s2; ///< para el resaltado de campos
 	
-	break_line_item *first_break_item; ///< lista de info de breakpoints 
+	BreakPointInfo **breaklist; ///< lista de info de breakpoints 
 	bool own_breaks; ///< para saber si la info de los breakpoints es resposabilidad propia o del proyecto
 	int calltip_brace;
 	int current_line;
@@ -117,7 +117,6 @@ public:
 	void SetFolded(int level, bool folded);
 	// stc
 	void OnMarginClick (wxStyledTextEvent &event);
-	void EnableDelayedBreakPoint(int line, int fake_num, int num);
 	void OnCharAdded  (wxStyledTextEvent &event);
 	void OnUpdateUI (wxStyledTextEvent &event);
 	void OnKillFocus (wxFocusEvent &event);

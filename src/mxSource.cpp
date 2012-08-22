@@ -116,7 +116,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 	
 	LoadSourceConfig();
 	
-	first_break_item = NULL;
+	breaklist = new BreakPointInfo*(NULL);
 	own_breaks = true;
 	
 	ignore_char_added=false;
@@ -271,6 +271,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 
 mxSource::~mxSource () {
 	
+	bool only_view=next_source_with_same_file==this; // there can be more than one view of the same source
+	
 	if (diff_brother) diff_brother->SetDiffBrother(NULL); diff_brother=NULL;
 	while (first_diff_info) delete first_diff_info;
 	
@@ -281,20 +283,25 @@ mxSource::~mxSource () {
 		if (compiler->last_compiled==this) compiler->last_compiled=NULL;
 		if (compiler->last_runned==this) compiler->last_runned=NULL;
 	}
-	if (own_breaks && next_source_with_same_file==this) { // si no es un fuente de un proyecto, tiene la resposabilidad de liberar la memoria de los breakpoints
-		break_line_item *item = first_break_item, *item2;
-		while (item) {
-			item2=item->next;
-			delete item;
-			item=item2;
-		}
+	
+	// si no es un fuente de un proyecto, tiene la resposabilidad de liberar la memoria de los breakpoints
+	if (own_breaks && only_view) delete_autolist(*breaklist);
+	
+	// si no es un fuente de un proyecto, tiene la resposabilidad de liberar la memoria de los breakpoints
+	BreakPointInfo *bpi=*breaklist;
+	while (bpi) {
+		// si es la ultima vista de este archivo, se le pasa null al bpi, sino la otra vista
+		bpi->SetSource(only_view?NULL:next_source_with_same_file);
+		bpi=bpi->Next();
 	}
 	
-	mxSource *iter=this;
-	while (iter->next_source_with_same_file!=this)
-		iter=iter->next_source_with_same_file;
-	iter->next_source_with_same_file=next_source_with_same_file;
-	MarkerDeleteHandle(current_marker);
+	if (!only_view) {
+		mxSource *iter=this;
+		while (iter->next_source_with_same_file!=this)
+			iter=iter->next_source_with_same_file;
+		iter->next_source_with_same_file=next_source_with_same_file;
+		MarkerDeleteHandle(current_marker);
+	}
 	
 }
 
@@ -536,79 +543,51 @@ void mxSource::OnFoldToggle (wxCommandEvent &event) {
 }
 
 void mxSource::OnMarginClick (wxStyledTextEvent &event) {
-    if (event.GetMargin() == 2) {
+	
+    if (event.GetMargin() == 2) { // margen del folding
         int lineClick = LineFromPosition (event.GetPosition());
         int levelClick = GetFoldLevel (lineClick);
         if ((levelClick & wxSTC_FOLDLEVELHEADERFLAG) > 0) {
             ToggleFold (lineClick);
         }
-    } else {
-//		if (!debug->running) {
-			break_line_item *bitem;
-			if (event.GetModifiers()&wxSTC_SCMOD_SHIFT || event.GetModifiers()&wxSTC_SCMOD_CTRL) {
-				int l = LineFromPosition (event.GetPosition());
-				if (!debug->debugging || !debug->waiting)
-					new mxBreakOptions(sin_titulo?temp_filename.GetFullPath():source_filename.GetFullPath(),l,this);
-			} else {
-				int l = LineFromPosition (event.GetPosition());
-				// buscar si habia un breakpoint en esa linea
-				bitem = first_break_item;
-				while (bitem && MarkerLineFromHandle(bitem->handle)!=l) 
-					bitem = bitem->next;
-				if (bitem) { // si hay que sacar el breakpoint
-					if (debug->debugging) {
-						debug->DeleteBreakPoint(bitem->num);
-					}		
-					// quitar el marcador del source
-					MarkerDeleteHandle(bitem->handle);
-					// quitar el item de la lista enlazada
-					if (bitem->prev) 
-						bitem->prev->next = bitem->next;
-					else {
-						first_break_item = bitem->next;
-						mxSource *bro=next_source_with_same_file;
-						while (bro!=this) {
-							bro->first_break_item=first_break_item; 
-							bro=bro->next_source_with_same_file;
-						}
-					}
-					if (bitem->next)
-						bitem->next->prev = bitem->prev;
-					delete bitem;
-				} else { // si hay que poner un breakpoint
-					if (IsEmptyLine(l)) {
-						mxMessageDialog(main_window,LANG(DEBUG_NO_BREAKPOINT_ON_EMPTY_LINE,""
-							"Los puntos de interrupcion no pueden colocarse en lineas vacias\n"
-							" que contengan solo comentarios o directivas de preprocesador"),LANG(DEBUG_BREAKPOINT_CAPTION,"Puntos de Interrupcion"),mxMD_INFO|mxMD_OK).ShowModal();
-						return;
-					}
-					int n=0;
-					if (debug->debugging) 
-						n=debug->SetLiveBreakPoint(this,l);
-					if (n!=-1) {
-						// agregar el item al principio de la lista
-						bitem = new break_line_item(l,NULL,first_break_item);
-						if (first_break_item)
-							first_break_item->prev=bitem;
-						first_break_item=bitem;
-						mxSource *bro=next_source_with_same_file;
-						while (bro!=this) {
-							bro->first_break_item=first_break_item; 
-							bro=bro->next_source_with_same_file;
-						}
-						// marcar en el margen del source_share
-						bitem->handle=MarkerAdd(l, n<0?mxSTC_MARK_BAD_BREAKPOINT:mxSTC_MARK_BREAKPOINT);
-						bitem->num=n;
-						if (n<0) bitem->enabled=false;
-					}
+		
+	} else { // margen de los puntos de interrupcion
+		
+		// buscar si habia un breakpoint en esa linea
+		BreakPointInfo *bpi = *breaklist;
+		int l = LineFromPosition (event.GetPosition());
+		while (bpi && (bpi->source!=this||MarkerLineFromHandle(bpi->marker_handle)!=l)) bpi = bpi->Next();
+		
+		// si apretó shift o ctrl (por alguna razon en linux solo me anda shift) mostrar el cuadro de opciones
+		if (event.GetModifiers()&wxSTC_SCMOD_SHIFT || event.GetModifiers()&wxSTC_SCMOD_CTRL) {
+			if (!debug->debugging || !debug->waiting) {
+				if (!bpi) { // si no habia, lo crea
+					bpi=new BreakPointInfo(this,l);
+					if (debug->debugging) debug->SetBreakPoint(bpi);
+					else bpi->SetStatus(BPS_UNKNOWN);
 				}
+				new mxBreakOptions(bpi); // muestra el dialogo de opciones del bp
 			}
-//		} else {
-//			mxMessageDialog(main_window,LANG(DEBUG_NO_BREAKPOINT_WHILE_RUNNING,"No puede colocar o modificar un breakpoint mientras el programa esta\n"
-//																			   "ejecutandose. Pause la depuracion (con el comando \"Interrumpir\" del menu\n"
-//																			   "\"Depuracion\") o espere a que la misma se interrumpa para realizar esta accion."),LANG(DEBUG_BREAKPOINT_CAPTION,"Puntos de Interrupcion"),mxMD_INFO|mxMD_OK).ShowModal();
-//							
-//		}
+		
+		// si hay que sacar el breakpoint
+		} else if (bpi) { 
+			if (debug->debugging) debug->DeleteBreakPoint(bpi); // debug se encarga de hacer el delete y eso se lleva el marker en el destructor
+			else delete bpi;
+		
+		// si hay que poner un breakpoint nuevo
+		} else { 
+			if (IsEmptyLine(l)) { // no dejar poner un pto de interrupción en una línea que no tiene código
+				mxMessageDialog(main_window,LANG(DEBUG_NO_BREAKPOINT_ON_EMPTY_LINE,""
+					"Los puntos de interrupcion no pueden colocarse en lineas vacias\n"
+					" que contengan solo comentarios o directivas de preprocesador"),
+					LANG(DEBUG_BREAKPOINT_CAPTION,"Puntos de Interrupcion"),mxMD_INFO|mxMD_OK).ShowModal();
+				return;
+			}
+			bpi=new BreakPointInfo(this,l);
+			if (debug->debugging) debug->SetLiveBreakPoint(bpi); // esta llamada cambia el estado del bpi y eso pone la marca en el margen
+			else bpi->SetStatus(BPS_SETTED);
+		}
+		
 	}
 }
 
@@ -3269,7 +3248,7 @@ void mxSource::SplitFrom(mxSource *orig) {
 	LoadFile(orig->source_filename);
 	treeId = orig->treeId;
 	never_parsed=false; sin_titulo=false; 
-	first_break_item=orig->first_break_item;
+	breaklist=orig->breaklist;
 	own_breaks=orig->own_breaks;
 	SetDocPointer(orig->GetDocPointer());
 	next_source_with_same_file=orig;
@@ -3440,20 +3419,6 @@ void mxSource::SetColours(bool also_style) {
 	
 	if (also_style) SetStyle(config_source.syntaxEnable);
 	
-}
-
-/**
-* Para se llamada desde DebugManager::HowDoesItRuns cuando hay que colocar un breakpoint pausando la ejecución
-**/
-void mxSource::EnableDelayedBreakPoint(int line, int fake_num, int num) {
-	break_line_item *bitem = first_break_item;
-	while (bitem && bitem->num!=fake_num)
-		bitem = bitem->next;
-	if (bitem) {
-		bitem->line=MarkerLineFromHandle(bitem->handle); bitem->num=num;
-		MarkerDeleteHandle(bitem->handle);
-		bitem->handle=MarkerAdd(bitem->line,mxSTC_MARK_BREAKPOINT);
-	}
 }
 
 /**

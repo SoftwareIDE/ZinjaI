@@ -4,6 +4,7 @@
 #include <wx/grid.h>
 #include "DebugManager.h"
 #include "mxBreakOptions.h"
+#include "BreakPointInfo.h"
 #include "DebugManager.h"
 #include "mxSource.h"
 #include "ProjectManager.h"
@@ -30,7 +31,7 @@ mxBreakList::mxBreakList() : wxDialog(main_window, wxID_ANY, LANG(BREAKLIST_CAPT
 	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	grid = new wxGrid(this,wxID_ANY);
 	grid->CreateGrid(0,BL_COLS_COUNT);
-	grid->SetColLabelValue(BL_COL_NUM,LANG(BREAKLIST_NUMBER,"Numero"));
+//	grid->SetColLabelValue(BL_COL_NUM,LANG(BREAKLIST_NUMBER,"Numero"));
 	grid->SetColLabelValue(BL_COL_TYPE,LANG(BREAKLIST_TYPE,"Tipo"));
 	grid->SetColLabelValue(BL_COL_WHY,LANG(BREAKLIST_LOCATION_EXPRESSION,"Ubicacion/Expresion"));
 	grid->SetColLabelValue(BL_COL_ENABLE,LANG(BREAKLIST_STATE,"Estado"));
@@ -42,12 +43,11 @@ mxBreakList::mxBreakList() : wxDialog(main_window, wxID_ANY, LANG(BREAKLIST_CAPT
 	grid->SetCellHighlightPenWidth(0);
 	grid->EnableDragRowSize(false);	
 	
-	old_size=100;
-	cols_sizes[BL_COL_NUM]=7;
+	old_size=100-7;
+//	cols_sizes[BL_COL_NUM]=7;
 	cols_sizes[BL_COL_TYPE]=8;
 	cols_sizes[BL_COL_WHY]=47;
 	cols_sizes[BL_COL_ENABLE]=10;
-//	cols_sizes[BL_COL_DISP]=10;
 	cols_sizes[BL_COL_HIT]=7;
 	cols_sizes[BL_COL_COND]=20;
 	
@@ -72,10 +72,10 @@ mxBreakList::mxBreakList() : wxDialog(main_window, wxID_ANY, LANG(BREAKLIST_CAPT
 	
 	wxSizeEvent evt(this->GetSize());
 	OnResize(evt);
-	debug->UpdateBreakList(grid);
-	AddErrorBreaks();
-	if (grid->GetNumberRows())
-		grid->SelectRow(0);
+	
+	PopulateGrid();
+	
+	if (grid->GetNumberRows()) grid->SelectRow(0);
 	
 	grid->SetFocus();
 	Show();
@@ -104,142 +104,23 @@ void mxBreakList::OnClose(wxCloseEvent &evt) {
 }
 
 void mxBreakList::OnDoubleClick(wxGridEvent &evt) {
-	int r = evt.GetRow();
-	long num, line;
-	wxString snum(grid->GetCellValue(r,BL_COL_NUM));
-	mxSource *source=NULL;
-	file_item *file=NULL;
-	break_line_item *bitem=NULL;
-	if (snum.Len()) {
-		snum.ToLong(&num);
-		debug->FindBreakInfoFromNumber(num,bitem,source,file);
-	} else {
-		if (grid->GetCellValue(r,BL_COL_TYPE)==_T("bkpt")) {
-			wxString where = grid->GetCellValue(r,BL_COL_WHY);
-			int p = where.Find(wxString(_T(": "))<<LANG(BREAKLIST_LINE,"linea")<<_T(" "));
-			wxString fname=where.Mid(0,p);
-			where.Mid(p+3+wxString(LANG(BREAKLIST_LINE,"linea")).Len()).ToLong(&line);
-			debug->FindBreakInfoFromData(fname,line,bitem,source,file);
-		}
-	}
-//	if (!bitem) return;
-	if (evt.GetCol()==BL_COL_WHY) {
-		if (!source) source = main_window->OpenFile(DIR_PLUS_FILE(project->path,file->name),!project);
-		else main_window->notebook_sources->SetSelection(main_window->notebook_sources->GetPageIndex(source));
-		Close();
-		if (source && source!=external_source) {
-			source->MarkError(bitem->line);
-			source->SetFocus();
-		}
-		return;
-	} else {
-		if (source) {
-			if (bitem)
-				new mxBreakOptions(source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath(),source->MarkerLineFromHandle(bitem->handle),source,bitem);
-			else
-				new mxBreakOptions(source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath(),line,source);
-			grid->DeleteRows(0,grid->GetNumberRows());
-			debug->UpdateBreakList(grid);
-			AddErrorBreaks();
-		} else if (file) {
-			new mxBreakOptions(DIR_PLUS_FILE(project->path,file->name),bitem->line,file,bitem);
-			grid->DeleteRows(0,grid->GetNumberRows());
-			debug->UpdateBreakList(grid);
-			AddErrorBreaks();
-		}
-	}
-	grid->SetGridCursor(r,evt.GetCol());
-	grid->SelectRow(r);
-	grid->MakeCellVisible(r,evt.GetCol());
-}
-
-void mxBreakList::AddErrorBreaks() {
-	int sc = main_window->notebook_sources->GetPageCount();
-	break_line_item *bitem;
-	bool force = !debug->debugging || debug->running;
-	int cont = grid->GetNumberRows();
-	if (sc) {
-		mxSource *source;
-		for (int i=0;i<sc;i++) {
-			source = (mxSource*)(main_window->notebook_sources->GetPage(i));
-			if (source->next_source_with_same_file!=source) { // si hay vista duplicadas, evita repetir tomando solo el menor
-				mxSource *min=source,*aux=source->next_source_with_same_file;
-				while (aux && aux!=source) { 
-					if (aux<min) min=aux; 
-					aux=aux->next_source_with_same_file;
-				}
-				if (min!=source) continue;
-			}
-			bitem = source->first_break_item;
-			while (bitem) {
-				if (force || bitem->error) {
-					grid->AppendRows(1);
-					for (int i=0;i<BL_COLS_COUNT;i++)
-						grid->SetReadOnly(cont,i,true);
-					grid->SetCellValue(cont,BL_COL_TYPE,_T("bkpt"));
-					if (bitem->error) {
-						if (bitem->valid_cond)
-							grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ERROR_LOCATION,"error (ubicacion)"));
-						else
-							grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ERROR_CONDITION,"error (condicion)"));
-					} else if (bitem->enabled) {
-						if (bitem->only_once)
-							grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ONCE,"una vez"));
-						else
-							grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ENABLED,"habilitado"));
-					} else
-						grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_DISABLED,"deshabilitado"));
-					wxString fname = source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath();
-					grid->SetCellValue(cont,BL_COL_WHY,fname<<_T(": ")<<LANG(BREAKLIS_LINE,"linea")<<_T(" ")<<source->MarkerLineFromHandle(bitem->handle));
-					grid->SetCellValue(cont,BL_COL_COND,bitem->cond);
-					grid->SetCellValue(cont,BL_COL_HIT,_T(""));
-					cont++;
-				}
-				bitem = bitem->next;
-			}
-			if (project) project->GetSourceExtras(source);
-		}
-	}
-
-	if (project) {
-		file_item *file = project->first_source;
-		bool header_done=false;
-		while (file) {
-			if (!main_window->IsOpen(file->item)) {
-				bitem = file->breakpoints;
-				while (bitem) {
-					if ((force || bitem->error)) {
-						grid->AppendRows(1);
-						for (int i=0;i<BL_COLS_COUNT;i++)
-							grid->SetReadOnly(cont,i,true);
-						grid->SetCellValue(cont,BL_COL_TYPE,_T("bkpt"));
-						if (bitem->error) {
-							if (bitem->valid_cond)
-								grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ERROR_LOCATION,"error (ubicacion)"));
-							else
-								grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ERROR_CONDITION,"error (condicion)"));
-						} else if (bitem->enabled) {
-							if (bitem->only_once)
-								grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ONCE,"una vez"));
-							else
-								grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_ENABLED,"habilitado"));
-						} else
-							grid->SetCellValue(cont,BL_COL_ENABLE,LANG(BREAKLIST_DISABLED,"deshabilitado"));
-						wxString fname = DIR_PLUS_FILE(project->path,file->name);
-						grid->SetCellValue(cont,BL_COL_WHY,fname<<_T(": ")<<LANG(BREAKLIST_LINE,"linea")<<_T(" ")<<bitem->line);
-						grid->SetCellValue(cont,BL_COL_COND,bitem->cond);
-						grid->SetCellValue(cont,BL_COL_HIT,_T(""));
-						cont++;
-					}
-					bitem = bitem->next;
-				}
-			}
-			file = file->next;
-			if (!file && !header_done) {
-				file = project->first_header;
-				header_done=true;
+	int r = evt.GetRow(), c=evt.GetCol();
+	grid->SetGridCursor(r,c); grid->SelectRow(r);
+	if (ids[r]==-1) return;
+	if (evt.GetCol()==BL_COL_WHY) { // doble click en la columna con la ubicacion, abre ese archivo y va a esa linea
+		BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[r],false);
+		if (bpi) {
+			if (!bpi->source) main_window->OpenFile(bpi->fname,!project);
+			else main_window->notebook_sources->SetSelection(main_window->notebook_sources->GetPageIndex(bpi->source));
+			if (bpi->source) {
+				Close();
+				bpi->source->MarkError(bpi->line_number);
+				bpi->source->SetFocus();
 			}
 		}
+	} else { // doble click en otro lado, abre el cuadro para editar el breakpoint
+		BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[r],false);
+		if (bpi) { new mxBreakOptions(bpi); PopulateGrid(); }
 	}
 }
 
@@ -274,46 +155,25 @@ void mxBreakList::OnDeleteAllButton(wxCommandEvent &evt) {
 	OnDeleteButton(evt);
 }
 
+void mxBreakList::RemoveBreakPoint(int _row, bool single) {
+	BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[_row],false);
+	if (!bpi) return;
+	if (debug->debugging && ((!debug->waiting)||single)) {
+		debug->DeleteBreakPoint(bpi);
+	} else delete bpi;
+	ids.erase(ids.begin()+_row);
+	grid->DeleteRows(_row,1);
+}
+
 void mxBreakList::OnDeleteButton(wxCommandEvent &evt) {
 	if (debug->running && debug->waiting) return;
 	for (int r=int(grid->GetNumberRows())-1;r>=0;r--) {
-		bool selected=false;
+		if (ids[r]==-1) continue;
 		for (unsigned int j=0;j<BL_COLS_COUNT;j++)
 			if (grid->IsInSelection(r,j)) {
-				selected=true; break;
+				RemoveBreakPoint(r,false); 
+				break;
 			}
-		if (selected) {
-			long num;
-			wxString snum(grid->GetCellValue(r,BL_COL_NUM));
-			mxSource *source=NULL;
-			file_item *file=NULL;
-			break_line_item *bitem=NULL;
-			if (snum.Len()) {
-				snum.ToLong(&num);
-				debug->FindBreakInfoFromNumber(num,bitem,source,file);
-			} else {
-				if (grid->GetCellValue(r,BL_COL_TYPE)==_T("bkpt")) {
-					wxString where = grid->GetCellValue(r,BL_COL_WHY);
-					int p = where.Find(wxString(_T(": "))<<LANG(BREAKLIST_LINE,"linea")<<_T(" "));
-					wxString fname=where.Mid(0,p);
-					long line;
-					where.Mid(p+3+wxString(LANG(BREAKLIST_LINE,"linea")).Len()).ToLong(&line);
-					debug->FindBreakInfoFromData(fname,line,bitem,source,file);
-				}
-			}
-			if (bitem) {
-				if (debug->debugging && !bitem->error) debug->DeleteBreakPoint(bitem->num);
-				if (bitem->next) bitem->next->prev=bitem->prev;
-				if (bitem->prev) bitem->prev->next=bitem->next;
-				else if (source && source->first_break_item==bitem)
-					source->first_break_item=bitem->next;
-				else if (file && file->breakpoints==bitem)
-					file->breakpoints=bitem->next;
-				if (source) source->MarkerDeleteHandle(bitem->handle);
-				delete bitem;
-				grid->DeleteRows(r);
-			}
-		}
 	}
 }
 
@@ -331,4 +191,43 @@ void mxBreakList::OnGotoButton(wxCommandEvent &evt) {
 	if (r<0 || r>=grid->GetNumberRows()) return;
 	wxGridEvent event(wxID_ANY,0,this,r,BL_COL_WHY);
 	OnDoubleClick(event);
+}
+
+
+void mxBreakList::PopulateGrid ( ) {
+	grid->DeleteRows(0,grid->GetNumberRows()); ids.clear();
+	
+	bool ask_debug=debug->debugging && !debug->waiting;
+	if (ask_debug) debug->PopulateBreakpointsList(this,true);
+	
+	BreakPointInfo *bpi=NULL;
+	while((bpi=BreakPointInfo::GetGlobalNext(bpi))) {
+		
+		if (ask_debug && bpi->gdb_id!=-1) continue; // ya lo cargo debug
+		
+		int i=AppendRow(bpi->zinjai_id);
+		
+		grid->SetCellValue(i,BL_COL_TYPE,"bkpt");
+		
+		wxString where(bpi->fname);	where<<": "<<LANG(BREAKLIST_LINE,"linea")<<" "<<bpi->line_number+1;
+		grid->SetCellValue(i,BL_COL_WHY,where);
+		
+		wxString status=LANG(BREAKLIST_ENABLED,"habilitado");
+		if (bpi->only_once) status=LANG(BREAKLIST_ONCE,"una vez");
+		if (bpi->gdb_status==BPS_ERROR_CONDITION) status=LANG(BREAKLIST_ERROR_CONDITION,"error (condicion)");
+		if (bpi->gdb_status==BPS_ERROR_SETTING) status=LANG(BREAKLIST_ERROR_LOCATION,"error (ubicacion)");
+		if (!bpi->enabled) status=LANG(BREAKLIST_DISABLED,"deshabilitado");
+		grid->SetCellValue(i,BL_COL_ENABLE,status);
+		
+		grid->SetCellValue(i,BL_COL_COND,bpi->cond);
+		
+		grid->SetCellValue(i,BL_COL_HIT,"0");
+	}
+}
+
+int mxBreakList::AppendRow(int _id) {
+	int n=grid->GetNumberRows(); grid->AppendRows(1);
+	for (int i=0;i<BL_COLS_COUNT;i++) grid->SetReadOnly(n,i,true);
+	ids.push_back(_id);
+	return n;
 }

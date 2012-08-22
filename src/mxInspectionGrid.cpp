@@ -829,7 +829,7 @@ void mxInspectionGrid::OnClick(wxGridEvent &event) {
 		wxTextDataObject my_data(GetCellValue(event.GetRow(),event.GetCol()));
 		wxDropSource dragSource(this);
 		dragSource.SetData(my_data);
-		wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
+		dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
 		can_drop=true;
 	} else event.Skip();
 }

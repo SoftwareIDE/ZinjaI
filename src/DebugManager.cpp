@@ -38,7 +38,7 @@ DebugManager *debug;
 
 DebugManager::DebugManager() {
 	show_breakpoint_error=true;
-	pause_fake_num = -1;
+	pause_breakpoint = NULL;
 	current_handle = -1;
 	last_backtrace_size = 0;
 	inspections_count = 0;
@@ -269,21 +269,15 @@ void DebugManager::ResetDebuggingStuff() {
 	utils->Split(config->Debug.blacklist,black_list,true,false);
 	stopping=false;
 	gui_is_prepared = false;
-	pause_line=-1;
+	pause_breakpoint=NULL;
 	
 	list<mxExternInspection*>::iterator i1=extern_list.begin();
 	while (i1!=extern_list.end()) if ((*i1)->SetOutdated()) i1=extern_list.erase(i1); else ++i1;
 	
+	// setear en -1 todos los ids de los pts de todos interrupcion, para evitar confusiones con depuraciones anteriores
+	BreakPointInfo *bpi=NULL;
+	while ((bpi=BreakPointInfo::GetGlobalNext(bpi))) bpi->gdb_id=-1;
 	
-//	explorer_list.clear();
-//	list<mxInspectionMatrix*>::iterator i1=matrix_list.begin(), i2=matrix_list.end();
-//	if (i1!=i2) (*(i1++))->SetOutdated(); 
-//	matrix_list.clear();
-	break_list.clear();
-//	inspections.clear();
-//	inspections_count=0;
-//	inspection_grid->DeleteRows(0,inspection_grid->GetNumberRows());
-//	inspection_grid->AddRow();
 	for (int i=0;i<inspections_count;i++)
 		if (inspections[i].is_vo) {
 			SetFramelessInspection(i);
@@ -550,17 +544,12 @@ void DebugManager::HowDoesItRuns() {
 		else
 			state_text=wxString(LANG(DEBUG_STATUS_EXIT_WITH_CODE,"El programa finalizo con el codigo de salida "))<<GetValueFromAns(ans,_T("exit-code"),true);
 	} else if (how==_T("signal-received")) {
-		if (pause_line!=-1) {
-			if (pause_file.Len()) {
-				int n=SetBreakPoint(pause_file,pause_line);
-				if (n!=-1) {
-					mxSource *src=pause_source?pause_source:main_window->FindSource(pause_file);
-					if (src) src->EnableDelayedBreakPoint(pause_line,pause_fake_num,n);
-				}
-			} else {
-				DeleteBreakPoint(pause_line);
-			}
-			pause_line=-1;
+		if (pause_breakpoint) {
+			if (pause_breakpoint->gdb_status==BPS_PENDING)
+				SetBreakPoint(pause_breakpoint);
+			else
+				DeleteBreakPoint(pause_breakpoint);
+			pause_breakpoint=NULL;
 			Continue();
 			return;
 		}
@@ -617,63 +606,43 @@ void DebugManager::HowDoesItRuns() {
 		Stop();
 	}
 	if (disable>=0) {
-		mxSource *source;
-		file_item *file;
-		break_line_item *bitem;
-		if (FindBreakInfoFromNumber(disable,bitem,source,file) && bitem->only_once) {
-			bitem->enabled=false;
-			if (source) {
-				bitem->line = source->MarkerLineFromHandle(bitem->handle);
-				source->MarkerDeleteHandle(bitem->handle);
-				bitem->handle = source->MarkerAdd(bitem->line,mxSTC_MARK_BAD_BREAKPOINT);
-			}
-		}
+		BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(disable,true);
+		if (bpi && bpi->only_once) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
 	}
 	SetStateText(state_text);
 }
 
-void DebugManager::DeleteBreakPoint(int num) {
+/**
+* @brief Removes a breakpoint from gdb and from ZinjaI's list
+*
+* If !debug->running it deletes the brekapoint inmediatly, but if its running
+* it marks the breakpoint to be deleted with pause_* and Pause the execution.
+* Next time debug see the execution paused will invoke this method again and 
+* resume the execution, so user can delete breakpoint without directly pausing
+* the program being debugged.
+**/
+void DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 	if (!debugging) return;
 	if (waiting) { // si esta ejecutando, anotar para sacar y mandar a pausar
-		pause_file="";
-		pause_line=num; 
+		pause_breakpoint=_bpi;
 		Pause();
 	} else {
-		// sacarlo de la lista que lleva el debug manager
-		list<breakinfo>::iterator it1=break_list.begin(), it2=break_list.end();
-		while (it1!=it2 && it1->n!=num) it1++; if (it1!=it2) break_list.erase(it1);
 		// decirle a gdb que lo saque
-		SendCommand(_T("-break-delete "),num);
+		SendCommand(_T("-break-delete "),_bpi->gdb_id);
+		// sacarlo de la memoria y las listas de zinjai
+		delete _bpi;
 	}
 }
 
-bool DebugManager::DeleteBreakPoint(wxString fname, int line) {
-	if (/*waiting || */!debugging) return false;
-	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
-		if (fname[i]=='\\') 
-			fname[i]='/';
-	list<breakinfo>::iterator it1=break_list.begin(), it2=break_list.end();
-	breakinfo bi(0,fname,line);
-	while (it1!=it2) {
-		if ((*it1)==bi) {
-			DeleteBreakPoint(it1->n);
-			return true;
-		}
-		++it1;
-	}
-	return false;
-}
-
-int DebugManager::SetLiveBreakPoint(mxSource *src, int line) {
-	wxString file=src->sin_titulo?src->temp_filename.GetFullPath():src->source_filename.GetFullPath();
+int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {
 	if (debugging && waiting) { 
-		pause_file=file;
-		pause_line=line; 
-		pause_source=src; 
+		pause_breakpoint=_bpi;
+		_bpi->SetStatus(BPS_PENDING);
 		Pause();
-		return --pause_fake_num;
-	} else 
-		return SetBreakPoint(file,line);
+		return -1;
+	} else {
+		return SetBreakPoint(_bpi);
+	}
 }
 
 /**
@@ -681,43 +650,42 @@ int DebugManager::SetLiveBreakPoint(mxSource *src, int line) {
 *
 * Le pide al depurador agregar un pto de interrupción. Esta función se usa tanto 
 * para proyectos como programas simples, y se llama desde mxSource::OnMarginClick,
-* DebugManager::HowDoesItRuns y ProjectManager::SetBreakpoints.
-* Esos método se encargan de los break_line_item y los markers normalmente.
-* Si logra colocar el bp retorna su id, sino -1.
+* DebugManager::HowDoesItRuns y ProjectManager::SetBreakpoints y 
+* DebugManager::SetBreakPoints. Si logra colocar el bp retorna su id, sino -1.
+*
+* Setea además las propiedades adicionales si están definidas en el BreakPointInfo.
 *
 * Antes de colocar el breakpoint se fija si es una direccion valida, porque
 * sino gdb lo coloca más adelante sin avisar.
-*
-* @param fname ruta del archivo, con cualquier barra (si es windows corrige)
-* @param line número de linea en base 0
 **/
-int DebugManager::SetBreakPoint(wxString file, int line) {
+int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 	if (waiting || !debugging) return 0;
-	wxString adr = GetAddress(file,line);
+	wxString adr = GetAddress(_bpi->fname,_bpi->line_number);
 	if (!adr.Len()) return -1;
-#if defined(_WIN32) || defined(__WIN32__)
-	for (unsigned int i=0;i<file.Len();i++) // corregir las barras en windows para que no sean caracter de escape
-		if (file[i]=='\\') 
-			file[i]='/';
-#endif
-	wxString ans = SendCommand(wxString(_T("-break-insert \"\\\""))<<file<<_T(":")<<line+1<<_T("\\\"\""));
+	wxString ans = SendCommand(wxString(_T("-break-insert \"\\\""))<<_bpi->fname<<_T(":")<<_bpi->line_number+1<<_T("\\\"\""));
 	wxString num = GetSubValueFromAns(ans,_T("bkpt"),_T("number"),true);
 	if (!num.Len()) { // a veces hay que poner dos barras (//) antes del nombre del archivo en vez de una (en los .h? ¿por que?)
+		wxString file=_bpi->fname;
 		int p = file.Find('/',true);
 		if (p!=wxNOT_FOUND) {
 			wxString file2 = file.Mid(0,p);
 			file2<<'/'<<file.Mid(p);
-			ans = SendCommand(wxString(_T("-break-insert \""))<<file2<<_T(":")<<line+1<<_T("\""));
+			ans = SendCommand(wxString(_T("-break-insert \""))<<file2<<_T(":")<<_bpi->line_number+1<<_T("\""));
 			num = GetSubValueFromAns(ans,_T("bkpt"),_T("number"),true);
 		}
 	}
+	int id=-1;
+	BREAK_POINT_STATUS status=BPS_SETTED;
 	if (num.Len()) {
-		long l;
-		num.ToLong(&l);
-		break_list.push_back(breakinfo(l,file,line));
-		return l;
+		long l; num.ToLong(&l); id=l;
+		// setear las opciones adicionales
+		if (_bpi->ignore_count) SetBreakPointOptions(id,_bpi->ignore_count);
+		if (_bpi->only_once||!_bpi->enabled) SetBreakPointEnable(id,_bpi->enabled,_bpi->only_once);
+		if (!_bpi->enabled) status=BPS_USER_DISABLED;
+		if (_bpi->cond.Len())	if (!SetBreakPointOptions(id,_bpi->cond)) status=BPS_ERROR_CONDITION;
 	}
-	return -1;
+	_bpi->SetStatus(status,id);
+	return id;
 }
 
 wxString DebugManager::InspectExpression(wxString var, bool pretty) {
@@ -1005,7 +973,11 @@ wxString DebugManager::WaitAnswer() {
 					buffer[c]='\0';
 					warn<<buffer+iwarn;
 					if (warn.StartsWith("&\"Error in re-setting breakpoint ")) {
-						long bn=-1;	if (warn.Mid(33).BeforeFirst(':').ToLong(&bn)) BadBreakpoint(bn);
+						long bn=-1;	if (warn.Mid(33).BeforeFirst(':').ToLong(&bn)) {
+							BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(bn,true);
+							if (bpi) bpi->SetStatus(BPS_ERROR_SETTING);
+							ShowBreakPointErrorMessage();
+						}
 					} else if (warn[0]=='=' || warn.StartsWith("&\"warning:") ) {
 						if (warn[0]=='&') warn=warn.Mid(2,warn.Len()-3);
 						main_window->AddToDebugLog(warn);
@@ -1119,47 +1091,15 @@ wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 	return WaitAnswer();
 }
 
-int DebugManager::SetBreakPoints(mxSource *source, wxString path) {
-	if (waiting || !debugging) return 0;
-	wxString fname = source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath();
-	if (source->sin_titulo)
-		notitle_source=source;
-	if (path.Len())
-		fname = DIR_PLUS_FILE(path,fname);
-	current_source = source;
-	// recorrer la lista y colocar los breakpoints
-	int cont=0;
-	break_line_item *bitem = source->first_break_item;
-	while (bitem) {
-		int l=source->MarkerLineFromHandle(bitem->handle);
-		if ((bitem->num=SetBreakPoint(fname,l))!=-1) { // si se puede colocar
-			bool error=false;
-			cont++;
-			// setear las opciones adicionales
-			if (bitem->ignore_count) debug->SetBreakPointOptions(bitem->num,bitem->ignore_count);
-			if (bitem->cond.Len()) {
-				bitem->valid_cond = debug->SetBreakPointOptions(bitem->num,bitem->cond);
-				error = !bitem->valid_cond;
-			}
-			if (!bitem->enabled) 
-				debug->SetBreakPointEnable(bitem->num,false);
-			else if (bitem->only_once) {
-				debug->SetBreakPointEnable(bitem->num,true,true);
-			}
-			if (error!=bitem->error) { // si estaba marcado como error, desmarcar
-				bitem->error = error;
-				source->MarkerDeleteHandle(bitem->handle);
-				if (bitem->error || !bitem->enabled)
-					bitem->handle = source->MarkerAdd(l, mxSTC_MARK_BAD_BREAKPOINT);
-				else
-					bitem->handle = source->MarkerAdd(l, mxSTC_MARK_BREAKPOINT);
-			}
-			
-		} else 
-			BadBreakpoint(bitem,source,l);
-		bitem = bitem->next;
+/// @brief Sets all breakpoints from an untitled or out of project mxSource
+void DebugManager::SetBreakPoints(mxSource *source) {
+	if (waiting || !debugging) return;
+	BreakPointInfo *bpi=*source->breaklist;
+	while (bpi) {
+		bpi->UpdateLineNumber();
+		debug->SetBreakPoint(bpi);
+		bpi->Next();
 	}
-	return cont;
 }
 
 /**
@@ -2360,22 +2300,23 @@ bool DebugManager::ModifyInspectionWatch(int num, bool read, bool write) {
 	return true;
 }
 
-void DebugManager::UpdateBreakList(wxGrid *grid) {
+/**
+* @brief Agrega los breakpoints y watchpoints a la tabla de puntos de interrupcion
+**/
+void DebugManager::PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints) {
+	wxGrid *grid=break_list->grid;
 	if (debug->running) return;
 	grid->ClearGrid();
 	wxString ans=SendCommand(_T("-break-list"));
 	int p=ans.Find(_T("body=["))+6;
-	wxString item;
-	item=GetNextItem(ans,p);
-	int cont=0;
+	wxString item=GetNextItem(ans,p);
 	while (item.Mid(0,5)==_T("bkpt=")) {
-		item=item.Mid(6);
-		grid->AppendRows(1);
-		for (int i=0;i<BL_COLS_COUNT;i++)
-			grid->SetReadOnly(cont,i,true);
+		item=item.Mid(6); 
 		wxString type=GetValueFromAns(item,_T("type"),true);
-		grid->SetCellValue(cont,BL_COL_NUM,GetValueFromAns(item,_T("number"),true));
-		if (type==_T("breakpoint")) {
+		if (type=="breakpoint") {
+			long id=-1; GetValueFromAns(item,_T("number"),true).ToLong(&id); 
+			BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(id,true);
+			int cont=break_list->AppendRow(bpi?bpi->zinjai_id:-1);
 			grid->SetCellValue(cont,BL_COL_TYPE,_T("bkpt"));
 			grid->SetCellValue(cont,BL_COL_HIT,GetValueFromAns(item,_T("times"),true));
 			if (GetValueFromAns(item,_T("enabled"),true)==_T("y")) {
@@ -2389,7 +2330,8 @@ void DebugManager::UpdateBreakList(wxGrid *grid) {
 			if (!fname.Len()) fname = GetValueFromAns(item,_T("file"),true);
 			grid->SetCellValue(cont,BL_COL_WHY,fname + _T(": linea ") +GetValueFromAns(item,_T("line"),true));
 			grid->SetCellValue(cont,BL_COL_COND,GetValueFromAns(item,_T("cond"),true));
-		} else if (type.Contains(_T("watchpoint"))) {
+		} else if (also_watchpoints && type.Contains("watchpoint")) {
+			int cont=break_list->AppendRow(-1);
 			if (type.Mid(0,3)==_("rea")) {
 				grid->SetCellValue(cont,BL_COL_TYPE,_T("w(l)"));
 			} else if (type.Mid(0,3)==_("acc")) {
@@ -2397,7 +2339,6 @@ void DebugManager::UpdateBreakList(wxGrid *grid) {
 			} else /*if (type.Mid(0,3)==_("acc"))*/ {
 				grid->SetCellValue(cont,BL_COL_TYPE,_T("w(l/e)"));
 			}
-//			grid->SetCellValue(cont,BL_COL_DISP,GetValueFromAns(item,_T("disp"),true));
 			grid->SetCellValue(cont,BL_COL_HIT,GetValueFromAns(item,_T("times"),true));
 			grid->SetCellValue(cont,BL_COL_ENABLE,GetValueFromAns(item,_T("enabled"),true)==_T("y")?_T("Si"):_T("No"));
 			long l;
@@ -2407,25 +2348,23 @@ void DebugManager::UpdateBreakList(wxGrid *grid) {
 					grid->SetCellValue(cont,BL_COL_WHY,inspections[i].expr);
 			}
 		}
-		cont++;
 		item=GetNextItem(ans,p);
-		
 	}
 }
 
+/// @brief Define the number of time the breakpoint should be ignored before actually stopping the execution
 void DebugManager::SetBreakPointOptions(int num, int ignore_count) {
 	wxString cmd(_T("-break-after "));
 	cmd<<num<<_T(" ")<<ignore_count;
 	SendCommand(cmd);
 }
 
+/// @brief Define the condition for a conditional breakpoint and returns true if the condition was correctly setted
 bool DebugManager::SetBreakPointOptions(int num, wxString condition) {
 	wxString cmd(_T("-break-condition "));
 	cmd<<num<<_T(" ")<<utils->EscapeString(condition);
 	wxString ans = SendCommand(cmd);
-	bool success = ans.Len()>4 && ans.Mid(1,4)==_T("done");
-	if (!success) SendCommand(_T("-break-delete "),num);
-	return success;
+	return ans.Len()>4 && ans.Mid(1,4)==_T("done");
 }
 
 void DebugManager::SetBreakPointEnable(int num, bool enable, bool once) {
@@ -2439,84 +2378,47 @@ void DebugManager::SetBreakPointEnable(int num, bool enable, bool once) {
 	wxString ans = SendCommand(cmd);
 }
 
-bool DebugManager::FindBreakInfoFromNumber(int num, break_line_item *&bitem, mxSource *&source, file_item *&file) {
-	int sc = main_window->notebook_sources->GetPageCount();
-	if (sc) {
-		file = NULL;
-		// buscar primero en el fuente acutal (siempre deberia estar ahi)
-		source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-		bitem = source->first_break_item;
-		while (bitem && bitem->num!=num)
-			bitem = bitem->next;
-		if (bitem) return true;
-		// si no lo encontro buscar en el resto de los fuentes abiertos
-		for (int i=0;i<sc;i++) {
-			source = (mxSource*)(main_window->notebook_sources->GetPage(i));
-			bitem = source->first_break_item;
-			while (bitem && bitem->num!=num)
-				bitem = bitem->next;
-			if (bitem) return true;
-			if (project) project->SetSourceExtras(source);
-		}
-	}
-	if (project) {
-		source=NULL;
-		file = project->first_source;
-		while (file) {
-			bitem = file->breakpoints;
-			while (bitem && bitem->num!=num)
-				bitem = bitem->next;
-			if (bitem) return true;
-			file = file->next;
-		}
-		file = project->first_header;
-		while (file) {
-			bitem = file->breakpoints;
-			while (bitem && bitem->num!=num)
-				bitem = bitem->next;
-			if (bitem) return true;
-			file = file->next;
-		}
-	}
-	return false;
-}
-
-bool DebugManager::FindBreakInfoFromData(wxString fname, int line, break_line_item *&bitem, mxSource *&source, file_item *&file) {
-	int sc = main_window->notebook_sources->GetPageCount();
-	if (sc) {
-		file = NULL;
-		// si no lo encontro buscar en el resto de los fuentes abiertos
-		for (int i=0;i<sc;i++) {
-			source = (mxSource*)(main_window->notebook_sources->GetPage(i));
-			if ( fname==(source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath()) ) {
-				bitem = source->first_break_item;
-				while (bitem && source->MarkerLineFromHandle(bitem->handle)!=line)
-					bitem = bitem->next;
-				if (bitem) return true;
-			}
-//			if (project) project->SetSourceExtras(source); // para que esta esto? WTF!
-		}
-	}
-	if (project) {
-		source=NULL;
-		file = project->first_source;
-		while (file && DIR_PLUS_FILE(project->path,file->name)!=fname)
-			file = file->next;
-		if (!file) {
-			file = project->first_header;
-			while (file && DIR_PLUS_FILE(project->path,file->name)!=fname)
-				file = file->next;
-		}
-		if (file) {
-			bitem = file->breakpoints;
-			while (bitem && bitem->line!=line)
-				bitem = bitem->next;
-			if (bitem) return true;
-			file = NULL;
-		}
-	}
-	return false;
-}
+// //**
+//* @brief find a BreakPointInfo that matches a gdb_id or zinjai_id
+//*
+//* If use_gdb finds a breakpoint that matches gdb_id, else 
+//* finds a breakpoint that matches zinjai_id. If there's no match
+//* returns NULL.
+//*
+//* This method searchs first in opened files (main_window->notebook_sources)
+//* starting by the current source, then searchs in project's files if there
+//* is a project.
+//**/
+//BreakPointInfo *DebugManager::FindBreakInfoFromNumber(int _id, bool use_gdb_id) {
+//	int sc = main_window->notebook_sources->GetPageCount();
+//	if (sc) {
+//		// buscar primero en el fuente acutal (siempre deberia estar ahi)
+//		mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
+//		BreakPointInfo *bpi= *source->breaklist;
+//		while (bpi && ((use_gdb_id&&bpi->gdb_id!=_id)||(!use_gdb_id&&bpi->zinjai_id!=_id))) bpi=bpi->Next();
+//		if (bpi) return bpi;
+//		// si no lo encontro buscar en el resto de los fuentes abiertos
+//		for (int i=0;i<sc;i++) {
+//			source = (mxSource*)(main_window->notebook_sources->GetPage(i));
+//			bpi = *source->breaklist;
+//			while (bpi && bpi->gdb_id!=_id) bpi=bpi->Next();
+//			if (bpi) return bpi;
+//		}
+//	}
+//	if (project) {
+//		for(int i=0;i<2;i++) { 
+//			file_item *file =i==0?project->first_source:project->first_header;
+//			ML_ITERATE(file) {
+//				BreakPointInfo *bpi = file->breaklist;
+//				while (bpi && bpi->gdb_id!=_id)
+//					bpi = bpi->Next();
+//				if (bpi) return bpi;
+//				file = file->next;
+//			}
+//		}
+//	}
+//	return NULL;
+//}
 
 int DebugManager::GetBreakHitCount(int num) {
 	long l=0;
@@ -2777,7 +2679,6 @@ bool DebugManager::ToggleInspectionFreeze(int n) {
 
 void DebugManager::UnregisterSource(mxSource *src) {
 	if (current_source==src) current_source=NULL;
-	if (pause_source==src) pause_source=NULL;
 }
 
 bool DebugManager::OffLineInspectionModify(int i, wxString value) {
@@ -2872,32 +2773,6 @@ void DebugManager::SetFullOutput (bool on) {
 	} else {
 		SendCommand(_T("set print repeats 100"));
 		SendCommand(_T("set print elements 100"));
-	}
-}
-
-void DebugManager::BadBreakpoint(int num) {
-	list<breakinfo>::iterator it=break_list.begin();
-	while (it!=break_list.end()) {
-		if (it->n==num) {
-			mxSource *src=main_window->FindSource(it->fname);
-			if (src) {
-				break_line_item *bitem=src->first_break_item;
-				while (bitem && src->MarkerLineFromHandle(bitem->handle)!=it->line)
-					bitem = bitem->next;
-				if (bitem) BadBreakpoint(bitem,src,it->line); else ShowBreakPointErrorMessage();
-			} else ShowBreakPointErrorMessage();
-			return;
-		}
-		it++;
-	}
-}
-
-void DebugManager::BadBreakpoint(break_line_item *bitem, mxSource *source, int line) {
-	ShowBreakPointErrorMessage();
-	if (!bitem->error) {
-		bitem->error=true;
-		source->MarkerDeleteHandle(bitem->handle);
-		bitem->handle = source->MarkerAdd(line,mxSTC_MARK_BAD_BREAKPOINT);
 	}
 }
 
