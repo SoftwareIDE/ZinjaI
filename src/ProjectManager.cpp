@@ -2045,6 +2045,11 @@ void ProjectManager::SetSourceExtras(mxSource *source, file_item *item) {
 		if (source->own_breaks) delete source->breaklist;
 		source->breaklist = &item->breaklist;
 		source->own_breaks = false;
+		BreakPointInfo *bpi=item->breaklist;
+		while (bpi) {
+			bpi->SetSource(source);
+			bpi=bpi->Next();
+		}
 		marked_line_item *marker = item->markers;
 		while (marker) {
 			source->MarkerAdd(marker->line, mxSTC_MARK_USER);

@@ -21,7 +21,7 @@ END_EVENT_TABLE()
 	
 mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxID_ANY, LANG(BREAKOPTS_CAPTION,"Propiedades del Breakpoint"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
-	bpi=_bpi;
+	bpi=_bpi; bpi->UpdateLineNumber();
 
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -100,8 +100,11 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 			bpi->cond=cond_text->GetValue();
 			bpi->SetStatus(BPS_UNKNOWN);
 		}
-	} else
-		debug->DeleteBreakPoint(bpi);
+	} else {
+		if (debug->debugging)
+			debug->DeleteBreakPoint(bpi);
+		else delete bpi;
+	}
 	Close();
 }
 

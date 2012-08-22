@@ -3248,6 +3248,7 @@ void mxSource::SplitFrom(mxSource *orig) {
 	LoadFile(orig->source_filename);
 	treeId = orig->treeId;
 	never_parsed=false; sin_titulo=false; 
+	if (breaklist && own_breaks) delete breaklist;
 	breaklist=orig->breaklist;
 	own_breaks=orig->own_breaks;
 	SetDocPointer(orig->GetDocPointer());

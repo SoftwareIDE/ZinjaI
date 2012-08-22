@@ -205,6 +205,8 @@ void mxBreakList::PopulateGrid ( ) {
 		
 		if (ask_debug && bpi->gdb_id!=-1) continue; // ya lo cargo debug
 		
+		bpi->UpdateLineNumber();
+		
 		int i=AppendRow(bpi->zinjai_id);
 		
 		grid->SetCellValue(i,BL_COL_TYPE,"bkpt");
