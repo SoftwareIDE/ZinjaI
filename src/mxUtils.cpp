@@ -1169,7 +1169,16 @@ char mxUtils::GetFileType(wxString name, bool recognize_projects) {
 #define _dummy_macro_for_extract_enum_bin \
 	LANG(GENERAL_WAIT_PARSER,"Debe esperar a que se terminen de analizar todos los fuentes."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 
+
+/**
+* @brief Retreaves all files or folders names from a specified path
+*
+* @param array files/folders will be appended to this array
+* @param path folder path where the method should look for files/folders
+* @param files true for retriving files, false for retrieving folders
+**/
 int mxUtils::GetFilesFromDir (wxArrayString & array, wxString path, bool files) {
+	if (!wxDirExists(path)) return -1;
 	int n=0;
 	wxDir dir(path);
 	if ( dir.IsOpened() ) {
