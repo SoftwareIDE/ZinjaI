@@ -1176,6 +1176,7 @@ char mxUtils::GetFileType(wxString name, bool recognize_projects) {
 * @param array files/folders will be appended to this array
 * @param path folder path where the method should look for files/folders
 * @param files true for retriving files, false for retrieving folders
+* @return number of files/folder if path exists, -1 if path does not exists
 **/
 int mxUtils::GetFilesFromDir (wxArrayString & array, wxString path, bool files) {
 	if (!wxDirExists(path)) return -1;

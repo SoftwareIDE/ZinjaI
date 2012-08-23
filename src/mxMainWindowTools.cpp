@@ -110,7 +110,9 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list="<<utils->Quotize(DIR_PLUS_FILE(project->path,project->cppcheck->suppress_file))<<" ";
 		if (project->cppcheck->inline_suppr) cppargs<<"--inline-suppr ";
 		
-		cppcheck->Launch(project->path,utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \'[{file}:{line}] ({severity},{id}) {message}\' "<<cppargs<<" "<<args<<" --file-list="<<utils->Quotize(list));
+		wxString command = utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \'[{file}:{line}] ({severity},{id}) {message}\' "<<cppargs<<" "<<args<<" --file-list="<<utils->Quotize(list);
+		wxMessageBox(command);
+		cppcheck->Launch(project->path,command);
 		
 	}
 }

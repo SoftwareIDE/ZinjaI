@@ -144,16 +144,11 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 	while (avar!=NULL) {
 		wxString one_attrib ="<LI>";
 		if (!aclass->is_union) {
-			if (avar->properties&PD_CONST_PUBLIC)
-				one_attrib<<"public ";
-			else if (avar->properties&PD_CONST_PRIVATE)
-				one_attrib<<"private ";
-			else if (avar->properties&PD_CONST_PROTECTED)
-				one_attrib<<"protected ";
-			if (avar->properties&PD_CONST_STATIC)
-				one_attrib<<"static ";
-			if (avar->properties&PD_CONST_VOLATILE)
-				one_attrib<<"volatile ";
+			if (avar->properties&PD_CONST_PUBLIC) one_attrib<<"public ";
+			else if (avar->properties&PD_CONST_PRIVATE) one_attrib<<"private ";
+			else if (avar->properties&PD_CONST_PROTECTED) one_attrib<<"protected ";
+			if (avar->properties&PD_CONST_STATIC) one_attrib<<"static ";
+			if (avar->properties&PD_CONST_VOLATILE) one_attrib<<"volatile ";
 		}
 		wxString proto = utils->ToHtml(avar->proto),link;
 		if (help->IsHelpForType(avar->type,link))
@@ -175,15 +170,12 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 	pd_func *afunc = aclass->first_method->next;
 	while (afunc!=NULL) {
 		wxString one_method="<LI>";
-		if (afunc->properties&PD_CONST_PUBLIC)
-			one_method<<"public ";
-		else if (afunc->properties&PD_CONST_PRIVATE)
-			one_method<<"private ";
-		else if (afunc->properties&PD_CONST_PROTECTED)
-			one_method<<"protected ";
+		if (afunc->properties&PD_CONST_PUBLIC) one_method<<"public ";
+		else if (afunc->properties&PD_CONST_PRIVATE) one_method<<"private ";
+		else if (afunc->properties&PD_CONST_PROTECTED) one_method<<"protected ";
 		one_method<<"<A href=\"quickhelp:"<<afunc->name<<"\">";
-		if (afunc->properties&PD_CONST_VIRTUAL)
-			one_method<<"virtual ";
+		if (afunc->properties&PD_CONST_STATIC)	one_method<<"static ";
+		if (afunc->properties&PD_CONST_VIRTUAL)	one_method<<"virtual ";
 		one_method<<utils->ToHtml(afunc->proto);
 		if (afunc->properties&PD_CONST_CONST) one_method<<" const";
 		if (afunc->properties&PD_CONST_VIRTUAL_PURE) one_method<<" = 0";
@@ -231,6 +223,7 @@ void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 		else if (afunc->properties&PD_CONST_PROTECTED)
 			content<<LANG(PARSERHELP_VISIBILITY_PROTECTED,"Visibilidad: Protegido")<<_T("<BR><BR>");
 		content<<LANG(PARSERHELP_PROTOTYPE,"Prototipo:")<<_T(" <BR><UL><LI>");
+		if (afunc->properties&PD_CONST_STATIC) content<<_T("static ");
 		if (afunc->properties&PD_CONST_VIRTUAL) content<<_T("virtual ");
 		content<<proto<<(afunc->properties&PD_CONST_CONST?" const":"")<<(afunc->properties&PD_CONST_VIRTUAL_PURE?" = 0":"")<<_T("</LI></UL><BR><BR>");
 		if (afunc->file_dec)
@@ -270,10 +263,8 @@ void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
 		else if (avar->properties&PD_CONST_PROTECTED)
 			content<<LANG(PARSERHELP_VISIBILITY_PROTECTED,"Visibilidad: Protegido")<<_T("<BR><BR>");
 		content<<LANG(PARSERHELP_VISIBILITY_DECLARATION,"Declaracion:")<<_T(" <BR><UL><LI>");
-		if (avar->properties&PD_CONST_STATIC) 
-			content<<_T("static ");
-		if (avar->properties&PD_CONST_VOLATILE) 
-			content<<_T("volatile ");
+		if (avar->properties&PD_CONST_STATIC) content<<_T("static ");
+		if (avar->properties&PD_CONST_VOLATILE) content<<_T("volatile ");
 		wxString proto = avar->proto,link;
 		if (help->IsHelpForType(avar->type,link))
 			proto.Replace(avar->type,wxString(_T("<A href=\"quickhelp:"))<<link<<_T("\">")<<avar->type<<_T("</A>"),true);

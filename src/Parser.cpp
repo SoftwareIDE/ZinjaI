@@ -430,7 +430,10 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 					props=PD_CONST_CONSTRUCTOR;
 				dectype=0; auxtype=1; postype=p[6]-1;
 				while (s[postype]!='x'&&s[postype]!=1) {
-					dectype+=(s[postype]-'0')*auxtype; 
+					if (s[postype]>='a')
+						dectype+=(s[postype]-'a'+10)*auxtype; 
+					else
+						dectype+=(s[postype]-'0')*auxtype; 
 					postype--;
 					auxtype*=16;
 				}
@@ -457,7 +460,10 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 					props=PD_CONST_CONSTRUCTOR;
 				dectype=0; auxtype=1; postype=p[6]-1;
 				while (s[postype]!='x'&&s[postype]!=1) {
-					dectype+=(s[postype]-'0')*auxtype; 
+					if (s[postype]>='a')
+						dectype+=(s[postype]-'a'+10)*auxtype; 
+					else
+						dectype+=(s[postype]-'0')*auxtype; 
 					postype--;
 					auxtype*=16;
 				}
@@ -482,7 +488,10 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				}
 				dectype=0; auxtype=1; postype=p[6]-1;
 				while (s[postype]!='x'&&s[postype]!=1) {
-					dectype+=(s[postype]-'0')*auxtype; 
+					if (s[postype]>='a')
+						dectype+=(s[postype]-'a'+10)*auxtype; 
+					else
+						dectype+=(s[postype]-'0')*auxtype; 
 					postype--;
 					auxtype*=16;
 				}
