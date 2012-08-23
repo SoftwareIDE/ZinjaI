@@ -19,4 +19,4 @@ clean:
 
 
 ..\zinjai.exe: ${OBJS_DIR} ${OBJS} ${OBJS_DIR}\icon.o
-	${GPP} ${OBJS} ${LIBS} -o $@
+	${GPP} ${OBJS_DIR}\icon.o ${OBJS} ${LIBS} -o $@
