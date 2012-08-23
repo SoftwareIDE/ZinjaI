@@ -57,7 +57,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		char el='\n';
 		for (unsigned int i=0;i<files.GetCount();i++) {
 			if (exclude_list.Index(files[i])==wxNOT_FOUND) {
-				flist.Write(utils->Quotize(DIR_PLUS_FILE(project->path,files[i])));
+				flist.Write(/*utils->Quotize(*/DIR_PLUS_FILE(project->path,files[i])/*)*/);
 				flist.Write((void*)&el,1);
 			}
 		}
@@ -110,8 +110,8 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list="<<utils->Quotize(DIR_PLUS_FILE(project->path,project->cppcheck->suppress_file))<<" ";
 		if (project->cppcheck->inline_suppr) cppargs<<"--inline-suppr ";
 		
-		wxString command = utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \'[{file}:{line}] ({severity},{id}) {message}\' "<<cppargs<<" "<<args<<" --file-list="<<utils->Quotize(list);
-		wxMessageBox(command);
+		wxString command = utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \"[{file}:{line}] ({severity},{id}) {message}\" "<<" "<<args<<" --file-list="<<utils->Quotize(list);
+//		wxMessageBox(command);
 		cppcheck->Launch(project->path,command);
 		
 	}
