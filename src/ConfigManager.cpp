@@ -430,10 +430,10 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("custom_tool_7",Toolbars.tools.custom[7]);
 				else CFG_BOOL_READ_DN("custom_tool_8",Toolbars.tools.custom[8]);
 				else CFG_BOOL_READ_DN("custom_tool_9",Toolbars.tools.custom[9]);
-#if !defined(__WIN32__)
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_run);
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_config);
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_view);
+#if !defined(__WIN32__)
 				else CFG_BOOL_READ(Toolbars,tools.valgrind_run);
 				else CFG_BOOL_READ(Toolbars,tools.valgrind_view);
 #endif
