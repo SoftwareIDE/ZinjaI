@@ -189,10 +189,12 @@ public:
 
 	cfgSource config_source;
 	cfgRunning config_running;
+	wxString GetParsedCompilerOptions();
 
 	bool ApplyAutotext();
 	
 	wxString GetPathForDebugger();
+	wxString SaveSourceForSomeTool();
 	
 private:
 	

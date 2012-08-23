@@ -491,9 +491,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 		z_opts<<_T("-x c++ "); // avoid not recognizing files without extension
 	// prepare command line
 	bool cpp = source->sin_titulo || (source->source_filename.GetExt()!=_T("C") && source->source_filename.GetExt()!=_T("c"));
-	wxString comp_opts = source->config_running.compiler_options;
-	utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
-	comp_opts = utils->ExecComas(source->working_folder.GetFullPath(),comp_opts);
+	wxString comp_opts = source->GetParsedCompilerOptions();
 	wxString command = wxString(cpp?config->Files.compiler_command:config->Files.compiler_c_command)+z_opts+_T("\"")+(main_window->GetCurrentSource()->sin_titulo?source->temp_filename:source->source_filename).GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+source->binary_filename.GetFullPath()<<_T("\"");
 	
 	// lanzar la ejecucion

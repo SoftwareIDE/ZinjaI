@@ -41,14 +41,17 @@ void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
 /// @brief Lanza cppcheck sobre los fuentes del proyecto en una mxOutputWindow
 void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	if (!config->CheckCppCheckPresent()) return;
+	ABORT_IF_PARSING;
+	if (!project && !notebook_sources->GetPageCount()) return;
+	mxOutputView *cppcheck = new mxOutputView(_T("CppCheck"),"",DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")),'c');
+	
+	wxString file_args, cppargs, toargs, extra_args, path;
+	
 	if (project) {
-		ABORT_IF_PARSING;
 		
-		if (!project->cppcheck) project->cppcheck=new cppcheck_configuration;
-		
-		mxOutputView *cppcheck = new mxOutputView(_T("CppCheck"),"",DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")),'c');
+		// files
 		project->SaveAll(false);
-		
+		if (!project->cppcheck) project->cppcheck=new cppcheck_configuration;
 		wxArrayString files,exclude_list;
 		utils->Split(project->cppcheck->exclude_list,exclude_list,true,false);
 		project->GetFileList(files,'s',true);
@@ -62,47 +65,16 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 			}
 		}
 		flist.Close();
-		
-		wxString args; // -D..., -I...., -U....
-		// lo que sale de las opciones de compilacion
+		file_args=wxString("--file-list=")<<utils->Quotize(list);
+
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
-		wxArrayString array;
+		toargs=project->compiling_options;
 		
-		utils->Split(project->compiling_options,array,false,true);
-		wxString lala;
-		for (unsigned int i=0;i<array.GetCount();i++) {
-			lala=array[i];
-			if (project->cppcheck->copy_from_config && array[i].StartsWith("-D")) {
-				if (array[i].Len()==2) {
-					args<<" -D "<<array[++i];
-				} else {
-					args<<" -D "<<array[i].Mid(2);
-				}
-			} else if (project->cppcheck->copy_from_config && array[i].StartsWith("\"-D")) {
-				if (array[i]=="\"-D\"")
-					args<<" -D "<<array[++i];
-				else
-					args<<" -D \""<<array[i].Mid(3);
-			} else if (array[i].StartsWith("-I")) {
-				if (array[i].Len()==2) {
-					args<<" -I "<<array[++i];
-				} else {
-					args<<" -I "<<array[i].Mid(2);
-				}
-			} else if (array[i].StartsWith("\"-I")) {
-				if (array[i]=="\"-I\"")
-					args<<" -I "<<array[++i];
-				else
-					args<<" -I \""<<array[i].Mid(3);
-			}
-			cerr<<lala;
-		}
-		// lo que se define project->cppcheck
-		if (project->cppcheck->copy_from_config) {
-			args<<" "<<utils->Split(project->cppcheck->config_d,"-D")<<" "<<utils->Split(project->cppcheck->config_u,"-U");
-		}
+		// extra_args
+		if (project->cppcheck->copy_from_config)
+			extra_args<<utils->Split(project->cppcheck->config_d,"-D")<<" "<<utils->Split(project->cppcheck->config_u,"-U");
 		
-		wxString cppargs;
+		// cppargs
 		cppargs<<utils->Split(project->cppcheck->style,"--enable=")<<" ";
 		cppargs<<utils->Split(project->cppcheck->platform,"--platform=")<<" ";
 		cppargs<<utils->Split(project->cppcheck->standard,"--std=")<<" ";
@@ -110,11 +82,61 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list="<<utils->Quotize(DIR_PLUS_FILE(project->path,project->cppcheck->suppress_file))<<" ";
 		if (project->cppcheck->inline_suppr) cppargs<<"--inline-suppr ";
 		
-		wxString command = utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \"[{file}:{line}] ({severity},{id}) {message}\" "<<" "<<args<<" --file-list="<<utils->Quotize(list);
-//		wxMessageBox(command);
-		cppcheck->Launch(project->path,command);
+		// path
+		path=project->path;
+		
+	} else {
+		
+		mxSource *src = CURRENT_SOURCE;
+		
+		//files
+		file_args = utils->Quotize(src->SaveSourceForSomeTool());
+		
+		// toargs
+		toargs=src->GetParsedCompilerOptions();
+		
+		// cppargs
+		cppargs="--enable=all --inline-suppr";
+		
+		// path
+		path=src->working_folder.GetFullPath();
 		
 	}
+	
+	// args, lo que sale de las opciones de compilacion
+	wxString args; // -D..., -I...., -U....
+	wxArrayString array;
+	utils->Split(toargs,array,false,true);
+	for (unsigned int i=0;i<array.GetCount();i++) {
+		if ((!project || project->cppcheck->copy_from_config) && array[i].StartsWith("-D")) {
+			if (array[i].Len()==2) {
+				args<<" -D "<<array[++i];
+			} else {
+				args<<" -D "<<array[i].Mid(2);
+			}
+		} else if ((!project || project->cppcheck->copy_from_config) && array[i].StartsWith("\"-D")) {
+			if (array[i]=="\"-D\"")
+				args<<" -D "<<array[++i];
+			else
+				args<<" -D \""<<array[i].Mid(3);
+		} else if (array[i].StartsWith("-I")) {
+			if (array[i].Len()==2) {
+				args<<" -I "<<array[++i];
+			} else {
+				args<<" -I "<<array[i].Mid(2);
+			}
+		} else if (array[i].StartsWith("\"-I")) {
+			if (array[i]=="\"-I\"")
+				args<<" -I "<<array[++i];
+			else
+				args<<" -I \""<<array[i].Mid(3);
+		}
+	}
+	if (extra_args.Len()) args<<" "<<extra_args;
+	
+	wxString command = utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \"[{file}:{line}] ({severity},{id}) {message}\" "<<args<<" "<<file_args;
+	cppcheck->Launch(path,command);
+	
 }
 
 /// @brief Despliega el panel de valgrind para mostrar los resultados de CppCheck
@@ -989,10 +1011,8 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
 		// prepare command line
 		bool cpp = src->sin_titulo || (src->source_filename.GetExt()!=_T("C") && src->source_filename.GetExt()!=_T("c"));
-		wxString comp_opts = src->config_running.compiler_options;
-		utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
-		comp_opts = utils->ExecComas(src->working_folder.GetFullPath(),comp_opts);
-		wxString command = wxString(cpp?config->Files.compiler_command:config->Files.compiler_c_command)+z_opts+_T("\"")+(main_window->GetCurrentSource()->sin_titulo?src->temp_filename:src->source_filename).GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
+		wxString comp_opts = src->GetParsedCompilerOptions();
+		wxString command = wxString(cpp?config->Files.compiler_command:config->Files.compiler_c_command)+z_opts+_T("\"")+main_window->GetCurrentSource()->GetPathForDebugger()+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
 		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
 			osd.Hide();

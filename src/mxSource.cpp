@@ -3429,3 +3429,23 @@ wxString mxSource::GetPathForDebugger() {
 	if (sin_titulo) return temp_filename.GetFullPath();
 	else return source_filename.GetFullPath();
 }
+
+/**
+* @brief Save the code in source_filename (or in temp_filename if untitled) and returns its full path
+*
+* To be called from tools that need to parse it (cppcheck)
+**/
+wxString mxSource::SaveSourceForSomeTool() {
+	if (sin_titulo) SaveTemp(); else SaveSource();
+	return GetPathForDebugger();
+}
+
+/**
+* @brief return config_runnign.compiler_options parsed (variables replaced and subcommands executed)
+**/
+wxString mxSource::GetParsedCompilerOptions() {
+	wxString comp_opts=config_running.compiler_options;
+	utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
+	comp_opts = utils->ExecComas(working_folder.GetFullPath(),comp_opts);
+	return comp_opts;
+}

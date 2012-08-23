@@ -5104,7 +5104,7 @@ void mxMainWindow::OnFileExploreFolder(wxCommandEvent &event) {
 void mxMainWindow::OnFileProperties (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
-		(new mxSourceProperties(src->sin_titulo?src->temp_filename.GetFullPath():src->source_filename.GetFullPath()),src)->Show();
+		(new mxSourceProperties(src->GetPathForDebugger(),src))->Show();
 	}
 }
 

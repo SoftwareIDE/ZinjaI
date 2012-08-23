@@ -1385,3 +1385,5 @@ void ConfigManager::RecalcStuff ( ) {
 	if (zinjai_dir.EndsWith("\\")||zinjai_dir.EndsWith("/")) zinjai_dir.RemoveLast();
 	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
 }
+
+
