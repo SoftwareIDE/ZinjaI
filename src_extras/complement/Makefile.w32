@@ -18,11 +18,11 @@ ${OBJS_DIR}\resources_normal.o: resources_normal.rc manifest_normal.xml
 ${OBJS_DIR}\resources_root.o: resources_root.rc manifest_root.xml
 	windres -i resources_root.rc -o $@
 
-..\..\complement.exe: ${OBJS_DIR} ${OBJS_DIR}\resources_normal.o
+..\..\complement.exe: ${OBJS_DIR} ${OBJS_DIR}\resources_normal.o ${OBJS}
 	${GPP} ${OBJS} ${OBJS_DIR}\resources_normal.o ${LIBS} -o $@
 
 ..\..\complement_wrap.exe: ${OBJS_DIR} ${OBJS} ${OBJS_DIR}\resources_root.o complement_wrap.cpp
-	${GPP} ${OBJS} ${OBJS_DIR}\resources_root.o ${LIBS_BASE} -o $@
+	${GPP} complement_wrap.cpp ${OBJS_DIR}\resources_root.o ${LIBS_BASE} -o $@
 
 clean:
 	del /Q ..\..\complement.exe ..\..\complement_wrap.exe ${OBJS_DIR}\*.o

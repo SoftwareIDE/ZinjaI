@@ -2,8 +2,18 @@
 <HEAD><TITLE>ZinjaI - Registro de Cambios</TITLE></HEAD>
 <BODY>
 
+<B>22-08-12</B>: <UL>
+	<LI>Fix: Ahora se interpreta correctamente el atributo de static en métodos para el Arbol de Símbolos, la ayuda rápida y el autocompletado.</LI>
+	<LI>Imp: Ahora se puede utilizar CppCheck con programas simples (sin crear un projecto).</LI>
+</UL><BR><BR>
+
 <B>21-08-12</B>: <UL>
+	<LI>Imp: Se reescribió casi totalmente el código que gestiona los breakpoints y sus propiedades, para usar estructuras de datos menos confusas.</LI>
 	<LI>Fix: Corregido un error al parsear las opciones de compilación entre comillas para lanzar CppCheck sobre un proyecto.</LI>
+</UL><BR><BR>
+
+<B>17-08-12</B>: <UL>
+	<LI>Imp: Al colocar intentar un punto de control cuando comienza la depuración, se verifica que la posición sea válida, de lo contrario no se coloca (antes gdb lo movía a la siguiente posición válida sin aviso).</LI>
 </UL><BR><BR>
 
 <B>16-08-12</B>: <UL>
