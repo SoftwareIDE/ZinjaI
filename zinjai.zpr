@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=../Fuckultad/Poo/answers/2009-p1
-current_source=src/BreakPointInfo.cpp
+current_source=src/BreakPointInfo.h
 path_char=/
 [source]
 path=src/mxColoursEditor.cpp
@@ -23,14 +23,13 @@ cursor=5207
 [source]
 path=src/mxHidenPanel.cpp
 cursor=1118
-marker=103
 marker=149
+marker=103
 [source]
 path=src/mxMainWindow.cpp
 cursor=212035
 marker=4213
 marker=1789
-open=true
 [source]
 path=src/mxSource.cpp
 cursor=13092
@@ -40,7 +39,6 @@ marker=1191
 marker=884
 marker=829
 marker=259
-open=true
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=613
@@ -61,7 +59,7 @@ path=src/mxNewWizard.cpp
 cursor=36108
 [source]
 path=src/ProjectManager.cpp
-cursor=81280
+cursor=84794
 marker=1280
 marker=1114
 open=true
@@ -75,8 +73,8 @@ marker=528
 [source]
 path=src/HelpManager.cpp
 cursor=28348
-marker=243
 marker=617
+marker=243
 [source]
 path=src/ShareManager.cpp
 cursor=5417
@@ -115,8 +113,9 @@ path=src/mxHelpWindow.cpp
 cursor=8011
 [source]
 path=src/DebugManager.cpp
-cursor=25335
+cursor=40939
 marker=1117
+open=true
 [source]
 path=src/mxFlowWindow.cpp
 cursor=21
@@ -150,8 +149,8 @@ cursor=239
 [source]
 path=src/mxInspectionGrid.cpp
 cursor=34470
-marker=113
 marker=618
+marker=113
 [source]
 path=src/mxBacktraceGrid.cpp
 cursor=1055
@@ -166,14 +165,14 @@ path=src/mxExeInfo.cpp
 cursor=1314
 [source]
 path=src/mxBreakList.cpp
-cursor=7199
+cursor=7471
 open=true
 [source]
 path=src/mxUpdatesChecker.cpp
 cursor=3062
 [source]
 path=src/mxBreakOptions.cpp
-cursor=872
+cursor=4466
 open=true
 [source]
 path=src/mxOSD.cpp
@@ -273,8 +272,8 @@ cursor=5372
 [source]
 path=src/mxCompiler.cpp
 cursor=1649
-marker=391
 marker=295
+marker=391
 [source]
 path=src/Autocoder.cpp
 cursor=10017
@@ -308,7 +307,7 @@ path=src/mxValgrindConfigDialog.cpp
 cursor=1047
 [source]
 path=src/BreakPointInfo.cpp
-cursor=2475
+cursor=1374
 open=true
 [header]
 path=src/CodeHelper.h
@@ -587,7 +586,8 @@ path=src/mxValgrindConfigDialog.h
 cursor=430
 [header]
 path=src/BreakPointInfo.h
-cursor=2653
+cursor=1343
+open=true
 [header]
 path=src/AutoList.h
 cursor=319
@@ -599,7 +599,7 @@ path=quickhelp/tips_spanish
 cursor=503
 [other]
 path=src/version.h
-cursor=24
+cursor=473
 [other]
 path=todo.txt
 cursor=368
@@ -630,7 +630,7 @@ cursor=3296
 name=Linux_Debug
 working_folder=/mnt/ex/zinjai
 always_ask_args=0
-args=--last-project
+args=--last-source
 wait_for_key=1
 temp_folder=debug.lnx
 output_file=debug.lnx/zinjai.bin

@@ -1098,7 +1098,7 @@ void DebugManager::SetBreakPoints(mxSource *source) {
 	while (bpi) {
 		bpi->UpdateLineNumber();
 		debug->SetBreakPoint(bpi);
-		bpi->Next();
+		bpi=bpi->Next();
 	}
 }
 

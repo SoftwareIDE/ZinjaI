@@ -23,7 +23,6 @@ BEGIN_EVENT_TABLE(mxBreakList, wxDialog)
 	EVT_BUTTON(mxID_BREAK_LIST_GOTO,mxBreakList::OnGotoButton)
 	EVT_BUTTON(mxID_BREAK_LIST_EDIT,mxBreakList::OnEditButton)
 END_EVENT_TABLE()
-	
 
 mxBreakList::mxBreakList() : wxDialog(main_window, wxID_ANY, LANG(BREAKLIST_CAPTION,"Lista de Break/Watch points"), wxDefaultPosition, wxSize(600,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	old_size=0;

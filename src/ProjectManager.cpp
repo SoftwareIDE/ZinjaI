@@ -2154,16 +2154,10 @@ bool ProjectManager::Debug() {
 * llamar antes de comenzar la ejecución.
 **/
 void ProjectManager::SetBreakpoints() {
-	for(int i=0;i<2;i++) { 
-		file_item *item=i==0?first_source:first_header;
-		ML_ITERATE(item) {
-			BreakPointInfo *bpi=item->breaklist;
-			while (bpi) {
-				bpi->UpdateLineNumber();
-				debug->SetBreakPoint(bpi);
-				bpi->Next();
-			}
-		}
+	BreakPointInfo *bpi=NULL;
+	while ((bpi=BreakPointInfo::GetGlobalNext(bpi))) {
+		bpi->UpdateLineNumber();
+		debug->SetBreakPoint(bpi);
 	}
 }
 
