@@ -454,18 +454,16 @@ BREAKLIST_CLEAN
 Remove All
 BREAKLIST_LINE
 line
-BREAKLIST_ERROR_LOCATION
-error (location)
-BREAKLIST_ERROR_CONDITION
-error (condition)
-BREAKLIST_ONCE
-once
 BREAKLIST_ENABLED
 enabled
+BREAKLIST_ONCE
+once
+BREAKLIST_ERROR_CONDITION
+error (condition)
+BREAKLIST_ERROR_LOCATION
+error (location)
 BREAKLIST_DISABLED
 disabled
-BREAKLIS_LINE
-line
 BREAKOPTS_CAPTION
 Breakpoint's Properties
 BREAKOPTS_FILE
@@ -2412,6 +2410,8 @@ MAINW_BEGGINERS_PANEL
 Mini-templates
 MAINW_CANNOT_SPLIT_VIEW
 ZinjaI cannot split unnamed files
+MENUITEM_FILE_OPEN_ON_PROJECT
+&Open/Attach to project...
 MAINW_VALGRIND_MISSING
 Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_GPROF_OUTPUT_MISSING
@@ -3188,8 +3188,6 @@ DEBUG_NO_BREAKPOINT_ON_EMPTY_LINE
 Breakpoints cannot be set on empty lines or\nline that contains only comments.
 DEBUG_BREAKPOINT_CAPTION
 Breakpoints
-DEBUG_NO_BREAKPOINT_WHILE_RUNNING
-You can't set a breakpoint while program is running. You must\ninterrupt it first (use "Pause" command from "Debug" menu)\nor wait untill it's interrupted to do it.
 SOURCE_TIP_NO_DEREFERENCE
 Tip: Probably you must not dereference this object.
 SOURCE_TIP_DO_DEREFERENCE

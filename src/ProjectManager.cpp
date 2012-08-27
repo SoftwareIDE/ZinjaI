@@ -420,27 +420,9 @@ ProjectManager::ProjectManager(wxFileName name) {
 					current_source[i]=real_path_char;
 		main_window->OpenFile(DIR_PLUS_FILE(path,current_source),false);
 	}
-//	main_window->menu.run_build->Enable(true);
-//	main_window->menu.run_clean->Enable(true);
-	main_window->menu.tools_doxygen->Enable(true);
-	main_window->menu.tools_cppcheck->Enable(true);
-	main_window->menu.tools_wxfb->Enable(true);
-	main_window->menu.tools_wxfb_activate->Check(false);
-	main_window->menu.tools_wxfb_regen->Enable(false);
-	main_window->menu.tools_wxfb_inherit->Enable(false);
-	main_window->menu.tools_wxfb_update_inherit->Enable(false);
-	main_window->menu.tools_proy_graph->Enable(true);
-	main_window->menu.tools_proy_graph->Enable(true);
-	main_window->menu.tools_makefile->Enable(true);
-	main_window->menu.tools_stats->Enable(true);
-	main_window->menu.file_save_project->Enable(true);
-	main_window->menu.file_close_project->Enable(true);
-	main_window->menu.file_project_config->Enable(true);
-	main_window->SetOpenedFileName(project_name);
+	
 	main_window->notebook_sources->Thaw();
 	main_window->notebook_sources->Fit();
-	if (use_wxfb) ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
-	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
 	if (autocodes_file.Len()) autocoder->LoadFromFile(DIR_PLUS_FILE(path,autocodes_file));
 	
@@ -460,7 +442,12 @@ ProjectManager::ProjectManager(wxFileName name) {
 	}
 	
 	if (files_to_open>0) main_window->SetStatusProgress(-1);
+	
 	loading=false;
+
+	main_window->PrepareGuiForProject(true);
+	if (project->use_wxfb) project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
+	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 }
 
 // liberar memoria al destruir el proyecto
@@ -471,17 +458,7 @@ ProjectManager::~ProjectManager(){
 	debug->ClearSavedInspectionTables();
 	
 	// configurar interface para modo proyecto
-	main_window->menu.file_save_project->Enable(false);
-	main_window->menu.file_close_project->Enable(false);
-	main_window->menu.file_project_config->Enable(false);
-//	main_window->menu.run_build->Enable(false);
-//	main_window->menu.run_clean->Enable(false);
-	main_window->menu.tools_doxygen->Enable(false);
-	main_window->menu.tools_cppcheck->Enable(false);
-	main_window->menu.tools_wxfb->Enable(false);
-	main_window->menu.tools_makefile->Enable(false);
-	main_window->menu.tools_stats->Enable(false);
-	main_window->SetTitle(_T("ZinjaI"));
+	main_window->PrepareGuiForProject(false);
 
 	// vaciar las listas
 	ML_FREE(first_source);

@@ -355,6 +355,7 @@ public:
 	void LoadInQuickHelpPanel(wxString file, bool hide_compiler_tree=true); ///< carga una pagina desde un archivo en el panel de ayuda rápida y lo muestra
 	
 	void PrepareGuiForDebugging(bool debug_mode);
+	void PrepareGuiForProject(bool project_mode);
 	
 	void OnToolRightClick(wxCommandEvent &evt);
 	
@@ -487,6 +488,7 @@ public:
 		wxMenuItem *view_beginner_panel;
 		wxMenuItem *tools_gprof_dot;
 		wxMenuItem *tools_gprof_fdp;
+		wxMenuItem *file_open;
 	} menu;
 
 	wxTimer *parser_timer, *focus_timer/*, *where_timer*/;
@@ -543,5 +545,6 @@ public:
 extern mxSource *external_source; // para que devuelva OpenFile cuando al archivo lo abre otro y no ZinjaI
 
 extern mxMainWindow *main_window;
+
 #endif
 

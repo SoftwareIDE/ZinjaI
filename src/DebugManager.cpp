@@ -2779,7 +2779,7 @@ void DebugManager::SetFullOutput (bool on) {
 void DebugManager::ShowBreakPointErrorMessage ( ) {
 	if (!show_breakpoint_error) return;
 	int res=mxMessageDialog(main_window,
-		LANG(DEBUG_BAD_BREAKPOINT_WARNING,
+		LANG(DEBUG_BAD_BREAKPOINT_WARNING,""
 		"El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n"
 		"* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n"
 		"* Algún breakpoint fue una linea que no genera codigo ejecutable (ej: comentario).\n"

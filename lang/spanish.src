@@ -101,7 +101,7 @@ THREADS_NO_THREADS
 THREADS_NO_INFO
 <<Informacion no disponible>>
 DEBUG_BAD_BREAKPOINT_WARNING
-El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n* Información de depuración desactualizada o inexistente. Intente recompilar completamente\n  el programa/proyecto, utilizando el item Limpiar del menu Ejecucion antes de depurar.\n* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n  espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.
+El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n* Algún breakpoint fue una linea que no genera codigo ejecutable (ej: comentario).\n* Información de depuración desactualizada o inexistente. Intente recompilar completamente\n  el programa/proyecto, utilizando el item Limpiar del menu Ejecucion antes de depurar.\n* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n  espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS
@@ -454,18 +454,16 @@ BREAKLIST_CLEAN
 &Limpiar
 BREAKLIST_LINE
 linea
-BREAKLIST_ERROR_LOCATION
-error (ubicacion)
-BREAKLIST_ERROR_CONDITION
-error (condicion)
-BREAKLIST_ONCE
-una vez
 BREAKLIST_ENABLED
 habilitado
+BREAKLIST_ONCE
+una vez
+BREAKLIST_ERROR_CONDITION
+error (condicion)
+BREAKLIST_ERROR_LOCATION
+error (ubicacion)
 BREAKLIST_DISABLED
 deshabilitado
-BREAKLIS_LINE
-linea
 BREAKOPTS_CAPTION
 Propiedades del Breakpoint
 BREAKOPTS_FILE
@@ -1023,7 +1021,7 @@ Iconos lanzadores
 XDG_NO_XDG
 Debe instalar xdg-utils para tener acceso todas las funcionalidades
 XDG_FIRST_TIME
-Desea crear un icono para acceder a ZinjaI desde el menu del sistema o el escritorio?
+¿Desea crear un icono para acceder a ZinjaI desde el menu del sistema o el escritorio?
 XDG_CREATE_DESKTOP
 Crear un icono en el escritorio
 XDG_CREATE_MENU
@@ -2295,7 +2293,7 @@ Busqueda Rapida
 TOOLBAR_FIND_BUTTON
 Buscar siguiente
 MAINW_QUICKHELP_INIT
-Coloca el cursor de texto sobre una palabra y presona Shift+F1 para ver la ayuda en este cuadro.
+Coloca el cursor de texto sobre una palabra y presiona Shift+F1 para ver la ayuda en este cuadro.
 MAINW_AUTOHIDE_QUICKHELP
 Ayuda/Busqueda
 CAPTION_PROJECT_SYMBOLS_TREE
@@ -2412,6 +2410,8 @@ MAINW_BEGGINERS_PANEL
 Asistencias
 MAINW_CANNOT_SPLIT_VIEW
 No se puede duplicar archivos sin nombre
+MENUITEM_FILE_OPEN_ON_PROJECT
+&Abrir/Agregar al proyecto...
 MAINW_VALGRIND_MISSING
 Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_GPROF_OUTPUT_MISSING
@@ -3188,8 +3188,6 @@ DEBUG_NO_BREAKPOINT_ON_EMPTY_LINE
 Los puntos de interrupcion no pueden colocarse en lineas vacias\n que contengan solo comentarios o directivas de preprocesador
 DEBUG_BREAKPOINT_CAPTION
 Puntos de Interrupcion
-DEBUG_NO_BREAKPOINT_WHILE_RUNNING
-No puede colocar o modificar un breakpoint mientras el programa esta\n
 SOURCE_TIP_NO_DEREFERENCE
 Tip: Probablemente no deba desreferenciar este objeto.
 SOURCE_TIP_DO_DEREFERENCE

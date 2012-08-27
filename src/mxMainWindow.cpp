@@ -1404,7 +1404,7 @@ void mxMainWindow::CreateMenus() {
 	menu.file = new wxMenu;
 	utils->AddItemToMenu(menu.file, wxID_NEW, LANG(MENUITEM_FILE_NEW,"&Nuevo..."),_T("Ctrl+N"),_T("Crear un nuevo archivo"),ipre+_T("nuevo.png"));
 	utils->AddItemToMenu(menu.file, mxID_FILE_PROJECT, LANG(MENUITEM_FILE_NEW_PROJECT,"&Nuevo Proyecto..."),_T("Ctrl+Shift+N"),_T("Crear un nuevo proyecto"),ipre+_T("proyecto.png"));
-	utils->AddItemToMenu(menu.file, wxID_OPEN, LANG(MENUITEM_FILE_OPEN,"&Abrir..."),_T("Ctrl+O"),_T("Abrir un archivo o un proyecto existente..."),ipre+_T("abrir.png"));
+	menu.file_open=utils->AddItemToMenu(menu.file, wxID_OPEN, LANG(MENUITEM_FILE_OPEN,"&Abrir..."),_T("Ctrl+O"),_T("Abrir un archivo o un proyecto existente..."),ipre+_T("abrir.png"));
 	utils->AddSubMenuToMenu(menu.file, menu.file_source_recent = new wxMenu,LANG(MENUITEM_FILE_RECENT_SOURCES,"Fuentes Abiertos Recientemente"),_T("Muestra los ultimos archivos abiertos como programas simples"),ipre+_T("recentSimple.png"));
 	utils->AddSubMenuToMenu(menu.file, menu.file_project_recent = new wxMenu,LANG(MENUITEM_FILE_RECENT_PROJECTS,"Proyectos Abiertos Recientemente"),_T("Muestra los ultimos proyectos abiertos"),ipre+_T("recentProject.png"));
 //	utils->AddItemToMenu(menu.file, mxID_FILE_OPEN_H, LANG(MENUITEM_FILE_OPEN_H,"Abrir &h/cpp complementario"),_T("F12"),_T("Si se esta editando un .h/.cpp, abrir el .cpp/.h homonimo."),ipre+_T("abrirp.png"));
@@ -5488,3 +5488,26 @@ void mxMainWindow::SetStatusProgress(int prog) {
 void mxMainWindow::FocusToSource() {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->SetFocus();
 }
+
+void mxMainWindow::PrepareGuiForProject (bool project_mode) {
+	menu.file_open->SetItemLabel(project_mode?LANG(MENUITEM_FILE_OPEN_ON_PROJECT,"&Abrir/Agregar al proyecto..."):LANG(MENUITEM_FILE_OPEN,"&Abrir..."));
+	menu.tools_doxygen->Enable(project_mode);
+	menu.tools_cppcheck->Enable(project_mode);
+	menu.tools_wxfb->Enable(project_mode);
+	menu.tools_wxfb_activate->Check(false);
+	menu.tools_wxfb_regen->Enable(false);
+	menu.tools_wxfb_inherit->Enable(false);
+	menu.tools_wxfb_update_inherit->Enable(false);
+	menu.tools_proy_graph->Enable(project_mode);
+	menu.tools_proy_graph->Enable(project_mode);
+	menu.tools_makefile->Enable(project_mode);
+	menu.tools_stats->Enable(project_mode);
+	menu.file_save_project->Enable(project_mode);
+	menu.file_close_project->Enable(project_mode);
+	menu.file_project_config->Enable(project_mode);
+	if (project_mode)
+		SetTitle(wxString("ZinjaI - ")+project->project_name);
+	else
+		SetTitle("ZinjaI");
+}
+
