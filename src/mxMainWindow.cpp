@@ -3517,16 +3517,55 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 		
 	} else { // si era otro archivo
 		// abrir el archivo
-		int ans = 0;
-		if (project && !project->HasFile(filename) &&  ( (multiple && (*multiple)==1) || ((!multiple || (*multiple)==0) &&
-			mxMD_YES&(ans=mxMessageDialog(main_window,LANG(MAINW_ADD_TO_PROJECT_QUESTION,"Desea agregar el archivo al proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):_T(""),false).ShowModal()) 
-			) )) {
-			OpenFile(filename.GetFullPath(),true);
+		if (project && !project->HasFile(filename)) {
+			// constantes para setear bits en *multiple
+			const int always_attach=1;
+			const int never_attach=2;
+			const int always_move=4;
+			const int never_move=8;
+			const int always_replace=16;
+			const int never_replace=32;
+			// ver si hay que adjuntarlo al proyecto además de abrirlo
+			bool attach=true;
+			if (multiple && (*multiple)&(always_attach|never_attach)) {
+				attach=(*multiple)&always_attach;
+			} else {
+				int ans1=mxMessageDialog(main_window,LANG(MAINW_ADD_TO_PROJECT_QUESTION,"¿Desea agregar el archivo al proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):_T(""),false).ShowModal();
+				attach=ans1&mxMD_YES;
+				if (multiple && ans1&mxMD_CHECKED) (*multiple)|=(attach?always_attach:never_attach);
+			}
+			if (attach) {
+				// si no esta en la carpeta del proyecto, preguntar si hay que copiarlo ahí
+				if (!(filename.GetPath().StartsWith(project->path))) { 
+					wxString dest_filename=DIR_PLUS_FILE(project->path,filename.GetFullName());
+					bool move=false;
+					if (multiple && (*multiple)&(always_move|never_move)) {
+						move=(*multiple)&always_move;
+					} else {
+						int ans2=mxMessageDialog(main_window,LANG(MAINW_MOVE_TO_PROJECT_PATH_QUESTION,"El archivo que intenta agregar no se encuentra en el directorio del proyecto.\n¿Desea copiar el archivo al directorio del proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):_T(""),false).ShowModal();
+						move=ans2&mxMD_YES;
+						if (multiple && ans2&mxMD_CHECKED) (*multiple)|=(move?always_move:never_move);
+					}
+					if (move && wxFileExists(dest_filename)) {
+						bool replace=false;
+						if (multiple && (*multiple)|(always_replace|never_replace)) {
+							replace=(*multiple)|always_replace;
+						} else {
+							int ans3=mxMessageDialog(main_window,LANG(MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION,"El archivo ya existe en el directorio de proyecto.\n¿Desea reemplazarlo?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):_T(""),true).ShowModal();
+							replace=(!(ans3&mxMD_YES));
+							if (multiple && ans3&mxMD_CHECKED) (*multiple)|=(replace?always_replace:never_replace);
+						}
+						if (!replace) move=false;
+					}
+					if (move) {
+						wxCopyFile(filename.GetFullPath(),DIR_PLUS_FILE(project->path,filename.GetFullName()));
+						filename=dest_filename;
+					}
+				}
+			}
+			OpenFile(filename.GetFullPath(),attach);
 		} else {
 			OpenFile(filename.GetFullPath(),!project);
-		}
-		if (ans&mxMD_CHECKED) {
-			(*multiple)=ans&mxMD_YES?1:2; // todo
 		}
 	}
 	// actualizar el historial de archivos abiertos recientemente

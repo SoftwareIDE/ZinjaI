@@ -2356,6 +2356,10 @@ MAINW_ADD_TO_PROJECT_QUESTION
 Do you want to attach the file to the project?
 MAINW_ADD_TO_PROJECT_CHECK
 Do the same action for all the files
+MAINW_MOVE_TO_PROJECT_PATH_QUESTION
+This file is outside project's folder. Do you want to copy it to project's path?
+MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION
+This file already exists in projects path. Do you want to replace it?
 MAINW_ERROR_PRITING
 There was an error trying to print
 MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT
