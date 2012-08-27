@@ -751,6 +751,7 @@ void mxMainWindow::OnProjectTreeAdd(wxCommandEvent &event) {
 			config->Files.last_dir=dlg.GetDirectory();
 		wxArrayString paths;
 		dlg.GetPaths(paths);
+		int multiple=0;
 		for (unsigned int i=0;i<paths.GetCount();i++) {
 			if (!wxFileName::FileExists(dlg.GetPath())) {
 				if (mxMD_YES==mxMessageDialog(main_window,LANG(MAINW_CREATE_FILE_QUESTION,"El archivo no existe, desea crearlo?"),dlg.GetPath(),mxMD_YES_NO).ShowModal()) {
@@ -760,7 +761,7 @@ void mxMainWindow::OnProjectTreeAdd(wxCommandEvent &event) {
 				} else
 					continue;
 			}
-			OpenFile(paths[i],true);
+			OpenFileFromGui(paths[i],&multiple);
 		}
 	}
 }
@@ -3536,7 +3537,13 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 			}
 			if (attach) {
 				// si no esta en la carpeta del proyecto, preguntar si hay que copiarlo ahí
-				if (!(filename.GetPath().StartsWith(project->path))) { 
+				wxString aux_project_path=project->path; aux_project_path.Replace("\\","/",true); if (aux_project_path.EndsWith("/")) aux_project_path.RemoveLast();
+				wxString aux_file_path=filename.GetFullPath(); aux_file_path.Replace("\\","/",true); if (aux_file_path.EndsWith("/")) aux_file_path.RemoveLast();
+#ifdef __WIN32__
+				aux_file_path.MakeLower();
+				aux_project_path.MakeLower();
+#endif
+				if (!aux_file_path.StartsWith(aux_project_path)) {
 					wxString dest_filename=DIR_PLUS_FILE(project->path,filename.GetFullName());
 					bool move=false;
 					if (multiple && (*multiple)&(always_move|never_move)) {
