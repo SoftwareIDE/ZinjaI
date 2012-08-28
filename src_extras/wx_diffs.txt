@@ -1,0 +1,8 @@
+This files describes some changes done to the statically compiled version of wxWidgets inside zinjai's binary distributions.
+
+In file src/gtk/toplevel.cpp, in bool wxTopLevelWindowGTK::SetTransparent(wxByte alpha), changed line 1489 from
+    Window win = wxGetTopmostWindowX11(dpy, GDK_WINDOW_XID (m_widget->window));
+to
+    Window win = GDK_WINDOW_XID(m_widget->window);
+to avoid a crash when dragging tabs or panels with wxaui. This is a problem with <=2.8.12, not tested in 2.9.
+Seen on http://trac.wxwidgets.org/changeset/71275, more info in http://trac.wxwidgets.org/ticket/4841
