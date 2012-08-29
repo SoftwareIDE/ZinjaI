@@ -39,8 +39,6 @@ extern mxSplashScreen *splash;
 
 enum autohide_ref {ATH_COMPILER=0,ATH_SYMBOL=1,ATH_PROJECT=2,ATH_EXPLORER=3,ATH_DEBUG_LOG=4,ATH_QUICKHELP=5,ATH_THREADS=6,ATH_INSPECTIONS=7,ATH_BACKTRACE=8,ATH_BEGINNERS=9,ATH_COUNT=10};
 
-;
-
 /**
 * @brief Ventana principal de la aplicación
 * 
@@ -50,12 +48,10 @@ enum autohide_ref {ATH_COMPILER=0,ATH_SYMBOL=1,ATH_PROJECT=2,ATH_EXPLORER=3,ATH_
 class mxMainWindow : public wxFrame {
 public:
 	
-	bool fullscreen_toolbars_status[10];
-	bool debug_toolbars_status[10];
+	bool gui_fullscreen_mode, gui_debug_mode, gui_project_mode; 
 	bool fullscreen_panels_status[10];
 	bool debug_panels_status[10];
 	mxSource *focus_source;
-	bool toolbar_first_time;
 
 	mxValgrindOuput *valgrind_panel;
 	void ShowValgrindPanel(char what, wxString file);

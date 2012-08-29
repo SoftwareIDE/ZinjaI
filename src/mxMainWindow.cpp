@@ -397,7 +397,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	SetAccelerators();
 	
-	toolbar_first_time=true;
+	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
 	untitled_count=0;
 	preference_window=NULL;
 	valgrind_panel=NULL; 
@@ -1383,14 +1383,14 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	} else if (event.pane->name == "symbols_tree") {
 		symbols_tree.menuItem->Check(false);
 	}
-	else if (event.pane->name == "toolbar_misc") { menu.view_toolbar_misc->Check(false); config->Toolbars.wich_ones.misc=false; }
-	else if (event.pane->name == "toolbar_find") { menu.view_toolbar_find->Check(false); config->Toolbars.wich_ones.find=false; }
-	else if (event.pane->name == "toolbar_view") { menu.view_toolbar_view->Check(false); config->Toolbars.wich_ones.view=false; }
-	else if (event.pane->name == "toolbar_tools") { menu.view_toolbar_tools->Check(false); config->Toolbars.wich_ones.tools=false; }
-	else if (event.pane->name == "toolbar_file") { menu.view_toolbar_file->Check(false); config->Toolbars.wich_ones.file=false; }
-	else if (event.pane->name == "toolbar_edit") { menu.view_toolbar_edit->Check(false); config->Toolbars.wich_ones.edit=false; }
-	else if (event.pane->name == "toolbar_run") { menu.view_toolbar_run->Check(false); config->Toolbars.wich_ones.run=false; }
-	else if (event.pane->name == "toolbar_debug") { menu.view_toolbar_debug->Check(false); config->Toolbars.wich_ones.debug=false; }
+	else if (event.pane->name == "toolbar_misc") { menu.view_toolbar_misc->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.misc=false; }
+	else if (event.pane->name == "toolbar_find") { menu.view_toolbar_find->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.find=false; }
+	else if (event.pane->name == "toolbar_view") { menu.view_toolbar_view->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.view=false; }
+	else if (event.pane->name == "toolbar_tools") { menu.view_toolbar_tools->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=false; }
+	else if (event.pane->name == "toolbar_file") { menu.view_toolbar_file->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.file=false; }
+	else if (event.pane->name == "toolbar_edit") { menu.view_toolbar_edit->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.edit=false; }
+	else if (event.pane->name == "toolbar_run") { menu.view_toolbar_run->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.run=false; }
+	else if (event.pane->name == "toolbar_debug") { menu.view_toolbar_debug->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.debug=false; }
 	else if (event.pane->name == "threadlist" && !config->Init.autohide_panels) debug->threadlist_visible=false;
 //	else if (event.pane->name == "backtrace") debug->backtrace_visible=false;
 	else if (event.pane->name == "beginner_panel") menu.view_beginner_panel->Check(false);
@@ -1758,7 +1758,6 @@ void mxMainWindow::CreateMenus() {
 
 void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 	
-	toolbar_first_time = false;
 	wxString ipre=DIR_PLUS_FILE(wxString()<<config->Toolbars.icon_size,_T(""));
 	
 	if (wich_one) {
@@ -2718,90 +2717,26 @@ void mxMainWindow::SetAccelerators() {
 }
 
 void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
-	if (IsFullScreen()) {
+	gui_fullscreen_mode=!gui_fullscreen_mode;
+	if (!gui_fullscreen_mode) { // sale de la pantalla completa y vuelve a ser ventana
 		menu.view_fullscreen->Check(false);
-		if (config->Init.autohide_toolbars_fs) { // reacomodar las barras de herramientas
-			if (menu.view_toolbar_debug->IsChecked()!=fullscreen_toolbars_status[0]) {
-				if (fullscreen_toolbars_status[0]) {
-					menu.view_toolbar_debug->Check(true);
-					aui_manager.GetPane(toolbar_debug).Show();
-				} else {
-					menu.view_toolbar_debug->Check(false);
-					aui_manager.GetPane(toolbar_debug).Hide();
-				}
-			}
-			if (menu.view_toolbar_file->IsChecked()!=fullscreen_toolbars_status[1]) {
-				if (fullscreen_toolbars_status[1]) {
-					menu.view_toolbar_file->Check(true);
-					aui_manager.GetPane(toolbar_file).Show();
-				} else {
-					menu.view_toolbar_file->Check(false);
-					aui_manager.GetPane(toolbar_file).Hide();
-				}
-			}
-			if (menu.view_toolbar_run->IsChecked()!=fullscreen_toolbars_status[2]) {
-				if (fullscreen_toolbars_status[2]) {
-					menu.view_toolbar_run->Check(true);
-					aui_manager.GetPane(toolbar_run).Show();
-				} else {
-					menu.view_toolbar_run->Check(false);
-					aui_manager.GetPane(toolbar_run).Hide();
-				}
-			}
-			if (menu.view_toolbar_edit->IsChecked()!=fullscreen_toolbars_status[3]) {
-				if (fullscreen_toolbars_status[3]) {
-					menu.view_toolbar_edit->Check(true);
-					aui_manager.GetPane(toolbar_edit).Show();
-				} else {
-					menu.view_toolbar_edit->Check(false);
-					aui_manager.GetPane(toolbar_edit).Hide();
-				}
-			}
-			if (menu.view_toolbar_misc->IsChecked()!=fullscreen_toolbars_status[4]) {
-				if (fullscreen_toolbars_status[4]) {
-					menu.view_toolbar_misc->Check(true);
-					aui_manager.GetPane(toolbar_misc).Show();
-				} else {
-					menu.view_toolbar_misc->Check(false);
-					aui_manager.GetPane(toolbar_misc).Hide();
-				}
-			}
-			if (menu.view_toolbar_find->IsChecked()!=fullscreen_toolbars_status[5]) {
-				if (fullscreen_toolbars_status[5]) {
-					menu.view_toolbar_find->Check(true);
-					aui_manager.GetPane(toolbar_find).Show();
-				} else {
-					menu.view_toolbar_find->Check(false);
-					aui_manager.GetPane(toolbar_find).Hide();
-				}
-			}
-			if (menu.view_toolbar_debug->IsChecked()!=fullscreen_toolbars_status[6]) {
-				if (fullscreen_toolbars_status[6]) {
-					menu.view_toolbar_debug->Check(true);
-					aui_manager.GetPane(toolbar_debug).Show();
-				} else {
-					menu.view_toolbar_debug->Check(false);
-					aui_manager.GetPane(toolbar_debug).Hide();
-				}
-			}
-			if (menu.view_toolbar_tools->IsChecked()!=fullscreen_toolbars_status[7]) {
-				if (fullscreen_toolbars_status[7]) {
-					menu.view_toolbar_tools->Check(true);
-					aui_manager.GetPane(toolbar_tools).Show();
-				} else {
-					menu.view_toolbar_tools->Check(false);
-					aui_manager.GetPane(toolbar_tools).Hide();
-				}
-			}
-			if (menu.view_toolbar_view->IsChecked()!=fullscreen_toolbars_status[8]) {
-				if (fullscreen_toolbars_status[8]) {
-					menu.view_toolbar_view->Check(true);
-					aui_manager.GetPane(toolbar_view).Show();
-				} else {
-					menu.view_toolbar_view->Check(false);
-					aui_manager.GetPane(toolbar_view).Hide();
-				}
-			}
+		if (config->Init.autohide_toolbars_fs && (!debug->debugging || !config->Debug.autohide_toolbars)) { // reacomodar las barras de herramientas (si no esta depurando, por que si esta depurando las reacomoda el depurador cuando termina)
+			if (config->Toolbars.wich_ones.file) { menu.view_toolbar_file->Check(true); aui_manager.GetPane(toolbar_file).Show(); }
+			else { menu.view_toolbar_file->Check(false); aui_manager.GetPane(toolbar_file).Hide(); }
+			if (config->Toolbars.wich_ones.run) { menu.view_toolbar_run->Check(true); aui_manager.GetPane(toolbar_run).Show(); } 
+			else { menu.view_toolbar_run->Check(false); aui_manager.GetPane(toolbar_run).Hide(); }
+			if (config->Toolbars.wich_ones.edit) { menu.view_toolbar_edit->Check(true); aui_manager.GetPane(toolbar_edit).Show(); }
+			else { menu.view_toolbar_edit->Check(false); aui_manager.GetPane(toolbar_edit).Hide(); }
+			if (config->Toolbars.wich_ones.misc) { menu.view_toolbar_misc->Check(true); aui_manager.GetPane(toolbar_misc).Show(); }
+			else { menu.view_toolbar_misc->Check(false); aui_manager.GetPane(toolbar_misc).Hide(); }
+			if (config->Toolbars.wich_ones.find) { menu.view_toolbar_find->Check(true); aui_manager.GetPane(toolbar_find).Show(); }
+			else { menu.view_toolbar_find->Check(false); aui_manager.GetPane(toolbar_find).Hide(); }
+			if (config->Toolbars.wich_ones.debug) { menu.view_toolbar_debug->Check(true); aui_manager.GetPane(toolbar_debug).Show(); }
+			else { menu.view_toolbar_debug->Check(false); aui_manager.GetPane(toolbar_debug).Hide(); }
+			if (config->Toolbars.wich_ones.tools) { menu.view_toolbar_tools->Check(true); aui_manager.GetPane(toolbar_tools).Show(); }
+			else { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
+			if (config->Toolbars.wich_ones.view) { menu.view_toolbar_view->Check(true); aui_manager.GetPane(toolbar_view).Show(); }
+			else { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
 		}
 		
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
@@ -2887,42 +2822,19 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 		
 		ShowFullScreen(false);
 		
-	} else {
-		for (int i=0;i<10;i++) debug_toolbars_status[i]=false;
+	} else { // entra al modo pantalla completa
 		menu.view_fullscreen->Check(true);
 		if (valgrind_panel) aui_manager.GetPane(valgrind_panel).Hide();
 		if (config->Init.autohide_toolbars_fs) { // reacomodar las barras de herramientas
-			if ( (fullscreen_toolbars_status[1]=menu.view_toolbar_file->IsChecked()) ) {
-				menu.view_toolbar_file->Check(false);
-				aui_manager.GetPane(toolbar_file).Hide();
-			}
-			if ( (fullscreen_toolbars_status[2]=menu.view_toolbar_run->IsChecked()) ) {
-				menu.view_toolbar_run->Check(false);
-				aui_manager.GetPane(toolbar_run).Hide();
-			}
-			if ( (fullscreen_toolbars_status[3]=menu.view_toolbar_edit->IsChecked()) ) {
-				menu.view_toolbar_edit->Check(false);
-				aui_manager.GetPane(toolbar_edit).Hide();
-			}
-			if ( (fullscreen_toolbars_status[4]=menu.view_toolbar_misc->IsChecked()) ) {
-				menu.view_toolbar_misc->Check(false);
-				aui_manager.GetPane(toolbar_misc).Hide();
-			}
-			if ( (fullscreen_toolbars_status[5]=menu.view_toolbar_find->IsChecked()) ) {
-				menu.view_toolbar_find->Check(false);
-				aui_manager.GetPane(toolbar_find).Hide();
-			}
-			if ( (fullscreen_toolbars_status[6]=menu.view_toolbar_debug->IsChecked()) ) {
-				menu.view_toolbar_debug->Check(false);
-				aui_manager.GetPane(toolbar_debug).Hide();
-			}
-			if ( (fullscreen_toolbars_status[7]=menu.view_toolbar_tools->IsChecked()) ) {
-				menu.view_toolbar_tools->Check(false);
-				aui_manager.GetPane(toolbar_tools).Hide();
-			}
-			if ( (fullscreen_toolbars_status[8]=menu.view_toolbar_view->IsChecked()) ) {
-				menu.view_toolbar_view->Check(false);
-				aui_manager.GetPane(toolbar_view).Hide();
+			if (!debug->debugging || !config->Debug.autohide_toolbars) { // si esta depurando, las oculta el depurador cuando termina, sino...
+				if (menu.view_toolbar_file->IsChecked()) { menu.view_toolbar_file->Check(false); aui_manager.GetPane(toolbar_file).Hide(); }
+				if (menu.view_toolbar_run->IsChecked()) { menu.view_toolbar_run->Check(false); aui_manager.GetPane(toolbar_run).Hide(); }
+				if (menu.view_toolbar_edit->IsChecked()) { menu.view_toolbar_edit->Check(false); aui_manager.GetPane(toolbar_edit).Hide(); }
+				if (menu.view_toolbar_misc->IsChecked()) { menu.view_toolbar_misc->Check(false); aui_manager.GetPane(toolbar_misc).Hide(); }
+				if (menu.view_toolbar_find->IsChecked()) { menu.view_toolbar_find->Check(false); aui_manager.GetPane(toolbar_find).Hide(); }
+				if (menu.view_toolbar_debug->IsChecked()) { menu.view_toolbar_debug->Check(false); aui_manager.GetPane(toolbar_debug).Hide(); }
+				if (menu.view_toolbar_tools->IsChecked()) { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
+				if (menu.view_toolbar_view->IsChecked()) { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
 			}
 		}
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
@@ -3139,11 +3051,11 @@ void mxMainWindow::OnViewToolbarView (wxCommandEvent &event) {
 	if (!menu.view_toolbar_view->IsChecked()) {
 		menu.view_toolbar_view->Check(false);
 		aui_manager.GetPane(toolbar_view).Hide();
-		config->Toolbars.wich_ones.view=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.view=false;
 	} else {
 		menu.view_toolbar_view->Check(true);
 		aui_manager.GetPane(toolbar_view).Show();
-		config->Toolbars.wich_ones.view=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.view=true;
 	}
 	aui_manager.Update();
 }
@@ -3152,11 +3064,11 @@ void mxMainWindow::OnViewToolbarTools (wxCommandEvent &event) {
 	if (!menu.view_toolbar_tools->IsChecked()) {
 		menu.view_toolbar_tools->Check(false);
 		aui_manager.GetPane(toolbar_tools).Hide();
-		config->Toolbars.wich_ones.tools=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=false;
 	} else {
 		menu.view_toolbar_tools->Check(true);
 		aui_manager.GetPane(toolbar_tools).Show();
-		config->Toolbars.wich_ones.tools=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=true;
 	}
 	aui_manager.Update();
 }
@@ -3165,11 +3077,11 @@ void mxMainWindow::OnViewToolbarFile (wxCommandEvent &event) {
 	if (!menu.view_toolbar_file->IsChecked()) {
 		menu.view_toolbar_file->Check(false);
 		aui_manager.GetPane(toolbar_file).Hide();
-		config->Toolbars.wich_ones.file=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.file=false;
 	} else {
 		menu.view_toolbar_file->Check(true);
 		aui_manager.GetPane(toolbar_file).Show();
-		config->Toolbars.wich_ones.file=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.file=true;
 	}
 	aui_manager.Update();
 }
@@ -3178,11 +3090,11 @@ void mxMainWindow::OnViewToolbarFind (wxCommandEvent &event) {
 	if (!menu.view_toolbar_find->IsChecked()) {
 		menu.view_toolbar_find->Check(false);
 		aui_manager.GetPane(toolbar_find).Hide();
-		config->Toolbars.wich_ones.find=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.find=false;
 	} else {
 		menu.view_toolbar_find->Check(true);
 		aui_manager.GetPane(toolbar_find).Show();
-		config->Toolbars.wich_ones.find=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.find=true;
 	}
 	aui_manager.Update();
 }
@@ -3191,11 +3103,11 @@ void mxMainWindow::OnViewToolbarDebug (wxCommandEvent &event) {
 	if (!menu.view_toolbar_debug->IsChecked()) {
 		menu.view_toolbar_debug->Check(false);
 		aui_manager.GetPane(toolbar_debug).Hide();
-		config->Toolbars.wich_ones.debug=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.debug=false;
 	} else {
 		menu.view_toolbar_debug->Check(true);
 		aui_manager.GetPane(toolbar_debug).Show();
-		config->Toolbars.wich_ones.debug=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.debug=true;
 	}
 	aui_manager.Update();
 }
@@ -3204,11 +3116,11 @@ void mxMainWindow::OnViewToolbarMisc (wxCommandEvent &event) {
 	if (!menu.view_toolbar_misc->IsChecked()) {
 		menu.view_toolbar_misc->Check(false);
 		aui_manager.GetPane(toolbar_misc).Hide();
-		config->Toolbars.wich_ones.misc=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.misc=false;
 	} else {
 		menu.view_toolbar_misc->Check(true);
 		aui_manager.GetPane(toolbar_misc).Show();
-		config->Toolbars.wich_ones.misc=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.misc=true;
 	}
 	aui_manager.Update();
 }
@@ -3217,11 +3129,11 @@ void mxMainWindow::OnViewToolbarEdit (wxCommandEvent &event) {
 	if (!menu.view_toolbar_edit->IsChecked()) {
 		menu.view_toolbar_edit->Check(false);
 		aui_manager.GetPane(toolbar_edit).Hide();
-		config->Toolbars.wich_ones.edit=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.edit=false;
 	} else {
 		menu.view_toolbar_edit->Check(true);
 		aui_manager.GetPane(toolbar_edit).Show();
-		config->Toolbars.wich_ones.edit=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.edit=true;
 	}
 	aui_manager.Update();
 }
@@ -3229,11 +3141,11 @@ void mxMainWindow::OnViewToolbarRun (wxCommandEvent &event) {
 	if (!menu.view_toolbar_run->IsChecked()) {
 		menu.view_toolbar_run->Check(false);
 		aui_manager.GetPane(toolbar_run).Hide();
-		config->Toolbars.wich_ones.run=false;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.run=false;
 	} else {
 		menu.view_toolbar_run->Check(true);
 		aui_manager.GetPane(toolbar_run).Show();
-		config->Toolbars.wich_ones.run=true;
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.run=true;
 	}
 	aui_manager.Update();
 }
@@ -4282,13 +4194,16 @@ void mxMainWindow::LoadInQuickHelpPanel(wxString file, bool hide_compiler_tree) 
 
 
 void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
+	
+	gui_debug_mode=debug_mode;
+	
 	static bool backtrace_visible=true;
 	static bool inspections_visible=true;
 	static bool threads_visible=true;
 	static bool log_visible=true;
 	
 	wxCommandEvent evt;
-	if (debug_mode) { // si comienza la depuracion
+	if (debug_mode) { // si comienza la depuracion...
 		// habilitar y deshabilitar cosas en los menues
 		menu.debug_stop->Enable(true);
 		menu.debug_return->Enable(true);
@@ -4317,39 +4232,15 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 		}
 
 		if (config->Debug.autohide_toolbars) { // reacomodar las barras de herramientas
-			if ( !(debug_toolbars_status[0]=menu.view_toolbar_debug->IsChecked()) ) {
-				menu.view_toolbar_debug->Check(true);
-				aui_manager.GetPane(toolbar_debug).Show();
-			}
+			if ( !menu.view_toolbar_debug->IsChecked()) { menu.view_toolbar_debug->Check(true); aui_manager.GetPane(toolbar_debug).Show(); }
 			aui_manager.GetPane(toolbar_status).Show();
-			if ( (debug_toolbars_status[1]=menu.view_toolbar_file->IsChecked()) ) {
-				menu.view_toolbar_file->Check(false);
-				aui_manager.GetPane(toolbar_file).Hide();
-			}
-			if ( (debug_toolbars_status[2]=menu.view_toolbar_run->IsChecked()) ) {
-				menu.view_toolbar_run->Check(false);
-				aui_manager.GetPane(toolbar_run).Hide();
-			}
-			if ( (debug_toolbars_status[3]=menu.view_toolbar_edit->IsChecked()) ) {
-				menu.view_toolbar_edit->Check(false);
-				aui_manager.GetPane(toolbar_edit).Hide();
-			}
-			if ( (debug_toolbars_status[4]=menu.view_toolbar_misc->IsChecked()) ) {
-				menu.view_toolbar_misc->Check(false);
-				aui_manager.GetPane(toolbar_misc).Hide();
-			}
-			if ( (debug_toolbars_status[5]=menu.view_toolbar_find->IsChecked()) ) {
-				menu.view_toolbar_find->Check(false);
-				aui_manager.GetPane(toolbar_find).Hide();
-			}
-			if ( (debug_toolbars_status[6]=menu.view_toolbar_tools->IsChecked()) ) {
-				menu.view_toolbar_tools->Check(false);
-				aui_manager.GetPane(toolbar_tools).Hide();
-			}
-			if ( (debug_toolbars_status[7]=menu.view_toolbar_view->IsChecked()) ) {
-				menu.view_toolbar_view->Check(false);
-				aui_manager.GetPane(toolbar_view).Hide();
-			}
+			if (menu.view_toolbar_file->IsChecked()) { menu.view_toolbar_file->Check(false); aui_manager.GetPane(toolbar_file).Hide(); }
+			if (menu.view_toolbar_run->IsChecked()) { menu.view_toolbar_run->Check(false); aui_manager.GetPane(toolbar_run).Hide(); }
+			if (menu.view_toolbar_edit->IsChecked()) { menu.view_toolbar_edit->Check(false); aui_manager.GetPane(toolbar_edit).Hide(); }
+			if (menu.view_toolbar_misc->IsChecked()) { menu.view_toolbar_misc->Check(false); aui_manager.GetPane(toolbar_misc).Hide(); }
+			if (menu.view_toolbar_find->IsChecked()) { menu.view_toolbar_find->Check(false); aui_manager.GetPane(toolbar_find).Hide(); }
+			if (menu.view_toolbar_tools->IsChecked()) { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
+			if (menu.view_toolbar_view->IsChecked()) { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
 		}
 		
 		if (config->Debug.autohide_panels) { // reacomodar los paneles
@@ -4409,78 +4300,26 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 			((mxSource*)(notebook_sources->GetPage(i)))->SetDebugTime(false);
 		
 		if (config->Debug.autohide_toolbars) { // reacomodar las barras de herramientas
-			if (menu.view_toolbar_debug->IsChecked()!=debug_toolbars_status[0]) {
-				if (debug_toolbars_status[0]) {
-					menu.view_toolbar_debug->Check(true);
-					aui_manager.GetPane(toolbar_debug).Show();
-				} else {
-					menu.view_toolbar_debug->Check(false);
-					aui_manager.GetPane(toolbar_debug).Hide();
-				}
-			}
 			aui_manager.GetPane(toolbar_status).Hide();
-			if (menu.view_toolbar_file->IsChecked()!=debug_toolbars_status[1]) {
-				if (debug_toolbars_status[1]) {
-					menu.view_toolbar_file->Check(true);
-					aui_manager.GetPane(toolbar_file).Show();
-				} else {
-					menu.view_toolbar_file->Check(false);
-					aui_manager.GetPane(toolbar_file).Hide();
-				}
-			}
-			if (menu.view_toolbar_run->IsChecked()!=debug_toolbars_status[2]) {
-				if (debug_toolbars_status[2]) {
-					menu.view_toolbar_run->Check(true);
-					aui_manager.GetPane(toolbar_run).Show();
-				} else {
-					menu.view_toolbar_run->Check(false);
-					aui_manager.GetPane(toolbar_run).Hide();
-				}
-			}
-			if (menu.view_toolbar_edit->IsChecked()!=debug_toolbars_status[3]) {
-				if (debug_toolbars_status[3]) {
-					menu.view_toolbar_edit->Check(true);
-					aui_manager.GetPane(toolbar_edit).Show();
-				} else {
-					menu.view_toolbar_edit->Check(false);
-					aui_manager.GetPane(toolbar_edit).Hide();
-				}
-			}
-			if (menu.view_toolbar_misc->IsChecked()!=debug_toolbars_status[4]) {
-				if (debug_toolbars_status[4]) {
-					menu.view_toolbar_misc->Check(true);
-					aui_manager.GetPane(toolbar_misc).Show();
-				} else {
-					menu.view_toolbar_misc->Check(false);
-					aui_manager.GetPane(toolbar_misc).Hide();
-				}
-			}
-			if (menu.view_toolbar_find->IsChecked()!=debug_toolbars_status[5]) {
-				if (debug_toolbars_status[5]) {
-					menu.view_toolbar_find->Check(true);
-					aui_manager.GetPane(toolbar_find).Show();
-				} else {
-					menu.view_toolbar_find->Check(false);
-					aui_manager.GetPane(toolbar_find).Hide();
-				}
-			}
-			if (menu.view_toolbar_tools->IsChecked()!=debug_toolbars_status[6]) {
-				if (debug_toolbars_status[6]) {
-					menu.view_toolbar_tools->Check(true);
-					aui_manager.GetPane(toolbar_tools).Show();
-				} else {
-					menu.view_toolbar_tools->Check(false);
-					aui_manager.GetPane(toolbar_tools).Hide();
-				}
-			}
-			if (menu.view_toolbar_view->IsChecked()!=debug_toolbars_status[7]) {
-				if (debug_toolbars_status[7]) {
-					menu.view_toolbar_view->Check(true);
-					aui_manager.GetPane(toolbar_view).Show();
-				} else {
-					menu.view_toolbar_view->Check(false);
-					aui_manager.GetPane(toolbar_view).Hide();
-				}
+			if (gui_fullscreen_mode) {
+				menu.view_toolbar_debug->Check(false); aui_manager.GetPane(toolbar_debug).Hide();
+			} else {
+				if (config->Toolbars.wich_ones.debug) { menu.view_toolbar_debug->Check(true); aui_manager.GetPane(toolbar_debug).Show(); }
+				else { menu.view_toolbar_debug->Check(false); aui_manager.GetPane(toolbar_debug).Hide(); }
+				if (config->Toolbars.wich_ones.file) { menu.view_toolbar_file->Check(true); aui_manager.GetPane(toolbar_file).Show(); }
+				else { menu.view_toolbar_file->Check(false); aui_manager.GetPane(toolbar_file).Hide(); }
+				if (config->Toolbars.wich_ones.run) { menu.view_toolbar_run->Check(true); aui_manager.GetPane(toolbar_run).Show(); }
+				else { menu.view_toolbar_run->Check(false); aui_manager.GetPane(toolbar_run).Hide(); }
+				if (config->Toolbars.wich_ones.edit) { menu.view_toolbar_edit->Check(true); aui_manager.GetPane(toolbar_edit).Show(); }
+				else { menu.view_toolbar_edit->Check(false); aui_manager.GetPane(toolbar_edit).Hide(); }
+				if (config->Toolbars.wich_ones.misc) { menu.view_toolbar_misc->Check(true); aui_manager.GetPane(toolbar_misc).Show(); }
+				else { menu.view_toolbar_misc->Check(false); aui_manager.GetPane(toolbar_misc).Hide(); }
+				if (config->Toolbars.wich_ones.find) { menu.view_toolbar_find->Check(true); aui_manager.GetPane(toolbar_find).Show(); }
+				else { menu.view_toolbar_find->Check(false); aui_manager.GetPane(toolbar_find).Hide(); }
+				if (config->Toolbars.wich_ones.tools) { menu.view_toolbar_tools->Check(true); aui_manager.GetPane(toolbar_tools).Show(); }
+				else { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
+				if (config->Toolbars.wich_ones.view) { menu.view_toolbar_view->Check(true); aui_manager.GetPane(toolbar_view).Show(); }
+				else { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
 			}
 		}
 		
@@ -4533,17 +4372,6 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 			}
 		}
 
-	}
-	
-	if (config->Debug.autohide_toolbars) {
-		fullscreen_toolbars_status[1]=!debug_mode&&config->Toolbars.wich_ones.file;
-		fullscreen_toolbars_status[2]=!debug_mode&&config->Toolbars.wich_ones.run;
-		fullscreen_toolbars_status[3]=!debug_mode&&config->Toolbars.wich_ones.edit;
-		fullscreen_toolbars_status[4]=!debug_mode&&config->Toolbars.wich_ones.misc;
-		fullscreen_toolbars_status[5]=!debug_mode&&config->Toolbars.wich_ones.find;
-		fullscreen_toolbars_status[6]=debug_mode;
-		fullscreen_toolbars_status[7]=!debug_mode&&config->Toolbars.wich_ones.tools;
-		fullscreen_toolbars_status[8]=!debug_mode&&config->Toolbars.wich_ones.view;
 	}
 	
 	aui_manager.Update(); // mostrar cambios en la interfaz
@@ -5555,5 +5383,6 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 		SetTitle(wxString("ZinjaI - ")+project->project_name);
 	else
 		SetTitle("ZinjaI");
+	gui_project_mode=project_mode;
 }
 
