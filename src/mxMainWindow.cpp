@@ -751,7 +751,7 @@ void mxMainWindow::OnProjectTreeAdd(wxCommandEvent &event) {
 			config->Files.last_dir=dlg.GetDirectory();
 		wxArrayString paths;
 		dlg.GetPaths(paths);
-		int multiple=0;
+		int multiple=1; // 1 en OpenFileFromGui significa always_attach
 		for (unsigned int i=0;i<paths.GetCount();i++) {
 			if (!wxFileName::FileExists(dlg.GetPath())) {
 				if (mxMD_YES==mxMessageDialog(main_window,LANG(MAINW_CREATE_FILE_QUESTION,"El archivo no existe, desea crearlo?"),dlg.GetPath(),mxMD_YES_NO).ShowModal()) {
@@ -3520,7 +3520,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 		// abrir el archivo
 		if (project && !project->HasFile(filename)) {
 			// constantes para setear bits en *multiple
-			const int always_attach=1;
+			const int always_attach=1; // ojo, esto se usa en OnProjectTreeAdd, asi que si se cambia el valor/significado, hay que revisar tambien ahi
 			const int never_attach=2;
 			const int always_move=4;
 			const int never_move=8;

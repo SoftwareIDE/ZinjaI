@@ -11,7 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=../Fuckultad/Poo/answers/2009-p1
-current_source=guihelp/ChangeLog.html
+current_source=src/mxMainWindow.cpp
 path_char=/
 [source]
 path=src/mxColoursEditor.cpp
@@ -26,7 +26,8 @@ marker=149
 marker=103
 [source]
 path=src/mxMainWindow.cpp
-cursor=239
+cursor=218746
+breakpoint=3431
 breakpoint=5347
 marker=4259
 marker=1790
@@ -589,7 +590,7 @@ path=src/AutoList.h
 cursor=319
 [other]
 path=guihelp/ChangeLog.html
-cursor=70
+cursor=314
 open=true
 [other]
 path=quickhelp/tips_spanish
@@ -812,10 +813,8 @@ inline_suppr=1
 exclude_list=
 [inspections]
 name=<current_inspections>
-expr=source
-expr=this
-expr=line_number
-expr=gdb_status
+expr=aux_file_path.m_pchData
+expr=aux_project_path.m_pchData
 [inspections]
 name=bugintel
 expr=str.m_pchData
