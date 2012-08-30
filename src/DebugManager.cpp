@@ -37,7 +37,6 @@ using namespace std;
 DebugManager *debug;
 
 DebugManager::DebugManager() {
-	show_breakpoint_error=true;
 	pause_breakpoint = NULL;
 	current_handle = -1;
 	last_backtrace_size = 0;
@@ -661,7 +660,7 @@ int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {
 int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 	if (waiting || !debugging) return 0;
 	wxString adr = GetAddress(_bpi->fname,_bpi->line_number);
-	if (!adr.Len()) return -1;
+	if (!adr.Len()) { _bpi->SetStatus(BPS_ERROR_SETTING); ShowBreakPointLocationErrorMessage(_bpi); return -1;  }
 	wxString ans = SendCommand(wxString(_T("-break-insert \"\\\""))<<_bpi->fname<<_T(":")<<_bpi->line_number+1<<_T("\\\"\""));
 	wxString num = GetSubValueFromAns(ans,_T("bkpt"),_T("number"),true);
 	if (!num.Len()) { // a veces hay que poner dos barras (//) antes del nombre del archivo en vez de una (en los .h? ¿por que?)
@@ -682,7 +681,10 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 		if (_bpi->ignore_count) SetBreakPointOptions(id,_bpi->ignore_count);
 		if (_bpi->only_once||!_bpi->enabled) SetBreakPointEnable(id,_bpi->enabled,_bpi->only_once);
 		if (!_bpi->enabled) status=BPS_USER_DISABLED;
-		if (_bpi->cond.Len())	if (!SetBreakPointOptions(id,_bpi->cond)) status=BPS_ERROR_CONDITION;
+		if (_bpi->cond.Len()) if (!SetBreakPointOptions(id,_bpi->cond)) { status=BPS_ERROR_SETTING; ShowBreakPointConditionErrorMessage(_bpi); }
+	} else { // si no se pudo colocar correctamente
+		status=BPS_ERROR_SETTING; 
+		ShowBreakPointLocationErrorMessage(_bpi);
 	}
 	_bpi->SetStatus(status,id);
 	return id;
@@ -976,7 +978,7 @@ wxString DebugManager::WaitAnswer() {
 						long bn=-1;	if (warn.Mid(33).BeforeFirst(':').ToLong(&bn)) {
 							BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(bn,true);
 							if (bpi) bpi->SetStatus(BPS_ERROR_SETTING);
-							ShowBreakPointErrorMessage();
+							if (bpi) ShowBreakPointLocationErrorMessage(bpi);
 						}
 					} else if (warn[0]=='=' || warn.StartsWith("&\"warning:") ) {
 						if (warn[0]=='&') warn=warn.Mid(2,warn.Len()-3);
@@ -2776,17 +2778,31 @@ void DebugManager::SetFullOutput (bool on) {
 	}
 }
 
-void DebugManager::ShowBreakPointErrorMessage ( ) {
+void DebugManager::ShowBreakPointLocationErrorMessage (BreakPointInfo *_bpi) {
+	static bool show_breakpoint_error=true;
 	if (!show_breakpoint_error) return;
 	int res=mxMessageDialog(main_window,
-		LANG(DEBUG_BAD_BREAKPOINT_WARNING,""
-		"El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n"
-		"* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n"
-		"* Algún breakpoint fue una linea que no genera codigo ejecutable (ej: comentario).\n"
-		"* Información de depuración desactualizada o inexistente. Intente recompilar completamente\n"
-		"  el programa/proyecto, utilizando el item Limpiar del menu Ejecucion antes de depurar.\n"
+		wxString(LANG(DEBUG_BAD_BREAKPOINT_WARNING,"El depurador no pudo colocar un punto de interrupcion en:"))<<
+		"\n"<<_bpi->fname<<": "<<_bpi->line_number<<"\n"<<
+		LANG(DEBUG_BAD_BREAKPOINT_WARNING_LOCATION,"Las posibles causas son:\n"
+		"* Fue colocado en un archivo que no se compila en el proyecto/programa.\n"
+		"* Fue colocado en una linea que no genera codigo ejecutable (ej: comentario).\n"
+		"* Información de depuración desactualizada o inexistente. Intente recompilar\n"
+		"   completamente el programa/proyecto, utilizando el item Limpiar del menu Ejecucion\n"
+		"   antes de depurar.\n"
 		"* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n"
-		"  espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.")
+		"   espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.")
+		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
+	if (res&mxMD_CHECKED) show_breakpoint_error=false;
+}
+
+void DebugManager::ShowBreakPointConditionErrorMessage (BreakPointInfo *_bpi) {
+	static bool show_breakpoint_error=true;
+	if (!show_breakpoint_error) return;
+	int res=mxMessageDialog(main_window,
+		wxString(LANG(DEBUG_BAD_BREAKPOINT_WARNING,"El depurador no pudo colocar un punto de interrupcion en:"))<<
+		"\n"<<_bpi->fname<<": "<<_bpi->line_number+"\n"<<
+		LANG(DEBUG_BAD_BREAKPOINT_WARNING_CONDITION,"La condición ingresada no es válida.")
 		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
 	if (res&mxMD_CHECKED) show_breakpoint_error=false;
 }

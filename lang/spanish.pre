@@ -103,7 +103,11 @@ THREADS_NO_THREADS
 THREADS_NO_INFO
 <<Informacion no disponible>>
 DEBUG_BAD_BREAKPOINT_WARNING
-El depurador no pudo colocar algunos puntos de interrupcion. Las posibles causas son:\n* Algún breakpoint fue colocado en un archivo que no pertence al proyecto.\n* Algún breakpoint fue una linea que no genera codigo ejecutable (ej: comentario).\n* Información de depuración desactualizada o inexistente. Intente recompilar completamente\n  el programa/proyecto, utilizando el item Limpiar del menu Ejecucion antes de depurar.\n* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n  espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.
+El depurador no pudo colocar un punto de interrupcion en:
+DEBUG_BAD_BREAKPOINT_WARNING_LOCATION
+Las posibles causas son:\n* Fue colocado en un archivo que no se compila en el proyecto/programa.\n* Fue colocado en una linea que no genera codigo ejecutable (ej: comentario).\n* Información de depuración desactualizada o inexistente. Intente recompilar\n   completamente el programa/proyecto, utilizando el item Limpiar del menu Ejecucion\n   antes de depurar.\n* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n   espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.
+DEBUG_BAD_BREAKPOINT_WARNING_CONDITION
+La condición ingresada no es válida.
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS
@@ -492,6 +496,8 @@ BREAKOPTS_ERROR_PLACING_BREAKPOINT
 Error al colocar breakpoint
 BREAKOPTS_INVALID_CONDITION
 La condicion actual no es valida
+BREAKOPTS_ERROR_SETTING_CONDITION
+La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?.
 COLORS_CAPTION
 Definir Colores
 GENERAL_APPLY_BUTTON
@@ -1631,7 +1637,7 @@ Activar &Integracion wxFormBuilder
 MENUITEM_TOOLS_WXFB_AUTO
 Regenerar y Actualizar Automaticamente
 MENUITEM_TOOLS_WXFB_NEW_RESOURCE
-&Adjuntar un Nuevo Projecto wxFB...
+&Adjuntar un Nuevo Proyecto wxFB...
 MENUITEM_TOOLS_WXFB_LOAD_RESOURCE
 &Adjuntar un Proyecto wxFB Existente...
 MENUITEM_TOOLS_WXFB_REGENERATE

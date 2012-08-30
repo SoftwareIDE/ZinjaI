@@ -102,6 +102,10 @@ THREADS_NO_INFO
 <<Thread info not available>>
 DEBUG_BAD_BREAKPOINT_WARNING
 Some breakpoints could not been setted by the debugger. Posible causes are:\n* Some breakpoints are placed in files that do not belong to the project.\n* Some breakpoints are placed in lines that don't gerate executable code (comments, empty lines, ...)\n* Missing or outdated debugging information. Use Clean item from Run menu before\n  debugging.\n* Spaces or special characters in files' paths. If that is the case, try moving\n  the project or renaming the directories.
+DEBUG_BAD_BREAKPOINT_WARNING_LOCATION
+Posible causes are:\n* Some breakpoints are placed in files that do not belong to the project.\n* Some breakpoints are placed in lines that don't gerate executable code (comments, empty lines, ...)\n* Missing or outdated debugging information. Use Clean item from Run menu before\n  debugging.\n* Spaces or special characters in files' paths. If that is the case, try moving\n  the project or renaming the directories.
+DEBUG_BAD_BREAKPOINT_WARNING_CONDITION
+Breakpoint's condition is not valid.
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS
@@ -490,6 +494,8 @@ BREAKOPTS_ERROR_PLACING_BREAKPOINT
 Error placing breakpoint
 BREAKOPTS_INVALID_CONDITION
 Current condition is not valid
+BREAKOPTS_ERROR_SETTING_CONDITION
+The entered breakpoint's condition is not valid. Do you wan't to set an unconditional breakpoint anyway?
 COLORS_CAPTION
 Define Colours
 GENERAL_APPLY_BUTTON

@@ -67,6 +67,7 @@ void mxWelcomePanel::Reload() {
 		wxString tip;
 		while (!tip.Len())
 			tip=file[TIPS_TO_SKIP+1+rand()%(file.GetLineCount()-TIPS_TO_SKIP-1)];
+//			tip=file[file.GetLineCount()-1];
 		text.Replace(_T("${TIP}"),tip);
 	} else {
 		text.Replace(_T("${TIP}"),LANG(TIPS_DB_NOT_FOUND,"No se pudo abrir correctamente el archivo de tips y sugerencias."));
@@ -78,7 +79,9 @@ void mxWelcomePanel::Reload() {
 
 void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':'));
-	if (action==_T("help")) {
+	if (action==_T("http")) {
+		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
+	} else if (action==_T("help")) {
 		SHOW_HELP(event.GetLinkInfo().GetHref().AfterFirst(':'));
 	} else if (action==_T("open")) {
 		main_window->OpenFileFromGui(event.GetLinkInfo().GetHref().AfterFirst(':') );

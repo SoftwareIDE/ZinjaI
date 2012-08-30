@@ -42,7 +42,7 @@
 &nbsp;&nbsp;&nbsp; Puede explorar  una inspección de una estructura de datos (un arreglo, una clase, etc.) para observar su composición en una estrucutra jerárquica haciendo click con el botón derecho sobre la misma y seleccionando la opción "Explorar inspección".
 &nbsp;&nbsp;&nbsp; You can set advanced breakpoint's properties by clicking on its mark (the red circle in the margin) holding Ctrl key.
 
-&nbsp;&nbsp;&nbsp; This software is still under development. If you find a bug, or something you'd like to see changed, you can write to <I>zaskar_84@yahoo.com.ar</I>, or leave a message in <I>Contact</I> web site's section (<I>http://zinjai.sourceforge.net</I>).
+&nbsp;&nbsp;&nbsp; This software is still under development. If you find a bug, or something you'd like to see changed, you can write to <I>zaskar_84@yahoo.com.ar</I>, or leave a message in <I>Contact</I> web site's section (<A href="http://zinjai.sourceforge.net">http://zinjai.sourceforge.net</A>).
 &nbsp;&nbsp;&nbsp; If you have a direct internet conection you can check for updates by clicking the <I>Check for updates...</I> option in <I>Help</I> menu.
 
 &nbsp;&nbsp;&nbsp; You can set shortcuts or toolbar buttons to launch your preferred tools or documents quickly from "Custom tools" submenu in "Tools" menu. <A href="help:custom_tools.html">Read more...</A>
@@ -55,4 +55,4 @@
 &nbsp;&nbsp;&nbsp; You can see <A href="help:autocode.html">autocodes</A> list or invoke autocode's autocompletion with <I>Ctrl+Shift+Space</I> shortcut.
 &nbsp;&nbsp;&nbsp; You can close all code tabs but the active one with <I>Ctrl+Alt+W</I> shortcut.
 &nbsp;&nbsp;&nbsp; In help you can find a table that summarizes most of the <A href="help:atajos.html">keyboard shorcuts</A> that you can try learn to develop faster.
-
+&nbsp;&nbsp;&nbsp; You can find more information about <I>ZinjaI</I> and other projects in the blog <A href="http://cucarachasracing.blogspot.com.ar">http://cucarachasracing.blogspot.com.ar</A>.

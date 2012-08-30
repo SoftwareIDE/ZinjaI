@@ -543,4 +543,3 @@ extern mxSource *external_source; // para que devuelva OpenFile cuando al archiv
 extern mxMainWindow *main_window;
 
 #endif
-

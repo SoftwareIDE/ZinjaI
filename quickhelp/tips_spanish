@@ -42,9 +42,8 @@
 &nbsp;&nbsp;&nbsp; Puede explorar  una inspección de una estructura de datos (un arreglo, una clase, etc.) para observar su composición en una estrucutra jerárquica haciendo click con el botón derecho sobre la misma y seleccionando la opción "Explorar inspección".
 &nbsp;&nbsp;&nbsp; Se pueden definir las propiedades avanzadas de un breakpoint haciendo click sobre el mismo teniendo presionada la tecla control.
 
-&nbsp;&nbsp;&nbsp; Este entorno aún se encuentra en desarrollo. Si encuentras un error o hay algo que te gustaría cambiar puedes escribir a <I>zaskar_84@yahoo.com.ar</I>, o dejar un mensaje en la sección <I>Contacto</I> del sitio web (<I>http://zinjai.sourceforge.net</I>).
+&nbsp;&nbsp;&nbsp; Este entorno aún se encuentra en desarrollo. Si encuentras un error o hay algo que te gustaría cambiar puedes escribir a <I>zaskar_84@yahoo.com.ar</I>, o dejar un mensaje en la sección <I>Contacto</I> del sitio web (<A href="http://zinjai.sourceforge.net">http://zinjai. 	net</A>).
 &nbsp;&nbsp;&nbsp; Si tienes conexión directa a internet, <I>ZinjaI</I> puede verificar si existen nuevas versiones en su pagina web utilizando la opción <I>Buscar Actualizaciones...</I> del menú <I>Ayuda</I>.
-&nbsp;&nbsp;&nbsp; Es bueno asistir tambien a las teorías!
 
 &nbsp;&nbsp;&nbsp; Puedes definir atajos y botones en la barra de herramientas personalizados para acceder rápidamente a tus herramientas o documentos más útiles mediante el submenú "Herramientas personalizadas" del menú "Herramientas". <A href="help:custom_tools.html">Leer más...</A>
 
@@ -56,3 +55,4 @@
 &nbsp;&nbsp;&nbsp; Puedes ver rápidamente la lista de <A href="help:autocode.html">auto-códigos</A> disponibles, o invocar su autocompletado presionando <I>Ctrl+Shift+Espacio</I>.
 &nbsp;&nbsp;&nbsp; Puedes cerrar todas las pestañas de código a excepción de la activa con el atajo <I>Ctrl+Alt+W</I>.
 &nbsp;&nbsp;&nbsp; En la ayuda hay una tabla con la mayoría de los <A href="help:atajos.html">atajos de teclado</A> que puedes utilizar en ZinjaI para acelerar el desarrollo.
+&nbsp;&nbsp;&nbsp; Puede leer más información y otras notas útiles sobre <I>ZinjaI</I> y otros proyectos en el blog <A href="http://cucarachasracing.blogspot.com.ar">http://cucarachasracing.blogspot.com.ar</A>.

@@ -70,6 +70,7 @@ void mxTipsWindow::ShowAnyTip() {
 		} else {
 			while (tip==_T(TIP_INITIAL_TEXT))
 				tip<<file[TIPS_TO_SKIP+rand()%(file.GetLineCount()-TIPS_TO_SKIP)];
+//				tip<<file[file.GetLineCount()-1];
 		}
 		tooltip->SetPage(tip);
 	}
@@ -131,7 +132,9 @@ void mxTipsWindow::OnKeyDown(wxKeyEvent &evt) {
 
 void mxTipsWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':'));
-	if (action=="help") {
+	if (action==_T("http")) {
+		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
+	} else if (action=="help") {
 		SHOW_HELP(event.GetLinkInfo().GetHref().AfterFirst(':'));
 	}
 }

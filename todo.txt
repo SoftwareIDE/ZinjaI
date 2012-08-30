@@ -1,5 +1,20 @@
 ZinjaI todo
 
+
+toolchains alternativos
+refactory: 
+	simil ctrl+h pero para agregar virtuales?
+	renombrar funciones/metodos
+	agregar getters/setters
+	ctrl+shift+h inverso
+template para C plano?
+drag and drop en arbol de proyectos
+
+probar tooodo lo de los breakpoints nuevos
+
+
+
+
 pestaña "avanzado" en compilacion de proyecto
 	variables de entorno para compilar y para ejecutar
 	algun super menu (pestaña en preferencias y combo en genereal de opciones de compilacion?) para elegir el "toolchain" (gcc-versiones, wine+gcc, makefile, clang, personalizado, etc)
@@ -37,3 +52,4 @@ otras:
 	6. jerarquia de proyectos
 	
 Alternativa a jerarquia de proyectos, jerarquia de perfiles, usando ${FROM:otro_perfil} en los campos de texto?
+

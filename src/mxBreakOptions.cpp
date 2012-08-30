@@ -10,6 +10,7 @@
 #include "mxHelpWindow.h"
 #include "mxBitmapButton.h"
 #include "mxSource.h"
+#include "mxMessageDialog.h"
 
 BEGIN_EVENT_TABLE(mxBreakOptions, wxDialog)
 	EVT_BUTTON(wxID_OK,mxBreakOptions::OnOkButton)
@@ -87,7 +88,7 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 				debug->SetBreakPointEnable(bpi->gdb_id,bpi->enabled,bpi->only_once);
 			}
 			if (!bpi->enabled) status=BPS_USER_DISABLED;
-			if (bpi->cond!=cond_text->GetValue()) { // condition
+			if (bpi->cond!=cond_text->GetValue() || bpi->gdb_status==BPS_ERROR_CONDITION) { // condition
 				bpi->cond=cond_text->GetValue();
 				if (!debug->SetBreakPointOptions(bpi->gdb_id,bpi->cond)) status=BPS_ERROR_CONDITION;
 			}
@@ -104,6 +105,10 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 		if (debug->debugging)
 			debug->DeleteBreakPoint(bpi);
 		else delete bpi;
+	}
+	if (bpi->gdb_status==BPS_ERROR_CONDITION) {
+		if (mxMD_NO==mxMessageDialog(this,LANG(BREAKOPTS_ERROR_SETTING_CONDITION,"La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?."),LANG(GENERAL_ERROR,"Advertencia"),mxMD_ERROR|mxMD_OK).ShowModal())
+			return;
 	}
 	Close();
 }

@@ -116,7 +116,6 @@ class DebugManager {
 	wxFFile debug_log_file;
 #endif
 private:
-	bool show_breakpoint_error; ///< indica si se debe mostrar un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint
 	bool has_symbols; ///< si cuando el debugger no inicia es porque no el ejecutable no tiene info de depuracion se baja esta bandera
 	mxInspectionGrid *inspection_grid;
 	bool recording_for_reverse; ///< indica si se ejecuto el comando "record" para habilitar luega la ejecucion hacia atras
@@ -267,8 +266,9 @@ public:
 	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print elements ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
 	void SetFullOutput(bool on=false);
 	
-	/// @brief muestra un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint (se controla con show_breakpoint_error)
-	void ShowBreakPointErrorMessage();
+	/// @brief muestra un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint
+	void ShowBreakPointLocationErrorMessage(BreakPointInfo *_bpi);
+	void ShowBreakPointConditionErrorMessage(BreakPointInfo *_bpi);
 };
 
 extern DebugManager *debug;
