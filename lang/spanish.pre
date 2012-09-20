@@ -2934,6 +2934,8 @@ PREFERENCES_COMMANDS_GDB
 Comando del depurador
 PREFERENCES_COMMANDS_CONSOLE
 Comando de la terminal
+PREFERENCES_TOOLCHAIN
+Herramientas de compilación
 PREFERENCES_COMMANDS_EXPLORER
 Comando del explorador de archivos
 PREFERENCES_COMMANDS_IMAGE_VIEWER

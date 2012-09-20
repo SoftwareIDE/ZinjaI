@@ -14,10 +14,12 @@
 #include <wx/dir.h>
 #include "mxMainWindow.h"
 #include "mxColoursEditor.h"
+#include "Toolchain.h"
 
 ConfigManager *config;
 
 ConfigManager::ConfigManager(wxString a_path){
+	config=this;
 	zinjai_dir = a_path;
 	color_theme::Init();
 	LoadDefaults();
@@ -223,8 +225,8 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("graphviz_dot",Init.graphviz_dot);
 				else CFG_INT_READ_DN("history_len",Init.history_len);
 				else CFG_INT_READ_DN("inherit_num",Init.inherit_num);
-				else CFG_GENERIC_READ_DN("forced_compiler_options",Init.forced_compiler_options);
-				else CFG_GENERIC_READ_DN("forced_linker_options",Init.forced_linker_options);
+//				else CFG_GENERIC_READ_DN("forced_compiler_options",Init.forced_compiler_options);
+//				else CFG_GENERIC_READ_DN("forced_linker_options",Init.forced_linker_options);
 				else CFG_GENERIC_READ_DN("proxy",Init.proxy);
 				else CFG_GENERIC_READ_DN("language_file",Init.language_file);
 				else CFG_INT_READ_DN("max_errors",Init.max_errors);
@@ -239,8 +241,9 @@ bool ConfigManager::Load() {
 				
 			
 			} else if (section==_T("Files")) {
-				CFG_GENERIC_READ_DN("compiler_command",Files.compiler_command);
-				else CFG_GENERIC_READ_DN("compiler_c_command",Files.compiler_c_command);
+				CFG_GENERIC_READ_DN("toolchain",Files.toolchain);
+//				CFG_GENERIC_READ_DN("compiler_command",Files.compiler_command);
+//				else CFG_GENERIC_READ_DN("compiler_c_command",Files.compiler_c_command);
 				else CFG_GENERIC_READ_DN("debugger_command",Files.debugger_command);
 #if defined(__WIN32__)
 				else CFG_GENERIC_READ_DN("mingw_dir",Files.mingw_dir);
@@ -489,16 +492,16 @@ bool ConfigManager::Load() {
 	if (Init.version<20110420) Init.check_for_updates=true;
 	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");
 	if (Init.version<20101112 && Help.autocomp_indexes.Len()) Help.autocomp_indexes<<",STL_Iteradores";
-#if defined(__WIN32__)
-	if (Init.version<20120208 && !Init.forced_linker_options.Contains("-static-libstdc++")) Init.forced_linker_options<<" -static-libstdc++";
-#else
-	// " -static-libstdc++" estaba por error, solo se deberia haber agregado en windows, pero por error el if de arriba estaba fuera del #ifdef
-	if (Init.version<20120229 && Init.forced_linker_options.Contains(" -static-libstdc++")) Init.forced_linker_options.Replace(" -static-libstdc++","",false);
-#endif
+//#if defined(__WIN32__)
+//	if (Init.version<20120208 && !Init.forced_linker_options.Contains("-static-libstdc++")) Init.forced_linker_options<<" -static-libstdc++";
+//#else
+//	// " -static-libstdc++" estaba por error, solo se deberia haber agregado en windows, pero por error el if de arriba estaba fuera del #ifdef
+//	if (Init.version<20120229 && Init.forced_linker_options.Contains(" -static-libstdc++")) Init.forced_linker_options.Replace(" -static-libstdc++","",false);
+//#endif
 	if (Init.version<20100828) {
-#if defined(__WIN32__)
-		Init.forced_compiler_options<<_T(" --show-column");
-#endif
+//#if defined(__WIN32__)
+//		Init.forced_compiler_options<<_T(" --show-column");
+//#endif
 		if (!Running.compiler_options.Contains("-O")) {
 			if (!Running.compiler_options.EndsWith(" "))
 				Running.compiler_options<<" ";
@@ -523,6 +526,8 @@ bool ConfigManager::Load() {
 		ctheme->Load(DIR_PLUS_FILE(home_dir,"colours.zcs"));
 	
 	Init.autohiding_panels=Init.autohide_panels;
+	
+	Toolchain::LoadToolchains();
 	
 	return true;
 }
@@ -578,8 +583,8 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("graphviz_dot",Init.graphviz_dot);
 	CFG_GENERIC_WRITE_DN("inherit_num",Init.inherit_num);
 	CFG_GENERIC_WRITE_DN("history_len",Init.history_len);
-	CFG_GENERIC_WRITE_DN("forced_compiler_options",Init.forced_compiler_options);
-	CFG_GENERIC_WRITE_DN("forced_linker_options",Init.forced_linker_options);
+//	CFG_GENERIC_WRITE_DN("forced_compiler_options",Init.forced_compiler_options);
+//	CFG_GENERIC_WRITE_DN("forced_linker_options",Init.forced_linker_options);
 	CFG_GENERIC_WRITE_DN("proxy",Init.proxy);
 	CFG_GENERIC_WRITE_DN("language_file",Init.language_file);
 	CFG_GENERIC_WRITE_DN("max_errors",Init.max_errors);
@@ -667,8 +672,9 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("skin_dir",Files.skin_dir);
 //	CFG_GENERIC_WRITE_DN("parser_command",Files.parser_command);
 	CFG_GENERIC_WRITE_DN("debugger_command",Files.debugger_command);
-	CFG_GENERIC_WRITE_DN("compiler_command",Files.compiler_command);
-	CFG_GENERIC_WRITE_DN("compiler_c_command",Files.compiler_c_command);
+	CFG_GENERIC_WRITE_DN("toolchain",Files.toolchain);
+//	CFG_GENERIC_WRITE_DN("compiler_command",Files.compiler_command);
+//	CFG_GENERIC_WRITE_DN("compiler_c_command",Files.compiler_c_command);
 	CFG_GENERIC_WRITE_DN("cppcheck_command",Files.cppcheck_command);
 #if defined(__WIN32__)
 	CFG_GENERIC_WRITE_DN("mingw_dir",Files.mingw_dir);
@@ -916,9 +922,8 @@ void ConfigManager::LoadDefaults(){
 	Files.skin_dir=_T("imgs");
 	Files.graphviz_dir=_T("graphviz");
 #if defined(__WIN32__)
+	Files.toolchain="mingw32";
 	Files.parser_command=_T("cbrowser.exe");
-	Files.compiler_command=_T("mingw32-g++");
-	Files.compiler_c_command=_T("mingw32-gcc");
 	Files.debugger_command=_T("gdb");
 	Files.mingw_dir=_T("mingw");
 	Files.runner_command=_T("runner.exe");
@@ -930,9 +935,8 @@ void ConfigManager::LoadDefaults(){
 //	Files.browser_command=_T("shellexecute.exe");
 	Files.browser_command=_T("");
 #elif defined(__APPLE__)
+	Files.toolchain="gcc";
 	Files.parser_command=_T("./cbrowser");
-	Files.compiler_command=_T("g++");
-	Files.compiler_c_command=_T("gcc");
 	Files.debugger_command=_T("gdb");
 	Files.runner_command=_T("./runner.bin");
 	Files.terminal_command=_T("./mac-terminal-wrapper.bin");
@@ -942,9 +946,8 @@ void ConfigManager::LoadDefaults(){
 	Files.wxfb_command=_T("/Applications/wxFormBuilder.app/Contents/MacOS/wxformbuilder");
 	Files.browser_command=_T("open");
 #else
+	Files.toolchain="gcc";
 	Files.parser_command=DIR_PLUS_FILE(zinjai_dir,_T("cbrowser"));
-	Files.compiler_command=_T("g++");
-	Files.compiler_c_command=_T("gcc");
 	Files.debugger_command=_T("gdb");
 	Files.runner_command=DIR_PLUS_FILE(zinjai_dir,_T("runner.bin"));
 	Files.explorer_command=_T("<<sin configurar>>");
@@ -1040,13 +1043,6 @@ void ConfigManager::LoadDefaults(){
 	Running.dont_run_headers=false;
 	Running.check_includes=true;
 	
-#if defined(__WIN32__)
-	Init.forced_compiler_options=_T("--show-column");
-	Init.forced_linker_options=_T("-static-libgcc -static-libstdc++ --show-column");
-#else
-	Init.forced_compiler_options=_T("");
-	Init.forced_linker_options=_T("");
-#endif
 	Init.proxy="";
 	Init.language_file=_T("spanish");
 	Init.max_errors=500;

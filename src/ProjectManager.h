@@ -186,6 +186,8 @@ struct project_configuration {
 	
 	wxString name; ///< nombre de la configuracion (unico y definido por usuario)
 	
+	wxString toolchain; ///< nombre del toolchain que utiliza, o <default> para tomar el por defecto de zinjai
+	
 	wxString working_folder; ///< directorio de trabajo para la ejecución
 	bool always_ask_args; ///< mostrar el dialogo que pide los argumentos antes de ejecutar
 	wxString args; ///< argumentos para la ejecucion
@@ -220,23 +222,24 @@ struct project_configuration {
 		libs_to_build=NULL;
 		bakup=NULL;
 		name=cname;
-		working_folder=_T("");
+		toolchain="<default>";
+		working_folder="";
 		always_ask_args=false;
-		args=_T("");
+		args="";
 		wait_for_key=2;
 		temp_folder=cname;
 		output_file=DIR_PLUS_FILE(cname,pname+_T(BINARY_EXTENSION));
-		compiling_extra=_T("");
-		macros=_T("");
-		headers_dirs=_T("");
+		compiling_extra="";
+		macros="";
+		headers_dirs="";
 		warnings_level=1;
 		ansi_compliance=false;
 		enable_profiling=false;
 		debug_level=2;
 		optimization_level=0;
-		linking_extra=_T("");
-		libraries_dirs=_T("");
-		libraries=_T("");
+		linking_extra="";
+		libraries_dirs="";
+		libraries="";
 		strip_executable=false;
 		console_program=true;
 		dont_generate_exe=false;

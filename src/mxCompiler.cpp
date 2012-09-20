@@ -35,6 +35,7 @@
 #define ES_COMPOUT_AT_THIS_POINT_IN_FILE ": en este punto en el fichero"
 #define ES_COMPOUT_WITHIN_THIS_CONTEXT ": en este contexto"
 #define ES_COMPOUT_IN_PASSING_ARGUMENT ": en el paso del argumento"
+#include "Toolchain.h"
 
 
 wxMutex mxMuteCompiler;
@@ -482,17 +483,17 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 	parser->ParseSource(source,true);
 	last_compiled=source;
 	wxString z_opts(wxString(_T(" ")));
+	bool cpp = source->sin_titulo || (source->source_filename.GetExt()!=_T("C") && source->source_filename.GetExt()!=_T("c"));
 	if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
-	if (config->Init.forced_compiler_options.Len()) z_opts<<config->Init.forced_compiler_options<<_T(" ");
-	if (config->Init.forced_linker_options.Len()) z_opts<<config->Init.forced_linker_options<<_T(" ");
-	z_opts<<_T(" -g "); // always include debugging information
+	z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" "; // forced compiler arguments
+	z_opts<<current_toolchain.linker_options<<" "; // forced linker arguments
+	z_opts<<" -g "; // always include debugging information
 	wxString ext=source->source_filename.GetExt();
 	if (!source->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9')))
 		z_opts<<_T("-x c++ "); // avoid not recognizing files without extension
 	// prepare command line
-	bool cpp = source->sin_titulo || (source->source_filename.GetExt()!=_T("C") && source->source_filename.GetExt()!=_T("c"));
 	wxString comp_opts = source->GetParsedCompilerOptions();
-	wxString command = wxString(cpp?config->Files.compiler_command:config->Files.compiler_c_command)+z_opts+_T("\"")+(main_window->GetCurrentSource()->sin_titulo?source->temp_filename:source->source_filename).GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+source->binary_filename.GetFullPath()<<_T("\"");
+	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+(main_window->GetCurrentSource()->sin_titulo?source->temp_filename:source->source_filename).GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+source->binary_filename.GetFullPath()<<_T("\"");
 	
 	// lanzar la ejecucion
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);

@@ -32,6 +32,7 @@
 #include "mxComplementInstallerWindow.h"
 #include "mxCppCheckConfigDialog.h"
 #include "mxValgrindConfigDialog.h"
+#include "Toolchain.h"
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
 void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
@@ -988,7 +989,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		file_item *item = project->FindFromName(src->source_filename.GetFullPath());
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
 		bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
-		wxString command = wxString(cpp?config->Files.compiler_command:config->Files.compiler_c_command)+
+		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
 			project->compiling_options+_T(" \"")+DIR_PLUS_FILE(project->path,item->name)+"\""+"-c -E -o \""+bin_name+"\"";
 		if (id_command==1) command<<" -fdirectives-only -C";
 		int x =utils->Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
@@ -1003,16 +1004,16 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 			else src->SaveSource();
 		}
 		wxString z_opts(wxString(_T(" ")));
+		// prepare command line
+		bool cpp = src->sin_titulo || (src->source_filename.GetExt()!=_T("C") && src->source_filename.GetExt()!=_T("c"));
 		if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
-		if (config->Init.forced_compiler_options.Len()) z_opts<<config->Init.forced_compiler_options<<_T(" ");
-		if (config->Init.forced_linker_options.Len()) z_opts<<config->Init.forced_linker_options<<_T(" ");
+		z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" ";
+		z_opts<<current_toolchain.linker_options<<" ";
 		wxString ext=src->source_filename.GetExt();
 		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<_T("-x c++ "); 
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
-		// prepare command line
-		bool cpp = src->sin_titulo || (src->source_filename.GetExt()!=_T("C") && src->source_filename.GetExt()!=_T("c"));
 		wxString comp_opts = src->GetParsedCompilerOptions();
-		wxString command = wxString(cpp?config->Files.compiler_command:config->Files.compiler_c_command)+z_opts+_T("\"")+main_window->GetCurrentSource()->GetPathForDebugger()+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
+		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+main_window->GetCurrentSource()->GetPathForDebugger()+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
 		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
 			osd.Hide();

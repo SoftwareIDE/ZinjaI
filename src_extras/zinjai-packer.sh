@@ -2,6 +2,7 @@
 if [ "$1" = "prepare" ]; then
 
   mkdir zinjai
+  mkdir zinjai/toolchains
   mkdir zinjai/templates
   mkdir zinjai/autocomp
   mkdir zinjai/colours
@@ -39,6 +40,8 @@ elif [ "$1" = "update" ]; then
   scp $2/zinjai/compiling.txt				zinjai/
   scp $2/zinjai/zinjai.dir				zinjai/
   scp $2/zinjai/Makefile				zinjai/
+
+  scp $2/zinjai/toolchains/*				zinjai/toolchains/
 
   scp $2/zinjai/parser/*				zinjai/parser/
   scp $2/zinjai/parser/common/*				zinjai/parser/common/

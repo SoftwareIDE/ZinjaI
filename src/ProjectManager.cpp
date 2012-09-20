@@ -28,12 +28,13 @@
 #include "mxCompiler.h"
 #include <algorithm>
 #include "Autocoder.h"
+#include "Toolchain.h"
 using namespace std;
 
 #define ICON_LINE(filename) (wxString(_T("0 ICON \""))<<filename<<_T("\""))
 #define MANIFEST_LINE(filename) (wxString(_T("1 RT_MANIFEST \""))<<filename<<_T("\""))
 
-ProjectManager *project;
+ProjectManager *project=NULL;
 extern char path_sep;
 
 wxString doxygen_configuration::get_tag_index() { 
@@ -473,6 +474,8 @@ ProjectManager::~ProjectManager(){
 	code_helper->ReloadIndexes(config->Help.autocomp_indexes);
 	
 	singleton->Start();
+	
+	project=NULL;
 }
 
 // agregar un archivo al proyecto: where = 's':fuente 'h':cabecera, 'o':otros
@@ -1120,8 +1123,6 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 		
 		// agregar el enlazado de bibliotecas
 		project_library *lib = active_configuration->libs_to_build;
-		wxString lcmd_static = _T("ar cr");
-		wxString lcmd_dynamic = config->Files.compiler_command+_T(" -shared -o");
 		while (lib) {
 			if (lib->path.Len() && !wxFileName::DirExists(DIR_PLUS_FILE(path,lib->path)))
 				wxFileName::Mkdir(DIR_PLUS_FILE(path,lib->path),0777,wxPATH_MKDIR_FULL);
@@ -1129,7 +1130,7 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 				AnalizeConfig(path,true,config->mingw_real_path,false);
 				if (lib->objects_list.Len()) {
 					step = step->next = new compile_step(CNS_LINK,new linking_info(
-						lib->is_static?lcmd_static:lcmd_dynamic,
+						lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker,
 						DIR_PLUS_FILE(path,lib->filename),lib->objects_list,lib->parsed_extra,&(lib->need_relink)));
 					steps_count++;
 					relink_exe=true;
@@ -1232,7 +1233,7 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 			if (relink_exe) {
 				AnalizeConfig(path,true,config->mingw_real_path,false);
 				step = step->next = new compile_step(CNS_LINK,
-					new linking_info(config->Files.compiler_command+_T(" -o"),
+					new linking_info(current_toolchain.linker+_T(" -o"),
 					executable_name,objects_list,linking_options,&force_relink));
 				steps_count++;
 			}
@@ -1321,7 +1322,7 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 	// preparar la linea de comando 
 	wxFileName bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+_T(".o"));
 	bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
-	wxString command = wxString(cpp?config->Files.compiler_command:config->Files.compiler_c_command)+
+	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
 #if !defined(_WIN32) && !defined(__WIN32__)
 		(item->lib?_T(" -fPIC "):_T(" "))+
 #endif
@@ -1568,8 +1569,8 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	if (mktype!=MKTYPE_OBJS) {
 		if (mingw_dir==_T("${MINGW_DIR}"))
 			fil.AddLine(wxString(_T("MINGW_DIR="))+config->mingw_real_path);
-		fil.AddLine(wxString(_T("GPP="))+config->Files.compiler_command);
-		fil.AddLine(wxString(_T("GCC="))+config->Files.compiler_c_command);
+		fil.AddLine(wxString(_T("GPP="))+current_toolchain.cpp_compiler);
+		fil.AddLine(wxString(_T("GCC="))+current_toolchain.c_compiler);
 		fil.AddLine(wxString(_T("FLAGS="))+compiling_options);
 		fil.AddLine(wxString(_T("LIBS="))+linking_options);
 	}
@@ -1678,8 +1679,6 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		}
 	
 		// agregar las bibliotecas
-		wxString lcmd_static = _T("ar cr");
-		wxString lcmd_dynamic = config->Files.compiler_command+_T(" -shared -o");
 		project_library *lib = active_configuration->libs_to_build;
 		while (lib) {
 			wxString libdep = utils->Quotize(lib->filename);
@@ -1693,7 +1692,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 				}
 			}
 			fil.AddLine(libdep+objs);
-			fil.AddLine(tab+(lib->is_static?lcmd_static:lcmd_dynamic)+_T(" ")+utils->Quotize(lib->filename)+objs+_T(" ")+lib->extra_link);
+			fil.AddLine(tab+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+_T(" ")+utils->Quotize(lib->filename)+objs+_T(" ")+lib->extra_link);
 			fil.AddLine(_T(""));
 			lib = lib->next;
 		}
@@ -1810,10 +1809,12 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	
 	if (!force && config_analized) return;
 	
+	Toolchain::SelectToolchain();
+	
 	temp_folder_short=active_configuration->temp_folder;
 	temp_folder=wxFileName(DIR_PLUS_FILE(path,active_configuration->temp_folder)).GetFullPath();
-	compiling_options=_T(" ");
-	if (config->Init.forced_compiler_options.Len()) compiling_options<<config->Init.forced_compiler_options<<_T(" ");
+	compiling_options=" ";
+	compiling_options<<current_toolchain.cpp_compiling_options<<" ";
 	
 	// debug_level
 	if (active_configuration->debug_level==1) 
@@ -1861,8 +1862,8 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	if (active_configuration->macros.Len())
 		compiling_options<<_T(" ")<<utils->Split(active_configuration->macros,_T("-D"));
 		
-	linking_options=_T(" ");
-	if (config->Init.forced_linker_options.Len()) linking_options<<config->Init.forced_linker_options<<_T(" ");
+	linking_options=" ";
+	linking_options<<current_toolchain.linker_options<<" ";
 	// mwindows
 #if defined(_WIN32) || defined(__WIN32__)
 	if (!active_configuration->console_program)

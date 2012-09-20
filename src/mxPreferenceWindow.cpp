@@ -30,6 +30,7 @@
 #include "Autocoder.h"
 #include "mxColoursEditor.h"
 #include "mxIconInstaller.h"
+#include "Toolchain.h"
 
 mxPreferenceWindow *preference_window=NULL;
 
@@ -39,8 +40,8 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_MAX_JOBS,mxPreferenceWindow::OnMaxJobsButton)
 	EVT_BUTTON(mxID_COLORS_PICKER,mxPreferenceWindow::OnColoursButton)
 	EVT_BUTTON(mxID_GDB_PATH,mxPreferenceWindow::OnGdbButton)
-	EVT_BUTTON(mxID_GPP_PATH,mxPreferenceWindow::OnGppButton)
-	EVT_BUTTON(mxID_GCC_PATH,mxPreferenceWindow::OnGccButton)
+//	EVT_BUTTON(mxID_GPP_PATH,mxPreferenceWindow::OnGppButton)
+//	EVT_BUTTON(mxID_GCC_PATH,mxPreferenceWindow::OnGccButton)
 	EVT_BUTTON(mxID_IMG_BROWSER_PATH,mxPreferenceWindow::OnImgBrowserButton)
 	EVT_BUTTON(mxID_BROWSER_PATH,mxPreferenceWindow::OnBrowserButton)
 	EVT_BUTTON(mxID_VALGRIND_PATH,mxPreferenceWindow::OnValgrindButton)
@@ -479,10 +480,14 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 	
 	help_wxhelp_index = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_WXWIDGETS_HELP_INDEX,"Indice de ayuda wxWidgets"),config->Help.wxhelp_index, mxID_WXHELP_FOLDER);
 	
-	files_compiler_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GPP,"Comando del compilador C++"),config->Files.compiler_command,mxID_GPP_PATH);
-	files_compiler_c_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GCC,"Comando del compilador C"),config->Files.compiler_c_command,mxID_GCC_PATH);
+//	files_compiler_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GPP,"Comando del compilador C++"),config->Files.compiler_command,mxID_GPP_PATH);
+//	files_compiler_c_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GCC,"Comando del compilador C"),config->Files.compiler_c_command,mxID_GCC_PATH);
 	files_debugger_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GDB,"Comando del depurador"),config->Files.debugger_command,mxID_GDB_PATH);
 	files_terminal_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CONSOLE,"Comando de la terminal"),config->Files.terminal_command,mxID_TERMINALS_BUTTON);
+	
+#warning LA FUNCIONALIDAD DEL COMBO PARA ELEGIR EL TOOLCHAIN NO ESTA IMPLEMENTADA
+	wxArrayString tc_array; Toolchain::GetNames(tc_array,true); int tc_i=tc_array.Index(config->Files.toolchain);
+	files_toolchain = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_TOOLCHAIN,"Herramientas de compilación"),tc_array,tc_i);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
@@ -565,8 +570,9 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 //	config->Files.parser_command = files_parser_command->GetValue();
 //	config->Files.runner_command = files_runner_command->GetValue();
 	config->Files.debugger_command = files_debugger_command->GetValue();
-	config->Files.compiler_command = files_compiler_command->GetValue();
-	config->Files.compiler_c_command = files_compiler_c_command->GetValue();
+//	config->Files.compiler_command = files_compiler_command->GetValue();
+//	config->Files.compiler_c_command = files_compiler_c_command->GetValue();
+	config->Files.toolchain = files_toolchain->GetValue();
 	config->Files.terminal_command = files_terminal_command->GetValue();
 	config->Files.explorer_command = files_explorer_command->GetValue();
 	config->Files.img_browser = files_img_browser_command->GetValue();
@@ -835,17 +841,17 @@ void mxPreferenceWindow::OnQuickhelpButton(wxCommandEvent &event){
 	}
 }
 
-void mxPreferenceWindow::OnGppButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del compilador C++:"),files_compiler_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_compiler_command->SetValue(dlg->GetPath());
-}
-
-void mxPreferenceWindow::OnGccButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del compilador C:"),files_compiler_c_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_compiler_c_command->SetValue(dlg->GetPath());
-}
+//void mxPreferenceWindow::OnGppButton(wxCommandEvent &event){
+//	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del compilador C++:"),files_compiler_command->GetValue());
+//	if (wxID_OK==dlg->ShowModal())
+//		files_compiler_command->SetValue(dlg->GetPath());
+//}
+//
+//void mxPreferenceWindow::OnGccButton(wxCommandEvent &event){
+//	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del compilador C:"),files_compiler_c_command->GetValue());
+//	if (wxID_OK==dlg->ShowModal())
+//		files_compiler_c_command->SetValue(dlg->GetPath());
+//}
 
 void mxPreferenceWindow::OnGdbButton(wxCommandEvent &event){
 	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del depurador"),files_debugger_command->GetValue());

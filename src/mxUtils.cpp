@@ -201,7 +201,7 @@ wxTextCtrl *mxUtils::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString te
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizerRow->Add(button, sizers->Exp0_Right);
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
-	sizer->Add(sizerRow, sizers->BLRT5_Exp0);
+	sizer->Add(sizerRow, sizers->BLRB5_Exp0);
 	textctrl->SetValue(value);
 	return textctrl;
 }

@@ -68,8 +68,9 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *running_compiler_options;
 	wxTextCtrl *files_autocode;
 	wxTextCtrl *files_temp_dir;
-	wxTextCtrl *files_compiler_command;
-	wxTextCtrl *files_compiler_c_command;
+//	wxTextCtrl *files_compiler_command;
+//	wxTextCtrl *files_compiler_c_command;
+	wxComboBox *files_toolchain;
 	wxTextCtrl *files_explorer_command;
 	wxTextCtrl *files_terminal_command;
 	wxTextCtrl *files_img_browser_command;
@@ -185,8 +186,8 @@ public:
 	void OnHelpButton(wxCommandEvent &event);
 	void OnColoursButton(wxCommandEvent &event);
 	void OnMaxJobsButton(wxCommandEvent &event);
-	void OnGppButton(wxCommandEvent &event);
-	void OnGccButton(wxCommandEvent &event);
+//	void OnGppButton(wxCommandEvent &event);
+//	void OnGccButton(wxCommandEvent &event);
 	void OnGdbButton(wxCommandEvent &event);
 	void OnImgBrowserButton(wxCommandEvent &event);
 	void OnBrowserButton(wxCommandEvent &event);

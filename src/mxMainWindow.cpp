@@ -548,7 +548,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 //	where_timer->Start(1000,false);
 	focus_timer = new wxTimer(GetEventHandler(),mxID_FOCUS_TIMER);
 	compiler->timer = new wxTimer(GetEventHandler(),mxID_COMPILER_TIMER);
-	project=NULL;
 	find_replace_dialog = NULL; // new mxFindDialog(this,wxID_ANY);
 
 	SetDropTarget(new mxDropTarget(NULL));
@@ -2616,7 +2615,6 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	main_window->project_tree.treeCtrl->DeleteChildren(main_window->project_tree.headers);
 	main_window->project_tree.treeCtrl->DeleteChildren(main_window->project_tree.others);
 	delete project;
-	project=NULL;
 	symbols_tree.menuItem->Check(false);
 	aui_manager.GetPane(symbols_tree.treeCtrl).Hide();
 	compiler_tree.menuItem->Check(false);
@@ -3391,7 +3389,6 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 		}
 		if (project) { // eliminar el proyecto viejo de la memoria
 			delete project;
-			project=NULL;
 		}
 		if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 		// abrir el proyecto

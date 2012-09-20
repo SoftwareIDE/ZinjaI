@@ -21,6 +21,7 @@
 #include "mxLibToBuildWindow.h"
 #include "ProjectManager.h"
 #include "mxTextDialog.h"
+#include "Toolchain.h"
 
 int mxProjectConfigWindow::last_page_index=0;
 
@@ -101,7 +102,7 @@ mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent, wxWindowID id, co
 	notebook->AddPage(CreateCompilingPanel(notebook), LANG(PROJECTCONFIG_COMPILING,"Compilacion"));
 	notebook->AddPage(CreateLinkingPanel(notebook), LANG(PROJECTCONFIG_LINKING,"Enlazado"));
 	notebook->AddPage(CreateStepsPanel(notebook), LANG(PROJECTCONFIG_SEQUENCE,"Secuencia"));
-	notebook->AddPage(CreateLibsPanel(notebook), LANG(PROJECTCONFIG_LIBRARIES,"Biblioteca"));
+	notebook->AddPage(CreateLibsPanel(notebook), LANG(PROJECTCONFIG_LIBRARIES,"Bibliotecas"));
 
 	SetOnlyLib(!configuration->dont_generate_exe);
 	
@@ -670,6 +671,19 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *sizer_h= new wxBoxSizer(wxHORIZONTAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+	
+#warning LA FUNCIONALIDAD DEL COMBO PARA ELEGIR TOOLCHAIN NO ESTA IMPLEMENTADA
+	wxArrayString toolchain_cmb;
+	toolchain_cmb.Add("<default>");
+	Toolchain::GetNames(toolchain_cmb,false);
+	
+	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
+	sizer_i->Add(new wxStaticText(panel,wxID_ANY,"Toolchain:"),sizers->BA5_Center);
+	sizer_i->Add(new wxComboBox(panel,wxID_ANY,"<default>",wxDefaultPosition,wxDefaultSize,toolchain_cmb),wxSizerFlags().Proportion(1).Center());
+//		sizers->BA5_Center);
+	sizer_i->Add(new wxButton(panel,wxID_ANY,"Opciones..."),sizers->BA10);
+	sizer->Add(sizer_i,sizers->BB5_Exp0);
+	
 
 	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_COMPILATION_SEQUENCE,"Secuencia de compilacion:")),sizers->BLRT5);
 	
@@ -684,11 +698,11 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	wxButton *button_delete = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_DEL,LANG(PROJECTCONFIG_STEPS_DELETE,"Quitar"));
 	wxButton *button_up = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_UP,LANG(PROJECTCONFIG_STEPS_MOVE_UP,"Subir"));
 	wxButton *button_down = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_DOWN,LANG(PROJECTCONFIG_STEPS_MOVE_DOWN,"Bajar"));
-	buttons->Add(button_add,sizers->BA5);
-	buttons->Add(button_edit,sizers->BA5);
-	buttons->Add(button_run,sizers->BA5);
-	buttons->Add(button_delete,sizers->BA5);
-	buttons->Add(button_up,sizers->BA5);
+	buttons->Add(button_add,sizers->BLRT5);
+	buttons->Add(button_edit,sizers->BLRT5);
+	buttons->Add(button_run,sizers->BLRT5);
+	buttons->Add(button_delete,sizers->BLRT5);
+	buttons->Add(button_up,sizers->BLRT5);
 	buttons->Add(button_down,sizers->BA5);
 	sizer_h->Add(buttons,sizers->BA5_Center);
 	sizer->Add(sizer_h,sizers->BA5_Exp1);
@@ -707,6 +721,12 @@ wxPanel *mxProjectConfigWindow::CreateLibsPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *sizer_h= new wxBoxSizer(wxHORIZONTAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+
+#warning LA FUNCIONALIDAD DEL BOTON PARA IMPORTAR BIBLIOTECAS NO ESTA IMPLEMENTADA
+	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
+	sizer_i->Add(new wxStaticText(panel,wxID_ANY,"Bibliotecas a utilizar:"),sizers->BA5_Center);
+	sizer_i->Add(new wxButton(panel,wxID_ANY," Importar configuración desde plantilla... "),sizers->BA10);
+	sizer->Add(sizer_i,sizers->BB5_Exp0);
 	
 	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_LIBS_TO_GENERATE,"Bibliotecas a generar")),sizers->BLRT5);
 	

@@ -132,8 +132,8 @@ struct cfgInit {
 	bool cppcheck_seen; ///< indica si se ha detectado en el sistema el ejecutable de cppcheck
 	bool doxygen_seen; ///< indica si se ha detectado en el sistema el depurador instalado
 	bool wxfb_seen; ///< indica si se ha detectado en el sistema el depurador instalado
-	wxString forced_compiler_options; ///< opciones que se anteponene a cualquier compilacion
-	wxString forced_linker_options; ///< opciones que se anteponene a cualquier enlazado (para poder poner -static-libgcc y evitar el dll)
+//	wxString forced_compiler_options; ///< opciones que se anteponene a cualquier compilacion
+//	wxString forced_linker_options; ///< opciones que se anteponene a cualquier enlazado (para poder poner -static-libgcc y evitar el dll)
 	int max_errors; ///< numero maximo de items el las ramas del arbol de resultados de la compilacion
 	wxString language_file; ///< archivo de internacionalizacion a utilizar (.pre, pero se guarda sin extension)
 	int wrap_mode; ///< indica el ajuste de linea (0=no, 1=fuentes, 2=todos), conf global
@@ -372,8 +372,9 @@ struct cfgFiles {
 	wxString default_project; 
 	wxString templates_dir; 
 	wxString mingw_dir;
-	wxString compiler_command;
-	wxString compiler_c_command;
+	wxString toolchain;
+//	wxString compiler_command;
+//	wxString compiler_c_command;
 	wxString runner_command;
 	wxString debugger_command;
 	wxString parser_command;

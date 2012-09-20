@@ -1,5 +1,11 @@
 ZinjaI todo
 
+mas opciones para crear un proyecto:
+	elegir que perfiles incluir
+	elegir que archivos incluir
+	elegir con que otras plantillas combinar
+
+
 
 toolchains alternativos
 refactory: 
@@ -13,11 +19,8 @@ drag and drop en arbol de proyectos
 probar tooodo lo de los breakpoints nuevos
 
 
-
-
 pestaña "avanzado" en compilacion de proyecto
-	variables de entorno para compilar y para ejecutar
-	algun super menu (pestaña en preferencias y combo en genereal de opciones de compilacion?) para elegir el "toolchain" (gcc-versiones, wine+gcc, makefile, clang, personalizado, etc)
+	variables de entorno para compilar y para ejecutar (ver como pasarle esto al runner?)
 	alguna forma de ejecutar indirectamente (ejemplo: bibliotecas, o comvida)
 
 Addons: 
