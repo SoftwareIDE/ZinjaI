@@ -314,7 +314,7 @@ path=src/BreakPointInfo.cpp
 cursor=2469
 [source]
 path=src/Toolchain.cpp
-cursor=1841
+cursor=2094
 breakpoint=75
 open=true
 [header]
@@ -638,7 +638,7 @@ temp_folder=debug.lnx
 output_file=debug.lnx/zinjai.bin
 icon_file=
 manifest_file=
-compiling_extra=`wx-config --unicode=no --cppflags` -gstabs+ -fno-strict-aliasing
+compiling_extra=`wx-config --unicode=no --cppflags`
 macros=DEBUG 
 warnings_level=2
 ansi_compliance=0

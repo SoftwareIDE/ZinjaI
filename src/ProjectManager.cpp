@@ -918,6 +918,11 @@ bool ProjectManager::DeleteFile(wxTreeItemId &tree_item, bool also) {
 	modified=true;
 	file_item *item=FindFromItem(tree_item);
 	if (item) {
+		mxSource *src = main_window->IsOpen(tree_item);
+		if (src) { // para que no reviente cuando al cerrarlo intente limpiar la list de breaks
+			src->breaklist = new BreakPointInfo*(item->breaklist); src->own_breaks=true;
+			item->breaklist=NULL;
+		}
 		int ans;
 		if (also)
 			ans=mxMessageDialog(main_window,wxString(LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_PRE,"¿Desea quitar tambien el archivo \""))<<item->name<<LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_POST,"\" del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
