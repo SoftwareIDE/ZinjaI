@@ -48,7 +48,7 @@ DebugManager::DebugManager() {
 	input = NULL;
 	output = NULL;
 	pid = 0;
-	notitle_source = current_source=NULL;
+	notitle_source = current_source = NULL;
 #if !defined(_WIN32) && !defined(__WIN32__)
 	tty_pid = 0;
 	tty_process = NULL;
@@ -137,6 +137,7 @@ bool DebugManager::Start(bool update, mxSource *source) {
 					SetBreakPoints(src);
 			}
 			SetBreakPoints(source);
+			if (source->sin_titulo) notitle_source=source;
 			if (!Run()) {
 #ifdef __WIN32__
 				if (source->binary_filename.GetPath().Contains(' '))
@@ -1132,11 +1133,12 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 				}
 			}
 		} else {
-			current_source = main_window->IsOpen(cfile);
 			if (notitle_source && notitle_source->temp_filename==cfile)
 				current_source = notitle_source;
-			else
+			else {
+				current_source = main_window->IsOpen(cfile);
 				current_source = main_window->OpenFile(cfile,!project);
+			}
 		}
 		if (current_source==external_source) current_source=NULL;
 		if (current_source) {
