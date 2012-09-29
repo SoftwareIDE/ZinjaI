@@ -170,6 +170,11 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("inspections_on_right",Debug.inspections_on_right);
 				else CFG_BOOL_READ_DN("show_thread_panel",Debug.show_thread_panel);
 				else CFG_BOOL_READ_DN("show_log_panel",Debug.show_log_panel);
+				else CFG_BOOL_READ_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
+				else if (key=="inspection_improving_template") {
+					Debug.inspection_improving_template_from.Add(value.BeforeFirst('|'));
+					Debug.inspection_improving_template_to.Add(value.AfterFirst('|'));
+				}
 				
 			} else if (section==_T("Running")) {
 				CFG_GENERIC_READ_DN("compiler_options",Running.compiler_options);
@@ -492,6 +497,11 @@ bool ConfigManager::Load() {
 	if (Init.version<20110420) Init.check_for_updates=true;
 	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");
 	if (Init.version<20101112 && Help.autocomp_indexes.Len()) Help.autocomp_indexes<<",STL_Iteradores";
+	if (Init.version<20120929) 	{
+		Debug.inspection_improving_template_from.Add("std::string");
+		Debug.inspection_improving_template_to.Add("${EXP}._M_dataplus._M_p");
+	}
+	
 //#if defined(__WIN32__)
 //	if (Init.version<20120208 && !Init.forced_linker_options.Contains("-static-libstdc++")) Init.forced_linker_options<<" -static-libstdc++";
 //#else
@@ -617,6 +627,9 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("inspections_on_right",Debug.inspections_on_right);
 	CFG_BOOL_WRITE_DN("readnow",Debug.readnow);
 	CFG_BOOL_WRITE_DN("auto_solibs",Debug.auto_solibs);
+	CFG_BOOL_WRITE_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
+	for(unsigned int i=0;i<Debug.inspection_improving_template_from.GetCount();i++)
+		CFG_GENERIC_WRITE_DN("inspection_improving_template",Debug.inspection_improving_template_from[i]+"|"+Debug.inspection_improving_template_to[i]);
 	fil.AddLine(_(""));
 	
 	fil.AddLine(_T("[Styles]"));
@@ -1081,6 +1094,7 @@ void ConfigManager::LoadDefaults(){
 	Debug.auto_solibs = false;
 	Debug.readnow = false;
 	Debug.show_do_that = false;
+	Debug.improve_inspections_by_type = true;
 	
 	for (int i=0;i<IG_COLS_COUNT;i++)
 		Cols.inspections_grid[i]=true;

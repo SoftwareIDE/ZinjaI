@@ -31,6 +31,7 @@
 #include "mxColoursEditor.h"
 #include "mxIconInstaller.h"
 #include "Toolchain.h"
+#include "mxInspectionsImprovingEditor.h"
 
 mxPreferenceWindow *preference_window=NULL;
 
@@ -39,6 +40,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxPreferenceWindow::OnCancelButton)
 	EVT_BUTTON(mxID_MAX_JOBS,mxPreferenceWindow::OnMaxJobsButton)
 	EVT_BUTTON(mxID_COLORS_PICKER,mxPreferenceWindow::OnColoursButton)
+	EVT_BUTTON(mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,mxPreferenceWindow::OnImproveInspectionsByTypeButton)
 	EVT_BUTTON(mxID_GDB_PATH,mxPreferenceWindow::OnGdbButton)
 //	EVT_BUTTON(mxID_GPP_PATH,mxPreferenceWindow::OnGppButton)
 //	EVT_BUTTON(mxID_GCC_PATH,mxPreferenceWindow::OnGccButton)
@@ -219,6 +221,14 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel (wxListbook *notebook) {
 	debug_always_debug = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER,"Siempre ejecutar en el depurador"),config->Debug.always_debug);
 	debug_raise_main_window = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION,"Mostrar ZinjaI cuando se interrumpe la ejecucion"),config->Debug.raise_main_window);
 	debug_select_modified_inspections = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS,"Utilizar colores en la tabla de inspecciones"),config->Debug.select_modified_inspections);
+	
+	wxBoxSizer *type_replace_sizer = new wxBoxSizer(wxHORIZONTAL);
+	improve_inspections_by_type = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Mejorar inspecciones automáticamente segun tipo"))+_T("   "));
+	improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
+	type_replace_sizer->Add(improve_inspections_by_type,sizers->Center);
+	type_replace_sizer->Add(new wxButton(panel,mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Configurar..."),sizers->Center);
+	sizer->Add(type_replace_sizer,sizers->BA5_Exp0);
+	
 	debug_macros_file = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de definiciones de macros para gdb"),config->Debug.macros_file,mxID_DEBUG_MACROS);
 	debug_blacklist = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_SOURCES_BLACKLIST,"Fuentes a evitar (para el step in)"),config->Debug.blacklist,mxID_DEBUG_BLACKLIST);
 	panel->SetSizerAndFit(sizer);
@@ -658,6 +668,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 	main_window->inspection_ctrl->ResetChangeHightlights(); // aplica los colores
 	config->Files.autocodes_file = files_autocode->GetValue();
 	autocoder->Reset(project?project->autocodes_file:"");
+	config->Debug.improve_inspections_by_type = improve_inspections_by_type->GetValue();
 	config->Debug.macros_file = debug_macros_file->GetValue();
 	config->Debug.blacklist = debug_blacklist->GetValue();
 	config->Save();
@@ -1467,6 +1478,7 @@ void mxPreferenceWindow::ResetChanges() {
 	debug_show_thread_panel->SetValue(config->Debug.show_thread_panel);
 	debug_show_log_panel->SetValue(config->Debug.show_log_panel);
 	debug_select_modified_inspections->SetValue(config->Debug.select_modified_inspections);
+	improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
 	debug_macros_file->SetValue(config->Debug.macros_file);
 	debug_blacklist->SetValue(config->Debug.blacklist);
 	
@@ -1503,3 +1515,8 @@ void mxPreferenceWindow::OnXdgButton(wxCommandEvent &evt) {
 	new mxIconInstaller(false);
 #endif
 }
+
+void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & event) {
+	mxInspectionsImprovingEditor(this);
+}
+

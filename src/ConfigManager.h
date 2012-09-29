@@ -42,6 +42,8 @@ struct cfgDebug {
 	bool show_thread_panel;
 	bool show_log_panel;
 	bool auto_solibs;
+	bool improve_inspections_by_type;
+	wxArrayString inspection_improving_template_from, inspection_improving_template_to;
 };
 
 //! Elementos de la configuración relacionados al aspecto del código

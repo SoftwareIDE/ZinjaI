@@ -128,6 +128,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *debug_auto_solibs;
 	wxCheckBox *debug_readnow;
 	wxTextCtrl *debug_macros_file;
+	wxCheckBox *improve_inspections_by_type;
 	wxTextCtrl *debug_blacklist;
 #if defined(_WIN32) || defined(__WIN32__)
 	wxTextCtrl *files_mingw_dir;
@@ -184,6 +185,7 @@ public:
 	void OnOkButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);
 	void OnHelpButton(wxCommandEvent &event);
+	void OnImproveInspectionsByTypeButton(wxCommandEvent &event);
 	void OnColoursButton(wxCommandEvent &event);
 	void OnMaxJobsButton(wxCommandEvent &event);
 //	void OnGppButton(wxCommandEvent &event);

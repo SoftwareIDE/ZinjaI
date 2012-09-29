@@ -2796,6 +2796,8 @@ PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
 Mostrar ZinjaI cuando se interrumpe la ejecucion
 PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS
 Utilizar colores en la tabla de inspecciones
+PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
+Mejorar inspecciones automáticamente seun tipo
 PREFERENCES_DEBUG_GDB_MACROS_FILE
 Archivo de definiciones de macros para gdb
 PREFERENCES_DEBUG_SOURCES_BLACKLIST
@@ -2999,7 +3001,7 @@ Enlazado
 PROJECTCONFIG_SEQUENCE
 Secuencia
 PROJECTCONFIG_LIBRARIES
-Biblioteca
+Bibliotecas
 PROJECTCONFIG_LINKING_EXTRA_ARGS
 Parametros extra para el enlazado
 PROJECTCONFIG_LINKING_EXTRA_PATHS
