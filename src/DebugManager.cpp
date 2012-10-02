@@ -1427,6 +1427,26 @@ void DebugManager::TtyProcessKilled() {
 }
 #endif
 
+/**
+* @brief expr is input and ouput argument
+* @brief type is output argument
+**/
+wxString DebugManager::CreateVO(wxString &expr, wxString &type) {
+	wxString ans = SendCommand("-var-create - * ",utils->EscapeString(expr,true));
+	type = GetValueFromAns(ans,"type",true);
+	wxArrayString &from=config->Debug.inspection_improving_template_from;
+	for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
+		if (from[i]==type) {
+			wxString e=config->Debug.inspection_improving_template_to[i];
+			e.Replace("${EXP}",expr,true); expr=e;
+			SendCommand("-var-delete ",GetValueFromAns(ans,"name",true));
+			ans = SendCommand("-var-create - * ",utils->EscapeString(expr,true));
+			break;
+		}
+	}
+	return ans;
+}
+
 bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 	if (waiting || !debugging) return false;
 	last_error.Clear();
@@ -1440,11 +1460,12 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 	if (config->Debug.select_modified_inspections)
 		inspection_grid->HightlightChange(num);
 	if (num==inspections_count || force_new) {
-		wxString ans,value;
-		if (is_vo) ans = SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
+		wxString ans,value,vo_type;
+		if (is_vo) ans = CreateVO(expr,vo_type);
+		inspection_grid->SetCellValue(num,IG_COL_EXPR,expr);
 		inspectinfo ii(
-			is_vo?GetValueFromAns(ans,_T("name"),true):expr.Mid(1),
-			is_vo?GetValueFromAns(ans,_T("type"),true):wxString(_T("<cmd>")),
+			is_vo?GetValueFromAns(ans,"name",true):expr.Mid(1),
+			is_vo?vo_type:wxString("<cmd>"),
 			expr);
 		ii.frame=current_frame;
 		ii.is_vo=is_vo;
@@ -1512,11 +1533,12 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 			inspection_grid->SetCellValue(num,IG_COL_LEVEL,current_frame_num);
 		ModifyInspectionWatch(num,false,false);
 		// para modificar una expresion se crea una nueva y destruye la anterior
-		wxString ans,value;
-		if (is_vo) ans = SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
+		wxString ans,value,vo_type;
+		if (is_vo) ans = CreateVO(expr,vo_type); // SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
+		inspection_grid->SetCellValue(num,IG_COL_EXPR,expr);
 		inspectinfo ii(
 			is_vo?GetValueFromAns(ans,_T("name"),true):expr.Mid(1),
-			is_vo?GetValueFromAns(ans,_T("type"),true):wxString(_T("<cmd>")),
+			is_vo?vo_type:wxString(_T("<cmd>")),
 			expr);
 		ii.is_vo=is_vo;
 		ii.frameless=false;

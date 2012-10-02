@@ -422,7 +422,7 @@ bool mxInspectionGrid::ModifyExpresion(int row, wxString expr) {
 		int sd=ShouldDivide(row,expr);
 		if (sd==0) {
 			if (debug->ModifyInspection(row,expr)) {
-				SetCellValue(row,IG_COL_EXPR,expr);
+//				SetCellValue(row,IG_COL_EXPR,expr);
 				if (row==GetNumberRows()-2) {
 					SelectRow(row+1);
 					SetGridCursor(row+1,IG_COL_EXPR);

@@ -168,6 +168,7 @@ void mxFindDialog::ShowReplace(mxSource *source) {
 }
 
 bool mxFindDialog::FindPrev() {
+	
 	if (main_window->notebook_sources->GetPageCount()!=0) {
 		mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
 		int f,t,p;

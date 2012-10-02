@@ -1,5 +1,7 @@
 ZinjaI todo
 
+testear el "ignorar comentarios" en las búsquedas (buscar cerr<< en dewall, andaba mal)
+
 mas opciones para crear un proyecto:
 	elegir que perfiles incluir
 	elegir que archivos incluir

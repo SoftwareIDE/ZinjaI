@@ -269,6 +269,9 @@ public:
 	/// @brief muestra un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint
 	void ShowBreakPointLocationErrorMessage(BreakPointInfo *_bpi);
 	void ShowBreakPointConditionErrorMessage(BreakPointInfo *_bpi);
+	
+	/// @brief  calls -var-create and returns its output, but applying improving_inspections_templates
+	wxString CreateVO(wxString &expr, wxString &type);
 };
 
 extern DebugManager *debug;
