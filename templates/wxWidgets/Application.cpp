@@ -1,11 +1,10 @@
 #include "Application.h"
 
-using namespace std;
+IMPLEMENT_APP(mxApplication)
 
 bool mxApplication::OnInit() {
 	
 	return true;
 }
 
-IMPLEMENT_APP(mxApplication)
 

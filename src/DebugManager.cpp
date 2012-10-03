@@ -1950,6 +1950,7 @@ bool DebugManager::DoThat(wxString what) {
 	return true;
 }
 
+/// @brief replace one inspection for a class/array with several inspection with its members (or a pointer with the pointed data)
 bool DebugManager::BreakCompoundInspection(int n) {
 	if (!debugging || waiting) return false;
 	if (inspections_count<=n || (!inspections[n].is_array && !inspections[n].is_class && inspections[n].type[inspections[n].type.Len()-1]!='*') || !inspections[n].on_scope )
@@ -2015,6 +2016,12 @@ bool DebugManager::BreakCompoundInspection(int n) {
 				if (p!=wxNOT_FOUND) {
 					p++;
 					wxString item = GetNextItem(ans,p);
+					wxString pre_expr=main_expr+_T(".");
+					if (breaking_class && main_expr.StartsWith("(*") && main_expr.Last()==')') {
+						wxString aux=main_expr.Mid(2); aux.RemoveLast();
+						if (aux==RewriteExpressionForBreaking(aux))
+						pre_expr=aux+"->";
+					}
 					while (item.Left(6)==_T("child=")) {
 						item.Remove(0,7);
 						inspections[n].frame = frame;
@@ -2024,9 +2031,9 @@ bool DebugManager::BreakCompoundInspection(int n) {
 						inspections[n].type = GetValueFromAns(item,_T("type"),true);
 						wxString new_exp = GetValueFromAns(item,_T("exp"),true);
 						if (breaking_class)
-							inspections[n].expr = main_expr+_T(".")+new_exp;
+							inspections[n].expr = pre_expr+new_exp;
 						else
-							inspections[n].expr = main_expr+_T("[")+new_exp+_T("]");
+							inspections[n].expr = main_expr+"["+new_exp+"]";
 						inspection_grid->SetCellValue(n,IG_COL_LEVEL, level);
 						inspection_grid->SetCellValue(n,IG_COL_TYPE, inspections[n].type);
 						inspection_grid->SetCellValue(n,IG_COL_EXPR, inspections[n].expr);
@@ -2198,27 +2205,37 @@ int DebugManager::GetVOChildrenData(mxIEItemData **data, wxString name, wxString
 wxString DebugManager::RewriteExpressionForBreaking(wxString main_expr) {
 	int i=0,l=main_expr.Len();
 	char c; bool comillas=false;
+	int parentesis=0; bool first_level0_parentesis=true;
 	while (i<l) { 	// agregar parentesis si la expresion no es simple
 		c=main_expr[i];
-		if (c=='\'') { if (main_expr[++i]=='\\') i++; }
-		else if (c=='\"') comillas=!comillas;
-		else if (!comillas) {
-			if (c=='[') {
-				int l=1; i++;
-				while (l) {
-					c=main_expr[i];
-					if (c=='\'') { if (main_expr[++i]=='\\') i++; }
-					else if (c=='\"') comillas=!comillas;
-					else if (c=='[') l++;
-					else if (c==']') l--;
-					i++;
+		if (c=='\'') { 
+			if (main_expr[++i]=='\\') i++;
+		} else if (c=='\"') {
+			comillas=!comillas;
+		} else if (!comillas) {
+			if (first_level0_parentesis && c=='(') {
+				first_level0_parentesis=false;
+				parentesis++;
+			} else if (parentesis) {
+				if (c==')') parentesis--;
+			} else {
+				if (c=='[') {
+					int l=1; i++;
+					while (l) {
+						c=main_expr[i];
+						if (c=='\'') { if (main_expr[++i]=='\\') i++; }
+						else if (c=='\"') comillas=!comillas;
+						else if (c=='[') l++;
+						else if (c==']') l--;
+						i++;
+					}
+				} else if (c=='@') {
+					break;
+				} else if ( ! ( (c>='a'&&c<='z') || (c>='A'&&c<='Z') || (c>='0'&&c<='9') || c=='_' || c=='.') ) {
+					main_expr.Prepend(wxChar('('));
+					main_expr.Append(wxChar(')'));
+					break;
 				}
-			} else if (c=='@') 
-				break;
-			else if ( ! ( (c>='a'&&c<='z') || (c>='A'&&c<='Z') || (c>='0'&&c<='9') || c=='_' || c=='.') ) {
-				main_expr.Prepend(wxChar('('));
-				main_expr.Append(wxChar(')'));
-				break;
 			}
 		}
 		i++;
@@ -2807,7 +2824,7 @@ void DebugManager::ShowBreakPointLocationErrorMessage (BreakPointInfo *_bpi) {
 	if (!show_breakpoint_error) return;
 	int res=mxMessageDialog(main_window,
 		wxString(LANG(DEBUG_BAD_BREAKPOINT_WARNING,"El depurador no pudo colocar un punto de interrupcion en:"))<<
-		"\n"<<_bpi->fname<<": "<<_bpi->line_number<<"\n"<<
+		"\n"<<_bpi->fname<<": "<<_bpi->line_number+1<<"\n"<<
 		LANG(DEBUG_BAD_BREAKPOINT_WARNING_LOCATION,"Las posibles causas son:\n"
 		"* Fue colocado en un archivo que no se compila en el proyecto/programa.\n"
 		"* Fue colocado en una linea que no genera codigo ejecutable (ej: comentario).\n"
@@ -2825,7 +2842,7 @@ void DebugManager::ShowBreakPointConditionErrorMessage (BreakPointInfo *_bpi) {
 	if (!show_breakpoint_error) return;
 	int res=mxMessageDialog(main_window,
 		wxString(LANG(DEBUG_BAD_BREAKPOINT_WARNING,"El depurador no pudo colocar un punto de interrupcion en:"))<<
-		"\n"<<_bpi->fname<<": "<<_bpi->line_number+"\n"<<
+		"\n"<<_bpi->fname<<": "<<_bpi->line_number+1<<"\n"<<
 		LANG(DEBUG_BAD_BREAKPOINT_WARNING_CONDITION,"La condición ingresada no es válida.")
 		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
 	if (res&mxMD_CHECKED) show_breakpoint_error=false;

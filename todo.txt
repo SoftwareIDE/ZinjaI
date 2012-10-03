@@ -1,13 +1,17 @@
 ZinjaI todo
 
-testear el "ignorar comentarios" en las búsquedas (buscar cerr<< en dewall, andaba mal)
+posible bug: testear el "ignorar comentarios" en las búsquedas (buscar cerr<< en dewall, andaba mal)
 
 mas opciones para crear un proyecto:
 	elegir que perfiles incluir
 	elegir que archivos incluir
 	elegir con que otras plantillas combinar
 
-
+integración con wx:
+	¿preguntar qué métodos agregar al actualizar automáticamente?
+	¿esconder métodos de las clases bases en el Ir a Función/Método?
+	detectar clases nuevas/renombradas
+	detectar archivos/proyectos renombrados / renombrar archivos/proyectos
 
 toolchains alternativos
 refactory: 
@@ -18,12 +22,25 @@ refactory:
 template para C plano?
 drag and drop en arbol de proyectos
 
-probar tooodo lo de los breakpoints nuevos
-
-
 pestaña "avanzado" en compilacion de proyecto
 	variables de entorno para compilar y para ejecutar (ver como pasarle esto al runner?)
 	alguna forma de ejecutar indirectamente (ejemplo: bibliotecas, o comvida)
+
+agregar un check en la conf de herramientas personalizadas para elegir si es general o se guarda con el proyecto?
+o ver la forma de que una plantilla configure una herramienta personalizada
+
+para agregar en el panel de mini-plantillas:
+	categoría: ¿declaraciones/definiciones?
+		clase
+		función
+		método
+	categoría: preprocesador
+		para cabeceras
+		#ifdef
+		#define
+	General user defined?
+	Project user defined?
+
 
 Addons: 
 	armar template sfml+wxwidgets
@@ -55,6 +72,8 @@ otras:
 	4. conectar guardar como con rename de proyecto (hecho?)
 	5. configurar atajos de teclado
 	6. jerarquia de proyectos
-	
-Alternativa a jerarquia de proyectos, jerarquia de perfiles, usando ${FROM:otro_perfil} en los campos de texto?
+		Alternativa a jerarquia de proyectos, jerarquia de perfiles, usando ${FROM:otro_perfil} en los campos de texto?
+
+Rehacer dibujo de diagramas de flujo usando graphviz esta vez?
+Rehacer visor de imágenes de modo que sea interno?
 
