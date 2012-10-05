@@ -914,7 +914,6 @@ void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 				source->AppendText(_T("\n"));
 			}
 			if (line==-1) line=source->GetLineCount();
-//			cerr<<"*"<<source->GetLine(source->GetLineCount()-1).Len()<<"*"<<endl;
 			source->AppendText(choices[sels[i]]+" {\n\t\n}\n\n");
 		}
 		if (line>=0) {
