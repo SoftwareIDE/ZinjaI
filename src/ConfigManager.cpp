@@ -500,6 +500,8 @@ bool ConfigManager::Load() {
 	if (Init.version<20120929) 	{
 		Debug.inspection_improving_template_from.Add("std::string");
 		Debug.inspection_improving_template_to.Add("${EXP}._M_dataplus._M_p");
+		Debug.inspection_improving_template_from.Add("wxString");
+		Debug.inspection_improving_template_to.Add("${EXP}.m_pchData");
 	}
 	
 //#if defined(__WIN32__)

@@ -1435,13 +1435,15 @@ wxString DebugManager::CreateVO(wxString &expr, wxString &type) {
 	wxString ans = SendCommand("-var-create - * ",utils->EscapeString(expr,true));
 	type = GetValueFromAns(ans,"type",true);
 	wxArrayString &from=config->Debug.inspection_improving_template_from;
-	for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
-		if (from[i]==type) {
-			wxString e=config->Debug.inspection_improving_template_to[i];
-			e.Replace("${EXP}",expr,true); expr=e;
-			SendCommand("-var-delete ",GetValueFromAns(ans,"name",true));
-			ans = SendCommand("-var-create - * ",utils->EscapeString(expr,true));
-			break;
+	if (config->Debug.improve_inspections_by_type) {
+		for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
+			if (from[i]==type) {
+				wxString e=config->Debug.inspection_improving_template_to[i];
+				e.Replace("${EXP}",expr,true); expr=e;
+				SendCommand("-var-delete ",GetValueFromAns(ans,"name",true));
+				ans = SendCommand("-var-create - * ",utils->EscapeString(expr,true));
+				break;
+			}
 		}
 	}
 	return ans;
