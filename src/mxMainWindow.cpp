@@ -928,7 +928,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
 		mxSource *src=OpenFile(the_one,!project);
 		if (src && src!=external_source) src->MarkError(line-1);
-	} else if (action=="gotopos") {
+	} else if (action=="gotopos") { // not used anymore?
 		mxSource *source=NULL;
 		wxString the_one=event.GetLinkInfo().GetHref().AfterFirst(':').BeforeLast(':').BeforeLast(':');
 		long int p1=0,p2=0;

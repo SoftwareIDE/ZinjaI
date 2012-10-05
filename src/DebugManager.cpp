@@ -189,7 +189,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		if (!tty_running && !wxFileName::FileExists(tty_file)) {
 			debugging = false;
 			mxMessageDialog(main_window,LANG(DEBUG_ERROR_WITH_TERMINAL,"Ha ocurrido un error al iniciar la terminal para la ejecucion.\n"
-										   "Compruebe que el campo \"Comando del terminal\" de la pestana\n"
+										   "Compruebe que el campo \"Comando del terminal\" de la pestaña\n"
 										   "\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 			main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,_T("Error al iniciar depuracion"));
 			return false;

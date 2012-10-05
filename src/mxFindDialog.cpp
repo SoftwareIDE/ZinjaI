@@ -609,7 +609,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 
 bool mxFindDialog::FindInSources() {
 
-	wxString res(wxString(_T("<HTML><HEAD><TITLE>"))<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<_T("</TITLE></HEAD><BODY><B>")<<LANG(FIND_IN_FILES_RESULT,"Resultados para la busqueda:")<<_T(" \"<I>")+utils->ToHtml(last_search)+_T("</I>\":</B><BR><UL>"));
+	wxString res(wxString(_T("<HTML><HEAD><TITLE>"))<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<_T("</TITLE></HEAD><BODY><B>")<<LANG(FIND_IN_FILES_RESULT,"Resultados para la busqueda:")<<_T(" \"<I>")+utils->ToHtml(last_search)+_T("</I>\":</B><BR><TABLE>"));
 	int count=0;
 	for (unsigned int j=0;j<main_window->notebook_sources->GetPageCount();j++) {
 		count+=FindInSource((mxSource*)(main_window->notebook_sources->GetPage(j)),res);
@@ -619,13 +619,20 @@ bool mxFindDialog::FindInSources() {
 		mxMessageDialog(this,LANG(FIND_IN_FILES_NOT_FOUND,"No se encontraron coincidencias"),LANG(FIND_IN_FILES_CAPTION,"Buscar en archivos"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return false;
 	} else {
-		res<<_T("</UL><BR><BR></BODY></HTML>");
+		res<<_T("</TABLE><BR><BR></BODY></HTML>");
 		main_window->ShowInQuickHelpPanel(res);
 		return true;
 	}
 	return false;
 }
-		
+
+wxString mxFindDialog::GetHtmlEntry(wxString fname, int line, int pos, int len, wxString falias, wxString the_line) {
+	wxString res;
+	res<<"<TR><TD><A href=\"gotolinepos:"<<fname<<":"<<line<<":"<<pos<<":"<<len<<"\">"<<falias<<": "<<LANG(FIND_LINE,"linea")<<" "<<line+1<<"</A></TD>";
+	res<<"<TD>"<<utils->ToHtml(the_line.Mid(0,pos).Trim(false))+"<B>"+utils->ToHtml(the_line.Mid(pos,len))+"</B>"+utils->ToHtml(the_line.Mid(pos+len).Trim(true))<<"</TD></TR>";
+	return res;
+}
+
 int mxFindDialog::FindInSource(mxSource *source,wxString &res) {
 	int count=0;
 	wxString file_name = source->sin_titulo?source->page_text:source->source_filename.GetFullPath();
@@ -634,10 +641,11 @@ int mxFindDialog::FindInSource(mxSource *source,wxString &res) {
 	int l = source->GetLength();
 	source->SetTargetStart(0);
 	source->SetTargetEnd(l);
-	int i = source->SearchInTarget(last_search);
+	int i = source->SearchInTarget(last_search), line;
 	while (i!=wxSTC_INVALID_POSITION) {
 		count++;
-		res<<_T("<LI><A href=\"gotopos:")<<file_name<<_T(":")<<i<<_T(":")<<source->GetTargetEnd()-source->GetTargetStart()<<_T("\">")<<page_text<<_T(": ")<<LANG(FIND_LINE,"linea")<<_T(" ")<<source->LineFromPosition(i)<<_T("</A></LI>");
+		line=source->LineFromPosition(i); i-=source->PositionFromLine(line);
+		res<<GetHtmlEntry(file_name,line,i,source->GetTargetEnd()-source->GetTargetStart(),page_text,source->GetLine(line));
 		source->SetTargetStart(source->GetTargetEnd());
 		source->SetTargetEnd(l);
 		i = source->SearchInTarget(last_search);
@@ -649,7 +657,7 @@ bool mxFindDialog::FindInProject(char where) {
 	last_flags = wxSTC_FIND_MATCHCASE;
 	wxArrayString array;
 	project->GetFileList(array,where);
-	wxString res(wxString(_T("<HTML><HEAD><TITLE>"))<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<_T("</TITLE></HEAD><BODY><B>")<<LANG(FIND_IN_FILES_RESULT,"Resultados para la busqueda:")<<_T(" \"<I>")+utils->ToHtml(last_search)+_T("</I>\":</B><BR><UL>"));
+	wxString res(wxString(_T("<HTML><HEAD><TITLE>"))<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<_T("</TITLE></HEAD><BODY><B>")<<LANG(FIND_IN_FILES_RESULT,"Resultados para la busqueda:")<<_T(" \"<I>")+utils->ToHtml(last_search)+_T("</I>\":</B><BR><TABLE>"));
 	int p,count=0;
 	mxSource *src;
 	last_flags = check_case->GetValue()?wxSTC_FIND_MATCHCASE:0;
@@ -663,13 +671,13 @@ bool mxFindDialog::FindInProject(char where) {
 			if (fil.Exists()) {
 				fil.Open();
 				int ac,l=0;
-				for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine()) {
-					ac=0;
+				for ( wxString str_orig, str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine()) {
+					ac=0; str_orig=str;
 					if (!check_case->GetValue()) str.MakeUpper();
 					while (wxNOT_FOUND!=(p=str.Find(what))) {
 						count++;
-						res<<_T("<LI><A href=\"gotolinepos:")<<array[i]<<_T(":")<<l<<_T(":")<<ac+p<<_T(":")<<last_search.Len()<<_T("\">")<<wxFileName(array[i]).GetFullName()<<_T(": ")<<LANG(FIND_LINE,"linea")<<_T(" ")<<l+1<<_T("</A></LI>");
-						str.Remove(0,ac+=p+what.Len());
+						res<<GetHtmlEntry(array[i],l,ac+p,what.Len(),wxFileName(array[i]).GetFullName(),str_orig);
+						int todel=p+what.Len(); ac+=todel; str.Remove(0,todel);
 					}
 					l++;
 				}
@@ -681,7 +689,7 @@ bool mxFindDialog::FindInProject(char where) {
 		mxMessageDialog(this,LANG(FIND_IN_FILES_NOT_FOUND,"No se encontraron coincidencias"),LANG(FIND_IN_FILES_CAPTION,"Buscar en archivos"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return false;
 	} else {
-		res<<_T("</UL><BR><BR></BODY></HTML>");
+		res<<_T("</TABLE><BR><BR></BODY></HTML>");
 		main_window->ShowInQuickHelpPanel(res);
 		return true;
 	}
