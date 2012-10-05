@@ -287,7 +287,7 @@ bool mxFindDialog::FindNext() {
 }
 
 void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
-	
+	num_results=0;
 	if (combo_find->GetValue().Len()==0) {
 		combo_find->SetFocus();
 		return;
@@ -375,7 +375,7 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 }
 
 void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
-
+	num_results=0;
 	if (combo_find->GetValue().Len()==0) {
 		combo_find->SetFocus();
 		return;
@@ -626,8 +626,24 @@ bool mxFindDialog::FindInSources() {
 	return false;
 }
 
+/**
+* @brief Auxiliar function for generaten the html (result for searchs in multiple files)
+*
+* This function will handle the results limit, if the count exceeds 500 only the first
+* 500 will be shown (trying to show a huge html will virtually freeze the application).
+*
+* @param fname    the full path to de filename, to be included in href in the link
+* @param line     the base 0 line number for the coincidence
+* @param pos      the base 0 position for the coincidence within that line
+* @param len      the len of the coincidence
+* @param falias   the friendly short filename to display in the text
+* @param the_line the content of the line, to display trimmed and with the coincidence in bold
+**/
 wxString mxFindDialog::GetHtmlEntry(wxString fname, int line, int pos, int len, wxString falias, wxString the_line) {
 	wxString res;
+	if (++num_results==500) {
+		return wxString("<TR><TD><B>...</B></TD>")<<LANG(FIND_TOO_MANY_RESULTS,"demasiados resultados, solo se muestran los primeros 500")<<"<TD></TD></TR>";
+	} else if (num_results>500) return "";
 	res<<"<TR><TD><A href=\"gotolinepos:"<<fname<<":"<<line<<":"<<pos<<":"<<len<<"\">"<<falias<<": "<<LANG(FIND_LINE,"linea")<<" "<<line+1<<"</A></TD>";
 	res<<"<TD>"<<utils->ToHtml(the_line.Mid(0,pos).Trim(false))+"<B>"+utils->ToHtml(the_line.Mid(pos,len))+"</B>"+utils->ToHtml(the_line.Mid(pos+len).Trim(true))<<"</TD></TR>";
 	return res;

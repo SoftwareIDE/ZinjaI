@@ -996,6 +996,8 @@ FIND_IN_FILES_NOT_FOUND
 No results found.
 FIND_IN_FILES_CAPTION
 Find in files
+FIND_TOO_MANY_RESULTS
+too many results, showing only first 500
 FIND_LINE
 line
 GOTOFILE_CAPTION

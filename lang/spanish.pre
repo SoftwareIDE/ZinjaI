@@ -43,7 +43,7 @@ Iniciando depuracion...
 GENERA_CONSOLE_CAPTION
 ZinjaI - Consola de Ejecucion
 DEBUG_ERROR_WITH_TERMINAL
-Ha ocurrido un error al iniciar la terminal para la ejecucion.\nCompruebe que el campo \"Comando del terminal\" de la pestana\n\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto.
+Ha ocurrido un error al iniciar la terminal para la ejecucion.\nCompruebe que el campo \"Comando del terminal\" de la pestaña\n\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto.
 DEBUG_NO_SYMBOLS
 El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depurarcion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar).
 DEBUG_ERROR_STATING_GDB
@@ -998,6 +998,8 @@ FIND_IN_FILES_NOT_FOUND
 No se encontraron coincidencias
 FIND_IN_FILES_CAPTION
 Buscar en archivos
+FIND_TOO_MANY_RESULTS
+demasiados resultados, solo se muestran los primeros 500
 FIND_LINE
 linea
 GOTOFILE_CAPTION
@@ -2797,7 +2799,7 @@ Mostrar ZinjaI cuando se interrumpe la ejecucion
 PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS
 Utilizar colores en la tabla de inspecciones
 PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
-Mejorar inspecciones automáticamente seun tipo
+Mejorar inspecciones automáticamente segun tipo
 PREFERENCES_DEBUG_GDB_MACROS_FILE
 Archivo de definiciones de macros para gdb
 PREFERENCES_DEBUG_SOURCES_BLACKLIST
