@@ -42,6 +42,14 @@ wxMutex mxMuteCompiler;
 
 mxCompiler *compiler=NULL;
 
+static bool EnsureCompilerNotRunning() {
+	compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;
+	while (compile_and_run && !compile_and_run->compiling && !compile_and_run->linking) 
+		compile_and_run=compile_and_run->next;
+	if (compile_and_run) return false;
+	return true;
+}
+
 compile_and_run_struct_single::compile_and_run_struct_single(const compile_and_run_struct_single *o) {
 	*this=*o;
 #ifdef DEBUG
@@ -125,6 +133,7 @@ void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
 	wxYield();
 	ABORT_IF_PARSING;
 	if (prepared || project->PrepareForBuilding()) { // si hay que compilar/enlazar
+		if (!EnsureCompilerNotRunning()) return;
 //		project->AnalizeConfig(project->path,true,config->mingw_real_path);
 		wxString current;
 		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("BuildOrRunProject 1");
@@ -477,6 +486,9 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 }
 
 void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
+	
+	if (!EnsureCompilerNotRunning()) return;
+	
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
 	compile_and_run->for_debug=debug;
 	compile_and_run->special_output=false;

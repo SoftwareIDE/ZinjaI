@@ -22,6 +22,8 @@ refactory:
 template para C plano?
 drag and drop en arbol de proyectos
 
+buscar skins en home/.zinjai
+
 pestaña "avanzado" en compilacion de proyecto
 	variables de entorno para compilar y para ejecutar (ver como pasarle esto al runner?)
 	alguna forma de ejecutar indirectamente (ejemplo: bibliotecas, o comvida)
