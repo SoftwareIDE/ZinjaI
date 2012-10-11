@@ -12,7 +12,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=../Fuckultad/Poo/answers/2009-p1
-current_source=src/mxCompiler.cpp
+current_source=src/DebugManager.cpp
 path_char=/
 [source]
 path=src/mxMainWindowTools.cpp
@@ -120,9 +120,11 @@ path=src/mxHelpWindow.cpp
 cursor=8011
 [source]
 path=src/DebugManager.cpp
-cursor=47066
+cursor=52338
 breakpoint=2020
+breakpoint=1438
 marker=2035
+open=true
 [source]
 path=src/mxFlowWindow.cpp
 cursor=21
@@ -831,10 +833,8 @@ inline_suppr=1
 exclude_list=
 [inspections]
 name=<current_inspections>
-expr=str.m_pchData
-expr=p
-expr=ac
-expr=tree
+expr=type.npos
+expr=type.m_pchData
 [inspections]
 name=bugintel
 expr=str.m_pchData

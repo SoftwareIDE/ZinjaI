@@ -1436,8 +1436,9 @@ wxString DebugManager::CreateVO(wxString &expr, wxString &type) {
 	type = GetValueFromAns(ans,"type",true);
 	wxArrayString &from=config->Debug.inspection_improving_template_from;
 	if (config->Debug.improve_inspections_by_type) {
+		wxString mtype=type; if (mtype.EndsWith(" &")) { mtype.RemoveLast(); mtype.RemoveLast(); }
 		for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
-			if (from[i]==type) {
+			if (from[i]==mtype) {
 				wxString e=config->Debug.inspection_improving_template_to[i];
 				e.Replace("${EXP}",expr,true); expr=e;
 				SendCommand("-var-delete ",GetValueFromAns(ans,"name",true));
