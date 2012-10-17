@@ -1455,7 +1455,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 		mxMessageDialog(main_window,LANG(PROJMNGR_RUNNING_NO_EXE,"Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return 0;
 	}
-	compile_and_run->compiling=false;
+	compile_and_run->linking=compile_and_run->compiling=false;
 	
 	// agregar el prefijo para valgrind
 	wxString exe_pref;
