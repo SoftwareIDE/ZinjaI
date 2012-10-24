@@ -1,6 +1,8 @@
 ZinjaI todo
 
-posible bug: testear el "ignorar comentarios" en las búsquedas (buscar cerr<< en dewall, andaba mal)
+posibles bugs:
+	revisar lo de agregar .cpp al guardar
+	testear el "ignorar comentarios" en las búsquedas (buscar cerr<< en dewall, andaba mal)
 
 mas opciones para crear un proyecto:
 	elegir que perfiles incluir
@@ -14,12 +16,14 @@ integración con wx:
 	detectar archivos/proyectos renombrados / renombrar archivos/proyectos
 
 toolchains alternativos
+	ver que hacer con el -static-libstdc++ para programas C
+template para C plano?
+	
 refactory: 
 	simil ctrl+h pero para agregar virtuales?
 	renombrar funciones/metodos
 	agregar getters/setters
 	ctrl+shift+h inverso
-template para C plano?
 drag and drop en arbol de proyectos
 
 buscar skins en home/.zinjai

@@ -1,0 +1,5 @@
+name=custom building script
+extern=true
+command=${ARG1}
+argument1=Command=build.sh
+use_return_vale=0

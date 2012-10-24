@@ -1,0 +1,10 @@
+name=default gcc
+extern=false
+c_compiler=gcc
+cpp_compiler=g++
+linker=g++
+c_compiling_options=-fshow-column
+cpp_compiling_options=-fshow-column
+linker_options=
+dynamic_lib_linker=ar cr
+static_lib_linker=g++ -shared -o
