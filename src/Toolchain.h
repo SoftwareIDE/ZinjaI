@@ -11,7 +11,8 @@ struct Toolchain {
 	wxString linker; ///< linker command
 	wxString c_compiling_options; ///< forced compiler arguments for compiling c files
 	wxString cpp_compiling_options; ///< forced compiler arguments for compiling c++ files
-	wxString linker_options; ///< forced linker arguments
+	wxString c_linker_options; ///< forced linker arguments
+	wxString cpp_linker_options; ///< forced linker arguments
 	wxString dynamic_lib_linker; ///< command for linking dynamic libraries
 	wxString static_lib_linker; ///< command for linking static libraries
 	Toolchain(); ///< loads default values for current platform

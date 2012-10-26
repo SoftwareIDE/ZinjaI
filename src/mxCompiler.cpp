@@ -510,7 +510,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 	bool cpp = source->IsCppOrJustC();
 	if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
 	z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" "; // forced compiler arguments
-	z_opts<<current_toolchain.linker_options<<" "; // forced linker arguments
+	z_opts<<(cpp?current_toolchain.cpp_linker_options:current_toolchain.c_linker_options)<<" "; // forced linker arguments
 	z_opts<<" -g "; // always include debugging information
 	wxString ext=source->source_filename.GetExt();
 	if (!source->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9')))

@@ -34,7 +34,8 @@ void Toolchain::LoadToolchains ( ) {
 				else if (key=="cpp_compiler") toolchains[i].cpp_compiler = value;
 				else if (key=="cpp_compiling_options") toolchains[i].cpp_compiling_options = value;
 				else if (key=="linker") toolchains[i].linker = value;
-				else if (key=="linker_options") toolchains[i].linker_options = value;
+				else if (key=="c_linker_options") toolchains[i].c_linker_options = value;
+				else if (key=="cpp_linker_options") toolchains[i].cpp_linker_options = value;
 				
 			}
 		}
@@ -48,7 +49,8 @@ Toolchain::Toolchain () {
 	linker=_T("mingw32-g++");
 	cpp_compiler=_T("mingw32-g++");
 	c_compiler=_T("mingw32-gcc");
-	linker_options=_T("-static-libgcc -static-libstdc++");
+	c_linker_options=_T("-static-libgcc");
+	cpp_linker_options=_T("-static-libgcc -static-libstdc++");
 #else
 	linker=_T("g++");
 	cpp_compiler=_T("g++");

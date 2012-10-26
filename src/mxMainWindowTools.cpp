@@ -1000,7 +1000,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		bool cpp = src->IsCppOrJustC();
 		if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
 		z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" ";
-		z_opts<<current_toolchain.linker_options<<" ";
+//		z_opts<<current_toolchain.linker_options<<" ";
 		wxString ext=src->source_filename.GetExt();
 		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<_T("-x c++ "); 
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";

@@ -1868,7 +1868,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		compiling_options<<_T(" ")<<utils->Split(active_configuration->macros,_T("-D"));
 		
 	linking_options=" ";
-	linking_options<<current_toolchain.linker_options<<" ";
+	linking_options<<current_toolchain.cpp_linker_options<<" ";
 	// mwindows
 #if defined(_WIN32) || defined(__WIN32__)
 	if (!active_configuration->console_program)
