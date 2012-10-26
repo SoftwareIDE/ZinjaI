@@ -1,4 +1,4 @@
-// !Z! Name: Empty C++'s Program Skeleton
+// !Z! Name: Empty C++ Program's Skeleton
 // !Z! Name_spanish: Programa C++ en Blanco
 // !Z! Caret: 78
 

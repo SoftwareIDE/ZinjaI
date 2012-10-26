@@ -260,7 +260,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 						main_window->SetStatusProgress((100*(++num_files_opened))/files_to_open);
 					if (last_file) {
 						mxSource *src = main_window->OpenFile(DIR_PLUS_FILE(path,last_file->name),false);
-						if (src && src!=external_source) src->MoveCursorTo(last_file->cursor,true);
+						if (src && src!=EXTERNAL_SOURCE) src->MoveCursorTo(last_file->cursor,true);
 					}
 				}
 			} else if (section==_T("doxygen")) {

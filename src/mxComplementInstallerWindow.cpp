@@ -170,7 +170,7 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 		// SHELLEXECUTEINFO struct.  Non privlidged applications
 		// cannot open/start a UAC prompt by simply spawning
 		// a process that has the correct XML manifest.
-		BOOL result = ShellExecuteEx(&sinfo);
+		/*BOOL result =*/ ShellExecuteEx(&sinfo);
 		
 	} else
 #endif

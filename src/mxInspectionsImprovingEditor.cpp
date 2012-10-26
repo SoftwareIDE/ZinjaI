@@ -93,7 +93,7 @@ void mxInspectionsImprovingEditor::OnDel (wxCommandEvent & evt) {
 	int old_selected=selected;
 	list->Delete(selected);
 	selected=old_selected;
-	if (selected<list->GetCount()) {
+	if (selected<int(list->GetCount())) {
 		list->Select(selected);
 		wxCommandEvent evt;
 		OnList(evt);
@@ -116,7 +116,7 @@ void mxInspectionsImprovingEditor::OnCancel (wxCommandEvent & evt) {
 
 void mxInspectionsImprovingEditor::OnList (wxCommandEvent & evt) {
 	selected=list->GetSelection();
-	if (selected<0||selected>=list->GetCount()) return; // delete method can launch this event
+	if (selected<0||selected>=int(list->GetCount())) return; // delete method can launch this event
 	type_from->Enable();
 	expression_to->Enable();
 	type_from->SetValue(array_from[selected]);

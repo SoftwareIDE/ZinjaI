@@ -70,7 +70,7 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 	wich_file = utils->AddComboBox(mySizer,this,LANG(DRAWCLASSES_FROM_FILE,"Dibujar relaciones de:"),array4,array4.GetCount()-1);
 	if (!project && main_window->notebook_sources->GetPageCount()) {
 		mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-		wich_file->SetValue(source->sin_titulo?source->temp_filename.GetFullPath():source->source_filename.GetFullPath());
+		wich_file->SetValue(source->GetFullPath());
 	}	
 
 	wxArrayString array5;

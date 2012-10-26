@@ -108,7 +108,7 @@ inline bool SameFile(wxFileName f1, wxFileName f2) {
 
 
 mxMainWindow *main_window;
-mxSource *external_source;
+mxSource *EXTERNAL_SOURCE; // will be main_window address, an impossible address for a real mxSource, so OpenFile can use to say "was opened, but not by me, amy be wxfb or someone else"
 
 BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	
@@ -391,7 +391,7 @@ END_EVENT_TABLE()
 
 mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
 	
-	external_source=(mxSource*)this;
+	EXTERNAL_SOURCE=(mxSource*)this;
 
 	SHOW_MILLIS("Creating main window...");
 	
@@ -927,7 +927,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		// si no esta abierto
 		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
 		mxSource *src=OpenFile(the_one,!project);
-		if (src && src!=external_source) src->MarkError(line-1);
+		if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
 	} else if (action=="gotopos") { // not used anymore?
 		mxSource *source=NULL;
 		wxString the_one=event.GetLinkInfo().GetHref().AfterFirst(':').BeforeLast(':').BeforeLast(':');
@@ -946,7 +946,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
 		if (!source)
 			source = OpenFile(the_one,!project);
-		if (source && source!=external_source) {
+		if (source && source!=EXTERNAL_SOURCE) {
 			int line=source->LineFromPosition(p1);
 			source->MarkError(line-1);
 			source->SetSelection(p1,p1+p2);
@@ -970,7 +970,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
 		if (!source)
 			source = OpenFile(the_one,!project);
-		if (source && source!=external_source) {
+		if (source && source!=EXTERNAL_SOURCE) {
 			p1+=source->PositionFromLine(line);
 			source->MarkError(line-1);
 			source->SetSelection(p1,p1+p2);
@@ -1013,7 +1013,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 		mxSource *source = OpenFile(project->GetNameFromItem(item),false);
 		if (!source)
 			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<project->GetNameFromItem(item),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		else if (source!=external_source) {
+		else if (source!=EXTERNAL_SOURCE) {
 			if (source && project_tree.treeCtrl->GetItemParent(item)==project_tree.others)
 				//source->SetStyle(false);
 				menu.view_code_style->Check(false);
@@ -1066,7 +1066,7 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event){
 		if (!opened) {
 //			if (mxMD_YES == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal() ) {
 				mxSource *src=OpenFile(sthe_one,!project);
-				if (src && src!=external_source) src->MarkError(line-1);
+				if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
 //			} else
 //				return;
 		}
@@ -1192,10 +1192,7 @@ void mxMainWindow::OnFileOpenSelected(wxCommandEvent &event){
 		}
 		wxString base_path;
 		if (source->GetStyleAt((p1+p2)/2)==wxSTC_C_PREPROCESSOR) {
-			if (source->sin_titulo)
-				base_path=source->temp_filename.GetPath();
-			else
-				base_path=source->source_filename.GetPath();
+			base_path=source->GetPath();
 		} else {
 			if (project)
 				base_path=project->path;
@@ -2640,9 +2637,10 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 void mxMainWindow::OnFileExportHtml (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->sin_titulo?wxString(wxFileName::GetHomeDir()):wxFileName(source->source_filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->source_filename).GetName()+_T(".html"), _T("Documento HTML | *.html"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		dlg.SetDirectory(source->sin_titulo?wxString(project?project->last_dir:config->Files.last_dir):wxFileName(source->source_filename).GetPath());
+		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->GetPath(true),source->GetFileName()+".html", _T("Documento HTML | *.html"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		dlg.SetDirectory(wxString(project?project->last_dir:config->Files.last_dir));
 		if (dlg.ShowModal() == wxID_OK) {
+			project?project->last_dir:config->Files.last_dir=dlg.GetPath();
 			CodeExporter ce;
 			mxSource *source = CURRENT_SOURCE;
 			wxString title = notebook_sources->GetPageText(notebook_sources->GetSelection());
@@ -3277,7 +3275,7 @@ mxSource *mxMainWindow::OpenFile (wxString filename, bool add_to_project) {
 			wxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" \"")+filename+_T("\""));
 			wxYield(); wxMilliSleep(1000);
 		}
-		return external_source;
+		return EXTERNAL_SOURCE;
 	}
 	
 	int i;
@@ -3648,7 +3646,10 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 		long pos=0;
 		wxString line = file.GetFirstLine();
 		while (line.Left(7)==_T("// !Z! ")) {
-			if (line.Left(13)==_T("// !Z! Caret:")) {
+			if (line==_T("// !Z! Type: C")) {
+				source->cpp_or_just_c=false;
+				source->temp_filename.SetExt("c");
+			} else if (line.Left(13)==_T("// !Z! Caret:")) {
 				line.Mid(13).Trim(false).Trim(true).ToLong(&pos);
 			} else if (line.Left(15)==_T("// !Z! Options:")) {
 				source->config_running.compiler_options=line.Mid(15).Trim(false).Trim(true);
@@ -3691,8 +3692,8 @@ void mxMainWindow::OnFileSave (wxCommandEvent &event) {
 void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE  {
 		mxSource *source=CURRENT_SOURCE;
-		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->sin_titulo?wxString(wxFileName::GetHomeDir()):wxFileName(source->source_filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->source_filename).GetFullName(), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		dlg.SetDirectory(source->sin_titulo?wxString(project?project->last_dir:config->Files.last_dir):wxFileName(source->source_filename).GetPath());
+		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->GetPath(true),source->GetFileName(), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		dlg.SetDirectory(source->GetPath(true));
 		dlg.SetWildcard(_T("Todos los archivos|*|Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER));
 //		dlg.SetFilterIndex(1);
 		if (dlg.ShowModal() == wxID_OK) {
@@ -4105,14 +4106,14 @@ void mxMainWindow::OnDebugReturn ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugJump ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		debug->Jump(source->GetPathForDebugger(),source->GetCurrentLine());
+		debug->Jump(source->GetFullPath(),source->GetCurrentLine());
 	}
 }
 
 void mxMainWindow::OnDebugRunUntil ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		debug->RunUntil(source->GetPathForDebugger(),source->GetCurrentLine());
+		debug->RunUntil(source->GetFullPath(),source->GetCurrentLine());
 	}
 }
 
@@ -4844,7 +4845,7 @@ void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
 			if (dlg.ShowModal() == wxID_OK)
 				debug->LoadCoreDump(dlg.GetPath(),project?NULL:CURRENT_SOURCE);
 		} else if (debug->debugging && !debug->waiting) {
-			wxString sPath = project?project->path:(CURRENT_SOURCE->sin_titulo?wxString(wxFileName::GetHomeDir()):wxFileName(CURRENT_SOURCE->source_filename).GetPath());
+			wxString sPath = project?project->path:(CURRENT_SOURCE->GetPath(true));
 			wxFileDialog dlg (this, _T("Guardar Volcade de Memoria"),sPath,_T("core"), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			dlg.SetDirectory(sPath);
 			dlg.SetWildcard(_T("Volcados de memoria|core*|Todos los Archivos|*"));
@@ -4960,14 +4961,14 @@ void mxMainWindow::OnProjectTreeOpenFolder (wxCommandEvent &event) {
 void mxMainWindow::OnFileOpenFolder(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
-		utils->OpenFolder(src->sin_titulo?src->temp_filename.GetPath():src->source_filename.GetPath());
+		utils->OpenFolder(src->GetPath());
 	}
 }
 
 void mxMainWindow::OnFileExploreFolder(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
-		SetExplorerPath(src->sin_titulo?src->temp_filename.GetPath():src->source_filename.GetPath());
+		SetExplorerPath(src->GetPath());
 		ShowExplorerTreePanel();
 	}
 }
@@ -4975,7 +4976,7 @@ void mxMainWindow::OnFileExploreFolder(wxCommandEvent &event) {
 void mxMainWindow::OnFileProperties (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
-		(new mxSourceProperties(src->GetPathForDebugger(),src))->Show();
+		(new mxSourceProperties(src->GetFullPath(),src))->Show();
 	}
 }
 

@@ -164,7 +164,7 @@ void mxValgrindOuput::OnSelect(wxTreeEvent &evt) {
 				file_item *fi = project->FindFromName(text);
 				if (fi) {
 					mxSource *source = main_window->OpenFile(DIR_PLUS_FILE(project->path,fi->name),false);
-					if (source && source!=external_source) source->MarkError(line-1);
+					if (source && source!=EXTERNAL_SOURCE) source->MarkError(line-1);
 				} else {
 					for (int i=0,j=main_window->notebook_sources->GetPageCount();i<j;i++) {
 						mxSource *src = ((mxSource*)(main_window->notebook_sources->GetPage(i)));

@@ -86,7 +86,7 @@ mxErrorRecovering::~mxErrorRecovering() {
 void mxErrorRecovering::OnAllButton(wxCommandEvent &evt) {
 	for (unsigned int i=0;i<files.GetCount();i++) {
 		mxSource *src =	main_window->OpenFile(DIR_PLUS_FILE(config->home_dir,files[i]));
-		if (src!=external_source) {
+		if (src!=EXTERNAL_SOURCE) {
 			src->SetPageText(names[i]);
 			src->SetModify(true);
 			src->sin_titulo=true;
@@ -99,7 +99,7 @@ void mxErrorRecovering::OnSomeButton(wxCommandEvent &evt) {
 	for (unsigned int i=0;i<files.GetCount();i++) {
 		if (list->IsSelected(i)) {
 			mxSource *src =	main_window->OpenFile(DIR_PLUS_FILE(config->home_dir,files[i]));
-			if (src && src!=external_source) {
+			if (src && src!=EXTERNAL_SOURCE) {
 				src->SetPageText(names[i]);
 				src->SetModify(true);
 				src->sin_titulo=true;

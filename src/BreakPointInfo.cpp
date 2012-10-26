@@ -26,7 +26,7 @@ BreakPointInfo::BreakPointInfo(file_item *_fitem, int _line_number) {
 BreakPointInfo::BreakPointInfo(mxSource *_source, int _line_number) {
 	_autolist_construct_global; _autolist_construct_local(_source->breaklist);
 	// para la lista global de breakpoints, siempre se inserta al principio
-	fname=_source->GetPathForDebugger();
+	fname=_source->GetFullPath();
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') fname[i]='/';
@@ -57,7 +57,7 @@ void BreakPointInfo::SetStatus(BREAK_POINT_STATUS _gdb_status, int _gdb_id) {
 /// @brief Updates line_number from the source's marker (it changes when user edits the source code)
 void BreakPointInfo::UpdateLineNumber() {
 	if (!source) return;
-	fname=source->GetPathForDebugger();
+	fname=source->GetFullPath();
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') fname[i]='/';

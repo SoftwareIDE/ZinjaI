@@ -153,6 +153,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 	working_folder = wxFileName::GetHomeDir();
 
 	sin_titulo = true;
+	cpp_or_just_c = true;
 	never_parsed = true;
 	first_view = true;
 	current_line = 0; current_marker = -1;
@@ -734,6 +735,7 @@ bool mxSource::LoadFile (const wxFileName &filename) {
 	
 	source_filename = filename;
 	source_time = source_filename.GetModificationTime();
+	cpp_or_just_c = source_filename.GetExt().Lower()!="c";
 	working_folder = filename.GetPath();
 	if (project)
 		binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+_T(".o");
@@ -797,6 +799,7 @@ bool mxSource::SaveSource (const wxFileName &filename) {
 	if (MySaveFile(filename.GetFullPath())) {
 		source_filename = filename;
 		working_folder = filename.GetPath();
+		cpp_or_just_c = source_filename.GetExt().Lower()!="c";
 		if (project)
 			binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+_T(".o");
 		else
@@ -2559,6 +2562,11 @@ void mxSource::SetDebugTime (bool setted) {
 	SetReadOnly(setted);
 }
 
+void mxSource::MakeUntitled(wxString ptext) {
+	SetPageText(ptext);
+	sin_titulo=true;
+}
+
 void mxSource::SetPageText(wxString ptext) {
 	main_window->notebook_sources->SetPageText(main_window->notebook_sources->GetPageIndex(this),page_text=ptext);
 }
@@ -3423,11 +3431,37 @@ void mxSource::SetColours(bool also_style) {
 }
 
 /**
+* @brief Returns the path (dirs, without filename) of the file as debugger knows it (temp_filename if untitled, source_filename else)
+*
+* @param for_user  indicates that this path is for user, not for some internal ZinjaI operation, so if source is untitled it will use user's home instead of temp dir
+**/
+wxString mxSource::GetPath(bool for_user) {
+	if (sin_titulo) return temp_filename.GetPath();
+	else {
+		if (for_user)
+			return wxFileName::GetHomeDir();
+		else
+			return source_filename.GetPath();
+	}
+}
+
+
+/**
 * @brief Returns the full path of the file as debugger knows it (temp_filename if untitled, source_filename else)
 **/
-wxString mxSource::GetPathForDebugger() {
+wxString mxSource::GetFullPath() {
 	if (sin_titulo) return temp_filename.GetFullPath();
 	else return source_filename.GetFullPath();
+}
+
+wxString mxSource::GetFileName(bool with_extension) {
+	if (with_extension) {
+		if (sin_titulo) return temp_filename.GetFullName();
+		else return source_filename.GetFullName();
+	} else {
+		if (sin_titulo) return temp_filename.GetName();
+		else return source_filename.GetName();
+	}
 }
 
 /**
@@ -3437,7 +3471,7 @@ wxString mxSource::GetPathForDebugger() {
 **/
 wxString mxSource::SaveSourceForSomeTool() {
 	if (sin_titulo) SaveTemp(); else SaveSource();
-	return GetPathForDebugger();
+	return GetFullPath();
 }
 
 /**
@@ -3448,4 +3482,8 @@ wxString mxSource::GetParsedCompilerOptions() {
 	utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
 	comp_opts = utils->ExecComas(working_folder.GetFullPath(),comp_opts);
 	return comp_opts;
+}
+
+bool mxSource::IsCppOrJustC() {
+	return cpp_or_just_c;
 }

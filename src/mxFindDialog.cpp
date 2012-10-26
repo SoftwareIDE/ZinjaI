@@ -651,7 +651,7 @@ wxString mxFindDialog::GetHtmlEntry(wxString fname, int line, int pos, int len, 
 
 int mxFindDialog::FindInSource(mxSource *source,wxString &res) {
 	int count=0;
-	wxString file_name = source->sin_titulo?source->page_text:source->source_filename.GetFullPath();
+	wxString file_name = source->GetFullPath();
 	wxString page_text = utils->ToHtml(source->page_text);
 	source->SetSearchFlags(last_flags);
 	int l = source->GetLength();

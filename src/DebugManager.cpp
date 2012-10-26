@@ -1123,7 +1123,7 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 		if (current_source) {
 			if (current_handle!=-1) 
 				current_source->MarkerDeleteHandle(current_handle);
-			if ( (current_source->sin_titulo?current_source->temp_filename:current_source->source_filename) !=cfile ) {
+			if ( (current_source->GetFullPath()) !=cfile ) {
 				current_source = main_window->IsOpen(cfile);
 				if (!current_source) {
 					if (notitle_source && notitle_source->temp_filename==cfile)
@@ -1140,7 +1140,7 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 				current_source = main_window->OpenFile(cfile,!project);
 			}
 		}
-		if (current_source==external_source) current_source=NULL;
+		if (current_source==EXTERNAL_SOURCE) current_source=NULL;
 		if (current_source) {
 			int x=main_window->notebook_sources->GetPageIndex(current_source);
 			if (x!=main_window->notebook_sources->GetSelection())

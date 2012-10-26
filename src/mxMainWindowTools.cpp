@@ -199,11 +199,10 @@ void mxMainWindow::OnToolsValgrindHelp(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsConsole(wxCommandEvent &evt) {
 	wxString path=config->zinjai_dir;
-	if (project) path=project->path;
-	else IF_THERE_IS_SOURCE {
-		mxSource *src=CURRENT_SOURCE;
-		if (!src->sin_titulo) path=src->source_filename.GetPath();
-	}
+	if (project) 
+		path=project->path;
+	else IF_THERE_IS_SOURCE 
+		path=CURRENT_SOURCE->GetPath(true);
 #if defined(__APPLE__)
 	utils->Execute(path,_T("/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"),wxEXEC_NOHIDE);
 #elif defined(__WIN32__)
@@ -683,10 +682,7 @@ void mxMainWindow::OnToolsGprofList (wxCommandEvent &event) {
 	fgout.Close();
 	
 	mxSource *src=OpenFile(gout,false);
-	if (src && src!=external_source) {
-		src->sin_titulo=true;
-		src->SetPageText(_T("<profiling>"));
-	}
+	if (src && src!=EXTERNAL_SOURCE) src->MakeUntitled("<profiling>");
 	status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	
 }
@@ -801,8 +797,8 @@ void mxMainWindow::RunCustomTool(wxString name, wxString workdir, wxString cmd, 
 		wxString project_path, project_bin, bin_workdir, current_source, current_dir, temp_dir;
 		IF_THERE_IS_SOURCE {
 			mxSource *src=CURRENT_SOURCE;
-			current_source=src->sin_titulo?src->temp_filename.GetFullPath():src->temp_filename.GetFullPath();
-			current_dir=src->sin_titulo?src->temp_filename.GetPath():src->temp_filename.GetPath();
+			current_source=src->GetFullPath();
+			current_dir=src->GetPath();
 			if (current_dir.EndsWith("\\")||current_dir.EndsWith("/")) current_dir.RemoveLast();
 			bin_workdir=src->working_folder.GetFullPath();
 			project_bin=src->binary_filename.GetFullPath();
@@ -998,13 +994,10 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 			return;
 		}
 	} else {
-		if (src->GetModify()) {
-			if (src->sin_titulo) src->SaveTemp();
-			else src->SaveSource();
-		}
+		wxString fname=src->SaveSourceForSomeTool();
 		wxString z_opts(wxString(_T(" ")));
 		// prepare command line
-		bool cpp = src->sin_titulo || (src->source_filename.GetExt()!=_T("C") && src->source_filename.GetExt()!=_T("c"));
+		bool cpp = src->IsCppOrJustC();
 		if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
 		z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" ";
 		z_opts<<current_toolchain.linker_options<<" ";
@@ -1012,7 +1005,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<_T("-x c++ "); 
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
 		wxString comp_opts = src->GetParsedCompilerOptions();
-		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+main_window->GetCurrentSource()->GetPathForDebugger()+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
+		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+fname+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
 		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
 			osd.Hide();

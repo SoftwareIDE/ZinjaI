@@ -538,7 +538,7 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern mxSource *external_source; // para que devuelva OpenFile cuando al archivo lo abre otro y no ZinjaI
+extern mxSource *EXTERNAL_SOURCE; // para que devuelva OpenFile cuando al archivo lo abre otro y no ZinjaI
 
 extern mxMainWindow *main_window;
 

@@ -55,10 +55,12 @@ public:
 	bool debug_time;
 	er_source_register *er_register;
 	
+private:
 	void SetSourceTime(wxDateTime stime);
 	wxDateTime source_time; ///< para saber si alguien lo modifico desde afuera
 	bool source_time_dont_ask, source_time_reload;
 	
+public:
 	void SplitFrom(mxSource *orig);
 	mxSource *next_source_with_same_file; // lista circular de mxSource que muestran el mismo archivo
 
@@ -71,6 +73,7 @@ public:
 	wxString page_text;
 	void SetDebugTime(bool setted);
 	void SetPageText(wxString ptext);
+	void MakeUntitled(wxString ptext); // para abrir resultados de compilacion, salidas de gprof, y cosas asi
 	void ShowBaloon(wxString text, int pos = -1);
 	
 	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle);
@@ -181,7 +184,9 @@ public:
 	wxFileName temp_filename;
 
 	wxString exec_args;
-	bool sin_titulo;
+	bool sin_titulo, cpp_or_just_c; // para un programa simple sin_titulo, la segunda bandera indica si compilar con g++ (true) o gcc (false), si tiene título se usa la extensión
+	bool IsCppOrJustC();
+	
 	void RemoveComments();
 	void AlignComments(int c);
 
@@ -193,7 +198,9 @@ public:
 
 	bool ApplyAutotext();
 	
-	wxString GetPathForDebugger();
+	wxString GetPath(bool for_user=false);
+	wxString GetFullPath();
+	wxString GetFileName(bool with_extension=true);
 	wxString SaveSourceForSomeTool();
 	
 private:

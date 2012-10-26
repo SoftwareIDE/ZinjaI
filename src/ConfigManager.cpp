@@ -184,13 +184,13 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("dont_run_headers",Running.dont_run_headers);
 			
 			} else if (section==_T("Help")) {
-				CFG_GENERIC_READ_DN("quickhelp_index",Help.quickhelp_index);
-				else CFG_GENERIC_READ_DN("wxhelp_index",Help.wxhelp_index);
+//				CFG_GENERIC_READ_DN("quickhelp_index",Help.quickhelp_index);
+				CFG_GENERIC_READ_DN("wxhelp_index",Help.wxhelp_index);
 //				else CFG_GENERIC_READ_DN("tips_file",Help.tips_file);
-				else CFG_GENERIC_READ_DN("quickhelp_dir",Help.quickhelp_dir);
-				else CFG_GENERIC_READ_DN("guihelp_dir",Help.guihelp_dir);
+//				else CFG_GENERIC_READ_DN("quickhelp_dir",Help.quickhelp_dir);
+//				else CFG_GENERIC_READ_DN("guihelp_dir",Help.guihelp_dir);
 				else CFG_GENERIC_READ_DN("autocomp_indexes",Help.autocomp_indexes);
-				else CFG_GENERIC_READ_DN("autocomp_dir",Help.autocomp_dir);
+//				else CFG_GENERIC_READ_DN("autocomp_dir",Help.autocomp_dir);
 				else CFG_INT_READ_DN("min_len_for_completion",Help.min_len_for_completion);
 				else CFG_BOOL_READ_DN("show_extra_panels",Help.show_extra_panels);
 			
@@ -258,7 +258,7 @@ bool ConfigManager::Load() {
 //				else CFG_GENERIC_READ_DN("runner_command",Files.runner_command);
 				else CFG_GENERIC_READ_DN("default_template",Files.default_template);
 				else CFG_GENERIC_READ_DN("default_project",Files.default_project);
-				else CFG_GENERIC_READ_DN("templates_dir",Files.templates_dir);
+//				else CFG_GENERIC_READ_DN("templates_dir",Files.templates_dir);
 				else CFG_GENERIC_READ_DN("autocodes_file",Files.autocodes_file);
 				else CFG_GENERIC_READ_DN("skin_dir",Files.skin_dir);
 				else CFG_GENERIC_READ_DN("temp_dir",Files.temp_dir);
@@ -672,12 +672,12 @@ bool ConfigManager::Save(){
 
 	fil.AddLine(_T("[Help]"));
 	CFG_GENERIC_WRITE_DN("wxhelp_index",Help.wxhelp_index);
-	CFG_GENERIC_WRITE_DN("quickhelp_index",Help.quickhelp_index);
+//	CFG_GENERIC_WRITE_DN("quickhelp_index",Help.quickhelp_index);
 //	CFG_GENERIC_WRITE_DN("tips_file",Help.tips_file);
-	CFG_GENERIC_WRITE_DN("quickhelp_dir",Help.quickhelp_dir);
-	CFG_GENERIC_WRITE_DN("guihelp_dir",Help.guihelp_dir);
+//	CFG_GENERIC_WRITE_DN("quickhelp_dir",Help.quickhelp_dir);
+//	CFG_GENERIC_WRITE_DN("guihelp_dir",Help.guihelp_dir);
 	CFG_GENERIC_WRITE_DN("autocomp_indexes",Help.autocomp_indexes);
-	CFG_GENERIC_WRITE_DN("autocomp_dir",Help.autocomp_dir);
+//	CFG_GENERIC_WRITE_DN("autocomp_dir",Help.autocomp_dir);
 	CFG_GENERIC_WRITE_DN("min_len_for_completion",Help.min_len_for_completion);
 	CFG_BOOL_WRITE_DN("show_extra_panels",Help.show_extra_panels);
 	fil.AddLine(_T(""));
@@ -701,7 +701,7 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("explorer_command",Files.explorer_command);
 	CFG_GENERIC_WRITE_DN("default_template",Files.default_template);
 	CFG_GENERIC_WRITE_DN("default_project",Files.default_project);
-	CFG_GENERIC_WRITE_DN("templates_dir",Files.templates_dir);
+//	CFG_GENERIC_WRITE_DN("templates_dir",Files.templates_dir);
 	CFG_GENERIC_WRITE_DN("autocodes_file",Files.autocodes_file);
 	CFG_GENERIC_WRITE_DN("doxygen_command",Files.doxygen_command);
 	CFG_GENERIC_WRITE_DN("wxfb_command",Files.wxfb_command);
@@ -977,7 +977,7 @@ void ConfigManager::LoadDefaults(){
 	Files.project_folder=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
 	Files.default_template=DIR_PLUS_FILE(_T("templates"),_T("default.tpl"));
 	Files.default_project=_T("<main>");
-	Files.templates_dir=_T("templates");
+	Files.templates_dir="templates";
 	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
 	Files.code_helper=DIR_PLUS_FILE(_T("quickhelp"),_T("codehelper.txt"));
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
@@ -1066,14 +1066,15 @@ void ConfigManager::LoadDefaults(){
 	
 #if defined(__WIN32__)
 	Help.wxhelp_index=_T("MinGW\\wx\\docs\\wx_contents.html");
+	Help.quickhelp_index="quickhelp\\index";
 #else
 	Help.wxhelp_index=_T("docs/wx/wx_contents.html");
+	Help.quickhelp_index="quickhelp/index";
 #endif
-	Help.quickhelp_index=DIR_PLUS_FILE(_T("quickhelp"),_T("index"));
 //	Help.tips_file=DIR_PLUS_FILE(_T("quickhelp"),_T("tips"));
-	Help.quickhelp_dir=_T("quickhelp");
-	Help.guihelp_dir=_T("guihelp");
-	Help.autocomp_dir=_T("autocomp");
+	Help.quickhelp_dir="quickhelp";
+	Help.guihelp_dir="guihelp";
+	Help.autocomp_dir="autocomp";
 	Help.autocomp_indexes=_T("AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,STL_Contenedores,STL_Algoritmos,STL_Iteradores,AAA_Palabras_Reservadas");
 	Help.min_len_for_completion=3;
 	Help.show_extra_panels=true;
