@@ -170,51 +170,63 @@ void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
 
 void mxCompiler::UnSTD(wxString &line) {
 	int p;
-	while ((p=line.find("[with "))!=wxNOT_FOUND) {
-		int p5=p; p+=6;
-		int p2,p3,p4,p6=p,lev=0;
-		while (p6<int(line.Len())&&(lev>0||line[p6]!=']')) {
-			if (line[p6]=='[') lev++;
-			else if (line[p6]==']') lev--;
-			p6++;
+	while ((p=line.find("[with "))!=wxNOT_FOUND) { // buscar un argumento actual para plantilla
+		int p0=p;  // pos donde inicia el argumento actual "[with booga=...."
+		int p1=p;  // pos donde termina el argumento actual "...]"
+		int lev=0; // auxiliar para ignorar corchetes anidados
+		p+=6; // salteat el "[with " y buscar el corchete que cierra
+		while (p1<int(line.Len())&&(lev>0||line[p1]!=']')) {
+			if (line[p1]=='[') lev++;
+			else if (line[p1]==']') lev--;
+			p1++;
 		}
-		while ((p2=line.Mid(p).Find("="))!=wxNOT_FOUND&&p2+p<p6) {
-			p3=(p2+=p);
-			p2--; while (p2>0&&line[p2]==' ') p2--; p4=p2;
+		int pos_last_igual=p0; 
+		int pos_igual=0; // posición donde encuentra un = que corresponda a esa lista de argumentos
+		while ((pos_igual=line.SubString(pos_last_igual+1,p1).Find("="))!=wxNOT_FOUND) {
+			pos_igual+=pos_last_igual+1; // para que quede como pos absoluta
+			pos_last_igual=pos_igual;
+			
+			// buscar que hay a la izquierda del igual
+			int pre_fin=pos_igual-1;  // pos donde termina el termino de la izquierda
+			while (pre_fin>0&&line[pre_fin]==' ') pre_fin--;
+			int pre_ini=pre_fin; // pos donde empieza el termino de la izquierda
 			lev=0; // no deberia ser necesario
-			while (p2>=p&&(lev>0||(line[p2]!='['&&line[p2]!=','))) {
-				if (line[p2]=='>'||line[p2]==')') lev++;
-				else if (line[p2]=='<'||line[p2]=='(') lev--;
-				p2--;
+			while (pre_ini>=p0+6&&(lev>0||(line[pre_ini]!='['&&line[pre_ini]!=','))) {
+				if (line[pre_ini]=='>'||line[pre_ini]==')') lev++;
+				else if (line[pre_ini]=='<'||line[pre_ini]=='(') lev--;
+				pre_ini--;
 			}
-			p2++; while (p2<int(line.Len())&&line[p2]==' ') p2++;
-			wxString type_in=line.Mid(p2,p4-p2+1);
+			pre_ini++; 
+			while (pre_ini<pre_fin&&line[pre_ini]==' ') pre_ini++;
+			wxString type_in=line.SubString(pre_ini,pre_fin); // tipo que sera reemplazado
+			
+			// buscar que hay a la derecha del igual
+			int pos_ini=pos_igual+1; // pos donde empieza el termino de la derecha
+			while (pos_ini<p1&&line[pos_ini]==' ') pos_ini++;
+			int pos_fin=pos_ini; // pos donde termina el termino de la derecha
 			lev=0; // no deberia ser necesario
-			p3++; while (p3<int(line.Len())&&line[p3]==' ') p3++; p4=p3;
-			while (lev>0||(line[p3]!=']'&&line[p3]!=',')) {
-				if (line[p3]=='('||line[p3]=='<') lev++;
-				else if (line[p3]==')'||line[p3]=='>') lev--;
-				p3++;
+			while (pos_fin<p1&&(lev>0||(line[pos_fin]!=']'&&line[pos_fin]!=','))) {	
+				if (line[pos_fin]=='>'||line[pos_fin]==')') lev++;
+				else if (line[pos_fin]==')'||line[pos_fin]=='>') lev--;
+				pos_fin++;
 			}
-			p3--; while (p3>0&&line[p3]==' ') p3--;
-			wxString type_out=line.Mid(p4,p3-p4+1);
-			p=p4; p4=0;
-			while ((p2=line.Mid(p4).Find(type_in))!=wxNOT_FOUND && p4+p2<p5) {
-				p4+=p2;
-				int diff;
-				line.replace(p4,type_in.size(),type_out);
-				diff=type_out.size()-type_in.size();
-				p4+=diff;
-				p+=diff;
-				p5+=diff;
-				p6+=diff;
+			pos_fin--;
+			while (pos_fin>pos_ini&&line[pos_fin]==' ') pos_fin--;
+			wxString type_out=line.SubString(pos_ini,pos_fin); // tipo con el cual se reemplazará
+			
+			int p_in=0, diff=type_out.size()-type_in.size();
+			while ((p=line.SubString(p_in,p0).Find(type_in))!=wxNOT_FOUND && p+p_in<p0) {
+				p+=p_in; // pos absoluta donde reemplazar
+				line.replace(p,type_in.size(),type_out);
+				p0+=diff; p1=diff; pos_last_igual+=diff; // corregir las pos posteriores que interesen mantener
+				p_in=p+type_out.size(); // para que la proxima busqueda empiece despues (porque puede aparecer "[with t=t]")
 			}
 			
 		}
-		line.erase(p5,p6-p5+1);
+		line.erase(p0,p1-p0+1);
 	}
 	
-	// quitar los allocators
+	// quitar los allocators y otras cosas
 	while ((p=line.Find("std::allocator<"))!=wxNOT_FOUND) { 
 		int p2=p+15, lev=0;
 		// buscar donde empieza (puede haber un const y espacios antes)

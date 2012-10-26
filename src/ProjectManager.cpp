@@ -1194,7 +1194,7 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 			else if (!rc_redo) {
 				wxTextFile fil(rc_file.GetFullPath());
 				fil.Open();
-				wxString cont; int i=0; 
+				wxString cont; 
 				rc_redo=rc_text.GetCount()!=fil.GetLineCount();
 				if (!rc_redo) {
 					int i=0;
