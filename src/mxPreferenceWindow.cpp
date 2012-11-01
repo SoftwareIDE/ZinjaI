@@ -42,8 +42,6 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_COLORS_PICKER,mxPreferenceWindow::OnColoursButton)
 	EVT_BUTTON(mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,mxPreferenceWindow::OnImproveInspectionsByTypeButton)
 	EVT_BUTTON(mxID_GDB_PATH,mxPreferenceWindow::OnGdbButton)
-//	EVT_BUTTON(mxID_GPP_PATH,mxPreferenceWindow::OnGppButton)
-//	EVT_BUTTON(mxID_GCC_PATH,mxPreferenceWindow::OnGccButton)
 	EVT_BUTTON(mxID_IMG_BROWSER_PATH,mxPreferenceWindow::OnImgBrowserButton)
 	EVT_BUTTON(mxID_BROWSER_PATH,mxPreferenceWindow::OnBrowserButton)
 	EVT_BUTTON(mxID_VALGRIND_PATH,mxPreferenceWindow::OnValgrindButton)
@@ -52,11 +50,8 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_DOXYGEN_PATH,mxPreferenceWindow::OnDoxygenButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxPreferenceWindow::OnHelpButton)
 	EVT_BUTTON(mxID_TEMP_FOLDER,mxPreferenceWindow::OnTempButton)
-	EVT_BUTTON(mxID_QUICKHELP_FOLDER,mxPreferenceWindow::OnQuickhelpButton)
-	EVT_BUTTON(mxID_TEMPLATES_FOLDER,mxPreferenceWindow::OnTemplatesButton)
 	EVT_BUTTON(mxID_SKIN_APPLY,mxPreferenceWindow::OnSkinButton)
 	EVT_BUTTON(mxID_WXHELP_FOLDER,mxPreferenceWindow::OnWxHelpButton)
-	EVT_BUTTON(mxID_AUTOCOMP_FOLDER,mxPreferenceWindow::OnAutocompButton)
 	EVT_BUTTON(mxID_PROJECTS_FOLDER,mxPreferenceWindow::OnProjectButton)
 	EVT_BUTTON(mxID_AUTOCODES_FILE,mxPreferenceWindow::OnAutocodesButton)
 	EVT_MENU(mxID_AUTOCODES_OPEN,mxPreferenceWindow::OnAutocodesOpen)
@@ -79,7 +74,6 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_PREFERENCES_XDG,mxPreferenceWindow::OnXdgButton)
 	EVT_BUTTON(mxID_TERMINALS_BUTTON,mxPreferenceWindow::OnTerminalButton)
 	EVT_MENU(mxID_TERMINALS_LX,mxPreferenceWindow::OnTerminalLX)
-//	EVT_MENU(mxID_TERMINALS_XFCE,mxPreferenceWindow::OnTerminalXfce)
 	EVT_MENU(mxID_TERMINALS_XTERM,mxPreferenceWindow::OnTerminalXTerm)
 	EVT_MENU(mxID_TERMINALS_GNOME,mxPreferenceWindow::OnTerminalGnomeTerminal)
 	EVT_MENU(mxID_TERMINALS_KONSOLE,mxPreferenceWindow::OnTerminalKonsole)
@@ -330,7 +324,7 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_CREATE_FROM_TEMPLATE,"Crear a partir de plantilla"));
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_SHOW_WIZARD,"Mostrar Asistente"));
 	init_new_file = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_SIMPLE_NEW_ACTION,"Accion para Nuevo Archivo"),a_new_file, config->Init.new_file);
-	files_templates_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_TEMPLATES_FOLDER,"Carpeta de plantillas (necesita reiniciar)"),config->Files.templates_dir,mxID_TEMPLATES_FOLDER);
+//	files_templates_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_TEMPLATES_FOLDER,"Carpeta de plantillas (necesita reiniciar)"),config->Files.templates_dir,mxID_TEMPLATES_FOLDER);
 	running_compiler_options = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_COMPILER_ARGUMENTS,"Parametros extra para el compilador"),config->Running.compiler_options);
 	running_wait_for_key = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING,"Esperar una tecla luego de la ejecucion"),config->Running.wait_for_key);
 	running_always_ask_args = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),config->Running.always_ask_args);
@@ -480,8 +474,8 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 
-	help_quickhelp_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_QUICKHELP,"Ubicacion de la ayuda rapida"),config->Help.quickhelp_dir,mxID_QUICKHELP_FOLDER);
-	help_autocomp_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_AUTOCOMP,"Ubicacion de los indices de autocompletado"),config->Help.autocomp_dir,mxID_AUTOCOMP_FOLDER);
+//	help_quickhelp_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_QUICKHELP,"Ubicacion de la ayuda rapida"),config->Help.quickhelp_dir,mxID_QUICKHELP_FOLDER);
+//	help_autocomp_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_AUTOCOMP,"Ubicacion de los indices de autocompletado"),config->Help.autocomp_dir,mxID_AUTOCOMP_FOLDER);
 	files_temp_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_TEMP,"Directorio temporal"),config->Files.temp_dir, mxID_TEMP_FOLDER);
 #if defined(_WIN32) || defined(__WIN32__)
 	files_mingw_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_MINGW,"Directorio de MinGW (requiere reiniciar ZinjaI)"),config->Files.mingw_dir, mxID_MINGW_FOLDER);
@@ -544,7 +538,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 		welcome_panel->Destroy();
 		welcome_panel=NULL;
 	}
-//	config->Init.hide_splash = init_hide_splash->GetValue();
 	config->Init.show_splash = init_show_splash->GetValue();
 	config->Init.always_add_extension = init_always_add_extension->GetValue();
 #if defined(_WIN32) || defined(__WIN32__)
@@ -574,14 +567,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 	else if (config->Init.singleton && !project && !singleton->IsRunning()) singleton->Start();
 	config->Init.autohide_panels = init_autohide_panels->GetValue();
 	config->Init.stop_compiling_on_error = init_stop_compiling_on_error->GetValue();
-	config->Help.quickhelp_dir = help_quickhelp_dir->GetValue();
-//	config->Files.skin_dir = files_skin_dir->GetValue();
 	config->Files.temp_dir = files_temp_dir->GetValue();
-//	config->Files.parser_command = files_parser_command->GetValue();
-//	config->Files.runner_command = files_runner_command->GetValue();
 	config->Files.debugger_command = files_debugger_command->GetValue();
-//	config->Files.compiler_command = files_compiler_command->GetValue();
-//	config->Files.compiler_c_command = files_compiler_c_command->GetValue();
 	config->Files.toolchain = files_toolchain->GetValue();
 	config->Files.terminal_command = files_terminal_command->GetValue();
 	config->Files.explorer_command = files_explorer_command->GetValue();
@@ -610,7 +597,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 	config->Source.callTips = source_callTips->GetValue();
 	config->Source.autoCompletion = source_autoCompletion->GetValue();
 	config->Source.autocloseStuff = source_autocloseStuff->GetValue();
-	config->Help.autocomp_dir = help_autocomp_dir->GetValue();
 	config->Help.wxhelp_index = help_wxhelp_index->GetValue();
 	
 	wxString autocomp_indexes;
@@ -633,18 +619,12 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 	
 	styles_print_size->GetValue().ToLong(&l); config->Styles.print_size=l;
 	styles_font_size->GetValue().ToLong(&l); config->Styles.font_size=l;
-//	config->Styles.dark=styles_dark->GetValue();
-	config->Files.templates_dir = files_templates_dir->GetValue();
 #if defined(_WIN32) || defined(__WIN32__)
 	config->Files.mingw_dir = files_mingw_dir->GetValue();
 #endif
 	wxAuiNotebook *ns=main_window->notebook_sources;
 	for (unsigned int i=0;i<ns->GetPageCount();i++)
 		((mxSource*)(ns->GetPage(i)))->LoadSourceConfig();
-//	for (unsigned int i=0;i<main_window->notebook_sources->GetPageCount();i++) {
-//		((mxSource*)(main_window->notebook_sources->GetPage(i)))->config_source=config->Source;
-//		if (project && project->custom_tabs) ((mxSource*)(main_window->notebook_sources->GetPage(i)))->config_source.tabWidth=project->custom_tabs;
-//	}
 	main_window->SetStatusBarFields(); // ocultar/mostrar nro de linea
 		
 	config->Debug.auto_solibs = debug_auto_solibs->GetValue();
@@ -775,15 +755,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 	} else
 		config->Toolbars.icon_size=16;
 	
-#if defined(_WIN32) || defined(__WIN32__)
-#else
-//	if (desktop_icon->GetValue()) {
-//		if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Desktop"))))
-//			utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Desktop")));
-//		if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Escritorio"))))
-//			utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Escritorio")));
-//	}
-#endif
 	config->RecalcStuff();
 	Close();
 
@@ -798,15 +769,6 @@ void mxPreferenceWindow::OnClose(wxCloseEvent &event){
 //	Destroy();
 	Hide();
 	event.Veto();
-}
-
-void mxPreferenceWindow::OnAutocompButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Ubicacion de los indices de autocompletado:"),help_autocomp_dir->GetValue());
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fn(dlg->GetPath());
-		fn.MakeRelativeTo(config->zinjai_dir);
-		help_autocomp_dir->SetValue(fn.GetFullPath());
-	}
 }
 
 void mxPreferenceWindow::OnSkinButton(wxCommandEvent &event){
@@ -833,36 +795,6 @@ void mxPreferenceWindow::OnProjectButton(wxCommandEvent &event){
 	if (wxID_OK==dlg->ShowModal())
 		files_project_folder->SetValue(dlg->GetPath());
 }
-
-void mxPreferenceWindow::OnTemplatesButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Directorio de plantillas:"),files_templates_dir->GetValue());
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fn(dlg->GetPath());
-		fn.MakeRelativeTo(config->zinjai_dir);
-		files_templates_dir->SetValue(fn.GetFullPath());
-	}
-}
-
-void mxPreferenceWindow::OnQuickhelpButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Directorio de ayuda rapida:"),help_quickhelp_dir->GetValue());
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fn(dlg->GetPath());
-		fn.MakeRelativeTo(config->zinjai_dir);
-		help_quickhelp_dir->SetValue(fn.GetFullPath());
-	}
-}
-
-//void mxPreferenceWindow::OnGppButton(wxCommandEvent &event){
-//	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del compilador C++:"),files_compiler_command->GetValue());
-//	if (wxID_OK==dlg->ShowModal())
-//		files_compiler_command->SetValue(dlg->GetPath());
-//}
-//
-//void mxPreferenceWindow::OnGccButton(wxCommandEvent &event){
-//	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del compilador C:"),files_compiler_c_command->GetValue());
-//	if (wxID_OK==dlg->ShowModal())
-//		files_compiler_c_command->SetValue(dlg->GetPath());
-//}
 
 void mxPreferenceWindow::OnGdbButton(wxCommandEvent &event){
 	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del depurador"),files_debugger_command->GetValue());
@@ -1352,15 +1284,11 @@ void mxPreferenceWindow::ResetChanges() {
 
 	// paths
 	help_wxhelp_index->SetValue(config->Help.wxhelp_index);
-	help_quickhelp_dir->SetValue(config->Help.quickhelp_dir);
-	help_quickhelp_dir->SetValue(config->Help.quickhelp_dir);
-	help_autocomp_dir->SetValue(config->Help.autocomp_dir);
 	files_temp_dir->SetValue(config->Files.temp_dir);
 #if defined(_WIN32) || defined(__WIN32__)
 	files_mingw_dir->SetValue(config->Files.mingw_dir);
 #endif
 	files_project_folder->SetValue(config->Files.project_folder);
-//	files_skin_dir->SetValue(config->Files.skin_dir);
 	files_wxfb_command->SetValue(config->Files.wxfb_command);
 #ifdef __WIN32__
 	files_valgrind_command->SetValue(config->Files.valgrind_command);
@@ -1396,7 +1324,6 @@ void mxPreferenceWindow::ResetChanges() {
 	
 	// style
 	source_syntaxEnable->SetValue(config->Source.syntaxEnable);
-//	styles_dark->SetValue(config->Styles.dark);
 	source_whiteSpace->SetValue(config->Source.whiteSpace);
 //	source_wrapMode->SetValue(config->Source.wrapMode);
 	source_lineNumber->SetValue(config->Source.lineNumber);
@@ -1411,7 +1338,7 @@ void mxPreferenceWindow::ResetChanges() {
 	files_autocode->SetValue(config->Files.autocodes_file);
 	
 	// simple
-	files_templates_dir->SetValue(config->Files.templates_dir);
+//	files_templates_dir->SetValue(config->Files.templates_dir);
 	running_compiler_options->SetValue(config->Running.compiler_options);
 	running_wait_for_key->SetValue(config->Running.wait_for_key);
 	running_always_ask_args->SetValue(config->Running.always_ask_args);

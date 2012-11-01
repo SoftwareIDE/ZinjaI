@@ -18,7 +18,7 @@ void Toolchain::LoadToolchains ( ) {
 	toolchains_count=toolchain_files.GetCount();
 	toolchains=new Toolchain[toolchains_count];
 	for (int i=0; i<toolchains_count;i++) {
-		toolchains[i].name = toolchain_files[i];
+		toolchains[i].file = toolchains[i].name = toolchain_files[i];
 		wxString filename = utils->WichOne(toolchain_files[i],DIR_PLUS_FILE(config->home_dir,"toolchains"),DIR_PLUS_FILE(config->zinjai_dir,"toolchains"),true);
 		wxTextFile file(filename); file.Open();
 		if (file.IsOpened()) {
@@ -44,6 +44,7 @@ void Toolchain::LoadToolchains ( ) {
 }
 
 Toolchain::Toolchain () {
+	name=file="<null>";
 	is_extern=false;
 #if defined(__WIN32__)
 	linker=_T("mingw32-g++");
@@ -63,9 +64,9 @@ Toolchain::Toolchain () {
 }
 
 bool Toolchain::SelectToolchain ( ) {
-	wxString name=project?project->active_configuration->toolchain:config->Files.toolchain;
+	wxString fname=project?project->active_configuration->toolchain:config->Files.toolchain;
 	for(int i=0;i<toolchains_count;i++) { 
-		if (toolchains[i].name==name) {
+		if (toolchains[i].file==fname) {
 			current_toolchain=toolchains[i];
 			return true;
 		}

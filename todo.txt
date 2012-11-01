@@ -16,8 +16,7 @@ integración con wx:
 	detectar archivos/proyectos renombrados / renombrar archivos/proyectos
 
 toolchains alternativos
-	ver que hacer con el -static-libstdc++ para programas C
-template para C plano?
+	agregar "encabezado para makefiles" a los gcc-like toolchains, y revisar genearación de makefiles
 	
 refactory: 
 	simil ctrl+h pero para agregar virtuales?

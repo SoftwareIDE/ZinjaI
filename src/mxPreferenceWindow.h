@@ -68,15 +68,10 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *running_compiler_options;
 	wxTextCtrl *files_autocode;
 	wxTextCtrl *files_temp_dir;
-//	wxTextCtrl *files_compiler_command;
-//	wxTextCtrl *files_compiler_c_command;
 	wxComboBox *files_toolchain;
 	wxTextCtrl *files_explorer_command;
 	wxTextCtrl *files_terminal_command;
 	wxTextCtrl *files_img_browser_command;
-//	wxTextCtrl *files_skin_dir;
-//	wxTextCtrl *files_parser_command;
-//	wxTextCtrl *files_runner_command;
 	wxTextCtrl *files_debugger_command;
 	wxTextCtrl *files_project_folder;
 	wxTextCtrl *files_wxfb_command;
@@ -85,8 +80,6 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *files_doxygen_command;
 	wxTextCtrl *files_browser_command;
 	wxTextCtrl *help_wxhelp_index;
-	wxTextCtrl *help_quickhelp_dir;
-	wxTextCtrl *help_autocomp_dir;
 	wxCheckListBox *help_autocomp_indexes;
 	wxCheckBox *source_bracketInsertion;
 	wxCheckBox *source_syntaxEnable;
@@ -95,7 +88,6 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *source_tabUseSpaces;
 	wxCheckBox *source_foldEnable;
 	wxCheckBox *source_whiteSpace;
-//	wxCheckBox *source_wrapMode;
 	wxCheckBox *source_lineNumber;
 	wxCheckBox *source_callTips;
 	wxCheckBox *source_avoidNoNewLineWarning;
@@ -104,19 +96,13 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *source_autoCompletion;
 	wxCheckBox *source_toolTips;
 	wxCheckBox *init_beautifyCompilerErrors;
-//	wxCheckBox *source_parser_completion;
-//	wxCheckBox *source_parser_calltips;
-//	wxCheckBox *source_std_completion;
-//	wxCheckBox *source_std_calltips;
 	wxTextCtrl *styles_print_size;
 	wxTextCtrl *styles_font_size;
 	wxCheckBox *styles_dark;
 	wxTextCtrl *files_default_template;
-	wxTextCtrl *files_templates_dir;
 	wxCheckBox *debug_allow_edition;
 	wxCheckBox *debug_autohide_panels;
 	wxCheckBox *debug_autohide_toolbars;
-//	wxCheckBox *debug_autoupdate_backtrace;
 	wxCheckBox *debug_compile_again;
 	wxCheckBox *debug_close_on_normal_exit;
 	wxCheckBox *debug_always_debug;
@@ -132,8 +118,6 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *debug_blacklist;
 #if defined(_WIN32) || defined(__WIN32__)
 	wxTextCtrl *files_mingw_dir;
-#else
-//	wxCheckBox *desktop_icon;
 #endif
 	
 	wxComboBox *toolbar_icon_size;
@@ -162,9 +146,6 @@ public:
 	void OnWxHelpButton(wxCommandEvent &event);
 	void OnSkinList(wxCommandEvent &event);
 	void OnSkinButton(wxCommandEvent &event);
-	void OnAutocompButton(wxCommandEvent &event);
-	void OnQuickhelpButton(wxCommandEvent &event);
-	void OnTemplatesButton(wxCommandEvent &event);
 	void OnProjectButton(wxCommandEvent &event);
 	void OnTempButton(wxCommandEvent &event);
 #if defined(_WIN32) || defined(__WIN32__)
@@ -188,8 +169,6 @@ public:
 	void OnImproveInspectionsByTypeButton(wxCommandEvent &event);
 	void OnColoursButton(wxCommandEvent &event);
 	void OnMaxJobsButton(wxCommandEvent &event);
-//	void OnGppButton(wxCommandEvent &event);
-//	void OnGccButton(wxCommandEvent &event);
 	void OnGdbButton(wxCommandEvent &event);
 	void OnImgBrowserButton(wxCommandEvent &event);
 	void OnBrowserButton(wxCommandEvent &event);

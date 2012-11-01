@@ -141,7 +141,6 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("foldEnable",Source.foldEnable);
 				else CFG_BOOL_READ_DN("indentEnable",Source.indentEnable);
 				else CFG_BOOL_READ_DN("whiteSpace",Source.whiteSpace);
-//				else CFG_BOOL_READ_DN("wrapMode",Init.wrapMode);
 				else CFG_BOOL_READ_DN("lineNumber",Source.lineNumber);
 				else CFG_BOOL_READ_DN("overType",Source.overType);
 				else CFG_BOOL_READ_DN("callTips",Source.callTips);
@@ -247,18 +246,14 @@ bool ConfigManager::Load() {
 			
 			} else if (section==_T("Files")) {
 				CFG_GENERIC_READ_DN("toolchain",Files.toolchain);
-//				CFG_GENERIC_READ_DN("compiler_command",Files.compiler_command);
-//				else CFG_GENERIC_READ_DN("compiler_c_command",Files.compiler_c_command);
 				else CFG_GENERIC_READ_DN("debugger_command",Files.debugger_command);
 #if defined(__WIN32__)
 				else CFG_GENERIC_READ_DN("mingw_dir",Files.mingw_dir);
 #endif
 				else CFG_GENERIC_READ_DN("terminal_command",Files.terminal_command);
 				else CFG_GENERIC_READ_DN("explorer_command",Files.explorer_command);
-//				else CFG_GENERIC_READ_DN("runner_command",Files.runner_command);
 				else CFG_GENERIC_READ_DN("default_template",Files.default_template);
 				else CFG_GENERIC_READ_DN("default_project",Files.default_project);
-//				else CFG_GENERIC_READ_DN("templates_dir",Files.templates_dir);
 				else CFG_GENERIC_READ_DN("autocodes_file",Files.autocodes_file);
 				else CFG_GENERIC_READ_DN("skin_dir",Files.skin_dir);
 				else CFG_GENERIC_READ_DN("temp_dir",Files.temp_dir);
@@ -573,7 +568,6 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("size_y",Init.size_y);
 	CFG_BOOL_WRITE_DN("maximized",Init.maximized);
 	CFG_BOOL_WRITE_DN("lang_es",Init.lang_es);
-//	CFG_BOOL_WRITE_DN("load_sharing_server",Init.load_sharing_server);
 	CFG_GENERIC_WRITE_DN("zinjai_server_port",Init.zinjai_server_port);
 	CFG_BOOL_WRITE_DN("save_project",Init.save_project);
 	CFG_BOOL_WRITE_DN("close_files_for_project",Init.close_files_for_project);
@@ -595,8 +589,6 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("graphviz_dot",Init.graphviz_dot);
 	CFG_GENERIC_WRITE_DN("inherit_num",Init.inherit_num);
 	CFG_GENERIC_WRITE_DN("history_len",Init.history_len);
-//	CFG_GENERIC_WRITE_DN("forced_compiler_options",Init.forced_compiler_options);
-//	CFG_GENERIC_WRITE_DN("forced_linker_options",Init.forced_linker_options);
 	CFG_GENERIC_WRITE_DN("proxy",Init.proxy);
 	CFG_GENERIC_WRITE_DN("language_file",Init.language_file);
 	CFG_GENERIC_WRITE_DN("max_errors",Init.max_errors);
@@ -614,7 +606,6 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("allow_edition",Debug.allow_edition);
 	CFG_BOOL_WRITE_DN("autohide_panels",Debug.autohide_panels);
 	CFG_BOOL_WRITE_DN("autohide_toolbars",Debug.autohide_toolbars);
-//	CFG_BOOL_WRITE_DN("autoupdate_backtrace",Debug.autoupdate_backtrace);
 	CFG_BOOL_WRITE_DN("select_modified_inspections",Debug.select_modified_inspections);
 	CFG_BOOL_WRITE_DN("raise_main_window",Debug.raise_main_window);
 	CFG_BOOL_WRITE_DN("compile_again",Debug.compile_again);
@@ -648,7 +639,6 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("foldEnable",Source.foldEnable);
 	CFG_BOOL_WRITE_DN("indentEnable",Source.indentEnable);
 	CFG_BOOL_WRITE_DN("whiteSpace",Source.whiteSpace);
-//	CFG_BOOL_WRITE_DN("wrapMode",Source.wrapMode);
 	CFG_BOOL_WRITE_DN("lineNumber",Source.lineNumber);
 	CFG_BOOL_WRITE_DN("overType",Source.overType);
 	CFG_BOOL_WRITE_DN("callTips",Source.callTips);
@@ -672,12 +662,7 @@ bool ConfigManager::Save(){
 
 	fil.AddLine(_T("[Help]"));
 	CFG_GENERIC_WRITE_DN("wxhelp_index",Help.wxhelp_index);
-//	CFG_GENERIC_WRITE_DN("quickhelp_index",Help.quickhelp_index);
-//	CFG_GENERIC_WRITE_DN("tips_file",Help.tips_file);
-//	CFG_GENERIC_WRITE_DN("quickhelp_dir",Help.quickhelp_dir);
-//	CFG_GENERIC_WRITE_DN("guihelp_dir",Help.guihelp_dir);
 	CFG_GENERIC_WRITE_DN("autocomp_indexes",Help.autocomp_indexes);
-//	CFG_GENERIC_WRITE_DN("autocomp_dir",Help.autocomp_dir);
 	CFG_GENERIC_WRITE_DN("min_len_for_completion",Help.min_len_for_completion);
 	CFG_BOOL_WRITE_DN("show_extra_panels",Help.show_extra_panels);
 	fil.AddLine(_T(""));
@@ -937,7 +922,7 @@ void ConfigManager::LoadDefaults(){
 	Files.skin_dir=_T("imgs");
 	Files.graphviz_dir=_T("graphviz");
 #if defined(__WIN32__)
-	Files.toolchain="mingw32";
+	Files.toolchain="gcc-mingw32";
 	Files.parser_command=_T("cbrowser.exe");
 	Files.debugger_command=_T("gdb");
 	Files.mingw_dir=_T("mingw");
@@ -1037,7 +1022,6 @@ void ConfigManager::LoadDefaults(){
 	Source.bracketInsertion=true;
 	Source.syntaxEnable=true;
 	Source.whiteSpace=false;
-//	Source.wrapMode=false;
 	Source.lineNumber=true;
 	Source.indentEnable=true;
 	Source.foldEnable=true;
