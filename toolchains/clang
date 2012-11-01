@@ -1,4 +1,4 @@
-name=llvm-clang
+desc=llvm-clang
 extern=false
 c_compiler=clang
 cpp_compiler=clang

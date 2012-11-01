@@ -444,6 +444,12 @@ void mxProjectConfigWindow::LoadValues() {
 	ReloadSteps();
 	ReloadLibs();
 	libtobuild_noexec->SetValue(configuration->dont_generate_exe);
+	// set toolchains combo value
+	toolchains_combo->SetSelection(0);
+	if (configuration->toolchain.Len()) 
+		for(unsigned int i=1;i<toolchains_combo->GetCount();i++) 
+			if (toolchains_combo->GetString(i)==configuration->toolchain) 
+			{ toolchains_combo->SetSelection(i); break; }
 	
 	SetOnlyLib(!configuration->dont_generate_exe);
 	
@@ -515,6 +521,9 @@ bool mxProjectConfigWindow::SaveValues() {
 	configuration->optimization_level=compiling_optimization_level->GetSelection();
 	
 	configuration->dont_generate_exe = libtobuild_noexec->GetValue();
+	
+	configuration->toolchain=toolchains_combo->GetStringSelection();
+	if (configuration->toolchain=="<default>") configuration->toolchain="";
 
 	return true;
 	
@@ -679,11 +688,14 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	
 	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
 	sizer_i->Add(new wxStaticText(panel,wxID_ANY,"Toolchain:"),sizers->BA5_Center);
-	sizer_i->Add(new wxComboBox(panel,wxID_ANY,"<default>",wxDefaultPosition,wxDefaultSize,toolchain_cmb),wxSizerFlags().Proportion(1).Center());
-//		sizers->BA5_Center);
+	sizer_i->Add(toolchains_combo=new wxComboBox(panel,wxID_ANY,"<default>",wxDefaultPosition,wxDefaultSize,toolchain_cmb),wxSizerFlags().Proportion(1).Center());
 	sizer_i->Add(new wxButton(panel,wxID_ANY,"Opciones..."),sizers->BA10);
 	sizer->Add(sizer_i,sizers->BB5_Exp0);
-	
+	// set toolchains combo value
+	if (configuration->toolchain.Len()) 
+		for(unsigned int i=1;i<toolchains_combo->GetCount();i++) 
+			if (toolchains_combo->GetString(i)==configuration->toolchain) 
+				{ toolchains_combo->SetSelection(i); break; }
 
 	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_COMPILATION_SEQUENCE,"Secuencia de compilacion:")),sizers->BLRT5);
 	

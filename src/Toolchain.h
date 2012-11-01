@@ -5,7 +5,7 @@
 
 struct Toolchain {
 	wxString file; ///< toolchain filename
-	wxString name; ///< toolchain name
+	wxString desc; ///< toolchain name
 	bool is_extern; ///< true for use with tools such as cmake, make, scons; false for zinjai managed compiling process
 	wxString c_compiler; ///< c compiler command
 	wxString cpp_compiler; ///< c++ compiler command

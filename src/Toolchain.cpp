@@ -18,7 +18,7 @@ void Toolchain::LoadToolchains ( ) {
 	toolchains_count=toolchain_files.GetCount();
 	toolchains=new Toolchain[toolchains_count];
 	for (int i=0; i<toolchains_count;i++) {
-		toolchains[i].file = toolchains[i].name = toolchain_files[i];
+		toolchains[i].file = toolchains[i].file = toolchain_files[i];
 		wxString filename = utils->WichOne(toolchain_files[i],DIR_PLUS_FILE(config->home_dir,"toolchains"),DIR_PLUS_FILE(config->zinjai_dir,"toolchains"),true);
 		wxTextFile file(filename); file.Open();
 		if (file.IsOpened()) {
@@ -26,7 +26,7 @@ void Toolchain::LoadToolchains ( ) {
 			for (wxString line = file.GetFirstLine();!file.Eof();line = file.GetNextLine()) {
 				key=line.BeforeFirst('=');
 				value=line.AfterFirst('=');
-				if (key=="name") toolchains[i].name = value;
+				if (key=="desc") toolchains[i].desc = value;
 				else if (key=="base_dir") base_dir = value;
 				else if (key=="extern") toolchains[i].is_extern = utils->IsTrue(value);
 				else if (key=="c_compiler") toolchains[i].c_compiler = value;
@@ -44,7 +44,8 @@ void Toolchain::LoadToolchains ( ) {
 }
 
 Toolchain::Toolchain () {
-	name=file="<null>";
+	file="<null>";
+	desc="<null>";
 	is_extern=false;
 #if defined(__WIN32__)
 	linker=_T("mingw32-g++");
@@ -64,7 +65,9 @@ Toolchain::Toolchain () {
 }
 
 bool Toolchain::SelectToolchain ( ) {
-	wxString fname=project?project->active_configuration->toolchain:config->Files.toolchain;
+	wxString fname=config->Files.toolchain;
+	if (project && project->active_configuration->toolchain.Len())
+		fname=project->active_configuration->toolchain;
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
 			current_toolchain=toolchains[i];
@@ -77,7 +80,7 @@ bool Toolchain::SelectToolchain ( ) {
 void Toolchain::GetNames (wxArrayString & names, bool exclude_extern) {
 	for(int i=0;i<toolchains_count;i++) { 
 		if (!exclude_extern || !toolchains[i].is_extern)
-			names.Add(toolchains[i].name);
+			names.Add(toolchains[i].file);
 	}
 }
 

@@ -1,4 +1,4 @@
-name=gcc (mingw32)
+desc=gcc (mingw32)
 extern=false
 c_compiler=mingw32-gcc
 cpp_compiler=mingw32-g++

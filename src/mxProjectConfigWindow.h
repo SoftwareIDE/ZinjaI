@@ -24,8 +24,6 @@ class mxProjectConfigWindow : public wxDialog {
 	bool comma_splits_for_edit;
 	wxString last_dir;
 
-	wxListBox *steps_list;
-		
 	wxComboBox *configuration_name;
 	project_configuration *configuration;
 //	wxTextCtrl *project_name;
@@ -59,6 +57,10 @@ class mxProjectConfigWindow : public wxDialog {
 	wxCheckBox *linking_strip_executable;
 	wxCheckBox *linking_force_relink;
 	wxCheckBox *linking_console_program;
+	
+	// pestaña pasos
+	wxListBox *steps_list;
+	wxComboBox *toolchains_combo;
 	
 	// pestaña bibliotecas
 	wxListBox *libtobuild_list;

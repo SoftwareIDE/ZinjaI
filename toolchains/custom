@@ -1,4 +1,4 @@
-name=custom building script
+desc=custom building script
 extern=true
 command=${ARG1}
 argument1=Command=build.sh

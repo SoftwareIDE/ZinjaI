@@ -1,4 +1,4 @@
-name=makefile based building (win32)
+desc=makefile based building (win32)
 command=mingw32-make -j ${NUM_PROCS} ${ARG1}
 use_return_vale=1
 argument1=Arguments=-f Makefile

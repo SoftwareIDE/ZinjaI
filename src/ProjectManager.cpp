@@ -198,6 +198,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 				} 
 			} else if (section==_T("config")) {
 				CFG_GENERIC_READ_DN("name",active_configuration->name);
+				else CFG_GENERIC_READ_DN("toolchain",active_configuration->toolchain);
 				else CFG_GENERIC_READ_DN("working_folder",active_configuration->working_folder);
 				else CFG_BOOL_READ_DN("always_ask_args",active_configuration->always_ask_args);
 				else CFG_GENERIC_READ_DN("args",active_configuration->args);
@@ -625,6 +626,7 @@ bool ProjectManager::Save () {
 	for (int i=0;i<configurations_count;i++) {
 		fil.AddLine(_T("[config]"));
 		CFG_GENERIC_WRITE_DN("name",configurations[i]->name);
+		CFG_GENERIC_WRITE_DN("toolchain",configurations[i]->toolchain);
 		CFG_GENERIC_WRITE_DN("working_folder",configurations[i]->working_folder);
 		CFG_BOOL_WRITE_DN("always_ask_args",configurations[i]->always_ask_args);
 		CFG_GENERIC_WRITE_DN("args",configurations[i]->args);

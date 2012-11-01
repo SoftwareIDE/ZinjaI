@@ -222,7 +222,7 @@ struct project_configuration {
 		libs_to_build=NULL;
 		bakup=NULL;
 		name=cname;
-		toolchain="<default>";
+		toolchain="";
 		working_folder="";
 		always_ask_args=false;
 		args="";
@@ -505,7 +505,7 @@ public:
 	
 	/// @brief Dibuja un grafo con las relaciones entre los fuentes como arcos y los tamaños como colores
 	void DrawGraph();
-		
+
 };
 
 extern ProjectManager *project;

@@ -1,4 +1,4 @@
-name=default gcc
+desc=default gcc
 extern=false
 c_compiler=gcc
 cpp_compiler=g++
