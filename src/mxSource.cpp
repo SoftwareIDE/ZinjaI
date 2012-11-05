@@ -1355,77 +1355,13 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle){
 	wxFont font (fontSize, wxMODERN, wxNORMAL, wxNORMAL, false, fontName);
 	StyleSetFont (idx, font);
-	/*if (foreground)*/ StyleSetForeground (idx, foreground);
-	/*if (background)*/  StyleSetBackground (idx, background);
+	StyleSetForeground (idx, foreground);
+	StyleSetBackground (idx, background);
 	StyleSetBold (idx, (fontStyle & mxSOURCE_BOLD) > 0);
 	StyleSetItalic (idx, (fontStyle & mxSOURCE_ITALIC) > 0);
 	StyleSetUnderline (idx, (fontStyle & mxSOURCE_UNDERL) > 0);
 	StyleSetVisible (idx, (fontStyle & mxSOURCE_HIDDEN) == 0);
 }
-
-//bool mxSource::FindNext (wxString text, int flags) {
-//	int ret=FindText(GetCurrentPos(), GetLength(), text, flags);
-//	if (ret==wxSTC_INVALID_POSITION) 
-//		ret=FindText(0,GetCurrentPos(), text, flags);
-//	if (ret>=0) {
-//		EnsureVisibleEnforcePolicy(LineFromPosition(ret));
-//		SetSelection(ret,ret+text.Len());
-//	} else { 
-//		mxMessageDialog(main_window,wxString(_T("La cadena \""))<<text<<_T("\" no se encontro."), _T("Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
-//		if (main_window->find_dialog->IsShown())
-//			main_window->find_dialog->Raise();
-//	}
-//	return ret>=0;
-// }
-
-//bool mxSource::FindPrev (wxString text, int flags) {
-//	int ret=FindText(GetCurrentPos()-1, 0, text, flags);
-//	if (ret==wxSTC_INVALID_POSITION) 
-//		ret=FindText(GetLength(), GetCurrentPos(), text, flags);
-//	if (ret>=0) {
-//		EnsureVisibleEnforcePolicy(LineFromPosition(ret));
-//		SetSelection(ret,ret+text.Len());
-//	} else { 
-//		mxMessageDialog(main_window,wxString(_T("La cadena \""))<<text<<_T("\" no se encontro."), _T("Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
-//		if (main_window->find_dialog->IsShown())
-//			main_window->find_dialog->Raise();
-//	}
-//	return ret>=0;
-// }
-
-//bool mxSource::Replace (wxString text1, wxString text2, int flags) {
-//	if (FindNext(text1,flags)) {
-//		SetTargetStart(GetSelectionStart());
-//		SetTargetEnd(GetSelectionEnd());
-//		ReplaceTarget(text2);
-//		SetSelection(GetSelectionStart(),GetSelectionStart()+text2.Len());
-//		return true;
-//	} else
-//		return false;
-//
-// }
-
-//bool mxSource::ReplaceAll (wxString text1, wxString text2, int flags) {
-//	int c=0,ret=FindText(0, GetLength(), text1, flags);
-//	if (ret<0) {
-//		mxMessageDialog(main_window,wxString(_T("La cadena \""))<<text1<<_T("\" no se encontro."), _T("Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();
-//		if (main_window->find_dialog->IsShown())
-//			main_window->find_dialog->Raise();
-// 		return false;
-//	} else {
-//		BeginUndoAction();
-//		while (ret>=0) {
-//			c++;
-//			SetTargetStart(ret);
-//			SetTargetEnd(ret+text1.Len());
-//			ReplaceTarget(text2);
-//			ret=FindText(ret+text2.Len(), GetLength(), text1, flags);
-//		}
-//		EndUndoAction();
-//		mxMessageDialog(main_window,wxString(_T("Se realizaron "))<<c<<_T("reemplazos."), _T("Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
-//		return true;
-//	}
-// }
 
 void mxSource::SetModify (bool modif) {
 	if (modif) {

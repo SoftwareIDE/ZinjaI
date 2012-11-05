@@ -209,10 +209,10 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	} else
 		command<<_T(" -tty=/dev/null");
 #endif
-	if (args.Len())
-		command<<_T(" --args \"")<<exe<<_T("\" ")<</*utils->EscapeString(*/args/*)*/;	
-	else
-		command<<_T(" \"")<<exe<<_T("\"");	
+//	if (args.Len())
+//		command<<_T(" --args \"")<<exe<<_T("\" ")<</*utils->EscapeString(*/args/*)*/;	
+//	else
+//		command<<_T(" \"")<<exe<<_T("\"");	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
@@ -228,6 +228,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			return false;
 		}
 		// configure debugger
+		SendCommand("-exec-arguments ",args);
 #if defined(_WIN32) || defined(__WIN32__)
 		SendCommand(_T("-gdb-set new-console on"));
 #endif

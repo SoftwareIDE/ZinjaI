@@ -76,7 +76,6 @@ public:
 	void MakeUntitled(wxString ptext); // para abrir resultados de compilacion, salidas de gprof, y cosas asi
 	void ShowBaloon(wxString text, int pos = -1);
 	
-	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle);
 	void SetColours(bool also_style=true);
 	bool IsComment(int pos);
 	bool IsEmptyLine(int l, bool ignore_comments=true, bool ignore_preproc=true);
@@ -138,11 +137,6 @@ public:
 	void OnStartDrag(wxStyledTextEvent &event);
 	void EndDrag();
 		
-//	bool FindNext (wxString text, int flags);
-//	bool FindPrev (wxString text, int flags);
-//	bool Replace (wxString text1, wxString text2, int flags);
-//	bool ReplaceAll (wxString text1, wxString text2, int flags);
-
 	// manejo de archivos
 	void LoadSourceConfig();
 	void SetLineNumbers();
@@ -157,6 +151,10 @@ public:
 
 	void MoveCursorTo (long pos, bool focus=false);
 
+private:
+	///* auxiliar function for the public SetStyle
+	void SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle);
+public:
 	void SetStyle(bool color);
 	void SetStyle(int lexer);
 	void SetModify(bool modif=true);
