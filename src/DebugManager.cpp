@@ -212,7 +212,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 //	if (args.Len())
 //		command<<_T(" --args \"")<<exe<<_T("\" ")<</*utils->EscapeString(*/args/*)*/;	
 //	else
-//		command<<_T(" \"")<<exe<<_T("\"");	
+		command<<_T(" \"")<<exe<<_T("\"");	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
@@ -228,11 +228,11 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			return false;
 		}
 		// configure debugger
-		SendCommand("-exec-arguments ",args);
 #if defined(_WIN32) || defined(__WIN32__)
 		SendCommand(_T("-gdb-set new-console on"));
 #endif
 		if (!config->Debug.auto_solibs) SendCommand(_T("set auto-solib-add off"));
+		if (args.Len()) cerr<<SendCommand("set args ",args);
 		SetFullOutput(false);
 //		SendCommand(_T(BACKTRACE_MACRO));
 		SendCommand(wxString(_T("-environment-cd "))<<utils->EscapeString(workdir,true));
