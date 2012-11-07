@@ -1271,16 +1271,12 @@ bool ConfigManager::CheckWxfbPresent() {
 		out = utils->GetOutput(wxString(_T("\""))<<config->Files.wxfb_command<<_T("\" -h"),true);
 #ifdef __WIN32__
 	if (!out.Len()) {
-		out = utils->GetOutput(wxString("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe")<<_T("\" -h"),true);
-		if (out.Len()) config->Files.wxfb_command="c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe";
-	}
-	if (!out.Len()) {
-		out = utils->GetOutput(wxString("c:\\Program Files\\wxformbuilder\\wxformbuilder.exe")<<_T("\" -h"),true);
-		if (out.Len()) config->Files.wxfb_command="c:\\Program Files\\wxformbuilder\\wxformbuilder.exe";
-	}
-	if (!out.Len()) {
-		out = utils->GetOutput(wxString("c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe")<<_T("\" -h"),true);
-		if (out.Len()) config->Files.wxfb_command="c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe";
+		if (wxFileName::FileExists("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe")
+			out=config->Files.wxfb_command="c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe";
+		else if (wxFileName::FileExists("c:\\Program Files\\wxformbuilder\\wxformbuilder.exe"))
+			out=config->Files.wxfb_command="c:\\Program Files\\wxformbuilder\\wxformbuilder.exe";
+		else if (wxFileName::FileExists("c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe"))
+			out=config->Files.wxfb_command="c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe";
 	}
 #endif
 	if (project->wxfb_ask && (out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
@@ -1305,16 +1301,12 @@ bool ConfigManager::CheckDoxygenPresent() {
 		out = utils->GetOutput(wxString(_T("\""))<<config->Files.doxygen_command<<_T("\" --version"),true);
 #ifdef __WIN32__
 	if (!out.Len()) {
-		out = utils->GetOutput(wxString("\"c:\\archivos de programa\\doxygen\\bin\\doxygen.exe")<<_T("\" --version"),true);
-		if (out.Len()) config->Files.doxygen_command="c:\\archivos de programa\\doxygen\\bin\\doxygen.exe";
-	}
-	if (!out.Len()) {
-		out = utils->GetOutput(wxString("\"c:\\Program Files\\doxygen\\bin\\doxygen.exe")<<_T("\" --version"),true);
-		if (out.Len()) config->Files.doxygen_command="c:\\Program Files\\doxygen\\bin\\doxygen.exe";
-	}
-	if (!out.Len()) {
-		out = utils->GetOutput(wxString("\"c:\\Program Files (x86)\\doxygen\\bin\\doxygen.exe")<<_T("\" --version"),true);
-		if (out.Len()) config->Files.doxygen_command="c:\\Program Files (x86)\\doxygen\\bin\\doxygen.exe";
+		if (wxFileName::FileExists("c:\\archivos de programa\\doxygen\\bin\\doxygen.exe"))
+			out=config->Files.doxygen_command="c:\\archivos de programa\\doxygen\\bin\\doxygen.exe";
+		else if (wxFileName::FileExists("c:\\Program Files\\doxygen\\bin\\doxygen.exe"))
+			out=config->Files.doxygen_command="c:\\Program Files\\doxygen\\bin\\doxygen.exe";
+		else if (wxFileName::FileExists("c:\\Program Files (x86)\\doxygen\\bin\\doxygen.exe"))
+			out=config->Files.doxygen_command="c:\\Program Files (x86)\\doxygen\\bin\\doxygen.exe";
 	}
 #endif
 	if ((out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
@@ -1338,16 +1330,12 @@ bool ConfigManager::CheckCppCheckPresent() {
 		out = utils->GetOutput(wxString(_T("\""))<<config->Files.cppcheck_command<<_T("\" --version"),true);
 #ifdef __WIN32__
 	if (!out.Len()) {
-		out = utils->GetOutput(wxString("\"c:\\archivos de programa\\cppcheck\\cppcheck.exe")<<_T("\" --version"),true);
-		if (out.Len()) config->Files.cppcheck_command="c:\\archivos de programa\\cppcheck\\cppcheck.exe";
-	}
-	if (!out.Len()) {
-		out = utils->GetOutput(wxString("\"c:\\Program Files\\cppcheck\\cppcheck.exe")<<_T("\" --version"),true);
-		if (out.Len()) config->Files.cppcheck_command="c:\\Program Files\\cppcheck\\cppcheck.exe";
-	}
-	if (!out.Len()) {
-		out = utils->GetOutput(wxString("\"c:\\Program Files (x86)\\cppcheck\\cppcheck.exe")<<_T("\" --version"),true);
-		if (out.Len()) config->Files.cppcheck_command="c:\\Program Files (x86)\\cppcheck\\cppcheck.exe";
+		if (wxFileName::FileExists("c:\\archivos de programa\\cppcheck\\cppcheck.exe"))
+			out=config->Files.cppcheck_command="c:\\archivos de programa\\cppcheck\\cppcheck.exe";
+		else if (wxFileName::FileExists("c:\\Program Files\\cppcheck\\cppcheck.exe"))
+			out=config->Files.cppcheck_command="c:\\Program Files\\cppcheck\\cppcheck.exe";
+		else if (wxFileName::FileExists("c:\\Program Files (x86)\\cppcheck\\cppcheck.exe"))
+			out=config->Files.cppcheck_command="c:\\Program Files (x86)\\cppcheck\\cppcheck.exe";
 	}
 #endif
 	if ((out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
