@@ -66,6 +66,7 @@ public:
 	
 	void CompileSource (mxSource *source, bool run, bool debug);
 	void BuildOrRunProject(bool run, bool debug, bool prepared);
+	void ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run);
 	void ParseSomeErrors(compile_and_run_struct_single *compile_and_run);
 	void ParseCompilerOutput(compile_and_run_struct_single *compile_and_run, bool success);
 	void ResetCompileData();

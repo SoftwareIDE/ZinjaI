@@ -2,7 +2,7 @@ desc=makefile based building (mingw32)
 extern=true
 build_command=mingw32-make ${ARG1} ${ARG2}
 clean_command=mingw32-make ${ARG1} ${ARG3}
-argument1=Common args=-j ${NUM_PROCS} -f Makefile
-argument2=Build target=all
-argument3=Clean target=clean
+argument1=Common arguments=-f Makefile
+argument2=Build arguments=-j ${NUM_PROCS} all
+argument3=Clean arguments=clean
 use_return_vale=1

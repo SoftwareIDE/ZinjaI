@@ -669,6 +669,7 @@ void mxUtils::ParameterReplace(wxString &str, wxString from, wxString to) {
 		int p=str.Find(from), l=str.Len();
 		while (p!=wxNOT_FOUND) {
 			int p1=p, p2=p;
+			// la clave puede ser parte de un argumento, por eso busca que hay pegado para atras y para adelante
 			while (p1>0 && str[p1]!=' ' && str[p1]!='\t')
 				p1--;
 			if (str[p1]==' ' || str[p1]=='\t')
@@ -678,12 +679,7 @@ void mxUtils::ParameterReplace(wxString &str, wxString from, wxString to) {
 			if (str[p2]==' ' || str[p2]=='\t')
 				p2--;
 			final<<str.SubString(0,p1-1);
-			final<<_T("\"");
-			final<<str.SubString(p1,p-1);
-			final<<to;
-			p+=from.Len();
-			final<<str.SubString(p,p2);
-			final<<_T("\"");
+			final<<utils->Quotize(str.SubString(p1,p-1)+to+str.SubString(p+from.Len(),p2));
 			str=str.Mid(p2+1);
 			p=str.Find(from);
 			l=str.Len();

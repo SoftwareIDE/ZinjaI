@@ -285,19 +285,14 @@ void mxCompiler::UnSTD(wxString &line) {
 
 
 void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run) {
+	if (compile_and_run->output_type==MXC_EXTERN) { ParseSomeExternErrors(compile_and_run); return; }
+	
 	wxProcess *process = compile_and_run->process;
 	static wxString error_line, nice_error_line;
 	int p,l;
 //	char c;
 	wxTextInputStream input(*(process->GetErrorStream()));	
 	while ( process->IsErrorAvailable() ) {
-//		error_line.Clear();
-//		while (process->IsErrorAvailable()) {
-//			c=input.GetChar();
-//			if (c!='\r' && c!='\n') error_line<<c;
-//			else break;
-//		}
-//		if (!(c=='\r'||c=='\n')) return;
 		
 		error_line=input.ReadLine();
 		
@@ -312,10 +307,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 			nice_error_line=error_line;
 		
 		compile_and_run->full_output.Add(error_line);
-		if (compile_and_run->output_type==MXC_EXTERN) {
-			main_window->AddExternCompilerOutput(error_line);
-			continue;
-		} else if (compile_and_run->output_type==MXC_EXTRA || error_line.Len()==0) 
+		if (compile_and_run->output_type==MXC_EXTRA || error_line.Len()==0) 
 			continue;
 		num_all++;
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
@@ -391,6 +383,26 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 	}
 }
 
+void mxCompiler::ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run) {
+	wxProcess *process = compile_and_run->process;
+	static wxString error_line, nice_error_line;
+	int p,l;
+	wxTextInputStream input1(*(process->GetInputStream()));	
+	while ( process->IsInputAvailable() ) {
+		error_line=input1.ReadLine();
+		if (error_line.Len()==0) continue;
+		compile_and_run->full_output.Add(error_line);
+		main_window->AddExternCompilerOutput("< ",error_line);
+	}
+	wxTextInputStream input2(*(process->GetErrorStream()));	
+	while ( process->IsErrorAvailable() ) {
+		error_line=input2.ReadLine();
+		if (error_line.Len()==0) continue;
+		compile_and_run->full_output.Add(error_line);
+		main_window->AddExternCompilerOutput("!! ",error_line);
+	}
+}
+
 void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_run, bool success) {
 	
 	// poner los errores/warnings/etc en el arbol
@@ -425,9 +437,9 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 							status_text<<LANG(MAINW_COMPILING_DONE_MID_ONE_MINUTE,"un minuto y ")<<elapsed_time%60<<_T(" segundos ).");
 						else
 							status_text<<elapsed_time/60<<LANG(MAINW_COMPILING_DONE_MID_MINUTES," minutos y ")<<elapsed_time%60<<LANG(MAINW_COMPILING_DONE_POST_SECONDS," segundos ).");
-							main_window->SetStatusText(status_text);
+						main_window->SetCompilingStatus(status_text);
 					} else {
-						main_window->SetStatusText(LANG(MAINW_COMPILING_DONE,"Compilacion finalizada."));
+						main_window->SetCompilingStatus(LANG(MAINW_COMPILING_DONE,"Compilacion finalizada."));
 					}
 					tree->Expand(warnings);
 					tree->SetItemText(state,LANG(MAINW_COMPILING_DONE,"Compilacion Finalizada"));
@@ -472,7 +484,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 		// informar y no seguir
 		if (!project || project->compile_was_ok) {
 			main_window->SetStatusProgress(0);
-			main_window->SetStatusText(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
+			main_window->SetCompilingStatus(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
 			compile_and_run->compiling=false;
 			wxBell();
 			if (compile_and_run->output_type==MXC_EXTRA)

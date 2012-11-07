@@ -853,7 +853,6 @@ void mxMainWindow::RunCustomTool(wxString name, wxString workdir, wxString cmd, 
 			wxExecute(term_cmd+" "+cmd, wxEXEC_NOHIDE|wxEXEC_MAKE_GROUP_LEADER);
 #endif
 		} else {
-//			wxMessageBox(cmd);	
 #if defined(__WIN32__)
 			wxExecute(cmd, wxEXEC_MAKE_GROUP_LEADER);
 #else

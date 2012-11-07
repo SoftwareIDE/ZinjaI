@@ -2310,7 +2310,7 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 		compiler->timer->Start(500);
 	}
 	// informar al usuario
-	SetCompilingStatus(msg);
+	if (msg.Len()) SetCompilingStatus(msg);
 }
 
 
@@ -5406,16 +5406,16 @@ void mxMainWindow::SetToolchainMode (bool is_extern) {
 }
 
 void mxMainWindow::SetCompilingStatus (const wxString &message) {
-	if (current_toolchain.is_extern) AddExternCompilerOutput(message);
+	if (current_toolchain.is_extern) AddExternCompilerOutput("= ",message);
 	else compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
 	main_window->SetStatusText(message);
 }
 
 void mxMainWindow::ClearExternCompilerOutput ( ) {
-	extern_compiler_output->Append("");
+	extern_compiler_output->Clear();
 }
 
-void mxMainWindow::AddExternCompilerOutput (const wxString &message) {
-	extern_compiler_output->Append(message);
+void mxMainWindow::AddExternCompilerOutput(const wxString &pre, const wxString &message) {
+	extern_compiler_output->Append(pre+message);
 	extern_compiler_output->ScrollLines(1);
 }

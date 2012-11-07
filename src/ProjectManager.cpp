@@ -990,24 +990,27 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 		delete first_compile_step;
 		first_compile_step=s;
 	}
-	compile_step *step=first_compile_step=new compile_step(CNS_VOID,NULL);
 	warnings.Clear();
 
+	compile_was_ok=true; // inicialmente no hay errores, se va a activar si un paso falla
+	
 	// si se encarga otro....
 	if (current_toolchain.is_extern) {
-		step->next = new compile_step(CNS_EXTERN,NULL);
+		current_step=0;
+		steps_count=1;
+		SaveAll(false);
+		first_compile_step = new compile_step(CNS_EXTERN,NULL);
 		return true;
 	}
 	
 	bool retval=false, relink_exe=false;
-		
 	config_analized=false;
 	
-	compile_was_ok=true; // inicialmente no hay errores, se va a activar si un paso falla
 	
 	// prepara la info de las bibliotecas
 	AssociateLibsAndSources(active_configuration);
 	
+	compile_step *step=first_compile_step=new compile_step(CNS_VOID,NULL);
 	compile_extra_step *extra_step = only_one?NULL:active_configuration->extra_steps;
 	current_step=steps_count=0;
 
@@ -1403,7 +1406,7 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 		compile_step *step = first_compile_step;
 		switch (step->type) {
 		case CNS_EXTERN: // for custom extern toolchains
-			caption=wxString(LANG(PROJMNGR_COMPILING,"Compilando"))<<"...";
+			caption="";
 			compile_and_run->pid = CompileWithExternToolchain(compile_and_run);
 			break;
 		case CNS_ICON:
@@ -1750,7 +1753,9 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 void ProjectManager::Clean() {
 	
 	if (current_toolchain.is_extern) {
-		CompileWithExternToolchain(new compile_and_run_struct_single("clean"),false);
+		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("clean");
+		compile_and_run->killed=true; // para que no lo procese el evento main_window->ProcessKilled
+		compile_and_run->pid=CompileWithExternToolchain(compile_and_run,false);
 		return;
 	}
 	
@@ -2585,6 +2590,7 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
 	compile_and_run->full_output.Add(_T(""));
+	main_window->AddExternCompilerOutput("> ",command);
 	return utils->Execute(path,command, wxEXEC_ASYNC/*|(step->hide_window?0:wxEXEC_NOHIDE)*/,compile_and_run->process);
 }
 
@@ -2600,32 +2606,31 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 * @retval true si es necesario ejecutar este paso
 * @retval false si es no necesario ejecutar este paso
 **/
-
 bool ProjectManager::ShouldDoExtraStep(compile_extra_step *step) {
-		if (step->out.Len()==0) return true;
-		wxString str_out(step->out);
-		utils->ParameterReplace(str_out,_T("${TEMP_DIR}"),temp_folder_short);
-		utils->ParameterReplace(str_out,_T("${PROJECT_BIN}"),executable_name);
-		utils->ParameterReplace(str_out,_T("${PROJECT_PATH}"),path);
-		utils->ParameterReplace(str_out,_T("${MINGW_DIR}"),config->mingw_real_path);
-		str_out=DIR_PLUS_FILE(path,str_out);
-		wxFileName fn_out(str_out);
-		if (!fn_out.FileExists()) return true;
-		wxDateTime dt_out = fn_out.GetModificationTime();
-		wxArrayString array;
-		utils->Split(step->deps,array,true,false);
-		for (unsigned int i=0;i<array.GetCount();i++) {
-			wxString str_dep(array[i]);
-			utils->ParameterReplace(str_dep,_T("${TEMP_DIR}"),temp_folder_short);
-			utils->ParameterReplace(str_dep,_T("${PROJECT_BIN}"),executable_name);
-			utils->ParameterReplace(str_dep,_T("${PROJECT_PATH}"),path);
-			utils->ParameterReplace(str_dep,_T("${MINGW_DIR}"),config->mingw_real_path);
-			str_dep = DIR_PLUS_FILE(path,str_dep);
-			wxFileName fn_dep = wxFileName(str_dep);
-			if (fn_dep.FileExists() && fn_dep.GetModificationTime()>dt_out)
-				return true;
-		}
-		return false;
+	if (step->out.Len()==0) return true;
+	wxString str_out(step->out);
+	utils->ParameterReplace(str_out,_T("${TEMP_DIR}"),temp_folder_short);
+	utils->ParameterReplace(str_out,_T("${PROJECT_BIN}"),executable_name);
+	utils->ParameterReplace(str_out,_T("${PROJECT_PATH}"),path);
+	utils->ParameterReplace(str_out,_T("${MINGW_DIR}"),config->mingw_real_path);
+	str_out=DIR_PLUS_FILE(path,str_out);
+	wxFileName fn_out(str_out);
+	if (!fn_out.FileExists()) return true;
+	wxDateTime dt_out = fn_out.GetModificationTime();
+	wxArrayString array;
+	utils->Split(step->deps,array,true,false);
+	for (unsigned int i=0;i<array.GetCount();i++) {
+		wxString str_dep(array[i]);
+		utils->ParameterReplace(str_dep,_T("${TEMP_DIR}"),temp_folder_short);
+		utils->ParameterReplace(str_dep,_T("${PROJECT_BIN}"),executable_name);
+		utils->ParameterReplace(str_dep,_T("${PROJECT_PATH}"),path);
+		utils->ParameterReplace(str_dep,_T("${MINGW_DIR}"),config->mingw_real_path);
+		str_dep = DIR_PLUS_FILE(path,str_dep);
+		wxFileName fn_dep = wxFileName(str_dep);
+		if (fn_dep.FileExists() && fn_dep.GetModificationTime()>dt_out)
+			return true;
+	}
+	return false;
 }
 
 /**

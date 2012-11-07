@@ -548,7 +548,7 @@ public:
 	///@brief clear the content of extern_compiler_output
 	void ClearExternCompilerOutput(); 
 	///@brief adds a new line to the content of extern_compiler_output
-	void AddExternCompilerOutput(const wxString &message); 
+	void AddExternCompilerOutput(const wxString &pre, const wxString &message); 
 	
 	DECLARE_EVENT_TABLE();
 };
