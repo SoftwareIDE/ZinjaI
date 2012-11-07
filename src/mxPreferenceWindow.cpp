@@ -489,7 +489,6 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 	files_debugger_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GDB,"Comando del depurador"),config->Files.debugger_command,mxID_GDB_PATH);
 	files_terminal_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CONSOLE,"Comando de la terminal"),config->Files.terminal_command,mxID_TERMINALS_BUTTON);
 	
-#warning LA FUNCIONALIDAD DEL COMBO PARA ELEGIR EL TOOLCHAIN NO ESTA IMPLEMENTADA
 	wxArrayString tc_array; Toolchain::GetNames(tc_array,true); int tc_i=tc_array.Index(config->Files.toolchain);
 	files_toolchain = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_TOOLCHAIN,"Herramientas de compilación"),tc_array,tc_i);
 	

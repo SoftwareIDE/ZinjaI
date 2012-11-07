@@ -1271,7 +1271,7 @@ bool ConfigManager::CheckWxfbPresent() {
 		out = utils->GetOutput(wxString(_T("\""))<<config->Files.wxfb_command<<_T("\" -h"),true);
 #ifdef __WIN32__
 	if (!out.Len()) {
-		if (wxFileName::FileExists("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe")
+		if (wxFileName::FileExists("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe"))
 			out=config->Files.wxfb_command="c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe";
 		else if (wxFileName::FileExists("c:\\Program Files\\wxformbuilder\\wxformbuilder.exe"))
 			out=config->Files.wxfb_command="c:\\Program Files\\wxformbuilder\\wxformbuilder.exe";

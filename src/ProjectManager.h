@@ -311,7 +311,7 @@ struct file_item { // para armar las listas (doblemente enlazadas) de archivos d
 	}
 };
 
-enum ces_type{CNS_VOID,CNS_SOURCE,CNS_BARRIER,CNS_EXTRA,CNS_LINK,CNS_ICON};
+enum ces_type{CNS_VOID,CNS_SOURCE,CNS_BARRIER,CNS_EXTRA,CNS_LINK,CNS_ICON,CNS_EXTERN};
 
 /** 
 * @brief Estructura que representa un paso genérico del proceso de compilación.
@@ -436,6 +436,9 @@ public:
 	long int CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step);
 	/// Ejecuta el paso de enlazado en la construcción de un proceso, se invoca a través de CompileNext, no directamente
 	long int Link(compile_and_run_struct_single *compile_and_run, linking_info *info);
+	/// Ejecuta el comando de compilación para un toolchan externo (como make) (build=true compila, build=false limpia)
+	long int CompileWithExternToolchain(compile_and_run_struct_single *compile_and_run, bool build=true);
+	/// Lanza el ejecutable
 	long int Run(compile_and_run_struct_single *compile_and_run);
 	bool RenameFile(wxTreeItemId &tree_item, wxString new_name);
 	/// Compila un solo fuente del proyecto, preparando la configuración, fuera del proceso de construcción general
@@ -505,6 +508,9 @@ public:
 	
 	/// @brief Dibuja un grafo con las relaciones entre los fuentes como arcos y los tamaños como colores
 	void DrawGraph();
+	
+	/// @brief Defines with project_configuration is the active one and inform main window to adecuate gui
+	void SetActiveConfiguration(project_configuration *aconf);
 
 };
 

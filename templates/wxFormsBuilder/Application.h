@@ -3,8 +3,6 @@
 
 #include <wx/app.h>
 
-IMPLEMENT_APP(mxApplication)
-
 class mxApplication : public wxApp {
 public:
 	virtual bool OnInit();

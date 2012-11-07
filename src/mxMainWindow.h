@@ -400,6 +400,10 @@ public:
 		wxMenuItem *menuItem;
 		wxTreeItemId root, state, errors, warnings, all;
 	} compiler_tree;
+	//! Componentes del árbol de resultados de la compilación
+	wxListBox *extern_compiler_output;
+	//! this sizer will hold both compiler_tree.treeCtrl and extern_compiler_output, but only one could be visible at a given time
+	wxPanel *compiler_panel;
 
 	//! Componentes del árbol de simbolos
 	struct symbols_tree_struct {
@@ -509,7 +513,7 @@ public:
 	wxTreeCtrl* CreateSymbolsTree();
 	wxTreeCtrl* CreateExplorerTree();
 	wxTreeCtrl* CreateProjectTree();
-	wxTreeCtrl* CreateCompilerTree();
+	wxPanel* CreateCompilerTree();
 	
 	void CreateBeginnersPanel();
 
@@ -534,6 +538,17 @@ public:
 	void ShowBeginnersPanel();
 	
 	void FocusToSource();
+	
+	///@brief adapt gui elements for the current toolchain (is_extern means showing result textbox instead of compiler tree)
+	void SetToolchainMode(bool is_extern);
+	
+	///@brief set the message in compiler panel and status bar
+	void SetCompilingStatus(const wxString &message); 
+	
+	///@brief clear the content of extern_compiler_output
+	void ClearExternCompilerOutput(); 
+	///@brief adds a new line to the content of extern_compiler_output
+	void AddExternCompilerOutput(const wxString &message); 
 	
 	DECLARE_EVENT_TABLE();
 };

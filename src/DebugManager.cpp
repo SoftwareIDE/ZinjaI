@@ -191,7 +191,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			mxMessageDialog(main_window,LANG(DEBUG_ERROR_WITH_TERMINAL,"Ha ocurrido un error al iniciar la terminal para la ejecucion.\n"
 										   "Compruebe que el campo \"Comando del terminal\" de la pestaña\n"
 										   "\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
-			main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,_T("Error al iniciar depuracion"));
+			main_window->SetCompilingStatus("Error al iniciar depuracion");
 			return false;
 		}
 		while (true) {
@@ -224,7 +224,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,"El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depurarcion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar)."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 			SendCommand(_T("-gdb-exit"));
 			debugging = false; has_symbols=false;
-			main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,_T("Error al iniciar depuracion"));
+			main_window->SetCompilingStatus("Error al iniciar depuracion");
 			return false;
 		}
 		// configure debugger
@@ -251,7 +251,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	}
 	pid=0;
 	debugging = false;
-	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,_T("Error al iniciar depuracion"));
+	main_window->SetCompilingStatus("Error al iniciar depuracion");
 	return false;
 }
 
@@ -1284,11 +1284,9 @@ wxString DebugManager::GetSubValueFromAns(wxString ans, wxString key1, wxString 
 }
 
 void DebugManager::SetStateText(wxString text, bool refresh) {
-	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,text);
-	main_window->SetStatusText(text);
+	main_window->SetCompilingStatus(text);
 	main_window->toolbar_status_text->SetLabel(wxString(LANG(DEBUG_STATUS_PREFIX,"  Depuracion: "))+text);
-	if (refresh)
-		wxYield();
+	if (refresh) wxYield();
 }
 
 

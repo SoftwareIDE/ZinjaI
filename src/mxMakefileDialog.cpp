@@ -73,7 +73,7 @@ void mxMakefileDialog::OnOkButton(wxCommandEvent &event) {
 	if (file_path->GetValue().Len()) {
 		Close();
 		project_configuration *orig = project->active_configuration;
-		project->active_configuration = project->GetConfig(configuration_name->GetValue());
+		project->active_configuration = project->GetConfig(configuration_name->GetValue()); // we can skip project->SetActiveConfiguration here cause we are setting it back after makefile generation
 		makefile_type mktype=MKTYPE_FULL;
 		if (split_type->GetSelection()==1) mktype=MKTYPE_CONFIG;
 		if (split_type->GetSelection()==2) mktype=MKTYPE_OBJS;

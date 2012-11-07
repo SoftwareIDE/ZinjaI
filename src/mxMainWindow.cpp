@@ -80,6 +80,7 @@
 #define SameFile(f1,f2) (f1==f2)
 #else
 #include <sys/stat.h>
+#include "Toolchain.h"
 inline bool SameFile(wxString f1, wxString f2) {
 	struct stat df1; struct stat df2;
 	lstat (f1.c_str(), &df1);
@@ -2163,8 +2164,11 @@ wxTreeCtrl* mxMainWindow::CreateSymbolsTree() {
 }
 
 
-wxTreeCtrl* mxMainWindow::CreateCompilerTree() {
-	compiler_tree.treeCtrl = new wxTreeCtrl(this, mxID_TREE_COMPILER, wxPoint(0,0), wxSize(160,250), wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT);
+wxPanel* mxMainWindow::CreateCompilerTree() {
+	
+	compiler_panel=new wxPanel(this,wxID_ANY,wxDefaultPosition,wxSize(160,250));
+	
+	compiler_tree.treeCtrl = new wxTreeCtrl(compiler_panel, mxID_TREE_COMPILER, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT);
 // 	wxFont tree_font=compiler_tree.treeCtrl->GetFont();
 // 	tree_font.SetFaceName("courier");
 // 	compiler_tree.treeCtrl->SetFont(tree_font);
@@ -2191,10 +2195,19 @@ wxTreeCtrl* mxMainWindow::CreateCompilerTree() {
 	items.Add(compiler_tree.warnings);
 	items.Add(compiler_tree.all);
 	
+	// added for enabling extern toolchains, output will go to a textbox instead of a tree
+	wxBoxSizer *compiler_sizer = new wxBoxSizer(wxVERTICAL);
+	extern_compiler_output = new wxListBox(compiler_panel,wxID_ANY,wxDefaultPosition,wxDefaultSize);
+	wxSizerFlags sf; sf.Expand().Proportion(1).Border(0,0);
+	compiler_sizer->Add(compiler_tree.treeCtrl,sf);
+	compiler_sizer->Add(extern_compiler_output,sf);
+	extern_compiler_output->Hide();
+	compiler_panel->SetSizer(compiler_sizer);
+	
 	if (config->Init.autohiding_panels)
-		autohide_handlers[ATH_COMPILER] = new mxHidenPanel(this,compiler_tree.treeCtrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_COMPILER,"Compilador"));
-
-	return compiler_tree.treeCtrl;
+		autohide_handlers[ATH_COMPILER] = new mxHidenPanel(this,compiler_panel,HP_BOTTOM,LANG(MAINW_AUTOHIDE_COMPILER,"Compilador"));
+	
+	return compiler_panel;
 }
 
 void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
@@ -2235,8 +2248,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 	if (compile_and_run->compiling) { // si termino la compilacion
 		compiler->ParseCompilerOutput(compile_and_run,event.GetExitCode()==0);
 	} else { // si termino la ejecucion
-		status_bar->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
-		compiler_tree.treeCtrl->SetItemText(compiler_tree.state,LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
+		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
 		if (compile_and_run->valgrind_cmd.Len()) ShowValgrindPanel('v',DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out")));
 		delete compile_and_run->process;
 		delete compile_and_run;
@@ -2272,9 +2284,9 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 	if (compile_and_run->pid==0) {
 		wxBell();
 		if (compile_and_run->compiling)
-			compiler_tree.treeCtrl->SetItemText(compiler_tree.state,LANG(MAINW_COULDNOT_LAUNCH_PROCESS,"No se pudo lanzar el proceso"));
+			SetCompilingStatus(LANG(MAINW_COULDNOT_LAUNCH_PROCESS,"No se pudo lanzar el proceso"));
 		else
-			compiler_tree.treeCtrl->SetItemText(compiler_tree.state,LANG(MAINW_COULDNOT_RUN,"No se pudo lanzar la ejecucion!"));
+			SetCompilingStatus(LANG(MAINW_COULDNOT_RUN,"No se pudo lanzar la ejecucion!"));
 		delete compile_and_run;
 		return;
 	}
@@ -2287,9 +2299,9 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 		menu.tools_makefile->Enable(false);
 		// mostrar el arbol de compilacion
 		if (!config->Init.autohiding_panels) {
-			if (!aui_manager.GetPane(compiler_tree.treeCtrl).IsShown()) {
+			if (!aui_manager.GetPane(compiler_panel).IsShown()) {
 				aui_manager.GetPane(quick_help).Hide();
-				aui_manager.GetPane(compiler_tree.treeCtrl).Show();
+				aui_manager.GetPane(compiler_panel).Show();
 				compiler_tree.menuItem->Check(true);
 				aui_manager.Update();
 			}
@@ -2298,8 +2310,7 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 		compiler->timer->Start(500);
 	}
 	// informar al usuario
-	compiler_tree.treeCtrl->SetItemText(compiler_tree.state,msg);
-	if (!project) status_bar->SetStatusText(msg);
+	SetCompilingStatus(msg);
 }
 
 
@@ -2488,7 +2499,7 @@ void mxMainWindow::OnRunStop (wxCommandEvent &event) {
 			}
 			compile_and_run=next;
 		}
-		compiler_tree.treeCtrl->SetItemText(compiler_tree.state,_T("Detenido!"));
+		SetCompilingStatus(_T("Detenido!"));
 	} else if (compiler->compile_and_run_single) {
 		compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;;
 		compile_and_run->killed=true;
@@ -2615,7 +2626,7 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	symbols_tree.menuItem->Check(false);
 	aui_manager.GetPane(symbols_tree.treeCtrl).Hide();
 	compiler_tree.menuItem->Check(false);
-	aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+	aui_manager.GetPane(compiler_panel).Hide();
 	project_tree.menuItem->Check(false);
 	if (valgrind_panel) aui_manager.GetPane(valgrind_panel).Hide();
 	if (config->Init.show_explorer_tree) {
@@ -2736,12 +2747,12 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 		}
 		
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
-			if ( fullscreen_panels_status[0]!=aui_manager.GetPane(compiler_tree.treeCtrl).IsShown() ) {
+			if ( fullscreen_panels_status[0]!=aui_manager.GetPane(compiler_panel).IsShown() ) {
 				if (fullscreen_panels_status[0]) {
-					aui_manager.GetPane(compiler_tree.treeCtrl).Show();
+					aui_manager.GetPane(compiler_panel).Show();
 					compiler_tree.menuItem->Check(true);
 				} else {
-					aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+					aui_manager.GetPane(compiler_panel).Hide();
 					compiler_tree.menuItem->Check(false);
 				}
 			}
@@ -2834,8 +2845,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 			}
 		}
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
-			if ( (fullscreen_panels_status[0]=aui_manager.GetPane(compiler_tree.treeCtrl).IsShown()) ) {
-				aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+			if ( (fullscreen_panels_status[0]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
+				aui_manager.GetPane(compiler_panel).Hide();
 				compiler_tree.menuItem->Check(false);
 			}
 			if ( (fullscreen_panels_status[1]=aui_manager.GetPane(quick_help).IsShown()) ) {
@@ -2888,9 +2899,9 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnViewHideBottom (wxCommandEvent &event) {
-	if (aui_manager.GetPane(compiler_tree.treeCtrl).IsShown()) {
+	if (aui_manager.GetPane(compiler_panel).IsShown()) {
 		compiler_tree.menuItem->Check(false);
-		aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+		aui_manager.GetPane(compiler_panel).Hide();
 	}
 	if (aui_manager.GetPane(quick_help).IsShown()) {
 		aui_manager.GetPane(quick_help).Hide();
@@ -3148,15 +3159,15 @@ void mxMainWindow::OnViewToolbarRun (wxCommandEvent &event) {
 
 void mxMainWindow::OnViewCompilerTree (wxCommandEvent &event) {
 	if (config->Init.autohiding_panels) {
-		if (!aui_manager.GetPane(compiler_tree.treeCtrl).IsShown())
+		if (!aui_manager.GetPane(compiler_panel).IsShown())
 			autohide_handlers[ATH_COMPILER]->ForceShow();
 	} else {	
 		if (!compiler_tree.menuItem->IsChecked()) {
 			compiler_tree.menuItem->Check(false);
-			aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+			aui_manager.GetPane(compiler_panel).Hide();
 		} else {
 			compiler_tree.menuItem->Check(true);
-			aui_manager.GetPane(compiler_tree.treeCtrl).Show();
+			aui_manager.GetPane(compiler_panel).Show();
 		}
 	}
 	aui_manager.Update();
@@ -3986,8 +3997,7 @@ void mxMainWindow::OnDebugRun ( wxCommandEvent &event ) {
 		if (!debug->running && !debug->waiting)
 			debug->Continue();
 	} else {
-		compiler_tree.treeCtrl->SetItemText(compiler_tree.state,_T("Preparando depuracion..."));
-		status_bar->SetStatusText(_T("Preparando depuracion..."));
+		SetCompilingStatus(_T("Preparando depuracion..."));
 		wxYield();
 		if (project) {
 			debug->Start(config->Debug.compile_again);
@@ -4252,8 +4262,8 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 				if (log_visible && aui_manager.GetPane(autohide_handlers[ATH_DEBUG_LOG]).IsShown())
 					autohide_handlers[ATH_DEBUG_LOG]->Select();
 			} else {
-				if ( (debug_panels_status[0]=aui_manager.GetPane(compiler_tree.treeCtrl).IsShown()) ) {
-					aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+				if ( (debug_panels_status[0]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
+					aui_manager.GetPane(compiler_panel).Hide();
 					compiler_tree.menuItem->Check(false);
 				}
 				if ( (debug_panels_status[1]=aui_manager.GetPane(quick_help).IsShown()) ) {
@@ -4335,12 +4345,12 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 					autohide_handlers[ATH_DEBUG_LOG]->Hide();
 			} else {
 				
-				if ( debug_panels_status[0]!=aui_manager.GetPane(compiler_tree.treeCtrl).IsShown() ) {
+				if ( debug_panels_status[0]!=aui_manager.GetPane(compiler_panel).IsShown() ) {
 					if (debug_panels_status[0]) {
-						aui_manager.GetPane(compiler_tree.treeCtrl).Show();
+						aui_manager.GetPane(compiler_panel).Show();
 						compiler_tree.menuItem->Check(true);
 					} else {
-						aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+						aui_manager.GetPane(compiler_panel).Hide();
 						compiler_tree.menuItem->Check(false);
 					}
 				}
@@ -4925,7 +4935,7 @@ void mxMainWindow::ShowWelcome(bool show) {
 	wxAuiPaneInfo &pns = aui_manager.GetPane(notebook_sources);
 	wxAuiPaneInfo &pwp = aui_manager.GetPane(welcome_panel);
 	if (show) {
-		aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+		aui_manager.GetPane(compiler_panel).Hide();
 		pns.Hide();
 		pwp.Show();
 		welcome_panel->Reload();
@@ -5172,12 +5182,12 @@ mxSource *mxMainWindow::GetCurrentSource() {
 
 void mxMainWindow::OnEscapePressed(wxCommandEvent &event) {
 	bool do_update=false;
-	if (aui_manager.GetPane(compiler_tree.treeCtrl).IsShown()) {
+	if (aui_manager.GetPane(compiler_panel).IsShown()) {
 		if (config->Init.autohide_panels)
 			autohide_handlers[ATH_COMPILER]->Hide();
 		else {
 			compiler_tree.menuItem->Check(false);
-			aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+			aui_manager.GetPane(compiler_panel).Hide();
 		}
 		do_update=true;
 	}
@@ -5210,7 +5220,7 @@ void mxMainWindow::ShowQuickHelpPanel(bool hide_compiler_tree) {
 			// hide compiler results pane
 			if (hide_compiler_tree) {
 				compiler_tree.menuItem->Check(false);
-				aui_manager.GetPane(compiler_tree.treeCtrl).Hide();
+				aui_manager.GetPane(compiler_panel).Hide();
 			}
 			// show quick help pane
 			aui_manager.GetPane(quick_help).Show();
@@ -5221,14 +5231,14 @@ void mxMainWindow::ShowQuickHelpPanel(bool hide_compiler_tree) {
 
 void mxMainWindow::ShowCompilerTreePanel() {
 	if (config->Init.autohiding_panels) {
-		if (!aui_manager.GetPane(compiler_tree.treeCtrl).IsShown()) {
+		if (!aui_manager.GetPane(compiler_panel).IsShown()) {
 			autohide_handlers[ATH_COMPILER]->ForceShow();
 			focus_timer->Start(333,true);
 		}
 	} else {	
-		if (!aui_manager.GetPane(compiler_tree.treeCtrl).IsShown()) {
+		if (!aui_manager.GetPane(compiler_panel).IsShown()) {
 			aui_manager.GetPane(quick_help).Hide();
-			aui_manager.GetPane(compiler_tree.treeCtrl).Show();
+			aui_manager.GetPane(compiler_panel).Show();
 			compiler_tree.menuItem->Check(true);
 			aui_manager.Update();
 		}
@@ -5384,3 +5394,28 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	gui_project_mode=project_mode;
 }
 
+void mxMainWindow::SetToolchainMode (bool is_extern) {
+	if (is_extern) {
+		compiler_tree.treeCtrl->Hide();
+		extern_compiler_output->Show();
+	} else {
+		compiler_tree.treeCtrl->Show();
+		extern_compiler_output->Hide();
+	}
+	compiler_panel->GetSizer()->Layout();
+}
+
+void mxMainWindow::SetCompilingStatus (const wxString &message) {
+	if (current_toolchain.is_extern) AddExternCompilerOutput(message);
+	else compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
+	main_window->SetStatusText(message);
+}
+
+void mxMainWindow::ClearExternCompilerOutput ( ) {
+	extern_compiler_output->Append("");
+}
+
+void mxMainWindow::AddExternCompilerOutput (const wxString &message) {
+	extern_compiler_output->Append(message);
+	extern_compiler_output->ScrollLines(1);
+}

@@ -28,6 +28,15 @@ void Toolchain::LoadToolchains ( ) {
 				value=line.AfterFirst('=');
 				if (key=="desc") toolchains[i].desc = value;
 				else if (key=="base_dir") base_dir = value;
+				else if (key=="build_command") toolchains[i].build_command = value;
+				else if (key=="clean_command") toolchains[i].clean_command = value;
+				else if (key.StartsWith("argument")) { 
+					long l; 
+					if (key.Mid(8).ToLong(&l) && l>0 && l<=TOOLCHAIN_MAX_ARGS) {
+						toolchains[i].arguments[l-1][0]=value.BeforeFirst('=');
+						toolchains[i].arguments[l-1][1]=value.AfterFirst('=');
+					}
+				}
 				else if (key=="extern") toolchains[i].is_extern = utils->IsTrue(value);
 				else if (key=="c_compiler") toolchains[i].c_compiler = value;
 				else if (key=="c_compiling_options") toolchains[i].c_compiling_options = value;
@@ -64,17 +73,18 @@ Toolchain::Toolchain () {
 	static_lib_linker="ar cr";
 }
 
-bool Toolchain::SelectToolchain ( ) {
+Toolchain *Toolchain::SelectToolchain ( ) {
 	wxString fname=config->Files.toolchain;
 	if (project && project->active_configuration->toolchain.Len())
 		fname=project->active_configuration->toolchain;
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
 			current_toolchain=toolchains[i];
-			return true;
+			return &current_toolchain;
 		}
 	}
-	return false;
+	current_toolchain=Toolchain();
+	return &current_toolchain;
 }
 
 void Toolchain::GetNames (wxArrayString & names, bool exclude_extern) {

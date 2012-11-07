@@ -2,11 +2,10 @@
 #include "VentanaPrincipal.h"
 #include <wx/image.h>
 
+IMPLEMENT_APP(mxApplication)
+
 bool mxApplication::OnInit() {
-	wxImage::AddHandler(new wxPNGHandler);
-	wxImage::AddHandler(new wxXPMHandler);
-	wxImage::AddHandler(new wxJPEGHandler);
-	wxImage::AddHandler(new wxBMPHandler);
+	wxInitAllImageHandlers();
 	new VentanaPrincipal(NULL);
 	return true;
 }

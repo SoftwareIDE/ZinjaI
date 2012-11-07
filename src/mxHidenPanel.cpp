@@ -201,7 +201,7 @@ bool mxHidenPanel::IsDocked() {
 }
 void mxHidenPanel::Select() {
 	ShowDock();
-	// ver como hace para que si estaba flotando aparezca otra vez en el mismo lugar
+	// ver como hacer para que si estaba flotando aparezca otra vez en el mismo lugar
 //	wxAuiPaneInfo &pane = main_window->aui_manager.GetPane(control);
 //	if (pane.IsDocked()) ShowDock();
 //	else { selected=true; pane.Show(); main_window->aui_manager.Update(); }

@@ -38,7 +38,7 @@
 #include "Toolchain.h"
 
 
-wxMutex mxMuteCompiler;
+wxMutex mxMutexCompiler;
 
 mxCompiler *compiler=NULL;
 
@@ -56,12 +56,12 @@ compile_and_run_struct_single::compile_and_run_struct_single(const compile_and_r
 	cerr<<"compile_and_run: *"<<mname<<endl;
 	count++;
 #endif
-	mxMuteCompiler.Lock();
+	mxMutexCompiler.Lock();
 	prev=NULL;
 	next=compiler->compile_and_run_single;
 	if (next) next->prev=this;
 	compiler->compile_and_run_single=this;
-	mxMuteCompiler.Unlock();
+	mxMutexCompiler.Unlock();
 }
 
 compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
@@ -70,21 +70,22 @@ compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
 	cerr<<"compile_and_run: +"<<name<<endl;
 	count++;
 #endif
-	killed=for_debug=compiling=special_output=linking=run_after_compile=last_error_item_IsOk=false;
+	killed=for_debug=compiling=linking=run_after_compile=last_error_item_IsOk=false;
+	output_type=MXC_NULL;
 	process=NULL;
 	pid=parsing_flag=0;
 	last_item_data=NULL;
 	valgrind_cmd=compiler->valgrind_cmd;
-	mxMuteCompiler.Lock();
+	mxMutexCompiler.Lock();
 	prev=NULL;
 	next=compiler->compile_and_run_single;
 	if (next) next->prev=this;
 	compiler->compile_and_run_single=this;
-	mxMuteCompiler.Unlock();
+	mxMutexCompiler.Unlock();
 }
 
 compile_and_run_struct_single::~compile_and_run_struct_single() {
-	mxMuteCompiler.Lock();
+	mxMutexCompiler.Lock();
 	if (next) next->prev=prev;
 	if (prev)
 		prev->next=next;
@@ -99,7 +100,7 @@ compile_and_run_struct_single::~compile_and_run_struct_single() {
 	cerr<<"compile_and_run: -"<<mname<<endl;
 	count--;
 #endif
-	mxMuteCompiler.Unlock();
+	mxMutexCompiler.Unlock();
 }
 
 wxString compile_and_run_struct_single::GetInfo() {
@@ -128,10 +129,10 @@ mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTree
 }
 
 void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
-	tree->SetItemText(state,LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
-	main_window->SetStatusText(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
-	wxYield();
 	ABORT_IF_PARSING;
+	main_window->ClearExternCompilerOutput();
+	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
+	wxYield();
 	if (prepared || project->PrepareForBuilding()) { // si hay que compilar/enlazar
 		if (!EnsureCompilerNotRunning()) return;
 //		project->AnalizeConfig(project->path,true,config->mingw_real_path);
@@ -164,8 +165,7 @@ void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
 		} else {
 			tree->SetItemText(state,LANG(MAINW_BINARY_ALREADY_UPDATED,"El binario ya esta actualizado"));
 		}
-	}
-	
+	}	
 }
 
 void mxCompiler::UnSTD(wxString &line) {
@@ -312,7 +312,10 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 			nice_error_line=error_line;
 		
 		compile_and_run->full_output.Add(error_line);
-		if (compile_and_run->special_output || error_line.Len()==0) 
+		if (compile_and_run->output_type==MXC_EXTERN) {
+			main_window->AddExternCompilerOutput(error_line);
+			continue;
+		} else if (compile_and_run->output_type==MXC_EXTRA || error_line.Len()==0) 
 			continue;
 		num_all++;
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
@@ -472,7 +475,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			main_window->SetStatusText(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
 			compile_and_run->compiling=false;
 			wxBell();
-			if (compile_and_run->special_output)
+			if (compile_and_run->output_type==MXC_EXTRA)
 				tree->SetItemText(state,wxString(_T("Error en: "))<<compile_and_run->step_label);
 			else
 				tree->SetItemText(state,LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
@@ -503,7 +506,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 	
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
 	compile_and_run->for_debug=debug;
-	compile_and_run->special_output=false;
+	compile_and_run->output_type=MXC_GCC;
 	parser->ParseSource(source,true);
 	last_compiled=source;
 	wxString z_opts(wxString(_T(" ")));
@@ -558,26 +561,26 @@ void mxCompiler::ResetCompileData() {
 
 int mxCompiler::NumCompilers() {
 	int n=0;
-	mxMuteCompiler.Lock();
+	mxMutexCompiler.Lock();
 	compile_and_run_struct_single *item = compile_and_run_single;
 	while (item) {
 		if (item->compiling && item->pid!=0) n++;
 		item=item->next;
 	}
-	mxMuteCompiler.Unlock();
+	mxMutexCompiler.Unlock();
 	return n;
 }
 bool mxCompiler::IsCompiling() {
-	mxMuteCompiler.Lock();
+	mxMutexCompiler.Lock();
 	compile_and_run_struct_single *item = compile_and_run_single;
 	while (item) {
 		if (item->compiling && item->pid!=0) {
-			mxMuteCompiler.Unlock();
+			mxMutexCompiler.Unlock();
 			return true;
 		}
 		item=item->next;
 	}
-	mxMuteCompiler.Unlock();
+	mxMutexCompiler.Unlock();
 	return false;
 }
 

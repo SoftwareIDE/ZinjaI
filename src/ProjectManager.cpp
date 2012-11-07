@@ -414,6 +414,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 			}
 	}
  
+	SetActiveConfiguration(active_configuration);
+	
 	// configurar interface de la ventana principal para modo proyecto
 	if (current_source!=_T("")) {
 		if (real_path_char!=file_path_char)
@@ -980,12 +982,6 @@ bool ProjectManager::DependsOnMacro(file_item *item, wxArrayString &macros) {
 **/
 bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 	
-	bool retval=false, relink_exe=false;
-		
-	config_analized=false;
-	
-	compile_was_ok=true; // inicialmente no hay errores, se va a activar si un paso falla
-	
 	// borrar los pasos que hayan quedado incompletos de compilaciones anteriores
 	// para preparar la nueva lista, se pone un nodo ficticio para facilitar la 
 	// "insersion", que siempre sera al final, se evita preguntar si es el primero
@@ -994,13 +990,24 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 		delete first_compile_step;
 		first_compile_step=s;
 	}
+	compile_step *step=first_compile_step=new compile_step(CNS_VOID,NULL);
 	warnings.Clear();
+
+	// si se encarga otro....
+	if (current_toolchain.is_extern) {
+		step->next = new compile_step(CNS_EXTERN,NULL);
+		return true;
+	}
+	
+	bool retval=false, relink_exe=false;
+		
+	config_analized=false;
+	
+	compile_was_ok=true; // inicialmente no hay errores, se va a activar si un paso falla
 	
 	// prepara la info de las bibliotecas
 	AssociateLibsAndSources(active_configuration);
 	
-//	first_compile_step = new compile_step(0,0,0);
-	compile_step *step=first_compile_step=new compile_step(CNS_VOID,NULL);
 	compile_extra_step *extra_step = only_one?NULL:active_configuration->extra_steps;
 	current_step=steps_count=0;
 
@@ -1339,7 +1346,7 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 	compile_and_run->process->Redirect();
 	
 	// ejecutar
-	compile_and_run->special_output=false;
+	compile_and_run->output_type=MXC_GCC;
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
 	compile_and_run->full_output.Add(_T(""));
@@ -1395,6 +1402,10 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 	if (first_compile_step) {
 		compile_step *step = first_compile_step;
 		switch (step->type) {
+		case CNS_EXTERN: // for custom extern toolchains
+			caption=wxString(LANG(PROJMNGR_COMPILING,"Compilando"))<<"...";
+			compile_and_run->pid = CompileWithExternToolchain(compile_and_run);
+			break;
 		case CNS_ICON:
 			caption=wxString(LANG(PROJMNGR_COMPILING,"Compilando"))<<_T(" \"")<<((file_item*)step->what)->name<<_T("\"...");
 			compile_and_run->pid = CompileIcon(compile_and_run,*((wxString*)step->what));
@@ -1442,7 +1453,7 @@ long int ProjectManager::Link(compile_and_run_struct_single *compile_and_run, li
 	command<<info->objects_list+_T(" ")+info->extra_args;
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
-	compile_and_run->special_output=false;
+	compile_and_run->output_type=MXC_SIMIL_GCC;
 	compile_and_run->linking=true; // para que cuando termine sepa que enlazo, para verificar llamar a compiler->CheckForExecutablePermision
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	compile_and_run->full_output.Add(_T(""));
@@ -1737,6 +1748,12 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 }
 
 void ProjectManager::Clean() {
+	
+	if (current_toolchain.is_extern) {
+		CompileWithExternToolchain(new compile_and_run_struct_single("clean"),false);
+		return;
+	}
+	
 	wxString file;
 	// preparar las rutas y nombres adecuados
 	AnalizeConfig(path,true,config->mingw_real_path);
@@ -2316,8 +2333,7 @@ bool ProjectManager::WxfbGenerate(bool show_osd, file_item *cual) {
 
 	mxOSD *osd=NULL;
 	
-	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
-	main_window->SetStatusText(LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
+	main_window->SetCompilingStatus(LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 	
 	wxfbHeaders.Clear();
 	bool something_changed=false;
@@ -2394,6 +2410,7 @@ bool ProjectManager::WxfbGenerate(bool show_osd, file_item *cual) {
 		}
 	}
 	
+	// todo: reemplazar estas lineas por SetCompilingStatus, pero ver antes en que contexto se llega aca para saber que puede haber habido en status
 	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,old_compiler_tree_text);
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
@@ -2523,7 +2540,7 @@ compile_extra_step *ProjectManager::GetExtraStep(project_configuration *conf, wx
 
 long int ProjectManager::CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step) {
 	
-	// preparar la linea de comando (OJO! esto tambien esta en mxProjectConfigWindo)
+	// preparar la linea de comando (OJO! esto tambien esta en mxProjectConfigWindow)
 	wxString command = step->command;
 	utils->ParameterReplace(command,_T("${OUTPUT}"),step->out);
 	utils->ParameterReplace(command,_T("${DEPS}"),step->deps);
@@ -2537,13 +2554,38 @@ long int ProjectManager::CompileExtra(compile_and_run_struct_single *compile_and
 	compile_and_run->process->Redirect();
 	
 	// ejecutar
-	compile_and_run->special_output=true;
+	compile_and_run->output_type=MXC_EXTRA;
 	compile_and_run->step_label=step->name;
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	return utils->Execute(path,command, wxEXEC_ASYNC|(step->hide_window?0:wxEXEC_NOHIDE),compile_and_run->process);
+}
+
+long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_single *compile_and_run, bool build) {
+	
+	wxString command = build?current_toolchain.build_command:current_toolchain.clean_command;
+	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) 
+		command.Replace(wxString("${ARG")<<i+1<<"}",current_toolchain.arguments[i][1],true);
+	
+#if defined(_WIN32) || defined(__WIN32__)
+	utils->ParameterReplace(command,_T("${MINGW_DIR}"),config->mingw_real_path);
+#endif
+	utils->ParameterReplace(command,_T("${PROJECT_PATH}"),project->path);
+	utils->ParameterReplace(command,_T("${PROJECT_BIN}"),project->executable_name);
+	utils->ParameterReplace(command,_T("${TEMP_DIR}"),temp_folder_short);
+	utils->ParameterReplace(command,_T("${NUM_PROCS}"),wxString()<<config->Init.max_jobs);
+	
+	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
+	compile_and_run->process->Redirect();
+	
+	// ejecutar
+	compile_and_run->output_type=MXC_EXTERN;
+	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add(wxString(_T("> "))+command);
+	compile_and_run->full_output.Add(_T(""));
+	return utils->Execute(path,command, wxEXEC_ASYNC/*|(step->hide_window?0:wxEXEC_NOHIDE)*/,compile_and_run->process);
 }
 
 
@@ -2625,7 +2667,7 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	// ejecutar
-	compile_and_run->special_output=false;
+	compile_and_run->output_type=MXC_SIMIL_GCC;
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
 	compile_and_run->full_output.Add(_T(""));
@@ -3223,5 +3265,11 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 		main_window->OpenFile(h_name,true);
 		return true;
 	}
+}
+
+void ProjectManager::SetActiveConfiguration (project_configuration * aconf) {
+	active_configuration=aconf;
+	Toolchain *tc=Toolchain::SelectToolchain();
+	main_window->SetToolchainMode(tc->is_extern);
 }
 

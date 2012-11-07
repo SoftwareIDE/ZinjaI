@@ -113,13 +113,13 @@ public:
 	void OnStepsDel(wxCommandEvent &evt);
 	void OnStepsRun(wxCommandEvent &evt);
 	void OnStepsEdit(wxCommandEvent &evt);
+	void OnToolchainOptionsButton(wxCommandEvent &evt);
+	void OnImportLibsButton(wxCommandEvent &evt);
 	void OnLibsAdd(wxCommandEvent &evt);
 	void OnLibsEdit(wxCommandEvent &evt);
 	void OnLibsDel(wxCommandEvent &evt);
 	void ReloadSteps(wxString selection=_T(""));
 	void ReloadLibs(wxString selection=_T(""));
-	void OnSelectLibrary(wxListEvent &evt);
-	void SelectLibrary(int idx);
 	void OnLibsNoExe(wxCommandEvent &evt);
 	void SetOnlyLib(bool val);
 private:

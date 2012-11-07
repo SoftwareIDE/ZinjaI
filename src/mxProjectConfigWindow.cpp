@@ -38,6 +38,7 @@ BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_SELECT,mxProjectConfigWindow::OnSelectConfigButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_REMOVE,mxProjectConfigWindow::OnRemoveConfigButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_RENAME,mxProjectConfigWindow::OnRenameConfigButton)
+	EVT_BUTTON(mxID_PROJECT_CONFIG_TOOLCHAIN_OPTIONS,mxProjectConfigWindow::OnToolchainOptionsButton)
 	EVT_COMBOBOX(mxID_PROJECT_CONFIG_NAME,mxProjectConfigWindow::OnSelectConfigInCombo)
 	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxProjectConfigWindow::OnArgsReplaceDir)
 	EVT_MENU(mxID_ARGS_ADD_DIR,mxProjectConfigWindow::OnArgsAddDir)
@@ -349,7 +350,7 @@ void mxProjectConfigWindow::OnAddConfigButton(wxCommandEvent &event) {
 }
 
 void mxProjectConfigWindow::OnSelectConfigButton(wxCommandEvent &event) {
-	project->active_configuration = configuration;
+	project->SetActiveConfiguration(configuration);
 }
 
 void mxProjectConfigWindow::OnRemoveConfigButton(wxCommandEvent &event) {
@@ -373,9 +374,9 @@ void mxProjectConfigWindow::OnRemoveConfigButton(wxCommandEvent &event) {
 		// si es la activa, cambiar la activa
 		if (configuration==project->active_configuration) {
 			if (sel==0)
-				configuration = project->active_configuration = project->configurations[0];
+				project->SetActiveConfiguration(configuration=project->configurations[0]);
 			else
-				configuration = project->active_configuration = project->configurations[sel-1];
+				project->SetActiveConfiguration(configuration=project->configurations[sel-1]);
 		} 
 		if (sel==0)
 			configuration = project->configurations[0];
@@ -474,7 +475,7 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 	discard=false; // evitar que al cerrar revierta los cambios
 	if (!SaveValues()) return; // guardar los cambios de la conf actual en vista
 	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_PRE,"Desea establecer la configuracion \"")<<configuration->name<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_POST,"\" como la configuracion a utilizar?"),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
-		project->active_configuration = configuration;
+		project->SetActiveConfiguration(configuration);
 	Close();
 }
 
@@ -681,7 +682,6 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer_h= new wxBoxSizer(wxHORIZONTAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
-#warning LA FUNCIONALIDAD DEL COMBO PARA ELEGIR TOOLCHAIN NO ESTA IMPLEMENTADA
 	wxArrayString toolchain_cmb;
 	toolchain_cmb.Add("<default>");
 	Toolchain::GetNames(toolchain_cmb,false);
@@ -689,7 +689,7 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
 	sizer_i->Add(new wxStaticText(panel,wxID_ANY,"Toolchain:"),sizers->BA5_Center);
 	sizer_i->Add(toolchains_combo=new wxComboBox(panel,wxID_ANY,"<default>",wxDefaultPosition,wxDefaultSize,toolchain_cmb),wxSizerFlags().Proportion(1).Center());
-	sizer_i->Add(new wxButton(panel,wxID_ANY,"Opciones..."),sizers->BA10);
+	sizer_i->Add(new wxButton(panel,mxID_PROJECT_CONFIG_TOOLCHAIN_OPTIONS,"Opciones..."),sizers->BA10);
 	sizer->Add(sizer_i,sizers->BB5_Exp0);
 	// set toolchains combo value
 	if (configuration->toolchain.Len()) 
@@ -734,11 +734,11 @@ wxPanel *mxProjectConfigWindow::CreateLibsPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer_h= new wxBoxSizer(wxHORIZONTAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 
-#warning LA FUNCIONALIDAD DEL BOTON PARA IMPORTAR BIBLIOTECAS NO ESTA IMPLEMENTADA
-	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
-	sizer_i->Add(new wxStaticText(panel,wxID_ANY,"Bibliotecas a utilizar:"),sizers->BA5_Center);
-	sizer_i->Add(new wxButton(panel,wxID_ANY," Importar configuración desde plantilla... "),sizers->BA10);
-	sizer->Add(sizer_i,sizers->BB5_Exp0);
+//#warning LA FUNCIONALIDAD DEL BOTON PARA IMPORTAR BIBLIOTECAS NO ESTA IMPLEMENTADA
+//	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
+//	sizer_i->Add(new wxStaticText(panel,mxID_PROJECT_CONFIG_IMPORT_LIBS,"Bibliotecas a utilizar:"),sizers->BA5_Center);
+//	sizer_i->Add(new wxButton(panel,wxID_ANY," Importar configuración desde plantilla... "),sizers->BA10);
+//	sizer->Add(sizer_i,sizers->BB5_Exp0);
 	
 	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_LIBS_TO_GENERATE,"Bibliotecas a generar")),sizers->BLRT5);
 	
@@ -978,5 +978,13 @@ void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
 	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
 	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
 	PopupMenu(&menu);	
+}
+
+void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {
+	
+}
+
+void mxProjectConfigWindow::OnImportLibsButton (wxCommandEvent & evt) {
+	
 }
 
