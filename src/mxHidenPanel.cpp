@@ -46,15 +46,8 @@ void mxHidenPanel::OnPaint(wxPaintEvent &evt) {
 	dc.SetBackground(wxSystemSettings::GetColour(selected?wxSYS_COLOUR_3DSHADOW:(mouse_in||showing?wxSYS_COLOUR_3DHIGHLIGHT:wxSYS_COLOUR_3DFACE)));
 	dc.Clear();
 	dc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-//	if (pos==HP_BOTTOM)
-//		dc.DrawText(label,0,0);
-	int w,h;
-	GetClientSize(&w,&h);
-		dc.DrawLabel(label,wxRect(0,0,w,h),wxALIGN_CENTER);
-//	else {
-//		for (unsigned int i=0;i<label.Len();i++)
-//			dc.DrawLText(label,5,10+i*h);
-//	}
+	int w,h; GetClientSize(&w,&h);
+	dc.DrawLabel(label,wxRect(0,0,w,h),wxALIGN_CENTER);
 }
 
 void mxHidenPanel::ToggleDock() {

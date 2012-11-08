@@ -81,6 +81,7 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
 			current_toolchain=toolchains[i];
+			if (project) current_toolchain.SetProjectArgumets();
 			return current_toolchain;
 		}
 	}
@@ -107,6 +108,31 @@ void Toolchain::GetNames (wxArrayString & names, bool exclude_extern) {
 	for(int i=0;i<toolchains_count;i++) { 
 		if (!exclude_extern || !toolchains[i].is_extern)
 			names.Add(toolchains[i].file);
+	}
+}
+
+static void aux1_SetProjectArguments(wxString &_tool, wxString _project) {
+	_project.Replace("${DEFAULT}",_tool);
+	_tool=_project;
+}
+
+static void aux2_SetProjectArguments(wxString &command, const wxString array[][2]) {
+	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) command.Replace(wxString("${ARG")<<i+1<<"}",array[i][1],true);
+}
+
+void Toolchain::SetProjectArgumets ( ) {
+	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) // replace arguments with values from project
+		aux1_SetProjectArguments(arguments[i][1],project->active_configuration->toolchain_arguments[i]);
+	if (!is_extern) { // if its extern, ProjectManager will apply arguments, but if its not we must do it now so they became transparent for clients
+		aux2_SetProjectArguments(c_compiler,arguments);
+		aux2_SetProjectArguments(cpp_compiler,arguments);
+		aux2_SetProjectArguments(linker,arguments);
+		aux2_SetProjectArguments(c_compiling_options,arguments);
+		aux2_SetProjectArguments(cpp_compiling_options,arguments);
+		aux2_SetProjectArguments(c_linker_options,arguments);
+		aux2_SetProjectArguments(cpp_linker_options,arguments);
+		aux2_SetProjectArguments(dynamic_lib_linker,arguments);
+		aux2_SetProjectArguments(static_lib_linker,arguments);
 	}
 }
 

@@ -197,7 +197,12 @@ ProjectManager::ProjectManager(wxFileName name) {
 						extra_step->pos=CES_AFTER_LINKING;
 				} 
 			} else if (section==_T("config")) {
-				CFG_GENERIC_READ_DN("name",active_configuration->name);
+				if (key.StartsWith("toolchain_argument_")) {
+					long l=-1; key.Mid(19).ToLong(&l);
+					if (l>=0&&l<TOOLCHAIN_MAX_ARGS) 
+						active_configuration->toolchain_arguments[l]=value;
+				}
+				else CFG_GENERIC_READ_DN("name",active_configuration->name);
 				else CFG_GENERIC_READ_DN("toolchain",active_configuration->toolchain);
 				else CFG_GENERIC_READ_DN("working_folder",active_configuration->working_folder);
 				else CFG_BOOL_READ_DN("always_ask_args",active_configuration->always_ask_args);
@@ -632,6 +637,8 @@ bool ProjectManager::Save () {
 		fil.AddLine(_T("[config]"));
 		CFG_GENERIC_WRITE_DN("name",configurations[i]->name);
 		CFG_GENERIC_WRITE_DN("toolchain",configurations[i]->toolchain);
+		for(int j=0;j<TOOLCHAIN_MAX_ARGS;j++)
+			fil.AddLine(wxString("toolchain_argument_")<<j<<"="<<configurations[i]->toolchain_arguments[j]);
 		CFG_GENERIC_WRITE_DN("working_folder",configurations[i]->working_folder);
 		CFG_BOOL_WRITE_DN("always_ask_args",configurations[i]->always_ask_args);
 		CFG_GENERIC_WRITE_DN("args",configurations[i]->args);

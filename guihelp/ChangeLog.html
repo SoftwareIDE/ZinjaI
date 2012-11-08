@@ -2,88 +2,93 @@
 <HEAD><TITLE>ZinjaI - Registro de Cambios</TITLE></HEAD>
 <BODY>
 
+<B>08-11-12</B>: <UL>
+	<LI>Imp: Ahora los toolchains pueden tener argumentos configurables que se almacenan en los perfiles de compilación de los proyectos<LI>
+	<LI>Fix: Aplicado un workaround para evitar que los caracteres como ñs y acentos produzcan inconngruencias en algunos GNU/Linux</LI>
+</UL><BR><BR>
+
 <B>07-11-12</B>: <UL>
-	<LI>New: Ahora se pueden utilizar para compilar scripts o herramientas externas (como make).</LI>
-	<LI>Imp: Mejorada la forma en que se intentan configurar automáticamente las rutas a herramientas externas en Windows.</LI>
+	<LI>New: Ahora se pueden utilizar para compilar scripts o herramientas externas (como make, mediante toolchains especiales)</LI>
+	<LI>Imp: Mejorada la forma en que se intentan configurar automáticamente las rutas a herramientas externas en Windows</LI>
 </UL><BR><BR>
 
 <B>05-11-12</B>: <UL>
-	<LI>Fix: Ahora los argumentos para la ejecución entre comillas se pasan correctamente al depurador también en Windows.</LI>
+	<LI>Fix: Ahora los argumentos para la ejecución entre comillas se pasan correctamente al depurador también en Windows</LI>
 </UL><BR><BR>
 
 <B>01-11-12</B>: <UL>
-	<LI>Imp: Ahora los proyectos pueden asociar un toolchain en particular a sus perfiles de compilación.</LI>
+	<LI>Imp: Ahora los proyectos pueden asociar un toolchain en particular a sus perfiles de compilación</LI>
 </UL><BR><BR>
 
 <B>26-10-12</B>: <UL>
-	<LI>Imp: Ahora se puede definir plantillas para trabajar con C en lugar de C++ (las opciones de compilación pueden variar según el lenguaje).</LI>
-	<LI>Fix: Corregido un error al simplificar mensajes de error con referencias a templates que producía un bucle infinito.</LI>
+	<LI>Imp: Ahora se puede definir plantillas para trabajar con C en lugar de C++ (y se incluye una por defecto, las opciones de compilación pueden variar según el lenguaje)</LI>
+	<LI>Fix: Corregido un error al simplificar mensajes de error con referencias a templates que producía un bucle infinito</LI>
 </UL><BR><BR>
 
 <B>11-10-12</B>: <UL>
-	<LI>Imp: Los tipos de datos cuyas expresiones se reescriben automáticamente funcionan también para referencias/alias.</LI>
-	<LI>Imp: Ahora ZinjaI se asegura de no estar compilando o enlazando nada antes de lanzar una nuevo proceso de compilación o enlazado.</LI>
+	<LI>Imp: Los tipos de datos cuyas expresiones se reescriben automáticamente funcionan también para referencias/alias</LI>
+	<LI>Imp: Ahora ZinjaI se asegura de no estar compilando o enlazando nada antes de lanzar una nuevo proceso de compilación o enlazado</LI>
 </UL><BR><BR>
 
 <B>05-10-12</B>: <UL>
-	<LI>Fix: Si hay demasiados resultados en una búsqueda sobre múltiples archivos solo se muestran los primeros 500.</LI>
-	<LI>Imp: Ahora los resultados de búsquedas en múltiples archivos muestran además de la posición la línea donde se encuentran las coincidencias.</LI>
+	<LI>Fix: Si hay demasiados resultados en una búsqueda sobre múltiples archivos solo se muestran los primeros 500</LI>
+	<LI>Imp: Ahora los resultados de búsquedas en múltiples archivos muestran además de la posición la línea donde se encuentran las coincidencias</LI>
 </UL><BR><BR>
 
 <B>03-10-12</B>: <UL>
-	<LI>Imp: Mejorada la forma en que se reescriben las expresiones al separar una expresión compleja o desreferenciar un puntero en la tabla de inspecciones haciendo doble click en su valor.</LI>
+	<LI>Imp: Mejorada la forma en que se reescriben las expresiones al separar una expresión compleja o desreferenciar un puntero en la tabla de inspecciones haciendo doble click en su valor</LI>
 </UL><BR><BR>
 
 <B>02-10-12</B>: <UL>
-	<LI>New: Ahora se puede configurar ZinjaI para que modifique automáticamente expresiones de la tabla según su tipo.</LI>
+	<LI>New: Ahora se puede configurar ZinjaI para que modifique automáticamente expresiones de la tabla según su tipo</LI>
 </UL><BR><BR>
 
 <B>20-10-12</B>: <UL>
-	<LI>New: Ahora se puede cambiar el compilador y demás herramientas (toolchain) por otro con interfaz similar a gcc (como clang) desde el menú preferencias.</LI>
+	<LI>New: Ahora se puede cambiar el compilador y demás herramientas (toolchain) por otro con interfaz similar a gcc (como clang) desde el menú preferencias</LI>
 </UL><BR><BR>
 
 <B>29-08-12</B>: <UL>
-	<LI>Fix: Se corrigió el problema por el cual desaparecían barras de herramientas al pasar a pantalla completa y volver durante la depuración.</LI>
+	<LI>Fix: Se corrigió el problema por el cual desaparecían barras de herramientas al pasar a pantalla completa y volver durante la depuración</LI>
 </UL><BR><BR>
 
 <B>28-08-12</B>: <UL>
-	<LI>Fix: Se aplicó un parche en los fuentes de wxWidgets usados para compilar los binarios para GNU/Linux para evitar que el programa se cierre al arrastrar pestañas o paneles en la ventana principal.</LI>
+	<LI>Fix: Se aplicó un parche en los fuentes de wxWidgets usados para compilar los binarios para GNU/Linux para evitar que el programa se cierre al arrastrar pestañas o paneles en la ventana principal</LI>
 </UL><BR><BR>
 
 <B>27-08-12</B>: <UL>
-	<LI>Imp: Al intentar agregar a un proyecto archivos que no estan en la carpeta de proyecto, ZinjaI pregunta si quiere copiarlos ahí.</LI>
+	<LI>Imp: Al intentar agregar a un proyecto archivos que no estan en la carpeta de proyecto, ZinjaI pregunta si quiere copiarlos ahí</LI>
 </UL><BR><BR>
 
 <B>22-08-12</B>: <UL>
-	<LI>Fix: Ahora se interpreta correctamente el atributo de static en métodos para el Arbol de Símbolos, la ayuda rápida y el autocompletado.</LI>
-	<LI>Imp: Ahora se puede utilizar CppCheck con programas simples (sin crear un proyecto).</LI>
+	<LI>Fix: Ahora se interpreta correctamente el atributo de static en métodos para el Arbol de Símbolos, la ayuda rápida y el autocompletado</LI>
+	<LI>Imp: Ahora se puede utilizar CppCheck con programas simples (sin crear un proyecto)</LI>
 </UL><BR><BR>
 
 <B>21-08-12</B>: <UL>
-	<LI>Imp: Se reescribió casi totalmente el código que gestiona los breakpoints y sus propiedades, para usar estructuras de datos menos confusas.</LI>
-	<LI>Fix: Corregido un error al parsear las opciones de compilación entre comillas para lanzar CppCheck sobre un proyecto.</LI>
+	<LI>Imp: Se reescribió casi totalmente el código que gestiona los breakpoints y sus propiedades, para usar estructuras de datos menos confusas</LI>
+	<LI>Fix: Corregido un error al parsear las opciones de compilación entre comillas para lanzar CppCheck sobre un proyecto</LI>
 </UL><BR><BR>
 
 <B>17-08-12</B>: <UL>
-	<LI>Imp: Al colocar intentar un punto de control cuando comienza la depuración, se verifica que la posición sea válida, de lo contrario no se coloca (antes gdb lo movía a la siguiente posición válida sin aviso).</LI>
+	<LI>Imp: Al colocar intentar un punto de control cuando comienza la depuración, se verifica que la posición sea válida, de lo contrario no se coloca (antes gdb lo movía a la siguiente posición válida sin aviso)</LI>
 </UL><BR><BR>
 
 <B>16-08-12</B>: <UL>
-	<LI>Imp: Ahora el comando "Ejecutar hasta el cursor" funciona cuando el cursor esta en otro frame que no es el actual.</LI>
-	<LI>Imp: Ahora se pueden arrastrar los resultados de una inspección desde la Tabla de Inspecciones manteniendo presionada la tecla Alt.</LI>
+	<LI>Imp: Ahora el comando "Ejecutar hasta el cursor" funciona cuando el cursor esta en otro frame que no es el actual</LI>
+	<LI>Imp: Ahora se pueden arrastrar los resultados de una inspección desde la Tabla de Inspecciones manteniendo presionada la tecla Alt</LI>
 </UL><BR><BR>
 
 <B>03-08-12</B>: <UL>
-	<LI>Imp: Ahora en la ejecución del análisis estático se puede utilizar cualquier herramienta de Valgrind, no solo memcheck.</LI>
+	<LI>Imp: Ahora en la ejecución del análisis estático se puede utilizar cualquier herramienta de Valgrind, no solo memcheck</LI>
 </UL><BR><BR>
 
 <B>31-05-12</B>: <UL>
-	<LI>Imp: Ahora se advierte cuando un punto de interrupción no pudo ser colocado por gdb.</LI>
-	<LI>Fix: Ahora se muestran completas las inspecciones largas en las ventanas fuera del panel de inspecciones.</LI>
+	<LI>Imp: Ahora se advierte cuando un punto de interrupción no pudo ser colocado por gdb</LI>
+	<LI>Fix: Ahora se muestran completas las inspecciones largas en las ventanas fuera del panel de inspecciones</LI>
 </UL><BR><BR>
 
 <B>30-05-12</B>: <UL>
-	<LI>Imp: Al abrir el cuadro de dialogo "Reemplazar", si el ámbito (valor del combo "Bucar en:") preseleccionado no es válido se vuelve al ambito del archivo actual.</LI>
+	<LI>Imp: Al abrir el cuadro de dialogo "Reemplazar", si el ámbito (valor del combo "Bucar en:") preseleccionado no es válido se vuelve al ambito del archivo actual</LI>
 </UL><BR><BR>
 
 <B>14-05-12</B>: <UL>
@@ -1707,7 +1712,7 @@
 	<LI>Agregadas opciones de merging para las comparaciones con <I>diff</I> (menu <I>Herramientas</I>-><I>Comparar Archivos</I>): permiten aplicar los cambios marcados selectivamente</LI>
 </UL><BR><BR>
 <B>30-03-09</B>: <UL>
-	<LI>Agregado un cuadro de configuraciones generales de proyecto (<I>Archivo</I>-><I>Configuracion del Proyecto...</I>) para definir el nombre, las opciones de tabulado, etc.</LI>
+	<LI>Agregado un cuadro de configuraciones generales de proyecto (<I>Archivo</I>-><I>Configuracion del Proyecto...</I>) para definir el nombre, las opciones de tabulado, etc</LI>
 	<LI>Se recuerda la pestaña del cuadro de diálogo <I>Opciones de Compilacion y Ejecucion de Proyecto</I> al cerrarlo</LI>
 	<LI>Se fuerza el reenlazado al cambiar la opción "Es un programa de consola" en la configuración de un proyecto en Windows</LI>
 </UL><BR><BR>

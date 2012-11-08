@@ -481,7 +481,8 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 	if (!SaveValues()) return; // guardar los cambios de la conf actual en vista
 	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_PRE,"Desea establecer la configuracion \"")<<configuration->name<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_POST,"\" como la configuracion a utilizar?"),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
 		project->SetActiveConfiguration(configuration);
-	main_window->SetToolchainMode(Toolchain::SelectToolchain().is_extern);
+	else
+		main_window->SetToolchainMode(Toolchain::SelectToolchain().is_extern);
 	Close();
 }
 
@@ -696,7 +697,7 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	sizer_i->Add(new wxStaticText(panel,wxID_ANY,"Toolchain:"),sizers->BA5_Center);
 	sizer_i->Add(toolchains_combo=new wxComboBox(panel,mxID_PROJECT_CONFIG_TOOLCHAIN_COMBO,"<default>",wxDefaultPosition,wxDefaultSize,toolchain_cmb,wxCB_READONLY),wxSizerFlags().Proportion(1).Center());
 	wxButton *button_toolchain = new wxButton(panel,mxID_PROJECT_CONFIG_TOOLCHAIN_OPTIONS,"Opciones...");
-	sizer_i->Add(button_toolchain,sizers->BA10); wx_extern.Add(button_toolchain);
+	sizer_i->Add(button_toolchain,sizers->BA10);
 	sizer->Add(sizer_i,sizers->BB5_Exp0);
 	// set toolchains combo value
 	if (configuration->toolchain.Len()) 
@@ -998,7 +999,7 @@ void mxProjectConfigWindow::OnComboToolchainChange(wxCommandEvent &evt) {
 }
 
 void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {
-	mxToolchainOptions(this,configuration).ShowModal();
+	mxToolchainOptions(this,toolchains_combo->GetStringSelection(),configuration).ShowModal();
 }
 
 void mxProjectConfigWindow::OnImportLibsButton (wxCommandEvent & evt) {

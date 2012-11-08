@@ -30,6 +30,8 @@ struct Toolchain {
 	
 	Toolchain(); ///< loads default values for current platform
 	
+	void SetProjectArgumets(); ///< applies project toolchain arguments, uso only with current_toolchain
+	
 	static void LoadToolchains();
 	static const Toolchain &GetInfo(wxString fname); ///< used to get info from a toolchain without setting it as active
 	static Toolchain &SelectToolchain(); ///< set the project toolchain as current (use default if not project or not found)

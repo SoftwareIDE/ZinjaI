@@ -3,9 +3,13 @@ extern=false
 c_compiler=mingw32-gcc
 cpp_compiler=mingw32-g++
 linker=mingw32-g++
-c_compiling_options=-fshow-column
-cpp_compiling_options=-fshow-column
-c_linker_options=-static-libgcc
-cpp_linker_options=-static-libstdc++ -static-libgcc
+c_compiling_options=${ARG1}
+cpp_compiling_options=${ARG2}
+c_linker_options=${ARG3}
+cpp_linker_options=${ARG4}
 dynamic_lib_linker=ar cr
 static_lib_linker=mingw32-g++ -shared -o
+argument1=C compiling arguments=-fshow-column
+argument2=C++ compiling arguments=-fshow-column
+argument3=C linking arguments=-static-libgcc
+argument4=C++ linking arguments=-static-libstdc++ -static-libgcc

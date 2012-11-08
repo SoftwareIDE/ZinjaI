@@ -25,6 +25,7 @@
 #define DeleteFile DeleteFileA
 #endif
 #include "BreakPointInfo.h"
+#include "Toolchain.h"
 class mxSource;
 
 /// Posibles ubicaciones para un paso de compilación adicional en el proceso de construcción de un proceso
@@ -187,6 +188,7 @@ struct project_configuration {
 	wxString name; ///< nombre de la configuracion (unico y definido por usuario)
 	
 	wxString toolchain; ///< nombre del toolchain que utiliza, o <default> para tomar el por defecto de zinjai
+	wxString toolchain_arguments[TOOLCHAIN_MAX_ARGS]; ///< argumentos para el Toolchain
 	
 	wxString working_folder; ///< directorio de trabajo para la ejecución
 	bool always_ask_args; ///< mostrar el dialogo que pide los argumentos antes de ejecutar
@@ -216,13 +218,13 @@ struct project_configuration {
 	compile_extra_step *extra_steps; ///< puntero al primer item de la lista de pasos adicionales para la compilacion (sin primer nodo ficticio), NULL si no hay pasos extra
 	project_library *libs_to_build; ///< bibliotecas a construir, lista enlazada sin primer nodo ficticio
 	bool dont_generate_exe; ///< no generar ejecutable, solo bibliotecas
+	
 		
 	//! inicializa la configuración con los valores por defecto
 	project_configuration(wxString pname, wxString cname) {
 		libs_to_build=NULL;
 		bakup=NULL;
 		name=cname;
-		toolchain="";
 		working_folder="";
 		always_ask_args=false;
 		args="";
@@ -244,6 +246,8 @@ struct project_configuration {
 		console_program=true;
 		dont_generate_exe=false;
 		extra_steps=NULL;
+		toolchain="";
+		for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) toolchain_arguments[i]="${DEFAULT}";
 	}
 };
 
