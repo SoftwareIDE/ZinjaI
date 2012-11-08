@@ -108,6 +108,12 @@ END_EVENT_TABLE()
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoint &pos, const wxSize &size, long style) : wxStyledTextCtrl (parent, id, pos, size, style) {
 
+#ifndef __WIN32__
+	// esto evita problemas en los ubuntus en castellano donde al agregar acentos, ñs y esas cosas, se desfaza el cursor, o al borrar se borra mal
+	if (wxLocale::GetSystemEncoding()==wxFONTENCODING_UTF8) 
+		SetCodePage(wxSTC_CP_UTF8);
+#endif
+	
 	next_source_with_same_file=this;
 	
 	source_time_dont_ask=false;

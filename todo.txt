@@ -17,6 +17,7 @@ integración con wx:
 
 toolchains alternativos
 	agregar "encabezado para makefiles" a los gcc-like toolchains, y revisar genearación de makefiles
+	!!! acomodar la gui cuando cambia entre extern y no extern desde el cuadro de opciones del proyecto
 	
 refactory: 
 	simil ctrl+h pero para agregar virtuales?
@@ -69,7 +70,10 @@ Documentacion:
 	4. algo de refactoring en las herramientas?
 	4. agregar enums al parser
 
-3. Sistema de votacion en el sitio para nuevas funcionalidades???
+
+Sitio:
+	Sistema de votacion en el sitio para nuevas funcionalidades???
+	!!! Foros
 
 3. shift+enter en la grilla de inspecciones
 
