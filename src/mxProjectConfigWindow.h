@@ -4,6 +4,7 @@
 #include <wx/dialog.h>
 #include "ProjectManager.h"
 #include <wx/listctrl.h>
+#include "widgetDisabler.h"
 
 class wxCheckBox;
 class wxComboBox;
@@ -66,7 +67,8 @@ class mxProjectConfigWindow : public wxDialog {
 	wxListBox *libtobuild_list;
 	wxCheckBox *libtobuild_noexec;
 	
-	wxWindow *noexe_controls[30];
+	widgetDisabler wx_noexe;
+	widgetDisabler wx_extern;
 
 public:
 
@@ -114,6 +116,7 @@ public:
 	void OnStepsRun(wxCommandEvent &evt);
 	void OnStepsEdit(wxCommandEvent &evt);
 	void OnToolchainOptionsButton(wxCommandEvent &evt);
+	void OnComboToolchainChange(wxCommandEvent &evt);
 	void OnImportLibsButton(wxCommandEvent &evt);
 	void OnLibsAdd(wxCommandEvent &evt);
 	void OnLibsEdit(wxCommandEvent &evt);
@@ -121,7 +124,6 @@ public:
 	void ReloadSteps(wxString selection=_T(""));
 	void ReloadLibs(wxString selection=_T(""));
 	void OnLibsNoExe(wxCommandEvent &evt);
-	void SetOnlyLib(bool val);
 private:
 	DECLARE_EVENT_TABLE()
 };

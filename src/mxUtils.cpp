@@ -258,6 +258,7 @@ wxComboBox *mxUtils::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(combo, sizers->Exp1);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
+	last_button=NULL;
 	return combo;
 }
 

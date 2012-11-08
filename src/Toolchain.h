@@ -28,11 +28,10 @@ struct Toolchain {
 	wxString dynamic_lib_linker; ///< command for linking dynamic libraries
 	wxString static_lib_linker; ///< command for linking static libraries
 	
-	
 	Toolchain(); ///< loads default values for current platform
 	
-	
 	static void LoadToolchains();
+	static const Toolchain &GetInfo(wxString fname); ///< used to get info from a toolchain without setting it as active
 	static Toolchain &SelectToolchain(); ///< set the project toolchain as current (use default if not project or not found)
 	static Toolchain *toolchains; ///< array with all known toolchains
 	static int toolchains_count; ///< number of items in toolchains

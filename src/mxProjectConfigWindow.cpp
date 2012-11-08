@@ -29,7 +29,6 @@ int mxProjectConfigWindow::last_page_index=0;
 BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxProjectConfigWindow::OnOkButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxProjectConfigWindow::OnHelpButton)
-//	EVT_BUTTON(mxID_PROJECT_CONFIG_APPLY,mxProjectConfigWindow::OnApplyButton)
 	EVT_BUTTON(wxID_CANCEL,mxProjectConfigWindow::OnCancelButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_MANIFEST_DIR,mxProjectConfigWindow::OnManifestDirButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_ICON_DIR,mxProjectConfigWindow::OnIconDirButton)
@@ -40,6 +39,7 @@ BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_REMOVE,mxProjectConfigWindow::OnRemoveConfigButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_RENAME,mxProjectConfigWindow::OnRenameConfigButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_TOOLCHAIN_OPTIONS,mxProjectConfigWindow::OnToolchainOptionsButton)
+	EVT_COMBOBOX(mxID_PROJECT_CONFIG_TOOLCHAIN_COMBO,mxProjectConfigWindow::OnComboToolchainChange)
 	EVT_COMBOBOX(mxID_PROJECT_CONFIG_NAME,mxProjectConfigWindow::OnSelectConfigInCombo)
 	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxProjectConfigWindow::OnArgsReplaceDir)
 	EVT_MENU(mxID_ARGS_ADD_DIR,mxProjectConfigWindow::OnArgsAddDir)
@@ -108,7 +108,7 @@ mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent, wxWindowID id, co
 	notebook->AddPage(CreateStepsPanel(notebook), LANG(PROJECTCONFIG_SEQUENCE,"Secuencia"));
 	notebook->AddPage(CreateLibsPanel(notebook), LANG(PROJECTCONFIG_LIBRARIES,"Bibliotecas"));
 
-	SetOnlyLib(!configuration->dont_generate_exe);
+	wx_noexe.EnableAll(!configuration->dont_generate_exe);
 	
 	// crear los botones de aceptar y cancelar
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -121,7 +121,6 @@ mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent, wxWindowID id, co
 	bottomSizer->Add(help_button,sizers->BA5_Exp0);
 	bottomSizer->AddStretchSpacer();
 	bottomSizer->Add(cancel_button,sizers->BA5);
-//	bottomSizer->Add(apply_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 
 	// juntar todo y mostrar
@@ -151,39 +150,44 @@ wxPanel *mxProjectConfigWindow::CreateLinkingPanel (wxNotebook *notebook) {
 
 	linking_extra_options = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_EXTRA_ARGS,"Parametros extra para el enlazado"),configuration->linking_extra,mxID_PROJECT_CONFIG_LINK_EXTRA_BUTTON);
-	noexe_controls[17]=utils->last_button;
-	noexe_controls[18]=utils->last_label;
-	noexe_controls[19]=linking_extra_options;
+	wx_noexe.Add(linking_extra_options,true);
+	wx_extern.Add(linking_extra_options,true);
 	
 	linking_libraries_dirs = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_EXTRA_PATHS,"Directorios adicionales para buscar bibliotecas"),configuration->libraries_dirs,mxID_PROJECT_CONFIG_LINK_DIRS_BUTTON);
-	noexe_controls[20]=utils->last_button;
-	noexe_controls[21]=utils->last_label;
-	noexe_controls[22]=linking_libraries_dirs;
+	wx_noexe.Add(linking_libraries_dirs,true);
+	wx_extern.Add(linking_libraries_dirs,true);
 	
 	linking_libraries = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_EXTRA_LIBS,"Bibliotecas a enlazar"),configuration->libraries,mxID_PROJECT_CONFIG_LINK_LIBS_BUTTON);
-	noexe_controls[25]=utils->last_button;
-	noexe_controls[24]=utils->last_label;
-	noexe_controls[23]=linking_libraries;
+	wx_noexe.Add(linking_libraries,true);
+	wx_extern.Add(linking_libraries,true);
 
 	linking_strip_executable = utils->AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_STRIP,"\"Stripear\" el ejecutable"),configuration->strip_executable);
-	noexe_controls[26]=linking_strip_executable;
+	wx_noexe.Add(linking_strip_executable);
+	wx_extern.Add(linking_strip_executable);
 
 	linking_console_program = utils->AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM,"Es un programa de consola"),configuration->console_program);
-	noexe_controls[10]=linking_console_program;
+	wx_noexe.Add(linking_console_program);
+#ifdef __WIN32__
+	wx_extern.Add(linking_console_program);
+#endif
 
 	linking_force_relink = utils->AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_FORCE_RELINK,"Reenlazar obligatoriamente en la proxima compilacion/ejecucion"),project->force_relink);
-
+	wx_noexe.Add(linking_force_relink);
+	wx_extern.Add(linking_force_relink);
+	
 	linking_icon = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_ICON_PATH,"Icono del ejecutable (solo Windows)"),configuration->icon_file,mxID_PROJECT_CONFIG_ICON_DIR);
+	wx_noexe.Add(linking_icon);
+	wx_extern.Add(linking_icon);
 	linking_manifest = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_MANIFEST_PATH,"Archivo manifest.xml (solo Windows)"),configuration->manifest_file,mxID_PROJECT_CONFIG_MANIFEST_DIR);
-	noexe_controls[16]=linking_icon;
-	noexe_controls[27]=linking_manifest;
+	wx_noexe.Add(linking_manifest);
+	wx_extern.Add(linking_manifest);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
@@ -197,28 +201,21 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 
 	general_output_file = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_EXE_PATH,"Ubicacion del ejecutable"),configuration->output_file,mxID_PROJECT_GENERAL_EXE_PATH);
-	noexe_controls[0]=utils->last_label;
-	noexe_controls[1]=utils->last_button;
-	noexe_controls[12]=general_output_file;
+	wx_noexe.Add(general_output_file,true);
 	
 	general_working_folder = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_WORKDIR,"Directorio de trabajo"),configuration->working_folder,mxID_PROJECT_CONFIG_WORKING_DIR);
-	noexe_controls[2]=utils->last_label;
-	noexe_controls[3]=utils->last_button;
-	noexe_controls[13]=general_working_folder;
+	wx_noexe.Add(general_working_folder,true);
 	
 	last_dir=configuration->working_folder;
 	
 	general_always_ask_args = utils->AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),configuration->always_ask_args);
-	noexe_controls[4]=utils->last_label;
-	noexe_controls[14]=general_always_ask_args;
+	wx_noexe.Add(general_always_ask_args);
 
 	general_args = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_RUNNING_ARGS,"Argumentos para la ejecucion"),configuration->args,mxID_PROJECT_CONFIG_ARGS_BUTTON);
-	noexe_controls[5]=utils->last_label;
-	noexe_controls[6]=utils->last_button;
-	noexe_controls[15]=general_args;
+	wx_noexe.Add(general_args,true);
 	
 	wxArrayString wait_cmb_lab;
 	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER,"Nunca"));
@@ -226,14 +223,11 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS,"Siempre"));
 	general_wait_for_key = utils->AddComboBox(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),wait_cmb_lab,configuration->wait_for_key);
-	noexe_controls[7]=utils->last_label;
-	noexe_controls[11]=general_wait_for_key;
+	wx_noexe.Add(general_wait_for_key,true);
 	
 	general_temp_folder = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_TEMP_FOLDER,"Directorio para archivos temporales e intermedios"),configuration->temp_folder,mxID_PROJECT_CONFIG_TEMP_DIR);
-
-	noexe_controls[8]=utils->last_label;
-	noexe_controls[9]=utils->last_button;
+	wx_extern.Add(general_temp_folder,true);
 	
 	panel->SetSizerAndFit(sizer);
 
@@ -249,20 +243,26 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	
 	compiling_extra_options = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion"),configuration->compiling_extra,mxID_PROJECT_CONFIG_COMPILE_EXTRA_BUTTON);
+	wx_extern.Add(compiling_extra_options,true);
 
-	compiling_macros = utils->AddDirCtrl(sizer,panel,LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir"),configuration->macros,mxID_PROJECT_CONFIG_COMPILE_MACROS_BUTTON);
+	compiling_macros = utils->AddDirCtrl(sizer,panel,
+		LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir"),configuration->macros,mxID_PROJECT_CONFIG_COMPILE_MACROS_BUTTON);
+	wx_extern.Add(compiling_macros,true);
 
 	compiling_headers_dirs = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras"),configuration->headers_dirs,mxID_PROJECT_CONFIG_COMPILE_DIRS_BUTTON);
-
+	wx_extern.Add(compiling_headers_dirs,true);
+	
 	compiling_ansi_compliance = utils->AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_COMPILING_ONLY_ANSI,"Limitar solo al estandard ANSI"),configuration->ansi_compliance);
+	wx_extern.Add(compiling_ansi_compliance);
 	
 	wxArrayString a_warnings;
 	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_NONE,"Ninguna"));
 	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_DEFAULT,"Predeterminadas"));
 	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_ALL,"Todas"));
 	compiling_warnings_level = utils->AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"),a_warnings, configuration->warnings_level);
+	wx_extern.Add(compiling_warnings_level,true);
 
 	wxArrayString a_debug;
 	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_NONE,"Ninguna"));
@@ -270,10 +270,11 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_2,"Nivel 2"));
 	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_3,"Nivel 3"));
 	compiling_debug_level = utils->AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"),a_debug, configuration->debug_level);
+	wx_extern.Add(compiling_debug_level,true);
 	
 	compiling_enable_profiling = utils->AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_COMPILING_PROFILING,"Generar informacion de \"profiling\""),configuration->enable_profiling);
-	
+	wx_extern.Add(compiling_enable_profiling);
 	
 	wxArrayString a_optimiz;
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_NONE,"Ninguna"));
@@ -282,6 +283,7 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_3,"Nivel 3"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_SIZE,"Reducir Tamaño"));
 	compiling_optimization_level = utils->AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"),a_optimiz, configuration->optimization_level);
+	wx_extern.Add(compiling_optimization_level,true);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
@@ -455,7 +457,7 @@ void mxProjectConfigWindow::LoadValues() {
 			if (toolchains_combo->GetString(i)==configuration->toolchain) 
 			{ toolchains_combo->SetSelection(i); break; }
 	
-	SetOnlyLib(!configuration->dont_generate_exe);
+	wx_noexe.EnableAll(!configuration->dont_generate_exe);
 	
 }
 
@@ -692,8 +694,9 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	
 	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
 	sizer_i->Add(new wxStaticText(panel,wxID_ANY,"Toolchain:"),sizers->BA5_Center);
-	sizer_i->Add(toolchains_combo=new wxComboBox(panel,wxID_ANY,"<default>",wxDefaultPosition,wxDefaultSize,toolchain_cmb),wxSizerFlags().Proportion(1).Center());
-	sizer_i->Add(new wxButton(panel,mxID_PROJECT_CONFIG_TOOLCHAIN_OPTIONS,"Opciones..."),sizers->BA10);
+	sizer_i->Add(toolchains_combo=new wxComboBox(panel,mxID_PROJECT_CONFIG_TOOLCHAIN_COMBO,"<default>",wxDefaultPosition,wxDefaultSize,toolchain_cmb,wxCB_READONLY),wxSizerFlags().Proportion(1).Center());
+	wxButton *button_toolchain = new wxButton(panel,mxID_PROJECT_CONFIG_TOOLCHAIN_OPTIONS,"Opciones...");
+	sizer_i->Add(button_toolchain,sizers->BA10); wx_extern.Add(button_toolchain);
 	sizer->Add(sizer_i,sizers->BB5_Exp0);
 	// set toolchains combo value
 	if (configuration->toolchain.Len()) 
@@ -701,30 +704,36 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 			if (toolchains_combo->GetString(i)==configuration->toolchain) 
 				{ toolchains_combo->SetSelection(i); break; }
 
-	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_COMPILATION_SEQUENCE,"Secuencia de compilacion:")),sizers->BLRT5);
+	wxStaticText *steps_label=new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_COMPILATION_SEQUENCE,"Secuencia de compilacion:"));
+	sizer->Add(steps_label,sizers->BLRT5);
+	wx_extern.Add(steps_label);
 	
 	steps_list = new wxListBox(panel,wxID_ANY);
 	ReloadSteps();
 	sizer_h->Add(steps_list,sizers->BA5_Exp1);
+	wx_extern.Add(steps_list);
 	
 	wxBoxSizer *buttons = new wxBoxSizer(wxVERTICAL);
 	wxButton *button_add = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_ADD,LANG(PROJECTCONFIG_STEPS_ADD,"Agregar"));
+	buttons->Add(button_add,sizers->BLRT5); wx_extern.Add(button_add);
 	wxButton *button_edit = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_EDIT,LANG(PROJECTCONFIG_STEPS_EDIT,"Editar"));
+	buttons->Add(button_edit,sizers->BLRT5); wx_extern.Add(button_edit);
 	wxButton *button_run = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_RUN,LANG(PROJECTCONFIG_STEPS_RUN,"Ejecutar"));
+	buttons->Add(button_run,sizers->BLRT5); wx_extern.Add(button_run);
 	wxButton *button_delete = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_DEL,LANG(PROJECTCONFIG_STEPS_DELETE,"Quitar"));
+	buttons->Add(button_delete,sizers->BLRT5); wx_extern.Add(button_delete);
 	wxButton *button_up = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_UP,LANG(PROJECTCONFIG_STEPS_MOVE_UP,"Subir"));
+	buttons->Add(button_up,sizers->BLRT5); wx_extern.Add(button_up);
 	wxButton *button_down = new wxButton(panel,mxID_PROJECT_CONFIG_STEPS_DOWN,LANG(PROJECTCONFIG_STEPS_MOVE_DOWN,"Bajar"));
-	buttons->Add(button_add,sizers->BLRT5);
-	buttons->Add(button_edit,sizers->BLRT5);
-	buttons->Add(button_run,sizers->BLRT5);
-	buttons->Add(button_delete,sizers->BLRT5);
-	buttons->Add(button_up,sizers->BLRT5);
-	buttons->Add(button_down,sizers->BA5);
+	buttons->Add(button_down,sizers->BA5); wx_extern.Add(button_down);
 	sizer_h->Add(buttons,sizers->BA5_Center);
 	sizer->Add(sizer_h,sizers->BA5_Exp1);
 	
-	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_1,"Nota: estos cambios se aplican inmediatamente,")),sizers->Center);
-	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_2,"aunque luego seleccione cancelar")),sizers->Center);
+
+	wxStaticText *st_warn1 = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_1,"Nota: estos cambios se aplican inmediatamente,"));
+	sizer->Add(st_warn1,sizers->Center); wx_extern.Add(st_warn1);
+	wxStaticText *st_warn2 = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_2,"aunque luego seleccione cancelar"));
+	sizer->Add(st_warn2,sizers->Center); wx_extern.Add(st_warn2);
 	
 	panel->SetSizerAndFit(sizer);
 	
@@ -744,25 +753,31 @@ wxPanel *mxProjectConfigWindow::CreateLibsPanel (wxNotebook *notebook) {
 //	sizer_i->Add(new wxButton(panel,wxID_ANY," Importar configuración desde plantilla... "),sizers->BA10);
 //	sizer->Add(sizer_i,sizers->BB5_Exp0);
 	
-	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_LIBS_TO_GENERATE,"Bibliotecas a generar")),sizers->BLRT5);
+	wxStaticText *libtobuild_label = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_LIBS_TO_GENERATE,"Bibliotecas a generar"));
+	sizer->Add(libtobuild_label,sizers->BLRT5);
+	wx_extern.Add(libtobuild_label);
 	
 	libtobuild_list = new wxListBox(panel,wxID_ANY);
 	sizer_h->Add(libtobuild_list,sizers->BA5_Exp1);
+	wx_extern.Add(libtobuild_list);
 	
 	wxBoxSizer *buttons = new wxBoxSizer(wxVERTICAL);
 	wxButton *button_add = new wxButton(panel,mxID_PROJECT_CONFIG_LIBS_ADD,LANG(PROJECTCONFIG_LIBS_ADD,"Agregar"));
+	buttons->Add(button_add,sizers->BA5); wx_extern.Add(button_add);
 	wxButton *button_edit = new wxButton(panel,mxID_PROJECT_CONFIG_LIBS_EDIT,LANG(PROJECTCONFIG_LIBS_EDIT,"Editar"));
+	buttons->Add(button_edit,sizers->BA5); wx_extern.Add(button_edit);
 	wxButton *button_delete = new wxButton(panel,mxID_PROJECT_CONFIG_LIBS_DEL,LANG(PROJECTCONFIG_LIBS_DELETE,"Quitar"));
-	buttons->Add(button_add,sizers->BA5);
-	buttons->Add(button_edit,sizers->BA5);
-	buttons->Add(button_delete,sizers->BA5);
+	buttons->Add(button_delete,sizers->BA5); wx_extern.Add(button_delete);
 	sizer_h->Add(buttons,sizers->BA5_Center);
 	sizer->Add(sizer_h,sizers->BA5_Exp1);
 	
 	libtobuild_noexec = utils->AddCheckBox(sizer,panel,LANG(PROJECTCONFIG_LIBS_NOEXEC,"Generar solo bibliotecas (no generar ejecutable)"),configuration->dont_generate_exe,mxID_PROJECT_CONFIG_LIBS_DONT_EXE);
+	wx_extern.Add(libtobuild_noexec);
 	
-	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_1,"Nota: estos cambios se aplican inmediatamente,")),sizers->Center);
-	sizer->Add(new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_2,"aunque luego seleccione cancelar")),sizers->Center);
+	wxStaticText *st_warn1 = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_1,"Nota: estos cambios se aplican inmediatamente,"));
+	sizer->Add(st_warn1,sizers->Center); wx_extern.Add(st_warn1);
+	wxStaticText *st_warn2 = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_2,"aunque luego seleccione cancelar"));
+	sizer->Add(st_warn2,sizers->Center); wx_extern.Add(st_warn2);
 	
 	panel->SetSizerAndFit(sizer);
 	
@@ -966,13 +981,7 @@ void mxProjectConfigWindow::OnLibsDel(wxCommandEvent &evt) {
 
 void mxProjectConfigWindow::OnLibsNoExe(wxCommandEvent &evt) {
 	evt.Skip();
-	SetOnlyLib(!libtobuild_noexec->GetValue());
-}
-
-void mxProjectConfigWindow::SetOnlyLib(bool val) {
-	for (int i=0;i<28;i++)
-		if (noexe_controls[i])
-			noexe_controls[i]->Enable(val);
+	wx_noexe.EnableAll(!libtobuild_noexec->GetValue());
 }
 
 void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
@@ -982,6 +991,10 @@ void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
 	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
 	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
 	PopupMenu(&menu);	
+}
+
+void mxProjectConfigWindow::OnComboToolchainChange(wxCommandEvent &evt) {
+	wx_extern.EnableAll(!Toolchain::GetInfo(toolchains_combo->GetStringSelection()).is_extern);
 }
 
 void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {

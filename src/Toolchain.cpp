@@ -4,6 +4,7 @@
 #include <wx/textfile.h>
 #include "ConfigManager.h"
 #include "ProjectManager.h"
+#include <wx/msgdlg.h>
 
 Toolchain *Toolchain::toolchains=NULL;
 int Toolchain::toolchains_count=0;
@@ -85,6 +86,21 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 	}
 	current_toolchain=Toolchain();
 	return current_toolchain;
+}
+
+const Toolchain &Toolchain::GetInfo (wxString fname) {
+	for(int i=0;i<toolchains_count;i++) { 
+		if (toolchains[i].file==fname) {
+			current_toolchain=toolchains[i];
+			return current_toolchain;
+		}
+	}
+	if (fname!=config->Files.toolchain) // if not found, returns default one
+		return GetInfo(config->Files.toolchain);
+#ifdef DEBUG
+		wxMessageBox(wxString("invalid toolchain fname: ")<<fname);
+#endif
+	return current_toolchain; // this should never reach this point
 }
 
 void Toolchain::GetNames (wxArrayString & names, bool exclude_extern) {
