@@ -755,6 +755,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 		config->Toolbars.icon_size=16;
 	
 	config->RecalcStuff();
+	Toolchain::SelectToolchain();
+	
 	Close();
 
 }

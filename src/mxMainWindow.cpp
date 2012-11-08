@@ -5389,8 +5389,10 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	menu.file_project_config->Enable(project_mode);
 	if (project_mode)
 		SetTitle(wxString("ZinjaI - ")+project->project_name);
-	else
+	else {
 		SetTitle("ZinjaI");
+		SetToolchainMode(false);
+	}
 	gui_project_mode=project_mode;
 }
 

@@ -479,6 +479,9 @@ ProjectManager::~ProjectManager(){
 	singleton->Start();
 	
 	project=NULL;
+	
+	Toolchain::SelectToolchain(); // keep after project=NULL
+	
 }
 
 // agregar un archivo al proyecto: where = 's':fuente 'h':cabecera, 'o':otros
