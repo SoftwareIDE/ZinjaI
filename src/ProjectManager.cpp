@@ -1508,7 +1508,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	
 	// agregar los argumentos de ejecucion
 	if (active_configuration->always_ask_args) {
-		int res = (new mxArgumentsDialog(main_window,active_configuration->args))->ShowModal();
+		int res = mxArgumentsDialog(main_window,active_configuration->args).ShowModal();
 		if (res&AD_CANCEL) return 0;
 		if (res&AD_ARGS) {
 			active_configuration->args = mxArgumentsDialog::last_arguments;;
@@ -2120,7 +2120,7 @@ bool ProjectManager::Debug() {
 		working_path.RemoveLast();
 	wxString args = active_configuration->args;
 	if (active_configuration->always_ask_args) {
-		int res = (new mxArgumentsDialog(main_window,active_configuration->args))->ShowModal();
+		int res = mxArgumentsDialog(main_window,active_configuration->args).ShowModal();
 		if (res&AD_CANCEL) return false;
 		if (res&AD_ARGS) {
 			active_configuration->args = mxArgumentsDialog::last_arguments;;
@@ -3274,7 +3274,6 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 
 void ProjectManager::SetActiveConfiguration (project_configuration * aconf) {
 	active_configuration=aconf;
-	Toolchain *tc=Toolchain::SelectToolchain();
-	main_window->SetToolchainMode(tc->is_extern);
+	main_window->SetToolchainMode(Toolchain::SelectToolchain().is_extern);
 }
 

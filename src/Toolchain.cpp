@@ -73,18 +73,18 @@ Toolchain::Toolchain () {
 	static_lib_linker="ar cr";
 }
 
-Toolchain *Toolchain::SelectToolchain ( ) {
+Toolchain &Toolchain::SelectToolchain ( ) {
 	wxString fname=config->Files.toolchain;
 	if (project && project->active_configuration->toolchain.Len())
 		fname=project->active_configuration->toolchain;
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
 			current_toolchain=toolchains[i];
-			return &current_toolchain;
+			return current_toolchain;
 		}
 	}
 	current_toolchain=Toolchain();
-	return &current_toolchain;
+	return current_toolchain;
 }
 
 void Toolchain::GetNames (wxArrayString & names, bool exclude_extern) {

@@ -403,9 +403,9 @@ void mxMainWindow::OnToolsWxfbHelpWx(wxCommandEvent &event) {
 	if (wxFileName::FileExists(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index)))
 		utils->OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
 	else if (mxMD_OK==mxMessageDialog(this,_T("ZinjaI no pudo encontrar la ayuda de wxWidgets. A continuacion le permitira buscarla\nmanualmente y luego recordara esta seleccion (en cualquier momento se puede modificar\ndesde el cuadro de Preferencias). Usualmente, el archivo indice es \"wx_contents.html\"."),_T("Ayuda wxWidgets"),(mxMD_INFO|mxMD_OK_CANCEL)).ShowModal()) {
-		wxFileDialog *dlg=new wxFileDialog(this,_T("Indice de ayuda wxWidgets:"),config->Help.wxhelp_index);
-		if (wxID_OK==dlg->ShowModal()) {
-			config->Help.wxhelp_index=dlg->GetPath();
+		wxFileDialog dlg(this,_T("Indice de ayuda wxWidgets:"),config->Help.wxhelp_index);
+		if (wxID_OK==dlg.ShowModal()) {
+			config->Help.wxhelp_index=dlg.GetPath();
 			utils->OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
 		}
 	}

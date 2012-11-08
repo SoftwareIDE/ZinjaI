@@ -31,8 +31,8 @@ public:
 	void OnArgsEditList(wxCommandEvent &evt);
 	void OnArgsEditText(wxCommandEvent &evt);
 	void OnCharHook(wxKeyEvent &evt);
-	DECLARE_EVENT_TABLE();
 	~mxArgumentsDialog();
+	DECLARE_EVENT_TABLE();
 };
 
 #endif

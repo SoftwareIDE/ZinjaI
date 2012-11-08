@@ -22,6 +22,7 @@
 #include "ProjectManager.h"
 #include "mxTextDialog.h"
 #include "Toolchain.h"
+#include "mxToolchainOptions.h"
 
 int mxProjectConfigWindow::last_page_index=0;
 
@@ -68,6 +69,8 @@ BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_LIBS_DEL,mxProjectConfigWindow::OnLibsDel)
 	
 	EVT_CHECKBOX(mxID_PROJECT_CONFIG_LIBS_DONT_EXE,mxProjectConfigWindow::OnLibsNoExe)
+	
+	EVT_BUTTON(mxID_PROJECT_CONFIG_IMPORT_LIBS,mxProjectConfigWindow::OnImportLibsButton)
 	
 	EVT_CLOSE(mxProjectConfigWindow::OnClose)
 END_EVENT_TABLE()
@@ -301,29 +304,29 @@ void mxProjectConfigWindow::OnClose(wxCloseEvent &event){
 }
 
 void mxProjectConfigWindow::OnIconDirButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Icono:"),DIR_PLUS_FILE(project->path,linking_icon->GetValue()));
-	dlg->SetWildcard(_T("Iconos|*.ico;*.ICO"));
-	if (wxID_OK==dlg->ShowModal()) 
-		linking_icon->SetValue(utils->Relativize(dlg->GetPath(),project->path));
+	wxFileDialog dlg(this,_T("Icono:"),DIR_PLUS_FILE(project->path,linking_icon->GetValue()));
+	dlg.SetWildcard(_T("Iconos|*.ico;*.ICO"));
+	if (wxID_OK==dlg.ShowModal()) 
+		linking_icon->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 void mxProjectConfigWindow::OnManifestDirButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Manifest:"),DIR_PLUS_FILE(project->path,linking_manifest->GetValue()));
-	dlg->SetWildcard(_T("XMLs|*.xml;*.XML"));
-	if (wxID_OK==dlg->ShowModal()) 
-		linking_manifest->SetValue(utils->Relativize(dlg->GetPath(),project->path));
+	wxFileDialog dlg(this,_T("Manifest:"),DIR_PLUS_FILE(project->path,linking_manifest->GetValue()));
+	dlg.SetWildcard(_T("XMLs|*.xml;*.XML"));
+	if (wxID_OK==dlg.ShowModal()) 
+		linking_manifest->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 void mxProjectConfigWindow::OnTempDirButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Carpeta para archivos temporales e intermedios:"),DIR_PLUS_FILE(project->path,general_temp_folder->GetValue()));
-	if (wxID_OK==dlg->ShowModal())
-		general_temp_folder->SetValue(utils->Relativize(dlg->GetPath(),project->path));
+	wxDirDialog dlg(this,_T("Carpeta para archivos temporales e intermedios:"),DIR_PLUS_FILE(project->path,general_temp_folder->GetValue()));
+	if (wxID_OK==dlg.ShowModal())
+		general_temp_folder->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Carpeta de trabajo:"),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-	if (wxID_OK==dlg->ShowModal())
-		general_working_folder->SetValue(utils->Relativize(dlg->GetPath(),project->path));
+	wxDirDialog dlg(this,_T("Carpeta de trabajo:"),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
+	if (wxID_OK==dlg.ShowModal())
+		general_working_folder->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 
@@ -476,6 +479,7 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 	if (!SaveValues()) return; // guardar los cambios de la conf actual en vista
 	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_PRE,"Desea establecer la configuracion \"")<<configuration->name<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_POST,"\" como la configuracion a utilizar?"),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
 		project->SetActiveConfiguration(configuration);
+	main_window->SetToolchainMode(Toolchain::SelectToolchain().is_extern);
 	Close();
 }
 
@@ -981,7 +985,7 @@ void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
 }
 
 void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {
-	
+	mxToolchainOptions(this,configuration).ShowModal();
 }
 
 void mxProjectConfigWindow::OnImportLibsButton (wxCommandEvent & evt) {

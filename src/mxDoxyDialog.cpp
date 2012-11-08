@@ -176,18 +176,18 @@ void mxDoxyDialog::OnHelpButton(wxCommandEvent &event) {
 }
 
 void mxDoxyDialog::OnBaseDirButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,LANG(DOXYCONF_BASE_DIR,"Directorio base:"),DIR_PLUS_FILE(project->path,base_path_ctrl->GetValue()));
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fname(dlg->GetPath());
+	wxDirDialog dlg(this,LANG(DOXYCONF_BASE_DIR,"Directorio base:"),DIR_PLUS_FILE(project->path,base_path_ctrl->GetValue()));
+	if (wxID_OK==dlg.ShowModal()) {
+		wxFileName fname(dlg.GetPath());
 		fname.MakeRelativeTo(project->path);
 		base_path_ctrl->SetValue(fname.GetFullPath());
 	}
 }
 
 void mxDoxyDialog::OnDestDirButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,LANG(DOXYCONF_DEST_DIR,"Directorio destino:"),DIR_PLUS_FILE(project->path,destdir_ctrl->GetValue()));
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fname(dlg->GetPath());
+	wxDirDialog dlg(this,LANG(DOXYCONF_DEST_DIR,"Directorio destino:"),DIR_PLUS_FILE(project->path,destdir_ctrl->GetValue()));
+	if (wxID_OK==dlg.ShowModal()) {
+		wxFileName fname(dlg.GetPath());
 		fname.MakeRelativeTo(project->path);
 		destdir_ctrl->SetValue(fname.GetFullPath());
 	}

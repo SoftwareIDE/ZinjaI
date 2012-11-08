@@ -145,9 +145,9 @@ void mxProjectGeneralConfig::OnDebugMacrosEdit(wxCommandEvent &evt) {
 }
 
 void mxProjectGeneralConfig::OnDebugMacrosOpen(wxCommandEvent &evt) {
-	wxFileDialog *dlg=new wxFileDialog(this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),_T(""),DIR_PLUS_FILE(project->path,project_debug_macros->GetValue()));
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fn(dlg->GetPath());
+	wxFileDialog dlg(this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),_T(""),DIR_PLUS_FILE(project->path,project_debug_macros->GetValue()));
+	if (wxID_OK==dlg.ShowModal()) {
+		wxFileName fn(dlg.GetPath());
 		fn.MakeRelativeTo(project->path);
 		project_debug_macros->SetValue(fn.GetFullPath());
 	}
@@ -169,9 +169,9 @@ void mxProjectGeneralConfig::OnAutocodesEdit(wxCommandEvent &evt) {
 }
 
 void mxProjectGeneralConfig::OnAutocodesOpen(wxCommandEvent &evt) {
-	wxFileDialog *dlg=new wxFileDialog(this,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo con definiciones de autocodigos"),_T(""),DIR_PLUS_FILE(project->path,project_autocodes->GetValue()));
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fn(dlg->GetPath());
+	wxFileDialog dlg(this,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo con definiciones de autocodigos"),_T(""),DIR_PLUS_FILE(project->path,project_autocodes->GetValue()));
+	if (wxID_OK==dlg.ShowModal()) {
+		wxFileName fn(dlg.GetPath());
 		fn.MakeRelativeTo(project->path);
 		project_autocodes->SetValue(fn.GetFullPath());
 	}

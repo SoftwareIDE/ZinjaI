@@ -118,9 +118,9 @@ void mxCompileConfigWindow::OnClose(wxCloseEvent &event){
 }
 
 void mxCompileConfigWindow::OnButtonFolder(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,LANG(COMPILECONF_WORKDIR_DLG,"Directorio de trabajo:"),working_folder_ctrl->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		working_folder_ctrl->SetValue(dlg->GetPath());
+	wxDirDialog dlg(this,LANG(COMPILECONF_WORKDIR_DLG,"Directorio de trabajo:"),working_folder_ctrl->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		working_folder_ctrl->SetValue(dlg.GetPath());
 }
 
 void mxCompileConfigWindow::OnHelpButton(wxCommandEvent &evt) {

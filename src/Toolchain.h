@@ -33,7 +33,7 @@ struct Toolchain {
 	
 	
 	static void LoadToolchains();
-	static Toolchain *SelectToolchain(); ///< set the project toolchain as current (use default if not project or not found)
+	static Toolchain &SelectToolchain(); ///< set the project toolchain as current (use default if not project or not found)
 	static Toolchain *toolchains; ///< array with all known toolchains
 	static int toolchains_count; ///< number of items in toolchains
 	static void GetNames(wxArrayString &names, bool exclude_extern=false); ///< populate the array with known toolchains' names

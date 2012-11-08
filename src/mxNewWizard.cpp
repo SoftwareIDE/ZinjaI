@@ -1059,9 +1059,9 @@ void mxNewWizard::RunWizard(wxString how) {
 }
 
 void mxNewWizard::OnButtonFolder(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,LANG(NEWWIZARD_CHOOSE_PATH,"Seleccione la ubicacion:"),DIR_PLUS_FILE(config->zinjai_dir,project_folder_path->GetValue()));
-	if (wxID_OK==dlg->ShowModal()) {
-		project_folder_path->SetValue(dlg->GetPath());
+	wxDirDialog dlg(this,LANG(NEWWIZARD_CHOOSE_PATH,"Seleccione la ubicacion:"),DIR_PLUS_FILE(config->zinjai_dir,project_folder_path->GetValue()));
+	if (wxID_OK==dlg.ShowModal()) {
+		project_folder_path->SetValue(dlg.GetPath());
 		project_folder_radio->SetSelection(3);
 	}
 }

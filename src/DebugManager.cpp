@@ -114,10 +114,10 @@ bool DebugManager::Start(bool update, mxSource *source) {
 		SetStateText(LANG(DEBUG_STATUS_STARTING,"Iniciando depuracion..."),true);
 		wxString args;
 		if (source->config_running.always_ask_args) {
-			int res = (new mxArgumentsDialog(main_window,source->exec_args))->ShowModal();
+			int res = mxArgumentsDialog(main_window,source->exec_args).ShowModal();
 			if (res&AD_CANCEL) return 0;
 			if (res&AD_ARGS) {
-				source->exec_args  = mxArgumentsDialog::last_arguments;;
+				source->exec_args = mxArgumentsDialog::last_arguments;;
 				args = source->exec_args ;
 			}
 			if (res&AD_REMEMBER) {

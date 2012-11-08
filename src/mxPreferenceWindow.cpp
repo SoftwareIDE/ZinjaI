@@ -778,63 +778,63 @@ void mxPreferenceWindow::OnSkinButton(wxCommandEvent &event){
 }
 
 void mxPreferenceWindow::OnWxHelpButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Indice de ayuda wxWidgets:"),help_wxhelp_index->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		help_wxhelp_index->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Indice de ayuda wxWidgets:"),help_wxhelp_index->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		help_wxhelp_index->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnTempButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Directorio temporal:"),files_temp_dir->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_temp_dir->SetValue(dlg->GetPath());
+	wxDirDialog dlg(this,_T("Directorio temporal:"),files_temp_dir->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_temp_dir->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnProjectButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Directorio de proyectos:"),files_project_folder->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_project_folder->SetValue(dlg->GetPath());
+	wxDirDialog dlg(this,_T("Directorio de proyectos:"),files_project_folder->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_project_folder->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnGdbButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del depurador"),files_debugger_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_debugger_command->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Comando del depurador"),files_debugger_command->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_debugger_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnImgBrowserButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del visor de imagenes"),files_img_browser_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_img_browser_command->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Comando del visor de imagenes"),files_img_browser_command->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_img_browser_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnBrowserButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Comando del navegador Web"),files_browser_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_browser_command->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Comando del navegador Web"),files_browser_command->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_browser_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnDoxygenButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Ubicacion del ejecutable de Doxygen"),files_doxygen_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_doxygen_command->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de Doxygen"),files_doxygen_command->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_doxygen_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnWxfbButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Ubicacion del ejecutable de wxFormBuilder"),files_wxfb_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_wxfb_command->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de wxFormBuilder"),files_wxfb_command->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_wxfb_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnValgrindButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Ubicacion del ejecutable de Valgrind"),files_valgrind_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_valgrind_command->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de Valgrind"),files_valgrind_command->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_valgrind_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnCppCheckButton(wxCommandEvent &event){
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Ubicacion del ejecutable de CppCheck"),files_cppcheck_command->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_cppcheck_command->SetValue(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de CppCheck"),files_cppcheck_command->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_cppcheck_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnHelpButton(wxCommandEvent &event){
@@ -844,9 +844,9 @@ void mxPreferenceWindow::OnHelpButton(wxCommandEvent &event){
 #if defined(_WIN32) || defined(__WIN32__)
 
 void mxPreferenceWindow::OnMingwButton(wxCommandEvent &event){
-	wxDirDialog *dlg=new wxDirDialog(this,_T("Directorio de binarios de MinGW:"),files_mingw_dir->GetValue());
-	if (wxID_OK==dlg->ShowModal())
-		files_mingw_dir->SetValue(dlg->GetPath());
+	wxDirDialog dlg(this,_T("Directorio de binarios de MinGW:"),files_mingw_dir->GetValue());
+	if (wxID_OK==dlg.ShowModal())
+		files_mingw_dir->SetValue(dlg.GetPath());
 }
 
 #else
@@ -961,9 +961,9 @@ void mxPreferenceWindow::OnAutocodesButton(wxCommandEvent &event) {
 	PopupMenu(&menu);
 }
 void mxPreferenceWindow::OnAutocodesOpen(wxCommandEvent &event) {
-	wxFileDialog *dlg=new wxFileDialog(this,_T("Archivo de definiciones de autocodigos"),_T(""),DIR_PLUS_FILE(config->zinjai_dir,files_autocode->GetValue()));
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fn(dlg->GetPath());
+	wxFileDialog dlg(this,_T("Archivo de definiciones de autocodigos"),_T(""),DIR_PLUS_FILE(config->zinjai_dir,files_autocode->GetValue()));
+	if (wxID_OK==dlg.ShowModal()) {
+		wxFileName fn(dlg.GetPath());
 		fn.MakeRelativeTo(config->zinjai_dir);
 		files_autocode->SetValue(fn.GetFullPath());
 	}
@@ -986,9 +986,9 @@ void mxPreferenceWindow::OnDebugMacrosButton(wxCommandEvent &event) {
 }
 
 void mxPreferenceWindow::OnDebugMacrosOpen(wxCommandEvent &event) {
-	wxFileDialog *dlg=new wxFileDialog(this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),_T(""),DIR_PLUS_FILE(config->zinjai_dir,debug_macros_file->GetValue()));
-	if (wxID_OK==dlg->ShowModal()) {
-		wxFileName fn(dlg->GetPath());
+	wxFileDialog dlg(this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),_T(""),DIR_PLUS_FILE(config->zinjai_dir,debug_macros_file->GetValue()));
+	if (wxID_OK==dlg.ShowModal()) {
+		wxFileName fn(dlg.GetPath());
 		fn.MakeRelativeTo(config->zinjai_dir);
 		debug_macros_file->SetValue(fn.GetFullPath());
 	}

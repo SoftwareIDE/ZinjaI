@@ -2464,7 +2464,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 //	utils->ParameterReplace(command,_T("${ZINJAI_DIR}"),wxGetCwd());
 	// agregar los argumentos de ejecucion
 	if (source->config_running.always_ask_args) {
-		int res = (new mxArgumentsDialog(this,source->exec_args))->ShowModal();
+		int res = mxArgumentsDialog(this,source->exec_args).ShowModal();
 		if (res&AD_CANCEL) return;
 		if (res&AD_ARGS) {
 			source->exec_args = mxArgumentsDialog::last_arguments;;
@@ -4553,10 +4553,10 @@ void mxMainWindow::OnSelectExplorerItem (wxTreeEvent &event) {
 	
 	if (explorer_tree.selected_item==explorer_tree.root) {
 		
-		wxDirDialog *dlg=new wxDirDialog(this,_T("Seleccione la ubicacion:"),explorer_tree.path);
-		if (wxID_OK==dlg->ShowModal()) {
-			SetExplorerPath(dlg->GetPath());
-			config->Files.last_dir = dlg->GetPath();
+		wxDirDialog dlg(this,_T("Seleccione la ubicacion:"),explorer_tree.path);
+		if (wxID_OK==dlg.ShowModal()) {
+			SetExplorerPath(dlg.GetPath());
+			config->Files.last_dir = dlg.GetPath();
 		}
 		
 	} else {
@@ -4617,10 +4617,10 @@ void mxMainWindow::OnExplorerTreeUpdate(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnExplorerTreeChangePath(wxCommandEvent &evy) {
-	wxDirDialog *dlg=new wxDirDialog(this,LANG(MAINW_EXPLORER_SELECT_PATH,"Seleccione la ubicacion:"),explorer_tree.path);
-	if (wxID_OK==dlg->ShowModal()) {
-		SetExplorerPath(dlg->GetPath());
-		config->Files.last_dir = dlg->GetPath();
+	wxDirDialog dlg(this,LANG(MAINW_EXPLORER_SELECT_PATH,"Seleccione la ubicacion:"),explorer_tree.path);
+	if (wxID_OK==dlg.ShowModal()) {
+		SetExplorerPath(dlg.GetPath());
+		config->Files.last_dir = dlg.GetPath();
 	}
 }
 
