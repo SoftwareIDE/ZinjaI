@@ -108,11 +108,13 @@ END_EVENT_TABLE()
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoint &pos, const wxSize &size, long style) : wxStyledTextCtrl (parent, id, pos, size, style) {
 
-#ifndef __WIN32__
-	// esto evita problemas en los ubuntus en castellano donde al agregar acentos, ñs y esas cosas, se desfaza el cursor, o al borrar se borra mal
-	if (wxLocale::GetSystemEncoding()==wxFONTENCODING_UTF8) 
-		SetCodePage(wxSTC_CP_UTF8);
-#endif
+	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
+	// with this path, text shows ok, but files can be saved with utf8 encoding and then it's shown differently when oppened somewhere else with the same zinjai
+//#ifndef __WIN32__
+//	// esto evita problemas en los ubuntus en castellano donde al agregar acentos, ñs y esas cosas, se desfaza el cursor, o al borrar se borra mal
+//	if (wxLocale::GetSystemEncoding()==wxFONTENCODING_UTF8) 
+//		SetCodePage(wxSTC_CP_UTF8);
+//#endif
 	
 	next_source_with_same_file=this;
 	
