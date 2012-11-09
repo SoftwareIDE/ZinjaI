@@ -81,7 +81,7 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
 			current_toolchain=toolchains[i];
-			if (project) current_toolchain.SetProjectArgumets();
+			current_toolchain.SetArgumets();
 			return current_toolchain;
 		}
 	}
@@ -120,10 +120,13 @@ static void aux2_SetProjectArguments(wxString &command, const wxString array[][2
 	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) command.Replace(wxString("${ARG")<<i+1<<"}",array[i][1],true);
 }
 
-void Toolchain::SetProjectArgumets ( ) {
-	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) // replace arguments with values from project
-		aux1_SetProjectArguments(arguments[i][1],project->active_configuration->toolchain_arguments[i]);
-	if (!is_extern) { // if its extern, ProjectManager will apply arguments, but if its not we must do it now so they became transparent for clients
+void Toolchain::SetArgumets ( ) {
+	if (project) {
+		for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) // replace arguments with values from project
+			aux1_SetProjectArguments(arguments[i][1],project->active_configuration->toolchain_arguments[i]);
+	}
+	// if its extern, ProjectManager will apply arguments, but if its not we must do it now so they became transparent for clients
+	if (!is_extern) {
 		aux2_SetProjectArguments(c_compiler,arguments);
 		aux2_SetProjectArguments(cpp_compiler,arguments);
 		aux2_SetProjectArguments(linker,arguments);

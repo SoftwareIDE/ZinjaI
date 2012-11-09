@@ -386,7 +386,6 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 void mxCompiler::ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run) {
 	wxProcess *process = compile_and_run->process;
 	static wxString error_line, nice_error_line;
-	int p,l;
 	wxTextInputStream input1(*(process->GetInputStream()));	
 	while ( process->IsInputAvailable() ) {
 		error_line=input1.ReadLine();
