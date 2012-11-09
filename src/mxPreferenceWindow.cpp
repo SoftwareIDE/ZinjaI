@@ -337,6 +337,9 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 	init_close_files_for_project = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING,"Cerrar todos los demas archivos al abrir un proyecto"),config->Init.close_files_for_project);
 	init_prefer_explorer_tree = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto"),config->Init.prefer_explorer_tree);
 	
+	wxArrayString tc_array; Toolchain::GetNames(tc_array,true); int tc_i=tc_array.Index(config->Files.toolchain);
+	files_toolchain = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_TOOLCHAIN,"Herramientas de compilación"),tc_array,tc_i);
+	
 	panel->SetSizerAndFit(sizer);
 	return panel;
 
@@ -488,9 +491,6 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 //	files_compiler_c_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GCC,"Comando del compilador C"),config->Files.compiler_c_command,mxID_GCC_PATH);
 	files_debugger_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GDB,"Comando del depurador"),config->Files.debugger_command,mxID_GDB_PATH);
 	files_terminal_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CONSOLE,"Comando de la terminal"),config->Files.terminal_command,mxID_TERMINALS_BUTTON);
-	
-	wxArrayString tc_array; Toolchain::GetNames(tc_array,true); int tc_i=tc_array.Index(config->Files.toolchain);
-	files_toolchain = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_TOOLCHAIN,"Herramientas de compilación"),tc_array,tc_i);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
