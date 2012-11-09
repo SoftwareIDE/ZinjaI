@@ -205,7 +205,25 @@ for(int i=0;i<32;i++) { signal(i,NULL); }
 			}
 		} else {
 			if (waitkey>0) {
-				cerr<<endl<<endl<<lang_program_finished_abnormal[lang_idx]<<WTERMSIG(child_status)<<" >>"<<endl<<lang_press_key_to_close[lang_idx];
+				const char signals[][15] = { "", // 0
+					"SIGHUP","SIGINT","SIGQUIT","SIGILL","SIGTRAP", // 1-5
+					"SIGABRT","SIGBUS","SIGFPE","SIGKILL","SIGUSR", // 6-10
+					"SIGSEGV","SIGUSR2","SIGPIPE","SIGALRM","SIGTERM", // 11-15
+					"SIGSTKFLT","SIGCHLD","SIGCONT","SIGSTOP","SIGTSTP", //16-20
+					"SIGTTIN","SIGTTOU","SIGURG","SIGXCPU","SIGXFSZ", // 21-25
+					"SIGVTALRM","SIGPROF","SIGWINCH","SIGIO","SIGPWR", // 26-29
+					"SIGSYS","SIGRTMIN","SIGRTMIN+1","SIGRTMIN+2","SIGRTMIN+3", // 33-37
+					"SIGRTMIN+4","SIGRTMIN+5","SIGRTMIN+6","SIGRTMIN+7","SIGRTMIN+8", // 38-42
+					"SIGRTMIN+9","SIGRTMIN+10","SIGRTMIN+11","SIGRTMIN+12","SIGRTMIN+13", // 43-47
+					"SIGRTMIN+14","SIGRTMIN+15","SIGRTMAX-14","SIGRTMAX-13","SIGRTMAX-12", // 48-52
+					"SIGRTMAX-11","SIGRTMAX-10","SIGRTMAX-9","SIGRTMAX-8","SIGRTMAX-7", // 53-57
+					"SIGRTMAX-6","SIGRTMAX-5","SIGRTMAX-4","SIGRTMAX-3","SIGRTMAX-2", // 58-62
+					"SIGRTMAX-1","SIGRTMAX" }; // 63-64
+				int sig=WTERMSIG(child_status);
+				if (sig>0 && sig<=64)
+					cerr<<endl<<endl<<lang_program_finished_abnormal[lang_idx]<<signals[sig]<<"("<<sig<<") >>"<<endl<<lang_press_key_to_close[lang_idx];
+				else
+					cerr<<endl<<endl<<lang_program_finished_abnormal[lang_idx]<<sig<<" >>"<<endl<<lang_press_key_to_close[lang_idx];
 				waitkey=2;
 			}
 		}
