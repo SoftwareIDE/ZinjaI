@@ -3581,8 +3581,8 @@ void mxMainWindow::OnFileSave (wxCommandEvent &event) {
 void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE  {
 		mxSource *source=CURRENT_SOURCE;
-		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->GetPath(true),source->GetFileName(), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		dlg.SetDirectory(source->GetPath(true));
+		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->sin_titulo?config->Files.last_dir:source->GetPath(true),source->GetFileName(), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+//		dlg.SetDirectory(source->GetPath(true));
 		dlg.SetWildcard(_T("Todos los archivos|*|Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER));
 //		dlg.SetFilterIndex(1);
 		if (dlg.ShowModal() == wxID_OK) {
