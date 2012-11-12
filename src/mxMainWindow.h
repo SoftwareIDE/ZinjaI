@@ -543,12 +543,15 @@ public:
 	void SetToolchainMode(bool is_extern);
 	
 	///@brief set the message in compiler panel and status bar
-	void SetCompilingStatus(const wxString &message); 
+	void SetCompilingStatus(const wxString &message, bool also_statusbar=true); 
 	
 	///@brief clear the content of extern_compiler_output
 	void ClearExternCompilerOutput(); 
 	///@brief adds a new line to the content of extern_compiler_output
 	void AddExternCompilerOutput(const wxString &pre, const wxString &message); 
+	
+	void OnExternCompilerOutput(wxCommandEvent &evt);
+	void OnSelectErrorCommon(const wxString &error); ///< to be called from OnExternCompilerOutput y OnSelectError
 	
 	DECLARE_EVENT_TABLE();
 };

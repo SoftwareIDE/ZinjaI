@@ -330,6 +330,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_END_PROCESS(wxID_ANY, mxMainWindow::OnProcessTerminate)
 	
 	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxMainWindow::OnSelectTreeItem)
+	EVT_LISTBOX_DCLICK(mxID_EXTERN_COMPILER_OUTPUT,mxMainWindow::OnExternCompilerOutput)
 	
 	EVT_HTML_LINK_CLICKED(wxID_ANY, mxMainWindow::OnQuickHelpLink)
 	
@@ -1037,134 +1038,11 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event){
 	}
 	// ver que dijo el compilador
 	wxYield();
-	long int line;
 	mxCompilerItemData *comp_data = (mxCompilerItemData*)(compiler_tree.treeCtrl->GetItemData(event.GetItem()));
 	if (!comp_data) return;
 	wxString error=comp_data->file_info;
 	if (!error.Len()) error=compiler_tree.treeCtrl->GetItemText(event.GetItem());;
-	bool opened=false;
-	
-	wxString preline=error[1]==':'?error.AfterFirst(':').AfterFirst(':'):error.AfterFirst(':');
-	
-	if ( preline.BeforeFirst(':').ToLong(&line) ) {
-		// ver si esta abierto
-		wxString sthe_one(error[1]!=':' ?error.BeforeFirst(':'):(error.Mid(0,2)+error.AfterFirst(':').BeforeFirst(':')));
-		wxFileName the_one;
-		if (project)
-			the_one=sthe_one=DIR_PLUS_FILE(project->path,sthe_one);
-		else IF_THERE_IS_SOURCE
-			the_one=sthe_one=DIR_PLUS_FILE(CURRENT_SOURCE->source_filename.GetPath(),sthe_one);
-		else
-			the_one=sthe_one;
-		for (int i=0,j=notebook_sources->GetPageCount();i<j;i++) {
-			mxSource *src = ((mxSource*)(notebook_sources->GetPage(i)));
-			if ((!src->sin_titulo && SameFile(src->source_filename,the_one)) || (src->temp_filename==the_one && src==compiler->last_compiled) ) {
-				notebook_sources->SetSelection(i);
-				opened=true; break;
-			}
-		}
-		// si no esta abierto
-		if (!opened) {
-//			if (mxMD_YES == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal() ) {
-				mxSource *src=OpenFile(sthe_one,!project);
-				if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
-//			} else
-//				return;
-		}
-
-		mxSource *source=CURRENT_SOURCE;
-		source->MarkError(line-1);
-		
-		preline=preline.AfterFirst(':').BeforeFirst(':');
-		if (preline.Len()) {
-			unsigned int i=0, n=0;
-			while (i<preline.size() && preline[i]>='0' && preline[i]<='9') 
-				{ n=n*10+preline[i++]-'0'; }
-			if (i==preline.Len()) {
-				n+=source->PositionFromLine(line-1)-1;
-				source->SelectError(0,n,n);
-#if defined(_WIN32) || defined(__WIN32__)
-				focus_timer->Start(333,true);
-#endif
-				ShowCompilerTreePanel();
-				return;
-			}
-		}
-		
-		wxString keyword=error;
-		
-		int a1 = keyword.Find('\'',true), a2 = keyword.Find('`',true);
-		int p1=wxNOT_FOUND, p2=wxNOT_FOUND;
-		if (a1==wxNOT_FOUND && a2!=wxNOT_FOUND)
-			p1=a2;
-		else if (a2==wxNOT_FOUND && a1!=wxNOT_FOUND)
-			p1=a1;
-		else if (a2!=wxNOT_FOUND && a1!=wxNOT_FOUND)
-			p1=a1>a2?a1:a2;
-		
-		if (p1!=wxNOT_FOUND)
-			keyword=keyword.Left(p1);
-		
-		a1 = keyword.Find('\'',true), a2 = keyword.Find('`',true);
-		if (a1==wxNOT_FOUND && a2!=wxNOT_FOUND)
-			p2=a2;
-		else if (a2==wxNOT_FOUND && a1!=wxNOT_FOUND)
-			p2=a1;
-		else if (a2!=wxNOT_FOUND && a1!=wxNOT_FOUND)
-			p2=a1>a2?a1:a2;
-		
-		if (p2!=wxNOT_FOUND)
-			keyword=keyword.Mid(p2+1);
-
-		bool found=false;
-		int endpos = source->PositionFromLine(line);
-		int startpos = source->PositionFromLine(line-1);
-		int pos;
-		if (keyword!=_T("") && keyword!=error) {
-			pos=source->FindText(startpos,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
-			if (pos>=0) {
-				found=true;
-			} else {
-				if (!found && keyword[keyword.Len()-1]==')' && keyword.BeforeLast('(')!="") {
-					keyword=keyword.BeforeLast('(');
-					if (keyword.AfterLast(':')!="")
-						keyword=keyword.AfterLast(':');
-					pos=source->FindText(startpos,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
-					if (pos>=0) {
-						found=true;
-					} else {
-						if (!found && keyword.AfterLast(':')!="") {
-							keyword=keyword.AfterLast(':');
-							int pos=source->FindText(startpos,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
-							if (pos>=0) {
-								found=true;
-							}
-						}
-					}
-				}
-			}
-		}
-		if (found) {
-			int p=source->FindText(pos+keyword.Len(),endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
-			if (p>=0) {
-				source->SelectError(1,pos,pos+keyword.Len());
-				source->SelectError(1,p,p+keyword.Len());
-				p=p+keyword.Len();
-				while ( (p=source->FindText(p,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD))>=0 ) {
-					source->SelectError(1,p,p+keyword.Len());
-					p=p+keyword.Len();
-				}
-				source->GotoPos(source->GetLineIndentPosition(line-1));
-			} else {
-				source->SelectError(0,pos,pos+keyword.Len());
-			}
-		}
-#if defined(_WIN32) || defined(__WIN32__)
-		focus_timer->Start(333,true);
-#endif
-		ShowCompilerTreePanel();
-		return;
-	}
+	if (error.Len()) OnSelectErrorCommon(error);
 }
 
 void mxMainWindow::OnFileOpenH(wxCommandEvent &event){
@@ -2197,7 +2075,7 @@ wxPanel* mxMainWindow::CreateCompilerTree() {
 	
 	// added for enabling extern toolchains, output will go to a textbox instead of a tree
 	wxBoxSizer *compiler_sizer = new wxBoxSizer(wxVERTICAL);
-	extern_compiler_output = new wxListBox(compiler_panel,wxID_ANY,wxDefaultPosition,wxDefaultSize);
+	extern_compiler_output = new wxListBox(compiler_panel,mxID_EXTERN_COMPILER_OUTPUT,wxDefaultPosition,wxDefaultSize);
 	wxSizerFlags sf; sf.Expand().Proportion(1).Border(0,0);
 	compiler_sizer->Add(compiler_tree.treeCtrl,sf);
 	compiler_sizer->Add(extern_compiler_output,sf);
@@ -2310,7 +2188,7 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 		compiler->timer->Start(500);
 	}
 	// informar al usuario
-	if (msg.Len()) SetCompilingStatus(msg);
+	if (msg.Len()) SetCompilingStatus(msg,false);
 }
 
 
@@ -5407,10 +5285,10 @@ void mxMainWindow::SetToolchainMode (bool is_extern) {
 	compiler_panel->GetSizer()->Layout();
 }
 
-void mxMainWindow::SetCompilingStatus (const wxString &message) {
+void mxMainWindow::SetCompilingStatus (const wxString &message, bool also_statusbar) {
 	if (current_toolchain.is_extern) AddExternCompilerOutput("= ",message);
 	else compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
-	main_window->SetStatusText(message);
+	if (also_statusbar) main_window->SetStatusText(message);
 }
 
 void mxMainWindow::ClearExternCompilerOutput ( ) {
@@ -5421,3 +5299,134 @@ void mxMainWindow::AddExternCompilerOutput(const wxString &pre, const wxString &
 	extern_compiler_output->Append(pre+message);
 	extern_compiler_output->ScrollLines(1);
 }
+
+void mxMainWindow::OnExternCompilerOutput (wxCommandEvent & evt) {
+	wxString str=extern_compiler_output->GetStringSelection().AfterFirst(' ');
+	if (str.Len()) OnSelectErrorCommon(str);
+	
+}
+
+void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
+	long line; 	bool opened=false;	
+	wxString preline=error[1]==':'?error.AfterFirst(':').AfterFirst(':'):error.AfterFirst(':');
+	if ( preline.BeforeFirst(':').ToLong(&line) ) {
+		// ver si esta abierto
+		wxString sthe_one(error[1]!=':' ?error.BeforeFirst(':'):(error.Mid(0,2)+error.AfterFirst(':').BeforeFirst(':')));
+		wxFileName the_one;
+		if (project)
+			the_one=sthe_one=DIR_PLUS_FILE(project->path,sthe_one);
+		else IF_THERE_IS_SOURCE
+			the_one=sthe_one=DIR_PLUS_FILE(CURRENT_SOURCE->source_filename.GetPath(),sthe_one);
+	else
+		the_one=sthe_one;
+		for (int i=0,j=notebook_sources->GetPageCount();i<j;i++) {
+			mxSource *src = ((mxSource*)(notebook_sources->GetPage(i)));
+			if ((!src->sin_titulo && SameFile(src->source_filename,the_one)) || (src->temp_filename==the_one && src==compiler->last_compiled) ) {
+				notebook_sources->SetSelection(i);
+				opened=true; break;
+			}
+		}
+		// si no esta abierto
+		if (!opened) {
+//			if (mxMD_YES == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal() ) {
+			mxSource *src=OpenFile(sthe_one,!project);
+			if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
+//			} else
+//				return;
+		}
+		
+		mxSource *source=CURRENT_SOURCE;
+		source->MarkError(line-1);
+		
+		preline=preline.AfterFirst(':').BeforeFirst(':');
+		if (preline.Len()) {
+			unsigned int i=0, n=0;
+			while (i<preline.size() && preline[i]>='0' && preline[i]<='9') 
+			{ n=n*10+preline[i++]-'0'; }
+			if (i==preline.Len()) {
+				n+=source->PositionFromLine(line-1)-1;
+				source->SelectError(0,n,n);
+#if defined(_WIN32) || defined(__WIN32__)
+				focus_timer->Start(333,true);
+#endif
+				ShowCompilerTreePanel();
+				return;
+			}
+		}
+		
+		wxString keyword=error;
+		
+		int a1 = keyword.Find('\'',true), a2 = keyword.Find('`',true);
+		int p1=wxNOT_FOUND, p2=wxNOT_FOUND;
+		if (a1==wxNOT_FOUND && a2!=wxNOT_FOUND)
+			p1=a2;
+		else if (a2==wxNOT_FOUND && a1!=wxNOT_FOUND)
+			p1=a1;
+		else if (a2!=wxNOT_FOUND && a1!=wxNOT_FOUND)
+			p1=a1>a2?a1:a2;
+		
+		if (p1!=wxNOT_FOUND)
+			keyword=keyword.Left(p1);
+		
+		a1 = keyword.Find('\'',true), a2 = keyword.Find('`',true);
+		if (a1==wxNOT_FOUND && a2!=wxNOT_FOUND)
+			p2=a2;
+		else if (a2==wxNOT_FOUND && a1!=wxNOT_FOUND)
+			p2=a1;
+		else if (a2!=wxNOT_FOUND && a1!=wxNOT_FOUND)
+			p2=a1>a2?a1:a2;
+		
+		if (p2!=wxNOT_FOUND)
+			keyword=keyword.Mid(p2+1);
+		
+		bool found=false;
+		int endpos = source->PositionFromLine(line);
+		int startpos = source->PositionFromLine(line-1);
+		int pos;
+		if (keyword!=_T("") && keyword!=error) {
+			pos=source->FindText(startpos,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
+			if (pos>=0) {
+				found=true;
+			} else {
+				if (!found && keyword[keyword.Len()-1]==')' && keyword.BeforeLast('(')!="") {
+					keyword=keyword.BeforeLast('(');
+					if (keyword.AfterLast(':')!="")
+						keyword=keyword.AfterLast(':');
+					pos=source->FindText(startpos,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
+					if (pos>=0) {
+						found=true;
+					} else {
+						if (!found && keyword.AfterLast(':')!="") {
+							keyword=keyword.AfterLast(':');
+							int pos=source->FindText(startpos,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
+							if (pos>=0) {
+								found=true;
+							}
+						}
+					}
+				}
+			}
+		}
+		if (found) {
+			int p=source->FindText(pos+keyword.Len(),endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
+			if (p>=0) {
+				source->SelectError(1,pos,pos+keyword.Len());
+				source->SelectError(1,p,p+keyword.Len());
+				p=p+keyword.Len();
+				while ( (p=source->FindText(p,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD))>=0 ) {
+					source->SelectError(1,p,p+keyword.Len());
+					p=p+keyword.Len();
+				}
+				source->GotoPos(source->GetLineIndentPosition(line-1));
+			} else {
+				source->SelectError(0,pos,pos+keyword.Len());
+			}
+		}
+#if defined(_WIN32) || defined(__WIN32__)
+		focus_timer->Start(333,true);
+#endif
+		ShowCompilerTreePanel();
+		return;
+	}
+}
+

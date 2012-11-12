@@ -2,6 +2,7 @@ ZinjaI todo
 
 posibles bugs:
 	revisar lo de agregar .cpp al guardar
+	revisar el icono que pone a la nueva pestaña al duplicar vista
 	testear el "ignorar comentarios" en las búsquedas (buscar cerr<< en dewall, andaba mal)
 
 mas opciones para crear un proyecto:
@@ -16,8 +17,7 @@ integración con wx:
 	detectar archivos/proyectos renombrados / renombrar archivos/proyectos
 
 toolchains alternativos
-	agregar "encabezado para makefiles" a los gcc-like toolchains, y revisar genearación de makefiles
-	!!! acomodar la gui cuando cambia entre extern y no extern desde el cuadro de opciones del proyecto
+	agregar "encabezado para makefiles" a los gcc-like toolchains, y revisar generación de makefiles
 	
 refactory: 
 	simil ctrl+h pero para agregar virtuales?
@@ -73,7 +73,6 @@ Documentacion:
 
 Sitio:
 	Sistema de votacion en el sitio para nuevas funcionalidades???
-	!!! Foros
 
 3. shift+enter en la grilla de inspecciones
 
