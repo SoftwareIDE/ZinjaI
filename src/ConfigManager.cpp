@@ -93,11 +93,17 @@ ConfigManager::ConfigManager(wxString a_path){
 	else if (Files.terminal_command==_T("gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x"))
 		Files.terminal_command=TERM_GNOME;
 	// verificar si hay compilador
-	if (!Init.compiler_seen && !utils->GetOutput(_T("g++ --version")).Len())
-		wxMessageBox(LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado el compilador (g++). Debe instalarlo\n"
-		                "con el gestor de paquetes que corresponda a su distribucion\n"
-		                "(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_COMPILER,"Compilador C++"));
-	else Init.compiler_seen=true;
+	if (!Init.compiler_seen && !utils->GetOutput(_T("g++ --version")).Len()) {
+		// try to use clang if g++ not found
+		wxArrayString toolchains;
+		Toolchain::GetNames(toolchains,true);
+		if (toolchains.Index("clang")!=wxNOT_FOUND && utils->GetOutput(_T("clang --version")).Len()) {
+			Files.toolchain="clang"; Toolchain::SelectToolchain(); 
+		} else 
+			wxMessageBox(LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
+				"con el gestor de paquetes que corresponda a su distribucion\n"
+				"(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_COMPILER,"Compilador C++"));
+	} else Init.compiler_seen=true;
 	// verificar si hay depurador
 	if (!Init.debugger_seen && !utils->GetOutput(_T("gdb --version")).Len())
 		wxMessageBox(LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
