@@ -18,6 +18,7 @@ struct Toolchain {
 	wxString arguments[TOOLCHAIN_MAX_ARGS][2]; ///< arguments for extern toolchains ([x][0]=name, [x][1]=value)
 	
 	// options for gcc-like toolchains
+	bool is_gcc; ///< apply gcc error simplifications
 	wxString c_compiler; ///< c compiler command
 	wxString cpp_compiler; ///< c++ compiler command
 	wxString linker; ///< linker command

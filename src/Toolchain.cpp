@@ -38,6 +38,7 @@ void Toolchain::LoadToolchains ( ) {
 						toolchains[i].arguments[l-1][1]=value.AfterFirst('=');
 					}
 				}
+				else if (key=="is_gcc") toolchains[i].is_gcc = utils->IsTrue(value);
 				else if (key=="extern") toolchains[i].is_extern = utils->IsTrue(value);
 				else if (key=="c_compiler") toolchains[i].c_compiler = value;
 				else if (key=="c_compiling_options") toolchains[i].c_compiling_options = value;
@@ -57,6 +58,7 @@ Toolchain::Toolchain () {
 	file="<null>";
 	desc="<null>";
 	is_extern=false;
+	is_gcc=true;
 #if defined(__WIN32__)
 	linker=_T("mingw32-g++");
 	cpp_compiler=_T("mingw32-g++");

@@ -321,7 +321,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 //		}
 			
 			// reemplazar templates para que sea más legible
-			if (config->Init.beautify_compiler_errors) UnSTD(nice_error_line);
+			if (config->Init.beautify_compiler_errors && current_toolchain.is_gcc) UnSTD(nice_error_line);
 			
 			if (error_line.Last()!=',' && ( error_line.Last()!=':' || error_line.Find(_T(": error: "))!=wxNOT_FOUND || wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)) || error_line.StartsWith(EN_COMPOUT_LINKER_WARNING)) ) {
 				bool flag;
