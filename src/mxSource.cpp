@@ -1949,11 +1949,15 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		
 		c=GetCharAt(p_from);
 		
-		if (c==')') {
-			p=p_from+1;
-			while(II_IS_4(p,' ','\n','\r','\t') || II_SHOULD_IGNORE(p)) {
-				p++;
+		if (c==')') { // ver si era una función/método
+			// avanzar despues del paréntesis y ver si abre una llave
+			p=p_from+1; int l=GetLength();
+			II_FRONT(p,II_IS_NOTHING_4(p))
+			// saltear el const
+			if (p+5<l&&GetCharAt(p)=='c'&&GetCharAt(p+1)=='o'&&GetCharAt(p+2)=='n'&&GetCharAt(p+3)=='s'&&GetCharAt(p+4)=='t'&&(GetCharAt(p+5)=='{'||II_IS_NOTHING_4(p+5))) {
+				p+=5; II_FRONT(p,II_IS_NOTHING_4(p))
 			}
+			
 			if (c!='{') {
 				p_from = BraceMatch(p_from);
 				if (p_from==wxSTC_INVALID_POSITION)
@@ -2038,13 +2042,17 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 				}
 			}
 			
-		} else	if (c=='}') {
+		} else	if (c=='}') { // saltear todo el contenido de ese bloque
 			p_from = BraceMatch(p_from);
 			if (p_from==wxSTC_INVALID_POSITION)
 				break;
 			p_from--;
-			while (p_from>0 && (II_IS_4(p_from,' ','\n','\r','\t') || II_SHOULD_IGNORE(p_from)) )
-				p_from--;
+			// ver si era una función, y en ese caso saltear tambien el prototipo
+			II_BACK(p_from,II_IS_NOTHING_4(p_from));
+			// saltear el const
+			if (p_from>4&&GetCharAt(p_from-4)=='c'&&GetCharAt(p_from-3)=='o'&&GetCharAt(p_from-2)=='n'&&GetCharAt(p_from-1)=='s'&&GetCharAt(p_from)=='t'&&(GetCharAt(p_from-5)==')'||II_IS_NOTHING_4(p_from-5))) {
+				p_from-=5; II_BACK(p_from,II_IS_NOTHING_4(p_from));
+			}			
 			if (c==')') {
 				p_from = BraceMatch(p_from);
 				if (p_from==wxSTC_INVALID_POSITION)
@@ -2374,6 +2382,9 @@ wxString mxSource::FindScope(int pos) {
 		} else if (p_llave_a!=wxSTC_INVALID_POSITION && (p_llave_c==wxSTC_INVALID_POSITION || p_llave_c<p_llave_a) ) {
 			int p=pos=p_llave_a-1;
 			II_BACK(p,II_IS_NOTHING_4(p));
+			if (p>4&&GetCharAt(p-4)=='c'&&GetCharAt(p-3)=='o'&&GetCharAt(p-2)=='n'&&GetCharAt(p-1)=='s'&&GetCharAt(p)=='t'&&(GetCharAt(p-5)==')'||II_IS_NOTHING_4(p-5))) {
+				p-=5; II_BACK(p,II_IS_NOTHING_4(p));
+			}
 			if (c==')') { // puede ser funcion
 				p=BraceMatch(p);
 				if (p!=wxSTC_INVALID_POSITION) {

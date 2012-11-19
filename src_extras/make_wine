@@ -20,7 +20,7 @@ cp -u $SRC/src_extras/complement/* fuentes/src_extras/complement
 cp -u $SRC/src_extras/wx_autocomp/* fuentes/src_extras/wx_autocomp
 cp -u $SRC/quickhelp/* zinjai/quickhelp/
 cp -u $SRC/guihelp/* zinjai/guihelp/
-cp -u $SRC/toolchains/*.png zinjai/toolchains/
+#cp -u $SRC/toolchains/* zinjai/toolchains/
 cp -u $SRC/imgs/*.png zinjai/imgs/
 cp -u $SRC/imgs/*.html zinjai/imgs/
 cp -u $SRC/src/* fuentes/src/
