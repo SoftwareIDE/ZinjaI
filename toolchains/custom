@@ -1,7 +1,7 @@
 desc=custom building script
 extern=true
 build_command=${ARG1}
-build_command=${ARG2}
+clean_command=${ARG2}
 argument1=Build Command=build.sh
 argument2=Clean Command=clean.sh
 use_return_vale=0
