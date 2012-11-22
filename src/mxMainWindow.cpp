@@ -407,8 +407,11 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	diff_sidebar=NULL;
 	for (int i=0;i<ATH_COUNT;i++)
 		autohide_handlers[i]=NULL;
-	
+
+#ifndef __APPLE__
+	// esto genera el problema de "image file is not of type 9"?
 	SetIcon(wxIcon(zinjai_xpm));
+#endif
 	
  	aui_manager.SetManagedWindow(this);
 		

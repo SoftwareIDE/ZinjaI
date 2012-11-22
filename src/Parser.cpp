@@ -718,3 +718,9 @@ void Parser::ParseIfUpdated(wxFileName fname) {
 			parser->ParseFile(fname.GetFullPath());
 	}
 }
+
+bool Parser::GetFather(wxString child, pd_inherit *&father) {
+	if (!father) father=first_inherit; else father=father->next;
+	while (father && father->son!=child) father=father->next;
+	return father;
+}

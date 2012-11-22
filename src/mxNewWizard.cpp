@@ -29,6 +29,7 @@
 #include "mxSizers.h"
 #include "Language.h"
 #include "mxMultipleFileChooser.h"
+#include "parserData.h"
 
 mxNewWizard *wizard;
 
@@ -243,31 +244,104 @@ void mxNewWizard::OnProjectCreate() {
 			mxMessageDialog(this,LANG(NEWWIZARD_FILE_EXISTS,"Ya existe un archivo con ese nombre"),h_name,mxMD_OK|mxMD_ERROR).ShowModal();				
 			return;
 		} else {
+			
+			// armar una arreglo con las clases bases y sus ansestros para buscar metodos virtuales
+			wxArrayString base_classes;
+			for (int i=0;i<config->Init.inherit_num;i++)
+				base_classes.Add(onproject_inherit_class[i]->GetValue());
+			for(unsigned int i=0;i<base_classes.GetCount();i++) {
+				pd_inherit *father=NULL;
+				while (parser->GetFather(base_classes[i],father)) {
+					if (base_classes.Index(father->father)==wxNOT_FOUND)
+						base_classes.Add(father->father);
+				}
+			}
+			// buscar todos los métodos virtuales de todas esas clases
+			wxArrayString virtual_methods;
+			for(unsigned int i=0;i<base_classes.GetCount();i++) {
+				pd_class *cls=parser->GetClass(base_classes[i]);
+				if (!cls) continue;
+				pd_func *func=cls->first_method;
+				while (func->next) { func=func->next; } // para atras, para que queden ordenadas como en el h
+				while (func->prev) {
+					wxString visib="private ";
+					if (func->properties&PD_CONST_PROTECTED) visib="protected ";
+					else if (func->properties&PD_CONST_PUBLIC) visib="public ";
+					if (func->properties&PD_CONST_VIRTUAL_PURE) {
+						virtual_methods.Add(visib+func->full_proto+(func->properties&PD_CONST_CONST?" const =0":" =0")); // const no deberia estar en el full proto?
+					} else if (func->properties&PD_CONST_VIRTUAL) {
+						virtual_methods.Add(visib+func->full_proto+(func->properties&PD_CONST_CONST?" const":"")); // const no deberia estar en el full proto?
+					}
+					func=func->prev;
+				}
+			}
+			if (virtual_methods.GetCount()) {
+				// eliminar repetidos
+				for(unsigned int i=0;i<virtual_methods.GetCount();i++) {  
+					for(unsigned int j=i+1;j<virtual_methods.GetCount();j++) {  
+						if (virtual_methods[i].AfterFirst(' ')==virtual_methods[j].AfterFirst(' ')) 
+							if (virtual_methods[i].EndsWith(" =0") && !virtual_methods[j].EndsWith(" =0")) {
+								virtual_methods[i]=virtual_methods[j]; // si hay una version virtual pura y otra no pura, quedarse con la que no
+							}
+							virtual_methods.RemoveAt(j--);
+					}
+				}
+				// preguntar cuales va a querer implementar
+				wxArrayInt sels; 
+				for (unsigned int i=0;i<virtual_methods.GetCount();i++) sels.Add(i);
+				int nsels=wxGetMultipleChoices(sels,"Seleccione los métodos virtuales de las clases ansestras a implementar","Nueva clase",virtual_methods,this);
+				// eliminar los no seleccionados
+				for(int i=virtual_methods.GetCount()-1;i>=0;i--) { 
+					if (sels.Index(i)==wxNOT_FOUND) 
+						virtual_methods.RemoveAt(i);
+				}
+				// quitar el "=0" del final de los prototipos
+				for(unsigned int i=0;i<virtual_methods.GetCount();i++) { 
+					if (virtual_methods[i].EndsWith(" =0")) {
+						for(int j=0;j<3;j++) virtual_methods[i].RemoveLast();
+					}
+				}
+			}
+			
 			// crear el cpp
 			wxTextFile cpp_file(cpp_name);
 			cpp_file.Create();
 			cpp_file.AddLine(wxString(_T("#include \""))+name+_T(".h\""));
 			cpp_file.AddLine(_T(""));
-			if (onproject_const_def->GetValue()) {
+			if (onproject_const_def->GetValue()) { // constructor por defecto
 				cpp_file.AddLine(name+_T("::")+name+_T("() {"));
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));
 				cpp_file.AddLine(_T(""));
 			}
-			if (onproject_const_copy->GetValue()) {
+			if (onproject_const_copy->GetValue()) { // constructor de copia
 				cpp_file.AddLine(name+_T("::")+name+_T("(const ")<<name<<_T(" &arg) {"));
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));
 				cpp_file.AddLine(_T(""));
 			}
-			if (onproject_dest->GetValue()) {
+			if (onproject_dest->GetValue()) { // destructor
 				cpp_file.AddLine(name+_T("::~")+name+_T("() {"));
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));
 				cpp_file.AddLine(_T(""));
 			}
+			for(unsigned int i=0;i<virtual_methods.GetCount();i++) { // métodos virtuales heredados
+				cpp_file.AddLine(virtual_methods[i].AfterFirst(' ')+" {");
+				cpp_file.AddLine(_T("\t"));
+				cpp_file.AddLine(_T("}"));
+				cpp_file.AddLine(_T(""));
+				// sacar el nombre de la clase del prototipo para que no ponerlo despues en el .h
+				virtual_methods[i]=
+					virtual_methods[i].BeforeFirst('(').BeforeLast(':').BeforeLast(' ') 
+					+" "+
+					virtual_methods[i].BeforeFirst('(').AfterLast(':')
+					+"("+
+					virtual_methods[i].AfterFirst('(');
+			}
 			cpp_file.Write();
 			cpp_file.Close();
+			
 			// crear el h
 			wxString def=name;
 			def.MakeUpper();
@@ -275,7 +349,8 @@ void mxNewWizard::OnProjectCreate() {
 			h_file.Create();
 			h_file.AddLine(wxString(_T("#ifndef "))+def+_T("_H"));
 			h_file.AddLine(wxString(_T("#define "))+def+_T("_H"));
-			for (int i=0;i<config->Init.inherit_num;i++) {
+			
+			for (int i=0;i<config->Init.inherit_num;i++) { // #includes para las clases bases
 				wxString aux = onproject_inherit_class[i]->GetValue();
 				if (aux.Len()) {
 					aux = code_helper->GetIncludeForClass(folder,aux);
@@ -284,7 +359,7 @@ void mxNewWizard::OnProjectCreate() {
 				}
 			}
 			h_file.AddLine(_T(""));
-			wxString inherits;
+			wxString inherits; // texto de la declaración de herencia
 			for (int i=0;i<config->Init.inherit_num;i++)
 				if (onproject_inherit_class[i]->GetValue().Len()) {
 					if (inherits.Len())
@@ -292,9 +367,16 @@ void mxNewWizard::OnProjectCreate() {
 					else
 						inherits<<_T(" : ")<<onproject_inherit_visibility[i]->GetValue()<<_T(" ")<<onproject_inherit_class[i]->GetValue();
 				}
+			// cuerpo de la clase
 			h_file.AddLine(wxString(_T("class "))+name+inherits+_T(" {"));
 			h_file.AddLine(_T("private:"));
+			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
+				if (virtual_methods[i].StartsWith("private "))
+					h_file.AddLine(wxString(_T("\t"))+virtual_methods[i].AfterFirst(' ')+";");
 			h_file.AddLine(_T("protected:"));
+			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
+				if (virtual_methods[i].StartsWith("protected "))
+					h_file.AddLine(wxString(_T("\t"))+virtual_methods[i].AfterFirst(' ')+";");
 			h_file.AddLine(_T("public:"));
 			if (onproject_const_def->GetValue())
 				h_file.AddLine(wxString(_T("\t"))+name+_T("();"));
@@ -302,12 +384,17 @@ void mxNewWizard::OnProjectCreate() {
 				h_file.AddLine(wxString(_T("\t"))+name+_T("(const ")<<name<<_T(" &arg);"));
 			if (onproject_dest->GetValue())
 				h_file.AddLine(wxString(_T("\t~"))+name+_T("();"));
+			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
+				if (virtual_methods[i].StartsWith("public "))
+					h_file.AddLine(wxString(_T("\t"))+virtual_methods[i].AfterFirst(' ')+";");
 			h_file.AddLine(_T("};"));
+			
 			h_file.AddLine(_T(""));
 			h_file.AddLine(_T("#endif"));
 			h_file.AddLine(_T(""));
 			h_file.Write();
 			h_file.Close();
+			
 			// abrir
 			main_window->OpenFile(cpp_name,true);
 			main_window->OpenFile(h_name,true);

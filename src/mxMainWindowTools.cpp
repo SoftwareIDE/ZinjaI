@@ -883,13 +883,13 @@ void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 		pd_ref *func;
 		func=file->first_func_dec;
 		wxArrayString choices;
-		while (func->next) { func=func->next; } // para atras, para que queden ordenadas como en el h
-		while (func->prev) {
-			if (!PD_UNREF(pd_func,func)->file_def) {
-				choices.Add(PD_UNREF(pd_func,func)->full_proto+(PD_UNREF(pd_func,func)->properties&PD_CONST_CONST?" const":""));
+			while (func->next) { func=func->next; } // para atras, para que queden ordenadas como en el h
+			while (func->prev) {
+				if (!PD_UNREF(pd_func,func)->file_def) {
+					choices.Add(PD_UNREF(pd_func,func)->full_proto+(PD_UNREF(pd_func,func)->properties&PD_CONST_CONST?" const":"")); // const no deberia estar en el full proto?
+				}
+				func=func->prev;
 			}
-			func=func->prev;
-		}
 		source->EndUndoAction();
 		if (!choices.GetCount()) {
 			mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION,"No se encontraron funciones/metodos sin implementar."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();

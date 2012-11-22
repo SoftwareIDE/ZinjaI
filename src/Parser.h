@@ -151,17 +151,21 @@ public:
 	void OnPopupMenu (wxTreeEvent &event, wxAuiNotebook *notebook);
 	void OnGotoDec (wxAuiNotebook *notebook);
 	void OnGotoDef (wxAuiNotebook *notebook);
-//	void Goto (wxAuiNotebook *notebook, parser_filename *file, int line);
 	void UnregisterSource(mxSource *src);
 	void Stop();
 	
 	wxString JoinNames(wxString types, wxString names);
 	
+	/// Method for finding info for a file by its name
 	pd_file *GetFile(wxString name);
+	/// Method for finding info for a class by its name
 	pd_class *GetClass(wxString name);
+	/// Method for finding ancestor classes for a class child (start with father=NULL an call until returns false to get all direct ancestor in father->father)
+	bool GetFather(wxString child, pd_inherit *&father);
 	
 	/// Parsea un archivo si ha sido modificado
 	void ParseIfUpdated(wxFileName fname); 
+	
 };
 
 extern Parser *parser;
