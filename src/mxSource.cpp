@@ -2001,6 +2001,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 						while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
 							p--;
 						}
+						if (c=='&') c=GetCharAt(--p); // alias de tipo puntero (foo *&var)
 						while (c=='*') {
 							p--;
 							dims++;
