@@ -381,6 +381,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				break;
 			case PAF_FUNC_DEF:
 				key=PARSER_PARTE(0);
+				if (key=="NULL") break;
 				if (key[0]=='<') key=key.AfterLast('>');
 				name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
 				fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
@@ -389,6 +390,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				break;
 			case PAF_FUNC_DCL:
 				key=PARSER_PARTE(0);
+				if (key=="NULL") break;
 				if (key[0]=='<') key=key.AfterLast('>');
 				name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
 				fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
@@ -406,6 +408,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				name=PARSER_PARTE(0);
 				PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
 				key=PARSER_PARTE_NB(5);
+				if (key=="NULL") break;
 				props=0;
 				if (key.Left(9)==_T("volatile ")) {
 					key=key.Mid(9);
@@ -428,6 +431,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 					props|=PD_CONST_DESTRUCTOR;
 				else if (name==aux)
 					props=PD_CONST_CONSTRUCTOR;
+				else if (key=="NULL") break;
 				dectype=0; auxtype=1; postype=p[6]-1;
 				while (s[postype]!='x'&&s[postype]!=1) {
 					if (s[postype]>='a')
@@ -458,6 +462,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 					props|=PD_CONST_DESTRUCTOR;
 				else if (name==aux)
 					props=PD_CONST_CONSTRUCTOR;
+				else if (key=="NULL") break;
 				dectype=0; auxtype=1; postype=p[6]-1;
 				while (s[postype]!='x'&&s[postype]!=1) {
 					if (s[postype]>='a')
@@ -481,6 +486,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 				name=PARSER_PARTE(1);
 				PARSER_PARTE(2).ToLong(&line);
 				key=PARSER_PARTE_NB(6);
+				if (key=="NULL") break;
 				props=0;
 				if (key.Left(9)==_T("volatile ")) {
 					key=key.Mid(9);

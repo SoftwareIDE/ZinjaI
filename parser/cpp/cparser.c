@@ -5943,7 +5943,7 @@ extern void create_type( LongString *type, Declaration_t Declaration, Declarator
    
    if( ! bType )
    {
-      f_Strcat( type, "int" );
+      f_Strcat( type, "NULL" ); // ZASKAR: antes decir "int" en lugar de "NULL", pero lo puse para diferenciar macros como el DECLARE_EVENT_TABLE de wx
       bType = True;
    }
 
