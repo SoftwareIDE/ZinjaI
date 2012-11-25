@@ -1,0 +1,19 @@
+OBJS_DIR=Build.w32
+GPP=mingw32-g++
+GCC=mingw32-gcc
+FLAGS= --show-column -g2 -Wall -O0  -D_DEBUG 
+LIBS=-static-libgcc -static-libstdc++
+
+all: ${OBJS_DIR} ${OBJS_DIR}/Project.bin
+
+include Makefile.common
+
+clean:
+	del /Q ${OBJS} ${OBJS_DIR}/Project.bin
+
+${OBJS_DIR}/Project.bin: ${OBJS}
+	${GPP} ${OBJS} ${LIBS} -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}
+

@@ -1,5 +1,5 @@
 &nbsp;&nbsp;&nbsp; If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-&nbsp;&nbsp;&nbsp; This version fixes many bugs and introduces some new features such as a complement installer, the possibility to insert or remove breakpoints without pausing execution, a configuration dialog for cppcheck, and some minor interfase improvements. To read the complete changelog hit F1.
+&nbsp;&nbsp;&nbsp; The main new feature in this version is the ability to use and configure different toolchains for compiling and building projects. This way you can choose between different versions of gcc or other similar compilers (such as llvm-clang), or use external tools or scripts to manage the compilation rules (such as make). To read the full changelog hit F1.
 &nbsp;&nbsp;&nbsp; These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 &nbsp;&nbsp;&nbsp; You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.
