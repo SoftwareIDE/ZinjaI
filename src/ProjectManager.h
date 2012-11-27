@@ -416,7 +416,7 @@ public:
 	file_item *FindFromItem(wxTreeItemId &tree_item);
 	wxString GetNameFromItem(wxTreeItemId &tree_item, bool relative=false);
 	file_item *HasFile(wxFileName file); ///< busca una archivo en el proyecto por su ruta completa
-	bool Save();
+	bool Save(bool as_template=false);
 	void MoveFirst(wxTreeItemId &tree_item);
 	
 	//! guarda todos los archivos del proyecto que esten abiertos

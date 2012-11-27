@@ -253,6 +253,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_FOLD_FOLD, mxMainWindow::OnFoldFold)
 	EVT_MENU(mxID_FOLD_UNFOLD, mxMainWindow::OnFoldUnFold)
 	
+	EVT_MENU(mxID_TOOLS_CREATE_TEMPLATE, mxMainWindow::OnToolsCreateTemplate)
 	EVT_MENU(mxID_TOOLS_PREPROC_UNMARK_ALL, mxMainWindow::OnToolsPreprocUnMarkAll)
 	EVT_MENU(mxID_TOOLS_PREPROC_MARK_VALID, mxMainWindow::OnToolsPreprocMarkValid)
 	EVT_MENU(mxID_TOOLS_PREPROC_EXPAND_MACROS, mxMainWindow::OnToolsPreprocReplaceMacros)
@@ -1616,6 +1617,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));	
 	UpdateCustomTools();
 	
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CREATE_TEMPLATE, LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),_T(""),_T("Permite guardar el programa simple o proyecto actual como plantilla"),ipre+_T("create_template.png"));
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_INSTALL_COMPLEMENTS, LANG(MENUITEM_TOOLS_INSTALL_COMPLEMENTS,"Instalar Complementos..."),_T(""),_T("Permite instalar un complemento ya descargado para ZinjaI"),ipre+_T("updates.png"));
 	
 	menu.menu->Append(menu.tools, LANG(MENUITEM_TOOLS,"&Herramientas"));

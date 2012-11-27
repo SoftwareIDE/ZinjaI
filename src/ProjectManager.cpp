@@ -535,9 +535,9 @@ file_item *ProjectManager::AddFile (char where, wxFileName filename, bool sort_t
 	return first->next;
 }
 
-bool ProjectManager::Save () {
+bool ProjectManager::Save (bool as_template) {
 	
-	if (version_required>VERSION) {
+	if (!as_template && version_required>VERSION) {
 		int res = mxMessageDialog(main_window,
 			wxString(_T("El proyecto que esta por guardar fue creado con una version de ZinjaI superior\n"))<<
 			_T("a la que esta utilizando. Si graba el proyecto ahora se convertira a su su\n")<<
@@ -575,6 +575,7 @@ bool ProjectManager::Save () {
 	
 	// guardar cosas varias
 	fil.AddLine(_T("[general]"));
+	if (as_template) CFG_BOOL_WRITE_DN("project_template",true);
 	if (main_window->notebook_sources->GetPageCount()>2)
 		CFG_GENERIC_WRITE_DN("files_to_open",main_window->notebook_sources->GetPageCount());
 	CFG_GENERIC_WRITE_DN("project_name",project_name);

@@ -33,6 +33,7 @@
 #include "mxCppCheckConfigDialog.h"
 #include "mxValgrindConfigDialog.h"
 #include "Toolchain.h"
+#include "mxNewWizard.h"
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
 void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
@@ -1065,4 +1066,45 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 
 void mxMainWindow::OnToolsInstallComplements(wxCommandEvent &evt) {
 	new mxComplementInstallerWindow(this);
+}
+
+void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
+	if (project) {
+		wxString description=wxGetTextFromUser(LANG(MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre para mostrar del nuevo template de proyecto"));
+		if (!description.Len()) return; 
+		wxString filename=wxGetTextFromUser(LANG(MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre del archivo del nuevo template de proyecto"));
+		if (!filename.Len()) return; 
+		mxOSD(this,LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."));
+		project->Clean(); wxYield(); // remove temporals
+		wxString project_name=project->project_name; project->project_name=description; // replace project name with the new description
+		project->Save(true); // save in place as template
+		project->project_name=project_name; // restore original project name
+		wxString dest_dir=DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"templates"),filename);
+		wxFileName::Mkdir(dest_dir); utils->XCopy(project->path,dest_dir,true); // copy all project files
+		project->Save(); // restore real project file to non-template status
+	} else IF_THERE_IS_SOURCE {
+		wxString description = wxGetTextFromUser(LANG(MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE,"Ingrese el nombre para mostrar del nuevo template de programa simple"));
+		if (!description.Len()) return; 
+		wxString filename = wxGetTextFromUser(LANG(MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE,"Ingrese el nombre del archivo del nuevo template de programa simple"));
+		if (!filename.Len()) return; 
+		mxSource *src=CURRENT_SOURCE;
+		wxString dest_file=DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"templates"),filename+".tpl");
+		// create the template file
+		wxTextFile template_file(dest_file);
+		template_file.Create();
+		template_file.AddLine(wxString("// !Z! Name: ")+description);
+		int cur_pos=src->GetCurrentPos(),delta=0;
+		for(int i=0;i<cur_pos;i++) { if (src->GetCharAt(i)=='\r') delta++; }
+		template_file.AddLine(wxString("// !Z! Caret: ")<<(cur_pos-delta));
+		template_file.AddLine(wxString("// !Z! Options: ")+src->config_running.compiler_options);
+		if (!src->cpp_or_just_c) template_file.AddLine(wxString("!Z! Type: C"));
+		for(int i=0;i<src->GetLineCount();i++) {
+			wxString str=src->GetLine(i);
+			while (str.EndsWith("\r")||str.EndsWith("\n")) str.RemoveLast();
+			template_file.AddLine(str);
+		}
+		template_file.Write(); template_file.Close();
+	}
+	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK);
+	delete wizard;
 }

@@ -4,6 +4,10 @@ make -j 2 -C $SRC/src -f Makefile.wine || exit 1
 make -j 2 -C $SRC/src_extras -f Makefile.wine || exit 1
 make -j 2 -C $SRC/parser -f Makefile.wine || exit 1
 
+cp -ru $SRC/templtes-w32/zinjai/* zinjai/templates/
+cp -ru $SRC/templtes-w32/OpenGL/* zinjai/OpenGL/
+cp -ru $SRC/templtes-w32/wx/* zinjai/wx/
+
 cp -u $SRC/readme.txt zinjai/
 cp -u $SRC/compiling.txt fuentes/
 cp -u $SRC/Makefile fuentes/

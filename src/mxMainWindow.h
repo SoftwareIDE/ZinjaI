@@ -189,6 +189,8 @@ public:
 	
 	void OnInternalInfo(wxCommandEvent &event);
 	
+	void OnToolsCreateTemplate (wxCommandEvent &event);
+	
 	void OnToolsCodeCopyFromH (wxCommandEvent &event);
 	void OnToolsConsole (wxCommandEvent &event);
 	void OnToolsExeProps (wxCommandEvent &event);

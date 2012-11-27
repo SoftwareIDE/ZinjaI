@@ -11,7 +11,7 @@ Terminal de ejecucion
 CONFIG_NO_TERMINAL_FOUND
 No se ha encontrado una terminal conocida.\nInstale xterm, konsole, lxterminal o gnome-terminal;\nluego configure el parametro \"Comando del Terminal\"\nen la seccion \"Rutas 2\" del cuadro de \"Preferencias\".
 CONFIG_COMPILER_NOT_FOUND
-No se ha encontrado el compilador (g++). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
+No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
 CONFIG_COMPILER
 Compilador C++
 CONFIG_DEBUGGER_NOT_FOUND
@@ -1694,6 +1694,8 @@ MENUITEM_TOOLS_CUSTOM_SETTINGS
 &Configurar...
 MENUITEM_TOOLS_CUSTOM_HELP
 A&yuda...
+MENUITEM_TOOLS_CREATE_TEMPLATE
+Guardar como nueva plantilla...
 MENUITEM_TOOLS_INSTALL_COMPLEMENTS
 Instalar Complementos...
 MENUITEM_TOOLS
@@ -2456,6 +2458,18 @@ MAINW_PREPROC_OSD
 Preprocesando...
 MAINW_PREPROC_ERROR
 No se pudo preprocesar correctamente el fuente.
+MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE
+Ingrese el nombre para mostrar del nuevo template de proyecto
+MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE
+Ingrese el nombre del archivo del nuevo template de proyecto
+MAINW_GENERATING_TEMPLATE
+Generando plantilla...
+MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
+Ingrese el nombre para mostrar del nuevo template de programa simple
+MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
+Ingrese el nombre del archivo del nuevo template de programa simple
+MAINW_TEMPLATE_GENERATED
+Plantilla generada
 MAKEFILE_CAPTION
 Generar Makefile
 MAKEFILE_PROFILE
@@ -2858,6 +2872,8 @@ PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING
 Cerrar todos los demas archivos al abrir un proyecto
 PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
 Mostrar el explorador de archivos al abrir un proyecto
+PREFERENCES_TOOLCHAIN
+Herramientas de compilación
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
 PREFERENCES_STYLE_INVERTED_COLOURS
@@ -2938,8 +2954,6 @@ PREFERENCES_COMMANDS_GDB
 Comando del depurador
 PREFERENCES_COMMANDS_CONSOLE
 Comando de la terminal
-PREFERENCES_TOOLCHAIN
-Herramientas de compilación
 PREFERENCES_COMMANDS_EXPLORER
 Comando del explorador de archivos
 PREFERENCES_COMMANDS_IMAGE_VIEWER
