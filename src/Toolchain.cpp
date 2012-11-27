@@ -51,7 +51,6 @@ void Toolchain::LoadToolchains ( ) {
 			}
 		}
 	}
-	SelectToolchain();
 }
 
 Toolchain::Toolchain () {

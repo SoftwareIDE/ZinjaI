@@ -18,12 +18,13 @@
 
 ConfigManager *config;
 
-ConfigManager::ConfigManager(wxString a_path){
+ConfigManager::ConfigManager(wxString a_path) {
 	config=this;
 	zinjai_dir = a_path;
 	color_theme::Init();
 	LoadDefaults();
 	LoadToolBarsDefaults();
+	Toolchain::LoadToolchains();
 	er_init(home_dir.char_str());
 	first_run = !Load();
 	// cargar archivo de internacionalizacion
@@ -111,6 +112,7 @@ ConfigManager::ConfigManager(wxString a_path){
 		                "(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_DEBUGGER,"Depurador"));
 	else Init.debugger_seen=true;
 #endif	
+	Toolchain::SelectToolchain();
 }
 	
 bool ConfigManager::Load() {
@@ -539,8 +541,6 @@ bool ConfigManager::Load() {
 		ctheme->Load(DIR_PLUS_FILE(home_dir,"colours.zcs"));
 	
 	Init.autohiding_panels=Init.autohide_panels;
-	
-	Toolchain::LoadToolchains();
 	
 	return true;
 }
