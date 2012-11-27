@@ -62,6 +62,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 	custom_tabs=0;
 	tab_use_spaces=false;
 	
+	bool project_template=false; // should be true only when creating a new project from a template
+	
 	int version_saved=0; // vesion del zinjai que guardo al proyecto (suele diferir de la requerida)
 	int files_to_open=0, num_files_opened=0; // para la barra de progreso
 	
@@ -156,6 +158,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 						main_window->SetStatusProgress((100*num_files_opened)/files_to_open);
 					}
 				}
+				else CFG_BOOL_READ_DN("project_template",project_template);
 				else CFG_GENERIC_READ_DN("active_configuration",conf_name);
 				else CFG_GENERIC_READ_DN("current_source",current_source);
 				else CFG_CHAR_READ_DN("path_char",file_path_char);
@@ -388,7 +391,9 @@ ProjectManager::ProjectManager(wxFileName name) {
 					}
 				}
 				if (suggested_configuration) {
-					int res = mxMessageDialog(main_window,wxString(
+					int res = 0;
+					if (project_template) res=mxMD_YES;
+					else mxMessageDialog(main_window,wxString(
 						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_PRE,"Parece que esta abriendo un proyecto que tiene seleccionado un perfil\n"
 						"de compilacion y ejecucion para otro sistema operativo: \"")
 						)<<active_configuration->name<<

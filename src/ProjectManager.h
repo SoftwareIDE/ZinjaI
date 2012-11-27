@@ -408,7 +408,7 @@ public:
 	bool GenerateDoxyfile(wxString fname); ///< escribe el archivo de configuración para Doxygen
 	wxString WxfbGetSourceFile(wxString fbp_file); ///< funcion auxiliar que devuelve el nombre (path+nombre, sin extension) de los archivos que genera el archivo .fbp que recibe
 	
-	ProjectManager(wxFileName filename);
+	ProjectManager(wxFileName filename); ///< loads a project from a file (just_created=true when its called from new project wizard)
 	~ProjectManager();
 	wxString GetFileName();
 	int GetFileList(wxArrayString &array, char cuales='*', bool relative_paths=false);

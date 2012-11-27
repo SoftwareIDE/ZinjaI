@@ -1,5 +1,6 @@
 # generado por ZinjaI-lnx-20090903
 [general]
+project_template=1
 project_name=Proyecto OpenGL
 autocomp_extra=OpenGL_gl OpenGL_glu OpenGL_glut OpenGL_glx
 active_configuration=Debug_Linux

@@ -1,5 +1,6 @@
 # generado por ZinjaI-lnx-20090903
 [general]
+project_template=1
 project_name=wxFormsBuilder Project
 autocomp_extra=wxWidgets
 active_configuration=Linux_Debug
