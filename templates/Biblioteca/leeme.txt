@@ -1,3 +1,7 @@
+ Español
+=========
 Este proyecto está configurado para generar una biblioteca, junto con el ejecutable. Todos los fuentes que agregue al proyecto formarán parte de dicha biblioteca, a excepción de main.cpp. Esto es así para que pueda generar un programa cliente que le permita verificar el funcionamiento de su biblioteca. Por defecto, el nombre de la biblioteca es el mismo que el del proyecto, y es de tipo dinámico. Para cambiar cualquiera de estas opciones (tipo, nombre, qué fuentes incluir, generar más de una biblioteca, etc.) utilice la pestaña "Biblioteca" de las opciones de proyecto (menú Ejecucion->Opciones). Si sólo desea crear una biblioteca, sin generar ejecutable alguno, utilice la opción "Solo generar bibliotecas", ubicada en la parte posterior de la misma pestaña.
 
+ English
+=========
 This project's profiles will generate an executable and a library. Every file you add to this project will belong to the library. Only main.cpp will be outside. It's done that way so you can test your library's features with a client program. By default, library's name is the same as project's name and its a dynamic library. To change any of this settings (library's name, type, wich source file to include, generating more than one, ...) you can go to tab "Libraries" in "Compilation and Execution's Options" dialog (Run menu->Options...". If you want just to build the libary without any client program you can check the option "Generate only libraries" in the same tab.

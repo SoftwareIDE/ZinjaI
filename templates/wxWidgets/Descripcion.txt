@@ -8,7 +8,7 @@ en Ejecucion->Opciones...->Enlazado->Librearias a enlazar
  OpenGL, "wx_gtk2_gl-2.8,GL,GLU"(GNU/Linux) o "wxmsw28_gl,opengl32,glu32"(Windows)
  Graficos SVG, "wx_gtk2_svg-2.8"(GNU/Linux) o "wxmsw28_svg"(Windows)
  
-En la distribución para windows, la documentación acerca de las funciones y 
+En la distribución para Windows, la documentación acerca de las funciones y 
 clases de wxWidgets se encuentra en formato HTML en el subdirectorio 
 MinGW/wx/docs dentro del directorio de ZinjaI. Se puede acceder rápidamente a 
 ella con la opción "Ayuda wxWidgets..." del submenu "Diseñar Interfases" del 
