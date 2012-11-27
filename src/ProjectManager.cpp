@@ -393,7 +393,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 				if (suggested_configuration) {
 					int res = 0;
 					if (project_template) res=mxMD_YES;
-					else mxMessageDialog(main_window,wxString(
+					else res = mxMessageDialog(main_window,wxString(
 						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_PRE,"Parece que esta abriendo un proyecto que tiene seleccionado un perfil\n"
 						"de compilacion y ejecucion para otro sistema operativo: \"")
 						)<<active_configuration->name<<

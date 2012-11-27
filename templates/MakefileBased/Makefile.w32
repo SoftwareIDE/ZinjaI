@@ -4,14 +4,14 @@ GCC=mingw32-gcc
 FLAGS= --show-column -g2 -Wall -O0  -D_DEBUG 
 LIBS=-static-libgcc -static-libstdc++
 
-all: ${OBJS_DIR} ${OBJS_DIR}/Project.bin
+all: ${OBJS_DIR} ${OBJS_DIR}/Project.exe
 
 include Makefile.common
 
 clean:
-	del /Q ${OBJS} ${OBJS_DIR}/Project.bin
+	del /Q ${OBJS} ${OBJS_DIR}/Project.exe
 
-${OBJS_DIR}/Project.bin: ${OBJS}
+${OBJS_DIR}/Project.exe: ${OBJS}
 	${GPP} ${OBJS} ${LIBS} -o $@
 
 ${OBJS_DIR}:

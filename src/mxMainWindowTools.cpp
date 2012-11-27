@@ -1106,5 +1106,5 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		template_file.Write(); template_file.Close();
 	}
 	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK);
-	delete wizard;
+	delete wizard; wizard=NULL;
 }

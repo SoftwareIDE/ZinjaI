@@ -2,7 +2,7 @@ echo Updating Files...
 
 cp -u /mnt/ex/zinjai/compiling.txt zinjai.app/Contents/Resources/
 cp -u /mnt/ex/zinjai/readme.txt zinjai.app/Contents/Resources/
-cp -u /mnt/ex/zinjai/templates-mac/* zinjai.app/Contents/Resources/templates/
+cp -Hur /mnt/ex/zinjai/templates-mac/* zinjai.app/Contents/Resources/templates/
 cp -u /mnt/ex/zinjai/src_extras/* zinjai.app/Contents/Resources/src_extras/
 cp -u /mnt/ex/zinjai/src_extras/complement/* zinjai.app/Contents/Resources/src_extras/complement
 cp -u /mnt/ex/zinjai/src_extras/wx_autocomp/* zinjai.app/Contents/Resources/src_extras/wx_autocomp
