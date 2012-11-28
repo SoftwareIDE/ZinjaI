@@ -30,6 +30,8 @@ using namespace std;
 
 #define min2(a,b) ((a)<(b)?(a):(b))
 
+bool zinjai_debug_mode=false;
+
 #ifdef DEBUG
 wxString debug_string;
 #endif 

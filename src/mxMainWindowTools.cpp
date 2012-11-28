@@ -987,8 +987,10 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
 			project->compiling_options+_T(" \"")+DIR_PLUS_FILE(project->path,item->name)+"\""+"-c -E -o \""+bin_name+"\"";
 		if (id_command==1) command<<" -fdirectives-only -C";
+		_IF_DEBUGMODE(command);
 		int x =utils->Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
+			_IF_DEBUGMODE(x);
 			osd.Hide();
 			mxMessageDialog(this,LANG(MAINW_PREPROC_ERROR,"No se pudo preprocesar correctamente el fuente."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 			return;
@@ -1006,8 +1008,10 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
 		wxString comp_opts = src->GetParsedCompilerOptions();
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+fname+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
+		_IF_DEBUGMODE(command);
 		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
+			_IF_DEBUGMODE(x);
 			osd.Hide();
 			mxMessageDialog(this,LANG(MAINW_PREPROC_ERROR,"No se pudo preprocesar correctamente el fuente."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 			return;

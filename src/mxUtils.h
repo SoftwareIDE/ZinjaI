@@ -246,8 +246,11 @@ public:
 	wxString WichOne(wxString file, wxString path1, wxString path2, bool is_file=true);
 };
 
-
 extern mxUtils *utils;
+
+extern bool zinjai_debug_mode; ///< cuando se pone en true zinjai muestra con wxMessageBox información interna, (ver _IF_DEBUGMODE), para ayudar a encontrar un error en versione release, se activa desde Do That con "set verbose"
+
+#define _IF_DEBUGMODE(x) if (zinjai_debug_mode) wxMessageBox(wxString()<<x)
 
 #endif
 

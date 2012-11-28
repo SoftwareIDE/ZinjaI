@@ -4063,14 +4063,20 @@ void mxMainWindow::OnDebugStepOut ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	static wxString what;
 	wxString res = mxGetTextFromUser(_T("Comando:"), _T("Comandos internos") , what, this);
-	if (res=="errorsave") {
+	if (res=="help") {
+		wxMessageBox ("errorsave, kboom, debugmode");
+	} else if (res=="debugmode") {
+		zinjai_debug_mode=!zinjai_debug_mode;
+		if (zinjai_debug_mode) wxMessageBox ("debugmode activado");
+		else wxMessageBox ("debugmode desactivado");
+	} else if (res=="errorsave") {
 		er_sigsev(11);
 	} else if (res=="kboom") {
 		int *p=NULL;
 		// cppcheck-suppress nullPointer
 		cout<<*p;
-	} else
-	if (debug->debugging && res.Len()) debug->DoThat(what=res);
+	} else if (res.Len() && debug->debugging) 
+		debug->DoThat(what=res);
 }
 
 void mxMainWindow::ShowInQuickHelpPanel(wxString &res, bool hide_compiler_tree) {
