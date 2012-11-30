@@ -14,7 +14,6 @@
 #include "mxUtils.h"
 
 #define EN_NSTANTIATED_FROM "nstantiated from "
-//#define EN_INSTANTIATED_FROM_HERE "nstantiated from here"
 #define EN_IN_INSTANTIATION_OF "In instantiation of "
 #define EN_COMPOUT_IN_FILE_INCLUDED_FROM "In file included from "
 #define EN_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 from "
@@ -24,9 +23,9 @@
 #define EN_COMPOUT_AT_THIS_POINT_IN_FILE ": at this point in file"
 #define EN_COMPOUT_WITHIN_THIS_CONTEXT ": within this context"
 #define EN_COMPOUT_IN_PASSING_ARGUMENT ": in passing argument"
+#define EN_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
 
 #define ES_NSTANTIATED_FROM "nstantiated from "
-//#define ES_INSTANTIATED_FROM_HERE "instantiated from here"
 #define ES_IN_INSTANTIATION_OF "In instantiation of "
 #define ES_COMPOUT_IN_FILE_INCLUDED_FROM "En el fichero incluído de "
 #define ES_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 de "
@@ -35,6 +34,7 @@
 #define ES_COMPOUT_AT_THIS_POINT_IN_FILE ": en este punto en el fichero"
 #define ES_COMPOUT_WITHIN_THIS_CONTEXT ": en este contexto"
 #define ES_COMPOUT_IN_PASSING_ARGUMENT ": en el paso del argumento"
+#define ES_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
 #include "Toolchain.h"
 
 
@@ -352,7 +352,8 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 //				last.Replace(last.Left(last.Find(": ")),error_line.Left(error_line.Find(": ")));
 //				tree->SetItemText(compile_and_run.last_error_item,last);
 				} else if (
-					wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_NOTE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_NOTE)) 
+					wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_NOTE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_NOTE))
+					|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_FORWARD_DECLARATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_FORWARD_DECLARATION_OF)) 
 					|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_IN_PASSING_ARGUMENT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_IN_PASSING_ARGUMENT)) 
 					|| (wxNOT_FOUND!=error_line.Find(_T("(")) && error_line[error_line.Find(_T("("))-2]==':' && error_line[error_line.Find(_T("("))-3]!=':') 
 					) {
