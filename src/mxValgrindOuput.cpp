@@ -11,6 +11,7 @@
 #include "mxCompiler.h"
 #include <set>
 #include <wx/textfile.h>
+#include "mxArt.h"
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxValgrindOuput,wxTreeCtrl)

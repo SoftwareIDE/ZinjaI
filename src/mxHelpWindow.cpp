@@ -16,6 +16,7 @@
 #include "mxSizers.h"
 
 #define ERROR_PAGE(page) wxString(_T("<I>ERROR</I>: La pagina \""))<<page<<_T("\" no se encuentra. <br><br> La ayuda de <I>ZinjaI</I> aun esta en contruccion.")
+#include "mxArt.h"
 
 mxHelpWindow *helpw;
 
@@ -262,9 +263,10 @@ void mxHelpWindow::OnTree(wxTreeEvent &event) {
 	HashStringTreeItem::iterator it = items.begin();
 	while (it!=items.end() && it->second != item) ++it;
 	if (it==items.end()) return;
-	wxString fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,it->first));
+	wxString fname=it->first,anchor; if (fname.Contains("#")) { anchor=fname.AfterFirst('#'); fname=fname.BeforeFirst('#'); }
+	fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,fname));
 	if (fname.Len())
-		html->LoadPage(fname);
+		html->LoadPage(fname+(anchor.Len()?wxString("#")+anchor:""));
 	else
 		html->SetPage(ERROR_PAGE(it->first));
 //	evt.Skip();

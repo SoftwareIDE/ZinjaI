@@ -2,10 +2,9 @@
 #define MX_APPLICATION_H
 
 #include <wx/app.h>
-#include <wx/splash.h>
-#include <wx/longlong.h>
 
 #ifdef DEBUG
+#include <wx/longlong.h>
 extern wxLongLong start_time;
 extern wxLongLong aux_start_time;
 #define SHOW_MILLIS(a) \

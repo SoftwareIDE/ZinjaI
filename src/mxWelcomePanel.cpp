@@ -14,6 +14,7 @@
 #include "mxApplication.h"
 #include "mxOSD.h"
 #include "mxHelpWindow.h"
+#include <wx/button.h>
 
 mxWelcomePanel *welcome_panel;
 

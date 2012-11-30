@@ -10,6 +10,7 @@
 #include "mxHelpWindow.h"
 #include "mxMessageDialog.h"
 #include "ProjectManager.h"
+#include "mxArt.h"
 
 BEGIN_EVENT_TABLE(mxCustomTools, wxDialog)
 	EVT_BUTTON(wxID_OK,mxCustomTools::OnButtonOk)

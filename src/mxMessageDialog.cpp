@@ -6,6 +6,7 @@
 #include "mxSizers.h"
 #include "mxSplashScreen.h"
 #include "Language.h"
+#include "mxBitmapButton.h"
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxMessageDialog, wxDialog)

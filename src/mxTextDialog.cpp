@@ -4,6 +4,7 @@
 #include "Language.h"
 #include "mxSizers.h"
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 
 
@@ -46,10 +47,6 @@ mxTextDialog::mxTextDialog(wxWindow *parent, wxString message, wxString title, w
 	mySizer->Add( new wxStaticText(this,wxID_ANY,message), sizers->BA10_Exp1);
 	text=new wxTextCtrl(this,wxID_ANY,value);
 	mySizer->Add( text, sizers->BA10_Exp1);
-	
-//	mySizer->Add(topSizer,sizers->Exp0);
-	
-//	mySizer->InsertStretchSpacer(1);
 	
 	mySizer->Add(bottomSizer,sizers->BA5_Right);
 	SetMinSize(GetSize());

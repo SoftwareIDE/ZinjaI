@@ -2,10 +2,10 @@
 #define MX_PROJECT_CONFIG_WINDOW_H
 
 #include <wx/dialog.h>
-#include "ProjectManager.h"
 #include <wx/listctrl.h>
 #include "widgetDisabler.h"
 
+class project_configuration;
 class wxCheckBox;
 class wxComboBox;
 class wxTextCtrl;
@@ -27,7 +27,6 @@ class mxProjectConfigWindow : public wxDialog {
 
 	wxComboBox *configuration_name;
 	project_configuration *configuration;
-//	wxTextCtrl *project_name;
 
 	// pestana general
 	wxTextCtrl *general_working_folder;

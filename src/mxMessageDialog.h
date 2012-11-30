@@ -15,7 +15,6 @@
 #define mxMD_YES_NO_CANCEL mxMD_YES|mxMD_NO|mxMD_CANCEL
 
 #include <wx/dialog.h>
-#include "mxBitmapButton.h"
 
 class wxCheckBox;
 

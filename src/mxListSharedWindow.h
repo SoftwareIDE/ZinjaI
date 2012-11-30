@@ -2,7 +2,6 @@
 #define MX_LIST_SHARED_WINDOW
 
 #include <wx/dialog.h>
-#include <wx/listctrl.h>
 
 class wxTextCtrl;
 class wxListBox;

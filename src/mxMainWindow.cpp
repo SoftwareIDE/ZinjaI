@@ -81,6 +81,7 @@
 #define SameFile(f1,f2) (f1==f2)
 #else
 #include <sys/stat.h>
+#include "CodeHelper.h"
 inline bool SameFile(wxString f1, wxString f2) {
 	struct stat df1; struct stat df2;
 	lstat (f1.c_str(), &df1);

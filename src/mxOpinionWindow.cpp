@@ -12,6 +12,7 @@
 #include "Language.h"
 #include "ConfigManager.h"
 #include "mxTextDialog.h"
+#include <wx/statbmp.h>
 
 BEGIN_EVENT_TABLE(mxOpinionWindow, wxDialog)
 	EVT_SOCKET(wxID_ANY,mxOpinionWindow::OnSocketEvent)

@@ -1,13 +1,12 @@
 #ifndef MX_SOURCE_H
 #define MX_SOURCE_H
 
-//#include "common.h"
-
 #include <wx/stc/stc.h>
 #include <wx/filename.h>
 #include <wx/treebase.h>
 #include "ConfigManager.h"
-#include "error_recovery.h"
+
+class er_source_register;
 
 #define mxSOURCE_BOLD 1
 #define mxSOURCE_ITALIC 2

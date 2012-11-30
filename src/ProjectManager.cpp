@@ -29,6 +29,7 @@
 #include <algorithm>
 #include "Autocoder.h"
 #include "Toolchain.h"
+#include "CodeHelper.h"
 using namespace std;
 
 #define ICON_LINE(filename) (wxString(_T("0 ICON \""))<<filename<<_T("\""))

@@ -1,7 +1,7 @@
 #ifndef MXTEXTDIALOG_H
 #define MXTEXTDIALOG_H
 #include <wx/dialog.h>
-#include <wx/textctrl.h>
+class wxTextCtrl;
 
 class mxTextDialog : public wxDialog {
 private:

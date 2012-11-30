@@ -1,8 +1,8 @@
 #ifndef MXINSPECTIONPRINT_H
 #define MXINSPECTIONPRINT_H
 #include "mxExternInspection.h"
-#include <wx/textctrl.h>
 
+class wxTextCtrl;
 
 class mxInspectionPrint : public mxExternInspection {
 	wxTextCtrl *text;

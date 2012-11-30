@@ -4,7 +4,7 @@
 #include <wx/frame.h>
 #include <wx/sashwin.h>
 #include <wx/html/htmlwin.h>
-#include "mxUtils.h"
+#include "mxUtils.h" // HashStringTreeItem
 
 class wxHtmlWindow;
 class wxTextCtrl;
@@ -12,8 +12,6 @@ class wxTreeCtrl;
 class wxSashLayoutWindow;
 class wxBoxSizer;
 class wxHtmlEasyPrinting;
-
-#define SHOW_HELP(page) if (helpw) helpw->ShowHelp(page); else helpw = new mxHelpWindow(page);
 
 class mxHelpWindow:public wxFrame {
 private:
@@ -47,6 +45,7 @@ public:
 };
 
 extern mxHelpWindow *helpw;
+#define SHOW_HELP(page) if (helpw) helpw->ShowHelp(page); else helpw = new mxHelpWindow(page);
 
 #endif
 

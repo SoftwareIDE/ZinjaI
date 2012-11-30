@@ -2,10 +2,10 @@
 #define MXCOMPILER_H
 #include <wx/treectrl.h>
 #include <wx/string.h>
-#include <wx/timer.h>
 
 class wxProcess;
 class mxSource;
+class wxTimer;
 
 //! Informacion asociada a un item del arbol de resultados de compilacion, para guardar los que no se ve (por ejemplo el path completo)
 class mxCompilerItemData:public wxTreeItemData {

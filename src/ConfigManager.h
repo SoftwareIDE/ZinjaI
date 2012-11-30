@@ -2,9 +2,9 @@
 #define CONFIG_MANAGER_H
 
 #include <wx/string.h>
-#include "mxInspectionGrid.h"
-#include "mxBacktraceGrid.h"
-#include "mxThreadGrid.h"
+#include "mxInspectionGrid.h" // por IG_COLS_COUNT
+#include "mxBacktraceGrid.h" // por BG_COLS_COUNT
+//#include "mxThreadGrid.h" // por TG_COLS_COUNT
 
 #define CM_HISTORY_MAX_LEN 50
 

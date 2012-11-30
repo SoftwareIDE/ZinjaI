@@ -1,9 +1,7 @@
 #ifndef HELP_MANAGER_H
 #define HELP_MANAGER_H
 
-#include <wx/hashset.h>
-#include <wx/string.h>
-#include "mxUtils.h"
+#include "mxUtils.h" // HashStringString
 
 #define NO_QUICKHELP_TEXT(key) wxString(_T("<BR>No se encontro ayuda relacionada a la palabra seleccionada: "))+key+_T("<BR>") 
 

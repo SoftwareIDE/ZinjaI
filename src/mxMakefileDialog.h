@@ -1,7 +1,6 @@
 #ifndef MX_MAKEFILE_DIALOG_H
 #define MX_MAKEFILE_DIALOG_H
 
-#include <wx/combobox.h>
 #include <wx/dialog.h>
 
 class wxCheckBox;

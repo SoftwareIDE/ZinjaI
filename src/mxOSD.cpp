@@ -14,7 +14,7 @@ wxColour *mxOSD::cb = NULL;
 wxColour *mxOSD::cf = NULL;
 wxBrush *mxOSD::br = NULL;
 
-mxOSD::mxOSD(wxWindow *aparent, wxString str, int time, bool corner) : wxDialog(aparent,wxID_ANY,_T(""),wxPoint(200,200),wxSize(400,100),(aparent?wxFRAME_FLOAT_ON_PARENT:wxSTAY_ON_TOP)|wxNO_3D|wxNO_BORDER) {
+mxOSD::mxOSD(wxWindow *aparent, wxString str, int time, bool corner) : wxDialog(aparent?aparent:main_window,wxID_ANY,_T(""),wxPoint(200,200),wxSize(400,100),(aparent?wxFRAME_FLOAT_ON_PARENT:wxSTAY_ON_TOP)|wxNO_3D|wxNO_BORDER) {
 	if (!font) {
 		font = new wxFont(12,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false);
 		cb = new wxColour(_T("Z LIGHT YELLOW"));

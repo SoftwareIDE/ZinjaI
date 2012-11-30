@@ -1,4 +1,5 @@
 #include "mxStatusBar.h"
+#include <wx/gauge.h>
 
 /* El siguiente codigo fue escrito por Anders Sandvig y tomado de 
 	http://lists.wxwidgets.org/archive/wx-users/msg55135.html */

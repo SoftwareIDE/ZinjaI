@@ -289,7 +289,7 @@ void mxNewWizard::OnProjectCreate() {
 				// preguntar cuales va a querer implementar
 				wxArrayInt sels; 
 				for (unsigned int i=0;i<virtual_methods.GetCount();i++) sels.Add(i);
-				int nsels=wxGetMultipleChoices(sels,"Seleccione los métodos virtuales de las clases ansestras a implementar","Nueva clase",virtual_methods,this);
+				/*int nsels=*/wxGetMultipleChoices(sels,"Seleccione los métodos virtuales de las clases ansestras a implementar","Nueva clase",virtual_methods,this);
 				// eliminar los no seleccionados
 				for(int i=virtual_methods.GetCount()-1;i>=0;i--) { 
 					if (sels.Index(i)==wxNOT_FOUND) 

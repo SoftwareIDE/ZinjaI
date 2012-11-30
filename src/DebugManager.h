@@ -2,14 +2,13 @@
 #define MX_DEBUG_MANAGER_H
 
 #include <wx/string.h>
-#include <wx/timer.h>
-#include <list>
-#include <vector>
 #include <wx/ffile.h>
-#include "BreakPointInfo.h"
+#include <vector>
+#include <list>
 using namespace std;
 
 #define BACKTRACE_SIZE 100
+class BreakPointInfo;
 class mxInspectionGrid;
 class mxIEItemData;
 class wxGrid;

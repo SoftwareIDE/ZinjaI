@@ -25,6 +25,7 @@
 #include "winStuff.h"
 #include "mxExternInspection.h"
 #include <algorithm>
+#include "mxThreadGrid.h"
 using namespace std;
 
 #ifdef DEBUG

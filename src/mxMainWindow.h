@@ -1,8 +1,6 @@
 #ifndef MX_MAIN_WINDOW_H
 #define MX_MAIN_WINDOW_H
 
-#include <wx/wxprec.h>
-
 #include <wx/frame.h>
 #include <wx/process.h>
 #include <wx/treebase.h>

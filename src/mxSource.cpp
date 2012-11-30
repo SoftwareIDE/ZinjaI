@@ -23,6 +23,7 @@
 #include "mxCompiler.h"
 #include "Autocoder.h"
 #include "mxColoursEditor.h"
+#include "error_recovery.h"
 using namespace std;
 
 #define II_BACK(p,a) while(p>0 && (a)) p--;

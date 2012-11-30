@@ -15,6 +15,7 @@
 #include "mxDrawClasses.h"
 #include "Language.h"
 #include "mxCompiler.h"
+#include "CodeHelper.h"
 
 Parser *parser;
 //wxTreeCtrl* symbol_tree;

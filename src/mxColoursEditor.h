@@ -1,8 +1,8 @@
 #ifndef MXCOLOURSEDITOR_H
 #define MXCOLOURSEDITOR_H
 #include <wx/dialog.h>
-#include "mxUtils.h"
 #include <wx/panel.h>
+#include "mxUtils.h"
 class wxScrolledWindow;
 class wxTextCtrl;
 class wxButton;

@@ -1,6 +1,8 @@
 #ifndef CODEEXPORTER_H
 #define CODEEXPORTER_H
-#include "mxSource.h"
+#include <wx/string.h>
+
+class mxSource;
 
 /**
 * @brief se encarga de exportar un fuente a HTML, formateandolo correctamente

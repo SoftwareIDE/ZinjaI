@@ -2,11 +2,8 @@
 #define MXBITMAPBUTTON_H
 
 #include <wx/bmpbuttn.h>
-#include <wx/statbmp.h>
-#include <wx/bitmap.h>
-#include <wx/clrpicker.h>
-#include "mxArt.h"
-
+#include <wx/colour.h>
+#include "mxArt.h" // todo el que use esta clase le va a poner algun icono que tiene mxArt
 
 class mxBitmapButton:public wxBitmapButton {
 private:

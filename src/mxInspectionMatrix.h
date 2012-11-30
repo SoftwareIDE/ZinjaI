@@ -1,6 +1,5 @@
 #ifndef MXINSPECTIONMATRIX_H
 #define MXINSPECTIONMATRIX_H
-#include <wx/dialog.h>
 #include <wx/grid.h>
 #include "mxExternInspection.h"
 

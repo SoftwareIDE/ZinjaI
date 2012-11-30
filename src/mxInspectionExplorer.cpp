@@ -1,12 +1,31 @@
+#include <wx/sizer.h>
+#include <wx/laywin.h>
+#include <wx/treectrl.h>
 #include "mxInspectionExplorer.h"
 #include "ids.h"
-#include <wx/sizer.h>
-#include <wx/treectrl.h>
 #include "mxBitmapButton.h"
 #include "DebugManager.h"
 #include "mxUtils.h"
-#include <wx/laywin.h>
 #include "mxSizers.h"
+
+
+mxIEItemData::mxIEItemData(wxString aname, wxString areal_expr, wxString aexpr, wxString aframe, wxString atype, int achildren) {
+	frame=aframe;
+	what_is = DI_NONE;
+	real_expr=areal_expr;
+	name=aname;
+	expr=aexpr;
+	type=atype;
+	age=0;
+	opened = use_data_evaluate = always_evaluate = false;
+	children = achildren;
+	is_root = false;
+}
+
+mxIEItemData::~mxIEItemData() {
+	if (is_root)
+		debug->DeleteVO(name);
+}
 
 BEGIN_EVENT_TABLE(mxInspectionExplorer, wxDialog)
 //	EVT_BUTTON(wxID_OK,mxInspectionExplorer::OnCloseButton)

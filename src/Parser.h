@@ -1,8 +1,5 @@
 #ifndef PARSER_H
-using namespace std;
 #define PARSER_H
-
-class mxSource;
 
 #include <wx/aui/aui.h>
 #include <wx/hashset.h>
@@ -10,13 +7,12 @@ class mxSource;
 #include <wx/filename.h>
 #include <map>
 #include <list>
-
-#include "CodeHelper.h"
-#include "mxUtils.h"
+using namespace std;
 
 #include "paf_defs.h"
 
 class ProjectManager;
+class mxSource;
 
 class pd_file;
 class pd_func;

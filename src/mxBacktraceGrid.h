@@ -2,7 +2,6 @@
 #define MXBACKTRACEGRID_H
 #include <wx/grid.h>
 
-
 enum {BG_COL_LEVEL = 0, /*BG_COL_ADDRESS,*/ BG_COL_FUNCTION, BG_COL_FILE ,BG_COL_LINE, BG_COL_ARGS, BG_COLS_COUNT};
 
 class mxBacktraceGrid : public wxGrid {

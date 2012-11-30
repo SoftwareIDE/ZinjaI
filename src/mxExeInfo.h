@@ -1,8 +1,8 @@
 #ifndef MXEXEINFO_H
+#define MXEXEINFO_H
 #include <wx/dialog.h>
 #include <wx/filename.h>
 #include <wx/timer.h>
-#define MXEXEINFO_H
 
 class mxSource;
 class wxNotebook;

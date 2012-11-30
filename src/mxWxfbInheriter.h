@@ -1,7 +1,7 @@
 #ifndef MXWXFBINHERITER_H
+#define MXWXFBINHERITER_H
 #include <wx/dialog.h>
 #include <wx/arrstr.h>
-#define MXWXFBINHERITER_H
 
 class wxComboBox;
 class wxTextCtrl;
@@ -21,7 +21,6 @@ public:
 	void OnButtonCancel(wxCommandEvent &evt);
 	void OkNewClass();
 	void OkUpdateClass();
-//	void GetFatherMethods(wxString base_header, wxString class_name, wxArrayString &methods);
 	DECLARE_EVENT_TABLE();
 };
 

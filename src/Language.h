@@ -1,6 +1,6 @@
 #ifndef LANGUAGE_H
 #define LANGUAGE_H
-#include <iostream>
+#include <string>
 #include "lang_index_macros.h"
 using namespace std;
 

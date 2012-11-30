@@ -2,7 +2,6 @@
 #define MX_TIPS_WINDOW_H
 
 #include <wx/dialog.h>
-#include <wx/listctrl.h>
 #include <wx/arrstr.h>
 
 class mxBitmapButton;

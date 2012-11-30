@@ -1,11 +1,12 @@
-#include "mxToolchainOptions.h"
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/bmpbuttn.h>
 #include <wx/stattext.h>
+#include "mxToolchainOptions.h"
 #include "mxBitmapButton.h"
 #include "Language.h"
 #include "mxSizers.h"
+#include "ProjectManager.h"
 
 BEGIN_EVENT_TABLE(mxToolchainOptions,wxDialog)
 	EVT_BUTTON(wxID_OK,mxToolchainOptions::OnOkButton)

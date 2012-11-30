@@ -34,6 +34,9 @@
 #include "mxValgrindConfigDialog.h"
 #include "Toolchain.h"
 #include "mxNewWizard.h"
+#include <fstream>
+#include "mxArt.h"
+using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
 void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {

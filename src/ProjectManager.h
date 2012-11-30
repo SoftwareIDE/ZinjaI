@@ -14,18 +14,21 @@
 #include <wx/string.h>
 #include <wx/filename.h>
 #include <wx/treebase.h>
-#include "mxUtils.h"
 #include <wx/arrstr.h>
+#include "mxUtils.h"
 
 #define PROJECT_EXT "zpr"
 
 #if defined(_WIN32) || defined(__WIN32__)
-// maldito seas "winbase.h"
+// maldito seas "winbase.h" (ahi se hacen defines como los que estan aca abajo, entonces cualquiera que los incluya esta cambiando los nombres)
 #define MoveFile MoveFileA
 #define DeleteFile DeleteFileA
 #endif
-#include "BreakPointInfo.h"
-#include "Toolchain.h"
+
+#include "Toolchain.h" // por TOOLCHAIN_MAX_ARGS
+#include "AutoList.h"
+#include "BreakPointInfo.h" // por el delete_autolist(breaklist) del destructor de file_item
+class BreakPointInfo;
 class mxSource;
 
 /// Posibles ubicaciones para un paso de compilación adicional en el proceso de construcción de un proceso

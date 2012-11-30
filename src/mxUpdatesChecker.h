@@ -1,7 +1,6 @@
 #ifndef MXUPDATESCHECKER_H
 #define MXUPDATESCHECKER_H
 #include <wx/dialog.h>
-#include <wx/timer.h>
 #include <wx/process.h>
 class wxStaticText;
 class wxCheckBox;

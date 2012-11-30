@@ -1,7 +1,6 @@
 #ifndef MXENUMERATIONEDITOR_H
 #define MXENUMERATIONEDITOR_H
 #include <wx/dialog.h>
-#include <wx/combobox.h>
 #include <wx/string.h>
 
 class wxTextCtrl;

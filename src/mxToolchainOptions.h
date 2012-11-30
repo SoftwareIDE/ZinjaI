@@ -1,9 +1,10 @@
 #ifndef MXTOOLCHAINOPTIONS_H
 #define MXTOOLCHAINOPTIONS_H
 #include <wx/dialog.h>
-#include "ProjectManager.h"
-#include "Toolchain.h"
+#include "Toolchain.h" // for TOOLCHAIN_MAX_ARGS
+
 class wxTextCtrl;
+class project_configuration;
 	
 class mxToolchainOptions : public wxDialog {
 private:

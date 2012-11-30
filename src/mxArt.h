@@ -1,8 +1,8 @@
 #ifndef MXART_H
 #define MXART_H
+#include <wx/string.h>
 
-#include <wx/bitmap.h>
-#include <wx/clrpicker.h>
+class wxBitmap;
 
 #define ICON_SIZE 20
 #define SKIN_FILE(fname) bitmaps->GetSkinImagePath(fname)

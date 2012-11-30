@@ -10,6 +10,7 @@
 #include "Language.h"
 #include "ProjectManager.h"
 #include <vector>
+#include "CodeHelper.h"
 using namespace std;
 
 HelpManager *help;

@@ -2,7 +2,7 @@
 #define CODE_HELPER_H 
 
 #include <wx/string.h>
-#include <wx/textfile.h>
+#include <wx/arrstr.h>
 
 //#define CODE_HELP_MAP(c) (c>='a' && c<='z')?c-'a':((c>='A' && c<='Z')?c-'A':26)
 

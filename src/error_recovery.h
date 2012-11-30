@@ -1,10 +1,9 @@
 #ifndef ERROR_RECOVERY_H
-using namespace std;
 #define ERROR_RECOVERY_H
 #include <fstream>
+using namespace std;
 
 class mxSource;
-
 
 struct er_source_register {
 	mxSource *src;

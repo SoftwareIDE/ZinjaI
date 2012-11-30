@@ -1,5 +1,4 @@
 #include "mxTreeCtrl.h"
-#include <wx/msgdlg.h>
 #include "mxMainWindow.h"
 
 BEGIN_EVENT_TABLE(mxTreeCtrl,wxTreeCtrl)

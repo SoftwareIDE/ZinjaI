@@ -1,7 +1,7 @@
 #ifndef BREAKPOINTINFO_H
 #define BREAKPOINTINFO_H
-#include "AutoList.h"
 #include <wx/string.h>
+#include "AutoList.h"
 
 class mxSource;
 class file_item;

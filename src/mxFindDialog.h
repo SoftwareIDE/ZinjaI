@@ -2,7 +2,6 @@
 #define MXFINDDIALOG_H
 #include <wx/dialog.h>
 #include <wx/string.h>
-#include <wx/arrstr.h>
 
 class wxComboBox;
 class wxCheckBox;

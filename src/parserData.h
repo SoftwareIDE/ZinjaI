@@ -18,7 +18,7 @@ ultimo de sus miembros o metodos. Respecto a la presencia en el control del arbo
 cada cosa guarda su itemID. El responsable de insertarlo en el arbol es el parser
 mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destructor. */
 
-#include "mxMainWindow.h"
+//#include "mxMainWindow.h"
 #include "Parser.h"
 
 // constantes para manipular con operaciones de bits las propiedades de los metodos y atributos
