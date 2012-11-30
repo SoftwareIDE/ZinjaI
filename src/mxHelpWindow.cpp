@@ -279,7 +279,7 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else {
 		wxString fname = event.GetLinkInfo().GetHref().BeforeFirst('#');
-		if (fname.Len()) {n
+		if (fname.Len()) {
 			HashStringTreeItem::iterator it = items.find(fname);
 			if (it!=items.end())
 				tree->SelectItem(it->second);
