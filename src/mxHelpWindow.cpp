@@ -279,13 +279,13 @@ void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
 		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else {
 		wxString fname = event.GetLinkInfo().GetHref().BeforeFirst('#');
-		if (fname.Len()) {
+		if (fname.Len()) {n
 			HashStringTreeItem::iterator it = items.find(fname);
 			if (it!=items.end())
 				tree->SelectItem(it->second);
 			fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,event.GetLinkInfo().GetHref()));
 			if (!fname.Len())
-				html->SetPage(ERROR_PAGE(fname));
+				html->SetPage(ERROR_PAGE(event.GetLinkInfo().GetHref()));
 			else {
 				html->LoadPage(fname);
 			}
