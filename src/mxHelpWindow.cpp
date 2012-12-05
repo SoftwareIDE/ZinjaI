@@ -127,7 +127,7 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, _T("Ayuda de
 	sizer->Add(bottomSizer,sizers->Exp1);
 	
 	wxBoxSizer *forum_sizer = new wxBoxSizer(wxHORIZONTAL);
-	forum_sizer->Add(new wxStaticText(this,wxID_ANY,LANG(HELPW_FORUM_TEXT,"¿Lo que buscas no esta en la ayuda, esta desactualizado, erroneo o incompleto? ")),sizers->Center);
+	forum_sizer->Add(new wxStaticText(this,wxID_ANY,LANG(HELPW_FORUM_TEXT,"¿Lo que buscas no está en la ayuda, está desactualizado, erróneo o incompleto? ")),sizers->Center);
 	forum_sizer->Add(new wxButton(this,mxID_HELPW_FORUM,LANG(HELPW_FORUM_BUTTON,"accede al Foro..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);
 	sizer->Add(forum_sizer,sizers->Right);
 	

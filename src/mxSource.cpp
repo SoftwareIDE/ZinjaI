@@ -2313,7 +2313,6 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			p=WordStartPosition(p,true); c=GetCharAt(p);
 			if (p<p_fin && (c<'0'||c>'9')) { // si puede ser un nombre de funcion
 				wxString func_name=GetTextRange(p,p_fin);
-				wxMessageBox(func_name);
 			}
 			
 			// si no paso nada con metodo/funcion, probar si era cast
