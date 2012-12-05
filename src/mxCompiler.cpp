@@ -1,7 +1,5 @@
 #include <wx/txtstrm.h>
-
 #include "mxCompiler.h"
-
 #include "ids.h"
 #include "Language.h"
 #include "mxMainWindow.h"

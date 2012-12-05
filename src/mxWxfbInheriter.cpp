@@ -1,8 +1,7 @@
+#include <wx/combobox.h>
 #include "mxWxfbInheriter.h"
-#include "mxMainWindow.h"
 #include "parserData.h"
 #include "mxSizers.h"
-#include <wx/combobox.h>
 #include "mxBitmapButton.h"
 #include "ProjectManager.h"
 #include "mxMessageDialog.h"
@@ -24,7 +23,7 @@ mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, bool a_new_class):wxDialog(pa
 	FillBaseArray();
 	
 	if (base_array.GetCount()==0) {
-		mxMessageDialog(main_window,LANG(WXFB_NO_WXFB_CLASSES,"No se encontraron clases generadas por wxFormsBuilder."),LANG(WXFB_GENERATE_INHERITED_CLASS,"Heredar Clase wxFormsBuilder"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(LANG(WXFB_NO_WXFB_CLASSES,"No se encontraron clases generadas por wxFormsBuilder."),LANG(WXFB_GENERATE_INHERITED_CLASS,"Heredar Clase wxFormsBuilder"),mxMD_ERROR|mxMD_OK).ShowModal();
 		Close();
 		return;
 	}
@@ -116,7 +115,7 @@ void mxWxfbInheriter::OkNewClass() {
 	wxString base_name = base_class->GetValue();
 	wxString name = utils->LeftTrim(child_class->GetValue());
 	if (name==_T("")) {
-		mxMessageDialog(main_window,LANG(WXFB_CLASSNAME_MISSING,"Debe introducir el nombre de la clase"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(LANG(WXFB_CLASSNAME_MISSING,"Debe introducir el nombre de la clase"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return;
 	}
 	Hide();

@@ -1,8 +1,8 @@
+#include <wx/font.h>
+#include <wx/dc.h>
 #include "mxOSD.h"
 #include "mxMainWindow.h"
 #include "ids.h"
-#include <wx/font.h>
-#include <wx/dc.h>
 
 BEGIN_EVENT_TABLE(mxOSD, wxDialog)
 	EVT_PAINT (mxOSD::OnPaint)

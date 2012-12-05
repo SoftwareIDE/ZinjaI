@@ -1,15 +1,15 @@
-#include "mxOpenRecentDialog.h"
 #include <wx/sizer.h>
+#include <wx/arrstr.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
-#include "mxBitmapButton.h"
 #include <wx/stattext.h>
+#include "mxOpenRecentDialog.h"
+#include "mxBitmapButton.h"
 #include "ProjectManager.h"
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "mxSource.h"
 #include "mxSizers.h"
-#include <wx/arrstr.h>
 #include "mxMessageDialog.h"
 #include "Language.h"
 

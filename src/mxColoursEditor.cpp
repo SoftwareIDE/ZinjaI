@@ -1,19 +1,19 @@
+#include <wx/textctrl.h>
+#include <wx/stattext.h>
+#include <wx/colordlg.h>
+#include <wx/richtext/richtextctrl.h>
+#include <wx/combobox.h>
+#include <wx/dir.h>
+#include <wx/textfile.h>
+#include <wx/bitmap.h>
 #include "mxColoursEditor.h"
 #include "mxMainWindow.h"
 #include "mxBitmapButton.h"
 #include "Language.h"
 #include "ids.h"
 #include "mxSizers.h"
-#include <wx/textctrl.h>
-#include <wx/stattext.h>
-#include <wx/colordlg.h>
-#include <wx/richtext/richtextctrl.h>
 #include "ConfigManager.h"
-#include <wx/combobox.h>
 #include "mxSource.h"
-#include <wx/dir.h>
-#include <wx/textfile.h>
-#include <wx/bitmap.h>
 
 color_theme *ctheme=NULL;
 

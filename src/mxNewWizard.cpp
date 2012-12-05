@@ -1,6 +1,3 @@
-#include "mxNewWizard.h"
-
-#include <wx/wx.h>
 #include <wx/arrstr.h>
 #include <wx/button.h>
 #include <wx/panel.h>
@@ -13,7 +10,7 @@
 #include <wx/dirdlg.h>
 #include <wx/treectrl.h>
 #include <wx/dir.h>
-
+#include "mxNewWizard.h"
 #include "ids.h"
 #include "ConfigManager.h"
 #include "ProjectManager.h"
@@ -23,7 +20,6 @@
 #include "mxSource.h"
 #include "mxBitmapButton.h"
 #include "mxArt.h"
-
 #include "mxMessageDialog.h"
 #include "CodeHelper.h"
 #include "mxSizers.h"

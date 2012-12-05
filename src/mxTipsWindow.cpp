@@ -11,10 +11,8 @@
 #include "mxUtils.h"
 #include "mxBitmapButton.h"
 #include "version.h"
-#include "mxMainWindow.h"
 #include "mxHelpWindow.h"
 #include "mxSizers.h"
-#include "mxMessageDialog.h"
 #include "Language.h"
 
 mxTipsWindow *tips_window=NULL;
@@ -125,7 +123,7 @@ void mxTipsWindow::OnKeyDown(wxKeyEvent &evt) {
 		ShowAnyTip();
 	} else if (evt.GetKeyCode()==WXK_F1) {
 		Close();
-		helpw = new mxHelpWindow(changelog?_T("ChangeLog.html"):_T("index.html"));
+		SHOW_HELP(changelog?_T("ChangeLog.html"):_T("index.html"));
 		helpw->Maximize(true);
 	} else evt.Skip();
 }

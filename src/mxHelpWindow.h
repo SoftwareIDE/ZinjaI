@@ -35,6 +35,7 @@ public:
 	void OnNext(wxCommandEvent &event);
 	void OnCopy(wxCommandEvent &event);
 	void OnPrint(wxCommandEvent &event);
+	void OnForum(wxCommandEvent &event);
 	void OnSearch(wxCommandEvent &event);
 	void OnSearchAll(wxCommandEvent &event);
 	void OnSashDrag (wxSashEvent& event);

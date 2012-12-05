@@ -1,3 +1,5 @@
+#include <wx/checkbox.h>
+#include <wx/textfile.h>
 #include "mxDiffWindow.h"
 #include "mxMainWindow.h"
 #include "mxBitmapButton.h"
@@ -6,13 +8,10 @@
 #include "mxUtils.h"
 #include "mxMessageDialog.h"
 #include "ids.h"
-#include <wx/checkbox.h>
 #include "mxHelpWindow.h"
-#include <wx/textfile.h>
 #include "Language.h"
 #include "mxDiffSideBar.h"
 #include "Parser.h"
-using namespace std;
 
 BEGIN_EVENT_TABLE(mxDiffWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxDiffWindow::OnOkButton)

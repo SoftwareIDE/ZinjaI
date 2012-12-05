@@ -1,11 +1,9 @@
-#include "mxCompileConfigWindow.h"
-
 #include <wx/wx.h>
 #include <wx/aui/auibook.h>
 #include <wx/clipbrd.h>
 #include <wx/dir.h>
 #include <wx/textfile.h>
-
+#include "mxCompileConfigWindow.h"
 #include "ConfigManager.h"
 #include "mxUtils.h"
 #include "mxHelpWindow.h"

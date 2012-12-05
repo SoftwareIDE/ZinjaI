@@ -1,8 +1,8 @@
-#include "widgetDisabler.h"
 #include <wx/control.h>
-#include "mxUtils.h"
 #include <wx/button.h>
 #include <wx/stattext.h>
+#include "widgetDisabler.h"
+#include "mxUtils.h"
 
 widgetDisabler::widgetDisabler() {
 	first=NULL;

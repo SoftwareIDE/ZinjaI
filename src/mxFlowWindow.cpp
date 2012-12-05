@@ -1,12 +1,9 @@
 #include <wx/dcclient.h>
 #include <wx/scrolwin.h>
-	
 #include "mxFlowWindow.h"
-
 #include "mxFlowCanvas.h"
 #include "mxSource.h"
 #include "mxUtils.h"
-#include "mxMainWindow.h"
 #include "mxMessageDialog.h"
 #include "mxSizers.h"
 
@@ -22,7 +19,7 @@ mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_A
 	int p=ps;
 	if (source->GetCharAt(p)=='}') {
 			if ((p=source->BraceMatch(p))==wxSTC_INVALID_POSITION) {
-				mxMessageDialog(main_window,_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog(_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 				Destroy();
 				return;
 			}
@@ -31,7 +28,7 @@ mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_A
 		if (FC_IS('}')) {
 			p=source->BraceMatch(p);
 			if (p==wxSTC_INVALID_POSITION || source->GetCharAt(p)!='{') {
-				mxMessageDialog(main_window,_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog(_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 				Destroy();
 				return;
 			}
@@ -40,7 +37,7 @@ mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_A
 	}
 	int pe = source->BraceMatch(ps=p);
 	if (pe==wxSTC_INVALID_POSITION || source->GetCharAt(ps)!='{') {
-		mxMessageDialog (main_window,_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog (_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		Destroy();
 		return;
 	}

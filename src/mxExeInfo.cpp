@@ -1,9 +1,8 @@
-#include "mxExeInfo.h"
-#include "mxSource.h"
-#include "mxMainWindow.h"
-#include "mxUtils.h"
 #include <wx/notebook.h>
 #include <wx/panel.h>
+#include "mxExeInfo.h"
+#include "mxSource.h"
+#include "mxUtils.h"
 #include "mxBitmapButton.h"
 #include "mxMessageDialog.h"
 #include "ProjectManager.h"
@@ -22,13 +21,13 @@ BEGIN_EVENT_TABLE(mxExeInfo, wxDialog)
 	EVT_TIMER(wxID_ANY,mxExeInfo::OnTimer)
 END_EVENT_TABLE()
 	
-mxExeInfo::mxExeInfo(mxSource *src) : wxDialog(main_window, wxID_ANY, LANG(EXEINFO_CAPTION,"Propiedades del Ejecutable"), wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxExeInfo::mxExeInfo(wxWindow *parent, mxSource *src) : wxDialog(parent, wxID_ANY, LANG(EXEINFO_CAPTION,"Propiedades del Ejecutable"), wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
 	wait_for_parser = NULL;
 	
 	fname = src?src->binary_filename:wxFileName(DIR_PLUS_FILE(project->path,project->active_configuration->output_file));
 	if (!fname.FileExists() || (src&&src->sin_titulo&&compiler->last_compiled!=src) ) {
-		mxMessageDialog(main_window,LANG(EXEINFO_NOT_FOUND,"No se encontro ejecutable. Compile el programa para crearlo."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK).ShowModal();
+		mxMessageDialog(LANG(EXEINFO_NOT_FOUND,"No se encontro ejecutable. Compile el programa para crearlo."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK).ShowModal();
 		Destroy();
 		return;
 	}

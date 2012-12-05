@@ -1,5 +1,4 @@
 #include "mxExtraStepWindow.h"
-#include "mxMainWindow.h"
 #include "mxUtils.h"
 #include "ids.h"
 #include "ProjectManager.h"
@@ -11,7 +10,6 @@
 #include "Language.h"
 
 BEGIN_EVENT_TABLE(mxExtraStepWindow, wxDialog)
-	
 	EVT_BUTTON(wxID_CANCEL,mxExtraStepWindow::OnCancelButton)
 	EVT_BUTTON(wxID_OK,mxExtraStepWindow::OnOkButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxExtraStepWindow::OnHelpButton)
@@ -20,9 +18,7 @@ BEGIN_EVENT_TABLE(mxExtraStepWindow, wxDialog)
 	EVT_BUTTON(mxID_EXTRA_STEP_DEPS,mxExtraStepWindow::OnDepsButton)
 	EVT_MENU_RANGE(mxID_POPUPS_INSERT_FIRST, mxID_POPUPS_INSERT_LAST, mxExtraStepWindow::OnPopup)
 	EVT_CLOSE(mxExtraStepWindow::OnClose)
-	
 END_EVENT_TABLE()
-	
 
 mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *conf, compile_extra_step *astep) : wxDialog(parent,wxID_ANY,_T("Paso de Compilacion Personalizable"),wxDefaultPosition,wxDefaultSize) {
 	configuration=conf;

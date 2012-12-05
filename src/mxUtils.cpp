@@ -1,6 +1,3 @@
-#include "ids.h"
-#include "mxUtils.h"
-
 #include <wx/checkbox.h>
 #include <wx/filename.h>
 #include <wx/menu.h>
@@ -11,12 +8,14 @@
 #include <wx/toolbar.h>
 #include <wx/combobox.h>
 #include <wx/textfile.h>
+#include <wx/dir.h>
 
+#include "ids.h"
+#include "mxUtils.h"
 #include "mxSource.h"
 #include "mxBitmapButton.h"
 #include "ConfigManager.h"
 #include "mxArt.h"
-#include <wx/dir.h>
 #include "mxSizers.h"
 #include "mxMessageDialog.h"
 #include "ProjectManager.h"
@@ -24,7 +23,6 @@
 #include "Language.h"
 #include "mxLongTextEditor.h"
 #include "mxEnumerationEditor.h"
-using namespace std;
 
 #define CTRL_BORDER 5
 

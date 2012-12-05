@@ -1,15 +1,15 @@
-#include "mxEnumerationEditor.h"
 #include <wx/sizer.h>
 #include <wx/button.h>
-#include "mxUtils.h"
-#include "ids.h"
 #include <wx/arrstr.h>
 #include <wx/listbox.h>
 #include <wx/textctrl.h>
+#include <wx/combobox.h>
+#include "mxEnumerationEditor.h"
+#include "mxUtils.h"
+#include "ids.h"
 #include "mxBitmapButton.h"
 #include "mxListItemEditor.h"
 #include "mxSizers.h"
-#include <wx/combobox.h>
 #include "Language.h"
 
 BEGIN_EVENT_TABLE(mxEnumerationEditor, wxDialog)

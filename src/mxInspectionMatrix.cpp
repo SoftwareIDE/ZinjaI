@@ -1,14 +1,14 @@
+#include <wx/grid.h>
+#include <wx/textdlg.h>
+#include <wx/checkbox.h>
+#include <wx/stattext.h>
 #include "mxInspectionMatrix.h"
 #include "DebugManager.h"
 #include "mxMainWindow.h"
-#include <wx/grid.h>
-#include <wx/textdlg.h>
 #include "mxBitmapButton.h"
 #include "Language.h"
 #include "mxSizers.h"
-#include <wx/checkbox.h>
 #include "mxTextDialog.h"
-#include <wx/stattext.h>
 
 BEGIN_EVENT_TABLE(mxInspectionMatrix, wxDialog)
 	EVT_SIZE(mxInspectionMatrix::OnResize)

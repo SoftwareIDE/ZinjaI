@@ -1,3 +1,7 @@
+#include <wx/checkbox.h> // for wxCheckListBox
+#include <wx/sizer.h>
+#include <wx/dirdlg.h>
+#include <wx/dir.h>
 #include "ids.h"
 #include "mxMultipleFileChooser.h"
 #include "mxMainWindow.h"
@@ -5,17 +9,12 @@
 #include "mxUtils.h"
 #include "ConfigManager.h"
 #include "ProjectManager.h"
-#include <wx/checklst.h>
-#include <wx/sizer.h>
 #include "mxBitmapButton.h"
 #include "mxSizers.h"
-#include <wx/dirdlg.h>
-#include <wx/dir.h>
 #include "mxMessageDialog.h"
 #include "mxHidenPanel.h"
 #include "Parser.h"
 #include "mxOSD.h"
-
 
 BEGIN_EVENT_TABLE(mxMultipleFileChooser, wxDialog)
 	EVT_BUTTON(mxID_MULTIPLEFILE_ADD,mxMultipleFileChooser::OnButtonOk)

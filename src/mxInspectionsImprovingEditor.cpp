@@ -1,7 +1,7 @@
 #include <wx/sizer.h>
 #include <wx/listbox.h>
-#include "ConfigManager.h"
 #include <wx/stattext.h>
+#include "ConfigManager.h"
 #include "mxInspectionsImprovingEditor.h"
 #include "mxBitmapButton.h"
 #include "ids.h"

@@ -1,8 +1,7 @@
-#include "mxValgrindConfigDialog.h"
-#include "mxMainWindow.h"
-#include "mxUtils.h"
 #include <wx/arrstr.h>
 #include <wx/sizer.h>
+#include "mxValgrindConfigDialog.h"
+#include "mxUtils.h"
 #include "mxBitmapButton.h"
 #include "Language.h"
 #include "ids.h"
@@ -18,7 +17,7 @@ BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 	EVT_CLOSE(mxValgrindConfigDialog::OnClose)
 END_EVENT_TABLE()
 	
-mxValgrindConfigDialog::mxValgrindConfigDialog():wxDialog(main_window,wxID_ANY,"Valgrind Setup",wxDefaultPosition,wxDefaultSize) {
+mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent,wxID_ANY,"Valgrind Setup",wxDefaultPosition,wxDefaultSize) {
 	wxBoxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	
 	wxArrayString tools;

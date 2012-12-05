@@ -1,11 +1,9 @@
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
-#include "mxBitmapButton.h"
 #include <wx/stattext.h>
-
 #include "mxGotoFileDialog.h"
-
+#include "mxBitmapButton.h"
 #include "mxSizers.h"
 #include "ProjectManager.h"
 #include "mxMainWindow.h"

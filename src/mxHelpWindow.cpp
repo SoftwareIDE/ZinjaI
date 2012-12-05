@@ -5,9 +5,7 @@
 #include <wx/textfile.h>
 #include <wx/treectrl.h>
 #include <wx/html/htmprint.h>
-
 #include "mxHelpWindow.h"
-
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "mxUtils.h"
@@ -17,6 +15,7 @@
 
 #define ERROR_PAGE(page) wxString(_T("<I>ERROR</I>: La pagina \""))<<page<<_T("\" no se encuentra. <br><br> La ayuda de <I>ZinjaI</I> aun esta en contruccion.")
 #include "mxArt.h"
+#include "Language.h"
 
 mxHelpWindow *helpw;
 
@@ -29,6 +28,7 @@ BEGIN_EVENT_TABLE(mxHelpWindow,wxFrame)
 	EVT_BUTTON(mxID_HELPW_COPY, mxHelpWindow::OnCopy)
 	EVT_BUTTON(mxID_HELPW_SEARCH, mxHelpWindow::OnSearch)
 	EVT_BUTTON(mxID_HELPW_PRINT, mxHelpWindow::OnPrint)
+	EVT_BUTTON(mxID_HELPW_FORUM, mxHelpWindow::OnForum)
 	EVT_SASH_DRAGGED(wxID_ANY, mxHelpWindow::OnSashDrag)
 	EVT_TREE_SEL_CHANGED(wxID_ANY, mxHelpWindow::OnTree)
 	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxHelpWindow::OnTree)
@@ -96,17 +96,17 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, _T("Ayuda de
 	bottomSizer->Add(index_sash,sizers->Exp0);
 	
 	wxBitmapButton *button_hide = new wxBitmapButton(panel, mxID_HELPW_HIDETREE, wxBitmap(SKIN_FILE(_T("ayuda_tree.png")),wxBITMAP_TYPE_PNG));
-	button_hide->SetToolTip(_T("Mostrar/Ocultar Indice"));
+	button_hide->SetToolTip(LANG(HELPW_FORUM_TOGGLE_TREE,"Mostrar/Ocultar Indice"));
 	wxBitmapButton *button_home = new wxBitmapButton(panel, mxID_HELPW_HOME, wxBitmap(SKIN_FILE(_T("ayuda_indice.png")),wxBITMAP_TYPE_PNG));
-	button_home->SetToolTip(_T("Ir al indice"));
+	button_home->SetToolTip(LANG(HELPW_FORUM_INDEX,"Ir a la pagina de incio"));
 	wxBitmapButton *button_prev = new wxBitmapButton(panel, mxID_HELPW_PREV, wxBitmap(SKIN_FILE(_T("ayuda_anterior.png")),wxBITMAP_TYPE_PNG));
-	button_prev->SetToolTip(_T("Ir a la pagina anterior"));
+	button_prev->SetToolTip(LANG(HELPW_FORUM_PREVIOUS,"Ir a la pagina anterior"));
 	wxBitmapButton *button_next = new wxBitmapButton(panel, mxID_HELPW_NEXT, wxBitmap(SKIN_FILE(_T("ayuda_siguiente.png")),wxBITMAP_TYPE_PNG));
-	button_next->SetToolTip(_T("Ir a la pagina siguiente"));
+	button_next->SetToolTip(LANG(HELPW_FORUM_NEXT,"Ir a la pagina siguiente"));
 	wxBitmapButton *button_copy = new wxBitmapButton(panel, mxID_HELPW_COPY, wxBitmap(SKIN_FILE(_T("ayuda_copiar.png")),wxBITMAP_TYPE_PNG));
-	button_copy->SetToolTip(_T("Copiar seleccion"));
+	button_copy->SetToolTip(LANG(HELPW_FORUM_COPY,"Copiar seleccion al portapapeles"));
 	wxBitmapButton *button_print = new wxBitmapButton(panel, mxID_HELPW_PRINT, wxBitmap(SKIN_FILE(_T("ayuda_imprimir.png")),wxBITMAP_TYPE_PNG));
-	button_print->SetToolTip(_T("Imprimir pagina actual"));
+	button_print->SetToolTip(LANG(HELPW_FORUM_PRINT,"Imprimir pagina actual"));
 	topSizer->Add(button_hide,sizers->BA2);
 	topSizer->Add(button_home,sizers->BA2);
 	topSizer->Add(button_prev,sizers->BA2);
@@ -114,17 +114,23 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, _T("Ayuda de
 	topSizer->Add(button_copy,sizers->BA2);
 	topSizer->Add(button_print,sizers->BA2);
 	search_text = new wxTextCtrl(panel,wxID_ANY);
-	search_text->SetToolTip(_T("Palabras a buscar"));
+	search_text->SetToolTip(LANG(HELPW_FORUM_SEARCH_LABEL,"Palabras a buscar"));
 	topSizer->Add(search_text,sizers->BA2_Exp1);
 
 	wxBitmapButton *search_button = new wxBitmapButton(panel, mxID_HELPW_SEARCH, wxBitmap(SKIN_FILE(_T("ayuda_buscar.png")),wxBITMAP_TYPE_PNG));
-	search_button->SetToolTip(_T("Buscar..."));
+	search_button->SetToolTip(LANG(HELPW_FORUM_FIND,"Buscar..."));
 	topSizer->Add(search_button,sizers->BA2);
 	panel->SetSizer(topSizer);
 	html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
 	bottomSizer->Add(html,sizers->Exp1);
 	sizer->Add(panel,sizers->Exp0);
 	sizer->Add(bottomSizer,sizers->Exp1);
+	
+	wxBoxSizer *forum_sizer = new wxBoxSizer(wxHORIZONTAL);
+	forum_sizer->Add(new wxStaticText(this,wxID_ANY,LANG(HELPW_FORUM_TEXT,"¿Lo que buscas no esta en la ayuda, esta desactualizado, erroneo o incompleto? ")),sizers->Center);
+	forum_sizer->Add(new wxButton(this,mxID_HELPW_FORUM,LANG(HELPW_FORUM_BUTTON,"accede al Foro..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);
+	sizer->Add(forum_sizer,sizers->Right);
+	
 	SetSizer(sizer);
 	bottomSizer->SetItemMinSize(index_sash,200, 10);
 	bottomSizer->Layout();
@@ -194,13 +200,13 @@ void mxHelpWindow::OnSearch(wxCommandEvent &event) {
 	utils->Split(search_text->GetValue().MakeUpper(),keywords,true,false);
 	unsigned int kc=keywords.GetCount();
 	if (kc==0) {
-		mxMessageDialog(this,_T("Debe introducir al menos una palabra clave para buscar"),_T("Error"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(HELPW_FORUM_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return;
 	}
 	unsigned char *bfound = new unsigned char[keywords.GetCount()];
-	html->SetPage(_T("<HTML><HEAD></HEAD><BODY><I><B>Buscando...</B></I></BODY></HTML>"));
+	html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><I><B>")<<LANG(HELPW_FORUM_SEARCH_SEARCHING,"Buscando...")<<"</B></I></BODY></HTML>");
 	HashStringTreeItem::iterator it = items.begin(), ed = items.end();
-	wxString result(_T("<HTML><HEAD></HEAD><BODY><I><B>Resultados:</B></I><UL>"));
+	wxString result(wxString("<HTML><HEAD></HEAD><BODY><I><B>")<<LANG(HELPW_FORUM_SEARCH_RESULTS,"Resultados:")<<"</B></I><UL>");
 	int count=0;
 	wxArrayString searched;
 	while (it!=ed) {
@@ -243,7 +249,7 @@ void mxHelpWindow::OnSearch(wxCommandEvent &event) {
 	if (count)		
 		html->SetPage(result);
 	else
-		html->SetPage(wxString(_T("<HTML><HEAD></HEAD><BODY><B>No se encontraron coincidencias para \""))<<search_text->GetValue()<<_T("\".</B></BODY></HTML>"));
+		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_FORUM_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<search_text->GetValue()<<_T("\".</B></BODY></HTML>"));
 	delete [] bfound;
 }
 
@@ -326,3 +332,8 @@ void mxHelpWindow::OnPrint(wxCommandEvent &evt) {
 	}
 	printer->PrintFile(html->GetOpenedPage());
 }
+
+void mxHelpWindow::OnForum (wxCommandEvent & event) {
+	utils->OpenInBrowser(LANG(HELPW_FORUM_ADDRESS,"http://zinjai.sourceforge.net/index.php?page=contacto.php"));
+}
+

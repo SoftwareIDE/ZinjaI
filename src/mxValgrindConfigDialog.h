@@ -8,7 +8,7 @@ class mxValgrindConfigDialog : public wxDialog {
 private:
 	wxComboBox *cmb_tool;
 public:
-	mxValgrindConfigDialog();
+	mxValgrindConfigDialog(wxWindow *parent);
 	~mxValgrindConfigDialog();
 	void OnButtonOk(wxCommandEvent &evt);
 	void OnButtonCancel(wxCommandEvent &evt);

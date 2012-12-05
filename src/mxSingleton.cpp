@@ -1,8 +1,8 @@
+#include <iostream>
+using namespace std;
 #include "mxSingleton.h"
 #include "ConfigManager.h"
 #include "mxMainWindow.h"
-#include <iostream>
-using namespace std;
 
 BEGIN_EVENT_TABLE(mxSingleton,wxEvtHandler)
 	EVT_SOCKET(wxID_ANY,mxSingleton::OnSocket)

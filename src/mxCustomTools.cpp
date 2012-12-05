@@ -1,16 +1,15 @@
+#include <wx/combobox.h>
+#include "mxArt.h"
 #include "mxCustomTools.h"
 #include "mxMainWindow.h"
 #include "mxSizers.h"
 #include "mxUtils.h"
 #include "ids.h"
 #include "Language.h"
-#include <wx/combobox.h>
 #include "mxBitmapButton.h"
 #include "ConfigManager.h"
 #include "mxHelpWindow.h"
 #include "mxMessageDialog.h"
-#include "ProjectManager.h"
-#include "mxArt.h"
 
 BEGIN_EVENT_TABLE(mxCustomTools, wxDialog)
 	EVT_BUTTON(wxID_OK,mxCustomTools::OnButtonOk)

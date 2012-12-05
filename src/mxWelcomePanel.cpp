@@ -1,4 +1,5 @@
 #include <wx/choicdlg.h>
+#include <wx/button.h>
 
 #include "mxWelcomePanel.h"
 
@@ -11,10 +12,8 @@
 #include "mxArt.h"
 #include "mxOpenRecentDialog.h"
 #include "Language.h"
-#include "mxApplication.h"
-#include "mxOSD.h"
+#include "mxApplication.h" // SHOW_MILLIS
 #include "mxHelpWindow.h"
-#include <wx/button.h>
 
 mxWelcomePanel *welcome_panel;
 

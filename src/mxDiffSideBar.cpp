@@ -1,6 +1,6 @@
+#include <wx/dcclient.h>
 #include "mxDiffSideBar.h"
 #include "mxMainWindow.h"
-#include <wx/dcclient.h>
 #include "mxSource.h"
 
 BEGIN_EVENT_TABLE(mxDiffSideBar, wxWindow)

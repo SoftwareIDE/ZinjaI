@@ -1,10 +1,6 @@
-#include <wx/wx.h>
-
 #include "mxListSharedWindow.h"
-
 #include "mxSource.h"
 #include "ids.h"
-#include "mxUtils.h"
 #include "ShareManager.h"
 #include "mxBitmapButton.h"
 #include "mxMessageDialog.h"
@@ -13,12 +9,10 @@
 #include "Language.h"
 
 BEGIN_EVENT_TABLE(mxListSharedWindow, wxDialog)
-	
 	EVT_BUTTON(wxID_OK,mxListSharedWindow::OnCloseButton)
 	EVT_BUTTON(wxID_CANCEL,mxListSharedWindow::OnStopSharingButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxListSharedWindow::OnHelpButton)
 	EVT_CLOSE(mxListSharedWindow::OnClose)
-	
 END_EVENT_TABLE()
 
 mxListSharedWindow::mxListSharedWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, LANG(LISTSHARED_CAPTION,"Lista de Archivos Compartidos"), pos, size, style) {

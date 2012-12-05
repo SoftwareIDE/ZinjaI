@@ -1026,6 +1026,36 @@ GOTOLINE_YOURE_HERE_PRE
 Estas en la linea  
 GOTOLINE_YOURE_HERE_POST
   de  
+HELPW_FORUM_TOGGLE_TREE
+Mostrar/Ocultar Indice
+HELPW_FORUM_INDEX
+Ir a la pagina de incio
+HELPW_FORUM_PREVIOUS
+Ir a la pagina anterior
+HELPW_FORUM_NEXT
+Ir a la pagina siguiente
+HELPW_FORUM_COPY
+Copiar seleccion al portapapeles
+HELPW_FORUM_PRINT
+Imprimir pagina actual
+HELPW_FORUM_SEARCH_LABEL
+Palabras a buscar
+HELPW_FORUM_FIND
+Buscar...
+HELPW_FORUM_TEXT
+¿Lo que buscas no esta en la ayuda, esta desactualizado, erroneo o incompleto? 
+HELPW_FORUM_BUTTON
+accede al Foro...
+HELPW_FORUM_SEARCH_ERROR_EMPTY
+Debe introducir al menos una palabra clave para buscar
+HELPW_FORUM_SEARCH_SEARCHING
+Buscando...
+HELPW_FORUM_SEARCH_RESULTS
+Resultados:
+HELPW_FORUM_SEARCH_NO_RESULTS_FOR
+No se encontraron coincidencias para \"
+HELPW_FORUM_ADDRESS
+http://zinjai.sourceforge.net/index.php?page=contacto.php
 XDG_CAPTION
 Iconos lanzadores
 XDG_NO_XDG

@@ -1,8 +1,9 @@
-#include "mxErrorRecovering.h"
-#include "ids.h"
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/textctrl.h>
+#include <wx/textfile.h>
+#include "mxErrorRecovering.h"
+#include "ids.h"
 #include "mxBitmapButton.h"
 #include "ConfigManager.h"
 #include "mxSizers.h"
@@ -10,7 +11,6 @@
 #include "mxUtils.h"
 #include "ProjectManager.h"
 #include "mxSource.h"
-#include <wx/textfile.h>
 #include "mxMessageDialog.h"
 #include "Parser.h"
 #include "mxWelcomePanel.h"

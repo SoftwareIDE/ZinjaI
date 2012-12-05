@@ -1,12 +1,10 @@
-#include "mxTextDialog.h"
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 #include <wx/sizer.h>
+#include "mxTextDialog.h"
 #include "mxBitmapButton.h"
 #include "Language.h"
 #include "mxSizers.h"
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-
-
 
 BEGIN_EVENT_TABLE(mxTextDialog, wxDialog)
 	

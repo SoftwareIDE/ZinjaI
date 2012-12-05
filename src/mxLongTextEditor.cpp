@@ -1,28 +1,24 @@
-#include "mxLongTextEditor.h"
-#include "ids.h"
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/textctrl.h>
+#include <wx/combo.h>
+#include "mxLongTextEditor.h"
+#include "ids.h"
 #include "mxBitmapButton.h"
 #include "ConfigManager.h"
 #include "mxSizers.h"
-#include <wx/combo.h>
 #include "Language.h"
 
 BEGIN_EVENT_TABLE(mxLongTextEditor, wxDialog)
-	
 	EVT_BUTTON(wxID_OK,mxLongTextEditor::OnOkButton)
 	EVT_BUTTON(wxID_CANCEL,mxLongTextEditor::OnCancelButton)
-
 	EVT_BUTTON(mxID_ARGS_BUTTON,mxLongTextEditor::OnArgsButton)
 	EVT_MENU(mxID_ARGS_REPLACE_FILE,mxLongTextEditor::OnReplaceFile)
 	EVT_MENU(mxID_ARGS_ADD_FILE,mxLongTextEditor::OnAddFile)
 	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxLongTextEditor::OnReplaceDir)
 	EVT_MENU(mxID_ARGS_ADD_DIR,mxLongTextEditor::OnAddDir)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxLongTextEditor::OnHelpButton)
-	
 	EVT_CLOSE(mxLongTextEditor::OnClose)
-	
 END_EVENT_TABLE()
 
 mxLongTextEditor::mxLongTextEditor(wxWindow *parent, wxString title, wxComboBox *acombo) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,250) ,wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {

@@ -19,7 +19,7 @@ private:
 	wxStaticText *cant_lines;
 	wxTimer *wait_for_parser;
 public:
-	mxProjectStatistics();
+	mxProjectStatistics(wxWindow *parent);
 	void OnClose(wxCloseEvent &event);
 	void OnHelpButton(wxCommandEvent &evt);
 	void OnCloseButton(wxCommandEvent &evt);

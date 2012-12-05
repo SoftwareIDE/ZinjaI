@@ -4,11 +4,8 @@
 #include <wx/stattext.h>
 #include "mxInspectionPrint.h"
 #include "DebugManager.h"
-#include "mxMainWindow.h"
 #include "mxBitmapButton.h"
-#include "Language.h"
 #include "mxSizers.h"
-#include "mxTextDialog.h"
 
 //BEGIN_EVENT_TABLE(mxInspectionPrint, mxExternInspection)
 //END_EVENT_TABLE()

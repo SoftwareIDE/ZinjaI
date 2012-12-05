@@ -1,8 +1,8 @@
-#include "mxListItemEditor.h"
-#include "ids.h"
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/textctrl.h>
+#include "mxListItemEditor.h"
+#include "ids.h"
 #include "mxBitmapButton.h"
 #include "ConfigManager.h"
 #include "mxSizers.h"

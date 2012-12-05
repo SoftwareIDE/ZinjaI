@@ -1,11 +1,9 @@
-#include "mxHidenPanel.h"
 #include <wx/dcclient.h>
 #include <wx/settings.h>
 #include <wx/aui/aui.h>
+#include "mxHidenPanel.h"
 #include "mxMainWindow.h"
-#include <iostream>
 #include "mxWelcomePanel.h"
-using namespace std;
 
 BEGIN_EVENT_TABLE(mxHidenPanel,wxPanel)
 	EVT_PAINT(mxHidenPanel::OnPaint)

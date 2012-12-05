@@ -1,15 +1,11 @@
-#include "mxMainWindow.h"
-
 #include <wx/imaglist.h>
 #include <wx/artprov.h>
 #include <wx/txtstrm.h>
 #include <wx/grid.h>
 #include <wx/dir.h>
-#include <iostream>
-
+#include "mxMainWindow.h"
 #include "egdata.h"
 #include "mxFindDialog.h"
-#include "paf_defs.h"
 #include "mxNewWizard.h"
 #include "mxDropTarget.h"
 #include "ids.h"
@@ -29,7 +25,6 @@
 #include "mxTipsWindow.h"
 #include "mxHelpWindow.h"
 #include "mxStatusBar.h"
-#include "mxMakefileDialog.h"
 #include "mxArt.h"
 #include "mxMessageDialog.h"
 #include "mxValgrindOuput.h"
@@ -67,6 +62,7 @@
 #include "Autocoder.h"
 #include "mxColoursEditor.h"
 #include "Toolchain.h"
+#include "CodeHelper.h"
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
 #define LAST_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(untitled_count)<<">")
@@ -81,7 +77,6 @@
 #define SameFile(f1,f2) (f1==f2)
 #else
 #include <sys/stat.h>
-#include "CodeHelper.h"
 inline bool SameFile(wxString f1, wxString f2) {
 	struct stat df1; struct stat df2;
 	lstat (f1.c_str(), &df1);
@@ -182,7 +177,6 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_RUN_BUILD, mxMainWindow::OnRunBuild)
 	EVT_MENU(mxID_RUN_COMPILE, mxMainWindow::OnRunCompile)
 	EVT_MENU(mxID_RUN_CLEAN, mxMainWindow::OnRunClean)
-	EVT_MENU(mxID_RUN_MAKEFILE, mxMainWindow::OnRunExportMakefile)
 	EVT_MENU(mxID_RUN_CONFIG, mxMainWindow::OnRunCompileConfig)
 	
 	EVT_MENU(mxID_DEBUG_ATTACH, mxMainWindow::OnDebugAttach)
@@ -254,6 +248,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_FOLD_FOLD, mxMainWindow::OnFoldFold)
 	EVT_MENU(mxID_FOLD_UNFOLD, mxMainWindow::OnFoldUnFold)
 	
+	EVT_MENU(mxID_TOOLS_MAKEFILE, mxMainWindow::OnToolsExportMakefile)
 	EVT_MENU(mxID_TOOLS_CREATE_TEMPLATE, mxMainWindow::OnToolsCreateTemplate)
 	EVT_MENU(mxID_TOOLS_PREPROC_UNMARK_ALL, mxMainWindow::OnToolsPreprocUnMarkAll)
 	EVT_MENU(mxID_TOOLS_PREPROC_MARK_VALID, mxMainWindow::OnToolsPreprocMarkValid)
@@ -1095,7 +1090,7 @@ void mxMainWindow::OnFileOpenSelected(wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpOpinion (wxCommandEvent &event){
-	new mxOpinionWindow;
+	new mxOpinionWindow(this);
 }
 
 void mxMainWindow::OnHelpTutorial (wxCommandEvent &event){
@@ -1525,7 +1520,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_HELP, LANG(MENUITEM_TOOLS_PREPROC_HELP,"Ayuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, preproc_menu,LANG(MENUITEM_TOOLS_PREPROC,"Preprocesador"),_T("Muestra información generada por el preprocesador de C++"),ipre+_T("preproc.png"));
 	
-	menu.tools_makefile = utils->AddItemToMenu(menu.tools, mxID_RUN_MAKEFILE, LANG(MENUITEM_TOOLS_GENERATE_MAKEFILE,"&Generar Makefile..."),_T(""),_T("Genera el Makefile a partir de los fuentes y la configuracion seleccionada"),ipre+_T("makefile.png"));
+	menu.tools_makefile = utils->AddItemToMenu(menu.tools, mxID_TOOLS_MAKEFILE, LANG(MENUITEM_TOOLS_GENERATE_MAKEFILE,"&Generar Makefile..."),_T(""),_T("Genera el Makefile a partir de los fuentes y la configuracion seleccionada"),ipre+_T("makefile.png"));
 	menu.tools_makefile->Enable(false);
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CONSOLE, LANG(MENUITEM_TOOLS_OPEN_TERMINAL,"Abrir Co&nsola..."),_T(""),_T("Inicia una terminal para interactuar con el interprete de comandos del sistema operativo"),ipre+_T("console.png"));
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_EXE_PROPS, LANG(MENUITEM_TOOLS_EXE_INFO,"&Propiedades del Ejecutable..."),_T(""),_T("Muestra informacion sobre el archivo compilado"),ipre+_T("exeinfo.png"));
@@ -1689,7 +1684,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		if (config->Toolbars.tools.preproc_mark_valid) utils->AddTool(toolbar_tools,mxID_TOOLS_PREPROC_MARK_VALID,LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_MARK_VALID,"Marcar Lineas No Compiladas"),ipre+_T("preproc_mark_valid.png"),LANG(TOOLBAR_DESC_TOOLS_PREPROC_MARK_VALID,"Herramientas -> Preprocesador -> Marcar Lineas No Compiladas"));
 		if (config->Toolbars.tools.preproc_unmark_all) utils->AddTool(toolbar_tools,mxID_TOOLS_PREPROC_UNMARK_ALL,LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_UNMARK_ALL,"Borrar Marcas"),ipre+_T("preproc_unmark_all.png"),LANG(TOOLBAR_DESC_TOOLS_PREPROC_UNMARK_ALL,"Herramientas -> Preprocesador -> Borrar Marcas"));
 		if (config->Toolbars.tools.preproc_expand_macros) utils->AddTool(toolbar_tools,mxID_TOOLS_PREPROC_EXPAND_MACROS,LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_EXPAND_MACROS,"Expandir Macros"),ipre+_T("preproc_expand_macros.png"),LANG(TOOLBAR_DESC_TOOLS_PREPROC_EXPAND_MACROS,"Herramientas -> Preprocesador -> Expandir Macros"));
-		if (config->Toolbars.tools.generate_makefile) utils->AddTool(toolbar_tools,mxID_RUN_MAKEFILE,LANG(TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE,"Generar Makefile..."),ipre+_T("makefile.png"),LANG(TOOLBAR_DESC_TOOLS_GENERATE_MAKEFILE,"Herramientas -> Generar Makefile..."));
+		if (config->Toolbars.tools.generate_makefile) utils->AddTool(toolbar_tools,mxID_TOOLS_MAKEFILE,LANG(TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE,"Generar Makefile..."),ipre+_T("makefile.png"),LANG(TOOLBAR_DESC_TOOLS_GENERATE_MAKEFILE,"Herramientas -> Generar Makefile..."));
 		if (config->Toolbars.tools.open_terminal) utils->AddTool(toolbar_tools,mxID_TOOLS_CONSOLE,LANG(TOOLBAR_CAPTION_TOOLS_OPEN_TERMINAL,"Abrir terminal..."),ipre+_T("console.png"),LANG(TOOLBAR_DESC_OPEN_TERMINAL,"Herramientas -> Abrir consola..."));
 		if (config->Toolbars.tools.exe_info) utils->AddTool(toolbar_tools,mxID_TOOLS_EXE_PROPS,LANG(TOOLBAR_CAPTION_TOOLS_EXE_INFO,"Propiedades del Ejecutable..."),ipre+_T("exeinfo.png"),LANG(TOOLBAR_DESC_EXE_INFO,"Herramientas -> Propiedades del Ejecutable..."));
 		if (config->Toolbars.tools.proy_stats) utils->AddTool(toolbar_tools,mxID_TOOLS_PROJECT_STATISTICS,LANG(TOOLBAR_CAPTION_TOOLS_PROY_STATS,"Estadisticas del Proyecto..."),ipre+_T("proystats.png"),LANG(TOOLBAR_DESC_PROY_STATS,"Herramientas -> Estadisticas del Proyecto..."));
@@ -2137,10 +2132,6 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		delete compile_and_run->process;
 		delete compile_and_run;
 	}
-}
-
-void mxMainWindow::OnRunExportMakefile (wxCommandEvent &event) {
-	new mxMakefileDialog(this);
 }
 
 void mxMainWindow::OnRunClean (wxCommandEvent &event) {

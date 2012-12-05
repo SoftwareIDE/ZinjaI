@@ -1,14 +1,14 @@
 #if !defined(__WIN32__) && !defined(__APPLE__)
 
+#include <wx/stattext.h>
+#include <wx/checkbox.h>
+#include <wx/textfile.h>
 #include "mxIconInstaller.h"
 #include "mxSizers.h"
 #include "mxUtils.h"
 #include "mxBitmapButton.h"
 #include "Language.h"
-#include <wx/stattext.h>
-#include <wx/checkbox.h>
 #include "ConfigManager.h"
-#include <wx/textfile.h>
 #include "mxMessageDialog.h"
 
 BEGIN_EVENT_TABLE(mxIconInstaller,wxDialog)

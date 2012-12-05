@@ -1,5 +1,3 @@
-#include <wx/wx.h>
-
 #include <wx/aui/auibook.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
@@ -9,7 +7,6 @@
 #include <wx/imaglist.h>
 
 #include "mxPreferenceWindow.h"
-
 #include "ConfigManager.h"
 #include "mxHelpWindow.h"
 #include "mxUtils.h"

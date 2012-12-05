@@ -1,3 +1,5 @@
+#include <wx/dir.h>
+#include <wx/choicdlg.h>
 #include "mxProjectGeneralConfig.h"
 #include "mxMainWindow.h"
 #include "mxBitmapButton.h"
@@ -8,8 +10,6 @@
 #include "mxHelpWindow.h"
 #include "CodeHelper.h"
 #include "mxSource.h"
-#include <wx/dir.h>
-#include <wx/choicdlg.h>
 #include "mxMessageDialog.h"
 #include "Language.h"
 #include "Autocoder.h"

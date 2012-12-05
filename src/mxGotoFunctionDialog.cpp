@@ -1,9 +1,9 @@
-#include "mxGotoFunctionDialog.h"
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
-#include "mxBitmapButton.h"
 #include <wx/stattext.h>
+#include "mxGotoFunctionDialog.h"
+#include "mxBitmapButton.h"
 #include "Parser.h"
 #include "parserData.h"
 #include "ids.h"

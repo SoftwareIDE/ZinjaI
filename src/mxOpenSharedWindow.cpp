@@ -1,7 +1,5 @@
 #include <wx/wx.h>
-
 #include "mxOpenSharedWindow.h"
-
 #include "mxSource.h"
 #include "ids.h"
 #include "mxUtils.h"

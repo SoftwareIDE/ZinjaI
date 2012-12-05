@@ -1,6 +1,4 @@
 #include "mxGotoLineWindow.h"
-
-#include <wx/wx.h>
 #include "mxBitmapButton.h"
 #include "mxSource.h"
 #include "mxUtils.h"

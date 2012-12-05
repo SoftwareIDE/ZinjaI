@@ -4,12 +4,12 @@
 #include <wx/bitmap.h>
 #include <wx/timer.h>
 
-//#if defined(DEBUG) || defined(__APPLE__)
-//#define SPLASH_FILE "splashvb.png"
-//#else
-//#warning SHOULD DEFINE CORRECT SPLASH BEFORE RELEASE
+#if defined(DEBUG) || defined(__APPLE__)
+#define SPLASH_FILE "splashvb.png"
+#else
+#warning SHOULD DEFINE CORRECT SPLASH BEFORE RELEASE
 #define SPLASH_FILE "splashv2i.png"
-//#endif
+#endif
 
 /**
 * @brief Ventana sin marco y siempre visible para mostrar un png como splash

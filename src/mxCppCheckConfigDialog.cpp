@@ -1,8 +1,9 @@
-#include "mxCppCheckConfigDialog.h"
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/listbox.h>
+#include <wx/notebook.h>
+#include "mxCppCheckConfigDialog.h"
 #include "ids.h"
 #include "mxUtils.h"
 #include "mxSizers.h"
@@ -10,7 +11,6 @@
 #include "mxBitmapButton.h"
 #include "Language.h"
 #include "ProjectManager.h"
-#include <wx/notebook.h>
 #include "mxEnumerationEditor.h"
 #include "mxMultipleChoiceEditor.h"
 #include "mxHelpWindow.h"

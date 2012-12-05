@@ -1,6 +1,5 @@
-#include "mxMakefileDialog.h"
-#include <wx/wx.h>
 #include <wx/sizer.h>
+#include "mxMakefileDialog.h"
 #include "ids.h"
 #include "ProjectManager.h"
 #include "ConfigManager.h"

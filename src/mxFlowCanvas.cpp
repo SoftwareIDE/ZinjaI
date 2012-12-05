@@ -1,8 +1,5 @@
 #include <stack>
-	
 #include "mxFlowCanvas.h"
-
-#include "mxMainWindow.h"
 #include "mxSource.h"
 #include "mxUtils.h"
 #include "mxMessageDialog.h"
@@ -55,7 +52,7 @@ mxFlowCanvas::mxFlowCanvas(wxWindow *parent, mxSource *src) : wxScrolledWindow (
     dc->SetTextForeground(*wxBLACK);
 	int r1=0,r2=0;
 	if (!Analize(source->GetSelectionStart(), source->GetSelectionEnd(),draw,dc,r1,r2))
-		mxMessageDialog(main_window,_T("El bloque de codigo no es correcto"),_T("Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(_T("El bloque de codigo no es correcto"),_T("Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 	// dibujar inicio y fin
 	wxString ini,fin;
 	ini<<_T("Lin ")<<source->LineFromPosition(source->GetSelectionStart())+1<<_T(" - Col ")<<source->GetSelectionStart()-source->PositionFromLine(source->LineFromPosition(source->GetSelectionStart()));

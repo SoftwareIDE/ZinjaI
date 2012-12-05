@@ -1,10 +1,5 @@
 #include "mxThreadGrid.h"
 #include "DebugManager.h"
-#include "mxSource.h"
-#include "ids.h"
-#include "mxMainWindow.h"
-#include "mxInspectionExplorer.h"
-#include "mxInspectionGrid.h"
 #include "Language.h"
 
 BEGIN_EVENT_TABLE(mxThreadGrid, wxGrid)

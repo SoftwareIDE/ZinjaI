@@ -1,10 +1,9 @@
-#include "mxShareSourceWindow.h"
-
 #include <wx/wx.h>
 #include <wx/utils.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/socket.h>
+#include "mxShareSourceWindow.h"
 #include "mxSource.h"
 #include "ids.h"
 #include "mxUtils.h"

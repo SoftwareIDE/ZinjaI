@@ -1,8 +1,8 @@
-#include "mxOpinionWindow.h"
-#include "mxMainWindow.h"
 #include <wx/textctrl.h>
 #include <wx/stattext.h>
 #include <wx/textdlg.h>
+#include <wx/statbmp.h>
+#include "mxOpinionWindow.h"
 #include "mxSizers.h"
 #include "mxBitmapButton.h"
 #include "mxMessageDialog.h"
@@ -12,7 +12,6 @@
 #include "Language.h"
 #include "ConfigManager.h"
 #include "mxTextDialog.h"
-#include <wx/statbmp.h>
 
 BEGIN_EVENT_TABLE(mxOpinionWindow, wxDialog)
 	EVT_SOCKET(wxID_ANY,mxOpinionWindow::OnSocketEvent)
@@ -22,7 +21,7 @@ BEGIN_EVENT_TABLE(mxOpinionWindow, wxDialog)
 	EVT_CLOSE(mxOpinionWindow::OnClose)
 END_EVENT_TABLE()
 	
-mxOpinionWindow::mxOpinionWindow():wxDialog(main_window,wxID_ANY,LANG(OPINION_CAPTION,"Envia tu mensaje"),wxDefaultPosition,wxDefaultSize) {
+mxOpinionWindow::mxOpinionWindow(wxWindow *parent):wxDialog(parent,wxID_ANY,LANG(OPINION_CAPTION,"Envia tu mensaje"),wxDefaultPosition,wxDefaultSize) {
 	
 	osd=NULL;
 	

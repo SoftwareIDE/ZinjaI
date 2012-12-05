@@ -1,9 +1,10 @@
-#include "mxInspectionGrid.h"
-#include "mxUtils.h"
-#include "DebugManager.h"
+#include <wx/wx.h> // for wxGetSingleChoice, for some reasom <wx/choicdlg.h> doesn't work????
 #include <wx/choicdlg.h>
 #include <wx/menu.h>
 #include <wx/clipbrd.h>
+#include "mxInspectionGrid.h"
+#include "mxUtils.h"
+#include "DebugManager.h"
 #include "mxSource.h"
 #include "ids.h"
 #include "mxMainWindow.h"

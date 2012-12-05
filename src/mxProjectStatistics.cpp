@@ -1,8 +1,5 @@
 #include <wx/panel.h>
-
 #include "mxProjectStatistics.h"
-	
-#include "mxMainWindow.h"
 #include "mxUtils.h"
 #include "mxBitmapButton.h"
 #include "ProjectManager.h"
@@ -20,7 +17,7 @@ BEGIN_EVENT_TABLE(mxProjectStatistics, wxDialog)
 	EVT_TIMER(wxID_ANY,mxProjectStatistics::OnTimer)
 END_EVENT_TABLE()
 	
-mxProjectStatistics::mxProjectStatistics() : wxDialog(main_window, wxID_ANY, LANG(PROYSTATS_CAPTION,"Estadisticas del Proyecto"), wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxProjectStatistics::mxProjectStatistics(wxWindow *parent) : wxDialog(parent, wxID_ANY, LANG(PROYSTATS_CAPTION,"Estadisticas del Proyecto"), wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
 	project->UpdateSymbols();
 	

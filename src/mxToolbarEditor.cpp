@@ -1,13 +1,13 @@
-#include "mxToolbarEditor.h"
-#include "mxPreferenceWindow.h"
 #include <wx/sizer.h>
 #include <wx/scrolwin.h>
+#include <wx/stattext.h>
+#include <wx/checkbox.h>
+#include "mxToolbarEditor.h"
+#include "mxPreferenceWindow.h"
 #include "mxBitmapButton.h"
 #include "mxSizers.h"
-#include <wx/stattext.h>
 #include "ConfigManager.h"
 #include "mxUtils.h"
-#include <wx/checkbox.h>
 #include "mxArt.h"
 #include "mxMainWindow.h"
 #include "Language.h"

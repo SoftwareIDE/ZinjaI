@@ -1,5 +1,10 @@
+#include <wx/file.h>
+#include <cstdio>
+#include <fstream>
+#include <cstring>
+#include <iostream>
+using namespace std;
 #include "mxComplementInstallerWindow.h"
-#include "mxMainWindow.h"
 #include "mxBitmapButton.h"
 #include "Language.h"
 #include "mxUtils.h"
@@ -8,12 +13,6 @@
 #include "mxHelpWindow.h"
 #include "ConfigManager.h"
 #include "mxMessageDialog.h"
-#include <wx/file.h>
-#include <cstdio>
-#include <fstream>
-#include <cstring>
-#include <iostream>
-using namespace std;
 
 BEGIN_EVENT_TABLE(mxComplementInstallerWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxComplementInstallerWindow::OnOkButton)

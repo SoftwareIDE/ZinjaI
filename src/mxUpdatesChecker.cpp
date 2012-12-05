@@ -1,3 +1,5 @@
+#include <wx/bitmap.h>
+#include <wx/textfile.h>
 #include "mxUpdatesChecker.h"
 #include "ids.h"
 #include "mxMainWindow.h"
@@ -7,11 +9,9 @@
 #include "mxHelpWindow.h"
 #include "mxSizers.h"
 #include "Language.h"
-#include <wx/bitmap.h>
 #include "version.h"
 #include "mxArt.h"
 #include "mxTextDialog.h"
-#include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(mxUpdatesChecker, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxUpdatesChecker::OnCloseButton)

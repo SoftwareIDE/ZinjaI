@@ -1,9 +1,9 @@
+#include <wx/clipbrd.h>
+#include <wx/encconv.h>
+#include <iostream>
+using namespace std;
 #include "mxSource.h"
 #include "mxUtils.h"
-
-#include <wx/wx.h>
-#include <wx/clipbrd.h>
-
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "CodeHelper.h" 
@@ -13,18 +13,15 @@
 #include "DebugManager.h"
 #include "mxArt.h" 
 #include "mxBreakOptions.h"
-#include <wx/encconv.h>
 #include "Parser.h"
 #include "mxGotoFunctionDialog.h"
 #include "mxApplication.h"
-#include <iostream>
 #include "Language.h"
 #include "mxStatusBar.h"
 #include "mxCompiler.h"
 #include "Autocoder.h"
 #include "mxColoursEditor.h"
 #include "error_recovery.h"
-using namespace std;
 
 #define II_BACK(p,a) while(p>0 && (a)) p--;
 #define II_BACK_NC(p,a) while(a) p--;
@@ -2257,8 +2254,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 	int s; char c;
 	// buscar donde comienza la expresion
 	II_BACK(p,II_IS_NOTHING_4(p));
-//	int e=p;
-
+	
 	while ( p>=0 && ( II_IS_NOTHING_2(p) || c==']' ) )  {
 		if (c==']') {
 			dims--;
@@ -2277,7 +2273,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			return scope;
 		}
 	}
-	if (c==')') { // si hay un parentesis ya esta todo resuelto
+	if (c==')') { // si hay un parentesis puede que ya esté todo resuelto (cast)
 		p = BraceMatch(p);
 		if (p==wxSTC_INVALID_POSITION) {
 			dims=SRC_PARSING_ERROR;
@@ -2306,8 +2302,22 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 				}
 				return code_helper->UnMacro(GetTextRange(p2+1,p+1),dims);
 			}
-		} else { // ver si hay un cast estilo c
-			p++;
+		} else { 
+			// puede ser un cast al estilo c: ejemplo ((lala)booga) y estabamos parados en el primer (, el tipo seria lala
+			// o una llamada a metodo/funcion/constructor: ejemplo foo(bar) y estamos en el (
+			// ver primero si es la segunda opcion, mirando que hay justo antes del (
+			int p_par=p;
+			p--; II_BACK(p, II_IS_NOTHING_4(p)); // ir a donde termina el nombre de la funcion
+			int p_fin=p+1;
+			// ir a donde empieza el nombre de la funcion
+			p=WordStartPosition(p,true); c=GetCharAt(p);
+			if (p<p_fin && (c<'0'||c>'9')) { // si puede ser un nombre de funcion
+				wxString func_name=GetTextRange(p,p_fin);
+				wxMessageBox(func_name);
+			}
+			
+			// si no paso nada con metodo/funcion, probar si era cast
+			p=p_par+1;
 			II_FRONT_NC(p, II_IS_NOTHING_4(p));
 			if (c=='(') {
 				int p2=BraceMatch(p);
@@ -3327,7 +3337,11 @@ wxString mxSource::WhereAmI() {
 				scope=scope+" "+GetTextRange(p,p2+1);
 		}
 	}
-	return scope;
+	return scope
+#ifdef DEBUG
+		<<"\n"<<GetCurrentPos()
+#endif
+		;
 }
 
 bool mxSource::ApplyAutotext() {

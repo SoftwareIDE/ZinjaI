@@ -155,7 +155,7 @@ public:
 	void OnRunCompile (wxCommandEvent &event);
 	void OnRunBuild (wxCommandEvent &event);
 	void OnRunCompileConfig (wxCommandEvent &event);
-	void OnRunExportMakefile (wxCommandEvent &event);
+	void OnToolsExportMakefile (wxCommandEvent &event);
 	void OnRunClean (wxCommandEvent &event);
 	void OnRunStop (wxCommandEvent &event);
 	

@@ -1,18 +1,18 @@
-#include "mxValgrindOuput.h"
-#include "ids.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
-#include "Language.h"
+#include <wx/textfile.h>
 #include <wx/filename.h>
+using namespace std;
+#include <set>
+#include "mxValgrindOuput.h"
+#include "ids.h"
+#include "Language.h"
 #include "mxMessageDialog.h"
 #include "mxMainWindow.h"
 #include "ProjectManager.h"
 #include "mxSource.h"
 #include "mxCompiler.h"
-#include <set>
-#include <wx/textfile.h>
 #include "mxArt.h"
-using namespace std;
 
 BEGIN_EVENT_TABLE(mxValgrindOuput,wxTreeCtrl)
 	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxValgrindOuput::OnPopup)

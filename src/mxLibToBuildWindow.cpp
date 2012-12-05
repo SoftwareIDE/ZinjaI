@@ -1,6 +1,5 @@
-#include "ids.h"
 #include "mxLibToBuildWindow.h"
-#include <wx/dialog.h>
+#include "ids.h"
 #include "ProjectManager.h"
 #include "Language.h"
 #include "mxSizers.h"

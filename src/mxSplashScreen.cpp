@@ -2,14 +2,11 @@
 #include <wx/clrpicker.h>
 #include <wx/timer.h>
 #include <wx/dcmemory.h>
-
-#include "mxSplashScreen.h"
-
-#include "mxApplication.h"
-#include "mxUtils.h"
-
 #include<iostream>
 using namespace std;
+
+#include "mxSplashScreen.h"
+#include "mxApplication.h" // for SHOW_MILLIS
 
 mxSplashScreen *splash;
 

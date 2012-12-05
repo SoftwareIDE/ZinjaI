@@ -36,6 +36,7 @@
 #include "mxNewWizard.h"
 #include <fstream>
 #include "mxArt.h"
+#include "mxMakefileDialog.h"
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -156,7 +157,7 @@ void mxMainWindow::OnToolsCppCheckHelp(wxCommandEvent &event) {
 void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 	if (project) {
 		ABORT_IF_PARSING;
-		new mxProjectStatistics;
+		new mxProjectStatistics(this);
 	}
 }
 
@@ -180,7 +181,7 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 		return;
 	} else config->Init.valgrind_seen=true;
 	
-	if (!valgrind_config) valgrind_config=new mxValgrindConfigDialog;
+	if (!valgrind_config) valgrind_config=new mxValgrindConfigDialog(this);
 	if (valgrind_config->ShowModal()==0) return;
 	
 	wxString val_file = DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out"));
@@ -754,9 +755,9 @@ void mxMainWindow::OnToolsDrawFlow(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsExeProps (wxCommandEvent &event) {
 	if (project)
-		new mxExeInfo(NULL);
+		new mxExeInfo(this,NULL);
 	else IF_THERE_IS_SOURCE
-		new mxExeInfo(CURRENT_SOURCE);
+		new mxExeInfo(this,CURRENT_SOURCE);
 }
 
 void mxMainWindow::OnToolsCustomSettings(wxCommandEvent &evt) {
@@ -1115,3 +1116,8 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK);
 	delete wizard; wizard=NULL;
 }
+
+void mxMainWindow::OnToolsExportMakefile (wxCommandEvent &event) {
+	new mxMakefileDialog(this);
+}
+

@@ -1,16 +1,15 @@
+#include <wx/file.h>
+#include <wx/textctrl.h>
+#include <wx/process.h>
+#include <wx/txtstrm.h>
 #include "mxOutputView.h"
 #include "mxMainWindow.h"
 #include "mxBitmapButton.h"
 #include "mxSizers.h"
-#include <wx/process.h>
-#include <wx/textctrl.h>
 #include "ConfigManager.h"
 #include "ids.h"
 #include "mxUtils.h"
-#include <wx/txtstrm.h>
 #include "Language.h"
-#include <wx/file.h>
-using namespace std;
 
 BEGIN_EVENT_TABLE(mxOutputView, wxDialog)
 	EVT_BUTTON(wxID_OK,mxOutputView::OnOkButton)

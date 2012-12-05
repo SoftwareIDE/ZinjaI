@@ -16,7 +16,7 @@ private:
 	mxOSD *osd;
 	mxBitmapButton *send_button;
 public:
-	mxOpinionWindow();
+	mxOpinionWindow(wxWindow *parent);
 	void OnSocketEvent(wxSocketEvent &event);
 	void OnClose(wxCloseEvent &evt);
 	void OnProxyButton(wxCommandEvent &evt);

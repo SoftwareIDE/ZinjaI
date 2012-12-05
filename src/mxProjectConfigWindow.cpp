@@ -4,7 +4,6 @@
 #include <wx/panel.h>
 
 #include "mxProjectConfigWindow.h"
-
 #include "ConfigManager.h"
 #include "mxUtils.h"
 #include "mxHelpWindow.h"

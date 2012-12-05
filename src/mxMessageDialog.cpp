@@ -1,26 +1,33 @@
-#include "mxMessageDialog.h"
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
 #include <wx/statbmp.h>
 #include <wx/stattext.h>
+#include "mxMessageDialog.h"
 #include "mxSizers.h"
 #include "mxSplashScreen.h"
 #include "Language.h"
 #include "mxBitmapButton.h"
+#include "mxMainWindow.h"
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxMessageDialog, wxDialog)
-	
 	EVT_BUTTON(wxID_OK,mxMessageDialog::OnOkButton)
 	EVT_BUTTON(wxID_YES,mxMessageDialog::OnYesButton)
 	EVT_BUTTON(wxID_NO,mxMessageDialog::OnNoButton)
 	EVT_BUTTON(wxID_CANCEL,mxMessageDialog::OnCancelButton)
 	EVT_CHAR_HOOK(mxMessageDialog::OnCharHook)
 	EVT_CLOSE(mxMessageDialog::OnClose)
-	
 END_EVENT_TABLE()
 
 mxMessageDialog::mxMessageDialog(wxWindow *parent, wxString message, wxString title, unsigned int style, wxString check, bool bval) : wxDialog(parent,wxID_ANY,title,wxDefaultPosition,wxSize(400,100)) {
+	CommonConstructor(parent,message,title,style,check,bval);
+}
+
+mxMessageDialog::mxMessageDialog(wxString message, wxString title, unsigned int style, wxString check, bool bval) : wxDialog(main_window,wxID_ANY,title,wxDefaultPosition,wxSize(400,100)) {
+	CommonConstructor(main_window,message,title,style,check,bval);
+}
+
+void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxString title, unsigned int style, wxString check, bool bval) {
 	
 	if (splash) splash->Close();
 

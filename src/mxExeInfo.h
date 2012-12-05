@@ -17,7 +17,7 @@ private:
 	wxTextCtrl *text_size, *text_type, *text_time, *ldd_ctrl;
 	wxTimer *wait_for_parser;
 public:
-	mxExeInfo(mxSource *src);
+	mxExeInfo(wxWindow *parent, mxSource *src);
 	wxPanel *CreateGeneralPanel (wxNotebook *notebook);
 	wxPanel *CreateDependPanel (wxNotebook *notebook);
 	~mxExeInfo();
