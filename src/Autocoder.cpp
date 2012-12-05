@@ -1,7 +1,7 @@
+#include <wx/textfile.h>
 #include "Autocoder.h"
 #include "mxSource.h"
 #include "mxUtils.h"
-#include <wx/textfile.h>
 #include "ProjectManager.h"
 
 Autocoder *autocoder=NULL;

@@ -36,7 +36,7 @@ BEGIN_EVENT_TABLE(mxHelpWindow,wxFrame)
 	EVT_CHAR_HOOK(mxHelpWindow::OnCharHook)
 END_EVENT_TABLE();
 
-mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, _T("Ayuda de ZinjaI"), wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
+mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, LANG(HELPW_CAPTION,"Ayuda de ZinjaI"), wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
 
 	printer=NULL;
 	
@@ -121,7 +121,7 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, _T("Ayuda de
 	search_button->SetToolTip(LANG(HELPW_FORUM_FIND,"Buscar..."));
 	topSizer->Add(search_button,sizers->BA2);
 	panel->SetSizer(topSizer);
-	html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(400,300));
+	html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(200,100));
 	bottomSizer->Add(html,sizers->Exp1);
 	sizer->Add(panel,sizers->Exp0);
 	sizer->Add(bottomSizer,sizers->Exp1);
@@ -132,7 +132,7 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, _T("Ayuda de
 	sizer->Add(forum_sizer,sizers->Right);
 	
 	SetSizer(sizer);
-	bottomSizer->SetItemMinSize(index_sash,200, 10);
+	bottomSizer->SetItemMinSize(index_sash,250, 10);
 	bottomSizer->Layout();
 //	search_button->SetDefault();
 	if (!file.Len()) file="index";
