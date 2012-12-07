@@ -596,7 +596,7 @@ wxString HelpManager::GetDoxyInfo(pd_class *aclass, wxString &desc) {
 		bool on_desc=false;
 		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 			if (on_desc) {
-				if (str.Contains("<h2>")) break; 
+				if (str.Contains("<h2")) break; 
 				///  @todo: ver que hacer con el utf8 para que muestre acentos
 				if (str.Len()&&str.FromUTF8(str.char_str()).Len()) // trae problemas en algunos linuxs 
 					str = str.FromUTF8(str.char_str());
@@ -604,7 +604,7 @@ wxString HelpManager::GetDoxyInfo(pd_class *aclass, wxString &desc) {
 				str.Replace(_T("<a "),_T("<aZZZ "));
 				desc+=str+_T("\n");
 //				cerr<<"DESC: "<<str<<endl;
-			} else if ( str.Contains("name=\"_details\"")) on_desc=true;
+			} else if ( str.Contains("name=\"_details\"")||str.Contains("name=\"details\"")) on_desc=true;
 		}
 		fil.Close();
 		return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,_T("html"))),it->second);
