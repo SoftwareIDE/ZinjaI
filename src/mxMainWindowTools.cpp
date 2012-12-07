@@ -985,11 +985,12 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 	bin_name = DIR_PLUS_FILE(config->home_dir,"preprocessed.tmp");
 	if (project) {
 		if (src->GetModify()) src->SaveSource();
-		file_item *item = project->FindFromName(src->source_filename.GetFullPath());
+//		file_item *item = project->FindFromName(src->source_filename.GetFullPath());
+		wxString fname = src->source_filename.GetFullPath();
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
-		bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
+		bool cpp = fname.Last()!='c';
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
-			project->compiling_options+_T(" \"")+DIR_PLUS_FILE(project->path,item->name)+"\""+"-c -E -o \""+bin_name+"\"";
+			project->compiling_options+_T(" \"")+fname+"\""+"-c -E -o \""+bin_name+"\"";
 		if (id_command==1) command<<" -fdirectives-only -C";
 		_IF_DEBUGMODE(command);
 		int x =utils->Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
