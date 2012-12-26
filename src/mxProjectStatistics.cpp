@@ -9,6 +9,7 @@
 #include "Parser.h"
 #include "parserData.h"
 #include "Language.h"
+#include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(mxProjectStatistics, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxProjectStatistics::OnCloseButton)

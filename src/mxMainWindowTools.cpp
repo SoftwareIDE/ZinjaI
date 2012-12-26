@@ -37,6 +37,8 @@
 #include <fstream>
 #include "mxArt.h"
 #include "mxMakefileDialog.h"
+#include <wx/file.h>
+#include <wx/textfile.h>
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)

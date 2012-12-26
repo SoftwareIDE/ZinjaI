@@ -323,6 +323,7 @@ void mxNewWizard::OnProjectCreate() {
 				cpp_file.AddLine(_T(""));
 			}
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) { // métodos virtuales heredados
+#warning ARREGLAR los metodos virtuales aparecen con el scope de la clase original, no la nueva
 				cpp_file.AddLine(virtual_methods[i].AfterFirst(' ')+" {");
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));

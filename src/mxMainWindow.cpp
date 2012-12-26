@@ -63,6 +63,8 @@
 #include "mxColoursEditor.h"
 #include "Toolchain.h"
 #include "CodeHelper.h"
+#include <iostream>
+using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
 #define LAST_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(untitled_count)<<">")

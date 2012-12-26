@@ -9,6 +9,7 @@
 #include "mxSizers.h"
 #include "Language.h"
 #include "mxOSD.h"
+#include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(mxDrawClasses, wxDialog)
 	EVT_BUTTON(wxID_OK,mxDrawClasses::OnOkButton)

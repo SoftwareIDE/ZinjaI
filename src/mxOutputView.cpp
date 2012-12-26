@@ -99,7 +99,7 @@ void mxOutputView::Launch(wxString path, wxString command) {
 	process = new wxProcess(GetEventHandler(),wxID_ANY);
 	process->Redirect();
 	wxSetWorkingDirectory(path);
-	cerr<<command<<endl<<endl<<command.Len();
+//	cerr<<command<<endl<<endl<<command.Len();
 	command=command.Mid(0,4000);
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
 	wxSetWorkingDirectory(config->zinjai_dir);

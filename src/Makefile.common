@@ -1,156 +1,156 @@
-OBJS=${OBJS_DIR}/mxMainWindowTools.o ${OBJS_DIR}/mxColoursEditor.o ${OBJS_DIR}/mxCustomTools.o ${OBJS_DIR}/mxHidenPanel.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxSource.o ${OBJS_DIR}/mxDiffSideBar.o ${OBJS_DIR}/mxBeginnerPanel.o ${OBJS_DIR}/mxProjectStatistics.o ${OBJS_DIR}/mxLibToBuildWindow.o ${OBJS_DIR}/Parser.o ${OBJS_DIR}/mxNewWizard.o ${OBJS_DIR}/ProjectManager.o ${OBJS_DIR}/CodeHelper.o ${OBJS_DIR}/ConfigManager.o ${OBJS_DIR}/HelpManager.o ${OBJS_DIR}/ShareManager.o ${OBJS_DIR}/mxAboutWindow.o ${OBJS_DIR}/mxApplication.o ${OBJS_DIR}/mxCompileConfigWindow.o ${OBJS_DIR}/mxPreferenceWindow.o ${OBJS_DIR}/mxGotoLineWindow.o ${OBJS_DIR}/mxOpenSharedWindow.o ${OBJS_DIR}/mxProjectConfigWindow.o ${OBJS_DIR}/mxShareSourceWindow.o ${OBJS_DIR}/mxTipsWindow.o ${OBJS_DIR}/mxUtils.o ${OBJS_DIR}/mxHelpWindow.o ${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxFlowWindow.o ${OBJS_DIR}/mxDropTarget.o ${OBJS_DIR}/mxStatusBar.o ${OBJS_DIR}/mxMakefileDialog.o ${OBJS_DIR}/mxArt.o ${OBJS_DIR}/mxBitmapButton.o ${OBJS_DIR}/mxMessageDialog.o ${OBJS_DIR}/mxFindDialog.o ${OBJS_DIR}/mxGotoFunctionDialog.o ${OBJS_DIR}/mxGotoFileDialog.o ${OBJS_DIR}/mxInspectionGrid.o ${OBJS_DIR}/mxBacktraceGrid.o ${OBJS_DIR}/CodeExporter.o ${OBJS_DIR}/mxInspectionExplorer.o ${OBJS_DIR}/mxExeInfo.o ${OBJS_DIR}/mxBreakList.o ${OBJS_DIR}/mxUpdatesChecker.o ${OBJS_DIR}/mxBreakOptions.o ${OBJS_DIR}/mxOSD.o ${OBJS_DIR}/mxInspectionMatrix.o ${OBJS_DIR}/mxDrawClasses.o ${OBJS_DIR}/mxFlowCanvas.o ${OBJS_DIR}/mxArgumentsDialog.o ${OBJS_DIR}/mxEnumerationEditor.o ${OBJS_DIR}/mxLongTextEditor.o ${OBJS_DIR}/mxListItemEditor.o ${OBJS_DIR}/mxSizers.o ${OBJS_DIR}/error_recovery.o ${OBJS_DIR}/mxErrorRecovering.o ${OBJS_DIR}/mxDiffWindow.o ${OBJS_DIR}/mxDoxyDialog.o ${OBJS_DIR}/mxOutputView.o ${OBJS_DIR}/mxSplashScreen.o ${OBJS_DIR}/mxToolbarEditor.o ${OBJS_DIR}/mxProjectGeneralConfig.o ${OBJS_DIR}/mxWxfbInheriter.o ${OBJS_DIR}/mxExtraStepWindow.o ${OBJS_DIR}/mxPrintOut.o ${OBJS_DIR}/mxTreeCtrl.o ${OBJS_DIR}/mxWelcomePanel.o ${OBJS_DIR}/mxSourceProperties.o ${OBJS_DIR}/mxOpenRecentDialog.o ${OBJS_DIR}/Language.o ${OBJS_DIR}/mxSingleton.o ${OBJS_DIR}/mxValgrindOuput.o ${OBJS_DIR}/mxOpinionWindow.o ${OBJS_DIR}/mxThreadGrid.o ${OBJS_DIR}/mxTextDialog.o ${OBJS_DIR}/mxMultipleFileChooser.o ${OBJS_DIR}/mxCompiler.o ${OBJS_DIR}/Autocoder.o ${OBJS_DIR}/mxIconInstaller.o ${OBJS_DIR}/mxInspectionPrint.o ${OBJS_DIR}/mxExternInspection.o ${OBJS_DIR}/mxListSharedWindow.o ${OBJS_DIR}/mxComplementInstallerWindow.o ${OBJS_DIR}/mxCppCheckConfigDialog.o ${OBJS_DIR}/mxMultipleChoiceEditor.o ${OBJS_DIR}/mxValgrindConfigDialog.o ${OBJS_DIR}/BreakPointInfo.o ${OBJS_DIR}/Toolchain.o ${OBJS_DIR}/mxInspectionsImprovingEditor.o ${OBJS_DIR}/mxToolchainOptions.o ${OBJS_DIR}/widgetDisabler.o 
+OBJS=${OBJS_DIR}/ProjectManager.o ${OBJS_DIR}/ConfigManager.o ${OBJS_DIR}/mxMainWindowTools.o ${OBJS_DIR}/mxColoursEditor.o ${OBJS_DIR}/mxCustomTools.o ${OBJS_DIR}/mxHidenPanel.o ${OBJS_DIR}/mxMainWindow.o ${OBJS_DIR}/mxSource.o ${OBJS_DIR}/mxDiffSideBar.o ${OBJS_DIR}/mxBeginnerPanel.o ${OBJS_DIR}/mxProjectStatistics.o ${OBJS_DIR}/mxLibToBuildWindow.o ${OBJS_DIR}/Parser.o ${OBJS_DIR}/mxNewWizard.o ${OBJS_DIR}/CodeHelper.o ${OBJS_DIR}/HelpManager.o ${OBJS_DIR}/ShareManager.o ${OBJS_DIR}/mxAboutWindow.o ${OBJS_DIR}/mxApplication.o ${OBJS_DIR}/mxCompileConfigWindow.o ${OBJS_DIR}/mxPreferenceWindow.o ${OBJS_DIR}/mxGotoLineWindow.o ${OBJS_DIR}/mxOpenSharedWindow.o ${OBJS_DIR}/mxProjectConfigWindow.o ${OBJS_DIR}/mxShareSourceWindow.o ${OBJS_DIR}/mxTipsWindow.o ${OBJS_DIR}/mxUtils.o ${OBJS_DIR}/mxHelpWindow.o ${OBJS_DIR}/DebugManager.o ${OBJS_DIR}/mxFlowWindow.o ${OBJS_DIR}/mxDropTarget.o ${OBJS_DIR}/mxStatusBar.o ${OBJS_DIR}/mxMakefileDialog.o ${OBJS_DIR}/mxArt.o ${OBJS_DIR}/mxBitmapButton.o ${OBJS_DIR}/mxMessageDialog.o ${OBJS_DIR}/mxFindDialog.o ${OBJS_DIR}/mxGotoFunctionDialog.o ${OBJS_DIR}/mxGotoFileDialog.o ${OBJS_DIR}/mxInspectionGrid.o ${OBJS_DIR}/mxBacktraceGrid.o ${OBJS_DIR}/CodeExporter.o ${OBJS_DIR}/mxInspectionExplorer.o ${OBJS_DIR}/mxExeInfo.o ${OBJS_DIR}/mxBreakList.o ${OBJS_DIR}/mxUpdatesChecker.o ${OBJS_DIR}/mxBreakOptions.o ${OBJS_DIR}/mxOSD.o ${OBJS_DIR}/mxInspectionMatrix.o ${OBJS_DIR}/mxDrawClasses.o ${OBJS_DIR}/mxFlowCanvas.o ${OBJS_DIR}/mxArgumentsDialog.o ${OBJS_DIR}/mxEnumerationEditor.o ${OBJS_DIR}/mxLongTextEditor.o ${OBJS_DIR}/mxListItemEditor.o ${OBJS_DIR}/mxSizers.o ${OBJS_DIR}/error_recovery.o ${OBJS_DIR}/mxErrorRecovering.o ${OBJS_DIR}/mxDiffWindow.o ${OBJS_DIR}/mxDoxyDialog.o ${OBJS_DIR}/mxOutputView.o ${OBJS_DIR}/mxSplashScreen.o ${OBJS_DIR}/mxToolbarEditor.o ${OBJS_DIR}/mxProjectGeneralConfig.o ${OBJS_DIR}/mxWxfbInheriter.o ${OBJS_DIR}/mxExtraStepWindow.o ${OBJS_DIR}/mxPrintOut.o ${OBJS_DIR}/mxTreeCtrl.o ${OBJS_DIR}/mxWelcomePanel.o ${OBJS_DIR}/mxSourceProperties.o ${OBJS_DIR}/mxOpenRecentDialog.o ${OBJS_DIR}/Language.o ${OBJS_DIR}/mxSingleton.o ${OBJS_DIR}/mxValgrindOuput.o ${OBJS_DIR}/mxOpinionWindow.o ${OBJS_DIR}/mxThreadGrid.o ${OBJS_DIR}/mxTextDialog.o ${OBJS_DIR}/mxMultipleFileChooser.o ${OBJS_DIR}/mxCompiler.o ${OBJS_DIR}/Autocoder.o ${OBJS_DIR}/mxIconInstaller.o ${OBJS_DIR}/mxInspectionPrint.o ${OBJS_DIR}/mxExternInspection.o ${OBJS_DIR}/mxListSharedWindow.o ${OBJS_DIR}/mxComplementInstallerWindow.o ${OBJS_DIR}/mxCppCheckConfigDialog.o ${OBJS_DIR}/mxMultipleChoiceEditor.o ${OBJS_DIR}/mxValgrindConfigDialog.o ${OBJS_DIR}/BreakPointInfo.o ${OBJS_DIR}/Toolchain.o ${OBJS_DIR}/mxInspectionsImprovingEditor.o ${OBJS_DIR}/mxToolchainOptions.o ${OBJS_DIR}/widgetDisabler.o 
 
-${OBJS_DIR}/mxMainWindowTools.o: mxMainWindowTools.cpp mxMainWindow.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h mxCustomTools.h mxHelpWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h ids.h Language.h lang_index_macros.h mxMessageDialog.h mxBitmapButton.h mxArt.h mxSource.h error_recovery.h Parser.h CodeHelper.h paf_defs.h parserData.h mxOutputView.h mxProjectStatistics.h mxCompiler.h mxTextDialog.h mxStatusBar.h mxWxfbInheriter.h mxDiffWindow.h mxDiffSideBar.h mxDoxyDialog.h mxOSD.h mxShareSourceWindow.h mxOpenSharedWindow.h mxDrawClasses.h mxFlowWindow.h mxExeInfo.h mxColoursEditor.h mxListSharedWindow.h mxComplementInstallerWindow.h mxCppCheckConfigDialog.h mxValgrindConfigDialog.h
+${OBJS_DIR}/ProjectManager.o: ProjectManager.cpp ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMainWindow.h mxStatusBar.h mxMessageDialog.h Parser.h paf_defs.h ids.h DebugManager.h version.h mxArgumentsDialog.h Language.h lang_index_macros.h mxSingleton.h mxOSD.h parserData.h mxCompiler.h Autocoder.h CodeHelper.h
+	${GPP} ${FLAGS} -c ProjectManager.cpp -o $@
+
+${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h version.h mxMessageDialog.h error_recovery.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxPreferenceWindow.h Language.h lang_index_macros.h mxMainWindow.h mxColoursEditor.h
+	${GPP} ${FLAGS} -c ConfigManager.cpp -o $@
+
+${OBJS_DIR}/mxMainWindowTools.o: mxMainWindowTools.cpp mxMainWindow.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h mxCustomTools.h mxHelpWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ids.h Language.h lang_index_macros.h mxMessageDialog.h mxSource.h Parser.h paf_defs.h parserData.h mxOutputView.h mxProjectStatistics.h mxCompiler.h mxTextDialog.h mxStatusBar.h mxWxfbInheriter.h mxDiffWindow.h mxDiffSideBar.h mxDoxyDialog.h mxOSD.h mxShareSourceWindow.h mxOpenSharedWindow.h mxDrawClasses.h mxFlowWindow.h mxExeInfo.h mxColoursEditor.h mxListSharedWindow.h mxComplementInstallerWindow.h mxCppCheckConfigDialog.h mxValgrindConfigDialog.h mxNewWizard.h mxArt.h mxMakefileDialog.h
 	${GPP} ${FLAGS} -c mxMainWindowTools.cpp -o $@
 
-${OBJS_DIR}/mxColoursEditor.o: mxColoursEditor.cpp mxColoursEditor.h mxUtils.h mxMainWindow.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h ids.h mxSizers.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxSource.h error_recovery.h
+${OBJS_DIR}/mxColoursEditor.o: mxColoursEditor.cpp mxColoursEditor.h mxUtils.h mxMainWindow.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h ids.h mxSizers.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxSource.h
 	${GPP} ${FLAGS} -c mxColoursEditor.cpp -o $@
 
-${OBJS_DIR}/mxCustomTools.o: mxCustomTools.cpp mxCustomTools.h mxMainWindow.h mxSizers.h mxUtils.h ids.h Language.h lang_index_macros.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxHelpWindow.h mxMessageDialog.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h
+${OBJS_DIR}/mxCustomTools.o: mxCustomTools.cpp mxArt.h mxCustomTools.h mxMainWindow.h mxSizers.h mxUtils.h ids.h Language.h lang_index_macros.h mxBitmapButton.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxHelpWindow.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c mxCustomTools.cpp -o $@
 
 ${OBJS_DIR}/mxHidenPanel.o: mxHidenPanel.cpp mxHidenPanel.h mxMainWindow.h mxWelcomePanel.h
 	${GPP} ${FLAGS} -c mxHidenPanel.cpp -o $@
 
-${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxMainWindow.h egdata.h mxFindDialog.h paf_defs.h mxNewWizard.h mxDropTarget.h ids.h Parser.h CodeHelper.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h DebugManager.h BreakPointInfo.h AutoList.h HelpManager.h ShareManager.h ProjectManager.h Toolchain.h mxSource.h error_recovery.h mxGotoLineWindow.h mxAboutWindow.h mxCompileConfigWindow.h mxProjectConfigWindow.h widgetDisabler.h mxPreferenceWindow.h mxTipsWindow.h mxHelpWindow.h mxStatusBar.h mxMakefileDialog.h mxArt.h mxMessageDialog.h mxBitmapButton.h mxValgrindOuput.h mxGotoFunctionDialog.h mxGotoFileDialog.h CodeExporter.h mxExeInfo.h mxBreakList.h mxUpdatesChecker.h mxBreakOptions.h mxArgumentsDialog.h mxSplashScreen.h mxProjectGeneralConfig.h mxPrintOut.h mxTreeCtrl.h mxWelcomePanel.h mxSourceProperties.h mxOpenRecentDialog.h Language.h lang_index_macros.h mxOSD.h mxApplication.h mxBeginnerPanel.h mxDiffSideBar.h mxOpinionWindow.h mxCustomTools.h parserData.h mxHidenPanel.h mxTextDialog.h mxMultipleFileChooser.h mxCompiler.h Autocoder.h mxColoursEditor.h zinjai-w32.xpm zinjai-lnx.xpm
+${OBJS_DIR}/mxMainWindow.o: mxMainWindow.cpp mxMainWindow.h egdata.h mxFindDialog.h mxNewWizard.h mxDropTarget.h ids.h Parser.h paf_defs.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h DebugManager.h HelpManager.h mxUtils.h ShareManager.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxSource.h mxGotoLineWindow.h mxAboutWindow.h mxCompileConfigWindow.h mxProjectConfigWindow.h widgetDisabler.h mxPreferenceWindow.h mxTipsWindow.h mxHelpWindow.h mxStatusBar.h mxArt.h mxMessageDialog.h mxValgrindOuput.h mxGotoFunctionDialog.h mxGotoFileDialog.h mxThreadGrid.h CodeExporter.h mxExeInfo.h mxBreakList.h mxUpdatesChecker.h mxBreakOptions.h mxArgumentsDialog.h error_recovery.h mxSplashScreen.h mxProjectGeneralConfig.h mxPrintOut.h mxTreeCtrl.h mxWelcomePanel.h mxSourceProperties.h mxOpenRecentDialog.h Language.h lang_index_macros.h mxOSD.h mxApplication.h mxBeginnerPanel.h mxDiffSideBar.h mxOpinionWindow.h mxCustomTools.h parserData.h mxHidenPanel.h mxTextDialog.h mxMultipleFileChooser.h mxCompiler.h Autocoder.h mxColoursEditor.h CodeHelper.h zinjai-w32.xpm zinjai-lnx.xpm
 	${GPP} ${FLAGS} -c mxMainWindow.cpp -o $@
 
-${OBJS_DIR}/mxSource.o: mxSource.cpp mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h ids.h mxMainWindow.h CodeHelper.h mxDropTarget.h mxMessageDialog.h mxBitmapButton.h mxArt.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h DebugManager.h mxBreakOptions.h Parser.h paf_defs.h mxGotoFunctionDialog.h mxApplication.h Language.h lang_index_macros.h mxStatusBar.h mxCompiler.h Autocoder.h mxColoursEditor.h
+${OBJS_DIR}/mxSource.o: mxSource.cpp mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h ids.h mxMainWindow.h CodeHelper.h mxDropTarget.h mxMessageDialog.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h DebugManager.h mxArt.h mxBreakOptions.h Parser.h paf_defs.h mxGotoFunctionDialog.h mxApplication.h Language.h lang_index_macros.h mxStatusBar.h mxCompiler.h Autocoder.h mxColoursEditor.h error_recovery.h
 	${GPP} ${FLAGS} -c mxSource.cpp -o $@
 
-${OBJS_DIR}/mxDiffSideBar.o: mxDiffSideBar.cpp mxDiffSideBar.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h
+${OBJS_DIR}/mxDiffSideBar.o: mxDiffSideBar.cpp mxDiffSideBar.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h
 	${GPP} ${FLAGS} -c mxDiffSideBar.cpp -o $@
 
-${OBJS_DIR}/mxBeginnerPanel.o: mxBeginnerPanel.cpp mxBeginnerPanel.h mxSizers.h ids.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxBeginnerPanel.o: mxBeginnerPanel.cpp mxBeginnerPanel.h mxSizers.h ids.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxBeginnerPanel.cpp -o $@
 
-${OBJS_DIR}/mxProjectStatistics.o: mxProjectStatistics.cpp mxProjectStatistics.h mxMainWindow.h mxUtils.h mxBitmapButton.h mxArt.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h ids.h mxSizers.h mxHelpWindow.h Parser.h CodeHelper.h paf_defs.h parserData.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxProjectStatistics.o: mxProjectStatistics.cpp mxProjectStatistics.h mxUtils.h mxBitmapButton.h mxArt.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h ids.h mxSizers.h mxHelpWindow.h Parser.h paf_defs.h parserData.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxProjectStatistics.cpp -o $@
 
-${OBJS_DIR}/mxLibToBuildWindow.o: mxLibToBuildWindow.cpp ids.h mxLibToBuildWindow.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h Language.h lang_index_macros.h mxSizers.h mxArt.h mxBitmapButton.h mxHelpWindow.h mxMessageDialog.h mxProjectConfigWindow.h widgetDisabler.h
+${OBJS_DIR}/mxLibToBuildWindow.o: mxLibToBuildWindow.cpp mxLibToBuildWindow.h ids.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h Language.h lang_index_macros.h mxSizers.h mxArt.h mxBitmapButton.h mxHelpWindow.h mxMessageDialog.h mxProjectConfigWindow.h widgetDisabler.h
 	${GPP} ${FLAGS} -c mxLibToBuildWindow.cpp -o $@
 
-${OBJS_DIR}/Parser.o: Parser.cpp Parser.h CodeHelper.h mxUtils.h paf_defs.h ids.h parserData.h mxMainWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxSource.h error_recovery.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h DebugManager.h mxDrawClasses.h Language.h lang_index_macros.h mxCompiler.h
+${OBJS_DIR}/Parser.o: Parser.cpp Parser.h paf_defs.h ids.h parserData.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxSource.h mxUtils.h mxMainWindow.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h DebugManager.h mxDrawClasses.h Language.h lang_index_macros.h mxCompiler.h CodeHelper.h
 	${GPP} ${FLAGS} -c Parser.cpp -o $@
 
-${OBJS_DIR}/mxNewWizard.o: mxNewWizard.cpp mxNewWizard.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h mxMainWindow.h mxHelpWindow.h mxSource.h error_recovery.h mxBitmapButton.h mxArt.h mxMessageDialog.h CodeHelper.h mxSizers.h Language.h lang_index_macros.h mxMultipleFileChooser.h
+${OBJS_DIR}/mxNewWizard.o: mxNewWizard.cpp mxNewWizard.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h mxMainWindow.h mxHelpWindow.h mxSource.h mxBitmapButton.h mxArt.h mxMessageDialog.h CodeHelper.h mxSizers.h Language.h lang_index_macros.h mxMultipleFileChooser.h parserData.h Parser.h paf_defs.h
 	${GPP} ${FLAGS} -c mxNewWizard.cpp -o $@
 
-${OBJS_DIR}/ProjectManager.o: ProjectManager.cpp ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxMainWindow.h mxStatusBar.h mxMessageDialog.h mxBitmapButton.h mxArt.h Parser.h CodeHelper.h paf_defs.h ids.h DebugManager.h version.h mxArgumentsDialog.h Language.h lang_index_macros.h mxSingleton.h mxOSD.h parserData.h mxCompiler.h Autocoder.h
-	${GPP} ${FLAGS} -c ProjectManager.cpp -o $@
-
-${OBJS_DIR}/CodeHelper.o: CodeHelper.cpp CodeHelper.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h Parser.h paf_defs.h parserData.h mxMainWindow.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h Autocoder.h
+${OBJS_DIR}/CodeHelper.o: CodeHelper.cpp CodeHelper.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h Parser.h paf_defs.h parserData.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h Autocoder.h
 	${GPP} ${FLAGS} -c CodeHelper.cpp -o $@
 
-${OBJS_DIR}/ConfigManager.o: ConfigManager.cpp ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxUtils.h version.h mxMessageDialog.h mxBitmapButton.h mxArt.h error_recovery.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxPreferenceWindow.h Language.h lang_index_macros.h mxMainWindow.h mxColoursEditor.h
-	${GPP} ${FLAGS} -c ConfigManager.cpp -o $@
-
-${OBJS_DIR}/HelpManager.o: HelpManager.cpp HelpManager.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h Parser.h CodeHelper.h paf_defs.h parserData.h mxMainWindow.h Language.h lang_index_macros.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h
+${OBJS_DIR}/HelpManager.o: HelpManager.cpp HelpManager.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h Parser.h paf_defs.h parserData.h mxMainWindow.h Language.h lang_index_macros.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h CodeHelper.h
 	${GPP} ${FLAGS} -c HelpManager.cpp -o $@
 
-${OBJS_DIR}/ShareManager.o: ShareManager.cpp ids.h ShareManager.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxMainWindow.h mxUtils.h Language.h lang_index_macros.h mxMessageDialog.h mxBitmapButton.h mxArt.h
+${OBJS_DIR}/ShareManager.o: ShareManager.cpp ids.h ShareManager.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMainWindow.h mxUtils.h Language.h lang_index_macros.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c ShareManager.cpp -o $@
 
-${OBJS_DIR}/mxAboutWindow.o: mxAboutWindow.cpp mxAboutWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxBitmapButton.h mxArt.h mxUtils.h version.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxAboutWindow.o: mxAboutWindow.cpp mxAboutWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxBitmapButton.h mxArt.h mxUtils.h version.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxAboutWindow.cpp -o $@
 
-${OBJS_DIR}/mxApplication.o: mxApplication.cpp mxApplication.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h ShareManager.h Language.h lang_index_macros.h mxSingleton.h mxBeginnerPanel.h mxIconInstaller.h HelpManager.h mxUtils.h Parser.h CodeHelper.h paf_defs.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h DebugManager.h mxMainWindow.h mxHelpWindow.h mxTipsWindow.h mxArt.h mxMessageDialog.h mxBitmapButton.h version.h mxUpdatesChecker.h mxSizers.h mxErrorRecovering.h mxSplashScreen.h
+${OBJS_DIR}/mxApplication.o: mxApplication.cpp mxApplication.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ShareManager.h Language.h lang_index_macros.h mxSingleton.h mxBeginnerPanel.h mxIconInstaller.h HelpManager.h mxUtils.h Parser.h paf_defs.h CodeHelper.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h DebugManager.h mxMainWindow.h mxHelpWindow.h mxTipsWindow.h mxArt.h mxMessageDialog.h version.h mxUpdatesChecker.h mxSizers.h mxErrorRecovering.h mxSplashScreen.h
 	${GPP} ${FLAGS} -c mxApplication.cpp -o $@
 
-${OBJS_DIR}/mxCompileConfigWindow.o: mxCompileConfigWindow.cpp mxCompileConfigWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxUtils.h mxHelpWindow.h mxSource.h error_recovery.h mxArt.h mxBitmapButton.h mxMessageDialog.h ids.h mxLongTextEditor.h mxMainWindow.h mxEnumerationEditor.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxCompileConfigWindow.o: mxCompileConfigWindow.cpp mxCompileConfigWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxHelpWindow.h mxSource.h mxArt.h mxBitmapButton.h mxMessageDialog.h ids.h mxLongTextEditor.h mxMainWindow.h mxEnumerationEditor.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxCompileConfigWindow.cpp -o $@
 
-${OBJS_DIR}/mxPreferenceWindow.o: mxPreferenceWindow.cpp mxPreferenceWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxHelpWindow.h mxUtils.h mxMainWindow.h mxSource.h error_recovery.h mxBitmapButton.h mxArt.h ids.h CodeHelper.h mxSizers.h mxEnumerationEditor.h mxToolbarEditor.h mxMessageDialog.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxWelcomePanel.h Language.h lang_index_macros.h mxSingleton.h DebugManager.h Autocoder.h mxColoursEditor.h mxIconInstaller.h mxInspectionsImprovingEditor.h
+${OBJS_DIR}/mxPreferenceWindow.o: mxPreferenceWindow.cpp mxPreferenceWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxHelpWindow.h mxUtils.h mxMainWindow.h mxSource.h mxBitmapButton.h mxArt.h ids.h CodeHelper.h mxSizers.h mxEnumerationEditor.h mxToolbarEditor.h mxMessageDialog.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxWelcomePanel.h Language.h lang_index_macros.h mxSingleton.h DebugManager.h Autocoder.h mxColoursEditor.h mxIconInstaller.h mxInspectionsImprovingEditor.h
 	${GPP} ${FLAGS} -c mxPreferenceWindow.cpp -o $@
 
-${OBJS_DIR}/mxGotoLineWindow.o: mxGotoLineWindow.cpp mxGotoLineWindow.h mxBitmapButton.h mxArt.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxGotoLineWindow.o: mxGotoLineWindow.cpp mxGotoLineWindow.h mxBitmapButton.h mxArt.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxGotoLineWindow.cpp -o $@
 
-${OBJS_DIR}/mxOpenSharedWindow.o: mxOpenSharedWindow.cpp mxOpenSharedWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h ids.h mxUtils.h ShareManager.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxSizers.h mxHelpWindow.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxOpenSharedWindow.o: mxOpenSharedWindow.cpp mxOpenSharedWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ids.h mxUtils.h ShareManager.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxSizers.h mxHelpWindow.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxOpenSharedWindow.cpp -o $@
 
-${OBJS_DIR}/mxProjectConfigWindow.o: mxProjectConfigWindow.cpp mxProjectConfigWindow.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h widgetDisabler.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxHelpWindow.h ids.h mxMainWindow.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxLongTextEditor.h mxEnumerationEditor.h mxSizers.h mxExtraStepWindow.h mxOutputView.h Language.h lang_index_macros.h mxLibToBuildWindow.h mxTextDialog.h mxToolchainOptions.h
+${OBJS_DIR}/mxProjectConfigWindow.o: mxProjectConfigWindow.cpp mxProjectConfigWindow.h widgetDisabler.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxHelpWindow.h ids.h mxMainWindow.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxLongTextEditor.h mxEnumerationEditor.h mxSizers.h mxExtraStepWindow.h mxOutputView.h Language.h lang_index_macros.h mxLibToBuildWindow.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxTextDialog.h mxToolchainOptions.h
 	${GPP} ${FLAGS} -c mxProjectConfigWindow.cpp -o $@
 
-${OBJS_DIR}/mxShareSourceWindow.o: mxShareSourceWindow.cpp mxShareSourceWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h ids.h mxUtils.h ShareManager.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxSizers.h mxHelpWindow.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxShareSourceWindow.o: mxShareSourceWindow.cpp mxShareSourceWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ids.h mxUtils.h ShareManager.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxSizers.h mxHelpWindow.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxShareSourceWindow.cpp -o $@
 
-${OBJS_DIR}/mxTipsWindow.o: mxTipsWindow.cpp mxTipsWindow.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxUtils.h mxBitmapButton.h mxArt.h version.h mxMainWindow.h mxHelpWindow.h mxSizers.h mxMessageDialog.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxTipsWindow.o: mxTipsWindow.cpp mxTipsWindow.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxBitmapButton.h mxArt.h version.h mxHelpWindow.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxTipsWindow.cpp -o $@
 
-${OBJS_DIR}/mxUtils.o: mxUtils.cpp ids.h mxUtils.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxBitmapButton.h mxArt.h mxSizers.h mxMessageDialog.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxMainWindow.h Language.h lang_index_macros.h mxLongTextEditor.h mxEnumerationEditor.h
+${OBJS_DIR}/mxUtils.o: mxUtils.cpp ids.h mxUtils.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxBitmapButton.h mxArt.h mxSizers.h mxMessageDialog.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxMainWindow.h Language.h lang_index_macros.h mxLongTextEditor.h mxEnumerationEditor.h
 	${GPP} ${FLAGS} -c mxUtils.cpp -o $@
 
-${OBJS_DIR}/mxHelpWindow.o: mxHelpWindow.cpp mxHelpWindow.h mxUtils.h ids.h mxMainWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxMessageDialog.h mxBitmapButton.h mxArt.h mxSizers.h
+${OBJS_DIR}/mxHelpWindow.o: mxHelpWindow.cpp mxHelpWindow.h mxUtils.h ids.h mxMainWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMessageDialog.h mxSizers.h mxArt.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxHelpWindow.cpp -o $@
 
-${OBJS_DIR}/DebugManager.o: DebugManager.cpp DebugManager.h BreakPointInfo.h AutoList.h mxCompiler.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxMainWindow.h mxMessageDialog.h mxBitmapButton.h mxArt.h mxUtils.h mxSource.h error_recovery.h ProjectManager.h Toolchain.h ids.h Parser.h CodeHelper.h paf_defs.h mxInspectionExplorer.h mxExternInspection.h mxBreakList.h mxInspectionMatrix.h mxArgumentsDialog.h mxApplication.h Language.h lang_index_macros.h mxOSD.h winStuff.h
+${OBJS_DIR}/DebugManager.o: DebugManager.cpp DebugManager.h mxCompiler.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMainWindow.h mxMessageDialog.h mxUtils.h mxSource.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h ids.h Parser.h paf_defs.h mxInspectionExplorer.h mxExternInspection.h mxBreakList.h mxInspectionMatrix.h mxArgumentsDialog.h mxApplication.h Language.h lang_index_macros.h mxOSD.h winStuff.h mxThreadGrid.h
 	${GPP} ${FLAGS} -c DebugManager.cpp -o $@
 
-${OBJS_DIR}/mxFlowWindow.o: mxFlowWindow.cpp mxFlowWindow.h mxFlowCanvas.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h mxMainWindow.h mxMessageDialog.h mxBitmapButton.h mxArt.h mxSizers.h
+${OBJS_DIR}/mxFlowWindow.o: mxFlowWindow.cpp mxFlowWindow.h mxFlowCanvas.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxMessageDialog.h mxSizers.h
 	${GPP} ${FLAGS} -c mxFlowWindow.cpp -o $@
 
-${OBJS_DIR}/mxDropTarget.o: mxDropTarget.cpp mxDropTarget.h mxUtils.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h
+${OBJS_DIR}/mxDropTarget.o: mxDropTarget.cpp mxDropTarget.h mxUtils.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h
 	${GPP} ${FLAGS} -c mxDropTarget.cpp -o $@
 
 ${OBJS_DIR}/mxStatusBar.o: mxStatusBar.cpp mxStatusBar.h
 	${GPP} ${FLAGS} -c mxStatusBar.cpp -o $@
 
-${OBJS_DIR}/mxMakefileDialog.o: mxMakefileDialog.cpp mxMakefileDialog.h ids.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxHelpWindow.h mxBitmapButton.h mxArt.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxMakefileDialog.o: mxMakefileDialog.cpp mxMakefileDialog.h ids.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxHelpWindow.h mxBitmapButton.h mxArt.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxMakefileDialog.cpp -o $@
 
-${OBJS_DIR}/mxArt.o: mxArt.cpp mxArt.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h
+${OBJS_DIR}/mxArt.o: mxArt.cpp mxArt.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h
 	${GPP} ${FLAGS} -c mxArt.cpp -o $@
 
 ${OBJS_DIR}/mxBitmapButton.o: mxBitmapButton.cpp mxBitmapButton.h mxArt.h mxUtils.h
 	${GPP} ${FLAGS} -c mxBitmapButton.cpp -o $@
 
-${OBJS_DIR}/mxMessageDialog.o: mxMessageDialog.cpp mxMessageDialog.h mxBitmapButton.h mxArt.h mxSizers.h mxSplashScreen.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxMessageDialog.o: mxMessageDialog.cpp mxMessageDialog.h mxSizers.h mxSplashScreen.h Language.h lang_index_macros.h mxBitmapButton.h mxArt.h mxMainWindow.h
 	${GPP} ${FLAGS} -c mxMessageDialog.cpp -o $@
 
-${OBJS_DIR}/mxFindDialog.o: mxFindDialog.cpp mxFindDialog.h mxUtils.h mxBitmapButton.h mxArt.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxMainWindow.h mxMessageDialog.h ids.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxHelpWindow.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxFindDialog.o: mxFindDialog.cpp mxFindDialog.h mxUtils.h mxBitmapButton.h mxArt.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMainWindow.h mxMessageDialog.h ids.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxHelpWindow.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxFindDialog.cpp -o $@
 
-${OBJS_DIR}/mxGotoFunctionDialog.o: mxGotoFunctionDialog.cpp mxGotoFunctionDialog.h mxBitmapButton.h mxArt.h Parser.h CodeHelper.h mxUtils.h paf_defs.h parserData.h mxMainWindow.h ids.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxGotoFunctionDialog.o: mxGotoFunctionDialog.cpp mxGotoFunctionDialog.h mxBitmapButton.h mxArt.h Parser.h paf_defs.h parserData.h ids.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxGotoFunctionDialog.cpp -o $@
 
-${OBJS_DIR}/mxGotoFileDialog.o: mxGotoFileDialog.cpp mxBitmapButton.h mxArt.h mxGotoFileDialog.h mxSizers.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h mxMainWindow.h ids.h Language.h lang_index_macros.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h
+${OBJS_DIR}/mxGotoFileDialog.o: mxGotoFileDialog.cpp mxGotoFileDialog.h mxBitmapButton.h mxArt.h mxSizers.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h mxMainWindow.h ids.h Language.h lang_index_macros.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h
 	${GPP} ${FLAGS} -c mxGotoFileDialog.cpp -o $@
 
-${OBJS_DIR}/mxInspectionGrid.o: mxInspectionGrid.cpp mxInspectionGrid.h mxUtils.h DebugManager.h BreakPointInfo.h AutoList.h mxSource.h ConfigManager.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h ids.h mxMainWindow.h mxInspectionExplorer.h mxExternInspection.h mxMessageDialog.h mxBitmapButton.h mxArt.h mxInspectionMatrix.h Language.h lang_index_macros.h mxTextDialog.h mxInspectionPrint.h
+${OBJS_DIR}/mxInspectionGrid.o: mxInspectionGrid.cpp mxInspectionGrid.h mxUtils.h DebugManager.h mxSource.h ConfigManager.h mxBacktraceGrid.h ids.h mxMainWindow.h mxInspectionExplorer.h mxExternInspection.h mxMessageDialog.h mxInspectionMatrix.h Language.h lang_index_macros.h mxTextDialog.h mxInspectionPrint.h
 	${GPP} ${FLAGS} -c mxInspectionGrid.cpp -o $@
 
-${OBJS_DIR}/mxBacktraceGrid.o: mxBacktraceGrid.cpp mxBacktraceGrid.h DebugManager.h BreakPointInfo.h AutoList.h mxSource.h ConfigManager.h mxInspectionGrid.h mxThreadGrid.h error_recovery.h ids.h mxMainWindow.h mxInspectionExplorer.h mxExternInspection.h Language.h lang_index_macros.h mxMessageDialog.h mxBitmapButton.h mxArt.h
+${OBJS_DIR}/mxBacktraceGrid.o: mxBacktraceGrid.cpp mxBacktraceGrid.h DebugManager.h mxSource.h ConfigManager.h mxInspectionGrid.h ids.h mxMainWindow.h mxInspectionExplorer.h mxExternInspection.h Language.h lang_index_macros.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c mxBacktraceGrid.cpp -o $@
 
-${OBJS_DIR}/CodeExporter.o: CodeExporter.cpp CodeExporter.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxMainWindow.h mxUtils.h Language.h lang_index_macros.h
+${OBJS_DIR}/CodeExporter.o: CodeExporter.cpp CodeExporter.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMainWindow.h mxUtils.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c CodeExporter.cpp -o $@
 
-${OBJS_DIR}/mxInspectionExplorer.o: mxInspectionExplorer.cpp mxInspectionExplorer.h mxExternInspection.h DebugManager.h BreakPointInfo.h AutoList.h ids.h mxBitmapButton.h mxArt.h mxUtils.h mxSizers.h
+${OBJS_DIR}/mxInspectionExplorer.o: mxInspectionExplorer.cpp mxInspectionExplorer.h mxExternInspection.h ids.h mxBitmapButton.h mxArt.h DebugManager.h mxUtils.h mxSizers.h
 	${GPP} ${FLAGS} -c mxInspectionExplorer.cpp -o $@
 
-${OBJS_DIR}/mxExeInfo.o: mxExeInfo.cpp mxExeInfo.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxMainWindow.h mxUtils.h mxBitmapButton.h mxArt.h mxMessageDialog.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h ids.h mxSizers.h mxHelpWindow.h Parser.h CodeHelper.h paf_defs.h Language.h lang_index_macros.h mxCompiler.h
+${OBJS_DIR}/mxExeInfo.o: mxExeInfo.cpp mxExeInfo.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxBitmapButton.h mxArt.h mxMessageDialog.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h ids.h mxSizers.h mxHelpWindow.h Parser.h paf_defs.h Language.h lang_index_macros.h mxCompiler.h
 	${GPP} ${FLAGS} -c mxExeInfo.cpp -o $@
 
-${OBJS_DIR}/mxBreakList.o: mxBreakList.cpp mxBreakList.h mxMainWindow.h mxBitmapButton.h mxArt.h DebugManager.h BreakPointInfo.h AutoList.h mxBreakOptions.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h ProjectManager.h mxUtils.h Toolchain.h ids.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxBreakList.o: mxBreakList.cpp mxBreakList.h mxMainWindow.h mxBitmapButton.h mxArt.h DebugManager.h mxBreakOptions.h BreakPointInfo.h AutoList.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ProjectManager.h mxUtils.h Toolchain.h ids.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxBreakList.cpp -o $@
 
-${OBJS_DIR}/mxUpdatesChecker.o: mxUpdatesChecker.cpp mxUpdatesChecker.h ids.h mxMainWindow.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxBitmapButton.h mxArt.h mxHelpWindow.h mxSizers.h Language.h lang_index_macros.h version.h mxTextDialog.h
+${OBJS_DIR}/mxUpdatesChecker.o: mxUpdatesChecker.cpp mxUpdatesChecker.h ids.h mxMainWindow.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxBitmapButton.h mxArt.h mxHelpWindow.h mxSizers.h Language.h lang_index_macros.h version.h mxTextDialog.h
 	${GPP} ${FLAGS} -c mxUpdatesChecker.cpp -o $@
 
-${OBJS_DIR}/mxBreakOptions.o: mxBreakOptions.cpp mxBreakOptions.h mxSizers.h mxMainWindow.h mxUtils.h DebugManager.h BreakPointInfo.h AutoList.h ids.h Language.h lang_index_macros.h ProjectManager.h Toolchain.h mxHelpWindow.h mxBitmapButton.h mxArt.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxMessageDialog.h
+${OBJS_DIR}/mxBreakOptions.o: mxBreakOptions.cpp mxBreakOptions.h mxSizers.h mxMainWindow.h mxUtils.h DebugManager.h ids.h Language.h lang_index_macros.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxHelpWindow.h mxBitmapButton.h mxArt.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c mxBreakOptions.cpp -o $@
 
 ${OBJS_DIR}/mxOSD.o: mxOSD.cpp mxOSD.h mxMainWindow.h ids.h
 	${GPP} ${FLAGS} -c mxOSD.cpp -o $@
 
-${OBJS_DIR}/mxInspectionMatrix.o: mxInspectionMatrix.cpp mxInspectionMatrix.h mxExternInspection.h DebugManager.h BreakPointInfo.h AutoList.h mxMainWindow.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxSizers.h mxTextDialog.h
+${OBJS_DIR}/mxInspectionMatrix.o: mxInspectionMatrix.cpp mxInspectionMatrix.h mxExternInspection.h DebugManager.h mxMainWindow.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxSizers.h mxTextDialog.h
 	${GPP} ${FLAGS} -c mxInspectionMatrix.cpp -o $@
 
-${OBJS_DIR}/mxDrawClasses.o: mxDrawClasses.cpp mxDrawClasses.h mxMainWindow.h parserData.h Parser.h CodeHelper.h mxUtils.h paf_defs.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxMessageDialog.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxSource.h error_recovery.h mxSizers.h Language.h lang_index_macros.h mxOSD.h
+${OBJS_DIR}/mxDrawClasses.o: mxDrawClasses.cpp mxDrawClasses.h mxMainWindow.h parserData.h Parser.h paf_defs.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMessageDialog.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h mxSource.h mxSizers.h Language.h lang_index_macros.h mxOSD.h
 	${GPP} ${FLAGS} -c mxDrawClasses.cpp -o $@
 
-${OBJS_DIR}/mxFlowCanvas.o: mxFlowCanvas.cpp mxFlowCanvas.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h mxMessageDialog.h mxBitmapButton.h mxArt.h
+${OBJS_DIR}/mxFlowCanvas.o: mxFlowCanvas.cpp mxFlowCanvas.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c mxFlowCanvas.cpp -o $@
 
 ${OBJS_DIR}/mxArgumentsDialog.o: mxArgumentsDialog.cpp mxArgumentsDialog.h mxBitmapButton.h mxArt.h ids.h mxSizers.h mxLongTextEditor.h mxEnumerationEditor.h Language.h lang_index_macros.h
@@ -159,121 +159,121 @@ ${OBJS_DIR}/mxArgumentsDialog.o: mxArgumentsDialog.cpp mxArgumentsDialog.h mxBit
 ${OBJS_DIR}/mxEnumerationEditor.o: mxEnumerationEditor.cpp mxEnumerationEditor.h mxUtils.h ids.h mxBitmapButton.h mxArt.h mxListItemEditor.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxEnumerationEditor.cpp -o $@
 
-${OBJS_DIR}/mxLongTextEditor.o: mxLongTextEditor.cpp mxLongTextEditor.h ids.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxLongTextEditor.o: mxLongTextEditor.cpp mxLongTextEditor.h ids.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxLongTextEditor.cpp -o $@
 
-${OBJS_DIR}/mxListItemEditor.o: mxListItemEditor.cpp mxListItemEditor.h ids.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxListItemEditor.o: mxListItemEditor.cpp mxListItemEditor.h ids.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxListItemEditor.cpp -o $@
 
 ${OBJS_DIR}/mxSizers.o: mxSizers.cpp mxSizers.h
 	${GPP} ${FLAGS} -c mxSizers.cpp -o $@
 
-${OBJS_DIR}/error_recovery.o: error_recovery.cpp error_recovery.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h Parser.h CodeHelper.h paf_defs.h DebugManager.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxMainWindow.h mxMessageDialog.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxCompiler.h
+${OBJS_DIR}/error_recovery.o: error_recovery.cpp error_recovery.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h Parser.h paf_defs.h DebugManager.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMainWindow.h mxMessageDialog.h Language.h lang_index_macros.h mxCompiler.h
 	${GPP} ${FLAGS} -c error_recovery.cpp -o $@
 
-${OBJS_DIR}/mxErrorRecovering.o: mxErrorRecovering.cpp mxErrorRecovering.h ids.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxSizers.h mxMainWindow.h mxUtils.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxSource.h error_recovery.h mxMessageDialog.h Parser.h CodeHelper.h paf_defs.h mxWelcomePanel.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxErrorRecovering.o: mxErrorRecovering.cpp mxErrorRecovering.h ids.h mxBitmapButton.h mxArt.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxSizers.h mxMainWindow.h mxUtils.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxSource.h mxMessageDialog.h Parser.h paf_defs.h mxWelcomePanel.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxErrorRecovering.cpp -o $@
 
-${OBJS_DIR}/mxDiffWindow.o: mxDiffWindow.cpp mxDiffWindow.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h mxMessageDialog.h ids.h mxHelpWindow.h Language.h lang_index_macros.h mxDiffSideBar.h Parser.h CodeHelper.h paf_defs.h
+${OBJS_DIR}/mxDiffWindow.o: mxDiffWindow.cpp mxDiffWindow.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxMessageDialog.h ids.h mxHelpWindow.h Language.h lang_index_macros.h mxDiffSideBar.h Parser.h paf_defs.h
 	${GPP} ${FLAGS} -c mxDiffWindow.cpp -o $@
 
-${OBJS_DIR}/mxDoxyDialog.o: mxDoxyDialog.cpp mxDoxyDialog.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxHelpWindow.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxDoxyDialog.o: mxDoxyDialog.cpp mxDoxyDialog.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxHelpWindow.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxDoxyDialog.cpp -o $@
 
-${OBJS_DIR}/mxOutputView.o: mxOutputView.cpp mxOutputView.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h ids.h mxUtils.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxOutputView.o: mxOutputView.cpp mxOutputView.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ids.h mxUtils.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxOutputView.cpp -o $@
 
-${OBJS_DIR}/mxSplashScreen.o: mxSplashScreen.cpp mxSplashScreen.h mxApplication.h mxUtils.h
+${OBJS_DIR}/mxSplashScreen.o: mxSplashScreen.cpp mxSplashScreen.h mxApplication.h
 	${GPP} ${FLAGS} -c mxSplashScreen.cpp -o $@
 
-${OBJS_DIR}/mxToolbarEditor.o: mxToolbarEditor.cpp mxToolbarEditor.h mxPreferenceWindow.h mxBitmapButton.h mxArt.h mxSizers.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxUtils.h mxMainWindow.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxToolbarEditor.o: mxToolbarEditor.cpp mxToolbarEditor.h mxPreferenceWindow.h mxBitmapButton.h mxArt.h mxSizers.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h mxMainWindow.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxToolbarEditor.cpp -o $@
 
-${OBJS_DIR}/mxProjectGeneralConfig.o: mxProjectGeneralConfig.cpp mxProjectGeneralConfig.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxHelpWindow.h CodeHelper.h mxSource.h error_recovery.h mxMessageDialog.h Language.h lang_index_macros.h Autocoder.h mxMultipleChoiceEditor.h
+${OBJS_DIR}/mxProjectGeneralConfig.o: mxProjectGeneralConfig.cpp mxProjectGeneralConfig.h mxMainWindow.h mxBitmapButton.h mxArt.h mxSizers.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h ids.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxHelpWindow.h CodeHelper.h mxSource.h mxMessageDialog.h Language.h lang_index_macros.h Autocoder.h mxMultipleChoiceEditor.h
 	${GPP} ${FLAGS} -c mxProjectGeneralConfig.cpp -o $@
 
-${OBJS_DIR}/mxWxfbInheriter.o: mxWxfbInheriter.cpp mxWxfbInheriter.h mxMainWindow.h parserData.h Parser.h CodeHelper.h mxUtils.h paf_defs.h mxSizers.h mxBitmapButton.h mxArt.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxMessageDialog.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxWxfbInheriter.o: mxWxfbInheriter.cpp mxWxfbInheriter.h parserData.h Parser.h paf_defs.h mxSizers.h mxBitmapButton.h mxArt.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h mxMessageDialog.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxWxfbInheriter.cpp -o $@
 
-${OBJS_DIR}/mxExtraStepWindow.o: mxExtraStepWindow.cpp mxExtraStepWindow.h mxMainWindow.h mxUtils.h ids.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxArt.h mxSizers.h mxBitmapButton.h mxHelpWindow.h mxMessageDialog.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxExtraStepWindow.o: mxExtraStepWindow.cpp mxExtraStepWindow.h mxUtils.h ids.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxArt.h mxSizers.h mxBitmapButton.h mxHelpWindow.h mxMessageDialog.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxExtraStepWindow.cpp -o $@
 
-${OBJS_DIR}/mxPrintOut.o: mxPrintOut.cpp mxPrintOut.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxMessageDialog.h mxBitmapButton.h mxArt.h mxMainWindow.h
+${OBJS_DIR}/mxPrintOut.o: mxPrintOut.cpp mxPrintOut.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c mxPrintOut.cpp -o $@
 
 ${OBJS_DIR}/mxTreeCtrl.o: mxTreeCtrl.cpp mxTreeCtrl.h mxMainWindow.h
 	${GPP} ${FLAGS} -c mxTreeCtrl.cpp -o $@
 
-${OBJS_DIR}/mxWelcomePanel.o: mxWelcomePanel.cpp mxWelcomePanel.h mxMainWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxUtils.h version.h mxNewWizard.h mxTipsWindow.h mxArt.h mxOpenRecentDialog.h Language.h lang_index_macros.h mxApplication.h mxOSD.h mxHelpWindow.h
+${OBJS_DIR}/mxWelcomePanel.o: mxWelcomePanel.cpp mxWelcomePanel.h mxMainWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h version.h mxNewWizard.h mxTipsWindow.h mxArt.h mxOpenRecentDialog.h Language.h lang_index_macros.h mxApplication.h mxHelpWindow.h
 	${GPP} ${FLAGS} -c mxWelcomePanel.cpp -o $@
 
-${OBJS_DIR}/mxSourceProperties.o: mxSourceProperties.cpp mxMainWindow.h mxSourceProperties.h mxBitmapButton.h mxArt.h mxSizers.h mxUtils.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h Parser.h CodeHelper.h paf_defs.h
+${OBJS_DIR}/mxSourceProperties.o: mxSourceProperties.cpp mxMainWindow.h mxSourceProperties.h mxBitmapButton.h mxArt.h mxSizers.h mxUtils.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h Parser.h paf_defs.h
 	${GPP} ${FLAGS} -c mxSourceProperties.cpp -o $@
 
-${OBJS_DIR}/mxOpenRecentDialog.o: mxOpenRecentDialog.cpp mxOpenRecentDialog.h mxBitmapButton.h mxArt.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h ids.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxSizers.h mxMessageDialog.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxOpenRecentDialog.o: mxOpenRecentDialog.cpp mxOpenRecentDialog.h mxBitmapButton.h mxArt.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h ids.h mxMainWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxSizers.h mxMessageDialog.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxOpenRecentDialog.cpp -o $@
 
 ${OBJS_DIR}/Language.o: Language.cpp Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c Language.cpp -o $@
 
-${OBJS_DIR}/mxSingleton.o: mxSingleton.cpp mxSingleton.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxMainWindow.h
+${OBJS_DIR}/mxSingleton.o: mxSingleton.cpp mxSingleton.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMainWindow.h
 	${GPP} ${FLAGS} -c mxSingleton.cpp -o $@
 
-${OBJS_DIR}/mxValgrindOuput.o: mxValgrindOuput.cpp mxValgrindOuput.h ids.h Language.h lang_index_macros.h mxMessageDialog.h mxBitmapButton.h mxArt.h mxMainWindow.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxCompiler.h
+${OBJS_DIR}/mxValgrindOuput.o: mxValgrindOuput.cpp mxValgrindOuput.h ids.h Language.h lang_index_macros.h mxMessageDialog.h mxMainWindow.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxCompiler.h mxArt.h
 	${GPP} ${FLAGS} -c mxValgrindOuput.cpp -o $@
 
-${OBJS_DIR}/mxOpinionWindow.o: mxOpinionWindow.cpp mxOpinionWindow.h mxMainWindow.h mxSizers.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxOSD.h version.h mxUtils.h Language.h lang_index_macros.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxTextDialog.h
+${OBJS_DIR}/mxOpinionWindow.o: mxOpinionWindow.cpp mxOpinionWindow.h mxSizers.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxOSD.h version.h mxUtils.h Language.h lang_index_macros.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxTextDialog.h
 	${GPP} ${FLAGS} -c mxOpinionWindow.cpp -o $@
 
-${OBJS_DIR}/mxThreadGrid.o: mxThreadGrid.cpp mxThreadGrid.h DebugManager.h BreakPointInfo.h AutoList.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h error_recovery.h ids.h mxMainWindow.h mxInspectionExplorer.h mxExternInspection.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxThreadGrid.o: mxThreadGrid.cpp mxThreadGrid.h DebugManager.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxThreadGrid.cpp -o $@
 
 ${OBJS_DIR}/mxTextDialog.o: mxTextDialog.cpp mxTextDialog.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxSizers.h
 	${GPP} ${FLAGS} -c mxTextDialog.cpp -o $@
 
-${OBJS_DIR}/mxMultipleFileChooser.o: mxMultipleFileChooser.cpp ids.h mxMultipleFileChooser.h mxMainWindow.h Language.h lang_index_macros.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxBitmapButton.h mxArt.h mxSizers.h mxMessageDialog.h mxHidenPanel.h Parser.h CodeHelper.h paf_defs.h mxOSD.h
+${OBJS_DIR}/mxMultipleFileChooser.o: mxMultipleFileChooser.cpp ids.h mxMultipleFileChooser.h mxMainWindow.h Language.h lang_index_macros.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxBitmapButton.h mxArt.h mxSizers.h mxMessageDialog.h mxHidenPanel.h Parser.h paf_defs.h mxOSD.h
 	${GPP} ${FLAGS} -c mxMultipleFileChooser.cpp -o $@
 
-${OBJS_DIR}/mxCompiler.o: mxCompiler.cpp mxCompiler.h ids.h Language.h lang_index_macros.h mxMainWindow.h Parser.h CodeHelper.h mxUtils.h paf_defs.h mxMessageDialog.h mxBitmapButton.h mxArt.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h DebugManager.h mxSource.h error_recovery.h
+${OBJS_DIR}/mxCompiler.o: mxCompiler.cpp mxCompiler.h ids.h Language.h lang_index_macros.h mxMainWindow.h Parser.h paf_defs.h mxMessageDialog.h ProjectManager.h mxUtils.h Toolchain.h AutoList.h BreakPointInfo.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h DebugManager.h mxSource.h
 	${GPP} ${FLAGS} -c mxCompiler.cpp -o $@
 
-${OBJS_DIR}/Autocoder.o: Autocoder.cpp Autocoder.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h mxUtils.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h
+${OBJS_DIR}/Autocoder.o: Autocoder.cpp Autocoder.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxUtils.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h
 	${GPP} ${FLAGS} -c Autocoder.cpp -o $@
 
-${OBJS_DIR}/mxIconInstaller.o: mxIconInstaller.cpp mxIconInstaller.h mxSizers.h mxUtils.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxMessageDialog.h
+${OBJS_DIR}/mxIconInstaller.o: mxIconInstaller.cpp mxIconInstaller.h mxSizers.h mxUtils.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c mxIconInstaller.cpp -o $@
 
-${OBJS_DIR}/mxInspectionPrint.o: mxInspectionPrint.cpp mxInspectionPrint.h mxExternInspection.h DebugManager.h BreakPointInfo.h AutoList.h mxMainWindow.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxSizers.h mxTextDialog.h
+${OBJS_DIR}/mxInspectionPrint.o: mxInspectionPrint.cpp mxInspectionPrint.h mxExternInspection.h DebugManager.h mxBitmapButton.h mxArt.h mxSizers.h
 	${GPP} ${FLAGS} -c mxInspectionPrint.cpp -o $@
 
-${OBJS_DIR}/mxExternInspection.o: mxExternInspection.cpp mxExternInspection.h mxMainWindow.h DebugManager.h BreakPointInfo.h AutoList.h
+${OBJS_DIR}/mxExternInspection.o: mxExternInspection.cpp mxExternInspection.h mxMainWindow.h DebugManager.h
 	${GPP} ${FLAGS} -c mxExternInspection.cpp -o $@
 
-${OBJS_DIR}/mxListSharedWindow.o: mxListSharedWindow.cpp mxListSharedWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h ids.h mxUtils.h ShareManager.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxSizers.h mxHelpWindow.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxListSharedWindow.o: mxListSharedWindow.cpp mxListSharedWindow.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ids.h ShareManager.h mxBitmapButton.h mxArt.h mxMessageDialog.h mxSizers.h mxHelpWindow.h mxUtils.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxListSharedWindow.cpp -o $@
 
-${OBJS_DIR}/mxComplementInstallerWindow.o: mxComplementInstallerWindow.cpp mxComplementInstallerWindow.h mxMainWindow.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxUtils.h ids.h mxSizers.h mxHelpWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxMessageDialog.h
+${OBJS_DIR}/mxComplementInstallerWindow.o: mxComplementInstallerWindow.cpp mxComplementInstallerWindow.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxUtils.h ids.h mxSizers.h mxHelpWindow.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxMessageDialog.h
 	${GPP} ${FLAGS} -c mxComplementInstallerWindow.cpp -o $@
 
-${OBJS_DIR}/mxCppCheckConfigDialog.o: mxCppCheckConfigDialog.cpp mxCppCheckConfigDialog.h ids.h mxUtils.h mxSizers.h mxArt.h mxBitmapButton.h Language.h lang_index_macros.h ProjectManager.h BreakPointInfo.h AutoList.h Toolchain.h mxEnumerationEditor.h mxMultipleChoiceEditor.h mxHelpWindow.h
+${OBJS_DIR}/mxCppCheckConfigDialog.o: mxCppCheckConfigDialog.cpp mxCppCheckConfigDialog.h ids.h mxUtils.h mxSizers.h mxArt.h mxBitmapButton.h Language.h lang_index_macros.h ProjectManager.h Toolchain.h AutoList.h BreakPointInfo.h mxEnumerationEditor.h mxMultipleChoiceEditor.h mxHelpWindow.h
 	${GPP} ${FLAGS} -c mxCppCheckConfigDialog.cpp -o $@
 
 ${OBJS_DIR}/mxMultipleChoiceEditor.o: mxMultipleChoiceEditor.cpp mxMultipleChoiceEditor.h mxUtils.h
 	${GPP} ${FLAGS} -c mxMultipleChoiceEditor.cpp -o $@
 
-${OBJS_DIR}/mxValgrindConfigDialog.o: mxValgrindConfigDialog.cpp mxValgrindConfigDialog.h mxMainWindow.h mxUtils.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h ids.h mxSizers.h mxHelpWindow.h
+${OBJS_DIR}/mxValgrindConfigDialog.o: mxValgrindConfigDialog.cpp mxValgrindConfigDialog.h mxUtils.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h ids.h mxSizers.h mxHelpWindow.h
 	${GPP} ${FLAGS} -c mxValgrindConfigDialog.cpp -o $@
 
-${OBJS_DIR}/BreakPointInfo.o: BreakPointInfo.cpp BreakPointInfo.h AutoList.h ProjectManager.h mxUtils.h Toolchain.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h error_recovery.h
+${OBJS_DIR}/BreakPointInfo.o: BreakPointInfo.cpp BreakPointInfo.h AutoList.h ProjectManager.h mxUtils.h Toolchain.h mxSource.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h
 	${GPP} ${FLAGS} -c BreakPointInfo.cpp -o $@
 
-${OBJS_DIR}/Toolchain.o: Toolchain.cpp Toolchain.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h ProjectManager.h BreakPointInfo.h AutoList.h
+${OBJS_DIR}/Toolchain.o: Toolchain.cpp Toolchain.h mxUtils.h ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h ProjectManager.h AutoList.h BreakPointInfo.h
 	${GPP} ${FLAGS} -c Toolchain.cpp -o $@
 
-${OBJS_DIR}/mxInspectionsImprovingEditor.o: mxInspectionsImprovingEditor.cpp ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxThreadGrid.h mxInspectionsImprovingEditor.h mxBitmapButton.h mxArt.h ids.h mxSizers.h Language.h lang_index_macros.h
+${OBJS_DIR}/mxInspectionsImprovingEditor.o: mxInspectionsImprovingEditor.cpp ConfigManager.h mxInspectionGrid.h mxBacktraceGrid.h mxInspectionsImprovingEditor.h mxBitmapButton.h mxArt.h ids.h mxSizers.h Language.h lang_index_macros.h
 	${GPP} ${FLAGS} -c mxInspectionsImprovingEditor.cpp -o $@
 
-${OBJS_DIR}/mxToolchainOptions.o: mxToolchainOptions.cpp mxToolchainOptions.h ProjectManager.h mxUtils.h BreakPointInfo.h AutoList.h Toolchain.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxSizers.h
+${OBJS_DIR}/mxToolchainOptions.o: mxToolchainOptions.cpp mxToolchainOptions.h Toolchain.h mxBitmapButton.h mxArt.h Language.h lang_index_macros.h mxSizers.h ProjectManager.h mxUtils.h AutoList.h BreakPointInfo.h
 	${GPP} ${FLAGS} -c mxToolchainOptions.cpp -o $@
 
 ${OBJS_DIR}/widgetDisabler.o: widgetDisabler.cpp widgetDisabler.h mxUtils.h

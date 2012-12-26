@@ -1,5 +1,7 @@
 ZinjaI todo
 
+reacomodar markers en las ediciones por lineas (ctrl+L, ctrl+T, Ctrl+Shift+T)
+
 posibles bugs:
 	revisar lo de agregar .cpp al guardar
 	revisar el icono que pone a la nueva pestaña al duplicar vista

@@ -1,6 +1,7 @@
 #include <wx/clipbrd.h>
 #include <wx/encconv.h>
 #include <iostream>
+#include <wx/file.h>
 using namespace std;
 #include "mxSource.h"
 #include "mxUtils.h"
