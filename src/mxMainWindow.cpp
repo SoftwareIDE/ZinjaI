@@ -1,3 +1,4 @@
+#include <wx/aui/aui.h> // si no hago este include antes del de imaglist no enlaza en windows por "undefined reference to wxGenericImageList::..." (wft?)
 #include <wx/imaglist.h>
 #include <wx/artprov.h>
 #include <wx/txtstrm.h>
