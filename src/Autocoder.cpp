@@ -211,11 +211,11 @@ bool Autocoder::Apply(mxSource *src, auto_code *ac, bool args) {
 					if (r!=wxNOT_FOUND) {
 						if (li>1&&code[li-1]=='#'&&code[li-2]=='#') { 
 							li-=2; 
-							code=code.Mid(0,li)+"\""+array[r]+"\""+code.Mid(i);
+							code=code.Mid(0,li)+array[r]+code.Mid(i);
 							i+=array[r].Len()+2-(i-li);
 						} else if (li>0&&code[li-1]=='#') { 
 							li--; 
-							code=code.Mid(0,li)+array[r]+code.Mid(i);
+							code=code.Mid(0,li)+"\""+array[r]+"\""+code.Mid(i);
 							i+=array[r].Len()+2-(i-li);
 						} else {
 							code=code.Mid(0,li)+array[r]+code.Mid(i);
