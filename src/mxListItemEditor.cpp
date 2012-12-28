@@ -54,7 +54,7 @@ mxListItemEditor::mxListItemEditor(wxWindow *parent, wxString title, wxListBox *
 	my_text->SetSelection(0,my_text->GetLastPosition());
 	my_text->SetFocus();
 	
-	SetSizer(mid_sizer);
+	SetSizerAndFit(mid_sizer);
 	ShowModal();
 	
 }

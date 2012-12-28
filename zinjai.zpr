@@ -11,7 +11,7 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=../zinjai
-current_source=src/mxMainWindow.cpp
+current_source=src/version.h
 path_char=/
 [source]
 path=src/ProjectManager.cpp
@@ -51,7 +51,6 @@ marker=3280
 marker=2605
 marker=2189
 marker=2047
-open=true
 [source]
 path=src/mxSource.cpp
 cursor=107895
@@ -78,7 +77,8 @@ path=src/Parser.cpp
 cursor=18087
 [source]
 path=src/mxNewWizard.cpp
-cursor=13283
+cursor=13539
+open=true
 [source]
 path=src/CodeHelper.cpp
 cursor=23206
@@ -392,7 +392,7 @@ path=src/paf_defs.h
 cursor=0
 [header]
 path=src/mxHelpWindow.h
-cursor=1098
+cursor=1256
 [header]
 path=src/DebugManager.h
 cursor=122
@@ -633,6 +633,7 @@ cursor=531
 [other]
 path=src/version.h
 cursor=24
+open=true
 [other]
 path=todo.txt
 cursor=15
