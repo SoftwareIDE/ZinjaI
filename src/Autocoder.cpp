@@ -209,10 +209,13 @@ bool Autocoder::Apply(mxSource *src, auto_code *ac, bool args) {
 				if (li!=i) {
 					r=ac->args.Index(code.Mid(li,i-li));
 					if (r!=wxNOT_FOUND) {
-						if (i&&code[li-1]=='#') i--;
-						if (i&&code[li-1]=='#') { 
-							i--; 
+						if (li>1&&code[li-1]=='#'&&code[li-2]=='#') { 
+							li-=2; 
 							code=code.Mid(0,li)+"\""+array[r]+"\""+code.Mid(i);
+							i+=array[r].Len()+2-(i-li);
+						} else if (li>0&&code[li-1]=='#') { 
+							li--; 
+							code=code.Mid(0,li)+array[r]+code.Mid(i);
 							i+=array[r].Len()+2-(i-li);
 						} else {
 							code=code.Mid(0,li)+array[r]+code.Mid(i);
