@@ -620,6 +620,8 @@
 
 	wxSize wxDefaultSize
 	wxPoint wxDefaultPosition
+  
+	int wxNOT_FOUND
 <wx/aboutdlg.h>
 	class wxAboutDialogInfo
 		wxAboutDialogInfo()
@@ -682,12 +684,16 @@
 		virtual wxAccStatus Select(int childId, wxAccSelectionFlags selectFlags)
 		void SetWindow(wxWindow* window)
 <wx/event.h>
+	EVT_ACTIVATE(func)
+	EVT_ACTIVATE_APP(func)
+	EVT_HIBERNATE(func)
 	class wxActivateEvent public wxEvent public wxObject
 		wxActivateEvent(WXTYPE eventType = 0, bool active = true, int id = 0)
 		bool GetActive() const
 <wx/msw/ole/activex.h>
 	class wxActiveXContainer public wxControl
 <wx/msw/ole/activex.h>
+	EVT_ACTIVEX(func)
 	class wxActiveXEvent public wxCommandEvent
 		size_t ParamCount() const
 		wxString ParamType(size_t idx) const
@@ -1139,7 +1145,7 @@
 		wxBitmap(const char bits[], int width, int heightint depth = 1)
 		wxBitmap(int width, int height, int depth = -1)
 		wxBitmap(const char* const* bits)
-		wxBitmap(const wxString& name, long type)
+		wxBitmap(const wxString& name, wxBitmapType type)
 		wxBitmap(const wxImage& img, int depth = -1)
 		~wxBitmap()
 		static void AddHandler(wxBitmapHandler* handler)
@@ -1308,6 +1314,7 @@
 		void SetDefault()
 		void SetLabel(const wxString& label)
 <wx/laywin.h>
+	EVT_CALCULATE_LAYOUT(func)
 	class wxCalculateLayoutEvent public wxEvent public wxObject
 		wxCalculateLayoutEvent(wxWindowID id = 0)
 		int GetFlags() const
@@ -1500,6 +1507,9 @@
 	class wxClipboardTextEvent public wxCommandEvent public wxEvent public wxObject
 		wxClipboardTextEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
 <wx/event.h>
+	EVT_CLOSE(func)
+	EVT_QUERY_END_SESSION(func)
+	EVT_END_SESSION(func)
 	class wxCloseEvent public wxEvent
 		wxCloseEvent(WXTYPE commandEventType = 0, int id = 0)
 		bool CanVeto()
@@ -1740,6 +1750,36 @@
 		wxString GetName()
 		bool Undo()
 <wx/event.h>
+	EVT_COMMAND(id, event, func)
+	EVT_COMMAND_RANGE(id1, id2, event, func)
+	EVT_BUTTON(id, func)
+	EVT_CHECKBOX(id, func)
+	EVT_CHOICE(id, func)
+	EVT_COMBOBOX(id, func)
+	EVT_LISTBOX(id, func)
+	EVT_LISTBOX_DCLICK(id, func)
+	EVT_MENU(id, func)
+	EVT_MENU_RANGE(id1, id2, func)
+	EVT_CONTEXT_MENU(func)
+	EVT_RADIOBOX(id, func)
+	EVT_RADIOBUTTON(id, func)
+	EVT_SCROLLBAR(id, func)
+	EVT_SLIDER(id, func)
+	EVT_TEXT(id, func)
+	EVT_TEXT_ENTER(id, func)
+	EVT_TEXT_MAXLEN(id, func)
+	EVT_TOGGLEBUTTON(id, func)
+	EVT_TOOL(id, func)
+	EVT_TOOL_RANGE(id1, id2, func)
+	EVT_TOOL_RCLICKED(id, func)
+	EVT_TOOL_RCLICKED_RANGE(id1, id2, func)
+	EVT_TOOL_ENTER(id, func)
+	EVT_COMMAND_LEFT_CLICK(id, func)
+	EVT_COMMAND_LEFT_DCLICK(id, func)
+	EVT_COMMAND_RIGHT_CLICK(id, func)
+	EVT_COMMAND_SET_FOCUS(id, func)
+	EVT_COMMAND_KILL_FOCUS(id, func)
+	EVT_COMMAND_ENTER(id, func)
 	class wxCommandEvent public wxEvent
 		wxCommandEvent(WXTYPE commandEventType = 0, int id = 0)
 		bool Checked() const
@@ -1853,9 +1893,11 @@
 		bool StartAdvise(const wxString& item)
 		bool StopAdvise(const wxString& item)
 <wx/event.h>
+	EVT_CHILD_FOCUS(func)
 	class wxChildFocusEvent public wxCommandEvent public wxEvent public wxObject
 		wxChildFocusEvent(wxWindow *win = NULL)
 <wx/event.h>
+	EVT_CONTEXT_MENU(func)
 	class wxContextMenuEvent public wxCommandEvent public wxEvent public wxObject
 		wxContextMenuEvent(WXTYPE id = 0, int id = 0, const wxPoint& pos=wxDefaultPosition)
 		wxPoint GetPosition() const
@@ -2758,6 +2800,8 @@
 		bool IsConnectedEvent() const
 		bool IsOwnEvent() const
 <wx/dialup.h>
+	EVT_DIALUP_CONNECTED(func)
+	EVT_DIALUP_DISCONNECTED(func)
 	class wxDialUpManager
 		wxDialUpManager* Create()
 		bool IsOk() const
@@ -3001,6 +3045,7 @@
 		bool Show()
 		bool UpdateBackingFromWindow(wxDC& windowDC, wxMemoryDC& destDC,const wxRect& sourceRect, const wxRect& destRect) const
 <wx/event.h>
+	EVT_DROP_FILES(func)
 	class wxDropFilesEvent public wxEvent public wxObject
 		wxDropFilesEvent(WXTYPE id = 0, int noFiles = 0,wxString* files = NULL)
 		wxString* GetFiles() const
@@ -3064,6 +3109,7 @@
 		static wxFontEncodingArray GetPlatformEquivalents(wxFontEncoding enc, int platform = wxPLATFORM_CURRENT)
 		static wxFontEncodingArray GetAllEquivalents(wxFontEncoding enc)
 <wx/event.h>
+	EVT_ERASE_BACKGROUND(func)
 	class wxEraseEvent public wxEvent public wxObject
 		wxEraseEvent(int id = 0, wxDC* dc = NULL)
 		wxDC* GetDC() const
@@ -3441,6 +3487,11 @@
 		wxFilterOutputStream(wxOutputStream& stream)
 		wxFilterOutputStream(wxOutputStream* stream)
 <wx/fdrepdlg.h>
+	EVT_FIND(id, func)
+	EVT_FIND_NEXT(id, func)
+	EVT_FIND_REPLACE(id, func)
+	EVT_FIND_REPLACE_ALL(id, func)
+	EVT_FIND_CLOSE(id, func)
 	class wxFindDialogEvent public wxCommandEvent
 		wxFindDialogEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
 		int GetFlags() const
@@ -3476,6 +3527,8 @@
 		void SetFlexibleDirection(int direction)
 		void SetNonFlexibleGrowMode(wxFlexSizerGrowMode mode)
 <wx/event.h>
+	EVT_SET_FOCUS(func)
+	EVT_KILL_FOCUS(func)
 	class wxFocusEvent public wxEvent public wxObject
 		wxFocusEvent(WXTYPE eventType = 0, int id = 0)
 <wx/font.h>
@@ -4470,6 +4523,8 @@
 		void SetHelpController(wxHelpControllerBase* hc)
 		wxHelpControllerBase* GetHelpController() const
 <wx/event.h>
+	EVT_HELP(id, func)
+	EVT_HELP_RANGE(id1, id2, func)
 	class wxHelpEvent public wxCommandEvent public wxEvent public wxObject
 		wxHelpEvent(WXTYPE eventType = 0, wxWindowID id = 0,const wxPoint& point)
 		wxHelpEvent::Origin GetOrigin() const
@@ -4897,10 +4952,12 @@
 	class wxIconLocation
 		bool IsOk() const
 <wx/event.h>
+	EVT_ICONIZE(func)
 	class wxIconizeEvent public wxEvent public wxObject
 		wxIconizeEvent(int id = 0, bool iconized = true)
 		bool Iconized() const
 <wx/event.h>
+	EVT_IDLE(func)
 	class wxIdleEvent public wxEvent public wxObject
 		wxIdleEvent()
 		static bool CanSend(wxWindow* window)
@@ -5049,6 +5106,7 @@
 		void SameAs(wxWindow *otherWin, wxEdge edge, int margin = 0)
 		void Set(wxRelationship rel, wxWindow *otherWin, wxEdge otherEdge,int value = 0, int margin = 0)
 <wx/event.h>
+	EVT_INIT_DIALOG(func)
 	class wxInitDialogEvent public wxEvent public wxObject
 		wxInitDialogEvent(int id = 0)
 <wx/stream.h>
@@ -5132,6 +5190,11 @@
 		bool SetCapture(wxWindow* win, int pollingFreq = 0)
 		void SetMovementThreshold(int threshold)
 <wx/event.h>
+	EVT_JOY_BUTTON_DOWN(func)
+	EVT_JOY_BUTTON_UP(func)
+	EVT_JOY_MOVE(func)
+	EVT_JOY_ZMOVE(func)
+	EVT_JOYSTICK_EVENTS(func)
 	class wxJoystickEvent public wxEvent
 		wxJoystickEvent(WXTYPE eventType = 0, int state = 0,int joystick = wxJOYSTICK1, int change = 0)
 		bool ButtonDown(int button = wxJOY_BUTTON_ANY) const
@@ -5146,6 +5209,9 @@
 		bool IsMove() const
 		bool IsZMove() const
 <wx/event.h>
+	EVT_KEY_DOWN(func)
+	EVT_KEY_UP(func)
+	EVT_CHAR(func)
 	class wxKeyEvent public wxEvent
 		wxKeyEvent(WXTYPE keyEventType)
 		bool AltDown() const
@@ -5380,6 +5446,26 @@
 		void SetWindowStyleFlag(long style)
 		bool SortItems(wxListCtrlCompare fnSortCallBack, long data)
 <wx/listctrl.h>
+	EVT_LIST_BEGIN_DRAG(id, func)
+	EVT_LIST_BEGIN_RDRAG(id, func)
+	EVT_LIST_BEGIN_LABEL_EDIT(id, func)
+	EVT_LIST_END_LABEL_EDIT(id, func)
+	EVT_LIST_DELETE_ITEM(id, func)
+	EVT_LIST_DELETE_ALL_ITEMS(id, func)
+	EVT_LIST_ITEM_SELECTED(id, func)
+	EVT_LIST_ITEM_DESELECTED(id, func)
+	EVT_LIST_ITEM_ACTIVATED(id, func)
+	EVT_LIST_ITEM_FOCUSED(id, func)
+	EVT_LIST_ITEM_MIDDLE_CLICK(id, func)
+	EVT_LIST_ITEM_RIGHT_CLICK(id, func)
+	EVT_LIST_KEY_DOWN(id, func)
+	EVT_LIST_INSERT_ITEM(id, func)
+	EVT_LIST_COL_CLICK(id, func)
+	EVT_LIST_COL_RIGHT_CLICK(id, func)
+	EVT_LIST_COL_BEGIN_DRAG(id, func)
+	EVT_LIST_COL_DRAGGING(id, func)
+	EVT_LIST_COL_END_DRAG(id, func)
+	EVT_LIST_CACHE_HINT(id, func)
 	class wxListEvent public wxNotifyEvent public wxCommandEvent public wxEvent public wxObject
 		wxListEvent(WXTYPE commandType = 0, int id = 0)
 		long GetCacheFrom() const
@@ -5575,6 +5661,7 @@
 		bool Create(const wxBitmap& bitmap, const wxColour& colour)
 		bool Create(const wxBitmap& bitmap, int index)
 <wx/event.h>
+	EVT_MAXIMIZE(func)
 	class wxMaximizeEvent public wxEvent public wxObject
 		wxMaximizeEvent(int id = 0)
 <wx/strconv.h>
@@ -5699,6 +5786,12 @@
 		bool Stop()
 		wxFileOffset Tell()
 <wx/mediactrl.h>
+	EVT_MEDIA_LOADED(id, func)
+	EVT_MEDIA_STOP(id, func)
+	EVT_MEDIA_FINISHED(id, func)
+	EVT_MEDIA_STATECHANGED(id, func)
+	EVT_MEDIA_PLAY(id, func)
+	EVT_MEDIA_PAUSE(id, func)
 	class wxMediaEvent public wxNotifyEvent
 <wx/buffer.h>
 	class wxMemoryBuffer
@@ -5817,6 +5910,10 @@
 		void SetLabelTop(int pos, const wxString& label)
 		void SetMenuLabel(int pos, const wxString& label)
 <wx/event.h>
+	EVT_MENU_OPEN(func)
+	EVT_MENU_CLOSE(func)
+	EVT_MENU_HIGHLIGHT(id, func)
+	EVT_MENU_HIGHLIGHT_ALL(func)
 	class wxMenuEvent public wxEvent public wxObject
 		wxMenuEvent(WXTYPE id = 0, int id = 0, wxMenu* menu = NULL)
 		wxMenu * GetMenu() const
@@ -5917,13 +6014,29 @@
 		virtual void OnExit()
 		virtual bool OnInit()
 <wx/event.h>
+	EVT_MOUSE_CAPTURE_CHANGED(func)
 	class wxMouseCaptureChangedEvent public wxEvent public wxObject
 		wxMouseCaptureChangedEvent(wxWindowID windowId = 0, wxWindow* gainedCapture = NULL)
 		wxWindow* GetCapturedWindow() const
 <wx/event.h>
+	EVT_MOUSE_CAPTURE_LOST(func)
 	class wxMouseCaptureLostEvent public wxEvent public wxObject
 		wxMouseCaptureLostEvent(wxWindowID windowId = 0)
 <wx/event.h>
+	EVT_LEFT_DOWN(func)
+	EVT_LEFT_UP(func)
+	EVT_LEFT_DCLICK(func)
+	EVT_MIDDLE_DOWN(func)
+	EVT_MIDDLE_UP(func)
+	EVT_MIDDLE_DCLICK(func)
+	EVT_RIGHT_DOWN(func)
+	EVT_RIGHT_UP(func)
+	EVT_RIGHT_DCLICK(func)
+	EVT_MOTION(func)
+	EVT_ENTER_WINDOW(func)
+	EVT_LEAVE_WINDOW(func)
+	EVT_MOUSEWHEEL(func)
+	EVT_MOUSE_EVENTS(func)
 	class wxMouseEvent public wxEvent
 		wxMouseEvent(WXTYPE mouseEventType = 0)
 		bool AltDown()
@@ -5964,6 +6077,7 @@
 		bool RightUp() const
 		bool ShiftDown() const
 <wx/event.h>
+	EVT_MOVE(func)
 	class wxMoveEvent public wxEvent public wxObject
 		wxMoveEvent(const wxPoint& pt, int id = 0)
 		wxPoint GetPosition() const
@@ -6147,6 +6261,7 @@
 	class wxPaintDC public wxWindowDC public wxDC
 		wxPaintDC(wxWindow* window)
 <wx/event.h>
+	EVT_PAINT(func)
 	class wxPaintEvent public wxEvent public wxObject
 		wxPaintEvent(int id = 0)
 <wx/palette.h>
@@ -6293,6 +6408,10 @@
 		wxPostScriptDC(const wxString& output, bool interactive = true,wxWindow *parent)
 		static void SetResolution(int ppi)
 		static int GetResolution()
+	EVT_POWER_SUSPENDING(func)
+	EVT_POWER_SUSPENDED(func)
+	EVT_POWER_SUSPEND_CANCEL(func)
+	EVT_POWER_RESUME(func)
 <wx/power.h>
 	class wxPowerEvent public wxEvent public wxObject
 		void Veto()
@@ -6471,6 +6590,7 @@
 		long GetPid() const
 		void Redirect()
 <wx/process.h>
+	EVT_END_PROCESS(id, func)
 	class wxProcessEvent public wxEvent public wxObject
 		wxProcessEvent(int id = 0, int pid = 0, int exitcode = 0)
 		int GetPid() const
@@ -6520,6 +6640,7 @@
 		bool Quantize(const wxImage& src, wxImage& dest, int desiredNoColours = 236, unsigned char** eightBitData = 0, int flags = wxQUANTIZE_INCLUDE_WINDOWS_COLOURS|wxQUANTIZE_FILL_DESTINATION_IMAGE|wxQUANTIZE_RETURN_8BIT_DATA)
 		void DoQuantize(unsigned w, unsigned h, unsigned char** in_rows, unsigned char** out_rows, unsigned char* palette, int desiredNoColours)
 <wx/laywin.h>
+	EVT_QUERY_LAYOUT_INFO(func)
 	class wxQueryLayoutInfoEvent public wxEvent public wxObject
 		wxQueryLayoutInfoEvent(wxWindowID id = 0)
 		void GetAlignment() const
@@ -7200,6 +7321,16 @@
 		bool WriteImage(const wxImage& image, int bitmapType = wxBITMAP_TYPE_PNG)
 		void WriteText(const wxString& text)
 		long XYToPosition(long x, long y) const
+	EVT_RICHTEXT_CHARACTER(id, func)
+	EVT_RICHTEXT_DELETE(id, func)
+	EVT_RICHTEXT_RETURN(id, func)
+	EVT_RICHTEXT_STYLE_CHANGED(id, func)
+	EVT_RICHTEXT_STYLESHEET_CHANGED(id, func)
+	EVT_RICHTEXT_STYLESHEET_REPLACING(id, func)
+	EVT_RICHTEXT_STYLESHEET_REPLACED(id, func)
+	EVT_RICHTEXT_CONTENT_INSERTED(id, func)
+	EVT_RICHTEXT_CONTENT_DELETED(id, func)
+	EVT_RICHTEXT_BUFFER_RESET(id, func)
 <wx/richtext/richtextctrl.h>
 	class wxRichTextEvent public wxNotifyEvent
 		wxRichTextEvent(const wxRichTextEvent& event)
@@ -7514,6 +7645,8 @@
 		bool HasParam(wxXmlNode* node, const wxString& param)
 		bool ImportXML(wxRichTextBuffer* buffer, wxXmlNode* node)
 <wx/sashwin.h>
+	EVT_SASH_DRAGGED(id, func)
+	EVT_SASH_DRAGGED_RANGE(id1, id2, func)
 	class wxSashEvent public wxCommandEvent public wxEvent public wxObject
 		wxSashEvent(int id = 0, wxSashEdgePosition edge = wxSASH_NONE)
 		wxSashEdgePosition GetEdge() const
@@ -7635,11 +7768,40 @@
 		void SetScrollRate(int xstep, int ystep)
 		void SetTargetWindow(wxWindow* window)
 <wx/event.h>
+	EVT_SCROLL(func)
+	EVT_SCROLL_TOP(func)
+	EVT_SCROLL_BOTTOM(func)
+	EVT_SCROLL_LINEUP(func)
+	EVT_SCROLL_LINEDOWN(func)
+	EVT_SCROLL_PAGEUP(func)
+	EVT_SCROLL_PAGEDOWN(func)
+	EVT_SCROLL_THUMBTRACK(func)
+	EVT_SCROLL_THUMBRELEASE(func)
+	EVT_SCROLL_CHANGED(func)
+	EVT_COMMAND_SCROLL(id, func)
+	EVT_COMMAND_SCROLL_TOP(id, func)
+	EVT_COMMAND_SCROLL_BOTTOM(id, func)
+	EVT_COMMAND_SCROLL_LINEUP(id, func)
+	EVT_COMMAND_SCROLL_LINEDOWN(id, func)
+	EVT_COMMAND_SCROLL_PAGEUP(id, func)
+	EVT_COMMAND_SCROLL_PAGEDOWN(id, func)
+	EVT_COMMAND_SCROLL_THUMBTRACK(id, func)
+	EVT_COMMAND_SCROLL_THUMBRELEASE(func)
+	EVT_COMMAND_SCROLL_CHANGED(func)
 	class wxScrollEvent public wxCommandEvent public wxEvent public wxObject
 		wxScrollEvent(WXTYPE commandType = 0, int id = 0, int pos = 0,int orientation = 0)
 		int GetOrientation() const
 		int GetPosition() const
 <wx/event.h>
+	EVT_SCROLLWIN(func)
+	EVT_SCROLLWIN_TOP(func)
+	EVT_SCROLLWIN_BOTTOM(func)
+	EVT_SCROLLWIN_LINEUP(func)
+	EVT_SCROLLWIN_LINEDOWN(func)
+	EVT_SCROLLWIN_PAGEUP(func)
+	EVT_SCROLLWIN_PAGEDOWN(func)
+	EVT_SCROLLWIN_THUMBTRACK(func)
+	EVT_SCROLLWIN_THUMBRELEASE(func)
 	class wxScrollWinEvent public wxEvent public wxObject
 		wxScrollWinEvent(WXTYPE commandType = 0, int pos = 0,int orientation = 0)
 		int GetOrientation() const
@@ -7653,6 +7815,7 @@
 		wxSemaError Wait()
 		wxSemaError WaitTimeout(unsignedlongtimeout_millis)
 <wx/event.h>
+	EVT_SET_CURSOR(func)
 	class wxSetCursorEvent public wxEvent public wxObject
 		wxSetCursorEvent(wxCoordx = 0, wxCoordy = 0)
 		wxCursor GetCursor() const
@@ -7735,6 +7898,7 @@
 		wxSize& operator /=(int factor)
 		wxSize& operator *=(int factor)
 <wx/event.h>
+	EVT_SIZE(func)
 	class wxSizeEvent public wxEvent public wxObject
 		wxSizeEvent(const wxSize& sz, int id = 0)
 		wxSize GetSize() const
@@ -7969,6 +8133,7 @@
 		bool Connect(wxSockAddress& address, wxSockAddress& local,bool wait = true)
 		bool WaitOnConnect(long seconds = -1, long milliseconds = 0)
 <wx/socket.h>
+	EVT_SOCKET(id, func)
 	class wxSocketEvent public wxEvent
 		wxSocketEvent(int id = 0)
 		void * GetClientData()
@@ -8048,6 +8213,10 @@
 		wxSplashScreenWindow* GetSplashWindow() const
 		int GetTimeout() const
 <wx/splitter.h>
+	EVT_SPLITTER_SASH_POS_CHANGING(id, func)
+	EVT_SPLITTER_SASH_POS_CHANGED(id, func)
+	EVT_SPLITTER_UNSPLIT(id, func)
+	EVT_SPLITTER_DCLICK(id, func)
 	class wxSplitterEvent public wxNotifyEvent public wxCommandEvent public wxEvent public wxObject
 		wxSplitterEvent(wxEventType eventType = wxEVT_NULL,wxSplitterWindow * splitter = NULL)
 		int GetSashPosition() const
@@ -8444,6 +8613,7 @@
 		void SetUnicodeMode(bool unicodeMode)
 		bool UseNormalFont() const
 <wx/event.h>
+	EVT_SYS_COLOUR_CHANGED(func)
 	class wxSysColourChangedEvent public wxEvent public wxObject
 		wxSysColourChangedEvent()
 <wx/sysopt.h>
@@ -9241,6 +9411,26 @@
 		bool operator ==(const wxTreeItemId& item) const
 		bool operator !=(const wxTreeItemId& item) const
 <wx/treectrl.h>
+	EVT_TREE_BEGIN_DRAG(id, func)
+	EVT_TREE_BEGIN_RDRAG(id, func)
+	EVT_TREE_BEGIN_LABEL_EDIT(id, func)
+	EVT_TREE_END_DRAG(id, func)
+	EVT_TREE_END_LABEL_EDIT(id, func)
+	EVT_TREE_DELETE_ITEM(id, func)
+	EVT_TREE_ITEM_ACTIVATED(id, func)
+	EVT_TREE_ITEM_COLLAPSED(id, func)
+	EVT_TREE_ITEM_COLLAPSING(id, func)
+	EVT_TREE_ITEM_EXPANDED(id, func)
+	EVT_TREE_ITEM_EXPANDING(id, func)
+	EVT_TREE_ITEM_RIGHT_CLICK(id, func)
+	EVT_TREE_ITEM_MIDDLE_CLICK(id, func)
+	EVT_TREE_KEY_DOWN(id, func)
+	EVT_TREE_SEL_CHANGED(id, func)
+	EVT_TREE_SEL_CHANGING(id, func)
+	EVT_TREE_KEY_DOWN(id, func)
+	EVT_TREE_ITEM_GETTOOLTIP(id, func)
+	EVT_TREE_ITEM_MENU(id, func)
+	EVT_TREE_STATE_IMAGE_CLICK(id, func)
 	class wxTreeEvent public wxNotifyEvent public wxCommandEvent public wxEvent public wxObject
 		wxTreeEvent(wxEventType commandType, wxTreeCtrl *tree, const wxTreeItemId&item = wxTreeItemId())
 		int GetKeyCode() const
@@ -9258,6 +9448,8 @@
 		const wxTreeItemId& GetId()
 		void SetId(const wxTreeItemId& id)
 <wx/event.h>
+	EVT_UPDATE_UI(id, func)
+	EVT_UPDATE_UI_RANGE(id1, id2, func)
 	class wxUpdateUIEvent public wxCommandEvent public wxEvent public wxObject
 		wxUpdateUIEvent(wxWindowID commandId = 0)
 		static bool CanUpdate(wxWindow* window)
@@ -9750,6 +9942,7 @@
 		wxWindowUpdateLocker(wxWindow *win)
 		~wxWindowUpdateLocker()
 <wx/event.h>
+	EVT_WINDOW_CREATE(func)
 	class wxWindowCreateEvent public wxCommandEvent public wxEvent public wxObject
 		wxWindowCreateEvent(wxWindow* win = NULL)
 <wx/dcclient.h>
@@ -9763,6 +9956,13 @@
 		wxWindowDisabler(wxWindow *winToSkip = NULL)
 		~wxWindowDisabler()
 <wx/wizard.h>
+	EVT_WIZARD_PAGE_CHANGED(id, func)
+	EVT_WIZARD_PAGE_CHANGING(id, func)
+	EVT_WIZARD_PAGE_SHOWN(id, func)
+	EVT_WIZARD_CANCEL(id, func)
+	EVT_WIZARD_HELP(id, func)
+	EVT_WIZARD_FINISHED(id, func)
+	wxWIZARD_EX_HELPBUTTON
 	class wxWizard public wxDialog public wxPanel public wxWindow public wxEvtHandler public wxObject
 		wxWizard()
 		wxWizard(wxWindow* parent, int id = -1, const wxString& title = wxEmptyString, const wxBitmap& bitmap = wxNullBitmap, const wxPoint& pos = wxDefaultPosition, long style = wxDEFAULT_DIALOG_STYLE)
@@ -9779,6 +9979,12 @@
 		void SetPageSize(const wxSize& sizePage)
 		void SetBorder(int border)
 <wx/wizard.h>
+	EVT_WIZARD_PAGE_CHANGED(id, func)
+	EVT_WIZARD_PAGE_CHANGING(id, func)
+	EVT_WIZARD_PAGE_SHOWN(id, func)
+	EVT_WIZARD_CANCEL(id, func)
+	EVT_WIZARD_HELP(id, func)
+	EVT_WIZARD_FINISHED(id, func)
 	class wxWizardEvent public wxNotifyEvent public wxCommandEvent public wxEvent public wxObject
 		wxWizardEvent(wxEventType type = wxEVT_NULL, int id = -1, bool direction = true)
 		bool GetDirection() const

@@ -1,4 +1,4 @@
-// /mnt/ex/Descargas/out_of_memory/docs/mshtml/wx/htmls/wx_wxlistbook.html
+// /mnt/ex/dist/win32/wx/MinGW/wx/docs/wx_wxeraseevent.html
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -52,11 +52,11 @@ int main(int argc, char *argv[]) {
 			getline(f,s); if (s.size()&&s[s.size()-1]=='\r') s=s.substr(0,s.size()-1);
 			s=notags(s); if (s.find(">")!=string::npos) s=s.substr(0,s.find(">")+1); // en algunos casos hay comentarios que sacar en la misma linea
 			cout<<s<<endl;
-		} if (s=="<B><FONT COLOR=\"#FF0000\">Window styles</FONT></B><P>") {
+		} else if (s=="<B><FONT COLOR=\"#FF0000\">Window styles</FONT></B><P>") {
 			members=false; events=false; styles=true;
-		} if (s=="<B><FONT COLOR=\"#FF0000\">Event handling</FONT></B><P>") {
+		} else if (s=="<B><FONT COLOR=\"#FF0000\">Event handling</FONT></B><P>" || s=="<B><FONT COLOR=\"#FF0000\">Event table macros</FONT></B><P>") {
 			members=false; events=true; styles=false;
-		} if (s=="<B><FONT COLOR=\"#FF0000\">Members</FONT></B><P>" || s=="<B><FONT COLOR=\"#FF0000\">Function groups</FONT></B><P>") {
+		} else if (s=="<B><FONT COLOR=\"#FF0000\">Members</FONT></B><P>" || s=="<B><FONT COLOR=\"#FF0000\">Function groups</FONT></B><P>") {
 			members=true; events=false; styles=false;
 			cout<<"\tclass "<<cname<<endl;
 		} else if ( (styles||events) && leftcompare(s,"<TR><TD VALIGN=TOP")) {
