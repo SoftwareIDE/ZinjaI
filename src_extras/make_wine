@@ -5,7 +5,7 @@ make -j 2 -C $SRC/src_extras -f Makefile.wine || exit 1
 make -j 2 -C $SRC/parser -f Makefile.wine || exit 1
 
 cp -Hru $SRC/templates-w32/zinjai/* zinjai/templates
-cp -Hru $SRC/templates-w32/OpenGl/* OpenGL/templates
+cp -Hru $SRC/templates-w32/OpenGL/* OpenGL/templates
 cp -Hru $SRC/templates-w32/wx/* wx/templates
 
 cp -u $SRC/readme.txt zinjai/
