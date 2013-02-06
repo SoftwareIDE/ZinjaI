@@ -56,3 +56,4 @@
 &nbsp;&nbsp;&nbsp; Puedes cerrar todas las pestañas de código a excepción de la activa con el atajo <I>Ctrl+Alt+W</I>.
 &nbsp;&nbsp;&nbsp; En la ayuda hay una tabla con la mayoría de los <A href="help:atajos.html">atajos de teclado</A> que puedes utilizar en ZinjaI para acelerar el desarrollo.
 &nbsp;&nbsp;&nbsp; Puede leer más información y otras notas útiles sobre <I>ZinjaI</I> y otros proyectos en el blog <A href="http://cucarachasracing.blogspot.com.ar">http://cucarachasracing.blogspot.com.ar</A>.
+&nbsp;&nbsp;&nbsp; Puedes cambiar rápidamente el perfil de compilación y ejecución activo en un proyecto haciendo click derecho sobre el botón de Opciones de Compilación y Ejecución (Ejecución->Opciones) de la barra de herramientas "Ejecutar".

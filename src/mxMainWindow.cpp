@@ -320,6 +320,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_HELP_CPP, mxMainWindow::OnHelpCpp)
 	EVT_MENU(mxID_HELP_TIP, mxMainWindow::OnHelpTip)
 	EVT_MENU(mxID_HELP_UPDATES, mxMainWindow::OnHelpUpdates)
+	
+	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxMainWindow::OnToolbarMenu)
 		
 	EVT_AUI_PANE_CLOSE(mxMainWindow::OnPaneClose)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(mxID_NOTEBOOK_SOURCES, mxMainWindow::OnNotebookPageClose)
@@ -4631,6 +4633,15 @@ void mxMainWindow::OnSymbolsGenerateCache(wxCommandEvent &evt) {
 
 void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
 	int id=evt.GetId();
+	if (project && id==mxID_RUN_CONFIG) {
+		wxMenu menu;
+		for(int i=0;i<project->configurations_count;i++) {
+			wxMenuItem *mi=menu.AppendRadioItem(mxID_LAST_ID+i,project->configurations[i]->name); // para mostrar en el dialogo
+			if (project->configurations[i]==project->active_configuration) mi->Check(true);
+		}
+		PopupMenu(&menu);
+		return;
+	}
 	if (id>=mxID_CUSTOM_TOOL_0 && id<mxID_CUSTOM_TOOL_0+10) {
 		new mxCustomTools(id-mxID_CUSTOM_TOOL_0);
 		return;
@@ -5434,5 +5445,9 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 		ShowCompilerTreePanel();
 		return;
 	}
+}
+
+void mxMainWindow::OnToolbarMenu (wxCommandEvent & evt) {
+	project->SetActiveConfiguration(project->configurations[evt.GetId()-mxID_LAST_ID]);
 }
 

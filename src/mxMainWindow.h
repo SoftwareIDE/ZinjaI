@@ -311,6 +311,8 @@ public:
 	void OnProjectTreeAdd(wxCommandEvent &event);
 	void OnProjectTreeAddMultiple(wxCommandEvent &event);
 	void OnProjectTreeAddSelected(wxCommandEvent &event);
+	
+	void OnToolbarMenu(wxCommandEvent &evt); // click on an item from a popup menu launched from some toolbar buttons (currently only compiling options in projecto mode to select a profile)
 
 	void OnWhereAmI(wxCommandEvent &event);
 //	void OnWhereTime(wxTimerEvent &event);
