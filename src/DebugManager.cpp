@@ -472,146 +472,152 @@ void DebugManager::HowDoesItRuns() {
 #endif
 	SetStateText(LANG(DEBUG_STATUS_RUNNING,"Ejecutando..."));
 	MarkCurrentPoint();
-	really_running = true;
-	wxString ans = WaitAnswer(), state_text=LANG(DEBUG_STATUS_UNKNOWN,"Estado desconocido");
-
-	really_running = false;
-	if (!process || stopping) return;
-	int st_pos = ans.Find(_T("*stopped"));
-	if (st_pos==wxNOT_FOUND) {
-		SetStateText(state_text);
-#ifdef DEBUG_MANAGER_LOG_TALK
-		wxString debug_log_string; debug_log_string<<"ERROR RUNNING: "<<ans;
-		debug_log_file.Write(debug_log_string);
-		debug_log_file.Flush();
-#endif
-		return;
-	}
-	ans=ans.Mid(st_pos);
-	wxString how = GetValueFromAns(ans,_T("reason"),true);
-	int mark = 0;
-	int disable = -1;
-	if (how==_T("breakpoint-hit")) {
-		wxString sbn = GetValueFromAns(ans,_T("bkptno"),true);
-		if (sbn.Len()) {
-			long bn;
-			sbn.ToLong(&bn);
-			disable=bn;
-		}
-		mark = mxSTC_MARK_EXECPOINT;
-		state_text=LANG(DEBUG_STATUS_BREAK,"El programa alcanzo un punto de interrupcion");
-	} else if (how==_T("watchpoint-trigger") || how==_T("access-watchpoint-trigger") || how==_T("read-watchpoint-trigger")) {
-		mark = mxSTC_MARK_EXECPOINT;
-		state_text=LANG(DEBUG_STATUS_WATCH,"El programa se interrumpio por un WatchPoint: ");
-		long l;
-		GetValueFromAns(ans.AfterFirst('{'),_T("number"),true).ToLong(&l);
-		for (int i=0;i<inspections_count;i++) {
-			if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
-				state_text<<inspections[i].expr;
-				inspection_grid->SelectRow(i);
-				break;
-			}
-		}
-	} else if (how==_T("watchpoint-scope")) {
-		mark = mxSTC_MARK_EXECPOINT;
-		state_text=LANG(DEBUG_STATUS_WATCH_OUT,"El WatchPoint ha dejado de ser valido: ");
-		long l;
-		GetValueFromAns(ans,_T("wpnum"),true).ToLong(&l);
-		for (int i=0;i<inspections_count;i++) {
-			if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
-				state_text<<inspections[i].expr;
-				inspections[i].watch_read = inspections[i].watch_write = false;
-				inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
-				inspection_grid->SelectRow(i);
-				break;
-			}
-		}
-	} else if (how==_T("location-reached")) {
-		mark = mxSTC_MARK_EXECPOINT;
-		state_text=LANG(DEBUG_STATUS_LOCATION_REACHED,"El programa alcanzo la ubicacion seleccionada");
-	} else if (how==_T("function-finished")) {
-		wxString retval = GetValueFromAns(ans,_T("return-value"),true);
-		mark = mxSTC_MARK_EXECPOINT;
-		if (retval.Len()) {
-			state_text=LANG(DEBUG_STATUS_FUNCTION_ENDED_RETVAL,"Valor de retorno: ");
-			state_text<<retval;
-		} else 
-			state_text=LANG(DEBUG_STATUS_FUNCTION_ENDED,"La funcion ha finalizado.");
-	} else if (how==_T("end-stepping-range")) {
-		mark = mxSTC_MARK_EXECPOINT;
-		state_text=LANG(DEBUG_STATUS_STEP_DONE,"Paso avanzado");
-	} else if (how==_T("exited-normally") || how==_T("exited")) {
-		if (how==_T("exited-normally"))
-			state_text=LANG(DEBUG_STATUS_ENDED_NORMALLY,"El programa finalizo con normalidad");
-		else
-			state_text=wxString(LANG(DEBUG_STATUS_EXIT_WITH_CODE,"El programa finalizo con el codigo de salida "))<<GetValueFromAns(ans,_T("exit-code"),true);
-	} else if (how==_T("signal-received")) {
-		if (pause_breakpoint) {
-			if (pause_breakpoint->gdb_status==BPS_PENDING)
-				SetBreakPoint(pause_breakpoint);
-			else
-				DeleteBreakPoint(pause_breakpoint);
-			pause_breakpoint=NULL;
-			Continue();
+	
+	while (true) { // para que vuelva a este punto cuando llega a un break point que no debe detener la ejecucion
+		really_running = true;
+		wxString ans = WaitAnswer();
+		really_running = false;
+		wxString state_text=LANG(DEBUG_STATUS_UNKNOWN,"Estado desconocido"); 
+		if (!process || stopping) return;
+		int st_pos = ans.Find(_T("*stopped"));
+		if (st_pos==wxNOT_FOUND) {
+			SetStateText(state_text);
+	#ifdef DEBUG_MANAGER_LOG_TALK
+			wxString debug_log_string; debug_log_string<<"ERROR RUNNING: "<<ans;
+			debug_log_file.Write(debug_log_string);
+			debug_log_file.Flush();
+	#endif
 			return;
 		}
-		if (GetValueFromAns(ans,_T("signal-meaning"),true)==_T("Trace/breakpoint trap")) {
-			mark = mxSTC_MARK_EXECPOINT;
-			state_text=LANG(DEBUG_STATUS_TRAP,"El programa se interrumpio para ceder el control al depurador");
-#ifdef __WIN32__
-			SendCommand(_T("-thread-select 1"));
-#endif
-		} else {
-			mark = mxSTC_MARK_STOP;
-			state_text=wxString(LANG(DEBUG_STATUS_ABNORMAL_INTERRUPTION,"El programa se interrumpio anormalmente ( "))<<GetValueFromAns(ans,_T("signal-name"),true)<<_T(" = ")<<GetValueFromAns(ans,_T("signal-meaning"),false)<<_T(" )");
-		}
-	} else if (how==_T("exited-signaled") || how==_T("exited")) {
-		mark = mxSTC_MARK_STOP;
-		state_text=LANG(DEBUG_STATUS_TERMINAL_CLOSED,"La terminal del programa ha sido cerrada");
-	} 
-#ifdef DEBUG_MANAGER_LOG_TALK
- 	else{ 
-		wxString debug_log_string; debug_log_string<<"NEW REASON: "<<ans;
-		debug_log_file.Write(debug_log_string);
-		debug_log_file.Flush();
-	}
-#endif
-	if (mark) {
-		wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true,true);
-		if (!fname.Len())
-			fname = GetSubValueFromAns(ans,_T("frame"),_T("file"),true,true);
-		fname.Replace(_T("//"),sep);
-		fname.Replace(_T("\\\\"),sep);
-		fname.Replace(wrong_sep,sep);
-		wxString line =  GetSubValueFromAns(ans,_T("frame"),_T("line"),true);
-		long fline = -1;
-		//if (backtrace_visible && config->Debug.autoupdate_backtrace)
-		if (stepping_in && mark==mxSTC_MARK_EXECPOINT && black_list.Index(fname)!=wxNOT_FOUND)
-			StepIn();
-		else {
-			stepping_in=false;
-			if (line.ToLong(&fline)) {
-				MarkCurrentPoint(fname,fline,mark);
-				if (threadlist_visible) ListThreads();
-				Backtrace(true);
-			} else {
-				if (threadlist_visible) ListThreads();
-				Backtrace(false);
+		ans=ans.Mid(st_pos);
+		wxString how = GetValueFromAns(ans,_T("reason"),true);
+		BreakPointInfo *bpi=NULL; int mark = 0;
+		if (how==_T("breakpoint-hit")) {
+			wxString sbn = GetValueFromAns(ans,_T("bkptno"),true);
+			if (sbn.Len()) {
+				long bn;
+				if (sbn.ToLong(&bn)) {
+					bpi=BreakPointInfo::FindFromNumber(bn,true);
+					if (bpi && bpi->action==BPA_INSPECTIONS) {
+						UpdateInspection();
+						SendCommand(_T("-exec-continue")); wxYield();
+						continue; // fake-goto... any better idea?
+					}
+				}
 			}
-			UpdateInspection();
+			mark = mxSTC_MARK_EXECPOINT;
+			state_text=LANG(DEBUG_STATUS_BREAK,"El programa alcanzo un punto de interrupcion");
+		} else if (how==_T("watchpoint-trigger") || how==_T("access-watchpoint-trigger") || how==_T("read-watchpoint-trigger")) {
+			mark = mxSTC_MARK_EXECPOINT;
+			state_text=LANG(DEBUG_STATUS_WATCH,"El programa se interrumpio por un WatchPoint: ");
+			long l;
+			GetValueFromAns(ans.AfterFirst('{'),_T("number"),true).ToLong(&l);
+			for (int i=0;i<inspections_count;i++) {
+				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
+					state_text<<inspections[i].expr;
+					inspection_grid->SelectRow(i);
+					break;
+				}
+			}
+		} else if (how==_T("watchpoint-scope")) {
+			mark = mxSTC_MARK_EXECPOINT;
+			state_text=LANG(DEBUG_STATUS_WATCH_OUT,"El WatchPoint ha dejado de ser valido: ");
+			long l;
+			GetValueFromAns(ans,_T("wpnum"),true).ToLong(&l);
+			for (int i=0;i<inspections_count;i++) {
+				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
+					state_text<<inspections[i].expr;
+					inspections[i].watch_read = inspections[i].watch_write = false;
+					inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
+					inspection_grid->SelectRow(i);
+					break;
+				}
+			}
+		} else if (how==_T("location-reached")) {
+			mark = mxSTC_MARK_EXECPOINT;
+			state_text=LANG(DEBUG_STATUS_LOCATION_REACHED,"El programa alcanzo la ubicacion seleccionada");
+		} else if (how==_T("function-finished")) {
+			wxString retval = GetValueFromAns(ans,_T("return-value"),true);
+			mark = mxSTC_MARK_EXECPOINT;
+			if (retval.Len()) {
+				state_text=LANG(DEBUG_STATUS_FUNCTION_ENDED_RETVAL,"Valor de retorno: ");
+				state_text<<retval;
+			} else 
+				state_text=LANG(DEBUG_STATUS_FUNCTION_ENDED,"La funcion ha finalizado.");
+		} else if (how==_T("end-stepping-range")) {
+			mark = mxSTC_MARK_EXECPOINT;
+			state_text=LANG(DEBUG_STATUS_STEP_DONE,"Paso avanzado");
+		} else if (how==_T("exited-normally") || how==_T("exited")) {
+			if (how==_T("exited-normally"))
+				state_text=LANG(DEBUG_STATUS_ENDED_NORMALLY,"El programa finalizo con normalidad");
+			else
+				state_text=wxString(LANG(DEBUG_STATUS_EXIT_WITH_CODE,"El programa finalizo con el codigo de salida "))<<GetValueFromAns(ans,_T("exit-code"),true);
+		} else if (how==_T("signal-received")) {
+			if (pause_breakpoint) {
+				if (pause_breakpoint->gdb_status==BPS_PENDING)
+					SetBreakPoint(pause_breakpoint);
+				else
+					DeleteBreakPoint(pause_breakpoint);
+				pause_breakpoint=NULL;
+				Continue();
+				return;
+			}
+			if (GetValueFromAns(ans,_T("signal-meaning"),true)==_T("Trace/breakpoint trap")) {
+				mark = mxSTC_MARK_EXECPOINT;
+				state_text=LANG(DEBUG_STATUS_TRAP,"El programa se interrumpio para ceder el control al depurador");
+	#ifdef __WIN32__
+				SendCommand(_T("-thread-select 1"));
+	#endif
+			} else {
+				mark = mxSTC_MARK_STOP;
+				state_text=wxString(LANG(DEBUG_STATUS_ABNORMAL_INTERRUPTION,"El programa se interrumpio anormalmente ( "))<<GetValueFromAns(ans,_T("signal-name"),true)<<_T(" = ")<<GetValueFromAns(ans,_T("signal-meaning"),false)<<_T(" )");
+			}
+		} else if (how==_T("exited-signaled") || how==_T("exited")) {
+			mark = mxSTC_MARK_STOP;
+			state_text=LANG(DEBUG_STATUS_TERMINAL_CLOSED,"La terminal del programa ha sido cerrada");
+		} 
+	#ifdef DEBUG_MANAGER_LOG_TALK
+		else{ 
+			wxString debug_log_string; debug_log_string<<"NEW REASON: "<<ans;
+			debug_log_file.Write(debug_log_string);
+			debug_log_file.Flush();
 		}
-	} else {
-//		if (config->Debug.autoupdate_backtrace)
-			BacktraceClean();
-			ThreadListClean();
-		running = false;
-		Stop();
+	#endif
+		if (mark) {
+			wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true,true);
+			if (!fname.Len())
+				fname = GetSubValueFromAns(ans,_T("frame"),_T("file"),true,true);
+			fname.Replace(_T("//"),sep);
+			fname.Replace(_T("\\\\"),sep);
+			fname.Replace(wrong_sep,sep);
+			wxString line =  GetSubValueFromAns(ans,_T("frame"),_T("line"),true);
+			long fline = -1;
+			//if (backtrace_visible && config->Debug.autoupdate_backtrace)
+			if (stepping_in && mark==mxSTC_MARK_EXECPOINT && black_list.Index(fname)!=wxNOT_FOUND)
+				StepIn();
+			else {
+				stepping_in=false;
+				if (line.ToLong(&fline)) {
+					MarkCurrentPoint(fname,fline,mark);
+					if (threadlist_visible) ListThreads();
+					Backtrace(true);
+				} else {
+					if (threadlist_visible) ListThreads();
+					Backtrace(false);
+				}
+				UpdateInspection();
+			}
+		} else {
+	//		if (config->Debug.autoupdate_backtrace)
+				BacktraceClean();
+				ThreadListClean();
+			running = false;
+			Stop();
+		}
+		if (bpi && bpi->action==BPA_STOP_ONCE) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
+		SetStateText(state_text);
+		return;
 	}
-	if (disable>=0) {
-		BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(disable,true);
-		if (bpi && bpi->only_once) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
-	}
-	SetStateText(state_text);
 }
 
 /**
@@ -682,7 +688,7 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 		long l; num.ToLong(&l); id=l;
 		// setear las opciones adicionales
 		if (_bpi->ignore_count) SetBreakPointOptions(id,_bpi->ignore_count);
-		if (_bpi->only_once||!_bpi->enabled) SetBreakPointEnable(id,_bpi->enabled,_bpi->only_once);
+		if (_bpi->action==BPA_STOP_ONCE ||!_bpi->enabled) SetBreakPointEnable(id,_bpi->enabled,_bpi->action==BPA_STOP_ONCE);
 		if (!_bpi->enabled) status=BPS_USER_DISABLED;
 		if (_bpi->cond.Len()) if (!SetBreakPointOptions(id,_bpi->cond)) { status=BPS_ERROR_SETTING; ShowBreakPointConditionErrorMessage(_bpi); }
 	} else { // si no se pudo colocar correctamente

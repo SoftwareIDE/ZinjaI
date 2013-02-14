@@ -41,7 +41,7 @@ mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxI
 	utils->AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_LINE,"Linea"),wxString()<<bpi->line_number+1)->SetEditable(false);
 	break_check = utils->AddCheckBox(mySizer,this,LANG(BREAKOPTS_INSERT,"Insertar punto de interrupcion"),true,mxID_BREAK_OPTS_ENABLE);
 	enable_check = utils->AddCheckBox(mySizer,this,LANG(BREAKOPTS_ENABLE,"Habilitar punto de interrupcion"),bpi->enabled);
-	once_check = utils->AddCheckBox(mySizer,this,LANG(BREAKOPTS_ONCE,"Interrumpir solo una vez"),bpi->only_once);
+//	once_check = utils->AddCheckBox(mySizer,this,LANG(BREAKOPTS_ONCE,"Interrumpir solo una vez"),bpi->only_once);
 	ignore_text = utils->AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_IGNORE_TIMES_PRE,"Ignorar"),bpi->ignore_count,wxString(LANG(BREAKOPTS_IGNORE_TIMES_POST,"veces")));
 	if (debug->debugging && !debug->waiting && bpi->IsInGDB()) {
 		count_text = utils->AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado"),debug->GetBreakHitCount(bpi->gdb_id),wxString(LANG(BREAKOPTS_HIT_TIMES_POST,"veces")));
@@ -50,6 +50,11 @@ mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxI
 		count_text = NULL;
 	}
 	cond_text = utils->AddTextCtrl(mySizer,this,LANG(BREAKOPTS_CONDITION,"Condicion"),bpi->cond);
+	wxArrayString actions_list;
+	actions_list.Add(LANG(BREAKTOPS_ACTIONS_ALWAYS,"Detener siempre"));
+	actions_list.Add(LANG(BREAKTOPS_ACTIONS_ONCE,"Detener solo la primera vez"));
+	actions_list.Add(LANG(BREAKTOPS_ACTIONS_INSPECTIONS,"Solo actualizar inspecciones (no detener)"));
+	action = utils->AddComboBox(mySizer,this,LANG(BREAKOPTS_ACTION,"Acción"),actions_list,bpi->action);
 	
 	if (bpi->gdb_status==BPS_ERROR_SETTING)
 		utils->AddStaticText(mySizer,this,LANG(BREAKOPTS_ERROR_PLACING_BREAKPOINT,"Error al colocar breakpoint"));
@@ -83,9 +88,9 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 				bpi->ignore_count=l;
 				debug->SetBreakPointOptions(bpi->gdb_id,bpi->ignore_count);
 			}
-			if (bpi->enabled!=enable_check->GetValue() || bpi->only_once!=once_check->GetValue()) { // enabled and only_once
-				bpi->enabled=enable_check->GetValue(); bpi->only_once=once_check->GetValue();
-				debug->SetBreakPointEnable(bpi->gdb_id,bpi->enabled,bpi->only_once);
+			if (bpi->enabled!=enable_check->GetValue() || bpi->action!=action->GetSelection()) { // enabled and only_once
+				bpi->enabled=enable_check->GetValue(); bpi->action=action->GetSelection();
+				debug->SetBreakPointEnable(bpi->gdb_id,bpi->enabled,bpi->action==BPA_STOP_ONCE);
 			}
 			if (!bpi->enabled) status=BPS_USER_DISABLED;
 			if (bpi->cond!=cond_text->GetValue() || bpi->gdb_status==BPS_ERROR_CONDITION) { // condition
@@ -97,7 +102,7 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 			long l;	ignore_text->GetValue().ToLong(&l); // ignore count
 			bpi->ignore_count=l;
 			bpi->enabled=enable_check->GetValue(); 
-			bpi->only_once=once_check->GetValue();
+			bpi->action=action->GetSelection();
 			bpi->cond=cond_text->GetValue();
 			bpi->SetStatus(BPS_UNKNOWN);
 		}
@@ -119,7 +124,7 @@ void mxBreakOptions::OnBreakpointCheck(wxCommandEvent &evt) {
 	if (count_text) count_text->Enable(enable);
 	ignore_text->Enable(enable);
 	cond_text->Enable(enable);
-	once_check->Enable(enable);
+	action->Enable(enable);
 }
 
 void mxBreakOptions::OnHelpButton(wxCommandEvent &evt) {

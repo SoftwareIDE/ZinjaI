@@ -214,7 +214,8 @@ void mxBreakList::PopulateGrid ( ) {
 		grid->SetCellValue(i,BL_COL_WHY,where);
 		
 		wxString status=LANG(BREAKLIST_ENABLED,"habilitado");
-		if (bpi->only_once) status=LANG(BREAKLIST_ONCE,"una vez");
+		if (bpi->action==BPA_STOP_ONCE) status=LANG(BREAKLIST_ONCE,"una vez");
+		if (bpi->action==BPA_INSPECTIONS) status=LANG(BREAKLIST_INSPECTIONS,"inspecciones");
 		if (bpi->gdb_status==BPS_ERROR_CONDITION) status=LANG(BREAKLIST_ERROR_CONDITION,"error (condicion)");
 		if (bpi->gdb_status==BPS_ERROR_SETTING) status=LANG(BREAKLIST_ERROR_LOCATION,"error (ubicacion)");
 		if (!bpi->enabled) status=LANG(BREAKLIST_DISABLED,"deshabilitado");

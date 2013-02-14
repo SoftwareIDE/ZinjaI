@@ -259,8 +259,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 				} else if (key==_T("breakpoint_ignore")) {
 					value.ToLong(&l);
 					if (last_breakpoint) last_breakpoint->ignore_count=l;
-				} else if (key==_T("breakpoint_only_once")) {
-					if (last_breakpoint) last_breakpoint->only_once=utils->IsTrue(value);
+				} else if (key==_T("breakpoint_only_once")||key==_T("breakpoint_action")) {
+					value.ToLong(&l); if (last_breakpoint) last_breakpoint->action=l;
 				} else if (key==_T("enabled")) {
 					if (last_breakpoint) last_breakpoint->enabled=utils->IsTrue(value);
 				} else if (key==_T("breakpoint_condition")) {
@@ -623,7 +623,7 @@ bool ProjectManager::Save (bool as_template) {
 				if (breakpoint->line_number>=0) { 
 					CFG_GENERIC_WRITE_DN("breakpoint",breakpoint->line_number);
 					if (!breakpoint->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
-					if (breakpoint->only_once) CFG_BOOL_WRITE_DN("breakpoint_only_once",true);
+					if (breakpoint->action) CFG_GENERIC_WRITE_DN("breakpoint_action",true);
 					if (breakpoint->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoint->ignore_count);
 					if (breakpoint->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoint->cond);
 	//				breakpoint->enabled=true; // que hace esto aca?

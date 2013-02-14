@@ -16,7 +16,8 @@ BreakPointInfo::BreakPointInfo(file_item *_fitem, int _line_number) {
 	source=NULL;
 	marker_handle=-1;
 	enabled=true;
-	only_once=false;
+//	only_once=false;
+	action=BPA_STOP_ALWAYS;
 	ignore_count=0;
 	gdb_status=BPS_UNKNOWN;
 	gdb_id=-1;
@@ -35,7 +36,8 @@ BreakPointInfo::BreakPointInfo(mxSource *_source, int _line_number) {
 	gdb_id=-1;
 	source=_source;
 	enabled=true;
-	only_once=false;
+//	only_once=false;
+	action=BPA_STOP_ALWAYS;
 	ignore_count=0;
 	gdb_status=BPS_UNKNOWN;
 	marker_handle=-1; SetMarker();

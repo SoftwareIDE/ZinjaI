@@ -5,14 +5,16 @@
 class mxSource;
 class wxCheckBox;
 class wxTextCtrl;
+class wxComboBox;
 class BreakPointInfo;
 struct file_item;
 
 class mxBreakOptions : public wxDialog {
 private:
 	BreakPointInfo *bpi;
-	wxCheckBox *break_check, *enable_check, *once_check;
+	wxCheckBox *break_check, *enable_check/*, *once_check*/;
 	wxTextCtrl *ignore_text,*cond_text,*count_text;
+	wxComboBox *action;
 public:
 	mxBreakOptions(BreakPointInfo *_bpi);
 	void OnClose(wxCloseEvent &event);

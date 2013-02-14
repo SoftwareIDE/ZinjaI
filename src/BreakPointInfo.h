@@ -28,6 +28,12 @@ enum BREAK_POINT_STATUS {
 	BPS_DISABLED_ONLY_ONCE, ///< when it's been hitted once and only_once=true
 };
 
+enum BREAK_POINT_ACTION {
+	BPA_STOP_ALWAYS=0, ///< regular breakpoint, pauses execution everytime its hitted
+	BPA_STOP_ONCE=1, ///< single time breakpoint, pauses execution only the first time its hitted
+	BPA_INSPECTIONS=2 ///< fake breakpoint, updates the inspections table and continue the execution
+};
+
 class BreakPointInfo {
 	_autolist_declare_global(BreakPointInfo);
 	_autolist_declare_local(BreakPointInfo);
@@ -42,7 +48,8 @@ public:
 	int marker_handle; ///< marker handle if it's open (mxSource)
 	int marker_type; ///< to know if current marker is red or grey, when marker_handle!=-1
 	bool enabled; ///< if it's marked as enabled in ZinjaI (mxBreakOptions)
-	bool only_once; ///< if this breakpoint should be disabled after been hitted for the first time (mxBreakOptions)
+//	bool only_once; ///< if this breakpoint should be disabled after been hitted for the first time (mxBreakOptions)
+	int action; ///< what to do when breakpoint is hitted, valid values are from BREAK_POINT_ACTION
 	int ignore_count; ///< number of times the breakpoint should be reached before really pausing the program (mxBreakOptions)
 	wxString cond; ///< bool expression for conditional breakpoints (mxBreakOptions)
 	BreakPointInfo(file_item *fitem, int _line_number); ///< to be called when loading a project, registers the breakpoint in the file_item::breaklist
