@@ -5,6 +5,7 @@ using namespace std;
 
 #if defined(_WIN32) || defined(__WIN32__)
 #else
+#include <unistd.h> 
 void Sleep(int delay) {
 	clock_t t1 = clock();
 	while (float(clock()-t1)/CLOCKS_PER_SEC<float(delay)/1000);
