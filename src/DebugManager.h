@@ -31,6 +31,13 @@ enum {	DI_NONE,
 		DI_ARRAY  // int a[10]
 	};
 
+enum DEBUG_STATUS { // stages of a debug session
+	DBGST_NULL, // no debugging session running
+	DBGST_STARTING, // debugging session is startig, program isn't running yet
+	DBGST_DEBUGGING, // debugging session running, but debugmanager talking to gdb
+	DBGST_STOPPING  // debugging session is terminating, waiting for process to end
+};
+
 //! Referencia del depurador a un punto de interrupción en gdb
 struct breakinfo {
 	wxString fname;
@@ -153,7 +160,8 @@ private:
 	BreakPointInfo *pause_breakpoint; ///< puntero al breakpoint que hay que agregar/sacar en una pausa, para el usuario los modifica durante la ejecución
 public:
 	wxString last_command, last_answer;
-	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible, stopping, really_running;
+	DEBUG_STATUS status;
+	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible, really_running;
 	DebugManager();
 	~DebugManager();
 	void BacktraceClean();

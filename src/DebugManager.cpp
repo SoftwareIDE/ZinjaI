@@ -38,6 +38,7 @@ using namespace std;
 DebugManager *debug;
 
 DebugManager::DebugManager() {
+	status = DBGST_NULL;
 	pause_breakpoint = NULL;
 	current_handle = -1;
 	last_backtrace_size = 0;
@@ -264,12 +265,12 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 **/
 
 void DebugManager::ResetDebuggingStuff() {
+	status=DBGST_STARTING;
 #if !defined(_WIN32) && !defined(__WIN32__)
 	tty_running = false;
 #endif
 	black_list.Clear(); stepping_in=false;
 	utils->Split(config->Debug.blacklist,black_list,true,false);
-	stopping=false;
 	gui_is_prepared = false;
 	pause_breakpoint=NULL;
 	
@@ -431,7 +432,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 }
 
 bool DebugManager::Stop() {
-	if (stopping) return false; else stopping = true;
+	if (status==DBGST_STOPPING) return false; else status=DBGST_STOPPING;
 	if (waiting || !debugging) {
 #if defined(__APPLE__) || defined(__WIN32__)
 		process->Kill(pid,wxSIGKILL);
@@ -478,7 +479,7 @@ void DebugManager::HowDoesItRuns() {
 		wxString ans = WaitAnswer();
 		really_running = false;
 		wxString state_text=LANG(DEBUG_STATUS_UNKNOWN,"Estado desconocido"); 
-		if (!process || stopping) return;
+		if (!process || status==DBGST_STOPPING) return;
 		int st_pos = ans.Find(_T("*stopped"));
 		if (st_pos==wxNOT_FOUND) {
 			SetStateText(state_text);
@@ -957,11 +958,11 @@ void DebugManager::Pause() {
 }
 
 void DebugManager::Continue() {
-	if (waiting || !debugging) return;
+	if (waiting || !debugging || status==DBGST_STOPPING) return;
 	running = true;
 	MarkCurrentPoint();
 	wxString ans = SendCommand(_T("-exec-continue"));
-	if (!stopping && ans.Mid(1,7)==_T("running")) {
+	if (ans.Mid(1,7)==_T("running")) {
 		HowDoesItRuns();
 		if (config->Debug.raise_main_window)
 			main_window->Raise();
@@ -1417,6 +1418,7 @@ void DebugManager::ProcessKilled() {
 	process=NULL;
 	pid=0;
 	running = debugging = waiting = false;
+	status=DBGST_NULL;
 	wxCommandEvent evt;
 	if (gui_is_prepared) {
 		main_window->PrepareGuiForDebugging(false);
@@ -1425,7 +1427,7 @@ void DebugManager::ProcessKilled() {
 
 #if !defined(_WIN32) && !defined(__WIN32__)
 void DebugManager::TtyProcessKilled() {
-	if (pid && debugging && !stopping) Stop();
+	if (pid && debugging && status!=DBGST_STOPPING) Stop();
 	delete tty_process;
 	tty_process = NULL;
 	tty_pid = 0;
