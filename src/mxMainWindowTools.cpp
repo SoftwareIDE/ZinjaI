@@ -39,6 +39,7 @@
 #include "mxMakefileDialog.h"
 #include <wx/file.h>
 #include <wx/textfile.h>
+#include "mxGprofOutput.h"
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -688,8 +689,9 @@ void mxMainWindow::OnToolsGprofList (wxCommandEvent &event) {
 		fgout.Write(output[i]+_T("\n"));
 	fgout.Close();
 	
-	mxSource *src=OpenFile(gout,false);
-	if (src && src!=EXTERNAL_SOURCE) src->MakeUntitled("<profiling>");
+	new mxGprofOutput(this,gout);
+//	mxSource *src=OpenFile(gout,false);
+//	if (src && src!=EXTERNAL_SOURCE) src->MakeUntitled("<profiling>");
 	status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	
 }
