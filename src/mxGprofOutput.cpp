@@ -22,9 +22,9 @@ mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname):wxDialog(parent, 
 	grid_table->SetColLabelValue(0,"% time");
 	grid_table->SetColLabelValue(1,"cum. secs");
 	grid_table->SetColLabelValue(2,"self secs");
-	grid_table->SetColLabelValue(3,"self s/call");
-	grid_table->SetColLabelValue(4,"total s/call");
-	grid_table->SetColLabelValue(5,"calls");
+	grid_table->SetColLabelValue(3,"calls");
+	grid_table->SetColLabelValue(4,"self s/call");
+	grid_table->SetColLabelValue(5,"total s/call");
 	grid_table->SetColLabelValue(6,"name");
 	grid_table->SetRowLabelSize(0);
 	FillTable();
@@ -70,9 +70,9 @@ void mxGprofOutput::FillTable ( ) {
 		grid_table->SetCellValue(i,0,to_str(data.table[i].percent_time));	
 		grid_table->SetCellValue(i,1,to_str(data.table[i].cumulative_seconds));	
 		grid_table->SetCellValue(i,2,to_str(data.table[i].self_seconds));	
-		grid_table->SetCellValue(i,3,to_str(data.table[i].self_s_calls));	
-		grid_table->SetCellValue(i,4,to_str(data.table[i].total_s_calls));	
-		grid_table->SetCellValue(i,5,wxString()<<data.table[i].calls);	
+		grid_table->SetCellValue(i,3,wxString()<<data.table[i].calls);	
+		grid_table->SetCellValue(i,4,to_str(data.table[i].self_s_calls));	
+		grid_table->SetCellValue(i,5,to_str(data.table[i].total_s_calls));	
 		grid_table->SetCellValue(i,6,data.table[i].name);	
 	}
 }

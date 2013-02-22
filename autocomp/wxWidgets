@@ -1,5 +1,6 @@
 <wx/wx.h>
 
+	wxID_ANY
 	wxID_LOWEST
 	wxID_OPEN
 	wxID_CLOSE

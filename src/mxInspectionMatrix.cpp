@@ -272,6 +272,7 @@ void mxInspectionMatrix::OnResize(wxSizeEvent &evt) {
 		}
 	}
 	evt.Skip();
+	Refresh();
 }
 
 void mxInspectionMatrix::OnColResize(wxGridSizeEvent &evt) {

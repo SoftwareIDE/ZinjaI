@@ -56,7 +56,7 @@ struct GprofData {
 					t.cumulative_seconds=atof(vals[1].c_str());
 					t.self_seconds=atof(vals[2].c_str());
 					t.calls=atoi(vals[3].c_str());
-					t.self_s_calls=atof(vals[3].c_str());
+					t.self_s_calls=atof(vals[4].c_str());
 					t.total_s_calls=atof(vals[5].c_str());
 					t.name=vals[6];
 					table.push_back(t);
@@ -127,9 +127,9 @@ struct GprofData {
 		if (col==0) sort(table.begin(),table.end(),cmp_percent_time);
 		if (col==1) sort(table.begin(),table.end(),cmp_cumulative_seconds);
 		if (col==2) sort(table.begin(),table.end(),cmp_self_seconds);
-		if (col==3) sort(table.begin(),table.end(),cmp_self_s_calls);
-		if (col==4) sort(table.begin(),table.end(),cmp_total_s_calls);
-		if (col==5) sort(table.begin(),table.end(),cmp_calls);
+		if (col==3) sort(table.begin(),table.end(),cmp_calls);
+		if (col==4) sort(table.begin(),table.end(),cmp_self_s_calls);
+		if (col==5) sort(table.begin(),table.end(),cmp_total_s_calls);
 		if (col==6) sort(table.begin(),table.end(),cmp_name);
 		if (!asc) reverse(table.begin(),table.end());
 	}
