@@ -48,7 +48,9 @@ BEGIN_EVENT_TABLE(mxNewWizard, wxDialog)
 END_EVENT_TABLE()
 
 mxNewWizard::mxNewWizard(mxMainWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, LANG(CAPTION_NEW_FILE_WIZARD,"Nuevo Archivo"), pos, size, style) {
+
 	
+	templates_default=-1;
 	project_internal_folder_change=true;
 	project_full_path=NULL;
 	
@@ -627,8 +629,7 @@ void mxNewWizard::OnButtonNext(wxCommandEvent &event){
 		ProjectCreate();
 	} else if (panel==panel_templates) {
 		int i=templates_list->GetSelection();
-		if (i<0 && i>=(int)file_templates.GetCount())
-			return;
+		if (i<0 || i>=(int)file_templates.GetCount()) return;
 		mxSource *source = main_window->NewFileFromTemplate(file_templates[i]);
 		if (templates_check->GetValue()) {
 			config->Files.default_template=file_templates[i];
