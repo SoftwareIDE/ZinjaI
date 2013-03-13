@@ -41,24 +41,26 @@ struct GprofData {
 		ifstream fin(fname);
 		string s;
 		int status=0; // 1=1er tabla, 2=calls_pre, 3=calls_post
+		int name_col;
 		graph_node node;
 		while (getline(fin,s)) {
 			if (status==0) {
 				// cabecera de la primer tabla
-				if (s.find("s/call")!=string::npos) status=1;
+				name_col=s.find("name");
+				if (s.find("s/call")!=string::npos && name_col!=string::npos) status=1;
 			} else if (status==1) {
 				// gran tabla por funciones
-				string vals[7]; 
-				cut(s,vals,7);
-				if (vals[6].size()) {
-					tm_item t;
+				if (s.size()>name_col) {
+					tm_item t; t.name=s.substr(name_col);
+					s.erase(name_col);
+					string vals[6]; 
+					cut(s,vals,6);
 					t.percent_time=atof(vals[0].c_str());
 					t.cumulative_seconds=atof(vals[1].c_str());
 					t.self_seconds=atof(vals[2].c_str());
 					t.calls=atoi(vals[3].c_str());
 					t.self_s_calls=atof(vals[4].c_str());
 					t.total_s_calls=atof(vals[5].c_str());
-					t.name=vals[6];
 					table.push_back(t);
 				} else status=2;
 			} else if (status==2) {
