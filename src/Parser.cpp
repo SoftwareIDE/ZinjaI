@@ -17,6 +17,7 @@
 #include "mxCompiler.h"
 #include "CodeHelper.h"
 #include "execution_workaround.h"
+#include <wx/txtstrm.h>
 
 Parser *parser;
 //wxTreeCtrl* symbol_tree;
@@ -104,13 +105,13 @@ bool Parser::ParseNextSource(mxSource *src, bool dontsave) {
 	if (source->sin_titulo) {
 		if (!dontsave)
 			source->SaveTemp();
-		ParseNextFile(source->temp_filename,source->temp_filename.GetFullPath());
+		ParseNextFileStart(source->temp_filename,source->temp_filename.GetFullPath());
 	} else {
 		if (source->GetModify() && !dontsave) {
 			source->SaveTemp();
-			ParseNextFile(source->temp_filename,source->source_filename.GetFullPath());
+			ParseNextFileStart(source->temp_filename,source->source_filename.GetFullPath());
 		} else {
-			ParseNextFile(source->source_filename,source->source_filename.GetFullPath());
+			ParseNextFileStart(source->source_filename,source->source_filename.GetFullPath());
 		}
 	}
 	return true;
@@ -334,224 +335,243 @@ wxString Parser::JoinNames(wxString types, wxString names) {
 }
 
 
-bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
+long Parser::ParseNextFileStart(wxFileName filename, wxString HashName) {
 	if (!compiler->IsCompiling())
 		main_window->SetStatusText(wxString(LANG(PARSER_PARSING_FILE_PRE,"Analizando \""))<<HashName<<LANG(PARSER_PARSING_FILE_POST,"\"..."));
-	pd_file *file;
-	pd_class *aux_class=NULL;
-	PD_REGISTER_FILE(file, HashName,filename.GetModificationTime());
-	if (!filename.FileExists()) { file->Purge(); return false; }
-	unsigned int props;
-	wxString my_home=DIR_PLUS_FILE(home,filename.GetPath());
-	wxArrayString output;
-	mxExecute(wxString(config->Files.parser_command)<<_T(" \"")<<filename.GetFullPath()<<_T("\""), output, wxEXEC_SYNC|wxEXEC_NODISABLE);
-	long int id, line;
-	wxString s,name,aux,key,par,fullproto, fullpar;
-	int p[15], ii, jj, kk;
-	int dectype, postype, auxtype; // para las flags de private, public,protected, static y const en miembros
-	// int ch_ini; bool ch_bool;
-	for (int i=0, j=output.GetCount();i<j;i++) {
-		s=output[i];
-		if (s.GetChar(1)==';') {
-			id = s.GetChar(0)-'0';
-			p[0]=1;
-		} else if (s.GetChar(2)==';') {
-			id = (s.GetChar(0)-'0')*10+output[i].GetChar(1)-'0';
-			p[0]=2;
-		} else id=-1;
-		if (id!=-1) {
-			for (ii=p[0]+1, jj=s.Len(), kk=1;ii<jj;ii++) {
-				if (s[ii]==';' || s[ii]==1) {
-					p[kk++]=ii;
-					if (kk==10) break;
-				}
-			}
-			p[kk]=ii;
-			switch (id) {
-			case PAF_TYPE_DEF:
-			case PAF_MACRO_DEF:
-				name=PARSER_PARTE(0);
-				if (id==PAF_MACRO_DEF) {
-					aux=PARSER_PARTE_NB(5); // "-" indica que es typedef o macro de una linea (el parser da el valor, para UnMacro)
-					key=PARSER_PARTE_NB(6); 
-				} else { 
-					aux="-"; // "-" indica que es typedef o macro de una linea (el parser da el valor, para UnMacro)
-					key=PARSER_PARTE_NB(5);
-				}
-				PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
-				PD_REGISTER_MACRO(file,line,name,key,aux,id==PAF_TYPE_DEF);
-				break;
-			case PAF_FUNC_DEF:
-				key=PARSER_PARTE(0);
-				if (key=="NULL") break;
-				if (key[0]=='<') key=key.AfterLast('>');
-				name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
-				fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
-				PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
-				PD_REGISTER_FUNCTION_DEF(file,line,key,name,fullproto);
-				break;
-			case PAF_FUNC_DCL:
-				key=PARSER_PARTE(0);
-				if (key=="NULL") break;
-				if (key[0]=='<') key=key.AfterLast('>');
-				name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
-				fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
-				PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
-				PD_REGISTER_FUNCTION_DEC(file,line,key,name,fullproto);
-				break;
-			case PAF_CLASS_DEF:
-			case PAF_UNION_DEF:
-				name=PARSER_PARTE(0);
-				key=PARSER_PARTE_NB(6);
-				PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
-				PD_REGISTER_CLASS_DEF(aux_class,file,line,name,key,id==PAF_UNION_DEF);
-				break;
-			case PAF_GLOB_VAR_DEF:
-				name=PARSER_PARTE(0);
-				PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
-				key=PARSER_PARTE_NB(5);
-				if (key=="NULL") break;
-				props=0;
-				if (key.Left(9)==_T("volatile ")) {
-					key=key.Mid(9);
-					props=PD_CONST_VOLATILE;
-				}
-				if (!PARSER_PARTE_NB(6).Len()) {
-					PD_REGISTER_GLOBAL(file,line,key,name,props);
-				}
-				break;
-			case PAF_MBR_FUNC_DEF:
-				aux=PARSER_PARTE(0);
-				key=PARSER_PARTE_NB(6);
-				props=0;
-				PARSER_PARTE(2).ToLong(&line);
-				name=PARSER_PARTE(1);
-				par=PARSER_PARTE_NB(7);
-				fullpar=JoinNames(par,PARSER_PARTE_NB(8));
-				if (name[0]=='<') name=name.AfterLast('>');
-				if (name[0]=='~')
-					props|=PD_CONST_DESTRUCTOR;
-				else if (name==aux)
-					props=PD_CONST_CONSTRUCTOR;
-				else if (key=="NULL") break;
-				dectype=0; auxtype=1; postype=p[6]-1;
-				while (s[postype]!='x'&&s[postype]!=1) {
-					if (s[postype]>='a')
-						dectype+=(s[postype]-'a'+10)*auxtype; 
-					else
-						dectype+=(s[postype]-'0')*auxtype; 
-					postype--;
-					auxtype*=16;
-				}
-				if (dectype&PAF_VIRTUAL) { props|=PD_CONST_VIRTUAL; key.Replace("virtual ","",false); }
-				if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
-				else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
-				else props|=PD_CONST_PUBLIC;
-				if (dectype&PAF_STATIC) props|=PD_CONST_STATIC;
-				if (dectype&PAF_CONST_OR_VOLATILE) props|=PD_CONST_CONST;
-				PD_REGISTER_METHOD_DEF(aux_class,file,line,key,aux,name,par,fullpar,props);
-				break;
-			case PAF_MBR_FUNC_DCL:
-				aux=PARSER_PARTE(0);
-				key=PARSER_PARTE_NB(6);
-				props=0;
-				PARSER_PARTE(2).ToLong(&line);
-				name=PARSER_PARTE(1);
-				par=PARSER_PARTE_NB(7);
-				fullpar=JoinNames(par,PARSER_PARTE_NB(8));
-				if (name[0]=='<') name=name.AfterLast('>');
-				if (name[0]=='~')
-					props|=PD_CONST_DESTRUCTOR;
-				else if (name==aux)
-					props=PD_CONST_CONSTRUCTOR;
-				else if (key=="NULL") break;
-				dectype=0; auxtype=1; postype=p[6]-1;
-				while (s[postype]!='x'&&s[postype]!=1) {
-					if (s[postype]>='a')
-						dectype+=(s[postype]-'a'+10)*auxtype; 
-					else
-						dectype+=(s[postype]-'0')*auxtype; 
-					postype--;
-					auxtype*=16;
-				}
-				if (dectype&PAF_VIRTUAL) { props|=PD_CONST_VIRTUAL; key.Replace("virtual ","",false); }
-				if (dectype&PAF_VIRTUAL_PURE) props|=PD_CONST_VIRTUAL_PURE;
-				if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
-				else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
-				else props|=PD_CONST_PUBLIC;
-				if (dectype&PAF_STATIC) props|=PD_CONST_STATIC;
-				if (dectype&PAF_CONST_OR_VOLATILE) props|=PD_CONST_CONST;
-				PD_REGISTER_METHOD_DEC(aux_class,file,line,key,aux,name,par,fullpar,props);
-				break;
-			case PAF_MBR_VAR_DEF:
-				aux=PARSER_PARTE(0);
-				name=PARSER_PARTE(1);
-				PARSER_PARTE(2).ToLong(&line);
-				key=PARSER_PARTE_NB(6);
-				if (key=="NULL") break;
-				props=0;
-				if (key.Left(9)==_T("volatile ")) {
-					key=key.Mid(9);
-					props=PD_CONST_VOLATILE;
-				}
-				dectype=0; auxtype=1; postype=p[6]-1;
-				while (s[postype]!='x'&&s[postype]!=1) {
-					if (s[postype]>='a')
-						dectype+=(s[postype]-'a'+10)*auxtype; 
-					else
-						dectype+=(s[postype]-'0')*auxtype; 
-					postype--;
-					auxtype*=16;
-				}
-				if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
-				else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
-				else props|=PD_CONST_PUBLIC;
-				if (dectype&PAF_STATIC) props|=PD_CONST_STATIC;
-				if (dectype&PAF_CONST_OR_VOLATILE) props|=PD_CONST_VOLATILE;
-				PD_REGISTER_ATTRIB(aux_class,file,line,aux,key,name,props);
-				break;
-			case PAF_INCLUDE_DEF: 
-//				if (follow_includes) {
-//					wxFileName inc_file(DIR_PLUS_FILE(my_home,PARSER_PARTE(0)));
-//					if (inc_file.FileExists()) {
-//						parser_filename *it=first_file;
-//						bool found=first_file->name==inc_file;
-//						ML_ITERATE(it)
-//							if (found=(it->name==inc_file)) 
-//							break;
-//						if (!found)
-//							ParseNextFile(it->next=new parser_filename(inc_file));
-//					}
-//				}
-				break;
-			case PAF_CLASS_INHERIT:
-				name=PARSER_PARTE(1);
-				key=PARSER_PARTE(0);
-				code_helper->UnMacro(name);
-				code_helper->UnTemplate(name);
-				switch (s[p[5]+3]) {
-				case '4':
-					PD_REGISTER_INHERIT(file,name,key,PD_CONST_PUBLIC);
-					break;
-				case '2':
-					PD_REGISTER_INHERIT(file,name,key,PD_CONST_PROTECTED);
-					break;
-				case '1':
-					PD_REGISTER_INHERIT(file,name,key,PD_CONST_PRIVATE);
-					break;
-				default:
-					PD_REGISTER_INHERIT(file,name,key,0);
-					break;
-				}
-				break;
-			}
-			
+	process=new mxParserProcess;
+	PD_REGISTER_FILE(process->file, HashName,filename.GetModificationTime());
+	if (!filename.FileExists()) { process->file->Purge(); return false; }
+	return wxExecute(wxString(config->Files.parser_command)<<_T(" \"")<<filename.GetFullPath()<<_T("\""),wxEXEC_ASYNC,process);
+}
+
+void Parser::ParseNextFileContinue(const wxString &s) {
+	
+	// toda linea de cbrowser empieza con un entero indicando que es, de 1 o 2 digitos, seguido por punto y coma
+	int id, p[15];
+	if (s.GetChar(1)==';') {
+		id = s.GetChar(0)-'0';
+		p[0]=1;
+	} else if (s.GetChar(2)==';') {
+		id = (s.GetChar(0)-'0')*10+s.GetChar(1)-'0';
+		p[0]=2;
+	} else return;
+	
+	// "cortar" las partes de la linea, separadas por ';' o 1. En p[i] se guardan las posiciones de estos caracteres de separacion
+	int ii, jj, kk;
+	for (ii=p[0]+1, jj=s.Len(), kk=1;ii<jj;ii++) {
+		if (s[ii]==';' || s[ii]==1) {
+			p[kk++]=ii;
+			if (kk==10) break;
 		}
 	}
-	file->Purge();
+	p[kk]=ii;
 	
-	return true;
+	long int line;
+	// segun el id, ver que significa
+	switch (id) {
+			
+		case PAF_TYPE_DEF:
+		case PAF_MACRO_DEF: {
+			wxString name=PARSER_PARTE(0),aux,key;
+			if (id==PAF_MACRO_DEF) {
+				aux=PARSER_PARTE_NB(5); // "-" indica que es typedef o macro de una linea (el parser da el valor, para UnMacro)
+				key=PARSER_PARTE_NB(6); 
+			} else { 
+				aux="-"; // "-" indica que es typedef o macro de una linea (el parser da el valor, para UnMacro)
+				key=PARSER_PARTE_NB(5);
+			}
+			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
+			PD_REGISTER_MACRO(process->file,line,name,key,aux,id==PAF_TYPE_DEF);
+			break;
+		}
+			
+		case PAF_FUNC_DEF: {
+			wxString key=PARSER_PARTE(0);
+			if (key=="NULL") break;
+			if (key[0]=='<') key=key.AfterLast('>');
+			wxString name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
+			wxString fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
+			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
+			PD_REGISTER_FUNCTION_DEF(process->file,line,key,name,fullproto);
+			break;
+		}
+			
+		case PAF_FUNC_DCL: {
+			wxString key=PARSER_PARTE(0);
+			if (key=="NULL") break;
+			if (key[0]=='<') key=key.AfterLast('>');
+			wxString name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
+			wxString fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
+			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
+			PD_REGISTER_FUNCTION_DEC(process->file,line,key,name,fullproto);
+			break;
+		}
+			
+		case PAF_CLASS_DEF:
+		case PAF_UNION_DEF: {
+			wxString name=PARSER_PARTE(0);
+			wxString key=PARSER_PARTE_NB(6);
+			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
+			PD_REGISTER_CLASS_DEF(process->aux_class,process->file,line,name,key,id==PAF_UNION_DEF);
+			break;
+		}
+			
+		case PAF_GLOB_VAR_DEF: {
+			wxString name=PARSER_PARTE(0);
+			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
+			wxString key=PARSER_PARTE_NB(5);
+			if (key=="NULL") break;
+			unsigned int props=0;
+			if (key.Left(9)==_T("volatile ")) {
+				key=key.Mid(9);
+				props=PD_CONST_VOLATILE;
+			}
+			if (!PARSER_PARTE_NB(6).Len()) {
+				PD_REGISTER_GLOBAL(process->file,line,key,name,props);
+			}
+			break;
+		}
+			
+		case PAF_MBR_FUNC_DEF: {
+			wxString aux=PARSER_PARTE(0);
+			wxString key=PARSER_PARTE_NB(6);
+			unsigned int props=0;
+			PARSER_PARTE(2).ToLong(&line);
+			wxString name=PARSER_PARTE(1);
+			wxString par=PARSER_PARTE_NB(7);
+			wxString fullpar=JoinNames(par,PARSER_PARTE_NB(8));
+			if (name[0]=='<') name=name.AfterLast('>');
+			if (name[0]=='~')
+				props|=PD_CONST_DESTRUCTOR;
+			else if (name==aux)
+				props=PD_CONST_CONSTRUCTOR;
+			else if (key=="NULL") break;
+			int dectype=0, auxtype=1, postype=p[6]-1;
+			while (s[postype]!='x'&&s[postype]!=1) {
+				if (s[postype]>='a')
+					dectype+=(s[postype]-'a'+10)*auxtype; 
+				else
+					dectype+=(s[postype]-'0')*auxtype; 
+				postype--;
+				auxtype*=16;
+			}
+			if (dectype&PAF_VIRTUAL) { props|=PD_CONST_VIRTUAL; key.Replace("virtual ","",false); }
+			if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
+			else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
+			else props|=PD_CONST_PUBLIC;
+			if (dectype&PAF_STATIC) props|=PD_CONST_STATIC;
+			if (dectype&PAF_CONST_OR_VOLATILE) props|=PD_CONST_CONST;
+			PD_REGISTER_METHOD_DEF(process->aux_class,process->file,line,key,aux,name,par,fullpar,props);
+			break;
+		}
+			
+		case PAF_MBR_FUNC_DCL: {
+			wxString aux=PARSER_PARTE(0);
+			wxString key=PARSER_PARTE_NB(6);
+			unsigned int props=0;
+			PARSER_PARTE(2).ToLong(&line);
+			wxString name=PARSER_PARTE(1);
+			wxString par=PARSER_PARTE_NB(7);
+			wxString fullpar=JoinNames(par,PARSER_PARTE_NB(8));
+			if (name[0]=='<') name=name.AfterLast('>');
+			if (name[0]=='~')
+				props|=PD_CONST_DESTRUCTOR;
+			else if (name==aux)
+				props=PD_CONST_CONSTRUCTOR;
+			else if (key=="NULL") break;
+			int dectype=0, auxtype=1, postype=p[6]-1;
+			while (s[postype]!='x'&&s[postype]!=1) {
+				if (s[postype]>='a')
+					dectype+=(s[postype]-'a'+10)*auxtype; 
+				else
+					dectype+=(s[postype]-'0')*auxtype; 
+				postype--;
+				auxtype*=16;
+			}
+			if (dectype&PAF_VIRTUAL) { props|=PD_CONST_VIRTUAL; key.Replace("virtual ","",false); }
+			if (dectype&PAF_VIRTUAL_PURE) props|=PD_CONST_VIRTUAL_PURE;
+			if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
+			else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
+			else props|=PD_CONST_PUBLIC;
+			if (dectype&PAF_STATIC) props|=PD_CONST_STATIC;
+			if (dectype&PAF_CONST_OR_VOLATILE) props|=PD_CONST_CONST;
+			PD_REGISTER_METHOD_DEC(process->aux_class,process->file,line,key,aux,name,par,fullpar,props);
+			break;
+		}
+			
+		case PAF_MBR_VAR_DEF: {
+			wxString aux=PARSER_PARTE(0);
+			wxString name=PARSER_PARTE(1);
+			PARSER_PARTE(2).ToLong(&line);
+			wxString key=PARSER_PARTE_NB(6);
+			if (key=="NULL") break;
+			unsigned int props=0;
+			if (key.Left(9)==_T("volatile ")) {
+				key=key.Mid(9);
+				props=PD_CONST_VOLATILE;
+			}
+			int dectype=0, auxtype=1, postype=p[6]-1;
+			while (s[postype]!='x'&&s[postype]!=1) {
+				if (s[postype]>='a')
+					dectype+=(s[postype]-'a'+10)*auxtype; 
+				else
+					dectype+=(s[postype]-'0')*auxtype; 
+				postype--;
+				auxtype*=16;
+			}
+			if (dectype&PAF_PRIVATE) props|=PD_CONST_PRIVATE;
+			else if (dectype&PAF_PROTECTED) props|=PD_CONST_PROTECTED;
+			else props|=PD_CONST_PUBLIC;
+			if (dectype&PAF_STATIC) props|=PD_CONST_STATIC;
+			if (dectype&PAF_CONST_OR_VOLATILE) props|=PD_CONST_VOLATILE;
+			PD_REGISTER_ATTRIB(process->aux_class,process->file,line,aux,key,name,props);
+			break;
+		}
 	
+		case PAF_INCLUDE_DEF: {
+	//				if (follow_includes) {
+	//					wxFileName inc_file(DIR_PLUS_FILE(my_home,PARSER_PARTE(0)));
+	//					if (inc_file.FileExists()) {
+	//						parser_filename *it=first_file;
+	//						bool found=first_file->name==inc_file;
+	//						ML_ITERATE(it)
+	//							if (found=(it->name==inc_file)) 
+	//							break;
+	//						if (!found)
+	//							ParseNextFile(it->next=new parser_filename(inc_file));
+	//					}
+	//				}
+			break;
+		}
+	
+		case PAF_CLASS_INHERIT: {
+			wxString name=PARSER_PARTE(1);
+			wxString key=PARSER_PARTE(0);
+			code_helper->UnMacro(name);
+			code_helper->UnTemplate(name);
+			switch (s[p[5]+3]) {
+			case '4':
+				PD_REGISTER_INHERIT(process->file,name,key,PD_CONST_PUBLIC);
+				break;
+			case '2':
+				PD_REGISTER_INHERIT(process->file,name,key,PD_CONST_PROTECTED);
+				break;
+			case '1':
+				PD_REGISTER_INHERIT(process->file,name,key,PD_CONST_PRIVATE);
+				break;
+			default:
+				PD_REGISTER_INHERIT(process->file,name,key,0);
+				break;
+			}
+			break;
+		}
+	}	
+}
+
+void Parser::ParseNextFileEnd() { ///< to be called when an asyn process from ParseNextFile ends
+	process->file->Purge();
+	delete process; process=NULL;
+	ParseSomething(false);
 }
 
 void Parser::ParseDeleteFile(wxString fname) {
@@ -588,71 +608,88 @@ bool Parser::RenameFile(wxString oldname, wxString newname) {
 	return true;
 }
 
-bool Parser::Parse(bool show_progress) {
+void Parser::Parse(bool show_progress) {
+	ParseSomething(true,show_progress);
+}
+
+/// if first==true, then consider arg_show_progress, else consider last valid arg_show_progress
+void Parser::ParseSomething(bool first, bool arg_show_progress) {
+	
+	static bool show_progress=false;
+	static int progress_total=0,progress_now=0;
+	if (first) {
+		show_progress=arg_show_progress;
+		if (show_progress) {
+			list<parserAction>::iterator it=actions.begin();
+			while (it!=actions.end()) { ++progress_total; ++it; }
+			if (progress_total>0) main_window->SetStatusProgress(0);
+		}
+	}
 	
 	working = true;
-	int progress_total=0,progress_now=0;
-	if (show_progress) {
-		list<parserAction>::iterator it=actions.begin();
-		while (it!=actions.end()) { ++progress_total; ++it; }
-		if (progress_total>0) main_window->SetStatusProgress(0);
+	if (!actions.empty()) {
+		bool async=false; // si un paso lanza un proceso asincrono, esta bandera lo indica, para cortar el loop y esperar el evento terminate de ese proceso
+		do {
+			list<parserAction>::iterator it=actions.begin();
+			parserAction pa=*it; actions.erase(it);
+			if (debug->debugging || should_stop) {
+				working=false;
+	//			symbol_tree->Thaw();
+				if (show_progress) main_window->SetStatusProgress(-1);
+				return;
+			}
+			switch(pa.action) {
+			case 'c':
+				ParseNextCleanAll();
+				break;
+			case 'p':
+				if (pa.ptr==project) { 
+					ParseNextFileStart(pa.str,pa.str); 
+					async=true;
+				}
+				break;
+			case 'f':
+				ParseNextFileStart(pa.str,pa.str);
+				async=true;
+				break;
+			case 'd':
+				ParseDeleteFile(pa.str);
+				break; // este break faltaba, era adrede o error?
+			case 's':
+				ParseNextSource((mxSource*)pa.ptr,pa.flag);
+				async=true;
+				break;
+			}
+			if (show_progress) { main_window->SetStatusProgress((100*(++progress_now))/progress_total); }
+		} while (!async && !actions.empty());
+		if (!async) ParseSomething(false,false);
+	} else {
+		working = false;
+		symbol_tree->SortChildren(item_classes);
+		symbol_tree->SortChildren(item_globals);
+		symbol_tree->SortChildren(item_macros);
+		symbol_tree->SortChildren(item_functions);
+	//	symbol_tree->Expand(item_functions);
+	//	symbol_tree->Expand(item_globals);
+	//	symbol_tree->Expand(item_macros);
+	//	symbol_tree->Expand(item_classes);
+	//	symbol_tree->Thaw();
+		if (main_window && !compiler->IsCompiling())
+			main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
+		switch (on_end) {
+		case POE_AUTOUPDATE_WXFB:
+			if (project) project->WxfbAutoCheck();
+			break;
+		case POE_DRAWCLASSES:
+			new mxDrawClasses;
+			break;
+		default:
+			;
+		}
+		if (show_progress) main_window->SetStatusProgress(-1);
+		on_end = POE_NONE;
 	}
 	
-	list<parserAction>::iterator it;
-	parserAction pa;
-//	symbol_tree->Freeze();
-	while ((it=actions.begin())!=actions.end()) {
-		pa=*it; actions.erase(it);
-		if (debug->debugging || should_stop) {
-			working=false;
-//			symbol_tree->Thaw();
-			if (show_progress) main_window->SetStatusProgress(-1);
-			return false;
-		}
-		switch(pa.action) {
-		case 'c':
-			ParseNextCleanAll();
-			break;
-		case 'p':
-			if (pa.ptr==project)
-				ParseNextFile(pa.str,pa.str);
-			break;
-		case 'f':
-			ParseNextFile(pa.str,pa.str);
-			break;
-		case 'd':
-			ParseDeleteFile(pa.str);
-		case 's':
-			ParseNextSource((mxSource*)pa.ptr,pa.flag);
-			break;
-		}
-		if (show_progress) { main_window->SetStatusProgress((100*(++progress_now))/progress_total); }
-	}
-	working = false;
-	symbol_tree->SortChildren(item_classes);
-	symbol_tree->SortChildren(item_globals);
-	symbol_tree->SortChildren(item_macros);
-	symbol_tree->SortChildren(item_functions);
-//	symbol_tree->Expand(item_functions);
-//	symbol_tree->Expand(item_globals);
-//	symbol_tree->Expand(item_macros);
-//	symbol_tree->Expand(item_classes);
-//	symbol_tree->Thaw();
-	if (main_window && !compiler->IsCompiling())
-		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
-	switch (on_end) {
-	case POE_AUTOUPDATE_WXFB:
-		if (project) project->WxfbAutoCheck();
-		break;
-	case POE_DRAWCLASSES:
-		new mxDrawClasses;
-		break;
-	default:
-		;
-	}
-	if (show_progress) main_window->SetStatusProgress(-1);
-	on_end = POE_NONE;
-	return true;
 }
 
 void Parser::CleanAll() {
@@ -732,3 +769,16 @@ bool Parser::GetFather(wxString child, pd_inherit *&father) {
 	while (father && father->son!=child) father=father->next;
 	return father;
 }
+
+void mxParserProcess::OnTerminate (int pid, int status) {
+	ParseOutput();
+	parser->ParseNextFileEnd();
+}
+
+void mxParserProcess::ParseOutput ( ) {
+	wxTextInputStream input(*GetInputStream());
+	while ( IsInputAvailable() ) {
+		parser->ParseNextFileContinue(input.ReadLine());
+	}
+}
+

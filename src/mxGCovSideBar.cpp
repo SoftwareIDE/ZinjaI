@@ -38,14 +38,14 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 			dc.DrawRectangle(0,y,mw,lh);
 		}
 		int h=hits[l++];
-		double hp=h+1;
-		int r=hp>=m2?255:(hp)*255/m2;
-		int g=hp>=m2?(128-(hp-m2)*128/m2):128;
-		dc.SetTextForeground(wxColour(r,g,0));
-		wxString text;
-		if (h>=0) {
-			if (h==0) text="#####";
-			else if (h>=0) text<<h;
+		if (h>0) {
+			double hp=h;
+			int r=hp>=m2?255:(hp)*255/m2;
+			int g=hp>=m2?(128-(hp-m2)*128/m2):128;
+			wxString text;
+			if (h==1) { text="#####"; r=g=0; }
+			else if (h>=0) text<<h-1;
+			dc.SetTextForeground(wxColour(r,g,0));
 			int tw,th;
 			GetTextExtent(text,&tw,&th);
 			dc.DrawText(text,mw-5-tw,y);
@@ -74,6 +74,7 @@ bool mxGCovSideBar::LoadData (mxSource * src) {
 	if (!fil.Exists()) return true; else fil.Open();
 	if (!fil.GetLineCount()) return true;
 		
+	// los valores de hits son los nros de gcov+1, para que 0 sea que la linea no existe (para poder inicializar todo con memset), entonces 1 es que existe pero no se ejecuta, y n es que se ejecuta n-1 veces
 	hits=new int[line_count=fil.GetLineCount()+1];
 	memset(hits,0,sizeof(int)*line_count);
 	hits_max=0;
@@ -81,10 +82,10 @@ bool mxGCovSideBar::LoadData (mxSource * src) {
 		long l=0,h;
 		if (!line.AfterFirst(':').BeforeFirst(':').ToLong(&l) || l==0 ||l>=line_count) continue;
 		line=line.BeforeFirst(':');
-		if (line.Last()=='#') hits[l-1]=0;
-		else if (line.Last()=='-') hits[l-1]=-1;
+		if (line.Last()=='#') hits[l-1]=1;
+		else if (line.Last()=='-') hits[l-1]=0;
 		else if (line.ToLong(&h)) {
-			hits[l-1]=h;
+			hits[l-1]=h+1;
 			if (h>hits_max) hits_max=h;
 		}
 	}

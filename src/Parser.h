@@ -7,6 +7,7 @@
 #include <wx/filename.h>
 #include <map>
 #include <list>
+#include <wx/process.h>
 using namespace std;
 
 #include "paf_defs.h"
@@ -67,10 +68,12 @@ struct parserAction {
 	}
 };
 
+class mxParserProcess;
 
 class Parser {
 
 public:
+	mxParserProcess *process; ///< curren async process (launched by ParseNextFile, interrupting ParseSomething, and waiting to call ParseContinue on termination)
 	
 	parser_on_end on_end;
 	wxTreeCtrl* symbol_tree;
@@ -130,8 +133,9 @@ public:
 	list<parserAction> actions;
 	void ParseSource(mxSource *src, bool dontsave=false);
 	bool ParseNextSource(mxSource *src, bool dontsave=false);
-	bool ParseNextProjectFile(mxSource *src, bool dontsave=false);
-	bool ParseNextFile (wxFileName filename, wxString hashName);
+	long ParseNextFileStart (wxFileName filename, wxString hashName);
+	void ParseNextFileContinue(const wxString &s); ///< to be called when an asyn process from ParseNextFile have some output
+	void ParseNextFileEnd(); ///< to be called when an asyn process from ParseNextFile ends
 	void ParseDeleteFile (wxString file);
 	void ParseFile(wxString filename);
 	bool RenameSource(mxSource *src, wxFileName newename);
@@ -141,7 +145,9 @@ public:
 	void ParseProject(bool show_progress=false);
 	void CleanAll();
 	bool ParseNextCleanAll();
-	bool Parse(bool show_progress=false);
+	
+	void Parse(bool show_progress=false);
+	void ParseSomething(bool first, bool arg_show_progress=false);
 
 	void OnSelectSymbol (wxTreeEvent &event, wxAuiNotebook *notebook);
 	void OnPopupMenu (wxTreeEvent &event, wxAuiNotebook *notebook);
@@ -165,5 +171,14 @@ public:
 };
 
 extern Parser *parser;
+
+class mxParserProcess:public wxProcess {
+public:
+	pd_file *file; pd_class *aux_class;
+	mxParserProcess():wxProcess(wxPROCESS_REDIRECT),file(NULL),aux_class(NULL){}
+	void OnTerminate(int pid, int status);
+	void ParseOutput();
+};
+
 
 #endif

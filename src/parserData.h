@@ -462,8 +462,8 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 		if (pd_it==h_classes.end() || !pd_it->second->prev) {\
 			pd_aux = new pd_class(last_class, afile, aline, aname, atempl, last_class->next); \
 			PD_INSERT(last_class,pd_aux); \
-			PD_ADD_REF(file->first_class, afile->counter, pd_aux); \
-			pd_aux->ref = file->first_class->next; \
+			PD_ADD_REF(afile->first_class, afile->counter, pd_aux); \
+			pd_aux->ref = afile->first_class->next; \
 			h_classes[name] = pd_aux; \
 		} else { \
 			pd_aux = pd_it->second; \
@@ -480,8 +480,8 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 			PD_TREE_SET_CLASS(pd_aux->item); \
 		pd_aux->file = afile; \
 		pd_aux->line = aline; \
-		PD_ADD_REF(file->first_class, afile->counter, pd_aux); \
-		pd_aux->ref = file->first_class->next; \
+		PD_ADD_REF(afile->first_class, afile->counter, pd_aux); \
+		pd_aux->ref = afile->first_class->next; \
 	} \
 	pd_aux->is_union=ais_union; \
 }
