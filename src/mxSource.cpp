@@ -2,6 +2,7 @@
 #include <wx/encconv.h>
 #include <iostream>
 #include <wx/file.h>
+#include "mxGCovSideBar.h"
 using namespace std;
 #include "mxSource.h"
 #include "mxUtils.h"
@@ -100,6 +101,8 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_LEFT_DOWN(mxSource::OnClick)
 	EVT_RIGHT_DOWN(mxSource::OnPopupMenu)
 	EVT_STC_ROMODIFYATTEMPT (wxID_ANY, mxSource::OnModifyOnRO)
+	
+	EVT_STC_PAINTED(wxID_ANY, mxSource::OnPainted)
 	
 	EVT_KEY_DOWN(mxSource::OnKeyDown)
 	
@@ -745,7 +748,7 @@ bool mxSource::LoadFile (const wxFileName &filename) {
 	cpp_or_just_c = source_filename.GetExt().Lower()!="c";
 	working_folder = filename.GetPath();
 	if (project)
-		binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+_T(".o");
+		binary_filename="binary_filename_not_seted";
 	else
 		binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+_T(BINARY_EXTENSION);
 	SetReadOnly(false);
@@ -3458,3 +3461,16 @@ wxString mxSource::GetParsedCompilerOptions() {
 bool mxSource::IsCppOrJustC() {
 	return cpp_or_just_c;
 }
+
+wxFileName mxSource::GetBinaryFileName ( ) {
+	if (project && !sin_titulo) 
+		return DIR_PLUS_FILE(project->GetTempFolder(),source_filename.GetName()+_T(".o"));
+	else
+		return binary_filename;
+}
+
+void mxSource::OnPainted (wxStyledTextEvent & event) {
+	event.Skip();
+	if (main_window->gcov_sidebar) main_window->gcov_sidebar->ShouldRefresh(this);
+}
+

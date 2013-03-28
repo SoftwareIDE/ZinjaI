@@ -65,6 +65,7 @@
 #include "Toolchain.h"
 #include "CodeHelper.h"
 #include <iostream>
+#include "mxGCovSideBar.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -406,6 +407,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	preference_window=NULL;
 	valgrind_panel=NULL; 
 	beginner_panel=NULL;
+	gcov_sidebar=NULL;
 	diff_sidebar=NULL;
 	for (int i=0;i<ATH_COUNT;i++)
 		autohide_handlers[i]=NULL;
@@ -572,6 +574,8 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	Show(true);
 	Maximize(config->Init.maximized);
+	
+	ShowGCovSideBar();
 	
 }
 
@@ -1254,6 +1258,8 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 		if (!config->Init.autohiding_panels) compiler_tree.menuItem->Check(false);
 	} else if (event.pane->name == "diff_sidebar") {
 		aui_manager.DetachPane(diff_sidebar); diff_sidebar->Destroy(); diff_sidebar=NULL;
+	} else if (event.pane->name == "gcov_sidebar") {
+		aui_manager.DetachPane(gcov_sidebar); gcov_sidebar->Destroy(); gcov_sidebar=NULL;
 	} else if (event.pane->name == "left_panels")
 		menu.view_left_panels->Check(false);
 	else if (event.pane->name == "project_tree") {
@@ -2145,7 +2151,7 @@ void mxMainWindow::OnRunClean (wxCommandEvent &event) {
 	else IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
 		if (src->sin_titulo) return;
-		wxRemoveFile(src->binary_filename.GetFullPath());
+		wxRemoveFile(src->GetBinaryFileName().GetFullPath());
 	}
 }
 
@@ -2239,13 +2245,13 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 				}
 			}
 			
-			if (source->GetModify() || !wxFileName::FileExists(source->binary_filename.GetFullPath()) || source->binary_filename.GetModificationTime()<source->source_filename.GetModificationTime()) {
+			if (source->GetModify() || !source->GetBinaryFileName().FileExists() || source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime()) {
 				source->SaveSource();
 				compiler->CompileSource(source,true,false);
 			} else { // si no cambio nada, ver si cambiaron sus includes
 				if (source->GetModify())
 					source->SaveSource();
-				if (config->Running.check_includes && utils->AreIncludesUpdated(source->binary_filename.GetModificationTime(),CURRENT_SOURCE->source_filename)) {
+				if (config->Running.check_includes && utils->AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),CURRENT_SOURCE->source_filename)) {
 					compiler->CompileSource(source,true,false);
 				} else { // si no cambio nada, correr el ya compilado
 					RunSource(source);
@@ -2338,9 +2344,9 @@ void mxMainWindow::RunSource (mxSource *source) {
 	if (source->config_running.wait_for_key) command<<_T("-waitkey ");
 	command<<_T("\"")<<source->working_folder.GetFullPath()<<(source->working_folder.GetFullPath().Last()=='\\'?_T("\\\" "):_T("\" "));
 
-	compiler->CheckForExecutablePermision(source->binary_filename.GetFullPath());
+	compiler->CheckForExecutablePermision(source->GetBinaryFileName().GetFullPath());
 	
-	command<<exe_pref<<_T("\"")<<source->binary_filename.GetFullPath()<<_T("\"");
+	command<<exe_pref<<_T("\"")<<source->GetBinaryFileName().GetFullPath()<<_T("\"");
 //	utils->ParameterReplace(command,_T("${ZINJAI_DIR}"),wxGetCwd());
 	// agregar los argumentos de ejecucion
 	if (source->config_running.always_ask_args) {
@@ -2533,7 +2539,6 @@ void mxMainWindow::OnFileExportHtml (wxCommandEvent &event) {
 		if (dlg.ShowModal() == wxID_OK) {
 			project?project->last_dir:config->Files.last_dir=dlg.GetPath();
 			CodeExporter ce;
-			mxSource *source = CURRENT_SOURCE;
 			wxString title = notebook_sources->GetPageText(notebook_sources->GetSelection());
 			if (title.Last()=='*') 
 				title.RemoveLast();
@@ -5066,6 +5071,13 @@ void mxMainWindow::ShowDiffSideBar(bool bar, bool map) {
 	if (bar)
 		aui_manager.GetPane(toolbar_diff).Show();
 	if (bar||map) aui_manager.Update();
+}
+
+void mxMainWindow::ShowGCovSideBar() {
+	if (gcov_sidebar) return;
+	gcov_sidebar=new mxGCovSideBar(this);
+	aui_manager.AddPane(gcov_sidebar, wxAuiPaneInfo().Name(_T("gcov_sidebar")).Caption(_T("gcov")).Left().Row(3).Show());
+	aui_manager.Update();
 }
 
 mxSource *mxMainWindow::GetCurrentSource() {

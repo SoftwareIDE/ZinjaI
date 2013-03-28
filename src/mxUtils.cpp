@@ -27,6 +27,7 @@
 #define CTRL_BORDER 5
 
 #define min2(a,b) ((a)<(b)?(a):(b))
+#include "execution_workaround.h"
 
 bool zinjai_debug_mode=false;
 
@@ -529,14 +530,14 @@ int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits,bool kee
 
 int mxUtils::Execute(wxString path, wxString command, int sync) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
-	wxProcess *p=NULL;
+	static wxProcess *p=NULL;
 	return Execute(path,command,sync,p);
 }
 
 int mxUtils::Execute(wxString path, wxString command, int sync, wxProcess *&process) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
 	wxSetWorkingDirectory(path);
-	int ret = wxExecute (command, sync, process);
+	int ret = (sync&wxEXEC_SYNC) ? mxExecute(command, sync, process) : wxExecute(command, sync, process);
 	wxSetWorkingDirectory(config->zinjai_dir);
 	return ret;
 }
@@ -614,9 +615,9 @@ wxString mxUtils::GetOutput(wxString command, bool also_error) {
 	wxString ret;
 	wxArrayString output,errors;
 	if (also_error)
-		wxExecute(command, output, errors, wxEXEC_NODISABLE|wxEXEC_SYNC);
+		mxExecute(command, output, errors, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	else
-		wxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+		mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	if (also_error) {
 		for (unsigned int i=0;i<errors.GetCount();i++)
 			if (ret.Len()==0)
@@ -881,7 +882,7 @@ void mxUtils::GetRunningChilds(wxArrayString &childs) {
 	struct proc { wxString cmd; long pid,ppid; int sel; };
 	wxArrayString output;
 	wxString ps_command=_T("ps --sort -pid -e --format '%P %p %a'");
-	wxExecute(ps_command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(ps_command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	unsigned int n=output.GetCount();
 	proc *list = new proc[n];
 	for (unsigned int i=1;i<n;i++) {

@@ -30,6 +30,7 @@
 #include "Autocoder.h"
 #include "Toolchain.h"
 #include "CodeHelper.h"
+#include "execution_workaround.h"
 using namespace std;
 
 #define ICON_LINE(filename) (wxString(_T("0 ICON \""))<<filename<<_T("\""))
@@ -1036,11 +1037,8 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 	wxDateTime bin_date, youngest_bin;
 	youngest_bin.SetYear(1900);
 	wxFileName bin_name;
-	// crear el directorio para los objetos si no existe
-	temp_folder_short=active_configuration->temp_folder;
-	temp_folder=wxFileName(DIR_PLUS_FILE(path,active_configuration->temp_folder)).GetFullPath();
-	if (temp_folder.Len() && !wxFileName::DirExists(temp_folder))
-		wxFileName::Mkdir(temp_folder,0777,wxPATH_MKDIR_FULL);
+	
+	GetTempFolder(true); // crear el directorio para los objetos si no existe
 	
 	wxString extra_step_for_link;
 		
@@ -1857,8 +1855,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	
 	Toolchain::SelectToolchain();
 	
-	temp_folder_short=active_configuration->temp_folder;
-	temp_folder=wxFileName(DIR_PLUS_FILE(path,active_configuration->temp_folder)).GetFullPath();
+	GetTempFolder();
 	compiling_options=" ";
 	compiling_options<<current_toolchain.cpp_compiling_options<<" ";
 	
@@ -2380,7 +2377,7 @@ bool ProjectManager::WxfbGenerate(bool show_osd, file_item *cual) {
 			if (regen) { // regenerar, reparsear y recargar si es necesario
 				if (show_osd && osd==NULL) osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 				if (fbase.Len()) {
-					int ret = wxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
+					int ret = mxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
 					
 					if (ret) {
 						if (osd) delete osd;
@@ -2406,7 +2403,7 @@ bool ProjectManager::WxfbGenerate(bool show_osd, file_item *cual) {
 					}
 				} else {
 					wxString fxrc=fbase+_T(".xrc");
-					wxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
+					mxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
 					mxSource *src=main_window->FindSource(fxrc);
 					if (src) src->Reload();
 				}
@@ -2992,7 +2989,7 @@ void ProjectManager::DrawGraph() {
 //#else
 //	command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -Tbmp -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.bmp"))<<_T("\"");
 //#endif
-	wxExecute(command,wxEXEC_SYNC);
+	mxExecute(command,wxEXEC_SYNC);
 	wxString command2 (config->Files.img_browser);
 //#if defined(__x86_64__) || defined(__WIN32__)
 	command2<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.png"))<<_T("\" \"")<<LANG(PROJMNGR_PROJECT_GRAPH_TITLE,"Grafo de Proyecto")<<_T("\"");
@@ -3292,5 +3289,13 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 void ProjectManager::SetActiveConfiguration (project_configuration * aconf) {
 	active_configuration=aconf;
 	main_window->SetToolchainMode(Toolchain::SelectToolchain().is_extern);
+}
+
+wxString ProjectManager::GetTempFolder (bool create) {
+	temp_folder_short=active_configuration->temp_folder;
+	temp_folder=wxFileName(DIR_PLUS_FILE(path,active_configuration->temp_folder)).GetFullPath();
+	if (create && temp_folder.Len() && !wxFileName::DirExists(temp_folder))
+		wxFileName::Mkdir(temp_folder,0777,wxPATH_MKDIR_FULL);
+	return temp_folder;
 }
 

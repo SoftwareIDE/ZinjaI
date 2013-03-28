@@ -10,6 +10,7 @@
 #include "Language.h"
 #include "ConfigManager.h"
 #include "mxMessageDialog.h"
+#include "execution_workaround.h"
 
 BEGIN_EVENT_TABLE(mxIconInstaller,wxDialog)
 	EVT_BUTTON(wxID_OK,mxIconInstaller::OnButtonOk)
@@ -77,13 +78,13 @@ void mxIconInstaller::InstallIcons ( ) {
 	wxString icon_file=DIR_PLUS_FILE(config->temp_dir,"zinjai.png");
 	
 	wxCopyFile(DIR_PLUS_FILE(config->zinjai_dir,DIR_PLUS_FILE("imgs","zinjai-256x256.png")),icon_file,true);
-	wxExecute(wxString("xdg-icon-resource install --novendor --size ")<<256<<" \""<<icon_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(wxString("xdg-icon-resource install --novendor --size ")<<256<<" \""<<icon_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 	
 	wxCopyFile(DIR_PLUS_FILE(config->zinjai_dir,DIR_PLUS_FILE("imgs","zinjai-64x64.png")),icon_file,true);
-	wxExecute(wxString("xdg-icon-resource install --novendor --size ")<<64<<" \""<<icon_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(wxString("xdg-icon-resource install --novendor --size ")<<64<<" \""<<icon_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 	
 	wxCopyFile(DIR_PLUS_FILE(config->zinjai_dir,DIR_PLUS_FILE("imgs","zinjai-32x32.png")),icon_file,true);
-	wxExecute(wxString("xdg-icon-resource install --novendor --size ")<<32<<" \""<<icon_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(wxString("xdg-icon-resource install --novendor --size ")<<32<<" \""<<icon_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 	
 	icon_installed=true;
 }
@@ -110,9 +111,9 @@ void mxIconInstaller::InstallDesktop ( bool menu ) {
 	fil.Write();
 	fil.Close();
 	if (menu)
-		wxExecute(wxString("xdg-desktop-menu install --novendor \"")<<desk_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
+		mxExecute(wxString("xdg-desktop-menu install --novendor \"")<<desk_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 	else
-		wxExecute(wxString("xdg-desktop-icon install --novendor \"")<<desk_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
+		mxExecute(wxString("xdg-desktop-icon install --novendor \"")<<desk_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 }
 
 void mxIconInstaller::InstallMimeZpr() { // todavia no se usa
@@ -190,14 +191,14 @@ void mxIconInstaller::InstallMime ( wxString mime_type, wxString mime_desc, wxSt
 	fil.Write();
 	fil.Close();
 
-	wxExecute(wxString("xdg-mime install \"")<<xml_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(wxString("xdg-mime install \"")<<xml_file<<"\"",wxEXEC_NODISABLE|wxEXEC_SYNC);
 	wxString icon_file;
 	const char sizes[][5]={"32","64","128","256"};
 	for (int i=0;i<4;i++) {
 		icon_file=DIR_PLUS_FILE(config->zinjai_dir,DIR_PLUS_FILE("imgs",DIR_PLUS_FILE("icons",DIR_PLUS_FILE(sizes[i],icon))));
-		wxExecute(wxString("xdg-icon-resource install --context mimetypes --size ")<<sizes[i]<<" \""<<icon_file<<"\" "<<mime_type,wxEXEC_NODISABLE|wxEXEC_SYNC);
+		mxExecute(wxString("xdg-icon-resource install --context mimetypes --size ")<<sizes[i]<<" \""<<icon_file<<"\" "<<mime_type,wxEXEC_NODISABLE|wxEXEC_SYNC);
 	}
-	wxExecute(wxString("xdg-mime default zinjai.desktop ")<<mime_type,wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(wxString("xdg-mime default zinjai.desktop ")<<mime_type,wxEXEC_NODISABLE|wxEXEC_SYNC);
 }
 
 void mxIconInstaller::MakeDesktopIcon() {

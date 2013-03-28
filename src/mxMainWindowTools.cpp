@@ -40,6 +40,7 @@
 #include <wx/file.h>
 #include <wx/textfile.h>
 #include "mxGprofOutput.h"
+#include "execution_workaround.h"
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -599,14 +600,14 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	if (project) {
 		command<<project->GetExePath()<<_T("\" \"")<<gmon<<_T("\"");
 	} else IF_THERE_IS_SOURCE
-		command<<CURRENT_SOURCE->binary_filename.GetFullPath()<<_T("\" \"")<<gmon<<_T("\"");
+		command<<CURRENT_SOURCE->GetBinaryFileName().GetFullPath()<<_T("\" \"")<<gmon<<_T("\"");
 	
 	wxString gout = DIR_PLUS_FILE(config->temp_dir,_T("gprof.txt"));
 	wxRemoveFile(gout);
 	wxFFile fgout(gout,_T("w+"));
 	wxArrayString output;
 	
-	wxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	for (unsigned int i=0;i<output.GetCount();i++)
 		fgout.Write(output[i]+_T("\n"));
 	fgout.Close();
@@ -625,7 +626,7 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	command<<pout;
 	command<<_T("\"");
 	
-	wxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
 	
 	status_bar->SetStatusText(LANG(MAINW_GPROF_SHOWING,"Mostrando resultados..."));
 	
@@ -645,7 +646,7 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 //	command<<_T(" \"")<<pout<<_T("\" -Tbmp -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.bmp"))<<_T("\"");
 	//#endif
 	
-	wxExecute(command,wxEXEC_SYNC);
+	mxExecute(command,wxEXEC_SYNC);
 	command = config->Files.img_browser;
 	//#if defined(__x86_64__) || defined(__WIN32__)
 	command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.png"))<<_T("\" \"")<<LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling")<<_T("\"");
@@ -675,7 +676,7 @@ void mxMainWindow::OnToolsGprofList (wxCommandEvent &event) {
 	if (project) {
 		command<<project->GetExePath()<<_T("\" \"")<<gmon<<_T("\"");
 	} else IF_THERE_IS_SOURCE
-		command<<CURRENT_SOURCE->binary_filename.GetFullPath()<<_T("\" \"")<<gmon<<_T("\"");
+		command<<CURRENT_SOURCE->GetBinaryFileName().GetFullPath()<<_T("\" \"")<<gmon<<_T("\"");
 	
 	wxString gout = DIR_PLUS_FILE(config->temp_dir,_T("gprof.txt"));
 	wxRemoveFile(gout);
@@ -684,7 +685,7 @@ void mxMainWindow::OnToolsGprofList (wxCommandEvent &event) {
 	
 	fgout.Write(wxString(_T("> "))<<command+_T("\n\n"));
 	
-	wxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	for (unsigned int i=0;i<output.GetCount();i++)
 		fgout.Write(output[i]+_T("\n"));
 	fgout.Close();
@@ -810,7 +811,7 @@ void mxMainWindow::RunCustomTool(wxString name, wxString workdir, wxString cmd, 
 			current_dir=src->GetPath();
 			if (current_dir.EndsWith("\\")||current_dir.EndsWith("/")) current_dir.RemoveLast();
 			bin_workdir=src->working_folder.GetFullPath();
-			project_bin=src->binary_filename.GetFullPath();
+			project_bin=src->GetBinaryFileName().GetFullPath();
 			project_path=current_dir;
 			temp_dir=src->temp_filename.GetPath();
 		}

@@ -41,7 +41,7 @@ struct GprofData {
 		ifstream fin(fname);
 		string s;
 		int status=0; // 1=1er tabla, 2=calls_pre, 3=calls_post
-		int name_col;
+		size_t name_col;
 		graph_node node;
 		while (getline(fin,s)) {
 			if (status==0) {

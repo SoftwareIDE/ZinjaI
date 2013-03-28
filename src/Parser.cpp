@@ -16,6 +16,7 @@
 #include "Language.h"
 #include "mxCompiler.h"
 #include "CodeHelper.h"
+#include "execution_workaround.h"
 
 Parser *parser;
 //wxTreeCtrl* symbol_tree;
@@ -343,7 +344,7 @@ bool Parser::ParseNextFile(wxFileName filename, wxString HashName) {
 	unsigned int props;
 	wxString my_home=DIR_PLUS_FILE(home,filename.GetPath());
 	wxArrayString output;
-	wxExecute(wxString(config->Files.parser_command)<<_T(" \"")<<filename.GetFullPath()<<_T("\""), output, wxEXEC_SYNC|wxEXEC_NODISABLE);
+	mxExecute(wxString(config->Files.parser_command)<<_T(" \"")<<filename.GetFullPath()<<_T("\""), output, wxEXEC_SYNC|wxEXEC_NODISABLE);
 	long int id, line;
 	wxString s,name,aux,key,par,fullproto, fullpar;
 	int p[15], ii, jj, kk;

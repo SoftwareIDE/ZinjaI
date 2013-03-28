@@ -65,6 +65,8 @@ public:
 
 	bool ro_quejado;
 	void OnModifyOnRO(wxStyledTextEvent &event);
+
+	void OnPainted(wxStyledTextEvent &event);
 	
 	void CheckForExternalModifications();
 	mxSource *diff_brother;
@@ -124,7 +126,6 @@ public:
 	void OnSetFocus (wxFocusEvent &event);
 	
 	void OnKeyDown(wxKeyEvent &evt);
-	void OnCharHook (wxStyledTextEvent &evt);
 
 	void OnClick(wxMouseEvent &evt);
 	void OnPopupMenu(wxMouseEvent &evt);
@@ -132,9 +133,6 @@ public:
 	void OnToolTipTimeOut(wxStyledTextEvent &event);
 	void OnSavePointReached(wxStyledTextEvent &event);
 	void OnSavePointLeft(wxStyledTextEvent &event);
-	void OnCalltipClick(wxStyledTextEvent &event);
-	void OnStartDrag(wxStyledTextEvent &event);
-	void EndDrag();
 		
 	// manejo de archivos
 	void LoadSourceConfig();
@@ -177,7 +175,11 @@ public:
 
 	wxFileName working_folder;
 	wxFileName source_filename;
-	wxFileName binary_filename;
+private:
+	wxFileName binary_filename; ///< nombre del ejecutable, solo para el modo programa simple
+public:
+	wxFileName GetBinaryFileName(); ///< en modo programa simple devuelve binary_filename, en modo proyecto arma la ruta completa del .o
+	
 	wxFileName temp_filename;
 
 	wxString exec_args;

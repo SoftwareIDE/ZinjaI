@@ -13,6 +13,7 @@
 
 class mxStatusBar;
 class mxHidenPanel;
+class mxGCovSideBar;
 class mxDiffSideBar;
 class mxValgrindOuput;
 class mxSource;
@@ -525,6 +526,9 @@ public:
 	
 	mxDiffSideBar *diff_sidebar;
 	void ShowDiffSideBar(bool bar, bool map);
+	
+	mxGCovSideBar *gcov_sidebar;
+	void ShowGCovSideBar();
 	
 	mxSource *GetCurrentSource();
 	

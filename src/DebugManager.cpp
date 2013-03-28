@@ -99,11 +99,11 @@ bool DebugManager::Start(bool update, mxSource *source) {
 				source->SaveTemp();
 				compiler->CompileSource(source,true,true);
 				return false;
-			} else if (source->GetModify() || !wxFileName::FileExists(source->binary_filename.GetFullPath()) || source->binary_filename.GetModificationTime()<source->source_filename.GetModificationTime()) {
+			} else if (source->GetModify() || !source->GetBinaryFileName().FileExists() || source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime()) {
 				source->SaveSource();
 				compiler->CompileSource(source,true,true);
 				return false;
-			} else if (config->Running.check_includes && utils->AreIncludesUpdated(source->binary_filename.GetModificationTime(),source->source_filename)) {
+			} else if (config->Running.check_includes && utils->AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source->source_filename)) {
 				compiler->CompileSource(source,true,true);
 				return false;
 			}
@@ -131,7 +131,7 @@ bool DebugManager::Start(bool update, mxSource *source) {
 
 		compiler->last_caption = source->page_text;
 		compiler->last_runned = source;
-		if (Start(source->working_folder.GetFullPath(),source->binary_filename.GetFullPath(),args,true,source->config_running.wait_for_key)) {
+		if (Start(source->working_folder.GetFullPath(),source->GetBinaryFileName().GetFullPath(),args,true,source->config_running.wait_for_key)) {
 			int cuantos_sources = main_window->notebook_sources->GetPageCount();
 			for (int i=0;i<cuantos_sources;i++) {
 				mxSource *src = (mxSource*)(main_window->notebook_sources->GetPage(i));
@@ -308,7 +308,7 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 #endif
 	mxOSD osd(main_window,LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."));
 	ResetDebuggingStuff();
-	wxString exe = source?source->binary_filename.GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
+//	wxString exe = source?source->GetBinaryFileName().GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
 	wxString command(config->Files.debugger_command);
 	command<<_T(" -quiet -nx -interpreter=mi");
 	if (config->Debug.readnow)
@@ -386,7 +386,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 	mxOSD osd(main_window,project?LANG(OSD_LOADING_CORE_DUMP,"Cargando volcado de memoria..."):"");
 	
 	ResetDebuggingStuff();
-	wxString exe = source?source->binary_filename.GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
+	wxString exe = source?source->GetBinaryFileName().GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
 	wxString command(config->Files.debugger_command);
 	command<<_T(" -quiet -nx -interpreter=mi");
 	if (config->Debug.readnow)

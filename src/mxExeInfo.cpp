@@ -25,7 +25,7 @@ mxExeInfo::mxExeInfo(wxWindow *parent, mxSource *src) : wxDialog(parent, wxID_AN
 	
 	wait_for_parser = NULL;
 	
-	fname = src?src->binary_filename:wxFileName(DIR_PLUS_FILE(project->path,project->active_configuration->output_file));
+	fname = src?src->GetBinaryFileName().GetFullPath():wxFileName(DIR_PLUS_FILE(project->path,project->active_configuration->output_file));
 	if (!fname.FileExists() || (src&&src->sin_titulo&&compiler->last_compiled!=src) ) {
 		mxMessageDialog(LANG(EXEINFO_NOT_FOUND,"No se encontro ejecutable. Compile el programa para crearlo."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK).ShowModal();
 		Destroy();
@@ -88,9 +88,9 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	if (!source || !source->sin_titulo) {
 		bool updated=true;
 		if (source) {
-			if (source->GetModify() || !wxFileName::FileExists(source->binary_filename.GetFullPath()) || source->binary_filename.GetModificationTime()<source->source_filename.GetModificationTime())
+			if (source->GetModify() || !source->GetBinaryFileName().FileExists() || source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime())
 				updated=false;
-			else if (config->Running.check_includes && utils->AreIncludesUpdated(source->binary_filename.GetModificationTime(),source->source_filename))
+			else if (config->Running.check_includes && utils->AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source->source_filename))
 				updated=false;
 		} else {
 			if (project->PrepareForBuilding())

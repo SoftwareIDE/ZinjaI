@@ -10,6 +10,7 @@
 #include "Language.h"
 #include "mxOSD.h"
 #include <wx/textfile.h>
+#include "execution_workaround.h"
 
 BEGIN_EVENT_TABLE(mxDrawClasses, wxDialog)
 	EVT_BUTTON(wxID_OK,mxDrawClasses::OnOkButton)
@@ -139,7 +140,7 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 		wxFileDialog dlg (this, LANG(DRAW_CLASSES_SAVE,"Guardar grafo"), project?DIR_PLUS_FILE(project->path,project->last_dir):config->Files.last_dir, _T(" "), where_store->GetValue().AfterFirst(' ').AfterFirst(' ')+_T("|*.")+ext, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (dlg.ShowModal() == wxID_OK) {
 			command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -T")<<ext<<_T(" -o \"")<<dlg.GetPath()<<_T("\"");
-			wxExecute(command,wxEXEC_SYNC);
+			mxExecute(command,wxEXEC_SYNC);
 		}
 	} else {
 		
@@ -151,7 +152,7 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 //#else
 //			command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -Tbmp -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.bmp"))<<_T("\"");
 //#endif
-		wxExecute(command,wxEXEC_SYNC);
+		mxExecute(command,wxEXEC_SYNC);
 		wxString command2 (config->Files.img_browser);
 //#if defined(__x86_64__) || defined(__WIN32__)
 		command2<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.png"))<<_T("\" \"")<<LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases")<<_T("\"");

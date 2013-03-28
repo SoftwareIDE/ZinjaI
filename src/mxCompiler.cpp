@@ -463,7 +463,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 				}
 			}
 		} else { // si era un ejercicio simple, ver si hay que ejecutar
-			CheckForExecutablePermision(last_compiled->binary_filename.GetFullPath());
+			CheckForExecutablePermision(last_compiled->GetBinaryFileName().GetFullPath());
 			main_window->SetStatusProgress(0);
 			main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 			tree->SetItemText(state,LANG(MAINW_COMPILING_DONE,"Compilacion Finalizada"));
@@ -531,7 +531,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 		z_opts<<_T("-x c++ "); // avoid not recognizing files without extension
 	// prepare command line
 	wxString comp_opts = source->GetParsedCompilerOptions();
-	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+source->binary_filename.GetFullPath()<<_T("\"");
+	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+source->GetBinaryFileName().GetFullPath()<<_T("\"");
 	
 	// lanzar la ejecucion
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);

@@ -12,6 +12,7 @@
 #include "Language.h"
 #include "mxDiffSideBar.h"
 #include "Parser.h"
+#include "execution_workaround.h"
 
 BEGIN_EVENT_TABLE(mxDiffWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxDiffWindow::OnOkButton)
@@ -104,7 +105,7 @@ void mxDiffWindow::DiffSourceFile(mxSource *src, wxString fname) {
 	command<<" "<<fname;
 	src->MarkDiffs(0,src->GetLineCount()-1,mxSTC_MARK_DIFF_NONE);
 	wxArrayString output;
-	wxExecute(command,output,wxEXEC_SYNC);
+	mxExecute(command,output,wxEXEC_SYNC);
 	wxTextFile text_file(fname);
 	text_file.Open();
 	if (output.GetCount()) {
@@ -168,7 +169,7 @@ void mxDiffWindow::DiffTwoSources(mxSource *src1, mxSource *src2) {
 	src1->MarkDiffs(0,src1->GetLineCount()-1,mxSTC_MARK_DIFF_NONE);
 	src2->MarkDiffs(0,src2->GetLineCount()-1,mxSTC_MARK_DIFF_NONE);
 	wxArrayString output;
-	wxExecute(command,output,wxEXEC_SYNC);
+	mxExecute(command,output,wxEXEC_SYNC);
 	if (output.GetCount()) {
 		for (unsigned int i=0;i<output.GetCount();i++) {
 			int n1=0,n2=0,n3=0,n4=0,p=0;
