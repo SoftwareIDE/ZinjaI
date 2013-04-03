@@ -31,7 +31,6 @@ mxSplashScreen::mxSplashScreen(wxString image_path):wxFrame(NULL,wxID_ANY,_T("Ca
 	SetSize(w,h);
 	CentreOnScreen();
 	Show(true);
-	Refresh();
 	wxYield();
 	timer = new wxTimer(GetEventHandler(),wxID_ANY);
 	timer->Start(2500,true);

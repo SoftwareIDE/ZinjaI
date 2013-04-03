@@ -3146,7 +3146,6 @@ void ProjectManager::WxfbAutoCheck() {
 	if (!something_changed) return;
 	
 	SaveAll(false);
-	if (parser->working) { parser->OnEnd(POE_AUTOUPDATE_WXFB); return; }
 	generating_wxfb=true;
 	if (!project->WxfbGenerate(true)) { generating_wxfb=false; return; }
 	generating_wxfb=false;

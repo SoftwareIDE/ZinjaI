@@ -109,8 +109,6 @@ void mxDrawClasses::OnCancelButton(wxCommandEvent &evt) {
 }
 
 void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
-	ABORT_IF_PARSING;
-	
 	bool one_class = wich_class->GetSelection()!=int(wich_class->GetCount())-1;
 	wxString the_one(_T(""));
 	if (wich_file->GetSelection()!=int(wich_file->GetCount())-1) the_one = wich_file->GetValue();

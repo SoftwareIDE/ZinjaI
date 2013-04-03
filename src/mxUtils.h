@@ -82,13 +82,6 @@ WX_DECLARE_STRING_HASH_MAP( wxTreeItemId, HashStringTreeItem );
 /** @brief eliminar una lista (incluyendo al primer item ficticio) **/
 #define ML_FREE(item) { typeof(item) ml_aifc; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
 
-#define ABORT_IF_PARSING \
-	if (parser->working) { \
-		mxMessageDialog(main_window,LANG(GENERAL_WAIT_PARSER,"Debe esperar a que se terminen de analizar todos los fuentes."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal(); \
-		return; \
-	}
-
-
 /**
 * @brief Clase para contener funciones varias de uso general
 **/

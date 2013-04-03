@@ -1164,9 +1164,6 @@ char mxUtils::GetFileType(wxString name, bool recognize_projects) {
 	return 'o';		
 }
 
-#define _dummy_macro_for_extract_enum_bin \
-	LANG(GENERAL_WAIT_PARSER,"Debe esperar a que se terminen de analizar todos los fuentes."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
-
 
 /**
 * @brief Retreaves all files or folders names from a specified path

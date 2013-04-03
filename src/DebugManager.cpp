@@ -69,10 +69,6 @@ bool DebugManager::Start(bool update) {
 		return false;
 	}
 	
-	if (parser->working) {
-		mxMessageDialog(main_window,LANG(DEBUG_MUST_WAIT_FOR_PARSER,"Debe esperar a que se termine de actualizar el arbol de simbolos para comenzar la depuracion."),LANG(GENERAL_WARNING,"Aviso"),mxMD_INFO|mxMD_OK).ShowModal();
-		return true;
-	}
 	SetStateText(LANG(DEBUG_STATUS_STARTING,"Iniciando depuracion..."),true);
 	project->Debug(); // lanzar el depurador con los parametros del proyecto
 	project->SetBreakpoints(); // setear los puntos de interrupcion del proyecto
@@ -109,10 +105,6 @@ bool DebugManager::Start(bool update, mxSource *source) {
 			}
 		}
 
-		if (parser->working) {
-			mxMessageDialog(main_window,LANG(DEBUG_MUST_WAIT_FOR_PARSER,"Debe esperar a que se termine de actualizar el arbol de simbolos para comenzar la depuracion."),LANG(GENERAL_WARNING,"Aviso"),mxMD_INFO|mxMD_OK).ShowModal();
-			return true;
-		}
 		SetStateText(LANG(DEBUG_STATUS_STARTING,"Iniciando depuracion..."),true);
 		wxString args;
 		if (source->config_running.always_ask_args) {

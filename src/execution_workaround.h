@@ -8,9 +8,4 @@ long mxExecute(const wxString& command, wxArrayString& output, int flags = 0);
 
 long mxExecute(const wxString& command, wxArrayString& output, wxArrayString& errors, int flags = 0);
 
-//struct ExecutionWA {
-//	ExecutionWA() { ExecutionWAControl(true); }
-//	~ExecutionWA() { ExecutionWAControl(false); }
-//};
-
 #endif

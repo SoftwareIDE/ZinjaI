@@ -9,7 +9,6 @@ class wxTimer;
 class mxSourceProperties : public wxDialog {
 private:
 	wxTextCtrl *text_type, *text_deps;
-	wxTimer *wait_for_parser;
 	wxString fname;
 public:
 	mxSourceProperties(wxString fname,mxSource *src=NULL);

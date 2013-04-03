@@ -2146,7 +2146,6 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 }
 
 void mxMainWindow::OnRunClean (wxCommandEvent &event) {
-	ABORT_IF_PARSING;
 	if (project) project->Clean();
 	else IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
@@ -2470,11 +2469,6 @@ void mxMainWindow::OnFileCloseAllButOne (wxCommandEvent &event) {
 
 void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	if (debug->debugging) debug->Stop();
-//	if (!project || parser->working) { 
-//		parser->Stop(); 
-//		event.Skip();
-//		while (parser->working) wxYield(); 
-//	}
 //	if (project->modified) {
 		if (config->Init.save_project)
 			project->Save();
@@ -3848,7 +3842,6 @@ wxStatusBar* mxMainWindow::OnCreateStatusBar(int number, long style, wxWindowID 
 
 
 void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
-	ABORT_IF_PARSING;
 	long dpid=0;
 	wxArrayString options;
 	wxString otro=_T("<<<Otro>>>"),cual;

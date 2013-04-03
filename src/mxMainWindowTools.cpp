@@ -51,7 +51,6 @@ void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
 /// @brief Lanza cppcheck sobre los fuentes del proyecto en una mxOutputWindow
 void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	if (!config->CheckCppCheckPresent()) return;
-	ABORT_IF_PARSING;
 	if (!project && !notebook_sources->GetPageCount()) return;
 	mxOutputView *cppcheck = new mxOutputView(_T("CppCheck"),"",DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")),'c');
 	
@@ -159,10 +158,7 @@ void mxMainWindow::OnToolsCppCheckHelp(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
-	if (project) {
-		ABORT_IF_PARSING;
-		new mxProjectStatistics(this);
-	}
+	if (project) new mxProjectStatistics(this);
 }
 
 #if !defined(_WIN32) && !defined(__WIN32__)
@@ -246,8 +242,6 @@ void mxMainWindow::OnToolsWxfbAuto(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 	if (project) {
-		
-		ABORT_IF_PARSING;
 		
 		if (!project->use_wxfb) project->ActivateWxfb();
 		
@@ -353,8 +347,6 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 	if (project) {
 		
-		ABORT_IF_PARSING;
-		
 		wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, _T(" "), _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
 		dlg.SetWildcard("wxFormBuilder projects|"WILDCARD_WXFB);
 		if (dlg.ShowModal() != wxID_OK) return;
@@ -390,8 +382,6 @@ void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsWxfbRegen(wxCommandEvent &event) {
 	if (project) {
-		
-		ABORT_IF_PARSING;
 		
 		if (project->use_wxfb) {
 			status_bar->SetStatusText(_T("Regenerando proyectos wxFormBuilder..."));
@@ -507,7 +497,6 @@ void mxMainWindow::OnToolsDoxyConfig(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
 	if (project) {
-		ABORT_IF_PARSING; 
 		if (config->CheckDoxygenPresent()) {
 			if (!project->doxygen) 
 				project->doxygen = new doxygen_configuration(project->project_name);
@@ -731,10 +720,7 @@ void mxMainWindow::OnToolsShareList(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsDrawProject(wxCommandEvent &event) {
-	if (project) {
-		ABORT_IF_PARSING;
-		project->DrawGraph();
-	}
+	if (project) project->DrawGraph();
 }
 
 void mxMainWindow::OnToolsDrawClasses(wxCommandEvent &event) {
@@ -744,10 +730,7 @@ void mxMainWindow::OnToolsDrawClasses(wxCommandEvent &event) {
 		IF_THERE_IS_SOURCE
 			parser->ParseSource(CURRENT_SOURCE);
 	}
-	if (!parser->working)
-		new mxDrawClasses();
-	else
-		parser->OnEnd(POE_DRAWCLASSES);
+	new mxDrawClasses();
 }
 
 /// @brief manda a dibujar un diagrama de flujo (de eso se encargan mxFlowWindow y mxFlowCanvas)
@@ -983,7 +966,6 @@ void mxMainWindow::OnToolsPreprocHelp ( wxCommandEvent &event ) {
 **/
 void mxMainWindow::ToolsPreproc( int id_command ) {
 	
-	ABORT_IF_PARSING;
 	mxOSD osd(this,LANG(MAINW_PREPROC_OSD,"Preprocesando..."));
 	mxSource *src=CURRENT_SOURCE;
 	wxString bin_name;

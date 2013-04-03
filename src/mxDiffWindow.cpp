@@ -79,7 +79,6 @@ mxDiffWindow::~mxDiffWindow() {
 }
 
 void mxDiffWindow::OnOkButton(wxCommandEvent &evt) {
-	ABORT_IF_PARSING;
 	if (source) {
 		DiffSourceFile(source,diff_to_name);
 	} else {

@@ -7,7 +7,6 @@
 #include "Parser.h"
 
 BEGIN_EVENT_TABLE(mxSourceProperties, wxDialog)
-	EVT_TIMER(wxID_ANY,mxSourceProperties::OnTimer)
 	EVT_BUTTON(wxID_OK,mxSourceProperties::OnOkButton)
 	EVT_CLOSE(mxSourceProperties::OnClose)
 END_EVENT_TABLE()
@@ -15,8 +14,6 @@ END_EVENT_TABLE()
 mxSourceProperties::mxSourceProperties(wxString afname, mxSource *src) : wxDialog(main_window, wxID_ANY, _T("Propiedades del Archivo"), wxDefaultPosition, wxSize(450,400),wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
 	fname=afname;
-	
-	wait_for_parser = NULL;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 
@@ -42,13 +39,7 @@ mxSourceProperties::mxSourceProperties(wxString afname, mxSource *src) : wxDialo
 	utils->AddShortTextCtrl(mySizer,this,_T("Abierto"),(src?_T("Si"):_T("No")))->SetEditable(false);
 	if (src) utils->AddShortTextCtrl(mySizer,this,_T("Modificado"),(src->GetModify()?_T("Si"):_T("No")))->SetEditable(false);
 	
-	wxString file_type = _T("No se puede determinar el tipo mientras el parser esta analizando fuentes");
-	if (!parser->working) 
-		file_type = utils->GetOutput(wxString(_T("file -b \""))<<fname<<_T("\""));
-	else if (!wait_for_parser) {
-		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
-		wait_for_parser->Start(1000,true);
-	}
+	wxString file_type = utils->GetOutput(wxString(_T("file -b \""))<<fname<<_T("\""));
 	
 	utils->AddLongTextCtrl(mySizer,this,_T("Tipo de Archivo"),file_type)->SetEditable(false);
 	
@@ -73,8 +64,4 @@ void mxSourceProperties::OnOkButton(wxCommandEvent &event) {
 
 void mxSourceProperties::OnClose(wxCloseEvent &event) {
 	Destroy();
-}
-void mxSourceProperties::OnTimer(wxTimerEvent &evt) {
-	if (parser->working) { wait_for_parser->Start(1000,true); return; }
-	text_type->SetValue( utils->GetOutput(wxString(_T("file -b \""))<<fname<<_T("\"")) );
 }

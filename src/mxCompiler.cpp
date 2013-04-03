@@ -127,7 +127,6 @@ mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTree
 }
 
 void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
-	ABORT_IF_PARSING;
 	if (project->generating_wxfb) return;
 	main_window->ClearExternCompilerOutput();
 	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));

@@ -3,39 +3,55 @@
 #include <wx/app.h>
 using namespace std;
 
-volatile static int count=0;
-
-static void ExecutionWAControl(bool starts) {
-	if (starts) { 
-		cerr<<"Enters, waiting: count="<<count<<endl;
-		while (count) 
-			cerr<<wxApp::GetInstance()->Yield(true)<<endl;
-		count++;
-		cerr<<"Enters, proceed: count="<<count<<endl;
-	}
-	else {
-		count--;
-		cerr<<"Exits: count="<<count<<endl;
-	}
-}
+static bool someone_is_running=false;
 
 long mxExecute(wxString command, int sync, wxProcess *process) {
-	ExecutionWAControl(true);
+#ifdef DEBUG
+	cerr<<"execution_workaround: Enters, command="<<command<<endl;
+	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
+#else
+	if (someone_is_running) return 0;
+#endif
+	someone_is_running=true;
 	long ret=wxExecute(command,sync,process);
-	ExecutionWAControl(false);
+	someone_is_running=false;	
+#ifdef DEBUG
+	cerr<<"execution_workaround: Exits, command="<<command<<endl;
+	cerr<<"execution_workaround: Exits, retval="<<ret<<endl;
+#endif
 	return ret;
 }
 long mxExecute(const wxString& command, wxArrayString& output, int flags) {
-	ExecutionWAControl(true);
+#ifdef DEBUG
+	cerr<<"execution_workaround: Enters, command="<<command<<endl;
+	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
+#else
+	if (someone_is_running) return 0;
+#endif
+	someone_is_running=true;
 	long ret=wxExecute(command,output,flags);
-	ExecutionWAControl(false);
+	someone_is_running=false;
+#ifdef DEBUG
+	cerr<<"execution_workaround: Exits, command="<<command<<endl;
+	cerr<<"execution_workaround: Exits, retval="<<ret<<endl;
+#endif
 	return ret;
 }
 
 long mxExecute(const wxString& command, wxArrayString& output, wxArrayString& errors, int flags) {
-	ExecutionWAControl(true);
+#ifdef DEBUG
+	cerr<<"execution_workaround: Enters, command="<<command<<endl;
+	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
+#else
+	if (someone_is_running) return 0;
+#endif
+	someone_is_running=true;
 	long ret=wxExecute(command,output,errors,flags);
-	ExecutionWAControl(false);
+	someone_is_running=false;
+#ifdef DEBUG
+	cerr<<"execution_workaround: Exits, command="<<command<<endl;
+	cerr<<"execution_workaround: Exits, retval="<<ret<<endl;
+#endif
 	return ret;
 }
 
