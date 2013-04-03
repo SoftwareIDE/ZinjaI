@@ -29,8 +29,6 @@ class pd_inherit;
 #define HashStringParserFunction std::map<wxString,pd_func*>
 #define HashStringParserVariable std::map<wxString,pd_var*>
 
-enum parser_on_end { POE_NONE, POE_DRAWCLASSES, POE_AUTOUPDATE_WXFB };
-
 enum {
 	mxSTI_DEFINE=2,
 	mxSTI_FUNCTION,
@@ -68,6 +66,13 @@ struct parserAction {
 	}
 };
 
+class ParserOnEndAction {
+	ParserOnEndAction *next;
+	friend class Parser;
+public:
+	virtual void Do()=0;
+};
+
 class mxParserProcess;
 
 class Parser {
@@ -75,7 +80,7 @@ class Parser {
 public:
 	mxParserProcess *process; ///< curren async process (launched by ParseNextFile, interrupting ParseSomething, and waiting to call ParseContinue on termination)
 	
-	parser_on_end on_end;
+	ParserOnEndAction *on_end;
 	wxTreeCtrl* symbol_tree;
 	HashStringParserFile h_files;
 	HashStringParserMacro h_macros;
@@ -125,7 +130,7 @@ public:
 	bool working;
 	bool follow_includes;
 	bool sort_items;
-	void OnEnd(parser_on_end what);
+	void OnEnd(ParserOnEndAction *what, bool run_now_if_not_working=false);
 
 	Parser (wxTreeCtrl *t);
 	~Parser();
@@ -154,7 +159,7 @@ public:
 	void OnGotoDec (wxAuiNotebook *notebook);
 	void OnGotoDef (wxAuiNotebook *notebook);
 	void UnregisterSource(mxSource *src);
-	void Stop();
+	void Stop(bool clean_end=false);
 	
 	wxString JoinNames(wxString types, wxString names);
 	

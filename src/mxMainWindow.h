@@ -191,6 +191,7 @@ public:
 	void OnToolsCreateTemplate (wxCommandEvent &event);
 	
 	void OnToolsCodeCopyFromH (wxCommandEvent &event);
+	void ToolsCodeCopyFromH (mxSource *source, wxString the_one);
 	void OnToolsConsole (wxCommandEvent &event);
 	void OnToolsExeProps (wxCommandEvent &event);
 	void OnToolsProjectStatistics (wxCommandEvent &event);

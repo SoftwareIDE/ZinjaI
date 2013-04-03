@@ -20,10 +20,9 @@
 #include <wx/txtstrm.h>
 
 Parser *parser;
-//wxTreeCtrl* symbol_tree;
 
 Parser::Parser (wxTreeCtrl *tree) {
-	on_end = POE_NONE;
+	on_end = NULL;
 	wxString pd_aux;
 	symbol_tree=tree;
 	follow_includes=true;
@@ -76,7 +75,7 @@ void Parser::ParseProject(bool show_progress) {
 
 	source=NULL;
 		
-	if (project->use_wxfb && project->auto_wxfb) parser->OnEnd(POE_AUTOUPDATE_WXFB);
+//	if (project->use_wxfb && project->auto_wxfb) parser->OnEnd(POE_AUTOUPDATE_WXFB);
 
 	if (!working) Parse(show_progress);
 }
@@ -302,13 +301,15 @@ void Parser::OnGotoDef(wxAuiNotebook *notebook) {
 
 
 
-void Parser::Stop() {
-//	if (!working) return;
+void Parser::Stop(bool clean_end) {
+	if (clean_end) 
+		while (on_end) {
+			ParserOnEndAction *aux=on_end->next;
+			delete on_end;
+			on_end=aux;
+		}
 	should_stop=true;
 	actions.clear();
-//	while (working) {
-//		wxYield();
-//	}
 }
 
 Parser::~Parser() {
@@ -615,6 +616,8 @@ void Parser::Parse(bool show_progress) {
 /// if first==true, then consider arg_show_progress, else consider last valid arg_show_progress
 void Parser::ParseSomething(bool first, bool arg_show_progress) {
 	
+	working = true;
+	
 	static bool show_progress=false;
 	static int progress_total=0,progress_now=0;
 	if (first) {
@@ -626,7 +629,6 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 		}
 	}
 	
-	working = true;
 	if (!actions.empty()) {
 		bool async=false; // si un paso lanza un proceso asincrono, esta bandera lo indica, para cortar el loop y esperar el evento terminate de ese proceso
 		do {
@@ -676,18 +678,13 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 	//	symbol_tree->Thaw();
 		if (main_window && !compiler->IsCompiling())
 			main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
-		switch (on_end) {
-		case POE_AUTOUPDATE_WXFB:
-			if (project) project->WxfbAutoCheck();
-			break;
-		case POE_DRAWCLASSES:
-			new mxDrawClasses;
-			break;
-		default:
-			;
+		while (on_end) {
+			on_end->Do();
+			ParserOnEndAction *aux=on_end;
+			on_end=on_end->next;
+			delete aux;
 		}
 		if (show_progress) main_window->SetStatusProgress(-1);
-		on_end = POE_NONE;
 	}
 	
 }
@@ -721,8 +718,14 @@ void Parser::ParseFile(wxString filename) {
 	if (!working) Parse();
 }
 
-void Parser::OnEnd(parser_on_end what) {
-	on_end=what;
+void Parser::OnEnd(ParserOnEndAction *what, bool run_now_if_not_working) {
+	if (run_now_if_not_working && !parser->working) {
+		what->Do();
+		delete what;
+	} else {
+		what->next=on_end;
+		on_end=what;
+	}
 }
 
 void Parser::UnregisterSource(mxSource *src) {

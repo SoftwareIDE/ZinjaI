@@ -782,8 +782,7 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 		return;
 	}
 	if (parser->working) {
-		parser->OnEnd(POE_NONE);
-		parser->Stop();
+		parser->Stop(true);
 	}
 	int pres=mxMD_OK;
 	if (project/* && project->modified*/) {

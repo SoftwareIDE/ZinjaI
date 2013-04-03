@@ -857,6 +857,14 @@ void mxMainWindow::RunCustomTool(wxString name, wxString workdir, wxString cmd, 
 	
 }
 
+class ToolsCodeCopyFromHAction:public ParserOnEndAction {
+	wxString the_one;
+	mxSource *source;
+public:
+	ToolsCodeCopyFromHAction(mxSource *_source,wxString _the_one):source(_source),the_one(_the_one){}
+	void Do() { main_window->ToolsCodeCopyFromH(source,the_one); }
+};
+
 void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
@@ -869,45 +877,48 @@ void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 		parser->ParseSource(source);
 		if (other) parser->ParseSource(other);
 		else parser->ParseFile(the_one);
-		parser->Parse();
-		pd_file *file=parser->GetFile(the_one);
-		if (!file) return;
-		source->BeginUndoAction();
-		pd_ref *func;
-		func=file->first_func_dec;
-		wxArrayString choices;
-			while (func->next) { func=func->next; } // para atras, para que queden ordenadas como en el h
-			while (func->prev) {
-				if (!PD_UNREF(pd_func,func)->file_def) {
-					choices.Add(PD_UNREF(pd_func,func)->full_proto+(PD_UNREF(pd_func,func)->properties&PD_CONST_CONST?" const":"")); // const no deberia estar en el full proto?
-				}
-				func=func->prev;
+		parser->OnEnd(new ToolsCodeCopyFromHAction(source,the_one),true);
+	}
+}
+		
+void mxMainWindow::ToolsCodeCopyFromH(mxSource *source, wxString the_one) {
+	pd_file *file=parser->GetFile(the_one);
+	if (!file) return;
+	source->BeginUndoAction();
+	pd_ref *func;
+	func=file->first_func_dec;
+	wxArrayString choices;
+		while (func->next) { func=func->next; } // para atras, para que queden ordenadas como en el h
+		while (func->prev) {
+			if (!PD_UNREF(pd_func,func)->file_def) {
+				choices.Add(PD_UNREF(pd_func,func)->full_proto+(PD_UNREF(pd_func,func)->properties&PD_CONST_CONST?" const":"")); // const no deberia estar en el full proto?
 			}
-		source->EndUndoAction();
-		if (!choices.GetCount()) {
-			mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION,"No se encontraron funciones/metodos sin implementar."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
-			return;
+			func=func->prev;
 		}
-		wxArrayInt sels;
-		int line=-1;
-		for (unsigned int i=0;i<choices.GetCount();i++) sels.Add(i);
-		int nsels=wxGetMultipleChoices(sels,LANG(MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS,"Seleccione las funciones/metodos a implementar:"),LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Metodos/Funciones faltantes"),choices,this);
-		for (int i=0;i<nsels;i++) {
-			while (source->GetLineCount() && source->GetLine(source->GetLineCount()-1).Len()>1) {
-				wxString aux=source->GetLine(source->GetLineCount()-1);
-				source->AppendText(_T("\n"));
-			}
-			while (source->GetLineCount()>1 && source->GetLine(source->GetLineCount()-2).Len()>1) {
-				wxString aux=source->GetLine(source->GetLineCount()-2);
-				source->AppendText(_T("\n"));
-			}
-			if (line==-1) line=source->GetLineCount();
-			source->AppendText(choices[sels[i]]+" {\n\t\n}\n\n");
+	source->EndUndoAction();
+	if (!choices.GetCount()) {
+		mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION,"No se encontraron funciones/metodos sin implementar."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+		return;
+	}
+	wxArrayInt sels;
+	int line=-1;
+	for (unsigned int i=0;i<choices.GetCount();i++) sels.Add(i);
+	int nsels=wxGetMultipleChoices(sels,LANG(MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS,"Seleccione las funciones/metodos a implementar:"),LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Metodos/Funciones faltantes"),choices,this);
+	for (int i=0;i<nsels;i++) {
+		while (source->GetLineCount() && source->GetLine(source->GetLineCount()-1).Len()>1) {
+			wxString aux=source->GetLine(source->GetLineCount()-1);
+			source->AppendText(_T("\n"));
 		}
-		if (line>=0) {
-			source->EnsureVisibleEnforcePolicy(source->GetLineCount()-1);
-			source->MarkError(line,false);
+		while (source->GetLineCount()>1 && source->GetLine(source->GetLineCount()-2).Len()>1) {
+			wxString aux=source->GetLine(source->GetLineCount()-2);
+			source->AppendText(_T("\n"));
 		}
+		if (line==-1) line=source->GetLineCount();
+		source->AppendText(choices[sels[i]]+" {\n\t\n}\n\n");
+	}
+	if (line>=0) {
+		source->EnsureVisibleEnforcePolicy(source->GetLineCount()-1);
+		source->MarkError(line,false);
 	}
 }
 
