@@ -3471,6 +3471,6 @@ wxFileName mxSource::GetBinaryFileName ( ) {
 
 void mxSource::OnPainted (wxStyledTextEvent & event) {
 	event.Skip();
-	if (main_window->gcov_sidebar) main_window->gcov_sidebar->ShouldRefresh(this);
+	if (main_window->gcov_sidebar) main_window->gcov_sidebar->Refresh(this);
 }
 

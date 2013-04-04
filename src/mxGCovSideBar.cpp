@@ -8,14 +8,15 @@
 
 BEGIN_EVENT_TABLE(mxGCovSideBar, wxWindow)
 	EVT_PAINT  (mxGCovSideBar::OnPaint)
+	EVT_TIMER(wxID_ANY,mxGCovSideBar::OnLoadData)
 END_EVENT_TABLE()
 
 mxGCovSideBar::mxGCovSideBar(wxWindow *parent):wxWindow(parent,wxID_ANY) {
 	SetBackgroundColour(*wxWHITE); hits=NULL; SetSize(80,60); should_refresh=NULL;
+	timer_load=new wxTimer(this->GetEventHandler());
 }
 
 void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
-	if (should_refresh) MyRefresh(should_refresh);
 	wxPaintDC dc(this);
 	PrepareDC(dc);
 	dc.Clear();
@@ -55,13 +56,30 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 }
 
 /// @return false si no pudo ejecutar gcov porque hay otra cosa ejecutandose
-bool mxGCovSideBar::LoadData (mxSource * src) {
-#warning VER QUE NO REVIENTE CUANDO HAY OTRO wxExcute PENDIENTES
-	if (!src->sin_titulo && src->source_filename.GetFullPath()==last_path) return true;
+bool mxGCovSideBar::ShouldLoadData(mxSource *src) {
+	if (!src->sin_titulo && src->source_filename.GetFullPath()==last_path) return false;
 	last_path=src->source_filename.GetFullPath();
-		
-	mxOSD osd(main_window,"Generando y leyendo información de cobertura (gcov)");
+	return true;
+}
+
+void mxGCovSideBar::Refresh (mxSource *src) {
+	static int fvl=-1, cl=-1; static mxSource *lsrc=NULL;	
+	if (lsrc!=src || src->GetCurrentLine()!=cl || src->GetFirstVisibleLine()!=fvl) {
+		lsrc=src;
+		cl=src->GetCurrentLine();
+		fvl=src->GetFirstVisibleLine();
+		if (ShouldLoadData(src)) {
+			timer_load->Start(100,true);
+		} else wxWindow::Refresh();
+	}
+}
+
+void mxGCovSideBar::OnLoadData (wxTimerEvent & evt) {
 	if (hits) delete hits; hits=NULL;
+	mxSource *src=main_window->GetCurrentSource();
+	if (!src) return;
+	
+	mxOSD osd(main_window,"Generando y leyendo información de cobertura (gcov)");
 	
 	wxFileName binary= src->GetBinaryFileName();
 	wxFileName fname= binary.GetFullPath().BeforeLast('.')+"."+src->source_filename.GetExt()+".gcov";
@@ -71,9 +89,9 @@ bool mxGCovSideBar::LoadData (mxSource * src) {
 	}
 	
 	wxTextFile fil(fname.GetFullPath());
-	if (!fil.Exists()) return true; else fil.Open();
-	if (!fil.GetLineCount()) return true;
-		
+	if (!fil.Exists()) return; else fil.Open();
+	if (!fil.GetLineCount()) return;
+	
 	// los valores de hits son los nros de gcov+1, para que 0 sea que la linea no existe (para poder inicializar todo con memset), entonces 1 es que existe pero no se ejecuta, y n es que se ejecuta n-1 veces
 	hits=new int[line_count=fil.GetLineCount()+1];
 	memset(hits,0,sizeof(int)*line_count);
@@ -89,21 +107,6 @@ bool mxGCovSideBar::LoadData (mxSource * src) {
 			if (h>hits_max) hits_max=h;
 		}
 	}
-	return true;
+	wxWindow::Refresh();
 }
 
-void mxGCovSideBar::MyRefresh (mxSource *src) {
-	should_refresh=NULL;
-	static int fvl=-1, cl=-1; static mxSource *lsrc=NULL;	
-	if (lsrc!=src || src->GetCurrentLine()!=cl || src->GetFirstVisibleLine()!=fvl) {
-		if (LoadData(src)) {
-			lsrc=src;
-			cl=src->GetCurrentLine();
-			fvl=src->GetFirstVisibleLine();
-		}
-	}
-}
-
-void mxGCovSideBar::ShouldRefresh (mxSource *src) {
-	should_refresh=src; Refresh();
-}
