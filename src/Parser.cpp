@@ -304,7 +304,7 @@ void Parser::OnGotoDef(wxAuiNotebook *notebook) {
 void Parser::Stop(bool clean_end) {
 	if (clean_end) 
 		while (on_end) {
-			ParserOnEndAction *aux=on_end->next;
+			OnEndAction *aux=on_end->next;
 			delete on_end;
 			on_end=aux;
 		}
@@ -680,7 +680,7 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 			main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 		while (on_end) {
 			on_end->Do();
-			ParserOnEndAction *aux=on_end;
+			OnEndAction *aux=on_end;
 			on_end=on_end->next;
 			delete aux;
 		}
@@ -718,7 +718,7 @@ void Parser::ParseFile(wxString filename) {
 	if (!working) Parse();
 }
 
-void Parser::OnEnd(ParserOnEndAction *what, bool run_now_if_not_working) {
+void Parser::OnEnd(OnEndAction *what, bool run_now_if_not_working) {
 	if (run_now_if_not_working && !parser->working) {
 		what->Do();
 		delete what;

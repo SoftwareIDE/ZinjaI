@@ -11,10 +11,9 @@ class mxGCovSideBar : public wxWindow {
 	wxString last_path;
 	bool ShouldLoadData(mxSource *src);
 	mxSource *should_refresh;
-	wxTimer *timer_load;
 	mxSource *src_load;
 public:
-	void OnLoadData(wxTimerEvent &evt);
+	void LoadData();
 	mxGCovSideBar(wxWindow *parent);
 	void OnPaint(wxPaintEvent &event);
 	void Refresh(mxSource *src);

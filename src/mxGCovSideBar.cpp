@@ -8,12 +8,10 @@
 
 BEGIN_EVENT_TABLE(mxGCovSideBar, wxWindow)
 	EVT_PAINT  (mxGCovSideBar::OnPaint)
-	EVT_TIMER(wxID_ANY,mxGCovSideBar::OnLoadData)
 END_EVENT_TABLE()
 
 mxGCovSideBar::mxGCovSideBar(wxWindow *parent):wxWindow(parent,wxID_ANY) {
 	SetBackgroundColour(*wxWHITE); hits=NULL; SetSize(80,60); should_refresh=NULL;
-	timer_load=new wxTimer(this->GetEventHandler());
 }
 
 void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
@@ -69,12 +67,15 @@ void mxGCovSideBar::Refresh (mxSource *src) {
 		cl=src->GetCurrentLine();
 		fvl=src->GetFirstVisibleLine();
 		if (ShouldLoadData(src)) {
-			timer_load->Start(100,true);
+			class ReloadGCovAction:public mxMainWindow::AfterEventsAction {
+				public: void Do() { main_window->gcov_sidebar->LoadData(); }
+			};
+			main_window->CallAfterEvents(new ReloadGCovAction);
 		} else wxWindow::Refresh();
 	}
 }
 
-void mxGCovSideBar::OnLoadData (wxTimerEvent & evt) {
+void mxGCovSideBar::LoadData () {
 	if (hits) delete hits; hits=NULL;
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;

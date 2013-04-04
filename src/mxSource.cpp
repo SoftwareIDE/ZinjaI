@@ -3140,17 +3140,27 @@ void mxSource::CheckForExternalModifications() {
 	static wxDateTime dt;
 	dt = source_filename.GetModificationTime();
 	if (dt!=source_time) {
-		SetSourceTime(dt);
-		if (!source_time_dont_ask) {
-			int res=mxMessageDialog(main_window,LANG(SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD,"El archivo fue modificado por otro programa.\nDesea recargarlo para obtener las modificaciones?"), source_filename.GetFullPath(), mxMD_YES_NO|mxMD_WARNING,_T("No volver a preguntar"),false).ShowModal();
-			source_time_reload=(res&mxMD_YES);
-			source_time_dont_ask=(res&mxMD_CHECKED);
-		}
-		if (source_time_reload) {
-			Reload();
-		} else {
-			SetModify(true);
-		}
+		class SourceModifAction:public mxMainWindow::AfterEventsAction {
+			mxSource *source;
+		public: 
+			SourceModifAction(mxSource *who):source(who){}
+			void Do() { source->ThereAreExternalModifications(); }
+		};
+		main_window->CallAfterEvents(new SourceModifAction(this));
+	}
+}
+
+void mxSource::ThereAreExternalModifications() {
+	SetSourceTime(source_filename.GetModificationTime());
+	if (!source_time_dont_ask) {
+		int res=mxMessageDialog(main_window,LANG(SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD,"El archivo fue modificado por otro programa.\nDesea recargarlo para obtener las modificaciones?"), source_filename.GetFullPath(), mxMD_YES_NO|mxMD_WARNING,_T("No volver a preguntar"),false).ShowModal();
+		source_time_reload=(res&mxMD_YES);
+		source_time_dont_ask=(res&mxMD_CHECKED);
+	}
+	if (source_time_reload) {
+		Reload();
+	} else {
+		SetModify(true);
 	}
 }
 

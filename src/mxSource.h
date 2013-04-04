@@ -68,7 +68,8 @@ public:
 
 	void OnPainted(wxStyledTextEvent &event);
 	
-	void CheckForExternalModifications();
+	void CheckForExternalModifications(); ///< checks if the file has changed, if it did, enqueue a call to ThereAreExternalModifications for the end of the main_window event loop
+	void ThereAreExternalModifications(); ///< show the warning dialog or reload the file when we know it has changed
 	mxSource *diff_brother;
 	DiffInfo *first_diff_info,*last_diff_info;
 	wxString page_text;

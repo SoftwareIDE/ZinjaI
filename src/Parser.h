@@ -66,21 +66,25 @@ struct parserAction {
 	}
 };
 
-class ParserOnEndAction {
-	ParserOnEndAction *next;
-	friend class Parser;
-public:
-	virtual void Do()=0;
-};
 
 class mxParserProcess;
 
 class Parser {
 
-public:
 	mxParserProcess *process; ///< curren async process (launched by ParseNextFile, interrupting ParseSomething, and waiting to call ParseContinue on termination)
+
+public:
+	class OnEndAction {
+		OnEndAction *next;
+		friend class Parser;
+	public:
+		virtual void Do()=0;
+	};
+	void OnEnd(OnEndAction *what, bool run_now_if_not_working=false);
+private:
+	OnEndAction *on_end;
 	
-	ParserOnEndAction *on_end;
+public:
 	wxTreeCtrl* symbol_tree;
 	HashStringParserFile h_files;
 	HashStringParserMacro h_macros;
@@ -111,9 +115,6 @@ public:
 	wxString popup_file_def;
 	int popup_line_def;
 	
-//	CodeHelper::list_item *last_ch_comp[26+26+1];
-//	CodeHelper::list_item *last_ch_tip[26+26+1];
-	
 	//inherit_data *first_inherit;
 	//parser_filename *first_file;
 	wxString home;
@@ -130,7 +131,6 @@ public:
 	bool working;
 	bool follow_includes;
 	bool sort_items;
-	void OnEnd(ParserOnEndAction *what, bool run_now_if_not_working=false);
 
 	Parser (wxTreeCtrl *t);
 	~Parser();

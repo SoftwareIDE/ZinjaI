@@ -172,7 +172,7 @@ void mxValgrindOuput::OnSelect(wxTreeEvent &evt) {
 						if (src && ((!src->sin_titulo && src->source_filename.GetFullName()==text) || (src->temp_filename.GetFullName()==text && src==compiler->last_compiled)) ) {
 							main_window->notebook_sources->SetSelection(i);
 							src->MarkError(line-1);
-							main_window->focus_timer->Start(333,true);
+							main_window->SetFocusToSourceAfterEvents();
 							return;
 						}
 					}
@@ -188,7 +188,7 @@ void mxValgrindOuput::OnSelect(wxTreeEvent &evt) {
 			if (!file.Len()) return;
 			mxSource *src=main_window->IsOpen(file);
 			if (!src) src=main_window->OpenFile(project?DIR_PLUS_FILE(project->path,file):file,!project);
-			if (src) { src->MarkError(line-1); main_window->focus_timer->Start(333,true); }
+			if (src) { src->MarkError(line-1); main_window->SetFocusToSourceAfterEvents(); }
 		}
 	}
 //	evt.Skip();

@@ -317,10 +317,30 @@ public:
 	void OnToolbarMenu(wxCommandEvent &evt); // click on an item from a popup menu launched from some toolbar buttons (currently only compiling options in projecto mode to select a profile)
 
 	void OnWhereAmI(wxCommandEvent &event);
-//	void OnWhereTime(wxTimerEvent &event);
-	void OnFocusTime(wxTimerEvent &event);
+	void SetFocusToSource();
 	void OnParseSourceTime(wxTimerEvent &event);
 	void OnParseOutputTime(wxTimerEvent &event);
+	
+	// this is a mechanism for setting something to run after a current event loop
+	// example: if you call something that execute a subprocess or display a new dialog inside a 
+	// paint/update event, you may have problems with focus after that (easily seen in ubuntu).
+	// So, you must register the action with a derived object from this class and RunAfterEvents 
+	// function, and the timer will be used to launch a main window event later (outside 
+	// the event that registered the action), that will call all pending actions and will delete them
+public:
+	class AfterEventsAction {
+		AfterEventsAction *next;
+		friend class mxMainWindow;
+	public:
+		virtual void Do()=0;
+	};
+private:
+	wxTimer *after_events_timer;
+	AfterEventsAction *call_after_events;
+public:
+	void CallAfterEvents(AfterEventsAction *action);
+	void OnAfterEventsTimer(wxTimerEvent &event);
+	void SetFocusToSourceAfterEvents();
 	
 	void OnActivate (wxActivateEvent &event);
 	
@@ -495,7 +515,7 @@ public:
 		wxMenuItem *file_open;
 	} menu;
 
-	wxTimer *parser_timer, *focus_timer/*, *where_timer*/;
+	wxTimer *parser_timer;
 
 	wxToolBar *toolbar_file, *toolbar_edit, *toolbar_run, *toolbar_misc, *toolbar_debug, *toolbar_find, *toolbar_status, *toolbar_tools, *toolbar_view, *toolbar_diff;
 	wxStaticText *toolbar_status_text;

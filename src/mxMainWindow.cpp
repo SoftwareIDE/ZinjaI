@@ -108,6 +108,7 @@ inline bool SameFile(wxFileName f1, wxFileName f2) {
 #endif
 
 
+
 mxMainWindow *main_window;
 mxSource *EXTERNAL_SOURCE; // will be main_window address, an impossible address for a real mxSource, so OpenFile can use to say "was opened, but not by me, amy be wxfb or someone else"
 
@@ -377,9 +378,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	
 	EVT_SOCKET(wxID_ANY,mxMainWindow::OnSocketEvent)
 	
-//	EVT_TIMER(mxID_WHERE_TIMER, mxMainWindow::OnWhereTime)
+	EVT_TIMER(mxID_TIMER_AFTER_EVENTS, mxMainWindow::OnAfterEventsTimer)
 	EVT_MENU(mxID_WHERE_TIMER, mxMainWindow::OnWhereAmI)
-	EVT_TIMER(mxID_FOCUS_TIMER, mxMainWindow::OnFocusTime)
 	EVT_TIMER(mxID_COMPILER_TIMER, mxMainWindow::OnParseOutputTime)
 	EVT_TIMER(mxID_PARSER_TIMER, mxMainWindow::OnParseSourceTime)
 
@@ -555,9 +555,11 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	parser_timer = new wxTimer(GetEventHandler(),mxID_PARSER_TIMER);
 //	where_timer = new wxTimer(GetEventHandler(),mxID_WHERE_TIMER);
 //	where_timer->Start(1000,false);
-	focus_timer = new wxTimer(GetEventHandler(),mxID_FOCUS_TIMER);
 	compiler->timer = new wxTimer(GetEventHandler(),mxID_COMPILER_TIMER);
 	find_replace_dialog = NULL; // new mxFindDialog(this,wxID_ANY);
+	
+	call_after_events = NULL;
+	after_events_timer = new wxTimer(GetEventHandler(),mxID_TIMER_AFTER_EVENTS);
 
 	SetDropTarget(new mxDropTarget(NULL));
 	
@@ -999,7 +1001,7 @@ void mxMainWindow::OnSelectTreeItem (wxTreeEvent &event){
 	else if (event.GetEventObject()==symbols_tree.treeCtrl) {
 		parser->OnSelectSymbol(event,notebook_sources);
 #if defined(_WIN32) || defined(__WIN32__)
-		focus_timer->Start(333,true);
+		CallAfterEvents(new SetFocusToSourceAfterEvents());
 #endif
 	} else if (event.GetEventObject()==explorer_tree.treeCtrl)
 		OnSelectExplorerItem(event);
@@ -1012,7 +1014,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 		if (((mxSource*)(notebook_sources->GetPage(i)))->treeId==item) {
 			notebook_sources->SetSelection(i);
 #if defined(_WIN32) || defined(__WIN32__)
-			focus_timer->Start(333,true);
+			CallAfterEvents(new SetFocusToSourceAfterEvents());
 #endif
 			return;
 		}
@@ -1028,7 +1030,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 				//source->SetStyle(false);
 				menu.view_code_style->Check(false);
 #if defined(_WIN32) || defined(__WIN32__)
-				focus_timer->Start(333,true);
+			CallAfterEvents(new SetFocusToSourceAfterEvents());
 #endif
 		}
 	}
@@ -4287,13 +4289,14 @@ void mxMainWindow::OnWhereAmI(wxCommandEvent &event) {
 }
 
 /**
-* esta funcion responde al timer mxID_FOCUS_TIMER y es un parche para 
-* windows, que le da el foco al fuente medio segundo despues de que
-* se hizo doble click en el error en el panel compiler_output, ya que
-* utilizar el metodo SetFocus en el evento no funciona en Windows
+* esta funcion es un parche para windows, que le da el foco al fuente 
+* despues de que se hizo doble click en el error en el panel compiler_output,
+* ya que utilizar el metodo SetFocus en el evento no funciona en Windows
+* porque los eventos de click y foco sse procesan en orden invertido
+* respecto a como lo hacen en linux
 **/
-void mxMainWindow::OnFocusTime(wxTimerEvent &event) {
-	main_window->Raise();
+void mxMainWindow::SetFocusToSource() {
+//	main_window->Raise();
 	IF_THERE_IS_SOURCE 
 		CURRENT_SOURCE->SetFocus();
 }
@@ -4524,7 +4527,7 @@ void mxMainWindow::OnExplorerTreeOpenOne(wxCommandEvent &evt) {
 	if (explorer_tree.treeCtrl->GetItemImage(explorer_tree.selected_item)) {
 		OpenFileFromGui(path);
 #if defined(_WIN32) || defined(__WIN32__)
-		focus_timer->Start(333,true);
+		CallAfterEvents(new SetFocusToSourceAfterEvents());
 #endif
 	} else {
 		
@@ -5132,7 +5135,7 @@ void mxMainWindow::ShowCompilerTreePanel() {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(compiler_panel).IsShown()) {
 			autohide_handlers[ATH_COMPILER]->ForceShow();
-			focus_timer->Start(333,true);
+			SetFocusToSourceAfterEvents();
 		}
 	} else {	
 		if (!aui_manager.GetPane(compiler_panel).IsShown()) {
@@ -5148,7 +5151,7 @@ void mxMainWindow::ShowExplorerTreePanel() {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(explorer_tree.treeCtrl).IsShown()) {
 			autohide_handlers[ATH_EXPLORER]->ForceShow();
-			focus_timer->Start(333,true);
+			SetFocusToSourceAfterEvents();
 		}
 	} else {	
 		if(left_panels) {
@@ -5368,7 +5371,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 				n+=source->PositionFromLine(line-1)-1;
 				source->SelectError(0,n,n);
 #if defined(_WIN32) || defined(__WIN32__)
-				focus_timer->Start(333,true);
+				CallAfterEvents(new SetFocusToSourceAfterEvents());
 #endif
 				ShowCompilerTreePanel();
 				return;
@@ -5444,7 +5447,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 			}
 		}
 #if defined(_WIN32) || defined(__WIN32__)
-		focus_timer->Start(333,true);
+		CallAfterEvents(new SetFocusToSourceAfterEvents());
 #endif
 		ShowCompilerTreePanel();
 		return;
@@ -5455,3 +5458,25 @@ void mxMainWindow::OnToolbarMenu (wxCommandEvent & evt) {
 	project->SetActiveConfiguration(project->configurations[evt.GetId()-mxID_LAST_ID]);
 }
 
+void mxMainWindow::CallAfterEvents (AfterEventsAction * action) {
+	if (!after_events_timer) return; // main_window not initialized yet
+	action->next=call_after_events;
+	call_after_events=action;
+	after_events_timer->Start(50,true);
+}
+
+void mxMainWindow::OnAfterEventsTimer (wxTimerEvent & event) {
+	while (call_after_events) {
+		call_after_events->Do();
+		AfterEventsAction *aux=call_after_events;
+		call_after_events=call_after_events->next;
+		delete aux;
+	}
+}
+
+void mxMainWindow::SetFocusToSourceAfterEvents () {
+	class SetFocusToSourceAfterEventsAction : public mxMainWindow::AfterEventsAction {
+		public: void Do() { main_window->SetFocusToSource(); }
+	};
+	CallAfterEvents(new SetFocusToSourceAfterEventsAction());
+}

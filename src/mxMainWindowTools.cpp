@@ -857,7 +857,7 @@ void mxMainWindow::RunCustomTool(wxString name, wxString workdir, wxString cmd, 
 	
 }
 
-class ToolsCodeCopyFromHAction:public ParserOnEndAction {
+class ToolsCodeCopyFromHAction : public Parser::OnEndAction {
 	wxString the_one;
 	mxSource *source;
 public:
