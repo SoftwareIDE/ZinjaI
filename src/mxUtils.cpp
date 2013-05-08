@@ -1112,13 +1112,13 @@ void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString
 			wxFileDialog dlg(win,caption,text.Len()?text:(project?project->last_dir:config->Files.last_dir));
 			if (wxID_OK!=dlg.ShowModal()) return;
 			(project?project->last_dir:config->Files.last_dir) = wxFileName(dlg.GetPath()).GetPath(); 
-			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path);
+			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
 			if (text.Contains(' ')) text = wxString(_T("\""))<<text<<_T("\"");
 		} else if (id==mxID_POPUPS_INSERT_DIR) {
 			wxDirDialog dlg(win,caption,text.Len()?text:(project?project->last_dir:config->Files.last_dir));
 			if (wxID_OK!=dlg.ShowModal()) return;
 			(project?project->last_dir:config->Files.last_dir) = dlg.GetPath(); 
-			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path);
+			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
 			if (text.Contains(' ')) text = wxString(_T("\""))<<text<<_T("\"");
 		} else if (id==mxID_POPUPS_INSERT_MINGW_DIR) {
 			text="${MINGW_DIR}";
