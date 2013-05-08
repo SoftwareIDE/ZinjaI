@@ -130,7 +130,9 @@ void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
 	if (project->generating_wxfb) return;
 	main_window->ClearExternCompilerOutput();
 	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
+DEBUG_INFO("wxYield:in  mxCompiler::BuildOrRunProject");
 	wxYield();
+DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 	if (prepared || project->PrepareForBuilding()) { // si hay que compilar/enlazar
 		if (!EnsureCompilerNotRunning()) return;
 //		project->AnalizeConfig(project->path,true,config->mingw_real_path);
@@ -491,6 +493,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 				tree->SetItemText(state,LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
 			tree->Expand(errors);
 			main_window->ShowCompilerTreePanel();
+			main_window->SetFocusToSourceAfterEvents();
 		}
 		if (project) {
 			project->compile_was_ok=false;

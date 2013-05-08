@@ -96,6 +96,7 @@ void mxHidenPanel::ShowFloat() {
 	timer->Start(200,false);
 	selected=false; showing=true; Refresh();
 	main_window->aui_manager.Update();
+	main_window->Raise(); // los paneles flotando le sacan el foco a la main window y no se soluciona con setfocus
 }
 
 void mxHidenPanel::ShowDock() {

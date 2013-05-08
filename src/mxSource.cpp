@@ -2248,7 +2248,9 @@ void mxSource::ShowBaloon(wxString text, int pos) {
 	else if (AutoCompActive())
 		AutoCompCancel();
 	ShowCallTip(pos==-1?GetCurrentPos():pos,text,false);
+DEBUG_INFO("wxYield:in  mxSource::ShowBaloon");
 	wxYield();
+DEBUG_INFO("wxYield:out mxSource::ShowBaloon");
 	false_calltip=true;
 }
 
@@ -2815,6 +2817,12 @@ DiffInfo *mxSource::MarkDiffs(int from, int to, MXS_MARKER marker, wxString extr
 }
 
 void mxSource::OnClick(wxMouseEvent &evt) {
+	// ¿por que no anda esto?
+//	if (evt.ControlDown() && evt.ShiftDown()) {
+//		SetSelectionMode(wxSTC_SEL_RECTANGLE);
+//		evt.Skip();
+//		return;
+//	}
 	if (evt.ControlDown()) {
 		int pos = PositionFromPointClose(evt.GetX(),evt.GetY());
 		int s=WordStartPosition(pos,true);

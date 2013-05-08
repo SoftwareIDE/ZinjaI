@@ -123,7 +123,7 @@ bool ConfigManager::Load() {
 	long l;
 	wxArrayString last_files; // para compatibilidad hacia atras, guarda el historial unificado y despues lo divide
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
-		wxYield();
+//		wxYield();
 		if (str[0]=='#') {
 			continue;
 		} else if (str[0]=='[') {

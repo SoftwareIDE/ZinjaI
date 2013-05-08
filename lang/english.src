@@ -43,7 +43,7 @@ ZinjaI - Execution Terminal
 DEBUG_ERROR_WITH_TERMINAL
 There's been an error starting the terminal for debugging.\nCheck if field "Console Application" in tab "Paths 2"\nin Preference's dialog" is correct.
 DEBUG_NO_SYMBOLS
-The file you're trying to debug has no debugging symbols.\nCheck in debugging options that debug information is enable,\nand verify that the field "String executable" is not checked\nin "Linking" tab. Then recompile the project if it's needed\n(Run -> Clean, Run -> Compile).
+The file you're trying to debug has no debugging symbols.\nCheck in debugging options that debug information is enable,\nand verify that the field "Strip executable" is not checked\nin "Linking" tab. Then recompile the project if it's needed\n(Run -> Clean, Run -> Compile).
 DEBUG_ERROR_STATING_GDB
 There's been an error starting debugger.
 DEBUG_ERROR_STARTING_GDB_LINUX

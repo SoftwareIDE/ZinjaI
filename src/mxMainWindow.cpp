@@ -577,7 +577,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	Show(true);
 	Maximize(config->Init.maximized);
 	
-	ShowGCovSideBar();
+//	ShowGCovSideBar();
 	
 }
 
@@ -993,7 +993,9 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 
 /// @brief evento generico para el doble click en cualquier arbol, desde aqui se llama al que corresponda
 void mxMainWindow::OnSelectTreeItem (wxTreeEvent &event){
+DEBUG_INFO("wxYield:in  mxMainWindow::OnSelectTreeItem");
 	wxYield();
+DEBUG_INFO("wxYield:out mxMainWindow::OnSelectTreeItem");
 	if (event.GetEventObject()==project_tree.treeCtrl)
 		OnSelectSource(event);
 	else if (event.GetEventObject()==compiler_tree.treeCtrl)
@@ -1047,7 +1049,9 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event){
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.quickhelp_dir,"zerror_missingiconmanifest.html"),false); return;
 	}
 	// ver que dijo el compilador
+DEBUG_INFO("wxYield:in  mxMainWindow::OnSelectError");
 	wxYield();
+DEBUG_INFO("wxYield:out mxMainWindow::OnSelectError");
 	mxCompilerItemData *comp_data = (mxCompilerItemData*)(compiler_tree.treeCtrl->GetItemData(event.GetItem()));
 	if (!comp_data) return;
 	wxString error=comp_data->file_info;
@@ -2768,7 +2772,9 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 		ShowFullScreen(true,(config->Init.autohide_menus_fs?wxFULLSCREEN_NOMENUBAR:0)|wxFULLSCREEN_NOTOOLBAR|wxFULLSCREEN_NOSTATUSBAR|wxFULLSCREEN_NOBORDER|wxFULLSCREEN_NOCAPTION );
 		new mxOSD(this,LANG(MAINW_FULLSCREEN_OUT_TIP,"Presione F11 para salir del modo pantalla completa"),3000,true);
 		Raise();
+DEBUG_INFO("wxYield:in  mxMainWindow::OnViewFullScreen");
 		wxYield();
+DEBUG_INFO("wxYield:out mxMainWindow::OnViewFullScreen");
 //		IF_THERE_IS_SOURCE CURRENT_SOURCE->SetFocus();
 	}
 	
@@ -2817,7 +2823,7 @@ void mxMainWindow::OnViewWhiteSpace (wxCommandEvent &event) {
 		source->SetViewWhiteSpace(source->config_source.whiteSpace?wxSTC_WS_VISIBLEALWAYS:wxSTC_WS_INVISIBLE);
 		source->SetViewEOL(source->config_source.whiteSpace);
 		source->SetFocus();
-		wxYield();
+//		wxYield();
 	}
 }
 
@@ -3058,6 +3064,7 @@ void mxMainWindow::OnViewExplorerTree (wxCommandEvent &event) {
 		if (!aui_manager.GetPane(explorer_tree.treeCtrl).IsShown()) {
 			autohide_handlers[ATH_EXPLORER]->ForceShow();
 			if (!project) SetExplorerPath(config->Files.last_dir);
+			
 		}
 	} else {	
 		if(left_panels) {
@@ -3164,7 +3171,10 @@ mxSource *mxMainWindow::OpenFile (wxString filename, bool add_to_project) {
 		} else {
 			mxOSD osd(this,LANG(WXFB_OPENING,"Abriendo wxFormBuilder..."));
 			wxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" \"")+filename+_T("\""));
-			wxYield(); wxMilliSleep(1000);
+DEBUG_INFO("wxYield:in  mxMainWindow::OpenFile");
+			wxYield(); 
+DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
+			wxMilliSleep(1000);
 		}
 		return EXTERNAL_SOURCE;
 	}
@@ -3877,7 +3887,9 @@ void mxMainWindow::OnDebugRun ( wxCommandEvent &event ) {
 			debug->Continue();
 	} else {
 		SetCompilingStatus(_T("Preparando depuracion..."));
+DEBUG_INFO("wxYield:in mxMainWindow::OnDebugRun");
 		wxYield();
+DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 		if (project) {
 			debug->Start(config->Debug.compile_again);
 		} else IF_THERE_IS_SOURCE {

@@ -55,7 +55,7 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 
 /// @return false si no pudo ejecutar gcov porque hay otra cosa ejecutandose
 bool mxGCovSideBar::ShouldLoadData(mxSource *src) {
-	if (!src->sin_titulo && src->source_filename.GetFullPath()==last_path) return false;
+	if (/* !src->sin_titulo && */src->source_filename.GetFullPath()==last_path) return false;
 	last_path=src->source_filename.GetFullPath();
 	return true;
 }
@@ -109,5 +109,6 @@ void mxGCovSideBar::LoadData () {
 		}
 	}
 	wxWindow::Refresh();
+	src->SetFocus();
 }
 
