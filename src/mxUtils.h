@@ -41,18 +41,22 @@ class wxButton;
 class wxBitmapButton;
 
 #ifdef DEBUG
-extern wxString debug_string;
-#define DEBUG_QH_SET(lala) debug_string=_T(""); debug_string<<utils->ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
-#define DEBUG_QH_ADD(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(debug_string);
-#define DEBUG_QH_ADDNL(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<_T("<BR> "); main_window->ShowInQuickHelpPanel(debug_string);
-#if defined(_WIN32) || defined(__WIN32__)
-#include <wx/msgdlg.h>
-#define DEBUG_INFO(info) wxMessageBox(wxString()<<info);
+	extern wxString debug_string;
+	#define DEBUG_QH_SET(lala) debug_string=_T(""); debug_string<<utils->ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
+	#define DEBUG_QH_ADD(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(debug_string);
+	#define DEBUG_QH_ADDNL(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<_T("<BR> "); main_window->ShowInQuickHelpPanel(debug_string);
+	#if defined(_WIN32) || defined(__WIN32__)
+		#include <wx/msgdlg.h>
+		#define DEBUG_INFO(info) wxMessageBox(wxString()<<info);
+	#else
+		#include <iostream>
+		using namespace std;
+		#define DEBUG_INFO(info) cerr<<info<<endl;
+	#endif
 #else
-#include <iostream>
-using namespace std;
-#define DEBUG_INFO(info) cerr<<info<<endl;
-#endif
+	#include <iostream>
+	using namespace std;
+	#define DEBUG_INFO(info) cerr<<info<<endl;
 #endif
 
 #define DIR_PLUS_FILE utils->JoinDirAndFile
