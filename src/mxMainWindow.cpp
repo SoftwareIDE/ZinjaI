@@ -2841,7 +2841,7 @@ void mxMainWindow::OnViewLeftPanels (wxCommandEvent &event) {
 void mxMainWindow::OnViewProjectTree (wxCommandEvent &event) {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(project_tree.treeCtrl).IsShown())
-			autohide_handlers[ATH_PROJECT]->ForceShow();
+			autohide_handlers[ATH_PROJECT]->ForceShow(false);
 	} else {	
 		if(left_panels) {
 			if (!menu.view_left_panels->IsChecked()) {
@@ -2868,7 +2868,7 @@ void mxMainWindow::OnViewProjectTree (wxCommandEvent &event) {
 void mxMainWindow::OnViewSymbolsTree (wxCommandEvent &event) {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(symbols_tree.treeCtrl).IsShown())
-			autohide_handlers[ATH_SYMBOL]->ForceShow();
+			autohide_handlers[ATH_SYMBOL]->ForceShow(true);
 	} else {	
 		if(left_panels) {
 			if (!menu.view_left_panels->IsChecked()) {
@@ -3046,7 +3046,7 @@ void mxMainWindow::OnViewToolbarRun (wxCommandEvent &event) {
 void mxMainWindow::OnViewCompilerTree (wxCommandEvent &event) {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(compiler_panel).IsShown())
-			autohide_handlers[ATH_COMPILER]->ForceShow();
+			autohide_handlers[ATH_COMPILER]->ForceShow(false);
 	} else {	
 		if (!compiler_tree.menuItem->IsChecked()) {
 			compiler_tree.menuItem->Check(false);
@@ -3062,10 +3062,10 @@ void mxMainWindow::OnViewCompilerTree (wxCommandEvent &event) {
 void mxMainWindow::OnViewExplorerTree (wxCommandEvent &event) {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(explorer_tree.treeCtrl).IsShown()) {
-			autohide_handlers[ATH_EXPLORER]->ForceShow();
 			if (!project) SetExplorerPath(config->Files.last_dir);
-			
 		}
+		autohide_handlers[ATH_EXPLORER]->ForceShow(true); // afuera del if para que reciba el foco siempre
+		explorer_tree.treeCtrl->SetFocus(); // para que tenga el foco el control dentro del panel
 	} else {	
 		if(left_panels) {
 			if (!menu.view_left_panels->IsChecked()) {
@@ -3939,8 +3939,8 @@ void mxMainWindow::OnDebugStop ( wxCommandEvent &event ) {
 
 void mxMainWindow::OnDebugInspect ( wxCommandEvent &event ) {
 	if (config->Init.autohiding_panels) {
-		if (!aui_manager.GetPane(inspection_ctrl).IsShown())
-			autohide_handlers[ATH_INSPECTIONS]->ForceShow();
+//		if (!aui_manager.GetPane(inspection_ctrl).IsShown())
+			autohide_handlers[ATH_INSPECTIONS]->ForceShow(true);
 	} else {	
 		if ( !aui_manager.GetPane((wxGrid*)inspection_ctrl).IsShown() )
 			aui_manager.GetPane((wxGrid*)inspection_ctrl).Show();
@@ -3955,7 +3955,7 @@ void mxMainWindow::OnDebugInspect ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugBacktrace ( wxCommandEvent &event ) {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(backtrace_ctrl).IsShown())
-			autohide_handlers[ATH_BACKTRACE]->ForceShow();
+			autohide_handlers[ATH_BACKTRACE]->ForceShow(false);
 	} else {	
 		aui_manager.GetPane(backtrace_ctrl).Show();
 		aui_manager.Update();
@@ -3976,7 +3976,7 @@ void mxMainWindow::OnDebugThreadList ( wxCommandEvent &event ) {
 			aui_manager.Update();
 		}
 		if (!aui_manager.GetPane(threadlist_ctrl).IsShown())
-			autohide_handlers[ATH_THREADS]->ForceShow();
+			autohide_handlers[ATH_THREADS]->ForceShow(false);
 		debug->threadlist_visible=true;
 		debug->ListThreads();
 	} else {
@@ -4991,7 +4991,7 @@ void mxMainWindow::OnDebugShowLogPanel (wxCommandEvent &event) {
 			aui_manager.Update();
 		}
 		if (!aui_manager.GetPane(debug_log_panel).IsShown())
-			autohide_handlers[ATH_DEBUG_LOG]->ForceShow();
+			autohide_handlers[ATH_DEBUG_LOG]->ForceShow(false);
 	} else {
 		if (!aui_manager.GetPane(debug_log_panel).IsShown()) {
 			aui_manager.GetPane(debug_log_panel).Show();
@@ -5127,7 +5127,7 @@ void mxMainWindow::OnEscapePressed(wxCommandEvent &event) {
 void mxMainWindow::ShowQuickHelpPanel(bool hide_compiler_tree) {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(quick_help).IsShown()) {
-			autohide_handlers[ATH_QUICKHELP]->ForceShow();
+			autohide_handlers[ATH_QUICKHELP]->ForceShow(false);
 		}
 	} else {	
 		if (!aui_manager.GetPane(quick_help).IsShown()) {
@@ -5146,7 +5146,7 @@ void mxMainWindow::ShowQuickHelpPanel(bool hide_compiler_tree) {
 void mxMainWindow::ShowCompilerTreePanel() {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(compiler_panel).IsShown()) {
-			autohide_handlers[ATH_COMPILER]->ForceShow();
+			autohide_handlers[ATH_COMPILER]->ForceShow(false);
 			SetFocusToSourceAfterEvents();
 		}
 	} else {	
@@ -5162,7 +5162,7 @@ void mxMainWindow::ShowCompilerTreePanel() {
 void mxMainWindow::ShowExplorerTreePanel() {
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(explorer_tree.treeCtrl).IsShown()) {
-			autohide_handlers[ATH_EXPLORER]->ForceShow();
+			autohide_handlers[ATH_EXPLORER]->ForceShow(true);
 			SetFocusToSourceAfterEvents();
 		}
 	} else {	
@@ -5197,7 +5197,7 @@ void mxMainWindow::ShowBeginnersPanel() {
 	if (!beginner_panel) CreateBeginnersPanel();
 	if (!aui_manager.GetPane(beginner_panel).IsShown()) {
 		if (config->Init.autohiding_panels) {
-			autohide_handlers[ATH_BEGINNERS]->ForceShow();
+			autohide_handlers[ATH_BEGINNERS]->ForceShow(false);
 		} else {
 			aui_manager.GetPane(beginner_panel).Show();
 			menu.view_beginner_panel->Check(true);

@@ -24,11 +24,11 @@ public:
 	void ProcessClose();
 	void Hide();
 	void Select();
-	void ShowFloat();
+	void ShowFloat(bool set_focus);
 	void ShowDock();
 	void ToggleFull();
 	void ToggleDock();
-	void ForceShow();
+	void ForceShow(bool set_focus);
 	void ProcessParentResize();
 	void OnClick(wxMouseEvent &evt);
 	void OnMotion(wxMouseEvent &evt);

@@ -50,12 +50,12 @@ void mxHidenPanel::OnPaint(wxPaintEvent &evt) {
 
 void mxHidenPanel::ToggleDock() {
 	if (selected) 
-		ShowFloat();
+		ShowFloat(true);
 	else 
 		ShowDock();
 }
 
-void mxHidenPanel::ShowFloat() {
+void mxHidenPanel::ShowFloat(bool set_focus) {
 	wxAuiPaneInfo &pane = main_window->aui_manager.GetPane(control);
 	int px,py,pw,ph,ax,ay,aw,ah;
 	if (welcome_panel && welcome_panel->IsVisible()) {
@@ -96,7 +96,7 @@ void mxHidenPanel::ShowFloat() {
 	timer->Start(200,false);
 	selected=false; showing=true; Refresh();
 	main_window->aui_manager.Update();
-	main_window->Raise(); // los paneles flotando le sacan el foco a la main window y no se soluciona con setfocus
+	if (!set_focus) main_window->Raise(); // los paneles flotando le sacan el foco a la main window y no se soluciona con setfocus
 }
 
 void mxHidenPanel::ShowDock() {
@@ -149,11 +149,17 @@ void mxHidenPanel::ProcessClose() {
 	if (selected) { selected=false; Refresh(); }
 }
 
-void mxHidenPanel::ForceShow() {
+void mxHidenPanel::ForceShow(bool set_focus) {
 	forced_show=true;
-	if (selected) return;
+	if (selected) {
+		if (set_focus) Raise();
+		if (set_focus) SetFocus();
+		if (set_focus) control->Raise();
+		if (set_focus) control->SetFocus();
+		return;
+	}
 	if  (!main_window->aui_manager.GetPane(control).IsShown()) 
-		ShowFloat();
+		ShowFloat(set_focus);
 }
 
 void mxHidenPanel::OnClick(wxMouseEvent &evt) {
@@ -180,7 +186,7 @@ void mxHidenPanel::OnTimer(wxTimerEvent &evt) {
 			Hide();
 		}
 	} else {
-		if (mouse_in && main_window->IsActive()) ShowFloat();
+		if (mouse_in && main_window->IsActive()) ShowFloat(false);
 	}
 }
 

@@ -72,13 +72,13 @@ ConfigManager::ConfigManager(wxString a_path) {
 		else if (utils->GetOutput(_T("konsole --version")).Len()) {
 			if (utils->GetOutput(_T("konsole --version")).Find(_T("KDE: 3"))==wxNOT_FOUND) {
 				Files.terminal_command = _T(TERM_KDE4);
-				wxMessageBox(LANG(CONFIG_KONSOLE_PROBLEM,"La aplicacion terminal que se ha encontrado instalada\n"
-								"es konsole 4.x. Esta version puede generear algunas\n"
-								"molestias al ejecutar sus programas, y problemas mayores\n"
-								"para depurarlos. Se recomienda instalar xterm. Luego\n"
-								"seleccionela en el campo \"Comando del Terminal\" de la\n"
-								"seccion \"Rutas 2\" del cuadro de \"Preferencias\" (desde\n"
-								"el menu archivo)."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"));
+//				wxMessageBox(LANG(CONFIG_KONSOLE_PROBLEM,"La aplicacion terminal que se ha encontrado instalada\n"
+//								"es konsole 4.x. Esta version puede generear algunas\n"
+//								"molestias al ejecutar sus programas, y problemas mayores\n"
+//								"para depurarlos. Se recomienda instalar xterm. Luego\n"
+//								"seleccionela en el campo \"Comando del Terminal\" de la\n"
+//								"seccion \"Rutas 2\" del cuadro de \"Preferencias\" (desde\n"
+//								"el menu archivo)."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"));
 			} else
 				Files.terminal_command = _T(TERM_KDE3);
 		} else if (utils->GetOutput(_T("gnome-terminal --version")).Len())

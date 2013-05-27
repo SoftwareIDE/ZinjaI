@@ -96,7 +96,7 @@ void mxMultipleFileChooser::OnButtonOk(wxCommandEvent &event) {
 		}
 	}
 	if (config->Init.autohiding_panels)
-		main_window->autohide_handlers[ATH_PROJECT]->ForceShow();
+		main_window->autohide_handlers[ATH_PROJECT]->ForceShow(false);
 	Close();
 }
 
