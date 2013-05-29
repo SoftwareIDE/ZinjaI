@@ -1,5 +1,5 @@
+type=clang
 desc=llvm-clang
-extern=false
 c_compiler=clang
 cpp_compiler=clang++
 linker=clang++
@@ -9,9 +9,8 @@ c_linker_options=${ARG3}
 cpp_linker_options=${ARG4}
 dynamic_lib_linker=ar cr
 static_lib_linker=clang -shared -o
-is_gcc=0
-argument1=C compiling arguments=-fno-caret-diagnostics
-argument2=C++ compiling arguments=-fno-caret-diagnostics
+argument1=C compiling arguments=
+argument2=C++ compiling arguments=
 argument3=C linking arguments=
 argument4=C++ linking arguments=-lstdc++
 

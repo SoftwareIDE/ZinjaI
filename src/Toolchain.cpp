@@ -38,8 +38,13 @@ void Toolchain::LoadToolchains ( ) {
 						toolchains[i].arguments[l-1][1]=value.AfterFirst('=');
 					}
 				}
-				else if (key=="is_gcc") toolchains[i].is_gcc = utils->IsTrue(value);
-				else if (key=="extern") toolchains[i].is_extern = utils->IsTrue(value);
+				else if (key=="type") {
+					if (value=="gcc") toolchains[i].type = TC_GCC;
+					else if (value=="gcc-like") toolchains[i].type = TC_GCC_LIKE;
+					else if (value=="clang") toolchains[i].type = TC_CLANG;
+					else if (value=="extern") toolchains[i].type = TC_EXTERN;
+					else toolchains[i].type = TC_UNKNOWN;
+				}
 				else if (key=="c_compiler") toolchains[i].c_compiler = value;
 				else if (key=="c_compiling_options") toolchains[i].c_compiling_options = value;
 				else if (key=="cpp_compiler") toolchains[i].cpp_compiler = value;
@@ -56,8 +61,7 @@ void Toolchain::LoadToolchains ( ) {
 Toolchain::Toolchain () {
 	file="<null>";
 	desc="<null>";
-	is_extern=false;
-	is_gcc=true;
+	type=TC_GCC;
 #if defined(__WIN32__)
 	linker=_T("mingw32-g++");
 	cpp_compiler=_T("mingw32-g++");
@@ -107,7 +111,7 @@ const Toolchain &Toolchain::GetInfo (wxString fname) {
 
 void Toolchain::GetNames (wxArrayString & names, bool exclude_extern) {
 	for(int i=0;i<toolchains_count;i++) { 
-		if (!exclude_extern || !toolchains[i].is_extern)
+		if (!exclude_extern || toolchains[i].type<TC_EXTERN)
 			names.Add(toolchains[i].file);
 	}
 }
@@ -127,7 +131,7 @@ void Toolchain::SetArgumets ( ) {
 			aux1_SetProjectArguments(arguments[i][1],project->active_configuration->toolchain_arguments[i]);
 	}
 	// if its extern, ProjectManager will apply arguments, but if its not we must do it now so they became transparent for clients
-	if (!is_extern) {
+	if (type<TC_EXTERN) {
 		aux2_SetProjectArguments(c_compiler,arguments);
 		aux2_SetProjectArguments(cpp_compiler,arguments);
 		aux2_SetProjectArguments(linker,arguments);
@@ -138,5 +142,20 @@ void Toolchain::SetArgumets ( ) {
 		aux2_SetProjectArguments(dynamic_lib_linker,arguments);
 		aux2_SetProjectArguments(static_lib_linker,arguments);
 	}
+}
+
+wxString Toolchain::GetExtraCompilingArguments (bool cpp) {
+	if (type==TC_GCC) {
+		static long version=0, subversion=0;
+		if (!version) {
+			wxString s=utils->GetOutput((cpp?cpp_compiler:c_compiler)+" -dumpversion");
+			s.BeforeFirst('.').ToLong(&version);
+			s.AfterFirst('.').BeforeFirst('.').ToLong(&subversion);
+		}
+		if ((version==4&&subversion>=8)||version>4) return "-fshow-column -fno-diagnostics-show-caret";
+		else return "-fshow-column";
+	}
+	else if (type==TC_CLANG) return "-fno-caret-diagnostics";
+	else return "";
 }
 

@@ -481,7 +481,7 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_PRE,"Desea establecer la configuracion \"")<<configuration->name<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_POST,"\" como la configuracion a utilizar?"),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
 		project->SetActiveConfiguration(configuration);
 	else
-		main_window->SetToolchainMode(Toolchain::SelectToolchain().is_extern);
+		main_window->SetToolchainMode(Toolchain::SelectToolchain().type>=TC_EXTERN);
 	Close();
 }
 
@@ -994,7 +994,7 @@ void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
 }
 
 void mxProjectConfigWindow::OnComboToolchainChange(wxCommandEvent &evt) {
-	wx_extern.EnableAll(!Toolchain::GetInfo(toolchains_combo->GetStringSelection()).is_extern);
+	wx_extern.EnableAll(!Toolchain::GetInfo(toolchains_combo->GetStringSelection()).type>=TC_EXTERN);
 }
 
 void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {

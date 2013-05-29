@@ -333,6 +333,7 @@ public:
 		friend class mxMainWindow;
 	public:
 		virtual void Do()=0;
+		virtual ~AfterEventsAction(){};
 	};
 private:
 	wxTimer *after_events_timer;

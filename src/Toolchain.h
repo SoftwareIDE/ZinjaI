@@ -5,6 +5,15 @@
 
 #define TOOLCHAIN_MAX_ARGS 5
 
+/// type of toolchain
+enum TC_TYPE { 
+	TC_GCC, ///< real gcc, zinjai will simplify output and append some arguments for controling error messages format
+	TC_CLANG, ///< real clang, zinjai will for controling error messages format
+	TC_GCC_LIKE, ///< some that acts like gcc, but its not, zinjai wont add argument and wont try to simplify errors
+	TC_EXTERN, ///< the whole building process is managed by some extern tool, such as make, cmake, scons, or some script
+	TC_UNKNOWN ///< should not happend
+};
+
 struct Toolchain {
 	
 	// common options
@@ -12,13 +21,12 @@ struct Toolchain {
 	wxString desc; ///< toolchain name
 	
 	// options for extern toolchains
-	bool is_extern; ///< true for use with tools such as cmake, make, scons; false for zinjai managed compiling process
 	wxString build_command; ///< command to run for building the project
 	wxString clean_command; ///< command to run for cleaning the project
 	wxString arguments[TOOLCHAIN_MAX_ARGS][2]; ///< arguments for extern toolchains ([x][0]=name, [x][1]=value)
 	
 	// options for gcc-like toolchains
-	bool is_gcc; ///< apply gcc error simplifications
+	TC_TYPE type; ///< apply ad-hoc arguments and output parsing (control diagnostics format and apply error simplifications)
 	wxString c_compiler; ///< c compiler command
 	wxString cpp_compiler; ///< c++ compiler command
 	wxString linker; ///< linker command
@@ -32,6 +40,8 @@ struct Toolchain {
 	Toolchain(); ///< loads default values for current platform
 	
 	void SetArgumets(); ///< applies project toolchain arguments, uso only with current_toolchain
+	
+	wxString GetExtraCompilingArguments(bool cpp);
 	
 	static void LoadToolchains();
 	static const Toolchain &GetInfo(wxString fname); ///< used to get info from a toolchain without setting it as active

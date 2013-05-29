@@ -1,3 +1,4 @@
+type=gcc
 desc=default gcc
 extern=false
 c_compiler=gcc
@@ -9,8 +10,7 @@ c_linker_options=${ARG3}
 cpp_linker_options=${ARG4}
 dynamic_lib_linker=ar cr
 static_lib_linker=g++ -shared -o
-is_gcc=1
-argument1=C compiling arguments=-fshow-column
-argument2=C++ compiling arguments=-fshow-column
+argument1=C compiling arguments=
+argument2=C++ compiling arguments=
 argument3=C linking arguments=
 argument4=C++ linking arguments=

@@ -1013,7 +1013,7 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 	compile_was_ok=true; // inicialmente no hay errores, se va a activar si un paso falla
 	
 	// si se encarga otro....
-	if (current_toolchain.is_extern) {
+	if (current_toolchain.type>=TC_EXTERN) {
 		current_step=0;
 		steps_count=1;
 		SaveAll(false);
@@ -1767,7 +1767,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 
 void ProjectManager::Clean() {
 	
-	if (current_toolchain.is_extern) {
+	if (current_toolchain.type>=TC_EXTERN) {
 		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("clean");
 		compile_and_run->killed=true; // para que no lo procese el evento main_window->ProcessKilled
 		compile_and_run->pid=CompileWithExternToolchain(compile_and_run,false);
@@ -1857,7 +1857,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	
 	GetTempFolder();
 	compiling_options=" ";
-	compiling_options<<current_toolchain.cpp_compiling_options<<" ";
+	compiling_options<<current_toolchain.cpp_compiling_options<<" "<<current_toolchain.GetExtraCompilingArguments(true)<<" ";
 	
 	// debug_level
 	if (active_configuration->debug_level==1) 
@@ -3287,7 +3287,7 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 
 void ProjectManager::SetActiveConfiguration (project_configuration * aconf) {
 	active_configuration=aconf;
-	main_window->SetToolchainMode(Toolchain::SelectToolchain().is_extern);
+	main_window->SetToolchainMode(Toolchain::SelectToolchain().type>=TC_EXTERN);
 }
 
 wxString ProjectManager::GetTempFolder (bool create) {

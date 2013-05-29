@@ -1,5 +1,5 @@
+type=extern
 desc=makefile based building (generic)
-extern=true
 build_command=make ${ARG1} ${ARG2}
 clean_command=make ${ARG1} ${ARG3}
 argument1=Common arguments=-f Makefile

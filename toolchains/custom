@@ -1,5 +1,5 @@
+type=extern
 desc=custom building script
-extern=true
 build_command=${ARG1}
 clean_command=${ARG2}
 argument1=Build Command=build.sh

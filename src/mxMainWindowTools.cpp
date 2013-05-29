@@ -858,8 +858,8 @@ void mxMainWindow::RunCustomTool(wxString name, wxString workdir, wxString cmd, 
 }
 
 class ToolsCodeCopyFromHAction : public Parser::OnEndAction {
-	wxString the_one;
 	mxSource *source;
+	wxString the_one;
 public:
 	ToolsCodeCopyFromHAction(mxSource *_source,wxString _the_one):source(_source),the_one(_the_one){}
 	void Do() { main_window->ToolsCodeCopyFromH(source,the_one); }

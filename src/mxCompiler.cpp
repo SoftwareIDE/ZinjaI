@@ -321,7 +321,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 //		}
 			
 			// reemplazar templates para que sea más legible
-			if (config->Init.beautify_compiler_errors && current_toolchain.is_gcc) UnSTD(nice_error_line);
+			if (config->Init.beautify_compiler_errors && current_toolchain.type>=TC_EXTERN) UnSTD(nice_error_line);
 			
 			if (error_line.Last()!=',' && ( error_line.Last()!=':' || error_line.Find(_T(": error: "))!=wxNOT_FOUND || wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)) || error_line.StartsWith(EN_COMPOUT_LINKER_WARNING)) ) {
 				bool flag;
@@ -527,6 +527,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 	if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
 	z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" "; // forced compiler arguments
 	z_opts<<(cpp?current_toolchain.cpp_linker_options:current_toolchain.c_linker_options)<<" "; // forced linker arguments
+	z_opts<<current_toolchain.GetExtraCompilingArguments(cpp);
 	z_opts<<" -g "; // always include debugging information
 	wxString ext=source->source_filename.GetExt();
 	if (!source->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9')))

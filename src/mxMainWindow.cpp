@@ -3084,6 +3084,7 @@ void mxMainWindow::OnViewExplorerTree (wxCommandEvent &event) {
 				explorer_tree.menuItem->Check(true);
 				if (!project) SetExplorerPath(config->Files.last_dir);
 				aui_manager.GetPane(explorer_tree.treeCtrl).Show();
+				explorer_tree.treeCtrl->SetFocus();
 			}
 			aui_manager.Update();
 		}
@@ -5322,7 +5323,7 @@ void mxMainWindow::SetToolchainMode (bool is_extern) {
 }
 
 void mxMainWindow::SetCompilingStatus (const wxString &message, bool also_statusbar) {
-	if (current_toolchain.is_extern) AddExternCompilerOutput("= ",message);
+	if (current_toolchain.type>=TC_EXTERN) AddExternCompilerOutput("= ",message);
 	else compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
 	if (also_statusbar) main_window->SetStatusText(message);
 }

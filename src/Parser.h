@@ -79,6 +79,7 @@ public:
 		friend class Parser;
 	public:
 		virtual void Do()=0;
+		virtual ~OnEndAction(){}
 	};
 	void OnEnd(OnEndAction *what, bool run_now_if_not_working=false);
 private:

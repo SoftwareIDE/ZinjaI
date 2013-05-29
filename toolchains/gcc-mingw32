@@ -1,5 +1,5 @@
+type=gcc
 desc=gcc (mingw32)
-extern=false
 c_compiler=mingw32-gcc
 cpp_compiler=mingw32-g++
 linker=mingw32-g++
@@ -9,7 +9,6 @@ c_linker_options=${ARG3}
 cpp_linker_options=${ARG4}
 dynamic_lib_linker=ar cr
 static_lib_linker=mingw32-g++ -shared -o
-is_gcc=1
 argument1=C compiling arguments=-fshow-column
 argument2=C++ compiling arguments=-fshow-column
 argument3=C linking arguments=-static-libgcc
