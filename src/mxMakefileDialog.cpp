@@ -70,7 +70,6 @@ mxMakefileDialog::mxMakefileDialog(wxWindow* parent, wxWindowID id, const wxPoin
 
 void mxMakefileDialog::OnOkButton(wxCommandEvent &event) {
 	if (file_path->GetValue().Len()) {
-		Close();
 		project_configuration *orig = project->active_configuration;
 		project->active_configuration = project->GetConfig(configuration_name->GetValue()); // we can skip project->SetActiveConfiguration here cause we are setting it back after makefile generation
 		makefile_type mktype=MKTYPE_FULL;
@@ -80,6 +79,7 @@ void mxMakefileDialog::OnOkButton(wxCommandEvent &event) {
 		if (mktype==MKTYPE_OBJS) fpath=DIR_PLUS_FILE(wxFileName(fpath).GetPath(),"Makefile.common");
 		project->ExportMakefile(fpath,expand_comas->GetValue(),mingw_dir->GetValue(),mktype);
 		project->active_configuration = orig;
+		Close();
 	}
 }
 

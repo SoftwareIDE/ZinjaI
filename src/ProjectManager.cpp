@@ -1832,7 +1832,7 @@ void ProjectManager::Clean() {
 * se encarga de hacerlo una vez antes de compilar y guardar los resultados en los
 * atributos de esta clase marcados como "temporales".
 * @param path        es el directorio de base a utilizar para todas las rutas
-*                    relativas. Én la salida de esta función se utiliza este path
+*                    relativas. En la salida de esta función se utiliza este path
 *                    para convertirlas en absolutas. Usualmente será la carpeta
 *                    del proyecto, pero a la hora de generar el makefile se deja 
 *                    en blanco, para que se mantengan relativas.
@@ -1855,7 +1855,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	
 	Toolchain::SelectToolchain();
 	
-	GetTempFolder();
+	GetTempFolderEx(path,false);
 	compiling_options=" ";
 	compiling_options<<current_toolchain.cpp_compiling_options<<" "<<current_toolchain.GetExtraCompilingArguments(true)<<" ";
 	
@@ -3291,6 +3291,10 @@ void ProjectManager::SetActiveConfiguration (project_configuration * aconf) {
 }
 
 wxString ProjectManager::GetTempFolder (bool create) {
+	return GetTempFolderEx(project->path,create);
+}
+
+wxString ProjectManager::GetTempFolderEx (wxString path, bool create) {
 	temp_folder_short=active_configuration->temp_folder;
 	temp_folder=wxFileName(DIR_PLUS_FILE(path,active_configuration->temp_folder)).GetFullPath();
 	if (create && temp_folder.Len() && !wxFileName::DirExists(temp_folder))

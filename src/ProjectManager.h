@@ -397,6 +397,7 @@ private:
 	wxString temp_folder_short; ///< guarda la ruta de temporales (objetos) relativa (como la ingresa el usuario), solo para uso interno
 public:
 	wxString GetTempFolder(bool create=false);
+	wxString GetTempFolderEx(wxString path, bool create=false);
 	wxString executable_name; ///< ubicacion final del ejecutable (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
 	wxString linking_options; ///< argumentos para el enlazado del ejecutable (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
 	wxString compiling_options; ///< argumentos para las compilaciones (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
