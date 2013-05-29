@@ -195,7 +195,6 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_STEP_IN, mxMainWindow::OnDebugStepIn)
 	EVT_MENU(mxID_DEBUG_STEP_OUT, mxMainWindow::OnDebugStepOut)
 	EVT_MENU(mxID_DEBUG_STEP_OVER, mxMainWindow::OnDebugStepOver)
-	EVT_MENU(mxID_DEBUG_FUNCTION_BREAKPOINT, mxMainWindow::OnDebugFunctionBreakpoint)
 	EVT_MENU(mxID_DEBUG_BREAKPOINT_OPTIONS, mxMainWindow::OnDebugBreakpointOptions)
 	EVT_MENU(mxID_DEBUG_INSERT_WATCHPOINT, mxMainWindow::OnDebugInsertWatchpoint)
 	EVT_MENU(mxID_DEBUG_LIST_BREAKPOINTS, mxMainWindow::OnDebugListBreakpoints)
@@ -1504,7 +1503,6 @@ void mxMainWindow::CreateMenus() {
 	menu.debug_toggle_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_BREAKPOINT_OPTIONS, LANG(MENUITEM_DEBUG_BREAKPOINT_OPTIONS,"&Opciones del Breakpoint..."),_T("Ctrl+F8"),_T(""),ipre+_T("breakpoint_options.png"));
 //	menu.debug_insert_watchpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_INSERT_WATCHPOINT, LANG(MENUITEM_DEBUG_INSERT_WATCHPOINT,"&Agregar Watchpoint..."),_T(""),ipre+_T("insert_watchpoint.png"));
 //	menu.debug_insert_watchpoint->Enable(false);
-//	menu.debug_function_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_FUNCTION_BREAKPOINT, LANG(MENUITEM_DEBUG_FUNCTION_BREAKPOINT,"&Insertar Breakpoint en Funcion..."),_T("Alt+F8"),_T(""),ipre+_T("function_breakpoint.png"));
 //	menu.debug_function_breakpoint->Enable(false);
 	utils->AddItemToMenu(menu.debug, mxID_DEBUG_LOG_PANEL, LANG(MENUITEM_DEBUG_SHOW_LOG_PANEL,"&Mostrar mensajes del depurador"),_T(""),_T(""),ipre+_T("debug_log_panel.png"));
 #if !defined(_WIN32) && !defined(__WIN32__)
@@ -4059,10 +4057,6 @@ void mxMainWindow::OnDebugBreakpointOptions ( wxCommandEvent &event ) {
 			new mxBreakOptions(bpi); // muestra el dialogo de opciones del bp
 		}
 	}
-}
-
-void mxMainWindow::OnDebugFunctionBreakpoint ( wxCommandEvent &event ) {
-	
 }
 
 void mxMainWindow::OnDebugStepOut ( wxCommandEvent &event ) {

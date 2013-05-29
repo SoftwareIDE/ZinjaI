@@ -180,7 +180,6 @@ public:
 	void OnDebugListBreakpoints (wxCommandEvent &event);
 	void OnDebugListWatchpoints (wxCommandEvent &event);
 	void OnDebugInsertWatchpoint (wxCommandEvent &event);
-	void OnDebugFunctionBreakpoint (wxCommandEvent &event);
 	void OnDebugBreakpointOptions (wxCommandEvent &event);
 	void OnDebugShowLogPanel (wxCommandEvent &event);
 	void OnDebugEnableInverseExecution (wxCommandEvent &event);

@@ -189,7 +189,7 @@ void mxLibToBuildWindow::SetFName() {
 	wxString fname = DIR_PLUS_FILE(path->GetValue(),wxString(_T("lib"))<<name->GetValue());
 #if defined(_WIN32) || defined(__WIN32__)
 	if (is_static)
-		fname<<_T(".lib");
+		fname<<_T(".a");
 	else
 		fname<<_T(".dll");
 #else

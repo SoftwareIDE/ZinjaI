@@ -2840,7 +2840,7 @@ void ProjectManager::AssociateLibsAndSources(project_configuration *conf) {
 		lib->filename = DIR_PLUS_FILE(lib->path,wxString(_T("lib"))<<lib->libname);
 #if defined(_WIN32) || defined(__WIN32__)
 		if (lib->is_static)
-			lib->filename<<_T(".lib");
+			lib->filename<<_T(".a");
 		else
 			lib->filename<<_T(".dll");
 #else
