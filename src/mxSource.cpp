@@ -116,6 +116,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 //		SetCodePage(wxSTC_CP_UTF8);
 //#endif
 	
+	brace_1=-1; brace_2=-1;
+	
 	next_source_with_same_file=this;
 	
 	source_time_dont_ask=false;
@@ -842,22 +844,22 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	int p=GetCurrentPos();
 	if (!config_source.lineNumber)
 		main_window->status_bar->SetStatusText(wxString("Lin ")<<cl<<" - Col "<<p-PositionFromLine(cl),1);
-	char c;
-	if ((c=GetCharAt(p))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
-		int m=BraceMatch(p);
-		if (m!=wxSTC_INVALID_POSITION)
-			BraceHighlight (p,m);
-		else
-			BraceBadLight (p);
-	} else if ((c=GetCharAt(p-1))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
-		int m=BraceMatch(p-1);
-		if (m!=wxSTC_INVALID_POSITION)
-			BraceHighlight (p-1,m);
-		else
-			BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
-	} else
-		BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
-	event.Skip();
+//	char c;
+//	if ((c=GetCharAt(p))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
+//		int m=BraceMatch(p);
+//		if (m!=wxSTC_INVALID_POSITION)
+//			BraceHighlight (p,m);
+//		else
+//			BraceBadLight (p);
+//	} else if ((c=GetCharAt(p-1))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
+//		int m=BraceMatch(p-1);
+//		if (m!=wxSTC_INVALID_POSITION)
+//			BraceHighlight (p-1,m);
+//		else
+//			BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
+//	} else
+//		BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
+//	event.Skip();
 	
 	// tomado de pseint, para resaltar las partes a completar
 //	if (GetStyleAt(p)&wxSTC_INDIC2_MASK) {
@@ -3394,7 +3396,7 @@ void mxSource::SetColours(bool also_style) {
 	MarkerDefine (wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNERCURVE,     ctheme->FOLD_BACK,ctheme->FOLD_FORE);
 //	MarkerDefine(mxSTC_MARK_CURRENT,wxSTC_MARK_BACKGROUND,ctheme->CURRENT_LINE,ctheme->CURRENT_LINE);
 //	SetCaretLineVisible(true); SetCaretLineBackground(ctheme->CURRENT_LINE); SetCaretLineBackAlpha(50);
-	SetCaretLineVisible(true); SetCaretLineBackground(ctheme->CURRENT_LINE); SetCaretLineBackAlpha(25);
+	SetCaretLineVisible(true); SetCaretLineBackground(ctheme->CURRENT_LINE); SetCaretLineBackAlpha(35);
 	MarkerDefine(mxSTC_MARK_USER,wxSTC_MARK_BACKGROUND,ctheme->USER_LINE,ctheme->USER_LINE);
 	// markers
 	
@@ -3491,7 +3493,33 @@ wxFileName mxSource::GetBinaryFileName ( ) {
 }
 
 void mxSource::OnPainted (wxStyledTextEvent & event) {
+	char c; int p=GetCurrentPos();
+	if ((c=GetCharAt(p))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
+		MyBraceHighLight(p,BraceMatch(p));
+	} else if ((c=GetCharAt(p-1))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
+		int m=BraceMatch(p-1);
+		if (m!=wxSTC_INVALID_POSITION)
+			MyBraceHighLight(p-1,m);
+		else
+			MyBraceHighLight();
+	} else
+		MyBraceHighLight();
 	event.Skip();
 	if (main_window->gcov_sidebar) main_window->gcov_sidebar->Refresh(this);
+}
+
+/**
+* Esta funcion esta para evitar el flickering que produce usar el bracehighlight
+* del stc cuando se llama desde el evento de udateui. A cambio, para que igual sea
+* instantaneo se llama desde el evento painted, y para evitar que reentre mil veces
+* se guardan las ultimas posiciones y no se vuelve a llamar si son las mismas.
+* El problema es que está recalculando el BraceMatch en cada paint.
+**/
+void mxSource::MyBraceHighLight (int b1, int b2) {
+	if (b1==brace_1&&b2==brace_2) return;
+	brace_1=b1; brace_2=b2;
+	if (b2==wxSTC_INVALID_POSITION) BraceBadLight (b1);
+	else BraceHighlight (b1,b2);
+	Refresh(false);
 }
 

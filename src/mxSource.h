@@ -212,6 +212,9 @@ private:
 	int m_FoldingMargin;
 	int m_DividerID;
 	
+	int brace_1,brace_2;
+	void MyBraceHighLight(int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);
+	
 	DECLARE_EVENT_TABLE()
 };
 
