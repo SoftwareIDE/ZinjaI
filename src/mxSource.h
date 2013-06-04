@@ -21,8 +21,8 @@ class BreakPointInfo;
 class DiffInfo;
 
 enum MXS_MARKER {
-	mxSTC_MARK_CURRENT=0, 	///< resaltar la linea actual en el editor (fondo celeste)
-	mxSTC_MARK_USER, 		///< resaltar lineas que elige el usuario (fondo rojo)
+//	mxSTC_MARK_CURRENT=0, 	///< resaltar la linea actual en el editor (fondo celeste)
+	mxSTC_MARK_USER=0, 		///< resaltar lineas que elige el usuario (fondo rojo)
 	mxSTC_MARK_BREAKPOINT,	///< marcar los puntos de interrupcion
 	mxSTC_MARK_BAD_BREAKPOINT,	///< marcar los puntos de interrupcion
 	mxSTC_MARK_EXECPOINT,	///< indicar donde esta actualmente la ejecucion
@@ -45,8 +45,8 @@ public:
 	BreakPointInfo **breaklist; ///< lista de info de breakpoints 
 	bool own_breaks; ///< para saber si la info de los breakpoints es resposabilidad propia o del proyecto
 	int calltip_brace;
-	int current_line;
-	int current_marker;
+//	int current_line;
+//	int current_marker;
 	int lexer;
 	bool first_view;
 	bool never_parsed;

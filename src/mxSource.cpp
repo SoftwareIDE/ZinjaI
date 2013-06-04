@@ -164,7 +164,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 	cpp_or_just_c = true;
 	never_parsed = true;
 	first_view = true;
-	current_line = 0; current_marker = -1;
+//	current_line = 0; current_marker = -1;
 	
 	m_LineNrID = 0;
 	m_DividerID = 1;
@@ -275,6 +275,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 		SetReadOnly(true);
 
 	er_register_source(this);
+	
 }
 
 
@@ -309,7 +310,7 @@ mxSource::~mxSource () {
 		while (iter->next_source_with_same_file!=this)
 			iter=iter->next_source_with_same_file;
 		iter->next_source_with_same_file=next_source_with_same_file;
-		MarkerDeleteHandle(current_marker);
+//		MarkerDeleteHandle(current_marker);
 	}
 	
 }
@@ -825,21 +826,22 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	if (first_view) {
 		ScrollToColumn(0);
 		first_view=false;
-		current_marker=MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
+//		current_marker=MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
 	} else {
 		if (false_calltip) {
 			CallTipCancel();
 			false_calltip=false;
 		}
-		if (cl!=current_line) {
-	//		MarkerDelete(current_line,mxSTC_MARK_CURRENT);
-	//		MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
-			MarkerDeleteHandle(current_marker);
-			current_marker=MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
-		}
+//		if (cl!=current_line) {
+//	//		MarkerDelete(current_line,mxSTC_MARK_CURRENT);
+//	//		MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
+//			MarkerDeleteHandle(current_marker);
+//			current_marker=MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
+//		}
 	}
 	int p=GetCurrentPos();
-	if (!config_source.lineNumber) main_window->status_bar->SetStatusText(wxString("Lin ")<<cl<<" - Col "<<p-PositionFromLine(cl),1);
+	if (!config_source.lineNumber)
+		main_window->status_bar->SetStatusText(wxString("Lin ")<<cl<<" - Col "<<p-PositionFromLine(cl),1);
 	char c;
 	if ((c=GetCharAt(p))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
 		int m=BraceMatch(p);
@@ -855,6 +857,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 			BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
 	} else
 		BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
+	event.Skip();
 	
 	// tomado de pseint, para resaltar las partes a completar
 //	if (GetStyleAt(p)&wxSTC_INDIC2_MASK) {
@@ -3389,7 +3392,9 @@ void mxSource::SetColours(bool also_style) {
 	MarkerDefine (wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_CIRCLEMINUS, ctheme->FOLD_BACK,ctheme->FOLD_FORE);
 	MarkerDefine (wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_TCORNERCURVE,     ctheme->FOLD_BACK,ctheme->FOLD_FORE);
 	MarkerDefine (wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNERCURVE,     ctheme->FOLD_BACK,ctheme->FOLD_FORE);
-	MarkerDefine(mxSTC_MARK_CURRENT,wxSTC_MARK_BACKGROUND,ctheme->CURRENT_LINE,ctheme->CURRENT_LINE);
+//	MarkerDefine(mxSTC_MARK_CURRENT,wxSTC_MARK_BACKGROUND,ctheme->CURRENT_LINE,ctheme->CURRENT_LINE);
+//	SetCaretLineVisible(true); SetCaretLineBackground(ctheme->CURRENT_LINE); SetCaretLineBackAlpha(50);
+	SetCaretLineVisible(true); SetCaretLineBackground(ctheme->CURRENT_LINE); SetCaretLineBackAlpha(25);
 	MarkerDefine(mxSTC_MARK_USER,wxSTC_MARK_BACKGROUND,ctheme->USER_LINE,ctheme->USER_LINE);
 	// markers
 	
