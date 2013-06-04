@@ -1200,6 +1200,10 @@ int mxUtils::Unique (wxArrayString &array, bool do_sort) {
 	return d;
 }
 
+wxString mxUtils::WichOne(wxString file, wxString dir_name, bool is_file) {
+	return WichOne(file,DIR_PLUS_FILE(config->home_dir,dir_name),DIR_PLUS_FILE(config->zinjai_dir,dir_name),is_file);
+}
+
 wxString mxUtils::WichOne(wxString file, wxString path1, wxString path2, bool is_file) {
 	wxString res=DIR_PLUS_FILE(path1,file);
 	if (is_file) { if (wxFileExists(res)) return res; }
@@ -1209,3 +1213,11 @@ wxString mxUtils::WichOne(wxString file, wxString path1, wxString path2, bool is
 	else { if (wxDirExists(res)) return res; }
 	return "";
 }
+
+void mxUtils::GetFilesFromBothDirs (wxArrayString & array, wxString dir_name, bool is_file, wxString extra_element) {
+	GetFilesFromDir(array,DIR_PLUS_FILE(config->zinjai_dir,dir_name),is_file);
+	GetFilesFromDir(array,DIR_PLUS_FILE(config->home_dir,dir_name),is_file);
+	utils->Unique(array,true);
+	if (extra_element.Len()) array.Add(extra_element);
+}
+

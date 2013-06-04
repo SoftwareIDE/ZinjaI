@@ -13,14 +13,12 @@ Toolchain current_toolchain;
 void Toolchain::LoadToolchains ( ) {
 	if (toolchains) delete [] toolchains;
 	wxArrayString toolchain_files;
-	utils->GetFilesFromDir(toolchain_files,DIR_PLUS_FILE(config->zinjai_dir,"toolchains"),true);
-	utils->GetFilesFromDir(toolchain_files,DIR_PLUS_FILE(config->home_dir,"toolchains"),true);
-	utils->Unique(toolchain_files,true);
+	utils->GetFilesFromBothDirs(toolchain_files,"toolchains");
 	toolchains_count=toolchain_files.GetCount();
 	toolchains=new Toolchain[toolchains_count];
 	for (int i=0; i<toolchains_count;i++) {
 		toolchains[i].file = toolchains[i].file = toolchain_files[i];
-		wxString filename = utils->WichOne(toolchain_files[i],DIR_PLUS_FILE(config->home_dir,"toolchains"),DIR_PLUS_FILE(config->zinjai_dir,"toolchains"),true);
+		wxString filename = utils->WichOne(toolchain_files[i],"toolchains",true);
 		wxTextFile file(filename); file.Open();
 		if (file.IsOpened()) {
 			wxString key, value, base_dir;

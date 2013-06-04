@@ -5,7 +5,7 @@ Exportando...
 GENERAL_READY
 Listo
 CONFIG_KONSOLE_PROBLEM
-La aplicacion terminal que se ha encontrado instalada\nes konsole 4.x. Esta version puede generear algunas\nmolestias al ejecutar sus programas, y problemas mayores\npara depurarlos. Se recomienda instalar xterm. Luego\nseleccionela en el campo \"Comando del Terminal\" de la\nseccion \"Rutas 2\" del cuadro de \"Preferencias\" (desde\nel menu archivo).
+La aplicacion terminal que se ha encontrado instalada\n
 CONFIG_TERMINAL
 Terminal de ejecucion
 CONFIG_NO_TERMINAL_FOUND
@@ -28,8 +28,6 @@ MAINW_DOXYGEN_MISSING
 Doxygen no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CPPCHECK_MISSING
 CppCheck no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
-DEBUG_MUST_WAIT_FOR_PARSER
-Debe esperar a que se termine de actualizar el arbol de simbolos para comenzar la depuracion.
 DEBUG_STATUS_STARTING
 Iniciando depuracion...
 DEBUG_ERROR_STARTING_SPACES
@@ -514,8 +512,6 @@ GENERAL_APPLY_BUTTON
 A&plicar
 COLOURS_ESCHEME
 Esquema:
-COLOURS_CUSTOM
-<personalizado>
 COLOURS_TIP_OPEN
 Cargar un esquema de colores personalizado desde un archivo .zcs
 COLOURS_TIP_SAVE
@@ -1588,8 +1584,6 @@ MENUITEM_DEBUG_BREAKPOINT_OPTIONS
 &Opciones del Breakpoint...
 MENUITEM_DEBUG_INSERT_WATCHPOINT
 &Agregar Watchpoint...
-MENUITEM_DEBUG_FUNCTION_BREAKPOINT
-&Insertar Breakpoint en Funcion...
 MENUITEM_DEBUG_SHOW_LOG_PANEL
 &Mostrar mensajes del depurador
 MENUITEM_DEBUG_LOAD_CORE_DUMP
@@ -2918,6 +2912,8 @@ PREFERENCES_TOOLCHAIN
 Herramientas de compilación
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
+PREFERENCES_STYLE_DEFINE_COLOURS
+Definir colores...
 PREFERENCES_STYLE_INVERTED_COLOURS
 Colores inversos (fondo negro)
 PREFERENCES_STYLE_LINE_WRAP
@@ -3424,8 +3420,6 @@ GENERAL_POPUP_INSERT_ZINJAI_DIR
 insertar el directorio de instalacion de ZinjaI
 GENERAL_POPUP_INSERT_BROWSER
 insertar comando del navegador
-GENERAL_WAIT_PARSER
-Debe esperar a que se terminen de analizar todos los fuentes.
 VALGRIND_OUTPUT_MISSING
 No se encontro el archivo de salida.\nPara saber como generarla consulte la ayuda.
 VALGRIND_RELOAD_TREE

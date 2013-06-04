@@ -208,12 +208,10 @@ void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {
 
 	wxMenu *templates=new wxMenu; opts_list.Clear();
 	wxArrayString templates_list;
-	utils->GetFilesFromDir(templates_list,config->Files.templates_dir);
-	utils->GetFilesFromDir(templates_list,DIR_PLUS_FILE(config->home_dir,"templates"));
-	utils->Unique(templates_list,true);
+	utils->GetFilesFromBothDirs(templates_list,"templates");
 	for(unsigned int i=0;i<templates_list.GetCount();i++) {
 		wxString name=templates_list[i], options;
-		wxString filename = utils->WichOne(name,DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,true);
+		wxString filename = utils->WichOne(name,"templates",true);
 		wxTextFile file(filename);
 		file.Open();
 		if (file.IsOpened()) { 

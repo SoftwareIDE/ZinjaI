@@ -90,7 +90,7 @@ struct cfgHelp {
 	wxString quickhelp_dir;
 	wxString guihelp_dir;
 	wxString autocomp_indexes;
-	wxString autocomp_dir;
+//	wxString autocomp_dir;
 	int min_len_for_completion;
 	bool show_extra_panels;
 };
@@ -367,7 +367,7 @@ struct cfgFiles {
 	wxString skin_dir;
 	wxString default_template; 
 	wxString default_project; 
-	wxString templates_dir; 
+//	wxString templates_dir; 
 	wxString mingw_dir;
 	wxString toolchain;
 	wxString runner_command;

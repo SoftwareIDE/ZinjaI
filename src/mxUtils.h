@@ -237,10 +237,15 @@ public:
 	
 	/// returns the list of files/subdirs from a directory (not recursive, add to the array without clearing first)
 	int GetFilesFromDir(wxArrayString &array, wxString path, bool files=true);
+	/// populate the array with files from home/.zinjai/dir_name install_dir/dir_name (sorted) and adds extra_element at the in if it is not empty
+	void GetFilesFromBothDirs(wxArrayString &array, wxString dir_name, bool is_file=true, wxString extra_element="");
+	
 	/// returns the list of files subdirectories from a directory (not recursive, add to the array without clearing first)
 	int Unique(wxArrayString &array, bool do_sort=false);
 	/// looks for file in path1 and path2, and returns the first ocurrence, or and empty string if not found
 	wxString WichOne(wxString file, wxString path1, wxString path2, bool is_file=true);
+	/// wrapper for looking as in the other WichOne with paths home/.zinjai/dir_name and install_dir/dir_name
+	wxString WichOne(wxString file, wxString dir_name, bool is_file=true);
 };
 
 extern mxUtils *utils;

@@ -351,7 +351,7 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (wxListbook *notebook) {
 	wxBoxSizer *colours_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_syntaxEnable = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_STYLE_SINTAX_HIGHLIGHT,"Colorear sintaxis"))+_T("   "));
 	colours_sizer->Add(source_syntaxEnable,sizers->Center);
-	colours_sizer->Add(new wxButton(panel,mxID_COLORS_PICKER,"Definir colores..."),sizers->Center);
+	colours_sizer->Add(new wxButton(panel,mxID_COLORS_PICKER,LANG(PREFERENCES_STYLE_DEFINE_COLOURS,"Definir colores...")),sizers->Center);
 	sizer->Add(colours_sizer,sizers->BA5_Exp0);
 	source_syntaxEnable->SetValue(config->Source.syntaxEnable);
 	
@@ -400,10 +400,8 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	help_autocomp_indexes = new wxCheckListBox(panel,mxID_AUTOCOMP_LIST,wxDefaultPosition,wxSize(100,100),0,NULL,wxLB_SORT);
 	
 	wxArrayString autocomp_array_all, autocomp_array_user;
-	utils->GetFilesFromDir(autocomp_array_all,config->Help.autocomp_dir);
-	utils->GetFilesFromDir(autocomp_array_all,DIR_PLUS_FILE(config->home_dir,"autocomp"));
+	utils->GetFilesFromBothDirs(autocomp_array_all,"autocomp");
 	utils->Split(config->Help.autocomp_indexes,autocomp_array_user);
-	utils->Unique(autocomp_array_all,true);
 	utils->Unique(autocomp_array_user,true);
 	
 	for (unsigned int i=0;i<autocomp_array_all.GetCount();i++) {
@@ -1303,21 +1301,16 @@ void mxPreferenceWindow::ResetChanges() {
 	source_autoCompletion->SetValue(config->Source.autoCompletion);
 	source_autocloseStuff->SetValue(config->Source.autocloseStuff);
 	source_callTips->SetValue(config->Source.callTips);
+	
 	help_autocomp_indexes->Clear();
-	wxDir dir(config->Help.autocomp_dir);
-	if ( dir.IsOpened() ) {
-		wxArrayString autocomp_array;
-		utils->Split(config->Help.autocomp_indexes,autocomp_array);
-		wxString filename;
-		wxString spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		int n;
-		while ( cont ) {
-			n = help_autocomp_indexes->Append(filename);
-			if (autocomp_array.Index(filename)!=wxNOT_FOUND)
-				help_autocomp_indexes->Check(n,true);
-			cont = dir.GetNext(&filename);
-		}	
+	wxArrayString autocomp_array_all, autocomp_array_user;
+	utils->GetFilesFromBothDirs(autocomp_array_all,"autocomp");
+	utils->Split(config->Help.autocomp_indexes,autocomp_array_user);
+	utils->Unique(autocomp_array_user,true);
+	for (unsigned int i=0;i<autocomp_array_all.GetCount();i++) {
+		int n=help_autocomp_indexes->Append(autocomp_array_all[i]);
+		if (autocomp_array_user.Index(autocomp_array_all[i])!=wxNOT_FOUND) 
+			help_autocomp_indexes->Check(n,true);
 	}
 	
 	// style

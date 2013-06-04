@@ -44,26 +44,18 @@ mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_AN
 	ok_button->SetMinSize(wxSize(ok_button->GetSize().GetWidth()<80?80:ok_button->GetSize().GetWidth(),ok_button->GetSize().GetHeight()));
 	apply_button->SetDefault(); 
 	
+
+	wxArrayString color_profiles;
+	utils->GetFilesFromBothDirs(color_profiles,"colours",true,"<personalizado>");
 	bottomSizer->Add(new wxStaticText(this,wxID_ANY,LANG(COLOURS_ESCHEME,"Esquema:")),sizers->BA5_Center);
-	combo=new wxComboBox(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY);
+	combo=new wxComboBox(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,color_profiles,wxCB_READONLY);
 	bottomSizer->Add(combo,sizers->BA5_Center);
 	
-	int sel=-1;
-	wxDir dir(DIR_PLUS_FILE(config->zinjai_dir,"colours"));
-	if ( dir.IsOpened() ) {
-		wxString filename, spec;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		int i=0;
-		while ( cont ) {
-			combo->Append(filename);
-			if (filename==config->Init.colour_theme) 
-				sel=i; i++;
-			cont = dir.GetNext(&filename);
-		}	
-	}
-	combo->Append(LANG(COLOURS_CUSTOM,"<personalizado>"));
-	if (sel==-1) sel=combo->GetCount()-1;
+	
+	int sel=color_profiles.Index(config->Init.colour_theme);
+	if (sel==wxNOT_FOUND) sel=color_profiles.GetCount()-1;
 	combo->SetSelection(sel);
+	
 	wxBitmapButton *open_button = new wxBitmapButton(this,wxID_OPEN,wxBitmap(SKIN_FILE(DIR_PLUS_FILE("16","abrir.png")),wxBITMAP_TYPE_PNG));
 	wxBitmapButton *save_button=new wxBitmapButton(this,wxID_SAVE,wxBitmap(SKIN_FILE(DIR_PLUS_FILE("16","guardar.png")),wxBITMAP_TYPE_PNG));
 	open_button->SetToolTip(LANG(COLOURS_TIP_OPEN,"Cargar un esquema de colores personalizado desde un archivo .zcs"));
@@ -541,10 +533,13 @@ void mxColoursEditor::OnCombo (wxCommandEvent & evt) {
 	if (combo->GetSelection()==int(combo->GetCount())-1) {
 		(*ctheme)=custom_theme;
 	} else {
-		ctheme->Load(DIR_PLUS_FILE(DIR_PLUS_FILE(config->zinjai_dir,"colours"),combo->GetString(combo->GetSelection())));
+		wxString filename = combo->GetString(combo->GetSelection());
+		wxString fullpath = utils->WichOne(filename,"colours",true);
+		ctheme->Load(fullpath);
 	}
 	SetValues();
 }
+
 void mxColoursEditor::SetValues() {
 	setting=true;
 	for (int i=0;i<lcount;i++) {
@@ -569,10 +564,18 @@ void mxColoursEditor::OnOpen (wxCommandEvent & evt) {
 }
 
 void mxColoursEditor::OnSave (wxCommandEvent & evt) {
-	wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),config->Files.last_dir,"custom_color_scheme.zcs", _T("Zinjai Colour Schemes (*.zcs)|*.zcs;*.ZCS|All files(*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	if (dlg.ShowModal() == wxID_OK) {
-		config->Files.last_dir=wxFileName(dlg.GetPath()).GetPath();
-		ctheme->Save(dlg.GetPath());
+	wxString fname=wxGetTextFromUser(LANG(COLOURS_ESCHEME,"Esquema:"),LANG(GENERAL_SAVE,"Guardar"),"custom_color_scheme", this);
+	if (fname.Len()) {
+		if (!fname.Upper().EndsWith(".ZCS")) fname<<".zcs";
+		ctheme->Save(DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"colours"),fname));
+#ifdef __WIN32__
+		bool os_case=false;
+#else
+		bool os_case=true;
+#endif
+		int idx=combo->FindString(fname,os_case);
+		if (idx==wxNOT_FOUND) combo->Insert(fname,idx=0);
+		combo->Select(idx);
 	}
 }
 

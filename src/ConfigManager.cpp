@@ -968,7 +968,7 @@ void ConfigManager::LoadDefaults(){
 	Files.project_folder=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
 	Files.default_template=DIR_PLUS_FILE(_T("templates"),_T("default.tpl"));
 	Files.default_project=_T("<main>");
-	Files.templates_dir="templates";
+//	Files.templates_dir="templates";
 	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
 	Files.code_helper=DIR_PLUS_FILE(_T("quickhelp"),_T("codehelper.txt"));
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
@@ -1064,7 +1064,7 @@ void ConfigManager::LoadDefaults(){
 //	Help.tips_file=DIR_PLUS_FILE(_T("quickhelp"),_T("tips"));
 	Help.quickhelp_dir="quickhelp";
 	Help.guihelp_dir="guihelp";
-	Help.autocomp_dir="autocomp";
+//	Help.autocomp_dir="autocomp";
 	Help.autocomp_indexes=_T("AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,STL_Contenedores,STL_Algoritmos,STL_Iteradores,AAA_Palabras_Reservadas");
 	Help.min_len_for_completion=3;
 	Help.show_extra_panels=true;

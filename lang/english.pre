@@ -28,8 +28,6 @@ MAINW_DOXYGEN_MISSING
 Doxygen isn't present in your system or its path isn't correctly defined\nin ZinjaI's settings. To download Doxygen go to http://www.doxygen.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_CPPCHECK_MISSING
 CppCheck isn't present in your system or its path isn't correctly defined\nin ZinjaI's settings. To download Doxygen go to http://cppcheck.sourceforge.net.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
-DEBUG_MUST_WAIT_FOR_PARSER
-Parser is updating symbol tree. You must wait for it to finish before starting debugger.
 DEBUG_STATUS_STARTING
 Starting...
 DEBUG_ERROR_STARTING_SPACES
@@ -514,8 +512,6 @@ GENERAL_APPLY_BUTTON
 A&pply
 COLOURS_ESCHEME
 Scheme:
-COLOURS_CUSTOM
-<custom>
 COLOURS_TIP_OPEN
 Load a custom colours' scheme from a .zcs file
 COLOURS_TIP_SAVE
@@ -1588,8 +1584,6 @@ MENUITEM_DEBUG_BREAKPOINT_OPTIONS
 Breakpoint Options...
 MENUITEM_DEBUG_INSERT_WATCHPOINT
 Insert Watchpoint
-MENUITEM_DEBUG_FUNCTION_BREAKPOINT
-Insert Breakpoint in Function
 MENUITEM_DEBUG_SHOW_LOG_PANEL
 Show Debbuger's Log
 MENUITEM_DEBUG_LOAD_CORE_DUMP
@@ -2918,6 +2912,8 @@ PREFERENCES_TOOLCHAIN
 Toolchain
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Sintax highlighting
+PREFERENCES_STYLE_DEFINE_COLOURS
+Define colours...
 PREFERENCES_STYLE_INVERTED_COLOURS
 Inverted colours (black background)
 PREFERENCES_STYLE_LINE_WRAP
@@ -3424,8 +3420,6 @@ GENERAL_POPUP_INSERT_ZINJAI_DIR
 insert ZinjaI's instalation folder
 GENERAL_POPUP_INSERT_BROWSER
 insert browser command
-GENERAL_WAIT_PARSER
-You must wait until ZinjaI finish parsing all sources.
 VALGRIND_OUTPUT_MISSING
 Dynamic analysis' information was not found.\nIn order to generate it go to ZinjaI's help.
 VALGRIND_RELOAD_TREE

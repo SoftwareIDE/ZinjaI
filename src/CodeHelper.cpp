@@ -788,7 +788,7 @@ void CodeHelper::ResetStdData() {
 }
 
 bool CodeHelper::LoadData(wxString index) {
-	wxString filepath=utils->WichOne(index,DIR_PLUS_FILE(config->home_dir,"autocomp"),config->Help.autocomp_dir,true);
+	wxString filepath=utils->WichOne(index,"autocomp",true);
 	if (!filepath.Len()) return false;
 	wxTextFile fil(filepath);
 	actual_indexes.Add(index);
@@ -1170,7 +1170,7 @@ int CodeHelper::AddReservedWords(wxArrayString &comp_list, wxString &typed, int 
 
 bool CodeHelper::GenerateCacheFile(wxString path, wxString filename) {
 	
-	wxFFile idx(DIR_PLUS_FILE(config->Help.autocomp_dir,filename),_T("w+"));
+	wxFFile idx(DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"autocomp"),filename),_T("w+"));
 	if (!idx.IsOpened()) 
 		return false;
 	

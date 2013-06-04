@@ -128,9 +128,7 @@ void mxProjectGeneralConfig::OnHelpButton(wxCommandEvent &event) {
 void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {
 
 	wxArrayString autocomp_array_all;
-	utils->GetFilesFromDir(autocomp_array_all,config->Help.autocomp_dir);
-	utils->GetFilesFromDir(autocomp_array_all,DIR_PLUS_FILE(config->home_dir,"autocomp"));
-	utils->Unique(autocomp_array_all,true);
+	utils->GetFilesFromBothDirs(autocomp_array_all,"autocomp");
 	
 	mxMultipleChoiceEditor(this,LANG(PROJECTGENERAL_AUTOCOMPLETION,"Autocompletado"),LANG(PROJECTGENERAL_INDEXES,"Indices:"),project_autocomp,autocomp_array_all);
 	

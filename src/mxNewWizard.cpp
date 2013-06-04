@@ -554,7 +554,7 @@ void mxNewWizard::ProjectCreate() {
 		project_file.Write();
 		project_file.Close();
 	} else {
-		wxString ofull=utils->WichOne(project_templates[cual],DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,false);
+		wxString ofull=utils->WichOne(project_templates[cual],"templates",false);
 		if (custom_files) { // si usa los archivos actuales, copiar solo el archivo de proyecto
 			wxString str;
 			wxTextFile fin(DIR_PLUS_FILE(ofull,project_templates[cual]+"."+_T(PROJECT_EXT))); fin.Open();
@@ -854,15 +854,13 @@ void mxNewWizard::CreatePanelTemplates() {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
 	wxArrayString templates;
-	utils->GetFilesFromDir(templates,config->Files.templates_dir);
-	utils->GetFilesFromDir(templates,DIR_PLUS_FILE(config->home_dir,"templates"));
-	utils->Unique(templates,true);
+	utils->GetFilesFromBothDirs(templates,"templates",true);
 	
 	for (unsigned int i=0; i<templates.GetCount();i++) {
 		wxString name_prefix = wxString(_T("// !Z! Name_"))<<config->Init.language_file<<_T(":");
 		wxString name = templates[i];
 		wxString local_name = _T("");
-		wxString filename = utils->WichOne(name,DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,true);
+		wxString filename = utils->WichOne(name,"templates",true);
 		wxTextFile file(filename);
 		file.Open();
 		if (file.IsOpened()) { 
@@ -1015,13 +1013,11 @@ void mxNewWizard::CreatePanelProject2() {
 		project_default=0;
 	
 	wxArrayString templates_array;
-	utils->GetFilesFromDir(templates_array,config->Files.templates_dir,false);
-	utils->GetFilesFromDir(templates_array,DIR_PLUS_FILE(config->home_dir,"templates"),false);
-	utils->Unique(templates_array,true);
+	utils->GetFilesFromBothDirs(templates_array,"templates",false);
 	
 	for(unsigned int i=0;i<templates_array.GetCount();i++) {
 		wxString name = templates_array[i];
-		wxString full = utils->WichOne(name,DIR_PLUS_FILE(config->home_dir,"templates"),config->Files.templates_dir,false);
+		wxString full = utils->WichOne(name,"templates",false);
 		if (wxFileName::FileExists(DIR_PLUS_FILE(full,name+_T(".zpr")))) {
 			if (name==config->Files.default_project) project_default=i;
 			wxTextFile file(DIR_PLUS_FILE(full,name+"."+_T(PROJECT_EXT)));
