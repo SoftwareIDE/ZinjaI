@@ -22,7 +22,6 @@ int main(int argc, char *argv[]) {
 		cmd+="\"";
 		i++;
 	}
-	system(cmd.c_str());
-	return 0;
+	return system(cmd.c_str());
 }
 
