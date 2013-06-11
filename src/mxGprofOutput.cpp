@@ -9,6 +9,7 @@
 
 BEGIN_EVENT_TABLE(mxGprofOutput,wxDialog)
 	EVT_GRID_CMD_CELL_LEFT_CLICK(wxID_ANY,mxGprofOutput::OnClickTableCell)
+	EVT_GRID_CMD_CELL_LEFT_DCLICK(wxID_ANY,mxGprofOutput::OnDClickTableCell)
 	EVT_GRID_CMD_LABEL_LEFT_CLICK(wxID_ANY,mxGprofOutput::OnClickTableLabel)
 	EVT_TEXT(wxID_FIND,mxGprofOutput::OnSearchTextChange)
 	EVT_COMBOBOX(wxID_ANY,mxGprofOutput::OnComboChange)
@@ -17,7 +18,7 @@ END_EVENT_TABLE()
 mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname):wxDialog(parent, wxID_ANY, "gprof output", wxDefaultPosition, wxSize(700,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER),data(fname.c_str()) {
 	wxSizer *main_sizer=new wxBoxSizer(wxVERTICAL);
 	
-	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);
+	notebook = new wxNotebook(this,wxID_ANY);
 	
 	wxPanel *table_panel=new wxPanel(notebook,wxID_ANY);
 	wxSizer *table_sizer=new wxBoxSizer(wxVERTICAL);
@@ -153,6 +154,23 @@ void mxGprofOutput::OnComboChange (wxCommandEvent & event) {
 
 void mxGprofOutput::OnSearchTextChange (wxCommandEvent & event) {
 	FillTable(search_text->GetValue());
+}
+
+void mxGprofOutput::OnDClickTableCell (wxGridEvent & event) {
+	wxString func;
+	if (grid_table==((wxGrid*)event.GetEventObject())) {
+		func=grid_table->GetCellValue(event.GetRow(),6)+" ";
+	} else {
+		func=grid_graph->GetCellValue(event.GetRow(),4).BeforeLast('[');
+	}
+	for(int i=0;i<combo->GetCount();i++) { 
+		if (combo->GetString(i).BeforeLast('[')==func) {
+			combo->SetSelection(i);
+			FillGraph();
+			notebook->SetSelection(1);
+			break;
+		}
+	}
 }
 
 void mxGprofOutput::OnClickTableCell (wxGridEvent & event) {
