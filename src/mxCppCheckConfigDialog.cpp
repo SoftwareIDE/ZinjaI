@@ -34,7 +34,11 @@ END_EVENT_TABLE()
 
 mxCppCheckConfigDialog::mxCppCheckConfigDialog(wxWindow *parent) : wxDialog(parent,wxID_ANY,"Configuración de CppCheck",wxDefaultPosition,wxDefaultSize,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
-	if (!project->cppcheck) project->cppcheck = new cppcheck_configuration();
+	if (!project->cppcheck) { 
+		project->cppcheck = new cppcheck_configuration();
+		project->cppcheck->save_in_project=true;
+	}
+	
 	ccc = project->cppcheck;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);

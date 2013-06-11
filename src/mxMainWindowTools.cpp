@@ -596,7 +596,9 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	wxFFile fgout(gout,_T("w+"));
 	wxArrayString output;
 	
-	mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	int retval=mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 1).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); }
+	
 	for (unsigned int i=0;i<output.GetCount();i++)
 		fgout.Write(output[i]+_T("\n"));
 	fgout.Close();
@@ -615,7 +617,8 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	command<<pout;
 	command<<_T("\"");
 	
-	mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
+	retval=mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
+	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 2).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); }
 	
 	status_bar->SetStatusText(LANG(MAINW_GPROF_SHOWING,"Mostrando resultados..."));
 	
@@ -635,7 +638,9 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 //	command<<_T(" \"")<<pout<<_T("\" -Tbmp -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.bmp"))<<_T("\"");
 	//#endif
 	
-	mxExecute(command,wxEXEC_SYNC);
+	retval= mxExecute(command,wxEXEC_SYNC);
+	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 3).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); }
+	
 	command = config->Files.img_browser;
 	//#if defined(__x86_64__) || defined(__WIN32__)
 	command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.png"))<<_T("\" \"")<<LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling")<<_T("\"");
@@ -674,7 +679,8 @@ void mxMainWindow::OnToolsGprofList (wxCommandEvent &event) {
 	
 	fgout.Write(wxString(_T("> "))<<command+_T("\n\n"));
 	
-	mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	int retval=mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	if (retval) { mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 1).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); }
 	for (unsigned int i=0;i<output.GetCount();i++)
 		fgout.Write(output[i]+_T("\n"));
 	fgout.Close();

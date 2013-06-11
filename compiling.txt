@@ -1,3 +1,7 @@
+Short version: Run "mingw32-make win32" on Windows, or "make linux" on GNU/Linux or Mac OSX. 
+               If that fails, read the following detailed description.
+
+
 Building Zinjai
 -----------------
 

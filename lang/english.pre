@@ -2476,6 +2476,8 @@ MAINW_GPROF_NODE_THERSHOLD
 Eliminate nodes under this threshold (%):
 MAINW_GPROF_STATUS_ANALIZING
 Analizing profiling information...
+MAINW_GPROF_ERROR
+Error processing profiling information
 MAINW_GPROF_DRAWING
 Generating graph...
 MAINW_GPROF_SHOWING

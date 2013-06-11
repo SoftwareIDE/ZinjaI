@@ -2474,6 +2474,8 @@ MAINW_GPROF_NODE_THERSHOLD
 Eliminar nodos bajo este umbral (%):
 MAINW_GPROF_STATUS_ANALIZING
 Analizando informacion de perfilado...
+MAINW_GPROF_ERROR
+Ha ocurrido un error al intentar procesar la información de perfilado
 MAINW_GPROF_DRAWING
 Dibujando grafo...
 MAINW_GPROF_SHOWING
