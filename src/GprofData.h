@@ -25,6 +25,12 @@ struct GprofData {
 		float percent_time,cumulative_seconds,self_seconds,self_s_calls,total_s_calls;
 		int calls;
 		string name;
+		bool match(const char *s) {
+			int i=name.find(s,0);
+			if (i==string::npos) return false;
+			int j=name.find('(',0);
+			return (j==string::npos || i<j);
+		}
 	};
 	struct call_item {
 		string name;

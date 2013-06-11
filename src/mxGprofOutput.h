@@ -5,17 +5,21 @@
 #include <wx/grid.h>
 
 class wxComboBox;
+class wxTextCtrl;
 
 class mxGprofOutput : public wxDialog {
 private:
 	GprofData data;
 	wxGrid *grid_table,*grid_graph;
+	wxTextCtrl *search_text;
 	wxComboBox *combo;
 public:
 	mxGprofOutput(wxWindow *parent, wxString fname);
-	void FillTable();
+	void FillTable(const wxString &pattern="");
 	void FillGraph();
-	void OnClickTable(wxGridEvent &event);
+	void OnClickTableLabel(wxGridEvent &event);
+	void OnClickTableCell(wxGridEvent &event);
+	void OnSearchTextChange(wxCommandEvent &event);
 	void OnComboChange(wxCommandEvent &event);
 	DECLARE_EVENT_TABLE();
 };

@@ -4,9 +4,13 @@
 #include <wx/statline.h>
 #include <wx/combobox.h>
 #include <wx/notebook.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 BEGIN_EVENT_TABLE(mxGprofOutput,wxDialog)
-	EVT_GRID_CMD_LABEL_LEFT_CLICK(wxID_ANY,mxGprofOutput::OnClickTable)
+	EVT_GRID_CMD_CELL_LEFT_CLICK(wxID_ANY,mxGprofOutput::OnClickTableCell)
+	EVT_GRID_CMD_LABEL_LEFT_CLICK(wxID_ANY,mxGprofOutput::OnClickTableLabel)
+	EVT_TEXT(wxID_FIND,mxGprofOutput::OnSearchTextChange)
 	EVT_COMBOBOX(wxID_ANY,mxGprofOutput::OnComboChange)
 END_EVENT_TABLE()
 
@@ -28,8 +32,16 @@ mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname):wxDialog(parent, 
 	grid_table->SetColLabelValue(6,"name");
 	grid_table->SetRowLabelSize(0);
 	FillTable();
-	grid_table->AutoSizeColumns();
 	table_sizer->Add(grid_table,sizers->Exp1);
+	grid_table->SetSelectionMode(wxGrid::wxGridSelectRows); // hacer que la seleccion sea por fila, y no por celda
+	grid_table->EnableEditing(false);
+	
+	wxSizer *search_sizer=new wxBoxSizer(wxHORIZONTAL);
+	search_sizer->Add(new wxStaticText(table_panel,wxID_ANY,"Filter: "),sizers->Center);
+	search_text = new wxTextCtrl(table_panel,wxID_FIND,"");
+	search_sizer->Add(search_text,sizers->Exp1);
+	
+	table_sizer->Add(search_sizer,sizers->Exp0);
 	table_panel->SetSizer(table_sizer);
 	
 	wxPanel *graph_panel=new wxPanel(notebook,wxID_ANY);
@@ -47,6 +59,8 @@ mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname):wxDialog(parent, 
 	grid_graph->SetColLabelValue(3,"called");
 	grid_graph->SetColLabelValue(4,"name");
 	grid_graph->SetRowLabelSize(0);
+	grid_graph->EnableEditing(false);
+	grid_graph->SetSelectionMode(wxGrid::wxGridSelectRows); // hacer que la seleccion sea por fila, y no por celda
 	FillGraph();
 	graph_sizer->Add(grid_graph,sizers->Exp1);
 	graph_panel->SetSizer(graph_sizer);
@@ -65,19 +79,30 @@ static wxString to_str(float f) {
 	return s;
 }
 
-void mxGprofOutput::FillTable ( ) {
-	for(unsigned int i=0;i<data.table.size();i++) { 
-		grid_table->SetCellValue(i,0,to_str(data.table[i].percent_time));	
-		grid_table->SetCellValue(i,1,to_str(data.table[i].cumulative_seconds));	
-		grid_table->SetCellValue(i,2,to_str(data.table[i].self_seconds));	
-		grid_table->SetCellValue(i,3,wxString()<<data.table[i].calls);	
-		grid_table->SetCellValue(i,4,to_str(data.table[i].self_s_calls));	
-		grid_table->SetCellValue(i,5,to_str(data.table[i].total_s_calls));	
-		grid_table->SetCellValue(i,6,data.table[i].name);	
+void mxGprofOutput::FillTable (const wxString &pattern) {
+	int gn=grid_table->GetNumberRows(), dn=data.table.size();
+	if (pattern.Len()) {
+		for(int i=dn-1;i>=0;i--)
+			if (!data.table[i].match(pattern.c_str())) dn--;
 	}
+	if (gn<dn) grid_table->AppendRows(dn-gn,false);
+	else if (gn>dn) grid_table->DeleteRows(dn,gn-dn,false);
+	for(int i=0,j=0;i<data.table.size();i++) { 
+		if (!pattern.Len() || data.table[i].match(pattern.c_str())) {
+			grid_table->SetCellValue(j,0,to_str(data.table[i].percent_time));	
+			grid_table->SetCellValue(j,1,to_str(data.table[i].cumulative_seconds));	
+			grid_table->SetCellValue(j,2,to_str(data.table[i].self_seconds));	
+			grid_table->SetCellValue(j,3,wxString()<<data.table[i].calls);	
+			grid_table->SetCellValue(j,4,to_str(data.table[i].self_s_calls));	
+			grid_table->SetCellValue(j,5,to_str(data.table[i].total_s_calls));	
+			grid_table->SetCellValue(j,6,data.table[i].name);	
+			j++;
+		}
+	}
+	grid_table->AutoSizeColumns();
 }
 
-void mxGprofOutput::OnClickTable (wxGridEvent & event) {
+void mxGprofOutput::OnClickTableLabel (wxGridEvent & event) {
 	if (event.GetEventObject()!=grid_table) return;
 	static int sorted=0;
 	int new_sorted=event.GetCol()+1;
@@ -124,5 +149,13 @@ void mxGprofOutput::FillGraph ( ) {
 void mxGprofOutput::OnComboChange (wxCommandEvent & event) {
 	event.Skip();
 	FillGraph();
+}
+
+void mxGprofOutput::OnSearchTextChange (wxCommandEvent & event) {
+	FillTable(search_text->GetValue());
+}
+
+void mxGprofOutput::OnClickTableCell (wxGridEvent & event) {
+	((wxGrid*)event.GetEventObject())->SelectRow(event.GetRow());
 }
 
