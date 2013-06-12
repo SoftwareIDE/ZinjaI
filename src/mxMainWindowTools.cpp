@@ -1145,7 +1145,7 @@ void mxMainWindow::OnToolsGcovSet (wxCommandEvent & event) {
 }
 
 void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
-	
+	wxMessageBox("Esta funcionalidad todavía no ha sido implementada");
 }
 
 void mxMainWindow::OnToolsGcovShow (wxCommandEvent & event) {

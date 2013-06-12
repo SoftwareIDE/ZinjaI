@@ -305,6 +305,9 @@ struct cfgToolBars {
 		bool gprof_activate;
 		bool gprof_show_graph;
 		bool gprof_list_output;
+		bool gcov_activate;
+		bool gcov_reset;
+		bool gcov_show_bar;
 		bool cppcheck_run;
 		bool cppcheck_config;
 		bool cppcheck_view;

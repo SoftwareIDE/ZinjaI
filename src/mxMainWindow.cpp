@@ -1601,7 +1601,7 @@ void mxMainWindow::CreateMenus() {
 	menu.tools_cppcheck->Enable(false);
 	
 	wxMenu *gprof_menu = new wxMenu;
-	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SET, LANG(MENUITEM_TOOLS_GPROF_ACTIVATE,"Activar"),_T(""),_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("comp_for_prof.png"));
+	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SET, LANG(MENUITEM_TOOLS_GPROF_ACTIVATE,"Habilitar/Deshabilitar"),_T(""),_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("comp_for_prof.png"));
 	wxMenu *gprof_gv_menu = new wxMenu;
 	menu.tools_gprof_dot = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_DOT, LANG(MENUITEM_TOOLS_GPROF_DOT,"dot"),_T(""),_T("dot"),config->Init.graphviz_dot);
 	menu.tools_gprof_fdp = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_FDP, LANG(MENUITEM_TOOLS_GPROF_FDP,"fdp"),_T(""),_T("fdp"),!config->Init.graphviz_dot);
@@ -1610,14 +1610,15 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_LIST, LANG(MENUITEM_TOOLS_GPROF_LIST,"Listar Resultados (texto)"),_T(""),_T("Muestra la informacion de profiling de la ultima ejecucion sin procesar."),ipre+_T("listgprof.png"));
 	gprof_menu->AppendSeparator();
 	utils->AddItemToMenu(gprof_menu,mxID_TOOLS_GPROF_HELP, LANG(MENUITEM_TOOLS_GPROF_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion de profiling"),ipre+_T("ayuda.png"));
-	utils->AddSubMenuToMenu(menu.tools, gprof_menu,LANG(MENUITEM_TOOLS_GPROF,"Perfil de &Ejecucion (gprof)"),_T("Gprof permite analizar las llamadas a funciones y sus tiempos de ejecucion."),ipre+_T("gprof.png"));
+	utils->AddSubMenuToMenu(menu.tools, gprof_menu,LANG(MENUITEM_TOOLS_GPROF,"Perfil de Ejecución (gprof)"),_T("Gprof permite analizar las llamadas a funciones y sus tiempos de ejecucion."),ipre+_T("gprof.png"));
 	
 	wxMenu *gcov_menu = new wxMenu;
 	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SET, LANG(MENUITEM_TOOLS_GCOV_ACTIVATE,"Habilitar/Deshabilitar"),_T(""),_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("gcov_set.png"));
 	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SHOW, LANG(MENUITEM_TOOLS_GCOV_SHOW_BAR,"Mostrar barra de resultados"),_T(""),_T("Muestra un panel con los conteos por linea en el margen izquierdo de la ventana."),ipre+_T("gcov_show.png"));
-	gprof_menu->AppendSeparator();
-	utils->AddItemToMenu(gcov_menu,mxID_TOOLS_GCOV_HELP, LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion del test de covertura"),ipre+_T("ayuda.png"));
-	utils->AddSubMenuToMenu(menu.tools, gcov_menu,LANG(MENUITEM_TOOLS_GPROF,"&Test de Covertura (gcov)"),_T("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente."),ipre+_T("gcov.png"));
+	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_RESET, LANG(MENUITEM_TOOLS_GCOV_RESET,"Eliminar resultados"),_T(""),_T("Elimina los archivos de resultados generados por el test de cobertura."),ipre+_T("gcov_reset.png"));
+	gcov_menu->AppendSeparator();
+	utils->AddItemToMenu(gcov_menu,mxID_TOOLS_GCOV_HELP, LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion del test de cobertura"),ipre+_T("ayuda.png"));
+	utils->AddSubMenuToMenu(menu.tools, gcov_menu,LANG(MENUITEM_TOOLS_GCOV,"&Test de Cobertura (gcov)"),_T("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente."),ipre+_T("gcov.png"));
 
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxMenu *valgrind_menu = new wxMenu;
@@ -1738,6 +1739,9 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		if (config->Toolbars.tools.gprof_activate) utils->AddTool(toolbar_tools,mxID_TOOLS_GPROF_SET,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE,"Activar Perfilado de Ejecucion"),ipre+_T("comp_for_prog.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_ACTIVATE,"Herramientas -> Perfil de Ejecucion -> Activar"));
 		if (config->Toolbars.tools.gprof_show_graph) utils->AddTool(toolbar_tools,mxID_TOOLS_GPROF_SHOW,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_SHOW,"Graficar Resultados del Perfilado de Ejecucion"),ipre+_T("showgprof.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_SHOW,"Herramientas -> Perfil de Ejecucion -> Visualizar Resultados (grafo)..."));
 		if (config->Toolbars.tools.gprof_list_output) utils->AddTool(toolbar_tools,mxID_TOOLS_GPROF_LIST,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_LIST,"Listar Resultados del Perfilado de Ejecucion"),ipre+_T("listgprof.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_LIST,"Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)..."));
+		if (config->Toolbars.tools.gcov_activate) utils->AddTool(toolbar_tools,mxID_TOOLS_GCOV_SET,LANG(TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE,"Activar Test de Cobertura"),ipre+_T("gcov_set.png"),LANG(TOOLBAR_DESC_TOOLS_GCOV_ACTIVATE,"Herramientas -> Test de Cobertura -> Habilitar/Deshabilitar"));
+		if (config->Toolbars.tools.gcov_show_bar) utils->AddTool(toolbar_tools,mxID_TOOLS_GCOV_SHOW,LANG(TOOLBAR_CAPTION_TOOLS_GCOV_RESET,"Mostrar barra de resultados de Test de Cobertura"),ipre+_T("gcov_show.png"),LANG(TOOLBAR_DESC_TOOLS_GCOV_SHOW_BAR,"Herramientas -> Test de Cobertura -> Mostrar Barra de Resultados"));
+		if (config->Toolbars.tools.gcov_reset) utils->AddTool(toolbar_tools,mxID_TOOLS_GCOV_RESET,LANG(TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR,"Eliminar resultados de Test de Cobertura"),ipre+_T("gcov_reset.png"),LANG(TOOLBAR_DESC_TOOLS_GCOV_RESET,"Herramientas -> Test de Cobertura -> Eliminar Resultados"));
 #if !defined(__WIN32__)
 		if (config->Toolbars.tools.valgrind_run) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_RUN,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN,"Ejecutar Para Analisis Dinamico"),ipre+_T("valgrind_run.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_RUN,"Herramientas -> Analisis Dinámico -> Ejecutar..."));
 		if (config->Toolbars.tools.valgrind_view) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_VIEW,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW,"Mostrar Resultados del Analisis Dinamico"),ipre+_T("valgrind_view.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_VIEW,"Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados"));

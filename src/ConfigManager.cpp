@@ -430,6 +430,9 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ(Toolbars,tools.gprof_activate);
 				else CFG_BOOL_READ(Toolbars,tools.gprof_show_graph);
 				else CFG_BOOL_READ(Toolbars,tools.gprof_list_output);
+				else CFG_BOOL_READ(Toolbars,tools.gcov_activate);
+				else CFG_BOOL_READ(Toolbars,tools.gcov_reset);
+				else CFG_BOOL_READ(Toolbars,tools.gcov_show_bar);
 				else CFG_BOOL_READ(Toolbars,tools.custom_settings);
 				else CFG_BOOL_READ_DN("custom_tool_0",Toolbars.tools.custom[0]);
 				else CFG_BOOL_READ_DN("custom_tool_1",Toolbars.tools.custom[1]);
@@ -823,6 +826,9 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE(Toolbars,tools.gprof_activate);
 	CFG_BOOL_WRITE(Toolbars,tools.gprof_show_graph);
 	CFG_BOOL_WRITE(Toolbars,tools.gprof_list_output);
+	CFG_BOOL_WRITE(Toolbars,tools.gcov_activate);
+	CFG_BOOL_WRITE(Toolbars,tools.gcov_reset);
+	CFG_BOOL_WRITE(Toolbars,tools.gcov_show_bar);
 	CFG_BOOL_WRITE(Toolbars,tools.custom_settings);
 	CFG_BOOL_WRITE_DN("custom_tool_0",Toolbars.tools.custom[0]);
 	CFG_BOOL_WRITE_DN("custom_tool_1",Toolbars.tools.custom[1]);
@@ -1210,6 +1216,9 @@ void ConfigManager::LoadToolBarsDefaults() {
 	Toolbars.tools.gprof_activate=false;
 	Toolbars.tools.gprof_show_graph=false;
 	Toolbars.tools.gprof_list_output=false;
+	Toolbars.tools.gcov_activate=false;
+	Toolbars.tools.gcov_reset=false;
+	Toolbars.tools.gcov_show_bar=false;
 	Toolbars.tools.cppcheck_run=false;
 	Toolbars.tools.cppcheck_config=false;
 	Toolbars.tools.cppcheck_view=false;

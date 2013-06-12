@@ -1699,7 +1699,7 @@ A&yuda...
 MENUITEM_TOOLS_CPPCHECK
 Analisis Estatico (cppcheck)
 MENUITEM_TOOLS_GPROF_ACTIVATE
-Activar
+Habilitar/Deshabilitar
 MENUITEM_TOOLS_GPROF_DOT
 dot
 MENUITEM_TOOLS_GPROF_FDP
@@ -1712,14 +1712,18 @@ MENUITEM_TOOLS_GPROF_LIST
 Listar Resultados (texto)
 MENUITEM_TOOLS_GPROF_HELP
 A&yuda...
-MENUITEM_TOOLS_GPROF
-Perfil de &Ejecucion (gprof)
+MENUITEM_TOOLS_GCOV
+Test de cobertura
 MENUITEM_TOOLS_GCOV_ACTIVATE
 Habilitar/Deshabilitar
 MENUITEM_TOOLS_GCOV_SHOW_BAR
 Mostrar barra de resultados
+MENUITEM_TOOLS_GCOV_RESET
+Eliminar resultados
 MENUITEM_TOOLS_GCOV_HELP
 A&yuda...
+MENUITEM_TOOLS_GPROF
+&Test de Cobertura (gcov)
 MENUITEM_TOOLS_VALGRIND_RUN
 Ejecutar...
 MENUITEM_TOOLS_VALGRIND_VIEW
@@ -1924,6 +1928,18 @@ TOOLBAR_CAPTION_TOOLS_GPROF_LIST
 Listar Resultados del Perfilado de Ejecucion
 TOOLBAR_DESC_TOOLS_GPROF_LIST
 Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)...
+TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE
+Activar Test de Cobertura
+TOOLBAR_DESC_TOOLS_GCOV_ACTIVATE
+Herramientas -> Test de Cobertura -> Habilitar/Deshabilitar
+TOOLBAR_CAPTION_TOOLS_GCOV_RESET
+Mostrar barra de resultados de Test de Cobertura
+TOOLBAR_DESC_TOOLS_GCOV_SHOW_BAR
+Herramientas -> Test de Cobertura -> Mostrar Barra de Resultados
+TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR
+Eliminar resultados de Test de Cobertura
+TOOLBAR_DESC_TOOLS_GCOV_RESET
+Herramientas -> Test de Cobertura -> Eliminar Resultados
 TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN
 Ejecutar Para Analisis Dinamico
 TOOLBAR_DESC_TOOLS_VALGRIND_RUN
@@ -3132,8 +3148,6 @@ PROJECTCONFIG_COMPILING_DEBUG_LEVEL_3
 Nivel 3
 PROJECTCONFIG_COMPILING_DEBUG
 Informacion de depuracion
-PROJECTCONFIG_COMPILING_PROFILING
-Generar informacion de \"profiling\"
 PROJECTCONFIG_COMPILING_OPTIM_NONE
 Ninguna
 PROJECTCONFIG_COMPILING_OPTIM_LEVEL_1

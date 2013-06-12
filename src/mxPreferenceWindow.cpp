@@ -1156,9 +1156,12 @@ void mxPreferenceWindow::OnToolbarsTools(wxCommandEvent &evt) {
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),_T("wxfb_inherit.png"),config->Toolbars.tools.wxfb_inherit);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT,"Actualizar Clase Heredada..."),_T("wxfb_update_inherit.png"),config->Toolbars.tools.wxfb_update_inherit);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),_T("ayuda_wx.png"),config->Toolbars.tools.wxfb_help_wx);
-		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE,"Activar Perfilado de Ejecucion"),_T("comp_for_prof.png"),config->Toolbars.tools.gprof_activate);
+		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE,"Activar/Desactivar Perfilado de Ejecucion"),_T("comp_for_prof.png"),config->Toolbars.tools.gprof_activate);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_SHOW,"Graficar Resultados del Perfilado de Ejecucion..."),_T("showgprof.png"),config->Toolbars.tools.gprof_show_graph);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_LIST,"Listar Resultados del Perfilado de Ejecucion"),_T("listgprof.png"),config->Toolbars.tools.gprof_list_output);
+		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE,"Activar/Desactivar Test de Cobertura"),_T("gcov_set.png"),config->Toolbars.tools.gcov_activate);
+		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR,"Mostrar Barra Lateral de Test de Cobertura"),_T("gcov_show.png"),config->Toolbars.tools.gcov_show_bar);
+		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GCOV_RESET,"Eliminar resultados de Test de Cobertura"),_T("gcov_reset.png"),config->Toolbars.tools.gcov_reset);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN,"Ejecutar Para Analisis Estatico"),_T("cppcheck_run.png"),config->Toolbars.tools.cppcheck_run);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG,"Configurar Analisis Estatico"),_T("cppcheck_config.png"),config->Toolbars.tools.cppcheck_config);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW,"Mostrar Resultados del Analisis Dinamico"),_T("cppcheck_view.png"),config->Toolbars.tools.cppcheck_view);
