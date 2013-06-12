@@ -227,6 +227,7 @@ public:
 	void OnToolsWxfbInheritClass(wxCommandEvent &event);
 	void OnToolsWxfbHelp(wxCommandEvent &event);
 	void OnToolsWxfbHelpWx(wxCommandEvent &event);
+	void OnToolsGprofGcovSetAux(wxCommandEvent &event, wxString tool, wxString arg); ///< OnToolsGprofSet and OnToolsGcovSet are almost identical, so they are wrapper to this single method
 	void OnToolsGprofSet(wxCommandEvent &event);
 	void OnToolsGprofShow(wxCommandEvent &event);
 	void OnToolsGprofList(wxCommandEvent &event);

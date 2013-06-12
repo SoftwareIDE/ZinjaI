@@ -271,10 +271,6 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	compiling_debug_level = utils->AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"),a_debug, configuration->debug_level);
 	wx_extern.Add(compiling_debug_level,true);
 	
-	compiling_enable_profiling = utils->AddCheckBox(sizer,panel,
-		LANG(PROJECTCONFIG_COMPILING_PROFILING,"Generar informacion de \"profiling\""),configuration->enable_profiling);
-	wx_extern.Add(compiling_enable_profiling);
-	
 	wxArrayString a_optimiz;
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_NONE,"Ninguna"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_1,"Nivel 1"));
@@ -441,7 +437,6 @@ void mxProjectConfigWindow::LoadValues() {
 	compiling_extra_options->SetValue(configuration->compiling_extra);
 	compiling_headers_dirs->SetValue(configuration->headers_dirs);
 	compiling_ansi_compliance->SetValue(configuration->ansi_compliance);
-	compiling_enable_profiling->SetValue(configuration->enable_profiling);
 	compiling_warnings_level->SetSelection(configuration->warnings_level);
 	compiling_debug_level->SetSelection(configuration->debug_level);
 	compiling_optimization_level->SetSelection(configuration->optimization_level);
@@ -521,7 +516,6 @@ bool mxProjectConfigWindow::SaveValues() {
 	configuration->macros=compiling_macros->GetValue();
 	configuration->compiling_extra=compiling_extra_options->GetValue();
 	configuration->headers_dirs=compiling_headers_dirs->GetValue();
-	configuration->enable_profiling=compiling_enable_profiling->GetValue();
 	configuration->ansi_compliance=compiling_ansi_compliance->GetValue();
 	configuration->warnings_level=compiling_warnings_level->GetSelection();
 	configuration->debug_level=compiling_debug_level->GetSelection();

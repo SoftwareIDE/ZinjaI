@@ -1715,7 +1715,7 @@ A&yuda...
 MENUITEM_TOOLS_GPROF
 Perfil de &Ejecucion (gprof)
 MENUITEM_TOOLS_GCOV_ACTIVATE
-Activar
+Habilitar/Deshabilitar
 MENUITEM_TOOLS_GCOV_SHOW_BAR
 Mostrar barra de resultados
 MENUITEM_TOOLS_GCOV_HELP
@@ -2470,6 +2470,16 @@ MENUITEM_FILE_OPEN_ON_PROJECT
 &Abrir/Agregar al proyecto...
 MAINW_VALGRIND_MISSING
 Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+MAINW_GPROF_GPROF_ENABLED_PRE
+Se agregaron los parámetros de compilación necesarios para utilizar 
+MAINW_GPROF_GPROF_ENABLED_POST
+.
+MAINW_GPROF_GPROF_DISABLED_PRE
+Se quitaron los parámetros de compilación necesarios para utilizar 
+MAINW_GPROF_GPROF_DISABLED_POST
+.
+MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
+Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
 MAINW_GPROF_OUTPUT_MISSING
 No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda.
 MAINW_GPROF_EDGE_THERSHOLD
@@ -2512,12 +2522,6 @@ MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Ingrese el nombre del archivo del nuevo template de programa simple
 MAINW_TEMPLATE_GENERATED
 Plantilla generada
-MAINW_GCOV_ENABLED
-Se agregaron los parámetros de compilación necesarios para utilizar gcov.
-MAINW_GCOV_DISABLED
-Se quitaron los parámetros de compilación necesarios para utilizar gcov.
-MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
-Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
 MAKEFILE_CAPTION
 Generar Makefile
 MAKEFILE_PROFILE

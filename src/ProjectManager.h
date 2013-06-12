@@ -211,8 +211,6 @@ struct project_configuration {
 	bool ansi_compliance; ///< forzar a cumplir el estandar (-pedantic-errors)
 	int debug_level; ///< nivel de información de depuración a colocar al compilar: 0=g0 1=g1 2=g2
 	int optimization_level; ///< nivel optimización para los binarios: 0=O0 1=O1 2=O2 3=O3 4=Os
-	bool enable_profiling; ///< habilitar la generación de información de profiling (para gprof, -pg)
-
 	wxString linking_extra; ///< parametros adicionales para el enlazador (se llama a travez de gcc/g++, no directo)
 	wxString libraries_dirs; ///< rutas adicionales para buscar librerias (para pasar con -L)
 	wxString libraries; ///< librearias para enlazar (para pasar con -l)
@@ -239,7 +237,6 @@ struct project_configuration {
 		headers_dirs="";
 		warnings_level=1;
 		ansi_compliance=false;
-		enable_profiling=false;
 		debug_level=2;
 		optimization_level=0;
 		linking_extra="";

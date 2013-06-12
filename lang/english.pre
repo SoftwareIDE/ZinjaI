@@ -2472,6 +2472,16 @@ MENUITEM_FILE_OPEN_ON_PROJECT
 &Open/Attach to project...
 MAINW_VALGRIND_MISSING
 Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
+MAINW_GPROF_GPROF_ENABLED_PRE
+The required compiling arguments for 
+MAINW_GPROF_GPROF_ENABLED_POST
+ where added.
+MAINW_GPROF_GPROF_DISABLED_PRE
+The required compiling arguments for 
+MAINW_GPROF_GPROF_DISABLED_POST
+ where removed.
+MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
+In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
 MAINW_GPROF_OUTPUT_MISSING
 Profilling information was not found.\nIn order to generate it go to ZinjaI's help.
 MAINW_GPROF_EDGE_THERSHOLD
@@ -2514,12 +2524,6 @@ MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Enter the template filename
 MAINW_TEMPLATE_GENERATED
 Template generated
-MAINW_GCOV_ENABLED
-The required compiling arguments for gcov where added.
-MAINW_GCOV_DISABLED
-The required compiling arguments for gcov where removed.
-MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
-In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
 MAKEFILE_CAPTION
 Generate Makefil
 MAKEFILE_PROFILE

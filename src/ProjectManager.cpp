@@ -228,7 +228,6 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_GENERIC_READ_DN("libraries_dirs",active_configuration->libraries_dirs);
 				else CFG_GENERIC_READ_DN("libraries",active_configuration->libraries);
 				else CFG_BOOL_READ_DN("strip_executable",active_configuration->strip_executable);
-				else CFG_BOOL_READ_DN("enable_profiling",active_configuration->enable_profiling);
 				else CFG_BOOL_READ_DN("console_program",active_configuration->console_program);
 				else CFG_BOOL_READ_DN("dont_generate_exe",active_configuration->dont_generate_exe);
 
@@ -668,7 +667,6 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_BOOL_WRITE_DN("strip_executable",configurations[i]->strip_executable);
 		CFG_BOOL_WRITE_DN("console_program",configurations[i]->console_program);
 		CFG_BOOL_WRITE_DN("dont_generate_exe",configurations[i]->dont_generate_exe);
-		CFG_BOOL_WRITE_DN("enable_profiling",configurations[i]->enable_profiling);
 		project_library *lib_to_build = configurations[i]->libs_to_build;
 		while (lib_to_build) {
 			fil.AddLine(_T("[lib_to_build]"));
@@ -1867,8 +1865,6 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	else if (active_configuration->debug_level==3) 
 		compiling_options<<config->Debug.format<<_T(" -g3 ");
 	// enable profiling information
-	if (active_configuration->enable_profiling) 
-		compiling_options<<_T("-pg ");
 	// warnings_level
 	if (active_configuration->warnings_level==0) 
 		compiling_options<<_T("-w ");
@@ -1912,9 +1908,6 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	if (!active_configuration->console_program)
 		linking_options<<_T("-mwindows ");
 #endif
-	// enable profiling information
-	if (active_configuration->enable_profiling) 
-		linking_options<<_T("-pg ");
 	// strip
 	if (active_configuration->strip_executable)
 		linking_options<<_T("-s ");
