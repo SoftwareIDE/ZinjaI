@@ -1126,3 +1126,43 @@ void mxMainWindow::OnToolsExportMakefile (wxCommandEvent &event) {
 	new mxMakefileDialog(this);
 }
 
+
+void mxMainWindow::OnToolsGcovSet (wxCommandEvent & event) {
+	wxString arg("--coverage");
+	if (project) {
+		bool present = utils->IsArgumentPresent(project->active_configuration->compiling_extra,arg);
+		utils->SetArgument(project->active_configuration->compiling_extra,arg,!present);
+		utils->SetArgument(project->active_configuration->linking_extra,arg,!present);
+		if (mxMD_YES==mxMessageDialog(this,wxString(!present?
+			(LANG(MAINW_GCOV_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar gcov.")):
+			(LANG(MAINW_GCOV_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar gcov."))
+			)+"\n"+
+			LANG(MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION,"Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n"
+														  "¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo)."),
+			"GCov",(mxMD_YES_NO|mxMD_INFO)).ShowModal()) {
+				project->Clean();
+				OnRunCompile(event);
+			}
+	} else IF_THERE_IS_SOURCE {
+		mxSource *src=CURRENT_SOURCE; 
+		bool present = utils->IsArgumentPresent(src->config_running.compiler_options,arg);
+		utils->SetArgument(src->config_running.compiler_options,arg,!present);
+		mxMessageDialog(this,(!present?
+			(LANG(MAINW_GCOV_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar gcov.")):
+			(LANG(MAINW_GCOV_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar gcov."))
+			),"GCov",(mxMD_OK|mxMD_INFO)).ShowModal();
+		OnRunClean(event);
+	}
+}
+
+void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
+	
+}
+
+void mxMainWindow::OnToolsGcovShow (wxCommandEvent & event) {
+	ShowGCovSideBar();
+}
+
+void mxMainWindow::OnToolsGcovHelp (wxCommandEvent & event) {
+	SHOW_HELP(_T("gcov.html"));
+}

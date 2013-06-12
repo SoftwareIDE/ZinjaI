@@ -626,7 +626,7 @@ void mxProjectConfigWindow::OnGeneralExePathButton(wxCommandEvent &evt) {
 }
 
 void mxProjectConfigWindow::OnArgsReplaceFile(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
+	wxString sel = text_for_edit->GetValue();
 	wxFileDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE,"Reemplazar todo por archivo:"),sel.Len()?sel:last_dir);
 	if (wxID_OK==dlg.ShowModal()) {
 		last_dir = wxFileName(dlg.GetPath()).GetPath();
@@ -650,7 +650,7 @@ void mxProjectConfigWindow::OnArgsAddFile(wxCommandEvent &evt) {
 }
 
 void mxProjectConfigWindow::OnArgsReplaceDir(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
+	wxString sel = text_for_edit->GetValue();
 	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER,"Reemplazar todo por directorio:"),sel.Len()?sel:last_dir);
 	if (wxID_OK==dlg.ShowModal()) {
 		last_dir = dlg.GetPath();

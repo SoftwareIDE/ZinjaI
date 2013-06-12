@@ -233,6 +233,10 @@ public:
 	void OnToolsGprofHelp(wxCommandEvent &event);
 	void OnToolsGprofDot(wxCommandEvent &event);
 	void OnToolsGprofFdp(wxCommandEvent &event);
+	void OnToolsGcovSet(wxCommandEvent &event);
+	void OnToolsGcovShow(wxCommandEvent &event);
+	void OnToolsGcovReset(wxCommandEvent &event);
+	void OnToolsGcovHelp(wxCommandEvent &event);
 	void OnToolsCppCheckRun(wxCommandEvent &event);
 	void OnToolsCppCheckConfig(wxCommandEvent &event);
 	void OnToolsCppCheckView(wxCommandEvent &event);

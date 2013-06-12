@@ -1716,6 +1716,12 @@ MENUITEM_TOOLS_GPROF_HELP
 A&yuda...
 MENUITEM_TOOLS_GPROF
 Perfil de &Ejecucion (gprof)
+MENUITEM_TOOLS_GCOV_ACTIVATE
+Activar
+MENUITEM_TOOLS_GCOV_SHOW_BAR
+Mostrar barra de resultados
+MENUITEM_TOOLS_GCOV_HELP
+A&yuda...
 MENUITEM_TOOLS_VALGRIND_RUN
 Ejecutar...
 MENUITEM_TOOLS_VALGRIND_VIEW
@@ -2508,6 +2514,12 @@ MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Ingrese el nombre del archivo del nuevo template de programa simple
 MAINW_TEMPLATE_GENERATED
 Plantilla generada
+MAINW_GCOV_ENABLED
+Se agregaron los parámetros de compilación necesarios para utilizar gcov.
+MAINW_GCOV_DISABLED
+Se quitaron los parámetros de compilación necesarios para utilizar gcov.
+MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
+Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
 MAKEFILE_CAPTION
 Generar Makefile
 MAKEFILE_PROFILE

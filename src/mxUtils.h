@@ -246,6 +246,10 @@ public:
 	wxString WichOne(wxString file, wxString path1, wxString path2, bool is_file=true);
 	/// wrapper for looking as in the other WichOne with paths home/.zinjai/dir_name and install_dir/dir_name
 	wxString WichOne(wxString file, wxString dir_name, bool is_file=true);
+	/// determines whether the argument "arg" is prensent in the arguments list "full"
+	bool IsArgumentPresent(const wxString &full, const wxString &arg);
+	/// adds/removes the argument "arg" is prensent to/from the arguments list "full" (modifies full)
+	void SetArgument(wxString &full, const wxString &arg, bool add);
 };
 
 extern mxUtils *utils;

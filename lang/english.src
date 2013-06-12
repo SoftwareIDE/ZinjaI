@@ -1714,6 +1714,12 @@ MENUITEM_TOOLS_GPROF_HELP
 Help
 MENUITEM_TOOLS_GPROF
 Execution Profiling (gprof)
+MENUITEM_TOOLS_GCOV_ACTIVATE
+Enable/Disable
+MENUITEM_TOOLS_GCOV_SHOW_BAR
+Show results bar
+MENUITEM_TOOLS_GCOV_HELP
+&Help...
 MENUITEM_TOOLS_VALGRIND_RUN
 Run...
 MENUITEM_TOOLS_VALGRIND_VIEW
@@ -2506,6 +2512,12 @@ MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Enter the template filename
 MAINW_TEMPLATE_GENERATED
 Template generated
+MAINW_GCOV_ENABLED
+The required compiling arguments for gcov where added.
+MAINW_GCOV_DISABLED
+The required compiling arguments for gcov where removed.
+MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
+In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
 MAKEFILE_CAPTION
 Generate Makefil
 MAKEFILE_PROFILE

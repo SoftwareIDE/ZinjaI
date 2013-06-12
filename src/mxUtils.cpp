@@ -468,22 +468,23 @@ void mxUtils::FindIncludes(wxString path, wxString filename, fi_file_item *first
 wxString mxUtils::UnSplit(wxArrayString &array, wxString sep, bool add_quotes) {
 	wxString ret;
 	if (array.GetCount()) {
-		if (add_quotes && array[0].Contains(_T(" ")))
-			ret<<_T("\"")<<array[0]<<_T("\"");
+		if (add_quotes) 
+			ret<<utils->Quotize(array[0]);
 		else
 			ret<<array[0];
 		for (unsigned int i=1;i<array.GetCount();i++) {
 			ret<<sep;
-			if (add_quotes && array[0].Contains(_T(" ")))
-				ret<<_T("\"")<<array[0]<<_T("\"");
+			if (add_quotes) 
+				ret<<utils->Quotize(array[i]);
 			else
-				ret<<array[0];
+				ret<<array[i];
 		}
 	}
 	return ret;
 }
 
 wxString mxUtils::Split(wxString str, wxString pre) {
+	/// @todo: reescribir este método reusando el otro Split
 	int i=0,s, l=str.Len();
 	wxString ret;
 	bool comillas = false;
@@ -495,6 +496,7 @@ wxString mxUtils::Split(wxString str, wxString pre) {
 		while (i<l && (comillas || !(str[i]==' ' || str[i]=='\t' || str[i]==',' || str[i]==';'))) {
 			if (str[i]=='\"') 
 				comillas=!comillas;
+			else if (str[i]=='\\' && i+1<l) i++;
 			i++;
 		}
 		if (s<i)
@@ -515,6 +517,7 @@ int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits,bool kee
 		while (i<l && (comillas || !(str[i]==' ' || str[i]=='\t' || (coma_splits && (str[i]==',' || str[i]==';') ) ) ) ) {
 			if (str[i]=='\"') 
 				comillas=!comillas;
+			else if (str[i]=='\\' && i+1<l) i++;
 			i++;
 		}
 		if (s<i) {
@@ -1219,5 +1222,24 @@ void mxUtils::GetFilesFromBothDirs (wxArrayString & array, wxString dir_name, bo
 	GetFilesFromDir(array,DIR_PLUS_FILE(config->home_dir,dir_name),is_file);
 	utils->Unique(array,true);
 	if (extra_element.Len()) array.Add(extra_element);
+}
+
+
+bool mxUtils::IsArgumentPresent (const wxString &full, const wxString &arg) {
+	wxArrayString array;
+	Split(full,array,false,false);
+	return array.Index(arg)!=wxNOT_FOUND;
+}
+
+void mxUtils::SetArgument (wxString &full, const wxString &arg, bool add) {
+	if (add) {
+		full=utils->Quotize(arg)+" "+full;
+	} else {
+		wxArrayString array;
+		Split(full,array,false,true);
+		array.Remove(arg);
+		array.Remove(wxString("\"")+arg+"\"");
+		full=UnSplit(array," ",false);
+	}
 }
 

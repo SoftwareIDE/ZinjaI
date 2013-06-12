@@ -26,9 +26,9 @@ struct GprofData {
 		int calls;
 		string name;
 		bool match(const char *s) {
-			int i=name.find(s,0);
+			size_t i=name.find(s,0);
 			if (i==string::npos) return false;
-			int j=name.find('(',0);
+			size_t j=name.find('(',0);
 			return (j==string::npos || i<j);
 		}
 	};

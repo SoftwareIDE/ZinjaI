@@ -298,6 +298,10 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_GPROF_HELP, mxMainWindow::OnToolsGprofHelp)
 	EVT_MENU(mxID_TOOLS_GPROF_FDP, mxMainWindow::OnToolsGprofFdp)
 	EVT_MENU(mxID_TOOLS_GPROF_DOT, mxMainWindow::OnToolsGprofDot)
+	EVT_MENU(mxID_TOOLS_GCOV_SET, mxMainWindow::OnToolsGcovSet)
+	EVT_MENU(mxID_TOOLS_GCOV_SHOW, mxMainWindow::OnToolsGcovShow)
+	EVT_MENU(mxID_TOOLS_GCOV_RESET, mxMainWindow::OnToolsGcovReset)
+	EVT_MENU(mxID_TOOLS_GCOV_HELP, mxMainWindow::OnToolsGcovHelp)
 	EVT_MENU(mxID_TOOLS_ALIGN_COMMENTS, mxMainWindow::OnToolsAlignComments)
 	EVT_MENU(mxID_TOOLS_REMOVE_COMMENTS, mxMainWindow::OnToolsRemoveComments)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_RUN, mxMainWindow::OnToolsCppCheckRun)
@@ -575,8 +579,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	Show(true);
 	Maximize(config->Init.maximized);
-	
-//	ShowGCovSideBar();
 	
 }
 
@@ -1599,7 +1601,7 @@ void mxMainWindow::CreateMenus() {
 	menu.tools_cppcheck->Enable(false);
 	
 	wxMenu *gprof_menu = new wxMenu;
-	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SET, LANG(MENUITEM_TOOLS_GPROF_ACTIVATE,"Activar"),_T(""),_T("Anade las opciones necesarias a la compila y reconstruye el ejecutable."),ipre+_T("comp_for_prof.png"));
+	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SET, LANG(MENUITEM_TOOLS_GPROF_ACTIVATE,"Activar"),_T(""),_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("comp_for_prof.png"));
 	wxMenu *gprof_gv_menu = new wxMenu;
 	menu.tools_gprof_dot = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_DOT, LANG(MENUITEM_TOOLS_GPROF_DOT,"dot"),_T(""),_T("dot"),config->Init.graphviz_dot);
 	menu.tools_gprof_fdp = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_FDP, LANG(MENUITEM_TOOLS_GPROF_FDP,"fdp"),_T(""),_T("fdp"),!config->Init.graphviz_dot);
@@ -1609,6 +1611,13 @@ void mxMainWindow::CreateMenus() {
 	gprof_menu->AppendSeparator();
 	utils->AddItemToMenu(gprof_menu,mxID_TOOLS_GPROF_HELP, LANG(MENUITEM_TOOLS_GPROF_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion de profiling"),ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, gprof_menu,LANG(MENUITEM_TOOLS_GPROF,"Perfil de &Ejecucion (gprof)"),_T("Gprof permite analizar las llamadas a funciones y sus tiempos de ejecucion."),ipre+_T("gprof.png"));
+	
+	wxMenu *gcov_menu = new wxMenu;
+	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SET, LANG(MENUITEM_TOOLS_GCOV_ACTIVATE,"Habilitar/Deshabilitar"),_T(""),_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("gcov_set.png"));
+	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SHOW, LANG(MENUITEM_TOOLS_GCOV_SHOW_BAR,"Mostrar barra de resultados"),_T(""),_T("Muestra un panel con los conteos por linea en el margen izquierdo de la ventana."),ipre+_T("gcov_show.png"));
+	gprof_menu->AppendSeparator();
+	utils->AddItemToMenu(gcov_menu,mxID_TOOLS_GCOV_HELP, LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion del test de covertura"),ipre+_T("ayuda.png"));
+	utils->AddSubMenuToMenu(menu.tools, gcov_menu,LANG(MENUITEM_TOOLS_GPROF,"&Test de Covertura (gcov)"),_T("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente."),ipre+_T("gcov.png"));
 
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxMenu *valgrind_menu = new wxMenu;

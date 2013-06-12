@@ -88,7 +88,7 @@ void mxGprofOutput::FillTable (const wxString &pattern) {
 	}
 	if (gn<dn) grid_table->AppendRows(dn-gn,false);
 	else if (gn>dn) grid_table->DeleteRows(dn,gn-dn,false);
-	for(int i=0,j=0;i<data.table.size();i++) { 
+	for(unsigned int i=0,j=0;i<data.table.size();i++) { 
 		if (!pattern.Len() || data.table[i].match(pattern.c_str())) {
 			grid_table->SetCellValue(j,0,to_str(data.table[i].percent_time));	
 			grid_table->SetCellValue(j,1,to_str(data.table[i].cumulative_seconds));	
@@ -163,7 +163,7 @@ void mxGprofOutput::OnDClickTableCell (wxGridEvent & event) {
 	} else {
 		func=grid_graph->GetCellValue(event.GetRow(),4).BeforeLast('[');
 	}
-	for(int i=0;i<combo->GetCount();i++) { 
+	for(unsigned int i=0;i<combo->GetCount();i++) { 
 		if (combo->GetString(i).BeforeLast('[')==func) {
 			combo->SetSelection(i);
 			FillGraph();
