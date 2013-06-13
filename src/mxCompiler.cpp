@@ -11,28 +11,40 @@
 #include "mxSource.h"
 #include "mxUtils.h"
 
+#define EN_COMPOUT_ERROR ": error: "
+#define EN_COMPOUT_ERROR_CHILD ": error:   "
+#define EN_COMPOUT_WARNING ": warning: "
+#define EN_COMPOUT_WARNING_CHILD ": warning:   "
+#define EN_COMPOUT_LINKER_WARNING "Warning: "
+
 #define EN_NSTANTIATED_FROM "nstantiated from "
 #define EN_IN_INSTANTIATION_OF "In instantiation of "
-#define EN_COMPOUT_IN_FILE_INCLUDED_FROM "In file included from "
-#define EN_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 from "
-#define EN_COMPOUT_LINKER_WARNING "Warning: "
-#define EN_COMPOUT_WARNING ": warning: "
-#define EN_COMPOUT_NOTE ": note: "
 #define EN_COMPOUT_AT_THIS_POINT_IN_FILE ": at this point in file"
 #define EN_COMPOUT_WITHIN_THIS_CONTEXT ": within this context"
-#define EN_COMPOUT_IN_PASSING_ARGUMENT ": in passing argument"
-#define EN_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
+#define EN_COMPOUT_NOTE ": note: "
+//#define EN_COMPOUT_IN_FILE_INCLUDED_FROM "In file included from "
+//#define EN_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 from "
+
+//#define EN_COMPOUT_IN_PASSING_ARGUMENT ": in passing argument"
+//#define EN_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
+
+#define ES_COMPOUT_ERROR ": error: "
+#define ES_COMPOUT_ERROR_CHILD ": error:   "
+#define ES_COMPOUT_WARNING ": aviso: "
+#define ES_COMPOUT_WARNING_CHILD ": aviso:   "
+//#define ES_COMPOUT_LINKER_WARNING "Advertencia: "
+
 
 #define ES_NSTANTIATED_FROM "nstantiated from "
 #define ES_IN_INSTANTIATION_OF "In instantiation of "
-#define ES_COMPOUT_IN_FILE_INCLUDED_FROM "En el fichero incluído de "
-#define ES_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 de "
-#define ES_COMPOUT_WARNING ": aviso: "
-#define ES_COMPOUT_NOTE ": nota: "
 #define ES_COMPOUT_AT_THIS_POINT_IN_FILE ": en este punto en el fichero"
 #define ES_COMPOUT_WITHIN_THIS_CONTEXT ": en este contexto"
-#define ES_COMPOUT_IN_PASSING_ARGUMENT ": en el paso del argumento"
-#define ES_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
+#define ES_COMPOUT_NOTE ": nota: "
+//#define ES_COMPOUT_IN_FILE_INCLUDED_FROM "En el fichero incluído de "
+//#define ES_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 de "
+//#define ES_COMPOUT_WARNING ": aviso: "
+//#define ES_COMPOUT_IN_PASSING_ARGUMENT ": en el paso del argumento"
+//#define ES_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
 #include "Toolchain.h"
 
 
@@ -283,6 +295,36 @@ void mxCompiler::UnSTD(wxString &line) {
 	line.Replace("typename::rebind<char>::other::size_type","size_t");
 }
 
+static inline bool ErrorLineIsChild(const wxString &error_line) {
+	// si el mensaje de error empieza con 3 espacios, es porque en realidad sigue del mensaje anterior
+	int p=2,l=error_line.Len();
+	while (p<l && error_line[p]!=':') p++; // saltear el nombre del archivo
+	if (p==l) return false; else p++;
+	while (p<l && error_line[p]!=':') p++; // saltear el numero de linea
+	if (p==l) return false; else p++;
+	while (p<l && error_line[p]!=':') p++; // saltear el la columna
+	if (p==l) return false; else p++;
+	if (p+2<l && error_line[p]==' '&&error_line[p+1]==' '&&error_line[p+2]==' ') return true; // puede venir directo el mensaje
+	if (p+5<l && error_line[p+1]=='n'&&error_line[p+2]=='o'&&error_line[p+3]=='t'&&error_line[p+5]==':') return true; // o la palabra note
+	while (p<l && error_line[p]!=':') p++; // o la palabra error/warning/
+	if (p==l) return false; else p++;
+	if (p+2<l && error_line[p]==' '&&error_line[p+1]==' '&&error_line[p+2]==' ') return true; // puede venir directo el mensaje
+	return false;
+//	return 
+//		error_line.Find(EN_COMPOUT_ERROR_CHILD)!=wxNOT_FOUND||
+//		error_line.Find(ES_COMPOUT_ERROR_CHILD)!=wxNOT_FOUND||
+//		error_line.Find(EN_COMPOUT_WARNING_CHILD)!=wxNOT_FOUND||
+//		error_line.Find(ES_COMPOUT_WARNING_CHILD)!=wxNOT_FOUND||
+//		error_line.Find(EN_COMPOUT_NOTE)!=wxNOT_FOUND||
+//		error_line.Find(ES_COMPOUT_NOTE)!=wxNOT_FOUND;
+	
+//	return !(
+//		wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_NOTE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_NOTE))
+//		|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_FORWARD_DECLARATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_FORWARD_DECLARATION_OF)) 
+//		|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_IN_PASSING_ARGUMENT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_IN_PASSING_ARGUMENT)) 
+//		|| (wxNOT_FOUND!=error_line.Find(_T("(")) && error_line[error_line.Find(_T("("))-2]==':' && error_line[error_line.Find(_T("("))-3]!=':') 
+//		);
+}
 
 void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run) {
 	if (compile_and_run->output_type==MXC_EXTERN) { ParseSomeExternErrors(compile_and_run); return; }
@@ -351,12 +393,8 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 //				wxString last=tree->GetItemText(compile_and_run.last_error_item);
 //				last.Replace(last.Left(last.Find(": ")),error_line.Left(error_line.Find(": ")));
 //				tree->SetItemText(compile_and_run.last_error_item,last);
-				} else if (
-					wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_NOTE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_NOTE))
-					|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_FORWARD_DECLARATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_FORWARD_DECLARATION_OF)) 
-					|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_IN_PASSING_ARGUMENT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_IN_PASSING_ARGUMENT)) 
-					|| (wxNOT_FOUND!=error_line.Find(_T("(")) && error_line[error_line.Find(_T("("))-2]==':' && error_line[error_line.Find(_T("("))-3]!=':') 
-					) {
+				} else {
+					if (ErrorLineIsChild(error_line)) {
 						if (compile_and_run->last_error_item_IsOk) {
 							tree->AppendItem(compile_and_run->last_error_item,nice_error_line,5,-1,new mxCompilerItemData(error_line));
 						} else {
@@ -376,6 +414,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 						compile_and_run->last_error_item=tree->AppendItem(errors,nice_error_line,4,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
 						compile_and_run->last_error_item_IsOk=true;
 					}
+				}
 			} else {
 				if (wxNOT_FOUND!=error_line.Find(_T(EN_IN_INSTANTIATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_IN_INSTANTIATION_OF)))
 					compile_and_run->parsing_flag = 1;
