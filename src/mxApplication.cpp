@@ -142,10 +142,13 @@ bool mxApplication::OnInit() {
 	bitmaps = new mxArt(config->Files.skin_dir);
 
 	// poner el idioma del compilador en castellano
-	if (config->Init.lang_es) 
+	if (config->Init.lang_es) {
 		wxSetEnv(_T("LANG"),_T("es_ES"));
-	else
+		wxSetEnv(_T("LANGUAGE"),_T("es_ES"));
+	} else {
 		wxSetEnv(_T("LANG"),_T("en_US"));
+		wxSetEnv(_T("LANGUAGE"),_T("en_US"));
+	}
 	
 //	wxSetEnv(_T("LD_LIBRARY_PATH"),_T("/home/santiago/OpenFOAM/ThirdParty/ParaView3.3-cvs/platforms/linuxGcc/bin:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug/openmpi-1.2.6:/home/santiago/OpenFOAM/ThirdParty/openmpi-1.2.6/platforms/linuxGccDPDebug/lib:/home/santiago/OpenFOAM/ThirdParty/gcc-4.3.1/platforms/linux/lib:/home/santiago/OpenFOAM/santiago-1.5/lib/linuxGccDPDebug:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug"));
 	

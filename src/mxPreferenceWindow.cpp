@@ -163,21 +163,21 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (wxListbook *notebook) {
 	init_show_splash = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_SPLASH,"Mostrar Splash mientras se carga el entorno"),config->Init.show_splash);
 	init_show_tip_on_startup = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_TOOLTIPS,"Mostrar sugerencias al inicio"),config->Init.show_tip_on_startup);
 	init_show_welcome = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_WELCOME_PANEL,"Mostrar panel de bienvenida"),config->Init.show_welcome);
-	init_show_extra_panels = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_HELP_TABS,"Mostrar pestanas de ayuda en dialogos (*)"),config->Help.show_extra_panels);
+	init_show_extra_panels = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_HELP_TABS,"Mostrar pestañas de ayuda en cuadro de diálogo (*)"),config->Help.show_extra_panels);
 	init_history_len = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_GENERAL_HISTORY_LEN,"Archivos en el historial"),config->Init.history_len);
 	init_show_explorer_tree = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_STARTUP,"Mostrar el explorador de archivos al iniciar"),config->Init.show_explorer_tree);
 	init_left_panels = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_GROUP_TREES,"Agrupar arboles en un solo panel (*)"),config->Init.left_panels);
-	init_autohide_panels = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_AUTOHIDE_PANELS,"Ocultar paneles automaticamente (experimental - *)"),config->Init.autohide_panels);
+	init_autohide_panels = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_AUTOHIDE_PANELS,"Ocultar paneles automaticamente (*)"),config->Init.autohide_panels);
 	init_singleton = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SINGLETON,"Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos"),config->Init.singleton);
 	init_check_for_updates = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CHECK_FOR_UPDATES,"Verificar si existen nuevas versiones al iniciar"),config->Init.check_for_updates);
 #if defined(_WIN32) || defined(__WIN32__)
 #else
-	init_lang_es = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT,"Mostrar errores de compilacion en Espanol (Ver Ayuda!) (*)"),config->Init.lang_es);
+	init_lang_es = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT,"Mostrar errores de compilación en Español (Ver Ayuda!) (*)"),config->Init.lang_es);
 //	desktop_icon = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON,"Crear/Actualizar icono de ZinjaI en el escritorio"),false);
-	wxButton *xdg_button = new wxButton(panel,mxID_PREFERENCES_XDG,LANG(PREFERENCES_CREATE_ICONS,"Crear/Actualizar accesos directos en el escritorio/menu del sistema"));
+	wxButton *xdg_button = new wxButton(panel,mxID_PREFERENCES_XDG,LANG(PREFERENCES_CREATE_ICONS,"Crear/Actualizar accesos directos en el escritorio/menú del sistema"));
 	sizer->Add(xdg_button,sizers->BA10);
 #endif
-	utils->AddStaticText(sizer,panel,LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,"(*) tendra efecto la proxima vez que inicie ZinjaI"));
+	utils->AddStaticText(sizer,panel,LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,"(*) tendrá efecto la proxima vez que inicie ZinjaI"));
 	panel->SetSizerAndFit(sizer);
 	return panel;
 
@@ -198,19 +198,19 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel (wxListbook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 		
-	debug_allow_edition = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ALLOW_EDITION,"Permitir editar los fuentes durante la depuracion"),config->Debug.allow_edition);
-	debug_autohide_panels = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_REORGANIZE_PANELS,"Reacomodar los paneles al iniciar/finalizar la depuracion"),config->Debug.autohide_panels);
+	debug_allow_edition = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ALLOW_EDITION,"Permitir editar los fuentes durante la depuración"),config->Debug.allow_edition);
+	debug_autohide_panels = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_REORGANIZE_PANELS,"Reacomodar los paneles al iniciar/finalizar la depuración"),config->Debug.autohide_panels);
 	debug_inspections_on_right = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_INSPECTIONS_PANEL_ON_RIGHT,"Colocar el panel de inspecciones a la derecha (*)"),config->Debug.inspections_on_right);
-	debug_show_thread_panel = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SHOW_THREAD_LIST,"Mostrar lista de hilos de ejecucion"),config->Debug.show_thread_panel);
+	debug_show_thread_panel = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SHOW_THREAD_LIST,"Mostrar lista de hilos de ejecución"),config->Debug.show_thread_panel);
 	debug_show_log_panel = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SHOW_DEBUGGER_LOG,"Mostrar el panel de mensajes del depurador"),config->Debug.show_log_panel);
-	debug_autohide_toolbars = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ORGANIZE_TOOLBARS,"Reacomodar las barras de herramienta al iniciar/finalizar la depuracion"),config->Debug.autohide_toolbars);
+	debug_autohide_toolbars = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ORGANIZE_TOOLBARS,"Reacomodar las barras de herramienta al iniciar/finalizar la depuración"),config->Debug.autohide_toolbars);
 //	debug_autoupdate_backtrace = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_AUTOUPDATE_BACKTRACE,"Actualizar automaticamente el panel de trazado inverso en cada paso"),config->Debug.autoupdate_backtrace);
-	debug_readnow = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO,"Cargar toda la informacion de depuracion antes de comenzar"),config->Debug.readnow);
-	debug_auto_solibs = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO,"Cargar informacion de depuracion de librerias externas"),config->Debug.auto_solibs);
+	debug_readnow = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO,"Cargar toda la información de depuracion antes de comenzar"),config->Debug.readnow);
+	debug_auto_solibs = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO,"Cargar información de depuracion de bibliotecas externas"),config->Debug.auto_solibs);
 	debug_compile_again = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_RECOMPILE_AUTOMATICALLY,"Recompilar automaticamente antes de depurar si es necesario"),config->Debug.compile_again);
-	debug_close_on_normal_exit= utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION,"Salir del modo depuracion si el programa finaliza normalmente"),config->Debug.close_on_normal_exit);
+	debug_close_on_normal_exit= utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION,"Salir del modo depuración si el programa finaliza normalmente"),config->Debug.close_on_normal_exit);
 	debug_always_debug = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER,"Siempre ejecutar en el depurador"),config->Debug.always_debug);
-	debug_raise_main_window = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION,"Mostrar ZinjaI cuando se interrumpe la ejecucion"),config->Debug.raise_main_window);
+	debug_raise_main_window = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION,"Mostrar ZinjaI cuando se interrumpe la ejecución"),config->Debug.raise_main_window);
 	debug_select_modified_inspections = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS,"Utilizar colores en la tabla de inspecciones"),config->Debug.select_modified_inspections);
 	
 	wxBoxSizer *type_replace_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -292,7 +292,7 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	szFind->Add(toolbars_wich_find,sizers->BLR10);
 	sizer->Add(szFind,sizers->BA5);
 	
-	wxButton *btReset = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RESET,LANG(PREFERENCES_TOOLBARS_RESET,"Reestablecer configuracion por defecto"));
+	wxButton *btReset = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RESET,LANG(PREFERENCES_TOOLBARS_RESET,"Reestablecer configuración por defecto"));
 	sizer->Add(btReset,sizers->BA5);
 	
 	wxArrayString icon_sizes;
@@ -322,8 +322,8 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_SHOW_WIZARD,"Mostrar Asistente"));
 	init_new_file = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_SIMPLE_NEW_ACTION,"Accion para Nuevo Archivo"),a_new_file, config->Init.new_file);
 //	files_templates_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_TEMPLATES_FOLDER,"Carpeta de plantillas (necesita reiniciar)"),config->Files.templates_dir,mxID_TEMPLATES_FOLDER);
-	running_compiler_options = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_COMPILER_ARGUMENTS,"Parametros extra para el compilador"),config->Running.compiler_options);
-	running_wait_for_key = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING,"Esperar una tecla luego de la ejecucion"),config->Running.wait_for_key);
+	running_compiler_options = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador"),config->Running.compiler_options);
+	running_wait_for_key = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING,"Esperar una tecla luego de la ejecución"),config->Running.wait_for_key);
 	running_always_ask_args = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),config->Running.always_ask_args);
 	init_always_add_extension = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ADD_CPP_EXTENSION,"Agregar la extension cpp si se omite al guardar"),config->Init.always_add_extension);
 	running_dont_run_headers = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_RUN_LAST_CPP_INSTEAD_HEADER,"Ejecutar el ultimo cpp si se intenta ejecutar una cabecera"),config->Running.dont_run_headers);
@@ -363,10 +363,10 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (wxListbook *notebook) {
 	a_wrap.Add(LANG(PREFERENCES_STYLE_WRAP_NONE,"Nunca"));
 	a_wrap.Add(LANG(PREFERENCES_STYLE_WRAP_ALL_BUT_SOURCES,"Todos menos fuentes"));
 	a_wrap.Add(LANG(PREFERENCES_STYLE_WRAP_ALWAYS,"Siempre"));
-	init_wrap_mode = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_STYLE_LINE_WRAP,"Ajuste de linea dinamico"),a_wrap, config->Init.wrap_mode);
+	init_wrap_mode = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_STYLE_LINE_WRAP,"Ajuste de linea dinámico"),a_wrap, config->Init.wrap_mode);
 	source_whiteSpace = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_SHOW_EOF_AND_WHITE_SPACES,"Mostrar espacios y caracteres de fin de linea"),config->Source.whiteSpace);
 	source_lineNumber = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_SHOW_LINE_NUMBERS,"Mostrar numeros de linea"),config->Source.lineNumber);
-	source_foldEnable = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_ENABLE_CODE_FOLDING,"Habilitar plegado de codigo"),config->Source.foldEnable);
+	source_foldEnable = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_ENABLE_CODE_FOLDING,"Habilitar plegado de código"),config->Source.foldEnable);
 	source_tabWidth = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_TAB_WIDTH,"Ancho del tabulado"),config->Source.tabWidth);
 	source_tabUseSpaces = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_SPACES_INTEAD_TABS,"Colocar espacios en lugar de tabs"),config->Source.tabUseSpaces);
 	styles_font_size = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_SCREEN_FONT_SIZE,"Tamaño de la fuente en pantalla"),config->Styles.font_size);
@@ -385,18 +385,18 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
-	source_smartIndent = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_INTELLIGENT_EDITING,"Edicion inteligente"),config->Source.smartIndent);
-	source_bracketInsertion = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCLOSE_BRACKETS,"Cerrar llaves automaticamente al presionar Enter"),config->Source.bracketInsertion);
-	source_autocloseStuff = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCLOSE_STUFF,"Siempre cerrar llaves, parentesis y comillas al ingresar"),config->Source.autocloseStuff);
+	source_smartIndent = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_INTELLIGENT_EDITING,"Edición inteligente"),config->Source.smartIndent);
+	source_bracketInsertion = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCLOSE_BRACKETS,"Cerrar llaves automáticamente al presionar Enter"),config->Source.bracketInsertion);
+	source_autocloseStuff = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCLOSE_STUFF,"Siempre cerrar llaves, paréntesis y comillas al ingresar"),config->Source.autocloseStuff);
 	source_indentPaste = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_INDENT_ON_PASTE,"Corregir indentado al pegar"),config->Source.indentPaste);
 	source_avoidNoNewLineWarning = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE,"Controlar que quede una linea en blanco al final de cada archivo"),config->Source.avoidNoNewLineWarning);
 	source_toolTips = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_SHOW_TOOLTIPS_FOR_VAR_TYPES,"Utilizar tooltips para identificar tipos de variables"),config->Source.toolTips);
 	source_autoCompletion = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_AUTOCOMPLETION,"Utilizar autocompletado mientras escribe"),config->Source.autoCompletion);
-	source_callTips = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y metodos"),config->Source.callTips);
+	source_callTips = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y métodos"),config->Source.callTips);
 	init_beautifyCompilerErrors  = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS,"Simplificar mensajes de error del compilador"),config->Init.beautify_compiler_errors);
-	files_autocode = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de plantillas de auto-codigo"),config->Files.autocodes_file,mxID_AUTOCODES_FILE);
+	files_autocode = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de plantillas de auto-código"),config->Files.autocodes_file,mxID_AUTOCODES_FILE);
 	
-	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Indices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
+	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Índices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
 	help_autocomp_indexes = new wxCheckListBox(panel,mxID_AUTOCOMP_LIST,wxDefaultPosition,wxSize(100,100),0,NULL,wxLB_SORT);
 	
 	wxArrayString autocomp_array_all, autocomp_array_user;
@@ -500,12 +500,12 @@ wxPanel *mxPreferenceWindow::CreateCommandsPanel (wxListbook *notebook) {
 	files_explorer_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_EXPLORER,"Comando del explorador de archivos"),config->Files.explorer_command,mxID_EXPLORERS_BUTTON);
 	files_img_browser_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_IMAGE_VIEWER,"Comando del visor de imagenes"),config->Files.img_browser,mxID_IMG_BROWSER_PATH);
 	files_browser_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_BROWSER,"Comando del navegador Web"),config->Files.browser_command,mxID_BROWSER_PATH);
-	files_doxygen_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_DOXYGEN,"Ubicacion del ejecutable de Doxygen"),config->Files.doxygen_command,mxID_DOXYGEN_PATH);
-	files_wxfb_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_WXFORMBUILDER,"Ubicacion del ejecutable de wxFormBuilder"),config->Files.wxfb_command,mxID_WXFB_PATH);
+	files_doxygen_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_DOXYGEN,"Ubicación del ejecutable de Doxygen"),config->Files.doxygen_command,mxID_DOXYGEN_PATH);
+	files_wxfb_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_WXFORMBUILDER,"Ubicación del ejecutable de wxFormBuilder"),config->Files.wxfb_command,mxID_WXFB_PATH);
 #ifdef __WIN32__
-	files_valgrind_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_VALGRIND,"Ubicacion del ejecutable de Valgrind"),config->Files.valgrind_command,mxID_VALGRIND_PATH);
+	files_valgrind_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_VALGRIND,"Ubicación del ejecutable de Valgrind"),config->Files.valgrind_command,mxID_VALGRIND_PATH);
 #endif
-	files_cppcheck_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CPPCHECK,"Ubicacion del ejecutable de CppCheck"),config->Files.cppcheck_command,mxID_CPPCHECK_PATH);
+	files_cppcheck_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CPPCHECK,"Ubicación del ejecutable de CppCheck"),config->Files.cppcheck_command,mxID_CPPCHECK_PATH);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
