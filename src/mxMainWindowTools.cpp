@@ -1145,7 +1145,14 @@ void mxMainWindow::OnToolsGcovSet (wxCommandEvent & event) {
 }
 
 void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
-	wxMessageBox("Esta funcionalidad todavía no ha sido implementada");
+	wxString path=project->GetTempFolder();
+	if (mxMD_NO==mxMessageDialog(this,wxString("Se eliminarán todos los archivos con extensión .gcov, .gcno y .gcda del\ndirectorio de temporales (")<<path<<")\n¿Desea Continuar?","gcov",(mxMD_YES_NO|mxMD_WARNING)).ShowModal()) return;
+	wxArrayString array;
+	utils->GetFilesFromDir(array,path,true);
+	for(unsigned int i=0;i<array.GetCount();i++) { 
+		if (array[i].EndsWith(".gcov")||array[i].EndsWith(".gcda")||array[i].EndsWith(".gcno"))
+			wxRemoveFile(DIR_PLUS_FILE(path,array[i]));
+	}
 }
 
 void mxMainWindow::OnToolsGcovShow (wxCommandEvent & event) {
