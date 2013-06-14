@@ -534,7 +534,7 @@ void mxMainWindow::OnToolsGprofHelp (wxCommandEvent &event) {
 	SHOW_HELP(_T("gprof.html"));
 }
 
-void mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, wxString arg) {
+bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, wxString arg) {
 	if (project) {
 		bool present = utils->IsArgumentPresent(project->active_configuration->compiling_extra,arg);
 		utils->SetArgument(project->active_configuration->compiling_extra,arg,!present);
@@ -549,6 +549,7 @@ void mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, w
 				project->Clean();
 				OnRunCompile(event);
 			}
+		return !present;
 	} else IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE; 
 		bool present = utils->IsArgumentPresent(src->config_running.compiler_options,arg);
@@ -558,6 +559,7 @@ void mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, w
 			(LANG(MAINW_GPROF_GPROF_DISABLED_PRE,"Se quitaron los parámetros de compilación necesarios para utilizar ")+tool+LANG(MAINW_GPROF_GPROF_DISABLED_POST,"."))
 			),tool,(mxMD_OK|mxMD_INFO)).ShowModal();
 		OnRunClean(event);
+		return !present;
 	}
 }
 void mxMainWindow::OnToolsGprofSet (wxCommandEvent &event) {
@@ -1141,7 +1143,8 @@ void mxMainWindow::OnToolsExportMakefile (wxCommandEvent &event) {
 
 
 void mxMainWindow::OnToolsGcovSet (wxCommandEvent & event) {
-	OnToolsGprofGcovSetAux(event,"gcov","--coverage");
+	if (OnToolsGprofGcovSetAux(event,"gcov","--coverage"))
+		ShowGCovSideBar();
 }
 
 void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
