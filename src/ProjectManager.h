@@ -157,7 +157,6 @@ struct cppcheck_configuration {
 **/
 struct project_library {
 	wxString libname; ///< nombre amigable
-	wxString filename; ///< archivo de salida (destino)
 	wxString path; ///< archivo de salida (destino)
 	wxString sources; ///< fuentes que poner dentro
 	wxString extra_link; ///< opciones extra para el linker
@@ -166,6 +165,7 @@ struct project_library {
 	bool need_relink; ///< temporal, para AnalizeConfig y PrepareForBuilding
 	wxString objects_list; ///< temporal, para AnalizeConfig y PrepareForBuilding
 	wxString parsed_extra; ///< temporal, para AnalizeConfig y PrepareForBuilding
+	wxString filename; ///< archivo de salida (ruta completa del destino), para AnalizeConfig y PrepareForBuilding
 	project_library *next;
 	project_library *prev;
 	project_library(project_library *aprev=NULL) {

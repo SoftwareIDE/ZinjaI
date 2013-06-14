@@ -118,7 +118,7 @@ void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 	}
 	lib->libname = new_name;
 	lib->path = path->GetValue();
-	lib->filename = filename->GetValue();
+//	lib->filename = filename->GetValue();
 	lib->extra_link = extra_link->GetValue();
 	lib->is_static = type->GetSelection()==1;
 	lib->default_lib = default_lib->GetValue();

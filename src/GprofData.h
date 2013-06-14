@@ -58,6 +58,7 @@ struct GprofData {
 				// gran tabla por funciones
 				if (s.size()>name_col) {
 					tm_item t; t.name=s.substr(name_col);
+					while (t.name.size()&&t.name[0]==' ') t.name=t.name.substr(1); // a veces una columna tiene un numero (contador de llamadas) muy grande y creo que por eso esta queda desfazada
 					s.erase(name_col);
 					string vals[6]; 
 					cut(s,vals,6);

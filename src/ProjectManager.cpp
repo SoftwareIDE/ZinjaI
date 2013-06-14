@@ -2811,6 +2811,7 @@ void ProjectManager::SaveLibsAndSourcesAssociation(project_configuration *conf) 
 	}
 }
 
+// parte de la PrepareForBuilding
 void ProjectManager::AssociateLibsAndSources(project_configuration *conf) {
 	if (!conf) conf=active_configuration;
 	file_item *fi = first_source;
@@ -2830,7 +2831,9 @@ void ProjectManager::AssociateLibsAndSources(project_configuration *conf) {
 			}
 		}
 		// armar tambien el nombre del archivo
-		lib->filename = DIR_PLUS_FILE(lib->path,wxString(_T("lib"))<<lib->libname);
+		lib->filename = lib->path;
+		utils->ParameterReplace(lib->filename,"${TEMP_DIR}",temp_folder);
+		lib->filename = DIR_PLUS_FILE(lib->filename,wxString(_T("lib"))<<lib->libname);
 #if defined(_WIN32) || defined(__WIN32__)
 		if (lib->is_static)
 			lib->filename<<_T(".a");

@@ -1506,7 +1506,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_FLOW, LANG(MENUITEM_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de &Flujo..."),_T(""),_T("Genera un diagrama de flujo a partir del bloque de codigo actual"),ipre+_T("flujo.png"));
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_CLASSES, LANG(MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar &Jerarquia de Clases..."),_T(""),_T(""),ipre+_T("clases.png"));
 	
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Metodos/Funciones faltantes..."),_T("Ctrl+Shift+H"),_T(""),ipre+_T("copy_code_from_h.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Métodos/Funciones faltantes..."),_T("Ctrl+Shift+H"),_T(""),ipre+_T("copy_code_from_h.png"));
 	
 	wxMenu *comments_menu = new wxMenu;
 	utils->AddItemToMenu(comments_menu, mxID_TOOLS_ALIGN_COMMENTS, LANG(MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS,"&Alinear Comentarios..."),_T(""),_T("Mueve todos los comentarios hacia una determinada columna"),ipre+_T("align_comments.png"));
@@ -1561,7 +1561,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_VIEW, LANG(MENUITEM_TOOLS_DOXYGEN_VIEW,"&Ver..."),_T("Ctrl+F1"),_T("Abre un explorador y muestra la documentacion generada"),ipre+_T("doxy_view.png"));
 	doxy_menu->AppendSeparator();
 	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_HELP, LANG(MENUITEM_TOOLS_DOXYGE_HELP,"A&yuda..."),_T(""),_T("Muestra una breve ayuda acerca de la integracion de Doxygen en ZinjaI"),ipre+_T("ayuda.png"));
-	menu.tools_doxygen = utils->AddSubMenuToMenu(menu.tools, doxy_menu,LANG(MENUITEM_TOOLS_DOXYGEN,"Generar &Documentacion (doxygen)"),_T("Doxygen permite generar automaticamente documentacion a partir del codigo y sus comentarios"),ipre+_T("doxy.png"));
+	menu.tools_doxygen = utils->AddSubMenuToMenu(menu.tools, doxy_menu,LANG(MENUITEM_TOOLS_DOXYGEN,"Generar &Documentación (doxygen)"),_T("Doxygen permite generar automaticamente documentacion a partir del codigo y sus comentarios"),ipre+_T("doxy.png"));
 	menu.tools_doxygen->Enable(false);
 
 	wxMenu *wxfb_menu = new wxMenu;
@@ -1584,7 +1584,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_VIEW, LANG(MENUITEM_TOOLS_CPPCHECK_VIEW,"Mostrar Panel de Resultados"),_T(""),_T(""),ipre+_T("cppcheck_view.png"));
 	cppcheck_menu->AppendSeparator();
 	utils->AddItemToMenu(cppcheck_menu,mxID_TOOLS_CPPCHECK_HELP, LANG(MENUITEM_TOOLS_CPPCHECK_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));
-	menu.tools_cppcheck = utils->AddSubMenuToMenu(menu.tools, cppcheck_menu,LANG(MENUITEM_TOOLS_CPPCHECK,"Analisis Estatico (cppcheck)"),_T(""),ipre+_T("cppcheck.png"));
+	menu.tools_cppcheck = utils->AddSubMenuToMenu(menu.tools, cppcheck_menu,LANG(MENUITEM_TOOLS_CPPCHECK,"Análisis Estático (cppcheck)"),_T(""),ipre+_T("cppcheck.png"));
 	menu.tools_cppcheck->Enable(false);
 	
 	wxMenu *gprof_menu = new wxMenu;
@@ -1613,7 +1613,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(valgrind_menu, mxID_TOOLS_VALGRIND_VIEW, LANG(MENUITEM_TOOLS_VALGRIND_VIEW,"Mostrar Panel de Resultados"),_T(""),_T(""),ipre+_T("valgrind_view.png"));
 	valgrind_menu->AppendSeparator();
 	utils->AddItemToMenu(valgrind_menu,mxID_TOOLS_VALGRIND_HELP, LANG(MENUITEM_TOOLS_VALGRIND_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));
-	utils->AddSubMenuToMenu(menu.tools, valgrind_menu,LANG(MENUITEM_TOOLS_VALGRIND,"Analisis Dinamico (valgrind)"),_T("Valgrind permite analizar el uso de memoria dinamica para detectar perdidas y otros errores"),ipre+_T("valgrind.png"));
+	utils->AddSubMenuToMenu(menu.tools, valgrind_menu,LANG(MENUITEM_TOOLS_VALGRIND,"Análisis Dinámico (valgrind)"),_T("Valgrind permite analizar el uso de memoria dinamica para detectar perdidas y otros errores"),ipre+_T("valgrind.png"));
 #endif
 
 	utils->AddSubMenuToMenu(menu.tools, menu.tools_custom_menu = new wxMenu,LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables"),_T(""),ipre+_T("customTools.png"));
