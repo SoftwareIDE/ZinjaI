@@ -3,17 +3,6 @@
 
 #include <wx/app.h>
 
-#ifdef DEBUG
-#include <wx/longlong.h>
-extern wxLongLong start_time;
-extern wxLongLong aux_start_time;
-#define SHOW_MILLIS(a) \
-	cerr<<((aux_start_time=wxGetLocalTimeMillis())-start_time).ToLong()<<"   "<<a<<endl;\
-	start_time=aux_start_time
-#else
-#define SHOW_MILLIS(a)
-#endif
-
 class mxApplication : public wxApp {
 public:
 	virtual bool OnInit();

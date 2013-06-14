@@ -560,7 +560,8 @@ bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, w
 			),tool,(mxMD_OK|mxMD_INFO)).ShowModal();
 		OnRunClean(event);
 		return !present;
-	}
+	} else
+		return false;
 }
 void mxMainWindow::OnToolsGprofSet (wxCommandEvent &event) {
 	OnToolsGprofGcovSetAux(event,"gprof","-pg");

@@ -21,7 +21,6 @@ BEGIN_EVENT_TABLE(mxSplashScreen, wxFrame)
 END_EVENT_TABLE()
 
 mxSplashScreen::mxSplashScreen(wxString image_path):wxFrame(NULL,wxID_ANY,_T("Cargando ZinjaI..."),wxDefaultPosition,wxDefaultSize, wxNO_BORDER | wxSTAY_ON_TOP ) {
-	SHOW_MILLIS("Loading splash...");
 	splash=this;
 	m_bmp = wxBitmap(image_path,wxBITMAP_TYPE_PNG);
 	w = m_bmp.GetWidth(); h = m_bmp.GetHeight();

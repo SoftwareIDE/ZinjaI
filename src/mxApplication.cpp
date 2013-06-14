@@ -43,8 +43,6 @@ wxLongLong aux_start_time;
 
 bool mxApplication::OnInit() {
 	
-	SHOW_MILLIS("Entering OnIni...");
-	
 	if (argc==2 && wxString(argv[1])==_T("--version")) {
 		cout<<"ZinjaI "<<VERSION<<endl;
 		return false;
@@ -88,10 +86,8 @@ bool mxApplication::OnInit() {
 
 	// inicialize mxUtils and ConfigManager
 	utils = new mxUtils;
-	SHOW_MILLIS("Loading config...");
 	config = new ConfigManager(zpath);
 
-	SHOW_MILLIS("Initializing singleton manager...");
 	// inicialize singleton manager
 	singleton = new mxSingleton;
 	if (config->Init.singleton) {
@@ -121,7 +117,6 @@ bool mxApplication::OnInit() {
 	}
 
 	// show splash screen
-	SHOW_MILLIS("Loading image handlers...");
 	splash = NULL;
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImage::AddHandler(new wxXPMHandler);
@@ -132,12 +127,9 @@ bool mxApplication::OnInit() {
 			argv[i][0]='\0';
 			no_splash=true;
 		}
-	SHOW_MILLIS("Loading splash...");
 	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE(_T("imgs"),_T(SPLASH_FILE))).FileExists()) 
 		splash = new mxSplashScreen(DIR_PLUS_FILE(_T("imgs"),_T(SPLASH_FILE)));
 //	wxYield();
-	
-	SHOW_MILLIS("Initializing art stuff...");
 	
 	bitmaps = new mxArt(config->Files.skin_dir);
 
@@ -152,7 +144,6 @@ bool mxApplication::OnInit() {
 	
 //	wxSetEnv(_T("LD_LIBRARY_PATH"),_T("/home/santiago/OpenFOAM/ThirdParty/ParaView3.3-cvs/platforms/linuxGcc/bin:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug/openmpi-1.2.6:/home/santiago/OpenFOAM/ThirdParty/openmpi-1.2.6/platforms/linuxGccDPDebug/lib:/home/santiago/OpenFOAM/ThirdParty/gcc-4.3.1/platforms/linux/lib:/home/santiago/OpenFOAM/santiago-1.5/lib/linuxGccDPDebug:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug"));
 	
-	SHOW_MILLIS("Creating helpers...");
 	// inicialize HelpManager
 	help = new HelpManager;
 	
@@ -170,7 +161,6 @@ bool mxApplication::OnInit() {
 		main_window = new mxMainWindow(NULL, wxID_ANY, _T("ZinjaI"), wxPoint(config->Init.pos_x,config->Init.pos_y), wxSize(config->Init.size_x,config->Init.size_y));
 
 	// inicialize debug manager
-	SHOW_MILLIS("Initializing debug manager...");
 	debug = new DebugManager();
 	debug->inspection_grid=main_window->inspection_ctrl;
 	
@@ -202,7 +192,6 @@ bool mxApplication::OnInit() {
 	
 	// load files or create and empty one
 	if (argc==1) {
-		SHOW_MILLIS("Creating first page...");
 		if (config->Init.show_welcome) {
 			main_window->ShowWelcome(true);
 		} else {
@@ -214,7 +203,6 @@ bool mxApplication::OnInit() {
 		} 
 		if (splash) splash->ShouldClose();
 	} else {
-		SHOW_MILLIS("Loading files...");
 		main_window->Refresh();
 		wxYield();
 		if (splash) splash->ShouldClose();
@@ -250,13 +238,10 @@ bool mxApplication::OnInit() {
 	
 	if (tips_window) tips_window->Raise();
 	
-	SHOW_MILLIS("Checking recovery system...");
 	if (!mxErrorRecovering::RecoverSomething()) {
 		if (config->Init.check_for_updates) 
 			mxUpdatesChecker::BackgroundCheck();
 	}
-	
-	SHOW_MILLIS("All done!");
 	
 //	cerr<<wxThread::GetCPUCount()<<endl;
 	

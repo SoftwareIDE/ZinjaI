@@ -32,7 +32,6 @@ mxWelcomePanel::~mxWelcomePanel() {
 }
 
 void mxWelcomePanel::Reload() {
-	SHOW_MILLIS("Loading welcome page...");
 	static wxString source;
 	bool skin_file=wxFileName::FileExists(DIR_PLUS_FILE(config->Files.skin_dir,wxString(_T("welcome_panel_"))<<config->Init.language_file<<_T(".html")));
 	if (!source.Len()) {
@@ -72,9 +71,7 @@ void mxWelcomePanel::Reload() {
 	} else {
 		text.Replace(_T("${TIP}"),LANG(TIPS_DB_NOT_FOUND,"No se pudo abrir correctamente el archivo de tips y sugerencias."));
 	}
-	SHOW_MILLIS("Setting welcome page...");
 	SetPage(text);
-	SHOW_MILLIS("Welcome page done...");
 }
 
 void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {

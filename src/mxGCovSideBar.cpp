@@ -32,8 +32,13 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 	int y=sy-my, l=l0, m2=hits_max/2+1; if (!m2) m2++;
 	while (y<sy+sh && l<line_count) {
 		if (l==cl) {
-			dc.SetBrush(wxBrush(ctheme->CURRENT_LINE));
-			dc.SetPen(wxPen(ctheme->CURRENT_LINE));
+			// los defines son para aplicar la transparencia, porque el color de fondo de linea actual tiene un alpha de 35% en el mxSource
+			// que por alguna razon no coincide con el mismo coeficiente (el color interpolado aca con el que pone scintilla), por eso aca uso 20%
+#define alpha 20/100
+#define base 255*80/100
+			wxColour color(base+ctheme->CURRENT_LINE.Red()*alpha,base+ctheme->CURRENT_LINE.Green()*alpha,base+ctheme->CURRENT_LINE.Blue()*alpha);
+			dc.SetBrush(wxBrush(color));
+			dc.SetPen(wxPen(color));
 			dc.DrawRectangle(0,y,mw,lh);
 		}
 		int h=hits[l++];

@@ -401,8 +401,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	EXTERNAL_SOURCE=(mxSource*)this;
 
-	SHOW_MILLIS("Creating main window...");
-	
 	SetAccelerators();
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
@@ -423,13 +421,10 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
  	aui_manager.SetManagedWindow(this);
 		
 	toolbar_tools=NULL;
-	SHOW_MILLIS("Creating menues...");
 	CreateMenus();
-	SHOW_MILLIS("Creating toolbars...");
 	CreateToolbars();
 	CreateStatusBar(1,0);
 	status_bar->SetStatusText(LANG(MAINW_INITIALIZING,"Inicializando..."));
-	SHOW_MILLIS("Setting panes v1...");
 	if (config->Init.left_panels && !config->Init.autohiding_panels) {
 		aui_manager.AddPane(CreateLeftPanels(), wxAuiPaneInfo().Name("left_panels").Left().CloseButton(true).MaximizeButton(true).Caption(_T("Arboles")).Hide());
 		left_panels->AddPage(CreateProjectTree(),"P");
@@ -444,7 +439,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 		aui_manager.AddPane(CreateSymbolsTree(), wxAuiPaneInfo().Name("symbols_tree").Caption(LANG(CAPTION_SYMBOLS_TREE,"Arbol de Simbolos")).Left().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
 		if (config->Init.autohiding_panels) SetExplorerPath(config->Files.last_dir);
 	}
-	SHOW_MILLIS("Setting panes v2...");
 	aui_manager.AddPane(CreateCompilerTree(), wxAuiPaneInfo().Name("compiler_tree").Bottom().Caption(LANG(CAPTION_COMPILER_OUTPUT,"Resultados de la Compilacion")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	aui_manager.AddPane(CreateQuickHelp(), wxAuiPaneInfo().Name("quick_help").Bottom().Caption(LANG(CAPTION_QUIKHELP,"Ayuda Rapida")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Debug.inspections_on_right)
@@ -487,7 +481,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 		
 	}
 		
-	SHOW_MILLIS("Setting panes v3...");
 	if (config->Toolbars.wich_ones.file) 
 		aui_manager.AddPane(toolbar_file, wxAuiPaneInfo().Name("toolbar_file").Caption(LANG(CAPTION_TOOLBAR_FILE,"Archivo")).ToolbarPane().Top().Position(0).Row(config->Toolbars.positions.row_file).LeftDockable(false).RightDockable(false));
 	else
@@ -530,7 +523,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	aui_manager.AddPane(toolbar_status, wxAuiPaneInfo().Name("toolbar_status").Caption(LANG(CAPTION_TOOLBAR_STATUS,"Status Toolbar")).ToolbarPane().Top().Position(1).Row(config->Toolbars.positions.row_debug).LeftDockable(false).RightDockable(false).Row(3).Hide());
 	aui_manager.AddPane(toolbar_diff, wxAuiPaneInfo().Name("toolbar_diff").Caption(LANG(CAPTION_TOOLBAR_DIFF,"Diff")).ToolbarPane().Top().Float().LeftDockable(false).RightDockable(false).Hide());
 	if (config->Init.show_welcome) {
-		SHOW_MILLIS("Creating welcome panel...");
 		welcome_panel=new mxWelcomePanel(this);
 		aui_manager.AddPane(welcome_panel, wxAuiPaneInfo().Name("welcome_panel").CenterPane().PaneBorder(false).Hide());
 	}
@@ -543,14 +535,12 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	}
 	aui_manager.Update();
 
-	SHOW_MILLIS("Starting parser...");
 	parser = new Parser(symbols_tree.treeCtrl);
 	code_helper->AppendIndexes(config->Help.autocomp_indexes);
 	autocoder = new Autocoder;
 	
 	compiler = new mxCompiler(compiler_tree.treeCtrl,compiler_tree.state,compiler_tree.errors,compiler_tree.warnings,compiler_tree.all);
 
-	SHOW_MILLIS("Creating wizard and others...");
 	wizard = NULL; //new mxNewWizard(this);
 	open_shared = NULL; // new mxOpenSharedWindow(this);
 	share = NULL; // new ShareManager();
@@ -575,10 +565,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	
-	SHOW_MILLIS("Main window done...");
-	
-	Show(true);
-	Maximize(config->Init.maximized);
+	Show(true); Maximize(config->Init.maximized);
 	
 }
 
