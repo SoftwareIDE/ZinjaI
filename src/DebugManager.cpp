@@ -29,8 +29,8 @@
 using namespace std;
 
 #ifdef DEBUG
-// #define DEBUG_MANAGER_LOG_TALK
-#define DEBUG_LOG_FILE "debug.log"
+#define DEBUG_MANAGER_LOG_TALK
+#define DEBUG_LOG_FILE "/mnt/rm/debug.log"
 #endif
 
 #define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
@@ -1360,6 +1360,9 @@ bool DebugManager::Jump(wxString fname, int line) {
 *
 * @param fname ruta del archivo, con cualquier barra (si es windows corrige)
 * @param line número de linea en base 0
+*
+* @return true si la direccion dada en fname y line es valida y el depurador efectivamente
+*         se puso a ejecutar, false si la direccion no era valida o hubo algun error
 **/
 bool DebugManager::RunUntil(wxString fname, int line) {
 	if (waiting || !debugging) return false;

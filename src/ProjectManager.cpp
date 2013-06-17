@@ -1022,6 +1022,7 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 	bool retval=false, relink_exe=false;
 	config_analized=false;
 	
+	GetTempFolder(true); // crear el directorio para los objetos si no existe
 	
 	// prepara la info de las bibliotecas
 	AssociateLibsAndSources(active_configuration);
@@ -1036,7 +1037,6 @@ bool ProjectManager::PrepareForBuilding(file_item *only_one) {
 	youngest_bin.SetYear(1900);
 	wxFileName bin_name;
 	
-	GetTempFolder(true); // crear el directorio para los objetos si no existe
 	
 	wxString extra_step_for_link;
 		

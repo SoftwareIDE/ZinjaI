@@ -4013,7 +4013,8 @@ void mxMainWindow::OnDebugJump ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugRunUntil ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		debug->RunUntil(source->GetFullPath(),source->GetCurrentLine());
+		if (!debug->RunUntil(source->GetFullPath(),source->GetCurrentLine()))
+			mxMessageDialog(main_window,/*LANG(DEBUG_RUN_UNTIL_ERROR,*/"La dirección actual no es válida."/*)*/,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 	}
 }
 
