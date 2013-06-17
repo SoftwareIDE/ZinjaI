@@ -1595,7 +1595,7 @@ Dibujar Diagrama de &Flujo...
 MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
 Dibujar &Jerarquia de Clases...
 MENUITEM_TOOLS_CODE_COPY_FROM_H
-Implementar Metodos/Funciones faltantes...
+Implementar Métodos/Funciones faltantes...
 MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
 &Alinear Comentarios...
 MENUITEM_TOOLS_COMMENTS_COMMENT
@@ -1667,7 +1667,7 @@ MENUITEM_TOOLS_DOXYGEN_VIEW
 MENUITEM_TOOLS_DOXYGE_HELP
 A&yuda...
 MENUITEM_TOOLS_DOXYGEN
-Generar &Documentacion (doxygen)
+Generar &Documentación (doxygen)
 MENUITEM_TOOLS_WXFB_ACTIVATE
 Activar &Integracion wxFormBuilder
 MENUITEM_TOOLS_WXFB_AUTO
@@ -1697,7 +1697,7 @@ Mostrar Panel de Resultados
 MENUITEM_TOOLS_CPPCHECK_HELP
 A&yuda...
 MENUITEM_TOOLS_CPPCHECK
-Analisis Estatico (cppcheck)
+Análisis Estático (cppcheck)
 MENUITEM_TOOLS_GPROF_ACTIVATE
 Habilitar/Deshabilitar
 MENUITEM_TOOLS_GPROF_DOT
@@ -1712,8 +1712,8 @@ MENUITEM_TOOLS_GPROF_LIST
 Listar Resultados (texto)
 MENUITEM_TOOLS_GPROF_HELP
 A&yuda...
-MENUITEM_TOOLS_GCOV
-Test de cobertura
+MENUITEM_TOOLS_GPROF
+Perfil de Ejecución (gprof)
 MENUITEM_TOOLS_GCOV_ACTIVATE
 Habilitar/Deshabilitar
 MENUITEM_TOOLS_GCOV_SHOW_BAR
@@ -1722,7 +1722,7 @@ MENUITEM_TOOLS_GCOV_RESET
 Eliminar resultados
 MENUITEM_TOOLS_GCOV_HELP
 A&yuda...
-MENUITEM_TOOLS_GPROF
+MENUITEM_TOOLS_GCOV
 &Test de Cobertura (gcov)
 MENUITEM_TOOLS_VALGRIND_RUN
 Ejecutar...
@@ -1731,7 +1731,7 @@ Mostrar Panel de Resultados
 MENUITEM_TOOLS_VALGRIND_HELP
 A&yuda...
 MENUITEM_TOOLS_VALGRIND
-Analisis Dinamico (valgrind)
+Análisis Dinámico (valgrind)
 MENUITEM_TOOLS_CUSTOM_TOOLS
 Herramientas Personalizables
 MENUITEM_TOOLS_CUSTOM_SETTINGS
@@ -2448,6 +2448,8 @@ DEBUG_RETURN_VALUE
 Valor de retorno:
 DEBUG_RETURN_FROM_FUNCTION
 Salir de la funcion
+DEBUG_RUN_UNTIL_ERROR
+La dirección actual no es válida.
 MENUITEM_SAVE_CORE_DUMP
 Guardar &Volcado de Memoria...
 MENUITEM_LOAD_CORE_DUMP
@@ -2831,7 +2833,7 @@ Mostrar sugerencias al inicio
 PREFERENCES_GENERAL_SHOW_WELCOME_PANEL
 Mostrar panel de bienvenida
 PREFERENCES_GENERAL_SHOW_HELP_TABS
-Mostrar pestanas de ayuda en dialogos (*)
+Mostrar pestañas de ayuda en cuadro de diálogo (*)
 PREFERENCES_GENERAL_HISTORY_LEN
 Archivos en el historial
 PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_STARTUP
@@ -2839,45 +2841,45 @@ Mostrar el explorador de archivos al iniciar
 PREFERENCES_GENERAL_GROUP_TREES
 Agrupar arboles en un solo panel (*)
 PREFERENCES_GENERAL_AUTOHIDE_PANELS
-Ocultar paneles automaticamente (experimental - *)
+Ocultar paneles automaticamente (*)
 PREFERENCES_SINGLETON
 Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos
 PREFERENCES_GENERAL_CHECK_FOR_UPDATES
 Verificar si existen nuevas versiones al iniciar
 PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT
-Mostrar errores de compilacion en Espanol (Ver Ayuda!) (*)
+Mostrar errores de compilación en Español (Ver Ayuda!) (*)
 PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON
 Crear/Actualizar icono de ZinjaI en el escritorio
 PREFERENCES_CREATE_ICONS
-Crear/Actualizar accesos directos en el escritorio/menu del sistema
+Crear/Actualizar accesos directos en el escritorio/menú del sistema
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME
-(*) tendra efecto la proxima vez que inicie ZinjaI
+(*) tendrá efecto la proxima vez que inicie ZinjaI
 PREFERENCES_DEBUG_ALLOW_EDITION
-Permitir editar los fuentes durante la depuracion
+Permitir editar los fuentes durante la depuración
 PREFERENCES_DEBUG_REORGANIZE_PANELS
-Reacomodar los paneles al iniciar/finalizar la depuracion
+Reacomodar los paneles al iniciar/finalizar la depuración
 PREFERENCES_DEBUG_INSPECTIONS_PANEL_ON_RIGHT
 Colocar el panel de inspecciones a la derecha (*)
 PREFERENCES_DEBUG_SHOW_THREAD_LIST
-Mostrar lista de hilos de ejecucion
+Mostrar lista de hilos de ejecución
 PREFERENCES_DEBUG_SHOW_DEBUGGER_LOG
 Mostrar el panel de mensajes del depurador
 PREFERENCES_DEBUG_ORGANIZE_TOOLBARS
-Reacomodar las barras de herramienta al iniciar/finalizar la depuracion
+Reacomodar las barras de herramienta al iniciar/finalizar la depuración
 PREFERENCES_DEBUG_AUTOUPDATE_BACKTRACE
 Actualizar automaticamente el panel de trazado inverso en cada paso
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
-Cargar toda la informacion de depuracion antes de comenzar
+Cargar toda la información de depuracion antes de comenzar
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
-Cargar informacion de depuracion de librerias externas
+Cargar información de depuracion de bibliotecas externas
 PREFERENCES_DEBUG_RECOMPILE_AUTOMATICALLY
 Recompilar automaticamente antes de depurar si es necesario
 PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION
-Salir del modo depuracion si el programa finaliza normalmente
+Salir del modo depuración si el programa finaliza normalmente
 PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER
 Siempre ejecutar en el depurador
 PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
-Mostrar ZinjaI cuando se interrumpe la ejecucion
+Mostrar ZinjaI cuando se interrumpe la ejecución
 PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS
 Utilizar colores en la tabla de inspecciones
 PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
@@ -2907,7 +2909,7 @@ Miscelanea
 PREFERENCES_TOOLBARS_FIND
 Busqueda
 PREFERENCES_TOOLBARS_RESET
-Reestablecer configuracion por defecto
+Reestablecer configuración por defecto
 PREFERENCES_TOOLBAR_ICON_SIZE
 Tamaño de icono
 PREFERENCES_SIMPLE_CREATE_EMPTY_FILE
@@ -2921,9 +2923,9 @@ Accion para Nuevo Archivo
 PREFERENCES_SIMPLE_TEMPLATES_FOLDER
 Carpeta de plantillas (necesita reiniciar)
 PREFERENCES_SIMPLE_EXTRA_COMPILER_ARGUMENTS
-Parametros extra para el compilador
+Parámetros adicionales para el compilador
 PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING
-Esperar una tecla luego de la ejecucion
+Esperar una tecla luego de la ejecución
 PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
 Siempre pedir argumentos al ejecutar
 PREFERENCES_SIMPLE_ADD_CPP_EXTENSION
@@ -2961,7 +2963,7 @@ Mostrar espacios y caracteres de fin de linea
 PREFERENCES_STYLE_SHOW_LINE_NUMBERS
 Mostrar numeros de linea
 PREFERENCES_STYLE_ENABLE_CODE_FOLDING
-Habilitar plegado de codigo
+Habilitar plegado de código
 PREFERENCES_STYLE_TAB_WIDTH
 Ancho del tabulado
 PREFERENCES_STYLE_SPACES_INTEAD_TABS
@@ -2977,11 +2979,11 @@ Ocultar barras de herramientas al pasar a pantalla completa
 PREFERENCES_STYLE_HIDE_PANELS_ON_FULLSCREEN
 Ocultar paneles al pasar a pantalla completa
 PREFERENCES_WRITING_INTELLIGENT_EDITING
-Edicion inteligente
+Edición inteligente
 PREFERENCES_WRITING_AUTOCLOSE_BRACKETS
-Cerrar llaves automaticamente al presionar Enter
+Cerrar llaves automáticamente al presionar Enter
 PREFERENCES_WRITING_AUTOCLOSE_STUFF
-Siempre cerrar llaves, parentesis y comillas al ingresar
+Siempre cerrar llaves, paréntesis y comillas al ingresar
 PREFERENCES_WRITING_INDENT_ON_PASTE
 Corregir indentado al pegar
 PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE
@@ -2991,13 +2993,13 @@ Utilizar tooltips para identificar tipos de variables
 PREFERENCES_WRITING_ENABLE_AUTOCOMPLETION
 Utilizar autocompletado mientras escribe
 PREFERENCES_WRITING_ENABLE_CALLTIPS
-Mostrar ayuda de llamadas a funciones y metodos
+Mostrar ayuda de llamadas a funciones y métodos
 PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS
 Simplificar mensajes de error del compilador
 PREFERENCES_WRITTING_AUTOCODES_FILE
-Archivo de definiciones de plantillas de auto-codigo
+Archivo de definiciones de plantillas de auto-código
 PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES
-Indices de autocompletado a utilizar
+Índices de autocompletado a utilizar
 PREFERENCES_SKIN_AVAILABLE_THEMES
 Temas disponibles
 PREFERENCES_SKIN_DEFAULT_THEME
@@ -3031,13 +3033,13 @@ Comando del visor de imagenes
 PREFERENCES_COMMANDS_BROWSER
 Comando del navegador Web
 PREFERENCES_COMMANDS_DOXYGEN
-Ubicacion del ejecutable de Doxygen
+Ubicación del ejecutable de Doxygen
 PREFERENCES_COMMANDS_WXFORMBUILDER
-Ubicacion del ejecutable de wxFormBuilder
+Ubicación del ejecutable de wxFormBuilder
 PREFERENCES_COMMANDS_VALGRIND
-Ubicacion del ejecutable de Valgrind
+Ubicación del ejecutable de Valgrind
 PREFERENCES_COMMANDS_CPPCHECK
-Ubicacion del ejecutable de CppCheck
+Ubicación del ejecutable de CppCheck
 PREFERENCES_OPEN_FILE
 &Buscar archivo...
 PREFERENCES_EDIT_FILE
