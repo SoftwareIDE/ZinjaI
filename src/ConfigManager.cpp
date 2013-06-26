@@ -266,6 +266,7 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("skin_dir",Files.skin_dir);
 				else CFG_GENERIC_READ_DN("temp_dir",Files.temp_dir);
 				else CFG_GENERIC_READ_DN("img_browser",Files.img_browser);
+				else CFG_GENERIC_READ_DN("xdot_command",Files.xdot_command);
 				else CFG_GENERIC_READ_DN("graphviz_dir",Files.graphviz_dir);
 				else CFG_GENERIC_READ_DN("browser_command",Files.browser_command);
 				else CFG_GENERIC_READ_DN("cppcheck_command",Files.cppcheck_command);
@@ -678,6 +679,8 @@ bool ConfigManager::Save(){
 
 	fil.AddLine(_T("[Files]"));
 	CFG_GENERIC_WRITE_DN("temp_dir",Files.temp_dir);
+	CFG_GENERIC_WRITE_DN("img_browser",Files.img_browser);
+	CFG_GENERIC_WRITE_DN("xdot_command",Files.xdot_command);
 	CFG_GENERIC_WRITE_DN("skin_dir",Files.skin_dir);
 //	CFG_GENERIC_WRITE_DN("parser_command",Files.parser_command);
 	CFG_GENERIC_WRITE_DN("debugger_command",Files.debugger_command);

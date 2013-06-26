@@ -109,8 +109,9 @@ void mxDrawClasses::OnCancelButton(wxCommandEvent &evt) {
 }
 
 void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
+	// obtener la jerarquia de clases
 	bool one_class = wich_class->GetSelection()!=int(wich_class->GetCount())-1;
-	wxString the_one(_T(""));
+	wxString the_one; // nombre de la clase o del archivo sobre el cual generar
 	if (wich_file->GetSelection()!=int(wich_file->GetCount())-1) the_one = wich_file->GetValue();
 	if (wich_class->GetSelection()!=int(wich_class->GetCount())-1) the_one = wich_class->GetValue();
 	bool inside = what_inside->GetSelection()>0, only_public = what_inside->GetSelection()<3;
@@ -120,49 +121,21 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 		mxMessageDialog(this,LANG(DRAWCLASSES_NO_COINCIDENCE_FOR_CLASS,"No se encontraron clases para las condiciones seleccionadas."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return;
 	}
-	
-	
-//#if defined(_WIN32) || defined(__WIN32__)	
-//		wxString command(DIR_PLUS_FILE(DIR_PLUS_FILE(config->Files.graphviz_dir,_T("bin")),wich_command->GetValue()+_T(".exe")));
-//#else
-//		wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,wich_command->GetValue()));
-//#endif
-#if defined(__WIN32__)	
-	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,_T("draw.exe")));
-#else
-	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,_T("draw.bin")));
-#endif
-	command<<_T(" ")<<wich_command->GetValue();
+	// generar grafo con dot/fdp y guardar/mostrar
+	wxString gout=DIR_PLUS_FILE(config->temp_dir,"graph.dot"), output; // graph_viz input (gout) y archivo de salida para exportar el resultado (output, vacio para solo visualizar)
 	if (where_store->GetSelection()) {
 		wxString ext = where_store->GetValue().AfterLast(' ');
 		wxFileDialog dlg (this, LANG(DRAW_CLASSES_SAVE,"Guardar grafo"), project?DIR_PLUS_FILE(project->path,project->last_dir):config->Files.last_dir, _T(" "), where_store->GetValue().AfterFirst(' ').AfterFirst(' ')+_T("|*.")+ext, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		if (dlg.ShowModal() == wxID_OK) {
-			command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -T")<<ext<<_T(" -o \"")<<dlg.GetPath()<<_T("\"");
-			mxExecute(command,wxEXEC_SYNC);
-		}
-	} else {
-		
-		mxOSD osd(main_window);
-		osd.ShowText(LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
-		
-//#if defined(__x86_64__) || defined(__WIN32__)
-		command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -Tpng -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.png"))<<_T("\"");
-//#else
-//			command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -Tbmp -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.bmp"))<<_T("\"");
-//#endif
-		mxExecute(command,wxEXEC_SYNC);
-		wxString command2 (config->Files.img_browser);
-//#if defined(__x86_64__) || defined(__WIN32__)
-		command2<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.png"))<<_T("\" \"")<<LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases")<<_T("\"");
-//#else
-//			command2<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.bmp"))<<_T("\" \"")<<LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases")<<_T("\"");
-//#endif
-		wxExecute(command2);
-//			new mxPictureWindow(main_window,DIR_PLUS_FILE(config->temp_dir,_T("graph.png")));
-		
+		if (dlg.ShowModal() != wxID_OK) return;
+		output=dlg.GetPath();
 	}
-//		Close();
+	int retval = utils->ProcessGraph(gout,false,"",LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases"));
+	// todo: mostrar mensaje de error si falla retval
 }
+
+/**
+* Genera el grafo de jerarquia de clases para el fuente file y lo guarda en .zinjai/graph.dot
+**/
 
 int mxDrawClasses::GenerateGraph(wxString file, bool one_class, bool related, bool indirect, bool inside, bool only_public, bool only_name) {
 	

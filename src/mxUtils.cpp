@@ -1243,3 +1243,46 @@ void mxUtils::SetArgument (wxString &full, const wxString &arg, bool add) {
 	}
 }
 
+/**
+* @param graph_file  file containing unprocessed graph description (input for dot or fpd)
+* @param use_fdp     if true then process graph_file with fdp, else process with dot
+* @param ouput       if empty, the result will be displayed with xdot or an image viewer, 
+*                    if not empty the result will be saved in ouput (a file path) and 
+*                    format will be guessed from its extension
+* @param title       if the file is displayed in an external viewer and the viewer allows
+*                    it, this will be the viewer window's caption
+*
+* @retval 0 graph was saved/displayed successfully
+* @retval 1 output does't have an extension (in order to find out output format)
+* @retval 2 graphviz error
+* @retval 3 xdot/viewer error
+**/
+int mxUtils::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxString title) {
+	bool show=!output.Len();
+	if (show) {
+		if (config->Files.xdot_command.Len())
+			output=DIR_PLUS_FILE(config->temp_dir,"temp.xdot");
+		else
+			output=DIR_PLUS_FILE(config->temp_dir,"temp.png");
+	}
+	wxString format=output.AfterLast('.').Lower(); if (!format.Len()) return 1;
+#if defined(__WIN32__)	
+	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,"draw.exe"));
+#else
+	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,"draw.bin"));
+#endif
+	command<<(use_fdp?" fdp ":" dot ");
+	command<<Quotize(graph_file)<<" -T"<<format<<" -o "<<Quotize(output);
+	if (mxExecute(command,wxEXEC_SYNC)) return 1;
+	if (show) {
+		wxString command2;
+		if (config->Files.xdot_command.Len()) {
+			command2<<config->Files.xdot_command<<" -n "<<Quotize(output);
+		} else {
+			command2<<config->Files.img_browser<<" "<<Quotize(output)<<" \""<<title<<"\"";
+		}
+		wxExecute(command2);
+	}
+	return 0;
+}
+

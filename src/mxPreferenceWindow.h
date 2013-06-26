@@ -72,6 +72,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *files_explorer_command;
 	wxTextCtrl *files_terminal_command;
 	wxTextCtrl *files_img_browser_command;
+	wxTextCtrl *files_xdot_command;
 	wxTextCtrl *files_debugger_command;
 	wxTextCtrl *files_project_folder;
 	wxTextCtrl *files_wxfb_command;
@@ -171,6 +172,7 @@ public:
 	void OnMaxJobsButton(wxCommandEvent &event);
 	void OnGdbButton(wxCommandEvent &event);
 	void OnImgBrowserButton(wxCommandEvent &event);
+	void OnXdotButton(wxCommandEvent &event);
 	void OnBrowserButton(wxCommandEvent &event);
 	void OnValgrindButton(wxCommandEvent &event);
 	void OnCppCheckButton(wxCommandEvent &event);

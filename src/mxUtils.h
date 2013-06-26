@@ -250,6 +250,9 @@ public:
 	bool IsArgumentPresent(const wxString &full, const wxString &arg);
 	/// adds/removes the argument "arg" is prensent to/from the arguments list "full" (modifies full)
 	void SetArgument(wxString &full, const wxString &arg, bool add);
+	
+	/// takes a graph description, process it with graphviz and shows results (output=="") or save it to an image file(output)
+	int ProcessGraph(wxString graph_file, bool use_fdp, wxString output, wxString title="");
 };
 
 extern mxUtils *utils;

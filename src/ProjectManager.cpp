@@ -2866,7 +2866,8 @@ void ProjectManager::DrawGraph() {
 	wxArrayString header_dirs_array;
 	utils->Split(active_configuration->headers_dirs,header_dirs_array,true,false);
 
-	wxTextFile fil(DIR_PLUS_FILE(config->temp_dir,_T("graph.dot")));
+	wxString graph_file=DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"));
+	wxTextFile fil(graph_file);
 	
 	int c=0;
 	file_item *fi = first_source;
@@ -2974,27 +2975,7 @@ void ProjectManager::DrawGraph() {
 	
 	delete [] dgi;
 	
-#if defined(__WIN32__)	
-	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,_T("draw.exe")));
-#else
-	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,_T("draw.bin")));
-#endif
-	command<<_T(" fdp");
-//#if defined(__x86_64__) || defined(__WIN32__)
-	command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -Tpng -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.png"))<<_T("\"");
-//#else
-//	command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.dot"))<<_T("\" -Tbmp -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.bmp"))<<_T("\"");
-//#endif
-	mxExecute(command,wxEXEC_SYNC);
-	wxString command2 (config->Files.img_browser);
-//#if defined(__x86_64__) || defined(__WIN32__)
-	command2<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.png"))<<_T("\" \"")<<LANG(PROJMNGR_PROJECT_GRAPH_TITLE,"Grafo de Proyecto")<<_T("\"");
-//#else
-//	command2<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("graph.bmp"))<<_T("\" \"")<<LANG(PROJMNGR_PROJECT_GRAPH_TITLE,"Grafo de Proyecto")<<_T("\"");
-//#endif
-	
-	wxExecute(command2);
-//			new mxPictureWindow(main_window,DIR_PLUS_FILE(config->temp_dir,_T("graph.png")));
+	utils->ProcessGraph(graph_file,true,"",LANG(PROJMNGR_PROJECT_GRAPH_TITLE,"Grafo de Proyecto"));
 
 }
 

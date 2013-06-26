@@ -579,17 +579,60 @@ void mxMainWindow::OnToolsGprofFdp (wxCommandEvent &event) {
 	config->Init.graphviz_dot=false;	
 }
 
-void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
+/**
+* Verifica que exita información de profiling para el fuente o proyecto actual,
+* y ejecuta gprof para extraerla un archivo de texto. Retorna el path del archivo
+* generado. Si hay error retorna una cadena vacia.
+**/
+wxString mxMainWindow::OnToolsGprofShowListAux(bool include_command) {
+	if (!project && notebook_sources->GetPageCount()==0) return "";
 	
-	if (!project && notebook_sources->GetPageCount()==0) return;
-	
-	static double edge_tres=0.1,node_tres=0.1;
+	// ver si hay informacion de profiling
 	wxString gmon = project ? (DIR_PLUS_FILE(project->active_configuration->working_folder.Len()?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):project->path,_T("gmon.out"))) : (DIR_PLUS_FILE(CURRENT_SOURCE->working_folder.GetFullPath(),_T("gmon.out")));
 	if (!wxFile::Exists(gmon)) {
 		mxMessageDialog(this,LANG(MAINW_GPROF_OUTPUT_MISSING,"No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		return;
+		return "";
 	}
 	
+	// ejecutar gprof...
+	status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_ANALIZING,"Analizando informacion de perfilado..."));
+	mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
+	wxString command("gprof -b ");
+	if (project)
+		command<<utils->Quotize(project->GetExePath());
+	else IF_THERE_IS_SOURCE
+		command<<utils->Quotize(CURRENT_SOURCE->GetBinaryFileName().GetFullPath());
+	command<<" "<<utils->Quotize(gmon);
+	// ...y capturar salida en un archivo de texto
+	wxString gout = DIR_PLUS_FILE(config->temp_dir,"gprof.txt");
+	wxRemoveFile(gout); // eliminar resultados previos para evitar problemas
+	wxFFile fgout(gout,"w+");
+	wxArrayString output;
+	if (include_command) fgout.Write(wxString("> ")<<command+"\n\n");
+	int retval=mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	if (retval||!output.GetCount()) { // si hay algun error al ejecutar gprof
+		osd.Hide(); 
+		mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))
+							 +(retval?" (error 1).":" (error 2)."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); 
+		return "";
+	}
+	for (unsigned int i=0;i<output.GetCount();i++)
+		fgout.Write(output[i]+"\n");
+	fgout.Close();
+	
+	return gout;
+}
+
+void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
+	
+	// procesar binario de gprof para obtener la salida como texto
+	wxString gout=OnToolsGprofShowListAux(); 
+	if (!gout.Len()) return;
+	
+	mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
+	
+	// pedir al usuario los limites para el grafo (arcos y nodos con poco peso se descartan)
+	static double edge_tres=0.1,node_tres=0.1;
 	wxString edgt = mxGetTextFromUser(LANG(MAINW_GPROF_EDGE_THERSHOLD,"Eliminar arcos bajo este umbral (%):"),LANG(MAINW_GPROF_ASK_TITLE,"Perfil de Ejecucion"),wxString()<<edge_tres,this);
 	if (!edgt.Len()) return;
 	edgt.Replace(",",".");
@@ -597,110 +640,34 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	if (!nodt.Len()) return;
 	nodt.Replace(",",".");
 	
-	status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_ANALIZING,"Analizando informacion de perfilado..."));
-	
-	mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
-	
-	wxString command(_T("gprof -b \""));
-	if (project) {
-		command<<project->GetExePath()<<_T("\" \"")<<gmon<<_T("\"");
-	} else IF_THERE_IS_SOURCE
-		command<<CURRENT_SOURCE->GetBinaryFileName().GetFullPath()<<_T("\" \"")<<gmon<<_T("\"");
-	
-	wxString gout = DIR_PLUS_FILE(config->temp_dir,_T("gprof.txt"));
-	wxRemoveFile(gout);
-	wxFFile fgout(gout,_T("w+"));
-	wxArrayString output;
-	
-	int retval=mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
-	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 1).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
-	
-	for (unsigned int i=0;i<output.GetCount();i++)
-		fgout.Write(output[i]+_T("\n"));
-	fgout.Close();
-	
+	// procesar salida con gprof2dot para obtener el grafo
 	status_bar->SetStatusText(LANG(MAINW_GPROF_DRAWING,"Dibujando grafo..."));
-	
-	wxString pout = DIR_PLUS_FILE(config->temp_dir,_T("gprof.dot"));
+	wxString pout = DIR_PLUS_FILE(config->temp_dir,"gprof.dot");
 #if defined(__WIN32__)	
-	command=_T("graphviz/gprof2dot/gprof2dot.exe \"");
+	wxString command="graphviz/gprof2dot/gprof2dot.exe ";
 #else
-	command=_T("python graphviz/gprof2dot/gprof2dot.py \"");
+	wxString command="python graphviz/gprof2dot/gprof2dot.py ";
 #endif
-	command<<gout;
 	nodt.ToDouble(&edge_tres); edgt.ToDouble(&node_tres);
-	command<<_T("\" -e ")<<edge_tres<<_T(" -n ")<<node_tres<<_T(" -o \"");
-	command<<pout;
-	command<<_T("\"");
-	
-	retval=mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
+	command<<utils->Quotize(gout)<<" -e "<<edge_tres<<" -n "<<node_tres<<" -o "<<utils->Quotize(pout);
+	int retval=mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
 	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 2).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
 	
+	// mostrar el grafo
 	status_bar->SetStatusText(LANG(MAINW_GPROF_SHOWING,"Mostrando resultados..."));
-	
-#if defined(__WIN32__)	
-	command=DIR_PLUS_FILE(config->Files.graphviz_dir,_T("draw.exe"));
-#else
-	command=DIR_PLUS_FILE(config->Files.graphviz_dir,_T("draw.bin"));
-#endif
-	
-	if (config->Init.graphviz_dot)
-		command<<_T(" dot");
-	else
-		command<<_T(" fdp");
-	//#if defined(__x86_64__) || defined(__WIN32__)
-	command<<_T(" \"")<<pout<<_T("\" -Tpng -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.png"))<<_T("\"");
-	//#else
-//	command<<_T(" \"")<<pout<<_T("\" -Tbmp -o \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.bmp"))<<_T("\"");
-	//#endif
-	
-	retval= mxExecute(command,wxEXEC_SYNC);
+	retval = utils->ProcessGraph(pout,!config->Init.graphviz_dot,"",LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling"));
 	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 3).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
-	
-	command = config->Files.img_browser;
-	//#if defined(__x86_64__) || defined(__WIN32__)
-	command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.png"))<<_T("\" \"")<<LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling")<<_T("\"");
-	//#else
-//	command<<_T(" \"")<<DIR_PLUS_FILE(config->temp_dir,_T("gprof.bmp"))<<_T("\" \"")<<LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling")<<_T("\"");
-	//#endif
-	
-	wxExecute(command);
-	
 	status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	
 }
 
 void mxMainWindow::OnToolsGprofList (wxCommandEvent &event) {
 	
-	if (!project && notebook_sources->GetPageCount()==0) return;
+	// procesar binario de gprof para obtener la salida como texto
+	wxString gout=OnToolsGprofShowListAux(); 
+	if (!gout.Len()) return;
 	
-	wxString gmon = project ? (DIR_PLUS_FILE(project->active_configuration->working_folder.Len()?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):project->path,_T("gmon.out"))) : (DIR_PLUS_FILE(CURRENT_SOURCE->working_folder.GetFullPath(),_T("gmon.out")));
-	if (!wxFile::Exists(gmon)) {
-		mxMessageDialog(this,LANG(MAINW_GPROF_OUTPUT_MISSING,"No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		return;
-	}
-	
-	status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_ANALIZING,"Analizando informacion de perfilado..."));
-	
-	wxString command(_T("gprof -b \""));
-	if (project) {
-		command<<project->GetExePath()<<_T("\" \"")<<gmon<<_T("\"");
-	} else IF_THERE_IS_SOURCE
-		command<<CURRENT_SOURCE->GetBinaryFileName().GetFullPath()<<_T("\" \"")<<gmon<<_T("\"");
-	
-	wxString gout = DIR_PLUS_FILE(config->temp_dir,_T("gprof.txt"));
-	wxRemoveFile(gout);
-	wxFFile fgout(gout,_T("w+"));
-	wxArrayString output;
-	
-	fgout.Write(wxString(_T("> "))<<command+_T("\n\n"));
-	
-	int retval=mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
-	if (retval) { mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 1).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
-	for (unsigned int i=0;i<output.GetCount();i++)
-		fgout.Write(output[i]+_T("\n"));
-	fgout.Close();
-	
+	// analizar la salida del archivo de texto y mostrar en nueva ventana
 	new mxGprofOutput(this,gout);
 //	mxSource *src=OpenFile(gout,false);
 //	if (src && src!=EXTERNAL_SOURCE) src->MakeUntitled("<profiling>");

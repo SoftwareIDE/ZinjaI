@@ -381,6 +381,7 @@ struct cfgFiles {
 	wxString code_helper;
 	wxString project_folder;
 	wxString graphviz_dir;
+	wxString xdot_command; ///< nice python app for displaying graphs
 	wxString img_browser;
 	wxString last_source[CM_HISTORY_MAX_LEN];
 	wxString last_project[CM_HISTORY_MAX_LEN];
