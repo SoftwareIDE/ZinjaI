@@ -1,6 +1,10 @@
 <HTML>
 <HEAD><TITLE>ZinjaI - Registro de Cambios</TITLE></HEAD>
 <BODY><UL>
+<H3>Registro de Cambios</H3>
+
+<I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
+<I>Nota2 : Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
 </UL><BR><B>Release 2013????</B><BR><UL>
 	<LI>New: Se puede utilizar xdot para visualizar los grafos que generan las herramientas externas (se debe descargar por separado y configurar en las preferencias).</LI>
@@ -31,7 +35,6 @@
 
 	
 </UL><BR><B>Release 20121230</B><BR><UL>
-
 	<LI>Fix: Corregida la aplicación de autocódigos con los operadores especiales # y ##.</LI>
 	<LI>Fix: Corregido el tamaño del cuadro de texto para agregar/editar items de una lista.</LI>
 	<LI>Fix: Ahora se coloca correctamente el scope de los métodos virtuales al crear una nueva clase dentro de un proyecto con el asistente.</LI>
@@ -41,8 +44,9 @@
 	<LI>Imp: Agregada la traducción al inglés de la ventana de ayuda.</LI>
 	<LI>Imp: Los errores de compilación que comienzan con "fordward declaration of..." ahora son subítems del error que los precede.</LI>
 	<LI>Imp: Agregados enlaces a post relevantes del blog cucarachasracing.blogspot.com.ar en la ayuda.</LI>
-	<LI>Fix: Corregido el comportamiento de links con anclas en la ventana de ayuda.</LI></UL><BR><B>Release 20121127</B><BR><UL>
-
+	<LI>Fix: Corregido el comportamiento de links con anclas en la ventana de ayuda.</LI>
+	
+</UL><BR><B>Release 20121127</B><BR><UL>
 	<LI>New: Agregada una opción en el menú Herramientas para crear una nueva plantilla a partir de un programa o proyecto abierto.</LI>
 	<LI>Fix: Corregido un error en el autocompletado de punteros pasados como argumentos por referencias a un método o función.</LI>
 	<LI>Imp: Al crear una clase en un proyecto con el asistente de Nuevo Archivo, si esta hereda de clases que presentan métodos virtuales se da al usuario la posibilidad de seleccionar cuales implementar en la nueva clase.</LI>
@@ -78,8 +82,9 @@
 	<LI>Imp: Ahora se advierte cuando un punto de interrupción no pudo ser colocado por gdb</LI>
 	<LI>Fix: Ahora se muestran completas las inspecciones largas en las ventanas fuera del panel de inspecciones</LI>
 	<LI>Imp: Al abrir el cuadro de dialogo "Reemplazar", si el ámbito (valor del combo "Bucar en:") preseleccionado no es válido se vuelve al ambito del archivo actual</LI>
-	<LI>Imp: Ahora se reconocen las plantillas de proyectos y los indices de autocompletado del directorio de configuración del usuario ($HOME/.zinjai/autocomp y $HOME/.zinjai/templates) y se les da preferencia por sobre las del sistema ($ZINJAI_DIR/autocomp y $ZINJAI_DIR/templates) en caso de conflicto</LI></UL><BR><B>Release 20120413</B><BR><UL>
-
+	<LI>Imp: Ahora se reconocen las plantillas de proyectos y los indices de autocompletado del directorio de configuración del usuario ($HOME/.zinjai/autocomp y $HOME/.zinjai/templates) y se les da preferencia por sobre las del sistema ($ZINJAI_DIR/autocomp y $ZINJAI_DIR/templates) en caso de conflicto</LI>
+	
+</UL><BR><B>Release 20120413</B><BR><UL>
 	<LI>Imp: Actualizado wxWidgets en la versión para Windows a su versión 2.8.12</LI>
 	<LI>Imp: Ahora se puede colocar un punto de interrupción sin pausar antes la depuración (en realidad ZinjaI sí la pausa, coloca el punto, y la continúa)</LI>
 	<LI>Fix: Ahora se marca correctamente el punto donde se detiene la depuración cuando el nombre de archivo contiene caracteres especiales (acentos, ñs, etc)</LI>
@@ -104,7 +109,6 @@
 	<LI>Fix: Se corrigieron algunos errores de estilo y advertencias que detectaba cpp-check</LI>
 
 </UL><BR><B>Release 20120213</B><BR><UL>
-
 	<LI>Fix: Corregido el problema por el cual no se actualizaba solo el código generado por wxFormBuilder antes de la primer compilación</LI>
 	<LI>Fix: Se corrigió el estado en que quedan las marcas de dos fuentes abiertos y comparados luego utilizar "Descartar cambios" del menú "Comparar de Archivos" para eliminar una cambio en particular</LI>
 	<LI>Imp: Se agregaron las opciones forzadas -static-libgcc y -static-libstd++ al comando de enlazado en Windows para mantener un comportamiento similar a versiones anteriores del compilador (no depender de sus dlls)</LI>
@@ -113,7 +117,10 @@
 	<LI>Imp: Agregados atajos de teclado e iconos para lo elementos del submenu "Preprocesador" del menu "Herramientas"</LI>
 	<LI>Fix: Corregido el ajuste del scroll cuando se resalta una linea (por ejemplo, al detenerse en depuración) y hay lineas colapsadas y paneles auto-ocultables</LI>
 	<LI>Fix: Corregido el tipo de datos que guarda el parser para autocompletar reemplazando typedefs y defines</LI>
-	<LI>Fix: El atajo para abrir el .h homónimo desde un .cpp o el .cpp desde el .h ahora reconoce también otras extensiones (c, h, cpp, hpp, hxx, cxx, h++, c++)</LI></UL><BR><B>Release 20120206</B><BR><UL>	<LI>Imp: Ahora se muestra un mensaje de error cuando se falla al intentar obtener un fuente compartido por otro ZinjaI</LI>
+	<LI>Fix: El atajo para abrir el .h homónimo desde un .cpp o el .cpp desde el .h ahora reconoce también otras extensiones (c, h, cpp, hpp, hxx, cxx, h++, c++)</LI>
+	
+</UL><BR><B>Release 20120206</B><BR><UL>
+	<LI>Imp: Ahora se muestra un mensaje de error cuando se falla al intentar obtener un fuente compartido por otro ZinjaI</LI>
 	<LI>Fix: Se agregaron traducciones para todos los cuadros diálogos relacionados a archivos compartidos a travéz de ZinjaI</LI>
 	<LI>New: Se agregó una item para ver la lista de fuentes compartidos actualmente en el submenú "Compartir Archivos" del menú "Herramientas"</LI>
 	<LI>Imp: Al preparar la ejecución de un proyecto se agregan en las variables LD_LIBRARY_PATH (GNU/Linux) o PATH (Windows) los directorios de los binarios de las bibliotecas dinámicas que este genere</LI>
@@ -166,7 +173,10 @@
 	<LI>Imp: Se agregó un indicador de progreso en la barra de estado para cuando se tarda en abrir un proyecto</LI>
 	<LI>Imp: Se agregó lxterminal entre las terminales conocidas en GNU/Linux</LI>
 	<LI>Imp: Se agregó un mensaje emergente por 3 segundos que avisa como salir del modo pantalla completa al entrar al mismo</LI>
-	<LI>Fix: Ahora se escriben correctamente las tablas de inspecciones guardadas en proyectos</LI></UL><BR><B>Release 20111022</B><BR><UL>	<LI>Fix: Corregida la posición en que inserta los #includes automáticos cuando hay directivas de preprocesador entre el código</LI>
+	<LI>Fix: Ahora se escriben correctamente las tablas de inspecciones guardadas en proyectos</LI>
+	
+</UL><BR><B>Release 20111022</B><BR><UL>
+	<LI>Fix: Corregida la posición en que inserta los #includes automáticos cuando hay directivas de preprocesador entre el código</LI>
 	<LI>Fix: Corregido el error por el cual al buscar sin distinguir mayúsculas y minúsculas en un proyecto siempre se distinguen en los archivos abiertos</LI>
 	<LI>Fix: Ahora al insertar #includes automáticamente lo hace después de todas las directivas de preprocesador de la cabecera</LI>
 	<LI>Imp: Ahora cuando se quiere abrir un nombre de archivo seleccionado en el código, si es parte de una directiva de procesador se busca en el directorio del fuente, sino se busca en el directorio de trabajo para la ejecución</LI>
@@ -180,7 +190,10 @@
 	<LI>Fix: Corregido un bug en el reemplazo de argumentos de autocódigos cuando el parametro actual es más largo que el formal y éste aparece más de una vez</LI>
 	<LI>Fix: Corregido el indentado automático al reemplazar autocódigos de una linea</LI>
 	<LI>Imp: Si al compilar en GNU/Linux el ejecutable no tiene permisos de ejecución (por ejemplo, cuando se guarda en una unidad fat o ntfs montada sin ese permiso) se agrega un Error a la salida del compilador</LI>
-	<LI>Imp: En un proyecto en Windows, si no encuentra el archivo manifest.xml o el archivo de icono, compila igual como si no estuvieran definidos y agrega una advertencia a la salida del compilador</LI></UL><BR><B>Release 20111009</B><BR><UL>	<LI>Fix: Corregido el problema del color de los números de linea al habilitar o deshabilitar el coloreado de sintaxis desde el menú ver</LI>
+	<LI>Imp: En un proyecto en Windows, si no encuentra el archivo manifest.xml o el archivo de icono, compila igual como si no estuvieran definidos y agrega una advertencia a la salida del compilador</LI>
+	
+</UL><BR><B>Release 20111009</B><BR><UL>
+	<LI>Fix: Corregido el problema del color de los números de linea al habilitar o deshabilitar el coloreado de sintaxis desde el menú ver</LI>
 	<LI>Imp: Ahora el comando Limpiar del menú Ejecutar se puede utilizar tambien con programas simples</LI>
 	<LI>Imp: Agregadas las extensiones .cc y .hh a la lista de extensiones para fuentes y cabeceras c/c++</LI>
 	<LI>Imp: Ahora ZinjaI puede agregar un icono al menu del sistema ademas del icono en el escritorio en GNU/Linux (hay un botón en Archivo->Preferencias->General)</LI>
@@ -196,7 +209,8 @@
 	<LI>Fix: Corregido los problemas al utilizar como directorio temporal un path relativo (a la carpeta de ZinjaI)</LI>
 	<LI>Fix: Ya no se muestra el campo para configurar la ruta al ejecutable de valgrind en Windows</LI>
 	<LI>Fix: Corregida la ejecución de comandos que involucran al navegador a través de la variable ${BROWSER} en las herramientas personalizadas cuando el campo del comando para el navegador en las preferencias esta vacio</LI>
-	<LI>Imp: Agreada una variable para referenciar al directorio de instalación de ZinjaI en las herramientas personalizables</LI>	<LI>Fix: Corregido los problemas al utilizar como directorio temporal un path relativo (a la carpeta de ZinjaI)</LI>
+	<LI>Imp: Agreada una variable para referenciar al directorio de instalación de ZinjaI en las herramientas personalizables</LI>
+	<LI>Fix: Corregido los problemas al utilizar como directorio temporal un path relativo (a la carpeta de ZinjaI)</LI>
 	<LI>Fix: Ya no se muestra el campo para configurar la ruta al ejecutable de valgrind en Windows</LI>
 	<LI>Fix: Corregida la ejecución de comandos que involucran al navegador a través de la variable ${BROWSER} en las herramientas personalizadas cuando el campo del comando para el navegador en las preferencias esta vacio</LI>
 	<LI>Imp: Agreada una variable para referenciar al directorio de instalación de ZinjaI en las herramientas personalizables</LI>
@@ -230,7 +244,10 @@
 	<LI>Imp: Las definiciones de auto-códigos se recargan automáticamente al guardar el archivo</LI>
 	<LI>Imp: Ahora se puede definir un archivo de auto-códigos específico para un proyecto, desde el cuadro de "Configuración del Proyecto" (desde el menú "Archivo")</LI>
 	<LI>New: Se implementó el uso de auto-códigos (son reemplazos automáticos de código mientras se escribe, en base a plantillas, ver en la ayuda (Caracterí­sticas Especiales->Ayudas en la escritura) cómo se utilizan)</LI>
-	<LI>New: Agregada una opción en la pestaña de "Asistencias" del cuadro de "Preferencias" para que ZinjaI cierre automáticamente todas las llaves, comillas, corchetes y paréntesis que se ingresen</LI></UL><BR><B>Release 20110802</B><BR><UL>	<LI>Agregados dos comandos al submenu "Comparar Archivos" y a la barra de herramientas correspondiente para ir a la anterior/siguiente diferencia desde el punto donde se encuentra el cursor (además, se puede invocar utilizando la rueda del mouse sobre la barra del lateral izquierdo)</LI>
+	<LI>New: Agregada una opción en la pestaña de "Asistencias" del cuadro de "Preferencias" para que ZinjaI cierre automáticamente todas las llaves, comillas, corchetes y paréntesis que se ingresen</LI>
+	
+</UL><BR><B>Release 20110802</B><BR><UL>
+	<LI>Agregados dos comandos al submenu "Comparar Archivos" y a la barra de herramientas correspondiente para ir a la anterior/siguiente diferencia desde el punto donde se encuentra el cursor (además, se puede invocar utilizando la rueda del mouse sobre la barra del lateral izquierdo)</LI>
 	<LI>Se oscureció levemente el color del texto de los calltips</LI>
 	<LI>Agregado un atajo para ver en qué función/clase se encuentra el cursor (<I>Ctrl+Alt+Epacio</I>)</LI>
 	<LI>Eliminado el mensaje que indica que no se encuentra el archivo al abrir un archivo de wxFormBuilder desde el arbol de proyecto</LI>
@@ -248,7 +265,10 @@
 	<LI>Agregado un mensaje alusivo para cuando el ejecutable de wxFormBuilder no termina correctamente o no se encuentra</LI>
 	<LI>Corregido el problema por el que indicaba que la actualización automática de proyectos wxFormBuilder debía desactivarse al crear un nuevo proyecto con la plantilla para este tipo de proyectos</LI>
 	<LI>Corregido el funcionamiento del item "Regenerar y Actualizar Automaticamente" del menú "Diseñar Interfases"</LI>
-	<LI>Corregida la selección por defecto luego de una busqueda en el cuadro para agregar multiples archivos a un proyecto</LI></UL><BR><B>Release 20110718</B><BR><UL>	<LI>Corregida la compilación en paralelo cuando hay pasos adicionales antes de la compilación de los fuentes de un proyecto</LI>
+	<LI>Corregida la selección por defecto luego de una busqueda en el cuadro para agregar multiples archivos a un proyecto</LI>
+	
+</UL><BR><B>Release 20110718</B><BR><UL>
+	<LI>Corregida la compilación en paralelo cuando hay pasos adicionales antes de la compilación de los fuentes de un proyecto</LI>
 	<LI>Corregido el comportamiento de los cursores en el dialogo para abrir archivos/proyectos recientes</LI>
 	<LI>La cantidad por defecto de procesos en paralelo al compilar se toma del número de núcleos de la PC</LI>
 	<LI>La pantalla de splash muestra tantos pinguinos como núcleos tenga la PC de forma similar al arranque de muchos GNU/Linux</LI>
@@ -266,7 +286,10 @@
 	<LI>Corregido el problema de los breakpoints cuando hay multiples vistas de un mismo fuente</LI>
 	<LI>El cuadro de <I>Ir a archivo...</I> cuando se invoca con un proyecto abierto muestra ahora rutas relativas a al directorio del proyecto</LI>
 	<LI>Agregado un atajo de teclado adicional para accedear al cuadro de <I>Opciones de Compilación y Ejecución</I>, <I>Ctrl+Alt+P</I>, porque el atajo del menú en muchos GNU/Linux se utiliza para minimizar la ventana</LI>
-	<LI>Ya no se pierde el foco del diseñador wxFormBuilder al segundo de lanzarlo cuando se abre desde el arbol de proyecto</LI></UL><BR><B>Release 20110618</B><BR><UL>	<LI>Ahora se puede acceder al cuadro de diálogo <I>Ir a Clase/Metodo/Funcion</I> desde el menú contextual del arbol de simbolos</LI>
+	<LI>Ya no se pierde el foco del diseñador wxFormBuilder al segundo de lanzarlo cuando se abre desde el arbol de proyecto</LI>
+	
+</UL><BR><B>Release 20110618</B><BR><UL>
+	<LI>Ahora se puede acceder al cuadro de diálogo <I>Ir a Clase/Metodo/Funcion</I> desde el menú contextual del arbol de simbolos</LI>
 	<LI>Ahora se puede acceder al cuadro de diálogo <I>Ir a Archivo</I> desde el menú contextual del arbol de simbolos</LI>
 	<LI>Corregida la violación de segmento al cerrar una vista duplicada fuera de un proyecto</LI>
 	<LI>Al duplicar una pestaña de código en la nueva pestaña ahora el cursor se coloca en el mismo punto que en la original</LI>
@@ -293,7 +316,11 @@
 	<LI>Corregido el problema por el cual no se podía poner un punto de interrupción después de utilizar <I>Continuar desde aqui</I> en la depuración</LI>
 	<LI>Corregido el problema del scroll horizontal al abrir un proyecto</LI>
 	<LI>La marca de linea actual ya no queda accidentalmente en más de una línea</LI>
-	<LI>Agregada la posibilidad de duplicar una pestaña para tener dos vistas de un mismo código (desde el menú <I>Ver</I>)</LI></UL><BR><B>Release 20110508</B><BR><UL>	<LI>Implementados parches varios para solucionar problemas de foco en Windows (despues de algunos eventos el foco no volvía al área de código)</LI>
+	<LI>Agregada la posibilidad de duplicar una pestaña para tener dos vistas de un mismo código (desde el menú <I>Ver</I>)</LI>
+	
+</UL><BR><B>Release 20110508</B><BR><UL>
+
+	<LI>Implementados parches varios para solucionar problemas de foco en Windows (despues de algunos eventos el foco no volvía al área de código)</LI>
 	<LI>Ahora se puede utilizar la configuración del proxy para enviar mensajes al sitio</LI>
 	<LI>Implementado un nuevo sistema para notificar automaticamente la disponibilidad de actualizaciones en el sitio</LI>
 	<LI>Ya no se puede colocar puntos de interrución sobre directivas de preprocesador</LI>
@@ -323,7 +350,10 @@
 	<LI>Corregido el problema de la pérdida de foco luego del cuadro de buscar/remplazar</LI>
 	<LI>Ahora los paneles auto-ocultables flotantes no se tapan entre si cuando se muestran en simultaneo</LI>
 	<LI>Corregida la visualizacion del panel de mini-plantillas cuando se utilizan paneles auto-ocultables</LI>
-	<LI>Corregida la actualización del panel del exlorador de archivos cuando se utilizan paneles auto-ocultables</LI></UL><BR><B>Release 20110203</B><BR><UL>	<LI>Corregido el problema de refresco (tamaño equivocado) de las pestañas de codigo fuente al abrir un proyecto con el panel de bienvenida activado en Windows</LI>
+	<LI>Corregida la actualización del panel del exlorador de archivos cuando se utilizan paneles auto-ocultables</LI>
+	
+</UL><BR><B>Release 20110203</B><BR><UL>
+	<LI>Corregido el problema de refresco (tamaño equivocado) de las pestañas de codigo fuente al abrir un proyecto con el panel de bienvenida activado en Windows</LI>
 	<LI>Agregado un boton para probar el comando de una herramienta personalizada en el cuadro de configuracion de la misma</LI>
 	<LI>Agregado un cuadro de texto para la carpeta de trabajo de una herramienta personalizada</LI>
 	<LI>El texto del directorio del proyecto para reemplazar ${PROJECT_PATH} en las herramientas personalizadas ya no incluye la barra final</LI>
@@ -355,7 +385,10 @@
 	<LI>Cuando una variable global esta declarada en un .h y un .cpp, el parser da ahora prioridad al .h, para que el comando "Insertar Include Correspondiente" evite en lo posible incluir un .cpp</LI>
 	<LI>Los eventos generados en las clases heredadas para la integracion con wxFormBuilder por default tienen la linea "event.Skip();" en lugar de estar vacios</LI>
 	<LI>Agregada una opcion para que se actualicen solos los proyectos de wxFormBuilder y las clases heredadas cuando se detecta un cambio en el archivo .fbp</LI>
-	<LI>Corregido el tramiento de rutas relativas para abrir archivos al hacer doble click sobre un error de compilación fuera de un proyecto</LI></UL><BR><B>Release 20100923</B><BR><UL>	<LI>Corregida la sincronización de los estados de las barras de herramientas entre el menú Ver y el díalogo de Preferencias al cerrarlas desde su panel</LI>
+	<LI>Corregido el tramiento de rutas relativas para abrir archivos al hacer doble click sobre un error de compilación fuera de un proyecto</LI>
+	
+</UL><BR><B>Release 20100923</B><BR><UL>
+	<LI>Corregida la sincronización de los estados de las barras de herramientas entre el menú Ver y el díalogo de Preferencias al cerrarlas desde su panel</LI>
 	<LI>Al apretar escape en el editor se cierran los paneles inferiores (resultados de la compilación, ayuda, busqueda)</LI>
 	<LI>Actualizado wxWidgets en la versión para Windows a su versión 2.8.11 incluyendo los agregados para OpenGL</LI>
 	<LI>No se permite poner puntos de interrupción en lineas vacias o con solo comentarios</LI>
@@ -364,7 +397,9 @@
 	<LI>Si existe un archivo clave (config.here) en el directorio de instalación de zinjai usa ese en lugar de buscar en la carpeta personal del usuario</LI>
 	<LI>El cuadro de configuración de herramientas personalizadas incluye una opción para mostrar u ocultar el botón de cada herramienta en la barra de herramientas</LI>
 	<LI>Al hacer click con el botón derecho sobre una herramienta personalizada se abre la ventana de configuración de la misma, en lugar del cuadro de preferencias</LI>
-</UL><BR><B>Release 20100829</B><BR><UL>	<LI>Corregida la indentación automática para la palabra clave case cuando hay llaves inmediamente despues de los dos puntos</LI>
+
+</UL><BR><B>Release 20100829</B><BR><UL>
+	<LI>Corregida la indentación automática para la palabra clave case cuando hay llaves inmediamente despues de los dos puntos</LI>
 	<LI>En Windows, se actualizó el depurador gdb</LI>
 	<LI>En Windows, por defecto ahora se muestra la columna de un error además del nro de linea</LI>
 	<LI>Corregido el cuelgue cuando el depurador arroja información incorrecta acerca del backtrace</LI>
@@ -395,7 +430,9 @@
 	<LI>Corregidos los valores por defecto para los paths de doxygen y wxformbuilder en Mac</LI>
 	<LI>Implementado un parche temporal en wxStyledTextCtrl para solucionar el problema de las teclas muertas en Mac</LI>
 	<LI>Corregida una potencial violación de segmento al parsear al actualizar el trazado inverso en la depuración</LI>
-</UL><BR><B>Release 20100624</B><BR><UL>	<LI>Corregida la violación de segmento al cerrar un proyecto sin detener el depurador</LI>
+
+</UL><BR><B>Release 20100624</B><BR><UL>
+	<LI>Corregida la violación de segmento al cerrar un proyecto sin detener el depurador</LI>
 	<LI>Se agregaron dos opciones al cuadro de configuración de Doxygen para definir si se deben incluir las funciones/variables static, y los atributos/metodos privados</LI>
 	<LI>Si se oculta el panel de mini-plantillas cerrandolo sin usar el menú, ya no vuelve a aparecer al reiniciar ZinjaI</LI>
 	<LI>Corregida la violación de segmento en el parseo de argumentos al generar el trazado inverso</LI>
@@ -426,10 +463,14 @@
 	<LI>Reorganizados algunos elementos del cuadro de <I>Preferencias</I></LI>
 	<LI>Al buscar en la ayuda más de una palabra, se consideran dos palabras separadas si no está entre comillas, y no una frase como antes (la búsqueda ya no es literal)</LI>
 	<LI>Ahora se guarda en el proyecto la versión de <I>ZinjaI</I> que lo guardó además de la mínima requerida</LI>
-</UL><BR><B>Release 20100526</B><BR><UL>	<LI>Corregidas las posible violaciones de segmento al iniciar el <I>Asistente Para Nuevo Archivo/Proyecto</I></LI>
+
+</UL><BR><B>Release 20100526</B><BR><UL>
+	<LI>Corregidas las posible violaciones de segmento al iniciar el <I>Asistente Para Nuevo Archivo/Proyecto</I></LI>
 	<LI>Corregidas las posible violaciones de segmento al cerrar el IDE debido al orden de destrucción de las clases</LI>
 	<LI>Nueva imágen para la splash screen</LI>
-</UL><BR><B>Release 20100521</B><BR><UL>	<LI>Corregido el segfault en el runner al esperar una tecla luego de la ejecución</LI>
+
+</UL><BR><B>Release 20100521</B><BR><UL>
+	<LI>Corregido el segfault en el runner al esperar una tecla luego de la ejecución</LI>
 	<LI>Ya no se crean ventanas que no se usan al cargar el entorno (como las de compartir archivo, o el asistente, para que el inicio sea más rápido)</LI>
 	<LI>Corregido el path donde busca la información de perfilado de ejecución cuando un proyecto define un directorio de trabajo</LI>
 	<LI>Corregido el tratamiento y coloreado de inspecciones congeladas</LI>
@@ -460,7 +501,9 @@
 	<LI>Corregida la colocación de puntos de interrupción con clicks en el margen</LI>
 	<LI>Corregida la visualización de arreglos en tablas separdas durante la depuración</LI>
 	<LI>Corregida la inicialización del servidor utilizado para mantener una sola instancia de <I>ZinjaI</I></LI>
-</UL><BR><B>Release 20100415</B><BR><UL>	<LI>Corregido el conteo de reintentos para abrir un fuente en otra instancia de <I>ZinjaI</I></LI>
+
+</UL><BR><B>Release 20100415</B><BR><UL>
+	<LI>Corregido el conteo de reintentos para abrir un fuente en otra instancia de <I>ZinjaI</I></LI>
 	<LI>Corregido el comportamiento del boton <I>Sin Argumentos</I> del diálogo de <I>Argumentos Para la Ejecución</I></LI>
 	<LI>Eliminada la race condition en el parser al purgar/cerrar un fuente mientras se analiza otro</LI>
 	<LI>Ahora al abrir archivos con <I>ZinjaI</I> mediante los argumentos en la linea de comandos (por ejemplo desde el explorador del SO) se puede hacer que reutilice una instancia previa si existe (no para proyectos)</LI>
@@ -479,7 +522,9 @@
 	<LI>Corregido el problema al pasar argumentos para el ejecutable con espacios</LI>
 	<LI>Ahora el cuadro de <I>Ir A Clase/Método/Función</I> también muestra busca entre las macros que reciben argumentos</LI>
 	<LI>Ahora los calltips muestran los nombres de los argumentos de funciones y métodos</LI>
-</UL><BR><B>Release 20100221</B><BR><UL>	<LI>Agregado soporte multilenguaje para los títulos de plantillas de programas simples</LI>
+
+</UL><BR><B>Release 20100221</B><BR><UL>
+	<LI>Agregado soporte multilenguaje para los títulos de plantillas de programas simples</LI>
 	<LI>Agregado soporte multilenguaje al runner</LI>
 	<LI>Ahora al intentar modificar el valor de una inspección insensible al contexto, se intenta asociar al contexto actual primero</LI>
 	<LI>Corregida la selección de valores modificados en la tabla de inspecciones</LI>
@@ -500,7 +545,9 @@
 	<LI>Cambiado el bucle infinito del runner utilizado para mantener una consola abierta para depuracion en <I>GNU/Linu</I>, para evitar que consuma tiempo de procesador</LI>
 	<LI>Ya no se bloquea la tabla de inspecciones cuando el depurador termina de forma anormal al intentar evaluar una expresión</LI>
 	<LI>Corregido el comando que abre la terminal para depuracion en <I>GNU/Linux</I> (las comillas daban problemas con algunas versiones de <I>konsole</I>)</LI>
-</UL><BR><B>Release 20100202</B><BR><UL>	<LI>Agregada la barra de desplazamiento horizontal en el <I>Panel de Mensajes del Depurador</I></LI>
+
+</UL><BR><B>Release 20100202</B><BR><UL>
+	<LI>Agregada la barra de desplazamiento horizontal en el <I>Panel de Mensajes del Depurador</I></LI>
 	<LI>Corregido el conteo de resultados al realizar busquedas en multiples archivos de un proyecto</LI>
 	<LI>Ahora el <I>Panel de Mensajes del Depurador</I> acomoda el scroll ante cada nuevo mensaje para que el ultimo permanezca visible</LI>
 	<LI>Corregido el parseo del dialogo con el depurador para la extraccion de mensajes para el usuario</LI>
@@ -518,7 +565,9 @@
 	<LI>Al cargar el volcado de memoria se actualiza la tabla de inspecciones</LI>
 	<LI>Reestablecida la funcionalidad del boton de pausa para la depuracion en Linux</LI>
 	<LI>Ahora se borra el contenido del panel de mensajes del depurador cada vez que comienza una nueva sesion de depuracion</LI>
-</UL><BR><B>Release 20100102</B><BR><UL>	<LI>Ahora se reconoce correctamente la ruta por defecto guardada en el proyecto al abrir un archivo dentro del mismo</LI>
+
+</UL><BR><B>Release 20100102</B><BR><UL>
+	<LI>Ahora se reconoce correctamente la ruta por defecto guardada en el proyecto al abrir un archivo dentro del mismo</LI>
 	<LI>Corregido el ordenamiento de los items de los submenúes de archivos y proyectos recientes en relación al separador</LI>
 	<LI>Corregido el problema de las transparencias en los cuadros de mensajes en Windows con wxWidgets-2.8.10</LI>
 	<LI>Agregado un botón para limpiar los historiales en el cuadro para abrir archivos o proyectos recientes</LI>
@@ -567,7 +616,9 @@
 	<LI>Si un fuente de un proyecto tiene fecha de modificación en el futuro, se cambia por la actual al compilar (para que no recompile todo en cada ejecución)</LI>
 	<LI>Corregido el conteo de elementos al mostrar arreglos en tablas separadas</LI>
 	<LI>El botón que aparece en el cuadro de búsqueda de actualizaciones cuando se encuentra disponible una versión más nueva lleva directamente a la página de descargas</LI>
-</UL><BR><B>Release 20091120</B><BR><UL>	<LI>Corregido el problema que no permitía agrandar el ancho de las columnas de una tabla más alla de los límites de la ventana en Windows</LI>
+
+</UL><BR><B>Release 20091120</B><BR><UL>
+	<LI>Corregido el problema que no permitía agrandar el ancho de las columnas de una tabla más alla de los límites de la ventana en Windows</LI>
 	<LI>Corregido el problema del tamaño de las barras de herramientas luego de modificarlas</LI>
 	<LI>La variable TEMP_FOLDER también se aplica en los campos de argumentos extras para compilador y enlazador en las opciones de proyecto</LI>
 	<LI>Corregido el orden de los atajos de teclado para cambiar de pestaña en Windows</LI>
@@ -599,7 +650,9 @@
 	<LI>Reemplazado el diálogo de selección de archivos y proyecto recientes por uno propio para permitir buscar rápidamente por parte del nombre</LI>
 	<LI>Corregido el bug que impedía generar clases heredadas de proyectos <I>wxFormBuilder</I> cuando el archivo de dicho proyecto estaba en un directorio diferente al del proyecto <I>ZinjaI</I></LI>
 	<LI>Corregido el bug que impedía visualizar bien algunas expresiones resultado de partir una expresión más compleja en la tabla de inspecciones al avanzar paso a paso</LI>
-</UL><BR><B>Release 20091101</B><BR><UL>	<LI>Corregido el problema de los espacios en la ruta completa a la carpeta de <I>ZinjaI</I> al ejecutar (para llamar al runner) en GNU/Linux</LI>
+
+</UL><BR><B>Release 20091101</B><BR><UL>
+	<LI>Corregido el problema de los espacios en la ruta completa a la carpeta de <I>ZinjaI</I> al ejecutar (para llamar al runner) en GNU/Linux</LI>
 	<LI>Agregada una pestaña para la selección del tema de íconos en el diálogo de <I>Preferencias</I></LI>
 	<LI>Implementado el soporte para múltiples temas de íconos e imágenes</LI>
 	<LI>Corregida parcialmente la desaparación del cursor luego del <I>drag and drop</I></LI>
@@ -621,7 +674,9 @@
 	<LI>Agregado un enlace al historial completo de archivos o proyectos abiertos desde el panel de bienvenida</LI>
 	<LI>Implementado el <I>drag and drop</I> de texto en los fuentes</LI>
 	<LI>Se actualiza automáticamente el arbol del explorador al guardar un fuente en su raiz</LI>
-</UL><BR><B>Release 20091005</B><BR><UL>	<LI>Corregida la recarga de los indices de autocompletado propios de un proyecto luego de modificar los comunes en el diálogo de preferencias</LI>
+
+</UL><BR><B>Release 20091005</B><BR><UL>
+	<LI>Corregida la recarga de los indices de autocompletado propios de un proyecto luego de modificar los comunes en el diálogo de preferencias</LI>
 	<LI>Ahora se avisa cuando el depurador se cierra anormalmente al intentar crear una inspección</LI>
 	<LI>Ahora cuando una inspección no se puede crear en el depurador, si el problema no es que el símbolo no existe, se muestra el mensaje de gdb al respecto</LI>
 	<LI>Corregida la forma de llamar al navegador para abrir paginas de ayuda o enlaces (tenía problemas en Windows Vista)</LI>
@@ -648,7 +703,9 @@
 	<LI>Agregada una lista de seleccion multiple para elegir los indices de autocompletado asociados a un proyecto (en el cuadro de <I>Configuración del Proyecto</I>)</LI>
 	<LI>Al buscar en los archivos del proyecto se tienen en cuenta los cambios en los archivos abiertos</LI>
 	<LI>Ahora se puede ir desde la lista de breakpoints a la posición de uno haciendo doble click sobre el mismo en la columna de ubicación</LI>
-</UL><BR><B>Release 20090927</B><BR><UL>	<LI>Corregido el comportamiento de los menues contextuales de los árboles de proyecto y del explorador de archivos, cuando se invocan por teclado</LI>
+
+</UL><BR><B>Release 20090927</B><BR><UL>
+	<LI>Corregido el comportamiento de los menues contextuales de los árboles de proyecto y del explorador de archivos, cuando se invocan por teclado</LI>
 	<LI>Corregida la desincronización entre la información del parser y los fuentes generados por wxFormBuilder que impedía generar clases heredadas</LI>
 	<LI>Corregido el agregado y borrado de perfiles de configuración de proyecto</LI>
 	<LI>Para cada fuente abierto se verifica automáticamente al recibir el foco si fue modificado por una apliación externa</LI>
@@ -673,7 +730,9 @@
 	<LI>Agregada una comprobacíón para verificar si está instalado Doxygen al intentar generar la documentacion</LI>
 	<LI>Agregada una comprobacíón para verificar si está instalado wxFormsBuilder al abrir un proyecto que lo utiliza</LI>
 	<LI>Ahora pregunta antes de reemplazar un archivo al crear un proyecto en una carpeta que no está vacia</LI>
-</UL><BR><B>Release 20090904</B><BR><UL>	<LI>Ahora el cuadro de dialogo <I>Buscar Actualizaciones</I> ofrece abrir el sitio, en lugar de sola la pagina de cambios</LI>
+
+</UL><BR><B>Release 20090904</B><BR><UL>
+	<LI>Ahora el cuadro de dialogo <I>Buscar Actualizaciones</I> ofrece abrir el sitio, en lugar de sola la pagina de cambios</LI>
 	<LI>Agregada una opción para eliminar todos los comentarios en el menu <I>Herramientas</I></LI>
 	<LI>Corregida la alineación de comentarios cuando hay varios fragmentos independientes en una misma linea</LI>
 	<LI>Ahora verifica si encuentra el compilador y el depurador al iniciar por primera vez en GNU/Linux</LI>
@@ -704,118 +763,217 @@
 	<LI>Corregido el comportamiento del cuadro de diálgo <I>Ir a Archivo</I> cuando no hay proyecto y hay archivos con nombre</LI>
 	<LI>Agregada la posibilidad de agrupar los paneles del <I>Arbol de Proyectos</I>, <I>Explorador de Archivos</I> y <I>Arbol de Simbolos</I> en un solo panel con pestañas</LI>
 	<LI>Corregida la aplicación del tipo de watchpoint</LI>
-	<LI>Los archivos cuyas extensiones empiecen con números se considerarán fuentes C++ al compilar en el modo de programa simple</LI><!-- 
-	<LI>Agregada una opción en el diálogo de preferencias para evitar que el depurador muestre el número de frame en las inspecciones (averigurarlo puede ser muy costoso)</LI>
- -->	<LI>Agregada una opción al cuadro buscar para ignorar ocurrencias en comentarios</LI>
+	<LI>Los archivos cuyas extensiones empiecen con números se considerarán fuentes C++ al compilar en el modo de programa simple</LI>
+	<!--<LI>Agregada una opción en el diálogo de preferencias para evitar que el depurador muestre el número de frame en las inspecciones (averigurarlo puede ser muy costoso)</LI>-->	
+	<LI>Agregada una opción al cuadro buscar para ignorar ocurrencias en comentarios</LI>
 	<LI>Las tablas de inspecciones y trazado inverso recuerdas las columnas contraidas al salir</LI>
 	<LI>La opcion <I>Insertar #include</I> considera los directorios adicionales de la configuración de proyecto para acortar si es posible</LI>
 	<LI>El submenu <I>Abiertos recientemente</I> del menu <I>Archivos</I> se dividió en dos para diferencias porgramas simples de proyectos</LI>
 	<LI>El autocompletado ahora procesa correctamente variables "locales" declaradas con extern/const/static/volatile</LI>
-</UL><BR><B>Release 20090610</B><BR><UL>	<LI>Agregada la posibilidad de asociar indices de autocompletado a proyectos para que se carguen automáticamente al abrirlos (en el diálogo <I>Configuración del Proyecto</I>)</LI>
-	<LI>Corregida la definición de la plantilla de proyecto para OpenGL</LI>	<LI>Se retocaron algunos colores en el resaltado de sintaxis</LI>
-	<LI>Ahora se leen correctamente las configuraciones para <I>Doxygen</I> de los proyectos</LI>	<LI>Se comenzó a utilizar <I>Doxygen</I> para documentar el código fuente del proyecto</LI>	<LI>Agregada la posibilidad de abrir un volcado de memoria para inspeccionar en el depurador (solo GNU/Linux)</LI>
-	<LI>Corregido el cuelgue al ir a las opciones del breakpoint durante la ejecución en una linea donde no hay breakpoint</LI>	<LI>Los pasos adicionales de la compilación ahora se procesan correctamente incluyendo el control de dependencias (tambien hacia adelante)</LI>
-	<LI>Los pasos adicionales para la compilación de proyectos ya se guardan en el archivo de proyecto (aunque todavia no se aplican)</LI>	<LI>Completada la interfaz para la definición de pasos de compilación personalizados</LI>
-</UL><BR><B>Release 20090530</B><BR><UL>	<LI>Agregada la pestaña <I>Secuencia</I> (solo parte visual) en el diálogo de <I>Opciones de Compilacion y Ejecucion de Proyectos</I> para introducir pasos personalizables en el proceso de compilación</LI>	<LI>Agregada una opción en el menú <I>Herramientas</I> para ver la salida del profiler sin procesar, como texto</LI>	<LI>Corregida la violación de segmento al eliminar puntos de interrupción desde el dialogo de <I>Listar Watch/Break points</I></LI>
+
+</UL><BR><B>Release 20090610</B><BR><UL>
+	<LI>Agregada la posibilidad de asociar indices de autocompletado a proyectos para que se carguen automáticamente al abrirlos (en el diálogo <I>Configuración del Proyecto</I>)</LI>
+	<LI>Corregida la definición de la plantilla de proyecto para OpenGL</LI>
+	<LI>Se retocaron algunos colores en el resaltado de sintaxis</LI>
+	<LI>Ahora se leen correctamente las configuraciones para <I>Doxygen</I> de los proyectos</LI>
+	<LI>Se comenzó a utilizar <I>Doxygen</I> para documentar el código fuente del proyecto</LI>
+	<LI>Agregada la posibilidad de abrir un volcado de memoria para inspeccionar en el depurador (solo GNU/Linux)</LI>
+	<LI>Corregido el cuelgue al ir a las opciones del breakpoint durante la ejecución en una linea donde no hay breakpoint</LI>
+	<LI>Los pasos adicionales de la compilación ahora se procesan correctamente incluyendo el control de dependencias (tambien hacia adelante)</LI>
+	<LI>Los pasos adicionales para la compilación de proyectos ya se guardan en el archivo de proyecto (aunque todavia no se aplican)</LI>
+	<LI>Completada la interfaz para la definición de pasos de compilación personalizados</LI>
+
+</UL><BR><B>Release 20090530</B><BR><UL>
+	<LI>Agregada la pestaña <I>Secuencia</I> (solo parte visual) en el diálogo de <I>Opciones de Compilacion y Ejecucion de Proyectos</I> para introducir pasos personalizables en el proceso de compilación</LI>
+	<LI>Agregada una opción en el menú <I>Herramientas</I> para ver la salida del profiler sin procesar, como texto</LI>
+	<LI>Corregida la violación de segmento al eliminar puntos de interrupción desde el dialogo de <I>Listar Watch/Break points</I></LI>
 	<LI>Ahora se tienen en cuenta las comillas en las listas de bibliotecas y directorios adicionales de las opciones compilación de un proyecto</LI>
 	<LI>Corregido la visualización de la consola al ejecutar proyectos en Windows</LI>
-	<LI>Corregido el cuelgue al cerrar una pestaña de un proyecto durante el parseo inicial de los fuentes</LI>	<LI>Agregada una opción en el menú <I>Herramientas</I> para alinear todos los comentarios a partir de determinada columna</LI>	<LI>Corregida la violacion de segmento al presionar <I>Ctrl+F1</I> sin un proyecto abierto</LI>	<LI>Corregidos los números de niveles para las insptecciones al romper una expresión inspecciones en la tabla de insptecciones</LI>	<LI>Agregado un comando en el menú <I>Herramientas</I> para generar automáticamente las clases heredadas a partir de un formulario diseñado con wxFormBuilder</LI>	<LI>Integración básica con wxFormBuilder (diseñador visual de interfaces con wxWidgets)</LI>	<LI>Al recargar un fuente, se mantienen la posición del cursor y la selección en caso de existir</LI>
-	<LI>Corregida la barra de herramientas Herramientas</LI>	<LI>Corregida la violación de segmento al detener forzosamente la depuración, luego de continuarla tras una interrupción</LI>
-</UL><BR><B>Release 20090405</B><BR><UL>	<LI>Corregida la violación de segmento al cambiar las preferencias en Windows</LI>
-	<LI>Corregida la dirección para la búsqueda de actualizaciones automáticas</LI>	<LI>Corregida la violación de segmento que ocurría cuando se abría un proyecto teniendo otro proyecto abierto junto con archivos que no pertenecían al mismo</LI>	<LI>Corregido el cuelgue al cargar por segunda vez el cuadro de preferencias en Windows</LI>
+	<LI>Corregido el cuelgue al cerrar una pestaña de un proyecto durante el parseo inicial de los fuentes</LI>
+	<LI>Agregada una opción en el menú <I>Herramientas</I> para alinear todos los comentarios a partir de determinada columna</LI>
+	<LI>Corregida la violacion de segmento al presionar <I>Ctrl+F1</I> sin un proyecto abierto</LI>
+	<LI>Corregidos los números de niveles para las insptecciones al romper una expresión inspecciones en la tabla de insptecciones</LI>
+	<LI>Agregado un comando en el menú <I>Herramientas</I> para generar automáticamente las clases heredadas a partir de un formulario diseñado con wxFormBuilder</LI>
+	<LI>Integración básica con wxFormBuilder (diseñador visual de interfaces con wxWidgets)</LI>
+	<LI>Al recargar un fuente, se mantienen la posición del cursor y la selección en caso de existir</LI>
+	<LI>Corregida la barra de herramientas Herramientas</LI>
+	<LI>Corregida la violación de segmento al detener forzosamente la depuración, luego de continuarla tras una interrupción</LI>
+
+</UL><BR><B>Release 20090405</B><BR><UL>
+	<LI>Corregida la violación de segmento al cambiar las preferencias en Windows</LI>
+	<LI>Corregida la dirección para la búsqueda de actualizaciones automáticas</LI>
+	<LI>Corregida la violación de segmento que ocurría cuando se abría un proyecto teniendo otro proyecto abierto junto con archivos que no pertenecían al mismo</LI>
+	<LI>Corregido el cuelgue al cargar por segunda vez el cuadro de preferencias en Windows</LI>
 	<LI>Corregidas las imagenes del cuadro de preferencias en Windows</LI>
 	<LI>Corregido la edición valores de variables de tipos base en la tabla de inspecciones</LI>
-	<LI>Agregado un menu contextual en los rotulos de las columnas de las tablas de trazado inverso e inspecciones para contraer o expandir columnas</LI>	<LI>Corregido el cuelgue al listar los puntos de interrupcion sin pausar el depurador</LI>
+	<LI>Agregado un menu contextual en los rotulos de las columnas de las tablas de trazado inverso e inspecciones para contraer o expandir columnas</LI>
+	<LI>Corregido el cuelgue al listar los puntos de interrupcion sin pausar el depurador</LI>
 	<LI>Corregido el cuelgue al querer abrir todos los archivos o todos los fuentes del directorio raiz del explorador de archivos mediante las opciones del menú contextual</LI>
-	<LI>Agregada la pestaña de dependencias directas en el dialogo de propiedades del ejecutable</LI>	<LI>Corregida la busqueda de dependencias para determinar si corresponde recompilar un fuente de un proyecto: ahora considera correctamente los directorios adicionales para cabeceras definidos en la configuracion del proyecto</LI>
+	<LI>Agregada la pestaña de dependencias directas en el dialogo de propiedades del ejecutable</LI>
+	<LI>Corregida la busqueda de dependencias para determinar si corresponde recompilar un fuente de un proyecto: ahora considera correctamente los directorios adicionales para cabeceras definidos en la configuracion del proyecto</LI>
 	<LI>Ahora se distinguen las pestañas de dos archivos de igual nombre (utilizando un numero auxiliar entre paréntesis luego del titulo)</LI>
-	<LI>Agregadas opciones de merging para las comparaciones con <I>diff</I> (menu <I>Herramientas</I>-><I>Comparar Archivos</I>): permiten aplicar los cambios marcados selectivamente</LI>	<LI>Agregado un cuadro de configuraciones generales de proyecto (<I>Archivo</I>-><I>Configuracion del Proyecto...</I>) para definir el nombre, las opciones de tabulado, etc</LI>
+	<LI>Agregadas opciones de merging para las comparaciones con <I>diff</I> (menu <I>Herramientas</I>-><I>Comparar Archivos</I>): permiten aplicar los cambios marcados selectivamente</LI>
+	<LI>Agregado un cuadro de configuraciones generales de proyecto (<I>Archivo</I>-><I>Configuracion del Proyecto...</I>) para definir el nombre, las opciones de tabulado, etc</LI>
 	<LI>Se recuerda la pestaña del cuadro de diálogo <I>Opciones de Compilacion y Ejecucion de Proyecto</I> al cerrarlo</LI>
-	<LI>Se fuerza el reenlazado al cambiar la opción "Es un programa de consola" en la configuración de un proyecto en Windows</LI>	<LI>Agregada una opción para subir un nivel la raiz en el menú contextual del panel <I>Explorador de Archivos</I></LI>
+	<LI>Se fuerza el reenlazado al cambiar la opción "Es un programa de consola" en la configuración de un proyecto en Windows</LI>
+	<LI>Agregada una opción para subir un nivel la raiz en el menú contextual del panel <I>Explorador de Archivos</I></LI>
 	<LI>Corregido el orden alfabético de los elementos del árbol de archivos luego de renombrar un archivo de un proyecto</LI>
-	<LI>Agregada una opción para cambiar el orden de compilación de los fuentes (mover uno al primer lugar) en el menú contextual del panel <I>Arbol de Archivos</I></LI>	<LI>Ahora se puede abrir automáticamente el ultimo fuente/proyecto en que se trabajó si se pasa el parámetro "--last"</LI>
+	<LI>Agregada una opción para cambiar el orden de compilación de los fuentes (mover uno al primer lugar) en el menú contextual del panel <I>Arbol de Archivos</I></LI>
+	<LI>Ahora se puede abrir automáticamente el ultimo fuente/proyecto en que se trabajó si se pasa el parámetro "--last"</LI>
 	<LI>Agregada una opción para listar todas las lineas resaltadas de un proyecto, o de los archivos abiertos, en el menú <I>Editar</I></LI>
 	<LI>Corregida la visualización de arreglos en el depurador con muchos elementos repetidos</LI>
-	<LI>Corregido el cuelgue cuando el depurador no puede obtener los argumentos en el trazado inverso</LI>	<LI>Agregada la posibilidad de definir un tabulado particular para cada proyecto diferente</LI>	<LI>La opción <I>Insertar #include correspondiente</I> ya no agrega "using namespace std;" siempre</LI>	<LI>Se volvió a colocar en la ventana de propiedades una opción para que gcc muestre sus errores en español</LI>
-</UL><BR><B>Release 20090222</B><BR><UL>	<LI>Corregido el runner para tomar correctamente los argumentos y poder ejecutar archivos con caracteres especiales en su path</LI>
-	<LI>Al cerrar y volver a abrir el diálogo de <I>Preferencias</I>, se mantiene la posición y pestaña seleccionada</LI>	<LI>Se puede ir directamente a la ayuda rápida de una palabra haciendo click con la tecla <I>Alt</I> apretada sobre la misma en el área de código</LI>
+	<LI>Corregido el cuelgue cuando el depurador no puede obtener los argumentos en el trazado inverso</LI>
+	<LI>Agregada la posibilidad de definir un tabulado particular para cada proyecto diferente</LI>
+	<LI>La opción <I>Insertar #include correspondiente</I> ya no agrega "using namespace std;" siempre</LI>
+	<LI>Se volvió a colocar en la ventana de propiedades una opción para que gcc muestre sus errores en español</LI>
+
+</UL><BR><B>Release 20090222</B><BR><UL>
+	<LI>Corregido el runner para tomar correctamente los argumentos y poder ejecutar archivos con caracteres especiales en su path</LI>
+	<LI>Al cerrar y volver a abrir el diálogo de <I>Preferencias</I>, se mantiene la posición y pestaña seleccionada</LI>
+	<LI>Se puede ir directamente a la ayuda rápida de una palabra haciendo click con la tecla <I>Alt</I> apretada sobre la misma en el área de código</LI>
 	<LI>Se puede ir directamente a la definicion de una clase, un metodo o una funcion haciendo click con la tecla <I>Control</I> apretada sobre su nombre en el área de código</LI>
-	<LI>Los cambios en la configuracion de las barras de herramientas es aplican sin necesidad de reiniciar</LI>	<LI>Se puede acceder a la configuración de las barras de herramientas haciendo click con el botón derecho del mouse sobre cualquiera de ellas</LI>
-	<LI>Agregado un cuadro de dialogo para configurar la composición de las barras de herramientas desde diálodo de <I>Preferencias</I></LI>	<LI>Agregada una pestaña para configurar las barras de herramientas en el diálodo de <I>Preferencias</I></LI>
-	<LI>Remodelado el aspecto del diálogo de <I>Preferencias</I></LI>	<LI>Corregido el problema de foco al editar las opciones de un breakpoint desde el diálogo <I>Lista de Break/Watch points</I></LI>
-	<LI>Corregido el segfault al intentar parsear automáticamente (por el timer de foco) un fuente que ya se cerró</LI>	<LI>Agregada una opcion al menu contextual de la <I>Tabla de Trazado Inverso</I> para evitar que el <I>Step In</I> se detenga en determinados fuentes (por ejemplo, las cabeceras de STL)</LI>
-	<LI>En el cuadro de diálogo <I>Ir a archivo</I> se muestran los paths relativos al directorio de proyecto si hay un proyecto abierto</LI>	<LI>Recompilada wxWidgets-2.8.8 para Windows para incluir soporte para OpenGL y la extensión para manipular SVGs</LI>	<LI>Agregados checks para decidir si las busquedas de los cuadros de <I>Ir a Funcion/Clase/Metodo</I> y <I>Ir a Archivo</I> deben distinguir mayusculas y minusculas</LI>	<LI>El icono del escritorio tambien se puede crear desde el diálgo de <I>Preferencias</I></LI>
-	<LI>Si es la primera vez que se ejecuta en GNU/Linux ofrece crear un icono en el escritorio</LI>	<LI>Corregido el segfault de la opción <I>Cerrar todos</I> del menú <I>Archivo</I></LI>
-	<LI>Mejorados algunos detalles menores de la presentación durante la carga</LI>	<LI>Corregido un error en el parser que hacia que entre en un bucle infinito ante determinados errores de sintaxis</LI>
+	<LI>Los cambios en la configuracion de las barras de herramientas es aplican sin necesidad de reiniciar</LI>
+	<LI>Se puede acceder a la configuración de las barras de herramientas haciendo click con el botón derecho del mouse sobre cualquiera de ellas</LI>
+	<LI>Agregado un cuadro de dialogo para configurar la composición de las barras de herramientas desde diálodo de <I>Preferencias</I></LI>
+	<LI>Agregada una pestaña para configurar las barras de herramientas en el diálodo de <I>Preferencias</I></LI>
+	<LI>Remodelado el aspecto del diálogo de <I>Preferencias</I></LI>
+	<LI>Corregido el problema de foco al editar las opciones de un breakpoint desde el diálogo <I>Lista de Break/Watch points</I></LI>
+	<LI>Corregido el segfault al intentar parsear automáticamente (por el timer de foco) un fuente que ya se cerró</LI>
+	<LI>Agregada una opcion al menu contextual de la <I>Tabla de Trazado Inverso</I> para evitar que el <I>Step In</I> se detenga en determinados fuentes (por ejemplo, las cabeceras de STL)</LI>
+	<LI>En el cuadro de diálogo <I>Ir a archivo</I> se muestran los paths relativos al directorio de proyecto si hay un proyecto abierto</LI>
+	<LI>Recompilada wxWidgets-2.8.8 para Windows para incluir soporte para OpenGL y la extensión para manipular SVGs</LI>
+	<LI>Agregados checks para decidir si las busquedas de los cuadros de <I>Ir a Funcion/Clase/Metodo</I> y <I>Ir a Archivo</I> deben distinguir mayusculas y minusculas</LI>
+	<LI>El icono del escritorio tambien se puede crear desde el diálgo de <I>Preferencias</I></LI>
+	<LI>Si es la primera vez que se ejecuta en GNU/Linux ofrece crear un icono en el escritorio</LI>
+	<LI>Corregido el segfault de la opción <I>Cerrar todos</I> del menú <I>Archivo</I></LI>
+	<LI>Mejorados algunos detalles menores de la presentación durante la carga</LI>
+	<LI>Corregido un error en el parser que hacia que entre en un bucle infinito ante determinados errores de sintaxis</LI>
 	<LI>Ahora el dialogo del asistente para nuevo archivo se ajusta al tamaño y se centra adecuadamente</LI>
-	<LI>Creada una nueva ventana de splash para poder soportar formas</LI>	<LI>Corregida la eliminación de procesos en GNU/Linux al detener la ejecución</LI>
+	<LI>Creada una nueva ventana de splash para poder soportar formas</LI>
+	<LI>Corregida la eliminación de procesos en GNU/Linux al detener la ejecución</LI>
 	<LI>Agregado un submenu para analizar la informacion de profiling en el menu <I>Herramientas</I> (combinando gprof, gprof2dot y graphviz)</LI>
-</UL><BR><B>Release 20081224</B><BR><UL>	<LI>Corregidos los botones para explorar en las opciones de la pestaña <I>Rutas 2</I> del diálogo de <I>Preferencias</I></LI>
+
+</UL><BR><B>Release 20081224</B><BR><UL>
+	<LI>Corregidos los botones para explorar en las opciones de la pestaña <I>Rutas 2</I> del diálogo de <I>Preferencias</I></LI>
 	<LI>Ahora los enlaces de la ayuda a sitios de internet se abrirán con el navegador del sistema</LI>
 	<LI>Creado un lanzador generico shellexecute.exe que funciona como interfase para la API de Windows homónima para lanzar el navegador por defecto<LI>
-	<LI>Corregidos los errores de la integración las herramientas <I>Doxygen</I> y diff en Windows</LI>	<LI>El título de la ventana principal ahora muestra el nombre del proyecto y no el nombre del archivo de proyecto cuando se abre uno</LI>
-	<LI>Agregada una ventana para definir algunas opciones para <I>Doxygen</I></LI>	<LI>Dividida en dos la pestaña <I>Rutas</I> del diálogo de <I>Preferencias</I></LI>
+	<LI>Corregidos los errores de la integración las herramientas <I>Doxygen</I> y diff en Windows</LI>
+	<LI>El título de la ventana principal ahora muestra el nombre del proyecto y no el nombre del archivo de proyecto cuando se abre uno</LI>
+	<LI>Agregada una ventana para definir algunas opciones para <I>Doxygen</I></LI>
+	<LI>Dividida en dos la pestaña <I>Rutas</I> del diálogo de <I>Preferencias</I></LI>
 	<LI>Agregada una opción para abrir el explorardor con la ayuda generada por <I>Doxygen</I> desde el menu de herramientas</LI>
-	<LI>Ahora se pueden configurar los comandos para <I>Doxygen</I> y el navegador desde el dialogo de <I>Preferencias</I></LI>	<LI>Agregada una opción para correr <I>Doxygen</I> desde el menu de herramientas</LI>
+	<LI>Ahora se pueden configurar los comandos para <I>Doxygen</I> y el navegador desde el dialogo de <I>Preferencias</I></LI>
+	<LI>Agregada una opción para correr <I>Doxygen</I> desde el menu de herramientas</LI>
 	<LI>Agregadas opciones para ignorar diferencias en espacios, lineas en blanco y/o mayusculas y minusculas al comparar archivos</LI>
-	<LI>La vista se divide automaticamente en dos para mostrar los archivos comparados</LI>	<LI>Agregado el submenu <I>Comparar archivos</I> al menu <I>Herramientas</I>, para comparar dos fuentes abiertos y colorearlos segun sus diferencias (utilizando la herramienta diff)</LI>
-	<LI>Reubicados los items <I>Dibujar diagrama de flujo...</I>, <I>Dibujar jerarquia de clases...</I> y <I>Generar Makefile...</I> en el menu <I>Herramientas</I></LI>	<LI>Agregado el menu herramientas para facilitar la integracion de herramientas externas</LI>	<LI>Modificado el parser para diferenciar macros sin argumentos de macros con argumentos nulos</LI>
-	<LI>Agregada una opción en el menú contextual del <I>Arbol de Símbolos</I> para generar un índice de autocompletado a partir de su contenido</LI>	<LI>Corregidos los colores del estilo inverso (con fondo negro) para Makefiles y HTMLs</LI>	<LI>Las lineas comentadas con doble barra antes del indentado, se mantienen igual ante el indentado inteligente o automático</LI>
-</UL><BR><B>Release 20081120</B><BR><UL>	<LI>Ahora se puede desreferenciar la inspección de un arreglo en la tabla de inspecciones haciendo doble click sobre su valor</LI>
-	<LI>Corregido el error en la asignación de frame al editar una inspección existente de la tabla de inspecciones</LI>	<LI>Corregida la visualición de matrices o vectores con elementos repetidos</LI>
+	<LI>La vista se divide automaticamente en dos para mostrar los archivos comparados</LI>
+	<LI>Agregado el submenu <I>Comparar archivos</I> al menu <I>Herramientas</I>, para comparar dos fuentes abiertos y colorearlos segun sus diferencias (utilizando la herramienta diff)</LI>
+	<LI>Reubicados los items <I>Dibujar diagrama de flujo...</I>, <I>Dibujar jerarquia de clases...</I> y <I>Generar Makefile...</I> en el menu <I>Herramientas</I></LI>
+	<LI>Agregado el menu herramientas para facilitar la integracion de herramientas externas</LI>
+	<LI>Modificado el parser para diferenciar macros sin argumentos de macros con argumentos nulos</LI>
+	<LI>Agregada una opción en el menú contextual del <I>Arbol de Símbolos</I> para generar un índice de autocompletado a partir de su contenido</LI>
+	<LI>Corregidos los colores del estilo inverso (con fondo negro) para Makefiles y HTMLs</LI>
+	<LI>Las lineas comentadas con doble barra antes del indentado, se mantienen igual ante el indentado inteligente o automático</LI>
+
+</UL><BR><B>Release 20081120</B><BR><UL>
+	<LI>Ahora se puede desreferenciar la inspección de un arreglo en la tabla de inspecciones haciendo doble click sobre su valor</LI>
+	<LI>Corregido el error en la asignación de frame al editar una inspección existente de la tabla de inspecciones</LI>
+	<LI>Corregida la visualición de matrices o vectores con elementos repetidos</LI>
 	<LI>Corregida la visualición del numero de frame en la tabla de inspecciones</LI>
-	<LI>Corregida la actualización de inspecciones resultantes de dividir una inspección compuesta</LI>	<LI>Corregida la visualización de ayuda de llamadas a metodos o funciones con nombres de menos de tres caracteres</LI>	<LI>Los cuadros de sugerencias para llamadas a metodos y funciones reajustan su texto al ancho de ventana disponible si es muy largo</LI>	<LI>Implementada la recuperacion ante cierto tipo de errores provocados por defectos internos del <I>ZinjaI</I></LI>	<LI>Agregadas las directivas de procesador en el sistema de autocompletado</LI>
-	<LI>Agregadas las palabras reservadas del lenguaje en el sistema de autocompletado</LI>	<LI>Corregido el menú contextual del panel del explorador de archivos</LI>	<LI>La terminal en GNU/Linux ya no se muestra para la depuración si la configuración del proyecto indica que no es un programa de consola</LI>	<LI>Corregida la determinación de ámbito para el autocompletado cuando se encuentra dentro de un destructor</LI>	<LI>Agregado el botón de ayuda en los diálogos en los que faltaba</LI>
+	<LI>Corregida la actualización de inspecciones resultantes de dividir una inspección compuesta</LI>
+	<LI>Corregida la visualización de ayuda de llamadas a metodos o funciones con nombres de menos de tres caracteres</LI>
+	<LI>Los cuadros de sugerencias para llamadas a metodos y funciones reajustan su texto al ancho de ventana disponible si es muy largo</LI>
+	<LI>Implementada la recuperacion ante cierto tipo de errores provocados por defectos internos del <I>ZinjaI</I></LI>
+	<LI>Agregadas las directivas de procesador en el sistema de autocompletado</LI>
+	<LI>Agregadas las palabras reservadas del lenguaje en el sistema de autocompletado</LI>
+	<LI>Corregido el menú contextual del panel del explorador de archivos</LI>
+	<LI>La terminal en GNU/Linux ya no se muestra para la depuración si la configuración del proyecto indica que no es un programa de consola</LI>
+	<LI>Corregida la determinación de ámbito para el autocompletado cuando se encuentra dentro de un destructor</LI>
+	<LI>Agregado el botón de ayuda en los diálogos en los que faltaba</LI>
 	<LI>Corregida la aplicación de algunos sizers para acomodar correctamente los controles en los diálogos</LI>
 	<LI>Limpieza parcial del código relativo a los wxSizerFlags (y posible optimizacion)</LI>
 	<LI>Agregados botones en las ventanas de <I>Opciones Compilación y Ejecución</I> para editar más comodamente algunos campos con los diálogos nuevos</LI>
-	<LI>Agregados dos diálogos genéricos para editar con comodidad parámetros de texto largos o listas y enumeraciones</LI>	<LI>Corregidos los wrappers para graphviz y viewer en Windows para evitar mostrar la consola y los problemas de foco</LI>
+	<LI>Agregados dos diálogos genéricos para editar con comodidad parámetros de texto largos o listas y enumeraciones</LI>
+	<LI>Corregidos los wrappers para graphviz y viewer en Windows para evitar mostrar la consola y los problemas de foco</LI>
 	<!--<LI>Recompilada la librería wxWidgets para Windows, incluyendo ahora la extensión para utilizar OpenGL</LI>-->
 	<LI>Corregido el indentado automático al presionar <I>Enter</I> sobre una llave que cierra</LI>
-	<LI>Corregida la inserción automática errónea de la llave que cierra en un switch o en una clase</LI>	<LI>La ayuda rápida sobre metodos y funciones definidos en el código del usuario presenta hipervínculos a la ayuda de sus respectivos tipos y los de sus argumentos si existe</LI>
+	<LI>Corregida la inserción automática errónea de la llave que cierra en un switch o en una clase</LI>
+	<LI>La ayuda rápida sobre metodos y funciones definidos en el código del usuario presenta hipervínculos a la ayuda de sus respectivos tipos y los de sus argumentos si existe</LI>
 	<LI>La ayuda rápida sobre variables o atributos definidos en el código del usuario presenta hipervínculos a la ayuda de sus respectivos tipos si existe</LI>
 	<LI>Movidos los items <I>Dibujar Diagrama de Flujo</I> y <I>Dibujar Jerarquia de clases</I> al menu <I>Ver</I></LI>
-	<LI>Corregidos errores en el visor de graficos (titulo de la ventana y visualizacion a pantalla completa)</LI>	<LI>Agregadas las dependencias de graphviz (Windows y GNU/Linux) y el wrapper draw para su correcto funcionamiento</LI>	<LI>Agregado un menu contextual para el arbol del explorador de archivos</LI>	<LI>Corregido defecto al reacomodar la salida del compilador en determinadas advertencias del ISO C++</LI>
+	<LI>Corregidos errores en el visor de graficos (titulo de la ventana y visualizacion a pantalla completa)</LI>
+	<LI>Agregadas las dependencias de graphviz (Windows y GNU/Linux) y el wrapper draw para su correcto funcionamiento</LI>
+	<LI>Agregado un menu contextual para el arbol del explorador de archivos</LI>
+	<LI>Corregido defecto al reacomodar la salida del compilador en determinadas advertencias del ISO C++</LI>
 	<LI>Corregido defecto al reacomodar la salida del compilador si el mensaje de error incluye un método cuyo nombre tiene un solo caracter</LI>
 	<LI>Agregado el panel de exploración de archivos</LI>
 	<LI>Corregida la selección automática del primer frame que contenga información de depuración en el panel de trazado inverso si el programa se detiene en un frame para el cual no hay información de depuración</LI>
 	<LI>Agregada una opción para ir directamente a los tutoriales en el menú <I>Ayuda</I></LI>
 	<LI>Se puede invocar el autocompletado manualmente presionado <I>Ctrl+Espacio</I></LI>
 	<LI>El número de archivos abiertos recientemente es configurable (hasta 30 archivos)</LI>
-	<LI>Los items del arbol de la ventana de ayuda se seleccionan con un solo click</LI>	<LI>Corregido el autocompletado de miembros de atributos heredados</LI>	<LI>Ahora se quita la llave que cierra del final de la linea si se colocó automáticamente otra debajo al presionar enter justo al comienzo de un bloque delimitado por llaves en una misma linea</LI>
-	<LI>Agregadas las consideraciones necesarias para visualizar los diagramas de clases en Windows</LI>	<LI>Solucionado el cuelgue al esperar la actualización del parser para mostrar el diálogo de jerarquia de clases</LI>
-	<LI>Agregada la visibilidad de metodos y atributos al <I>Diagrama de Jerarquía de Clases</I> (simil UML) y alineados a la izquierda</LI>	<LI>Agregada la opción de exportar los diagramas de relaciones de clases a png,jpg,bmp,pdf,ps,svg y dia</LI>
-	<LI>Reemplazado el cuadro para pedir argumentos antes de la ejecución (ahora recuerda la lista de argumentos de ejecuciones anteriores y permite introducir archivos o directorios mediante sus respectivos cuadros de dialogo)</LI>	<LI>Agregados botones para buscar (con un cuadro de selección de archivo) los comandos de los compiladores y el depurador en el cuadro de prefencias</LI>
+	<LI>Los items del arbol de la ventana de ayuda se seleccionan con un solo click</LI>
+	<LI>Corregido el autocompletado de miembros de atributos heredados</LI>
+	<LI>Ahora se quita la llave que cierra del final de la linea si se colocó automáticamente otra debajo al presionar enter justo al comienzo de un bloque delimitado por llaves en una misma linea</LI>
+	<LI>Agregadas las consideraciones necesarias para visualizar los diagramas de clases en Windows</LI>
+	<LI>Solucionado el cuelgue al esperar la actualización del parser para mostrar el diálogo de jerarquia de clases</LI>
+	<LI>Agregada la visibilidad de metodos y atributos al <I>Diagrama de Jerarquía de Clases</I> (simil UML) y alineados a la izquierda</LI>
+	<LI>Agregada la opción de exportar los diagramas de relaciones de clases a png,jpg,bmp,pdf,ps,svg y dia</LI>
+	<LI>Reemplazado el cuadro para pedir argumentos antes de la ejecución (ahora recuerda la lista de argumentos de ejecuciones anteriores y permite introducir archivos o directorios mediante sus respectivos cuadros de dialogo)</LI>
+	<LI>Agregados botones para buscar (con un cuadro de selección de archivo) los comandos de los compiladores y el depurador en el cuadro de prefencias</LI>
 	<LI>Agregada una opcion a la configuración para establecer el visualizador de imágenes</LI>
-	<LI>Implementado un visualizador de imágenes con CImg para mostrar el diagrama de clases</LI>	<LI>Agregado un cuadro de diálogo para configurar el grafo de jerarquía entre clases</LI>	<LI>Agregada una opción en el menú <I>Ejecutar</I> para visualizar la jerarquía de clases en un grafo</LI>	<LI>La función <I>Resaltar Lineas</I> del menú edición ahora se comporta uniformemente al seleccionar un conjunto de lineas (se resaltan/desresaltan todas, en lugar de invertir cada una individualmente)</LI>	<LI>Corregidos los iconos de <I>Aceptar</I> y <I>Cancelar</I> en el diálogo de <I>Opciones del BreakPoint</I>, y el ícono de <I>Propiedades del Ejecutable</I> en el menú <I>Ejecutar</I></LI>	<LI>La lista de warnings en el panel de resultados de la compilación se despliega automáticamente si se compila un proyecto sin errores</LI>
-</UL><BR><B>Release 20080814</B><BR><UL>	<LI>Agregado un check para redimensionar automaticamente los anchos de columnas de una matriz de inspeccion al redimensionar su ventana</LI>
-	<LI>Agregados los iconos para los tipos de archivo en los recursos del ejecutable para Windows</LI>	<LI>Corregidos los cuelgues al iniciar <I>ZinjaI</I> en Windows por redimensionar tablas que aun no existen (al crear paneles de inspeccion o trazado inverso)</LI>
+	<LI>Implementado un visualizador de imágenes con CImg para mostrar el diagrama de clases</LI>
+	<LI>Agregado un cuadro de diálogo para configurar el grafo de jerarquía entre clases</LI>
+	<LI>Agregada una opción en el menú <I>Ejecutar</I> para visualizar la jerarquía de clases en un grafo</LI>
+	<LI>La función <I>Resaltar Lineas</I> del menú edición ahora se comporta uniformemente al seleccionar un conjunto de lineas (se resaltan/desresaltan todas, en lugar de invertir cada una individualmente)</LI>
+	<LI>Corregidos los iconos de <I>Aceptar</I> y <I>Cancelar</I> en el diálogo de <I>Opciones del BreakPoint</I>, y el ícono de <I>Propiedades del Ejecutable</I> en el menú <I>Ejecutar</I></LI>
+	<LI>La lista de warnings en el panel de resultados de la compilación se despliega automáticamente si se compila un proyecto sin errores</LI>
+
+</UL><BR><B>Release 20080814</B><BR><UL>
+	<LI>Agregado un check para redimensionar automaticamente los anchos de columnas de una matriz de inspeccion al redimensionar su ventana</LI>
+	<LI>Agregados los iconos para los tipos de archivo en los recursos del ejecutable para Windows</LI>
+	<LI>Corregidos los cuelgues al iniciar <I>ZinjaI</I> en Windows por redimensionar tablas que aun no existen (al crear paneles de inspeccion o trazado inverso)</LI>
 	<LI>Corregida la actualización de los exploradores de inspecciones</LI>
-	<LI>Corregida la aplicación de las condiciones de los breakpoints cuando se modifican durante la depuración</LI>	<LI>Las matrices de inspecciones mantienen su ambito original</LI>
+	<LI>Corregida la aplicación de las condiciones de los breakpoints cuando se modifican durante la depuración</LI>
+	<LI>Las matrices de inspecciones mantienen su ambito original</LI>
 	<LI>Se optimizó el manejo interno de los variable objects de gdb correspondientes a expresiones que ya no se muestran/actualizan</LI>
 	<LI>Agregada una columna en el panel de inspecciones que indica el ambito (nro de frame del trazado inverso) de cada inspeccion</LI>
 	<LI>Las expresiones de arreglos y estructuras del panel de inspeccion ahora mantienen su ambito original</LI>
-	<LI>Cuando se actualiza la tabla de trazado inverso se selecciona el primer frame que tenga informacion de depuraccion, no necesariamente el frame donde se interrumpio</LI>	<LI>Corregido bug (lista recursiva) al cambiar de categoria (fuente, cabecera, otros) un archivo de un proyecto</LI>	<LI>Ahora el depurador se detiene si se cierra la terminal donde se esta ejecutando, en GNU/Linux</LI>
+	<LI>Cuando se actualiza la tabla de trazado inverso se selecciona el primer frame que tenga informacion de depuraccion, no necesariamente el frame donde se interrumpio</LI>
+	<LI>Corregido bug (lista recursiva) al cambiar de categoria (fuente, cabecera, otros) un archivo de un proyecto</LI>
+	<LI>Ahora el depurador se detiene si se cierra la terminal donde se esta ejecutando, en GNU/Linux</LI>
 	<LI>Corregido el movimiento indebido de un punto de interruoción al ejecutar un programa simple sin titulo</LI>
-	<LI>Agregadas opciones en el menú <I>Editar</I> para subir o bajar en una linea la selección</LI>	<LI>Agregada una opción para definir colores "invertidos" en los fuentes (fondo negro) en el cuadro de <I>Preferencias</I></LI>	<LI>Ahora se puede inpeccionar en la matriz de inspección arreglos de caracteres</LI>	<LI>Actualizada la versión de wxWidgets a 2.8.8</LI>
-	<LI>Ahora se pueden colocar en las tablas de inspecciones de arreglos arreglos dinamicos, estableciendo una cantidad de elementos</LI>	<LI>Corregidos pequeños errores de visualización de las tablas de depuración, y mejorada la velocidad de actualización</LI>
+	<LI>Agregadas opciones en el menú <I>Editar</I> para subir o bajar en una linea la selección</LI>
+	<LI>Agregada una opción para definir colores "invertidos" en los fuentes (fondo negro) en el cuadro de <I>Preferencias</I></LI>
+	<LI>Ahora se puede inpeccionar en la matriz de inspección arreglos de caracteres</LI>
+	<LI>Actualizada la versión de wxWidgets a 2.8.8</LI>
+	<LI>Ahora se pueden colocar en las tablas de inspecciones de arreglos arreglos dinamicos, estableciendo una cantidad de elementos</LI>
+	<LI>Corregidos pequeños errores de visualización de las tablas de depuración, y mejorada la velocidad de actualización</LI>
 	<LI>Implementada la clase mxInspectionMatrix para mostrar arreglos, clases, arreglos y matrices en un dialogo propio fuera de la tabla de inspecciones</LI>
-	<LI>Ya se muestra correctamente la fila seleccionada en las tablas de inspecciones y trazado inverso al hacer click con el boton derecho del mouse</LI>	<LI>Corregida la exploracion de inspecciones que consiste en un puntero a una clase</LI>
+	<LI>Ya se muestra correctamente la fila seleccionada en las tablas de inspecciones y trazado inverso al hacer click con el boton derecho del mouse</LI>
+	<LI>Corregida la exploracion de inspecciones que consiste en un puntero a una clase</LI>
 	<LI>Implementada la barra de estado de depuración en la barra de herramientas en la vista de depuración</LI>
-	<LI>Implementada la clase mxOSD para mostrar mensajes al usuario</LI>	<LI>Los parametros extras para el compilador ahora se colocan luego del fuente en la linea de compilación, para poder enlazar librerías externas en Windows (donde el orden si altera el resultado)</LI>	<LI>Se corrigió el archivo gtk/clipbrd.cpp de los fuentes de wxWidgets para poder copiar caracteres especiales al portapapeles de gtk (GNU/Linux)</LI>
+	<LI>Implementada la clase mxOSD para mostrar mensajes al usuario</LI>
+	<LI>Los parametros extras para el compilador ahora se colocan luego del fuente en la linea de compilación, para poder enlazar librerías externas en Windows (donde el orden si altera el resultado)</LI>
+	<LI>Se corrigió el archivo gtk/clipbrd.cpp de los fuentes de wxWidgets para poder copiar caracteres especiales al portapapeles de gtk (GNU/Linux)</LI>
 	<LI>Ya no se lee el comando del runner del archivo de configuración</LI>
-	<LI>Ya no se cuelga si presionan detener dos veces seguidas durante la depuración</LI>	<LI>Agregado un "sash" para redimensionar los paneles del explorador de inspecciones</LI>
+	<LI>Ya no se cuelga si presionan detener dos veces seguidas durante la depuración</LI>
+	<LI>Agregado un "sash" para redimensionar los paneles del explorador de inspecciones</LI>
 	<LI>Al crear una clase para un proyecto mediante el asistente, se agregan automáticamente los includes de las clases base</LI>
 	<LI>Al ir a una funcion o clase mediante el dialogo "Ir A Funcion", esta se despliega si estaba plegada</LI>
-</UL><BR><B>Release 20080612</B><BR><UL>	<LI>Ahora se avisa antes de cerrar un archivo compartido al usar la opcion "Cerrar" del menu "Archivo"</LI>
-	<LI>Modificado el runner para que diferencie salidas normales de anormales(por señal) en GNU/Linux</LI>	<LI>Agregada una opcion para generar información de "profiling" para gprof en la pestaña de opciones de compilación de proyecto</LI>
+
+</UL><BR><B>Release 20080612</B><BR><UL>
+	<LI>Ahora se avisa antes de cerrar un archivo compartido al usar la opcion "Cerrar" del menu "Archivo"</LI>
+	<LI>Modificado el runner para que diferencie salidas normales de anormales(por señal) en GNU/Linux</LI>
+	<LI>Agregada una opcion para generar información de "profiling" para gprof en la pestaña de opciones de compilación de proyecto</LI>
 	<LI>Corregido el conteo de veces que se a alcanzado un breakpoint en el cuadro de opciones</LI>
 	<LI>Corregida la funcionalidad para ir a una linea previamente marcada (ya no se detiene en los puntos de interrupción)</LI>
-	<LI>Agregado el argumento "-pedantic-errors" a los argumentos por defecto para un programa simple que el compilador se ajuste mejor al estandar</LI>	<LI>Agregada opcion para volver a ejecutar el ultimo cpp ejecutado si se intenta ejecutar una cabecera en el modo ejercicio</LI>	<LI>Agregados botones en los cuadros de opciones de compilacion junto a los argumentos para agregar rutas de archivos o directorios</LI>
+	<LI>Agregado el argumento "-pedantic-errors" a los argumentos por defecto para un programa simple que el compilador se ajuste mejor al estandar</LI>
+	<LI>Agregada opcion para volver a ejecutar el ultimo cpp ejecutado si se intenta ejecutar una cabecera en el modo ejercicio</LI>
+	<LI>Agregados botones en los cuadros de opciones de compilacion junto a los argumentos para agregar rutas de archivos o directorios</LI>
 	<LI>Agregado un boton el cuadro de preferencias junto al comando del terminal con las opciones reconocidas (xterm, konsole o gnome-terminal)</LI>
 	<LI>Eliminados los parametros de comando de runner y parser de la configuracion de usuario</LI>
 	<LI>En GNU/Linux se verifca si existe xterm, sino se prueba con konsole y gnome-terminal, y si no se advierte al usuario</LI>
-	<LI>Reemplazados todos los arreglos de wxChar por wxString para evitar desbordamientos en las preferencias y configuraciones de proyecto</LI>	<LI>Corregida la division de una inspeccion en varias (por el ...) luego de volver a soilicitar tras haberla ingresado incorrectamente</LI>
+	<LI>Reemplazados todos los arreglos de wxChar por wxString para evitar desbordamientos en las preferencias y configuraciones de proyecto</LI>
+	<LI>Corregida la division de una inspeccion en varias (por el ...) luego de volver a soilicitar tras haberla ingresado incorrectamente</LI>
 	<LI>Agregado un boton en la ventana de busqueda de actualizaciones para ver el nuevo registro de cambios si se encuentra una nueva version</LI>
 	<LI>Corregida la funcionalidad del cuadro <I>Ir a Linea</I></LI>
 	<LI>Los resultados de la busqueda en la ventana de ayuda ahora se ordenan alfabeticamente</LI>
@@ -824,117 +982,180 @@
 	<LI>Ya se pueden eliminar breakpoints desde la lista presionando suprimir</LI>
 	<LI>Ahora se pueden modificar las propiedades de un breakpoint desde la lista</LI>
 	<LI>Ya se muestran todos los breakpoints en la lista (incluyendo los que no estan colocados en el depurador)</LI>
-	<LI>Implementada la funcionalidad fuera de depuración del dialogo de propiedades de un breakpoint</LI>	<LI>Ahora F1 en el cuadro de sugerencias abre la ayuda principal</LI>
+	<LI>Implementada la funcionalidad fuera de depuración del dialogo de propiedades de un breakpoint</LI>
+	<LI>Ahora F1 en el cuadro de sugerencias abre la ayuda principal</LI>
 	<LI>Implementada la funcionalidad fuera de depuración del dialogo de propiedades de un breakpoint</LI>
 	<LI>Rediseñado el manejo de la información de depuración para incluir las nuevas opciones asociadas</LI>
-	<LI>Agregado el cuadro de dialogo de propiedades de un breakpoint (conteo, condicion, habilitar/desabilitar, etc...)</LI>	<LI>Corregida la eliminación de puntos de interrupción en fuentes sin título</LI>
+	<LI>Agregado el cuadro de dialogo de propiedades de un breakpoint (conteo, condicion, habilitar/desabilitar, etc...)</LI>
+	<LI>Corregida la eliminación de puntos de interrupción en fuentes sin título</LI>
 	<LI>Los tooltips del codigo fuente ahora se muestran sin necesidad de que este tenga el foco, y se ocultan al mover el mouse o presionar una tecla</LI>
 	<LI>Ya no se pueden abrir mas de un dialogo de preferencias al mismo tiempo</LI>
-	<LI>Implementada la verificacion de actualizaciones disponibles a traves de internet</LI>	<LI>Mejorado el dimensionamiento y redimensionamiento de las tablas de trazado inverso e inspecciones</LI>
+	<LI>Implementada la verificacion de actualizaciones disponibles a traves de internet</LI>
+	<LI>Mejorado el dimensionamiento y redimensionamiento de las tablas de trazado inverso e inspecciones</LI>
 	<LI>Implementada la visualizacion de la lista de breakpoints y watchpoints</LI>
 	<LI>Reemplazados los combos de la tabla de inspecciones por menus popup para evitar los problemas del foco</LI>
 	<LI>Implementada la funcionalidad de la columna "WatchPoint" en la tabla de inspecciones</LI>
 	<LI>Eliminado el codigo obsoleto para el indice de cabeceras segun palabra clave</LI>
-</UL><BR><B>Release 20080601</B><BR><UL>	<LI>Corregido el parseo de la salida del compilador para errores precedidos por "intantiated from..."</LI>	<LI>Agregado un boton para "stripear" el ejecutable en el dialogo de propiedades</LI>
+
+</UL><BR><B>Release 20080601</B><BR><UL>
+	<LI>Corregido el parseo de la salida del compilador para errores precedidos por "intantiated from..."</LI>
+	<LI>Agregado un boton para "stripear" el ejecutable en el dialogo de propiedades</LI>
 	<LI>Corregida la prevencion del segfault en el parsing de la salida del compilador</LI>
 	<LI>Agregada la pestaña de dependencias en el cuadro de propiedades del ejecutable en GNU/Linux</LI>
-	<LI>Agregado el cuadro de propiedades del ejecutable</LI>	<LI>Ahora el enter en la ventana de ayuda solo equivale al boton buscar si el foco esta en el cuadro de texto</LI>
-	<LI>Corregido el socket servidor para compartir archivos a travez de la LAN</LI>	<LI>Corregido el segfault al intentar recuperar la lista de archivos compartidos por segunda vez antes de que termine la primera</LI>
-	<LI>Ahora agrega correctamente la extension al querer grabar un programa simple sin extension</LI>	<LI>Ahora se fuerza al compilador a intentar compilar como fuentes C++ a archivos sin extensión</LI>
+	<LI>Agregado el cuadro de propiedades del ejecutable</LI>
+	<LI>Ahora el enter en la ventana de ayuda solo equivale al boton buscar si el foco esta en el cuadro de texto</LI>
+	<LI>Corregido el socket servidor para compartir archivos a travez de la LAN</LI>
+	<LI>Corregido el segfault al intentar recuperar la lista de archivos compartidos por segunda vez antes de que termine la primera</LI>
+	<LI>Ahora agrega correctamente la extension al querer grabar un programa simple sin extension</LI>
+	<LI>Ahora se fuerza al compilador a intentar compilar como fuentes C++ a archivos sin extensión</LI>
 	<LI>Corregida la insercion de comillas al reemplazar variables en los parametros de compilacion</LI>
 	<LI>Agregado un control en el parseo de la salida del compilador para evitar segfaults ante salidas no previstas</LI>
 	<LI>Agregado un menu contextual al arbol de salida del compilador para abrir la salida en bruto</LI>
 	<LI>Corregida la carga de macros con parametros desde los indices de autocompletado</LI>
-	<LI>Ahora ignora correctamente lineas en blanco al cargar un indice de autocompletado</LI>	<LI>Agregadas sugerencias especiales para la primera vez que inicia el entorno, y cuando se actualiza</LI>
-	<LI>Agregada opción en el menu Ver para trabajar a pantalla completa</LI>	<LI>Corregida la ubicacion en que queda el cursor luego de eliminar una linea</LI>
-</UL><BR><B>Release 20080510</B><BR><UL>	<LI>Ahora avisa si se pretende guardar un fuente sin extensión (en modo programa simple)</LI>
-	<LI>Cambiado el valor por defecto para los parametros para el compilador de un programa simple a "-Wall"</LI>	<LI>Corregida la insersión de filas para dividir inspecciones compuestas</LI>
-	<LI>Corregida la busqueda de dependencias de un fuente cuando se incluye un path relativo superior (que comienza con "../")</LI>
-	<LI>Corregida la lectura de parámetros en templates</LI>	<LI>Corregido el segfault al buscar un archivo o funcion antes de que caduque el timer que actualiza la lista</LI>
-	<LI>Ahora al reemplazar ${MINGW_DIR} en los parametros de compilacion de un proyecto agrega comillas si es necesario</LI>	<LI>La opcion <I>Descomentar</I> del menú <I>Edición</I> ahora también trabaja sobre comentarios tipo C (/*...*/)</LI>
-	<LI>La opcion <I>Comentar</I> del menú <I>Edición</I> ahora utiliza comentarios tipo C (/*...*/) cuando se trata de una selección una sola línea</LI>	<LI>Se corrigio el agregado de archivos a un proyecot mediante el menu contextual del arbol de archivos</LI>
+	<LI>Ahora ignora correctamente lineas en blanco al cargar un indice de autocompletado</LI>
+	<LI>Agregadas sugerencias especiales para la primera vez que inicia el entorno, y cuando se actualiza</LI>
+	<LI>Agregada opción en el menu Ver para trabajar a pantalla completa</LI>
+	<LI>Corregida la ubicacion en que queda el cursor luego de eliminar una linea</LI>
 
-	
-	<LI>Ahora se define correctamente el orden inicial de los paneles y las barras de herramientas</LI>	<LI>Ya no muestra la terminal si es un proyecto de consola en GNU/Linux</LI>
+</UL><BR><B>Release 20080510</B><BR><UL>
+	<LI>Ahora avisa si se pretende guardar un fuente sin extensión (en modo programa simple)</LI>
+	<LI>Cambiado el valor por defecto para los parametros para el compilador de un programa simple a "-Wall"</LI>
+	<LI>Corregida la insersión de filas para dividir inspecciones compuestas</LI>
+	<LI>Corregida la busqueda de dependencias de un fuente cuando se incluye un path relativo superior (que comienza con "../")</LI>
+	<LI>Corregida la lectura de parámetros en templates</LI>
+	<LI>Corregido el segfault al buscar un archivo o funcion antes de que caduque el timer que actualiza la lista</LI>
+	<LI>Ahora al reemplazar ${MINGW_DIR} en los parametros de compilacion de un proyecto agrega comillas si es necesario</LI>
+	<LI>La opcion <I>Descomentar</I> del menú <I>Edición</I> ahora también trabaja sobre comentarios tipo C (/*...*/)</LI>
+	<LI>La opcion <I>Comentar</I> del menú <I>Edición</I> ahora utiliza comentarios tipo C (/*...*/) cuando se trata de una selección una sola línea</LI>
+	<LI>Se corrigio el agregado de archivos a un proyecot mediante el menu contextual del arbol de archivos</LI>
+	<LI>Ahora se define correctamente el orden inicial de los paneles y las barras de herramientas</LI>
+	<LI>Ya no muestra la terminal si es un proyecto de consola en GNU/Linux</LI>
 	<LI>Corregido el parametro "-pedantic-errors" en la compilación de un proyecto</LI>
-	<LI>Agregados atajos de teclado para plegar o deplegar el código en una linea particular</LI>	<LI>Agregados el segfault en la salida del compilador cuando a parece "In instantiation of"</LI>	<LI>Agregados los calltips para constructores</LI>
+	<LI>Agregados atajos de teclado para plegar o deplegar el código en una linea particular</LI>
+	<LI>Agregados el segfault en la salida del compilador cuando a parece "In instantiation of"</LI>
+	<LI>Agregados los calltips para constructores</LI>
 	<LI>Arreglada la lectura de atributos en los indices de autocompletado</LI>
 	<LI>Arreglado el indentado inteligente al pegar o indentar manualmente</LI>
-	<LI>Mejorado el manejo de templates en el autocompletado (reconocimiendo de variables locales)</LI>	<LI>Verificada la compilación con <I>gcc 4.1.2</I> y <I>wxWidgets 2.8.7</I></LI>
+	<LI>Mejorado el manejo de templates en el autocompletado (reconocimiendo de variables locales)</LI>
+	<LI>Verificada la compilación con <I>gcc 4.1.2</I> y <I>wxWidgets 2.8.7</I></LI>
 	<LI>Agregados los titulos a los paneles</LI>
-	<LI>Agregadas opciones para definir constructor, destructor y herencias al crear una nueva clase para un proyecto con el <I>Asistente para Nuevo Archivo</I></LI>	<LI>Ahora se puede agragar multiples inspecciones utilizando los puntos suspensivos para indicar un rango en el <I>Panel de Inspecciones</I></LI>	<LI>Agregada opcion al menu contextual del trazado inverso para inspeccionar todos los argumentos o todas las variables locales</LI>
-	<LI>La opcion <I>insertar #include correspondiente</I> permite hacerlo a partir de una instancia de una clase</LI>	<LI>Al agregar o modificar una inspeccion ahora avisa y vuelve a solicitar la expresion si no es valida</LI>
+	<LI>Agregadas opciones para definir constructor, destructor y herencias al crear una nueva clase para un proyecto con el <I>Asistente para Nuevo Archivo</I></LI>
+	<LI>Ahora se puede agragar multiples inspecciones utilizando los puntos suspensivos para indicar un rango en el <I>Panel de Inspecciones</I></LI>
+	<LI>Agregada opcion al menu contextual del trazado inverso para inspeccionar todos los argumentos o todas las variables locales</LI>
+	<LI>La opcion <I>insertar #include correspondiente</I> permite hacerlo a partir de una instancia de una clase</LI>
+	<LI>Al agregar o modificar una inspeccion ahora avisa y vuelve a solicitar la expresion si no es valida</LI>
 	<LI>Agregada opcion para explorar todas las inspecciones en el mismo explorador</LI>
-	<LI>Agregado el menu contextual de la tabla de trazado inverso (ahora se pueden explorar todos los argumentos o todas las variables locales)</LI>	<LI>Ya se borra correctamente la marca del punto de ejecucion actual, aunque el usuario modifique el fuente</LI>
-	<LI>Explorador de inspecciones: clase <I>mxInspectionExplorer</I> (segunda parte)</LI>	<LI>Explorador de inspecciones: clase <I>mxInspectionExplorer</I> (primera parte)</LI>
+	<LI>Agregado el menu contextual de la tabla de trazado inverso (ahora se pueden explorar todos los argumentos o todas las variables locales)</LI>
+	<LI>Ya se borra correctamente la marca del punto de ejecucion actual, aunque el usuario modifique el fuente</LI>
+	<LI>Explorador de inspecciones: clase <I>mxInspectionExplorer</I> (segunda parte)</LI>
+	<LI>Explorador de inspecciones: clase <I>mxInspectionExplorer</I> (primera parte)</LI>
 	<LI>Corregido el tratamiento de funciones y metodos templatizados en el Parser</LI>
-	<LI>Corregido el bucle que espera por la tty al inicio de la depuracion en GNU/Linux</LI>	<LI>Corregida la busqueda de la ayuda (ahora busca en todos los archivos, y evita repeticiones)</LI>
+	<LI>Corregido el bucle que espera por la tty al inicio de la depuracion en GNU/Linux</LI>
+	<LI>Corregida la busqueda de la ayuda (ahora busca en todos los archivos, y evita repeticiones)</LI>
 	<LI>Agregado el menu contextual a la tabla de inspecciones</LI>
 	<LI>Ahora el depurador avisa cuando se intenta abrir un ejecutable que no contiene informacióm de depuración<LI>	<LI>Ya se puede interrumpir arbitrariamente un programa en depuración en GNU/Linux</LI>
-	<LI>Corregida la administración de e la terminal para la depuración en GNU/Linux</LI>	<LI>Corregida la actualizacion de inspecciones a alias de variables</LI>
-	<LI>Corregido el paso de parametros para el ejecutable al depurador</LI>	<LI>Ahora el depurador muestra correctamente arreglos y permite dividirlos en multiples inspecciones con doble click</LI>
-	<LI>Corregida la division de clases y estructuras en multiples expresiones en la ventana de inspeccion cuando hay herencia</LI>	<LI>Se agregó una opción para exportar un código a HTML en el menú <I>Archivo</I></LI>	<LI>Se corrigieron errores varios en los métodos <I>FindTypeOf</I> de <I>mxSource</I></LI>
+	<LI>Corregida la administración de e la terminal para la depuración en GNU/Linux</LI>
+	<LI>Corregida la actualizacion de inspecciones a alias de variables</LI>
+	<LI>Corregido el paso de parametros para el ejecutable al depurador</LI>
+	<LI>Ahora el depurador muestra correctamente arreglos y permite dividirlos en multiples inspecciones con doble click</LI>
+	<LI>Corregida la division de clases y estructuras en multiples expresiones en la ventana de inspeccion cuando hay herencia</LI>
+	<LI>Se agregó una opción para exportar un código a HTML en el menú <I>Archivo</I></LI>
+	<LI>Se corrigieron errores varios en los métodos <I>FindTypeOf</I> de <I>mxSource</I></LI>
 	<LI>El autocompletado soporta alias de tipos definidos en macros</LI>
 	<LI>Las cadenas de la salida del depurador ya no muestran los caracteres de escape que agrega gdb</LI>
 	<LI>Las ayudas de llamadas a funciones tambien tienen en cuenta macros con parametros</LI>
-	<LI>Ahora distingue automáticamente archivos C++ de archivos C y usa el compilador adecuado para cada caso (gcc o g++)</LI>	<LI>Al hacer doble click en una expresión que representa un tipo compuesto en el panel de inspección, ésta se divide en sus subexpresiones (por ej, una clase en sus atributos)</LI>	<LI>El cuadro de ayuda verifica si el archivo de ayuda seleccionado existe antes de intentar mostrarlo</LI>	<LI>Ahora las expresiones que devuelven un tipo compuesto tambien se muestran en la ventana de inspeccion (con p, no como una var en gdb)</LI>
-	<LI>Corregida la actualizacion de los valores en la ventana de inspeccion</LI>	<LI>Corregida la forma de pasarle paths al depurador (habia problemas con los espacios y los dos puntos de la unidad en Windows)</LI>
-	<LI>Agregada la opcion para definir si es un porgrama de consola o no (-mwindows) en las opciones de enlazado de un proyecto</LI>	<LI>Ahora marca con gris los puntos de interrupcion que no acepto el depurador</LI>
-	<LI>Corregido el path de los archivos en la insercion de breakpoins</LI>	<LI>Ahora el depurador no vuelva a abrir otra copia de un archivo sin titulo para marcar el punto de ejecucion</LI>
+	<LI>Ahora distingue automáticamente archivos C++ de archivos C y usa el compilador adecuado para cada caso (gcc o g++)</LI>
+	<LI>Al hacer doble click en una expresión que representa un tipo compuesto en el panel de inspección, ésta se divide en sus subexpresiones (por ej, una clase en sus atributos)</LI>
+	<LI>El cuadro de ayuda verifica si el archivo de ayuda seleccionado existe antes de intentar mostrarlo</LI>
+	<LI>Ahora las expresiones que devuelven un tipo compuesto tambien se muestran en la ventana de inspeccion (con p, no como una var en gdb)</LI>
+	<LI>Corregida la actualizacion de los valores en la ventana de inspeccion</LI>
+	<LI>Corregida la forma de pasarle paths al depurador (habia problemas con los espacios y los dos puntos de la unidad en Windows)</LI>
+	<LI>Agregada la opcion para definir si es un porgrama de consola o no (-mwindows) en las opciones de enlazado de un proyecto</LI>
+	<LI>Ahora marca con gris los puntos de interrupcion que no acepto el depurador</LI>
+	<LI>Corregido el path de los archivos en la insercion de breakpoins</LI>
+	<LI>Ahora el depurador no vuelva a abrir otra copia de un archivo sin titulo para marcar el punto de ejecucion</LI>
 	<LI>Corregido el error en <I>DebugManager::WaitAnswer</I> cuando se comienza a recibir una segunda respuestas antes de procesar la primera</LI>
-	<LI>Arreglada la violacion de segmento al redefinir un metodo o una funcion que ya habia sido eliminada en los datos del parser</LI>	<LI>Al depurar un programa simple se intentan setear los ptos de interrupcion de todos los fuentes abiertos (por si, por ej, se abrió un .h que incluye el programa)</LI>
+	<LI>Arreglada la violacion de segmento al redefinir un metodo o una funcion que ya habia sido eliminada en los datos del parser</LI>
+	<LI>Al depurar un programa simple se intentan setear los ptos de interrupcion de todos los fuentes abiertos (por si, por ej, se abrió un .h que incluye el programa)</LI>
 	<LI>La depuracion verifica los includes tambien para saber si debe compilar antes de comenzar</LI>
-	<LI>La depuracion se puede detener en cualquier momento (si es necesari <I>debug-&gt;Stop</I> mata el proceso)</LI>	<LI>Ahora compila automáticamente antes de depurar</LI>
+	<LI>La depuracion se puede detener en cualquier momento (si es necesari <I>debug-&gt;Stop</I> mata el proceso)</LI>
+	<LI>Ahora compila automáticamente antes de depurar</LI>
 	<LI>Ahora habilita/deshabilita los comandos del menu de depuracion al inciar/finalizar la depuracion</LI>
-	<LI>Agregada la ejecucion de proyectos en el depurador</LI>	<LI>Agregado el cuadro de busqueda rapida en la barra de herramientas</LI>	<LI>El código de la tabla de trazado inverso pasa a formar la clase <I>mxBacktraceGrid</I></LI>
+	<LI>Agregada la ejecucion de proyectos en el depurador</LI>
+	<LI>Agregado el cuadro de busqueda rapida en la barra de herramientas</LI>
+	<LI>El código de la tabla de trazado inverso pasa a formar la clase <I>mxBacktraceGrid</I></LI>
 	<LI>Ahora el foco si se dirige al teclado al hacer doble click sobre un error en windows (parche temporal que utiliza un timer)</LI>
 	<LI><I>mxGotoFunctionDialog</I> selecciona el item en el arbol de símbolos al encontrarlo</LI>
-	<LI>Arreglada la violacion de segmento al parsear un archivo que redefine un elemento del autocompletado estandar</LI>	<LI>Implementación del panel de inspección (primera parte)</LI>	<LI>Implementación del panel de inspección (primera parte)</LI>	<LI>Corregida la lectura de nombres de archivos desde el debugger (campos <I>file</I> y <I>fullname</I> de <I>frame</I>)</LI>
+	<LI>Arreglada la violacion de segmento al parsear un archivo que redefine un elemento del autocompletado estandar</LI>
+	<LI>Implementación del panel de inspección (primera parte)</LI>
+	<LI>Implementación del panel de inspección (primera parte)</LI>
+	<LI>Corregida la lectura de nombres de archivos desde el debugger (campos <I>file</I> y <I>fullname</I> de <I>frame</I>)</LI>
 	<LI>Mejorada la visualización del punto actual de la ejecución</LI>
 	<LI>Agregados los atajos de teclado a los comandos de depuración</LI>
 	<LI>Agregados los comandos <I>exec-until</I> y <I>return</I> a la depuración</LI>
 	<LI>Agregada la pestaña <I>Depuracion</I> al cuadro de preferencias</LI>
-	<LI>Implementada la visualización del trazado inverso en la depuración</LI>	<LI>Las barras de herramienta se muestran u ocultan automáticamente al iniciar o finalizar la depuración</LI>
+	<LI>Implementada la visualización del trazado inverso en la depuración</LI>
+	<LI>Las barras de herramienta se muestran u ocultan automáticamente al iniciar o finalizar la depuración</LI>
 	<LI>Agregada la barra de herramientas de depuración</LI>
-	<LI><I>mxSource::FindTypeOf</I> ya no confunde una asignacion a continuación de un <I>else</I> sin llaves con una declaración</LI>	<LI>Los tooltips, calltips y las ayudas de autocompletado se cierran automaticamente al perder el foco su fuente</LI>	<LI>Clase <I>DebugManager</I> (segunda parte - control de stream y ejecución)</LI>
+	<LI><I>mxSource::FindTypeOf</I> ya no confunde una asignacion a continuación de un <I>else</I> sin llaves con una declaración</LI>
+	<LI>Los tooltips, calltips y las ayudas de autocompletado se cierran automaticamente al perder el foco su fuente</LI>
+	<LI>Clase <I>DebugManager</I> (segunda parte - control de stream y ejecución)</LI>
 	<LI>Agregada la notificación de cambios sin guardar mediante un asterisco en el título de la pesataña</LI>
 	<LI>Agregados los tooltips inteligentes en <I>mxSource</I></LI>
 	<LI>Ahora se pueden poner y quitar breakpoints haciendo click en el margen</LI>
-	<LI>Agregada la opción <I>Recargar</I> al menú <I>Archivo</I></LI>	<LI>Arreglada la deteccion de la carpeta de <I>ZinajI</I> al inicio</LI>
-	<LI>Arreglados los path del ejecutable para un programa simple con nombre</LI>	<LI>Implementado el cuadro <I>mxGotoFileDialog</I> para buscar un archivo rapidamente</LI>
-	<LI>Los indices de autocompletado pueden modificarse sin necesidad de reiniciar</LI>	<LI>Agregado el tipo de link <I>quickfile</I> a la ayuda rápida</LI>
-	<LI>Arreglada la presencia del modificador <I>virtual</I> en los metodos de clases al parsear</LI>	<LI>Ahora se considera tambien al puntero this para el autocompletado</LI>
+	<LI>Agregada la opción <I>Recargar</I> al menú <I>Archivo</I></LI>
+	<LI>Arreglada la deteccion de la carpeta de <I>ZinajI</I> al inicio</LI>
+	<LI>Arreglados los path del ejecutable para un programa simple con nombre</LI>
+	<LI>Implementado el cuadro <I>mxGotoFileDialog</I> para buscar un archivo rapidamente</LI>
+	<LI>Los indices de autocompletado pueden modificarse sin necesidad de reiniciar</LI>
+	<LI>Agregado el tipo de link <I>quickfile</I> a la ayuda rápida</LI>
+	<LI>Arreglada la presencia del modificador <I>virtual</I> en los metodos de clases al parsear</LI>
+	<LI>Ahora se considera tambien al puntero this para el autocompletado</LI>
 	<LI>Nuevo dialogo para buscar y reemplazar (<I>mxFindDialog</I>, ahora tiene historial, y acepta expresiones regulares y varios ambitos para la busqueda)</LI>
-	<LI>Arreglado el conteo de dimensiones al averiguar el tipo de un parametro para el autocompletado</LI>	<LI>Agregada la opción para cerrar siempre los demas fuentes al abrir un proyecto</LI>
+	<LI>Arreglado el conteo de dimensiones al averiguar el tipo de un parametro para el autocompletado</LI>
+	<LI>Agregada la opción para cerrar siempre los demas fuentes al abrir un proyecto</LI>
 	<LI>Arreglado el cambio de la bandera <I>Modify</I> en mxSource al llamar a <I>SaveTemp</I></LI>
-	<LI>Reemplazado el cuadro de texto por un checklist para los indices del autocompletado en <I>mxConfigWindow</I></LI>	<LI>Clase <I>DebugManager</I> (primera parte - base)</LI>	<LI>Implementado el cuadro <I>mxGotoFunctionDialog</I> para buscar funciones, clases y metodos rapidamente</LI>
+	<LI>Reemplazado el cuadro de texto por un checklist para los indices del autocompletado en <I>mxConfigWindow</I></LI>
+	<LI>Clase <I>DebugManager</I> (primera parte - base)</LI>
+	<LI>Implementado el cuadro <I>mxGotoFunctionDialog</I> para buscar funciones, clases y metodos rapidamente</LI>
 	<LI>Al crear una clase con el asistente en un proyecto, se puede incluir una ruta (directorio)</LI>
 	<LI>Corregidos algunos errores que quedaron del ultimo cambio en el sistema de templates</LI>
 	<LI>Ahora recuerda breakpoints, lineas marcadas y la posicion del cursor en los archivos de un proyecto</LI>
 	<LI>Agregada la opcion <I>Abrir todos</I> para las categorias del arbol de proyecto (fuentes/cabeceras/otros)</LI>
-	<LI>Redefinidos los estilos de los marcadores para el folding, y agregados los de depuracion</LI>	<LI>Implementada version preliminar de <I>Buscar en archivos</I></LI>
+	<LI>Redefinidos los estilos de los marcadores para el folding, y agregados los de depuracion</LI>
+	<LI>Implementada version preliminar de <I>Buscar en archivos</I></LI>
 	<LI>Corregida la creacion de la carpeta para los objetos temporales al compilar</LI>
 	<LI>Corregida la creacion de la carpeta para los objetos temporales en el makefile</LI>
-	<LI>Coregida la visualizacion correcta de resultados de busquedas (por el folding)</LI>	<LI>Ahora busca el archivo <I>zinjai.dir</I> para saber cual es su directorio de trabajo</LI>	<LI>Creada la clase mxMessageDialog (para reemplazar a wxMessageBox)</LI>
+	<LI>Coregida la visualizacion correcta de resultados de busquedas (por el folding)</LI>
+	<LI>Ahora busca el archivo <I>zinjai.dir</I> para saber cual es su directorio de trabajo</LI>
+	<LI>Creada la clase mxMessageDialog (para reemplazar a wxMessageBox)</LI>
 	<LI>Creada la clase mxBitmapButton (para que los botones tengan tambien un icono)</LI>
 	<LI>Creada la clase mxArt (para administrar las imagenes de uso cotidiano)</LI>
 	<LI>Las opciones para compilacion y enlazado soportan el uso de la variable MINGW_DIR</LI>
-	<LI>Los argumentos extra para compilacion y enlazado soportan ejecucion de subcomandos entre acentos</LI>	<LI>Agregado el soporte para etiquetas "example" en la ayuda rapida (para abrir los ejemplos)</LI>
+	<LI>Los argumentos extra para compilacion y enlazado soportan ejecucion de subcomandos entre acentos</LI>
+	<LI>Agregado el soporte para etiquetas "example" en la ayuda rapida (para abrir los ejemplos)</LI>
 	<LI>Agregado el icono en las pestanas de los archivos</I>
 	<LI>Arreglada la pelea entre la compilacion y el parsing por la barra de estado en proyectos</I>
 	<LI>Ahora muestra el tiempo que tomo compilar un proyecto al finalizar exitosamente</I>
-	<LI>Implementado el soporte para templates para proyectos</LI>	<LI>Agregada la propiedad "nombre" a los proyectos</LI>
+	<LI>Implementado el soporte para templates para proyectos</LI>
+	<LI>Agregada la propiedad "nombre" a los proyectos</LI>
 	<LI>Los templates de archivos pueden declarar opciones para el compilador (Options) y nombre (Name) en sus comentarios ("// !Z! &lt;propiedad&gt; &lt;valor&gt;")</LI>
-	<LI>Los templates de archivos ya no tienen indice, sino que se toman todos los archivos del directorio</LI>	<LI>Corregido el metodo AddInclude de mxSource (y ahora tambien descomenta el include si estaba comentado)</LI>	<LI>Corregidos errores varios en el autocompletado inteligente</LI>	<LI>Agregado el autocompletado estandar configurable</LI>
-	<LI>Adaptada la inclusion automatica de cabeceras a los nuevos parerData</LI>	<LI>El autocompletado tiene en cuenta atributos encadenados (ej: clase->clase->puntero->metodo)</LI>
+	<LI>Los templates de archivos ya no tienen indice, sino que se toman todos los archivos del directorio</LI>
+	<LI>Corregido el metodo AddInclude de mxSource (y ahora tambien descomenta el include si estaba comentado)</LI>
+	<LI>Corregidos errores varios en el autocompletado inteligente</LI>
+	<LI>Agregado el autocompletado estandar configurable</LI>
+	<LI>Adaptada la inclusion automatica de cabeceras a los nuevos parerData</LI>
+	<LI>El autocompletado tiene en cuenta atributos encadenados (ej: clase->clase->puntero->metodo)</LI>
 	<LI>Las ayudas de llamadas tienen en cuenta ambito (puede ser una clase, un metodo, o un namspace)	<LI>En el autocompletado se muestran los mismos iconos que en el arbol de simbolos</LI>
 	<LI>Corregido el orden de la lista de autocompletado (alfabetico y no case-sensitive)</LI>
 	<LI>Agregada las ayudas de llamadas a metodos y funciones (calltips)</LI>
-	<LI>Corregidos errores varios en el autocompletado inteligente</LI>	<LI>Agregadas las consideraciones para break y continue en los diagramas de flujo</LI>
+	<LI>Corregidos errores varios en el autocompletado inteligente</LI>
+	<LI>Agregadas las consideraciones para break y continue en los diagramas de flujo</LI>
 	<LI>La ayuda rapida de una macro muestra su definicion si su archivo no fue modificado</LI>
 	<LI>Autocompletado inteligente: completa tambien funciones, macros, variables globales y nombres de clases</LI>
 	<LI>Autocompletado inteligente: acepta expresiones con punteros e indices</LI>
-	<LI>Autocompletado inteligente: reconoce casting tipo c o c++</LI>	<LI>Agregado el calculo del ancho del margen para nros de linea al cargar un archivo</LI>
+	<LI>Autocompletado inteligente: reconoce casting tipo c o c++</LI>
+	<LI>Agregado el calculo del ancho del margen para nros de linea al cargar un archivo</LI>
 	<LI>Agregados los globos para tips (metodo ShowBaloon) a mxSource</LI>
 	<LI>Implementado el autocompletado basico para metodos y atributos</LI>
 	<LI>Agregada la información de herencia a parserData y HelpManager</LI>
@@ -943,51 +1164,99 @@
 		<LI>Opcion default en el indentado inteligente del switch</LI>
 		<LI>Posicion de una llave si esta sobre el cursor al presionar enter con el indentado inteligente</LI>
 		<LI>Ya no se duplican los archivos en el arbol de proyecto al abrirlos con ctrl+enter</LI>
-	</UL></LI>	<LI>Adaptada la clase HelpManager a la nueva arquitectura parserData</LI>
-	<LI>Nueva arquitectura parserData (actions, lista de parserData)</LI>	<LI>Nueva arquitectura parserData (propiedades de metodos y atributos)</LI>	<LI>Nueva arquitectura parserData (metodos y attributos)</LI>	<LI>Agregada la barra de progreso en la barra de estado para la compilacion de proyectos</LI>
-	<LI>Nueva arquitectura parserData (macros y variables globales)</LI>	<LI>Nueva arquitectura parserData (declaracion de clases y funciones)</LI>	<LI>Nueva arquitectura parserData (primera parte)</LI>	<LI>Agregado el menu contextual en mxSource</LI>
-	<LI>Deteccion de tipos para el autocompletado inteligente (primera parte: mxSource::FindTypeOf)</LI>	<LI>Agregada la navegacion entre pestañas del notebook de fuente con Ctrl+Tab y Ctrl+Shift+Tab</LI>
-	<LI>La ayuda rapida de una clase muestra su jerarquia de herencia completa, y tambien sus clases hijas</LI>	<LI>Agregada la opcion para insertar automaticamente el include necesario a partir de una palabra clave</LI>	<LI>Ahora se contempla la declaracion de templates en las reglas de indentado inteligente</LI>
-	<LI>Reescrita la seleccion de errores (ahora subraya en rojo)</LI>	<LI>Diagrama de flujo: zoom y panning</LI>
-	<LI>Diagrama de flujo: for if</LI>	<LI>Diagrama de flujo: do, while, return</LI>	<LI>Implementado buscar en la ayuda de la gui</LI>	<LI>El coloreado de sintaxis soporta tambien HTML, XML y Makefiles automaticamente</LI>
+	</UL></LI>
+	<LI>Adaptada la clase HelpManager a la nueva arquitectura parserData</LI>
+	<LI>Nueva arquitectura parserData (actions, lista de parserData)</LI>
+	<LI>Nueva arquitectura parserData (propiedades de metodos y atributos)</LI>
+	<LI>Nueva arquitectura parserData (metodos y attributos)</LI>
+	<LI>Agregada la barra de progreso en la barra de estado para la compilacion de proyectos</LI>
+	<LI>Nueva arquitectura parserData (macros y variables globales)</LI>
+	<LI>Nueva arquitectura parserData (declaracion de clases y funciones)</LI>
+	<LI>Nueva arquitectura parserData (primera parte)</LI>
+	<LI>Agregado el menu contextual en mxSource</LI>
+	<LI>Deteccion de tipos para el autocompletado inteligente (primera parte: mxSource::FindTypeOf)</LI>
+	<LI>Agregada la navegacion entre pestañas del notebook de fuente con Ctrl+Tab y Ctrl+Shift+Tab</LI>
+	<LI>La ayuda rapida de una clase muestra su jerarquia de herencia completa, y tambien sus clases hijas</LI>
+	<LI>Agregada la opcion para insertar automaticamente el include necesario a partir de una palabra clave</LI>
+	<LI>Ahora se contempla la declaracion de templates en las reglas de indentado inteligente</LI>
+	<LI>Reescrita la seleccion de errores (ahora subraya en rojo)</LI>
+	<LI>Diagrama de flujo: zoom y panning</LI>
+	<LI>Diagrama de flujo: for if</LI>
+	<LI>Diagrama de flujo: do, while, return</LI>
+	<LI>Implementado buscar en la ayuda de la gui</LI>
+	<LI>El coloreado de sintaxis soporta tambien HTML, XML y Makefiles automaticamente</LI>
 	<LI>Se puede abrir archivos arrastrandolos desde el explorardor a la ventana de <I>ZinjaI</I></LI>
 	<LI>La opcion agregar del menu contextual del arbol de proyecto permite seleccionas mas de un archivo</LI>
 	<LI>Arreglada la visualizacion del menu de archivos abiertos recientemente en windows</LI>
-	<LI>Arreglado el manejo de directivas de preprocesador y comentarios en el indentado inteligente</LI>	<LI>Diagramas de flujo (primera parte)</LI>
+	<LI>Arreglado el manejo de directivas de preprocesador y comentarios en el indentado inteligente</LI>
+	<LI>Diagramas de flujo (primera parte)</LI>
 	<LI>La compilacion se ejecuta en la carpeta del fuente/proyecto</LI>
 	<LI>Agregada la opción para evitar el warning no new line at end of file</LI>
-	<LI>Corregido el renombrado de archivos en proyectos</LI>	<LI>Al pegar un bloque de código, este se indenta automáticamente de acuerdo al nuevo contexto</LI>	<LI>El arbol de simbolos se actualiza genera automaticamente al abrir un proyecto</LI>	<LI>El pegado indentado acomoda el código del portapapeles de acuerdo a las reglas del indentado automático al pegar</LI>	<LI>La edición inteligente agrega la llave que cierra un bloque luego de presionar enter tras introducir la llave que lo abre</LI>	<LI>Los procesos de compilacion y ejecucion se matan correctamente al interrumpirse con Ejecucion->Detener</LI>
+	<LI>Corregido el renombrado de archivos en proyectos</LI>
+	<LI>Al pegar un bloque de código, este se indenta automáticamente de acuerdo al nuevo contexto</LI>
+	<LI>El arbol de simbolos se actualiza genera automaticamente al abrir un proyecto</LI>
+	<LI>El pegado indentado acomoda el código del portapapeles de acuerdo a las reglas del indentado automático al pegar</LI>
+	<LI>La edición inteligente agrega la llave que cierra un bloque luego de presionar enter tras introducir la llave que lo abre</LI>
+	<LI>Los procesos de compilacion y ejecucion se matan correctamente al interrumpirse con Ejecucion->Detener</LI>
 	<LI>Se puede continuar trabajando mientras se parsean los fuentes para el arbol de simbolos</LI>
-	<LI>Al seleccionar un error se selecciona la palabra que lo generó en el código si se encuentra</LI>	<LI>Agregado el autocompletado de constructores en declaraciones de instancias</LI>	<LI>La lista de autocompletado ya no muestra elementos repetidos</LI>
-	<LI>Se pueden cargar clases para el autocompletado estandar</LI>	<LI>Agregado el resaltado de lineas de usuario</LI>	<LI>Resaltado de constructores y destructor en el arbol de simbolos</LI>	<LI>Ventana de ayuda (mxHelpWindow) (segunda parte: barra de herramientas y arbol indice)</LI>	<LI>Ventana de ayuda (mxHelpWindow) (primera parte: html base)</LI>
+	<LI>Al seleccionar un error se selecciona la palabra que lo generó en el código si se encuentra</LI>
+	<LI>Agregado el autocompletado de constructores en declaraciones de instancias</LI>
+	<LI>La lista de autocompletado ya no muestra elementos repetidos</LI>
+	<LI>Se pueden cargar clases para el autocompletado estandar</LI>
+	<LI>Agregado el resaltado de lineas de usuario</LI>
+	<LI>Resaltado de constructores y destructor en el arbol de simbolos</LI>
+	<LI>Ventana de ayuda (mxHelpWindow) (segunda parte: barra de herramientas y arbol indice)</LI>
+	<LI>Ventana de ayuda (mxHelpWindow) (primera parte: html base)</LI>
 	<LI>Corregido renombrar en el arbol de proyecto</LI>
 	<LI>Arreglado el orden de las lista de autocompletado</LI>
-	<LI>Agregada la información de herencia obtenida del parser en la ayuda rápida</LI>	<LI>El autocompletado ya no es case sensitive</LI>
+	<LI>Agregada la información de herencia obtenida del parser en la ayuda rápida</LI>
+	<LI>El autocompletado ya no es case sensitive</LI>
 	<LI>Agregada la informacion de visibilidad para los miembros y attributos de la ayuda rapida generados por el parser</LI>
 	<LI>Agregado el indice en caso de haber multiples resultados para la ayuda rapida</LI>
-	<LI>Independizado cbrowser de TCL</LI>	<LI>Agregado el tratamiento especial de los metodos virtuales por parte de Parser</LI>
-	<LI>Adaptado y reacomodado del codigo de cbrowser (parser tomado de SourceNavigator)</LI>	<LI>Implementadas las opciones de plegado en el menu ver</LI>	<LI>Implementada la opcion Indentar del menu edicion</LI>
-	<LI>Implementado el indentado inteligente (segunda parte)</LI>	<LI>Implementado el indentado inteligente (primera parte)</LI>
-	<LI>Arreglado Seleccionar Bloque del menu edicion</LI>	<LI>Agregada la informacion del Parser a la ayuda rapida</LI>
+	<LI>Independizado cbrowser de TCL</LI>
+	<LI>Agregado el tratamiento especial de los metodos virtuales por parte de Parser</LI>
+	<LI>Adaptado y reacomodado del codigo de cbrowser (parser tomado de SourceNavigator)</LI>
+	<LI>Implementadas las opciones de plegado en el menu ver</LI>
+	<LI>Implementada la opcion Indentar del menu edicion</LI>
+	<LI>Implementado el indentado inteligente (segunda parte)</LI>
+	<LI>Implementado el indentado inteligente (primera parte)</LI>
+	<LI>Arreglado Seleccionar Bloque del menu edicion</LI>
+	<LI>Agregada la informacion del Parser a la ayuda rapida</LI>
 	<LI>Agregadas las opciones "Cerrar Todo" y "Guardar Todo" en el menu Archivo</LI>
 	<LI>Agregadas las opciones "Duplicar Lineas" y "Eliminar Lineas" en el menu Edicion</LI>
-	<LI>Agregada la pagina del asistente mxNewWizard para crear un archivo en un proyecto</LI>	<LI>Agregada la informacion del parseo para el arbol de simbolos al autocompletado</LI>	<LI>Arreglada la salida del compilador en windows (ahora hay un timer que va actualizando el arbol de compilacion cada medio segundo)</LI>
-	<LI>Agregada opcion para guardar el proyecto automaticamente</LI>	<LI>Agregadas opciones para administrar mas de una configuracion en un proyecto</LI>	<LI>Abre archivos al iniciar si se le pasan como parametros</LI>
+	<LI>Agregada la pagina del asistente mxNewWizard para crear un archivo en un proyecto</LI>
+	<LI>Agregada la informacion del parseo para el arbol de simbolos al autocompletado</LI>
+	<LI>Arreglada la salida del compilador en windows (ahora hay un timer que va actualizando el arbol de compilacion cada medio segundo)</LI>
+	<LI>Agregada opcion para guardar el proyecto automaticamente</LI>
+	<LI>Agregadas opciones para administrar mas de una configuracion en un proyecto</LI>
+	<LI>Abre archivos al iniciar si se le pasan como parametros</LI>
 	<LI>Ordenamiento del arbol del simbolos</LI>
 	<LI>//Reemplazo del wxHashMap por un std::map para data en el parser (es mas rapido y muestra ordenado)</LI>
 	<LI>Compilacion de fuentes individuales dentro de proyectos</LI>
-	<LI>Implementacion del las opciones de compilacion de proyecto (segunda parte) </LI>	<LI>Arreglado la compilacion y exportacion de makefiles de proyectos que tienen fuentes que incluyen espacios en sus rutas</LI>
+	<LI>Implementacion del las opciones de compilacion de proyecto (segunda parte) </LI>
+	<LI>Arreglado la compilacion y exportacion de makefiles de proyectos que tienen fuentes que incluyen espacios en sus rutas</LI>
 	<LI>Arreglado el manejo de rutas relativas y absolutas en proyectos</LI>
-	<LI>Implementacion del las opciones de compilacion de proyecto (primera parte)</LI>	<LI>Agregadas macros en mxUtils para el trabajo con listas enlazadas para limpiar codigo</LI>
+	<LI>Implementacion del las opciones de compilacion de proyecto (primera parte)</LI>
+	<LI>Agregadas macros en mxUtils para el trabajo con listas enlazadas para limpiar codigo</LI>
 	<LI>Corregido el parser para que no procese mas de una vez el mismo archivo en un proyecto</LI>
 	<LI>clase mxProjectConfigWindow</LI>
 	<LI>Compilacion de proyectos (segunda parte)</LI>
-	<LI>Exportacion de Makefile</LI>	<LI>Compilacion de proyectos (primera parte)</LI>	<LI>Actualizada clase Parser para trabajar con proyectos</LI>	<LI>Menu contextual del arbol de proyecto</LI>	<LI>Clase ProjectManager y manejo de proyectos (tercera parte)</LI>	<LI>Clase ProjectManager  y manejo de proyectos (segunda parte)</LI>	<LI>Arreglado el problema al compartir el primer archivo en windows</LI>
-	<LI>Arreglado el problema del paso de parametros en windows</LI>	<LI>Historial de archivos abiertos</LI>
-	<LI>Busqueda de includes (segunda parte)</LI>	<LI>Busqueda de includes para armar las dependencias de un cpp respecto a las cabeceras (primera parte)</LI>
-	<LI>Clase ProjectManager y manejo de proyectos (segunda parte)</LI>	<LI>Nuevos iconos para la barra de herramientas y los menues</LI>
+	<LI>Exportacion de Makefile</LI>
+	<LI>Compilacion de proyectos (primera parte)</LI>
+	<LI>Actualizada clase Parser para trabajar con proyectos</LI>
+	<LI>Menu contextual del arbol de proyecto</LI>
+	<LI>Clase ProjectManager y manejo de proyectos (tercera parte)</LI>
+	<LI>Clase ProjectManager  y manejo de proyectos (segunda parte)</LI>
+	<LI>Arreglado el problema al compartir el primer archivo en windows</LI>
+	<LI>Arreglado el problema del paso de parametros en windows</LI>
+	<LI>Historial de archivos abiertos</LI>
+	<LI>Busqueda de includes (segunda parte)</LI>
+	<LI>Busqueda de includes para armar las dependencias de un cpp respecto a las cabeceras (primera parte)</LI>
+	<LI>Clase ProjectManager y manejo de proyectos (segunda parte)</LI>
+	<LI>Nuevos iconos para la barra de herramientas y los menues</LI>
 	<LI>Agregados iconos a los arboles de symbolos y salida del compilador</LI>
-	<LI>Agregada distincion en el alcance de los miembros y atributos de una clase en Parser</LI>	<LI>Bugs arreglados<UL>
+	<LI>Agregada distincion en el alcance de los miembros y atributos de una clase en Parser</LI>
+	<LI>Bugs arreglados<UL>
 		<LI>parseo del error cuando aparece la unidad en el path del archivo</LI>
 		<LI>foco del nuevo source despues de mostrar el asistente mxNewWizard</LI>
 		<LI>menu contextual del arbol de simbolos en windows</LI>
@@ -999,15 +1268,20 @@
 		<LI>visualizacion de la consola de ejecucion en windows</LI>
 	</UL></LI>
 	<LI>Agregado icono a la ventana principal y al exe</LI>
-	<LI>Makefile para windows</LI>	<LI>Arreglada el foco en los comandos buscar y reemplazar</LI>
+	<LI>Makefile para windows</LI>
+	<LI>Arreglada el foco en los comandos buscar y reemplazar</LI>
 	<LI>Arreglada la apariencia de los Add***Ctrl en mxUtils</LI>
 	<LI>Agregado directorio de trabajo configurable en mxConfigWindow y runner</LI>
-	<LI>Arreglados los paths en ConfigManager::LoadDefaults para que sean independientes del SO</LI>	<LI>Panel de nuevo proyecto en mxNewWizard</LI>
-	<LI>clase ProjectManager (primera parte)</LI>	<LI>Parser: seguir includes</LI>
-	<LI>segunda parte de clase CodeHelper (autocompletado y calltips)</LI>	<LI>Asistente para nuevo archivo (segunda parte: asistente para plantilla, y tooltips)</LI>
+	<LI>Arreglados los paths en ConfigManager::LoadDefaults para que sean independientes del SO</LI>
+	<LI>Panel de nuevo proyecto en mxNewWizard</LI>
+	<LI>clase ProjectManager (primera parte)</LI>
+	<LI>Parser: seguir includes</LI>
+	<LI>segunda parte de clase CodeHelper (autocompletado y calltips)</LI>
+	<LI>Asistente para nuevo archivo (segunda parte: asistente para plantilla, y tooltips)</LI>
 	<LI>arreglo: posibilidad de seleccionar nodos intermedios en el arbol de simbolos</LI>
 	<LI>primera parte de clase CodeHelper (autocompletado y calltips)</LI>
-	<LI>arreglo del cuelgue cuando se busca archivos compartidos en un host que no existe</LI>	<LI>clase mxOpenSharedWindow</LI>
+	<LI>arreglo del cuelgue cuando se busca archivos compartidos en un host que no existe</LI>
+	<LI>clase mxOpenSharedWindow</LI>
 	<LI>clase mxShareSourceWindow</LI>
 	<LI>clase ShareManager (segunda parte)</LI>
 
@@ -1033,16 +1307,16 @@
 		<LI>Creacion del ConfigManager</LI>
 		<LI>Arbol de Proyecto</LI>
 		<LI>Base (a partir de los ejemplos de aui y scintilla de la wx)</LI>
-		<B>Trabajo Previo</B>: <UL>
+		<LI><B>Trabajo Previo</B>: <UL>
 			<LI>Selección de la biblioteca para la GUI: wxWidgets (por potencia, portabilidad, orientacion a objetos, licensia, ...)</LI>
 			<LI>Selección de un parser C++: cbrowser de SourceNavigator (opcion temporal)</LI>
 			<LI>Lectura de material <UL>
 				<LI>Documentación, referencia, tutoriales y ejemplos de wxWidgets</LI>
 				<LI>Documentación oficial de gdb</LI>
-		</UL>
+			</UL></LI>
+		</UL></LI>
 	</UL></LI>
 </UL>
 <BR><BR>
-<I>Nota: Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><BR>
 </BODY>
 </HTML>
