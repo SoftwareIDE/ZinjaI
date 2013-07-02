@@ -70,7 +70,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, bool
 		wxCommandEvent evt;
 		OnGotoButton(evt);
 #if defined(_WIN32) || defined(__WIN32__)
-		main_window->focus_timer->Start(333,true);
+		main_window->SetFocusToSourceAfterEvents();
 #endif
 	} else
 		Show();
