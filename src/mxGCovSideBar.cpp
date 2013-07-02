@@ -5,6 +5,7 @@
 #include "mxUtils.h"
 #include "mxColoursEditor.h"
 #include "mxOSD.h"
+#include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(mxGCovSideBar, wxWindow)
 	EVT_PAINT  (mxGCovSideBar::OnPaint)
