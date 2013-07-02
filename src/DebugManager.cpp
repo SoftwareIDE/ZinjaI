@@ -134,7 +134,7 @@ bool DebugManager::Start(bool update, mxSource *source) {
 			if (source->sin_titulo) notitle_source=source;
 			if (!Run()) {
 #ifdef __WIN32__
-				if (source->binary_filename.GetPath().Contains(' '))
+				if (source->GetBinaryFileName().Contains(' '))
 					mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING_SPACES,"Error al iniciar el proceso. Puede intentar mover el ejecutable o el proyecto a una ruta sin espacios."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
 				else
 #endif
