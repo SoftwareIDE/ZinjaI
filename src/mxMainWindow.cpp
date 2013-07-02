@@ -991,7 +991,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnSelectTreeItem");
 	else if (event.GetEventObject()==symbols_tree.treeCtrl) {
 		parser->OnSelectSymbol(event,notebook_sources);
 #if defined(_WIN32) || defined(__WIN32__)
-		CallAfterEvents(new SetFocusToSourceAfterEvents());
+		SetFocusToSourceAfterEvents();
 #endif
 	} else if (event.GetEventObject()==explorer_tree.treeCtrl)
 		OnSelectExplorerItem(event);
@@ -1004,7 +1004,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 		if (((mxSource*)(notebook_sources->GetPage(i)))->treeId==item) {
 			notebook_sources->SetSelection(i);
 #if defined(_WIN32) || defined(__WIN32__)
-			CallAfterEvents(new SetFocusToSourceAfterEvents());
+			SetFocusToSourceAfterEvents();
 #endif
 			return;
 		}
@@ -1020,7 +1020,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 				//source->SetStyle(false);
 				menu.view_code_style->Check(false);
 #if defined(_WIN32) || defined(__WIN32__)
-			CallAfterEvents(new SetFocusToSourceAfterEvents());
+			SetFocusToSourceAfterEvents();
 #endif
 		}
 	}
@@ -4536,7 +4536,7 @@ void mxMainWindow::OnExplorerTreeOpenOne(wxCommandEvent &evt) {
 	if (explorer_tree.treeCtrl->GetItemImage(explorer_tree.selected_item)) {
 		OpenFileFromGui(path);
 #if defined(_WIN32) || defined(__WIN32__)
-		CallAfterEvents(new SetFocusToSourceAfterEvents());
+		SetFocusToSourceAfterEvents();
 #endif
 	} else {
 		
@@ -5380,7 +5380,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 				n+=source->PositionFromLine(line-1)-1;
 				source->SelectError(0,n,n);
 #if defined(_WIN32) || defined(__WIN32__)
-				CallAfterEvents(new SetFocusToSourceAfterEvents());
+				SetFocusToSourceAfterEvents();
 #endif
 				ShowCompilerTreePanel();
 				return;
@@ -5456,7 +5456,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 			}
 		}
 #if defined(_WIN32) || defined(__WIN32__)
-		CallAfterEvents(new SetFocusToSourceAfterEvents());
+		SetFocusToSourceAfterEvents();
 #endif
 		ShowCompilerTreePanel();
 		return;
