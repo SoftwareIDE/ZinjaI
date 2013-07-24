@@ -47,6 +47,10 @@
 //#define ES_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
 #include "Toolchain.h"
 
+#ifdef DEBUG
+#include<iostream>
+using namespace std;
+#endif
 
 wxMutex mxMutexCompiler;
 

@@ -234,6 +234,12 @@ PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK
 Seleccionar otro perfil de la lista
 PROJMNGR_CHANGE_PROFILE_OPENNING_CHOICE
 Seleccione el perfil a activar
+PROJECT_MINGW_CC_PROBLEM_DESC
+El proyecto que está abriendo fue guardado con una versión de ZinjaI que incluía\nversiones anteriores de las herramientas de compilación mingw. Los archivos ya\ncompilados con esas herramientas no serán compatibles con los que compilen con la\nnueva versión disponible actualmente. Si utiliza el compilador por defecto deberá\nrecompilar todo el proyecto. ¿Desea eliminar ahora los objetos compilados para\nforzar la recompilación del proyecto antes de la próxima ejecución?\nNota: si su proyecto utiliza bibliotecas no provistas con ZinjaI, probablemente deba\nobtener además nuevas versiones de las mismas. En caso de no hacerlo, su programa\npodría finalizar anormalmente al intentar ejecturalo.
+PROJECT_MINGW_CC_PROBLEM_MORE
+Mostrar más detalles (artículo en el blog)
+PROJECT_REQUIRES_NEWER_ZINJAI
+El proyecto que esta abriendo requiere una version superior de ZinjaI\na la instalada actualmente para cargar todas las opciones de proyecto\ncorrectamente. El proyecto se abrira de todas formas, pero podria encontrar\nproblemas posteriormente.\n
 PROJMNGR_CONFIRM_REPLACE
 Ya existe un archivo con ese nombre. Desea Reemplazarlo?
 PROJMNGR_CONFIRM_DETTACH_ALSO_PRE
@@ -2502,16 +2508,16 @@ MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
 Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
 MAINW_GPROF_OUTPUT_MISSING
 No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda.
+MAINW_GPROF_STATUS_ANALIZING
+Analizando informacion de perfilado...
+MAINW_GPROF_ERROR
+Ha ocurrido un error al intentar procesar la información de perfilado
 MAINW_GPROF_EDGE_THERSHOLD
 Eliminar arcos bajo este umbral (%):
 MAINW_GPROF_ASK_TITLE
 Perfil de Ejecucion
 MAINW_GPROF_NODE_THERSHOLD
 Eliminar nodos bajo este umbral (%):
-MAINW_GPROF_STATUS_ANALIZING
-Analizando informacion de perfilado...
-MAINW_GPROF_ERROR
-Ha ocurrido un error al intentar procesar la información de perfilado
 MAINW_GPROF_DRAWING
 Dibujando grafo...
 MAINW_GPROF_SHOWING

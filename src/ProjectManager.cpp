@@ -448,12 +448,12 @@ ProjectManager::ProjectManager(wxFileName name) {
 	}
 	
 	if (version_required>VERSION) {
-		mxMessageDialog(main_window,
-			wxString(_T("El proyecto que esta abriendo requiere una version superior de ZinjaI\n"))<<
-			_T("Su version es ")<<VERSION<<_T(" y se requiere al menos ")<<version_required<<_T(" para cargar\n")<<
-			_T("todas las opciones de proyecto correctamente. El proyecto se abrira\n")<<
-			_T("de todas formas, pero podria encontrar problemas posteriormente.\n"),
-			_T("Version del Proyecto"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(main_window,LANG(PROJECT_REQUIRES_NEWER_ZINJAI,""
+			"El proyecto que esta abriendo requiere una version superior de ZinjaI\n"
+			"a la instalada actualmente para cargar todas las opciones de proyecto\n"
+			"correctamente. El proyecto se abrira de todas formas, pero podria encontrar\n"
+			"problemas posteriormente.\n"
+			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 	}
 	
 	if (files_to_open>0) main_window->SetStatusProgress(-1);
@@ -463,6 +463,25 @@ ProjectManager::ProjectManager(wxFileName name) {
 	main_window->PrepareGuiForProject(true);
 	if (project->use_wxfb) project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
+	
+	#ifdef __WIN32__
+	if (version_saved<20130723) { // changes mingw default calling convention
+		int ret=mxMessageDialog(main_window,LANG(PROJECT_MINGW_CC_PROBLEM_DESC,""
+			"El proyecto que está abriendo fue guardado con una versión de ZinjaI que utilizaba\n"
+			"versiones ahora desactualizadas de las herramientas de compilación (mingw). Los\n"
+			"archivos compilados con esas herramientas no serán compatibles con los que se\n"
+			"compilen con la nueva versión disponible. Si utiliza el compilador por defecto\n"
+			"deberá recompilar todo el proyecto. ¿Desea eliminar ahora los objetos compilados\n"
+			"para forzar la recompilación del proyecto antes de la próxima ejecución?\n\n"
+			"Nota: si su proyecto utiliza bibliotecas no provistas con ZinjaI, probablemente deba\n"
+			"obtener además nuevas versiones de las mismas. En caso de no hacerlo, su programa\n"
+			"podría finalizar anormalmente al intentar ejecutarlo."
+			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_YES_NO,LANG(PROJECT_MINGW_CC_PROBLEM_MORE,"Mostrar más detalles (artículo en el blog)"),false).ShowModal();
+		if (ret&mxMD_CHECKED) utils->OpenInBrowser("http://cucarachasracing.blogspot.com.ar");
+		if (ret&mxMD_YES) { wxCommandEvent evt; main_window->OnRunClean(evt); }
+	}
+	#endif
+	
 }
 
 // liberar memoria al destruir el proyecto

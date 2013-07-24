@@ -8,11 +8,13 @@
 #include <map>
 #include <list>
 #include <wx/process.h>
+#include <wx/timer.h>
 using namespace std;
 
 #include "paf_defs.h"
 
 class ProjectManager;
+class mxMainWindow;
 class mxSource;
 
 class pd_file;
@@ -133,7 +135,7 @@ public:
 	bool follow_includes;
 	bool sort_items;
 
-	Parser (wxTreeCtrl *t);
+	Parser (mxMainWindow *mainwin);
 	~Parser();
 
 	list<parserAction> actions;
@@ -174,6 +176,9 @@ public:
 	/// Parsea un archivo si ha sido modificado
 	void ParseIfUpdated(wxFileName fname); 
 	
+	wxTimer *process_timer; /// timer for flushing input stream from process while its running to avoid process lock due to too much unprocessed output (happens on win32)
+	void OnParserProcessTimer(); /// ask the current process to flush and parse its curren inputs
+	
 };
 
 extern Parser *parser;
@@ -181,7 +186,7 @@ extern Parser *parser;
 class mxParserProcess:public wxProcess {
 public:
 	pd_file *file; pd_class *aux_class;
-	mxParserProcess():wxProcess(wxPROCESS_REDIRECT),file(NULL),aux_class(NULL){}
+	mxParserProcess():wxProcess(wxPROCESS_REDIRECT),file(NULL),aux_class(NULL){ parser->process_timer->Start(100,false); }
 	void OnTerminate(int pid, int status);
 	void ParseOutput();
 };

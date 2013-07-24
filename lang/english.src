@@ -232,6 +232,12 @@ PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK
 Select another profile from a list
 PROJMNGR_CHANGE_PROFILE_OPENNING_CHOICE
 Select a profile to activate
+PROJECT_MINGW_CC_PROBLEM_DESC
+This project was saved with an older ZinjaI release, that was shipped with an older\ncompiler version (mingw). Object files generated with the old compiler cannot be linked\nwith the ones that will generate the new and currently available compiler (if you are\nstill compiling with ZinjaI's default toolchain). In most cases you can easily solve\nthis problem by cleaning the project (removing temporal objects to make ZinjaI regenerate\nthem before next running). Do you want to do it now?\nNote: if your project links to external libraries not shipped with ZinjaI, you may need\nto update them too. If you don't, your program could stop annormaly.
+PROJECT_MINGW_CC_PROBLEM_MORE
+Show more details (opens a blog post)
+PROJECT_REQUIRES_NEWER_ZINJAI
+This projects requiers a newer ZinjaI version in order to correctly understand\nall options in project configuration. ZinjaI will open the project anyway, but\nyou may experience some problems later. You should update your ZinjaI installation.
 PROJMNGR_CONFIRM_REPLACE
 File exists. Do you want to replace it?
 PROJMNGR_CONFIRM_DETTACH_ALSO_PRE
@@ -2500,16 +2506,16 @@ MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
 In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
 MAINW_GPROF_OUTPUT_MISSING
 Profilling information was not found.\nIn order to generate it go to ZinjaI's help.
+MAINW_GPROF_STATUS_ANALIZING
+Analizing profiling information...
+MAINW_GPROF_ERROR
+Error processing profiling information
 MAINW_GPROF_EDGE_THERSHOLD
 Eliminate edges under this threshold (%):
 MAINW_GPROF_ASK_TITLE
 Profiling
 MAINW_GPROF_NODE_THERSHOLD
 Eliminate nodes under this threshold (%):
-MAINW_GPROF_STATUS_ANALIZING
-Analizing profiling information...
-MAINW_GPROF_ERROR
-Error processing profiling information
 MAINW_GPROF_DRAWING
 Generating graph...
 MAINW_GPROF_SHOWING

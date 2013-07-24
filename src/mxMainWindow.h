@@ -325,6 +325,7 @@ public:
 	void SetFocusToSource();
 	void OnParseSourceTime(wxTimerEvent &event);
 	void OnParseOutputTime(wxTimerEvent &event);
+	void OnParserContinueProcess(wxTimerEvent &event);
 	
 	// this is a mechanism for setting something to run after a current event loop
 	// example: if you call something that execute a subprocess or display a new dialog inside a 

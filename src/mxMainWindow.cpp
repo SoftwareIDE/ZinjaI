@@ -385,6 +385,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_WHERE_TIMER, mxMainWindow::OnWhereAmI)
 	EVT_TIMER(mxID_COMPILER_TIMER, mxMainWindow::OnParseOutputTime)
 	EVT_TIMER(mxID_PARSER_TIMER, mxMainWindow::OnParseSourceTime)
+	EVT_TIMER(mxID_PARSER_PROCESS_TIMER, mxMainWindow::OnParserContinueProcess)
 
 	EVT_TEXT(mxID_TOOLBAR_FIND, mxMainWindow::OnToolbarFindChange)
 	EVT_TEXT_ENTER(mxID_TOOLBAR_FIND, mxMainWindow::OnToolbarFindEnter)
@@ -535,7 +536,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	}
 	aui_manager.Update();
 
-	parser = new Parser(symbols_tree.treeCtrl);
+	parser = new Parser(this);
 	code_helper->AppendIndexes(config->Help.autocomp_indexes);
 	autocoder = new Autocoder;
 	
@@ -5488,4 +5489,8 @@ void mxMainWindow::SetFocusToSourceAfterEvents () {
 		public: void Do() { main_window->SetFocusToSource(); }
 	};
 	CallAfterEvents(new SetFocusToSourceAfterEventsAction());
+}
+
+void mxMainWindow::OnParserContinueProcess(wxTimerEvent &event) {
+	parser->OnParserProcessTimer();
 }

@@ -21,10 +21,10 @@
 
 Parser *parser;
 
-Parser::Parser (wxTreeCtrl *tree) {
+Parser::Parser (mxMainWindow *mainwin) {
 	on_end = NULL;
 	wxString pd_aux;
-	symbol_tree=tree;
+	symbol_tree=mainwin->symbols_tree.treeCtrl;
 	follow_includes=true;
 
 	item_root = symbol_tree->AddRoot(_T("Simbolos encontrados"),0);
@@ -50,6 +50,8 @@ Parser::Parser (wxTreeCtrl *tree) {
 	
 	working=false;
 	should_stop=false;
+	
+	process_timer = new wxTimer(mainwin->GetEventHandler(),mxID_PARSER_PROCESS_TIMER);
 
 }
 
@@ -774,6 +776,7 @@ bool Parser::GetFather(wxString child, pd_inherit *&father) {
 }
 
 void mxParserProcess::OnTerminate (int pid, int status) {
+	parser->process_timer->Stop();
 	ParseOutput();
 	parser->ParseNextFileEnd();
 }
@@ -785,3 +788,6 @@ void mxParserProcess::ParseOutput ( ) {
 	}
 }
 
+void Parser::OnParserProcessTimer() {
+	process->ParseOutput();
+}

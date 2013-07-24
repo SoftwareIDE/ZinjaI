@@ -2577,6 +2577,8 @@ void mxSource::OnEditAutoCompleteAutocode(wxCommandEvent &evt) {
 	code_helper->AutocompleteAutocode(this,GetTextRange(ws,p));
 }
 
+
+//#ifndef DEBUG
 void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 	int p=GetCurrentPos();
 	char chr = p>0?GetCharAt(p-1):' ';
@@ -2762,6 +2764,8 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 	if (!CallTipActive() && !AutoCompActive())
 		ShowBaloon(LANG(SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION,"No se encontraron opciones para autocompletar"),p);
 }
+
+//#endif
 
 void mxSource::ShowCallTip(int p, wxString str, bool fix_pos) {
 	if (fix_pos) { // evitar que tape el cursor
