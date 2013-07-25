@@ -1,5 +1,5 @@
 &nbsp;&nbsp;&nbsp; Si es la primera vez que utiliza este entorno puede presionar la tecla F1 para acceder a la ayuda y los tutoriales.
-&nbsp;&nbsp;&nbsp; La principal novedad en esta versión es la posibilidad de utilizar y configurar diferentes conjuntos herramientas para la compilación y construcción de proyectos (toolchains). De esta forma se puede optar entre diferentes versiones de gcc u otros compiladores similares (como llvm-clang), o utilizar herramientas o scripts externos para gestionar las reglas de construcción de un proyecto (como por ejemplo make). Para ver la lista completa de cambios presione F1.
+&nbsp;&nbsp;&nbsp; Esta versión incorpora numerosas correcciones, agrega soporte para gcov, incluye en su instalador para Windows una versión actualizada de MinGW, y muchos otros detalles. Para ver la lista completa de cambios presione F1.
 &nbsp;&nbsp;&nbsp; Estas sugerencias suelen ser molestas para muchos usuarios! <BR> Puedes desactivarlas haciendo click en el checkbox "<I>Mostrar sugerencias al inicio</I>" de esta misma ventana.
 
 &nbsp;&nbsp;&nbsp; Puedes cambiar el tamaño del código rápidamente manteniendo presionada la tecla Control y girando la rueda del mouse, presionando la tecla <I>Control</I> y las teclas <I>+</I> o <I>-</I> del teclado numérico.

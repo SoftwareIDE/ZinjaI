@@ -7,11 +7,13 @@
 <I>Nota2 : Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
 </UL><BR><B>Release 2013????</B><BR><UL>
+	<LI>Imp: En Windows, ZinjaI advierte sobre la incompatibilidad con el nuevo gcc de objetos compilados con versiones anteriores al abrir un proyecto.</LI>
+	<LI>Imp: Se actualizaron las herramientas de compilación en Windows (mingw, ahora incluye gcc 4.7.2).</LI>
 	<LI>New: Se puede utilizar xdot para visualizar los grafos que generan las herramientas externas (se debe descargar por separado y configurar en las preferencias).</LI>
 	<LI>Imp: Al usar "Ejecutar hasta el cursor" en depuración, ahora se muestra un mensaje de error si la posición del cursor no es válida.</LI>
 	<LI>Imp: Mejorado el mecanismo para detectar errores de compilación compuestos por varias lineas al procesar la salida del compilador.</LI>
 	<LI>Imp: Los argumentos de compilación necesarios para gcov y gprof se colocan ahora en el campo de argumentos adicionales (ya no tienen un checkbox propio en la configuración del proyecto).</LI>
-	<LI>New: Agregado el soporte para realizar tests de coertura mediante gcov (nuevo submenú en el menú "Herramientas").</LI>
+	<LI>New: Agregado el soporte para realizar tests de cobertura mediante gcov (nuevo submenú en el menú "Herramientas").</LI>
 	<LI>Imp: Al hacer doble click en la tabla de resultados de gprof se muestra la entrada del grafo correspondiente a la fila seleccionada.</LI>
 	<LI>Imp: Agregado un cuadro de texto para filtrar entradas en la tabla de resultados de gprof.</LI>
 	<LI>Imp: Al procesar las salidas de gprof para visualizar el grafo se verifican los códigos de retorno de cada proceso involucrado para detectar si alguno falla.</LI>
@@ -33,7 +35,6 @@
 	<LI>Fix: Actualizado el parser en la versión para Windows (los últimos cambios se habían aplicado solo en GNU/Linux).</LI>
 	<LI>Fix: Agregados algunas macros que faltaban para la tabla de eventos de wxWidgets en el indice de autocompletado.</LI>
 
-	
 </UL><BR><B>Release 20121230</B><BR><UL>
 	<LI>Fix: Corregida la aplicación de autocódigos con los operadores especiales # y ##.</LI>
 	<LI>Fix: Corregido el tamaño del cuadro de texto para agregar/editar items de una lista.</LI>

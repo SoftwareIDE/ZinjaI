@@ -1606,7 +1606,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_RESET, LANG(MENUITEM_TOOLS_GCOV_RESET,"Eliminar resultados"),_T(""),_T("Elimina los archivos de resultados generados por el test de cobertura."),ipre+_T("gcov_reset.png"));
 	gcov_menu->AppendSeparator();
 	utils->AddItemToMenu(gcov_menu,mxID_TOOLS_GCOV_HELP, LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion del test de cobertura"),ipre+_T("ayuda.png"));
-	utils->AddSubMenuToMenu(menu.tools, gcov_menu,LANG(MENUITEM_TOOLS_GCOV,"&Test de Cobertura (gcov)"),_T("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente."),ipre+_T("gcov.png"));
+	utils->AddSubMenuToMenu(menu.tools, gcov_menu,LANG(MENUITEM_TOOLS_GCOV,"&Test de Cobertura (experimental, gcov)"),_T("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente."),ipre+_T("gcov.png"));
 
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxMenu *valgrind_menu = new wxMenu;

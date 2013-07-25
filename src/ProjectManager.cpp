@@ -464,7 +464,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	if (project->use_wxfb) project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
-	#ifdef __WIN32__
+#ifdef __WIN32__
 	if (version_saved<20130723) { // changes mingw default calling convention
 		int ret=mxMessageDialog(main_window,LANG(PROJECT_MINGW_CC_PROBLEM_DESC,""
 			"El proyecto que está abriendo fue guardado con una versión de ZinjaI que utilizaba\n"
@@ -477,10 +477,10 @@ ProjectManager::ProjectManager(wxFileName name) {
 			"obtener además nuevas versiones de las mismas. En caso de no hacerlo, su programa\n"
 			"podría finalizar anormalmente al intentar ejecutarlo."
 			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_YES_NO,LANG(PROJECT_MINGW_CC_PROBLEM_MORE,"Mostrar más detalles (artículo en el blog)"),false).ShowModal();
-		if (ret&mxMD_CHECKED) utils->OpenInBrowser("http://cucarachasracing.blogspot.com.ar");
+		if (ret&mxMD_CHECKED) utils->OpenInBrowser("http://cucarachasracing.blogspot.com.ar/2013/07/mingw-y-las-calling-conventions.html");
 		if (ret&mxMD_YES) { wxCommandEvent evt; main_window->OnRunClean(evt); }
 	}
-	#endif
+#endif
 	
 }
 
