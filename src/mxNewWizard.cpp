@@ -26,6 +26,7 @@
 #include "Language.h"
 #include "mxMultipleFileChooser.h"
 #include "parserData.h"
+#include "version.h"
 
 mxNewWizard *wizard;
 
@@ -522,6 +523,9 @@ void mxNewWizard::ProjectCreate() {
 		else
 			project_file.Create();
 		project_file.Clear();
+		
+		project_file.AddLine(_T("[general]"));
+		project_file.AddLine(wxString("version_saved=")<<VERSION);
 		
 		if (cual==1 && !custom_files) { // si quiere un main
 			// registrarlo en el proyecto

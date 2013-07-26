@@ -465,7 +465,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
 #ifdef __WIN32__
-	if (version_saved<20130723) { // changes mingw default calling convention
+	if (!project_template && version_saved<20130723) { // changes mingw default calling convention
 		int ret=mxMessageDialog(main_window,LANG(PROJECT_MINGW_CC_PROBLEM_DESC,""
 			"El proyecto que está abriendo fue guardado con una versión de ZinjaI que utilizaba\n"
 			"versiones ahora desactualizadas de las herramientas de compilación (mingw). Los\n"
