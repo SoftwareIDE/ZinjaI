@@ -258,7 +258,7 @@ void mxCreateComplementWindow::SetFolder (wxString where) {
 		close->SetValue(info.closereq);
 		reset->SetValue(info.resetreq);
 		version->SetValue(wxString()<<info.reqver);
-		dest->SetValue(folder->GetValue()+".zcp");
+		dest->SetValue(folder->GetValue()+"-"+wxDateTime::Today().Format("%Y%m%d")+".zcp");
 	}
 }
 
