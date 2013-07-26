@@ -7,8 +7,8 @@
 #if defined(DEBUG) || defined(__APPLE__)
 #define SPLASH_FILE "splashvb.png"
 #else
-#warning SHOULD DEFINE CORRECT SPLASH BEFORE RELEASE
-#define SPLASH_FILE "splashv2i.png"
+//#warning SHOULD DEFINE CORRECT SPLASH BEFORE RELEASE
+#define SPLASH_FILE "splashv2j.png"
 #endif
 
 /**
