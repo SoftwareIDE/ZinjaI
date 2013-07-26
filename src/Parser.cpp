@@ -340,9 +340,9 @@ wxString Parser::JoinNames(wxString types, wxString names) {
 long Parser::ParseNextFileStart(wxFileName filename, wxString HashName) {
 	if (!compiler->IsCompiling())
 		main_window->SetStatusText(wxString(LANG(PARSER_PARSING_FILE_PRE,"Analizando \""))<<HashName<<LANG(PARSER_PARSING_FILE_POST,"\"..."));
+	if (!filename.FileExists()) return false;
 	process=new mxParserProcess;
 	PD_REGISTER_FILE(process->file, HashName,filename.GetModificationTime());
-	if (!filename.FileExists()) { process->file->Purge(); return false; }
 	return wxExecute(wxString(config->Files.parser_command)<<_T(" \"")<<filename.GetFullPath()<<_T("\""),wxEXEC_ASYNC,process);
 }
 
