@@ -104,18 +104,17 @@ bool Parser::ParseNextSource(mxSource *src, bool dontsave) {
 	home=source->source_filename.GetPath();
 
 	if (source->sin_titulo) {
-		if (!dontsave)
-			source->SaveTemp();
-		ParseNextFileStart(source->temp_filename,source->temp_filename.GetFullPath());
+		if (!dontsave) source->SaveTemp();
+		return ParseNextFileStart(source->temp_filename,source->temp_filename.GetFullPath());
 	} else {
 		if (source->GetModify() && !dontsave) {
 			source->SaveTemp();
-			ParseNextFileStart(source->temp_filename,source->source_filename.GetFullPath());
+			return ParseNextFileStart(source->temp_filename,source->source_filename.GetFullPath());
 		} else {
-			ParseNextFileStart(source->source_filename,source->source_filename.GetFullPath());
+			return ParseNextFileStart(source->source_filename,source->source_filename.GetFullPath());
 		}
 	}
-	return true;
+	return false; // nunca llega a esta linea
 }
 
 
@@ -648,20 +647,17 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 				break;
 			case 'p':
 				if (pa.ptr==project) { 
-					ParseNextFileStart(pa.str,pa.str); 
-					async=true;
+					if (ParseNextFileStart(pa.str,pa.str)) async=true;
 				}
 				break;
 			case 'f':
-				ParseNextFileStart(pa.str,pa.str);
-				async=true;
+				if (ParseNextFileStart(pa.str,pa.str)) async=true;
 				break;
 			case 'd':
 				ParseDeleteFile(pa.str);
 				break; // este break faltaba, era adrede o error?
 			case 's':
-				ParseNextSource((mxSource*)pa.ptr,pa.flag);
-				async=true;
+				if (ParseNextSource((mxSource*)pa.ptr,pa.flag)) async=true;
 				break;
 			}
 			if (show_progress) { main_window->SetStatusProgress((100*(++progress_now))/progress_total); }
