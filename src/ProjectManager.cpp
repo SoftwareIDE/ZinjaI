@@ -1925,10 +1925,11 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		compiling_options<<_T(" ")<<utils->Split(active_configuration->macros,_T("-D"));
 	
 	c_compiling_options=cpp_compiling_options=compiling_options;
-	if (active_configuration->std_c.Len() && !active_configuration->std_c.StartsWith("<"))
+	if (active_configuration->std_c.Len())
 		c_compiling_options<<" -std="<<active_configuration->std_c;
-	if (active_configuration->std_cpp.Len() && !active_configuration->std_cpp.StartsWith("<"))
-		cpp_compiling_options<<" -std="<<active_configuration->std_cpp;
+	if (active_configuration->std_cpp.Len())
+		cpp_compiling_options<<" "<<current_toolchain.FixArgument(true,wxString("-std=")+active_configuration->std_cpp);
+	
 	
 		
 	linking_options=" ";
@@ -2720,8 +2721,8 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 int ProjectManager::GetRequiredVersion() {
 	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false;
 	for (int i=0;i<configurations_count;i++) {
-		if (!configurations[i]->std_c.StartsWith("<")) have_std=true;
-		if (!configurations[i]->std_cpp.StartsWith("<")) have_std=true;
+		if (!configurations[i]->std_c.Len()) have_std=true;
+		if (!configurations[i]->std_cpp.Len()) have_std=true;
 		if (configurations[i]->pedantic_errors) have_std=true;
 		if (configurations[i]->compiling_extra.Contains("${TEMP_DIR}")) have_temp_dir=true;
 		if (configurations[i]->linking_extra.Contains("${TEMP_DIR}")) have_temp_dir=true;

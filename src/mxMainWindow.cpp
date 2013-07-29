@@ -3556,6 +3556,11 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 			} else if (line.Left(15)==_T("// !Z! Options:")) {
 				source->config_running.compiler_options=line.Mid(15).Trim(false).Trim(true);
 				source->config_running.compiler_options.Replace("${DEFAULT}",config->Running.compiler_options,true);
+				Toolchain::SelectToolchain(); 
+				wxArrayString args; 
+				utils->Split(source->config_running.compiler_options,args,false,true);
+				for(unsigned int i=0;i<args.GetCount();i++) args[i]=current_toolchain.FixArgument(source->cpp_or_just_c,args[i]);
+				source->config_running.compiler_options=utils->UnSplit(args," ",false);
 			}
 			line = file.GetNextLine();
 		}

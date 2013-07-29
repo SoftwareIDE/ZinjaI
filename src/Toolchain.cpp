@@ -57,6 +57,7 @@ void Toolchain::LoadToolchains ( ) {
 }
 
 Toolchain::Toolchain () {
+	version_c=version_cpp=-1;
 	file="<null>";
 	desc="<null>";
 	type=TC_GCC;
@@ -144,16 +145,39 @@ void Toolchain::SetArgumets ( ) {
 
 wxString Toolchain::GetExtraCompilingArguments (bool cpp) {
 	if (type==TC_GCC) {
-		static long version=0, subversion=0;
-		if (!version) {
-			wxString s=utils->GetOutput((cpp?cpp_compiler:c_compiler)+" -dumpversion");
-			s.BeforeFirst('.').ToLong(&version);
-			s.AfterFirst('.').BeforeFirst('.').ToLong(&subversion);
-		}
-		if ((version==4&&subversion>=8)||version>4) return "-fshow-column -fno-diagnostics-show-caret";
+		if (CheckVersion(cpp,4,8)) return "-fshow-column -fno-diagnostics-show-caret";
 		else return "-fshow-column";
 	}
 	else if (type==TC_CLANG) return "-fno-caret-diagnostics";
 	else return "";
+}
+
+bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
+	if (cpp) {
+		if (version_cpp<0) {
+			long v,s;
+			wxString str=utils->GetOutput(cpp_compiler+" -dumpversion");
+			str.BeforeFirst('.').ToLong(&v);
+			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
+			version_cpp=v*1000+s;
+		}
+		return version_cpp>=_v*1000+_s;
+	} else {
+		if (version_c<0) {
+			long v,s;
+			wxString str=utils->GetOutput(c_compiler+" -dumpversion");
+			str.BeforeFirst('.').ToLong(&v);
+			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
+			version_c=v*1000+s;
+		}
+		return version_c>=_v*1000+_s;
+	}
+}
+
+wxString Toolchain::FixArgument (bool cpp, wxString arg) {
+	if (type!=TC_GCC) return arg;
+	if (arg=="-std=c++11" && !CheckVersion(cpp,4,7)) return "-std=c++0x";
+	if (arg=="-std=gnu++11" && !CheckVersion(cpp,4,7)) return "-std=gnu++0x";
+	return arg;
 }
 

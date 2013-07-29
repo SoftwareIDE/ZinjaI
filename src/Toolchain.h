@@ -16,6 +16,9 @@ enum TC_TYPE {
 
 struct Toolchain {
 	
+	long version_c; /// compiler version (if gcc 4.8.x => version_c=4008)
+	long version_cpp; /// compiler version (if g++ 4.8.x => version_cpp=4008)
+	
 	// common options
 	wxString file; ///< toolchain filename
 	wxString desc; ///< toolchain name
@@ -41,7 +44,9 @@ struct Toolchain {
 	
 	void SetArgumets(); ///< applies project toolchain arguments, uso only with current_toolchain
 	
-	wxString GetExtraCompilingArguments(bool cpp);
+	wxString GetExtraCompilingArguments(bool cpp); ///< get extra arguments to deal with difference in output formatting in recent gcc versions (clang-like messages)
+	wxString FixArgument(bool cpp, wxString arg); ///< if compiler is too old, some arguments may be different
+	bool CheckVersion(bool cpp, int _v, int _s); ///< returns true if compiler version is greater than or equal to _v._s
 	
 	static void LoadToolchains();
 	static const Toolchain &GetInfo(wxString fname); ///< used to get info from a toolchain without setting it as active
