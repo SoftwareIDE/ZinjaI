@@ -476,7 +476,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 			"Nota: si su proyecto utiliza bibliotecas no provistas con ZinjaI, probablemente deba\n"
 			"obtener además nuevas versiones de las mismas. En caso de no hacerlo, su programa\n"
 			"podría finalizar anormalmente al intentar ejecutarlo."
-			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_YES_NO,LANG(PROJECT_MINGW_CC_PROBLEM_MORE,"Mostrar más detalles (artículo en el blog)"),false).ShowModal();
+			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_YES_NO,LANG(PROJECT_MINGW_CC_PROBLEM_MORE,"Mostrar información (web)..."),false).ShowModal();
 		if (ret&mxMD_CHECKED) utils->OpenInBrowser("http://cucarachasracing.blogspot.com.ar/2013/07/mingw-y-las-calling-conventions.html");
 		if (ret&mxMD_YES) { wxCommandEvent evt; main_window->OnRunClean(evt); }
 	}

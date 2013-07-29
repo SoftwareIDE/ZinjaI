@@ -237,7 +237,7 @@ Select a profile to activate
 PROJECT_MINGW_CC_PROBLEM_DESC
 This project was saved with an older ZinjaI release, that was shipped with an older\ncompiler version (mingw). Object files generated with the old compiler cannot be linked\nwith the ones that will generate the new and currently available compiler (if you are\nstill compiling with ZinjaI's default toolchain). In most cases you can easily solve\nthis problem by cleaning the project (removing temporal objects to make ZinjaI regenerate\nthem before next running). Do you want to do it now?\nNote: if your project links to external libraries not shipped with ZinjaI, you may need\nto update them too. If you don't, your program could stop annormaly.
 PROJECT_MINGW_CC_PROBLEM_MORE
-Show more details (opens a blog post)
+Show more details (web)...
 PROJECT_REQUIRES_NEWER_ZINJAI
 This projects requiers a newer ZinjaI version in order to correctly understand\nall options in project configuration. ZinjaI will open the project anyway, but\nyou may experience some problems later. You should update your ZinjaI installation.
 PROJMNGR_CONFIRM_REPLACE
