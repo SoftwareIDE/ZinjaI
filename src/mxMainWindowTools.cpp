@@ -1125,6 +1125,11 @@ void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
 			if (array[i].EndsWith(".gcov")||array[i].EndsWith(".gcda")||array[i].EndsWith(".gcno"))
 				wxRemoveFile(DIR_PLUS_FILE(path,array[i]));
 		}
+	} else IF_THERE_IS_SOURCE {
+		mxSource *src=CURRENT_SOURCE;
+		wxRemoveFile(DIR_PLUS_FILE(src->GetPath(false),src->GetFileName(true))+".gcov");
+		wxRemoveFile(DIR_PLUS_FILE(src->GetPath(false),src->GetFileName(false))+".gcda");
+		wxRemoveFile(DIR_PLUS_FILE(src->GetPath(false),src->GetFileName(false))+".gcno");
 	}
 }
 
