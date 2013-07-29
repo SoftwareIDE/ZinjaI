@@ -7,7 +7,6 @@ class mxSource;
 
 class mxGCovSideBar : public wxWindow {
 	int line_count, *hits, hits_max;
-	mxSource *the_source;
 	wxString last_path;
 	bool ShouldLoadData(mxSource *src);
 	mxSource *should_refresh;
@@ -16,6 +15,8 @@ public:
 	void LoadData();
 	mxGCovSideBar(wxWindow *parent);
 	void OnPaint(wxPaintEvent &event);
+	void OnPopup(wxMouseEvent &event);
+	void OnRefresh(wxCommandEvent &event);
 	void Refresh(mxSource *src);
 	DECLARE_EVENT_TABLE();
 };
