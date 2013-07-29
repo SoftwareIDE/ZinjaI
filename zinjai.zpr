@@ -11,7 +11,6 @@ custom_tabs=0
 tab_use_spaces=0
 use_wxfb=0
 explorer_path=../zinjai
-current_source=todo.txt
 path_char=/
 [source]
 path=src/ProjectManager.cpp
@@ -659,7 +658,6 @@ cursor=24
 path=todo.txt
 cursor=551
 marker=4
-open=true
 [other]
 path=src/mainpage.h
 cursor=784

@@ -3437,11 +3437,12 @@ void mxSource::SetColours(bool also_style) {
 * @param for_user  indicates that this path is for user, not for some internal ZinjaI operation, so if source is untitled it will use user's home instead of temp dir
 **/
 wxString mxSource::GetPath(bool for_user) {
-	if (sin_titulo) return temp_filename.GetPath();
-	else {
+	if (sin_titulo) {
 		if (for_user)
 			return wxFileName::GetHomeDir();
 		else
+			return temp_filename.GetPath();
+	} else {
 			return source_filename.GetPath();
 	}
 }

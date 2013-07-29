@@ -583,13 +583,8 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	ResetCompileData();
-	if (!source->sin_titulo) {
-		compile_and_run->pid = utils->Execute(source->source_filename.GetPath(),command,wxEXEC_ASYNC,compile_and_run->process);
-		main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
-	} else {
-		compile_and_run->pid = wxExecute(command, wxEXEC_ASYNC,compile_and_run->process);
-		main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
-	}
+	compile_and_run->pid = utils->Execute(source->GetPath(false),command,wxEXEC_ASYNC,compile_and_run->process);
+	main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
 	compile_and_run->full_output.Add(_T(""));
@@ -600,7 +595,7 @@ void mxCompiler::ResetCompileData() {
 	full_output.Clear();
 	num_errors=num_warnings=num_all=0;
 	tree->SetItemText(errors,LANG(MAINW_CT_ERRORS,"Errores"));
-	tree->SetItemText(warnings,LANG(MAINW_CT_WARNINGS,"Advertencias"));
+	tree->SetItemText(warnings,LANG(MAINW_CT_WARNINGS,"Advertenccd ias"));
 	tree->DeleteChildren(errors);
 	tree->DeleteChildren(warnings);
 	if (!project)  {
