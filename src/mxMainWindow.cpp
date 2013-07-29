@@ -3555,6 +3555,7 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 				line.Mid(13).Trim(false).Trim(true).ToLong(&pos);
 			} else if (line.Left(15)==_T("// !Z! Options:")) {
 				source->config_running.compiler_options=line.Mid(15).Trim(false).Trim(true);
+				source->config_running.compiler_options.Replace("${DEFAULT}",config->Running.compiler_options,true);
 			}
 			line = file.GetNextLine();
 		}
