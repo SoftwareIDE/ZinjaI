@@ -6,7 +6,7 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota2 : Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
-</UL><BR><B>Release 2013????</B><BR><UL>
+</UL><BR><B>Release 20130730</B><BR><UL>
 	<LI>Imp: Al abrir un proyecto, ya no se muestran mensajes de error si alguno de los fuentes asociados no existe.</LI>
 	<LI>Imp: En Windows, ZinjaI advierte sobre la incompatibilidad con el nuevo gcc de objetos compilados con versiones anteriores al abrir un proyecto.</LI>
 	<LI>Imp: Se actualizaron las herramientas de compilación en Windows (mingw, ahora incluye gcc 4.7.2).</LI>
@@ -24,14 +24,14 @@
 	<LI>Fix: Las bibliotecas generadas por proyectos en Windows ahora tienen la extensión .a.</LI>
 	<LI>Fix: Corregido el comportamiento del comando "Opciones del breakpoint" del menú "Depuración".</LI>
 	<LI>Imp: Ahora las opciones de formateo de mensajes de error para gcc se adaptan a la versión del compilador (soporte para gcc 4.8).</LI>
-	<LI>Fix: Corregidos el comportamiento en cuadros de texto donde se puede insertar/reemplazar rutas de archivos o directorios de las opciones del menú contextual para hacerlo.</LI>
+	<LI>Fix: Corregido el comportamiento en cuadros de texto donde se puede insertar/reemplazar rutas de archivos o directorios de las opciones del menú contextual para hacerlo.</LI>
 	<LI>Fix: Corregidos los problemas de foco de los mensajes de aviso de que un fuente abierto ha cambiado.</LI>
 	<LI>Imp: Ya no se debe esperar a que el parser termine su trabajo para realizar otras acciones como compilar o invocar herramientas externas.</LI>
 	<LI>Fix: Ya no provoca un segfault si no hay plantilla seleccionada al crear un nuevo programa simple desde el asistente.</LI>
 	<LI>Fix: Corregido un problema de refresco al redimensionar la vista en forma de tabla de una inspección.</LI>
 	<LI>New: Los resultados de la herramienta de perfilado de ejecución (gprof) ahora se muestran en tablas en una cuadro de diálogo especial.</LI>
-	<LI>New: Ahora se pueden definir breakpoints que solo actualicen la tabla de inspecciones, sin detener el programa.</LI>
-	<LI>Imp: Se cambiar el perfil de compilación y ejecución activo en un proyecto haciendo click derecho sobre el botón de Opciones de Compilación y Ejecución de la barra de herramientas.</LI>
+	<LI>New: Ahora se pueden definir breakpoints que solo actualicen la tabla de inspecciones, simulando no detener el programa.</LI>
+	<LI>Imp: Se puede cambiar el perfil de compilación y ejecución activo en un proyecto haciendo click derecho sobre el botón de Opciones de Compilación y Ejecución de la barra de herramientas.</LI>
 	<LI>Fix: Ya no se permite lanzar la compilación de un proyecto mientras se están regenerando los fuentes de wxFormBuilder.</LI>
 	<LI>Fix: Actualizado el parser en la versión para Windows (los últimos cambios se habían aplicado solo en GNU/Linux).</LI>
 	<LI>Fix: Agregados algunas macros que faltaban para la tabla de eventos de wxWidgets en el indice de autocompletado.</LI>

@@ -1,5 +1,5 @@
 &nbsp;&nbsp;&nbsp; If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-&nbsp;&nbsp;&nbsp; This release includes several new details, adds experimental support for gcov, packs in its Windows' installer an updated MinGW version, and fixes a lot of bugs. To read the full changelog hit F1.
+&nbsp;&nbsp;&nbsp; This release includes several new details, adds experimental support for gcov, improved gprof integration, packs in its Windows' installer an updated MinGW version, and fixes a lot of bugs. Read the <A href="help:ChangeLog.html">full changelog</A>.
 &nbsp;&nbsp;&nbsp; These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 &nbsp;&nbsp;&nbsp; You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.
@@ -14,7 +14,7 @@
 &nbsp;&nbsp;&nbsp; When you run a program with F9 key, if the source code was modified, it is saved a compiled again automatically before running. So, you should never need to do it yourself.
 &nbsp;&nbsp;&nbsp; You can find and see macro definition from your code by placing the text cursor over its name and pressing Ctrl+F1..
 &nbsp;&nbsp;&nbsp; You comment and uncomment lines with the shortcuts Ctrl+D and Ctrl+Shift+D (you don't need to select the whole line).
-&nbsp;&nbsp;&nbsp; Puedes escribir tu codigo mas rapida y comodamente si actualizas el arbol de simbolos, ya que cuando se actualiza el arbol de simbolos, la informacion que se obtiene se utiliza tambien se utiliza para generar las ayudas de autocompletado y tips de llamadas a funciones.
+&nbsp;&nbsp;&nbsp; Puedes escribir tu código más rápida y cómodamente si actualizas el árbol de símbolos, ya que cuando se actualiza el árbol de símbolos, la información que se obtiene se utiliza también se utiliza para generar las ayudas de autocompletado y tips de llamadas a funciones. El árbol se actualiza al presionar la tecla <I>F2</I> o automáticamente al guardar o ejecutar el programa.
 &nbsp;&nbsp;&nbsp; If your Symbol's Tree is up to date (F2 key), you can use Shit+F1 shortcut to obtain information about some elements defined in your code (global variables, classes, functions, macros).
 &nbsp;&nbsp;&nbsp; Smart indention (<I>File-&gt;Preferences...-&gt;Writing-&gt;Smart indention) allows you to write code faster without thinking about indention. ZinjaI will decide how to indent your code will you write it. But if you already have bad intented code, you can select it and correct it automaticaly with <I>Ctrl+I</I>shortcut, or the item <I>Indent Selected Lines</I> from <I>Edit</I> menu.
 &nbsp;&nbsp;&nbsp; Las herramientas de <I>Indentar bloque</I>, <I>Seleccionar bloque</I>, y las opciones de plegado de código pueden ser útiles para verificar si las llaves estan correctamente colocadas, por ejemplo, seleccionando o plegando un bloque para ver si concuerda con lo esperado.

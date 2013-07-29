@@ -100,6 +100,7 @@
 			0 diff.html Comparación de Fuentes (diff)
 			0 doxygen.html Generación de Documentación (doxygen)
 			0 gprof.html Perfiles de Ejecución (gprof)
+			0 gcov.html Test de cobertura (gcov)
 			0 valgrind.html Análisis Dinámico (Valgrind)
 			0 cppcheck.html Análisis Estático (CppCheck)
 			0 wxformbuilder.html Diseño Rápido de Interfases (wxFormBuilder)

@@ -85,19 +85,13 @@ Section /o "Fuentes" SEC05
   File /R "fuentes\*"
 SectionEnd
 
-;Section /o "Extras" SEC06
-;  SetOutPath "$INSTDIR\"
-;  File /R "extras\*"
-;SectionEnd
-
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Entorno ZinjaI. Tamaño aproximado: 37 MB"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Herramientas de compilacion, depuracion y otros GNU. Tamaño aproximado: 159 MB"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Archivos necesarios para utilizar la librería wxWidgets. Tamaño aproximado: 42 MB"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Archivos necesarios para compilar aplicaciones OpenGL y freeglut. Tamaño Aproximado: 4MB"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Códigos fuentes del entorno. Tamaño aproximado: 14 MB"
-;  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} "Plantillas adicionales (SFML, SDL). Tamaño aproximado: 0.2 MB"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Entorno ZinjaI. Tamaño aproximado: 39 MB"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Herramientas de compilacion, depuracion y otros GNU. Tamaño aproximado: 165 MB"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Archivos necesarios para utilizar la biblioteca wxWidgets. Tamaño aproximado: 42 MB"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Archivos necesarios para compilar aplicaciones OpenGL con freeglut y/o glew. Tamaño Aproximado: 6.6MB"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Código fuente del entorno. Tamaño aproximado: 16 MB"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01b} "Asociar fuentes (c,c++,cpp,cxx,h,h++,hpp,hxx) para abrir con ZinjaI"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 

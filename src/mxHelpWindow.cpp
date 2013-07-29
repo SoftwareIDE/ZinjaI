@@ -16,6 +16,7 @@
 #define ERROR_PAGE(page) wxString(_T("<I>ERROR</I>: La pagina \""))<<page<<_T("\" no se encuentra. <br><br> La ayuda de <I>ZinjaI</I> aun esta en contruccion.")
 #include "mxArt.h"
 #include "Language.h"
+#include <wx/settings.h>
 
 mxHelpWindow *helpw;
 
@@ -37,6 +38,10 @@ BEGIN_EVENT_TABLE(mxHelpWindow,wxFrame)
 END_EVENT_TABLE();
 
 mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, LANG(HELPW_CAPTION,"Ayuda de ZinjaI"), wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
+	
+#ifdef __WIN32__
+	SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
+#endif
 
 	printer=NULL;
 	
