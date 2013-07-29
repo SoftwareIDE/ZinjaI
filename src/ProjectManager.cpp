@@ -221,7 +221,9 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_GENERIC_READ_DN("compiling_extra",active_configuration->compiling_extra);
 				else CFG_GENERIC_READ_DN("headers_dirs",active_configuration->headers_dirs);
 				else CFG_INT_READ_DN("warnings_level",active_configuration->warnings_level);
-				else CFG_BOOL_READ_DN("ansi_compliance",active_configuration->ansi_compliance);
+				else CFG_BOOL_READ_DN("pedantic_errors",active_configuration->pedantic_errors);
+				else CFG_GENERIC_READ_DN("std_c",active_configuration->std_c);
+				else CFG_GENERIC_READ_DN("std_cpp",active_configuration->std_cpp);
 				else CFG_INT_READ_DN("debug_level",active_configuration->debug_level);
 				else CFG_INT_READ_DN("optimization_level",active_configuration->optimization_level);
 				else CFG_GENERIC_READ_DN("linking_extra",active_configuration->linking_extra);
@@ -676,7 +678,9 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("compiling_extra",configurations[i]->compiling_extra);
 		CFG_GENERIC_WRITE_DN("macros",configurations[i]->macros);
 		CFG_GENERIC_WRITE_DN("warnings_level",configurations[i]->warnings_level);
-		CFG_BOOL_WRITE_DN("ansi_compliance",configurations[i]->ansi_compliance);
+		CFG_BOOL_WRITE_DN("pedantic_errors",configurations[i]->pedantic_errors);
+		CFG_GENERIC_WRITE_DN("std_c",configurations[i]->std_c);
+		CFG_GENERIC_WRITE_DN("std_cpp",configurations[i]->std_cpp);
 		CFG_GENERIC_WRITE_DN("debug_level",configurations[i]->debug_level);
 		CFG_GENERIC_WRITE_DN("optimization_level",configurations[i]->optimization_level);
 		CFG_GENERIC_WRITE_DN("headers_dirs",configurations[i]->headers_dirs);
@@ -1375,7 +1379,7 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 #if !defined(_WIN32) && !defined(__WIN32__)
 		(item->lib?_T(" -fPIC "):_T(" "))+
 #endif
-		compiling_options+_T(" \"")+DIR_PLUS_FILE(path,item->name)+_T("\" -c -o \"")+bin_name.GetFullPath()+_T("\"");
+		(cpp?cpp_compiling_options:c_compiling_options)+_T(" \"")+DIR_PLUS_FILE(path,item->name)+_T("\" -c -o \"")+bin_name.GetFullPath()+_T("\"");
 	
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
@@ -1622,9 +1626,10 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	if (mktype!=MKTYPE_OBJS) {
 		if (mingw_dir==_T("${MINGW_DIR}"))
 			fil.AddLine(wxString(_T("MINGW_DIR="))+config->mingw_real_path);
-		fil.AddLine(wxString(_T("GPP="))+current_toolchain.cpp_compiler);
 		fil.AddLine(wxString(_T("GCC="))+current_toolchain.c_compiler);
-		fil.AddLine(wxString(_T("FLAGS="))+compiling_options);
+		fil.AddLine(wxString(_T("GPP="))+current_toolchain.cpp_compiler);
+		fil.AddLine(wxString(_T("CFLAGS="))+c_compiling_options);
+		fil.AddLine(wxString(_T("CXXFLAGS="))+cpp_compiling_options);
 		fil.AddLine(wxString(_T("LIBS="))+linking_options);
 	}
 	
@@ -1765,7 +1770,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			bin_full_path=utils->Quotize(bin_name.GetFullPath());
 			fil.AddLine(bin_full_path+_T(": ")+utils->FindIncludes(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
 			bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
-			fil.AddLine(tab+(cpp?_T("${GPP}"):_T("${GCC}"))+_T(" ${FLAGS} ")+
+			fil.AddLine(tab+(cpp?"${GPP}":"${GCC}")+(cpp?" ${CXXFLAGS} ":" ${CFLAGS} ")+
 	#if !defined(_WIN32) && !defined(__WIN32__)
 				(item->lib?_T("-fPIC "):_T(""))+
 	#endif
@@ -1873,7 +1878,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	Toolchain::SelectToolchain();
 	
 	GetTempFolderEx(path,false);
-	compiling_options=" ";
+	wxString compiling_options=" ";
 	compiling_options<<current_toolchain.cpp_compiling_options<<" "<<current_toolchain.GetExtraCompilingArguments(true)<<" ";
 	
 	// debug_level
@@ -1901,8 +1906,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	else if (active_configuration->optimization_level==4) 
 		compiling_options<<_T("-Os ");
 	// ansi_compliance
-	if (active_configuration->ansi_compliance)
-		compiling_options<<_T("-pedantic-errors ");
+	if (active_configuration->pedantic_errors) compiling_options<<_T("-pedantic-errors ");
 	// headers_dirs
 	compiling_options<<utils->Split(active_configuration->headers_dirs,_T("-I"));
 	// parametros variables
@@ -1919,6 +1923,13 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	// macros predefinidas
 	if (active_configuration->macros.Len())
 		compiling_options<<_T(" ")<<utils->Split(active_configuration->macros,_T("-D"));
+	
+	c_compiling_options=cpp_compiling_options=compiling_options;
+	if (active_configuration->std_c.Len() && !active_configuration->std_c.StartsWith("<"))
+		c_compiling_options<<" -std="<<active_configuration->std_c;
+	if (active_configuration->std_cpp.Len() && !active_configuration->std_cpp.StartsWith("<"))
+		cpp_compiling_options<<" -std="<<active_configuration->std_cpp;
+	
 		
 	linking_options=" ";
 	linking_options<<current_toolchain.cpp_linker_options<<" ";
@@ -2707,8 +2718,11 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false;
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false;
 	for (int i=0;i<configurations_count;i++) {
+		if (!configurations[i]->std_c.StartsWith("<")) have_std=true;
+		if (!configurations[i]->std_cpp.StartsWith("<")) have_std=true;
+		if (configurations[i]->pedantic_errors) have_std=true;
 		if (configurations[i]->compiling_extra.Contains("${TEMP_DIR}")) have_temp_dir=true;
 		if (configurations[i]->linking_extra.Contains("${TEMP_DIR}")) have_temp_dir=true;
 		if (configurations[i]->macros.Len()) have_macros=true;
@@ -2730,7 +2744,8 @@ int ProjectManager::GetRequiredVersion() {
 		}
 	}
 	version_required=0;
-	if (autocodes_file.Len()) version_required=20110814;
+	if (have_std) version_required=20130729;
+	else if (autocodes_file.Len()) version_required=20110814;
 	else if (have_manifest) version_required=20110610;
 	else if (have_extra_vars) version_required=20110401;
 	else if (builds_libs) version_required=20100503;

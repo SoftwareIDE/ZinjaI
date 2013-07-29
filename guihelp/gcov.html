@@ -10,5 +10,6 @@
 </UL><BR>
 <BR>Notas:<UL>
 <LI>ZinjaI actualiza automáticametne la información que se muestra en la barra de resultados al cambiar de pestaña de código (con la excepción de los programas simples sin título) y al finalizar la ejecución del programa. Para forzar la actualización en cualquier momento utilice el botón derecho del ratón sobre la misma.</LI>
+<LI>Al eliminar la información de gcov en programas simples solo se elimina el archivo de resultados del cpp actual, pero la ejecución de gcov puede generar archivos de resultados para las cabeceras incluidas que no serán eliminados con este mecanismo. Cuando se trabaja en un proyecto, la eliminación se realiza por extensión, se eliminan todos los archivos con extensiones gcov, gcno y gcda del directorio de temporales.</LI>
 </UL><BR>
 </BODY></HTML>

@@ -44,9 +44,11 @@ class mxProjectConfigWindow : public wxDialog {
 	wxTextCtrl *compiling_extra_options;
 	wxTextCtrl *compiling_headers_dirs;
 	wxComboBox *compiling_warnings_level;
-	wxCheckBox *compiling_ansi_compliance;
+	wxCheckBox *compiling_pedantic;
 	wxComboBox *compiling_debug_level;
 	wxComboBox *compiling_optimization_level;
+	wxComboBox *compiling_std_c;
+	wxComboBox *compiling_std_cpp;
 
 	// pestana enlazado
 	//wxTextCtrl *linking_resource_file;

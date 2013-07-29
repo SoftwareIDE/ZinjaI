@@ -7,7 +7,7 @@ Building Zinjai
 
  For building ZinjaI you will need g++ and wxWidgets 2.8 or higher compiled in ANSI mode. Note that
  most common GNU/Linux distribution offer the UNICODE version in their repositories, so you may  
- have to compile it manually from source code. Just use follow regular steps (./configure; make; sudo 
+ have to compile it manually from source code. Just follow regular steps (./configure; make; sudo 
  make install) adding --enable-ansi --disable-unicode arguments when running configure. If you're 
  compiling wxWidgets 2.8 you should also run make and sudo make install in contrib/src/stc, if you're 
  compiling 2.9 version you should add --enable-scintilla, for building its Scintilla extension. 

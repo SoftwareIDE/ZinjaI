@@ -208,7 +208,9 @@ struct project_configuration {
 	wxString old_macros; ///< lista de macros a definir en la ultima corrida (para comparar y saber que recompilar por cambio de macros)
 	wxString headers_dirs; ///< lista de rutas adicionales donde buscar cabeceras (para pasar con -I)
 	int warnings_level; ///< nivel de advertencias a mostrar por el compilador: 0=ninguna 1=default 2=todas
-	bool ansi_compliance; ///< forzar a cumplir el estandar (-pedantic-errors)
+	bool pedantic_errors; ///< forzar a cumplir el estandar (-pedantic-errors)
+	wxString std_c; ///< versión del estándar a utilizar para los fuentes C
+	wxString std_cpp; ///< versión del estándar a utilizar para los fuentes C++
 	int debug_level; ///< nivel de información de depuración a colocar al compilar: 0=g0 1=g1 2=g2
 	int optimization_level; ///< nivel optimización para los binarios: 0=O0 1=O1 2=O2 3=O3 4=Os
 	wxString linking_extra; ///< parametros adicionales para el enlazador (se llama a travez de gcc/g++, no directo)
@@ -236,7 +238,7 @@ struct project_configuration {
 		macros="";
 		headers_dirs="";
 		warnings_level=1;
-		ansi_compliance=false;
+		pedantic_errors=false;
 		debug_level=2;
 		optimization_level=0;
 		linking_extra="";
@@ -247,6 +249,7 @@ struct project_configuration {
 		dont_generate_exe=false;
 		extra_steps=NULL;
 		toolchain="";
+		std_c=std_cpp="<default>";
 		for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) toolchain_arguments[i]="${DEFAULT}";
 	}
 };
@@ -397,7 +400,8 @@ public:
 	wxString GetTempFolderEx(wxString path, bool create=false);
 	wxString executable_name; ///< ubicacion final del ejecutable (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
 	wxString linking_options; ///< argumentos para el enlazado del ejecutable (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
-	wxString compiling_options; ///< argumentos para las compilaciones (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
+	wxString cpp_compiling_options; ///< argumentos para las compilaciones (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
+	wxString c_compiling_options; ///< argumentos para las compilaciones (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
 	wxString objects_list; ///< lista de objetos y bibliotecas (con -L) para usar en la linea de compilacion (se llena en AnalizeConfig, lo usan PrepareForBuilding, ExportMakefile, ...)
 	wxString exe_deps; ///< temporal, para pasar de AnalizeConfig a ExportMakefile las dependencias del ejecutable (la diff con objects_list esta en los -l de las bibliotecas)
 	int custom_tabs; ///< tipo de tabulado en los fuentes, si es 0, hereda de la configuracion de zinjai, si no usa ese

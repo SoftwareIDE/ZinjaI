@@ -234,12 +234,12 @@ PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK
 Seleccionar otro perfil de la lista
 PROJMNGR_CHANGE_PROFILE_OPENNING_CHOICE
 Seleccione el perfil a activar
-PROJECT_MINGW_CC_PROBLEM_DESC
-El proyecto que está abriendo fue guardado con una versión de ZinjaI que incluía\nversiones anteriores de las herramientas de compilación mingw. Los archivos ya\ncompilados con esas herramientas no serán compatibles con los que compilen con la\nnueva versión disponible actualmente. Si utiliza el compilador por defecto deberá\nrecompilar todo el proyecto. ¿Desea eliminar ahora los objetos compilados para\nforzar la recompilación del proyecto antes de la próxima ejecución?\nNota: si su proyecto utiliza bibliotecas no provistas con ZinjaI, probablemente deba\nobtener además nuevas versiones de las mismas. En caso de no hacerlo, su programa\npodría finalizar anormalmente al intentar ejecturalo.
-PROJECT_MINGW_CC_PROBLEM_MORE
-Mostrar más detalles (artículo en el blog)
 PROJECT_REQUIRES_NEWER_ZINJAI
 El proyecto que esta abriendo requiere una version superior de ZinjaI\na la instalada actualmente para cargar todas las opciones de proyecto\ncorrectamente. El proyecto se abrira de todas formas, pero podria encontrar\nproblemas posteriormente.\n
+PROJECT_MINGW_CC_PROBLEM_DESC
+El proyecto que está abriendo fue guardado con una versión de ZinjaI que utilizaba\nversiones ahora desactualizadas de las herramientas de compilación (mingw). Los\narchivos compilados con esas herramientas no serán compatibles con los que se\ncompilen con la nueva versión disponible. Si utiliza el compilador por defecto\ndeberá recompilar todo el proyecto. ¿Desea eliminar ahora los objetos compilados\npara forzar la recompilación del proyecto antes de la próxima ejecución?\n\nNota: si su proyecto utiliza bibliotecas no provistas con ZinjaI, probablemente deba\nobtener además nuevas versiones de las mismas. En caso de no hacerlo, su programa\npodría finalizar anormalmente al intentar ejecutarlo.
+PROJECT_MINGW_CC_PROBLEM_MORE
+Mostrar información (web)...
 PROJMNGR_CONFIRM_REPLACE
 Ya existe un archivo con ese nombre. Desea Reemplazarlo?
 PROJMNGR_CONFIRM_DETTACH_ALSO_PRE
@@ -1731,7 +1731,7 @@ Eliminar resultados
 MENUITEM_TOOLS_GCOV_HELP
 A&yuda...
 MENUITEM_TOOLS_GCOV
-&Test de Cobertura (gcov)
+&Test de Cobertura (experimental, gcov)
 MENUITEM_TOOLS_VALGRIND_RUN
 Ejecutar...
 MENUITEM_TOOLS_VALGRIND_VIEW
@@ -3140,8 +3140,12 @@ PROJECTCONFIG_COMPILING_MACROS
 Macros a definir
 PROJECTCONFIG_COMPILING_EXTRA_PATHS
 Directorios adicionales para buscar cabeceras
+PROJECTCONFIG_COMPILING_STD
+Dialectos:
+PROJECTCONFIG_COMPILING_STD_DEFAULT
+<predeterminado>
 PROJECTCONFIG_COMPILING_ONLY_ANSI
-Limitar solo al estandard ANSI
+estricto
 PROJECTCONFIG_COMPILING_WARNINGS_NONE
 Ninguna
 PROJECTCONFIG_COMPILING_WARNINGS_DEFAULT

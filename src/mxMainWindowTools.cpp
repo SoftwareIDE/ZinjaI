@@ -77,7 +77,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		file_args=wxString("--file-list=")<<utils->Quotize(list);
 
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
-		toargs=project->compiling_options;
+		toargs=project->cpp_compiling_options;
 		
 		// extra_args
 		if (project->cppcheck->copy_from_config)
@@ -977,7 +977,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
 		bool cpp = fname.Last()!='c';
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
-			project->compiling_options+_T(" \"")+fname+"\""+"-c -E -o \""+bin_name+"\"";
+			(cpp?project->cpp_compiling_options:project->c_compiling_options)+_T(" \"")+fname+"\""+"-c -E -o \""+bin_name+"\"";
 		if (id_command==1) command<<" -fdirectives-only -C";
 		_IF_DEBUGMODE(command);
 		int x =utils->Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	

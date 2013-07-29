@@ -252,9 +252,34 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 		LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras"),configuration->headers_dirs,mxID_PROJECT_CONFIG_COMPILE_DIRS_BUTTON);
 	wx_extern.Add(compiling_headers_dirs,true);
 	
-	compiling_ansi_compliance = utils->AddCheckBox(sizer,panel,
-		LANG(PROJECTCONFIG_COMPILING_ONLY_ANSI,"Limitar solo al estandard ANSI"),configuration->ansi_compliance);
-	wx_extern.Add(compiling_ansi_compliance);
+
+	wxBoxSizer *std_sizer=new wxBoxSizer(wxHORIZONTAL);
+	// c dialect
+	std_sizer->Add(new wxStaticText(panel,wxID_ANY,wxString(LANG(PROJECTCONFIG_COMPILING_STD,"Estandar:"))+"   C: "),sizers->Center);
+	wxArrayString c_aux; c_aux.Add(LANG(PROJECTCONFIG_COMPILING_STD_DEFAULT,"<predeterminado>")); 
+	c_aux.Add("c90"); c_aux.Add("gnu90"); c_aux.Add("c99"); 
+	c_aux.Add("gnu99"); c_aux.Add("c11"); c_aux.Add("gnu11");
+	wxString c_def=c_aux[0]; if (c_aux.Index(configuration->std_c)!=wxNOT_FOUND) c_def=configuration->std_c;
+	compiling_std_c = new wxComboBox(panel, wxID_ANY, c_def, wxDefaultPosition, wxDefaultSize, c_aux, wxCB_READONLY);
+	compiling_std_c->SetMinSize(wxSize(50,-1)); std_sizer->Add(compiling_std_c,sizers->Exp1);
+	// c++ dialect
+	std_sizer->Add(new wxStaticText(panel,wxID_ANY,"   C++: "),sizers->Center);
+	wxArrayString cpp_aux; cpp_aux.Add(LANG(PROJECTCONFIG_COMPILING_STD_DEFAULT,"<predeterminado>")); 
+	cpp_aux.Add("c++99"); cpp_aux.Add("gnu++99"); cpp_aux.Add("c++03"); cpp_aux.Add("gnu++03"); 
+	cpp_aux.Add("c++11"); cpp_aux.Add("gnu++11"); cpp_aux.Add("c++1y"); cpp_aux.Add("gnu++1y");
+	wxString cpp_def=cpp_aux[0]; if (cpp_aux.Index(configuration->std_cpp)!=wxNOT_FOUND) cpp_def=configuration->std_cpp;
+	compiling_std_cpp = new wxComboBox(panel, wxID_ANY, cpp_def, wxDefaultPosition, wxDefaultSize, cpp_aux, wxCB_READONLY);
+	compiling_std_cpp->SetMinSize(wxSize(50,-1)); std_sizer->Add(compiling_std_cpp,sizers->Exp1);
+	// pedantic option
+	std_sizer->Add(new wxStaticText(panel,wxID_ANY,"  "),sizers->Center);
+	compiling_pedantic = new wxCheckBox(panel,wxID_ANY,LANG(PROJECTCONFIG_COMPILING_ONLY_ANSI,"estricto")); 
+	compiling_pedantic->SetValue(configuration->pedantic_errors);
+	std_sizer->Add(compiling_pedantic,sizers->Center);
+	// agregar
+	sizer->Add(std_sizer,sizers->BA5_Exp0);
+	wx_extern.Add(compiling_pedantic,true);
+	wx_extern.Add(compiling_std_c,true);
+	wx_extern.Add(compiling_std_cpp,true);
 	
 	wxArrayString a_warnings;
 	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_NONE,"Ninguna"));
@@ -436,7 +461,15 @@ void mxProjectConfigWindow::LoadValues() {
 	compiling_macros->SetValue(configuration->macros);
 	compiling_extra_options->SetValue(configuration->compiling_extra);
 	compiling_headers_dirs->SetValue(configuration->headers_dirs);
-	compiling_ansi_compliance->SetValue(configuration->ansi_compliance);
+	compiling_pedantic->SetValue(configuration->pedantic_errors);
+	if (compiling_std_c->FindString(configuration->std_c)!=wxNOT_FOUND)
+		compiling_std_c->SetValue(configuration->std_c);
+	else 
+		compiling_std_c->SetSelection(0);
+	if (compiling_std_cpp->FindString(configuration->std_cpp)!=wxNOT_FOUND)
+		compiling_std_cpp->SetValue(configuration->std_cpp);
+	else 
+		compiling_std_cpp->SetSelection(0);
 	compiling_warnings_level->SetSelection(configuration->warnings_level);
 	compiling_debug_level->SetSelection(configuration->debug_level);
 	compiling_optimization_level->SetSelection(configuration->optimization_level);
@@ -516,7 +549,9 @@ bool mxProjectConfigWindow::SaveValues() {
 	configuration->macros=compiling_macros->GetValue();
 	configuration->compiling_extra=compiling_extra_options->GetValue();
 	configuration->headers_dirs=compiling_headers_dirs->GetValue();
-	configuration->ansi_compliance=compiling_ansi_compliance->GetValue();
+	configuration->pedantic_errors=compiling_pedantic->GetValue();
+	configuration->std_c=compiling_std_c->GetValue();
+	configuration->std_cpp=compiling_std_cpp->GetValue();
 	configuration->warnings_level=compiling_warnings_level->GetSelection();
 	configuration->debug_level=compiling_debug_level->GetSelection();
 	configuration->optimization_level=compiling_optimization_level->GetSelection();
