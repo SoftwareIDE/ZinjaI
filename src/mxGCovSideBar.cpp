@@ -64,8 +64,8 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 
 /// @return false si no pudo ejecutar gcov porque hay otra cosa ejecutandose
 bool mxGCovSideBar::ShouldLoadData(mxSource *src) {
-	if (src->sin_titulo || src->GetFullPath()==last_path) return false;
-	last_path=src->source_filename.GetFullPath();
+	if (/*src->sin_titulo || */src->GetFullPath()==last_path) return false;
+	last_path=src->GetFullPath();
 	return true;
 }
 
@@ -96,7 +96,7 @@ void mxGCovSideBar::LoadData () {
 	
 	wxFileName binary= src->GetBinaryFileName();
 	cerr<<"SIDE:"<<binary.GetFullPath()<<endl;
-	wxFileName fname= binary.GetFullPath().BeforeLast('.')+"."+src->source_filename.GetExt()+".gcov";
+	wxFileName fname= binary.GetFullPath().BeforeLast('.')+"."+src->GetFileName(true).AfterLast('.')+".gcov";
 	if (binary.FileExists() && (!fname.FileExists() || fname.GetModificationTime()<binary.GetModificationTime())) { 
 		wxString command="gcov "; command<<utils->Quotize(binary.GetName());
 		utils->Execute(binary.GetPath(),command,wxEXEC_SYNC);
