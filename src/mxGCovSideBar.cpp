@@ -95,7 +95,6 @@ void mxGCovSideBar::LoadData () {
 	mxOSD osd(main_window,"Generando y leyendo información de cobertura (gcov)");
 	
 	wxFileName binary= src->GetBinaryFileName();
-	cerr<<"SIDE:"<<binary.GetFullPath()<<endl;
 	wxFileName fname= binary.GetFullPath().BeforeLast('.')+"."+src->GetFileName(true).AfterLast('.')+".gcov";
 	if (binary.FileExists() && (!fname.FileExists() || fname.GetModificationTime()<binary.GetModificationTime())) { 
 		wxString command="gcov "; command<<utils->Quotize(binary.GetName());
