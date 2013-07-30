@@ -344,7 +344,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 		// crear configuracion Debug
 		configurations[0] = new project_configuration(name.GetName(),_T("Debug"));
 		configurations[0]->debug_level=2;
-		configurations[0]->optimization_level=0;
+		configurations[0]->optimization_level=5;
 		configurations[0]->strip_executable=false;
 		configurations[0]->macros=configurations[0]->old_macros="_DEBUG";
 		// crear configuracion Release
@@ -1905,6 +1905,8 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		compiling_options<<_T("-O3 ");
 	else if (active_configuration->optimization_level==4) 
 		compiling_options<<_T("-Os ");
+	else if (active_configuration->optimization_level==5) 
+		compiling_options<<(current_toolchain.FixArgument(true,"-Og")+" ");
 	// ansi_compliance
 	if (active_configuration->pedantic_errors) compiling_options<<_T("-pedantic-errors ");
 	// headers_dirs
@@ -2719,8 +2721,9 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false;
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false;
 	for (int i=0;i<configurations_count;i++) {
+		if (configurations[i]->optimization_level==5) use_og=true;
 		if (!configurations[i]->std_c.Len()) have_std=true;
 		if (!configurations[i]->std_cpp.Len()) have_std=true;
 		if (configurations[i]->pedantic_errors) have_std=true;
@@ -2745,7 +2748,7 @@ int ProjectManager::GetRequiredVersion() {
 		}
 	}
 	version_required=0;
-	if (have_std) version_required=20130729;
+	if (use_og || have_std) version_required=20130729;
 	else if (autocodes_file.Len()) version_required=20110814;
 	else if (have_manifest) version_required=20110610;
 	else if (have_extra_vars) version_required=20110401;

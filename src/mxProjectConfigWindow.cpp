@@ -304,6 +304,7 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_2,"Nivel 2"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_3,"Nivel 3"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_SIZE,"Reducir Tamaño"));
+	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_SIZE,"Depuración"));
 	compiling_optimization_level = utils->AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"),a_optimiz, configuration->optimization_level);
 	wx_extern.Add(compiling_optimization_level,true);
 	

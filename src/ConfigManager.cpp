@@ -528,6 +528,11 @@ bool ConfigManager::Load() {
 		}
 	}
 	
+	if (Init.version<20130730) {
+		if (Running.compiler_options.Contains("-O0"))
+			Running.compiler_options.Replace("-O0","-Og");
+	}
+	
 	fil.Close();
 	if (last_files.GetCount()) {
 		int ps=0, pp=0;
@@ -1051,7 +1056,7 @@ void ConfigManager::LoadDefaults(){
 	Source.callTips=true;
 	Source.avoidNoNewLineWarning=true;
 
-	Running.compiler_options=_T("-Wall -pedantic-errors");
+	Running.compiler_options=_T("-Wall -pedantic-errors -Og");
 	Running.wait_for_key=true;
 	Running.always_ask_args=false;
 	Running.dont_run_headers=false;

@@ -3477,10 +3477,13 @@ wxString mxSource::SaveSourceForSomeTool() {
 }
 
 /**
-* @brief return config_runnign.compiler_options parsed (variables replaced and subcommands executed)
+* @brief return config_runnign.compiler_options parsed (variables replaced and subcommands executed, current_toolchain must be setted)
 **/
 wxString mxSource::GetParsedCompilerOptions() {
-	wxString comp_opts=config_running.compiler_options;
+	wxArrayString args; 
+	utils->Split(config_running.compiler_options,args,false,true);
+	for(unsigned int i=0;i<args.GetCount();i++) args[i]=current_toolchain.FixArgument(cpp_or_just_c,args[i]);
+	wxString comp_opts=utils->UnSplit(args," ",false);
 	utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
 	comp_opts = utils->ExecComas(working_folder.GetFullPath(),comp_opts);
 	return comp_opts;

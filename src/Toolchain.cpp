@@ -176,6 +176,7 @@ bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 
 wxString Toolchain::FixArgument (bool cpp, wxString arg) {
 	if (type!=TC_GCC) return arg;
+	if (arg=="-Og" && !CheckVersion(cpp,4,8)) return "-O0";
 	if (arg=="-std=c++11" && !CheckVersion(cpp,4,7)) return "-std=c++0x";
 	if (arg=="-std=gnu++11" && !CheckVersion(cpp,4,7)) return "-std=gnu++0x";
 	return arg;
