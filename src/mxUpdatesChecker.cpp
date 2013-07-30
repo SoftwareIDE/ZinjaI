@@ -165,7 +165,6 @@ void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
 		return;
 	}
 	wxString res=fil.GetFirstLine();
-	res="update";
 	if (res=="nonews") {
 		main_window->SetStatusText(LANG(UPDATE_NO_NEW_VERSION_STATUS,"Buscar actualizaciones: No hay versiones nuevas disponibles."));
 		text->SetLabel(LANG(UPDATE_NO_NEW_VERSION,"No hay nuevas versiones disponibles."));
