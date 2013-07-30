@@ -126,9 +126,9 @@ void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
 //	wxExecute(config->Files.browser_command+_T(" http://127.0.0.1/zinjai"));
 //#else
 	if (config->Init.language_file=="spanish")
-		utils->OpenInBrowser(_T("http://zinjai.sourceforge.net?page=descargas.php"));
+		utils->OpenInBrowser("http://zinjai.sourceforge.net?page=actualizacion.php&os="ARCHITECTURE);
 	else
-		utils->OpenInBrowser(_T("http://zinjai.sourceforge.net?page=descargas_en.php"));
+		utils->OpenInBrowser("http://zinjai.sourceforge.net?page=actualizacion_en.php&os="ARCHITECTURE);
 //#endif
 	Close();
 }
@@ -165,6 +165,7 @@ void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
 		return;
 	}
 	wxString res=fil.GetFirstLine();
+	res="update";
 	if (res=="nonews") {
 		main_window->SetStatusText(LANG(UPDATE_NO_NEW_VERSION_STATUS,"Buscar actualizaciones: No hay versiones nuevas disponibles."));
 		text->SetLabel(LANG(UPDATE_NO_NEW_VERSION,"No hay nuevas versiones disponibles."));
