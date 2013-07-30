@@ -50,7 +50,7 @@ mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname):wxDialog(parent, 
 	wxPanel *graph_panel=new wxPanel(notebook,wxID_ANY);
 	wxSizer *graph_sizer=new wxBoxSizer(wxVERTICAL);
 	wxArrayString array;
-	for(unsigned int i=0;i<data.graph.size();i++) array.Add(data.graph[i].name);
+	for(unsigned int i=0;i<data.graph.size();i++) array.Add(data.graph[i].name.c_str());
 	combo = new wxComboBox(graph_panel,wxID_ANY,array[0],wxDefaultPosition,wxDefaultSize,array,wxCB_READONLY);
 	combo->SetSelection(0);
 	graph_sizer->Add(combo,sizers->Exp0);
@@ -98,7 +98,7 @@ void mxGprofOutput::FillTable (const wxString &pattern) {
 			grid_table->SetCellValue(j,3,wxString()<<data.table[i].calls);	
 			grid_table->SetCellValue(j,4,to_str(data.table[i].self_s_calls));	
 			grid_table->SetCellValue(j,5,to_str(data.table[i].total_s_calls));	
-			grid_table->SetCellValue(j,6,data.table[i].name);	
+			grid_table->SetCellValue(j,6,data.table[i].name.c_str());	
 			j++;
 		}
 	}
@@ -132,8 +132,8 @@ void mxGprofOutput::FillGraph ( ) {
 		grid_graph->SetCellValue(sum,0,to_str(data.graph[i].called_by[j].percent_time));
 		grid_graph->SetCellValue(sum,1,to_str(data.graph[i].called_by[j].self));
 		grid_graph->SetCellValue(sum,2,to_str(data.graph[i].called_by[j].children));
-		grid_graph->SetCellValue(sum,3,data.graph[i].called_by[j].called);
-		grid_graph->SetCellValue(sum,4,data.graph[i].called_by[j].name);
+		grid_graph->SetCellValue(sum,3,data.graph[i].called_by[j].called.c_str());
+		grid_graph->SetCellValue(sum,4,data.graph[i].called_by[j].name.c_str());
 		sum++;
 	}
 	grid_graph->SetCellValue(sum,0,""); grid_graph->SetCellValue(sum,1,""); grid_graph->SetCellValue(sum,2,"");
@@ -142,8 +142,8 @@ void mxGprofOutput::FillGraph ( ) {
 		grid_graph->SetCellValue(sum,0,to_str(data.graph[i].calls_to[j].percent_time));
 		grid_graph->SetCellValue(sum,1,to_str(data.graph[i].calls_to[j].self));
 		grid_graph->SetCellValue(sum,2,to_str(data.graph[i].calls_to[j].children));
-		grid_graph->SetCellValue(sum,3,data.graph[i].calls_to[j].called);
-		grid_graph->SetCellValue(sum,4,data.graph[i].calls_to[j].name);
+		grid_graph->SetCellValue(sum,3,data.graph[i].calls_to[j].called.c_str());
+		grid_graph->SetCellValue(sum,4,data.graph[i].calls_to[j].name.c_str());
 		sum++;
 	}	
 	grid_graph->AutoSizeColumns();

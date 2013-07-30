@@ -48,8 +48,8 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 		int h=hits[l++];
 		if (h>0) {
 			double hp=h;
-			int r=hp>=m2?255:(hp)*255/m2;
-			int g=hp>=m2?(128-(hp-m2)*128/m2):128;
+			int r=hp>=m2?255:int((hp)*255/m2);
+			int g=hp>=m2?int(128-(hp-m2)*128/m2):128;
 			wxString text;
 			if (h==1) { text="#####"; r=g=0; }
 			else if (h>=0) text<<h-1;
