@@ -1001,7 +1001,7 @@ void ConfigManager::LoadDefaults(){
 	Init.version=0;
 	Init.pos_x=Init.pos_y=0;
 	Init.size_x=Init.size_y=0;
-	Init.maximized=false;
+	Init.maximized=true;
 	Init.lang_es=false;
 	Init.zinjai_server_port=46527;
 //	Init.load_sharing_server=false;
