@@ -104,6 +104,7 @@
 			0 valgrind.html Análisis Dinámico (Valgrind)
 			0 cppcheck.html Análisis Estático (CppCheck)
 			0 wxformbuilder.html Diseño Rápido de Interfases (wxFormBuilder)
+		0 toolchains.html Uso de toolchains alternativos
 	0 debug.html Debugging
 		0 debug_info.html Informacion de Depuracion
 		0 debug_exec.html Ejecucion en Depuración
