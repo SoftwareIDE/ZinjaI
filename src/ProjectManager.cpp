@@ -443,6 +443,13 @@ ProjectManager::ProjectManager(wxFileName name) {
 	
 	if (autocodes_file.Len()) autocoder->LoadFromFile(DIR_PLUS_FILE(path,autocodes_file));
 	
+	if (version_saved<20130801) { // arreglar cambios de significado ("<default>" en el estandar c/cpp)
+		for (int i=0;i<configurations_count;i++) {
+			if (configurations[i]->std_c.StartsWith("<")) configurations[i]->std_c="";
+			if (configurations[i]->std_cpp.StartsWith("<")) configurations[i]->std_cpp="";
+		}
+	}
+	
 	if (version_saved<20100518) { // arreglar cambios de significado
 		for (int i=0;i<configurations_count;i++)
 			if (configurations[i]->wait_for_key)

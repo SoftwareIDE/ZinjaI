@@ -249,7 +249,7 @@ struct project_configuration {
 		dont_generate_exe=false;
 		extra_steps=NULL;
 		toolchain="";
-		std_c=std_cpp="<default>";
+		std_c=std_cpp="";
 		for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) toolchain_arguments[i]="${DEFAULT}";
 	}
 };
