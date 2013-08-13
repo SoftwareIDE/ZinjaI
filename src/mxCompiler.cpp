@@ -595,7 +595,7 @@ void mxCompiler::ResetCompileData() {
 	full_output.Clear();
 	num_errors=num_warnings=num_all=0;
 	tree->SetItemText(errors,LANG(MAINW_CT_ERRORS,"Errores"));
-	tree->SetItemText(warnings,LANG(MAINW_CT_WARNINGS,"Advertenccd ias"));
+	tree->SetItemText(warnings,LANG(MAINW_CT_WARNINGS,"Advertencias"));
 	tree->DeleteChildren(errors);
 	tree->DeleteChildren(warnings);
 	if (!project)  {

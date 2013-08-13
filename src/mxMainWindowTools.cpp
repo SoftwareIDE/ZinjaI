@@ -1013,6 +1013,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 	int *v=new int[n];
 	GetValidLines(bin_name.c_str(),v,n);
 	
+	
 	if (id_command==1) {
 		src->IndicatorSetStyle(2,wxSTC_INDIC_STRIKE);
 		if (ctheme->DEFAULT_BACK.Green()+ctheme->DEFAULT_BACK.Blue()+ctheme->DEFAULT_BACK.Red()<256*3/2)
@@ -1065,6 +1066,9 @@ void mxMainWindow::OnToolsInstallComplements(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
+	wxString user_templates_dir=DIR_PLUS_FILE(config->home_dir,"templates");
+	if (!wxFileName::DirExists(user_templates_dir)) 
+		wxFileName::Mkdir(user_templates_dir);
 	if (project) {
 		wxString description=wxGetTextFromUser(LANG(MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre para mostrar del nuevo template de proyecto"));
 		if (!description.Len()) return; 
@@ -1075,7 +1079,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		wxString project_name=project->project_name; project->project_name=description; // replace project name with the new description
 		project->Save(true); // save in place as template
 		project->project_name=project_name; // restore original project name
-		wxString dest_dir=DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"templates"),filename);
+		wxString dest_dir=DIR_PLUS_FILE(user_templates_dir,filename);
 		wxFileName::Mkdir(dest_dir); utils->XCopy(project->path,dest_dir,true); // copy all project files
 		project->Save(); // restore real project file to non-template status
 	} else IF_THERE_IS_SOURCE {
@@ -1084,7 +1088,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		wxString filename = wxGetTextFromUser(LANG(MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE,"Ingrese el nombre del archivo del nuevo template de programa simple"));
 		if (!filename.Len()) return; 
 		mxSource *src=CURRENT_SOURCE;
-		wxString dest_file=DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"templates"),filename+".tpl");
+		wxString dest_file=DIR_PLUS_FILE(user_templates_dir,filename+".tpl");
 		// create the template file
 		wxTextFile template_file(dest_file);
 		template_file.Create();
