@@ -153,7 +153,7 @@ void mxUpdatesChecker::BackgroundCheck() {
 }
 
 void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
-	delete process;
+	delete process; process=NULL;
 	wxString temp_file(DIR_PLUS_FILE(config->temp_dir,"updatem.res"));
 	wxTextFile fil(temp_file);
 	if (!fil.Exists() || !fil.Open() || !fil.GetLineCount()) {

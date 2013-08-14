@@ -1,5 +1,7 @@
 ZinjaI todo
 
+que al generar un indice de autocompletado vaya a parar a home/autocomp
+
 importante: revisar el GetOutput y evaluar implementarlo por fuera de wx para evitar el problema del wxyield (llamada a g++ --dumpversion como ejemplo)
 
 reacomodar markers en las ediciones por lineas (ctrl+L, ctrl+T, Ctrl+Shift+T)
