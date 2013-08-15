@@ -3,10 +3,13 @@
 #include <wx/dialog.h>
 
 class wxComboBox;
+class wxTextCtrl;
 
 class mxValgrindConfigDialog : public wxDialog {
 private:
 	wxComboBox *cmb_tool;
+	wxTextCtrl *suppressions;
+	wxTextCtrl *additional_args;
 public:
 	mxValgrindConfigDialog(wxWindow *parent);
 	~mxValgrindConfigDialog();

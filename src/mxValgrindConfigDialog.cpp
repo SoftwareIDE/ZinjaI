@@ -29,6 +29,8 @@ mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent
 	tools.Add("drd");
 	
 	cmb_tool=utils->AddComboBox(sizer,this,"Tool",tools,0);
+	suppressions=utils->AddTextCtrl(sizer,this,"Suppression files:","");
+	additional_args=utils->AddTextCtrl(sizer,this,"Additional arguments:","");
 	
 	wxSizer *bottomSizer=new wxBoxSizer(wxHORIZONTAL);
 	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
@@ -67,11 +69,18 @@ void mxValgrindConfigDialog::OnClose (wxCloseEvent & evt) {
 
 wxString mxValgrindConfigDialog::GetArgs() {
 	int i=cmb_tool->GetSelection();
-	if (i==0) return "--leak-check=full --tool=memcheck";
-	if (i==1) return "--tool=cachegrind";
-	if (i==2) return "--tool=callgrind";
-	if (i==3) return "--tool=massif";
-	if (i==4) return "--tool=helgrind";
-	if (i==5) return "--tool=drd";
-	return "";
+	wxString args;
+	switch (i) {
+	case 0: args="--leak-check=full --tool=memcheck"; break;
+	case 1: args="--tool=cachegrind"; break;
+	case 2: args="--tool=callgrind"; break;
+	case 3: args="--tool=massif"; break;
+	case 4: args="--tool=helgrind"; break;
+	case 5: args="--tool=drd"; break;
+	}
+	if (suppressions->GetValue().Len()) 
+		args<<" "<<utils->Split(suppressions->GetValue(),"--suppressions=");
+	if (additional_args->GetValue().Len()) 
+		args<<" "<<additional_args->GetValue();
+	return args;
 }
