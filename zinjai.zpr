@@ -312,7 +312,7 @@ path=src/mxMultipleChoiceEditor.cpp
 cursor=86
 [source]
 path=src/mxValgrindConfigDialog.cpp
-cursor=968
+cursor=1867
 open=true
 [source]
 path=src/BreakPointInfo.cpp

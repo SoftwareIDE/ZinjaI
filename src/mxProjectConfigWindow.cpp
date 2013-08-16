@@ -1024,7 +1024,7 @@ void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
 }
 
 void mxProjectConfigWindow::OnComboToolchainChange(wxCommandEvent &evt) {
-	wx_extern.EnableAll(!Toolchain::GetInfo(toolchains_combo->GetStringSelection()).type>=TC_EXTERN);
+	wx_extern.EnableAll(Toolchain::GetInfo(toolchains_combo->GetStringSelection()).type<TC_EXTERN);
 }
 
 void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {
