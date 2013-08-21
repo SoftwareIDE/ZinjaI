@@ -74,9 +74,9 @@ int lang_idx=0;
 pid_t child_pid=0;
 bool received_sighup=false;
 void forward_signal(int s) {
-	ofstream of("/home/zaskar/.zinjai/signals.txt",ios::app);
-	of<<endl<<s<<" "<<getppid()<<"  "<<kill(getppid(),0)<<endl;
-	of.close();
+//	ofstream of("/home/zaskar/.zinjai/signals.txt",ios::app);
+//	of<<endl<<s<<" "<<getppid()<<"  "<<kill(getppid(),0)<<endl;
+//	of.close();
 	if (s==SIGHUP) {
 		received_sighup=true;
 		if (child_pid && kill(getppid(),0)) kill(child_pid,SIGKILL);
