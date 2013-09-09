@@ -212,6 +212,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_GENERIC_READ_DN("working_folder",active_configuration->working_folder);
 				else CFG_BOOL_READ_DN("always_ask_args",active_configuration->always_ask_args);
 				else CFG_GENERIC_READ_DN("args",active_configuration->args);
+				else CFG_INT_READ_DN("exec_method",active_configuration->exec_method);
+				else CFG_GENERIC_READ_DN("exec_script",active_configuration->exec_script);
 				else CFG_INT_READ_DN("wait_for_key",active_configuration->wait_for_key);
 				else CFG_GENERIC_READ_DN("temp_folder",active_configuration->temp_folder);
 				else CFG_GENERIC_READ_DN("output_file",active_configuration->output_file);
@@ -677,6 +679,8 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("working_folder",configurations[i]->working_folder);
 		CFG_BOOL_WRITE_DN("always_ask_args",configurations[i]->always_ask_args);
 		CFG_GENERIC_WRITE_DN("args",configurations[i]->args);
+		CFG_GENERIC_WRITE_DN("exec_method",configurations[i]->exec_method);
+		CFG_GENERIC_WRITE_DN("exec_script",configurations[i]->exec_script);
 		CFG_GENERIC_WRITE_DN("wait_for_key",configurations[i]->wait_for_key);
 		CFG_GENERIC_WRITE_DN("temp_folder",configurations[i]->temp_folder);
 		CFG_GENERIC_WRITE_DN("output_file",configurations[i]->output_file);
@@ -2728,8 +2732,9 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false;
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false;
 	for (int i=0;i<configurations_count;i++) {
+		if (configurations[i]->exec_method!=0) use_exec_script=true;
 		if (configurations[i]->optimization_level==5) use_og=true;
 		if (!configurations[i]->std_c.Len()) have_std=true;
 		if (!configurations[i]->std_cpp.Len()) have_std=true;
@@ -2755,7 +2760,8 @@ int ProjectManager::GetRequiredVersion() {
 		}
 	}
 	version_required=0;
-	if (use_og || have_std) version_required=20130729;
+	if (use_exec_script) version_required=20130817;
+	else if (use_og || have_std) version_required=20130729;
 	else if (autocodes_file.Len()) version_required=20110814;
 	else if (have_manifest) version_required=20110610;
 	else if (have_extra_vars) version_required=20110401;

@@ -32,6 +32,8 @@ class mxProjectConfigWindow : public wxDialog {
 	wxTextCtrl *general_working_folder;
 	wxCheckBox *general_always_ask_args;
 	wxTextCtrl *general_args;
+	wxComboBox *general_exec_method;
+	wxTextCtrl *general_exec_script;
 	wxComboBox *general_wait_for_key;
 	
 	wxTextCtrl *general_temp_folder;
@@ -67,6 +69,7 @@ class mxProjectConfigWindow : public wxDialog {
 	wxListBox *libtobuild_list;
 	wxCheckBox *libtobuild_noexec;
 	
+	widgetDisabler wx_noscript;
 	widgetDisabler wx_noexe;
 	widgetDisabler wx_extern;
 
@@ -95,6 +98,8 @@ public:
 	void OnClose(wxCloseEvent &event);
 	void LoadValues();
 	void OnSelectConfigInCombo(wxCommandEvent &event);
+	void OnExecutionMethodButton(wxCommandEvent &evt);
+	void OnComboExecutionScript(wxCommandEvent &evt);
 	void OnArgsAddFile(wxCommandEvent &evt);
 	void OnArgsAddDir(wxCommandEvent &evt);
 	void OnArgsReplaceFile(wxCommandEvent &evt);

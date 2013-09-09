@@ -196,6 +196,8 @@ struct project_configuration {
 	wxString working_folder; ///< directorio de trabajo para la ejecución
 	bool always_ask_args; ///< mostrar el dialogo que pide los argumentos antes de ejecutar
 	wxString args; ///< argumentos para la ejecucion
+	int exec_method; ///< como se debe ejecutar (0=zinjai ejecuta, 1=primero script luego como 0, 2=todo responsabilidad del escript)
+	wxString exec_script; ///< script para exec_method>0
 	int wait_for_key; ///< esperar una tecla antes de cerrar la consola luego de la ejecución (0=nunca, 1=solo en caso de error, 2=siempre)
 	
 	wxString temp_folder; ///< directorio temporal donde poner los objetos de la compilacion
@@ -230,7 +232,9 @@ struct project_configuration {
 		name=cname;
 		working_folder="";
 		always_ask_args=false;
+		exec_script="";
 		args="";
+		exec_method=0;
 		wait_for_key=2;
 		temp_folder=cname;
 		output_file=DIR_PLUS_FILE(cname,pname+_T(BINARY_EXTENSION));

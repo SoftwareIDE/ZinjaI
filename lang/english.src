@@ -3116,12 +3116,22 @@ PROJECTCONFIG_GENERAL_MANIFEST_PATH
 Manifest file (Windows only)
 PROJECTCONFIG_GENERAL_EXE_PATH
 Path for executable file
+PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR
+Regular (ZinjaI launches executable)
+PROJECTCONFIG_GENERAL_EXEC_METHOD_INI
+With initialization (runs a script befora launching executable)
+PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT
+Only script (the script must launch the executable)
+PROJECTCONFIG_GENERAL_EXEC_METHOD
+Execution method
+PROJECTCONFIG_GENERAL_SCRIPT
+Execution script
 PROJECTCONFIG_GENERAL_WORKDIR
 Working directory
-PROJECTCONFIG_GENERAL_ASK_ARGS
-Always ask for arguments before running
 PROJECTCONFIG_GENERAL_RUNNING_ARGS
 Arguments for execution
+PROJECTCONFIG_GENERAL_ASK_ARGS
+Always ask for arguments before running
 PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER
 Never
 PROJECTCONFIG_GENERAL_WAIT_KEY_ERROR
@@ -3131,7 +3141,7 @@ Always
 PROJECTCONFIG_GENERAL_WAIT_KEY
 Wait for a key press after execution
 PROJECTCONFIG_GENERAL_TEMP_FOLDER
-Directory for temporary and intermidiate files
+Directory for temporary and intermediate files
 PROJECTCONFIG_COMPILING_EXTRA_ARGS
 Extra arguments for compiler
 PROJECTCONFIG_COMPILING_MACROS

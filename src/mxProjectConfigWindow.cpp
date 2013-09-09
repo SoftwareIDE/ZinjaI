@@ -40,6 +40,8 @@ BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_TOOLCHAIN_OPTIONS,mxProjectConfigWindow::OnToolchainOptionsButton)
 	EVT_COMBOBOX(mxID_PROJECT_CONFIG_TOOLCHAIN_COMBO,mxProjectConfigWindow::OnComboToolchainChange)
 	EVT_COMBOBOX(mxID_PROJECT_CONFIG_NAME,mxProjectConfigWindow::OnSelectConfigInCombo)
+	EVT_COMBOBOX(mxID_PROJECT_CONFIG_EXEC_METHOD,mxProjectConfigWindow::OnComboExecutionScript)
+	EVT_MENU(mxID_PROJECT_CONFIG_EXEC_SCRIPT,mxProjectConfigWindow::OnExecutionMethodButton)
 	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxProjectConfigWindow::OnArgsReplaceDir)
 	EVT_MENU(mxID_ARGS_ADD_DIR,mxProjectConfigWindow::OnArgsAddDir)
 	EVT_MENU(mxID_ARGS_REPLACE_FILE,mxProjectConfigWindow::OnArgsReplaceFile)
@@ -108,6 +110,8 @@ mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent, wxWindowID id, co
 	notebook->AddPage(CreateLibsPanel(notebook), LANG(PROJECTCONFIG_LIBRARIES,"Bibliotecas"));
 
 	wx_noexe.EnableAll(!configuration->dont_generate_exe);
+	wx_extern.EnableAll(Toolchain::GetInfo(toolchains_combo->GetStringSelection()).type<TC_EXTERN);
+	wx_noscript.EnableAll(configuration->exec_method);
 	
 	// crear los botones de aceptar y cancelar
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -202,19 +206,31 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 		LANG(PROJECTCONFIG_GENERAL_EXE_PATH,"Ubicacion del ejecutable"),configuration->output_file,mxID_PROJECT_GENERAL_EXE_PATH);
 	wx_noexe.Add(general_output_file,true);
 	
+	
+	wxArrayString exec_method_arr;
+	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR,"Regular (se lanza directamente el ejecutable)"));
+	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_INI,"Con inicialización (se ejecuta un script antes)"));
+	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT,"Solo script (el script deberá lanzar el ejecutable)"));
+	general_exec_method = utils->AddComboBox(sizer,panel,
+		LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD,"Mecanismo de ejecución"),exec_method_arr,configuration->exec_method,mxID_PROJECT_CONFIG_EXEC_METHOD);
+	
+	general_exec_script = utils->AddDirCtrl(sizer,panel,
+		LANG(PROJECTCONFIG_GENERAL_SCRIPT,"Script para ejecución"),configuration->exec_script,mxID_PROJECT_CONFIG_EXEC_SCRIPT);
+	wx_noscript.Add(general_exec_script,true);
+	
 	general_working_folder = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_WORKDIR,"Directorio de trabajo"),configuration->working_folder,mxID_PROJECT_CONFIG_WORKING_DIR);
 	wx_noexe.Add(general_working_folder,true);
 	
 	last_dir=configuration->working_folder;
 	
-	general_always_ask_args = utils->AddCheckBox(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),configuration->always_ask_args);
-	wx_noexe.Add(general_always_ask_args);
-
 	general_args = utils->AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_RUNNING_ARGS,"Argumentos para la ejecucion"),configuration->args,mxID_PROJECT_CONFIG_ARGS_BUTTON);
 	wx_noexe.Add(general_args,true);
+	
+	general_always_ask_args = utils->AddCheckBox(sizer,panel,
+		LANG(PROJECTCONFIG_GENERAL_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),configuration->always_ask_args);
+	wx_noexe.Add(general_always_ask_args);
 	
 	wxArrayString wait_cmb_lab;
 	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER,"Nunca"));
@@ -456,6 +472,8 @@ void mxProjectConfigWindow::LoadValues() {
 	general_working_folder->SetValue(configuration->working_folder);
 	general_always_ask_args->SetValue(configuration->always_ask_args);
 	general_args->SetValue(configuration->args);
+	general_exec_script->SetValue(configuration->exec_script);
+	general_exec_method->SetSelection(configuration->exec_method);
 	general_wait_for_key->SetSelection(configuration->wait_for_key);
 	general_temp_folder->SetValue(configuration->temp_folder);
 	linking_icon->SetValue(configuration->icon_file);
@@ -540,6 +558,8 @@ bool mxProjectConfigWindow::SaveValues() {
 	configuration->working_folder=general_working_folder->GetValue();
 	configuration->always_ask_args=general_always_ask_args->GetValue();
 	configuration->args=general_args->GetValue();
+	configuration->exec_script=general_exec_script->GetValue();
+	configuration->exec_method=general_exec_method->GetSelection();
 	configuration->wait_for_key=general_wait_for_key->GetSelection();
 	configuration->icon_file=linking_icon->GetValue();
 	configuration->manifest_file=linking_manifest->GetValue();
@@ -1033,5 +1053,13 @@ void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {
 
 void mxProjectConfigWindow::OnImportLibsButton (wxCommandEvent & evt) {
 	
+}
+
+void mxProjectConfigWindow::OnExecutionMethodButton (wxCommandEvent & evt) {
+	
+}
+
+void mxProjectConfigWindow::OnComboExecutionScript (wxCommandEvent & evt) {
+	wx_noscript.EnableAll(general_exec_method->GetSelection()!=0);
 }
 

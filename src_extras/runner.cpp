@@ -1,18 +1,18 @@
 #include<cstring>
 #include<iostream>
 #if defined(__WIN32__)
-#define eternal_nothing while (true) Sleep(10000)
-#include<io.h>
-#include<windows.h>
-#include <conio.h>
+	#define eternal_nothing while (true) Sleep(10000)
+	#include<io.h>
+	#include<windows.h>
+	#include <conio.h>
 #else
-#include<cstdlib>
-#if !defined(__APPLE__)
-#include<wait.h>
-#endif
-#include <termios.h>
-#include <unistd.h>
-#define eternal_nothing while (true) sleep(10)
+	#include<cstdlib>
+	#if !defined(__APPLE__)
+		#include<wait.h>
+	#endif
+	#include <termios.h>
+	#include <unistd.h>
+	#define eternal_nothing while (true) sleep(10)
 #endif
 
 #include <fstream>

@@ -3116,12 +3116,22 @@ PROJECTCONFIG_GENERAL_MANIFEST_PATH
 Archivo manifest.xml (solo Windows)
 PROJECTCONFIG_GENERAL_EXE_PATH
 Ubicacion del ejecutable
+PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR
+Regular (se lanza directamente el ejecutable)
+PROJECTCONFIG_GENERAL_EXEC_METHOD_INI
+Con inicialización (se ejecuta un script antes)
+PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT
+Solo script (el script deberá lanzar el ejecutable)
+PROJECTCONFIG_GENERAL_EXEC_METHOD
+Mecanismo de ejecución
+PROJECTCONFIG_GENERAL_SCRIPT
+Script para ejecución
 PROJECTCONFIG_GENERAL_WORKDIR
 Directorio de trabajo
-PROJECTCONFIG_GENERAL_ASK_ARGS
-Siempre pedir argumentos al ejecutar
 PROJECTCONFIG_GENERAL_RUNNING_ARGS
 Argumentos para la ejecucion
+PROJECTCONFIG_GENERAL_ASK_ARGS
+Siempre pedir argumentos al ejecutar
 PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER
 Nunca
 PROJECTCONFIG_GENERAL_WAIT_KEY_ERROR

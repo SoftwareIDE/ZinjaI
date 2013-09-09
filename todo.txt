@@ -1,5 +1,7 @@
 ZinjaI todo
 
+corregir el problema del drag and drop que le jode a nestor
+
 que al generar un indice de autocompletado vaya a parar a home/autocomp
 
 importante: revisar el GetOutput y evaluar implementarlo por fuera de wx para evitar el problema del wxyield (llamada a g++ --dumpversion como ejemplo)
