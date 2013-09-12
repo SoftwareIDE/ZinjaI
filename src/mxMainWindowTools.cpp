@@ -747,7 +747,6 @@ void mxMainWindow::OnToolsCustomHelp(wxCommandEvent &evt) {
 
 void mxMainWindow::UpdateCustomTools() {
 	wxString ipre=DIR_PLUS_FILE(_T("16"),_T("customTool"));
-	// actualizar el menu archivo
 	for (int i=0;i<10;i++) {
 		if (menu.tools_custom_item[i])
 			menu.tools_custom_menu->Remove(menu.tools_custom_item[i]);

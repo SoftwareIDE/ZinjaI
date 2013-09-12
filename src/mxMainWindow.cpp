@@ -1619,7 +1619,7 @@ void mxMainWindow::CreateMenus() {
 
 	utils->AddSubMenuToMenu(menu.tools, menu.tools_custom_menu = new wxMenu,LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables"),_T(""),ipre+_T("customTools.png"));
 	menu.tools_custom_item=new wxMenuItem*[10];
-	for (int i=0;i<10;i++) menu.file_source_history[i] = NULL;
+	for (int i=0;i<10;i++) menu.tools_custom_item[i] = NULL;
 	menu.tools_custom_menu->AppendSeparator();
 	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_SETTINGS,"&Configurar..."),_T(""),_T(""),ipre+_T("customToolsSettings.png"));
 	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));	
