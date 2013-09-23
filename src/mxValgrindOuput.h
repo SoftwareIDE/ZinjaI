@@ -2,6 +2,13 @@
 #define MXVALGRINDOUPUT_H
 #include <wx/treectrl.h>
 
+enum mxVOmode {
+	mxVO_NULL,
+	mxVO_CPPCHECK,
+	mxVO_VALGRIND,
+	mxVO_DOXYGEN,
+};
+
 class mxValgrindOuput:public wxTreeCtrl {
 private:
 	wxString filename;
@@ -9,13 +16,14 @@ private:
 	wxTreeItemId last;
 	bool is_last;
 	wxTreeItemId sel;
-	char mode;
+	mxVOmode mode;
 public:
-	mxValgrindOuput(wxWindow* parent, char amode, wxString afilename);
-	void SetMode(char amode, wxString afilename);
+	mxValgrindOuput(wxWindow* parent, mxVOmode mode, wxString afilename);
+	void SetMode(mxVOmode mode, wxString afilename);
 	void LoadOutput();
 	void LoadOutputValgrind();
 	void LoadOutputCppCheck();
+	void LoadOutputDoxygen();
 	void OnPopup(wxTreeEvent &evt);
 	void OnSelect(wxTreeEvent &evt);
 	void OnDelete(wxCommandEvent &evt);

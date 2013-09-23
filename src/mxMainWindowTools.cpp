@@ -52,7 +52,7 @@ void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
 void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	if (!config->CheckCppCheckPresent()) return;
 	if (!project && !notebook_sources->GetPageCount()) return;
-	mxOutputView *cppcheck = new mxOutputView(_T("CppCheck"),"",DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")),'c');
+	mxOutputView *cppcheck = new mxOutputView("CppCheck",mxOV_EXTRA_NULL,"","",mxVO_CPPCHECK,DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")));
 	
 	wxString file_args, cppargs, toargs, extra_args, path;
 	
@@ -500,8 +500,8 @@ void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
 		if (config->CheckDoxygenPresent()) {
 			if (!project->doxygen) 
 				project->doxygen = new doxygen_configuration(project->project_name);
-			mxOutputView *doxy = new mxOutputView(_T("Doxygen"),
-				_T("Ver HTMLs"),DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))),':');
+			mxOutputView *doxy = new mxOutputView("Doxygen",mxOV_EXTRA_URL,"Ver HTMLs",DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))),
+				mxVO_DOXYGEN,DIR_PLUS_FILE(config->temp_dir,_T("doxygen.out")));
 			project->SaveAll(false);
 			project->GenerateDoxyfile(DIR_PLUS_FILE(project->path,_T("Doxyfile")));
 			doxy->Launch(project->path,wxString(_T("\""))<<config->Files.doxygen_command<<_T("\" Doxyfile"));

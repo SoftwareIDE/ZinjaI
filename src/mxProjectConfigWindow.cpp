@@ -885,7 +885,7 @@ void mxProjectConfigWindow::OnStepsRun(wxCommandEvent &evt) {
 #endif
 	utils->ParameterReplace(command,_T("${TEMP_DIR}"),temp_folder_short);
 	if (step->hide_window) {
-		mxOutputView *outwin= new mxOutputView(step->name);
+		mxOutputView *outwin= new mxOutputView(step->name,mxOV_EXTRA_NULL,"","",mxVO_NULL,"");
 		outwin->Launch(project->path,command);
 	} else {
 		utils->Execute(project->path,command,wxEXEC_ASYNC|wxEXEC_NOHIDE);

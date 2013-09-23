@@ -20,20 +20,24 @@ BEGIN_EVENT_TABLE(mxOutputView, wxDialog)
 END_EVENT_TABLE()
 	
 /**
-* Si mode==':' extra_command es una url para el boton adicional.
-* Si mode=='+' extra_command es un comando para el boton adicional.
-* Si mode==' ' extra_command no es nada.
-* Sino extra_command es un archivo para el panel de resultados, y mode el modo.
+* @param caption       title for this dialog
+* @param extra_mode    mode for the additional button (mxOV_EXTRA_*)
+* @param extra_label   if extra_mode!=mxOV_EXTRA_NULL, label for the additional button
+* @param extra_command if extra_mode!=mxOV_EXTRA_NULL, file/URL to be opened/launched by the additional button
+* @param output_mode   mode for openning results pannel in main_window (mxOV_OUTPUT_*)
+* @param output_file   if output_mode!=mxVO_NULL, the full path for the output file
 **/
-mxOutputView::mxOutputView(wxString caption, wxString aextra_button_text, wxString run_on_finish, char amode) : wxDialog(main_window, wxID_ANY, caption, wxDefaultPosition, wxSize(600,500) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	extra_button_text=aextra_button_text;
+mxOutputView::mxOutputView(wxString caption, mxOVmode extra_mode, wxString extra_label, wxString extra_command, mxVOmode output_mode, wxString output_file) : wxDialog(main_window, wxID_ANY, caption, wxDefaultPosition, wxSize(600,500) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	process = NULL;
 	working = false;
-	mode=amode;
-	extra_command = run_on_finish;
+	this->extra_mode=extra_mode;
+	this->extra_label=extra_label;
+	this->extra_command=extra_command;
+	this->output_mode=output_mode;
+	this->output_file=output_file;
 	
-	if (mode!=' '&&mode!=':'&&mode!='+') {
-		textfile=new wxFile(extra_command,wxFile::write);
+	if (output_mode!=mxVO_NULL) {
+		textfile=new wxFile(output_file,wxFile::write);
 	} else textfile=NULL;
 	
 	timer = new wxTimer(GetEventHandler(),mxID_TIMER_OUTPUT);
@@ -114,8 +118,8 @@ void mxOutputView::Launch(wxString path, wxString command) {
 void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
 	close_button->Enable(true);
 	working=false;
-	if (extra_button_text.Len()) {
-		extra_button->SetThings(bitmaps->buttons.next,extra_button_text);
+	if (extra_mode!=mxOV_EXTRA_NULL) {
+		extra_button->SetThings(bitmaps->buttons.next,extra_label);
 		GetSizer()->Layout();
 		extra_button->SetFocus();
 	} else {
@@ -130,8 +134,8 @@ void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
 		state->SetLabel(LANG(LAUNCH_STATUS_FINISH,"Estado: Terminado"));
 		if (textfile) {
 			textfile->Close();
-			main_window->ShowValgrindPanel(mode,extra_command);
-			Close();
+			main_window->ShowValgrindPanel(output_mode,output_file);
+			if (extra_mode==mxOV_EXTRA_NULL) Close();
 		}
 	}
 	delete process;
@@ -168,6 +172,6 @@ void mxOutputView::GetProcessOutput() {
 
 void mxOutputView::OnExtraButton(wxCommandEvent &evt) {
 	if (working) process->Kill(pid,wxSIGKILL);
-	else if (mode==':') utils->OpenInBrowser(extra_command);
-	else if (mode!=' ') wxExecute(extra_command);
+	else if (extra_mode==mxOV_EXTRA_URL) utils->OpenInBrowser(extra_command);
+	else if (extra_mode==mxOV_EXTRA_COMMAND) wxExecute(extra_command);
 }

@@ -5031,13 +5031,13 @@ void mxMainWindow::ClearDebugLog() {
 * @param what   tipo de resultado, v=valgrind, c=cppcheck
 * @param file   archivo de donde leer los resultados
 **/
-void mxMainWindow::ShowValgrindPanel(char what, wxString file) {
+void mxMainWindow::ShowValgrindPanel(int what, wxString file) {
 	if (valgrind_panel) {
 		aui_manager.GetPane(valgrind_panel).Show();
-		valgrind_panel->SetMode(what,file);
+		valgrind_panel->SetMode((mxVOmode)what,file);
 	} else {
 		aui_manager.AddPane(
-			valgrind_panel = new mxValgrindOuput(this,what,file)
+			valgrind_panel = new mxValgrindOuput(this,(mxVOmode)what,file)
 			, wxAuiPaneInfo().Name(_T("valgrind_output")).Bottom().Caption(LANG(CAPTION_TOOLS_RESULTS_PANEL,"Panel de resultados")).CloseButton(true).MaximizeButton(true).Row(8));
 	}
 	aui_manager.Update();
@@ -5353,8 +5353,8 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 			the_one=sthe_one=DIR_PLUS_FILE(project->path,sthe_one);
 		else IF_THERE_IS_SOURCE
 			the_one=sthe_one=DIR_PLUS_FILE(CURRENT_SOURCE->source_filename.GetPath(),sthe_one);
-	else
-		the_one=sthe_one;
+		else
+			the_one=sthe_one;
 		for (int i=0,j=notebook_sources->GetPageCount();i<j;i++) {
 			mxSource *src = ((mxSource*)(notebook_sources->GetPage(i)));
 			if ((!src->sin_titulo && SameFile(src->source_filename,the_one)) || (src->temp_filename==the_one && src==compiler->last_compiled) ) {

@@ -23,13 +23,14 @@ BEGIN_EVENT_TABLE(mxValgrindOuput,wxTreeCtrl)
 	EVT_KEY_DOWN(mxValgrindOuput::OnKey)
 END_EVENT_TABLE()
 
-mxValgrindOuput::mxValgrindOuput(wxWindow *parent, char amode, wxString afilename):wxTreeCtrl(parent, wxID_ANY, wxPoint(0,0), wxSize(160,100), wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT) {
-	SetMode(amode,afilename);
+mxValgrindOuput::mxValgrindOuput(wxWindow *parent, mxVOmode mode, wxString afilename):wxTreeCtrl(parent, wxID_ANY, wxPoint(0,0), wxSize(160,100), wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT) {
+	SetMode(mode,afilename);
 }
 
 void mxValgrindOuput::LoadOutput() {
-	if (mode=='v') LoadOutputValgrind();
-	else if (mode=='c') LoadOutputCppCheck();
+	if (mode==mxVO_VALGRIND) LoadOutputValgrind();
+	else if (mode==mxVO_CPPCHECK) LoadOutputCppCheck();
+	else if (mode==mxVO_DOXYGEN) LoadOutputDoxygen();
 }
 
 void mxValgrindOuput::LoadOutputCppCheck() {
@@ -49,7 +50,7 @@ void mxValgrindOuput::LoadOutputCppCheck() {
 		
 	wxTextFile fil(filename);
 	if (!fil.Exists()) {
-		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarla consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return;
 	}
 	fil.Open();
@@ -82,7 +83,7 @@ void mxValgrindOuput::LoadOutputValgrind() {
 	root = AddRoot(_T("Salida"), 0);
 	is_last=false;
 	if (!wxFileName(filename).FileExists()) {
-		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarla consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return;
 	}
 	wxFFileInputStream finput(filename);
@@ -111,9 +112,42 @@ void mxValgrindOuput::LoadOutputValgrind() {
 	Expand(sel=root);
 }
 
+void mxValgrindOuput::LoadOutputDoxygen() {
+	DeleteAllItems();
+	root = AddRoot(_T("Salida"), 0);
+	is_last=false;
+	if (!wxFileName(filename).FileExists()) {
+		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		return;
+	}
+	wxFFileInputStream finput(filename);
+	wxTextInputStream input(finput);
+	wxString line;
+	int i,l;
+	while (finput.CanRead()) {
+		line=input.ReadLine();
+		i=0; l=line.Len();
+		while (i<l && ( line[i]==' ' || line[i]=='\t') ) i++;
+		line=line.Mid(i);
+		if (i && is_last) {
+			AppendItem(last,line);
+		} else {
+			last = AppendItem(root,line);
+			is_last=true;
+		}
+	}
+	Expand(sel=root);
+}
+
 void mxValgrindOuput::OnOpen(wxCommandEvent  &evt) {
 	if (config->Init.show_welcome) main_window->ShowWelcome(false);
-	wxString name = mode=='v'?"<resultados_valgrind>":"<resultados_cppcheck>";
+	wxString name="<results>";
+	switch (mode) { 
+	case mxVO_VALGRIND: name="<results_valgrind>"; break;
+	case mxVO_CPPCHECK: name="<results_cppcheck>"; break;
+	case mxVO_DOXYGEN: name="<results_doxygen>"; break;
+	default:;
+	}
 	mxSource* source = new mxSource(main_window->notebook_sources, main_window->AvoidDuplicatePageText(name));
 	source->SetStyle(false); source->LoadFile(filename);
 	main_window->notebook_sources->AddPage(source, name ,true, *bitmaps->files.other);
@@ -151,7 +185,7 @@ void mxValgrindOuput::OnPopup(wxTreeEvent &evt) {
 
 void mxValgrindOuput::OnSelect(wxTreeEvent &evt) {
 	wxString text=GetItemText(evt.GetItem());
-	if (mode=='v') {
+	if (mode==mxVO_VALGRIND) {
 		if (text.Last()==')') {
 			text = text.AfterLast('(');
 			text = text.Mid(0,text.Len()-1);
@@ -179,7 +213,7 @@ void mxValgrindOuput::OnSelect(wxTreeEvent &evt) {
 				}
 			}
 		}
-	} else if (mode=='c') {
+	} else if (mode==mxVO_CPPCHECK) {
 		if (text.Len()&&text[0]=='[') {
 			wxString file=text.AfterFirst('[').BeforeFirst(']');
 			long line;
@@ -190,8 +224,22 @@ void mxValgrindOuput::OnSelect(wxTreeEvent &evt) {
 			if (!src) src=main_window->OpenFile(project?DIR_PLUS_FILE(project->path,file):file,!project);
 			if (src) { src->MarkError(line-1); main_window->SetFocusToSourceAfterEvents(); }
 		}
+	} else if (mode==mxVO_DOXYGEN) {
+		if ( text.Len()>1 && ( (text[0]=='/'&&text.Find(':')!=wxNOT_FOUND) || (text[1]==':'&&text.Mid(2).Find(':')!=wxNOT_FOUND) ) ) {
+			wxString file; long line=-1;
+			if (text[0]=='/') {
+				file = text.BeforeFirst(':'); 
+				text.AfterFirst(':').BeforeFirst(':').ToLong(&line);
+			} else {
+				file = text.BeforeFirst(':')+":"+text.AfterFirst(':').BeforeFirst(':'); 
+				text.AfterFirst(':').AfterFirst(':').BeforeFirst(':').ToLong(&line);
+			}
+			if (line<0 || !file.Len()) return;
+			mxSource *src=main_window->IsOpen(file);
+			if (!src) src=main_window->OpenFile(project?DIR_PLUS_FILE(project->path,file):file,!project);
+			if (src) { src->MarkError(line-1); main_window->SetFocusToSourceAfterEvents(); }
+		}
 	}
-//	evt.Skip();
 }
 
 void mxValgrindOuput::OnKey(wxKeyEvent &evt) {
@@ -207,9 +255,9 @@ mxValgrindOuput::~mxValgrindOuput() {
 	
 }
 
-void mxValgrindOuput::SetMode (char amode, wxString afilename) {
+void mxValgrindOuput::SetMode (mxVOmode mode, wxString afilename) {
 	filename=afilename;
-	mode=amode;
+	this->mode=mode;
 }
 
 	
