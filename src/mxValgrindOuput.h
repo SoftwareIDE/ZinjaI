@@ -20,10 +20,10 @@ private:
 public:
 	mxValgrindOuput(wxWindow* parent, mxVOmode mode, wxString afilename);
 	void SetMode(mxVOmode mode, wxString afilename);
-	void LoadOutput();
-	void LoadOutputValgrind();
-	void LoadOutputCppCheck();
-	void LoadOutputDoxygen();
+	bool LoadOutput(); /// populate panel's tree from given output file, returns false if there's no output
+	bool LoadOutputValgrind();
+	bool LoadOutputCppCheck();
+	bool LoadOutputDoxygen();
 	void OnPopup(wxTreeEvent &evt);
 	void OnSelect(wxTreeEvent &evt);
 	void OnDelete(wxCommandEvent &evt);

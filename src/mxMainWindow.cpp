@@ -5040,8 +5040,10 @@ void mxMainWindow::ShowValgrindPanel(int what, wxString file) {
 			valgrind_panel = new mxValgrindOuput(this,(mxVOmode)what,file)
 			, wxAuiPaneInfo().Name(_T("valgrind_output")).Bottom().Caption(LANG(CAPTION_TOOLS_RESULTS_PANEL,"Panel de resultados")).CloseButton(true).MaximizeButton(true).Row(8));
 	}
+	if (!valgrind_panel->LoadOutput()) {
+		aui_manager.GetPane(valgrind_panel).Hide();
+	}
 	aui_manager.Update();
-	valgrind_panel->LoadOutput();
 }
 
 void mxMainWindow::OnViewBeginnerPanel (wxCommandEvent &event) {

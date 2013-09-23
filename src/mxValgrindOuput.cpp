@@ -27,13 +27,14 @@ mxValgrindOuput::mxValgrindOuput(wxWindow *parent, mxVOmode mode, wxString afile
 	SetMode(mode,afilename);
 }
 
-void mxValgrindOuput::LoadOutput() {
-	if (mode==mxVO_VALGRIND) LoadOutputValgrind();
-	else if (mode==mxVO_CPPCHECK) LoadOutputCppCheck();
-	else if (mode==mxVO_DOXYGEN) LoadOutputDoxygen();
+bool mxValgrindOuput::LoadOutput() {
+	if (mode==mxVO_VALGRIND) return LoadOutputValgrind();
+	else if (mode==mxVO_CPPCHECK) return LoadOutputCppCheck();
+	else if (mode==mxVO_DOXYGEN) return LoadOutputDoxygen();
+	return false;
 }
 
-void mxValgrindOuput::LoadOutputCppCheck() {
+bool mxValgrindOuput::LoadOutputCppCheck() {
 	
 	set<wxString> all;
 		
@@ -51,7 +52,7 @@ void mxValgrindOuput::LoadOutputCppCheck() {
 	wxTextFile fil(filename);
 	if (!fil.Exists()) {
 		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		return;
+		return false;
 	}
 	fil.Open();
 	wxArrayString last_files; // para compatibilidad hacia atras, guarda el historial unificado y despues lo divide
@@ -76,15 +77,16 @@ void mxValgrindOuput::LoadOutputCppCheck() {
 	SetItemText(other,wxString("Other (")<<coth<<")");
 	
 	Expand(sel=root);
+	return true;
 }	
 
-void mxValgrindOuput::LoadOutputValgrind() {
+bool mxValgrindOuput::LoadOutputValgrind() {
 	DeleteAllItems();
 	root = AddRoot(_T("Salida"), 0);
 	is_last=false;
 	if (!wxFileName(filename).FileExists()) {
 		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		return;
+		return false;
 	}
 	wxFFileInputStream finput(filename);
 	wxTextInputStream input(finput);
@@ -110,23 +112,25 @@ void mxValgrindOuput::LoadOutputValgrind() {
 			is_last=false;
 	}
 	Expand(sel=root);
+	return true;
 }
 
-void mxValgrindOuput::LoadOutputDoxygen() {
+bool mxValgrindOuput::LoadOutputDoxygen() {
 	DeleteAllItems();
 	root = AddRoot(_T("Salida"), 0);
 	is_last=false;
 	if (!wxFileName(filename).FileExists()) {
 		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		return;
+		return false;
 	}
 	wxFFileInputStream finput(filename);
 	wxTextInputStream input(finput);
 	wxString line;
-	int i,l;
+	int count=0;
 	while (finput.CanRead()) {
 		line=input.ReadLine();
-		i=0; l=line.Len();
+		if (!line.Len()) { is_last=false; continue; }
+		int i=0, l=line.Len();
 		while (i<l && ( line[i]==' ' || line[i]=='\t') ) i++;
 		line=line.Mid(i);
 		if (i && is_last) {
@@ -135,8 +139,10 @@ void mxValgrindOuput::LoadOutputDoxygen() {
 			last = AppendItem(root,line);
 			is_last=true;
 		}
+		count++;
 	}
 	Expand(sel=root);
+	return count;
 }
 
 void mxValgrindOuput::OnOpen(wxCommandEvent  &evt) {
