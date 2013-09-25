@@ -3893,6 +3893,10 @@ DEBUG_INFO("wxYield:in mxMainWindow::OnDebugRun");
 		wxYield();
 DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 		if (project) {
+			if (project->active_configuration->exec_method==EMETHOD_SCRIPT) { // if the script launches the executable, we can only attach the debugger to it
+				OnDebugAttach(event);
+				return;
+			}
 			debug->Start(config->Debug.compile_again);
 		} else IF_THERE_IS_SOURCE {
 			mxSource *source=CURRENT_SOURCE;

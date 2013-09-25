@@ -1544,7 +1544,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 		int res = mxArgumentsDialog(main_window,active_configuration->args).ShowModal();
 		if (res&AD_CANCEL) return 0;
 		if (res&AD_ARGS) {
-			active_configuration->args = mxArgumentsDialog::last_arguments;;
+			active_configuration->args = mxArgumentsDialog::last_arguments;
 			command<<' '<<active_configuration->args;
 		}
 		if (res&AD_REMEMBER) {
@@ -1578,8 +1578,6 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 		command=terminal_cmd+command;
 	}
 	
-	cerr<<"EL COMANDO ES: **"<<command<<"**"<<endl;
-	
 	// lanzar la ejecucion
 #ifdef __WIN32__
 	wxString ldlp_vname="PATH";
@@ -1589,21 +1587,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	wxString ldlp_sep=":";
 #endif
 	
-	wxString ld_library_path;
-	wxGetEnv(ldlp_vname,&ld_library_path);
-	wxString old_ld_library_path=ld_library_path;
-	project_library *lib = active_configuration->libs_to_build;
-	while (lib) {
-		if (!lib->is_static) {
-			if (ld_library_path.Len())
-				ld_library_path<<ldlp_sep;
-			ld_library_path<<utils->Quotize(DIR_PLUS_FILE(path,lib->path));
-		}
-		lib = lib->next;
-	}
-	wxSetEnv(ldlp_vname,ld_library_path);
-	wxSetEnv("PROJECT_PATH",working_path);
-	wxSetEnv("PROJECT_BIN",wxFileName(executable_name).GetFullPath());
+	SetEnvironment(true,true);
 	
 	int pid;
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
@@ -1612,9 +1596,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	else
 		pid = utils->Execute(working_path,command,wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);
 
-#ifndef __WIN32__
-	wxSetEnv(_T("LD_LIBRARY_PATH"),old_ld_library_path);
-#endif
+	SetEnvironment(false,true);
 	return compile_and_run->pid=pid;
 }
 
@@ -2056,7 +2038,8 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		lib = lib->next;
 	}	
 	objects_list.RemoveLast();
-	
+
+	SetEnvironment(true,false);
 }
 
 void ProjectManager::GetSourceExtras(mxSource *source, file_item *item) {
@@ -2197,25 +2180,9 @@ bool ProjectManager::Debug() {
 		}
 	}
 	
-#if !defined(_WIN32) && !defined(__WIN32__)
-	wxString ld_library_path;
-	wxGetEnv(_T("LD_LIBRARY_PATH"),&ld_library_path);
-	wxString old_ld_library_path=ld_library_path;
-	project_library *lib = active_configuration->libs_to_build;
-	while (lib) {
-		if (!lib->is_static) {
-			if (ld_library_path.Len())
-				ld_library_path<<_T(";");
-			ld_library_path<<utils->Quotize(DIR_PLUS_FILE(path,lib->path));
-		}
-		lib = lib->next;
-	}
-	wxSetEnv(_T("LD_LIBRARY_PATH"),ld_library_path);
-#endif
+	SetEnvironment(true,true);
 	bool ret = debug->Start(working_path,command,args,active_configuration->console_program,active_configuration->wait_for_key);
-#if !defined(_WIN32) && !defined(__WIN32__)
-	wxSetEnv(_T("LD_LIBRARY_PATH"),old_ld_library_path);
-#endif
+	SetEnvironment(false,true);
 	return ret;
 }
 
@@ -3342,5 +3309,47 @@ wxString ProjectManager::GetTempFolderEx (wxString path, bool create) {
 	if (create && temp_folder.Len() && !wxFileName::DirExists(temp_folder))
 		wxFileName::Mkdir(temp_folder,0777,wxPATH_MKDIR_FULL);
 	return temp_folder;
+}
+
+/**
+* Updates some environment variables. If for_running, this update includes 
+* LD_LIBRARY_PATH/PATH, else it only sets ZinjaI's specific vars for letting a
+* script know some of the definned project settings in active_configuration. 
+* When called with set=true, it stores LD_LIBRARY_PATH/PATH value, and updates it
+* to include paths to generated dynamic libs... when called with set=false it restores
+* its old value. It should be called with true before running, and again with false 
+* after launching the process execution.
+* 
+* Should call AnalizeConfig first.
+**/
+void ProjectManager::SetEnvironment (bool set, bool for_running) {
+	if (for_running) {
+	#ifdef __WIN32__
+		string ldlp_vname="PATH", ldlp_sep=";";
+	#else 
+		string ldlp_vname="LD_LIBRARY_PATH", ldlp_sep=":";
+	#endif
+		static wxString old_ld_library_path;
+		if (set) {
+			wxString ld_library_path;
+			wxGetEnv(ldlp_vname,&ld_library_path);
+			wxString old_ld_library_path=ld_library_path;
+			project_library *lib = active_configuration->libs_to_build;
+			while (lib) {
+				if (!lib->is_static) {
+					if (ld_library_path.Len())
+						ld_library_path<<ldlp_sep;
+					ld_library_path<<utils->Quotize(DIR_PLUS_FILE(path,lib->path));
+				}
+				lib = lib->next;
+			}
+			wxSetEnv(ldlp_vname,ld_library_path);
+		} else {
+			wxSetEnv(ldlp_vname,old_ld_library_path);
+		}
+	}
+	wxSetEnv("Z_PROJECT_PATH",active_configuration->working_folder);
+	wxSetEnv("Z_PROJECT_BIN",executable_name);
+	wxSetEnv("Z_TEMP_DIR",temp_folder);
 }
 

@@ -470,18 +470,13 @@ public:
 	long int Link(compile_and_run_struct_single *compile_and_run, linking_info *info);
 	/// Ejecuta el comando de compilación para un toolchan externo (como make) (build=true compila, build=false limpia)
 	long int CompileWithExternToolchain(compile_and_run_struct_single *compile_and_run, bool build=true);
-	/// Lanza el ejecutable
-	long int Run(compile_and_run_struct_single *compile_and_run);
+
 	bool RenameFile(wxTreeItemId &tree_item, wxString new_name);
 	/// Compila un solo fuente del proyecto, preparando la configuración, fuera del proceso de construcción general
 	long int CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename);
 	bool MoveFile(wxTreeItemId &tree_item, char where);
 	bool DeleteFile(wxTreeItemId &tree_item, bool also=false);
 	file_item *AddFile (char where, wxFileName name, bool sort_tree=true);
-	/// Genera un makefile para el proyecto a partir de active_configuration
-	void ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, makefile_type mktype);
-	/// Parsea la configuración del proyecto (active_configuration) para generar los argumentos necesarios para invocar al compilador
-	void AnalizeConfig(wxString path, bool exec_comas, wxString mingw_dir, bool force=true);
 	/// Regenera uno o todos los proyecto wxFormBuilder
 	bool WxfbGenerate(bool show_osd=false, file_item *cual=NULL);
 	/// Regenerar proyectos o actualizar clases de wxFormBuilder si es necesario
@@ -490,8 +485,17 @@ public:
 	bool WxfbNewClass(wxString base_name, wxString name);
 	/// Actualiza una clase heredada de alguna de las diseñadas en wxFormBuilder
 	bool WxfbUpdateClass(wxString fname, wxString cname);
+	/// Genera un makefile para el proyecto a partir de active_configuration
+	void ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, makefile_type mktype);
+	/// Parsea la configuración del proyecto (active_configuration) para generar los argumentos necesarios para invocar al compilador
+	void AnalizeConfig(wxString path, bool exec_comas, wxString mingw_dir, bool force=true);
+	/// sets environment variables for running/compiling the project (LD_LIBRARY_PATH, PROJECT_BIN, PROJECT_PATH)
+	void SetEnvironment(bool set, bool for_running);
+	/// Lanza el ejecutable
+	long int Run(compile_and_run_struct_single *compile_and_run);
+	/// not to be called directly, but trough DebugManager::Start(bool)
+	bool Debug(); 
 	void Clean();
-	bool Debug();
 	wxString GetPath();
 	/// Carga todos los breakpoints del proyecto en gdb
 	void SetBreakpoints();

@@ -165,8 +165,8 @@ public:
 	DebugManager();
 	~DebugManager();
 	void BacktraceClean();
-	bool Start(bool update);
-	bool Start(bool update, mxSource *source);
+	bool Start(bool update); ///< starts debugging for current project
+	bool Start(bool update, mxSource *source); ///< starts debugging for a simple program
 	bool Start(wxString workdir, wxString exe, wxString args, bool show_console, bool wait_for_key);
 	bool Stop();
 	bool Run();

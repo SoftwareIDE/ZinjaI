@@ -209,6 +209,14 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		command<<_T(" \"")<<exe<<_T("\"");	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
+	
+#ifndef __WIN32__
+	if (project && project->active_configuration->exec_method==EMETHOD_INIT) {
+		command=wxString()<<"/bin/sh -c "<<utils->SingleQuotes(wxString()
+			<<". "<<DIR_PLUS_FILE(project->path,project->active_configuration->exec_script)<<"; "<<command);
+	}
+#endif
+	
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
 	if (pid>0) {
 		input = process->GetInputStream();
