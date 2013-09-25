@@ -1602,6 +1602,8 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 		lib = lib->next;
 	}
 	wxSetEnv(ldlp_vname,ld_library_path);
+	wxSetEnv("PROJECT_PATH",working_path);
+	wxSetEnv("PROJECT_BIN",wxFileName(executable_name).GetFullPath());
 	
 	int pid;
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
