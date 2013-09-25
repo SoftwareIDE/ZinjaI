@@ -33,7 +33,7 @@ using namespace std;
 #define DEBUG_LOG_FILE "/mnt/rm/debug.log"
 #endif
 
-#define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
+//#define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
 
 DebugManager *debug;
 
@@ -213,7 +213,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 #ifndef __WIN32__
 	if (project && project->active_configuration->exec_method==EMETHOD_INIT) {
 		command=wxString()<<"/bin/sh -c "<<utils->SingleQuotes(wxString()
-			<<". "<<DIR_PLUS_FILE(project->path,project->active_configuration->exec_script)<<"; "<<command);
+			<<". "<<DIR_PLUS_FILE(project->path,project->active_configuration->exec_script)<<" &>/dev/null; "<<command);
 	}
 #endif
 	
