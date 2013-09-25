@@ -47,6 +47,20 @@ enum makefile_type {
 	MKTYPE_CONFIG ///< el que define las variables que dependen del perfil de compilación, y incluye al otro makefile que contiene la parte comun a todos los perfiles
 	};
 
+/// mecanismo de ejecución para un proyecto
+enum exec_method_t { 
+	EMETHOD_REGULAR=0, ///< zinjai launches executable directly
+	EMETHOD_INIT=1, ///< zinjai launches an script to setup environment and then launches the executable
+	EMETHOD_SCRIPT=2 ///< zinjai launches a script only, the script should launch the executable
+	};
+
+/// para indicar si se debe esperar una tecla antes de cerrar la consola una vez finalizada la ejecución de un proyecto
+enum wait_for_key_t { 
+	WKEY_NEVER=0, 
+	WKEY_ON_ERROR=1, 
+	WKEY_ALWAYS=2,
+	};
+
 struct compile_and_run_struct_single;
 
 /** 

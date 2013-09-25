@@ -100,6 +100,9 @@ public:
 	//! Agrega comillas si la cadena tiene un espacio, sino no
 	wxString Quotize(const wxString &what);
 	
+	//! Agrega comillas simples a una linea de comandos, respetando las comillas anteriores si había
+	wxString SingleQuotes(wxString what);
+	
 	wxString EscapeString(wxString str, bool add_comillas=false);
 	
 	//! Elimina los elementos repetidos de un wxArrayString

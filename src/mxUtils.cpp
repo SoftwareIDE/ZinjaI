@@ -985,6 +985,11 @@ wxString mxUtils::Quotize(const wxString &what) {
 		return what;
 }
 
+wxString mxUtils::SingleQuotes(wxString what) {
+	what.Replace("\'","\'\\\'\'",true);
+	return wxString("\'")<<what<<"\'";
+}
+
 wxString mxUtils::EscapeString(wxString str, bool add_comillas) {
 	int i=0, l=str.Len();
 	if (add_comillas) {

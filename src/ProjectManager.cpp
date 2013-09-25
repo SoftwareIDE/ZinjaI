@@ -1520,38 +1520,24 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	}
 	compile_and_run->linking=compile_and_run->compiling=false;
 	
-	// agregar el prefijo para valgrind
 	wxString exe_pref;
-#if !defined(_WIN32) && !defined(__WIN32__)
-	if (compile_and_run->valgrind_cmd.Len())
-		exe_pref = compile_and_run->valgrind_cmd+_T(" ");
+#ifndef __WIN32__
+	// agregar el prefijo para valgrind
+	if (compile_and_run->valgrind_cmd.Len()) exe_pref = compile_and_run->valgrind_cmd+_T(" ");
 #endif
 	// armar la linea de comando para ejecutar
 	executable_name=wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetFullPath();
-	wxString command(config->Files.terminal_command);
-	command.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
-	if (command.Len()!=0) {
-		if (command==_T(" ") )
-			command=_T("");
-		else if (command[command.Len()-1]!=' ') 
-			command<<_T(" ");
-	}
-	wxString working_path = (active_configuration->working_folder==_T(""))?path:DIR_PLUS_FILE(path,active_configuration->working_folder);
-	if (working_path.Last()==path_sep)
-		working_path.RemoveLast();
-	if (active_configuration->console_program) { // si es de consola, ver si hay que esperar y pasar la ruta de trabajo
-		command<<_T("\"")<<config->Files.runner_command<<_T("\" ");
-		command<<_T("-lang \"")<<config->Init.language_file<<_T("\" ");
-		if (active_configuration->wait_for_key==2)
-			command<<_T("-waitkey ");
-		else if (active_configuration->wait_for_key==1)
-			command<<_T("-waitkey-onerror ");
-		command<<_T("\"")<<working_path<<_T("\" ")<<exe_pref<<_T("\"")<<wxFileName(executable_name).GetShortPath()<<_T("\"");
-	} else { // si no es de consola, se ejecuta derecho, sin el runner
-		command=exe_pref<<wxString(_T("\""))<<wxFileName(executable_name).GetFullPath()<<_T("\"");
-	}
 	
-//	utils->ParameterReplace(command,_T("${ZINJAI_DIR}"),wxGetCwd());
+	wxString working_path = active_configuration->working_folder.Len()?DIR_PLUS_FILE(path,active_configuration->working_folder):path;
+	if (working_path.Last()==path_sep) working_path.RemoveLast();
+	
+	wxString command=exe_pref<<utils->Quotize(wxFileName(executable_name).GetFullPath());
+	if (active_configuration->exec_method==EMETHOD_SCRIPT) 
+#ifdef __WIN32__
+		command=utils->Quotize(DIR_PLUS_FILE(path,active_configuration->exec_script));
+#else
+		command="/bin/sh "+utils->Quotize(DIR_PLUS_FILE(path,active_configuration->exec_script));
+#endif
 	
 	// agregar los argumentos de ejecucion
 	if (active_configuration->always_ask_args) {
@@ -1568,8 +1554,34 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	} else if (active_configuration->args.Len())
 		command<<' '<<active_configuration->args;	
 	
+#ifndef __WIN32__
+	if (active_configuration->exec_method==EMETHOD_INIT) {
+		command=wxString()<<"/bin/sh -c "<<utils->SingleQuotes(wxString()
+			<<". "<<DIR_PLUS_FILE(path,active_configuration->exec_script)<<"; "<<command);
+	}
+#endif
+	
+	if (active_configuration->console_program) { // si es de consola...
+		wxString terminal_cmd(config->Files.terminal_command);
+		terminal_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
+		if (terminal_cmd.Len()!=0) { // corregir espacios al final del comando de la terminal
+			if (terminal_cmd==" " ) terminal_cmd="";
+			else if (terminal_cmd[terminal_cmd.Len()-1]!=' ') terminal_cmd<<" ";
+		}
+		// invocar al runner
+		terminal_cmd<<utils->Quotize(config->Files.runner_command); 
+		terminal_cmd<<" -lang "<<utils->Quotize(config->Init.language_file)<<" ";
+		if (active_configuration->wait_for_key==WKEY_ALWAYS) terminal_cmd<<"-waitkey ";
+		else if (active_configuration->wait_for_key==WKEY_ON_ERROR) terminal_cmd<<"-waitkey-onerror ";
+		terminal_cmd<<utils->Quotize(working_path)<<" ";
+		// corregir el comando final
+		command=terminal_cmd+command;
+	}
+	
+	cerr<<"EL COMANDO ES: **"<<command<<"**"<<endl;
+	
 	// lanzar la ejecucion
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	wxString ldlp_vname="PATH";
 	wxString ldlp_sep=";";
 #else
@@ -1598,7 +1610,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	else
 		pid = utils->Execute(working_path,command,wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);
 
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	wxSetEnv(_T("LD_LIBRARY_PATH"),old_ld_library_path);
 #endif
 	return compile_and_run->pid=pid;
