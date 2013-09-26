@@ -3331,9 +3331,8 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 	#endif
 		static wxString old_ld_library_path;
 		if (set) {
-			wxString ld_library_path;
-			wxGetEnv(ldlp_vname,&ld_library_path);
-			wxString old_ld_library_path=ld_library_path;
+			wxGetEnv(ldlp_vname,&old_ld_library_path);
+			wxString ld_library_path=old_ld_library_path;
 			project_library *lib = active_configuration->libs_to_build;
 			while (lib) {
 				if (!lib->is_static) {
