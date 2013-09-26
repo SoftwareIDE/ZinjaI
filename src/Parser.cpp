@@ -773,6 +773,7 @@ bool Parser::GetFather(wxString child, pd_inherit *&father) {
 
 void mxParserProcess::OnTerminate (int pid, int status) {
 	parser->process_timer->Stop();
+	if (parser->should_stop) return;
 	ParseOutput();
 	parser->ParseNextFileEnd();
 }
