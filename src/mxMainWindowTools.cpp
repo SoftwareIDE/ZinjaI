@@ -150,7 +150,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 
 /// @brief Despliega el panel de valgrind para mostrar los resultados de CppCheck
 void mxMainWindow::OnToolsCppCheckView(wxCommandEvent &event) {
-	ShowValgrindPanel('c',DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")));
+	ShowValgrindPanel(mxVO_CPPCHECK,DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")));
 }
 
 void mxMainWindow::OnToolsCppCheckHelp(wxCommandEvent &event) {
@@ -193,7 +193,7 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 
 /// @brief Despliega el panel de Valgrind para mostrar los resultados del analisis dinamico
 void mxMainWindow::OnToolsValgrindView(wxCommandEvent &event) {
-	ShowValgrindPanel('v',DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out")));
+	ShowValgrindPanel(mxVO_VALGRIND,DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out")));
 }
 
 void mxMainWindow::OnToolsValgrindHelp(wxCommandEvent &event) {

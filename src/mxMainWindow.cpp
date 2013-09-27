@@ -2143,7 +2143,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		compiler->ParseCompilerOutput(compile_and_run,event.GetExitCode()==0);
 	} else { // si termino la ejecucion
 		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
-		if (compile_and_run->valgrind_cmd.Len()) ShowValgrindPanel('v',DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out")));
+		if (compile_and_run->valgrind_cmd.Len()) ShowValgrindPanel(mxVO_VALGRIND,DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out")));
 		delete compile_and_run->process;
 		delete compile_and_run;
 		if (gcov_sidebar) gcov_sidebar->LoadData();
@@ -5035,7 +5035,7 @@ void mxMainWindow::ClearDebugLog() {
 * @param what   tipo de resultado, v=valgrind, c=cppcheck
 * @param file   archivo de donde leer los resultados
 **/
-void mxMainWindow::ShowValgrindPanel(int what, wxString file) {
+void mxMainWindow::ShowValgrindPanel(int what, wxString file, bool force) {
 	if (valgrind_panel) {
 		aui_manager.GetPane(valgrind_panel).Show();
 		valgrind_panel->SetMode((mxVOmode)what,file);
@@ -5044,7 +5044,9 @@ void mxMainWindow::ShowValgrindPanel(int what, wxString file) {
 			valgrind_panel = new mxValgrindOuput(this,(mxVOmode)what,file)
 			, wxAuiPaneInfo().Name(_T("valgrind_output")).Bottom().Caption(LANG(CAPTION_TOOLS_RESULTS_PANEL,"Panel de resultados")).CloseButton(true).MaximizeButton(true).Row(8));
 	}
-	if (!valgrind_panel->LoadOutput()) {
+	if (valgrind_panel->LoadOutput() || force) {
+		aui_manager.GetPane(valgrind_panel).Show();
+	} else {
 		aui_manager.GetPane(valgrind_panel).Hide();
 	}
 	aui_manager.Update();

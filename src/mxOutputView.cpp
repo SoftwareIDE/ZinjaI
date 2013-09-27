@@ -134,7 +134,7 @@ void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
 		state->SetLabel(LANG(LAUNCH_STATUS_FINISH,"Estado: Terminado"));
 		if (textfile) {
 			textfile->Close();
-			main_window->ShowValgrindPanel(output_mode,output_file);
+			main_window->ShowValgrindPanel(output_mode,output_file,output_mode!=mxVO_CPPCHECK);
 			if (extra_mode==mxOV_EXTRA_NULL) Close();
 		}
 	}

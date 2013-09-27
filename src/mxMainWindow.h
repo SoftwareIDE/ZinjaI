@@ -53,7 +53,7 @@ public:
 	mxSource *focus_source;
 
 	mxValgrindOuput *valgrind_panel;
-	void ShowValgrindPanel(int what, wxString file);
+	void ShowValgrindPanel(int what, wxString file, bool force=true);
 	
 	wxListBox *debug_log_panel;
 	void AddToDebugLog(wxString str);
