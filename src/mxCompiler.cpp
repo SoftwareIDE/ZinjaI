@@ -17,9 +17,10 @@
 #define EN_COMPOUT_WARNING_CHILD ": warning:   "
 #define EN_COMPOUT_LINKER_WARNING "Warning: "
 
-#define EN_REQUIRED_FROM_HERE "required from here"
-#define EN_NSTANTIATED_FROM "nstantiated from "
-#define EN_IN_INSTANTIATION_OF "In instantiation of "
+#define EN_COMPOUT_COMPILATION_TERMINATED "compilation terminated."
+#define EN_COMPOUT_REQUIRED_FROM_HERE "required from here"
+#define EN_COMPOUT__NSTANTIATED_FROM "nstantiated from "
+#define EN_COMPOUT_IN_INSTANTIATION_OF "In instantiation of "
 #define EN_COMPOUT_AT_THIS_POINT_IN_FILE ": at this point in file"
 #define EN_COMPOUT_WITHIN_THIS_CONTEXT ": within this context"
 #define EN_COMPOUT_NOTE ": note: "
@@ -36,9 +37,9 @@
 //#define ES_COMPOUT_LINKER_WARNING "Advertencia: "
 
 
-#define ES_REQUIRED_FROM_HERE "se requiere desde aqu"
-#define ES_NSTANTIATED_FROM "nstantiated from "
-#define ES_IN_INSTANTIATION_OF "In instantiation of "
+#define ES_COMPOUT_REQUIRED_FROM_HERE "se requiere desde aqu"
+#define ES_COMPOUT__NSTANTIATED_FROM "nstantiated from "
+#define ES_COMPOUT_IN_INSTANTIATION_OF "In instantiation of "
 #define ES_COMPOUT_AT_THIS_POINT_IN_FILE ": en este punto en el fichero"
 #define ES_COMPOUT_WITHIN_THIS_CONTEXT ": en este contexto"
 #define ES_COMPOUT_NOTE ": nota: "
@@ -368,12 +369,14 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 //				compile_and_run.last_error_item=tree->AppendItem(errors,error_line,4);
 //		}
 			
+			if (error_line==EN_COMPOUT_COMPILATION_TERMINATED) continue;
+			
 			// reemplazar templates para que sea más legible
 			if (config->Init.beautify_compiler_errors && current_toolchain.type>=TC_EXTERN) UnSTD(nice_error_line);
 			
 			if (error_line.Last()!=',' && ( error_line.Last()!=':' || error_line.Find(_T(": error: "))!=wxNOT_FOUND || wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)) || error_line.StartsWith(EN_COMPOUT_LINKER_WARNING)) ) {
 				bool flag;
-				if ( (flag=(wxNOT_FOUND!=error_line.First(_T(ES_REQUIRED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(EN_REQUIRED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(ES_NSTANTIATED_FROM)) || wxNOT_FOUND!=error_line.First(_T(EN_NSTANTIATED_FROM)))) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_WITHIN_THIS_CONTEXT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WITHIN_THIS_CONTEXT)) ) {
+				if ( (flag=(wxNOT_FOUND!=error_line.First(_T(ES_COMPOUT_REQUIRED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_REQUIRED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(ES_COMPOUT__NSTANTIATED_FROM)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT__NSTANTIATED_FROM)))) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_WITHIN_THIS_CONTEXT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WITHIN_THIS_CONTEXT)) ) {
 					if (!flag && error_line.Right(4)!=_T("here")) {
 						if (compile_and_run->parsing_flag==1) {
 							compile_and_run->parsing_flag=2;
@@ -422,7 +425,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 					}
 				}
 			} else {
-				if (wxNOT_FOUND!=error_line.Find(_T(EN_IN_INSTANTIATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_IN_INSTANTIATION_OF)))
+				if (wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_IN_INSTANTIATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_IN_INSTANTIATION_OF)))
 					compile_and_run->parsing_flag = 1;
 			}
 		}
