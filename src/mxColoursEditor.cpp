@@ -163,6 +163,7 @@ void mxColoursEditor::LoadList ( ) {
 	lcount=0;
 	MXCAdd(DEFAULT,LANG(COLORS_ID_DEFAULT,"Texto por defecto"));
 	MXCAdd(IDENTIFIER,LANG(COLORS_ID_IDENTIFIER,"Identificadores"));
+	MXCAdd(GLOBALCLASS,LANG(COLORS_ID_USER_KEYWORD,"Identificador resaltado"));	
 	MXCAdd(NUMBER,LANG(COLORS_ID_NUMBER,"Numero"));
 	MXCAdd(WORD,LANG(COLORS_ID_WORD,"Palabra clave"));
 	MXCAdd(WORD2,LANG(COLORS_ID_WORD2,"Tipo de dato funtamental"));
@@ -281,8 +282,9 @@ void color_theme::SetDefaults (bool inverted) {
 		INDENTGUIDE="Z DARK GRAY";
 		
 		SELBACKGROUND="Z REALLY DARKER GRAY";
-		CURRENT_LINE="Z REALLY DARK BLUE";
+		CURRENT_LINE=wxColour(0x80,0x80,0xFF);
 		USER_LINE="Z REALLY DARK RED";
+		ctSet(GLOBALCLASS,"WHITE","Z DARK GREEN"); // string eol
 		CARET="WHITE";
 		
 	} else {
@@ -313,9 +315,10 @@ void color_theme::SetDefaults (bool inverted) {
 		ctSet0(LINENUMBER,"Z DARK GRAY","WHITE");
 		INDENTGUIDE="Z DARK GRAY";
 		
-		SELBACKGROUND="GRAY";
-		CURRENT_LINE="Z LIGHT BLUE";
+		SELBACKGROUND="Z LIGHT GRAY";
+		CURRENT_LINE="BLUE";
 		USER_LINE="Z LIGHT RED";
+		ctSet(GLOBALCLASS,"BLACK","Z LIGHT GREEN"); // identifier 
 		CARET="BLACK";
 	}
 }
@@ -369,6 +372,7 @@ bool color_theme::Save (wxString fname) {
 	CTWrite2(SELBACKGROUND);
 	CTWrite2(CURRENT_LINE);
 	CTWrite2(USER_LINE);
+	CTWrite(GLOBALCLASS);
 	CTWrite1(CARET);
 	
 	fil.Write();
@@ -432,6 +436,7 @@ bool color_theme::Load (wxString fname) {
 		CTLoad2(SELBACKGROUND);
 		CTLoad2(CURRENT_LINE);
 		CTLoad2(USER_LINE);
+		CTLoad(GLOBALCLASS);
 		CTLoad1(CARET);
 		
 	}
@@ -474,6 +479,8 @@ void mxStaticText::SetData (wxColour * fore, wxColour * back, bool * italic, boo
 
 void color_theme::Init() {
 	
+	wxTheColourDatabase->AddColour(_T("Z LIGHT GREEN"),wxColour(100,255,100));
+	wxTheColourDatabase->AddColour(_T("Z DARK GREEN"),wxColour(0,80,0));
 	wxTheColourDatabase->AddColour(_T("Z LIGHT BLUE"),wxColour(235,235,255));
 	wxTheColourDatabase->AddColour(_T("Z DOXY BLUE"),wxColour(80,80,255));
 	wxTheColourDatabase->AddColour(_T("Z ALMOST BLUE"),wxColour(100,100,230));
@@ -485,15 +492,17 @@ void color_theme::Init() {
 	wxTheColourDatabase->AddColour(_T("Z ALMOST GREEN"),wxColour(100,230,100));
 	wxTheColourDatabase->AddColour(_T("Z DARK BLUE"),wxColour(0,0,128));
 	wxTheColourDatabase->AddColour(_T("Z DARK RED"),wxColour(128,0,0));
+	wxTheColourDatabase->AddColour(_T("Z LIGHT GRAY"),wxColour(200,200,200));
 	wxTheColourDatabase->AddColour(_T("Z DARK GRAY"),wxColour(150,150,150));
 	wxTheColourDatabase->AddColour(_T("Z DARKER GRAY"),wxColour(100,100,100)); // para el texto del tooltip
-	wxTheColourDatabase->AddColour(_T("Z REALLY DARKER GRAY"),wxColour(50,50,50)); // para el texto del tooltip
+	wxTheColourDatabase->AddColour(_T("Z REALLY DARKER GRAY"),wxColour(66,66,66)); // para el texto del tooltip
 	wxTheColourDatabase->AddColour(_T("Z DIFF GREEN"),wxColour(128,255,128));
 	wxTheColourDatabase->AddColour(_T("Z DIFF YELLOW"),wxColour(255,255,128));
 	wxTheColourDatabase->AddColour(_T("Z CORNFLOWER BLUE"),wxColour(100,150,240));
 	
 	ctheme = new color_theme;
 #if 0
+	// para generar los perfiles de color y que concuerden con los valores por defecto
 	ctheme->SetDefaults(true);
 	ctheme->Save(DIR_PLUS_FILE(("colours"),"inverted.zcs"));
 	ctheme->SetDefaults();

@@ -584,6 +584,8 @@ COLORS_ID_CURRENT_LINE
 Linea actual
 COLORS_ID_USER_LINE
 Linea resaltada
+COLORS_ID_USER_KEYWORD
+Palabra clave resaltada
 COLORS_ID_CARET
 Cursor de texto
 GENERAL_OPEN
@@ -3368,6 +3370,8 @@ SOURCE_POPUP_INSERT_INCLUDE_PRE
 Insertar #incl&ude correspondiente a \"
 SOURCE_POPUP_INSERT_INCLUDE_POST
 \"
+SOURCE_POPUP_HIGHLIGHT_WORD
+Resaltar \"
 SOURCE_POPUP_OPEN_SELECTED_PRE
 &Abrir \"
 SOURCE_POPUP_OPEN_SELECTED_POST
@@ -3477,7 +3481,7 @@ insertar el directorio de instalacion de ZinjaI
 GENERAL_POPUP_INSERT_BROWSER
 insertar comando del navegador
 VALGRIND_OUTPUT_MISSING
-No se encontro el archivo de salida.\nPara saber como generarla consulte la ayuda.
+No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda.
 VALGRIND_RELOAD_TREE
 Recargar
 VALGRIND_OPEN_OUTPUT_FILE

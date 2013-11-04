@@ -126,6 +126,9 @@ public:
 	void OnKillFocus (wxFocusEvent &event);
 	void OnSetFocus (wxFocusEvent &event);
 	
+	void OnHighLightWord(wxCommandEvent &event);
+	void OnDoubleClick(wxStyledTextEvent &event);
+	
 	void OnKeyDown(wxKeyEvent &evt);
 
 	void OnClick(wxMouseEvent &evt);

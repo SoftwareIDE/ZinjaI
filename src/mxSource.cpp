@@ -35,10 +35,13 @@ using namespace std;
 #define II_IS_5(p,c1,c2,c3,c4,c5) ((c=GetCharAt(p))==c1 || c==c2 || c==c3 || c==c4 || c==c5)
 #define II_IS_6(p,c1,c2,c3,c4,c5,c6) ((c=GetCharAt(p))==c1 || c==c2 || c==c3 || c==c4 || c==c5 || c==c6)
 #define II_IS_COMMENT(p) ((s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
-#define II_SHOULD_IGNORE(p) ((s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRING || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
+#define II_SHOULD_IGNORE(p) ((s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
 #define II_IS_NOTHING_4(p) (II_IS_4(p,' ','\t','\r','\n') || II_SHOULD_IGNORE(p))
 #define II_IS_NOTHING_2(p) (II_IS_2(p,' ','\t') || II_SHOULD_IGNORE(p)) 
 #define II_IS_KEYWORD_CHAR(c) ( ( (c|32)>='a' && (c|32)<='z' ) || (c>='0' && c<='9') || c=='_' )
+
+#define STYLE_IS_CONSTANT(s) (s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRING || s==wxSTC_C_REGEX || s==wxSTC_C_NUMBER)
+#define STYLE_IS_COMMENT(s) (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
 
 const wxChar* mxSourceWords1 =
 	_T("and asm auto break case catch class const const_cast ")
@@ -84,6 +87,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_UNCOMMENT, mxSource::OnUncomment)
 	EVT_MENU (mxID_EDIT_BRACEMATCH, mxSource::OnBraceMatch)
 	EVT_MENU (mxID_EDIT_INDENT, mxSource::OnIndentSelection)
+	EVT_MENU (mxID_EDIT_HIGHLIGHT_WORD, mxSource::OnHighLightWord)
 	// view
 	EVT_MENU (mxID_FOLDTOGGLE, mxSource::OnFoldToggle)
 	EVT_SET_FOCUS (mxSource::OnSetFocus)
@@ -99,6 +103,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_LEFT_DOWN(mxSource::OnClick)
 	EVT_RIGHT_DOWN(mxSource::OnPopupMenu)
 	EVT_STC_ROMODIFYATTEMPT (wxID_ANY, mxSource::OnModifyOnRO)
+	EVT_STC_DOUBLECLICK (wxID_ANY, mxSource::OnDoubleClick)
 	
 	EVT_STC_PAINTED(wxID_ANY, mxSource::OnPainted)
 	
@@ -1600,8 +1605,7 @@ void mxSource::SetStyle(bool color) {
 			AUXSetStyle(C,WORD2); // extra words
 			AUXSetStyle(C,COMMENTDOCKEYWORD); // doxy keywords
 			AUXSetStyle(C,COMMENTDOCKEYWORDERROR); // keywords errors
-			AUXSetStyle3(C,GLOBALCLASS,DEFAULT); // keywords errors
-
+			AUXSetStyle(C,GLOBALCLASS); // keywords errors
 			break;
 		case wxSTC_LEX_HTML: case wxSTC_LEX_XML:
 //			config_source.stdCalltips=config_source.stdCompletion=config_source.parserCalltips=config_source.parserCompletion=config_source.smartIndent=config_source.indentPaste=false;
@@ -1853,8 +1857,11 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 		if (GetCharAt(s-1)=='#')
 			key = GetTextRange(s-1,e);
 		menu.Append(mxID_HELP_CPP, wxString(LANG(SOURCE_POPUP_HELP_ON_PRE,"Ayuda sobre \""))<<key<<LANG(SOURCE_POPUP_HELP_ON_POST,"\"...")<<_T("\tShift+F1"));
-		if (GetStyleAt(s)!=wxSTC_C_PREPROCESSOR)
+//		if ((s=GetStyleAt(s))!=wxSTC_C_PREPROCESSOR && !STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s) && s!=wxSTC_C_OPERATOR && s!=wxSTC_C_WORD && s!=wxSTC_C_WORD2) {
+		if (lexer==wxSTC_LEX_CPP && GetStyleAt(s)==wxSTC_C_IDENTIFIER) {
 			menu.Append(mxID_EDIT_INSERT_HEADER, wxString(LANG(SOURCE_POPUP_INSERT_INCLUDE_PRE,"Insertar #incl&ude correspondiente a \""))<<key<<LANG(SOURCE_POPUP_INSERT_INCLUDE_POST,"\"")<<_T("\tCtrl+H"));
+			menu.Append(mxID_EDIT_HIGHLIGHT_WORD, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \""))<<key<<"\"");
+		}
 	}
 	
 	
@@ -3529,5 +3536,21 @@ void mxSource::MyBraceHighLight (int b1, int b2) {
 	if (b2==wxSTC_INVALID_POSITION) BraceBadLight (b1);
 	else BraceHighlight (b1,b2);
 	Refresh(false);
+}
+
+void mxSource::OnHighLightWord (wxCommandEvent & event) {
+	int pos=GetCurrentPos();
+	int s=WordStartPosition(pos,true);
+	int e=WordEndPosition(pos,true);
+	wxString key = GetTextRange(s,e);
+	if (!key.Len()) return;
+	SetKeyWords(3,key);
+	Colourise(0,GetLength());
+}
+
+void mxSource::OnDoubleClick (wxStyledTextEvent & event) {
+	event.Skip();
+	wxCommandEvent e;
+	OnHighLightWord(e);
 }
 

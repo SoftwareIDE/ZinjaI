@@ -129,7 +129,7 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 		if (dlg.ShowModal() != wxID_OK) return;
 		output=dlg.GetPath();
 	}
-	int retval = utils->ProcessGraph(gout,false,"",LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases"));
+	/*int retval = */utils->ProcessGraph(gout,false,"",LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases"));
 	// todo: mostrar mensaje de error si falla retval
 }
 
