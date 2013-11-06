@@ -1989,7 +1989,6 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 						c=GetCharAt(--p);
 					while (p>0 && II_IS_4(p,' ','\t','\n','\r'))
 						p--;
-//					cerr<<char(GetCharAt(p-1))<<char(GetCharAt(p))<<char(GetCharAt(p+1))<<endl;
 					if (p==0 || ( c!=',' && (c!=':' || GetCharAt(p-1)==':') ) ) { p=p2; break; }
 					p--;
 					while (p>0 && II_IS_4(p,' ','\t','\n','\r'))
@@ -2033,6 +2032,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 					while  ( p>0 && ( (c>='a' && c<='z') || (c>='0' && c<='9') || (c>='A' && c<='Z') || c=='_' || II_SHOULD_IGNORE(p) ) ) {
 						c=GetCharAt(--p);
 					}
+					if (p>0&&c=='~') c=GetCharAt(--p); // por si era un destructor
 					while (p>0 && ( II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p) ) ) {
 						p--;
 					}
