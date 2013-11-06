@@ -19,10 +19,10 @@ path=cpp/skeleton.c
 cursor=2593
 [source]
 path=cpp/cparser.c
-cursor=73795
-breakpoint=2574
-breakpoint=5305
+cursor=1491
 breakpoint=1588
+breakpoint=5305
+breakpoint=2574
 open=true
 [source]
 path=cpp/cpplib/cpkeyw.c

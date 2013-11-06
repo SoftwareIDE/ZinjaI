@@ -33,7 +33,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define PD_CONST_VOLATILE 256
 #define PD_CONST_VIRTUAL_PURE 512
 
-#define PD_ENUM_CONST 1024
+#define PD_CONST_ENUM_CONST 1024
 
 // macros para cargar el autocompletado estandar
 
@@ -117,7 +117,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_TYPEDEF)
 
 #define PD_TREE_CTRL_SET_ATTRIB(aitem,aprops) \
-	if ((aprops)&PD_ENUM_CONST) \
+	if ((aprops)&PD_CONST_ENUM_CONST) \
 		parser->symbol_tree->SetItemImage(aitem,mxSTI_ENUM_CONST); \
 	else if ((aprops)&PD_CONST_PUBLIC) \
 		parser->symbol_tree->SetItemImage(aitem,mxSTI_PUBLIC_ATTRIB); \

@@ -3544,7 +3544,6 @@ void mxSource::OnHighLightWord (wxCommandEvent & event) {
 	int s=WordStartPosition(pos,true);
 	int e=WordEndPosition(pos,true);
 	wxString key = GetTextRange(s,e);
-	if (!key.Len()) return;
 	SetKeyWords(3,key);
 	Colourise(0,GetLength());
 }

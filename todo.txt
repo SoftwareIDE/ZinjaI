@@ -1,8 +1,6 @@
 enum const
 	exportar autocomp
-	no confundir con atributos
 	leer autocomp
-	ayuda rapida de atributos
 
 
 

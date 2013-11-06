@@ -372,13 +372,12 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 	switch (id) {
 			
 		case PAF_ENUM_CONST_DEF: {
-			cout<<"%: "<<PARSER_PARTE(5)<<endl;
-			wxString scope=PARSER_PARTE(0), name=PARSER_PARTE(1), type="<enum const>";
+			wxString scope=PARSER_PARTE(0), name=PARSER_PARTE(1), type=PARSER_PARTE_NB(6);
 			if (scope=="-") {
 //				PD_REGISTER_MACRO(process->file,line,name,type,name,2);
-				PD_REGISTER_GLOBAL(process->file,line,type,name,PD_ENUM_CONST);
+				PD_REGISTER_GLOBAL(process->file,line,type,name,PD_CONST_ENUM_CONST);
 			} else {
-				PD_REGISTER_ATTRIB(process->aux_class,process->file,line,scope,type,name,PD_ENUM_CONST);
+				PD_REGISTER_ATTRIB(process->aux_class,process->file,line,scope,type,name,PD_CONST_ENUM_CONST);
 				break;
 			}
 			break;
