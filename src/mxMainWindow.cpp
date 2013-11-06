@@ -2468,7 +2468,6 @@ void mxMainWindow::OnFileCloseAll (wxCommandEvent &event) {
 void mxMainWindow::OnFileCloseAllButOne (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		int sel=notebook_sources->GetSelection();
-		cerr<<notebook_sources->GetPageText(sel)<<endl;
 		for (int i=notebook_sources->GetPageCount()-1;i>=0;i--)
 			if (i!=sel) CloseFromGui(i);
 	}
@@ -4453,7 +4452,6 @@ void mxMainWindow::SetExplorerPath(wxString path) {
 
 void mxMainWindow::OnSelectExplorerItem (wxTreeEvent &event) {
 	explorer_tree.selected_item = event.GetItem();
-	cerr<<explorer_tree.treeCtrl->GetItemText(explorer_tree.selected_item)<<endl;
 	
 	if (explorer_tree.selected_item==explorer_tree.root) {
 		
