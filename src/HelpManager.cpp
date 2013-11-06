@@ -295,20 +295,12 @@ void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
 
 void HelpManager::HelpFor(pd_macro *amacro, wxString &content, wxString &index) {
 	int id=index_ref_counter++;
-	index<<_T("<LI><A href=\"#")<<id<<_T("\">");
-	if (amacro->type==2) index<<LANG(PARSERHELP_ENUM_CONST,"Constante de tipo enumerado");
-	else if (amacro->type==1) index<<LANG(PARSERHELP_TYPEDEF,"Typedef");
-	else if (amacro->type==0) index<<LANG(PARSERHELP_MACRO,"Macro");
-	index<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
-	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>");
-	if (amacro->type==2) content<<LANG(PARSERHELP_ENUM_CONST,"Constante de tipo enumerado");
-	else if (amacro->type==1) content<<LANG(PARSERHELP_TYPEDEF,"Typedef");
-	else content<<LANG(PARSERHELP_MACRO,"Macro");
-	content<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
+	index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<(amacro->is_typedef?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
+	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<(amacro->is_typedef?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
 	if (amacro->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),amacro->file->name,amacro->line);
 	
 	// incluir el contenido
-	if (amacro->type==1) {
+	if (amacro->is_typedef) {
 		content<<LANG(PARSERHELP_DEFINED_AS,"Definida como:")<<_T(" <BR>&nbsp;&nbsp;&nbsp;&nbsp;")<<
 			utils->ToHtml(wxString("typedef ")<<amacro->cont<<" "<<amacro->name)<<"<BR>";
 	} else {

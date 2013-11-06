@@ -632,17 +632,15 @@ struct pd_macro {
 	pd_ref *ref;
 	int line;
 	bool has_args;
-	char type; // 0=macro, 1=typedef, 2=enum const
-	pd_macro(pd_macro *aprev, pd_file *afile, int aline, wxString &aname, pd_macro *anext, char atype=0) {
+	bool is_typedef;
+	pd_macro(pd_macro *aprev, pd_file *afile, int aline, wxString &aname, pd_macro *anext, bool ais_typedef=false) {
 		has_args=false;
-		type=atype;
+		is_typedef=ais_typedef;
 		if (aprev) {
-			if (atype==0)
-				item = PD_TREE_CTRL_ADD_MACRO(aname);
-			else if (atype==1)
+			if (ais_typedef)
 				item = PD_TREE_CTRL_ADD_TYPEDEF(aname);
 			else
-				item = PD_TREE_CTRL_ADD_ENUM_CONST(aname);
+				item = PD_TREE_CTRL_ADD_MACRO(aname);
 		}
 		file=afile;
 		line=aline;

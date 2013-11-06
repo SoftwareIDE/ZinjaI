@@ -387,7 +387,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			CH_COMPARE(typed,aux_macro->name,i,l,max_str_dist);
 			if (i==l) {
 				t++;
-				comp_array.Add(aux_macro->name+(aux_macro->type==0?"?2":(aux_macro->type==1?"?18":"?19")));
+				comp_array.Add(aux_macro->name+(aux_macro->is_typedef?"?18":"?2"));
 			}
 		}
 		aux_macro = aux_macro->next;
