@@ -28,7 +28,7 @@ Parser::Parser (mxMainWindow *mainwin) {
 	follow_includes=true;
 
 	item_root = symbol_tree->AddRoot(_T("Simbolos encontrados"),0);
-	item_macros = symbol_tree->AppendItem(item_root,LANG(SYMBOLS_MACROS,"Macros y Typedefs"),0);
+	item_macros = symbol_tree->AppendItem(item_root,LANG(SYMBOLS_MACROS,"Macros y Otros"),0);
 	item_globals = symbol_tree->AppendItem(item_root,LANG(SYMBOLS_GLOBALS,"Variables Globales"),0);
 	item_functions = symbol_tree->AppendItem(item_root,LANG(SYMBOLS_FUNCTIONS,"Funciones"),0);
 	item_classes = symbol_tree->AppendItem(item_root,LANG(SYMBOLS_CLASSES,"Clases"),0);
@@ -38,8 +38,8 @@ Parser::Parser (mxMainWindow *mainwin) {
 	first_function = new pd_func(wxTreeItemId(), NULL, pd_aux, pd_aux, pd_aux, NULL);
 	first_class = new pd_class(NULL, NULL, 0, pd_aux, pd_aux, NULL);
 	first_file = new pd_file(NULL,pd_aux,wxDateTime::Now(),NULL);
-	first_macro = new pd_macro(NULL,NULL,0,pd_aux,NULL);
-	first_global = new pd_var(wxTreeItemId(), NULL,NULL,0,pd_aux,pd_aux,pd_aux,NULL);
+	first_macro = new pd_macro(NULL,NULL,0,pd_aux,0,NULL);
+	first_global = new pd_var(wxTreeItemId(), NULL,NULL,0,pd_aux,pd_aux,pd_aux,0,NULL);
 	first_inherit = new pd_inherit(NULL,pd_aux,pd_aux,0,NULL);
 	
 	last_file = first_file;
@@ -371,14 +371,25 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 	// segun el id, ver que significa
 	switch (id) {
 			
+		case PAF_ENUM_DEF: {
+			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
+			wxString scope=PARSER_PARTE_NB(5), name=PARSER_PARTE(0), type="enum";
+			if (scope=="") {
+				PD_REGISTER_MACRO(process->file,line,name,type,name,PD_CONST_ENUM);
+//				PD_REGISTER_GLOBAL(process->file,line,type,name,PD_CONST_ENUM);
+			} else {
+				PD_REGISTER_ATTRIB(process->aux_class,process->file,line,scope,type,name,PD_CONST_ENUM);
+			}
+			break;
+		}
+			
 		case PAF_ENUM_CONST_DEF: {
+			PARSER_PARTE(2).BeforeFirst('.').ToLong(&line);
 			wxString scope=PARSER_PARTE(0), name=PARSER_PARTE(1), type=PARSER_PARTE_NB(6);
 			if (scope=="-") {
-//				PD_REGISTER_MACRO(process->file,line,name,type,name,2);
-				PD_REGISTER_GLOBAL(process->file,line,type,name,PD_CONST_ENUM_CONST);
+				PD_REGISTER_MACRO(process->file,line,name,type,name,PD_CONST_ENUM_CONST);
 			} else {
 				PD_REGISTER_ATTRIB(process->aux_class,process->file,line,scope,type,name,PD_CONST_ENUM_CONST);
-				break;
 			}
 			break;
 		}
@@ -386,15 +397,18 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 		case PAF_TYPE_DEF:
 		case PAF_MACRO_DEF: {
 			wxString name=PARSER_PARTE(0),aux,key;
+			int props=PD_CONST_MACRO_CONST;
 			if (id==PAF_MACRO_DEF) {
 				aux=PARSER_PARTE_NB(5); // "-" indica que es typedef o macro de una linea (el parser da el valor, para UnMacro)
+				if (aux!="-") props=PD_CONST_MACRO_FUNC;
 				key=PARSER_PARTE_NB(6); 
 			} else { 
+				props=PD_CONST_TYPEDEF;
 				aux="-"; // "-" indica que es typedef o macro de una linea (el parser da el valor, para UnMacro)
 				key=PARSER_PARTE_NB(5);
 			}
 			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
-			PD_REGISTER_MACRO(process->file,line,name,key,aux,id==PAF_TYPE_DEF);
+			PD_REGISTER_MACRO(process->file,line,name,key,aux,props);
 			break;
 		}
 			

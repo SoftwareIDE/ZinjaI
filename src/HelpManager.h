@@ -34,6 +34,7 @@ public:
 	bool IsHelpForType(wxString what, wxString &link);
 	void HelpFor(pd_func *afunc, wxString &content, wxString &index);
 	void HelpFor(pd_var *avar, wxString &content, wxString &index);
+	void HelpForEnum(pd_var *avar, wxString &content, wxString &index);
 	void HelpFor(pd_macro *amacro, wxString &content, wxString &index);
 	void HelpFor(pd_class *aclass, wxString &content, wxString &index);
 	int GetStandardHelp(wxString keyword, wxString &content);

@@ -22,18 +22,22 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #include "Parser.h"
 
 // constantes para manipular con operaciones de bits las propiedades de los metodos y atributos
-#define PD_CONST_PUBLIC 1
-#define PD_CONST_PRIVATE 2
-#define PD_CONST_PROTECTED 4
-#define PD_CONST_VIRTUAL 8
-#define PD_CONST_STATIC 16
-#define PD_CONST_CONSTRUCTOR 32
-#define PD_CONST_DESTRUCTOR 64
-#define PD_CONST_CONST 128
-#define PD_CONST_VOLATILE 256
-#define PD_CONST_VIRTUAL_PURE 512
+#define PD_CONST_PUBLIC 			(1<<0)
+#define PD_CONST_PRIVATE 			(1<<1)
+#define PD_CONST_PROTECTED	 		(1<<2)
+#define PD_CONST_VIRTUAL 			(1<<3)
+#define PD_CONST_STATIC 			(1<<4)
+#define PD_CONST_CONSTRUCTOR 		(1<<5)
+#define PD_CONST_DESTRUCTOR		 	(1<<6)
+#define PD_CONST_CONST			 	(1<<7)
+#define PD_CONST_VOLATILE 			(1<<8)
+#define PD_CONST_VIRTUAL_PURE		(1<<9)
 
-#define PD_CONST_ENUM_CONST 1024
+#define PD_CONST_ENUM 				(1<<10)
+#define PD_CONST_ENUM_CONST 		(1<<11)
+#define PD_CONST_MACRO_CONST		(1<<12)
+#define PD_CONST_MACRO_FUNC 		(1<<13)
+#define PD_CONST_TYPEDEF 			(1<<14)
 
 // macros para cargar el autocompletado estandar
 
@@ -53,23 +57,22 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define CH_REGISTER_INHERIT(afather, aprops, ason) \
 	parser->first_inherit->next = new pd_inherit(NULL,ason,afather,aprops,parser->first_inherit->next); \
 
-#define CH_REGISTER_MACRO(afile,aname) \
-	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,parser->first_macro->next);
+// para macros, typedefs, enums (y enums_consts) globales (la diferencia es props)
+#define CH_REGISTER_MACRO(afile,aname, aprops) \
+	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,aprops,parser->first_macro->next);
 
 #define CH_REGISTER_MACRO_P(afile,aname,aproto) \
-	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,parser->first_macro->next);\
+	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,PD_CONST_MACRO_FUNC,parser->first_macro->next);\
 	parser->first_macro->next->proto = aproto;\
-	parser->first_macro->next->has_args = true;\
 //	DEBUG_INFO("   Macro: "<<aname);
 
 #define CH_REGISTER_GLOBAL(afile, atype, aname, aproto, aprops) \
-	parser->h_globals[aname] = parser->first_global->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,parser->first_global->next,NULL,_T("")); \
-	parser->first_global->next->properties = (aprops);
+	parser->h_globals[aname] = parser->first_global->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aprops,parser->first_global->next,NULL,_T("")); \
 //	DEBUG_INFO("   Global:  t:"<<atype<<"   n:"<<aname<<"   p:"<<aproto);
 
+// para atributos y enums/enums_const dentro de clases (la diferencia es props)
 #define CH_REGISTER_ATTRIB(afile, aclass, atype, aname, aproto, aprops) \
-	aclass->h_attribs[aname] = aclass->first_attrib->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aclass->first_attrib->next,aclass,aproto); \
-	aclass->first_attrib->next->properties = aprops;
+	aclass->h_attribs[aname] = aclass->first_attrib->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aprops,aclass->first_attrib->next,aclass,aproto); \
 //	DEBUG_INFO("      Attrib:  t:"<<atype<<"   n:"<<aname<<"   p:"<<aproto);
 
 #define CH_REGISTER_FUNCTION(afile, atype, aname, aproto) \
@@ -105,20 +108,20 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define PD_TREE_CTRL_ADD_FUNC(aitem, aname) \
 	parser->symbol_tree->AppendItem(aitem,aname,mxSTI_FUNCTION)
 
-#define PD_TREE_CTRL_ADD_VAR(aitem, aname) \
-	parser->symbol_tree->AppendItem(aitem,aname,mxSTI_GLOBAL)
+#define PD_TREE_CTRL_ADD_VAR(aitem, aname, aprops) \
+	parser->symbol_tree->AppendItem(aitem,aname, ((aprops)&(PD_CONST_ENUM_CONST|PD_CONST_ENUM))  ? mxSTI_ENUM_CONST : mxSTI_GLOBAL)
 
 #define PD_TREE_CTRL_ADD_MACRO(aname) \
 	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_DEFINE)
 
 #define PD_TREE_CTRL_ADD_ENUM_CONST(aname) \
-	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_ENUM_CONST)
+	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_ENUM_CONST) 
 
 #define PD_TREE_CTRL_ADD_TYPEDEF(aname) \
 	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_TYPEDEF)
 
 #define PD_TREE_CTRL_SET_ATTRIB(aitem,aprops) \
-	if ((aprops)&PD_CONST_ENUM_CONST) \
+	if ((aprops)&(PD_CONST_ENUM_CONST|PD_CONST_ENUM)) \
 		parser->symbol_tree->SetItemImage(aitem,mxSTI_ENUM_CONST); \
 	else if ((aprops)&PD_CONST_PUBLIC) \
 		parser->symbol_tree->SetItemImage(aitem,mxSTI_PUBLIC_ATTRIB); \
@@ -255,16 +258,16 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 			pd_aux->file = afile; \
 			pd_aux->line = aline; \
 			pd_aux->ref->counter = afile->counter; \
+			pd_aux->properties = aprops; \
 		}\
 	} else {\
-		h_globals[aproto] = pd_aux = new pd_var(item_globals, last_global, afile, aline, aname, atype, aproto, last_global->next); \
+		h_globals[aproto] = pd_aux = new pd_var(item_globals, last_global, afile, aline, aname, atype, aproto, aprops, last_global->next); \
 		PD_INSERT(last_global,pd_aux); \
 		PD_ADD_REF(afile->first_global,afile->counter,pd_aux); \
 		pd_aux->ref = afile->first_global->next; \
 		pd_aux->line = aline; \
 		pd_aux->ref->counter = afile->counter; \
 	} \
-	pd_aux->properties = (aprops); \
 }
 
 #define PD_REGISTER_MACRO(afile,aline,aname,acont,aparams,atype) { \
@@ -279,19 +282,16 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 			pd_aux->file = afile; \
 		} \
 	} else {\
-		h_macros[aname] = pd_aux = new pd_macro(last_macro, afile, aline, aname, last_macro->next,atype); \
+		h_macros[aname] = pd_aux = new pd_macro(last_macro, afile, aline, aname, atype, last_macro->next); \
 		PD_INSERT(last_macro,pd_aux); \
 		PD_ADD_REF(afile->first_macro,afile->counter,pd_aux); \
 		pd_aux->ref = afile->first_macro->next; \
 	} \
 	pd_aux->cont = acont;\
-	if (aparams==_T("-")) { \
-		pd_aux->has_args = false;\
-		pd_aux->proto = aname;\
-	} else { \
-		pd_aux->has_args = true;\
+	if (atype&PD_CONST_MACRO_FUNC) \
 		pd_aux->proto = aname+_T("(")+aparams+_T(")");\
-	} \
+	else \
+		pd_aux->proto = aname;\
 	pd_aux->line = aline; \
 	pd_aux->ref->counter = afile->counter; \
 }
@@ -442,8 +442,9 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 	pd_var *pd_aux; \
 	if (it!=aclass->h_attribs.end()) { \
 		pd_aux = it->second; \
+		pd_aux->properties = (aprops); \
 	} else { \
-		aclass->h_attribs[aproto] = pd_aux = new pd_var(aclass->item, aclass->first_attrib, afile, aline, aname, atype, aproto, aclass->first_attrib->next,aclass,afullproto); \
+		aclass->h_attribs[aproto] = pd_aux = new pd_var(aclass->item, aclass->first_attrib, afile, aline, aname, atype, aproto, aprops, aclass->first_attrib->next,aclass,afullproto); \
 		PD_INSERT(aclass->first_attrib,pd_aux); \
 		PD_ADD_REF(afile->first_attrib,afile->counter,pd_aux); \
 		pd_aux->ref = afile->first_attrib->next; \
@@ -460,7 +461,6 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 		PD_ADD_REF(afile->first_attrib,afile->counter,pd_aux); \
 		pd_aux->ref = afile->first_attrib->next; \
 	} \
-	pd_aux->properties = (aprops); \
 	PD_TREE_CTRL_SET_ATTRIB(pd_aux->item, aprops); \
 }
 
@@ -631,14 +631,14 @@ struct pd_macro {
 	pd_file *file;
 	pd_ref *ref;
 	int line;
-	bool has_args;
-	bool is_typedef;
-	pd_macro(pd_macro *aprev, pd_file *afile, int aline, wxString &aname, pd_macro *anext, bool ais_typedef=false) {
-		has_args=false;
-		is_typedef=ais_typedef;
+	int props; // PD_CONST_MACRO_CONST o PD_CONST_MACRO_FUNC o PD_CONST_TYPEDEF o PD_CONST_ENUM o PD_CONST_ENUM_CONST (uno solo de estos)
+	pd_macro(pd_macro *aprev, pd_file *afile, int aline, wxString &aname, int aprops, pd_macro *anext) {
+		props=aprops;
 		if (aprev) {
-			if (ais_typedef)
+			if (props&PD_CONST_TYPEDEF)
 				item = PD_TREE_CTRL_ADD_TYPEDEF(aname);
+			else if (props&(PD_CONST_ENUM|PD_CONST_ENUM_CONST))
+				item = PD_TREE_CTRL_ADD_ENUM_CONST(aname);
 			else
 				item = PD_TREE_CTRL_ADD_MACRO(aname);
 		}
@@ -667,15 +667,16 @@ struct pd_var {
 	pd_ref *ref;
 	unsigned short properties;
 	int line;
-	pd_var(wxTreeItemId fitem, pd_var *aprev, pd_file *afile, int aline, wxString &aname, wxString &atype, wxString &aproto, pd_var *anext, pd_class *aspace = NULL, wxString afullproto=_T("")) {
+	pd_var(wxTreeItemId fitem, pd_var *aprev, pd_file *afile, int aline, wxString &aname, wxString &atype, wxString &aproto, int aproperties, pd_var *anext, pd_class *aspace = NULL, wxString afullproto="") {
 		space=aspace;
 		proto=aproto;
+		properties=aproperties;
 		if (space)
 			full_proto = afullproto;
 		else
 			full_proto = proto;
 		if (aprev) 
-			item = PD_TREE_CTRL_ADD_VAR(fitem, proto);
+			item = PD_TREE_CTRL_ADD_VAR(fitem, proto, properties);
 		file=afile;
 		line=aline;
 		prev=aprev;
@@ -735,7 +736,7 @@ struct pd_class { // clases, namespaces y uniones (para el uso son exactamente l
 		is_union=false;
 		wxString s;
 		first_method=new pd_func(wxTreeItemId(), NULL,s,s,s,NULL);
-		first_attrib=new pd_var(wxTreeItemId(), NULL,NULL,0,s,s,s,NULL);
+		first_attrib=new pd_var(wxTreeItemId(), NULL,NULL,0,s,s,s,0,NULL);
 		if (prev) {
 			if (file)
 				item = PD_TREE_CTRL_ADD_CLASS(name);

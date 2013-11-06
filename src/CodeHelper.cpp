@@ -106,7 +106,7 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 					comp_array.Add(aux_var->name+_T("?7"));
 				else if (aux_var->properties&PD_CONST_PUBLIC)
 					comp_array.Add(aux_var->name+_T("?8"));
-				else if (aux_var->properties&PD_CONST_ENUM_CONST)
+				else if (aux_var->properties&(PD_CONST_ENUM_CONST|PD_CONST_ENUM))
 					comp_array.Add(aux_var->name+_T("?19"));
 				else 
 					comp_array.Add(aux_var->name+_T("?5"));
@@ -363,7 +363,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			CH_COMPARE(typed,aux_var->name,i,l,max_str_dist);
 			if (i==l) {
 				t++;
-				comp_array.Add(aux_var->name+(aux_var->properties&PD_CONST_ENUM_CONST?"?19":"?14"));
+				comp_array.Add(aux_var->name+(aux_var->properties&(PD_CONST_ENUM_CONST|PD_CONST_ENUM)?"?19":"?14"));
 			}
 		}
 		aux_var = aux_var->next;
@@ -387,7 +387,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			CH_COMPARE(typed,aux_macro->name,i,l,max_str_dist);
 			if (i==l) {
 				t++;
-				comp_array.Add(aux_macro->name+(aux_macro->is_typedef?"?18":"?2"));
+				comp_array.Add(aux_macro->name+(aux_macro->props&(PD_CONST_ENUM|PD_CONST_ENUM_CONST)?"?19":(aux_macro->props&PD_CONST_TYPEDEF?"?18":"?2")));
 			}
 		}
 		aux_macro = aux_macro->next;
@@ -855,16 +855,22 @@ bool CodeHelper::LoadData(wxString index) {
 					}
 				}
 			} else if ( (pos=str.Find('('))==wxNOT_FOUND) {
-				if ( (pos=str.Find(' '))==wxNOT_FOUND) { // macro
-					CH_REGISTER_MACRO(aux_file,str);
+				if ( (pos=str.Find(' '))==wxNOT_FOUND || str.StartsWith("enum ")) { // macro o enum
+					CH_REGISTER_MACRO(aux_file,str,PD_CONST_MACRO_CONST);
+				} else if (str.StartsWith("enum ")) { // macro o enum
+					wxString name = str.AfterLast(' ');
+					wxString type = str.BeforeLast(' ');
+					int props=PD_CONST_ENUM;
+					if (type.StartsWith("enum const ")) {
+						type=type.Mid(11); if (!type.Len()) type="anonymous";
+						props=PD_CONST_ENUM_CONST;
+					}
+					CH_REGISTER_MACRO(aux_file,str,props);
 				} else { // variable
 					wxString name = str.AfterLast(' ');
 					wxString type = str.BeforeLast(' ');
 					int props=0;
-					if (type.StartsWith("enum const ")) {
-						type=type.Mid(11); if (!type.Len()) type="anonymous";
-						props=PD_CONST_ENUM_CONST;
-					} else if (type.StartsWith("const ")) props&=PD_CONST_CONST;
+					if (type.StartsWith("const ")) props&=PD_CONST_CONST;
 					if (type.Find(' ')!=wxNOT_FOUND) type = type.AfterLast(' ');
 					CH_REGISTER_GLOBAL(aux_file,type,name,str,props);
 				}
@@ -902,7 +908,9 @@ bool CodeHelper::LoadData(wxString index) {
 					wxString name = str.AfterLast(' ');
 					wxString type = str.BeforeLast(' ');
 					int props=PD_CONST_PUBLIC;
-					if (type.StartsWith("enum const ")) {
+					if (type=="enum"){
+						props=PD_CONST_ENUM;
+					} else if (type.StartsWith("enum const ")) {
 						type=type.Mid(11); if (!type.Len()) type="anonymous";
 						props=PD_CONST_ENUM_CONST;
 					}

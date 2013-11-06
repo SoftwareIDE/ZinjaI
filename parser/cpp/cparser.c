@@ -2528,7 +2528,7 @@ extern int f_enum( Declaration_t Declaration, Enum_t Enum )
                    , f_lineno( -1 )
                    , f_charno( -1 ) + 1
                    , (unsigned long) 0
-                   , (char *) 0
+                   , classname_g
                    , (char *) 0
                    , (char *) 0
                    , comment

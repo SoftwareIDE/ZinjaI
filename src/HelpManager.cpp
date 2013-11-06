@@ -147,7 +147,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 	wxString attribs;
 	pd_var *avar = aclass->first_attrib->next;
 	while (avar!=NULL) {
-		if (avar->properties&PD_CONST_ENUM_CONST) { avar = avar->next; continue; }
+		if (avar->properties&(PD_CONST_ENUM_CONST||PD_CONST_ENUM)) { avar = avar->next; continue; }
 		wxString one_attrib ="<LI>";
 		if (!aclass->is_union) {
 			if (avar->properties&PD_CONST_PUBLIC) one_attrib<<"public ";
@@ -253,13 +253,30 @@ void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 	
 }
 
-/** Arma el texto de ayuda rápida para variables globales, atributos, y constantes de tipos enumerados **/
-void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
+void HelpManager::HelpForEnum(pd_var *avar, wxString &content, wxString &index) {
 	int id=index_ref_counter++;
-	if (avar->properties&PD_CONST_ENUM_CONST) {
+	if (avar->properties&PD_CONST_ENUM) {
+		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_ENUM,"Tipo Enumerado")<<_T(" <I>")<<avar->proto<<_T("</I></A></LI>");
+		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_ENUM,"Tipo Enumerado")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I></B><BR><BR>");
+		if (avar->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definido en"),avar->file->name,avar->line);
+	} else if (avar->properties&PD_CONST_ENUM_CONST) {
 		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_ENUM_CONST,"Constante de Tipo Enumerado")<<_T(" <I>")<<avar->proto<<_T("</I></A></LI>");
 		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_ENUM_CONST,"Constante de Tipo Enumerado")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I></B><BR><BR>");
-		// poner el nombre del enum y enlace al mismo?
+		if (avar->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),avar->file->name,avar->line);
+	}
+}
+	
+/** Arma el texto de ayuda rápida para variables globales, atributos, y constantes de tipos enumerados **/
+void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
+	if (avar->properties&(PD_CONST_ENUM|PD_CONST_ENUM_CONST)) { HelpForEnum(avar,content,index); return; }
+	int id=index_ref_counter++;
+	if (avar->properties&PD_CONST_ENUM) {
+		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_ENUM,"Tipo Enumerado")<<_T(" <I>")<<avar->proto<<_T("</I></A></LI>");
+		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_ENUM,"Tipo Enumerado")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I></B><BR><BR>");
+		if (avar->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definido en"),avar->file->name,avar->line);
+	} else if (avar->properties&PD_CONST_ENUM_CONST) {
+		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_ENUM_CONST,"Constante de Tipo Enumerado")<<_T(" <I>")<<avar->proto<<_T("</I></A></LI>");
+		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_ENUM_CONST,"Constante de Tipo Enumerado")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I></B><BR><BR>");
 		if (avar->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),avar->file->name,avar->line);
 	} else {
 		if (avar->space) {
@@ -294,13 +311,23 @@ void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
 }
 
 void HelpManager::HelpFor(pd_macro *amacro, wxString &content, wxString &index) {
+	if (amacro->props&(PD_CONST_ENUM_CONST|PD_CONST_ENUM)) {
+		wxString s;
+		pd_var aux(wxTreeItemId(),NULL,NULL,0,s,s,s,0,NULL);
+		aux.file=amacro->file;
+		aux.line=amacro->line;
+		aux.properties=amacro->props;
+		aux.proto=amacro->proto;
+		HelpForEnum(&aux,content,index);
+		return;
+	}
 	int id=index_ref_counter++;
-	index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<(amacro->is_typedef?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
-	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<(amacro->is_typedef?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
+	index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<(amacro->props&PD_CONST_TYPEDEF?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
+	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<(amacro->props&PD_CONST_TYPEDEF?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
 	if (amacro->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),amacro->file->name,amacro->line);
 	
 	// incluir el contenido
-	if (amacro->is_typedef) {
+	if (amacro->props&PD_CONST_TYPEDEF) {
 		content<<LANG(PARSERHELP_DEFINED_AS,"Definida como:")<<_T(" <BR>&nbsp;&nbsp;&nbsp;&nbsp;")<<
 			utils->ToHtml(wxString("typedef ")<<amacro->cont<<" "<<amacro->name)<<"<BR>";
 	} else {

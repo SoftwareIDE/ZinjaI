@@ -92,7 +92,7 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 		key=key.Mid(8);
 		pd_macro *aux_macro = parser->last_macro->next;
 		while (aux_macro) {
-			if (aux_macro->has_args && aux_macro->proto==key) {
+			if (aux_macro->props&PD_CONST_MACRO_FUNC && aux_macro->proto==key) {
 				Close();
 				parser->popup_file_def = aux_macro->file->name;
 				parser->popup_line_def = aux_macro->line;
@@ -215,7 +215,7 @@ void mxGotoFunctionDialog::OnTimerInput(wxTimerEvent &event) {
 	
 	pd_macro *aux_macro = parser->last_macro->next;
 	while (aux_macro) {
-		if (aux_macro->has_args) {
+		if (aux_macro->props&PD_CONST_MACRO_FUNC) {
 			if (strict_compare) {
 				if (aux_macro->name==key)
 					list_ctrl->Append(wxString(_T("#define "))<<aux_macro->proto);
