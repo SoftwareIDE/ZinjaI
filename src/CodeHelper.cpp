@@ -860,9 +860,13 @@ bool CodeHelper::LoadData(wxString index) {
 				} else { // variable
 					wxString name = str.AfterLast(' ');
 					wxString type = str.BeforeLast(' ');
-					if (type.Find(' ')!=wxNOT_FOUND)
-						type = type.AfterLast(' ');
-					CH_REGISTER_GLOBAL(aux_file,type,name,str);
+					int props=0;
+					if (type.StartsWith("enum const ")) {
+						type=type.Mid(11); if (!type.Len()) type="anonymous";
+						props=PD_CONST_ENUM_CONST;
+					} else if (type.StartsWith("const ")) props&=PD_CONST_CONST;
+					if (type.Find(' ')!=wxNOT_FOUND) type = type.AfterLast(' ');
+					CH_REGISTER_GLOBAL(aux_file,type,name,str,props);
 				}
 			} else { //  funcion
 				pos--;
@@ -897,6 +901,11 @@ bool CodeHelper::LoadData(wxString index) {
 				if (str.Find(':')==wxNOT_FOUND) {
 					wxString name = str.AfterLast(' ');
 					wxString type = str.BeforeLast(' ');
+					int props=PD_CONST_PUBLIC;
+					if (type.StartsWith("enum const ")) {
+						type=type.Mid(11); if (!type.Len()) type="anonymous";
+						props=PD_CONST_ENUM_CONST;
+					}
 					char c=type.Last();
 					int dims=0;
 					while (c=='&' || c=='*' || c==' ') {
@@ -909,13 +918,13 @@ bool CodeHelper::LoadData(wxString index) {
 						type = type.AfterLast(' ');
 					for (int i=0;i<dims;i++)
 						type<<'*';
-					CH_REGISTER_ATTRIB(aux_file,aux_class,type,name,str);
+					CH_REGISTER_ATTRIB(aux_file,aux_class,type,name,str,props);
 				} else {
 					wxString name = str.AfterLast(':');
 					wxString type = str.BeforeLast(' ');
 					if (type.Find(' ')!=wxNOT_FOUND)
 						type = type.AfterLast(' ');
-					CH_REGISTER_ATTRIB(aux_file,aux_class,type,name,str);
+					CH_REGISTER_ATTRIB(aux_file,aux_class,type,name,str,PD_CONST_PUBLIC);
 				}
 			} else { // metodo
 				pos--;
@@ -1183,8 +1192,14 @@ bool CodeHelper::GenerateCacheFile(wxString path, wxString filename) {
 		idx.Write(wxString(_T("<"))<<fn.GetFullPath()<<_T(">\n"));
 		pd_ref *ref = fil->first_global->next;
 		while (ref) {
-			if (PD_UNREF(pd_var,ref)->space==NULL)
-				idx.Write(wxString(_T("\t"))<<PD_UNREF(pd_var,ref)->proto<<_T("\n"));
+			if (PD_UNREF(pd_var,ref)->space==NULL) {
+				if (PD_UNREF(pd_var,ref)->properties==PD_CONST_ENUM_CONST)
+					idx.Write(wxString(_T("\tenum const "))<<PD_UNREF(pd_var,ref)->proto<<_T("\n"));
+				else if (PD_UNREF(pd_var,ref)->properties==PD_CONST_CONST)
+					idx.Write(wxString(_T("\tconst "))<<PD_UNREF(pd_var,ref)->proto<<_T("\n"));
+				else
+					idx.Write(wxString(_T("\t"))<<PD_UNREF(pd_var,ref)->proto<<_T("\n"));
+			}
 			ref = ref->next;
 		}
 		ref = fil->first_func_dec->next;
@@ -1225,6 +1240,8 @@ bool CodeHelper::GenerateCacheFile(wxString path, wxString filename) {
 			while (var) {
 				if (var->properties&PD_CONST_PUBLIC)
 					idx.Write(wxString(_T("\t\t"))<<var->proto<<_T("\n"));
+				else if (var->properties&PD_CONST_ENUM_CONST)
+					idx.Write(wxString(_T("\t\tenum const "))<<var->proto<<_T("\n"));
 				var = var->next;
 			}
 			pd_func *met = cls->first_method->next;

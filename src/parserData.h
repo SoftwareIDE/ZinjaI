@@ -62,13 +62,14 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 	parser->first_macro->next->has_args = true;\
 //	DEBUG_INFO("   Macro: "<<aname);
 
-#define CH_REGISTER_GLOBAL(afile, atype, aname, aproto) \
+#define CH_REGISTER_GLOBAL(afile, atype, aname, aproto, aprops) \
 	parser->h_globals[aname] = parser->first_global->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,parser->first_global->next,NULL,_T("")); \
+	parser->first_global->next->properties = (aprops);
 //	DEBUG_INFO("   Global:  t:"<<atype<<"   n:"<<aname<<"   p:"<<aproto);
 
-#define CH_REGISTER_ATTRIB(afile, aclass, atype, aname, aproto) \
+#define CH_REGISTER_ATTRIB(afile, aclass, atype, aname, aproto, aprops) \
 	aclass->h_attribs[aname] = aclass->first_attrib->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aclass->first_attrib->next,aclass,aproto); \
-	aclass->first_attrib->next->properties = PD_CONST_PUBLIC;
+	aclass->first_attrib->next->properties = aprops;
 //	DEBUG_INFO("      Attrib:  t:"<<atype<<"   n:"<<aname<<"   p:"<<aproto);
 
 #define CH_REGISTER_FUNCTION(afile, atype, aname, aproto) \

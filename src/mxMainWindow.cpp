@@ -4452,8 +4452,8 @@ void mxMainWindow::SetExplorerPath(wxString path) {
 }
 
 void mxMainWindow::OnSelectExplorerItem (wxTreeEvent &event) {
-	
 	explorer_tree.selected_item = event.GetItem();
+	cerr<<explorer_tree.treeCtrl->GetItemText(explorer_tree.selected_item)<<endl;
 	
 	if (explorer_tree.selected_item==explorer_tree.root) {
 		
@@ -4638,15 +4638,23 @@ wxString mxMainWindow::GetExplorerItemPath(wxTreeItemId item) {
 }
 
 void mxMainWindow::OnSymbolsGenerateCache(wxCommandEvent &evt) {
-	wxFileDialog dlg1(this,_T("Archivo indice:"),"","","*.*",wxFD_SAVE);
-	if (wxID_OK!=dlg1.ShowModal()) return;
-	wxString fname = dlg1.GetPath();
-	wxDirDialog dlg2(this,_T("Directorio base:"),_T(""));
+	wxString fname = wxGetTextFromUser(
+		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_NAME,"Nombre del nuevo índice"),
+		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),
+		"",this);
+	if (!fname.Len()) return;
+	fname=DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"autocomp"),fname);
+	if (wxFileName::FileExists(fname)) {
+		if (mxMD_NO==mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE,"El indice ya existe, ¿desea reemplazarlo?"),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_YES_NO).ShowModal()) 
+			return;
+	}
+	wxDirDialog dlg2(this,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR,"Directorio base (para formar las rutas relativas para los #includes):"),"");
 	if (wxID_OK!=dlg2.ShowModal()) return;
-	if (code_helper->GenerateCacheFile(dlg2.GetPath(),fname))
-		mxMessageDialog(main_window,_T("Indice generado"),fname,mxMD_OK|mxMD_INFO).ShowModal();
-	else
-		mxMessageDialog(main_window,_T("No se pudo generar el archivo"),fname,mxMD_OK|mxMD_ERROR).ShowModal();
+	if (code_helper->GenerateCacheFile(dlg2.GetPath(),fname)) {
+		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED,"Indice generado correctamente."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_INFO).ShowModal();
+		delete preference_window; preference_window=NULL;
+	} else
+		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_ERROR,"Ha ocurrido un error al intentar generar el archivo."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_ERROR).ShowModal();
 }
 
 void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {

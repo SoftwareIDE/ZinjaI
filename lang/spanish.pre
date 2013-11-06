@@ -106,14 +106,14 @@ DEBUG_BAD_BREAKPOINT_WARNING_LOCATION
 Las posibles causas son:\n* Fue colocado en un archivo que no se compila en el proyecto/programa.\n* Fue colocado en una linea que no genera codigo ejecutable (ej: comentario).\n* Información de depuración desactualizada o inexistente. Intente recompilar\n   completamente el programa/proyecto, utilizando el item Limpiar del menu Ejecucion\n   antes de depurar.\n* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n   espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.
 DEBUG_BAD_BREAKPOINT_WARNING_CONDITION
 La condición ingresada no es válida.
+PARSERHELP_DEFINED_IN_POST
+en la linea
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS
 Clase
-PARSERHELP_DEFINED_IN
+PARSERHELP_DEFINED_IN_PRE
 Definida en
-PARSERHELP_IN_LINE
-en la linea
 PARSERHELP_GENERIC_CLASS
 Clase generica: 
 PARSERHELP_THIS_ONE_INHERITS_FROM
@@ -168,14 +168,10 @@ PARSERHELP_PROTOTYPE
 Prototipo:
 PARSERHELP_DECLARED_IN_PRE
 Declarado en
-PARSERHELP_DECLARED_IN_POST
-en la linea
-PARSERHELP_DEFINED_IN_PRE
-Definido en
-PARSERHELP_DEFINED_IN_POST
-en la linea
 PARSERHELP_FUNCTION
 Funcion
+PARSERHELP_ENUM_CONST
+Constante de Tipo Enumerado
 PARSERHELP_ATTRIBUTE_FROM_CLASS_PRE
 Atributo
 PARSERHELP_ATTRIBUTE_FROM_CLASS_POST
@@ -186,8 +182,6 @@ PARSERHELP_GLOBAL_VAR
 Variable Global
 PARSERHELP_DECLARATION
 Declaracion:
-PARSERHELP_ENUM_CONST
-Constante de tipo enumerado
 PARSERHELP_TYPEDEF
 Typedef
 PARSERHELP_MACRO
@@ -2490,6 +2484,18 @@ MAINW_EXPLORER_POPUP_SHOW_SOURCES
 &Mostrar Solo los Fuentes
 MAINW_EXPLORER_SELECT_PATH
 Seleccione la ubicacion:
+MAINW_GENERATE_AUTOCOMP_INDEX_NAME
+Nombre del nuevo índice
+MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
+Generación de índice de autocompletado
+MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE
+El indice ya existe, ¿desea reemplazarlo?
+MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR
+Directorio base (para formar las rutas relativas para los #includes):
+MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED
+Indice generado correctamente.
+MAINW_GENERATE_AUTOCOMP_INDEX_ERROR
+Ha ocurrido un error al intentar generar el archivo.
 CAPTION_TOOLS_RESULTS_PANEL
 Panel de resultados
 MAINW_BEGGINERS_PANEL

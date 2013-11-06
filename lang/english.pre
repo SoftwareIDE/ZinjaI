@@ -106,14 +106,14 @@ DEBUG_BAD_BREAKPOINT_WARNING_LOCATION
 Posible causes are:\n* Some breakpoints are placed in files that do not belong to the project.\n* Some breakpoints are placed in lines that don't gerate executable code (comments, empty lines, ...)\n* Missing or outdated debugging information. Use Clean item from Run menu before\n  debugging.\n* Spaces or special characters in files' paths. If that is the case, try moving\n  the project or renaming the directories.
 DEBUG_BAD_BREAKPOINT_WARNING_CONDITION
 Breakpoint's condition is not valid.
+PARSERHELP_DEFINED_IN_POST
+line
 PARSERHELP_UNION
 Union
 PARSERHELP_CLASS
 Class
-PARSERHELP_DEFINED_IN
+PARSERHELP_DEFINED_IN_PRE
 Defined in
-PARSERHELP_IN_LINE
-line
 PARSERHELP_GENERIC_CLASS
 Generic class:
 PARSERHELP_THIS_ONE_INHERITS_FROM
@@ -168,14 +168,10 @@ PARSERHELP_PROTOTYPE
 Prototype:
 PARSERHELP_DECLARED_IN_PRE
 Declared in
-PARSERHELP_DECLARED_IN_POST
-line
-PARSERHELP_DEFINED_IN_PRE
-Defined in
-PARSERHELP_DEFINED_IN_POST
-line
 PARSERHELP_FUNCTION
 Function
+PARSERHELP_ENUM_CONST
+Enum const
 PARSERHELP_ATTRIBUTE_FROM_CLASS_PRE
 Attribute
 PARSERHELP_ATTRIBUTE_FROM_CLASS_POST
@@ -186,8 +182,6 @@ PARSERHELP_GLOBAL_VAR
 Global variable
 PARSERHELP_DECLARATION
 Declaration:
-PARSERHELP_ENUM_CONST
-Enum const
 PARSERHELP_TYPEDEF
 Typedef
 PARSERHELP_MACRO
@@ -2490,6 +2484,18 @@ MAINW_EXPLORER_POPUP_SHOW_SOURCES
 Show Only &Sources
 MAINW_EXPLORER_SELECT_PATH
 Select location:
+MAINW_GENERATE_AUTOCOMP_INDEX_NAME
+New autocompletion index name
+MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
+Autocompletion index generation
+MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE
+Index already exists, do you want to overwrite it?
+MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR
+Base path (for make relative paths for #includes):
+MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED
+Index generated successfully
+MAINW_GENERATE_AUTOCOMP_INDEX_ERROR
+There was an error generating the index file.
 CAPTION_TOOLS_RESULTS_PANEL
 Tool Result's  Panel
 MAINW_BEGGINERS_PANEL
