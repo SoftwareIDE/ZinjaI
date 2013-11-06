@@ -218,7 +218,7 @@ int     high_end_colpos)
 	case	PAF_GLOB_VAR_DEF:
 	case	PAF_FUNC_DCL:
 	case	PAF_UNION_DEF:
-	case	PAF_ENUM_CONST_DEF:
+//	case	PAF_ENUM_CONST_DEF:
 		scope_name = NULL;
 		break;
 	}

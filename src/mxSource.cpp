@@ -138,23 +138,24 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 	
 	page_text = ptext;
 	
-	RegisterImage(2,*(bitmaps->parser.icon2));
-	RegisterImage(3,*(bitmaps->parser.icon3));
-	RegisterImage(4,*(bitmaps->parser.icon4));
-	RegisterImage(5,*(bitmaps->parser.icon5));
-	RegisterImage(6,*(bitmaps->parser.icon6));
-	RegisterImage(7,*(bitmaps->parser.icon7));
-	RegisterImage(8,*(bitmaps->parser.icon8));
-	RegisterImage(9,*(bitmaps->parser.icon9));
-	RegisterImage(10,*(bitmaps->parser.icon10));
-	RegisterImage(11,*(bitmaps->parser.icon11));
-	RegisterImage(12,*(bitmaps->parser.icon12));
-	RegisterImage(13,*(bitmaps->parser.icon13));
-	RegisterImage(14,*(bitmaps->parser.icon14));
-	RegisterImage(15,*(bitmaps->parser.icon15));
-	RegisterImage(16,*(bitmaps->parser.icon16));
-	RegisterImage(17,*(bitmaps->parser.icon17));
-	RegisterImage(18,*(bitmaps->parser.icon18));
+	RegisterImage(2,*(bitmaps->parser.icon02_define));
+	RegisterImage(3,*(bitmaps->parser.icon03_func));
+	RegisterImage(4,*(bitmaps->parser.icon04_class));
+	RegisterImage(5,*(bitmaps->parser.icon05_att_unk));
+	RegisterImage(6,*(bitmaps->parser.icon06_att_pri));
+	RegisterImage(7,*(bitmaps->parser.icon07_att_pro));
+	RegisterImage(8,*(bitmaps->parser.icon08_att_pub));
+	RegisterImage(9,*(bitmaps->parser.icon09_mem_unk));
+	RegisterImage(10,*(bitmaps->parser.icon10_mem_pri));
+	RegisterImage(11,*(bitmaps->parser.icon11_mem_pro));
+	RegisterImage(12,*(bitmaps->parser.icon12_mem_pub));
+	RegisterImage(13,*(bitmaps->parser.icon13_none));
+	RegisterImage(14,*(bitmaps->parser.icon14_global_var));
+	RegisterImage(15,*(bitmaps->parser.icon15_res_word));
+	RegisterImage(16,*(bitmaps->parser.icon16_preproc));
+	RegisterImage(17,*(bitmaps->parser.icon17_doxygen));
+	RegisterImage(18,*(bitmaps->parser.icon18_typedef));
+	RegisterImage(19,*(bitmaps->parser.icon19_enum_const));
 	
 	false_calltip=false;
 	

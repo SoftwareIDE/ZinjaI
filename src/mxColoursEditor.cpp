@@ -479,7 +479,7 @@ void mxStaticText::SetData (wxColour * fore, wxColour * back, bool * italic, boo
 
 void color_theme::Init() {
 	
-	wxTheColourDatabase->AddColour(_T("Z LIGHT GREEN"),wxColour(100,255,100));
+	wxTheColourDatabase->AddColour(_T("Z LIGHT GREEN"),wxColour(120,255,120));
 	wxTheColourDatabase->AddColour(_T("Z DARK GREEN"),wxColour(0,80,0));
 	wxTheColourDatabase->AddColour(_T("Z LIGHT BLUE"),wxColour(235,235,255));
 	wxTheColourDatabase->AddColour(_T("Z DOXY BLUE"),wxColour(80,80,255));

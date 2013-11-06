@@ -184,6 +184,8 @@ PARSERHELP_GLOBAL_VAR
 Variable Global
 PARSERHELP_DECLARATION
 Declaracion:
+PARSERHELP_ENUM_CONST
+Constante de tipo enumerado
 PARSERHELP_TYPEDEF
 Typedef
 PARSERHELP_MACRO
@@ -534,6 +536,8 @@ COLORS_ID_DEFAULT
 Texto por defecto
 COLORS_ID_IDENTIFIER
 Identificadores
+COLORS_ID_USER_KEYWORD
+Identificador resaltado
 COLORS_ID_NUMBER
 Numero
 COLORS_ID_WORD
@@ -582,8 +586,6 @@ COLORS_ID_CURRENT_LINE
 Linea actual
 COLORS_ID_USER_LINE
 Linea resaltada
-COLORS_ID_USER_KEYWORD
-Palabra clave resaltada
 COLORS_ID_CARET
 Cursor de texto
 GENERAL_OPEN
@@ -3369,7 +3371,7 @@ Insertar #incl&ude correspondiente a \"
 SOURCE_POPUP_INSERT_INCLUDE_POST
 \"
 SOURCE_POPUP_HIGHLIGHT_WORD
-Resaltar \"
+Resaltar identificador \"
 SOURCE_POPUP_OPEN_SELECTED_PRE
 &Abrir \"
 SOURCE_POPUP_OPEN_SELECTED_POST

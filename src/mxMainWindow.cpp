@@ -2034,20 +2034,21 @@ wxTreeCtrl* mxMainWindow::CreateSymbolsTree() {
 	imglist->Add(wxBitmap(SKIN_FILE(_T("as_folder.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
 	
-	imglist->Add(*(bitmaps->parser.icon2));
-	imglist->Add(*(bitmaps->parser.icon3));
-	imglist->Add(*(bitmaps->parser.icon4));
-	imglist->Add(*(bitmaps->parser.icon5));
-	imglist->Add(*(bitmaps->parser.icon6));
-	imglist->Add(*(bitmaps->parser.icon7));
-	imglist->Add(*(bitmaps->parser.icon8));
-	imglist->Add(*(bitmaps->parser.icon9));
-	imglist->Add(*(bitmaps->parser.icon10));
-	imglist->Add(*(bitmaps->parser.icon11));
-	imglist->Add(*(bitmaps->parser.icon12));
-	imglist->Add(*(bitmaps->parser.icon13));
-	imglist->Add(*(bitmaps->parser.icon14));
-	imglist->Add(*(bitmaps->parser.icon18));
+	imglist->Add(*(bitmaps->parser.icon02_define));
+	imglist->Add(*(bitmaps->parser.icon03_func));
+	imglist->Add(*(bitmaps->parser.icon04_class));
+	imglist->Add(*(bitmaps->parser.icon05_att_unk));
+	imglist->Add(*(bitmaps->parser.icon06_att_pri));
+	imglist->Add(*(bitmaps->parser.icon07_att_pro));
+	imglist->Add(*(bitmaps->parser.icon08_att_pub));
+	imglist->Add(*(bitmaps->parser.icon09_mem_unk));
+	imglist->Add(*(bitmaps->parser.icon10_mem_pri));
+	imglist->Add(*(bitmaps->parser.icon11_mem_pro));
+	imglist->Add(*(bitmaps->parser.icon12_mem_pub));
+	imglist->Add(*(bitmaps->parser.icon13_none));
+	imglist->Add(*(bitmaps->parser.icon14_global_var));
+	imglist->Add(*(bitmaps->parser.icon18_typedef));
+	imglist->Add(*(bitmaps->parser.icon19_enum_const));
 	
 	symbols_tree.treeCtrl->AssignImageList(imglist);
 //	symbols_tree.treeCtrl->AddRoot(_T("Simbolos encontrados"), 0);

@@ -65,18 +65,18 @@ public:
 
 class mxColoursEditor:public wxDialog {
 	wxScrolledWindow *scroll;
-	wxString lnames[MAX_STYLES];
-	mxStaticText *llabel[MAX_STYLES];
-	wxButton *lbfore[MAX_STYLES];
-	wxButton *lbback[MAX_STYLES];
-	wxTextCtrl *ltfore[MAX_STYLES];
-	wxTextCtrl *ltback[MAX_STYLES];
-	wxCheckBox *lbold[MAX_STYLES];
-	wxCheckBox *lcur[MAX_STYLES];
-	wxColour *lvalfor[MAX_STYLES];
-	wxColour *lvalbak[MAX_STYLES];
-	bool *lvalita[MAX_STYLES];
-	bool *lvalbol[MAX_STYLES];
+	wxString lnames[MAX_STYLES]; ///< items for wich style should be defined
+	mxStaticText *llabel[MAX_STYLES]; ///< text sample with item name
+	wxColour *lvalfor[MAX_STYLES]; ///< foreground colours
+	wxColour *lvalbak[MAX_STYLES]; ///< background colours
+	wxTextCtrl *ltfore[MAX_STYLES]; ///< foreground colour text controls (hex colour)
+	wxTextCtrl *ltback[MAX_STYLES]; ///< background colour text controls (hex colour)
+	wxButton *lbfore[MAX_STYLES]; ///< foreground colour buttons (...)
+	wxButton *lbback[MAX_STYLES]; ///< background colour buttons(...)
+	wxCheckBox *lbold[MAX_STYLES]; ///< bold text checkboxs
+	wxCheckBox *lcur[MAX_STYLES]; ///< italic text checkboxs
+	bool *lvalita[MAX_STYLES]; ///< italic values
+	bool *lvalbol[MAX_STYLES]; ///< bold values
 	wxFlexGridSizer *sizer;
 	int lcount;
 	wxComboBox *combo;

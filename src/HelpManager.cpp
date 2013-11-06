@@ -143,6 +143,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 	wxString attribs;
 	pd_var *avar = aclass->first_attrib->next;
 	while (avar!=NULL) {
+		if (avar->properties&PD_ENUM_CONST) { avar = avar->next; continue; }
 		wxString one_attrib ="<LI>";
 		if (!aclass->is_union) {
 			if (avar->properties&PD_CONST_PUBLIC) one_attrib<<"public ";
@@ -155,8 +156,8 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 		if (help->IsHelpForType(avar->type,link))
 			proto.Replace(avar->type,wxString("<A href=\"quickhelp:")<<link<<"\">"<<avar->type<<"</A>",true);
 		one_attrib<<proto<<"</LI>";
-		avar = avar->next;
 		attribs=one_attrib+attribs;
+		avar = avar->next;
 	}
 	if (attribs.Len())
 		if (aclass->file)
@@ -252,49 +253,69 @@ void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 	
 }
 
+static void AddDefRef(wxString &content, wxString text, wxString fname, int line) {
+	content<<text<<" \"<A href=\"gotoline:"<<fname<<":"<<line<<"\">"<<fname<<"</A>\" "<<LANG(PARSERHELP_DEFINED_IN_POST,"en la linea")<<" "<<line<<"<BR><BR>";	
+}
+
+/** Arma el texto de ayuda rápida para variables globales, atributos, y constantes de tipos enumerados **/
 void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
 	int id=index_ref_counter++;
-	if (avar->space) {
-		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_PRE,"Atributo")<<_T(" <I>")<<avar->proto<<_T("</I> ")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<avar->space->name<<_T("</I></A></LI>");
-		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_PRE,"Atributo")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I> ")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<avar->space->name<<_T("\">")<<avar->space->name<<_T("</A></I></B><BR><BR>");
-		if (avar->properties&PD_CONST_PUBLIC)
-			content<<LANG(PARSERHELP_VISIBILITY_PUBLIC,"Visibilidad: Publico")<<_T("<BR><BR>");
-		else if (avar->properties&PD_CONST_PRIVATE)
-			content<<LANG(PARSERHELP_VISIBILITY_PRIVATE,"Visibilidad: Privado")<<_T("<BR><BR>");
-		else if (avar->properties&PD_CONST_PROTECTED)
-			content<<LANG(PARSERHELP_VISIBILITY_PROTECTED,"Visibilidad: Protegido")<<_T("<BR><BR>");
-		content<<LANG(PARSERHELP_VISIBILITY_DECLARATION,"Declaracion:")<<_T(" <BR><UL><LI>");
-		if (avar->properties&PD_CONST_STATIC) content<<_T("static ");
-		if (avar->properties&PD_CONST_VOLATILE) content<<_T("volatile ");
-		wxString proto = avar->proto,link;
-		if (help->IsHelpForType(avar->type,link))
-			proto.Replace(avar->type,wxString(_T("<A href=\"quickhelp:"))<<link<<_T("\">")<<avar->type<<_T("</A>"),true);
-		content<<proto<<_T("</LI></UL><BR><BR>");
-		if (avar->file)
-			content<<LANG(PARSERHELP_DEFINED_IN_PRE,"Definido en")<<_T(" \"<A href=\"gotoline:")<<avar->file->name<<_T(":")<<avar->line<<_T("\">")<<avar->file->name<<_T("</A>\" ")<<LANG(PARSERHELP_DEFINED_IN_POST,"en la linea")<<_T(" ")<<avar->line<<_T("<BR><BR>");
+	if (avar->properties&PD_ENUM_CONST) {
+		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_ENUM_CONST,"Constante de Tipo Enumerado")<<_T(" <I>")<<avar->proto<<_T("</I></A></LI>");
+		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_ENUM_CONST,"Constante de Tipo Enumerado")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I></B><BR><BR>");
+		// poner el nombre del enum y enlace al mismo?
+		if (avar->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),avar->file->name,avar->line);
 	} else {
-		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_GLOBAL_VAR,"Variable Global")<<_T(" <I>")<<avar->proto<<_T("</I></A></LI>");
-		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_GLOBAL_VAR,"Variable Global")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I></B><BR><BR>");
-		wxString proto = avar->proto,link;
-		if (avar->properties&PD_CONST_VOLATILE) 
-			proto=wxString("volatile ")+proto;
-		if (help->IsHelpForType(avar->type,link))
-			proto.Replace(avar->type,wxString(_T("<A href=\"quickhelp:"))<<link<<_T("\">")<<avar->type<<_T("</A>"),true);
-		content<<LANG(PARSERHELP_DECLARATION,"Declaracion:")<<_T(" <BR><UL><LI>")<<proto<<_T("</LI></UL><BR><BR>");
-		if (avar->file)
-			content<<LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en")<<_T(" \"<A href=\"gotoline:")<<avar->file->name<<_T(":")<<avar->line<<_T("\">")<<avar->file->name<<_T("</A>\" ")<<LANG(PARSERHELP_DEFINED_IN_POST,"en la linea")<<_T(" ")<<avar->line<<_T("<BR><BR>");
+		if (avar->space) {
+			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_PRE,"Atributo")<<_T(" <I>")<<avar->proto<<_T("</I> ")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<avar->space->name<<_T("</I></A></LI>");
+			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_PRE,"Atributo")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I> ")<<LANG(PARSERHELP_ATTRIBUTE_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<avar->space->name<<_T("\">")<<avar->space->name<<_T("</A></I></B><BR><BR>");
+			if (avar->properties&PD_CONST_PUBLIC)
+				content<<LANG(PARSERHELP_VISIBILITY_PUBLIC,"Visibilidad: Publico")<<_T("<BR><BR>");
+			else if (avar->properties&PD_CONST_PRIVATE)
+				content<<LANG(PARSERHELP_VISIBILITY_PRIVATE,"Visibilidad: Privado")<<_T("<BR><BR>");
+			else if (avar->properties&PD_CONST_PROTECTED)
+				content<<LANG(PARSERHELP_VISIBILITY_PROTECTED,"Visibilidad: Protegido")<<_T("<BR><BR>");
+			content<<LANG(PARSERHELP_VISIBILITY_DECLARATION,"Declaracion:")<<_T(" <BR><UL><LI>");
+			if (avar->properties&PD_CONST_STATIC) content<<_T("static ");
+			if (avar->properties&PD_CONST_VOLATILE) content<<_T("volatile ");
+			wxString proto = avar->proto,link;
+			if (help->IsHelpForType(avar->type,link))
+				proto.Replace(avar->type,wxString(_T("<A href=\"quickhelp:"))<<link<<_T("\">")<<avar->type<<_T("</A>"),true);
+			content<<proto<<_T("</LI></UL><BR><BR>");
+			if (avar->file)
+				content<<LANG(PARSERHELP_DEFINED_IN_PRE,"Definido en")<<_T(" \"<A href=\"gotoline:")<<avar->file->name<<_T(":")<<avar->line<<_T("\">")<<avar->file->name<<_T("</A>\" ")<<LANG(PARSERHELP_DEFINED_IN_POST,"en la linea")<<_T(" ")<<avar->line<<_T("<BR><BR>");
+		} else {
+			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_GLOBAL_VAR,"Variable Global")<<_T(" <I>")<<avar->proto<<_T("</I></A></LI>");
+			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_GLOBAL_VAR,"Variable Global")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<avar->proto<<_T("</A></I></B><BR><BR>");
+			wxString proto = avar->proto,link;
+			if (avar->properties&PD_CONST_VOLATILE) 
+				proto=wxString("volatile ")+proto;
+			if (help->IsHelpForType(avar->type,link))
+				proto.Replace(avar->type,wxString(_T("<A href=\"quickhelp:"))<<link<<_T("\">")<<avar->type<<_T("</A>"),true);
+			content<<LANG(PARSERHELP_DECLARATION,"Declaracion:")<<_T(" <BR><UL><LI>")<<proto<<_T("</LI></UL><BR><BR>");
+			if (avar->file)
+				content<<LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en")<<_T(" \"<A href=\"gotoline:")<<avar->file->name<<_T(":")<<avar->line<<_T("\">")<<avar->file->name<<_T("</A>\" ")<<LANG(PARSERHELP_DEFINED_IN_POST,"en la linea")<<_T(" ")<<avar->line<<_T("<BR><BR>");
+		}
 	}
 }
 
 void HelpManager::HelpFor(pd_macro *amacro, wxString &content, wxString &index) {
 	int id=index_ref_counter++;
-	index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<(amacro->is_typedef?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
-	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<(amacro->is_typedef?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
+	index<<_T("<LI><A href=\"#")<<id<<_T("\">");
+	if (amacro->type==2) index<<LANG(PARSERHELP_ENUM_CONST,"Constante de tipo enumerado");
+	else if (amacro->type==1) index<<LANG(PARSERHELP_TYPEDEF,"Typedef");
+	else if (amacro->type==0) index<<LANG(PARSERHELP_MACRO,"Macro");
+	index<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
+	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>");
+	if (amacro->type==2) content<<LANG(PARSERHELP_ENUM_CONST,"Constante de tipo enumerado");
+	else if (amacro->type==1) content<<LANG(PARSERHELP_TYPEDEF,"Typedef");
+	else content<<LANG(PARSERHELP_MACRO,"Macro");
+	content<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
 	if (amacro->file)
 		content<<LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en")<<_T(" \"<A href=\"gotoline:")<<amacro->file->name<<_T(":")<<amacro->line<<_T("\">")<<amacro->file->name<<_T("</A>\" ")<<LANG(PARSERHELP_DEFINED_IN_POST,"en la linea")<<_T(" ")<<amacro->line<<_T("<BR><BR>");
 	
 	// incluir el contenido
-	if (amacro->is_typedef) {
+	if (amacro->type==1) {
 		content<<LANG(PARSERHELP_DEFINED_AS,"Definida como:")<<_T(" <BR>&nbsp;&nbsp;&nbsp;&nbsp;")<<
 			utils->ToHtml(wxString("typedef ")<<amacro->cont<<" "<<amacro->name)<<"<BR>";
 	} else {

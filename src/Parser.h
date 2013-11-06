@@ -45,7 +45,8 @@ enum {
 	mxSTI_PUBLIC_MEMBER,
 	mxSTI_NAMESPACE,
 	mxSTI_GLOBAL,
-	mxSTI_TYPEDEF
+	mxSTI_TYPEDEF,
+	mxSTI_ENUM_CONST,
 };
 
 struct parserAction {

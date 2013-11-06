@@ -33,6 +33,8 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define PD_CONST_VOLATILE 256
 #define PD_CONST_VIRTUAL_PURE 512
 
+#define PD_ENUM_CONST 1024
+
 // macros para cargar el autocompletado estandar
 
 
@@ -108,11 +110,16 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define PD_TREE_CTRL_ADD_MACRO(aname) \
 	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_DEFINE)
 
+#define PD_TREE_CTRL_ADD_ENUM_CONST(aname) \
+	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_ENUM_CONST)
+
 #define PD_TREE_CTRL_ADD_TYPEDEF(aname) \
 	parser->symbol_tree->AppendItem(parser->item_macros,aname,mxSTI_TYPEDEF)
 
 #define PD_TREE_CTRL_SET_ATTRIB(aitem,aprops) \
-	if ((aprops)&PD_CONST_PUBLIC) \
+	if ((aprops)&PD_ENUM_CONST) \
+		parser->symbol_tree->SetItemImage(aitem,mxSTI_ENUM_CONST); \
+	else if ((aprops)&PD_CONST_PUBLIC) \
 		parser->symbol_tree->SetItemImage(aitem,mxSTI_PUBLIC_ATTRIB); \
 	else if ((aprops)&PD_CONST_PROTECTED) \
 		parser->symbol_tree->SetItemImage(aitem,mxSTI_PROTECTED_ATTRIB); \
@@ -259,7 +266,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 	pd_aux->properties = (aprops); \
 }
 
-#define PD_REGISTER_MACRO(afile,aline,aname,acont,aparams,ais_typedef) { \
+#define PD_REGISTER_MACRO(afile,aline,aname,acont,aparams,atype) { \
 	HashStringParserMacro::iterator it = h_macros.find(aname); \
 	pd_macro *pd_aux; \
 	if (it!=h_macros.end() && it->second->prev) { \
@@ -271,7 +278,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 			pd_aux->file = afile; \
 		} \
 	} else {\
-		h_macros[aname] = pd_aux = new pd_macro(last_macro, afile, aline, aname, last_macro->next,ais_typedef); \
+		h_macros[aname] = pd_aux = new pd_macro(last_macro, afile, aline, aname, last_macro->next,atype); \
 		PD_INSERT(last_macro,pd_aux); \
 		PD_ADD_REF(afile->first_macro,afile->counter,pd_aux); \
 		pd_aux->ref = afile->first_macro->next; \
@@ -624,15 +631,17 @@ struct pd_macro {
 	pd_ref *ref;
 	int line;
 	bool has_args;
-	bool is_typedef;
-	pd_macro(pd_macro *aprev, pd_file *afile, int aline, wxString &aname, pd_macro *anext, bool ais_typedef=false) {
+	char type; // 0=macro, 1=typedef, 2=enum const
+	pd_macro(pd_macro *aprev, pd_file *afile, int aline, wxString &aname, pd_macro *anext, char atype=0) {
 		has_args=false;
-		is_typedef=ais_typedef;
+		type=atype;
 		if (aprev) {
-			if (is_typedef)
+			if (atype==0)
+				item = PD_TREE_CTRL_ADD_MACRO(aname);
+			else if (atype==1)
 				item = PD_TREE_CTRL_ADD_TYPEDEF(aname);
 			else
-				item = PD_TREE_CTRL_ADD_MACRO(aname);
+				item = PD_TREE_CTRL_ADD_ENUM_CONST(aname);
 		}
 		file=afile;
 		line=aline;

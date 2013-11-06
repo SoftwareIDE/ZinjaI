@@ -73,7 +73,6 @@ MA 02111-1307, USA.
 #define PAF_CROSS_REF_FILE 30
 #define PAF_SYMBOL_TYPE_MAX 31 /* Must be index of sizeof(SN_symbol_types) */
 
-
 /* Cross reference values. */
 #define PAF_REF_TO_TYPEDEF PAF_TYPE_DEF
 #define PAF_REF_TO_DEFINE  PAF_MACRO_DEF

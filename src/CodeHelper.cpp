@@ -106,7 +106,9 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 					comp_array.Add(aux_var->name+_T("?7"));
 				else if (aux_var->properties&PD_CONST_PUBLIC)
 					comp_array.Add(aux_var->name+_T("?8"));
-				else
+				else if (aux_var->properties&PD_ENUM_CONST)
+					comp_array.Add(aux_var->name+_T("?19"));
+				else 
 					comp_array.Add(aux_var->name+_T("?5"));
 			} else {
 				if (aux_var->name.Len()>=l) {
@@ -361,7 +363,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			CH_COMPARE(typed,aux_var->name,i,l,max_str_dist);
 			if (i==l) {
 				t++;
-				comp_array.Add(aux_var->name+_T("?14"));
+				comp_array.Add(aux_var->name+(aux_var->properties&PD_ENUM_CONST?"?19":"?14"));
 			}
 		}
 		aux_var = aux_var->next;
@@ -385,7 +387,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			CH_COMPARE(typed,aux_macro->name,i,l,max_str_dist);
 			if (i==l) {
 				t++;
-				comp_array.Add(aux_macro->name+(aux_macro->is_typedef?"?18":"?2"));
+				comp_array.Add(aux_macro->name+(aux_macro->type==0?"?2":(aux_macro->type==1?"?18":"?19")));
 			}
 		}
 		aux_macro = aux_macro->next;

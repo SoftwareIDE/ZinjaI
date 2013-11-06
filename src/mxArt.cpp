@@ -31,23 +31,24 @@ mxArt::mxArt(wxString img_dir) {
 	files.other = new wxBitmap(SKIN_FILE(_T("ap_other.png")),wxBITMAP_TYPE_PNG);
 	files.blank = new wxBitmap(SKIN_FILE(_T("ap_blank.png")),wxBITMAP_TYPE_PNG);
 	
-	parser.icon2 =new wxBitmap(SKIN_FILE(_T("as_define.png")),wxBITMAP_TYPE_PNG);
-	parser.icon3 = new wxBitmap(SKIN_FILE(_T("as_func.png")),wxBITMAP_TYPE_PNG);
-	parser.icon4 = new wxBitmap(SKIN_FILE(_T("as_class.png")),wxBITMAP_TYPE_PNG);
-	parser.icon5 = new wxBitmap(SKIN_FILE(_T("as_att_unk.png")),wxBITMAP_TYPE_PNG);
-	parser.icon6 = new wxBitmap(SKIN_FILE(_T("as_att_pri.png")),wxBITMAP_TYPE_PNG);
-	parser.icon7 = new wxBitmap(SKIN_FILE(_T("as_att_pro.png")),wxBITMAP_TYPE_PNG);
-	parser.icon8 = new wxBitmap(SKIN_FILE(_T("as_att_pub.png")),wxBITMAP_TYPE_PNG);
-	parser.icon9 = new wxBitmap(SKIN_FILE(_T("as_mem_unk.png")),wxBITMAP_TYPE_PNG);
-	parser.icon10 = new wxBitmap(SKIN_FILE(_T("as_mem_pri.png")),wxBITMAP_TYPE_PNG);
-	parser.icon11 = new wxBitmap(SKIN_FILE(_T("as_mem_pro.png")),wxBITMAP_TYPE_PNG);
-	parser.icon12 = new wxBitmap(SKIN_FILE(_T("as_mem_pub.png")),wxBITMAP_TYPE_PNG);
-	parser.icon13 = new wxBitmap(SKIN_FILE(_T("as_none.png")),wxBITMAP_TYPE_PNG);
-	parser.icon14 = new wxBitmap(SKIN_FILE(_T("as_global.png")),wxBITMAP_TYPE_PNG);
-	parser.icon15 = new wxBitmap(SKIN_FILE(_T("as_res_word.png")),wxBITMAP_TYPE_PNG);
-	parser.icon16 = new wxBitmap(SKIN_FILE(_T("as_preproc.png")),wxBITMAP_TYPE_PNG);
-	parser.icon17 = new wxBitmap(SKIN_FILE(_T("as_doxygen.png")),wxBITMAP_TYPE_PNG);
-	parser.icon18 = new wxBitmap(SKIN_FILE(_T("as_typedef.png")),wxBITMAP_TYPE_PNG);
+	parser.icon02_define =new wxBitmap(SKIN_FILE(_T("as_define.png")),wxBITMAP_TYPE_PNG);
+	parser.icon03_func = new wxBitmap(SKIN_FILE(_T("as_func.png")),wxBITMAP_TYPE_PNG);
+	parser.icon04_class = new wxBitmap(SKIN_FILE(_T("as_class.png")),wxBITMAP_TYPE_PNG);
+	parser.icon05_att_unk = new wxBitmap(SKIN_FILE(_T("as_att_unk.png")),wxBITMAP_TYPE_PNG);
+	parser.icon06_att_pri = new wxBitmap(SKIN_FILE(_T("as_att_pri.png")),wxBITMAP_TYPE_PNG);
+	parser.icon07_att_pro = new wxBitmap(SKIN_FILE(_T("as_att_pro.png")),wxBITMAP_TYPE_PNG);
+	parser.icon08_att_pub = new wxBitmap(SKIN_FILE(_T("as_att_pub.png")),wxBITMAP_TYPE_PNG);
+	parser.icon09_mem_unk = new wxBitmap(SKIN_FILE(_T("as_mem_unk.png")),wxBITMAP_TYPE_PNG);
+	parser.icon10_mem_pri = new wxBitmap(SKIN_FILE(_T("as_mem_pri.png")),wxBITMAP_TYPE_PNG);
+	parser.icon11_mem_pro = new wxBitmap(SKIN_FILE(_T("as_mem_pro.png")),wxBITMAP_TYPE_PNG);
+	parser.icon12_mem_pub = new wxBitmap(SKIN_FILE(_T("as_mem_pub.png")),wxBITMAP_TYPE_PNG);
+	parser.icon13_none = new wxBitmap(SKIN_FILE(_T("as_none.png")),wxBITMAP_TYPE_PNG);
+	parser.icon14_global_var = new wxBitmap(SKIN_FILE(_T("as_global.png")),wxBITMAP_TYPE_PNG);
+	parser.icon15_res_word = new wxBitmap(SKIN_FILE(_T("as_res_word.png")),wxBITMAP_TYPE_PNG);
+	parser.icon16_preproc = new wxBitmap(SKIN_FILE(_T("as_preproc.png")),wxBITMAP_TYPE_PNG);
+	parser.icon17_doxygen = new wxBitmap(SKIN_FILE(_T("as_doxygen.png")),wxBITMAP_TYPE_PNG);
+	parser.icon18_typedef = new wxBitmap(SKIN_FILE(_T("as_typedef.png")),wxBITMAP_TYPE_PNG);
+	parser.icon19_enum_const = new wxBitmap(SKIN_FILE(_T("as_enum_const.png")),wxBITMAP_TYPE_PNG);
 
 	icons.error = new wxBitmap(SKIN_FILE(_T("icono_error.png")),wxBITMAP_TYPE_PNG);
 	icons.info = new wxBitmap(SKIN_FILE(_T("icono_info.png")),wxBITMAP_TYPE_PNG);
@@ -95,21 +96,25 @@ mxArt::mxArt(wxString img_dir) {
 
 
 mxArt::~mxArt() {
-	delete parser.icon2;
-	delete parser.icon3;
-	delete parser.icon4;
-	delete parser.icon5;
-	delete parser.icon6;
-	delete parser.icon7;
-	delete parser.icon8;
-	delete parser.icon9;
-	delete parser.icon10;
-	delete parser.icon11;
-	delete parser.icon12;
-	delete parser.icon13;
-	delete parser.icon14;
-	delete parser.icon15;
-	delete parser.icon16;
+	
+	delete parser.icon02_define;
+	delete parser.icon03_func;
+	delete parser.icon04_class;
+	delete parser.icon05_att_unk;
+	delete parser.icon06_att_pri;
+	delete parser.icon07_att_pro;
+	delete parser.icon08_att_pub;
+	delete parser.icon09_mem_unk;
+	delete parser.icon10_mem_pri;
+	delete parser.icon11_mem_pro;
+	delete parser.icon12_mem_pub;
+	delete parser.icon13_none;
+	delete parser.icon14_global_var;
+	delete parser.icon15_res_word;
+	delete parser.icon16_preproc;
+	delete parser.icon17_doxygen;
+	delete parser.icon18_typedef;
+	delete parser.icon19_enum_const;
 	
 	delete files.blank;
 	delete files.source;

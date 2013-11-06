@@ -11,13 +11,13 @@
 #define PARSER_PARTE(i) s.Mid(p[i]+1,p[i+1]-p[i]-1)
 #define PARSER_PARTE_NB(i) s.Mid(p[i]+2,p[i+1]-p[i]-3)
 #include <wx/wx.h>
+#include <wx/txtstrm.h>
 #include "DebugManager.h"
 #include "mxDrawClasses.h"
 #include "Language.h"
 #include "mxCompiler.h"
 #include "CodeHelper.h"
 #include "execution_workaround.h"
-#include <wx/txtstrm.h>
 
 Parser *parser;
 
@@ -357,7 +357,6 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 		id = (s.GetChar(0)-'0')*10+s.GetChar(1)-'0';
 		p[0]=2;
 	} else return;
-	
 	// "cortar" las partes de la linea, separadas por ';' o 1. En p[i] se guardan las posiciones de estos caracteres de separacion
 	int ii, jj, kk;
 	for (ii=p[0]+1, jj=s.Len(), kk=1;ii<jj;ii++) {
@@ -371,6 +370,19 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 	long int line;
 	// segun el id, ver que significa
 	switch (id) {
+			
+		case PAF_ENUM_CONST_DEF: {
+			cout<<"%: "<<PARSER_PARTE(5)<<endl;
+			wxString scope=PARSER_PARTE(0), name=PARSER_PARTE(1), type="<enum const>";
+			if (scope=="-") {
+//				PD_REGISTER_MACRO(process->file,line,name,type,name,2);
+				PD_REGISTER_GLOBAL(process->file,line,type,name,PD_ENUM_CONST);
+			} else {
+				PD_REGISTER_ATTRIB(process->aux_class,process->file,line,scope,type,name,PD_ENUM_CONST);
+				break;
+			}
+			break;
+		}
 			
 		case PAF_TYPE_DEF:
 		case PAF_MACRO_DEF: {

@@ -32,9 +32,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.6103724"
-     inkscape:cx="1144.996"
-     inkscape:cy="-1336.5278"
+     inkscape:zoom="3.2207448"
+     inkscape:cx="127.21496"
+     inkscape:cy="276.4904"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showguides="true"
@@ -9711,11 +9711,11 @@
     <image
        sodipodi:absref="/mnt/ex/zinjai/imgs/abrir.png"
        xlink:href="abrir.png"
-       y="323.35617"
-       x="73.929314"
-       id="image2222"
+       width="16"
        height="14"
-       width="16" />
+       id="image2222"
+       x="73.929314"
+       y="323.35617" />
     <g
        id="g15880"
        transform="matrix(1.7922095,0,0,1.7922095,1957.2655,219.96573)">
@@ -10555,14 +10555,14 @@
     <image
        sodipodi:absref="/mnt/ex/zinjai/imgs/buscar.png"
        xlink:href="buscar.png"
-       y="492.85358"
-       x="32.96143"
-       id="image3727"
-       height="11.071428"
-       width="11.535714"
-       inkscape:export-filename="/mnt/sh/zinjai/imgs/IrAMarca.png"
+       inkscape:export-ydpi="93.66082"
        inkscape:export-xdpi="93.66082"
-       inkscape:export-ydpi="93.66082" />
+       inkscape:export-filename="/mnt/sh/zinjai/imgs/IrAMarca.png"
+       width="11.535714"
+       height="11.071428"
+       id="image3727"
+       x="32.96143"
+       y="492.85358" />
     <g
        id="g5667"
        transform="matrix(1.9561793,0,0,1.9561793,-1374.3043,-1353.9819)">
@@ -11345,15 +11345,15 @@
         <image
            sodipodi:absref="/mnt/ex/zinjai/imgs/ejecutar.png"
            xlink:href="ejecutar.png"
-           transform="matrix(1.6881603,0,0,1.6881603,-94.98297,35.836553)"
-           inkscape:export-ydpi="88.25"
-           inkscape:export-xdpi="88.25"
-           inkscape:export-filename="/mnt/sh/zinjai/imgs/depurar.png"
-           width="15"
-           height="14"
-           id="image3581"
+           y="70.18618"
            x="126.72401"
-           y="70.18618" />
+           id="image3581"
+           height="14"
+           width="15"
+           inkscape:export-filename="/mnt/sh/zinjai/imgs/depurar.png"
+           inkscape:export-xdpi="88.25"
+           inkscape:export-ydpi="88.25"
+           transform="matrix(1.6881603,0,0,1.6881603,-94.98297,35.836553)" />
         <path
            sodipodi:nodetypes="csssssssc"
            id="path3500"
@@ -27797,5 +27797,33 @@
        id="path9030"
        d="m 1060.375,1971.375 a 2.8837768,2.8837768 0 0 0 -1.8125,5.0312 c 2.977,2.7499 4.8032,5.0195 6.125,7.125 -1.5973,1.9314 -3.7223,3.9479 -7.0625,6.3126 a 2.8837768,2.8837768 0 1 0 3.3438,4.6874 c 2.7731,-1.9631 4.8363,-3.7955 6.5,-5.5312 0.8177,1.8384 1.6712,3.7536 3.0312,5.9688 a 2.8968813,2.8968813 0 1 0 4.9375,-3.0313 c -1.5879,-2.5863 -2.5382,-5.1711 -3.9375,-8 1.7307,-2.596 3.0065,-5.0011 4.9062,-7.3437 a 2.8837768,2.8837768 0 0 0 -2.5937,-4.7188 2.8837768,2.8837768 0 0 0 -1.875,1.0938 c -1.6222,2.0003 -2.703,3.7678 -3.75,5.4687 -1.4199,-1.9256 -3.2434,-3.9948 -5.7187,-6.2813 a 2.8837768,2.8837768 0 0 0 -2.0938,-0.7812 z"
        style="font-size:xx-small;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#800000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;font-family:Sans;-inkscape-font-specification:Sans" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#005522;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="107.42879"
+       y="809.56042"
+       id="text8277"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/as_enum.png"
+       inkscape:export-xdpi="125.00067"
+       inkscape:export-ydpi="125.00067"><tspan
+         sodipodi:role="line"
+         id="tspan8279"
+         x="107.42879"
+         y="809.56042"
+         style="fill:#005522;font-family:Hobbit SF">E</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#005522;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="109.81271"
+       y="835.30481"
+       id="text8277-2"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/as_typedef.png"
+       inkscape:export-xdpi="125.00067"
+       inkscape:export-ydpi="125.00067"><tspan
+         sodipodi:role="line"
+         id="tspan8279-1"
+         x="109.81271"
+         y="835.30481"
+         style="fill:#005522;font-family:Hobbit SF">T</tspan></text>
   </g>
 </svg>

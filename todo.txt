@@ -1,3 +1,11 @@
+enum const
+	exportar autocomp
+	no confundir con atributos
+	leer autocomp
+	ayuda rapida de atributos
+
+
+
 ZinjaI todo
 
 corregir el problema del drag and drop que le jode a nestor

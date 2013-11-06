@@ -267,8 +267,8 @@ extern int _member_declaration( Class_t Class );
 extern int member_declarator_list( Class_t Class, Declaration_t Declaration );
 extern int member_declarator( Declarator_t Declarator );
 extern int f_enum( Declaration_t Declaration, Enum_t Enum );
-extern int enum_list( Enum_t Enum );
-extern int enumerator( Enum_t Enum );
+extern int enum_list( Enum_t Enum, char *scope ); /// scope agregado por Zaskar para saber en qué clase se declara el enum
+extern int enumerator( Enum_t Enum, char *scope ); /// scope agregado por Zaskar para saber en qué clase se declara el enum
 extern int operator_function_name( LongString *plstr );
 extern int conversion_type_name( LongString *plstr );
 extern int conversion_type_specifier( LongString *plstr );
@@ -2509,7 +2509,7 @@ extern int f_enum( Declaration_t Declaration, Enum_t Enum )
          char *classname_save = classname_g;         /* 08.04.97 */
          comment = get_comment( Enum->lineno_end );
          classname_g = my_strdup( Enum->name.buf );      /* 07.04.97 */
-         enum_list( Enum );
+         enum_list( Enum, classname_save );
          while(( t = token( 0 )) != RBRACE && t != 0 )   /* t != 0 10.02.97 rigo */
          {
             step( 1 );
@@ -2572,7 +2572,7 @@ extern int f_enum( Declaration_t Declaration, Enum_t Enum )
       lineno = f_lineno( 0 );
       charno = f_charno( 0 ) + 1;
       comment = get_comment( Enum->lineno_end );
-      enum_list( Enum );
+      enum_list( Enum, NULL);
       while(( t = token( 0 )) != RBRACE && t != 0 )   /* t != 0 10.02.97 rigo */
       {
          step( 1 );
@@ -2616,12 +2616,12 @@ extern int f_enum( Declaration_t Declaration, Enum_t Enum )
    return True;
 }
 
-extern int enum_list( Enum_t Enum )
+extern int enum_list( Enum_t Enum , char *scope) /// scope agreado por Zaskar para saber en que clase esta el enum
 {
    niveau++;
    step( 1 );
 
-   while( enumerator( Enum ))
+   while( enumerator( Enum , scope ))
    {
       if( token( 0 ) == ',' )
       {
@@ -2633,16 +2633,16 @@ extern int enum_list( Enum_t Enum )
    return True;
 }
 
-extern int enumerator( Enum_t Enum )
+extern int enumerator( Enum_t Enum , char *scope ) /// scope agreado por Zaskar para saber en que clase esta el enum
 {
+	if (scope==NULL) scope="-"; /// by Zaskar, es importante que no sea null, porque no tiene distinto id el enum const con y sin scope
    Save_d();
    niveau++;
-
    if( token( 0 ) == SN_IDENTIFIER )
    {
       Put_symbol( PAF_ENUM_CONST_DEF
 /*              , Enum->name */
-                , NULL                          /* 17.02.97 rigo */
+                , scope                          /* 17.02.97 rigo */ /// scope agregado por Zaskar (antes era NULL)
                 , StringToText( ident( 0 ))
                 , filename_g
                 , f_lineno( 0 )
