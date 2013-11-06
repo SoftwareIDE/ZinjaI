@@ -430,6 +430,7 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 			break;
 		}
 			
+		case PAF_CONS_DEF: 
 		case PAF_GLOB_VAR_DEF: {
 			wxString name=PARSER_PARTE(0);
 			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
@@ -440,6 +441,7 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 				key=key.Mid(9);
 				props=PD_CONST_VOLATILE;
 			}
+			if (id==PAF_CONS_DEF) props=props|PD_CONST_CONST;
 			if (!PARSER_PARTE_NB(6).Len()) {
 				PD_REGISTER_GLOBAL(process->file,line,key,name,props);
 			}
