@@ -239,7 +239,7 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	toolbars_wich_file = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_FILE,"Archivo"));
 	toolbars_wich_file->SetValue(config->Toolbars.wich_ones.file);
 	wxButton *btFile = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_FILE,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szFile->Add(toolbars_wich_file,sizers->BLR10); szFile->Add(btFile,sizers->BLR10);
+	szFile->Add(toolbars_wich_file,sizers->BA5_Center); szFile->Add(btFile,sizers->BLR10);
 	szFile->Add(GetSize().GetWidth()/2,1,0);
 	sizer->Add(szFile,sizers->BA5);
 	
@@ -247,35 +247,35 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	toolbars_wich_edit = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_EDIT,"Editar"));
 	toolbars_wich_edit->SetValue(config->Toolbars.wich_ones.edit);
 	wxButton *btEdit = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_EDIT,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szEdit->Add(toolbars_wich_edit,sizers->BLR10); szEdit->Add(btEdit,sizers->BLR10);
+	szEdit->Add(toolbars_wich_edit,sizers->BA5_Center); szEdit->Add(btEdit,sizers->BLR10);
 	sizer->Add(szEdit,sizers->BA5);
 	
 	wxBoxSizer *szView  = new wxBoxSizer(wxHORIZONTAL);
 	toolbars_wich_view = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_VIEW,"Ver"));
 	toolbars_wich_view->SetValue(config->Toolbars.wich_ones.view);
 	wxButton *btView = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_VIEW,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szView->Add(toolbars_wich_view,sizers->BLR10); szView->Add(btView,sizers->BLR10);
+	szView->Add(toolbars_wich_view,sizers->BA5_Center); szView->Add(btView,sizers->BLR10);
 	sizer->Add(szView,sizers->BA5);
 	
 	wxBoxSizer *szRun= new wxBoxSizer(wxHORIZONTAL);
 	toolbars_wich_run = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_RUN,"Ejecucion"));
 	toolbars_wich_run->SetValue(config->Toolbars.wich_ones.run);
 	wxButton *btRun = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RUN,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szRun->Add(toolbars_wich_run,sizers->BLR10); szRun->Add(btRun,sizers->BLR10);
+	szRun->Add(toolbars_wich_run,sizers->BA5_Center); szRun->Add(btRun,sizers->BLR10);
 	sizer->Add(szRun,sizers->BA5);
 	
 	wxBoxSizer *szDebug= new wxBoxSizer(wxHORIZONTAL);
 	toolbars_wich_debug = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_DEBUG,"Depuracion"));
 	toolbars_wich_debug->SetValue(config->Toolbars.wich_ones.debug);
 	wxButton *btDebug = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_DEBUG,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szDebug->Add(toolbars_wich_debug,sizers->BLR10); szDebug->Add(btDebug,sizers->BLR10);
+	szDebug->Add(toolbars_wich_debug,sizers->BA5_Center); szDebug->Add(btDebug,sizers->BLR10);
 	sizer->Add(szDebug,sizers->BA5);
 	
 	wxBoxSizer *szTools= new wxBoxSizer(wxHORIZONTAL);
 	toolbars_wich_tools = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_TOOLS,"Herramientas"));
 	toolbars_wich_tools->SetValue(config->Toolbars.wich_ones.tools);
 	wxButton *btTools = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_TOOLS,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szTools->Add(toolbars_wich_tools,sizers->BLR10); szTools->Add(btTools,sizers->BLR10);
+	szTools->Add(toolbars_wich_tools,sizers->BA5_Center); szTools->Add(btTools,sizers->BLR10);
 	szTools->Add(GetSize().GetWidth()/2,1,0);
 	sizer->Add(szTools,sizers->BA5);
 	
@@ -283,21 +283,21 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	toolbars_wich_misc = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_MISC,"Miscelanea"));
 	toolbars_wich_misc->SetValue(config->Toolbars.wich_ones.misc);
 	wxButton *btMisc = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_MISC,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szMisc->Add(toolbars_wich_misc,sizers->BLR10); szMisc->Add(btMisc,sizers->BLR10);
+	szMisc->Add(toolbars_wich_misc,sizers->BA5_Center); szMisc->Add(btMisc,sizers->BLR10);
 	szMisc->Add(GetSize().GetWidth()/2,1,0);
 	sizer->Add(szMisc,sizers->BA5);
 
 	toolbars_wich_find = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_FIND,"Busqueda"));
 	toolbars_wich_find->SetValue(config->Toolbars.wich_ones.find);
 	wxBoxSizer *szFind = new wxBoxSizer(wxHORIZONTAL);
-	szFind->Add(toolbars_wich_find,sizers->BLR10);
+	szFind->Add(toolbars_wich_find,sizers->BA5_Center);
 	sizer->Add(szFind,sizers->BA5);
 	
 	
 	toolbars_wich_project = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_PROJECT,"Proyecto"));
 	toolbars_wich_project->SetValue(config->Toolbars.wich_ones.project);
 	wxBoxSizer *szProject = new wxBoxSizer(wxHORIZONTAL);
-	szProject->Add(toolbars_wich_project,sizers->BLR10);
+	szProject->Add(toolbars_wich_project,sizers->BA5_Center);
 	sizer->Add(szProject,sizers->BA5);
 	
 	wxButton *btReset = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RESET,LANG(PREFERENCES_TOOLBARS_RESET,"Reestablecer configuración por defecto"));

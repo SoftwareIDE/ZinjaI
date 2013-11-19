@@ -68,27 +68,6 @@
 #include "mxGCovSideBar.h"
 using namespace std;
 
-void mxMainWindow::SortToolbars(bool update_aui) {
-
-	wxAuiManager &a=aui_manager;
-	int c=0;
-	
-#define aui_update_toolbar_pos(name) { wxAuiPaneInfo &pi=a.GetPane(toolbar_##name); \
-  if (config->Toolbars.wich_ones.name) a.InsertPane(toolbar_##name, pi.Position(c++).Show(),wxAUI_INSERT_DOCK); else pi.Hide(); }
-	aui_update_toolbar_pos(file)
-	aui_update_toolbar_pos(edit)
-	aui_update_toolbar_pos(view)
-	aui_update_toolbar_pos(tools)
-	aui_update_toolbar_pos(run)
-	aui_update_toolbar_pos(misc)
-	aui_update_toolbar_pos(find)
-		
-	wxAuiPaneInfo &pi=a.GetPane(toolbar_project); 
-	if (project) a.InsertPane(toolbar_project, pi.Position(c++).Show()); else pi.Hide();
-	
-	if (update_aui) a.Update();
-}
-
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
 #define LAST_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(untitled_count)<<">")
 
@@ -507,47 +486,16 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 		
 	}
 		
-	if (config->Toolbars.wich_ones.file) 
-		aui_manager.AddPane(toolbar_file, wxAuiPaneInfo().Name("toolbar_file").Caption(LANG(CAPTION_TOOLBAR_FILE,"Archivo")).ToolbarPane().Top().Position(0).Row(config->Toolbars.positions.row_file).LeftDockable(false).RightDockable(false));
-	else
-		aui_manager.AddPane(toolbar_file, wxAuiPaneInfo().Name("toolbar_file").Caption(LANG(CAPTION_TOOLBAR_FILE,"Archivo")).ToolbarPane().Top().Position(0).Row(config->Toolbars.positions.row_file).LeftDockable(false).RightDockable(false).Hide());
-	
-	if (config->Toolbars.wich_ones.edit) 
-		aui_manager.AddPane(toolbar_edit, wxAuiPaneInfo().Name("toolbar_edit").Caption(LANG(CAPTION_TOOLBAR_EDIT,"Edicion")).ToolbarPane().Top().Position(1).Row(config->Toolbars.positions.row_edit).LeftDockable(false).RightDockable(false));
-	else
-		aui_manager.AddPane(toolbar_edit, wxAuiPaneInfo().Name("toolbar_edit").Caption(LANG(CAPTION_TOOLBAR_EDIT,"Edicion")).ToolbarPane().Top().Position(1).Row(config->Toolbars.positions.row_edit).LeftDockable(false).RightDockable(false).Hide());
-	
-	if (config->Toolbars.wich_ones.view) 
-		aui_manager.AddPane(toolbar_view, wxAuiPaneInfo().Name("toolbar_view").Caption(LANG(CAPTION_TOOLBAR_VIEW,"Ver")).ToolbarPane().Top().Position(2).Row(config->Toolbars.positions.row_view).LeftDockable(false).RightDockable(false));
-	else
-		aui_manager.AddPane(toolbar_view, wxAuiPaneInfo().Name("toolbar_view").Caption(LANG(CAPTION_TOOLBAR_VIEW,"Ver")).ToolbarPane().Top().Position(2).Row(config->Toolbars.positions.row_view).LeftDockable(false).RightDockable(false).Hide());
-	
-	if (config->Toolbars.wich_ones.tools) 
-		aui_manager.AddPane(toolbar_tools, wxAuiPaneInfo().Name("toolbar_tools").Caption(LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas")).ToolbarPane().Top().Position(3).Row(config->Toolbars.positions.row_tools).LeftDockable(false).RightDockable(false));
-	else
-		aui_manager.AddPane(toolbar_tools, wxAuiPaneInfo().Name("toolbar_tools").Caption(LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas")).ToolbarPane().Top().Position(3).Row(config->Toolbars.positions.row_tools).LeftDockable(false).RightDockable(false).Hide());
-
-	if (config->Toolbars.wich_ones.run) 
-		aui_manager.AddPane(toolbar_run, wxAuiPaneInfo().Name("toolbar_run").Caption(LANG(CAPTION_TOOLBAR_RUN,"Ejecucion")).ToolbarPane().Top().Position(4).Row(config->Toolbars.positions.row_run).LeftDockable(false).RightDockable(false));
-	else
-		aui_manager.AddPane(toolbar_run, wxAuiPaneInfo().Name("toolbar_run").Caption(LANG(CAPTION_TOOLBAR_RUN,"Ejecucion")).ToolbarPane().Top().Position(4).Row(config->Toolbars.positions.row_run).LeftDockable(false).RightDockable(false).Hide());
-
-	if (config->Toolbars.wich_ones.misc) 
-		aui_manager.AddPane(toolbar_misc, wxAuiPaneInfo().Name("toolbar_misc").Caption(LANG(CAPTION_TOOLBAR_MISC,"Miscelanea")).ToolbarPane().Top().Position(5).Row(config->Toolbars.positions.row_misc).LeftDockable(false).RightDockable(false));
-	else
-		aui_manager.AddPane(toolbar_misc, wxAuiPaneInfo().Name("toolbar_misc").Caption(LANG(CAPTION_TOOLBAR_MISC,"Miscelanea")).ToolbarPane().Top().Position(5).Row(config->Toolbars.positions.row_misc).LeftDockable(false).RightDockable(false).Hide());
-	
-	if (config->Toolbars.wich_ones.find) 
-		aui_manager.AddPane(toolbar_find, wxAuiPaneInfo().Name("toolbar_find").Caption(LANG(CAPTION_TOOLBAR_FIND,"Busqueda")).ToolbarPane().Top().Position(6).Row(config->Toolbars.positions.row_find).LeftDockable(false).RightDockable(false));
-	else
-		aui_manager.AddPane(toolbar_find, wxAuiPaneInfo().Name("toolbar_find").Caption(LANG(CAPTION_TOOLBAR_FIND,"Busqueda")).ToolbarPane().Top().Position(6).Row(config->Toolbars.positions.row_find).LeftDockable(false).RightDockable(false).Hide());
-
-	aui_manager.AddPane(toolbar_project, wxAuiPaneInfo().Name("toolbar_project").Caption(LANG(CAPTION_TOOLBAR_TOOLS,"Proyecto")).ToolbarPane().Top().Position(7).Row(config->Toolbars.positions.row_project).LeftDockable(false).RightDockable(false).Hide());
-	
-	if (config->Toolbars.wich_ones.debug) 
-		aui_manager.AddPane(toolbar_debug, wxAuiPaneInfo().Name("toolbar_debug").Caption(LANG(CAPTION_TOOLBAR_DEBUG,"Depuracion")).ToolbarPane().Top().Position(0).Row(config->Toolbars.positions.row_debug).LeftDockable(false).RightDockable(false).Row(3));
-	else
-		aui_manager.AddPane(toolbar_debug, wxAuiPaneInfo().Name("toolbar_debug").Caption(LANG(CAPTION_TOOLBAR_DEBUG,"Depuracion")).ToolbarPane().Top().Position(0).Row(config->Toolbars.positions.row_debug).LeftDockable(false).RightDockable(false).Row(3).Hide());
+	aui_manager.AddPane(toolbar_file, wxAuiPaneInfo().Name("toolbar_file").Caption(LANG(CAPTION_TOOLBAR_FILE,"Archivo")).ToolbarPane().Top().Row(config->Toolbars.positions.row_file).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_edit, wxAuiPaneInfo().Name("toolbar_edit").Caption(LANG(CAPTION_TOOLBAR_EDIT,"Edicion")).ToolbarPane().Top().Row(config->Toolbars.positions.row_edit).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_view, wxAuiPaneInfo().Name("toolbar_view").Caption(LANG(CAPTION_TOOLBAR_VIEW,"Ver")).ToolbarPane().Top().Row(config->Toolbars.positions.row_view).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_tools, wxAuiPaneInfo().Name("toolbar_tools").Caption(LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas")).ToolbarPane().Top().Row(config->Toolbars.positions.row_tools).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_run, wxAuiPaneInfo().Name("toolbar_run").Caption(LANG(CAPTION_TOOLBAR_RUN,"Ejecucion")).ToolbarPane().Top().Row(config->Toolbars.positions.row_run).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_misc, wxAuiPaneInfo().Name("toolbar_misc").Caption(LANG(CAPTION_TOOLBAR_MISC,"Miscelanea")).ToolbarPane().Top().Row(config->Toolbars.positions.row_misc).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_find, wxAuiPaneInfo().Name("toolbar_find").Caption(LANG(CAPTION_TOOLBAR_FIND,"Busqueda")).ToolbarPane().Top().Row(config->Toolbars.positions.row_find).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_project, wxAuiPaneInfo().Name("toolbar_project").Caption(LANG(CAPTION_TOOLBAR_TOOLS,"Proyecto")).ToolbarPane().Top().Row(config->Toolbars.positions.row_project).LeftDockable(false).RightDockable(false).Hide());
+	aui_manager.AddPane(toolbar_debug, wxAuiPaneInfo().Name("toolbar_debug").Caption(LANG(CAPTION_TOOLBAR_DEBUG,"Depuracion")).ToolbarPane().Top().Position(0).Row(config->Toolbars.positions.row_debug).LeftDockable(false).RightDockable(false).Row(3).Hide());
+	SortToolbars(false);
 	aui_manager.AddPane(toolbar_status, wxAuiPaneInfo().Name("toolbar_status").Caption(LANG(CAPTION_TOOLBAR_STATUS,"Status Toolbar")).ToolbarPane().Top().Position(1).Row(config->Toolbars.positions.row_debug).LeftDockable(false).RightDockable(false).Row(3).Hide());
 	aui_manager.AddPane(toolbar_diff, wxAuiPaneInfo().Name("toolbar_diff").Caption(LANG(CAPTION_TOOLBAR_DIFF,"Diff")).ToolbarPane().Top().Float().LeftDockable(false).RightDockable(false).Hide());
 	if (config->Init.show_welcome) {
@@ -5519,4 +5467,20 @@ void mxMainWindow::SetFocusToSourceAfterEvents () {
 
 void mxMainWindow::OnParserContinueProcess(wxTimerEvent &event) {
 	parser->OnParserProcessTimer();
+}
+
+void mxMainWindow::SortToolbars(bool update_aui) {
+	wxAuiManager &a=aui_manager;
+	int c=0;
+#define _aui_update_toolbar_pos(name) { wxAuiPaneInfo &pi=a.GetPane(toolbar_##name); \
+	if (config->Toolbars.wich_ones.name) a.InsertPane(toolbar_##name, pi.Position(c++).Show(),wxAUI_INSERT_DOCK); else pi.Hide(); }
+	_aui_update_toolbar_pos(file);
+	_aui_update_toolbar_pos(edit);
+	_aui_update_toolbar_pos(view);
+	_aui_update_toolbar_pos(tools);
+	_aui_update_toolbar_pos(run);
+	_aui_update_toolbar_pos(misc);
+	_aui_update_toolbar_pos(find);
+	if (project) _aui_update_toolbar_pos(project);
+	if (update_aui) a.Update();
 }
