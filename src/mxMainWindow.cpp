@@ -4636,7 +4636,6 @@ void mxMainWindow::OnExplorerTreeOpenAll(wxCommandEvent &evt) {
 	wxTreeItemIdValue cookie;
 	wxTreeItemId item = explorer_tree.treeCtrl->GetFirstChild(explorer_tree.selected_item,cookie);
 	while (item.IsOk()) {
-		cerr<<explorer_tree.treeCtrl->GetItemImage(item)<<"  "<<explorer_tree.treeCtrl->GetItemText(item)<<endl;
 		if (explorer_tree.treeCtrl->GetItemImage(item)!=0 && explorer_tree.treeCtrl->GetItemImage(item)!=5) // 0=folder, 5=zpr
 			OpenFileFromGui(DIR_PLUS_FILE(path,explorer_tree.treeCtrl->GetItemText(item)));
 		item = explorer_tree.treeCtrl->GetNextChild(explorer_tree.selected_item,cookie);
