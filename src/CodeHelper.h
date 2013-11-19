@@ -47,7 +47,7 @@ public:
 	bool AutocompleteFromArray(mxSource *source, wxArrayString &words, wxString typed);
 	bool AutocompletePreprocesorDirective(mxSource *source, wxString typed=_T(""));
 	bool AutocompleteDoxygen(mxSource *source, wxString typed=_T(""));
-	bool GenerateCacheFile(wxString path, wxString filename);
+	bool GenerateAutocompletionIndex(wxString path, wxString filename);
 	
 	//! Recarga los indices de autocompletado
 	void ReloadIndexes(wxString indexes);

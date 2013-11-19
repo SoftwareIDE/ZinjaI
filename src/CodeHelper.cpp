@@ -855,17 +855,17 @@ bool CodeHelper::LoadData(wxString index) {
 					}
 				}
 			} else if ( (pos=str.Find('('))==wxNOT_FOUND) {
-				if ( (pos=str.Find(' '))==wxNOT_FOUND || str.StartsWith("enum ")) { // macro o enum
+				if ( (pos=str.Find(' '))==wxNOT_FOUND /*|| str.StartsWith("enum ")*/) { // macro o enum
 					CH_REGISTER_MACRO(aux_file,str,PD_CONST_MACRO_CONST);
 				} else if (str.StartsWith("enum ")) { // macro o enum
-					wxString name = str.AfterLast(' ');
-					wxString type = str.BeforeLast(' ');
 					int props=PD_CONST_ENUM;
+					wxString type = str.BeforeLast(' ');
 					if (type.StartsWith("enum const ")) {
-						type=type.Mid(11); if (!type.Len()) type="anonymous";
 						props=PD_CONST_ENUM_CONST;
+						type=type.Mid(11); if (!type.Len()) type="anonymous";
 					}
-					CH_REGISTER_MACRO(aux_file,str,props);
+					wxString name = str.AfterLast(' ');
+					CH_REGISTER_MACRO_P(aux_file,name,type,props);
 				} else { // variable
 					wxString name = str.AfterLast(' ');
 					wxString type = str.BeforeLast(' ');
@@ -899,7 +899,7 @@ bool CodeHelper::LoadData(wxString index) {
 				if (type.Len()) {
 					CH_REGISTER_FUNCTION(aux_file,type,name,str);
 				} else {
-					CH_REGISTER_MACRO_P(aux_file,name,str);
+					CH_REGISTER_MACRO_P(aux_file,name,str,PD_CONST_MACRO_FUNC);
 				}
 			}
 		} else if (tabs==2) { // es un metodo o atributo
@@ -911,8 +911,8 @@ bool CodeHelper::LoadData(wxString index) {
 					if (type=="enum"){
 						props=PD_CONST_ENUM;
 					} else if (type.StartsWith("enum const ")) {
-						type=type.Mid(11); if (!type.Len()) type="anonymous";
 						props=PD_CONST_ENUM_CONST;
+						type=type.Mid(11); if (!type.Len()) type="anonymous";
 					}
 					char c=type.Last();
 					int dims=0;
@@ -1187,9 +1187,10 @@ int CodeHelper::AddReservedWords(wxArrayString &comp_list, wxString &typed, int 
 	return c;
 }
 
-bool CodeHelper::GenerateCacheFile(wxString path, wxString filename) {
-	
-	wxFFile idx(DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"autocomp"),filename),_T("w+"));
+bool CodeHelper::GenerateAutocompletionIndex(wxString path, wxString filename) {
+	wxString autocomp_dir = DIR_PLUS_FILE(config->home_dir,"autocomp");
+	if (!wxFileName::DirExists(autocomp_dir)) wxFileName::Mkdir(autocomp_dir);
+	wxFFile idx(DIR_PLUS_FILE(autocomp_dir,filename),_T("w+"));
 	if (!idx.IsOpened()) 
 		return false;
 	

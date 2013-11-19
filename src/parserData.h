@@ -61,8 +61,8 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define CH_REGISTER_MACRO(afile,aname, aprops) \
 	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,aprops,parser->first_macro->next);
 
-#define CH_REGISTER_MACRO_P(afile,aname,aproto) \
-	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,PD_CONST_MACRO_FUNC,parser->first_macro->next);\
+#define CH_REGISTER_MACRO_P(afile,aname,aproto,aprops) \
+	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,aprops,parser->first_macro->next);\
 	parser->first_macro->next->proto = aproto;\
 //	DEBUG_INFO("   Macro: "<<aname);
 

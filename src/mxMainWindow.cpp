@@ -351,7 +351,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_SYMBOL_POPUP_DEC, mxMainWindow::OnSymbolTreeDec)
 	EVT_MENU(mxID_SYMBOL_POPUP_DEF, mxMainWindow::OnSymbolTreeDef)
 	EVT_MENU(mxID_SYMBOL_POPUP_INCLUDES, mxMainWindow::OnSymbolTreeIncludes)
-	EVT_MENU(mxID_SYMBOL_GENERATE_CACHE, mxMainWindow::OnSymbolsGenerateCache)
+	EVT_MENU(mxID_SYMBOL_GENERATE_CACHE, mxMainWindow::OnSymbolsGenerateAutocompletionIndex)
 	
 	EVT_TREE_ITEM_RIGHT_CLICK(mxID_TREE_EXPLORER, mxMainWindow::OnExplorerTreePopup)
 	EVT_MENU(mxID_EXPLORER_POPUP_UPDATE, mxMainWindow::OnExplorerTreeUpdate)
@@ -4671,7 +4671,7 @@ wxString mxMainWindow::GetExplorerItemPath(wxTreeItemId item) {
 	return path;
 }
 
-void mxMainWindow::OnSymbolsGenerateCache(wxCommandEvent &evt) {
+void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 	wxString fname = wxGetTextFromUser(
 		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_NAME,"Nombre del nuevo índice"),
 		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),
@@ -4684,7 +4684,7 @@ void mxMainWindow::OnSymbolsGenerateCache(wxCommandEvent &evt) {
 	}
 	wxDirDialog dlg2(this,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR,"Directorio base (para formar las rutas relativas para los #includes):"),"");
 	if (wxID_OK!=dlg2.ShowModal()) return;
-	if (code_helper->GenerateCacheFile(dlg2.GetPath(),fname)) {
+	if (code_helper->GenerateAutocompletionIndex(dlg2.GetPath(),fname)) {
 		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED,"Indice generado correctamente."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_INFO).ShowModal();
 		delete preference_window; preference_window=NULL;
 	} else

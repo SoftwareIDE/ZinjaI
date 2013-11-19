@@ -285,7 +285,7 @@ public:
 	void OnSelectError (wxTreeEvent &event);
 	void OnSelectTreeItem (wxTreeEvent &event);
 	void OnSelectExplorerItem (wxTreeEvent &event);
-	void OnSymbolsGenerateCache(wxCommandEvent &evt);
+	void OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt);
 	
 	void OnExplorerTreePopup(wxTreeEvent &event);
 	void OnExplorerTreeUpdate(wxCommandEvent &evt);
