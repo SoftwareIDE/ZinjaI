@@ -28,6 +28,7 @@
 #include "Toolchain.h" // por TOOLCHAIN_MAX_ARGS
 #include "AutoList.h"
 #include "BreakPointInfo.h" // por el delete_autolist(breaklist) del destructor de file_item
+#include "mxCustomTools.h"
 class BreakPointInfo;
 class mxSource;
 
@@ -410,6 +411,7 @@ public:
 	wxString macros_file; ///< archivo con definiciones de macros para gdb
 //	wxString temp_folder; ///< ruta completa a la carpeta de temporales
 //	wxString temp_folder_short; ///< ruta relativa (tal cual ingresa el usuario) a la carpeta de temporales
+	cfgCustomTool custom_tools[MAX_PROJECT_CUSTOM_TOOLS]; ///< herramientas personalizables asociadas al proyecto
 private:
 	wxString temp_folder; ///< guarda la ruta de temporales (objetos) completa para la configuracion actual, solo para uso interno
 	wxString temp_folder_short; ///< guarda la ruta de temporales (objetos) relativa (como la ingresa el usuario), solo para uso interno

@@ -222,6 +222,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_VIEW_EXPLORER_TREE, mxMainWindow::OnViewExplorerTree)
 	EVT_MENU(mxID_VIEW_SYMBOLS_TREE, mxMainWindow::OnViewSymbolsTree)
 	EVT_MENU(mxID_VIEW_UPDATE_SYMBOLS, mxMainWindow::OnViewUpdateSymbols)
+	EVT_MENU(mxID_VIEW_TOOLBAR_PROJECT, mxMainWindow::OnViewToolbarProject)
 	EVT_MENU(mxID_VIEW_TOOLBAR_MISC, mxMainWindow::OnViewToolbarMisc)
 	EVT_MENU(mxID_VIEW_TOOLBAR_TOOLS, mxMainWindow::OnViewToolbarTools)
 	EVT_MENU(mxID_VIEW_TOOLBAR_VIEW, mxMainWindow::OnViewToolbarView)
@@ -314,8 +315,10 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_VALGRIND_VIEW, mxMainWindow::OnToolsValgrindView)
 	EVT_MENU(mxID_TOOLS_VALGRIND_HELP, mxMainWindow::OnToolsValgrindHelp)
 #endif
-	EVT_MENU_RANGE(mxID_CUSTOM_TOOL_0, mxID_CUSTOM_TOOL_9,mxMainWindow::OnToolsCustomTool)
-	EVT_MENU(mxID_TOOLS_CUSTOM_SETTINGS, mxMainWindow::OnToolsCustomSettings)
+	EVT_MENU_RANGE(mxID_CUSTOM_TOOL_0, mxID_CUSTOM_TOOL_0+MAX_CUSTOM_TOOLS,mxMainWindow::OnToolsCustomTool)
+	EVT_MENU_RANGE(mxID_CUSTOM_PROJECT_TOOL_0, mxID_CUSTOM_PROJECT_TOOL_0+MAX_PROJECT_CUSTOM_TOOLS,mxMainWindow::OnToolsCustomProjectTool)
+	EVT_MENU(mxID_TOOLS_CUSTOM_TOOLS_SETTINGS, mxMainWindow::OnToolsCustomToolsSettings)
+	EVT_MENU(mxID_TOOLS_PROJECT_TOOLS_SETTINGS, mxMainWindow::OnToolsProjectToolsSettings)
 	EVT_MENU(mxID_TOOLS_CUSTOM_HELP, mxMainWindow::OnToolsCustomHelp)
 	EVT_MENU(mxID_TOOLS_INSTALL_COMPLEMENTS, mxMainWindow::OnToolsInstallComplements)
 	
@@ -518,6 +521,8 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	else
 		aui_manager.AddPane(toolbar_find, wxAuiPaneInfo().Name("toolbar_find").Caption(LANG(CAPTION_TOOLBAR_FIND,"Busqueda")).ToolbarPane().Top().Position(6).Row(config->Toolbars.positions.row_find).LeftDockable(false).RightDockable(false).Hide());
 
+	aui_manager.AddPane(toolbar_project, wxAuiPaneInfo().Name("toolbar_project").Caption(LANG(CAPTION_TOOLBAR_TOOLS,"Proyecto")).ToolbarPane().Top().Position(7).Row(config->Toolbars.positions.row_project).LeftDockable(false).RightDockable(false).Hide());
+	
 	if (config->Toolbars.wich_ones.debug) 
 		aui_manager.AddPane(toolbar_debug, wxAuiPaneInfo().Name("toolbar_debug").Caption(LANG(CAPTION_TOOLBAR_DEBUG,"Depuracion")).ToolbarPane().Top().Position(0).Row(config->Toolbars.positions.row_debug).LeftDockable(false).RightDockable(false).Row(3));
 	else
@@ -1267,6 +1272,7 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	else if (event.pane->name == "toolbar_misc") { menu.view_toolbar_misc->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.misc=false; }
 	else if (event.pane->name == "toolbar_find") { menu.view_toolbar_find->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.find=false; }
 	else if (event.pane->name == "toolbar_view") { menu.view_toolbar_view->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.view=false; }
+	else if (event.pane->name == "toolbar_project") { menu.view_toolbar_project->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=false; }
 	else if (event.pane->name == "toolbar_tools") { menu.view_toolbar_tools->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=false; }
 	else if (event.pane->name == "toolbar_file") { menu.view_toolbar_file->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.file=false; }
 	else if (event.pane->name == "toolbar_edit") { menu.view_toolbar_edit->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.edit=false; }
@@ -1388,6 +1394,8 @@ void mxMainWindow::CreateMenus() {
 	menu.view_toolbar_find = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida"),_T(""),_T("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente"), config->Toolbars.wich_ones.find);
 	menu.view_toolbar_run = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion"),_T(""),_T("Muestra la barra de herramientas para la compilacion y ejecucion del programa"), config->Toolbars.wich_ones.run);
 	menu.view_toolbar_tools = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas"),_T(""),_T("Muestra la barra de herramientas para las herramientas adicionales"), config->Toolbars.wich_ones.tools);
+	menu.view_toolbar_project = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto"),_T(""),_T("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto"), config->Toolbars.wich_ones.project);
+	menu.view_toolbar_project->Enable(false);
 	menu.view_toolbar_debug = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion"),_T(""),_T("Muestra la barra de herramientas para la depuracion del programa"), config->Toolbars.wich_ones.debug);
 	menu.view_toolbar_misc = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea"),_T(""),_T("Muestra la barra de herramientas con commandos miselaneos"), config->Toolbars.wich_ones.misc);
 	menu.view->AppendSeparator();
@@ -1622,9 +1630,11 @@ void mxMainWindow::CreateMenus() {
 	menu.tools_custom_item=new wxMenuItem*[10];
 	for (int i=0;i<10;i++) menu.tools_custom_item[i] = NULL;
 	menu.tools_custom_menu->AppendSeparator();
-	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_SETTINGS,"&Configurar..."),_T(""),_T(""),ipre+_T("customToolsSettings.png"));
+	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS,"&Configurar (generales)..."),_T(""),_T(""),ipre+_T("customToolsSettings.png"));
+	menu.tools_project_tools = utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_PROJECT_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS,"&Configurar (de proyecto)..."),_T(""),_T(""),ipre+_T("projectToolsSettings.png"));
+	menu.tools_project_tools->Enable(false);
 	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));	
-	UpdateCustomTools();
+	UpdateCustomTools(false);
 	
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CREATE_TEMPLATE, LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),_T(""),_T("Permite guardar el programa simple o proyecto actual como plantilla"),ipre+_T("create_template.png"));
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_INSTALL_COMPLEMENTS, LANG(MENUITEM_TOOLS_INSTALL_COMPLEMENTS,"Instalar Complementos..."),_T(""),_T("Permite instalar un complemento ya descargado para ZinjaI"),ipre+_T("updates.png"));
@@ -1668,6 +1678,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		toolbar_view = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
 		toolbar_tools = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
 		toolbar_debug = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
+		toolbar_project = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
 		toolbar_file->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
 		toolbar_edit->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
 		toolbar_run->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
@@ -1675,6 +1686,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		toolbar_debug->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
 		toolbar_tools->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
 		toolbar_view->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
+		toolbar_project->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
 		
 		toolbar_diff = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
 		toolbar_diff->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size));
@@ -1735,22 +1747,26 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		if (config->Toolbars.tools.valgrind_run) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_RUN,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN,"Ejecutar Para Analisis Dinamico"),ipre+_T("valgrind_run.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_RUN,"Herramientas -> Analisis Dinámico -> Ejecutar..."));
 		if (config->Toolbars.tools.valgrind_view) utils->AddTool(toolbar_tools,mxID_TOOLS_VALGRIND_VIEW,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW,"Mostrar Resultados del Analisis Dinamico"),ipre+_T("valgrind_view.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_VIEW,"Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados"));
 #endif
-		for (int i=0;i<10;i++) {
-			if (config->Toolbars.tools.custom[i]) {
-				if (config->CustomTools.names[i].Len())
-					utils->AddTool(toolbar_tools,mxID_CUSTOM_TOOL_0+i,
-						wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<config->CustomTools.names[i]<<")",
-						ipre+wxString("customTool")<<i<<".png",
-						wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<config->CustomTools.names[i]<<")");
-				else
-					utils->AddTool(toolbar_tools,mxID_CUSTOM_TOOL_0+i,
-						wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<LANG(CUSTOM_TOOLS_NOT_CONFIGURED,"no configurada")<<")",
-						ipre+wxString("customTool")<<i<<".png",
-						wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<LANG(CUSTOM_TOOLS_NOT_CONFIGURED,"no configurada")<<")");
+		for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
+			if (config->CustomTools[i].on_toolbar) {
+				wxString str(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada ")); str<<i<<" ("<<config->CustomTools[i].name<<")";
+				utils->AddTool(toolbar_tools,mxID_CUSTOM_TOOL_0+i,str,ipre+wxString("customTool")<<i<<".png",str);
 			}
 		}
-		if (config->Toolbars.tools.custom_settings) utils->AddTool(toolbar_tools,mxID_TOOLS_CUSTOM_SETTINGS,LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),ipre+_T("customToolsSettings.png"),LANG(TOOLBAR_DESC_TOOLS_CUSTOM_SETTINGS,"Herramientas -> Herramientas Personalizadas -> Configurar..."));
+		if (config->Toolbars.tools.custom_settings) utils->AddTool(toolbar_tools,mxID_TOOLS_CUSTOM_TOOLS_SETTINGS,LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),ipre+_T("customToolsSettings.png"),LANG(TOOLBAR_DESC_TOOLS_CUSTOM_SETTINGS,"Herramientas -> Herramientas Personalizadas -> Configurar..."));
 		toolbar_tools->Realize();
+	}
+	
+	if (wich_one==toolbar_project) {
+		if (project->auto_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
+		if (project->auto_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_HELP_WX,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
+		for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) {
+			if (project->custom_tools[i].on_toolbar) {
+				wxString str(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada ")); str<<i<<" ("<<project->custom_tools[i].name<<")";;
+				utils->AddTool(toolbar_project,mxID_CUSTOM_PROJECT_TOOL_0+i,str,ipre+wxString("projectTool")<<i<<".png",str);
+			}
+		}
+		toolbar_project->Realize();
 	}
 	
 	if (!wich_one || wich_one==toolbar_view) {
@@ -1779,6 +1795,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 	}
 	
 	if (!wich_one || wich_one==toolbar_file) {
+		
 		if (config->Toolbars.file.new_file) utils->AddTool(toolbar_file,wxID_NEW,LANG(TOOLBAR_CAPTION_FILE_NEW,"Nuevo..."),ipre+_T("nuevo.png"),LANG(TOOLBAR_DESC_FILE_NEW,"Archivo -> Nuevo..."));
 		if (config->Toolbars.file.new_project) utils->AddTool(toolbar_file,mxID_FILE_PROJECT,LANG(TOOLBAR_CAPTION_FILE_NEW_PROJECT,"Nuevo Proyecto..."),ipre+_T("proyecto.png"),LANG(TOOLBAR_DESC_FILE_NEW_PROJECT,"Archivo -> Nuevo Proyecto..."));
 		if (config->Toolbars.file.open) utils->AddTool(toolbar_file,wxID_OPEN,LANG(TOOLBAR_CAPTION_FILE_OPEN,"Abrir..."),ipre+_T("abrir.png"),LANG(TOOLBAR_DESC_FILE_OPEN,"Archivo -> Abrir..."));
@@ -2629,6 +2646,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 			else { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
 			if (config->Toolbars.wich_ones.view) { menu.view_toolbar_view->Check(true); aui_manager.GetPane(toolbar_view).Show(); }
 			else { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
+			if (config->Toolbars.wich_ones.project) { menu.view_toolbar_project->Check(true); aui_manager.GetPane(toolbar_project).Show(); }
+			else { menu.view_toolbar_project->Check(false); aui_manager.GetPane(toolbar_project).Hide(); }
 		}
 		
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
@@ -2727,6 +2746,7 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 				if (menu.view_toolbar_debug->IsChecked()) { menu.view_toolbar_debug->Check(false); aui_manager.GetPane(toolbar_debug).Hide(); }
 				if (menu.view_toolbar_tools->IsChecked()) { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
 				if (menu.view_toolbar_view->IsChecked()) { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
+				if (menu.view_toolbar_project->IsChecked()) { menu.view_toolbar_project->Check(false); aui_manager.GetPane(toolbar_project).Hide(); }
 			}
 		}
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
@@ -2963,6 +2983,19 @@ void mxMainWindow::OnViewToolbarTools (wxCommandEvent &event) {
 		menu.view_toolbar_tools->Check(true);
 		aui_manager.GetPane(toolbar_tools).Show();
 		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=true;
+	}
+	aui_manager.Update();
+}
+
+void mxMainWindow::OnViewToolbarProject (wxCommandEvent &event) {
+	if (!menu.view_toolbar_project->IsChecked()) {
+		menu.view_toolbar_project->Check(false);
+		aui_manager.GetPane(toolbar_project).Hide();
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.project=false;
+	} else {
+		menu.view_toolbar_project->Check(true);
+		aui_manager.GetPane(toolbar_project).Show();
+		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.project=true;
 	}
 	aui_manager.Update();
 }
@@ -4151,6 +4184,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 			if (menu.view_toolbar_find->IsChecked()) { menu.view_toolbar_find->Check(false); aui_manager.GetPane(toolbar_find).Hide(); }
 			if (menu.view_toolbar_tools->IsChecked()) { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
 			if (menu.view_toolbar_view->IsChecked()) { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
+			if (menu.view_toolbar_project->IsChecked()) { menu.view_toolbar_project->Check(false); aui_manager.GetPane(toolbar_project).Hide(); }
 		}
 		
 		if (config->Debug.autohide_panels) { // reacomodar los paneles
@@ -4230,6 +4264,8 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 				else { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
 				if (config->Toolbars.wich_ones.view) { menu.view_toolbar_view->Check(true); aui_manager.GetPane(toolbar_view).Show(); }
 				else { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
+				if (config->Toolbars.wich_ones.project) { menu.view_toolbar_project->Check(true); aui_manager.GetPane(toolbar_project).Show(); }
+				else { menu.view_toolbar_project->Check(false); aui_manager.GetPane(toolbar_project).Hide(); }
 			}
 		}
 		
@@ -4666,8 +4702,12 @@ void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
 		PopupMenu(&menu);
 		return;
 	}
-	if (id>=mxID_CUSTOM_TOOL_0 && id<mxID_CUSTOM_TOOL_0+10) {
-		new mxCustomTools(id-mxID_CUSTOM_TOOL_0);
+	if (id>=mxID_CUSTOM_TOOL_0 && id<mxID_CUSTOM_TOOL_0+MAX_CUSTOM_TOOLS) {
+		new mxCustomTools(false,id-mxID_CUSTOM_TOOL_0);
+		return;
+	}
+	if (id>=mxID_CUSTOM_PROJECT_TOOL_0 && id<mxID_CUSTOM_PROJECT_TOOL_0+MAX_PROJECT_CUSTOM_TOOLS) {
+		new mxCustomTools(true,id-mxID_CUSTOM_PROJECT_TOOL_0);
 		return;
 	}
 	if (preference_window) {
@@ -5302,7 +5342,16 @@ void mxMainWindow::FocusToSource() {
 }
 
 void mxMainWindow::PrepareGuiForProject (bool project_mode) {
+	CreateToolbars(toolbar_project);
+	if (config->Toolbars.wich_ones.project) {
+		if (project_mode)
+			aui_manager.GetPane(toolbar_project).Show();
+		else
+			aui_manager.GetPane(toolbar_project).Hide();
+		aui_manager.Update();
+	}
 	menu.file_open->SetItemLabel(project_mode?LANG(MENUITEM_FILE_OPEN_ON_PROJECT,"&Abrir/Agregar al proyecto..."):LANG(MENUITEM_FILE_OPEN,"&Abrir..."));
+	menu.view_toolbar_project->Enable(project_mode);
 	menu.tools_doxygen->Enable(project_mode);
 	menu.tools_cppcheck->Enable(project_mode);
 	menu.tools_wxfb->Enable(project_mode);
@@ -5310,6 +5359,7 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	menu.tools_wxfb_regen->Enable(false);
 	menu.tools_wxfb_inherit->Enable(false);
 	menu.tools_wxfb_update_inherit->Enable(false);
+	menu.tools_project_tools->Enable(project_mode);
 	menu.tools_proy_graph->Enable(project_mode);
 	menu.tools_proy_graph->Enable(project_mode);
 	menu.tools_makefile->Enable(project_mode);

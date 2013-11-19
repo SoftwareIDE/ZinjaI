@@ -193,7 +193,7 @@ Definida como:
 PARSERHELP_SYMBOLS_FOUND
 Simbolos encontrados:
 SYMBOLS_MACROS
-Macros y Typedefs
+Macros y Otros
 SYMBOLS_GLOBALS
 Variables Globales
 SYMBOLS_FUNCTIONS
@@ -1494,6 +1494,8 @@ MENUITEM_VIEW_TOOLBAR_RUN
 &Mostrar Barra de Herramientas Ejecucion
 MENUITEM_VIEW_TOOLBAR_TOOLS
 &Mostrar Barra de Herramientas Herramientas
+MENUITEM_VIEW_TOOLBAR_PROJECT
+&Mostrar Barra de Herramientas Proyecto
 MENUITEM_VIEW_TOOLBAR_DEBUG
 &Mostrar Barra de Herramientas Depuracion
 MENUITEM_VIEW_TOOLBAR_MISC
@@ -1742,8 +1744,10 @@ MENUITEM_TOOLS_VALGRIND
 Análisis Dinámico (valgrind)
 MENUITEM_TOOLS_CUSTOM_TOOLS
 Herramientas Personalizables
-MENUITEM_TOOLS_CUSTOM_SETTINGS
-&Configurar...
+MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS
+&Configurar (generales)...
+MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS
+&Configurar (de proyecto)...
 MENUITEM_TOOLS_CUSTOM_HELP
 A&yuda...
 MENUITEM_TOOLS_CREATE_TEMPLATE
@@ -1958,8 +1962,6 @@ TOOLBAR_DESC_TOOLS_VALGRIND_VIEW
 Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados
 TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
 Herramienta Personalizada 
-CUSTOM_TOOLS_NOT_CONFIGURED
-no configurada
 TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
 Configurar Herramientas Personalizadas
 TOOLBAR_DESC_TOOLS_CUSTOM_SETTINGS
@@ -2928,6 +2930,8 @@ PREFERENCES_TOOLBARS_MISC
 Miscelanea
 PREFERENCES_TOOLBARS_FIND
 Busqueda
+PREFERENCES_TOOLBARS_PROJECT
+Proyecto
 PREFERENCES_TOOLBARS_RESET
 Reestablecer configuración por defecto
 PREFERENCES_TOOLBAR_ICON_SIZE
@@ -3082,6 +3086,8 @@ TOOLBAR_CAPTION_TOOLS_COMMENTS_COPY_CODE_FROM_H
 Implementar Metodos/Funciones Faltantes...
 TOOLBAR_CAPTION_TOOLS_PROJECT_STATISTICS
 Estadisticas del Proyecto...
+CUSTOM_TOOLS_NOT_CONFIGURED
+no configurada
 PREFERENCES_EDIT_TOOLBAR_DEBUG_CAPTION
 Barra de Herramientas \"Depuracion\"
 PREFERENCES_EDIT_TOOLBAR_RUN_CAPTION
@@ -3272,6 +3278,8 @@ PROJECTGENERAL_COMPILE_AND_RUN
  Compilacion y Ejecucion... 
 PROJECTGENERAL_DOXYGEN
  Opciones Doxygen... 
+PROJECTGENERAL_CUSTOM_TOOLS
+ Herramientas Personalizadas... 
 PROJECTGENERAL_ACTIVATE_WXFORMBUILDER
 Activar integracion con wxFormBuilder
 PROJECTGENERAL_AUTOCOMPLETION

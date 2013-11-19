@@ -20,6 +20,7 @@ BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxProjectGeneralConfig::OnCancelButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES,mxProjectGeneralConfig::OnIndexesButton)
 	EVT_BUTTON(mxID_RUN_CONFIG,mxProjectGeneralConfig::OnCompileConfigButton)
+	EVT_BUTTON(mxID_PROJECT_CONFIG_CUSTOM_TOOLS,mxProjectGeneralConfig::OnCustomToolsConfig)
 	EVT_BUTTON(mxID_TOOLS_DOXY_CONFIG,mxProjectGeneralConfig::OnDoxigenConfigButton)
 	EVT_BUTTON(mxID_DEBUG_MACROS,mxProjectGeneralConfig::OnDebugMacros)
 	EVT_MENU(mxID_DEBUG_MACROS_OPEN,mxProjectGeneralConfig::OnDebugMacrosOpen)
@@ -51,16 +52,15 @@ mxProjectGeneralConfig::mxProjectGeneralConfig() : wxDialog(main_window, wxID_AN
 	project_name = utils->AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_NAME,"Nombre del proyecto"),project->project_name);
 	custom_tab = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_CUSTOM_TABS,"Utilizar tabulado propio"),project->custom_tabs!=0);
 	tab_width = utils->AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_TAB_WIDTH,"Ancho del tabulado"),project->custom_tabs==0?config->Source.tabWidth:project->custom_tabs,true);
-	tab_use_spaces = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY,true);
+	tab_use_spaces = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY);
 	project_autocomp = utils->AddDirCtrl(mySizer,this,LANG(PROJECTGENERAL_AUTOCOMP_EXTRA,"Indices de autocompletado adicionales"),project->autocomp_extra,mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES);
 	project_autocodes = utils->AddDirCtrl(mySizer,this,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de autocódigos"),project->autocodes_file,mxID_AUTOCODES_FILE);
 	project_debug_macros = utils->AddDirCtrl(mySizer,this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
 	
-	wxButton *button_compile_config=new wxButton(this,mxID_RUN_CONFIG,LANG(PROJECTGENERAL_COMPILE_AND_RUN," Compilacion y Ejecucion... "));
-	wxButton *button_doxygen_config=new wxButton(this,mxID_TOOLS_DOXY_CONFIG,LANG(PROJECTGENERAL_DOXYGEN," Opciones Doxygen... "));
-	use_wxfb = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_ACTIVATE_WXFORMBUILDER,"Activar integracion con wxFormBuilder"),project->use_wxfb,wxID_ANY,true);
-	mySizer->Add(button_compile_config,sizers->BA5);
-	mySizer->Add(button_doxygen_config,sizers->BA5);
+	mySizer->Add(new wxButton(this,mxID_RUN_CONFIG,LANG(PROJECTGENERAL_COMPILE_AND_RUN," Compilacion y Ejecucion... ")),sizers->BA5);
+	mySizer->Add(new wxButton(this,mxID_TOOLS_DOXY_CONFIG,LANG(PROJECTGENERAL_DOXYGEN," Opciones Doxygen... ")),sizers->BA5);
+	mySizer->Add(new wxButton(this,mxID_PROJECT_CONFIG_CUSTOM_TOOLS,LANG(PROJECTGENERAL_CUSTOM_TOOLS," Herramientas Personalizadas... ")),sizers->BA5);
+	use_wxfb = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_ACTIVATE_WXFORMBUILDER,"Activar integracion con wxFormBuilder"),project->use_wxfb,wxID_ANY);
 	
 	mySizer->Add(bottomSizer,sizers->Exp0);
 	
@@ -180,5 +180,9 @@ void mxProjectGeneralConfig::OnAutocodes(wxCommandEvent &evt) {
 	menu.Append(mxID_AUTOCODES_OPEN,LANG(PREFERENCES_OPEN_FILE,"&Buscar archivo..."));
 	menu.Append(mxID_AUTOCODES_EDIT,LANG(PREFERENCES_EDIT_FILE,"&Editar archivo..."));
 	PopupMenu(&menu);
+}
+
+void mxProjectGeneralConfig::OnCustomToolsConfig (wxCommandEvent & evt) {
+	new mxCustomTools(true,-1);
 }
 

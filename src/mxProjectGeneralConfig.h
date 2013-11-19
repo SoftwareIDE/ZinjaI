@@ -31,6 +31,7 @@ public:
 	void OnAutocodesEdit(wxCommandEvent &evt);
 	void OnAutocodes(wxCommandEvent &evt);
 	void OnIndexesButton(wxCommandEvent &evt);
+	void OnCustomToolsConfig(wxCommandEvent &evt);
 	DECLARE_EVENT_TABLE();
 };
 

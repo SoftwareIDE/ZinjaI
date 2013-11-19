@@ -10,6 +10,7 @@
 
 #define IF_THERE_IS_SOURCE if (notebook_sources->GetPageCount()>0)
 #define CURRENT_SOURCE ((mxSource*)notebook_sources->GetPage(notebook_sources->GetSelection()))
+#include "mxCustomTools.h"
 
 class mxStatusBar;
 class mxHidenPanel;
@@ -117,6 +118,7 @@ public:
 	void OnViewWhiteSpace (wxCommandEvent &event);
 	void OnViewLineWrap (wxCommandEvent &event);
 	void OnViewCodeStyle (wxCommandEvent &event);
+	void OnViewToolbarProject (wxCommandEvent &event);
 	void OnViewToolbarTools (wxCommandEvent &event);
 	void OnViewToolbarView (wxCommandEvent &event);
 	void OnViewToolbarFile (wxCommandEvent &event);
@@ -249,8 +251,10 @@ public:
 	void OnToolsValgrindHelp(wxCommandEvent &event);
 #endif
 	void OnToolsCustomTool(wxCommandEvent &event);
-	void RunCustomTool(wxString name, wxString workdir, wxString cmd, bool console);
-	void OnToolsCustomSettings(wxCommandEvent &event);
+	void OnToolsCustomProjectTool(wxCommandEvent &event);
+	void RunCustomTool(cfgCustomTool tool);
+	void OnToolsCustomToolsSettings(wxCommandEvent &event);
+	void OnToolsProjectToolsSettings(wxCommandEvent &event);
 	void OnToolsCustomHelp(wxCommandEvent &event);
 	
 	void OnToolsPreprocMarkValid ( wxCommandEvent &event );
@@ -372,7 +376,7 @@ public:
 	bool CloseSource(int i);
 	void UpdateInHistory(wxString filename);
 	
-	void UpdateCustomTools();
+	void UpdateCustomTools(bool for_project);
 
 	void ShowQuickHelp (wxString keyword, bool hide_compiler_tree=true);
 	void RunSource(mxSource *source);
@@ -476,6 +480,7 @@ public:
 		wxMenuItem *tools_wxfb_regen;
 		wxMenuItem *tools_wxfb_inherit;
 		wxMenuItem *tools_wxfb_update_inherit;
+		wxMenuItem *tools_project_tools;
 		wxMenu *tools_custom_menu;
 		wxMenuItem **tools_custom_item;
 		wxMenu *debug;
@@ -510,6 +515,7 @@ public:
 		wxMenuItem *view_code_style;
 		wxMenuItem *view_toolbar_view;
 		wxMenuItem *view_toolbar_debug;
+		wxMenuItem *view_toolbar_project;
 		wxMenuItem *view_toolbar_tools;
 		wxMenuItem *view_toolbar_file;
 		wxMenuItem *view_toolbar_edit;
@@ -524,7 +530,7 @@ public:
 
 	wxTimer *parser_timer;
 
-	wxToolBar *toolbar_file, *toolbar_edit, *toolbar_run, *toolbar_misc, *toolbar_debug, *toolbar_find, *toolbar_status, *toolbar_tools, *toolbar_view, *toolbar_diff;
+	wxToolBar *toolbar_file, *toolbar_edit, *toolbar_run, *toolbar_misc, *toolbar_debug, *toolbar_find, *toolbar_status, *toolbar_tools, *toolbar_view, *toolbar_diff, *toolbar_project;
 	wxStaticText *toolbar_status_text;
 
 	wxAuiNotebook *CreateNotebookSources();

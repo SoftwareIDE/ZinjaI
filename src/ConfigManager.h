@@ -17,10 +17,11 @@
 #define CFG_CHAR_READ_DN(name,what) if (key==_T(name)) what=value[0]
 
 #define CFG_BOOL_WRITE(where,what) fil.AddLine(wxString(_T(#what"="))<<(where.what?_T("1"):_T("0")))
-#define CFG_BOOL_WRITE_DN(name,what) fil.AddLine(wxString(_T(name"="))<<(what?_T("1"):_T("0")))
+#define CFG_BOOL_WRITE_DN(name,what) fil.AddLine(wxString(name)<<(what?_T("=1"):_T("=0")))
 #define CFG_GENERIC_WRITE(where,what) fil.AddLine(wxString(_T(#what"="))<<where.what);
 #define CFG_GENERIC_WRITE_DN(name,what) fil.AddLine(wxString(_T(name"="))<<what);
 #define CFG_TEXT_WRITE_DN(name,what) fil.AddLine(wxString(_T(name"="))<<utils->Text2Line(what));
+#include "mxCustomTools.h"
 
 //! Elementos de la configuración relacionados a la depuración
 struct cfgDebug {
@@ -159,6 +160,7 @@ struct cfgToolBars {
 		bool misc;
 		bool debug;
 		bool find;
+		bool project;
 	} wich_ones;
 	
 	struct cfgTbPositions {
@@ -170,6 +172,7 @@ struct cfgToolBars {
 		int row_misc;
 		int row_debug;
 		int row_find;
+		int row_project;
 	} positions;
 	
 	//! Determina los componentes de la barra de herramientas "Archivo"
@@ -315,7 +318,7 @@ struct cfgToolBars {
 		bool valgrind_run;
 		bool valgrind_view;
 #endif
-		bool custom[10];
+//		bool custom[10];
 		bool custom_settings;
 	} tools;
 	
@@ -355,13 +358,6 @@ struct cfgToolBars {
 	} misc;
 	
 	//! Determina que columnas se veran el las tables
-};
-
-struct cfgCustomTools {
-	wxString names[10];
-	wxString commands[10];
-	wxString workdirs[10];
-	bool console[10];
 };
 
 //! Elementos de la configuración relacionados a rutas de archivos y directorios
@@ -421,7 +417,7 @@ public:
 	cfgFiles Files;
 	cfgCols Cols;
 	cfgDebug Debug;
-	cfgCustomTools CustomTools;
+	cfgCustomTool CustomTools[MAX_CUSTOM_TOOLS];
 	ConfigManager(wxString a_path);
 	bool Load();
 	bool Save();	

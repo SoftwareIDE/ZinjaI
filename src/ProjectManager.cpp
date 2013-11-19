@@ -317,6 +317,23 @@ ProjectManager::ProjectManager(wxFileName name) {
 				} else if (key==_T("expr") && current_inspectlist) {
 					current_inspectlist->vars.Add(value);
 				}
+			} else if (section==_T("custom_tools")) {
+				if (key.StartsWith("name_")) {
+					if (key.Mid(5).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
+						custom_tools[l].name=value;
+				} else if (key.StartsWith("command_")) {
+					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
+						custom_tools[l].command=value;
+				} else if (key.StartsWith("workdir_")) {
+					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
+						custom_tools[l].workdir=value;
+				} else if (key.StartsWith("console_")) {
+					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
+						custom_tools[l].console=utils->IsTrue(value);
+				} else if (key.StartsWith("on_toolbar_")) {
+					if (key.Mid(11).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
+						custom_tools[l].on_toolbar=utils->IsTrue(value);
+				}
 			}
 		}
 	}
@@ -794,6 +811,18 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("name",ii.name);
 		for (unsigned int j=0;j<ii.vars.GetCount();j++) 
 			CFG_GENERIC_WRITE_DN("expr",ii.vars[j]);
+	}
+	
+	// guardar herramientas personalizadas
+	fil.AddLine(_T("[custom_tools]"));
+	for(int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) {
+		if (custom_tools[i].command.Len()) {
+			fil.AddLine(wxString(_T("name_"))<<i<<_T("=")<<custom_tools[i].name);
+			fil.AddLine(wxString(_T("command_"))<<i<<_T("=")<<custom_tools[i].command);
+			fil.AddLine(wxString(_T("workdir_"))<<i<<_T("=")<<custom_tools[i].workdir);
+			fil.AddLine(wxString(_T("console_"))<<i<<_T("=")<<(custom_tools[i].console?_T("1"):_T("0")));
+			fil.AddLine(wxString(_T("on_toolbar_"))<<i<<_T("=")<<(custom_tools[i].on_toolbar?_T("1"):_T("0")));
+		}
 	}
 	
 	// sellar, escribir, cerrar y terminar
@@ -2713,7 +2742,7 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false;
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false;
 	for (int i=0;i<configurations_count;i++) {
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
 		if (configurations[i]->optimization_level==5) use_og=true;
@@ -2740,8 +2769,10 @@ int ProjectManager::GetRequiredVersion() {
 			step = step->next;
 		}
 	}
+	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	version_required=0;
-	if (use_exec_script) version_required=20130817;
+	if (have_custom_tools) version_required=20131115;
+	else if (use_exec_script) version_required=20130817;
 	else if (use_og || have_std) version_required=20130729;
 	else if (autocodes_file.Len()) version_required=20110814;
 	else if (have_manifest) version_required=20110610;

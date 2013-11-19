@@ -293,6 +293,13 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	szFind->Add(toolbars_wich_find,sizers->BLR10);
 	sizer->Add(szFind,sizers->BA5);
 	
+	
+	toolbars_wich_project = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_PROJECT,"Proyecto"));
+	toolbars_wich_project->SetValue(config->Toolbars.wich_ones.project);
+	wxBoxSizer *szProject = new wxBoxSizer(wxHORIZONTAL);
+	szProject->Add(toolbars_wich_project,sizers->BLR10);
+	sizer->Add(szProject,sizers->BA5);
+	
 	wxButton *btReset = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RESET,LANG(PREFERENCES_TOOLBARS_RESET,"Reestablecer configuración por defecto"));
 	sizer->Add(btReset,sizers->BA5);
 	
@@ -727,6 +734,17 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 		}
 		main_window->aui_manager.Update();
 	}
+	if (toolbars_wich_project->GetValue()!=config->Toolbars.wich_ones.project) {
+		config->Toolbars.wich_ones.project=toolbars_wich_project->GetValue();
+		if (config->Toolbars.wich_ones.project) {
+			main_window->menu.view_toolbar_project->Check(true);
+			if (project) main_window->aui_manager.GetPane(main_window->toolbar_project).Show();
+		} else {
+			main_window->menu.view_toolbar_project->Check(false);
+			if (project) main_window->aui_manager.GetPane(main_window->toolbar_project).Hide();
+		}
+		main_window->aui_manager.Update();
+	}
 	if (toolbars_wich_find->GetValue()!=config->Toolbars.wich_ones.find) {
 		config->Toolbars.wich_ones.find=toolbars_wich_find->GetValue();
 		if (config->Toolbars.wich_ones.find) {
@@ -745,6 +763,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 			main_window->CreateToolbars(main_window->toolbar_edit);
 			main_window->CreateToolbars(main_window->toolbar_view);
 			main_window->CreateToolbars(main_window->toolbar_run);
+			main_window->CreateToolbars(main_window->toolbar_project);
 			main_window->CreateToolbars(main_window->toolbar_tools);
 			main_window->CreateToolbars(main_window->toolbar_misc);
 			main_window->CreateToolbars(main_window->toolbar_debug);
@@ -1179,10 +1198,10 @@ void mxPreferenceWindow::OnToolbarsTools(wxCommandEvent &evt) {
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW,"Mostrar Resultados del Analisis Dinamico"),_T("valgrind_view.png"),config->Toolbars.tools.valgrind_view);
 #endif
 		for (int i=0;i<10;i++) {
-			if (config->CustomTools.names[i].Len())
-				toolbar_editor_tools->Add(wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<config->CustomTools.names[i]<<")",wxString("customTool")<<i<<".png",config->Toolbars.tools.custom[i]);
+			if (config->CustomTools[i].name.Len())
+				toolbar_editor_tools->Add(wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<config->CustomTools[i].name<<")",wxString("customTool")<<i<<".png",config->CustomTools[i].on_toolbar);
 			else
-				toolbar_editor_tools->Add(wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<LANG(CUSTOM_TOOLS_NOT_CONFIGURED,"no configurada")<<")",wxString("customTool")<<i<<".png",config->Toolbars.tools.custom[i]);
+				toolbar_editor_tools->Add(wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<LANG(CUSTOM_TOOLS_NOT_CONFIGURED,"no configurada")<<")",wxString("customTool")<<i<<".png",config->CustomTools[i].on_toolbar);
 		}
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),_T("customToolsSettings.png"),config->Toolbars.tools.custom_settings);
 		toolbar_editor_tools->ShowUp();

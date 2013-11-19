@@ -10,6 +10,7 @@
 #include "ConfigManager.h"
 #include "mxHelpWindow.h"
 #include "mxMessageDialog.h"
+#include "ProjectManager.h"
 
 BEGIN_EVENT_TABLE(mxCustomTools, wxDialog)
 	EVT_BUTTON(wxID_OK,mxCustomTools::OnButtonOk)
@@ -25,27 +26,32 @@ END_EVENT_TABLE()
 
 int mxCustomTools::prev_sel=0;
 	
-mxCustomTools::mxCustomTools(int cual):wxDialog(main_window,wxID_ANY,LANG(CUSTOM_TOOLS_CAPTION,"Herramientas Personalizables"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
+mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wxID_ANY,LANG(CUSTOM_TOOLS_CAPTION,"Herramientas Personalizables"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
+	this->for_project=for_project;
 	if (cual<0) cual=prev_sel; else prev_sel=cual;
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	wxArrayString array;
-	for (int i=0;i<10;i++) {
-		names[i]=config->CustomTools.names[i];
-		commands[i]=config->CustomTools.commands[i];
-		console[i]=config->CustomTools.console[i];
-		ontoolbar[i]=config->Toolbars.tools.custom[i];
+	tool_count=for_project?MAX_PROJECT_CUSTOM_TOOLS:MAX_CUSTOM_TOOLS;
+	tools=new cfgCustomTool[tool_count];
+	orig=for_project?project->custom_tools:config->CustomTools;
+	for (int i=0;i<tool_count;i++) {
+		tools[i].name=orig[i].name;
+		tools[i].command=orig[i].command;
+		tools[i].workdir=orig[i].workdir;
+		tools[i].console=orig[i].console;
+		tools[i].on_toolbar=orig[i].on_toolbar;
 		array.Add(wxString(LANG(CUSTOM_TOOLS_ITEM,"Herramienta "))<<i);
 	}
 	the_combo = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_COMBO,"Herramienta a editar"),array,cual,mxID_CUSTOM_TOOLS_COMBO);
-	name_ctrl  =utils->AddTextCtrl(sizer,this,LANG(CUSTOM_TOOLS_NAME,"Nombre"),config->CustomTools.names[cual]);
-	command_ctrl = utils->AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),config->CustomTools.commands[cual],mxID_CUSTOM_TOOLS_COMMAND);
-	workdir_ctrl = utils->AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),config->CustomTools.workdirs[cual],mxID_CUSTOM_TOOLS_WORKDIR);
+	name_ctrl  =utils->AddTextCtrl(sizer,this,LANG(CUSTOM_TOOLS_NAME,"Nombre"),tools[cual].name);
+	command_ctrl = utils->AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),tools[cual].command,mxID_CUSTOM_TOOLS_COMMAND);
+	workdir_ctrl = utils->AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),tools[cual].workdir,mxID_CUSTOM_TOOLS_WORKDIR);
 #if defined(__WIN32__)
-	console_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_CONSOLE_WINDOWS,"Ocultar ventana"),config->CustomTools.console[cual]);
+	console_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_CONSOLE_WINDOWS,"Ocultar ventana"),tools[cual].console);
 #else
-	console_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_CONSOLE_LINUX,"Correr en terminal"),config->CustomTools.console[cual]);
+	console_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_CONSOLE_LINUX,"Correr en terminal"),tools[cual].console);
 #endif
-	ontoolbar_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ONTOOLBAR_LINUX,"Mostrar en la barra de herramientas"),config->Toolbars.tools.custom[cual]);
+	ontoolbar_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ONTOOLBAR_LINUX,"Mostrar en la barra de herramientas"),tools[cual].on_toolbar);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
@@ -86,27 +92,36 @@ void mxCustomTools::OnPopup(wxCommandEvent &evt) {
 }
 
 void mxCustomTools::OnButtonOk(wxCommandEvent &event) {
-	commands[prev_sel]=command_ctrl->GetValue();
-	names[prev_sel]=name_ctrl->GetValue();
-	console[prev_sel]=console_ctrl->GetValue();
-	ontoolbar[prev_sel]=ontoolbar_ctrl->GetValue();
+	if (for_project && !project) { Close(); return; }
+	tools[prev_sel].command=command_ctrl->GetValue();
+	tools[prev_sel].name=name_ctrl->GetValue();
+	tools[prev_sel].console=console_ctrl->GetValue();
+	tools[prev_sel].workdir=workdir_ctrl->GetValue();
+	tools[prev_sel].on_toolbar=ontoolbar_ctrl->GetValue();
 	bool someone_ontoolbar=false;
-	for (int i=0;i<10;i++) {
-		config->CustomTools.names[i]=names[i];
-		config->CustomTools.commands[i]=commands[i];
-		config->CustomTools.console[i]=console[i];
-		config->Toolbars.tools.custom[i]=ontoolbar[i];
-		someone_ontoolbar|=ontoolbar[i];
+	for (int i=0;i<tool_count;i++) {
+		orig[i].name=tools[i].name;
+		orig[i].command=tools[i].command;
+		orig[i].workdir=tools[i].workdir;
+		orig[i].console=tools[i].console;
+		orig[i].on_toolbar=tools[i].on_toolbar;
+		someone_ontoolbar|=tools[i].on_toolbar;
 	}
-	if (someone_ontoolbar && !config->Toolbars.wich_ones.tools && 
+	bool &visible=for_project?config->Toolbars.wich_ones.project:config->Toolbars.wich_ones.tools;
+	if (someone_ontoolbar && !visible && 
 		mxMD_YES==mxMessageDialog(this,LANG(CUSTOM_TOOLS_SHOW_TOOLBAR,"La barra de herramientas \"Herramientas\" no esta visible.\n"
 		"¿Desea activarla para ver los controles personalizados?"), _T("Reiniciar Barras de Herramientas"), mxMD_YES_NO).ShowModal()) {
-		config->Toolbars.wich_ones.tools=true;
-			main_window->menu.view_toolbar_tools->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_tools).Show();
+			visible=true;
+			if (for_project) {
+				main_window->menu.view_toolbar_project->Check(true);
+				main_window->aui_manager.GetPane(main_window->toolbar_project).Show();
+			} else {
+				main_window->menu.view_toolbar_tools->Check(true);
+				main_window->aui_manager.GetPane(main_window->toolbar_tools).Show();
+			}
 		}
-	main_window->CreateToolbars(main_window->toolbar_tools);
-	main_window->UpdateCustomTools();
+	main_window->CreateToolbars(for_project?main_window->toolbar_project:main_window->toolbar_tools);
+	main_window->UpdateCustomTools(for_project);
 	Close();
 }
 
@@ -122,16 +137,18 @@ void mxCustomTools::OnComboChange(wxCommandEvent &event) {
 	int i=the_combo->GetSelection();
 	if (i<0||i>9) return;
 	
-	commands[prev_sel]=command_ctrl->GetValue();
-	names[prev_sel]=name_ctrl->GetValue();
-	console[prev_sel]=console_ctrl->GetValue();
-	ontoolbar[prev_sel]=ontoolbar_ctrl->GetValue();
+	tools[prev_sel].command=command_ctrl->GetValue();
+	tools[prev_sel].workdir=workdir_ctrl->GetValue();
+	tools[prev_sel].name=name_ctrl->GetValue();
+	tools[prev_sel].console=console_ctrl->GetValue();
+	tools[prev_sel].on_toolbar=ontoolbar_ctrl->GetValue();
 	
 	prev_sel=i;
-	command_ctrl->SetValue(commands[prev_sel]);
-	name_ctrl->SetValue(names[prev_sel]);
-	console_ctrl->SetValue(console[prev_sel]);
-	ontoolbar_ctrl->SetValue(ontoolbar[prev_sel]);
+	command_ctrl->SetValue(tools[prev_sel].command);
+	name_ctrl->SetValue(tools[prev_sel].name);
+	console_ctrl->SetValue(tools[prev_sel].console);
+	ontoolbar_ctrl->SetValue(tools[prev_sel].on_toolbar);
+	workdir_ctrl->SetValue(tools[prev_sel].workdir);
 }
 
 void mxCustomTools::OnButtonHelp(wxCommandEvent &evt) {
@@ -139,5 +156,10 @@ void mxCustomTools::OnButtonHelp(wxCommandEvent &evt) {
 }
 
 void mxCustomTools::OnButtonTest(wxCommandEvent &evt) {
-	main_window->RunCustomTool(name_ctrl->GetValue(),workdir_ctrl->GetValue(),command_ctrl->GetValue(),console_ctrl->GetValue());
+	cfgCustomTool t;
+	t.name=name_ctrl->GetValue();
+	t.workdir=workdir_ctrl->GetValue();
+	t.command=command_ctrl->GetValue();
+	t.console=console_ctrl->GetValue();
+	main_window->RunCustomTool(t);
 }

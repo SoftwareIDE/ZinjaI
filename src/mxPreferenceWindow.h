@@ -25,6 +25,7 @@ class mxPreferenceWindow : public wxDialog {
 
 	wxCheckBox *toolbars_wich_file;
 	wxCheckBox *toolbars_wich_find;
+	wxCheckBox *toolbars_wich_project;
 	wxCheckBox *toolbars_wich_edit;
 	wxCheckBox *toolbars_wich_view;
 	wxCheckBox *toolbars_wich_run;

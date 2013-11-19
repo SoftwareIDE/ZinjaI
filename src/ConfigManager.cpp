@@ -251,7 +251,6 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("fullpath_on_project_tree",Init.fullpath_on_project_tree);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
 				
-			
 			} else if (section==_T("Files")) {
 				CFG_GENERIC_READ_DN("toolchain",Files.toolchain);
 				else CFG_GENERIC_READ_DN("debugger_command",Files.debugger_command);
@@ -289,6 +288,7 @@ bool ConfigManager::Load() {
 					if (key.Mid(13).ToLong(&l) && l>=0 && l<CM_HISTORY_MAX_LEN)
 						Files.last_project[l]=value;
 				}
+				
 			} else if (section==_T("Columns")) {
 				if (key.StartsWith(_T("inspections_grid_"))	) {
 					if (key.Mid(17).ToLong(&l) && l>=0 && l<IG_COLS_COUNT)
@@ -301,20 +301,25 @@ bool ConfigManager::Load() {
 //					if (key.Mid(15).ToLong(&l) && l>=0 && l<TG_COLS_COUNT)
 //						Cols.threadlist_grid[l]=utils->IsTrue(value);
 //				}
+				
 			} else if (section==_T("CustomTools")) {
 				if (key.StartsWith("name_")) {
-					if (key.Mid(5).ToLong(&l) && l>=0 && l<IG_COLS_COUNT)
-						CustomTools.names[l]=value;
+					if (key.Mid(5).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
+						CustomTools[l].name=value;
 				} else if (key.StartsWith("command_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<IG_COLS_COUNT)
-						CustomTools.commands[l]=value;
+					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
+						CustomTools[l].command=value;
 				} else if (key.StartsWith("workdir_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<IG_COLS_COUNT)
-						CustomTools.workdirs[l]=value;
+					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
+						CustomTools[l].workdir=value;
 				} else if (key.StartsWith("console_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<IG_COLS_COUNT)
-						CustomTools.console[l]=utils->IsTrue(value);
+					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
+						CustomTools[l].console=utils->IsTrue(value);
+				} else if (key.StartsWith("on_toolbar_")) {
+					if (key.Mid(11).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
+						CustomTools[l].on_toolbar=utils->IsTrue(value);
 				}
+				
 			} else if (section==_T("Toolbars")) {
 				CFG_INT_READ(Toolbars,icon_size);
 				else CFG_BOOL_READ(Toolbars,file.new_file);
@@ -435,16 +440,6 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ(Toolbars,tools.gcov_reset);
 				else CFG_BOOL_READ(Toolbars,tools.gcov_show_bar);
 				else CFG_BOOL_READ(Toolbars,tools.custom_settings);
-				else CFG_BOOL_READ_DN("custom_tool_0",Toolbars.tools.custom[0]);
-				else CFG_BOOL_READ_DN("custom_tool_1",Toolbars.tools.custom[1]);
-				else CFG_BOOL_READ_DN("custom_tool_2",Toolbars.tools.custom[2]);
-				else CFG_BOOL_READ_DN("custom_tool_3",Toolbars.tools.custom[3]);
-				else CFG_BOOL_READ_DN("custom_tool_4",Toolbars.tools.custom[4]);
-				else CFG_BOOL_READ_DN("custom_tool_5",Toolbars.tools.custom[5]);
-				else CFG_BOOL_READ_DN("custom_tool_6",Toolbars.tools.custom[6]);
-				else CFG_BOOL_READ_DN("custom_tool_7",Toolbars.tools.custom[7]);
-				else CFG_BOOL_READ_DN("custom_tool_8",Toolbars.tools.custom[8]);
-				else CFG_BOOL_READ_DN("custom_tool_9",Toolbars.tools.custom[9]);
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_run);
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_config);
 				else CFG_BOOL_READ(Toolbars,tools.cppcheck_view);
@@ -487,6 +482,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ(Toolbars,wich_ones.debug);
 				else CFG_BOOL_READ(Toolbars,wich_ones.tools);
 				else CFG_BOOL_READ(Toolbars,wich_ones.view);
+				else CFG_BOOL_READ(Toolbars,wich_ones.project);
 				else CFG_INT_READ(Toolbars,positions.row_file);
 				else CFG_INT_READ(Toolbars,positions.row_find);
 				else CFG_INT_READ(Toolbars,positions.row_edit);
@@ -495,7 +491,12 @@ bool ConfigManager::Load() {
 				else CFG_INT_READ(Toolbars,positions.row_debug);
 				else CFG_INT_READ(Toolbars,positions.row_tools);
 				else CFG_INT_READ(Toolbars,positions.row_view);
-				
+				else CFG_INT_READ(Toolbars,positions.row_project);
+				else if (Init.version<20131115) {
+					for(int i=0;i<MAX_CUSTOM_TOOLS;i++) { 
+						CFG_BOOL_READ_DN(wxString("custom_tool_")<<i,CustomTools[i].on_toolbar);
+					}
+				}
 			}		
 		} 
 	}
@@ -729,11 +730,14 @@ bool ConfigManager::Save(){
 	fil.AddLine(_T(""));
 	
 	fil.AddLine(_T("[CustomTools]"));
-	for (int i=0;i<10;i++) {
-		fil.AddLine(wxString(_T("name_"))<<i<<_T("=")<<CustomTools.names[i]);
-		fil.AddLine(wxString(_T("command_"))<<i<<_T("=")<<CustomTools.commands[i]);
-		fil.AddLine(wxString(_T("workdir_"))<<i<<_T("=")<<CustomTools.workdirs[i]);
-		fil.AddLine(wxString(_T("console_"))<<i<<_T("=")<<(CustomTools.console[i]?_T("1"):_T("0")));
+	for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
+		if (CustomTools[i].command.Len()) {
+			fil.AddLine(wxString(_T("name_"))<<i<<_T("=")<<CustomTools[i].name);
+			fil.AddLine(wxString(_T("command_"))<<i<<_T("=")<<CustomTools[i].command);
+			fil.AddLine(wxString(_T("workdir_"))<<i<<_T("=")<<CustomTools[i].workdir);
+			fil.AddLine(wxString(_T("console_"))<<i<<_T("=")<<(CustomTools[i].console?_T("1"):_T("0")));
+			fil.AddLine(wxString(_T("on_toolbar_"))<<i<<_T("=")<<(CustomTools[i].on_toolbar?_T("1"):_T("0")));
+		}
 	}
 	fil.AddLine(_T(""));
 	
@@ -838,16 +842,8 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE(Toolbars,tools.gcov_reset);
 	CFG_BOOL_WRITE(Toolbars,tools.gcov_show_bar);
 	CFG_BOOL_WRITE(Toolbars,tools.custom_settings);
-	CFG_BOOL_WRITE_DN("custom_tool_0",Toolbars.tools.custom[0]);
-	CFG_BOOL_WRITE_DN("custom_tool_1",Toolbars.tools.custom[1]);
-	CFG_BOOL_WRITE_DN("custom_tool_2",Toolbars.tools.custom[2]);
-	CFG_BOOL_WRITE_DN("custom_tool_3",Toolbars.tools.custom[3]);
-	CFG_BOOL_WRITE_DN("custom_tool_4",Toolbars.tools.custom[4]);
-	CFG_BOOL_WRITE_DN("custom_tool_5",Toolbars.tools.custom[5]);
-	CFG_BOOL_WRITE_DN("custom_tool_6",Toolbars.tools.custom[6]);
-	CFG_BOOL_WRITE_DN("custom_tool_7",Toolbars.tools.custom[7]);
-	CFG_BOOL_WRITE_DN("custom_tool_8",Toolbars.tools.custom[8]);
-	CFG_BOOL_WRITE_DN("custom_tool_9",Toolbars.tools.custom[9]);
+	for(int i=0;i<MAX_CUSTOM_TOOLS;i++)
+		CFG_BOOL_WRITE_DN((wxString("custom_tool_")<<i),CustomTools[i].on_toolbar);
 	CFG_BOOL_WRITE(Toolbars,tools.cppcheck_run);
 	CFG_BOOL_WRITE(Toolbars,tools.cppcheck_config);
 	CFG_BOOL_WRITE(Toolbars,tools.cppcheck_view);
@@ -909,6 +905,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE(Toolbars,wich_ones.run);	
 	CFG_BOOL_WRITE(Toolbars,wich_ones.misc);	
 	CFG_BOOL_WRITE(Toolbars,wich_ones.debug);	
+	CFG_BOOL_WRITE(Toolbars,wich_ones.project);	
 	CFG_GENERIC_WRITE(Toolbars,positions.row_file);	
 	CFG_GENERIC_WRITE(Toolbars,positions.row_edit);	
 	CFG_GENERIC_WRITE(Toolbars,positions.row_find);	
@@ -917,6 +914,7 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE(Toolbars,positions.row_run);	
 	CFG_GENERIC_WRITE(Toolbars,positions.row_misc);	
 	CFG_GENERIC_WRITE(Toolbars,positions.row_debug);	
+	CFG_GENERIC_WRITE(Toolbars,positions.row_project);	
 	
 	fil.Write();
 	fil.Close();
@@ -1113,7 +1111,6 @@ void ConfigManager::LoadDefaults(){
 }
 
 void ConfigManager::LoadToolBarsDefaults() {
-	for (int i=0;i<10;i++) Toolbars.tools.custom[i]=false;
 	Toolbars.tools.custom_settings=false;
 	Toolbars.icon_size=24;
 	Toolbars.file.new_file=true;
@@ -1276,6 +1273,7 @@ void ConfigManager::LoadToolBarsDefaults() {
 	Toolbars.wich_ones.debug=false;
 	Toolbars.wich_ones.find=true;
 	Toolbars.wich_ones.misc=true;
+	Toolbars.wich_ones.project=true;
 	Toolbars.positions.row_file=1;
 	Toolbars.positions.row_edit=1;
 	Toolbars.positions.row_run=1;
@@ -1284,6 +1282,7 @@ void ConfigManager::LoadToolBarsDefaults() {
 	Toolbars.positions.row_debug=3;
 	Toolbars.positions.row_find=1;
 	Toolbars.positions.row_misc=1;
+	Toolbars.positions.row_project=1;
 	
 }
 

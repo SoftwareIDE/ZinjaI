@@ -737,39 +737,57 @@ void mxMainWindow::OnToolsExeProps (wxCommandEvent &event) {
 		new mxExeInfo(this,CURRENT_SOURCE);
 }
 
-void mxMainWindow::OnToolsCustomSettings(wxCommandEvent &evt) {
-	new mxCustomTools();
+void mxMainWindow::OnToolsCustomToolsSettings(wxCommandEvent &evt) {
+	new mxCustomTools(false,-1);
+}
+
+void mxMainWindow::OnToolsProjectToolsSettings(wxCommandEvent &evt) {
+	new mxCustomTools(true,-1);
 }
 
 void mxMainWindow::OnToolsCustomHelp(wxCommandEvent &evt) {
 	SHOW_HELP(_T("custom_tools.html"));	
 }
 
-void mxMainWindow::UpdateCustomTools() {
-	wxString ipre=DIR_PLUS_FILE(_T("16"),_T("customTool"));
-	for (int i=0;i<10;i++) {
-		if (menu.tools_custom_item[i])
-			menu.tools_custom_menu->Remove(menu.tools_custom_item[i]);
-		menu.tools_custom_item[i]=NULL;
+void mxMainWindow::UpdateCustomTools(bool for_project) {
+	
+	wxToolBar *toolbar=for_project?toolbar_project:toolbar_tools;
+	int count=(for_project?MAX_PROJECT_CUSTOM_TOOLS:MAX_CUSTOM_TOOLS);
+	cfgCustomTool *tools=(for_project?project->custom_tools:config->CustomTools);
+	
+	if (!for_project) {
+		wxString ipre=DIR_PLUS_FILE("16","customTool");
+		for (int i=0;i<count;i++) {
+			if (menu.tools_custom_item[i])
+				menu.tools_custom_menu->Remove(menu.tools_custom_item[i]);
+			menu.tools_custom_item[i]=NULL;
+		}
+		int c=0;
+		for (int i=0;i<count;i++) {
+			if (tools[i].name.Len() && tools[i].command.Len())
+				menu.tools_custom_item[i] = utils->AddItemToMenu(menu.tools_custom_menu, mxID_CUSTOM_TOOL_0+i,tools[i].name,"",tools[i].command,SKIN_FILE(wxString(ipre)<<i<<".png"),c++);
+		}
 	}
-	int c=0;
-	for (int i=0;i<10;i++) {
-		if (config->CustomTools.names[i].Len() && config->CustomTools.commands[i].Len())
-			menu.tools_custom_item[i] = utils->AddItemToMenu(menu.tools_custom_menu, mxID_CUSTOM_TOOL_0+i,config->CustomTools.names[i],"",config->CustomTools.commands[i],SKIN_FILE(wxString(ipre)<<i<<".png"),c++);
-	}
-	if (toolbar_tools) CreateToolbars(toolbar_tools);
+	
+	if (toolbar) CreateToolbars(toolbar);
 }
 
 
 void mxMainWindow::OnToolsCustomTool(wxCommandEvent &event) {
-	RunCustomTool(
-		config->CustomTools.names[event.GetId()-mxID_CUSTOM_TOOL_0],
-		config->CustomTools.workdirs[event.GetId()-mxID_CUSTOM_TOOL_0],
-		config->CustomTools.commands[event.GetId()-mxID_CUSTOM_TOOL_0],
-		config->CustomTools.console[event.GetId()-mxID_CUSTOM_TOOL_0]);
+	RunCustomTool(config->CustomTools[event.GetId()-mxID_CUSTOM_TOOL_0]);
 }
 
-void mxMainWindow::RunCustomTool(wxString name, wxString workdir, wxString cmd, bool console) {
+void mxMainWindow::OnToolsCustomProjectTool(wxCommandEvent &event) {
+	RunCustomTool(project->custom_tools[event.GetId()-mxID_CUSTOM_PROJECT_TOOL_0]);
+}
+
+void mxMainWindow::RunCustomTool(cfgCustomTool tool) {
+	
+	wxString name=tool.name;
+	wxString workdir=tool.workdir;
+	wxString cmd=tool.command;
+	bool console=tool.console;
+	
 	if (!name.Len()) name=" ";
 	name.Replace("\"","\\\"");
 	if (!cmd.Len()) {
