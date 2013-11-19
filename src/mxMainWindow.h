@@ -66,6 +66,7 @@ public:
 	
 	void CreateMenus();
 	void CreateToolbars(wxToolBar *wich_one=NULL);
+	void SortToolbars(bool update_aui=true);
 	void OnExit(wxCommandEvent& event);
 	void OnEditNeedFocus (wxCommandEvent &event);
 	void OnEdit (wxCommandEvent &event);
@@ -118,6 +119,7 @@ public:
 	void OnViewWhiteSpace (wxCommandEvent &event);
 	void OnViewLineWrap (wxCommandEvent &event);
 	void OnViewCodeStyle (wxCommandEvent &event);
+	void OnToggleToolbar(wxMenuItem *menu_item, wxToolBar *toolbar, bool &config_entry, bool update_aui=true);
 	void OnViewToolbarProject (wxCommandEvent &event);
 	void OnViewToolbarTools (wxCommandEvent &event);
 	void OnViewToolbarView (wxCommandEvent &event);

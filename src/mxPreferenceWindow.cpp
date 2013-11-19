@@ -522,7 +522,7 @@ wxPanel *mxPreferenceWindow::CreateCommandsPanel (wxListbook *notebook) {
 }
 
 
-void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
+void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
 	long int l;
 	config->Init.left_panels = init_left_panels->GetValue();
@@ -657,120 +657,36 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event){
 	config->Debug.blacklist = debug_blacklist->GetValue();
 	config->Save();
 	
-	if (toolbars_wich_file->GetValue()!=config->Toolbars.wich_ones.file) {
-		config->Toolbars.wich_ones.file=toolbars_wich_file->GetValue();
-		if (config->Toolbars.wich_ones.file) {
-			main_window->menu.view_toolbar_file->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_file).Show();
-		} else {
-			main_window->menu.view_toolbar_file->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_file).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_edit->GetValue()!=config->Toolbars.wich_ones.edit) {
-		config->Toolbars.wich_ones.edit=toolbars_wich_edit->GetValue();
-		if (config->Toolbars.wich_ones.edit) {
-			main_window->menu.view_toolbar_edit->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_edit).Show();
-		} else {
-			main_window->menu.view_toolbar_edit->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_edit).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_view->GetValue()!=config->Toolbars.wich_ones.view) {
-		config->Toolbars.wich_ones.view=toolbars_wich_view->GetValue();
-		if (config->Toolbars.wich_ones.view) {
-			main_window->menu.view_toolbar_view->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_view).Show();
-		} else {
-			main_window->menu.view_toolbar_view->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_view).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_run->GetValue()!=config->Toolbars.wich_ones.run) {
-		config->Toolbars.wich_ones.run=toolbars_wich_run->GetValue();
-		if (config->Toolbars.wich_ones.run) {
-			main_window->menu.view_toolbar_run->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_run).Show();
-		} else {
-			main_window->menu.view_toolbar_run->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_run).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_debug->GetValue()!=config->Toolbars.wich_ones.debug) {
-		config->Toolbars.wich_ones.debug=toolbars_wich_debug->GetValue();
-		if (config->Toolbars.wich_ones.debug) {
-			main_window->menu.view_toolbar_debug->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_debug).Show();
-		} else {
-			main_window->menu.view_toolbar_debug->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_debug).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_misc->GetValue()!=config->Toolbars.wich_ones.misc) {
-		config->Toolbars.wich_ones.misc=toolbars_wich_misc->GetValue();
-		if (config->Toolbars.wich_ones.misc) {
-			main_window->menu.view_toolbar_misc->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_misc).Show();
-		} else {
-			main_window->menu.view_toolbar_misc->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_misc).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_tools->GetValue()!=config->Toolbars.wich_ones.tools) {
-		config->Toolbars.wich_ones.tools=toolbars_wich_tools->GetValue();
-		if (config->Toolbars.wich_ones.tools) {
-			main_window->menu.view_toolbar_tools->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_tools).Show();
-		} else {
-			main_window->menu.view_toolbar_tools->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_tools).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_project->GetValue()!=config->Toolbars.wich_ones.project) {
-		config->Toolbars.wich_ones.project=toolbars_wich_project->GetValue();
-		if (config->Toolbars.wich_ones.project) {
-			main_window->menu.view_toolbar_project->Check(true);
-			if (project) main_window->aui_manager.GetPane(main_window->toolbar_project).Show();
-		} else {
-			main_window->menu.view_toolbar_project->Check(false);
-			if (project) main_window->aui_manager.GetPane(main_window->toolbar_project).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
-	if (toolbars_wich_find->GetValue()!=config->Toolbars.wich_ones.find) {
-		config->Toolbars.wich_ones.find=toolbars_wich_find->GetValue();
-		if (config->Toolbars.wich_ones.find) {
-			main_window->menu.view_toolbar_find->Check(true);
-			main_window->aui_manager.GetPane(main_window->toolbar_find).Show();
-		} else {
-			main_window->menu.view_toolbar_find->Check(false);
-			main_window->aui_manager.GetPane(main_window->toolbar_find).Hide();
-		}
-		main_window->aui_manager.Update();
-	}
+	wxCommandEvent evt;
+	bool toolbar_changed=false;
+#define _update_toolbar_visibility(name) \
+	if (toolbars_wich_##name->GetValue()!=config->Toolbars.wich_ones.name) { toolbar_changed=true; \
+		main_window->OnToggleToolbar(main_window->menu.view_toolbar_##name,main_window->toolbar_##name,config->Toolbars.wich_ones.name,false); }
+	_update_toolbar_visibility(file);
+	_update_toolbar_visibility(edit);
+	_update_toolbar_visibility(view);
+	_update_toolbar_visibility(run);
+	_update_toolbar_visibility(debug);
+	_update_toolbar_visibility(tools);
+	_update_toolbar_visibility(find);
+	if (project) { _update_toolbar_visibility(project); } else config->Toolbars.wich_ones.project=toolbars_wich_project->GetValue();
 	if (toolbar_icon_size->GetValue().BeforeFirst('x').ToLong(&l)) {
 		if (l!=config->Toolbars.icon_size) {
+			toolbar_changed=true;
 			config->Toolbars.icon_size=l;
 			main_window->CreateToolbars(main_window->toolbar_file);
 			main_window->CreateToolbars(main_window->toolbar_edit);
 			main_window->CreateToolbars(main_window->toolbar_view);
 			main_window->CreateToolbars(main_window->toolbar_run);
-			main_window->CreateToolbars(main_window->toolbar_project);
+			if (project) main_window->CreateToolbars(main_window->toolbar_project);
 			main_window->CreateToolbars(main_window->toolbar_tools);
 			main_window->CreateToolbars(main_window->toolbar_misc);
 			main_window->CreateToolbars(main_window->toolbar_debug);
+			main_window->SortToolbars();
 		}
 	} else
 		config->Toolbars.icon_size=16;
-	
+	if (toolbar_changed) main_window->aui_manager.Update();
 	config->RecalcStuff();
 	Toolchain::SelectToolchain();
 	
@@ -1228,7 +1144,7 @@ void mxPreferenceWindow::OnToolbarsDebug(wxCommandEvent &evt) {
 #endif
 		toolbar_editor_debug->Add(_T("Panel de Inspecciones"),_T("inspect.png"),config->Toolbars.debug.inspections);
 		toolbar_editor_debug->Add(_T("Trazado Inverso"),_T("backtrace.png"),config->Toolbars.debug.backtrace);
-		toolbar_editor_debug->Add(_T("Hilos de Ejecucion"),_T("threadlsit.png"),config->Toolbars.debug.threadlist);
+		toolbar_editor_debug->Add(_T("Hilos de Ejecucion"),_T("threadlist.png"),config->Toolbars.debug.threadlist);
 		toolbar_editor_debug->Add(_T("Agregar/Quitar Breakpoint"),_T("breakpoint.png"),config->Toolbars.debug.break_toggle);
 		toolbar_editor_debug->Add(_T("Opciones del Breakpoint..."),_T("breakpoint_options.png"),config->Toolbars.debug.break_options);
 		toolbar_editor_debug->Add(_T("Listar Watch/Break points..."),_T("breakpoint_list.png"),config->Toolbars.debug.break_list);
@@ -1304,6 +1220,7 @@ void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
 		config->Toolbars.wich_ones.misc=tbms;
 		config->Toolbars.wich_ones.debug=tbdb;
 		config->Toolbars.wich_ones.tools=tbtl;
+		main_window->SortToolbars();
 	}
 }
 	

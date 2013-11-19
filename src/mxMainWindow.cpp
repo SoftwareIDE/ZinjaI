@@ -68,6 +68,27 @@
 #include "mxGCovSideBar.h"
 using namespace std;
 
+void mxMainWindow::SortToolbars(bool update_aui) {
+
+	wxAuiManager &a=aui_manager;
+	int c=0;
+	
+#define aui_update_toolbar_pos(name) { wxAuiPaneInfo &pi=a.GetPane(toolbar_##name); \
+  if (config->Toolbars.wich_ones.name) a.InsertPane(toolbar_##name, pi.Position(c++).Show(),wxAUI_INSERT_DOCK); else pi.Hide(); }
+	aui_update_toolbar_pos(file)
+	aui_update_toolbar_pos(edit)
+	aui_update_toolbar_pos(view)
+	aui_update_toolbar_pos(tools)
+	aui_update_toolbar_pos(run)
+	aui_update_toolbar_pos(misc)
+	aui_update_toolbar_pos(find)
+		
+	wxAuiPaneInfo &pi=a.GetPane(toolbar_project); 
+	if (project) a.InsertPane(toolbar_project, pi.Position(c++).Show()); else pi.Hide();
+	
+	if (update_aui) a.Update();
+}
+
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
 #define LAST_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(untitled_count)<<">")
 
@@ -1927,7 +1948,6 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		toolbar_status_text->SetForegroundColour(wxColour(_T("Z DARK BLUE")));
 		toolbar_status->Realize();
 	}
-	
 }
 
 void mxMainWindow::OnExit(wxCommandEvent &event) {
@@ -2961,120 +2981,53 @@ void mxMainWindow::ShowQuickHelp (wxString keyword, bool hide_compiler_tree) {
 	ShowQuickHelpPanel(hide_compiler_tree);
 }
 
-void mxMainWindow::OnViewToolbarView (wxCommandEvent &event) {
-	if (!menu.view_toolbar_view->IsChecked()) {
-		menu.view_toolbar_view->Check(false);
-		aui_manager.GetPane(toolbar_view).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.view=false;
+void mxMainWindow::OnToggleToolbar (wxMenuItem *menu_item, wxToolBar *toolbar, bool &config_entry, bool update_aui) {
+	if (config_entry) {
+		menu_item->Check(false);
+		aui_manager.GetPane(toolbar).Hide();
+		if (!gui_debug_mode && !gui_fullscreen_mode) config_entry=false;
 	} else {
-		menu.view_toolbar_view->Check(true);
-		aui_manager.GetPane(toolbar_view).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.view=true;
+		menu_item->Check(true);
+		aui_manager.GetPane(toolbar).Show();
+		if (!gui_debug_mode && !gui_fullscreen_mode) config_entry=true;
 	}
-	aui_manager.Update();
+	SortToolbars(update_aui);
+}
+
+void mxMainWindow::OnViewToolbarView (wxCommandEvent &event) {
+	OnToggleToolbar(menu.view_toolbar_view,toolbar_view,config->Toolbars.wich_ones.view);
 }
 
 void mxMainWindow::OnViewToolbarTools (wxCommandEvent &event) {
-	if (!menu.view_toolbar_tools->IsChecked()) {
-		menu.view_toolbar_tools->Check(false);
-		aui_manager.GetPane(toolbar_tools).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=false;
-	} else {
-		menu.view_toolbar_tools->Check(true);
-		aui_manager.GetPane(toolbar_tools).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.tools=true;
-	}
-	aui_manager.Update();
+	OnToggleToolbar(menu.view_toolbar_tools,toolbar_tools,config->Toolbars.wich_ones.tools);
 }
 
 void mxMainWindow::OnViewToolbarProject (wxCommandEvent &event) {
-	if (!menu.view_toolbar_project->IsChecked()) {
-		menu.view_toolbar_project->Check(false);
-		aui_manager.GetPane(toolbar_project).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.project=false;
-	} else {
-		menu.view_toolbar_project->Check(true);
-		aui_manager.GetPane(toolbar_project).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.project=true;
-	}
-	aui_manager.Update();
+	OnToggleToolbar(menu.view_toolbar_project,toolbar_project,config->Toolbars.wich_ones.project);
 }
 
 void mxMainWindow::OnViewToolbarFile (wxCommandEvent &event) {
-	if (!menu.view_toolbar_file->IsChecked()) {
-		menu.view_toolbar_file->Check(false);
-		aui_manager.GetPane(toolbar_file).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.file=false;
-	} else {
-		menu.view_toolbar_file->Check(true);
-		aui_manager.GetPane(toolbar_file).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.file=true;
-	}
-	aui_manager.Update();
+	OnToggleToolbar(menu.view_toolbar_file,toolbar_file,config->Toolbars.wich_ones.file);
 }
 
 void mxMainWindow::OnViewToolbarFind (wxCommandEvent &event) {
-	if (!menu.view_toolbar_find->IsChecked()) {
-		menu.view_toolbar_find->Check(false);
-		aui_manager.GetPane(toolbar_find).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.find=false;
-	} else {
-		menu.view_toolbar_find->Check(true);
-		aui_manager.GetPane(toolbar_find).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.find=true;
-	}
+	OnToggleToolbar(menu.view_toolbar_find,toolbar_find,config->Toolbars.wich_ones.find);
 	aui_manager.Update();
 }
 
 void mxMainWindow::OnViewToolbarDebug (wxCommandEvent &event) {
-	if (!menu.view_toolbar_debug->IsChecked()) {
-		menu.view_toolbar_debug->Check(false);
-		aui_manager.GetPane(toolbar_debug).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.debug=false;
-	} else {
-		menu.view_toolbar_debug->Check(true);
-		aui_manager.GetPane(toolbar_debug).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.debug=true;
-	}
-	aui_manager.Update();
+	OnToggleToolbar(menu.view_toolbar_debug,toolbar_debug,config->Toolbars.wich_ones.debug);
 }
 
 void mxMainWindow::OnViewToolbarMisc (wxCommandEvent &event) {
-	if (!menu.view_toolbar_misc->IsChecked()) {
-		menu.view_toolbar_misc->Check(false);
-		aui_manager.GetPane(toolbar_misc).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.misc=false;
-	} else {
-		menu.view_toolbar_misc->Check(true);
-		aui_manager.GetPane(toolbar_misc).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.misc=true;
-	}
-	aui_manager.Update();
+	OnToggleToolbar(menu.view_toolbar_misc,toolbar_misc,config->Toolbars.wich_ones.misc);
 }
 
 void mxMainWindow::OnViewToolbarEdit (wxCommandEvent &event) {
-	if (!menu.view_toolbar_edit->IsChecked()) {
-		menu.view_toolbar_edit->Check(false);
-		aui_manager.GetPane(toolbar_edit).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.edit=false;
-	} else {
-		menu.view_toolbar_edit->Check(true);
-		aui_manager.GetPane(toolbar_edit).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.edit=true;
-	}
-	aui_manager.Update();
+	OnToggleToolbar(menu.view_toolbar_edit,toolbar_edit,config->Toolbars.wich_ones.edit);
 }
 void mxMainWindow::OnViewToolbarRun (wxCommandEvent &event) {
-	if (!menu.view_toolbar_run->IsChecked()) {
-		menu.view_toolbar_run->Check(false);
-		aui_manager.GetPane(toolbar_run).Hide();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.run=false;
-	} else {
-		menu.view_toolbar_run->Check(true);
-		aui_manager.GetPane(toolbar_run).Show();
-		if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.wich_ones.run=true;
-	}
-	aui_manager.Update();
+	OnToggleToolbar(menu.view_toolbar_run,toolbar_run,config->Toolbars.wich_ones.run);
 }
 
 void mxMainWindow::OnViewCompilerTree (wxCommandEvent &event) {
@@ -5348,9 +5301,10 @@ void mxMainWindow::FocusToSource() {
 void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	CreateToolbars(toolbar_project);
 	if (config->Toolbars.wich_ones.project) {
-		if (project_mode)
+		if (project_mode) {
 			aui_manager.GetPane(toolbar_project).Show();
-		else
+			SortToolbars(false);
+		} else
 			aui_manager.GetPane(toolbar_project).Hide();
 		aui_manager.Update();
 	}
