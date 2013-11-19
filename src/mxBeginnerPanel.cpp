@@ -82,7 +82,7 @@ void mxBeginnerPanel::ShowOptions(int n, wxString help) {
 		current_panel=options[n];
 		Layout();
 	}
-	LoadQuickHelp(help);
+	if (show_quickhelp->GetValue()) LoadQuickHelp(help);
 }
 
 void mxBeginnerPanel::LoadQuickHelp(wxString file) {
