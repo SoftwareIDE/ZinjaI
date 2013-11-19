@@ -1068,7 +1068,8 @@ void mxMainWindow::OnFileOpenSelected(wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpOpinion (wxCommandEvent &event){
-	new mxOpinionWindow(this);
+	utils->OpenInBrowser("http://zinjai.sourceforge.net/index.php?page=contacto.php");
+//	new mxOpinionWindow(this);
 }
 
 void mxMainWindow::OnHelpTutorial (wxCommandEvent &event){
@@ -1616,7 +1617,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(menu.help,mxID_HELP_GUI, LANG(MENUITEM_HELP_ZINJAI,"Ayuda sobre ZinjaI..."),_T("F1"),_T("Muestra la ayuda sobre el uso y las caracteristicas de este entorno..."),ipre+_T("ayuda.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_CPP, LANG(MENUITEM_HELP_CPP,"Ayuda sobre C++..."),_T("Shift+F1"),_T("Muestra una ayuda rapida sobre la palabra en la que se encuentra el cursor"),ipre+_T("referencia.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_TIP, LANG(MENUITEM_HELP_TIPS,"&Mostrar sugerencia..."),_T(""),_T("Muestra sugerencias sobre el uso del programa..."),ipre+_T("tip.png"));
-	utils->AddItemToMenu(menu.help,mxID_HELP_OPINION, LANG(MENUITEM_HELP_OPINION,"Opina sobre ZinjaI..."),_T(""),_T("Permite enviar un mensaje directamente al desarrollador de ZinjaI"),ipre+_T("opinion.png"));
+	utils->AddItemToMenu(menu.help,mxID_HELP_OPINION, LANG(MENUITEM_HELP_OPINION,"Enviar sugerencia o reportar error..."),_T(""),_T("Permite acceder a los foros oficiales de ZinjaI para dejar sugerencias, comentarios o reportar errores"),ipre+_T("opinion.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_UPDATES, LANG(MENUITEM_HELP_UPDATES,"&Buscar actualizaciones..."),_T(""),_T("Comprueba a traves de Internet si hay versiones mas recientes de ZinjaI disponibles..."),ipre+_T("updates.png"));
 	menu.menu->Append(menu.help, LANG(MENUITEM_HELP,"A&yuda"));
 
@@ -1793,7 +1794,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one) {
 		if (config->Toolbars.misc.help_cpp) utils->AddTool(toolbar_misc,mxID_HELP_CPP,LANG(TOOLBAR_CAPTION_HELP_CPP,"Ayuda Sobre C++..."),ipre+_T("referencia.png"),LANG(TOOLBAR_DESC_HELP_CPP,"Ayuda -> Ayuda sobre C++..."));
 		if (config->Toolbars.misc.show_tips) utils->AddTool(toolbar_misc,mxID_HELP_TIP,LANG(TOOLBAR_CAPTION_HELP_TIPS,"Sugerencias..."),ipre+_T("tip.png"),LANG(TOOLBAR_DESC_HELP_TIPS,"Ayuda -> Mostrar Sugerencias..."));
 		if (config->Toolbars.misc.about) utils->AddTool(toolbar_misc,mxID_HELP_ABOUT,LANG(TOOLBAR_CAPTION_HELP_ABOUT,"Acerca de..."),ipre+_T("acercaDe.png"),LANG(TOOLBAR_DESC_HELP_ABOUT,"Ayuda -> Acerca de..."));
-		if (config->Toolbars.misc.opinion) utils->AddTool(toolbar_misc,mxID_HELP_OPINION,LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Opina sobre ZinjaI..."),ipre+_T("opinion.png"),LANG(TOOLBAR_DESC_HELP_OPINION,"Ayuda -> Opina sobre ZinjaI..."));
+		if (config->Toolbars.misc.opinion) utils->AddTool(toolbar_misc,mxID_HELP_OPINION,LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Enviar sugerencia o reportar error..."),ipre+_T("opinion.png"),LANG(TOOLBAR_DESC_HELP_OPINION,"Ayuda -> Opina sobre ZinjaI..."));
 		if (config->Toolbars.misc.find_updates) utils->AddTool(toolbar_misc,mxID_HELP_UPDATES,LANG(TOOLBAR_CAPTION_HELP_UPDATES,"Buscar Actualizaciones..."),ipre+_T("updates.png"),LANG(TOOLBAR_DESC_HELP_UPDATES,"Ayuda -> Buscar Actualizaciones..."));
 		if (config->Toolbars.misc.exit) utils->AddTool(toolbar_misc,wxID_EXIT,LANG(TOOLBAR_CAPTION_FILE_EXIT,"Salir"),ipre+_T("salir.png"),LANG(TOOLBAR_DESC_FILE_EXIT,"Archivo -> Salir"));
 		toolbar_misc->Realize();
