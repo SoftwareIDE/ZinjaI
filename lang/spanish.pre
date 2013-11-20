@@ -1242,12 +1242,6 @@ LISTSHARED_SELECT_SOMETHING
 Debe seleccionar uno o más fuentes compartidos de la lista.
 UNTITLED
 sin_titulo_
-CAPTION_TOOLBAR_FIND
-Busqueda
-CAPTION_TOOLBAR_STATUS
-Status Toolbar
-CAPTION_TOOLBAR_DIFF
-Diff
 MAINW_INITIALIZING
 Inicializando...
 CAPTION_EXPLORER_TREE
@@ -1778,30 +1772,6 @@ MAIN_WINDOW_NO_ICON_SIZE_PRE
 El tema de iconos seleccionado no tiene iconos del tamano elegido (
 MAIN_WINDOW_NO_ICON_SIZE_POST
 )\nSe utilizaran los iconos del tamano predeterminado (16x16).\nPara modificarlo utilice el cuadro de Preferencias (menu Archivo).
-TOOLBAR_CAPTION_TOOLS_DIFF_PREV
-Diferencia Anterior
-TOOLBAR_DESC_TOOLS_DIFF_PREV
-Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior
-TOOLBAR_CAPTION_TOOLS_DIFF_NEXT
-Siguiente Diferencia
-TOOLBAR_DESC_TOOLS_DIFF_NEXT
-Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia
-TOOLBAR_CAPTION_TOOLS_DIFF_SHOW
-Mostrar Cambio
-TOOLBAR_DESC_TOOLS_DIFF_SHOW
-Herramientas -> Comparar Archivos -> Mostrar Cambio
-TOOLBAR_CAPTION_TOOLS_DIFF_APPLY
-Aplicar Cambio
-TOOLBAR_DESC_TOOLS_DIFF_APPLY
-Herramientas -> Comparar Archivos -> Aplicar Cambio
-TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD
-Descartar Cambio
-TOOLBAR_DESC_TOOLS_DIFF_DISCARD
-Herramientas -> Comparar Archivos -> Descartar Cambio
-TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
-Borrar Marcas de Comparacion
-TOOLBAR_DESC_TOOLS_DIFF_CLEAR
-Herramientas -> Comparar Archivos -> Borrar Marcas
 TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART
 Dibujar Diagrama de Flujo...
 TOOLBAR_DESC_TOOLS_DRAW_FLOWCHART
@@ -1878,6 +1848,22 @@ TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF
 Comparar Cambios en el Fuente con su Version en Disco...
 TOOLBAR_DESC_TOOLS_DIFF_HIMSELF
 Herramientas -> Comparar Archivos -> Fuente Actual Contra Version en Disco
+TOOLBAR_CAPTION_TOOLS_DIFF_SHOW
+Mostrar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_SHOW
+Herramientas -> Comparar Archivos -> Mostrar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_APPLY
+Aplicar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_APPLY
+Herramientas -> Comparar Archivos -> Aplicar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD
+Descartar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_DISCARD
+Herramientas -> Comparar Archivos -> Descartar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
+Borrar Marcas de Comparacion
+TOOLBAR_DESC_TOOLS_DIFF_CLEAR
+Herramientas -> Comparar Archivos -> Borrar Marcas
 TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE
 Generar Documentacion Doxygen...
 TOOLBAR_DESC_TOOLS_DOXYGEN_GENERATE
@@ -1966,7 +1952,9 @@ TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
 Herramienta Personalizada 
 TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
 Configurar Herramientas Personalizadas
-TOOLBAR_DESC_TOOLS_CUSTOM_SETTINGS
+TOOLBAR_DESC_TOOLS_CUSTOM_TOOLS_SETTINGS
+Herramientas -> Herramientas Personalizadas -> Configurar...
+TOOLBAR_DESC_TOOLS_PROJECT_TOOLS_SETTINGS
 Herramientas -> Herramientas Personalizadas -> Configurar...
 TOOLBAR_CAPTION_VIEW_SPLIT_VIEW
 Duplicar Vista
@@ -2372,6 +2360,20 @@ TOOLBAR_FIND_CAPTION
 Busqueda Rapida
 TOOLBAR_FIND_BUTTON
 Buscar siguiente
+CAPTION_TOOLBAR_FIND
+Busqueda
+CAPTION_TOOLBAR_STATUS
+Status Toolbar
+TOOLBAR_CAPTION_TOOLS_DIFF_PREV
+Diferencia Anterior
+TOOLBAR_DESC_TOOLS_DIFF_PREV
+Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior
+TOOLBAR_CAPTION_TOOLS_DIFF_NEXT
+Siguiente Diferencia
+TOOLBAR_DESC_TOOLS_DIFF_NEXT
+Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia
+CAPTION_TOOLBAR_DIFF
+Diff
 MAINW_QUICKHELP_INIT
 Coloca el cursor de texto sobre una palabra y presiona Shift+F1 para ver la ayuda en este cuadro.
 MAINW_AUTOHIDE_QUICKHELP

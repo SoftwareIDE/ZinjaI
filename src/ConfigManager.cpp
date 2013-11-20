@@ -1095,7 +1095,7 @@ void ConfigManager::LoadDefaults(){
 }
 
 void ConfigManager::LoadToolBarsDefaults() {
-	Toolbars.tools.custom_settings=false;
+	Toolbars.tools.custom_settings=true;
 	Toolbars.icon_size=24;
 	Toolbars.file.new_file=true;
 	Toolbars.file.new_project=false;

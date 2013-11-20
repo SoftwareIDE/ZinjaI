@@ -1711,19 +1711,22 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 				utils->AddTool(toolbar_tools,mxID_CUSTOM_TOOL_0+i,str,ipre+wxString("customTool")<<i<<".png",str);
 			}
 		}
-		if (config->Toolbars.tools.custom_settings) utils->AddTool(toolbar_tools,mxID_TOOLS_CUSTOM_TOOLS_SETTINGS,LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),ipre+_T("customToolsSettings.png"),LANG(TOOLBAR_DESC_TOOLS_CUSTOM_SETTINGS,"Herramientas -> Herramientas Personalizadas -> Configurar..."));
+		if (config->Toolbars.tools.custom_settings) utils->AddTool(toolbar_tools,mxID_TOOLS_CUSTOM_TOOLS_SETTINGS,LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),ipre+_T("customToolsSettings.png"),LANG(TOOLBAR_DESC_TOOLS_CUSTOM_TOOLS_SETTINGS,"Herramientas -> Herramientas Personalizadas -> Configurar (generales)..."));
 		_aux_ctb_realize(toolbar_tools);
 	}
 	
 	if (wich_one==toolbar_project) {
-		if (project->auto_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
-		if (project->auto_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_HELP_WX,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
+		if (project->use_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
+		if (project->use_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_HELP_WX,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
+		bool have_tool=false;
 		for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) {
 			if (project->custom_tools[i].on_toolbar) {
+				have_tool=true;
 				wxString str(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada ")); str<<i<<" ("<<project->custom_tools[i].name<<")";;
 				utils->AddTool(toolbar_project,mxID_CUSTOM_PROJECT_TOOL_0+i,str,ipre+wxString("projectTool")<<i<<".png",str);
 			}
 		}
+		if (!have_tool) utils->AddTool(toolbar_project,mxID_TOOLS_PROJECT_TOOLS_SETTINGS,LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),ipre+_T("projectToolsSettings.png"),LANG(TOOLBAR_DESC_TOOLS_PROJECT_TOOLS_SETTINGS,"Herramientas -> Herramientas Personalizadas -> Configurar (de proyecto)..."));
 		_aux_ctb_realize(toolbar_project);
 	}
 	

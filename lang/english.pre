@@ -1242,12 +1242,6 @@ LISTSHARED_SELECT_SOMETHING
 You must choose at least one file from the list.
 UNTITLED
 untitled_
-CAPTION_TOOLBAR_FIND
-Find
-CAPTION_TOOLBAR_STATUS
-Status
-CAPTION_TOOLBAR_DIFF
-Diff
 MAINW_INITIALIZING
 Initializing...
 CAPTION_EXPLORER_TREE
@@ -1778,30 +1772,6 @@ MAIN_WINDOW_NO_ICON_SIZE_PRE
 Current icon size for toolbars (
 MAIN_WINDOW_NO_ICON_SIZE_POST
 ) is not present\nin the choosen skin. Default size (16x16) will be used. To change it\nuse the Preference's dialog (from File menu).
-TOOLBAR_CAPTION_TOOLS_DIFF_PREV
-Previous Change
-TOOLBAR_DESC_TOOLS_DIFF_PREV
-Tools -> Compare Files -> Go To Previous Change
-TOOLBAR_CAPTION_TOOLS_DIFF_NEXT
-Next Change
-TOOLBAR_DESC_TOOLS_DIFF_NEXT
-Tools -> Compare Files -> Go To Next Change
-TOOLBAR_CAPTION_TOOLS_DIFF_SHOW
-Show Changed Lines
-TOOLBAR_DESC_TOOLS_DIFF_SHOW
-Tools -> Compare Files -> Show Changed Lines
-TOOLBAR_CAPTION_TOOLS_DIFF_APPLY
-Apply Change
-TOOLBAR_DESC_TOOLS_DIFF_APPLY
-Tools -> Compare Files -> Apply Change
-TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD
-Discard Change
-TOOLBAR_DESC_TOOLS_DIFF_DISCARD
-Tools -> Compare Files -> Discard Change
-TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
-Clear Comparison Marks
-TOOLBAR_DESC_TOOLS_DIFF_CLEAR
-Tools -> Compare Files -> Clear Marks
 TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART
 Draw Flow Chart...
 TOOLBAR_DESC_TOOLS_DRAW_FLOWCHART
@@ -1878,6 +1848,22 @@ TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF
 Compare Current File To Its Disk Version..
 TOOLBAR_DESC_TOOLS_DIFF_HIMSELF
 Tools -> Compare Files -> Compare Current File To Its Disk Version..
+TOOLBAR_CAPTION_TOOLS_DIFF_SHOW
+Show Changed Lines
+TOOLBAR_DESC_TOOLS_DIFF_SHOW
+Tools -> Compare Files -> Show Changed Lines
+TOOLBAR_CAPTION_TOOLS_DIFF_APPLY
+Apply Change
+TOOLBAR_DESC_TOOLS_DIFF_APPLY
+Tools -> Compare Files -> Apply Change
+TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD
+Discard Change
+TOOLBAR_DESC_TOOLS_DIFF_DISCARD
+Tools -> Compare Files -> Discard Change
+TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
+Clear Comparison Marks
+TOOLBAR_DESC_TOOLS_DIFF_CLEAR
+Tools -> Compare Files -> Clear Marks
 TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE
 Generate Doxygen Documentation...
 TOOLBAR_DESC_TOOLS_DOXYGEN_GENERATE
@@ -1966,8 +1952,10 @@ TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
 Custom Tool 
 TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
 Configure Custom Tools...
-TOOLBAR_DESC_TOOLS_CUSTOM_SETTINGS
-Tools -> Custom Tools -> Settings...
+TOOLBAR_DESC_TOOLS_CUSTOM_TOOLS_SETTINGS
+Tools -> Custom tools -> Settings (general)...
+TOOLBAR_DESC_TOOLS_PROJECT_TOOLS_SETTINGS
+Tools -> Custom tools -> Settings (project)...
 TOOLBAR_CAPTION_VIEW_SPLIT_VIEW
 Split View
 TOOLBAR_DESC_VIEW_SPLIT_VIEW
@@ -2372,6 +2360,20 @@ TOOLBAR_FIND_CAPTION
 Quick Search
 TOOLBAR_FIND_BUTTON
 Find next
+CAPTION_TOOLBAR_FIND
+Find
+CAPTION_TOOLBAR_STATUS
+Status
+TOOLBAR_CAPTION_TOOLS_DIFF_PREV
+Previous Change
+TOOLBAR_DESC_TOOLS_DIFF_PREV
+Tools -> Compare Files -> Go To Previous Change
+TOOLBAR_CAPTION_TOOLS_DIFF_NEXT
+Next Change
+TOOLBAR_DESC_TOOLS_DIFF_NEXT
+Tools -> Compare Files -> Go To Next Change
+CAPTION_TOOLBAR_DIFF
+Diff
 MAINW_QUICKHELP_INIT
 Place text cursor over a word and press Shift+F1 to see help here
 MAINW_AUTOHIDE_QUICKHELP
