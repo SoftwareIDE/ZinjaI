@@ -629,7 +629,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Save();
 	
 	wxCommandEvent evt;
-	bool toolbar_changed=false,resort_toolbars=false;
+	bool toolbar_changed=false;
 #define _update_toolbar_visibility_0(name) \
 	if (toolbars_wich_##name->GetValue()!=config->Toolbars.positions.name.visible) { toolbar_changed=true; \
 	main_window->OnToggleToolbar(main_window->menu.view_toolbar_##name,main_window->toolbar_##name,config->Toolbars.positions.name.visible,false); }
@@ -639,7 +639,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		if (s==2) { config->Toolbars.positions.name.right=true; config->Toolbars.positions.name.left=config->Toolbars.positions.name.top=false; } \
 		else if (s==1) { config->Toolbars.positions.name.left=true; config->Toolbars.positions.name.top=config->Toolbars.positions.name.right=false; } \
 		else { config->Toolbars.positions.name.top=true; config->Toolbars.positions.name.left=config->Toolbars.positions.name.right=false; } \
-		main_window->CreateToolbars(main_window->toolbar_##name,true); resort_toolbars=true; } \
+		main_window->CreateToolbars(main_window->toolbar_##name,true); toolbar_changed=true; } \
 	}
 	_update_toolbar_visibility(file);
 	_update_toolbar_visibility(edit);
@@ -647,6 +647,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	_update_toolbar_visibility(run);
 	_update_toolbar_visibility(debug);
 	_update_toolbar_visibility(tools);
+	_update_toolbar_visibility(misc);
 	_update_toolbar_visibility_0(find);
 	if (project) { _update_toolbar_visibility_0(project); } else config->Toolbars.positions.project.visible=toolbars_wich_project->GetValue();
 	if (toolbar_icon_size->GetValue().BeforeFirst('x').ToLong(&l)) {
@@ -661,12 +662,11 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 			main_window->CreateToolbars(main_window->toolbar_tools);
 			main_window->CreateToolbars(main_window->toolbar_misc);
 			main_window->CreateToolbars(main_window->toolbar_debug);
-			resort_toolbars=true;
+			toolbar_changed=true;
 		}
 	} else
 		config->Toolbars.icon_size=16;
-	if (resort_toolbars) { main_window->SortToolbars(); toolbar_changed=true; }
-	if (toolbar_changed) main_window->aui_manager.Update();
+	if (toolbar_changed) main_window->SortToolbars(true);
 	config->RecalcStuff();
 	Toolchain::SelectToolchain();
 	

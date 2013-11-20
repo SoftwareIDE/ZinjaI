@@ -5482,6 +5482,7 @@ void mxMainWindow::GetToolbarsPositions() {
 }
 
 void mxMainWindow::SortToolbars(bool update_aui) {
+	cerr<<"SORT!!   "<<endl;
 	wxAuiManager &a=aui_manager;
 	int c[10]={0};
 #define _aui_update_toolbar_pos(name) { \
