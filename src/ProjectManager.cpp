@@ -1583,12 +1583,14 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	} else if (active_configuration->args.Len())
 		command<<' '<<active_configuration->args;	
 	
-#ifndef __WIN32__
 	if (active_configuration->exec_method==EMETHOD_INIT) {
+#ifdef __WIN32__
+		command=DIR_PLUS_FILE(path,active_configuration->exec_script)<<" & "<<command;
+#else
 		command=wxString()<<"/bin/sh -c "<<utils->SingleQuotes(wxString()
 			<<". "<<DIR_PLUS_FILE(path,active_configuration->exec_script)<<"; "<<command);
-	}
 #endif
+	}
 	
 	if (active_configuration->console_program) { // si es de consola...
 		wxString terminal_cmd(config->Files.terminal_command);

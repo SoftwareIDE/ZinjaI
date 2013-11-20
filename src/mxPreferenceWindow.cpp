@@ -648,7 +648,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	_update_toolbar_visibility(debug);
 	_update_toolbar_visibility(tools);
 	_update_toolbar_visibility_0(find);
-	if (project) { _update_toolbar_visibility(project); } else config->Toolbars.positions.project.visible=toolbars_wich_project->GetValue();
+	if (project) { _update_toolbar_visibility_0(project); } else config->Toolbars.positions.project.visible=toolbars_wich_project->GetValue();
 	if (toolbar_icon_size->GetValue().BeforeFirst('x').ToLong(&l)) {
 		if (l!=config->Toolbars.icon_size) {
 			toolbar_changed=true;
