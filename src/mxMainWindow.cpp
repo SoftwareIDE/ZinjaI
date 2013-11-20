@@ -2936,7 +2936,7 @@ void mxMainWindow::OnToggleToolbar (wxMenuItem *menu_item, wxToolBar *toolbar, b
 		aui_manager.GetPane(toolbar).Show();
 		if (!(gui_debug_mode&&config->Debug.autohide_toolbars) && !(gui_fullscreen_mode&&config->Init.autohide_toolbars_fs)) config_entry=true;
 	}
-//	SortToolbars(update_aui);
+	SortToolbars(update_aui);
 }
 
 void mxMainWindow::OnViewToolbarView (wxCommandEvent &event) {
@@ -4073,9 +4073,6 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 		}
 
 		if (config->Debug.autohide_toolbars) { // reacomodar las barras de herramientas
-			if ( !menu.view_toolbar_debug->IsChecked()) { 
-				menu.view_toolbar_debug->Check(true); aui_manager.GetPane(toolbar_debug).Show();
-			}
 			aui_manager.GetPane(toolbar_status).Show();
 			if (menu.view_toolbar_file->IsChecked()) { menu.view_toolbar_file->Check(false); aui_manager.GetPane(toolbar_file).Hide(); }
 			if (menu.view_toolbar_run->IsChecked()) { menu.view_toolbar_run->Check(false); aui_manager.GetPane(toolbar_run).Hide(); }
@@ -4085,6 +4082,10 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 			if (menu.view_toolbar_tools->IsChecked()) { menu.view_toolbar_tools->Check(false); aui_manager.GetPane(toolbar_tools).Hide(); }
 			if (menu.view_toolbar_view->IsChecked()) { menu.view_toolbar_view->Check(false); aui_manager.GetPane(toolbar_view).Hide(); }
 			if (menu.view_toolbar_project->IsChecked()) { menu.view_toolbar_project->Check(false); aui_manager.GetPane(toolbar_project).Hide(); }
+			if (!menu.view_toolbar_debug->IsChecked()) { 
+				menu.view_toolbar_debug->Check(true); 
+				aui_manager.GetPane(toolbar_debug).Show();
+			}
 		}
 		
 		if (config->Debug.autohide_panels) { // reacomodar los paneles
@@ -5482,7 +5483,6 @@ void mxMainWindow::GetToolbarsPositions() {
 }
 
 void mxMainWindow::SortToolbars(bool update_aui) {
-	cerr<<"SORT!!   "<<endl;
 	wxAuiManager &a=aui_manager;
 	int c[10]={0};
 #define _aui_update_toolbar_pos(name) { \
@@ -5503,6 +5503,7 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 	_aui_update_toolbar_pos(misc);
 	_aui_update_toolbar_pos(find);
 	_aui_update_toolbar_pos(debug);
+	_aui_update_toolbar_pos(status);
 	if (project) _aui_update_toolbar_pos(project);
 	if (update_aui) a.Update();
 }
