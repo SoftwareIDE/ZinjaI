@@ -225,6 +225,7 @@ void mxMainWindow::OnToolsWxfbActivate(wxCommandEvent &event) {
 		} else {
 			project->use_wxfb=false;
 		}
+		if (config->Toolbars.positions.project.visible) { CreateToolbars(toolbar_project); aui_manager.Update(); }
 	}
 }
 
