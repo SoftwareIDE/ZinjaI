@@ -65,7 +65,8 @@ public:
 	~mxMainWindow();
 	
 	void CreateMenus();
-	void CreateToolbars(wxToolBar *wich_one=NULL);
+	void CreateToolbars(wxToolBar *wich_one=NULL, bool delete_old=false);
+	void GetToolbarsPositions();
 	void SortToolbars(bool update_aui=true);
 	void OnExit(wxCommandEvent& event);
 	void OnEditNeedFocus (wxCommandEvent &event);

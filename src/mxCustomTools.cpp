@@ -107,17 +107,15 @@ void mxCustomTools::OnButtonOk(wxCommandEvent &event) {
 		orig[i].on_toolbar=tools[i].on_toolbar;
 		someone_ontoolbar|=tools[i].on_toolbar;
 	}
-	bool &visible=for_project?config->Toolbars.wich_ones.project:config->Toolbars.wich_ones.tools;
+	bool &visible=for_project?config->Toolbars.positions.project.visible:config->Toolbars.positions.tools.visible;
 	if (someone_ontoolbar && !visible && 
 		mxMD_YES==mxMessageDialog(this,LANG(CUSTOM_TOOLS_SHOW_TOOLBAR,"La barra de herramientas \"Herramientas\" no esta visible.\n"
 		"¿Desea activarla para ver los controles personalizados?"), _T("Reiniciar Barras de Herramientas"), mxMD_YES_NO).ShowModal()) {
 			visible=true;
 			if (for_project) {
-				main_window->menu.view_toolbar_project->Check(true);
-				main_window->aui_manager.GetPane(main_window->toolbar_project).Show();
+				main_window->OnToggleToolbar(main_window->menu.view_toolbar_project,main_window->toolbar_project,visible,true);
 			} else {
-				main_window->menu.view_toolbar_tools->Check(true);
-				main_window->aui_manager.GetPane(main_window->toolbar_tools).Show();
+				main_window->OnToggleToolbar(main_window->menu.view_toolbar_tools,main_window->toolbar_tools,visible,true);
 			}
 		}
 	main_window->CreateToolbars(for_project?main_window->toolbar_project:main_window->toolbar_tools);

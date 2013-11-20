@@ -12,6 +12,7 @@
 #define CFG_BOOL_READ(where,what) if (key==_T(#what)) where.what=utils->IsTrue(value)
 #define CFG_INT_READ(where,what) if (key==_T(#what)) utils->ToInt(value,where.what)
 #define CFG_INT_READ_DN(name,what) if (key==_T(name)) utils->ToInt(value,what)
+#define CFG_GENERIC_READ(where,what) if (key==_T(#what)) where.what=value
 #define CFG_GENERIC_READ_DN(name,what) if (key==_T(name)) what=value
 #define CFG_TEXT_READ_DN(name,what) if (key==_T(name)) what=utils->Line2Text(value)
 #define CFG_CHAR_READ_DN(name,what) if (key==_T(name)) what=value[0]
@@ -150,29 +151,41 @@ struct cfgToolBars {
 	
 	int icon_size;
 	
-	//! Determina qué barras de herramientas se muestran
-	struct cfgTbWichOnes {
-		bool file;
-		bool edit;
-		bool run;
-		bool tools;
-		bool view;
-		bool misc;
-		bool debug;
-		bool find;
-		bool project;
-	} wich_ones;
-	
+	//! Información sobre la posición y visibilidad de las barras de herramientas
 	struct cfgTbPositions {
-		int row_file;
-		int row_edit;
-		int row_run;
-		int row_tools;
-		int row_view;
-		int row_misc;
-		int row_debug;
-		int row_find;
-		int row_project;
+		struct pos_item {
+			bool top,left,right,visible;
+			long row/*,pos*/;
+			pos_item():top(true),left(false),right(false),visible(false),row(0)/*,pos(0)*/ {}
+			void operator=(wxString s) { 
+				if (s.Len()==0) return;
+				else if (s[0]=='T') { top=true; left=right=false; visible=true; }
+				else if (s[0]=='R') { right=true; left=top=false; visible=true; }
+				else if (s[0]=='L') { left=true; top=right=false; visible=true; }
+				else if (s[0]=='t') { top=true; left=right=false; visible=false; }
+				else if (s[0]=='r') { right=true; left=top=false; visible=false; }
+				else if (s[0]=='l') { left=true; top=right=false; visible=false; }
+				s=s.Mid(1); if (s.Len()==0) return; else s.ToLong(&row);
+			}
+			operator wxString() {
+				wxString s;
+				if (left) s<<"L"<<row; 
+				else if (right) s<<"R"<<row; 
+				else s<<"T"<<row;
+				if (!visible) s[0]+=32;
+				return s;
+			}
+		};
+		pos_item file;
+		pos_item edit;
+		pos_item run;
+		pos_item tools;
+		pos_item view;
+		pos_item misc;
+		pos_item debug;
+		pos_item find;
+		pos_item status;
+		pos_item project;
 	} positions;
 	
 	//! Determina los componentes de la barra de herramientas "Archivo"

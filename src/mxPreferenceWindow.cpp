@@ -235,68 +235,39 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_TOOLBARS_WICH,"Barra de herramientas a utilizar:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
 	
-	wxBoxSizer *szFile= new wxBoxSizer(wxHORIZONTAL);
-	toolbars_wich_file = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_FILE,"Archivo"));
-	toolbars_wich_file->SetValue(config->Toolbars.wich_ones.file);
-	wxButton *btFile = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_FILE,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szFile->Add(toolbars_wich_file,sizers->BA5_Center); szFile->Add(btFile,sizers->BLR10);
-	szFile->Add(GetSize().GetWidth()/2,1,0);
-	sizer->Add(szFile,sizers->BA5);
+	wxArrayString poss; poss.Add("Arriba"); poss.Add("Izquierda"); poss.Add("Derecha");
+#define _aux_ctp_1(name,id,label) { \
+	wxBoxSizer *sz= new wxBoxSizer(wxHORIZONTAL); \
+	sz->Add(20,1,0); \
+	toolbars_wich_##name = new wxCheckBox(panel,wxID_ANY,label); \
+	toolbars_wich_##name->SetValue(config->Toolbars.positions.name.visible); \
+	wxButton *bt = new wxButton(panel,id,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar...")); \
+	sz->Add(toolbars_wich_##name,sizers->BA5_Center); sz->AddStretchSpacer(); sz->Add(bt,sizers->BLR10); \
+	toolbars_side_##name = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,poss,wxCB_READONLY); \
+	toolbars_side_##name->SetSelection(config->Toolbars.positions.name.top?0:(config->Toolbars.positions.name.left?1:2)); \
+	sz->Add(new wxStaticText(panel,wxID_ANY,"Ubicación:"), sizers->BA5_Center); \
+	sz->Add(toolbars_side_##name,sizers->BA5_Center); \
+	sizer->Add(sz,sizers->BA5_Exp0); }
 	
-	wxBoxSizer *szEdit  = new wxBoxSizer(wxHORIZONTAL);
-	toolbars_wich_edit = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_EDIT,"Editar"));
-	toolbars_wich_edit->SetValue(config->Toolbars.wich_ones.edit);
-	wxButton *btEdit = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_EDIT,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szEdit->Add(toolbars_wich_edit,sizers->BA5_Center); szEdit->Add(btEdit,sizers->BLR10);
-	sizer->Add(szEdit,sizers->BA5);
+	_aux_ctp_1(file,mxID_PREFERENCES_TOOLBAR_FILE,LANG(CAPTION_TOOLBAR_FILE,"Archivo"));
+	_aux_ctp_1(edit,mxID_PREFERENCES_TOOLBAR_EDIT,LANG(CAPTION_TOOLBAR_EDIT,"Editar"));
+	_aux_ctp_1(view,mxID_PREFERENCES_TOOLBAR_VIEW,LANG(CAPTION_TOOLBAR_VIEW,"Ver"));
+	_aux_ctp_1(run,mxID_PREFERENCES_TOOLBAR_RUN,LANG(CAPTION_TOOLBAR_RUN,"Ejecución"));
+	_aux_ctp_1(debug,mxID_PREFERENCES_TOOLBAR_DEBUG,LANG(CAPTION_TOOLBAR_DEBUG,"Depuración"));
+	_aux_ctp_1(tools,mxID_PREFERENCES_TOOLBAR_TOOLS,LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas"));
+	_aux_ctp_1(misc,mxID_PREFERENCES_TOOLBAR_MISC,LANG(CAPTION_TOOLBAR_MISC,"Misceánea"));
 	
-	wxBoxSizer *szView  = new wxBoxSizer(wxHORIZONTAL);
-	toolbars_wich_view = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_VIEW,"Ver"));
-	toolbars_wich_view->SetValue(config->Toolbars.wich_ones.view);
-	wxButton *btView = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_VIEW,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szView->Add(toolbars_wich_view,sizers->BA5_Center); szView->Add(btView,sizers->BLR10);
-	sizer->Add(szView,sizers->BA5);
-	
-	wxBoxSizer *szRun= new wxBoxSizer(wxHORIZONTAL);
-	toolbars_wich_run = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_RUN,"Ejecucion"));
-	toolbars_wich_run->SetValue(config->Toolbars.wich_ones.run);
-	wxButton *btRun = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RUN,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szRun->Add(toolbars_wich_run,sizers->BA5_Center); szRun->Add(btRun,sizers->BLR10);
-	sizer->Add(szRun,sizers->BA5);
-	
-	wxBoxSizer *szDebug= new wxBoxSizer(wxHORIZONTAL);
-	toolbars_wich_debug = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_DEBUG,"Depuracion"));
-	toolbars_wich_debug->SetValue(config->Toolbars.wich_ones.debug);
-	wxButton *btDebug = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_DEBUG,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szDebug->Add(toolbars_wich_debug,sizers->BA5_Center); szDebug->Add(btDebug,sizers->BLR10);
-	sizer->Add(szDebug,sizers->BA5);
-	
-	wxBoxSizer *szTools= new wxBoxSizer(wxHORIZONTAL);
-	toolbars_wich_tools = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_TOOLS,"Herramientas"));
-	toolbars_wich_tools->SetValue(config->Toolbars.wich_ones.tools);
-	wxButton *btTools = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_TOOLS,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szTools->Add(toolbars_wich_tools,sizers->BA5_Center); szTools->Add(btTools,sizers->BLR10);
-	szTools->Add(GetSize().GetWidth()/2,1,0);
-	sizer->Add(szTools,sizers->BA5);
-	
-	wxBoxSizer *szMisc = new wxBoxSizer(wxHORIZONTAL);
-	toolbars_wich_misc = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_MISC,"Miscelanea"));
-	toolbars_wich_misc->SetValue(config->Toolbars.wich_ones.misc);
-	wxButton *btMisc = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_MISC,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar..."));
-	szMisc->Add(toolbars_wich_misc,sizers->BA5_Center); szMisc->Add(btMisc,sizers->BLR10);
-	szMisc->Add(GetSize().GetWidth()/2,1,0);
-	sizer->Add(szMisc,sizers->BA5);
-
-	toolbars_wich_find = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_FIND,"Busqueda"));
-	toolbars_wich_find->SetValue(config->Toolbars.wich_ones.find);
+	toolbars_wich_find = new wxCheckBox(panel,wxID_ANY,LANG(CAPTION_TOOLBAR_FIND,"Busqueda"));
+	toolbars_wich_find->SetValue(config->Toolbars.positions.find.visible);
 	wxBoxSizer *szFind = new wxBoxSizer(wxHORIZONTAL);
+	szFind->Add(20,1,0);
 	szFind->Add(toolbars_wich_find,sizers->BA5_Center);
 	sizer->Add(szFind,sizers->BA5);
 	
-	
-	toolbars_wich_project = new wxCheckBox(panel,wxID_ANY,LANG(PREFERENCES_TOOLBARS_PROJECT,"Proyecto"));
-	toolbars_wich_project->SetValue(config->Toolbars.wich_ones.project);
+	toolbars_wich_project = new wxCheckBox(panel,wxID_ANY,LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"));
+	toolbars_wich_project->SetValue(config->Toolbars.positions.project.visible);
 	wxBoxSizer *szProject = new wxBoxSizer(wxHORIZONTAL);
+	szProject->Add(20,1,0);
 	szProject->Add(toolbars_wich_project,sizers->BA5_Center);
 	sizer->Add(szProject,sizers->BA5);
 	
@@ -658,18 +629,26 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Save();
 	
 	wxCommandEvent evt;
-	bool toolbar_changed=false;
-#define _update_toolbar_visibility(name) \
-	if (toolbars_wich_##name->GetValue()!=config->Toolbars.wich_ones.name) { toolbar_changed=true; \
-		main_window->OnToggleToolbar(main_window->menu.view_toolbar_##name,main_window->toolbar_##name,config->Toolbars.wich_ones.name,false); }
+	bool toolbar_changed=false,resort_toolbars=false;
+#define _update_toolbar_visibility_0(name) \
+	if (toolbars_wich_##name->GetValue()!=config->Toolbars.positions.name.visible) { toolbar_changed=true; \
+	main_window->OnToggleToolbar(main_window->menu.view_toolbar_##name,main_window->toolbar_##name,config->Toolbars.positions.name.visible,false); }
+#define _update_toolbar_visibility(name) _update_toolbar_visibility_0(name); \
+	{ int s=toolbars_side_##name->GetSelection(); \
+	if ( (s==0&&!config->Toolbars.positions.name.top) || (s==1&&!config->Toolbars.positions.name.left) || (s==2&&!config->Toolbars.positions.name.right) ) { \
+		if (s==2) { config->Toolbars.positions.name.right=true; config->Toolbars.positions.name.left=config->Toolbars.positions.name.top=false; } \
+		else if (s==1) { config->Toolbars.positions.name.left=true; config->Toolbars.positions.name.top=config->Toolbars.positions.name.right=false; } \
+		else { config->Toolbars.positions.name.top=true; config->Toolbars.positions.name.left=config->Toolbars.positions.name.right=false; } \
+		main_window->CreateToolbars(main_window->toolbar_##name,true); resort_toolbars=true; } \
+	}
 	_update_toolbar_visibility(file);
 	_update_toolbar_visibility(edit);
 	_update_toolbar_visibility(view);
 	_update_toolbar_visibility(run);
 	_update_toolbar_visibility(debug);
 	_update_toolbar_visibility(tools);
-	_update_toolbar_visibility(find);
-	if (project) { _update_toolbar_visibility(project); } else config->Toolbars.wich_ones.project=toolbars_wich_project->GetValue();
+	_update_toolbar_visibility_0(find);
+	if (project) { _update_toolbar_visibility(project); } else config->Toolbars.positions.project.visible=toolbars_wich_project->GetValue();
 	if (toolbar_icon_size->GetValue().BeforeFirst('x').ToLong(&l)) {
 		if (l!=config->Toolbars.icon_size) {
 			toolbar_changed=true;
@@ -682,10 +661,11 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 			main_window->CreateToolbars(main_window->toolbar_tools);
 			main_window->CreateToolbars(main_window->toolbar_misc);
 			main_window->CreateToolbars(main_window->toolbar_debug);
-			main_window->SortToolbars();
+			resort_toolbars=true;
 		}
 	} else
 		config->Toolbars.icon_size=16;
+	if (resort_toolbars) { main_window->SortToolbars(); toolbar_changed=true; }
 	if (toolbar_changed) main_window->aui_manager.Update();
 	config->RecalcStuff();
 	Toolchain::SelectToolchain();
@@ -1188,23 +1168,23 @@ void mxPreferenceWindow::SetToolbarPage() {
 void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
 	if (mxMD_YES == mxMessageDialog(main_window,_T("Perdera todas las modificiaciones realizadas a las barras\n de herramientas. Desea continuar?"), _T("Reiniciar Barras de Herramientas"), mxMD_YES_NO).ShowModal()) {
 		bool 
-			tbed=config->Toolbars.wich_ones.edit,
-			tbrn=config->Toolbars.wich_ones.run,
-			tbvw=config->Toolbars.wich_ones.view,
-			tbfn=config->Toolbars.wich_ones.find,
-			tbfl=config->Toolbars.wich_ones.file,
-			tbms=config->Toolbars.wich_ones.misc,
-			tbdb=config->Toolbars.wich_ones.debug,
-			tbtl=config->Toolbars.wich_ones.tools;
+			tbed=config->Toolbars.positions.edit.visible,
+			tbrn=config->Toolbars.positions.run.visible,
+			tbvw=config->Toolbars.positions.view.visible,
+			tbfn=config->Toolbars.positions.find.visible,
+			tbfl=config->Toolbars.positions.file.visible,
+			tbms=config->Toolbars.positions.misc.visible,
+			tbdb=config->Toolbars.positions.debug.visible,
+			tbtl=config->Toolbars.positions.tools.visible;
 		config->LoadToolBarsDefaults();
-		toolbars_wich_edit->SetValue(config->Toolbars.wich_ones.edit);
-		toolbars_wich_run->SetValue(config->Toolbars.wich_ones.run);
-		toolbars_wich_view->SetValue(config->Toolbars.wich_ones.view);
-		toolbars_wich_find->SetValue(config->Toolbars.wich_ones.find);
-		toolbars_wich_file->SetValue(config->Toolbars.wich_ones.file);
-		toolbars_wich_misc->SetValue(config->Toolbars.wich_ones.misc);
-		toolbars_wich_debug->SetValue(config->Toolbars.wich_ones.debug);
-		toolbars_wich_tools->SetValue(config->Toolbars.wich_ones.tools);
+		toolbars_wich_edit->SetValue(config->Toolbars.positions.edit.visible);
+		toolbars_wich_run->SetValue(config->Toolbars.positions.run.visible);
+		toolbars_wich_view->SetValue(config->Toolbars.positions.view.visible);
+		toolbars_wich_find->SetValue(config->Toolbars.positions.find.visible);
+		toolbars_wich_file->SetValue(config->Toolbars.positions.file.visible);
+		toolbars_wich_misc->SetValue(config->Toolbars.positions.misc.visible);
+		toolbars_wich_debug->SetValue(config->Toolbars.positions.debug.visible);
+		toolbars_wich_tools->SetValue(config->Toolbars.positions.tools.visible);
 		main_window->CreateToolbars(main_window->toolbar_debug);
 		main_window->CreateToolbars(main_window->toolbar_file);
 		main_window->CreateToolbars(main_window->toolbar_view);
@@ -1212,14 +1192,14 @@ void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
 		main_window->CreateToolbars(main_window->toolbar_misc);
 		main_window->CreateToolbars(main_window->toolbar_tools);
 		main_window->CreateToolbars(main_window->toolbar_run);
-		config->Toolbars.wich_ones.edit=tbed;
-		config->Toolbars.wich_ones.run=tbrn;
-		config->Toolbars.wich_ones.view=tbvw;
-		config->Toolbars.wich_ones.find=tbfn;
-		config->Toolbars.wich_ones.file=tbfl;
-		config->Toolbars.wich_ones.misc=tbms;
-		config->Toolbars.wich_ones.debug=tbdb;
-		config->Toolbars.wich_ones.tools=tbtl;
+		config->Toolbars.positions.edit.visible=tbed;
+		config->Toolbars.positions.run.visible=tbrn;
+		config->Toolbars.positions.view.visible=tbvw;
+		config->Toolbars.positions.find.visible=tbfn;
+		config->Toolbars.positions.file.visible=tbfl;
+		config->Toolbars.positions.misc.visible=tbms;
+		config->Toolbars.positions.debug.visible=tbdb;
+		config->Toolbars.positions.tools.visible=tbtl;
 		main_window->SortToolbars();
 	}
 }
@@ -1310,14 +1290,14 @@ void mxPreferenceWindow::ResetChanges() {
 #endif
 
 	// toolbars
-	toolbars_wich_file->SetValue(config->Toolbars.wich_ones.file);
-	toolbars_wich_edit->SetValue(config->Toolbars.wich_ones.edit);
-	toolbars_wich_run->SetValue(config->Toolbars.wich_ones.run);
-	toolbars_wich_debug->SetValue(config->Toolbars.wich_ones.debug);
-	toolbars_wich_tools->SetValue(config->Toolbars.wich_ones.tools);
-	toolbars_wich_misc->SetValue(config->Toolbars.wich_ones.misc);
-	toolbars_wich_find->SetValue(config->Toolbars.wich_ones.find);
-	toolbars_wich_view->SetValue(config->Toolbars.wich_ones.view);
+	toolbars_wich_file->SetValue(config->Toolbars.positions.file.visible);
+	toolbars_wich_edit->SetValue(config->Toolbars.positions.edit.visible);
+	toolbars_wich_run->SetValue(config->Toolbars.positions.run.visible);
+	toolbars_wich_debug->SetValue(config->Toolbars.positions.debug.visible);
+	toolbars_wich_tools->SetValue(config->Toolbars.positions.tools.visible);
+	toolbars_wich_misc->SetValue(config->Toolbars.positions.misc.visible);
+	toolbars_wich_find->SetValue(config->Toolbars.positions.find.visible);
+	toolbars_wich_view->SetValue(config->Toolbars.positions.view.visible);
 	wxArrayString icon_sizes;
 	icon_sizes.Add(_T("16x16"));
 	if (wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,_T("24")))) icon_sizes.Add(_T("24x24"));
