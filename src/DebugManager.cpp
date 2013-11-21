@@ -299,6 +299,7 @@ void DebugManager::ResetDebuggingStuff() {
 	recording_for_reverse=inverse_exec=false;
 	main_window->ClearDebugLog();
 	has_symbols=true;
+	should_pause=false;
 }
 
 
@@ -492,6 +493,19 @@ void DebugManager::HowDoesItRuns() {
 		}
 		ans=ans.Mid(st_pos);
 		wxString how = GetValueFromAns(ans,_T("reason"),true);
+		
+#define _aux_continue SendCommand(_T("-exec-continue")); waiting=true; wxYield(); waiting=false; continue;
+		bool should_continue=false; // cuando se pauso solo para colocar un brekapoint y seguir, esto indica que siga sin analizar la salida... puede ser how diga signal-received (lo normal) o que se haya pausado justo por un bp de los que solo actualizan la tabla de inspecciones
+		if (pause_breakpoint) { // si se pauso solo para colocar un brekapoint, colocarlo y setear banderas para que siga ejecutando
+			if (pause_breakpoint->gdb_status==BPS_PENDING)
+				SetBreakPoint(pause_breakpoint);
+			else
+				DeleteBreakPoint(pause_breakpoint);
+			pause_breakpoint=NULL;
+			should_pause=false; // la pausa no la generó el usuario, sino que era solo para colocar el brakpoint
+			should_continue=true;
+		}
+		
 		BreakPointInfo *bpi=NULL; int mark = 0;
 		if (how==_T("breakpoint-hit")) {
 			wxString sbn = GetValueFromAns(ans,_T("bkptno"),true);
@@ -499,10 +513,9 @@ void DebugManager::HowDoesItRuns() {
 				long bn;
 				if (sbn.ToLong(&bn)) {
 					bpi=BreakPointInfo::FindFromNumber(bn,true);
-					if (bpi && bpi->action==BPA_INSPECTIONS) {
+					if (!should_pause && bpi && bpi->action==BPA_INSPECTIONS) {
 						UpdateInspection();
-						SendCommand(_T("-exec-continue")); wxYield();
-						continue; // fake-goto... any better idea?
+						_aux_continue;
 					}
 				}
 			}
@@ -554,15 +567,7 @@ void DebugManager::HowDoesItRuns() {
 			else
 				state_text=wxString(LANG(DEBUG_STATUS_EXIT_WITH_CODE,"El programa finalizo con el codigo de salida "))<<GetValueFromAns(ans,_T("exit-code"),true);
 		} else if (how==_T("signal-received")) {
-			if (pause_breakpoint) {
-				if (pause_breakpoint->gdb_status==BPS_PENDING)
-					SetBreakPoint(pause_breakpoint);
-				else
-					DeleteBreakPoint(pause_breakpoint);
-				pause_breakpoint=NULL;
-				Continue();
-				return;
-			}
+			if (should_continue) { _aux_continue; }
 			if (GetValueFromAns(ans,_T("signal-meaning"),true)==_T("Trace/breakpoint trap")) {
 				mark = mxSTC_MARK_EXECPOINT;
 				state_text=LANG(DEBUG_STATUS_TRAP,"El programa se interrumpio para ceder el control al depurador");
@@ -616,7 +621,7 @@ void DebugManager::HowDoesItRuns() {
 			Stop();
 		}
 		if (bpi && bpi->action==BPA_STOP_ONCE) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
-		SetStateText(state_text);
+		SetStateText(state_text); should_pause=false;
 		return;
 	}
 }
@@ -943,6 +948,7 @@ void DebugManager::StepOver() {
 
 
 void DebugManager::Pause() {
+	should_pause=true;
 	if (!waiting && !debugging) return;
 #if defined(_WIN32) || defined(__WIN32__)
 	if (!winLoadDBP()) {
@@ -1065,6 +1071,7 @@ wxString DebugManager::WaitAnswer() {
 }
 
 wxString DebugManager::SendCommand(wxString command) {
+	waiting = true;
 #ifdef DEBUG_MANAGER_LOG_TALK
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<command;
 		debug_log_file.Write(debug_log_string);
@@ -1078,6 +1085,7 @@ wxString DebugManager::SendCommand(wxString command) {
 }
 
 wxString DebugManager::SendCommand(wxString command, int i) {
+	waiting = true;
 #ifdef DEBUG_MANAGER_LOG_TALK
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<command<<i;
 		debug_log_file.Write(debug_log_string);
@@ -1091,6 +1099,7 @@ wxString DebugManager::SendCommand(wxString command, int i) {
 }
 
 wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
+	waiting = true;
 #ifdef DEBUG_MANAGER_LOG_TALK
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<cmd1<<cmd2;
 		debug_log_file.Write(debug_log_string);

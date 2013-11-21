@@ -122,6 +122,7 @@ class DebugManager {
 	wxFFile debug_log_file;
 #endif
 private:
+	bool should_pause; ///< puede que al hacer click en la pausa no se pause realmente (que la señal que envía no llegue a término, no se por qué, pero pasa cuando hay un breakpoint de los que solo actualizan la tabla de inspecciones)
 	bool has_symbols; ///< si cuando el debugger no inicia es porque no el ejecutable no tiene info de depuracion se baja esta bandera
 	mxInspectionGrid *inspection_grid;
 	bool recording_for_reverse; ///< indica si se ejecuto el comando "record" para habilitar luega la ejecucion hacia atras
@@ -161,7 +162,8 @@ private:
 public:
 	wxString last_command, last_answer;
 	DEBUG_STATUS status;
-	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible, really_running;
+	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible;
+	bool really_running; ///< solo para indicar desde al WaitAnswer que esta esperando el resultado de una ejecución del programa que se esta depurando y no de un comando gdb para setear o averiguar algo (para que en el primer caso haga yield y en el otro no)
 	DebugManager();
 	~DebugManager();
 	void BacktraceClean();
