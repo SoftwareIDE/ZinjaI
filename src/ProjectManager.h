@@ -499,7 +499,10 @@ public:
 	long int Run(compile_and_run_struct_single *compile_and_run);
 	/// not to be called directly, but trough DebugManager::Start(bool)
 	bool Debug(); 
-	void Clean();
+	///< remove temporary files for active configuration
+	void Clean(); 
+	///< remove temporary files for all configurations
+	void CleanAll(); 
 	wxString GetPath();
 	/// Carga todos los breakpoints del proyecto en gdb
 	void SetBreakpoints();

@@ -3435,3 +3435,12 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 	}
 }
 
+void ProjectManager::CleanAll ( ) {
+	project_configuration *act=active_configuration;
+	for(int i=0;i<configurations_count;i++) { 
+		SetActiveConfiguration(configurations[i]);
+		Clean();
+	}
+	SetActiveConfiguration(act);
+}
+

@@ -1094,17 +1094,22 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 	if (!wxFileName::DirExists(user_templates_dir)) 
 		wxFileName::Mkdir(user_templates_dir);
 	if (project) {
-		wxString description=wxGetTextFromUser(LANG(MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre para mostrar del nuevo template de proyecto"));
+		wxString description=wxGetTextFromUser(LANG(MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre para mostrar del nuevo template de proyecto"),LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."),project->project_name);
 		if (!description.Len()) return; 
-		wxString filename=wxGetTextFromUser(LANG(MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre del archivo del nuevo template de proyecto"));
+		wxString filename=wxGetTextFromUser(LANG(MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre del archivo del nuevo template de proyecto"),LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."),wxFileName(project->filename).GetName());
 		if (!filename.Len()) return; 
 		mxOSD(this,LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."));
 		project->Clean(); wxYield(); // remove temporals
 		wxString project_name=project->project_name; project->project_name=description; // replace project name with the new description
 		project->Save(true); // save in place as template
 		project->project_name=project_name; // restore original project name
+		project->CleanAll(); // remove temp files
 		wxString dest_dir=DIR_PLUS_FILE(user_templates_dir,filename);
 		wxFileName::Mkdir(dest_dir); utils->XCopy(project->path,dest_dir,true); // copy all project files
+		wxString zpr=wxFileName(project->filename).GetFullName(); 
+		wxString orig_zpr=DIR_PLUS_FILE(dest_dir,zpr);
+		wxString dest_zpr=DIR_PLUS_FILE(dest_dir,filename+".zpr");
+		if (dest_zpr!=orig_zpr) wxRenameFile(orig_zpr,dest_zpr); // rename .zpr
 		project->Save(); // restore real project file to non-template status
 	} else IF_THERE_IS_SOURCE {
 		wxString description = wxGetTextFromUser(LANG(MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE,"Ingrese el nombre para mostrar del nuevo template de programa simple"));
