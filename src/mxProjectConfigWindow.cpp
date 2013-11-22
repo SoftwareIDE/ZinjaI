@@ -370,7 +370,7 @@ void mxProjectConfigWindow::OnTempDirButton(wxCommandEvent &event){
 }
 
 void mxProjectConfigWindow::OnEnvVarsButton(wxCommandEvent &event){
-	new mxEnumerationEditor(this,_T("Parametros extra para el compilador"),general_env_vars,true,true);
+	new mxEnumerationEditor(this,_T("Parametros extra para el compilador"),general_env_vars,true);
 }
 
 void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {

@@ -498,24 +498,27 @@ wxString mxUtils::Split(wxString str, wxString pre) {
 	return ret;
 }
 
-int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits, bool keep_quotes, bool use_scape_char) {
+int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits, bool keep_quotes) {
 	int c=0, i=0, s, l=str.Len();
 	wxString ret;
-	bool comillas = false;
+	bool comillas = false; char cual_comilla;
 	while (i<l) {
 		while (i<l && (str[i]==' ' || str[i]=='\t' || (coma_splits && (str[i]==',' || str[i]==';') ) ) ) {
 			i++;
 		}
 		s=i;
 		while (i<l && (comillas || !(str[i]==' ' || str[i]=='\t' || (coma_splits && (str[i]==',' || str[i]==';') ) ) ) ) {
-			if (str[i]=='\"') {
-				comillas=!comillas;
+			if (comillas && str[i]==cual_comilla) {
+				comillas=false;
+				if (!keep_quotes) { l--; str.Remove(i,1); i--; }
+			} else if (!comillas && (str[i]=='\"'||str[i]=='\'')) {
+				comillas=true; cual_comilla=str[i];
 				if (!keep_quotes) { l--; str.Remove(i,1); i--; }
 			}
-			else if (str[i]=='\\' && i+1<l) {
-				if (!use_scape_char) i++;
-				else { l--; str.Remove(i,1); }
-			}
+//			else if (str[i]=='\\' && i+1<l) {
+//				if (!use_scape_char) i++;
+//				else { l--; str.Remove(i,1); }
+//			}
 			i++;
 		}
 		if (s<i) {
@@ -975,9 +978,25 @@ void mxUtils::OpenFolder(wxString path) {
 
 wxString mxUtils::Quotize(const wxString &what) {
 	if (what.Find(' ')!=wxNOT_FOUND)
-		return wxString(_T("\""))<<what<<_T("\"");
+		return wxString("\"")<<what<<"\"";
 	else
 		return what;
+}
+
+wxString mxUtils::QuotizeEx(const wxString &what) {
+	if (what.Find(' ')==wxNOT_FOUND&&what.Find(',')==wxNOT_FOUND&&what.Find(';')==wxNOT_FOUND&&what.Find('\'')==wxNOT_FOUND&&what.Find('\"')==wxNOT_FOUND)
+		return what;
+	else if (what.Find('\"')==wxNOT_FOUND)
+		return wxString("\"")<<what<<"\"";
+	else if (what.Find('\'')==wxNOT_FOUND)
+		return wxString("\'")<<what<<"\'";
+	wxString r; int i=0,p=0, l=what.Len();
+	while(i<l) {
+		if (i!=l && what[i]=='\"') { r<<'\''<<what.Mid(p,i-p+1)<<'\''; p=i+1; }
+		if (i!=l && what[i]=='\'') { r<<'\"'<<what.Mid(p,i-p+1)<<'\"'; p=i+1; }
+		i++;
+	}
+	return r;
 }
 
 wxString mxUtils::SingleQuotes(wxString what) {

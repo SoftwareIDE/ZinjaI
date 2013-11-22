@@ -12,10 +12,11 @@ private:
 	wxListBox *list;
 	wxTextCtrl *text;
 	wxComboBox *combo;
+	bool comma_splits;
 public:
-	mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *text, bool comma_splits, bool use_scape_char=false);
-	mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *combo, bool comma_splits, bool use_scape_char=false);
-	void CreateCommonStuff(wxString value, bool comma_splits, bool use_scape_char=false);
+	mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *text, bool comma_splits);
+	mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *combo, bool comma_splits);
+	void CreateCommonStuff(wxString value, bool comma_splits);
 	~mxEnumerationEditor();
 	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);

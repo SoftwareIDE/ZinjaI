@@ -24,16 +24,16 @@ BEGIN_EVENT_TABLE(mxEnumerationEditor, wxDialog)
 END_EVENT_TABLE()
 	
 
-mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *acombo, bool comma_splits, bool use_scape_char) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *acombo, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	text=NULL; combo=acombo;
-	CreateCommonStuff(combo->GetValue(),comma_splits,use_scape_char);
+	CreateCommonStuff(combo->GetValue(),comma_splits);
 }
 
-mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *atext, bool comma_splits, bool use_scape_char) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *atext, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	text=atext; combo=NULL;
-	CreateCommonStuff(text->GetValue(),comma_splits,use_scape_char);
+	CreateCommonStuff(text->GetValue(),comma_splits);
 }
-void mxEnumerationEditor::CreateCommonStuff(wxString value, bool comma_splits, bool use_scape_char) {
+void mxEnumerationEditor::CreateCommonStuff(wxString value, bool comma_splits) {
 	
 	wxBoxSizer *mid_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -62,7 +62,8 @@ void mxEnumerationEditor::CreateCommonStuff(wxString value, bool comma_splits, b
 	main_sizer->Add(bottom_sizer,sizers->Center);
 	
 	wxArrayString array;
-	utils->Split(value,array,comma_splits,false,use_scape_char);
+	this->comma_splits=comma_splits;
+	utils->Split(value,array,comma_splits,false);
 	list->InsertItems(array,0);
 	list->SetFocus();
 	SetSizer(main_sizer);
@@ -75,8 +76,12 @@ mxEnumerationEditor::~mxEnumerationEditor() {
 
 void mxEnumerationEditor::OnOkButton(wxCommandEvent &evt) {
 	wxString str;
-	for (unsigned int i=0;i<list->GetCount();i++)
-		str<<utils->Quotize(utils->EscapeString(list->GetString(i)))<<' ';
+	for (unsigned int i=0;i<list->GetCount();i++) {
+		if (comma_splits)
+			str<<utils->QuotizeEx(list->GetString(i))<<' ';
+		else
+			str<<utils->Quotize(list->GetString(i))<<' ';
+	}
 	if (str.Len()) str.RemoveLast();
 	if (text) text->SetValue(str);
 	if (combo) combo->SetValue(str);

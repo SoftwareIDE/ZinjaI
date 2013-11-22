@@ -100,6 +100,9 @@ public:
 	//! Agrega comillas si la cadena tiene un espacio, sino no
 	wxString Quotize(const wxString &what);
 	
+	//! Agrega comillas si la cadena tiene un espacio, coma o punto y coma, pero ademas mira que comilla usar (simple, doble o ambas)
+	wxString QuotizeEx(const wxString &what);
+	
 	//! Agrega comillas simples a una linea de comandos, respetando las comillas anteriores si había
 	wxString SingleQuotes(wxString what);
 	
@@ -138,7 +141,7 @@ public:
 	bool IsTrue(wxString &value);
 	wxString UnSplit(wxArrayString &array); ///< joins all strins in array into a single string using a single space as separator
 	wxString Split(wxString str, wxString pre);
-	int Split(wxString str, wxArrayString &array, bool coma_splits=true,bool keep_quotes=true, bool use_scape_char=false);
+	int Split(wxString str, wxArrayString &array, bool coma_splits=true,bool keep_quotes=true);
 	int Execute(wxString path, wxString command, int sync);
 	int Execute(wxString path, wxString command, int sync, wxProcess *&process);
 	bool XCopy(wxString src, wxString dst, bool ask=true, bool replace=false);
