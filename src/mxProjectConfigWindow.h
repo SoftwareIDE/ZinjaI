@@ -36,7 +36,7 @@ class mxProjectConfigWindow : public wxDialog {
 	wxTextCtrl *general_exec_script;
 	wxComboBox *general_wait_for_key;
 	
-	wxTextCtrl *general_temp_folder;
+	wxTextCtrl *general_env_vars;
 	wxTextCtrl *general_output_file;
 	wxTextCtrl *linking_icon;
 	wxTextCtrl *linking_manifest;
@@ -51,6 +51,7 @@ class mxProjectConfigWindow : public wxDialog {
 	wxComboBox *compiling_optimization_level;
 	wxComboBox *compiling_std_c;
 	wxComboBox *compiling_std_cpp;
+	wxTextCtrl *compiling_temp_folder;
 
 	// pestana enlazado
 	//wxTextCtrl *linking_resource_file;
@@ -84,6 +85,7 @@ public:
 	wxPanel *CreateLibsPanel (wxNotebook *notebook);
 	void OnManifestDirButton(wxCommandEvent &event);
 	void OnIconDirButton(wxCommandEvent &event);
+	void OnEnvVarsButton(wxCommandEvent &event);
 	void OnTempDirButton(wxCommandEvent &event);
 	void OnWorkingDirButton(wxCommandEvent &event);
 	void OnAddConfigButton(wxCommandEvent &event);

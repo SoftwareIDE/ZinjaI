@@ -214,6 +214,8 @@ struct project_configuration {
 	int exec_method; ///< como se debe ejecutar (0=zinjai ejecuta, 1=primero script luego como 0, 2=todo responsabilidad del escript)
 	wxString exec_script; ///< script para exec_method>0
 	int wait_for_key; ///< esperar una tecla antes de cerrar la consola luego de la ejecución (0=nunca, 1=solo en caso de error, 2=siempre)
+	wxString env_vars; ///< lista con valores para asignar o reemplazar en las variables de entorno antes de ejecutar
+	
 	
 	wxString temp_folder; ///< directorio temporal donde poner los objetos de la compilacion
 	wxString output_file; ///< archivo de salida de la compilacion = ruta del ejecutable

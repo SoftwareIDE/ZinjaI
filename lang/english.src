@@ -3144,8 +3144,8 @@ PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS
 Always
 PROJECTCONFIG_GENERAL_WAIT_KEY
 Wait for a key press after execution
-PROJECTCONFIG_GENERAL_TEMP_FOLDER
-Directory for temporary and intermediate files
+PROJECTCONFIG_GENERAL_ENV_VARS
+Environment variables
 PROJECTCONFIG_COMPILING_EXTRA_ARGS
 Extra arguments for compiler
 PROJECTCONFIG_COMPILING_MACROS
@@ -3188,6 +3188,8 @@ PROJECTCONFIG_COMPILING_OPTIM_SIZE
 Reduce Size
 PROJECTCONFIG_COMPILING_OPTIM
 Optimizations level
+PROJECTCONFIG_GENERAL_TEMP_FOLDER
+Directory for temporary and intermediate files
 PROJECTCONFIG_PROFILE_NAME
 Name:
 PROJECTCONFIG_ADD_PROFILE
@@ -3482,6 +3484,8 @@ GENERAL_POPUP_INSERT_ZINJAI_DIR
 insert ZinjaI's instalation folder
 GENERAL_POPUP_INSERT_BROWSER
 insert browser command
+GENERAL_POPUP_INSERT_SHELL_EXECUTE
+insert command for opening with associated program
 VALGRIND_OUTPUT_MISSING
 Dynamic analysis' information was not found.\nIn order to generate it go to ZinjaI's help.
 VALGRIND_RELOAD_TREE

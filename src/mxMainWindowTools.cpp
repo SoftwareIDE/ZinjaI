@@ -824,11 +824,17 @@ void mxMainWindow::RunCustomTool(cfgCustomTool tool) {
 		cmd.Replace("${MINGW_DIR}",config->mingw_real_path);
 		if (config->Files.browser_command.Len())
 			cmd.Replace("${BROWSER}",config->Files.browser_command);
-		else
+		else {
 #ifdef __WIN32__
 			utils->ParameterReplace(cmd,"${BROWSER}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
 #else
-		cmd.Replace("${BROWSER}","xdg-open");
+			cmd.Replace("${BROWSER}","xdg-open");
+#endif
+		}
+#ifdef __WIN32__
+		utils->ParameterReplace(cmd,"${OPEN}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
+#else
+		cmd.Replace("${OPEN}","xdg-open");
 #endif
 		cmd.Replace("${ZINJAI_DIR}",config->zinjai_dir);
 		

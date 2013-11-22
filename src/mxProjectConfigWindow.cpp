@@ -32,6 +32,7 @@ BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_MANIFEST_DIR,mxProjectConfigWindow::OnManifestDirButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_ICON_DIR,mxProjectConfigWindow::OnIconDirButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_TEMP_DIR,mxProjectConfigWindow::OnTempDirButton)
+	EVT_BUTTON(mxID_PROJECT_CONFIG_ENV_VARS,mxProjectConfigWindow::OnEnvVarsButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_WORKING_DIR,mxProjectConfigWindow::OnWorkingDirButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_ADD,mxProjectConfigWindow::OnAddConfigButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_SELECT,mxProjectConfigWindow::OnSelectConfigButton)
@@ -240,9 +241,9 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 		LANG(PROJECTCONFIG_GENERAL_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),wait_cmb_lab,configuration->wait_for_key);
 	wx_noexe.Add(general_wait_for_key,true);
 	
-	general_temp_folder = utils->AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_TEMP_FOLDER,"Directorio para archivos temporales e intermedios"),configuration->temp_folder,mxID_PROJECT_CONFIG_TEMP_DIR);
-	wx_extern.Add(general_temp_folder,true);
+	general_env_vars = utils->AddDirCtrl(sizer,panel,
+		LANG(PROJECTCONFIG_GENERAL_ENV_VARS,"Variables de entorno"),configuration->env_vars,mxID_PROJECT_CONFIG_ENV_VARS);
+	wx_noexe.Add(general_env_vars,true);
 	
 	panel->SetSizerAndFit(sizer);
 
@@ -324,6 +325,10 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	compiling_optimization_level = utils->AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"),a_optimiz, configuration->optimization_level);
 	wx_extern.Add(compiling_optimization_level,true);
 	
+	compiling_temp_folder = utils->AddDirCtrl(sizer,panel,
+		LANG(PROJECTCONFIG_GENERAL_TEMP_FOLDER,"Directorio para archivos temporales e intermedios"),configuration->temp_folder,mxID_PROJECT_CONFIG_TEMP_DIR);
+	wx_extern.Add(compiling_temp_folder,true);
+	
 	panel->SetSizerAndFit(sizer);
 	return panel;
 
@@ -359,9 +364,22 @@ void mxProjectConfigWindow::OnManifestDirButton(wxCommandEvent &event){
 }
 
 void mxProjectConfigWindow::OnTempDirButton(wxCommandEvent &event){
-	wxDirDialog dlg(this,_T("Carpeta para archivos temporales e intermedios:"),DIR_PLUS_FILE(project->path,general_temp_folder->GetValue()));
+	wxDirDialog dlg(this,_T("Carpeta para archivos temporales e intermedios:"),DIR_PLUS_FILE(project->path,compiling_temp_folder->GetValue()));
 	if (wxID_OK==dlg.ShowModal())
-		general_temp_folder->SetValue(utils->Relativize(dlg.GetPath(),project->path));
+		compiling_temp_folder->SetValue(utils->Relativize(dlg.GetPath(),project->path));
+}
+
+void mxProjectConfigWindow::OnEnvVarsButton(wxCommandEvent &event){
+	text_for_edit=general_env_vars;
+	comma_splits_for_edit=false;
+	wxMenu menu;
+	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
+	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
+	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
+	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
+	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
+	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
+	PopupMenu(&menu);
 }
 
 void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {
@@ -475,10 +493,11 @@ void mxProjectConfigWindow::LoadValues() {
 	general_exec_script->SetValue(configuration->exec_script);
 	general_exec_method->SetSelection(configuration->exec_method);
 	general_wait_for_key->SetSelection(configuration->wait_for_key);
-	general_temp_folder->SetValue(configuration->temp_folder);
+	general_env_vars->SetValue(configuration->env_vars);
 	linking_icon->SetValue(configuration->icon_file);
 	linking_manifest->SetValue(configuration->manifest_file);
 	
+	compiling_temp_folder->SetValue(configuration->temp_folder);
 	compiling_macros->SetValue(configuration->macros);
 	compiling_extra_options->SetValue(configuration->compiling_extra);
 	compiling_headers_dirs->SetValue(configuration->headers_dirs);
@@ -563,8 +582,9 @@ bool mxProjectConfigWindow::SaveValues() {
 	configuration->wait_for_key=general_wait_for_key->GetSelection();
 	configuration->icon_file=linking_icon->GetValue();
 	configuration->manifest_file=linking_manifest->GetValue();
-	configuration->temp_folder=general_temp_folder->GetValue();
+	configuration->env_vars=general_env_vars->GetValue();
 	
+	configuration->temp_folder=compiling_temp_folder->GetValue();
 	configuration->macros=compiling_macros->GetValue();
 	configuration->compiling_extra=compiling_extra_options->GetValue();
 	configuration->headers_dirs=compiling_headers_dirs->GetValue();

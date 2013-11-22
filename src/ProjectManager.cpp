@@ -214,6 +214,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_GENERIC_READ_DN("args",active_configuration->args);
 				else CFG_INT_READ_DN("exec_method",active_configuration->exec_method);
 				else CFG_GENERIC_READ_DN("exec_script",active_configuration->exec_script);
+				else CFG_GENERIC_READ_DN("env_vars",active_configuration->env_vars);
 				else CFG_INT_READ_DN("wait_for_key",active_configuration->wait_for_key);
 				else CFG_GENERIC_READ_DN("temp_folder",active_configuration->temp_folder);
 				else CFG_GENERIC_READ_DN("output_file",active_configuration->output_file);
@@ -698,6 +699,7 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("args",configurations[i]->args);
 		CFG_GENERIC_WRITE_DN("exec_method",configurations[i]->exec_method);
 		CFG_GENERIC_WRITE_DN("exec_script",configurations[i]->exec_script);
+		CFG_GENERIC_WRITE_DN("env_vars",configurations[i]->env_vars);
 		CFG_GENERIC_WRITE_DN("wait_for_key",configurations[i]->wait_for_key);
 		CFG_GENERIC_WRITE_DN("temp_folder",configurations[i]->temp_folder);
 		CFG_GENERIC_WRITE_DN("output_file",configurations[i]->output_file);
@@ -2744,7 +2746,7 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false;
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,have_env_vars=false;
 	for (int i=0;i<configurations_count;i++) {
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
 		if (configurations[i]->optimization_level==5) use_og=true;
@@ -2757,6 +2759,7 @@ int ProjectManager::GetRequiredVersion() {
 		if (configurations[i]->manifest_file.Len()) have_manifest=true;
 		if (configurations[i]->icon_file.Len()) have_icon=true;
 		if (configurations[i]->libs_to_build) builds_libs=true;
+		if (configurations[i]->env_vars.Len()) have_env_vars=true;
 		compile_extra_step *step=configurations[i]->extra_steps;
 		while (step) {
 			if (step->deps.Contains("${TEMP_DIR}")) have_temp_dir=true;
@@ -2773,7 +2776,8 @@ int ProjectManager::GetRequiredVersion() {
 	}
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	version_required=0;
-	if (have_custom_tools) version_required=20131115;
+	if (have_env_vars) version_required=20131122;
+	else if (have_custom_tools) version_required=20131115;
 	else if (use_exec_script) version_required=20130817;
 	else if (use_og || have_std) version_required=20130729;
 	else if (autocodes_file.Len()) version_required=20110814;
@@ -3356,32 +3360,75 @@ wxString ProjectManager::GetTempFolderEx (wxString path, bool create) {
 * Should call AnalizeConfig first.
 **/
 void ProjectManager::SetEnvironment (bool set, bool for_running) {
+	
+#ifdef DEBUG
 	if (for_running) {
-	#ifdef __WIN32__
-		string ldlp_vname="PATH", ldlp_sep=";";
-	#else 
-		string ldlp_vname="LD_LIBRARY_PATH", ldlp_sep=":";
-	#endif
-		static wxString old_ld_library_path;
+		static bool last_was_for_set=false;
+		if (set==last_was_for_set) wxMessageBox("WRONG USE OF ProjectManager::SetEnvironment");
+		last_was_for_set=set;
+	}
+#endif
+	
+	// for execution scripts
+	wxSetEnv("Z_PROJECT_PATH",active_configuration->working_folder);
+	wxSetEnv("Z_PROJECT_BIN",executable_name);
+	wxSetEnv("Z_TEMP_DIR",temp_folder);
+	
+	static HashStringString orig;
+	if (for_running) {
 		if (set) {
+			// update PATH/LD_LIBRARY_PATH to find the project generated dynamic libs
+#ifdef __WIN32__
+			string ldlp_vname="PATH", ldlp_sep=";";
+#else 
+			string ldlp_vname="LD_LIBRARY_PATH", ldlp_sep=":";
+#endif			
+			bool has_libs=false;
+			// obtener el valor actual
+			wxString old_ld_library_path;
 			wxGetEnv(ldlp_vname,&old_ld_library_path);
 			wxString ld_library_path=old_ld_library_path;
+			// recorrer la bibliotecas y agregar lo que haga falta agregar
 			project_library *lib = active_configuration->libs_to_build;
 			while (lib) {
 				if (!lib->is_static) {
+					has_libs=true;
 					if (ld_library_path.Len())
 						ld_library_path<<ldlp_sep;
 					ld_library_path<<utils->Quotize(DIR_PLUS_FILE(path,lib->path));
 				}
 				lib = lib->next;
 			}
-			wxSetEnv(ldlp_vname,ld_library_path);
+			// si habia bibliotecas, guardar el viejo, y actualizarlo
+			if (has_libs) {
+				orig[ldlp_vname]=old_ld_library_path;
+				wxSetEnv(ldlp_vname,ld_library_path);
+			}
+			// add user defined environmental variables
+			if (active_configuration->env_vars.Len()) {
+				wxArrayString array;
+				utils->Split(active_configuration->env_vars,array,true,false);
+				for(unsigned int i=0;i<array.GetCount();i++) {  
+					wxString name=array[i].BeforeFirst('='); 
+					wxString value=array[i].AfterFirst('='); 
+					if (!name.Len()) continue;
+					bool add = name.Last()=='+'; 
+					if (add) name.RemoveLast();
+					wxString old_value; wxGetEnv(name,&old_value);
+					if (orig.find(old_value)==orig.end()) orig[name]=old_value;
+					if (add) value=old_value+value;
+					wxSetEnv(name,value);
+				}
+			}
 		} else {
-			wxSetEnv(ldlp_vname,old_ld_library_path);
+			// restaurar valores originales (de cuando se invoco esta misma funcion con set=false)
+			HashStringString::iterator it=orig.begin();
+			while (it!=orig.end()) {
+				wxSetEnv(it->first,it->second);
+				++it;
+			}
+			orig.clear();
 		}
 	}
-	wxSetEnv("Z_PROJECT_PATH",active_configuration->working_folder);
-	wxSetEnv("Z_PROJECT_BIN",executable_name);
-	wxSetEnv("Z_TEMP_DIR",temp_folder);
 }
 

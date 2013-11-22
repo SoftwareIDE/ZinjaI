@@ -1951,9 +1951,9 @@ Herramienta Personalizada
 TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
 Configurar Herramientas Personalizadas
 TOOLBAR_DESC_TOOLS_CUSTOM_TOOLS_SETTINGS
-Herramientas -> Herramientas Personalizadas -> Configurar...
+Herramientas -> Herramientas Personalizadas -> Configurar (generales)...
 TOOLBAR_DESC_TOOLS_PROJECT_TOOLS_SETTINGS
-Herramientas -> Herramientas Personalizadas -> Configurar...
+Herramientas -> Herramientas Personalizadas -> Configurar (de proyecto)...
 TOOLBAR_CAPTION_VIEW_SPLIT_VIEW
 Duplicar Vista
 TOOLBAR_DESC_VIEW_SPLIT_VIEW
@@ -3144,8 +3144,8 @@ PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS
 Siempre
 PROJECTCONFIG_GENERAL_WAIT_KEY
 Esperar una tecla luego de la ejecucion
-PROJECTCONFIG_GENERAL_TEMP_FOLDER
-Directorio para archivos temporales e intermedios
+PROJECTCONFIG_GENERAL_ENV_VARS
+Variables de entorno
 PROJECTCONFIG_COMPILING_EXTRA_ARGS
 Parametros extra para la compilacion
 PROJECTCONFIG_COMPILING_MACROS
@@ -3188,6 +3188,8 @@ PROJECTCONFIG_COMPILING_OPTIM_SIZE
 Reducir Tamaño
 PROJECTCONFIG_COMPILING_OPTIM
 Nivel de optimizacion
+PROJECTCONFIG_GENERAL_TEMP_FOLDER
+Directorio para archivos temporales e intermedios
 PROJECTCONFIG_PROFILE_NAME
 Nombre:
 PROJECTCONFIG_ADD_PROFILE
@@ -3482,6 +3484,8 @@ GENERAL_POPUP_INSERT_ZINJAI_DIR
 insertar el directorio de instalacion de ZinjaI
 GENERAL_POPUP_INSERT_BROWSER
 insertar comando del navegador
+GENERAL_POPUP_INSERT_SHELL_EXECUTE
+insertar comando para abrir con el programa asociado
 VALGRIND_OUTPUT_MISSING
 No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda.
 VALGRIND_RELOAD_TREE

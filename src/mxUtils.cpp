@@ -1098,6 +1098,7 @@ void mxUtils::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, 
 		else if (opt=="BIN_WORKDIR") menu.Append(mxID_POPUPS_INSERT_WORKDIR,LANG(GENERAL_POPUP_INSERT_WORKDIR,"insertar el directorio de trabajo"));
 		else if (opt=="ZINJAI_DIR") menu.Append(mxID_POPUPS_INSERT_ZINJAI_DIR,LANG(GENERAL_POPUP_INSERT_ZINJAI_DIR,"insertar el directorio de instalacion de ZinjaI"));
 		else if (opt=="BROWSER") menu.Append(mxID_POPUPS_INSERT_BROWSER,LANG(GENERAL_POPUP_INSERT_BROWSER,"insertar comando del navegador"));
+		else if (opt=="SHELL_EXECUTE") menu.Append(mxID_POPUPS_INSERT_SHELL_EXECUTE,LANG(GENERAL_POPUP_INSERT_SHELL_EXECUTE,"insertar comando para abrir con el programa asociado"));
 	} while (options.Len());
 	ProcessTextPopup(0,parent,text,path,title,replace,comma);
 	parent->PopupMenu(&menu);
@@ -1134,6 +1135,8 @@ void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString
 			text="${TEMP_DIR}";
 		} else if (id==mxID_POPUPS_INSERT_BROWSER) {
 			text="${BROWSER}";
+		} else if (id==mxID_POPUPS_INSERT_SHELL_EXECUTE) {
+			text="${OPEN}";
 		} else if (id==mxID_POPUPS_INSERT_PROJECT_PATH) {
 			text="${PROJECT_PATH}";
 		} else if (id==mxID_POPUPS_INSERT_PROJECT_BIN) {

@@ -79,7 +79,7 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 }
 
 void mxCustomTools::OnCommandPopup(wxCommandEvent &event) {
-	utils->ShowTextPopUp(this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),command_ctrl,"TEXT|LIST|FILE|DIR|TEMP_DIR|MINGW_DIR|BROWSER|PROJECT_PATH|PROJECT_BIN|CURRENT_FILE|CURRENT_DIR|ZINJAI_DIR");
+	utils->ShowTextPopUp(this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),command_ctrl,"TEXT|LIST|FILE|DIR|TEMP_DIR|SHELL_EXECUTE|MINGW_DIR|BROWSER|PROJECT_PATH|PROJECT_BIN|CURRENT_FILE|CURRENT_DIR|ZINJAI_DIR");
 }
 
 void mxCustomTools::OnWorkdirPopup(wxCommandEvent &event) {
