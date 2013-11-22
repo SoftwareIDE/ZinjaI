@@ -3412,7 +3412,7 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 					wxString name=array[i].BeforeFirst('='); 
 					wxString value=array[i].AfterFirst('='); 
 					if (!name.Len()) continue;
-					utils->ParameterReplace(value,"${MINGW_DIR}",config->Files.mingw_dir);
+					utils->ParameterReplace(value,"${MINGW_DIR}",config->mingw_real_path);
 					utils->ParameterReplace(value,_T("${TEMP_DIR}"),temp_folder);
 					utils->ParameterReplace(value,_T("${PROJECT_PATH}"),project->path);
 					bool add = name.Last()=='+'; 
