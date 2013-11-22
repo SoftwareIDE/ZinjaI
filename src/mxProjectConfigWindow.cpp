@@ -370,16 +370,7 @@ void mxProjectConfigWindow::OnTempDirButton(wxCommandEvent &event){
 }
 
 void mxProjectConfigWindow::OnEnvVarsButton(wxCommandEvent &event){
-	text_for_edit=general_env_vars;
-	comma_splits_for_edit=false;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
-	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
-	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
-	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
-	PopupMenu(&menu);
+	new mxEnumerationEditor(this,_T("Parametros extra para el compilador"),general_env_vars,true,true);
 }
 
 void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {

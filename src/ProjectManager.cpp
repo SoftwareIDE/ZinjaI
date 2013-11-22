@@ -3407,7 +3407,7 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 			// add user defined environmental variables
 			if (active_configuration->env_vars.Len()) {
 				wxArrayString array;
-				utils->Split(active_configuration->env_vars,array,true,false);
+				utils->Split(active_configuration->env_vars,array,true,false,true);
 				for(unsigned int i=0;i<array.GetCount();i++) {  
 					wxString name=array[i].BeforeFirst('='); 
 					wxString value=array[i].AfterFirst('='); 

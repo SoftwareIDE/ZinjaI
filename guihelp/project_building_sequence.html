@@ -4,7 +4,7 @@
 <BR>
 &nbsp;&nbsp;&nbsp;A continuación se describe detalladamente el proceso de construcción de un proceso. Es decir, todo lo que ocurre detrás del IDE cuando el proyecto se compila.<BR>
 <BR>
-<BR>&nbsp;&nbsp;&nbsp;La secuencia de pasos es la siguiente:<OL>
+<BR>&nbsp;&nbsp;&nbsp;La secuencia de pasos es la siguiente para un proyecto cuya compilación es gestionada directamente por ZinjaI es:<OL>
 	<LI>Se verifica qué pasos hay que ejecutar. Las reglas para ello son:<UL>
 		<LI>Un proyecto wxFormBuilder se recompila (es decir, se regeneran los funentes con las ventanas que éste define) si:<UL>
 			<LI>los fuentes de salida no existen</LI>
@@ -62,6 +62,8 @@
 </OL>
 <BR><BR>
 &nbsp;&nbsp;&nbsp;Siempre puede analizar qué comandos en verdad se ejecutaron tras una compilación haciendo click con el botón derecho del mouse en el <I>Arbol de Resultados de la Compilación</I> y seleccionando la opción <I>Abrir última salida</I> del menú contextual. Aquí observará los comandos ejecutados (precedidos por el signo &gt;) y la salida que cada uno de ellos arrojó a continuación.
+<BR><BR>
+Nota: Un proyecto que utiliza un toolchain basado en una herramienta externa (script de compilación o Makefile por ejemplo), delega todo el proceso de compilación al mismo, por lo que ninguna de las etapas que se describen a continuación aplican en ese caso. Antes de ejecutar el script o la herramienta que corresponda al toolchain, <I>ZinjaI</I> define algunas variables de entorno para comunicarle al mismo valores de la configuración del proyecto que puedan ser de utilidad. Estas son: "Z_PROJECT_PATH", que contiene la carpeta del proyecto; "Z_PROJECT_BIN", que contiene la ubicación del ejecutable; y "Z_TEMP_DIR", que contiene la ruta del directorio de temporales.
 <BR><BR>
 </BODY>
 </HTML>

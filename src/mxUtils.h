@@ -136,9 +136,9 @@ public:
 	// devuelve verdadero si el dato value empieza con '1','V','v','T','t','S' o 's'
 	bool ToInt(wxString &value, int &what);
 	bool IsTrue(wxString &value);
-	wxString UnSplit(wxArrayString &array, wxString sep=_T(" "), bool add_quotes=true);
+	wxString UnSplit(wxArrayString &array); ///< joins all strins in array into a single string using a single space as separator
 	wxString Split(wxString str, wxString pre);
-	int Split(wxString str, wxArrayString &array, bool coma_splits=true,bool keep_quotes=true);
+	int Split(wxString str, wxArrayString &array, bool coma_splits=true,bool keep_quotes=true, bool use_scape_char=false);
 	int Execute(wxString path, wxString command, int sync);
 	int Execute(wxString path, wxString command, int sync, wxProcess *&process);
 	bool XCopy(wxString src, wxString dst, bool ask=true, bool replace=false);

@@ -465,19 +465,12 @@ void mxUtils::FindIncludes(wxString path, wxString filename, fi_file_item *first
 	}
 }
 
-wxString mxUtils::UnSplit(wxArrayString &array, wxString sep, bool add_quotes) {
+wxString mxUtils::UnSplit(wxArrayString &array) {
 	wxString ret;
 	if (array.GetCount()) {
-		if (add_quotes) 
-			ret<<utils->Quotize(array[0]);
-		else
-			ret<<array[0];
+		ret<<array[0];
 		for (unsigned int i=1;i<array.GetCount();i++) {
-			ret<<sep;
-			if (add_quotes) 
-				ret<<utils->Quotize(array[i]);
-			else
-				ret<<array[i];
+			ret<<' '<<array[i];
 		}
 	}
 	return ret;
@@ -505,7 +498,7 @@ wxString mxUtils::Split(wxString str, wxString pre) {
 	return ret;
 }
 
-int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits,bool keep_quotes) {
+int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits, bool keep_quotes, bool use_scape_char) {
 	int c=0, i=0, s, l=str.Len();
 	wxString ret;
 	bool comillas = false;
@@ -515,16 +508,18 @@ int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits,bool kee
 		}
 		s=i;
 		while (i<l && (comillas || !(str[i]==' ' || str[i]=='\t' || (coma_splits && (str[i]==',' || str[i]==';') ) ) ) ) {
-			if (str[i]=='\"') 
+			if (str[i]=='\"') {
 				comillas=!comillas;
-			else if (str[i]=='\\' && i+1<l) i++;
+				if (!keep_quotes) { l--; str.Remove(i,1); i--; }
+			}
+			else if (str[i]=='\\' && i+1<l) {
+				if (!use_scape_char) i++;
+				else { l--; str.Remove(i,1); }
+			}
 			i++;
 		}
 		if (s<i) {
-			if (!keep_quotes && str[s]=='\"' && str[i-1]=='\"')
-				array.Add(str.Mid(s+1,i-s-2));
-			else
-				array.Add(str.Mid(s,i-s));
+			array.Add(str.Mid(s,i-s));
 			c++;
 		}
 	}
@@ -1247,7 +1242,7 @@ void mxUtils::SetArgument (wxString &full, const wxString &arg, bool add) {
 		Split(full,array,false,true);
 		array.Remove(arg);
 		array.Remove(wxString("\"")+arg+"\"");
-		full=UnSplit(array," ",false);
+		full=UnSplit(array);
 	}
 }
 
