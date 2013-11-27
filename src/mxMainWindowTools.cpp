@@ -411,15 +411,22 @@ void mxMainWindow::OnToolsWxfbHelpWx(wxCommandEvent &event) {
 	}
 }
 
+
+class ToolsWxfbInheriterAction : public Parser::OnEndAction {
+	bool the_bool;
+public:
+	ToolsWxfbInheriterAction(bool _the_bool):the_bool(_the_bool){}
+	void Do() { new mxWxfbInheriter(main_window,the_bool); }
+};
+
 void mxMainWindow::OnToolsWxfbInheritClass(wxCommandEvent &event) {
 	OnToolsWxfbRegen(event);
-	new mxWxfbInheriter(this,true);
+	parser->OnEnd(new ToolsWxfbInheriterAction(true),true);
 }
 
 void mxMainWindow::OnToolsWxfbUpdateInherit(wxCommandEvent &event) {
 	OnToolsWxfbRegen(event);
-	UpdateSymbols();;
-	new mxWxfbInheriter(this,false);
+	parser->OnEnd(new ToolsWxfbInheriterAction(true),false);
 }
 
 void mxMainWindow::OnToolsRemoveComments (wxCommandEvent &event) {
