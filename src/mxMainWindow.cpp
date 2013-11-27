@@ -5336,9 +5336,8 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 		if (!opened) {
 //			if (mxMD_YES == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal() ) {
 			mxSource *src=OpenFile(sthe_one,!project);
-			if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
-//			} else
-//				return;
+			new mxGotoFileDialog(the_one.GetFullName(),this,line-1);
+			if (!src || src==EXTERNAL_SOURCE) return;
 		}
 		
 		mxSource *source=CURRENT_SOURCE;
@@ -5491,7 +5490,6 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 #define _aui_update_toolbar_pos(name) { \
 	wxAuiPaneInfo &pi=a.GetPane(toolbar_##name); \
 	cfgToolBars::cfgTbPositions::pos_item &t=config->Toolbars.positions.name; \
-	cerr<<#name<<"  "<<(wxString)t<<endl;\
 	pi.LeftDockable(t.right||t.left); \
 	pi.RightDockable(t.right||t.left); \
 	pi.TopDockable(t.top); \

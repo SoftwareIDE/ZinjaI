@@ -16,8 +16,9 @@ private:
 	wxTimer *timer;
 	wxButton *goto_button;
 	wxButton *cancel_button;
+	int goto_line; ///< line withing the file that should be displayed after openning (it is used when its called for an compiler error from a external build tool/script)
 public:
-	mxGotoFileDialog(wxString text, wxWindow* parent);
+	mxGotoFileDialog(wxString text, wxWindow* parent, int _goto_line=-1);
 	~mxGotoFileDialog();
 	void OnGotoButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);

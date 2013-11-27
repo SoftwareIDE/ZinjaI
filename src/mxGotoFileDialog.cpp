@@ -24,7 +24,9 @@ BEGIN_EVENT_TABLE(mxGotoFileDialog, wxDialog)
 END_EVENT_TABLE()
 	
 	
-mxGotoFileDialog::mxGotoFileDialog(wxString text, wxWindow* parent) : wxDialog( parent, wxID_ANY, LANG(GOTOFILE_CAPTION,"Ir a..."), wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER ) {
+mxGotoFileDialog::mxGotoFileDialog(wxString text, wxWindow* parent, int _goto_line) : wxDialog( parent, wxID_ANY, LANG(GOTOFILE_CAPTION,"Ir a..."), wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER ) {
+	goto_line=_goto_line;
+	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
@@ -76,7 +78,8 @@ void mxGotoFileDialog::OnGotoButton(wxCommandEvent &event) {
 	if (key.Len()) {
 		if (project) {
 			Close();
-			main_window->OpenFile(DIR_PLUS_FILE(project->GetPath(),key),false);
+			mxSource *src=main_window->OpenFile(DIR_PLUS_FILE(project->GetPath(),key),false);
+			if (goto_line!=-1 && src && src!=EXTERNAL_SOURCE) src->MarkError(goto_line); /// for errors with incomplete or relative path from external building tools
 		} else {
 			mxSource *source;
 			for (unsigned int i=0;i<main_window->notebook_sources->GetPageCount();i++) {

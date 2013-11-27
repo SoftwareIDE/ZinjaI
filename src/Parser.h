@@ -155,7 +155,7 @@ public:
 	void CleanAll();
 	bool ParseNextCleanAll();
 	
-	void Parse(bool show_progress=false);
+	void Parse(bool show_progress=false); ///< put the parser to work if it is not working yet (it is safe to call it while parser is working, will be ignored)
 	void ParseSomething(bool first, bool arg_show_progress=false);
 
 	void OnSelectSymbol (wxTreeEvent &event, wxAuiNotebook *notebook);

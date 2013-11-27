@@ -1,5 +1,5 @@
 &nbsp;&nbsp;&nbsp; If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-&nbsp;&nbsp;&nbsp; This release includes several new details, adds experimental support for gcov, improved gprof integration, packs in its Windows' installer an updated MinGW version, and fixes a lot of bugs. Read the <A href="help:ChangeLog.html">full changelog</A>.
+&nbsp;&nbsp;&nbsp; This release adds new project settings (per project custom toolbar, alternative execution methods, user defined environment variables, etc), improves symbols tree information (to support enumerated types and constants), fixes many bugs (such as the annoying compiler error parsing problem when dealing with C++ templates), and also contains some gui minor improvements (such as the habiliy to place tooblar vertically). It is recommended to update complements to take advantage of new projects template's features. Read the <A href="help:ChangeLog.html">full changelog</A>.
 &nbsp;&nbsp;&nbsp; These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 &nbsp;&nbsp;&nbsp; You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.
