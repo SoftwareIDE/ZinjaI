@@ -65,8 +65,8 @@ mxWxfbInheriter::~mxWxfbInheriter() {
 void mxWxfbInheriter::FillBaseArray() {
 	base_array.Clear();
 	for (unsigned int i=0; i<project->wxfbHeaders.GetCount();i++) {
-		parser->ParseFile(project->wxfbHeaders[i]);
-		parser->Parse();
+//		parser->ParseFile(project->wxfbHeaders[i]);
+//		parser->Parse();
 		pd_file *pdf=parser->GetFile(project->wxfbHeaders[i]);
 		if (pdf) {
 			pd_ref *cls_ref = pdf->first_class;
