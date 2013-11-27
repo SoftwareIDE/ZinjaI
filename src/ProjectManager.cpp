@@ -3379,9 +3379,9 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 		if (set) {
 			// update PATH/LD_LIBRARY_PATH to find the project generated dynamic libs
 #ifdef __WIN32__
-			string ldlp_vname="PATH", ldlp_sep=";";
+			wxString ldlp_vname="PATH", ldlp_sep=";";
 #else 
-			string ldlp_vname="LD_LIBRARY_PATH", ldlp_sep=":";
+			wxString ldlp_vname="LD_LIBRARY_PATH", ldlp_sep=":";
 #endif			
 			bool has_libs=false;
 			// obtener el valor actual
@@ -3394,7 +3394,7 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 				if (!lib->is_static) {
 					has_libs=true;
 					if (ld_library_path.Len())
-						ld_library_path<<ldlp_sep;
+						ld_library_path<<(ldlp_sep);
 					ld_library_path<<utils->Quotize(DIR_PLUS_FILE(path,lib->path));
 				}
 				lib = lib->next;
