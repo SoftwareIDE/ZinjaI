@@ -79,7 +79,7 @@ void Parser::ParseProject(bool show_progress) {
 		
 //	if (project->use_wxfb && project->auto_wxfb) parser->OnEnd(POE_AUTOUPDATE_WXFB);
 
-	if (!working) Parse(show_progress);
+	Parse(show_progress);
 }
 
 
@@ -91,7 +91,7 @@ void Parser::ParseSource(mxSource *src, bool dontsave) {
 	} else {
 		actions.insert(actions.end(),parserAction(src,dontsave));
 	}
-	if (!working) Parse();
+	Parse();
 }
 
 bool Parser::ParseNextSource(mxSource *src, bool dontsave) {
@@ -613,13 +613,13 @@ bool Parser::RemoveSource(mxSource *source) {
 	} else {
 		actions.insert(actions.end(),parserAction(source->source_filename.GetFullPath(),'d'));
 	}
-	if (!working) Parse();
+	Parse();
 	return true;
 }
 
 bool Parser::RemoveFile(wxString fname) {
 	actions.insert(actions.end(),parserAction(fname,'d'));
-	if (!working) Parse();
+	Parse();
 	return true;
 }
 
@@ -638,7 +638,7 @@ bool Parser::RenameFile(wxString oldname, wxString newname) {
 }
 
 void Parser::Parse(bool show_progress) {
-	ParseSomething(true,show_progress);
+	if (!working) ParseSomething(true,show_progress);
 }
 
 /// if first==true, then consider arg_show_progress, else consider last valid arg_show_progress
@@ -717,7 +717,7 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 void Parser::CleanAll() {
 	actions.clear();
 	actions.insert(actions.end(),parserAction(0));
-	if (!working) Parse();
+	Parse();
 }
 
 bool Parser::ParseNextCleanAll() {
@@ -740,7 +740,7 @@ void Parser::ParseFile(wxString filename) {
 	wxFileName fname(filename);
 	fname.Normalize();
 	actions.insert(actions.end(),parserAction(fname.GetFullPath()));
-	if (!working) Parse();
+	Parse();
 }
 
 void Parser::OnEnd(OnEndAction *what, bool run_now_if_not_working) {
