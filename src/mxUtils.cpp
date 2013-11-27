@@ -1104,7 +1104,11 @@ void mxUtils::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, 
 		else if (opt=="OUTPUT") menu.Append(mxID_POPUPS_INSERT_OUTPUT,LANG(GENERAL_POPUP_INSERT_OUTPUT,"insertar archivo de salida"));
 		else if (opt=="DEPS") menu.Append(mxID_POPUPS_INSERT_DEPS,LANG(GENERAL_POPUP_INSERT_DEPS,"insertar lista de dependencias"));
 		else if (opt=="TEMP_DIR") menu.Append(mxID_POPUPS_INSERT_TEMP_DIR,LANG(GENERAL_POPUP_INSERT_TEMP_DIR,"insertar directorio de temporales"));
+#ifdef __WIN32__
+		else if (opt=="MINGW_DIR") menu.Append(mxID_POPUPS_INSERT_MINGW_DIR,LANG(GENERAL_POPUP_INSERT_MINGW_DIR,"insertar directorio MinGW"));
+#else
 		else if (opt=="MINGW_DIR") menu.Append(mxID_POPUPS_INSERT_MINGW_DIR,LANG(GENERAL_POPUP_INSERT_MINGW_DIR,"insertar directorio del compilador"));
+#endif
 		else if (opt=="PROJECT_PATH") menu.Append(mxID_POPUPS_INSERT_PROJECT_PATH,LANG(GENERAL_POPUP_INSERT_PROJECT_PATH,"insertar directorio del proyecto"));
 		else if (opt=="PROJECT_BIN") menu.Append(mxID_POPUPS_INSERT_PROJECT_BIN,LANG(GENERAL_POPUP_INSERT_PROJECT_BIN,"insertar ruta del ejecutable"));
 		else if (opt=="CURRENT_FILE") menu.Append(mxID_POPUPS_INSERT_CURRENT_FILE,LANG(GENERAL_POPUP_INSERT_CURRENT_FILE,"insertar archivo actual"));

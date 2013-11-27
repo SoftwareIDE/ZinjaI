@@ -855,6 +855,11 @@ void mxMainWindow::RunCustomTool(cfgCustomTool tool) {
 		} else 
 			workdir=project?project_path:current_dir;
 		
+#if defined(__WIN32__)
+		workdir.Replace("/","\\");
+#else
+		workdir.Replace("\\","/");
+#endif
 		wxSetWorkingDirectory(workdir);
 		
 		if (console) {
