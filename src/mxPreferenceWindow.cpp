@@ -492,6 +492,16 @@ wxPanel *mxPreferenceWindow::CreateCommandsPanel (wxListbook *notebook) {
 
 }
 
+static void RecreateAllToolbars ( ) {
+	main_window->CreateToolbars(main_window->toolbar_file);
+	main_window->CreateToolbars(main_window->toolbar_edit);
+	main_window->CreateToolbars(main_window->toolbar_view);
+	main_window->CreateToolbars(main_window->toolbar_run);
+	if (project) main_window->CreateToolbars(main_window->toolbar_project);
+	main_window->CreateToolbars(main_window->toolbar_tools);
+	main_window->CreateToolbars(main_window->toolbar_misc);
+	main_window->CreateToolbars(main_window->toolbar_debug);
+}
 
 void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
@@ -654,14 +664,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		if (l!=config->Toolbars.icon_size) {
 			toolbar_changed=true;
 			config->Toolbars.icon_size=l;
-			main_window->CreateToolbars(main_window->toolbar_file);
-			main_window->CreateToolbars(main_window->toolbar_edit);
-			main_window->CreateToolbars(main_window->toolbar_view);
-			main_window->CreateToolbars(main_window->toolbar_run);
-			if (project) main_window->CreateToolbars(main_window->toolbar_project);
-			main_window->CreateToolbars(main_window->toolbar_tools);
-			main_window->CreateToolbars(main_window->toolbar_misc);
-			main_window->CreateToolbars(main_window->toolbar_debug);
+			RecreateAllToolbars();
 			toolbar_changed=true;
 		}
 	} else
@@ -689,7 +692,8 @@ void mxPreferenceWindow::OnSkinButton(wxCommandEvent &event){
 	int selection = skin_list->GetSelection();
 	if (selection<0) return;
 	config->Files.skin_dir=skin_paths[selection];
-	mxMessageDialog(main_window,_T("El tema seleccionado se aplicara la proxima vez que cierre y vuelva a iniciar ZinjaI"),_T("Tema de iconos"), mxMD_OK|mxMD_INFO).ShowModal();
+	RecreateAllToolbars(); main_window->SortToolbars(true);
+	mxMessageDialog(main_window,_T("El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI"),_T("Tema de iconos"), mxMD_OK|mxMD_INFO).ShowModal();
 }
 
 void mxPreferenceWindow::OnWxHelpButton(wxCommandEvent &event){
@@ -1365,4 +1369,6 @@ void mxPreferenceWindow::OnXdgButton(wxCommandEvent &evt) {
 void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & event) {
 	mxInspectionsImprovingEditor(this);
 }
+
+
 
