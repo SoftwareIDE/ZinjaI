@@ -105,6 +105,7 @@
 			0 cppcheck.html Análisis Estático (CppCheck)
 			0 wxformbuilder.html Diseño Rápido de Interfases (wxFormBuilder)
 		0 toolchains.html Uso de toolchains alternativos
+		0 complements.html Complementos adicionales instalables
 	0 debug.html Depuración en Zinjai
 		0 debug_info.html Informacion de Depuracion
 		0 debug_exec.html Ejecucion en Depuración
