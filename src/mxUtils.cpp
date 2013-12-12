@@ -831,13 +831,13 @@ bool mxUtils::Compare(const wxArrayString &array1, const wxArrayString &array2, 
 * Dado un nombre de archivo, busca el complementario. Es decir, para un .h busca
 * (verificando que exista) un .c/.cpp /.cxx/.c++ con el mismo nombre y viseversa.
 * @param the_one path completo del archivo
-* @param force_ext sirve para forzar el tipo de archivo que recibe: cabecera 'h' 
-	               o fuente 'c'. El default '*' adivina según la extensión
+* @param force_ext sirve para forzar el tipo de archivo que recibe: cabecera  o
+	               fuente. El default adivina según la extensión
 * @return el nombre del complementario, o una cadena vacia si no lo encuentra
 **/
-wxString mxUtils::GetComplementaryFile(wxFileName the_one, char force_ext) {
-	char ctype=GetFileType(the_one.GetFullPath());
-	if ( force_ext=='c' || ctype=='s' ) {
+wxString mxUtils::GetComplementaryFile(wxFileName the_one, eFileType force_ext) {
+	if (force_ext==FT_NULL) force_ext=GetFileType(the_one.GetFullPath());
+	if (force_ext==FT_SOURCE) {
 		the_one.SetExt(_T("h"));
 		if (the_one.FileExists())
 			return the_one.GetFullPath();

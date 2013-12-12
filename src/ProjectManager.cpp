@@ -2147,14 +2147,13 @@ void ProjectManager::SetSourceExtras(mxSource *source, project_file_item *item) 
 
 /**
 * Agrega los archivos del proyecto al arreglo array. El arreglo no se vacia
-* antes de comenzar. Cuales puede ser 's' para fuentes, 'h' para cabeceras,
-* 'o' para otros, y '*' para todos.
+* antes de comenzar.
 **/
-int ProjectManager::GetFileList(wxArrayString &array, char cuales, bool relative_paths) { // cuales='o','s','h','*'
+int ProjectManager::GetFileList(wxArrayString &array, eFileType cuales, bool relative_paths) {
 	int i=0;
 
 	project_file_item *item;
-	if (cuales=='*' || cuales=='s') {
+	if (cuales==FT_NULL || cuales==FT_SOURCE) {
 		item = first_source;
 		ML_ITERATE(item) {
 			i++;
@@ -2164,7 +2163,7 @@ int ProjectManager::GetFileList(wxArrayString &array, char cuales, bool relative
 				array.Add(DIR_PLUS_FILE(path,item->name));
 		}
 	}
-	if (cuales=='*' || cuales=='h') {
+	if (cuales==FT_NULL || cuales==FT_HEADER) {
 		item = first_header;
 		ML_ITERATE(item) {
 			i++;
@@ -2174,7 +2173,7 @@ int ProjectManager::GetFileList(wxArrayString &array, char cuales, bool relative
 				array.Add(DIR_PLUS_FILE(path,item->name));
 		}
 	}
-	if (cuales=='*' || cuales=='o') {
+	if (cuales==FT_NULL || cuales==FT_OTHER) {
 		item = first_other;
 		ML_ITERATE(item) {
 			i++;
@@ -2184,7 +2183,6 @@ int ProjectManager::GetFileList(wxArrayString &array, char cuales, bool relative
 				array.Add(DIR_PLUS_FILE(path,item->name));
 		}
 	}
-	
 	return i;
 }
 
@@ -3071,7 +3069,7 @@ void static GetFatherMethods(wxString base_header, wxString class_name, wxArrayS
 
 bool ProjectManager::WxfbUpdateClass(wxString fbp_file, wxString cname) {
 	pd_class *pdc_son = parser->GetClass(cname);
-	wxString cfile = utils->GetComplementaryFile(pdc_son->file->name,'h');
+	wxString cfile = utils->GetComplementaryFile(pdc_son->file->name,FT_HEADER);
 	if (cfile.Len()==0) { // si tampoco hay "public:", no hay caso
 		mxMessageDialog(main_window,_T("No se pudo determinar donde definir los nuevos metodos.\nNo se encontró el archivo fuente complementario."),_T("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return false;

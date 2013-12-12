@@ -160,7 +160,7 @@ public:
 	int Levenshtein(const char *s1, int N1, const char *s2, int N2);
 
 	/** @brief Busca el archivo complementario(cpp<->h) **/
-	wxString GetComplementaryFile(wxFileName the_one, char force_ext='*');
+	wxString GetComplementaryFile(wxFileName the_one, eFileType force_ext=FT_NULL);
 	/*@}*/
 	
 	
@@ -239,7 +239,7 @@ public:
 	void ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxString options, wxString path="");
 	void ProcessTextPopup(int id, wxWindow *parent=NULL, wxTextCtrl *t=NULL, wxString path="", wxString title="", bool replace=false, bool comma_splits=false);
 	
-	/// devuelve 's' para source, 'h' para header, 'o' para others, 'z' para proyectos
+	/// determina el tipo de archivo segun su extension
 	eFileType GetFileType(wxString name, bool recognize_projects=true);
 	
 	/// returns the list of files/subdirs from a directory (not recursive, add to the array without clearing first)

@@ -129,7 +129,7 @@ void mxGotoFileDialog::OnTimerInput(wxTimerEvent &event) {
 		
 		wxString path = project->GetPath();
 		wxArrayString array;
-		project->GetFileList(array,'*',true);
+		project->GetFileList(array,FT_NULL,true);
 		for (unsigned int i=0; i<array.GetCount();i++) {
 //			wxFileName fn(array[i]);
 //			fn.Normalize();

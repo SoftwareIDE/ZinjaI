@@ -451,7 +451,7 @@ public:
 	ProjectManager(wxFileName filename); ///< loads a project from a file (just_created=true when its called from new project wizard)
 	~ProjectManager();
 	wxString GetFileName();
-	int GetFileList(wxArrayString &array, char cuales='*', bool relative_paths=false);
+	int GetFileList(wxArrayString &array, eFileType cuales=FT_NULL, bool relative_paths=false);
 	project_file_item *FindFromName(wxString name); ///< busca a partir del nombre de archivo (solo, sin path)
 	project_file_item *FindFromItem(wxTreeItemId &tree_item);
 	wxString GetNameFromItem(wxTreeItemId &tree_item, bool relative=false);

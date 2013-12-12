@@ -63,7 +63,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		if (!project->cppcheck) project->cppcheck=new cppcheck_configuration;
 		wxArrayString files,exclude_list;
 		utils->Split(project->cppcheck->exclude_list,exclude_list,true,false);
-		project->GetFileList(files,'s',true);
+		project->GetFileList(files,FT_SOURCE,true);
 		wxString list(DIR_PLUS_FILE(config->temp_dir,"cppcheck.lst"));
 		wxFile flist(list,wxFile::write);
 		char el='\n';
@@ -894,7 +894,7 @@ void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		wxString the_one;
-		if (source->sin_titulo || !(the_one=utils->GetComplementaryFile(source->source_filename,'c')).Len()) {
+		if (source->sin_titulo || !(the_one=utils->GetComplementaryFile(source->source_filename,FT_SOURCE)).Len()) {
 			mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_HEADER_FOUND,"No se pudo determinar el archivo de cabecera asociado."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 			return;
 		}

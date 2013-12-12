@@ -3527,7 +3527,7 @@ void mxMainWindow::OnFileSave (wxCommandEvent &event) {
 		else {
 			src->SaveSource();
 			project_file_item *fi;
-			if (!project || ((fi=project->FindFromName(src->source_filename.GetFullPath())) && fi->where!='o'))
+			if (!project || ((fi=project->FindFromName(src->source_filename.GetFullPath())) && fi->where!=FT_OTHER))
 				parser->ParseSource(CURRENT_SOURCE,true);
 		} 
 	}
@@ -3558,14 +3558,14 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 			if (source->SaveSource(file)) {
 				parser->RenameSource(source,file);
 				wxString filename = file.GetFullName();
-				char ftype=utils->GetFileType(filename);
+				eFileType ftype=utils->GetFileType(filename);
 				source->SetPageText(filename);
 				if (project)
 					project->last_dir=dlg.GetDirectory();
 				else
 					config->Files.last_dir=dlg.GetDirectory();
 				if (!project) {
-					if (ftype=='s') {
+					if (ftype==FT_SOURCE) {
 						notebook_sources->SetPageBitmap(notebook_sources->GetSelection(),*bitmaps->files.source);
 						source->SetStyle(wxSTC_LEX_CPP);
 						if (project_tree.treeCtrl->GetItemParent(source->treeId)!=project_tree.sources) {
@@ -3574,7 +3574,7 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 						} else
 							project_tree.treeCtrl->SetItemText(source->treeId,filename);
 						project_tree.treeCtrl->Expand(project_tree.sources);
-					} else if (ftype=='h') {
+					} else if (ftype==FT_HEADER) {
 						notebook_sources->SetPageBitmap(notebook_sources->GetSelection(),*bitmaps->files.header);
 						source->SetStyle(wxSTC_LEX_CPP);
 						if (project_tree.treeCtrl->GetItemParent(source->treeId)!=project_tree.headers) {
@@ -3760,7 +3760,7 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 				}
 			}
 			if (header.Len()) {
-				if (utils->GetFileType(header)=='s')
+				if (utils->GetFileType(header)==FT_SOURCE)
 					mxMessageDialog(main_window,key+LANG(MAINW_INSERT_HEADIR_CPP," esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
 				else
 					source->AddInclude(header);
@@ -4375,11 +4375,11 @@ void mxMainWindow::SetExplorerPath(wxString path) {
 		}
 		as.Sort();
 		for (unsigned int i=0;i<as.GetCount();i++) {
-			char ctype=utils->GetFileType(as[i]);
+			eFileType ctype=utils->GetFileType(as[i]);
 			int t=4;
-			if (ctype=='s')	t=1;
-			else if (ctype=='h') t=2;
-			else if (ctype=='z') t=5;
+			if (ctype==FT_SOURCE)	t=1;
+			else if (ctype==FT_HEADER) t=2;
+			else if (ctype==FT_PROJECT) t=5;
 			if (!explorer_tree.show_only_sources || t<3)
 				explorer_tree.treeCtrl->AppendItem(explorer_tree.root,as[i],t);
 		}	
@@ -4511,11 +4511,11 @@ void mxMainWindow::OnExplorerTreeOpenOne(wxCommandEvent &evt) {
 			}
 			as.Sort();
 			for (unsigned int i=0;i<as.GetCount();i++) {
-				char ctype=utils->GetFileType(as[i]);
+				eFileType ctype=utils->GetFileType(as[i]);
 				int t=4;
-				if (ctype=='s') t=1;
-				else if (ctype=='h') t=2;
-				else if (ctype=='z') t=5;
+				if (ctype==FT_SOURCE) t=1;
+				else if (ctype==FT_HEADER) t=2;
+				else if (ctype==FT_PROJECT) t=5;
 				if (!explorer_tree.show_only_sources || (t==1||t==2))
 					explorer_tree.treeCtrl->AppendItem(explorer_tree.selected_item,as[i],t);
 			}	
