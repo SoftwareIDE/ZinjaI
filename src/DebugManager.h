@@ -12,7 +12,7 @@ class BreakPointInfo;
 class mxInspectionGrid;
 class mxIEItemData;
 class wxGrid;
-class file_item;
+class project_file_item;
 class mxInspectionMatrix;
 class mxInspectionExplorer;
 class mxExternInspection;

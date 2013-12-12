@@ -81,7 +81,7 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 	
 	project->AssociateLibsAndSources(configuration);
 
-	file_item *item = project->first_source;
+	project_file_item *item = project->first_source;
 	ML_ITERATE(item) {
 		if (lib && item->lib==lib)
 			sources_in->Append(item->name);
@@ -129,7 +129,7 @@ void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 			aux = aux->next;
 		}
 	}
-	file_item *fi = project->first_source;
+	project_file_item *fi = project->first_source;
 	ML_ITERATE(fi) {
 		if (sources_in->FindString(fi->name)!=wxNOT_FOUND) {
 #if !defined(_WIN32) && !defined(__WIN32__)

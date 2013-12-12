@@ -5,7 +5,7 @@
 _autolist_initialize_global(BreakPointInfo);
 int BreakPointInfo::last_zinjai_id=0;
 
-BreakPointInfo::BreakPointInfo(file_item *_fitem, int _line_number) {
+BreakPointInfo::BreakPointInfo(project_file_item *_fitem, int _line_number) {
 	_autolist_construct_global; _autolist_construct_local(&(_fitem->breaklist));
 	fname=DIR_PLUS_FILE(project->path,_fitem->name);
 #if defined(_WIN32) || defined(__WIN32__)

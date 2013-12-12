@@ -59,7 +59,7 @@ Parser::Parser (mxMainWindow *mainwin) {
 void Parser::ParseProject(bool show_progress) {
 //	main_window->SetStatusText(wxString(_T("Analizando fuentes...")));
 	home=project->path;
-	file_item *item;
+	project_file_item *item;
 	wxString str;
 //	project->SaveAll(false);
 

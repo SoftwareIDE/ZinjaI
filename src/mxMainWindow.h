@@ -11,6 +11,7 @@
 #define IF_THERE_IS_SOURCE if (notebook_sources->GetPageCount()>0)
 #define CURRENT_SOURCE ((mxSource*)notebook_sources->GetPage(notebook_sources->GetSelection()))
 #include "mxCustomTools.h"
+#include "enums.h"
 
 class mxStatusBar;
 class mxHidenPanel;
@@ -34,6 +35,7 @@ class wxStaticText;
 class wxTreeCtrl;
 class wxTextCtrl;
 class compile_and_run_struct_single;
+class project_file_item;
 
 extern mxSplashScreen *splash;
 
@@ -308,7 +310,8 @@ public:
 
 	void OnCompilerTreeShowFull(wxCommandEvent &event);
 	void OnCompilerTreePopup(wxTreeEvent &event);
-	
+
+	void PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item &fi, bool for_tab);
 	void OnProjectTreePopup(wxTreeEvent &event);
 	void OnProjectTreeToggleFullPath(wxCommandEvent &event);
 	void OnProjectTreeOpenFolder(wxCommandEvent &event);
@@ -372,8 +375,8 @@ public:
 	mxSource *OpenFile (wxString filename, bool add_to_project=true);
 	mxSource *FindSource(wxFileName filename, int *pos=NULL);
 	void OpenFileFromGui (wxFileName filename, int *multiple=NULL);
-	wxTreeItemId AddToProjectTreeSimple(wxFileName filename, char where='u');
-	wxTreeItemId AddToProjectTreeProject(wxString filename, char where, bool sort=true);
+	wxTreeItemId AddToProjectTreeSimple(wxFileName filename, eFileType where=FT_NULL);
+	wxTreeItemId AddToProjectTreeProject(wxString filename, eFileType where, bool sort=true);
 	mxSource *IsOpen (wxFileName filename);
 	mxSource *IsOpen (wxTreeItemId tree_item);
 	bool CloseSource(int i);

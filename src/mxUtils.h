@@ -27,6 +27,7 @@
 #define WILDCARD_CPP WILDCARD_SOURCE";"WILDCARD_HEADER
 #define WILDCARD_CPP_EXT WILDCARD_SOURCE";"WILDCARD_HEADER";"WILDCARD_PROJECT
 #define WILDCARD_ALL "*"
+#include "enums.h"
 
 class wxBoxSizer;
 class wxTextCtrl;
@@ -239,7 +240,7 @@ public:
 	void ProcessTextPopup(int id, wxWindow *parent=NULL, wxTextCtrl *t=NULL, wxString path="", wxString title="", bool replace=false, bool comma_splits=false);
 	
 	/// devuelve 's' para source, 'h' para header, 'o' para others, 'z' para proyectos
-	char GetFileType(wxString name, bool recognize_projects=true);
+	eFileType GetFileType(wxString name, bool recognize_projects=true);
 	
 	/// returns the list of files/subdirs from a directory (not recursive, add to the array without clearing first)
 	int GetFilesFromDir(wxArrayString &array, wxString path, bool files=true);

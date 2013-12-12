@@ -77,7 +77,7 @@ void mxProjectStatistics::SetValues(bool all) {
 		int cs=0,ch=0,co=0,ct=0;
 		int lc=0;
 		
-		file_item *fi = project->first_header;
+		project_file_item *fi = project->first_header;
 		ML_ITERATE (fi) { 
 			ch++; ct++;
 			tsz=wxFileName::GetSize(DIR_PLUS_FILE(project->path,fi->name)).ToULong();

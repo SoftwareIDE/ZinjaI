@@ -379,8 +379,7 @@ bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArr
 		first=first->next;
 		if (!ret) {
 			if (project) {
-				char h='h';
-				file_item *fi=project->FindFromName(first->name,&h);
+				project_file_item *fi=project->FindFromName(first->name);
 				if (fi && fi->force_recompile) ret=true;
 			}
 			wxDateTime dt = wxFileName(first->name).GetModificationTime();
@@ -1178,19 +1177,19 @@ void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString
 	ctrl=t; caption=title; comma=comma_splits; win=parent; dir=path; repl=replace;
 }
 
-char mxUtils::GetFileType(wxString name, bool recognize_projects) {
-	wxString pto="."; if (!name.Contains(pto)) return 'o';
+eFileType mxUtils::GetFileType(wxString name, bool recognize_projects) {
+	wxString pto="."; if (!name.Contains(pto)) return FT_OTHER;
 	name=name.AfterLast('.').Lower();
-	if (!name.Len()) return 'o';
+	if (!name.Len()) return FT_OTHER;
 	if (name.Last()=='\"') name.RemoveLast();
-	pto[0]=path_sep; if (name.Contains(pto)) return 'o';
+	pto[0]=path_sep; if (name.Contains(pto)) return FT_OTHER;
 	if (name=="cpp"||name=="c"||name=="c++"||name=="cxx")
-		return 's';
+		return FT_SOURCE;
 	if (name=="h"||name=="hpp"||name=="hxx")
-		return 'h';
+		return FT_HEADER;
 	if (recognize_projects && name==PROJECT_EXT)
-		return 'z';
-	return 'o';		
+		return FT_PROJECT;
+	return FT_OTHER;		
 }
 
 

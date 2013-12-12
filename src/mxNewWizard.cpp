@@ -442,11 +442,11 @@ void mxNewWizard::OnProjectCreate() {
 			cpp_file.Write();
 			cpp_file.Close();
 			if (sel==0)
-				project->AddFile('s',filename);
+				project->AddFile(FT_SOURCE,filename);
 			else if (sel==1)
-				project->AddFile('h',filename);
+				project->AddFile(FT_HEADER,filename);
 			else
-				project->AddFile('o',filename);
+				project->AddFile(FT_OTHER,filename);
 			main_window->OpenFile(filename.GetFullPath(),false);
 			Close();
 			return;

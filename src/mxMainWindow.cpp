@@ -548,6 +548,31 @@ void mxMainWindow::OnSymbolTreePopup(wxTreeEvent &event) {
 	mxHidenPanel::ignore_autohide=false;
 }
 
+void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item &fi, bool for_tab) {
+	
+	project_tree.selected_parent = project_tree.treeCtrl->GetItemParent(project_tree.selected_item);
+	if (!for_tab) menu.Append(mxID_PROJECT_POPUP_OPEN, LANG(MAINW_PROJECT_FILE_POPUP_SHOW_FILE,"&Mostrar Archivo"));
+	menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar Archivo..."));
+	menu.Append(mxID_PROJECT_POPUP_DELETE, LANG(MAINW_PROJECT_FILE_POPUP_DETACH,"&Quitar Archivo"));
+	if (project_tree.selected_parent==project_tree.sources) {
+		menu.AppendSeparator();
+		menu.Append(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"))->Enable(!compiler->IsCompiling());
+		menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
+	}
+	menu.AppendSeparator();
+	if (project_tree.selected_parent!=project_tree.sources)
+		menu.Append(mxID_PROJECT_POPUP_MOVE_TO_SOURCES, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES,"Mover a &Fuentes"));
+	if (project_tree.selected_parent!=project_tree.headers)
+		menu.Append(mxID_PROJECT_POPUP_MOVE_TO_HEADERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS,"Mover a &Cabeceras"));
+	if (project_tree.selected_parent!=project_tree.others)
+		menu.Append(mxID_PROJECT_POPUP_MOVE_TO_OTHERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS,"Mover a &Otros"));
+	menu.AppendSeparator();
+	menu.Append(mxID_PROJECT_POPUP_OPEN_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER,"Abrir carpeta contenedora..."));
+	menu.Append(mxID_PROJECT_POPUP_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"Propiedades..."));
+	menu.AppendSeparator();
+	menu.Append(mxID_PROJECT_POPUP_ADD_MULTI, LANG(MAINW_PROJECT_FILE_POPUP_ADD_MULTI,"&Agregar Múltiples Archivos..."));
+}
+
 void mxMainWindow::OnProjectTreePopup(wxTreeEvent &event) {
 	
 	if (!project) {
@@ -569,27 +594,8 @@ void mxMainWindow::OnProjectTreePopup(wxTreeEvent &event) {
 		menu.Append(mxID_PROJECT_POPUP_ADD_MULTI, LANG(MAINW_PROJECT_FILE_POPUP_ADD_MULTI,"&Agregar Múltiples Archivos..."));
 		menu.Append(mxID_PROJECT_POPUP_OPEN_ALL, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_ALL,"Abrir &Todos"));
 	} else {
-		project_tree.selected_parent = project_tree.treeCtrl->GetItemParent(project_tree.selected_item);
-		menu.Append(mxID_PROJECT_POPUP_OPEN, LANG(MAINW_PROJECT_FILE_POPUP_SHOW_FILE,"&Mostrar Archivo"));
-		menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar Archivo..."));
-		menu.Append(mxID_PROJECT_POPUP_DELETE, LANG(MAINW_PROJECT_FILE_POPUP_DETACH,"&Quitar Archivo"));
-		if (project_tree.selected_parent==project_tree.sources) {
-			menu.AppendSeparator();
-			menu.Append(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"))->Enable(!compiler->IsCompiling());
-			menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
-		}
-		menu.AppendSeparator();
-		if (project_tree.selected_parent!=project_tree.sources)
-			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_SOURCES, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES,"Mover a &Fuentes"));
-		if (project_tree.selected_parent!=project_tree.headers)
-			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_HEADERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS,"Mover a &Cabeceras"));
-		if (project_tree.selected_parent!=project_tree.others)
-			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_OTHERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS,"Mover a &Otros"));
-		menu.AppendSeparator();
-		menu.Append(mxID_PROJECT_POPUP_OPEN_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER,"Abrir carpeta contenedora..."));
-		menu.Append(mxID_PROJECT_POPUP_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"Propiedades..."));
-		menu.AppendSeparator();
-		menu.Append(mxID_PROJECT_POPUP_ADD_MULTI, LANG(MAINW_PROJECT_FILE_POPUP_ADD_MULTI,"&Agregar Múltiples Archivos..."));
+		project_file_item *fi = project->FindFromItem(project_tree.selected_item);
+		if (fi) PopulateProjectFilePopupMenu(menu,*fi,false); // el if debería ser innecesario en este punto
 	}	
 	menu.AppendSeparator();
 	if (config->Init.fullpath_on_project_tree)
@@ -617,7 +623,7 @@ void mxMainWindow::OnCompilerTreeShowFull(wxCommandEvent &event) {
 	for (unsigned int i=0;i<compiler->full_output.GetCount();i++)
 		source->AppendText(compiler->full_output[i]+"\n");
 	notebook_sources->AddPage(source, name ,true, *bitmaps->files.other);
-	if (!project) source->treeId = AddToProjectTreeSimple(name,'o');
+	if (!project) source->treeId = AddToProjectTreeSimple(name,FT_OTHER);
 	source->SetModify(false);
 	source->SetReadOnly(true);
 	source->SetFocus();
@@ -680,15 +686,15 @@ void mxMainWindow::OnProjectTreeDelete(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnProjectTreeMoveToSources(wxCommandEvent &event) {
-	project->MoveFile(project_tree.selected_item,'s');
+	project->MoveFile(project_tree.selected_item,FT_SOURCE);
 }
 
 void mxMainWindow::OnProjectTreeMoveToHeaders(wxCommandEvent &event) {
-	project->MoveFile(project_tree.selected_item,'h');
+	project->MoveFile(project_tree.selected_item,FT_HEADER);
 }
 
 void mxMainWindow::OnProjectTreeMoveToOthers(wxCommandEvent &event) {
-	project->MoveFile(project_tree.selected_item,'o');
+	project->MoveFile(project_tree.selected_item,FT_OTHER);
 }
 
 void mxMainWindow::OnProjectTreeAddMultiple(wxCommandEvent &event) {
@@ -3043,15 +3049,15 @@ mxSource *mxMainWindow::IsOpen (wxTreeItemId tree_item) {
 }
 
 // esta funcion solo se llama cuando no es proyecto
-wxTreeItemId mxMainWindow::AddToProjectTreeProject(wxString name, char where, bool sort) {
+wxTreeItemId mxMainWindow::AddToProjectTreeProject(wxString name, eFileType where, bool sort) {
 	wxString iname=config->Init.fullpath_on_project_tree?name:wxFileName(name).GetFullName();
 	wxTreeItemId item;
 	switch (where) {
-	case 's':
+	case FT_SOURCE:
 		item = project_tree.treeCtrl->AppendItem(project_tree.sources, iname, 1);
 		if (sort) project_tree.treeCtrl->SortChildren(main_window->project_tree.sources);
 		return item;
-	case 'h':
+	case FT_HEADER:
 		item = project_tree.treeCtrl->AppendItem(project_tree.headers, iname, 2);
 		if (sort) project_tree.treeCtrl->SortChildren(main_window->project_tree.headers);
 		break;
@@ -3063,13 +3069,13 @@ wxTreeItemId mxMainWindow::AddToProjectTreeProject(wxString name, char where, bo
 	return item;
 }
 
-wxTreeItemId mxMainWindow::AddToProjectTreeSimple(wxFileName filename, char where) {
-	if (where=='u') where=utils->GetFileType(filename.GetFullName(),false);
+wxTreeItemId mxMainWindow::AddToProjectTreeSimple(wxFileName filename, eFileType where) {
+	if (where==FT_NULL) where=utils->GetFileType(filename.GetFullName(),false);
 	switch (where) {
-		case 's':
+		case FT_SOURCE:
 			return project_tree.treeCtrl->AppendItem(project_tree.sources, filename.GetFullName(), 1);
 			break;
-		case 'h':
+		case FT_HEADER:
 			return project_tree.treeCtrl->AppendItem(project_tree.headers, filename.GetFullName(), 2);
 			break;
 		default:
@@ -3103,7 +3109,7 @@ mxSource *mxMainWindow::OpenFile (wxString filename, bool add_to_project) {
 	
 	if (project && project->use_wxfb && filename.Len()>4 && filename.Mid(filename.Len()-4).CmpNoCase(_T(".fbp"))==0) {
 		if (add_to_project) {
-			project->AddFile('o',filename);
+			project->AddFile(FT_OTHER,filename);
 		} else {
 			mxOSD osd(this,LANG(WXFB_OPENING,"Abriendo wxFormBuilder..."));
 			wxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" \"")+filename+_T("\""));
@@ -3134,11 +3140,11 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		if (add_to_project) {
 			if (project) {
 				 if (!project->HasFile(filename)) {
-					 file_item *fi=project->AddFile('s',filename);
-					 source->treeId=fi->item;
+					project_file_item *fi=project->AddFile(FT_SOURCE,filename);
+					source->treeId=fi->item;
 				 }
 			} else {
-				source->treeId = AddToProjectTreeSimple(filename,'s');
+				source->treeId = AddToProjectTreeSimple(filename,FT_SOURCE);
 			}
 			source->never_parsed=false;
 			parser->ParseFile(filename);
@@ -3148,11 +3154,11 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		if (add_to_project) {
 			if (project) {
 				if (!project->HasFile(filename)) {
-					file_item *fi=project->AddFile('h',filename);
+					project_file_item *fi=project->AddFile(FT_HEADER,filename);
 					source->treeId = fi->item;
 				}
 			} else {
-				source->treeId = AddToProjectTreeSimple(filename,'h');
+				source->treeId = AddToProjectTreeSimple(filename,FT_HEADER);
 			}
 			source->never_parsed=false;
 			parser->ParseFile(filename);
@@ -3162,11 +3168,11 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		if (add_to_project) {
 			if (project) {
 				if (!project->HasFile(filename)) {
-					file_item *fi=project->AddFile('o',filename);
+					project_file_item *fi=project->AddFile(FT_OTHER,filename);
 					source->treeId=fi->item;
 				}
 			} else {
-				source->treeId = AddToProjectTreeSimple(filename,'o');
+				source->treeId = AddToProjectTreeSimple(filename,FT_OTHER);
 			}
 		}
 	}
@@ -3460,7 +3466,7 @@ mxSource *mxMainWindow::NewFileFromText (wxString text, wxString name, int pos) 
 	source->MoveCursorTo(pos);
 	source->SetLineNumbers();
 	notebook_sources->AddPage(source, name ,true, *bitmaps->files.blank);
-	if (!project) source->treeId = AddToProjectTreeSimple(name,'s');
+	if (!project) source->treeId = AddToProjectTreeSimple(name,FT_SOURCE);
 	source->SetModify(false);
 	source->SetFocus();
 	return source;
@@ -3503,7 +3509,7 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 	}
 	source->SetLineNumbers();
 	notebook_sources->AddPage(source, LAST_TITULO ,true, *bitmaps->files.blank);
-	if (!project) source->treeId = AddToProjectTreeSimple(LAST_TITULO,'s');
+	if (!project) source->treeId = AddToProjectTreeSimple(LAST_TITULO,FT_SOURCE);
 	source->SetModify(false);
 	source->SetFocus();
 	return source;
@@ -3520,8 +3526,8 @@ void mxMainWindow::OnFileSave (wxCommandEvent &event) {
 			OnFileSaveAs(event);
 		else {
 			src->SaveSource();
-			char where;
-			if (!project || (project->FindFromName(src->source_filename.GetFullPath(),&where) && where!='o'))
+			project_file_item *fi;
+			if (!project || ((fi=project->FindFromName(src->source_filename.GetFullPath())) && fi->where!='o'))
 				parser->ParseSource(CURRENT_SOURCE,true);
 		} 
 	}
@@ -4637,7 +4643,7 @@ void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 		wxString res(_T("<HTML><HEAD><TITLE>Lineas Resaltadas</TITLE></HEAD><BODY><B>Lineas Resaltadas:</B><BR><UL>"));
 		wxString restmp;
 		
-		file_item *fi = project->first_source;
+		project_file_item *fi = project->first_source;
 		while (fi) {
 			marked_line_item *mi = fi->markers;
 			restmp=_T("");
@@ -5202,7 +5208,7 @@ void mxMainWindow::OnViewDuplicateTab(wxCommandEvent &evt) {
 
 void mxMainWindow::OnProjectTreeToggleFullPath(wxCommandEvent &event) {
 	bool full = config->Init.fullpath_on_project_tree = !config->Init.fullpath_on_project_tree;
-	file_item *it;
+	project_file_item *it;
 	it=project->first_header;
 	ML_ITERATE(it) {
 		project_tree.treeCtrl->SetItemText(it->item,full?it->name:wxFileName(it->name).GetFullName());
@@ -5334,10 +5340,9 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 		}
 		// si no esta abierto
 		if (!opened) {
-//			if (mxMD_YES == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal() ) {
 			mxSource *src=OpenFile(sthe_one,!project);
-			new mxGotoFileDialog(the_one.GetFullName(),this,line-1);
-			if (!src || src==EXTERNAL_SOURCE) return;
+			if (src==EXTERNAL_SOURCE) return; // si era un proyecto wxfb o algo asi que se abre afuera de zinjai
+			if (!src) { new mxGotoFileDialog(the_one.GetFullName(),this,line-1); return; }
 		}
 		
 		mxSource *source=CURRENT_SOURCE;

@@ -2,6 +2,7 @@
 #define MXFINDDIALOG_H
 #include <wx/dialog.h>
 #include <wx/string.h>
+#include "enums.h"
 
 class wxComboBox;
 class wxCheckBox;
@@ -50,7 +51,7 @@ public:
 	bool FindPrev();
 	int FindInSource(mxSource *source,wxString &res);
 	bool FindInSources();
-	bool FindInProject(char where);
+	bool FindInProject(eFileType where);
 };
 
 #endif

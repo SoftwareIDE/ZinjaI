@@ -335,11 +335,11 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		
 		// abrir
 		if (!project->HasFile(cpp_name))
-			project->AddFile('s',cpp_name);
+			project->AddFile(FT_SOURCE,cpp_name);
 		if (!project->HasFile(h_name))
-			project->AddFile('h',h_name);
+			project->AddFile(FT_HEADER,h_name);
 		if (!project->HasFile(fname))
-			project->AddFile('o',fname);
+			project->AddFile(FT_OTHER,fname);
 		main_window->OpenFile(fname,false);
 		return;
 	}
@@ -369,11 +369,11 @@ void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 		if (!project->use_wxfb) project->ActivateWxfb();
 		
 		if (!project->HasFile(cpp_name))
-			project->AddFile('s',cpp_name);
+			project->AddFile(FT_SOURCE,cpp_name);
 		if (!project->HasFile(h_name))
-			project->AddFile('h',h_name);
+			project->AddFile(FT_HEADER,h_name);
 		if (!project->HasFile(fbp_name))
-			project->AddFile('o',fbp_name);
+			project->AddFile(FT_OTHER,fbp_name);
 //		main_window->OpenFile(fbp_name,false);
 		project->WxfbGenerate(true,project->HasFile(fbp_name));
 		parser->Parse();

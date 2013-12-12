@@ -3,7 +3,7 @@
 * @brief Definición de la clase ProjectManager y otras relacionadas
 *
 * ProjectManager, compile_extra_step, doxygen_configuration, project_library, 
-* project_configuration, break_line_item, marked_line_item, file_item,
+* project_configuration, break_line_item, marked_line_item, project_file_item,
 * compile_step, linking_info
 **/
 
@@ -27,8 +27,9 @@
 
 #include "Toolchain.h" // por TOOLCHAIN_MAX_ARGS
 #include "AutoList.h"
-#include "BreakPointInfo.h" // por el delete_autolist(breaklist) del destructor de file_item
+#include "BreakPointInfo.h" // por el delete_autolist(breaklist) del destructor de project_file_item
 #include "mxCustomTools.h"
+#include "enums.h"
 class BreakPointInfo;
 class mxSource;
 
@@ -295,34 +296,41 @@ class project_library;
 * cabeceras y otros). Cada estructura guarda el nombre del archivo, sus listas breakpoints
 * y lineas resaltadas y algunas banderas.
 **/
-struct file_item { // para armar las listas (doblemente enlazadas) de archivos del proyecto
+struct project_file_item { // para armar las listas (doblemente enlazadas) de archivos del proyecto
 	wxString name;
 	wxTreeItemId item;
-	file_item *prev, *next; ///< para enlazar los nodos de la lista
+	project_file_item *prev, *next; ///< para enlazar los nodos de la lista
 	BreakPointInfo *breaklist; ///< primer item de la lista de breakpoints del fuente (se asigna con GetSourceExtras)
 	marked_line_item *markers; ///< primer item de la lista de lineas resaltadas del fuente (sin primer elemento ficticio, se asigna con GetSourceExtras)
-	bool force_recompile; ///< indica se debe recompilar independientemente de la fecha de modificacion (por ejemplo, si lo va a modificar un paso adicional)
+	bool force_recompile; ///< indica que se debe recompilar independientemente de la fecha de modificacion (por ejemplo, si lo va a modificar un paso adicional)
 	int cursor; ///< posicion del cursor en el texto (se asigna con GetSourceExtras)
 	project_library *lib; ///< a que biblioteca pertenece (no siempre es correcto, se rehace con analize_config)
+	bool read_only; ///< indica que se debe abrir como solo lectura (porque es generado por una herramienta externa)
+	bool show_on_goto_func; ///< indica si sus métodos y funciones se deben tener en cuenta para el cuadro "Ir a funcion/clase/método"
+	eFileType where; ///< indica en qué categoria de archivos está asociado al proyecto (s=sources, h=headers, o=otros)
 	
-	file_item (file_item *p, wxString &n, wxTreeItemId &i) {
+	void Init() { // parte comun a ambos constructores
 		force_recompile=false;
 		cursor=0;
 		breaklist=NULL;
 		markers=NULL;
+		read_only=false;
+		show_on_goto_func=true;
+		lib=NULL;
+	}
+	project_file_item (project_file_item *p, wxString &n, wxTreeItemId &i, eFileType w) {
+		Init();
 		name=n;
 		item=i;
 		prev=p;
 		next=NULL;
+		where=w;
 	}
-	file_item () {
-		force_recompile=false;
-		name=_T("");
-		breaklist=NULL;
-		markers=NULL;
-		cursor=0;
+	project_file_item () {
+		Init();
 		next=NULL;
 		prev=NULL;
+		where=FT_NULL;
 	}
 	void ClearExtras(bool all=false) {
 		marked_line_item *mit = markers, *mit2;
@@ -333,7 +341,7 @@ struct file_item { // para armar las listas (doblemente enlazadas) de archivos d
 		}
 		markers=NULL;
 	}
-	~file_item() {
+	~project_file_item() {
 		delete_autolist(breaklist);
 		ClearExtras(true);
 	}
@@ -353,7 +361,7 @@ enum ces_type{CNS_VOID,CNS_SOURCE,CNS_BARRIER,CNS_EXTRA,CNS_LINK,CNS_ICON,CNS_EX
 struct compile_step {
 	ces_type type; ///< que se hace en este paso (compilar fuente, paso personalizado, enlazar
 	bool start_parallel; ///< indica si en este paso se debe comenzar a paralelizar (es decir, si es el primer paso de una etapa paralelizable)
-	void *what; ///< puntero al file_item si es un fuente, al compile_extra_step si es un paso personalizado, o basura si para enlazar
+	void *what; ///< puntero al project_file_item si es un fuente, al compile_extra_step si es un paso personalizado, o basura si para enlazar
 	compile_step *next; ///< puntero al siguiente paso (lista simplemente enlazada)
 	//! constructor
 	compile_step(ces_type t, void *w) : type(t),start_parallel(false),what(w),next(NULL) {}
@@ -405,9 +413,9 @@ public:
 	wxString project_name; ///< el nombre bonito del proyecto
 	wxString filename; ///< el archivo del proyecto
 	wxString path; ///< la carpeta del proyecto
-	file_item *first_header; ///< primeros nodos (ficticios) de la lista de archivos de cabeceras
-	file_item *first_source; ///< primeros nodos (ficticios) de la lista de archivos fuentes
-	file_item *first_other; ///< primeros nodos (ficticios) de la lista de otros archivos
+	project_file_item *first_header; ///< primeros nodos (ficticios) de la lista de archivos de cabeceras
+	project_file_item *first_source; ///< primeros nodos (ficticios) de la lista de archivos fuentes
+	project_file_item *first_other; ///< primeros nodos (ficticios) de la lista de otros archivos
 	wxString autocomp_extra; ///< indices de autocompletado adicionales para este proyecto
 	wxString autocodes_file; ///< archivo con definiciones de autocodigos adicionales
 	wxString macros_file; ///< archivo con definiciones de macros para gdb
@@ -444,30 +452,30 @@ public:
 	~ProjectManager();
 	wxString GetFileName();
 	int GetFileList(wxArrayString &array, char cuales='*', bool relative_paths=false);
-	file_item *FindFromName(wxString name, char *where=NULL); ///< busca a partir del nombre de archivo (solo, sin path)
-	file_item *FindFromItem(wxTreeItemId &tree_item);
+	project_file_item *FindFromName(wxString name); ///< busca a partir del nombre de archivo (solo, sin path)
+	project_file_item *FindFromItem(wxTreeItemId &tree_item);
 	wxString GetNameFromItem(wxTreeItemId &tree_item, bool relative=false);
-	file_item *HasFile(wxFileName file); ///< busca una archivo en el proyecto por su ruta completa
+	project_file_item *HasFile(wxFileName file); ///< busca una archivo en el proyecto por su ruta completa
 	bool Save(bool as_template=false);
 	void MoveFirst(wxTreeItemId &tree_item);
 	
 	//! guarda todos los archivos del proyecto que esten abiertos
 	void SaveAll(bool save_project=true);
 	
-	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un mxSource a un file_item del proyecto
-	void GetSourceExtras(mxSource *source, file_item *item=NULL);
-	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un file_item del proyecto a un mxSource
-	void SetSourceExtras(mxSource *source, file_item *item=NULL);
+	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un mxSource a un project_file_item del proyecto
+	void GetSourceExtras(mxSource *source, project_file_item *item=NULL);
+	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un project_file_item del proyecto a un mxSource
+	void SetSourceExtras(mxSource *source, project_file_item *item=NULL);
 	/// Determina si el archivo item usa alguna de las macros de la lista macros
-	bool DependsOnMacro(file_item *item, wxArrayString &macros);
+	bool DependsOnMacro(project_file_item *item, wxArrayString &macros);
 	/// Guarda todo y marca cuales archivos hay que recompilar, devuelve falso si no hay que compilar ninguno ni reenlazar el ejecutable
-	bool PrepareForBuilding(file_item *only_one=NULL);
+	bool PrepareForBuilding(project_file_item *only_one=NULL);
 	/// Ejecuta el próximo paso para la construcción del proyecto
 	long int CompileNext(compile_and_run_struct_single *compile_and_run, wxString &object_name);
 	/// Compila el archivo de recursos temporal del proyecto (generado por PrepareForBuilding), se invoca a través de CompileNext, no directamente
 	long int CompileIcon(compile_and_run_struct_single *compile_and_run, wxString icon_file);
 	/// Ejecuta un paso de compilación de un fuente del proyecto en la construcción de un proceso, se invoca a través de CompileNext, o del otro CompileFile, no directamente
-	long int CompileFile(compile_and_run_struct_single *compile_and_run, file_item *item);
+	long int CompileFile(compile_and_run_struct_single *compile_and_run, project_file_item *item);
 	/// Ejecuta un paso compilación adicional, se invoca a través de CompileNext, no directamente
 	long int CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step);
 	/// Ejecuta el paso de enlazado en la construcción de un proceso, se invoca a través de CompileNext, no directamente
@@ -478,11 +486,11 @@ public:
 	bool RenameFile(wxTreeItemId &tree_item, wxString new_name);
 	/// Compila un solo fuente del proyecto, preparando la configuración, fuera del proceso de construcción general
 	long int CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename);
-	bool MoveFile(wxTreeItemId &tree_item, char where);
+	bool MoveFile(wxTreeItemId &tree_item, eFileType where);
 	bool DeleteFile(wxTreeItemId &tree_item, bool also=false);
-	file_item *AddFile (char where, wxFileName name, bool sort_tree=true);
+	project_file_item *AddFile (eFileType where, wxFileName name, bool sort_tree=true);
 	/// Regenera uno o todos los proyecto wxFormBuilder
-	bool WxfbGenerate(bool show_osd=false, file_item *cual=NULL);
+	bool WxfbGenerate(bool show_osd=false, project_file_item *cual=NULL);
 	/// Regenerar proyectos o actualizar clases de wxFormBuilder si es necesario
 	void WxfbAutoCheck();
 	/// Agrega al proyecto un clase heredada de alguna de las diseñadas en wxFormBuilder
@@ -517,9 +525,9 @@ public:
 	/** @brief Elimina una biblioteca a construir de una configuración **/
 	project_library *GetLibToBuild(project_configuration *conf, wxString libname);
 	
-	/// @brief Asocia los fuenes a las bibliotecas de una configuracion (llena el puntero lib de file_item)
+	/// @brief Asocia los fuenes a las bibliotecas de una configuracion (llena el puntero lib de project_file_item)
 	void AssociateLibsAndSources(project_configuration *conf=NULL);
-	/// @brief Guarda las asociaciones de los fuentes (puntero lib de file_item) en la configuracion que recibe
+	/// @brief Guarda las asociaciones de los fuentes (puntero lib de project_file_item) en la configuracion que recibe
 	void SaveLibsAndSourcesAssociation(project_configuration *conf=NULL);
 	
 	/** @brief Añade un paso de compilación personalizado a una configuración  **/

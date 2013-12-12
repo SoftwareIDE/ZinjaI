@@ -338,7 +338,7 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 	} else {
 		switch (scope) {
 		case 3:
-			if (FindInProject('s') && check_close->GetValue()) {
+			if (FindInProject(FT_SOURCE) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -346,7 +346,7 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 			}
 			break;
 		case 4:
-			if (FindInProject('h') && check_close->GetValue()) {
+			if (FindInProject(FT_HEADER) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -354,7 +354,7 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 			}
 			break;
 		case 5:
-			if (FindInProject('o') && check_close->GetValue()) {
+			if (FindInProject(FT_OTHER) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -362,7 +362,7 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 			}
 			break;
 		default:
-			if (FindInProject('*') && check_close->GetValue()) {
+			if (FindInProject(FT_NULL) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -427,7 +427,7 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 	} else {
 		switch (scope) {
 		case 3:
-			if (FindInProject('s') && check_close->GetValue()) {
+			if (FindInProject(FT_SOURCE) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -435,7 +435,7 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 			}
 			break;
 		case 4:
-			if (FindInProject('h') && check_close->GetValue()) {
+			if (FindInProject(FT_HEADER) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -443,7 +443,7 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 			}
 			break;
 		case 5:
-			if (FindInProject('o') && check_close->GetValue()) {
+			if (FindInProject(FT_OTHER) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -451,7 +451,7 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 			}
 			break;
 		default:
-			if (FindInProject('*') && check_close->GetValue()) {
+			if (FindInProject(FT_NULL) && check_close->GetValue()) {
 				MyHide(); /*main_window->Raise();*/
 			} else {
 				Raise();
@@ -669,7 +669,7 @@ int mxFindDialog::FindInSource(mxSource *source,wxString &res) {
 	return count;
 }
 
-bool mxFindDialog::FindInProject(char where) {
+bool mxFindDialog::FindInProject(eFileType where) {
 	last_flags = wxSTC_FIND_MATCHCASE;
 	wxArrayString array;
 	project->GetFileList(array,where);

@@ -4,7 +4,7 @@
 #include "AutoList.h"
 
 class mxSource;
-class file_item;
+class project_file_item;
 
 /**
 * @brief guarda toda la información acerca de un punto de interrupción
@@ -52,7 +52,7 @@ public:
 	int action; ///< what to do when breakpoint is hitted, valid values are from BREAK_POINT_ACTION
 	int ignore_count; ///< number of times the breakpoint should be reached before really pausing the program (mxBreakOptions)
 	wxString cond; ///< bool expression for conditional breakpoints (mxBreakOptions)
-	BreakPointInfo(file_item *fitem, int _line_number); ///< to be called when loading a project, registers the breakpoint in the file_item::breaklist
+	BreakPointInfo(project_file_item *fitem, int _line_number); ///< to be called when loading a project, registers the breakpoint in the file_item::breaklist
 	BreakPointInfo(mxSource *_source, int _line_number); ///< to be called from mxSource events, registers the breakpoint in the mxSource::breaklist
 	void SetStatus(BREAK_POINT_STATUS _status, int _gdb_id=-1);
 	void UpdateLineNumber();

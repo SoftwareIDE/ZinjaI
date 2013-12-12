@@ -83,16 +83,16 @@ void mxMultipleFileChooser::OnButtonOk(wxCommandEvent &event) {
 	if (mxMD_YES!=x) return;
 	mxOSD osd(main_window,LANG(OSD_ADDING_FILES,"Agregando archivos..."));
 	int iw=cmb_where->GetSelection();
-	char where='*';
-	if (iw==0) where='s';
-	else if (iw==1) where='h';
-	else if (iw==2) where='o';
+	eFileType where=FT_NULL;
+	if (iw==0) where=FT_SOURCE;
+	else if (iw==1) where=FT_HEADER;
+	else if (iw==2) where=FT_OTHER;
 	for (int i=0;i<n;i++) {
 		wxString fname=DIR_PLUS_FILE(search_base,list->GetString(i));
 		if (list->IsChecked(i) && !project->HasFile(fname)) {
-			char w=where=='*'?utils->GetFileType(fname,false):where;
-			project->AddFile(w,fname);
-			if (w=='s'||w=='h') parser->ParseFile(fname);
+			if (where==FT_NULL) where=utils->GetFileType(fname,false);
+			project->AddFile(where,fname);
+			if (where==FT_SOURCE||where==FT_HEADER) parser->ParseFile(fname);
 		}
 	}
 	if (config->Init.autohiding_panels)
