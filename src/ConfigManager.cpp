@@ -526,6 +526,10 @@ bool ConfigManager::Load() {
 			Running.compiler_options.Replace("-O0","-Og");
 	}
 	
+	if (Init.version<20131213) {
+		Help.autocomp_indexes+=",AAA_Estandar_Cpp11";
+	}
+	
 	fil.Close();
 	if (last_files.GetCount()) {
 		int ps=0, pp=0;
@@ -1061,7 +1065,7 @@ void ConfigManager::LoadDefaults(){
 	Help.quickhelp_dir="quickhelp";
 	Help.guihelp_dir="guihelp";
 //	Help.autocomp_dir="autocomp";
-	Help.autocomp_indexes=_T("AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,STL_Contenedores,STL_Algoritmos,STL_Iteradores,AAA_Palabras_Reservadas");
+	Help.autocomp_indexes=_T("AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,AAA_Estandar_Cpp11,STL_Contenedores,STL_Algoritmos,STL_Iteradores,AAA_Palabras_Reservadas");
 	Help.min_len_for_completion=3;
 	Help.show_extra_panels=true;
 	

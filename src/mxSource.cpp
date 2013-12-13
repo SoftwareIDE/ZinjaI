@@ -50,7 +50,8 @@ const wxChar* mxSourceWords1 =
 	_T("mutable namespace new not operator or private protected public ")
 	_T("reinterpret_cast return sizeof static_cast ")
 	_T("struct switch template this throw true try typedef typeid ")
-	_T("typename union using virtual while xor");
+	_T("typename union using virtual while xor ")
+	_T("auto constexp decltype static_assert final override noexcept nullptr"); // c++ 2011
 const wxChar* mxSourceWords2 =
 	_T("bool char const double float int long mutable register ")
 	_T("short signed static unsigned void volatile wchar_t");

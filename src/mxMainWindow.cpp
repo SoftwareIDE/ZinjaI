@@ -549,7 +549,6 @@ void mxMainWindow::OnSymbolTreePopup(wxTreeEvent &event) {
 }
 
 void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item &fi, bool for_tab) {
-	
 	project_tree.selected_parent = project_tree.treeCtrl->GetItemParent(project_tree.selected_item);
 	if (!for_tab) menu.Append(mxID_PROJECT_POPUP_OPEN, LANG(MAINW_PROJECT_FILE_POPUP_SHOW_FILE,"&Mostrar Archivo"));
 	menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar Archivo..."));

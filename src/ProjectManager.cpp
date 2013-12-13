@@ -1639,6 +1639,35 @@ project_configuration *ProjectManager::GetConfig(wxString name) {
 	return NULL;
 }
 
+wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step) {
+	wxString deps, output;
+	return GetCustomStepCommand(step,config->mingw_real_path,deps,output);
+}
+
+wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step, wxString mingw_dir, wxString &deps, wxString &output) {
+	wxString command = step->command;
+	output = step->out;
+	deps = step->deps;
+	utils->ParameterReplace(deps,"${TEMP_DIR}",project->temp_folder);
+	utils->ParameterReplace(deps,"${PROJECT_PATH}",project->path);
+	utils->ParameterReplace(deps,"${PROJECT_BIN}",project->executable_name);
+	utils->ParameterReplace(output,"${TEMP_DIR}",project->temp_folder);
+	utils->ParameterReplace(output,"${PROJECT_PATH}",project->path);
+	utils->ParameterReplace(output,"${PROJECT_BIN}",project->executable_name);
+	utils->ParameterReplace(command,"${TEMP_DIR}",project->temp_folder);
+	utils->ParameterReplace(command,"${PROJECT_PATH}",project->path);
+	utils->ParameterReplace(command,"${PROJECT_BIN}",project->executable_name);
+//#if defined(_WIN32) || defined(__WIN32__)
+	utils->ParameterReplace(output,"${MINGW_DIR}",mingw_dir);
+	utils->ParameterReplace(deps,"${MINGW_DIR}",mingw_dir);
+	utils->ParameterReplace(command,"${MINGW_DIR}",mingw_dir);
+//#endif
+	utils->ParameterReplace(command,"${DEPS}",deps);
+	utils->ParameterReplace(command,"${OUTPUT}",output);
+	return command;
+}
+
+
 void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir,makefile_type mktype) {
 	
 	wxString old_temp_folder = active_configuration->temp_folder;
@@ -1748,25 +1777,8 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		estep=active_configuration->extra_steps;
 		while (estep) {
 			if (estep->out.Len()) {
-				wxString command = estep->command;
-				wxString output = estep->out;
-				wxString deps = estep->deps;
-				utils->ParameterReplace(deps,"${TEMP_DIR}",project->temp_folder);
-				utils->ParameterReplace(deps,"${PROJECT_PATH}",project->path);
-				utils->ParameterReplace(deps,"${PROJECT_BIN}",project->executable_name);
-				utils->ParameterReplace(output,"${TEMP_DIR}",project->temp_folder);
-				utils->ParameterReplace(output,"${PROJECT_PATH}",project->path);
-				utils->ParameterReplace(output,"${PROJECT_BIN}",project->executable_name);
-				utils->ParameterReplace(command,"${TEMP_DIR}",project->temp_folder);
-				utils->ParameterReplace(command,"${PROJECT_PATH}",project->path);
-				utils->ParameterReplace(command,"${PROJECT_BIN}",project->executable_name);
-#if defined(_WIN32) || defined(__WIN32__)
-				utils->ParameterReplace(output,"${MINGW_DIR}",mingw_dir);
-				utils->ParameterReplace(deps,"${MINGW_DIR}",mingw_dir);
-				utils->ParameterReplace(command,"${MINGW_DIR}",mingw_dir);
-#endif
-				utils->ParameterReplace(command,"${DEPS}",deps);
-				utils->ParameterReplace(command,"${OUTPUT}",output);
+				wxString output,deps,command;
+				command = GetCustomStepCommand(estep,mingw_dir,deps,output);
 				fil.AddLine(output+_T(": ")+deps);
 				fil.AddLine(_T("\t")+command);
 				fil.AddLine(_T(""));
@@ -2605,21 +2617,9 @@ compile_extra_step *ProjectManager::GetExtraStep(project_configuration *conf, wx
 }
 
 long int ProjectManager::CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step) {
-	
-	// preparar la linea de comando (OJO! esto tambien esta en mxProjectConfigWindow)
-	wxString command = step->command;
-	utils->ParameterReplace(command,_T("${OUTPUT}"),step->out);
-	utils->ParameterReplace(command,_T("${DEPS}"),step->deps);
-#if defined(_WIN32) || defined(__WIN32__)
-	utils->ParameterReplace(command,_T("${MINGW_DIR}"),config->mingw_real_path);
-#endif
-	utils->ParameterReplace(command,_T("${PROJECT_PATH}"),project->path);
-	utils->ParameterReplace(command,_T("${PROJECT_BIN}"),project->executable_name);
-	utils->ParameterReplace(command,_T("${TEMP_DIR}"),temp_folder_short);
+	wxString command = GetCustomStepCommand(step);
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
-	
-	// ejecutar
 	compile_and_run->output_type=MXC_EXTRA;
 	compile_and_run->step_label=step->name;
 	compile_and_run->full_output.Add(_T(""));

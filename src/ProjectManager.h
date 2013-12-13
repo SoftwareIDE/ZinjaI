@@ -459,8 +459,13 @@ public:
 	bool Save(bool as_template=false);
 	void MoveFirst(wxTreeItemId &tree_item);
 	
-	//! guarda todos los archivos del proyecto que esten abiertos
+	/// guarda todos los archivos del proyecto que esten abiertos
 	void SaveAll(bool save_project=true);
+	
+	/// arma el comando para ejecutar de un paso de compilación personalizado, reemplazando todas las variables de sus campos
+	wxString GetCustomStepCommand(const compile_extra_step *step, wxString mingw_dir, wxString &deps, wxString &output);
+	/// arma el comando para ejecutar de un paso de compilación personalizado, reemplazando todas las variables de sus campos
+	wxString GetCustomStepCommand(const compile_extra_step *step);
 	
 	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un mxSource a un project_file_item del proyecto
 	void GetSourceExtras(mxSource *source, project_file_item *item=NULL);

@@ -890,11 +890,7 @@ void mxProjectConfigWindow::OnStepsRun(wxCommandEvent &evt) {
 	compile_extra_step *step = project->GetExtraStep(configuration,steps_list->GetString(steps_list->GetSelection()));
 	if (!step) return;
 	wxString temp_folder_short = configuration->temp_folder;
-	wxString command = step->command;
-#if defined(_WIN32) || defined(__WIN32__)
-	utils->ParameterReplace(command,_T("${MINGW_DIR}"),config->mingw_real_path);
-#endif
-	utils->ParameterReplace(command,_T("${TEMP_DIR}"),temp_folder_short);
+	wxString command = project->GetCustomStepCommand(step);
 	if (step->hide_window) {
 		mxOutputView *outwin= new mxOutputView(step->name,mxOV_EXTRA_NULL,"","",mxVO_NULL,"");
 		outwin->Launch(project->path,command);
