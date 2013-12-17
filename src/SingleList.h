@@ -166,6 +166,8 @@ private:
 	}	
 };
 
+template<class T> class LocalListIterator;
+
 /**
 * A LocalList is a list that contains elements that are also registered in a GlobalList. This class is 
 * responsible for keeping the global one synchronized, and is the real owner of the elements.
@@ -173,6 +175,7 @@ private:
 template<class T>
 class LocalList : private SingleList<LocalListNode<T> > {
 	friend class LocalListNodePtr<T>;
+	friend class LocalListIterator<T>;
 	GlobalList<T> *m_global_list; ///< a GlobalList that will contain references to elements in this list (among others)
 	LocalList(const LocalList &other) {} ///< it is not allowed to duplicate a LocalList
 public:
@@ -212,6 +215,14 @@ public:
 		SingleList<LocalListNode<T> >::Remove(pos); // remove from local (this will make a swap)
 		int size=SingleList<LocalListNode<T> >::m_size;
 		if (size!=pos) m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+pos,pos); // udate position in references to the swapped element)
+	}
+	/// swaps positions for two elements
+	void Swap(int i, int j) {
+		LocalListNode<T> aux=SingleList<LocalListNode<T> >::m_vec[i]; 
+		SingleList<LocalListNode<T> >::m_vec[i]=SingleList<LocalListNode<T> >::m_vec[j]; 
+		SingleList<LocalListNode<T> >::m_vec[j]=aux;
+		m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+j,j); // udate position in references to the swapped element)
+		m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+i,i); // udate position in references to the swapped element)
 	}
 	/// retrieves and elemento from the list
 	T &operator[](int i) { 
@@ -260,6 +271,8 @@ public:
 	GlobalListIterator(GlobalList<T> *g) : m_node(g->m_first) {}
 	bool IsValid () { return !m_node.IsNull(); }
 	bool Next() { m_node=m_node->m_next; return !m_node.IsNull(); }
+	T &operator*() { return m_node->m_data; }
+	const T &operator*() const { return m_node->data; }
 	T &GetData() { return m_node->m_data; }
 	const T &GetData() const { return m_node->data; }
 	T &operator->() { return m_node->m_data; }
@@ -271,7 +284,7 @@ template<class T>
 GlobalListIterator<T> GlobalList<T>::Find(T data) {
 	GlobalListIterator<T> it(this);
 	while (it.IsValid()) {
-		if (it.GetData()==data) return it;
+		if (*it==data) return it;
 		it.Next();
 	}
 	return it;
@@ -288,5 +301,20 @@ void GlobalList<T>::FindAndRemove(T data) {
 	if (it.IsValid()) Remove(it);
 }
 
+template<class T>
+class LocalListIterator {
+	LocalListNodePtr<T> m_ptr;
+public:
+	LocalListIterator() {}
+	LocalListIterator(LocalList<T> *list) : m_ptr(list,0) {}
+	bool IsValid() { return m_ptr.m_list && m_ptr.m_pos<m_ptr.m_list->m_size; }
+	void Next() { m_ptr.m_pos++; }
+	T &GetData() { return (m_ptr.m_list->m_vec+m_ptr.m_pos)->m_data; }
+	const T &GetData() const { return (m_ptr.m_list->m_vec+m_ptr.m_pos)->m_data; }
+	T &operator*() { return (m_ptr.m_list->m_vec+m_ptr.m_pos)->m_data; }
+	const T &operator*() const { return (m_ptr.m_list->m_vec+m_ptr.m_pos)->m_data; }
+	T &operator->() { return (m_ptr.m_list->m_vec+m_ptr.m_pos)->m_data; }
+	const T &operator->() const { return (m_ptr.m_list->m_vec+m_ptr.m_pos)->m_data; }
+};
 #endif
 

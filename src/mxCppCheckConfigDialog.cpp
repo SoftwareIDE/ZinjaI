@@ -121,12 +121,13 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	
 	wxArrayString array;
 	utils->Split(ccc->exclude_list,array,true,false);
-	project_file_item *fi=project->first_source;
-	ML_ITERATE(fi) {
+	LocalListIterator<project_file_item*> fi(&project->files_sources);
+	while(fi.IsValid()) {
 		if (array.Index(fi->name)==wxNOT_FOUND)
 			sources_in->Append(fi->name);
 		else 
 			sources_out->Append(fi->name);
+		fi.Next();
 	}
 	
 	panel->SetSizer(src_sizer);

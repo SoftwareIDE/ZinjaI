@@ -59,22 +59,16 @@ Parser::Parser (mxMainWindow *mainwin) {
 void Parser::ParseProject(bool show_progress) {
 //	main_window->SetStatusText(wxString(_T("Analizando fuentes...")));
 	home=project->path;
-	project_file_item *item;
 	wxString str;
 //	project->SaveAll(false);
 
-	item=project->first_source;
-	ML_ITERATE(item) {
-		actions.insert(actions.end(),parserAction(project,DIR_PLUS_FILE(project->path,item->name)));
-	}
-	
-//	if (!follow_includes) {
-		item=project->first_header;
-		ML_ITERATE(item) {
+	for(int i=0;i<2;i++) { 
+		LocalListIterator<project_file_item*> item(i==0?&project->files_sources:&project->files_headers);
+		while(item.IsValid()) {
 			actions.insert(actions.end(),parserAction(project,DIR_PLUS_FILE(project->path,item->name)));
+			item.Next();
 		}
-//	}
-
+	}
 	source=NULL;
 		
 //	if (project->use_wxfb && project->auto_wxfb) parser->OnEnd(POE_AUTOUPDATE_WXFB);

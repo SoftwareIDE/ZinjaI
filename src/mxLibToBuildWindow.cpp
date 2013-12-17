@@ -81,12 +81,13 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 	
 	project->AssociateLibsAndSources(configuration);
 
-	project_file_item *item = project->first_source;
-	ML_ITERATE(item) {
+	LocalListIterator<project_file_item*> item(&project->files_sources);
+	while (item.IsValid()) {
 		if (lib && item->lib==lib)
 			sources_in->Append(item->name);
 		else
 			sources_out->Append(item->name);
+		item.Next();
 	}
 	
 	constructed=true;
@@ -129,8 +130,8 @@ void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 			aux = aux->next;
 		}
 	}
-	project_file_item *fi = project->first_source;
-	ML_ITERATE(fi) {
+	LocalListIterator<project_file_item*> fi(&project->files_sources);
+	while(fi.IsValid()) {
 		if (sources_in->FindString(fi->name)!=wxNOT_FOUND) {
 #if !defined(_WIN32) && !defined(__WIN32__)
 			if (!fi->lib) fi->force_recompile=true; // por el fPIC
@@ -142,6 +143,7 @@ void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 			fi->lib=NULL;
 #endif
 		}
+		fi.Next();
 	}
 	project->SaveLibsAndSourcesAssociation(configuration);
 	lib->need_relink=true;

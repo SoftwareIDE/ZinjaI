@@ -557,7 +557,7 @@ void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item 
 	if (fi && project_tree.selected_parent==project_tree.sources) {
 		menu.AppendSeparator();
 		wxMenuItem *item=menu.AppendCheckItem(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"));
-		item->Enable(!compiler->IsCompiling()); item->Check(fi==project->first_source->next);
+		item->Enable(fi!=project->files_sources[0] && !compiler->IsCompiling()); item->Check(fi==project->files_sources[0]);
 		menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
 	}
 	menu.AppendSeparator();
@@ -4643,32 +4643,14 @@ void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 		wxString res(_T("<HTML><HEAD><TITLE>Lineas Resaltadas</TITLE></HEAD><BODY><B>Lineas Resaltadas:</B><BR><UL>"));
 		wxString restmp;
 		
-		project_file_item *fi = project->first_source;
-		while (fi) {
+		GlobalListIterator<project_file_item*> fi(&project->files_all);
+		while (fi.IsValid()) {
 			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
 			restmp=_T("");
 			for(int i=0;i<markers_list.GetSize();i++)
 				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
 			res<<restmp;	
-			ML_NEXT(fi);
-		}
-		fi = project->first_header;
-		while (fi) {
-			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
-			restmp=_T("");
-			for(int i=0;i<markers_list.GetSize();i++)
-				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
-			res<<restmp;
-			ML_NEXT(fi);
-		}
-		fi = project->first_other;
-		while (fi) {
-			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
-			restmp=_T("");
-			for(int i=0;i<markers_list.GetSize();i++)
-				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
-			res<<restmp;
-			ML_NEXT(fi);
+			fi.Next();
 		}
 		
 		res<<_T("</UL><BR><BR></BODY></HTML>");
@@ -5202,18 +5184,11 @@ void mxMainWindow::OnViewDuplicateTab(wxCommandEvent &evt) {
 
 void mxMainWindow::OnProjectTreeToggleFullPath(wxCommandEvent &event) {
 	bool full = config->Init.fullpath_on_project_tree = !config->Init.fullpath_on_project_tree;
-	project_file_item *it;
-	it=project->first_header;
-	ML_ITERATE(it) {
+	
+	GlobalListIterator<project_file_item*> it(&project->files_all);
+	while(it.IsValid()) {
 		project_tree.treeCtrl->SetItemText(it->item,full?it->name:wxFileName(it->name).GetFullName());
-	}
-	it=project->first_source;
-	ML_ITERATE(it) {
-		project_tree.treeCtrl->SetItemText(it->item,full?it->name:wxFileName(it->name).GetFullName());
-	}
-	it=project->first_other;
-	ML_ITERATE(it) {
-		project_tree.treeCtrl->SetItemText(it->item,full?it->name:wxFileName(it->name).GetFullName());
+		it.Next();
 	}
 	project_tree.treeCtrl->SortChildren(project_tree.sources);
 	project_tree.treeCtrl->SortChildren(project_tree.others);

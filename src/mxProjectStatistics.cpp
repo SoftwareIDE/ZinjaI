@@ -77,39 +77,48 @@ void mxProjectStatistics::SetValues(bool all) {
 		int cs=0,ch=0,co=0,ct=0;
 		int lc=0;
 		
-		project_file_item *fi = project->first_header;
-		ML_ITERATE (fi) { 
-			ch++; ct++;
-			tsz=wxFileName::GetSize(DIR_PLUS_FILE(project->path,fi->name)).ToULong();
-			wxTextFile tf(DIR_PLUS_FILE(project->path,fi->name));
-			if (tsz!=wxInvalidSize) sz+=tsz;
-			if (tf.Open()) {
-				lc+=tf.GetLineCount();
-				tf.Close();
+		{
+			LocalListIterator<project_file_item*> fi(&project->files_headers);
+			while (fi.IsValid()) { 
+				ch++; ct++;
+				tsz=wxFileName::GetSize(DIR_PLUS_FILE(project->path,fi->name)).ToULong();
+				wxTextFile tf(DIR_PLUS_FILE(project->path,fi->name));
+				if (tsz!=wxInvalidSize) sz+=tsz;
+				if (tf.Open()) {
+					lc+=tf.GetLineCount();
+					tf.Close();
+				}
+				fi.Next();
 			}
+			cant_headers->SetLabel(wxString()<<ch);
 		}
-		cant_headers->SetLabel(wxString()<<ch);
 		
-		fi = project->first_source;
-		ML_ITERATE (fi) { 
-			ct++; cs++; 
-			tsz=wxFileName::GetSize(DIR_PLUS_FILE(project->path,fi->name)).ToULong();
-			if (tsz!=wxInvalidSize) sz+=tsz;
-			wxTextFile tf(DIR_PLUS_FILE(project->path,fi->name));
-			if (tf.Open()) {
-				lc+=tf.GetLineCount();
-				tf.Close();
+		{
+			LocalListIterator<project_file_item*> fi(&project->files_sources);
+			while(fi.IsValid()) { 
+				ct++; cs++; 
+				tsz=wxFileName::GetSize(DIR_PLUS_FILE(project->path,fi->name)).ToULong();
+				if (tsz!=wxInvalidSize) sz+=tsz;
+				wxTextFile tf(DIR_PLUS_FILE(project->path,fi->name));
+				if (tf.Open()) {
+					lc+=tf.GetLineCount();
+					tf.Close();
+				}
+				fi.Next();
 			}
+			cant_sources->SetLabel(wxString()<<cs);
 		}
-		cant_sources->SetLabel(wxString()<<cs);
 		
-		fi = project->first_other;
-		ML_ITERATE (fi) { 
-			co++; ct++;
-			tsz=wxFileName::GetSize(DIR_PLUS_FILE(project->path,fi->name)).ToULong();
-			if (tsz!=wxInvalidSize) sz+=tsz;
+		{
+			LocalListIterator<project_file_item*> fi(&project->files_others);
+			while(fi.IsValid()) { 
+				co++; ct++;
+				tsz=wxFileName::GetSize(DIR_PLUS_FILE(project->path,fi->name)).ToULong();
+				if (tsz!=wxInvalidSize) sz+=tsz;
+				fi.Next();
+			}
+			cant_others->SetLabel(wxString()<<co);
 		}
-		cant_others->SetLabel(wxString()<<co);
 		
 		cant_total->SetLabel(wxString()<<ct);
 		

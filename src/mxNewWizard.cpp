@@ -599,7 +599,7 @@ void mxNewWizard::ProjectCreate() {
 	project->FixTemplateData(filename);
 	// agregar los archivos abiertos si van
 	if (project_current_files->GetValue()) {
-		project->DeleteFile(project->first_header->item);
+//		project->DeleteFile(project->first_header->item); // para que estaba esta linea????
 		for (unsigned int i=0;i<filesToAdd.GetCount();i++)
 			main_window->OpenFile(filesToAdd[i],true);
 	}

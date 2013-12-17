@@ -299,33 +299,26 @@ class project_library;
 struct project_file_item { // para armar las listas (doblemente enlazadas) de archivos del proyecto
 	wxString name;
 	wxTreeItemId item;
-	project_file_item *prev, *next; ///< para enlazar los nodos de la lista
 	SourceExtras extras; ///< breakpoints, highlighted lines, cursor position
 	bool force_recompile; ///< indica que se debe recompilar independientemente de la fecha de modificacion (por ejemplo, si lo va a modificar un paso adicional)
 	project_library *lib; ///< a que biblioteca pertenece (no siempre es correcto, se rehace con analize_config)
 	bool read_only; ///< indica que se debe abrir como solo lectura (porque es generado por una herramienta externa)
 	bool show_on_goto_func; ///< indica si sus métodos y funciones se deben tener en cuenta para el cuadro "Ir a funcion/clase/método"
 	eFileType where; ///< indica en qué categoria de archivos está asociado al proyecto (s=sources, h=headers, o=otros)
-	
 	void Init() { // parte comun a ambos constructores
 		force_recompile=false;
-//		cursor=0;
 		read_only=false;
 		show_on_goto_func=true;
 		lib=NULL;
 	}
-	project_file_item (project_file_item *p, wxString &n, wxTreeItemId &i, eFileType w) {
+	project_file_item (const wxString &n, const wxTreeItemId &i, const eFileType w) {
 		Init();
 		name=n;
 		item=i;
-		prev=p;
-		next=NULL;
 		where=w;
 	}
 	project_file_item () {
 		Init();
-		next=NULL;
-		prev=NULL;
 		where=FT_NULL;
 	}
 };
@@ -396,9 +389,13 @@ public:
 	wxString project_name; ///< el nombre bonito del proyecto
 	wxString filename; ///< el archivo del proyecto
 	wxString path; ///< la carpeta del proyecto
-	project_file_item *first_header; ///< primeros nodos (ficticios) de la lista de archivos de cabeceras
-	project_file_item *first_source; ///< primeros nodos (ficticios) de la lista de archivos fuentes
-	project_file_item *first_other; ///< primeros nodos (ficticios) de la lista de otros archivos
+	GlobalList<project_file_item*> files_all;
+	LocalList<project_file_item*> files_sources;
+	LocalList<project_file_item*> files_headers;
+	LocalList<project_file_item*> files_others;
+//	project_file_item *first_header; ///< primeros nodos (ficticios) de la lista de archivos de cabeceras
+//	project_file_item *first_source; ///< primeros nodos (ficticios) de la lista de archivos fuentes
+//	project_file_item *first_other; ///< primeros nodos (ficticios) de la lista de otros archivos
 	wxString autocomp_extra; ///< indices de autocompletado adicionales para este proyecto
 	wxString autocodes_file; ///< archivo con definiciones de autocodigos adicionales
 	wxString macros_file; ///< archivo con definiciones de macros para gdb
@@ -470,7 +467,7 @@ public:
 	bool RenameFile(wxTreeItemId &tree_item, wxString new_name);
 	/// Compila un solo fuente del proyecto, preparando la configuración, fuera del proceso de construcción general
 	long int CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename);
-	bool MoveFile(wxTreeItemId &tree_item, eFileType where);
+	void MoveFile(wxTreeItemId &tree_item, eFileType where);
 	bool DeleteFile(wxTreeItemId &tree_item, bool also=false);
 	project_file_item *AddFile (eFileType where, wxFileName name, bool sort_tree=true);
 	/// Regenera uno o todos los proyecto wxFormBuilder

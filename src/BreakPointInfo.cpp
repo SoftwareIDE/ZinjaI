@@ -104,7 +104,7 @@ BreakPointInfo *BreakPointInfo::FindFromNumber(int _id, bool use_gdb_id) {
 	GlobalListIterator<BreakPointInfo*> bpi=GetGlobalIterator();
 	while (bpi.IsValid()) {
 		if ( (use_gdb_id&&bpi->gdb_id==_id) || (!use_gdb_id&&bpi->zinjai_id==_id) )
-			return bpi.GetData();
+			return *bpi;
 		bpi.Next();
 	}
 	return NULL;
