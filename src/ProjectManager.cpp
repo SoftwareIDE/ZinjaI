@@ -249,9 +249,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 					else if (section==_T("other"))
 						last_file = AddFile(FT_OTHER,value,false);
 				} else if (key==_T("cursor")) {
-					value.ToLong(&l);
-					if (last_file)
-						last_file->extras.SetCurrentPos(l);
+					if (last_file) 
+						last_file->extras.SetCurrentPos(value);
 				} else if (key==_T("marker")) {
 					value.ToLong(&l);
 					if (last_file)
@@ -275,7 +274,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 						main_window->SetStatusProgress((100*(++num_files_opened))/files_to_open);
 					if (last_file) {
 						mxSource *src = main_window->OpenFile(DIR_PLUS_FILE(path,last_file->name),false);
-						if (src && src!=EXTERNAL_SOURCE) src->MoveCursorTo(last_file->extras.GetCurrentPos(),true);
+//						if (src && src!=EXTERNAL_SOURCE) src->MoveCursorTo(last_file->extras.GetCurrentPos(),true);
 					}
 				}
 			} else if (section==_T("doxygen")) {

@@ -3045,12 +3045,9 @@ void mxSource::ShowDiffChange() {
 }
 
 void mxSource::Reload() {
-	int ss = GetSelectionStart();
-	int se = GetSelectionEnd();
-	int line_ss=LineFromPosition(ss), line_se=LineFromPosition(se);
-	int offset_ss = ss-PositionFromLine(line_ss), offset_se=se-PositionFromLine(line_se);
+	m_extras->FromSource(this);
 	LoadFile(source_filename.GetFullPath());
-	SetSelection(PositionFromLine(line_ss)+offset_ss,PositionFromLine(line_se)+offset_se);
+	m_extras->ToSource(this);
 }
 
 void mxSource::AlignComments (int col) {
