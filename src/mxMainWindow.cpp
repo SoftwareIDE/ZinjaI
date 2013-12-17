@@ -548,28 +548,31 @@ void mxMainWindow::OnSymbolTreePopup(wxTreeEvent &event) {
 	mxHidenPanel::ignore_autohide=false;
 }
 
-void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item &fi, bool for_tab) {
-	project_tree.selected_parent = project_tree.treeCtrl->GetItemParent(project_tree.selected_item);
+void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item *fi, bool for_tab) {
+	if (!fi) menu.Append(mxID_PROJECT_POPUP_ADD_SELECTED, LANG(MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT,"Agregar al proyecto"));
+	if (fi) project_tree.selected_parent = project_tree.treeCtrl->GetItemParent(project_tree.selected_item);
 	if (!for_tab) menu.Append(mxID_PROJECT_POPUP_OPEN, LANG(MAINW_PROJECT_FILE_POPUP_SHOW_FILE,"&Mostrar Archivo"));
-	menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar Archivo..."));
-	menu.Append(mxID_PROJECT_POPUP_DELETE, LANG(MAINW_PROJECT_FILE_POPUP_DETACH,"&Quitar Archivo"));
-	if (project_tree.selected_parent==project_tree.sources) {
+	if (fi) menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar Archivo..."));
+	if (fi) menu.Append(mxID_PROJECT_POPUP_DELETE, LANG(MAINW_PROJECT_FILE_POPUP_DETACH,"&Quitar Archivo"));
+	if (fi && project_tree.selected_parent==project_tree.sources) {
 		menu.AppendSeparator();
-		menu.Append(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"))->Enable(!compiler->IsCompiling());
+		wxMenuItem *item=menu.AppendCheckItem(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"));
+		item->Enable(!compiler->IsCompiling()); item->Check(fi==project->first_source->next);
 		menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
 	}
 	menu.AppendSeparator();
-	if (project_tree.selected_parent!=project_tree.sources)
-		menu.Append(mxID_PROJECT_POPUP_MOVE_TO_SOURCES, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES,"Mover a &Fuentes"));
-	if (project_tree.selected_parent!=project_tree.headers)
-		menu.Append(mxID_PROJECT_POPUP_MOVE_TO_HEADERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS,"Mover a &Cabeceras"));
-	if (project_tree.selected_parent!=project_tree.others)
-		menu.Append(mxID_PROJECT_POPUP_MOVE_TO_OTHERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS,"Mover a &Otros"));
-	menu.AppendSeparator();
+	if (!for_tab && fi) {
+		if (project_tree.selected_parent!=project_tree.sources)
+			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_SOURCES, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES,"Mover a &Fuentes"));
+		if (project_tree.selected_parent!=project_tree.headers)
+			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_HEADERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS,"Mover a &Cabeceras"));
+		if (project_tree.selected_parent!=project_tree.others)
+			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_OTHERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS,"Mover a &Otros"));
+		menu.AppendSeparator();
+	}
 	menu.Append(mxID_PROJECT_POPUP_OPEN_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER,"Abrir carpeta contenedora..."));
+	menu.Append(mxID_FILE_EXPLORE_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER,"Explorar carpeta contenedora"));
 	menu.Append(mxID_PROJECT_POPUP_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"Propiedades..."));
-	menu.AppendSeparator();
-	menu.Append(mxID_PROJECT_POPUP_ADD_MULTI, LANG(MAINW_PROJECT_FILE_POPUP_ADD_MULTI,"&Agregar Múltiples Archivos..."));
 }
 
 void mxMainWindow::OnProjectTreePopup(wxTreeEvent &event) {
@@ -589,12 +592,11 @@ void mxMainWindow::OnProjectTreePopup(wxTreeEvent &event) {
 	wxMenu menu("");
 	if (!is_file) {
 		project_tree.selected_parent=project_tree.selected_item;
+		menu.Append(mxID_PROJECT_POPUP_OPEN_ALL, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_ALL,"Abrir &Todos"));
 		menu.Append(mxID_PROJECT_POPUP_ADD, LANG(MAINW_PROJECT_FILE_POPUP_ADD,"&Agregar Archivo..."));
 		menu.Append(mxID_PROJECT_POPUP_ADD_MULTI, LANG(MAINW_PROJECT_FILE_POPUP_ADD_MULTI,"&Agregar Múltiples Archivos..."));
-		menu.Append(mxID_PROJECT_POPUP_OPEN_ALL, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_ALL,"Abrir &Todos"));
 	} else {
-		project_file_item *fi = project->FindFromItem(project_tree.selected_item);
-		if (fi) PopulateProjectFilePopupMenu(menu,*fi,false); // el if debería ser innecesario en este punto
+		PopulateProjectFilePopupMenu(menu,project->FindFromItem(project_tree.selected_item),false); // el if debería ser innecesario en este punto
 	}	
 	menu.AppendSeparator();
 	if (config->Init.fullpath_on_project_tree)
@@ -1137,21 +1139,21 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 	notebook_sources->SetSelection(notebook_sources->GetPageIndex(src));
 	wxMenu menu("");
 	if (project) {
-		if (project->FindFromItem(src->treeId)) {
-			menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"Re&nombrar archivo..."));
+		project_file_item *fi=project->FindFromItem(src->treeId);
+		if (fi) {
+			// seleccionarlo en el arbol de proyecto
 			project_tree.treeCtrl->SelectItem(src->treeId);
 			project_tree.selected_item = src->treeId;
 			project_tree.selected_parent = project_tree.treeCtrl->GetItemParent(project_tree.selected_item);
-			if (project_tree.selected_parent==project_tree.sources) 
-				menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Reco&mpilar"))->Enable();
+			// colocar las opciones comunes al popup del arbol de proyecto
+			PopulateProjectFilePopupMenu(menu,fi,true);
 		} else {
-			menu.Append(mxID_PROJECT_POPUP_ADD_SELECTED, LANG(MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT,"Agregar al proyecto"));
+			PopulateProjectFilePopupMenu(menu,NULL,true);
 		}
 	}
+	menu.AppendSeparator();
 	if (!src->sin_titulo && utils->GetComplementaryFile(src->source_filename).Len())
 		menu.Append(mxID_FILE_OPEN_H, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_H,"&Abrir complementario...\tF12"));
-	menu.Append(mxID_FILE_OPEN_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER,"Abrir carpeta contenedora..."));
-	menu.Append(mxID_FILE_EXPLORE_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER,"Explorar carpeta contenedora"));
 	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));
 	menu.Append(wxID_SAVE, LANG(MAINW_PROJECT_FILE_POPUP_SAVE,"&Guardar\tCtrl+S"));
 	if (!project)
@@ -1160,7 +1162,6 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 	menu.Append(wxID_CLOSE, LANG(MAINW_PROJECT_FILE_POPUP_CLOSE,"&Cerrar\tCtrl+W"));
 	if (notebook_sources->GetPageCount()>1)
 		menu.Append(mxID_FILE_CLOSE_ALL_BUT_ONE, LANG(MAINW_PROJECT_FILE_POPUP_CLOSE_ALL_BUT_ONE,"Cerrar &todas las demas\tCtrl+Alt+W"));
-	menu.Append(mxID_FILE_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"&Propiedades..."));
 	notebook_sources->PopupMenu(&menu);
 }
 

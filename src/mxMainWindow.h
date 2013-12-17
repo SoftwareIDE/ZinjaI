@@ -311,7 +311,7 @@ public:
 	void OnCompilerTreeShowFull(wxCommandEvent &event);
 	void OnCompilerTreePopup(wxTreeEvent &event);
 
-	void PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item &fi, bool for_tab);
+	void PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item *fi, bool for_tab);
 	void OnProjectTreePopup(wxTreeEvent &event);
 	void OnProjectTreeToggleFullPath(wxCommandEvent &event);
 	void OnProjectTreeOpenFolder(wxCommandEvent &event);

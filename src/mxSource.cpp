@@ -135,6 +135,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	if (fitem) {
 		m_extras = &fitem->extras;
 		m_owns_extras=false;
+		treeId=fitem->item;
 	} else {
 		m_owns_extras=true;
 		m_extras = new SourceExtras();
