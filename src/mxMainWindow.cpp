@@ -1187,7 +1187,7 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 	if (!project) {
 		project_tree.treeCtrl->Delete(source->treeId);
 	} else {
-		project->GetSourceExtras(source);
+		source->UpdateExtras();
 	}
 	if (share && share->Exists(source))  {
 		int ans =mxMessageDialog(main_window,LANG(MAINW_ASK_CLOSE_SHARED,"El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?"),source->page_text, mxMD_YES_NO,LANG(MAINW_SHARE_AFTER_CLOSE,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo."),false).ShowModal();
@@ -2495,7 +2495,7 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()!=0) {
 		if (cerrar || mxMD_YES==mxMessageDialog(main_window,LANG(MAINW_CHANGE_CLOSE_ALL_QUESTION,"Hay cambios sin guardar. Se cerraran todos los archivos. Desea Continuar?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_QUESTION).ShowModal()) {
 			for (int i=notebook_sources->GetPageCount()-1;i>=0;i--) {
-				project->GetSourceExtras((mxSource*)(notebook_sources->GetPage(i)));
+				((mxSource*)(notebook_sources->GetPage(i)))->UpdateExtras();
 				notebook_sources->DeletePage(i);;
 			}
 		} else
@@ -2576,7 +2576,7 @@ bool mxMainWindow::CloseSource (int i) {
 		}
 	} else {
 		parser->ParseIfUpdated(source->source_filename);
-		project->GetSourceExtras(source);
+		source->UpdateExtras();
 	}
 	debug->CloseSource(source);
 	notebook_sources->DeletePage(i);
@@ -3128,10 +3128,11 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		source->SetFocus();
 		not_opened=false;
 	} else {
-		source = new mxSource(notebook_sources, AvoidDuplicatePageText(wxFileName(filename).GetFullName()));
+		project_file_item *fitem=project?project->FindFromName(filename):NULL;
+		source = new mxSource(notebook_sources, AvoidDuplicatePageText(wxFileName(filename).GetFullName()),fitem);
 		source->sin_titulo=false;
 		source->LoadFile(filename);
-		if (project) project->SetSourceExtras(source);
+		if (project) source->m_extras->ToSource(source);
 	}
 	wxString ext=wxFileName(filename).GetExt().MakeUpper();
 	if (ext==_T("CPP") || ext==_T("CXX") || ext==_T("C") || ext==_T("C++")) {
@@ -3992,11 +3993,10 @@ void mxMainWindow::OnDebugBreakpointOptions ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
 		if (!debug->debugging || !debug->waiting) {
-			int l = source->LineFromPosition (source->GetCurrentPos());
 			
 			// buscar si habia un breakpoint en esa linea
-			BreakPointInfo *bpi = *source->breaklist;
-			while (bpi && source->MarkerLineFromHandle(bpi->marker_handle)!=l) bpi = bpi->Next();
+			int l = source->LineFromPosition (source->GetCurrentPos());
+			BreakPointInfo *bpi = source->m_extras->FindBreakpointFromLine(source,l);
 			
 			if (!bpi) { // si no habia, lo crea
 				bpi=new BreakPointInfo(source,l);
@@ -4637,41 +4637,35 @@ void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 	if (project) {
 		
 		for (int i=notebook_sources->GetPageCount()-1;i>=0;i--)
-			project->GetSourceExtras((mxSource*)(notebook_sources->GetPage(i)));
+			((mxSource*)(notebook_sources->GetPage(i)))->UpdateExtras();
 		
 		wxString res(_T("<HTML><HEAD><TITLE>Lineas Resaltadas</TITLE></HEAD><BODY><B>Lineas Resaltadas:</B><BR><UL>"));
 		wxString restmp;
 		
 		project_file_item *fi = project->first_source;
 		while (fi) {
-			marked_line_item *mi = fi->markers;
+			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
 			restmp=_T("");
-			while (mi) {
-				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<mi->line+1<<_T("\">")<<fi->name<<_T(": linea ")<<mi->line+1<<_T("</A></LI>")<<restmp;
-				ML_NEXT(mi);
-			}
-			res<<restmp;
+			for(int i=0;i<markers_list.GetSize();i++)
+				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
+			res<<restmp;	
 			ML_NEXT(fi);
 		}
 		fi = project->first_header;
 		while (fi) {
-			marked_line_item *mi = fi->markers;
+			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
 			restmp=_T("");
-			while (mi) {
-				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<mi->line+1<<_T("\">")<<fi->name<<_T(": linea ")<<mi->line+1<<_T("</A></LI>")<<restmp;
-				ML_NEXT(mi);
-			}
+			for(int i=0;i<markers_list.GetSize();i++)
+				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
 			res<<restmp;
 			ML_NEXT(fi);
 		}
 		fi = project->first_other;
 		while (fi) {
-			marked_line_item *mi = fi->markers;
+			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
 			restmp=_T("");
-			while (mi) {
-				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<mi->line+1<<_T("\">")<<fi->name<<_T(": linea ")<<mi->line+1<<_T("</A></LI>")<<restmp;
-				ML_NEXT(mi);
-			}
+			for(int i=0;i<markers_list.GetSize();i++)
+				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
 			res<<restmp;
 			ML_NEXT(fi);
 		}

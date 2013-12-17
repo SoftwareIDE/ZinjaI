@@ -251,11 +251,11 @@ ProjectManager::ProjectManager(wxFileName name) {
 				} else if (key==_T("cursor")) {
 					value.ToLong(&l);
 					if (last_file)
-						last_file->cursor = l;
+						last_file->extras.SetCurrentPos(l);
 				} else if (key==_T("marker")) {
 					value.ToLong(&l);
 					if (last_file)
-						last_file->markers = new marked_line_item(l,last_file->markers);
+						last_file->extras.AddHighlightedLine(l);
 				} else if (key==_T("breakpoint")) {
 					value.ToLong(&l);
 					if (last_file && l>=0) {
@@ -275,7 +275,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 						main_window->SetStatusProgress((100*(++num_files_opened))/files_to_open);
 					if (last_file) {
 						mxSource *src = main_window->OpenFile(DIR_PLUS_FILE(path,last_file->name),false);
-						if (src && src!=EXTERNAL_SOURCE) src->MoveCursorTo(last_file->cursor,true);
+						if (src && src!=EXTERNAL_SOURCE) src->MoveCursorTo(last_file->extras.GetCurrentPos(),true);
 					}
 				}
 			} else if (section==_T("doxygen")) {
@@ -653,8 +653,6 @@ bool ProjectManager::Save (bool as_template) {
 	fil.AddLine(_T("path_char=/"));
 #endif
 	// agregar la lista de fuentes pertenecientes al proyecto
-	marked_line_item *marker;
-	BreakPointInfo *breakpoint;
 	wxString section;
 	for(int i=0;i<3;i++) { 
 		if (i==0) { item = first_source; section="[source]"; }
@@ -664,25 +662,22 @@ bool ProjectManager::Save (bool as_template) {
 			fil.AddLine(section);
 			CFG_GENERIC_WRITE_DN("path",item->name);
 			source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name));
-			if (source) GetSourceExtras(source,item);
-			CFG_GENERIC_WRITE_DN("cursor",item->cursor);
-			breakpoint = item->breaklist;
-			while (breakpoint) {
-				if (breakpoint->line_number>=0) { 
-					CFG_GENERIC_WRITE_DN("breakpoint",breakpoint->line_number);
-					if (!breakpoint->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
-					if (breakpoint->action) CFG_GENERIC_WRITE_DN("breakpoint_action",true);
-					if (breakpoint->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoint->ignore_count);
-					if (breakpoint->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoint->cond);
+			if (source) source->UpdateExtras();
+			CFG_GENERIC_WRITE_DN("cursor",item->extras.GetCurrentPos());
+			const LocalList<BreakPointInfo*> &breakpoints=item->extras.GetBreakpoints();
+			for(int j=0;j<breakpoints.GetSize();j++) {
+				if (breakpoints[j]->line_number>=0) { 
+					CFG_GENERIC_WRITE_DN("breakpoint",breakpoints[j]->line_number);
+					if (!breakpoints[j]->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
+					if (breakpoints[j]->action) CFG_GENERIC_WRITE_DN("breakpoint_action",true);
+					if (breakpoints[j]->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoints[j]->ignore_count);
+					if (breakpoints[j]->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoints[j]->cond);
 	//				breakpoint->enabled=true; // que hace esto aca?
 				}
-				breakpoint = breakpoint->Next();
 			}
-			marker = item->markers;
-			while (marker) {
-				CFG_GENERIC_WRITE_DN("marker",marker->line);
-				marker = marker->next;
-			}
+			const SingleList<int> &highlighted_lines=item->extras.GetHighlightedLines();
+			for(int j=0;j<highlighted_lines.GetSize();j++)
+				CFG_GENERIC_WRITE_DN("marker",highlighted_lines[j]);
 			if (source)
 				fil.AddLine(_T("open=true"));
 		}
@@ -1002,10 +997,7 @@ bool ProjectManager::DeleteFile(wxTreeItemId &tree_item, bool also) {
 	project_file_item *item=FindFromItem(tree_item);
 	if (item) {
 		mxSource *src = main_window->IsOpen(tree_item);
-		if (src) { // para que no reviente cuando al cerrarlo intente limpiar la list de breaks
-			src->breaklist = new BreakPointInfo*(item->breaklist); src->own_breaks=true;
-			item->breaklist=NULL;
-		}
+		if (src) new SourceExtras(src); // create a new SourceExtras that will be owned by src
 		int ans;
 		if (also)
 			ans=mxMessageDialog(main_window,wxString(LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_PRE,"¿Desea quitar tambien el archivo \""))<<item->name<<LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_POST,"\" del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
@@ -2085,77 +2077,6 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	SetEnvironment(true,false);
 }
 
-void ProjectManager::GetSourceExtras(mxSource *source, project_file_item *item) {
-	if (!item) item = FindFromItem(source->treeId);
-	if (!item) return;
-	// reacomodar los nros de linea de los pts de interrupcion
-	BreakPointInfo *bitem=item->breaklist;
-	while (bitem) {	bitem->UpdateLineNumber(); bitem=bitem->Next(); }
-	// guardar los bookmarks
-	int l = source->GetLineCount();
-	item->ClearExtras();
-	int m;
-	for (int i=0;i<l;i++) {
-		m = source->MarkerGet(i);
-		if (m&1<<mxSTC_MARK_USER)
-			item->markers = new marked_line_item (i,item->markers);
-	}
-	// guardar otras cosas
-	item->cursor = source->GetCurrentPos();
-}
-
-void ProjectManager::SetSourceExtras(mxSource *source, project_file_item *item) {
-	if (!item) {
-		wxFileName fname = source->source_filename;
-		fname.MakeRelativeTo(path);
-		wxString name = fname.GetFullPath();
-		if (!item) {
-			item = first_source->next;
-			while (item) {
-				if (item->name == name) {
-					break;
-				}
-				item=item->next;
-			}
-		}
-		if (!item) {
-			item = first_header->next;
-			while (item) {
-				if (item->name == name) {
-					break;
-				}
-				item=item->next;
-			}
-		}
-		if (!item) {
-			item = first_other->next;
-			while (item) {
-				if (item->name == name) {
-					break;
-				}
-				item=item->next;
-			}
-		}
-		if (item)
-			source->treeId = item->item;
-	}
-	if (item) {
-		if (source->own_breaks) delete source->breaklist;
-		source->breaklist = &item->breaklist;
-		source->own_breaks = false;
-		BreakPointInfo *bpi=item->breaklist;
-		while (bpi) {
-			bpi->SetSource(source);
-			bpi=bpi->Next();
-		}
-		marked_line_item *marker = item->markers;
-		while (marker) {
-			source->MarkerAdd(marker->line, mxSTC_MARK_USER);
-			marker = marker->next;
-		}
-		source->GotoPos(item->cursor);
-	}
-}
 
 /**
 * Agrega los archivos del proyecto al arreglo array. El arreglo no se vacia
@@ -2234,10 +2155,11 @@ bool ProjectManager::Debug() {
 * llamar antes de comenzar la ejecución.
 **/
 void ProjectManager::SetBreakpoints() {
-	BreakPointInfo *bpi=NULL;
-	while ((bpi=BreakPointInfo::GetGlobalNext(bpi))) {
-		bpi->UpdateLineNumber();
-		debug->SetBreakPoint(bpi);
+	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
+	while (bpi.IsValid()) {
+		bpi.GetData()->UpdateLineNumber();
+		debug->SetBreakPoint(bpi.GetData());
+		bpi.Next();
 	}
 }
 

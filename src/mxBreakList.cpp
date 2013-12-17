@@ -199,8 +199,8 @@ void mxBreakList::PopulateGrid ( ) {
 	bool ask_debug=debug->debugging && !debug->waiting;
 	if (ask_debug) debug->PopulateBreakpointsList(this,true);
 	
-	BreakPointInfo *bpi=NULL;
-	while((bpi=BreakPointInfo::GetGlobalNext(bpi))) {
+	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
+	while(bpi.IsValid()) {
 		
 		if (ask_debug && bpi->gdb_id!=-1) continue; // ya lo cargo debug
 		
@@ -224,6 +224,8 @@ void mxBreakList::PopulateGrid ( ) {
 		grid->SetCellValue(i,BL_COL_COND,bpi->cond);
 		
 		grid->SetCellValue(i,BL_COL_HIT,"0");
+		
+		bpi.Next();
 	}
 }
 

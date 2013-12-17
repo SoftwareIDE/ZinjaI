@@ -26,10 +26,10 @@
 #endif
 
 #include "Toolchain.h" // por TOOLCHAIN_MAX_ARGS
-#include "AutoList.h"
 #include "BreakPointInfo.h" // por el delete_autolist(breaklist) del destructor de project_file_item
 #include "mxCustomTools.h"
 #include "enums.h"
+#include "SourceExtras.h"
 class BreakPointInfo;
 class mxSource;
 
@@ -300,10 +300,8 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 	wxString name;
 	wxTreeItemId item;
 	project_file_item *prev, *next; ///< para enlazar los nodos de la lista
-	BreakPointInfo *breaklist; ///< primer item de la lista de breakpoints del fuente (se asigna con GetSourceExtras)
-	marked_line_item *markers; ///< primer item de la lista de lineas resaltadas del fuente (sin primer elemento ficticio, se asigna con GetSourceExtras)
+	SourceExtras extras; ///< breakpoints, highlighted lines, cursor position
 	bool force_recompile; ///< indica que se debe recompilar independientemente de la fecha de modificacion (por ejemplo, si lo va a modificar un paso adicional)
-	int cursor; ///< posicion del cursor en el texto (se asigna con GetSourceExtras)
 	project_library *lib; ///< a que biblioteca pertenece (no siempre es correcto, se rehace con analize_config)
 	bool read_only; ///< indica que se debe abrir como solo lectura (porque es generado por una herramienta externa)
 	bool show_on_goto_func; ///< indica si sus métodos y funciones se deben tener en cuenta para el cuadro "Ir a funcion/clase/método"
@@ -311,9 +309,7 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 	
 	void Init() { // parte comun a ambos constructores
 		force_recompile=false;
-		cursor=0;
-		breaklist=NULL;
-		markers=NULL;
+//		cursor=0;
 		read_only=false;
 		show_on_goto_func=true;
 		lib=NULL;
@@ -331,19 +327,6 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 		next=NULL;
 		prev=NULL;
 		where=FT_NULL;
-	}
-	void ClearExtras(bool all=false) {
-		marked_line_item *mit = markers, *mit2;
-		while (mit) {
-			mit2=mit->next;
-			delete mit;
-			mit=mit2;
-		}
-		markers=NULL;
-	}
-	~project_file_item() {
-		delete_autolist(breaklist);
-		ClearExtras(true);
 	}
 };
 
@@ -467,10 +450,6 @@ public:
 	/// arma el comando para ejecutar de un paso de compilación personalizado, reemplazando todas las variables de sus campos
 	wxString GetCustomStepCommand(const compile_extra_step *step);
 	
-	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un mxSource a un project_file_item del proyecto
-	void GetSourceExtras(mxSource *source, project_file_item *item=NULL);
-	/// Copia la posición del cursor, las breakpoints y la lista de lineas resaltadas desde un project_file_item del proyecto a un mxSource
-	void SetSourceExtras(mxSource *source, project_file_item *item=NULL);
 	/// Determina si el archivo item usa alguna de las macros de la lista macros
 	bool DependsOnMacro(project_file_item *item, wxArrayString &macros);
 	/// Guarda todo y marca cuales archivos hay que recompilar, devuelve falso si no hay que compilar ninguno ni reenlazar el ejecutable

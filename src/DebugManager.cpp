@@ -278,8 +278,8 @@ void DebugManager::ResetDebuggingStuff() {
 	while (i1!=extern_list.end()) if ((*i1)->SetOutdated()) i1=extern_list.erase(i1); else ++i1;
 	
 	// setear en -1 todos los ids de los pts de todos interrupcion, para evitar confusiones con depuraciones anteriores
-	BreakPointInfo *bpi=NULL;
-	while ((bpi=BreakPointInfo::GetGlobalNext(bpi))) bpi->gdb_id=-1;
+	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
+	while (bpi.IsValid()) { bpi->gdb_id=-1; bpi.Next(); }
 	
 	for (int i=0;i<inspections_count;i++)
 		if (inspections[i].is_vo) {
@@ -1115,11 +1115,10 @@ wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 /// @brief Sets all breakpoints from an untitled or out of project mxSource
 void DebugManager::SetBreakPoints(mxSource *source) {
 	if (waiting || !debugging) return;
-	BreakPointInfo *bpi=*source->breaklist;
-	while (bpi) {
-		bpi->UpdateLineNumber();
-		debug->SetBreakPoint(bpi);
-		bpi=bpi->Next();
+	const LocalList<BreakPointInfo*> &breakpoints=source->m_extras->GetBreakpoints();
+	for(int i=0;i<breakpoints.GetSize();i++) { 
+		breakpoints[i]->UpdateLineNumber();
+		debug->SetBreakPoint(breakpoints[i]);
 	}
 }
 

@@ -2,11 +2,10 @@
 #include "ProjectManager.h"
 #include "mxSource.h"
 
-_autolist_initialize_global(BreakPointInfo);
 int BreakPointInfo::last_zinjai_id=0;
+GlobalList<BreakPointInfo*> BreakPointInfo::global_list;
 
 BreakPointInfo::BreakPointInfo(project_file_item *_fitem, int _line_number) {
-	_autolist_construct_global; _autolist_construct_local(&(_fitem->breaklist));
 	fname=DIR_PLUS_FILE(project->path,_fitem->name);
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
@@ -22,10 +21,10 @@ BreakPointInfo::BreakPointInfo(project_file_item *_fitem, int _line_number) {
 	gdb_status=BPS_UNKNOWN;
 	gdb_id=-1;
 	zinjai_id=++last_zinjai_id;
+	_fitem->extras.AddBreakpoint(this);
 }
 
 BreakPointInfo::BreakPointInfo(mxSource *_source, int _line_number) {
-	_autolist_construct_global; _autolist_construct_local(_source->breaklist);
 	// para la lista global de breakpoints, siempre se inserta al principio
 	fname=_source->GetFullPath();
 #if defined(_WIN32) || defined(__WIN32__)
@@ -42,11 +41,12 @@ BreakPointInfo::BreakPointInfo(mxSource *_source, int _line_number) {
 	gdb_status=BPS_UNKNOWN;
 	marker_handle=-1; SetMarker();
 	zinjai_id=++last_zinjai_id;
+	_source->m_extras->AddBreakpoint(this);
 }
 
 BreakPointInfo::~BreakPointInfo() {
-	_autolist_destroy_global; _autolist_destroy_local;
 	if (source && marker_handle!=-1) source->MarkerDeleteHandle(marker_handle);
+	global_list.FindAndRemove(this);
 }
 
 /// @brief Change its gdb_status, set its gdb_id, and update the source's marker if needed
@@ -69,8 +69,8 @@ void BreakPointInfo::UpdateLineNumber() {
 
 /// @brief Updates its source_pointer, and ads the marker if its previous one was NULL
 void BreakPointInfo::SetSource(mxSource *_source) {
-	if (!source) { source=_source; marker_handle=-1; SetMarker(); }
-	else source=_source;
+	source=_source; marker_handle=-1; 
+	if (_source) SetMarker();
 }
 
 /// @brief returs true if this breakpoint has a valid gdb_id, inspecting its gdb_status
@@ -101,9 +101,16 @@ void BreakPointInfo::SetMarker() {
 * is a project.
 **/
 BreakPointInfo *BreakPointInfo::FindFromNumber(int _id, bool use_gdb_id) {
-	BreakPointInfo *bps=NULL;
-	while ((bps=GetGlobalNext(bps))) 
-		if ( (use_gdb_id&&bps->gdb_id==_id) || (!use_gdb_id&&bps->zinjai_id==_id) )
-			return bps;
+	GlobalListIterator<BreakPointInfo*> bpi=GetGlobalIterator();
+	while (bpi.IsValid()) {
+		if ( (use_gdb_id&&bpi->gdb_id==_id) || (!use_gdb_id&&bpi->zinjai_id==_id) )
+			return bpi.GetData();
+		bpi.Next();
+	}
 	return NULL;
 }
+
+GlobalListIterator<BreakPointInfo*> BreakPointInfo::GetGlobalIterator ( ) {
+	return GlobalListIterator<BreakPointInfo*>(&global_list);
+}
+

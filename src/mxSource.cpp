@@ -112,7 +112,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	
 END_EVENT_TABLE()
 
-mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoint &pos, const wxSize &size, long style) : wxStyledTextCtrl (parent, id, pos, size, style) {
+mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
 	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
 	// with this path, text shows ok, but files can be saved with utf8 encoding and then it's shown differently when oppened somewhere else with the same zinjai
@@ -132,8 +132,13 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, wxWindowID id, const wxPoi
 	
 	LoadSourceConfig();
 	
-	breaklist = new BreakPointInfo*(NULL);
-	own_breaks = true;
+	if (fitem) {
+		m_extras = &fitem->extras;
+		m_owns_extras=false;
+	} else {
+		m_owns_extras=true;
+		m_extras = new SourceExtras();
+	}
 	
 	ignore_char_added=false;
 	
@@ -303,23 +308,17 @@ mxSource::~mxSource () {
 		if (compiler->last_runned==this) compiler->last_runned=NULL;
 	}
 	
-	// si no es un fuente de un proyecto, tiene la resposabilidad de liberar la memoria de los breakpoints
-	if (own_breaks && only_view) delete_autolist(*breaklist);
-	
-	// si no es un fuente de un proyecto, tiene la resposabilidad de liberar la memoria de los breakpoints
-	BreakPointInfo *bpi=*breaklist;
-	while (bpi) {
-		// si es la ultima vista de este archivo, se le pasa null al bpi, sino la otra vista
-		bpi->SetSource(only_view?NULL:next_source_with_same_file);
-		bpi=bpi->Next();
-	}
-	
 	if (!only_view) {
 		mxSource *iter=this;
 		while (iter->next_source_with_same_file!=this)
 			iter=iter->next_source_with_same_file;
 		iter->next_source_with_same_file=next_source_with_same_file;
-//		MarkerDeleteHandle(current_marker);
+		m_extras->ChangeSource(next_source_with_same_file);
+		if (m_owns_extras) next_source_with_same_file->m_owns_extras=true;
+	} else {
+		// si no es un fuente de un proyecto, tiene la resposabilidad de liberar la memoria de los breakpoints
+		m_extras->ChangeSource(NULL);
+		if (m_owns_extras) delete m_extras; /// @todo: esto puede traer problemas en combinacion con el split
 	}
 	
 }
@@ -573,9 +572,8 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 	} else { // margen de los puntos de interrupcion
 		
 		// buscar si habia un breakpoint en esa linea
-		BreakPointInfo *bpi = *breaklist;
 		int l = LineFromPosition (event.GetPosition());
-		while (bpi && (bpi->source!=this||MarkerLineFromHandle(bpi->marker_handle)!=l)) bpi = bpi->Next();
+		BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
 		
 		// si apretó shift o ctrl (por alguna razon en linux solo me anda shift) mostrar el cuadro de opciones
 		if (event.GetModifiers()&wxSTC_SCMOD_SHIFT || event.GetModifiers()&wxSTC_SCMOD_CTRL) {
@@ -3260,9 +3258,9 @@ void mxSource::SplitFrom(mxSource *orig) {
 	LoadFile(orig->source_filename);
 	treeId = orig->treeId;
 	never_parsed=false; sin_titulo=false; 
-	if (breaklist && own_breaks) delete breaklist;
-	breaklist=orig->breaklist;
-	own_breaks=orig->own_breaks;
+	if (m_owns_extras) delete m_extras;
+	m_extras=orig->m_extras;
+	m_owns_extras=false;
 	SetDocPointer(orig->GetDocPointer());
 	next_source_with_same_file=orig;
 	mxSource *iter=orig;
@@ -3553,5 +3551,9 @@ void mxSource::OnDoubleClick (wxStyledTextEvent & event) {
 	event.Skip();
 	wxCommandEvent e;
 	OnHighLightWord(e);
+}
+
+void mxSource::UpdateExtras ( ) {
+	m_extras->FromSource(this);
 }
 

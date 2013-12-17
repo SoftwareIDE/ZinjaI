@@ -15,9 +15,10 @@ class er_source_register;
 
 #define SRC_PARSING_ERROR 999
 
+class project_file_item;
+class SourceExtras;
 class wxString;
 class wxTreeItemId;
-class BreakPointInfo;
 class DiffInfo;
 
 enum MXS_MARKER {
@@ -42,11 +43,11 @@ public:
 	
 	int last_s1, last_s2; ///< para el resaltado de campos
 	
-	BreakPointInfo **breaklist; ///< lista de info de breakpoints 
-	bool own_breaks; ///< para saber si la info de los breakpoints es resposabilidad propia o del proyecto
+	SourceExtras *m_extras; ///< breakpoints, highlighted lines, saved cursor positio (see m_owns_extras)
+	bool m_owns_extras; ///< if true, this objtec is the owner of m_extras and should delete it on its destructor; if false, m_owns_extras points to an instance owned by ProjectManager
+	void UpdateExtras(); ///< updates info in m_extras
+	
 	int calltip_brace;
-//	int current_line;
-//	int current_marker;
 	int lexer;
 	bool first_view;
 	bool never_parsed;
@@ -82,11 +83,7 @@ public:
 	bool IsComment(int pos);
 	bool IsEmptyLine(int l, bool ignore_comments=true, bool ignore_preproc=true);
 
-	mxSource (wxWindow *parent, wxString ptext, wxWindowID id = wxID_ANY,
-		const wxPoint &pos = wxDefaultPosition,
-		const wxSize &size = wxDefaultSize,
-		long style = wxSUNKEN_BORDER|wxVSCROLL
-		);
+	mxSource(wxWindow *parent, wxString ptext, project_file_item *fitem=NULL);
 	
 	~mxSource ();
 	
