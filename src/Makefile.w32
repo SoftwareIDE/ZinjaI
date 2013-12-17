@@ -1,6 +1,6 @@
 MINGW_DIR=..\mingw
 GPP=mingw32-g++
-FLAGS=-O2 -I"${MINGW_DIR}"\wx\include 
+CXXFLAGS=-O2 -I"${MINGW_DIR}"\wx\include 
 LIBS=-mwindows -s -L"${MINGW_DIR}"\wx\lib -lwxmsw28_stc -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -static-libgcc -static-libstdc++
 OBJS_DIR=..\release.w32
 

@@ -1,5 +1,5 @@
 GPP=g++
-FLAGS=-O2 `wx-config --unicode=no --cppflags`
+CXXFLAGS=-O2 `wx-config --unicode=no --cppflags`
 LIBS=-s -lwx_gtk2_mac-2.8 `wx-config --libs` 
 OBJS_DIR=../release.mac
 

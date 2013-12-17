@@ -666,6 +666,7 @@ bool ProjectManager::Save (bool as_template) {
 	// agregar la lista de fuentes pertenecientes al proyecto
 	wxString section;
 	for(int i=0;i<3;i++) { 
+		section=i==0?"[source]":(i==1?"[header]":"[other]");
 		LocalListIterator<project_file_item*> item(i==0?&files_sources:(i==1?&files_headers:&files_others));
 		while (item.IsValid()) {
 			fil.AddLine(section);

@@ -48,6 +48,9 @@ public:
 		m_vec[m_size]=data;
 		return m_size++;
 	}
+	void Swap(int i, int j) {
+		T aux=m_vec[i]; m_vec[i]=m_vec[j]; m_vec[j]=aux;
+	}
 	T &operator[](int i) { 
 		return m_vec[i];
 	}
@@ -218,11 +221,14 @@ public:
 	}
 	/// swaps positions for two elements
 	void Swap(int i, int j) {
-		LocalListNode<T> aux=SingleList<LocalListNode<T> >::m_vec[i]; 
-		SingleList<LocalListNode<T> >::m_vec[i]=SingleList<LocalListNode<T> >::m_vec[j]; 
-		SingleList<LocalListNode<T> >::m_vec[j]=aux;
-		m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+j,j); // udate position in references to the swapped element)
-		m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+i,i); // udate position in references to the swapped element)
+//		LocalListNode<T> aux=SingleList<LocalListNode<T> >::m_vec[i]; 
+//		SingleList<LocalListNode<T> >::m_vec[i]=SingleList<LocalListNode<T> >::m_vec[j]; 
+//		SingleList<LocalListNode<T> >::m_vec[j]=aux;
+//		m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+j,j); // udate position in references to the swapped element)
+//		m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+i,i); // udate position in references to the swapped element)
+		T aux=SingleList<LocalListNode<T> >::m_vec[i].m_data;
+		SingleList<LocalListNode<T> >::m_vec[i].m_data=SingleList<LocalListNode<T> >::m_vec[j].m_data; 
+		SingleList<LocalListNode<T> >::m_vec[j].m_data=aux;
 	}
 	/// retrieves and elemento from the list
 	T &operator[](int i) { 
