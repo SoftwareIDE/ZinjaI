@@ -318,21 +318,17 @@ bool mxUtils::IsTrue(wxString &value){
 
 
 
-wxString mxUtils::FindIncludes(wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
-	fi_file_item *prev, *item=new fi_file_item;
-	item->next=new fi_file_item(filename.GetFullPath());
-	FindIncludes(filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR),filename.GetFullName(),item,header_dirs);
+wxString mxUtils::FindObjectDeps(wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
+	wxArrayString already_processed;
+	already_processed.Add(filename.GetFullPath());
+	FindIncludes(filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR),filename.GetFullName(),already_processed,header_dirs);
 	wxString deps;
 	wxFileName file_name;
-	ML_WHILE(item) {
-		prev=item;
-		ML_NEXT(item);
-		delete prev;
-		file_name=item->name;
+	for(int i=0;i<already_processed.GetCount();i++) { 
+		file_name=already_processed[i];
 		file_name.MakeRelativeTo(ref_path);
 		deps+=file_name.GetFullPath()+_T(" ");
 	}
-	delete item;
 	if (deps.Len()==0) 
 		return _T("");
 	else
@@ -341,61 +337,51 @@ wxString mxUtils::FindIncludes(wxFileName filename, wxString ref_path, wxArraySt
 
 void mxUtils::FindIncludes(wxArrayString &deps, wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
 	deps.Clear();
-	fi_file_item *prev, *item=new fi_file_item;
-	item->next=new fi_file_item(filename.GetFullPath()); // FindIncludes usa el primer item para sacar le path?
-	FindIncludes(filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR),filename.GetFullName(),item,header_dirs,false);
-	prev=item; ML_NEXT(item); delete prev; // borrar el primer item (el mismisimo archivo)
+	wxArrayString already_processed;
+	already_processed.Add(filename.GetFullPath()); // FindIncludes usa el primer item para sacar el path?
+	FindIncludes(filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR),filename.GetFullName(),already_processed,header_dirs,false);
 	wxFileName file_name;
-	ML_WHILE(item) {
-		prev=item;
-		ML_NEXT(item);
-		delete prev;
-		file_name=item->name;
+	for(int i=1;i<already_processed.GetCount();i++) { // empieza de 1 para saltearse el primer item (el propio archivo)
+		file_name=already_processed[i];
 		file_name.MakeRelativeTo(ref_path);
 		deps.Add(file_name.GetFullPath());
 	}
-	delete item;
 }
 
 bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename) {
-	wxArrayString as;
-	return AreIncludesUpdated(bin_date,filename,as);
+	wxArrayString header_dirs;
+	return AreIncludesUpdated(bin_date,filename,header_dirs);
 }
 
 bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs) {
-	
 	// inicializar la lista
-	fi_file_item *prev, *first=new fi_file_item;
+	wxArrayString already_processed;
 	wxString my_path=filename.GetPathWithSep();
-	first->name=my_path; // el primer elemento (ficticio) guarda la ruta del archivo original
-	first->next=new fi_file_item(filename.GetFullPath());
+	already_processed.Add(my_path); // el primer elemento (ficticio) guarda la ruta del archivo original
+	already_processed.Add(filename.GetFullPath());
 	// averiguar las dependencias
-	FindIncludes(_T(""),filename.GetFullName(),first,header_dirs);
+	FindIncludes("",filename.GetFullName(),already_processed,header_dirs);
 	// comparar las fechas y liberar memoria
 	bool ret=false,future=false;
 	wxDateTime now=wxDateTime::Now();
-	while (first->next!=NULL) {
-		prev=first;
-		first=first->next;
+	for(int i=1;i<already_processed.GetCount();i++) { // saltea el elemento ficticio
 		if (!ret) {
 			if (project) {
-				project_file_item *fi=project->FindFromName(first->name);
+				project_file_item *fi=project->FindFromName(already_processed[i]);
 				if (fi && fi->force_recompile) ret=true;
 			}
-			wxDateTime dt = wxFileName(first->name).GetModificationTime();
-			ret = wxFileName(first->name).GetModificationTime()>bin_date;
+			wxDateTime dt = wxFileName(already_processed[i]).GetModificationTime();
+			ret = wxFileName(already_processed[i]).GetModificationTime()>bin_date;
 			if ((now-dt).GetSeconds().ToLong()<-3) { // si es del futuro, arreglar y recompilar
-				wxFileName(first->name).Touch();
+				wxFileName(already_processed[i]).Touch();
 				future=true;
 				if (project)
-					project->warnings.Add(wxString(LANG(UTILS_FUTURE_FILE_PRE,"El archivo incluido "))<<first->name<<LANG(UTILS_FUTURE_SOURCE_POST," tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual."));
-				mxSource *src = main_window->IsOpen(first->name);
+					project->warnings.Add(wxString(LANG(UTILS_FUTURE_FILE_PRE,"El archivo incluido "))<<already_processed[i]<<LANG(UTILS_FUTURE_SOURCE_POST," tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual."));
+				mxSource *src = main_window->IsOpen(already_processed[i]);
 				if (src) src->Reload();
 			}
 		}
-		delete prev;
 	}
-	delete first;
 	return ret||future;
 }
 
@@ -403,11 +389,10 @@ bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArr
 * Busca los includes del archivo filename que esta en el directorio path, relativo 
 * al directorio original first->name 
 **/
-void mxUtils::FindIncludes(wxString path, wxString filename, fi_file_item *first, wxArrayString &header_dirs, bool recursive) {
-	wxTextFile text_file(DIR_PLUS_FILE(DIR_PLUS_FILE(first->name,path),filename));
+void mxUtils::FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive) {
+	wxTextFile text_file(DIR_PLUS_FILE(DIR_PLUS_FILE(already_processed[0],path),filename));
 	wxFileName file_name;
 	text_file.Open();
-	fi_file_item *item;
 	wxString line, this_one;
 	int pos, len, ini, end;
 	// recorrer el fuente para buscar que incluye
@@ -435,28 +420,18 @@ void mxUtils::FindIncludes(wxString path, wxString filename, fi_file_item *first
 				}
 				this_one=line.Mid(ini,end);
 				// si el archivo existe
-				if (this_one!=_T(""))
-					this_one=GetOnePath(DIR_PLUS_FILE(first->name,path),project?project->path:DIR_PLUS_FILE(first->name,path),this_one,header_dirs);
+				if (this_one.Len())
+					this_one=GetOnePath(DIR_PLUS_FILE(already_processed[0],path),project?project->path:DIR_PLUS_FILE(already_processed[0],path),this_one,header_dirs);
 				if (this_one.Len()) {
 					file_name=this_one;
 					file_name.Normalize(wxPATH_NORM_DOTS);
 					this_one=file_name.GetFullPath();
-					// ver que no esta ya en la lista
-					item=first;
-					bool no_esta=true;
-					while (item->next!=NULL) {
-						item=item->next;
-						if (item->name==this_one) {
-							no_esta=false;
-							break;
-						}
-					}
-					if (no_esta) {
+					if (already_processed.Index(this_one)==wxNOT_FOUND) {
 						// agregarlo a la lista de archivos ya considerados
-						item->next=new fi_file_item(this_one);
+						already_processed.Add(this_one);
 						// buscar las dependencias recursivamente
 						if (recursive) 
-							FindIncludes(file_name.GetPathWithSep(),file_name.GetFullName(),first,header_dirs);
+							FindIncludes(file_name.GetPathWithSep(),file_name.GetFullName(),already_processed,header_dirs);
 					}
 				}
 			}

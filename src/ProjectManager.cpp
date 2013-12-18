@@ -1764,7 +1764,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		while(item.IsValid()) {
 			bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+_T(".o"));
 			bin_full_path=utils->Quotize(bin_name.GetFullPath());
-			fil.AddLine(bin_full_path+_T(": ")+utils->FindIncludes(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
+			fil.AddLine(bin_full_path+_T(": ")+utils->FindObjectDeps(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
 			bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
 			fil.AddLine(tab+(cpp?"${GPP}":"${GCC}")+(cpp?" ${CXXFLAGS} ":" ${CFLAGS} ")+
 	#if !defined(_WIN32) && !defined(__WIN32__)

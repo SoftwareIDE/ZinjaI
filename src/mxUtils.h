@@ -74,18 +74,18 @@ WX_DECLARE_STRING_HASH_MAP( wxTreeItemId, HashStringTreeItem );
 /*
 * macros auxiliares para trabajar con mis listas enlazadas made in home
 **/
-/** @brief eliminar un item de una lista doblemente enlazada **/
-#define ML_REMOVE(item) if ((item->prev->next=item->next)!=NULL) item->next->prev=item->prev;
-/** @brief while (hay un item mas) **/
-#define ML_WHILE(item) while(item->next!=NULL)
+// /** @brief eliminar un item de una lista doblemente enlazada **/
+//#define ML_REMOVE(item) if ((item->prev->next=item->next)!=NULL) item->next->prev=item->prev;
+// /** @brief while (hay un item mas) **/
+//#define ML_WHILE(item) while(item->next!=NULL)
 /** @brief avanzar al siguiente item **/
 #define ML_NEXT(item) item=item->next;
 /** @brief iterar por una lista (de primer elemento ficticio) **/
 #define ML_ITERATE(item) while(item->next && (item=item->next))
-/** @brief vaciar una lista (dejando al primer item ficticio) **/
-#define ML_CLEAN(first) if (first->next) { typeof(first) ml_aifc; typeof(first) item=first->next; first->next=NULL; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
-/** @brief eliminar una lista (incluyendo al primer item ficticio) **/
-#define ML_FREE(item) { typeof(item) ml_aifc; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
+// /** @brief vaciar una lista (dejando al primer item ficticio) **/
+//#define ML_CLEAN(first) if (first->next) { typeof(first) ml_aifc; typeof(first) item=first->next; first->next=NULL; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
+// /** @brief eliminar una lista (incluyendo al primer item ficticio) **/
+//#define ML_FREE(item) { typeof(item) ml_aifc; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
 
 /**
 * @brief Clase para contener funciones varias de uso general
@@ -192,37 +192,23 @@ public:
 	wxMenuItem *AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, wxString caption, wxString help, wxString filename);
 	/*@}*/
 	
-private:
-	// estructura auxiliar para llevar la cuenta de cuales ya se revisaron
-	struct fi_file_item {
-		wxString name;
-		fi_file_item *next;
-		fi_file_item (wxString n) {
-			name=n;
-			next=NULL;
-		}
-		fi_file_item () {
-			name=_T("");
-			next=NULL;
-		}
-	};
 public:
 	/**
 	* @name para el manejo de "dependencias" (que hs incluye un cpp)
 	**/
 	/*@{*/
 	/** @brief funcion interna que busca "inclusiones" (\#include...) en un fuente **/
-	void FindIncludes(wxString path, wxString filename, fi_file_item *first, wxArrayString &header_dirs, bool recursive=true);
-	/** @brief Busca las dependencias de un fuente (para el makefile?)**/
-	wxString FindIncludes(wxFileName filename, wxString path, wxArrayString &header_dirs);
+	void FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive=true);
+	/** @brief Busca las dependencias de un fuente (en realidad del objeto que genera al compilarse, ya que incluye al propio fuente, para el makefile)**/
+	wxString FindObjectDeps(wxFileName filename, wxString ref_path, wxArrayString &header_dirs);
 	/// @brief Devuelve una lista de includes directos (no recursivo) como wxArrayString (para el grafo del proyecto)
 	void FindIncludes(wxArrayString &dest, wxFileName filename, wxString path, wxArrayString &header_dirs);
 
 	wxString GetOnePath(wxString orig_path, wxString project_path, wxString fname, wxArrayString &dirs);
-	// devuelve verdadero si alguno de los archivos incluidos por filename es mas nuevo que bin_date
+	/// devuelve verdadero si alguno de los archivos incluidos por filename es mas nuevo que bin_date
 	bool AreIncludesUpdated(wxDateTime bin_date, wxFileName filename);
+	/// devuelve verdadero si alguno de los archivos incluidos por filename es mas nuevo que bin_date
 	bool AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs);
-	/*@}*/
 	
 	/// Busca los programas ejecutados desde zinjai
 	void GetRunningChilds(wxArrayString &childs);

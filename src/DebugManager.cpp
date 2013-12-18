@@ -1723,16 +1723,19 @@ bool DebugManager::UpdateInspection() {
 						found=true;
 						my_frame=frames_addrs[j];
 						my_frame_num=frames_nums[j];
+						ii.frame=my_frame;
 						ii.frame_num=my_frame_num;
 						inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
 						break;
 					}
 				}
 				if (!found) {
+					ii.frame=_T("Error");
 					ii.frame_num=_T("Error");
 					inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("Error"));
 				}
 			} else {
+				ii.frame=my_frame;
 				ii.frame_num=my_frame_num;
 				inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
 			}
@@ -1799,7 +1802,7 @@ bool DebugManager::UpdateInspection() {
 		p = ans.Find(_T("name="));
 	}
 
-	// actualizar los tipos compuestos (abria que buscar algo mas eficiente)
+	// actualizar los tipos compuestos (habria que buscar algo mas eficiente)
 	for (unsigned int i=0;i<inspections.size();i++) {
 		if (!inspections[i].on_scope || inspections[i].frameless || inspections[i].freezed) continue;
 		if (inspections[i].is_vo && inspections[i].always_evaluate) {
@@ -1816,10 +1819,10 @@ bool DebugManager::UpdateInspection() {
 //			} else do_inspect=true;
 //			if (do_inspect) {
 			if (inspections[i].frame_num[0]!='E') {
-//				SendCommand(_T("-stack-select-frame "),my_frame_num=frames_nums[j]);
 				if (my_frame_num!=inspections[i].frame_num) {
-					SendCommand(_T("-stack-select-frame "),my_frame_num=inspections[i].frame_num);
-					my_frame = frames_addrs[i];
+					my_frame=inspections[i].frame;
+					my_frame_num=inspections[i].frame_num;
+					SendCommand(_T("-stack-select-frame "),my_frame_num);
 				}
 				if (inspections[i].use_data_evaluate) {
 					inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
@@ -1883,7 +1886,8 @@ bool DebugManager::UpdateInspection() {
 						if (frames_addrs[j]==(*i1)->frame) {
 							do_inspect=true;
 							my_frame=frames_addrs[j];
-							SendCommand(_T("-stack-select-frame "),my_frame_num=frames_nums[j]);
+							my_frame_num=frames_nums[j];
+							SendCommand(_T("-stack-select-frame "),my_frame_num);
 							break;
 						}
 					}
