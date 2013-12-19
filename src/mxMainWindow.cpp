@@ -277,8 +277,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_DOXY_VIEW, mxMainWindow::OnToolsDoxyView)
 	EVT_MENU(mxID_TOOLS_WXFB_UPDATE_INHERIT, mxMainWindow::OnToolsWxfbUpdateInherit)
 	EVT_MENU(mxID_TOOLS_WXFB_INHERIT_CLASS, mxMainWindow::OnToolsWxfbInheritClass)
-	EVT_MENU(mxID_TOOLS_WXFB_AUTO, mxMainWindow::OnToolsWxfbAuto)
-	EVT_MENU(mxID_TOOLS_WXFB_ACTIVATE, mxMainWindow::OnToolsWxfbActivate)
+	EVT_MENU(mxID_TOOLS_WXFB_CONFIG, mxMainWindow::OnToolsWxfbConfig)
 	EVT_MENU(mxID_TOOLS_WXFB_NEW_RES, mxMainWindow::OnToolsWxfbNewRes)
 	EVT_MENU(mxID_TOOLS_WXFB_LOAD_RES, mxMainWindow::OnToolsWxfbLoadRes)
 	EVT_MENU(mxID_TOOLS_WXFB_REGEN, mxMainWindow::OnToolsWxfbRegen)
@@ -1539,8 +1538,7 @@ void mxMainWindow::CreateMenus() {
 	menu.tools_doxygen->Enable(false);
 
 	wxMenu *wxfb_menu = new wxMenu;
-	menu.tools_wxfb_activate = utils->AddCheckToMenu(wxfb_menu,mxID_TOOLS_WXFB_ACTIVATE, LANG(MENUITEM_TOOLS_WXFB_ACTIVATE,"Activar &Integracion wxFormBuilder"),_T(""),_T("Añade los pasos necesarios a la compilacion para utilizar wxFormBuilder"),false);
-	menu.tools_wxfb_auto = utils->AddCheckToMenu(wxfb_menu,mxID_TOOLS_WXFB_AUTO, LANG(MENUITEM_TOOLS_WXFB_AUTO,"Regenerar y Actualizar Automaticamente"),_T(""),_T("Regenera los proyectos si es necesario cada vez que ZinjaI recibe el foco"),false);
+	menu.tools_wxfb_config = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_CONFIG, LANG(MENUITEM_TOOLS_WXFB_CONFIG,"Configurar &Integracion con wxFormBuilder..."),_T(""),_T("Añade los pasos necesarios a la compilacion para utilizar wxFormBuilder"),ipre+_T("wxfb_activate.png"));
 	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_NEW_RES, LANG(MENUITEM_TOOLS_WXFB_NEW_RESOURCE,"&Adjuntar un Nuevo Proyecto wxFB..."),_T(""),_T("Crea un nuevo proyecto wxFormBuilder y lo agrega al proyecto en ZinjaI"),ipre+_T("wxfb_new_res.png"));
 	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_LOAD_RES, LANG(MENUITEM_TOOLS_WXFB_LOAD_RESOURCE,"&Adjuntar un Proyecto wxFB Existente..."),_T(""),_T("Agrega un proyecto wxFormBuilder ya existente al proyecto en ZinjaI"),ipre+_T("wxfb_load_res.png"));
 	menu.tools_wxfb_regen = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_REGEN, LANG(MENUITEM_TOOLS_WXFB_REGENERATE,"&Regenerar Proyectos wxFB"),_T("Shift+Alt+F9"),_T("Ejecuta wxFormBuilder para regenerar los archivos de recurso o fuentes que correspondan"),ipre+_T("wxfb_regen.png"));
@@ -1691,7 +1689,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 		if (config->Toolbars.tools.doxy_generate) utils->AddTool(toolbar_tools,mxID_TOOLS_DOXY_GENERATE,LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE,"Generar Documentacion Doxygen..."),ipre+_T("doxy_run.png"),LANG(TOOLBAR_DESC_TOOLS_DOXYGEN_GENERATE,"Herramientas -> Generar Documentacion -> Generar..."));
 		if (config->Toolbars.tools.doxy_config) utils->AddTool(toolbar_tools,mxID_TOOLS_DOXY_CONFIG,LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE,"Configurar Documentacion Doxygen..."),ipre+_T("doxy_config.png"),LANG(TOOLBAR_DESC_TOOLS_DOXYGEN_CONFIGURE,"Herramientas -> Generar Documentacion -> Configurar..."));
 		if (config->Toolbars.tools.doxy_view) utils->AddTool(toolbar_tools,mxID_TOOLS_DOXY_VIEW,LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW,"Ver Documentacion Doxygen..."),ipre+_T("doxy_view.png"),LANG(TOOLBAR_DESC_TOOLS_DOXYGEN_VIEW,"Herramientas -> Generar Documentacion -> Ver..."));
-		if (config->Toolbars.tools.wxfb_activate) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_ACTIVATE,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_ACTIVATE,"Activar Integracion wxFormBuilder"),ipre+_T("wxfb_activate.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_ACTIVATE,"Herramientas -> wxFormBuilder -> Activar Integracion wxFormBuilder"));
+		if (config->Toolbars.tools.wxfb_config) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_CONFIG,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG,"Activar Integracion wxFormBuilder"),ipre+_T("wxfb_activate.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_ACTIVATE,"Herramientas -> wxFormBuilder -> Configurar Integracion wxFormBuilder"));
 		if (config->Toolbars.tools.wxfb_new_res) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_NEW_RES,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE,"Adjuntar un Nuevo Proyecto wxFB"),ipre+_T("wxfb_new_res.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_NEW_RESOURCE,"Herramientas -> wxFormBuilder -> Adjuntar un Nuevo Proyecto wxFB"));
 		if (config->Toolbars.tools.wxfb_load_res) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_LOAD_RES,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE,"Adjuntar un Proyecto wxFB Existente"),ipre+_T("wxfb_load_res.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_LOAD_RESOURCE,"Herramientas -> wxFormBuilder -> Adjuntar un Proyecto wxFB Existente"));
 		if (config->Toolbars.tools.wxfb_regen) utils->AddTool(toolbar_tools,mxID_TOOLS_WXFB_REGEN,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE,"Regenerar Proyectos wxFB"),ipre+_T("wxfb_regen.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REGENERATE,"Herramientas -> wxFormBuilder -> Regenerar Proyectos wxFB"));
@@ -5234,9 +5232,7 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	menu.tools_doxygen->Enable(project_mode);
 	menu.tools_cppcheck->Enable(project_mode);
 	menu.tools_wxfb->Enable(project_mode);
-	menu.tools_wxfb_activate->Check(false);
-	menu.tools_wxfb_regen->Enable(false);
-	menu.tools_wxfb_inherit->Enable(false);
+	menu.tools_wxfb_config->Enable(project_mode);
 	menu.tools_wxfb_update_inherit->Enable(false);
 	menu.tools_project_tools->Enable(project_mode);
 	menu.tools_proy_graph->Enable(project_mode);

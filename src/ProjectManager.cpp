@@ -2582,9 +2582,7 @@ void ProjectManager::FixTemplateData(wxString name) {
 
 void ProjectManager::ActivateWxfb() {
 	use_wxfb=true; wxfb_ask=true;
-	main_window->menu.tools_wxfb_activate->Check(true);
-	main_window->menu.tools_wxfb_auto->Check(auto_wxfb);
-	main_window->menu.tools_wxfb_auto->Enable(true);
+	main_window->menu.tools_wxfb_config->Enable(true);
 	main_window->menu.tools_wxfb_regen->Enable(true);
 	main_window->menu.tools_wxfb_inherit->Enable(true);
 	main_window->menu.tools_wxfb_update_inherit->Enable(true);

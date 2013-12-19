@@ -228,8 +228,7 @@ public:
 	void OnToolsWxfbNewRes(wxCommandEvent &event);
 	void OnToolsWxfbLoadRes(wxCommandEvent &event);
 	void OnToolsWxfbRegen(wxCommandEvent &event);
-	void OnToolsWxfbActivate(wxCommandEvent &event);
-	void OnToolsWxfbAuto(wxCommandEvent &event);
+	void OnToolsWxfbConfig(wxCommandEvent &event);
 	void OnToolsWxfbUpdateInherit(wxCommandEvent &event);
 	void OnToolsWxfbInheritClass(wxCommandEvent &event);
 	void OnToolsWxfbHelp(wxCommandEvent &event);
@@ -481,8 +480,7 @@ public:
 		wxMenuItem *tools_doxygen;
 		wxMenuItem *tools_wxfb;
 		wxMenuItem *tools_cppcheck;
-		wxMenuItem *tools_wxfb_activate;
-		wxMenuItem *tools_wxfb_auto;
+		wxMenuItem *tools_wxfb_config;
 		wxMenuItem *tools_wxfb_regen;
 		wxMenuItem *tools_wxfb_inherit;
 		wxMenuItem *tools_wxfb_update_inherit;

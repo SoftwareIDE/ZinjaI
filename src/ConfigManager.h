@@ -311,7 +311,7 @@ struct cfgToolBars {
 		bool doxy_generate;
 		bool doxy_config;
 		bool doxy_view;
-		bool wxfb_activate;
+		bool wxfb_config;
 		bool wxfb_new_res;
 		bool wxfb_load_res;
 		bool wxfb_regen;

@@ -423,7 +423,8 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ(Toolbars,tools.diff_show);
 				else CFG_BOOL_READ(Toolbars,tools.diff_apply);
 				else CFG_BOOL_READ(Toolbars,tools.diff_discard);
-				else CFG_BOOL_READ(Toolbars,tools.wxfb_activate);
+				else CFG_BOOL_READ(Toolbars,tools.wxfb_config);
+				else CFG_BOOL_READ_DN("tools.wxfb_activate",Toolbars.tools.wxfb_config);
 				else CFG_BOOL_READ(Toolbars,tools.wxfb_new_res);
 				else CFG_BOOL_READ(Toolbars,tools.wxfb_load_res);
 				else CFG_BOOL_READ(Toolbars,tools.wxfb_regen);
@@ -824,7 +825,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE(Toolbars,tools.doxy_generate);
 	CFG_BOOL_WRITE(Toolbars,tools.doxy_config);
 	CFG_BOOL_WRITE(Toolbars,tools.doxy_view);
-	CFG_BOOL_WRITE(Toolbars,tools.wxfb_activate);
+	CFG_BOOL_WRITE(Toolbars,tools.wxfb_config);
 	CFG_BOOL_WRITE(Toolbars,tools.wxfb_regen);
 	CFG_BOOL_WRITE(Toolbars,tools.wxfb_new_res);
 	CFG_BOOL_WRITE(Toolbars,tools.wxfb_load_res);
@@ -1219,7 +1220,7 @@ void ConfigManager::LoadToolBarsDefaults() {
 	Toolbars.tools.valgrind_run=false;
 	Toolbars.tools.valgrind_view=false;
 #endif
-	Toolbars.tools.wxfb_activate=false;
+	Toolbars.tools.wxfb_config=false;
 	Toolbars.tools.wxfb_new_res=false;
 	Toolbars.tools.wxfb_load_res=false;
 	Toolbars.tools.wxfb_regen=false;

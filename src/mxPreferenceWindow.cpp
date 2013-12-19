@@ -1077,7 +1077,7 @@ void mxPreferenceWindow::OnToolbarsTools(wxCommandEvent &evt) {
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE,"Generar Documentacion Doxygen..."),_T("doxy_run.png"),config->Toolbars.tools.doxy_generate);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE,"Configurar Documentacion Doxygen..."),_T("doxy_config.png"),config->Toolbars.tools.doxy_config);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW,"Ver Documentacion Doxygen..."),_T("doxy_view.png"),config->Toolbars.tools.doxy_view);
-		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_ACTIVATE,"Activar Integracion wxFormBuilder"),_T("wxfb_activate.png"),config->Toolbars.tools.wxfb_activate);
+		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG,"Configurar Integracion wxFormBuilder"),_T("wxfb_activate.png"),config->Toolbars.tools.wxfb_config);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE,"Adjuntar un Nuevo Proyecto wxFB"),_T("wxfb_new_res.png"),config->Toolbars.tools.wxfb_new_res);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE,"Adjuntar un Proyecto wxFB Existente"),_T("wxfb_load_res.png"),config->Toolbars.tools.wxfb_load_res);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE,"Regenerar Proyectos wxFB"),_T("wxfb_regen.png"),config->Toolbars.tools.wxfb_regen);

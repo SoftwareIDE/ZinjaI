@@ -1268,12 +1268,8 @@ CAPTION_DEBUGGER_LOG
 Mensajes del Depurador
 MAINW_AUTOHIDE_DEBUG_LOG
 Log Depurador
-MAINW_PROJECT_FILE_POPUP_ADD
-&Agregar Archivo...
-MAINW_PROJECT_FILE_POPUP_ADD_MULTI
-&Agregar Múltiples Archivos...
-MAINW_PROJECT_FILE_POPUP_OPEN_ALL
-Abrir &Todos
+MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT
+Agregar al proyecto
 MAINW_PROJECT_FILE_POPUP_SHOW_FILE
 &Mostrar Archivo
 MAINW_PROJECT_FILE_POPUP_RENAME
@@ -1292,8 +1288,16 @@ MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS
 Mover a &Otros
 MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER
 Abrir carpeta contenedora...
+MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER
+Explorar carpeta contenedora
 MAINW_PROJECT_FILE_POPUP_PROPERTIES
 Propiedades...
+MAINW_PROJECT_FILE_POPUP_OPEN_ALL
+Abrir &Todos
+MAINW_PROJECT_FILE_POPUP_ADD
+&Agregar Archivo...
+MAINW_PROJECT_FILE_POPUP_ADD_MULTI
+&Agregar Múltiples Archivos...
 MAINW_PROJECT_FILE_POPUP_TOGGLE_FULL_PATH_OFF
 Mostrar solo nombres de archivos
 MAINW_PROJECT_FILE_POPUP_TOGGLE_FULL_PATH_ON
@@ -1316,12 +1320,8 @@ QUICKHELP_WORDS_TO_SEARCH
 Palabra a buscar:
 CAPTION_QUICKHELP
 Ayuda Rapida
-MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT
-Agregar al proyecto
 MAINW_PROJECT_FILE_POPUP_OPEN_H
 &Abrir complementario...\tF12
-MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER
-Explorar carpeta contenedora
 MENUITEM_VIEW_SPLIT_VIEW
 &Duplicar vista
 MAINW_PROJECT_FILE_POPUP_SAVE
@@ -1656,10 +1656,8 @@ MENUITEM_TOOLS_DOXYGE_HELP
 A&yuda...
 MENUITEM_TOOLS_DOXYGEN
 Generar &Documentación (doxygen)
-MENUITEM_TOOLS_WXFB_ACTIVATE
-Activar &Integracion wxFormBuilder
-MENUITEM_TOOLS_WXFB_AUTO
-Regenerar y Actualizar Automaticamente
+MENUITEM_TOOLS_WXFB_CONFIG
+Configurar &Integracion con wxFormBuilder...
 MENUITEM_TOOLS_WXFB_NEW_RESOURCE
 &Adjuntar un Nuevo Proyecto wxFB...
 MENUITEM_TOOLS_WXFB_LOAD_RESOURCE
@@ -1874,10 +1872,10 @@ TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW
 Ver Documentacion Doxygen...
 TOOLBAR_DESC_TOOLS_DOXYGEN_VIEW
 Herramientas -> Generar Documentacion -> Ver...
-TOOLBAR_CAPTION_TOOLS_WXFB_ACTIVATE
+TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG
 Activar Integracion wxFormBuilder
 TOOLBAR_DESC_TOOLS_WXFB_ACTIVATE
-Herramientas -> wxFormBuilder -> Activar Integracion wxFormBuilder
+Herramientas -> wxFormBuilder -> Configurar Integracion wxFormBuilder
 TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE
 Adjuntar un Nuevo Proyecto wxFB
 TOOLBAR_DESC_TOOLS_WXFB_NEW_RESOURCE
@@ -2554,10 +2552,10 @@ MAINW_PREPROC_ERROR
 No se pudo preprocesar correctamente el fuente.
 MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE
 Ingrese el nombre para mostrar del nuevo template de proyecto
-MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE
-Ingrese el nombre del archivo del nuevo template de proyecto
 MAINW_GENERATING_TEMPLATE
 Generando plantilla...
+MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE
+Ingrese el nombre del archivo del nuevo template de proyecto
 MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Ingrese el nombre para mostrar del nuevo template de programa simple
 MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
@@ -3469,7 +3467,7 @@ insertar lista de dependencias
 GENERAL_POPUP_INSERT_TEMP_DIR
 insertar directorio de temporales
 GENERAL_POPUP_INSERT_MINGW_DIR
-insertar directorio del compilador
+insertar directorio MinGW
 GENERAL_POPUP_INSERT_PROJECT_PATH
 insertar directorio del proyecto
 GENERAL_POPUP_INSERT_PROJECT_BIN
@@ -3494,6 +3492,20 @@ VALGRIND_OPEN_OUTPUT_FILE
 Abrir salida completa
 VALGRIND_DELETE_FROM_TREE
 Eliminar Items
+WXFBSETUP_CAPTION
+Configuracion wxFormBuilder
+WXFBSETUP_ACTIVATE
+Activar integración con wxFormBuilder
+WXFBSETUP_AUTOUPDATE
+Regenerar proyectos wxFormBuilder automáticamente
+WXFBSETUP_UPDATE_CLASSES
+Crear/eliminar clases heredadas luego de regenerar
+WXFBSETUP_UPDATE_METHODS
+Actualizar clases heredadas automáticamente
+WXFBSETUP_READONLY
+Marcar fuentes generados por wxfb como solo-lectura
+WXFBSETUP_HIDEONGOTO
+Ocultar métodos y clases generadas por wxfb en el cuadro \"Ir a Función/Clase/Método\"
 WXFB_CAPTION_NEWCLASS
 wxFB - Generar Clase Heredada
 WXFB_CAPTION_UPDATE

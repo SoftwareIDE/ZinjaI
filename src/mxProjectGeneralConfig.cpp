@@ -60,7 +60,7 @@ mxProjectGeneralConfig::mxProjectGeneralConfig() : wxDialog(main_window, wxID_AN
 	mySizer->Add(new wxButton(this,mxID_RUN_CONFIG,LANG(PROJECTGENERAL_COMPILE_AND_RUN," Compilacion y Ejecucion... ")),sizers->BA5);
 	mySizer->Add(new wxButton(this,mxID_TOOLS_DOXY_CONFIG,LANG(PROJECTGENERAL_DOXYGEN," Opciones Doxygen... ")),sizers->BA5);
 	mySizer->Add(new wxButton(this,mxID_PROJECT_CONFIG_CUSTOM_TOOLS,LANG(PROJECTGENERAL_CUSTOM_TOOLS," Herramientas Personalizadas... ")),sizers->BA5);
-	use_wxfb = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_ACTIVATE_WXFORMBUILDER,"Activar integracion con wxFormBuilder"),project->use_wxfb,wxID_ANY);
+//	use_wxfb = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_ACTIVATE_WXFORMBUILDER,"Activar integracion con wxFormBuilder"),project->use_wxfb,wxID_ANY);
 	
 	mySizer->Add(bottomSizer,sizers->Exp0);
 	
@@ -91,13 +91,13 @@ void mxProjectGeneralConfig::OnOkButton(wxCommandEvent &evt) {
 			
 	} else 
 		project->custom_tabs=0;
-	project->use_wxfb = use_wxfb->GetValue();
+//	project->use_wxfb = use_wxfb->GetValue();
 	project->macros_file = project_debug_macros->GetValue();
 	if (project->autocomp_extra != project_autocomp->GetValue()) {
 		project->autocomp_extra = project_autocomp->GetValue();
 		code_helper->ReloadIndexes(config->Help.autocomp_indexes+_T(" ")+project->autocomp_extra);
 	}
-	main_window->menu.tools_wxfb_activate->Check(project->use_wxfb);
+//	main_window->menu.tools_wxfb_activate->Check(project->use_wxfb);
 	if (project->autocodes_file != project_autocodes->GetValue()) {
 		project->autocodes_file = project_autocodes->GetValue();
 		autocoder->Reset(DIR_PLUS_FILE(project->path,project->autocodes_file));

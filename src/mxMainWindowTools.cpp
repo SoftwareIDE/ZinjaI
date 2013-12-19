@@ -41,6 +41,7 @@
 #include <wx/textfile.h>
 #include "mxGprofOutput.h"
 #include "execution_workaround.h"
+#include "mxWxfbConfigDialog.h"
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -217,29 +218,33 @@ void mxMainWindow::OnToolsConsole(wxCommandEvent &evt) {
 #endif
 }
 
-void mxMainWindow::OnToolsWxfbActivate(wxCommandEvent &event) {
-	if (project) {
-		menu.tools_wxfb_activate->Check(menu.tools_wxfb_activate->IsChecked());
-		if (menu.tools_wxfb_activate->IsChecked()) {
-			project->ActivateWxfb(); // para que verifique si esta el ejecutable
-		} else {
-			project->use_wxfb=false;
-		}
-		if (config->Toolbars.positions.project.visible) { CreateToolbars(toolbar_project); aui_manager.Update(); }
-	}
+void mxMainWindow::OnToolsWxfbConfig(wxCommandEvent &event) {
+	if (project) new mxWxfbConfigDialog();
 }
 
-void mxMainWindow::OnToolsWxfbAuto(wxCommandEvent &event) {
-	if (project) {
-		menu.tools_wxfb_auto->Check(menu.tools_wxfb_activate->IsChecked());
-		if (menu.tools_wxfb_auto->IsChecked()) {
-			if (!project->use_wxfb) project->ActivateWxfb();
-			menu.tools_wxfb_auto->Check(project->auto_wxfb=true);
-		} else {
-			menu.tools_wxfb_auto->Check(project->auto_wxfb=false);
-		}
-	}
-}
+//void mxMainWindow::OnToolsWxfbActivate(wxCommandEvent &event) {
+//	if (project) {
+//		menu.tools_wxfb_activate->Check(menu.tools_wxfb_activate->IsChecked());
+//		if (menu.tools_wxfb_activate->IsChecked()) {
+//			project->ActivateWxfb(); // para que verifique si esta el ejecutable
+//		} else {
+//			project->use_wxfb=false;
+//		}
+//		if (config->Toolbars.positions.project.visible) { CreateToolbars(toolbar_project); aui_manager.Update(); }
+//	}
+//}
+//
+//void mxMainWindow::OnToolsWxfbAuto(wxCommandEvent &event) {
+//	if (project) {
+//		menu.tools_wxfb_auto->Check(menu.tools_wxfb_activate->IsChecked());
+//		if (menu.tools_wxfb_auto->IsChecked()) {
+//			if (!project->use_wxfb) project->ActivateWxfb();
+//			menu.tools_wxfb_auto->Check(project->auto_wxfb=true);
+//		} else {
+//			menu.tools_wxfb_auto->Check(project->auto_wxfb=false);
+//		}
+//	}
+//}
 
 void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 	if (project) {
