@@ -57,9 +57,12 @@ public:
 	const T &operator[](int i) const { 
 		return m_vec[i];
 	}
-	void Clear() {
+	void Reset() {
 		delete []m_vec;
 		m_vec=NULL;
+		m_capacity=m_size=0;
+	}
+	void Clear() {
 		m_capacity=m_size=0;
 	}
 	int Find(const T &data) {
@@ -238,7 +241,13 @@ public:
 	const T &operator[](int i) const { 
 		return SingleList<LocalListNode<T> >::m_vec[i].m_data;
 	}
-	/// erase all elements from the list (cleans both local and global lists)
+	/// erase all elements from the list (cleans both local and global lists, also frees internal reserved memory)
+	void Reset() { 
+		for(int i=0;i<SingleList<LocalListNode<T> >::m_size;i++)
+			m_global_list->Remove(LocalListNodePtr<T>(this,i));
+		SingleList<LocalListNode<T> >::Reset();
+	}
+	/// erase all elements from the list (cleans both local and global lists, but keeps the internal reserved memory)
 	void Clear() { 
 		for(int i=0;i<SingleList<LocalListNode<T> >::m_size;i++)
 			m_global_list->Remove(LocalListNodePtr<T>(this,i));

@@ -82,113 +82,56 @@ mxGotoFunctionDialog::~mxGotoFunctionDialog() {
 }
 
 void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
+	// update results if needed
 	if (timer->IsRunning()) {
 		timer->Stop();
 		wxTimerEvent evt;
 		OnTimerInput(evt);
 	}
-	wxString key = list_ctrl->GetString(list_ctrl->GetSelection());
-	if (key.Mid(0,8)==_T("#define ")) {
-		key=key.Mid(8);
-		pd_macro *aux_macro = parser->last_macro->next;
-		while (aux_macro) {
-			if (aux_macro->props&PD_CONST_MACRO_FUNC && aux_macro->proto==key) {
-				Close();
-				parser->popup_file_def = aux_macro->file->name;
-				parser->popup_line_def = aux_macro->line;
-				parser->OnGotoDef(main_window->notebook_sources);
-				if (main_window->symbols_tree.menuItem->IsChecked()) {
-					main_window->symbols_tree.treeCtrl->EnsureVisible(aux_macro->item);
-					main_window->symbols_tree.treeCtrl->ScrollTo(aux_macro->item);
-					main_window->symbols_tree.treeCtrl->SelectItem(aux_macro->item);
-				}
-				mxSource *source=(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-				source->EnsureVisibleEnforcePolicy(source->GetCurrentLine());
-				if (!source->GetFoldExpanded(source->GetCurrentLine()))	source->ToggleFold(source->GetCurrentLine());
-				source->SetFocus();
-				return;
-			}
-			aux_macro = aux_macro->next;
-		}
-	} else if (key.Mid(0,6)==_T("class ")) {
-		key=key.Mid(6);
-		pd_class *aux_class = parser->last_class->next;
-		while (aux_class) {
-			if (aux_class->name==key) {
-				Close();
-				parser->popup_file_def = aux_class->file->name;
-				parser->popup_line_def = aux_class->line;
-				parser->OnGotoDef(main_window->notebook_sources);
-				if (main_window->symbols_tree.menuItem->IsChecked()) {
-					main_window->symbols_tree.treeCtrl->EnsureVisible(aux_class->item);
-					main_window->symbols_tree.treeCtrl->ScrollTo(aux_class->item);
-					main_window->symbols_tree.treeCtrl->SelectItem(aux_class->item);
-				}
-				mxSource *source=(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-				source->EnsureVisibleEnforcePolicy(source->GetCurrentLine());
-				if (!source->GetFoldExpanded(source->GetCurrentLine()))	source->ToggleFold(source->GetCurrentLine());
-				source->SetFocus();
-				return;
-			}
-			aux_class = aux_class->next;
+	int sel=list_ctrl->GetSelection();
+	if (sel<0||sel>=m_results.GetSize()) return;
+	gotoff_result &r=m_results[sel];
+	Close(); 
+	// process results (simulate double click on parser tree)
+	wxTreeItemId tree_item;
+	if (r.type==1) {
+		pd_macro *aux_macro = r.get_macro();
+		parser->popup_file_def = aux_macro->file->name;
+		parser->popup_line_def = aux_macro->line;
+		parser->OnGotoDef(main_window->notebook_sources);
+		tree_item=aux_macro->item;
+	} else if (r.type==2) {
+		pd_class *aux_class=r.get_class();
+		parser->popup_file_def = aux_class->file->name;
+		parser->popup_line_def = aux_class->line;
+		parser->OnGotoDef(main_window->notebook_sources);
+		tree_item=aux_class->item;
+	} else if (r.type==3) {
+		pd_func *aux_func = r.get_func();
+		parser->popup_file_def = aux_func->file_def->name;
+		parser->popup_line_def = aux_func->line_def;
+		parser->OnGotoDef(main_window->notebook_sources);
+		tree_item=aux_func->item;
+	}
+	// select the item in symbols tree and ensure definition/declaration visibility in its mxSource (at this point should be the current one)
+	if (main_window->left_panels) {
+		if (main_window->menu.view_left_panels->IsChecked()) {
+			main_window->left_panels->SetSelection(1);
+			main_window->symbols_tree.treeCtrl->EnsureVisible(tree_item);
+			main_window->symbols_tree.treeCtrl->ScrollTo(tree_item);
+			main_window->symbols_tree.treeCtrl->SelectItem(tree_item);
 		}
 	} else {
-		pd_func *aux_func = parser->last_function->next;
-		while (aux_func) {
-			if (aux_func->file_def && aux_func->proto==key) {
-				Close();
-				parser->popup_file_def = aux_func->file_def->name;
-				parser->popup_line_def = aux_func->line_def;
-				parser->OnGotoDef(main_window->notebook_sources);
-				if (main_window->left_panels) {
-					if (main_window->menu.view_left_panels->IsChecked()) {
-						main_window->left_panels->SetSelection(1);
-						main_window->symbols_tree.treeCtrl->EnsureVisible(aux_func->item);
-						main_window->symbols_tree.treeCtrl->ScrollTo(aux_func->item);
-						main_window->symbols_tree.treeCtrl->SelectItem(aux_func->item);
-					}
-				} else {
-					if (main_window->symbols_tree.menuItem->IsChecked()) {
-						main_window->symbols_tree.treeCtrl->EnsureVisible(aux_func->item);
-						main_window->symbols_tree.treeCtrl->ScrollTo(aux_func->item);
-						main_window->symbols_tree.treeCtrl->SelectItem(aux_func->item);
-					}
-				}
-				mxSource *source=(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-				source->EnsureVisibleEnforcePolicy(source->GetCurrentLine());
-				if (!source->GetFoldExpanded(source->GetCurrentLine()))	source->ToggleFold(source->GetCurrentLine());
-				source->SetFocus();
-				return;
-			}
-			aux_func = aux_func->next;
-		}
-
-		pd_class *aux_class = parser->last_class->next;
-		while (aux_class) {
-			pd_func *aux_func = aux_class->first_method;
-			while (aux_func) {
-				if (aux_func->file_def && aux_func->full_proto==key) {
-					Close();
-					parser->popup_file_def = aux_func->file_def->name;
-					parser->popup_line_def = aux_func->line_def;
-					parser->OnGotoDef(main_window->notebook_sources);
-					if (main_window->symbols_tree.menuItem->IsChecked()) {
-						main_window->symbols_tree.treeCtrl->EnsureVisible(aux_func->item);
-						main_window->symbols_tree.treeCtrl->ScrollTo(aux_func->item);
-						main_window->symbols_tree.treeCtrl->SelectItem(aux_func->item);
-						main_window->symbols_tree.treeCtrl->SelectItem(aux_func->item);
-					}
-					mxSource *source=(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-					source->EnsureVisibleEnforcePolicy(source->GetCurrentLine());
-					if (!source->GetFoldExpanded(source->GetCurrentLine()))	source->ToggleFold(source->GetCurrentLine());
-					source->SetFocus();
-					return;
-				}
-				aux_func = aux_func->next;
-			}
-			aux_class = aux_class->next;
+		if (main_window->symbols_tree.menuItem->IsChecked()) {
+			main_window->symbols_tree.treeCtrl->EnsureVisible(tree_item);
+			main_window->symbols_tree.treeCtrl->ScrollTo(tree_item);
+			main_window->symbols_tree.treeCtrl->SelectItem(tree_item);
 		}
 	}
+	mxSource *source=(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
+	source->EnsureVisibleEnforcePolicy(source->GetCurrentLine());
+	if (!source->GetFoldExpanded(source->GetCurrentLine()))	source->ToggleFold(source->GetCurrentLine());
+	source->SetFocus();
 }
 
 
@@ -207,53 +150,23 @@ void mxGotoFunctionDialog::OnTextChange(wxCommandEvent &event) {
 }
 
 void mxGotoFunctionDialog::OnTimerInput(wxTimerEvent &event) {
-	bool ignore_case=!case_sensitive->IsChecked();
-	list_ctrl->Freeze();
-	list_ctrl->Clear();
-	wxString key = text_ctrl->GetValue();
-	if (ignore_case && !strict_compare) key.MakeUpper();
-	
-	pd_macro *aux_macro = parser->last_macro->next;
-	while (aux_macro) {
-		if (aux_macro->props&PD_CONST_MACRO_FUNC) {
-			if (strict_compare) {
-				if (aux_macro->name==key)
-					list_ctrl->Append(wxString(_T("#define "))<<aux_macro->proto);
-			} else {
-				if ((ignore_case?aux_macro->name.Upper():aux_macro->name).Contains(key))
-					list_ctrl->Append(wxString(_T("#define "))<<aux_macro->proto);
-			}
+	list_ctrl->Freeze(); list_ctrl->Clear();
+	int n = FillResults(text_ctrl->GetValue(),!case_sensitive->IsChecked(),strict_compare);
+	cerr<<"RECEIVED: "<<n<<endl;
+	for(int i=0;i<n;i++) { 
+		gotoff_result &r=m_results[i];
+		if (r.type==1) {
+			list_ctrl->Append(wxString(_T("#define "))<<r.get_macro()->proto);
+		} else if (r.type==2) {
+			list_ctrl->Append(wxString(_T("class "))<<r.get_class()->name);
+		} else if (r.type==3) {
+			pd_class *s=r.get_func()->space;
+			if (s && s->file) list_ctrl->Append(r.get_func()->full_proto);
+			else list_ctrl->Append(r.get_func()->proto);
 		}
-		aux_macro = aux_macro->next;
-	}
-	
-	pd_class *aux_class = parser->last_class->next;
-	while (aux_class) {
-		if (strict_compare && aux_class->name==key)
-			list_ctrl->Append(wxString(_T("class "))<<aux_class->name);
-		else if (!strict_compare && (ignore_case?aux_class->name.Upper():aux_class->name).Contains(key))
-			list_ctrl->Append(wxString(_T("class "))<<aux_class->name);
-		pd_func *aux_func = aux_class->first_method;
-		while (aux_func) {
-			if (strict_compare && aux_func->name==key)
-				list_ctrl->Append(aux_func->full_proto);
-			else if (!strict_compare && aux_func->file_def && (ignore_case?aux_func->name.Upper():aux_func->name).Contains(key))
-				list_ctrl->Append(aux_func->full_proto);
-			aux_func = aux_func->next;
-		}
-		aux_class = aux_class->next;
-	}
-	
-	pd_func *aux_func = parser->last_function->next;
-	while (aux_func) {
-		if (strict_compare && aux_func->name==key)
-			list_ctrl->Append(aux_func->proto);
-		else if (!strict_compare && aux_func->file_def && (ignore_case?aux_func->name.Upper():aux_func->name).Contains(key))
-			list_ctrl->Append(aux_func->proto);
-		aux_func = aux_func->next;
 	}
 	list_ctrl->Thaw();
-	if (list_ctrl->GetCount()) {
+	if (n) {
 		goto_button->Enable(true);
 		list_ctrl->SetSelection(0);
 	} else {
@@ -288,3 +201,75 @@ void mxGotoFunctionDialog::OnCaseCheck(wxCommandEvent &event) {
 	OnTimerInput(evt);
 	text_ctrl->SetFocus();
 }
+
+int mxGotoFunctionDialog::FillResults (wxString key, bool ignore_case, bool strict_compare) {
+	m_results.Clear();
+	if (ignore_case && !strict_compare) key.MakeUpper();
+	// search in preprocessor functions
+	pd_macro *aux_macro = parser->last_macro->next;
+	while (aux_macro) {
+		if (!aux_macro->file->hide_symbols) {
+			if (aux_macro->props&PD_CONST_MACRO_FUNC) {
+				if (strict_compare) {
+					if (aux_macro->name==key) m_results.Add(aux_macro);
+				} else if (ignore_case) {
+					if (aux_macro->name.Upper().Contains(key)) m_results.Add(aux_macro);
+				} else {
+					if (aux_macro->name.Contains(key)) m_results.Add(aux_macro);
+				}
+			}
+		}
+		aux_macro = aux_macro->next;
+	}
+
+	// search in class names and their methods
+	pd_class *aux_class = parser->last_class->next;
+	while (aux_class) {
+		if (!aux_class->file || !aux_class->file->hide_symbols) {
+			// class name
+			if (strict_compare) {
+				if (aux_class->name==key) m_results.Add(aux_class);
+			} else if (ignore_case) {
+				if (aux_class->name.Upper().Contains(key)) m_results.Add(aux_class);
+			} else {
+				if (aux_class->name.Contains(key)) m_results.Add(aux_class);
+			}
+			// methods names
+			pd_func *aux_func = aux_class->first_method;
+			while (aux_func) {
+				if ((aux_func->file_def && !aux_func->file_def->hide_symbols) || (aux_func->file_dec && !aux_func->file_dec->hide_symbols)) {
+					if (strict_compare) {
+						if (aux_func->name==key) m_results.Add(aux_func);
+					} else if (aux_func->file_def) {
+						if (ignore_case) {
+							if (aux_func->name.Upper().Contains(key)) m_results.Add(aux_func);
+						} else {
+							if (aux_func->name.Contains(key)) m_results.Add(aux_func);
+						}
+					}
+				}
+				aux_func = aux_func->next;
+			}
+		}
+		aux_class = aux_class->next;
+	}
+	// search in global functions and methos
+	pd_func *aux_func = parser->last_function->next;
+	while (aux_func) {
+		if ((aux_func->file_def && !aux_func->file_def->hide_symbols) || (aux_func->file_dec && !aux_func->file_dec->hide_symbols)) {
+			if (strict_compare) {
+				if (aux_func->name==key) m_results.Add(aux_func);
+			} else if (aux_func->file_def) {
+				if (ignore_case) {
+					if (aux_func->name.Upper().Contains(key)) m_results.Add(aux_func);
+				} else {
+					if (aux_func->name.Contains(key)) m_results.Add(aux_func);
+				}
+			}
+		}
+		aux_func = aux_func->next;
+	}
+	cerr<<"BUSCADO: "<<key<<"    -   "<<m_results.GetSize()<<endl;
+	return m_results.GetSize();
+}
+
