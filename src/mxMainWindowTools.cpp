@@ -249,7 +249,7 @@ void mxMainWindow::OnToolsWxfbConfig(wxCommandEvent &event) {
 void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 	if (project) {
 		
-		if (!project->use_wxfb) project->ActivateWxfb();
+		if (!project->GetWxfbActivated()) project->ActivateWxfb();
 		
 		wxString name=mxGetTextFromUser(_T("Nombre del archivo:"),_T("Nuevo Proyecto wxFormBuilder"),_T(""),this);
 		if (name.Len()==0) return;
@@ -371,7 +371,7 @@ void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 		fn_source.Normalize();
 		wxString cpp_name=fn_source.GetFullPath();
 		
-		if (!project->use_wxfb) project->ActivateWxfb();
+		if (!project->GetWxfbActivated()) project->ActivateWxfb();
 		
 		if (!project->HasFile(cpp_name))
 			project->AddFile(FT_SOURCE,cpp_name);
@@ -387,16 +387,11 @@ void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsWxfbRegen(wxCommandEvent &event) {
-	if (project) {
-		
-		if (project->use_wxfb) {
-			status_bar->SetStatusText(_T("Regenerando proyectos wxFormBuilder..."));
-			project->WxfbGenerate();
-			parser->Parse();
-			status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
-		} else {
-			
-		}
+	if (project && project->GetWxfbActivated()) {
+		status_bar->SetStatusText(_T("Regenerando proyectos wxFormBuilder..."));
+		project->WxfbGenerate();
+		parser->Parse();
+		status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	}
 }
 
@@ -511,9 +506,8 @@ void mxMainWindow::OnToolsDoxyConfig(wxCommandEvent &event) {
 void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
 	if (project) {
 		if (config->CheckDoxygenPresent()) {
-			if (!project->doxygen) 
-				project->doxygen = new doxygen_configuration(project->project_name);
-			mxOutputView *doxy = new mxOutputView("Doxygen",mxOV_EXTRA_URL,"Ver HTMLs",DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))),
+			mxOutputView *doxy = new mxOutputView("Doxygen",mxOV_EXTRA_URL,"Ver HTMLs",
+				DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))),
 				mxVO_DOXYGEN,DIR_PLUS_FILE(config->temp_dir,_T("doxygen.out")));
 			project->SaveAll(false);
 			project->GenerateDoxyfile(DIR_PLUS_FILE(project->path,_T("Doxyfile")));
@@ -524,9 +518,7 @@ void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsDoxyView(wxCommandEvent &event) {
 	if (project) {
-		if (!project->doxygen) 
-			project->doxygen = new doxygen_configuration(project->project_name);
-		utils->OpenInBrowser(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))));
+		utils->OpenInBrowser(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))));
 	}
 }
 
@@ -1018,7 +1010,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
 		bool cpp = fname.Last()!='c';
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
-			(cpp?project->cpp_compiling_options:project->c_compiling_options)+_T(" \"")+fname+"\""+"-c -E -o \""+bin_name+"\"";
+			(cpp?project->cpp_compiling_options:project->c_compiling_options)+_" "+utils->Quotize(fname)+" -c -E -o "+utils->Quotize(bin_name);
 		if (id_command==1) command<<" -fdirectives-only -C";
 		_IF_DEBUGMODE(command);
 		int x =utils->Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	

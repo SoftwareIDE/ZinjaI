@@ -139,6 +139,34 @@ struct doxygen_configuration {
 };
 
 /** 
+* @brief Configuración de la integración con wxFormBuilder para un proyecto
+**/
+struct wxfb_configuration {
+	bool activate_integration;
+	bool autoupdate_projects;
+	bool update_class_list;
+	bool update_methods;
+	bool dont_show_base_classes_in_goto;
+	bool set_wxfb_sources_as_readonly;
+	// auxiliares para zinjai, no se guardan como opciones del proyecto ni los configura el usuario
+	bool ask_if_wxfb_is_missing;  ///< indica si avisar cuando no encuentra el ejecutable del wxFormBuilder
+	bool working; ///< indica si se esta actualmente regenerando algun proyecto wxfb (si wxfb está ejecutandose en segundo plano)
+	wxArrayString headers; ///< nombres de archivos .h asociados al proyecto generados automáticamente por wxfb (se carga en Project::WxfbGenerate y se utiliza en Project::WxfbAutoCheck)
+	
+	//! inicializa la configuración con los valores por defecto
+	wxfb_configuration(bool enabled=true) {
+		ask_if_wxfb_is_missing=true;
+		activate_integration=enabled;
+		autoupdate_projects=true;
+		update_class_list=true;
+		update_methods=true;
+		dont_show_base_classes_in_goto=true;
+		set_wxfb_sources_as_readonly=true;
+		working=false;
+	}
+};
+
+/** 
 * @brief Configuración para CppCheck de un proyecto
 * 
 * Estructura que representa la información para configurar cppcheck. Existe, cuanto mucho 
@@ -206,7 +234,7 @@ struct project_configuration {
 	
 	wxString name; ///< nombre de la configuracion (unico y definido por usuario)
 	
-	wxString toolchain; ///< nombre del toolchain que utiliza, o <default> para tomar el por defecto de zinjai
+	wxString toolchain; ///< nombre del toolchain que utiliza, o \<default\> para tomar el por defecto de zinjai
 	wxString toolchain_arguments[TOOLCHAIN_MAX_ARGS]; ///< argumentos para el Toolchain
 	
 	wxString working_folder; ///< directorio de trabajo para la ejecución
@@ -303,12 +331,12 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 	bool force_recompile; ///< indica que se debe recompilar independientemente de la fecha de modificacion (por ejemplo, si lo va a modificar un paso adicional)
 	project_library *lib; ///< a que biblioteca pertenece (no siempre es correcto, se rehace con analize_config)
 	bool read_only; ///< indica que se debe abrir como solo lectura (porque es generado por una herramienta externa)
-	bool show_on_goto_func; ///< indica si sus métodos y funciones se deben tener en cuenta para el cuadro "Ir a funcion/clase/método"
+	bool hide_symbols; ///< indica si sus métodos y funciones se deben tener en cuenta para el cuadro "Ir a funcion/clase/método"
 	eFileType where; ///< indica en qué categoria de archivos está asociado al proyecto (s=sources, h=headers, o=otros)
 	void Init() { // parte comun a ambos constructores
 		force_recompile=false;
 		read_only=false;
-		show_on_goto_func=true;
+		hide_symbols=false;
 		lib=NULL;
 	}
 	project_file_item (const wxString &n, const wxTreeItemId &i, const eFileType w) {
@@ -366,6 +394,7 @@ struct linking_info {
 * actual; o es NULL si no hay proyecto abierto.
 **/
 class ProjectManager {
+	friend wxString doxygen_configuration::get_tag_index();
 public:
 	compile_step *first_compile_step;
 	bool loading; ///< indica que se esta cargando, para que otros eventos sepan
@@ -376,13 +405,14 @@ public:
 	float actual_progress; ///< temporal para calcular el porcentaje de progreso segun las cuentas de pasos
 	float progress_step; ///< temporal para guardar de a cuanto avanza la barra de progreso al avanzar un paso
 	bool force_relink;	///< indica si debe reenlazar si o si en la proxima compilacion, aunque el exe esté al día
-	bool use_wxfb; ///< indica si esta activada la integracion con wxFormBuilder
-	bool auto_wxfb; ///< indica si la integracion con wxFormBuilder es automatica (regenera solo al activar la ventana)
-	bool generating_wxfb; ///< indica si la generacion o actualizacion esta en proceso
-	bool wxfb_ask; ///< indica si avisar cuando no encuentra el ejecutable del wxFormBuilder
-	wxArrayString wxfbHeaders;
 	cppcheck_configuration *cppcheck; ///< configuracion para ejecutar cppcheck, NULL si no esta definido en el proyecto
+private:
+	wxfb_configuration *wxfb; ///< configuración de la integración con wxfb (si es NULL no está activada)
 	doxygen_configuration *doxygen; ///< configuracion para el Doxyfile, NULL si no esta definido en el proyecto
+public:
+	doxygen_configuration* GetDoxygenConfiguration();
+	wxfb_configuration* GetWxfbConfiguration(bool create_activated=true);
+	bool GetWxfbActivated() { return wxfb && wxfb->activate_integration; }
 	project_configuration *active_configuration; ///< puntero a la configuracion activa
 	project_configuration *configurations[100]; ///< arreglo de configuraciones, ver configurations_count
 	int configurations_count; ///< cantidad de configuraciones validas en configurations

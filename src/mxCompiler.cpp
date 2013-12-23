@@ -146,7 +146,7 @@ mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTree
 }
 
 void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
-	if (project->generating_wxfb) return;
+	if (project->GetWxfbActivated() && project->GetWxfbConfiguration()->working) return;
 	main_window->ClearExternCompilerOutput();
 	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
 DEBUG_INFO("wxYield:in  mxCompiler::BuildOrRunProject");

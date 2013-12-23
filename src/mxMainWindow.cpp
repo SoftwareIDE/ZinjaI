@@ -553,11 +553,16 @@ void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item 
 	if (!for_tab) menu.Append(mxID_PROJECT_POPUP_OPEN, LANG(MAINW_PROJECT_FILE_POPUP_SHOW_FILE,"&Mostrar Archivo"));
 	if (fi) menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar Archivo..."));
 	if (fi) menu.Append(mxID_PROJECT_POPUP_DELETE, LANG(MAINW_PROJECT_FILE_POPUP_DETACH,"&Quitar Archivo"));
-	if (fi && project_tree.selected_parent==project_tree.sources) {
+	if (fi) {
 		menu.AppendSeparator();
-		wxMenuItem *item=menu.AppendCheckItem(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"));
-		item->Enable(fi!=project->files_sources[0] && !compiler->IsCompiling()); item->Check(fi==project->files_sources[0]);
-		menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
+		if (project_tree.selected_parent==project_tree.sources) {
+			wxMenuItem *item=menu.AppendCheckItem(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"));
+			item->Enable(fi!=project->files_sources[0] && !compiler->IsCompiling()); item->Check(fi==project->files_sources[0]);
+			menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
+		}
+		wxMenuItem *item_ro=menu.AppendCheckItem(mxID_PROJECT_POPUP_READONLY, LANG(MAINW_PROJECT_FILE_POPUP_READONLY,"Solo lectura"));
+		wxMenuItem *item_hs=menu.AppendCheckItem(mxID_PROJECT_POPUP_HIDE_SYMBOLS, LANG(MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS,"Ignorar símbolos en búsquedas"));
+		item_ro->Check(fi->read_only); item_hs->Check(fi->hide_symbols);
 	}
 	menu.AppendSeparator();
 	if (!for_tab && fi) {
@@ -1720,8 +1725,10 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 	}
 	
 	if (wich_one==toolbar_project) {
-		if (project->use_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
-		if (project->use_wxfb) utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_HELP_WX,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
+		if (project->GetWxfbActivated()) {
+			utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
+			utils->AddTool(toolbar_project,mxID_TOOLS_WXFB_HELP_WX,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
+		}
 		bool have_tool=false;
 		for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) {
 			if (project->custom_tools[i].on_toolbar) {
@@ -2424,7 +2431,7 @@ void mxMainWindow::OnFileSaveAll (wxCommandEvent &event) {
 
 /**
 * @brief Cierra una pestaña de codigo, pidiendo confirmacion al usuario si hay cambios
-* @param Indice de la pestaña a cerrar, o -1 para cerrar la actual
+* @param i Indice de la pestaña a cerrar, o -1 para cerrar la actual
 **/
 bool mxMainWindow::CloseFromGui (int i) {
 	if (i<0) i=notebook_sources->GetSelection();
@@ -3105,7 +3112,7 @@ mxSource *mxMainWindow::OpenFile (wxString filename, bool add_to_project) {
 	if (filename==_T("") || !wxFileName::FileExists(filename))
 		return NULL;
 	
-	if (project && project->use_wxfb && filename.Len()>4 && filename.Mid(filename.Len()-4).CmpNoCase(_T(".fbp"))==0) {
+	if (project && project->GetWxfbActivated() && filename.Len()>4 && filename.Mid(filename.Len()-4).CmpNoCase(_T(".fbp"))==0) {
 		if (add_to_project) {
 			project->AddFile(FT_OTHER,filename);
 		} else {
@@ -4792,9 +4799,7 @@ void mxMainWindow::ShowWelcome(bool show) {
 }
 
 void mxMainWindow::OnActivate (wxActivateEvent &event) {
-	if (project && project->use_wxfb && project->auto_wxfb) {
-		project->WxfbAutoCheck();
-	}
+	if (project) project->WxfbAutoCheck();
 	event.Skip();
 }
 

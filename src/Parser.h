@@ -49,24 +49,25 @@ enum {
 	mxSTI_ENUM_CONST,
 };
 
+enum ParserActionEnum {
+	PA_NULL,
+	PA_PARSE_OPENED_SOURCE,
+	PA_PARSE_PROJECT_FILE,
+	PA_PARSE_FILE,
+	PA_DELETE_FILE,
+	PA_CLEAR_ALL,
+};
+
 struct parserAction {
-	char action; // s=parseSource, c=clearAll, f=parseFile, d=deleteFile
+	ParserActionEnum action_type; 
 	void *ptr;
-	bool flag;
+	bool flag; /// if action_type==PA_PARSE_OPENED_SOURCE, flag=false means save before parsing; if action_type==PA_PROJECT_FILE, flag=true means sets its pd_file::hide_symbols as true
 	wxString str;
-	parserAction(){}
-	parserAction(mxSource *src, bool dont_save) {
-		ptr=src; flag=dont_save; action='s';
-	}
-	parserAction(int) {
-		action='c';
-	}
-	parserAction(ProjectManager *prj, wxString fnm) {
-		ptr=prj; str=fnm; action='p';
-	}
-	parserAction(wxString fnm, char aaction='f') {
-		str=fnm; action=aaction;
-	}
+	parserAction():action_type(PA_NULL){}
+	parserAction(mxSource *src, bool dont_save):action_type(PA_PARSE_OPENED_SOURCE),ptr(src), flag(dont_save) {}
+	parserAction(int) : action_type(PA_CLEAR_ALL) {}
+	parserAction(ProjectManager *prj, wxString fnm) :action_type(PA_PARSE_PROJECT_FILE),ptr(prj),str(fnm) {}
+	parserAction(wxString fnm, ParserActionEnum aaction=PA_PARSE_FILE) : action_type(aaction), str(fnm) {}
 };
 
 
@@ -142,7 +143,7 @@ public:
 	list<parserAction> actions;
 	void ParseSource(mxSource *src, bool dontsave=false);
 	bool ParseNextSource(mxSource *src, bool dontsave=false);
-	long ParseNextFileStart (wxFileName filename, wxString hashName);
+	long ParseNextFileStart (wxFileName filename, wxString hashName, bool hide_symbols=false);
 	void ParseNextFileContinue(const wxString &s); ///< to be called when an asyn process from ParseNextFile have some output
 	void ParseNextFileEnd(); ///< to be called when an asyn process from ParseNextFile ends
 	void ParseDeleteFile (wxString file);

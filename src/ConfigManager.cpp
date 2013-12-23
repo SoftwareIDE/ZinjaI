@@ -1282,14 +1282,14 @@ bool ConfigManager::CheckWxfbPresent() {
 			out=config->Files.wxfb_command="c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe";
 	}
 #endif
-	if (project->wxfb_ask && (out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
+	if (project->GetWxfbConfiguration(false)->ask_if_wxfb_is_missing && (out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
 		/*int res = */mxMessageDialog(main_window,LANG(PROJMNGR_WXFB_NOT_FOUND,"El proyecto utiliza wxFormBuilder, pero este software\n"
 			"no se ecuentra correctamente instalado/configurado en\n"
 			"su pc. Para descargar e instalar wxFormsBuilder dirijase\n"
 			"a http://wxformbuilder.org. Si ya se encuentra instalado,\n"
 			"configure su ubicacion en la pestaña \"Rutas 2\" del\n"
 			"dialogo de \"Preferencias\" (menu \"Archivo\")."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING/*,LANG(GENERAL_DONT_REMEMBER_AGAIN,"No volver a recordar"),false*/).ShowModal();
-		/*if (res&mxMD_CHECKED)*/ project->wxfb_ask=false;
+		/*if (res&mxMD_CHECKED)*/ project->GetWxfbConfiguration()->ask_if_wxfb_is_missing=false;
 		return false;
 	} else {
 		config->Init.wxfb_seen=true;

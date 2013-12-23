@@ -331,12 +331,13 @@ wxString Parser::JoinNames(wxString types, wxString names) {
 }
 
 
-long Parser::ParseNextFileStart(wxFileName filename, wxString HashName) {
+long Parser::ParseNextFileStart(wxFileName filename, wxString HashName, bool hide_symbols) {
+	if (!filename.FileExists()) return false;
 	if (!compiler->IsCompiling())
 		main_window->SetStatusText(wxString(LANG(PARSER_PARSING_FILE_PRE,"Analizando \""))<<HashName<<LANG(PARSER_PARSING_FILE_POST,"\"..."));
-	if (!filename.FileExists()) return false;
 	process=new mxParserProcess;
 	PD_REGISTER_FILE(process->file, HashName,filename.GetModificationTime());
+	process->file->hide_symbols=hide_symbols;
 	return wxExecute(wxString(config->Files.parser_command)<<_T(" \"")<<filename.GetFullPath()<<_T("\""),wxEXEC_ASYNC,process);
 }
 
@@ -603,16 +604,16 @@ void Parser::ParseDeleteFile(wxString fname) {
 
 bool Parser::RemoveSource(mxSource *source) {
 	if (source->sin_titulo) {
-		actions.insert(actions.end(),parserAction(source->temp_filename.GetFullPath(),'d'));
+		actions.insert(actions.end(),parserAction(source->temp_filename.GetFullPath(),PA_DELETE_FILE));
 	} else {
-		actions.insert(actions.end(),parserAction(source->source_filename.GetFullPath(),'d'));
+		actions.insert(actions.end(),parserAction(source->source_filename.GetFullPath(),PA_DELETE_FILE));
 	}
 	Parse();
 	return true;
 }
 
 bool Parser::RemoveFile(wxString fname) {
-	actions.insert(actions.end(),parserAction(fname,'d'));
+	actions.insert(actions.end(),parserAction(fname,PA_DELETE_FILE));
 	Parse();
 	return true;
 }
@@ -662,24 +663,25 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 				if (show_progress) main_window->SetStatusProgress(-1);
 				return;
 			}
-			switch(pa.action) {
-			case 'c':
+			switch(pa.action_type) {
+			case PA_CLEAR_ALL:
 				ParseNextCleanAll();
 				break;
-			case 'p':
+			case PA_PARSE_PROJECT_FILE:
 				if (pa.ptr==project) { 
-					if (ParseNextFileStart(pa.str,pa.str)) async=true;
+					if (ParseNextFileStart(pa.str,pa.str,pa.flag)) async=true;
 				}
 				break;
-			case 'f':
+			case PA_PARSE_FILE:
 				if (ParseNextFileStart(pa.str,pa.str)) async=true;
 				break;
-			case 'd':
+			case PA_DELETE_FILE:
 				ParseDeleteFile(pa.str);
 				break; // este break faltaba, era adrede o error?
-			case 's':
+			case PA_PARSE_OPENED_SOURCE:
 				if (ParseNextSource((mxSource*)pa.ptr,pa.flag)) async=true;
 				break;
+			default:;
 			}
 			if (show_progress) { main_window->SetStatusProgress((100*(++progress_now))/progress_total); }
 		} while (!async && !actions.empty());
@@ -750,11 +752,11 @@ void Parser::OnEnd(OnEndAction *what, bool run_now_if_not_working) {
 void Parser::UnregisterSource(mxSource *src) {
 	list<parserAction>::iterator it=actions.begin();
 	while (it!=actions.end()) {
-		if (it->action=='s' && !(it==actions.begin() && parser->working)) {
+		if (it->action_type==PA_PARSE_OPENED_SOURCE && !(it==actions.begin() && parser->working)) {
 			if (src->sin_titulo)
-				it->action='*';
+				it->action_type=PA_NULL;
 			else {
-				it->action='f';
+				it->action_type=PA_PARSE_FILE;
 				it->str=src->source_filename.GetFullPath();
 			}
 		}

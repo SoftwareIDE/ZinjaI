@@ -64,10 +64,11 @@ mxWxfbInheriter::~mxWxfbInheriter() {
 
 void mxWxfbInheriter::FillBaseArray() {
 	base_array.Clear();
-	for (unsigned int i=0; i<project->wxfbHeaders.GetCount();i++) {
+	wxArrayString &headers=project->GetWxfbConfiguration()->headers;
+	for (unsigned int i=0; i<headers.GetCount();i++) {
 //		parser->ParseFile(project->wxfbHeaders[i]);
 //		parser->Parse();
-		pd_file *pdf=parser->GetFile(project->wxfbHeaders[i]);
+		pd_file *pdf=parser->GetFile(headers[i]);
 		if (pdf) {
 			pd_ref *cls_ref = pdf->first_class;
 			ML_ITERATE(cls_ref)

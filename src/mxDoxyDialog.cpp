@@ -20,8 +20,7 @@ END_EVENT_TABLE()
 
 mxDoxyDialog::mxDoxyDialog() : wxDialog(main_window, wxID_ANY, LANG(DOXYCONF_CAPTION,"Configuracion Doxygen"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
-	if (!project->doxygen) project->doxygen = new doxygen_configuration(project->project_name);
-	dox = project->doxygen;
+	dox = project->GetDoxygenConfiguration();
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);

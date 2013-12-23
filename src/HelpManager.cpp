@@ -622,7 +622,7 @@ wxString HelpManager::GetDoxyInfo(pd_class *aclass, wxString &desc) {
 	wxString key = aclass->name;
 	it = doxy_index.find(wxString("+class+")<<key);
 	if (it!=doxy_index.end()) {
-		wxTextFile fil(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,DIR_PLUS_FILE("html",it->second))));
+		wxTextFile fil(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE("html",it->second))));
 		if (!fil.Exists()) return "";
 		fil.Open();
 		wxString str;
@@ -640,7 +640,7 @@ wxString HelpManager::GetDoxyInfo(pd_class *aclass, wxString &desc) {
 			} else if ( str.Contains("name=\"_details\"")||str.Contains("name=\"details\"")) on_desc=true;
 		}
 		fil.Close();
-		return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,_T("html"))),it->second);
+		return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html"))),it->second);
 	}
 	return _T("");	
 }
@@ -656,7 +656,7 @@ wxString HelpManager::GetDoxyInfo(pd_func *afunc, wxString &desc) {
 	while (it!=doxy_index.end()) {
 		wxString auxp = ParseDoxyText(it->second,desc);
 		if (auxp==args)
-			return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->doxygen->destdir,_T("html"))),it->second);
+			return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html"))),it->second);
 		key<<_T("*");
 		it = doxy_index.find(key);
 	}
@@ -666,7 +666,7 @@ wxString HelpManager::GetDoxyInfo(pd_func *afunc, wxString &desc) {
 wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 	desc.Clear();
 //	cerr<<"FILE:  "<<link<<endl;
-	wxString file = DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(DIR_PLUS_FILE(project->doxygen->destdir,_T("html")),link.BeforeLast('#')));
+	wxString file = DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html")),link.BeforeLast('#')));
 	if (!file.Len()) return _T("");
 	if (!wxFileName(file).FileExists()) return _T("");
 	wxString anchor=link.AfterLast('#');

@@ -14,14 +14,14 @@ BEGIN_EVENT_TABLE(mxWxfbConfigDialog, wxDialog)
 	EVT_BUTTON(wxID_OK,mxWxfbConfigDialog::OnOkButton)
 	EVT_BUTTON(wxID_CANCEL,mxWxfbConfigDialog::OnCancelButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxWxfbConfigDialog::OnHelpButton)
+	EVT_CHECKBOX(wxID_FIND,mxWxfbConfigDialog::OnActivateClick)
 	EVT_CLOSE(mxWxfbConfigDialog::OnClose)
 END_EVENT_TABLE()
 
 mxWxfbConfigDialog::mxWxfbConfigDialog():wxDialog(main_window, wxID_ANY, LANG(WXFBSETUP_CAPTION,"Configuracion wxFormBuilder"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
-//	if (!project->doxygen) project->doxygen = new doxygen_configuration(project->project_name);
-//	dox = project->doxygen;
-//	
+	conf=project->GetWxfbConfiguration(false);
+	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -37,23 +37,26 @@ mxWxfbConfigDialog::mxWxfbConfigDialog():wxDialog(main_window, wxID_ANY, LANG(WX
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
-	m_activate_integration=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_ACTIVATE,"Activar integración con wxFormBuilder"),false);
-	m_autoupdate_project=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_AUTOUPDATE,"Regenerar proyectos wxFormBuilder automáticamente"),false);
-	m_update_class_list=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_CLASSES,"Crear/eliminar clases heredadas luego de regenerar"),false);
-	m_update_methods=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_METHODS,"Actualizar clases heredadas automáticamente"),false);
-	m_set_wxfb_sources_as_readonly=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_READONLY,"Marcar fuentes generados por wxfb como solo-lectura"),false);
-	m_dont_show_base_classes_in_goto=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_HIDEONGOTO,"Ocultar métodos y clases generadas por wxfb en el cuadro \"Ir a Función/Clase/Método\""),false);
+	m_activate_integration=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_ACTIVATE,"Activar integración con wxFormBuilder"),conf->activate_integration,wxID_FIND);
+	m_autoupdate_projects=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_AUTOUPDATE,"Regenerar proyectos wxFormBuilder automáticamente"),conf->autoupdate_projects);
+	m_disabler.Add(m_autoupdate_projects);
+	m_update_class_list=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_CLASSES,"Crear/eliminar clases heredadas luego de regenerar"),conf->update_class_list);
+	m_disabler.Add(m_update_class_list);
+	m_update_methods=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_METHODS,"Actualizar clases heredadas automáticamente"),conf->update_methods);
+	m_disabler.Add(m_update_methods);
+	m_set_wxfb_sources_as_readonly=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_READONLY,"Marcar fuentes generados por wxfb como solo-lectura"),conf->set_wxfb_sources_as_readonly);
+	m_disabler.Add(m_set_wxfb_sources_as_readonly);
+	m_dont_show_base_classes_in_goto=utils->AddCheckBox(mySizer,this,LANG(WXFBSETUP_HIDEONGOTO,"Ocultar métodos y clases generadas por wxfb en el cuadro \"Ir a Función/Clase/Método\""),conf->dont_show_base_classes_in_goto);
+	m_disabler.Add(m_dont_show_base_classes_in_goto);
 	
 	mySizer->Add(bottomSizer,sizers->Exp0);
 	
 	SetSizerAndFit(mySizer);
 	
-	SetFocus();
-	Show();
+	m_disabler.EnableAll(conf->activate_integration);
 	
-}
-
-mxWxfbConfigDialog::~mxWxfbConfigDialog() {
+	Show();
+	SetFocus();
 	
 }
 
@@ -63,7 +66,13 @@ void mxWxfbConfigDialog::OnClose (wxCloseEvent & event) {
 
 void mxWxfbConfigDialog::OnOkButton (wxCommandEvent & evt) {
 	if (!project) { return; }
-//	Close();
+	conf->activate_integration=m_activate_integration->GetValue();
+	conf->autoupdate_projects=m_autoupdate_projects->GetValue();
+	conf->update_class_list=m_update_class_list->GetValue();
+	conf->update_methods=m_update_methods->GetValue();
+	conf->set_wxfb_sources_as_readonly=m_set_wxfb_sources_as_readonly->GetValue();
+	conf->dont_show_base_classes_in_goto=m_dont_show_base_classes_in_goto->GetValue();
+	Close();
 }
 
 void mxWxfbConfigDialog::OnCancelButton (wxCommandEvent & evt) {
@@ -72,5 +81,9 @@ void mxWxfbConfigDialog::OnCancelButton (wxCommandEvent & evt) {
 
 void mxWxfbConfigDialog::OnHelpButton (wxCommandEvent & evt) {
 	SHOW_HELP("wxfb_config.html");
+}
+
+void mxWxfbConfigDialog::OnActivateClick (wxCommandEvent & evt) {
+	m_disabler.EnableAll(m_activate_integration->GetValue());
 }
 

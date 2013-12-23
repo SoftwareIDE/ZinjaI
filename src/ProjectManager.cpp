@@ -48,7 +48,7 @@ wxString doxygen_configuration::get_tag_index() {
 	
 // abrir un proyecto existente
 ProjectManager::ProjectManager(wxFileName name) {
-	loading=true; generating_wxfb=false;
+	loading=true;
 	mxOSD osd(main_window,wxString(LANG(OSD_LOADING_PROJECT_PRE,"Abriendo "))<<name.GetName()<<LANG(OSD_LOADING_PROJECT_POST,"..."));
 	
 	singleton->Stop();
@@ -59,7 +59,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	parser->CleanAll();
 	cppcheck=NULL;
 	doxygen=NULL;
-	auto_wxfb=true; use_wxfb=false;
+	wxfb=NULL;
 	version_required=0;
 	custom_tabs=0;
 	tab_use_spaces=false;
@@ -148,7 +148,9 @@ ProjectManager::ProjectManager(wxFileName name) {
 				cppcheck=new cppcheck_configuration();
 				cppcheck->save_in_project=true;
 			} else if (section==_T("doxygen") && !doxygen) { 
-				doxygen=new doxygen_configuration(project_name);
+				GetDoxygenConfiguration();
+			} else if (section==_T("wxfb") && !wxfb) { 
+				GetWxfbConfiguration(true);
 			}
 		} else {
 			// separar clave y valor, y arreglar valor si es un path
@@ -175,9 +177,11 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_INT_READ_DN("version_required",version_required);
 				else CFG_INT_READ_DN("custom_tabs",custom_tabs); 
 				else CFG_BOOL_READ_DN("tab_use_spaces",tab_use_spaces);
-				else CFG_BOOL_READ_DN("use_wxfb",use_wxfb);
-				else CFG_BOOL_READ_DN("auto_wxfb",auto_wxfb);
 				else CFG_GENERIC_READ_DN("explorer_path",last_dir);
+				else CFG_BOOL_READ_DN("tab_use_spaces",tab_use_spaces);
+				// para compatibilidad hacia atrás con proyectos de zinjai viejos
+				else CFG_BOOL_READ_DN("use_wxfb",GetWxfbConfiguration()->activate_integration);
+				else CFG_BOOL_READ_DN("auto_wxfb",GetWxfbConfiguration()->autoupdate_projects);
 			} else if (section==_T("lib_to_build") && lib_to_build) {
 				CFG_GENERIC_READ_DN("path",lib_to_build->path);
 				else CFG_GENERIC_READ_DN("libname",lib_to_build->libname);
@@ -254,6 +258,10 @@ ProjectManager::ProjectManager(wxFileName name) {
 				} else if (key==_T("cursor")) {
 					if (last_file) 
 						last_file->extras.SetCurrentPos(value);
+				} else if (key==_T("readonly")) {
+					if (last_file) last_file->read_only=utils->IsTrue(value);
+				} else if (key==_T("hide_symbols")) {
+					if (last_file) last_file->hide_symbols=utils->IsTrue(value);
 				} else if (key==_T("marker")) {
 					value.ToLong(&l);
 					if (last_file)
@@ -280,6 +288,12 @@ ProjectManager::ProjectManager(wxFileName name) {
 //						if (src && src!=EXTERNAL_SOURCE) src->MoveCursorTo(last_file->extras.GetCurrentPos(),true);
 					}
 				}
+			} else if (section==_T("wxfb")) {
+				CFG_BOOL_READ_DN("autoupdate_projects",wxfb->autoupdate_projects);
+				else CFG_BOOL_READ_DN("update_class_list",wxfb->update_class_list);
+				else CFG_BOOL_READ_DN("update_methods",wxfb->update_methods);
+				else CFG_BOOL_READ_DN("dont_show_base_classes_in_goto",wxfb->dont_show_base_classes_in_goto);
+				else CFG_BOOL_READ_DN("set_wxfb_sources_as_readonly",wxfb->set_wxfb_sources_as_readonly);
 			} else if (section==_T("doxygen")) {
 				CFG_GENERIC_READ_DN("name",doxygen->name);
 				else CFG_GENERIC_READ_DN("version",doxygen->version);
@@ -492,7 +506,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	loading=false;
 
 	main_window->PrepareGuiForProject(true);
-	if (project->use_wxfb) project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
+	if (GetWxfbActivated()) project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
 #ifdef __WIN32__
@@ -538,6 +552,9 @@ ProjectManager::~ProjectManager(){
 	
 	// restaurar los indices de autocompletado
 	code_helper->ReloadIndexes(config->Help.autocomp_indexes);
+	
+	if (doxygen) delete doxygen;
+	if (wxfb) delete wxfb;
 	
 	singleton->Start();
 	
@@ -647,7 +664,6 @@ bool ProjectManager::Save (bool as_template) {
 	CFG_GENERIC_WRITE_DN("version_required",version_required);
 	CFG_GENERIC_WRITE_DN("custom_tabs",custom_tabs);
 	CFG_BOOL_WRITE_DN("tab_use_spaces",tab_use_spaces);
-	CFG_BOOL_WRITE_DN("use_wxfb",use_wxfb);
 	CFG_GENERIC_WRITE_DN("explorer_path",utils->Relativize(main_window->explorer_tree.path,path));
 	
 	if (main_window->notebook_sources->GetPageCount()>0) {
@@ -671,6 +687,8 @@ bool ProjectManager::Save (bool as_template) {
 		while (item.IsValid()) {
 			fil.AddLine(section);
 			CFG_GENERIC_WRITE_DN("path",item->name);
+			if (item->read_only) CFG_GENERIC_WRITE_DN("readonly",1);
+			if (item->hide_symbols) CFG_GENERIC_WRITE_DN("hide_symbols",1);
 			source=main_window->IsOpen(DIR_PLUS_FILE(path,item->name));
 			if (source) source->UpdateExtras();
 			CFG_GENERIC_WRITE_DN("cursor",item->extras.GetCurrentPos());
@@ -768,6 +786,16 @@ bool ProjectManager::Save (bool as_template) {
 		}
 	}
 
+	// configuracion wxfb
+	if (wxfb && wxfb->activate_integration) {
+		fil.AddLine(_T("[wxfb]"));
+		CFG_BOOL_WRITE_DN("autoupdate_projects",wxfb->autoupdate_projects);
+		CFG_BOOL_WRITE_DN("update_class_list",wxfb->update_class_list);
+		CFG_BOOL_WRITE_DN("update_methods",wxfb->update_methods);
+		CFG_BOOL_WRITE_DN("dont_show_base_classes_in_goto",wxfb->dont_show_base_classes_in_goto);
+		CFG_BOOL_WRITE_DN("set_wxfb_sources_as_readonly",wxfb->set_wxfb_sources_as_readonly);
+	}
+	
 	// configuracion Doxygen
 	if (doxygen && doxygen->save) {
 		fil.AddLine(_T("[doxygen]"));
@@ -1065,7 +1093,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	// guardar todos los fuentes abiertos
 	SaveAll(false);
 	if (!only_one) {
-		if (use_wxfb) WxfbGenerate();
+		if (GetWxfbActivated()) WxfbGenerate();
 		
 		// agregar los items extra previos a los fuentes
 		while (extra_step && extra_step->pos==CES_BEFORE_SOURCES) {
@@ -2111,7 +2139,7 @@ void ProjectManager::SetBreakpoints() {
 
 bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	
-	if (!doxygen) doxygen=new doxygen_configuration(project_name);
+	GetDoxygenConfiguration();
 
 	wxTextFile fil(DIR_PLUS_FILE(path,fname));
 	if (fil.Exists())
@@ -2269,17 +2297,12 @@ wxString ProjectManager::WxfbGetSourceFile(wxString fbp_file) {
 }
 
 bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
-
 	if (!config->CheckWxfbPresent()) return false;
-	
+	wxfb->working=true;
 	wxString old_compiler_tree_text = main_window->compiler_tree.treeCtrl->GetItemText(main_window->compiler_tree.state);
-//	wxString old_status_text = main_window->GetStatusBar()->GetStatusText();
-
 	mxOSD *osd=NULL;
-	
 	main_window->SetCompilingStatus(LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
-	
-	wxfbHeaders.Clear();
+	wxfb->headers.Clear();
 	bool something_changed=false;
 	LocalListIterator<project_file_item*> item(&files_others);
 	while(item.IsValid()) { // por cada archivo .fbp (deberian estar en "otros")
@@ -2296,7 +2319,7 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 			if (fbase.Len()) {
 				wxFileName fn_header(fbase+_T(".h"));
 				fn_header.Normalize();
-				if (HasFile(fn_header.GetFullPath())) wxfbHeaders.Add(fn_header.GetFullPath());
+				if (HasFile(fn_header.GetFullPath())) wxfb->headers.Add(fn_header.GetFullPath());
 			}
 			if (regen) { // regenerar, reparsear y recargar si es necesario
 				if (show_osd && osd==NULL) osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
@@ -2305,12 +2328,13 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 					
 					if (ret) {
 						if (osd) delete osd;
-						if (auto_wxfb) {
+						if (wxfb->autoupdate_projects) {
 							if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_1,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal())
-								auto_wxfb=false;
+								wxfb->autoupdate_projects=false;
 						} else {
 							mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_2,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\")."),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal();
 						}
+						wxfb->working=false;
 						return false;
 					}
 					
@@ -2336,9 +2360,9 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 				if (!fil.Exists()) fil.Create();
 				fil.Open();
 				if (!fil.IsOpened()) {
-					if (auto_wxfb) {
+					if (wxfb->autoupdate_projects) {
 						if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_3,"No se pudo actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal())
-							auto_wxfb=false;
+							wxfb->autoupdate_projects=false;
 					} else {
 						mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_4,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto)."),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal();
 					}
@@ -2357,11 +2381,8 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 	// todo: reemplazar estas lineas por SetCompilingStatus, pero ver antes en que contexto se llega aca para saber que puede haber habido en status
 	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,old_compiler_tree_text);
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
-	
-	generating_wxfb=false;
-	
+	wxfb->working=false;
 	if (osd) delete osd;
-	
 	return something_changed;
 }
 
@@ -2581,7 +2602,7 @@ void ProjectManager::FixTemplateData(wxString name) {
 }
 
 void ProjectManager::ActivateWxfb() {
-	use_wxfb=true; wxfb_ask=true;
+	GetWxfbConfiguration()->activate_integration=true;
 	main_window->menu.tools_wxfb_config->Enable(true);
 	main_window->menu.tools_wxfb_regen->Enable(true);
 	main_window->menu.tools_wxfb_inherit->Enable(true);
@@ -2636,7 +2657,8 @@ int ProjectManager::GetRequiredVersion() {
 	}
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	version_required=0;
-	if (have_env_vars) version_required=20131122;
+	if (wxfb && wxfb->activate_integration) version_required=20131219;
+	else if (have_env_vars) version_required=20131122;
 	else if (have_custom_tools) version_required=20131115;
 	else if (use_exec_script) version_required=20130817;
 	else if (use_og || have_std) version_required=20130729;
@@ -3022,7 +3044,7 @@ bool ProjectManager::WxfbUpdateClass(wxString fbp_file, wxString cname) {
 }
 
 void ProjectManager::WxfbAutoCheck() {
-	if (loading || generating_wxfb) return;
+	if (loading || !wxfb || !wxfb->activate_integration || !wxfb->autoupdate_projects || wxfb->working) return;
 	
 	// primero una verificación rapida para evitar que este evento moleste muy seguido
 	bool something_changed=false;
@@ -3041,17 +3063,16 @@ void ProjectManager::WxfbAutoCheck() {
 	}
 	if (!something_changed) return;
 	
-	SaveAll(false);
-	generating_wxfb=true;
-	if (!project->WxfbGenerate(true)) { generating_wxfb=false; return; }
-	generating_wxfb=false;
+	SaveAll(false); /// @todo: ver de sacar esto
+	bool generated=project->WxfbGenerate(true);
+	if (!generated) return;
 	mxOSD osd(main_window,LANG(OSD_WXFB_AUTOREGEN,"Actualizando clases wxFormBuilder..."));
 	
 	parser->Parse();
 	
 	wxArrayString fathers;
-	for (unsigned int i=0; i<project->wxfbHeaders.GetCount();i++) {
-		pd_file *pdf=parser->GetFile(project->wxfbHeaders[i]);
+	for (unsigned int i=0; i<wxfb->headers.GetCount();i++) {
+		pd_file *pdf=parser->GetFile(wxfb->headers[i]);
 		if (pdf) {
 			pd_ref *cls_ref = pdf->first_class;
 			ML_ITERATE(cls_ref)
@@ -3070,7 +3091,7 @@ void ProjectManager::WxfbAutoCheck() {
 	}
 	for (unsigned int i=0;i<to_update.GetCount();i+=2)
 		project->WxfbUpdateClass(to_update[i],to_update[i+1]);
-	generating_wxfb=false;
+	wxfb->working=false;
 }
 
 
@@ -3292,5 +3313,15 @@ void ProjectManager::CleanAll ( ) {
 		Clean();
 	}
 	SetActiveConfiguration(act);
+}
+
+doxygen_configuration * ProjectManager::GetDoxygenConfiguration ( ) {
+	if (!doxygen) doxygen=new doxygen_configuration(project_name);
+	return doxygen;
+}
+
+wxfb_configuration * ProjectManager::GetWxfbConfiguration (bool create_activated) {
+	if (!wxfb) wxfb=new wxfb_configuration(create_activated);
+	return wxfb;
 }
 
