@@ -912,7 +912,7 @@ void mxMainWindow::ToolsCodeCopyFromH(mxSource *source, wxString the_one) {
 	wxArrayString choices;
 		while (func->next) { func=func->next; } // para atras, para que queden ordenadas como en el h
 		while (func->prev) {
-			if (!PD_UNREF(pd_func,func)->file_def) {
+			if (!PD_UNREF(pd_func,func)->file_def && !(PD_UNREF(pd_func,func)->properties&PD_CONST_VIRTUAL_PURE)) {
 				choices.Add(PD_UNREF(pd_func,func)->full_proto+(PD_UNREF(pd_func,func)->properties&PD_CONST_CONST?" const":"")); // const no deberia estar en el full proto?
 			}
 			func=func->prev;

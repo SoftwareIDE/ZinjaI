@@ -3,14 +3,12 @@
 #include <wx/dialog.h>
 #include <wx/timer.h>
 #include "SingleList.h"
+#include "parserData.h"
 
 class wxListBox;
 class wxTextCtrl;
 class wxButton;
 class wxCheckBox;
-class pd_macro;
-class pd_class;
-class pd_func;
 
 class mxGotoFunctionDialog: public wxDialog {
 private:
@@ -24,6 +22,13 @@ private:
 		pd_macro *get_macro() { return (pd_macro*)ptr; }
 		pd_class *get_class() { return (pd_class*)ptr; }
 		pd_func *get_func() { return (pd_func*)ptr; }
+		wxString get_label() { 
+			if (type==1) return wxString("#define ")<<get_macro()->proto;
+			if (type==2) return wxString("class ")<<get_class()->name;
+			pd_class *s=get_func()->space;
+			if (s && s->file) return get_func()->full_proto;
+			return get_func()->proto;
+		}
 	};
 	SingleList<gotoff_result> m_results;
 	/// performs an interface-independent search, put results in m_results 

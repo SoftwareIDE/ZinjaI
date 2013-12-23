@@ -284,9 +284,6 @@ void Parser::OnGotoDef(wxAuiNotebook *notebook) {
 			return;
 		}
 	}
-	// si no esta abierto
-//	int res = mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
-//	if (res == mxMD_YES)
 	mxSource *src=main_window->OpenFile(the_one.GetFullPath(),!project);
 	if (src && source!=EXTERNAL_SOURCE) src->MarkError(line-1);
 }

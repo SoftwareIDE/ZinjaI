@@ -1,5 +1,5 @@
 enum const
-	agregar el nombre del enum al parser además de las constantes
+	agregar el nombre del enum al parser además de las constantes (hecho?)
 
 
 ZinjaI todo
@@ -13,18 +13,12 @@ reacomodar markers en las ediciones por lineas (ctrl+L, ctrl+T, Ctrl+Shift+T)
 posibles bugs:
 	revisar lo de agregar .cpp al guardar
 	revisar el icono que pone a la nueva pestaña al duplicar vista
-	testear el "ignorar comentarios" en las búsquedas (buscar cerr<< en dewall, andaba mal)
+	revisar lo de correr un cpp cuando se intenta correr un h
 
 mas opciones para crear un proyecto:
 	elegir que perfiles incluir
 	elegir que archivos incluir
 	elegir con que otras plantillas combinar
-
-integración con wx:
-	¿preguntar qué métodos agregar al actualizar automáticamente?
-	¿esconder métodos de las clases bases en el Ir a Función/Método?
-	detectar clases nuevas/renombradas
-	detectar archivos/proyectos renombrados / renombrar archivos/proyectos
 
 toolchains alternativos
 	agregar "encabezado para makefiles" a los gcc-like toolchains, y revisar generación de makefiles
@@ -37,12 +31,6 @@ refactory:
 drag and drop en arbol de proyectos
 
 buscar skins en home/.zinjai
-
-toolbars verticales
-
-pestaña "avanzado" en compilacion de proyecto
-	variables de entorno para compilar y para ejecutar (ver como pasarle esto al runner?)
-	alguna forma de ejecutar indirectamente (ejemplo: bibliotecas, o comvida)
 
 agregar un check en la conf de herramientas personalizadas para elegir si es general o se guarda con el proyecto?
 o ver la forma de que una plantilla configure una herramienta personalizada

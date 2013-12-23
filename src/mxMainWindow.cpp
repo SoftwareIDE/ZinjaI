@@ -562,9 +562,8 @@ void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item 
 			item->Enable(fi!=project->files_sources[0] && !compiler->IsCompiling()); item->Check(fi==project->files_sources[0]);
 			menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
 		}
-		wxMenuItem *item_ro=menu.AppendCheckItem(mxID_PROJECT_POPUP_READONLY, LANG(MAINW_PROJECT_FILE_POPUP_READONLY,"Solo lectura"));
-		if (fi->where!=FT_OTHER) wxMenuItem *item_hs=menu.AppendCheckItem(mxID_PROJECT_POPUP_HIDE_SYMBOLS, LANG(MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS,"Ignorar símbolos en búsquedas"));
-		item_ro->Check(fi->read_only); item_hs->Check(fi->hide_symbols);
+		menu.AppendCheckItem(mxID_PROJECT_POPUP_READONLY, LANG(MAINW_PROJECT_FILE_POPUP_READONLY,"Solo lectura"))->Check(fi->read_only);
+		if (fi->where!=FT_OTHER) menu.AppendCheckItem(mxID_PROJECT_POPUP_HIDE_SYMBOLS, LANG(MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS,"Ignorar símbolos en búsquedas"))->Check(fi->hide_symbols);
 	}
 	menu.AppendSeparator();
 	if (!for_tab && fi) {

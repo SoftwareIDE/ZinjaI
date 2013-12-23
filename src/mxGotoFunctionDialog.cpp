@@ -88,9 +88,12 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 		wxTimerEvent evt;
 		OnTimerInput(evt);
 	}
-	int sel=list_ctrl->GetSelection();
-	if (sel<0||sel>=m_results.GetSize()) return;
-	gotoff_result &r=m_results[sel];
+	// find selected item (list is alphabetically sorted, so order does not match m_results)
+	wxString key = list_ctrl->GetString(list_ctrl->GetSelection());
+	int sel=-1, i=0;
+	while (i<m_results.GetSize() && m_results[i].get_label()!=key) i++;
+	if (i==-1) return;
+	gotoff_result &r=m_results[i];
 	Close(); 
 	// process results (simulate double click on parser tree)
 	wxTreeItemId tree_item;
@@ -108,8 +111,13 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 		tree_item=aux_class->item;
 	} else if (r.type==3) {
 		pd_func *aux_func = r.get_func();
-		parser->popup_file_def = aux_func->file_def->name;
-		parser->popup_line_def = aux_func->line_def;
+		if (aux_func->file_def) {
+			parser->popup_file_def = aux_func->file_def->name;
+			parser->popup_line_def = aux_func->line_def;
+		} else {
+			parser->popup_file_dec = aux_func->file_dec->name;
+			parser->popup_line_dec = aux_func->line_dec;
+		}
 		parser->OnGotoDef(main_window->notebook_sources);
 		tree_item=aux_func->item;
 	}
@@ -152,19 +160,8 @@ void mxGotoFunctionDialog::OnTextChange(wxCommandEvent &event) {
 void mxGotoFunctionDialog::OnTimerInput(wxTimerEvent &event) {
 	list_ctrl->Freeze(); list_ctrl->Clear();
 	int n = FillResults(text_ctrl->GetValue(),!case_sensitive->IsChecked(),strict_compare);
-	cerr<<"RECEIVED: "<<n<<endl;
-	for(int i=0;i<n;i++) { 
-		gotoff_result &r=m_results[i];
-		if (r.type==1) {
-			list_ctrl->Append(wxString(_T("#define "))<<r.get_macro()->proto);
-		} else if (r.type==2) {
-			list_ctrl->Append(wxString(_T("class "))<<r.get_class()->name);
-		} else if (r.type==3) {
-			pd_class *s=r.get_func()->space;
-			if (s && s->file) list_ctrl->Append(r.get_func()->full_proto);
-			else list_ctrl->Append(r.get_func()->proto);
-		}
-	}
+	for(int i=0;i<n;i++) 
+		list_ctrl->Append(m_results[i].get_label());
 	list_ctrl->Thaw();
 	if (n) {
 		goto_button->Enable(true);
@@ -269,7 +266,6 @@ int mxGotoFunctionDialog::FillResults (wxString key, bool ignore_case, bool stri
 		}
 		aux_func = aux_func->next;
 	}
-	cerr<<"BUSCADO: "<<key<<"    -   "<<m_results.GetSize()<<endl;
 	return m_results.GetSize();
 }
 
