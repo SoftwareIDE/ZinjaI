@@ -497,6 +497,10 @@ public:
 	bool RenameFile(wxTreeItemId &tree_item, wxString new_name);
 	/// Compila un solo fuente del proyecto, preparando la configuración, fuera del proceso de construcción general
 	long int CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename);
+	
+	void SetFileReadOnly(project_file_item *item, bool read_only);
+	void SetFileHideSymbols(project_file_item *item, bool hide_symbols);
+	
 	void MoveFile(wxTreeItemId &tree_item, eFileType where);
 	bool DeleteFile(wxTreeItemId &tree_item, bool also=false);
 	project_file_item *AddFile (eFileType where, wxFileName name, bool sort_tree=true);

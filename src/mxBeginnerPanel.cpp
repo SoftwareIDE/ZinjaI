@@ -57,7 +57,7 @@ wxPanel *mxBeginnerPanel::CreatePageControls() {
 void mxBeginnerPanel::WriteTemplate(const wxString &text) {
 	if (main_window->notebook_sources->GetPageCount()==0) return;
 	mxSource *src = (mxSource*)main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection());
-	if (src->debug_time) return;
+	if (src->GetReadOnly()) return;
 	int p1=src->GetSelectionStart();
 	int p2=src->GetSelectionEnd();
 	if (p2<p1) { int aux=p1; p1=p2; p2=aux; }

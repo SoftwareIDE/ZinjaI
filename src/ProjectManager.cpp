@@ -954,6 +954,7 @@ void ProjectManager::MoveFile(wxTreeItemId &tree_item, eFileType where) {
 	modified=true;
 	// eliminar el item de la lista
 	project_file_item *item=FindFromItem(tree_item);
+	if (!item) return; /// shouldn't happen
 	files_all.FindAndRemove(item);
 	// eliminar del arbol	
 	main_window->project_tree.treeCtrl->Delete(item->item);
@@ -979,6 +980,7 @@ void ProjectManager::MoveFile(wxTreeItemId &tree_item, eFileType where) {
 		} else {
 			parser->ParseFile(name);
 		}
+		if (item->hide_symbols) parser->SetHideSymbols(name,true);
 	} else {
 		wxString name = DIR_PLUS_FILE(path,item->name);
 		parser->RemoveFile(name);
@@ -3323,5 +3325,16 @@ doxygen_configuration * ProjectManager::GetDoxygenConfiguration ( ) {
 wxfb_configuration * ProjectManager::GetWxfbConfiguration (bool create_activated) {
 	if (!wxfb) wxfb=new wxfb_configuration(create_activated);
 	return wxfb;
+}
+
+void ProjectManager::SetFileReadOnly (project_file_item * item, bool read_only) {
+	item->read_only=read_only;
+	mxSource *src=main_window->IsOpen(item->item);
+	if (src) src->SetReadOnlyMode(read_only?ROM_ADD_PROJECT:ROM_DEL_PROJECT);
+}
+
+void ProjectManager::SetFileHideSymbols (project_file_item * item, bool hide_symbols) {
+	item->hide_symbols=hide_symbols;
+	parser->SetHideSymbols(DIR_PLUS_FILE(path,item->name),hide_symbols);
 }
 

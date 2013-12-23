@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=src/CodeHelper.cpp
 path_char=/
 [source]
 path=src/mxThreadGrid.cpp
@@ -65,7 +66,8 @@ path=src/mxNewWizard.cpp
 cursor=532:32
 [source]
 path=src/CodeHelper.cpp
-cursor=-1:235
+cursor=10:0
+open=true
 [source]
 path=src/HelpManager.cpp
 cursor=668:107
@@ -334,7 +336,8 @@ path=src/SourceExtras.cpp
 cursor=0:0
 [header]
 path=src/CodeHelper.h
-cursor=-1:2276
+cursor=8:15
+open=true
 [header]
 path=src/ConfigManager.h
 cursor=313:12

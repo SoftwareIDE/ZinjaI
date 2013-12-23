@@ -130,12 +130,15 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	diff_brother=NULL;
 	first_diff_info=last_diff_info=NULL;
 	
+	readonly_mode = ROM_NONE;
+	
 	LoadSourceConfig();
 	
 	if (fitem) {
 		m_extras = &fitem->extras;
 		m_owns_extras=false;
 		treeId=fitem->item;
+		if (fitem->read_only) SetReadOnlyMode(ROM_ADD_PROJECT);
 	} else {
 		m_owns_extras=true;
 		m_extras = new SourceExtras();
@@ -192,7 +195,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	SetEdgeMode (true?wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
 //	SetViewWhiteSpace (wxSTC_WS_INVISIBLE);
 	SetOvertype (config_source.overType);
-	SetReadOnly (false);
 	config_source.wrapMode = config->Init.wrap_mode==2||(config->Init.wrap_mode==1&&!config_source.syntaxEnable);
 	SetWrapMode (config_source.wrapMode?wxSTC_WRAP_WORD: wxSTC_WRAP_NONE);
 	SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_END|wxSTC_WRAPVISUALFLAG_START);
@@ -286,8 +288,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 //	SetTwoPhaseDraw (false);
 	SetMouseDwellTime(1500); // mis tooltips bizarros (con showbaloon = calltip)
 	
-	if ( (debug_time = (!config->Debug.allow_edition && debug->debugging) ) )
-		SetReadOnly(true);
+	if (debug->debugging && !config->Debug.allow_edition) SetReadOnlyMode(ROM_ADD_DEBUG);
 
 	er_register_source(this);
 	
@@ -758,11 +759,11 @@ bool mxSource::LoadFile (const wxFileName &filename) {
 		binary_filename="binary_filename_not_seted";
 	else
 		binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+_T(BINARY_EXTENSION);
-	SetReadOnly(false);
+	SetReadOnly(false); // para que wxStyledTextCtrl::LoadFile pueda modificarlo
 	ClearAll ();
 	sin_titulo=!wxStyledTextCtrl::LoadFile(source_filename.GetFullPath());
 	EmptyUndoBuffer();
-	SetReadOnly(debug_time);
+	if (readonly_mode!=ROM_NONE) SetReadOnly(true);
 	config_source.wrapMode = config->Init.wrap_mode==2||(config->Init.wrap_mode==1&&(lexer!=wxSTC_LEX_CPP||!config_source.syntaxEnable));
 	SetWrapMode (config_source.wrapMode?wxSTC_WRAP_WORD: wxSTC_WRAP_NONE);
 	SetLineNumbers();
@@ -2540,11 +2541,6 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	}
 }
 
-void mxSource::SetDebugTime (bool setted) {
-	debug_time = setted;
-	SetReadOnly(setted);
-}
-
 void mxSource::MakeUntitled(wxString ptext) {
 	SetPageText(ptext);
 	sin_titulo=true;
@@ -3195,7 +3191,7 @@ bool mxSource::MySaveFile(const wxString &fname) {
 }
 	
 void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
-	if (debug_time && !ro_quejado) {
+	if (readonly_mode==ROM_DEBUG) {
 		ro_quejado=true;
 		int ans = mxMessageDialog(main_window,LANG(DEBUG_CANT_EDIT_WHILE_DEBUGGING,""
 			"Por defecto, no se puede modificar el fuente mientras se encuentra\n"
@@ -3207,8 +3203,8 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 			LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK,
 			LANG(DEBUG_ALLOW_EDIT_WHILE_DEBUGGING,"Permitir editar igualemente"),config->Debug.allow_edition).ShowModal();
 		if (ans&mxMD_CHECKED) {
-			SetReadOnly(false);
 			config->Debug.allow_edition=true;
+			SetReadOnlyMode(ROM_NONE);
 		}
 	}
 }
@@ -3553,5 +3549,26 @@ void mxSource::OnDoubleClick (wxStyledTextEvent & event) {
 
 void mxSource::UpdateExtras ( ) {
 	m_extras->FromSource(this);
+}
+
+void mxSource::SetReadOnlyMode (ReadOnlyModeEnum mode) {
+	if (mode>ROM_SPECIALS) {
+		if (mode==ROM_ADD_DEBUG) {
+			if (readonly_mode==ROM_NONE) readonly_mode=ROM_DEBUG;
+			else if (readonly_mode==ROM_PROJECT) readonly_mode=ROM_PROJECT_AND_DEBUG;
+		} else if (mode==ROM_DEL_DEBUG) {
+			if (readonly_mode==ROM_DEBUG) readonly_mode=ROM_NONE;
+			else if (readonly_mode==ROM_PROJECT_AND_DEBUG) readonly_mode=ROM_PROJECT;
+		} else if (mode==ROM_ADD_PROJECT) {
+			if (readonly_mode==ROM_NONE) readonly_mode=ROM_PROJECT;
+			else if (readonly_mode==ROM_DEBUG) readonly_mode=ROM_PROJECT_AND_DEBUG;
+		} else if (mode==ROM_DEL_PROJECT) {
+			if (readonly_mode==ROM_PROJECT) readonly_mode=ROM_NONE;
+			else if (readonly_mode==ROM_PROJECT_AND_DEBUG) readonly_mode=ROM_DEBUG;
+		}
+	} else {
+		readonly_mode=mode;
+	}
+	SetReadOnly(readonly_mode!=ROM_NONE);
 }
 

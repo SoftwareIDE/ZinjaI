@@ -65,7 +65,7 @@ void Parser::ParseProject(bool show_progress) {
 	for(int i=0;i<2;i++) { 
 		LocalListIterator<project_file_item*> item(i==0?&project->files_sources:&project->files_headers);
 		while(item.IsValid()) {
-			actions.insert(actions.end(),parserAction(project,DIR_PLUS_FILE(project->path,item->name)));
+			actions.insert(actions.end(),parserAction::ParseProjectFile(project,DIR_PLUS_FILE(project->path,item->name),item->hide_symbols));
 			item.Next();
 		}
 	}
@@ -79,12 +79,9 @@ void Parser::ParseProject(bool show_progress) {
 
 void Parser::ParseSource(mxSource *src, bool dontsave) {
 	if (src->lexer!=wxSTC_LEX_CPP) return;
-	if (project) {
-		if (project->HasFile(src->source_filename))
-			actions.insert(actions.end(),parserAction(src,dontsave));
-	} else {
-		actions.insert(actions.end(),parserAction(src,dontsave));
-	}
+	project_file_item *item=project?project->HasFile(src->source_filename):NULL;
+	if (item && item->where!=FT_OTHER) return; // if we are in project mode and the source is not attached to the project, don't parse
+	actions.insert(actions.end(),parserAction::ParseSource(src,dontsave));
 	Parse();
 }
 
@@ -602,28 +599,9 @@ void Parser::ParseDeleteFile(wxString fname) {
 	PD_DELETE_FILE(fname);
 }
 
-bool Parser::RemoveSource(mxSource *source) {
-	if (source->sin_titulo) {
-		actions.insert(actions.end(),parserAction(source->temp_filename.GetFullPath(),PA_DELETE_FILE));
-	} else {
-		actions.insert(actions.end(),parserAction(source->source_filename.GetFullPath(),PA_DELETE_FILE));
-	}
-	Parse();
-	return true;
-}
-
 bool Parser::RemoveFile(wxString fname) {
-	actions.insert(actions.end(),parserAction(fname,PA_DELETE_FILE));
+	actions.insert(actions.end(),parserAction::DeleteFile(fname));
 	Parse();
-	return true;
-}
-
-bool Parser::RenameSource(mxSource *source, wxFileName newname) {
-	if (source->sin_titulo) {
-		PD_RENAME_FILE(source->temp_filename.GetFullPath(),newname.GetFullPath());
-	} else {
-		PD_RENAME_FILE(source->source_filename.GetFullPath(),newname.GetFullPath());
-	}
 	return true;
 }
 
@@ -672,11 +650,14 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 					if (ParseNextFileStart(pa.str,pa.str,pa.flag)) async=true;
 				}
 				break;
-			case PA_PARSE_FILE:
+			case PA_PARSE_SAVED_FILE:
 				if (ParseNextFileStart(pa.str,pa.str)) async=true;
 				break;
 			case PA_DELETE_FILE:
 				ParseDeleteFile(pa.str);
+				break; // este break faltaba, era adrede o error?
+			case PA_SET_HIDE_SYMBOLS:
+				ParseSetHideSymbols(pa.str,pa.flag);
 				break; // este break faltaba, era adrede o error?
 			case PA_PARSE_OPENED_SOURCE:
 				if (ParseNextSource((mxSource*)pa.ptr,pa.flag)) async=true;
@@ -712,7 +693,7 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 
 void Parser::CleanAll() {
 	actions.clear();
-	actions.insert(actions.end(),parserAction(0));
+	actions.insert(actions.end(),parserAction::ClearAll());
 	Parse();
 }
 
@@ -735,7 +716,7 @@ bool Parser::ParseNextCleanAll() {
 void Parser::ParseFile(wxString filename) {
 	wxFileName fname(filename);
 	fname.Normalize();
-	actions.insert(actions.end(),parserAction(fname.GetFullPath()));
+	actions.insert(actions.end(),parserAction::ParseSavedFile(fname.GetFullPath()));
 	Parse();
 }
 
@@ -756,7 +737,7 @@ void Parser::UnregisterSource(mxSource *src) {
 			if (src->sin_titulo)
 				it->action_type=PA_NULL;
 			else {
-				it->action_type=PA_PARSE_FILE;
+				it->action_type=PA_PARSE_SAVED_FILE;
 				it->str=src->source_filename.GetFullPath();
 			}
 		}
@@ -811,3 +792,15 @@ void mxParserProcess::ParseOutput ( ) {
 void Parser::OnParserProcessTimer() {
 	process->ParseOutput();
 }
+
+bool Parser::ParseSetHideSymbols (wxString filename, bool hide_symbols) {
+	pd_file *file = GetFile(filename);
+	if (file) file->hide_symbols=hide_symbols;
+	return file;
+}
+
+void Parser::SetHideSymbols(wxString filename, bool hide_symbols) {
+	if (!ParseSetHideSymbols(filename,hide_symbols))
+		actions.insert(actions.end(),parserAction::SetHideSymbols(filename,hide_symbols));
+}
+

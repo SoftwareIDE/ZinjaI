@@ -1010,7 +1010,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
 		bool cpp = fname.Last()!='c';
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
-			(cpp?project->cpp_compiling_options:project->c_compiling_options)+_" "+utils->Quotize(fname)+" -c -E -o "+utils->Quotize(bin_name);
+			(cpp?project->cpp_compiling_options:project->c_compiling_options)+" "+utils->Quotize(fname)+" -c -E -o "+utils->Quotize(bin_name);
 		if (id_command==1) command<<" -fdirectives-only -C";
 		_IF_DEBUGMODE(command);
 		int x =utils->Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	

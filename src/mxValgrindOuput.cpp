@@ -159,7 +159,7 @@ void mxValgrindOuput::OnOpen(wxCommandEvent  &evt) {
 	main_window->notebook_sources->AddPage(source, name ,true, *bitmaps->files.other);
 	if (!project) source->treeId = main_window->AddToProjectTreeSimple(name,FT_OTHER);
 	source->SetModify(false);
-	source->SetReadOnly(true);
+	source->SetReadOnlyMode(ROM_SPECIAL);
 	source->SetFocus();
 }
 

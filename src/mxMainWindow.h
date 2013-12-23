@@ -319,6 +319,8 @@ public:
 	void OnProjectTreeOpenAll(wxCommandEvent &event);
 	void OnProjectTreeCompileNow(wxCommandEvent &event);
 	void OnProjectTreeCompileFirst(wxCommandEvent &event);
+	void OnProjectTreeToggleReadOnly(wxCommandEvent &event);
+	void OnProjectTreeToggleHideSymbols(wxCommandEvent &event);
 	void OnProjectTreeRename(wxCommandEvent &event);
 	void OnProjectTreeDelete(wxCommandEvent &event);
 	void OnProjectTreeMoveToSources(wxCommandEvent &event);

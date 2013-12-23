@@ -32,6 +32,19 @@ enum MXS_MARKER {
 	mxSTC_MARK_DIFF_ADD, mxSTC_MARK_DIFF_CHANGE, mxSTC_MARK_DIFF_DEL, mxSTC_MARK_DIFF_NONE
 };
 
+enum ReadOnlyModeEnum { 
+	ROM_NONE, ///< not readonly, can edit
+	ROM_PROJECT, ///< setted as readonly in project_file_item props
+	ROM_DEBUG, ///< currently debugging, and preferences say don't edit while debug
+	ROM_PROJECT_AND_DEBUG, ///< currently debugging, and preferences say don't edit while debug, and also setted in project_file_item
+	ROM_SPECIAL, ///< special file, such as full compiler output
+	ROM_SPECIALS, ///< dummy item to split real states and special flags
+	ROM_ADD_DEBUG, ///< not a real state, just used for telling SetReadOnlyMode "change to some debugging state"
+	ROM_DEL_DEBUG, ///< not a real state, just used for telling SetReadOnlyMode "change to some non-debugging state"
+	ROM_ADD_PROJECT, ///< not a real state, just used for telling SetReadOnlyMode "ProjectManager says you're read-only"
+	ROM_DEL_PROJECT, ///< not a real state, just used for telling SetReadOnlyMode "ProjectManager says you're not read-only"
+};
+
 /**
 * @brief Componente visual de edicion de texto para fuentes
 **/
@@ -52,7 +65,6 @@ public:
 	bool first_view;
 	bool never_parsed;
 	bool false_calltip;
-	bool debug_time;
 	er_source_register *er_register;
 	
 private:
@@ -64,8 +76,12 @@ public:
 	void SplitFrom(mxSource *orig);
 	mxSource *next_source_with_same_file; // lista circular de mxSource que muestran el mismo archivo
 
+private:
 	bool ro_quejado;
+	ReadOnlyModeEnum readonly_mode;
 	void OnModifyOnRO(wxStyledTextEvent &event);
+public:
+	void SetReadOnlyMode(ReadOnlyModeEnum mode);
 
 	void OnPainted(wxStyledTextEvent &event);
 	
@@ -74,7 +90,6 @@ public:
 	mxSource *diff_brother;
 	DiffInfo *first_diff_info,*last_diff_info;
 	wxString page_text;
-	void SetDebugTime(bool setted);
 	void SetPageText(wxString ptext);
 	void MakeUntitled(wxString ptext); // para abrir resultados de compilacion, salidas de gprof, y cosas asi
 	void ShowBaloon(wxString text, int pos = -1);
@@ -215,7 +230,7 @@ private:
 	int brace_1,brace_2;
 	void MyBraceHighLight(int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);
 	
-	DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE();
 };
 
 

@@ -617,7 +617,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.allow_edition = debug_allow_edition->GetValue();
 	if (debug->debugging) {
 		for (unsigned int i=0;i<ns->GetPageCount();i++)
-			((mxSource*)(ns->GetPage(i)))->SetDebugTime(!config->Debug.allow_edition);
+			((mxSource*)(ns->GetPage(i)))->SetReadOnlyMode(config->Debug.allow_edition?ROM_DEBUG:ROM_ADD_DEBUG);
 	}
 	config->Debug.autohide_panels = debug_autohide_panels->GetValue();
 	config->Debug.autohide_toolbars = debug_autohide_panels->GetValue();

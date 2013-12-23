@@ -372,6 +372,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_PROJECT_POPUP_OPEN_ALL, mxMainWindow::OnProjectTreeOpenAll)
 	EVT_MENU(mxID_PROJECT_POPUP_COMPILE_NOW, mxMainWindow::OnProjectTreeCompileNow)
 	EVT_MENU(mxID_PROJECT_POPUP_COMPILE_FIRST, mxMainWindow::OnProjectTreeCompileFirst)
+	EVT_MENU(mxID_PROJECT_POPUP_READONLY, mxMainWindow::OnProjectTreeToggleReadOnly)
+	EVT_MENU(mxID_PROJECT_POPUP_HIDE_SYMBOLS, mxMainWindow::OnProjectTreeToggleHideSymbols)
 	EVT_MENU(mxID_PROJECT_POPUP_RENAME, mxMainWindow::OnProjectTreeRename)
 	EVT_MENU(mxID_PROJECT_POPUP_DELETE, mxMainWindow::OnProjectTreeDelete)
 	EVT_MENU(mxID_PROJECT_POPUP_MOVE_TO_SOURCES, mxMainWindow::OnProjectTreeMoveToSources)
@@ -630,12 +632,22 @@ void mxMainWindow::OnCompilerTreeShowFull(wxCommandEvent &event) {
 	notebook_sources->AddPage(source, name ,true, *bitmaps->files.other);
 	if (!project) source->treeId = AddToProjectTreeSimple(name,FT_OTHER);
 	source->SetModify(false);
-	source->SetReadOnly(true);
+	source->SetReadOnlyMode(ROM_SPECIAL);
 	source->SetFocus();
 }
 
 void mxMainWindow::OnProjectTreeCompileFirst(wxCommandEvent &event) {
 	project->MoveFirst(project_tree.selected_item);
+}
+
+void mxMainWindow::OnProjectTreeToggleReadOnly(wxCommandEvent &event) {
+	project_file_item *item=project->FindFromItem(project_tree.selected_item);
+	if (item) project->SetFileReadOnly(item,!item->read_only);
+}
+
+void mxMainWindow::OnProjectTreeToggleHideSymbols(wxCommandEvent &event) {
+	project_file_item *item=project->FindFromItem(project_tree.selected_item);
+	if (item) project->SetFileHideSymbols(item,!item->hide_symbols);
 }
 
 void mxMainWindow::OnProjectTreeCompileNow(wxCommandEvent &event) {
@@ -1207,7 +1219,7 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 		}
 	}
 	if (!project)
-		parser->RemoveSource(source);
+		parser->RemoveFile(source->GetFullPath());
 	else
 		parser->ParseIfUpdated(source->source_filename);
 	debug->CloseSource(source);
@@ -2578,7 +2590,7 @@ bool mxMainWindow::CloseSource (int i) {
 	if (!project) {
 		if (source->next_source_with_same_file==source) {
 			project_tree.treeCtrl->Delete(source->treeId);
-			parser->RemoveSource(source);
+			parser->RemoveFile(source->GetFullPath());
 		}
 	} else {
 		parser->ParseIfUpdated(source->source_filename);
@@ -3562,7 +3574,7 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 				}
 			}
 			if (source->SaveSource(file)) {
-				parser->RenameSource(source,file);
+				parser->RenameFile(source->GetFullPath(),file.GetFullPath());
 				wxString filename = file.GetFullName();
 				eFileType ftype=utils->GetFileType(filename);
 				source->SetPageText(filename);
@@ -4083,7 +4095,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 		
 		if (!config->Debug.allow_edition) { // no permitir editar los fuentes durante la depuracion
 			for (unsigned int i=0;i<notebook_sources->GetPageCount();i++) 
-				((mxSource*)(notebook_sources->GetPage(i)))->SetDebugTime(true);
+				((mxSource*)(notebook_sources->GetPage(i)))->SetReadOnlyMode(ROM_ADD_DEBUG);
 		}
 
 		if (config->Debug.autohide_toolbars) { // reacomodar las barras de herramientas
@@ -4156,7 +4168,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 #endif
 		// reestablecer la edicion de fuentes
 		for (unsigned int i=0;i<notebook_sources->GetPageCount();i++)
-			((mxSource*)(notebook_sources->GetPage(i)))->SetDebugTime(false);
+			((mxSource*)(notebook_sources->GetPage(i)))->SetReadOnlyMode(ROM_DEL_DEBUG);
 		
 		if (config->Debug.autohide_toolbars) { // reacomodar las barras de herramientas
 			aui_manager.GetPane(toolbar_status).Hide();
