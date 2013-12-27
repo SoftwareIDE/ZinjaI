@@ -6,6 +6,11 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota2 : Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
+</UL><BR><B>Release 201401XX</B><BR><UL>
+
+	<LI>New: Nuevo cuadro de configuración para las opciones de la integración con wxFormBuilder, con nuevas funcionalidades como detectar automáticamente las clases agregradas/eliminadas para crear/eliminar las herencias, o marcar los fuentes autogenerados como solo-lectura.</LI>
+	<LI>Fix: Las opciones de compilación por default utilizan el nivel de optimización 0 de gcc (-O0) en lugar del específico de depuración (-Og) porque en la práctica he econtrado varios casos donde -Og provee menos información.</LI>
+	<LI>Fix: Los métodos virtuales puros ya no se consideran para el comando "Implementar métodos/funciones faltantes" del menú Herramientas.</LI>
 	<LI>Fix: Corregido un error que evitaba el funcionamiento de las opciones de Preprocesador del menú Herramientas en ciertos casos.</LI>
 	<LI>New: Ahora se pueden marcar archivos de un proyecto para que sus símbolos (funciones, clases, macros, etc) sean ignorados en las búsquedas del cuadro de díalogo "Ir a función/clase/método..." desde el menú contextual del Arbol de Proyecto.</LI>
 	<LI>New: Ahora se pueden marcar archivos de un proyecto como archivos de solo lectura desde el menú contextual del Arbol de Proyecto.</LI>

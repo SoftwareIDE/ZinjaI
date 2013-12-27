@@ -1643,7 +1643,7 @@ wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step, wx
 }
 
 
-void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir,makefile_type mktype) {
+void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype) {
 	
 	wxString old_temp_folder = active_configuration->temp_folder;
 	if (mktype!=MKTYPE_FULL) active_configuration->temp_folder="${OBJS_DIR}";
