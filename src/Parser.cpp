@@ -80,7 +80,7 @@ void Parser::ParseProject(bool show_progress) {
 void Parser::ParseSource(mxSource *src, bool dontsave) {
 	if (src->lexer!=wxSTC_LEX_CPP) return;
 	project_file_item *item=project?project->HasFile(src->source_filename):NULL;
-	if (item && item->where!=FT_OTHER) return; // if we are in project mode and the source is not attached to the project, don't parse
+	if (!item || item->where==FT_OTHER) return; // if we are in project mode and the source is not attached to the project, don't parse
 	actions.insert(actions.end(),parserAction::ParseSource(src,dontsave));
 	Parse();
 }
