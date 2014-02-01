@@ -202,7 +202,7 @@ void mxBreakList::PopulateGrid ( ) {
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
 	while(bpi.IsValid()) {
 		
-		if (ask_debug && bpi->gdb_id!=-1) continue; // ya lo cargo debug
+		if (ask_debug && bpi->gdb_id!=-1) { bpi.Next(); continue; } // ya lo cargo debug
 		
 		bpi->UpdateLineNumber();
 		

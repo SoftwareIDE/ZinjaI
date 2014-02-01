@@ -4810,7 +4810,7 @@ void mxMainWindow::ShowWelcome(bool show) {
 }
 
 void mxMainWindow::OnActivate (wxActivateEvent &event) {
-	if (project) project->WxfbAutoCheck();
+	if (project) project->WxfbAutoCheckStep1();
 	event.Skip();
 }
 

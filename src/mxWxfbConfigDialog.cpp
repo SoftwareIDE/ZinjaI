@@ -66,12 +66,19 @@ void mxWxfbConfigDialog::OnClose (wxCloseEvent & event) {
 
 void mxWxfbConfigDialog::OnOkButton (wxCommandEvent & evt) {
 	if (!project) { return; }
+	bool old_hide_symbols=conf->dont_show_base_classes_in_goto, 
+		 old_read_only=conf->set_wxfb_sources_as_readonly;
 	conf->activate_integration=m_activate_integration->GetValue();
 	conf->autoupdate_projects=m_autoupdate_projects->GetValue();
 	conf->update_class_list=m_update_class_list->GetValue();
 	conf->update_methods=m_update_methods->GetValue();
 	conf->set_wxfb_sources_as_readonly=m_set_wxfb_sources_as_readonly->GetValue();
 	conf->dont_show_base_classes_in_goto=m_dont_show_base_classes_in_goto->GetValue();
+	project->WxfbSetFileProperties(
+		conf->set_wxfb_sources_as_readonly!=old_read_only,
+		conf->set_wxfb_sources_as_readonly,
+		conf->dont_show_base_classes_in_goto!=old_hide_symbols,
+		conf->dont_show_base_classes_in_goto);
 	Close();
 }
 

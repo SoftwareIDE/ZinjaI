@@ -4,7 +4,7 @@
 # instalador generado aún está incompleto,
 # además de los archivos que copia y genera este script desde los fuentes de zinjai, 
 # también se deben colocar en las carpetas creadas binarios de mingw (compilador y otras
-# como gdb, file, diff, etc) los binarios y la documentacion de wx, los binarios de gprof 
+# como gdb, file, diff, etc), los binarios de gprof 
 # y gprof2dot, los binarios de freeglut y glew, y algunos archivos txt con informacion 
 # de licencias y origen de todas estas cosas (todo esto puede obtenerse de alguna
 # versión anterior de ZinjaI para Windows)
@@ -76,11 +76,11 @@ zmkdir OpenGL
   zmkdir OpenGL/autocomp
     cp -Hru $SRC/autocomp/OpenGL* OpenGL/autocomp
 
-zmkdir wx
-  zmkdir wx/templates
-    cp -Hru $SRC/templates-w32/wx/* wx/templates
-  zmkdir wx/autocomp
-    cp -Hru $SRC/autocomp/wx* wx/autocomp/
+#zmkdir wx
+#  zmkdir wx/templates
+#    cp -Hru $SRC/templates-w32/wx/* wx/templates
+#  zmkdir wx/autocomp
+#    cp -Hru $SRC/autocomp/wx* wx/autocomp/
 
 zmkdir fuentes
   cp -u $SRC/compiling.txt fuentes/
@@ -92,8 +92,8 @@ zmkdir fuentes
     cp -u $SRC/src_extras/* fuentes/src_extras
   zmkdir fuentes/src_extras/complement
     cp -u $SRC/src_extras/complement/* fuentes/src_extras/complement
-  zmkdir fuentes/src_extras/wx_autocomp
-    cp -u $SRC/src_extras/wx_autocomp/* fuentes/src_extras/wx_autocomp
+#  zmkdir fuentes/src_extras/wx_autocomp
+#    cp -u $SRC/src_extras/wx_autocomp/* fuentes/src_extras/wx_autocomp
   zmkdir fuentes/imgs
     cp -u $SRC/imgs/art.svg fuentes/imgs/
     cp -u $SRC/imgs/logos.svg fuentes/imgs/

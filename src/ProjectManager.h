@@ -32,6 +32,7 @@
 #include "SourceExtras.h"
 class BreakPointInfo;
 class mxSource;
+class mxOSD;
 
 /// Posibles ubicaciones para un paso de compilación adicional en el proceso de construcción de un proceso
 enum ces_pos {
@@ -153,7 +154,8 @@ struct wxfb_configuration {
 	// auxiliares para zinjai, no se guardan como opciones del proyecto ni los configura el usuario
 	bool ask_if_wxfb_is_missing;  ///< indica si avisar cuando no encuentra el ejecutable del wxFormBuilder
 	bool working; ///< indica si se esta actualmente regenerando algun proyecto wxfb (si wxfb está ejecutandose en segundo plano)
-	wxArrayString headers; ///< nombres de archivos .h asociados al proyecto generados automáticamente por wxfb (se carga en Project::WxfbGenerate y se utiliza en Project::WxfbAutoCheck)
+	SingleList<wxString> projects; ///< nombres de archivos de proyecto wxfb asociados al proyecto zinjai en la categoría Otros (se carga en Project::WxfbGetFiles, full paths)
+	SingleList<wxString> sources; ///< nombres de archivos (sin extension, será .h o .cpp) asociados al proyecto generados automáticamente por wxfb, ordenados con relación a projects (se carga en Project::WxfbGetFiles, full paths)
 	
 	//! inicializa la configuración con los valores por defecto
 	wxfb_configuration(bool enabled=true) {
@@ -499,16 +501,38 @@ public:
 	void SetFileHideSymbols(project_file_item *item, bool hide_symbols);
 	
 	void MoveFile(wxTreeItemId &tree_item, eFileType where);
-	bool DeleteFile(wxTreeItemId &tree_item, bool also=false);
+	/// Removes a file from the project, and optionally also erases it from the disk
+	void DeleteFile(project_file_item *item, bool also_delete_from_disk);
+	/// Removes a file from the project and optionally from the disk, and optionally also the complement (include gui actions to confirm, also param is for internal use)
+	bool DeleteFile(wxTreeItemId tree_item);
 	project_file_item *AddFile (eFileType where, wxFileName name, bool sort_tree=true);
+	
+	/// Determina cuales son los projectos wxfb asociados al proyecto zinjai y sus respectivos fuentes (busca archivos .fbp en Otros, guarda los resultados en wxfb->projects y wxfb->sources)
+	void WxfbGetFiles();
+	/// Sets read_only and hide_symbols properties for project_file_items from wxfb projects
+	void WxfbSetFileProperties(bool change_read_only, bool read_only_value, bool change_hide_symbols, bool hide_symbols_value);
 	/// Regenera uno o todos los proyecto wxFormBuilder
 	bool WxfbGenerate(bool show_osd=false, project_file_item *cual=NULL);
-	/// Regenerar proyectos o actualizar clases de wxFormBuilder si es necesario
-	void WxfbAutoCheck();
+private:
+	/// Funcion auxiliar para el otro WxfbGenerate, esta es la que realmente hace el trabajo, la otra funcion de wrapper para seleccionar cuales proyectos
+	bool WxfbGenerate(wxString fbp_file, wxString fbase, bool force_regen, mxOSD **osd);
+public:
+	/// auxiliar struct for retrieving wxfb related data from parser data (used to send the old state from WxfbAutoCheckStep1 to WxfbAutoCheckStep2)
+	struct WxfbAutoCheckData {
+		SingleList<wxString> wxfb_classes; /// list of wxfb's generated classes before the update (step 1); if after  the update (step 2) there are new classes here zinjai can offer creating new inherited ones
+		SingleList<wxString> user_classes; /// list of wxfb inherited classes, if some of this classes don't have a base class anymore (was deleted in wxfb), zinjai can offer deleting them
+		SingleList<wxString> user_fathers; /// list fathers of classes in user_classes (same size, same indexes)
+		WxfbAutoCheckData(); /// initializes the lists with info from the current project (erases previous existing data)
+	};
+	/// Regenerar proyectos o actualizar clases de wxFormBuilder si es necesario (parte 1)
+	void WxfbAutoCheckStep1();
+	/// Regenerar proyectos o actualizar clases de wxFormBuilder si es necesario (parte 2)
+	void WxfbAutoCheckStep2(WxfbAutoCheckData *old_data);
+	
 	/// Agrega al proyecto un clase heredada de alguna de las diseñadas en wxFormBuilder
 	bool WxfbNewClass(wxString base_name, wxString name);
 	/// Actualiza una clase heredada de alguna de las diseñadas en wxFormBuilder
-	bool WxfbUpdateClass(wxString fname, wxString cname);
+	bool WxfbUpdateClass(wxString wxfb_class, wxString user_class);
 	/// Genera un makefile para el proyecto a partir de active_configuration
 	void ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype);
 	/// Parsea la configuración del proyecto (active_configuration) para generar los argumentos necesarios para invocar al compilador

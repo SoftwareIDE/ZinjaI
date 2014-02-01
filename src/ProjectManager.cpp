@@ -31,6 +31,7 @@
 #include "Toolchain.h"
 #include "CodeHelper.h"
 #include "execution_workaround.h"
+#include "mxWxfbInheriter.h"
 using namespace std;
 
 #define ICON_LINE(filename) (wxString(_T("0 ICON \""))<<filename<<_T("\""))
@@ -492,6 +493,10 @@ ProjectManager::ProjectManager(wxFileName name) {
 				configurations[i]->wait_for_key=2;
 	}
 	
+	if (wxfb && version_saved<20140125) {
+		WxfbSetFileProperties(true,wxfb->set_wxfb_sources_as_readonly,true,wxfb->dont_show_base_classes_in_goto);
+	}
+	
 	if (version_required>VERSION) {
 		mxMessageDialog(main_window,LANG(PROJECT_REQUIRES_NEWER_ZINJAI,""
 			"El proyecto que esta abriendo requiere una version superior de ZinjaI\n"
@@ -500,6 +505,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 			"problemas posteriormente.\n"
 			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 	}
+	
 	
 	if (files_to_open>0) main_window->SetStatusProgress(-1);
 	
@@ -989,12 +995,27 @@ void ProjectManager::MoveFile(wxTreeItemId &tree_item, eFileType where) {
 	main_window->project_tree.treeCtrl->SelectItem(item->item);
 }
 
-bool ProjectManager::DeleteFile(wxTreeItemId &tree_item, bool also) {
+void ProjectManager::DeleteFile(project_file_item *item, bool also_delete_from_disk) {
+	wxString fullpath=DIR_PLUS_FILE(path,item->name);
+	// eliminar el archivo del disco
+	if (also_delete_from_disk) wxRemoveFile(fullpath);
+	// eliminar sus simbolos del parser
+	parser->RemoveFile(fullpath);
+	// quitar el archivo del arbol de proyecto
+	main_window->project_tree.treeCtrl->Delete(item->item);
+	// eliminar el item de la lista
+	files_all.FindAndRemove(item);
+	delete item;
+}
+
+bool ProjectManager::DeleteFile(wxTreeItemId tree_item) {
+	bool also=false;
 	modified=true;
-	project_file_item *item=FindFromItem(tree_item);
-	if (item) {
+	while (true) {
+		project_file_item *item=FindFromItem(tree_item);
+		if (!item) return also;
 		mxSource *src = main_window->IsOpen(tree_item);
-		if (src) new SourceExtras(src); // create a new SourceExtras that will be owned by src
+		if (src) new SourceExtras(src); // "tranfers ownership" of extras to the mxSource
 		int ans;
 		if (also)
 			ans=mxMessageDialog(main_window,wxString(LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_PRE,"¿Desea quitar tambien el archivo \""))<<item->name<<LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_POST,"\" del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
@@ -1002,22 +1023,12 @@ bool ProjectManager::DeleteFile(wxTreeItemId &tree_item, bool also) {
 			ans=mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_DETTACH_FILE,"¿Desea quitar el archivo del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
 		if (ans&mxMD_CANCEL || ans&mxMD_NO)
 			return false;
-		// eliminar el archivo del disco
-		if (ans&mxMD_CHECKED)
-			wxRemoveFile(DIR_PLUS_FILE(path,item->name));
-		parser->RemoveFile(DIR_PLUS_FILE(path,item->name));
-		// quitar el archivo del arbol de proyecto
-		main_window->project_tree.treeCtrl->Delete(item->item);
-		// eliminar el item de la lista
 		wxString comp = utils->GetComplementaryFile(DIR_PLUS_FILE(project->path,item->name));
-		files_all.FindAndRemove(item);
-		delete item;
-		if (comp.Len() && HasFile(comp)) DeleteFile(HasFile(comp)->item,true);
-		return true;
+		DeleteFile(item,ans&mxMD_CHECKED);
+		if (comp.Len()==0 || !HasFile(comp)) return true;
+		tree_item=HasFile(comp)->item; also=true;
 	}
-	return false;
 }
-
 
 bool ProjectManager::DependsOnMacro(project_file_item *item, wxArrayString &macros) {
 	wxTextFile fil(DIR_PLUS_FILE(path,item->name));
@@ -2298,94 +2309,130 @@ wxString ProjectManager::WxfbGetSourceFile(wxString fbp_file) {
 	return DIR_PLUS_FILE(fn.GetPath(),in_name);
 }
 
+void ProjectManager::WxfbGetFiles() {
+	wxfb->projects.Clear();
+	wxfb->sources.Clear();
+	LocalListIterator<project_file_item*> item(&files_others);
+	while(item.IsValid()) { // por cada archivo .fbp (deberian estar en "otros")
+		if (item->name.Len()>4 && item->name.Mid(item->name.Len()-4).CmpNoCase(_T(".fbp"))==0) {
+			wxFileName fbp_file=DIR_PLUS_FILE(path,item->name);
+			fbp_file.Normalize();
+			wxfb->projects.Add(fbp_file.GetFullPath());
+			wxFileName source_file=WxfbGetSourceFile(fbp_file.GetFullPath());
+			source_file.Normalize();
+			wxfb->sources.Add(source_file.GetFullPath());
+		}
+		item.Next();
+	}
+}
+
+/**
+* Ask wxformbuilder to regenerate one or all fbp projects (i.e. to create .cpp and .h or .xrc files)
+*
+* It is called automatically when ZinjaI gets the focus (for all wxfb projects, cual=NULL), or 
+* manually from tools menu (for a single wxfb project, specified in argument cual)
+**/
 bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 	if (!config->CheckWxfbPresent()) return false;
 	wxfb->working=true;
 	wxString old_compiler_tree_text = main_window->compiler_tree.treeCtrl->GetItemText(main_window->compiler_tree.state);
 	mxOSD *osd=NULL;
 	main_window->SetCompilingStatus(LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
-	wxfb->headers.Clear();
+	
 	bool something_changed=false;
-	LocalListIterator<project_file_item*> item(&files_others);
-	while(item.IsValid()) { // por cada archivo .fbp (deberian estar en "otros")
-		if ( (cual&&*item==cual) || (!cual && item->name.Len()>4 && item->name.Mid(item->name.Len()-4).CmpNoCase(_T(".fbp"))==0) ) {
-			
-			wxString fbp_file=DIR_PLUS_FILE(path,item->name);
-			wxString fbase = WxfbGetSourceFile(fbp_file);
-			
-			// ver si hay que regenerar (comparando con fflag)
-			wxString fflag = fbp_file.Mid(0,fbp_file.Len()-4)+_T(".flg");
-			wxDateTime dp = wxFileName(fbp_file).GetModificationTime();
-			bool regen = cual||(!wxFileName::FileExists(fflag) || dp>wxFileName(fflag).GetModificationTime());
-			
-			if (fbase.Len()) {
-				wxFileName fn_header(fbase+_T(".h"));
-				fn_header.Normalize();
-				if (HasFile(fn_header.GetFullPath())) wxfb->headers.Add(fn_header.GetFullPath());
-			}
-			if (regen) { // regenerar, reparsear y recargar si es necesario
-				if (show_osd && osd==NULL) osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
-				if (fbase.Len()) {
-					int ret = mxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
-					
-					if (ret) {
-						if (osd) delete osd;
-						if (wxfb->autoupdate_projects) {
-							if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_1,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal())
-								wxfb->autoupdate_projects=false;
-						} else {
-							mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_2,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\")."),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal();
-						}
-						wxfb->working=false;
-						return false;
-					}
-					
-					something_changed=true;
-					if (wxFileName::FileExists(fbase+_T(".cpp"))) {
-						mxSource *src = main_window->FindSource(fbase+".cpp");
-						if (src) src->Reload();
-						if (project->HasFile(fbase+".cpp")) parser->ParseFile(fbase+".cpp");
-					}
-					if (wxFileName::FileExists(fbase+_T(".h"))) {
-						mxSource *src = main_window->FindSource(fbase+_T(".h"));
-						if (src) src->Reload();
-						if (project->HasFile(fbase+".h")) parser->ParseFile(fbase+_T(".h"));
-					}
-				} else {
-					wxString fxrc=fbase+_T(".xrc");
-					mxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
-					mxSource *src=main_window->FindSource(fxrc);
-					if (src) src->Reload();
-				}
-				
-				wxTextFile fil(fflag);
-				if (!fil.Exists()) fil.Create();
-				fil.Open();
-				if (!fil.IsOpened()) {
-					if (wxfb->autoupdate_projects) {
-						if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_3,"No se pudo actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal())
-							wxfb->autoupdate_projects=false;
-					} else {
-						mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_4,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto)."),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal();
-					}
-					break;
-				}
-				fil.Clear();
-				fil.AddLine(_T("Este archivo se utiliza para determinar la fecha y hora de la ultima compilacion del proyecto wxFormBuilder homonimo."));
-				fil.AddLine(_T("This is a dummy file to be used as timestamp for the generation of a wxFormBuilder project."));
-				fil.Write();
-				fil.Close();
-			}
+	if (cual) {
+		wxString fbp_file=DIR_PLUS_FILE(path,cual->name);
+		wxString fbase = WxfbGetSourceFile(fbp_file);
+		something_changed=WxfbGenerate(fbp_file,fbase,true,show_osd?&osd:NULL);
+	} else {
+		WxfbGetFiles();
+		for(int i=0;i<wxfb->projects.GetSize();i++) { 
+			if (WxfbGenerate(wxfb->projects[i],wxfb->sources[i],false,show_osd?&osd:NULL)) something_changed=true;
+			if (!wxfb->autoupdate_projects) break;
 		}
-		item.Next();
 	}
 	
-	// todo: reemplazar estas lineas por SetCompilingStatus, pero ver antes en que contexto se llega aca para saber que puede haber habido en status
+	/// @todo: reemplazar estas lineas por SetCompilingStatus, pero ver antes en que contexto se llega aca para saber que puede haber habido en status
 	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,old_compiler_tree_text);
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	wxfb->working=false;
 	if (osd) delete osd;
 	return something_changed;
+}
+
+void ProjectManager::WxfbSetFileProperties(bool change_read_only, bool read_only_value, bool change_hide_symbols, bool hide_symbols_value) {
+	WxfbGetFiles();
+	for(int i=0;i<wxfb->sources.GetSize();i++) {
+		wxString base = wxfb->sources[i];
+		char exts[][5]={".cpp",".h",".xrc"};
+		for(int j=0;j<3;j++) { 
+			project_file_item *item = HasFile(base+exts[i]);
+			if (!item) continue;
+			if (change_read_only) SetFileReadOnly(item,read_only_value);
+			if (change_hide_symbols) SetFileHideSymbols(item,hide_symbols_value);
+		}
+	}
+}
+
+bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_regen, mxOSD **osd) {
+	// ver si hay que regenerar (comparando con fflag)
+	wxString fflag = fbp_file.Mid(0,fbp_file.Len()-4)+_T(".flg");
+	wxDateTime dp = wxFileName(fbp_file).GetModificationTime();
+	bool regen = force_regen || (!wxFileName::FileExists(fflag) || dp>wxFileName(fflag).GetModificationTime());
+	if (!regen) return false;
+	
+	if (osd && *osd==NULL) *osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
+	
+	int ret = mxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
+
+	if (fbase.Len()) {
+		if (ret) {
+			if (osd) { delete *osd; *osd=NULL; }
+			if (wxfb->autoupdate_projects) {
+				if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_1,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal())
+					wxfb->autoupdate_projects=false;
+			} else {
+				mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_2,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\")."),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal();
+			}
+			return false;
+		}
+		
+		if (wxFileName::FileExists(fbase+".cpp")) {
+			mxSource *src = main_window->FindSource(fbase+".cpp");
+			if (src) src->Reload();
+			if (project->HasFile(fbase+".cpp")) parser->ParseFile(fbase+".cpp");
+		}
+		if (wxFileName::FileExists(fbase+_T(".h"))) {
+			mxSource *src = main_window->FindSource(fbase+_T(".h"));
+			if (src) src->Reload();
+			if (project->HasFile(fbase+".h")) parser->ParseFile(fbase+_T(".h"));
+		}
+		
+	} else {
+		wxString fxrc=fbase+_T(".xrc");
+		mxSource *src=main_window->FindSource(fxrc);
+		if (src) src->Reload();
+	}
+	
+	wxTextFile fil(fflag);
+	if (!fil.Exists()) fil.Create();
+	fil.Open();
+	if (!fil.IsOpened()) {
+		if (wxfb->autoupdate_projects) {
+			if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_3,"No se pudo actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal())
+				wxfb->autoupdate_projects=false;
+		} else {
+			mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_4,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto)."),_T("Error"),mxMD_YES_NO|mxMD_ERROR).ShowModal();
+		}
+		return true;
+	}
+	fil.Clear();
+	fil.AddLine(_T("Este archivo se utiliza para determinar la fecha y hora de la ultima compilacion del proyecto wxFormBuilder homonimo."));
+	fil.AddLine(_T("This is a dummy file to be used as timestamp for the generation of a wxFormBuilder project."));
+	fil.Write();
+	fil.Close();
+
+	return true;
 }
 
 compile_extra_step *ProjectManager::InsertExtraSteps(project_configuration *conf, wxString name, wxString cmd, int pos) {
@@ -2944,8 +2991,8 @@ void static GetFatherMethods(wxString base_header, wxString class_name, wxArrayS
 	btf.Close();
 }
 
-bool ProjectManager::WxfbUpdateClass(wxString fbp_file, wxString cname) {
-	pd_class *pdc_son = parser->GetClass(cname);
+bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
+	pd_class *pdc_son = parser->GetClass(user_class);
 	wxString cfile = utils->GetComplementaryFile(pdc_son->file->name,FT_HEADER);
 	if (cfile.Len()==0) { // si tampoco hay "public:", no hay caso
 		mxMessageDialog(main_window,_T("No se pudo determinar donde definir los nuevos metodos.\nNo se encontró el archivo fuente complementario."),_T("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
@@ -2988,9 +3035,9 @@ bool ProjectManager::WxfbUpdateClass(wxString fbp_file, wxString cname) {
 	
 	tabs_pro+=_T("\t");
 	
-	pd_class *pdc_father = parser->GetClass(fbp_file);
+	pd_class *pdc_father = parser->GetClass(wxfb_class);
 	wxArrayString methods;
-	GetFatherMethods(pdc_father->file->name,fbp_file,methods);
+	GetFatherMethods(pdc_father->file->name,wxfb_class,methods);
 	
 	bool modified=false;
 	
@@ -3009,7 +3056,7 @@ bool ProjectManager::WxfbUpdateClass(wxString fbp_file, wxString cname) {
 		if (!found) {
 			modified=true;
 			fil.InsertLine(tabs_pro+methods[i]+_T(";"),inspos++);
-			fil2.AddLine(methods[i].BeforeFirst(' ')+_T(" ")+cname+_T("::")+methods[i].AfterFirst(' ')+_T(" {"));
+			fil2.AddLine(methods[i].BeforeFirst(' ')+_T(" ")+user_class+_T("::")+methods[i].AfterFirst(' ')+_T(" {"));
 			fil2.AddLine(_T("\tevent.Skip();"));
 			fil2.AddLine(_T("}"));
 			fil2.AddLine(_T(""));
@@ -3045,8 +3092,42 @@ bool ProjectManager::WxfbUpdateClass(wxString fbp_file, wxString cname) {
 	return true;
 }
 
-void ProjectManager::WxfbAutoCheck() {
+ProjectManager::WxfbAutoCheckData::WxfbAutoCheckData() {
+	for (unsigned int i=0; i<project->wxfb->sources.GetSize();i++) {
+		pd_file *pdf=parser->GetFile(project->wxfb->sources[i]+".h");
+		if (pdf) {
+			pd_ref *cls_ref = pdf->first_class;
+			ML_ITERATE(cls_ref)
+				wxfb_classes.Add(PD_UNREF(pd_class,cls_ref)->name);
+		}
+	}
+	pd_inherit *item=parser->first_inherit;
+	while (item->next) {
+		item=item->next;
+		if (wxfb_classes.Contains(item->father)) {
+			user_fathers.Add(item->father);
+			user_classes.Add(item->son);
+		}
+	}
+}
+
+/**
+* Parte 1, se llama al recibir el foco en la ventana principal. Primero mira si hay cambios
+* en los proyectos cd wxfb comparando los archivos de proyecto con los archivos flags que 
+* genera ZinjaI, y si los hay hace regererar el código, manda a parsear los nuevos fuentes
+* y programa el paso 2 para después del parseo.
+**/
+void ProjectManager::WxfbAutoCheckStep1() {
+	
 	if (loading || !wxfb || !wxfb->activate_integration || !wxfb->autoupdate_projects || wxfb->working) return;
+	
+	if (parser->working) {
+		class LaunchProjectWxfbAutoUpdateStep1Action : public Parser::OnEndAction {
+		public: void Do() { if (project) project->WxfbAutoCheckStep1(); }
+		};
+		parser->OnEnd(new LaunchProjectWxfbAutoUpdateStep1Action());
+		return;
+	}
 	
 	// primero una verificación rapida para evitar que este evento moleste muy seguido
 	bool something_changed=false;
@@ -3064,35 +3145,91 @@ void ProjectManager::WxfbAutoCheck() {
 		fitem.Next();
 	}
 	if (!something_changed) return;
+	SaveAll(false); /// @todo: ver de sacar esto (para que al actualizar los fuentes agregando metodos o lo que sea no se pierdan los cambios sin guardar)
 	
-	SaveAll(false); /// @todo: ver de sacar esto
-	bool generated=project->WxfbGenerate(true);
-	if (!generated) return;
-	mxOSD osd(main_window,LANG(OSD_WXFB_AUTOREGEN,"Actualizando clases wxFormBuilder..."));
+	WxfbAutoCheckData *old_data = new WxfbAutoCheckData(); // for comparing after parsing updated files and detecting new/deleted windows
+	if (!project->WxfbGenerate(true)) { delete old_data; return; }
 	
-	parser->Parse();
-	
-	wxArrayString fathers;
-	for (unsigned int i=0; i<wxfb->headers.GetCount();i++) {
-		pd_file *pdf=parser->GetFile(wxfb->headers[i]);
-		if (pdf) {
-			pd_ref *cls_ref = pdf->first_class;
-			ML_ITERATE(cls_ref)
-				fathers.Add(PD_UNREF(pd_class,cls_ref)->name);
-		}
-	}
+	class LaunchProjectWxfbAutoUpdateStep2Action : public Parser::OnEndAction {
+	private: WxfbAutoCheckData *data;
+	public: void Do() { if (project) project->WxfbAutoCheckStep2(data); delete data; }
+	public: LaunchProjectWxfbAutoUpdateStep2Action(WxfbAutoCheckData *_data):data(_data) {}
+	};
+	parser->Parse(false);
+	parser->OnEnd(new LaunchProjectWxfbAutoUpdateStep2Action(old_data),true);
+}
 
-	wxArrayString to_update;
-	pd_inherit *item=parser->first_inherit;
-	while (item->next) {
-		item=item->next;
-		if (fathers.Index(item->father)!=wxNOT_FOUND) {
-			to_update.Add(item->father);
-			to_update.Add(item->son);
+void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
+	wxfb->working=true;
+	WxfbAutoCheckData new_data;
+	if (wxfb->update_methods) { // update already present inherited classes' methods (with new events)
+		for(int i=0;i<new_data.user_classes.GetSize();i++) {
+			WxfbUpdateClass(new_data.user_fathers[i],new_data.user_classes[i]);
 		}
 	}
-	for (unsigned int i=0;i<to_update.GetCount();i+=2)
-		project->WxfbUpdateClass(to_update[i],to_update[i+1]);
+	
+	if (wxfb->update_class_list) {// create new inherited classes (from new wxfb base classes)
+		SingleList<wxString> bases;
+		for(int i=0;i<new_data.wxfb_classes.GetSize();i++) { 
+			if (!old_data->wxfb_classes.Contains(new_data.wxfb_classes[i])) {
+				bases.Add(new_data.wxfb_classes[i]);
+			}
+		}
+		for(int i=0;i<bases.GetSize();i++) { 
+			new mxWxfbInheriter(main_window,bases[i],false);
+		}
+	}
+		
+	if (wxfb->update_class_list) {// deleted unused inherited classes (from wxfb base classes that where deleted from the wxfb project)
+		// find out wich wxfb classes where deleted
+		SingleList<wxString> bases;
+		for(int i=0;i<old_data->wxfb_classes.GetSize();i++) { 
+			if (!new_data.wxfb_classes.Contains(old_data->wxfb_classes[i])) {
+				bases.Add(old_data->wxfb_classes[i]);
+			}
+		}
+		// find out wich user classes where inherited from the deleted ones
+		SingleList<wxString> children;
+		pd_inherit *item=parser->first_inherit;
+		while (item->next) {
+			item=item->next;
+			if (bases.Contains(item->father)) {
+				children.Add(item->son);
+			}
+		}
+		// offer the user to deleted those inherited classes
+		for(int i=0;i<children.GetSize();i++) {
+			// obtener archivos de dichas clases
+			pd_class *pd_aux = parser->GetClass(children[i]);
+			if (!pd_aux) continue;
+			wxString fname1 = pd_aux->file->name;
+			wxString fname2 = utils->GetComplementaryFile(fname1);
+			// buscarlos en el proyecto
+			project_file_item *fitem1=HasFile(fname1),*fitem2=HasFile(fname2);
+			if (!fitem1&&!fitem2) continue;
+			if (!fitem1) fname1=""; 
+			if (!fitem2) fname2="";
+			// preguntar
+			wxString filenames; filenames<<fname1<<(fname1.Len()&&fname2.Len()?", ":"")<<fname2;
+			int ans=mxMessageDialog(main_window,
+				wxString(LANG(WXFB_ASK_BEFORE_AUTO_DELETING_PRE,"ZinjaI ha detectado que la clase "))<<children[i]
+				<<LANG(WXFB_ASK_BEFORE_AUTO_DELETING_MID,"\n"
+				"hereda de una clase anteriormente autogenerada por wxFormBuilder que ha sido eliminada."
+				"¿Desea elminar los archivos de la clase heredada: ")<<filenames<<
+				LANG(WXFB_ASK_BEFORE_AUTO_DELETING_POST,"?\n"
+				"Advertencia: se eliminarán el/los archivos completos; debe estar seguro de que no contienen\n"
+				"definiciones ajenas a dicha clase, y de que la clase base no ha sido solo renombrada.")
+				,LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_WARNING,
+				LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false
+				).ShowModal();
+			// eliminar
+			if (ans==mxMD_YES) {
+				if (fitem1) DeleteFile(fitem1,ans&mxMD_CHECKED);
+				if (fitem2) DeleteFile(fitem2,ans&mxMD_CHECKED);
+			}
+		}
+	}
+		
 	wxfb->working=false;
 }
 

@@ -300,8 +300,12 @@ PROJMNGR_PROJECT_GRAPH_SYMBOLS
  simbolo(s)
 PROJMNGR_PROJECT_GRAPH_TITLE
 Grafo de Proyecto
-OSD_WXFB_AUTOREGEN
-Actualizando clases wxFormBuilder...
+WXFB_ASK_BEFORE_AUTO_DELETING_PRE
+ZinjaI ha detectado que la clase 
+WXFB_ASK_BEFORE_AUTO_DELETING_MID
+\nhereda de una clase anteriormente autogenerada por wxFormBuilder que ha sido eliminada.¿Desea elminar los archivos de la clase heredada: 
+WXFB_ASK_BEFORE_AUTO_DELETING_POST
+?\nAdvertencia: se eliminarán el/los archivos completos; debe estar seguro de que no contienen\ndefiniciones ajenas a dicha clase, y de que la clase base no ha sido solo renombrada.
 PROJECT_DIRNOTFOUND_CREATE_PRE
 El directorio \"
 PROJECT_DIRNOTFOUND_CREATE_POST
@@ -3520,6 +3524,10 @@ WXFB_NO_WXFB_CLASSES
 No se encontraron clases generadas por wxFormsBuilder.
 WXFB_GENERATE_INHERITED_CLASS
 Heredar Clase wxFormsBuilder
+WXFB_NO_WXFB_INHERITED_CLASSES
+No se encontraron clases heredadas a partir de las generadas por wxFormBuilder.
+WXFB_AUTOINHERIT_MESSAGE
+ZinjaI ha detectado una nueva clase (ventanda, diálogo, panel, etc)\nen un archivo generado por wxFormBuilder. Puede generar ahora una \nherencia a partir de dicha clase. Introduzca el nombre de la nueva \nclase heradad para hacerlo, o presione cancelar. La clase base es:\n
 WXFB_BASECLASS
 Clase base:
 WXFB_INHERITEDCLASS

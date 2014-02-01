@@ -222,30 +222,6 @@ void mxMainWindow::OnToolsWxfbConfig(wxCommandEvent &event) {
 	if (project) new mxWxfbConfigDialog();
 }
 
-//void mxMainWindow::OnToolsWxfbActivate(wxCommandEvent &event) {
-//	if (project) {
-//		menu.tools_wxfb_activate->Check(menu.tools_wxfb_activate->IsChecked());
-//		if (menu.tools_wxfb_activate->IsChecked()) {
-//			project->ActivateWxfb(); // para que verifique si esta el ejecutable
-//		} else {
-//			project->use_wxfb=false;
-//		}
-//		if (config->Toolbars.positions.project.visible) { CreateToolbars(toolbar_project); aui_manager.Update(); }
-//	}
-//}
-//
-//void mxMainWindow::OnToolsWxfbAuto(wxCommandEvent &event) {
-//	if (project) {
-//		menu.tools_wxfb_auto->Check(menu.tools_wxfb_activate->IsChecked());
-//		if (menu.tools_wxfb_auto->IsChecked()) {
-//			if (!project->use_wxfb) project->ActivateWxfb();
-//			menu.tools_wxfb_auto->Check(project->auto_wxfb=true);
-//		} else {
-//			menu.tools_wxfb_auto->Check(project->auto_wxfb=false);
-//		}
-//	}
-//}
-
 void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 	if (project) {
 		
@@ -338,13 +314,24 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 			fbp_file.Close();
 		}
 		
-		// abrir
-		if (!project->HasFile(cpp_name))
-			project->AddFile(FT_SOURCE,cpp_name);
-		if (!project->HasFile(h_name))
-			project->AddFile(FT_HEADER,h_name);
-		if (!project->HasFile(fname))
-			project->AddFile(FT_OTHER,fname);
+		// asociar al proyecto y abrir
+		project_file_item *item;
+		
+		wxfb_configuration *wxfb = project->GetWxfbConfiguration();
+		
+		item=project->HasFile(cpp_name);
+		if (!item) item=project->AddFile(FT_SOURCE,cpp_name);
+		if (wxfb->set_wxfb_sources_as_readonly) project->SetFileReadOnly(item,true);
+		if (wxfb->dont_show_base_classes_in_goto) project->SetFileHideSymbols(item,true);
+		
+		item=project->HasFile(h_name);
+		if (!item) item=project->AddFile(FT_HEADER,h_name);
+		if (wxfb->set_wxfb_sources_as_readonly) project->SetFileReadOnly(item,true);
+		if (wxfb->dont_show_base_classes_in_goto) project->SetFileHideSymbols(item,true);
+		
+		item=project->HasFile(fname);
+		if (!item) item=project->AddFile(FT_OTHER,fname);
+		
 		main_window->OpenFile(fname,false);
 		return;
 	}
@@ -390,8 +377,8 @@ void mxMainWindow::OnToolsWxfbRegen(wxCommandEvent &event) {
 	if (project && project->GetWxfbActivated()) {
 		status_bar->SetStatusText(_T("Regenerando proyectos wxFormBuilder..."));
 		project->WxfbGenerate();
-		parser->Parse();
-		status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
+//		parser->Parse();
+//		status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	}
 }
 
@@ -413,20 +400,20 @@ void mxMainWindow::OnToolsWxfbHelpWx(wxCommandEvent &event) {
 
 
 class ToolsWxfbInheriterAction : public Parser::OnEndAction {
-	bool the_bool;
+	bool update;
 public:
-	ToolsWxfbInheriterAction(bool _the_bool):the_bool(_the_bool){}
-	void Do() { new mxWxfbInheriter(main_window,the_bool); }
+	ToolsWxfbInheriterAction(bool _update):update(_update){}
+	void Do() { new mxWxfbInheriter(main_window,"",update); }
 };
 
 void mxMainWindow::OnToolsWxfbInheritClass(wxCommandEvent &event) {
 	OnToolsWxfbRegen(event);
-	parser->OnEnd(new ToolsWxfbInheriterAction(true),true);
+	parser->OnEnd(new ToolsWxfbInheriterAction(false),true);
 }
 
 void mxMainWindow::OnToolsWxfbUpdateInherit(wxCommandEvent &event) {
 	OnToolsWxfbRegen(event);
-	parser->OnEnd(new ToolsWxfbInheriterAction(true),false);
+	parser->OnEnd(new ToolsWxfbInheriterAction(true),true);
 }
 
 void mxMainWindow::OnToolsRemoveComments (wxCommandEvent &event) {

@@ -678,9 +678,9 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 		if (main_window && !compiler->IsCompiling())
 			main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 		while (on_end) {
-			on_end->Do();
 			OnEndAction *aux=on_end;
 			on_end=on_end->next;
+			aux->Do();
 			delete aux;
 		}
 		if (show_progress) main_window->SetStatusProgress(-1);

@@ -13,6 +13,12 @@ using namespace std;
 
 #include "paf_defs.h"
 
+#if defined(_WIN32)||defined(__WIN32__)
+// maldito seas "winbase.h" (ahi se hacen defines como los que estan aca abajo, entonces cualquiera que los incluya esta cambiando los nombres)
+#define MoveFile MoveFileA
+#define DeleteFile DeleteFileA
+#endif
+
 class ProjectManager;
 class mxMainWindow;
 class mxSource;

@@ -13,28 +13,52 @@ BEGIN_EVENT_TABLE(mxWxfbInheriter, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxWxfbInheriter::OnButtonCancel)
 	EVT_CLOSE(mxWxfbInheriter::OnClose)
 END_EVENT_TABLE()
-	
 
-mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, bool a_new_class):wxDialog(parent,wxID_ANY,new_class?LANG(WXFB_CAPTION_NEWCLASS,"wxFB - Generar Clase Heredada"):LANG(WXFB_CAPTION_UPDATE,"wxFB - Actualizar Clase Heredada"),wxDefaultPosition,wxDefaultSize) {
-	
+/**
+* @param parent  		parent window (main_window)
+* @param classname 		if !update, name for a base class to be use for generating a 
+*						new class; if update, name for a class to be updated (added 
+*						missing virtual methods)
+* @param update			create a new inherited class or add new methods to an existing 
+*						one, see classname
+**/
+mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, wxString classname, bool update):wxDialog(parent,wxID_ANY,mode!=WXFBI_UPDATE_EXISTING_CLASS?LANG(WXFB_CAPTION_NEWCLASS,"wxFB - Generar Clase Heredada"):LANG(WXFB_CAPTION_UPDATE,"wxFB - Actualizar Clase Heredada"),wxDefaultPosition,wxDefaultSize) {
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	
-	new_class=a_new_class;
-	FillBaseArray();
-	
-	if (base_array.GetCount()==0) {
+	if (update) { mode=WXFBI_UPDATE_EXISTING_CLASS; FillBaseArray(); }
+	else if (classname.Len()) { mode=WXFBI_NEW_CLASS_SPECIFIC; wxfb_classes.Add(classname); }
+	else { mode=WXFBI_NEW_CLASS_ANY; FillBaseArray(); }
+		
+	if (mode==WXFBI_NEW_CLASS_ANY && wxfb_classes.GetCount()==0) {
 		mxMessageDialog(LANG(WXFB_NO_WXFB_CLASSES,"No se encontraron clases generadas por wxFormsBuilder."),LANG(WXFB_GENERATE_INHERITED_CLASS,"Heredar Clase wxFormsBuilder"),mxMD_ERROR|mxMD_OK).ShowModal();
 		Close();
 		return;
 	}
 	
+	if (mode==WXFBI_UPDATE_EXISTING_CLASS && user_classes.GetCount()==0) {
+		mxMessageDialog(LANG(WXFB_NO_WXFB_INHERITED_CLASSES,"No se encontraron clases heredadas a partir de las generadas por wxFormBuilder."),LANG(WXFB_CAPTION_UPDATE,"wxFB - Actualizar Clase Heredada"),mxMD_ERROR|mxMD_OK).ShowModal();
+		Close();
+		return;
+	}
+	
+	if (mode==WXFBI_NEW_CLASS_SPECIFIC) {
+		mySizer->Add(new wxStaticText(this, wxID_ANY, 
+			LANG(WXFB_AUTOINHERIT_MESSAGE,""
+			"ZinjaI ha detectado una nueva clase (ventana, diálogo, panel, etc)\n"
+			"en un archivo generado por wxFormBuilder. Puede generar ahora una \n"
+			"herencia a partir de dicha clase. Introduzca el nombre de la nueva \n"
+			"clase heradad para hacerlo, o presione cancelar en caso contrario."
+			),wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Exp0);
+		wxfb_classes.Clear(); wxfb_classes.Add(classname);
+	}
+	
 	wxBoxSizer *baseSizer = new wxBoxSizer(wxHORIZONTAL);
-	base_class = new wxComboBox(this, wxID_ANY,base_array[0], wxDefaultPosition, wxDefaultSize, base_array,wxCB_READONLY);
-	baseSizer->Add(new wxStaticText(this, wxID_ANY, new_class?LANG(WXFB_BASECLASS,"Clase base:"):LANG(WXFB_INHERITEDCLASS,"Clase heredada:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Left);
+	base_class = new wxComboBox(this, wxID_ANY,mode==WXFBI_UPDATE_EXISTING_CLASS?user_classes[0]:wxfb_classes[0], wxDefaultPosition, wxDefaultSize, mode==WXFBI_UPDATE_EXISTING_CLASS?user_classes:wxfb_classes, wxCB_READONLY);
+	baseSizer->Add(new wxStaticText(this, wxID_ANY, mode==WXFBI_NEW_CLASS_ANY?LANG(WXFB_BASECLASS,"Clase base:"):LANG(WXFB_INHERITEDCLASS,"Clase heredada:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Left);
 	baseSizer->Add(base_class, sizers->BA5_Exp1);
 	mySizer->Add(baseSizer, sizers->BA5_Exp1);
-
-	if (new_class) {
+	
+	if (mode!=WXFBI_UPDATE_EXISTING_CLASS) {
 		wxBoxSizer *childSizer = new wxBoxSizer(wxHORIZONTAL);
 		child_class = new wxTextCtrl(this, wxID_ANY,_T(""));
 		childSizer->Add(new wxStaticText(this, wxID_ANY, LANG(WXFB_INHERITEDCLASS,"Clase heredada:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Left);
@@ -54,41 +78,27 @@ mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, bool a_new_class):wxDialog(pa
 	
 	SetMinSize(GetSize());
 	SetSizerAndFit(mySizer);
-	SetFocusFromKbd();
+	if (mode==WXFBI_NEW_CLASS_ANY) base_class->SetFocus();
+	else child_class->SetFocus();
 	
-	Show();
+	ShowModal();
 }
 
 mxWxfbInheriter::~mxWxfbInheriter() {
 }
 
 void mxWxfbInheriter::FillBaseArray() {
-	base_array.Clear();
-	wxArrayString &headers=project->GetWxfbConfiguration()->headers;
-	for (unsigned int i=0; i<headers.GetCount();i++) {
-//		parser->ParseFile(project->wxfbHeaders[i]);
-//		parser->Parse();
-		pd_file *pdf=parser->GetFile(headers[i]);
-		if (pdf) {
-			pd_ref *cls_ref = pdf->first_class;
-			ML_ITERATE(cls_ref)
-				base_array.Add(PD_UNREF(pd_class,cls_ref)->name);
-		}
+	ProjectManager::WxfbAutoCheckData data;
+	wxfb_classes.Clear(); user_classes.Clear(); 
+	if (mode==WXFBI_UPDATE_EXISTING_CLASS) {
+		for(int i=0;i<data.user_fathers.GetSize();i++) 
+			wxfb_classes.Add(data.user_fathers[i]);
+		for(int i=0;i<data.user_classes.GetSize();i++) 
+			user_classes.Add(data.user_classes[i]);
+	} else {
+		for(int i=0;i<data.wxfb_classes.GetSize();i++) 
+			wxfb_classes.Add(data.wxfb_classes[i]);
 	}
-	
-	if (!new_class) {
-		wxArrayString fathers(base_array);
-		base_array.Clear();
-		pd_inherit *item=parser->first_inherit;
-		while (item->next) {
-			item=item->next;
-			if (fathers.Index(item->father)!=wxNOT_FOUND) {
-				base_array.Add(item->son);
-				father_array.Add(item->father);
-			}
-		}
-	}
-	
 }
 
 void mxWxfbInheriter::OnClose(wxCloseEvent &evt) {
@@ -96,15 +106,15 @@ void mxWxfbInheriter::OnClose(wxCloseEvent &evt) {
 }
 
 void mxWxfbInheriter::OnButtonOk(wxCommandEvent &evt) {
-	if (new_class) OkNewClass();
-	else OkUpdateClass();
+	if (mode==WXFBI_UPDATE_EXISTING_CLASS) OkUpdateClass();
+	else OkNewClass();
 }
 
 void mxWxfbInheriter::OkUpdateClass() {
 	Hide();
-	wxString cname=base_class->GetValue();
-	wxString fname=father_array[base_array.Index(cname)];
-	if (!project->WxfbUpdateClass(cname,fname)) {
+	wxString user_class=base_class->GetValue();
+	wxString wxfb_class=wxfb_classes[user_classes.Index(user_class)];
+	if (!project->WxfbUpdateClass(wxfb_class,user_class)) {
 		Show();
 		base_class->SetFocus();
 		return;

@@ -71,6 +71,12 @@ public:
 		}
 		return NotFound();
 	}
+	bool Contains(const T &data) {
+		for(int i=0;i<m_size;i++) { 
+			if (m_vec[i]==data) return true;
+		}
+		return false;
+	}
 	void Remove(int pos) {
 		m_vec[pos]=m_vec[--m_size];
 	}
