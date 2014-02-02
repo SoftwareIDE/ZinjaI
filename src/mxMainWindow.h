@@ -381,6 +381,7 @@ public:
 	mxSource *IsOpen (wxFileName filename);
 	mxSource *IsOpen (wxTreeItemId tree_item);
 	bool CloseSource(int i);
+	bool CloseSource(mxSource *src);
 	void UpdateInHistory(wxString filename);
 	
 	void UpdateCustomTools(bool for_project);

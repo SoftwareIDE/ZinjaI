@@ -1174,13 +1174,6 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 	return current_source;
 }
 
-void DebugManager::CloseSource(mxSource *source) {
-	if (source==current_source)
-		current_source=NULL;
-	if (source==notitle_source)
-		notitle_source=NULL;
-}
-
 /**
 * @brief Parsea la salida de un comando enviado a gdb para extraer un campo
 *
@@ -2748,6 +2741,7 @@ bool DebugManager::ToggleInspectionFreeze(int n) {
 
 void DebugManager::UnregisterSource(mxSource *src) {
 	if (current_source==src) current_source=NULL;
+	if (notitle_source==src) notitle_source=NULL;
 }
 
 bool DebugManager::OffLineInspectionModify(int i, wxString value) {

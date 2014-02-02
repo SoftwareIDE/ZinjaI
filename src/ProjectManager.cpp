@@ -512,7 +512,9 @@ ProjectManager::ProjectManager(wxFileName name) {
 	loading=false;
 
 	main_window->PrepareGuiForProject(true);
-	if (GetWxfbActivated()) project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
+	if (GetWxfbActivated()) {
+		project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
+	}
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
 #ifdef __WIN32__
@@ -612,6 +614,7 @@ project_file_item *ProjectManager::AddFile (eFileType where, wxFileName filename
 			break;
 		default:
 			files_others.Add(fitem);
+			if (wxfb && fitem->name.Right(4).Lower()==".fbp") WxfbGetFiles();
 			break;
 	};
 	modified=true;
@@ -996,8 +999,11 @@ void ProjectManager::MoveFile(wxTreeItemId &tree_item, eFileType where) {
 }
 
 void ProjectManager::DeleteFile(project_file_item *item, bool also_delete_from_disk) {
-	wxString fullpath=DIR_PLUS_FILE(path,item->name);
+	// cerrar si está abierto
+	mxSource *src = main_window->IsOpen(item->item);
+	if (src) main_window->CloseSource(src);
 	// eliminar el archivo del disco
+	wxString fullpath=DIR_PLUS_FILE(path,item->name);
 	if (also_delete_from_disk) wxRemoveFile(fullpath);
 	// eliminar sus simbolos del parser
 	parser->RemoveFile(fullpath);
@@ -1005,6 +1011,7 @@ void ProjectManager::DeleteFile(project_file_item *item, bool also_delete_from_d
 	main_window->project_tree.treeCtrl->Delete(item->item);
 	// eliminar el item de la lista
 	files_all.FindAndRemove(item);
+	if (wxfb && wxfb->projects.Contains(fullpath)) WxfbGetFiles();
 	delete item;
 }
 
@@ -2314,7 +2321,7 @@ void ProjectManager::WxfbGetFiles() {
 	wxfb->sources.Clear();
 	LocalListIterator<project_file_item*> item(&files_others);
 	while(item.IsValid()) { // por cada archivo .fbp (deberian estar en "otros")
-		if (item->name.Len()>4 && item->name.Mid(item->name.Len()-4).CmpNoCase(_T(".fbp"))==0) {
+		if (item->name.Right(4).Lower()==".fbp") {
 			wxFileName fbp_file=DIR_PLUS_FILE(path,item->name);
 			fbp_file.Normalize();
 			wxfb->projects.Add(fbp_file.GetFullPath());
@@ -2345,7 +2352,6 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 		wxString fbase = WxfbGetSourceFile(fbp_file);
 		something_changed=WxfbGenerate(fbp_file,fbase,true,show_osd?&osd:NULL);
 	} else {
-		WxfbGetFiles();
 		for(int i=0;i<wxfb->projects.GetSize();i++) { 
 			if (WxfbGenerate(wxfb->projects[i],wxfb->sources[i],false,show_osd?&osd:NULL)) something_changed=true;
 			if (!wxfb->autoupdate_projects) break;
@@ -2361,7 +2367,6 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 }
 
 void ProjectManager::WxfbSetFileProperties(bool change_read_only, bool read_only_value, bool change_hide_symbols, bool hide_symbols_value) {
-	WxfbGetFiles();
 	for(int i=0;i<wxfb->sources.GetSize();i++) {
 		wxString base = wxfb->sources[i];
 		char exts[][5]={".cpp",".h",".xrc"};
@@ -2656,6 +2661,7 @@ void ProjectManager::ActivateWxfb() {
 	main_window->menu.tools_wxfb_regen->Enable(true);
 	main_window->menu.tools_wxfb_inherit->Enable(true);
 	main_window->menu.tools_wxfb_update_inherit->Enable(true);
+	WxfbGetFiles();
 	config->CheckWxfbPresent();
 }
 
@@ -3131,18 +3137,14 @@ void ProjectManager::WxfbAutoCheckStep1() {
 	
 	// primero una verificación rapida para evitar que este evento moleste muy seguido
 	bool something_changed=false;
-	LocalListIterator<project_file_item*> fitem(&files_others);
-	while(fitem.IsValid()) { // por cada archivo .fbp (deberian estar en "otros")
-		if (fitem->name.Len()>4 && fitem->name.Mid(fitem->name.Len()-4).CmpNoCase(_T(".fbp"))==0) {
-			// ver si hay que regenerar (comparando con fflag)
-			wxString fbp_file=DIR_PLUS_FILE(path,fitem->name);
-			wxString fflag = fbp_file.Mid(0,fbp_file.Len()-4)+_T(".flg");
-			if (!wxFileName::FileExists(fflag) || wxFileName(fbp_file).GetModificationTime()>wxFileName(fflag).GetModificationTime()) {
-				something_changed=true;
-				break;
-			}
+	for(int i=0;i<wxfb->projects.GetSize();i++) {
+		// ver si hay que regenerar (comparando con fflag)
+		wxString fbp_file=wxfb->projects[i];
+		wxString fflag = fbp_file.Mid(0,fbp_file.Len()-4)+_T(".flg");
+		if (!wxFileName::FileExists(fflag) || wxFileName(fbp_file).GetModificationTime()>wxFileName(fflag).GetModificationTime()) {
+			something_changed=true;
+			break;
 		}
-		fitem.Next();
 	}
 	if (!something_changed) return;
 	SaveAll(false); /// @todo: ver de sacar esto (para que al actualizar los fuentes agregando metodos o lo que sea no se pierdan los cambios sin guardar)
@@ -3167,8 +3169,7 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 			WxfbUpdateClass(new_data.user_fathers[i],new_data.user_classes[i]);
 		}
 	}
-	
-	if (wxfb->update_class_list) {// create new inherited classes (from new wxfb base classes)
+	if (wxfb->update_class_list) { // create new inherited classes (from new wxfb base classes)
 		SingleList<wxString> bases;
 		for(int i=0;i<new_data.wxfb_classes.GetSize();i++) { 
 			if (!old_data->wxfb_classes.Contains(new_data.wxfb_classes[i])) {
@@ -3213,10 +3214,10 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 			wxString filenames; filenames<<fname1<<(fname1.Len()&&fname2.Len()?", ":"")<<fname2;
 			int ans=mxMessageDialog(main_window,
 				wxString(LANG(WXFB_ASK_BEFORE_AUTO_DELETING_PRE,"ZinjaI ha detectado que la clase "))<<children[i]
-				<<LANG(WXFB_ASK_BEFORE_AUTO_DELETING_MID,"\n"
-				"hereda de una clase anteriormente autogenerada por wxFormBuilder que ha sido eliminada."
-				"¿Desea elminar los archivos de la clase heredada: ")<<filenames<<
-				LANG(WXFB_ASK_BEFORE_AUTO_DELETING_POST,"?\n"
+				<<LANG(WXFB_ASK_BEFORE_AUTO_DELETING_MID,", hereda de otra clase\n"
+				"anteriormente autogenerada por wxFormBuilder que ha sido eliminada.\n"
+				"¿Desea elminar los archivos de la clase heredada:\n")<<filenames<<
+				LANG(WXFB_ASK_BEFORE_AUTO_DELETING_POST,"?\n\n"
 				"Advertencia: se eliminarán el/los archivos completos; debe estar seguro de que no contienen\n"
 				"definiciones ajenas a dicha clase, y de que la clase base no ha sido solo renombrada.")
 				,LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_WARNING,

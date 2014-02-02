@@ -1221,7 +1221,7 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 		parser->RemoveFile(source->GetFullPath());
 	else
 		parser->ParseIfUpdated(source->source_filename);
-	debug->CloseSource(source);
+//	debug->OnSourceClosed(source); // supuestamente lo hace el destructor de mxSource llamando a debug->UnregisterSource
 	if (!project && welcome_panel && notebook_sources->GetPageCount()==1)
 		ShowWelcome(true);
 }
@@ -2573,6 +2573,13 @@ void mxMainWindow::OnFileReload (wxCommandEvent &event) {
 	}
 }
 
+bool mxMainWindow::CloseSource (mxSource *src) {
+	for(unsigned int i=0;i<notebook_sources->GetPageCount();i++) { 
+		if (notebook_sources->GetPage(i)==src) return CloseSource(i);
+	}
+	return false;
+}
+
 bool mxMainWindow::CloseSource (int i) {
 	mxSource *source=(mxSource*)notebook_sources->GetPage(i);
 	if (share && share->Exists(source))  {
@@ -2595,7 +2602,7 @@ bool mxMainWindow::CloseSource (int i) {
 		parser->ParseIfUpdated(source->source_filename);
 		source->UpdateExtras();
 	}
-	debug->CloseSource(source);
+//	debug->OnSourceClosed(source); // supuestamente lo hace el destructor de mxSource llamando a debug->UnregisterSource
 	notebook_sources->DeletePage(i);
 	if (!project && welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(true);
 	return true;
