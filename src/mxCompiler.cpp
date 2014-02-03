@@ -367,6 +367,9 @@ CAR_ERROR_LINE mxCompiler::ParseSomeErrorsOneLine(compile_and_run_struct_single 
 		return CAR_EL_CHILD_LAST;
 	}
 	
+	// error inside functions has a line before saying "In function 'foo()':"
+	if (error_line.Last()==':') return CAR_EL_IGNORE;
+	
 	// anything else?
 	compile_and_run->parsing_errors_was_ok=false;
 	return CAR_EL_UNKNOWN;
