@@ -18,14 +18,13 @@
 #define EN_COMPOUT_LINKER_WARNING "Warning: "
 
 #define EN_COMPOUT_COMPILATION_TERMINATED "compilation terminated."
-#define EN_COMPOUT_REQUIRED_FROM_HERE "required from here"
+#define EN_COMPOUT_REQUIRED_FROM_HERE "required from "
 #define EN_COMPOUT__NSTANTIATED_FROM "nstantiated from "
 #define EN_COMPOUT_IN_INSTANTIATION_OF "In instantiation of "
 #define EN_COMPOUT_AT_THIS_POINT_IN_FILE ": at this point in file"
 #define EN_COMPOUT_WITHIN_THIS_CONTEXT ": within this context"
 #define EN_COMPOUT_NOTE ": note: "
-//#define EN_COMPOUT_IN_FILE_INCLUDED_FROM "In file included from "
-//#define EN_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 from "
+#define EN_COMPOUT_IN_FILE_INCLUDED_FROM "In file included from "
 
 //#define EN_COMPOUT_IN_PASSING_ARGUMENT ": in passing argument"
 //#define EN_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
@@ -34,17 +33,16 @@
 #define ES_COMPOUT_ERROR_CHILD ": error:   "
 #define ES_COMPOUT_WARNING ": aviso: "
 #define ES_COMPOUT_WARNING_CHILD ": aviso:   "
-//#define ES_COMPOUT_LINKER_WARNING "Advertencia: "
+#define ES_COMPOUT_LINKER_WARNING "Advertencia: "
 
 
-#define ES_COMPOUT_REQUIRED_FROM_HERE "se requiere desde aqu"
+#define ES_COMPOUT_REQUIRED_FROM_HERE "se requiere desde "
 #define ES_COMPOUT__NSTANTIATED_FROM "nstantiated from "
 #define ES_COMPOUT_IN_INSTANTIATION_OF "In instantiation of "
 #define ES_COMPOUT_AT_THIS_POINT_IN_FILE ": en este punto en el fichero"
 #define ES_COMPOUT_WITHIN_THIS_CONTEXT ": en este contexto"
 #define ES_COMPOUT_NOTE ": nota: "
-//#define ES_COMPOUT_IN_FILE_INCLUDED_FROM "En el fichero incluído de "
-//#define ES_COMPOUT_IN_FILE_INCLUDED_FROM_FROM "                 de "
+#define ES_COMPOUT_IN_FILE_INCLUDED_FROM "En el fichero incluído de "
 //#define ES_COMPOUT_WARNING ": aviso: "
 //#define ES_COMPOUT_IN_PASSING_ARGUMENT ": en el paso del argumento"
 //#define ES_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
@@ -82,15 +80,17 @@ compile_and_run_struct_single::compile_and_run_struct_single(const compile_and_r
 }
 
 compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
+	error_line_flag=CAR_LL_NULL;
 #ifdef DEBUG
 	mname=name;
 	cerr<<"compile_and_run: +"<<name<<endl;
 	count++;
 #endif
 	killed=for_debug=compiling=linking=run_after_compile=last_error_item_IsOk=false;
+	parsing_errors_was_ok=true;
 	output_type=MXC_NULL;
 	process=NULL;
-	pid=parsing_flag=0;
+	pid=0;
 	last_item_data=NULL;
 	valgrind_cmd=compiler->valgrind_cmd;
 	mxMutexCompiler.Lock();
@@ -317,20 +317,60 @@ static inline bool ErrorLineIsChild(const wxString &error_line) {
 	if (p==l) return false; else p++;
 	if (p+2<l && error_line[p]==' '&&error_line[p+1]==' '&&error_line[p+2]==' ') return true; // puede venir directo el mensaje
 	return false;
-//	return 
-//		error_line.Find(EN_COMPOUT_ERROR_CHILD)!=wxNOT_FOUND||
-//		error_line.Find(ES_COMPOUT_ERROR_CHILD)!=wxNOT_FOUND||
-//		error_line.Find(EN_COMPOUT_WARNING_CHILD)!=wxNOT_FOUND||
-//		error_line.Find(ES_COMPOUT_WARNING_CHILD)!=wxNOT_FOUND||
-//		error_line.Find(EN_COMPOUT_NOTE)!=wxNOT_FOUND||
-//		error_line.Find(ES_COMPOUT_NOTE)!=wxNOT_FOUND;
+}
+
+
+CAR_ERROR_LINE mxCompiler::ParseSomeErrorsOneLine(compile_and_run_struct_single *compile_and_run, const wxString &error_line) {
 	
-//	return !(
-//		wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_NOTE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_NOTE))
-//		|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_FORWARD_DECLARATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_FORWARD_DECLARATION_OF)) 
-//		|| wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_IN_PASSING_ARGUMENT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_IN_PASSING_ARGUMENT)) 
-//		|| (wxNOT_FOUND!=error_line.Find(_T("(")) && error_line[error_line.Find(_T("("))-2]==':' && error_line[error_line.Find(_T("("))-3]!=':') 
-//		);
+	// if it starts or continues an "In included file from ....., \n from ...., \n from .....:" list, ignore
+	if (compile_and_run->error_line_flag==CAR_LL_IN_INCLUDED_FILE || error_line.Contains(EN_COMPOUT_IN_FILE_INCLUDED_FROM) || error_line.Contains(ES_COMPOUT_IN_FILE_INCLUDED_FROM) ) {
+		if (error_line.Last()==',') compile_and_run->error_line_flag=CAR_LL_IN_INCLUDED_FILE;
+		else compile_and_run->error_line_flag=CAR_LL_NULL;
+		return CAR_EL_IGNORE;
+	}
+	compile_and_run->error_line_flag=CAR_LL_NULL;
+	
+	// if there was an error within the compiler stop
+	if (error_line==EN_COMPOUT_COMPILATION_TERMINATED) return CAR_EL_ERROR;
+	
+	// if it starts or continue a list of template instantiation chain: "In instantiation of ....: \n required from ...\n required from ..."
+	if (error_line.Contains(EN_COMPOUT_IN_INSTANTIATION_OF) || error_line.Contains(ES_COMPOUT_IN_INSTANTIATION_OF)
+		|| error_line.Contains(EN_COMPOUT_REQUIRED_FROM_HERE) || error_line.Contains(ES_COMPOUT_REQUIRED_FROM_HERE)) {
+		return CAR_EL_CHILD_NEXT;
+	}
+	
+	// esto va antes de testear si es error o warning, porque ambos tests (por ejemplo, este y el de si es error) pueden dar verdaderos, y en ese caso debe primar este
+	if (ErrorLineIsChild(error_line)) return CAR_EL_CHILD_LAST;
+	
+	// errores de compilacion
+	if (error_line.Contains(EN_COMPOUT_ERROR) || error_line.Contains(ES_COMPOUT_ERROR)) {
+		// el "within this contex" avisa el punto dentro de una plantilla, para un error previo que se marco en la llamada a la plantilla, por eso va como hijo
+		if (error_line.Contains(EN_COMPOUT_WITHIN_THIS_CONTEXT) || error_line.Contains(ES_COMPOUT_WITHIN_THIS_CONTEXT))
+			return CAR_EL_CHILD_LAST;
+		if (error_line.Contains(EN_COMPOUT_AT_THIS_POINT_IN_FILE) || error_line.Contains(EN_COMPOUT_AT_THIS_POINT_IN_FILE)) // estos errores aparecian en gcc 4.4, ahora cambiaron y ya no los veo
+			return CAR_EL_CHILD_LAST;
+		else return CAR_EL_ERROR;
+	}
+	
+	// warnings del compilador
+	if (error_line.Contains(EN_COMPOUT_WARNING) || error_line.Contains(ES_COMPOUT_WARNING)) {
+		return CAR_EL_WARNING;
+	}
+	
+	// warnings del linker
+	if (error_line.Contains(EN_COMPOUT_LINKER_WARNING) || error_line.Contains(ES_COMPOUT_LINKER_WARNING)) {
+		return CAR_EL_WARNING;
+	}
+	
+	// warnings del linker
+	if (error_line.Contains(EN_COMPOUT_NOTE) || error_line.Contains(ES_COMPOUT_NOTE)) {
+		return CAR_EL_CHILD_LAST;
+	}
+	
+	// anything else?
+	compile_and_run->parsing_errors_was_ok=false;
+	return CAR_EL_UNKNOWN;
+	
 }
 
 void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run) {
@@ -361,73 +401,42 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 		num_all++;
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
 		if (num_all<config->Init.max_errors) {
-//		if (compile_and_run.parsing_flag==2) {
-//			compile_and_run.parsing_flag=0;
-//			if (wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)))
-//				compile_and_run.last_error_item=tree->AppendItem(warnings,error_line,3);
-//			else
-//				compile_and_run.last_error_item=tree->AppendItem(errors,error_line,4);
-//		}
-			
-			if (error_line==EN_COMPOUT_COMPILATION_TERMINATED) continue;
 			
 			// reemplazar templates para que sea más legible
 			if (config->Init.beautify_compiler_errors && current_toolchain.type>=TC_EXTERN) UnSTD(nice_error_line);
 			
-			if (error_line.Last()!=',' && ( error_line.Last()!=':' || error_line.Find(_T(": error: "))!=wxNOT_FOUND || wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)) || error_line.StartsWith(EN_COMPOUT_LINKER_WARNING)) ) {
-				bool flag;
-				if ( (flag=(wxNOT_FOUND!=error_line.First(_T(ES_COMPOUT_REQUIRED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_REQUIRED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(ES_COMPOUT__NSTANTIATED_FROM)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT__NSTANTIATED_FROM)))) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_WITHIN_THIS_CONTEXT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WITHIN_THIS_CONTEXT)) ) {
-					if (!flag && error_line.Right(4)!=_T("here")) {
-						if (compile_and_run->parsing_flag==1) {
-							compile_and_run->parsing_flag=2;
-							continue;
-//						compile_and_run.parsing_aux=error_line;
-						} else {
-							if (compile_and_run->last_error_item_IsOk) {
-								wxString last=tree->GetItemText(compile_and_run->last_error_item);
-								last.Replace(last.Left(last.Find(_T(": "))),error_line.Left(error_line.Find(_T(": "))));
-								compile_and_run->last_item_data->Set(last);
-								tree->SetItemText(compile_and_run->last_error_item,last);
-							} else {
-								mxMessageDialog(main_window,LANG(MAINW_COMPILER_OUTPUT_PARSING_ERROR,"ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\n"
-									"Puede que algun error no se muestre correctamente en el arbol. Para ver la salida\n"
-									"completa haga click con el boton derecho del raton en cualquier elemento del arbol\n"
-									"y seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\n"
-									"enviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar"
-									),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-							}
-						}
-					}
-//			} else if (wxNOT_FOUND!=error_line.First(_T(ES_INSTANTIATED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(EN_INSTANTIATED_FROM_HERE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_AT_THIS_POINT_IN_FILE)) || wxNOT_FOUND!=error_line.First(_T(EN_COMPOUT_WITHIN_THIS_CONTEXT)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WITHIN_THIS_CONTEXT)) ){
-//				wxString last=tree->GetItemText(compile_and_run.last_error_item);
-//				last.Replace(last.Left(last.Find(": ")),error_line.Left(error_line.Find(": ")));
-//				tree->SetItemText(compile_and_run.last_error_item,last);
-				} else {
-					if (ErrorLineIsChild(error_line)) {
-						if (compile_and_run->last_error_item_IsOk) {
-							tree->AppendItem(compile_and_run->last_error_item,nice_error_line,5,-1,new mxCompilerItemData(error_line));
-						} else {
-							mxMessageDialog(main_window,LANG(MAINW_COMPILER_OUTPUT_PARSING_ERROR,"ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\n"
-								"Puede que algun error no se muestre correctamente en el arbol. Para ver la salida\n"
-								"completa haga click con el boton derecho del raton en cualquier elemento del arbol\n"
-								"y seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\n"
-								"enviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar"
-								),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-						}
-					} else if ( wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_WARNING)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_WARNING)) || error_line.StartsWith(EN_COMPOUT_LINKER_WARNING) ) {
-						num_warnings++;
-						compile_and_run->last_error_item=tree->AppendItem(warnings,nice_error_line,3,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
-						compile_and_run->last_error_item_IsOk=true;
-					} else {
-						num_errors++;
-						compile_and_run->last_error_item=tree->AppendItem(errors,nice_error_line,4,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
-						compile_and_run->last_error_item_IsOk=true;
-					}
+			// averiguar si es error, warning, o parte de un error/warning anterior/siguiente
+			CAR_ERROR_LINE action=ParseSomeErrorsOneLine(compile_and_run,error_line);
+
+			if (action==CAR_EL_ERROR||action==CAR_EL_WARNING) { // nuevo error o warning
+				if (action==CAR_EL_ERROR) { // nuevo error
+					num_errors++;
+					compile_and_run->last_error_item=tree->AppendItem(errors,nice_error_line,4,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
+					compile_and_run->last_error_item_IsOk=true;
+				} else { // nuevo warning
+					num_warnings++;
+					compile_and_run->last_error_item=tree->AppendItem(warnings,nice_error_line,3,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
+					compile_and_run->last_error_item_IsOk=true;
 				}
-			} else {
-				if (wxNOT_FOUND!=error_line.Find(_T(EN_COMPOUT_IN_INSTANTIATION_OF)) || wxNOT_FOUND!=error_line.Find(_T(ES_COMPOUT_IN_INSTANTIATION_OF)))
-					compile_and_run->parsing_flag = 1;
+				if (!compile_and_run->pending_error_lines.IsEmpty()) { // agregar los hijos que estaban pendientes
+					wxTreeItemId tree_item = tree->AppendItem(compile_and_run->last_error_item,compile_and_run->pending_error_nices[0],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[0]));
+					for(int i=1;i<compile_and_run->pending_error_lines.GetCount();i++) { 
+						tree->AppendItem(tree_item,compile_and_run->pending_error_nices[i],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[i]));
+					}
+					compile_and_run->pending_error_nices.Clear();
+					compile_and_run->pending_error_lines.Clear();
+				}
+			} else if (action==CAR_EL_CHILD_LAST) { // continua el último error
+				if (compile_and_run->last_error_item_IsOk) {
+					tree->AppendItem(compile_and_run->last_error_item,nice_error_line,5,-1,new mxCompilerItemData(error_line));
+				} else
+					compile_and_run->parsing_errors_was_ok=false;
+			} else if (action==CAR_EL_CHILD_NEXT) { // parte (hijos) del siguiente error
+				compile_and_run->last_error_item_IsOk=false;
+				compile_and_run->pending_error_lines.Add(error_line);
+				compile_and_run->pending_error_nices.Add(nice_error_line);
 			}
+			
 		}
 	}
 }
@@ -457,6 +466,15 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 	ParseSomeErrors(compile_and_run); 
 	tree->SetItemText(errors,wxString(LANG(MAINW_CT_ERRORS,"Errores"))<<_T(" (")<<num_errors<<(num_all>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
 	tree->SetItemText(warnings,wxString(LANG(MAINW_CT_WARNINGS,"Advertencias"))<<_T(" (")<<num_warnings<<(num_all>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
+	
+	if (!compile_and_run_single->killed && (!compile_and_run->parsing_errors_was_ok || !compile_and_run->pending_error_lines.IsEmpty())) {
+		mxMessageDialog(main_window,LANG(MAINW_COMPILER_OUTPUT_PARSING_ERROR,"ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\n"
+			"Puede que algun error no se muestre correctamente en el arbol. Para ver la salida\n"
+			"completa haga click con el boton derecho del raton en cualquier elemento del arbol\n"
+			"y seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\n"
+			"enviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar"
+			),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+	}
 	
 	delete compile_and_run->process; compile_and_run->process=NULL; // liberar el proceso
 	

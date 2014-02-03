@@ -23,8 +23,23 @@ enum MXC_OUTPUT {
 	MXC_NULL ///< undefined, should not be used
 };
 
+enum CAR_LAST_LINE { // information about last error line that may condicion current one
+	CAR_LL_NULL, //
+	CAR_LL_IN_INCLUDED_FILE
+};
+
+enum CAR_ERROR_LINE { // information about last error line that may condicion current one
+	CAR_EL_UNKNOWN,
+	CAR_EL_ERROR,
+	CAR_EL_WARNING,
+	CAR_EL_CHILD_LAST,
+	CAR_EL_CHILD_NEXT,
+	CAR_EL_IGNORE
+};
+
 //! Información acerca de una compilación en proceso
 struct compile_and_run_struct_single {
+	bool parsing_errors_was_ok; ///< indica si hubo problemas al analizar/reacomodar la salida del compilador
 	bool killed; ///< indica si fue interrumpido adrede, para usar en OnProcessTerminate
 	bool for_debug; ///< indica si la compilacion fue para luego depurar en lugar de ejecutar normalmente
 	bool compiling; ///< indica si esta compilando/enlazando o ejecutando
@@ -34,8 +49,9 @@ struct compile_and_run_struct_single {
 	wxProcess *process; ///< puntero al proceso en ejecucion
 	long int pid; ///< process id del proceso en ejecucion, 0 si no se pudo lanzar
 	bool run_after_compile; ///< indica si hay que ejecutar cuando termine de compilar y enlazar
-	int parsing_flag;
-	wxString parsing_aux;
+	wxArrayString pending_error_lines, pending_error_nices; ///< for child items in compiler tree that are generated before their fathers (like "In instantiation of..." lines)
+	bool last_error_item_IsOk; ///< indica si hay un ultimo item de error donde agregar "hijos"
+	CAR_LAST_LINE error_line_flag; ///< flag for mxCompiler::ParseSomeErrorsOneLine
 	wxTreeItemId last_error_item; ///< ultima error/advertencia (para poner las "note:")
 	wxTreeItemId last_all_item; ///< ultima linea en la rama "toda la salida"
 	mxCompilerItemData *last_item_data;
@@ -44,7 +60,6 @@ struct compile_and_run_struct_single {
 	compile_and_run_struct_single(const compile_and_run_struct_single *o);
 	compile_and_run_struct_single(const char *name);
 	~compile_and_run_struct_single();
-	bool last_error_item_IsOk;
 	compile_and_run_struct_single *next, *prev;
 #ifdef DEBUG
 	const char* mname;
@@ -67,10 +82,11 @@ public:
 	void CompileSource (mxSource *source, bool run, bool debug);
 	void BuildOrRunProject(bool run, bool debug, bool prepared);
 	void ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run);
+	CAR_ERROR_LINE ParseSomeErrorsOneLine(compile_and_run_struct_single *compile_and_run, const wxString &error_line);
 	void ParseSomeErrors(compile_and_run_struct_single *compile_and_run);
 	void ParseCompilerOutput(compile_and_run_struct_single *compile_and_run, bool success);
 	void ResetCompileData();
-	compile_and_run_struct_single  *compile_and_run_single; // lista simplemente doblemente enlazada, sin nodo ficticio
+	compile_and_run_struct_single *compile_and_run_single; // lista simplemente doblemente enlazada, sin nodo ficticio ???
 	
 	// compile_and_run_struct_common
 	mxSource *last_compiled; ///< ultimo fuente compilado
