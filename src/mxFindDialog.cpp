@@ -325,7 +325,7 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 				Raise(); combo_find->SetFocus();
 			}
 		} else {
-			mxMessageDialog(main_window,wxString(LANG(FIND_NOT_FOUND_PRE,"La cadena \""))<<last_search<<LANG(FIND_NOT_FOUND_POST,"\" no se encontro."), LANG(FIND_FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",last_search), LANG(FIND_FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
 			Raise();
 		}
 	} else if (scope==2) {
@@ -416,7 +416,7 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 				combo_find->SetFocus();
 			}
 		} else
-			mxMessageDialog(main_window,wxString(LANG(FIND_NOT_FOUND_PRE,"La cadena \""))<<last_search<<LANG(FIND_NOT_FOUND_POST,"\" no se encontro."), LANG(FIND_FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",last_search), LANG(FIND_FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
 	} else if (scope==2) {
 		if (FindInSources() && check_close->GetValue()) {
 			MyHide(); /*main_window->Raise();*/
@@ -471,7 +471,7 @@ void mxFindDialog::OnReplaceButton(wxCommandEvent &event) {
 	}
 
 	if (combo_scope->GetSelection()>2) {
-		mxMessageDialog(this,wxString(LANG(FIND_CANT_REPLACE_IN_PRE,"No es posible realizar reemplazos en \""))<<combo_scope->GetValue()<<LANG(FIND_CANT_REPLACE_IN_POST,"\",\nesta opcion aun no esta disponible."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG1(FIND_CANT_REPLACE_IN,"No es posible realizar reemplazos en \"<{1}>\",\nesta opcion aun no esta disponible.",combo_scope->GetValue()),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
 		return;
 	}
 
@@ -523,7 +523,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	}
 
 	if (combo_scope->GetSelection()>2) {
-		mxMessageDialog(this,wxString(LANG(FIND_CANT_REPLACE_IN_PRE,"No es posible realizar reemplazos en \""))<<combo_scope->GetValue()<<LANG(FIND_CANT_REPLACE_IN_POST,"\",\nesta opcion aun no esta disponible."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG1(FIND_CANT_REPLACE_IN,"No es posible realizar reemplazos en \"<{1}>\",\nesta opcion aun no esta disponible.",combo_scope->GetValue()),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
 		return;
 	}
 
@@ -602,7 +602,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	else if (c==1)
 		mxMessageDialog(this,LANG(FIND_ONE_REPLACE_DONE,"Se realizo un remplazo."), LANG(FIND_REPLACE_CAPTION,"Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();
 	else
-		mxMessageDialog(this,wxString(LANG(FIND_MANY_REPLACES_PRE,"Se realizaron "))<<c<<LANG(FIND_MANY_REPLACES_POST," reemplazos."), LANG(FIND_REPLACE_CAPTION,"Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();
+		mxMessageDialog(this,LANG1(FIND_MANY_REPLACES,"Se realizaron <{1}> reemplazos.",wxString()<<c), LANG(FIND_REPLACE_CAPTION,"Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();
 	
 	Raise();
 }

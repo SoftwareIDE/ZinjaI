@@ -206,7 +206,7 @@ void mxNewWizard::OnProjectCreate() {
 		if (folder.Len()) {
 			folder = DIR_PLUS_FILE(project->path,folder);
 			if (!wxFileName::DirExists(folder)) {
-				int ans = mxMessageDialog(this,wxString(LANG(NEWWIZARD_DIRECTORY_NOT_FOUND_PRE,"El directorio \""))<<folder<<LANG(NEWWIZARD_DIRECTORY_NOT_FOUND_POST,"\" no existe. Desea crearlo?"),LANG(GENERIC_ERROR,"Error"),mxMD_YES|mxMD_NO|mxMD_QUESTION).ShowModal();
+				int ans = mxMessageDialog(this,LANG1(NEWWIZARD_DIRECTORY_NOT_FOUND,"El directorio \"<{1}>\" no existe. Desea crearlo?",folder),LANG(GENERIC_ERROR,"Error"),mxMD_YES|mxMD_NO|mxMD_QUESTION).ShowModal();
 				if (ans==mxMD_YES) {
 					wxFileName::Mkdir(folder,0777,wxPATH_MKDIR_FULL);
 					if (!wxFileName::DirExists(folder)) {

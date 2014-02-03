@@ -328,11 +328,11 @@ wxString Parser::JoinNames(wxString types, wxString names) {
 long Parser::ParseNextFileStart(wxFileName filename, wxString HashName, bool hide_symbols) {
 	if (!filename.FileExists()) return false;
 	if (!compiler->IsCompiling())
-		main_window->SetStatusText(wxString(LANG(PARSER_PARSING_FILE_PRE,"Analizando \""))<<HashName<<LANG(PARSER_PARSING_FILE_POST,"\"..."));
+		main_window->SetStatusText(wxString(LANG(PARSER_PARSING_FILE,"Analizando"))<<" \""<<HashName<<"\"...");
 	process=new mxParserProcess;
 	PD_REGISTER_FILE(process->file, HashName,filename.GetModificationTime());
 	process->file->hide_symbols=hide_symbols;
-	return wxExecute(wxString(config->Files.parser_command)<<_T(" \"")<<filename.GetFullPath()<<_T("\""),wxEXEC_ASYNC,process);
+	return wxExecute(wxString(config->Files.parser_command)<<" \""<<filename.GetFullPath()<<"\"",wxEXEC_ASYNC,process);
 }
 
 void Parser::ParseNextFileContinue(const wxString &s) {

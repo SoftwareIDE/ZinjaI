@@ -833,7 +833,7 @@ void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 	if (!find_replace_dialog) find_replace_dialog = new mxFindDialog(this,wxID_ANY);
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindNext())
-			mxMessageDialog(main_window,wxString(LANG(FIND_NOT_FOUND_PRE,"La cadena \""))<<find_replace_dialog->last_search<<LANG(FIND_NOT_FOUND_POST,"\" no se encontro."), LANG(FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",find_replace_dialog->last_search), LANG(FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
 	} else {
 		OnEditFind(event);
 	}
@@ -847,7 +847,7 @@ void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
 	if (!find_replace_dialog) find_replace_dialog = new mxFindDialog(this,wxID_ANY);
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindPrev())
-			mxMessageDialog(main_window,wxString(LANG(FIND_NOT_FOUND_PRE,"La cadena \""))<<find_replace_dialog->last_search<<LANG(FIND_NOT_FOUND_POST,"\" no se encontro."), LANG(FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",find_replace_dialog->last_search), LANG(FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
 	} else {
 		OnEditFind(event);
 	}
@@ -1658,8 +1658,11 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 		if (!wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,wxString()<<config->Toolbars.icon_size))) {
 			wxString icsz = wxString()<<config->Toolbars.icon_size<<_T("x")<<config->Toolbars.icon_size;
 			mxMessageDialog(this,
-				wxString()<<LANG(MAIN_WINDOW_NO_ICON_SIZE_PRE,"El tema de iconos seleccionado no tiene iconos del tamano elegido (")
-				<<icsz<<LANG(MAIN_WINDOW_NO_ICON_SIZE_POST,")\nSe utilizaran los iconos del tamano predeterminado (16x16).\nPara modificarlo utilice el cuadro de Preferencias (menu Archivo)."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+				wxString()<<LANG1(MAIN_WINDOW_NO_ICON_SIZE,""
+					"El tema de iconos seleccionado no tiene iconos del tamano elegido (<{1}>)\n"
+					"Se utilizaran los iconos del tamano predeterminado (16x16).\n"
+					"Para modificarlo utilice el cuadro de Preferencias (menu Archivo).",wxString()<<icsz),
+				LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 			config->Toolbars.icon_size=16;
 			ipre=DIR_PLUS_FILE(_T("16"),_T(""));
 		}
@@ -2251,9 +2254,10 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 					if (config->Running.dont_run_headers)
 						source=compiler->last_runned;
 					else {
-						int ans = mxMessageDialog(this,wxString(LANG(MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION_PRE,"Esta intentando ejecutar un archivo de cabecera.\n"
-							"Desea ejecutar en su lugar "))<<compiler->last_caption<<LANG(MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION_POST,"?"),
-							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,_T("Siempre ejecutar el ultimo cpp.")).ShowModal();
+						int ans = mxMessageDialog(this,LANG1(MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION,""
+							"Esta intentando ejecutar un archivo de cabecera.\n"
+							"¿Desea ejecutar en su lugar <{1}>?",compiler->last_caption),
+							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,"Siempre ejecutar el ultimo cpp.").ShowModal();
 						if (ans&mxMD_CANCEL) return;
 						if (ans&mxMD_CHECKED) config->Running.dont_run_headers = true;
 						if (ans&mxMD_YES) source = compiler->last_runned;
@@ -3791,7 +3795,7 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 			} else if (key==_T("Clippo"))
 				new mxSplashScreen(clpeg,GetPosition().x+GetSize().x-215,GetPosition().y+GetSize().y-230);
 			else
-				mxMessageDialog(main_window,wxString(LANG(MAINW_NO_HEADER_FOR_PRE,"No se encontro cabecera correspondiente a \""))+key+LANG(MAINW_NO_HEADER_FOR_POST,"\""),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
+				mxMessageDialog(main_window,LANG1(MAINW_NO_HEADER_FOR,"No se encontro cabecera correspondiente a \"<{1}>\".",key),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
 		}
 	}
 }

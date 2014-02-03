@@ -28,6 +28,7 @@
 #define WILDCARD_CPP_EXT WILDCARD_SOURCE";"WILDCARD_HEADER";"WILDCARD_PROJECT
 #define WILDCARD_ALL "*"
 #include "enums.h"
+#include "Language.h"
 
 class wxBoxSizer;
 class wxTextCtrl;
@@ -61,6 +62,10 @@ class wxBitmapButton;
 #endif
 
 #define DIR_PLUS_FILE utils->JoinDirAndFile
+	
+#define LANG1(key,text,arg1) 			utils->ReplaceLangArgs(LANG(key,text),arg1)
+#define LANG2(key,text,arg1,arg2) 		utils->ReplaceLangArgs(LANG(key,text),arg1,arg2)
+#define LANG3(key,text,arg1,arg2,arg3) 	utils->ReplaceLangArgs(LANG(key,text),arg1,arg2,arg3)
 
 #if defined(_WIN32) || defined(__WIN32__)
 #define BINARY_EXTENSION ".exe"
@@ -246,6 +251,14 @@ public:
 	
 	/// takes a graph description, process it with graphviz and shows results (output=="") or save it to an image file(output)
 	int ProcessGraph(wxString graph_file, bool use_fdp, wxString output, wxString title="");
+	
+	/// for replacing aguments in translate strings for gui messages (version for 1 argument)
+	wxString ReplaceLangArgs(wxString src, wxString arg1);
+	/// for replacing aguments in translate strings for gui messages (version for 2 arguments)
+	wxString ReplaceLangArgs(wxString src, wxString arg1, wxString arg2);
+	/// for replacing aguments in translate strings for gui messages (version for 3 arguments)
+	wxString ReplaceLangArgs(wxString src, wxString arg1, wxString arg2, wxString arg3);
+
 };
 
 extern mxUtils *utils;

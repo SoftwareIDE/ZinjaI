@@ -533,7 +533,7 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 	project->force_relink=linking_force_relink->GetValue();
 	discard=false; // evitar que al cerrar revierta los cambios
 	if (!SaveValues()) return; // guardar los cambios de la conf actual en vista
-	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_PRE,"Desea establecer la configuracion \"")<<configuration->name<<LANG(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE_POST,"\" como la configuracion a utilizar?"),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
+	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG1(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE,"Desea establecer la configuracion \"<{1}>\" como la configuracion a utilizar?",configuration->name),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
 		project->SetActiveConfiguration(configuration);
 	else
 		main_window->SetToolchainMode(Toolchain::SelectToolchain().type>=TC_EXTERN);

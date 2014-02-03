@@ -172,7 +172,7 @@ void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
 		if (!shown) Destroy();
 	} else if (res=="update") {
 		wxString str;
-		str<<LANG(UPDATE_NEW_VERSION_IN_SITE_PRE,"Hay una nueva version disponible en\nhttp://zinjai.sourceforge.net (")<<fil.GetNextLine()<<LANG(UPDATE_NEW_VERSION_IN_SITE_POST,")");
+		str<<LANG1(UPDATE_NEW_VERSION_IN_SITE,"Hay una nueva version disponible en\nhttp://zinjai.sourceforge.net (<{1}>)",fil.GetNextLine());
 		text->SetLabel(str);
 		proxy_button->Hide();
 		changes_button->Show();

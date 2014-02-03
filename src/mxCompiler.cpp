@@ -478,14 +478,12 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 					main_window->SetStatusProgress(0);
 					time_t elapsed_time = time(NULL)-project->compile_startup_time;
 					if (elapsed_time>5) {
-						wxString status_text(LANG(MAINW_COMPILING_DONE_TIME_PRE,"Compilacion finalizada ( tiempo transcurrido: "));
 						if (elapsed_time/60==0)
-							status_text<<elapsed_time%60<<LANG(MAINW_COMPILING_DONE_POST_SECONDS," segundos ).");
-						else if (elapsed_time/60==1)
-							status_text<<LANG(MAINW_COMPILING_DONE_MID_ONE_MINUTE,"un minuto y ")<<elapsed_time%60<<_T(" segundos ).");
+							main_window->SetCompilingStatus(LANG1(MAINW_COMPILING_DONE_SECONDS,"Compilacion finalizada ( tiempo transcurrido: <{1}> segundos ).",wxString()<<elapsed_time));
+						if (elapsed_time/60==1)
+							main_window->SetCompilingStatus(LANG1(MAINW_COMPILING_DONE_ONE_MINUTE,"Compilacion finalizada ( tiempo transcurrido: un minuto y <{1}> segundos ).",wxString()<<(elapsed_time%60)));
 						else
-							status_text<<elapsed_time/60<<LANG(MAINW_COMPILING_DONE_MID_MINUTES," minutos y ")<<elapsed_time%60<<LANG(MAINW_COMPILING_DONE_POST_SECONDS," segundos ).");
-						main_window->SetCompilingStatus(status_text);
+							main_window->SetCompilingStatus(LANG2(MAINW_COMPILING_DONE_MINUTES_AND_SECONDS,"Compilacion finalizada ( tiempo transcurrido: <{1}> minutos y <{2}> segundos ).",wxString()<<(elapsed_time/60),wxString()<<(elapsed_time%60)));
 					} else {
 						main_window->SetCompilingStatus(LANG(MAINW_COMPILING_DONE,"Compilacion finalizada."));
 					}

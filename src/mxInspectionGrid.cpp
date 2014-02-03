@@ -699,7 +699,7 @@ void mxInspectionGrid::OnManageTables(wxCommandEvent &evt) {
 	for (unsigned int i=0;i<debug->inspections_tables.size();i++)
 		as.Add(debug->inspections_tables[i]->name);
 	wxString name = wxGetSingleChoice(LANG(INSPECTGRID_DELETE_TABLE,"Eliminar Lista:"),LANG(INSPECTGRID_INSPECTIONS_TABLE,"Lista de Inspecciones"),as);
-	if (name.Len() && mxMD_YES==mxMessageDialog(main_window,wxString(LANG(INSPECTGRID_CONFIRM_DELETE_TABLE_PRE,"Desea eliminar la lista \""))<<name<<LANG(INSPECTGRID_CONFIRM_DELETE_TABLE_POST,"\"?"),LANG(GENERAL_CONFIRM,"Confirmacion"),mxMD_YES_NO).ShowModal())
+	if (name.Len() && mxMD_YES==mxMessageDialog(main_window,LANG1(INSPECTGRID_CONFIRM_DELETE_TABLE,"Desea eliminar la lista \"<{1}>\"?",name),LANG(GENERAL_CONFIRM,"Confirmacion"),mxMD_YES_NO).ShowModal())
 		debug->DeleteInspectionsTable(name);	
 }
 

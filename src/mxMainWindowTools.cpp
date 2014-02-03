@@ -532,8 +532,8 @@ bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, w
 		utils->SetArgument(project->active_configuration->compiling_extra,arg,!present);
 		utils->SetArgument(project->active_configuration->linking_extra,arg,!present);
 		if (mxMD_YES==mxMessageDialog(this,wxString(!present?
-			(LANG(MAINW_GPROF_GPROF_ENABLED_PRE,"Se agregaron los parámetros de compilación necesarios para utilizar ")+tool+LANG(MAINW_GPROF_GPROF_ENABLED_POST,".")):
-			(LANG(MAINW_GPROF_GPROF_DISABLED_PRE,"Se quitaron los parámetros de compilación necesarios para utilizar ")+tool+LANG(MAINW_GPROF_GPROF_DISABLED_POST,"."))
+			(LANG1(MAINW_GPROF_GPROF_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.",tool)):
+			(LANG1(MAINW_GPROF_GPROF_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.",tool))
 			)+"\n"+
 			LANG(MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION,"Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n"
 			"¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo)."),
@@ -547,8 +547,8 @@ bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, w
 		bool present = utils->IsArgumentPresent(src->config_running.compiler_options,arg);
 		utils->SetArgument(src->config_running.compiler_options,arg,!present);
 		mxMessageDialog(this,wxString(!present?
-			(LANG(MAINW_GPROF_GPROF_ENABLED_PRE,"Se agregaron los parámetros de compilación necesarios para utilizar ")+tool+LANG(MAINW_GPROF_GPROF_ENABLED_POST,".")):
-			(LANG(MAINW_GPROF_GPROF_DISABLED_PRE,"Se quitaron los parámetros de compilación necesarios para utilizar ")+tool+LANG(MAINW_GPROF_GPROF_DISABLED_POST,"."))
+			(LANG1(MAINW_GPROF_GPROF_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.",tool)):
+			(LANG1(MAINW_GPROF_GPROF_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.",tool))
 			),tool,(mxMD_OK|mxMD_INFO)).ShowModal();
 		OnRunClean(event);
 		return !present;

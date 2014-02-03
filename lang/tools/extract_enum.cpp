@@ -14,10 +14,21 @@ int main(int argc, char *argv[]) {
 	for (int u=1;u<argc;u++) {
 		cout<<argv[u]<<"..."<<endl;
 		ifstream fil(argv[u]);
-		string s;
+		string s; int line_num=0;
 		while (getline(fil,s)) {
-			while (s.find("LANG(")!=string::npos) {
-				s=s.substr(s.find("LANG(")+5);
+			line_num++;
+			while (true) {
+				size_t pos0=s.find("LANG(");
+				size_t pos1=s.find("LANG1(");
+				size_t pos2=s.find("LANG2(");
+				size_t pos3=s.find("LANG3(");
+				size_t pos=pos0;
+				if (pos1!=string::npos && pos1<pos) pos=pos1;
+				if (pos2!=string::npos && pos2<pos) pos=pos2;
+				if (pos3!=string::npos && pos3<pos) pos=pos3;
+				int d=pos==pos0?5:6;
+				if (pos==string::npos) break;
+				s=s.substr(pos+d);
 				int p=s.find(",");
 				string key =s.substr(0,p);
 				if (find(done.begin(),done.end(),key)==done.end()) {
@@ -38,6 +49,7 @@ int main(int argc, char *argv[]) {
 						value+=s.substr(p+1,p2-p-1);
 						if (p2==s.size()-1) {
 							if (getline(fil,s)) {
+								line_num++;
 								p=0;
 								while (p<s.size() && (s[p]==' ' || s[p]=='\t')) p++;
 								if (p<s.size() && s[p]=='\"') { cont=true; p2=p+1; }

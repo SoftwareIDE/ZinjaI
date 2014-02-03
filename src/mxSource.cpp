@@ -1806,9 +1806,9 @@ bool mxSource::AddInclude(wxString header) {
 		StartStyling(lse,0x1F);
 		if (!header_present) {
 			if (uncomment_line)
-				ShowBaloon(wxString(LANG(SOURCE_UNCOMMENTED_FOR_HEADER_PRE,"Descomentada linea "))<<uncomment_line<<LANG(SOURCE_UNCOMMENTED_FOR_HEADER_MID,": \"#include ")<<oHeader<<LANG(SOURCE_UNCOMMENTED_FOR_HEADER_POST,"\"."));
+				ShowBaloon(LANG2(SOURCE_UNCOMMENTED_FOR_HEADER,"Descomentada linea <{1}>: \"#include <{2}>\".",wxString()<<uncomment_line,oHeader));
 			else
-				ShowBaloon(wxString(LANG(SOURCE_ADDED_HEADER_PRE,"Agregada cabecera "))<<oHeader<<LANG(SOURCE_ADDED_HEADER_POST," "));
+				ShowBaloon(LANG1(SOURCE_ADDED_HEADER,"Cabecera agregadad: <{1}>.",oHeader));
 		} else {
 			ShowBaloon(LANG(SOURCE_ADDED_USING_NAMESPACE_STD,"Agregado \"using namespace std;\""));
 		}
@@ -1858,10 +1858,10 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 		menu.Append(mxID_EDIT_GOTO_FUNCTION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Buscar en el Arbol de Simbolos..."))<<_T("\tCtrl+Shift+G"));
 		if (GetCharAt(s-1)=='#')
 			key = GetTextRange(s-1,e);
-		menu.Append(mxID_HELP_CPP, wxString(LANG(SOURCE_POPUP_HELP_ON_PRE,"Ayuda sobre \""))<<key<<LANG(SOURCE_POPUP_HELP_ON_POST,"\"...")<<_T("\tShift+F1"));
+		menu.Append(mxID_HELP_CPP, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<_T("\tShift+F1"));
 //		if ((s=GetStyleAt(s))!=wxSTC_C_PREPROCESSOR && !STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s) && s!=wxSTC_C_OPERATOR && s!=wxSTC_C_WORD && s!=wxSTC_C_WORD2) {
 		if (lexer==wxSTC_LEX_CPP && GetStyleAt(s)==wxSTC_C_IDENTIFIER) {
-			menu.Append(mxID_EDIT_INSERT_HEADER, wxString(LANG(SOURCE_POPUP_INSERT_INCLUDE_PRE,"Insertar #incl&ude correspondiente a \""))<<key<<LANG(SOURCE_POPUP_INSERT_INCLUDE_POST,"\"")<<_T("\tCtrl+H"));
+			menu.Append(mxID_EDIT_INSERT_HEADER, LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key)<<_T("\tCtrl+H"));
 			menu.Append(mxID_EDIT_HIGHLIGHT_WORD, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \""))<<key<<"\"");
 		}
 	}
@@ -1878,7 +1878,7 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 	}
 	wxFileName the_one (sin_titulo?GetTextRange(p1,p2):DIR_PLUS_FILE(source_filename.GetPath(),GetTextRange(p1,p2)));
 	if (wxFileName::FileExists(the_one.GetFullPath()))
-		menu.Append(mxID_FILE_OPEN_SELECTED, wxString(LANG(SOURCE_POPUP_OPEN_SELECTED_PRE,"&Abrir \""))<<GetTextRange(p1,p2)<<LANG(SOURCE_POPUP_OPEN_SELECTED_POST,"\"")<<_T("\tCtrl+Enter"));
+		menu.Append(mxID_FILE_OPEN_SELECTED, LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2))<<"\tCtrl+Enter");
 	
 	main_window->PopupMenu(&menu);
 	

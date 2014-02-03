@@ -1347,12 +1347,11 @@ void mxPreferenceWindow::OnSkinList(wxCommandEvent &event) {
 }
 
 void mxPreferenceWindow::OnMaxJobsButton(wxCommandEvent &event) {
-	wxMessageBox(wxString(LANG(LANG_MAX_JOBS_TIP_PRE,""
+	wxMessageBox(LANG1(LANG_MAX_JOBS_TIP,""
 		"Este campo define la cantidad de objetos que se compilan en simultaneo "
 		"al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad "
 		"de nucleos, o la mitad son valores recomendables. Consulte la ayuda para "
-		"más detalles. ZinjaI detecta en el sistema actual "))<<wxThread::GetCPUCount()
-		<<LANG(LANG_MAX_JOBS_TIP_POST," nucleos"),
+		"más detalles. ZinjaI detecta en el sistema actual <{1}> nucleos",wxString()<<wxThread::GetCPUCount()),
 		LANG(PREFERENCES_GENERAL_MAX_JOBS,"Cantidad de pasos en paralelo al compilar"),wxOK,this);	
 }
 

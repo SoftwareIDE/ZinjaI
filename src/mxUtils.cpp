@@ -376,7 +376,7 @@ bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArr
 				wxFileName(already_processed[i]).Touch();
 				future=true;
 				if (project)
-					project->warnings.Add(wxString(LANG(UTILS_FUTURE_FILE_PRE,"El archivo incluido "))<<already_processed[i]<<LANG(UTILS_FUTURE_SOURCE_POST," tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual."));
+					project->warnings.Add(LANG1(UTILS_FUTURE_FILE,"El archivo incluido <{1}> tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.",already_processed[i]));
 				mxSource *src = main_window->IsOpen(already_processed[i]);
 				if (src) src->Reload();
 			}
@@ -548,7 +548,7 @@ bool mxUtils::XCopy(wxString src,wxString dst, bool ask, bool replace) {
 		wxString dest_file = JoinDirAndFile(dst,filename);
 		cont = (!ask&&replace)||!(wxFileName::FileExists(dest_file));
 		if (!cont && ask) { // si ya existe preguntar si hay que pisar
-			int ret = mxMessageDialog(NULL,wxString(LANG(FILE_EXISTS_ASK_REPLACE_PRE,"El archivo \""))<<dest_file<<LANG(FILE_EXISTS_ASK_REPLACE_POST,"\" ya existe. Desea reemplazarlo?"),_T("Aviso"),mxMD_YES_NO|mxMD_QUESTION,LANG(GENERAL_DONT_ASK_AGAIN,"No volver a preguntar"),false).ShowModal();
+			int ret = mxMessageDialog(NULL,LANG1(FILE_EXISTS_ASK_REPLACE,"El archivo \"<{1}>\" ya existe. Desea reemplazarlo?",dest_file),"Aviso",mxMD_YES_NO|mxMD_QUESTION,LANG(GENERAL_DONT_ASK_AGAIN,"No volver a preguntar"),false).ShowModal();
 			cont = (ret&mxMD_YES);
 			if (ret&mxMD_CHECKED) {
 				ask=false;
@@ -1286,3 +1286,23 @@ int mxUtils::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, w
 	return 0;
 }
 
+wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1) {
+	src.Replace("<{1}>",arg1);
+	return src;
+	
+}
+
+wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2) {
+	src.Replace("<{1}>",arg1);
+	src.Replace("<{2}>",arg2);
+	return src;
+	
+}
+
+wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2, wxString arg3) {
+	src.Replace("<{1}>",arg1);
+	src.Replace("<{2}>",arg2);
+	src.Replace("<{3}>",arg3);
+	return src;
+	
+}

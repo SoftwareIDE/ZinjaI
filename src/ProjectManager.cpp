@@ -433,14 +433,13 @@ ProjectManager::ProjectManager(wxFileName name) {
 				if (suggested_configuration) {
 					int res = 0;
 					if (project_template) res=mxMD_YES;
-					else res = mxMessageDialog(main_window,wxString(
-						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_PRE,"Parece que esta abriendo un proyecto que tiene seleccionado un perfil\n"
-						"de compilacion y ejecucion para otro sistema operativo: \"")
-						)<<active_configuration->name<<
-						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_MID,"\"\n ¿Desea cambiar el perfil activo por: \"")
-						<<suggested_configuration->name<<
-						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_POST,"\"?")
-						,LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_POST,"Perfil de Compilacion y Ejecucion"),mxMD_YES_NO|mxMD_WARNING,
+					else res = mxMessageDialog(main_window,
+						LANG2(PROJMNGR_CHANGE_PROFILE_OPENNING,""
+						"Parece que esta abriendo un proyecto que tiene seleccionado un perfil\n"
+						"de compilacion y ejecucion para otro sistema operativo: \"<{1}>\"\n"
+						"\n¿Desea cambiar el perfil activo por \"<{2}>\"?",
+						active_configuration->name,suggested_configuration->name),
+						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilacion y Ejecucion"),mxMD_YES_NO|mxMD_WARNING,
 						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK,"Seleccionar otro perfil de la lista")
 						,false).ShowModal();
 					if (mxMD_YES&res) {
@@ -450,7 +449,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 								choices.Add(configurations[i]->name);
 							wxString res=wxGetSingleChoice(
 								LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CHOICE,"Seleccione el perfil a activar"),
-								LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_POST,"Perfil de Compilacion y Ejecucion"),
+								LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilacion y Ejecucion"),
 								choices,main_window);
 							if (res.Len())
 								for (int i=0;i<configurations_count;i++)
@@ -1025,9 +1024,9 @@ bool ProjectManager::DeleteFile(wxTreeItemId tree_item) {
 		if (src) new SourceExtras(src); // "tranfers ownership" of extras to the mxSource
 		int ans;
 		if (also)
-			ans=mxMessageDialog(main_window,wxString(LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_PRE,"¿Desea quitar tambien el archivo \""))<<item->name<<LANG(PROJMNGR_CONFIRM_DETTACH_ALSO_POST,"\" del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
+			ans=mxMessageDialog(main_window,LANG1(PROJMNGR_CONFIRM_DETACH_ALSO,"¿Desea quitar tambien el archivo \"<{1}>\" del proyecto?",item->name),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
 		else
-			ans=mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_DETTACH_FILE,"¿Desea quitar el archivo del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
+			ans=mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_DETACH_FILE,"¿Desea quitar el archivo del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
 		if (ans&mxMD_CANCEL || ans&mxMD_NO)
 			return false;
 		wxString comp = utils->GetComplementaryFile(DIR_PLUS_FILE(project->path,item->name));
@@ -1178,7 +1177,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				wxFileName(full_path).Touch();
 				mxSource *src = main_window->IsOpen(item->item);
 				if (src) src->Reload();
-				warnings.Add(wxString(LANG(PROJMNGR_FUTURE_SOURCE_PRE,"El fuente "))<<full_path<<LANG(PROJMNGR_FUTURE_SOURCE_POST," tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual."));
+				warnings.Add(LANG1(PROJMNGR_FUTURE_SOURCE,"El fuente <{1}> tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.",full_path));
 				utils->AreIncludesUpdated(bin_date,full_path,header_dirs_array);
 				flag=true;
 			} else 
@@ -1189,7 +1188,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				if (src_date>bin_date) // si el objeto esta desactualizado respecto al fuente 
 					flag=true;
 				else if (bin_date.IsLaterThan(now)) { // si el objeto es del futuro (por las dudas)
-					warnings.Add(wxString(LANG(PROJMNGR_FUTURE_OBJECT_PRE,"El objeto "))<<full_path<<LANG(PROJMNGR_FUTURE_OBJECT_POST," tenia fecha de modificacion en el futuro. Se recompilara el fuente."));
+					warnings.Add(LANG1(PROJMNGR_FUTURE_OBJECT,"El objeto <{1}> tenia fecha de modificacion en el futuro. Se recompilara el fuente.",full_path));
 					flag=true;
 				} else { // ver si el objeto esta desactualizado respecto a los includes del fuente
 					flag=utils->AreIncludesUpdated(bin_date,full_path,header_dirs_array);
@@ -1199,7 +1198,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				flag=true;
 			}
 		} else if (active_configuration->dont_generate_exe && !item->lib) {
-			warnings.Add(wxString(LANG(PROJMNGR_NO_LIB_FOR_THAT_SOURCE_PRE,"El fuente \""))<<item->name<<LANG(PROJMNGR_NO_LIB_FOR_THAT_SOURCE_POST,"\" no esta asociado a ninguna biblioteca."));
+			warnings.Add(LANG1(PROJMNGR_NO_LIB_FOR_THAT_SOURCE,"El fuente \"<{1}>\" no esta asociado a ninguna biblioteca.",item->name));
 		}
 		if (flag) {
 			step = step->next = new compile_step(CNS_SOURCE,*item);
@@ -1237,7 +1236,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 					steps_count++;
 					relink_exe=true;
 				} else {
-					warnings.Add(wxString(LANG(PROJMNGR_LIB_WITHOUT_SOURCES_PRE,"La biblioteca \""))<<lib->libname<<LANG(PROJMNGR_LIB_WITHOUT_SOURCES_POST,"\" no tiene ningun fuente asociado."));
+					warnings.Add(LANG1(PROJMNGR_LIB_WITHOUT_SOURCES,"La biblioteca \"<{1}>\" no tiene ningun fuente asociado.",lib->libname));
 				}
 			}
 			lib = lib->next;
@@ -1469,7 +1468,7 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 	compile_and_run->pid=0;
 	
 	main_window->SetStatusProgress( int(actual_progress+=progress_step) );
-	main_window->SetStatusText(wxString(LANG(PROJMNGR_COMPILING,"Compilando"))<<_T("... ( ")<<LANG(PROJMNGR_STEP_FROM_PRE,"paso ")<<++current_step<<LANG(PROJMNGR_STEP_FROM_PORT," de ")<<steps_count<<_T(" - ")<<int(actual_progress)<<_T("% )"));
+	main_window->SetStatusText(wxString()<<LANG(PROJMNGR_COMPILING,"Compilando")<<"... ( "<<LANG2(PROJMNGR_STEP_FROM,"paso <{1}> de <{2}>",wxString()<<(++current_step),wxString()<<steps_count)<<" - "<<int(actual_progress)<<"% )");
 	
 	if (first_compile_step) {
 		compile_step *step = first_compile_step;
@@ -3099,7 +3098,7 @@ bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 }
 
 ProjectManager::WxfbAutoCheckData::WxfbAutoCheckData() {
-	for (unsigned int i=0; i<project->wxfb->sources.GetSize();i++) {
+	for (int i=0; i<project->wxfb->sources.GetSize();i++) {
 		pd_file *pdf=parser->GetFile(project->wxfb->sources[i]+".h");
 		if (pdf) {
 			pd_ref *cls_ref = pdf->first_class;
@@ -3191,11 +3190,13 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 		}
 		// find out wich user classes where inherited from the deleted ones
 		SingleList<wxString> children;
+		SingleList<wxString> fathers;
 		pd_inherit *item=parser->first_inherit;
 		while (item->next) {
 			item=item->next;
 			if (bases.Contains(item->father)) {
 				children.Add(item->son);
+				fathers.Add(item->father);
 			}
 		}
 		// offer the user to deleted those inherited classes
@@ -3211,15 +3212,18 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 			if (!fitem1) fname1=""; 
 			if (!fitem2) fname2="";
 			// preguntar
-			wxString filenames; filenames<<fname1<<(fname1.Len()&&fname2.Len()?", ":"")<<fname2;
+			wxString filenames; filenames<<fname1<<(fname1.Len()&&fname2.Len()?"\n":"")<<fname2;
 			int ans=mxMessageDialog(main_window,
-				wxString(LANG(WXFB_ASK_BEFORE_AUTO_DELETING_PRE,"ZinjaI ha detectado que la clase "))<<children[i]
-				<<LANG(WXFB_ASK_BEFORE_AUTO_DELETING_MID,", hereda de otra clase\n"
-				"anteriormente autogenerada por wxFormBuilder que ha sido eliminada.\n"
-				"¿Desea elminar los archivos de la clase heredada:\n")<<filenames<<
-				LANG(WXFB_ASK_BEFORE_AUTO_DELETING_POST,"?\n\n"
-				"Advertencia: se eliminarán el/los archivos completos; debe estar seguro de que no contienen\n"
-				"definiciones ajenas a dicha clase, y de que la clase base no ha sido solo renombrada.")
+				LANG3(WXFB_ASK_BEFORE_AUTO_DELETING,""
+				"ZinjaI ha detectado que la clase <{1}> hereda de\n"
+				"otra clase anteriormente autogenerada por wxFormBuilder\n"
+				"(<{2}>) que ha sido eliminada en el diseñador.\n"
+				"¿Desea eliminar los fuentes correspondiente a dicha clase?\n"
+				"Los fuentes son: <{3}>\n"
+				"\n"
+				"Advertencia: debe estar seguro de que no contienen definiciones ajenas\n"
+				"a dicha clase, y de que la clase base no ha sido solo renombrada.",
+				children[i],fathers[i],filenames)
 				,LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_WARNING,
 				LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false
 				).ShowModal();
@@ -3254,7 +3258,7 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 	if (folder.Len()) {
 		folder = DIR_PLUS_FILE(project->path,folder);
 		if (!wxFileName::DirExists(folder)) {
-			int ans = mxMessageDialog(main_window,wxString(LANG(PROJECT_DIRNOTFOUND_CREATE_PRE,"El directorio \""))<<folder<<LANG(PROJECT_DIRNOTFOUND_CREATE_POST,"\" no existe. Desea crearlo?"),_T("Error"),mxMD_YES|mxMD_NO|mxMD_QUESTION).ShowModal();
+			int ans = mxMessageDialog(main_window,LANG1(PROJECT_DIRNOTFOUND_CREATE,"El directorio \"<{1}>\" no existe. Desea crearlo?",folder),"Error",mxMD_YES|mxMD_NO|mxMD_QUESTION).ShowModal();
 			if (ans==mxMD_YES) {
 				wxFileName::Mkdir(folder);
 				if (!wxFileName::DirExists(folder)) {
