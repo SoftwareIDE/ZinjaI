@@ -32,9 +32,6 @@ drag and drop en arbol de proyectos
 
 buscar skins en home/.zinjai
 
-agregar un check en la conf de herramientas personalizadas para elegir si es general o se guarda con el proyecto?
-o ver la forma de que una plantilla configure una herramienta personalizada
-
 para agregar en el panel de mini-plantillas:
 	categoría: ¿declaraciones/definiciones?
 		clase
@@ -50,7 +47,6 @@ para agregar en el panel de mini-plantillas:
 
 Addons: 
 	armar template sfml+wxwidgets
-	que puedan definir herramientas personalizadas
 	que se instalen system-wide o user-wide
 
 Cosas importantes que no andan!!!:
@@ -77,7 +73,6 @@ Sitio:
 otras:
 	4. avivarse si el directorio del explorador cambia
 	4. rename en el explorador
-	4. conectar guardar como con rename de proyecto (hecho?)
 	5. configurar atajos de teclado
 	6. jerarquia de proyectos
 		Alternativa a jerarquia de proyectos, jerarquia de perfiles, usando ${FROM:otro_perfil} en los campos de texto?

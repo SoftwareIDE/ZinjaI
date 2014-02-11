@@ -11,6 +11,7 @@
 #include "mxSource.h"
 #include "mxUtils.h"
 
+#define EN_COMPOUT_FATAL_ERROR ": fatal error: "
 #define EN_COMPOUT_ERROR ": error: "
 #define EN_COMPOUT_ERROR_CHILD ": error:   "
 #define EN_COMPOUT_WARNING ": warning: "
@@ -19,7 +20,7 @@
 
 #define EN_COMPOUT_COMPILATION_TERMINATED "compilation terminated."
 #define EN_COMPOUT_REQUIRED_FROM_HERE "required from "
-#define EN_COMPOUT__NSTANTIATED_FROM "nstantiated from "
+//#define EN_COMPOUT__NSTANTIATED_FROM "nstantiated from "
 #define EN_COMPOUT_IN_INSTANTIATION_OF "In instantiation of "
 #define EN_COMPOUT_AT_THIS_POINT_IN_FILE ": at this point in file"
 #define EN_COMPOUT_WITHIN_THIS_CONTEXT ": within this context"
@@ -29,6 +30,7 @@
 //#define EN_COMPOUT_IN_PASSING_ARGUMENT ": in passing argument"
 //#define EN_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
 
+#define ES_COMPOUT_FATAL_ERROR ": error fatal: "
 #define ES_COMPOUT_ERROR ": error: "
 #define ES_COMPOUT_ERROR_CHILD ": error:   "
 #define ES_COMPOUT_WARNING ": aviso: "
@@ -36,8 +38,9 @@
 #define ES_COMPOUT_LINKER_WARNING "Advertencia: "
 
 
+#define ES_COMPOUT_COMPILATION_TERMINATED "compilación terminada."
 #define ES_COMPOUT_REQUIRED_FROM_HERE "se requiere desde "
-#define ES_COMPOUT__NSTANTIATED_FROM "nstantiated from "
+//#define ES_COMPOUT__NSTANTIATED_FROM "nstantiated from "
 #define ES_COMPOUT_IN_INSTANTIATION_OF "In instantiation of "
 #define ES_COMPOUT_AT_THIS_POINT_IN_FILE ": en este punto en el fichero"
 #define ES_COMPOUT_WITHIN_THIS_CONTEXT ": en este contexto"
@@ -331,7 +334,7 @@ CAR_ERROR_LINE mxCompiler::ParseSomeErrorsOneLine(compile_and_run_struct_single 
 	compile_and_run->error_line_flag=CAR_LL_NULL;
 	
 	// if there was an error within the compiler stop
-	if (error_line==EN_COMPOUT_COMPILATION_TERMINATED) return CAR_EL_ERROR;
+	if (error_line==EN_COMPOUT_COMPILATION_TERMINATED || error_line==ES_COMPOUT_COMPILATION_TERMINATED) return CAR_EL_ERROR;
 	
 	// if it starts or continue a list of template instantiation chain: "In instantiation of ....: \n required from ...\n required from ..."
 	if (error_line.Contains(EN_COMPOUT_IN_INSTANTIATION_OF) || error_line.Contains(ES_COMPOUT_IN_INSTANTIATION_OF)
@@ -342,7 +345,11 @@ CAR_ERROR_LINE mxCompiler::ParseSomeErrorsOneLine(compile_and_run_struct_single 
 	// esto va antes de testear si es error o warning, porque ambos tests (por ejemplo, este y el de si es error) pueden dar verdaderos, y en ese caso debe primar este
 	if (ErrorLineIsChild(error_line)) return CAR_EL_CHILD_LAST;
 	
-	// errores de compilacion
+	// errores "fatales" (como cuando no encuentra los archivos que tiene que compilar)
+	if (error_line.Contains(EN_COMPOUT_FATAL_ERROR) || error_line.Contains(ES_COMPOUT_FATAL_ERROR)) {
+		return CAR_EL_ERROR;
+	}
+	
 	if (error_line.Contains(EN_COMPOUT_ERROR) || error_line.Contains(ES_COMPOUT_ERROR)) {
 		// el "within this contex" avisa el punto dentro de una plantilla, para un error previo que se marco en la llamada a la plantilla, por eso va como hijo
 		if (error_line.Contains(EN_COMPOUT_WITHIN_THIS_CONTEXT) || error_line.Contains(ES_COMPOUT_WITHIN_THIS_CONTEXT))
@@ -362,18 +369,19 @@ CAR_ERROR_LINE mxCompiler::ParseSomeErrorsOneLine(compile_and_run_struct_single 
 		return CAR_EL_WARNING;
 	}
 	
-	// warnings del linker
-	if (error_line.Contains(EN_COMPOUT_NOTE) || error_line.Contains(ES_COMPOUT_NOTE)) {
-		return CAR_EL_CHILD_LAST;
-	}
+//	// notas (detectado antes en ErrorLineIsChild(error_line))
+//	if (error_line.Contains(EN_COMPOUT_NOTE) || error_line.Contains(ES_COMPOUT_NOTE)) {
+//		return CAR_EL_CHILD_LAST;
+//	}
 	
 	// error inside functions has a line before saying "In function 'foo()':"
 	if (error_line.Last()==':') return CAR_EL_IGNORE;
 	
-	// anything else?
-	compile_and_run->parsing_errors_was_ok=false;
-	return CAR_EL_UNKNOWN;
+	// anything else? probably linker error
+	return CAR_EL_ERROR;
 	
+//	compile_and_run->parsing_errors_was_ok=false;
+//	return CAR_EL_UNKNOWN;
 }
 
 void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run) {
@@ -423,7 +431,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 				}
 				if (!compile_and_run->pending_error_lines.IsEmpty()) { // agregar los hijos que estaban pendientes
 					wxTreeItemId tree_item = tree->AppendItem(compile_and_run->last_error_item,compile_and_run->pending_error_nices[0],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[0]));
-					for(int i=1;i<compile_and_run->pending_error_lines.GetCount();i++) { 
+					for(unsigned int i=1;i<compile_and_run->pending_error_lines.GetCount();i++) { 
 						tree->AppendItem(tree_item,compile_and_run->pending_error_nices[i],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[i]));
 					}
 					compile_and_run->pending_error_nices.Clear();

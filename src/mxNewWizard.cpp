@@ -636,7 +636,7 @@ void mxNewWizard::OnButtonNext(wxCommandEvent &event){
 		if (i<0 || i>=(int)file_templates.GetCount()) return;
 		mxSource *source = main_window->NewFileFromTemplate(file_templates[i]);
 		if (templates_check->GetValue()) {
-			config->Files.default_template=file_templates[i];
+			config->Files.default_template=wxFileName(file_templates[i]).GetFullName();
 			templates_default=i;
 		}
 		source->SetFocus();
@@ -864,6 +864,7 @@ void mxNewWizard::CreatePanelTemplates() {
 		wxString name_prefix = wxString(_T("// !Z! Name_"))<<config->Init.language_file<<_T(":");
 		wxString name = templates[i];
 		wxString local_name = _T("");
+		if (config->Files.default_template==name)	templates_default = i;
 		wxString filename = utils->WichOne(name,"templates",true);
 		wxTextFile file(filename);
 		file.Open();
@@ -883,8 +884,6 @@ void mxNewWizard::CreatePanelTemplates() {
 			file.Close();
 			file_templates.Add(filename); // para uso interno
 			templates[i]=name; // para mostrar en el dialogo
-			if (filename==config->Files.default_template)
-				templates_default = i;
 		}	
 	}
 
