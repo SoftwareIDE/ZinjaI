@@ -51,6 +51,11 @@ enum ReadOnlyModeEnum {
 class mxSource: public wxStyledTextCtrl {
 
 public:
+	struct MacroAction { 
+		int msg; int wp=0; int lp=0;
+		MacroAction(int _msg=0, int _wp=0, int _lp=0):msg(_msg),wp(_wp),lp(_lp){}
+	};
+	void OnMacroAction(wxStyledTextEvent &evt);
 
 	bool ignore_char_added; ///< algunas operaciones (pegar,autocode,etc) necesitan desactivar el evento
 	
@@ -222,9 +227,7 @@ private:
 	
 	// margin variables
 	int m_LineNrID;
-	int m_LineNrMargin;
 	int m_FoldingID;
-	int m_FoldingMargin;
 	int m_DividerID;
 	
 	int brace_1,brace_2;

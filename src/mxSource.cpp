@@ -109,6 +109,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_PAINTED(wxID_ANY, mxSource::OnPainted)
 	
 	EVT_KEY_DOWN(mxSource::OnKeyDown)
+	EVT_STC_MACRORECORD(wxID_ANY,mxSource::OnMacroAction)
 	
 END_EVENT_TABLE()
 
@@ -248,12 +249,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 //	SetYCaretPolicy(wxSTC_CARET_SLOP,50);
 		
 	SetEndAtLastLine(!config->Init.autohide_panels);
-	
-	
-
-	// miscelaneous
-//	m_LineNrMargin = TextWidth (wxSTC_STYLE_LINENUMBER, _T("_999999"));
-//	m_FoldingMargin = 16;
 
 	AutoCompSetSeparator('\n');
 	AutoCompSetIgnoreCase(true);
@@ -2479,10 +2474,24 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	// no mostrar tooltips si no es la pestana del notebook seleccionada, o el foco no esta en esta ventana
 	if (!main_window->IsActive() || main_window->focus_source!=this) return; 
 	
+	int p = event.GetPosition();
+	if (p==-1) {
+		int x=event.GetX(), y=event.GetY();
+		int x0=GetMarginWidth(m_LineNrID);
+		int x1=x0+GetMarginWidth(m_DividerID);
+		if (x>=x0 && x<=x1) {
+			p=PositionFromPointClose(x1+GetMarginWidth(m_FoldingID)+10,y);
+			int l=LineFromPosition(p);
+			BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
+			if (bpi && bpi->annotation.Len()) CallTipShow(PositionFromLine(l),bpi->annotation);
+		}
+		return;
+	}
+	
 	if (!debug->debugging) {
 		if (!config_source.toolTips)
 			return;
-		int s,p = event.GetPosition();
+		int s;
 		if (II_SHOULD_IGNORE(p)) 
 			return;
 		int e = WordEndPosition(p,true);
@@ -2525,7 +2534,6 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 			}
 		}
 	} else {
-		int p = event.GetPosition();
 		int e = GetSelectionEnd();
 		int s = GetSelectionStart();
 		if (e==s || p<s || p>e) {
@@ -3570,5 +3578,13 @@ void mxSource::SetReadOnlyMode (ReadOnlyModeEnum mode) {
 		readonly_mode=mode;
 	}
 	SetReadOnly(readonly_mode!=ROM_NONE);
+}
+
+void mxSource::OnMacroAction (wxStyledTextEvent & evt) {
+	cerr<<"Action ";
+	if (main_window->m_macro&&(*main_window->m_macro)[0].msg==1) {
+		cerr<<evt.GetMessage()<<" "<<evt.GetWParam()<<" "<<evt.GetLParam()<<endl;
+		main_window->m_macro->Add(MacroAction(evt.GetMessage(),evt.GetWParam(),evt.GetLParam()));
+	}
 }
 

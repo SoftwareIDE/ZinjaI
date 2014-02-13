@@ -998,7 +998,7 @@ wxString mxUtils::EscapeString(wxString str, bool add_comillas) {
 }
 
 
-wxString mxUtils::Text2Line(wxString &text) {
+wxString mxUtils::Text2Line(const wxString &text) {
 	int l=text.Len(),i,p=0;
 	wxString line;
 	for (i=0;i<l;i++) {
@@ -1014,7 +1014,7 @@ wxString mxUtils::Text2Line(wxString &text) {
 	return line;
 }
 
-wxString mxUtils::Line2Text(wxString &line) {
+wxString mxUtils::Line2Text(const wxString &line) {
 	int l=line.Len(),i,p=0;
 	wxString text;
 	for (i=0;i<l;i++) {

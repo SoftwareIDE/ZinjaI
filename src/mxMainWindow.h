@@ -12,6 +12,7 @@
 #define CURRENT_SOURCE ((mxSource*)notebook_sources->GetPage(notebook_sources->GetSelection()))
 #include "mxCustomTools.h"
 #include "enums.h"
+#include "mxSource.h"
 
 class mxStatusBar;
 class mxHidenPanel;
@@ -36,6 +37,8 @@ class wxTreeCtrl;
 class wxTextCtrl;
 class compile_and_run_struct_single;
 class project_file_item;
+
+template<class T> class SingleList;
 
 extern mxSplashScreen *splash;
 
@@ -599,6 +602,11 @@ public:
 	
 	void OnExternCompilerOutput(wxCommandEvent &evt);
 	void OnSelectErrorCommon(const wxString &error); ///< to be called from OnExternCompilerOutput y OnSelectError
+	
+	
+	SingleList<mxSource::MacroAction> *m_macro;
+	void OnMacroRecord(wxCommandEvent &evt);
+	void OnMacroReplay(wxCommandEvent &evt);
 	
 	DECLARE_EVENT_TABLE();
 };

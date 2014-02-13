@@ -48,10 +48,10 @@ public:
 	int marker_handle; ///< marker handle if it's open (mxSource)
 	int marker_type; ///< to know if current marker is red or grey, when marker_handle!=-1
 	bool enabled; ///< if it's marked as enabled in ZinjaI (mxBreakOptions)
-//	bool only_once; ///< if this breakpoint should be disabled after been hitted for the first time (mxBreakOptions)
 	int action; ///< what to do when breakpoint is hitted, valid values are from BREAK_POINT_ACTION
 	int ignore_count; ///< number of times the breakpoint should be reached before really pausing the program (mxBreakOptions)
 	wxString cond; ///< bool expression for conditional breakpoints (mxBreakOptions)
+	wxString annotation; ///< some description or whatever the user can set and will be displayed when the bp is hitted
 	BreakPointInfo(project_file_item *fitem, int _line_number); ///< to be called when loading a project, registers the breakpoint in the file_item::breaklist
 	BreakPointInfo(mxSource *_source, int _line_number); ///< to be called from mxSource events, registers the breakpoint in the mxSource::breaklist
 	void SetStatus(BREAK_POINT_STATUS _status, int _gdb_id=-1);

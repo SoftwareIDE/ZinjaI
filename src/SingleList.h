@@ -63,7 +63,7 @@ public:
 		m_capacity=m_size=0;
 	}
 	void Clear() {
-		m_capacity=m_size=0;
+		m_size=0;
 	}
 	int Find(const T &data) {
 		for(int i=0;i<m_size;i++) { 

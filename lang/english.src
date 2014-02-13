@@ -488,6 +488,8 @@ BREAKOPTS_ERROR_PLACING_BREAKPOINT
 Error placing breakpoint
 BREAKOPTS_INVALID_CONDITION
 Current condition is not valid
+BREAKOPTS_ANNTOATION
+Annotation
 BREAKOPTS_ERROR_SETTING_CONDITION
 The entered breakpoint's condition is not valid. Do you wan't to set an unconditional breakpoint anyway?
 COLORS_CAPTION
@@ -600,12 +602,12 @@ MAINW_BINARY_ALREADY_UPDATED
 Binary file is up to date.
 GENERAL_RUNNING_DOTS
 Running...
-MAINW_COMPILER_OUTPUT_PARSING_ERROR
-There was an error when trying to reorganize compiler's output. Some errors may\nnot display correctly in compiler result's tree. To see the real output use right\nclick over the tree. If you like to help us improving ZinjaI, you're welcome to send\nthe code that produced that error to zaskar_84@yahoo.com.ar
 MAINW_CT_ERRORS
 Errors
 MAINW_CT_WARNINGS
 Warnings
+MAINW_COMPILER_OUTPUT_PARSING_ERROR
+There was an error when trying to reorganize compiler's output. Some errors may\nnot display correctly in compiler result's tree. To see the real output use right\nclick over the tree. If you like to help us improving ZinjaI, you're welcome to send\nthe code that produced that error to zaskar_84@yahoo.com.ar
 MAINW_COMPILING_DONE_SECONDS
 Compilation finished ( elapsed time: <{1}> seconds ).
 MAINW_COMPILING_DONE_ONE_MINUTE

@@ -7,7 +7,7 @@ using namespace std;
 
 class wxGrid;
 
-enum {/*BL_COL_NUM=0,*/BL_COL_TYPE=0,BL_COL_WHY,BL_COL_ENABLE,/*BL_COL_DISP,*/BL_COL_HIT,BL_COL_COND,BL_COLS_COUNT};
+enum {/*BL_COL_NUM=0,*/BL_COL_TYPE=0,BL_COL_WHY,BL_COL_ENABLE,/*BL_COL_DISP,*/BL_COL_HIT,BL_COL_COND,BL_COL_ANNOTATION,BL_COLS_COUNT};
 
 class mxBreakList : public wxDialog {
 private:

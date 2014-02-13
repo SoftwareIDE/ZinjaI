@@ -488,6 +488,8 @@ BREAKOPTS_ERROR_PLACING_BREAKPOINT
 Error al colocar breakpoint
 BREAKOPTS_INVALID_CONDITION
 La condicion actual no es valida
+BREAKOPTS_ANNTOATION
+Anotación
 BREAKOPTS_ERROR_SETTING_CONDITION
 La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?.
 COLORS_CAPTION
@@ -600,12 +602,12 @@ MAINW_BINARY_ALREADY_UPDATED
 El binario ya esta actualizado.
 GENERAL_RUNNING_DOTS
 Ejecutando...
-MAINW_COMPILER_OUTPUT_PARSING_ERROR
-ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\nPuede que algun error no se muestre correctamente en el arbol. Para ver la salida\ncompleta haga click con el boton derecho del raton en cualquier elemento del arbol\ny seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\nenviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar
 MAINW_CT_ERRORS
 Errores
 MAINW_CT_WARNINGS
 Advertencias
+MAINW_COMPILER_OUTPUT_PARSING_ERROR
+ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\nPuede que algun error no se muestre correctamente en el arbol. Para ver la salida\ncompleta haga click con el boton derecho del raton en cualquier elemento del arbol\ny seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\nenviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar
 MAINW_COMPILING_DONE_SECONDS
 Compilacion finalizada ( tiempo transcurrido: <{1}> segundos ).
 MAINW_COMPILING_DONE_ONE_MINUTE

@@ -61,6 +61,8 @@ mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxI
 	if (bpi->gdb_status==BPS_ERROR_CONDITION)
 			utils->AddStaticText(mySizer,this,LANG(BREAKOPTS_INVALID_CONDITION,"La condicion actual no es valida"));
 	
+	annotation_text = utils->AddLongTextCtrl(mySizer,this,LANG(BREAKOPTS_ANNTOATION,"Anotación"),bpi->annotation);
+	
 	mySizer->Add(buttonSizer,sizers->Exp0);
 	
 	wxCommandEvent evt; OnBreakpointCheck(evt);
@@ -106,6 +108,7 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 			bpi->cond=cond_text->GetValue();
 			bpi->SetStatus(BPS_UNKNOWN);
 		}
+		bpi->annotation=annotation_text->GetValue();
 	} else {
 		if (debug->debugging)
 			debug->DeleteBreakPoint(bpi);

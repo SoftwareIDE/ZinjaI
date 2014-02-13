@@ -132,10 +132,10 @@ public:
 	/** @brief Convierte un path absoluto en relativo **/
 	wxString Relativize(wxString fname, wxString path);
 	
-	/// @brief Concatena una cadena en una linea reemplazando
-	wxString Text2Line(wxString &text);
-	/// @brief Divide una linea en una cadena en una cadena con varias
-	wxString Line2Text(wxString &line);
+	/// @brief Concatena una cadena en una linea reemplazando saltos de linea por "\\n" (y escapando las demás '\\')
+	wxString Text2Line(const wxString &text);
+	/// @brief Divide una linea generada con Text2Line en una cadena en una cadena con varias lineas
+	wxString Line2Text(const wxString &line);
 	
 	// copia una cadena wx en una cadena c
 	void strcpy(wxChar *cstr, wxString wstr);

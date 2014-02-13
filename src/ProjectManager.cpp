@@ -281,6 +281,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 					if (last_breakpoint) last_breakpoint->enabled=utils->IsTrue(value);
 				} else if (key==_T("breakpoint_condition")) {
 					if (last_breakpoint) last_breakpoint->cond=value;
+				} else if (key==_T("breakpoint_annotation")) {
+					if (last_breakpoint) last_breakpoint->annotation=utils->Line2Text(value);
 				} else if (key==_T("open") && utils->IsTrue(value)) {
 					if (files_to_open>0)
 						main_window->SetStatusProgress((100*(++num_files_opened))/files_to_open);
@@ -707,6 +709,7 @@ bool ProjectManager::Save (bool as_template) {
 					if (!breakpoints[j]->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
 					if (breakpoints[j]->action) CFG_GENERIC_WRITE_DN("breakpoint_action",true);
 					if (breakpoints[j]->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoints[j]->ignore_count);
+					if (breakpoints[j]->annotation) CFG_GENERIC_WRITE_DN("breakpoint_annotation",utils->Text2Line(breakpoints[j]->annotation));
 					if (breakpoints[j]->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoints[j]->cond);
 	//				breakpoint->enabled=true; // que hace esto aca?
 				}
@@ -2681,7 +2684,12 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,have_env_vars=false;
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,have_env_vars=false,have_breakpoint_annotation=false;
+	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
+	while (bpi.IsValid()) {
+		if (bpi->annotation.Len()) have_breakpoint_annotation=true;
+		bpi.Next();
+	}
 	for (int i=0;i<configurations_count;i++) {
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
 		if (configurations[i]->optimization_level==5) use_og=true;
@@ -2711,7 +2719,8 @@ int ProjectManager::GetRequiredVersion() {
 	}
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	version_required=0;
-	if (wxfb && wxfb->activate_integration) version_required=20131219;
+	if (have_breakpoint_annotation) version_required=20140213;
+	else if (wxfb && wxfb->activate_integration) version_required=20131219;
 	else if (have_env_vars) version_required=20131122;
 	else if (have_custom_tools) version_required=20131115;
 	else if (use_exec_script) version_required=20130817;

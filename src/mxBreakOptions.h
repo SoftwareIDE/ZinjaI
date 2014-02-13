@@ -13,7 +13,7 @@ class mxBreakOptions : public wxDialog {
 private:
 	BreakPointInfo *bpi;
 	wxCheckBox *break_check, *enable_check/*, *once_check*/;
-	wxTextCtrl *ignore_text,*cond_text,*count_text;
+	wxTextCtrl *ignore_text,*cond_text,*count_text, *annotation_text;
 	wxComboBox *action;
 public:
 	mxBreakOptions(BreakPointInfo *_bpi);

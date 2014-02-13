@@ -622,6 +622,10 @@ void DebugManager::HowDoesItRuns() {
 		}
 		if (bpi && bpi->action==BPA_STOP_ONCE) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
 		SetStateText(state_text); should_pause=false;
+		if (bpi && bpi->annotation.Len() && current_source) {
+			wxYield();
+			current_source->CallTipShow(current_source->PositionFromLine(current_source->GetCurrentLine()),bpi->annotation);
+		}
 		return;
 	}
 }

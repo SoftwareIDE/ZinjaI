@@ -34,21 +34,22 @@ mxBreakList::mxBreakList() : wxDialog(main_window, wxID_ANY, LANG(BREAKLIST_CAPT
 	grid->SetColLabelValue(BL_COL_TYPE,LANG(BREAKLIST_TYPE,"Tipo"));
 	grid->SetColLabelValue(BL_COL_WHY,LANG(BREAKLIST_LOCATION_EXPRESSION,"Ubicacion/Expresion"));
 	grid->SetColLabelValue(BL_COL_ENABLE,LANG(BREAKLIST_STATE,"Estado"));
-	grid->SetColLabelValue(BL_COL_COND,LANG(BREAKLIST_CONDITION,"Condicion"));
 	grid->SetColLabelValue(BL_COL_HIT,LANG(BREAKLIST_COUNTER,"Conteo"));
+	grid->SetColLabelValue(BL_COL_COND,LANG(BREAKLIST_CONDITION,"Condicion"));
+	grid->SetColLabelValue(BL_COL_ANNOTATION,LANG(BREAKOPTS_ANNTOATION,"Anotación"));
 	grid->SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
 	grid->SetRowLabelSize(0);
 	grid->SetSelectionMode(wxGrid::wxGridSelectRows);
 	grid->SetCellHighlightPenWidth(0);
 	grid->EnableDragRowSize(false);	
 	
-	old_size=100-7;
-//	cols_sizes[BL_COL_NUM]=7;
 	cols_sizes[BL_COL_TYPE]=8;
 	cols_sizes[BL_COL_WHY]=47;
 	cols_sizes[BL_COL_ENABLE]=10;
 	cols_sizes[BL_COL_HIT]=7;
 	cols_sizes[BL_COL_COND]=20;
+	cols_sizes[BL_COL_ANNOTATION]=20;
+	old_size=0; for(int i=0;i<BG_COLS_COUNT;i++) old_size+=cols_sizes[i];
 	
 	wxButton *close_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.ok,LANG(BREAKLIST_CLOSE,"&Cerrar"));
 	SetEscapeId(wxID_CANCEL);
@@ -222,6 +223,7 @@ void mxBreakList::PopulateGrid ( ) {
 		grid->SetCellValue(i,BL_COL_ENABLE,status);
 		
 		grid->SetCellValue(i,BL_COL_COND,bpi->cond);
+		grid->SetCellValue(i,BL_COL_ANNOTATION,bpi->annotation);
 		
 		grid->SetCellValue(i,BL_COL_HIT,"0");
 		

@@ -177,6 +177,9 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_FORCE_AUTOCOMPLETE, mxMainWindow::OnEdit)
 //	EVT_MENU(mxID_EDIT_FUZZY_AUTOCOMPLETE, mxMainWindow::OnEdit)
 	
+	EVT_MENU(mxID_MACRO_RECORD, mxMainWindow::OnMacroRecord)
+	EVT_MENU(mxID_MACRO_REPLAY, mxMainWindow::OnMacroReplay)
+	
 	EVT_MENU(mxID_RUN_RUN, mxMainWindow::OnRunRun)
 	EVT_MENU(mxID_RUN_RUN_OLD, mxMainWindow::OnRunRunOld)
 	EVT_MENU(mxID_RUN_STOP, mxMainWindow::OnRunStop)
@@ -407,6 +410,8 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	EXTERNAL_SOURCE=(mxSource*)this;
 
+	m_macro=NULL;
+	
 	SetAccelerators();
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
@@ -2613,7 +2618,7 @@ bool mxMainWindow::CloseSource (int i) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	wxAcceleratorEntry entries[14];
+	wxAcceleratorEntry entries[16];
 	entries[0].Set(wxACCEL_CTRL, WXK_SPACE, mxID_EDIT_FORCE_AUTOCOMPLETE);
 	entries[1].Set(wxACCEL_CTRL, WXK_RETURN, mxID_FILE_OPEN_SELECTED);
 	entries[2].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_TAB, mxID_VIEW_NOTEBOOK_PREV);
@@ -2628,7 +2633,9 @@ void mxMainWindow::SetAccelerators() {
 	entries[11].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_SPACE, mxID_EDIT_AUTOCODE_AUTOCOMPLETE);
 	entries[12].Set(wxACCEL_CTRL|wxACCEL_ALT, 'w', mxID_FILE_CLOSE_ALL_BUT_ONE);
 	entries[13].Set(wxACCEL_CTRL|wxACCEL_ALT, 'f', mxID_EDIT_FIND_FROM_TOOLBAR);
-	wxAcceleratorTable accel(14,entries);
+	entries[14].Set(wxACCEL_CTRL, 'q', mxID_MACRO_REPLAY);
+	entries[15].Set(wxACCEL_CTRL|wxACCEL_SHIFT, 'q', mxID_MACRO_RECORD);
+	wxAcceleratorTable accel(16,entries);
 	SetAcceleratorTable(accel);
 }
 
@@ -5072,7 +5079,7 @@ void mxMainWindow::OnEscapePressed(wxCommandEvent &event) {
 		do_update=true;
 	}
 	if (aui_manager.GetPane(quick_help).IsShown()) {
-		if (config->Init.autohide_panels)
+		if (config->Init.autohiding_panels)
 			autohide_handlers[ATH_QUICKHELP]->Hide();
 		else {
 			compiler_tree.menuItem->Check(false);
@@ -5505,3 +5512,33 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 	if (project) _aui_update_toolbar_pos(project);
 	if (update_aui) a.Update();
 }
+
+void mxMainWindow::OnMacroRecord (wxCommandEvent & evt) {
+	if (!m_macro||(*m_macro)[0].msg==0) {
+		cerr<<"Start recording"<<endl;
+		if (!m_macro) m_macro=new SingleList<mxSource::MacroAction>();
+		else m_macro->Clear();
+		m_macro->Add(mxSource::MacroAction(1));
+		IF_THERE_IS_SOURCE CURRENT_SOURCE->StartRecord();
+	} else {
+		cerr<<"Stop recording"<<endl;
+		(*m_macro)[0].msg=1;
+		IF_THERE_IS_SOURCE CURRENT_SOURCE->StopRecord();
+	}
+}
+
+void mxMainWindow::OnMacroReplay (wxCommandEvent & evt) {
+	if (!m_macro) return;
+	if ((*m_macro)[0].msg==0) (*m_macro)[0].msg=1;
+	IF_THERE_IS_SOURCE {
+		cerr<<"Start replaying"<<endl;
+		mxSource *src=CURRENT_SOURCE;
+		for(int i=1;i<m_macro->GetSize();i++) 
+			src->SendMsg(
+				(*m_macro)[i].msg,
+				(*m_macro)[i].wp,
+				(*m_macro)[i].lp
+			);
+	}
+}
+
