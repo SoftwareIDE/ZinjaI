@@ -52,8 +52,23 @@ class mxSource: public wxStyledTextCtrl {
 
 public:
 	struct MacroAction { 
-		int msg; int wp=0; int lp=0;
-		MacroAction(int _msg=0, int _wp=0, int _lp=0):msg(_msg),wp(_wp),lp(_lp){}
+		int msg; unsigned long wp; long lp; char data[2]; bool for_sci; char *extra;
+		MacroAction(int _msg, unsigned long _wp, long _lp):msg(_msg),wp(_wp),lp(_lp),for_sci(true),extra(NULL) { 
+			/// 2170 = replace selection, with a 16-bits keycode stored in the address pointed by lp
+			/// 2001/2003 = add/insert text, wp has lenght/position, lp points to a null-terminated string
+			/// 2002 = add styled text, wp has lenght, lp points to a some data buffer
+			if (lp && msg==2170) { memcpy(data,(void*)lp,2); }
+			else if (msg==2003||msg==2001) { 
+				char *aux=(char*)_lp; int i=0; while (aux[i]!='\0') i++;
+				extra=new char[i+1]; i=0; while (aux[i]!='\0') { extra[i]=aux[i]; i++; } extra[i]='\0';
+			} else if (msg==2001) { 
+				char *aux=(char*)_lp; extra=new char[wp]; for(unsigned int i=0;i<wp;i++) extra[i]=aux[i];
+			}
+		}
+		MacroAction(int id=0):msg(id),wp(0),lp(0),for_sci(false),extra(NULL) { }
+		MacroAction(const MacroAction &other) { this->extra=other.extra; const_cast<MacroAction*>(&other)->extra=NULL; }
+		MacroAction &Get() { if (msg==2170) lp=(long)data; else if (msg>=2001&&msg<=2003) lp=(long)extra; return *this; }
+		~MacroAction() { delete [] extra; }
 	};
 	void OnMacroAction(wxStyledTextEvent &evt);
 

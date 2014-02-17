@@ -324,7 +324,7 @@ wxString mxUtils::FindObjectDeps(wxFileName filename, wxString ref_path, wxArray
 	FindIncludes(filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR),filename.GetFullName(),already_processed,header_dirs);
 	wxString deps;
 	wxFileName file_name;
-	for(int i=0;i<already_processed.GetCount();i++) { 
+	for(unsigned int i=0;i<already_processed.GetCount();i++) { 
 		file_name=already_processed[i];
 		file_name.MakeRelativeTo(ref_path);
 		deps+=file_name.GetFullPath()+_T(" ");
@@ -341,7 +341,7 @@ void mxUtils::FindIncludes(wxArrayString &deps, wxFileName filename, wxString re
 	already_processed.Add(filename.GetFullPath()); // FindIncludes usa el primer item para sacar el path?
 	FindIncludes(filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR),filename.GetFullName(),already_processed,header_dirs,false);
 	wxFileName file_name;
-	for(int i=1;i<already_processed.GetCount();i++) { // empieza de 1 para saltearse el primer item (el propio archivo)
+	for(unsigned int i=1;i<already_processed.GetCount();i++) { // empieza de 1 para saltearse el primer item (el propio archivo)
 		file_name=already_processed[i];
 		file_name.MakeRelativeTo(ref_path);
 		deps.Add(file_name.GetFullPath());
@@ -364,7 +364,7 @@ bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArr
 	// comparar las fechas y liberar memoria
 	bool ret=false,future=false;
 	wxDateTime now=wxDateTime::Now();
-	for(int i=1;i<already_processed.GetCount();i++) { // saltea el elemento ficticio
+	for(unsigned int i=1;i<already_processed.GetCount();i++) { // saltea el elemento ficticio
 		if (!ret) {
 			if (project) {
 				project_file_item *fi=project->FindFromName(already_processed[i]);

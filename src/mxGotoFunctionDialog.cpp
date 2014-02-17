@@ -90,7 +90,7 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 	}
 	// find selected item (list is alphabetically sorted, so order does not match m_results)
 	wxString key = list_ctrl->GetString(list_ctrl->GetSelection());
-	int sel=-1, i=0;
+	int i=0;
 	while (i<m_results.GetSize() && m_results[i].get_label()!=key) i++;
 	if (i==-1) return;
 	gotoff_result &r=m_results[i];

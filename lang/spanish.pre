@@ -428,10 +428,12 @@ BREAKLIST_LOCATION_EXPRESSION
 Ubicacion/Expresion
 BREAKLIST_STATE
 Estado
-BREAKLIST_CONDITION
-Condicion
 BREAKLIST_COUNTER
 Conteo
+BREAKLIST_CONDITION
+Condicion
+BREAKOPTS_ANNTOATION
+Anotación
 BREAKLIST_CLOSE
 &Cerrar
 BREAKLIST_GO_TO
@@ -490,8 +492,6 @@ BREAKOPTS_ERROR_PLACING_BREAKPOINT
 Error al colocar breakpoint
 BREAKOPTS_INVALID_CONDITION
 La condicion actual no es valida
-BREAKOPTS_ANNTOATION
-Anotación
 BREAKOPTS_ERROR_SETTING_CONDITION
 La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?.
 COLORS_CAPTION
@@ -2482,6 +2482,10 @@ MAINW_CANNOT_SPLIT_VIEW
 No se puede duplicar archivos sin nombre
 MENUITEM_FILE_OPEN_ON_PROJECT
 &Abrir/Agregar al proyecto...
+MAINW_MACRO_START
+Generando macro, presione Ctrl+Shift+Q para finalizar.
+MAINW_MACRO_STOP
+Macro guardada, presione Ctrl+Q para reproducirla.
 MAINW_VALGRIND_MISSING
 Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_GPROF_GPROF_ENABLED

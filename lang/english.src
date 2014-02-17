@@ -426,10 +426,12 @@ BREAKLIST_LOCATION_EXPRESSION
 Location/Expression
 BREAKLIST_STATE
 State
-BREAKLIST_CONDITION
-Condition
 BREAKLIST_COUNTER
 Hit Counter
+BREAKLIST_CONDITION
+Condition
+BREAKOPTS_ANNTOATION
+Annotation
 BREAKLIST_CLOSE
 Close
 BREAKLIST_GO_TO
@@ -488,8 +490,6 @@ BREAKOPTS_ERROR_PLACING_BREAKPOINT
 Error placing breakpoint
 BREAKOPTS_INVALID_CONDITION
 Current condition is not valid
-BREAKOPTS_ANNTOATION
-Annotation
 BREAKOPTS_ERROR_SETTING_CONDITION
 The entered breakpoint's condition is not valid. Do you wan't to set an unconditional breakpoint anyway?
 COLORS_CAPTION
@@ -2480,6 +2480,10 @@ MAINW_CANNOT_SPLIT_VIEW
 ZinjaI cannot split unnamed files
 MENUITEM_FILE_OPEN_ON_PROJECT
 &Open/Attach to project...
+MAINW_MACRO_START
+Recording macro, press Ctrl+Shift+Q again to stop recording.
+MAINW_MACRO_STOP
+Macro saved, press Ctrl+Q to replay.
 MAINW_VALGRIND_MISSING
 Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_GPROF_GPROF_ENABLED

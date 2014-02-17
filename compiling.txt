@@ -5,13 +5,13 @@ Short version: Run "mingw32-make win32" on Windows, or "make linux" on GNU/Linux
 Building Zinjai
 -----------------
 
- For building ZinjaI you will need g++ and wxWidgets 2.8 or higher compiled in ANSI mode. Note that
+ For building ZinjaI you will need g++ and wxWidgets 2.8 compiled in ANSI mode. Note that
  most common GNU/Linux distribution offer the UNICODE version in their repositories, so you may  
  have to compile it manually from source code. Just follow regular steps (./configure; make; sudo 
  make install) adding --enable-ansi --disable-unicode arguments when running configure. If you're 
  compiling wxWidgets 2.8 you should also run make and sudo make install in contrib/src/stc, if you're 
  compiling 2.9 version you should add --enable-scintilla, for building its Scintilla extension. 
- ZinjaI's Windows installer includes a suitable wxWidgets version, so you won't need anything else.
+ ZinjaI's Windows installer includes a suitable wxWidgets version, so you won't need anything else*.
 
  You can use Makefiles in directories src, src_extra and parser to build ZinjaI's executable files, 
  or a global Makefile in zinjai directory that compiles everything. The latter is easier one.
@@ -41,6 +41,11 @@ Building Zinjai
  you also need zlib and libpng. You can get them from gnuwin32.sourceforge.net (download "Developer 
  files" and extract them in a new folder named "misc" in MinGW). You can still run ZinjaI without it, 
  but you'll have to setup another viewer in Preferences' dialog.
+ 
+ *note: the scintilla wrapper included in wx 2.8's contrib section has a bug in 64bits mode when using
+ macros (Ctrl+Shift+Q in ZinjaI). Binaries for 64bits included a patched version. The patch consist on
+ changing wparam field from int to unsigned long in wxStyledTextEvent struct, and lparam from int to
+ long in the same struct.
 
  Pablo Novara, zaskar_84@yahoo.com.ar
 

@@ -108,6 +108,17 @@ inline bool SameFile(wxFileName f1, wxFileName f2) {
 #endif
 
 
+#define _record_this_action_in_macro(_id) \
+	class MacroMasker {  \
+		bool is_masked; \
+	public: \
+		MacroMasker(int id) { \
+			is_masked = main_window->m_macro && (*main_window->m_macro)[0].msg==1; \
+			if (!is_masked) return; (*main_window->m_macro)[0].msg=0; \
+			main_window->m_macro->Add(mxSource::MacroAction(id)); \
+		} \
+		~MacroMasker() { if (is_masked) (*main_window->m_macro)[0].msg=1; } \
+	} macro_masker(_id);
 
 mxMainWindow *main_window;
 mxSource *EXTERNAL_SOURCE; // will be main_window address, an impossible address for a real mxSource, so OpenFile can use to say "was opened, but not by me, amy be wxfb or someone else"
@@ -831,6 +842,7 @@ void mxMainWindow::OnEditFind (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
+	_record_this_action_in_macro(event.GetId());
 	IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->CallTipCancel();
 		CURRENT_SOURCE->AutoCompCancel();
@@ -845,6 +857,7 @@ void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
+	_record_this_action_in_macro(event.GetId());
 	IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->CallTipCancel();
 		CURRENT_SOURCE->AutoCompCancel();
@@ -1946,6 +1959,7 @@ mxMainWindow::~mxMainWindow() {
 
 
 void mxMainWindow::OnEdit (wxCommandEvent &event) {
+	_record_this_action_in_macro(event.GetId());
 	IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->ProcessEvent(event);
 		CURRENT_SOURCE->SetFocus();
@@ -1953,11 +1967,13 @@ void mxMainWindow::OnEdit (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnEditNeedFocus (wxCommandEvent &event) {
+	_record_this_action_in_macro(event.GetId());
 	wxWindow *focus = main_window->FindFocus();
 	if (focus && focus->IsKindOf(toolbar_find_text->GetClassInfo()))
 		focus->ProcessEvent(event);
-	else IF_THERE_IS_SOURCE 
+	else IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->ProcessEvent(event);
+	}
 }
 
 
@@ -2618,24 +2634,25 @@ bool mxMainWindow::CloseSource (int i) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	wxAcceleratorEntry entries[16];
-	entries[0].Set(wxACCEL_CTRL, WXK_SPACE, mxID_EDIT_FORCE_AUTOCOMPLETE);
-	entries[1].Set(wxACCEL_CTRL, WXK_RETURN, mxID_FILE_OPEN_SELECTED);
-	entries[2].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_TAB, mxID_VIEW_NOTEBOOK_PREV);
-	entries[3].Set(wxACCEL_CTRL, WXK_TAB, mxID_VIEW_NOTEBOOK_NEXT);
-	entries[4].Set(wxACCEL_CTRL, WXK_PAGEUP, mxID_VIEW_NOTEBOOK_PREV);
-	entries[5].Set(wxACCEL_CTRL, WXK_PAGEDOWN, mxID_VIEW_NOTEBOOK_NEXT);
-	entries[6].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_F5, mxID_DEBUG_DO_THAT);
-	entries[7].Set(0, WXK_F12, mxID_FILE_OPEN_H);
-	entries[8].Set(wxACCEL_ALT|wxACCEL_CTRL, 'p', mxID_RUN_CONFIG);
-	entries[9].Set(wxACCEL_SHIFT|wxACCEL_CTRL, WXK_F6, mxID_INTERNAL_INFO);
-	entries[10].Set(wxACCEL_ALT|wxACCEL_CTRL, WXK_SPACE, mxID_WHERE_TIMER);
-	entries[11].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_SPACE, mxID_EDIT_AUTOCODE_AUTOCOMPLETE);
-	entries[12].Set(wxACCEL_CTRL|wxACCEL_ALT, 'w', mxID_FILE_CLOSE_ALL_BUT_ONE);
-	entries[13].Set(wxACCEL_CTRL|wxACCEL_ALT, 'f', mxID_EDIT_FIND_FROM_TOOLBAR);
-	entries[14].Set(wxACCEL_CTRL, 'q', mxID_MACRO_REPLAY);
-	entries[15].Set(wxACCEL_CTRL|wxACCEL_SHIFT, 'q', mxID_MACRO_RECORD);
-	wxAcceleratorTable accel(16,entries);
+	int accel_count=16, i=0;
+	wxAcceleratorEntry entries[accel_count];
+	entries[i++].Set(wxACCEL_CTRL, WXK_SPACE, mxID_EDIT_FORCE_AUTOCOMPLETE);
+	entries[i++].Set(wxACCEL_CTRL, WXK_RETURN, mxID_FILE_OPEN_SELECTED);
+	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_TAB, mxID_VIEW_NOTEBOOK_PREV);
+	entries[i++].Set(wxACCEL_CTRL, WXK_TAB, mxID_VIEW_NOTEBOOK_NEXT);
+	entries[i++].Set(wxACCEL_CTRL, WXK_PAGEUP, mxID_VIEW_NOTEBOOK_PREV);
+	entries[i++].Set(wxACCEL_CTRL, WXK_PAGEDOWN, mxID_VIEW_NOTEBOOK_NEXT);
+	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_F5, mxID_DEBUG_DO_THAT);
+	entries[i++].Set(0, WXK_F12, mxID_FILE_OPEN_H);
+	entries[i++].Set(wxACCEL_ALT|wxACCEL_CTRL, 'p', mxID_RUN_CONFIG);
+	entries[i++].Set(wxACCEL_SHIFT|wxACCEL_CTRL, WXK_F6, mxID_INTERNAL_INFO);
+	entries[i++].Set(wxACCEL_ALT|wxACCEL_CTRL, WXK_SPACE, mxID_WHERE_TIMER);
+	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_SPACE, mxID_EDIT_AUTOCODE_AUTOCOMPLETE);
+	entries[i++].Set(wxACCEL_CTRL|wxACCEL_ALT, 'w', mxID_FILE_CLOSE_ALL_BUT_ONE);
+	entries[i++].Set(wxACCEL_CTRL|wxACCEL_ALT, 'f', mxID_EDIT_FIND_FROM_TOOLBAR);
+	entries[i++].Set(wxACCEL_CTRL, 'q', mxID_MACRO_REPLAY);
+	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, 'q', mxID_MACRO_RECORD);
+	wxAcceleratorTable accel(accel_count,entries);
 	SetAcceleratorTable(accel);
 }
 
@@ -3757,7 +3774,7 @@ void mxMainWindow::OnFoldHideAll(wxCommandEvent &event) {
 
 /// @brief inserta el include correspondiente a la palabra sobre el cursor si lo conoce y no estaba
 void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
-	
+	_record_this_action_in_macro(event.GetId());
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
 		// separar la palabra
@@ -5515,30 +5532,35 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 
 void mxMainWindow::OnMacroRecord (wxCommandEvent & evt) {
 	if (!m_macro||(*m_macro)[0].msg==0) {
-		cerr<<"Start recording"<<endl;
+		SetStatusText(LANG(MAINW_MACRO_START,"Generando macro, presione Ctrl+Shift+Q para finalizar."));
 		if (!m_macro) m_macro=new SingleList<mxSource::MacroAction>();
 		else m_macro->Clear();
 		m_macro->Add(mxSource::MacroAction(1));
 		IF_THERE_IS_SOURCE CURRENT_SOURCE->StartRecord();
 	} else {
-		cerr<<"Stop recording"<<endl;
-		(*m_macro)[0].msg=1;
+		SetStatusText(LANG(MAINW_MACRO_STOP,"Macro guardada, presione Ctrl+Q para reproducirla."));
+		(*m_macro)[0].msg=0;
 		IF_THERE_IS_SOURCE CURRENT_SOURCE->StopRecord();
 	}
 }
 
 void mxMainWindow::OnMacroReplay (wxCommandEvent & evt) {
-	if (!m_macro) return;
-	if ((*m_macro)[0].msg==0) (*m_macro)[0].msg=1;
+	if (!m_macro) {
+		SetStatusText(LANG(MAINW_MACRO_STOP,"No hay macro definida, presione Ctrl+Shift+Q para generarla."));
+		return;
+	}
+	if ((*m_macro)[0].msg==1) OnMacroRecord(evt);
 	IF_THERE_IS_SOURCE {
 		cerr<<"Start replaying"<<endl;
 		mxSource *src=CURRENT_SOURCE;
-		for(int i=1;i<m_macro->GetSize();i++) 
-			src->SendMsg(
-				(*m_macro)[i].msg,
-				(*m_macro)[i].wp,
-				(*m_macro)[i].lp
-			);
+		src->BeginUndoAction();
+		for(int i=1;i<m_macro->GetSize();i++) {
+			mxSource::MacroAction &m=(*m_macro)[i].Get();
+			if (m.for_sci) src->SendMsg(m.msg,m.wp,m.lp);
+			else { evt.SetId(m.msg); ProcessEvent(evt); }
+		}
+		evt.SetId(mxID_MACRO_REPLAY); // just to be sure
+		src->EndUndoAction();
 	}
 }
 
