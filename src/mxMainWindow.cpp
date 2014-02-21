@@ -2153,7 +2153,6 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		return;
 #endif
 	}
-	compiler->timer->Stop();
 	menu.run_stop->Enable(false);
 	menu.run_run->Enable(true);
 	menu.run_compile->Enable(true);
@@ -2162,10 +2161,18 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		menu.tools_makefile->Enable(true);
 	}
 	
-	// ver si es uno de los procesos que se estan esperando
+	bool there_are_other_compiling_now=false;
+	// ver si es uno de los procesos que se estan esperando, y si era el ultimo del compilador para que se detenga el timer que analiza su salida
 	compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;
-	while (compile_and_run && compile_and_run->pid!=event.GetPid()) 
+	while (compile_and_run && compile_and_run->pid!=event.GetPid()) {
+		if (compile_and_run->process) there_are_other_compiling_now=true;
 		compile_and_run=compile_and_run->next;
+	}
+	compile_and_run_struct_single *aux_compile_and_run=compile_and_run;
+	while (there_are_other_compiling_now && aux_compile_and_run) 
+		aux_compile_and_run=aux_compile_and_run->next;
+	if (!there_are_other_compiling_now) compiler->timer->Stop();
+	
 	// si es uno interrumpido adrede, liberar memoria y no hacer nada mas
 	if (compile_and_run && compile_and_run->killed) { 
 		delete compile_and_run; return;
