@@ -23,10 +23,12 @@ BEGIN_EVENT_TABLE(mxGotoFunctionDialog, wxDialog)
 	EVT_CHECKBOX(wxID_ANY,mxGotoFunctionDialog::OnCaseCheck)
 END_EVENT_TABLE()
 	
-
-mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, bool direct_goto) : wxDialog(parent, wxID_ANY, LANG(GOTOFUNCTION_CAPTION,"Ir a..."),wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+/**
+* @param direct_goto   if empty shows the regular dialog, else it searchs for the text, and if theres only one result automatically goes to it, if there are more than one shows the dialog, but trying to preselect and option in the current_file, wich is given in this argument
+**/
+mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxString direct_goto) : wxDialog(parent, wxID_ANY, LANG(GOTOFUNCTION_CAPTION,"Ir a..."),wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
-	strict_compare=direct_goto;
+	strict_compare=direct_goto.Len();
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -37,16 +39,16 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, bool
 	goto_button->SetDefault(); 
 	
 	text_ctrl = new wxTextCtrl(this,wxID_ANY,_T(""));
-	if (direct_goto) text_ctrl->Hide();
+	if (strict_compare) text_ctrl->Hide();
 	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,NULL,wxLB_SINGLE|wxLB_SORT);
 	case_sensitive = new wxCheckBox(this,wxID_ANY,LANG(GOTOFUNCTION_CASE_SENSITIVE,"&Distinguir mayusculas y minusculas"));
 	case_sensitive->SetValue(true);
-	if (direct_goto) case_sensitive->Hide();
+	if (strict_compare) case_sensitive->Hide();
 	
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(goto_button,sizers->BA5);
 	
-	if (!direct_goto) 
+	if (!strict_compare) 
 		mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(GOTOFUNCTION_ENTER_FUNC_NAME,"Ingrese el nombre de la funcion, clase o metodo:")),sizers->BLRT5_Exp0);
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
 	mySizer->Add(list_ctrl,sizers->BA5_Exp0);
@@ -57,7 +59,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, bool
 	text_ctrl->SetSelection(-1,-1);
 	text_ctrl->SetFocus();
 	
-	timer = new wxTimer(GetEventHandler(),mxID_TIMER_INPUT);
+	if (!strict_compare) timer = new wxTimer(GetEventHandler(),mxID_TIMER_INPUT); else timer=NULL;
 	
 	if (text.Len()) {
 		text_ctrl->SetValue(text);
@@ -66,15 +68,24 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, bool
 	} else 
 		goto_button->Enable(false);
 	text_ctrl->SetSelection(0,-1);
-	if (direct_goto && list_ctrl->GetCount()==1 && goto_button->IsEnabled()) {
+	if (strict_compare && list_ctrl->GetCount()==1 && goto_button->IsEnabled()) {
 		wxCommandEvent evt;
 		OnGotoButton(evt);
 #if defined(_WIN32) || defined(__WIN32__)
 		main_window->SetFocusToSourceAfterEvents();
 #endif
-	} else
+	} else {
+		if (direct_goto) {
+			list_ctrl->SetFocus();
+			for(int i=0;i<m_results.GetSize();i++) { 
+				if (wxFileName(m_results[i].get_file()).GetName()==direct_goto) {
+					list_ctrl->SetSelection(list_ctrl->FindString(m_results[i].get_label()));
+					break;
+				}
+			}
+		}
 		Show();
-	if (direct_goto) list_ctrl->SetFocus();
+	}
 }
 
 mxGotoFunctionDialog::~mxGotoFunctionDialog() {
@@ -83,7 +94,7 @@ mxGotoFunctionDialog::~mxGotoFunctionDialog() {
 
 void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 	// update results if needed
-	if (timer->IsRunning()) {
+	if (timer && timer->IsRunning()) {
 		timer->Stop();
 		wxTimerEvent evt;
 		OnTimerInput(evt);
@@ -96,31 +107,10 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 	gotoff_result &r=m_results[i];
 	Close(); 
 	// process results (simulate double click on parser tree)
-	wxTreeItemId tree_item;
-	if (r.type==1) {
-		pd_macro *aux_macro = r.get_macro();
-		parser->popup_file_def = aux_macro->file->name;
-		parser->popup_line_def = aux_macro->line;
-		parser->OnGotoDef(main_window->notebook_sources);
-		tree_item=aux_macro->item;
-	} else if (r.type==2) {
-		pd_class *aux_class=r.get_class();
-		parser->popup_file_def = aux_class->file->name;
-		parser->popup_line_def = aux_class->line;
-		parser->OnGotoDef(main_window->notebook_sources);
-		tree_item=aux_class->item;
-	} else if (r.type==3) {
-		pd_func *aux_func = r.get_func();
-		if (aux_func->file_def) {
-			parser->popup_file_def = aux_func->file_def->name;
-			parser->popup_line_def = aux_func->line_def;
-		} else {
-			parser->popup_file_dec = aux_func->file_dec->name;
-			parser->popup_line_dec = aux_func->line_dec;
-		}
-		parser->OnGotoDef(main_window->notebook_sources);
-		tree_item=aux_func->item;
-	}
+	wxTreeItemId tree_item=r.get_item();
+	parser->popup_file_def = r.get_file();
+	parser->popup_line_def = r.get_line();
+	parser->OnGotoDef(main_window->notebook_sources);
 	// select the item in symbols tree and ensure definition/declaration visibility in its mxSource (at this point should be the current one)
 	if (main_window->left_panels) {
 		if (main_window->menu.view_left_panels->IsChecked()) {
@@ -148,13 +138,12 @@ void mxGotoFunctionDialog::OnCancelButton(wxCommandEvent &event) {
 }
 
 void mxGotoFunctionDialog::OnClose(wxCloseEvent &event) {
-	if (timer->IsRunning())
-		timer->Stop();
+	if (timer && timer->IsRunning()) timer->Stop();
 	Destroy();
 }
 
 void mxGotoFunctionDialog::OnTextChange(wxCommandEvent &event) {
-	timer->Start(500,true);
+	if (timer) timer->Start(500,true);
 }
 
 void mxGotoFunctionDialog::OnTimerInput(wxTimerEvent &event) {
@@ -193,7 +182,7 @@ void mxGotoFunctionDialog::OnCharHook (wxKeyEvent &event) {
 }
 
 void mxGotoFunctionDialog::OnCaseCheck(wxCommandEvent &event) {
-	timer->Stop();
+	if (timer) timer->Stop();
 	wxTimerEvent evt;
 	OnTimerInput(evt);
 	text_ctrl->SetFocus();

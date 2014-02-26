@@ -19,6 +19,32 @@ private:
 		gotoff_result(pd_macro *p):type(1),ptr(p) {}
 		gotoff_result(pd_class *p):type(2),ptr(p) {}
 		gotoff_result(pd_func *p):type(3),ptr(p) {}
+		wxString get_file() {
+			if (type==1) return get_macro()->file->name;
+			if (type==2) return get_class()->file->name;
+			if (type==3) {
+				pd_func *aux_func = get_func();
+				if (aux_func->file_def) return aux_func->file_def->name;
+				else return aux_func->file_dec->name;
+			}
+			return ""; // no deberia llegar nunca a este punto
+		}
+		int get_line() {
+			if (type==1) return get_macro()->line;
+			if (type==2) return get_class()->line;
+			if (type==3) {
+				pd_func *aux_func = get_func();
+				if (aux_func->file_def) return aux_func->line_def;
+				else return aux_func->line_dec;
+			}
+			return 0; // no deberia llegar nunca a este punto
+		}
+		const wxTreeItemId &get_item() {
+			if (type==1) return get_macro()->item;
+			if (type==2) return get_class()->item;
+			if (type==3) get_func()->item;
+			return wxTreeItemId(); // no deberia llegar nunca a este punto
+		}
 		pd_macro *get_macro() { return (pd_macro*)ptr; }
 		pd_class *get_class() { return (pd_class*)ptr; }
 		pd_func *get_func() { return (pd_func*)ptr; }
@@ -42,7 +68,7 @@ private:
 	wxCheckBox *case_sensitive;
 	bool strict_compare;
 public:
-	mxGotoFunctionDialog(wxString text, wxWindow* parent, bool direct_goto=false);
+	mxGotoFunctionDialog(wxString text, wxWindow* parent, wxString direct_goto="");
 	~mxGotoFunctionDialog();
 	void OnGotoButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);

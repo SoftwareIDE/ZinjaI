@@ -5558,7 +5558,6 @@ void mxMainWindow::OnMacroReplay (wxCommandEvent & evt) {
 	}
 	if ((*m_macro)[0].msg==1) OnMacroRecord(evt);
 	IF_THERE_IS_SOURCE {
-		cerr<<"Start replaying"<<endl;
 		mxSource *src=CURRENT_SOURCE;
 		src->BeginUndoAction();
 		for(int i=1;i<m_macro->GetSize();i++) {

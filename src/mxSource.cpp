@@ -2847,8 +2847,9 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 		int s=WordStartPosition(pos,true);
 		int e=WordEndPosition(pos,true);
 		wxString key = GetTextRange(s,e);
-		if (key.Len())
-			new mxGotoFunctionDialog(key,main_window,true);
+		if (key.Len()) {
+			new mxGotoFunctionDialog(key,main_window,GetFileName(false));
+		}
 	} else if (evt.AltDown()) {
 		int pos = PositionFromPointClose(evt.GetX(),evt.GetY());
 		int s=WordStartPosition(pos,true);
