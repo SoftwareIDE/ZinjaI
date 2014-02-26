@@ -3582,7 +3582,7 @@ void mxSource::SetReadOnlyMode (ReadOnlyModeEnum mode) {
 
 void mxSource::OnMacroAction (wxStyledTextEvent & evt) {
 	if (main_window->m_macro&&(*main_window->m_macro)[0].msg==1) {
-		cerr<<evt.GetMessage()<<" "<<evt.GetWParam()<<" "<<evt.GetLParam()<<endl;
+//		cerr<<evt.GetMessage()<<" "<<evt.GetWParam()<<" "<<evt.GetLParam()<<endl;
 		main_window->m_macro->Add(MacroAction(evt.GetMessage(),evt.GetWParam(),evt.GetLParam()));
 	}
 }

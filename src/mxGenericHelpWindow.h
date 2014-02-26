@@ -32,18 +32,18 @@ protected:
 	wxSashLayoutWindow *index_sash;
 	wxHtmlEasyPrinting *printer;
 	
-	void OnTree(wxTreeEvent &event);
-	void OnLink (wxHtmlLinkEvent &event);
-	void OnHideTree(wxCommandEvent &evt);
-	void OnClose(wxCloseEvent &evt);
-	void OnHome(wxCommandEvent &event);
-	void OnPrev(wxCommandEvent &event);
-	void OnNext(wxCommandEvent &event);
-	void OnCopy(wxCommandEvent &event);
-	void OnPrint(wxCommandEvent &event);
-	void OnSearch(wxCommandEvent &event);
-	void OnSashDrag (wxSashEvent& event);
-	void OnCharHook(wxKeyEvent &evt);
+	void OnTreeEvent(wxTreeEvent &event);
+	void OnLinkEvent(wxHtmlLinkEvent &event);
+	void OnHideTreeEvent(wxCommandEvent &event);
+	void OnCloseEvent(wxCloseEvent &event);
+	void OnHomeEvent(wxCommandEvent &event);
+	void OnPrevEvent(wxCommandEvent &event);
+	void OnNextEvent(wxCommandEvent &event);
+	void OnCopyEvent(wxCommandEvent &event);
+	void OnPrintEvent(wxCommandEvent &event);
+	void OnSearchEvent(wxCommandEvent &event);
+	void OnSashDragEvent(wxSashEvent& event);
+	void OnCharHookEvent(wxKeyEvent &event);
 	
 public:
 	mxGenericHelpWindow(bool use_tree);

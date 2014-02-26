@@ -16,20 +16,20 @@
 #include "Language.h"
 
 BEGIN_EVENT_TABLE(mxGenericHelpWindow,wxFrame)
-	EVT_CLOSE(mxGenericHelpWindow::OnClose)
-	EVT_BUTTON(mxID_HELPW_HIDETREE, mxGenericHelpWindow::OnHideTree)
-	EVT_BUTTON(mxID_HELPW_HOME, mxGenericHelpWindow::OnHome)
-	EVT_BUTTON(mxID_HELPW_PREV, mxGenericHelpWindow::OnPrev)
-	EVT_BUTTON(mxID_HELPW_NEXT, mxGenericHelpWindow::OnNext)
-	EVT_BUTTON(mxID_HELPW_COPY, mxGenericHelpWindow::OnCopy)
-	EVT_BUTTON(mxID_HELPW_SEARCH, mxGenericHelpWindow::OnSearch)
-	EVT_BUTTON(mxID_HELPW_PRINT, mxGenericHelpWindow::OnPrint)
-	EVT_SASH_DRAGGED(wxID_ANY, mxGenericHelpWindow::OnSashDrag)
-	EVT_TREE_SEL_CHANGED(wxID_ANY, mxGenericHelpWindow::OnTree)
-	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxGenericHelpWindow::OnTree)
-	EVT_HTML_LINK_CLICKED(wxID_ANY, mxGenericHelpWindow::OnLink)
-	EVT_CHAR_HOOK(mxGenericHelpWindow::OnCharHook)
-	END_EVENT_TABLE();
+	EVT_CLOSE(mxGenericHelpWindow::OnCloseEvent)
+	EVT_BUTTON(mxID_HELPW_HIDETREE, mxGenericHelpWindow::OnHideTreeEvent)
+	EVT_BUTTON(mxID_HELPW_HOME, mxGenericHelpWindow::OnHomeEvent)
+	EVT_BUTTON(mxID_HELPW_PREV, mxGenericHelpWindow::OnPrevEvent)
+	EVT_BUTTON(mxID_HELPW_NEXT, mxGenericHelpWindow::OnNextEvent)
+	EVT_BUTTON(mxID_HELPW_COPY, mxGenericHelpWindow::OnCopyEvent)
+	EVT_BUTTON(mxID_HELPW_SEARCH, mxGenericHelpWindow::OnSearchEvent)
+	EVT_BUTTON(mxID_HELPW_PRINT, mxGenericHelpWindow::OnPrintEvent)
+	EVT_SASH_DRAGGED(wxID_ANY, mxGenericHelpWindow::OnSashDragEvent)
+	EVT_TREE_SEL_CHANGED(wxID_ANY, mxGenericHelpWindow::OnTreeEvent)
+	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxGenericHelpWindow::OnTreeEvent)
+	EVT_HTML_LINK_CLICKED(wxID_ANY, mxGenericHelpWindow::OnLinkEvent)
+	EVT_CHAR_HOOK(mxGenericHelpWindow::OnCharHookEvent)
+END_EVENT_TABLE();
 
 mxGenericHelpWindow::mxGenericHelpWindow(bool use_tree):wxFrame (NULL,mxID_HELPW, LANG(HELPW_CAPTION,"Ayuda de ZinjaI"), wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
 	
@@ -93,14 +93,14 @@ mxGenericHelpWindow::mxGenericHelpWindow(bool use_tree):wxFrame (NULL,mxID_HELPW
 //	search_button->SetDefault();
 }
 
-void mxGenericHelpWindow::OnClose(wxCloseEvent &evt) {
+void mxGenericHelpWindow::OnCloseEvent(wxCloseEvent &event) {
 	Hide();
 }
 
 mxGenericHelpWindow::~mxGenericHelpWindow() {
 }
 
-void mxGenericHelpWindow::OnHideTree(wxCommandEvent &event) {
+void mxGenericHelpWindow::OnHideTreeEvent(wxCommandEvent &event) {
 	if (bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()<10)
 		bottomSizer->SetItemMinSize(index_sash,200, 10);	
 	else
@@ -108,19 +108,19 @@ void mxGenericHelpWindow::OnHideTree(wxCommandEvent &event) {
 	bottomSizer->Layout();
 }
 
-void mxGenericHelpWindow::OnHome(wxCommandEvent &event) {
+void mxGenericHelpWindow::OnHomeEvent(wxCommandEvent &event) {
 	ShowIndex();
 }
 
-void mxGenericHelpWindow::OnPrev(wxCommandEvent &event) {
+void mxGenericHelpWindow::OnPrevEvent(wxCommandEvent &event) {
 	OnPrev();
 }
 
-void mxGenericHelpWindow::OnNext(wxCommandEvent &event) {
+void mxGenericHelpWindow::OnNextEvent(wxCommandEvent &event) {
 	OnNext();
 }
 
-void mxGenericHelpWindow::OnCopy(wxCommandEvent &event) {
+void mxGenericHelpWindow::OnCopyEvent(wxCommandEvent &event) {
 	if (html->SelectionToText()==_T("")) 
 		return;
 	wxTheClipboard->Open();
@@ -128,34 +128,31 @@ void mxGenericHelpWindow::OnCopy(wxCommandEvent &event) {
 	wxTheClipboard->Close();
 }
 
-void mxGenericHelpWindow::OnSashDrag(wxSashEvent& event) {
+void mxGenericHelpWindow::OnSashDragEvent(wxSashEvent& event) {
 	//index_sash->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
 	bottomSizer->SetItemMinSize(index_sash,event.GetDragRect().width<150?150:event.GetDragRect().width, 10);
 	//GetClientWindow()->Refresh();
 	bottomSizer->Layout();
 }
 
-void mxGenericHelpWindow::OnTree(wxTreeEvent &event) {
+void mxGenericHelpWindow::OnTreeEvent(wxTreeEvent &event) {
 	OnTree(event.GetItem());
 }
 
-void mxGenericHelpWindow::OnLink (wxHtmlLinkEvent &event) {
+void mxGenericHelpWindow::OnLinkEvent(wxHtmlLinkEvent &event) {
 	if (!OnLink(event.GetLinkInfo().GetHref())) event.Skip();
 }
 
-void mxGenericHelpWindow::OnCharHook(wxKeyEvent &evt) {
-	if (evt.GetKeyCode()==WXK_RETURN && search_text==FindFocus()) {
-		wxCommandEvent evt;
-		OnSearch(evt);
-	} else if (evt.GetKeyCode()==WXK_ESCAPE)
+void mxGenericHelpWindow::OnCharHookEvent(wxKeyEvent &event) {
+	if (event.GetKeyCode()==WXK_RETURN && search_text==FindFocus()) {
+		wxCommandEvent e; OnSearchEvent(e);
+	} else if (event.GetKeyCode()==WXK_ESCAPE)
 		Close();
 	else
-		evt.Skip();
+		event.Skip();
 }
 
-
-
-void mxGenericHelpWindow::OnPrint(wxCommandEvent &evt) {
+void mxGenericHelpWindow::OnPrintEvent(wxCommandEvent &event) {
 	if (!printer) {
 		printer = new wxHtmlEasyPrinting("ZinjaI's help",this);
 		int sizes[]={6,8,10,12,14,16,18};
@@ -164,7 +161,7 @@ void mxGenericHelpWindow::OnPrint(wxCommandEvent &evt) {
 	printer->PrintFile(html->GetOpenedPage());
 }
 
-void mxGenericHelpWindow::OnSearch (wxCommandEvent & event) {
+void mxGenericHelpWindow::OnSearchEvent(wxCommandEvent & event) {
 	OnSearch(search_text->GetValue());
 }
 
