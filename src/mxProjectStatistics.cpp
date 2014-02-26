@@ -74,10 +74,10 @@ void mxProjectStatistics::SetValues(bool all) {
 	if (all) {
 		unsigned long sz=0, tsz=wxFileName::GetSize(project->filename).ToULong();
 		if (tsz!=wxInvalidSize) sz+=tsz;
-		int cs=0,ch=0,co=0,ct=0;
-		int lc=0;
+		int ct=0, lc=0;
 		
 		{
+			int ch=0;
 			LocalListIterator<project_file_item*> fi(&project->files_headers);
 			while (fi.IsValid()) { 
 				ch++; ct++;
@@ -94,6 +94,7 @@ void mxProjectStatistics::SetValues(bool all) {
 		}
 		
 		{
+			int cs=0;
 			LocalListIterator<project_file_item*> fi(&project->files_sources);
 			while(fi.IsValid()) { 
 				ct++; cs++; 
@@ -110,6 +111,7 @@ void mxProjectStatistics::SetValues(bool all) {
 		}
 		
 		{
+			int co=0;
 			LocalListIterator<project_file_item*> fi(&project->files_others);
 			while(fi.IsValid()) { 
 				co++; ct++;

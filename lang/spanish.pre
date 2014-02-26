@@ -990,6 +990,24 @@ FIND_TOO_MANY_RESULTS
 demasiados resultados, solo se muestran los primeros 500
 FIND_LINE
 linea
+HELPW_CAPTION
+Ayuda de ZinjaI
+HELPW_TOGGLE_TREE
+Mostrar/Ocultar Indice
+HELPW_INDEX
+Ir a la pagina de incio
+HELPW_PREVIOUS
+Ir a la pagina anterior
+HELPW_NEXT
+Ir a la pagina siguiente
+HELPW_COPY
+Copiar seleccion al portapapeles
+HELPW_PRINT
+Imprimir pagina actual
+HELPW_SEARCH_LABEL
+Palabras a buscar
+HELPW_FIND
+Buscar...
 GOTOFILE_CAPTION
 Ir a...
 GENERAL_GOTO_BUTTON
@@ -1012,37 +1030,19 @@ GOTOLINE_CAPTION
 Ir a linea
 GOTOLINE_YOURE_HERE
 Estas en la linea <{1}> de <{2}>.
-HELPW_CAPTION
-Ayuda de ZinjaI
-HELPW_FORUM_TOGGLE_TREE
-Mostrar/Ocultar Indice
-HELPW_FORUM_INDEX
-Ir a la pagina de incio
-HELPW_FORUM_PREVIOUS
-Ir a la pagina anterior
-HELPW_FORUM_NEXT
-Ir a la pagina siguiente
-HELPW_FORUM_COPY
-Copiar seleccion al portapapeles
-HELPW_FORUM_PRINT
-Imprimir pagina actual
-HELPW_FORUM_SEARCH_LABEL
-Palabras a buscar
-HELPW_FORUM_FIND
-Buscar...
 HELPW_FORUM_TEXT
 ¿Lo que buscas no está en la ayuda, está desactualizado, erróneo o incompleto? 
 HELPW_FORUM_BUTTON
 accede al Foro...
-HELPW_FORUM_SEARCH_ERROR_EMPTY
+HELPW_SEARCH_ERROR_EMPTY
 Debe introducir al menos una palabra clave para buscar
-HELPW_FORUM_SEARCH_SEARCHING
+HELPW_SEARCH_SEARCHING
 Buscando...
-HELPW_FORUM_SEARCH_RESULTS
+HELPW_SEARCH_RESULTS
 Resultados:
-HELPW_FORUM_SEARCH_NO_RESULTS_FOR
+HELPW_SEARCH_NO_RESULTS_FOR
 No se encontraron coincidencias para \"
-HELPW_FORUM_ADDRESS
+HELPW_ADDRESS
 http://zinjai.sourceforge.net/index.php?page=contacto.php
 XDG_CAPTION
 Iconos lanzadores
@@ -1719,7 +1719,7 @@ Tutoriales...
 MENUITEM_HELP_ZINJAI
 Ayuda sobre ZinjaI...
 MENUITEM_HELP_CPP
-Ayuda sobre C++...
+Ayuda sobre C/C++...
 MENUITEM_HELP_TIPS
 &Mostrar sugerencia...
 MENUITEM_HELP_OPINION
@@ -2095,7 +2095,7 @@ Ayuda Sobre ZinjaI...
 TOOLBAR_DESC_HELP_ZINJAI
 Ayuda -> Ayuda sobre ZinjaI...
 TOOLBAR_CAPTION_HELP_CPP
-Ayuda Sobre C++...
+Ayuda Sobre C/C++...
 TOOLBAR_DESC_HELP_CPP
 Ayuda -> Ayuda sobre C++...
 TOOLBAR_CAPTION_HELP_TIPS

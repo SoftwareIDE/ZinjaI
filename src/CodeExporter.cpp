@@ -50,9 +50,9 @@ bool CodeExporter::ExportHtml(mxSource *src, wxString title, wxString fname) {
 	
 	int len = src->GetLength();
 	src->Colourise(0,len);
-	int p0=0,p1=1,s;
+	int p0=0,p1=1;
 	while (true) {
-		s=src->GetStyleAt(p0);
+		int s=src->GetStyleAt(p0);
 		while (p1<len && src->GetStyleAt(p1)==s)
 			p1++;
 			

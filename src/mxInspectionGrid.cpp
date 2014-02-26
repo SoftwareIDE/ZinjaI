@@ -755,9 +755,9 @@ void mxInspectionGrid::OnFreeze(wxCommandEvent &evt) {
 
 void mxInspectionGrid::OnCopyAll(wxCommandEvent &evt) {
 	wxString text;
-	unsigned int c[4]={IG_COL_LEVEL,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE}, w[3]={0,0,0};
 	bool formatted_copy=true;
 	if (formatted_copy) {
+		unsigned int c[4]={IG_COL_LEVEL,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE}, w[3]={0,0,0};;
 		for (int i=0;i<debug->inspections_count;i++) {
 			for (int j=0;j<3;j++) {
 				wxString sw; sw<<GetCellValue(i,c[j]);

@@ -924,7 +924,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			if (p+4==e && GetTextRange(p,e)==_T("else")) {
 				char c; int s;
 				p=PositionFromLine(GetCurrentLine())-1;
-				while (p>=0 && ((c=GetCharAt(p))==' ' || c=='\t'  || c=='\r'  || c=='\n' || (s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR))
+				while (p>=0 && ((c=GetCharAt(p))==' ' || c=='\t'  || c=='\r'  || c=='\n' || (s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR))
 					p--;
 				if (p>0) 
 					if (c=='}') {
@@ -932,7 +932,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						if (p==wxSTC_INVALID_POSITION)
 								return;
 						p--;
-						while (p>=0 && ((c=GetCharAt(p))==' ' || c=='\t'  || c=='\r'  || c=='\n' || (s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR))
+						while (p>=0 && ((c=GetCharAt(p))==' ' || c=='\t'  || c=='\r'  || c=='\n' || (s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR))
 							p--;
 					}
 					bool baux; e=0;
@@ -1468,13 +1468,12 @@ void mxSource::Indent(int min, int max) {
 	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 	wxStyledTextEvent evt, evt_n;
 	evt_n.SetKey('\n');
-	int a,s,p;
-	char c;
 	if (min==0)
 		SetLineIndentation(0,0);
 	for (int i=(min==0?1:min);i<=max;i++) {
+		int s; char c; // para los II_*
 		SetLineIndentation(i,0);
-		p=PositionFromLine(i);
+		int p=PositionFromLine(i);
 		SetCurrentPos(p);
 		OnCharAdded(evt_n);
 		p=PositionFromLine(i);
@@ -1510,7 +1509,7 @@ void mxSource::Indent(int min, int max) {
 			SetCurrentPos(p+8);
 			OnCharAdded(evt);
 		} else if (c=='c' && GetTextRange(p,p+5)==_T("case ") && !II_SHOULD_IGNORE(p)) {
-			a=GetLineEndPosition(i);
+			int a=GetLineEndPosition(i);
 			p+=5;
 			II_FRONT_NC(p,p<=a && (GetCharAt(p)!=':' || II_SHOULD_IGNORE(p)));
 			if (p<=a) {
@@ -1708,11 +1707,11 @@ bool mxSource::AddInclude(wxString header) {
 	header=header.MakeLower();
 #endif
 	wxString str;
-	int s,p,p1,p2,le, lta=0, flag=true, comment;
+	int s,p,p1,p2,lta=0, flag=true, comment;
 	int uncomment_line=0;
 	for (int i=0;i<cl;i++) {
 		p=GetLineIndentPosition(i);
-		le=GetLineEndPosition(i);
+		int le=GetLineEndPosition(i);
 		if (GetTextRange(p,p+8)==_T("#include") || GetTextRange(p,p+10)==_T("//#include") || GetTextRange(p,p+11)==_T("// #include")) {
 			if ( ( comment = (GetTextRange(p,p+2)==_T("//")) ) ) {
 				p+=2;
@@ -1853,7 +1852,7 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 		menu.Append(mxID_EDIT_GOTO_FUNCTION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Buscar en el Arbol de Simbolos..."))<<_T("\tCtrl+Shift+G"));
 		if (GetCharAt(s-1)=='#')
 			key = GetTextRange(s-1,e);
-		menu.Append(mxID_HELP_CPP, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<_T("\tShift+F1"));
+		menu.Append(mxID_HELP_CODE, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<_T("\tShift+F1"));
 //		if ((s=GetStyleAt(s))!=wxSTC_C_PREPROCESSOR && !STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s) && s!=wxSTC_C_OPERATOR && s!=wxSTC_C_WORD && s!=wxSTC_C_WORD2) {
 		if (lexer==wxSTC_LEX_CPP && GetStyleAt(s)==wxSTC_C_IDENTIFIER) {
 			menu.Append(mxID_EDIT_INSERT_HEADER, LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key)<<_T("\tCtrl+H"));
@@ -1894,7 +1893,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 	
 	wxString ret=_T(""),space=_T("");
 	
-	int p_to,p_from,p_llave_c, /*p_llave_a,*/ p_par_c;
+	int p_to,p_from;
 	p_from = pos;
 	int p,s;
 	int p1,p2;
@@ -2073,10 +2072,10 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 //		p_llave_a = FindText(p_from-1,0,_T("{"));
 //		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
 //			p_llave_a = FindText(p_llave_c-1,0,_T("}"));
-		p_llave_c = FindText(p_from-1,0,_T("}"));
+		int p_llave_c = FindText(p_from-1,0,_T("}"));
 		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
 			p_llave_c = FindText(p_llave_c-1,0,_T("}"));
-		p_par_c = FindText(p_from-1,0,_T(")"));
+		int p_par_c = FindText(p_from-1,0,_T(")"));
 		while (p_par_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_par_c))
 			p_par_c = FindText(p_par_c-1,0,_T(")"));
 
@@ -2386,13 +2385,13 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 }
 
 wxString mxSource::FindScope(int pos) {
-	int p_llave_a,p_llave_c,s, l=pos;
+	int l=pos,s;
 	char c;
 	while (true) {
-		p_llave_a = FindText(pos,0,_T("{"));
+		int p_llave_a = FindText(pos,0,_T("{"));
 		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
 			p_llave_a = FindText(p_llave_a-1,0,_T("{"));
-		p_llave_c = FindText(pos,0,_T("}"));
+		int p_llave_c = FindText(pos,0,_T("}"));
 		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
 			p_llave_c = FindText(p_llave_c-1,0,_T("}"));
 		if (p_llave_c==wxSTC_INVALID_POSITION && p_llave_a==wxSTC_INVALID_POSITION) {
@@ -3064,11 +3063,11 @@ void mxSource::AlignComments (int col) {
 	if (ss>se) { int aux=ss; ss=se; se=aux; }
 	bool sel = se>ss; char c;
 	int line_ss=sel?LineFromPosition(ss):0, line_se=sel?LineFromPosition(se):GetLineCount();
-	int p1,p2,p3,pl=PositionFromLine(line_ss),s;
+	int p3,pl=PositionFromLine(line_ss),s;
 	bool prev=false;
 	for (int i=line_ss;i<line_se;i++) {
-		p1=pl;
-		p2=PositionFromLine(i+1);
+		int p1=pl;
+		int p2=PositionFromLine(i+1);
 		if (!II_IS_COMMENT(p1) || prev) {
 			if (!II_IS_COMMENT(p1)) {
 				while (p1<p2 && !II_IS_COMMENT(p1)) p1++;
@@ -3113,10 +3112,10 @@ void mxSource::RemoveComments () {
 	if (ss>se) { int aux=ss; ss=se; se=aux; }
 	bool sel = se>ss;
 	int line_ss=sel?LineFromPosition(ss):0, line_se=sel?LineFromPosition(se):GetLineCount();
-	int p1,p2,p3,s;
+	int p1,p2,s;
 	for (int i=line_ss;i<line_se;i++) {
 
-		p3=ss=PositionFromLine(i);
+		int p3=ss=PositionFromLine(i);
 		se=PositionFromLine(i+1);
 		
 		while (p3<se && !II_IS_COMMENT(p3)) p3++;
@@ -3285,14 +3284,14 @@ void mxSource::SetSourceTime(wxDateTime stime) {
 wxString mxSource::WhereAmI() {
 	wxString scope, type;
 	int pos=GetCurrentPos();
-	int p_llave_a,p_llave_c,s, l=pos;
+	int s, l=pos;
 	int first_p=-1; // guarda el primer scope, para buscar argumentos si es funcion
 	char c;
 	while (true) {
-		p_llave_a = FindText(pos,0,_T("{"));
+		int p_llave_a = FindText(pos,0,_T("{"));
 		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
 			p_llave_a = FindText(p_llave_a-1,0,_T("{"));
-		p_llave_c = FindText(pos,0,_T("}"));
+		int p_llave_c = FindText(pos,0,_T("}"));
 		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
 			p_llave_c = FindText(p_llave_c-1,0,_T("}"));
 		if (p_llave_c==wxSTC_INVALID_POSITION && p_llave_a==wxSTC_INVALID_POSITION) {

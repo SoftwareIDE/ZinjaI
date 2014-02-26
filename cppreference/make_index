@@ -1,0 +1,4 @@
+#!/bin/sh
+for a in $(find -name "*.html"); do
+	grep -H \<title "$a" | sed 's/<title>//' | sed 's/<\/title>//' | sed 's/ - cppreference.com//' | sed 's/cppreference.com//'
+done

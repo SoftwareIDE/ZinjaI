@@ -10,7 +10,7 @@ using namespace std;
 
 struct GprofData {
 	int cmp_id;
-	void cut(const string s, string *v, int cant) {
+	void cut(const string &s, string *v, int cant) {
 		int p=0,l=s.size(),i=0;
 		while (true) {
 			while(p<l && (s[p]==' '||s[p]=='\t')) p++;

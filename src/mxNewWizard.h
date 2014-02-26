@@ -110,6 +110,7 @@ public:
 	void OnProjectCreate();
 	void WizardCreate();
 	
+	void OnOnProjectNameChange(wxCommandEvent &evt);
 	void OnProjectFolderCheck(wxCommandEvent &evt);
 	void OnProjectNameChange(wxCommandEvent &evt);
 	void OnProjectFolderChange(wxCommandEvent &evt);

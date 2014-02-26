@@ -1119,7 +1119,7 @@ void mxMainWindow::OnHelpTip (wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpCpp (wxCommandEvent &event) {
-	mxReferenceWindow::ShowHelp(); return;
+	mxReferenceWindow::ShowHelp();
 }
 
 void mxMainWindow::OnHelpCode (wxCommandEvent &event) {
@@ -3270,9 +3270,8 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 						config->Init.close_files_for_project = true;
 			}
 			if (do_close) {
-				mxSource *source;
 				for (int i=notebook_sources->GetPageCount()-1;i>=0;i--) {
-					source = ((mxSource*)(notebook_sources->GetPage(i)));
+					mxSource *source = ((mxSource*)(notebook_sources->GetPage(i)));
 					if (source ->GetModify()) {
 						notebook_sources->SetSelection(i);
 						int res=mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_QUESTION,"Hay cambios sin guardar. Desea guardarlos?"), source->page_text, mxMD_QUESTION|mxMD_YES_NO_CANCEL).ShowModal();
@@ -4075,13 +4074,17 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	static wxString what;
 	wxString res = mxGetTextFromUser(_T("Comando:"), _T("Comandos internos") , what, this);
 	if (res=="help") {
-		wxMessageBox ("errorsave, kboom, debugmode");
+		wxMessageBox ("errorsave, kboom, debugmode, wxlog");
 	} else if (res=="debugmode") {
 		zinjai_debug_mode=!zinjai_debug_mode;
 		if (zinjai_debug_mode) wxMessageBox ("debugmode activado");
 		else wxMessageBox ("debugmode desactivado");
 	} else if (res=="errorsave") {
 		er_sigsev(11);
+	} else if (res=="wxlog on") {
+		wxLog::SetActiveTarget(new wxLogGui());
+	} else if (res=="wxlog off") {
+		wxLog::SetActiveTarget(new wxLogStderr());
 	} else if (res=="kboom") {
 		int *p=NULL;
 		// cppcheck-suppress nullPointer
@@ -5342,7 +5345,7 @@ void mxMainWindow::OnExternCompilerOutput (wxCommandEvent & evt) {
 }
 
 void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
-	long line; 	bool opened=false;	
+	long line;
 	wxString preline=error[1]==':'?error.AfterFirst(':').AfterFirst(':'):error.AfterFirst(':');
 	if ( preline.BeforeFirst(':').ToLong(&line) ) {
 		// ver si esta abierto
@@ -5354,6 +5357,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 			the_one=sthe_one=DIR_PLUS_FILE(CURRENT_SOURCE->source_filename.GetPath(),sthe_one);
 		else
 			the_one=sthe_one;
+		bool opened=false;
 		for (int i=0,j=notebook_sources->GetPageCount();i<j;i++) {
 			mxSource *src = ((mxSource*)(notebook_sources->GetPage(i)));
 			if ((!src->sin_titulo && SameFile(src->source_filename,the_one)) || (src->temp_filename==the_one && src==compiler->last_compiled) ) {

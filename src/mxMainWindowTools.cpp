@@ -1094,7 +1094,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		if (!description.Len()) return; 
 		wxString filename=wxGetTextFromUser(LANG(MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre del archivo del nuevo template de proyecto"),LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."),wxFileName(project->filename).GetName());
 		if (!filename.Len()) return; 
-		mxOSD(this,LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."));
+		mxOSD osd(this,LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."));
 		project->Clean(); wxYield(); // remove temporals
 		wxString project_name=project->project_name; project->project_name=description; // replace project name with the new description
 		project->Save(true); // save in place as template
@@ -1130,7 +1130,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		}
 		template_file.Write(); template_file.Close();
 	}
-	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK);
+	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK).Show();
 	delete wizard; wizard=NULL;
 }
 

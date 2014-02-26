@@ -91,10 +91,9 @@ bool mxValgrindOuput::LoadOutputValgrind() {
 	wxFFileInputStream finput(filename);
 	wxTextInputStream input(finput);
 	wxString line;
-	int i,l;
 	while (finput.CanRead()) {
 		line=input.ReadLine();
-		i=0; l=line.Len();
+		int i=0, l=line.Len();
 		while (i<l && ( line[i]==' ' || line[i]=='\t') ) i++;
 		while (i<l && line[i]!=' ' && line[i]!='\t') i++;
 		i++;

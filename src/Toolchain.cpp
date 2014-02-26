@@ -84,6 +84,8 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 		fname=project->active_configuration->toolchain;
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
+			toolchains[i].CheckVersion(true,0,0);
+			toolchains[i].CheckVersion(false,0,0);
 			current_toolchain=toolchains[i];
 			current_toolchain.SetArgumets();
 			return current_toolchain;
@@ -147,9 +149,10 @@ wxString Toolchain::GetExtraCompilingArguments (bool cpp) {
 	if (type==TC_GCC) {
 		if (CheckVersion(cpp,4,8)) return "-fshow-column -fno-diagnostics-show-caret";
 		else return "-fshow-column";
-	}
-	else if (type==TC_CLANG) return "-fno-caret-diagnostics";
-	else return "";
+	} else if (type==TC_CLANG) {
+		return "-fno-caret-diagnostics";
+	} else 
+		return "";
 }
 
 bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
@@ -161,6 +164,7 @@ bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
 			version_cpp=v*1000+s;
 		}
+		cerr<<"Toolchain::CheckVersion cpp: "<<version_cpp<<endl;
 		return version_cpp>=_v*1000+_s;
 	} else {
 		if (version_c<0) {
@@ -170,6 +174,7 @@ bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
 			version_c=v*1000+s;
 		}
+		cerr<<"Toolchain::CheckVersion c: "<<version_c<<endl;
 		return version_c>=_v*1000+_s;
 	}
 }

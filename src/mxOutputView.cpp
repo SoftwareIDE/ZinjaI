@@ -99,6 +99,7 @@ void mxOutputView::AppendOutput(wxString text) {
 	ctrl_std->AppendText(text);
 }
 
+// cppcheck-suppress publicAllocationError
 void mxOutputView::Launch(wxString path, wxString command) {
 	process = new wxProcess(GetEventHandler(),wxID_ANY);
 	process->Redirect();

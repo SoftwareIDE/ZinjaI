@@ -7,10 +7,12 @@
 <I>Nota2 : Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
 </UL><BR><B>Release 201402XX</B><BR><UL>
-
+	<LI>Imp: Pequeñas mejoras de usabilidad en los cuadros de diálogo para crear un archivo/clase en un proyecto y para ir a un método/función.</LI>
+	<LI>New: Se agregó una nueva ventana de ayuda para consultar una versión offline (incluida en ZinjaI) de la documentación de C/C++ estándar disponible en cppreference.com.</LI>
 	<LI>New: Se pueden asociar descripciones a los breakpoints para que se muestren cuando son alcanzados durante la depuracion.</LI>
 	<LI>New: Se pueden guardar macros (acciones/eventos de edición sobre un fuente) con Ctrl+Shift+Q para luego reproducirlas con un atajo de teclado.</LI>
-<!--	<LI>Imp: Se actualizaron las versiones de gcc (a 4.8.1-4), gdb (a 7.6.1-1) y sus dependencias en los binarios de MinGW incluidos en el instalador para Windows.</LI> -->
+	<LI>Imp: Ya no se incluye la biblitoeca wxWidgets en el instalador para Windows (binarios, cabeceras, refencia y plantillas; ahora pueden instalarse como complementos).</LI>
+	<LI>Imp: Se actualizaron las versiones de gcc (a 4.8.1-4), gdb (a 7.6.1-1) y sus dependencias en los binarios de MinGW incluidos en el instalador para Windows.</LI>
 	<LI>Fix: Se corrigió un bug relacionado al uso de popup menues en los binarios de freeglut incluidos en la versión para Windows.</LI>
 	<LI>Fix: Mejorado el algoritmo utilizado para analizar la salida del compilador al armar el arbol de resultados, para evitar los problemas al analizar errores con templates en la versión anterior.</LI>
 	<LI>New: Nuevo cuadro de configuración para las opciones de la integración con wxFormBuilder, con nuevas funcionalidades como detectar automáticamente las clases agregradas/eliminadas para crear/eliminar las herencias, o marcar los fuentes autogenerados como solo-lectura.</LI>

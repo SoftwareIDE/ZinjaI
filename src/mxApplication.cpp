@@ -7,6 +7,7 @@
 #include "mxBeginnerPanel.h"
 #include <wx/thread.h>
 #include "mxIconInstaller.h"
+#include <wx/log.h>
 
 IMPLEMENT_APP(mxApplication)
 
@@ -47,6 +48,10 @@ bool mxApplication::OnInit() {
 		cout<<"ZinjaI "<<VERSION<<endl;
 		return false;
 	}
+	
+#ifndef DEBUG
+	wxLog::SetActiveTarget(new wxLogStderr());
+#endif
 	
 	app=this;
 	srand(time(0));

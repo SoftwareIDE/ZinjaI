@@ -1139,12 +1139,11 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 		wxArrayString omac,nmac; 
 		utils->Split(active_configuration->old_macros,omac,true,true);
 		utils->Split(active_configuration->macros,nmac,true,true);
-		int j;
-		for (unsigned int i=0;i<omac.GetCount();i++)
-			if ((j=nmac.Index(omac[i]))==wxNOT_FOUND)
-				dif_mac.Add(omac[i]);
-			else
-				nmac.RemoveAt(j);
+		for (unsigned int i=0;i<omac.GetCount();i++) {
+			int j=nmac.Index(omac[i]);
+			if (j==wxNOT_FOUND) dif_mac.Add(omac[i]);
+			else nmac.RemoveAt(j);
+		}
 		for (unsigned int i=0;i<nmac.GetCount();i++)
 			dif_mac.Add(nmac[i]);
 		for (unsigned int i=0;i<dif_mac.GetCount();i++)
@@ -1166,9 +1165,8 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	
 	compile_step *prev_to_sources=step;
 	wxDateTime now=wxDateTime::Now();
-	bool flag;
 	while(item.IsValid()) {
-		flag=false;
+		bool flag=false;
 		if ( ( only_one && only_one==*item ) || item->force_recompile) {
 			flag=true;
 		} else if (!only_one && (!active_configuration->dont_generate_exe || item->lib)) {
@@ -3015,12 +3013,12 @@ bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 	wxTextFile fil(pdc_son->file->name);
 	fil.Open();
 	bool add_visibility=false;
-	int i,lines=fil.GetLineCount(),curpos=pdc_son->line,inspos=-1, pubpos=-1; // linea en la cual agregar los metodos
+	int lines=fil.GetLineCount(),curpos=pdc_son->line,inspos=-1, pubpos=-1; // linea en la cual agregar los metodos
 	wxString str;
 	wxString tabs_pro, tabs_pub;
 	while (curpos<lines) {
 		str = fil.GetLine(curpos);
-		i=0; while (str[i]==' '||str[i]=='\t') i++;
+		int i=0; while (str[i]==' '||str[i]=='\t') i++;
 		if (str.Len()-i>=10 && str.Mid(i,10)==_T("protected:")) {
 			inspos=curpos;
 			tabs_pro=str.Mid(0,i);

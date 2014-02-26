@@ -53,8 +53,8 @@ zmkdir zinjai
     cp $SRC/lang/*.txt zinjai/lang/
     rm -f zinjai/lang/spanish.*
     cp $SRC/lang/*.sgn zinjai/lang/
-  zmkdir zinjai/quickhelp
-    cp -u $SRC/quickhelp/* zinjai/quickhelp/
+  zmkdir cppreference/cppreference
+    cp -ru $SRC/cppreference/* cppreference/cppreference
   zmkdir zinjai/guihelp
     cp -u $SRC/guihelp/* zinjai/guihelp/
   zmkdir zinjai/toolchains

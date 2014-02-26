@@ -389,7 +389,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 	
 	wxProcess *process = compile_and_run->process;
 	static wxString error_line, nice_error_line;
-	int p,l;
+	int p;
 //	char c;
 	wxTextInputStream input(*(process->GetErrorStream()));	
 	while ( process->IsErrorAvailable() ) {
@@ -398,7 +398,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 		
 		// acortar el nombre de archivo
 		if ( error_line[1]==':' ) p=2; else p=0;
-		l=error_line.Len();
+		int l=error_line.Len();
 		while (p<l && error_line[p]!=':') p++;
 		if (p<l) {
 			while (p>=0 && error_line[p]!='/' && error_line[p]!='\\') p--;

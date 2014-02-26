@@ -491,10 +491,9 @@ bool HelpManager::IsHelpForType(wxString what, wxString &link) {
 wxString HelpManager::MakeClassLinks(wxString what) {
 	int len = what.Len();
 	int p=0, p1=0;
-	char c;
 	wxString link;
 	while (p<len) {
-		c=what[p];
+		char c=what[p];
 		while ( p<len && ! ( (c>='A' && c<='Z') || (c>='a' && c<='z') || (c>='0' && c<='9') || c=='_' ) ) {
 			p++; c=what[p];
 		}
@@ -546,9 +545,9 @@ bool HelpManager::ReloadDoxyIndex() {
 	// ver si existe el indice
 	wxFileName fname ( file );
 	if (!fname.FileExists()) return false;
-	bool on_class=false;
 	// releer si fue modificado
 	if (fname.GetModificationTime()!=doxy_index_stamp) {
+		bool on_class=false;
 		doxy_index.clear();
 		doxy_index_stamp=fname.GetModificationTime();
 		wxTextFile fil(file);

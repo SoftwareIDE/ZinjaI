@@ -3,6 +3,7 @@
 #include "mxGenericHelpWindow.h"
 
 class mxHelpWindow:public mxGenericHelpWindow {
+	
 	static mxHelpWindow *instance;
 	mxHelpWindow(wxString file="");
 	HashStringTreeItem items;
@@ -18,6 +19,8 @@ public:
 	void OnTree(wxTreeItemId item);
 	void OnSearch(wxString value);
 	bool OnLink(wxString href);
+	
+	void OnForum(wxCommandEvent &event);
 	
 	~mxHelpWindow();
 };

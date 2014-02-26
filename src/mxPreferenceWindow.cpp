@@ -665,7 +665,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 			toolbar_changed=true;
 			config->Toolbars.icon_size=l;
 			RecreateAllToolbars();
-			toolbar_changed=true;
 		}
 	} else
 		config->Toolbars.icon_size=16;

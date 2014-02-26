@@ -81,9 +81,8 @@ void mxGotoFileDialog::OnGotoButton(wxCommandEvent &event) {
 			mxSource *src=main_window->OpenFile(DIR_PLUS_FILE(project->GetPath(),key),false);
 			if (goto_line!=-1 && src && src!=EXTERNAL_SOURCE) src->MarkError(goto_line); /// for errors with incomplete or relative path from external building tools
 		} else {
-			mxSource *source;
 			for (unsigned int i=0;i<main_window->notebook_sources->GetPageCount();i++) {
-				source = (mxSource*)(main_window->notebook_sources->GetPage(i));
+				mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(i));
 				if (source->sin_titulo) {
 					if (source->page_text==key) {
 						Close();

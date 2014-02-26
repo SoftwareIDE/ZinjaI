@@ -42,6 +42,7 @@ BEGIN_EVENT_TABLE(mxNewWizard, wxDialog)
 	EVT_LISTBOX_DCLICK(wxID_ANY,mxNewWizard::OnButtonNext)
 	EVT_TEXT(mxID_WIZARD_PROJECT_NAME_TEXT,mxNewWizard::OnProjectNameChange)
 	EVT_TEXT(mxID_WIZARD_PROJECT_FOLDER_TEXT,mxNewWizard::OnProjectFolderChange)
+	EVT_TEXT(mxID_WIZARD_ONPROJECT_NAME,mxNewWizard::OnOnProjectNameChange)
 	EVT_CHECKBOX(mxID_WIZARD_PROJECT_FOLDER_CHECK,mxNewWizard::OnProjectFolderCheck)
 	EVT_CHECKBOX(mxID_WIZARD_PROJECT_FILES_OPEN_CHECK,mxNewWizard::OnProjectFilesOpenCheck)
 	EVT_CHECKBOX(mxID_WIZARD_PROJECT_FILES_DIR_CHECK,mxNewWizard::OnProjectFilesDirCheck)
@@ -795,7 +796,7 @@ void mxNewWizard::CreatePanelOnProject() {
 	sizer->Add(onproject_radio);
 	
 	onproject_label = new wxStaticText(panel_onproject,wxID_ANY,LANG(NEWWIZARD_FILENAME,"Nombre del archivo:"));
-	onproject_name = new wxTextCtrl(panel_onproject,wxID_ANY,_T(""));
+	onproject_name = new wxTextCtrl(panel_onproject,mxID_WIZARD_ONPROJECT_NAME,_T(""));
 
 	sizer->Add(onproject_label,sizers->BT10);
 	wxBoxSizer *sizer_name = new wxBoxSizer(wxHORIZONTAL);
@@ -1195,6 +1196,18 @@ void mxNewWizard::OnProjectPathRadio(wxCommandEvent &event){
 		break;
 	}
 	project_internal_folder_change=false;
+}
+
+void mxNewWizard::OnOnProjectNameChange(wxCommandEvent &evt) {
+	wxString name=onproject_name->GetValue();
+	if (name.Contains("/")) name=name.AfterLast('/');
+	if (name.Contains("\\")) name=name.AfterLast('\\');
+	if (name.Contains(".")) {
+		eFileType t = utils->GetFileType(name,false);
+		if (t==FT_SOURCE) onproject_radio->SetSelection(0);
+		else if (t==FT_HEADER) onproject_radio->SetSelection(1);
+		else onproject_radio->SetSelection(2);
+	}
 }
 
 void mxNewWizard::OnProjectFolderChange(wxCommandEvent &evt) {

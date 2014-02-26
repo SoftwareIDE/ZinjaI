@@ -1,4 +1,4 @@
-
+#include <wx/textfile.h>
 #include "mxHelpWindow.h"
 #include "ConfigManager.h"
 #include <wx/treectrl.h>
@@ -7,6 +7,9 @@
 
 #define ERROR_PAGE(page) wxString(_T("<I>ERROR</I>: La pagina \""))<<page<<_T("\" no se encuentra. <br><br> La ayuda de <I>ZinjaI</I> aun esta en contruccion.")
 #define _index "index"
+#include "ids.h"
+#include "mxSizers.h"
+#include "mxReferenceWindow.h"
 
 mxHelpWindow *mxHelpWindow::instance=NULL;
 
@@ -50,6 +53,13 @@ mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(true) {
 	}
 	
 	if (!file.Len()) file="index"; LoadHelp(file);
+	
+	wxBoxSizer *forum_sizer = new wxBoxSizer(wxHORIZONTAL); wxButton *button;
+	forum_sizer->Add(new wxStaticText(this,wxID_ANY,LANG(HELPW_FORUM_TEXT,"¿Lo que buscas no está en la ayuda, está desactualizado, erróneo o incompleto? ")),sizers->Center);
+	forum_sizer->Add(button=new wxButton(this,mxID_HELPW_FORUM,LANG(HELPW_FORUM_BUTTON,"accede al Foro..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);
+	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(mxHelpWindow::OnForum),NULL,this);
+	general_sizer->Add(forum_sizer,sizers->Right);
+	Layout();
 }
 
 mxHelpWindow::~mxHelpWindow() { instance=NULL; }
@@ -59,13 +69,13 @@ void mxHelpWindow::OnSearch(wxString value) {
 	utils->Split(value.MakeUpper(),keywords,true,false);
 	unsigned int kc=keywords.GetCount();
 	if (kc==0) {
-		mxMessageDialog(this,LANG(HELPW_FORUM_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(HELPW_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return;
 	}
 	unsigned char *bfound = new unsigned char[keywords.GetCount()];
-	html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><I><B>")<<LANG(HELPW_FORUM_SEARCH_SEARCHING,"Buscando...")<<"</B></I></BODY></HTML>");
+	html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><I><B>")<<LANG(HELPW_SEARCH_SEARCHING,"Buscando...")<<"</B></I></BODY></HTML>");
 	HashStringTreeItem::iterator it = items.begin(), ed = items.end();
-	wxString result(wxString("<HTML><HEAD></HEAD><BODY><I><B>")<<LANG(HELPW_FORUM_SEARCH_RESULTS,"Resultados:")<<"</B></I><UL>");
+	wxString result(wxString("<HTML><HEAD></HEAD><BODY><I><B>")<<LANG(HELPW_SEARCH_RESULTS,"Resultados:")<<"</B></I><UL>");
 	int count=0;
 	wxArrayString searched;
 	while (it!=ed) {
@@ -108,7 +118,7 @@ void mxHelpWindow::OnSearch(wxString value) {
 	if (count)		
 		html->SetPage(result);
 	else
-		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_FORUM_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<value<<_T("\".</B></BODY></HTML>"));
+		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<value<<_T("\".</B></BODY></HTML>"));
 	delete [] bfound;
 }
 
@@ -146,7 +156,9 @@ void mxHelpWindow::LoadHelp(wxString file) {
 }
 
 bool mxHelpWindow::OnLink (wxString href) {
-	if (href.StartsWith(_T("foropen:"))) {
+	if (href=="cppreference:") {
+		Close(); mxReferenceWindow::ShowHelp();
+	} else if (href.StartsWith(_T("foropen:"))) {
 		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,href.AfterFirst(':')));
 	} else if (href.StartsWith(_T("http://"))) {
 		utils->OpenInBrowser(href);
@@ -193,4 +205,8 @@ wxString mxHelpWindow::GetHelpFile(wxString file) {
 		return file+".html"+post;
 	else
 		return "";
+}
+
+void mxHelpWindow::OnForum (wxCommandEvent & event) {
+	utils->OpenInBrowser(LANG(HELPW_ADDRESS,"http://zinjai.sourceforge.net/index.php?page=contacto.php"));
 }

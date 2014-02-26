@@ -7,7 +7,7 @@ if [ "$1" = "prepare" ]; then
   mkdir zinjai/autocomp
   mkdir zinjai/colours
   mkdir zinjai/guihelp
-  mkdir zinjai/quickhelp
+  mkdir zinjai/cppreference
   mkdir zinjai/graphviz
   mkdir zinjai/graphviz/bin
   mkdir zinjai/graphviz/lib
@@ -68,7 +68,7 @@ elif [ "$1" = "update" ]; then
   scp -r $2/zinjai/skins/*				zinjai/skins/
 
   scp $2/zinjai/debug_macros.gdb			zinjai/
-  scp $2/zinjai/quickhelp/*				zinjai/quickhelp/
+  scp -r $2/zinjai/cppreference/*			zinjai/cppreference/
   scp $2/zinjai/colours/*				zinjai/colours/
   scp $2/zinjai/guihelp/*				zinjai/guihelp/
   scp $2/zinjai/autocomp/*				zinjai/autocomp/

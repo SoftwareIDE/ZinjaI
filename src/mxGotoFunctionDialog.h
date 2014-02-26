@@ -39,7 +39,7 @@ private:
 			}
 			return 0; // no deberia llegar nunca a este punto
 		}
-		const wxTreeItemId &get_item() {
+		wxTreeItemId get_item() {
 			if (type==1) return get_macro()->item;
 			if (type==2) return get_class()->item;
 			if (type==3) get_func()->item;

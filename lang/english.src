@@ -1012,35 +1012,35 @@ GOTOLINE_YOURE_HERE
 You are in line <{1}> from <{2}>.
 HELPW_CAPTION
 ZinjaI's Help
-HELPW_FORUM_TOGGLE_TREE
+HELPW_TOGGLE_TREE
 Show/Hide Index tree
-HELPW_FORUM_INDEX
+HELPW_INDEX
 Go to home page
-HELPW_FORUM_PREVIOUS
+HELPW_PREVIOUS
 Go to previous page
-HELPW_FORUM_NEXT
+HELPW_NEXT
 Go to next page
-HELPW_FORUM_COPY
+HELPW_COPY
 Copy selection to clipboard
-HELPW_FORUM_PRINT
+HELPW_PRINT
 Print current page...
-HELPW_FORUM_SEARCH_LABEL
+HELPW_SEARCH_LABEL
 Search:
-HELPW_FORUM_FIND
+HELPW_FIND
 Find...
 HELPW_FORUM_TEXT
 Cannot find what you need here? Is it incomplete, outdated or wrong?  
 HELPW_FORUM_BUTTON
 use the Forum...
-HELPW_FORUM_SEARCH_ERROR_EMPTY
+HELPW_SEARCH_ERROR_EMPTY
 You must enter at least one keyword to search
-HELPW_FORUM_SEARCH_SEARCHING
+HELPW_SEARCH_SEARCHING
 Searching...
-HELPW_FORUM_SEARCH_RESULTS
+HELPW_SEARCH_RESULTS
 Results:
-HELPW_FORUM_SEARCH_NO_RESULTS_FOR
+HELPW_SEARCH_NO_RESULTS_FOR
 No matches found for "
-HELPW_FORUM_ADDRESS
+HELPW_ADDRESS
 http://zinjai.sourceforge.net/index_en.php?page=contacto_en.php
 XDG_CAPTION
 Menu and desktop icons and file associations

@@ -585,11 +585,11 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 }
 
 bool CodeHelper::AutocompleteAutocode(mxSource *source, wxString typed, int max_str_dist) {
-	wxArrayString comp_array; int t=0, l=typed.Len(), i;
+	wxArrayString comp_array; int t=0, l=typed.Len();
 	HashStringAutoCode::iterator it = autocoder->list.begin();
 	while (it!=autocoder->list.end()) {
 		wxString &aux=it->first;
-		CH_COMPARE(typed,aux,i,l,max_str_dist);
+		int CH_COMPARE(typed,aux,i,l,max_str_dist);
 		if (i==l) { ++t; comp_array.Add(it->first); }
 		++it;
 	}
@@ -1176,9 +1176,9 @@ bool CodeHelper::ShowConstructorCalltip(int p, mxSource *source, wxString name) 
 }
 
 int CodeHelper::AddReservedWords(wxArrayString &comp_list, wxString &typed, int max_str_dist) {
-	int i, j, c = 0, l = typed.Len(), ll = reserved_words.GetCount();
+	int j, c = 0, l = typed.Len(), ll = reserved_words.GetCount();
 	for (j=0;j<ll;j++) {
-		CH_COMPARE(typed,reserved_words[j],i,l,max_str_dist);
+		int CH_COMPARE(typed,reserved_words[j],i,l,max_str_dist);
 		if (i==l) {
 			c++;
 			comp_list.Add(reserved_words[j]+_T("?15"));

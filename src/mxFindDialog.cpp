@@ -554,7 +554,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	
 	mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
 	
-	int f,t,l;
+	int f,t;
 	if (only_selection) {
 		f=source->GetSelectionStart();
 		t=source->GetSelectionEnd();
@@ -577,7 +577,7 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	source->SetTargetEnd(t);
 	int ret = source->SearchInTarget(last_search);
 	while (ret!=wxSTC_INVALID_POSITION) {
-		l = source->GetTargetEnd()-source->GetTargetStart(); // para saber si cambio el largo de la seleccion despues de reemplazar
+		int l = source->GetTargetEnd()-source->GetTargetStart(); // para saber si cambio el largo de la seleccion despues de reemplazar
 		if (c==0)
 			source->BeginUndoAction();
 		if (last_flags&wxSTC_FIND_REGEXP) // el remplazo propiamente dicho
@@ -657,10 +657,10 @@ int mxFindDialog::FindInSource(mxSource *source,wxString &res) {
 	int l = source->GetLength();
 	source->SetTargetStart(0);
 	source->SetTargetEnd(l);
-	int i = source->SearchInTarget(last_search), line;
+	int i = source->SearchInTarget(last_search);
 	while (i!=wxSTC_INVALID_POSITION) {
 		count++;
-		line=source->LineFromPosition(i); i-=source->PositionFromLine(line);
+		int line=source->LineFromPosition(i); i-=source->PositionFromLine(line);
 		res<<GetHtmlEntry(file_name,line,i,source->GetTargetEnd()-source->GetTargetStart(),page_text,source->GetLine(line));
 		source->SetTargetStart(source->GetTargetEnd());
 		source->SetTargetEnd(l);
@@ -675,20 +675,20 @@ bool mxFindDialog::FindInProject(eFileType where) {
 	project->GetFileList(array,where);
 	wxString res(wxString(_T("<HTML><HEAD><TITLE>"))<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<_T("</TITLE></HEAD><BODY><B>")<<LANG(FIND_IN_FILES_RESULT,"Resultados para la busqueda:")<<_T(" \"<I>")+utils->ToHtml(last_search)+_T("</I>\":</B><BR><TABLE>"));
 	int p,count=0;
-	mxSource *src;
 	last_flags = check_case->GetValue()?wxSTC_FIND_MATCHCASE:0;
 	wxString what=last_search;
 	if (!check_case->GetValue()) what.MakeUpper();
 	for (unsigned int i=0;i<array.GetCount();i++) {
-		if ((src=main_window->IsOpen(array[i]))) {
+		mxSource *src=main_window->IsOpen(array[i]);
+		if (src) {
 			count+=FindInSource(src,res);
 		} else {
 			wxTextFile fil(array[i]);
 			if (fil.Exists()) {
 				fil.Open();
-				int ac,l=0;
+				int l=0;
 				for ( wxString str_orig, str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine()) {
-					ac=0; str_orig=str;
+					int ac=0; str_orig=str;
 					if (!check_case->GetValue()) str.MakeUpper();
 					while (wxNOT_FOUND!=(p=str.Find(what))) {
 						count++;

@@ -179,7 +179,6 @@ void mxInspectionMatrix::Update() {
 	wxString data = is_vo?debug->InspectExpression(expression):debug->GetMacroOutput(expression);
 	debug->SetFullOutput(false);
 	int l=data.Len();
-	bool comillas=false;
 	const wxChar *cdata=data.c_str();
 	const wxChar *inidata=cdata;
 	const wxChar *enddata=cdata+data.Len();
@@ -203,6 +202,7 @@ void mxInspectionMatrix::Update() {
 			grid->SetCellValue(p,0,wxString()<<_T("\\000"));
 		}
 	} else {
+		bool comillas=false;
 		int dim1=1,dim2=1,p1=0, llaves=0;
 		while (cdata<enddata) {
 			if (comillas) {

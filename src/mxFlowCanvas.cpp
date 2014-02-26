@@ -128,14 +128,14 @@ int mxFlowCanvas::FindBlockEnd(int p, int pe) {
 }
 
 bool mxFlowCanvas::Analize(int ps, int pe, draw_data &draw, wxDC *dc, int &break_index, int &continue_index) {
-	int p=ps, s;
-	char c;
+	int p=ps;
 	int p1,p2, ax,ay, tw,th;
 	wxString text;
 	int x=0, y=0;
 	int mb_index, mc_index;
-	stack<wxChar> pila;
+//	stack<wxChar> pila;
 	while (true) {
+		char c; int s; // para los FC_*
 		FC_FRONT(FC_IS_EMPTY || FC_SHOULD_IGNORE);
 		while (c=='{' || c=='}') {
 			p++;
@@ -758,9 +758,9 @@ void mxFlowCanvas::Draw(wxPaintDC &dc, draw_data &draw, int x, int y) {
 
 wxString mxFlowCanvas::GetText(int p1, int p2) {
 	wxString ret;
-	int p=p1, s;
-	char c;
+	int p=p1;
 	while (p<p2) {
+		char c; int s; // para los FC_*
 		while (p<p2 && !FC_IS_EMPTY && !FC_IS_COMMENT) {
 			ret+=c; p++;
 		}

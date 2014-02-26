@@ -752,7 +752,6 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 	const wxChar * chfr = frames.c_str();
 	// to_select* es para marcar el primer frame que tenga info de depuracion
 	wxString line_str,to_select, to_select_file; 
-	bool to_select_done=false;
 	int to_select_line, to_select_row=-1;
 	i=frames.Find(_T("stack="));
 	if (i==wxNOT_FOUND) {
@@ -762,6 +761,7 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 		}
 		main_window->backtrace_ctrl->EndBatch();
 	} else {
+		bool to_select_done=false;
 		i+=7;
 		while (true) {
 			while (i<sll && chfr[i]!='{') 
@@ -818,23 +818,22 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 //	}
 		
 	wxString args ,args_list = n?SendCommand("-stack-list-arguments 1 0 ",n-1):"";
-	int arglev;
 	const wxChar * chag = args_list.c_str();
 //cerr<<"CHAG="<<endl<<chag<<endl<<endl;
-	bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
 	i=args_list.Find(_T("stack-args="));
 	if (i==wxNOT_FOUND) {
 		for (int c=0;c<fdepth;c++)
 			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,_T("<<Imposible determinar argumentos>>"));
 		main_window->backtrace_ctrl->EndBatch();
 	} else {
+		bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
 		i+=12;
 		for (int c=0;c<n;c++) {
 			// chag+i = frame={level="0",args={{name="...
 			while (chag[i]!='[' && chag[i]!='{') 
 				i++; 
 			p=++i;
-			arglev=0;
+			int arglev=0;
 			// chag+i = level="0",args={{name="...
 			while ((chag[i]!=']' && chag[i]!='}') || comillas || arglev>0) {
 				if (comillas) {
@@ -1191,11 +1190,11 @@ wxString DebugManager::GetValueFromAns(wxString ans, wxString key, bool crop, bo
 		return _T("");
 	unsigned int sc=0, t = ans.Len()-key.Len()-2;
 	key<<_T("=");
-	char stack[25], c;
+	char stack[25];
 //	bool not_ignore=true;
 	bool is_the_first = (ans.Left(key.Len())==key) ;
 	for (unsigned int i=0;i<t;i++) {
-		c=ans[i];
+		char c=ans[i];
 		if (sc && !is_the_first) {
 			if (stack[sc]=='[' && c==']')
 				sc--;
@@ -2227,10 +2226,10 @@ int DebugManager::GetVOChildrenData(mxIEItemData **data, wxString name, wxString
 
 wxString DebugManager::RewriteExpressionForBreaking(wxString main_expr) {
 	int i=0,l=main_expr.Len();
-	char c; bool comillas=false;
+	bool comillas=false;
 	int parentesis=0; bool first_level0_parentesis=true;
 	while (i<l) { 	// agregar parentesis si la expresion no es simple
-		c=main_expr[i];
+		char c=main_expr[i];
 		if (c=='\'') { 
 			if (main_expr[++i]=='\\') i++;
 		} else if (c=='\"') {
@@ -2311,13 +2310,13 @@ bool DebugManager::GetLocals (wxArrayString &array, wxString level) {
 	if (!debugging || waiting) return false;
 	wxString args_list = SendCommand(_T("-stack-list-locals 0"));
 	const wxChar * choa = args_list.c_str();
-	int p,j=args_list.Find('[')+1, l= args_list.Len();
+	int j=args_list.Find('[')+1, l= args_list.Len();
 	while (true) {
 		while ( j<l && !(choa[j]=='n' && choa[j+1]=='a' && choa[j+2]=='m' && choa[j+3]=='e' && choa[j+4]=='=') )
 			j++;
 		if (j==l) break;
 		j+=6;
-		p=j;
+		int p=j;
 		while (choa[j]!='\"')
 			j++;
 		array.Add(args_list.SubString(p,j-1));

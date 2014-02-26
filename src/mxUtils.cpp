@@ -394,11 +394,11 @@ void mxUtils::FindIncludes(wxString path, wxString filename, wxArrayString &alre
 	wxFileName file_name;
 	text_file.Open();
 	wxString line, this_one;
-	int pos, len, ini, end;
+	int ini, end;
 	// recorrer el fuente para buscar que incluye
 	for ( line = text_file.GetFirstLine(); !text_file.Eof(); line = text_file.GetNextLine() ) { 
 		// buscar donde comienza cada linea
-		pos=0; len=line.Len();
+		int pos=0, len=line.Len();
 		while (pos<len && ( line[pos]==' ' || line[pos]=='\t' ))
 			pos++;
 		// si es una directiva de compilador
@@ -452,14 +452,14 @@ wxString mxUtils::UnSplit(wxArrayString &array) {
 
 wxString mxUtils::Split(wxString str, wxString pre) {
 	/// @todo: reescribir este método reusando el otro Split
-	int i=0,s, l=str.Len();
+	int i=0, l=str.Len();
 	wxString ret;
 	bool comillas = false;
 	while (i<l) {
 		while (i<l && (str[i]==' ' || str[i]=='\t' || str[i]==',' || str[i]==';')) {
 			i++;
 		}
-		s=i;
+		int s=i;
 		while (i<l && (comillas || !(str[i]==' ' || str[i]=='\t' || str[i]==',' || str[i]==';'))) {
 			if (str[i]=='\"') 
 				comillas=!comillas;
@@ -473,14 +473,14 @@ wxString mxUtils::Split(wxString str, wxString pre) {
 }
 
 int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits, bool keep_quotes) {
-	int c=0, i=0, s, l=str.Len();
+	int c=0, i=0, l=str.Len();
 	wxString ret;
 	bool comillas = false; char cual_comilla;
 	while (i<l) {
 		while (i<l && (str[i]==' ' || str[i]=='\t' || (coma_splits && (str[i]==',' || str[i]==';') ) ) ) {
 			i++;
 		}
-		s=i;
+		int s=i;
 		while (i<l && (comillas || !(str[i]==' ' || str[i]=='\t' || (coma_splits && (str[i]==',' || str[i]==';') ) ) ) ) {
 			if (comillas && str[i]==cual_comilla) {
 				comillas=false;
