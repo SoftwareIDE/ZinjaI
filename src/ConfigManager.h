@@ -87,9 +87,9 @@ struct cfgRunning {
 
 //! Elementos de la configuración relacionados al sistema de ayuda
 struct cfgHelp {
-	wxString quickhelp_index;
+//	wxString quickhelp_index;
 	wxString wxhelp_index;
-	wxString quickhelp_dir;
+	wxString cppreference_dir;
 	wxString guihelp_dir;
 	wxString autocomp_indexes;
 //	wxString autocomp_dir;
@@ -387,7 +387,7 @@ struct cfgFiles {
 	wxString parser_command;
 	wxString terminal_command; ///< comando para abrir un terminal y ejecutar algo en el
 	wxString explorer_command; ///< comando para abrir un explorador de archivos
-	wxString code_helper;
+//	wxString code_helper;
 	wxString project_folder;
 	wxString graphviz_dir;
 	wxString xdot_command; ///< nice python app for displaying graphs

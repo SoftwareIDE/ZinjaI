@@ -331,6 +331,7 @@ enum {
 	
 	mxID_HELP_ABOUT,
 	mxID_HELP_CPP,
+	mxID_HELP_CODE,
 	mxID_HELP_TUTORIAL,
 	mxID_HELP_GUI,
 	mxID_HELP_TIP,

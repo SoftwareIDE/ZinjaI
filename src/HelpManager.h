@@ -19,8 +19,8 @@ class pd_class;
 **/
 class HelpManager {
 private:
-	wxString quickhelp_dir;
-	HashStringString quick_help_hash;
+//	wxString quickhelp_dir;
+//	HashStringString quick_help_hash;
 	unsigned int index_ref_counter;
 	HashStringString doxy_index;
 	wxDateTime doxy_index_stamp;

@@ -66,6 +66,7 @@
 #include "CodeHelper.h"
 #include <iostream>
 #include "mxGCovSideBar.h"
+#include "mxReferenceWindow.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -340,6 +341,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_HELP_ABOUT, mxMainWindow::OnHelpAbout)
 	EVT_MENU(mxID_HELP_GUI, mxMainWindow::OnHelpGui)
 	EVT_MENU(mxID_HELP_CPP, mxMainWindow::OnHelpCpp)
+	EVT_MENU(mxID_HELP_CODE, mxMainWindow::OnHelpCode)
 	EVT_MENU(mxID_HELP_TIP, mxMainWindow::OnHelpTip)
 	EVT_MENU(mxID_HELP_UPDATES, mxMainWindow::OnHelpUpdates)
 	
@@ -907,12 +909,12 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 	if (action=="quickhelp")
 //		ShowQuickHelp(event.GetLinkInfo().GetHref().AfterFirst(':'));
 		quick_help->SetPage(help->GetQuickHelp( event.GetLinkInfo().GetHref().AfterFirst(':') ));
-	else if (action=="quickfile")
-		quick_help->LoadPage(DIR_PLUS_FILE(config->Help.quickhelp_dir,event.GetLinkInfo().GetHref().AfterFirst(':')));
+//	else if (action=="quickfile")
+//		quick_help->LoadPage(DIR_PLUS_FILE(config->Help.quickhelp_dir,event.GetLinkInfo().GetHref().AfterFirst(':')));
 	else if (action=="doxygen")
 		utils->OpenInBrowser(wxString("file://")<<event.GetLinkInfo().GetHref().AfterFirst(':'));
-	else if (action=="example")
-		NewFileFromTemplate(DIR_PLUS_FILE(config->Help.quickhelp_dir,event.GetLinkInfo().GetHref().AfterFirst(':')));
+//	else if (action=="example")
+//		NewFileFromTemplate(DIR_PLUS_FILE(config->Help.quickhelp_dir,event.GetLinkInfo().GetHref().AfterFirst(':')));
 	else if (action=="gotoline") {
 		wxString the_one=event.GetLinkInfo().GetHref().AfterFirst(':').BeforeLast(':');
 		long int line;
@@ -1034,11 +1036,11 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event){
 	// ver si es alguno de los mensajes de zinjai
 	wxString item_text=(compiler_tree.treeCtrl->GetItemText(event.GetItem()));
 	if (item_text==LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución.")) {
-		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.quickhelp_dir,"zerror_noexecperm.html"),false); return;
+		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_noexecperm.html"),false); return;
 	} else if (item_text.EndsWith(LANG(PROJMNGR_FUTURE_SOURCE_POST," tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual."))) {
-		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.quickhelp_dir,"zerror_futuretimestamp.html"),false); return;
+		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_futuretimestamp.html"),false); return;
 	} else if (item_text==LANG(PROJMNGR_MANIFEST_NOT_FOUND,"No se ha encontrado el archivo manifest.xml.")) {
-		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.quickhelp_dir,"zerror_missingiconmanifest.html"),false); return;
+		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_missingiconmanifest.html"),false); return;
 	}
 	// ver que dijo el compilador
 DEBUG_INFO("wxYield:in  mxMainWindow::OnSelectError");
@@ -1109,21 +1111,18 @@ void mxMainWindow::OnHelpAbout (wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpGui (wxCommandEvent &event){
-	if (helpw) {
-		helpw->ShowIndex();
-		if (helpw->IsIconized())
-			helpw->Maximize(false);
-		else
-			helpw->Raise();
-	} else
-		helpw = new mxHelpWindow();
+	mxHelpWindow::ShowHelp();
 }
 
 void mxMainWindow::OnHelpTip (wxCommandEvent &event){
 	new mxTipsWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 300));
 }
 
-void mxMainWindow::OnHelpCpp (wxCommandEvent &event){
+void mxMainWindow::OnHelpCpp (wxCommandEvent &event) {
+	mxReferenceWindow::ShowHelp(); return;
+}
+
+void mxMainWindow::OnHelpCode (wxCommandEvent &event) {
 	bool ask = true; // preguntar si no hay fuente abierto o palabra seleccionada
 	wxString key;
 	IF_THERE_IS_SOURCE { // si hay fuente abierto
@@ -1641,7 +1640,7 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(menu.help,mxID_HELP_ABOUT, LANG(MENUITEM_HELP_ABOUT,"Acerca de..."),_T(""),_T("Acerca de..."),ipre+_T("acercaDe.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_TUTORIAL, LANG(MENUITEM_HELP_TUTORIALS,"Tutoriales..."),_T(""),_T("Abre el cuadro de ayuda y muestra el indice de tutoriales disponibles"),ipre+_T("tutoriales.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_GUI, LANG(MENUITEM_HELP_ZINJAI,"Ayuda sobre ZinjaI..."),_T("F1"),_T("Muestra la ayuda sobre el uso y las caracteristicas de este entorno..."),ipre+_T("ayuda.png"));
-	utils->AddItemToMenu(menu.help,mxID_HELP_CPP, LANG(MENUITEM_HELP_CPP,"Ayuda sobre C++..."),_T("Shift+F1"),_T("Muestra una ayuda rapida sobre la palabra en la que se encuentra el cursor"),ipre+_T("referencia.png"));
+	utils->AddItemToMenu(menu.help,mxID_HELP_CPP, LANG(MENUITEM_HELP_CPP,"Ayuda sobre C/C++..."),_T("Alt+F1"),_T("Muestra una completa referencia sobre el lenguaje"),ipre+_T("referencia.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_TIP, LANG(MENUITEM_HELP_TIPS,"&Mostrar sugerencia..."),_T(""),_T("Muestra sugerencias sobre el uso del programa..."),ipre+_T("tip.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_OPINION, LANG(MENUITEM_HELP_OPINION,"Enviar sugerencia o reportar error..."),_T(""),_T("Permite acceder a los foros oficiales de ZinjaI para dejar sugerencias, comentarios o reportar errores"),ipre+_T("opinion.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_UPDATES, LANG(MENUITEM_HELP_UPDATES,"&Buscar actualizaciones..."),_T(""),_T("Comprueba a traves de Internet si hay versiones mas recientes de ZinjaI disponibles..."),ipre+_T("updates.png"));
@@ -1825,7 +1824,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 		if (config->Toolbars.misc.preferences) utils->AddTool(toolbar_misc,mxID_FILE_PREFERENCES,LANG(TOOLBAR_CAPTION_FILE_PREFERENCES,"Preferencias..."),ipre+_T("preferencias.png"),LANG(TOOLBAR_DESC_FILE_PREFERENCES,"Archivo -> Preferencias..."));
 		if (config->Toolbars.misc.tutorials) utils->AddTool(toolbar_misc,mxID_HELP_TUTORIAL,LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Tutoriales..."),ipre+_T("tutoriales.png"),LANG(TOOLBAR_DESC_HELP_TUTORIALS,"Ayuda -> Tutoriales..."));
 		if (config->Toolbars.misc.help_ide) utils->AddTool(toolbar_misc,mxID_HELP_GUI,LANG(TOOLBAR_CAPTION_HELP_ZINJAI,"Ayuda Sobre ZinjaI..."),ipre+_T("ayuda.png"),LANG(TOOLBAR_DESC_HELP_ZINJAI,"Ayuda -> Ayuda sobre ZinjaI..."));
-		if (config->Toolbars.misc.help_cpp) utils->AddTool(toolbar_misc,mxID_HELP_CPP,LANG(TOOLBAR_CAPTION_HELP_CPP,"Ayuda Sobre C++..."),ipre+_T("referencia.png"),LANG(TOOLBAR_DESC_HELP_CPP,"Ayuda -> Ayuda sobre C++..."));
+		if (config->Toolbars.misc.help_cpp) utils->AddTool(toolbar_misc,mxID_HELP_CPP,LANG(TOOLBAR_CAPTION_HELP_CPP,"Ayuda Sobre C/C++..."),ipre+_T("referencia.png"),LANG(TOOLBAR_DESC_HELP_CPP,"Ayuda -> Ayuda sobre C++..."));
 		if (config->Toolbars.misc.show_tips) utils->AddTool(toolbar_misc,mxID_HELP_TIP,LANG(TOOLBAR_CAPTION_HELP_TIPS,"Sugerencias..."),ipre+_T("tip.png"),LANG(TOOLBAR_DESC_HELP_TIPS,"Ayuda -> Mostrar Sugerencias..."));
 		if (config->Toolbars.misc.about) utils->AddTool(toolbar_misc,mxID_HELP_ABOUT,LANG(TOOLBAR_CAPTION_HELP_ABOUT,"Acerca de..."),ipre+_T("acercaDe.png"),LANG(TOOLBAR_DESC_HELP_ABOUT,"Ayuda -> Acerca de..."));
 		if (config->Toolbars.misc.opinion) utils->AddTool(toolbar_misc,mxID_HELP_OPINION,LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Enviar sugerencia o reportar error..."),ipre+_T("opinion.png"),LANG(TOOLBAR_DESC_HELP_OPINION,"Ayuda -> Opina sobre ZinjaI..."));
@@ -2641,24 +2640,25 @@ bool mxMainWindow::CloseSource (int i) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	int accel_count=16, i=0;
+	int accel_count=17, i=0;
 	wxAcceleratorEntry entries[accel_count];
-	entries[i++].Set(wxACCEL_CTRL, WXK_SPACE, mxID_EDIT_FORCE_AUTOCOMPLETE);
-	entries[i++].Set(wxACCEL_CTRL, WXK_RETURN, mxID_FILE_OPEN_SELECTED);
-	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_TAB, mxID_VIEW_NOTEBOOK_PREV);
-	entries[i++].Set(wxACCEL_CTRL, WXK_TAB, mxID_VIEW_NOTEBOOK_NEXT);
-	entries[i++].Set(wxACCEL_CTRL, WXK_PAGEUP, mxID_VIEW_NOTEBOOK_PREV);
-	entries[i++].Set(wxACCEL_CTRL, WXK_PAGEDOWN, mxID_VIEW_NOTEBOOK_NEXT);
-	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_F5, mxID_DEBUG_DO_THAT);
-	entries[i++].Set(0, WXK_F12, mxID_FILE_OPEN_H);
-	entries[i++].Set(wxACCEL_ALT|wxACCEL_CTRL, 'p', mxID_RUN_CONFIG);
-	entries[i++].Set(wxACCEL_SHIFT|wxACCEL_CTRL, WXK_F6, mxID_INTERNAL_INFO);
-	entries[i++].Set(wxACCEL_ALT|wxACCEL_CTRL, WXK_SPACE, mxID_WHERE_TIMER);
-	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, WXK_SPACE, mxID_EDIT_AUTOCODE_AUTOCOMPLETE);
-	entries[i++].Set(wxACCEL_CTRL|wxACCEL_ALT, 'w', mxID_FILE_CLOSE_ALL_BUT_ONE);
-	entries[i++].Set(wxACCEL_CTRL|wxACCEL_ALT, 'f', mxID_EDIT_FIND_FROM_TOOLBAR);
-	entries[i++].Set(wxACCEL_CTRL, 'q', mxID_MACRO_REPLAY);
-	entries[i++].Set(wxACCEL_CTRL|wxACCEL_SHIFT, 'q', mxID_MACRO_RECORD);
+	entries[i++].Set(	wxACCEL_CTRL,					WXK_SPACE, 		mxID_EDIT_FORCE_AUTOCOMPLETE);
+	entries[i++].Set(	wxACCEL_CTRL,					WXK_RETURN,		mxID_FILE_OPEN_SELECTED);
+	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_TAB, 		mxID_VIEW_NOTEBOOK_PREV);
+	entries[i++].Set(	wxACCEL_CTRL,					WXK_TAB, 		mxID_VIEW_NOTEBOOK_NEXT);
+	entries[i++].Set(	wxACCEL_CTRL,					WXK_PAGEUP, 	mxID_VIEW_NOTEBOOK_PREV);
+	entries[i++].Set(	wxACCEL_CTRL,					WXK_PAGEDOWN, 	mxID_VIEW_NOTEBOOK_NEXT);
+	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_F5, 		mxID_DEBUG_DO_THAT);
+	entries[i++].Set(	0 ,								WXK_F12, 		mxID_FILE_OPEN_H);
+	entries[i++].Set(	wxACCEL_ALT|wxACCEL_CTRL,		'p', 			mxID_RUN_CONFIG);
+	entries[i++].Set(	wxACCEL_SHIFT|wxACCEL_CTRL,		WXK_F6, 		mxID_INTERNAL_INFO);
+	entries[i++].Set(	wxACCEL_ALT|wxACCEL_CTRL,		WXK_SPACE, 		mxID_WHERE_TIMER);
+	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_SPACE, 		mxID_EDIT_AUTOCODE_AUTOCOMPLETE);
+	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_ALT,		'w', 			mxID_FILE_CLOSE_ALL_BUT_ONE);
+	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_ALT,		'f', 			mxID_EDIT_FIND_FROM_TOOLBAR);
+	entries[i++].Set(	wxACCEL_CTRL,					'q', 			mxID_MACRO_REPLAY);
+	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		'q', 			mxID_MACRO_RECORD);
+	entries[i++].Set(	wxACCEL_SHIFT,					WXK_F1, 		mxID_HELP_CODE);
 	wxAcceleratorTable accel(accel_count,entries);
 	SetAcceleratorTable(accel);
 }

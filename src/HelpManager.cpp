@@ -16,26 +16,25 @@ using namespace std;
 HelpManager *help;
 
 HelpManager::HelpManager() {
-	HashStringString::iterator it;
-	wxTextFile file1(config->Help.quickhelp_index);
-	wxString key, value;
-	file1.Open();
-	if (file1.IsOpened()) {
-		wxString str;
-		for (str=file1.GetFirstLine();!file1.Eof();str=file1.GetNextLine()) {
-			key = str.BeforeFirst(' ');
-			value = str.AfterFirst(' ');
-			if (key.Len() && value.Len()) {
-				it = quick_help_hash.find(key);
-				if (it==quick_help_hash.end())
-					quick_help_hash[key] = value;
-				else
-					it->second<<_T("\n")<<value;
-			}
-		}
-	}
-	file1.Close();
-
+//	HashStringString::iterator it;
+//	wxTextFile file1(config->Help.quickhelp_index);
+//	wxString key, value;
+//	file1.Open();
+//	if (file1.IsOpened()) {
+//		wxString str;
+//		for (str=file1.GetFirstLine();!file1.Eof();str=file1.GetNextLine()) {
+//			key = str.BeforeFirst(' ');
+//			value = str.AfterFirst(' ');
+//			if (key.Len() && value.Len()) {
+//				it = quick_help_hash.find(key);
+//				if (it==quick_help_hash.end())
+//					quick_help_hash[key] = value;
+//				else
+//					it->second<<_T("\n")<<value;
+//			}
+//		}
+//	}
+//	file1.Close();
 }
 
 /// funcion auxiliar para las que generan la ayuda rápida a partir de los datos del parser
@@ -430,26 +429,26 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 }
 
 int HelpManager::GetStandardHelp(wxString keyword, wxString &content) {
-	HashStringString::iterator it;
-	if ((it=quick_help_hash.find(keyword))!=quick_help_hash.end()) {
-		int count=0;
-		wxString files = it->second+_T("\n");
-		while (files.Len()) {
-			wxString fname = files.BeforeFirst('\n');
-			files = files.AfterFirst('\n');
-			if (wxFileName::FileExists(DIR_PLUS_FILE(config->Help.quickhelp_dir,fname))) {
-				wxTextFile fil(DIR_PLUS_FILE(config->Help.quickhelp_dir,fname));
-				fil.Open();	
-				wxString lin;
-				for (lin=fil.GetFirstLine();!fil.Eof();lin=fil.GetNextLine())
-					content+=lin;
-				content+=_T("<HR>");
-				fil.Close();
-				count++;
-			}
-		}
-		return count;
-	}
+//	HashStringString::iterator it;
+//	if ((it=quick_help_hash.find(keyword))!=quick_help_hash.end()) {
+//		int count=0;
+//		wxString files = it->second+_T("\n");
+//		while (files.Len()) {
+//			wxString fname = files.BeforeFirst('\n');
+//			files = files.AfterFirst('\n');
+//			if (wxFileName::FileExists(DIR_PLUS_FILE(config->Help.quickhelp_dir,fname))) {
+//				wxTextFile fil(DIR_PLUS_FILE(config->Help.quickhelp_dir,fname));
+//				fil.Open();	
+//				wxString lin;
+//				for (lin=fil.GetFirstLine();!fil.Eof();lin=fil.GetNextLine())
+//					content+=lin;
+//				content+=_T("<HR>");
+//				fil.Close();
+//				count++;
+//			}
+//		}
+//		return count;
+//	}
 	return 0;
 }
 
@@ -486,7 +485,8 @@ bool HelpManager::IsHelpForType(wxString what, wxString &link) {
 			return true;
 		aclass = aclass->next;
 	}
-	return quick_help_hash.find(what)!=quick_help_hash.end();
+//	return quick_help_hash.find(what)!=quick_help_hash.end();
+	return false;
 }
 wxString HelpManager::MakeClassLinks(wxString what) {
 	int len = what.Len();

@@ -277,6 +277,7 @@ public:
 	void OnHelpAbout (wxCommandEvent &event);
 	void OnHelpGui (wxCommandEvent &event);
 	void OnHelpCpp (wxCommandEvent &event);
+	void OnHelpCode (wxCommandEvent &event);
 	void OnHelpTip (wxCommandEvent &event);
 	void OnHelpUpdates (wxCommandEvent &event);
 

@@ -1,66 +1,17 @@
-#include <wx/bmpbuttn.h>
-#include <wx/clipbrd.h>
-#include <wx/sashwin.h>
-#include <wx/laywin.h>
-#include <wx/textfile.h>
-#include <wx/treectrl.h>
-#include <wx/html/htmprint.h>
+
 #include "mxHelpWindow.h"
-#include "ids.h"
-#include "mxMainWindow.h"
-#include "mxUtils.h"
 #include "ConfigManager.h"
+#include <wx/treectrl.h>
 #include "mxMessageDialog.h"
-#include "mxSizers.h"
+#include "mxMainWindow.h"
 
 #define ERROR_PAGE(page) wxString(_T("<I>ERROR</I>: La pagina \""))<<page<<_T("\" no se encuentra. <br><br> La ayuda de <I>ZinjaI</I> aun esta en contruccion.")
-#include "mxArt.h"
-#include "Language.h"
-#include <wx/settings.h>
+#define _index "index"
 
-mxHelpWindow *helpw;
+mxHelpWindow *mxHelpWindow::instance=NULL;
 
-BEGIN_EVENT_TABLE(mxHelpWindow,wxFrame)
-	EVT_CLOSE(mxHelpWindow::OnClose)
-	EVT_BUTTON(mxID_HELPW_HIDETREE, mxHelpWindow::OnHideTree)
-	EVT_BUTTON(mxID_HELPW_HOME, mxHelpWindow::OnHome)
-	EVT_BUTTON(mxID_HELPW_PREV, mxHelpWindow::OnPrev)
-	EVT_BUTTON(mxID_HELPW_NEXT, mxHelpWindow::OnNext)
-	EVT_BUTTON(mxID_HELPW_COPY, mxHelpWindow::OnCopy)
-	EVT_BUTTON(mxID_HELPW_SEARCH, mxHelpWindow::OnSearch)
-	EVT_BUTTON(mxID_HELPW_PRINT, mxHelpWindow::OnPrint)
-	EVT_BUTTON(mxID_HELPW_FORUM, mxHelpWindow::OnForum)
-	EVT_SASH_DRAGGED(wxID_ANY, mxHelpWindow::OnSashDrag)
-	EVT_TREE_SEL_CHANGED(wxID_ANY, mxHelpWindow::OnTree)
-	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxHelpWindow::OnTree)
-	EVT_HTML_LINK_CLICKED(wxID_ANY, mxHelpWindow::OnLink)
-	EVT_CHAR_HOOK(mxHelpWindow::OnCharHook)
-END_EVENT_TABLE();
-
-mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, LANG(HELPW_CAPTION,"Ayuda de ZinjaI"), wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
-	
-#ifdef __WIN32__
-	SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
-#endif
-
-	printer=NULL;
-	
-	wxPanel *panel= new wxPanel(this);
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
-	bottomSizer = new wxBoxSizer(wxHORIZONTAL);
-
-	index_sash = new wxSashLayoutWindow(this, wxID_ANY,
-		wxDefaultPosition, wxSize(200, 30),
-		wxNO_BORDER | wxSW_3D | wxCLIP_CHILDREN);
-	index_sash->SetDefaultSize(wxSize(120, 1000));
-	index_sash->SetOrientation(wxLAYOUT_VERTICAL);
-	index_sash->SetAlignment(wxLAYOUT_LEFT);
-	index_sash->SetSashVisible(wxSASH_RIGHT, true);
-	
-	// create and fill index tree
-	tree = new wxTreeCtrl(index_sash, wxID_ANY, wxPoint(0,0), wxSize(10,250), wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
-	
+mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(true) { 
+	// populate index tree
 	wxString index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,_T("index_")+config->Init.language_file);
 	if (!wxFileName::FileExists(index_file))
 		index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,_T("index_spanish"));
@@ -98,111 +49,14 @@ mxHelpWindow::mxHelpWindow(wxString file):wxFrame (NULL,mxID_HELPW, LANG(HELPW_C
 		}
 	}
 	
-	bottomSizer->Add(index_sash,sizers->Exp0);
-	
-	wxBitmapButton *button_hide = new wxBitmapButton(panel, mxID_HELPW_HIDETREE, wxBitmap(SKIN_FILE(_T("ayuda_tree.png")),wxBITMAP_TYPE_PNG));
-	button_hide->SetToolTip(LANG(HELPW_FORUM_TOGGLE_TREE,"Mostrar/Ocultar Indice"));
-	wxBitmapButton *button_home = new wxBitmapButton(panel, mxID_HELPW_HOME, wxBitmap(SKIN_FILE(_T("ayuda_indice.png")),wxBITMAP_TYPE_PNG));
-	button_home->SetToolTip(LANG(HELPW_FORUM_INDEX,"Ir a la pagina de incio"));
-	wxBitmapButton *button_prev = new wxBitmapButton(panel, mxID_HELPW_PREV, wxBitmap(SKIN_FILE(_T("ayuda_anterior.png")),wxBITMAP_TYPE_PNG));
-	button_prev->SetToolTip(LANG(HELPW_FORUM_PREVIOUS,"Ir a la pagina anterior"));
-	wxBitmapButton *button_next = new wxBitmapButton(panel, mxID_HELPW_NEXT, wxBitmap(SKIN_FILE(_T("ayuda_siguiente.png")),wxBITMAP_TYPE_PNG));
-	button_next->SetToolTip(LANG(HELPW_FORUM_NEXT,"Ir a la pagina siguiente"));
-	wxBitmapButton *button_copy = new wxBitmapButton(panel, mxID_HELPW_COPY, wxBitmap(SKIN_FILE(_T("ayuda_copiar.png")),wxBITMAP_TYPE_PNG));
-	button_copy->SetToolTip(LANG(HELPW_FORUM_COPY,"Copiar seleccion al portapapeles"));
-	wxBitmapButton *button_print = new wxBitmapButton(panel, mxID_HELPW_PRINT, wxBitmap(SKIN_FILE(_T("ayuda_imprimir.png")),wxBITMAP_TYPE_PNG));
-	button_print->SetToolTip(LANG(HELPW_FORUM_PRINT,"Imprimir pagina actual"));
-	topSizer->Add(button_hide,sizers->BA2);
-	topSizer->Add(button_home,sizers->BA2);
-	topSizer->Add(button_prev,sizers->BA2);
-	topSizer->Add(button_next,sizers->BA2);
-	topSizer->Add(button_copy,sizers->BA2);
-	topSizer->Add(button_print,sizers->BA2);
-	search_text = new wxTextCtrl(panel,wxID_ANY);
-	search_text->SetToolTip(LANG(HELPW_FORUM_SEARCH_LABEL,"Palabras a buscar"));
-	topSizer->Add(search_text,sizers->BA2_Exp1);
-
-	wxBitmapButton *search_button = new wxBitmapButton(panel, mxID_HELPW_SEARCH, wxBitmap(SKIN_FILE(_T("ayuda_buscar.png")),wxBITMAP_TYPE_PNG));
-	search_button->SetToolTip(LANG(HELPW_FORUM_FIND,"Buscar..."));
-	topSizer->Add(search_button,sizers->BA2);
-	panel->SetSizer(topSizer);
-	html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(200,100));
-	bottomSizer->Add(html,sizers->Exp1);
-	sizer->Add(panel,sizers->Exp0);
-	sizer->Add(bottomSizer,sizers->Exp1);
-	
-	wxBoxSizer *forum_sizer = new wxBoxSizer(wxHORIZONTAL);
-	forum_sizer->Add(new wxStaticText(this,wxID_ANY,LANG(HELPW_FORUM_TEXT,"¿Lo que buscas no está en la ayuda, está desactualizado, erróneo o incompleto? ")),sizers->Center);
-	forum_sizer->Add(new wxButton(this,mxID_HELPW_FORUM,LANG(HELPW_FORUM_BUTTON,"accede al Foro..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);
-	sizer->Add(forum_sizer,sizers->Right);
-	
-	SetSizer(sizer);
-	bottomSizer->SetItemMinSize(index_sash,250, 10);
-	bottomSizer->Layout();
-//	search_button->SetDefault();
-	if (!file.Len()) file="index";
-	ShowHelp(file);
+	if (!file.Len()) file="index"; LoadHelp(file);
 }
 
-void mxHelpWindow::ShowIndex() {
-	wxArrayTreeItemIds ta;
-	if (tree->GetSelections(ta))
-		tree->SelectItem(tree->GetSelection(),false);
-	ShowHelp("index");
-}
+mxHelpWindow::~mxHelpWindow() { instance=NULL; }
 
-void mxHelpWindow::ShowHelp(wxString file) {
-	if (file.Len()>5 && file.Mid(0,5)==_T("http:"))
-		html->LoadPage(file);
-	else
-		html->LoadPage(GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,file)));
-	HashStringTreeItem::iterator it = items.find(file);
-	if (it!=items.end())
-		tree->SelectItem(it->second);
-	Show();
-	html->SetFocus();
-	Raise();
-}
-
-void mxHelpWindow::OnClose(wxCloseEvent &evt) {
-	Hide();
-}
-
-mxHelpWindow::~mxHelpWindow() {
-	helpw=NULL;
-}
-
-void mxHelpWindow::OnHideTree(wxCommandEvent &event) {
-	if (bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()<10)
-		bottomSizer->SetItemMinSize(index_sash,200, 10);	
-	else
-		bottomSizer->SetItemMinSize(index_sash,0, 10);
-	bottomSizer->Layout();
-}
-
-void mxHelpWindow::OnHome(wxCommandEvent &event) {
-	ShowHelp("index");
-}
-
-void mxHelpWindow::OnPrev(wxCommandEvent &event) {
-	html->HistoryBack();
-}
-
-void mxHelpWindow::OnNext(wxCommandEvent &event) {
-	html->HistoryForward();
-}
-
-void mxHelpWindow::OnCopy(wxCommandEvent &event) {
-	if (html->SelectionToText()==_T("")) 
-		return;
-	wxTheClipboard->Open();
-	wxTheClipboard->SetData(new wxTextDataObject(html->SelectionToText()));
-	wxTheClipboard->Close();
-}
-
-void mxHelpWindow::OnSearch(wxCommandEvent &event) {
+void mxHelpWindow::OnSearch(wxString value) {
 	wxArrayString aresults, keywords;
-	utils->Split(search_text->GetValue().MakeUpper(),keywords,true,false);
+	utils->Split(value.MakeUpper(),keywords,true,false);
 	unsigned int kc=keywords.GetCount();
 	if (kc==0) {
 		mxMessageDialog(this,LANG(HELPW_FORUM_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
@@ -254,22 +108,67 @@ void mxHelpWindow::OnSearch(wxCommandEvent &event) {
 	if (count)		
 		html->SetPage(result);
 	else
-		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_FORUM_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<search_text->GetValue()<<_T("\".</B></BODY></HTML>"));
+		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_FORUM_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<value<<_T("\".</B></BODY></HTML>"));
 	delete [] bfound;
 }
 
-void mxHelpWindow::OnSearchAll(wxCommandEvent &event) {
+void mxHelpWindow::ShowIndex() {
+	wxArrayTreeItemIds ta;
+	if (tree->GetSelections(ta))
+		tree->SelectItem(tree->GetSelection(),false);
+	LoadHelp(_index);
 }
 
-void mxHelpWindow::OnSashDrag(wxSashEvent& event) {
-    //index_sash->SetDefaultSize(wxSize(event.GetDragRect().width, 1000));
-	bottomSizer->SetItemMinSize(index_sash,event.GetDragRect().width<150?150:event.GetDragRect().width, 10);
-	//GetClientWindow()->Refresh();
-	bottomSizer->Layout();
+void mxHelpWindow::ShowHelp(wxString page) {
+	if (page=="") page=_index;
+	if (instance) {
+		if (!instance->IsShown()) instance->Show(); 
+		else if (instance->IsIconized()) instance->Maximize(false); 
+		else instance->Raise();
+		instance->LoadHelp(page); 
+	} else {
+		instance=new mxHelpWindow(page);
+	}
 }
 
-void mxHelpWindow::OnTree(wxTreeEvent &event) {
-	wxTreeItemId item = event.GetItem();
+
+void mxHelpWindow::LoadHelp(wxString file) {
+	if (file.Len()>5 && file.Mid(0,5)==_T("http:"))
+		html->LoadPage(file);
+	else
+		html->LoadPage(GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,file)));
+	HashStringTreeItem::iterator it = items.find(file);
+	if (it!=items.end())
+		tree->SelectItem(it->second);
+	Show();
+	html->SetFocus();
+	Raise();
+}
+
+bool mxHelpWindow::OnLink (wxString href) {
+	if (href.StartsWith(_T("foropen:"))) {
+		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,href.AfterFirst(':')));
+	} else if (href.StartsWith(_T("http://"))) {
+		utils->OpenInBrowser(href);
+	} else {
+		wxString fname = href.BeforeFirst('#');
+		if (fname.Len()) {
+			HashStringTreeItem::iterator it = items.find(fname);
+			if (it!=items.end())
+				tree->SelectItem(it->second);
+			fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,href));
+			if (!fname.Len())
+				html->SetPage(ERROR_PAGE(href));
+			else {
+				html->LoadPage(fname);
+			}
+		} else
+			return false;
+	}
+	return true;
+}
+
+void mxHelpWindow::OnTree (wxTreeItemId item) {
 	tree->Expand(item);
 	HashStringTreeItem::iterator it = items.begin();
 	while (it!=items.end() && it->second != item) ++it;
@@ -280,39 +179,6 @@ void mxHelpWindow::OnTree(wxTreeEvent &event) {
 		html->LoadPage(fname+(anchor.Len()?wxString("#")+anchor:""));
 	else
 		html->SetPage(ERROR_PAGE(it->first));
-//	evt.Skip();
-}
-
-void mxHelpWindow::OnLink (wxHtmlLinkEvent &event) {
-	if (event.GetLinkInfo().GetHref().StartsWith(_T("foropen:"))) {
-		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,event.GetLinkInfo().GetHref().AfterFirst(':')));
-	} else if (event.GetLinkInfo().GetHref().StartsWith(_T("http://"))) {
-		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
-	} else {
-		wxString fname = event.GetLinkInfo().GetHref().BeforeFirst('#');
-		if (fname.Len()) {
-			HashStringTreeItem::iterator it = items.find(fname);
-			if (it!=items.end())
-				tree->SelectItem(it->second);
-			fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,event.GetLinkInfo().GetHref()));
-			if (!fname.Len())
-				html->SetPage(ERROR_PAGE(event.GetLinkInfo().GetHref()));
-			else {
-				html->LoadPage(fname);
-			}
-		} else
-			event.Skip();
-	}
-}
-
-void mxHelpWindow::OnCharHook(wxKeyEvent &evt) {
-	if (evt.GetKeyCode()==WXK_RETURN && search_text==FindFocus()) {
-		wxCommandEvent evt;
-		OnSearch(evt);
-	} else if (evt.GetKeyCode()==WXK_ESCAPE)
-		Close();
-	else
-		evt.Skip();
 }
 
 wxString mxHelpWindow::GetHelpFile(wxString file) {
@@ -328,17 +194,3 @@ wxString mxHelpWindow::GetHelpFile(wxString file) {
 	else
 		return "";
 }
-
-void mxHelpWindow::OnPrint(wxCommandEvent &evt) {
-	if (!printer) {
-		printer = new wxHtmlEasyPrinting("ZinjaI's help",this);
-		int sizes[]={6,8,10,12,14,16,18};
-		printer->SetFonts("","",sizes);
-	}
-	printer->PrintFile(html->GetOpenedPage());
-}
-
-void mxHelpWindow::OnForum (wxCommandEvent & event) {
-	utils->OpenInBrowser(LANG(HELPW_FORUM_ADDRESS,"http://zinjai.sourceforge.net/index.php?page=contacto.php"));
-}
-

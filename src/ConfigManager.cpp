@@ -275,7 +275,7 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("doxygen_command",Files.doxygen_command);
 				else CFG_GENERIC_READ_DN("wxfb_command",Files.wxfb_command);
 				else CFG_GENERIC_READ_DN("parser_command",Files.parser_command);
-				else CFG_GENERIC_READ_DN("code_helper",Files.code_helper);
+//				else CFG_GENERIC_READ_DN("code_helper",Files.code_helper);
 				else CFG_GENERIC_READ_DN("project_folder",Files.project_folder);
 				else CFG_GENERIC_READ_DN("last_project_dir",Files.last_project_dir);
 				else CFG_GENERIC_READ_DN("last_dir",Files.last_dir);
@@ -712,7 +712,7 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("wxfb_command",Files.wxfb_command);
 	CFG_GENERIC_WRITE_DN("browser_command",Files.browser_command);
 	CFG_GENERIC_WRITE_DN("graphviz_dir",Files.graphviz_dir);
-	CFG_GENERIC_WRITE_DN("code_helper",Files.code_helper);
+//	CFG_GENERIC_WRITE_DN("code_helper",Files.code_helper);
 	CFG_GENERIC_WRITE_DN("project_folder",Files.project_folder);
 	CFG_GENERIC_WRITE_DN("last_dir",Files.last_dir);
 	CFG_GENERIC_WRITE_DN("last_project_dir",Files.last_project_dir);
@@ -976,7 +976,7 @@ void ConfigManager::LoadDefaults(){
 	Files.default_project=_T("<main>");
 //	Files.templates_dir="templates";
 	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
-	Files.code_helper=DIR_PLUS_FILE(_T("quickhelp"),_T("codehelper.txt"));
+//	Files.code_helper=DIR_PLUS_FILE(_T("quickhelp"),_T("codehelper.txt"));
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
 		Files.last_source[i]=_T("");
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
@@ -1062,13 +1062,14 @@ void ConfigManager::LoadDefaults(){
 	
 #if defined(__WIN32__)
 	Help.wxhelp_index=_T("MinGW\\wx\\docs\\wx_contents.html");
-	Help.quickhelp_index="quickhelp\\index";
+//	Help.quickhelp_index="quickhelp\\index";
 #else
 	Help.wxhelp_index=_T("docs/wx/wx_contents.html");
-	Help.quickhelp_index="quickhelp/index";
+//	Help.quickhelp_index="quickhelp/index";
 #endif
 //	Help.tips_file=DIR_PLUS_FILE(_T("quickhelp"),_T("tips"));
-	Help.quickhelp_dir="quickhelp";
+//	Help.quickhelp_dir="quickhelp";
+	Help.cppreference_dir="cppreference/en";
 	Help.guihelp_dir="guihelp";
 //	Help.autocomp_dir="autocomp";
 	Help.autocomp_indexes=_T("AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,AAA_Estandar_Cpp11,STL_Contenedores,STL_Algoritmos,STL_Iteradores,AAA_Palabras_Reservadas");

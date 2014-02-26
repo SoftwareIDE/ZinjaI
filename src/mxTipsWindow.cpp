@@ -85,7 +85,7 @@ mxTipsWindow::mxTipsWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	tooltip = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(300,175));
 	
-	wxString tips_file=DIR_PLUS_FILE(config->Help.quickhelp_dir,wxString(_T("tips_"))<<config->Init.language_file);
+	wxString tips_file=DIR_PLUS_FILE(config->Help.guihelp_dir,wxString(_T("tips_"))<<config->Init.language_file);
 	if (wxFileName::FileExists(tips_file)) file.Open(tips_file);
 
 	if (file.IsOpened())	
@@ -124,7 +124,6 @@ void mxTipsWindow::OnKeyDown(wxKeyEvent &evt) {
 	} else if (evt.GetKeyCode()==WXK_F1) {
 		Close();
 		SHOW_HELP(changelog?_T("ChangeLog.html"):_T("index.html"));
-		helpw->Maximize(true);
 	} else evt.Skip();
 }
 

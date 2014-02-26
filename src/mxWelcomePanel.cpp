@@ -23,7 +23,7 @@ END_EVENT_TABLE()
 
 mxWelcomePanel::mxWelcomePanel(wxWindow *parent):wxHtmlWindow(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxHW_NO_SELECTION|wxHW_DEFAULT_STYLE) {
 	is_visible=false;
-	wxString tips_file=DIR_PLUS_FILE(config->Help.quickhelp_dir,wxString(_T("tips_"))<<config->Init.language_file);
+	wxString tips_file=DIR_PLUS_FILE(config->Help.guihelp_dir,wxString(_T("tips_"))<<config->Init.language_file);
 	if (wxFileName::FileExists(tips_file)) file.Open(tips_file);
 //	LoadPage(SKIN_FILE(wxString(_T("welcome_panel_"))<<config->Init.language_file<<_T(".html")));
 }

@@ -152,7 +152,6 @@ bool mxApplication::OnInit() {
 
 	// inicialize ProjectManager
 	project = NULL;
-	helpw = NULL;
 	
 	// create main window
 	if (config->Init.size_x==0 || config->Init.size_y==0)
