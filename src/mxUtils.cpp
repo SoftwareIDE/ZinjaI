@@ -1306,3 +1306,15 @@ wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2, wx
 	return src;
 	
 }
+
+void mxUtils::OpenZinjaiSite(wxString page) {
+	if (!page.Len()) page="portada.php";
+	wxString base("http://zinjai.sourceforge.net");
+	if (config->Init.language_file=="spanish") {
+		base<<"/index.php?page="<<page;
+	} else {
+		base<<"/index_en.php?page="<<(page.BeforeFirst('.')+"_en."+page.AfterFirst('.'));
+	}
+	utils->OpenInBrowser(base);
+}
+

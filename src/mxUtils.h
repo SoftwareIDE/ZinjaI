@@ -221,6 +221,8 @@ public:
 	/// Abre una pagina en el navegador configurado
 	void OpenInBrowser(wxString url);
 	
+	void OpenZinjaiSite(wxString page="");
+	
 	/// Abre una carpeta en el explorador de archivos configurado
 	void OpenFolder(wxString path);
 	

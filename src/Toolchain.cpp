@@ -163,8 +163,8 @@ bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 			str.BeforeFirst('.').ToLong(&v);
 			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
 			version_cpp=v*1000+s;
+			cerr<<"Toolchain::CheckVersion cpp: "<<version_cpp<<endl;
 		}
-		cerr<<"Toolchain::CheckVersion cpp: "<<version_cpp<<endl;
 		return version_cpp>=_v*1000+_s;
 	} else {
 		if (version_c<0) {
@@ -173,8 +173,8 @@ bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 			str.BeforeFirst('.').ToLong(&v);
 			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
 			version_c=v*1000+s;
+			cerr<<"Toolchain::CheckVersion c: "<<version_c<<endl;
 		}
-		cerr<<"Toolchain::CheckVersion c: "<<version_c<<endl;
 		return version_c>=_v*1000+_s;
 	}
 }

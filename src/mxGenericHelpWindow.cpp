@@ -31,7 +31,7 @@ BEGIN_EVENT_TABLE(mxGenericHelpWindow,wxFrame)
 	EVT_CHAR_HOOK(mxGenericHelpWindow::OnCharHookEvent)
 END_EVENT_TABLE();
 
-mxGenericHelpWindow::mxGenericHelpWindow(bool use_tree):wxFrame (NULL,mxID_HELPW, LANG(HELPW_CAPTION,"Ayuda de ZinjaI"), wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
+mxGenericHelpWindow::mxGenericHelpWindow(wxString title, bool use_tree):wxFrame (NULL,mxID_HELPW, title, wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
 	
 #ifdef __WIN32__
 	SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));

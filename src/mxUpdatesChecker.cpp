@@ -122,14 +122,7 @@ void mxUpdatesChecker::OnCloseButton(wxCommandEvent &evt) {
 }
 
 void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
-//#ifdef DEBUG
-//	wxExecute(config->Files.browser_command+_T(" http://127.0.0.1/zinjai"));
-//#else
-	if (config->Init.language_file=="spanish")
-		utils->OpenInBrowser("http://zinjai.sourceforge.net?page=actualizacion.php&os="ARCHITECTURE);
-	else
-		utils->OpenInBrowser("http://zinjai.sourceforge.net?page=actualizacion_en.php&os="ARCHITECTURE);
-//#endif
+	utils->OpenZinjaiSite("actualizacion.php&os="ARCHITECTURE);
 	Close();
 }
 

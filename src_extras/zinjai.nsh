@@ -75,10 +75,10 @@ SectionEnd
 ;  File /R "wx\*"
 ;SectionEnd
 
-Section "Referencia C/C++" SEC03
-  SetOutPath "$INSTDIR\"
-  File /R "cppreference\*"
-SectionEnd
+;Section "Referencia C/C++" SEC03
+;  SetOutPath "$INSTDIR\"
+;  File /R "cppreference\*"
+;SectionEnd
 
 Section /o "OpenGL" SEC04
   SetOutPath "$INSTDIR\"
@@ -95,7 +95,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Entorno ZinjaI. Tamaño aproximado: 39 MB"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Herramientas de compilacion, depuracion y otros GNU. Tamaño aproximado: 165 MB"
 ;  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Archivos necesarios para utilizar la biblioteca wxWidgets. Tamaño aproximado: 42 MB"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Completa referencia sobre C/C++ estándar (basada en el sitio cppreference.com). Tamaño aproximado: 128 MB"
+;  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Completa referencia sobre C/C++ estándar (basada en el sitio cppreference.com). Tamaño aproximado: 128 MB"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "Archivos necesarios para compilar aplicaciones OpenGL con freeglut y/o glew. Tamaño Aproximado: 6.6MB"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Código fuente del entorno. Tamaño aproximado: 16 MB"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC01b} "Asociar fuentes (c,c++,cpp,cxx,h,h++,hpp,hxx) para abrir con ZinjaI"

@@ -5,6 +5,7 @@
 #include "mxReferenceWindow.h"
 #include "mxMessageDialog.h"
 #include "ConfigManager.h"
+#include "mxComplementInstallerWindow.h"
 using namespace std;
 
 #define _index "index.html"
@@ -12,19 +13,21 @@ using namespace std;
 
 mxReferenceWindow *mxReferenceWindow::instance=NULL;
 
-mxReferenceWindow::mxReferenceWindow(wxString page):mxGenericHelpWindow(true) {
-	PopulateInitialTree();
-	ShowIndex(); Show();
+mxReferenceWindow::mxReferenceWindow(wxString page):mxGenericHelpWindow(LANG(CPPREF_CAPTION,"Referencia C/C++"),true) {
+	if (!PopulateInitialTree()) return;
+	LoadHelp(DIR_PLUS_FILE(config->Help.cppreference_dir,page));
+	Show();
 }
 
 mxReferenceWindow::~mxReferenceWindow() {
 	instance=NULL;
-}
+}	
 
 void mxReferenceWindow::ShowHelp(wxString page) {
 	if (page=="") page=_index;
 	page=DIR_PLUS_FILE(config->Help.cppreference_dir,page);
 	if (instance) {
+		if (!instance->PopulateInitialTree()) return;
 		if (!instance->IsShown()) instance->Show(); 
 		else if (instance->IsIconized()) instance->Maximize(false); 
 		else instance->Raise();
@@ -79,7 +82,7 @@ void mxReferenceWindow::OnSearch (wxString value) {
 	if (aresults.GetCount())		
 		html->SetPage(result);
 	else
-		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<value<<"\".</B></BODY></HTML>");
+		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(CPPREF_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<value<<"\".</B></BODY></HTML>");
 }
 
 bool mxReferenceWindow::OnLink (wxString href) {
@@ -214,7 +217,26 @@ void mxReferenceWindow::LoadSearchIndex ( ) {
 	fil.Close();
 }
 
-void mxReferenceWindow::PopulateInitialTree ( ) {
+bool mxReferenceWindow::PopulateInitialTree ( ) {
+	static bool index_loaded=false;
+	if (index_loaded) return true;
+	wxTextFile fil(DIR_PLUS_FILE(config->Help.cppreference_dir,_index));
+	if (!fil.Exists()) {
+		int res=mxMessageDialog(LANG(CPPREF_NOT_FOUND,""
+						"No se encontró el archivo indice. Es probable que la\n"
+						"referencia no está instalada, ya que no se incluye por\n"
+						"defecto en todas las versiones de ZinjaI.\n\n"
+						"Si dispone de acceso a internet puede descargarla e\n"
+						"instalarla como complemento ahora."),
+						"Referencia C/C++",mxMD_INFO|mxMD_OK,
+						LANG(CPPREF_INSTALL_NOW,"Descargar e instalar ahora"),true).ShowModal();
+		if (res&mxMD_CHECKED) {
+			new mxComplementInstallerWindow(this); wxYield();
+			utils->OpenZinjaiSite("cppreference.html");
+		}
+		return false;
+	}
+	
 	wxTreeItemId root=tree->AddRoot("Contents");
 	wxTreeItemId index = tree->AppendItem(root,"General Index");
 	wxTreeItemId item_cpp= tree->AppendItem(index,"C++ reference");
@@ -224,9 +246,6 @@ void mxReferenceWindow::PopulateInitialTree ( ) {
 	items_general.push_back(make_pair(index,_index));
 	items_general.push_back(make_pair(item_c,wxString("c.html")));
 	items_general.push_back(make_pair(item_cpp,wxString("cpp.html")));
-	
-	wxTextFile fil(DIR_PLUS_FILE(config->Help.cppreference_dir,_index));
-	if (!fil.Exists()) return;
 	fil.Open(); bool on_child=false;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (str.Contains("<div class=\"mainpagediv\">")) on_child=true;
@@ -252,6 +271,7 @@ void mxReferenceWindow::PopulateInitialTree ( ) {
 	}
 	tree->Expand(index);
 	fil.Close();
-	
+
+	return index_loaded=true;
 }
 

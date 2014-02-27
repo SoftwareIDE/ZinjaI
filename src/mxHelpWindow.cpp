@@ -13,7 +13,7 @@
 
 mxHelpWindow *mxHelpWindow::instance=NULL;
 
-mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(true) { 
+mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(LANG(HELPW_CAPTION,"Ayuda de ZinjaI"),true) { 
 	// populate index tree
 	wxString index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,_T("index_")+config->Init.language_file);
 	if (!wxFileName::FileExists(index_file))

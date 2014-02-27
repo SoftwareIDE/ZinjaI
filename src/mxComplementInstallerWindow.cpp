@@ -85,10 +85,7 @@ void mxComplementInstallerWindow::OnHelpButton (wxCommandEvent & evt) {
 }
 
 void mxComplementInstallerWindow::OnDownloadButton (wxCommandEvent & evt) {
-	if (config->Init.language_file=="spanish")
-		utils->OpenInBrowser(_T("http://zinjai.sourceforge.net?page=downextras.html"));
-	else
-		utils->OpenInBrowser(_T("http://zinjai.sourceforge.net?page=downextras_en.html"));
+	utils->OpenZinjaiSite("downextras.html");
 }
 
 void mxComplementInstallerWindow::OnCancelButton (wxCommandEvent & evt) {

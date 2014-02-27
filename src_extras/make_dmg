@@ -8,7 +8,7 @@ cp -u /mnt/ex/zinjai/src_extras/complement/* zinjai.app/Contents/Resources/src_e
 cp -u /mnt/ex/zinjai/src_extras/wx_autocomp/* zinjai.app/Contents/Resources/src_extras/wx_autocomp
 cp -u /mnt/ex/zinjai/autocomp/* zinjai.app/Contents/Resources/autocomp/
 cp -u /mnt/ex/zinjai/colours/* zinjai.app/Contents/Resources/colours/
-cp -u /mnt/ex/zinjai/quickhelp/* zinjai.app/Contents/Resources/quickhelp/
+#cp -u /mnt/ex/zinjai/quickhelp/* zinjai.app/Contents/Resources/quickhelp/
 cp -u /mnt/ex/zinjai/guihelp/* zinjai.app/Contents/Resources/guihelp/
 cp -u /mnt/ex/zinjai/imgs/*.png zinjai.app/Contents/Resources/imgs/
 cp -u /mnt/ex/zinjai/imgs/*.html zinjai.app/Contents/Resources/imgs/

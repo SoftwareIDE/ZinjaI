@@ -12,7 +12,7 @@ class mxReferenceWindow:public mxGenericHelpWindow {
 	void LoadSearchIndex();
 	
 	wxTreeItemId page_tree_item;
-	void PopulateInitialTree();
+	bool PopulateInitialTree();
 	
 	vector<pair<wxTreeItemId,wxString> > items_general,items_page;
 	

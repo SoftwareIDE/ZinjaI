@@ -46,7 +46,7 @@ protected:
 	void OnCharHookEvent(wxKeyEvent &event);
 	
 public:
-	mxGenericHelpWindow(bool use_tree);
+	mxGenericHelpWindow(wxString title, bool use_tree);
 	~mxGenericHelpWindow();
 	
 	virtual void OnPrev() { html->HistoryBack(); }

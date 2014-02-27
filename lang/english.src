@@ -988,6 +988,22 @@ FIND_TOO_MANY_RESULTS
 too many results, showing only first 500
 FIND_LINE
 line
+HELPW_TOGGLE_TREE
+Show/Hide Index tree
+HELPW_INDEX
+Go to home page
+HELPW_PREVIOUS
+Go to previous page
+HELPW_NEXT
+Go to next page
+HELPW_COPY
+Copy selection to clipboard
+HELPW_PRINT
+Print current page...
+HELPW_SEARCH_LABEL
+Search:
+HELPW_FIND
+Find...
 GOTOFILE_CAPTION
 Go To...
 GENERAL_GOTO_BUTTON
@@ -1012,22 +1028,6 @@ GOTOLINE_YOURE_HERE
 You are in line <{1}> from <{2}>.
 HELPW_CAPTION
 ZinjaI's Help
-HELPW_TOGGLE_TREE
-Show/Hide Index tree
-HELPW_INDEX
-Go to home page
-HELPW_PREVIOUS
-Go to previous page
-HELPW_NEXT
-Go to next page
-HELPW_COPY
-Copy selection to clipboard
-HELPW_PRINT
-Print current page...
-HELPW_SEARCH_LABEL
-Search:
-HELPW_FIND
-Find...
 HELPW_FORUM_TEXT
 Cannot find what you need here? Is it incomplete, outdated or wrong?  
 HELPW_FORUM_BUTTON
@@ -3260,6 +3260,16 @@ PROYSTATS_NUM_MACROS
 Preprocessor Macros
 PROYSTATS_NOTE_DISK_USAGE
 (*) binary file and objects not included
+CPPREF_CAPTION
+C/C++ Reference
+CPPREF_SEARCH_NO_RESULTS_FOR
+No results found for "
+CPPREF_NOT_FOUND
+Index file was not found. May be c++ reference is not installed\n(it is not included by default with all ZinjaI's versions).\n\nIf there is an Internet conection available, you can download\nand install this as a complement now.
+CPPREF_INSTALL_NOW
+Download and install now
+CPPREF_INSTALL_HELP
+1. Download the complement with your preferred browser\n2. Return to ZinjaI and click "Install" button\n3. Select the downloaded file and click "Install" button\n    again in the new window.
 SHARESOURCE_CAPTION
 Share Source
 SHARESOURCE_SHARE_WITHOUT_MODIFICATIONS
