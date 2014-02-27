@@ -418,6 +418,32 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 END_EVENT_TABLE()
 
 
+/**
+* Hay eventos que llaman al AnalizeConfig del proyecto, que puede requerir expandir subcomandos 
+* y dejar que en el yield del execute se vuelva a invocar otro de estos eventos provocando las 
+* "colisiones" en los executes (yields en yields no tienen efecto). Esta clase maneja un flag
+* para evitar procesar uno de esos eventos.
+**/
+class PreventExecuteYieldExecuteProblem {
+	static bool flag; 
+	bool owns_flag;
+public:
+	PreventExecuteYieldExecuteProblem() {
+		owns_flag=!flag;
+		flag=true;
+	}
+	~PreventExecuteYieldExecuteProblem() {
+		if (owns_flag) flag=false;
+	}
+	bool IsOk() { return owns_flag; }
+};
+
+bool PreventExecuteYieldExecuteProblem::flag=false;
+
+#define _prevent_execute_yield_execute_problem \
+	PreventExecuteYieldExecuteProblem prevent_execute_yield_execute_problem; \
+	if (!prevent_execute_yield_execute_problem.IsOk()) return
+	
 
 mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
 	
@@ -1098,7 +1124,7 @@ void mxMainWindow::OnFileOpenSelected(wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpOpinion (wxCommandEvent &event){
-	utils->OpenInBrowser("http://zinjai.sourceforge.net/index.php?page=contacto.php");
+	utils->OpenZinjaiSite("contacto.php");
 //	new mxOpinionWindow(this);
 }
 
@@ -2196,6 +2222,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 }
 
 void mxMainWindow::OnRunClean (wxCommandEvent &event) {
+	_prevent_execute_yield_execute_problem;
 	if (project) project->Clean();
 	else IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
@@ -2206,6 +2233,7 @@ void mxMainWindow::OnRunClean (wxCommandEvent &event) {
 
 
 void mxMainWindow::OnRunBuild (wxCommandEvent &event) {
+	_prevent_execute_yield_execute_problem;
 	compiler->BuildOrRunProject(false,false,false);
 }
 
@@ -2250,6 +2278,7 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 
 
 void mxMainWindow::OnRunRun (wxCommandEvent &event) {
+	_prevent_execute_yield_execute_problem;
 	if (!compiler->valgrind_cmd.Len() && config->Debug.always_debug) { // si siempre hay que ejecutar en el depurador
 		OnDebugRun(event); // patearle la bocha
 		return;
@@ -2352,6 +2381,7 @@ void mxMainWindow::OnPreferences (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnRunCompile (wxCommandEvent &event) {
+	_prevent_execute_yield_execute_problem;
 	if (project) {
 		compiler->BuildOrRunProject(false,false,false);
 	} else {
