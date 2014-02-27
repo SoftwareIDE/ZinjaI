@@ -15,7 +15,7 @@ mxReferenceWindow *mxReferenceWindow::instance=NULL;
 
 mxReferenceWindow::mxReferenceWindow(wxString page):mxGenericHelpWindow(LANG(CPPREF_CAPTION,"Referencia C/C++"),true) {
 	if (!PopulateInitialTree()) return;
-	LoadHelp(DIR_PLUS_FILE(config->Help.cppreference_dir,page));
+	LoadHelp(DIR_PLUS_FILE(config->Help.cppreference_dir,_index));
 	Show();
 }
 

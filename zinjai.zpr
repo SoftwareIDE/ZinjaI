@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxUpdatesChecker.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -36,8 +35,8 @@ cursor=117:1
 marker=141
 [source]
 path=src/mxMainWindow.cpp
-cursor=1100:21
-marker=1963
+cursor=2382:0
+marker=1989
 [source]
 path=src/mxSource.cpp
 cursor=1687:21
@@ -100,7 +99,7 @@ path=src/mxTipsWindow.cpp
 cursor=-1:0
 [source]
 path=src/ProjectManager.cpp
-cursor=711:98
+cursor=1165:36
 marker=182
 marker=3200
 marker=3235
@@ -166,7 +165,6 @@ cursor=51:38
 [source]
 path=src/mxUpdatesChecker.cpp
 cursor=160:0
-open=true
 [source]
 path=src/mxBreakOptions.cpp
 cursor=114:18
@@ -302,7 +300,7 @@ path=src/BreakPointInfo.cpp
 cursor=116:0
 [source]
 path=src/Toolchain.cpp
-cursor=-1:5761
+cursor=175:3
 [source]
 path=src/mxInspectionsImprovingEditor.cpp
 cursor=-1:0
@@ -320,7 +318,7 @@ path=src/mxGCovSideBar.cpp
 cursor=-1:1823
 [source]
 path=src/execution_workaround.cpp
-cursor=-1:1353
+cursor=12:33
 [source]
 path=src/mxWxfbConfigDialog.cpp
 cursor=76:25
@@ -333,7 +331,6 @@ cursor=33:21
 [source]
 path=src/mxReferenceWindow.cpp
 cursor=222:5
-open=true
 [header]
 path=src/CodeHelper.h
 cursor=-1:2276
@@ -374,7 +371,7 @@ path=src/mxGotoLineWindow.h
 cursor=-1:0
 [header]
 path=src/mxMainWindow.h
-cursor=607:1
+cursor=162:0
 [header]
 path=src/mxNewWizard.h
 cursor=41:29
@@ -662,7 +659,7 @@ path=src/mxReferenceWindow.h
 cursor=9:1
 [other]
 path=guihelp/ChangeLog.html
-cursor=31:24
+cursor=7:0
 [other]
 path=quickhelp/tips_spanish
 cursor=-1:802
