@@ -35,6 +35,7 @@ public:
 	void OnTree(wxTreeItemId item);
 	void ShowIndex();
 	void OnSearch(wxString value);
+	void OnSearch(wxString value, bool update_history);
 	bool OnLink(wxString href);
 	
 	~mxReferenceWindow();

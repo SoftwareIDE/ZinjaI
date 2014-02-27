@@ -45,7 +45,7 @@ void mxReferenceWindow::LoadHelp (wxString fname, bool update_history) {
 	wxFileName fn(fname);
 	current_page=fname;
 	current_path=fn.GetPath();
-	wxString old_path=wxGetWorkingDirectory(); 
+	wxString old_path=wxGetCwd(); 
 	wxSetWorkingDirectory(fn.GetPath()); 
 	html->SetPage(ProcessHTML(fn.GetFullName(),this));
 	wxSetWorkingDirectory(old_path); 
@@ -56,10 +56,19 @@ void mxReferenceWindow::ShowIndex ( ) {
 }
 
 void mxReferenceWindow::OnSearch (wxString value) {
+	OnSearch(value,true);
+}
+
+void mxReferenceWindow::OnSearch (wxString value, bool update_history) {
+	if (update_history) { 
+		while(!history_next.empty()) history_next.pop(); 
+		if (value.Len()) history_prev.push(current_page);
+	}
 	LoadSearchIndex();
 	tree->DeleteChildren(page_tree_item); 
 	tree->SetItemText(page_tree_item,value);
 	current_path=config->Help.cppreference_dir;
+	current_page=wxString(">")+value;
 	wxArrayString aresults;
 	if (!value.Len()) {
 		mxMessageDialog(this,LANG(HELPW_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
@@ -102,14 +111,16 @@ bool mxReferenceWindow::OnLink (wxString href) {
 void mxReferenceWindow::OnPrev ( ) {
 	if (history_prev.empty()) return;
 	history_next.push(current_page);
-	LoadHelp(history_prev.top(),false);
+	if (history_prev.top().StartsWith(">")) OnSearch(history_prev.top().Mid(1),false);
+	else LoadHelp(history_prev.top(),false);
 	history_prev.pop();
 }
 
 void mxReferenceWindow::OnNext ( ) {
 	if (history_next.empty()) return;
 	history_prev.push(current_page);
-	LoadHelp(history_next.top(),false);
+	if (history_next.top().StartsWith(">")) OnSearch(history_next.top().Mid(1),false);
+	else LoadHelp(history_next.top(),false);
 	history_next.pop();
 }
 
@@ -122,7 +133,7 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 	bool ignoring=false; bool on_toc=false; int div_deep=0; wxString result;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (!ignoring) {
-			size_t p=str.find("<title");
+			int p=str.find("<title");
 			if (w && p!=string::npos) {
 				wxString title=str.Mid(p).AfterFirst('>').BeforeFirst('<');
 				title.Replace("&lt;","<"); title.Replace("&gt;",">"); title.Replace("&amp;","&");
@@ -131,6 +142,7 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 			}
 			
 			p=str.Find("<div class=\"t-navbar\"");
+			if (p==wxNOT_FOUND) p=str.Find("class=\"noprint\"");
 			ignoring = p!=wxNOT_FOUND; div_deep=1;
 			if (ignoring) str=str.Mid(p).AfterFirst('>');
 		}
@@ -201,7 +213,7 @@ void mxReferenceWindow::OnTree (wxTreeItemId item) {
 			return;
 		}
 	}
-	OnSearch(tree->GetItemText(item));
+//	OnSearch(tree->GetItemText(item));
 }
 
 void mxReferenceWindow::LoadSearchIndex ( ) {
