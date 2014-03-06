@@ -12,6 +12,7 @@
 #include "mxSizers.h"
 #include "mxMessageDialog.h"
 #include "Language.h"
+#include <wx/listctrl.h>
 
 BEGIN_EVENT_TABLE(mxOpenRecentDialog, wxDialog)
 	EVT_BUTTON(wxID_OK,mxOpenRecentDialog::OnGotoButton)
@@ -21,9 +22,9 @@ BEGIN_EVENT_TABLE(mxOpenRecentDialog, wxDialog)
 	EVT_CLOSE(mxOpenRecentDialog::OnClose)
 	EVT_TEXT(wxID_ANY,mxOpenRecentDialog::OnTextChange)
 	EVT_CHAR_HOOK(mxOpenRecentDialog::OnCharHook)
-	EVT_LISTBOX_DCLICK(wxID_ANY,mxOpenRecentDialog::OnGotoButton)
+	EVT_SIZE(mxOpenRecentDialog::OnResize)
+	EVT_LIST_ITEM_ACTIVATED(wxID_ANY,mxOpenRecentDialog::OnListDClick)
 END_EVENT_TABLE()
-	
 	
 mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(parent, wxID_ANY, LANG(RECENT_CAPTION,"Archivos Recientes..."), wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
@@ -49,7 +50,9 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	goto_button->SetDefault(); 
 	
 	text_ctrl = new wxTextCtrl(this,wxID_ANY,_T(""));
-	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,NULL,wxLB_SINGLE|wxLB_SORT);
+	list_ctrl = new wxListCtrl(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),wxLC_REPORT|wxLC_SINGLE_SEL);
+	list_ctrl->InsertColumn(0,LANG(RECENT_COLUMN_FILE,"Archivo"));
+	list_ctrl->InsertColumn(1,LANG(RECENT_COLUMN_DATE,"Fecha Modificacion"));
 	
 	bottomSizer->Add(clear_button,sizers->BA5);
 	bottomSizer->Add(del_button,sizers->BA5);
@@ -59,7 +62,7 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	
 	mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(RECENT_ENTER_FILENAME,"Ingrese parte del nombre del archivo que desea abrir:")),sizers->BLRT5_Exp0);
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
-	mySizer->Add(list_ctrl,sizers->BA5_Exp0);
+	mySizer->Add(list_ctrl,sizers->BA5_Exp1);
 	mySizer->Add(new wxStaticText(this,wxID_ANY,wxString(' ',max_len*2)),sizers->BLRT5_Exp0);
 	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	SetSizerAndFit(mySizer);
@@ -70,11 +73,10 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	UpdateList();
 	CenterOnParent();
 	Show();
-	
 }
 
 void mxOpenRecentDialog::OnGotoButton(wxCommandEvent &event) {
-	wxString key = list_ctrl->GetString(list_ctrl->GetSelection());
+	wxString key = list_ctrl->GetItemText(GetListSelection());
 	Close();
 	main_window->OpenFileFromGui(key);
 }
@@ -85,10 +87,10 @@ void mxOpenRecentDialog::OnCancelButton(wxCommandEvent &event) {
 }
 
 void mxOpenRecentDialog::OnDelButton(wxCommandEvent &event) {
-	int sel = list_ctrl->GetSelection();
-	if (sel<0||sel>=int(list_ctrl->GetCount())) return;
-	wxString todel = list_ctrl->GetString(sel);
-	list_ctrl->Delete(sel);
+	int sel = GetListSelection();
+	if (sel<0||sel>=int(list_ctrl->GetItemCount())) return;
+	wxString todel = list_ctrl->GetItemText(sel);
+	list_ctrl->DeleteItem(sel);
 
 	wxString *array = projects?config->Files.last_project:config->Files.last_source;
 	bool found=false;
@@ -99,7 +101,6 @@ void mxOpenRecentDialog::OnDelButton(wxCommandEvent &event) {
 	array[CM_HISTORY_MAX_LEN-1]="";
 	
 	if (array[0].Len()) main_window->UpdateInHistory(array[0]);
-	
 }
 
 void mxOpenRecentDialog::OnClose(wxCloseEvent &event) {
@@ -112,47 +113,53 @@ void mxOpenRecentDialog::OnTextChange(wxCommandEvent &event) {
 
 void mxOpenRecentDialog::UpdateList() {
 	list_ctrl->Freeze();
-	list_ctrl->Clear();
+	list_ctrl->DeleteAllItems();
 	wxString key = text_ctrl->GetValue();
 	key.MakeUpper();
 	wxString *array = projects?config->Files.last_project:config->Files.last_source;
-	for (unsigned int i=0;i<CM_HISTORY_MAX_LEN;i++) {
+	for (unsigned int i=0,count=0;i<CM_HISTORY_MAX_LEN;i++) {
 		if (array[i].Len()==0) break;
 		wxFileName fn(array[i]);
 		fn.Normalize();
 		wxString file(fn.GetFullPath());
-		if (file.Upper().Find(key)!=wxNOT_FOUND)
-			list_ctrl->Append(file);
+		if (file.Upper().Find(key)!=wxNOT_FOUND) {
+			list_ctrl->InsertItem(count,file);
+			if (fn.FileExists())
+				list_ctrl->SetItem(count,1,fn.GetModificationTime().Format(LANG(RECENT_DATE_FORMAT,"%d/%m/%Y %H:%M:%S")));
+			else
+				list_ctrl->SetItem(count,1,LANG(RECENT_DATE_NOT_FOUND,"no encontrado"));
+			count++;
+		}
 	}
 	list_ctrl->Thaw();
-	if (list_ctrl->GetCount()) {
+	if (list_ctrl->GetItemCount()) {
 		goto_button->Enable(true);
-		list_ctrl->SetSelection(0);
+		SetListSelection(0);
 	} else {
-		list_ctrl->Append(LANG(RECENT_NO_RESULTS,"<<no se encontraron coincidencias>>"));
+		list_ctrl->InsertItem(0,LANG(RECENT_NO_RESULTS,"<<no se encontraron coincidencias>>"));
 		goto_button->Enable(false);
 	}
 }
 
 void mxOpenRecentDialog::OnCharHook (wxKeyEvent &event) {
-	if (!list_ctrl->GetCount())  {
+	if (!list_ctrl->GetItemCount())  {
 		event.Skip();
 	} else if ( event.GetKeyCode() == WXK_DELETE && FindFocus()!=text_ctrl) {
 		wxCommandEvent evt;
 		OnDelButton(evt);
 	} else if ( event.GetKeyCode() == WXK_UP ) {
-		int sel = list_ctrl->GetSelection();
+		int sel = GetListSelection();
 		sel--;
 		if (sel==-1)
-			sel=list_ctrl->GetCount()-1;
-		list_ctrl->SetSelection(sel);
+			sel=list_ctrl->GetItemCount()-1;
+		SetListSelection(sel);
 //		list_ctrl->SetFirstItem(sel); // para que estaba esto?
 	} else if (event.GetKeyCode()==WXK_DOWN) {
-		int sel = list_ctrl->GetSelection();
+		int sel = GetListSelection();
 		sel++;
-		if (sel==int(list_ctrl->GetCount()))
+		if (sel==int(list_ctrl->GetItemCount()))
 			sel=0;
-		list_ctrl->SetSelection(sel);
+		SetListSelection(sel);
 //		list_ctrl->SetFirstItem(sel); // para que estaba esto?
 	} else event.Skip();
 }
@@ -165,7 +172,7 @@ void mxOpenRecentDialog::OnClear(wxCommandEvent &event) {
 				if (main_window->menu.file_project_history[i])
 					main_window->menu.file_project_recent->Remove(main_window->menu.file_project_history[i]);
 			}
-			list_ctrl->Clear();
+			list_ctrl->DeleteAllItems();
 		}
 	} else {
 		if (mxMD_YES==mxMessageDialog(this,LANG(RECENT_CONFIRM_CLEAR_FILE_HISTORY,"Desea eliminar la lista de archivos recientes?"), LANG(GENERAL_CONFIRM,"Confirmacion"), mxMD_YES_NO|mxMD_QUESTION).ShowModal()) {
@@ -174,7 +181,28 @@ void mxOpenRecentDialog::OnClear(wxCommandEvent &event) {
 				if (main_window->menu.file_source_history[i])
 					main_window->menu.file_source_recent->Remove(main_window->menu.file_source_history[i]);
 			}
-			list_ctrl->Clear();
+			list_ctrl->DeleteAllItems();
 		}
 	}
 }
+
+int mxOpenRecentDialog::GetListSelection ( ) {
+	long item=-1;
+	return list_ctrl->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+}
+
+void mxOpenRecentDialog::SetListSelection (int i) {
+	list_ctrl->SetItemState(i,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);	
+}
+
+void mxOpenRecentDialog::OnResize (wxSizeEvent & event) {
+	event.Skip();
+	list_ctrl->SetColumnWidth(1,wxLIST_AUTOSIZE);
+	list_ctrl->SetColumnWidth(1,list_ctrl->GetColumnWidth(1)+5);
+	list_ctrl->SetColumnWidth(0,list_ctrl->GetSize().GetWidth()-list_ctrl->GetColumnWidth(1)-5);
+}
+
+void mxOpenRecentDialog::OnListDClick (wxListEvent & event) {
+	wxCommandEvent e; OnGotoButton(e);
+}
+
