@@ -483,6 +483,7 @@ void DebugManager::HowDoesItRuns() {
 		if (!process || status==DBGST_STOPPING) return;
 		int st_pos = ans.Find(_T("*stopped"));
 		if (st_pos==wxNOT_FOUND) {
+			_IF_DEBUGMODE(wxMessageBox(wxString("HowDoesItRuns answer: ")<<ans));
 			SetStateText(state_text);
 	#ifdef DEBUG_MANAGER_LOG_TALK
 			wxString debug_log_string; debug_log_string<<"ERROR RUNNING: "<<ans;

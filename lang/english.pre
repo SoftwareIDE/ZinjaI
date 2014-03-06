@@ -2554,6 +2554,8 @@ MAKEFILE_TYPE_OBJECTS
 Splitted: objects
 MAKEFILE_TYPE
 Type
+MAKEFILE_CMAKE_STYLE
+Show progress while compiling (cmake style)
 MAKEFILE_GENERATE
 Generate
 GENERAL_NO_BUTTON
@@ -2732,8 +2734,16 @@ RECENT_CLEAN
 C&lean list
 RECENT_DELETE
 &Remove from list
+RECENT_COLUMN_FILE
+Path
+RECENT_COLUMN_DATE
+Modification Date
 RECENT_ENTER_FILENAME
 Enter part of the filename:
+RECENT_DATE_FORMAT
+%m/%d/%Y %H:%M:%S
+RECENT_DATE_NOT_FOUND
+file not found
 RECENT_NO_RESULTS
 <<no result found>>
 RECENT_CONFIRM_CLEAR_PROJECT_HISTORY
@@ -3270,8 +3280,6 @@ CPPREF_NOT_FOUND
 Index file was not found. May be c++ reference is not installed\n(it is not included by default with all ZinjaI's versions).\n\nIf there is an Internet conection available, you can download\nand install this as a complement now.
 CPPREF_INSTALL_NOW
 Download and install now
-CPPREF_INSTALL_HELP
-1. Download the complement with your preferred browser\n2. Return to ZinjaI and click "Install" button\n3. Select the downloaded file and click "Install" button\n    again in the new window.
 SHARESOURCE_CAPTION
 Share Source
 SHARESOURCE_SHARE_WITHOUT_MODIFICATIONS

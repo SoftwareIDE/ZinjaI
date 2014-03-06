@@ -4104,23 +4104,33 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	static wxString what;
 	wxString res = mxGetTextFromUser(_T("Comando:"), _T("Comandos internos") , what, this);
 	if (res=="help") {
-		wxMessageBox ("errorsave, kboom, debugmode, wxlog");
-	} else if (res=="debugmode") {
-		zinjai_debug_mode=!zinjai_debug_mode;
-		if (zinjai_debug_mode) wxMessageBox ("debugmode activado");
-		else wxMessageBox ("debugmode desactivado");
+		wxMessageBox ("errorsave, kboom, debug on, debug off, wxlog, gdb cmd, gdb ans");
+	} else if (res=="debug on") {
+		zinjai_debug_mode=true;
+		SetStatusText("DoThat: Modo debug activado");
+	} else if (res=="debug off") {
+		zinjai_debug_mode=false;
+		SetStatusText("DoThat: Modo debug desactivado");
+	} else if (res=="gdb cmd") {
+		wxMessageBox (debug->last_command);
+	} else if (res=="gdb ans") {
+		wxMessageBox (debug->last_answer);
 	} else if (res=="errorsave") {
 		er_sigsev(11);
 	} else if (res=="wxlog on") {
 		wxLog::SetActiveTarget(new wxLogGui());
+		SetStatusText("DoThat: usando wxLogGui");
 	} else if (res=="wxlog off") {
 		wxLog::SetActiveTarget(new wxLogStderr());
+		SetStatusText("DoThat: usando wxLogStrerr");
 	} else if (res=="kboom") {
 		int *p=NULL;
 		// cppcheck-suppress nullPointer
 		cout<<*p;
-	} else if (res.Len() && debug->debugging) 
+	} else if (res.Len() && debug->debugging) {
+		SetStatusText(wxString("DoThat: comando para gdb: ")<<res);
 		debug->DoThat(what=res);
+	}
 }
 
 void mxMainWindow::ShowInQuickHelpPanel(wxString &res, bool hide_compiler_tree) {

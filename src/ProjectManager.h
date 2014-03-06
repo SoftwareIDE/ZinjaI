@@ -534,7 +534,7 @@ public:
 	/// Actualiza una clase heredada de alguna de las diseñadas en wxFormBuilder
 	bool WxfbUpdateClass(wxString wxfb_class, wxString user_class);
 	/// Genera un makefile para el proyecto a partir de active_configuration
-	void ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype);
+	void ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype, bool cmake_style=false);
 	/// Parsea la configuración del proyecto (active_configuration) para generar los argumentos necesarios para invocar al compilador
 	void AnalizeConfig(wxString path, bool exec_comas, wxString mingw_dir, bool force=true);
 	/// sets environment variables for running/compiling the project (LD_LIBRARY_PATH, PROJECT_BIN, PROJECT_PATH)

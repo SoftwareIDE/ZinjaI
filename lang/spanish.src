@@ -2552,6 +2552,8 @@ MAKEFILE_TYPE_OBJECTS
 Por partes: objetos
 MAKEFILE_TYPE
 Formato
+MAKEFILE_CMAKE_STYLE
+Mostrar progreso al compilar (estilo cmake)
 MAKEFILE_GENERATE
 Generar
 GENERAL_NO_BUTTON
@@ -2730,8 +2732,16 @@ RECENT_CLEAN
 &Limpiar Lista
 RECENT_DELETE
 &Quitar de la Lista
+RECENT_COLUMN_FILE
+Archivo
+RECENT_COLUMN_DATE
+Fecha Modificacion
 RECENT_ENTER_FILENAME
 Ingrese parte del nombre del archivo que desea abrir:
+RECENT_DATE_FORMAT
+%d/%m/%Y %H:%M:%S
+RECENT_DATE_NOT_FOUND
+no encontrado
 RECENT_NO_RESULTS
 <<no se encontraron coincidencias>>
 RECENT_CONFIRM_CLEAR_PROJECT_HISTORY
@@ -3268,8 +3278,6 @@ CPPREF_NOT_FOUND
 No se encontró el archivo indice. Es probable que la\nreferencia no está instalada, ya que no se incluye por\ndefecto en todas las versiones de ZinjaI.\n\nSi dispone de acceso a internet puede descargarla e\ninstalarla como complemento ahora.
 CPPREF_INSTALL_NOW
 Descargar e instalar ahora
-CPPREF_INSTALL_HELP
-1 .Descargue y guarde el complemento con su navegador\n2. Regrese a ZinjaI y haga click en \"Instalar\"3. Seleccione el archivo descargado y haga click en\n    \"Instalar\" en la nueva ventana.
 SHARESOURCE_CAPTION
 Compartir Archivo
 SHARESOURCE_SHARE_WITHOUT_MODIFICATIONS

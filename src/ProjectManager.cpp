@@ -1660,8 +1660,24 @@ wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step, wx
 	return command;
 }
 
+static wxString get_percent(int cur, int tot) {
+	wxString s; s<<(cur*100)/tot;
+	if (s.Len()==1) s=wxString("  ")+s;
+	else if (s.Len()==2) s=wxString(" ")+s;
+	return s+"%";
+}
 
-void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype) {
+void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype, bool cmake_style) {
+	
+	int steps_total=0, steps_extras, steps_objs, steps_libs, steps_current;
+	if (cmake_style) { // calcular cuantos pasos hay en cada etapa para saber que porcentajes de progreso mostrar en cada comando
+		steps_objs = files_sources.GetSize();
+		project_library *lib = active_configuration->libs_to_build;
+		steps_libs=0; while (lib) { lib = lib->next; steps_libs++; }
+		compile_extra_step *estep=active_configuration->extra_steps;
+		steps_extras=0; while (estep) { if (estep->out.Len()) steps_extras++; estep=estep->next;	}
+		steps_total=/*steps_extras+*/steps_objs+steps_libs+(active_configuration->dont_generate_exe?0:1);
+	}
 	
 	wxString old_temp_folder = active_configuration->temp_folder;
 	if (mktype!=MKTYPE_FULL) active_configuration->temp_folder="${OBJS_DIR}";
@@ -1707,6 +1723,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	if (mktype!=MKTYPE_OBJS) {
 		// agregar las secciones all, clean, y la del ejecutable
 		fil.AddLine(wxString(_T("all: "))+temp_folder+_T(" ")+executable_name);
+		if (cmake_style) fil.AddLine(tab+"@echo [100%] Built target "+executable_name);
 		fil.AddLine(_T(""));
 		
 		if (mktype==MKTYPE_CONFIG) { 
@@ -1781,6 +1798,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	
 		// agregar las bibliotecas
 		project_library *lib = active_configuration->libs_to_build;
+		steps_current=steps_objs;
 		while (lib) {
 			wxString libdep = utils->Quotize(lib->filename);
 			wxString objs;
@@ -1794,7 +1812,9 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 				item.Next();
 			}
 			fil.AddLine(libdep+objs);
-			fil.AddLine(tab+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+_T(" ")+utils->Quotize(lib->filename)+objs+_T(" ")+lib->extra_link);
+			
+			if (cmake_style) fil.AddLine(tab+"@echo ["+get_percent(steps_current++,steps_total)+"] Linking library "+libdep);
+			fil.AddLine(tab+(cmake_style?"@":"")+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+_T(" ")+utils->Quotize(lib->filename)+objs+_T(" ")+lib->extra_link);
 			fil.AddLine(_T(""));
 			lib = lib->next;
 		}
@@ -1808,13 +1828,15 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			header_dirs_array[i]=DIR_PLUS_FILE(path,header_dirs_array[i]);
 		
 		LocalListIterator<project_file_item*> item(&files_sources);
-		wxString bin_full_path;
+		wxString bin_full_path; steps_current=0;
 		while(item.IsValid()) {
 			bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+_T(".o"));
 			bin_full_path=utils->Quotize(bin_name.GetFullPath());
 			fil.AddLine(bin_full_path+_T(": ")+utils->FindObjectDeps(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
 			bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
-			fil.AddLine(tab+(cpp?"${GPP}":"${GCC}")+(cpp?" ${CXXFLAGS} ":" ${CFLAGS} ")+
+			
+			if (cmake_style) fil.AddLine(tab+"@echo ["+get_percent(steps_current++,steps_total)+"] Building "+(cpp?"C++":"C")+" object "+bin_full_path);
+			fil.AddLine(tab+(cmake_style?"@":"")+(cpp?"${GPP}":"${GCC}")+(cpp?" ${CXXFLAGS} ":" ${CFLAGS} ")+
 	#if !defined(_WIN32) && !defined(__WIN32__)
 				(item->lib?_T("-fPIC "):_T(""))+
 	#endif

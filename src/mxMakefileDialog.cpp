@@ -44,6 +44,8 @@ mxMakefileDialog::mxMakefileDialog(wxWindow* parent, wxWindowID id, const wxPoin
 	split_values.Add(LANG(MAKEFILE_TYPE_OBJECTS,"Por partes: objetos"));
 	split_type = utils->AddComboBox(mySizer,this,LANG(MAKEFILE_TYPE,"Formato"),split_values,0);
 	
+	cmake_style = utils->AddCheckBox(mySizer,this,LANG(MAKEFILE_CMAKE_STYLE,"Mostrar progreso al compilar (estilo cmake)"),false);
+	
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(MAKEFILE_GENERATE,"Generar"));
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
@@ -77,7 +79,7 @@ void mxMakefileDialog::OnOkButton(wxCommandEvent &event) {
 		if (split_type->GetSelection()==2) mktype=MKTYPE_OBJS;
 		wxString fpath=file_path->GetValue();
 		if (mktype==MKTYPE_OBJS) fpath=DIR_PLUS_FILE(wxFileName(fpath).GetPath(),"Makefile.common");
-		project->ExportMakefile(fpath,expand_comas->GetValue(),mingw_dir->GetValue(),mktype);
+		project->ExportMakefile(fpath,expand_comas->GetValue(),mingw_dir->GetValue(),mktype,cmake_style->GetValue());
 		project->active_configuration = orig;
 		Close();
 	}

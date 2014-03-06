@@ -6,26 +6,27 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota2 : Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
-</UL><BR><B>Release 201402XX</B><BR><UL>
-	<LI>Fix: Solucionado el problema por el cual la aplicación se tildaba al intentar compilar un proyecto que contenga subcomandos en sus argumentos de compilación/enlazado cuando el evento de compilar (o ejecutar) se invocaba muy rápidamente más de una vez.</LI>
-	<LI>Imp: Pequeñas mejoras de usabilidad en los cuadros de diálogo para crear un archivo/clase en un proyecto y para ir a un método/función.</LI>
+</UL><BR><B>Release 201403XX</B><BR><UL>
 	<LI>New: Se agregó una nueva ventana de ayuda para consultar una versión offline (instalable como complemento) de la documentación de C/C++ estándar disponible en cppreference.com.</LI>
 	<LI>New: Se pueden asociar descripciones a los breakpoints para que se muestren cuando son alcanzados durante la depuracion.</LI>
 	<LI>New: Se pueden guardar macros (acciones/eventos de edición sobre un fuente) con Ctrl+Shift+Q para luego reproducirlas con un atajo de teclado.</LI>
+	<LI>New: Nuevo cuadro de configuración para las opciones de la integración con wxFormBuilder, con nuevas funcionalidades como detectar automáticamente las clases agregradas/eliminadas para crear/eliminar las herencias, o marcar los fuentes autogenerados como solo-lectura.</LI>
+	<LI>New: Ahora se pueden marcar archivos de un proyecto para que sus símbolos (funciones, clases, macros, etc) sean ignorados en las búsquedas del cuadro de díalogo "Ir a función/clase/método..." desde el menú contextual del Arbol de Proyecto.</LI>
+	<LI>New: Ahora se pueden marcar archivos de un proyecto como archivos de solo lectura desde el menú contextual del Arbol de Proyecto.</LI>
+	<LI>New: Agregadas en el autocompletado las palabras claves añadidas al estándar C++ en 2011, y un índice adicional con las nuevas bibliotecas.</LI>
+	<LI>Imp: El cuadro de diálogo para listar archivos/proyectos abiertos recientemente muestra ahora una columna con la fecha de modificación de cada uno.</LI>
+	<LI>Imp: Pequeñas mejoras de usabilidad en los cuadros de diálogo para crear un archivo/clase en un proyecto y para ir a un método/función.</LI>
 	<LI>Imp: Ya no se incluye la biblitoeca wxWidgets en el instalador para Windows (binarios, cabeceras, refencia y plantillas; ahora pueden instalarse como complementos).</LI>
 	<LI>Imp: Se actualizaron las versiones de gcc (a 4.8.1-4), gdb (a 7.6.1-1) y sus dependencias en los binarios de MinGW incluidos en el instalador para Windows.</LI>
+	<LI>Imp: Mucha limpieza interna en el código, empezando a utilizar estructuras de datos más seguras para varias tareas y contenedores genéricos (más clases y menos macros)</LI>
+	<LI>Fix: Solucionado el problema por el cual la aplicación se tildaba al intentar compilar un proyecto que contenga subcomandos en sus argumentos de compilación/enlazado cuando el evento de compilar (o ejecutar) se invocaba muy rápidamente más de una vez.</LI>
 	<LI>Fix: Se corrigió un bug relacionado al uso de popup menues en los binarios de freeglut incluidos en la versión para Windows.</LI>
 	<LI>Fix: Mejorado el algoritmo utilizado para analizar la salida del compilador al armar el arbol de resultados, para evitar los problemas al analizar errores con templates en la versión anterior.</LI>
-	<LI>New: Nuevo cuadro de configuración para las opciones de la integración con wxFormBuilder, con nuevas funcionalidades como detectar automáticamente las clases agregradas/eliminadas para crear/eliminar las herencias, o marcar los fuentes autogenerados como solo-lectura.</LI>
 	<LI>Fix: Las opciones de compilación por default utilizan el nivel de optimización 0 de gcc (-O0) en lugar del específico de depuración (-Og) porque en la práctica he econtrado varios casos donde -Og provee menos información.</LI>
 	<LI>Fix: Los métodos virtuales puros ya no se consideran para el comando "Implementar métodos/funciones faltantes" del menú Herramientas.</LI>
 	<LI>Fix: Corregido un error que evitaba el funcionamiento de las opciones de Preprocesador del menú Herramientas en ciertos casos.</LI>
-	<LI>New: Ahora se pueden marcar archivos de un proyecto para que sus símbolos (funciones, clases, macros, etc) sean ignorados en las búsquedas del cuadro de díalogo "Ir a función/clase/método..." desde el menú contextual del Arbol de Proyecto.</LI>
-	<LI>New: Ahora se pueden marcar archivos de un proyecto como archivos de solo lectura desde el menú contextual del Arbol de Proyecto.</LI>
 	<LI>Fix: Corregido un error que hacía que en ciertos casos el depurador quedara evaluando inspecciones en el frame incorrecto luego de actualizar la tabla de inspeccione.</LI>
-	<LI>Imp: Mucha limpieza interna en el código, empezando a utilizar estructuras de datos más seguras para varias tareas y contenedores (más clases y menos macros)</LI>
 	<LI>Fix: Al recargar un fuente por modificaciones externas ya no se pierden los puntos de interrupción del mismo.</LI>
-	<LI>New: Agregadas en el autocompletado las palabras claves añadidas al estándar C++ en 2011, y un índice adicional con las nuevas bibliotecas.</LI>
 
 </UL><BR><B>Release 20131127</B><BR><UL>
 	<LI>New: Ahora se pueden definir variables de entorno para la ejecución de un proyecto en su perfil de compilación y ejecución.</LI>
