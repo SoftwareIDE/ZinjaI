@@ -410,44 +410,59 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 		if (compile_and_run->output_type==MXC_EXTRA || error_line.Len()==0) 
 			continue;
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
-//		if (num_all<config->Init.max_errors) {
-			
-			// reemplazar templates para que sea más legible
-			if (config->Init.beautify_compiler_errors && current_toolchain.type>=TC_EXTERN) UnSTD(nice_error_line);
-			
-			// averiguar si es error, warning, o parte de un error/warning anterior/siguiente
-			CAR_ERROR_LINE action=ParseSomeErrorsOneLine(compile_and_run,error_line);
-
-			if (action==CAR_EL_ERROR||action==CAR_EL_WARNING) { // nuevo error o warning
-				if (action==CAR_EL_ERROR) { // nuevo error
-					num_errors++;
-					compile_and_run->last_error_item=tree->AppendItem(errors,nice_error_line,4,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
-					compile_and_run->last_error_item_IsOk=true;
-				} else { // nuevo warning
-					num_warnings++;
-					compile_and_run->last_error_item=tree->AppendItem(warnings,nice_error_line,3,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
-					compile_and_run->last_error_item_IsOk=true;
-				}
-				if (!compile_and_run->pending_error_lines.IsEmpty()) { // agregar los hijos que estaban pendientes
-					wxTreeItemId tree_item = tree->AppendItem(compile_and_run->last_error_item,compile_and_run->pending_error_nices[0],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[0]));
-					for(unsigned int i=1;i<compile_and_run->pending_error_lines.GetCount();i++) { 
-						tree->AppendItem(tree_item,compile_and_run->pending_error_nices[i],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[i]));
-					}
-					compile_and_run->pending_error_nices.Clear();
-					compile_and_run->pending_error_lines.Clear();
-				}
-			} else if (action==CAR_EL_CHILD_LAST) { // continua el último error
-				if (compile_and_run->last_error_item_IsOk) {
-					tree->AppendItem(compile_and_run->last_error_item,nice_error_line,5,-1,new mxCompilerItemData(error_line));
-				} else
-					compile_and_run->parsing_errors_was_ok=false;
-			} else if (action==CAR_EL_CHILD_NEXT) { // parte (hijos) del siguiente error
+		
+		// reemplazar templates para que sea más legible
+		if (config->Init.beautify_compiler_errors && current_toolchain.type>=TC_EXTERN) UnSTD(nice_error_line);
+		
+		// averiguar si es error, warning, o parte de un error/warning anterior/siguiente
+		CAR_ERROR_LINE action=ParseSomeErrorsOneLine(compile_and_run,error_line);
+		
+		// no mostrar taaantos errores/warnings	
+		if (action==CAR_EL_ERROR) {
+			num_errors++; 
+			if (num_errors>config->Init.max_errors) {
 				compile_and_run->last_error_item_IsOk=false;
-				compile_and_run->pending_error_lines.Add(error_line);
-				compile_and_run->pending_error_nices.Add(nice_error_line);
+				continue;
 			}
+			compile_and_run->last_error_item_IsOk=false;
+		} else if (action==CAR_EL_WARNING) { 
+			num_warnings++; 
+			if (num_warnings>config->Init.max_errors) {
+				compile_and_run->last_error_item_IsOk=false;
+				continue;
+			}
+		} else if (action==CAR_EL_CHILD_LAST) {
+			if (!compile_and_run->last_error_item_IsOk && (num_warnings>config->Init.max_errors||num_errors>config->Init.max_errors)) 
+				continue;
+		}
+		
+		if (action==CAR_EL_ERROR||action==CAR_EL_WARNING) { // nuevo error o warning
+			if (action==CAR_EL_ERROR) { // nuevo error
+				compile_and_run->last_error_item=tree->AppendItem(errors,nice_error_line,4,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
+				compile_and_run->last_error_item_IsOk=true;
+			} else { // nuevo warning
+				compile_and_run->last_error_item=tree->AppendItem(warnings,nice_error_line,3,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
+				compile_and_run->last_error_item_IsOk=true;
+			}
+			if (!compile_and_run->pending_error_lines.IsEmpty()) { // agregar los hijos que estaban pendientes
+				wxTreeItemId tree_item = tree->AppendItem(compile_and_run->last_error_item,compile_and_run->pending_error_nices[0],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[0]));
+				for(unsigned int i=1;i<compile_and_run->pending_error_lines.GetCount();i++) { 
+					tree->AppendItem(tree_item,compile_and_run->pending_error_nices[i],5,-1,new mxCompilerItemData(compile_and_run->pending_error_lines[i]));
+				}
+				compile_and_run->pending_error_nices.Clear();
+				compile_and_run->pending_error_lines.Clear();
+			}
+		} else if (action==CAR_EL_CHILD_LAST) { // continua el último error
+			if (compile_and_run->last_error_item_IsOk) {
+				tree->AppendItem(compile_and_run->last_error_item,nice_error_line,5,-1,new mxCompilerItemData(error_line));
+			} else
+				compile_and_run->parsing_errors_was_ok=false;
+		} else if (action==CAR_EL_CHILD_NEXT) { // parte (hijos) del siguiente error
+			compile_and_run->last_error_item_IsOk=false;
+			compile_and_run->pending_error_lines.Add(error_line);
+			compile_and_run->pending_error_nices.Add(nice_error_line);
+		}
 			
-//		}
 	}
 }
 
@@ -474,8 +489,16 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 	
 	// poner los errores/warnings/etc en el arbol
 	ParseSomeErrors(compile_and_run); 
-	tree->SetItemText(errors,wxString(LANG(MAINW_CT_ERRORS,"Errores"))<<_T(" (")<<num_errors<<(num_errors>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
-	tree->SetItemText(warnings,wxString(LANG(MAINW_CT_WARNINGS,"Advertencias"))<<_T(" (")<<num_warnings<<(num_warnings>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
+	
+	wxString serrors=LANG(MAINW_CT_ERRORS,"Errores"); serrors<<" (";
+	if (num_errors<=config->Init.max_errors) serrors<<num_errors;
+	else serrors<<config->Init.max_errors<<"+";
+	serrors<<")"; tree->SetItemText(errors,serrors);
+	
+	wxString swarnings=LANG(MAINW_CT_WARNINGS,"Advertencias"); swarnings<<" (";
+	if (num_warnings<=config->Init.max_errors) swarnings<<num_warnings;
+	else swarnings<<config->Init.max_errors<<"+";
+	swarnings<<")"; tree->SetItemText(warnings,swarnings);
 	
 	if (!compile_and_run_single->killed && (!compile_and_run->parsing_errors_was_ok || !compile_and_run->pending_error_lines.IsEmpty())) {
 		mxMessageDialog(main_window,LANG(MAINW_COMPILER_OUTPUT_PARSING_ERROR,"ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\n"

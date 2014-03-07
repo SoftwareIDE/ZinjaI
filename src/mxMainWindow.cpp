@@ -2196,8 +2196,10 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		compile_and_run=compile_and_run->next;
 	}
 	compile_and_run_struct_single *aux_compile_and_run=compile_and_run;
-	while (!there_are_other_compiling_now && aux_compile_and_run) 
+	while (!there_are_other_compiling_now && aux_compile_and_run) {
+		if (aux_compile_and_run->process) there_are_other_compiling_now=true;
 		aux_compile_and_run=aux_compile_and_run->next;
+	}
 	if (!there_are_other_compiling_now) compiler->timer->Stop();
 	
 	// si es uno interrumpido adrede, liberar memoria y no hacer nada mas
