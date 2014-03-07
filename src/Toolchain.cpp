@@ -5,6 +5,8 @@
 #include "ConfigManager.h"
 #include "ProjectManager.h"
 #include <wx/msgdlg.h>
+#include <iostream>
+using namespace std;
 
 Toolchain *Toolchain::toolchains=NULL;
 int Toolchain::toolchains_count=0;

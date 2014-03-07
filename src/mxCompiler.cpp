@@ -409,9 +409,8 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 		compile_and_run->full_output.Add(error_line);
 		if (compile_and_run->output_type==MXC_EXTRA || error_line.Len()==0) 
 			continue;
-		num_all++;
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
-		if (num_all<config->Init.max_errors) {
+//		if (num_all<config->Init.max_errors) {
 			
 			// reemplazar templates para que sea más legible
 			if (config->Init.beautify_compiler_errors && current_toolchain.type>=TC_EXTERN) UnSTD(nice_error_line);
@@ -448,7 +447,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 				compile_and_run->pending_error_nices.Add(nice_error_line);
 			}
 			
-		}
+//		}
 	}
 }
 
@@ -475,8 +474,8 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 	
 	// poner los errores/warnings/etc en el arbol
 	ParseSomeErrors(compile_and_run); 
-	tree->SetItemText(errors,wxString(LANG(MAINW_CT_ERRORS,"Errores"))<<_T(" (")<<num_errors<<(num_all>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
-	tree->SetItemText(warnings,wxString(LANG(MAINW_CT_WARNINGS,"Advertencias"))<<_T(" (")<<num_warnings<<(num_all>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
+	tree->SetItemText(errors,wxString(LANG(MAINW_CT_ERRORS,"Errores"))<<_T(" (")<<num_errors<<(num_errors>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
+	tree->SetItemText(warnings,wxString(LANG(MAINW_CT_WARNINGS,"Advertencias"))<<_T(" (")<<num_warnings<<(num_warnings>config->Init.max_errors?_T("+"):_T(""))<<_T(")"));
 	
 	if (!compile_and_run_single->killed && (!compile_and_run->parsing_errors_was_ok || !compile_and_run->pending_error_lines.IsEmpty())) {
 		mxMessageDialog(main_window,LANG(MAINW_COMPILER_OUTPUT_PARSING_ERROR,"ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\n"
@@ -625,7 +624,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 // incializar el arbol de compilacion y sus auxiliares
 void mxCompiler::ResetCompileData() {
 	full_output.Clear();
-	num_errors=num_warnings=num_all=0;
+	num_errors=num_warnings=0;
 	tree->SetItemText(errors,LANG(MAINW_CT_ERRORS,"Errores"));
 	tree->SetItemText(warnings,LANG(MAINW_CT_WARNINGS,"Advertencias"));
 	tree->DeleteChildren(errors);

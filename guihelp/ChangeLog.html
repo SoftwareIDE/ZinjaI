@@ -22,6 +22,7 @@
 	<LI>Imp: Se actualizaron las versiones de gcc (a 4.8.1-4), gdb (a 7.6.1-1) y sus dependencias en los binarios de MinGW incluidos en el instalador para Windows.</LI>
 	<LI>Imp: Mucha limpieza interna en el código, empezando a utilizar estructuras de datos más seguras para varias tareas y contenedores genéricos (más clases y menos macros)</LI>
 	<LI>Fix: Solucionado el problema por el cual la aplicación se tildaba al intentar compilar un proyecto que contenga subcomandos en sus argumentos de compilación/enlazado cuando el evento de compilar (o ejecutar) se invocaba muy rápidamente más de una vez.</LI>
+	<LI>Fix: Solucionado un error por el cual en Windows una compilación no finalizaba si el compilador arrojaba demasiados errores/warnings.</LI>
 	<LI>Fix: Se corrigió un bug relacionado al uso de popup menues en los binarios de freeglut incluidos en la versión para Windows.</LI>
 	<LI>Fix: Mejorado el algoritmo utilizado para analizar la salida del compilador al armar el arbol de resultados, para evitar los problemas al analizar errores con templates en la versión anterior.</LI>
 	<LI>Fix: Las opciones de compilación por default utilizan el nivel de optimización 0 de gcc (-O0) en lugar del específico de depuración (-Og) porque en la práctica he econtrado varios casos donde -Og provee menos información.</LI>

@@ -2196,7 +2196,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		compile_and_run=compile_and_run->next;
 	}
 	compile_and_run_struct_single *aux_compile_and_run=compile_and_run;
-	while (there_are_other_compiling_now && aux_compile_and_run) 
+	while (!there_are_other_compiling_now && aux_compile_and_run) 
 		aux_compile_and_run=aux_compile_and_run->next;
 	if (!there_are_other_compiling_now) compiler->timer->Stop();
 	
@@ -3422,8 +3422,8 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 }
 	
 void mxMainWindow::UpdateInHistory(wxString filename) {
-	wxString ipre=DIR_PLUS_FILE(_T("16"),_T("recent"));
-	bool is_project = wxFileName(filename).GetExt().CmpNoCase(_T(PROJECT_EXT))==0;
+	wxString ipre=DIR_PLUS_FILE("16","recent");
+	bool is_project = wxFileName(filename).GetExt().CmpNoCase(PROJECT_EXT)==0;
 	int i;
 	wxString *cfglast = is_project?config->Files.last_project:config->Files.last_source;
 	wxMenuItem **mnihistory = is_project?menu.file_project_history:menu.file_source_history;
@@ -3440,19 +3440,21 @@ void mxMainWindow::UpdateInHistory(wxString filename) {
 	cfglast[0]=filename;
 	// actualizar el menu archivo
 	for (i=0;i<config->Init.history_len;i++) {
+		wxString icon_fname=wxString("recent")<<i<<".png";
 #if defined(_WIN32) || defined(__WIN32__)
 		if (mnihistory[i])
 			mnurecent->Remove(mnihistory[i]);
 		if (cfglast[i][0])
-			mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],_T(""),cfglast[i],wxString(_T("recent"))<<i<<_T(".png"),i);
+			mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],icon_fname,i);
 #else
 		if (cfglast[i][0])
 			if (mnihistory[i]) {
-				if (wxFileName::FileExists(SKIN_FILE(wxString(ipre)<<i<<_T(".png"))))
-					mnihistory[i]->SetBitmap(wxBitmap(SKIN_FILE(wxString(ipre)<<i<<_T(".png")),wxBITMAP_TYPE_PNG));
+				icon_fname=SKIN_FILE_OPT(icon_fname);
+				if (wxFileName::FileExists(icon_fname))
+					mnihistory[i]->SetBitmap(wxBitmap(icon_fname,wxBITMAP_TYPE_PNG));
 				mnurecent->SetLabel(mnihistory[i]->GetId(),cfglast[i]);
 			} else {
-				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],_T(""),cfglast[i],wxString(_T("recent"))<<i<<_T(".png"),i);
+				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],icon_fname,i);
 			}
 		else
 			break;
