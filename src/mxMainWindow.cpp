@@ -1994,9 +1994,11 @@ void mxMainWindow::OnEdit (wxCommandEvent &event) {
 void mxMainWindow::OnEditNeedFocus (wxCommandEvent &event) {
 	_record_this_action_in_macro(event.GetId());
 	wxWindow *focus = main_window->FindFocus();
-	if (focus && focus->IsKindOf(toolbar_find_text->GetClassInfo()))
+	if (focus && focus->IsKindOf(toolbar_find_text->GetClassInfo())) {
 		focus->ProcessEvent(event);
-	else IF_THERE_IS_SOURCE {
+	} else if (focus && (focus==inspection_ctrl || focus->GetParent()==inspection_ctrl)) {
+		inspection_ctrl->OnRedirectedEditEvent(event);
+	} else IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->ProcessEvent(event);
 	}
 }

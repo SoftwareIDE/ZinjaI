@@ -97,15 +97,14 @@ public:
 	void OnResize(wxSizeEvent &evt);
 	void OnColResize(wxGridSizeEvent &evt);
 	void OnShowHideCol(wxCommandEvent &evt);
-	void OnsAVE(wxCommandEvent &evt);
 	void OnSaveTable(wxCommandEvent &evt);
 	void OnLoadTable(wxCommandEvent &evt);
 	void OnManageTables(wxCommandEvent &evt);
 	void OnSetFrameless(wxCommandEvent &evt);
 	void OnShowAppart(wxCommandEvent &evt);
 	void OnCopyAll(wxCommandEvent &evt);
-	void OnCellEditorShown(wxGridEvent &evt);
-	void OnCellEditorHidden(wxGridEvent &evt);
+//	void OnCellEditorShown(wxGridEvent &evt);
+//	void OnCellEditorHidden(wxGridEvent &evt);
 	void HightlightChange(int r);
 	void HightlightSpecial(int r);
 	void HightlightDisable(int r);
@@ -114,6 +113,8 @@ public:
 	void ResetChangeHightlights();
 	bool ModifyExpresion(int r, wxString expr);
 	bool CanDrop();
+	
+	void OnRedirectedEditEvent(wxCommandEvent &event);
 };
 
 #endif

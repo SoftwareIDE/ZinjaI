@@ -337,23 +337,23 @@ void mxInspectionGrid::OnRightClick(wxGridEvent &event) {
 			menu.Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"&Mostrar en ventana separada"));
 			if (ii.is_vo) menu.Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos"));
 			menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
-			menu.Append(mxID_INSPECTION_SET_FRAMELESS,LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"));
+			menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
 		} else if (selected_row<debug->inspections_count) {
 			menu.Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"&Mostrar en ventana separada"));
-			menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
-			if (!ii.frameless) menu.Append(mxID_INSPECTION_SET_FRAMELESS,LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"));
+			menu.Append(mxID_INSPECTION_RESCOPE,wxString(LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"))+(ii.frameless?"\tCtrl+I":""));
+			if (!ii.frameless) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
 		}
 		if (debug->inspections_count)
 			menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
 	}
 	if (selected_row<debug->inspections_count) {
-		if (debug->debugging) menu.Append(mxID_INSPECTION_DUPLICATE,LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"));
-		menu.Append(mxID_INSPECTION_COPY_EXPRESSION,LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"));
+		if (debug->debugging) menu.Append(mxID_INSPECTION_DUPLICATE,wxString(LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"))+"\tCtrl+L");
+		menu.Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"))+"\tCtrl+C");
 		menu.Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"&Copiar Valor"));
 		if (debug->inspections[selected_row].freezed)
-			menu.Append(mxID_INSPECTION_FREEZE,LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"));
+			menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"))+"\tCtrl+B");
 		else
-			menu.Append(mxID_INSPECTION_FREEZE,LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"));
+			menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
 	}
 	if (debug->inspections_count)
 		menu.Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"Copiar Toda la Ta&bla"));
@@ -367,14 +367,14 @@ void mxInspectionGrid::OnRightClick(wxGridEvent &event) {
 		wxTextDataObject clip_data;
 		if (wxTheClipboard->GetData(clip_data)) {
 			if (clip_data.GetText().Find('\n')==wxNOT_FOUND)
-				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD,"Pegar Expresion Desde el &Portapapeles"));
+				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD,"Pegar Expresion Desde el &Portapapeles"))+"\tCtrl+V");
 		}
 		wxTheClipboard->Close();
 	}
 	if (debug->inspections_count) {
 		menu.AppendSeparator();
 		if (selected_row<debug->inspections_count)
-			menu.Append(mxID_INSPECTION_CLEAR_ONE,LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"));
+			menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
 		menu.Append(mxID_INSPECTION_CLEAR_ALL,LANG(INSPECTGRID_POPUP_CLEAN_TABLE,"&Limpiar Tabla de Inspeccion"));
 		menu.Append(mxID_INSPECTION_SAVE_TABLE,LANG(INSPECTGRID_POPUP_SAVE_TABLE,"&Guardar Lista de Inspecciones..."));
 	}
@@ -833,5 +833,36 @@ void mxInspectionGrid::OnClick(wxGridEvent &event) {
 		dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
 		can_drop=true;
 	} else event.Skip();
+}
+
+void mxInspectionGrid::OnRedirectedEditEvent (wxCommandEvent & event) {
+	selected_row=GetGridCursorRow();
+	switch (event.GetId()) {
+	case wxID_COPY: 
+		OnCopyExpression(event); 
+		break;
+	case wxID_PASTE:
+		OnPasteFromClipboard(event);
+		break;
+	case wxID_CUT:
+		OnCopyExpression(event);
+		OnClearOne(event);
+		break;
+	case mxID_EDIT_DUPLICATE_LINES:
+		OnDuplicate(event);
+		break;
+	case mxID_EDIT_DELETE_LINES:
+		OnClearOne(event);
+		break;
+	case mxID_EDIT_MARK_LINES:
+		OnFreeze(event);
+		break;
+	case mxID_EDIT_INDENT:
+		if (!debug->debugging || selected_row>=debug->inspections_count) return;
+		if (debug->inspections[selected_row].frameless) OnReScope(event); else OnSetFrameless(event);
+		break;
+	default:
+		event.Skip();
+	}
 }
 

@@ -1664,7 +1664,7 @@ static wxString get_percent(int cur, int tot) {
 	wxString s; s<<(cur*100)/tot;
 	if (s.Len()==1) s=wxString("  ")+s;
 	else if (s.Len()==2) s=wxString(" ")+s;
-	return s+"%";
+	return wxString("\"[")+s+"%]\"";
 }
 
 void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype, bool cmake_style) {
@@ -1772,7 +1772,8 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 //		utils->ParameterReplace(extra_deps,_T("${TEMP_DIR}"),temp_folder);
 		
 		fil.AddLine(executable_name+_T(": ${OBJS}")/*+extra_deps*/+extra_pre);
-		fil.AddLine(tab+_T("${GPP} ${OBJS} ${LIBS} -o $@"));
+		if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_objs+steps_extras,steps_total)+" Linking executable "+executable_name);
+		fil.AddLine(tab+(cmake_style?"@":"")+"${GPP} ${OBJS} ${LIBS} -o $@");
 		fil.AddLine(_T(""));
 
 		if (temp_folder.Len()!=0) {
@@ -1813,7 +1814,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			}
 			fil.AddLine(libdep+objs);
 			
-			if (cmake_style) fil.AddLine(tab+"@echo ["+get_percent(steps_current++,steps_total)+"] Linking library "+libdep);
+			if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_current++,steps_total)+" Linking library "+libdep);
 			fil.AddLine(tab+(cmake_style?"@":"")+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+_T(" ")+utils->Quotize(lib->filename)+objs+_T(" ")+lib->extra_link);
 			fil.AddLine(_T(""));
 			lib = lib->next;
@@ -1835,7 +1836,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			fil.AddLine(bin_full_path+_T(": ")+utils->FindObjectDeps(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
 			bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
 			
-			if (cmake_style) fil.AddLine(tab+"@echo ["+get_percent(steps_current++,steps_total)+"] Building "+(cpp?"C++":"C")+" object "+bin_full_path);
+			if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_current++,steps_total)+" Building "+(cpp?"C++":"C")+" object "+bin_full_path);
 			fil.AddLine(tab+(cmake_style?"@":"")+(cpp?"${GPP}":"${GCC}")+(cpp?" ${CXXFLAGS} ":" ${CFLAGS} ")+
 	#if !defined(_WIN32) && !defined(__WIN32__)
 				(item->lib?_T("-fPIC "):_T(""))+
