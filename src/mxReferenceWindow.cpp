@@ -133,7 +133,7 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 	bool ignoring=false; bool on_toc=false; int div_deep=0; wxString result;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (!ignoring) {
-			int p=str.find("<title");
+			size_t p=str.find("<title");
 			if (w && p!=string::npos) {
 				wxString title=str.Mid(p).AfterFirst('>').BeforeFirst('<');
 				title.Replace("&lt;","<"); title.Replace("&gt;",">"); title.Replace("&amp;","&");
@@ -191,6 +191,16 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 			size_t p=str.find("<span class=\"mw-headline\" id=");
 			if (p!=string::npos) str.replace(p,29,"<a name=");
 			while ((p=str.find(".svg\""))!=string::npos) str.replace(p,5,".png\"");
+			
+			// arreglar caracteres unicode para compilaciones de wx ansi
+			for(unsigned int i=0;i<str.size();i++) { 
+				if (str[i]=='Â') 
+					str.replace(i,2,"&nbsp");
+				if (str[i]=='â') 
+					str.replace(i,3,"-");
+			}
+			if ((p=str.find("charset=UTF-8"))!=string::npos) str.erase(p,13);
+			
 			result<<str<<"\n";
 		}
 	}

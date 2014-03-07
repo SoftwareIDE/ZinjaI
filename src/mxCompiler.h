@@ -95,7 +95,7 @@ public:
 	wxTimer *timer; ///< timer que actualiza el arbol de compilacion mientras compila
 	int num_errors; ///< cantidad de errores de la compilacion
 	int num_warnings; ///< cantidad de avisos de la compilacion
-	int num_all; ///< cantidad de cualquier cosa de la compilacion
+//	int num_all; ///< cantidad de cualquier cosa de la compilacion
 	wxArrayString full_output; ///< guarda toda la salida sin procesar
 	wxString valgrind_cmd; ///< indica si la proxima ejecución se hace con valgrind
 	bool CheckForExecutablePermision(wxString file); ///< en linux, verifica que tenga permisos de ejecucion

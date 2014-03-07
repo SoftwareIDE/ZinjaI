@@ -4108,7 +4108,7 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	static wxString what;
 	wxString res = mxGetTextFromUser(_T("Comando:"), _T("Comandos internos") , what, this);
 	if (res=="help") {
-		wxMessageBox ("errorsave, kboom, debug on, debug off, wxlog, gdb cmd, gdb ans");
+		wxMessageBox ("errorsave, kboom, debug on, debug off, wxlog on, wxlog off, gdb cmd, gdb ans");
 	} else if (res=="debug on") {
 		zinjai_debug_mode=true;
 		SetStatusText("DoThat: Modo debug activado");
@@ -4134,6 +4134,8 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	} else if (res.Len() && debug->debugging) {
 		SetStatusText(wxString("DoThat: comando para gdb: ")<<res);
 		debug->DoThat(what=res);
+	} else if (!debug->debugging) {
+		SetStatusText(wxString("DoThat: gdb is not running")<<res);
 	}
 }
 
