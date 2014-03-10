@@ -30,14 +30,14 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	
 	projects=aprj;
 	
-	wxString *array = projects?config->Files.last_project:config->Files.last_source;
-	int n=0; unsigned int max_len=0;
-	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) 
-		if (array[i].Len()) {
-			n++; 
-			if (array[i].Len()>max_len)
-				max_len=array[i].Len();
-		} else break;
+//	wxString *array = projects?config->Files.last_project:config->Files.last_source;
+//	int n=0; unsigned int max_len=0;
+//	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) 
+//		if (array[i].Len()) {
+//			n++; 
+//			if (array[i].Len()>max_len)
+//				max_len=array[i].Len();
+//		} else break;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -50,7 +50,7 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	goto_button->SetDefault(); 
 	
 	text_ctrl = new wxTextCtrl(this,wxID_ANY,_T(""));
-	list_ctrl = new wxListCtrl(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),wxLC_REPORT|wxLC_SINGLE_SEL);
+	list_ctrl = new wxListCtrl(this,wxID_ANY,wxDefaultPosition, wxSize(450,200),wxLC_REPORT|wxLC_SINGLE_SEL);
 	list_ctrl->InsertColumn(0,LANG(RECENT_COLUMN_FILE,"Archivo"));
 	list_ctrl->InsertColumn(1,LANG(RECENT_COLUMN_DATE,"Fecha Modificacion"));
 	
@@ -63,16 +63,19 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(RECENT_ENTER_FILENAME,"Ingrese parte del nombre del archivo que desea abrir:")),sizers->BLRT5_Exp0);
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
 	mySizer->Add(list_ctrl,sizers->BA5_Exp1);
-	mySizer->Add(new wxStaticText(this,wxID_ANY,wxString(' ',max_len*2)),sizers->BLRT5_Exp0);
+//	mySizer->Add(new wxStaticText(this,wxID_ANY,wxString(' ',max_len*2)),sizers->BLRT5_Exp0);
 	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
-	SetSizerAndFit(mySizer);
+	SetSizer(mySizer);
+	this->SetSize(wxSize(main_window->GetSize().GetWidth()/2,main_window->GetSize().GetHeight()/2));
 	
-	text_ctrl->SetSelection(-1,-1);
-	text_ctrl->SetFocus();
-	
-	UpdateList();
 	CenterOnParent();
 	Show();
+	
+	UpdateList();
+	text_ctrl->SetSelection(-1,-1);
+	text_ctrl->SetFocus();
+	wxSizeEvent sz_evt;
+	OnResize(sz_evt);
 }
 
 void mxOpenRecentDialog::OnGotoButton(wxCommandEvent &event) {
