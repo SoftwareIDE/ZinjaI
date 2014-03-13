@@ -149,29 +149,30 @@ void mxBreakList::OnCharHook(wxKeyEvent &evt) {
 		Close();
 	} else evt.Skip();
 }
-	
+
 void mxBreakList::OnDeleteAllButton(wxCommandEvent &evt) {
 	grid->SelectAll();
 	OnDeleteButton(evt);
 }
 
-void mxBreakList::RemoveBreakPoint(int _row, bool single) {
+void mxBreakList::RemoveBreakPoint(int _row) {
 	BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[_row],false);
 	if (!bpi) return;
-	if (debug->debugging && ((!debug->waiting)||single)) {
-		debug->DeleteBreakPoint(bpi);
-	} else delete bpi;
+	if (debug->debugging) {
+		if (!debug->DeleteBreakPoint(bpi)) return;
+	} else {
+		delete bpi;
+	}
 	ids.erase(ids.begin()+_row);
 	grid->DeleteRows(_row,1);
 }
 
 void mxBreakList::OnDeleteButton(wxCommandEvent &evt) {
-	if (debug->running && debug->waiting) return;
 	for (int r=int(grid->GetNumberRows())-1;r>=0;r--) {
-		if (ids[r]==-1) continue;
+		if (ids[r]==-1) continue; // ignore watchpoints
 		for (unsigned int j=0;j<BL_COLS_COUNT;j++)
 			if (grid->IsInSelection(r,j)) {
-				RemoveBreakPoint(r,false); 
+				RemoveBreakPoint(r); 
 				break;
 			}
 	}

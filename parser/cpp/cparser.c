@@ -2253,7 +2253,7 @@ extern int _member_declaration( Class_t Class )
             konstrukciot ), akkor nem lehet deklarator_list */
          if(( token( 1 ) == '*' ) ||
             ( token( 1 ) == '&' ) ||
-            ( token( 1 ) == SN_IDENTIFIER && ( token( 2 ) != '(' || token( 3 ) != '(' ))
+            ( (token( 1 ) == SN_IDENTIFIER || token( 1 ) == SN_OPERATOR) && ( token( 2 ) != '(' || token( 3 ) != '(' ))
            )
          {
          }

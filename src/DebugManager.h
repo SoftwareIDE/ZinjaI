@@ -191,7 +191,7 @@ public:
 	void SetBreakPointOptions(int num, int ignore_count);
 	bool SetBreakPointOptions(int num, wxString condition);
 	int GetBreakHitCount(int num);
-	void DeleteBreakPoint(BreakPointInfo *_bpi);
+	bool DeleteBreakPoint(BreakPointInfo *_bpi);
 	wxString GetValueFromAns(wxString ans, wxString key, bool crop = false, bool fix_slash=false);
 	wxString GetSubValueFromAns(wxString ans, wxString key1, wxString key2, bool crop=false, bool fix_slash=false);
 	wxString InspectExpression(wxString var, bool pretty=false);

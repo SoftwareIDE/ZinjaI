@@ -640,9 +640,14 @@ void DebugManager::HowDoesItRuns() {
 * resume the execution, so user can delete breakpoint without directly pausing
 * the program being debugged.
 **/
-void DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
-	if (!debugging) return;
+bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
+	if (!debugging) return false;
+	if (_bpi->gdb_id==-1) { // only invalid breakpoints can be safetly deleted from zinjai without interacting with gdb (the ones that were not correctly setted in gdb (for instance, with a wrong line number))
+		delete _bpi; 
+		return true;
+	}
 	if (waiting) { // si esta ejecutando, anotar para sacar y mandar a pausar
+		if (pause_breakpoint) return false;
 		pause_breakpoint=_bpi;
 		Pause();
 	} else {
@@ -651,6 +656,7 @@ void DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 		// sacarlo de la memoria y las listas de zinjai
 		delete _bpi;
 	}
+	return true;
 }
 
 int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {

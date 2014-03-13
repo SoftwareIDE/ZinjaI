@@ -26,7 +26,7 @@ public:
 	void OnCharHook(wxKeyEvent &evt);
 	void OnDeleteAllButton(wxCommandEvent &evt);
 	void OnDeleteButton(wxCommandEvent &evt);
-	void RemoveBreakPoint(int _row, bool single=true);
+	void RemoveBreakPoint(int _row);
 	void OnGotoButton(wxCommandEvent &evt);
 	void OnEditButton(wxCommandEvent &evt);
 	int AppendRow(int _id);

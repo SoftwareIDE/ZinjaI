@@ -101,7 +101,7 @@ bool mxApplication::OnInit() {
 			bool done=true;
 			for (int i=1; i<argc;i++) {
 				wxString name = argv[i];
-				if (name!=_T("--last-source") && name!=_T("--last-project") && name.AfterLast('.').Lower()!=PROJECT_EXT) {
+				if (name!=_T("--last-source") && name!=_T("--last-project") && name!=_T("--no-splash") && name.AfterLast('.').Lower()!=PROJECT_EXT) {
 					bool opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
 					int ret=0;
 					while (!opened && ret<2) { // dos reintentos, por si estaba muy ocupado
@@ -202,7 +202,7 @@ bool mxApplication::OnInit() {
 			if (config->Init.new_file==0)
 				main_window->NewFileFromText(_T(""));
 			else
-				main_window->NewFileFromTemplate(config->Files.default_template);
+				main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
 			main_window->Refresh();
 		} 
 		if (splash) splash->ShouldClose();

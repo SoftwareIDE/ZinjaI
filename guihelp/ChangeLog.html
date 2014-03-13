@@ -4,9 +4,11 @@
 <H3>Registro de Cambios (ChangeLog)</H3>
 
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
-<I>Nota2 : Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
+<I>Nota 2: Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
 </UL><BR><B>Release 201403XX</B><BR><UL>
+	<LI>New: El sistema de autocompletado ahora reconoce en casos básicos las sobrecargas de los operadores () y [].</LI>
+	<LI>New: El sistema de autocompletado ahora reconoce se también el valor de retorono de una función si la función no tiene sobrecargas o todas sus sobrecargas retornan el mismo tipo de dato.</LI>
 	<LI>New: Se agregó una nueva ventana de ayuda para consultar una versión offline (instalable como complemento) de la documentación de C/C++ estándar disponible en cppreference.com.</LI>
 	<LI>New: Se pueden asociar descripciones a los breakpoints para que se muestren cuando son alcanzados durante la depuracion.</LI>
 	<LI>New: Se pueden guardar macros (acciones/eventos de edición sobre un fuente) con Ctrl+Shift+Q para luego reproducirlas con un atajo de teclado.</LI>
@@ -14,6 +16,7 @@
 	<LI>New: Ahora se pueden marcar archivos de un proyecto para que sus símbolos (funciones, clases, macros, etc) sean ignorados en las búsquedas del cuadro de díalogo "Ir a función/clase/método..." desde el menú contextual del Arbol de Proyecto.</LI>
 	<LI>New: Ahora se pueden marcar archivos de un proyecto como archivos de solo lectura desde el menú contextual del Arbol de Proyecto.</LI>
 	<LI>New: Agregadas en el autocompletado las palabras claves añadidas al estándar C++ en 2011, y un índice adicional con las nuevas bibliotecas.</LI>
+	<LI>Imp: Se puede eliminar breakpoints desde la ventana de lista de breakpoints/watchpoints (solo individualmente) sin detener la ejecución.</LI>
 	<LI>Imp: Varios atajos de teclado relacionados a acciones de edición actúan ahora sobre la tabla de inspecciones y no sobre el código fuente si esta tabla tiene el foco.</LI>
 	<LI>Imp: El cuadro de diálogo para listar archivos/proyectos abiertos recientemente muestra ahora una columna con la fecha de modificación de cada uno.</LI>
 	<LI>Imp: Al generar el Makefile de un proyecto se puede hacer que al compilar muestre el progreso en porcentaje con un mensaje simple en lugar de mostrar los comandos ejecutables (estilo cmake).</LI>
@@ -21,6 +24,7 @@
 	<LI>Imp: Ya no se incluye la biblitoeca wxWidgets en el instalador para Windows (binarios, cabeceras, refencia y plantillas; ahora pueden instalarse como complementos).</LI>
 	<LI>Imp: Se actualizaron las versiones de gcc (a 4.8.1-4), gdb (a 7.6.1-1) y sus dependencias en los binarios de MinGW incluidos en el instalador para Windows.</LI>
 	<LI>Imp: Mucha limpieza interna en el código, empezando a utilizar estructuras de datos más seguras para varias tareas y contenedores genéricos (más clases y menos macros)</LI>
+	<LI>Fix: Corregido el problema por el cual en algunos casos zinjai no cargaba correctamente la plantilla de programa simple por defecto.</LI>
 	<LI>Fix: Solucionado el problema por el cual la aplicación se tildaba al intentar compilar un proyecto que contenga subcomandos en sus argumentos de compilación/enlazado cuando el evento de compilar (o ejecutar) se invocaba muy rápidamente más de una vez.</LI>
 	<LI>Fix: Solucionado un error por el cual en Windows una compilación no finalizaba si el compilador arrojaba demasiados errores/warnings.</LI>
 	<LI>Fix: Se corrigió un bug relacionado al uso de popup menues en los binarios de freeglut incluidos en la versión para Windows.</LI>

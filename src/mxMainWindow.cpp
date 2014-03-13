@@ -2604,7 +2604,7 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	if (welcome_panel) 
 		ShowWelcome(true);
 	else {
-		NewFileFromTemplate(config->Files.default_template);
+		NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
 		aui_manager.Update();
 	}
 }
@@ -3543,7 +3543,7 @@ void mxMainWindow::OnFileNew (wxCommandEvent &event) {
 				NewFileFromText(_T(""));
 				break;
 			case 1:
-				main_window->NewFileFromTemplate(config->Files.default_template);
+				main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
 				break;
 			default: {
 				if (!wizard) wizard = new mxNewWizard(this);

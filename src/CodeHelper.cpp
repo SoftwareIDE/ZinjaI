@@ -607,14 +607,46 @@ bool CodeHelper::AutocompleteAutocode(mxSource *source, wxString typed, int max_
 }
 
 bool CodeHelper::ShowCalltip(int p, mxSource *source, wxString scope, wxString key, bool onlyScope) {
+	wxString result=GetCalltip(scope,key,onlyScope);
+	if (result.Len()) {
+		source->ShowCallTip(p-key.Len(),result);
+		source->calltip_brace=p;
+	}
+	return result.Len();
+}
+	
+
+static void aux_AddToCalltip(int &t, wxString &text, const wxString &full_proto, bool only_type) {
+	if (only_type) {
+		if (t!=0 && !text.Len()) return; // esto indica que ya hubo problemas con los tipos
+		wxString aux=full_proto;
+		aux.Replace("static ","",true);
+		aux.Replace("const ","",true);
+		aux.Replace("constexpr ","",true);
+		aux.Replace("volatile ","",true);
+		wxString type=aux.BeforeFirst(' ');
+		type.Replace(" ","",true);
+		while (aux[type.Len()+1]=='*') { aux<<"*"; }
+		type.Replace("&","");
+		if (t!=0 && aux!=text) type=""; 
+		else text=type;
+	} else {
+		if (t++) text+="\n";
+		text+=full_proto;
+	}
+}
+
+wxString CodeHelper::GetCalltip(wxString scope, wxString key, bool onlyScope, bool only_type) {
 	UnTemplate(key); UnTemplate(scope);
 	int t=0;
 	wxString text;
 	
-	HashStringParserMacro::iterator it = parser->h_macros.find(key);
-	if (it!=parser->h_macros.end()) {
-		t=1;
-		text=it->second->proto;
+	if (!only_type) { // no usefull for determining return type for autocompletion
+		HashStringParserMacro::iterator it = parser->h_macros.find(key);
+		if (it!=parser->h_macros.end()) {
+			t=1;
+			text=it->second->proto;
+		}
 	}
 	
 	pd_func *aux_func;
@@ -623,23 +655,23 @@ bool CodeHelper::ShowCalltip(int p, mxSource *source, wxString scope, wxString k
 		aux_func=parser->first_function->next;
 		while (aux_func) {
 			if (aux_func->name==key) {
-				if (t++)
-					text+=_T("\n");
-				text+=aux_func->full_proto;
+				aux_AddToCalltip(t,text,aux_func->full_proto,only_type);
 			}
 			aux_func = aux_func->next;
 		}
 		pd_class *aux_class = parser->first_class->next;
 		while (aux_class) {
 			if (aux_class->name==key) {
-				aux_func=aux_class->first_method->next;
-				while (aux_func) {
-					if (aux_func->name==key) {
-						if (t++)
-							text+=_T("\n");
-						text+=aux_func->full_proto;
+				if (only_type) {
+					aux_AddToCalltip(t,text,key+" "+key,only_type);
+				} else {
+					aux_func=aux_class->first_method->next;
+					while (aux_func) {
+						if (aux_func->name==key) {
+							aux_AddToCalltip(t,text,aux_func->full_proto,only_type);
+						}
+						aux_func = aux_func->next;
 					}
-					aux_func = aux_func->next;
 				}
 			}
 			aux_class = aux_class->next;
@@ -652,9 +684,7 @@ bool CodeHelper::ShowCalltip(int p, mxSource *source, wxString scope, wxString k
 			aux_func=it->second->first_method->next;
 			while (aux_func) {
 				if (aux_func->name==key) {
-					if (t++)
-						text+=_T("\n");
-					text+=aux_func->full_proto;
+					aux_AddToCalltip(t,text,aux_func->full_proto,only_type);
 				}
 				aux_func = aux_func->next;
 			}
@@ -692,20 +722,14 @@ bool CodeHelper::ShowCalltip(int p, mxSource *source, wxString scope, wxString k
 				aux_func=it->second->first_method->next;
 				while (aux_func) {
 					if (aux_func->name==key) {
-						if (t++)
-							text+=_T("\n");
-						text+=aux_func->full_proto;
+						aux_AddToCalltip(t,text,aux_func->full_proto,only_type);
 					}
 					aux_func = aux_func->next;
 				}
 			}
 		}
 	}
-	if (t!=0) {
-		source->ShowCallTip(p-key.Len(),text);
-	}
-	source->calltip_brace=p;
-	return t!=0;
+	return text;
 }
 
 void CodeHelper::ResetStdData() {
@@ -1102,15 +1126,19 @@ wxString CodeHelper::GetIncludeForClass(wxString path, wxString key) {
 
 wxString CodeHelper::UnMacro(wxString name) {
 	HashStringParserMacro::iterator it = parser->h_macros.find(name);
-	if (it!=parser->h_macros.end() && it->second->cont.Len())
-		return it->second->cont;
+	if (it!=parser->h_macros.end() && it->second->cont.Len()) {
+		name=it->second->cont;
+		int p=name.Find("//");
+		if (p!=wxNOT_FOUND) name=name.Mid(0,p);
+		name.Trim(true); name.Trim(false);
+		return name;
+	}
 	return name;
 }
 
 wxString CodeHelper::UnMacro(wxString name, int &dims) {
-	HashStringParserMacro::iterator it = parser->h_macros.find(name);
-	if (it!=parser->h_macros.end() && it->second->cont.Len()) {
-		name = it->second->cont;
+	wxString res=UnMacro(name); if (res!=name) {
+		name=res;
 		int i=name.Len()-1, c=0;
 		while (name[i]=='*') { i--; c++; }
 		if (c) name=name.Mid(0,i+1);
@@ -1171,7 +1199,7 @@ bool CodeHelper::ShowConstructorCalltip(int p, mxSource *source, wxString name) 
 	if (t!=0)
 		source->ShowCallTip(p-name.Len(),text);
 	source->calltip_brace=p;
-	return true;
+	return t!=0;
 	
 }
 

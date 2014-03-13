@@ -1357,7 +1357,15 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 							II_FRONT_NC(p,II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) || (s==wxSTC_C_WORD));
 							int p1=p;
 							II_FRONT_NC(p,(c=GetCharAt(p))=='_' || (c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9') );
-							code_helper->ShowConstructorCalltip(ctp,this,GetTextRange(p1,p));
+							if (!code_helper->ShowConstructorCalltip(ctp,this,GetTextRange(p1,p))) {
+								if (!code_helper->ShowConstructorCalltip(ctp,this,key)) {
+									// mostrar sobrecarga del operador()
+									wxString type=FindTypeOf(key,p1);
+									if (type.Len()) {
+										code_helper->ShowCalltip(ctp,this,type,"operator()",true);
+									}
+								}
+							}
 						}
 					} else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 						code_helper->AutocompleteGeneral(this,FindScope(GetCurrentPos()),key);
@@ -2323,8 +2331,28 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			int p_fin=p+1;
 			// ir a donde empieza el nombre de la funcion
 			p=WordStartPosition(p,true); c=GetCharAt(p);
-			if (p<p_fin && (c<'0'||c>'9')) { // si puede ser un nombre de funcion
-				wxString func_name=GetTextRange(p,p_fin);
+			if (p<p_fin && (c<'0'||c>'9')) { // si puede ser un nombre de funcion o metodo
+				int p0_name=p; wxString func_name=GetTextRange(p,p_fin), scope;
+				--p; II_BACK(p,II_IS_NOTHING_4(p));
+				if (GetCharAt(p)=='.') {
+					--p; II_BACK(p,II_IS_NOTHING_4(p));
+					scope=FindTypeOf(p,dims);
+				} else if (p&& GetCharAt(p)==':' && GetCharAt(p-1)==':') {
+					p-=2; II_BACK(p,II_IS_NOTHING_4(p));
+					scope=GetTextRange(WordStartPosition(p,true),p+1);
+				} else if (GetCharAt(p)=='>') {
+					p-=2; II_BACK(p,II_IS_NOTHING_4(p));
+					scope=FindTypeOf(p,dims); dims--;
+				}
+				wxString type=code_helper->GetCalltip(scope,func_name,true,true);
+				if (!type.Len()) { // sera sobrecarga del operator() ?
+					type=FindTypeOf(func_name,p0_name);
+					type=code_helper->GetCalltip(type,"operator()",true,true);
+				}
+				if (type.Len()) {
+					while(type.Last()=='*') { dims++; type.RemoveLast(); }
+					return type;
+				}
 			}
 			
 			// si no paso nada con metodo/funcion, probar si era cast
@@ -2344,6 +2372,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 					return code_helper->UnMacro(GetTextRange(p+1,p2+1),dims);
 				}
 			}
+				
 		}
 		
 	} else { // si la cosa no estaba entre parentesis, podemos encontrarnos con indices entre corchetes o el nombre
@@ -2353,10 +2382,12 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 	if (GetCharAt(p)=='(')
 		p++;
 	while (II_IS_2(p,'&','*') || II_IS_NOTHING_4(p)) {
-		if (c=='*')
-			dims--;
-		else if (c=='&')
-			dims++;
+		if (!II_IS_NOTHING_4(p)) {
+			if (c=='*')
+				dims--;
+			else if (c=='&')
+				dims++;
+		}
 		p++;
 	}
 	if (c=='(') {
@@ -2372,6 +2403,13 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			s=p;
 			wxString key=GetTextRange(p,WordEndPosition(p,true));
 			wxString ans=FindTypeOf(key,s);
+			if (dims<0 && s==0) {
+				wxString type=code_helper->GetCalltip(ans,"operator[]",true,true);				
+				if (type.Len()) { 
+					while(type.Last()=='*') { dims++; type.RemoveLast(); }
+					dims++; ans=type;
+				}
+			}
 			if (s==SRC_PARSING_ERROR) {
 				dims=SRC_PARSING_ERROR;
 				return _T("");
@@ -2761,7 +2799,14 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 						II_FRONT_NC(p,II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) || (s==wxSTC_C_WORD));
 						int p1=p;
 						II_FRONT_NC(p,(c=GetCharAt(p))=='_' || (c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9') );
-						code_helper->ShowConstructorCalltip(ctp,this,GetTextRange(p1,p));
+						wxString key=GetTextRange(p1,p);
+						if (!code_helper->ShowConstructorCalltip(ctp,this,key)) {
+							// mostrar sobrecarga del operador()
+							wxString type=FindTypeOf(key,p1);
+							if (type.Len()) {
+								code_helper->ShowCalltip(ctp,this,type,"operator()",true);
+							}
+						}
 					}
 				} else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 					code_helper->AutocompleteGeneral(this,FindScope(GetCurrentPos()),key);
