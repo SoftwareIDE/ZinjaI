@@ -2180,14 +2180,6 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		return;
 #endif
 	}
-	menu.run_stop->Enable(false);
-	menu.run_run->Enable(true);
-	menu.run_compile->Enable(true);
-	if (project) {
-		menu.run_clean->Enable(true);
-		menu.tools_makefile->Enable(true);
-	}
-	
 	bool there_are_other_compiling_now=false;
 	// ver si es uno de los procesos que se estan esperando, y si era el ultimo del compilador para que se detenga el timer que analiza su salida
 	compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;
@@ -2200,10 +2192,20 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		if (aux_compile_and_run->process) there_are_other_compiling_now=true;
 		aux_compile_and_run=aux_compile_and_run->next;
 	}
-	if (!there_are_other_compiling_now) compiler->timer->Stop();
+	if (!there_are_other_compiling_now) {
+		compiler->timer->Stop();
+		menu.run_stop->Enable(false);
+		menu.run_run->Enable(true);
+		menu.run_compile->Enable(true);
+		if (project) {
+			menu.run_clean->Enable(true);
+			menu.tools_makefile->Enable(true);
+		}
+	}
 	
 	// si es uno interrumpido adrede, liberar memoria y no hacer nada mas
 	if (compile_and_run && compile_and_run->killed) { 
+		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
 		delete compile_and_run; return;
 	}
 	if (!compile_and_run) { // esto no deberia ocurrir
