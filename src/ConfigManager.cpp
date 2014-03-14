@@ -972,8 +972,8 @@ void ConfigManager::LoadDefaults(){
 	Files.browser_command=_T("firefox");
 #endif
 	Files.project_folder=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
-	Files.default_template=DIR_PLUS_FILE(_T("templates"),_T("default.tpl"));
-	Files.default_project=_T("<main>");
+	Files.default_template="default.tpl";
+	Files.default_project="<main>";
 //	Files.templates_dir="templates";
 	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
 //	Files.code_helper=DIR_PLUS_FILE(_T("quickhelp"),_T("codehelper.txt"));
