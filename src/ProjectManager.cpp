@@ -2000,8 +2000,6 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		c_compiling_options<<" -std="<<active_configuration->std_c;
 	if (active_configuration->std_cpp.Len())
 		cpp_compiling_options<<" "<<current_toolchain.FixArgument(true,wxString("-std=")+active_configuration->std_cpp);
-	
-	
 		
 	linking_options=" ";
 	linking_options<<current_toolchain.cpp_linker_options<<" ";
@@ -2706,7 +2704,7 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,have_env_vars=false,have_breakpoint_annotation=false;
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,have_env_vars=false,have_breakpoint_annotation=false,env_vars_autoref=false,exe_use_temp=false;
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
 	while (bpi.IsValid()) {
 		if (bpi->annotation.Len()) have_breakpoint_annotation=true;
@@ -2714,6 +2712,7 @@ int ProjectManager::GetRequiredVersion() {
 	}
 	for (int i=0;i<configurations_count;i++) {
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
+		if (configurations[i]->output_file.Contains("${TEMP_DIR}")) exe_use_temp=true;
 		if (configurations[i]->optimization_level==5) use_og=true;
 		if (!configurations[i]->std_c.Len()) have_std=true;
 		if (!configurations[i]->std_cpp.Len()) have_std=true;
@@ -2724,7 +2723,10 @@ int ProjectManager::GetRequiredVersion() {
 		if (configurations[i]->manifest_file.Len()) have_manifest=true;
 		if (configurations[i]->icon_file.Len()) have_icon=true;
 		if (configurations[i]->libs_to_build) builds_libs=true;
-		if (configurations[i]->env_vars.Len()) have_env_vars=true;
+		if (configurations[i]->env_vars.Len()) {
+			have_env_vars=true;
+			if (configurations[i]->env_vars.Contains("${")) env_vars_autoref=true;
+		}
 		compile_extra_step *step=configurations[i]->extra_steps;
 		while (step) {
 			if (step->deps.Contains("${TEMP_DIR}")) have_temp_dir=true;
@@ -2741,7 +2743,8 @@ int ProjectManager::GetRequiredVersion() {
 	}
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	version_required=0;
-	if (have_breakpoint_annotation) version_required=20140213;
+	if (env_vars_autoref || exe_use_temp) version_required=20140318;
+	else if (have_breakpoint_annotation) version_required=20140213;
 	else if (wxfb && wxfb->activate_integration) version_required=20131219;
 	else if (have_env_vars) version_required=20131122;
 	else if (have_custom_tools) version_required=20131115;
