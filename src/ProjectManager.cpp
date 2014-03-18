@@ -3464,7 +3464,7 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 					if (add) name.RemoveLast();
 					wxString old_value; wxGetEnv(name,&old_value);
 					if (orig.find(old_value)==orig.end()) orig[name]=old_value;
-					if (add) value=old_value+value;
+					if (add) value=old_value+value; else value.Replace(wxString("${")+name+"}",old_value);
 					wxSetEnv(name,value);
 				}
 			}

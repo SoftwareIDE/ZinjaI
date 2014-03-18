@@ -2187,7 +2187,13 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		if (compile_and_run->process) there_are_other_compiling_now=true;
 		compile_and_run=compile_and_run->next;
 	}
-	compile_and_run_struct_single *aux_compile_and_run=compile_and_run;
+	if (!compile_and_run) { // esto no deberia ocurrir?
+		DEBUG_INFO("Warning: Unknown process id: "<<event.GetPid());
+		cerr<<"Warning: Unknown process id: "<<event.GetPid()<<endl;
+		return;
+	}
+	// ver si hay otro proceso de compilacion en curso en paralelo
+	compile_and_run_struct_single *aux_compile_and_run=compile_and_run->next;
 	while (!there_are_other_compiling_now && aux_compile_and_run) {
 		if (aux_compile_and_run->process) there_are_other_compiling_now=true;
 		aux_compile_and_run=aux_compile_and_run->next;
@@ -2208,13 +2214,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
 		delete compile_and_run; return;
 	}
-	if (!compile_and_run) { // esto no deberia ocurrir
-#ifdef DEBUG
-		wxMessageBox(wxString()<<event.GetPid());
-#endif
-		cerr<<"Warning: Unknown process id: "<<event.GetPid()<<endl;
-		return;
-	}
+
 	// actualizar el compiler_tree
 	if (compile_and_run->compiling) { // si termino la compilacion
 		compiler->ParseCompilerOutput(compile_and_run,event.GetExitCode()==0);
