@@ -133,8 +133,8 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 	bool ignoring=false; bool on_toc=false; int div_deep=0; wxString result;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (!ignoring) {
-			size_t p=str.find("<title");
-			if (w && p!=string::npos) {
+			int p=str.Find("<title");
+			if (w && p!=wxNOT_FOUND) {
 				wxString title=str.Mid(p).AfterFirst('>').BeforeFirst('<');
 				title.Replace("&lt;","<"); title.Replace("&gt;",">"); title.Replace("&amp;","&");
 				title.Replace(" - cppreference.com","");
@@ -159,16 +159,16 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 				} else break;
 			} while (true);
 		}
-		if (!ignoring && str.find("<table id=\"toc\"")!=string::npos) on_toc=true;
-		else if (on_toc && str.find("</table>")!=string::npos) on_toc=false;
+		if (!ignoring && str.Find("<table id=\"toc\"")!=wxNOT_FOUND) on_toc=true;
+		else if (on_toc && str.Find("</table>")!=wxNOT_FOUND) on_toc=false;
 		else if (on_toc && w) {
 			static int lev=0;
-			size_t p=str.find("class=\"toclevel-"); 
-			if (p!=string::npos) lev=str[p+16]-'0';
-			p=str.find("href=\"#");
-			if (p!=string::npos) {
+			int p=str.Find("class=\"toclevel-"); 
+			if (p!=wxNOT_FOUND) lev=str[p+16]-'0';
+			p=str.Find("href=\"#");
+			if (p!=wxNOT_FOUND) {
 				wxString anchor=str.Mid(p).AfterFirst('#').BeforeFirst('\"');
-				p=str.find("class=\"toctext\""); 
+				p=str.Find("class=\"toctext\""); 
 				wxString lab=str.Mid(p).AfterFirst('>');
 				if (lab.StartsWith("<span>")) lab=lab.AfterFirst('>');
 				lab=lab.BeforeFirst('<');
@@ -188,9 +188,8 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 				str="<BR><BR><BR><I>This help page was generated from content archive (version 20140208) donwloaded from <A href=\"http://www.cppreference.com\">www.cppreference.com</a>.</I>";
 				fil.GetNextLine(); 
 			}
-			size_t p=str.find("<span class=\"mw-headline\" id=");
-			if (p!=string::npos) str.replace(p,29,"<a name=");
-			while ((p=str.find(".svg\""))!=string::npos) str.replace(p,5,".png\"");
+			str.Replace("<span class=\"mw-headline\" id=","<a name=",false);
+			str.Replace(".svg\"",".png\"",true);
 			
 			// arreglar caracteres unicode para compilaciones de wx ansi
 			for(unsigned int i=0;i<str.size();i++) { 
@@ -199,7 +198,7 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 				if (str[i]=='â') 
 					str.replace(i,3,"-");
 			}
-			if ((p=str.find("charset=UTF-8"))!=string::npos) str.erase(p,13);
+			str.Replace("charset=UTF-8","",false);
 			
 			result<<str<<"\n";
 		}
