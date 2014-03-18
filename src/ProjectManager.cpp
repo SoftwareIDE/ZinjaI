@@ -2029,7 +2029,8 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	else
 		linking_options<<_T(" ")<<linking_extra;
 
-	executable_name=wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetFullPath();
+	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",temp_folder_short);
+	executable_name=wxFileName(DIR_PLUS_FILE(path,executable_name)).GetFullPath();
 	
 	// bibliotecas
 	project_library *lib = active_configuration->libs_to_build;
