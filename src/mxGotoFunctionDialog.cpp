@@ -75,7 +75,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 		main_window->SetFocusToSourceAfterEvents();
 #endif
 	} else {
-		if (direct_goto) {
+		if (direct_goto.Len()) {
 			list_ctrl->SetFocus();
 			for(int i=0;i<m_results.GetSize();i++) { 
 				if (wxFileName(m_results[i].get_file()).GetName()==direct_goto) {
