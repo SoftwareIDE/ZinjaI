@@ -966,29 +966,32 @@ bool CodeHelper::LoadData(wxString index) {
 				wxString name=str.Mid(0,pos+1);
 				char c;
 				// nombre
-				while ( ! ((c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9')) )
+				while ( pos>=0 && ! ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ) )
 					pos--;
-				while ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') )
+				while ( pos>=0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ) )
 					pos--;
 				name=name.Mid(pos+1);
 				// scope
-				pos-=2;
-				while ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') )
+				if (pos==-1) { 
+					str=aux_class->name+"::"+str; 
+				} else {
+					if (c!=':') { str=str.Mid(0,pos+1)+aux_class->name+"::"+str.Mid(pos+1); }
+					else pos-=2;
+				}
+				while ( pos>=0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ) )
 					pos--;
-				while (str[pos]==' ')
+				while (pos>=0 && str[pos]==' ')
 					pos--;
 				// tipo
 				if (name==aux_class->name) {
 					CH_REGISTER_METHOD(aux_file, aux_class, name, name, str);				
 				} else {
-					wxString type = str.Mid(0,pos+1);
-					while (str[pos]==' ' || str[pos]=='*' || str[pos]=='&')
+					wxString type = pos<0?"":str.Mid(0,pos+1);
+					while (pos>=0 && (str[pos]==' ' || str[pos]=='*' || str[pos]=='&'))
 						pos--;
-					while ( pos>0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ) )
+					while (pos>=0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ) )
 						pos--;
-					if (pos!=0)
-						pos++;
-					type=type.Mid(pos);
+					if (pos>0) { pos++; type=type.Mid(pos); }
 					CH_REGISTER_METHOD(aux_file, aux_class, type, name, str);				
 				}
 			}

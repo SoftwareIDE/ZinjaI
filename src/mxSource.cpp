@@ -1939,14 +1939,22 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 	} else if (c=='>' && e!=0 && GetCharAt(e-1)=='-') {
 		e-=2;
 		II_BACK(e,II_IS_NOTHING_4(e));
-		int dims=WordStartPosition(e,true);
-		wxString space = GetTextRange(dims,e+1);
-		wxString type = FindTypeOf(space,dims);
-		if (dims==1) {
-			pos=-1;
-			type = code_helper->GetAttribType(type,key,pos);
-			key = space;
+		wxString space=FindTypeOf(e,dims);
+		if (space.Len()) { // codigo nuevo, usar el otro FindTypeOf
+			pos=dims-1; // pos es argumento de entrada(posicion) y salida(dimension)
+			wxString type=code_helper->GetAttribType(space,key,pos);
+			key=type; // key es argumento de entrada (nombre de var a buscar) y salida (scope)
 			return type;
+		} else {// fin codigo nuevo, empieza codigo viejo, si no funca que siga como antes (todo: analizar si vale la pena o si con el nuevo ya reemplaza todo)
+			int dims=WordStartPosition(e,true);
+			wxString space = GetTextRange(dims,e+1);
+			wxString type = FindTypeOf(space,dims);
+			if (dims==1) {
+				pos=-1;
+				type = code_helper->GetAttribType(type,key,pos);
+				key = space;
+				return type;
+			}
 		}
 	} else if (c==':' && e!=0 && GetCharAt(e-1)==':') {
 		e-=2;
