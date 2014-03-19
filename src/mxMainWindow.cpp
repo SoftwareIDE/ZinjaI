@@ -3244,7 +3244,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 			source->never_parsed=false;
 			parser->ParseFile(filename);
 		}
-	} else if (ext==_T("H") || ext==_T("HXX") || ext==_T("HPP")) {
+	} else if (ext=="" || ext==_T("H") || ext==_T("HXX") || ext==_T("HPP")) {
 		if (not_opened) notebook_sources->AddPage(source, source->page_text, true, *bitmaps->files.header);
 		if (add_to_project) {
 			if (project) {

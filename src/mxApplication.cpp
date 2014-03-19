@@ -210,7 +210,7 @@ bool mxApplication::OnInit() {
 		main_window->Refresh();
 		wxYield();
 		if (splash) splash->ShouldClose();
-		for (int i=1; i<argc;i++)
+		for (int i=1; i<argc;i++) {
 			if (wxString(argv[i])=="--last-source" && config->Files.last_source[0].Len())
 				main_window->OpenFileFromGui(wxString(config->Files.last_source[0]));
 			else if (wxString(argv[i])=="--last-project" && config->Files.last_project[0].Len())
@@ -219,6 +219,7 @@ bool mxApplication::OnInit() {
 //				main_window->ShowExplorerTreePanel();
 			else if (argv[i][0]!='\0')
 				main_window->OpenFileFromGui(DIR_PLUS_FILE(cmd_path,argv[i]));
+		}
 		if (!project && main_window->notebook_sources->GetPageCount()==0 && config->Init.show_welcome) {
 			main_window->ShowWelcome(true);
 		}
