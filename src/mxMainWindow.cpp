@@ -2184,7 +2184,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 	// ver si es uno de los procesos que se estan esperando, y si era el ultimo del compilador para que se detenga el timer que analiza su salida
 	compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;
 	while (compile_and_run && compile_and_run->pid!=event.GetPid()) {
-		if (compile_and_run->process) there_are_other_compiling_now=true;
+		if (compile_and_run->process && compile_and_run->compiling) there_are_other_compiling_now=true;
 		compile_and_run=compile_and_run->next;
 	}
 	if (!compile_and_run) { // esto no deberia ocurrir?
@@ -2195,7 +2195,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 	// ver si hay otro proceso de compilacion en curso en paralelo
 	compile_and_run_struct_single *aux_compile_and_run=compile_and_run->next;
 	while (!there_are_other_compiling_now && aux_compile_and_run) {
-		if (aux_compile_and_run->process) there_are_other_compiling_now=true;
+		if (aux_compile_and_run->process && aux_compile_and_run->compiling) there_are_other_compiling_now=true;
 		aux_compile_and_run=aux_compile_and_run->next;
 	}
 	if (!there_are_other_compiling_now) {
