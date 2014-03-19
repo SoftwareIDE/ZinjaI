@@ -1,0 +1,905 @@
+<typeindex>
+	class type_index
+		const char * name ()
+		size_t hash_code ()
+<type_traits>
+	type
+	value_type
+	false_type
+	true_type
+	class integral_constant
+		T value
+		constexpr operator_value_type ()
+<tuple>
+	const const NULL ignore
+	NULL noexcept(x)
+	bool operator>=(const tuple<TTypes...> &,const tuple<UTypes...> &)
+	bool operator<=(const tuple<TTypes...> &,const tuple<UTypes...> &)
+	bool operator>(const tuple<TTypes...> &,const tuple<UTypes...> &)
+	bool operator!=(const tuple<TTypes...> &,const tuple<UTypes...> &)
+	bool operator<(const tuple<TTypes...> &,const tuple<UTypes...> &)
+	bool operator==(const tuple<TTypes...> &,const tuple<UTypes...> &)
+	tuple<Ctypes...> tuple_cat(Tuples,...)
+	tuple<VTypes...> make_tuple(Types,...)
+	class tuple
+		tuple & operator
+		tuple (allocator_arg_t,const Alloc &,pair<U1,U2>)
+		tuple (allocator_arg_t,const Alloc &,const pair<U1,U2> &)
+		tuple (allocator_arg_t,const Alloc &,tuple<UTypes...>)
+		tuple (allocator_arg_t,const Alloc &,const tuple<UTypes...> &)
+		tuple (allocator_arg_t,const Alloc &,tuple)
+		tuple (allocator_arg_t,const Alloc &,const tuple &)
+		tuple (allocator_arg_t,const Alloc &,const UTypes,...)
+		tuple (allocator_arg_t,const Alloc &,const Types &,...)
+		tuple (allocator_arg_t,const Alloc &)
+		tuple (pair<U1,U2>)
+		tuple (const pair<U1,U2> &)
+		tuple (tuple<UTypes...>)
+		tuple (const tuple<UTypes...> &)
+		tuple (UTypes,...)
+		tuple (const Types &,...)
+		tuple ()
+<thread>
+	void sleep_for(const chrono::duration<Rep,Period> &)
+	void sleep_until(const chrono::time_point<Clock,Duration> &)
+	basic_ostream<CharT,Traits> & operator<<(basic_ostream<CharT,Traits> &,thread::id)
+	native_handle_type
+	class thread
+		thread & operator
+		native_handle_type native_handle ()
+		void detach ()
+		void join ()
+		~thread ()
+		thread (F,Args,...)
+<system_error>
+	class is_error_condition_enum<errc> public true_type public true_type
+	class is_error_condition_enum public false_type public false_type
+	class is_error_code_enum public false_type public false_type
+<shared_mutex>
+	mutex_type
+	class shared_lock
+		bool owns
+		shared_lock & operator
+		void unlock ()
+		bool try_lock_until (const chrono::time_point<Clock,Duration> &)
+		bool try_lock_for (const chrono::duration<Rep,Period> &)
+		bool try_lock ()
+		void lock ()
+		~shared_lock ()
+		shared_lock (mutex_type &,const chrono::duration<Rep,Period> &)
+		shared_lock (mutex_type &,const chrono::time_point<Clock,Duration> &)
+		shared_lock (mutex_type &,adopt_lock_t)
+		shared_lock (mutex_type &,try_to_lock_t)
+		shared_lock (mutex_type &)
+	class shared_mutex
+		void unlock_shared ()
+		bool try_lock_shared_until (const chrono::time_point<Clock,Duration> &)
+		bool try_lock_shared_for (const chrono::duration<Rep,Period> &)
+		bool try_lock_shared ()
+		void lock_shared ()
+		void unlock ()
+		bool try_lock_until (const chrono::time_point<Clock,Duration> &)
+		bool try_lock_for (const chrono::duration<Rep,Period> &)
+		bool try_lock ()
+		void lock ()
+		shared_mutex & operator= (const shared_mutex &)
+		~shared_mutex ()
+		shared_mutex ()
+<scoped_allocator>
+	other
+	propagate_on_container_swap
+	propagate_on_container_move_assignment
+	propagate_on_container_copy_assignment
+	const_void_pointer
+	void_pointer
+	const_pointer
+	pointer
+	difference_type
+	size_type
+	inner_allocator_type
+	outer_allocator_type
+	OuterTraits
+	class scoped_allocator_adaptor public OuterAlloc public OuterAlloc public OuterAlloc public OuterAlloc public OuterAlloc public OuterAlloc
+		scoped_allocator_adaptor select_on_container_copy_construction ()
+		void template<class T> destroy (T *)
+		void template<class T1,class T2,class U,class V> construct (pair<T1,T2> *,pair<U,V>)
+		void template<class T1,class T2,class U,class V> construct (pair<T1,T2> *,const pair<U,V> &)
+		void template<class T1,class T2,class U,class V> construct (pair<T1,T2> *,U,V)
+		void template<class T1,class T2> construct (pair<T1,T2> *)
+		void template<class T1,class T2,class...Args1,class...Args2> construct (pair<T1,T2> *,piecewise_construct_t,tuple<Args1...>,tuple<Args2...>)
+		void template<class T,class...Args> construct (T *,Args,...)
+		size_type max_size ()
+		void deallocate (pointer,size_type)
+		pointer allocate (size_type,const_void_pointer)
+		pointer allocate (size_type)
+		~scoped_allocator_adaptor ()
+		scoped_allocator_adaptor ()
+	class rebind
+<regex>
+	error_type error_stack
+	error_type error_complexity
+	error_type error_badrepeat
+	error_type error_space
+	error_type error_range
+	error_type error_badbrace
+	error_type error_brace
+	error_type error_paren
+	error_type error_brack
+	error_type error_backref
+	error_type error_escape
+	error_type error_ctype
+	error_type error_collate
+	match_flag_type format_first_only
+	match_flag_type format_no_copy
+	match_flag_type format_sed
+	match_flag_type format_default
+	match_flag_type match_prev_avail
+	match_flag_type match_continuous
+	match_flag_type match_not_null
+	match_flag_type match_any
+	match_flag_type match_not_eow
+	match_flag_type match_not_bow
+	match_flag_type match_not_eol
+	match_flag_type match_not_bol
+	match_flag_type match_default
+	syntax_option_type egrep
+	syntax_option_type grep
+	syntax_option_type awk
+	syntax_option_type extended
+	syntax_option_type basic
+	syntax_option_type ECMAScript
+	syntax_option_type collate
+	syntax_option_type optimize
+	syntax_option_type nosubs
+	syntax_option_type icase
+	basic_string<charT> regex_replace(const charT *,const basic_regex<charT,traits> &,const charT *,regex_constants::match_flag_type)
+	basic_string<charT> regex_replace(const charT *,const basic_regex<charT,traits> &,const basic_string<charT,ST,SA> &,regex_constants::match_flag_type)
+	basic_string<charT,ST,SA> regex_replace(const basic_string<charT,ST,SA> &,const basic_regex<charT,traits> &,const charT *,regex_constants::match_flag_type)
+	basic_string<charT,ST,SA> regex_replace(const basic_string<charT,ST,SA> &,const basic_regex<charT,traits> &,const basic_string<charT,FST,FSA> &,regex_constants::match_flag_type)
+	OutputIterator regex_replace(OutputIterator,BidirectionalIterator,BidirectionalIterator,const basic_regex<charT,traits> &,const charT *,regex_constants::match_flag_type)
+	OutputIterator regex_replace(OutputIterator,BidirectionalIterator,BidirectionalIterator,const basic_regex<charT,traits> &,const basic_string<charT,ST,SA> &,regex_constants::match_flag_type)
+	bool regex_search(const basic_string<charT,ST,SA> &,match_results<typename basic_string<charT,ST,SA>::const_iterator,Allocator> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_search(const basic_string<charT,ST,SA> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_search(const charT *,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_search(const charT *,match_results<const charT*,Allocator> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_search(BidirectionalIterator,BidirectionalIterator,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_search(BidirectionalIterator,BidirectionalIterator,match_results<BidirectionalIterator,Allocator> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_match(const basic_string<charT,ST,SA> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_match(const charT *,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_match(const basic_string<charT,ST,SA> &,match_results<typename basic_string<charT,ST,SA>::const_iterator,Allocator> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_match(const charT *,match_results<const charT*,Allocator> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_match(BidirectionalIterator,BidirectionalIterator,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	bool regex_match(BidirectionalIterator,BidirectionalIterator,match_results<BidirectionalIterator,Allocator> &,const basic_regex<charT,traits> &,regex_constants::match_flag_type)
+	void swap(match_results<BidirectionalIterator,Allocator> &,match_results<BidirectionalIterator,Allocator> &)
+	bool operator!=(const match_results<BidirectionalIterator,Allocator> &,const match_results<BidirectionalIterator,Allocator> &)
+	bool operator==(const match_results<BidirectionalIterator,Allocator> &,const match_results<BidirectionalIterator,Allocator> &)
+	basic_ostream<charT,ST> & operator<<(basic_ostream<charT,ST> &,const sub_match<BiIter> &)
+	bool operator>(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type &)
+	bool operator<(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type &)
+	bool operator<=(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type &)
+	bool operator>=(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type &)
+	bool operator!=(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type &)
+	bool operator==(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type &)
+	bool operator<(const iterator_traits<BiIter>::value_type &,const sub_match<BiIter> &)
+	bool operator>(const iterator_traits<BiIter>::value_type &,const sub_match<BiIter> &)
+	bool operator<=(const iterator_traits<BiIter>::value_type &,const sub_match<BiIter> &)
+	bool operator>=(const iterator_traits<BiIter>::value_type &,const sub_match<BiIter> &)
+	bool operator!=(const iterator_traits<BiIter>::value_type &,const sub_match<BiIter> &)
+	bool operator==(const iterator_traits<BiIter>::value_type &,const sub_match<BiIter> &)
+	bool operator>(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type *)
+	bool operator<(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type *)
+	bool operator>=(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type *)
+	bool operator<=(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type *)
+	bool operator!=(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type *)
+	bool operator==(const sub_match<BiIter> &,const iterator_traits<BiIter>::value_type *)
+	bool operator<=(const iterator_traits<BiIter>::value_type *,const sub_match<BiIter> &)
+	bool operator>=(const iterator_traits<BiIter>::value_type *,const sub_match<BiIter> &)
+	bool operator>(const iterator_traits<BiIter>::value_type *,const sub_match<BiIter> &)
+	bool operator<(const iterator_traits<BiIter>::value_type *,const sub_match<BiIter> &)
+	bool operator!=(const iterator_traits<BiIter>::value_type *,const sub_match<BiIter> &)
+	bool operator==(const iterator_traits<BiIter>::value_type *,const sub_match<BiIter> &)
+	bool operator>=(const sub_match<BiIter> &,const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &)
+	bool operator<=(const sub_match<BiIter> &,const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &)
+	bool operator>(const sub_match<BiIter> &,const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &)
+	bool operator<(const sub_match<BiIter> &,const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &)
+	bool operator!=(const sub_match<BiIter> &,const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &)
+	bool operator==(const sub_match<BiIter> &,const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &)
+	bool operator<=(const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &,const sub_match<BiIter> &)
+	bool operator>=(const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &,const sub_match<BiIter> &)
+	bool operator>(const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &,const sub_match<BiIter> &)
+	bool operator<(const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &,const sub_match<BiIter> &)
+	bool operator!=(const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &,const sub_match<BiIter> &)
+	bool operator==(const basic_string<typename iterator_traits<BiIter>::value_type,ST,SA> &,const sub_match<BiIter> &)
+	bool operator>(const sub_match<BiIter> &,const sub_match<BiIter> &)
+	bool operator>=(const sub_match<BiIter> &,const sub_match<BiIter> &)
+	bool operator<=(const sub_match<BiIter> &,const sub_match<BiIter> &)
+	bool operator<(const sub_match<BiIter> &,const sub_match<BiIter> &)
+	bool operator!=(const sub_match<BiIter> &,const sub_match<BiIter> &)
+	bool operator==(const sub_match<BiIter> &,const sub_match<BiIter> &)
+	void swap(basic_regex<charT,traits> &,basic_regex<charT,traits> &)
+	iterator
+	flag_type
+	traits_type
+	char_class_type
+	locale_type
+	string_type
+	char_type
+	error_type
+	match_flag_type
+	syntax_option_type
+	wscregex_token_iterator
+	scregex_token_iterator
+	wcregex_token_iterator
+	cregex_token_iterator
+	wsregex_iterator
+	sregex_iterator
+	wcregex_iterator
+	cregex_iterator
+	wsmatch
+	smatch
+	wcmatch
+	cmatch
+	wssub_match
+	ssub_match
+	wcsub_match
+	csub_match
+	wregex
+	regex
+	class sub_match public pair public pair
+		bool matched
+		int compare (const value_type *)
+		int compare (const string_type &)
+		int compare (const sub_match &)
+		string_type str ()
+		difference_type length ()
+		sub_match ()
+	class basic_regex
+		basic_regex & operator
+		regex_constants::syntax_option_type egrep
+		regex_constants::syntax_option_type grep
+		regex_constants::syntax_option_type awk
+		regex_constants::syntax_option_type extended
+		regex_constants::syntax_option_type basic
+		regex_constants::syntax_option_type ECMAScript
+		regex_constants::syntax_option_type collate
+		regex_constants::syntax_option_type optimize
+		regex_constants::syntax_option_type nosubs
+		regex_constants::syntax_option_type icase
+		void swap (basic_regex &)
+		locale_type getloc ()
+		locale_type imbue (locale_type)
+		flag_type flags ()
+		unsigned NULL mark_count ()
+		basic_regex & assign (initializer_list<charT>,flag_type)
+		basic_regex & assign (InputIterator,InputIterator,flag_type)
+		basic_regex & assign (const basic_string<charT,string_traits,A> &,flag_type)
+		basic_regex & assign (const charT *,size_t,flag_type)
+		basic_regex & assign (const charT *,flag_type)
+		basic_regex & assign (const basic_regex &)
+		~basic_regex ()
+		basic_regex (initializer_list<charT>,flag_type)
+		basic_regex (ForwardIterator,ForwardIterator,flag_type)
+		basic_regex (const basic_string<charT,ST,SA> &,flag_type)
+		basic_regex (const basic_regex &)
+		basic_regex (const charT *,size_t,flag_type)
+		basic_regex (const charT *,flag_type)
+		basic_regex ()
+	class regex_traits
+		locale_type getloc ()
+		locale_type imbue (locale_type)
+		int value (charT,int)
+		bool isctype (charT,char_class_type)
+		char_class_type lookup_classname (ForwardIterator,ForwardIterator,bool)
+		string_type lookup_collatename (ForwardIterator,ForwardIterator)
+		string_type transform_primary (ForwardIterator,ForwardIterator)
+		string_type transform (ForwardIterator,ForwardIterator)
+		charT translate_nocase (charT)
+		charT translate (charT)
+		std::size_t length (const char_type *)
+		regex_traits ()
+	class regex_error public runtime_error public runtime_error
+		regex_constants::error_type code ()
+		regex_error (regex_constants::error_type)
+<ratio>
+<random>
+	RealType generate_canonical(URNG &)
+	param_type
+	result_type
+	default_random_engine
+	knuth_b
+	ranlux48
+	ranlux24
+	ranlux48_base
+	ranlux24_base
+	mt19937_64
+	mt19937
+	minstd_rand
+	minstd_rand0
+	class piecewise_linear_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		vector<result_type> densities ()
+		vector<result_type> intervals ()
+		void reset ()
+		piecewise_linear_distribution (const param_type &)
+		piecewise_linear_distribution (size_t,RealType,RealType,UnaryOperation)
+		piecewise_linear_distribution (initializer_list<RealType>,UnaryOperation)
+		piecewise_linear_distribution (InputIteratorB,InputIteratorB,InputIteratorW)
+		piecewise_linear_distribution ()
+	class piecewise_constant_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		vector<result_type> densities ()
+		vector<result_type> intervals ()
+		void reset ()
+		piecewise_constant_distribution (const param_type &)
+		piecewise_constant_distribution (size_t,RealType,RealType,UnaryOperation)
+		piecewise_constant_distribution (initializer_list<RealType>,UnaryOperation)
+		piecewise_constant_distribution (InputIteratorB,InputIteratorB,InputIteratorW)
+		piecewise_constant_distribution ()
+	class discrete_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		vector<double> probabilities ()
+		void reset ()
+		discrete_distribution (const param_type &)
+		discrete_distribution (size_t,double,double,UnaryOperation)
+		discrete_distribution (initializer_list<double>)
+		discrete_distribution (InputIterator,InputIterator)
+		discrete_distribution ()
+	class student_t_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType n ()
+		void reset ()
+		student_t_distribution (const param_type &)
+		student_t_distribution (RealType)
+	class fisher_f_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType n ()
+		RealType m ()
+		void reset ()
+		fisher_f_distribution (const param_type &)
+		fisher_f_distribution (RealType,RealType)
+	class cauchy_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType b ()
+		RealType a ()
+		void reset ()
+		cauchy_distribution (const param_type &)
+		cauchy_distribution (RealType,RealType)
+	class chi_squared_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType n ()
+		void reset ()
+		chi_squared_distribution (const param_type &)
+		chi_squared_distribution (RealType)
+	class lognormal_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType s ()
+		RealType m ()
+		void reset ()
+		lognormal_distribution (const param_type &)
+		lognormal_distribution (RealType,RealType)
+	class normal_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType stddev ()
+		RealType mean ()
+		void reset ()
+		normal_distribution (const param_type &)
+		normal_distribution (RealType,RealType)
+	class extreme_value_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType b ()
+		RealType a ()
+		void reset ()
+		extreme_value_distribution (const param_type &)
+		extreme_value_distribution (RealType,RealType)
+	class weibull_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType b ()
+		RealType a ()
+		void reset ()
+	class gamma_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType beta ()
+		RealType alpha ()
+		void reset ()
+		gamma_distribution (const param_type &)
+		gamma_distribution (RealType,RealType)
+	class exponential_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		RealType lambda ()
+		void reset ()
+		exponential_distribution (const param_type &)
+		exponential_distribution (RealType)
+	class poisson_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		double mean ()
+		void reset ()
+		poisson_distribution (const param_type &)
+		poisson_distribution (double)
+	class negative_binomial_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		double p ()
+		IntType k ()
+		void reset ()
+		negative_binomial_distribution (const param_type &)
+		negative_binomial_distribution (IntType,double)
+	class geometric_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		double p ()
+		void reset ()
+		geometric_distribution (const param_type &)
+		geometric_distribution (double)
+	class binomial_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		double p ()
+		IntType t ()
+		void reset ()
+		binomial_distribution (const param_type &)
+		binomial_distribution (IntType,double)
+	class bernoulli_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		double p ()
+		void reset ()
+		bernoulli_distribution (const param_type &)
+		bernoulli_distribution (double)
+	class uniform_int_distribution
+		result_type max ()
+		result_type min ()
+		void param (const param_type &)
+		param_type param ()
+		result_type b ()
+		result_type a ()
+		void reset ()
+		uniform_int_distribution (const param_type &)
+		uniform_int_distribution (IntType,IntType)
+	class seed_seq
+		void operator
+		void template<class OutputIterator> param (OutputIterator)
+		size_t size ()
+		void template<class RandomAccessIterator> generate (RandomAccessIterator,RandomAccessIterator)
+		seed_seq (InputIterator,InputIterator)
+		seed_seq (initializer_list<T>)
+		seed_seq ()
+	class random_device
+		void operator= (const random_device &)
+		result_type operator() ()
+		random_device (const string &)
+		result_type max ()
+		result_type min ()
+	class shuffle_order_engine
+		size_t table_size
+		void discard (unsigned long)
+		result_type operator() ()
+		void template<class Sseq> seed (Sseq &)
+		void seed (result_type)
+		void seed ()
+		shuffle_order_engine (Sseq &)
+		shuffle_order_engine (result_type)
+		shuffle_order_engine (Engine)
+		shuffle_order_engine (const Engine &)
+		shuffle_order_engine ()
+		result_type max ()
+		result_type min ()
+	class independent_bits_engine
+		void discard (unsigned long)
+		result_type operator() ()
+		void template<class Sseq> seed (Sseq &)
+		void seed (result_type)
+		void seed ()
+		independent_bits_engine (Sseq &)
+		independent_bits_engine (result_type)
+		independent_bits_engine (Engine)
+		independent_bits_engine (const Engine &)
+		independent_bits_engine ()
+		result_type max ()
+		result_type min ()
+	class discard_block_engine
+		size_t used_block
+		size_t block_size
+		void discard (unsigned long)
+		result_type operator() ()
+		void template<class Sseq> seed (Sseq &)
+		void seed (result_type)
+		void seed ()
+		discard_block_engine (Sseq &)
+		discard_block_engine (result_type)
+		discard_block_engine (Engine)
+		discard_block_engine (const Engine &)
+		discard_block_engine ()
+		result_type max ()
+		result_type min ()
+	class subtract_with_carry_engine
+		result_type default_seed
+		size_t long_lag
+		size_t short_lag
+		size_t word_size
+		void discard (unsigned long)
+		result_type operator() ()
+		void template<class Sseq> seed (Sseq &)
+		void seed (result_type)
+		subtract_with_carry_engine (Sseq &)
+		subtract_with_carry_engine (result_type)
+		result_type max ()
+		result_type min ()
+	class mersenne_twister_engine
+		result_type default_seed
+		UIntType initialization_multiplier
+		size_t tempering_l
+		UIntType tempering_c
+		size_t tempering_t
+		UIntType tempering_b
+		size_t tempering_s
+		UIntType tempering_d
+		size_t tempering_u
+		UIntType xor_mask
+		size_t mask_bits
+		size_t shift_size
+		size_t state_size
+		size_t word_size
+		void discard (unsigned long)
+		result_type operator() ()
+		void template<class Sseq> seed (Sseq &)
+		void seed (result_type)
+		mersenne_twister_engine (Sseq &)
+		mersenne_twister_engine (result_type)
+		result_type max ()
+		result_type min ()
+	class linear_congruential_engine
+		result_type default_seed
+		result_type modulus
+		result_type increment
+		result_type multiplier
+		void discard (unsigned long)
+		result_type operator() ()
+		void template<class Sseq> seed (Sseq &)
+		void seed (result_type)
+		linear_congruential_engine (Sseq &)
+		linear_congruential_engine (result_type)
+		result_type max ()
+		result_type min ()
+<mutex>
+	void call_once(once_flag &,Callable,Args,...)
+	void lock(L1 &,L2 &,L3 &,...)
+	int try_lock(L1 &,L2 &,L3 &,...)
+	class once_flag
+		once_flag & operator
+	class unique_lock
+		bool owns
+		unique_lock & operator
+		void unlock ()
+		bool try_lock_until (const chrono::time_point<Clock,Duration> &)
+		bool try_lock_for (const chrono::duration<Rep,Period> &)
+		bool try_lock ()
+		void lock ()
+		~unique_lock ()
+		unique_lock (mutex_type &,const chrono::duration<Rep,Period> &)
+		unique_lock (mutex_type &,const chrono::time_point<Clock,Duration> &)
+		unique_lock (mutex_type &,adopt_lock_t)
+		unique_lock (mutex_type &,try_to_lock_t)
+		unique_lock (mutex_type &)
+	class lock_guard
+		lock_guard & operator= (const lock_guard &)
+		~lock_guard ()
+		lock_guard (mutex_type &,adopt_lock_t)
+		lock_guard (mutex_type &)
+	class recursive_timed_mutex
+		native_handle_type native_handle ()
+		void unlock ()
+		bool try_lock_until (const chrono::time_point<Clock,Duration> &)
+		bool try_lock_for (const chrono::duration<Rep,Period> &)
+		void lock ()
+		recursive_timed_mutex & operator= (const recursive_timed_mutex &)
+		~recursive_timed_mutex ()
+		recursive_timed_mutex ()
+	class timed_mutex
+		native_handle_type native_handle ()
+		void unlock ()
+		bool try_lock_until (const chrono::time_point<Clock,Duration> &)
+		bool try_lock_for (const chrono::duration<Rep,Period> &)
+		bool try_lock ()
+		void lock ()
+		timed_mutex & operator= (const timed_mutex &)
+		~timed_mutex ()
+		timed_mutex ()
+	class recursive_mutex
+		native_handle_type native_handle ()
+		void unlock ()
+		void lock ()
+		recursive_mutex & operator= (const recursive_mutex &)
+		~recursive_mutex ()
+		recursive_mutex ()
+	class mutex
+		native_handle_type native_handle ()
+		void unlock ()
+		bool try_lock ()
+		void lock ()
+		mutex & operator= (const mutex &)
+		~mutex ()
+	class adopt_lock_t
+	class try_to_lock_t
+	class defer_lock_t
+<initializer_list>
+	const_iterator
+	const_reference
+	reference
+	class initializer_list
+<future>
+	class packaged_task
+	class packaged_task<R(ArgTypes...)>
+		packaged_task & operator
+		void reset ()
+		void make_ready_at_thread_exit (ArgTypes,...)
+		void operator() (ArgTypes,...)
+		future<R> get_future ()
+		~packaged_task ()
+		explicit packaged_task (allocator_arg_t,const Allocator &,F)
+		explicit packaged_task (F)
+	class shared_future
+		shared_future & operator
+		future_status wait_until (const chrono::time_point<Clock,Duration> &)
+		future_status wait_for (const chrono::duration<Rep,Period> &)
+		void wait ()
+		shared_future & operator= (const shared_future &)
+		~shared_future ()
+		shared_future (const shared_future &)
+	class future
+		future & operator
+		future_status wait_until (const chrono::time_point<Clock,Duration> &)
+		future_status wait_for (const chrono::duration<Rep,Period> &)
+		void wait ()
+		below get ()
+		shared_future<R> share ()
+		future & operator= (const future &)
+		~future ()
+	class promise
+		promise & operator
+		void set_exception_at_thread_exit (exception_ptr)
+		void set_value_at_thread_exit (see)
+		void set_value_at_thread_exit (const R &)
+		void set_exception (exception_ptr)
+		void set_value (see)
+		future<R> get_future ()
+		~promise ()
+		promise (allocator_arg_t,const Allocator &)
+		promise ()
+	class future_error public logic_error public logic_error
+		future_error (error_code)
+	class uses_allocator<packaged_task<R>,Alloc> public true_type public true_type
+	class uses_allocator<promise<R>,Alloc> public true_type public true_type
+	class is_error_code_enum<future_errc> public true_type public true_type
+<cuchar>
+<ctgmath>
+<cstdint>
+	uintptr_t
+	uintmax_t
+	uint_least64_t
+	uint_least32_t
+	uint_least16_t
+	uint_least8_t
+	uint_fast64_t
+	uint_fast32_t
+	uint_fast16_t
+	uint_fast8_t
+	uint64_t
+	uint32_t
+	uint16_t
+	uint8_t
+	intptr_t
+	intmax_t
+	int_least64_t
+	int_least32_t
+	int_least16_t
+	int_least8_t
+	int_fast64_t
+	int_fast32_t
+	int_fast16_t
+	int_fast8_t
+	int64_t
+	int32_t
+	int16_t
+	int8_t
+<cstdbool>
+<cstdalign>
+<condition_variable>
+	void notify_all_at_thread_exit(condition_variable &,unique_lock<mutex>)
+	class condition_variable_any
+		bool wait_for (Lock &,const chrono::duration<Rep,Period> &,Predicate)
+		cv_status wait_for (Lock &,const chrono::duration<Rep,Period> &)
+		bool wait_until (Lock &,const chrono::time_point<Clock,Duration> &,Predicate)
+		cv_status wait_until (Lock &,const chrono::time_point<Clock,Duration> &)
+		void template<class Lock,class Predicate> wait (Lock &,Predicate)
+		void template<class Lock> wait (Lock &)
+		condition_variable_any & operator= (const condition_variable_any &)
+		~condition_variable_any ()
+		condition_variable_any ()
+	class condition_variable
+		native_handle_type native_handle ()
+		bool wait_for (unique_lock<mutex> &,const chrono::duration<Rep,Period> &,Predicate)
+		cv_status wait_for (unique_lock<mutex> &,const chrono::duration<Rep,Period> &)
+		bool wait_until (unique_lock<mutex> &,const chrono::time_point<Clock,Duration> &,Predicate)
+		cv_status wait_until (unique_lock<mutex> &,const chrono::time_point<Clock,Duration> &)
+		void template<class Predicate> wait (unique_lock<mutex> &,Predicate)
+		void wait (unique_lock<mutex> &)
+		condition_variable & operator= (const condition_variable &)
+		~condition_variable ()
+		condition_variable ()
+<codecvt>
+	codecvt_mode
+	little_endian
+	generate_header
+	consume_header
+	class codecvt_utf8_utf16 public codecvt public codecvt
+		~codecvt_utf8_utf16 ()
+		codecvt_utf8_utf16 (size_t)
+	class codecvt_utf16 public codecvt public codecvt
+		~codecvt_utf16 ()
+		codecvt_utf16 (size_t)
+	class codecvt_utf8 public codecvt public codecvt
+		~codecvt_utf8 ()
+		codecvt_utf8 (size_t)
+<cinttypes>
+<chrono>
+	time_point<Clock,ToDuration> time_point_cast(const time_point<Clock,Duration> &)
+	bool operator>=(const time_point<Clock,Duration1> &,const time_point<Clock,Duration2> &)
+	bool operator>(const time_point<Clock,Duration1> &,const time_point<Clock,Duration2> &)
+	bool operator<=(const time_point<Clock,Duration1> &,const time_point<Clock,Duration2> &)
+	bool operator<(const time_point<Clock,Duration1> &,const time_point<Clock,Duration2> &)
+	bool operator!=(const time_point<Clock,Duration1> &,const time_point<Clock,Duration2> &)
+	bool operator==(const time_point<Clock,Duration1> &,const time_point<Clock,Duration2> &)
+	common_type<Duration1,Duration2>::type operator-(const time_point<Clock,Duration1> &,const time_point<Clock,Duration2> &)
+	time_point<Clock,typename common_type<duration<Rep1,Period1>,Duration2>::type> operator+(const duration<Rep1,Period1> &,const time_point<Clock,Duration2> &)
+	ToDuration duration_cast(const duration<Rep,Period> &)
+	bool constexpr operator>=(const duration<Rep1,Period1> &,const duration<Rep2,Period2> &)
+	bool constexpr operator>(const duration<Rep1,Period1> &,const duration<Rep2,Period2> &)
+	bool constexpr operator<=(const duration<Rep1,Period1> &,const duration<Rep2,Period2> &)
+	bool constexpr operator<(const duration<Rep1,Period1> &,const duration<Rep2,Period2> &)
+	bool constexpr operator!=(const duration<Rep1,Period1> &,const duration<Rep2,Period2> &)
+	bool constexpr operator==(const duration<Rep1,Period1> &,const duration<Rep2,Period2> &)
+	duration<typename common_type<Rep1,Rep2>::type,Period> operator%(const duration<Rep1,Period> &,const Rep2 &)
+	common_type<Rep1,Rep2>::type operator/(const duration<Rep1,Period1> &,const duration<Rep2,Period2> &)
+	duration<typename common_type<Rep1,Rep2>::type,Period> operator/(const duration<Rep1,Period> &,const Rep2 &)
+	duration<typename common_type<Rep1,Rep2>::type,Period> operator*(const Rep1 &,const duration<Rep2,Period> &)
+	duration<typename common_type<Rep1,Rep2>::type,Period> operator*(const duration<Rep1,Period> &,const Rep2 &)
+	seconds
+	milliseconds
+	microseconds
+	nanoseconds
+<cfenv>
+	int feupdateenv(const fenv_t *)
+	int fesetenv(const fenv_t *)
+	int feholdexcept(fenv_t *)
+	int fegetenv(fenv_t *)
+	int fesetround(int)
+	int fegetround(void)
+	int fetestexcept(int)
+	int fesetexceptflag(const fexcept_t *,int)
+	int feraiseexcept(int)
+	int fegetexceptflag(fexcept_t *,int)
+	int feclearexcept(int)
+	fexcept_t
+	fenv_t
+<ccomplex>
+<atomic>
+	atomic_flag
+	ATOMIC_FLAG_INIT
+	ATOMIC_VAR_INIT(value)
+	atomic_uintmax_t
+	atomic_intmax_t
+	atomic_ptrdiff_t
+	atomic_size_t
+	atomic_uintptr_t
+	atomic_intptr_t
+	atomic_uint_fast64_t
+	atomic_int_fast64_t
+	atomic_uint_fast32_t
+	atomic_int_fast32_t
+	atomic_uint_fast16_t
+	atomic_int_fast16_t
+	atomic_uint_fast8_t
+	atomic_int_fast8_t
+	atomic_uint_least64_t
+	atomic_int_least64_t
+	atomic_uint_least32_t
+	atomic_int_least32_t
+	atomic_uint_least16_t
+	atomic_int_least16_t
+	atomic_uint_least8_t
+	atomic_int_least8_t
+	atomic_wchar_t
+	atomic_char32_t
+	atomic_char16_t
+	atomic_ullong
+	atomic_llong
+	atomic_ulong
+	atomic_long
+	atomic_uint
+	atomic_int
+	atomic_ushort
+	atomic_short
+	atomic_uchar
+	atomic_schar
+	atomic_char
+	atomic_bool
+	ATOMIC_POINTER_LOCK_FREE
+	ATOMIC_LLONG_LOCK_FREE
+	ATOMIC_LONG_LOCK_FREE
+	ATOMIC_INT_LOCK_FREE
+	ATOMIC_SHORT_LOCK_FREE
+	ATOMIC_WCHAR_T_LOCK_FREE
+	ATOMIC_CHAR32_T_LOCK_FREE
+	ATOMIC_CHAR16_T_LOCK_FREE
+	ATOMIC_CHAR_LOCK_FREE
+	ATOMIC_BOOL_LOCK_FREE
+	memory_order
+	memory_order_seq_cst
+	memory_order_acq_rel
+	memory_order_release
+	memory_order_acquire
+	memory_order_consume
+	memory_order_relaxed
+	class atomic_flag
+		atomic_flag & operator
+	class atomic<T*>
+		T * operator
+		atomic & operator
+	class atomic<>
+		atomic & operator
+		volatile noexcept
+		const NULL noexcept
+		const volatile noexcept
+	class atomic
+		T operator
+		atomic & operator= (const atomic &)
