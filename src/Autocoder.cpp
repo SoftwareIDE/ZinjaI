@@ -68,6 +68,10 @@ void Autocoder::SetDefaults() {
 	{ auto_code a; a.code="for(int i=0;i<N;i++) { #here# }"; a.args.Add("N"); list["fori"]=a; }
 	{ auto_code a; a.code="for(int j=0;j<N;j++) { #here# }"; a.args.Add("N"); list["forj"]=a; }
 	{ auto_code a; a.code="for(int k=0;k<N;k++) { #here# }"; a.args.Add("N"); list["fork"]=a; }
+	{ auto_code a; a.code="for(unsigned int i=0;i<N;i++) { #here# }"; a.args.Add("i"); a.args.Add("N"); list["foru2"]=a; }
+	{ auto_code a; a.code="for(unsigned int i=0;i<N;i++) { #here# }"; a.args.Add("N"); list["forui"]=a; }
+	{ auto_code a; a.code="for(unsigned int j=0;j<N;j++) { #here# }"; a.args.Add("N"); list["foruj"]=a; }
+	{ auto_code a; a.code="for(unsigned int k=0;k<N;k++) { #here# }"; a.args.Add("N"); list["foruk"]=a; }
 	{ auto_code a; a.code="while(true) {\n#here#\n}"; list["whilet"]=a; }
 	{ auto_code a; a.code="if(cond) {\n\t#here#\n} else {\n\t\n}"; a.args.Add("cond"); list["ifel"]=a; }
 	{ auto_code a; a.code="cout<<x<<endl;"; a.args.Add("x"); list["cout"]=a; }
