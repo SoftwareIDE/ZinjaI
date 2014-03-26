@@ -1,6 +1,5 @@
 &nbsp;&nbsp;&nbsp; Si es la primera vez que utiliza este entorno puede presionar la tecla F1 para acceder a la ayuda y los tutoriales.
-&nbsp;&nbsp;&nbsp; 
-Esta versión  incluye mejoras en el sistema de autocompletado, la posibilidad de integrar una referencia completa sobre C/C++ (disponible como complemento), una versión actualizada de MinGW en el instalador para Windows, varias mejoras en la integración con wxWidgets, y muchos otros cambios menores. Ver la <A href="help:ChangeLog.html">lista completa de cambios</A>.
+&nbsp;&nbsp;&nbsp; Esta versión  incluye mejoras en el sistema de autocompletado, la posibilidad de integrar una referencia completa sobre C/C++ (disponible como complemento), una versión actualizada de MinGW en el instalador para Windows, varias mejoras en la integración con wxWidgets, y muchos otros cambios menores. Ver la <A href="help:ChangeLog.html">lista completa de cambios</A>.
 &nbsp;&nbsp;&nbsp; Estas sugerencias suelen ser molestas para muchos usuarios! <BR> Puedes desactivarlas haciendo click en el checkbox "<I>Mostrar sugerencias al inicio</I>" de esta misma ventana.
 
 &nbsp;&nbsp;&nbsp; Puedes cambiar el tamaño del código rápidamente manteniendo presionada la tecla Control y girando la rueda del mouse, presionando la tecla <I>Control</I> y las teclas <I>+</I> o <I>-</I> del teclado numérico.
