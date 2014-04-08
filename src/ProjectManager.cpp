@@ -46,6 +46,18 @@ wxString doxygen_configuration::get_tag_index() {
 	else return _T("");
 }
 
+
+static void fix_path_char(wxChar file_path_char, wxString &value) {
+#if defined(__WIN32__)
+	#define real_path_char '\\'
+#else
+	#define real_path_char '/'
+#endif
+	if (real_path_char!=file_path_char)
+		for (unsigned int i=0;i<value.Len();i++)
+			if (value[i]==file_path_char)
+				value[i]=real_path_char;
+}
 	
 // abrir un proyecto existente
 ProjectManager::ProjectManager(wxFileName name) {
@@ -105,10 +117,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 	fil.Open();
 #if defined(__WIN32__)
 	wxChar file_path_char='\\';
-	wxChar real_path_char='\\';
 #else
 	wxChar file_path_char='/';
-	wxChar real_path_char='/';
 #endif
 	wxString section, key, value;
 	project_file_item *last_file = NULL;
@@ -246,10 +256,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 
 			} else if ( section==_T("source") || section==_T("header") || section==_T("other") ) {
 				if (key==_T("path")) {
-					if (real_path_char!=file_path_char)
-						for (unsigned int i=0;i<value.Len();i++)
-							if (value[i]==file_path_char)
-								value[i]=real_path_char;
+					fix_path_char(file_path_char,value);
 					if (section==_T("source"))
 						last_file = AddFile(FT_SOURCE,value,false);
 					else if (section==_T("header"))
@@ -400,8 +407,12 @@ ProjectManager::ProjectManager(wxFileName name) {
 		if (active_configuration==NULL) // si no tenia seleccionada ninguna, seleccionar la primera
 			active_configuration = configurations[0];
 		
-		for (int i=0;i<configurations_count;i++)
+		for (int i=0;i<configurations_count;i++) {
 			configurations[i]->old_macros=configurations[i]->macros;
+//			fix_path_char(configurations[i]->output_file);
+//			fix_path_char(configurations[i]->temp_folder);
+//			fix_path_char(configurations[i]->working_folder);
+		}
 #ifdef __WIN32__
 		wxString cur1="win",cur2="w32";
 #else
@@ -469,10 +480,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	
 	// configurar interface de la ventana principal para modo proyecto
 	if (current_source!=_T("")) {
-		if (real_path_char!=file_path_char)
-			for (unsigned int i=0;i<current_source.Len();i++)
-				if (current_source[i]==file_path_char)
-					current_source[i]=real_path_char;
+		fix_path_char(file_path_char,current_source);
 		main_window->OpenFile(DIR_PLUS_FILE(path,current_source),false);
 	}
 	

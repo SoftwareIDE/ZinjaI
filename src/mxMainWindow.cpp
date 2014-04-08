@@ -3858,8 +3858,10 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 			if (header.Len()) {
 				if (utils->GetFileType(header)==FT_SOURCE)
 					mxMessageDialog(main_window,key+LANG(MAINW_INSERT_HEADIR_CPP," esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
-				else
+				else {
+					header.Replace("\\","/");
 					source->AddInclude(header);
+				}
 			} else if (key==_T("Clippo"))
 				new mxSplashScreen(clpeg,GetPosition().x+GetSize().x-215,GetPosition().y+GetSize().y-230);
 			else

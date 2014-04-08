@@ -2351,6 +2351,8 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 				} else if (GetCharAt(p)=='>') {
 					p-=2; II_BACK(p,II_IS_NOTHING_4(p));
 					scope=FindTypeOf(p,dims); dims--;
+				} else {
+					scope = FindScope(p);
 				}
 				wxString type=code_helper->GetCalltip(scope,func_name,true,true);
 				if (!type.Len()) { // sera sobrecarga del operator() ?
