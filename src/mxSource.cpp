@@ -281,7 +281,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	SetBufferedDraw(false); 
 #endif
 //	SetTwoPhaseDraw (false);
-	SetMouseDwellTime(1500); // mis tooltips bizarros (con showbaloon = calltip)
+	SetMouseDwellTime(1000); // mis tooltips bizarros (con showbaloon = calltip)
 	
 	if (debug->debugging && !config->Debug.allow_edition) SetReadOnlyMode(ROM_ADD_DEBUG);
 
