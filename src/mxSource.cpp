@@ -2413,7 +2413,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			s=p;
 			wxString key=GetTextRange(p,WordEndPosition(p,true));
 			wxString ans=FindTypeOf(key,s);
-			if (dims<0 && s==0) {
+			if (ans.Len() && dims<0 && s==0) {
 				wxString type=code_helper->GetCalltip(ans,"operator[]",true,true);				
 				if (type.Len()) { 
 					while(type.Last()=='*') { dims++; type.RemoveLast(); }

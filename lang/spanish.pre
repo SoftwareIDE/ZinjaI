@@ -262,6 +262,8 @@ PROJMNGR_RUNNING
 Ejecutando
 PROJMNGR_LINKING
 Enlazando \"
+PROJMNGR_STRIPING
+Extrayendo información de depuración de \"<{1}>\" - paso <{2}> de 3...
 PROJMNGR_RUNNING_NO_EXE
 Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas.
 PROJMNGR_REGENERATING_WXFB
@@ -2398,10 +2400,6 @@ MAINW_FILE_NOT_EXISTS
 El archivo no existe.
 MAINW_ASK_SAVE_PREVIOUS_PROJECT
 Desea guardar los cambios del proyecto anterior antes de cerrarlo?
-MAINW_CLOSE_ALL_BEFORE_PROJECT_QUESTION
-Desea cerrar todos los archivos que no pertenecen al proyecto?
-MAINW_CLOSE_ALL_BEFORE_PROJECT_CHECK
-Siempre cerrar los demas archivos al abrir un proyecto
 MAINW_SAVE_CHANGES_QUESTION
 Hay cambios sin guardar. Desea guardarlos?
 MAINW_ADD_TO_PROJECT_QUESTION
@@ -3084,8 +3082,14 @@ PROJECTCONFIG_LINKING_EXTRA_PATHS
 Directorios adicionales para buscar bibliotecas
 PROJECTCONFIG_LINKING_EXTRA_LIBS
 Bibliotecas a enlazar
-PROJECTCONFIG_LINKING_STRIP
-\"Stripear\" el ejecutable
+PROJECTCONFIG_DEBUG_INFO_KEEP
+Mantener en el binario
+PROJECTCONFIG_DEBUG_INFO_COPY
+Extraer a un archivo separado
+PROJECTCONFIG_DEBUG_INFO_STRIP
+Eliminar del binario
+PROJECTCONFIG_DEBUG_INFO
+Información para depuración
 PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM
 Es un programa de consola
 PROJECTCONFIG_LINKING_FORCE_RELINK

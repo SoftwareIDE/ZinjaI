@@ -7,6 +7,10 @@
 <I>Nota 2: Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
 </UL><BR><B>Release 201404XX</B><BR><UL>
+	<LI>New: Se puede configurar un proyecto para que al enlazar extraiga la información de depuración el ejecutable (o de las bibliotecas generadas) y la guarde en un archivo separado.</LI>
+	<LI>Imp: Se redujo el tiempo de espera para los tooltips en el código (para ver el tipo o el valor de una variable) a 1 segundo.</LI>
+	<LI>Imp: Ya no se pregunta si se quieren cerrar los fuentes abiertos actualmente antes de abrir otro proyecto (se cierran siempre, a menos que se esté construyendo un proyecto a partir de esos mismos fuentes).</LI>
+	<LI>Fix: Se corrigió un problema por el cual ZinjaI podía cerrarse al intentar abrir/crear un proyecto sin cerrar los fuentes abiertos por un proyecto previo.</LI>
 	<LI>Fix: Ya no pregunta si cerrar los archivos abiertos al crear un proyecto con dichos archivos.</LI>
 	<LI>Fix: Se corrigieron bugs importantes en las funcionalidades de autocompletado introducidas en la última versión.</LI>
 	<LI>Fix: Al insertar un #include con Ctrl+H, se reemplaza \ por / en el path.</LI>

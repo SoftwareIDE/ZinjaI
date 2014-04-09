@@ -37,7 +37,7 @@ enum CAR_ERROR_LINE { // information about last error line that may condicion cu
 	CAR_EL_IGNORE
 };
 
-//! Información acerca de una compilación en proceso
+//! Información acerca de una compilación en proceso (puede ser realmente una compilación, o un paso adicional, o hasta una ejecución... es decir, cualquier proceso relacionado a la construcción y/o ejecución)
 struct compile_and_run_struct_single {
 	bool parsing_errors_was_ok; ///< indica si hubo problemas al analizar/reacomodar la salida del compilador
 	bool killed; ///< indica si fue interrumpido adrede, para usar en OnProcessTerminate

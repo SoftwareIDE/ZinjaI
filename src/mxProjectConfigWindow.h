@@ -58,7 +58,7 @@ class mxProjectConfigWindow : public wxDialog {
 	wxTextCtrl *linking_extra_options;
 	wxTextCtrl *linking_libraries_dirs;
 	wxTextCtrl *linking_libraries;
-	wxCheckBox *linking_strip_executable;
+	wxComboBox *linking_strip_executable;
 	wxCheckBox *linking_force_relink;
 	wxCheckBox *linking_console_program;
 	

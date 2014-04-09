@@ -57,6 +57,12 @@ enum ExecMethodEnum {
 	EMETHOD_SCRIPT=2 ///< zinjai launches a script only, the script should launch the executable
 };
 
+enum DebugSymbolsAction {
+	DBSACTION_KEEP=0,
+	DBSACTION_COPY=1,
+	DBSACTION_STRIP=2
+};
+
 /// para indicar si se debe esperar una tecla antes de cerrar la consola una vez finalizada la ejecución de un proyecto
 enum wait_for_key_t { 
 	WKEY_NEVER=0, 
@@ -244,7 +250,7 @@ struct project_configuration {
 	wxString working_folder; ///< directorio de trabajo para la ejecución
 	bool always_ask_args; ///< mostrar el dialogo que pide los argumentos antes de ejecutar
 	wxString args; ///< argumentos para la ejecucion
-	int exec_method; ///< como se debe ejecutar (0=zinjai ejecuta, 1=primero script luego como 0, 2=todo responsabilidad del escript)
+	int exec_method; ///< como se debe ejecutar (las opciones estan en ExecMethodEnum)
 	wxString exec_script; ///< script para exec_method>0
 	int wait_for_key; ///< esperar una tecla antes de cerrar la consola luego de la ejecución (0=nunca, 1=solo en caso de error, 2=siempre)
 	wxString env_vars; ///< lista con valores para asignar o reemplazar en las variables de entorno antes de ejecutar
@@ -268,7 +274,7 @@ struct project_configuration {
 	wxString linking_extra; ///< parametros adicionales para el enlazador (se llama a travez de gcc/g++, no directo)
 	wxString libraries_dirs; ///< rutas adicionales para buscar librerias (para pasar con -L)
 	wxString libraries; ///< librearias para enlazar (para pasar con -l)
-	bool strip_executable; ///< stripear el ejecutable (-s)
+	int strip_executable; ///< que hacer durante el enlazado con la info de depuracion (las opciones estan en el enum DebugSymbolsAction)
 	bool console_program; ///< marcar como programa de consola (sino, no usar el runner y compilar con -mwindows)
 	compile_extra_step *extra_steps; ///< puntero al primer item de la lista de pasos adicionales para la compilacion (sin primer nodo ficticio), NULL si no hay pasos extra
 	project_library *libs_to_build; ///< bibliotecas a construir, lista enlazada sin primer nodo ficticio
@@ -298,7 +304,7 @@ struct project_configuration {
 		linking_extra="";
 		libraries_dirs="";
 		libraries="";
-		strip_executable=false;
+		strip_executable=DBSACTION_KEEP;
 		console_program=true;
 		dont_generate_exe=false;
 		extra_steps=NULL;
@@ -355,7 +361,16 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 	}
 };
 
-enum ces_type{CNS_VOID,CNS_SOURCE,CNS_BARRIER,CNS_EXTRA,CNS_LINK,CNS_ICON,CNS_EXTERN};
+enum ces_type{
+	CNS_VOID, ///< primer paso, ficticio, solo para inicializar la lista de pasos
+	CNS_SOURCE, ///< compilación un fuente del proyecto
+	CNS_BARRIER, ///< paso ficticio que no ejecuta nada, pero está para separar grupos de pasos paralelizables
+	CNS_EXTRA, ///< para pasos adicionales que configure el usuario en la pestaña "Secuencia"
+	CNS_LINK, ///< enlazado de una biblioteca o del ejecutable
+	CNS_ICON, ///< compilación del archivo de recursos que arma zinjai en windows para el manifest y/o el ícono
+	CNS_DEBUGSYM, ///< paso que extrae los simbolos de depuracion de un ejecutable o de una biblioteca a un archivo separado
+	CNS_EXTERN ///< para extern toolchains (llamar a make por ejemplo)
+};
 
 /** 
 * @brief Estructura que representa un paso genérico del proceso de compilación.
@@ -385,6 +400,16 @@ struct linking_info {
 	bool *flag_relink;
 	linking_info(wxString cmd, wxString output, wxString objects, wxString args, bool *flag) :
 		command(cmd), output_file(output), objects_list(objects),extra_args(args),flag_relink(flag) {};
+};
+
+struct stripping_info {
+	wxString fullpath;
+	wxString filename;
+	int current_step;
+	stripping_info(wxString _fullpath, wxString _filename="", int _curren_step=0):
+		fullpath(_fullpath),filename(_filename),current_step(_curren_step) {
+			if (filename.IsEmpty()) filename=wxFileName(fullpath).GetFullName();
+		};
 };
 
 
@@ -488,8 +513,10 @@ public:
 	long int CompileFile(compile_and_run_struct_single *compile_and_run, project_file_item *item);
 	/// Ejecuta un paso compilación adicional, se invoca a través de CompileNext, no directamente
 	long int CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step);
-	/// Ejecuta el paso de enlazado en la construcción de un proceso, se invoca a través de CompileNext, no directamente
+	/// Ejecuta el paso de enlazado del ejecutable o de una biblioteca que genera un proyecto, se invoca a través de CompileNext, no directamente
 	long int Link(compile_and_run_struct_single *compile_and_run, linking_info *info);
+	/// Ejecuta el paso de extracción de los simbolos de depuración a un archivo separado, se invoca a través de CompileNext, no directamente
+	long int Strip(compile_and_run_struct_single *compile_and_run, stripping_info *info);
 	/// Ejecuta el comando de compilación para un toolchan externo (como make) (build=true compila, build=false limpia)
 	long int CompileWithExternToolchain(compile_and_run_struct_single *compile_and_run, bool build=true);
 

@@ -250,7 +250,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 				else CFG_GENERIC_READ_DN("linking_extra",active_configuration->linking_extra);
 				else CFG_GENERIC_READ_DN("libraries_dirs",active_configuration->libraries_dirs);
 				else CFG_GENERIC_READ_DN("libraries",active_configuration->libraries);
-				else CFG_BOOL_READ_DN("strip_executable",active_configuration->strip_executable);
+				else CFG_INT_READ_DN("strip_executable",active_configuration->strip_executable);
 				else CFG_BOOL_READ_DN("console_program",active_configuration->console_program);
 				else CFG_BOOL_READ_DN("dont_generate_exe",active_configuration->dont_generate_exe);
 
@@ -391,13 +391,13 @@ ProjectManager::ProjectManager(wxFileName name) {
 		configurations[0] = new project_configuration(name.GetName(),_T("Debug"));
 		configurations[0]->debug_level=2;
 		configurations[0]->optimization_level=5;
-		configurations[0]->strip_executable=false;
+		configurations[0]->strip_executable=DBSACTION_KEEP;
 		configurations[0]->macros=configurations[0]->old_macros="_DEBUG";
 		// crear configuracion Release
 		configurations[1] = new project_configuration(name.GetName(),_T("Release"));
 		configurations[1]->debug_level=0;
 		configurations[1]->optimization_level=2;
-		configurations[1]->strip_executable=true;
+		configurations[1]->strip_executable=DBSACTION_STRIP;
 		// Debug es la predeterminada
 		active_configuration = configurations[0];
 		configurations_count = 2;
@@ -488,6 +488,12 @@ ProjectManager::ProjectManager(wxFileName name) {
 	main_window->notebook_sources->Fit();
 	
 	if (autocodes_file.Len()) autocoder->LoadFromFile(DIR_PLUS_FILE(path,autocodes_file));
+	
+	if (version_saved<20140410) { // arreglar cambios de significado strip_executable (paso de bool a int)
+		for (int i=0;i<configurations_count;i++) {
+			configurations[i]->strip_executable = configurations[i]->strip_executable!=0?DBSACTION_STRIP:DBSACTION_KEEP;
+		}
+	}
 	
 	if (version_saved<20130801) { // arreglar cambios de significado ("<default>" en el estandar c/cpp)
 		for (int i=0;i<configurations_count;i++) {
@@ -763,7 +769,7 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("linking_extra",configurations[i]->linking_extra);
 		CFG_GENERIC_WRITE_DN("libraries_dirs",configurations[i]->libraries_dirs);
 		CFG_GENERIC_WRITE_DN("libraries",configurations[i]->libraries);
-		CFG_BOOL_WRITE_DN("strip_executable",configurations[i]->strip_executable);
+		CFG_GENERIC_WRITE_DN("strip_executable",configurations[i]->strip_executable);
 		CFG_BOOL_WRITE_DN("console_program",configurations[i]->console_program);
 		CFG_BOOL_WRITE_DN("dont_generate_exe",configurations[i]->dont_generate_exe);
 		project_library *lib_to_build = configurations[i]->libs_to_build;
@@ -1240,18 +1246,35 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 			if (lib->path.Len() && !wxFileName::DirExists(DIR_PLUS_FILE(path,lib->path)))
 				wxFileName::Mkdir(DIR_PLUS_FILE(path,lib->path),0777,wxPATH_MKDIR_FULL);
 			if (lib->need_relink || !wxFileName(DIR_PLUS_FILE(path,lib->filename)).FileExists()) {
-				AnalizeConfig(path,true,config->mingw_real_path,false);
+				AnalizeConfig(path,true,config->mingw_real_path,false); // esto no fuerza el "reanalizado", pero se puede llegar hasta aca sin haberlo hecho antes??
 				if (lib->objects_list.Len()) {
 					step = step->next = new compile_step(CNS_LINK,new linking_info(
 						lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker,
 						DIR_PLUS_FILE(path,lib->filename),lib->objects_list,lib->parsed_extra,&(lib->need_relink)));
 					steps_count++;
+					lib->need_relink=true; // para que sepa el loop que sigue (el del strip_executable)
 					relink_exe=true;
 				} else {
+					lib->need_relink=false; // para que sepa el loop que sigue (el del strip_executable)
 					warnings.Add(LANG1(PROJMNGR_LIB_WITHOUT_SOURCES,"La biblioteca \"<{1}>\" no tiene ningun fuente asociado.",lib->libname));
 				}
 			}
 			lib = lib->next;
+		}
+		
+		// si hay que mover la info de depuracion afuera de los binarios, agregar esos pasos
+		if (active_configuration->strip_executable==DBSACTION_COPY) {
+			step = step->next = new compile_step(CNS_BARRIER,NULL);
+			for(int k=0;k<3;k++) {
+				lib = active_configuration->libs_to_build;
+				while (lib) {
+					if (lib->need_relink) {
+						step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(DIR_PLUS_FILE(path,lib->filename),"",k));
+						if (k==0) steps_count++;
+					}
+					lib = lib->next;
+				}
+			}
 		}
 		
 		// agregar los items extra posteriores al enlazado de blibliotecas
@@ -1349,6 +1372,12 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 					new linking_info(current_toolchain.linker+_T(" -o"),
 					executable_name,objects_list,linking_options,&force_relink));
 				steps_count++;
+				if (active_configuration->strip_executable==DBSACTION_COPY) {
+					step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",0));
+					step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",1));
+					step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",2));
+					steps_count++;
+				}
 			}
 		} else if (relink_exe) {
 			AnalizeConfig(path,true,config->mingw_real_path,false);
@@ -1480,7 +1509,8 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 	compile_and_run->pid=0;
 	
 	main_window->SetStatusProgress( int(actual_progress+=progress_step) );
-	main_window->SetStatusText(wxString()<<LANG(PROJMNGR_COMPILING,"Compilando")<<"... ( "<<LANG2(PROJMNGR_STEP_FROM,"paso <{1}> de <{2}>",wxString()<<(++current_step),wxString()<<steps_count)<<" - "<<int(actual_progress)<<"% )");
+	if (first_compile_step && (first_compile_step->type!=CNS_DEBUGSYM || ((stripping_info*)first_compile_step->what)->current_step==0)) ++current_step;
+	main_window->SetStatusText(wxString()<<LANG(PROJMNGR_COMPILING,"Compilando")<<"... ( "<<LANG2(PROJMNGR_STEP_FROM,"paso <{1}> de <{2}>",wxString()<<(current_step),wxString()<<steps_count)<<" - "<<int(actual_progress)<<"% )");
 	
 	if (first_compile_step) {
 		compile_step *step = first_compile_step;
@@ -1520,6 +1550,12 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 			compile_and_run->pid = Link(compile_and_run,(linking_info*)step->what);
 			delete ((linking_info*)step->what);
 			break;
+		case CNS_DEBUGSYM:
+			if (!compile_was_ok) return 0;
+			caption=LANG2(PROJMNGR_STRIPING,"Extrayendo información de depuración de \"<{1}>\" - paso <{2}> de 3...",((stripping_info*)step->what)->filename,(wxString()<<((stripping_info*)step->what)->current_step+1));
+			compile_and_run->pid = Strip(compile_and_run,(stripping_info*)step->what);
+			delete ((stripping_info*)step->what);
+			break;
 		default:
 			;
 		}
@@ -1542,6 +1578,26 @@ long int ProjectManager::Link(compile_and_run_struct_single *compile_and_run, li
 	compile_and_run->full_output.Add(_T(""));
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
 	compile_and_run->full_output.Add(_T(""));
+	return utils->Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
+}
+
+/**
+* @param paso sirve para saber que paso del proceso de extración se tiene que ejecutar, porque si bien zinjai lo presenta como una sola cosa, en realidad lleva 3 pasos (extraer del ejecutable, stripearle, y añadir la referencia)
+**/
+long int ProjectManager::Strip(compile_and_run_struct_single *compile_and_run, stripping_info *info) {
+	wxString command;
+	if (info->current_step==0) command<<"objcopy --only-keep-debug "<<utils->Quotize(info->fullpath)<<" "<<utils->Quotize(info->fullpath+".dbg");
+	else if (info->current_step==1) command<<"strip "<<utils->Quotize(info->fullpath);
+	else if (info->current_step==2) command<<"objcopy --add-gnu-debuglink="<<utils->Quotize(info->fullpath+".dbg")<<" "<<utils->Quotize(info->fullpath);
+	compile_and_run->compiling=compile_and_run->linking=false;
+	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
+	compile_and_run->process->Redirect();
+	compile_and_run->output_type=MXC_EXTRA;
+	compile_and_run->step_label=wxString("Extrayendo símbolos de depuración de ")<<info->filename<<" - paso "<<info->current_step+1<<" de 3";
+	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add(wxString(_T("> "))+command);
+	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	return utils->Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
 }
 
@@ -1679,7 +1735,7 @@ static wxString get_percent(int cur, int tot) {
 }
 
 void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype, bool cmake_style) {
-	
+#warning Falta considerar el nuevo significado de strip_executable
 	int steps_total=0, steps_extras, steps_objs, steps_libs, steps_current;
 	if (cmake_style) { // calcular cuantos pasos hay en cada etapa para saber que porcentajes de progreso mostrar en cada comando
 		steps_objs = files_sources.GetSize();
@@ -2020,7 +2076,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		linking_options<<_T("-mwindows ");
 #endif
 	// strip
-	if (active_configuration->strip_executable)
+	if (active_configuration->strip_executable==DBSACTION_STRIP)
 		linking_options<<_T("-s ");
 	// directorios para bibliotecas
 	linking_options<<utils->Split(active_configuration->libraries_dirs,_T("-L"));
@@ -2592,6 +2648,7 @@ compile_extra_step *ProjectManager::GetExtraStep(project_configuration *conf, wx
 
 long int ProjectManager::CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step) {
 	wxString command = GetCustomStepCommand(step);
+	compile_and_run->compiling=compile_and_run->linking=false;
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	compile_and_run->output_type=MXC_EXTRA;
@@ -2715,13 +2772,21 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 }
 
 int ProjectManager::GetRequiredVersion() {
-	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,have_env_vars=false,have_breakpoint_annotation=false,env_vars_autoref=false,exe_use_temp=false;
+	
+	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,
+		 have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,
+		 have_env_vars=false,have_breakpoint_annotation=false,env_vars_autoref=false,exe_use_temp=false,
+		 copy_debug_symbols=false;
+	
+	// breakpoint options
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
 	while (bpi.IsValid()) {
 		if (bpi->annotation.Len()) have_breakpoint_annotation=true;
 		bpi.Next();
 	}
+	// compiling and running options
 	for (int i=0;i<configurations_count;i++) {
+		if (configurations[i]->strip_executable==DBSACTION_COPY) copy_debug_symbols=true;
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
 		if (configurations[i]->output_file.Contains("${TEMP_DIR}")) exe_use_temp=true;
 		if (configurations[i]->optimization_level==5) use_og=true;
@@ -2752,9 +2817,12 @@ int ProjectManager::GetRequiredVersion() {
 			step = step->next;
 		}
 	}
+	// project's custom tools
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
+	
 	version_required=0;
-	if (env_vars_autoref || exe_use_temp) version_required=20140318;
+	if (copy_debug_symbols) version_required=20140410;
+	else if (env_vars_autoref || exe_use_temp) version_required=20140318;
 	else if (have_breakpoint_annotation) version_required=20140213;
 	else if (wxfb && wxfb->activate_integration) version_required=20131219;
 	else if (have_env_vars) version_required=20131122;

@@ -640,7 +640,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 	compile_and_run->pid = utils->Execute(source->GetPath(false),command,wxEXEC_ASYNC,compile_and_run->process);
 	main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
 	compile_and_run->full_output.Add(_T(""));
-	compile_and_run->full_output.Add(wxString(_T("> "))+command);
+	if (!project) compile_and_run->full_output.Add(wxString(_T("> "))+command); // lo hace el proyecto si hay
 	compile_and_run->full_output.Add(_T(""));
 }
 

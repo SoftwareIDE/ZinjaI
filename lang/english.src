@@ -260,6 +260,8 @@ PROJMNGR_RUNNING
 Running
 PROJMNGR_LINKING
 Linking "
+PROJMNGR_STRIPING
+Moving debbuging information out of \"<{1}>\" - step <{2}> from 3...
 PROJMNGR_RUNNING_NO_EXE
 This project's settings defines that no executable file should\nbe built (only libraries). There's nothing to run.
 PROJMNGR_REGENERATING_WXFB
@@ -2396,10 +2398,6 @@ MAINW_FILE_NOT_EXISTS
 File does not exist.
 MAINW_ASK_SAVE_PREVIOUS_PROJECT
 Do you want to save previous project's changes beforo closing?
-MAINW_CLOSE_ALL_BEFORE_PROJECT_QUESTION
-Do you want to close all files before opening the project?
-MAINW_CLOSE_ALL_BEFORE_PROJECT_CHECK
-Always close all files before openning a project.
 MAINW_SAVE_CHANGES_QUESTION
 There are unsaved changes. Do you want to save it now?
 MAINW_ADD_TO_PROJECT_QUESTION
@@ -3082,8 +3080,14 @@ PROJECTCONFIG_LINKING_EXTRA_PATHS
 Additional paths for searching for libraries
 PROJECTCONFIG_LINKING_EXTRA_LIBS
 Libraries to link
-PROJECTCONFIG_LINKING_STRIP
-Strip executable
+PROJECTCONFIG_DEBUG_INFO_KEEP
+Keep inside the executable/library file
+PROJECTCONFIG_DEBUG_INFO_COPY
+Move to a separate file
+PROJECTCONFIG_DEBUG_INFO_STRIP
+Delete from the binary/library file
+PROJECTCONFIG_DEBUG_INFO
+Debugging information
 PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM
 It is a console program
 PROJECTCONFIG_LINKING_FORCE_RELINK
