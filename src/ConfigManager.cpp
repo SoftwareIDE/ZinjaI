@@ -218,7 +218,7 @@ bool ConfigManager::Load() {
 				else CFG_INT_READ_DN("zinjai_server_port",Init.zinjai_server_port);
 //				else CFG_BOOL_READ_DN("load_sharing_server",Init.load_sharing_server);
 				else CFG_BOOL_READ_DN("save_project",Init.save_project);
-				else CFG_BOOL_READ_DN("close_files_for_project",Init.close_files_for_project);
+//				else CFG_BOOL_READ_DN("close_files_for_project",Init.close_files_for_project);
 				else CFG_BOOL_READ_DN("always_add_extension",Init.always_add_extension);
 				else CFG_BOOL_READ_DN("autohide_menus_fs",Init.autohide_menus_fs);
 				else CFG_BOOL_READ_DN("autohide_panels_fs",Init.autohide_panels_fs);
@@ -593,7 +593,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("lang_es",Init.lang_es);
 	CFG_GENERIC_WRITE_DN("zinjai_server_port",Init.zinjai_server_port);
 	CFG_BOOL_WRITE_DN("save_project",Init.save_project);
-	CFG_BOOL_WRITE_DN("close_files_for_project",Init.close_files_for_project);
+//	CFG_BOOL_WRITE_DN("close_files_for_project",Init.close_files_for_project);
 	CFG_BOOL_WRITE_DN("always_add_extension",Init.always_add_extension);
 	CFG_BOOL_WRITE_DN("autohide_toolbars_fs",Init.autohide_toolbars_fs);
 	CFG_BOOL_WRITE_DN("autohide_panels_fs",Init.autohide_panels_fs);
@@ -1003,7 +1003,7 @@ void ConfigManager::LoadDefaults(){
 	Init.zinjai_server_port=46527;
 //	Init.load_sharing_server=false;
 	Init.save_project=false;
-	Init.close_files_for_project=false;
+//	Init.close_files_for_project=false;
 	Init.always_add_extension=false;
 	Init.autohide_toolbars_fs=true;
 	Init.autohide_menus_fs=false;

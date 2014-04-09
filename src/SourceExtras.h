@@ -16,6 +16,7 @@ private:
 public:
 	SourceExtras();
 	SourceExtras(mxSource *src); ///< used to transfer data from a project_file_item's SourceExtras to a mxSource's one (when dettaching an opened file from the project)
+	SourceExtras(mxSource *src, bool use_a_new_empty_extra_and_reset_source_markers); ///< used to create a new SourceExtras for a file that remains open after closing a project (so the file will loose the project owned data, and now needs to own a new one)
 	~SourceExtras();
 	void AddHighlightedLine(int l);
 	void AddBreakpoint(BreakPointInfo *bpi);

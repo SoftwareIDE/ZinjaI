@@ -3274,6 +3274,11 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 	return source;
 }
 
+/**
+* - Al abrir un proyecto multiple indica si cerrar o no los archivos que tengamos abiertos de antes (1024 es no, otra cosa es si)
+* - Al abrir archivos sueltos puede contener respuestas a las preguntas de si agregar al proyecto, mover a la carpeta o esas cosas (para
+*   cuando elegimo hacer lo mismo para todos en la primer pregunta), como flags por bits
+**/
 void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 	if (!filename.FileExists()) {
 		if (wxFileName::DirExists(DIR_PLUS_FILE(filename.GetFullPath(),"."))) {
@@ -3287,7 +3292,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 	if (!project) config->Files.last_dir=filename.GetPath();
 	if (filename.GetExt().CmpNoCase(_T(PROJECT_EXT))==0) { // si es un proyecto
 		// cerrar si habia un proyecto anterior
-		if (project) {
+		if (project && filename!=DIR_PLUS_FILE(project->path,project->filename)) { // la segunda condicion es porque puedo estar creando uno nuevo encima del abierto, en ese caso, si guardo el abiero pierdo el que creo el asistente
 			int ret=0;
 			if (config->Init.save_project || (/*project->modified && */mxMD_YES&(ret=mxMessageDialog(main_window,LANG(MAINW_ASK_SAVE_PREVIOUS_PROJECT,"Desea guardar los cambios del proyecto anterior antes de cerrarlo?"),project->GetFileName(),mxMD_YES_NO|mxMD_QUESTION,LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false).ShowModal()))) {
 				if (!config->Init.save_project && ret&mxMD_CHECKED)
@@ -3296,16 +3301,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 			}
 		}
 		// cerrar todos los archivos que no pertenezcan al proyecto
-		if (notebook_sources->GetPageCount()!=0 && (!multiple || (*multiple)!=-5)) {
-			bool do_close = config->Init.close_files_for_project;
-			if (!do_close) {
-				int ans = mxMessageDialog(main_window,LANG(MAINW_CLOSE_ALL_BEFORE_PROJECT_QUESTION,"Desea cerrar todos los archivos que no pertenecen al proyecto?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_QUESTION,LANG(MAINW_CLOSE_ALL_BEFORE_PROJECT_CHECK,"Siempre cerrar los demas archivos al abrir un proyecto"),false).ShowModal();
-					if (ans&mxMD_YES)
-						do_close=true;
-					if (ans&mxMD_CHECKED)
-						config->Init.close_files_for_project = true;
-			}
-			if (do_close) {
+		if ((!multiple || (*multiple)!=1024)) {
 				for (int i=notebook_sources->GetPageCount()-1;i>=0;i--) {
 					mxSource *source = ((mxSource*)(notebook_sources->GetPage(i)));
 					if (source ->GetModify()) {
@@ -3314,13 +3310,12 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 						if (mxMD_CANCEL==res) {
 							status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 							return;
-						} else if (mxMD_YES==res)
+						} else if (mxMD_YES==res) {
 							source->SaveSource();
-						CloseSource(i);//notebook_sources->DeletePage(i);;
-					} else
-						CloseSource(i);//notebook_sources->DeletePage(i);
+						}
+					} 
+					CloseSource(i);//notebook_sources->DeletePage(i);
 				}
-			}
 		}
 		if (project) { // eliminar el proyecto viejo de la memoria
 			delete project;

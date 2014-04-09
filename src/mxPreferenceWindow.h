@@ -66,7 +66,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *init_save_project;
 	wxCheckBox *init_show_explorer_tree;
 	wxCheckBox *init_prefer_explorer_tree;
-	wxCheckBox *init_close_files_for_project;
+//	wxCheckBox *init_close_files_for_project;
 	wxTextCtrl *init_max_jobs;
 	wxTextCtrl *init_history_len;
 	wxCheckBox *init_stop_compiling_on_error;

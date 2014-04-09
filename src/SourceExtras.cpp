@@ -52,6 +52,10 @@ SourceExtras::SourceExtras ():m_breakpoints(&BreakPointInfo::global_list) {
 	m_current_line=m_current_col=0;
 }
 
+SourceExtras::SourceExtras (mxSource *src, bool use_a_new_empty_extra_and_reset_source_markers):m_breakpoints(&BreakPointInfo::global_list) {
+	m_current_line=m_current_col=0;
+}
+
 SourceExtras::SourceExtras (mxSource *src):m_breakpoints(&BreakPointInfo::global_list) {
 	m_breakpoints.StealFrom(&(src->m_extras->m_breakpoints));
 	m_highlighted_lines.StealFrom(&(src->m_extras->m_highlighted_lines));

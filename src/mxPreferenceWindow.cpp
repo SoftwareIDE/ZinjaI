@@ -310,7 +310,7 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 	init_max_jobs = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_GENERAL_MAX_JOBS,"Cantidad de pasos en paralelo al compilar"),wxString()<<config->Init.max_jobs,mxID_MAX_JOBS);
 	init_stop_compiling_on_error = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STOP_COMPILING_ON_ERROR,"Detener la compilación de un proyecto al encontrar el primer error"),config->Init.stop_compiling_on_error);
 	init_save_project = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE,"Guardar siempre el proyeto al salir"),config->Init.save_project);
-	init_close_files_for_project = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING,"Cerrar todos los demas archivos al abrir un proyecto"),config->Init.close_files_for_project);
+//	init_close_files_for_project = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING,"Cerrar todos los demas archivos al abrir un proyecto"),config->Init.close_files_for_project);
 	init_prefer_explorer_tree = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto"),config->Init.prefer_explorer_tree);
 	
 	wxArrayString tc_array; Toolchain::GetNames(tc_array,true); int tc_i=tc_array.Index(config->Files.toolchain);
@@ -537,7 +537,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	if (config->Init.max_jobs<1) config->Init.max_jobs=1;
 	config->Init.autohide_panels_fs = init_autohide_panels_fs->GetValue();
 	config->Init.autohide_toolbars_fs = init_autohide_toolbars_fs->GetValue();
-	config->Init.close_files_for_project = init_close_files_for_project->GetValue();
+//	config->Init.close_files_for_project = init_close_files_for_project->GetValue();
 	config->Init.prefer_explorer_tree = init_prefer_explorer_tree->GetValue();
 	config->Init.show_explorer_tree = init_show_explorer_tree->GetValue();
 	config->Init.wrap_mode = init_wrap_mode->GetSelection();
@@ -1281,7 +1281,7 @@ void mxPreferenceWindow::ResetChanges() {
 	init_new_file->SetSelection(config->Init.new_file);
 	init_history_len->SetValue(wxString()<<config->Init.history_len);
 	init_save_project->SetValue(config->Init.save_project);
-	init_close_files_for_project->SetValue(config->Init.close_files_for_project);
+//	init_close_files_for_project->SetValue(config->Init.close_files_for_project);
 	init_prefer_explorer_tree->SetValue(config->Init.prefer_explorer_tree);
 	init_show_explorer_tree->SetValue(config->Init.show_explorer_tree);
 	init_left_panels->SetValue(config->Init.left_panels);

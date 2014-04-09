@@ -114,7 +114,7 @@ struct cfgInit {
 	int zinjai_server_port;
 	bool lang_es;
 	bool save_project;
-	bool close_files_for_project;
+//	bool close_files_for_project;
 	bool always_add_extension;
 	bool autohide_toolbars_fs;
 	bool autohide_panels_fs;

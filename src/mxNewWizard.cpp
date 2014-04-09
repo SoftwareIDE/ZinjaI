@@ -594,7 +594,7 @@ void mxNewWizard::ProjectCreate() {
 		config->Files.default_project=project_templates[cual];
 	}
 	Close();
-	int multiple=-1;
+	int multiple=project_current_files->GetValue()?1024:0; // 1024 es valor especial para que no cierre los fuentes abiertos, 0 no significa nada en especial
 	main_window->OpenFileFromGui(DIR_PLUS_FILE(full,filename+"."+_T(PROJECT_EXT)),&multiple);
 	if (!project) return; // si por alguna razon no se abre el proyecto (puede el usuario cancelarlo, por alguna pregunta?)
 	project->FixTemplateData(filename);

@@ -559,6 +559,9 @@ ProjectManager::~ProjectManager(){
 	// vaciar las listas
 	GlobalListIterator<project_file_item*> it(&files_all);
 	while (it.IsValid()) {
+		// si el fuente queda abierto al cerrar el proyecto, pasarle la propiedad del SourceExtras
+		mxSource *source = main_window->IsOpen(it->item);
+		if (source) new SourceExtras(source,true);
 		delete *it;
 		it.Next();
 	}
