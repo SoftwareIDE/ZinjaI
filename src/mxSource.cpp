@@ -2053,7 +2053,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 							p--;
 						}
 						p2=p+1;
-						while  ( p>0 &&  ( (c>='a' && c<='z') || (c>='0' && c<='9') || (c>='A' && c<='Z') || c=='_' || II_SHOULD_IGNORE(p) ) ) {
+						while  ( p>0 &&  ( (c>='a' && c<='z') || (c>='0' && c<='9') || (c>='A' && c<='Z') || c=='_' /*|| II_SHOULD_IGNORE(p)*/ ) ) {
 							c=GetCharAt(--p);
 						}
 						p1=p+1;
