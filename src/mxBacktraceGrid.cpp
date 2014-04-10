@@ -293,6 +293,7 @@ void mxBacktraceGrid::OnShowHideCol(wxCommandEvent &evt) {
 			cols_sizes[i]+=cols_sizes[i]/sum*fs;
 			SetColSize(i,int(cols_sizes[i]));
 		}
+	if (cn==BG_COL_ARGS) debug->SetBacktraceShowsArgs(cols_visibles[cn]);
 	Refresh();
 }
 

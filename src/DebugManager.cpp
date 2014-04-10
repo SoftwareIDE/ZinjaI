@@ -38,6 +38,7 @@ using namespace std;
 DebugManager *debug;
 
 DebugManager::DebugManager() {
+	backtrace_shows_args=true;
 	status = DBGST_NULL;
 	pause_breakpoint = NULL;
 	current_handle = -1;
@@ -170,10 +171,10 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	command<<_T(" -quiet -nx -interpreter=mi");
 	if (config->Debug.readnow)
 		command<<_T(" --readnow");
+	if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<_T("\"");
-	else if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
 #if !defined(__WIN32__)
 	if (show_console) {
 		pid=0;
@@ -314,10 +315,10 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 	command<<_T(" -quiet -nx -interpreter=mi");
 	if (config->Debug.readnow)
 		command<<_T(" --readnow");
+	if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<_T("\"");
-	else if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
@@ -392,10 +393,10 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 	command<<_T(" -quiet -nx -interpreter=mi");
 	if (config->Debug.readnow)
 		command<<_T(" --readnow");
+	if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<_T("\"");
-	else if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
 	command<<_T(" -c \"")<<core_file<<_T("\" \"")<<exe<<_T("\"");	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
@@ -734,8 +735,11 @@ wxString DebugManager::InspectExpression(wxString var, bool pretty) {
 //	return ret;
 }
 
-
-bool DebugManager::Backtrace(bool dont_select_if_first) {
+void DebugManager::SetBacktraceShowsArgs(bool show) {
+	backtrace_shows_args=show;
+	Backtrace(false,false);
+}
+bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all) {
 #if defined(_WIN32) || defined(__WIN32__)
 	static wxString sep=_T("\\"),wrong_sep=_T("/");
 #else
@@ -745,7 +749,8 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 		return false;
 	main_window->backtrace_ctrl->BeginBatch();
 	
-	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion V2
+	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion V2 
+	// ya no se usan "direcciones", sino que simplemente se numeran desde el punto de entrada para "arriba"
 	long fdepth=0;
 	if (GetValueFromAns(SendCommand(_T("-stack-info-depth")),_T("depth"),true).ToLong(&fdepth)) {
 		if (fdepth>BACKTRACE_SIZE) fdepth=BACKTRACE_SIZE;
@@ -812,118 +817,117 @@ bool DebugManager::Backtrace(bool dont_select_if_first) {
 			}
 		}
 	}
-//	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion
-//	wxString frame_address = SendCommand(_T("zframeaddress "),n);
-//	for (i=0;i<n;i++) {
-//		int p = frame_address.Find(_T("*zframe-"));
-//		if (p==wxNOT_FOUND) { 
-//			frames_addrs[i]="error"; 
-//		} else {
-//			frame_address=frame_address.Mid(p+8);
-//			frames_addrs[i]=frame_address.BeforeFirst(':').AfterLast(' ');
-//		}
-//	}
-		
-	wxString args ,args_list = n?SendCommand("-stack-list-arguments 1 0 ",n-1):"";
-	const wxChar * chag = args_list.c_str();
-//cerr<<"CHAG="<<endl<<chag<<endl<<endl;
-	i=args_list.Find(_T("stack-args="));
-	if (i==wxNOT_FOUND) {
-		for (int c=0;c<fdepth;c++)
-			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,_T("<<Imposible determinar argumentos>>"));
-		main_window->backtrace_ctrl->EndBatch();
-	} else {
-		bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
-		i+=12;
-		for (int c=0;c<n;c++) {
-			// chag+i = frame={level="0",args={{name="...
-			while (chag[i]!='[' && chag[i]!='{') 
-				i++; 
-			p=++i;
-			int arglev=0;
-			// chag+i = level="0",args={{name="...
-			while ((chag[i]!=']' && chag[i]!='}') || comillas || arglev>0) {
-				if (comillas) {
-					if (cm_dtype && chag[i]=='\"') 
-						comillas=false;
-					else if (!cm_dtype && chag[i]=='\'') 
-						comillas=false;
-					else if (chag[i]=='\\') i++;
-				} else {
-					if (chag[i]=='\"' || chag[i]=='\'')
-						{ comillas=true; cm_dtype=(chag[i]=='\"'); }
-					else if (!comillas && (chag[i]=='{' || chag[i]=='['))
-						arglev++;
-					else if (!comillas && (chag[i]==']' || chag[i]=='}'))
-						arglev--;
-					else if (chag[i]=='\\') i++;
-				}
-				i++;
-			}
-			wxString s(args_list.SubString(p,i-1));
-			wxString args, sub;
-			int j=0, l=s.Len();
-			const wxChar * choa = s.c_str();
-			// choa+j = level="0",args={{name="...
-			while (j<l && choa[j]!='{' && choa[j]!='[')	j++; j++;
-			// choa+j = {name="...
-			while (j<l) {
-				while (j<l && choa[j]!='{' && choa[j]!='[')
-					j++;
-				if (j==l)
-					break;
-				p=++j;
-				arglev=0; comillas=false;
-				while (choa[j]!='}' || comillas || arglev>0) {
+	
+	// completar la columna de argumentos si es que está visible
+	if (backtrace_shows_args) { 
+		wxString args ,args_list = n?SendCommand("-stack-list-arguments 1 0 ",n-1):"";
+		const wxChar * chag = args_list.c_str();
+	//cerr<<"CHAG="<<endl<<chag<<endl<<endl;
+		i=args_list.Find(_T("stack-args="));
+		if (i==wxNOT_FOUND) {
+			for (int c=0;c<fdepth;c++)
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,_T("<<Imposible determinar argumentos>>"));
+			main_window->backtrace_ctrl->EndBatch();
+		} else {
+			bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
+			i+=12;
+			for (int c=0;c<n;c++) {
+				// chag+i = frame={level="0",args={{name="...
+				while (chag[i]!='[' && chag[i]!='{') 
+					i++; 
+				p=++i;
+				int arglev=0;
+				// chag+i = level="0",args={{name="...
+				while ((chag[i]!=']' && chag[i]!='}') || comillas || arglev>0) {
 					if (comillas) {
-						if (cm_dtype && choa[j]=='\"') 
+						if (cm_dtype && chag[i]=='\"') 
 							comillas=false;
-						else if (!cm_dtype && choa[j]=='\'') 
+						else if (!cm_dtype && chag[i]=='\'') 
 							comillas=false;
-						else if (choa[j]=='\\') j++;
+						else if (chag[i]=='\\') i++;
 					} else {
-						if (choa[j]=='\"' || choa[j]=='\'')
-						{ comillas=true; cm_dtype=(choa[j]=='\"'); }
-						else if (choa[j]=='{' || choa[j]=='[')
+						if (chag[i]=='\"' || chag[i]=='\'')
+							{ comillas=true; cm_dtype=(chag[i]=='\"'); }
+						else if (!comillas && (chag[i]=='{' || chag[i]=='['))
 							arglev++;
-						else if (choa[j]==']' || choa[j]=='}')
+						else if (!comillas && (chag[i]==']' || chag[i]=='}'))
 							arglev--;
-						else if (choa[j]=='\\') j++;
+						else if (chag[i]=='\\') i++;
 					}
-					j++;
+					i++;
 				}
-				sub=s.SubString(p,j-1);
-				if (args.Len())
-					args<<_T(", ");
-				args<<GetValueFromAns(sub,_T("name"),true)<<_T("=")<<GetValueFromAns(sub,_T("value"),true,true);
-			}
-			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,args);
-		}	
+				wxString s(args_list.SubString(p,i-1));
+				wxString args, sub;
+				int j=0, l=s.Len();
+				const wxChar * choa = s.c_str();
+				// choa+j = level="0",args={{name="...
+				while (j<l && choa[j]!='{' && choa[j]!='[')	j++; j++;
+				// choa+j = {name="...
+				while (j<l) {
+					while (j<l && choa[j]!='{' && choa[j]!='[')
+						j++;
+					if (j==l)
+						break;
+					p=++j;
+					arglev=0; comillas=false;
+					while (choa[j]!='}' || comillas || arglev>0) {
+						if (comillas) {
+							if (cm_dtype && choa[j]=='\"') 
+								comillas=false;
+							else if (!cm_dtype && choa[j]=='\'') 
+								comillas=false;
+							else if (choa[j]=='\\') j++;
+						} else {
+							if (choa[j]=='\"' || choa[j]=='\'')
+							{ comillas=true; cm_dtype=(choa[j]=='\"'); }
+							else if (choa[j]=='{' || choa[j]=='[')
+								arglev++;
+							else if (choa[j]==']' || choa[j]=='}')
+								arglev--;
+							else if (choa[j]=='\\') j++;
+						}
+						j++;
+					}
+					sub=s.SubString(p,j-1);
+					if (args.Len())
+						args<<_T(", ");
+					args<<GetValueFromAns(sub,_T("name"),true)<<_T("=")<<GetValueFromAns(sub,_T("value"),true,true);
+				}
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,args);
+			}	
+		}
 	}
+	
+	// "limpiar" los renglones que sobran
 	c=n;
-	while (c<last_backtrace_size) { // borrar los renglones que sobran
+	while (c<last_backtrace_size) { 
 		for (int i=0;i<BG_COLS_COUNT;i++)
 			main_window->backtrace_ctrl->SetCellValue(c,i,_T(""));
 		c++;
 	}
-	main_window->backtrace_ctrl->SelectRow(0);
-	last_backtrace_size = n;
-	if (!dont_select_if_first || to_select!=frames_nums[0]) {
-		if (to_select_row==-1) {
+	
+	// seleccionar el frame actual, o el más cercano que tenga info de depuración
+	if (!dont_select_at_all) {
+		main_window->backtrace_ctrl->SelectRow(0);
+		last_backtrace_size = n;
+		if (!dont_select_if_first || to_select!=frames_nums[0]) {
+			if (to_select_row==-1) {
+				current_frame_num=frames_nums[0];
+				current_frame=frames_addrs[0];
+				debug->MarkCurrentPoint(to_select_file,to_select_line);
+			} else {
+				main_window->backtrace_ctrl->SelectRow(to_select_row);
+				SelectFrame(to_select,to_select_row);
+				debug->MarkCurrentPoint(to_select_file,to_select_line,mxSTC_MARK_FUNCCALL);
+			}
+		}
+		else if (last_backtrace_size>0) {
 			current_frame_num=frames_nums[0];
 			current_frame=frames_addrs[0];
-			debug->MarkCurrentPoint(to_select_file,to_select_line);
-		} else {
-			main_window->backtrace_ctrl->SelectRow(to_select_row);
-			SelectFrame(to_select,to_select_row);
-			debug->MarkCurrentPoint(to_select_file,to_select_line,mxSTC_MARK_FUNCCALL);
-		}
+		} else 
+			current_frame=current_frame_num=_T("");
 	}
-	else if (last_backtrace_size>0) {
-		current_frame_num=frames_nums[0];
-		current_frame=frames_addrs[0];
-	} else 
-		current_frame=current_frame_num=_T("");
+	
 	main_window->backtrace_ctrl->EndBatch();
 	return true;
 }

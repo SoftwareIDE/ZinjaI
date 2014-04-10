@@ -196,7 +196,10 @@ public:
 	wxString GetSubValueFromAns(wxString ans, wxString key1, wxString key2, bool crop=false, bool fix_slash=false);
 	wxString InspectExpression(wxString var, bool pretty=false);
 	wxString WaitAnswer();
-	bool Backtrace(bool dont_select_if_first=false);
+private:
+	bool backtrace_shows_args; ///< determine wheter backtrace table should show an extra column with arguments (with values) for each function in the stack
+	void SetBacktraceShowsArgs(bool show);
+	bool Backtrace(bool dont_select_if_first=false, bool dont_select_at_all=false);
 #if !defined(_WIN32) && !defined(__WIN32__)
 	void TtyProcessKilled();
 #endif
