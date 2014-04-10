@@ -1268,7 +1268,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 			for(int k=0;k<3;k++) {
 				lib = active_configuration->libs_to_build;
 				while (lib) {
-					if (lib->need_relink) {
+					if (lib->need_relink && !lib->is_static) {
 						step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(DIR_PLUS_FILE(path,lib->filename),"",k));
 						if (k==0) steps_count++;
 					}
@@ -1373,9 +1373,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 					executable_name,objects_list,linking_options,&force_relink));
 				steps_count++;
 				if (active_configuration->strip_executable==DBSACTION_COPY) {
-					step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",0));
-					step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",1));
-					step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",2));
+					for(int k=0;k<3;k++) step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",k));
 					steps_count++;
 				}
 			}
@@ -1969,14 +1967,14 @@ void ProjectManager::Clean() {
 	project_library *lib = active_configuration->libs_to_build;
 	while (lib) {
 		file=DIR_PLUS_FILE(path,lib->filename);
-		if (wxFileName::FileExists(file))
-			wxRemoveFile(file);
+		if (wxFileName::FileExists(file)) wxRemoveFile(file);
+		if (wxFileName::FileExists(file+".dbg")) wxRemoveFile(file+".dbg");
 		lib = lib->next;
 	}
 	
 	// borrar el ejecutable
-	if (wxFileName::FileExists(executable_name))
-		wxRemoveFile(executable_name);
+	if (wxFileName::FileExists(executable_name)) wxRemoveFile(executable_name);
+	if (wxFileName::FileExists(executable_name+".dbg")) wxRemoveFile(executable_name+".dbg");
 }
 
 
