@@ -90,8 +90,8 @@ void mxMultipleFileChooser::OnButtonOk(wxCommandEvent &event) {
 	for (int i=0;i<n;i++) {
 		wxString fname=DIR_PLUS_FILE(search_base,list->GetString(i));
 		if (list->IsChecked(i) && !project->HasFile(fname)) {
-			if (where==FT_NULL) where=utils->GetFileType(fname,false);
-			project->AddFile(where,fname);
+			eFileType aux_where = where==FT_NULL?where=utils->GetFileType(fname,false):where;
+			project->AddFile(aux_where,fname);
 			if (where==FT_SOURCE||where==FT_HEADER) parser->ParseFile(fname);
 		}
 	}
@@ -130,24 +130,31 @@ void mxMultipleFileChooser::OnButtonDir(wxCommandEvent &event) {
 void mxMultipleFileChooser::OnButtonFind(wxCommandEvent &event) {
 	list->Freeze();
 	list->Clear();
-	FindFiles(search_base=DIR_PLUS_FILE(project->path,basedir->GetValue()),"",filter->GetValue(),subdirs->GetValue());
+	
+	wxArrayString filter_array;
+	utils->Split(filter->GetValue(),filter_array,true,false);
+	
+	FindFiles(search_base=DIR_PLUS_FILE(project->path,basedir->GetValue()),"",filter_array,subdirs->GetValue());
 	for (int i=0,n=list->GetCount();i<n;i++) 
 		if (list->GetString(i).AfterLast('.').Lower()!=PROJECT_EXT)
 			list->Check(i,true);
 	list->Thaw();
 }
 
-void mxMultipleFileChooser::FindFiles(wxString where, wxString sub, wxString what, bool rec) {
+void mxMultipleFileChooser::FindFiles(wxString where, wxString sub, wxArrayString &filter_array, bool rec) {
 	
-	
-	wxDir fil(sub.Len()?DIR_PLUS_FILE(where,sub):where);
-	if ( fil.IsOpened() ) {
-		wxString filename;
-		bool cont = fil.GetFirst(&filename, what , wxDIR_FILES);
-		while ( cont ) {
-			list->Append(DIR_PLUS_FILE(sub,filename));
-			cont = fil.GetNext(&filename);
-		}	
+	for(unsigned int i=0;i<filter_array.GetCount();i++) { 
+		wxString &what=filter_array[i];
+		wxDir fil(sub.Len()?DIR_PLUS_FILE(where,sub):where);
+		if ( fil.IsOpened() ) {
+			wxString filename;
+			bool cont = fil.GetFirst(&filename, what , wxDIR_FILES);
+			while ( cont ) {
+				wxString fname=DIR_PLUS_FILE(sub,filename);
+				if (list->FindString(fname)==wxNOT_FOUND) list->Append(fname);
+				cont = fil.GetNext(&filename);
+			}	
+		}
 	}
 	
 	if (!rec) return;
@@ -157,7 +164,7 @@ void mxMultipleFileChooser::FindFiles(wxString where, wxString sub, wxString wha
 		wxString filename, spec;
 		bool cont = dir.GetFirst(&filename, spec , wxDIR_DIRS);
 		while ( cont ) {
-			FindFiles(where, DIR_PLUS_FILE(sub,filename),what,true);
+			FindFiles(where, DIR_PLUS_FILE(sub,filename),filter_array,true);
 			cont = dir.GetNext(&filename);
 		}	
 	}

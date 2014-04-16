@@ -2589,20 +2589,31 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	main_window->project_tree.treeCtrl->DeleteChildren(main_window->project_tree.headers);
 	main_window->project_tree.treeCtrl->DeleteChildren(main_window->project_tree.others);
 	delete project;
-	symbols_tree.menuItem->Check(false);
-	aui_manager.GetPane(symbols_tree.treeCtrl).Hide();
-	compiler_tree.menuItem->Check(false);
-	aui_manager.GetPane(compiler_panel).Hide();
-	project_tree.menuItem->Check(false);
-	if (valgrind_panel) aui_manager.GetPane(valgrind_panel).Hide();
-	if (config->Init.show_explorer_tree) {
-		explorer_tree.menuItem->Check(true);
-		aui_manager.GetPane(explorer_tree.treeCtrl).Show();
+	if (config->Init.autohiding_panels) {
+		autohide_handlers[ATH_EXPLORER]->Hide();
+		autohide_handlers[ATH_PROJECT]->Hide();
+		autohide_handlers[ATH_SYMBOL]->Hide();
+		autohide_handlers[ATH_COMPILER]->Hide();
+	} else if (left_panels) {
+		aui_manager.GetPane(left_panels).Hide();
+		compiler_tree.menuItem->Check(false);
+		aui_manager.GetPane(compiler_panel).Hide();
 	} else {
-		explorer_tree.menuItem->Check(false);
-		aui_manager.GetPane(explorer_tree.treeCtrl).Hide();
+		symbols_tree.menuItem->Check(false);
+		aui_manager.GetPane(symbols_tree.treeCtrl).Hide();
+		compiler_tree.menuItem->Check(false);
+		aui_manager.GetPane(compiler_panel).Hide();
+		project_tree.menuItem->Check(false);
+		if (config->Init.show_explorer_tree) {
+			explorer_tree.menuItem->Check(true);
+			aui_manager.GetPane(explorer_tree.treeCtrl).Show();
+		} else {
+			explorer_tree.menuItem->Check(false);
+			aui_manager.GetPane(explorer_tree.treeCtrl).Hide();
+		}
+		aui_manager.GetPane(project_tree.treeCtrl).Hide();
 	}
-	aui_manager.GetPane(project_tree.treeCtrl).Hide();
+	if (valgrind_panel) aui_manager.GetPane(valgrind_panel).Hide();
 	if (welcome_panel) 
 		ShowWelcome(true);
 	else {

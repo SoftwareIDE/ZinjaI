@@ -4,13 +4,17 @@
 <H3>Registro de Cambios (ChangeLog)</H3>
 
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
-<I>Nota 2: Nuevo codigo para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
+<I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
+	<LI>Imp: Ahora se puede utilizar más de un filtro en una misma búsqueda en el cuadro de diálogo para insertar múltiples archivos desde un directorio.</LI>
+	<LI>Fix: Corregido un error al determinar en qué categoría insertar archivos en un proyecto al utilizar el cuadro de diálogo para insertar múltiples archivos desde un directorio..</LI>
+	
 </UL><BR><B>Release 20140411</B><BR><UL>
 	<LI>New: Se puede configurar un proyecto para que al enlazar extraiga la información de depuración el ejecutable (o de las bibliotecas generadas) y la guarde en un archivo separado.</LI>
 	<LI>Imp: Si en la tabla de trazado inverso se oculta la columna de argumentos, ya no se le consultan los argumentos a gdb (se ahorra comunicación con el depurador, mejora la velocidad del paso a paso cuando hay muchas llamadas anidadas, o se pasan objetos grandes).</LI>
 	<LI>Imp: Se redujo el tiempo de espera para los tooltips en el código (para ver el tipo o el valor de una variable) a 1 segundo.</LI>
 	<LI>Imp: Ya no se pregunta si se quieren cerrar los fuentes abiertos actualmente antes de abrir otro proyecto (se cierran siempre, a menos que se esté construyendo un proyecto a partir de esos mismos fuentes).</LI>
+	<LI>Fix: Se agregaron archivos faltantes en la distribución de MinGW incluida en el instalador para Windows para evitar problemas al reinstalar ZinjaI sobre versiones viejas del mismo.</LI>
 	<LI>Fix: Cuando se define un archivo de macros para gdb en un proyecto, el archivo general definido en las preferencias de ZinjaI se carga igualmente en primer lugar, y luego el del proyecto.</LI>
 	<LI>Fix: Se corrigió un problema por el cual ZinjaI podía cerrarse al intentar abrir/crear un proyecto sin cerrar los fuentes abiertos por un proyecto previo.</LI>
 	<LI>Fix: Ya no pregunta si cerrar los archivos abiertos al crear un proyecto con dichos archivos.</LI>

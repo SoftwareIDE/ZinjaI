@@ -25,7 +25,7 @@ public:
 	void OnButtonDir(wxCommandEvent &event);
 	void OnButtonFind(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
-	void FindFiles(wxString where, wxString sub, wxString what, bool rec);
+	void FindFiles(wxString where, wxString sub, wxArrayString &filter_array, bool rec);
 	DECLARE_EVENT_TABLE();
 };
 
