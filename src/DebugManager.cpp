@@ -2895,12 +2895,15 @@ void DebugManager::ShowBreakPointConditionErrorMessage (BreakPointInfo *_bpi) {
 }
 
 wxString DebugManager::MakeForPatchCopy (mxSource *source) {
-	if (for_patch_done.Len()) return; // ya se hizo
+#ifndef __WIN32__
+	if (for_patch_done.Len()) return ""; // ya se hizo, solo en linux, y en linux no importa el valor de retorno
+#endif
 	for_patch_done=source?source->GetBinaryFileName().GetFullPath():project->GetExePath();
 #ifndef __WIN32__
 	wxCopyFile(for_patch_done,for_patch_done+".for_patch");
 #endif
 	for_patch_done+=".for_patch";
+	return for_patch_done;
 }
 
 void DebugManager::Patch ( ) {
@@ -2962,7 +2965,7 @@ void DebugManager::Patch ( ) {
 	}
 	
 	int cok=0,cer=0;
-	for(int i=0;i<v.size();i++) { 
+	for(unsigned int i=0;i<v.size();i++) { 
 		wxString cmd; 
 		cmd<<"set (*((char*)("<<base<<"-"<<pvalid<<"+"<<v[i].first<<")))="<<int(v[i].second);
 		wxString ans=SendCommand(cmd);

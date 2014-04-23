@@ -637,8 +637,9 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 		z_opts<<_T("-x c++ "); // avoid not recognizing files without extension
 	// prepare command line
 	wxString comp_opts = source->GetParsedCompilerOptions();
+	wxString output_file = source->GetBinaryFileName().GetFullPath();
 #ifdef __WIN32__
-	wxString output_file = debug->debugging?debug->MakeForPatchCopy():source->GetBinaryFileName().GetFullPath();
+	if (debug->debugging) debug->MakeForPatchCopy(source);
 #endif
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+output_file+_T("\"");
 	

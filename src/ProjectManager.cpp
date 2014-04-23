@@ -1370,7 +1370,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				AnalizeConfig(path,true,config->mingw_real_path,false);
 				wxString output_bin_file=executable_name;
 #ifdef __WIN32__
-				if (debug->debugging) output_bin_file=debug->MakeForPatchCopy():
+				if (debug->debugging) output_bin_file=debug->MakeForPatchCopy(NULL):
 #endif
 				step = step->next = new compile_step(CNS_LINK,
 					new linking_info(current_toolchain.linker+_T(" -o"),
