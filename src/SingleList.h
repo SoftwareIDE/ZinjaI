@@ -78,6 +78,12 @@ public:
 		return false;
 	}
 	void Remove(int pos) {
+		--m_size;
+		for(int i=pos;i<m_size;i++) { 
+			m_vec[i]=m_vec[i+1];
+		}
+	}
+	void FastRemove(int pos) {
 		m_vec[pos]=m_vec[--m_size];
 	}
 	~SingleList() {
@@ -224,7 +230,7 @@ public:
 	/// adds an element to the list (removes from both local and global lists)
 	void Remove(int pos) {
 		m_global_list->Remove(LocalListNodePtr<T>(this,pos)); // remove from global
-		SingleList<LocalListNode<T> >::Remove(pos); // remove from local (this will make a swap)
+		SingleList<LocalListNode<T> >::FastRemove(pos); // remove from local (this will make a swap)
 		int size=SingleList<LocalListNode<T> >::m_size;
 		if (size!=pos) m_global_list->UpdatePos(SingleList<LocalListNode<T> >::m_vec+pos,pos); // udate position in references to the swapped element)
 	}
