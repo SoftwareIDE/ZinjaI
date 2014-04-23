@@ -148,7 +148,7 @@ mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTree
 	compile_and_run_single=NULL;
 }
 
-void mxCompiler::BuildOrRunProject(bool run, bool debug, bool prepared) {
+void mxCompiler::BuildOrRunProject(bool run, bool for_debug, bool prepared) {
 	if (project->GetWxfbActivated() && project->GetWxfbConfiguration()->working) return;
 	main_window->ClearExternCompilerOutput();
 	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
@@ -156,6 +156,9 @@ DEBUG_INFO("wxYield:in  mxCompiler::BuildOrRunProject");
 	wxYield();
 DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 	if (prepared || project->PrepareForBuilding()) { // si hay que compilar/enlazar
+#ifndef __WIN32__
+		if (debug->debugging) debug->MakeForPatchCopy(NULL);
+#endif
 		if (!EnsureCompilerNotRunning()) return;
 //		project->AnalizeConfig(project->path,true,config->mingw_real_path);
 		wxString current;
@@ -169,7 +172,7 @@ DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 		num_warnings=project->warnings.GetCount();
 		compile_and_run->run_after_compile=run; // hay que setearlo antes de CompileNext porque se va a duplicar ahi si hay paralelismo
 		compile_and_run->compiling=true;
-		compile_and_run->for_debug=debug;
+		compile_and_run->for_debug=for_debug;
 		compile_and_run->pid=project->CompileNext(compile_and_run,current); // mandar a compilar el primero
 		if (compile_and_run->pid) // si se puso a compilar algo
 			main_window->StartExecutionStuff(true,run,compile_and_run,current);
@@ -610,12 +613,15 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 	}
 }
 
-void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
+void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	
 	if (!EnsureCompilerNotRunning()) return;
+#ifndef __WIN32__
+	if (debug && debug->debugging) debug->MakeForPatchCopy(source);
+#endif
 	
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
-	compile_and_run->for_debug=debug;
+	compile_and_run->for_debug=for_debug;
 	compile_and_run->output_type=MXC_GCC;
 	parser->ParseSource(source,true);
 	last_compiled=source;
@@ -631,7 +637,10 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool debug) {
 		z_opts<<_T("-x c++ "); // avoid not recognizing files without extension
 	// prepare command line
 	wxString comp_opts = source->GetParsedCompilerOptions();
-	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+source->GetBinaryFileName().GetFullPath()<<_T("\"");
+#ifdef __WIN32__
+	wxString output_file = debug->debugging?debug->MakeForPatchCopy():source->GetBinaryFileName().GetFullPath();
+#endif
+	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+output_file+_T("\"");
 	
 	// lanzar la ejecucion
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);

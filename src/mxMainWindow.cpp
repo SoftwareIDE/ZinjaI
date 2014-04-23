@@ -201,6 +201,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_RUN_CONFIG, mxMainWindow::OnRunCompileConfig)
 	
 	EVT_MENU(mxID_DEBUG_ATTACH, mxMainWindow::OnDebugAttach)
+	EVT_MENU(mxID_DEBUG_PATCH, mxMainWindow::OnDebugPatch)
 	EVT_MENU(mxID_DEBUG_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
 	EVT_MENU(mxID_DEBUG_THREADLIST, mxMainWindow::OnDebugThreadList)
 	EVT_MENU(mxID_DEBUG_BACKTRACE, mxMainWindow::OnDebugBacktrace)
@@ -850,6 +851,7 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 		project->Save();
 	config->Init.show_beginner_panel=menu.view_beginner_panel->IsChecked();
 	config->Save();
+	while (notebook_sources->GetPageCount()) notebook_sources->DeletePage(0); // close sources to avoid paint events and other calls that could use some just deleted objects
 	if (share) delete share;
 	main_window=NULL;
 	er_uninit();
@@ -1490,6 +1492,7 @@ void mxMainWindow::CreateMenus() {
 	menu.debug_run = utils->AddItemToMenu(menu.debug, mxID_DEBUG_RUN, LANG(MENUITEM_DEBUG_START,"&Iniciar/Continuar"),_T("F5"),_T(""),ipre+_T("depurar.png"));
 #if !defined(_WIN32) && !defined(__WIN32__)
 	menu.debug_attach = utils->AddItemToMenu(menu.debug, mxID_DEBUG_ATTACH, LANG(MENUITEM_DEBUG_ATTACH,"Ad&juntar..."),_T(""),_T(""),ipre+_T("debug_attach.png"));
+	menu.debug_core_dump = utils->AddItemToMenu(menu.debug, mxID_DEBUG_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria..."),_T(""),_T(""),ipre+_T("core_dump.png"));
 #endif
 	menu.debug_pause = utils->AddItemToMenu(menu.debug, mxID_DEBUG_PAUSE, LANG(MENUITEM_DEBUG_PAUSE,"Interrum&pir"),_T(""),_T(""),ipre+_T("pausar.png"));
 	menu.debug_pause->Enable(false);
@@ -1526,9 +1529,7 @@ void mxMainWindow::CreateMenus() {
 //	menu.debug_insert_watchpoint->Enable(false);
 //	menu.debug_function_breakpoint->Enable(false);
 	utils->AddItemToMenu(menu.debug, mxID_DEBUG_LOG_PANEL, LANG(MENUITEM_DEBUG_SHOW_LOG_PANEL,"&Mostrar mensajes del depurador"),_T(""),_T(""),ipre+_T("debug_log_panel.png"));
-#if !defined(_WIN32) && !defined(__WIN32__)
-	menu.debug_core_dump = utils->AddItemToMenu(menu.debug, mxID_DEBUG_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria..."),_T(""),_T(""),ipre+_T("core_dump.png"));
-#endif
+	menu.debug_patch = utils->AddItemToMenu(menu.debug, mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable..."),_T(""),_T(""),ipre+_T("debug_patch.png"));
 	if (config->Debug.show_do_that) menu.debug_function_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_DO_THAT, LANG(MENUITEM_DEBUG_DO_THAT,"DO_THAT"),_T(""),_T(""),ipre+_T("do_that.png"));
 	menu.menu->Append(menu.debug, LANG(MENUITEM_DEBUG,"&Depuracion"));
 
@@ -4184,6 +4185,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 //		menu.debug_list_breakpoints->Enable(true);
 		menu.debug_pause->Enable(true);
 #if !defined(_WIN32) && !defined(__WIN32__)
+		menu.debug_patch->Enable(true);
 		menu.debug_attach->Enable(false);
 		menu.debug->SetLabel(mxID_DEBUG_CORE_DUMP,LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria..."));
 		menu.debug_inverse_execution->Enable(false);
@@ -4262,6 +4264,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 		menu.debug_jump->Enable(false);
 //		menu.debug_list_breakpoints->Enable(false);
 		menu.debug_pause->Enable(false);
+		menu.debug_patch->Enable(false);
 #if !defined(_WIN32) && !defined(__WIN32__)
 		menu.debug_attach->Enable(true);
 		menu.debug->SetLabel(mxID_DEBUG_CORE_DUMP,LANG(MENUITEM_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria..."));
@@ -4808,6 +4811,10 @@ wxString mxMainWindow::AvoidDuplicatePageText(wxString ptext) {
 			return text;
 	}
 	return text;
+}
+
+void mxMainWindow::OnDebugPatch (wxCommandEvent &event) {
+	if (debug->debugging&&!debug->waiting) debug->Patch();
 }
 
 void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {

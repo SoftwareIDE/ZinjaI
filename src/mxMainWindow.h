@@ -171,6 +171,7 @@ public:
 	void OnRunStop (wxCommandEvent &event);
 	
 	void OnDebugAttach (wxCommandEvent &event);
+	void OnDebugPatch (wxCommandEvent &event);
 	void OnDebugCoreDump (wxCommandEvent &event);
 	void OnDebugDoThat (wxCommandEvent &event);
 	void OnDebugRun (wxCommandEvent &event);
@@ -498,6 +499,7 @@ public:
 		wxMenuItem *debug_run;
 		wxMenuItem *debug_attach;
 		wxMenuItem *debug_pause;
+		wxMenuItem *debug_patch;
 #if !defined(_WIN32) && !defined(__WIN32__)
 		wxMenuItem *debug_core_dump;
 #endif

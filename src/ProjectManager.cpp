@@ -1368,13 +1368,21 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 
 			if (relink_exe) {
 				AnalizeConfig(path,true,config->mingw_real_path,false);
+				wxString output_bin_file=executable_name;
+#ifdef __WIN32__
+				if (debug->debugging) output_bin_file=debug->MakeForPatchCopy():
+#endif
 				step = step->next = new compile_step(CNS_LINK,
 					new linking_info(current_toolchain.linker+_T(" -o"),
-					executable_name,objects_list,linking_options,&force_relink));
+					output_bin_file,objects_list,linking_options,&force_relink));
 				steps_count++;
-				if (active_configuration->strip_executable==DBSACTION_COPY) {
-					for(int k=0;k<3;k++) step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",k));
-					steps_count++;
+				if (
+#ifdef __WIN32__
+					!debug->debugging && 
+#endif
+					active_configuration->strip_executable==DBSACTION_COPY) {
+						for(int k=0;k<3;k++) step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",k));
+						steps_count++;
 				}
 			}
 		} else if (relink_exe) {

@@ -26,6 +26,10 @@
 #include "mxExternInspection.h"
 #include <algorithm>
 #include "mxThreadGrid.h"
+#include "Inspection.h"
+#include "mxGenericInspectionCtrl.h"
+#include <fstream>
+#include <vector>
 using namespace std;
 
 #ifdef DEBUG
@@ -266,6 +270,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 **/
 
 void DebugManager::ResetDebuggingStuff() {
+	for_patch_done="";
 	status=DBGST_STARTING;
 #if !defined(_WIN32) && !defined(__WIN32__)
 	tty_running = false;
@@ -1422,6 +1427,7 @@ bool DebugManager::Return(wxString what) {
 }
 
 void DebugManager::ProcessKilled() {
+	if (for_patch_done.Len()) wxRemoveFile(for_patch_done);
 #ifdef DEBUG_MANAGER_LOG_TALK
 	debug_log_file.Close();
 #endif
@@ -1707,6 +1713,11 @@ void DebugManager::UpdateFramelessInspection() {
 	}
 }
 
+void  DebugManager::UpdateInspections() {
+	DebuggerInspection::UpdateAll();
+	mxGenericInspectionCtrl::UpdateAll();
+}
+
 bool DebugManager::UpdateInspection() {
 	if (!debugging || waiting || inspections_count==0) return false;
 	inspection_grid->BeginBatch();
@@ -1979,6 +1990,7 @@ bool DebugManager::SelectFrame(wxString strnum, int idx) {
 }
 
 bool DebugManager::DoThat(wxString what) {
+	if (what=="patch") { Patch(); return true; }
 	wxMessageBox(SendCommand(what),what,wxOK,main_window);
 	return true;
 }
@@ -2880,5 +2892,84 @@ void DebugManager::ShowBreakPointConditionErrorMessage (BreakPointInfo *_bpi) {
 		LANG(DEBUG_BAD_BREAKPOINT_WARNING_CONDITION,"La condición ingresada no es válida.")
 		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
 	if (res&mxMD_CHECKED) show_breakpoint_error=false;
+}
+
+wxString DebugManager::MakeForPatchCopy (mxSource *source) {
+	if (for_patch_done.Len()) return; // ya se hizo
+	for_patch_done=source?source->GetBinaryFileName().GetFullPath():project->GetExePath();
+#ifndef __WIN32__
+	wxCopyFile(for_patch_done,for_patch_done+".for_patch");
+#endif
+	for_patch_done+=".for_patch";
+}
+
+void DebugManager::Patch ( ) {
+	if (!project && !main_window->GetCurrentSource()) {
+		wxMessageBox("No openend process/file");
+	}
+	wxString fnew=project?project->GetExePath():main_window->GetCurrentSource()->GetBinaryFileName().GetFullPath();
+	wxString fold=for_patch_done;
+#ifdef __WIN32__
+	wxString saux=fnew; fnew=fold; fold=saux;
+#endif
+	
+	if (!debug->for_patch_done.Len()) {
+		wxMessageBox("No patched binary found. Recompile first.");
+	}
+	
+	// abrir los binarios y obtener las diferencias
+	ifstream f1(fold.c_str(),ios::binary|ios::ate), f2(fnew.c_str(),ios::binary|ios::ate);
+	if (!f1.is_open()||!f2.is_open()) {
+		wxMessageBox("Could not open binary files");
+		return;
+	}
+	if (f1.tellg()!=f2.tellg()) {
+		wxMessageBox("File size mismatch");
+		return;
+	}
+	int bsize=f2.tellg(); f1.seekg(0,ios::beg); f2.seekg(0,ios::beg);
+	vector<pair<int,char> > v; char c1,c2; int p=0, max_change=0;
+	while (f1.read(&c1,1) && f2.read(&c2,1)) {
+		if (c1!=c2) {
+			v.push_back(make_pair(p,c2));
+			max_change=p;
+			if (v.size()>100) {
+				wxMessageBox("too many changes");
+				return;
+			}
+		}
+		p++;
+	}
+	f1.close(); f2.close();
+	
+	if (v.size()==0) {
+		wxMessageBox("No changes detected.");
+		return;
+	}
+	
+	// buscar en gdb donde empieza la zona de memoria del binario
+	wxString base=debug->SendCommand("info address main");
+	int x=base.Find(" 0x"); if (x==wxNOT_FOUND) {
+		wxMessageBox("Could not determine memory address");
+		return;
+	}
+	base=base.Mid(x).BeforeFirst('.'); int pvalid=0, pinvalid=bsize;
+	while (pinvalid-pvalid>1) {
+		int pmid=(pvalid+pinvalid)/2;
+		wxString cmd; cmd<<"p (int)(*((char*)("<<base<<"-"<<pmid<<")))";
+		cmd=SendCommand(cmd);
+		if (cmd.Contains("^error")) pinvalid=pmid; else pvalid=pmid;
+	}
+	
+	int cok=0,cer=0;
+	for(int i=0;i<v.size();i++) { 
+		wxString cmd; 
+		cmd<<"set (*((char*)("<<base<<"-"<<pvalid<<"+"<<v[i].first<<")))="<<int(v[i].second);
+		wxString ans=SendCommand(cmd);
+		if (ans.Contains("^done")) cok++; else cer++;
+	}
+	wxRemoveFile(for_patch_done); for_patch_done=""; 
+	wxMessageBox(wxString("Changes applied: ")<<cok<<"/"<<cok+cer);
+	return;
 }
 

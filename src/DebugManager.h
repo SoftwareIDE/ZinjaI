@@ -118,9 +118,15 @@ class DebugManager {
 	friend class mxBacktraceGrid;
 	friend class mxInspectionExplorer;
 	friend class mxInspectionMatrix;
+	friend class DebuggerInspection;
 #ifdef DEBUG
 	wxFFile debug_log_file;
 #endif
+private:
+	wxString for_patch_done; ///< para aplicar parches en el depurador (tipo edit & continue), indica si ya se creo la copia del exe original al recompilar con cambios
+public:
+	wxString MakeForPatchCopy(mxSource *source);
+	void Patch();
 private:
 	bool should_pause; ///< puede que al hacer click en la pausa no se pause realmente (que la señal que envía no llegue a término, no se por qué, pero pasa cuando hay un breakpoint de los que solo actualizan la tabla de inspecciones)
 	bool has_symbols; ///< si cuando el debugger no inicia es porque no el ejecutable no tiene info de depuracion se baja esta bandera
@@ -211,7 +217,8 @@ public:
 	bool ModifyInspectionValue(int num, wxString value);
 	bool ModifyInspectionFormat(int num, wxString format);
 	bool ModifyInspectionWatch(int num, bool read, bool write);
-	bool UpdateInspection();
+	bool UpdateInspection(); ///< @todo: metodo viejo, a eliminar cuando termine de reescribir el manejo de inspecciones
+	void UpdateInspections();
 	wxString GetNextItem(wxString &ans, int &from);
 	bool SelectFrame(wxString framenum, int idx);
 	bool SelectFrameForInspeccion(wxString addr);
