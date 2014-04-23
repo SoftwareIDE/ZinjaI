@@ -617,7 +617,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	
 	if (!EnsureCompilerNotRunning()) return;
 #ifndef __WIN32__
-	if (debug && debug->debugging) debug->MakeForPatchCopy(source);
+	if (debug->running debugging) debug->MakeForPatchCopy(source);
 #endif
 	
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
@@ -639,7 +639,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	wxString comp_opts = source->GetParsedCompilerOptions();
 	wxString output_file = source->GetBinaryFileName().GetFullPath();
 #ifdef __WIN32__
-	if (debug->debugging) debug->MakeForPatchCopy(source);
+	if (debug->debugging) output_file=debug->MakeForPatchCopy(source);
 #endif
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+output_file+_T("\"");
 	
