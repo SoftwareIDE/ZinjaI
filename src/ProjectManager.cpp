@@ -3,12 +3,16 @@
 * @brief Implementación de los métodos de la clase ProjectManager
 **/
 
+#include <iostream>
+#include <algorithm>
+#include <wx/textfile.h>
+#include <wx/treectrl.h>
+
 #include "ProjectManager.h"
+#include "DebugPatcher.h"
 #include "mxUtils.h"
 #include "BreakPointInfo.h"
 
-#include <wx/textfile.h>
-#include <wx/treectrl.h>
 #include "mxSource.h"
 #include "mxMainWindow.h"
 #include "mxStatusBar.h"
@@ -19,14 +23,12 @@
 #include "version.h"
 #include "mxArgumentsDialog.h"
 #include "ConfigManager.h"
-#include <iostream>
 #include <wx/msgdlg.h>
 #include "Language.h"
 #include "mxSingleton.h"
 #include "mxOSD.h"
 #include "parserData.h"
 #include "mxCompiler.h"
-#include <algorithm>
 #include "Autocoder.h"
 #include "Toolchain.h"
 #include "CodeHelper.h"
@@ -1369,20 +1371,21 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 			if (relink_exe) {
 				AnalizeConfig(path,true,config->mingw_real_path,false);
 				wxString output_bin_file=executable_name;
-#ifdef __WIN32__
-				if (debug->debugging) output_bin_file=debug->MakeForPatchCopy(NULL);
-#endif
+				if (debug->debugging) debug->GetPatcher()->AlterOuputFileName(output_bin_file);
 				step = step->next = new compile_step(CNS_LINK,
-					new linking_info(current_toolchain.linker+_T(" -o"),
-					output_bin_file,objects_list,linking_options,&force_relink));
+													new linking_info(current_toolchain.linker+_T(" -o"),
+													output_bin_file,objects_list,linking_options,&force_relink));
 				steps_count++;
-				if (
+				if (active_configuration->strip_executable==DBSACTION_COPY) {
+					int ini=0;
 #ifdef __WIN32__
-					!debug->debugging && 
+					// en windows no podemos modificar archivos que se esten usando, y ademas compilamos 
+					// en uno alternativo para parchearlo en gdb, asi que solo lo stripeamos y linkamos 
+					// para que quede como el original, pero no reescribimos el archivo de la info de depuracion
+					if (debug->debugging) ini=1;
 #endif
-					active_configuration->strip_executable==DBSACTION_COPY) {
-						for(int k=0;k<3;k++) step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(executable_name,"",k));
-						steps_count++;
+					for(int k=ini;k<3;k++) step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(output_bin_file,"",k));
+					steps_count++;
 				}
 			}
 		} else if (relink_exe) {

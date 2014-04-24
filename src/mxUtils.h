@@ -112,6 +112,8 @@ public:
 	
 	wxString EscapeString(wxString str, bool add_comillas=false);
 	
+	wxString UnEscapeString(wxString str);
+	
 	//! Elimina los elementos repetidos de un wxArrayString
 	void Purgue(wxArrayString &array, bool sort=true);
 	

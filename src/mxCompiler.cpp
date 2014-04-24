@@ -8,6 +8,7 @@
 #include "ProjectManager.h"
 #include "ConfigManager.h"
 #include "DebugManager.h"
+#include "DebugPatcher.h"
 #include "mxSource.h"
 #include "mxUtils.h"
 
@@ -156,9 +157,6 @@ DEBUG_INFO("wxYield:in  mxCompiler::BuildOrRunProject");
 	wxYield();
 DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 	if (prepared || project->PrepareForBuilding()) { // si hay que compilar/enlazar
-#ifndef __WIN32__
-		if (debug->debugging) debug->MakeForPatchCopy(NULL);
-#endif
 		if (!EnsureCompilerNotRunning()) return;
 //		project->AnalizeConfig(project->path,true,config->mingw_real_path);
 		wxString current;
@@ -614,12 +612,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 }
 
 void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
-	
 	if (!EnsureCompilerNotRunning()) return;
-#ifndef __WIN32__
-	if (debug->running debugging) debug->MakeForPatchCopy(source);
-#endif
-	
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
 	compile_and_run->for_debug=for_debug;
 	compile_and_run->output_type=MXC_GCC;
@@ -638,9 +631,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	// prepare command line
 	wxString comp_opts = source->GetParsedCompilerOptions();
 	wxString output_file = source->GetBinaryFileName().GetFullPath();
-#ifdef __WIN32__
-	if (debug->debugging) output_file=debug->MakeForPatchCopy(source);
-#endif
+	if (debug->debugging) debug->GetPatcher()->AlterOuputFileName(output_file);
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+output_file+_T("\"");
 	
 	// lanzar la ejecucion

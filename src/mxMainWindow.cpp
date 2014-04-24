@@ -67,6 +67,7 @@
 #include <iostream>
 #include "mxGCovSideBar.h"
 #include "mxReferenceWindow.h"
+#include "DebugPatcher.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -4814,7 +4815,7 @@ wxString mxMainWindow::AvoidDuplicatePageText(wxString ptext) {
 }
 
 void mxMainWindow::OnDebugPatch (wxCommandEvent &event) {
-	if (debug->debugging&&!debug->waiting) debug->Patch();
+	if (debug->debugging&&!debug->waiting) debug->GetPatcher()->Patch();
 }
 
 void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {

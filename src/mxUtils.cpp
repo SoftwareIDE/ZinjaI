@@ -997,6 +997,21 @@ wxString mxUtils::EscapeString(wxString str, bool add_comillas) {
 	return str;
 }
 
+wxString mxUtils::UnEscapeString(wxString str) {
+	int i=0, l=str.Len();
+	while(i!=l) {
+		if (str[i]=='\\' || str[i]=='\"' || str[i]=='\'') {
+			if (str[i]=='\\' && i+1<l && str[i+1]=='n') str[i+1]='\n';
+			else if (str[i]=='\\' && i+1<l && str[i+1]=='r') str[i+1]='\r';
+			else if (str[i]=='\\' && i+1<l && str[i+1]=='b') str[i+1]='\b';
+			str=str.Mid(0,i)+str.Mid(i+1);
+			i++; l--;
+		}
+		i++;
+	}
+	return str;
+}
+
 
 wxString mxUtils::Text2Line(const wxString &text) {
 	int l=text.Len(),i,p=0;

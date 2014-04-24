@@ -107,6 +107,7 @@ class wxProcess;
 class wxOutputStream;
 class wxInputStream;
 class mxSource;
+class DebugPatcher;
 
 /**
 * @brief Administra la comunicación entre la interfaz y el depurador gdb
@@ -119,14 +120,15 @@ class DebugManager {
 	friend class mxInspectionExplorer;
 	friend class mxInspectionMatrix;
 	friend class DebuggerInspection;
+	friend class DebugPatcher;
 #ifdef DEBUG
 	wxFFile debug_log_file;
 #endif
 private:
-	wxString for_patch_done; ///< para aplicar parches en el depurador (tipo edit & continue), indica si ya se creo la copia del exe original al recompilar con cambios
+	DebugPatcher *debug_patcher;
 public:
-	wxString MakeForPatchCopy(mxSource *source);
-	void Patch();
+	DebugPatcher *GetPatcher() { return debug_patcher; } // retorna puntero y no instancia para poder poner en ese h solo una forward declaration y evitar tener que recompilar mucho al cambiar el patcher
+
 private:
 	bool should_pause; ///< puede que al hacer click en la pausa no se pause realmente (que la señal que envía no llegue a término, no se por qué, pero pasa cuando hay un breakpoint de los que solo actualizan la tabla de inspecciones)
 	bool has_symbols; ///< si cuando el debugger no inicia es porque no el ejecutable no tiene info de depuracion se baja esta bandera
