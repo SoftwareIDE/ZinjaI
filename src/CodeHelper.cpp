@@ -8,6 +8,11 @@
 #include <wx/ffile.h>
 #include "ProjectManager.h"
 #include "Autocoder.h"
+#include <map>
+#include <wx/choicdlg.h>
+#include "mxMainWindow.h"
+#include "mxMessageDialog.h"
+using namespace std;
 
 // comparacion con distancia de Levenshtein
 /*#define CH_COMPARE(typed,aux,i,l,max_str_dist)\*/
@@ -1336,3 +1341,125 @@ void CodeHelper::AppendIndexes(wxString indexes) {
 	}
 	actual_indexes.Sort();
 }
+
+#define EN_COMPOUT_UNDEFINED_REFERENCE ": undefined reference to "
+#define EN_COMPOUT_NO_SUCH_FILE_OR_DIRECTORY ": No such file or directory"
+
+void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayString &full_output, bool for_running) {
+	
+	static bool dont_check=false; if (dont_check) return;
+
+	mxSource *source=main_window->GetCurrentSource();
+	if (!source) return;
+	
+	static bool template_map_filled=false;
+	static map<wxString,int> the_map; // asocia include con elementos de temp_names y temp_args;
+	static wxArrayString temp_names; // nombres de las plantillas
+	static wxArrayString temp_args; // argumentos de las plantillas
+	
+	if (!template_map_filled) {
+		template_map_filled=true; wxArrayString templates_list;
+		utils->GetFilesFromBothDirs(templates_list,"templates");
+		for(unsigned int i=0;i<templates_list.GetCount();i++) {
+			wxString name=templates_list[i], options, includes;
+			wxString filename = utils->WichOne(name,"templates",true);
+			wxTextFile file(filename);
+			file.Open();
+			if (file.IsOpened()) { 
+				// buscar si tiene nombre, argumentos e includes
+				wxString line = file.GetFirstLine();
+				while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
+					if (line.Left(15)==_T("// !Z! Options:")) {
+						options = line.Mid(15).Trim(false).Trim(true);
+					}
+					if (line.Left(12)==_T("// !Z! Name:")) {
+						name = line.Mid(12).Trim(false).Trim(true);
+					}
+					if (line.Left(16)==_T("// !Z! Includes:")) {
+						includes = line.Mid(16).Trim(false).Trim(true);
+					}
+					line = file.GetNextLine();
+				}
+				file.Close();
+				if (options.Len() && includes.Len()) {
+					wxArrayString ainc; utils->Split(includes,ainc,true,true);
+					temp_names.Add(name);
+					temp_args.Add(options);
+					for(unsigned int j=0;j<ainc.Count();j++) {
+						wxString key=ainc[j];
+						while (the_map.find(key)!=the_map.end()) key+="#";
+						the_map[key]=temp_names.GetCount()-1;
+					}
+				}
+			}
+		}
+	}	
+
+	if (the_map.empty()) return;
+		
+	map<wxString,wxString> candidatos; // opciones
+	
+	for(unsigned int i=0;i<full_output.GetCount();i++) { 
+		
+		wxString &l=full_output[i], keyword; 
+		
+		// simbolos que no encuentra el linker
+		int p=l.Find(EN_COMPOUT_UNDEFINED_REFERENCE);
+		if (p!=wxNOT_FOUND) {
+			keyword=l.Mid(p+wxString(EN_COMPOUT_UNDEFINED_REFERENCE).Len()+1);
+			unsigned int j=0; 
+			while (j<keyword.Len()) {
+				if (keyword[j]=='\'' || keyword[j]=='`') {
+					keyword=keyword.Mid(0,j);
+					break;
+				}
+				j++;
+			}
+			if (!keyword.Len()) continue;
+			keyword=GetInclude("",keyword);
+			if (!keyword.Len()) continue;
+		} else {
+		
+			// includes que no encuentra el linker
+			p=l.Find(EN_COMPOUT_NO_SUCH_FILE_OR_DIRECTORY);
+			if (p!=wxNOT_FOUND) {
+				keyword=l.Mid(0,p);
+				unsigned int j=p-1; 
+				while (j>0 && keyword[j]!=':') j--;
+				if (keyword[j+1]==' ') j++;
+				keyword=keyword.Mid(j+1);
+				if (!keyword.Len()) continue;
+				keyword=wxString("<")<<keyword<<">";
+			}
+		}
+		
+		// buscar en las plantillas
+		map<wxString,int>::iterator it=the_map.find(keyword);
+		if (it==the_map.end()) continue;
+		while (it!=the_map.end()) {
+			candidatos[temp_names[it->second]]=temp_args[it->second];
+			keyword+="#";
+			it=the_map.find(keyword);
+		}
+	}
+	
+	if (candidatos.empty()) return;
+	wxArrayString vals;
+	map<wxString,wxString>::iterator it=candidatos.begin(), it2=candidatos.end();
+	while (it!=it2) {
+		vals.Add(it->first);
+		it++;
+	}
+	int ans=mxMessageDialog(main_window,("Los errores de compilación/enlazado podrían deberse a la falta de argumento\nde compilación adecuados para las bibliotecas que utiliza.\n¿Desea que ZinjaI modifique automáticamente los argumentos en base a una plantilla?"),("Errores de compilacion/enlazado"),mxMD_YES_NO|mxMD_QUESTION,("No volver a mostrar este mensaje"),false).ShowModal();
+	if (ans&mxMD_NO) {
+		if (ans&mxMD_CHECKED) dont_check=false;
+		return;
+	}
+	wxString cual=wxGetSingleChoice("Seleccione una plantilla","Parametros extra para el compilador",vals,main_window);
+	if (cual.Len()==0) return;
+	source->config_running.compiler_options=candidatos[cual];
+	wxCommandEvent evt;
+	if (for_running) main_window->OnRunRun(evt);
+	else main_window->OnRunCompile(evt);
+}
+

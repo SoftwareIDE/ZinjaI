@@ -56,6 +56,8 @@ public:
 	//! Agrega indices de autocompletado
 	void AppendIndexes(wxString indexes);
 	
+	void TryToSuggestTemplateSolutionForLinkingErrors(const wxArrayString &full_output, bool for_running);
+	
 };
 
 extern CodeHelper *code_helper;

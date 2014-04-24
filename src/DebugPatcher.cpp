@@ -75,7 +75,6 @@ void DebugPatcher::Patch ( ) {
 	int ms_ok=0,ms_err=0,ms_eq=0,ms_partial=0,ch_ok=0,ch_err=0,ms_can=0;
 	ans=utils->UnEscapeString(ans);
 	wxArrayString lines; Split(lines,ans);
-	cerr<<"e:"<<exe_file<<":"<<endl;
 	for(unsigned int i=0;i<lines.GetCount();i++) { 
 		if (lines[i].EndsWith(" (deleted)")) lines[i]=lines[i].Mid(0,lines[i].Len()-10);
 		if (lines[i].EndsWith(exe_file)) {

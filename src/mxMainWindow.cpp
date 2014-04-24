@@ -1061,7 +1061,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 	}
 }
 
-void mxMainWindow::OnSelectError (wxTreeEvent &event){
+void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 	// ver si es alguno de los mensajes de zinjai
 	wxString item_text=(compiler_tree.treeCtrl->GetItemText(event.GetItem()));
 	if (item_text==LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución.")) {
@@ -1082,7 +1082,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnSelectError");
 	if (error.Len()) OnSelectErrorCommon(error);
 }
 
-void mxMainWindow::OnFileOpenH(wxCommandEvent &event){
+void mxMainWindow::OnFileOpenH(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		if (source->sin_titulo) return;

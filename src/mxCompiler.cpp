@@ -11,6 +11,8 @@
 #include "DebugPatcher.h"
 #include "mxSource.h"
 #include "mxUtils.h"
+#include "Toolchain.h"
+#include "CodeHelper.h"
 
 #define EN_COMPOUT_FATAL_ERROR ": fatal error: "
 #define EN_COMPOUT_ERROR ": error: "
@@ -50,7 +52,6 @@
 //#define ES_COMPOUT_WARNING ": aviso: "
 //#define ES_COMPOUT_IN_PASSING_ARGUMENT ": en el paso del argumento"
 //#define ES_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
-#include "Toolchain.h"
 
 #ifdef DEBUG
 #include<iostream>
@@ -592,6 +593,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			tree->Expand(errors);
 			main_window->ShowCompilerTreePanel();
 			main_window->SetFocusToSourceAfterEvents();
+			if (!project) code_helper->TryToSuggestTemplateSolutionForLinkingErrors(compile_and_run->full_output,compile_and_run->run_after_compile);
 		}
 		if (project) {
 			project->compile_was_ok=false;

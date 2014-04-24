@@ -6,8 +6,11 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
+	<LI>New: Al intentar compilar un programa simple, si la compilación falla por símbolos indefinidos o por no encontrar headers de bibliotecas, se buscan estas bibliotecas en las plantillas y se ofrece copiar la configurar de la compilación de las plantillas coincidentes (por ahora el único ejemplo es OpenGL).</LI>
+	<LI>New: Se agregó un opción en el menú "Depuración" en la versión para GNU/Linux que permite modificar un ejecutable que se está depurando (recompilar y aplicar los cambios) sin reiniciar la depuración en algunos casos especiales.</LI>
 	<LI>Imp: Ahora se puede utilizar más de un filtro en una misma búsqueda en el cuadro de diálogo para insertar múltiples archivos desde un directorio.</LI>
-	<LI>Fix: Corregido un error al determinar en qué categoría insertar archivos en un proyecto al utilizar el cuadro de diálogo para insertar múltiples archivos desde un directorio..</LI>
+	<LI>Fix: Se cambión el nivel de optimizaciones por defecto en el perfil de compilación de proyecto Debug por defecto al nivel 0 (porque el nivel específico para depuración impide evaluar ciertas inspecciones).</LI>
+	<LI>Fix: Corregido un error al determinar en qué categoría insertar archivos en un proyecto al utilizar el cuadro de diálogo para insertar múltiples archivos desde un directorio.</LI>
 	
 </UL><BR><B>Release 20140411</B><BR><UL>
 	<LI>New: Se puede configurar un proyecto para que al enlazar extraiga la información de depuración el ejecutable (o de las bibliotecas generadas) y la guarde en un archivo separado.</LI>

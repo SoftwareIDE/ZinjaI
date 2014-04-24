@@ -392,7 +392,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 		// crear configuracion Debug
 		configurations[0] = new project_configuration(name.GetName(),_T("Debug"));
 		configurations[0]->debug_level=2;
-		configurations[0]->optimization_level=5;
+		configurations[0]->optimization_level=0;
 		configurations[0]->strip_executable=DBSACTION_KEEP;
 		configurations[0]->macros=configurations[0]->old_macros="_DEBUG";
 		// crear configuracion Release
