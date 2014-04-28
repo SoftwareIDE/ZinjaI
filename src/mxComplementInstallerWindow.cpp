@@ -85,7 +85,7 @@ void mxComplementInstallerWindow::OnHelpButton (wxCommandEvent & evt) {
 }
 
 void mxComplementInstallerWindow::OnDownloadButton (wxCommandEvent & evt) {
-	utils->OpenZinjaiSite("downextras.html");
+	utils->OpenZinjaiSite("downextras.php");
 }
 
 void mxComplementInstallerWindow::OnCancelButton (wxCommandEvent & evt) {
