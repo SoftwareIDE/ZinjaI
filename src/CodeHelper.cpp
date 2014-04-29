@@ -1448,10 +1448,10 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 	map<wxString,wxString>::iterator it=candidatos.begin(), it2=candidatos.end();
 	while (it!=it2) {
 		it->second.Replace("${DEFAULT}",config->Running.compiler_options,true);
-		if (it->second!=source->config_running.compiler_options) vals.Add(it->first);
+		if (it->second==source->config_running.compiler_options) return; // si ya se habia aplicado una, no volver a preguntar, probablemente sea otro el problema
+		vals.Add(it->first);
 		it++;
 	}
-	if (!vals.GetCount()) return;
 	int ans=mxMessageDialog(main_window,("Los errores de compilación/enlazado podrían deberse a la falta de argumentos\nde compilación adecuados para las bibliotecas que utiliza.\n¿Desea que ZinjaI modifique automáticamente los argumentos en base a una plantilla?"),("Errores de compilacion/enlazado"),mxMD_YES_NO|mxMD_QUESTION,("No volver a mostrar este mensaje"),false).ShowModal();
 	if (ans&mxMD_NO) {
 		if (ans&mxMD_CHECKED) dont_check=false;
