@@ -1430,9 +1430,9 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 				keyword=keyword.Mid(j+1);
 				if (!keyword.Len()) continue;
 				keyword=wxString("<")<<keyword<<">";
-			}
+			} else 
+				if (!keyword.Len()) continue;
 		}
-		
 		// buscar en las plantillas
 		map<wxString,int>::iterator it=the_map.find(keyword);
 		if (it==the_map.end()) continue;
@@ -1447,10 +1447,12 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 	wxArrayString vals;
 	map<wxString,wxString>::iterator it=candidatos.begin(), it2=candidatos.end();
 	while (it!=it2) {
-		vals.Add(it->first);
+		it->second.Replace("${DEFAULT}",config->Running.compiler_options,true);
+		if (it->second!=source->config_running.compiler_options) vals.Add(it->first);
 		it++;
 	}
-	int ans=mxMessageDialog(main_window,("Los errores de compilación/enlazado podrían deberse a la falta de argumento\nde compilación adecuados para las bibliotecas que utiliza.\n¿Desea que ZinjaI modifique automáticamente los argumentos en base a una plantilla?"),("Errores de compilacion/enlazado"),mxMD_YES_NO|mxMD_QUESTION,("No volver a mostrar este mensaje"),false).ShowModal();
+	if (!vals.GetCount()) return;
+	int ans=mxMessageDialog(main_window,("Los errores de compilación/enlazado podrían deberse a la falta de argumentos\nde compilación adecuados para las bibliotecas que utiliza.\n¿Desea que ZinjaI modifique automáticamente los argumentos en base a una plantilla?"),("Errores de compilacion/enlazado"),mxMD_YES_NO|mxMD_QUESTION,("No volver a mostrar este mensaje"),false).ShowModal();
 	if (ans&mxMD_NO) {
 		if (ans&mxMD_CHECKED) dont_check=false;
 		return;
