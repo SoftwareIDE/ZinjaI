@@ -1530,7 +1530,9 @@ void mxMainWindow::CreateMenus() {
 //	menu.debug_insert_watchpoint->Enable(false);
 //	menu.debug_function_breakpoint->Enable(false);
 	utils->AddItemToMenu(menu.debug, mxID_DEBUG_LOG_PANEL, LANG(MENUITEM_DEBUG_SHOW_LOG_PANEL,"&Mostrar mensajes del depurador"),_T(""),_T(""),ipre+_T("debug_log_panel.png"));
+#ifndef __WIN32__
 	menu.debug_patch = utils->AddItemToMenu(menu.debug, mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable..."),_T(""),_T(""),ipre+_T("debug_patch.png"));
+#endif
 	if (config->Debug.show_do_that) menu.debug_function_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_DO_THAT, LANG(MENUITEM_DEBUG_DO_THAT,"DO_THAT"),_T(""),_T(""),ipre+_T("do_that.png"));
 	menu.menu->Append(menu.debug, LANG(MENUITEM_DEBUG,"&Depuracion"));
 
@@ -2689,7 +2691,7 @@ bool mxMainWindow::CloseSource (int i) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	int accel_count=17, i=0;
+	const int accel_count=17; int i=0;
 	wxAcceleratorEntry entries[accel_count];
 	entries[i++].Set(	wxACCEL_CTRL,					WXK_SPACE, 		mxID_EDIT_FORCE_AUTOCOMPLETE);
 	entries[i++].Set(	wxACCEL_CTRL,					WXK_RETURN,		mxID_FILE_OPEN_SELECTED);
@@ -3293,6 +3295,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 *   cuando elegimo hacer lo mismo para todos en la primer pregunta), como flags por bits
 **/
 void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
+	cerr<<"*"<<filename.GetFullPath()<<"*"<<endl;
 	if (!filename.FileExists()) {
 		if (wxFileName::DirExists(DIR_PLUS_FILE(filename.GetFullPath(),"."))) {
 			SetExplorerPath(filename.GetFullPath());
@@ -4265,8 +4268,8 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 		menu.debug_jump->Enable(false);
 //		menu.debug_list_breakpoints->Enable(false);
 		menu.debug_pause->Enable(false);
-		menu.debug_patch->Enable(false);
 #if !defined(_WIN32) && !defined(__WIN32__)
+		menu.debug_patch->Enable(false);
 		menu.debug_attach->Enable(true);
 		menu.debug->SetLabel(mxID_DEBUG_CORE_DUMP,LANG(MENUITEM_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria..."));
 		menu.debug_inverse_execution->Enable(false);

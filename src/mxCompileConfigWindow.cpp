@@ -190,7 +190,9 @@ void mxCompileConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
 }
 
 void mxCompileConfigWindow::OnArgsFromTemplateV2(wxCommandEvent &evt) {
-	compiler_options_ctrl->SetValue(opts_list[evt.GetId()-mxID_LAST_ID]);
+	wxString val=opts_list[evt.GetId()-mxID_LAST_ID];
+	val.Replace("${DEFAULT}",config->Running.compiler_options,true);
+	compiler_options_ctrl->SetValue(val);
 }
 
 void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {

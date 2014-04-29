@@ -499,8 +499,8 @@ public:
 		wxMenuItem *debug_run;
 		wxMenuItem *debug_attach;
 		wxMenuItem *debug_pause;
-		wxMenuItem *debug_patch;
 #if !defined(_WIN32) && !defined(__WIN32__)
+		wxMenuItem *debug_patch;
 		wxMenuItem *debug_core_dump;
 #endif
 		wxMenuItem *debug_continue;
