@@ -103,7 +103,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		file_args = utils->Quotize(src->SaveSourceForSomeTool());
 		
 		// toargs
-		toargs=src->GetParsedCompilerOptions();
+		toargs=src->GetCompilerOptions(true);
 		
 		// cppargs
 		cppargs="--enable=all --inline-suppr";
@@ -544,8 +544,10 @@ bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, w
 		return !present;
 	} else IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE; 
-		bool present = utils->IsArgumentPresent(src->config_running.compiler_options,arg);
-		utils->SetArgument(src->config_running.compiler_options,arg,!present);
+		wxString comp_opts=src->GetCompilerOptions(false);
+		bool present = utils->IsArgumentPresent(comp_opts,arg);
+		utils->SetArgument(comp_opts,arg,!present);
+		src->SetCompilerOptions(comp_opts);
 		mxMessageDialog(this,wxString(!present?
 			(LANG1(MAINW_GPROF_GPROF_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.",tool)):
 			(LANG1(MAINW_GPROF_GPROF_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.",tool))
@@ -1018,7 +1020,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		wxString ext=src->source_filename.GetExt();
 		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<_T("-x c++ "); 
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
-		wxString comp_opts = src->GetParsedCompilerOptions();
+		wxString comp_opts = src->GetCompilerOptions();
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+fname+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
 		_IF_DEBUGMODE(command);
 		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
@@ -1121,7 +1123,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		int cur_pos=src->GetCurrentPos(),delta=0;
 		for(int i=0;i<cur_pos;i++) { if (src->GetCharAt(i)=='\r') delta++; }
 		template_file.AddLine(wxString("// !Z! Caret: ")<<(cur_pos-delta));
-		template_file.AddLine(wxString("// !Z! Options: ")+src->config_running.compiler_options);
+		template_file.AddLine(wxString("// !Z! Options: ")+src->GetCompilerOptions(false));
 		if (!src->cpp_or_just_c) template_file.AddLine(wxString("!Z! Type: C"));
 		for(int i=0;i<src->GetLineCount();i++) {
 			wxString str=src->GetLine(i);

@@ -229,7 +229,8 @@ public:
 
 	cfgSource config_source;
 	cfgRunning config_running;
-	wxString GetParsedCompilerOptions();
+	wxString GetCompilerOptions(bool parsed=true);
+	void SetCompilerOptions(const wxString &compiler_options);
 
 	bool ApplyAutotext();
 	

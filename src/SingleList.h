@@ -35,6 +35,17 @@ public:
 	int GetSize() const { 
 		return m_size;
 	}
+	void Reserve(int n) {
+		if (!m_capacity) {
+			m_capacity=n; 
+			m_vec=new T[n];
+		} else {
+			m_capacity=n; if (m_size<n) m_size=n;
+			T *new_vec=new T[m_capacity];
+			for(int i=0;i<m_size;i++) new_vec[i]=m_vec[i];
+			delete []m_vec; m_vec=new_vec;
+		}
+	}
 	int Add(const T &data) {
 		if (!m_capacity) {
 			m_capacity=10; 

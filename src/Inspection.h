@@ -123,6 +123,12 @@ public:
 					else if (name=="new_type") u.new_type=s.Mid(p1+2,p2-p1-2);
 					else if (name=="new_num_children") u.new_num_children=s.Mid(p1+2,p2-p1-2);
 				}
+				map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(u.name);
+				if (it==vo2di_map.end()) {
+					DEBUG_INFO("Inspection::UpdateAll vo name not found in vo2di_map");
+					continue;
+				}
+				DebuggerInspection &di=*(it->second);
 				/// @todo: procesar u
 			}
 		}

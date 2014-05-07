@@ -631,7 +631,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	if (!source->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9')))
 		z_opts<<_T("-x c++ "); // avoid not recognizing files without extension
 	// prepare command line
-	wxString comp_opts = source->GetParsedCompilerOptions();
+	wxString comp_opts = source->GetCompilerOptions();
 	wxString output_file = source->GetBinaryFileName().GetFullPath();
 	if (debug->debugging) debug->GetPatcher()->AlterOuputFileName(output_file);
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+output_file+_T("\"");

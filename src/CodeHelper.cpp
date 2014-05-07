@@ -1447,8 +1447,8 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 	wxArrayString vals;
 	map<wxString,wxString>::iterator it=candidatos.begin(), it2=candidatos.end();
 	while (it!=it2) {
-		it->second.Replace("${DEFAULT}",config->Running.compiler_options,true);
-		if (it->second==source->config_running.compiler_options) return; // si ya se habia aplicado una, no volver a preguntar, probablemente sea otro el problema
+		it->second.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(source->IsCppOrJustC()),true);
+		if (it->second==source->GetCompilerOptions(false)) return; // si ya se habia aplicado una, no volver a preguntar, probablemente sea otro el problema
 		vals.Add(it->first);
 		it++;
 	}
@@ -1459,7 +1459,7 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 	}
 	wxString cual=wxGetSingleChoice("Seleccione una plantilla","Parametros extra para el compilador",vals,main_window);
 	if (cual.Len()==0) return;
-	source->config_running.compiler_options=candidatos[cual];
+	source->SetCompilerOptions(candidatos[cual]);
 	wxCommandEvent evt;
 	if (for_running) main_window->OnRunRun(evt);
 	else main_window->OnRunCompile(evt);

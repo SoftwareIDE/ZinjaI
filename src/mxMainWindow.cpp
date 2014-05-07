@@ -3602,8 +3602,10 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 			} else if (line.Left(13)==_T("// !Z! Caret:")) {
 				line.Mid(13).Trim(false).Trim(true).ToLong(&pos);
 			} else if (line.Left(15)==_T("// !Z! Options:")) {
-				source->config_running.compiler_options=line.Mid(15).Trim(false).Trim(true);
-				source->config_running.compiler_options.Replace("${DEFAULT}",config->Running.compiler_options,true);
+				wxString comp_opts=line.Mid(15).Trim(false).Trim(true);
+				// here we assume Type is before Options
+				comp_opts.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(source->IsCppOrJustC()),true);
+				source->SetCompilerOptions(comp_opts); 
 			}
 			line = file.GetNextLine();
 		}
@@ -3643,9 +3645,9 @@ void mxMainWindow::OnFileSave (wxCommandEvent &event) {
 void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE  {
 		mxSource *source=CURRENT_SOURCE;
-		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->sin_titulo?config->Files.last_dir:source->GetPath(true),source->GetFileName(), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->sin_titulo?config->Files.last_dir:source->GetPath(true),source->GetFileName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 //		dlg.SetDirectory(source->GetPath(true));
-		dlg.SetWildcard(_T("Todos los archivos|*|Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER));
+		dlg.SetWildcard("Todos los archivos|*|Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER);
 //		dlg.SetFilterIndex(1);
 		if (dlg.ShowModal() == wxID_OK) {
 			wxFileName file = dlg.GetPath();
@@ -3659,7 +3661,7 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 						add=res&mxMD_YES;
 					}
 					if (add)
-						file.SetExt(_T("cpp"));
+						file.SetExt("cpp");
 				}
 			}
 			if (source->SaveSource(file)) {
@@ -3693,13 +3695,13 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 					} else {
 						wxString ext=file.GetExt();
 						notebook_sources->SetPageBitmap(notebook_sources->GetSelection(),*bitmaps->files.other);
-						if (ext==_T("HTM") || ext==_T("HTML"))
+						if (ext=="HTM" || ext=="HTML")
 							source->SetStyle(wxSTC_LEX_HTML);
-						else if (ext==_T("XML"))
+						else if (ext=="XML")
 							source->SetStyle(wxSTC_LEX_XML);
-						else if (ext==_T("SH"))
+						else if (ext=="SH")
 							source->SetStyle(wxSTC_LEX_BASH);
-						else if (file.GetName().MakeUpper()==_T("MAKEFILE"))
+						else if (file.GetName().MakeUpper()=="MAKEFILE")
 							source->SetStyle(wxSTC_LEX_MAKEFILE);
 						if (project_tree.treeCtrl->GetItemParent(source->treeId)!=project_tree.others) {
 							project_tree.treeCtrl->Delete(source->treeId);

@@ -184,7 +184,9 @@ bool ConfigManager::Load() {
 				}
 				
 			} else if (section==_T("Running")) {
-				CFG_GENERIC_READ_DN("compiler_options",Running.compiler_options);
+				CFG_GENERIC_READ_DN("compiler_options",Running.cpp_compiler_options); //just for backward compatibility
+				else CFG_GENERIC_READ_DN("cpp_compiler_options",Running.cpp_compiler_options);
+				else CFG_GENERIC_READ_DN("c_compiler_options",Running.c_compiler_options);
 				else CFG_BOOL_READ_DN("wait_for_key",Running.wait_for_key);
 				else CFG_BOOL_READ_DN("always_ask_args",Running.always_ask_args);
 				else CFG_BOOL_READ_DN("check_includes",Running.check_includes);
@@ -515,21 +517,21 @@ bool ConfigManager::Load() {
 //#if defined(__WIN32__)
 //		Init.forced_compiler_options<<_T(" --show-column");
 //#endif
-		if (!Running.compiler_options.Contains("-O")) {
-			if (!Running.compiler_options.EndsWith(" "))
-				Running.compiler_options<<" ";
-			Running.compiler_options<<"-O0";
+		if (!Running.cpp_compiler_options.Contains("-O")) {
+			if (!Running.cpp_compiler_options.EndsWith(" "))
+				Running.cpp_compiler_options<<" ";
+			Running.cpp_compiler_options<<"-O0";
 		}
 	}
 	
 //	if (Init.version<20130730) {
-//		if (Running.compiler_options.Contains("-O0"))
-//			Running.compiler_options.Replace("-O0","-Og");
+//		if (Running.cpp_compiler_options.Contains("-O0"))
+//			Running.cpp_compiler_options.Replace("-O0","-Og");
 //	}
 	
 	if (Init.version<20131223) {
-		if (Running.compiler_options.Contains("-Og"))
-			Running.compiler_options.Replace("-Og","-O0");
+		if (Running.cpp_compiler_options.Contains("-Og"))
+			Running.cpp_compiler_options.Replace("-Og","-O0");
 	}
 	
 	if (Init.version<20140319) {
@@ -676,7 +678,8 @@ bool ConfigManager::Save(){
 	fil.AddLine(_T(""));
 
 	fil.AddLine(_T("[Running]"));
-	CFG_GENERIC_WRITE_DN("compiler_options",Running.compiler_options);
+	CFG_GENERIC_WRITE_DN("cpp_compiler_options",Running.cpp_compiler_options);
+	CFG_GENERIC_WRITE_DN("c_compiler_options",Running.c_compiler_options);
 	CFG_BOOL_WRITE_DN("wait_for_key",Running.wait_for_key);
 	CFG_BOOL_WRITE_DN("always_ask_args",Running.always_ask_args);
 	CFG_BOOL_WRITE_DN("dont_run_headers",Running.dont_run_headers);
@@ -1053,7 +1056,8 @@ void ConfigManager::LoadDefaults(){
 	Source.callTips=true;
 	Source.avoidNoNewLineWarning=true;
 
-	Running.compiler_options=_T("-Wall -pedantic-errors -O0");
+	Running.cpp_compiler_options=_T("-Wall -pedantic-errors -O0");
+	Running.c_compiler_options=_T("-Wall -pedantic-errors -O0 -lm");
 	Running.wait_for_key=true;
 	Running.always_ask_args=false;
 	Running.dont_run_headers=false;

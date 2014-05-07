@@ -674,12 +674,34 @@ void mxSource::OnComment (wxCommandEvent &event) {
 	if (min>max) { int aux=min; min=max; max=aux; }
 	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
 	BeginUndoAction();
-	for (int i=min;i<=max;i++) {
-		//if (GetLine(i).Left(2)!="//") {
-		SetTargetStart(PositionFromLine(i));
-		SetTargetEnd(PositionFromLine(i));
-		ReplaceTarget(_T("//"));
-	}	
+	if (cpp_or_just_c) {
+		for (int i=min;i<=max;i++) {
+			//if (GetLine(i).Left(2)!="//") {
+			SetTargetStart(PositionFromLine(i));
+			SetTargetEnd(PositionFromLine(i));
+			ReplaceTarget("//");
+		}	
+	} else {
+		for (int i=min;i<=max;i++) {
+			int lp=PositionFromLine(i), ll=GetLineEndPosition(i); 
+			while (true) {
+				int s; char c; // para los II_*
+				int l0=lp;
+				while (lp<ll && II_IS_2(lp,' ','\t')) lp++;
+				if (lp==ll) break;
+				if (II_IS_COMMENT(lp)) {
+					while (lp<ll && II_IS_COMMENT(lp)) lp++;
+					if (lp==ll) break;
+				} else {
+					int le=lp;
+					while (le<ll && !II_IS_COMMENT(le)) le++;
+					SetTargetStart(le); SetTargetEnd(le); ReplaceTarget("*/");
+					SetTargetStart(l0); SetTargetEnd(l0); ReplaceTarget("/*");
+					lp=le+4; ll+=4;
+				}
+			}
+		}
+	}
 	EndUndoAction();
 }
 
@@ -687,43 +709,66 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 	int ss = GetSelectionStart();
 	int min=LineFromPosition(ss);
 	
-	if (GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!=_T("//")) {
-		BeginUndoAction();
-		int se=ss, l=GetLength();
-		while (ss>0 && (GetCharAt(ss)!='/' || GetCharAt(ss+1)!='*') )
-			ss--;
-		if (!se) 
-			se++;
-		while (se<l && (GetCharAt(se-1)!='*' || GetCharAt(se)!='/') )
-			se++;
-		if (GetCharAt(se)=='/' && GetCharAt(se-1)=='*') {
-			SetTargetStart(se-1);
-			SetTargetEnd(se+1);
-			ReplaceTarget(_T(""));
-		}
-		if (GetCharAt(ss)=='/' && GetCharAt(ss+1)=='*') {
-			SetTargetStart(ss);
-			SetTargetEnd(ss+2);
-			ReplaceTarget(_T(""));
-		}
-		SetSelection(ss,se-3);
-		EndUndoAction();
-		return;
-	}
+//	if (GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!=_T("//")) {
+//		BeginUndoAction();
+//		int se=ss, l=GetLength();
+//		while (ss>0 && (GetCharAt(ss)!='/' || GetCharAt(ss+1)!='*') )
+//			ss--;
+//		if (!se) 
+//			se++;
+//		while (se<l && (GetCharAt(se-1)!='*' || GetCharAt(se)!='/') )
+//			se++;
+//		if (GetCharAt(se)=='/' && GetCharAt(se-1)=='*') {
+//			SetTargetStart(se-1);
+//			SetTargetEnd(se+1);
+//			ReplaceTarget(_T(""));
+//		}
+//		if (GetCharAt(ss)=='/' && GetCharAt(ss+1)=='*') {
+//			SetTargetStart(ss);
+//			SetTargetEnd(ss+2);
+//			ReplaceTarget(_T(""));
+//		}
+//		SetSelection(ss,se-3);
+//		EndUndoAction();
+//		return;
+//	}
 	
 	int max=LineFromPosition(GetSelectionEnd());
 	int aux;
 	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 	BeginUndoAction();
 	for (int i=min;i<=max;i++) {
-		if (GetLine(i).Left(2)==_T("//")) {
-			SetTargetStart(PositionFromLine(i));
-			SetTargetEnd(PositionFromLine(i)+2);
-			ReplaceTarget(_T(""));
-		} else if (GetLine(i).Left((aux=GetLineIndentPosition(i))-PositionFromLine(i)+2).Right(2)==_T("//")) {
-			SetTargetStart(aux);
-			SetTargetEnd(aux+2);
-			ReplaceTarget(_T(""));
+		int s, p=GetLineIndentPosition(i); char c=GetCharAt(p+1);; // s y c se reutilizan para II_*
+		if (II_IS_COMMENT(p)) {
+			bool remove_asterisco_barra=false, add_barra_asterisco=false;
+			if (GetCharAt(p)=='/' && (c=='/' || c=='*')) {
+				SetTargetStart(p);
+				SetTargetEnd(p+2);
+				ReplaceTarget("");
+				remove_asterisco_barra = c=='*';
+			} else if (i>0) {
+				p=GetLineEndPosition(i-1);
+				SetTargetStart(p);
+				SetTargetEnd(p);
+				ReplaceTarget("*/");
+				p+=2;
+				remove_asterisco_barra=add_barra_asterisco=true;
+			}
+			if (remove_asterisco_barra||add_barra_asterisco) {
+				int p2=p,pl=GetLineEndPosition(i);
+				while (p2<pl && !(GetCharAt(p2=='*') && GetCharAt(p2+1)=='/') ) p2++;
+				if (p2!=pl) {
+					SetTargetStart(p2);
+					SetTargetEnd(p2+2);
+					ReplaceTarget("");
+					Colourise(p,p2);
+				} else if (add_barra_asterisco && i+1<GetLineCount()) {
+					p=PositionFromLine(i+1);
+					SetTargetStart(p);
+					SetTargetEnd(p);
+					ReplaceTarget("/*");
+				}
+			} 
 		}
 	}
 	EndUndoAction();
@@ -3543,14 +3588,24 @@ wxString mxSource::SaveSourceForSomeTool() {
 /**
 * @brief return config_runnign.compiler_options parsed (variables replaced and subcommands executed, current_toolchain must be setted)
 **/
-wxString mxSource::GetParsedCompilerOptions() {
-	wxArrayString args; 
-	utils->Split(config_running.compiler_options,args,false,true);
-	for(unsigned int i=0;i<args.GetCount();i++) args[i]=current_toolchain.FixArgument(cpp_or_just_c,args[i]);
-	wxString comp_opts=utils->UnSplit(args);
-	utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
-	comp_opts = utils->ExecComas(working_folder.GetFullPath(),comp_opts);
+wxString mxSource::GetCompilerOptions(bool parsed) {
+	wxString comp_opts = cpp_or_just_c?config_running.cpp_compiler_options:config_running.c_compiler_options;
+	if (parsed) {
+		wxArrayString args; 
+		utils->Split(comp_opts,args,false,true);
+		for(unsigned int i=0;i<args.GetCount();i++) args[i]=current_toolchain.FixArgument(cpp_or_just_c,args[i]);
+		comp_opts=utils->UnSplit(args);
+		utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
+		comp_opts = utils->ExecComas(working_folder.GetFullPath(),comp_opts);
+	}
 	return comp_opts;
+}
+
+void mxSource::SetCompilerOptions(const wxString &comp_opts) {
+	if (cpp_or_just_c) 
+		config_running.cpp_compiler_options = comp_opts;
+	else 
+		config_running.c_compiler_options = comp_opts;
 }
 
 bool mxSource::IsCppOrJustC() {

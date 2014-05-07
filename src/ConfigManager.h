@@ -80,7 +80,8 @@ struct cfgSource {
 struct cfgRunning {
 	bool dont_run_headers;
 	bool check_includes;
-	wxString compiler_options;
+	wxString cpp_compiler_options;
+	wxString c_compiler_options;
 	bool wait_for_key;
 	bool always_ask_args;
 };
@@ -445,6 +446,9 @@ public:
 	bool CheckDoxygenPresent();
 	/// @brief Verifica si esta instalado y configurado el path para llamar a CppCheck
 	bool CheckCppCheckPresent();
+	
+	/// @brief return default compiler arguments for simple programs (for_cpp=true: c++(g++) arguments, for_cpp=false, c(gcc) arguments)
+	wxString GetDefaultCompilerOptions(bool for_cpp) { return for_cpp?Running.cpp_compiler_options:Running.c_compiler_options; }
 	
 };
 

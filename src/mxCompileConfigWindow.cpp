@@ -31,7 +31,7 @@ BEGIN_EVENT_TABLE(mxCompileConfigWindow, wxDialog)
 	EVT_MENU(mxID_ARGS_ADD_FILE,mxCompileConfigWindow::OnArgsAddFile)
 	EVT_MENU(mxID_ARGS_EDIT_LIST,mxCompileConfigWindow::OnArgsEditList)
 	EVT_MENU(mxID_ARGS_EDIT_TEXT,mxCompileConfigWindow::OnArgsEditText)
-	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxCompileConfigWindow::OnArgsFromTemplateV2)
+	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxCompileConfigWindow::OnArgsFromTemplate)
 	EVT_BUTTON(mxID_ARGS_BUTTON,mxCompileConfigWindow::OnArgsButton)
 	EVT_CLOSE(mxCompileConfigWindow::OnClose)
 END_EVENT_TABLE()
@@ -54,7 +54,7 @@ mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* paren
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 
-	compiler_options_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_COMPILER_ARGS,"Parametros extra para el compilador"),source->config_running.compiler_options,mxID_COMPILE_OPTIONS_COMP_EXTRA);
+	compiler_options_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_COMPILER_ARGS,"Parametros extra para el compilador"),source->GetCompilerOptions(false),mxID_COMPILE_OPTIONS_COMP_EXTRA);
 	working_folder_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_WORKDIR,"Directorio de trabajo"),source->working_folder.GetFullPath(),mxID_WORKING_FOLDER);
 	args_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion"),source->exec_args,mxID_ARGS_BUTTON);
 	always_ask_args_ctrl = utils->AddCheckBox(mySizer,this,LANG(COMPILECONF_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),source->config_running.always_ask_args);
@@ -64,7 +64,7 @@ mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* paren
 	last_dir=source->working_folder.GetFullPath();
 	
 	args_ctrl->SetValue(source->exec_args);
-	compiler_options_ctrl->SetValue(source->config_running.compiler_options);
+	compiler_options_ctrl->SetValue(source->GetCompilerOptions());
 	always_ask_args_ctrl->SetValue(source->config_running.always_ask_args);
 	wait_for_key_ctrl->SetValue(source->config_running.wait_for_key);
 
@@ -95,7 +95,7 @@ void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 
 	source->exec_args = args_ctrl->GetValue();
 	source->working_folder = working_folder_ctrl->GetValue();
-	source->config_running.compiler_options=compiler_options_ctrl->GetValue();
+	source->SetCompilerOptions(compiler_options_ctrl->GetValue());
 	source->config_running.always_ask_args = always_ask_args_ctrl->GetValue();
 	source->config_running.wait_for_key = wait_for_key_ctrl->GetValue();
 	Destroy();
@@ -173,7 +173,7 @@ void mxCompileConfigWindow::OnArgsReplaceDir(wxCommandEvent &evt) {
 }
 
 void mxCompileConfigWindow::OnArgsDefault(wxCommandEvent &evt) {
-	compiler_options_ctrl->SetValue(config->Running.compiler_options);
+	compiler_options_ctrl->SetValue(config->GetDefaultCompilerOptions(source->IsCppOrJustC()));
 }
 
 void mxCompileConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
@@ -189,9 +189,9 @@ void mxCompileConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
 	}
 }
 
-void mxCompileConfigWindow::OnArgsFromTemplateV2(wxCommandEvent &evt) {
+void mxCompileConfigWindow::OnArgsFromTemplate(wxCommandEvent &evt) {
 	wxString val=opts_list[evt.GetId()-mxID_LAST_ID];
-	val.Replace("${DEFAULT}",config->Running.compiler_options,true);
+	val.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(source->IsCppOrJustC()),true);
 	compiler_options_ctrl->SetValue(val);
 }
 

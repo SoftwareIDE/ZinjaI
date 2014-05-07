@@ -301,7 +301,8 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_SHOW_WIZARD,"Mostrar Asistente"));
 	init_new_file = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_SIMPLE_NEW_ACTION,"Accion para Nuevo Archivo"),a_new_file, config->Init.new_file);
 //	files_templates_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_TEMPLATES_FOLDER,"Carpeta de plantillas (necesita reiniciar)"),config->Files.templates_dir,mxID_TEMPLATES_FOLDER);
-	running_compiler_options = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador"),config->Running.compiler_options);
+	running_cpp_compiler_options = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador C++"),config->Running.cpp_compiler_options);
+	running_c_compiler_options = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador C"),config->Running.c_compiler_options);
 	running_wait_for_key = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING,"Esperar una tecla luego de la ejecución"),config->Running.wait_for_key);
 	running_always_ask_args = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),config->Running.always_ask_args);
 	init_always_add_extension = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ADD_CPP_EXTENSION,"Agregar la extension cpp si se omite al guardar"),config->Init.always_add_extension);
@@ -544,7 +545,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Init.new_file = init_new_file->GetSelection();
 	config->Running.wait_for_key = running_wait_for_key->GetValue();
 	config->Running.always_ask_args = running_always_ask_args->GetValue();
-	config->Running.compiler_options = running_compiler_options->GetValue();
+	config->Running.cpp_compiler_options = running_cpp_compiler_options->GetValue();
+	config->Running.c_compiler_options = running_c_compiler_options->GetValue();
 	config->Running.dont_run_headers = running_dont_run_headers->GetValue();
 	config->Init.singleton = init_singleton->GetValue();
 	if (!config->Init.singleton && singleton->IsRunning()) singleton->Stop();
@@ -1261,7 +1263,8 @@ void mxPreferenceWindow::ResetChanges() {
 	
 	// simple
 //	files_templates_dir->SetValue(config->Files.templates_dir);
-	running_compiler_options->SetValue(config->Running.compiler_options);
+	running_cpp_compiler_options->SetValue(config->Running.cpp_compiler_options);
+	running_c_compiler_options->SetValue(config->Running.c_compiler_options);
 	running_wait_for_key->SetValue(config->Running.wait_for_key);
 	running_always_ask_args->SetValue(config->Running.always_ask_args);
 	init_always_add_extension->SetValue(config->Init.always_add_extension);

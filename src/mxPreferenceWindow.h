@@ -75,7 +75,8 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *running_dont_run_headers;
 	wxCheckBox *running_wait_for_key;
 	wxCheckBox *running_always_ask_args;
-	wxTextCtrl *running_compiler_options;
+	wxTextCtrl *running_cpp_compiler_options;
+	wxTextCtrl *running_c_compiler_options;
 	wxTextCtrl *files_autocode;
 	wxTextCtrl *files_temp_dir;
 	wxComboBox *files_toolchain;

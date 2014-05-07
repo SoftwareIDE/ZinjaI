@@ -2906,8 +2906,10 @@ PREFERENCES_SIMPLE_NEW_ACTION
 Accion para Nuevo Archivo
 PREFERENCES_SIMPLE_TEMPLATES_FOLDER
 Carpeta de plantillas (necesita reiniciar)
-PREFERENCES_SIMPLE_EXTRA_COMPILER_ARGUMENTS
-Parámetros adicionales para el compilador
+PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS
+Parámetros adicionales para el compilador C++
+PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS
+Parámetros adicionales para el compilador C
 PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING
 Esperar una tecla luego de la ejecución
 PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
