@@ -2039,7 +2039,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		compiling_options<<_T("-w ");
 	else if (active_configuration->debug_level==2) 
 		compiling_options<<_T("-Wall ");
-	// warnings_level
+	// optimization_level
 	if (active_configuration->optimization_level==0) 
 		compiling_options<<_T("-O0 ");
 	else if (active_configuration->optimization_level==1) 
@@ -2052,6 +2052,8 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		compiling_options<<_T("-Os ");
 	else if (active_configuration->optimization_level==5) 
 		compiling_options<<(current_toolchain.FixArgument(true,"-Og")+" ");
+	else if (active_configuration->optimization_level==6) 
+		compiling_options<<_T("-Ofast ");
 	// ansi_compliance
 	if (active_configuration->pedantic_errors) compiling_options<<_T("-pedantic-errors ");
 	// headers_dirs
@@ -2785,7 +2787,7 @@ int ProjectManager::GetRequiredVersion() {
 	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,
 		 have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,
 		 have_env_vars=false,have_breakpoint_annotation=false,env_vars_autoref=false,exe_use_temp=false,
-		 copy_debug_symbols=false;
+		 copy_debug_symbols=false, use_ofast=false;
 	
 	// breakpoint options
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
@@ -2799,6 +2801,7 @@ int ProjectManager::GetRequiredVersion() {
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
 		if (configurations[i]->output_file.Contains("${TEMP_DIR}")) exe_use_temp=true;
 		if (configurations[i]->optimization_level==5) use_og=true;
+		else if (configurations[i]->optimization_level==6) use_ofast=true;
 		if (!configurations[i]->std_c.Len()) have_std=true;
 		if (!configurations[i]->std_cpp.Len()) have_std=true;
 		if (configurations[i]->pedantic_errors) have_std=true;
@@ -2830,7 +2833,8 @@ int ProjectManager::GetRequiredVersion() {
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	
 	version_required=0;
-	if (copy_debug_symbols) version_required=20140410;
+	if (use_ofast) version_required=20140507;
+	else if (copy_debug_symbols) version_required=20140410;
 	else if (env_vars_autoref || exe_use_temp) version_required=20140318;
 	else if (have_breakpoint_annotation) version_required=20140213;
 	else if (wxfb && wxfb->activate_integration) version_required=20131219;

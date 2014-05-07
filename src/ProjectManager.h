@@ -270,7 +270,7 @@ struct project_configuration {
 	wxString std_c; ///< versión del estándar a utilizar para los fuentes C
 	wxString std_cpp; ///< versión del estándar a utilizar para los fuentes C++
 	int debug_level; ///< nivel de información de depuración a colocar al compilar: 0=g0 1=g1 2=g2
-	int optimization_level; ///< nivel optimización para los binarios: 0=O0 1=O1 2=O2 3=O3 4=Os, 5=Og
+	int optimization_level; ///< nivel optimización para los binarios: 0=O0 1=O1 2=O2 3=O3 4=Os, 5=Og, 6=Ofast
 	wxString linking_extra; ///< parametros adicionales para el enlazador (se llama a travez de gcc/g++, no directo)
 	wxString libraries_dirs; ///< rutas adicionales para buscar librerias (para pasar con -L)
 	wxString libraries; ///< librearias para enlazar (para pasar con -l)
