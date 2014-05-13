@@ -128,7 +128,7 @@ bool DebugManager::Start(bool update, mxSource *source) {
 			args = source->exec_args;	
 
 		compiler->last_caption = source->page_text;
-		compiler->last_runned = source;
+		compiler->last_runned = current_source = source;
 		if (Start(source->working_folder.GetFullPath(),source->GetBinaryFileName().GetFullPath(),args,true,source->config_running.wait_for_key)) {
 			int cuantos_sources = main_window->notebook_sources->GetPageCount();
 			for (int i=0;i<cuantos_sources;i++) {
