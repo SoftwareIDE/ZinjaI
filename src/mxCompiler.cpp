@@ -540,7 +540,10 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 					} else {
 						main_window->SetCompilingStatus(LANG(MAINW_COMPILING_DONE,"Compilacion finalizada."));
 					}
-					tree->Expand(warnings);
+					if (num_warnings) {
+						tree->Expand(warnings);
+						main_window->ShowCompilerTreePanel();
+					}
 					tree->SetItemText(state,LANG(MAINW_COMPILING_DONE,"Compilacion Finalizada"));
 					// ejecutar o depurar
 					if (compile_and_run->run_after_compile) {
