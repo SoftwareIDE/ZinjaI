@@ -55,6 +55,7 @@
 
 #ifdef DEBUG
 #include<iostream>
+#include <cstdlib>
 using namespace std;
 #endif
 
@@ -717,10 +718,16 @@ wxString mxCompiler::GetCompilingStatusText() {
 bool mxCompiler::CheckForExecutablePermision(wxString file) {
 #ifndef __WIN32__
 	if (!wxFileName::IsFileExecutable(file)) {
-		tree->AppendItem(errors,LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución."),7);
-		main_window->ShowCompilerTreePanel();
-		tree->Expand(errors);
-		return false;
+		system((string("chmod a+x ")+utils->Quotize(file)).c_str());
+		if (!wxFileName::IsFileExecutable(file)) {
+			tree->AppendItem(errors,LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución."),7);
+			main_window->ShowCompilerTreePanel();
+			tree->Expand(errors);
+			return false;
+		} else {
+			tree->AppendItem(warnings,LANG(MAINW_WARNING_EXCUTABLE_PERMISSION_CHANGED,"Se cambiaron los permisos del binario (chmod a+x)."),7);
+			tree->Expand(warnings);
+		}
 	}
 #endif
 	return true;

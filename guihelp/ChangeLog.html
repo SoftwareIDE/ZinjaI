@@ -8,9 +8,13 @@
 
 	<LI>New: Al intentar compilar un programa simple, si la compilación falla por símbolos indefinidos o por no encontrar headers de bibliotecas, se buscan estas bibliotecas en las plantillas y se ofrece copiar la configuración de la compilación de las plantillas coincidentes (por ahora el único ejemplo es OpenGL).</LI>
 	<LI>New: Se agregó un opción en el menú "Depuración" en la versión para GNU/Linux que permite modificar un ejecutable que se está depurando (recompilar y aplicar los cambios) sin reiniciar la depuración en algunos casos especiales.</LI>
+	<LI>Imp: Al intentar ejecutar un programa/proyecto en GNU/Linux, si ZinjaI detecta que hay un ejecutable compilado y actualizado pero sin permisos de ejecución, intenta cambiarle los permisos. Si lo logra genera una advertencia, sino un error.</LI>
+	<LI>Imp: La ventana de ayuda sobre C++ agrega al final de cada página de referencia un enlace para visualizarla en el navegador por defecto (para poder visualizarla con su formato completo).</LI>
+	<LI>Imp: Al finalizar la compilación de manera exitosa, si hay warnings el panel de resultados se hace visible automáticamente.</LI>
 	<LI>Imp: El atajo de teclado para comentar lineas de código utiliza siempre /* si es un programa C.</LI>
 	<LI>Imp: Los argumentos de compilación por defecto para programas simple ahora distinguen entre programas C y programas C++.</LI>
 	<LI>Imp: Ahora se puede utilizar más de un filtro en una misma búsqueda en el cuadro de diálogo para insertar múltiples archivos desde un directorio.</LI>
+	<LI>Fix: Corregido un bug por el cual se mostraba el fuente equivocado durante la depuración de un programa simple sin título en algunas situaciones.</LI>
 	<LI>Fix: Se cambión agregó una opción que faltaba a los posibles niveles de optimizaciones a utilizar en la compilación de un proyecto (Velocidad, que equivale a -Ofast en gcc).</LI>
 	<LI>Fix: Se cambión el nivel de optimizaciones por defecto en el perfil de compilación de proyecto Debug por defecto al nivel 0 (porque el nivel específico para depuración impide evaluar ciertas inspecciones).</LI>
 	<LI>Fix: Corregido un error al determinar en qué categoría insertar archivos en un proyecto al utilizar el cuadro de diálogo para insertar múltiples archivos desde un directorio.</LI>
