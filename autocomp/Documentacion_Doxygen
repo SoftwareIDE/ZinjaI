@@ -76,6 +76,7 @@
 	@test
 	@throw
 	@todo
+	@tparam
 	@typedef
 	@union
 	@until

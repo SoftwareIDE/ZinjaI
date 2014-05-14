@@ -64,7 +64,7 @@ const wxChar* mxSourceWords3 =
 	_T("latexonly li line link mainpage n name namespace nosubgrouping note ")
 	_T("overload p page par param post pre ref relates remarks return ")
 	_T("retval sa section see showinitializer since skip skipline struct ")
-	_T("subsection test throw todo typedef union until var verbatim ")
+	_T("subsection test throw todo tparam typedef union until var verbatim ")
 	_T("verbinclude version warning weakgroup $ @ \"\" & < > # { }");
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
