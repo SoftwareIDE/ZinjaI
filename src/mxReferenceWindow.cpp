@@ -35,6 +35,7 @@ void mxReferenceWindow::ShowHelp(wxString page) {
 	} else {
 		instance=new mxReferenceWindow(page);
 	}
+	instance->search_text->SetFocus();
 }
 
 void mxReferenceWindow::LoadHelp (wxString fname, bool update_history) {
@@ -97,6 +98,8 @@ void mxReferenceWindow::OnSearch (wxString value, bool update_history) {
 bool mxReferenceWindow::OnLink (wxString href) {
 	if (href.StartsWith("http:")) {
 		utils->OpenInBrowser(href);
+	} else if (href.StartsWith("file:")) {
+		utils->OpenInBrowser(DIR_PLUS_FILE(current_path,href.Mid(5)));
 	} else if (href[0]=='#') {
 		html->ScrollToAnchor(href.AfterFirst('#'));
 	} else if (href.Contains("#")) {
@@ -186,6 +189,8 @@ wxString mxReferenceWindow::ProcessHTML (wxString fname, mxReferenceWindow *w) {
 			else if (str.Contains("<div id=\"contentSub\">")) str="";
 			else if (str.Contains("<div class=\"printfooter\">")) {
 				str="<BR><BR><BR><I>This help page was generated from content archive (version 20140208) donwloaded from <A href=\"http://www.cppreference.com\">www.cppreference.com</a>.</I>";
+				str+="<BR><BR><A href=\"file:"; str+=fname;
+				str+="\">Click here</A> to open this page in your default web browser.<BR>";
 				fil.GetNextLine(); 
 			}
 			str.Replace("<span class=\"mw-headline\" id=","<a name=",false);
