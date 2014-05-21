@@ -24,6 +24,7 @@ BEGIN_EVENT_TABLE(mxOpenRecentDialog, wxDialog)
 	EVT_CHAR_HOOK(mxOpenRecentDialog::OnCharHook)
 	EVT_SIZE(mxOpenRecentDialog::OnResize)
 	EVT_LIST_ITEM_ACTIVATED(wxID_ANY,mxOpenRecentDialog::OnListDClick)
+	EVT_CHECKBOX(wxID_ANY,mxOpenRecentDialog::OnShowDates)
 END_EVENT_TABLE()
 	
 mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(parent, wxID_ANY, LANG(RECENT_CAPTION,"Archivos Recientes..."), wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
@@ -64,6 +65,7 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
 	mySizer->Add(list_ctrl,sizers->BA5_Exp1);
 //	mySizer->Add(new wxStaticText(this,wxID_ANY,wxString(' ',max_len*2)),sizers->BLRT5_Exp0);
+	mySizer->Add(show_mod_date = new wxCheckBox(this,wxID_ANY,"Mostrar fecha de modificacion",wxDefaultPosition,wxDefaultSize),sizers->BA5_Exp0);
 	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	SetSizer(mySizer);
 	this->SetSize(wxSize(main_window->GetSize().GetWidth()/2,main_window->GetSize().GetHeight()/2));
@@ -74,8 +76,6 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	UpdateList();
 	text_ctrl->SetSelection(-1,-1);
 	text_ctrl->SetFocus();
-	wxSizeEvent sz_evt;
-	OnResize(sz_evt);
 }
 
 void mxOpenRecentDialog::OnGotoButton(wxCommandEvent &event) {
@@ -127,10 +127,12 @@ void mxOpenRecentDialog::UpdateList() {
 		wxString file(fn.GetFullPath());
 		if (file.Upper().Find(key)!=wxNOT_FOUND) {
 			list_ctrl->InsertItem(count,file);
-			if (fn.FileExists())
-				list_ctrl->SetItem(count,1,fn.GetModificationTime().Format(LANG(RECENT_DATE_FORMAT,"%d/%m/%Y %H:%M:%S")));
-			else
-				list_ctrl->SetItem(count,1,LANG(RECENT_DATE_NOT_FOUND,"no encontrado"));
+			if (show_mod_date->GetValue()) {
+				if (fn.FileExists())
+					list_ctrl->SetItem(count,1,fn.GetModificationTime().Format(LANG(RECENT_DATE_FORMAT,"%d/%m/%Y %H:%M:%S")));
+				else
+					list_ctrl->SetItem(count,1,LANG(RECENT_DATE_NOT_FOUND,"no encontrado"));
+			}
 			count++;
 		}
 	}
@@ -142,6 +144,7 @@ void mxOpenRecentDialog::UpdateList() {
 		list_ctrl->InsertItem(0,LANG(RECENT_NO_RESULTS,"<<no se encontraron coincidencias>>"));
 		goto_button->Enable(false);
 	}
+	if (show_mod_date->GetValue()) ResizeColums();
 }
 
 void mxOpenRecentDialog::OnCharHook (wxKeyEvent &event) {
@@ -199,13 +202,21 @@ void mxOpenRecentDialog::SetListSelection (int i) {
 }
 
 void mxOpenRecentDialog::OnResize (wxSizeEvent & event) {
-	event.Skip();
-	list_ctrl->SetColumnWidth(1,wxLIST_AUTOSIZE);
-	list_ctrl->SetColumnWidth(1,list_ctrl->GetColumnWidth(1)+5);
-	list_ctrl->SetColumnWidth(0,list_ctrl->GetSize().GetWidth()-list_ctrl->GetColumnWidth(1)-5);
+	event.Skip(); ResizeColums();
 }
 
 void mxOpenRecentDialog::OnListDClick (wxListEvent & event) {
 	wxCommandEvent e; OnGotoButton(e);
+}
+
+void mxOpenRecentDialog::ResizeColums ( ) {
+	list_ctrl->SetColumnWidth(1,show_mod_date->GetValue()?wxLIST_AUTOSIZE:0);
+	list_ctrl->SetColumnWidth(1,list_ctrl->GetColumnWidth(1)+5);
+	list_ctrl->SetColumnWidth(0,list_ctrl->GetSize().GetWidth()-list_ctrl->GetColumnWidth(1)-5);
+}
+
+void mxOpenRecentDialog::OnShowDates (wxCommandEvent & evt) {
+	evt.Skip();
+	UpdateList();
 }
 

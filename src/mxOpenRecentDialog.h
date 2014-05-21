@@ -18,9 +18,11 @@ private:
 	wxButton *del_button;
 	wxButton *goto_button;
 	wxButton *cancel_button;
+	wxCheckBox *show_mod_date;
 	bool projects; ///< determina si muestra proyectos o fuentes recientes
 	int GetListSelection();
 	void SetListSelection(int i);
+	void ResizeColums();
 public:
 	mxOpenRecentDialog(wxWindow* parent, bool aprj);
 	void OnDelButton(wxCommandEvent &event);
@@ -32,6 +34,7 @@ public:
 	void OnTextChange(wxCommandEvent &event);
 	void OnCharHook (wxKeyEvent &event);
 	void OnResize(wxSizeEvent &event);
+	void OnShowDates(wxCommandEvent &evt);
 	void UpdateList();
 private:
 	DECLARE_EVENT_TABLE();

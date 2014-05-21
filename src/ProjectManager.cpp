@@ -2008,7 +2008,7 @@ void ProjectManager::Clean() {
 *                    como estan (al compilar en zinjai se ejecutan, al generar
 *                    el makefile suele ser convieniente dejarlos para que 
 *                    los ejecute make).
-* @param mignw_dir   indica con que valor se deben reemplazar las ocurrencias de
+* @param mingw_dir   indica con que valor se deben reemplazar las ocurrencias de
 *                    la variable ${MINGW_DIR} en las opciones. Es el valor real
 *                    al compilar en zinjai, pero conviene queda como variable
 *                    al generar el makefile.

@@ -474,6 +474,10 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 	files_debugger_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GDB,"Comando del depurador"),config->Files.debugger_command,mxID_GDB_PATH);
 	files_terminal_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CONSOLE,"Comando de la terminal"),config->Files.terminal_command,mxID_TERMINALS_BUTTON);
 	
+	utils->AddStaticText(sizer,panel,/*LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,*/"Nota: Las configuración de las rutas relacionadas al compilador se realiza\n"
+																								"desde la pestaña \"Programa/Proyecto\" utilizando el botón \"...\" de la\n"
+																								"opción \"Herramientas de compilación\"."/*)*/);
+	
 	panel->SetSizerAndFit(sizer);
 	return panel;
 
