@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,mxPreferenceWindow::OnImproveInspectionsByTypeButton)
 	EVT_BUTTON(mxID_GDB_PATH,mxPreferenceWindow::OnGdbButton)
 	EVT_BUTTON(mxID_XDOT_PATH,mxPreferenceWindow::OnXdotButton)
+	EVT_BUTTON(mxID_PREFERENCES_TOOLCHAIN_OPTIONS,mxPreferenceWindow::OnToolchainButton)
 	EVT_BUTTON(mxID_IMG_BROWSER_PATH,mxPreferenceWindow::OnImgBrowserButton)
 	EVT_BUTTON(mxID_BROWSER_PATH,mxPreferenceWindow::OnBrowserButton)
 	EVT_BUTTON(mxID_VALGRIND_PATH,mxPreferenceWindow::OnValgrindButton)
@@ -67,7 +68,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_VIEW,mxPreferenceWindow::OnToolbarsView)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_RESET,mxPreferenceWindow::OnToolbarsReset)
 #if defined(_WIN32) || defined(__WIN32__)
-	EVT_BUTTON(mxID_MINGW_FOLDER,mxPreferenceWindow::OnMingwButton)
+//	EVT_BUTTON(mxID_MINGW_FOLDER,mxPreferenceWindow::OnMingwButton)
 #else
 	EVT_BUTTON(mxID_PREFERENCES_XDG,mxPreferenceWindow::OnXdgButton)
 	EVT_BUTTON(mxID_TERMINALS_BUTTON,mxPreferenceWindow::OnTerminalButton)
@@ -315,7 +316,13 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 	init_prefer_explorer_tree = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto"),config->Init.prefer_explorer_tree);
 	
 	wxArrayString tc_array; Toolchain::GetNames(tc_array,true); int tc_i=tc_array.Index(config->Files.toolchain);
-	files_toolchain = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_TOOLCHAIN,"Herramientas de compilación"),tc_array,tc_i);
+	files_toolchain = new wxComboBox(panel, wxID_ANY, config->Files.toolchain, wxDefaultPosition, wxDefaultSize, tc_array, wxCB_READONLY);
+	files_toolchain->SetSelection(tc_i);
+	wxBoxSizer *tc_sizer = new wxBoxSizer(wxHORIZONTAL);
+	tc_sizer->Add(new wxStaticText(panel, wxID_ANY, wxString(LANG(PREFERENCES_TOOLCHAIN,"Herramientas de compilación"))+": ", wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
+	tc_sizer->Add(files_toolchain , sizers->Exp1);
+	tc_sizer->Add(new wxButton(panel,mxID_PREFERENCES_TOOLCHAIN_OPTIONS,"...",wxDefaultPosition,wxSize(30,10)),sizers->Exp0_Right);
+	sizer->Add(tc_sizer,sizers->BA5_Exp0);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
@@ -456,7 +463,7 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 //	help_autocomp_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_AUTOCOMP,"Ubicacion de los indices de autocompletado"),config->Help.autocomp_dir,mxID_AUTOCOMP_FOLDER);
 	files_temp_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_TEMP,"Directorio temporal"),config->Files.temp_dir, mxID_TEMP_FOLDER);
 #if defined(_WIN32) || defined(__WIN32__)
-	files_mingw_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_MINGW,"Directorio de MinGW (requiere reiniciar ZinjaI)"),config->Files.mingw_dir, mxID_MINGW_FOLDER);
+//	files_mingw_dir = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_MINGW,"Directorio de MinGW (requiere reiniciar ZinjaI)"),config->Files.mingw_dir, mxID_MINGW_FOLDER);
 #endif
 	files_project_folder = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_PROJECTS,"Directorio de proyectos"),config->Files.project_folder, mxID_PROJECTS_FOLDER);
 	
@@ -606,9 +613,9 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
 	styles_print_size->GetValue().ToLong(&l); config->Styles.print_size=l;
 	styles_font_size->GetValue().ToLong(&l); config->Styles.font_size=l;
-#if defined(_WIN32) || defined(__WIN32__)
-	config->Files.mingw_dir = files_mingw_dir->GetValue();
-#endif
+//#if defined(_WIN32) || defined(__WIN32__)
+//	config->Files.mingw_dir = files_mingw_dir->GetValue();
+//#endif
 	wxAuiNotebook *ns=main_window->notebook_sources;
 	for (unsigned int i=0;i<ns->GetPageCount();i++)
 		((mxSource*)(ns->GetPage(i)))->LoadSourceConfig();
@@ -671,8 +678,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	} else
 		config->Toolbars.icon_size=16;
 	if (toolbar_changed) main_window->SortToolbars(true);
-	config->RecalcStuff();
 	Toolchain::SelectToolchain();
+	config->RecalcStuff();
 	
 	Close();
 
@@ -768,12 +775,12 @@ void mxPreferenceWindow::OnHelpButton(wxCommandEvent &event){
 }
 
 #if defined(_WIN32) || defined(__WIN32__)
-
-void mxPreferenceWindow::OnMingwButton(wxCommandEvent &event){
-	wxDirDialog dlg(this,_T("Directorio de binarios de MinGW:"),files_mingw_dir->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_mingw_dir->SetValue(dlg.GetPath());
-}
+//
+//void mxPreferenceWindow::OnMingwButton(wxCommandEvent &event){
+//	wxDirDialog dlg(this,_T("Directorio de binarios de MinGW:"),files_mingw_dir->GetValue());
+//	if (wxID_OK==dlg.ShowModal())
+//		files_mingw_dir->SetValue(dlg.GetPath());
+//}
 
 #else
 
@@ -1214,9 +1221,9 @@ void mxPreferenceWindow::ResetChanges() {
 	// paths
 	help_wxhelp_index->SetValue(config->Help.wxhelp_index);
 	files_temp_dir->SetValue(config->Files.temp_dir);
-#if defined(_WIN32) || defined(__WIN32__)
-	files_mingw_dir->SetValue(config->Files.mingw_dir);
-#endif
+//#if defined(_WIN32) || defined(__WIN32__)
+//	files_mingw_dir->SetValue(config->Files.mingw_dir);
+//#endif
 	files_project_folder->SetValue(config->Files.project_folder);
 	files_wxfb_command->SetValue(config->Files.wxfb_command);
 #ifdef __WIN32__
@@ -1371,5 +1378,6 @@ void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & even
 	mxInspectionsImprovingEditor(this);
 }
 
-
-
+void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
+	
+}

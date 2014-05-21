@@ -1216,7 +1216,7 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 	if (!src->sin_titulo && utils->GetComplementaryFile(src->source_filename).Len())
 		menu.Append(mxID_FILE_OPEN_H, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_H,"&Abrir complementario...\tF12"));
 	
-	wxMenuItem *shared = menu.AppendCheckItem(mxID_TOOLS_SHARE_SHARE, /*LANG(MAINW_PROJECT_FILE_POPUP_SHARE,*/"Compartir archivo..."/*)*/);
+	wxMenuItem *shared = menu.AppendCheckItem(mxID_TOOLS_SHARE_SHARE, LANG(MAINW_PROJECT_FILE_POPUP_SHARE,"Compartir archivo..."));
 	shared->Check(share && share->Exists(src));
 		
 	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));

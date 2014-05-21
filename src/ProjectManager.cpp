@@ -1248,7 +1248,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 			if (lib->path.Len() && !wxFileName::DirExists(DIR_PLUS_FILE(path,lib->path)))
 				wxFileName::Mkdir(DIR_PLUS_FILE(path,lib->path),0777,wxPATH_MKDIR_FULL);
 			if (lib->need_relink || !wxFileName(DIR_PLUS_FILE(path,lib->filename)).FileExists()) {
-				AnalizeConfig(path,true,config->mingw_real_path,false); // esto no fuerza el "reanalizado", pero se puede llegar hasta aca sin haberlo hecho antes??
+				AnalizeConfig(path,true,current_toolchain.mingw_dir,false); // esto no fuerza el "reanalizado", pero se puede llegar hasta aca sin haberlo hecho antes??
 				if (lib->objects_list.Len()) {
 					step = step->next = new compile_step(CNS_LINK,new linking_info(
 						lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker,
@@ -1369,7 +1369,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 			}
 
 			if (relink_exe) {
-				AnalizeConfig(path,true,config->mingw_real_path,false);
+				AnalizeConfig(path,true,current_toolchain.mingw_dir,false);
 				wxString output_bin_file=executable_name;
 				if (debug->debugging) debug->GetPatcher()->AlterOuputFileName(output_bin_file);
 				step = step->next = new compile_step(CNS_LINK,
@@ -1389,11 +1389,11 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				}
 			}
 		} else if (relink_exe) {
-			AnalizeConfig(path,true,config->mingw_real_path,false);
+			AnalizeConfig(path,true,current_toolchain.mingw_dir,false);
 		}
 	} else  { // si only_one
 		// configurar si hay que recompilar un solo fuente
-		AnalizeConfig(path,true,config->mingw_real_path,false);
+		AnalizeConfig(path,true,current_toolchain.mingw_dir,false);
 		relink_exe=true;
 	}
 	
@@ -1476,7 +1476,7 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 
 
 long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_run, wxFileName filename) {
-	AnalizeConfig(path,true,config->mingw_real_path);
+	AnalizeConfig(path,true,current_toolchain.mingw_dir);
 	// crear el directorio para los objetos si no existe
 	if (!wxFileName::DirExists(temp_folder))
 		wxFileName::Mkdir(temp_folder,0777,wxPATH_MKDIR_FULL);
@@ -1710,7 +1710,7 @@ project_configuration *ProjectManager::GetConfig(wxString name) {
 
 wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step) {
 	wxString deps, output;
-	return GetCustomStepCommand(step,config->mingw_real_path,deps,output);
+	return GetCustomStepCommand(step,current_toolchain.mingw_dir,deps,output);
 }
 
 wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step, wxString mingw_dir, wxString &deps, wxString &output) {
@@ -1777,7 +1777,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	if (mktype==MKTYPE_CONFIG) fil.AddLine(wxString(_T("OBJS_DIR="))+old_temp_folder);
 	if (mktype!=MKTYPE_OBJS) {
 		if (mingw_dir==_T("${MINGW_DIR}"))
-			fil.AddLine(wxString(_T("MINGW_DIR="))+config->mingw_real_path);
+			fil.AddLine(wxString(_T("MINGW_DIR="))+current_toolchain.mingw_dir);
 		fil.AddLine(wxString(_T("GCC="))+current_toolchain.c_compiler);
 		fil.AddLine(wxString(_T("GPP="))+current_toolchain.cpp_compiler);
 		fil.AddLine(wxString(_T("CFLAGS="))+c_compiling_options);
@@ -1942,7 +1942,7 @@ void ProjectManager::Clean() {
 	
 	wxString file;
 	// preparar las rutas y nombres adecuados
-	AnalizeConfig(path,true,config->mingw_real_path);
+	AnalizeConfig(path,true,current_toolchain.mingw_dir);
 	// borrar los objetos
 	LocalListIterator<project_file_item*> item(&files_sources);
 	while(item.IsValid()) {
@@ -1960,7 +1960,7 @@ void ProjectManager::Clean() {
 			utils->ParameterReplace(out,"${PROJECT_BIN}",executable_name);
 			utils->ParameterReplace(out,"${PROJECT_PATH}",path);
 #ifdef __WIN32__
-			utils->ParameterReplace(out,"${MINGW_DIR}",config->mingw_real_path);
+			utils->ParameterReplace(out,"${MINGW_DIR}",current_toolchain.mingw_dir);
 #endif
 			file=DIR_PLUS_FILE(path,out);
 			if (wxFileName::FileExists(file))
@@ -2678,7 +2678,7 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 		command.Replace(wxString("${ARG")<<i+1<<"}",current_toolchain.arguments[i][1],true);
 	
 #if defined(_WIN32) || defined(__WIN32__)
-	utils->ParameterReplace(command,_T("${MINGW_DIR}"),config->mingw_real_path);
+	utils->ParameterReplace(command,_T("${MINGW_DIR}"),current_toolchain.mingw_dir);
 #endif
 	utils->ParameterReplace(command,_T("${PROJECT_PATH}"),project->path);
 	utils->ParameterReplace(command,_T("${PROJECT_BIN}"),project->executable_name);
@@ -2715,7 +2715,7 @@ bool ProjectManager::ShouldDoExtraStep(compile_extra_step *step) {
 	utils->ParameterReplace(str_out,_T("${TEMP_DIR}"),temp_folder_short);
 	utils->ParameterReplace(str_out,_T("${PROJECT_BIN}"),executable_name);
 	utils->ParameterReplace(str_out,_T("${PROJECT_PATH}"),path);
-	utils->ParameterReplace(str_out,_T("${MINGW_DIR}"),config->mingw_real_path);
+	utils->ParameterReplace(str_out,_T("${MINGW_DIR}"),current_toolchain.mingw_dir);
 	str_out=DIR_PLUS_FILE(path,str_out);
 	wxFileName fn_out(str_out);
 	if (!fn_out.FileExists()) return true;
@@ -2727,7 +2727,7 @@ bool ProjectManager::ShouldDoExtraStep(compile_extra_step *step) {
 		utils->ParameterReplace(str_dep,_T("${TEMP_DIR}"),temp_folder_short);
 		utils->ParameterReplace(str_dep,_T("${PROJECT_BIN}"),executable_name);
 		utils->ParameterReplace(str_dep,_T("${PROJECT_PATH}"),path);
-		utils->ParameterReplace(str_dep,_T("${MINGW_DIR}"),config->mingw_real_path);
+		utils->ParameterReplace(str_dep,_T("${MINGW_DIR}"),current_toolchain.mingw_dir);
 		str_dep = DIR_PLUS_FILE(path,str_dep);
 		wxFileName fn_dep = wxFileName(str_dep);
 		if (fn_dep.FileExists() && fn_dep.GetModificationTime()>dt_out)
@@ -3553,7 +3553,7 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 					wxString name=array[i].BeforeFirst('='); 
 					wxString value=array[i].AfterFirst('='); 
 					if (!name.Len()) continue;
-					utils->ParameterReplace(value,"${MINGW_DIR}",config->mingw_real_path);
+					utils->ParameterReplace(value,"${MINGW_DIR}",current_toolchain.mingw_dir);
 					utils->ParameterReplace(value,_T("${TEMP_DIR}"),temp_folder);
 					utils->ParameterReplace(value,_T("${PROJECT_PATH}"),project->path);
 					bool add = name.Last()=='+'; 

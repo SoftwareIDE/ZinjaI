@@ -6,3 +6,5 @@ argument1=Common arguments=-f Makefile
 argument2=Build arguments=-j ${NUM_PROCS} all
 argument3=Clean arguments=clean
 use_return_vale=1
+bin_path=MinGW/bin
+base_path=MinGW

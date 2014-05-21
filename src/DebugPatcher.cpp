@@ -100,7 +100,7 @@ void DebugPatcher::Patch ( ) {
 		return;
 	}
 	
-	if (ms_eq=ms_all==0) {
+	if (ms_eq==ms_all) {
 		wxMessageBox("No difference found");
 		return;
 	}

@@ -381,7 +381,7 @@ struct cfgFiles {
 	wxString default_template; 
 	wxString default_project; 
 //	wxString templates_dir; 
-	wxString mingw_dir;
+//	wxString mingw_dir;
 	wxString toolchain;
 	wxString runner_command;
 	wxString debugger_command;
@@ -420,7 +420,7 @@ public:
 	wxString home_dir;
 	wxString zinjai_dir;
 	wxString temp_dir;
-	wxString mingw_real_path;
+//	wxString mingw_real_path;
 	cfgSource Source;
 	cfgToolBars Toolbars;
 	bool first_run;
@@ -438,7 +438,7 @@ public:
 	void LoadDefaults();
 	void LoadToolBarsDefaults();
 	
-	void RecalcStuff(); /// @brief arma las cadenas que no se graban en la configuracion, pero que dependen de esta (como mingw_real_path y temp_dir)
+	void RecalcStuff(); /// @brief arma las cadenas (paths) que no se graban en la configuracion, pero que dependen de esta (ejemplo: temp_dir)
 	
 	/// @brief Verifica si esta instalado y configurado el path para llamar a wxFormBuilder
 	bool CheckWxfbPresent();

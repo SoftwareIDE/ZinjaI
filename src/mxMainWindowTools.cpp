@@ -77,7 +77,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		flist.Close();
 		file_args=wxString("--file-list=")<<utils->Quotize(list);
 
-		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
+		project->AnalizeConfig(project->path,true,current_toolchain.mingw_dir,true);
 		toargs=project->cpp_compiling_options;
 		
 		// extra_args
@@ -814,7 +814,7 @@ void mxMainWindow::RunCustomTool(cfgCustomTool tool) {
 		cmd.Replace("${PROJECT_PATH}",project_path);
 		cmd.Replace("${TEMP_DIR}",temp_dir);
 		cmd.Replace("${PROJECT_BIN}",project_bin);
-		cmd.Replace("${MINGW_DIR}",config->mingw_real_path);
+		cmd.Replace("${MINGW_DIR}",current_toolchain.mingw_dir);
 		if (config->Files.browser_command.Len())
 			cmd.Replace("${BROWSER}",config->Files.browser_command);
 		else {
@@ -836,7 +836,7 @@ void mxMainWindow::RunCustomTool(cfgCustomTool tool) {
 			workdir.Replace("${BIN_WORKDIR}",bin_workdir);
 			workdir.Replace("${CURRENT_DIR}",current_dir);
 			workdir.Replace("${PROJECT_PATH}",project_path);
-			workdir.Replace("${MINGW_DIR}",config->mingw_real_path);
+			workdir.Replace("${MINGW_DIR}",current_toolchain.mingw_dir);
 			workdir.Replace("${ZINJAI_DIR}",config->zinjai_dir);
 		} else 
 			workdir=project?project_path:current_dir;
@@ -996,7 +996,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		if (src->GetModify()) src->SaveSource();
 //		file_item *item = project->FindFromName(src->source_filename.GetFullPath());
 		wxString fname = src->source_filename.GetFullPath();
-		project->AnalizeConfig(project->path,true,config->Files.mingw_dir,true);
+		project->AnalizeConfig(project->path,true,current_toolchain.mingw_dir,true);
 		bool cpp = fname.Last()!='c';
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
 			(cpp?project->cpp_compiling_options:project->c_compiling_options)+" "+utils->Quotize(fname)+" -c -E -o "+utils->Quotize(bin_name);

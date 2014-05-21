@@ -39,17 +39,23 @@ struct Toolchain {
 	wxString cpp_linker_options; ///< forced linker arguments
 	wxString dynamic_lib_linker; ///< command for linking dynamic libraries
 	wxString static_lib_linker; ///< command for linking static libraries
+	wxString base_path; ///< path for compiler folder, will be used to replace ${MINGW_DIR} and ${COMPILER_DIR} in project's settings
+	wxString bin_path; ///< path for binaries, to be added to env PATH variable to be able to launch the compiler from anywhere
+	
+	wxString mingw_dir; ///< calculated field, to replace ${MINGW_DIR}, based on base_path, but made absolute 
 	
 	Toolchain(); ///< loads default values for current platform
 	
-	void SetArgumets(); ///< applies project toolchain arguments, uso only with current_toolchain
+	void SetPaths(); ///< configure PATH variable for finding current compiler (this method is called automatically from SelectToolchain)
+	void SetArgumets(); ///< applies project toolchain arguments, uso only with current_toolchain (this method is called automatically from SelectToolchain)
 	
 	wxString GetExtraCompilingArguments(bool cpp); ///< get extra arguments to deal with difference in output formatting in recent gcc versions (clang-like messages)
 	wxString FixArgument(bool cpp, wxString arg); ///< if compiler is too old, some arguments may be different
 	bool CheckVersion(bool cpp, int _v, int _s); ///< returns true if compiler version is greater than or equal to _v._s
 	
-	static void LoadToolchains();
-	static const Toolchain &GetInfo(wxString fname); ///< used to get info from a toolchain without setting it as active
+	void Save(const wxString &fname); ///< saves a single toolchain
+	static void LoadToolchains(); ///< loads all available toolchains
+	static const Toolchain &GetInfo(const wxString &fname); ///< used to get info from a toolchain without setting it as active
 	static Toolchain &SelectToolchain(); ///< set the project toolchain as current (use default if not project or not found)
 	static Toolchain *toolchains; ///< array with all known toolchains
 	static int toolchains_count; ///< number of items in toolchains

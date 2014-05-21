@@ -128,9 +128,9 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *debug_macros_file;
 	wxCheckBox *improve_inspections_by_type;
 	wxTextCtrl *debug_blacklist;
-#if defined(_WIN32) || defined(__WIN32__)
-	wxTextCtrl *files_mingw_dir;
-#endif
+//#if defined(_WIN32) || defined(__WIN32__)
+//	wxTextCtrl *files_mingw_dir;
+//#endif
 	
 	wxComboBox *toolbar_icon_size;
 	
@@ -161,7 +161,7 @@ public:
 	void OnProjectButton(wxCommandEvent &event);
 	void OnTempButton(wxCommandEvent &event);
 #if defined(_WIN32) || defined(__WIN32__)
-	void OnMingwButton(wxCommandEvent &event);
+//	void OnMingwButton(wxCommandEvent &event);
 #else
 	void OnExplorerButton(wxCommandEvent &event);
 	void OnExplorerNautilus(wxCommandEvent &event);
@@ -205,6 +205,7 @@ public:
 	void OnToolbarsRun(wxCommandEvent &evt);
 	void OnToolbarsReset(wxCommandEvent &evt);
 	void OnXdgButton(wxCommandEvent &evt);
+	void OnToolchainButton(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &event);
 	void SetToolbarPage();
 	void ShowUp();

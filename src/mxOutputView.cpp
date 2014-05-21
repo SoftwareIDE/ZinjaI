@@ -173,6 +173,6 @@ void mxOutputView::GetProcessOutput() {
 
 void mxOutputView::OnExtraButton(wxCommandEvent &evt) {
 	if (working) process->Kill(pid,wxSIGKILL);
-	else if (extra_mode==mxOV_EXTRA_URL) utils->OpenInBrowser(extra_command);
+	else if (extra_mode==mxOV_EXTRA_URL) { utils->OpenInBrowser(extra_command); Close(); }
 	else if (extra_mode==mxOV_EXTRA_COMMAND) wxExecute(extra_command);
 }

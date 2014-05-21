@@ -23,12 +23,13 @@ void Toolchain::LoadToolchains ( ) {
 		wxString filename = utils->WichOne(toolchain_files[i],"toolchains",true);
 		wxTextFile file(filename); file.Open();
 		if (file.IsOpened()) {
-			wxString key, value, base_dir;
+			wxString key, value;
 			for (wxString line = file.GetFirstLine();!file.Eof();line = file.GetNextLine()) {
 				key=line.BeforeFirst('=');
 				value=line.AfterFirst('=');
 				if (key=="desc") toolchains[i].desc = value;
-				else if (key=="base_dir") base_dir = value;
+				else if (key=="base_path") toolchains[i].base_path = value;
+				else if (key=="bin_path") toolchains[i].bin_path = value;
 				else if (key=="build_command") toolchains[i].build_command = value;
 				else if (key=="clean_command") toolchains[i].clean_command = value;
 				else if (key.StartsWith("argument")) { 
@@ -52,10 +53,46 @@ void Toolchain::LoadToolchains ( ) {
 				else if (key=="linker") toolchains[i].linker = value;
 				else if (key=="c_linker_options") toolchains[i].c_linker_options = value;
 				else if (key=="cpp_linker_options") toolchains[i].cpp_linker_options = value;
-				
 			}
 		}
 	}
+}
+
+void Toolchain::Save(const wxString &fname) {
+	wxTextFile fil(fname);
+	if (fil.Exists())
+		fil.Open();
+	else
+		fil.Create();
+	fil.Clear();
+				
+	fil.AddLine(wxString("desc=")+desc);
+	fil.AddLine(wxString("base_path=")+base_path);
+	fil.AddLine(wxString("bin_path=")+bin_path);
+	fil.AddLine(wxString("build_command=")+build_command);
+	fil.AddLine(wxString("clean_command=")+clean_command);
+	for(int unsigned i=0;i<TOOLCHAIN_MAX_ARGS;i++) {  
+		if (arguments[i][0].Len())
+			fil.AddLine(wxString("argument")<<(i+1)<<"="<<arguments[i][0]<<"="<<arguments[i][1]);
+	}
+	switch(type) {
+	case TC_GCC: fil.AddLine("type=gcc"); break;
+	case TC_GCC_LIKE: fil.AddLine("type=gcc-like"); break;
+	case TC_CLANG: fil.AddLine("type=clang"); break;
+	case TC_EXTERN: fil.AddLine("type=extern"); break;
+	case TC_UNKNOWN:;
+	}
+	fil.AddLine(wxString("c_compiler=")+c_compiler);
+	fil.AddLine(wxString("c_compiling_options=")+c_compiling_options);
+	fil.AddLine(wxString("cpp_compiler=")+cpp_compiler);
+	fil.AddLine(wxString("cpp_compiling_options=")+cpp_compiling_options);
+	fil.AddLine(wxString("linker=")+linker);
+	fil.AddLine(wxString("c_linker_options=")+c_linker_options);
+	fil.AddLine(wxString("cpp_linker_options=")+cpp_linker_options);
+				
+	fil.Write();
+	fil.Close();
+	
 }
 
 Toolchain::Toolchain () {
@@ -64,18 +101,20 @@ Toolchain::Toolchain () {
 	desc="<null>";
 	type=TC_GCC;
 #if defined(__WIN32__)
-	linker=_T("mingw32-g++");
-	cpp_compiler=_T("mingw32-g++");
-	c_compiler=_T("mingw32-gcc");
-	c_linker_options=_T("-static-libgcc");
-	cpp_linker_options=_T("-static-libgcc -static-libstdc++");
+	linker="mingw32-g++";
+	cpp_compiler="mingw32-g++";
+	c_compiler="mingw32-gcc";
+	c_linker_options="-static-libgcc";
+	cpp_linker_options="-static-libgcc -static-libstdc++";
+	base_path="MinGW";
+	bin_path="MinGW\\bin";
 #else
-	linker=_T("g++");
-	cpp_compiler=_T("g++");
-	c_compiler=_T("gcc");
+	linker="g++";
+	cpp_compiler="g++";
+	c_compiler="gcc";
 #endif
-	c_compiling_options=_T("--show-column");
-	cpp_compiling_options=_T("--show-column");
+	c_compiling_options="--show-column";
+	cpp_compiling_options="--show-column";
 	dynamic_lib_linker=cpp_compiler+" -shared -o";
 	static_lib_linker="ar cr";
 }
@@ -90,14 +129,37 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 			toolchains[i].CheckVersion(false,0,0);
 			current_toolchain=toolchains[i];
 			current_toolchain.SetArgumets();
+			current_toolchain.SetPaths();
 			return current_toolchain;
 		}
 	}
 	current_toolchain=Toolchain();
+	current_toolchain.SetArgumets();
+	current_toolchain.SetPaths();
 	return current_toolchain;
 }
 
-const Toolchain &Toolchain::GetInfo (wxString fname) {
+void Toolchain::SetPaths() {
+	static wxString old_compiler_bin_path; 
+	if (old_compiler_bin_path!=current_toolchain.bin_path) {
+		old_compiler_bin_path = current_toolchain.bin_path;
+		static wxString original_path;
+		if (!original_path.Len()) wxGetEnv("PATH",&original_path);
+		if (current_toolchain.bin_path.Len()) {
+			wxString new_path=original_path;
+			wxArrayString array; utils->Split(current_toolchain.bin_path,array,true,false);
+			for(unsigned int i=0;i<array.GetCount();i++) 
+				new_path=wxFileName(DIR_PLUS_FILE(config->zinjai_dir,array[i])).GetShortPath()+";"+new_path;
+			wxSetEnv("PATH",new_path);
+		} else {
+			wxSetEnv("PATH",original_path);
+		}
+	}
+	mingw_dir=DIR_PLUS_FILE(config->zinjai_dir,base_path);
+	if (mingw_dir.EndsWith("\\")||mingw_dir.EndsWith("/")) mingw_dir.RemoveLast();
+}
+
+const Toolchain &Toolchain::GetInfo (const wxString &fname) {
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
 			current_toolchain=toolchains[i];

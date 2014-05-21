@@ -13,3 +13,5 @@ argument1=C compiling arguments=-fshow-column
 argument2=C++ compiling arguments=-fshow-column
 argument3=C linking arguments=-static-libgcc
 argument4=C++ linking arguments=-static-libstdc++ -static-libgcc
+base_path=MinGW
+bin_path=MinGW\bin

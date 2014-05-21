@@ -29,7 +29,7 @@ mxMakefileDialog::mxMakefileDialog(wxWindow* parent, wxWindowID id, const wxPoin
 			sel=i;
 	}
 	configuration_name = utils->AddComboBox(mySizer,this,LANG(MAKEFILE_PROFILE,"Perfil"),values,sel);
-	mingw_dir = utils->AddTextCtrl(mySizer,this,LANG(MAKEFILE_REPLACE_MINGW,"Reemplazar \"${MINGW_DIR}\" con"),config->mingw_real_path);
+	mingw_dir = utils->AddTextCtrl(mySizer,this,LANG(MAKEFILE_REPLACE_MINGW,"Reemplazar \"${MINGW_DIR}\" con"),current_toolchain.mingw_dir);
 #if defined(__WIN32__)
 	expand_comas = utils->AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),true);
 #else

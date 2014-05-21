@@ -709,6 +709,8 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 	int ss = GetSelectionStart();
 	int min=LineFromPosition(ss);
 	
+	
+	/// @todo: recuperar el funcionamiento de esto que está comentado (descomentar seleccion comentada con /* y */)
 //	if (GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!=_T("//")) {
 //		BeginUndoAction();
 //		int se=ss, l=GetLength();
@@ -734,7 +736,6 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 //	}
 	
 	int max=LineFromPosition(GetSelectionEnd());
-	int aux;
 	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 	BeginUndoAction();
 	for (int i=min;i<=max;i++) {
@@ -3595,7 +3596,7 @@ wxString mxSource::GetCompilerOptions(bool parsed) {
 		utils->Split(comp_opts,args,false,true);
 		for(unsigned int i=0;i<args.GetCount();i++) args[i]=current_toolchain.FixArgument(cpp_or_just_c,args[i]);
 		comp_opts=utils->UnSplit(args);
-		utils->ParameterReplace(comp_opts,_T("${MINGW_DIR}"),config->mingw_real_path);
+		utils->ParameterReplace(comp_opts,"${MINGW_DIR}",current_toolchain.mingw_dir);
 		comp_opts = utils->ExecComas(working_folder.GetFullPath(),comp_opts);
 	}
 	return comp_opts;

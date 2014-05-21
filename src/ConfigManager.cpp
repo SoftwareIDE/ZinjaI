@@ -256,9 +256,9 @@ bool ConfigManager::Load() {
 			} else if (section==_T("Files")) {
 				CFG_GENERIC_READ_DN("toolchain",Files.toolchain);
 				else CFG_GENERIC_READ_DN("debugger_command",Files.debugger_command);
-#if defined(__WIN32__)
-				else CFG_GENERIC_READ_DN("mingw_dir",Files.mingw_dir);
-#endif
+//#if defined(__WIN32__)
+//				else CFG_GENERIC_READ_DN("mingw_dir",Files.mingw_dir);
+//#endif
 				else CFG_GENERIC_READ_DN("terminal_command",Files.terminal_command);
 				else CFG_GENERIC_READ_DN("explorer_command",Files.explorer_command);
 				else CFG_GENERIC_READ_DN("default_template",Files.default_template);
@@ -705,7 +705,7 @@ bool ConfigManager::Save(){
 //	CFG_GENERIC_WRITE_DN("compiler_c_command",Files.compiler_c_command);
 	CFG_GENERIC_WRITE_DN("cppcheck_command",Files.cppcheck_command);
 #if defined(__WIN32__)
-	CFG_GENERIC_WRITE_DN("mingw_dir",Files.mingw_dir);
+//	CFG_GENERIC_WRITE_DN("mingw_dir",Files.mingw_dir);
 #else
 	CFG_GENERIC_WRITE_DN("valgrind_command",Files.valgrind_command);
 #endif
@@ -941,7 +941,7 @@ void ConfigManager::LoadDefaults(){
 	Files.temp_dir=home_dir;
 	Files.skin_dir=_T("imgs");
 	Files.graphviz_dir=_T("graphviz");
-	Files.mingw_dir=_T("MinGW");
+//	Files.mingw_dir=_T("MinGW");
 #if defined(__WIN32__)
 	Files.toolchain="gcc-mingw32";
 	Files.parser_command=_T("cbrowser.exe");
@@ -1372,22 +1372,6 @@ bool ConfigManager::CheckCppCheckPresent() {
 
 void ConfigManager::RecalcStuff ( ) {
 	temp_dir = DIR_PLUS_FILE(zinjai_dir,Files.temp_dir);
-//#if defined(__WIN32__)
-	if (mingw_real_path != DIR_PLUS_FILE(zinjai_dir,Files.mingw_dir)) {
-		mingw_real_path = DIR_PLUS_FILE(zinjai_dir,Files.mingw_dir);
-#if defined(__WIN32__)
-		wxFileName mingw_bin_dir(DIR_PLUS_FILE(Files.mingw_dir,"bin"));
-		mingw_bin_dir.MakeAbsolute();
-		wxString path;
-		wxGetEnv(_T("PATH"),&path);
-		wxSetEnv(_T("PATH"),mingw_bin_dir.GetShortPath()<<_T(";")<<path);
-#else
-		if (mingw_real_path.EndsWith("\\")||mingw_real_path.EndsWith("/")) mingw_real_path.RemoveLast();
-#endif
-	}
-//#else
-//	mingw_real_path = DIR_PLUS_FILE(_T("/usr/bin"),Files.mingw_dir);
-//#endif
 	if (zinjai_dir.EndsWith("\\")||zinjai_dir.EndsWith("/")) zinjai_dir.RemoveLast();
 	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
 }
