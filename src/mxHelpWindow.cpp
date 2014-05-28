@@ -168,11 +168,11 @@ bool mxHelpWindow::OnLink (wxString href) {
 			HashStringTreeItem::iterator it = items.find(fname);
 			if (it!=items.end())
 				tree->SelectItem(it->second);
-			fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,href));
+			fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,fname));
 			if (!fname.Len())
-				html->SetPage(ERROR_PAGE(href));
+				html->SetPage(ERROR_PAGE(fname));
 			else {
-				html->LoadPage(fname);
+				html->LoadPage(href);
 			}
 		} else
 			return false;

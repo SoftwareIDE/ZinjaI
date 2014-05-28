@@ -61,7 +61,7 @@ mxGotoFileDialog::mxGotoFileDialog(wxString text, wxWindow* parent, int _goto_li
 	} else 
 		goto_button->Enable(false);
 	text_ctrl->SetSelection(0,-1);
-	Show();
+	ShowModal();
 }
 
 mxGotoFileDialog::~mxGotoFileDialog() {

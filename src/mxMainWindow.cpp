@@ -3302,7 +3302,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 }
 
 mxSource *mxMainWindow::OpenFile (const wxString &filename) {
-	return OpenFile(filename);
+	return OpenFile(filename,!project);
 }
 
 /**

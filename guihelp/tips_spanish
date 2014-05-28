@@ -59,3 +59,5 @@
 &nbsp;&nbsp;&nbsp; Puedes cambiar rápidamente el perfil de compilación y ejecución activo en un proyecto haciendo click derecho sobre el botón de Opciones de Compilación y Ejecución (Ejecución->Opciones) de la barra de herramientas "Ejecutar".
 
 &nbsp;&nbsp;&nbsp; Puedes cambiar los colores con que ZinjaI colorea el código fuente para ajustarlos a tus preferencias. ZinjaI incluye dos perfiles predefinidos, uno para fondo claro (blanco) y uno para fondo oscuro (negro), pero puedes crear nuevos esquemas de colores y compartirlos. Para acceder a estas opciones utiliza el bótón "Definir Colores..." de la pestaña "Estilo" del cuadro de "Preferencias" (al cual se accede desde el menú "Archivo").
+
+&nbsp;&nbsp;&nbsp; Puedes utilizar Alt+Derecha y Alt+Izquierda para saltar entre las últimas lineas de código sobre las que trabajaste. Por ejemplo, si saltas de una función a otra para corregir algo, puedes volver a la anterior con Alt+Izquierda.
