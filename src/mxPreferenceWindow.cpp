@@ -30,6 +30,33 @@
 #include "Toolchain.h"
 #include "mxInspectionsImprovingEditor.h"
 
+
+int LinuxTerminalInfo::count=0;
+LinuxTerminalInfo *LinuxTerminalInfo::list=NULL;
+void LinuxTerminalInfo::Init() {
+	list = new LinuxTerminalInfo[9];
+	count=0;
+	list[count++]=LinuxTerminalInfo("xterm","xterm -version","xterm -T \"${TITLE}\" -e");
+	list[count++]=LinuxTerminalInfo("lxterminal","lxterminal -version","lxterminal -T \"${TITLE}\" -e");
+	list[count++]=LinuxTerminalInfo("aterm","aterm --version","aterm -title \"${TITLE}\" -e");
+	list[count++]=LinuxTerminalInfo("roxterm","roxterm --help","roxterm --separate --hide-menubar -T \"${TITLE}\" -e");
+	list[count++]=LinuxTerminalInfo("xfce4-terminal","xfce4-terminal --version","xfce4-terminal --hide-menubar --hide-toolbar -T \"${TITLE}\" -x");
+	list[count++]=LinuxTerminalInfo("konsole (kde3)","konsole --version","konsole --nomenubar --notoolbar -T \"${TITLE}\" -e",false,"KDE: 3");
+	list[count++]=LinuxTerminalInfo("konsole (kde4)","konsole --version","konsole -e",false,"~KDE: 3");
+	list[count++]=LinuxTerminalInfo("mate-terminal","mate-terminal --version","mate-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x");
+	list[count++]=LinuxTerminalInfo("gnome-terminal","gnome-terminal --version","gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x",true);
+};
+bool LinuxTerminalInfo::Test() {
+	wxString out = utils->GetOutput(test_command);
+	if (extra_test.Len()) {
+		if (extra_test[0]=='~')
+			return !out.Contains(extra_test.Mid(1));
+		else
+			return out.Contains(extra_test);
+	}
+	else return out.Length();
+}
+
 mxPreferenceWindow *preference_window=NULL;
 
 BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
@@ -72,10 +99,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 #else
 	EVT_BUTTON(mxID_PREFERENCES_XDG,mxPreferenceWindow::OnXdgButton)
 	EVT_BUTTON(mxID_TERMINALS_BUTTON,mxPreferenceWindow::OnTerminalButton)
-	EVT_MENU(mxID_TERMINALS_LX,mxPreferenceWindow::OnTerminalLX)
-	EVT_MENU(mxID_TERMINALS_XTERM,mxPreferenceWindow::OnTerminalXTerm)
-	EVT_MENU(mxID_TERMINALS_GNOME,mxPreferenceWindow::OnTerminalGnomeTerminal)
-	EVT_MENU(mxID_TERMINALS_KONSOLE,mxPreferenceWindow::OnTerminalKonsole)
+	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxPreferenceWindow::OnSelectTerminal)
 	EVT_BUTTON(mxID_EXPLORERS_BUTTON,mxPreferenceWindow::OnExplorerButton)
 	EVT_MENU(mxID_EXPLORERS_KONQUEROR,mxPreferenceWindow::OnExplorerKonqueror)
 	EVT_MENU(mxID_EXPLORERS_DOLPHIN,mxPreferenceWindow::OnExplorerDolphin)
@@ -831,58 +855,23 @@ void mxPreferenceWindow::OnExplorerThunar(wxCommandEvent &event) {
 }
 
 void mxPreferenceWindow::OnTerminalButton(wxCommandEvent &event) {
-	wxMenu menu;
-	int count=0;
-	if (utils->GetOutput(_T("xterm -version")).Len()) {
-		count++;
-		menu.Append(mxID_TERMINALS_XTERM,_T("xterm (consola basica)"));
-	}
-	if (utils->GetOutput(_T("lxterminal --version")).Len()) {
-		count++;
-		menu.Append(mxID_TERMINALS_XTERM,_T("xterm (consola basica)"));
-	}
-//	if (utils->GetOutput(_T("xfterm4 --version")).Len()) {
-//		count++;
-//		menu.Append(mxID_TERMINALS_XFCE,_T("xterm (consola basica)"));
-//	}
-	if (utils->GetOutput(_T("konsole --version")).Len()) {
-		count++;
-		menu.Append(mxID_TERMINALS_KONSOLE,_T("konsole (consola de kde)"));
-	}
-	if (utils->GetOutput(_T("gnome-terminal --version")).Len()) {
-		count++;
-		menu.Append(mxID_TERMINALS_GNOME,_T("gnome-terminal (consola de gnome)"));
+	LinuxTerminalInfo::Init();
+	wxMenu menu; int count=0;
+	for(int i=0;i<LinuxTerminalInfo::count;i++) { 
+		if (LinuxTerminalInfo::list[i].Test()) {
+			menu.Append(mxID_LAST_ID+i,wxString("Utilizar ")+LinuxTerminalInfo::list[i].name);
+			count++;
+		}
 	}
 	if (count) {
 		PopupMenu(&menu);
 	} else {
-		mxMessageDialog(main_window,_T("No se ha encontrado una terminal conocida.\nInstale xterm,konsole o gnome-terminal; o\nconfigure el parametro \"Comando del\nTerminal\" en el cuadro de Preferencias.\""),_T("Terminal de ejecucion"), mxMD_OK|mxMD_WARNING).ShowModal();
+		mxMessageDialog(main_window,"No se ha encontrado una terminal conocida.\nInstale xterm,konsole o gnome-terminal; o\nconfigure el parametro \"Comando del\nTerminal\" en el cuadro de Preferencias.\"","Terminal de ejecucion", mxMD_OK|mxMD_WARNING).ShowModal();
 	}	
 }
 
-void mxPreferenceWindow::OnTerminalXTerm(wxCommandEvent &event) {
-	files_terminal_command->SetValue(_T(TERM_XTERM));
-}
-
-void mxPreferenceWindow::OnTerminalLX(wxCommandEvent &event) {
-	files_terminal_command->SetValue(_T(TERM_LX));
-}
-
-//void mxPreferenceWindow::OnTerminalXfce(wxCommandEvent &event) {
-//	files_terminal_command->SetValue(_T(TERM_XFCE));
-//}
-
-void mxPreferenceWindow::OnTerminalKonsole(wxCommandEvent &event) {
-	if (utils->GetOutput(_T("konsole --version")).Len()) {
-		if (utils->GetOutput(_T("konsole --version")).Find(_T("KDE: 3"))==wxNOT_FOUND)
-			files_terminal_command->SetValue(_T(TERM_KDE4));
-		else
-			files_terminal_command->SetValue(_T(TERM_KDE3));
-	}
-}
-
-void mxPreferenceWindow::OnTerminalGnomeTerminal(wxCommandEvent &event) {
-	files_terminal_command->SetValue(_T(TERM_GNOME));
+void mxPreferenceWindow::OnSelectTerminal(wxCommandEvent &event) {
+	files_terminal_command->SetValue(LinuxTerminalInfo::list[event.GetId()-mxID_LAST_ID].run_command);
 }
 
 #endif

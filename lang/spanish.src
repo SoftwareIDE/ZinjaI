@@ -2,12 +2,14 @@ HTMLEXPORT_STATUS
 Exportando...
 GENERAL_READY
 Listo
-CONFIG_KONSOLE_PROBLEM
-La aplicacion terminal que se ha encontrado instalada\n
+CONFIG_TERMINAL_WARNING
+La aplicacion terminal que se ha encontrado instalada\nes <{1}>. Algunas versiones de esta terminal pueden generar\nproblemas al intentar ejecutar un programa o proyecto. Si no logra\nejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\nque compile, intente configurar otra terminal (menú Archivo->Preferencias...\npestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\nrecomendada es xterm).
 CONFIG_TERMINAL
 Terminal de ejecucion
 CONFIG_NO_TERMINAL_FOUND
 No se ha encontrado una terminal conocida.\nInstale xterm, konsole, lxterminal o gnome-terminal;\nluego configure el parametro \"Comando del Terminal\"\nen la seccion \"Rutas 2\" del cuadro de \"Preferencias\".
+CONFIG_APTGET_BUILD_ESSENTIAL
+Intentar instalar ahora
 CONFIG_COMPILER_NOT_FOUND
 No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
 CONFIG_COMPILER
@@ -1305,7 +1307,7 @@ Ayuda Rapida
 MAINW_PROJECT_FILE_POPUP_OPEN_H
 &Abrir complementario...\tF12
 MAINW_PROJECT_FILE_POPUP_SHARE
-/
+Compartir archivo...
 MENUITEM_VIEW_SPLIT_VIEW
 &Duplicar vista
 MAINW_PROJECT_FILE_POPUP_SAVE
@@ -3355,7 +3357,7 @@ Seleccionar &Todo
 SOURCE_POPUP_HIGHLIGHT_LINES
 &Resaltar Linea(s)
 SOURCE_POPUP_FIND_SYMBOL
-&Buscar en el Arbol de Simbolos...
+&Ir a definición...
 SOURCE_POPUP_HELP_ON
 Ayuda sobre \"<{1}>\"...
 SOURCE_POPUP_INSERT_INCLUDE
@@ -3452,6 +3454,8 @@ GENERAL_POPUP_INSERT_PROJECT_PATH
 insertar directorio del proyecto
 GENERAL_POPUP_INSERT_PROJECT_BIN
 insertar ruta del ejecutable
+GENERAL_POPUP_INSERT_WORK_DIR
+insertar directorio de trabajo
 GENERAL_POPUP_INSERT_CURRENT_FILE
 insertar archivo actual
 GENERAL_POPUP_INSERT_CURRENT_DIR

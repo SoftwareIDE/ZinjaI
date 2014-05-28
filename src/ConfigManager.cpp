@@ -68,34 +68,29 @@ void ConfigManager::DoInitialChecks() {
 	} 
 	// elegir un terminal
 	if (Files.terminal_command=="<<sin configurar>>") { // tratar de detectar automaticamente un terminal adecuado
-		if (utils->GetOutput("xterm -version").Len())
-			Files.terminal_command = TERM_XTERM;
-		else if (utils->GetOutput("lxterminal -version").Len())
-			Files.terminal_command = TERM_LX;
-		else if (utils->GetOutput("konsole --version").Len()) {
-			if (utils->GetOutput("konsole --version").Find("KDE: 3")==wxNOT_FOUND) {
-				Files.terminal_command = TERM_KDE4;
-//				wxMessageBox(LANG(CONFIG_KONSOLE_PROBLEM,"La aplicacion terminal que se ha encontrado instalada\n"
-//								"es konsole 4.x. Esta version puede generear algunas\n"
-//								"molestias al ejecutar sus programas, y problemas mayores\n"
-//								"para depurarlos. Se recomienda instalar xterm. Luego\n"
-//								"seleccionela en el campo \"Comando del Terminal\" de la\n"
-//								"seccion \"Rutas 2\" del cuadro de \"Preferencias\" (desde\n"
-//								"el menu archivo)."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"));
-			} else
-				Files.terminal_command = TERM_KDE3;
-		} else if (utils->GetOutput("gnome-terminal --version").Len())
-			Files.terminal_command = TERM_GNOME;
-//		} else if (utils->GetOutput("xfterm4 --version").Len())
-//			Files.terminal_command = TERM_XFCE;
-		else
+		LinuxTerminalInfo::Init();
+		for(int i=0;i<LinuxTerminalInfo::count;i++) { 
+			if (LinuxTerminalInfo::list[i].Test()) {
+				Files.terminal_command = LinuxTerminalInfo::list[i].run_command;
+				if (LinuxTerminalInfo::list[i].warning) {
+					wxMessageBox(LANG1(CONFIG_TERMINAL_WARNING,"La aplicacion terminal que se ha encontrado instalada\n"
+						"es <{1}>. Algunas versiones de esta terminal pueden generar\n"
+						"problemas al intentar ejecutar un programa o proyecto. Si no logra\n"
+						"ejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\n"
+						"que compile, intente configurar otra terminal (menú Archivo->Preferencias...\n"
+						"pestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\n"
+						"recomendada es xterm).",LinuxTerminalInfo::list[i].name),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"));
+				}
+			}
+			break;
+		}
+		if (Files.terminal_command=="<<sin configurar>>") {
 			mxMessageDialog(NULL,LANG(CONFIG_NO_TERMINAL_FOUND,"No se ha encontrado una terminal conocida.\n"
 			                "Instale xterm, konsole, lxterminal o gnome-terminal;\n"
 							"luego configure el parametro \"Comando del Terminal\"\n"
 							"en la seccion \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING).ShowModal();
-	} 
-	else if (Files.terminal_command=="gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x")
-		Files.terminal_command=TERM_GNOME;
+		}
+	}
 	// verificar si hay compilador
 	if (!Init.compiler_seen && !utils->GetOutput("g++ --version").Len()) {
 		// try to use clang if g++ not found
@@ -106,7 +101,7 @@ void ConfigManager::DoInitialChecks() {
 		} else {
 			wxString chk_message; 
 			if (Files.terminal_command!="<<sin configurar>>" && utils->GetOutput("apt-get --version").Len())
-				chk_message="Intentar instalar ahora";
+				chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 			int ans = mxMessageDialog(NULL,LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
 				"con el gestor de paquetes que corresponda a su distribucion\n"
 				"(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_COMPILER,"Compilador C++"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
@@ -117,7 +112,7 @@ void ConfigManager::DoInitialChecks() {
 	if (!Init.debugger_seen && !utils->GetOutput("gdb --version").Len()) {
 		wxString chk_message; 
 		if (Files.terminal_command!="<<sin configurar>>" && utils->GetOutput("apt-get --version").Len())
-			chk_message="Intentar instalar ahora";
+			chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 		int ans = mxMessageDialog(NULL,LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
 		                "el gestor de paquetes que corresponda a su distribucion\n"
 		                "(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_DEBUGGER,"Depurador"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();

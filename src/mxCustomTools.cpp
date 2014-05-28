@@ -83,7 +83,7 @@ void mxCustomTools::OnCommandPopup(wxCommandEvent &event) {
 }
 
 void mxCustomTools::OnWorkdirPopup(wxCommandEvent &event) {
-	utils->ShowTextPopUp(this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),workdir_ctrl,"REPLACE|DIR|TEMP_DIR|MINGW_DIR|PROJECT_PATH|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR");
+	utils->ShowTextPopUp(this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),workdir_ctrl,"REPLACE|DIR|TEMP_DIR|MINGW_DIR|PROJECT_PATH|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR|WORK_DIR");
 }
 
 

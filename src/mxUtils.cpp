@@ -1100,6 +1100,7 @@ void mxUtils::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, 
 #endif
 		else if (opt=="PROJECT_PATH") menu.Append(mxID_POPUPS_INSERT_PROJECT_PATH,LANG(GENERAL_POPUP_INSERT_PROJECT_PATH,"insertar directorio del proyecto"));
 		else if (opt=="PROJECT_BIN") menu.Append(mxID_POPUPS_INSERT_PROJECT_BIN,LANG(GENERAL_POPUP_INSERT_PROJECT_BIN,"insertar ruta del ejecutable"));
+		else if (opt=="WORK_DIR") menu.Append(mxID_POPUPS_INSERT_WORK_DIR,LANG(GENERAL_POPUP_INSERT_WORK_DIR,"insertar directorio de trabajo"));
 		else if (opt=="CURRENT_FILE") menu.Append(mxID_POPUPS_INSERT_CURRENT_FILE,LANG(GENERAL_POPUP_INSERT_CURRENT_FILE,"insertar archivo actual"));
 		else if (opt=="CURRENT_DIR") menu.Append(mxID_POPUPS_INSERT_CURRENT_DIR,LANG(GENERAL_POPUP_INSERT_CURRENT_DIR,"insertar directorio del archivo actual"));
 		else if (opt=="BIN_WORKDIR") menu.Append(mxID_POPUPS_INSERT_WORKDIR,LANG(GENERAL_POPUP_INSERT_WORKDIR,"insertar el directorio de trabajo"));
@@ -1146,6 +1147,8 @@ void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString
 			text="${OPEN}";
 		} else if (id==mxID_POPUPS_INSERT_PROJECT_PATH) {
 			text="${PROJECT_PATH}";
+		} else if (id==mxID_POPUPS_INSERT_WORK_DIR) {
+			text="${WORK_DIR}";
 		} else if (id==mxID_POPUPS_INSERT_PROJECT_BIN) {
 			text="${PROJECT_BIN}";
 		} else if (id==mxID_POPUPS_INSERT_CURRENT_FILE) {

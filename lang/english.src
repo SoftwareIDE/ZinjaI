@@ -2,12 +2,14 @@ HTMLEXPORT_STATUS
 Generating_html...
 GENERAL_READY
 Ready
-CONFIG_KONSOLE_PROBLEM
-Selected terminal application is konsole 4.x. This\nversion have some issues for running your programs.\nIt is recommended to install xterm. After installing\ngo to "Console application" field in "Paths 2" tabs\nin "Preferences" (from "File" menu) dialog and set it.
+CONFIG_TERMINAL_WARNING
+The only one known terminal application found in this system is <{1}>.\nSome versions of this app can cause problems when trying to run compiled\nprograms/projects from ZinjaI. If you cannot run any program/project, try to set\na different terminal application(from "File" menu, choose "Preferences..." and change\nthe files "Terminal Command" from "Paths 2" tab, recommended terminal is xterm).
 CONFIG_TERMINAL
 Console Application
 CONFIG_NO_TERMINAL_FOUND
 No known console application was found. Please\ninstall xterm, konsole or gnome-terminal; then\ngo to "Console application" field in "Paths 2"\ntabsin "Preferences" (from "File" menu) dialog\nand set it.
+CONFIG_APTGET_BUILD_ESSENTIAL
+Try to install the compiler now.
 CONFIG_COMPILER_NOT_FOUND
 C++ compiler (g++) was not found in your system. You must\ninstall it with your distribution's package maganer(aptitude,\nyum, yast, installpkg...).
 CONFIG_COMPILER
@@ -3339,9 +3341,9 @@ Copy
 SOURCE_POPUP_PASTE
 Paste
 SOURCE_POPUP_DUPLICATE_LINES
-Duplicate Line(s)
+Duplicate line(s)
 SOURCE_POPUP_DELETE_LINES
-Delete Line(s)
+Delete line(s)
 SOURCE_POPUP_COMMENT_LINES
 Comment
 SOURCE_POPUP_UNCOMMENT_LINES
@@ -3349,13 +3351,13 @@ Uncomment
 SOURCE_POPUP_INDENTE
 Indent
 SOURCE_POPUP_SELECT_BLOCK
-Select Logic Block
+Select logic block
 SOURCE_POPUP_SELECT_ALL
-Select All
+Select all
 SOURCE_POPUP_HIGHLIGHT_LINES
-Toggle Highlighting
+Toggle highlighting
 SOURCE_POPUP_FIND_SYMBOL
-Find in Symbol's Tree
+Goto symbols' definition
 SOURCE_POPUP_HELP_ON
 Help On "<{1}>"...
 SOURCE_POPUP_INSERT_INCLUDE
@@ -3452,6 +3454,8 @@ GENERAL_POPUP_INSERT_PROJECT_PATH
 insert project path
 GENERAL_POPUP_INSERT_PROJECT_BIN
 insert executable patth
+GENERAL_POPUP_INSERT_WORK_DIR
+insert working directory
 GENERAL_POPUP_INSERT_CURRENT_FILE
 insert current file
 GENERAL_POPUP_INSERT_CURRENT_DIR

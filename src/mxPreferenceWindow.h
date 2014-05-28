@@ -3,12 +3,20 @@
 
 #include <wx/dialog.h>
 
-#define TERM_LX "lxterminal -T \"${TITLE}\" -e"
-//#define TERM_XFCE "xfterm4 -e"
-#define TERM_XTERM "xterm -T \"${TITLE}\" -e"
-#define TERM_KDE3 "konsole --nomenubar --notoolbar -T \"${TITLE}\" -e"
-#define TERM_KDE4 "konsole -e"
-#define TERM_GNOME "gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x"
+struct LinuxTerminalInfo {
+	wxString name; ///< nombre para mostrar en el cuadro de preferencias
+	wxString test_command; ///< comando para probar si existe (usualmente ejecutable+" --version")
+	wxString extra_test; ///< extra string to find in test_command's output
+	wxString run_command; ///< comando para setear en config->Files.terminal_command
+	bool warning; ///< indica si es problematica y se debe recomendar utilizar otra.
+	LinuxTerminalInfo() {}
+	LinuxTerminalInfo(wxString _name, wxString _test_command, wxString _run_command, bool _warning=false, wxString _extra_test="")
+		:name(_name),test_command(_test_command),extra_test(_extra_test),run_command(_run_command),warning(_warning) {}
+	bool Test();
+	static int count;
+	static LinuxTerminalInfo *list;
+	static void Init();
+};
 
 class wxCheckBox;
 class wxComboBox;
@@ -169,11 +177,7 @@ public:
 	void OnExplorerThunar(wxCommandEvent &event);
 	void OnExplorerKonqueror(wxCommandEvent &event);
 	void OnTerminalButton(wxCommandEvent &event);
-	void OnTerminalLX(wxCommandEvent &event);
-//	void OnTerminalXfce(wxCommandEvent &event);
-	void OnTerminalXTerm(wxCommandEvent &event);
-	void OnTerminalKonsole(wxCommandEvent &event);
-	void OnTerminalGnomeTerminal(wxCommandEvent &event);
+	void OnSelectTerminal(wxCommandEvent &event);
 #endif
 	void OnOkButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);
