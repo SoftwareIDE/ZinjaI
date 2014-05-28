@@ -222,8 +222,9 @@ wxString Toolchain::GetExtraCompilingArguments (bool cpp) {
 bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 	if (cpp) {
 		if (version_cpp<0) {
-			long v,s;
 			wxString str=utils->GetOutput(cpp_compiler+" -dumpversion");
+			if (str.Len()==0) return false;
+			long v,s;
 			str.BeforeFirst('.').ToLong(&v);
 			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
 			version_cpp=v*1000+s;
@@ -232,8 +233,9 @@ bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 		return version_cpp>=_v*1000+_s;
 	} else {
 		if (version_c<0) {
-			long v,s;
 			wxString str=utils->GetOutput(c_compiler+" -dumpversion");
+			if (str.Len()==0) return false;
+			long v,s;
 			str.BeforeFirst('.').ToLong(&v);
 			str.AfterFirst('.').BeforeFirst('.').ToLong(&s);
 			version_c=v*1000+s;

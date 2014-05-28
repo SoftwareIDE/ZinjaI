@@ -45,11 +45,40 @@ enum ReadOnlyModeEnum {
 	ROM_DEL_PROJECT, ///< not a real state, just used for telling SetReadOnlyMode "ProjectManager says you're not read-only"
 };
 
+class mxSource;
+#define MAX_NAVIGATION_HISTORY_LEN 100
+class NavigationHistory {
+	struct Location {
+		wxString file;
+		mxSource *src;
+		int pos;
+		Location():src(NULL),pos(0){}
+	};
+	Location locs[MAX_NAVIGATION_HISTORY_LEN];
+	int hsize, hcur, hbase; // hcur y hsize son relativos a hbase
+	mxSource *focus_source;
+	bool jumping;
+	void Goto(int i);
+	void Add(mxSource *src, int pos);
+public:
+	NavigationHistory():hsize(1),hcur(0),hbase(0),focus_source(NULL),jumping(false) {}
+	void OnFocus(mxSource *src);
+	void OnJump(mxSource *src, int current_line, int current_pos);
+	void OnClose(mxSource *src);
+	void Prev();
+	void Next();
+};
+
+extern NavigationHistory navigation_history;
+
 /**
 * @brief Componente visual de edicion de texto para fuentes
 **/
 class mxSource: public wxStyledTextCtrl {
 
+	friend class NavigationHistory;
+	int old_current_line; ///< for detecting jumps long enought to record in navigation_history
+	
 public:
 	struct MacroAction { 
 		int msg; unsigned long wp; long lp; char data[2]; bool for_sci; char *extra;

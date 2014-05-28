@@ -189,6 +189,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_AUTOCODE_AUTOCOMPLETE, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_FORCE_AUTOCOMPLETE, mxMainWindow::OnEdit)
 //	EVT_MENU(mxID_EDIT_FUZZY_AUTOCOMPLETE, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_NAVIGATION_HISTORY_PREV, mxMainWindow::OnNavigationHistoryPrev)
+	EVT_MENU(mxID_NAVIGATION_HISTORY_NEXT, mxMainWindow::OnNavigationHistoryNext)
 	
 	EVT_MENU(mxID_MACRO_RECORD, mxMainWindow::OnMacroRecord)
 	EVT_MENU(mxID_MACRO_REPLAY, mxMainWindow::OnMacroReplay)
@@ -1464,8 +1466,8 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_5,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_5,"Desplegar el quinto nivel"),_T(""),_T("Abre todos los bolques del quinto nivel"),ipre+_T("unfold5.png"));
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_ALL,LANG(MENUITEM_FOLD_UNFOLD_ALL_LEVELS,"Desplegar todos los niveles"),_T(""),_T("Abre todos los bolques de todos los niveles"),ipre+_T("unfoldAll.png"));
 #else
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_FOLD,LANG(MENUITEM_FOLD_FOLD_THIS_LINE,"Plegar en esta linea"),_T("Alt+Left"),_T(""),ipre+_T("foldOne.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_UNFOLD,LANG(MENUITEM_FOLD_UNFOLD_THIS_LINE,"Desplegar en esta linea"),_T("Alt+Right"),_T(""),ipre+_T("unfoldOne.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_FOLD,LANG(MENUITEM_FOLD_FOLD_THIS_LINE,"Plegar en esta linea"),_T("Alt+Up"),_T(""),ipre+_T("foldOne.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_UNFOLD,LANG(MENUITEM_FOLD_UNFOLD_THIS_LINE,"Desplegar en esta linea"),_T("Alt+Down"),_T(""),ipre+_T("unfoldOne.png"));
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_1,LANG(MENUITEM_FOLD_FOLD_LEVEL_1,"Plegar el primer nivel"),_T("Ctrl+1"),_T("Cierra todos los bolques del primer nivel"),ipre+_T("fold1.png"));
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_2,LANG(MENUITEM_FOLD_FOLD_LEVEL_2,"Plegar el segundo nivel"),_T("Ctrl+2"),_T("Cierra todos los bolques del segundo nivel"),ipre+_T("unfold2.png"));
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_3,LANG(MENUITEM_FOLD_FOLD_LEVEL_3,"Plegar el tercer nivel"),_T("Ctrl+3"),_T("Cierra todos los bolques del tercer nivel"),ipre+_T("fold3.png"));
@@ -2695,7 +2697,7 @@ bool mxMainWindow::CloseSource (int i) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	const int accel_count=17; int i=0;
+	const int accel_count=19; int i=0;
 	wxAcceleratorEntry entries[accel_count];
 	entries[i++].Set(	wxACCEL_CTRL,					WXK_SPACE, 		mxID_EDIT_FORCE_AUTOCOMPLETE);
 	entries[i++].Set(	wxACCEL_CTRL,					WXK_RETURN,		mxID_FILE_OPEN_SELECTED);
@@ -2714,6 +2716,8 @@ void mxMainWindow::SetAccelerators() {
 	entries[i++].Set(	wxACCEL_CTRL,					'q', 			mxID_MACRO_REPLAY);
 	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		'q', 			mxID_MACRO_RECORD);
 	entries[i++].Set(	wxACCEL_SHIFT,					WXK_F1, 		mxID_HELP_CODE);
+	entries[i++].Set(	wxACCEL_ALT,					WXK_LEFT, 		mxID_NAVIGATION_HISTORY_PREV);
+	entries[i++].Set(	wxACCEL_ALT,					WXK_RIGHT, 		mxID_NAVIGATION_HISTORY_NEXT);
 	wxAcceleratorTable accel(accel_count,entries);
 	SetAcceleratorTable(accel);
 }
@@ -5400,7 +5404,10 @@ void mxMainWindow::SetToolchainMode (bool is_extern) {
 
 void mxMainWindow::SetCompilingStatus (const wxString &message, bool also_statusbar) {
 	if (current_toolchain.type>=TC_EXTERN) AddExternCompilerOutput("= ",message);
-	else compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
+	else {
+		compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
+		main_window->compiler_tree.treeCtrl->SelectItem(main_window->compiler_tree.state);
+	}
 	if (also_statusbar) main_window->SetStatusText(message);
 }
 
@@ -5647,5 +5654,13 @@ void mxMainWindow::OnMacroReplay (wxCommandEvent & evt) {
 		evt.SetId(mxID_MACRO_REPLAY); // just to be sure
 		src->EndUndoAction();
 	}
+}
+
+void mxMainWindow::OnNavigationHistoryNext (wxCommandEvent &evt) {
+	navigation_history.Next();
+}
+
+void mxMainWindow::OnNavigationHistoryPrev (wxCommandEvent &evt) {
+	navigation_history.Prev();
 }
 

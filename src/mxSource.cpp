@@ -25,6 +25,76 @@ using namespace std;
 #include "mxColoursEditor.h"
 #include "error_recovery.h"
 
+NavigationHistory navigation_history;
+
+void NavigationHistory::OnClose(mxSource *src) {
+	for(int i=0;i<hsize;i++) { 
+		int j=(hbase+i)%MAX_NAVIGATION_HISTORY_LEN;
+		if (locs[j].src==src) {
+			if (src->sin_titulo) locs[j].file.Clear();
+			else locs[j].file=src->GetFullPath(); 
+			locs[j].src=NULL;
+		}
+	}
+	if (focus_source==src) focus_source=NULL;
+}
+
+void NavigationHistory::Goto(int i) {
+	jumping=true;
+	Location &loc=locs[i%MAX_NAVIGATION_HISTORY_LEN];
+cerr<<"NAV:Goto("<<loc.src<<","<<loc.pos<<")"<<endl;
+	if (!loc.src && loc.file.Len()) 
+		loc.src=main_window->OpenFile(loc.file);
+	if (loc.src) loc.src->GotoPos(loc.pos);
+	jumping=false;
+}
+
+
+void NavigationHistory::OnFocus(mxSource *src) {
+cerr<<"NAV:OnFocus("<<src<<")"<<endl;
+	if (src==focus_source) return;
+	focus_source=src; src->old_current_line=src->GetCurrentLine();
+	if (!jumping) Add(src,src->GetCurrentPos());
+}
+
+void NavigationHistory::OnJump(mxSource *src, int current_line, int current_pos) {
+cerr<<"NAV:OnJump("<<src<<","<<current_line<<")"<<endl;
+	const int min_long_jump_len=10;
+	if (!jumping && (
+			current_line>=src->old_current_line+min_long_jump_len
+			||
+			current_line<=src->old_current_line-min_long_jump_len
+		))
+			Add(src,current_pos);
+	src->old_current_line=current_line;
+}
+
+void NavigationHistory::Add(mxSource *src, int pos) {
+	Location &old_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
+	if (old_loc.src==src&&old_loc.pos==pos) return;
+cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+cerr<<"NAV:Add("<<this<<","<<pos<<")"<<endl;
+	if (hsize<MAX_NAVIGATION_HISTORY_LEN) hsize=(++hcur)+1;
+	else hbase=(hbase+1)%MAX_NAVIGATION_HISTORY_LEN;
+	Location &new_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
+	new_loc.src=src; new_loc.pos=pos;
+cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+}
+
+void NavigationHistory::Prev() {
+cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+	if (hcur==0) return;
+	Goto(hbase+(--hcur));
+cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+}
+
+void NavigationHistory::Next() {
+cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;	
+	if (hcur+1==hsize) return; // no hay historial para adelante
+	Goto(hbase+(++hcur));
+cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+}
+
 #define II_BACK(p,a) while(p>0 && (a)) p--;
 #define II_BACK_NC(p,a) while(a) p--;
 #define II_FRONT(p,a) while(p<l && (a)) p++;
@@ -122,6 +192,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 //	if (wxLocale::GetSystemEncoding()==wxFONTENCODING_UTF8) 
 //		SetCodePage(wxSTC_CP_UTF8);
 //#endif
+	
+	old_current_line=-1000;
 	
 	brace_1=-1; brace_2=-1;
 	
@@ -297,6 +369,7 @@ mxSource::~mxSource () {
 	if (diff_brother) diff_brother->SetDiffBrother(NULL); diff_brother=NULL;
 	while (first_diff_info) delete first_diff_info;
 	
+	navigation_history.OnClose(this);
 	parser->UnregisterSource(this);
 	debug->UnregisterSource(this);
 	er_unregister_source(this);
@@ -871,6 +944,7 @@ bool mxSource::SaveSource (const wxFileName &filename) {
 	return false;
 }
 
+
 void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	int cl=GetCurrentLine();
 	if (first_view) {
@@ -890,6 +964,9 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 //		}
 	}
 	int p=GetCurrentPos();
+	
+	navigation_history.OnJump(this,cl,p);
+	
 	if (!config_source.lineNumber)
 		main_window->status_bar->SetStatusText(wxString("Lin ")<<cl<<" - Col "<<p-PositionFromLine(cl),1);
 //	char c;
@@ -2669,7 +2746,12 @@ void mxSource::OnKillFocus(wxFocusEvent &event) {
 
 void mxSource::OnSetFocus(wxFocusEvent &event) {
 	ro_quejado=false;
-	if (main_window) main_window->focus_source=this;
+	if (main_window) {
+		if (main_window->focus_source!=this) {
+			navigation_history.OnFocus(this);
+			main_window->focus_source=this;
+		}
+	}
 	event.Skip();
 	if (!sin_titulo) CheckForExternalModifications();
 }

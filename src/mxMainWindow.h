@@ -611,6 +611,9 @@ public:
 	void OnMacroRecord(wxCommandEvent &evt);
 	void OnMacroReplay(wxCommandEvent &evt);
 	
+	void OnNavigationHistoryNext(wxCommandEvent &evt);
+	void OnNavigationHistoryPrev(wxCommandEvent &evt);
+	
 	DECLARE_EVENT_TABLE();
 };
 
