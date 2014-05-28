@@ -39,7 +39,7 @@ cursor=117:1
 marker=141
 [source]
 path=src/mxMainWindow.cpp
-cursor=3304:34
+cursor=3310:86
 breakpoint=1952
 breakpoint_annotation=
 marker=855

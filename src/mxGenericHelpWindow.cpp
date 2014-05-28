@@ -136,7 +136,9 @@ void mxGenericHelpWindow::OnSashDragEvent(wxSashEvent& event) {
 }
 
 void mxGenericHelpWindow::OnTreeEvent(wxTreeEvent &event) {
-	OnTree(event.GetItem());
+	wxArrayTreeItemIds items;
+	tree->GetSelections(items);
+	if (items.GetCount()) OnTree(event.GetItem());
 }
 
 void mxGenericHelpWindow::OnLinkEvent(wxHtmlLinkEvent &event) {

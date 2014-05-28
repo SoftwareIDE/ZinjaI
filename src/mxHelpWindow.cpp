@@ -14,6 +14,7 @@
 mxHelpWindow *mxHelpWindow::instance=NULL;
 
 mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(LANG(HELPW_CAPTION,"Ayuda de ZinjaI"),true) { 
+	ignore_tree_event=false;
 	// populate index tree
 	wxString index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,_T("index_")+config->Init.language_file);
 	if (!wxFileName::FileExists(index_file))
@@ -123,9 +124,6 @@ void mxHelpWindow::OnSearch(wxString value) {
 }
 
 void mxHelpWindow::ShowIndex() {
-	wxArrayTreeItemIds ta;
-	if (tree->GetSelections(ta))
-		tree->SelectItem(tree->GetSelection(),false);
 	LoadHelp(_index);
 }
 
@@ -144,12 +142,9 @@ void mxHelpWindow::ShowHelp(wxString page) {
 
 void mxHelpWindow::LoadHelp(wxString file) {
 	if (file.Len()>5 && file.Mid(0,5)==_T("http:"))
-		html->LoadPage(file);
-	else
-		html->LoadPage(GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,file)));
-	HashStringTreeItem::iterator it = items.find(file);
-	if (it!=items.end())
-		tree->SelectItem(it->second);
+		utils->OpenInBrowser(file);
+	else FixLoadPage(file);
+	SelectTreeItem(file);
 	Show();
 	html->SetFocus();
 	Raise();
@@ -163,17 +158,10 @@ bool mxHelpWindow::OnLink (wxString href) {
 	} else if (href.StartsWith(_T("http://"))) {
 		utils->OpenInBrowser(href);
 	} else {
-		wxString fname = href.BeforeFirst('#');
+		wxString fname=(href+"#").BeforeFirst('#');
 		if (fname.Len()) {
-			HashStringTreeItem::iterator it = items.find(fname);
-			if (it!=items.end())
-				tree->SelectItem(it->second);
-			fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,fname));
-			if (!fname.Len())
-				html->SetPage(ERROR_PAGE(fname));
-			else {
-				html->LoadPage(href);
-			}
+			SelectTreeItem(fname);
+			FixLoadPage(href);
 		} else
 			return false;
 	}
@@ -181,16 +169,11 @@ bool mxHelpWindow::OnLink (wxString href) {
 }
 
 void mxHelpWindow::OnTree (wxTreeItemId item) {
+	if (ignore_tree_event) return;
 	tree->Expand(item);
 	HashStringTreeItem::iterator it = items.begin();
 	while (it!=items.end() && it->second != item) ++it;
-	if (it==items.end()) return;
-	wxString fname=it->first,anchor; if (fname.Contains("#")) { anchor=fname.AfterFirst('#'); fname=fname.BeforeFirst('#'); }
-	fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,fname));
-	if (fname.Len())
-		html->LoadPage(fname+(anchor.Len()?wxString("#")+anchor:""));
-	else
-		html->SetPage(ERROR_PAGE(it->first));
+	if (it!=items.end()) FixLoadPage(it->first);
 }
 
 wxString mxHelpWindow::GetHelpFile(wxString file) {
@@ -210,3 +193,32 @@ wxString mxHelpWindow::GetHelpFile(wxString file) {
 void mxHelpWindow::OnForum (wxCommandEvent & event) {
 	utils->OpenInBrowser(LANG(HELPW_ADDRESS,"http://zinjai.sourceforge.net/index.php?page=contacto.php"));
 }
+
+void mxHelpWindow::FixLoadPage (const wxString &href) {
+cerr<<"FixLoadPage: **"<<href<<"**"<<endl;
+	if (href.Contains("#")) {
+		wxString fname=href.BeforeFirst('#'), anchor=href.AfterFirst('#');
+		fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,fname));
+		if (!fname.Len()) html->SetPage(ERROR_PAGE(fname));
+		else html->LoadPage(fname+"#"+anchor);
+	} else {
+		wxString fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,href));
+		if (!fname.Len()) html->SetPage(ERROR_PAGE(fname));
+		else html->LoadPage(fname);
+	}
+}
+
+void mxHelpWindow::SelectTreeItem (const wxString &fname) {
+	HashStringTreeItem::iterator it = items.find(fname);
+	if (it==items.end()) {
+		wxArrayTreeItemIds ta;
+		if (tree->GetSelections(ta)) 
+			tree->SelectItem(tree->GetSelection(),false);
+		return;	
+	}
+	ignore_tree_event=true;
+	tree->SelectItem(it->second);
+	ignore_tree_event=false;
+}
+
+
