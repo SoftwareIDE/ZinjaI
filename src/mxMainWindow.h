@@ -379,7 +379,8 @@ public:
 	mxSource *NewFileFromTemplate (wxString filename);
 	mxSource *NewFileFromText (wxString text, int pos=0);
 	mxSource *NewFileFromText (wxString text, wxString name, int pos=0);
-	mxSource *OpenFile (wxString filename, bool add_to_project=true);
+	mxSource *OpenFile (const wxString &filename);
+	mxSource *OpenFile (const wxString &filename, bool add_to_project);
 	mxSource *FindSource(wxFileName filename, int *pos=NULL);
 	void OpenFileFromGui (wxFileName filename, int *multiple=NULL);
 	wxTreeItemId AddToProjectTreeSimple(wxFileName filename, eFileType where=FT_NULL);

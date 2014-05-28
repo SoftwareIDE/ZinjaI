@@ -110,7 +110,7 @@ void mxBreakList::OnDoubleClick(wxGridEvent &evt) {
 	if (evt.GetCol()==BL_COL_WHY) { // doble click en la columna con la ubicacion, abre ese archivo y va a esa linea
 		BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[r],false);
 		if (bpi) {
-			if (!bpi->source) main_window->OpenFile(bpi->fname,!project);
+			if (!bpi->source) main_window->OpenFile(bpi->fname);
 			else main_window->notebook_sources->SetSelection(main_window->notebook_sources->GetPageIndex(bpi->source));
 			if (bpi->source) {
 				Close();

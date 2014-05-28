@@ -1167,7 +1167,7 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 					if (notitle_source && notitle_source->temp_filename==cfile)
 						current_source = notitle_source;
 					else
-						current_source = main_window->OpenFile(cfile,!project);
+						current_source = main_window->OpenFile(cfile);
 				}
 			}
 		} else {
@@ -1175,7 +1175,7 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 				current_source = notitle_source;
 			else {
 				current_source = main_window->IsOpen(cfile);
-				current_source = main_window->OpenFile(cfile,!project);
+				current_source = main_window->OpenFile(cfile);
 			}
 		}
 		if (current_source==EXTERNAL_SOURCE) current_source=NULL;

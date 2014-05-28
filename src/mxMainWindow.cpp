@@ -964,7 +964,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		}
 		// si no esta abierto
 		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
-		mxSource *src=OpenFile(the_one,!project);
+		mxSource *src=OpenFile(the_one);
 		if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
 	} else if (action=="gotopos") { // not used anymore?
 		mxSource *source=NULL;
@@ -982,8 +982,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		}
 		// si no esta abierto
 		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
-		if (!source)
-			source = OpenFile(the_one,!project);
+		if (!source) source = OpenFile(the_one);
 		if (source && source!=EXTERNAL_SOURCE) {
 			int line=source->LineFromPosition(p1);
 			source->MarkError(line-1);
@@ -1006,8 +1005,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		}
 		// si no esta abierto
 		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
-		if (!source)
-			source = OpenFile(the_one,!project);
+		if (!source) source = OpenFile(the_one);
 		if (source && source!=EXTERNAL_SOURCE) {
 			p1+=source->PositionFromLine(line);
 			source->MarkError(line-1);
@@ -1090,7 +1088,7 @@ void mxMainWindow::OnFileOpenH(wxCommandEvent &event) {
 		mxSource *source = CURRENT_SOURCE;
 		if (source->sin_titulo) return;
 		wxString the_one(utils->GetComplementaryFile(source->source_filename));
-		if (the_one.Len()) OpenFile(the_one,!project);
+		if (the_one.Len()) OpenFile(the_one);
 	}
 }
 
@@ -1122,7 +1120,7 @@ void mxMainWindow::OnFileOpenSelected(wxCommandEvent &event){
 		if (source->GetStyleAt(p1-1)==wxSTC_C_STRING) fname.Replace("\\\\","\\");
 		wxFileName the_one (DIR_PLUS_FILE(base_path,fname));
 		if (wxFileName::FileExists(the_one.GetFullPath()))
-			OpenFile(the_one.GetFullPath(),!project);
+			OpenFile(the_one.GetFullPath());
 		else 
 			new mxGotoFileDialog(source->GetTextRange(p1,p2),this);
 		
@@ -3219,8 +3217,13 @@ mxSource *mxMainWindow::FindSource(wxFileName filename, int *pos) {
 /**
 * @return NULL si no encuentra el archivo, puntero al mxSource si lo abre en Zinjai, 
 *         o puntero a main_window si se abre con un programa externo (como wxFormBuilder)
+*
+* @param filename 			path completo del archivo a abrir
+* @param add_to_project		indica si hay que agregar el archivo al arbol de archivos (deberia 
+*							ser siempre asi cuando no hay proyecto) y al proyecto (en caso
+*							de haber uno) 
 **/
-mxSource *mxMainWindow::OpenFile (wxString filename, bool add_to_project) {
+mxSource *mxMainWindow::OpenFile (const wxString &filename, bool add_to_project) {
 	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	if (filename==_T("") || !wxFileName::FileExists(filename))
 		return NULL;
@@ -3296,6 +3299,10 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		}
 	}
 	return source;
+}
+
+mxSource *mxMainWindow::OpenFile (const wxString &filename) {
+	return OpenFile(filename);
 }
 
 /**
@@ -3436,7 +3443,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 			}
 			OpenFile(filename.GetFullPath(),attach);
 		} else {
-			OpenFile(filename.GetFullPath(),!project);
+			OpenFile(filename.GetFullPath());
 		}
 	}
 	// actualizar el historial de archivos abiertos recientemente
@@ -5450,7 +5457,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 		}
 		// si no esta abierto
 		if (!opened) {
-			mxSource *src=OpenFile(sthe_one,!project);
+			mxSource *src=OpenFile(sthe_one);
 			if (src==EXTERNAL_SOURCE) return; // si era un proyecto wxfb o algo asi que se abre afuera de zinjai
 			if (!src) { new mxGotoFileDialog(the_one.GetFullName(),this,line-1); return; }
 		}

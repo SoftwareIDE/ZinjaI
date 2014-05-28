@@ -45,7 +45,7 @@ void NavigationHistory::Goto(int i) {
 //cerr<<"NAV:Goto("<<loc.src<<","<<loc.pos<<")"<<endl;
 	if (!loc.src) {
 		if (!loc.file.Len()) return;
-		loc.src=main_window->OpenFile(loc.file,!project);
+		loc.src=main_window->OpenFile(loc.file);
 	} else if (focus_source!=loc.src) {
 		for (int i=0,j=main_window->notebook_sources->GetPageCount();i<j;i++)
 			if (main_window->notebook_sources->GetPage(i)==loc.src) {

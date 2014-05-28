@@ -67,6 +67,7 @@ public:
 	void OnClose(mxSource *src);
 	void Prev();
 	void Next();
+	void Reset() { hsize=1; hcur=0; hbase=0; focus_source=NULL; jumping=false; }
 };
 
 extern NavigationHistory navigation_history;

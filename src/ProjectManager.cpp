@@ -532,6 +532,9 @@ ProjectManager::ProjectManager(wxFileName name) {
 	if (GetWxfbActivated()) {
 		project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
 	}
+	
+	navigation_history.Reset();
+	
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
 #ifdef __WIN32__
@@ -555,7 +558,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 }
 
 // liberar memoria al destruir el proyecto
-ProjectManager::~ProjectManager(){
+ProjectManager::~ProjectManager() {
 
 	parser->CleanAll();
 	autocoder->Reset("");
@@ -590,6 +593,7 @@ ProjectManager::~ProjectManager(){
 	
 	Toolchain::SelectToolchain(); // keep after project=NULL
 	
+	navigation_history.Reset();
 }
 
 // devuelve verdadero si lo inserta, falso si ya estaba
