@@ -158,6 +158,8 @@ bool mxApplication::OnInit() {
 	// inicialize ProjectManager
 	project = NULL;
 	
+	config->DoInitialChecks(); // verifica si hay compilador, terminal, etc instalado y configurado
+	
 	// create main window
 	if (config->Init.size_x==0 || config->Init.size_y==0)
 		main_window = new mxMainWindow(NULL, wxID_ANY, _T("ZinjaI "), wxDefaultPosition, wxSize(800, 600));
