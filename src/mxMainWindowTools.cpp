@@ -764,6 +764,7 @@ void mxMainWindow::UpdateCustomTools(bool for_project) {
 	}
 	
 	if (toolbar) CreateToolbars(toolbar);
+	if (main_window) main_window->aui_manager.Update();
 }
 
 
