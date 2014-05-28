@@ -173,6 +173,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_BRACEMATCH, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_INDENT, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_GOTO, mxMainWindow::OnEditGoto)
+	EVT_MENU(mxID_SOURCE_GOTO_DEFINITION, mxMainWindow::OnSourceGotoDefinition)
 	EVT_MENU(mxID_EDIT_GOTO_FUNCTION, mxMainWindow::OnEditGotoFunction)
 	EVT_MENU(mxID_EDIT_GOTO_FILE, mxMainWindow::OnEditGotoFile)
 	EVT_MENU(mxID_EDIT_COMMENT, mxMainWindow::OnEdit)
@@ -5662,5 +5663,9 @@ void mxMainWindow::OnNavigationHistoryNext (wxCommandEvent &evt) {
 
 void mxMainWindow::OnNavigationHistoryPrev (wxCommandEvent &evt) {
 	navigation_history.Prev();
+}
+
+void mxMainWindow::OnSourceGotoDefinition (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->JumpToCurrentSymbolDefinition();
 }
 

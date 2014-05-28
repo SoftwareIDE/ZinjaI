@@ -42,57 +42,75 @@ void NavigationHistory::OnClose(mxSource *src) {
 void NavigationHistory::Goto(int i) {
 	jumping=true;
 	Location &loc=locs[i%MAX_NAVIGATION_HISTORY_LEN];
-cerr<<"NAV:Goto("<<loc.src<<","<<loc.pos<<")"<<endl;
-	if (!loc.src && loc.file.Len()) 
-		loc.src=main_window->OpenFile(loc.file);
-	if (loc.src) loc.src->GotoPos(loc.pos);
+//cerr<<"NAV:Goto("<<loc.src<<","<<loc.pos<<")"<<endl;
+	if (!loc.src) {
+		if (!loc.file.Len()) return;
+		loc.src=main_window->OpenFile(loc.file,!project);
+	} else if (focus_source!=loc.src) {
+		for (int i=0,j=main_window->notebook_sources->GetPageCount();i<j;i++)
+			if (main_window->notebook_sources->GetPage(i)==loc.src) {
+				main_window->notebook_sources->SetSelection(i);
+				break;
+			}
+	}
+	if (loc.src) {
+		loc.src->GotoPos(loc.pos);
+		loc.src->SetFocus();
+	}
 	jumping=false;
 }
 
 
 void NavigationHistory::OnFocus(mxSource *src) {
-cerr<<"NAV:OnFocus("<<src<<")"<<endl;
+//cerr<<"NAV:OnFocus("<<src<<")"<<endl;
 	if (src==focus_source) return;
-	focus_source=src; src->old_current_line=src->GetCurrentLine();
-	if (!jumping) Add(src,src->GetCurrentPos());
+	focus_source=src; 
+//	src->old_current_line=src->GetCurrentLine();
+//	if (!jumping) Add(src,src->GetCurrentPos());
 }
 
 void NavigationHistory::OnJump(mxSource *src, int current_line, int current_pos) {
-cerr<<"NAV:OnJump("<<src<<","<<current_line<<")"<<endl;
+//cerr<<"NAV:OnJump("<<src<<","<<current_line<<")"<<endl;
 	const int min_long_jump_len=10;
-	if (!jumping && (
+	if (!jumping) {
+		if (
 			current_line>=src->old_current_line+min_long_jump_len
 			||
 			current_line<=src->old_current_line-min_long_jump_len
-		))
+		) {
 			Add(src,current_pos);
+		} else {
+			Location &old_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
+			old_loc.pos=current_pos;
+		}
+	}
 	src->old_current_line=current_line;
 }
 
 void NavigationHistory::Add(mxSource *src, int pos) {
 	Location &old_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
 	if (old_loc.src==src&&old_loc.pos==pos) return;
-cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
-cerr<<"NAV:Add("<<this<<","<<pos<<")"<<endl;
+//cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+//cerr<<"NAV:Add("<<this<<","<<pos<<")"<<endl;
 	if (hsize<MAX_NAVIGATION_HISTORY_LEN) hsize=(++hcur)+1;
 	else hbase=(hbase+1)%MAX_NAVIGATION_HISTORY_LEN;
 	Location &new_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
 	new_loc.src=src; new_loc.pos=pos;
-cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+//cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 }
 
 void NavigationHistory::Prev() {
-cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+//cerr<<"NAV:Prev In:  hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 	if (hcur==0) return;
 	Goto(hbase+(--hcur));
-cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+//cerr<<"NAV:Prev Out: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 }
 
 void NavigationHistory::Next() {
-cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;	
+//cerr<<"NAV:Next In:  hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;	
 	if (hcur+1==hsize) return; // no hay historial para adelante
 	Goto(hbase+(++hcur));
-cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
+//cerr<<"NAV:Next Out: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 }
 
 #define II_BACK(p,a) while(p>0 && (a)) p--;
@@ -1980,7 +1998,7 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 	int e=WordEndPosition(pos,true);
 	wxString key = GetTextRange(s,e);
 	if (key.Len()!=0) {
-		menu.Append(mxID_EDIT_GOTO_FUNCTION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Buscar en el Arbol de Simbolos..."))<<_T("\tCtrl+Shift+G"));
+		menu.Append(mxID_SOURCE_GOTO_DEFINITION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Ir a definición..."))<<_T("\tCtrl+Shift+G"));
 		if (GetCharAt(s-1)=='#')
 			key = GetTextRange(s-1,e);
 		menu.Append(mxID_HELP_CODE, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<_T("\tShift+F1"));
@@ -3017,6 +3035,17 @@ DiffInfo *mxSource::MarkDiffs(int from, int to, MXS_MARKER marker, wxString extr
 	}
 }
 
+/// @brief looks for the symbol under the cursor in the symbols tress (functions/methods/classes) and goes to its definition (or opens mxGotoFunctionDialog if there are options)
+void mxSource::JumpToCurrentSymbolDefinition() {
+	int pos = GetCurrentPos();
+	int s=WordStartPosition(pos,true);
+	int e=WordEndPosition(pos,true);
+	wxString key = GetTextRange(s,e);
+	if (key.Len()) {
+		new mxGotoFunctionDialog(key,main_window,GetFileName(false));
+	}
+}
+
 void mxSource::OnClick(wxMouseEvent &evt) {
 	// ¿por que no anda esto?
 //	if (evt.ControlDown() && evt.ShiftDown()) {
@@ -3025,13 +3054,8 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 //		return;
 //	}
 	if (evt.ControlDown()) {
-		int pos = PositionFromPointClose(evt.GetX(),evt.GetY());
-		int s=WordStartPosition(pos,true);
-		int e=WordEndPosition(pos,true);
-		wxString key = GetTextRange(s,e);
-		if (key.Len()) {
-			new mxGotoFunctionDialog(key,main_window,GetFileName(false));
-		}
+		SetCurrentPos(PositionFromPointClose(evt.GetX(),evt.GetY()));
+		JumpToCurrentSymbolDefinition();
 	} else if (evt.AltDown()) {
 		int pos = PositionFromPointClose(evt.GetX(),evt.GetY());
 		int s=WordStartPosition(pos,true);

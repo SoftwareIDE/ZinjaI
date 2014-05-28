@@ -117,6 +117,7 @@ public:
 	void OnEditGotoFile (wxCommandEvent &event);
 	void OnEditInsertInclude (wxCommandEvent &event);
 	void OnEditListMarks (wxCommandEvent &event);
+	void OnSourceGotoDefinition (wxCommandEvent &event);
 	
 	void OnViewDuplicateTab (wxCommandEvent &event);
 	void OnViewBeginnerPanel (wxCommandEvent &event);
