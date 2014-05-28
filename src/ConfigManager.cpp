@@ -37,41 +37,44 @@ ConfigManager::ConfigManager(wxString a_path) {
 			langs.Add(filename.BeforeLast('.'));
 			cont = dir.GetNext(&filename);
 		}
-		if (langs.Index(_T("spanish"))==wxNOT_FOUND) langs.Add(_("spanish"));
+		if (langs.Index("spanish")==wxNOT_FOUND) langs.Add("spanish");
 		if (langs.GetCount()>1) {
-			wxString newlang = wxGetSingleChoice(_T("Select a Language:\nSeleccione el idioma:"),_T("ZinjaI"),langs);
+			wxString newlang = wxGetSingleChoice("Select a Language:\nSeleccione el idioma:","ZinjaI",langs);
 			if (newlang.Len()) Init.language_file=newlang;
 		}
 	}
 	if (Init.language_file!="spanish")
-		if (LANGERR_OK!=load_language(DIR_PLUS_FILE(_T("lang"),Init.language_file).c_str(),DIR_PLUS_FILE(home_dir,_T("lang_cache")).c_str()))
-		wxMessageBox(_T("No se pudo cargar el diccionario del idioma seleccionado.\n"
+		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(home_dir,"lang_cache").c_str()))
+		mxMessageDialog(NULL,"No se pudo cargar el diccionario del idioma seleccionado.\n"
 						"El sistema utilizará el predeterminado (spanish).\n"
-						"Could not load language file. System will use default (spanish)."),Init.language_file);
+						"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
 		
 	RecalcStuff();
+}
+
+void ConfigManager::DoInitialChecks() {
 #if defined(__WIN32__)
 #else
 	// elegir un explorador de archivos
-	if (Files.explorer_command==_T("<<sin configurar>>")) { // tratar de detectar automaticamente un terminal adecuado
-		if (utils->GetOutput(_T("dolphin --version")).Len())
-			Files.explorer_command = _T("dolphin");
-		if (utils->GetOutput(_T("konqueror --version")).Len())
-			Files.explorer_command = _T("konqueror");
-		else if (utils->GetOutput(_T("nautilus --version")).Len())
-			Files.explorer_command = _T("nautilus");
-		else if (utils->GetOutput(_T("thunar --version")).Len())
-			Files.explorer_command = _T("thunar");
+	if (Files.explorer_command=="<<sin configurar>>") { // tratar de detectar automaticamente un terminal adecuado
+		if (utils->GetOutput("dolphin --version").Len())
+			Files.explorer_command = "dolphin";
+		if (utils->GetOutput("konqueror --version").Len())
+			Files.explorer_command = "konqueror";
+		else if (utils->GetOutput("nautilus --version").Len())
+			Files.explorer_command = "nautilus";
+		else if (utils->GetOutput("thunar --version").Len())
+			Files.explorer_command = "thunar";
 	} 
 	// elegir un terminal
-	if (Files.terminal_command==_T("<<sin configurar>>")) { // tratar de detectar automaticamente un terminal adecuado
-		if (utils->GetOutput(_T("xterm -version")).Len())
-			Files.terminal_command = _T(TERM_XTERM);
-		else if (utils->GetOutput(_T("lxterminal -version")).Len())
-			Files.terminal_command = _T(TERM_LX);
-		else if (utils->GetOutput(_T("konsole --version")).Len()) {
-			if (utils->GetOutput(_T("konsole --version")).Find(_T("KDE: 3"))==wxNOT_FOUND) {
-				Files.terminal_command = _T(TERM_KDE4);
+	if (Files.terminal_command=="<<sin configurar>>") { // tratar de detectar automaticamente un terminal adecuado
+		if (utils->GetOutput("xterm -version").Len())
+			Files.terminal_command = TERM_XTERM;
+		else if (utils->GetOutput("lxterminal -version").Len())
+			Files.terminal_command = TERM_LX;
+		else if (utils->GetOutput("konsole --version").Len()) {
+			if (utils->GetOutput("konsole --version").Find("KDE: 3")==wxNOT_FOUND) {
+				Files.terminal_command = TERM_KDE4;
 //				wxMessageBox(LANG(CONFIG_KONSOLE_PROBLEM,"La aplicacion terminal que se ha encontrado instalada\n"
 //								"es konsole 4.x. Esta version puede generear algunas\n"
 //								"molestias al ejecutar sus programas, y problemas mayores\n"
@@ -80,36 +83,46 @@ ConfigManager::ConfigManager(wxString a_path) {
 //								"seccion \"Rutas 2\" del cuadro de \"Preferencias\" (desde\n"
 //								"el menu archivo)."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"));
 			} else
-				Files.terminal_command = _T(TERM_KDE3);
-		} else if (utils->GetOutput(_T("gnome-terminal --version")).Len())
-			Files.terminal_command = _T(TERM_GNOME);
-//		} else if (utils->GetOutput(_T("xfterm4 --version")).Len())
-//			Files.terminal_command = _T(TERM_XFCE);
+				Files.terminal_command = TERM_KDE3;
+		} else if (utils->GetOutput("gnome-terminal --version").Len())
+			Files.terminal_command = TERM_GNOME;
+//		} else if (utils->GetOutput("xfterm4 --version").Len())
+//			Files.terminal_command = TERM_XFCE;
 		else
-			wxMessageBox(LANG(CONFIG_NO_TERMINAL_FOUND,"No se ha encontrado una terminal conocida.\n"
+			mxMessageDialog(NULL,LANG(CONFIG_NO_TERMINAL_FOUND,"No se ha encontrado una terminal conocida.\n"
 			                "Instale xterm, konsole, lxterminal o gnome-terminal;\n"
 							"luego configure el parametro \"Comando del Terminal\"\n"
-							"en la seccion \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"));
+							"en la seccion \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING).ShowModal();
 	} 
-	else if (Files.terminal_command==_T("gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x"))
+	else if (Files.terminal_command=="gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x")
 		Files.terminal_command=TERM_GNOME;
 	// verificar si hay compilador
-	if (!Init.compiler_seen && !utils->GetOutput(_T("g++ --version")).Len()) {
+	if (!Init.compiler_seen && !utils->GetOutput("g++ --version").Len()) {
 		// try to use clang if g++ not found
 		wxArrayString toolchains;
 		Toolchain::GetNames(toolchains,true);
-		if (toolchains.Index("clang")!=wxNOT_FOUND && utils->GetOutput(_T("clang --version")).Len()) {
+		if (toolchains.Index("clang")!=wxNOT_FOUND && utils->GetOutput("clang --version").Len()) {
 			Files.toolchain="clang"; Toolchain::SelectToolchain(); 
-		} else 
-			wxMessageBox(LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
+		} else {
+			wxString chk_message; 
+			if (Files.terminal_command!="<<sin configurar>>" && utils->GetOutput("apt-get --version").Len())
+				chk_message="Intentar instalar ahora";
+			int ans = mxMessageDialog(NULL,LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
 				"con el gestor de paquetes que corresponda a su distribucion\n"
-				"(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_COMPILER,"Compilador C++"));
+				"(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_COMPILER,"Compilador C++"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
+			if (ans&mxMD_CHECKED) wxExecute(Files.terminal_command+"sudo apt-get install build-essential");
+		}
 	} else Init.compiler_seen=true;
 	// verificar si hay depurador
-	if (!Init.debugger_seen && !utils->GetOutput(_T("gdb --version")).Len())
-		wxMessageBox(LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
+	if (!Init.debugger_seen && !utils->GetOutput("gdb --version").Len()) {
+		wxString chk_message; 
+		if (Files.terminal_command!="<<sin configurar>>" && utils->GetOutput("apt-get --version").Len())
+			chk_message="Intentar instalar ahora";
+		int ans = mxMessageDialog(NULL,LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
 		                "el gestor de paquetes que corresponda a su distribucion\n"
-		                "(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_DEBUGGER,"Depurador"));
+		                "(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_DEBUGGER,"Depurador"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
+		if (ans&mxMD_CHECKED) wxExecute(Files.terminal_command+"sudo apt-get install build-essential");
+	}
 	else Init.debugger_seen=true;
 #endif	
 	Toolchain::SelectToolchain();
@@ -132,13 +145,13 @@ bool ConfigManager::Load() {
 		} else {
 			key=str.BeforeFirst('=');
 			value=str.AfterFirst('=');
-			if (section==_T("Styles")) {
+			if (section=="Styles") {
 				CFG_INT_READ_DN("print_size",Styles.print_size);
 				else CFG_INT_READ_DN("font_size",Styles.font_size);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
 				else if (key=="dark") { if (utils->IsTrue(value)) Init.colour_theme="inverted.zcs";	}
 				
-			} else if (section==_T("Source")) {
+			} else if (section=="Source") {
 				CFG_INT_READ_DN("tabWidth",Source.tabWidth);
 				else CFG_INT_READ_DN("alignComments",Source.alignComments);
 				else CFG_BOOL_READ_DN("tabUseSpaces",Source.tabUseSpaces);
@@ -158,7 +171,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("autoCompletion",Source.autoCompletion);
 				else CFG_BOOL_READ_DN("avoidNoNewLineWarning",Source.avoidNoNewLineWarning);
 			
-			} else if (section==_T("Debug")) {
+			} else if (section=="Debug") {
 //				CFG_BOOL_READ_DN("autoupdate_backtrace",Debug.autoupdate_backtrace);
 				CFG_BOOL_READ_DN("autohide_panels",Debug.autohide_panels);
 				else CFG_BOOL_READ_DN("autohide_toolbars",Debug.autohide_toolbars);
@@ -183,7 +196,7 @@ bool ConfigManager::Load() {
 					Debug.inspection_improving_template_to.Add(value.AfterFirst('|'));
 				}
 				
-			} else if (section==_T("Running")) {
+			} else if (section=="Running") {
 				CFG_GENERIC_READ_DN("compiler_options",Running.cpp_compiler_options); //just for backward compatibility
 				else CFG_GENERIC_READ_DN("cpp_compiler_options",Running.cpp_compiler_options);
 				else CFG_GENERIC_READ_DN("c_compiler_options",Running.c_compiler_options);
@@ -192,7 +205,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("check_includes",Running.check_includes);
 				else CFG_BOOL_READ_DN("dont_run_headers",Running.dont_run_headers);
 			
-			} else if (section==_T("Help")) {
+			} else if (section=="Help") {
 //				CFG_GENERIC_READ_DN("quickhelp_index",Help.quickhelp_index);
 				CFG_GENERIC_READ_DN("wxhelp_index",Help.wxhelp_index);
 //				else CFG_GENERIC_READ_DN("tips_file",Help.tips_file);
@@ -203,7 +216,7 @@ bool ConfigManager::Load() {
 				else CFG_INT_READ_DN("min_len_for_completion",Help.min_len_for_completion);
 				else CFG_BOOL_READ_DN("show_extra_panels",Help.show_extra_panels);
 			
-			} else if (section==_T("Init")) {
+			} else if (section=="Init") {
 				CFG_BOOL_READ_DN("left_panels",Init.left_panels);
 				else CFG_BOOL_READ_DN("show_beginner_panel",Init.show_beginner_panel);
 				else CFG_BOOL_READ_DN("show_welcome",Init.show_welcome);
@@ -253,7 +266,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("fullpath_on_project_tree",Init.fullpath_on_project_tree);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
 				
-			} else if (section==_T("Files")) {
+			} else if (section=="Files") {
 				CFG_GENERIC_READ_DN("toolchain",Files.toolchain);
 				else CFG_GENERIC_READ_DN("debugger_command",Files.debugger_command);
 //#if defined(__WIN32__)
@@ -281,30 +294,30 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("project_folder",Files.project_folder);
 				else CFG_GENERIC_READ_DN("last_project_dir",Files.last_project_dir);
 				else CFG_GENERIC_READ_DN("last_dir",Files.last_dir);
-				else if (key.StartsWith(_T("last_file_"))) {
+				else if (key.StartsWith("last_file_")) {
 					last_files.Add(value);
-				} else if (key.StartsWith(_T("last_source_"))) {
+				} else if (key.StartsWith("last_source_")) {
 					if (key.Mid(12).ToLong(&l) && l>=0 && l<CM_HISTORY_MAX_LEN)
 						Files.last_source[l]=value;
-				} else if (key.StartsWith(_T("last_project_"))	) {
+				} else if (key.StartsWith("last_project_")	) {
 					if (key.Mid(13).ToLong(&l) && l>=0 && l<CM_HISTORY_MAX_LEN)
 						Files.last_project[l]=value;
 				}
 				
-			} else if (section==_T("Columns")) {
-				if (key.StartsWith(_T("inspections_grid_"))	) {
+			} else if (section=="Columns") {
+				if (key.StartsWith("inspections_grid_")	) {
 					if (key.Mid(17).ToLong(&l) && l>=0 && l<IG_COLS_COUNT)
 						Cols.inspections_grid[l]=utils->IsTrue(value);
-				} else if (key.StartsWith(_T("backtrace_grid_"))	) {
+				} else if (key.StartsWith("backtrace_grid_")	) {
 					if (key.Mid(15).ToLong(&l) && l>=0 && l<BG_COLS_COUNT)
 						Cols.backtrace_grid[l]=utils->IsTrue(value);
 				}
-//				} else if (key.StartsWith(_T("threadlist_grid_"))	) {
+//				} else if (key.StartsWith("threadlist_grid_")	) {
 //					if (key.Mid(15).ToLong(&l) && l>=0 && l<TG_COLS_COUNT)
 //						Cols.threadlist_grid[l]=utils->IsTrue(value);
 //				}
 				
-			} else if (section==_T("CustomTools")) {
+			} else if (section=="CustomTools") {
 				if (key.StartsWith("name_")) {
 					if (key.Mid(5).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
 						CustomTools[l].name=value;
@@ -322,7 +335,7 @@ bool ConfigManager::Load() {
 						CustomTools[l].on_toolbar=utils->IsTrue(value);
 				}
 				
-			} else if (section==_T("Toolbars")) {
+			} else if (section=="Toolbars") {
 				CFG_INT_READ(Toolbars,icon_size);
 				else CFG_BOOL_READ(Toolbars,file.new_file);
 				else CFG_BOOL_READ(Toolbars,file.new_project);

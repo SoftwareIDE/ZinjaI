@@ -433,6 +433,7 @@ public:
 	cfgDebug Debug;
 	cfgCustomTool CustomTools[MAX_CUSTOM_TOOLS];
 	ConfigManager(wxString a_path);
+	void DoInitialChecks();
 	bool Load();
 	bool Save();	
 	void LoadDefaults();
