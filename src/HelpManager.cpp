@@ -454,16 +454,24 @@ int HelpManager::GetStandardHelp(wxString keyword, wxString &content) {
 
 wxString HelpManager::GetQuickHelp(wxString keyword) {
 
-	wxString ret(_T("<HTML><HEAD><TITLE>ZinjaI Quick Help</TITLE></HEAD><BODY>"));
+	wxString ret("<HTML><HEAD><TITLE>ZinjaI Quick Help</TITLE></HEAD><BODY>");
 	wxString content;
 	int count=GetStandardHelp(keyword,content)+GetParserHelp(keyword,content);
 	
 	if (count)
 		ret+=content;
-	else
-		ret+=NO_QUICKHELP_TEXT(keyword);
+	else {
+		ret+="<BR>";
+		ret+=LANG1(PARSERHELP_NO_RESULTS,"No se encontro ayuda rápida para la palabra seleccionada: <{1}>",keyword);
+		ret+="<BR><HR><BR>";
+	}
 	
-	return ret+_T("</BODY></HTML>");
+	ret+="<A href=\"cppreference:"+keyword+"\">";
+	ret+=LANG1(PARSERHELP_GOTO_CPPREFENCE,"Buscar \"<{1}>\" en la referencia C/C++...",keyword);
+	ret+="</A><BR>";
+	
+	ret+"</BODY></HTML>";
+	return ret;
 	
 }
 

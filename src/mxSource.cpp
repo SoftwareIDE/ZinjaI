@@ -2005,8 +2005,10 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	int p=GetCurrentPos(); int s=GetStyleAt(p);
 	wxString key=GetCurrentKeyword(p);
 	if (key.Len()!=0) {
-		if (!key[0]!='#') menu.Append(mxID_SOURCE_GOTO_DEFINITION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Ir a definición..."))<<"\tCtrl+Shift+G");
-		menu.Append(mxID_HELP_CODE, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<"\tShift+F1");
+		if (!key[0]!='#') 
+			menu.Append(mxID_SOURCE_GOTO_DEFINITION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Ir a definición..."))<<"\tCtrl+Shift+G");
+		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) 
+			menu.Append(mxID_HELP_CODE, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<"\tShift+F1");
 		if (s==wxSTC_C_IDENTIFIER) {
 			menu.Append(mxID_EDIT_INSERT_HEADER, LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key)<<"\tCtrl+H");
 			menu.Append(mxID_EDIT_HIGHLIGHT_WORD, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \""))<<key<<"\"");
@@ -2026,7 +2028,8 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 		wxFileName the_one (sin_titulo?GetTextRange(p1,p2):DIR_PLUS_FILE(source_filename.GetPath(),GetTextRange(p1,p2)));
 		if (wxFileName::FileExists(the_one.GetFullPath()))
 			menu.Append(mxID_FILE_OPEN_SELECTED, LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2))<<"\tCtrl+Enter");
-	}		
+	}
+	menu.Append(mxID_WHERE_AM_I, LANG(SOURCE_POPUP_WHERE_AM_I,"Mostrar contexto (clase/método/función)"));
 	menu.AppendSeparator();
 	
 	menu.Append(wxID_UNDO, wxString(LANG(SOURCE_POPUP_UNDO,"&Deshacer"))<<"\tCtrl+Z");

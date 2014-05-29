@@ -192,6 +192,10 @@ PARSERHELP_DEFINED_AS
 Definida como:
 PARSERHELP_SYMBOLS_FOUND
 Simbolos encontrados:
+PARSERHELP_NO_RESULTS
+No se encontro ayuda relacionada a la palabra seleccionada: <{1}>
+PARSERHELP_GOTO_CPPREFENCE
+Buscar \"<{1}>\" en la referencia C/C++...
 SYMBOLS_MACROS
 Macros y Otros
 SYMBOLS_GLOBALS
@@ -3362,6 +3366,8 @@ SOURCE_POPUP_HIGHLIGHT_WORD
 Resaltar identificador \"
 SOURCE_POPUP_OPEN_SELECTED
 &Abrir \"<{1}>\"
+SOURCE_POPUP_WHERE_AM_I
+Mostrar contexto (clase/método/función)
 SOURCE_POPUP_UNDO
 &Deshacer
 SOURCE_POPUP_REDO

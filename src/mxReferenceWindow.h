@@ -25,7 +25,8 @@ class mxReferenceWindow:public mxGenericHelpWindow {
 	stack<wxString> history_next;
 	
 public:
-	static void ShowHelp(wxString page="");
+	static void ShowPage(wxString page="");
+	static void ShowAndSearch(const wxString &keyword);
 	static wxString ProcessHTML(wxString fname, mxReferenceWindow *w=NULL);
 	
 	void LoadHelp(wxString file, bool update_history=true);

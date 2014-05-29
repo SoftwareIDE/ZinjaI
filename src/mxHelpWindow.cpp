@@ -152,7 +152,7 @@ void mxHelpWindow::LoadHelp(wxString file) {
 
 bool mxHelpWindow::OnLink (wxString href) {
 	if (href=="cppreference:") {
-		Close(); mxReferenceWindow::ShowHelp();
+		Close(); mxReferenceWindow::ShowPage();
 	} else if (href.StartsWith(_T("foropen:"))) {
 		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,href.AfterFirst(':')));
 	} else if (href.StartsWith(_T("http://"))) {

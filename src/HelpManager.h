@@ -3,8 +3,6 @@
 
 #include "mxUtils.h" // HashStringString
 
-#define NO_QUICKHELP_TEXT(key) wxString(_T("<BR>No se encontro ayuda relacionada a la palabra seleccionada: "))+key+_T("<BR>") 
-
 class pd_func;
 class pd_var;
 class pd_macro;

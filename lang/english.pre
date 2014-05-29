@@ -194,6 +194,10 @@ PARSERHELP_DEFINED_AS
 Defined as:
 PARSERHELP_SYMBOLS_FOUND
 Symbols found:
+PARSERHELP_NO_RESULTS
+No quickhelp results found for keyword "<{1}>".
+PARSERHELP_GOTO_CPPREFENCE
+Search "<{1}>" in C/C++ reference...
 SYMBOLS_MACROS
 Macros and Misc.
 SYMBOLS_GLOBALS
@@ -3364,6 +3368,8 @@ SOURCE_POPUP_HIGHLIGHT_WORD
 Highligth identifier 
 SOURCE_POPUP_OPEN_SELECTED
 Open "<{1}>"
+SOURCE_POPUP_WHERE_AM_I
+Show context (current class/method/function)
 SOURCE_POPUP_UNDO
 Undo
 SOURCE_POPUP_REDO

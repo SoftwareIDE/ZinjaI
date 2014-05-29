@@ -23,7 +23,7 @@ mxReferenceWindow::~mxReferenceWindow() {
 	instance=NULL;
 }	
 
-void mxReferenceWindow::ShowHelp(wxString page) {
+void mxReferenceWindow::ShowPage(wxString page) {
 	if (page=="") page=_index;
 	page=DIR_PLUS_FILE(config->Help.cppreference_dir,page);
 	if (instance) {
@@ -36,6 +36,12 @@ void mxReferenceWindow::ShowHelp(wxString page) {
 		instance=new mxReferenceWindow(page);
 	}
 	instance->search_text->SetFocus();
+}
+
+void mxReferenceWindow::ShowAndSearch(const wxString &keyword) {
+	ShowPage();
+	instance->search_text->SetValue(keyword);
+	instance->OnSearch(keyword,false);
 }
 
 void mxReferenceWindow::LoadHelp (wxString fname, bool update_history) {

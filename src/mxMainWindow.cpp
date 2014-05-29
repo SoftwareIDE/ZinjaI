@@ -408,7 +408,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_SOCKET(wxID_ANY,mxMainWindow::OnSocketEvent)
 	
 	EVT_TIMER(mxID_TIMER_AFTER_EVENTS, mxMainWindow::OnAfterEventsTimer)
-	EVT_MENU(mxID_WHERE_TIMER, mxMainWindow::OnWhereAmI)
+	EVT_MENU(mxID_WHERE_AM_I, mxMainWindow::OnWhereAmI)
 	EVT_TIMER(mxID_COMPILER_TIMER, mxMainWindow::OnParseOutputTime)
 	EVT_TIMER(mxID_PARSER_TIMER, mxMainWindow::OnParseSourceTime)
 	EVT_TIMER(mxID_PARSER_PROCESS_TIMER, mxMainWindow::OnParserContinueProcess)
@@ -561,8 +561,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	share = NULL; // new ShareManager();
 
 	parser_timer = new wxTimer(GetEventHandler(),mxID_PARSER_TIMER);
-//	where_timer = new wxTimer(GetEventHandler(),mxID_WHERE_TIMER);
-//	where_timer->Start(1000,false);
 	compiler->timer = new wxTimer(GetEventHandler(),mxID_COMPILER_TIMER);
 	find_replace_dialog = NULL; // new mxFindDialog(this,wxID_ANY);
 	
@@ -937,18 +935,19 @@ void mxMainWindow::OnEditGotoFile (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
-	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':'));
+	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':')), post=event.GetLinkInfo().GetHref().AfterFirst(':');
 	if (action=="quickhelp")
-//		ShowQuickHelp(event.GetLinkInfo().GetHref().AfterFirst(':'));
-		quick_help->SetPage(help->GetQuickHelp( event.GetLinkInfo().GetHref().AfterFirst(':') ));
+		quick_help->SetPage(help->GetQuickHelp( post ));
 //	else if (action=="quickfile")
-//		quick_help->LoadPage(DIR_PLUS_FILE(config->Help.quickhelp_dir,event.GetLinkInfo().GetHref().AfterFirst(':')));
+//		quick_help->LoadPage(DIR_PLUS_FILE(config->Help.quickhelp_dir,post));
 	else if (action=="doxygen")
-		utils->OpenInBrowser(wxString("file://")<<event.GetLinkInfo().GetHref().AfterFirst(':'));
+		utils->OpenInBrowser(wxString("file://")<<post);
 //	else if (action=="example")
-//		NewFileFromTemplate(DIR_PLUS_FILE(config->Help.quickhelp_dir,event.GetLinkInfo().GetHref().AfterFirst(':')));
+//		NewFileFromTemplate(DIR_PLUS_FILE(config->Help.quickhelp_dir,post));
+	else if (action=="cppreference")
+		mxReferenceWindow::ShowAndSearch( post );
 	else if (action=="gotoline") {
-		wxString the_one=event.GetLinkInfo().GetHref().AfterFirst(':').BeforeLast(':');
+		wxString the_one=post.BeforeLast(':');
 		long int line;
 		event.GetLinkInfo().GetHref().AfterLast(':').ToLong(&line);
 		for (int i=0,j=notebook_sources->GetPageCount();i<j;i++) {
@@ -968,7 +967,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
 	} else if (action=="gotopos") { // not used anymore?
 		mxSource *source=NULL;
-		wxString the_one=event.GetLinkInfo().GetHref().AfterFirst(':').BeforeLast(':').BeforeLast(':');
+		wxString the_one=post.BeforeLast(':').BeforeLast(':');
 		long int p1=0,p2=0;
 		event.GetLinkInfo().GetHref().BeforeLast(':').AfterLast(':').ToLong(&p1);
 		event.GetLinkInfo().GetHref().AfterLast(':').ToLong(&p2);
@@ -990,7 +989,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		}
 	} else if (action=="gotolinepos") {
 		mxSource *source=NULL;
-		wxString the_one=event.GetLinkInfo().GetHref().AfterFirst(':').BeforeLast(':').BeforeLast(':').BeforeLast(':');
+		wxString the_one=post.BeforeLast(':').BeforeLast(':').BeforeLast(':');
 		long int p1=0,p2=0,line=0;
 		event.GetLinkInfo().GetHref().BeforeLast(':').BeforeLast(':').AfterLast(':').ToLong(&line);
 		event.GetLinkInfo().GetHref().BeforeLast(':').AfterLast(':').ToLong(&p1);
@@ -1149,26 +1148,27 @@ void mxMainWindow::OnHelpTip (wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpCpp (wxCommandEvent &event) {
-	mxReferenceWindow::ShowHelp();
+	mxReferenceWindow::ShowPage();
 }
 
 void mxMainWindow::OnHelpCode (wxCommandEvent &event) {
-	bool ask = true; // preguntar si no hay fuente abierto o palabra seleccionada
 	wxString key;
 	IF_THERE_IS_SOURCE { // si hay fuente abierto
-		mxSource *source=CURRENT_SOURCE; 
+		mxSource *source=CURRENT_SOURCE;
 		int pos=source->GetCurrentPos(); // buscar la palabra sobre el cursor
-		int s=source->WordStartPosition(pos,true);
-		int e=source->WordEndPosition(pos,true);
-		key = source->GetTextRange(s,e);
-		if (key.Len()!=0) { // puede ser una directiva de preprocesador
-			ask=false;
-			if (source->GetCharAt(s-1)=='#')
-				key = source->GetTextRange(s-1,e);
+		key = source->GetCurrentKeyword(pos);
+		if (key.StartsWith("#")) {
+			mxReferenceWindow::ShowAndSearch("Preprocessor");
+			return;
+		}
+		int s=source->GetStyleAt(pos);
+		if (s==wxSTC_C_WORD||s==wxSTC_C_WORD2) {
+			mxReferenceWindow::ShowAndSearch(key);
+			return;
 		}
 	}
-	if (ask) // si no hay clave, preguntar
-		key = mxGetTextFromUser(LANG(QUICKHELP_WORDS_TO_SEARCH,"Palabra a buscar:"), LANG(CAPTION_QUICKHELP,"Ayuda Rapida") , _(""), this);
+	if (!key.Len()) // si no hay clave, preguntar
+		key = mxGetTextFromUser(LANG(QUICKHELP_WORDS_TO_SEARCH,"Palabra a buscar:"), LANG(CAPTION_QUICKHELP,"Ayuda Rapida") , "", this);
 	if (key=="Zaskar") {
 		new mxSplashScreen(zskr,GetPosition().x+GetSize().x/2-100,GetPosition().y+GetSize().y/2-150);
 		wxString s("Hola, este soy yo... Pablo Novara, alias Zaskar... ;).");
@@ -2708,7 +2708,7 @@ void mxMainWindow::SetAccelerators() {
 	entries[i++].Set(	0 ,								WXK_F12, 		mxID_FILE_OPEN_H);
 	entries[i++].Set(	wxACCEL_ALT|wxACCEL_CTRL,		'p', 			mxID_RUN_CONFIG);
 	entries[i++].Set(	wxACCEL_SHIFT|wxACCEL_CTRL,		WXK_F6, 		mxID_INTERNAL_INFO);
-	entries[i++].Set(	wxACCEL_ALT|wxACCEL_CTRL,		WXK_SPACE, 		mxID_WHERE_TIMER);
+	entries[i++].Set(	wxACCEL_ALT|wxACCEL_CTRL,		WXK_SPACE, 		mxID_WHERE_AM_I);
 	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_SPACE, 		mxID_EDIT_AUTOCODE_AUTOCOMPLETE);
 	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_ALT,		'w', 			mxID_FILE_CLOSE_ALL_BUT_ONE);
 	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_ALT,		'f', 			mxID_EDIT_FIND_FROM_TOOLBAR);
