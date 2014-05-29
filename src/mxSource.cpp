@@ -1,9 +1,8 @@
+#include <iostream>
 #include <wx/clipbrd.h>
 #include <wx/encconv.h>
-#include <iostream>
 #include <wx/file.h>
 #include "mxGCovSideBar.h"
-using namespace std;
 #include "mxSource.h"
 #include "mxUtils.h"
 #include "ids.h"
@@ -24,6 +23,7 @@ using namespace std;
 #include "Autocoder.h"
 #include "mxColoursEditor.h"
 #include "error_recovery.h"
+using namespace std;
 
 NavigationHistory navigation_history;
 
@@ -1971,9 +1971,9 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	
 	if (m_extras->FindBreakpointFromLine(this,l)) {
 		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"))<<"\tF8");
-		menu.Append(mxID_DEBUG_BREAKPOINT_OPTIONS, wxString(LANG(SOURCE_POPUP_BREAKPOINT_OPTIONS,"Opciones del breakpoint..."))<<"\tCtrl+F9");
 	} else if (!IsEmptyLine(l))
 		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"))<<"\tF8");
+	menu.Append(mxID_DEBUG_BREAKPOINT_OPTIONS, wxString(LANG(SOURCE_POPUP_BREAKPOINT_OPTIONS,"Opciones del breakpoint..."))<<"\tCtrl+Shift+F8");
 	int s=GetStyleAt(p);
 	if (MarkerGet(l)&(1<<mxSTC_MARK_USER))
 		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltaso"))<<"\tCtrl+B");
@@ -2030,7 +2030,7 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 		if (wxFileName::FileExists(the_one.GetFullPath()))
 			menu.Append(mxID_FILE_OPEN_SELECTED, LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2))<<"\tCtrl+Enter");
 	}
-	menu.Append(mxID_WHERE_AM_I, LANG(SOURCE_POPUP_WHERE_AM_I,"Mostrar contexto (clase/método/función)"));
+	menu.Append(mxID_WHERE_AM_I, wxString(LANG(SOURCE_POPUP_WHERE_AM_I,"Mostrar contexto (clase/método/función)"))<<"\tCtrl+Alt+Space");
 	menu.AppendSeparator();
 	
 	menu.Append(wxID_UNDO, wxString(LANG(SOURCE_POPUP_UNDO,"&Deshacer"))<<"\tCtrl+Z");

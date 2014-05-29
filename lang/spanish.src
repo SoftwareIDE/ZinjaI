@@ -193,7 +193,7 @@ Definida como:
 PARSERHELP_SYMBOLS_FOUND
 Simbolos encontrados:
 PARSERHELP_NO_RESULTS
-No se encontro ayuda relacionada a la palabra seleccionada: <{1}>
+No se encontro ayuda rápida para la palabra seleccionada: <{1}>
 PARSERHELP_GOTO_CPPREFENCE
 Buscar \"<{1}>\" en la referencia C/C++...
 SYMBOLS_MACROS
@@ -1432,6 +1432,8 @@ MENUITEM_VIEW_WHITE_SPACES
 Mostrar espacios y caracteres de &fin de linea
 MENUITEM_VIEW_SYNTAX_HIGHLIGHT
 &Colorear Sintaxis
+MENUITEM_VIEW_CODE_COLOURS
+Configurar esquema de colores...
 MENUITEM_VIEW_FOLDING
 Plegado
 MENUITEM_VIEW_FULLSCREEN
@@ -1450,6 +1452,8 @@ MENUITEM_VIEW_COMPILER_TREE
 &Mostrar Resultados de la Compilacion
 MENUITEM_VIEW_UPDATE_SYMBOLS
 &Actualizar Arbol de Simbolos
+MENUITEM_VIEW_TOOLBARS
+Barras de herramientas
 MENUITEM_VIEW_TOOLBAR_FILE
 &Mostrar Barra de Herramientas Archivo
 MENUITEM_VIEW_TOOLBAR_EDIT
@@ -1468,6 +1472,8 @@ MENUITEM_VIEW_TOOLBAR_DEBUG
 &Mostrar Barra de Herramientas Depuracion
 MENUITEM_VIEW_TOOLBAR_MISC
 &Mostrar Barra de Herramientas Miscelanea
+MENUITEM_VIEW_TOOLBARS_CONFIG
+&Configurar...
 MENUITEM_VIEW_PREV_ERROR
 &Ir a error anterior
 MENUITEM_VIEW_NEXT_ERROR
@@ -3336,26 +3342,28 @@ SOURCE_HEADER_WAS_ALREADY
 Sin cambios, ya estaba la cabecera 
 SOURCE_POPUP_REMOVE_BREAKPOINT
 Quitar breakpoint
-SOURCE_POPUP_BREAKPOINT_OPTIONS
-Opciones del breakpoint...
 SOURCE_POPUP_INSERT_BREAKPOINT
 Insertar breakpoint
-SOURCE_POPUP_UNCOMMENT_LINES
-&Descomentar linea(s)
-SOURCE_POPUP_COMMENT_LINES
-Comentar linea(s)
+SOURCE_POPUP_BREAKPOINT_OPTIONS
+Opciones del breakpoint...
 SOURCE_POPUP_REMOVE_HIGHLIGHT
 Quitar resaltaso
 SOURCE_POPUP_HIGHLIGHT_LINES
-Resaltar linea(s)
+Resaltar linea
+SOURCE_POPUP_INDENTE
+Indentar Linea
+SOURCE_POPUP_UNCOMMENT_LINES
+&Descomentar linea
+SOURCE_POPUP_COMMENT_LINES
+Comentar linea
 SOURCE_POPUP_DUPLICATE_LINES
-Duplicar linea(s)
+Duplicar linea
 SOURCE_POPUP_DELETE_LINES
-Eliminar linea(s)
+Eliminar linea
 SOURCE_POPUP_TOGGLE_LINES_UP
-Mover linea(s) hacia arriba
+Mover linea hacia arriba
 SOURCE_POPUP_TOGGLE_LINES_DOWN
-Mover linea(s) hacia abajo
+Mover linea hacia abajo
 SOURCE_POPUP_FIND_SYMBOL
 &Ir a definición...
 SOURCE_POPUP_HELP_ON
@@ -3378,8 +3386,6 @@ SOURCE_POPUP_COPY
 &Copiar
 SOURCE_POPUP_PASTE
 &Pegar
-SOURCE_POPUP_INDENTE
-&Indentar Blo&que
 SOURCE_POPUP_SELECT_BLOCK
 &Seleccionar Bloque
 SOURCE_POPUP_SELECT_ALL

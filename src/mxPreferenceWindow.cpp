@@ -929,10 +929,15 @@ void mxPreferenceWindow::OnDebugMacrosEdit(wxCommandEvent &event) {
 		mxMessageDialog(main_window,_T("El archivo no existe"),LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"), mxMD_OK|mxMD_WARNING).ShowModal();	
 }
 
-void mxPreferenceWindow::ShowUp() {
-	ResetChanges();
-	Show();
-	Raise();
+mxPreferenceWindow *mxPreferenceWindow::ShowUp() {
+	if (preference_window) {
+		preference_window->ResetChanges();
+		preference_window->Show();
+		preference_window->Raise();
+	} else {
+		preference_window = new mxPreferenceWindow(main_window);
+	}
+	return preference_window;
 }
 
 void mxPreferenceWindow::OnToolbarsFile(wxCommandEvent &evt) {
@@ -940,7 +945,7 @@ void mxPreferenceWindow::OnToolbarsFile(wxCommandEvent &evt) {
 	if (toolbar_editor_file)
 		toolbar_editor_file->ShowUp();
 	else {
-		toolbar_editor_file = new mxToolbarEditor(main_window->toolbar_file,LANG(PREFERENCES_EDIT_TOOLBAR_FILE_CAPTION,"Barra de Herramientas Archivo"));
+		toolbar_editor_file = new mxToolbarEditor(this,main_window->toolbar_file,LANG(PREFERENCES_EDIT_TOOLBAR_FILE_CAPTION,"Barra de Herramientas Archivo"));
 
 		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_NEW,"Nuevo..."),_T("nuevo.png"),config->Toolbars.file.new_file);
 		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_NEW_PROJECT,"Nuevo Proyecto..."),_T("proyecto.png"),config->Toolbars.file.new_project);
@@ -969,7 +974,7 @@ void mxPreferenceWindow::OnToolbarsEdit(wxCommandEvent &evt) {
 	if (toolbar_editor_edit)
 		toolbar_editor_edit->ShowUp();
 	else {
-		toolbar_editor_edit = new mxToolbarEditor(main_window->toolbar_edit,LANG(PREFERENCES_EDIT_TOOLBAR_EDIT_CAPTION,"Barra de Herramientas \"Edicion\""));
+		toolbar_editor_edit = new mxToolbarEditor(this,main_window->toolbar_edit,LANG(PREFERENCES_EDIT_TOOLBAR_EDIT_CAPTION,"Barra de Herramientas \"Edicion\""));
 		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_UNDO,"Deshacer"),_T("deshacer.png"),config->Toolbars.edit.undo);
 		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_REDO,"Rehacer"),_T("rehacer.png"),config->Toolbars.edit.redo);
 		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_COPY,"Copiar"),_T("copiar.png"),config->Toolbars.edit.copy);
@@ -1004,7 +1009,7 @@ void mxPreferenceWindow::OnToolbarsMisc(wxCommandEvent &evt) {
 	if (toolbar_editor_misc)
 		toolbar_editor_misc->ShowUp();
 	else {
-		toolbar_editor_misc = new mxToolbarEditor(main_window->toolbar_misc,LANG(PREFERENCES_EDIT_TOOLBAR_MISC_CAPTION,"Barra de Herramientas \"Miscelanea\""));
+		toolbar_editor_misc = new mxToolbarEditor(this,main_window->toolbar_misc,LANG(PREFERENCES_EDIT_TOOLBAR_MISC_CAPTION,"Barra de Herramientas \"Miscelanea\""));
 		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_FILE_PREFERENCES,"Preferencias..."),_T("preferencias.png"),config->Toolbars.misc.preferences);
 		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Tutoriales..."),_T("tutoriales.png"),config->Toolbars.misc.tutorials);
 		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_ZINJAI,"Ayuda Sobre ZinjaI..."),_T("ayuda.png"),config->Toolbars.misc.help_ide);
@@ -1022,7 +1027,7 @@ void mxPreferenceWindow::OnToolbarsView(wxCommandEvent &evt) {
 	if (toolbar_editor_view)
 		toolbar_editor_view->ShowUp();
 	else {
-		toolbar_editor_view = new mxToolbarEditor(main_window->toolbar_view,LANG(PREFERENCES_EDIT_TOOLBAR_VIEW_CAPTION,"Barra de Herramientas \"ver\""));
+		toolbar_editor_view = new mxToolbarEditor(this,main_window->toolbar_view,LANG(PREFERENCES_EDIT_TOOLBAR_VIEW_CAPTION,"Barra de Herramientas \"ver\""));
 		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_SPLIT_VIEW,"Duplicar Vista"),_T("duplicarVista.png"),config->Toolbars.view.split_view);
 		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_LINE_WRAP,"Ajuste de Linea"),_T("lineWrap.png"),config->Toolbars.view.line_wrap);
 		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_WHITE_SPACES,"Mostrar Espacios y Caracteres de Fin de Linea"),_T("whiteSpace.png"),config->Toolbars.view.white_space);
@@ -1051,7 +1056,7 @@ void mxPreferenceWindow::OnToolbarsTools(wxCommandEvent &evt) {
 	if (toolbar_editor_tools)
 		toolbar_editor_tools->ShowUp();
 	else {
-		toolbar_editor_tools = new mxToolbarEditor(main_window->toolbar_tools,LANG(PREFERENCES_EDIT_TOOLBAR_TOOLS_CAPTION,"Barra de Herramientas \"Herramientas\""));
+		toolbar_editor_tools = new mxToolbarEditor(this,main_window->toolbar_tools,LANG(PREFERENCES_EDIT_TOOLBAR_TOOLS_CAPTION,"Barra de Herramientas \"Herramientas\""));
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de Flujo..."),_T("flujo.png"),config->Toolbars.tools.draw_flow);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar Jerarquia de Clases..."),_T("clases.png"),config->Toolbars.tools.draw_classes);
 		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_COMMENTS_COPY_CODE_FROM_H,"Implementar Metodos/Funciones Faltantes..."),_T("copy_code_from_h.png"),config->Toolbars.tools.copy_code_from_h);
@@ -1113,7 +1118,7 @@ void mxPreferenceWindow::OnToolbarsDebug(wxCommandEvent &evt) {
 	if (toolbar_editor_debug)
 		toolbar_editor_debug->ShowUp();
 	else {
-		toolbar_editor_debug = new mxToolbarEditor(main_window->toolbar_debug,LANG(PREFERENCES_EDIT_TOOLBAR_DEBUG_CAPTION,"Barra de Herramientas \"Depuracion\""));
+		toolbar_editor_debug = new mxToolbarEditor(this,main_window->toolbar_debug,LANG(PREFERENCES_EDIT_TOOLBAR_DEBUG_CAPTION,"Barra de Herramientas \"Depuracion\""));
 		toolbar_editor_debug->Add(_T("Comenzar/Continuar Depuracion"),_T("depurar.png"),config->Toolbars.debug.start);
 		toolbar_editor_debug->Add(_T("Interrumpir Ejecucion en Depuracion"),_T("pausar.png"),config->Toolbars.debug.pause);
 		toolbar_editor_debug->Add(_T("Detener Depuracion"),_T("detener.png"),config->Toolbars.debug.stop);
@@ -1142,7 +1147,7 @@ void mxPreferenceWindow::OnToolbarsRun(wxCommandEvent &evt) {
 	if (toolbar_editor_run)
 		toolbar_editor_run->ShowUp();
 	else {
-		toolbar_editor_run = new mxToolbarEditor(main_window->toolbar_run,LANG(PREFERENCES_EDIT_TOOLBAR_RUN_CAPTION,"Barra de Herramientas \"Ejecucion\""));
+		toolbar_editor_run = new mxToolbarEditor(this,main_window->toolbar_run,LANG(PREFERENCES_EDIT_TOOLBAR_RUN_CAPTION,"Barra de Herramientas \"Ejecucion\""));
 		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_COMPILE,"Compilar"),_T("compilar.png"),config->Toolbars.run.compile);
 		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_RUN,"Guardar, Compilar y Ejecutar..."),_T("ejecutar.png"),config->Toolbars.run.run);
 		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_OLD,"Ejecutar Sin Recompilar..."),_T("ejecutar_old.png"),config->Toolbars.run.run_old);
@@ -1162,12 +1167,22 @@ void mxPreferenceWindow::OnToolbarsRun(wxCommandEvent &evt) {
 	}	
 }
 
-void mxPreferenceWindow::SetToolbarPage() {
+void mxPreferenceWindow::SetToolbarPage(const wxString &edit_one) {
 	for (unsigned int i=0;i<notebook->GetPageCount();i++)
 		if (notebook->GetPage(i)==panel_toolbars) {
 			notebook->SetSelection(i);
 			break;
 		}
+	if (edit_one.Len()) {
+		wxCommandEvent evt;
+		if (edit_one=="file") OnToolbarsFile(evt);
+		else if (edit_one=="edit") OnToolbarsEdit(evt);
+		else if (edit_one=="view") OnToolbarsView(evt);
+		else if (edit_one=="debug") OnToolbarsDebug(evt);
+		else if (edit_one=="run") OnToolbarsRun(evt);
+		else if (edit_one=="misc") OnToolbarsMisc(evt);
+		else if (edit_one=="tools") OnToolbarsTools(evt);
+	}
 }
 
 void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
@@ -1374,3 +1389,11 @@ void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & even
 void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
 	
 }
+
+void mxPreferenceWindow::Delete ( ) {
+	{
+		preference_window->Destroy();
+		preference_window=NULL;
+	}	
+}
+

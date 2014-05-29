@@ -251,9 +251,11 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_VIEW_TOOLBAR_DEBUG, mxMainWindow::OnViewToolbarDebug)
 	EVT_MENU(mxID_VIEW_TOOLBAR_RUN, mxMainWindow::OnViewToolbarRun)
 	EVT_MENU(mxID_VIEW_TOOLBAR_FIND, mxMainWindow::OnViewToolbarFind)
+	EVT_MENU(mxID_VIEW_TOOLBARS_CONFIG, mxMainWindow::OnViewToolbarsConfig)
 	EVT_MENU(mxID_VIEW_WHITE_SPACE, mxMainWindow::OnViewWhiteSpace)
 	EVT_MENU(mxID_VIEW_LINE_WRAP, mxMainWindow::OnViewLineWrap)
 	EVT_MENU(mxID_VIEW_CODE_STYLE, mxMainWindow::OnViewCodeStyle)
+	EVT_MENU(mxID_VIEW_CODE_COLOURS, mxMainWindow::OnViewCodeColours)
 	EVT_MENU(mxID_VIEW_NOTEBOOK_NEXT, mxMainWindow::OnViewNotebookNext)
 	EVT_MENU(mxID_VIEW_NOTEBOOK_PREV, mxMainWindow::OnViewNotebookPrev)
 	EVT_MENU(mxID_VIEW_HIDE_BOTTOM, mxMainWindow::OnViewHideBottom)
@@ -460,7 +462,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
 	untitled_count=0;
-	preference_window=NULL;
 	valgrind_panel=NULL; 
 	beginner_panel=NULL;
 	gcov_sidebar=NULL;
@@ -1398,14 +1399,15 @@ void mxMainWindow::CreateMenus() {
 //#ifdef DEBUG
 //	utils->AddItemToMenu(menu.edit, mxID_EDIT_FUZZY_AUTOCOMPLETE, _T("Autocompletar extendido"),_T("Ctrl+alt+Space"),_T("Muestra el menu emergente de autocompletado"),ipre+_T("autocompletar.png"));
 //#endif
-	menu.menu->Append(menu.edit, LANG(MENUITEM_EDIT,"&Editar"));
+	menu.menu->Append(menu.edit, LANG(MENUITEM_EDIT,"&Edicion"));
 	
 	menu.view = new wxMenu;
-	wxMenu *fold_menu;
+	wxMenu *fold_menu, *toolbars_menu;
 	utils->AddItemToMenu(menu.view, mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"),_T(""),_T(""),ipre+_T("duplicarVista.png"));
 	menu.view_line_wrap = utils->AddCheckToMenu(menu.view, mxID_VIEW_LINE_WRAP, LANG(MENUITEM_VIEW_LINE_WRAP,"&Ajuste de linea"),_T("Alt+F11"),_T("Muestra las lineas largas como en varios renglones"), false);	
 	menu.view_white_space = utils->AddCheckToMenu(menu.view, mxID_VIEW_WHITE_SPACE, LANG(MENUITEM_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de &fin de linea"),_T(""),_T("Muestra las lineas largas como en varios renglones"), false);	
 	menu.view_code_style = utils->AddCheckToMenu(menu.view, mxID_VIEW_CODE_STYLE, LANG(MENUITEM_VIEW_SYNTAX_HIGHLIGHT,"&Colorear Sintaxis"),_T("Shift+F11"),_T("Resalta el codigo con diferentes colores y formatos de fuente."), false);	
+	utils->AddItemToMenu(menu.view, mxID_VIEW_CODE_COLOURS, LANG(MENUITEM_VIEW_CODE_COLOURS,"Configurar esquema de colores..."),"","",ipre+_T("preferencias.png"));
 	utils->AddSubMenuToMenu(menu.view, fold_menu = new wxMenu,LANG(MENUITEM_VIEW_FOLDING,"Plegado"),_T("Muestra opciones para plegar y desplegar codigo en distintos niveles"),ipre+_T("folding.png"));
 	menu.view->AppendSeparator();
 	menu.view_fullscreen = utils->AddCheckToMenu(menu.view, mxID_VIEW_FULLSCREEN, LANG(MENUITEM_VIEW_FULLSCREEN,"Ver a Pantalla &Completa"),_T("F11"),_T("Muestra el editor a pantalla completa, ocultando tambien los demas paneles"), false);
@@ -1416,18 +1418,20 @@ void mxMainWindow::CreateMenus() {
 	explorer_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_EXPLORER_TREE, LANG(MENUITEM_VIEW_EXPLORER_TREE,"Mostrar &Explorardor de Archivos"),_T("Ctrl+E"),_T("Muestra el panel explorador de archivos"), false);
 	symbols_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos"),_T(""),_T("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo."), false);
 	compiler_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion"),_T(""),_T("Muestra un panel con la salida del compilador"), false);
-	utils->AddItemToMenu(menu.view, mxID_VIEW_UPDATE_SYMBOLS, LANG(MENUITEM_VIEW_UPDATE_SYMBOLS,"&Actualizar Arbol de Simbolos"),_T("F2"),_T("Actualiza el arbol de simbolos."),ipre+_T("simbolos.png"));
+//	utils->AddItemToMenu(menu.view, mxID_VIEW_UPDATE_SYMBOLS, LANG(MENUITEM_VIEW_UPDATE_SYMBOLS,"&Actualizar Arbol de Simbolos"),_T("F2"),_T("Actualiza el arbol de simbolos."),ipre+_T("simbolos.png"));
 //	utils->AddItemToMenu(menu.view, mxID_VIEW_HIDE_BOTTOM, _T("&Ocultar paneles inferiores"),_T("Escape"),_T("Oculta los paneles de informacion de compilacion y ayuda rapida."),ipre+_T("hideBottom.png"));
-	menu.view_toolbar_file = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo"),_T(""),_T("Muestra la barra de herramientas para el manejo de archivos"), config->Toolbars.positions.file.visible);
-	menu.view_toolbar_edit = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion"),_T(""),_T("Muestra la barra de herramientas para la edicion del fuente"), config->Toolbars.positions.edit.visible);
-	menu.view_toolbar_view = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver"),_T(""),_T("Muestra la barra de herramientas para las opciones de visualizacion"), config->Toolbars.positions.view.visible);
-	menu.view_toolbar_find = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida"),_T(""),_T("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente"), config->Toolbars.positions.find.visible);
-	menu.view_toolbar_run = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion"),_T(""),_T("Muestra la barra de herramientas para la compilacion y ejecucion del programa"), config->Toolbars.positions.run.visible);
-	menu.view_toolbar_tools = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas"),_T(""),_T("Muestra la barra de herramientas para las herramientas adicionales"), config->Toolbars.positions.tools.visible);
-	menu.view_toolbar_project = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto"),_T(""),_T("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto"), config->Toolbars.positions.project.visible);
+	utils->AddSubMenuToMenu(menu.view, toolbars_menu = new wxMenu,LANG(MENUITEM_VIEW_TOOLBARS,"Barras de herramientas"),"","");
+	menu.view_toolbar_file = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo"),_T(""),_T("Muestra la barra de herramientas para el manejo de archivos"), config->Toolbars.positions.file.visible);
+	menu.view_toolbar_edit = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion"),_T(""),_T("Muestra la barra de herramientas para la edicion del fuente"), config->Toolbars.positions.edit.visible);
+	menu.view_toolbar_view = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver"),_T(""),_T("Muestra la barra de herramientas para las opciones de visualizacion"), config->Toolbars.positions.view.visible);
+	menu.view_toolbar_find = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida"),_T(""),_T("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente"), config->Toolbars.positions.find.visible);
+	menu.view_toolbar_run = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion"),_T(""),_T("Muestra la barra de herramientas para la compilacion y ejecucion del programa"), config->Toolbars.positions.run.visible);
+	menu.view_toolbar_tools = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas"),_T(""),_T("Muestra la barra de herramientas para las herramientas adicionales"), config->Toolbars.positions.tools.visible);
+	menu.view_toolbar_project = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto"),_T(""),_T("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto"), config->Toolbars.positions.project.visible);
 	menu.view_toolbar_project->Enable(false);
-	menu.view_toolbar_debug = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion"),_T(""),_T("Muestra la barra de herramientas para la depuracion del programa"), config->Toolbars.positions.debug.visible);
-	menu.view_toolbar_misc = utils->AddCheckToMenu(menu.view, mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea"),_T(""),_T("Muestra la barra de herramientas con commandos miselaneos"), config->Toolbars.positions.misc.visible);
+	menu.view_toolbar_debug = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion"),_T(""),_T("Muestra la barra de herramientas para la depuracion del programa"), config->Toolbars.positions.debug.visible);
+	menu.view_toolbar_misc = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea"),_T(""),_T("Muestra la barra de herramientas con commandos miselaneos"), config->Toolbars.positions.misc.visible);
+	utils->AddItemToMenu(toolbars_menu, mxID_VIEW_TOOLBARS_CONFIG, LANG(MENUITEM_VIEW_TOOLBARS_CONFIG,"&Configurar..."),"","",ipre+_T("preferencias.png"));
 	menu.view->AppendSeparator();
 #if !defined(_WIN32) && !defined(__WIN32__)
 	utils->AddItemToMenu(menu.view, mxID_VIEW_PREV_ERROR, LANG(MENUITEM_VIEW_PREV_ERROR,"&Ir a error anterior"),_T("Ctrl+>"),_T("Selecciona el error/advertencia anterior de la salida del compilador."),ipre+_T("errorPrev.png"));
@@ -2388,11 +2392,7 @@ void mxMainWindow::OnRunCompileConfig (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnPreferences (wxCommandEvent &event) {
-	if (preference_window) {
-		preference_window->ShowUp();
-	} else {
-		preference_window = new mxPreferenceWindow(this);
-	}
+	mxPreferenceWindow::ShowUp();
 }
 
 void mxMainWindow::OnRunCompile (wxCommandEvent &event) {
@@ -2696,8 +2696,9 @@ bool mxMainWindow::CloseSource (int i) {
 }
 
 void mxMainWindow::SetAccelerators() {
-	const int accel_count=19; int i=0;
+	const int accel_count=20; int i=0;
 	wxAcceleratorEntry entries[accel_count];
+	entries[i++].Set(	0,								WXK_F2, 		mxID_VIEW_UPDATE_SYMBOLS);
 	entries[i++].Set(	wxACCEL_CTRL,					WXK_SPACE, 		mxID_EDIT_FORCE_AUTOCOMPLETE);
 	entries[i++].Set(	wxACCEL_CTRL,					WXK_RETURN,		mxID_FILE_OPEN_SELECTED);
 	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_TAB, 		mxID_VIEW_NOTEBOOK_PREV);
@@ -2718,6 +2719,9 @@ void mxMainWindow::SetAccelerators() {
 	entries[i++].Set(	wxACCEL_ALT,					WXK_LEFT, 		mxID_NAVIGATION_HISTORY_PREV);
 	entries[i++].Set(	wxACCEL_ALT,					WXK_RIGHT, 		mxID_NAVIGATION_HISTORY_NEXT);
 	wxAcceleratorTable accel(accel_count,entries);
+#ifdef _DEBUG
+	if (i!=count) wxMessageBox("mxMainWindow::SetAccelerators i!=cont");
+#endif
 	SetAcceleratorTable(accel);
 }
 
@@ -2914,6 +2918,10 @@ void mxMainWindow::OnViewCodeStyle (wxCommandEvent &event) {
 	}
 }
 
+void mxMainWindow::OnViewCodeColours (wxCommandEvent &event) {
+	new mxColoursEditor(this);
+}
+
 void mxMainWindow::OnViewLineWrap (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
@@ -3049,6 +3057,10 @@ void mxMainWindow::ShowQuickHelp (wxString keyword, bool hide_compiler_tree) {
 	
 	quick_help->SetPage(help->GetQuickHelp(keyword));
 	ShowQuickHelpPanel(hide_compiler_tree);
+}
+
+void mxMainWindow::OnViewToolbarsConfig (wxCommandEvent &event) {
+	mxPreferenceWindow::ShowUp()->SetToolbarPage();
 }
 
 void mxMainWindow::OnToggleToolbar (wxMenuItem *menu_item, wxToolBar *toolbar, bool &config_entry, bool update_aui) {
@@ -4739,7 +4751,7 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 	if (wxID_OK!=dlg2.ShowModal()) return;
 	if (code_helper->GenerateAutocompletionIndex(dlg2.GetPath(),fname)) {
 		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED,"Indice generado correctamente."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_INFO).ShowModal();
-		delete preference_window; preference_window=NULL;
+		mxPreferenceWindow::Delete();
 	} else
 		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_ERROR,"Ha ocurrido un error al intentar generar el archivo."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_ERROR).ShowModal();
 }
@@ -4763,19 +4775,15 @@ void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
 		new mxCustomTools(true,id-mxID_CUSTOM_PROJECT_TOOL_0);
 		return;
 	}
-	if (preference_window) {
-		preference_window->ShowUp();
-	} else {
-		preference_window = new mxPreferenceWindow(this);
-	}
-	preference_window->SetToolbarPage();
-	if (toolbar_file->FindById(id)) preference_window->OnToolbarsFile(evt);
-	else if (toolbar_edit->FindById(id)) preference_window->OnToolbarsEdit(evt);
-	else if (toolbar_view->FindById(id)) preference_window->OnToolbarsView(evt);
-	else if (toolbar_debug->FindById(id)) preference_window->OnToolbarsDebug(evt);
-	else if (toolbar_run->FindById(id)) preference_window->OnToolbarsRun(evt);
-	else if (toolbar_misc->FindById(id)) preference_window->OnToolbarsMisc(evt);
-	else if (toolbar_tools->FindById(id)) preference_window->OnToolbarsTools(evt);
+	wxString stoolbar;
+	if (toolbar_file->FindById(id)) stoolbar="file";
+	else if (toolbar_edit->FindById(id)) stoolbar="edit";
+	else if (toolbar_view->FindById(id)) stoolbar="view";
+	else if (toolbar_debug->FindById(id)) stoolbar="debug";
+	else if (toolbar_run->FindById(id)) stoolbar="run";
+	else if (toolbar_misc->FindById(id)) stoolbar="misc";
+	else if (toolbar_tools->FindById(id)) stoolbar="tools";
+	mxPreferenceWindow::ShowUp()->SetToolbarPage(stoolbar);
 }
 
 void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {

@@ -19,7 +19,7 @@ private:
 	wxCheckBox *checkboxs[MAX_TOOLBAR_BUTTONS];
 	int count;
 public:
-	mxToolbarEditor(wxToolBar *toolbar,wxString name);
+	mxToolbarEditor(wxWindow *parent, wxToolBar *toolbar,wxString name);
 	~mxToolbarEditor();
 	void Add(wxString name, wxString file, bool &config_entry);
 	void ShowUp();

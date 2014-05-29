@@ -125,6 +125,7 @@ public:
 	void OnViewPrevError (wxCommandEvent &event);
 	void OnViewWhiteSpace (wxCommandEvent &event);
 	void OnViewLineWrap (wxCommandEvent &event);
+	void OnViewCodeColours (wxCommandEvent &event);
 	void OnViewCodeStyle (wxCommandEvent &event);
 	void OnToggleToolbar(wxMenuItem *menu_item, wxToolBar *toolbar, bool &config_entry, bool update_aui=true);
 	void OnViewToolbarProject (wxCommandEvent &event);
@@ -136,6 +137,7 @@ public:
 	void OnViewToolbarEdit (wxCommandEvent &event);
 	void OnViewToolbarRun (wxCommandEvent &event);
 	void OnViewToolbarMisc (wxCommandEvent &event);
+	void OnViewToolbarsConfig (wxCommandEvent &event);
 	void OnViewExplorerTree (wxCommandEvent &event);
 	void OnViewCompilerTree (wxCommandEvent &event);
 	void OnViewLeftPanels (wxCommandEvent &event);

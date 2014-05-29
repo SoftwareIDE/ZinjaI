@@ -211,15 +211,14 @@ public:
 	void OnXdgButton(wxCommandEvent &evt);
 	void OnToolchainButton(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &event);
-	void SetToolbarPage();
-	void ShowUp();
+	void SetToolbarPage(const wxString &edit_one="");
+	static mxPreferenceWindow *ShowUp();
+	static void Delete(); ///< to force reloading of some things that Reset won't redo, such as the list of autocompletion indexes
 	void ResetChanges();
 
 private:
 	DECLARE_EVENT_TABLE()
 
 };
-
-extern mxPreferenceWindow *preference_window;
 
 #endif

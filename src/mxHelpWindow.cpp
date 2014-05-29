@@ -195,7 +195,6 @@ void mxHelpWindow::OnForum (wxCommandEvent & event) {
 }
 
 void mxHelpWindow::FixLoadPage (const wxString &href) {
-cerr<<"FixLoadPage: **"<<href<<"**"<<endl;
 	if (href.Contains("#")) {
 		wxString fname=href.BeforeFirst('#'), anchor=href.AfterFirst('#');
 		fname=GetHelpFile(DIR_PLUS_FILE(config->Help.guihelp_dir,fname));

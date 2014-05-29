@@ -203,7 +203,7 @@ void mxColoursEditor::SaveTheme (wxString name) {
 
 void mxColoursEditor::OnClose (wxCloseEvent & evt) {
 	Destroy();
-	parent->Show();
+	if (parent!=main_window) parent->Show();
 }
 
 void mxColoursEditor::OnButtonOk (wxCommandEvent & evt) {
