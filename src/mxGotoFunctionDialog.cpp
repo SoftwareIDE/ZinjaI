@@ -11,8 +11,10 @@
 #include "mxSource.h"
 #include "mxSizers.h"
 #include "Language.h"
+#include "mxGotoFileDialog.h"
 
 BEGIN_EVENT_TABLE(mxGotoFunctionDialog, wxDialog)
+	EVT_BUTTON(mxID_EDIT_GOTO_FILE,mxGotoFunctionDialog::OnGotoFileButton)
 	EVT_BUTTON(wxID_OK,mxGotoFunctionDialog::OnGotoButton)
 	EVT_BUTTON(wxID_CANCEL,mxGotoFunctionDialog::OnCancelButton)
 	EVT_CLOSE(mxGotoFunctionDialog::OnClose)
@@ -45,6 +47,13 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	case_sensitive->SetValue(true);
 	if (strict_compare) case_sensitive->Hide();
 	
+	bottomSizer->Add(new wxButton(this,mxID_EDIT_GOTO_FILE,"Buscar archivo...",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);
+	bottomSizer->AddStretchSpacer();
+	bottomSizer->Add(cancel_button,sizers->BA5);
+	bottomSizer->Add(goto_button,sizers->BA5);
+	wxAcceleratorEntry accel(wxACCEL_CTRL|wxACCEL_SHIFT,'f',mxID_EDIT_GOTO_FILE);
+	SetAcceleratorTable(wxAcceleratorTable(1,&accel));
+	
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(goto_button,sizers->BA5);
 	
@@ -53,7 +62,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
 	mySizer->Add(list_ctrl,sizers->BA5_Exp0);
 	mySizer->Add(case_sensitive,sizers->BA5_Exp0);
-	mySizer->Add(bottomSizer,sizers->BA5_Right);
+	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	SetSizerAndFit(mySizer);
 	
 	text_ctrl->SetSelection(-1,-1);
@@ -256,5 +265,12 @@ int mxGotoFunctionDialog::FillResults (wxString key, bool ignore_case, bool stri
 		aux_func = aux_func->next;
 	}
 	return m_results.GetSize();
+}
+
+
+void mxGotoFunctionDialog::OnGotoFileButton (wxCommandEvent & event) {
+	Hide();
+	new mxGotoFileDialog(text_ctrl->GetValue(),this);
+	Close();
 }
 

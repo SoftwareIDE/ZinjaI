@@ -70,6 +70,7 @@ private:
 public:
 	mxGotoFunctionDialog(wxString text, wxWindow* parent, wxString direct_goto="");
 	~mxGotoFunctionDialog();
+	void OnGotoFileButton(wxCommandEvent &event);
 	void OnGotoButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);

@@ -1975,16 +1975,17 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	} else if (!IsEmptyLine(l))
 		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"))<<"\tF8");
 	int s=GetStyleAt(p);
-	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar linea(s)"))<<"\tShift+Ctrl+D");
-	else menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"Comentar linea(s)"))<<"\tCtrl+D");
 	if (MarkerGet(l)&(1<<mxSTC_MARK_USER))
 		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltaso"))<<"\tCtrl+B");
 	else 
-		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"Resaltar linea(s)"))<<"\tCtrl+B");
-	menu.Append(mxID_EDIT_DUPLICATE_LINES, wxString(LANG(SOURCE_POPUP_DUPLICATE_LINES,"Duplicar linea(s)"))<<"\tCtrl+L");
-	menu.Append(mxID_EDIT_DELETE_LINES, wxString(LANG(SOURCE_POPUP_DELETE_LINES,"Eliminar linea(s)"))<<"\tCtrl+Shift+L");
-	if (l>1) menu.Append(mxID_EDIT_TOGGLE_LINES_UP, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_UP,"Mover linea(s) hacia arriba"))<<"\tCtrl+T");
-	if (l+1<GetLineCount()) menu.Append(mxID_EDIT_TOGGLE_LINES_DOWN, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_DOWN,"Mover linea(s) hacia abajo"))<<"\tCtrl+Shift+T");
+		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"Resaltar linea"))<<"\tCtrl+B");
+	menu.Append(mxID_EDIT_INDENT, wxString(LANG(SOURCE_POPUP_INDENTE,"Indentar Linea"))<<"\tCtrl+I");
+	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar linea"))<<"\tShift+Ctrl+D");
+	else menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"Comentar linea"))<<"\tCtrl+D");
+	menu.Append(mxID_EDIT_DUPLICATE_LINES, wxString(LANG(SOURCE_POPUP_DUPLICATE_LINES,"Duplicar linea"))<<"\tCtrl+L");
+	menu.Append(mxID_EDIT_DELETE_LINES, wxString(LANG(SOURCE_POPUP_DELETE_LINES,"Eliminar linea"))<<"\tCtrl+Shift+L");
+	if (l>1) menu.Append(mxID_EDIT_TOGGLE_LINES_UP, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_UP,"Mover linea hacia arriba"))<<"\tCtrl+T");
+	if (l+1<GetLineCount()) menu.Append(mxID_EDIT_TOGGLE_LINES_DOWN, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_DOWN,"Mover linea hacia abajo"))<<"\tCtrl+Shift+T");
 	
 	main_window->PopupMenu(&menu);
 	
@@ -2038,12 +2039,10 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	menu.Append(wxID_CUT, wxString(LANG(SOURCE_POPUP_CUT,"C&ortar"))<<"\tCtrl+X");
 	menu.Append(wxID_COPY, wxString(LANG(SOURCE_POPUP_COPY,"&Copiar"))<<"\tCtrl+C");
 	menu.Append(wxID_PASTE, wxString(LANG(SOURCE_POPUP_PASTE,"&Pegar"))<<"\tCtrl+V");
-	menu.Append(mxID_EDIT_DUPLICATE_LINES, wxString(LANG(SOURCE_POPUP_DUPLICATE_LINES,"&Duplicar Linea(s)"))<<"\tCtrl+L");
-	menu.Append(mxID_EDIT_DELETE_LINES, wxString(LANG(SOURCE_POPUP_DELETE_LINES,"&Eliminar Linea(s)"))<<"\tShift+Ctrl+L");
 	menu.AppendSeparator();
 	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar"))<<"\tShift+Ctrl+D");
 	else menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"&Comentar"))<<"\tCtrl+D");
-	menu.Append(mxID_EDIT_INDENT, wxString(LANG(SOURCE_POPUP_INDENTE,"&Indentar Blo&que"))<<"\tCtrl+I");
+	menu.Append(mxID_EDIT_INDENT, wxString(LANG(SOURCE_POPUP_INDENTE,"Indentar Linea"))<<"\tCtrl+I");
 	menu.Append(mxID_EDIT_BRACEMATCH, wxString(LANG(SOURCE_POPUP_SELECT_BLOCK,"&Seleccionar Bloque"))<<"\tCtrl+M");
 	menu.Append(wxID_SELECTALL, wxString(LANG(SOURCE_POPUP_SELECT_ALL,"Seleccionar &Todo"))<<"\tCtrl+A");
 	

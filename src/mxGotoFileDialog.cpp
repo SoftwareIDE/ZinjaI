@@ -10,9 +10,10 @@
 #include "ids.h"
 #include "Language.h"
 #include "mxSource.h"
+#include "mxGotoFunctionDialog.h"
 
 BEGIN_EVENT_TABLE(mxGotoFileDialog, wxDialog)
-	
+	EVT_BUTTON(mxID_EDIT_GOTO_FUNCTION,mxGotoFileDialog::OnGotoFunctionButton)
 	EVT_BUTTON(wxID_OK,mxGotoFileDialog::OnGotoButton)
 	EVT_BUTTON(wxID_CANCEL,mxGotoFileDialog::OnCancelButton)
 	EVT_CLOSE(mxGotoFileDialog::OnClose)
@@ -39,14 +40,18 @@ mxGotoFileDialog::mxGotoFileDialog(wxString text, wxWindow* parent, int _goto_li
 	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,NULL,wxLB_SINGLE|wxLB_SORT);
 	case_sensitive = new wxCheckBox(this,wxID_ANY,LANG(GOTOFILE_CASE_SENSITIVE,"&Distinguir mayusculas y minusculas"));
 	
+	bottomSizer->Add(new wxButton(this,mxID_EDIT_GOTO_FUNCTION,"Buscar clase/metodo/función...",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);
+	bottomSizer->AddStretchSpacer();
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(goto_button,sizers->BA5);
+	wxAcceleratorEntry accel(wxACCEL_CTRL|wxACCEL_SHIFT,'g',mxID_EDIT_GOTO_FUNCTION);
+	SetAcceleratorTable(wxAcceleratorTable(1,&accel));
 	
 	mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(GOTOFILE_ENTER_FILENAME,"Ingrese parte del nombre del archivo que desea abrir:")),sizers->BLRT5_Exp0);
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
 	mySizer->Add(list_ctrl,sizers->BA5_Exp0);
 	mySizer->Add(case_sensitive,sizers->BA5_Exp0);
-	mySizer->Add(bottomSizer,sizers->BA5_Right);
+	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	SetSizerAndFit(mySizer);
 	
 	text_ctrl->SetSelection(-1,-1);
@@ -185,3 +190,10 @@ void mxGotoFileDialog::OnCaseCheck(wxCommandEvent &event) {
 	OnTimerInput(evt);
 	text_ctrl->SetFocus();
 }
+
+void mxGotoFileDialog::OnGotoFunctionButton (wxCommandEvent & event) {
+	Hide();
+	new mxGotoFunctionDialog(text_ctrl->GetValue(),this);
+	Close();
+}
+

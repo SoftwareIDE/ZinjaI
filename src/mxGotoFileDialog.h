@@ -21,6 +21,7 @@ public:
 	mxGotoFileDialog(wxString text, wxWindow* parent, int _goto_line=-1);
 	~mxGotoFileDialog();
 	void OnGotoButton(wxCommandEvent &event);
+	void OnGotoFunctionButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
 	void OnTimerInput(wxTimerEvent &event);
