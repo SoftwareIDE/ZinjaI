@@ -169,7 +169,7 @@ public:
 	void OnEditAutoCompleteAutocode (wxCommandEvent &event);
 	// selection
 	void OnEditSelectAll (wxCommandEvent &event);
-	void OnEditSelectLine (wxCommandEvent &event);
+//	void OnEditSelectLine (wxCommandEvent &event);
 	void OnEditMarkLines (wxCommandEvent &event);
 //	void OnEditUnMarkLines (wxCommandEvent &event);
 	void OnEditGotoMark (wxCommandEvent &event);
@@ -193,13 +193,16 @@ public:
 	
 	void OnKeyDown(wxKeyEvent &evt);
 
+	int GetMarginForThisX(int x);
 	void OnClick(wxMouseEvent &evt);
 	void OnPopupMenu(wxMouseEvent &evt);
+	void OnPopupMenuInside(wxMouseEvent &evt);
+	void OnPopupMenuMargin(wxMouseEvent &evt);
 	void OnToolTipTime(wxStyledTextEvent &event);
 	void OnToolTipTimeOut(wxStyledTextEvent &event);
 	void OnSavePointReached(wxStyledTextEvent &event);
 	void OnSavePointLeft(wxStyledTextEvent &event);
-		
+	
 	// manejo de archivos
 	void LoadSourceConfig();
 	void SetLineNumbers();
@@ -270,12 +273,9 @@ public:
 	wxString SaveSourceForSomeTool();
 	void JumpToCurrentSymbolDefinition();
 	
-private:
+	wxString GetCurrentKeyword(int pos=-1);
 	
-	// margin variables
-	int m_LineNrID;
-	int m_FoldingID;
-	int m_DividerID;
+private:
 	
 	int brace_1,brace_2;
 	void MyBraceHighLight(int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);

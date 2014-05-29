@@ -1727,9 +1727,9 @@ Tutoriales...
 MENUITEM_HELP_ZINJAI
 Ayuda sobre ZinjaI...
 MENUITEM_HELP_CPP
-Ayuda sobre C/C++...
+Referencia C/C++...
 MENUITEM_HELP_TIPS
-&Mostrar sugerencia...
+&Mostrar sugerencias de uso...
 MENUITEM_HELP_OPINION
 Enviar sugerencia o reportar error...
 MENUITEM_HELP_UPDATES
@@ -3330,32 +3330,28 @@ SOURCE_ADDED_USING_NAMESPACE_STD
 Agregado \"using namespace std;\"
 SOURCE_HEADER_WAS_ALREADY
 Sin cambios, ya estaba la cabecera 
-SOURCE_POPUP_UNDO
-&Deshacer
-SOURCE_POPUP_REDO
-&Rehacer
-SOURCE_POPUP_CUT
-C&ortar
-SOURCE_POPUP_COPY
-&Copiar
-SOURCE_POPUP_PASTE
-&Pegar
-SOURCE_POPUP_DUPLICATE_LINES
-&Duplicar Linea(s)
-SOURCE_POPUP_DELETE_LINES
-&Eliminar Linea(s)
-SOURCE_POPUP_COMMENT_LINES
-&Comentar
+SOURCE_POPUP_REMOVE_BREAKPOINT
+Quitar breakpoint
+SOURCE_POPUP_BREAKPOINT_OPTIONS
+Opciones del breakpoint...
+SOURCE_POPUP_INSERT_BREAKPOINT
+Insertar breakpoint
 SOURCE_POPUP_UNCOMMENT_LINES
-&Descomentar
-SOURCE_POPUP_INDENTE
-&Indentar Blo&que
-SOURCE_POPUP_SELECT_BLOCK
-&Seleccionar Bloque
-SOURCE_POPUP_SELECT_ALL
-Seleccionar &Todo
+&Descomentar linea(s)
+SOURCE_POPUP_COMMENT_LINES
+Comentar linea(s)
+SOURCE_POPUP_REMOVE_HIGHLIGHT
+Quitar resaltaso
 SOURCE_POPUP_HIGHLIGHT_LINES
-&Resaltar Linea(s)
+Resaltar linea(s)
+SOURCE_POPUP_DUPLICATE_LINES
+Duplicar linea(s)
+SOURCE_POPUP_DELETE_LINES
+Eliminar linea(s)
+SOURCE_POPUP_TOGGLE_LINES_UP
+Mover linea(s) hacia arriba
+SOURCE_POPUP_TOGGLE_LINES_DOWN
+Mover linea(s) hacia abajo
 SOURCE_POPUP_FIND_SYMBOL
 &Ir a definición...
 SOURCE_POPUP_HELP_ON
@@ -3366,6 +3362,22 @@ SOURCE_POPUP_HIGHLIGHT_WORD
 Resaltar identificador \"
 SOURCE_POPUP_OPEN_SELECTED
 &Abrir \"<{1}>\"
+SOURCE_POPUP_UNDO
+&Deshacer
+SOURCE_POPUP_REDO
+&Rehacer
+SOURCE_POPUP_CUT
+C&ortar
+SOURCE_POPUP_COPY
+&Copiar
+SOURCE_POPUP_PASTE
+&Pegar
+SOURCE_POPUP_INDENTE
+&Indentar Blo&que
+SOURCE_POPUP_SELECT_BLOCK
+&Seleccionar Bloque
+SOURCE_POPUP_SELECT_ALL
+Seleccionar &Todo
 SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION
 No se encontraron elementos para autocompletar el ambito 
 SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION

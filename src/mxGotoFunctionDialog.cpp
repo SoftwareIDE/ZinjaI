@@ -84,7 +84,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 				}
 			}
 		}
-		Show();
+		ShowModal();
 	}
 }
 

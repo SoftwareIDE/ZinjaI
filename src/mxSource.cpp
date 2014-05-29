@@ -128,7 +128,7 @@ void NavigationHistory::Next() {
 #define II_IS_NOTHING_2(p) (II_IS_2(p,' ','\t') || II_SHOULD_IGNORE(p)) 
 #define II_IS_KEYWORD_CHAR(c) ( ( (c|32)>='a' && (c|32)<='z' ) || (c>='0' && c<='9') || c=='_' )
 
-#define STYLE_IS_CONSTANT(s) (s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_CHARACTER || s==wxSTC_C_STRING || s==wxSTC_C_REGEX || s==wxSTC_C_NUMBER)
+#define STYLE_IS_CONSTANT(s) (s==wxSTC_C_STRING || s==wxSTC_C_STRINGEOL || s==wxSTC_C_CHARACTER || s==wxSTC_C_REGEX || s==wxSTC_C_NUMBER)
 #define STYLE_IS_COMMENT(s) (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
 
 const wxChar* mxSourceWords1 =
@@ -154,6 +154,9 @@ const wxChar* mxSourceWords3 =
 	_T("retval sa section see showinitializer since skip skipline struct ")
 	_T("subsection test throw todo tparam typedef union until var verbatim ")
 	_T("verbinclude version warning weakgroup $ @ \"\" & < > # { }");
+
+
+enum Margins { MARGIN_LINENUM=0, MARGIN_BREAKS, MARGIN_FOLD, MARGIN_NULL };
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	// edit
@@ -275,10 +278,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	first_view = true;
 //	current_line = 0; current_marker = -1;
 	
-	m_LineNrID = 0;
-	m_DividerID = 1;
-	m_FoldingID = 2;
-	
 //	SetViewEOL (false); // no mostrar fin de lineas
 //	SetIndentationGuides (true); 
 //	SetViewWhiteSpace(config_source.whiteSpace?wxSTC_WS_VISIBLEALWAYS:wxSTC_WS_INVISIBLE);
@@ -301,33 +300,28 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	//SetCaretLineVisible(true);
 
 	// numeros de linea
-//	SetMarginWidth (m_LineNrID, TextWidth (wxSTC_STYLE_LINENUMBER, _T(" XXX")));
+//	SetMarginWidth (MARGIN_LINENUM, TextWidth (wxSTC_STYLE_LINENUMBER, _T(" XXX")));
 
 	// set margin as unused
-	SetMarginType (m_DividerID, wxSTC_MARGIN_SYMBOL);
-	SetMarginWidth (m_DividerID, 16);
-	SetMarginSensitive (m_DividerID, true);
+	SetMarginType (MARGIN_BREAKS, wxSTC_MARGIN_SYMBOL);
+	SetMarginWidth (MARGIN_BREAKS, 16);
+	SetMarginSensitive (MARGIN_BREAKS, true);
 
 	// folding
-	SetMarginType (m_FoldingID, wxSTC_MARGIN_SYMBOL);
-	SetMarginMask (m_FoldingID, wxSTC_MASK_FOLDERS);
-	SetMarginWidth (m_FoldingID, 0);
-	SetMarginSensitive (m_FoldingID, false);
+	SetMarginType (MARGIN_FOLD, wxSTC_MARGIN_SYMBOL);
+	SetMarginMask (MARGIN_FOLD, wxSTC_MASK_FOLDERS);
+	SetMarginWidth (MARGIN_FOLD, 0);
+	SetMarginSensitive (MARGIN_FOLD, false);
 	// folding enable
 	if (config_source.foldEnable) {
-		SetMarginWidth (m_FoldingID, true? 15: 0);
-		SetMarginSensitive (m_FoldingID, 1);
-		SetProperty (_T("fold"), true? _T("1"): _T("0"));
-		SetProperty (_T("fold.comment"),
-				true? _T("1"): _T("0"));
-		SetProperty (_T("fold.compact"),
-				true? _T("1"): _T("0"));
-		SetProperty (_T("fold.preprocessor"),
-				true? _T("1"): _T("0"));
-		SetProperty (_T("fold.html.preprocessor"),
-				true? _T("1"): _T("0"));
-		SetFoldFlags (wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED |
-				wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED);
+		SetMarginWidth (MARGIN_FOLD, true? 15: 0);
+		SetMarginSensitive (MARGIN_FOLD, 1);
+		SetProperty("fold", true?"1":"0");
+		SetProperty("fold.comment",true?"1":"0");
+		SetProperty("fold.compact",true?"1":"0");
+		SetProperty("fold.preprocessor",true?"1":"0");
+		SetProperty("fold.html.preprocessor",true?"1":"0");
+		SetFoldFlags( wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED );
 	}
 
 	// set visibility
@@ -439,7 +433,7 @@ void mxSource::OnEditDeleteLines (wxCommandEvent &event) {
 void mxSource::OnEditGotoMark (wxCommandEvent &event) {
 	int cl=GetCurrentLine(), lc=GetLineCount();
 	int i=cl+1;
-	while (!(MarkerGet(i)&1<<mxSTC_MARK_USER) && i<lc)
+	while (!(MarkerGet(i)&(1<<mxSTC_MARK_USER)) && i<lc)
 		i++;
 	if (i<lc) {
 		GotoPos(GetLineIndentPosition(i));
@@ -447,7 +441,7 @@ void mxSource::OnEditGotoMark (wxCommandEvent &event) {
 		return;
 	}
 	i=0;
-	while (!(MarkerGet(i)&1<<mxSTC_MARK_USER) && i<cl)
+	while (!(MarkerGet(i)&(1<<mxSTC_MARK_USER)) && i<cl)
 		i++;
 	if (i<cl) {
 		GotoPos(GetLineIndentPosition(i));
@@ -460,7 +454,7 @@ void mxSource::OnEditMarkLines (wxCommandEvent &event) {
 	int min=LineFromPosition(GetSelectionStart());
 	int max=LineFromPosition(GetSelectionEnd());
 	if (max==min) {
-		if (MarkerGet(min)&1<<mxSTC_MARK_USER)
+		if (MarkerGet(min)&(1<<mxSTC_MARK_USER))
 			MarkerDelete(min,mxSTC_MARK_USER);
 		else
 			MarkerAdd(min,mxSTC_MARK_USER);
@@ -469,7 +463,7 @@ void mxSource::OnEditMarkLines (wxCommandEvent &event) {
 			if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 			int mark=true;
 			for (int i=min;i<=max;i++)
-				if (MarkerGet(i)&1<<mxSTC_MARK_USER) {
+				if (MarkerGet(i)&(1<<mxSTC_MARK_USER)) {
 					mark=false;
 					break;
 				}
@@ -650,7 +644,7 @@ void mxSource::OnFoldToggle (wxCommandEvent &event) {
 
 void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 	
-    if (event.GetMargin() == 2) { // margen del folding
+    if (event.GetMargin() == MARGIN_FOLD) { // margen del folding
         int lineClick = LineFromPosition (event.GetPosition());
         int levelClick = GetFoldLevel (lineClick);
         if ((levelClick & wxSTC_FOLDLEVELHEADERFLAG) > 0) {
@@ -696,11 +690,11 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 	}
 }
 
-void mxSource::OnEditSelectLine (wxCommandEvent &event) {
-	int lineStart = PositionFromLine (GetCurrentLine());
-	int lineEnd = PositionFromLine (GetCurrentLine() + 1);
-	SetSelection (lineStart, lineEnd);
-}
+//void mxSource::OnEditSelectLine (wxCommandEvent &event) {
+//	int lineStart = PositionFromLine (GetCurrentLine());
+//	int lineEnd = PositionFromLine (GetCurrentLine() + 1);
+//	SetSelection (lineStart, lineEnd);
+//}
 
 void mxSource::OnEditSelectAll (wxCommandEvent &event) {
 	SetSelection (0, GetTextLength ());
@@ -1964,6 +1958,39 @@ bool mxSource::AddInclude(wxString header) {
 }
 
 void mxSource::OnPopupMenu(wxMouseEvent &evt) {
+	if (GetMarginForThisX(evt.GetX())==MARGIN_NULL) OnPopupMenuInside(evt); 
+	else OnPopupMenuMargin(evt);
+}
+	
+void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
+	
+	int x=10,p; for(int i=0;i<MARGIN_NULL;i++) { x+=GetMarginWidth(i); }
+	int l=LineFromPosition( p=PositionFromPointClose(x,evt.GetY()) );
+	if (GetCurrentLine()!=l) GotoPos(PositionFromLine(l));
+	wxMenu menu("");
+	
+	if (m_extras->FindBreakpointFromLine(this,l)) {
+		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"))<<"\tF8");
+		menu.Append(mxID_DEBUG_BREAKPOINT_OPTIONS, wxString(LANG(SOURCE_POPUP_BREAKPOINT_OPTIONS,"Opciones del breakpoint..."))<<"\tCtrl+F9");
+	} else if (!IsEmptyLine(l))
+		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"))<<"\tF8");
+	int s=GetStyleAt(p);
+	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar linea(s)"))<<"\tShift+Ctrl+D");
+	else menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"Comentar linea(s)"))<<"\tCtrl+D");
+	if (MarkerGet(l)&(1<<mxSTC_MARK_USER))
+		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltaso"))<<"\tCtrl+B");
+	else 
+		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"Resaltar linea(s)"))<<"\tCtrl+B");
+	menu.Append(mxID_EDIT_DUPLICATE_LINES, wxString(LANG(SOURCE_POPUP_DUPLICATE_LINES,"Duplicar linea(s)"))<<"\tCtrl+L");
+	menu.Append(mxID_EDIT_DELETE_LINES, wxString(LANG(SOURCE_POPUP_DELETE_LINES,"Eliminar linea(s)"))<<"\tCtrl+Shift+L");
+	if (l>1) menu.Append(mxID_EDIT_TOGGLE_LINES_UP, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_UP,"Mover linea(s) hacia arriba"))<<"\tCtrl+T");
+	if (l+1<GetLineCount()) menu.Append(mxID_EDIT_TOGGLE_LINES_DOWN, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_DOWN,"Mover linea(s) hacia abajo"))<<"\tCtrl+Shift+T");
+	
+	main_window->PopupMenu(&menu);
+	
+}
+
+void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	
 	int p1=GetSelectionStart();
 	int p2=GetSelectionEnd();
@@ -1973,55 +2000,49 @@ void mxSource::OnPopupMenu(wxMouseEvent &evt) {
 			GotoPos(p);
 	}
 
-	wxMenu menu(_T(""));
+	wxMenu menu("");
 	
-	menu.Append(wxID_UNDO, wxString(LANG(SOURCE_POPUP_UNDO,"&Deshacer"))<<_T("\tCtrl+Z"));
-	menu.Append(wxID_REDO, wxString(LANG(SOURCE_POPUP_REDO,"&Rehacer"))<<_T("\tCtrl+Shift+Z"));
-	menu.AppendSeparator();
-	menu.Append(wxID_CUT, wxString(LANG(SOURCE_POPUP_CUT,"C&ortar"))<<_T("\tCtrl+X"));
-	menu.Append(wxID_COPY, wxString(LANG(SOURCE_POPUP_COPY,"&Copiar"))<<_T("\tCtrl+C"));
-	menu.Append(wxID_PASTE, wxString(LANG(SOURCE_POPUP_PASTE,"&Pegar"))<<_T("\tCtrl+V"));
-	menu.Append(mxID_EDIT_DUPLICATE_LINES, wxString(LANG(SOURCE_POPUP_DUPLICATE_LINES,"&Duplicar Linea(s)"))<<_T("\tCtrl+L"));
-	menu.Append(mxID_EDIT_DELETE_LINES, wxString(LANG(SOURCE_POPUP_DELETE_LINES,"&Eliminar Linea(s)"))<<_T("\tShift+Ctrl+L"));
-	menu.AppendSeparator();
-	menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"&Comentar"))<<_T("\tCtrl+D"));
-	menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar"))<<_T("\tShift+Ctrl+D"));
-	menu.Append(mxID_EDIT_INDENT, wxString(LANG(SOURCE_POPUP_INDENTE,"&Indentar Blo&que"))<<_T("\tCtrl+I"));
-	menu.Append(mxID_EDIT_BRACEMATCH, wxString(LANG(SOURCE_POPUP_SELECT_BLOCK,"&Seleccionar Bloque"))<<_T("\tCtrl+M"));
-	menu.Append(wxID_SELECTALL, wxString(LANG(SOURCE_POPUP_SELECT_ALL,"Seleccionar &Todo"))<<_T("\tCtrl+A"));
-	menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"&Resaltar Linea(s)"))<<_T("\tCtrl+B"));
-	menu.AppendSeparator();
-	
-
-	int pos=GetCurrentPos();
-	int s=WordStartPosition(pos,true);
-	int e=WordEndPosition(pos,true);
-	wxString key = GetTextRange(s,e);
+	int p=GetCurrentPos(); int s=GetStyleAt(p);
+	wxString key=GetCurrentKeyword(p);
 	if (key.Len()!=0) {
-		menu.Append(mxID_SOURCE_GOTO_DEFINITION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Ir a definición..."))<<_T("\tCtrl+Shift+G"));
-		if (GetCharAt(s-1)=='#')
-			key = GetTextRange(s-1,e);
-		menu.Append(mxID_HELP_CODE, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<_T("\tShift+F1"));
-//		if ((s=GetStyleAt(s))!=wxSTC_C_PREPROCESSOR && !STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s) && s!=wxSTC_C_OPERATOR && s!=wxSTC_C_WORD && s!=wxSTC_C_WORD2) {
-		if (lexer==wxSTC_LEX_CPP && GetStyleAt(s)==wxSTC_C_IDENTIFIER) {
-			menu.Append(mxID_EDIT_INSERT_HEADER, LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key)<<_T("\tCtrl+H"));
+		if (!key[0]!='#') menu.Append(mxID_SOURCE_GOTO_DEFINITION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Ir a definición..."))<<"\tCtrl+Shift+G");
+		menu.Append(mxID_HELP_CODE, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<"\tShift+F1");
+		if (s==wxSTC_C_IDENTIFIER) {
+			menu.Append(mxID_EDIT_INSERT_HEADER, LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key)<<"\tCtrl+H");
 			menu.Append(mxID_EDIT_HIGHLIGHT_WORD, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \""))<<key<<"\"");
 		}
 	}
 	
+	if (s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_STRING) {
+		if (p1==p2) {
+			int pos=GetCurrentPos();
+			p1=WordStartPosition(pos,true);
+			p2=WordEndPosition(pos,true);
+			while (GetCharAt(p1-1)=='.' || GetCharAt(p1-1)=='/' || GetCharAt(p1-1)=='\\' || GetCharAt(p1-1)==':')
+				p1=WordStartPosition(p1-1,true);
+			while (GetCharAt(p2)=='.' || GetCharAt(p2)=='/' || GetCharAt(p2)=='\\' || GetCharAt(p2)==':')
+				p2=WordEndPosition(p2+1,true);
+		}
+		wxFileName the_one (sin_titulo?GetTextRange(p1,p2):DIR_PLUS_FILE(source_filename.GetPath(),GetTextRange(p1,p2)));
+		if (wxFileName::FileExists(the_one.GetFullPath()))
+			menu.Append(mxID_FILE_OPEN_SELECTED, LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2))<<"\tCtrl+Enter");
+	}		
+	menu.AppendSeparator();
 	
-	if (p1==p2) {
-		int pos=GetCurrentPos();
-		p1=WordStartPosition(pos,true);
-		p2=WordEndPosition(pos,true);
-		while (GetCharAt(p1-1)=='.' || GetCharAt(p1-1)=='/' || GetCharAt(p1-1)=='\\' || GetCharAt(p1-1)==':')
-			p1=WordStartPosition(p1-1,true);
-		while (GetCharAt(p2)=='.' || GetCharAt(p2)=='/' || GetCharAt(p2)=='\\' || GetCharAt(p2)==':')
-			p2=WordEndPosition(p2+1,true);
-	}
-	wxFileName the_one (sin_titulo?GetTextRange(p1,p2):DIR_PLUS_FILE(source_filename.GetPath(),GetTextRange(p1,p2)));
-	if (wxFileName::FileExists(the_one.GetFullPath()))
-		menu.Append(mxID_FILE_OPEN_SELECTED, LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2))<<"\tCtrl+Enter");
+	menu.Append(wxID_UNDO, wxString(LANG(SOURCE_POPUP_UNDO,"&Deshacer"))<<"\tCtrl+Z");
+	menu.Append(wxID_REDO, wxString(LANG(SOURCE_POPUP_REDO,"&Rehacer"))<<"\tCtrl+Shift+Z");
+	menu.AppendSeparator();
+	menu.Append(wxID_CUT, wxString(LANG(SOURCE_POPUP_CUT,"C&ortar"))<<"\tCtrl+X");
+	menu.Append(wxID_COPY, wxString(LANG(SOURCE_POPUP_COPY,"&Copiar"))<<"\tCtrl+C");
+	menu.Append(wxID_PASTE, wxString(LANG(SOURCE_POPUP_PASTE,"&Pegar"))<<"\tCtrl+V");
+	menu.Append(mxID_EDIT_DUPLICATE_LINES, wxString(LANG(SOURCE_POPUP_DUPLICATE_LINES,"&Duplicar Linea(s)"))<<"\tCtrl+L");
+	menu.Append(mxID_EDIT_DELETE_LINES, wxString(LANG(SOURCE_POPUP_DELETE_LINES,"&Eliminar Linea(s)"))<<"\tShift+Ctrl+L");
+	menu.AppendSeparator();
+	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar"))<<"\tShift+Ctrl+D");
+	else menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"&Comentar"))<<"\tCtrl+D");
+	menu.Append(mxID_EDIT_INDENT, wxString(LANG(SOURCE_POPUP_INDENTE,"&Indentar Blo&que"))<<"\tCtrl+I");
+	menu.Append(mxID_EDIT_BRACEMATCH, wxString(LANG(SOURCE_POPUP_SELECT_BLOCK,"&Seleccionar Bloque"))<<"\tCtrl+M");
+	menu.Append(wxID_SELECTALL, wxString(LANG(SOURCE_POPUP_SELECT_ALL,"Seleccionar &Todo"))<<"\tCtrl+A");
 	
 	main_window->PopupMenu(&menu);
 	
@@ -2665,11 +2686,9 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	int p = event.GetPosition();
 	if (p==-1) {
 		int x=event.GetX(), y=event.GetY();
-		int x0=GetMarginWidth(m_LineNrID);
-		int x1=x0+GetMarginWidth(m_DividerID);
-		if (x>=x0 && x<=x1) {
-			p=PositionFromPointClose(x1+GetMarginWidth(m_FoldingID)+10,y);
-			int l=LineFromPosition(p);
+		if (GetMarginForThisX(x)==MARGIN_BREAKS) {
+			x=10; for(int i=0;i<MARGIN_NULL;i++) { x+=GetMarginWidth(i); }
+			int l=LineFromPosition( PositionFromPointClose(x,y) );
 			BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
 			if (bpi && bpi->annotation.Len()) CallTipShow(PositionFromLine(l),bpi->annotation);
 		}
@@ -3108,7 +3127,7 @@ void mxSource::LoadSourceConfig() {
 	SetIndent (config_source.indentEnable? config_source.tabWidth: 0);
 	SetIndentationGuides(true);
 	SetLineNumbers();
-	SetMarginWidth (m_FoldingID, config_source.foldEnable? 15: 0);
+	SetMarginWidth (MARGIN_FOLD, config_source.foldEnable? 15: 0);
 }
 
 void mxSource::SetLineNumbers() {
@@ -3119,7 +3138,7 @@ void mxSource::SetLineNumbers() {
 		ancho+=_T("X");
 		lnct/=10;
 	}
-	SetMarginWidth (m_LineNrID, config_source.lineNumber?TextWidth (wxSTC_STYLE_LINENUMBER, ancho):0);
+	SetMarginWidth (MARGIN_LINENUM, config_source.lineNumber?TextWidth (wxSTC_STYLE_LINENUMBER, ancho):0);
 	SetViewWhiteSpace(config_source.whiteSpace?wxSTC_WS_VISIBLEALWAYS:wxSTC_WS_INVISIBLE);
 	SetViewEOL(config_source.whiteSpace);
 }
@@ -3802,5 +3821,23 @@ void mxSource::OnMacroAction (wxStyledTextEvent & evt) {
 //		cerr<<evt.GetMessage()<<" "<<evt.GetWParam()<<" "<<evt.GetLParam()<<endl;
 		main_window->m_macro->Add(MacroAction(evt.GetMessage(),evt.GetWParam(),evt.GetLParam()));
 	}
+}
+
+wxString mxSource::GetCurrentKeyword (int pos) {
+	if (pos==-1) pos=GetCurrentPos();
+	int s=WordStartPosition(pos,true);
+	if (GetCharAt(s-1)=='#') s--;
+	int e=WordEndPosition(pos,true);
+	return GetTextRange(s,e);
+}
+
+int mxSource::GetMarginForThisX (int x) {
+	int x0=GetMarginWidth(MARGIN_LINENUM);
+	if (x<x0) return MARGIN_LINENUM;
+	x0+=GetMarginWidth(MARGIN_BREAKS);
+	if (x<x0) return MARGIN_BREAKS;
+	x0+=GetMarginWidth(MARGIN_FOLD);
+	if (x<x0) return MARGIN_FOLD;
+	return MARGIN_NULL;
 }
 
