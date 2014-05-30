@@ -30,6 +30,8 @@ class mxToolbarEditor;
 class wxStaticBitmap;
 
 class mxPreferenceWindow : public wxDialog {
+	
+	bool ignore_styles_changes;
 
 	wxCheckBox *toolbars_wich_file;
 	wxCheckBox *toolbars_wich_find;
@@ -118,6 +120,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *init_beautifyCompilerErrors;
 	wxTextCtrl *styles_print_size;
 	wxTextCtrl *styles_font_size;
+	wxComboBox *styles_font_name;
 	wxCheckBox *styles_dark;
 	wxTextCtrl *files_default_template;
 	wxCheckBox *debug_allow_edition;
@@ -215,7 +218,7 @@ public:
 	static mxPreferenceWindow *ShowUp();
 	static void Delete(); ///< to force reloading of some things that Reset won't redo, such as the list of autocompletion indexes
 	void ResetChanges();
-
+	void OnFontChange(wxCommandEvent &evt);
 private:
 	DECLARE_EVENT_TABLE()
 

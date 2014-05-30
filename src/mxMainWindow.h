@@ -618,6 +618,8 @@ public:
 	void OnNavigationHistoryNext(wxCommandEvent &evt);
 	void OnNavigationHistoryPrev(wxCommandEvent &evt);
 	
+	void UpdateStylesInSources();
+	
 	DECLARE_EVENT_TABLE();
 };
 

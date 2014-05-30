@@ -143,6 +143,7 @@ bool ConfigManager::Load() {
 			if (section=="Styles") {
 				CFG_INT_READ_DN("print_size",Styles.print_size);
 				else CFG_INT_READ_DN("font_size",Styles.font_size);
+				else CFG_GENERIC_READ_DN("font_name",Styles.font_name);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
 				else if (key=="dark") { if (utils->IsTrue(value)) Init.colour_theme="inverted.zcs";	}
 				
@@ -661,6 +662,7 @@ bool ConfigManager::Save(){
 	fil.AddLine(_T("[Styles]"));
 	CFG_GENERIC_WRITE_DN("print_size",Styles.print_size);
 	CFG_GENERIC_WRITE_DN("font_size",Styles.font_size);
+	CFG_GENERIC_WRITE_DN("font_name",Styles.font_name);
 	CFG_GENERIC_WRITE_DN("colour_theme",Init.colour_theme);
 	fil.AddLine("");
 
@@ -1042,6 +1044,7 @@ void ConfigManager::LoadDefaults(){
 
 	Styles.print_size=8;
 	Styles.font_size=10;
+	Styles.font_name=wxFont(10,wxMODERN,wxNORMAL,wxNORMAL).GetFaceName();
 	Init.colour_theme="default.zcs";
 	
 	Init.wrap_mode=1;

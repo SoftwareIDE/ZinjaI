@@ -1510,17 +1510,6 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	}
 }
 
-void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle){
-	wxFont font (fontSize, wxMODERN, wxNORMAL, wxNORMAL, false, fontName);
-	StyleSetFont (idx, font);
-	StyleSetForeground (idx, foreground);
-	StyleSetBackground (idx, background);
-	StyleSetBold (idx, (fontStyle & mxSOURCE_BOLD) > 0);
-	StyleSetItalic (idx, (fontStyle & mxSOURCE_ITALIC) > 0);
-	StyleSetUnderline (idx, (fontStyle & mxSOURCE_UNDERL) > 0);
-	StyleSetVisible (idx, (fontStyle & mxSOURCE_HIDDEN) == 0);
-}
-
 void mxSource::SetModify (bool modif) {
 	if (modif) {
 //		SetTargetStart(0); 
@@ -1707,8 +1696,15 @@ int mxSource::InstructionBegin(int p) {
 	return GetLineIndentPosition(LineFromPosition(p));
 }
 
-#define AUXSetStyle(who,name) SetStyle(wxSTC_##who##_##name,"",config->Styles.font_size,ctheme->name##_FORE,ctheme->name##_BACK,(ctheme->name##_BOLD?mxSOURCE_BOLD:0)|(ctheme->name##_ITALIC?mxSOURCE_ITALIC:0)); // default
-#define AUXSetStyle3(who,name,real) SetStyle(wxSTC_##who##_##name,"",config->Styles.font_size,ctheme->real##_FORE,ctheme->real##_BACK,(ctheme->real##_BOLD?mxSOURCE_BOLD:0)|(ctheme->real##_ITALIC?mxSOURCE_ITALIC:0)); // default
+void mxSource::SetStyle(int idx, const wxChar *fontName, int fontSize, const wxColour &foreground, const wxColour &background, int fontStyle){
+	StyleSetFontAttr(idx,fontSize,fontName,fontStyle&mxSOURCE_BOLD,fontStyle&mxSOURCE_ITALIC,fontStyle&mxSOURCE_UNDERL);
+	StyleSetForeground (idx, foreground);
+	StyleSetBackground (idx, background);
+	StyleSetVisible (idx,!(fontStyle&mxSOURCE_HIDDEN));
+}
+
+#define AUXSetStyle(who,name) SetStyle(wxSTC_##who##_##name,config->Styles.font_name,config->Styles.font_size,ctheme->name##_FORE,ctheme->name##_BACK,(ctheme->name##_BOLD?mxSOURCE_BOLD:0)|(ctheme->name##_ITALIC?mxSOURCE_ITALIC:0)); // default
+#define AUXSetStyle3(who,name,real) SetStyle(wxSTC_##who##_##name,config->Styles.font_name,config->Styles.font_size,ctheme->real##_FORE,ctheme->real##_BACK,(ctheme->real##_BOLD?mxSOURCE_BOLD:0)|(ctheme->real##_ITALIC?mxSOURCE_ITALIC:0)); // default
 void mxSource::SetStyle(bool color) {
 	if ((config_source.syntaxEnable=color)) {
 		SetLexer(lexer);

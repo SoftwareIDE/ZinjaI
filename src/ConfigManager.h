@@ -49,6 +49,7 @@ struct cfgDebug {
 
 //! Elementos de la configuración relacionados al aspecto del código
 struct cfgStyles {
+	wxString font_name;
 	int font_size;
 	int print_size;
 };

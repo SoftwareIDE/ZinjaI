@@ -5684,3 +5684,8 @@ void mxMainWindow::OnSourceGotoDefinition (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->JumpToCurrentSymbolDefinition();
 }
 
+void mxMainWindow::UpdateStylesInSources ( ) {
+	for (unsigned int i=0;i<notebook_sources->GetPageCount();i++)
+		((mxSource*)(notebook_sources->GetPage(i)))->SetColours();
+}
+

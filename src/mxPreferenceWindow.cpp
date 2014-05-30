@@ -29,7 +29,9 @@
 #include "mxIconInstaller.h"
 #include "Toolchain.h"
 #include "mxInspectionsImprovingEditor.h"
+#include <wx/fontenum.h>
 
+static cfgStyles old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
 
 int LinuxTerminalInfo::count=0;
 LinuxTerminalInfo *LinuxTerminalInfo::list=NULL;
@@ -57,7 +59,7 @@ bool LinuxTerminalInfo::Test() {
 	else return out.Length();
 }
 
-mxPreferenceWindow *preference_window=NULL;
+static mxPreferenceWindow *preference_window=NULL;
 
 BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxPreferenceWindow::OnOkButton)
@@ -108,10 +110,14 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 #endif
 	EVT_CLOSE(mxPreferenceWindow::OnClose)
 	EVT_LISTBOX(mxID_SKIN_LIST,mxPreferenceWindow::OnSkinList)
+	EVT_COMBOBOX(mxID_PREFERENCES_FONTNAME,mxPreferenceWindow::OnFontChange)
+	EVT_TEXT(mxID_PREFERENCES_FONTSIZE,mxPreferenceWindow::OnFontChange)
 END_EVENT_TABLE()
 
 mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, LANG(PREFERENCES_CAPTION,"Preferencias"), pos, size, style) {
 
+	ignore_styles_changes = true;
+	
 	toolbar_editor_file = NULL;
 	toolbar_editor_edit = NULL;
 	toolbar_editor_view = NULL;
@@ -119,6 +125,8 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	toolbar_editor_debug = NULL;
 	toolbar_editor_run = NULL;
 	toolbar_editor_misc = NULL;
+	
+	old_config_styles=config->Styles;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	notebook = new wxListbook(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxBK_LEFT);
@@ -165,6 +173,8 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 
 	SetSizerAndFit(mySizer);
 
+	ignore_styles_changes=false;
+	
 	SetFocus();
 	Show();
 }
@@ -354,6 +364,9 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 }
 
 
+
+
+
 wxPanel *mxPreferenceWindow::CreateStylePanel (wxListbook *notebook) {
 	
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
@@ -380,7 +393,21 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (wxListbook *notebook) {
 	source_foldEnable = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_ENABLE_CODE_FOLDING,"Habilitar plegado de código"),config->Source.foldEnable);
 	source_tabWidth = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_TAB_WIDTH,"Ancho del tabulado"),config->Source.tabWidth);
 	source_tabUseSpaces = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_SPACES_INTEAD_TABS,"Colocar espacios en lugar de tabs"),config->Source.tabUseSpaces);
-	styles_font_size = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_SCREEN_FONT_SIZE,"Tamaño de la fuente en pantalla"),config->Styles.font_size);
+
+	class mxFontEnumerator: public wxFontEnumerator {
+		wxArrayString *array;
+	public:
+		mxFontEnumerator(wxArrayString &the_array):array(&the_array){ 
+			wxFontEnumerator::EnumerateFacenames(wxFONTENCODING_SYSTEM,true);
+		}
+		bool OnFacename(const wxString& font) {
+			array->Add(font);
+			return true;
+		}
+	};
+	wxArrayString fonts; mxFontEnumerator f(fonts); fonts.Sort(); int def_font=fonts.Index(config->Styles.font_name,false); if (def_font==wxNOT_FOUND) def_font=-1;
+	styles_font_name = utils->AddComboBox(sizer,panel,LANG(PREFERENCES_STYLE_FONT_NAME,"Fuente para el código"),fonts,def_font,mxID_PREFERENCES_FONTNAME);
+	styles_font_size = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_SCREEN_FONT_SIZE,"Tamaño de la fuente en pantalla"),config->Styles.font_size,false,mxID_PREFERENCES_FONTSIZE);
 	styles_print_size = utils->AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_PRINTING_FONT_SIZE,"Tamaño de la fuente para impresion"),config->Styles.print_size);
 	init_autohide_menus_fs = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_HIDE_MENUS_ON_FULLSCREEN,"Ocultar barra de menues al pasar a pantalla completa"),config->Init.autohide_menus_fs);
 	init_autohide_toolbars_fs = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_HIDE_TOOLBARS_ON_FULLSCREEN,"Ocultar barras de herramientas al pasar a pantalla completa"),config->Init.autohide_toolbars_fs);
@@ -641,6 +668,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
 	styles_print_size->GetValue().ToLong(&l); config->Styles.print_size=l;
 	styles_font_size->GetValue().ToLong(&l); config->Styles.font_size=l;
+	config->Styles.font_name=styles_font_name->GetValue();
 //#if defined(_WIN32) || defined(__WIN32__)
 //	config->Files.mingw_dir = files_mingw_dir->GetValue();
 //#endif
@@ -673,6 +701,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.improve_inspections_by_type = improve_inspections_by_type->GetValue();
 	config->Debug.macros_file = debug_macros_file->GetValue();
 	config->Debug.blacklist = debug_blacklist->GetValue();
+	
+	old_config_styles=config->Styles;
 	config->Save();
 	
 	wxCommandEvent evt;
@@ -714,12 +744,12 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 }
 
 void mxPreferenceWindow::OnCancelButton(wxCommandEvent &event){
+	config->Styles=old_config_styles;
+	main_window->UpdateStylesInSources();
 	Close();
 }
 
 void mxPreferenceWindow::OnClose(wxCloseEvent &event){
-//	main_window->preference_window=NULL;
-//	Destroy();
 	Hide();
 	event.Veto();
 }
@@ -1226,6 +1256,9 @@ void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
 	
 void mxPreferenceWindow::ResetChanges() {
 
+	ignore_styles_changes=true;
+	old_config_styles=config->Styles;
+	
 	// paths
 	help_wxhelp_index->SetValue(config->Help.wxhelp_index);
 	files_temp_dir->SetValue(config->Files.temp_dir);
@@ -1271,6 +1304,8 @@ void mxPreferenceWindow::ResetChanges() {
 	source_tabUseSpaces->SetValue(config->Source.tabUseSpaces);
 	styles_print_size->SetValue(wxString()<<int(config->Styles.print_size));
 	styles_font_size->SetValue(wxString()<<int(config->Styles.font_size));
+	styles_font_name->SetValue(config->Styles.font_name); 
+	wxCommandEvent cmd_evt; OnFontChange(cmd_evt);
 	init_autohide_menus_fs->SetValue(config->Init.autohide_menus_fs);
 	init_autohide_toolbars_fs->SetValue(config->Init.autohide_toolbars_fs);
 	init_autohide_panels_fs->SetValue(config->Init.autohide_panels_fs);
@@ -1349,6 +1384,7 @@ void mxPreferenceWindow::ResetChanges() {
 	debug_macros_file->SetValue(config->Debug.macros_file);
 	debug_blacklist->SetValue(config->Debug.blacklist);
 	
+	ignore_styles_changes=false;
 }
 
 void mxPreferenceWindow::OnSkinList(wxCommandEvent &event) {
@@ -1391,9 +1427,14 @@ void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
 }
 
 void mxPreferenceWindow::Delete ( ) {
-	{
-		preference_window->Destroy();
-		preference_window=NULL;
-	}	
+	preference_window->Destroy();
+	preference_window=NULL;
+}
+
+void mxPreferenceWindow::OnFontChange (wxCommandEvent & evt) {
+	if (ignore_styles_changes) return;
+	config->Styles.font_name = styles_font_name->GetValue();
+	long l=0; if (styles_font_size->GetValue().ToLong(&l)&&l>0) config->Styles.font_size=l;
+	main_window->UpdateStylesInSources();
 }
 

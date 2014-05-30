@@ -178,8 +178,8 @@ wxCheckBox *mxUtils::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	return checkbox;	
 }
 
-wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value) {
-	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, int id) {
+	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp0);
 	textctrl->SetValue(value);
@@ -207,8 +207,8 @@ wxTextCtrl *mxUtils::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString te
 	return textctrl;
 }
 
-wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value, bool margin) {
-	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
+wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value, bool margin, int id) {
+	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(15);
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);

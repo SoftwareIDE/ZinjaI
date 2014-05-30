@@ -39,9 +39,9 @@ mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wx
 	mySizer->Add(list,sizers->BA5_Exp1);
 
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
-	wxButton *source_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CLOSE_BUTTON," &Cerrar ")); 
+	wxButton *close_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CLOSE_BUTTON," &Cerrar ")); 
 	wxButton *list_button = new mxBitmapButton (this, mxID_SHARE_GET_LIST, bitmaps->buttons.next,LANG(OPENSHARED_UPDATE_LIST_BUTTON,"&Actualizar lista"));
-	wxButton *close_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(OPENSHARED_GET_SOURCE_BUTTON,"&Obtener fuente"));
+	wxButton *source_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(OPENSHARED_GET_SOURCE_BUTTON,"&Obtener fuente"));
 
 	bottomSizer->Add(help_button,sizers->BA5_Exp0);
 	bottomSizer->AddStretchSpacer();
