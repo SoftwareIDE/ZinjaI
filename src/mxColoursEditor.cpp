@@ -213,13 +213,13 @@ void mxColoursEditor::OnButtonOk (wxCommandEvent & evt) {
 	} else {
 		config->Init.colour_theme=combo->GetString(combo->GetSelection());
 	}
-	OnButtonApply(evt); 
+	main_window->UpdateStylesInSources();
 	Close();
 }
 
 void mxColoursEditor::OnButtonCancel (wxCommandEvent & evt) {
 	(*ctheme)=old_theme;
-	OnButtonApply(evt);
+	main_window->UpdateStylesInSources();
 	Close();
 }
 
@@ -238,8 +238,7 @@ void mxColoursEditor::OnButtonPicker (wxCommandEvent & evt) {
 }
 
 void mxColoursEditor::OnButtonApply (wxCommandEvent & evt) {
-	for (unsigned int i=0;i<main_window->notebook_sources->GetPageCount();i++)
-		((mxSource*)(main_window->notebook_sources->GetPage(i)))->SetColours();
+	main_window->UpdateStylesInSources();
 }
 
 color_theme::color_theme (wxString file) {
@@ -459,7 +458,7 @@ void mxStaticText::OnPaint(wxPaintEvent &evt) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
 	dc.SetBackground(*back);
-	wxFont f(config->Styles.font_size, wxMODERN, wxNORMAL, wxNORMAL);
+	wxFont f(config->Styles.font_size, wxMODERN, wxNORMAL, wxNORMAL,false,config->Styles.font_name);
 	f.SetWeight((bold&&*bold)?wxFONTWEIGHT_BOLD:wxFONTWEIGHT_NORMAL);
 	f.SetStyle((italic&&*italic)?wxFONTFLAG_ITALIC:wxFONTFLAG_DEFAULT);
 	dc.Clear(); dc.SetFont(f);

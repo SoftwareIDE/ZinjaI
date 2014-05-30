@@ -53,7 +53,6 @@
 #include "mxApplication.h"
 #include "mxBeginnerPanel.h"
 #include "mxDiffSideBar.h"
-#include "mxOpinionWindow.h"
 #include "mxCustomTools.h"
 #include "parserData.h"
 #include "mxHidenPanel.h"
