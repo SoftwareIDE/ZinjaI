@@ -70,7 +70,7 @@ mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDia
 
 void mxComplementInstallerWindow::OnOkButton (wxCommandEvent & evt) {
 	
-	wxFileDialog dlg (this, LANG(COMPLEMENTS_CAPTION,"Instalación de Complementos"), config->Files.last_dir, _T(" "), _T("Complement files (zcp)|*.zcp;*.ZCP|Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxFileDialog dlg (this, LANG(COMPLEMENTS_CAPTION,"Instalación de Complementos"), config->Files.last_dir, " ", _T("Complement files (zcp)|*.zcp;*.ZCP|Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (dlg.ShowModal() == wxID_OK) {
 		wxFileName fname=dlg.GetPath();
 		config->Files.last_dir=fname.GetPath();

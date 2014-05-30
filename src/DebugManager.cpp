@@ -122,7 +122,7 @@ bool DebugManager::Start(bool update, mxSource *source) {
 			}
 			if (res&AD_REMEMBER) {
 				source->config_running.always_ask_args=false;
-				if (res&AD_EMPTY) source->exec_args =_T("");
+				if (res&AD_EMPTY) source->exec_args ="";
 			}
 		} else if (source->exec_args[0]!='\0')
 			args = source->exec_args;	
@@ -162,7 +162,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	if (show_console) {
 		if (wxFileName::FileExists(tty_file))
 			wxRemoveFile(tty_file);
-		tty_cmd<<config->Files.terminal_command<<_T(" ")<<config->Files.runner_command<<_T(" -tty ")<<tty_file;
+		tty_cmd<<config->Files.terminal_command<<" "<<config->Files.runner_command<<_T(" -tty ")<<tty_file;
 		tty_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
 		if (wait_for_key) tty_cmd<<_T(" -waitkey");
 	//	utils->ParameterReplace(tty_cmd,_T("${ZINJAI_DIR}"),wxGetCwd());
@@ -725,7 +725,7 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 }
 
 wxString DebugManager::InspectExpression(wxString var, bool pretty) {
-	if (waiting || !debugging) return _T("");
+	if (waiting || !debugging) return "";
 	if (!pretty) {
 		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),utils->EscapeString(var,true)),_T("value") ,true,true);
 	} else {
@@ -795,9 +795,9 @@ bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all)
 			wxString func = GetValueFromAns(s,_T("func"),true);
 			if (func[0]=='?') {
 				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,_T("<<informacion no disponible>>"));
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,_T(""));
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_LINE,_T(""));
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,_T(""));
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,"");
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_LINE,"");
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,"");
 			} else {
 				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,func);
 	//			frames_addrs[c]=SendCommand(_T("info frame "),frames_nums[c]).BeforeFirst(':').AfterLast(' ');
@@ -909,7 +909,7 @@ bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all)
 	c=n;
 	while (c<last_backtrace_size) { 
 		for (int i=0;i<BG_COLS_COUNT;i++)
-			main_window->backtrace_ctrl->SetCellValue(c,i,_T(""));
+			main_window->backtrace_ctrl->SetCellValue(c,i,"");
 		c++;
 	}
 	
@@ -932,7 +932,7 @@ bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all)
 			current_frame_num=frames_nums[0];
 			current_frame=frames_addrs[0];
 		} else 
-			current_frame=current_frame_num=_T("");
+			current_frame=current_frame_num="";
 	}
 	
 	main_window->backtrace_ctrl->EndBatch();
@@ -1077,7 +1077,7 @@ wxString DebugManager::WaitAnswer() {
 				wxMilliSleep(10);
 				wxTimeSpan t2=t1-wxDateTime::Now();
 				if (t2.GetSeconds()>30 && mxMD_YES==mxMessageDialog(main_window,_T("Alguna operación en el depurador está tomando demasiado tiempo, desea interrumpirla?."),_T("UPS!"),(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
-						return _T("");
+						return "";
 				else t1=wxDateTime::Now();
 			}
 		}
@@ -1087,8 +1087,8 @@ wxString DebugManager::WaitAnswer() {
 		buffer[c+6]='\0'; iwarn=c=6;
 		
 	}
-	last_answer = _T("");
-	return _T("");
+	last_answer = "";
+	return "";
 }
 
 wxString DebugManager::SendCommand(wxString command) {
@@ -1098,7 +1098,7 @@ wxString DebugManager::SendCommand(wxString command) {
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
 #endif
-	if (!process) return _T("");
+	if (!process) return "";
 	last_command=command;
 	output->Write(command.c_str(),command.Len());
 	output->Write("\n",1);
@@ -1112,7 +1112,7 @@ wxString DebugManager::SendCommand(wxString command, int i) {
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
 #endif
-	if (!process) return _T("");
+	if (!process) return "";
 	command<<i<<_T("\n");
 	last_command=command;
 	output->Write(command.c_str(),command.Len());
@@ -1126,7 +1126,7 @@ wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
 #endif
-	if (!process) return _T("");
+	if (!process) return "";
 	cmd1<<cmd2<<_T("\n");
 	last_command=cmd1;
 	output->Write(cmd1.c_str(),cmd1.Len());
@@ -1205,7 +1205,7 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 **/
 wxString DebugManager::GetValueFromAns(wxString ans, wxString key, bool crop, bool fix_slash) {
 	if (ans.Len()<key.Len()+2)
-		return _T("");
+		return "";
 	unsigned int sc=0, t = ans.Len()-key.Len()-2;
 	key<<_T("=");
 	char stack[25];
@@ -1301,7 +1301,7 @@ wxString DebugManager::GetValueFromAns(wxString ans, wxString key, bool crop, bo
 			}
 		}
 	}
-	return _T("");
+	return "";
 }
 
 wxString DebugManager::GetSubValueFromAns(wxString ans, wxString key1, wxString key2, bool crop, bool fix_slash) {
@@ -1310,7 +1310,7 @@ wxString DebugManager::GetSubValueFromAns(wxString ans, wxString key1, wxString 
 		value[0]=value[value.Len()-1]=',';
 		return GetValueFromAns(value,key2,crop,fix_slash);
 	}
-	return _T("");
+	return "";
 }
 
 void DebugManager::SetStateText(wxString text, bool refresh) {
@@ -1324,7 +1324,7 @@ void DebugManager::BacktraceClean() {
 	int c=0;
 	while (c<last_backtrace_size) { // borrar los renglones que sobran
 		for (int i=0;i<BG_COLS_COUNT;i++)
-			main_window->backtrace_ctrl->SetCellValue(c,i,_T(""));
+			main_window->backtrace_ctrl->SetCellValue(c,i,"");
 		c++;
 	}
 	last_backtrace_size = 0;
@@ -1341,7 +1341,7 @@ void DebugManager::BacktraceClean() {
 * @param line número de linea en base 0
 **/
 wxString DebugManager::GetAddress(wxString fname, int line) {
-	if (waiting || !debugging) return _T("");
+	if (waiting || !debugging) return "";
 #if defined(_WIN32) || defined(__WIN32__)
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') 
@@ -1355,7 +1355,7 @@ wxString DebugManager::GetAddress(wxString fname, int line) {
 		if (r!=wxNOT_FOUND)
 			return ans.Mid(r).BeforeFirst(' ');
 	}
-	return _T("");
+	return "";
 }
 
 /**
@@ -1561,7 +1561,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		} else {
 			if (!ans.Len()) last_error=_T("<killed>"); else
 				last_error = GetValueFromAns(ans,_T("msg"),true,true);
-			inspection_grid->SetCellValue(num,IG_COL_EXPR,_T(""));
+			inspection_grid->SetCellValue(num,IG_COL_EXPR,"");
 		}
 	} else /*if (inspections[num].expr!=expr)*/ {
 		if (!inspections[num].frameless && inspections[num].is_vo && inspections[num].on_scope && !SelectFrameForInspeccion(inspections[num].frame))
@@ -1589,7 +1589,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		if (ii.name.Len()) { // si se pudo crea el nuevo VO
 			inspection_grid->SetCellValue(num,IG_COL_TYPE,ii.type);
 			if (is_vo) {
-				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+_T(" ")+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)==_T("error")) 
+				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+" "+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)==_T("error")) 
 					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
 				value = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),ii.name),_T("value"),true,true);
 			} else {
@@ -1680,7 +1680,7 @@ bool DebugManager::DeleteInspection(int num) {
 
 bool DebugManager::ModifyInspectionValue(int num, wxString value) {
 	if (!debugging || waiting) return false;
-	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+_T(" ")+utils->EscapeString(value,true));
+	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+" "+utils->EscapeString(value,true));
 	if (ans.Mid(1,4)==_T("done"))
 		UpdateInspection();
 	return ans.Mid(1,4)==_T("done");
@@ -1688,7 +1688,7 @@ bool DebugManager::ModifyInspectionValue(int num, wxString value) {
 
 bool DebugManager::ModifyInspectionFormat(int num, wxString format) {
 	if (!debugging || waiting) return false;
-	wxString ans = SendCommand(_T("-var-set-format "),inspections[num].name+_T(" ")+format);
+	wxString ans = SendCommand(_T("-var-set-format "),inspections[num].name+" "+format);
 	if (ans.SubString(1,5)==_T("error"))
 		return false;
 	inspection_grid->SetCellValue(num,IG_COL_FORMAT,format);
@@ -1784,7 +1784,7 @@ bool DebugManager::UpdateInspection() {
 						inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
 						if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
 					}
-					inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T(""));
+					inspection_grid->SetCellValue(i,IG_COL_LEVEL,"");
 					inspection_grid->SetReadOnly(i,IG_COL_VALUE,true);
 					inspection_grid->SetReadOnly(i,IG_COL_FORMAT,true);
 					inspection_grid->SetReadOnly(i,IG_COL_WATCH,true);
@@ -2167,7 +2167,7 @@ bool DebugManager::CreateVO(wxString expr, wxString &name, wxString &type, int &
 }
 
 wxString DebugManager::GetVOValue(wxString name) {
-	if (!debugging || waiting) return _T("");
+	if (!debugging || waiting) return "";
 	return GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),name),_T("value"),true,true);
 }
 
@@ -2302,7 +2302,7 @@ void DebugManager::ClearInspections() {
 
 bool DebugManager::GetArgs (wxArrayString &array, wxString level) {
 	if (!debugging || waiting) return false;
-	wxString args_list = SendCommand(_T("-stack-list-arguments 0 "),level+_T(" ")+level);
+	wxString args_list = SendCommand(_T("-stack-list-arguments 0 "),level+" "+level);
 	const wxChar * chag = args_list.c_str();
 	bool comillas = false;
 	int i=args_list.Find('[')+1;
@@ -2445,14 +2445,14 @@ void DebugManager::PopulateBreakpointsList(mxBreakList *break_list, bool also_wa
 /// @brief Define the number of time the breakpoint should be ignored before actually stopping the execution
 void DebugManager::SetBreakPointOptions(int num, int ignore_count) {
 	wxString cmd(_T("-break-after "));
-	cmd<<num<<_T(" ")<<ignore_count;
+	cmd<<num<<" "<<ignore_count;
 	SendCommand(cmd);
 }
 
 /// @brief Define the condition for a conditional breakpoint and returns true if the condition was correctly setted
 bool DebugManager::SetBreakPointOptions(int num, wxString condition) {
 	wxString cmd(_T("-break-condition "));
-	cmd<<num<<_T(" ")<<utils->EscapeString(condition);
+	cmd<<num<<" "<<utils->EscapeString(condition);
 	wxString ans = SendCommand(cmd);
 	return ans.Len()>4 && ans.Mid(1,4)==_T("done");
 }
@@ -2781,7 +2781,7 @@ bool DebugManager::OffLineInspectionModify(int i, wxString value) {
 		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
 		return true;
 	} else if (i==inspections_count) {
-		inspections.push_back(inspectinfo(value,_T(""),value));
+		inspections.push_back(inspectinfo(value,"",value));
 		inspection_grid->AddRow(); inspections_count++;
 		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
 		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());

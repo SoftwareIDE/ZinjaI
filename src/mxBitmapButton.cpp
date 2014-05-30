@@ -48,7 +48,7 @@ wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, wxBitmap *bmp) {
 	} else {
 		text.Remove(p++,1);
 	}
-	dc->DrawLabel(wxString(_T(" "))<<text,*bmp,wxRect(wxPoint(0,0),wxPoint(200,100)), wxALIGN_LEFT | wxALIGN_TOP,p,&r);
+	dc->DrawLabel(wxString(" ")<<text,*bmp,wxRect(wxPoint(0,0),wxPoint(200,100)), wxALIGN_LEFT | wxALIGN_TOP,p,&r);
 	r.height = r.height>bmp->GetHeight()?r.height:bmp->GetHeight()+1;
 	r.height += r.y+1;
 	r.y = 0;

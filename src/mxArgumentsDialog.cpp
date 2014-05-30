@@ -75,12 +75,12 @@ void mxArgumentsDialog::OnYesButton(wxCommandEvent &evt) {
 			list_for_combo.Add(last_arguments);
 		EndModal(AD_ARGS|(check->GetValue()?AD_REMEMBER:0));
 	} else {
-		last_arguments=_T("");
+		last_arguments="";
 		EndModal(AD_EMPTY|(check->GetValue()?AD_REMEMBER:0));
 	}
 }
 void mxArgumentsDialog::OnNoButton(wxCommandEvent &evt) {
-	last_arguments=_T("");
+	last_arguments="";
 	EndModal(AD_EMPTY|(check->GetValue()?AD_REMEMBER:0));
 }
 void mxArgumentsDialog::OnCancelButton(wxCommandEvent &evt) {

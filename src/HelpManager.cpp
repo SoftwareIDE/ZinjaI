@@ -48,7 +48,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<(aclass->is_union?LANG(PARSERHELP_UNION,"Union"):LANG(PARSERHELP_CLASS,"Clase"))<<_T(" <I>")<<aclass->name<<_T("</I></A></LI>");
 		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<(aclass->is_union?LANG(PARSERHELP_UNION,"Union"):LANG(PARSERHELP_CLASS,"Clase"))<<_T(" <I><A href=\"#")<<id<<_T("\">")<<aclass->name<<_T("</A></I></B><BR><BR>");
 		AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),aclass->file->name,aclass->line);
-		if (aclass->templ!=_T("")) {
+		if (aclass->templ!="") {
 			wxString aux = aclass->templ;
 			aux.Replace(_T("<"),_T("&lt;"));
 			aux.Replace(_T(">"),_T("&gt;"));
@@ -75,7 +75,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 					inheritTexts.Add(_T("public "));
 					break;
 				default:
-					inheritTexts.Add(_T(""));
+					inheritTexts.Add("");
 					break;
 				}
 			} else if (item->father==aclass->name)
@@ -83,7 +83,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 		}
 		if (inheritClasses.GetCount()!=0) {
 			int in_j = inheritClasses.GetCount()-1;;
-			content<<LANG(PARSERHELP_THIS_ONE_INHERITS_FROM,"Hereda de:")<<_T(" ")<<inheritTexts[in_j]<<_T("<A href=\"quickhelp:")<<inheritClasses[in_j]<<_T("\">")<<inheritClasses[in_j]<<_T("</A>");
+			content<<LANG(PARSERHELP_THIS_ONE_INHERITS_FROM,"Hereda de:")<<" "<<inheritTexts[in_j]<<_T("<A href=\"quickhelp:")<<inheritClasses[in_j]<<_T("\">")<<inheritClasses[in_j]<<_T("</A>");
 			in_j--;
 			while (in_j>0) {
 				content<<_T(", ")<<inheritTexts[in_j]<<_T("<A href=\"quickhelp:")<<inheritClasses[in_j]<<_T("\">")<<inheritClasses[in_j]<<_T("</A>");
@@ -111,21 +111,21 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 					if (item->son==keyword) {
 						inheritStack.Add(item->father);
 						inheritMargins.Add(margin+_T("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
-						if (inheritText==_T("")) {
+						if (inheritText=="") {
 							inheritText=wxString(_T("<A href=\"quickhelp:"))<<item->father<<_T("\">")<<item->father<<_T("</A>");
 						} else {
 							inheritText=wxString(_T("<A href=\"quickhelp:"))<<item->father<<_T("\">")<<item->father<<_T("</A>, ")+inheritText;
 						}
 					}
 				}
-				if (inheritText!=_T(""))
-					content<<margin<<_T("<A href=\"quickhelp:")<<keyword<<_T("\">")<<keyword<<_T("</A> ")<<LANG(PARSERHELP_OTHER_ONE_INHERIT_FROM,"hereda de")<<_T(" ")<<inheritText<<_T("<BR>");
+				if (inheritText!="")
+					content<<margin<<_T("<A href=\"quickhelp:")<<keyword<<_T("\">")<<keyword<<_T("</A> ")<<LANG(PARSERHELP_OTHER_ONE_INHERIT_FROM,"hereda de")<<" "<<inheritText<<_T("<BR>");
 			}
 			content<<_T("<BR>");
 		}
 		if (inheritChildren.GetCount()!=0) {
 			if (inheritChildren.GetCount()==1) {
-				content<<LANG(PARSERHELP_ONE_CLASS_INHERITS_FROM_PRE,"La clase")<<_T(" <A href=\"quickhelp:")<<inheritChildren[0]<<_T("\">")<<inheritChildren[0]<<_T("</A> ")<<LANG(PARSERHELP_ONE_CLASS_INHERITS_FROM_POST,"hereda de")<<_T(" ")<<aclass->name<<_T(".<BR><BR>");
+				content<<LANG(PARSERHELP_ONE_CLASS_INHERITS_FROM_PRE,"La clase")<<_T(" <A href=\"quickhelp:")<<inheritChildren[0]<<_T("\">")<<inheritChildren[0]<<_T("</A> ")<<LANG(PARSERHELP_ONE_CLASS_INHERITS_FROM_POST,"hereda de")<<" "<<aclass->name<<_T(".<BR><BR>");
 			} else {
 				unsigned int in_j=1;
 				content<<LANG(PARSERHELP_MANY_CLASSES_INHERIT_FROM_PRE,"Las clases")<<_T(" <A href=\"quickhelp:")<<inheritChildren[0]<<_T("\">")<<inheritChildren[0]<<_T("</A>");
@@ -134,7 +134,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 					in_j++;
 				}
 				content<<_T(" y <A href=\"quickhelp:")<<inheritChildren[in_j]<<_T("\">")<<inheritChildren[in_j]<<_T("</A>");
-				content<<_T(" ")<<LANG(PARSERHELP_MANY_CLASSES_INHERIT_FROM_POST,"heredan de")<<_T(" ")<<aclass->name<<_T(".<BR><BR>");
+				content<<" "<<LANG(PARSERHELP_MANY_CLASSES_INHERIT_FROM_POST,"heredan de")<<" "<<aclass->name<<_T(".<BR><BR>");
 			}							
 		}	
 		
@@ -649,7 +649,7 @@ wxString HelpManager::GetDoxyInfo(pd_class *aclass, wxString &desc) {
 		fil.Close();
 		return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html"))),it->second);
 	}
-	return _T("");	
+	return "";	
 }
 
 wxString HelpManager::GetDoxyInfo(pd_func *afunc, wxString &desc) {
@@ -667,15 +667,15 @@ wxString HelpManager::GetDoxyInfo(pd_func *afunc, wxString &desc) {
 		key<<_T("*");
 		it = doxy_index.find(key);
 	}
-	return _T("");	
+	return "";	
 }
 
 wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 	desc.Clear();
 //	cerr<<"FILE:  "<<link<<endl;
 	wxString file = DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html")),link.BeforeLast('#')));
-	if (!file.Len()) return _T("");
-	if (!wxFileName(file).FileExists()) return _T("");
+	if (!file.Len()) return "";
+	if (!wxFileName(file).FileExists()) return "";
 	wxString anchor=link.AfterLast('#');
 	wxString anchor_label=_T("class=\"anchor\"");
 	wxString anchor_key=wxString(_T("name=\""))<<anchor<<_T("\"");
@@ -726,13 +726,13 @@ wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 							i++;
 						}
 						arg = arg.Mid(0,ir);
-						arg.Replace(_T("&#160;"),_T(""));
-						arg.Replace(_T("&;"),_T(""));
-						arg.Replace(_T("&nbsp;"),_T(""));
+						arg.Replace(_T("&#160;"),"");
+						arg.Replace(_T("&;"),"");
+						arg.Replace(_T("&nbsp;"),"");
 						arg.Replace(_T("&gt;"),_T(">"));
 						arg.Replace(_T("&lt;"),_T("<"));
 						arg.Replace(_T("&amp;"),_T("&"));
-						arg.Replace(_T("  "),_T(" "));
+						arg.Replace(_T("  ")," ");
 						arg.Replace(_T(" <"),_T("<"));
 						arg.Replace(_T("< "),_T("<"));
 						arg.Replace(_T("> "),_T(">"));
@@ -764,5 +764,5 @@ wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 		}
 	}
 	fil.Close();
-	return _T("");
+	return "";
 }

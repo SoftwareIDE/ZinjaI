@@ -682,7 +682,7 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 }
 
 void mxInspectionGrid::OnSaveTable(wxCommandEvent &evt) {
-	wxString name = mxGetTextFromUser(LANG(INSPECTGRID_TABLE_NAME,"Nombre de la lista:"),_T("Guardar Lista"),_T(""),this);
+	wxString name = mxGetTextFromUser(LANG(INSPECTGRID_TABLE_NAME,"Nombre de la lista:"),_T("Guardar Lista"),"",this);
 	if (name.Len()) debug->SaveInspectionsTable(name);
 }
 

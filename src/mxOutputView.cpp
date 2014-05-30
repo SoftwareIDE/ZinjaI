@@ -45,11 +45,11 @@ mxOutputView::mxOutputView(wxString caption, mxOVmode extra_mode, wxString extra
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	
 	mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(LAUNCH_STANDAR_OUTPUT,"Salida estandar")),sizers->BLRT5_Exp0);
-	ctrl_std = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
+	ctrl_std = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	mySizer->Add(ctrl_std,sizers->BA5_Exp1);
 	
 	mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(LAUNCH_ERROR_OUTPUT,"Salida de errores")),sizers->BLRT5_Exp0);
-	ctrl_err = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
+	ctrl_err = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	mySizer->Add(ctrl_err,sizers->BA5_Exp1);
 	
 	mySizer->Add(state = new wxStaticText(this,wxID_ANY,LANG(LAUNCH_STATUS_STARTING,"Estado: Comenzando")),sizers->BA5_Exp0);

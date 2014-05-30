@@ -1,47 +1,49 @@
 <HTML>
 <HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
-<B>Menú Ayuda</B><BR><BR>
-<UL>
-<LI><A href="#acerca_de">Acerca de...</A></LI>
-<LI><A href="#tutoriales">Tutoriales...</A></LI>
-<LI><A href="#ide">Ayuda sobre ZinjaI...</A></LI>
-<LI><A href="#cpp">Ayuda sobre C++...</A></LI>
-<LI><A href="#mostrar_sugerencias">Mostrar Sugerencia...</A></LI>
-<LI><A href="#buscar_actualizaciones">Buscar Actualizaciones...</A></LI>
-</UL>
-<BR><BR>
+
 
 <A name="acerca_de"><HR></A>
+<img src="../imgs/24/acercaDe.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ayuda: Acerca de...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Muestra un cuadro de diálogo con el logo del software e información acerca de su versión y sitio web.<BR>
-<BR>
+
 
 <A name="tutoriales"><HR></A>
+<img src="../imgs/24/tutoriales.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ayuda: Tutoriales...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Abre la ventana de ayuda y muestra la página que contiene el índice de tutoriales sobre el uso del entorno.<BR>
-<BR>
+
 
 <A name="ide"><HR></A>
-<B>Menú Ayuda: Ayuda sobre la IDE...</B><BR><BR>
+<img src="../imgs/24/ayuda.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Ayuda: Ayuda sobre ZinjaI...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Abre esta ventana de ayuda y muestra el índice de la misma. Aquí se puede encontrar ayuda acerca del uso y configuración del entorno, así como documentación acerca de la licencia, versión, sitio web, etc.<BR>
-<BR>
+
 
 <A name="cpp"><HR></A>
-<B>Menú Ayuda: Ayuda sobre C++...</B><BR><BR>
-&nbsp;&nbsp;&nbsp; Permite obtener ayuda rápida acerca de una librería, función, clase, estructura, palabra reservada, etc del lenguaje. Cuando se selecciona esta opción o se presiona <I>Shift+F1</I>, se busca ayuda sobre la palabra en la que está actualmente posicionado el cursor en el código. Primero se busca dentro de la ayuda del lenguaje estándar. Si se encontró la palabra buscada se muestra la ayuda correspondiente. Si no se encuentra, se busca luego si la palabra seleccionada es una macro, función, clase, método o atributo definido en el programa. De ser así se muestra un breve descripción del mismo que incluye su prototipo, su jerarquia, su visibilidad y/o sus métodos y atributos según correspondan, junto con enlaces a las lineas de código en donde se declara y/o define. Para que esta ayuda acerca del propio código esté disponible se debe tener actualizado el árbol de símbolos, ya que dicha ayuda se genera durante este proceso de actualización.<BR>
-<BR>
-&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="panel_symbol_tree.html">Arbol de simbolos</A>, <A href="menu_ver.html#mostrar_arbol_de_simbolos">Menu ver: Mostrar Arbol de Simbolos... </A>, <A href="menu_ver.html#actualizar_arbol_de_simbolos">Menu ver: Actualizar Arbol de Simbolos... </A>, <A href="quickhelp.html">Ayuda Rápida</A><BR>
-<BR>
+<img src="../imgs/24/referencia.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Ayuda: Referencia C/C++...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Permite obtener ayuda rápida acerca de una librería, función, clase, estructura, palabra reservada, etc del lenguaje. Esta ayuda no se incluye en el instalador de ZinjaI, sino que debe descargarse por separado e instalarse como complemento. Al intentar ingresar a la misma por primera vez ZinjaI abrirá un navegador en el sitio de descarga y mostrará un cuadro de diálogo para la instalación del complemento.<BR>
+&nbsp;&nbsp;&nbsp; Esta primer referencia solo muestra contenido C/C++ estándar. ZinjaI posee además un panel de ayuda rápida donde puede acceder fácilmente descripciones sobre los símbolos (clases, métodos, funciones, etc.) que defina en su proyecto, autogenerada por ZinjaI a partir del análasis de los fuentes, y complementada con la documentación generada por <A href="doxygen.html">Doxygen</A> si está disponible y actualizada. Para acceder a la misma debe presionar <I>Shift+F1</I>. Para que esta segunda ayuda acerca del propio código esté disponible se debe mantener actualizado el <A href="panel_symbol_tree.html">Arbol de simbolos</A> (lo cual se hace automáticamente al guardar/ejecutar, o manualmente con la tecla <I>F2</I>).<BR>
+
 
 <A name="mostrar_sugerencias"><HR></A>
-<B>Menú Ayuda: Mostrar Sugerencias...</B><BR><BR>
-&nbsp;&nbsp;&nbsp; Muestra el cuadro de diálogo de sugerencias. El mismo contiene breves sugerencias acerca del uso de ZinjaI y sus prinicipales características, así como algunos trucos y consejos para aprovechar mejor sus opciones y herramientas. Este cuadro es el que se muestra cuando se carga el entorno si la opción <I>Mostrar sugerencias al inicio</I> de la pestaña <I>General</I> del cuadro de diálogo <I>Preferencias</I> (<I>Archivo-&gt;Preferencias...</I> ó <I>Ctrl+P</I>) está seleccionada.
-<BR>
+<img src="../imgs/24/tip.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Ayuda: Mostrar Sugerencias de uso...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra el cuadro de diálogo de sugerencias. El mismo contiene breves sugerencias acerca del uso de ZinjaI y sus prinicipales características, así como algunos trucos y consejos para aprovechar mejor sus opciones y herramientas. Este cuadro es el que se muestra cuando se carga el entorno si la opción <I>Mostrar sugerencias al inicio</I> de la pestaña <I>General</I> del cuadro de diálogo <I>Preferencias</I> (<I>Archivo-&gt;Preferencias...</I> ó <I>Ctrl+P</I>) está seleccionada.<BR>
+
+
+<A name="enviar_sugerencia"><HR></A>
+<img src="../imgs/24/opinion.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Ayuda: Enviar sugerencia o reportar error...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Abre la sección de foros del sitio oficial de Zinjai en navegador del sistema, para poder enviar un mensaje al desarrollador de ZinjaI y/o la comunidad de usuarios. El sitio dispone de diferentes foros según el objetivo del mensage, existiendo foros específicos para consultas sobre el uso del IDE, para reporte de errores encontrados en el mismo, y para enviar sugerencias y comentarios libres.<BR>
+
 
 <A name="buscar_actualizaciones"><HR></A>
+<img src="../imgs/24/updates.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ayuda: Buscar Actualizaciones...</B><BR><BR>
-&nbsp;&nbsp;&nbsp; Intenta conectarse a travéz de internet para determinar si hay disponible en el sitio web de <I>ZinjaI</I> una versión más reciente que la que se está utilizando. En caso afirmativo permite observar el registro de cambios. Este método no funciona si el sistema utiliza un proxy para navegar.
-<BR>
+&nbsp;&nbsp;&nbsp; Intenta conectarse a travéz de internet para determinar si hay disponible en el sitio web de <I>ZinjaI</I> una versión más reciente que la que se está utilizando. En caso afirmativo permite observar el registro de cambios. Este método no funciona si el sistema utiliza un proxy para navegar.<BR>
+
 
 <HR>
 

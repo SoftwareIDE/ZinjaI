@@ -405,8 +405,8 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 			wxString key=PARSER_PARTE(0);
 			if (key=="NULL") break;
 			if (key[0]=='<') key=key.AfterLast('>');
-			wxString name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
-			wxString fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
+			wxString name=PARSER_PARTE_NB(5)+" "+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
+			wxString fullproto=PARSER_PARTE_NB(5)+" "+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
 			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
 			PD_REGISTER_FUNCTION_DEF(process->file,line,key,name,fullproto);
 			break;
@@ -416,8 +416,8 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 			wxString key=PARSER_PARTE(0);
 			if (key=="NULL") break;
 			if (key[0]=='<') key=key.AfterLast('>');
-			wxString name=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
-			wxString fullproto=PARSER_PARTE_NB(5)+_T(" ")+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
+			wxString name=PARSER_PARTE_NB(5)+" "+key+_T("(")+PARSER_PARTE_NB(6)+_T(")");
+			wxString fullproto=PARSER_PARTE_NB(5)+" "+key+_T("(")+JoinNames(PARSER_PARTE_NB(6),PARSER_PARTE_NB(7))+_T(")");
 			PARSER_PARTE(1).BeforeFirst('.').ToLong(&line);
 			PD_REGISTER_FUNCTION_DEC(process->file,line,key,name,fullproto);
 			break;

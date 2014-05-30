@@ -51,7 +51,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 //	DEBUG_INFO("Archivo: "<<aname);
 
 #define CH_REGISTER_CLASS(afile,aclass,aname) \
-	parser->h_classes[aname] = parser->first_class->next = aclass=new pd_class(NULL,afile,0,aname,_T(""),parser->first_class->next);
+	parser->h_classes[aname] = parser->first_class->next = aclass=new pd_class(NULL,afile,0,aname,"",parser->first_class->next);
 //	DEBUG_INFO("   Clase: "<<aname<<"*");
 
 #define CH_REGISTER_INHERIT(afather, aprops, ason) \
@@ -67,7 +67,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 //	DEBUG_INFO("   Macro: "<<aname);
 
 #define CH_REGISTER_GLOBAL(afile, atype, aname, aproto, aprops) \
-	parser->h_globals[aname] = parser->first_global->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aprops,parser->first_global->next,NULL,_T("")); \
+	parser->h_globals[aname] = parser->first_global->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aprops,parser->first_global->next,NULL,""); \
 //	DEBUG_INFO("   Global:  t:"<<atype<<"   n:"<<aname<<"   p:"<<aproto);
 
 // para atributos y enums/enums_const dentro de clases (la diferencia es props)
@@ -242,7 +242,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 }
 
 #define PD_REGISTER_GLOBAL(afile,aline,atype,aname,aprops) { \
-	wxString aproto = atype+_T(" ")+aname; \
+	wxString aproto = atype+" "+aname; \
 	HashStringParserVariable::iterator it = h_globals.find(aproto); \
 	pd_var *pd_aux; \
 	if (it!=h_globals.end() && it->second->prev) { \
@@ -289,7 +289,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 	} \
 	pd_aux->cont = acont;\
 	if (atype&PD_CONST_MACRO_FUNC) \
-		pd_aux->proto = aname+_T("(")+aparams+_T(")");\
+		pd_aux->proto = aname+"("+aparams+")";\
 	else \
 		pd_aux->proto = aname;\
 	pd_aux->line = aline; \
@@ -322,14 +322,14 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 
 
 #define PD_REGISTER_METHOD_DEC(aclass,afile,aline,atype,aspace,aname,aparams,afullparams,aprops) { \
-	wxString aproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?_T(""):atype + _T(" ")) + aname + _T(" (") + aparams + _T(")"); \
-	wxString afullproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?_T(""):atype + _T(" ")) + aspace + _T("::") + aname + _T(" (") + afullparams + _T(")"); \
+	wxString aproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aname + " (" + aparams + ")"; \
+	wxString afullproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aspace + "::" + aname + " (" + afullparams + ")"; \
 	if (!aclass || aclass->name!=aspace) { \
 		HashStringParserClass::iterator pd_it = h_classes.find(aspace); \
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \
 			aclass = pd_it->second; \
 		} else { \
-			aclass = new pd_class(last_class, NULL, 0, aspace, _T(""), last_class->next); \
+			aclass = new pd_class(last_class, NULL, 0, aspace, "", last_class->next); \
 			PD_INSERT(last_class,aclass); \
 			h_classes[aspace] = aclass; \
 		} \
@@ -362,14 +362,14 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 
 
 #define PD_REGISTER_METHOD_DEF(aclass,afile,aline,atype,aspace,aname,aparams,afullparams,aprops) { \
-	wxString aproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?_T(""):atype + _T(" ")) + aname + _T(" (") + aparams + _T(")"); \
-	wxString afullproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?_T(""):atype + _T(" ")) + aspace + _T("::") + aname + _T(" (") + afullparams + _T(")"); \
+	wxString aproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aname + " (" + aparams + ")"; \
+	wxString afullproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aspace + "::" + aname + " (" + afullparams + ")"; \
 	if (!aclass || aclass->name!=aspace) { \
 		HashStringParserClass::iterator pd_it = h_classes.find(aspace); \
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \
 			aclass = pd_it->second; \
 		} else { \
-			aclass = new pd_class(last_class, NULL, 0, aspace, _T(""), last_class->next); \
+			aclass = new pd_class(last_class, NULL, 0, aspace, "", last_class->next); \
 			PD_INSERT(last_class,aclass); \
 			h_classes[aspace] = aclass; \
 		} \
@@ -426,14 +426,14 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 
 
 #define PD_REGISTER_ATTRIB(aclass,afile,aline,aspace,atype,aname,aprops) { \
-	wxString aproto = atype + _T(" ") + aname; \
-	wxString afullproto = atype + _T(" ") + aspace + _T("::") + aname; \
+	wxString aproto = atype + " " + aname; \
+	wxString afullproto = atype + " " + aspace + "::" + aname; \
 	if (!aclass || aclass->name!=aspace) { \
 		HashStringParserClass::iterator pd_it = h_classes.find(aspace); \
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \
 			aclass = pd_it->second; \
 		} else { \
-			aclass = new pd_class(last_class, NULL, 0, aspace, _T(""), last_class->next); \
+			aclass = new pd_class(last_class, NULL, 0, aspace, "", last_class->next); \
 			PD_INSERT(last_class,aclass); \
 			h_classes[aspace] = aclass; \
 		} \

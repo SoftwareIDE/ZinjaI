@@ -45,7 +45,7 @@ extern char path_sep;
 wxString doxygen_configuration::get_tag_index() { 
 	if (project && project->doxygen && project->doxygen->use_in_quickhelp)
 		return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,project->doxygen->destdir),_T("index-for-zinjai.tag"));
-	else return _T("");
+	else return "";
 }
 
 
@@ -93,7 +93,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	
 	name.MakeAbsolute();
 	wxString conf_name=_T("Debug");
-	wxString current_source=_T("");
+	wxString current_source="";
 	configurations_count=0;
 	
 	// inicializar listas con el elemento ficticio begin
@@ -136,7 +136,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 			last_file=NULL;
 			section=str.AfterFirst('[').BeforeFirst(']');
 			if (section==_T("config")) { // agregar una configuracion en blanco a la lista
-				active_configuration=configurations[configurations_count++]=new project_configuration(name.GetName(),_T(""));
+				active_configuration=configurations[configurations_count++]=new project_configuration(name.GetName(),"");
 				extra_step = NULL;
 				lib_to_build = NULL;
 			} else if (section==_T("lib_to_build")) { // agregar un paso de compilación adicional a la configuración actual del proyecto
@@ -481,7 +481,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	SetActiveConfiguration(active_configuration);
 	
 	// configurar interface de la ventana principal para modo proyecto
-	if (current_source!=_T("")) {
+	if (current_source!="") {
 		fix_path_char(file_path_char,current_source);
 		main_window->OpenFile(DIR_PLUS_FILE(path,current_source),false);
 	}
@@ -625,7 +625,7 @@ project_file_item *ProjectManager::AddFile (eFileType where, wxFileName filename
 				project_library *lib = configurations[i]->libs_to_build;
 				while (lib) {
 					if (lib->default_lib) {
-						lib->sources<<_T(" ")<<utils->Quotize(name);
+						lib->sources<<" "<<utils->Quotize(name);
 						break;
 					}
 					lib = lib->next;
@@ -935,7 +935,7 @@ wxString ProjectManager::GetNameFromItem(wxTreeItemId &tree_item, bool relative)
 		else
 			return DIR_PLUS_FILE(path,item->name);
 	else
-		return _T("");
+		return "";
 }
 
 /**
@@ -1462,7 +1462,7 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 	bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
 #if !defined(_WIN32) && !defined(__WIN32__)
-		(item->lib?_T(" -fPIC "):_T(" "))+
+		(item->lib?_T(" -fPIC "):" ")+
 #endif
 		(cpp?cpp_compiling_options:c_compiling_options)+_T(" \"")+DIR_PLUS_FILE(path,item->name)+_T("\" -c -o \"")+bin_name.GetFullPath()+_T("\"");
 	
@@ -1471,9 +1471,9 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 	
 	// ejecutar
 	compile_and_run->output_type=MXC_GCC;
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	return utils->Execute(path,command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);	
 }
@@ -1581,16 +1581,16 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 long int ProjectManager::Link(compile_and_run_struct_single *compile_and_run, linking_info *info) {
 	(*info->flag_relink)=false;
 	wxString command = info->command;
-	command<<_T(" ")+utils->Quotize(info->output_file)+_T(" ");
-	command<<info->objects_list+_T(" ")+info->extra_args;
+	command<<" "+utils->Quotize(info->output_file)+" ";
+	command<<info->objects_list+" "+info->extra_args;
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	compile_and_run->output_type=MXC_SIMIL_GCC;
 	compile_and_run->linking=true; // para que cuando termine sepa que enlazo, para verificar llamar a compiler->CheckForExecutablePermision
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	return utils->Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
 }
 
@@ -1607,9 +1607,9 @@ long int ProjectManager::Strip(compile_and_run_struct_single *compile_and_run, s
 	compile_and_run->process->Redirect();
 	compile_and_run->output_type=MXC_EXTRA;
 	compile_and_run->step_label=wxString("Extrayendo símbolos de depuración de ")<<info->filename<<" - paso "<<info->current_step+1<<" de 3";
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	return utils->Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
 }
@@ -1625,7 +1625,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	wxString exe_pref;
 #ifndef __WIN32__
 	// agregar el prefijo para valgrind
-	if (compile_and_run->valgrind_cmd.Len()) exe_pref = compile_and_run->valgrind_cmd+_T(" ");
+	if (compile_and_run->valgrind_cmd.Len()) exe_pref = compile_and_run->valgrind_cmd+" ";
 #endif
 	// armar la linea de comando para ejecutar
 	executable_name=wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetFullPath();
@@ -1651,7 +1651,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 		}
 		if (res&AD_REMEMBER) {
 			active_configuration->always_ask_args=false;
-			if (res&AD_EMPTY) active_configuration->args=_T("");
+			if (res&AD_EMPTY) active_configuration->args="";
 		}
 	} else if (active_configuration->args.Len())
 		command<<' '<<active_configuration->args;	
@@ -1762,8 +1762,8 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	wxString old_temp_folder = active_configuration->temp_folder;
 	if (mktype!=MKTYPE_FULL) active_configuration->temp_folder="${OBJS_DIR}";
 	
-	AnalizeConfig(_T(""),exec_comas,mingw_dir);
-	if (executable_name.Contains(_T(" ")))
+	AnalizeConfig("",exec_comas,mingw_dir);
+	if (executable_name.Contains(" "))
 		executable_name=wxString(_T("\""))+executable_name+_T("\"");
 	
 	wxFileName bin_name;
@@ -1798,17 +1798,17 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	
 	if (mktype!=MKTYPE_CONFIG) fil.AddLine(wxString(_T("OBJS="))+exe_deps);
 	if (libs_deps.Len()&&mktype!=MKTYPE_CONFIG) fil.AddLine(wxString(_T("LIBS_OBJS="))+libs_deps);
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 	
 	if (mktype!=MKTYPE_OBJS) {
 		// agregar las secciones all, clean, y la del ejecutable
-		fil.AddLine(wxString(_T("all: "))+temp_folder+_T(" ")+executable_name);
+		fil.AddLine(wxString(_T("all: "))+temp_folder+" "+executable_name);
 		if (cmake_style) fil.AddLine(tab+"@echo [100%] Built target "+executable_name);
-		fil.AddLine(_T(""));
+		fil.AddLine("");
 		
 		if (mktype==MKTYPE_CONFIG) { 
 			fil.AddLine("include Makefile.common");
-			fil.AddLine(_T(""));
+			fil.AddLine("");
 		}
 
 		compile_extra_step *estep=active_configuration->extra_steps;
@@ -1816,10 +1816,10 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		while (estep) {
 			if (estep->out.Len() && estep->delete_on_clean) {
 				if (estep->pos!=CES_AFTER_LINKING) {
-					extra_pre<<_T(" ");
+					extra_pre<<" ";
 					extra_pre<<estep->out;
 				} else {
-					extra_post<<_T(" ");
+					extra_post<<" ";
 					extra_post<<estep->out;
 				}
 			}
@@ -1838,13 +1838,13 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	#else
 		fil.AddLine(wxString(_T("\trm -rf ${OBJS} "))+executable_name+extra_pre+extra_post+(libs_deps.Len()?" ${LIBS_OBJS}":""));
 	#endif
-		fil.AddLine(_T(""));
+		fil.AddLine("");
 
 //		compile_extra_step *estep=active_configuration->extra_steps;
 //		wxString extra_deps;
 //		while (estep) {
 //			if (estep->out.Len()) {
-//				extra_deps<<_T(" ");
+//				extra_deps<<" ";
 //				extra_deps<<estep->out;
 //			}
 //			estep=estep->next;
@@ -1854,12 +1854,12 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		fil.AddLine(executable_name+_T(": ${OBJS}")/*+extra_deps*/+extra_pre);
 		if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_objs+steps_extras,steps_total)+" Linking executable "+executable_name);
 		fil.AddLine(tab+(cmake_style?"@":"")+"${GPP} ${OBJS} ${LIBS} -o $@");
-		fil.AddLine(_T(""));
+		fil.AddLine("");
 
 		if (temp_folder.Len()!=0) {
 			fil.AddLine(temp_folder+_T(":"));
 			fil.AddLine(_T("\tmkdir ")+temp_folder);
-			fil.AddLine(_T(""));
+			fil.AddLine("");
 		}
 	
 		// agregar las secciones de los pasos extra 
@@ -1872,7 +1872,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 				command = GetCustomStepCommand(estep,mingw_dir,deps,output);
 				fil.AddLine(output+_T(": ")+deps);
 				fil.AddLine(_T("\t")+command);
-				fil.AddLine(_T(""));
+				fil.AddLine("");
 			}
 			estep=estep->next;
 		}
@@ -1888,15 +1888,15 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			while (item.IsValid()) {
 				if (item->lib==lib) {
 					wxString bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+_T(".o"));
-					objs<<_T(" ")<<utils->Quotize(bin_name);
+					objs<<" "<<utils->Quotize(bin_name);
 				}
 				item.Next();
 			}
 			fil.AddLine(libdep+objs);
 			
 			if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_current++,steps_total)+" Linking library "+libdep);
-			fil.AddLine(tab+(cmake_style?"@":"")+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+_T(" ")+utils->Quotize(lib->filename)+objs+_T(" ")+lib->extra_link);
-			fil.AddLine(_T(""));
+			fil.AddLine(tab+(cmake_style?"@":"")+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+" "+utils->Quotize(lib->filename)+objs+" "+lib->extra_link);
+			fil.AddLine("");
 			lib = lib->next;
 		}
 	}
@@ -1919,10 +1919,10 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_current++,steps_total)+" Building "+(cpp?"C++":"C")+" object "+bin_full_path);
 			fil.AddLine(tab+(cmake_style?"@":"")+(cpp?"${GPP}":"${GCC}")+(cpp?" ${CXXFLAGS} ":" ${CFLAGS} ")+
 	#if !defined(_WIN32) && !defined(__WIN32__)
-				(item->lib?_T("-fPIC "):_T(""))+
+				(item->lib?_T("-fPIC "):"")+
 	#endif
 				_T("-c ")+item->name+_T(" -o $@"));
-			fil.AddLine(_T(""));
+			fil.AddLine("");
 			item.Next();
 		}
 	}
@@ -2075,7 +2075,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		compiling_options<<compiling_extra;
 	// macros predefinidas
 	if (active_configuration->macros.Len())
-		compiling_options<<_T(" ")<<utils->Split(active_configuration->macros,_T("-D"));
+		compiling_options<<" "<<utils->Split(active_configuration->macros,_T("-D"));
 	
 	c_compiling_options=cpp_compiling_options=compiling_options;
 	if (active_configuration->std_c.Len())
@@ -2105,9 +2105,9 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	utils->ParameterReplace(linking_options,_T("${TEMP_DIR}"),temp_folder_short);
 	// reemplazar subcomandos y agregar extras
 	if (exec_comas)
-		linking_options<<_T(" ")<<utils->ExecComas(path,linking_extra);
+		linking_options<<" "<<utils->ExecComas(path,linking_extra);
 	else
-		linking_options<<_T(" ")<<linking_extra;
+		linking_options<<" "<<linking_extra;
 
 	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",temp_folder_short);
 	executable_name=wxFileName(DIR_PLUS_FILE(path,executable_name)).GetFullPath();
@@ -2121,14 +2121,14 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	
 	AssociateLibsAndSources(active_configuration);
 	
-	objects_list=_T("");
+	objects_list="";
 #if defined(_WIN32) || defined(__WIN32__)
 	if (
 		( active_configuration->icon_file.Len() && wxFileName::FileExists(DIR_PLUS_FILE(path,active_configuration->icon_file)) )
 		||
 		( active_configuration->manifest_file.Len() && wxFileName::FileExists(DIR_PLUS_FILE(path,active_configuration->manifest_file)) ) 
 		)
-			objects_list<<utils->Quotize(DIR_PLUS_FILE(temp_folder,_T("zpr_resource.o")))<<_T(" ");
+			objects_list<<utils->Quotize(DIR_PLUS_FILE(temp_folder,_T("zpr_resource.o")))<<" ";
 #endif
 	
 	wxString extra_step_objs;
@@ -2154,7 +2154,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	while(item.IsValid()) {
 		bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+_T(".o"));
 		wxString *olist = item->lib?&(item->lib->objects_list):&objects_list;
-		(*olist)<<utils->Quotize(bin_name.GetFullPath())<<_T(" ");
+		(*olist)<<utils->Quotize(bin_name.GetFullPath())<<" ";
 		item.Next();
 	}
 	
@@ -2169,7 +2169,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 			utils->ParameterReplace(lib->parsed_extra,_T("${TEMP_DIR}"),temp_folder_short);
 			bin_name = DIR_PLUS_FILE(path,lib->filename);
 			wxString libfile = lib->is_static ? bin_name.GetFullPath():wxString(_T("-l"))<<lib->libname;
-				objects_list<<utils->Quotize(libfile)<<_T(" ");
+				objects_list<<utils->Quotize(libfile)<<" ";
 			if (!lib->is_static) {
 				bin_name.MakeRelativeTo(path);
 				if (bin_name.GetPath().Len())
@@ -2177,7 +2177,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 				else
 					linking_options<<_T(" -L./");
 			}
-			exe_deps<<utils->Quotize(lib->filename)<<_T(" ");
+			exe_deps<<utils->Quotize(lib->filename)<<" ";
 		}
 		lib = lib->next;
 	}	
@@ -2223,7 +2223,7 @@ bool ProjectManager::Debug() {
 		return false;
 	}
 	wxString command ( wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetShortPath() );
-	wxString working_path = (active_configuration->working_folder==_T(""))?path:DIR_PLUS_FILE(path,active_configuration->working_folder);
+	wxString working_path = (active_configuration->working_folder=="")?path:DIR_PLUS_FILE(path,active_configuration->working_folder);
 	if (working_path.Last()==path_sep)
 		working_path.RemoveLast();
 	wxString args = active_configuration->args;
@@ -2236,7 +2236,7 @@ bool ProjectManager::Debug() {
 		}
 		if (res&AD_REMEMBER) {
 			active_configuration->always_ask_args=false;
-			if (res&AD_EMPTY) active_configuration->args=_T("");
+			if (res&AD_EMPTY) active_configuration->args="";
 		}
 	}
 	
@@ -2668,9 +2668,9 @@ long int ProjectManager::CompileExtra(compile_and_run_struct_single *compile_and
 	compile_and_run->process->Redirect();
 	compile_and_run->output_type=MXC_EXTRA;
 	compile_and_run->step_label=step->name;
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	return utils->Execute(path,command, wxEXEC_ASYNC|(step->hide_window?0:wxEXEC_NOHIDE),compile_and_run->process);
 }
@@ -2694,9 +2694,9 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 	
 	// ejecutar
 	compile_and_run->output_type=MXC_EXTERN;
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	main_window->AddExternCompilerOutput("> ",command);
 	return utils->Execute(path,command, wxEXEC_ASYNC/*|(step->hide_window?0:wxEXEC_NOHIDE)*/,compile_and_run->process);
 }
@@ -2779,9 +2779,9 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 	compile_and_run->process->Redirect();
 	// ejecutar
 	compile_and_run->output_type=MXC_SIMIL_GCC;
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString(_T("> "))+command);
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	return utils->Execute(path,command, wxEXEC_ASYNC,compile_and_run->process);
 }
@@ -2930,8 +2930,8 @@ void ProjectManager::SaveLibsAndSourcesAssociation(project_configuration *conf) 
 	while(fi.IsValid()) {
 		if (fi->lib) {
 			if (fi->lib->sources.Len())
-				fi->lib->sources<<_T(" ");
-			if (fi->name.Contains(_T(" ")))
+				fi->lib->sources<<" ";
+			if (fi->name.Contains(" "))
 				fi->lib->sources<<_T("\"")<<fi->name<<_T("\"");
 			else
 				fi->lib->sources<<fi->name;
@@ -3179,7 +3179,7 @@ bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 	wxTextFile fil2(cfile);
 	fil2.Open();
 	if (fil2.GetLastLine().Len())
-		fil2.AddLine(_T(""));
+		fil2.AddLine("");
 	
 	for (unsigned int i=0;i<methods.GetCount();i++) {
 		wxString mname = methods[i].BeforeFirst('(');
@@ -3191,10 +3191,10 @@ bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 		if (!found) {
 			modified=true;
 			fil.InsertLine(tabs_pro+methods[i]+_T(";"),inspos++);
-			fil2.AddLine(methods[i].BeforeFirst(' ')+_T(" ")+user_class+_T("::")+methods[i].AfterFirst(' ')+_T(" {"));
+			fil2.AddLine(methods[i].BeforeFirst(' ')+" "+user_class+_T("::")+methods[i].AfterFirst(' ')+_T(" {"));
 			fil2.AddLine(_T("\tevent.Skip();"));
 			fil2.AddLine(_T("}"));
-			fil2.AddLine(_T(""));
+			fil2.AddLine("");
 		}
 	}
 	
@@ -3424,21 +3424,21 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 		wxTextFile cpp_file(cpp_name);
 		cpp_file.Create();
 		cpp_file.AddLine(wxString(_T("#include \""))+name+_T(".h\""));
-		cpp_file.AddLine(_T(""));
+		cpp_file.AddLine("");
 		cpp_file.AddLine(name+_T("::")+name+_T("(wxWindow *parent) : ")+base_name+_T("(parent) {"));
 		cpp_file.AddLine(_T("\t"));
 		cpp_file.AddLine(_T("}"));
-		cpp_file.AddLine(_T(""));
+		cpp_file.AddLine("");
 		for (unsigned int i=0;i<methods.GetCount();i++) {
-			cpp_file.AddLine(methods[i].BeforeFirst(' ')+_T(" ")+name+_T("::")+methods[i].AfterFirst(' ')+_T(" {"));
+			cpp_file.AddLine(methods[i].BeforeFirst(' ')+" "+name+_T("::")+methods[i].AfterFirst(' ')+_T(" {"));
 			cpp_file.AddLine(_T("\tevent.Skip();"));
 			cpp_file.AddLine(_T("}"));
-			cpp_file.AddLine(_T(""));
+			cpp_file.AddLine("");
 		}
 		cpp_file.AddLine(name+_T("::~")+name+_T("() {"));
 		cpp_file.AddLine(_T("\t"));
 		cpp_file.AddLine(_T("}"));
-		cpp_file.AddLine(_T(""));
+		cpp_file.AddLine("");
 		cpp_file.Write();
 		cpp_file.Close();
 		// crear el h
@@ -3451,7 +3451,7 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 		wxFileName fn_base_header(base_header);
 		fn_base_header.MakeRelativeTo(folder);
 		h_file.AddLine(wxString(_T("#include \""))+fn_base_header.GetFullPath()+_T("\""));
-		h_file.AddLine(_T(""));
+		h_file.AddLine("");
 		h_file.AddLine(wxString(_T("class "))+name+_T(" : public ")+base_name+_T(" {"));
 		h_file.AddLine(_T("\t"));
 		h_file.AddLine(_T("private:"));
@@ -3464,9 +3464,9 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 		h_file.AddLine(wxString(_T("\t"))+name+_T("(wxWindow *parent=NULL);"));
 		h_file.AddLine(wxString(_T("\t~"))+name+_T("();"));
 		h_file.AddLine(_T("};"));
-		h_file.AddLine(_T(""));
+		h_file.AddLine("");
 		h_file.AddLine(_T("#endif"));
-		h_file.AddLine(_T(""));
+		h_file.AddLine("");
 		h_file.Write();
 		h_file.Close();
 		// abrir

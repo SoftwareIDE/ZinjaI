@@ -21,7 +21,7 @@ class mxPrintOut: public wxPrintout {
 public:
 	
 	//! constructor
-	mxPrintOut (mxSource *source, wxString title = _T(""));
+	mxPrintOut (mxSource *source, wxString title = "");
 	//! destructor
 	~mxPrintOut();
 	

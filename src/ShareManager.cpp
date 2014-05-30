@@ -320,7 +320,7 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 		if (event->GetSocketEvent()==wxSOCKET_INPUT) { // if ask for something
 			
 			// read the request
-			wxChar buf[256]=_T("");
+			wxChar buf[256]="";
 			event->GetSocket()->Read(buf,255);
 			HashStringSource it;
 			
@@ -338,13 +338,13 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 				if (it!=data.end()) { // if that source exists
 					if (it->second.len==-1) { // if its not a freezed one
 						mxSource *source = (mxSource*)it->second.source;
-						str<<source->GetLength()<<_T(" ");
+						str<<source->GetLength()<<" ";
 						event->GetSocket()->Write(str.c_str(),str.Len());
 						for (int i=0;i<source->GetLineCount();i++) {
 							event->GetSocket()->Write(source->GetLine(i).c_str(),source->GetLine(i).Len());
 						}
 					} else { // if its a freezed one
-						str<<it->second.len<<_T(" ");
+						str<<it->second.len<<" ";
 						event->GetSocket()->Write(str.c_str(),str.Len());
 						event->GetSocket()->Write(it->second.source,it->second.len);
 					}

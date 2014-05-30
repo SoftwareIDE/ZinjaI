@@ -128,8 +128,8 @@ public:
 	void OnLibsAdd(wxCommandEvent &evt);
 	void OnLibsEdit(wxCommandEvent &evt);
 	void OnLibsDel(wxCommandEvent &evt);
-	void ReloadSteps(wxString selection=_T(""));
-	void ReloadLibs(wxString selection=_T(""));
+	void ReloadSteps(wxString selection="");
+	void ReloadLibs(wxString selection="");
 	void OnLibsNoExe(wxCommandEvent &evt);
 private:
 	DECLARE_EVENT_TABLE()

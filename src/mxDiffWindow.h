@@ -14,7 +14,7 @@ private:
 	mxSource *source;
 	wxString diff_to_name;
 public:
-	mxDiffWindow(mxSource *source=NULL, wxString fname=_T(""));
+	mxDiffWindow(mxSource *source=NULL, wxString fname="");
 	void OnClose(wxCloseEvent &event);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

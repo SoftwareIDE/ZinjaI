@@ -121,7 +121,7 @@ void mxGenericHelpWindow::OnNextEvent(wxCommandEvent &event) {
 }
 
 void mxGenericHelpWindow::OnCopyEvent(wxCommandEvent &event) {
-	if (html->SelectionToText()==_T("")) 
+	if (html->SelectionToText()=="") 
 		return;
 	wxTheClipboard->Open();
 	wxTheClipboard->SetData(new wxTextDataObject(html->SelectionToText()));

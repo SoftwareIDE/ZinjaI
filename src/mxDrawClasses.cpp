@@ -125,7 +125,7 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 	wxString gout=DIR_PLUS_FILE(config->temp_dir,"graph.dot"), output; // graph_viz input (gout) y archivo de salida para exportar el resultado (output, vacio para solo visualizar)
 	if (where_store->GetSelection()) {
 		wxString ext = where_store->GetValue().AfterLast(' ');
-		wxFileDialog dlg (this, LANG(DRAW_CLASSES_SAVE,"Guardar grafo"), project?DIR_PLUS_FILE(project->path,project->last_dir):config->Files.last_dir, _T(" "), where_store->GetValue().AfterFirst(' ').AfterFirst(' ')+_T("|*.")+ext, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog dlg (this, LANG(DRAW_CLASSES_SAVE,"Guardar grafo"), project?DIR_PLUS_FILE(project->path,project->last_dir):config->Files.last_dir, " ", where_store->GetValue().AfterFirst(' ').AfterFirst(' ')+_T("|*.")+ext, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (dlg.ShowModal() != wxID_OK) return;
 		output=dlg.GetPath();
 	}

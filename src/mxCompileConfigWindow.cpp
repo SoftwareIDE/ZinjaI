@@ -59,7 +59,7 @@ mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* paren
 	args_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion"),source->exec_args,mxID_ARGS_BUTTON);
 	always_ask_args_ctrl = utils->AddCheckBox(mySizer,this,LANG(COMPILECONF_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),source->config_running.always_ask_args);
 	wait_for_key_ctrl = utils->AddCheckBox(mySizer,this,LANG(COMPILECONF_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),source->config_running.wait_for_key);
-	mySizer->Add(new wxStaticText(this,wxID_ANY,_T(" ")),sizers->Exp0);
+	mySizer->Add(new wxStaticText(this,wxID_ANY," "),sizers->Exp0);
 
 	last_dir=source->working_folder.GetFullPath();
 	
@@ -86,7 +86,7 @@ void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 		return;
 	}
 	
-	if (working_folder_ctrl->GetValue()==_T(""))
+	if (working_folder_ctrl->GetValue()=="")
 		working_folder_ctrl->SetValue(wxFileName::GetHomeDir());
 	else if (!wxFileName::DirExists(working_folder_ctrl->GetValue())) {
 		mxMessageDialog(this,LANG(COMPILECONF_INVALID_WORKDIR,"El directorio de trabajo no es valido."), LANG(GENERAL_ERROR,"Error"), mxMD_ERROR|mxMD_OK).ShowModal();

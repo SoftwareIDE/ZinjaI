@@ -46,8 +46,8 @@ public:
 	void UnTemplate(wxString &var);
 	int AddReservedWords(wxArrayString &comp_list, wxString &typed, int max_str_dist=3);
 	bool AutocompleteFromArray(mxSource *source, wxArrayString &words, wxString typed);
-	bool AutocompletePreprocesorDirective(mxSource *source, wxString typed=_T(""));
-	bool AutocompleteDoxygen(mxSource *source, wxString typed=_T(""));
+	bool AutocompletePreprocesorDirective(mxSource *source, wxString typed="");
+	bool AutocompleteDoxygen(mxSource *source, wxString typed="");
 	bool GenerateAutocompletionIndex(wxString path, wxString filename);
 	
 	//! Recarga los indices de autocompletado

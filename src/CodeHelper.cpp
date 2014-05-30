@@ -330,7 +330,7 @@ wxString CodeHelper::GetAttribType(wxString &scope, wxString &key, int &dims) {
 			item=item->next;
 		}
 	}
-	return _T("");
+	return "";
 }
 
 wxString CodeHelper::GetGlobalType(wxString &key, int &dims) {
@@ -352,7 +352,7 @@ wxString CodeHelper::GetGlobalType(wxString &key, int &dims) {
 		}
 		pd_aux=pd_aux->next;
 	}
-	return _T("");
+	return "";
 }
 
 bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString typed, int max_str_dist) {
@@ -1111,7 +1111,7 @@ wxString CodeHelper::GetInclude(wxString path, wxString key) {
 		}
 		aux_macro = aux_macro->next;
 	}
-	return _T("");
+	return "";
 }
 
 wxString CodeHelper::GetIncludeForClass(wxString path, wxString key) {
@@ -1129,7 +1129,7 @@ wxString CodeHelper::GetIncludeForClass(wxString path, wxString key) {
 		}
 		aux_class = aux_class->next;
 	}
-	return _T("");
+	return "";
 }
 
 wxString CodeHelper::UnMacro(wxString name) {

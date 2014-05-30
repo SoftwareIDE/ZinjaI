@@ -227,7 +227,7 @@ public:
 	void MarkError(int line, bool focus=true);
 	void SelectError(int indic, int p1, int p2);
 	void Indent(int min, int max);
-	DiffInfo *MarkDiffs(int from, int to, MXS_MARKER marker, wxString extra=_T(""));
+	DiffInfo *MarkDiffs(int from, int to, MXS_MARKER marker, wxString extra="");
 	void SetDiffBrother(mxSource *source);
 	void ApplyDiffChange();
 	void DiscardDiffChange();

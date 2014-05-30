@@ -202,7 +202,7 @@ bool mxApplication::OnInit() {
 			main_window->ShowWelcome(true);
 		} else {
 			if (config->Init.new_file==0)
-				main_window->NewFileFromText(_T(""));
+				main_window->NewFileFromText("");
 			else
 				main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
 			main_window->Refresh();

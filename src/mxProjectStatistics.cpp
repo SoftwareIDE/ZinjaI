@@ -25,18 +25,18 @@ mxProjectStatistics::mxProjectStatistics(wxWindow *parent) : wxDialog(parent, wx
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	cant_total = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_TOTAL,"Archivos en el Proyecto"),_T(""));
-	cant_headers = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_HEADERS,"Cabeceras"),_T(""),true);
-	cant_sources = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_SOURCES,"Fuentes"),_T(""),true);
-	cant_others = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_OTHERS,"Otros"),_T(""),true);
+	cant_total = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_TOTAL,"Archivos en el Proyecto"),"");
+	cant_headers = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_HEADERS,"Cabeceras"),"",true);
+	cant_sources = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_SOURCES,"Fuentes"),"",true);
+	cant_others = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_OTHERS,"Otros"),"",true);
 	total_size = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_DISK_USAGE,"Tamaño en Disco (*)"),_T("12"));
-	utils->AddStaticText(mySizer,this,_T(""));
-	cant_lines = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_LINES,"Lineas de Codigo"),_T(""));
-	cant_class = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_CLASSES,"Clases Definidas"),_T(""),true);
-	cant_funcs = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_FUNCTIONS,"Funciones Definidas"),_T(""),true);
-	cant_globs = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_GLOBALS,"Objetos Globales"),_T(""),true);
-	cant_defs = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_MACROS,"Macros de Preprocesador"),_T(""),true);
-	utils->AddStaticText(mySizer,this,_T(""));
+	utils->AddStaticText(mySizer,this,"");
+	cant_lines = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_LINES,"Lineas de Codigo"),"");
+	cant_class = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_CLASSES,"Clases Definidas"),"",true);
+	cant_funcs = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_FUNCTIONS,"Funciones Definidas"),"",true);
+	cant_globs = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_GLOBALS,"Objetos Globales"),"",true);
+	cant_defs = utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_MACROS,"Macros de Preprocesador"),"",true);
+	utils->AddStaticText(mySizer,this,"");
 	utils->AddStaticText(mySizer,this,LANG(PROYSTATS_NOTE_DISK_USAGE,"(*) no incluye binarios ni temporales"));
 	
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));

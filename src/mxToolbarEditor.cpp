@@ -20,7 +20,7 @@ END_EVENT_TABLE()
 
 mxToolbarEditor::mxToolbarEditor(wxWindow *parent, wxToolBar *atoolbar, wxString name):wxDialog(parent,wxID_ANY,name,wxDefaultPosition,wxSize(350,400),wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
 	
-	ipre=DIR_PLUS_FILE(wxString()<<config->Toolbars.icon_size,_T(""));
+	ipre=DIR_PLUS_FILE(wxString()<<config->Toolbars.icon_size,"");
 	
 	toolbar = atoolbar;
 	

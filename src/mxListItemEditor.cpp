@@ -66,8 +66,8 @@ mxListItemEditor::~mxListItemEditor() {
 
 void mxListItemEditor::OnOkButton(wxCommandEvent &evt) {
 	wxString str = my_text->GetValue();
-	str.Replace(_T("\n"),_T(" "));
-	str.Replace(_T("\r"),_T(""));
+	str.Replace(_T("\n")," ");
+	str.Replace(_T("\r"),"");
 	if (sel==wxNOT_FOUND) {
 		if (list->GetSelection()!=wxNOT_FOUND)
 			list->Insert(str,list->GetSelection());

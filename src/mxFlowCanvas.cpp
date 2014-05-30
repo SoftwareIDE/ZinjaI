@@ -764,7 +764,7 @@ wxString mxFlowCanvas::GetText(int p1, int p2) {
 		while (p<p2 && !FC_IS_EMPTY && !FC_IS_COMMENT) {
 			ret+=c; p++;
 		}
-		ret+=_T(" ");
+		ret+=" ";
 		while (p<p2 && (FC_IS_EMPTY || FC_IS_COMMENT) )
 			p++;
 	}

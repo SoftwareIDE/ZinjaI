@@ -44,9 +44,9 @@ void mxWelcomePanel::Reload() {
 	}
 	wxString text=source;
 	if (skin_file)
-		text.Replace(_T("src=\""),wxString(_T("src=\""))<<DIR_PLUS_FILE(config->Files.skin_dir,_T("")));
+		text.Replace(_T("src=\""),wxString(_T("src=\""))<<DIR_PLUS_FILE(config->Files.skin_dir,""));
 	else
-		text.Replace(_T("src=\""),wxString(_T("src=\""))<<DIR_PLUS_FILE(_T("imgs"),_T("")));
+		text.Replace(_T("src=\""),wxString(_T("src=\""))<<DIR_PLUS_FILE(_T("imgs"),""));
 	text.Replace(_T("${ZVERSION}"),wxString()<<VERSION);
 	wxColour background_colour=wxButton(NULL,wxID_ANY,_T("lala")).GetBackgroundColour();
 	wxColour foreground_colour=wxButton(NULL,wxID_ANY,_T("lala")).GetForegroundColour();
@@ -102,7 +102,7 @@ void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 		welcome_panel=NULL;
 		Destroy();
 		if (config->Init.new_file==0)
-			main_window->NewFileFromText(_T(""));
+			main_window->NewFileFromText("");
 		else
 			main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
 	} else if (action==_T("open_file")) {

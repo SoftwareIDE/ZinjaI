@@ -386,8 +386,8 @@ void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {
 
 
 void mxProjectConfigWindow::OnAddConfigButton(wxCommandEvent &event) {
-	wxString res = mxGetTextFromUser(LANG(PROJECTCONFIG_PROFILE_NAME,"Nombre:"), LANG(PROJECTCONFIG_ADD_PROFILE,"Agregar configuracion:"), _T(""), this);
-	if (res!=_T("")) {
+	wxString res = mxGetTextFromUser(LANG(PROJECTCONFIG_PROFILE_NAME,"Nombre:"), LANG(PROJECTCONFIG_ADD_PROFILE,"Agregar configuracion:"), "", this);
+	if (res!="") {
 		for (int i=0;i<project->configurations_count;i++)
 			if (project->configurations[i]->name==res) {
 				mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuracion con ese nombre"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
@@ -456,7 +456,7 @@ void mxProjectConfigWindow::OnRemoveConfigButton(wxCommandEvent &event) {
 
 void mxProjectConfigWindow::OnRenameConfigButton(wxCommandEvent &event) {
 	wxString res = mxGetTextFromUser(LANG(PROJECTCONFIG_PROFILE_NEW_NAME,"Nuevo nombre:"), LANG(PROJECTCONFIG_RENAME_PROFILE,"Renombrar configuracion:") , configuration->name, this);
-	if (res!=_T("")) {
+	if (res!="") {
 		for (int i=0;i<project->configurations_count;i++)
 			if (project->configurations[i]!=configuration && project->configurations[i]->name==res) {
 				mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuracion con ese nombre"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
@@ -1012,7 +1012,7 @@ void mxProjectConfigWindow::ReloadLibs(wxString selection) {
 		i++;
 	}
 	if (i<n) while (i<n) libtobuild_list->Delete(--n);
-	if (selection==_T("") && i) selection=libtobuild_list->GetString(0);
+	if (selection=="" && i) selection=libtobuild_list->GetString(0);
 	libtobuild_list->SetSelection(libtobuild_list->FindString(selection));
 }
 

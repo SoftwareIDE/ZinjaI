@@ -627,9 +627,9 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	compile_and_run->output_type=MXC_GCC;
 	parser->ParseSource(source,true);
 	last_compiled=source;
-	wxString z_opts(wxString(_T(" ")));
+	wxString z_opts(wxString(" "));
 	bool cpp = source->IsCppOrJustC();
-	if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
+	if (config->Debug.format.Len()) z_opts<<config->Debug.format<<" ";
 	z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" "; // forced compiler arguments
 	z_opts<<(cpp?current_toolchain.cpp_linker_options:current_toolchain.c_linker_options)<<" "; // forced linker arguments
 	z_opts<<current_toolchain.GetExtraCompilingArguments(cpp);
@@ -649,9 +649,9 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	ResetCompileData();
 	compile_and_run->pid = utils->Execute(source->GetPath(false),command,wxEXEC_ASYNC,compile_and_run->process);
 	main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 	if (!project) compile_and_run->full_output.Add(wxString(_T("> "))+command); // lo hace el proyecto si hay
-	compile_and_run->full_output.Add(_T(""));
+	compile_and_run->full_output.Add("");
 }
 
 // incializar el arbol de compilacion y sus auxiliares

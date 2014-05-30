@@ -179,7 +179,7 @@ void mxValgrindOuput::OnDelete(wxCommandEvent &evt) {
 void mxValgrindOuput::OnPopup(wxTreeEvent &evt) {
 	sel = evt.GetItem();
 	
-	wxMenu menu(_T(""));
+	wxMenu menu("");
 	menu.Append(mxID_VALGRIND_RELOAD_TREE, LANG(VALGRIND_RELOAD_TREE,"Recargar"));
 	menu.Append(mxID_VALGRIND_OPEN_OUTPUT_FILE, LANG(VALGRIND_OPEN_OUTPUT_FILE,"Abrir salida completa"));
 	menu.AppendSeparator();

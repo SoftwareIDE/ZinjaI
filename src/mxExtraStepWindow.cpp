@@ -27,13 +27,13 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *butSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	name = utils->AddTextCtrl(mySizer,this,LANG(EXTRASTEP_NAME,"Nombre"),step?step->name:_T(""));
-	command = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_COMMAND,"Comando"),step?step->command:_T(""),mxID_EXTRA_STEP_COMMAND);
-	deps = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_DEPS,"Dependencias"),step?step->deps:_T(""),mxID_EXTRA_STEP_DEPS);
-	output = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),step?step->out:_T(""),mxID_EXTRA_STEP_OUTPUT);
+	name = utils->AddTextCtrl(mySizer,this,LANG(EXTRASTEP_NAME,"Nombre"),step?step->name:"");
+	command = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_COMMAND,"Comando"),step?step->command:"",mxID_EXTRA_STEP_COMMAND);
+	deps = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_DEPS,"Dependencias"),step?step->deps:"",mxID_EXTRA_STEP_DEPS);
+	output = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),step?step->out:"",mxID_EXTRA_STEP_OUTPUT);
 	if (!step) {
 		wxArrayString pos_array;
-		pos_array.Add(_T(""),CES_COUNT);
+		pos_array.Add("",CES_COUNT);
 		pos_array[CES_BEFORE_SOURCES]=LANG(EXTRASTEP_BEFORE_SOURCES,"Antes de compilar los fuentes");
 		pos_array[CES_BEFORE_LIBS]=LANG(EXTRASTEP_BEFORE_LIBS,"Antes de generar las bibliotecas");
 		pos_array[CES_BEFORE_EXECUTABLE]=LANG(EXTRASTEP_BEFORE_EXECUTABLE,"Antes de enlazar el ejecutable");
@@ -110,7 +110,7 @@ void mxExtraStepWindow::OnOkButton(wxCommandEvent &evt) {
 }
 
 void mxExtraStepWindow::OnCancelButton(wxCommandEvent &evt) {
-	new_name = _T("");
+	new_name = "";
 	Close();
 }
 

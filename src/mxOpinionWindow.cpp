@@ -41,7 +41,7 @@ mxOpinionWindow::mxOpinionWindow(wxWindow *parent):wxDialog(parent,wxID_ANY,LANG
 		"deben mejorar, agregar o quitar, y son tenidos en cuenta para el desarrollo de nuevas\n"
 		"versiones."
 		),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE|wxST_NO_AUTORESIZE),sizers->BA5_Exp0);
-	text = new wxTextCtrl(this,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_TAB|wxTE_MULTILINE|wxTE_PROCESS_ENTER);
+	text = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_TAB|wxTE_MULTILINE|wxTE_PROCESS_ENTER);
 	mySizer->Add(text,sizers->BA5_Exp1);
 	mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(OPINION_EMAIL,""
 		"Si esperas recibir alguna respuesta directa no olvides incluir tu email en el mensaje."

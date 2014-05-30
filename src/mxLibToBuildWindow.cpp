@@ -33,11 +33,11 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *butSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	name = utils->AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_NAME,"Nombre"),lib?lib->libname:_T(""));
+	name = utils->AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_NAME,"Nombre"),lib?lib->libname:"");
 	path = utils->AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_DIR,"Directorio de salida"),lib?lib->path:configuration->temp_folder);
-	filename = utils->AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_FILE,"Archivo de salida"),_T(""));
+	filename = utils->AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_FILE,"Archivo de salida"),"");
 	filename->SetEditable(false);
-	extra_link = utils->AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_EXTRA_LINK,"Opciones de enlazado"),lib?lib->extra_link:_T(""));
+	extra_link = utils->AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_EXTRA_LINK,"Opciones de enlazado"),lib?lib->extra_link:"");
 	
 	wxArrayString tipos;
 	tipos.Add(LANG(LIBTOBUILD_DYNAMIC,"Dinamica"));
@@ -152,7 +152,7 @@ void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 }
 
 void mxLibToBuildWindow::OnCancelButton(wxCommandEvent &evt) {
-	new_name = _T("");
+	new_name = "";
 	Close();
 }
 

@@ -89,7 +89,7 @@ struct compile_extra_step {
 	bool hide_window; ///< si debe ocultar la ventana/consola donde se ejecuta
 	bool delete_on_clean; ///< si debe eliminar este archivo al hacer un clean del proyecto
 	bool link_output; ///< si debe agregar el archivo de salida a la lista de objetos a enlazar
-	compile_extra_step():deps(_T("")),out(_T("")),command(_T("")),name(_T("<noname>")),pos(0),next(NULL),prev(NULL),check_retval(false),hide_window(true),delete_on_clean(true),link_output(false) {}
+	compile_extra_step():deps(""),out(""),command(""),name("<noname>"),pos(0),next(NULL),prev(NULL),check_retval(false),hide_window(true),delete_on_clean(true),link_output(false) {}
 };
 
 
@@ -129,7 +129,7 @@ struct doxygen_configuration {
 	doxygen_configuration(wxString aname) {
 		name = aname;
 		save = true;
-		destdir = _T("docs");
+		destdir = "docs";
 		html = true;
 		html_navtree = false;
 		html_searchengine = true;
@@ -139,7 +139,7 @@ struct doxygen_configuration {
 		extra_static = false;
 		extra_private = false;
 		preprocess = true;
-		lang = _T("Spanish");
+		lang = "Spanish";
 		use_in_quickhelp = true;
 	}
 	

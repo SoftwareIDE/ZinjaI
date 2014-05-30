@@ -42,7 +42,7 @@ mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_A
 		return;
 	}
 	source->SetSelection(ps,pe+1);
-	SetTitle(title<<_T(" ")<<source->LineFromPosition(ps)+1<<_T("-")<<source->LineFromPosition(pe)+1);
+	SetTitle(title<<" "<<source->LineFromPosition(ps)+1<<_T("-")<<source->LineFromPosition(pe)+1);
 	canvas = new mxFlowCanvas (this,source);
 	
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);

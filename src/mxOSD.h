@@ -23,7 +23,7 @@ private:
 	static wxBrush *br;
 	bool corner;
 public:
-	mxOSD(wxWindow *aparent, wxString str=_T(""), int time=0, bool coner=false);
+	mxOSD(wxWindow *aparent, wxString str="", int time=0, bool coner=false);
 	~mxOSD();
 	void ShowText(wxString str, int time=0, bool corner=false);
 	void OnTimer(wxTimerEvent &evt);

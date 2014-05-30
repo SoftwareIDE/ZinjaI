@@ -526,7 +526,7 @@ void mxSource::OnEditCut (wxCommandEvent &event) {
 //		wxTheClipboard->SetData( new wxTextDataObject(GetTextRange(ss,se)) );
 //		wxTheClipboard->Close();
 //	}
-//	ReplaceSelection(_T(""));
+//	ReplaceSelection("");
 	Cut();
 }
 
@@ -717,7 +717,7 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 		ReplaceTarget(line);
 		SetTargetStart(PositionFromLine(min-1));
 		SetTargetEnd(PositionFromLine(min));
-		ReplaceTarget(_T(""));
+		ReplaceTarget("");
 		EndUndoAction();
 		EnsureVisibleEnforcePolicy(min);
 	}
@@ -736,7 +736,7 @@ void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
 		wxString line = GetLine(max+1);
 		SetTargetStart(GetLineEndPosition(max));
 		SetTargetEnd(GetLineEndPosition(max+1));
-		ReplaceTarget(_T(""));
+		ReplaceTarget("");
 		SetTargetStart(PositionFromLine(min));
 		SetTargetEnd(PositionFromLine(min));
 		ReplaceTarget(line);
@@ -808,12 +808,12 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 //		if (GetCharAt(se)=='/' && GetCharAt(se-1)=='*') {
 //			SetTargetStart(se-1);
 //			SetTargetEnd(se+1);
-//			ReplaceTarget(_T(""));
+//			ReplaceTarget("");
 //		}
 //		if (GetCharAt(ss)=='/' && GetCharAt(ss+1)=='*') {
 //			SetTargetStart(ss);
 //			SetTargetEnd(ss+2);
-//			ReplaceTarget(_T(""));
+//			ReplaceTarget("");
 //		}
 //		SetSelection(ss,se-3);
 //		EndUndoAction();
@@ -901,7 +901,7 @@ bool mxSource::SaveSource() {
 	StartStyling(0,wxSTC_INDICS_MASK);
 	SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
-	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!=_T(""))
+	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!="")
 		AppendText(_T("\n"));
 	sin_titulo = false;
 	bool ret=MySaveFile(source_filename.GetFullPath());
@@ -924,7 +924,7 @@ bool mxSource::SaveTemp () {
 	StartStyling(0,wxSTC_INDICS_MASK);
 	SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
-	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!=_T(""))
+	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!="")
 		AppendText(_T("\n"));
 	if (sin_titulo)
 		binary_filename=temp_filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR)+temp_filename.GetName()+_T(BINARY_EXTENSION);
@@ -938,7 +938,7 @@ bool mxSource::SaveSource (const wxFileName &filename) {
 	StartStyling(0,wxSTC_INDICS_MASK);
 	SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
-	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!=_T(""))
+	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!="")
 		AppendText(_T("\n"));
 	if (MySaveFile(filename.GetFullPath())) {
 		source_filename = filename;
@@ -1203,7 +1203,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 									II_BACK(pf,II_SHOULD_IGNORE(pf)||II_IS_2(pf,' ','\t'));
 									SetTargetStart(pf+1);
 									SetTargetEnd(opf);
-									ReplaceTarget(_T(""));
+									ReplaceTarget("");
 								}
 							}
 							SetLineIndentation(cl,GetLineIndentation(cl-1)+config_source.tabWidth);
@@ -1360,7 +1360,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				}
 				wxString key=GetTextRange(WordStartPosition(p,true),WordEndPosition(p,true));
 				if (key.Len()!=0)
-					code_helper->AutocompleteScope(this,key,_T(""),false,false);
+					code_helper->AutocompleteScope(this,key,"",false,false);
 			}
 		} else if (chr=='>') {
 			int p=GetCurrentPos()-2;
@@ -1371,7 +1371,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (type.Len()!=0)
 						ShowBaloon(type);
 				} else if (dims==1)
-					code_helper->AutocompleteScope(this,type,_T(""),true,false);
+					code_helper->AutocompleteScope(this,type,"",true,false);
 				else if (type.Len()!=0 && dims==0)
 					ShowBaloon(LANG(SOURCE_TIP_NO_DEREFERENCE,"Tip: Probablemente no deba desreferenciar este objeto."));
 			}
@@ -1392,7 +1392,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (type.Len()!=0)
 						ShowBaloon(type);
 				} else	if (dims==0)
-					code_helper->AutocompleteScope(this,type,_T(""),true,false);
+					code_helper->AutocompleteScope(this,type,"",true,false);
 				else if (type.Len()!=0 && dims>0)
 					ShowBaloon(LANG(SOURCE_TIP_DO_DEREFERENCE,"Tip: Probablemente deba desreferenciar este objeto."));
 			}
@@ -1530,10 +1530,10 @@ void mxSource::SetModify (bool modif) {
 		if (GetLength()&&p<1) p=1;
 		SetTargetStart(p); 
 		SetTargetEnd(p);
-		ReplaceTarget(_T(" "));
+		ReplaceTarget(" ");
 		SetTargetStart(p); 
 		SetTargetEnd(p+1);
-		ReplaceTarget(_T(""));
+		ReplaceTarget("");
 	} else 
 		SetSavePoint();
 }
@@ -1707,8 +1707,8 @@ int mxSource::InstructionBegin(int p) {
 	return GetLineIndentPosition(LineFromPosition(p));
 }
 
-#define AUXSetStyle(who,name) SetStyle(wxSTC_##who##_##name,_T(""),config->Styles.font_size,ctheme->name##_FORE,ctheme->name##_BACK,(ctheme->name##_BOLD?mxSOURCE_BOLD:0)|(ctheme->name##_ITALIC?mxSOURCE_ITALIC:0)); // default
-#define AUXSetStyle3(who,name,real) SetStyle(wxSTC_##who##_##name,_T(""),config->Styles.font_size,ctheme->real##_FORE,ctheme->real##_BACK,(ctheme->real##_BOLD?mxSOURCE_BOLD:0)|(ctheme->real##_ITALIC?mxSOURCE_ITALIC:0)); // default
+#define AUXSetStyle(who,name) SetStyle(wxSTC_##who##_##name,"",config->Styles.font_size,ctheme->name##_FORE,ctheme->name##_BACK,(ctheme->name##_BOLD?mxSOURCE_BOLD:0)|(ctheme->name##_ITALIC?mxSOURCE_ITALIC:0)); // default
+#define AUXSetStyle3(who,name,real) SetStyle(wxSTC_##who##_##name,"",config->Styles.font_size,ctheme->real##_FORE,ctheme->real##_BACK,(ctheme->real##_BOLD?mxSOURCE_BOLD:0)|(ctheme->real##_ITALIC?mxSOURCE_ITALIC:0)); // default
 void mxSource::SetStyle(bool color) {
 	if ((config_source.syntaxEnable=color)) {
 		SetLexer(lexer);
@@ -1910,7 +1910,7 @@ bool mxSource::AddInclude(wxString header) {
 			while (GetCharAt(p)!='#')
 				p++;
 			SetTargetEnd(p);
-			ReplaceTarget(_T(""));
+			ReplaceTarget("");
 		} else {
 			p = PositionFromLine(lta);
 			wxString line = wxString(_T("#include "))+oHeader+_T("\n");
@@ -2063,7 +2063,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 	int dims=0;
 	bool notSpace=true;
 	
-	wxString ret=_T(""),space=_T("");
+	wxString ret="",space="";
 	
 	int p_to,p_from;
 	p_from = pos;
@@ -2128,7 +2128,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		if (dims==0) {
 			dims=-1;
 			type = code_helper->GetAttribType(type,key,dims);
-			key = _T("");
+			key = "";
 			return type;
 		}
 	}
@@ -2418,7 +2418,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 				dims=1;
 		} else {
 			wxString ans;
-			if ( (space!=_T("") && (ans=code_helper->GetAttribType(space,key,pos))!=_T("")) || (ans=code_helper->GetGlobalType(key,pos))!=_T("") )
+			if ( (space!="" && (ans=code_helper->GetAttribType(space,key,pos))!="") || (ans=code_helper->GetGlobalType(key,pos))!="" )
 				ret=ans;
 			else
 				pos=SRC_PARSING_ERROR;
@@ -2568,7 +2568,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 		p=BraceMatch(p);
 		if (p==wxSTC_INVALID_POSITION) {
 			dims=SRC_PARSING_ERROR;
-			return _T("");
+			return "";
 		}
 		wxString ans = FindTypeOf(p,dims,false);
 		return ans;
@@ -2586,14 +2586,14 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			}
 			if (s==SRC_PARSING_ERROR) {
 				dims=SRC_PARSING_ERROR;
-				return _T("");
+				return "";
 			}
 			dims+=s;
 			return ans;
 		}
 	}
 	dims=SRC_PARSING_ERROR;
-	return _T("");
+	return "";
 }
 
 wxString mxSource::FindScope(int pos) {
@@ -2670,7 +2670,7 @@ wxString mxSource::FindScope(int pos) {
 			}
 		}
 	}
-	return _T("");
+	return "";
 }
 
 void mxSource::OnToolTipTimeOut (wxStyledTextEvent &event) {
@@ -2845,7 +2845,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 		}
 		wxString key=GetTextRange(WordStartPosition(p,true),WordEndPosition(p,true));
 		if (key.Len()!=0) {
-			if (!code_helper->AutocompleteScope(this,key,_T(""),false,false))
+			if (!code_helper->AutocompleteScope(this,key,"",false,false))
 				ShowBaloon(wxString(LANG(SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION,"No se encontraron elementos para autocompletar el ambito "))<<key);
 		} else
 			ShowBaloon(LANG(SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION,"No se pudo determinar el ambito a autocompletar"));
@@ -2856,7 +2856,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 		if (dims==SRC_PARSING_ERROR) {
 			ShowBaloon(LANG(SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION,"No se pudo determinar el ambito a autocompletar"));
 		} else if (dims==1) {
-			if (!code_helper->AutocompleteScope(this,type,_T(""),true,false))
+			if (!code_helper->AutocompleteScope(this,type,"",true,false))
 				ShowBaloon(wxString(LANG(SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION,"No se encontraron elementos para autocompletar el ambito "))<<type);
 		} else if (type.Len()!=0 && dims==0) {
 			ShowBaloon(LANG(SOURCE_TIP_NO_DEREFERENCE,"Tip: Probablemente no deba desreferenciar este objeto."));
@@ -2875,7 +2875,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 //				p--;
 //				II_BACK(p,II_IS_NOTHING_4(p));
 //				wxString key=GetTextRange(WordStartPosition(p,true),p+1);
-//				code_helper->AutoCompleteFunction(FindScope(p),key,_T(""));
+//				code_helper->AutoCompleteFunction(FindScope(p),key,"");
 //			}
 //		}
 		if ((c=GetCharAt(p))>='0' && c<='9') {
@@ -2890,7 +2890,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 			if (dims==SRC_PARSING_ERROR) {
 				ShowBaloon(LANG(SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION,"No se pudo determinar el ambito a autocompletar"));
 			} else	if (dims==0) {
-				if (!code_helper->AutocompleteScope(this,type,_T(""),true,false))
+				if (!code_helper->AutocompleteScope(this,type,"",true,false))
 					ShowBaloon(wxString(LANG(SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION,"No se encontraron elementos para autocompletar el ambito "))<<type);
 			} else if (type.Len()!=0 && dims>0)
 				ShowBaloon(LANG(SOURCE_TIP_DO_DEREFERENCE,"Tip: Probablemente deba desreferenciar este objeto."));
@@ -2991,7 +2991,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 		} else {
 			wxString scope = FindScope(GetCurrentPos());
 			if (scope.Len())
-				code_helper->AutocompleteScope(this,scope,_T(""),true,true);
+				code_helper->AutocompleteScope(this,scope,"",true,true);
 		}
 	}
 	if (!CallTipActive() && !AutoCompActive())
@@ -3075,7 +3075,8 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 //		return;
 //	}
 	if (evt.ControlDown()) {
-		SetCurrentPos(PositionFromPointClose(evt.GetX(),evt.GetY()));
+		int p=PositionFromPointClose(evt.GetX(),evt.GetY());
+		SetSelectionStart(p); SetSelectionEnd(p);
 		JumpToCurrentSymbolDefinition();
 	} else if (evt.AltDown()) {
 		int pos = PositionFromPointClose(evt.GetX(),evt.GetY());
@@ -3100,14 +3101,14 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 			wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
 			if (mxDropTarget::current_drag_source!=NULL && result==wxDragMove) {
 				mxDropTarget::current_drag_source=NULL;
-				SetTargetStart(ss); SetTargetEnd(se); ReplaceTarget(_T(""));
+				SetTargetStart(ss); SetTargetEnd(se); ReplaceTarget("");
 			} 
 			else if (result==wxDragCancel && ss==GetSelectionStart()) {
-				DoDropText(evt.GetX(),evt.GetY(),_T("")); // para evitar que se congele el cursor
+				DoDropText(evt.GetX(),evt.GetY(),""); // para evitar que se congele el cursor
 				SetSelection(p,p);
 //				evt.Skip();
 			} else {
-				DoDropText(evt.GetX(),evt.GetY(),_T(""));
+				DoDropText(evt.GetX(),evt.GetY(),"");
 			}
 		} else
 			evt.Skip();
@@ -3319,7 +3320,7 @@ void mxSource::AlignComments (int col) {
 					if (col>=cp)
 						ReplaceTarget(wxString(wxChar(' '),col-cp));
 					else
-						ReplaceTarget(_T(" "));
+						ReplaceTarget(" ");
 				} else
 					prev=false;
 				p2=PositionFromLine(i+1);
@@ -3360,7 +3361,7 @@ void mxSource::RemoveComments () {
 		}
 		SetTargetEnd(p2);
 		SetTargetStart(p1);
-		ReplaceTarget(_T(""));
+		ReplaceTarget("");
 		i--;
 	}
 	EndUndoAction();

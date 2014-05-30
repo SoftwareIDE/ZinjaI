@@ -17,11 +17,11 @@
 #define CFG_TEXT_READ_DN(name,what) if (key==_T(name)) what=utils->Line2Text(value)
 #define CFG_CHAR_READ_DN(name,what) if (key==_T(name)) what=value[0]
 
-#define CFG_BOOL_WRITE(where,what) fil.AddLine(wxString(_T(#what"="))<<(where.what?_T("1"):_T("0")))
-#define CFG_BOOL_WRITE_DN(name,what) fil.AddLine(wxString(name)<<(what?_T("=1"):_T("=0")))
-#define CFG_GENERIC_WRITE(where,what) fil.AddLine(wxString(_T(#what"="))<<where.what);
-#define CFG_GENERIC_WRITE_DN(name,what) fil.AddLine(wxString(_T(name"="))<<what);
-#define CFG_TEXT_WRITE_DN(name,what) fil.AddLine(wxString(_T(name"="))<<utils->Text2Line(what));
+#define CFG_BOOL_WRITE(where,what) fil.AddLine(wxString(#what"=")<<(where.what?"1":"0"))
+#define CFG_BOOL_WRITE_DN(name,what) fil.AddLine(wxString(name)<<(what?"=1":"=0"))
+#define CFG_GENERIC_WRITE(where,what) fil.AddLine(wxString(#what"=")<<where.what);
+#define CFG_GENERIC_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<what);
+#define CFG_TEXT_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<utils->Text2Line(what));
 #include "mxCustomTools.h"
 
 //! Elementos de la configuración relacionados a la depuración

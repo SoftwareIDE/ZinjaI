@@ -60,7 +60,7 @@ mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, wxString classname, bool upda
 	
 	if (mode!=WXFBI_UPDATE_EXISTING_CLASS) {
 		wxBoxSizer *childSizer = new wxBoxSizer(wxHORIZONTAL);
-		child_class = new wxTextCtrl(this, wxID_ANY,_T(""));
+		child_class = new wxTextCtrl(this, wxID_ANY,"");
 		childSizer->Add(new wxStaticText(this, wxID_ANY, LANG(WXFB_INHERITEDCLASS,"Clase heredada:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Left);
 		childSizer->Add(child_class, sizers->BA5_Exp1);
 		mySizer->Add(childSizer, sizers->BA5_Exp1);
@@ -125,7 +125,7 @@ void mxWxfbInheriter::OkUpdateClass() {
 void mxWxfbInheriter::OkNewClass() {
 	wxString base_name = base_class->GetValue();
 	wxString name = utils->LeftTrim(child_class->GetValue());
-	if (name==_T("")) {
+	if (name=="") {
 		mxMessageDialog(LANG(WXFB_CLASSNAME_MISSING,"Debe introducir el nombre de la clase"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return;
 	}

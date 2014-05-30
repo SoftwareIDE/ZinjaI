@@ -104,7 +104,7 @@ public:
 	void OnProjectRadio(wxCommandEvent &event);
 	void OnProjectPathRadio(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
-	void RunWizard(wxString how=_T("simple"));
+	void RunWizard(wxString how="simple");
 	
 	void ProjectCreate();
 	void OnProjectCreate();

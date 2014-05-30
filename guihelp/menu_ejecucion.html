@@ -1,18 +1,8 @@
 <HTML>
 <HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
-<B>Menú Ejecucion</B><BR><BR>
-<UL>
-<LI><A href="#ejecutar">Ejecutar...</A></LI>
-<LI><A href="#compilar">Compilar</A></LI>
-<LI><A href="#propiedades_del_ejecutable">Propiedades del Ejecutable...</A></LI>
-<LI><A href="#limpiar">Limpiar</A></LI>
-<LI><A href="#detener">Detener</A></LI>
-<LI><A href="#opciones">Opciones...</A></LI>
-</UL>
-<BR><BR>
-
 
 <A name="ejecutar"><HR></A>
+<img src="../imgs/24/ejecutar.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ejecucion: Ejecutar...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Ejecuta un programa, guardando y compilando previamente si es necesario. Para detalles de cuando se considera necesario guardar o recompilar vea la ayuda de la opción <I>Compilar...</I> de este menú.<BR>
 &nbsp;&nbsp;&nbsp; El programa es ejecutado en su directorio de trabajo. El directorio de trabajo por defecto de un nuevo archivo es el directorio de documentos del usuario. Cuando el archivo se guarda por primera vez, el directorio de trabajo pasa a ser el directorio donde el archivo se guardó. Este se puede modificar desde el cuadro de <I>Opciones de Compilacion y Ejecución</I> (<I>Ejecución->Opciones</I>). También en dicho cuadro se puede configurar los argumentos que se le pasan al programa al ejecutarlo (en la casilla <I>Argumentos para la ejecució</I>). Estos argumentos pueden estar fijos, o ser solicitados nuevamente en cada ejecución (si se activa la opción <I>siempre pedir argumentos al ejecutar</I> en el mismo cuadro de diálogo). Estos argumentos son los que recibe típicamente la función <I>main</I> del programa en los parámetros <I>argc</I> y <I>argv</I>.<BR>
@@ -21,7 +11,14 @@
 &nbsp;&nbsp;&nbsp; Temas relacionados: <A href="panel_compiler_results.html">Resultados de la compilación</A>, <A href="compile_config.html">Diálogo de Opciones de Compilación y Ejecución</A>, <A href="project_config.html">Diálogo de Opciones de Compilación y Ejecución de proyecto</A>, <A href="#opciones">Menú Ejecucion: Opciones...</A>, <A href="#compilar">Menú Ejecucion: Compilar...</A><BR>
 <BR>
 
+<A name="ejecutar_sin_recompilar"><HR></A>
+<img src="../imgs/24/ejecutar_old.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Ejecucion: Ejecutar (sin recompilar)...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Ejecuta el último binario disponible de un programa o proyecto, sin antes actualizarlo ni guardar los cambios en sus fuentes. El mecanismo de ejecución es el mismo que se describe para el ítem anterior (Ejecutar).<BR>
+<BR>
+
 <A name="compilar"><HR></A>
+<img src="../imgs/24/compilar.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ejecucion: Compilar</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Si se esta trabajando sobre un proyecto, guarda todos los archivos pertenecientes al proyecto abiertos que hayan sido modificados, se recompilan todos los objetos que hayan sido modificados desde la ultima ejecución (para esto se comparan las fechas de los fuentes y las cabeceras que estos incluyen con las fechas de los objetos), y se enlaza nuevamente el ejecutable de ser necesario (para esto se comparan las fechas de los objetos y el ejecutable). Luego se ejecuta el programa en cuestión.<BR>
 &nbsp;&nbsp;&nbsp; Si no se estaba trabajando en un proyecto, guarda el archivo actual y lo compila de ser necesario. Cuando el archivo actual tiene un nombre, ya fue compilado y no fue modificado ni el archivo fuente ni las cabeceras que este incluye, el programa se ejecuta directamente sin ser recompilado. Cuando el archivo no tiene titulo (nunca fue guardado) siempre se guarda en un archivo temporal y se vuelve a compilar, independientemente de que haya o no sido modificado desde su última compilación.<BR>
@@ -33,27 +30,23 @@
 <BR>
 
 <A name="limpiar"><HR></A>
+<img src="../imgs/24/limpiar.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ejecucion: Limpiar</B><BR><BR>
-&nbsp;&nbsp;&nbsp; Elimina todos los objetos intermedios compilados y el ejecutable enlazado. Esta opción sólo está disponible para proyectos.<BR>
+&nbsp;&nbsp;&nbsp; Elimina todos los objetos intermedios compilados y el ejecutable enlazado.<BR>
 <BR>
 
 <A name="detener"><HR></A>
+<img src="../imgs/24/detener.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ejecucion: Detener</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Detiene la compilación o ejecución en curso.<BR>
 <BR>
 
 <A name="opciones"><HR></A>
+<img src="../imgs/24/opciones.png">&nbsp;&nbsp;&nbsp;
 <B>Menú Ejecucion: Opciones</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Muestra un cuadro de diálogo que permite especificar opciones de compilación y ejecución (como directorio de trabajo, argumentos para el programa, opciones del compilador, librerías para el enlazado, etc) Este diálogo es diferente cuando se trata de un archivo simple y cuando se trata de un proyecto. En el primer caso muestra una pocas opciones básicas que no se guardan con el fuente, en el segundo permite modificar una mayor cantidad de opciones que serán guardadas en el archivo de proyecto.<BR>
 <BR>
 &nbsp;&nbsp;&nbsp; Temas relacionados: <A href="panel_compiler_results.html">Resultados de la compilación</A>, <A href="compile_config.html">Diálogo de Opciones de Compilación y Ejecución</A>, <A href="project_config.html">Diálogo de Opciones de Compilación y Ejecución de proyecto</A>, <A href="#opciones">Menú Ejecucion: Opciones...</A>, <A href="#compilar">Menú Ejecucion: Compilar...</A><BR>
-<BR>
-
-<A name="generar_makefile"><HR></A>
-<B>Menú Ejecucion: Generar Makefile...</B><BR><BR>
-&nbsp;&nbsp;&nbsp; Permite generar automáticamente un archivo <I>Makefile</I> a partir de la composición y configuración de un proyecto. Un archivo <I>Makefile</I> es un archivo que contiene las reglas y comandos necesarios para construir el programa y es utilizado por la herramienta GNU <I>make</I> para tal fin. Dicho archivo incluye además información sobre las relaciones entre los archivos y los objetos (qué obejto depende de qué archivo fuente y cuales cabeceras), lo que permite recompilar lo mínimo necesario cuando se modifica el código.<BR>
-<BR>
-&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="makefile.html">Dialogo Generar Makefile</A><BR>
 <BR>
 
 <HR>

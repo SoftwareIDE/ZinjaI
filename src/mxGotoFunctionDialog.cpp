@@ -40,7 +40,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	goto_button->SetMinSize(wxSize(goto_button->GetSize().GetWidth()<80?80:goto_button->GetSize().GetWidth(),goto_button->GetSize().GetHeight()));
 	goto_button->SetDefault(); 
 	
-	text_ctrl = new wxTextCtrl(this,wxID_ANY,_T(""));
+	text_ctrl = new wxTextCtrl(this,wxID_ANY,"");
 	if (strict_compare) text_ctrl->Hide();
 	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,NULL,wxLB_SINGLE|wxLB_SORT);
 	case_sensitive = new wxCheckBox(this,wxID_ANY,LANG(GOTOFUNCTION_CASE_SENSITIVE,"&Distinguir mayusculas y minusculas"));
@@ -93,7 +93,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 				}
 			}
 		}
-		ShowModal();
+		Show();
 	}
 }
 
@@ -270,7 +270,7 @@ int mxGotoFunctionDialog::FillResults (wxString key, bool ignore_case, bool stri
 
 void mxGotoFunctionDialog::OnGotoFileButton (wxCommandEvent & event) {
 	Hide();
-	new mxGotoFileDialog(text_ctrl->GetValue(),this);
+	new mxGotoFileDialog(text_ctrl->GetValue(),main_window);
 	Close();
 }
 

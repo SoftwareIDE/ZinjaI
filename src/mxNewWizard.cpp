@@ -222,7 +222,7 @@ void mxNewWizard::OnProjectCreate() {
 			}
 		} else
 			folder=project->path;
-		if (name==_T("")) {
+		if (name=="") {
 			mxMessageDialog(this,LANG(NEWWIZARD_CLASSNAME_MISSNG,"Debe introducir el nombre de la clase"),LANG(GENERIC_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 			onproject_name->SetFocus();
 			return;
@@ -307,24 +307,24 @@ void mxNewWizard::OnProjectCreate() {
 			wxTextFile cpp_file(cpp_name);
 			cpp_file.Create();
 			cpp_file.AddLine(wxString(_T("#include \""))+name+_T(".h\""));
-			cpp_file.AddLine(_T(""));
+			cpp_file.AddLine("");
 			if (onproject_const_def->GetValue()) { // constructor por defecto
 				cpp_file.AddLine(name+_T("::")+name+_T("() {"));
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));
-				cpp_file.AddLine(_T(""));
+				cpp_file.AddLine("");
 			}
 			if (onproject_const_copy->GetValue()) { // constructor de copia
 				cpp_file.AddLine(name+_T("::")+name+_T("(const ")<<name<<_T(" &arg) {"));
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));
-				cpp_file.AddLine(_T(""));
+				cpp_file.AddLine("");
 			}
 			if (onproject_dest->GetValue()) { // destructor
 				cpp_file.AddLine(name+_T("::~")+name+_T("() {"));
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));
-				cpp_file.AddLine(_T(""));
+				cpp_file.AddLine("");
 			}
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) { // métodos virtuales heredados
 				// los metodos virtuales aparecen en el arreglo, con el scope de la clase original, no la nueva
@@ -337,7 +337,7 @@ void mxNewWizard::OnProjectCreate() {
 				cpp_file.AddLine(virtual_methods[i].AfterFirst(' ')+" {");
 				cpp_file.AddLine(_T("\t"));
 				cpp_file.AddLine(_T("}"));
-				cpp_file.AddLine(_T(""));
+				cpp_file.AddLine("");
 				// sacar el nombre de la clase del prototipo para que no ponerlo despues en el .h
 				virtual_methods[i]=
 					virtual_methods[i].BeforeFirst('(').BeforeLast(':').BeforeLast(' ') 
@@ -365,14 +365,14 @@ void mxNewWizard::OnProjectCreate() {
 						h_file.AddLine(aux);
 				}
 			}
-			h_file.AddLine(_T(""));
+			h_file.AddLine("");
 			wxString inherits; // texto de la declaración de herencia
 			for (int i=0;i<config->Init.inherit_num;i++)
 				if (onproject_inherit_class[i]->GetValue().Len()) {
 					if (inherits.Len())
-						inherits<<_T(", ")<<onproject_inherit_visibility[i]->GetValue()<<_T(" ")<<onproject_inherit_class[i]->GetValue();
+						inherits<<_T(", ")<<onproject_inherit_visibility[i]->GetValue()<<" "<<onproject_inherit_class[i]->GetValue();
 					else
-						inherits<<_T(" : ")<<onproject_inherit_visibility[i]->GetValue()<<_T(" ")<<onproject_inherit_class[i]->GetValue();
+						inherits<<_T(" : ")<<onproject_inherit_visibility[i]->GetValue()<<" "<<onproject_inherit_class[i]->GetValue();
 				}
 			// cuerpo de la clase
 			h_file.AddLine(wxString(_T("class "))+name+inherits+_T(" {"));
@@ -396,9 +396,9 @@ void mxNewWizard::OnProjectCreate() {
 					h_file.AddLine(wxString(_T("\t"))+virtual_methods[i].AfterFirst(' ')+";");
 			h_file.AddLine(_T("};"));
 			
-			h_file.AddLine(_T(""));
+			h_file.AddLine("");
 			h_file.AddLine(_T("#endif"));
-			h_file.AddLine(_T(""));
+			h_file.AddLine("");
 			h_file.Write();
 			h_file.Close();
 			
@@ -409,7 +409,7 @@ void mxNewWizard::OnProjectCreate() {
 			return;
 		}
 	} else {
-		if (name==_T("")) {
+		if (name=="") {
 			mxMessageDialog(this,LANG(NEWWIZARD_FILENAME_MISSING,"Debe introducir el nombre del archivo"),LANG(GENERIC_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 			onproject_name->SetFocus();
 			return;
@@ -420,7 +420,7 @@ void mxNewWizard::OnProjectCreate() {
 			return;
 		}
 		wxFileName filename(DIR_PLUS_FILE(project->path,name));
-		if (filename.GetExt()==_T("")) {
+		if (filename.GetExt()=="") {
 			if (sel==0)
 				filename.SetExt(_T("cpp"));
 			else if (sel==1)
@@ -437,7 +437,7 @@ void mxNewWizard::OnProjectCreate() {
 				cte.MakeUpper();
 				cpp_file.AddLine(wxString(_T("#ifndef "))+cte);
 				cpp_file.AddLine(wxString(_T("#define "))+cte);
-				cpp_file.AddLine(_T(""));
+				cpp_file.AddLine("");
 				cpp_file.AddLine(_T("#endif"));
 			}
 			cpp_file.Write();
@@ -472,17 +472,17 @@ void mxNewWizard::ProjectCreate() {
 	wxString filename = project_name->GetValue();
 	wxString folder = project_folder_path->GetValue();
 	int cual = project_list->GetSelection();
-	if (filename==_T("")) {
+	if (filename=="") {
 		mxMessageDialog(this,LANG(NEWWIZARD_PROJECT_NAME_MISSING,"Debe establecer un nombre de proyecto."),LANG(GENERIC_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		project_name->SetFocus();
 		return;
 	}
-	if (filename==_T("")) {
+	if (filename=="") {
 		mxMessageDialog(this,LANG(NEWWIZARD_FILENAME_MISSING,"Debe establecer un nombre de archivo."),LANG(GENERIC_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		project_name->SetFocus();
 		return;
 	}
-	if (folder==_T("")) {
+	if (folder=="") {
 		mxMessageDialog(this,LANG(NEWWIZARD_PROJECT_LOCATION_MISSING,"Debe establecer un ubicacion para el proyecto."),LANG(GENERIC_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		project_folder_path->SetFocus();
 		return;
@@ -544,12 +544,12 @@ void mxNewWizard::ProjectCreate() {
 			fil.Clear();
 			fil.AddLine(_T("#include<iostream>"));
 			fil.AddLine(_T("using namespace std;"));
-			fil.AddLine(_T(""));
+			fil.AddLine("");
 			fil.AddLine(_T("int main (int argc, char *argv[]) {"));
 			fil.AddLine(_T("\t"));
 			fil.AddLine(_T("\treturn 0;"));
 			fil.AddLine(_T("}"));
-			fil.AddLine(_T(""));
+			fil.AddLine("");
 			fil.Write();
 			fil.Close();
 		}
@@ -615,7 +615,7 @@ void mxNewWizard::OnButtonNext(wxCommandEvent &event){
 	} else if (panel==panel_start) {
 		switch (start_radio->GetSelection()) {
 			case 0:
-				main_window->NewFileFromText(_T(""),0);
+				main_window->NewFileFromText("",0);
 				Close();
 				break;
 			case 1:
@@ -796,7 +796,7 @@ void mxNewWizard::CreatePanelOnProject() {
 	sizer->Add(onproject_radio);
 	
 	onproject_label = new wxStaticText(panel_onproject,wxID_ANY,LANG(NEWWIZARD_FILENAME,"Nombre del archivo:"));
-	onproject_name = new wxTextCtrl(panel_onproject,mxID_WIZARD_ONPROJECT_NAME,_T(""));
+	onproject_name = new wxTextCtrl(panel_onproject,mxID_WIZARD_ONPROJECT_NAME,"");
 
 	sizer->Add(onproject_label,sizers->BT10);
 	wxBoxSizer *sizer_name = new wxBoxSizer(wxHORIZONTAL);
@@ -830,7 +830,7 @@ void mxNewWizard::CreatePanelOnProject() {
 	for (int i=0;i<config->Init.inherit_num;i++) {
 		wxBoxSizer *inhSizer = new wxBoxSizer(wxHORIZONTAL);
 		onproject_inherit_visibility[i] = new wxComboBox(panel_onproject,wxID_ANY,_T("public"),wxDefaultPosition,wxDefaultSize,inherit_choices,wxCB_READONLY);
-		onproject_inherit_class[i] = new wxTextCtrl(panel_onproject,wxID_ANY,_T(""));
+		onproject_inherit_class[i] = new wxTextCtrl(panel_onproject,wxID_ANY,"");
 		inhSizer->Add(onproject_inherit_visibility[i]);
 		inhSizer->Add(onproject_inherit_class[i],sizers->BL5_Exp1);
 		sizer->Add(inhSizer,sizers->BL10_Exp0);
@@ -864,7 +864,7 @@ void mxNewWizard::CreatePanelTemplates() {
 	for (unsigned int i=0; i<templates.GetCount();i++) {
 		wxString name_prefix = wxString(_T("// !Z! Name_"))<<config->Init.language_file<<_T(":");
 		wxString name = templates[i];
-		wxString local_name = _T("");
+		wxString local_name = "";
 		if (config->Files.default_template==name)	templates_default = i;
 		wxString filename = utils->WichOne(name,"templates",true);
 		wxTextFile file(filename);
@@ -993,7 +993,7 @@ void mxNewWizard::CreatePanelProject1() {
 	project_folder_create->SetValue(true);
 	sizer->Add(project_folder_create);
 	
-	project_full_path = new wxTextCtrl(panel_project_1,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE);
+	project_full_path = new wxTextCtrl(panel_project_1,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE);
 	project_full_path->SetBackgroundColour(panel_project_1->GetBackgroundColour());
 //	project_full_path->Enable(false);
 	sizer->Add(project_full_path,sizers->BT10_Exp0);
@@ -1246,7 +1246,7 @@ void mxNewWizard::OnButtonNewFilePath(wxCommandEvent &evt) {
 		fname=dlg.GetPath();
 		fname.MakeRelativeTo(project->path);
 		if (onproject_radio->GetSelection()==3) 
-			fname.SetExt(_T(""));
+			fname.SetExt("");
 		onproject_name->SetValue(fname.GetFullPath());
 	}
 }

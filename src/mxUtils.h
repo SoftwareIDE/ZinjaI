@@ -44,9 +44,9 @@ class wxBitmapButton;
 
 #ifdef DEBUG
 	extern wxString debug_string;
-	#define DEBUG_QH_SET(lala) debug_string=_T(""); debug_string<<utils->ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
+	#define DEBUG_QH_SET(lala) debug_string=""; debug_string<<utils->ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
 	#define DEBUG_QH_ADD(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(debug_string);
-	#define DEBUG_QH_ADDNL(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<_T("<BR> "); main_window->ShowInQuickHelpPanel(debug_string);
+	#define DEBUG_QH_ADDNL(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<"<BR> "; main_window->ShowInQuickHelpPanel(debug_string);
 //	#if defined(_WIN32) || defined(__WIN32__)
 //		#include <wx/msgdlg.h>
 //		#define DEBUG_INFO(info) wxMessageBox(wxString()<<info);
@@ -176,12 +176,12 @@ public:
 	wxStaticText *last_label; ///< guarda la ultima etiqueta que se uso en alguno de los AddAlgo
 	wxButton *last_button; ///< guarda el ultimo boton colocado por AddDirCtrl
 	wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value=false, wxWindowID id = wxID_ANY,bool margin=false);
-	wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value=_T(""));
-	wxTextCtrl *AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value=_T(""));
-	wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value=_T(""), bool margin=false);
+	wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="");
+	wxTextCtrl *AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="");
+	wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", bool margin=false);
 	wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString tail, bool margin=false);
 	wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value=0,bool margin=false);
-	wxTextCtrl *AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text = _T("..."),bool margin=false);
+	wxTextCtrl *AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text = "...",bool margin=false);
 	wxComboBox *AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID = wxID_ANY,bool margin=false);
 	wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text);
 	wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, bool margin=false);

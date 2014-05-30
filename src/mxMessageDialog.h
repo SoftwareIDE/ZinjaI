@@ -24,8 +24,8 @@ private:
 	int buttons;
 	void CommonConstructor(wxWindow *parent, wxString message, wxString title, unsigned int style, wxString check, bool bval);
 public:
-	mxMessageDialog(wxWindow *parent, wxString message, wxString title=_T("ZinjaI"), unsigned int style=mxMD_OK, wxString check=_T(""), bool bval=false);
-	mxMessageDialog(wxString message, wxString title=_T("ZinjaI"), unsigned int style=mxMD_OK, wxString check=_T(""), bool bval=false);
+	mxMessageDialog(wxWindow *parent, wxString message, wxString title="ZinjaI", unsigned int style=mxMD_OK, wxString check="", bool bval=false);
+	mxMessageDialog(wxString message, wxString title="ZinjaI", unsigned int style=mxMD_OK, wxString check="", bool bval=false);
 	void OnCancelButton(wxCommandEvent &event);
 	void OnOkButton(wxCommandEvent &event);
 	void OnYesButton(wxCommandEvent &event);

@@ -662,7 +662,7 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("print_size",Styles.print_size);
 	CFG_GENERIC_WRITE_DN("font_size",Styles.font_size);
 	CFG_GENERIC_WRITE_DN("colour_theme",Init.colour_theme);
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 
 	fil.AddLine(_T("[Source]"));
 	CFG_BOOL_WRITE_DN("smartIndent",Source.smartIndent);
@@ -683,7 +683,7 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("alignComments",Source.alignComments);
 	CFG_GENERIC_WRITE_DN("tabWidth",Source.tabWidth);
 	CFG_BOOL_WRITE_DN("tabUseSpaces",Source.tabUseSpaces);
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 
 	fil.AddLine(_T("[Running]"));
 	CFG_GENERIC_WRITE_DN("cpp_compiler_options",Running.cpp_compiler_options);
@@ -692,14 +692,14 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("always_ask_args",Running.always_ask_args);
 	CFG_BOOL_WRITE_DN("dont_run_headers",Running.dont_run_headers);
 	CFG_BOOL_WRITE_DN("check_includes",Running.check_includes);
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 
 	fil.AddLine(_T("[Help]"));
 	CFG_GENERIC_WRITE_DN("wxhelp_index",Help.wxhelp_index);
 	CFG_GENERIC_WRITE_DN("autocomp_indexes",Help.autocomp_indexes);
 	CFG_GENERIC_WRITE_DN("min_len_for_completion",Help.min_len_for_completion);
 	CFG_BOOL_WRITE_DN("show_extra_panels",Help.show_extra_panels);
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 
 	fil.AddLine(_T("[Files]"));
 	CFG_GENERIC_WRITE_DN("temp_dir",Files.temp_dir);
@@ -736,7 +736,7 @@ bool ConfigManager::Save(){
 		if (Files.last_source[i].Len()) fil.AddLine(wxString(_T("last_source_"))<<i<<_T("=")<<Files.last_source[i]);
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
 		if (Files.last_project[i].Len()) fil.AddLine(wxString(_T("last_project_"))<<i<<_T("=")<<Files.last_project[i]);
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 	
 	fil.AddLine(_T("[Columns]"));
 	for (int i=0;i<IG_COLS_COUNT;i++)
@@ -745,7 +745,7 @@ bool ConfigManager::Save(){
 		fil.AddLine(wxString(_T("backtrace_grid_"))<<i<<_T("=")<<(Cols.backtrace_grid[i]?_T("1"):_T("0")));
 //	for (int i=0;i<TG_COLS_COUNT;i++)
 //		fil.AddLine(wxString(_T("threadlist_grid_"))<<i<<_T("=")<<(Cols.threadlist_grid[i]?_T("1"):_T("0")));
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 	
 	fil.AddLine(_T("[CustomTools]"));
 	for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
@@ -757,7 +757,7 @@ bool ConfigManager::Save(){
 			fil.AddLine(wxString(_T("on_toolbar_"))<<i<<_T("=")<<(CustomTools[i].on_toolbar?_T("1"):_T("0")));
 		}
 	}
-	fil.AddLine(_T(""));
+	fil.AddLine("");
 	
 	fil.AddLine(_T("[Toolbars]"));
 	CFG_GENERIC_WRITE(Toolbars,icon_size);
@@ -955,13 +955,13 @@ void ConfigManager::LoadDefaults(){
 	Files.parser_command=_T("cbrowser.exe");
 	Files.debugger_command=_T("gdb");
 	Files.runner_command=_T("runner.exe");
-	Files.terminal_command=_T("");
+	Files.terminal_command="";
 	Files.explorer_command=_T("explorer");
 	Files.img_browser=_T("graphviz\\viewerw.exe");
 	Files.doxygen_command=_T("c:\\archivos de programa\\doxygen\\bin\\doxygen.exe");
-	Files.wxfb_command=_T("");
+	Files.wxfb_command="";
 //	Files.browser_command=_T("shellexecute.exe");
-	Files.browser_command=_T("");
+	Files.browser_command="";
 #elif defined(__APPLE__)
 	Files.toolchain="gcc";
 	Files.parser_command=_T("./cbrowser");
@@ -994,9 +994,9 @@ void ConfigManager::LoadDefaults(){
 	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
 //	Files.code_helper=DIR_PLUS_FILE(_T("quickhelp"),_T("codehelper.txt"));
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
-		Files.last_source[i]=_T("");
+		Files.last_source[i]="";
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
-		Files.last_project[i]=_T("");
+		Files.last_project[i]="";
 	Files.last_dir=wxFileName::GetHomeDir();
 	Files.last_project_dir=wxFileName::GetHomeDir();
 
@@ -1102,9 +1102,9 @@ void ConfigManager::LoadDefaults(){
 	Debug.always_debug = false;
 	Debug.raise_main_window = true;
 	Debug.compile_again = true;
-	Debug.format = _T("");
+	Debug.format = "";
 	Debug.macros_file = _T("debug_macros.gdb");
-	Debug.blacklist = _T("");
+	Debug.blacklist = "";
 	Debug.inspections_on_right = false;
 	Debug.show_thread_panel = false;
 	Debug.show_log_panel = false;

@@ -740,7 +740,7 @@ void mxMainWindow::OnProjectTreeRename(wxCommandEvent &event) {
 			mxMessageDialog(main_window,LANG(MAINW_PROBLEM_RENAMING,"No se pudo renombrar el archivo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		
 //	wxString res = mxGetTextFromUser(_T("Nuevo nombre:"), _T("Renombrar archivo") , project->GetNameFromItem(project_tree.selected_item,true), this);
-//	if (res!=_T(""))
+//	if (res!="")
 //		if (!project->RenameFile(project_tree.selected_item,res))
 //			mxMessageDialog(main_window,_T("No se pudo renombrar el archivo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 }
@@ -771,7 +771,7 @@ void mxMainWindow::OnProjectTreeAddSelected(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnProjectTreeAdd(wxCommandEvent &event) {
-	wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, _T(" "), _T("Any file (*)|*"), wxFD_OPEN | wxFD_MULTIPLE);
+	wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_MULTIPLE);
 	dlg.SetWildcard(_T("Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Todos los archivos|*"));
 	if (project_tree.selected_parent==project_tree.sources)
 		dlg.SetFilterIndex(1);
@@ -1318,7 +1318,7 @@ void mxMainWindow::CreateMenus() {
 	
 	menu.menu = new wxMenuBar;
 	
-	wxString ipre=DIR_PLUS_FILE(_T("16"),_T(""));
+	wxString ipre=DIR_PLUS_FILE(_T("16"),"");
 
 	menu.file = new wxMenu;
 	utils->AddItemToMenu(menu.file, wxID_NEW, LANG(MENUITEM_FILE_NEW,"&Nuevo..."),_T("Ctrl+N"),_T("Crear un nuevo archivo"),ipre+_T("nuevo.png"));
@@ -1332,8 +1332,8 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(menu.file, wxID_SAVEAS, LANG(MENUITEM_FILE_SAVE_AS,"G&uardar Como..."),_T("Ctrl+Shift+S"),_T("Guardar el archivo actual con otro nombre..."),ipre+_T("guardarComo.png"));
 	utils->AddItemToMenu(menu.file, mxID_FILE_SAVE_ALL, LANG(MENUITEM_FILE_SAVE_ALL,"Guardar &Todo..."),_T("Ctrl+Alt+Shift+S"),_T("Guarda todos los archivos abiertos y el proyecto actual..."),ipre+_T("guardarTodo.png"));
 	menu.file_save_project = utils->AddItemToMenu(menu.file, mxID_FILE_SAVE_PROJECT, LANG(MENUITEM_FILE_SAVE_PROJECT,"Guar&dar Proyecto"),_T("Ctrl+Alt+S"),_T("Guardar la configuaricion actual del proyecto"),ipre+_T("guardarProyecto.png"));
-	utils->AddItemToMenu(menu.file, mxID_FILE_EXPORT_HTML, LANG(MENUITEM_FILE_EXPORT_HTML,"Exportar a HTML..."),_T(""),_T("Genera un archiv HTML con el codigo fuente"),ipre+_T("exportHtml.png"));
-	utils->AddItemToMenu(menu.file, mxID_FILE_PRINT, LANG(MENUITEM_FILE_PRINT,"&Imprimir..."),_T(""),_T("Imprime el codigo fuente actual"),ipre+_T("imprimir.png"));
+	utils->AddItemToMenu(menu.file, mxID_FILE_EXPORT_HTML, LANG(MENUITEM_FILE_EXPORT_HTML,"Exportar a HTML..."),"",_T("Genera un archiv HTML con el codigo fuente"),ipre+_T("exportHtml.png"));
+	utils->AddItemToMenu(menu.file, mxID_FILE_PRINT, LANG(MENUITEM_FILE_PRINT,"&Imprimir..."),"",_T("Imprime el codigo fuente actual"),ipre+_T("imprimir.png"));
 	utils->AddItemToMenu(menu.file, mxID_FILE_RELOAD, LANG(MENUITEM_FILE_RELOAD,"&Recargar"),_T("Ctrl+Shift+R"),_T("Recarga la version en disco del archivo actual."),ipre+_T("recargar.png"));
 	utils->AddItemToMenu(menu.file, wxID_CLOSE, LANG(MENUITEM_FILE_CLOSE,"&Cerrar"),_T("Ctrl+W"),_T("Cerrar el archivo actual"),ipre+_T("cerrar.png"));
 	utils->AddItemToMenu(menu.file, mxID_FILE_CLOSE_ALL, LANG(MENUITEM_FILE_CLOSE_ALL,"Cerrar &Todo"),_T("Ctrl+Alt+Shift+W"),_T("Cierra todos los archivos abiertos"),ipre+_T("cerrarTodo.png"));
@@ -1346,21 +1346,21 @@ void mxMainWindow::CreateMenus() {
 	menu.file_source_history=new wxMenuItem*[CM_HISTORY_MAX_LEN];
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) {
 		if (i<config->Init.history_len && config->Files.last_source[i][0]!=0)
-			menu.file_source_history[i] = utils->AddItemToMenu(menu.file_source_recent, mxID_FILE_SOURCE_HISTORY_0+i,config->Files.last_source[i],_T(""),config->Files.last_source[i],wxString(ipre+_T("recent"))<<i<<(_T(".png")));
+			menu.file_source_history[i] = utils->AddItemToMenu(menu.file_source_recent, mxID_FILE_SOURCE_HISTORY_0+i,config->Files.last_source[i],"",config->Files.last_source[i],wxString(ipre+_T("recent"))<<i<<(_T(".png")));
 		else
 			menu.file_source_history[i] = NULL;
 	}
 	menu.file_source_recent->AppendSeparator();
-	utils->AddItemToMenu(menu.file_source_recent, mxID_FILE_SOURCE_HISTORY_MORE,LANG(MENU_FILE_RECENT_MORE,"Mas..."),_T(""),_T("Muestra un dialogo con la lista completa de archivos recientes"),ipre+_T("recentMore.png"));
+	utils->AddItemToMenu(menu.file_source_recent, mxID_FILE_SOURCE_HISTORY_MORE,LANG(MENU_FILE_RECENT_MORE,"Mas..."),"",_T("Muestra un dialogo con la lista completa de archivos recientes"),ipre+_T("recentMore.png"));
 	menu.file_project_history=new wxMenuItem*[CM_HISTORY_MAX_LEN];
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) {
 		if (i<config->Init.history_len && config->Files.last_project[i][0]!=0)
-			menu.file_project_history[i] = utils->AddItemToMenu(menu.file_project_recent, mxID_FILE_PROJECT_HISTORY_0+i, config->Files.last_project[i],_T(""),config->Files.last_project[i],wxString(ipre+_T("recent"))<<i<<(_T(".png")));
+			menu.file_project_history[i] = utils->AddItemToMenu(menu.file_project_recent, mxID_FILE_PROJECT_HISTORY_0+i, config->Files.last_project[i],"",config->Files.last_project[i],wxString(ipre+_T("recent"))<<i<<(_T(".png")));
 		else
 			menu.file_project_history[i]=NULL;
 	}
 	menu.file_project_recent->AppendSeparator();
-	utils->AddItemToMenu(menu.file_project_recent, mxID_FILE_PROJECT_HISTORY_MORE,LANG(MENU_FILE_RECENT_MORE,"Mas..."),_T(""),_T("Muestra un dialogo con la lista completa de archivos recientes"),ipre+_T("recentMore.png"));
+	utils->AddItemToMenu(menu.file_project_recent, mxID_FILE_PROJECT_HISTORY_MORE,LANG(MENU_FILE_RECENT_MORE,"Mas..."),"",_T("Muestra un dialogo con la lista completa de archivos recientes"),ipre+_T("recentMore.png"));
 	menu.menu->Append(menu.file, LANG(MENUITEM_FILE,"&Archivo"));
 	menu.file_save_project->Enable(false);
 	menu.file_close_project->Enable(false);
@@ -1403,34 +1403,34 @@ void mxMainWindow::CreateMenus() {
 	
 	menu.view = new wxMenu;
 	wxMenu *fold_menu, *toolbars_menu;
-	utils->AddItemToMenu(menu.view, mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"),_T(""),_T(""),ipre+_T("duplicarVista.png"));
+	utils->AddItemToMenu(menu.view, mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"),"","",ipre+_T("duplicarVista.png"));
 	menu.view_line_wrap = utils->AddCheckToMenu(menu.view, mxID_VIEW_LINE_WRAP, LANG(MENUITEM_VIEW_LINE_WRAP,"&Ajuste de linea"),_T("Alt+F11"),_T("Muestra las lineas largas como en varios renglones"), false);	
-	menu.view_white_space = utils->AddCheckToMenu(menu.view, mxID_VIEW_WHITE_SPACE, LANG(MENUITEM_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de &fin de linea"),_T(""),_T("Muestra las lineas largas como en varios renglones"), false);	
+	menu.view_white_space = utils->AddCheckToMenu(menu.view, mxID_VIEW_WHITE_SPACE, LANG(MENUITEM_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de &fin de linea"),"",_T("Muestra las lineas largas como en varios renglones"), false);	
 	menu.view_code_style = utils->AddCheckToMenu(menu.view, mxID_VIEW_CODE_STYLE, LANG(MENUITEM_VIEW_SYNTAX_HIGHLIGHT,"&Colorear Sintaxis"),_T("Shift+F11"),_T("Resalta el codigo con diferentes colores y formatos de fuente."), false);	
 	utils->AddItemToMenu(menu.view, mxID_VIEW_CODE_COLOURS, LANG(MENUITEM_VIEW_CODE_COLOURS,"Configurar esquema de colores..."),"","",ipre+_T("preferencias.png"));
 	utils->AddSubMenuToMenu(menu.view, fold_menu = new wxMenu,LANG(MENUITEM_VIEW_FOLDING,"Plegado"),_T("Muestra opciones para plegar y desplegar codigo en distintos niveles"),ipre+_T("folding.png"));
 	menu.view->AppendSeparator();
 	menu.view_fullscreen = utils->AddCheckToMenu(menu.view, mxID_VIEW_FULLSCREEN, LANG(MENUITEM_VIEW_FULLSCREEN,"Ver a Pantalla &Completa"),_T("F11"),_T("Muestra el editor a pantalla completa, ocultando tambien los demas paneles"), false);
-	menu.view_beginner_panel = utils->AddCheckToMenu(menu.view, mxID_VIEW_BEGINNER_PANEL, LANG(MENUITEM_VIEW_BEGINNER_PANEL,"Mostrar Panel de Mini-Plantillas"),_T(""),_T("Muestra un panel con plantillas y estructuras basicas de c++"), false);
+	menu.view_beginner_panel = utils->AddCheckToMenu(menu.view, mxID_VIEW_BEGINNER_PANEL, LANG(MENUITEM_VIEW_BEGINNER_PANEL,"Mostrar Panel de Mini-Plantillas"),"",_T("Muestra un panel con plantillas y estructuras basicas de c++"), false);
 	if (config->Init.left_panels)
-		menu.view_left_panels = utils->AddCheckToMenu(menu.view, mxID_VIEW_LEFT_PANELS, LANG(MENUITEM_VIEW_LEFT_PANELS,"&Mostrar Panel de Arboles"),_T(""),_T("Muestra el panel con los arboles de proyecto, simbolos y explorador de archivos"), false);
-	project_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_PROJECT_TREE, LANG(MENUITEM_VIEW_PROJECT_TREE,"&Mostrar Arbol de &Proyecto"),_T(""),_T("Muestra el panel del arbol de proyecto/archivos abiertos"), false);
+		menu.view_left_panels = utils->AddCheckToMenu(menu.view, mxID_VIEW_LEFT_PANELS, LANG(MENUITEM_VIEW_LEFT_PANELS,"&Mostrar Panel de Arboles"),"",_T("Muestra el panel con los arboles de proyecto, simbolos y explorador de archivos"), false);
+	project_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_PROJECT_TREE, LANG(MENUITEM_VIEW_PROJECT_TREE,"&Mostrar Arbol de &Proyecto"),"",_T("Muestra el panel del arbol de proyecto/archivos abiertos"), false);
 	explorer_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_EXPLORER_TREE, LANG(MENUITEM_VIEW_EXPLORER_TREE,"Mostrar &Explorardor de Archivos"),_T("Ctrl+E"),_T("Muestra el panel explorador de archivos"), false);
-	symbols_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos"),_T(""),_T("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo."), false);
-	compiler_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion"),_T(""),_T("Muestra un panel con la salida del compilador"), false);
+	symbols_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos"),"",_T("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo."), false);
+	compiler_tree.menuItem = utils->AddCheckToMenu(menu.view, mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion"),"",_T("Muestra un panel con la salida del compilador"), false);
 //	utils->AddItemToMenu(menu.view, mxID_VIEW_UPDATE_SYMBOLS, LANG(MENUITEM_VIEW_UPDATE_SYMBOLS,"&Actualizar Arbol de Simbolos"),_T("F2"),_T("Actualiza el arbol de simbolos."),ipre+_T("simbolos.png"));
 //	utils->AddItemToMenu(menu.view, mxID_VIEW_HIDE_BOTTOM, _T("&Ocultar paneles inferiores"),_T("Escape"),_T("Oculta los paneles de informacion de compilacion y ayuda rapida."),ipre+_T("hideBottom.png"));
 	utils->AddSubMenuToMenu(menu.view, toolbars_menu = new wxMenu,LANG(MENUITEM_VIEW_TOOLBARS,"Barras de herramientas"),"","");
-	menu.view_toolbar_file = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo"),_T(""),_T("Muestra la barra de herramientas para el manejo de archivos"), config->Toolbars.positions.file.visible);
-	menu.view_toolbar_edit = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion"),_T(""),_T("Muestra la barra de herramientas para la edicion del fuente"), config->Toolbars.positions.edit.visible);
-	menu.view_toolbar_view = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver"),_T(""),_T("Muestra la barra de herramientas para las opciones de visualizacion"), config->Toolbars.positions.view.visible);
-	menu.view_toolbar_find = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida"),_T(""),_T("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente"), config->Toolbars.positions.find.visible);
-	menu.view_toolbar_run = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion"),_T(""),_T("Muestra la barra de herramientas para la compilacion y ejecucion del programa"), config->Toolbars.positions.run.visible);
-	menu.view_toolbar_tools = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas"),_T(""),_T("Muestra la barra de herramientas para las herramientas adicionales"), config->Toolbars.positions.tools.visible);
-	menu.view_toolbar_project = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto"),_T(""),_T("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto"), config->Toolbars.positions.project.visible);
+	menu.view_toolbar_file = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo"),"",_T("Muestra la barra de herramientas para el manejo de archivos"), config->Toolbars.positions.file.visible);
+	menu.view_toolbar_edit = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion"),"",_T("Muestra la barra de herramientas para la edicion del fuente"), config->Toolbars.positions.edit.visible);
+	menu.view_toolbar_view = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver"),"",_T("Muestra la barra de herramientas para las opciones de visualizacion"), config->Toolbars.positions.view.visible);
+	menu.view_toolbar_find = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida"),"",_T("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente"), config->Toolbars.positions.find.visible);
+	menu.view_toolbar_run = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion"),"",_T("Muestra la barra de herramientas para la compilacion y ejecucion del programa"), config->Toolbars.positions.run.visible);
+	menu.view_toolbar_tools = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas"),"",_T("Muestra la barra de herramientas para las herramientas adicionales"), config->Toolbars.positions.tools.visible);
+	menu.view_toolbar_project = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto"),"",_T("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto"), config->Toolbars.positions.project.visible);
 	menu.view_toolbar_project->Enable(false);
-	menu.view_toolbar_debug = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion"),_T(""),_T("Muestra la barra de herramientas para la depuracion del programa"), config->Toolbars.positions.debug.visible);
-	menu.view_toolbar_misc = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea"),_T(""),_T("Muestra la barra de herramientas con commandos miselaneos"), config->Toolbars.positions.misc.visible);
+	menu.view_toolbar_debug = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion"),"",_T("Muestra la barra de herramientas para la depuracion del programa"), config->Toolbars.positions.debug.visible);
+	menu.view_toolbar_misc = utils->AddCheckToMenu(toolbars_menu, mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea"),"",_T("Muestra la barra de herramientas con commandos miselaneos"), config->Toolbars.positions.misc.visible);
 	utils->AddItemToMenu(toolbars_menu, mxID_VIEW_TOOLBARS_CONFIG, LANG(MENUITEM_VIEW_TOOLBARS_CONFIG,"&Configurar..."),"","",ipre+_T("preferencias.png"));
 	menu.view->AppendSeparator();
 #if !defined(_WIN32) && !defined(__WIN32__)
@@ -1454,23 +1454,23 @@ void mxMainWindow::CreateMenus() {
 #endif
 
 #ifdef __APPLE__
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_FOLD,LANG(MENUITEM_FOLD_FOLD_THIS_LINE,"Plegar en esta linea"),_T(""),_T(""),ipre+_T("foldOne.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_UNFOLD,LANG(MENUITEM_FOLD_UNFOLD_THIS_LINE,"Desplegar en esta linea"),_T(""),_T(""),ipre+_T("unfoldOne.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_1,LANG(MENUITEM_FOLD_FOLD_LEVEL_1,"Plegar el primer nivel"),_T(""),_T("Cierra todos los bolques del primer nivel"),ipre+_T("fold1.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_2,LANG(MENUITEM_FOLD_FOLD_LEVEL_2,"Plegar el segundo nivel"),_T(""),_T("Cierra todos los bolques del segundo nivel"),ipre+_T("unfold2.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_3,LANG(MENUITEM_FOLD_FOLD_LEVEL_3,"Plegar el tercer nivel"),_T(""),_T("Cierra todos los bolques del tercer nivel"),ipre+_T("fold3.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_4,LANG(MENUITEM_FOLD_FOLD_LEVEL_4,"Plegar el cuarto nivel"),_T(""),_T("Cierra todos los bolques del cuarto nivel"),ipre+_T("fold4.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_5,LANG(MENUITEM_FOLD_FOLD_LEVEL_5,"Plegar el quinto nivel"),_T(""),_T("Cierra todos los bolques del quinto nivel"),ipre+_T("fold5.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_ALL,LANG(MENUITEM_FOLD_FOLD_ALL_LEVELS,"Plegar todos los niveles"),_T(""),_T("Cierra todos los bolques de todos los niveles"),ipre+_T("foldAll.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_1,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_1,"Desplegar el primer nivel"),_T(""),_T("Abre todos los bolques del primer nivel"),ipre+_T("unfold1.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_2,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_2,"Desplegar el segundo nivel"),_T(""),_T("Abre todos los bolques del segundo nivel"),ipre+_T("unfold2.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_3,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_3,"Desplegar el tercer nivel"),_T(""),_T("Abre todos los bolques del tercer nivel"),ipre+_T("unfold3.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_4,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_4,"Desplegar el cuarto nivel"),_T(""),_T("Abre todos los bolques del cuarto nivel"),ipre+_T("unfold4.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_5,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_5,"Desplegar el quinto nivel"),_T(""),_T("Abre todos los bolques del quinto nivel"),ipre+_T("unfold5.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_ALL,LANG(MENUITEM_FOLD_UNFOLD_ALL_LEVELS,"Desplegar todos los niveles"),_T(""),_T("Abre todos los bolques de todos los niveles"),ipre+_T("unfoldAll.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_FOLD,LANG(MENUITEM_FOLD_FOLD_THIS_LINE,"Plegar en esta linea"),"","",ipre+_T("foldOne.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_UNFOLD,LANG(MENUITEM_FOLD_UNFOLD_THIS_LINE,"Desplegar en esta linea"),"","",ipre+_T("unfoldOne.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_1,LANG(MENUITEM_FOLD_FOLD_LEVEL_1,"Plegar el primer nivel"),"",_T("Cierra todos los bolques del primer nivel"),ipre+_T("fold1.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_2,LANG(MENUITEM_FOLD_FOLD_LEVEL_2,"Plegar el segundo nivel"),"",_T("Cierra todos los bolques del segundo nivel"),ipre+_T("unfold2.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_3,LANG(MENUITEM_FOLD_FOLD_LEVEL_3,"Plegar el tercer nivel"),"",_T("Cierra todos los bolques del tercer nivel"),ipre+_T("fold3.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_4,LANG(MENUITEM_FOLD_FOLD_LEVEL_4,"Plegar el cuarto nivel"),"",_T("Cierra todos los bolques del cuarto nivel"),ipre+_T("fold4.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_5,LANG(MENUITEM_FOLD_FOLD_LEVEL_5,"Plegar el quinto nivel"),"",_T("Cierra todos los bolques del quinto nivel"),ipre+_T("fold5.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_ALL,LANG(MENUITEM_FOLD_FOLD_ALL_LEVELS,"Plegar todos los niveles"),"",_T("Cierra todos los bolques de todos los niveles"),ipre+_T("foldAll.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_1,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_1,"Desplegar el primer nivel"),"",_T("Abre todos los bolques del primer nivel"),ipre+_T("unfold1.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_2,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_2,"Desplegar el segundo nivel"),"",_T("Abre todos los bolques del segundo nivel"),ipre+_T("unfold2.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_3,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_3,"Desplegar el tercer nivel"),"",_T("Abre todos los bolques del tercer nivel"),ipre+_T("unfold3.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_4,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_4,"Desplegar el cuarto nivel"),"",_T("Abre todos los bolques del cuarto nivel"),ipre+_T("unfold4.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_5,LANG(MENUITEM_FOLD_UNFOLD_LEVEL_5,"Desplegar el quinto nivel"),"",_T("Abre todos los bolques del quinto nivel"),ipre+_T("unfold5.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_SHOW_ALL,LANG(MENUITEM_FOLD_UNFOLD_ALL_LEVELS,"Desplegar todos los niveles"),"",_T("Abre todos los bolques de todos los niveles"),ipre+_T("unfoldAll.png"));
 #else
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_FOLD,LANG(MENUITEM_FOLD_FOLD_THIS_LINE,"Plegar en esta linea"),_T("Alt+Up"),_T(""),ipre+_T("foldOne.png"));
-	utils->AddItemToMenu(fold_menu, mxID_FOLD_UNFOLD,LANG(MENUITEM_FOLD_UNFOLD_THIS_LINE,"Desplegar en esta linea"),_T("Alt+Down"),_T(""),ipre+_T("unfoldOne.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_FOLD,LANG(MENUITEM_FOLD_FOLD_THIS_LINE,"Plegar en esta linea"),_T("Alt+Up"),"",ipre+_T("foldOne.png"));
+	utils->AddItemToMenu(fold_menu, mxID_FOLD_UNFOLD,LANG(MENUITEM_FOLD_UNFOLD_THIS_LINE,"Desplegar en esta linea"),_T("Alt+Down"),"",ipre+_T("unfoldOne.png"));
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_1,LANG(MENUITEM_FOLD_FOLD_LEVEL_1,"Plegar el primer nivel"),_T("Ctrl+1"),_T("Cierra todos los bolques del primer nivel"),ipre+_T("fold1.png"));
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_2,LANG(MENUITEM_FOLD_FOLD_LEVEL_2,"Plegar el segundo nivel"),_T("Ctrl+2"),_T("Cierra todos los bolques del segundo nivel"),ipre+_T("unfold2.png"));
 	utils->AddItemToMenu(fold_menu, mxID_FOLD_HIDE_3,LANG(MENUITEM_FOLD_FOLD_LEVEL_3,"Plegar el tercer nivel"),_T("Ctrl+3"),_T("Cierra todos los bolques del tercer nivel"),ipre+_T("fold3.png"));
@@ -1491,7 +1491,7 @@ void mxMainWindow::CreateMenus() {
 	menu.run_compile = utils->AddItemToMenu(menu.run, mxID_RUN_COMPILE, LANG(MENUITEM_RUN_COMPILE,"&Compilar"),_T("Shift+F9"),_T("Guarda y compila el fuente actual"),ipre+_T("compilar.png"));
 //	menu.run_build = utils->AddItemToMenu(menu.run, mxID_RUN_BUILD, LANG(MENUITEM_RUN_BUILD,"Co&nstruir"),_T("Ctrl+F9"),_T("Guarda y compila todo el proyecto"),ipre+_T("construir.png")));
 	menu.run_clean = utils->AddItemToMenu(menu.run, mxID_RUN_CLEAN, LANG(MENUITEM_RUN_CLEAN,"&Limpiar"),_T("Ctrl+Shift+F9"),_T("Elimina los objetos y ejecutables compilados"),ipre+_T("limpiar.png"));
-	menu.run_stop = utils->AddItemToMenu(menu.run, mxID_RUN_STOP, LANG(MENUITEM_RUN_STOP,"&Detener"),_T(""),_T("Detiene la ejecucion del programa"),ipre+_T("detener.png"));
+	menu.run_stop = utils->AddItemToMenu(menu.run, mxID_RUN_STOP, LANG(MENUITEM_RUN_STOP,"&Detener"),"",_T("Detiene la ejecucion del programa"),ipre+_T("detener.png"));
 	utils->AddItemToMenu(menu.run, mxID_RUN_CONFIG, LANG(MENUITEM_RUN_OPTIONS,"&Opciones..."),_T("Alt+F9"),_T("Configura la compilacion y ejecucion de los programas"),ipre+_T("opciones.png"));
 	menu.menu->Append(menu.run, LANG(MENUITEM_RUN,"E&jecucion"));
 //	menu.run_clean->Enable(false);
@@ -1499,190 +1499,190 @@ void mxMainWindow::CreateMenus() {
 //	menu.run_build->Enable(false);
 
 	menu.debug = new wxMenu;
-	menu.debug_run = utils->AddItemToMenu(menu.debug, mxID_DEBUG_RUN, LANG(MENUITEM_DEBUG_START,"&Iniciar/Continuar"),_T("F5"),_T(""),ipre+_T("depurar.png"));
+	menu.debug_run = utils->AddItemToMenu(menu.debug, mxID_DEBUG_RUN, LANG(MENUITEM_DEBUG_START,"&Iniciar/Continuar"),_T("F5"),"",ipre+_T("depurar.png"));
 #if !defined(_WIN32) && !defined(__WIN32__)
-	menu.debug_attach = utils->AddItemToMenu(menu.debug, mxID_DEBUG_ATTACH, LANG(MENUITEM_DEBUG_ATTACH,"Ad&juntar..."),_T(""),_T(""),ipre+_T("debug_attach.png"));
-	menu.debug_core_dump = utils->AddItemToMenu(menu.debug, mxID_DEBUG_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria..."),_T(""),_T(""),ipre+_T("core_dump.png"));
+	menu.debug_attach = utils->AddItemToMenu(menu.debug, mxID_DEBUG_ATTACH, LANG(MENUITEM_DEBUG_ATTACH,"Ad&juntar..."),"","",ipre+_T("debug_attach.png"));
+	menu.debug_core_dump = utils->AddItemToMenu(menu.debug, mxID_DEBUG_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria..."),"","",ipre+_T("core_dump.png"));
 #endif
-	menu.debug_pause = utils->AddItemToMenu(menu.debug, mxID_DEBUG_PAUSE, LANG(MENUITEM_DEBUG_PAUSE,"Interrum&pir"),_T(""),_T(""),ipre+_T("pausar.png"));
+	menu.debug_pause = utils->AddItemToMenu(menu.debug, mxID_DEBUG_PAUSE, LANG(MENUITEM_DEBUG_PAUSE,"Interrum&pir"),"","",ipre+_T("pausar.png"));
 	menu.debug_pause->Enable(false);
-//	menu.debug_continue = utils->AddItemToMenu(menu.debug, mxID_DEBUG_CONTINUE, _T("&Continuar"),_T(""),_T(""),ipre+_T("continuar.png"));
-	menu.debug_stop = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STOP, LANG(MENUITEM_DEBUG_STOP,"&Detener"),_T("Shift+F5"),_T(""),ipre+_T("detener.png"));
+//	menu.debug_continue = utils->AddItemToMenu(menu.debug, mxID_DEBUG_CONTINUE, _T("&Continuar"),"","",ipre+_T("continuar.png"));
+	menu.debug_stop = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STOP, LANG(MENUITEM_DEBUG_STOP,"&Detener"),_T("Shift+F5"),"",ipre+_T("detener.png"));
 	menu.debug_stop->Enable(false);
-	menu.debug_step_in = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STEP_IN, LANG(MENUITEM_DEBUG_STEP_IN,"Step &In"),_T("F6"),_T(""),ipre+_T("step_in.png"));
+	menu.debug_step_in = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STEP_IN, LANG(MENUITEM_DEBUG_STEP_IN,"Step &In"),_T("F6"),"",ipre+_T("step_in.png"));
 	menu.debug_step_in->Enable(false);
-	menu.debug_step_over = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STEP_OVER, LANG(MENUITEM_DEBUG_STEP_OVER,"Step &Over"),_T("F7"),_T(""),ipre+_T("step_over.png"));
+	menu.debug_step_over = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STEP_OVER, LANG(MENUITEM_DEBUG_STEP_OVER,"Step &Over"),_T("F7"),"",ipre+_T("step_over.png"));
 	menu.debug_step_over->Enable(false);
-	menu.debug_step_out = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STEP_OUT, LANG(MENUITEM_DEBUG_STEP_OUT,"Step O&ut"),_T("Shift+F6"),_T(""),ipre+_T("step_out.png"));
+	menu.debug_step_out = utils->AddItemToMenu(menu.debug, mxID_DEBUG_STEP_OUT, LANG(MENUITEM_DEBUG_STEP_OUT,"Step O&ut"),_T("Shift+F6"),"",ipre+_T("step_out.png"));
 	menu.debug_step_out->Enable(false);
-	menu.debug_return = utils->AddItemToMenu(menu.debug, mxID_DEBUG_RETURN, LANG(MENUITEM_DEBUG_RETURN,"&Return"),_T("Ctrl+F6"),_T(""),ipre+_T("return.png"));
+	menu.debug_return = utils->AddItemToMenu(menu.debug, mxID_DEBUG_RETURN, LANG(MENUITEM_DEBUG_RETURN,"&Return"),_T("Ctrl+F6"),"",ipre+_T("return.png"));
 	menu.debug_return->Enable(false);
-	menu.debug_run_until = utils->AddItemToMenu(menu.debug, mxID_DEBUG_RUN_UNTIL, LANG(MENUITEM_DEBUG_RUN_UNTIL,"Ejecutar &Hasta el Cursor"),_T("Shift+F7"),_T(""),ipre+_T("run_until.png"));
+	menu.debug_run_until = utils->AddItemToMenu(menu.debug, mxID_DEBUG_RUN_UNTIL, LANG(MENUITEM_DEBUG_RUN_UNTIL,"Ejecutar &Hasta el Cursor"),_T("Shift+F7"),"",ipre+_T("run_until.png"));
 	menu.debug_run_until->Enable(false);
-	menu.debug_jump = utils->AddItemToMenu(menu.debug, mxID_DEBUG_JUMP, LANG(MENUITEM_DEBUG_JUMP,"Continuar Desde Aqui"),_T("Ctrl+F5"),_T(""),ipre+_T("debug_jump.png"));
+	menu.debug_jump = utils->AddItemToMenu(menu.debug, mxID_DEBUG_JUMP, LANG(MENUITEM_DEBUG_JUMP,"Continuar Desde Aqui"),_T("Ctrl+F5"),"",ipre+_T("debug_jump.png"));
 	menu.debug_jump->Enable(false);
 #if !defined(_WIN32) && !defined(__WIN32__)
-	menu.debug_enable_inverse_execution = utils->AddCheckToMenu(menu.debug, mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras"),_T(""),_T(""),false);
+	menu.debug_enable_inverse_execution = utils->AddCheckToMenu(menu.debug, mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras"),"","",false);
 	menu.debug_enable_inverse_execution->Enable(false);
-	menu.debug_inverse_execution = utils->AddCheckToMenu(menu.debug, mxID_DEBUG_INVERSE_EXEC, LANG(MENUITEM_DEBUG_INVERSE,"Ejecutar Hacia Atras"),_T(""),_T(""),false);
+	menu.debug_inverse_execution = utils->AddCheckToMenu(menu.debug, mxID_DEBUG_INVERSE_EXEC, LANG(MENUITEM_DEBUG_INVERSE,"Ejecutar Hacia Atras"),"","",false);
 	menu.debug_inverse_execution->Enable(false);
 #endif
 	menu.debug_jump->Enable(false);
-	menu.debug_inspect = utils->AddItemToMenu(menu.debug, mxID_DEBUG_INSPECT, LANG(MENUITEM_DEBUG_INSPECT,"Panel de In&speccion"),_T(""),_T(""),ipre+_T("inspect.png"));
-	menu.debug_backtrace = utils->AddItemToMenu(menu.debug, mxID_DEBUG_BACKTRACE, LANG(MENUITEM_DEBUG_BACKTRACE,"&Trazado Inverso"),_T(""),_T(""),ipre+_T("backtrace.png"));
-	menu.debug_threadlist = utils->AddItemToMenu(menu.debug, mxID_DEBUG_THREADLIST, LANG(MENUITEM_DEBUG_THREADLIST,"&Hilos de Ejecucion"),_T(""),_T(""),ipre+_T("threadlist.png"));
-	menu.debug_list_breakpoints = utils->AddItemToMenu(menu.debug, mxID_DEBUG_LIST_BREAKPOINTS, LANG(MENUITEM_DEBUG_LIST_BREAKPOINTS,"&Listar Watch/Break points..."),_T("Shift+F8"),_T(""),ipre+_T("breakpoint_list.png"));
+	menu.debug_inspect = utils->AddItemToMenu(menu.debug, mxID_DEBUG_INSPECT, LANG(MENUITEM_DEBUG_INSPECT,"Panel de In&specciones"),"","",ipre+_T("inspect.png"));
+	menu.debug_backtrace = utils->AddItemToMenu(menu.debug, mxID_DEBUG_BACKTRACE, LANG(MENUITEM_DEBUG_BACKTRACE,"&Trazado Inverso"),"","",ipre+_T("backtrace.png"));
+	menu.debug_threadlist = utils->AddItemToMenu(menu.debug, mxID_DEBUG_THREADLIST, LANG(MENUITEM_DEBUG_THREADLIST,"&Hilos de Ejecucion"),"","",ipre+_T("threadlist.png"));
+	menu.debug_list_breakpoints = utils->AddItemToMenu(menu.debug, mxID_DEBUG_LIST_BREAKPOINTS, LANG(MENUITEM_DEBUG_LIST_BREAKPOINTS,"&Listar Watch/Break points..."),_T("Shift+F8"),"",ipre+_T("breakpoint_list.png"));
 //	menu.debug_list_breakpoints->Enable(false);
-	menu.debug_toggle_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_TOGGLE_BREAKPOINT, LANG(MENUITEM_DEBUG_TOGGLE_BREAKPOINT,"&Agregar/quitar Breakpoint"),_T("F8"),_T(""),ipre+_T("breakpoint.png"));
-	menu.debug_toggle_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_BREAKPOINT_OPTIONS, LANG(MENUITEM_DEBUG_BREAKPOINT_OPTIONS,"&Opciones del Breakpoint..."),_T("Ctrl+F8"),_T(""),ipre+_T("breakpoint_options.png"));
-//	menu.debug_insert_watchpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_INSERT_WATCHPOINT, LANG(MENUITEM_DEBUG_INSERT_WATCHPOINT,"&Agregar Watchpoint..."),_T(""),ipre+_T("insert_watchpoint.png"));
+	menu.debug_toggle_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_TOGGLE_BREAKPOINT, LANG(MENUITEM_DEBUG_TOGGLE_BREAKPOINT,"&Agregar/quitar Breakpoint"),_T("F8"),"",ipre+_T("breakpoint.png"));
+	menu.debug_toggle_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_BREAKPOINT_OPTIONS, LANG(MENUITEM_DEBUG_BREAKPOINT_OPTIONS,"&Opciones del Breakpoint..."),_T("Ctrl+F8"),"",ipre+_T("breakpoint_options.png"));
+//	menu.debug_insert_watchpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_INSERT_WATCHPOINT, LANG(MENUITEM_DEBUG_INSERT_WATCHPOINT,"&Agregar Watchpoint..."),"",ipre+_T("insert_watchpoint.png"));
 //	menu.debug_insert_watchpoint->Enable(false);
 //	menu.debug_function_breakpoint->Enable(false);
-	utils->AddItemToMenu(menu.debug, mxID_DEBUG_LOG_PANEL, LANG(MENUITEM_DEBUG_SHOW_LOG_PANEL,"&Mostrar mensajes del depurador"),_T(""),_T(""),ipre+_T("debug_log_panel.png"));
+	utils->AddItemToMenu(menu.debug, mxID_DEBUG_LOG_PANEL, LANG(MENUITEM_DEBUG_SHOW_LOG_PANEL,"&Mostrar mensajes del depurador"),"","",ipre+_T("debug_log_panel.png"));
 #ifndef __WIN32__
-	menu.debug_patch = utils->AddItemToMenu(menu.debug, mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable..."),_T(""),_T(""),ipre+_T("debug_patch.png"));
+	menu.debug_patch = utils->AddItemToMenu(menu.debug, mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable..."),"","",ipre+_T("debug_patch.png"));
 #endif
-	if (config->Debug.show_do_that) menu.debug_function_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_DO_THAT, LANG(MENUITEM_DEBUG_DO_THAT,"DO_THAT"),_T(""),_T(""),ipre+_T("do_that.png"));
+	if (config->Debug.show_do_that) menu.debug_function_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_DO_THAT, LANG(MENUITEM_DEBUG_DO_THAT,"DO_THAT"),"","",ipre+_T("do_that.png"));
 	menu.menu->Append(menu.debug, LANG(MENUITEM_DEBUG,"&Depuracion"));
 
 
 	menu.tools = new wxMenu;
 	
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_FLOW, LANG(MENUITEM_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de &Flujo..."),_T(""),_T("Genera un diagrama de flujo a partir del bloque de codigo actual"),ipre+_T("flujo.png"));
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_CLASSES, LANG(MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar &Jerarquia de Clases..."),_T(""),_T(""),ipre+_T("clases.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_FLOW, LANG(MENUITEM_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de &Flujo..."),"",_T("Genera un diagrama de flujo a partir del bloque de codigo actual"),ipre+_T("flujo.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_CLASSES, LANG(MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar &Jerarquia de Clases..."),"","",ipre+_T("clases.png"));
 	
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Métodos/Funciones faltantes..."),_T("Ctrl+Shift+H"),_T(""),ipre+_T("copy_code_from_h.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Métodos/Funciones faltantes..."),_T("Ctrl+Shift+H"),"",ipre+_T("copy_code_from_h.png"));
 	
 	wxMenu *comments_menu = new wxMenu;
-	utils->AddItemToMenu(comments_menu, mxID_TOOLS_ALIGN_COMMENTS, LANG(MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS,"&Alinear Comentarios..."),_T(""),_T("Mueve todos los comentarios hacia una determinada columna"),ipre+_T("align_comments.png"));
-	utils->AddItemToMenu(comments_menu, mxID_EDIT_COMMENT, LANG(MENUITEM_TOOLS_COMMENTS_COMMENT,"&Comentar"),_T(""),_T("Convierte el texto seleccionado en comentario anadiendo \"//\" a cada linea"),ipre+_T("comentar.png"));
-	utils->AddItemToMenu(comments_menu, mxID_EDIT_UNCOMMENT, LANG(MENUITEM_TOOLS_COMMENTS_UNCOMMENT,"&Descomentar"),_T(""),_T("Descomente el texto seleccionado eliminando \"//\" de cada linea"),ipre+_T("descomentar.png"));
-	utils->AddItemToMenu(comments_menu, mxID_TOOLS_REMOVE_COMMENTS, LANG(MENUITEM_TOOLS_COMMENTS_DELETE_COMMENTS,"&Eliminar Comentarios"),_T(""),_T("Quita todos los comentarios del codigo fuente o de la seleccion"),ipre+_T("remove_comments.png"));
+	utils->AddItemToMenu(comments_menu, mxID_TOOLS_ALIGN_COMMENTS, LANG(MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS,"&Alinear Comentarios..."),"",_T("Mueve todos los comentarios hacia una determinada columna"),ipre+_T("align_comments.png"));
+	utils->AddItemToMenu(comments_menu, mxID_EDIT_COMMENT, LANG(MENUITEM_TOOLS_COMMENTS_COMMENT,"&Comentar"),"",_T("Convierte el texto seleccionado en comentario anadiendo \"//\" a cada linea"),ipre+_T("comentar.png"));
+	utils->AddItemToMenu(comments_menu, mxID_EDIT_UNCOMMENT, LANG(MENUITEM_TOOLS_COMMENTS_UNCOMMENT,"&Descomentar"),"",_T("Descomente el texto seleccionado eliminando \"//\" de cada linea"),ipre+_T("descomentar.png"));
+	utils->AddItemToMenu(comments_menu, mxID_TOOLS_REMOVE_COMMENTS, LANG(MENUITEM_TOOLS_COMMENTS_DELETE_COMMENTS,"&Eliminar Comentarios"),"",_T("Quita todos los comentarios del codigo fuente o de la seleccion"),ipre+_T("remove_comments.png"));
 	utils->AddSubMenuToMenu(menu.tools, comments_menu,LANG(MENUITEM_TOOLS_COMMENTS,"Coment&arios"),_T("Permite alinear o quitar los comentarios del codigo"),ipre+_T("comments.png"));
 	
 	wxMenu *preproc_menu = new wxMenu;
-	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_EXPAND_MACROS, LANG(MENUITEM_TOOLS_PREPROC_EXPAND_MACROS,"Expandir Macros"),_T("Ctrl+Shift+M"),_T(""),ipre+_T("preproc_expand_macros.png"));
-	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_MARK_VALID, LANG(MENUITEM_TOOLS_PREPROC_MARK_VALID,"Marcar Lineas No Compiladas"),_T("Ctrl+Alt+M"),_T(""),ipre+_T("preproc_mark_valid.png"));
-	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_UNMARK_ALL, LANG(MENUITEM_TOOLS_PREPROC_UNMARK_ALL,"Borrar Marcas"),_T("Ctrl+Alt+Shift+M"),_T(""),ipre+_T("preproc_unmark_all.png"));
+	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_EXPAND_MACROS, LANG(MENUITEM_TOOLS_PREPROC_EXPAND_MACROS,"Expandir Macros"),_T("Ctrl+Shift+M"),"",ipre+_T("preproc_expand_macros.png"));
+	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_MARK_VALID, LANG(MENUITEM_TOOLS_PREPROC_MARK_VALID,"Marcar Lineas No Compiladas"),_T("Ctrl+Alt+M"),"",ipre+_T("preproc_mark_valid.png"));
+	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_UNMARK_ALL, LANG(MENUITEM_TOOLS_PREPROC_UNMARK_ALL,"Borrar Marcas"),_T("Ctrl+Alt+Shift+M"),"",ipre+_T("preproc_unmark_all.png"));
 	preproc_menu->AppendSeparator();
-	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_HELP, LANG(MENUITEM_TOOLS_PREPROC_HELP,"Ayuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_HELP, LANG(MENUITEM_TOOLS_PREPROC_HELP,"Ayuda..."),"","",ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, preproc_menu,LANG(MENUITEM_TOOLS_PREPROC,"Preprocesador"),_T("Muestra información generada por el preprocesador de C++"),ipre+_T("preproc.png"));
 	
-	menu.tools_makefile = utils->AddItemToMenu(menu.tools, mxID_TOOLS_MAKEFILE, LANG(MENUITEM_TOOLS_GENERATE_MAKEFILE,"&Generar Makefile..."),_T(""),_T("Genera el Makefile a partir de los fuentes y la configuracion seleccionada"),ipre+_T("makefile.png"));
+	menu.tools_makefile = utils->AddItemToMenu(menu.tools, mxID_TOOLS_MAKEFILE, LANG(MENUITEM_TOOLS_GENERATE_MAKEFILE,"&Generar Makefile..."),"",_T("Genera el Makefile a partir de los fuentes y la configuracion seleccionada"),ipre+_T("makefile.png"));
 	menu.tools_makefile->Enable(false);
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CONSOLE, LANG(MENUITEM_TOOLS_OPEN_TERMINAL,"Abrir Co&nsola..."),_T(""),_T("Inicia una terminal para interactuar con el interprete de comandos del sistema operativo"),ipre+_T("console.png"));
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_EXE_PROPS, LANG(MENUITEM_TOOLS_EXE_INFO,"&Propiedades del Ejecutable..."),_T(""),_T("Muestra informacion sobre el archivo compilado"),ipre+_T("exeinfo.png"));
-	menu.tools_stats = utils->AddItemToMenu(menu.tools, mxID_TOOLS_PROJECT_STATISTICS, LANG(MENUITEM_TOOLS_PROJECT_STATISTICS,"E&stadisticas del Proyecto..."),_T(""),_T("Muestra informacion estadistica sobre los fuentes y demas archivos del proyecto"),ipre+_T("proystats.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CONSOLE, LANG(MENUITEM_TOOLS_OPEN_TERMINAL,"Abrir Co&nsola..."),"",_T("Inicia una terminal para interactuar con el interprete de comandos del sistema operativo"),ipre+_T("console.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_EXE_PROPS, LANG(MENUITEM_TOOLS_EXE_INFO,"&Propiedades del Ejecutable..."),"",_T("Muestra informacion sobre el archivo compilado"),ipre+_T("exeinfo.png"));
+	menu.tools_stats = utils->AddItemToMenu(menu.tools, mxID_TOOLS_PROJECT_STATISTICS, LANG(MENUITEM_TOOLS_PROJECT_STATISTICS,"E&stadisticas del Proyecto..."),"",_T("Muestra informacion estadistica sobre los fuentes y demas archivos del proyecto"),ipre+_T("proystats.png"));
 	menu.tools_stats->Enable(false);
-	menu.tools_proy_graph = utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_PROJECT, LANG(MENUITEM_TOOLS_DRAW_PROJECT,"Grafo del Proyecto..."),_T(""),_T(""),ipre+_T("draw_project.png"));
+	menu.tools_proy_graph = utils->AddItemToMenu(menu.tools, mxID_TOOLS_DRAW_PROJECT, LANG(MENUITEM_TOOLS_DRAW_PROJECT,"Grafo del Proyecto..."),"","",ipre+_T("draw_project.png"));
 	menu.tools_proy_graph->Enable(false);
 
 	wxMenu *share_menu = new wxMenu;
-	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_OPEN, LANG(MENUITEM_TOOLS_SHARE_OPEN,"&Abrir compartido..."),_T(""),_T("Abre un archivo compartido por otra PC en la red local."),ipre+_T("abrirs.png"));
-	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_SHARE, LANG(MENUITEM_TOOLS_SHARE_SHARE,"&Compartir actual..."),_T(""),_T("Comparte el archivo en la red local."),ipre+_T("compartir.png"));
-	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_LIST, LANG(MENUITEM_TOOLS_SHARE_LIST,"&Ver lista de compartidos propios..."),_T(""),_T("Comparte el archivo en la red local."),ipre+_T("share_list.png"));
+	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_OPEN, LANG(MENUITEM_TOOLS_SHARE_OPEN,"&Abrir compartido..."),"",_T("Abre un archivo compartido por otra PC en la red local."),ipre+_T("abrirs.png"));
+	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_SHARE, LANG(MENUITEM_TOOLS_SHARE_SHARE,"&Compartir actual..."),"",_T("Comparte el archivo en la red local."),ipre+_T("compartir.png"));
+	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_LIST, LANG(MENUITEM_TOOLS_SHARE_LIST,"&Ver lista de compartidos propios..."),"",_T("Comparte el archivo en la red local."),ipre+_T("share_list.png"));
 	share_menu->AppendSeparator();
-	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_HELP, LANG(MENUITEM_TOOLS_SHARE_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de la comparticion de archivos en ZinjaI"),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_HELP, LANG(MENUITEM_TOOLS_SHARE_HELP,"A&yuda..."),"",_T("Muestra ayuda acerca de la comparticion de archivos en ZinjaI"),ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, share_menu,LANG(MENUITEM_TOOLS_SHARE,"Compartir Archivos en la &Red Local"),_T("Permite enviar o recibir codigos fuentes a traves de una red LAN"),ipre+_T("share.png"));
 	
 	wxMenu *diff_menu = new wxMenu;
-	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_TWO, LANG(MENUITEM_TOOLS_DIFF_TWO,"&Dos fuentes abiertos..."),_T(""),_T("Compara dos archivos de texto abiertos y los colorea segun sus diferencias"),ipre+_T("diff_sources.png"));
-	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_DISK, LANG(MENUITEM_TOOLS_DIFF_DISK,"&Fuente actual contra archivo en disco..."),_T(""),_T("Compara un archivo abierto contra un archivo en disco y lo colorea segun sus diferencias"),ipre+_T("diff_source_file.png"));
-	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_HIMSELF, LANG(MENUITEM_TOOLS_DIFF_HIMSELF,"&Cambios en fuente actual contra su version en disco..."),_T(""),_T("Compara un archivos abierto y modificado contra su version en disco y lo colorea segun sus diferencias"),ipre+_T("diff_source_himself.png"));
+	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_TWO, LANG(MENUITEM_TOOLS_DIFF_TWO,"&Dos fuentes abiertos..."),"",_T("Compara dos archivos de texto abiertos y los colorea segun sus diferencias"),ipre+_T("diff_sources.png"));
+	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_DISK, LANG(MENUITEM_TOOLS_DIFF_DISK,"&Fuente actual contra archivo en disco..."),"",_T("Compara un archivo abierto contra un archivo en disco y lo colorea segun sus diferencias"),ipre+_T("diff_source_file.png"));
+	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_HIMSELF, LANG(MENUITEM_TOOLS_DIFF_HIMSELF,"&Cambios en fuente actual contra su version en disco..."),"",_T("Compara un archivos abierto y modificado contra su version en disco y lo colorea segun sus diferencias"),ipre+_T("diff_source_himself.png"));
 	diff_menu->AppendSeparator();
-	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_PREV, LANG(MENUITEM_TOOLS_DIFF_PREV,"Ir a Diferencia Anterior"),_T("Shift+Alt+PageUp"),_T(""),ipre+_T("diff_prev.png"));
-	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_NEXT, LANG(MENUITEM_TOOLS_DIFF_NEXT,"Ir a Siguiente Diferencia"),_T("Shift+Alt+PageDown"),_T(""),ipre+_T("diff_next.png"));
+	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_PREV, LANG(MENUITEM_TOOLS_DIFF_PREV,"Ir a Diferencia Anterior"),_T("Shift+Alt+PageUp"),"",ipre+_T("diff_prev.png"));
+	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_NEXT, LANG(MENUITEM_TOOLS_DIFF_NEXT,"Ir a Siguiente Diferencia"),_T("Shift+Alt+PageDown"),"",ipre+_T("diff_next.png"));
 	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_SHOW, LANG(MENUITEM_TOOLS_DIFF_SHOW,"Mostrar Cambio"),_T("Alt+Shift+Ins"),_T("Muestra en un globo emergente el cambio a aplicar"),ipre+_T("diff_show.png"));
 	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_APPLY, LANG(MENUITEM_TOOLS_DIFF_APPLY,"Apl&icar Cambio"),_T("Alt+Ins"),_T("Aplica el cambio marcado en la linea actual"),ipre+_T("diff_apply.png"));
 	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_DISCARD, LANG(MENUITEM_TOOLS_DIFF_DISCARD,"De&scartar Cambio"),_T("Alt+Del"),_T("Descarta el cambio marcado en la linea actual"),ipre+_T("diff_discard.png"));
 	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_CLEAR, LANG(MENUITEM_TOOLS_DIFF_CLEAR,"&Borrar Marcas"),_T("Alt+Shift+Del"),_T("Quita los colores y marcas que se agregaron en un fuente producto de una comparacion"),ipre+_T("diff_clear.png"));
 	diff_menu->AppendSeparator();
-	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_HELP, LANG(MENUITEM_TOOLS_DIFF_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de la comparacion de fuentes en ZinjaI"),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_HELP, LANG(MENUITEM_TOOLS_DIFF_HELP,"A&yuda..."),"",_T("Muestra ayuda acerca de la comparacion de fuentes en ZinjaI"),ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, diff_menu,LANG(MENUITEM_TOOLS_DIFF,"&Comparar Archivos (diff)"),_T("Muestra opciones para plegar y desplegar codigo en distintos niveles"),ipre+_T("diff.png"));
 
 	wxMenu *doxy_menu = new wxMenu;
 	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_GENERATE, LANG(MENUITEM_TOOLS_DOXYGEN_GENERATE,"&Generar..."),_T("Ctrl+Shift+F1"),_T("Ejecuta doxygen para generar la documentacion de forma automatica"),ipre+_T("doxy_run.png"));
-	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_CONFIG, LANG(MENUITEM_TOOLS_DOXYGEN_CONFIGURE,"&Configurar..."),_T(""),_T("Permite establecer opciones para el archivo de configuracion de doxygen"),ipre+_T("doxy_config.png"));
+	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_CONFIG, LANG(MENUITEM_TOOLS_DOXYGEN_CONFIGURE,"&Configurar..."),"",_T("Permite establecer opciones para el archivo de configuracion de doxygen"),ipre+_T("doxy_config.png"));
 	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_VIEW, LANG(MENUITEM_TOOLS_DOXYGEN_VIEW,"&Ver..."),_T("Ctrl+F1"),_T("Abre un explorador y muestra la documentacion generada"),ipre+_T("doxy_view.png"));
 	doxy_menu->AppendSeparator();
-	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_HELP, LANG(MENUITEM_TOOLS_DOXYGE_HELP,"A&yuda..."),_T(""),_T("Muestra una breve ayuda acerca de la integracion de Doxygen en ZinjaI"),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(doxy_menu,mxID_TOOLS_DOXY_HELP, LANG(MENUITEM_TOOLS_DOXYGE_HELP,"A&yuda..."),"",_T("Muestra una breve ayuda acerca de la integracion de Doxygen en ZinjaI"),ipre+_T("ayuda.png"));
 	menu.tools_doxygen = utils->AddSubMenuToMenu(menu.tools, doxy_menu,LANG(MENUITEM_TOOLS_DOXYGEN,"Generar &Documentación (doxygen)"),_T("Doxygen permite generar automaticamente documentacion a partir del codigo y sus comentarios"),ipre+_T("doxy.png"));
 	menu.tools_doxygen->Enable(false);
 
 	wxMenu *wxfb_menu = new wxMenu;
-	menu.tools_wxfb_config = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_CONFIG, LANG(MENUITEM_TOOLS_WXFB_CONFIG,"Configurar &Integracion con wxFormBuilder..."),_T(""),_T("Añade los pasos necesarios a la compilacion para utilizar wxFormBuilder"),ipre+_T("wxfb_activate.png"));
-	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_NEW_RES, LANG(MENUITEM_TOOLS_WXFB_NEW_RESOURCE,"&Adjuntar un Nuevo Proyecto wxFB..."),_T(""),_T("Crea un nuevo proyecto wxFormBuilder y lo agrega al proyecto en ZinjaI"),ipre+_T("wxfb_new_res.png"));
-	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_LOAD_RES, LANG(MENUITEM_TOOLS_WXFB_LOAD_RESOURCE,"&Adjuntar un Proyecto wxFB Existente..."),_T(""),_T("Agrega un proyecto wxFormBuilder ya existente al proyecto en ZinjaI"),ipre+_T("wxfb_load_res.png"));
+	menu.tools_wxfb_config = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_CONFIG, LANG(MENUITEM_TOOLS_WXFB_CONFIG,"Configurar &Integracion con wxFormBuilder..."),"",_T("Añade los pasos necesarios a la compilacion para utilizar wxFormBuilder"),ipre+_T("wxfb_activate.png"));
+	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_NEW_RES, LANG(MENUITEM_TOOLS_WXFB_NEW_RESOURCE,"&Adjuntar un Nuevo Proyecto wxFB..."),"",_T("Crea un nuevo proyecto wxFormBuilder y lo agrega al proyecto en ZinjaI"),ipre+_T("wxfb_new_res.png"));
+	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_LOAD_RES, LANG(MENUITEM_TOOLS_WXFB_LOAD_RESOURCE,"&Adjuntar un Proyecto wxFB Existente..."),"",_T("Agrega un proyecto wxFormBuilder ya existente al proyecto en ZinjaI"),ipre+_T("wxfb_load_res.png"));
 	menu.tools_wxfb_regen = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_REGEN, LANG(MENUITEM_TOOLS_WXFB_REGENERATE,"&Regenerar Proyectos wxFB"),_T("Shift+Alt+F9"),_T("Ejecuta wxFormBuilder para regenerar los archivos de recurso o fuentes que correspondan"),ipre+_T("wxfb_regen.png"));
-	menu.tools_wxfb_inherit = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_INHERIT_CLASS, LANG(MENUITEM_TOOLS_WXFB_INHERIT,"&Generar Clase Heredada..."),_T(""),_T("Genera una nueva clase a partir de las definidas por algun proyecto wxfb"),ipre+_T("wxfb_inherit.png"));
-	menu.tools_wxfb_update_inherit = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_UPDATE_INHERIT, LANG(MENUITEM_TOOLS_WXFB_UPDATE_INHERIT,"Act&ualizar Clase Heredada..."),_T(""),_T("Actualiza los metodos de una clase que hereda de las definidas por algun proyecto wxfb"),ipre+_T("wxfb_update_inherit.png"));
+	menu.tools_wxfb_inherit = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_INHERIT_CLASS, LANG(MENUITEM_TOOLS_WXFB_INHERIT,"&Generar Clase Heredada..."),"",_T("Genera una nueva clase a partir de las definidas por algun proyecto wxfb"),ipre+_T("wxfb_inherit.png"));
+	menu.tools_wxfb_update_inherit = utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_UPDATE_INHERIT, LANG(MENUITEM_TOOLS_WXFB_UPDATE_INHERIT,"Act&ualizar Clase Heredada..."),"",_T("Actualiza los metodos de una clase que hereda de las definidas por algun proyecto wxfb"),ipre+_T("wxfb_update_inherit.png"));
 	wxfb_menu->AppendSeparator();
-	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_HELP_WX, LANG(MENUITEM_TOOLS_WXFB_REFERENCE,"Referencia &wxWidgets..."),_T(""),_T("Muestra la ayuda de la biblioteca wxWidgets"),ipre+_T("ayuda_wx.png"));
-	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_HELP, LANG(MENUITEM_TOOLS_WXFB_HELP,"A&yuda wxFB..."),_T(""),_T("Muestra una breve ayuda acerca de la integracion de wxFormBuilder en ZinjaI"),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_HELP_WX, LANG(MENUITEM_TOOLS_WXFB_REFERENCE,"Referencia &wxWidgets..."),"",_T("Muestra la ayuda de la biblioteca wxWidgets"),ipre+_T("ayuda_wx.png"));
+	utils->AddItemToMenu(wxfb_menu,mxID_TOOLS_WXFB_HELP, LANG(MENUITEM_TOOLS_WXFB_HELP,"A&yuda wxFB..."),"",_T("Muestra una breve ayuda acerca de la integracion de wxFormBuilder en ZinjaI"),ipre+_T("ayuda.png"));
 	menu.tools_wxfb = utils->AddSubMenuToMenu(menu.tools, wxfb_menu,LANG(MENUITEM_TOOLS_WXFB,"Diseñar &Interfases (wxFormBuilder)"),_T("Diseño visual de interfaces con la biblioteca wxWidgets"),ipre+_T("wxfb.png"));
 	menu.tools_wxfb->Enable(false);
 
 	wxMenu *cppcheck_menu = new wxMenu;
-	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_RUN, LANG(MENUITEM_TOOLS_CPPCHECK_RUN,"Iniciar..."),_T(""),_T(""),ipre+_T("cppcheck_run.png"));
-	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_CONFIG, LANG(MENUITEM_TOOLS_CPPCHECK_CONFIG,"Configurar..."),_T(""),_T(""),ipre+_T("cppcheck_config.png"));
-	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_VIEW, LANG(MENUITEM_TOOLS_CPPCHECK_VIEW,"Mostrar Panel de Resultados"),_T(""),_T(""),ipre+_T("cppcheck_view.png"));
+	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_RUN, LANG(MENUITEM_TOOLS_CPPCHECK_RUN,"Iniciar..."),"","",ipre+_T("cppcheck_run.png"));
+	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_CONFIG, LANG(MENUITEM_TOOLS_CPPCHECK_CONFIG,"Configurar..."),"","",ipre+_T("cppcheck_config.png"));
+	utils->AddItemToMenu(cppcheck_menu, mxID_TOOLS_CPPCHECK_VIEW, LANG(MENUITEM_TOOLS_CPPCHECK_VIEW,"Mostrar Panel de Resultados"),"","",ipre+_T("cppcheck_view.png"));
 	cppcheck_menu->AppendSeparator();
-	utils->AddItemToMenu(cppcheck_menu,mxID_TOOLS_CPPCHECK_HELP, LANG(MENUITEM_TOOLS_CPPCHECK_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));
-	menu.tools_cppcheck = utils->AddSubMenuToMenu(menu.tools, cppcheck_menu,LANG(MENUITEM_TOOLS_CPPCHECK,"Análisis Estático (cppcheck)"),_T(""),ipre+_T("cppcheck.png"));
+	utils->AddItemToMenu(cppcheck_menu,mxID_TOOLS_CPPCHECK_HELP, LANG(MENUITEM_TOOLS_CPPCHECK_HELP,"A&yuda..."),"","",ipre+_T("ayuda.png"));
+	menu.tools_cppcheck = utils->AddSubMenuToMenu(menu.tools, cppcheck_menu,LANG(MENUITEM_TOOLS_CPPCHECK,"Análisis Estático (cppcheck)"),"",ipre+_T("cppcheck.png"));
 	menu.tools_cppcheck->Enable(false);
 	
 	wxMenu *gprof_menu = new wxMenu;
-	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SET, LANG(MENUITEM_TOOLS_GPROF_ACTIVATE,"Habilitar/Deshabilitar"),_T(""),_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("comp_for_prof.png"));
+	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SET, LANG(MENUITEM_TOOLS_GPROF_ACTIVATE,"Habilitar/Deshabilitar"),"",_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("comp_for_prof.png"));
 	wxMenu *gprof_gv_menu = new wxMenu;
-	menu.tools_gprof_dot = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_DOT, LANG(MENUITEM_TOOLS_GPROF_DOT,"dot"),_T(""),_T("dot"),config->Init.graphviz_dot);
-	menu.tools_gprof_fdp = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_FDP, LANG(MENUITEM_TOOLS_GPROF_FDP,"fdp"),_T(""),_T("fdp"),!config->Init.graphviz_dot);
+	menu.tools_gprof_dot = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_DOT, LANG(MENUITEM_TOOLS_GPROF_DOT,"dot"),"",_T("dot"),config->Init.graphviz_dot);
+	menu.tools_gprof_fdp = utils->AddCheckToMenu(gprof_gv_menu, mxID_TOOLS_GPROF_FDP, LANG(MENUITEM_TOOLS_GPROF_FDP,"fdp"),"",_T("fdp"),!config->Init.graphviz_dot);
 	utils->AddSubMenuToMenu(gprof_menu, gprof_gv_menu,LANG(MENUITEM_TOOLS_GPROF_LAYOUT,"Algoritmo de Dibujo"),_T("Permite seleccionar entre dos algoritmos diferentes para dibujar el grafo"),ipre+_T("dotfdp.png"));
-	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SHOW, LANG(MENUITEM_TOOLS_GPROF_SHOW,"Visualizar Resultados (grafo)..."),_T(""),_T("Muestra graficamente la informacion de profiling de la ultima ejecucion."),ipre+_T("showgprof.png"));
-	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_LIST, LANG(MENUITEM_TOOLS_GPROF_LIST,"Listar Resultados (texto)"),_T(""),_T("Muestra la informacion de profiling de la ultima ejecucion sin procesar."),ipre+_T("listgprof.png"));
+	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_SHOW, LANG(MENUITEM_TOOLS_GPROF_SHOW,"Visualizar Resultados (grafo)..."),"",_T("Muestra graficamente la informacion de profiling de la ultima ejecucion."),ipre+_T("showgprof.png"));
+	utils->AddItemToMenu(gprof_menu, mxID_TOOLS_GPROF_LIST, LANG(MENUITEM_TOOLS_GPROF_LIST,"Listar Resultados (texto)"),"",_T("Muestra la informacion de profiling de la ultima ejecucion sin procesar."),ipre+_T("listgprof.png"));
 	gprof_menu->AppendSeparator();
-	utils->AddItemToMenu(gprof_menu,mxID_TOOLS_GPROF_HELP, LANG(MENUITEM_TOOLS_GPROF_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion de profiling"),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(gprof_menu,mxID_TOOLS_GPROF_HELP, LANG(MENUITEM_TOOLS_GPROF_HELP,"A&yuda..."),"",_T("Muestra ayuda acerca de como generar e interpretar la informacion de profiling"),ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, gprof_menu,LANG(MENUITEM_TOOLS_GPROF,"Perfil de Ejecución (gprof)"),_T("Gprof permite analizar las llamadas a funciones y sus tiempos de ejecucion."),ipre+_T("gprof.png"));
 	
 	wxMenu *gcov_menu = new wxMenu;
-	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SET, LANG(MENUITEM_TOOLS_GCOV_ACTIVATE,"Habilitar/Deshabilitar"),_T(""),_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("gcov_set.png"));
-	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SHOW, LANG(MENUITEM_TOOLS_GCOV_SHOW_BAR,"Mostrar barra de resultados"),_T(""),_T("Muestra un panel con los conteos por linea en el margen izquierdo de la ventana."),ipre+_T("gcov_show.png"));
-	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_RESET, LANG(MENUITEM_TOOLS_GCOV_RESET,"Eliminar resultados"),_T(""),_T("Elimina los archivos de resultados generados por el test de cobertura."),ipre+_T("gcov_reset.png"));
+	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SET, LANG(MENUITEM_TOOLS_GCOV_ACTIVATE,"Habilitar/Deshabilitar"),"",_T("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable."),ipre+_T("gcov_set.png"));
+	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_SHOW, LANG(MENUITEM_TOOLS_GCOV_SHOW_BAR,"Mostrar barra de resultados"),"",_T("Muestra un panel con los conteos por linea en el margen izquierdo de la ventana."),ipre+_T("gcov_show.png"));
+	utils->AddItemToMenu(gcov_menu, mxID_TOOLS_GCOV_RESET, LANG(MENUITEM_TOOLS_GCOV_RESET,"Eliminar resultados"),"",_T("Elimina los archivos de resultados generados por el test de cobertura."),ipre+_T("gcov_reset.png"));
 	gcov_menu->AppendSeparator();
-	utils->AddItemToMenu(gcov_menu,mxID_TOOLS_GCOV_HELP, LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda..."),_T(""),_T("Muestra ayuda acerca de como generar e interpretar la informacion del test de cobertura"),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(gcov_menu,mxID_TOOLS_GCOV_HELP, LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda..."),"",_T("Muestra ayuda acerca de como generar e interpretar la informacion del test de cobertura"),ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, gcov_menu,LANG(MENUITEM_TOOLS_GCOV,"&Test de Cobertura (experimental, gcov)"),_T("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente."),ipre+_T("gcov.png"));
 
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxMenu *valgrind_menu = new wxMenu;
-	utils->AddItemToMenu(valgrind_menu, mxID_TOOLS_VALGRIND_RUN, LANG(MENUITEM_TOOLS_VALGRIND_RUN,"Ejecutar..."),_T(""),_T(""),ipre+_T("valgrind_run.png"));
-	utils->AddItemToMenu(valgrind_menu, mxID_TOOLS_VALGRIND_VIEW, LANG(MENUITEM_TOOLS_VALGRIND_VIEW,"Mostrar Panel de Resultados"),_T(""),_T(""),ipre+_T("valgrind_view.png"));
+	utils->AddItemToMenu(valgrind_menu, mxID_TOOLS_VALGRIND_RUN, LANG(MENUITEM_TOOLS_VALGRIND_RUN,"Ejecutar..."),"","",ipre+_T("valgrind_run.png"));
+	utils->AddItemToMenu(valgrind_menu, mxID_TOOLS_VALGRIND_VIEW, LANG(MENUITEM_TOOLS_VALGRIND_VIEW,"Mostrar Panel de Resultados"),"","",ipre+_T("valgrind_view.png"));
 	valgrind_menu->AppendSeparator();
-	utils->AddItemToMenu(valgrind_menu,mxID_TOOLS_VALGRIND_HELP, LANG(MENUITEM_TOOLS_VALGRIND_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));
+	utils->AddItemToMenu(valgrind_menu,mxID_TOOLS_VALGRIND_HELP, LANG(MENUITEM_TOOLS_VALGRIND_HELP,"A&yuda..."),"","",ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, valgrind_menu,LANG(MENUITEM_TOOLS_VALGRIND,"Análisis Dinámico (valgrind)"),_T("Valgrind permite analizar el uso de memoria dinamica para detectar perdidas y otros errores"),ipre+_T("valgrind.png"));
 #endif
 
-	utils->AddSubMenuToMenu(menu.tools, menu.tools_custom_menu = new wxMenu,LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables"),_T(""),ipre+_T("customTools.png"));
+	utils->AddSubMenuToMenu(menu.tools, menu.tools_custom_menu = new wxMenu,LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables"),"",ipre+_T("customTools.png"));
 	menu.tools_custom_item=new wxMenuItem*[10];
 	for (int i=0;i<10;i++) menu.tools_custom_item[i] = NULL;
 	menu.tools_custom_menu->AppendSeparator();
-	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS,"&Configurar (generales)..."),_T(""),_T(""),ipre+_T("customToolsSettings.png"));
-	menu.tools_project_tools = utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_PROJECT_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS,"&Configurar (de proyecto)..."),_T(""),_T(""),ipre+_T("projectToolsSettings.png"));
+	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS,"&Configurar (generales)..."),"","",ipre+_T("customToolsSettings.png"));
+	menu.tools_project_tools = utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_PROJECT_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS,"&Configurar (de proyecto)..."),"","",ipre+_T("projectToolsSettings.png"));
 	menu.tools_project_tools->Enable(false);
-	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda..."),_T(""),_T(""),ipre+_T("ayuda.png"));	
+	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda..."),"","",ipre+_T("ayuda.png"));	
 	UpdateCustomTools(false);
 	
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CREATE_TEMPLATE, LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),_T(""),_T("Permite guardar el programa simple o proyecto actual como plantilla"),ipre+_T("create_template.png"));
-	utils->AddItemToMenu(menu.tools, mxID_TOOLS_INSTALL_COMPLEMENTS, LANG(MENUITEM_TOOLS_INSTALL_COMPLEMENTS,"Instalar Complementos..."),_T(""),_T("Permite instalar un complemento ya descargado para ZinjaI"),ipre+_T("updates.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CREATE_TEMPLATE, LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),"",_T("Permite guardar el programa simple o proyecto actual como plantilla"),ipre+_T("create_template.png"));
+	utils->AddItemToMenu(menu.tools, mxID_TOOLS_INSTALL_COMPLEMENTS, LANG(MENUITEM_TOOLS_INSTALL_COMPLEMENTS,"Instalar Complementos..."),"",_T("Permite instalar un complemento ya descargado para ZinjaI"),ipre+_T("updates.png"));
 	
 	menu.menu->Append(menu.tools, LANG(MENUITEM_TOOLS,"&Herramientas"));
 
 	menu.help = new wxMenu;
-	utils->AddItemToMenu(menu.help,mxID_HELP_ABOUT, LANG(MENUITEM_HELP_ABOUT,"Acerca de..."),_T(""),_T("Acerca de..."),ipre+_T("acercaDe.png"));
-	utils->AddItemToMenu(menu.help,mxID_HELP_TUTORIAL, LANG(MENUITEM_HELP_TUTORIALS,"Tutoriales..."),_T(""),_T("Abre el cuadro de ayuda y muestra el indice de tutoriales disponibles"),ipre+_T("tutoriales.png"));
+	utils->AddItemToMenu(menu.help,mxID_HELP_ABOUT, LANG(MENUITEM_HELP_ABOUT,"Acerca de..."),"",_T("Acerca de..."),ipre+_T("acercaDe.png"));
+	utils->AddItemToMenu(menu.help,mxID_HELP_TUTORIAL, LANG(MENUITEM_HELP_TUTORIALS,"Tutoriales..."),"",_T("Abre el cuadro de ayuda y muestra el indice de tutoriales disponibles"),ipre+_T("tutoriales.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_GUI, LANG(MENUITEM_HELP_ZINJAI,"Ayuda sobre ZinjaI..."),_T("F1"),_T("Muestra la ayuda sobre el uso y las caracteristicas de este entorno..."),ipre+_T("ayuda.png"));
 	utils->AddItemToMenu(menu.help,mxID_HELP_CPP, LANG(MENUITEM_HELP_CPP,"Referencia C/C++..."),_T("Alt+F1"),_T("Muestra una completa referencia sobre el lenguaje"),ipre+_T("referencia.png"));
-	utils->AddItemToMenu(menu.help,mxID_HELP_TIP, LANG(MENUITEM_HELP_TIPS,"&Mostrar sugerencias de uso..."),_T(""),_T("Muestra sugerencias sobre el uso del programa..."),ipre+_T("tip.png"));
-	utils->AddItemToMenu(menu.help,mxID_HELP_OPINION, LANG(MENUITEM_HELP_OPINION,"Enviar sugerencia o reportar error..."),_T(""),_T("Permite acceder a los foros oficiales de ZinjaI para dejar sugerencias, comentarios o reportar errores"),ipre+_T("opinion.png"));
-	utils->AddItemToMenu(menu.help,mxID_HELP_UPDATES, LANG(MENUITEM_HELP_UPDATES,"&Buscar actualizaciones..."),_T(""),_T("Comprueba a traves de Internet si hay versiones mas recientes de ZinjaI disponibles..."),ipre+_T("updates.png"));
+	utils->AddItemToMenu(menu.help,mxID_HELP_TIP, LANG(MENUITEM_HELP_TIPS,"&Mostrar sugerencias de uso..."),"",_T("Muestra sugerencias sobre el uso del programa..."),ipre+_T("tip.png"));
+	utils->AddItemToMenu(menu.help,mxID_HELP_OPINION, LANG(MENUITEM_HELP_OPINION,"Enviar sugerencia o reportar error..."),"",_T("Permite acceder a los foros oficiales de ZinjaI para dejar sugerencias, comentarios o reportar errores"),ipre+_T("opinion.png"));
+	utils->AddItemToMenu(menu.help,mxID_HELP_UPDATES, LANG(MENUITEM_HELP_UPDATES,"&Buscar actualizaciones..."),"",_T("Comprueba a traves de Internet si hay versiones mas recientes de ZinjaI disponibles..."),ipre+_T("updates.png"));
 	menu.menu->Append(menu.help, LANG(MENUITEM_HELP,"A&yuda"));
 
 	SetMenuBar(menu.menu);
@@ -1692,7 +1692,7 @@ void mxMainWindow::CreateMenus() {
 void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 #define _aux_ctb_new(name) toolbar_##name = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | (config->Toolbars.positions.name.top?wxTB_HORIZONTAL:wxTB_VERTICAL));
 #define _aux_ctb_aui(name,label) aui_manager.AddPane(toolbar_##name, wxAuiPaneInfo().Name("toolbar_"#name).Caption(label).ToolbarPane().Hide());
-	wxString ipre=DIR_PLUS_FILE(wxString()<<config->Toolbars.icon_size,_T(""));
+	wxString ipre=DIR_PLUS_FILE(wxString()<<config->Toolbars.icon_size,"");
 	if (wich_one) {
 		if (delete_old) { 
 #define _aux_ctb_redo(name,label) if (wich_one == toolbar_##name) { \
@@ -1720,7 +1720,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 					"Para modificarlo utilice el cuadro de Preferencias (menu Archivo).",wxString()<<icsz),
 				LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 			config->Toolbars.icon_size=16;
-			ipre=DIR_PLUS_FILE(_T("16"),_T(""));
+			ipre=DIR_PLUS_FILE(_T("16"),"");
 		}
 		
 #define _aux_ctb_init(name,label) _aux_ctb_new(name); toolbar_##name->SetToolBitmapSize(wxSize(config->Toolbars.icon_size,config->Toolbars.icon_size)); _aux_ctb_aui(name,label)
@@ -1965,7 +1965,7 @@ void mxMainWindow::CreateToolbars(wxToolBar *wich_one, bool delete_old) {
 
 		toolbar_status = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
 		toolbar_status->SetToolBitmapSize(wxSize(ICON_SIZE,ICON_SIZE));
-		toolbar_status->AddControl( toolbar_status_text = new wxStaticText(toolbar_status,wxID_ANY,_T(""),wxDefaultPosition,wxSize(2500,20)) );
+		toolbar_status->AddControl( toolbar_status_text = new wxStaticText(toolbar_status,wxID_ANY,"",wxDefaultPosition,wxSize(2500,20)) );
 		toolbar_status_text->SetForegroundColour(wxColour(_T("Z DARK BLUE")));
 		_aux_ctb_realize(toolbar_status);
 		aui_manager.AddPane(toolbar_status, wxAuiPaneInfo().Name("toolbar_status").Caption(LANG(CAPTION_TOOLBAR_STATUS,"Status Toolbar")).ToolbarPane().Top().Hide());
@@ -2321,7 +2321,7 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 			compiler->CompileSource(source,true,false);
 		} else { // si estaba guardado ver si cambio
 			// si es un .h, preguntar si no es mejor ejecutar un cpp
-			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(_T("")):source->source_filename.GetExt().MakeUpper();
+			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeUpper();
 			if (ext==_T("H") || ext==_T("HPP") || ext==_T("HXX") || ext==_T("H++")) {
 				if (source->GetModify())
 					source->SaveSource();
@@ -2423,16 +2423,16 @@ void mxMainWindow::RunSource (mxSource *source) {
 	wxString exe_pref;
 #if !defined(_WIN32) && !defined(__WIN32__)
 	if (compiler->valgrind_cmd.Len())
-		exe_pref = compiler->valgrind_cmd+_T(" ");
+		exe_pref = compiler->valgrind_cmd+" ";
 #endif
 	
 	wxString command(config->Files.terminal_command);
 	command.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
 	if (command.Len()!=0) {
-		if (command==_T(" ")) 
-			command=_T("");
+		if (command==" ") 
+			command="";
 		else if (command[command.Len()-1]!=' ') 
-			command<<_T(" ");
+			command<<" ";
 	}
 	command<<_T("\"")<<config->Files.runner_command<<_T("\" ");
 	command<<_T("-lang \"")<<config->Init.language_file<<_T("\" ");
@@ -2453,7 +2453,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 		}
 		if (res&AD_REMEMBER) {
 			source->config_running.always_ask_args=false;
-			if (res&AD_EMPTY) source->exec_args=_T("");
+			if (res&AD_EMPTY) source->exec_args="";
 		}
 	} else if (source->exec_args.Len())
 		command<<' '<<source->exec_args;	
@@ -3237,7 +3237,7 @@ mxSource *mxMainWindow::FindSource(wxFileName filename, int *pos) {
 **/
 mxSource *mxMainWindow::OpenFile (const wxString &filename, bool add_to_project) {
 	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
-	if (filename==_T("") || !wxFileName::FileExists(filename))
+	if (filename=="" || !wxFileName::FileExists(filename))
 		return NULL;
 	
 	if (project && project->GetWxfbActivated() && filename.Len()>4 && filename.Mid(filename.Len()-4).CmpNoCase(_T(".fbp"))==0) {
@@ -3414,7 +3414,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 			if (multiple && (*multiple)&(always_attach|never_attach)) {
 				attach=(*multiple)&always_attach;
 			} else {
-				int ans1=mxMessageDialog(main_window,LANG(MAINW_ADD_TO_PROJECT_QUESTION,"¿Desea agregar el archivo al proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):_T(""),false).ShowModal();
+				int ans1=mxMessageDialog(main_window,LANG(MAINW_ADD_TO_PROJECT_QUESTION,"¿Desea agregar el archivo al proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",false).ShowModal();
 				attach=ans1&mxMD_YES;
 				if (multiple && ans1&mxMD_CHECKED) (*multiple)|=(attach?always_attach:never_attach);
 			}
@@ -3432,7 +3432,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 					if (multiple && (*multiple)&(always_move|never_move)) {
 						move=(*multiple)&always_move;
 					} else {
-						int ans2=mxMessageDialog(main_window,LANG(MAINW_MOVE_TO_PROJECT_PATH_QUESTION,"El archivo que intenta agregar no se encuentra en el directorio del proyecto.\n¿Desea copiar el archivo al directorio del proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):_T(""),false).ShowModal();
+						int ans2=mxMessageDialog(main_window,LANG(MAINW_MOVE_TO_PROJECT_PATH_QUESTION,"El archivo que intenta agregar no se encuentra en el directorio del proyecto.\n¿Desea copiar el archivo al directorio del proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",false).ShowModal();
 						move=ans2&mxMD_YES;
 						if (multiple && ans2&mxMD_CHECKED) (*multiple)|=(move?always_move:never_move);
 					}
@@ -3441,7 +3441,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 						if (multiple && (*multiple)|(always_replace|never_replace)) {
 							replace=(*multiple)|always_replace;
 						} else {
-							int ans3=mxMessageDialog(main_window,LANG(MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION,"El archivo ya existe en el directorio de proyecto.\n¿Desea reemplazarlo?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):_T(""),true).ShowModal();
+							int ans3=mxMessageDialog(main_window,LANG(MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION,"El archivo ya existe en el directorio de proyecto.\n¿Desea reemplazarlo?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",true).ShowModal();
 							replace=(!(ans3&mxMD_YES));
 							if (multiple && ans3&mxMD_CHECKED) (*multiple)|=(replace?always_replace:never_replace);
 						}
@@ -3506,7 +3506,7 @@ void mxMainWindow::UpdateInHistory(wxString filename) {
 }
 
 void mxMainWindow::OnFileOpen (wxCommandEvent &event) {
-	wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, _T(" "), _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+	wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 	dlg.SetWildcard(_T("Archivos de C/C++ y Proyectos|"WILDCARD_CPP_EXT"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Proyectos|"WILDCARD_PROJECT"|Todos los archivos|*"));
 	if (dlg.ShowModal() == wxID_OK) {
 		if (project)
@@ -3581,7 +3581,7 @@ void mxMainWindow::OnFileNew (wxCommandEvent &event) {
 	} else 
 		switch (config->Init.new_file){
 			case 0:
-				NewFileFromText(_T(""));
+				NewFileFromText("");
 				break;
 			case 1:
 				main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
@@ -3637,7 +3637,7 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 			}
 			line = file.GetNextLine();
 		}
-		if (line!=_T(""))
+		if (line!="")
 			source->AppendText(line+_T("\n"));
 		while (!file.Eof()) 
 			source->AppendText(file.GetNextLine()+_T("\n"));
@@ -3877,11 +3877,11 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 			mxMessageDialog(main_window,LANG(MAINW_INSERT_HEADIR_NO_WORD,"Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
 			return;
 		} else { // conseguir el h y darselo al source para que haga lo que corresponda
-			wxString header = code_helper->GetInclude(source->sin_titulo?wxString(_T("")):source->source_filename.GetPathWithSep(),key);
+			wxString header = code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),key);
 			if (!header.Len()) {
 				wxString bkey=key, type = source->FindTypeOf(e-1,s);
 				if ( s!=SRC_PARSING_ERROR && type.Len() ) {
-					header = code_helper->GetInclude(source->sin_titulo?wxString(_T("")):source->source_filename.GetPathWithSep(),type);
+					header = code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),type);
 				} else { // buscar el scope y averiguar si es algo de la clase
 					type = source->FindScope(s);
 					if (type.Len()) {
@@ -3892,7 +3892,7 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 						type=code_helper->GetGlobalType(bkey,s);
 					}
 					if (type.Len()) {
-						header=code_helper->GetInclude(source->sin_titulo?wxString(_T("")):source->source_filename.GetPathWithSep(),type);
+						header=code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),type);
 					}
 				}
 			}
@@ -3945,7 +3945,7 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 		if (!cual.Len()) return;
 	}
 	if (cual==otro) 
-		mxGetTextFromUser(_T("PID:"),_T("Adjuntar Depurador"),_T(""),this).ToLong(&dpid);
+		mxGetTextFromUser(_T("PID:"),_T("Adjuntar Depurador"),"",this).ToLong(&dpid);
 	else
 		cual.BeforeFirst(' ').ToLong(&dpid);
 	if (!dpid) return;
@@ -3981,7 +3981,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 		} else IF_THERE_IS_SOURCE {
 			mxSource *source=CURRENT_SOURCE;
 			// si es un .h, preguntar si no es mejor ejecutar un cpp
-			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(_T("")):source->source_filename.GetExt().MakeUpper();
+			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeUpper();
 			if (ext==_T("H") || ext==_T("HPP") || ext==_T("HXX") || ext==_T("H++")) {
 				if (source->GetModify())
 					source->SaveSource();
@@ -4085,7 +4085,7 @@ void mxMainWindow::OnDebugStepOver ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugReturn ( wxCommandEvent &event ) {
 	if (debug->debugging && !debug->waiting) {
 		wxString res;
-		if (mxGetTextFromUser(res,LANG(DEBUG_RETURN_VALUE,"Valor de retorno:"), LANG(DEBUG_RETURN_FROM_FUNCTION,"Salir de la funcion") , _T(""), this))
+		if (mxGetTextFromUser(res,LANG(DEBUG_RETURN_VALUE,"Valor de retorno:"), LANG(DEBUG_RETURN_FROM_FUNCTION,"Salir de la funcion") , "", this))
 			debug->Return(res);
 	}
 }
@@ -4427,7 +4427,7 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 	if (stext.Len()==0)
 		return;
 	if (!project && stext==_T("Cuack Attack!")) { // are you looking for a duck?
-		toolbar_find_text->SetValue(_T(""));
+		toolbar_find_text->SetValue("");
 		NewFileFromText(_T(
 "#include <iostream>\n#include <cstdlib>\n#include <ctime>\nusing namespace std;\n"
 "char *cuack() {\nstatic char cuack[] = \"cuack\";\nfor (int i=0;i<4;i++)\nif (rand()%2)\ncuack[i]=cuack[i]|32;\nelse\ncuack[i]=cuack[i]&(~32);\nreturn cuack;\n}\n"
@@ -4573,7 +4573,7 @@ void mxMainWindow::OnExplorerTreePopup(wxTreeEvent &event) {
 	
 	explorer_tree.selected_item = event.GetItem();
 	
-	wxMenu menu(_T(""));
+	wxMenu menu("");
 	if (explorer_tree.selected_item==explorer_tree.root) {
 		menu.Append(mxID_EXPLORER_POPUP_CHANGE_PATH, LANG(MAINW_EXPLORER_POPUP_CHANGE_PATH,"&Cambiar Ubicacion..."));
 		menu.Append(mxID_EXPLORER_POPUP_PATH_UP, LANG(MAINW_EXPLORER_POPUP_LEVEL_UP,"&Subir un Nivel"));
@@ -4798,7 +4798,7 @@ void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 		GlobalListIterator<project_file_item*> fi(&project->files_all);
 		while (fi.IsValid()) {
 			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
-			restmp=_T("");
+			restmp="";
 			for(int i=0;i<markers_list.GetSize();i++)
 				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
 			res<<restmp;	
@@ -4851,7 +4851,7 @@ void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()>0||project) {
 		if (!debug->debugging && (project || notebook_sources->GetPageCount())) {
 			wxString dir = project?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):CURRENT_SOURCE->working_folder.GetFullPath();
-			wxFileDialog dlg (this, _T("Abrir Archivo"), dir, _T(" "), _T("Volcados de memoria|core*|Todos los Archivos|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+			wxFileDialog dlg (this, _T("Abrir Archivo"), dir, " ", _T("Volcados de memoria|core*|Todos los Archivos|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (dlg.ShowModal() == wxID_OK)
 				debug->LoadCoreDump(dlg.GetPath(),project?NULL:CURRENT_SOURCE);
 		} else if (debug->debugging && !debug->waiting) {
@@ -5518,7 +5518,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 		int endpos = source->PositionFromLine(line);
 		int startpos = source->PositionFromLine(line-1);
 		int pos;
-		if (keyword!=_T("") && keyword!=error) {
+		if (keyword!="" && keyword!=error) {
 			pos=source->FindText(startpos,endpos,keyword,wxSTC_FIND_MATCHCASE|wxSTC_FIND_WHOLEWORD);
 			if (pos>=0) {
 				found=true;

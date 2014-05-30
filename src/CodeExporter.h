@@ -14,8 +14,8 @@ private:
 		wxString bgcolor, fgcolor;
 		style_def() {
 			bold=italic=underline=false;
-			bgcolor=_T("#000000");
-			fgcolor=_T("#000000");
+			bgcolor="#000000";
+			fgcolor="#000000";
 			used=false;
 		}
 	} styles[128];

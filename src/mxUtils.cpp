@@ -243,15 +243,15 @@ wxTextCtrl *mxUtils::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStr
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxString()<<n, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
-	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(" "), wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
+	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+" ", wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
 	sizerRow->Add(textctrl, sizers->Exp1);
-	sizerRow->Add(new wxStaticText(panel, wxID_ANY, wxString(_T(" "))<<foot, wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
+	sizerRow->Add(new wxStaticText(panel, wxID_ANY, wxString(" ")<<foot, wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
 	return textctrl;
 }
 
 wxComboBox *mxUtils::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID id, bool margin) {
-	wxString sdef=def==-1?_T(""):values[def];
+	wxString sdef=def==-1?"":values[def];
 	wxComboBox *combo = new wxComboBox(panel, id, sdef, wxDefaultPosition, wxDefaultSize, values, wxCB_READONLY);
 	combo->SetSelection(def);
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
@@ -327,10 +327,10 @@ wxString mxUtils::FindObjectDeps(wxFileName filename, wxString ref_path, wxArray
 	for(unsigned int i=0;i<already_processed.GetCount();i++) { 
 		file_name=already_processed[i];
 		file_name.MakeRelativeTo(ref_path);
-		deps+=file_name.GetFullPath()+_T(" ");
+		deps+=file_name.GetFullPath()+" ";
 	}
 	if (deps.Len()==0) 
-		return _T("");
+		return "";
 	else
 		return deps.RemoveLast();
 }
@@ -467,7 +467,7 @@ wxString mxUtils::Split(wxString str, wxString pre) {
 			i++;
 		}
 		if (s<i)
-			ret<<pre<<str.Mid(s,i-s)<<_T(" ");
+			ret<<pre<<str.Mid(s,i-s)<<" ";
 	}
 	return ret;
 }
@@ -619,7 +619,7 @@ wxString mxUtils::ToHtml(wxString text, bool full) {
 	static wxString tabs;
 	static int tabs_n;
 	if (tabs_n!=config->Source.tabWidth) {
-		tabs=_T("");
+		tabs="";
 		for (int i=0;i<config->Source.tabWidth;i++)
 			tabs<<_T("&nbsp;");
 		tabs_n=config->Source.tabWidth;
@@ -630,10 +630,10 @@ wxString mxUtils::ToHtml(wxString text, bool full) {
 	text.Replace(_T(">"),_T("&gt;"));
 	text.Replace(_T("\n"),_T("<BR>"));
 	if (full) {
-		wxChar doce[]=_T(" ");
+		wxChar doce[]=" ";
 		doce[0]=12;
 		text.Replace(doce,_T("<BR>"));
-		text.Replace(_T(" "),_T("&nbsp;"));
+		text.Replace(" ",_T("&nbsp;"));
 	}
 	return text;
 }
@@ -699,7 +699,7 @@ wxString mxUtils::GetOnePath(wxString orig_path, wxString project_path, wxString
 				return theone;
 		} while (hi<header_dirs.GetCount());
 	}
-	return _T("");
+	return "";
 }
 
 /**

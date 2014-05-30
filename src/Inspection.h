@@ -139,7 +139,7 @@ public:
 //				p2++;
 //			wxString name = ans.SubString(p+6,p2-1);
 //			ans.Remove(0,p2);
-//			p = ans.Find(_T("in_scope="));
+//			p = ans.Find("in_scope=");
 //			if (p!=wxNOT_FOUND && ans[p+10]=='f') {
 //				for (unsigned int i=0;i<inspections.size();i++)
 //					if (inspections[i].on_scope && inspections[i].name==name && inspections[i].is_vo) {
@@ -148,12 +148,12 @@ public:
 //							inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
 //							if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
 //						}
-//						inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T(""));
+//						inspection_grid->SetCellValue(i,IG_COL_LEVEL,"");
 //						inspection_grid->SetReadOnly(i,IG_COL_VALUE,true);
 //						inspection_grid->SetReadOnly(i,IG_COL_FORMAT,true);
 //						inspection_grid->SetReadOnly(i,IG_COL_WATCH,true);
 //						inspections[i].on_scope=false;
-//						if (inspections[i].is_vo) SendCommand(_T("-var-delete "),inspections[i].name);
+//						if (inspections[i].is_vo) SendCommand("-var-delete ",inspections[i].name);
 //						break;
 //					}
 //			} else {
@@ -171,11 +171,11 @@ public:
 ////					} else 
 ////						do_inspect=true;
 ////					if (!do_inspect) 
-////						inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("Error"));
+////						inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
 ////					else {
 //						if (inspections[i].frame_num[0]!='E') {
 //							inspection_grid->SetCellValue(i,IG_COL_VALUE,
-//								GetValueFromAns( SendCommand(_T("-var-evaluate-expression "), name) , _T("value") ,true,true ) );
+//								GetValueFromAns( SendCommand("-var-evaluate-expression ", name) , "value" ,true,true ) );
 //							if (config->Debug.select_modified_inspections)
 //								inspection_grid->HightlightChange(i);
 //						}
@@ -183,7 +183,7 @@ public:
 //					}
 //				}
 //			}
-//			p = ans.Find(_T("name="));
+//			p = ans.Find("name=");
 //		}
 		
 		

@@ -459,7 +459,7 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (wxListbook *notebook) {
 	
 	sizer->Add(skin_list,sizers->BA5_DL_Exp1);
 
-	skin_text = new wxTextCtrl(panel,wxID_ANY,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_READONLY|wxTE_MULTILINE);
+	skin_text = new wxTextCtrl(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_READONLY|wxTE_MULTILINE);
 	sizer->Add(skin_text,sizers->BA10_Exp0);
 	if (wxFileName::FileExists(SKIN_FILE_OPT(_T("skin_preview.png"))))
 		skin_image = new wxStaticBitmap(panel,wxID_ANY,wxBitmap(SKIN_FILE_OPT(_T("skin_preview.png")),wxBITMAP_TYPE_PNG));
@@ -625,7 +625,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	for (unsigned int i=0;i<help_autocomp_indexes->GetCount();i++) {
 		if (help_autocomp_indexes->IsChecked(i)) {
 			wxString index_string=help_autocomp_indexes->GetString(i);
-			if (index_string.Contains(_T(" ")))
+			if (index_string.Contains(" "))
 				index_string=wxString(_T("\""))<<index_string<<_T("\"");
 			if (autocomp_indexes.Len())
 				autocomp_indexes<<_T(",")<<index_string;
@@ -635,7 +635,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	}
 	if (config->Help.autocomp_indexes != autocomp_indexes) {
 		config->Help.autocomp_indexes = autocomp_indexes;
-		if (project) autocomp_indexes<<_T(" ")<<project->autocomp_extra;
+		if (project) autocomp_indexes<<" "<<project->autocomp_extra;
 		code_helper->ReloadIndexes(autocomp_indexes);
 	}
 	
@@ -887,7 +887,7 @@ void mxPreferenceWindow::OnAutocodesButton(wxCommandEvent &event) {
 	PopupMenu(&menu);
 }
 void mxPreferenceWindow::OnAutocodesOpen(wxCommandEvent &event) {
-	wxFileDialog dlg(this,_T("Archivo de definiciones de autocodigos"),_T(""),DIR_PLUS_FILE(config->zinjai_dir,files_autocode->GetValue()));
+	wxFileDialog dlg(this,_T("Archivo de definiciones de autocodigos"),"",DIR_PLUS_FILE(config->zinjai_dir,files_autocode->GetValue()));
 	if (wxID_OK==dlg.ShowModal()) {
 		wxFileName fn(dlg.GetPath());
 		fn.MakeRelativeTo(config->zinjai_dir);
@@ -912,7 +912,7 @@ void mxPreferenceWindow::OnDebugMacrosButton(wxCommandEvent &event) {
 }
 
 void mxPreferenceWindow::OnDebugMacrosOpen(wxCommandEvent &event) {
-	wxFileDialog dlg(this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),_T(""),DIR_PLUS_FILE(config->zinjai_dir,debug_macros_file->GetValue()));
+	wxFileDialog dlg(this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),"",DIR_PLUS_FILE(config->zinjai_dir,debug_macros_file->GetValue()));
 	if (wxID_OK==dlg.ShowModal()) {
 		wxFileName fn(dlg.GetPath());
 		fn.MakeRelativeTo(config->zinjai_dir);

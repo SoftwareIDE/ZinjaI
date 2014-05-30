@@ -186,7 +186,7 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 	if (valgrind_config->ShowModal()==0) return;
 	
 	wxString val_file = DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out"));
-	val_file.Replace(_T(" "),_T("\\ "));
+	val_file.Replace(" ",_T("\\ "));
 	compiler->valgrind_cmd = config->Files.valgrind_command+" "<<valgrind_config->GetArgs()<<" --log-file="+val_file;
 	OnRunRun(event);
 	compiler->valgrind_cmd="";
@@ -227,7 +227,7 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		
 		if (!project->GetWxfbActivated()) project->ActivateWxfb();
 		
-		wxString name=mxGetTextFromUser(_T("Nombre del archivo:"),_T("Nuevo Proyecto wxFormBuilder"),_T(""),this);
+		wxString name=mxGetTextFromUser(_T("Nombre del archivo:"),_T("Nuevo Proyecto wxFormBuilder"),"",this);
 		if (name.Len()==0) return;
 		
 		wxString fname=DIR_PLUS_FILE(project->path,name);
@@ -340,7 +340,7 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 	if (project) {
 		
-		wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, _T(" "), _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
+		wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
 		dlg.SetWildcard("wxFormBuilder projects|"WILDCARD_WXFB);
 		if (dlg.ShowModal() != wxID_OK) return;
 		
@@ -464,7 +464,7 @@ void mxMainWindow::OnToolsDiffToHimself(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsDiffToDiskFile(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
-		wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, _T(" "), _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
+		wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
 		dlg.SetWildcard(_T("Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Todos los archivos|*"));
 		if (dlg.ShowModal() == wxID_OK) {
 			if (project)
@@ -979,7 +979,7 @@ void mxMainWindow::OnToolsPreprocReplaceMacros ( wxCommandEvent &event ) {
 }
 
 void mxMainWindow::OnToolsPreprocHelp ( wxCommandEvent &event ) {
-	SHOW_HELP(_T("preproc.html"));	
+	SHOW_HELP(_T("menu_herramientas.html#expandir_macros"));	
 }
 
 /**
@@ -1012,10 +1012,10 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		}
 	} else {
 		wxString fname=src->SaveSourceForSomeTool();
-		wxString z_opts(wxString(_T(" ")));
+		wxString z_opts(wxString(" "));
 		// prepare command line
 		bool cpp = src->IsCppOrJustC();
-		if (config->Debug.format.Len()) z_opts<<config->Debug.format<<_T(" ");
+		if (config->Debug.format.Len()) z_opts<<config->Debug.format<<" ";
 		z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" ";
 //		z_opts<<current_toolchain.linker_options<<" ";
 		wxString ext=src->source_filename.GetExt();

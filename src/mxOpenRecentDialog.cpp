@@ -50,7 +50,7 @@ mxOpenRecentDialog::mxOpenRecentDialog(wxWindow* parent, bool aprj) : wxDialog(p
 	goto_button->SetMinSize(wxSize(goto_button->GetSize().GetWidth()<80?80:goto_button->GetSize().GetWidth(),goto_button->GetSize().GetHeight()));
 	goto_button->SetDefault(); 
 	
-	text_ctrl = new wxTextCtrl(this,wxID_ANY,_T(""));
+	text_ctrl = new wxTextCtrl(this,wxID_ANY,"");
 	list_ctrl = new wxListCtrl(this,wxID_ANY,wxDefaultPosition, wxSize(450,200),wxLC_REPORT|wxLC_SINGLE_SEL);
 	list_ctrl->InsertColumn(0,LANG(RECENT_COLUMN_FILE,"Archivo"));
 	list_ctrl->InsertColumn(1,LANG(RECENT_COLUMN_DATE,"Fecha Modificacion"));
@@ -174,7 +174,7 @@ void mxOpenRecentDialog::OnClear(wxCommandEvent &event) {
 	if (projects) {
 		if (mxMD_YES==mxMessageDialog(this,LANG(RECENT_CONFIRM_CLEAR_PROJECT_HISTORY,"Desea eliminar la lista de proyectos recientes?"), LANG(GENERAL_CONFIRM,"Confirmacion"), mxMD_YES_NO|mxMD_WARNING).ShowModal()) {
 			for (unsigned int i=0;i<CM_HISTORY_MAX_LEN;i++) {
-				config->Files.last_project[i]=_T("");
+				config->Files.last_project[i]="";
 				if (main_window->menu.file_project_history[i])
 					main_window->menu.file_project_recent->Remove(main_window->menu.file_project_history[i]);
 			}
@@ -183,7 +183,7 @@ void mxOpenRecentDialog::OnClear(wxCommandEvent &event) {
 	} else {
 		if (mxMD_YES==mxMessageDialog(this,LANG(RECENT_CONFIRM_CLEAR_FILE_HISTORY,"Desea eliminar la lista de archivos recientes?"), LANG(GENERAL_CONFIRM,"Confirmacion"), mxMD_YES_NO|mxMD_QUESTION).ShowModal()) {
 			for (unsigned int i=0;i<CM_HISTORY_MAX_LEN;i++) {
-				config->Files.last_source[i]=_T("");
+				config->Files.last_source[i]="";
 				if (main_window->menu.file_source_history[i])
 					main_window->menu.file_source_recent->Remove(main_window->menu.file_source_history[i]);
 			}

@@ -49,7 +49,7 @@ mxMultipleChoiceEditor::mxMultipleChoiceEditor(wxWindow *parent, wxString title,
 				if (options_array[selection[i]].Contains(wxChar(' '))) 
 					res<<_T(" \"")<<options_array[selection[i]]<<_T("\"");
 				else
-					res<<_T(" ")<<options_array[selection[i]];
+					res<<" "<<options_array[selection[i]];
 			}
 		}
 		text->SetValue(res);

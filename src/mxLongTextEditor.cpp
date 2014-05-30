@@ -67,8 +67,8 @@ mxLongTextEditor::~mxLongTextEditor() {
 
 void mxLongTextEditor::OnOkButton(wxCommandEvent &evt) {
 	wxString str = my_text->GetValue();
-	str.Replace(_T("\n"),_T(" "));
-	str.Replace(_T("\r"),_T(""));
+	str.Replace(_T("\n")," ");
+	str.Replace(_T("\r"),"");
 	if (text) text->SetValue(str);
 	if (combo) combo->SetValue(str);
 	Close();

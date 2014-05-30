@@ -1,116 +1,345 @@
 <HTML>
 <HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
-<B>Menú Herramientas</B><BR><BR>
-<UL>
-<LI><A href="#diagrama_flujo">Dibujar Diagrama de Flujo...</A></LI>
-<LI><A href="#jerarquia_de_clases">Dibujar Jerarquia de Clases...</A></LI>
-<LI>Comentarios<UL>
-	<LI><A href="#comentarios_alinear">Alinear...</A></LI>
-	<LI><A href="#comentarios_comentar">Comentar</A></LI>
-	<LI><A href="#comentarios_descomentar">Descomentar</A></LI>
-	<LI><A href="#comentarios_eliminar">Eliminar Comentarios</A></LI>
-</UL></LI>
-<LI><A href="#generar_makefile">Generar Makefile...</A></LI>
-<LI><A href="#abrir_consola">Abrir Consola...</A></LI>
-<LI><A href="#propiedades_ejecutable">Propiedades del Ejecutable...</A></LI>
-<LI><A href="#estadisticas_proyecto">Estadísticas del Proyecto...</A></LI>
-<LI><A href="#grafo_proyecto">Grafo del Proyecto...</A></LI>
-<LI>Compartir Archivos en la Red Local<UL>
-	<LI><A href="#share_abrir_compartido">Abrir compartido...</A></LI>
-	<LI><A href="#share_compartir">Compartir...</A></LI>
-</UL></LI>
-<LI>Comparar Archivos<UL>
-	<LI><A href="#diff_dos_fuentes">Dos fuentes abiertos...</A></LI>
-	<LI><A href="#diff_fuente_contra_archivo">Fuente actual contra archivo en disco...</A></LI>
-	<LI><A href="#diff_cambios">Cambios en fuente actual contra su version en disco...</A></LI>
-	<LI><A href="#diff_mostrar_cambio">Mostrar Cambio</A></LI>
-	<LI><A href="#diff_aplicar_cambio">Aplicar Cambio</A></LI>
-	<LI><A href="#diff_descartar_cambio">Descartar Cambio</A></LI>
-	<LI><A href="#diff_borrar_marcas">Borrar Marcas</A></LI>
-</UL></LI>
-<LI>Generar Documentacion<UL>
-	<LI><A href="#doxy_configurar">Configurar...</A></LI>
-	<LI><A href="#doxy_generar">Generar...</A></LI>
-	<LI><A href="#doxy_ver">Ver...</A></LI>
-</UL></LI>
-<LI>Diseñar Interfases<UL>
-	<LI><A href="#wxfb_activar">Activar Integración</A></LI>
-	<LI><A href="#wxfb_agregar_proyecto">Agregar Proyecto...</A></LI>
-	<LI><A href="#wxfb_regenerar_proyectos">Regenerar Proyectos</A></LI>
-	<LI><A href="#wxfb_heredar_clase">Generar Clase Heredada...</A></LI>
-	<LI><A href="#wxfb_actulizar_clase">Actualizar Clase Heredada...</A></LI>
-</UL></LI>
-<LI>Perfil de Ejecución<UL>
-	<LI><A href="#gprof_activar">Activar</A></LI>
-	<LI><A href="#gprof_algoritmo">Algoritmo de Visualización</A></LI>
-	<LI><A href="#gprof_grafo">Visualizar Resultados</A></LI>
-	<LI><A href="#gprof_lista">Listar Resultados</A></LI>
-</UL></LI>
-<LI>Análisis Dinámico<UL>
-	<LI><A href="#valgrind_ejecutar">Ejecutar...</A></LI>
-	<LI><A href="#valgrind_mostrar_panel">Mostrar Panel de Resultados</A></LI>
-</UL></LI>
-</UL>
-<BR><BR>
 
 <A name="diagrama_flujo"><HR></A>
-<B>Menú Ejecucion: Dibujar Diagrama de Flujo...</B><BR><BR>
+<img src="../imgs/24/flujo.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Dibujar Diagrama de Flujo...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Muestra una ventana con el dibujo de un diagrama de flujo que representa el bloque de código más interno en donde se encontraba el cursor. El cursor debe estar dentro de un bloque de código válido (se determinan por las llaves {}). En esta ventana se pueden utilizar la rueda del mouse para agrandar o achicar el dibujo y el botón izquierdo para desplazarlo.<BR>
 &nbsp;&nbsp;&nbsp; Nota: La implementación actual de esta funcionalidad no se encuentra finalizada, aún no es capaz de dibujar correctamente la estructuras condicional <I>switch</I>.<BR>
 <BR>
 
 <A name="jerarquia_de_clases"><HR></A>
-<B>Menú Ejecucion: Dibujar Jerarquia de Clases...</B><BR><BR>
+<img src="../imgs/24/clases.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Dibujar Jerarquia de Clases...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; Muestra el díalogo de <I>Dibujar Jerarquía de Clases</I>, el cual permite generar una representación gráfica de la jerarquía de clases de uno o más fuentes.<BR><BR>
 &nbsp;&nbsp;&nbsp; Temas relacionados: <A href="draw_classes.html">Diálogo Dibujar Jerarquía de Clases</A><BR>
 <BR>
 
+<A name="implementar_faltantes"><HR></A>
+<img src="../imgs/24/copy_code_from_h.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Implementar métodos/funciones faltantes...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Cuando un proyecto tiene un par de archivos fuente y cabecera homónimos (por ejemplo clase.h y clase.cpp), este comando busca prototipos de métodos y/o funciones que estén definidos en el archivo de cabecera, pero que no tengan implementación en ninguno de ellos (es decir, solo estén los prototipos). El comando genera automáticamene todas las implementaciones vacías para estos métodos en al final del archivo fuente (copia los prototipos, agregando los scopes de clases si es necesario, y las llaves con una línea en blanco). Esta función no tendrá en cuenta métodos definidos como virtuales puros.<BR>
+<BR>
+
+
+
+<A name="alinear_comentarios"><HR></A>
+<img src="../imgs/24/align_comments.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comentarios: Alinear comentarios</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+<A name="comentar"><HR></A>
+<img src="../imgs/24/comentar.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comentarios: Comentar</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+<A name="descomentar"><HR></A>
+<img src="../imgs/24/descomentar.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comentarios: Descomentar</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+<A name="eliminar_comentarios"><HR></A>
+<img src="../imgs/24/remove_comments.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comentarios: Eliminar comentarios</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+
+<A name="expandir_macros"><HR></A>
+<img src="../imgs/24/preproc_expand_macros.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Preprocesador: Expandir macros</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+<A name="preproc_marcar"><HR></A>
+<img src="../imgs/24/preproc_mark_valid.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Preprocesador: Marcar lineas no compiladas</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+<A name="preproc_borrar_marcas"><HR></A>
+<img src="../imgs/24/preproc_unmark_all.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Preprocesador: Borrar marcas</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+
+
+
+<A name="generar_makefile"><HR></A>
+<img src="../imgs/24/makefile.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Generar Makefile...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Permite generar automáticamente un archivo <I>Makefile</I> a partir de la composición y configuración de un proyecto. Un archivo <I>Makefile</I> es un archivo que contiene las reglas y comandos necesarios para construir el programa y es utilizado por la herramienta GNU <I>make</I> para tal fin. Dicho archivo incluye además información sobre las relaciones entre los archivos y los objetos (qué obejto depende de qué archivo fuente y cuales cabeceras), lo que permite recompilar lo mínimo necesario cuando se modifica el código. Vea <A href="makefile.html">Dialogo Generar Makefile</A>.<BR>
+<BR>
+
+<A name="abrir_consola"><HR></A>
+<img src="../imgs/24/console.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Abrir consola...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+
+<A name="propiedades_del_ejecutable"><HR></A>
+<!--<img src="../imgs/24/exeinfo.png">&nbsp;&nbsp;&nbsp;-->
+<B>Menú Herramientas: Propiedades del ejecutable...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+
+<A name="estadisticas_del_proyecto"><HR></A>
+<img src="../imgs/24/proystats.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Estadisticas del proyecto...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR>
+<BR>
+
+<A name="grafo_del_proyecto"><HR></A>
+<img src="../imgs/24/draw_project.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Grafo del proyecto...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Genera y mustra el <A href="proy_graph.html">Grafo de proyecto</A>, un grafo que muestra información sobre los tamaños y las relaciones de inclusión entre los archivos fuente y cabecera de un proyecto.<BR>
+<BR>
+
+
+
+
+
+
 <A name="share_abrir_compartido"><HR></A>
-<B>Menú Archivo: Compartir Archivos en la Red Local: Abrir compartido...</B><BR><BR>
-&nbsp;&nbsp;&nbsp; Permite abrir un archivo que se está editando en otra PC (tambien utilizando <I>ZinjaI</I>). Muestra el diálogo <I>Abrir compartido</I>, en la cual, conociendo el IP o HostName de la otra PC, podemos seleecionar y transferir un fuente. El fuente recibido se abre como un nuevo archivo sin título. Esta opción, junto con <I>Compartir</I>, permiten intercambiar fuentes rápidamente a travez de una LAN.<BR><BR>
-&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="open_shared.html">Diálogo Abrir Compartido</A>, <A href="#compartir">Menú Herramientas: Compartir... </A><BR>
+<img src="../imgs/24/abrirs.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Compartir Archivos en la Red Local: Abrir compartido...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Permite abrir un archivo que se está editando en otra PC (tambien utilizando <I>ZinjaI</I>). Muestra el diálogo <A href="open_shared.html">Abrir Compartido</A>, en el cual, conociendo el IP o HostName de la otra PC, podemos seleccionar y transferir un fuente. El fuente recibido se abre como un nuevo archivo sin título. Esta opción, junto con <I>Compartir</I>, permiten intercambiar fuentes rápidamente a travez de una LAN.<BR><BR>
 <BR>
 
 <A name="share_compartir"><HR></A>
-<B>Menú Archivo: Compartir Archivos en la Red Local: Compartir...</B><BR><BR>
-&nbsp;&nbsp;&nbsp; Muestra el cuadro de diálogo <I>Compartir Fuente</I>, el cual permite compartir el archivo actual a travez de una LAN (red interna). Un archivo compartido es un archivo disponible para ser descargado desde otras PCs. Hay dos formas en las cuales se comparte un archivo: puede compartirse sin modificaciones, es decir, que el archivo se descargará en las otras PCs exáctamente como estaba al momento de comenzar a compartirlo; o puede compartirse con modificaciones, es decir que siempre se descargará la versión actualizada del mismo. Para ser descargado en otra PC, sólo necesitará conocer el nombre de la PC que comparte el archivo (el cual se muestra en el diálogo <I>Compartir Fuente</I>. Cada archivo compartido se identifica por un nombre ficticio que se especifica en dicho diálogo y puede o no coincidir con el nombre real del mismo.<BR><BR>
-&nbsp;&nbsp;&nbsp; Temas relacionados: <A href="share_source.html">Diálogo Compartir Fuente</A>, <A href="#abrir_compartido">Menú Herraminetas: Abrir Compartido... </A><BR>
+<img src="../imgs/24/compartir.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Compartir Archivos en la Red Local: Compartir...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra el cuadro de diálogo <A href="share_source.html">Compartir Fuente</A>, , el cual permite compartir el archivo actual a travez de una LAN (red interna). Un archivo compartido es un archivo disponible para ser descargado desde otras PCs. Hay dos formas en las cuales se comparte un archivo: puede compartirse sin modificaciones, es decir, que el archivo se descargará en las otras PCs exáctamente como estaba al momento de comenzar a compartirlo; o puede compartirse con modificaciones, es decir que siempre se descargará la versión actualizada del mismo. Para ser descargado en otra PC, sólo necesitará conocer el nombre de la PC que comparte el archivo (el cual se muestra en el diálogo <I>Compartir Fuente</I>. Cada archivo compartido se identifica por un nombre ficticio que se especifica en dicho diálogo y puede o no coincidir con el nombre real del mismo.<BR><BR>
+<BR>
+
+<A name="ver_lista_de_compartidos"><HR></A>
+<img src="../imgs/24/share_list.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Compartir Archivos en la Red Local: Ver lista de compartidos propios...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra la lista de archivos que ZinjaI está compartiendo actualmente. El cuadro de diálogo que muestra la lista permite además seleccionar archivos para dejar de compartirlos. <BR>
 <BR>
 
 
+
 <A name="diff_dos_fuentes"><HR></A>
-<B>Menú Archivo: Comparar Archivos: Dos fuentes abiertos...</B><BR><BR>
+<img src="../imgs/24/diff_sources.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Dos fuentes abiertos...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; .<BR><BR>
 <BR>
 
 <A name="diff_fuente_contra_archivo"><HR></A>
-<B>Menú Archivo: Comparar Archivos: Fuente actual contra archivo en disco...</B><BR><BR>
+<img src="../imgs/24/diff_source_file.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Fuente actual contra archivo en disco...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; .<BR><BR>
 <BR>
 
 <A name="diff_cambios"><HR></A>
-<B>Menú Archivo: Comparar Archivos: Cambios en fuente actual contra su version en disco...</B><BR><BR>
+<img src="../imgs/24/diff_source_himself.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Cambios en fuente actual contra su version en disco...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="diff_anterior"><HR></A>
+<img src="../imgs/24/diff_prev.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Ir a diferencia anterior</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="diff_siguiente"><HR></A>
+<img src="../imgs/24/diff_next.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Ir a diferencia siguiente</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="diff_mostrar"><HR></A>
+<img src="../imgs/24/diff_show.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Mostrar cambio</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+<A name="diff_aplicar"><HR></A>
+<img src="../imgs/24/diff_apply.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Aplicar cambio</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+<A name="diff_descartar"><HR></A>
+<img src="../imgs/24/diff_discard.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Descartar cambio</B><BR><BR>
 &nbsp;&nbsp;&nbsp; .<BR><BR>
 <BR>
 
 <A name="diff_borrar_marcas"><HR></A>
-<B>Menú Archivo: Comparar Archivos: Borrar marcas</B><BR><BR>
+<img src="../imgs/24/diff_clear.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Comparar Archivos: Borrar marcas</B><BR><BR>
 &nbsp;&nbsp;&nbsp; .<BR><BR>
 <BR>
 
+
+
 <A name="doxy_configurar"><HR></A>
-<B>Menú Archivo: Generar Documentacio: Configurar...</B><BR><BR>
+<img src="../imgs/24/doxy_config.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Generar Documentacion: Configurar...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; .<BR><BR>
 <BR>
 
 <A name="doxy_generar"><HR></A>
-<B>Menú Archivo: Generar Documentacio: Generar...</B><BR><BR>
+<img src="../imgs/24/doxy_run.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Generar Documentacion: Generar...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; .<BR><BR>
 <BR>
 
 <A name="doxy_ver"><HR></A>
-<B>Menú Archivo: Generar Documentacio: Ver...</B><BR><BR>
+<img src="../imgs/24/doxy_view.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Generar Documentacion: Ver...</B><BR><BR>
 &nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+
+<A name="wxfb_configurar"><HR></A>
+<img src="../imgs/24/wxfb_activate.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Diseñar interfases: Configurar Integracion con wxFormBuilder...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="wxfb_adjuntar_nuevo_proyecto"><HR></A>
+<img src="../imgs/24/wxfb_new_res.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Diseñar interfases: Adjuntar un Nuevo Proyecto wxFB...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="wxfb_adjuntar_proyecto_existente"><HR></A>
+<img src="../imgs/24/wxfb_load_res.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Diseñar interfases: Adjuntar un Proyecto wxFB Existente...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="wxfb_regenerar_proyectos"><HR></A>
+<img src="../imgs/24/wxfb_regen.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Diseñar interfases: Regenerar Proyectos wxFB</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="wxfb_generar_clase"><HR></A>
+<img src="../imgs/24/wxfb_inherit.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Diseñar interfases: Generar Clase Heredada...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="wxfb_actualizar_clase"><HR></A>
+<img src="../imgs/24/wxfb_update_inherit.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Diseñar interfases: Actualizar Clase Heredada...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="wxfb_referencia"><HR></A>
+<img src="../imgs/24/ayuda_wx.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Diseñar interfases: Referencia wxWidgets...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+
+<A name="cppcheck_iniciar"><HR></A>
+<img src="../imgs/24/cppcheck_run.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Análisis estático: Iniciar...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="cppcheck_configurar"><HR></A>
+<img src="../imgs/24/cppcheck_config.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Análisis estático: Configurar...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="cppcheck_mostrar_resultados"><HR></A>
+<img src="../imgs/24/cppcheck_view.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Análisis estático: Mostrar Panel de Resultados</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+
+<A name="gprof_habilitar/deshabilitar"><HR></A>
+<img src="../imgs/24/comp_for_prof.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Perfil de ejecución: Habilitar/Deshabilitar</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="gprof_algoritmo_de_dibujo"><HR></A>
+<!--<img src="../imgs/24/dotfdp.png">&nbsp;&nbsp;&nbsp;-->
+<B>Menú Herramientas: Perfil de ejecución: Algoritmo de Dibujo</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="gprof_visualizar_grafo"><HR></A>
+<img src="../imgs/24/showgprof.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Perfil de ejecución: Visualizar Resultados (grafo)...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="gprof_listar_resultados"><HR></A>
+<img src="../imgs/24/listgprof.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Perfil de ejecución: Listar Resultados (texto)</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+
+<A name="gcov_habilitar"><HR></A>
+<img src="../imgs/24/gcov_set.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Test de cobertura: Habilitar/Deshabilitar</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="gcov_mostrar_resultados"><HR></A>
+<img src="../imgs/24/gcov_show.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Test de cobertura: Mostrar barra de resultados</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="gcov_eliminar_resultados"><HR></A>
+<img src="../imgs/24/gcov_reset.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Test de cobertura: Eliminar resultados</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+
+
+<A name="valgrind_ejecutar"><HR></A>
+<img src="../imgs/24/valgrind_run.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Análisis dinámico: Ejecutar...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="valgrind_ver"><HR></A>
+<img src="../imgs/24/valgrind_view.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Análisis dinámico: Mostrar panel de resultados</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Despliega un panel en la parte inferior de la ventana principal donde se muestran los resultados de la última ejecución realizada a través de valgrind. Más información sobre .<BR><BR>
+<BR>
+
+<A name="herramientas_personalizables_configurar_generales"><HR></A>
+<img src="../imgs/24/customToolsSettings.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Herramientas personalizables: Configurar (generales)...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra una cuadro de diálogo para configurar <A href="custom_tools.html">herramientas personalizables</A> generales, que ZinjaI mostrará en todo momento. Las herramientas personalizables son items del menú, o botones en la barra de herramientas para ejecutar comandos arbitrarios. Se pueden utilizar por ejemplo para invocar fácilmente programas externos a ZinjaI.<BR><BR>
+<BR>
+
+<A name="herramientas_personalizables_configurar_proyecto"><HR></A>
+<img src="../imgs/24/projectToolsSettings.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Herramientas personalizables: Configurar (de proyecto)...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Muestra una cuadro de diálogo para configurar <A href="custom_tools.html">herramientas personalizables</A> que se guardarán con el archivo de proyecto, y que ZinjaI mostrará solo para ese proyecto. Las herramientas personalizables son items del menú, o botones en la barra de herramientas para ejecutar comandos arbitrarios. Se pueden utilizar por ejemplo para invocar fácilmente programas externos a ZinjaI.<BR><BR>
+<BR>
+
+<A name="guardar_como_plantilla"><HR></A>
+<!--<img src="../imgs/24/create_template.png">&nbsp;&nbsp;&nbsp;-->
+<B>Menú Herramientas: Guardar como nueva plantilla...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; .<BR><BR>
+<BR>
+
+<A name="instalar_complemento"><HR></A>
+<img src="../imgs/24/updates.png">&nbsp;&nbsp;&nbsp;
+<B>Menú Herramientas: Instalar complemento...</B><BR><BR>
+&nbsp;&nbsp;&nbsp; Abre un cuadro de diálogo que permite instalar <A href="complements.html">complementos para ZinjaI</A>. Los complementos pueden contener documentación, plantillas, ínidices de autocompletado, binarios de bibliotecas, ejemplos, etc. La ventana de instalación ofrese un botón para acceder a la sección de descargas de complementos del sitio oficial de ZinjaI..<BR><BR>
 <BR>
 
 <HR>
