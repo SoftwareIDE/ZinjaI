@@ -214,6 +214,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 //		SetCodePage(wxSTC_CP_UTF8);
 //#endif
 	
+	AutoCompSetDropRestOfWord(true);
+	
 	old_current_line=-1000;
 	
 	brace_1=-1; brace_2=-1;

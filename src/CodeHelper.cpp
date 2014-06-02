@@ -106,28 +106,28 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 			if (!l) {
 				t++;
 				if (aux_var->properties&PD_CONST_PRIVATE)
-					comp_array.Add(aux_var->name+_T("?6"));
+					comp_array.Add(aux_var->name+"?6");
 				else if (aux_var->properties&PD_CONST_PROTECTED)
-					comp_array.Add(aux_var->name+_T("?7"));
+					comp_array.Add(aux_var->name+"?7");
 				else if (aux_var->properties&PD_CONST_PUBLIC)
-					comp_array.Add(aux_var->name+_T("?8"));
+					comp_array.Add(aux_var->name+"?8");
 				else if (aux_var->properties&(PD_CONST_ENUM_CONST|PD_CONST_ENUM))
-					comp_array.Add(aux_var->name+_T("?19"));
+					comp_array.Add(aux_var->name+"?19");
 				else 
-					comp_array.Add(aux_var->name+_T("?5"));
+					comp_array.Add(aux_var->name+"?5");
 			} else {
 				if (aux_var->name.Len()>=l) {
 					CH_COMPARE(typed,aux_var->name,i,l,max_str_dist);
 					if (i==l) {
 						t++;
 						if (aux_var->properties&PD_CONST_PRIVATE)
-							comp_array.Add(aux_var->name+_T("?6"));
+							comp_array.Add(aux_var->name+"?6");
 						else if (aux_var->properties&PD_CONST_PROTECTED)
-							comp_array.Add(aux_var->name+_T("?7"));
+							comp_array.Add(aux_var->name+"?7");
 						else if (aux_var->properties&PD_CONST_PUBLIC)
-							comp_array.Add(aux_var->name+_T("?8"));
+							comp_array.Add(aux_var->name+"?8");
 						else
-							comp_array.Add(aux_var->name+_T("?5"));
+							comp_array.Add(aux_var->name+"?5");
 					}
 				}
 			}
@@ -138,26 +138,26 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 			if (!l) {
 				t++;
 				if (aux_func->properties&PD_CONST_PRIVATE)
-					comp_array.Add(aux_func->name+_T("?10"));
+					comp_array.Add(aux_func->name+"?10");
 				else if (aux_func->properties&PD_CONST_PROTECTED)
-					comp_array.Add(aux_func->name+_T("?11"));
+					comp_array.Add(aux_func->name+"?11");
 				else if (aux_func->properties&PD_CONST_PUBLIC)
-					comp_array.Add(aux_func->name+_T("?12"));
+					comp_array.Add(aux_func->name+"?12");
 				else
-					comp_array.Add(aux_func->name+_T("?9"));
+					comp_array.Add(aux_func->name+"?9");
 			} else {
 				if (aux_func->name.Len()>=l) {
 					CH_COMPARE(typed,aux_func->name,i,l,max_str_dist);
 					if (i==l) {
 						t++;
 						if (aux_func->properties&PD_CONST_PRIVATE)
-							comp_array.Add(aux_func->name+_T("?10"));
+							comp_array.Add(aux_func->name+"?10");
 						else if (aux_func->properties&PD_CONST_PROTECTED)
-							comp_array.Add(aux_func->name+_T("?11"));
+							comp_array.Add(aux_func->name+"?11");
 						else if (aux_func->properties&PD_CONST_PUBLIC)
-							comp_array.Add(aux_func->name+_T("?12"));
+							comp_array.Add(aux_func->name+"?12");
 						else
-							comp_array.Add(aux_func->name+_T("?9"));
+							comp_array.Add(aux_func->name+"?9");
 					}
 				}
 			}
@@ -200,26 +200,26 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 						if (!l) {
 							t++;
 							if (aux_var->properties&PD_CONST_PRIVATE)
-								comp_array.Add(aux_var->name+_T("?6"));
+								comp_array.Add(aux_var->name+"?6");
 							else if (aux_var->properties&PD_CONST_PROTECTED)
-								comp_array.Add(aux_var->name+_T("?7"));
+								comp_array.Add(aux_var->name+"?7");
 							else if (aux_var->properties&PD_CONST_PUBLIC)
-								comp_array.Add(aux_var->name+_T("?8"));
+								comp_array.Add(aux_var->name+"?8");
 							else
-								comp_array.Add(aux_var->name+_T("?5"));
+								comp_array.Add(aux_var->name+"?5");
 						} else {
 							if (aux_var->name.Len()>=l) {
 								CH_COMPARE(typed,aux_var->name,i,l,max_str_dist);
 								if (i==l) {
 									t++;
 									if (aux_var->properties&PD_CONST_PRIVATE)
-										comp_array.Add(aux_var->name+_T("?6"));
+										comp_array.Add(aux_var->name+"?6");
 									else if (aux_var->properties&PD_CONST_PROTECTED)
-										comp_array.Add(aux_var->name+_T("?7"));
+										comp_array.Add(aux_var->name+"?7");
 									else if (aux_var->properties&PD_CONST_PUBLIC)
-										comp_array.Add(aux_var->name+_T("?8"));
+										comp_array.Add(aux_var->name+"?8");
 									else
-										comp_array.Add(aux_var->name+_T("?5"));
+										comp_array.Add(aux_var->name+"?5");
 								}
 							}
 						}
@@ -230,26 +230,26 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 						if (!l) {
 							t++;
 							if (aux_func->properties&PD_CONST_PRIVATE)
-								comp_array.Add(aux_func->name+_T("?10"));
+								comp_array.Add(aux_func->name+"?10");
 							else if (aux_func->properties&PD_CONST_PROTECTED)
-								comp_array.Add(aux_func->name+_T("?11"));
+								comp_array.Add(aux_func->name+"?11");
 							else if (aux_func->properties&PD_CONST_PUBLIC)
-								comp_array.Add(aux_func->name+_T("?12"));
+								comp_array.Add(aux_func->name+"?12");
 							else
-								comp_array.Add(aux_func->name+_T("?9"));
+								comp_array.Add(aux_func->name+"?9");
 						} else {
 							if (aux_func->name.Len()>=l) {
 								CH_COMPARE(typed,aux_func->name,i,l,max_str_dist);
 								if (i==l) {
 									t++;
 									if (aux_func->properties&PD_CONST_PRIVATE)
-										comp_array.Add(aux_func->name+_T("?10"));
+										comp_array.Add(aux_func->name+"?10");
 									else if (aux_func->properties&PD_CONST_PROTECTED)
-										comp_array.Add(aux_func->name+_T("?11"));
+										comp_array.Add(aux_func->name+"?11");
 									else if (aux_func->properties&PD_CONST_PUBLIC)
-										comp_array.Add(aux_func->name+_T("?12"));
+										comp_array.Add(aux_func->name+"?12");
 									else
-										comp_array.Add(aux_func->name+_T("?9"));
+										comp_array.Add(aux_func->name+"?9");
 								}
 							}
 						}
@@ -409,7 +409,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			CH_COMPARE(typed,aux_func->name,i,l,max_str_dist);
 			if (i==l) {
 				t++;
-				comp_array.Add(aux_func->name+_T("?3"));
+				comp_array.Add(aux_func->name+"?3");
 			}
 		}
 		aux_func = aux_func->next;
@@ -434,9 +434,9 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			if (i==l) {
 				t++;
 				if (aux_class->file) {
-					comp_array.Add(aux_class->name+_T("?4"));
+					comp_array.Add(aux_class->name+"?4");
 				} else
-					comp_array.Add(aux_class->name+_T("?13"));
+					comp_array.Add(aux_class->name+"?13");
 			}
 		}
 		aux_class = aux_class->next;
@@ -451,26 +451,26 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			if (!l) {
 				t++;
 				if (aux_var->properties&PD_CONST_PRIVATE)
-					comp_array.Add(aux_var->name+_T("?6"));
+					comp_array.Add(aux_var->name+"?6");
 				else if (aux_var->properties&PD_CONST_PROTECTED)
-					comp_array.Add(aux_var->name+_T("?7"));
+					comp_array.Add(aux_var->name+"?7");
 				else if (aux_var->properties&PD_CONST_PUBLIC)
-					comp_array.Add(aux_var->name+_T("?8"));
+					comp_array.Add(aux_var->name+"?8");
 				else
-					comp_array.Add(aux_var->name+_T("?5"));
+					comp_array.Add(aux_var->name+"?5");
 			} else {
 				if (aux_var->name.Len()>=l) {
 					CH_COMPARE(typed,aux_var->name,i,l,max_str_dist);
 					if (i==l) {
 						t++;
 						if (aux_var->properties&PD_CONST_PRIVATE)
-							comp_array.Add(aux_var->name+_T("?6"));
+							comp_array.Add(aux_var->name+"?6");
 						else if (aux_var->properties&PD_CONST_PROTECTED)
-							comp_array.Add(aux_var->name+_T("?7"));
+							comp_array.Add(aux_var->name+"?7");
 						else if (aux_var->properties&PD_CONST_PUBLIC)
-							comp_array.Add(aux_var->name+_T("?8"));
+							comp_array.Add(aux_var->name+"?8");
 						else
-							comp_array.Add(aux_var->name+_T("?5"));
+							comp_array.Add(aux_var->name+"?5");
 					}
 				}
 			}
@@ -481,26 +481,26 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 			if (!l) {
 				t++;
 				if (aux_func->properties&PD_CONST_PRIVATE)
-					comp_array.Add(aux_func->name+_T("?10"));
+					comp_array.Add(aux_func->name+"?10");
 				else if (aux_func->properties&PD_CONST_PROTECTED)
-					comp_array.Add(aux_func->name+_T("?11"));
+					comp_array.Add(aux_func->name+"?11");
 				else if (aux_func->properties&PD_CONST_PUBLIC)
-					comp_array.Add(aux_func->name+_T("?12"));
+					comp_array.Add(aux_func->name+"?12");
 				else
-					comp_array.Add(aux_func->name+_T("?9"));
+					comp_array.Add(aux_func->name+"?9");
 			} else {
 				if (aux_func->name.Len()>=l) {
 					CH_COMPARE(typed,aux_func->name,i,l,max_str_dist);
 					if (i==l) {
 						t++;
 						if (aux_func->properties&PD_CONST_PRIVATE)
-							comp_array.Add(aux_func->name+_T("?10"));
+							comp_array.Add(aux_func->name+"?10");
 						else if (aux_func->properties&PD_CONST_PROTECTED)
-							comp_array.Add(aux_func->name+_T("?11"));
+							comp_array.Add(aux_func->name+"?11");
 						else if (aux_func->properties&PD_CONST_PUBLIC)
-							comp_array.Add(aux_func->name+_T("?12"));
+							comp_array.Add(aux_func->name+"?12");
 						else
-							comp_array.Add(aux_func->name+_T("?9"));
+							comp_array.Add(aux_func->name+"?9");
 					}
 				}
 			}
@@ -543,26 +543,26 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 						if (!l) {
 							t++;
 							if (aux_var->properties&PD_CONST_PRIVATE)
-								comp_array.Add(aux_var->name+_T("?6"));
+								comp_array.Add(aux_var->name+"?6");
 							else if (aux_var->properties&PD_CONST_PROTECTED)
-								comp_array.Add(aux_var->name+_T("?7"));
+								comp_array.Add(aux_var->name+"?7");
 							else if (aux_var->properties&PD_CONST_PUBLIC)
-								comp_array.Add(aux_var->name+_T("?8"));
+								comp_array.Add(aux_var->name+"?8");
 							else
-								comp_array.Add(aux_var->name+_T("?5"));
+								comp_array.Add(aux_var->name+"?5");
 						} else {
 							if (aux_var->name.Len()>=l) {
 								CH_COMPARE(typed,aux_var->name,i,l,max_str_dist);
 								if (i==l) {
 									t++;
 									if (aux_var->properties&PD_CONST_PRIVATE)
-										comp_array.Add(aux_var->name+_T("?6"));
+										comp_array.Add(aux_var->name+"?6");
 									else if (aux_var->properties&PD_CONST_PROTECTED)
-										comp_array.Add(aux_var->name+_T("?7"));
+										comp_array.Add(aux_var->name+"?7");
 									else if (aux_var->properties&PD_CONST_PUBLIC)
-										comp_array.Add(aux_var->name+_T("?8"));
+										comp_array.Add(aux_var->name+"?8");
 									else
-										comp_array.Add(aux_var->name+_T("?5"));
+										comp_array.Add(aux_var->name+"?5");
 								}
 							}
 						}
@@ -573,26 +573,26 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 						if (!l) {
 							t++;
 							if (aux_func->properties&PD_CONST_PRIVATE)
-								comp_array.Add(aux_func->name+_T("?10"));
+								comp_array.Add(aux_func->name+"?10");
 							else if (aux_func->properties&PD_CONST_PROTECTED)
-								comp_array.Add(aux_func->name+_T("?11"));
+								comp_array.Add(aux_func->name+"?11");
 							else if (aux_func->properties&PD_CONST_PUBLIC)
-								comp_array.Add(aux_func->name+_T("?12"));
+								comp_array.Add(aux_func->name+"?12");
 							else
-								comp_array.Add(aux_func->name+_T("?9"));
+								comp_array.Add(aux_func->name+"?9");
 						} else {
 							if (aux_func->name.Len()>=l) {
 								CH_COMPARE(typed,aux_func->name,i,l,max_str_dist);
 								if (i==l) {
 									t++;
 									if (aux_func->properties&PD_CONST_PRIVATE)
-										comp_array.Add(aux_func->name+_T("?10"));
+										comp_array.Add(aux_func->name+"?10");
 									else if (aux_func->properties&PD_CONST_PROTECTED)
-										comp_array.Add(aux_func->name+_T("?11"));
+										comp_array.Add(aux_func->name+"?11");
 									else if (aux_func->properties&PD_CONST_PUBLIC)
-										comp_array.Add(aux_func->name+_T("?12"));
+										comp_array.Add(aux_func->name+"?12");
 									else
-										comp_array.Add(aux_func->name+_T("?9"));
+										comp_array.Add(aux_func->name+"?9");
 								}
 							}
 						}
@@ -609,8 +609,8 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	// agregar los argumentos de la función/método actual
 	if (args && args->Len()) {
 		bool comillas=false, done=false; int parentesis=0;
-		wxString &s=*args; int l=s.Len(), la=0; s[l-1]=',';
-		for(int i=1;i<l;i++) { 
+		wxString &s=*args; int al=s.Len(), la=0; s[al-1]=',';
+		for(int i=1;i<al;i++) {
 			char c=s[i];
 			if (c=='\''||c=='\"') comillas=!comillas;
 			else {
@@ -619,7 +619,8 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 				else if (!parentesis) {
 					if (c=='='||(c==','&&!done)) { // consideramos identificador lo que esté antes de una coma o de un igual (valores por defecto)... el done es para no considerar ambos en un mismo argumento
 						wxString id=ExtractIdentifierFromDeclaration(s.Mid(la+1,i-la-1));
-						{ comp_array.Add(id+_T("?20")); t++; }
+						unsigned int CH_COMPARE(typed,id,i,l,max_str_dist);
+						if (i==l) { comp_array.Add(id+"?20"); t++; }
 					}
 					if (c==',') { done=false; la=i+1; }
 				}
@@ -894,9 +895,9 @@ bool CodeHelper::LoadData(wxString index) {
 		if (str.Len() && str[0]=='\\') {
 			reserved_words.Add(str.Mid(1));
 		} else if (str.Len() && str[0]=='@') {
-			doxygen_directives.Add(str.Mid(1)+_T("?17"));
+			doxygen_directives.Add(str.Mid(1)+"?17");
 		} else if (str.Len() && str[0]=='#') {
-			preproc_directives.Add(str.Mid(1)+_T("?16"));
+			preproc_directives.Add(str.Mid(1)+"?16");
 		} else if (tabs==0) { // es el nombre de la cabecera
 			header=str;
 			CH_REGISTER_FILE(aux_file, header);
@@ -1268,7 +1269,7 @@ int CodeHelper::AddReservedWords(wxArrayString &comp_list, wxString &typed, int 
 		int CH_COMPARE(typed,reserved_words[j],i,l,max_str_dist);
 		if (i==l) {
 			c++;
-			comp_list.Add(reserved_words[j]+_T("?15"));
+			comp_list.Add(reserved_words[j]+"?15");
 		}
 	}
 	return c;
