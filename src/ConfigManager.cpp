@@ -949,7 +949,7 @@ void ConfigManager::LoadDefaults(){
 	
 	// establecer valores predeterminados para todas las estructuras
 	Files.temp_dir=home_dir;
-	Files.skin_dir="img";
+	Files.skin_dir="imgs";
 	Files.graphviz_dir="graphviz";
 //	Files.mingw_dir="MinGW";
 #if defined(__WIN32__)

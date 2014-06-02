@@ -132,8 +132,8 @@ bool mxApplication::OnInit() {
 			argv[i][0]='\0';
 			no_splash=true;
 		}
-	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE("img",_T(SPLASH_FILE))).FileExists()) 
-		splash = new mxSplashScreen(DIR_PLUS_FILE("img",_T(SPLASH_FILE)));
+	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE("imgs",SPLASH_FILE)).FileExists()) 
+		splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",_T(SPLASH_FILE)));
 //	wxYield();
 	
 	bitmaps = new mxArt(config->Files.skin_dir);
