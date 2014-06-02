@@ -237,7 +237,7 @@ public:
 	bool AddInclude(wxString header);
 	wxString FindTypeOf(wxString &key, int &pos); // en pos retorna los asteriscos y en key el scope de la funcion
 	wxString FindTypeOf(int pos, int &dims, bool first_call=true);
-	wxString FindScope(int pos);
+	wxString FindScope(int pos, wxString *args=NULL, bool full_scope=false);
 	wxString WhereAmI();
 	
 	void ShowCallTip(int p, wxString str, bool fix_pos=true);

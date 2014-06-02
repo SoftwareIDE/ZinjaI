@@ -197,7 +197,7 @@ bool mxApplication::OnInit() {
 	}
 	
 	// load files or create and empty one
-	if (argc==1) {
+	if (argc==1 || (argc==2&&argv[1][0]=='\0')) {
 		if (config->Init.show_welcome) {
 			main_window->ShowWelcome(true);
 		} else {

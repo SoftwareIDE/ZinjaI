@@ -355,12 +355,41 @@ wxString CodeHelper::GetGlobalType(wxString &key, int &dims) {
 	return "";
 }
 
-bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString typed, int max_str_dist) {
+
+wxString ExtractIdentifierFromDeclaration(const wxString &decl) {
+	int i=decl.Len(); 
+	i--; if (i<0) return "";
+	if (decl[i]==' ') {
+		i--; if (i<0) return "";
+	}
+	while (i>0 && (decl[i]==']'||decl[i]==')') ) {
+		int cor=0; char c=decl[--i];
+		while (i>0 && (cor||(c!='['&&c!='('))) {
+			if (c==']'||c==')') cor++;
+			else if (c=='['||c=='(') cor--;
+			c=decl[--i];
+		}
+		if (decl[i]=='('&&decl[i+1]=='*') { // puntero a funcion, o a arreglo
+			i+=2; int i0=i; 
+			char c=decl[i];
+			while ( (c>='a'&&c<='z') || (c>='A'&&c<='Z') || (c>='0'&&c<='9') || c=='_' ) c=decl[++i];
+			return decl.Mid(i0,i-i0);
+		}
+		--i; if (i<0) return "";
+		if (decl[i]==' ') {
+			i--; if (i<0) return "";
+		}
+	}
+	int i1=i; char c=decl[i]; while ( i>0 && ( (c>='a'&&c<='z') || (c>='A'&&c<='Z') || (c>='0'&&c<='9') || c=='_' ) ) c=decl[--i];
+	return decl.Mid(i+1,i1-i);
+	
+}
+
+bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString typed, wxString *args, int max_str_dist) {
 	UnTemplate(typed); UnTemplate(scope);
 	int t=0;
 	unsigned int i,l=typed.Len();
-	for (i=0;i<l;i++)
-		typed[i]=(typed[i]|32);
+	for (i=0;i<l;i++) typed[i]=(typed[i]|32);
 	wxArrayString comp_array;
 	pd_var *aux_var = parser->first_global;
 	while (aux_var) {
@@ -576,6 +605,28 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	
 	// agregar las palabras reservadas
 	t+=AddReservedWords(comp_array,typed);
+	
+	// agregar los argumentos de la función/método actual
+	if (args && args->Len()) {
+		bool comillas=false, done=false; int parentesis=0;
+		wxString &s=*args; int l=s.Len(), la=0; s[l-1]=',';
+		for(int i=1;i<l;i++) { 
+			char c=s[i];
+			if (c=='\''||c=='\"') comillas=!comillas;
+			else {
+				if (c=='('||c=='['||c=='{') parentesis++;
+				else if (c==')'||c==']'||c=='}') parentesis--;
+				else if (!parentesis) {
+					if (c=='='||(c==','&&!done)) { // consideramos identificador lo que esté antes de una coma o de un igual (valores por defecto)... el done es para no considerar ambos en un mismo argumento
+						wxString id=ExtractIdentifierFromDeclaration(s.Mid(la+1,i-la-1));
+						{ comp_array.Add(id+_T("?20")); t++; }
+					}
+					if (c==',') { done=false; la=i+1; }
+				}
+			}
+		}
+	}
+	
 	
 	// mostrar la lista final
 	if (t==0) return false;

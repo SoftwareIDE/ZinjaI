@@ -41,6 +41,7 @@ public:
 		wxBitmap *icon17_doxygen;
 		wxBitmap *icon18_typedef;
 		wxBitmap *icon19_enum_const;
+		wxBitmap *icon20_argument;
 	} parser;
 	struct {
 		wxBitmap *ok;
