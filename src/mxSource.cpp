@@ -712,7 +712,7 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 		BeginUndoAction();
 		wxString line = GetLine(min-1);
 		if (max==GetLineCount()-1)
-			AppendText(_T("\n"));
+			AppendText("\n");
 		SetTargetStart(PositionFromLine(max+1));
 		SetTargetEnd(PositionFromLine(max+1));
 		ReplaceTarget(line);
@@ -903,7 +903,7 @@ bool mxSource::SaveSource() {
 	SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
 	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!="")
-		AppendText(_T("\n"));
+		AppendText("\n");
 	sin_titulo = false;
 	bool ret=MySaveFile(source_filename.GetFullPath());
 	SetSourceTime(source_filename.GetModificationTime());
@@ -926,7 +926,7 @@ bool mxSource::SaveTemp () {
 	SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
 	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!="")
-		AppendText(_T("\n"));
+		AppendText("\n");
 	if (sin_titulo)
 		binary_filename=temp_filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR)+temp_filename.GetName()+_T(BINARY_EXTENSION);
 	bool ret=MySaveFile(temp_filename.GetFullPath());
@@ -940,7 +940,7 @@ bool mxSource::SaveSource (const wxFileName &filename) {
 	SetStyling(GetLength(),0);
 	StartStyling(lse,0x1F);
 	if (lexer==wxSTC_LEX_CPP && config_source.avoidNoNewLineWarning && GetLine(GetLineCount()-1)!="")
-		AppendText(_T("\n"));
+		AppendText("\n");
 	if (MySaveFile(filename.GetFullPath())) {
 		source_filename = filename;
 		working_folder = filename.GetPath();
@@ -1170,7 +1170,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (LineFromPosition(p)==cl-1) { // si estaban las dos llaves juntas, agregar un enter mas para quedar escribiendo entre medio
 						while (++p<op&&(II_IS_NOTHING_4(p)));
 						if (p==op) {
-							InsertText(PositionFromLine(cl),_T("\n"));
+							InsertText(PositionFromLine(cl),"\n");
 							SetLineIndentation(cl,GetLineIndentation(cl-1)+config_source.tabWidth);
 						}
 					}
@@ -1183,7 +1183,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			II_BACK(p,II_IS_2(p,' ','\t') );
 			if (config_source.bracketInsertion && c=='{') { // si estaba en la llave que abre, agregar si se debe la que cierra
 				if (cl==GetLineCount()-1)
-					AppendText(_T("\n"));
+					AppendText("\n");
 				int e=p+1, l=GetLength();
 				II_FRONT(e,II_IS_4(e,' ','\t','\r','\n') || II_SHOULD_IGNORE(e));
 				if (LineFromPosition(e)==cl) {
@@ -1913,7 +1913,7 @@ bool mxSource::AddInclude(wxString header) {
 			ReplaceTarget("");
 		} else {
 			p = PositionFromLine(lta);
-			wxString line = wxString(_T("#include "))+oHeader+_T("\n");
+			wxString line = wxString(_T("#include "))+oHeader+"\n";
 			if (p<=lp)
 				lp+=line.Len();
 			InsertText(p,line);
@@ -3294,7 +3294,7 @@ void mxSource::ApplyDiffChange() {
 					if (diff_brother) diff_brother->MarkerDeleteHandle(di->brother->handles[0]);
 				} else if (di->marker==mxSTC_MARK_DIFF_DEL) {
 					MarkerDeleteHandle(di->handles[0]);
-					InsertText(PositionFromLine(cl),di->extra<<_T("\n"));
+					InsertText(PositionFromLine(cl),di->extra<<"\n");
 					if (diff_brother)
 						for (int i=0;i<di->brother->len;i++)
 							diff_brother->MarkerDeleteHandle(di->brother->handles[i]);

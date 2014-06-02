@@ -653,9 +653,9 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		if (help_autocomp_indexes->IsChecked(i)) {
 			wxString index_string=help_autocomp_indexes->GetString(i);
 			if (index_string.Contains(" "))
-				index_string=wxString(_T("\""))<<index_string<<_T("\"");
+				index_string=wxString("\"")<<index_string<<"\"";
 			if (autocomp_indexes.Len())
-				autocomp_indexes<<_T(",")<<index_string;
+				autocomp_indexes<<","<<index_string;
 			else
 				autocomp_indexes = help_autocomp_indexes->GetString(i);
 		}

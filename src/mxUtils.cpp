@@ -270,7 +270,7 @@ wxStaticText *mxUtils::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxStri
 }
 
 wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, wxString filename, int where) {
-	if (accel.Len()) caption<<_T("\t")<<accel;
+	if (accel.Len()) caption<<"\t"<<accel;
 	wxMenuItem *item = new wxMenuItem(menu,id,caption,help);
 	filename=SKIN_FILE_OPT(filename);
 	if (wxFileName::FileExists(filename))
@@ -290,7 +290,7 @@ wxMenuItem *mxUtils::AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, wxString cap
 }
 
 wxMenuItem *mxUtils::AddCheckToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, bool value) {
-	if (accel.Len()) caption<<_T("\t")<<accel;
+	if (accel.Len()) caption<<"\t"<<accel;
 	wxMenuItem *item = menu->AppendCheckItem (id, caption,help);
 	item->Check(value);
 	return item;
@@ -598,13 +598,13 @@ wxString mxUtils::GetOutput(wxString command, bool also_error) {
 			if (ret.Len()==0)
 				ret<<errors[i];
 			else
-				ret<<_T("\n")<<errors[i];
+				ret<<"\n"<<errors[i];
 	}
 	for (unsigned int i=0;i<output.GetCount();i++)
 		if (ret.Len()==0)
 			ret<<output[i];
 		else
-			ret<<_T("\n")<<output[i];
+			ret<<"\n"<<output[i];
 	return ret;
 }
 
@@ -625,10 +625,10 @@ wxString mxUtils::ToHtml(wxString text, bool full) {
 		tabs_n=config->Source.tabWidth;
 	}
 	text.Replace(_T("&"),_T("&amp;"));
-	text.Replace(_T("\t"),tabs);
+	text.Replace("\t",tabs);
 	text.Replace(_T("<"),_T("&lt;"));
 	text.Replace(_T(">"),_T("&gt;"));
-	text.Replace(_T("\n"),_T("<BR>"));
+	text.Replace("\n",_T("<BR>"));
 	if (full) {
 		wxChar doce[]=" ";
 		doce[0]=12;
@@ -915,7 +915,7 @@ void mxUtils::OpenInBrowser(wxString url) {
 	if (config->Files.browser_command.Len()) {
 		if (config->Files.browser_command=="shellexecute.exe" && url.StartsWith("file://"))
 			url=url.Mid(7);
-		wxExecute(config->Files.browser_command+_T(" \"")+url+_T("\""));	
+		wxExecute(config->Files.browser_command+" \""+url+"\"");	
 	} else
 		wxLaunchDefaultBrowser(url);
 }
@@ -944,7 +944,7 @@ void mxUtils::OpenFolder(wxString path) {
 												   "cuadro de Preferencias (menu Archivo->Preferencias)."),LANG(CONFIG_EXPLORER,"Explorador de archivos"));
 	} else {
 		wxString cmd = config->Files.explorer_command;
-		cmd<<_T(" \"")<<path<<_T("\"");
+		cmd<<" \""<<path<<"\"";
 		utils->Execute(path,cmd,wxEXEC_NOHIDE);
 	}
 }
@@ -1035,7 +1035,7 @@ wxString mxUtils::Line2Text(const wxString &line) {
 	for (i=0;i<l;i++) {
 		if (line[i]=='\\') {
 			if (line[i+1]=='n') {
-				text<<line.Mid(p,i-p)<<_T("\n");
+				text<<line.Mid(p,i-p)<<"\n";
 				p=(++i)+1;
 			} else {
 				text<<line.Mid(p,i-p);
@@ -1130,13 +1130,13 @@ void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString
 			if (wxID_OK!=dlg.ShowModal()) return;
 			(project?project->last_dir:config->Files.last_dir) = wxFileName(dlg.GetPath()).GetPath(); 
 			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
-			if (text.Contains(' ')) text = wxString(_T("\""))<<text<<_T("\"");
+			if (text.Contains(' ')) text = wxString("\"")<<text<<"\"";
 		} else if (id==mxID_POPUPS_INSERT_DIR) {
 			wxDirDialog dlg(win,caption,text.Len()?text:(project?project->last_dir:config->Files.last_dir));
 			if (wxID_OK!=dlg.ShowModal()) return;
 			(project?project->last_dir:config->Files.last_dir) = dlg.GetPath(); 
 			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
-			if (text.Contains(' ')) text = wxString(_T("\""))<<text<<_T("\"");
+			if (text.Contains(' ')) text = wxString("\"")<<text<<"\"";
 		} else if (id==mxID_POPUPS_INSERT_MINGW_DIR) {
 			text="${MINGW_DIR}";
 		} else if (id==mxID_POPUPS_INSERT_TEMP_DIR) {

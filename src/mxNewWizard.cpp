@@ -310,19 +310,19 @@ void mxNewWizard::OnProjectCreate() {
 			cpp_file.AddLine("");
 			if (onproject_const_def->GetValue()) { // constructor por defecto
 				cpp_file.AddLine(name+_T("::")+name+_T("() {"));
-				cpp_file.AddLine(_T("\t"));
+				cpp_file.AddLine("\t");
 				cpp_file.AddLine(_T("}"));
 				cpp_file.AddLine("");
 			}
 			if (onproject_const_copy->GetValue()) { // constructor de copia
 				cpp_file.AddLine(name+_T("::")+name+_T("(const ")<<name<<_T(" &arg) {"));
-				cpp_file.AddLine(_T("\t"));
+				cpp_file.AddLine("\t");
 				cpp_file.AddLine(_T("}"));
 				cpp_file.AddLine("");
 			}
 			if (onproject_dest->GetValue()) { // destructor
 				cpp_file.AddLine(name+_T("::~")+name+_T("() {"));
-				cpp_file.AddLine(_T("\t"));
+				cpp_file.AddLine("\t");
 				cpp_file.AddLine(_T("}"));
 				cpp_file.AddLine("");
 			}
@@ -335,7 +335,7 @@ void mxNewWizard::OnProjectCreate() {
 					+"("+
 					virtual_methods[i].AfterFirst('(');
 				cpp_file.AddLine(virtual_methods[i].AfterFirst(' ')+" {");
-				cpp_file.AddLine(_T("\t"));
+				cpp_file.AddLine("\t");
 				cpp_file.AddLine(_T("}"));
 				cpp_file.AddLine("");
 				// sacar el nombre de la clase del prototipo para que no ponerlo despues en el .h
@@ -379,21 +379,21 @@ void mxNewWizard::OnProjectCreate() {
 			h_file.AddLine(_T("private:"));
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
 				if (virtual_methods[i].StartsWith("private "))
-					h_file.AddLine(wxString(_T("\t"))+virtual_methods[i].AfterFirst(' ')+";");
+					h_file.AddLine(wxString("\t")+virtual_methods[i].AfterFirst(' ')+";");
 			h_file.AddLine(_T("protected:"));
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
 				if (virtual_methods[i].StartsWith("protected "))
-					h_file.AddLine(wxString(_T("\t"))+virtual_methods[i].AfterFirst(' ')+";");
+					h_file.AddLine(wxString("\t")+virtual_methods[i].AfterFirst(' ')+";");
 			h_file.AddLine(_T("public:"));
 			if (onproject_const_def->GetValue())
-				h_file.AddLine(wxString(_T("\t"))+name+_T("();"));
+				h_file.AddLine(wxString("\t")+name+_T("();"));
 			if (onproject_const_copy->GetValue())
-				h_file.AddLine(wxString(_T("\t"))+name+_T("(const ")<<name<<_T(" &arg);"));
+				h_file.AddLine(wxString("\t")+name+_T("(const ")<<name<<_T(" &arg);"));
 			if (onproject_dest->GetValue())
 				h_file.AddLine(wxString(_T("\t~"))+name+_T("();"));
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
 				if (virtual_methods[i].StartsWith("public "))
-					h_file.AddLine(wxString(_T("\t"))+virtual_methods[i].AfterFirst(' ')+";");
+					h_file.AddLine(wxString("\t")+virtual_methods[i].AfterFirst(' ')+";");
 			h_file.AddLine(_T("};"));
 			
 			h_file.AddLine("");
@@ -546,7 +546,7 @@ void mxNewWizard::ProjectCreate() {
 			fil.AddLine(_T("using namespace std;"));
 			fil.AddLine("");
 			fil.AddLine(_T("int main (int argc, char *argv[]) {"));
-			fil.AddLine(_T("\t"));
+			fil.AddLine("\t");
 			fil.AddLine(_T("\treturn 0;"));
 			fil.AddLine(_T("}"));
 			fil.AddLine("");

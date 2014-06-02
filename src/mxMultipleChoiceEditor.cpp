@@ -42,12 +42,12 @@ mxMultipleChoiceEditor::mxMultipleChoiceEditor(wxWindow *parent, wxString title,
 		wxString res;
 		if (selection.GetCount()) {
 			if (options_array[selection[0]].Contains(wxChar(' '))) 
-				res=wxString(_T("\""))<<options_array[selection[0]]<<_T("\"");
+				res=wxString("\"")<<options_array[selection[0]]<<"\"";
 			else
 				res=options_array[selection[0]];
 			for (unsigned int i=1;i<selection.GetCount();i++) {
 				if (options_array[selection[i]].Contains(wxChar(' '))) 
-					res<<_T(" \"")<<options_array[selection[i]]<<_T("\"");
+					res<<" \""<<options_array[selection[i]]<<"\"";
 				else
 					res<<" "<<options_array[selection[i]];
 			}

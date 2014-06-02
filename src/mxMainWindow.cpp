@@ -2222,7 +2222,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 	}
 	
 	// si es uno interrumpido adrede, liberar memoria y no hacer nada mas
-	if (compile_and_run && compile_and_run->killed) { 
+	if (compile_and_run->killed) { 
 		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
 		delete compile_and_run; return;
 	}
@@ -2433,14 +2433,14 @@ void mxMainWindow::RunSource (mxSource *source) {
 		else if (command[command.Len()-1]!=' ') 
 			command<<" ";
 	}
-	command<<_T("\"")<<config->Files.runner_command<<_T("\" ");
-	command<<_T("-lang \"")<<config->Init.language_file<<_T("\" ");
+	command<<"\""<<config->Files.runner_command<<"\" ";
+	command<<_T("-lang \"")<<config->Init.language_file<<"\" ";
 	if (source->config_running.wait_for_key) command<<_T("-waitkey ");
-	command<<_T("\"")<<source->working_folder.GetFullPath()<<(source->working_folder.GetFullPath().Last()=='\\'?_T("\\\" "):_T("\" "));
+	command<<"\""<<source->working_folder.GetFullPath()<<(source->working_folder.GetFullPath().Last()=='\\'?_T("\\\" "):"\" ");
 
 	compiler->CheckForExecutablePermision(source->GetBinaryFileName().GetFullPath());
 	
-	command<<exe_pref<<_T("\"")<<source->GetBinaryFileName().GetFullPath()<<_T("\"");
+	command<<exe_pref<<"\""<<source->GetBinaryFileName().GetFullPath()<<"\"";
 //	utils->ParameterReplace(command,_T("${ZINJAI_DIR}"),wxGetCwd());
 	// agregar los argumentos de ejecucion
 	if (source->config_running.always_ask_args) {
@@ -3244,7 +3244,7 @@ mxSource *mxMainWindow::OpenFile (const wxString &filename, bool add_to_project)
 			project->AddFile(FT_OTHER,filename);
 		} else {
 			mxOSD osd(this,LANG(WXFB_OPENING,"Abriendo wxFormBuilder..."));
-			wxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" \"")+filename+_T("\""));
+			wxExecute(wxString("\"")+config->Files.wxfb_command+_T("\" \"")+filename+"\"");
 DEBUG_INFO("wxYield:in  mxMainWindow::OpenFile");
 			wxYield(); 
 DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
@@ -3637,9 +3637,9 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 			line = file.GetNextLine();
 		}
 		if (line!="")
-			source->AppendText(line+_T("\n"));
+			source->AppendText(line+"\n");
 		while (!file.Eof()) 
-			source->AppendText(file.GetNextLine()+_T("\n"));
+			source->AppendText(file.GetNextLine()+"\n");
 		source->MoveCursorTo(pos);
 		file.Close();
 	}
@@ -4446,7 +4446,7 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 		src->SetModify(false);
 		int delay=200;
 		for (int i=0;i<20;i++) {
-			wxString s(_T("\n")), d(i,' ');
+			wxString s("\n"), d(i,' ');
 			s<<d<<_T(" _A_\n")<<d<<_T("  O \n")<<d<<_T("  |\\\n")<<d<<_T("  |/\n");
 			if (i%4==0)	s<<d<<_T(" /|\n")<<d<<_T(" \\|\n");
 			if (i%4==1) s<<d<<_T(" /|\n")<<d<<_T(" ||\n");
@@ -4455,9 +4455,9 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 			src->SetText(s); wxYield();	wxMilliSleep(delay);
 		}
 		wxString d(23,' ');
-		src->SetText(wxString()<<_T("\n")<<d<<_T(" _A_\n")<<d<<_T("  O |\n")<<d<<_T(" /|/\n")<<d<<_T(" || \n")<<d<<_T(" / \\\n")<<d<<_T(" | |\n"));
+		src->SetText(wxString()<<"\n"<<d<<_T(" _A_\n")<<d<<_T("  O |\n")<<d<<_T(" /|/\n")<<d<<_T(" || \n")<<d<<_T(" / \\\n")<<d<<_T(" | |\n"));
 		wxYield(); wxMilliSleep(delay*2);
-		src->SetText(wxString()<<_T("\n")<<d<<_T("\\\n")<<d<<_T(" \\O \n")<<d<<_T("  |\\\n")<<d<<_T("  |_A_\n")<<d<<_T(" / \\\n")<<d<<_T(" | |\n"));
+		src->SetText(wxString()<<"\n"<<d<<_T("\\\n")<<d<<_T(" \\O \n")<<d<<_T("  |\\\n")<<d<<_T("  |_A_\n")<<d<<_T(" / \\\n")<<d<<_T(" | |\n"));
 		wxYield(); wxMilliSleep(delay*3);
 		src->SetModify(false);
 		OnFileClose(evt);

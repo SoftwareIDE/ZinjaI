@@ -36,8 +36,8 @@
 #include "mxWxfbInheriter.h"
 using namespace std;
 
-#define ICON_LINE(filename) (wxString(_T("0 ICON \""))<<filename<<_T("\""))
-#define MANIFEST_LINE(filename) (wxString(_T("1 RT_MANIFEST \""))<<filename<<_T("\""))
+#define ICON_LINE(filename) (wxString(_T("0 ICON \""))<<filename<<"\"")
+#define MANIFEST_LINE(filename) (wxString(_T("1 RT_MANIFEST \""))<<filename<<"\"")
 
 ProjectManager *project=NULL;
 extern char path_sep;
@@ -86,7 +86,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 	
 	inspectlist current_inspections(_("<current_inspections>")), *current_inspectlist=NULL;
 	
-	main_window->SetStatusText(wxString(LANG(PROJMNGR_OPENING,"Abriendo"))<<_T(" \"")+name.GetFullPath()+_T("\"..."));
+	main_window->SetStatusText(wxString(LANG(PROJMNGR_OPENING,"Abriendo"))<<" \""+name.GetFullPath()+_T("\"..."));
 	main_window->notebook_sources->Freeze();
 	
 	debug->ClearSavedInspectionTables();
@@ -1464,7 +1464,7 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 #if !defined(_WIN32) && !defined(__WIN32__)
 		(item->lib?_T(" -fPIC "):" ")+
 #endif
-		(cpp?cpp_compiling_options:c_compiling_options)+_T(" \"")+DIR_PLUS_FILE(path,item->name)+_T("\" -c -o \"")+bin_name.GetFullPath()+_T("\"");
+		(cpp?cpp_compiling_options:c_compiling_options)+" \""+DIR_PLUS_FILE(path,item->name)+_T("\" -c -o \"")+bin_name.GetFullPath()+"\"";
 	
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
@@ -1533,7 +1533,7 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 			compile_and_run->pid = CompileWithExternToolchain(compile_and_run);
 			break;
 		case CNS_ICON:
-			caption=wxString(LANG(PROJMNGR_COMPILING,"Compilando"))<<_T(" \"")<<((project_file_item*)step->what)->name<<_T("\"...");
+			caption=wxString(LANG(PROJMNGR_COMPILING,"Compilando"))<<" \""<<((project_file_item*)step->what)->name<<_T("\"...");
 			compile_and_run->pid = CompileIcon(compile_and_run,*((wxString*)step->what));
 			delete ((wxString*)step->what);
 			break;
@@ -1554,7 +1554,7 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 			caption=compiler->GetCompilingStatusText();
 			break;
 		case CNS_EXTRA:
-			caption=wxString(LANG(PROJMNGR_RUNNING,"Ejecutando"))<<_T(" \"")<<((compile_extra_step*)step->what)->name<<_T("\"...");
+			caption=wxString(LANG(PROJMNGR_RUNNING,"Ejecutando"))<<" \""<<((compile_extra_step*)step->what)->name<<_T("\"...");
 			compile_and_run->pid = CompileExtra(compile_and_run,(compile_extra_step*)step->what);
 			break;
 		case CNS_LINK:
@@ -1764,10 +1764,10 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	
 	AnalizeConfig("",exec_comas,mingw_dir);
 	if (executable_name.Contains(" "))
-		executable_name=wxString(_T("\""))+executable_name+_T("\"");
+		executable_name=wxString("\"")+executable_name+"\"";
 	
 	wxFileName bin_name;
-	wxString tab(_T("\t"));
+	wxString tab("\t");
 	
 	// abrir el archivo (crear o pisar)
 	wxTextFile fil(make_file);
@@ -1871,7 +1871,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 				wxString output,deps,command;
 				command = GetCustomStepCommand(estep,mingw_dir,deps,output);
 				fil.AddLine(output+_T(": ")+deps);
-				fil.AddLine(_T("\t")+command);
+				fil.AddLine("\t"+command);
 				fil.AddLine("");
 			}
 			estep=estep->next;
@@ -2333,7 +2333,7 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	if (input.GetCount()) {
 		fil.AddLine(wxString(_T("INPUT = "))<<input[0]);
 		for (unsigned int i=1;i<input.GetCount();i++)
-			fil.AddLine(wxString(_T("INPUT += \""))<<input[i]<<_T("\""));
+			fil.AddLine(wxString(_T("INPUT += \""))<<input[i]<<"\"");
 	}
 	
 	array.Clear();
@@ -2347,7 +2347,7 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	if (array.GetCount()) {
 		wxString defs(_T("INCLUDE_PATH = "));
 		for (unsigned int i=0;i<array.GetCount();i++)
-			defs<<_T("\"")<<array[i]<<_T("\" ");
+			defs<<"\""<<array[i]<<"\" ";
 		fil.AddLine(defs);
 	}
 	fil.AddLine(wxString(_T("ENABLE_PREPROCESSING = "))<<(doxygen->preprocess?_T("YES"):_T("NO")));
@@ -2359,7 +2359,7 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 		if (array.GetCount()) {
 			wxString defs(_T("PREDEFINED = "));
 			for (unsigned int i=0;i<array.GetCount();i++)
-				defs<<_T("\"")<<array[i]<<_T("\" ");
+				defs<<"\""<<array[i]<<"\" ";
 			fil.AddLine(defs);
 		}
 	}
@@ -2492,7 +2492,7 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 	
 	if (osd && *osd==NULL) *osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 	
-	int ret = mxExecute(wxString(_T("\""))+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+_T("\""), wxEXEC_NODISABLE|wxEXEC_SYNC);
+	int ret = mxExecute(wxString("\"")+config->Files.wxfb_command+_T("\" -g \"")+fbp_file+"\"", wxEXEC_NODISABLE|wxEXEC_SYNC);
 
 	if (fbase.Len()) {
 		if (ret) {
@@ -2773,8 +2773,8 @@ void ProjectManager::ActivateWxfb() {
 long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_run, wxString icon_name) {
 	// preparar la linea de comando 
 	wxString command = _T("windres ");
-	command<<_T(" -i \"")<<wxFileName(DIR_PLUS_FILE(temp_folder,_T("zpr_resource.rc"))).GetShortPath()<<_T("\"");
-	command<<_T(" -o \"")<<wxFileName(DIR_PLUS_FILE(temp_folder,_T("zpr_resource.o"))).GetShortPath()<<_T("\"");
+	command<<_T(" -i \"")<<wxFileName(DIR_PLUS_FILE(temp_folder,_T("zpr_resource.rc"))).GetShortPath()<<"\"";
+	command<<_T(" -o \"")<<wxFileName(DIR_PLUS_FILE(temp_folder,_T("zpr_resource.o"))).GetShortPath()<<"\"";
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	// ejecutar
@@ -2932,7 +2932,7 @@ void ProjectManager::SaveLibsAndSourcesAssociation(project_configuration *conf) 
 			if (fi->lib->sources.Len())
 				fi->lib->sources<<" ";
 			if (fi->name.Contains(" "))
-				fi->lib->sources<<_T("\"")<<fi->name<<_T("\"");
+				fi->lib->sources<<"\""<<fi->name<<"\"";
 			else
 				fi->lib->sources<<fi->name;
 		}
@@ -3003,7 +3003,7 @@ void ProjectManager::DrawGraph() {
 	
 	draw_graph_item *dgi = new draw_graph_item[c];
 	c=0;
-	wxString tab(_T("\t"));
+	wxString tab("\t");
 	
 	if (fil.Exists())
 		fil.Open();
@@ -3068,7 +3068,7 @@ void ProjectManager::DrawGraph() {
 			x=(dgi[i].lc-mm)*100/(Ml-mm);
 			col=wxColour(155+x,255-x,156);
 		}
-		line<<_T("\"")<<dgi[i].name<<_T("\"")
+		line<<"\""<<dgi[i].name<<"\""
 			<<_T("[shape=note,style=filled,fillcolor=\"")
 			<<col.GetAsString(wxC2S_HTML_SYNTAX)<<_T("\",label=\"")
 			<<dgi[i].name
@@ -3086,7 +3086,7 @@ void ProjectManager::DrawGraph() {
 			wxString header=DIR_PLUS_FILE(path,deps[j]);
 			for (int k=0;k<c;k++) {
 				if (dgi[k].fullpath==header) {
-					fil.AddLine(tab+_T("\"")+dgi[i].name+_T("\"->\"")+dgi[k].name+_T("\";"));
+					fil.AddLine(tab+"\""+dgi[i].name+_T("\"->\"")+dgi[k].name+_T("\";"));
 					break;
 				}
 			}
@@ -3168,7 +3168,7 @@ bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 		fil.InsertLine(tabs_pro,inspos);
 	}
 	
-	tabs_pro+=_T("\t");
+	tabs_pro+="\t";
 	
 	pd_class *pdc_father = parser->GetClass(wxfb_class);
 	wxArrayString methods;
@@ -3426,7 +3426,7 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 		cpp_file.AddLine(wxString(_T("#include \""))+name+_T(".h\""));
 		cpp_file.AddLine("");
 		cpp_file.AddLine(name+_T("::")+name+_T("(wxWindow *parent) : ")+base_name+_T("(parent) {"));
-		cpp_file.AddLine(_T("\t"));
+		cpp_file.AddLine("\t");
 		cpp_file.AddLine(_T("}"));
 		cpp_file.AddLine("");
 		for (unsigned int i=0;i<methods.GetCount();i++) {
@@ -3436,7 +3436,7 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 			cpp_file.AddLine("");
 		}
 		cpp_file.AddLine(name+_T("::~")+name+_T("() {"));
-		cpp_file.AddLine(_T("\t"));
+		cpp_file.AddLine("\t");
 		cpp_file.AddLine(_T("}"));
 		cpp_file.AddLine("");
 		cpp_file.Write();
@@ -3450,19 +3450,19 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 		h_file.AddLine(wxString(_T("#define "))+def+_T("_H"));
 		wxFileName fn_base_header(base_header);
 		fn_base_header.MakeRelativeTo(folder);
-		h_file.AddLine(wxString(_T("#include \""))+fn_base_header.GetFullPath()+_T("\""));
+		h_file.AddLine(wxString(_T("#include \""))+fn_base_header.GetFullPath()+"\"");
 		h_file.AddLine("");
 		h_file.AddLine(wxString(_T("class "))+name+_T(" : public ")+base_name+_T(" {"));
-		h_file.AddLine(_T("\t"));
+		h_file.AddLine("\t");
 		h_file.AddLine(_T("private:"));
-		h_file.AddLine(_T("\t"));
+		h_file.AddLine("\t");
 		h_file.AddLine(_T("protected:"));
 		for (unsigned int i=0;i<methods.GetCount();i++)
-			h_file.AddLine(wxString(_T("\t"))<<methods[i]+_T(";"));
-		h_file.AddLine(_T("\t"));
+			h_file.AddLine(wxString("\t")<<methods[i]+_T(";"));
+		h_file.AddLine("\t");
 		h_file.AddLine(_T("public:"));
-		h_file.AddLine(wxString(_T("\t"))+name+_T("(wxWindow *parent=NULL);"));
-		h_file.AddLine(wxString(_T("\t~"))+name+_T("();"));
+		h_file.AddLine(wxString("\t")+name+_T("(wxWindow *parent=NULL);"));
+		h_file.AddLine(wxString("\t~")+name+_T("();"));
 		h_file.AddLine(_T("};"));
 		h_file.AddLine("");
 		h_file.AddLine(_T("#endif"));

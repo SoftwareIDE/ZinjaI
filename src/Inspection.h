@@ -52,7 +52,7 @@ private:
 	static map<wxString,DebuggerInspection*> vo2di_map;
 	
 	/// busca una instancia de esta clase DebuggerInspection a partir del nombre de su variable-object en gdb
-	static DebuggerInspection *GetFromVO(const wxString variable_object) {
+	static DebuggerInspection *GetFromVO(const wxString &variable_object) {
 		map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(variable_object);
 		if (it!=vo2di_map.end()) return it->second; else return NULL;
 	}
@@ -128,7 +128,7 @@ public:
 					DEBUG_INFO("Inspection::UpdateAll vo name not found in vo2di_map");
 					continue;
 				}
-				DebuggerInspection &di=*(it->second);
+//				DebuggerInspection &di=*(it->second);
 				/// @todo: procesar u
 			}
 		}

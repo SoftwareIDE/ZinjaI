@@ -524,7 +524,7 @@ bool ConfigManager::Load() {
 //#endif
 	if (Init.version<20100828) {
 //#if defined(__WIN32__)
-//		Init.forced_compiler_options<<_T(" --show-column");
+//		Init.forced_compiler_options<<" --show-column";
 //#endif
 		if (!Running.cpp_compiler_options.Contains("-O")) {
 			if (!Running.cpp_compiler_options.EndsWith(" "))
@@ -556,7 +556,7 @@ bool ConfigManager::Load() {
 	if (last_files.GetCount()) {
 		int ps=0, pp=0;
 		for (unsigned int i=0;i<last_files.GetCount();i++) {
-			if (wxFileName(last_files[i]).GetExt().CmpNoCase(_T(PROJECT_EXT))==0)
+			if (wxFileName(last_files[i]).GetExt().CmpNoCase(PROJECT_EXT)==0)
 				Files.last_project[pp++]=last_files[i];
 			else
 				Files.last_source[ps++]=last_files[i];
@@ -582,13 +582,13 @@ bool ConfigManager::Save(){
 	fil.Clear();
 	
 #if defined(__WIN32__)
-	fil.AddLine(wxString(_T("# generado por ZinjaI-w32-"))<<VERSION);
+	fil.AddLine(wxString("# generado por ZinjaI-w32-")<<VERSION);
 #elif defined(__APPLE__)
-	fil.AddLine(wxString(_T("# generado por ZinjaI-mac-"))<<VERSION);
+	fil.AddLine(wxString("# generado por ZinjaI-mac-")<<VERSION);
 #else
-	fil.AddLine(wxString(_T("# generado por ZinjaI-lnx-"))<<VERSION);
+	fil.AddLine(wxString("# generado por ZinjaI-lnx-")<<VERSION);
 #endif
-	fil.AddLine(_T("[Init]"));
+	fil.AddLine("[Init]");
 	CFG_BOOL_WRITE_DN("left_panels",Init.left_panels);
 	CFG_BOOL_WRITE_DN("show_welcome",Init.show_welcome);
 	CFG_BOOL_WRITE_DN("show_beginner_panel",Init.show_beginner_panel);
@@ -636,7 +636,7 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("colour_theme",Init.colour_theme);
 	fil.AddLine(_(""));
 
-	fil.AddLine(_T("[Debug]"));
+	fil.AddLine("[Debug]");
 	CFG_BOOL_WRITE_DN("allow_edition",Debug.allow_edition);
 	CFG_BOOL_WRITE_DN("autohide_panels",Debug.autohide_panels);
 	CFG_BOOL_WRITE_DN("autohide_toolbars",Debug.autohide_toolbars);
@@ -659,14 +659,14 @@ bool ConfigManager::Save(){
 		CFG_GENERIC_WRITE_DN("inspection_improving_template",Debug.inspection_improving_template_from[i]+"|"+Debug.inspection_improving_template_to[i]);
 	fil.AddLine(_(""));
 	
-	fil.AddLine(_T("[Styles]"));
+	fil.AddLine("[Styles]");
 	CFG_GENERIC_WRITE_DN("print_size",Styles.print_size);
 	CFG_GENERIC_WRITE_DN("font_size",Styles.font_size);
 	CFG_GENERIC_WRITE_DN("font_name",Styles.font_name);
 	CFG_GENERIC_WRITE_DN("colour_theme",Init.colour_theme);
 	fil.AddLine("");
 
-	fil.AddLine(_T("[Source]"));
+	fil.AddLine("[Source]");
 	CFG_BOOL_WRITE_DN("smartIndent",Source.smartIndent);
 	CFG_BOOL_WRITE_DN("indentPaste",Source.indentPaste);
 	CFG_BOOL_WRITE_DN("bracketInsertion",Source.bracketInsertion);
@@ -687,7 +687,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("tabUseSpaces",Source.tabUseSpaces);
 	fil.AddLine("");
 
-	fil.AddLine(_T("[Running]"));
+	fil.AddLine("[Running]");
 	CFG_GENERIC_WRITE_DN("cpp_compiler_options",Running.cpp_compiler_options);
 	CFG_GENERIC_WRITE_DN("c_compiler_options",Running.c_compiler_options);
 	CFG_BOOL_WRITE_DN("wait_for_key",Running.wait_for_key);
@@ -696,14 +696,14 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("check_includes",Running.check_includes);
 	fil.AddLine("");
 
-	fil.AddLine(_T("[Help]"));
+	fil.AddLine("[Help]");
 	CFG_GENERIC_WRITE_DN("wxhelp_index",Help.wxhelp_index);
 	CFG_GENERIC_WRITE_DN("autocomp_indexes",Help.autocomp_indexes);
 	CFG_GENERIC_WRITE_DN("min_len_for_completion",Help.min_len_for_completion);
 	CFG_BOOL_WRITE_DN("show_extra_panels",Help.show_extra_panels);
 	fil.AddLine("");
 
-	fil.AddLine(_T("[Files]"));
+	fil.AddLine("[Files]");
 	CFG_GENERIC_WRITE_DN("temp_dir",Files.temp_dir);
 	CFG_GENERIC_WRITE_DN("img_browser",Files.img_browser);
 	CFG_GENERIC_WRITE_DN("xdot_command",Files.xdot_command);
@@ -735,33 +735,33 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("last_dir",Files.last_dir);
 	CFG_GENERIC_WRITE_DN("last_project_dir",Files.last_project_dir);
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
-		if (Files.last_source[i].Len()) fil.AddLine(wxString(_T("last_source_"))<<i<<_T("=")<<Files.last_source[i]);
+		if (Files.last_source[i].Len()) fil.AddLine(wxString("last_source_")<<i<<"="<<Files.last_source[i]);
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
-		if (Files.last_project[i].Len()) fil.AddLine(wxString(_T("last_project_"))<<i<<_T("=")<<Files.last_project[i]);
+		if (Files.last_project[i].Len()) fil.AddLine(wxString("last_project_")<<i<<"="<<Files.last_project[i]);
 	fil.AddLine("");
 	
-	fil.AddLine(_T("[Columns]"));
+	fil.AddLine("[Columns]");
 	for (int i=0;i<IG_COLS_COUNT;i++)
-		fil.AddLine(wxString(_T("inspections_grid_"))<<i<<_T("=")<<(Cols.inspections_grid[i]?_T("1"):_T("0")));
+		fil.AddLine(wxString("inspections_grid_")<<i<<"="<<(Cols.inspections_grid[i]?"1":"0"));
 	for (int i=0;i<BG_COLS_COUNT;i++)
-		fil.AddLine(wxString(_T("backtrace_grid_"))<<i<<_T("=")<<(Cols.backtrace_grid[i]?_T("1"):_T("0")));
+		fil.AddLine(wxString("backtrace_grid_")<<i<<"="<<(Cols.backtrace_grid[i]?"1":"0"));
 //	for (int i=0;i<TG_COLS_COUNT;i++)
-//		fil.AddLine(wxString(_T("threadlist_grid_"))<<i<<_T("=")<<(Cols.threadlist_grid[i]?_T("1"):_T("0")));
+//		fil.AddLine(wxString("threadlist_grid_")<<i<<"="<<(Cols.threadlist_grid[i]?"1":"0"));
 	fil.AddLine("");
 	
-	fil.AddLine(_T("[CustomTools]"));
+	fil.AddLine("[CustomTools]");
 	for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
 		if (CustomTools[i].command.Len()) {
-			fil.AddLine(wxString(_T("name_"))<<i<<_T("=")<<CustomTools[i].name);
-			fil.AddLine(wxString(_T("command_"))<<i<<_T("=")<<CustomTools[i].command);
-			fil.AddLine(wxString(_T("workdir_"))<<i<<_T("=")<<CustomTools[i].workdir);
-			fil.AddLine(wxString(_T("console_"))<<i<<_T("=")<<(CustomTools[i].console?_T("1"):_T("0")));
-			fil.AddLine(wxString(_T("on_toolbar_"))<<i<<_T("=")<<(CustomTools[i].on_toolbar?_T("1"):_T("0")));
+			fil.AddLine(wxString("name_")<<i<<"="<<CustomTools[i].name);
+			fil.AddLine(wxString("command_")<<i<<"="<<CustomTools[i].command);
+			fil.AddLine(wxString("workdir_")<<i<<"="<<CustomTools[i].workdir);
+			fil.AddLine(wxString("console_")<<i<<"="<<(CustomTools[i].console?"1":"0"));
+			fil.AddLine(wxString("on_toolbar_")<<i<<"="<<(CustomTools[i].on_toolbar?"1":"0"));
 		}
 	}
 	fil.AddLine("");
 	
-	fil.AddLine(_T("[Toolbars]"));
+	fil.AddLine("[Toolbars]");
 	CFG_GENERIC_WRITE(Toolbars,icon_size);
 	CFG_BOOL_WRITE(Toolbars,file.new_file);
 	CFG_BOOL_WRITE(Toolbars,file.new_project);
@@ -938,63 +938,63 @@ void ConfigManager::LoadDefaults(){
 
 	// crear el directorio para zinjai si no existe
 #if defined(__WIN32__)
-	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("zinjai"));
+	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),"zinjai");
 #else
-	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T(".zinjai"));
+	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),".zinjai");
 #endif
 	if (!wxFileName::DirExists(home_dir)) wxFileName::Mkdir(home_dir);
 	filename = DIR_PLUS_FILE(zinjai_dir,"config.here");
 	if (!wxFileName::FileExists(filename)) 
-		filename = DIR_PLUS_FILE(home_dir,_T("config"));
+		filename = DIR_PLUS_FILE(home_dir,"config");
 	
 	// establecer valores predeterminados para todas las estructuras
 	Files.temp_dir=home_dir;
-	Files.skin_dir=_T("imgs");
-	Files.graphviz_dir=_T("graphviz");
-//	Files.mingw_dir=_T("MinGW");
+	Files.skin_dir="img";
+	Files.graphviz_dir="graphviz";
+//	Files.mingw_dir="MinGW";
 #if defined(__WIN32__)
 	Files.toolchain="gcc-mingw32";
-	Files.parser_command=_T("cbrowser.exe");
-	Files.debugger_command=_T("gdb");
-	Files.runner_command=_T("runner.exe");
+	Files.parser_command="cbrowser.exe";
+	Files.debugger_command="gdb";
+	Files.runner_command="runner.exe";
 	Files.terminal_command="";
-	Files.explorer_command=_T("explorer");
-	Files.img_browser=_T("graphviz\\viewerw.exe");
-	Files.doxygen_command=_T("c:\\archivos de programa\\doxygen\\bin\\doxygen.exe");
+	Files.explorer_command="explorer";
+	Files.img_browser="graphviz\\viewerw.exe";
+	Files.doxygen_command="c:\\archivos de programa\\doxygen\\bin\\doxygen.exe";
 	Files.wxfb_command="";
-//	Files.browser_command=_T("shellexecute.exe");
+//	Files.browser_command="shellexecute.exe";
 	Files.browser_command="";
 #elif defined(__APPLE__)
 	Files.toolchain="gcc";
-	Files.parser_command=_T("./cbrowser");
-	Files.debugger_command=_T("gdb");
-	Files.runner_command=_T("./runner.bin");
-	Files.terminal_command=_T("./mac-terminal-wrapper.bin");
-	Files.explorer_command=_T("open");
-	Files.img_browser=_T("open");
-	Files.doxygen_command=_T("/Applications/Doxygen.app/Contents/Resources/doxygen");
-	Files.wxfb_command=_T("/Applications/wxFormBuilder.app/Contents/MacOS/wxformbuilder");
-	Files.browser_command=_T("open");
+	Files.parser_command="./cbrowser";
+	Files.debugger_command="gdb";
+	Files.runner_command="./runner.bin";
+	Files.terminal_command="./mac-terminal-wrapper.bin";
+	Files.explorer_command="open";
+	Files.img_browser="open";
+	Files.doxygen_command="/Applications/Doxygen.app/Contents/Resources/doxygen";
+	Files.wxfb_command="/Applications/wxFormBuilder.app/Contents/MacOS/wxformbuilder";
+	Files.browser_command="open";
 #else
 	Files.toolchain="gcc";
-	Files.parser_command=DIR_PLUS_FILE(zinjai_dir,_T("cbrowser"));
-	Files.debugger_command=_T("gdb");
-	Files.runner_command=DIR_PLUS_FILE(zinjai_dir,_T("runner.bin"));
-	Files.explorer_command=_T("<<sin configurar>>");
-	Files.terminal_command=_T("<<sin configurar>>");
-	Files.img_browser=DIR_PLUS_FILE(zinjai_dir,_T("graphviz/viewer.bin"));
-	Files.wxfb_command=_T("wxformbuilder");
-	Files.cppcheck_command=_T("cppcheck");
-	Files.valgrind_command=_T("valgrind");
-	Files.doxygen_command=_T("doxygen");
-	Files.browser_command=_T("firefox");
+	Files.parser_command=DIR_PLUS_FILE(zinjai_dir,"cbrowser");
+	Files.debugger_command="gdb";
+	Files.runner_command=DIR_PLUS_FILE(zinjai_dir,"runner.bin");
+	Files.explorer_command="<<sin configurar>>";
+	Files.terminal_command="<<sin configurar>>";
+	Files.img_browser=DIR_PLUS_FILE(zinjai_dir,"graphviz/viewer.bin");
+	Files.wxfb_command="wxformbuilder";
+	Files.cppcheck_command="cppcheck";
+	Files.valgrind_command="valgrind";
+	Files.doxygen_command="doxygen";
+	Files.browser_command="firefox";
 #endif
 	Files.project_folder=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
 	Files.default_template="default.tpl";
 	Files.default_project="<main>";
 //	Files.templates_dir="templates";
 	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
-//	Files.code_helper=DIR_PLUS_FILE(_T("quickhelp"),_T("codehelper.txt"));
+//	Files.code_helper=DIR_PLUS_FILE("quickhelp","codehelper.txt");
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
 		Files.last_source[i]="";
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
@@ -1067,32 +1067,32 @@ void ConfigManager::LoadDefaults(){
 	Source.callTips=true;
 	Source.avoidNoNewLineWarning=true;
 
-	Running.cpp_compiler_options=_T("-Wall -pedantic-errors -O0");
-	Running.c_compiler_options=_T("-Wall -pedantic-errors -O0 -lm");
+	Running.cpp_compiler_options="-Wall -pedantic-errors -O0";
+	Running.c_compiler_options="-Wall -pedantic-errors -O0 -lm";
 	Running.wait_for_key=true;
 	Running.always_ask_args=false;
 	Running.dont_run_headers=false;
 	Running.check_includes=true;
 	
 	Init.proxy="";
-	Init.language_file=_T("spanish");
+	Init.language_file="spanish";
 	Init.max_errors=500;
 	Init.max_jobs=wxThread::GetCPUCount();
 	if (Init.max_jobs<1) Init.max_jobs=1;
 	
 #if defined(__WIN32__)
-	Help.wxhelp_index=_T("MinGW\\wx\\docs\\wx_contents.html");
+	Help.wxhelp_index="MinGW\\wx\\docs\\wx_contents.html";
 //	Help.quickhelp_index="quickhelp\\index";
 #else
-	Help.wxhelp_index=_T("docs/wx/wx_contents.html");
+	Help.wxhelp_index="docs/wx/wx_contents.html";
 //	Help.quickhelp_index="quickhelp/index";
 #endif
-//	Help.tips_file=DIR_PLUS_FILE(_T("quickhelp"),_T("tips"));
+//	Help.tips_file=DIR_PLUS_FILE("quickhelp","tips");
 //	Help.quickhelp_dir="quickhelp";
 	Help.cppreference_dir="cppreference/en";
 	Help.guihelp_dir="guihelp";
 //	Help.autocomp_dir="autocomp";
-	Help.autocomp_indexes=_T("AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,AAA_STL,AAA_Palabras_Reservadas,AAA_Estandar_Cpp_11,AAA_STL_11,AAA_Palabras_Reservadas_11");
+	Help.autocomp_indexes="AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,AAA_STL,AAA_Palabras_Reservadas,AAA_Estandar_Cpp_11,AAA_STL_11,AAA_Palabras_Reservadas_11";
 	Help.min_len_for_completion=3;
 	Help.show_extra_panels=true;
 	
@@ -1106,7 +1106,7 @@ void ConfigManager::LoadDefaults(){
 	Debug.raise_main_window = true;
 	Debug.compile_again = true;
 	Debug.format = "";
-	Debug.macros_file = _T("debug_macros.gdb");
+	Debug.macros_file = "debug_macros.gdb";
 	Debug.blacklist = "";
 	Debug.inspections_on_right = false;
 	Debug.show_thread_panel = false;
@@ -1297,7 +1297,7 @@ bool ConfigManager::CheckWxfbPresent() {
 	if (config->Init.wxfb_seen) return true;
 	wxString out;
 	if (config->Files.wxfb_command.Len())
-		out = utils->GetOutput(wxString(_T("\""))<<config->Files.wxfb_command<<_T("\" -h"),true);
+		out = utils->GetOutput(wxString("\"")<<config->Files.wxfb_command<<"\" -h",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe"))
@@ -1308,7 +1308,7 @@ bool ConfigManager::CheckWxfbPresent() {
 			out=config->Files.wxfb_command="c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe";
 	}
 #endif
-	if (project->GetWxfbConfiguration(false)->ask_if_wxfb_is_missing && (out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
+	if (project->GetWxfbConfiguration(false)->ask_if_wxfb_is_missing && (out.Len()==0 || out.Find("bash")!=wxNOT_FOUND || out.Find("exec")!=wxNOT_FOUND)) {
 		/*int res = */mxMessageDialog(main_window,LANG(PROJMNGR_WXFB_NOT_FOUND,"El proyecto utiliza wxFormBuilder, pero este software\n"
 			"no se ecuentra correctamente instalado/configurado en\n"
 			"su pc. Para descargar e instalar wxFormsBuilder dirijase\n"
@@ -1327,7 +1327,7 @@ bool ConfigManager::CheckDoxygenPresent() {
 	if (config->Init.doxygen_seen) return true;
 	wxString out;
 	if (config->Files.doxygen_command.Len())
-		out = utils->GetOutput(wxString(_T("\""))<<config->Files.doxygen_command<<_T("\" --version"),true);
+		out = utils->GetOutput(wxString("\"")<<config->Files.doxygen_command<<"\" --version",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\doxygen\\bin\\doxygen.exe"))
@@ -1338,7 +1338,7 @@ bool ConfigManager::CheckDoxygenPresent() {
 			out=config->Files.doxygen_command="c:\\Program Files (x86)\\doxygen\\bin\\doxygen.exe";
 	}
 #endif
-	if ((out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
+	if ((out.Len()==0 || out.Find("bash")!=wxNOT_FOUND || out.Find("exec")!=wxNOT_FOUND)) {
 		mxMessageDialog(main_window,LANG(MAINW_DOXYGEN_MISSING,"Doxygen no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar CppCheck dirijase a\n"
 			"http://www.doxygen.org. Si ya se encuentra instalado,\n"
@@ -1356,7 +1356,7 @@ bool ConfigManager::CheckCppCheckPresent() {
 	if (config->Init.cppcheck_seen) return true;
 	wxString out;
 	if (config->Files.cppcheck_command.Len())
-		out = utils->GetOutput(wxString(_T("\""))<<config->Files.cppcheck_command<<_T("\" --version"),true);
+		out = utils->GetOutput(wxString("\"")<<config->Files.cppcheck_command<<"\" --version",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\cppcheck\\cppcheck.exe"))
@@ -1367,7 +1367,7 @@ bool ConfigManager::CheckCppCheckPresent() {
 			out=config->Files.cppcheck_command="c:\\Program Files (x86)\\cppcheck\\cppcheck.exe";
 	}
 #endif
-	if ((out.Len()==0 || out.Find(_T("bash"))!=wxNOT_FOUND || out.Find(_T("exec"))!=wxNOT_FOUND)) {
+	if ((out.Len()==0 || out.Find("bash")!=wxNOT_FOUND || out.Find("exec")!=wxNOT_FOUND)) {
 		mxMessageDialog(main_window,LANG(MAINW_CPPCHECK_MISSING,"CppCheck no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar CppCheck dirijase a\n"
 			"http://cppcheck.sourceforge.net. Si ya se encuentra instalado,\n"

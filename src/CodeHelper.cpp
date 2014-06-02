@@ -63,7 +63,7 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, wxArrayString &words, w
 		int li=0;
 		for (unsigned int i=1;i<comp_array.GetCount();i++)
 			if (comp_array[li]!=comp_array[i])
-				text<<_T("\n")<<comp_array[li=i];
+				text<<"\n"<<comp_array[li=i];
 		source->AutoCompShow(l,text);
 	}
 
@@ -86,7 +86,7 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, wxArrayString &words, w
 	int li=0;
 	for (unsigned int i=1;i<comp_array.GetCount();i++)
 		if (comp_array[li]!=comp_array[i])
-			text<<_T("\n")<<comp_array[li=i];
+			text<<"\n"<<comp_array[li=i];
 	source->AutoCompShow(l,text);
 	return true;	
 }
@@ -269,7 +269,7 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 		int li=0;
 		for (unsigned int i=1;i<comp_array.GetCount();i++)
 			if (comp_array[li]!=comp_array[i])
-				text<<_T("\n")<<comp_array[li=i];
+				text<<"\n"<<comp_array[li=i];
 		source->AutoCompShow(l,text);
 		//comp_array.Clear();
 		return true;
@@ -635,7 +635,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	int li=0;
 	for (unsigned int i=1;i<comp_array.GetCount();i++)
 		if (comp_array[li]!=comp_array[i])
-			text<<_T("\n")<<comp_array[li=i];
+			text<<"\n"<<comp_array[li=i];
 	source->AutoCompShow(l,text);
 	return true;
 }
@@ -657,7 +657,7 @@ bool CodeHelper::AutocompleteAutocode(mxSource *source, wxString typed, int max_
 	int li=0;
 	for (unsigned int i=1;i<comp_array.GetCount();i++)
 		if (comp_array[li]!=comp_array[i])
-			text<<_T("\n")<<comp_array[li=i];
+			text<<"\n"<<comp_array[li=i];
 	source->AutoCompShow(l,text);
 	return true;
 }
@@ -1105,12 +1105,12 @@ wxString CodeHelper::GetInclude(wxString path, wxString key) {
 					unsigned int i;
 					for (i=0;i<header_dirs_array.GetCount();i++) {
 						if (wxFileName(DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,header_dirs_array[i]),fn.GetFullName()))==fn)
-							return wxString(_T("\""))+fn.GetFullName()+_T("\"");
+							return wxString("\"")+fn.GetFullName()+"\"";
 					}
 				}
 				if (path.Len())
 					fn.MakeRelativeTo(path);
-				return wxString(_T("\""))+fn.GetFullPath()+_T("\"");
+				return wxString("\"")+fn.GetFullPath()+"\"";
 			}
 		}
 		aux_class = aux_class->next;
@@ -1124,12 +1124,12 @@ wxString CodeHelper::GetInclude(wxString path, wxString key) {
 				wxFileName fn(aux_func->file_dec->name);
 				if (path.Len())
 					fn.MakeRelativeTo(path);
-				return wxString(_T("\""))+fn.GetFullPath()+_T("\"");
+				return wxString("\"")+fn.GetFullPath()+"\"";
 			} else if (aux_func->file_def) {
 				wxFileName fn(aux_func->file_def->name);
 				if (path.Len())
 					fn.MakeRelativeTo(path);
-				return wxString(_T("\""))+fn.GetFullPath()+_T("\"");
+				return wxString("\"")+fn.GetFullPath()+"\"";
 			}
 		}
 		aux_func = aux_func->next;
@@ -1143,7 +1143,7 @@ wxString CodeHelper::GetInclude(wxString path, wxString key) {
 				wxFileName fn(aux_var->file->name);
 				if (path.Len())
 					fn.MakeRelativeTo(path);
-				return wxString(_T("\""))+fn.GetFullPath()+_T("\"");
+				return wxString("\"")+fn.GetFullPath()+"\"";
 			}
 		}
 		aux_var = aux_var->next;
@@ -1157,7 +1157,7 @@ wxString CodeHelper::GetInclude(wxString path, wxString key) {
 				wxFileName fn(aux_macro->file->name);
 				if (path.Len())
 					fn.MakeRelativeTo(path);
-				return wxString(_T("\""))+fn.GetFullPath()+_T("\"");
+				return wxString("\"")+fn.GetFullPath()+"\"";
 			}
 		}
 		aux_macro = aux_macro->next;
@@ -1175,7 +1175,7 @@ wxString CodeHelper::GetIncludeForClass(wxString path, wxString key) {
 				wxFileName fn(aux_class->file->name);
 				if (path.Len())
 					fn.MakeRelativeTo(path);
-				return wxString(_T("#include \""))+fn.GetFullPath()+_T("\"");
+				return wxString(_T("#include \""))+fn.GetFullPath()+"\"";
 			}
 		}
 		aux_class = aux_class->next;
@@ -1248,7 +1248,7 @@ bool CodeHelper::ShowConstructorCalltip(int p, mxSource *source, wxString name) 
 		while (aux_func) {
 			if (aux_func->name==name && aux_func->proto[0]!='~') {
 				if (t++)
-					text+=_T("\n");
+					text+="\n";
 				text+=aux_func->full_proto;
 			}
 			aux_func = aux_func->next;
@@ -1290,29 +1290,29 @@ bool CodeHelper::GenerateAutocompletionIndex(wxString path, wxString filename) {
 		while (ref) {
 			if (PD_UNREF(pd_var,ref)->space==NULL) {
 				if (PD_UNREF(pd_var,ref)->properties==PD_CONST_ENUM_CONST)
-					idx.Write(wxString(_T("\tenum const "))<<PD_UNREF(pd_var,ref)->proto<<_T("\n"));
+					idx.Write(wxString(_T("\tenum const "))<<PD_UNREF(pd_var,ref)->proto<<"\n");
 				else if (PD_UNREF(pd_var,ref)->properties==PD_CONST_CONST)
-					idx.Write(wxString(_T("\tconst "))<<PD_UNREF(pd_var,ref)->proto<<_T("\n"));
+					idx.Write(wxString(_T("\tconst "))<<PD_UNREF(pd_var,ref)->proto<<"\n");
 				else
-					idx.Write(wxString(_T("\t"))<<PD_UNREF(pd_var,ref)->proto<<_T("\n"));
+					idx.Write(wxString("\t")<<PD_UNREF(pd_var,ref)->proto<<"\n");
 			}
 			ref = ref->next;
 		}
 		ref = fil->first_func_dec->next;
 		while (ref) {
 			if (PD_UNREF(pd_func,ref)->space==NULL)
-				idx.Write(wxString(_T("\t"))<<PD_UNREF(pd_func,ref)->proto<<_T("\n"));
+				idx.Write(wxString("\t")<<PD_UNREF(pd_func,ref)->proto<<"\n");
 			ref = ref->next;
 		}
 		ref = fil->first_func_def->next;
 		while (ref) {
 			if (PD_UNREF(pd_func,ref)->space==NULL && PD_UNREF(pd_func,ref)->file_dec==NULL)
-				idx.Write(wxString(_T("\t"))<<PD_UNREF(pd_func,ref)->proto<<_T("\n"));
+				idx.Write(wxString("\t")<<PD_UNREF(pd_func,ref)->proto<<"\n");
 			ref = ref->next;
 		}
 		ref = fil->first_macro->next;
 		while (ref) {
-			idx.Write(wxString(_T("\t"))<<PD_UNREF(pd_macro,ref)->proto<<_T("\n"));
+			idx.Write(wxString("\t")<<PD_UNREF(pd_macro,ref)->proto<<"\n");
 			ref = ref->next;
 		}
 		ref = fil->first_class->next;
@@ -1331,19 +1331,19 @@ bool CodeHelper::GenerateAutocompletionIndex(wxString path, wxString filename) {
 				}
 				item=item->next;
 			}
-			idx.Write(wxString(_T("\tclass "))<<cls->name<<herencias<<_T("\n"));
+			idx.Write(wxString(_T("\tclass "))<<cls->name<<herencias<<"\n");
 			pd_var *var = cls->first_attrib->next;
 			while (var) {
 				if (var->properties&PD_CONST_PUBLIC)
-					idx.Write(wxString(_T("\t\t"))<<var->proto<<_T("\n"));
+					idx.Write(wxString(_T("\t\t"))<<var->proto<<"\n");
 				else if (var->properties&PD_CONST_ENUM_CONST)
-					idx.Write(wxString(_T("\t\tenum const "))<<var->proto<<_T("\n"));
+					idx.Write(wxString(_T("\t\tenum const "))<<var->proto<<"\n");
 				var = var->next;
 			}
 			pd_func *met = cls->first_method->next;
 			while (met) {
 				if (met->properties&PD_CONST_PUBLIC)
-					idx.Write(wxString(_T("\t\t"))<<met->proto<<_T("\n"));
+					idx.Write(wxString(_T("\t\t"))<<met->proto<<"\n");
 				met = met->next;
 			}
 			ref = ref->next;
@@ -1501,7 +1501,7 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 		it->second.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(source->IsCppOrJustC()),true);
 		if (it->second==source->GetCompilerOptions(false)) return; // si ya se habia aplicado una, no volver a preguntar, probablemente sea otro el problema
 		vals.Add(it->first);
-		it++;
+		++it;
 	}
 	int ans=mxMessageDialog(main_window,("Los errores de compilación/enlazado podrían deberse a la falta de argumentos\nde compilación adecuados para las bibliotecas que utiliza.\n¿Desea que ZinjaI modifique automáticamente los argumentos en base a una plantilla?"),("Errores de compilacion/enlazado"),mxMD_YES_NO|mxMD_QUESTION,("No volver a mostrar este mensaje"),false).ShowModal();
 	if (ans&mxMD_NO) {

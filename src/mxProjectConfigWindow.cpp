@@ -700,7 +700,7 @@ void mxProjectConfigWindow::OnArgsReplaceFile(wxCommandEvent &evt) {
 	if (wxID_OK==dlg.ShowModal()) {
 		last_dir = wxFileName(dlg.GetPath()).GetPath();
 		wxString file = utils->Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
 		text_for_edit->SetValue(file);
 	}
 }
@@ -713,7 +713,7 @@ void mxProjectConfigWindow::OnArgsAddFile(wxCommandEvent &evt) {
 		text_for_edit->GetSelection(&p1,&p2);
 		last_dir = wxFileName(dlg.GetPath()).GetPath();
 		wxString file = utils->Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
 		text_for_edit->Replace(p1,p2,file);
 	}
 }
@@ -724,7 +724,7 @@ void mxProjectConfigWindow::OnArgsReplaceDir(wxCommandEvent &evt) {
 	if (wxID_OK==dlg.ShowModal()) {
 		last_dir = dlg.GetPath();
 		wxString file = utils->Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
 		text_for_edit->SetValue(file);
 	}
 }
@@ -737,7 +737,7 @@ void mxProjectConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
 		text_for_edit->GetSelection(&p1,&p2);
 		last_dir = dlg.GetPath();
 		wxString file = utils->Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");		
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";		
 		text_for_edit->Replace(p1,p2,file);
 	}
 }

@@ -44,7 +44,7 @@ bool mxSingleton::RemoteOpen(wxString fname) {
 	wxSocketClient *client = new wxSocketClient(wxSOCKET_WAITALL);
 	client->SetEventHandler(*this, wxID_ANY);
 	if (client->Connect(adrs,true)) {
-		fname<<_T("\n");
+		fname<<"\n";
 		client->Write(fname.c_str(),fname.Len());
 		client->Close();
 		delete client;
@@ -116,7 +116,7 @@ void mxSingleton::OnSocket(wxSocketEvent &evt) {
 				buf[lc]='\0';
 				mdat<<buf;
 			}
-			while (mdat.Contains(_T("\n"))) {
+			while (mdat.Contains("\n")) {
 				wxString fname = mdat.BeforeFirst('\n');
 				mdat = mdat.AfterFirst('\n');
 				if (fname.Last()=='\r') fname.RemoveLast();

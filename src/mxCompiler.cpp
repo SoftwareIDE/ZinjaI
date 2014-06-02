@@ -641,7 +641,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	wxString comp_opts = source->GetCompilerOptions();
 	wxString output_file = source->GetBinaryFileName().GetFullPath();
 	if (debug->debugging) debug->GetPatcher()->AlterOuputFileName(output_file);
-	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+source->GetFullPath()+_T("\" ")+comp_opts+_T(" -o \"")+output_file+_T("\"");
+	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+source->GetFullPath()+"\" "+comp_opts+_T(" -o \"")+output_file+"\"";
 	
 	// lanzar la ejecucion
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);

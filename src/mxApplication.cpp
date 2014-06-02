@@ -132,19 +132,19 @@ bool mxApplication::OnInit() {
 			argv[i][0]='\0';
 			no_splash=true;
 		}
-	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE(_T("imgs"),_T(SPLASH_FILE))).FileExists()) 
-		splash = new mxSplashScreen(DIR_PLUS_FILE(_T("imgs"),_T(SPLASH_FILE)));
+	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE("img",_T(SPLASH_FILE))).FileExists()) 
+		splash = new mxSplashScreen(DIR_PLUS_FILE("img",_T(SPLASH_FILE)));
 //	wxYield();
 	
 	bitmaps = new mxArt(config->Files.skin_dir);
 
 	// poner el idioma del compilador en castellano
 	if (config->Init.lang_es) {
-		wxSetEnv(_T("LANG"),_T("es_ES"));
-		wxSetEnv(_T("LANGUAGE"),_T("es_ES"));
+		wxSetEnv("LANG","es_ES");
+		wxSetEnv("LANGUAGE","es_ES");
 	} else {
-		wxSetEnv(_T("LANG"),_T("en_US"));
-		wxSetEnv(_T("LANGUAGE"),_T("en_US"));
+		wxSetEnv("LANG","en_US");
+		wxSetEnv("LANGUAGE","en_US");
 	}
 	
 //	wxSetEnv(_T("LD_LIBRARY_PATH"),_T("/home/santiago/OpenFOAM/ThirdParty/ParaView3.3-cvs/platforms/linuxGcc/bin:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug/openmpi-1.2.6:/home/santiago/OpenFOAM/ThirdParty/openmpi-1.2.6/platforms/linuxGccDPDebug/lib:/home/santiago/OpenFOAM/ThirdParty/gcc-4.3.1/platforms/linux/lib:/home/santiago/OpenFOAM/santiago-1.5/lib/linuxGccDPDebug:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug"));

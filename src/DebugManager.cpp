@@ -178,9 +178,9 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	if (config->Debug.readnow)
 		command<<_T(" --readnow");
 	if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<"\"";
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<_T("\"");
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<"\"";
 #if !defined(__WIN32__)
 	if (show_console) {
 		pid=0;
@@ -211,9 +211,9 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		command<<_T(" -tty=/dev/null");
 #endif
 //	if (args.Len())
-//		command<<_T(" --args \"")<<exe<<_T("\" ")<</*utils->EscapeString(*/args/*)*/;	
+//		command<<_T(" --args \"")<<exe<<"\" "<</*utils->EscapeString(*/args/*)*/;	
 //	else
-		command<<_T(" \"")<<exe<<_T("\"");	
+		command<<" \""<<exe<<"\"";	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	
@@ -250,7 +250,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	} else  {
 			mxMessageDialog(main_window,wxString(LANG(DEBUG_ERROR_STATING_GDB,"Ha ocurrido un error al ejecutar el depurador."))
 #if !defined(_WIN32) && !defined(__WIN32__)
-							<<_T("\n")<<LANG(DEBUG_ERROR_STARTING_GDB_LINUX,"Si el depurador (gdb) no se encuentra instalado\n"
+							<<"\n"<<LANG(DEBUG_ERROR_STARTING_GDB_LINUX,"Si el depurador (gdb) no se encuentra instalado\n"
 							"en su systema debe instalarlo con el gestor de\n"
 							"paquetes que corresponda a su distribucion\n"
 							"(apt-get, yum, yast, installpkg, etc.)")
@@ -323,9 +323,9 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 	if (config->Debug.readnow)
 		command<<_T(" --readnow");
 	if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<"\"";
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<_T("\"");
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<"\"";
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
@@ -401,10 +401,10 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 	if (config->Debug.readnow)
 		command<<_T(" --readnow");
 	if (wxFileName(DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<_T("\"");
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<"\"";
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
-		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<_T("\"");
-	command<<_T(" -c \"")<<core_file<<_T("\" \"")<<exe<<_T("\"");	
+		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<"\"";
+	command<<_T(" -c \"")<<core_file<<_T("\" \"")<<exe<<"\"";	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
@@ -703,7 +703,7 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 		if (p!=wxNOT_FOUND) {
 			wxString file2 = file.Mid(0,p);
 			file2<<'/'<<file.Mid(p);
-			ans = SendCommand(wxString(_T("-break-insert \""))<<file2<<_T(":")<<_bpi->line_number+1<<_T("\""));
+			ans = SendCommand(wxString(_T("-break-insert \""))<<file2<<_T(":")<<_bpi->line_number+1<<"\"");
 			num = GetSubValueFromAns(ans,_T("bkpt"),_T("number"),true);
 		}
 	}
@@ -1113,7 +1113,7 @@ wxString DebugManager::SendCommand(wxString command, int i) {
 		debug_log_file.Flush();
 #endif
 	if (!process) return "";
-	command<<i<<_T("\n");
+	command<<i<<"\n";
 	last_command=command;
 	output->Write(command.c_str(),command.Len());
 	return WaitAnswer();
@@ -1127,7 +1127,7 @@ wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 		debug_log_file.Flush();
 #endif
 	if (!process) return "";
-	cmd1<<cmd2<<_T("\n");
+	cmd1<<cmd2<<"\n";
 	last_command=cmd1;
 	output->Write(cmd1.c_str(),cmd1.Len());
 	return WaitAnswer();
@@ -1347,7 +1347,7 @@ wxString DebugManager::GetAddress(wxString fname, int line) {
 		if (fname[i]=='\\') 
 			fname[i]='/';
 #endif
-	wxString ans = SendCommand(wxString(_T("info line \""))<<fname<<_T(":")<<line+1<<_T("\""));
+	wxString ans = SendCommand(wxString(_T("info line \""))<<fname<<_T(":")<<line+1<<"\"");
 	int r=ans.Find(_T("starts at"));
 	if (r!=wxNOT_FOUND) {
 		ans=ans.Mid(r);
@@ -2017,7 +2017,7 @@ bool DebugManager::BreakCompoundInspection(int n) {
 		fans = SendCommand(_T("-var-list-children "),inspections[n].name);
 		p = fans.Find(_T("name=\""));
 	} else {
-		fans<<_T("name=\"")<<main_name<<_T("\"");
+		fans<<_T("name=\"")<<main_name<<"\"";
 		// ver si era un "arreglo" artificial (sintaxis gdb)
 		if (main_expr.Find('@')!=wxNOT_FOUND) { 
 			if (main_expr[0]=='*')

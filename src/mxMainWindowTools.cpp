@@ -172,7 +172,7 @@ void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 * vuelva a ser normal
 **/
 void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
-	if (!config->Init.valgrind_seen && !utils->GetOutput(wxString(_T("\""))<<config->Files.valgrind_command<<_T("\" --version")).Len()) {
+	if (!config->Init.valgrind_seen && !utils->GetOutput(wxString("\"")<<config->Files.valgrind_command<<_T("\" --version")).Len()) {
 		mxMessageDialog(main_window,LANG(MAINW_VALGRIND_MISSING,"Valgrind no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
 			"http://www.valgrind.org. Si ya se encuentra instalado,\n"
@@ -498,7 +498,7 @@ void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
 				mxVO_DOXYGEN,DIR_PLUS_FILE(config->temp_dir,_T("doxygen.out")));
 			project->SaveAll(false);
 			project->GenerateDoxyfile(DIR_PLUS_FILE(project->path,_T("Doxyfile")));
-			doxy->Launch(project->path,wxString(_T("\""))<<config->Files.doxygen_command<<_T("\" Doxyfile"));
+			doxy->Launch(project->path,wxString("\"")<<config->Files.doxygen_command<<_T("\" Doxyfile"));
 		}
 	}
 }
@@ -919,11 +919,11 @@ void mxMainWindow::ToolsCodeCopyFromH(mxSource *source, wxString the_one) {
 	for (int i=0;i<nsels;i++) {
 		while (source->GetLineCount() && source->GetLine(source->GetLineCount()-1).Len()>1) {
 			wxString aux=source->GetLine(source->GetLineCount()-1);
-			source->AppendText(_T("\n"));
+			source->AppendText("\n");
 		}
 		while (source->GetLineCount()>1 && source->GetLine(source->GetLineCount()-2).Len()>1) {
 			wxString aux=source->GetLine(source->GetLineCount()-2);
-			source->AppendText(_T("\n"));
+			source->AppendText("\n");
 		}
 		if (line==-1) line=source->GetLineCount();
 		source->AppendText(choices[sels[i]]+" {\n\t\n}\n\n");
@@ -1022,7 +1022,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<_T("-x c++ "); 
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
 		wxString comp_opts = src->GetCompilerOptions();
-		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+_T("\"")+fname+_T("\" ")+comp_opts+_T(" -o \"")+bin_name<<_T("\"");
+		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+fname+"\" "+comp_opts+_T(" -o \"")+bin_name<<"\"";
 		_IF_DEBUGMODE(command);
 		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 

@@ -101,7 +101,7 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	
 	wxString file_type = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar el tipo mientras el parser esta analizando fuentes");
 	if (!parser->working) 
-		file_type = utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<_T("\""));
+		file_type = utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\"");
 	else if (!wait_for_parser) {
 		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
 		wait_for_parser->Start(1000,true);
@@ -122,9 +122,9 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	
 	if (!parser->working) {
 #if !defined(_WIN32) && !defined(__WIN32__)
-		ldd = utils->GetOutput(wxString(_T("ldd \""))<<fname.GetFullPath()<<_T("\""));
+		ldd = utils->GetOutput(wxString(_T("ldd \""))<<fname.GetFullPath()<<"\"");
 #else
-		ldd = utils->GetOutput(wxString(_T("lsdeps \""))<<fname.GetFullPath()<<_T("\""));
+		ldd = utils->GetOutput(wxString(_T("lsdeps \""))<<fname.GetFullPath()<<"\"");
 #endif
 	} else if (!wait_for_parser) {
 		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
@@ -154,7 +154,7 @@ void mxExeInfo::OnCloseButton(wxCommandEvent &evt) {
 }
 
 void mxExeInfo::OnStripButton(wxCommandEvent &evt) {
-	utils->GetOutput(wxString(_T("strip \""))<<fname.GetFullPath()<<_T("\""));
+	utils->GetOutput(wxString(_T("strip \""))<<fname.GetFullPath()<<"\"");
 	wxString tsize;
 	double fsize = fname.GetSize().ToDouble();
 	if (fsize>1024) {
@@ -165,7 +165,7 @@ void mxExeInfo::OnStripButton(wxCommandEvent &evt) {
 	}
 	tsize<<fname.GetSize()<<_T(" B");
 	text_size->SetValue(tsize);	
-	text_type->SetValue(utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<_T("\"")));
+	text_type->SetValue(utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\""));
 	text_time->SetValue(fname.GetModificationTime().Format(_T("%H:%M:%S - %d/%B/%Y")));
 }
 
@@ -175,6 +175,6 @@ void mxExeInfo::OnHelpButton(wxCommandEvent &event){
 
 void mxExeInfo::OnTimer(wxTimerEvent &evt) {
 	if (parser->working) { wait_for_parser->Start(1000,true); return; }
-	ldd_ctrl->SetValue(utils->GetOutput(wxString(_T("lsdeps \""))<<fname.GetFullPath()<<_T("\"")));
-	text_type->SetValue(utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<_T("\"")));
+	ldd_ctrl->SetValue(utils->GetOutput(wxString(_T("lsdeps \""))<<fname.GetFullPath()<<"\""));
+	text_type->SetValue(utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\""));
 }

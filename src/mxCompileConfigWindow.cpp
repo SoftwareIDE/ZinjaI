@@ -143,7 +143,7 @@ void mxCompileConfigWindow::OnArgsReplaceFile(wxCommandEvent &evt) {
 	if (wxID_OK==dlg.ShowModal()) {
 		last_dir = wxFileName(dlg.GetPath()).GetPath();
 		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
 		text_for_edit->SetValue(file);
 	}
 }
@@ -156,7 +156,7 @@ void mxCompileConfigWindow::OnArgsAddFile(wxCommandEvent &evt) {
 		text_for_edit->GetSelection(&p1,&p2);
 		last_dir = wxFileName(dlg.GetPath()).GetPath();
 		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
 		text_for_edit->Replace(p1,p2,file);
 	}
 }
@@ -167,7 +167,7 @@ void mxCompileConfigWindow::OnArgsReplaceDir(wxCommandEvent &evt) {
 	if (wxID_OK==dlg.ShowModal()) {
 		last_dir = dlg.GetPath();
 		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
 		text_for_edit->SetValue(file);
 	}
 }
@@ -184,7 +184,7 @@ void mxCompileConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
 		text_for_edit->GetSelection(&p1,&p2);
 		last_dir = dlg.GetPath();
 		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString(_T("\""))<<file<<_T("\"");
+		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
 		text_for_edit->Replace(p1,p2,file);
 	}
 }

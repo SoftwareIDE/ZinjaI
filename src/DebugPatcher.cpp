@@ -35,16 +35,10 @@ bool DebugPatcher::mem_seg::extract(wxString &s, int &where) {
 }
 
 DebugPatcher::mem_seg::mem_seg(wxString line) {
-	string lala;
-	lala=line.c_str();
 	extract(line,mini);
-	lala=line.c_str();
 	extract(line,mend);
-	lala=line.c_str();
 	extract(line,size);
-	lala=line.c_str();
 	extract(line,fini);
-	lala=line.c_str();
 }
 
 static void Split(wxArrayString &a, wxString &s) {

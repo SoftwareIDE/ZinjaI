@@ -30,7 +30,7 @@ HelpManager::HelpManager() {
 //				if (it==quick_help_hash.end())
 //					quick_help_hash[key] = value;
 //				else
-//					it->second<<_T("\n")<<value;
+//					it->second<<"\n"<<value;
 //			}
 //		}
 //	}
@@ -432,7 +432,7 @@ int HelpManager::GetStandardHelp(wxString keyword, wxString &content) {
 //	HashStringString::iterator it;
 //	if ((it=quick_help_hash.find(keyword))!=quick_help_hash.end()) {
 //		int count=0;
-//		wxString files = it->second+_T("\n");
+//		wxString files = it->second+"\n";
 //		while (files.Len()) {
 //			wxString fname = files.BeforeFirst('\n');
 //			files = files.AfterFirst('\n');
@@ -642,7 +642,7 @@ wxString HelpManager::GetDoxyInfo(pd_class *aclass, wxString &desc) {
 					str = str.FromUTF8(str.char_str());
 				str.Replace(_T("</a>"),_T("</aZZZ>"));
 				str.Replace(_T("<a "),_T("<aZZZ "));
-				desc+=str+_T("\n");
+				desc+=str+"\n";
 //				cerr<<"DESC: "<<str<<endl;
 			} else if ( str.Contains("name=\"_details\"")||str.Contains("name=\"details\"")) on_desc=true;
 		}
@@ -678,8 +678,8 @@ wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 	if (!wxFileName(file).FileExists()) return "";
 	wxString anchor=link.AfterLast('#');
 	wxString anchor_label=_T("class=\"anchor\"");
-	wxString anchor_key=wxString(_T("name=\""))<<anchor<<_T("\"");
-	wxString anchor_key2=wxString(_T("id=\""))<<anchor<<_T("\"");
+	wxString anchor_key=wxString(_T("name=\""))<<anchor<<"\"";
+	wxString anchor_key2=wxString(_T("id=\""))<<anchor<<"\"";
 	wxTextFile fil(file);
 	int divcounter=0;
 	fil.Open();
@@ -739,9 +739,9 @@ wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 						arg.Replace(_T(" >"),_T(">"));
 						if (arg.EndsWith(_T(">&"))) {
 							arg.Last()=' ';
-							arg<<_T("&");
+							arg<<"&";
 						}
-						proto+=arg+_T(",");
+						proto+=arg+",";
 //						cerr<<"**ARGS: "<<arg<<endl;
 					}
 				} else if (on_desc) {
@@ -757,7 +757,7 @@ wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 						str = str.FromUTF8(str.char_str());
 					str.Replace(_T("</a>"),_T("</aZZZ>"));
 					str.Replace(_T("<a "),_T("<aZZZ "));
-					desc+=str+_T("\n");
+					desc+=str+"\n";
 //					cerr<<"DESC: "<<str<<endl;
 				}
 			}

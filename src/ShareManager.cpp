@@ -305,7 +305,7 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 					return;
 				};
 			}
-		} else if (event->GetSocketEvent()==wxSOCKET_LOST) {
+		} else if (event->GetSocketEvent()==wxSOCKET_LOST) { /// @todo: este if esta repetido, es el primero arriba, ver si hay que mover ahí este código (que no se ejecuta nunca)
 			if (it->second.len!=-1)
 				delete [] it->second.source; 
 			clients.erase(it);
@@ -326,10 +326,10 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 			
 			if (buf[0]=='l') { // if he wants the list
 				HashStringSource::iterator it;
-				wxString str=wxString()<<data.size()<<_T("\n");
+				wxString str=wxString()<<data.size()<<"\n";
 				event->GetSocket()->Write(str.c_str(),str.Len());
 				for (it = data.begin(); it != data.end(); ++it ) {
-					event->GetSocket()->Write((it->first+_T("\n")).c_str(),it->first.Len()+1);
+					event->GetSocket()->Write((it->first+"\n").c_str(),it->first.Len()+1);
 				}
 			} else if (buf[0]=='*') { // if he wants a source
 				buf[event->GetSocket()->LastCount()]='\0';
