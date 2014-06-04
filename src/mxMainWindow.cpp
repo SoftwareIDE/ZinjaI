@@ -1527,6 +1527,9 @@ void mxMainWindow::CreateMenus() {
 	menu.debug_inverse_execution->Enable(false);
 #endif
 	menu.debug_jump->Enable(false);
+	
+//	menu.debug->AppendSeparator();
+	
 	menu.debug_inspect = utils->AddItemToMenu(menu.debug, mxID_DEBUG_INSPECT, LANG(MENUITEM_DEBUG_INSPECT,"Panel de In&specciones"),"","",ipre+_T("inspect.png"));
 	menu.debug_backtrace = utils->AddItemToMenu(menu.debug, mxID_DEBUG_BACKTRACE, LANG(MENUITEM_DEBUG_BACKTRACE,"&Trazado Inverso"),"","",ipre+_T("backtrace.png"));
 	menu.debug_threadlist = utils->AddItemToMenu(menu.debug, mxID_DEBUG_THREADLIST, LANG(MENUITEM_DEBUG_THREADLIST,"&Hilos de Ejecucion"),"","",ipre+_T("threadlist.png"));
@@ -1567,6 +1570,8 @@ void mxMainWindow::CreateMenus() {
 	utils->AddItemToMenu(preproc_menu , mxID_TOOLS_PREPROC_HELP, LANG(MENUITEM_TOOLS_PREPROC_HELP,"Ayuda..."),"","",ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, preproc_menu,LANG(MENUITEM_TOOLS_PREPROC,"Preprocesador"),_T("Muestra información generada por el preprocesador de C++"),ipre+_T("preproc.png"));
 	
+	menu.tools->AppendSeparator();
+	
 	menu.tools_makefile = utils->AddItemToMenu(menu.tools, mxID_TOOLS_MAKEFILE, LANG(MENUITEM_TOOLS_GENERATE_MAKEFILE,"&Generar Makefile..."),"",_T("Genera el Makefile a partir de los fuentes y la configuracion seleccionada"),ipre+_T("makefile.png"));
 	menu.tools_makefile->Enable(false);
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CONSOLE, LANG(MENUITEM_TOOLS_OPEN_TERMINAL,"Abrir Co&nsola..."),"",_T("Inicia una terminal para interactuar con el interprete de comandos del sistema operativo"),ipre+_T("console.png"));
@@ -1583,6 +1588,8 @@ void mxMainWindow::CreateMenus() {
 	share_menu->AppendSeparator();
 	utils->AddItemToMenu(share_menu, mxID_TOOLS_SHARE_HELP, LANG(MENUITEM_TOOLS_SHARE_HELP,"A&yuda..."),"",_T("Muestra ayuda acerca de la comparticion de archivos en ZinjaI"),ipre+_T("ayuda.png"));
 	utils->AddSubMenuToMenu(menu.tools, share_menu,LANG(MENUITEM_TOOLS_SHARE,"Compartir Archivos en la &Red Local"),_T("Permite enviar o recibir codigos fuentes a traves de una red LAN"),ipre+_T("share.png"));
+	
+	menu.tools->AppendSeparator();
 	
 	wxMenu *diff_menu = new wxMenu;
 	utils->AddItemToMenu(diff_menu,mxID_TOOLS_DIFF_TWO, LANG(MENUITEM_TOOLS_DIFF_TWO,"&Dos fuentes abiertos..."),"",_T("Compara dos archivos de texto abiertos y los colorea segun sus diferencias"),ipre+_T("diff_sources.png"));
@@ -1668,6 +1675,8 @@ void mxMainWindow::CreateMenus() {
 	menu.tools_project_tools->Enable(false);
 	utils->AddItemToMenu(menu.tools_custom_menu,mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda..."),"","",ipre+_T("ayuda.png"));	
 	UpdateCustomTools(false);
+	
+	menu.tools->AppendSeparator();
 	
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_CREATE_TEMPLATE, LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),"",_T("Permite guardar el programa simple o proyecto actual como plantilla"),ipre+_T("create_template.png"));
 	utils->AddItemToMenu(menu.tools, mxID_TOOLS_INSTALL_COMPLEMENTS, LANG(MENUITEM_TOOLS_INSTALL_COMPLEMENTS,"Instalar Complementos..."),"",_T("Permite instalar un complemento ya descargado para ZinjaI"),ipre+_T("updates.png"));

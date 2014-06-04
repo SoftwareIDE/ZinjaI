@@ -207,14 +207,14 @@ END_EVENT_TABLE()
 mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
 
 	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
-	// with this path, text shows ok, but files can be saved with utf8 encoding and then it's shown differently when oppened somewhere else with the same zinjai
+	// with this patch, text shows ok, but files can be saved with utf8 encoding and then it's shown differently when oppened somewhere else with the same zinjai
 //#ifndef __WIN32__
 //	// esto evita problemas en los ubuntus en castellano donde al agregar acentos, ñs y esas cosas, se desfaza el cursor, o al borrar se borra mal
 //	if (wxLocale::GetSystemEncoding()==wxFONTENCODING_UTF8) 
 //		SetCodePage(wxSTC_CP_UTF8);
 //#endif
 	
-	AutoCompSetDropRestOfWord(true);
+//	AutoCompSetDropRestOfWord(true); // esto se torna muy molesto en muchos casos (por ejemplo, intentar agregar unsigned antes de int), mejor no usar
 	
 	old_current_line=-1000;
 	
@@ -2658,7 +2658,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 							p-=2;
 							II_BACK(p,II_IS_NOTHING_4(p));
 							wxString aux = code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1)); // nombre de la clase?
-							if (full_scope) scope=aux+"::"+scope; else scope=aux;
+							if (full_scope) scope=aux+"::"+scope; else { scope=aux; break; }
 						} else { // puede ser constructor
 							p = FindText(p,0,_T("::"));
 							if (p!=wxSTC_INVALID_POSITION) {
@@ -2668,7 +2668,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 								II_FRONT_NC(e,II_IS_NOTHING_4(e));
 								if (GetTextRange(WordStartPosition(p,true),p+1)==GetTextRange(e,WordEndPosition(e,true))) {
 									wxString aux=code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1)); // nombre de la clase?
-									if (full_scope) scope=aux+"::"+aux; else scope=aux;
+									if (full_scope) scope=aux+"::"+aux; else { scope=aux; break; }
 								}
 							}
 						}
@@ -2689,7 +2689,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 					if (some) {
 						II_FRONT(p,II_IS_NOTHING_4(p));
 						wxString aux=code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
-						if (full_scope) scope=aux+"::"+scope; else scope=scope;
+						if (full_scope) scope=aux+"::"+scope; else { scope=scope; break; }
 					}
 				}
 			}
