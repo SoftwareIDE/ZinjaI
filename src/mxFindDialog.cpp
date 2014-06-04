@@ -608,22 +608,26 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 }
 
 bool mxFindDialog::FindInSources() {
-
-	wxString res(wxString(_T("<HTML><HEAD><TITLE>"))<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<_T("</TITLE></HEAD><BODY><B>")<<LANG(FIND_IN_FILES_RESULT,"Resultados para la busqueda:")<<_T(" \"<I>")+utils->ToHtml(last_search)+_T("</I>\":</B><BR><TABLE>"));
-	int count=0;
+	wxString res; int count=0;
 	for (unsigned int j=0;j<main_window->notebook_sources->GetPageCount();j++) {
 		count+=FindInSource((mxSource*)(main_window->notebook_sources->GetPage(j)),res);
 	}
-		
+	return MultifindAux(count,res);
+}
+	
+	
+bool mxFindDialog::MultifindAux(int count, const wxString &res) {
 	if (count==0) {
 		mxMessageDialog(this,LANG(FIND_IN_FILES_NOT_FOUND,"No se encontraron coincidencias"),LANG(FIND_IN_FILES_CAPTION,"Buscar en archivos"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return false;
 	} else {
-		res<<_T("</TABLE><BR><BR></BODY></HTML>");
-		main_window->ShowInQuickHelpPanel(res);
+		wxString html("<HTML><HEAD><TITLE>");
+		html<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<"</TITLE></HEAD><BODY><B>";
+		html<<LANG2(FIND_IN_FILES_RESULT,"Resultados para la busqueda \"<I><{1}></I>\" (<{2}> resultados):",utils->ToHtml(last_search),wxString()<<count);
+		html<<"</B><BR><TABLE>"<<res<<"</TABLE><BR><BR></BODY></HTML>";
+		main_window->ShowInQuickHelpPanel(html);
 		return true;
 	}
-	return false;
 }
 
 /**
@@ -673,7 +677,7 @@ bool mxFindDialog::FindInProject(eFileType where) {
 	last_flags = wxSTC_FIND_MATCHCASE;
 	wxArrayString array;
 	project->GetFileList(array,where);
-	wxString res(wxString(_T("<HTML><HEAD><TITLE>"))<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<_T("</TITLE></HEAD><BODY><B>")<<LANG(FIND_IN_FILES_RESULT,"Resultados para la busqueda:")<<_T(" \"<I>")+utils->ToHtml(last_search)+_T("</I>\":</B><BR><TABLE>"));
+	wxString res;
 	int p,count=0;
 	last_flags = check_case->GetValue()?wxSTC_FIND_MATCHCASE:0;
 	wxString what=last_search;
@@ -701,15 +705,7 @@ bool mxFindDialog::FindInProject(eFileType where) {
 			}
 		}
 	}
-	if (count==0) {
-		mxMessageDialog(this,LANG(FIND_IN_FILES_NOT_FOUND,"No se encontraron coincidencias"),LANG(FIND_IN_FILES_CAPTION,"Buscar en archivos"),mxMD_WARNING|mxMD_OK).ShowModal();
-		return false;
-	} else {
-		res<<_T("</TABLE><BR><BR></BODY></HTML>");
-		main_window->ShowInQuickHelpPanel(res);
-		return true;
-	}
-	return false;
+	return MultifindAux(count,res);
 }
 
 void mxFindDialog::OnComboScope(wxCommandEvent &event) {

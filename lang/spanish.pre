@@ -988,14 +988,14 @@ FIND_ONE_REPLACE_DONE
 Se realizo un remplazo.
 FIND_MANY_REPLACES
 Se realizaron <{1}> reemplazos.
-FIND_FIND_IN_FILES
-Buscar en archivos
-FIND_IN_FILES_RESULT
-Resultados para la busqueda:
 FIND_IN_FILES_NOT_FOUND
 No se encontraron coincidencias
 FIND_IN_FILES_CAPTION
 Buscar en archivos
+FIND_FIND_IN_FILES
+Buscar en archivos
+FIND_IN_FILES_RESULT
+Resultados para la busqueda \"<I><{1}></I>\" (<{1}>) resultado(s):
 FIND_TOO_MANY_RESULTS
 demasiados resultados, solo se muestran los primeros 500
 FIND_LINE
@@ -2782,30 +2782,6 @@ OPENSHARED_GET_SHARED_LIST_FIRST
 Debe obtener la lista de fuentes compartidas primero. Para ello ingrese el nombre de host\no el IP de la pc que esta compartiendo el archivo y seleccione \"Actualizar lista\".
 OPENSHARED_SELECT_ONE_FIRST
 Debe seleccionar un fuente de la lista primero.
-OPINION_CAPTION
-Envia tu mensaje
-OPINION_TEXT
-Desde esta ventana puedes enviar un mensaje directamente al desarrollador de ZinjaI.\nPuedes utilizar este espacio para sugerir mejoras, comentar que te gusta y que no del\nentorno, reportar errores, o cualquier otro comentario. Los mensajes de los usuarios\nsirven para saber que aspectos de ZinjaI son utiles y funcionan bien, y que cosas se\ndeben mejorar, agregar o quitar, y son tenidos en cuenta para el desarrollo de nuevas\nversiones.
-OPINION_EMAIL
-Si esperas recibir alguna respuesta directa no olvides incluir tu email en el mensaje.
-OPINION_SEND_BUTTON
-Enviar
-UPDATE_CONF_PROXY
-Conf. Proxy...
-OPINION_MESSAGE_SENT
-El mensaje ha sido enviado correctamente.\nGracias por aportar su opinion.
-OPINION_SENT_CAPTION
-Mensaje enviado
-OPINION_MESSAGE_EMPTY
-No se puede enviar un mensaje en blanco.
-OPINION_SENDING_OSD
-Enviando mensaje...
-OPINION_ADDRESS_ERROR
-No se pudo contactar al servidor. Puede deberse a problemas\nde conexion o la presencia de un proxie. Si el problema persiste\npuede enviar el mensaje desde su navegador accediendo a la\nseccion Contactos del sitio web de ZinjaI.\nhttp://zinjai.sourceforge.net
-UPDATE_PROXY_ASK
-Ingrese la direccion del proxy ( ej: 192.168.0.120:3128 ):
-UPDATE_CAPTION
-Buscar Actualizaciones
 LAUNCH_STANDAR_OUTPUT
 Salida estandar
 LAUNCH_ERROR_OUTPUT
@@ -2948,8 +2924,6 @@ PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
 Mostrar el explorador de archivos al abrir un proyecto
 PREFERENCES_TOOLCHAIN
 Herramientas de compilación
-PREFERENCES_STYLE_FONT_NAME
-Fuente para el código
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
 PREFERENCES_STYLE_DEFINE_COLOURS
@@ -2974,6 +2948,8 @@ PREFERENCES_STYLE_TAB_WIDTH
 Ancho del tabulado
 PREFERENCES_STYLE_SPACES_INTEAD_TABS
 Colocar espacios en lugar de tabs
+PREFERENCES_STYLE_FONT_NAME
+Fuente para el código
 PREFERENCES_STYLE_SCREEN_FONT_SIZE
 Tamaño de la fuente en pantalla
 PREFERENCES_STYLE_PRINTING_FONT_SIZE
@@ -3432,6 +3408,8 @@ TIPS_CLOSE
 Cerrar
 TOOLBAREDITOR_SELECT_ICONS
 Seleccione los iconos que desea en la barra:
+UPDATE_CAPTION
+Buscar Actualizaciones
 UPDATE_CHECK_AT_STARTUP
 Verificar siempre al iniciar
 UPDATE_PROXY_DIR
@@ -3442,8 +3420,12 @@ UPDATE_CONSULTING_WEB
 Consultando web...
 UPDATE_GOTO_SITE
 Ir al &sitio...
+UPDATE_CONF_PROXY
+Conf. Proxy...
 UPDATE_ERROR_CONNECTING
 Error al conectarse al servidor.
+UPDATE_PROXY_ASK
+Ingrese la direccion del proxy ( ej: 192.168.0.120:3128 ):
 UPDATE_CONSULTING_STATUS
 Buscar actualizaciones: Consultando...
 UPDATE_ERROR_CONNECTING_STATUS

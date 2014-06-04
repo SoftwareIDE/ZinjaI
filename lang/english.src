@@ -986,14 +986,14 @@ FIND_ONE_REPLACE_DONE
 One replacement done.
 FIND_MANY_REPLACES
 <{1}> replacements done.
-FIND_FIND_IN_FILES
-Find in files
-FIND_IN_FILES_RESULT
-Search results:
 FIND_IN_FILES_NOT_FOUND
 No results found.
 FIND_IN_FILES_CAPTION
 Find in files
+FIND_FIND_IN_FILES
+Find in files
+FIND_IN_FILES_RESULT
+Search results for "<I><{1}></I>" (<{2}> result(s) found):
 FIND_TOO_MANY_RESULTS
 too many results, showing only first 500
 FIND_LINE
@@ -2780,30 +2780,6 @@ OPENSHARED_GET_SHARED_LIST_FIRST
 You must get the shared sources' list first. Enter hostname or ip address first and click on "Update list" button.
 OPENSHARED_SELECT_ONE_FIRST
 You must pick a source from the list first.
-OPINION_CAPTION
-Send your message
-OPINION_TEXT
-From this window you can send a message directly to ZinjaI's developer.\nYou can use this place to make suggestions, talk about what do you like\nand wath don't about ZinjaI, report errors and crashes, or whatever you\nwant to say about it. Users' messages serve for known what works well\nin ZinjaI and what must be improved, added or deleted, and will be\nvery usefull for guiding the development of future versions.
-OPINION_EMAIL
-If you want to receive a direct answer please include an email address.
-OPINION_SEND_BUTTON
-Send
-UPDATE_CONF_PROXY
-Proxy Setup...
-OPINION_MESSAGE_SENT
-Message has ben sent correctly. Thanks for wirting.
-OPINION_SENT_CAPTION
-Message sent
-OPINION_MESSAGE_EMPTY
-You can't send an empty message.
-OPINION_SENDING_OSD
-Sending message...
-OPINION_ADDRESS_ERROR
-Cannot contact server. It may be due to conexion's problems\nor a by the need of a proxie configuration. If the problem\npersist you can still send the message from your browser\ngoing to Contact section in ZinjaI's website:\nhttp://zinjai.sourceforge.net
-UPDATE_PROXY_ASK
-Enter proxy address ( example: 192.168.0.120:3128 ):
-UPDATE_CAPTION
-Check for Updates
 LAUNCH_STANDAR_OUTPUT
 Standard Output
 LAUNCH_ERROR_OUTPUT
@@ -2946,8 +2922,6 @@ PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
 Prefer file explorer for projects
 PREFERENCES_TOOLCHAIN
 Toolchain
-PREFERENCES_STYLE_FONT_NAME
-Source code's font
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Sintax highlighting
 PREFERENCES_STYLE_DEFINE_COLOURS
@@ -2972,6 +2946,8 @@ PREFERENCES_STYLE_TAB_WIDTH
 Tab width
 PREFERENCES_STYLE_SPACES_INTEAD_TABS
 Use white spaces instead of tabs
+PREFERENCES_STYLE_FONT_NAME
+Source code's font
 PREFERENCES_STYLE_SCREEN_FONT_SIZE
 Font size for screen
 PREFERENCES_STYLE_PRINTING_FONT_SIZE
@@ -3430,6 +3406,8 @@ TIPS_CLOSE
 Close
 TOOLBAREDITOR_SELECT_ICONS
 Select wich icons do you want in the toolbar:
+UPDATE_CAPTION
+Check for Updates
 UPDATE_CHECK_AT_STARTUP
 Check always at startup
 UPDATE_PROXY_DIR
@@ -3440,8 +3418,12 @@ UPDATE_CONSULTING_WEB
 Querying web site...
 UPDATE_GOTO_SITE
 Go To Web Site
+UPDATE_CONF_PROXY
+Proxy Setup...
 UPDATE_ERROR_CONNECTING
 Error connecting to server.
+UPDATE_PROXY_ASK
+Enter proxy address ( example: 192.168.0.120:3128 ):
 UPDATE_CONSULTING_STATUS
 Check for updates: Querying server...
 UPDATE_ERROR_CONNECTING_STATUS
