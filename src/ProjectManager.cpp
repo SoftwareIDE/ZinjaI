@@ -1622,6 +1622,15 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	}
 	compile_and_run->linking=compile_and_run->compiling=false;
 	
+	// agregar los argumentos de ejecucion
+	if (active_configuration->always_ask_args) {
+		int res = mxArgumentsDialog(main_window,active_configuration->args).ShowModal();
+		if (res&AD_CANCEL) return 0;
+		active_configuration->working_folder = mxArgumentsDialog::last_workdir;
+		active_configuration->args = (res&AD_EMPTY) ? "" : mxArgumentsDialog::last_arguments;
+		if (res&AD_REMEMBER) active_configuration->always_ask_args=false;
+	}
+	
 	wxString exe_pref;
 #ifndef __WIN32__
 	// agregar el prefijo para valgrind
@@ -1641,20 +1650,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 		command="/bin/sh "+utils->Quotize(DIR_PLUS_FILE(path,active_configuration->exec_script));
 #endif
 	
-	// agregar los argumentos de ejecucion
-	if (active_configuration->always_ask_args) {
-		int res = mxArgumentsDialog(main_window,active_configuration->args).ShowModal();
-		if (res&AD_CANCEL) return 0;
-		if (res&AD_ARGS) {
-			active_configuration->args = mxArgumentsDialog::last_arguments;
-			command<<' '<<active_configuration->args;
-		}
-		if (res&AD_REMEMBER) {
-			active_configuration->always_ask_args=false;
-			if (res&AD_EMPTY) active_configuration->args="";
-		}
-	} else if (active_configuration->args.Len())
-		command<<' '<<active_configuration->args;	
+	if (active_configuration->args.Len()) command<<' '<<active_configuration->args;	
 	
 	if (active_configuration->exec_method==EMETHOD_INIT) {
 #ifdef __WIN32__

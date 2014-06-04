@@ -1746,6 +1746,14 @@ void mxMainWindow::OnRunCompile (wxCommandEvent &event) {
 
 void mxMainWindow::RunSource (mxSource *source) {
 	
+	if (source->config_running.always_ask_args) {
+		int res = mxArgumentsDialog(this,source->exec_args).ShowModal();
+		if (res&AD_CANCEL) return;
+		source->working_folder = mxArgumentsDialog::last_workdir;
+		source->exec_args = (res&AD_EMPTY) ? "" : mxArgumentsDialog::last_arguments;
+		if (res&AD_REMEMBER) source->config_running.always_ask_args=false;
+	}
+	
 	// armar la linea de comando para ejecutar
 	compiler->last_caption = source->page_text;
 	compiler->last_runned = source;
@@ -1775,19 +1783,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 	command<<exe_pref<<"\""<<source->GetBinaryFileName().GetFullPath()<<"\"";
 //	utils->ParameterReplace(command,_T("${ZINJAI_DIR}"),wxGetCwd());
 	// agregar los argumentos de ejecucion
-	if (source->config_running.always_ask_args) {
-		int res = mxArgumentsDialog(this,source->exec_args).ShowModal();
-		if (res&AD_CANCEL) return;
-		if (res&AD_ARGS) {
-			source->exec_args = mxArgumentsDialog::last_arguments;;
-			command<<' '<<source->exec_args;
-		}
-		if (res&AD_REMEMBER) {
-			source->config_running.always_ask_args=false;
-			if (res&AD_EMPTY) source->exec_args="";
-		}
-	} else if (source->exec_args.Len())
-		command<<' '<<source->exec_args;	
+	if (source->exec_args.Len()) command<<' '<<source->exec_args;	
 	
 	// lanzar la ejecucion
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("OnRunSource");
