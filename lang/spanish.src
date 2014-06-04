@@ -993,7 +993,7 @@ Buscar en archivos
 FIND_FIND_IN_FILES
 Buscar en archivos
 FIND_IN_FILES_RESULT
-Resultados para la busqueda \"<I><{1}></I>\" (<{1}>) resultado(s):
+Resultados para la busqueda \"<I><{1}></I>\" (<{2}> resultados):
 FIND_TOO_MANY_RESULTS
 demasiados resultados, solo se muestran los primeros 500
 FIND_LINE
@@ -1330,6 +1330,202 @@ MAINW_ASK_CLOSE_SHARED
 El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?
 MAINW_SHARE_AFTER_CLOSE
 Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo.
+MAINW_QUICKHELP_INIT
+Coloca el cursor de texto sobre una palabra y presiona Shift+F1 para ver la ayuda en este cuadro.
+MAINW_AUTOHIDE_QUICKHELP
+Ayuda/Busqueda
+CAPTION_PROJECT_SYMBOLS_TREE
+Arbol de Simbolos
+CAPTION_PROJECT_PROJECT_TREE
+Arbol de Proyecto
+MAINW_AUTOHIDE_EXPLORER
+Explorador
+MAINW_PT_SOURCES
+Fuentes
+MAINW_PT_HEADERS
+Cabeceras
+MAINW_PT_OTHERS
+Otros
+MAINW_AUTOHIDE_PROJECT
+Proyecto
+MAINW_AUTOHIDE_SYMBOLS
+Simbolos
+MAINW_CT_ALL
+Toda la salida
+MAINW_AUTOHIDE_COMPILER
+Compilador
+MAINW_STATUS_RUN_FINISHED
+Ejecucion Finalizada
+MAINW_COULDNOT_LAUNCH_PROCESS
+No se pudo lanzar el proceso
+MAINW_COULDNOT_RUN
+No se pudo lanzar la ejecucion!
+MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION
+Esta intentando ejecutar un archivo de cabecera.\n¿Desea ejecutar en su lugar <{1}>?
+MAINW_RUN_HEADER_QUESTION
+Esta intentando ejecutar un archivo de cabecera. Desea continuar?
+MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
+Desea guardar los cambios del proyecto anterior antes de cerrarlo?
+MAINW_CHANGE_CLOSE_ALL_QUESTION
+Hay cambios sin guardar. Se cerraran todos los archivos. Desea Continuar?
+MAINW_COULD_NOT_EXPORT_HTML
+No se pudo guardar el archivo
+MAINW_CHANGES_CONFIRM_RELOAD
+Hay Cambios sin guardar, desea recargar igualmente la version del disco?
+MAINW_FULLSCREEN_OUT_TIP
+Presione F11 para salir del modo pantalla completa
+WXFB_OPENING
+Abriendo wxFormBuilder...
+MAINW_FILE_NOT_EXISTS
+El archivo no existe.
+MAINW_ASK_SAVE_PREVIOUS_PROJECT
+Desea guardar los cambios del proyecto anterior antes de cerrarlo?
+MAINW_SAVE_CHANGES_QUESTION
+Hay cambios sin guardar. Desea guardarlos?
+MAINW_ADD_TO_PROJECT_QUESTION
+¿Desea agregar el archivo al proyecto?
+MAINW_ADD_TO_PROJECT_CHECK
+Hacer lo mismo para todos
+MAINW_MOVE_TO_PROJECT_PATH_QUESTION
+El archivo que intenta agregar no se encuentra en el directorio del proyecto.\n¿Desea copiar el archivo al directorio del proyecto?
+MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION
+El archivo ya existe en el directorio de proyecto.\n¿Desea reemplazarlo?
+MAINW_ERROR_PRITING
+Ha ocurrido un error al intentar imprimir
+MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT
+No puede abrir un ejemplo mientras trabaja en un proyecto.\nCierre el proyecto e intente nuevamente.
+MAINW_NO_EXTENSION_ADD_CPP_QUESTION
+No ha definido una extension en el nombre de archivo indicado.\nSi es un codigo fuente se recomienda utilizar la extension cpp\npara que el compilador pueda identificar el lenguaje.\nDesea agregar la extension cpp al nombre?
+MAINW_ALWAYS_APPEND_EXTENSION
+Siempre agregar la extension sin preguntar.
+MAINW_INSERT_HEADIR_NO_WORD
+Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir.
+MAINW_INSERT_HEADIR_CPP
+ esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera.
+MAINW_NO_HEADER_FOR
+No se encontro cabecera correspondiente a \"<{1}>\".
+DEBUG_THREAD_SYSTEM_INCOMPLETE
+El manejo de hilos en la depuracion aun esta en construccion.\nPuede que los niveles en las inspecciones no se correspondan con\nel trazado inverso al cambiar de hilo.
+DEBUG_RETURN_VALUE
+Valor de retorno:
+DEBUG_RETURN_FROM_FUNCTION
+Salir de la funcion
+DEBUG_RUN_UNTIL_ERROR
+La dirección actual no es válida.
+MAINW_EXPLORER_POPUP_CHANGE_PATH
+&Cambiar Ubicacion...
+MAINW_EXPLORER_POPUP_LEVEL_UP
+&Subir un Nivel
+MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE
+Tomar Ubicacion del Archivo Abierto
+MAINW_EXPLORER_POPUP_OPEN_ALL
+&Abrir Todos los Archivos
+MAINW_EXPLORER_POPUP_OPEN_SOURCES
+Abrir &Todos los Fuentes
+MAINW_EXPLORER_POPUP_UPDATE
+Ac&tualizar
+MAINW_EXPLORER_POPUP_OPEN_FILE
+&Abrir archivo
+MAINW_EXPLORER_POPUP_EXPAND
+&Expandir
+MAINW_EXPLORER_POPUP_SET_AS_ROOT
+Utilizar Como &Raiz
+MAINW_EXPLORER_POPUP_SHOW_ALL
+&Mostrar Todos los Archivos
+MAINW_EXPLORER_POPUP_SHOW_SOURCES
+&Mostrar Solo los Fuentes
+MAINW_EXPLORER_SELECT_PATH
+Seleccione la ubicacion:
+MAINW_GENERATE_AUTOCOMP_INDEX_NAME
+Nombre del nuevo índice
+MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
+Generación de índice de autocompletado
+MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE
+El indice ya existe, ¿desea reemplazarlo?
+MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR
+Directorio base (para formar las rutas relativas para los #includes):
+MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED
+Indice generado correctamente.
+MAINW_GENERATE_AUTOCOMP_INDEX_ERROR
+Ha ocurrido un error al intentar generar el archivo.
+CAPTION_TOOLS_RESULTS_PANEL
+Panel de resultados
+MAINW_BEGGINERS_PANEL
+Asistencias
+MAINW_CANNOT_SPLIT_VIEW
+No se puede duplicar archivos sin nombre
+MAINW_MACRO_START
+Generando macro, presione Ctrl+Shift+Q para finalizar.
+MAINW_MACRO_STOP
+Macro guardada, presione Ctrl+Q para reproducirla.
+MAINW_VALGRIND_MISSING
+Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+MAINW_GPROF_GPROF_ENABLED
+Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.
+MAINW_GPROF_GPROF_DISABLED
+Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.
+MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
+Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
+MAINW_GPROF_OUTPUT_MISSING
+No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda.
+MAINW_GPROF_STATUS_ANALIZING
+Analizando informacion de perfilado...
+MAINW_GPROF_ERROR
+Ha ocurrido un error al intentar procesar la información de perfilado
+MAINW_GPROF_EDGE_THERSHOLD
+Eliminar arcos bajo este umbral (%):
+MAINW_GPROF_ASK_TITLE
+Perfil de Ejecucion
+MAINW_GPROF_NODE_THERSHOLD
+Eliminar nodos bajo este umbral (%):
+MAINW_GPROF_DRAWING
+Dibujando grafo...
+MAINW_GPROF_SHOWING
+Mostrando resultados...
+MAINW_GPROF_GRAPH_TITLE
+Informacion de Profiling
+MAINW_CUSTOM_TOOL_UNDEFINED
+Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
+MAINW_CODETOOLS_NO_HEADER_FOUND
+No se pudo determinar el archivo de cabecera asociado.
+MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION
+No se encontraron funciones/metodos sin implementar.
+MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS
+Seleccione las funciones/metodos a implementar:
+MENUITEM_TOOLS_CODE_COPY_FROM_H
+Implementar Metodos/Funciones faltantes
+MAINW_PREPROC_OSD
+Preprocesando...
+MAINW_PREPROC_ERROR
+No se pudo preprocesar correctamente el fuente.
+MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE
+Ingrese el nombre para mostrar del nuevo template de proyecto
+MAINW_GENERATING_TEMPLATE
+Generando plantilla...
+MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE
+Ingrese el nombre del archivo del nuevo template de proyecto
+MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
+Ingrese el nombre para mostrar del nuevo template de programa simple
+MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
+Ingrese el nombre del archivo del nuevo template de programa simple
+MAINW_TEMPLATE_GENERATED
+Plantilla generada
+MENUITEM_TOOLS_CREATE_TEMPLATE
+Guardar como nueva plantilla...
+MENUITEM_FILE
+&Archivo
+MENUITEM_EDIT
+&Edicion
+MENUITEM_VIEW
+Ver
+MENUITEM_RUN
+E&jecucion
+MENUITEM_DEBUG
+&Depuracion
+MENUITEM_TOOLS
+&Herramientas
+MENUITEM_HELP
+A&yuda
 MENUITEM_FILE_NEW
 &Nuevo...
 MENUITEM_FILE_NEW_PROJECT
@@ -1372,8 +1568,6 @@ MENUITEM_FILE_EXIT
 &Salir
 MENU_FILE_RECENT_MORE
 Mas...
-MENUITEM_FILE
-&Archivo
 MENUITEM_EDIT_UNDO
 &Deshacer
 MENUITEM_EDIT_REDO
@@ -1424,8 +1618,6 @@ MENUITEM_EDIT_LIST_HIGHLIGHTS
 &Listar Lineas Resaltadas
 MENUITEM_EDIT_FORCE_AUTOCOMPLETE
 Autocompletar
-MENUITEM_EDIT
-&Edicion
 MENUITEM_VIEW_LINE_WRAP
 &Ajuste de linea
 MENUITEM_VIEW_WHITE_SPACES
@@ -1482,8 +1674,6 @@ MENUITEM_VIEW_PREV_SOURCE
 &Fuente anterior
 MENUITEM_VIEW_NEXT_SOURCE
 &Fuente siguiente
-MENUITEM_VIEW
-Ver
 MENUITEM_FOLD_FOLD_THIS_LINE
 Plegar en esta linea
 MENUITEM_FOLD_UNFOLD_THIS_LINE
@@ -1526,14 +1716,8 @@ MENUITEM_RUN_STOP
 &Detener
 MENUITEM_RUN_OPTIONS
 &Opciones...
-MENUITEM_RUN
-E&jecucion
 MENUITEM_DEBUG_START
 &Iniciar/Continuar
-MENUITEM_DEBUG_ATTACH
-Ad&juntar...
-MENUITEM_DEBUG_LOAD_CORE_DUMP
-Cargar &Volcado de Memoria...
 MENUITEM_DEBUG_PAUSE
 Interrum&pir
 MENUITEM_DEBUG_STOP
@@ -1544,44 +1728,52 @@ MENUITEM_DEBUG_STEP_OVER
 Step &Over
 MENUITEM_DEBUG_STEP_OUT
 Step O&ut
-MENUITEM_DEBUG_RETURN
-&Return
 MENUITEM_DEBUG_RUN_UNTIL
 Ejecutar &Hasta el Cursor
+MENUITEM_DEBUG_RETURN
+&Return
 MENUITEM_DEBUG_JUMP
 Continuar Desde Aqui
-MENUITEM_DEBUG_ENABLE_INVERSE
-Habilitar Ejecucion Hacia Atras
-MENUITEM_DEBUG_INVERSE
-Ejecutar Hacia Atras
+MENUITEM_DEBUG_TOGGLE_BREAKPOINT
+&Agregar/quitar Breakpoint
+MENUITEM_DEBUG_BREAKPOINT_OPTIONS
+&Opciones del Breakpoint...
+MENUITEM_DEBUG_LIST_BREAKPOINTS
+&Listar Watch/Break points...
 MENUITEM_DEBUG_INSPECT
 Panel de In&specciones
 MENUITEM_DEBUG_BACKTRACE
 &Trazado Inverso
 MENUITEM_DEBUG_THREADLIST
 &Hilos de Ejecucion
-MENUITEM_DEBUG_LIST_BREAKPOINTS
-&Listar Watch/Break points...
-MENUITEM_DEBUG_TOGGLE_BREAKPOINT
-&Agregar/quitar Breakpoint
-MENUITEM_DEBUG_BREAKPOINT_OPTIONS
-&Opciones del Breakpoint...
-MENUITEM_DEBUG_INSERT_WATCHPOINT
-&Agregar Watchpoint...
 MENUITEM_DEBUG_SHOW_LOG_PANEL
 &Mostrar mensajes del depurador
+MENUITEM_DEBUG_ATTACH
+&Adjuntar...
+MENUITEM_DEBUG_LOAD_CORE_DUMP
+Cargar &Volcado de Memoria...
+MENUITEM_SAVE_CORE_DUMP
+Guardar &Volcado de Memoria...
+MENUITEM_DEBUG_ENABLE_INVERSE
+Habilitar Ejecucion Hacia Atras
+MENUITEM_DEBUG_INVERSE
+Ejecutar Hacia Atras
+MENUITEM_DEBUG_SET_SIGNALS
+Configurar comportamiento ante señales
+MENUITEM_DEBUG_SEND_SIGNALS
+Enviar señal
+MENUITEM_DEBUG_GDB_COMMAND
+Introducir comandos gdb...
 MENUITEM_DEBUG_PATCH
 Actualizar ejecutable...
+MENUITEM_DEBUG_MORE
+Más...
 MENUITEM_DEBUG_DO_THAT
 DO_THAT
-MENUITEM_DEBUG
-&Depuracion
 MENUITEM_TOOLS_DRAW_FLOWCHART
 Dibujar Diagrama de &Flujo...
 MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
 Dibujar &Jerarquia de Clases...
-MENUITEM_TOOLS_CODE_COPY_FROM_H
-Implementar Métodos/Funciones faltantes...
 MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
 &Alinear Comentarios...
 MENUITEM_TOOLS_COMMENTS_COMMENT
@@ -1724,12 +1916,8 @@ MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS
 &Configurar (de proyecto)...
 MENUITEM_TOOLS_CUSTOM_HELP
 A&yuda...
-MENUITEM_TOOLS_CREATE_TEMPLATE
-Guardar como nueva plantilla...
 MENUITEM_TOOLS_INSTALL_COMPLEMENTS
 Instalar Complementos...
-MENUITEM_TOOLS
-&Herramientas
 MENUITEM_HELP_ABOUT
 Acerca de...
 MENUITEM_HELP_TUTORIALS
@@ -1744,8 +1932,6 @@ MENUITEM_HELP_OPINION
 Enviar sugerencia o reportar error...
 MENUITEM_HELP_UPDATES
 &Buscar actualizaciones...
-MENUITEM_HELP
-A&yuda
 CAPTION_TOOLBAR_FILE
 Archivo
 CAPTION_TOOLBAR_EDIT
@@ -2366,190 +2552,8 @@ TOOLBAR_DESC_TOOLS_DIFF_NEXT
 Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia
 CAPTION_TOOLBAR_DIFF
 Diff
-MAINW_QUICKHELP_INIT
-Coloca el cursor de texto sobre una palabra y presiona Shift+F1 para ver la ayuda en este cuadro.
-MAINW_AUTOHIDE_QUICKHELP
-Ayuda/Busqueda
-CAPTION_PROJECT_SYMBOLS_TREE
-Arbol de Simbolos
-CAPTION_PROJECT_PROJECT_TREE
-Arbol de Proyecto
-MAINW_AUTOHIDE_EXPLORER
-Explorador
-MAINW_PT_SOURCES
-Fuentes
-MAINW_PT_HEADERS
-Cabeceras
-MAINW_PT_OTHERS
-Otros
-MAINW_AUTOHIDE_PROJECT
-Proyecto
-MAINW_AUTOHIDE_SYMBOLS
-Simbolos
-MAINW_CT_ALL
-Toda la salida
-MAINW_AUTOHIDE_COMPILER
-Compilador
-MAINW_STATUS_RUN_FINISHED
-Ejecucion Finalizada
-MAINW_COULDNOT_LAUNCH_PROCESS
-No se pudo lanzar el proceso
-MAINW_COULDNOT_RUN
-No se pudo lanzar la ejecucion!
-MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION
-Esta intentando ejecutar un archivo de cabecera.\n¿Desea ejecutar en su lugar <{1}>?
-MAINW_RUN_HEADER_QUESTION
-Esta intentando ejecutar un archivo de cabecera. Desea continuar?
-MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
-Desea guardar los cambios del proyecto anterior antes de cerrarlo?
-MAINW_CHANGE_CLOSE_ALL_QUESTION
-Hay cambios sin guardar. Se cerraran todos los archivos. Desea Continuar?
-MAINW_COULD_NOT_EXPORT_HTML
-No se pudo guardar el archivo
-MAINW_CHANGES_CONFIRM_RELOAD
-Hay Cambios sin guardar, desea recargar igualmente la version del disco?
-MAINW_FULLSCREEN_OUT_TIP
-Presione F11 para salir del modo pantalla completa
-WXFB_OPENING
-Abriendo wxFormBuilder...
-MAINW_FILE_NOT_EXISTS
-El archivo no existe.
-MAINW_ASK_SAVE_PREVIOUS_PROJECT
-Desea guardar los cambios del proyecto anterior antes de cerrarlo?
-MAINW_SAVE_CHANGES_QUESTION
-Hay cambios sin guardar. Desea guardarlos?
-MAINW_ADD_TO_PROJECT_QUESTION
-¿Desea agregar el archivo al proyecto?
-MAINW_ADD_TO_PROJECT_CHECK
-Hacer lo mismo para todos
-MAINW_MOVE_TO_PROJECT_PATH_QUESTION
-El archivo que intenta agregar no se encuentra en el directorio del proyecto.\n¿Desea copiar el archivo al directorio del proyecto?
-MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION
-El archivo ya existe en el directorio de proyecto.\n¿Desea reemplazarlo?
-MAINW_ERROR_PRITING
-Ha ocurrido un error al intentar imprimir
-MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT
-No puede abrir un ejemplo mientras trabaja en un proyecto.\nCierre el proyecto e intente nuevamente.
-MAINW_NO_EXTENSION_ADD_CPP_QUESTION
-No ha definido una extension en el nombre de archivo indicado.\nSi es un codigo fuente se recomienda utilizar la extension cpp\npara que el compilador pueda identificar el lenguaje.\nDesea agregar la extension cpp al nombre?
-MAINW_ALWAYS_APPEND_EXTENSION
-Siempre agregar la extension sin preguntar.
-MAINW_INSERT_HEADIR_NO_WORD
-Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir.
-MAINW_INSERT_HEADIR_CPP
- esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera.
-MAINW_NO_HEADER_FOR
-No se encontro cabecera correspondiente a \"<{1}>\".
-DEBUG_THREAD_SYSTEM_INCOMPLETE
-El manejo de hilos en la depuracion aun esta en construccion.\nPuede que los niveles en las inspecciones no se correspondan con\nel trazado inverso al cambiar de hilo.
-DEBUG_RETURN_VALUE
-Valor de retorno:
-DEBUG_RETURN_FROM_FUNCTION
-Salir de la funcion
-DEBUG_RUN_UNTIL_ERROR
-La dirección actual no es válida.
-MENUITEM_SAVE_CORE_DUMP
-Guardar &Volcado de Memoria...
-MENUITEM_LOAD_CORE_DUMP
-Cargar &Volcado de Memoria...
-MAINW_EXPLORER_POPUP_CHANGE_PATH
-&Cambiar Ubicacion...
-MAINW_EXPLORER_POPUP_LEVEL_UP
-&Subir un Nivel
-MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE
-Tomar Ubicacion del Archivo Abierto
-MAINW_EXPLORER_POPUP_OPEN_ALL
-&Abrir Todos los Archivos
-MAINW_EXPLORER_POPUP_OPEN_SOURCES
-Abrir &Todos los Fuentes
-MAINW_EXPLORER_POPUP_UPDATE
-Ac&tualizar
-MAINW_EXPLORER_POPUP_OPEN_FILE
-&Abrir archivo
-MAINW_EXPLORER_POPUP_EXPAND
-&Expandir
-MAINW_EXPLORER_POPUP_SET_AS_ROOT
-Utilizar Como &Raiz
-MAINW_EXPLORER_POPUP_SHOW_ALL
-&Mostrar Todos los Archivos
-MAINW_EXPLORER_POPUP_SHOW_SOURCES
-&Mostrar Solo los Fuentes
-MAINW_EXPLORER_SELECT_PATH
-Seleccione la ubicacion:
-MAINW_GENERATE_AUTOCOMP_INDEX_NAME
-Nombre del nuevo índice
-MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
-Generación de índice de autocompletado
-MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE
-El indice ya existe, ¿desea reemplazarlo?
-MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR
-Directorio base (para formar las rutas relativas para los #includes):
-MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED
-Indice generado correctamente.
-MAINW_GENERATE_AUTOCOMP_INDEX_ERROR
-Ha ocurrido un error al intentar generar el archivo.
-CAPTION_TOOLS_RESULTS_PANEL
-Panel de resultados
-MAINW_BEGGINERS_PANEL
-Asistencias
-MAINW_CANNOT_SPLIT_VIEW
-No se puede duplicar archivos sin nombre
 MENUITEM_FILE_OPEN_ON_PROJECT
 &Abrir/Agregar al proyecto...
-MAINW_MACRO_START
-Generando macro, presione Ctrl+Shift+Q para finalizar.
-MAINW_MACRO_STOP
-Macro guardada, presione Ctrl+Q para reproducirla.
-MAINW_VALGRIND_MISSING
-Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
-MAINW_GPROF_GPROF_ENABLED
-Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.
-MAINW_GPROF_GPROF_DISABLED
-Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.
-MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
-Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
-MAINW_GPROF_OUTPUT_MISSING
-No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda.
-MAINW_GPROF_STATUS_ANALIZING
-Analizando informacion de perfilado...
-MAINW_GPROF_ERROR
-Ha ocurrido un error al intentar procesar la información de perfilado
-MAINW_GPROF_EDGE_THERSHOLD
-Eliminar arcos bajo este umbral (%):
-MAINW_GPROF_ASK_TITLE
-Perfil de Ejecucion
-MAINW_GPROF_NODE_THERSHOLD
-Eliminar nodos bajo este umbral (%):
-MAINW_GPROF_DRAWING
-Dibujando grafo...
-MAINW_GPROF_SHOWING
-Mostrando resultados...
-MAINW_GPROF_GRAPH_TITLE
-Informacion de Profiling
-MAINW_CUSTOM_TOOL_UNDEFINED
-Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
-MAINW_CODETOOLS_NO_HEADER_FOUND
-No se pudo determinar el archivo de cabecera asociado.
-MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION
-No se encontraron funciones/metodos sin implementar.
-MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS
-Seleccione las funciones/metodos a implementar:
-MAINW_PREPROC_OSD
-Preprocesando...
-MAINW_PREPROC_ERROR
-No se pudo preprocesar correctamente el fuente.
-MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE
-Ingrese el nombre para mostrar del nuevo template de proyecto
-MAINW_GENERATING_TEMPLATE
-Generando plantilla...
-MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE
-Ingrese el nombre del archivo del nuevo template de proyecto
-MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
-Ingrese el nombre para mostrar del nuevo template de programa simple
-MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
-Ingrese el nombre del archivo del nuevo template de programa simple
-MAINW_TEMPLATE_GENERATED
-Plantilla generada
 MAKEFILE_CAPTION
 Generar Makefile
 MAKEFILE_PROFILE

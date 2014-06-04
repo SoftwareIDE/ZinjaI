@@ -68,8 +68,16 @@ public:
 	mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
 	
 	~mxMainWindow();
-	
-	void CreateMenus();
+private:
+	void PopulateMenuFile(const wxString &ipre);
+	void PopulateMenuEdit(const wxString &ipre);
+	void PopulateMenuView(const wxString &ipre);
+	void PopulateMenuRun(const wxString &ipre);
+	void PopulateMenuDebug(const wxString &ipre);
+	void PopulateMenuTools(const wxString &ipre);
+	void PopulateMenuHelp(const wxString &ipre);
+public:
+	void CreateMenues();
 	void CreateToolbars(wxToolBar *wich_one=NULL, bool delete_old=false);
 	void GetToolbarsPositions();
 	void SortToolbars(bool update_aui=true);
@@ -173,6 +181,9 @@ public:
 	void OnRunClean (wxCommandEvent &event);
 	void OnRunStop (wxCommandEvent &event);
 	
+	void OnDebugSendSignal(wxCommandEvent &event);
+	void OnDebugSetSignals(wxCommandEvent &event);
+	void OnDebugGdbCommand(wxCommandEvent &event);
 	void OnDebugAttach (wxCommandEvent &event);
 	void OnDebugPatch (wxCommandEvent &event);
 	void OnDebugCoreDump (wxCommandEvent &event);
@@ -402,6 +413,10 @@ public:
 	void ShowInQuickHelpPanel(wxString &res, bool hide_compiler_tree=true); ///< carga el fuente de una pagina desde la cadena res en el panel de ayuda rápida y la muestra
 	void LoadInQuickHelpPanel(wxString file, bool hide_compiler_tree=true); ///< carga una pagina desde un archivo en el panel de ayuda rápida y lo muestra
 	
+private:
+	void SetMenusForDebugging(bool debug_mode);
+	void SetMenusForProject(bool project_mode);
+public:
 	void PrepareGuiForDebugging(bool debug_mode);
 	void PrepareGuiForProject(bool project_mode);
 	
@@ -505,7 +520,8 @@ public:
 		wxMenuItem *debug_pause;
 #if !defined(_WIN32) && !defined(__WIN32__)
 		wxMenuItem *debug_patch;
-		wxMenuItem *debug_core_dump;
+		wxMenuItem *debug_load_core_dump;
+		wxMenuItem *debug_generate_core_dump;
 #endif
 		wxMenuItem *debug_continue;
 		wxMenuItem *debug_stop;
@@ -525,6 +541,9 @@ public:
 		wxMenuItem *debug_inverse_execution;
 		wxMenuItem *debug_enable_inverse_execution;
 		wxMenuItem *debug_insert_watchpoint;
+		wxMenuItem *debug_set_signals;
+		wxMenuItem *debug_send_signal;
+		wxMenuItem *debug_gdb_command;
 		wxMenuItem *view_left_panels;
 		wxMenuItem *view_fullscreen;
 		wxMenuItem *view_white_space;

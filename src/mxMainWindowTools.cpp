@@ -743,31 +743,6 @@ void mxMainWindow::OnToolsCustomHelp(wxCommandEvent &evt) {
 	SHOW_HELP(_T("custom_tools.html"));	
 }
 
-void mxMainWindow::UpdateCustomTools(bool for_project) {
-	
-	wxToolBar *toolbar=for_project?toolbar_project:toolbar_tools;
-	int count=(for_project?MAX_PROJECT_CUSTOM_TOOLS:MAX_CUSTOM_TOOLS);
-	cfgCustomTool *tools=(for_project?project->custom_tools:config->CustomTools);
-	
-	if (!for_project) {
-		wxString ipre=DIR_PLUS_FILE("16","customTool");
-		for (int i=0;i<count;i++) {
-			if (menu.tools_custom_item[i])
-				menu.tools_custom_menu->Remove(menu.tools_custom_item[i]);
-			menu.tools_custom_item[i]=NULL;
-		}
-		int c=0;
-		for (int i=0;i<count;i++) {
-			if (tools[i].name.Len() && tools[i].command.Len())
-				menu.tools_custom_item[i] = utils->AddItemToMenu(menu.tools_custom_menu, mxID_CUSTOM_TOOL_0+i,tools[i].name,"",tools[i].command,SKIN_FILE(wxString(ipre)<<i<<".png"),c++);
-		}
-	}
-	
-	if (toolbar) CreateToolbars(toolbar);
-	if (main_window) main_window->aui_manager.Update();
-}
-
-
 void mxMainWindow::OnToolsCustomTool(wxCommandEvent &event) {
 	RunCustomTool(config->CustomTools[event.GetId()-mxID_CUSTOM_TOOL_0]);
 }

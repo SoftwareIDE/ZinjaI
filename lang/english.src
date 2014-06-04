@@ -1330,6 +1330,202 @@ MAINW_ASK_CLOSE_SHARED
 File is being shared with modifications. If you close it, it won't\nbe available anymore. Close anyway?
 MAINW_SHARE_AFTER_CLOSE
 Keep sharing (\"whithout modifications\") after closing.
+MAINW_QUICKHELP_INIT
+Place text cursor over a word and press Shift+F1 to see help here
+MAINW_AUTOHIDE_QUICKHELP
+Help/Search
+CAPTION_PROJECT_SYMBOLS_TREE
+Symbols Tree
+CAPTION_PROJECT_PROJECT_TREE
+Project Tree
+MAINW_AUTOHIDE_EXPLORER
+Explorer
+MAINW_PT_SOURCES
+Sources
+MAINW_PT_HEADERS
+Headers
+MAINW_PT_OTHERS
+Other Files
+MAINW_AUTOHIDE_PROJECT
+Project
+MAINW_AUTOHIDE_SYMBOLS
+Symbols
+MAINW_CT_ALL
+Full Output
+MAINW_AUTOHIDE_COMPILER
+Compiler
+MAINW_STATUS_RUN_FINISHED
+Process Finished
+MAINW_COULDNOT_LAUNCH_PROCESS
+Could not launch process
+MAINW_COULDNOT_RUN
+Could not run program!
+MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION
+You're trying to run a header file. Do you want to run \n"<{1}>" instead?
+MAINW_RUN_HEADER_QUESTION
+You're trying to run a header file. Continue anyway?
+MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
+Do you want to save project's changes before closing it?
+MAINW_CHANGE_CLOSE_ALL_QUESTION
+All files are going to be closed, and there are unsaved changes.\nDo you want to continue anyway?
+MAINW_COULD_NOT_EXPORT_HTML
+File couldn't be saved.
+MAINW_CHANGES_CONFIRM_RELOAD
+There are unsaved changes. Do you want to reload the file anyway?
+MAINW_FULLSCREEN_OUT_TIP
+Press F11 to exit fullscreen mode
+WXFB_OPENING
+Opening wxFormBuilder...
+MAINW_FILE_NOT_EXISTS
+File does not exist.
+MAINW_ASK_SAVE_PREVIOUS_PROJECT
+Do you want to save previous project's changes beforo closing?
+MAINW_SAVE_CHANGES_QUESTION
+There are unsaved changes. Do you want to save it now?
+MAINW_ADD_TO_PROJECT_QUESTION
+Do you want to attach the file to the project?
+MAINW_ADD_TO_PROJECT_CHECK
+Do the same action for all the files
+MAINW_MOVE_TO_PROJECT_PATH_QUESTION
+This file is outside project's folder. Do you want to copy it to project's path?
+MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION
+This file already exists in projects path. Do you want to replace it?
+MAINW_ERROR_PRITING
+There was an error trying to print
+MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT
+You cannot open an example without closing the project.\nClose the project and try again.
+MAINW_NO_EXTENSION_ADD_CPP_QUESTION
+There is no extension in that filename. Do you want to append .cpp to it?
+MAINW_ALWAYS_APPEND_EXTENSION
+Always append cpp extension without asking.
+MAINW_INSERT_HEADIR_NO_WORD
+You must place your text carret over a class/function name.
+MAINW_INSERT_HEADIR_CPP
+ is declared in a source file. Only header files should be included.
+MAINW_NO_HEADER_FOR
+Could'nt find a header file related to "<{1}>".
+DEBUG_THREAD_SYSTEM_INCOMPLETE
+Thread displaying is still work in progress, so it may have errors.\nLevels in inspections table won't match backtrace.
+DEBUG_RETURN_VALUE
+Return value:
+DEBUG_RETURN_FROM_FUNCTION
+Return from function
+DEBUG_RUN_UNTIL_ERROR
+The location is not valid.
+MAINW_EXPLORER_POPUP_CHANGE_PATH
+&Change Root Path...
+MAINW_EXPLORER_POPUP_LEVEL_UP
+&Show Parent Directory
+MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE
+Open current file's location
+MAINW_EXPLORER_POPUP_OPEN_ALL
+Open All Files
+MAINW_EXPLORER_POPUP_OPEN_SOURCES
+Open All Sources
+MAINW_EXPLORER_POPUP_UPDATE
+&Update
+MAINW_EXPLORER_POPUP_OPEN_FILE
+Open &File
+MAINW_EXPLORER_POPUP_EXPAND
+&Expand
+MAINW_EXPLORER_POPUP_SET_AS_ROOT
+Set As Root &Path
+MAINW_EXPLORER_POPUP_SHOW_ALL
+Show &All Files
+MAINW_EXPLORER_POPUP_SHOW_SOURCES
+Show Only &Sources
+MAINW_EXPLORER_SELECT_PATH
+Select location:
+MAINW_GENERATE_AUTOCOMP_INDEX_NAME
+New autocompletion index name
+MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
+Autocompletion index generation
+MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE
+Index already exists, do you want to overwrite it?
+MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR
+Base path (for make relative paths for #includes):
+MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED
+Index generated successfully
+MAINW_GENERATE_AUTOCOMP_INDEX_ERROR
+There was an error generating the index file.
+CAPTION_TOOLS_RESULTS_PANEL
+Tool Result's  Panel
+MAINW_BEGGINERS_PANEL
+Mini-templates
+MAINW_CANNOT_SPLIT_VIEW
+ZinjaI cannot split unnamed files
+MAINW_MACRO_START
+Recording macro, press Ctrl+Shift+Q again to stop recording.
+MAINW_MACRO_STOP
+Macro saved, press Ctrl+Q to replay.
+MAINW_VALGRIND_MISSING
+Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
+MAINW_GPROF_GPROF_ENABLED
+The required compiling arguments for <{1}> where added.
+MAINW_GPROF_GPROF_DISABLED
+The required compiling arguments for <{1}> where removed.
+MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
+In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
+MAINW_GPROF_OUTPUT_MISSING
+Profilling information was not found.\nIn order to generate it go to ZinjaI's help.
+MAINW_GPROF_STATUS_ANALIZING
+Analizing profiling information...
+MAINW_GPROF_ERROR
+Error processing profiling information
+MAINW_GPROF_EDGE_THERSHOLD
+Eliminate edges under this threshold (%):
+MAINW_GPROF_ASK_TITLE
+Profiling
+MAINW_GPROF_NODE_THERSHOLD
+Eliminate nodes under this threshold (%):
+MAINW_GPROF_DRAWING
+Generating graph...
+MAINW_GPROF_SHOWING
+Displaying results...
+MAINW_GPROF_GRAPH_TITLE
+Profiling Information
+MAINW_CUSTOM_TOOL_UNDEFINED
+This tool is not completelly configured.\nUse item "Settings..." in "Custom Tools" submenu from "Tools" menu.
+MAINW_CODETOOLS_NO_HEADER_FOUND
+Could not find complementary header file.
+MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION
+There isn't any not implemente method/function.
+MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS
+Choose functions/methods to implement:
+MENUITEM_TOOLS_CODE_COPY_FROM_H
+Implement Missing Functions/Methods...
+MAINW_PREPROC_OSD
+Preprocessing...
+MAINW_PREPROC_ERROR
+Error while preprocessing source
+MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE
+Enter a one line template's description
+MAINW_GENERATING_TEMPLATE
+Generating template...
+MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE
+Enter the template filename
+MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
+Enter a one line template's description
+MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
+Enter the template filename
+MAINW_TEMPLATE_GENERATED
+Template generated
+MENUITEM_TOOLS_CREATE_TEMPLATE
+Save current project/file as new template...
+MENUITEM_FILE
+&File
+MENUITEM_EDIT
+&Edit
+MENUITEM_VIEW
+&View
+MENUITEM_RUN
+&Run
+MENUITEM_DEBUG
+&Debug
+MENUITEM_TOOLS
+&Tools
+MENUITEM_HELP
+&Help
 MENUITEM_FILE_NEW
 &New...\tCtrl+N
 MENUITEM_FILE_NEW_PROJECT
@@ -1372,8 +1568,6 @@ MENUITEM_FILE_EXIT
 Exit
 MENU_FILE_RECENT_MORE
 More...
-MENUITEM_FILE
-&File
 MENUITEM_EDIT_UNDO
 Undo
 MENUITEM_EDIT_REDO
@@ -1424,8 +1618,6 @@ MENUITEM_EDIT_LIST_HIGHLIGHTS
 List HighLighted Lines
 MENUITEM_EDIT_FORCE_AUTOCOMPLETE
 Show Autocompletion
-MENUITEM_EDIT
-&Edit
 MENUITEM_VIEW_LINE_WRAP
 Line Wrap
 MENUITEM_VIEW_WHITE_SPACES
@@ -1482,8 +1674,6 @@ MENUITEM_VIEW_PREV_SOURCE
 Previous Source
 MENUITEM_VIEW_NEXT_SOURCE
 Next Source
-MENUITEM_VIEW
-&View
 MENUITEM_FOLD_FOLD_THIS_LINE
 Fold This Line
 MENUITEM_FOLD_UNFOLD_THIS_LINE
@@ -1526,14 +1716,8 @@ MENUITEM_RUN_STOP
 Stop
 MENUITEM_RUN_OPTIONS
 Configure...
-MENUITEM_RUN
-&Run
 MENUITEM_DEBUG_START
 Start/Continue
-MENUITEM_DEBUG_ATTACH
-Attach To Running Instance...
-MENUITEM_DEBUG_LOAD_CORE_DUMP
-Load Core Dump...
 MENUITEM_DEBUG_PAUSE
 Pause
 MENUITEM_DEBUG_STOP
@@ -1544,44 +1728,52 @@ MENUITEM_DEBUG_STEP_OVER
 Step Over
 MENUITEM_DEBUG_STEP_OUT
 Step Out
-MENUITEM_DEBUG_RETURN
-Return...
 MENUITEM_DEBUG_RUN_UNTIL
 Run Until Carret Line
+MENUITEM_DEBUG_RETURN
+Return...
 MENUITEM_DEBUG_JUMP
 Jump To Carret Line
-MENUITEM_DEBUG_ENABLE_INVERSE
-Enable Inverse Execution
-MENUITEM_DEBUG_INVERSE
-Toggle Execution Direction
+MENUITEM_DEBUG_TOGGLE_BREAKPOINT
+Toggle Breakpoint
+MENUITEM_DEBUG_BREAKPOINT_OPTIONS
+Breakpoint Options...
+MENUITEM_DEBUG_LIST_BREAKPOINTS
+List Break/Watchpoints...
 MENUITEM_DEBUG_INSPECT
 Show Inspections Panel
 MENUITEM_DEBUG_BACKTRACE
 Show Backtrace Panel
 MENUITEM_DEBUG_THREADLIST
 &Threads List
-MENUITEM_DEBUG_LIST_BREAKPOINTS
-List Break/Watchpoints...
-MENUITEM_DEBUG_TOGGLE_BREAKPOINT
-Toggle Breakpoint
-MENUITEM_DEBUG_BREAKPOINT_OPTIONS
-Breakpoint Options...
-MENUITEM_DEBUG_INSERT_WATCHPOINT
-Insert Watchpoint
 MENUITEM_DEBUG_SHOW_LOG_PANEL
 Show Debbuger's Log
+MENUITEM_DEBUG_ATTACH
+Attach To Running Instance...
+MENUITEM_DEBUG_LOAD_CORE_DUMP
+Load Core Dump...
+MENUITEM_SAVE_CORE_DUMP
+Save Core Dump...
+MENUITEM_DEBUG_ENABLE_INVERSE
+Enable Inverse Execution
+MENUITEM_DEBUG_INVERSE
+Toggle Execution Direction
+MENUITEM_DEBUG_SET_SIGNALS
+Setup signals handling...
+MENUITEM_DEBUG_SEND_SIGNALS
+Send signal...
+MENUITEM_DEBUG_GDB_COMMAND
+Enter gdb commands...
 MENUITEM_DEBUG_PATCH
 Update executable on debugger...
+MENUITEM_DEBUG_MORE
+More...
 MENUITEM_DEBUG_DO_THAT
 DO_THAT
-MENUITEM_DEBUG
-&Debug
 MENUITEM_TOOLS_DRAW_FLOWCHART
 Draw Flow Chart...
 MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
 Draw Class Hierarchy...
-MENUITEM_TOOLS_CODE_COPY_FROM_H
-Implement Missing Functions/Methods...
 MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
 Align Comments...
 MENUITEM_TOOLS_COMMENTS_COMMENT
@@ -1724,12 +1916,8 @@ MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS
 Settings (project)...
 MENUITEM_TOOLS_CUSTOM_HELP
 Help...
-MENUITEM_TOOLS_CREATE_TEMPLATE
-Save current project/file as new template...
 MENUITEM_TOOLS_INSTALL_COMPLEMENTS
 Install Complements...
-MENUITEM_TOOLS
-&Tools
 MENUITEM_HELP_ABOUT
 About...
 MENUITEM_HELP_TUTORIALS
@@ -1744,8 +1932,6 @@ MENUITEM_HELP_OPINION
 Send suggestions or report bugs...
 MENUITEM_HELP_UPDATES
 Check for Updates...
-MENUITEM_HELP
-&Help
 CAPTION_TOOLBAR_FILE
 File
 CAPTION_TOOLBAR_EDIT
@@ -2366,190 +2552,8 @@ TOOLBAR_DESC_TOOLS_DIFF_NEXT
 Tools -> Compare Files -> Go To Next Change
 CAPTION_TOOLBAR_DIFF
 Diff
-MAINW_QUICKHELP_INIT
-Place text cursor over a word and press Shift+F1 to see help here
-MAINW_AUTOHIDE_QUICKHELP
-Help/Search
-CAPTION_PROJECT_SYMBOLS_TREE
-Symbols Tree
-CAPTION_PROJECT_PROJECT_TREE
-Project Tree
-MAINW_AUTOHIDE_EXPLORER
-Explorer
-MAINW_PT_SOURCES
-Sources
-MAINW_PT_HEADERS
-Headers
-MAINW_PT_OTHERS
-Other Files
-MAINW_AUTOHIDE_PROJECT
-Project
-MAINW_AUTOHIDE_SYMBOLS
-Symbols
-MAINW_CT_ALL
-Full Output
-MAINW_AUTOHIDE_COMPILER
-Compiler
-MAINW_STATUS_RUN_FINISHED
-Process Finished
-MAINW_COULDNOT_LAUNCH_PROCESS
-Could not launch process
-MAINW_COULDNOT_RUN
-Could not run program!
-MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION
-You're trying to run a header file. Do you want to run \n"<{1}>" instead?
-MAINW_RUN_HEADER_QUESTION
-You're trying to run a header file. Continue anyway?
-MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
-Do you want to save project's changes before closing it?
-MAINW_CHANGE_CLOSE_ALL_QUESTION
-All files are going to be closed, and there are unsaved changes.\nDo you want to continue anyway?
-MAINW_COULD_NOT_EXPORT_HTML
-File couldn't be saved.
-MAINW_CHANGES_CONFIRM_RELOAD
-There are unsaved changes. Do you want to reload the file anyway?
-MAINW_FULLSCREEN_OUT_TIP
-Press F11 to exit fullscreen mode
-WXFB_OPENING
-Opening wxFormBuilder...
-MAINW_FILE_NOT_EXISTS
-File does not exist.
-MAINW_ASK_SAVE_PREVIOUS_PROJECT
-Do you want to save previous project's changes beforo closing?
-MAINW_SAVE_CHANGES_QUESTION
-There are unsaved changes. Do you want to save it now?
-MAINW_ADD_TO_PROJECT_QUESTION
-Do you want to attach the file to the project?
-MAINW_ADD_TO_PROJECT_CHECK
-Do the same action for all the files
-MAINW_MOVE_TO_PROJECT_PATH_QUESTION
-This file is outside project's folder. Do you want to copy it to project's path?
-MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION
-This file already exists in projects path. Do you want to replace it?
-MAINW_ERROR_PRITING
-There was an error trying to print
-MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT
-You cannot open an example without closing the project.\nClose the project and try again.
-MAINW_NO_EXTENSION_ADD_CPP_QUESTION
-There is no extension in that filename. Do you want to append .cpp to it?
-MAINW_ALWAYS_APPEND_EXTENSION
-Always append cpp extension without asking.
-MAINW_INSERT_HEADIR_NO_WORD
-You must place your text carret over a class/function name.
-MAINW_INSERT_HEADIR_CPP
- is declared in a source file. Only header files should be included.
-MAINW_NO_HEADER_FOR
-Could'nt find a header file related to "<{1}>".
-DEBUG_THREAD_SYSTEM_INCOMPLETE
-Thread displaying is still work in progress, so it may have errors.\nLevels in inspections table won't match backtrace.
-DEBUG_RETURN_VALUE
-Return value:
-DEBUG_RETURN_FROM_FUNCTION
-Return from function
-DEBUG_RUN_UNTIL_ERROR
-The location is not valid.
-MENUITEM_SAVE_CORE_DUMP
-Save Core Dump...
-MENUITEM_LOAD_CORE_DUMP
-Load Core Dump...
-MAINW_EXPLORER_POPUP_CHANGE_PATH
-&Change Root Path...
-MAINW_EXPLORER_POPUP_LEVEL_UP
-&Show Parent Directory
-MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE
-Open current file's location
-MAINW_EXPLORER_POPUP_OPEN_ALL
-Open All Files
-MAINW_EXPLORER_POPUP_OPEN_SOURCES
-Open All Sources
-MAINW_EXPLORER_POPUP_UPDATE
-&Update
-MAINW_EXPLORER_POPUP_OPEN_FILE
-Open &File
-MAINW_EXPLORER_POPUP_EXPAND
-&Expand
-MAINW_EXPLORER_POPUP_SET_AS_ROOT
-Set As Root &Path
-MAINW_EXPLORER_POPUP_SHOW_ALL
-Show &All Files
-MAINW_EXPLORER_POPUP_SHOW_SOURCES
-Show Only &Sources
-MAINW_EXPLORER_SELECT_PATH
-Select location:
-MAINW_GENERATE_AUTOCOMP_INDEX_NAME
-New autocompletion index name
-MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
-Autocompletion index generation
-MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE
-Index already exists, do you want to overwrite it?
-MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR
-Base path (for make relative paths for #includes):
-MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED
-Index generated successfully
-MAINW_GENERATE_AUTOCOMP_INDEX_ERROR
-There was an error generating the index file.
-CAPTION_TOOLS_RESULTS_PANEL
-Tool Result's  Panel
-MAINW_BEGGINERS_PANEL
-Mini-templates
-MAINW_CANNOT_SPLIT_VIEW
-ZinjaI cannot split unnamed files
 MENUITEM_FILE_OPEN_ON_PROJECT
 &Open/Attach to project...
-MAINW_MACRO_START
-Recording macro, press Ctrl+Shift+Q again to stop recording.
-MAINW_MACRO_STOP
-Macro saved, press Ctrl+Q to replay.
-MAINW_VALGRIND_MISSING
-Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
-MAINW_GPROF_GPROF_ENABLED
-The required compiling arguments for <{1}> where added.
-MAINW_GPROF_GPROF_DISABLED
-The required compiling arguments for <{1}> where removed.
-MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
-In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
-MAINW_GPROF_OUTPUT_MISSING
-Profilling information was not found.\nIn order to generate it go to ZinjaI's help.
-MAINW_GPROF_STATUS_ANALIZING
-Analizing profiling information...
-MAINW_GPROF_ERROR
-Error processing profiling information
-MAINW_GPROF_EDGE_THERSHOLD
-Eliminate edges under this threshold (%):
-MAINW_GPROF_ASK_TITLE
-Profiling
-MAINW_GPROF_NODE_THERSHOLD
-Eliminate nodes under this threshold (%):
-MAINW_GPROF_DRAWING
-Generating graph...
-MAINW_GPROF_SHOWING
-Displaying results...
-MAINW_GPROF_GRAPH_TITLE
-Profiling Information
-MAINW_CUSTOM_TOOL_UNDEFINED
-This tool is not completelly configured.\nUse item "Settings..." in "Custom Tools" submenu from "Tools" menu.
-MAINW_CODETOOLS_NO_HEADER_FOUND
-Could not find complementary header file.
-MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION
-There isn't any not implemente method/function.
-MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS
-Choose functions/methods to implement:
-MAINW_PREPROC_OSD
-Preprocessing...
-MAINW_PREPROC_ERROR
-Error while preprocessing source
-MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_PROJECT_TEMPLATE
-Enter a one line template's description
-MAINW_GENERATING_TEMPLATE
-Generating template...
-MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE
-Enter the template filename
-MAINW_ENTER_FRIENDLY_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
-Enter a one line template's description
-MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
-Enter the template filename
-MAINW_TEMPLATE_GENERATED
-Template generated
 MAKEFILE_CAPTION
 Generate Makefil
 MAKEFILE_PROFILE

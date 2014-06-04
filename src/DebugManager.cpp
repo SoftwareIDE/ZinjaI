@@ -1992,7 +1992,6 @@ bool DebugManager::SelectFrame(wxString strnum, int idx) {
 }
 
 bool DebugManager::DoThat(wxString what) {
-	if (what=="patch") { if (!debug->waiting) debug_patcher->Patch(); return true; }
 	wxMessageBox(SendCommand(what),what,wxOK,main_window);
 	return true;
 }
