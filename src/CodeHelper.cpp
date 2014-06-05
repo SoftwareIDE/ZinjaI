@@ -64,7 +64,7 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, wxArrayString &words, w
 		for (unsigned int i=1;i<comp_array.GetCount();i++)
 			if (comp_array[li]!=comp_array[i])
 				text<<"\n"<<comp_array[li=i];
-		source->AutoCompShow(l,text);
+		source->ShowAutoComp(l,text);
 	}
 
 	wxArrayString comp_array;
@@ -87,7 +87,7 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, wxArrayString &words, w
 	for (unsigned int i=1;i<comp_array.GetCount();i++)
 		if (comp_array[li]!=comp_array[i])
 			text<<"\n"<<comp_array[li=i];
-	source->AutoCompShow(l,text);
+	source->ShowAutoComp(l,text);
 	return true;	
 }
 
@@ -270,7 +270,7 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 		for (unsigned int i=1;i<comp_array.GetCount();i++)
 			if (comp_array[li]!=comp_array[i])
 				text<<"\n"<<comp_array[li=i];
-		source->AutoCompShow(l,text);
+		source->ShowAutoComp(l,text);
 		//comp_array.Clear();
 		return true;
 	}
@@ -637,7 +637,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	for (unsigned int i=1;i<comp_array.GetCount();i++)
 		if (comp_array[li]!=comp_array[i])
 			text<<"\n"<<comp_array[li=i];
-	source->AutoCompShow(l,text);
+	source->ShowAutoComp(l,text);
 	return true;
 }
 
@@ -659,7 +659,7 @@ bool CodeHelper::AutocompleteAutocode(mxSource *source, wxString typed, int max_
 	for (unsigned int i=1;i<comp_array.GetCount();i++)
 		if (comp_array[li]!=comp_array[i])
 			text<<"\n"<<comp_array[li=i];
-	source->AutoCompShow(l,text);
+	source->ShowAutoComp(l,text);
 	return true;
 }
 

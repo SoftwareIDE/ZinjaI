@@ -257,7 +257,7 @@ void mxMainWindow::PopulateMenuDebug(const wxString &ipre) {
 	menu.debug_set_signals = utils->AddItemToMenu(more_menu, mxID_DEBUG_SET_SIGNALS, LANG(MENUITEM_DEBUG_SET_SIGNALS,"Configurar comportamiento ante señales..."),"","",ipre+_T("debug_singals_set.png"));
 	menu.debug_send_signal = utils->AddItemToMenu(more_menu, mxID_DEBUG_SEND_SIGNAL, LANG(MENUITEM_DEBUG_SEND_SIGNALS,"Enviar señal..."),"","",ipre+_T("debug_singal_send.png"));
 	menu.debug_gdb_command = utils->AddItemToMenu(more_menu, mxID_DEBUG_GDB_COMMAND, LANG(MENUITEM_DEBUG_GDB_COMMAND,"Introducir comandos gdb..."),"","",ipre+_T("gdb_command.png"));
-	menu.debug_patch = utils->AddItemToMenu(more_menu, mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable..."),"","",ipre+_T("debug_patch.png"));
+	menu.debug_patch = utils->AddItemToMenu(more_menu, mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable (experimental)..."),"","",ipre+_T("debug_patch.png"));
 	utils->AddSubMenuToMenu(menu.debug, more_menu,LANG(MENUITEM_DEBUG_MORE,"Más..."),"",ipre+"share.png");
 #endif
 	if (config->Debug.show_do_that) menu.debug_function_breakpoint = utils->AddItemToMenu(menu.debug, mxID_DEBUG_DO_THAT, LANG(MENUITEM_DEBUG_DO_THAT,"DO_THAT"),"","",ipre+_T("do_that.png"));
@@ -775,11 +775,11 @@ void mxMainWindow::SetMenusForDebugging(bool debug_mode) {
 	menu.debug_run_until->Enable(debug_mode);
 	menu.debug_jump->Enable(debug_mode);
 	menu.debug_pause->Enable(debug_mode);
-	menu.debug_patch->Enable(debug_mode);
 	menu.debug_gdb_command->Enable(debug_mode);
 	menu.debug_send_signal->Enable(debug_mode);
 	menu.debug_set_signals->Enable(debug_mode);
 #ifndef __WIN32__
+	menu.debug_patch->Enable(debug_mode);
 	menu.debug_attach->Enable(!debug_mode);
 	menu.debug_enable_inverse_execution->Enable(debug_mode);
 	menu.debug_inverse_execution->Enable(false);

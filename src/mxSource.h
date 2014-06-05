@@ -77,6 +77,18 @@ extern NavigationHistory navigation_history;
 **/
 class mxSource: public wxStyledTextCtrl {
 
+	class AutocompletionLocation {
+		int pos;
+		wxString key;
+	public:
+		bool IsSameLocation(int p, const wxString &k) {
+			if (p==pos && k.StartsWith(key)) return true;
+			key=k; pos=p; return false;
+		}
+		void Reset() { pos=-1; }
+	};
+	AutocompletionLocation last_failed_autocompletion;
+	
 	friend class NavigationHistory;
 	int old_current_line; ///< for detecting jumps long enought to record in navigation_history
 	
@@ -241,6 +253,10 @@ public:
 	wxString WhereAmI();
 	
 	void ShowCallTip(int p, wxString str, bool fix_pos=true);
+private:
+	void AutoCompShow(int p, const wxString &s) {} // solo para evitar llamarla sin querer
+public:
+	void ShowAutoComp(int p, const wxString &s) { last_failed_autocompletion.Reset(); wxStyledTextCtrl::AutoCompShow(p,s); }
 
 	wxFileName working_folder;
 	wxFileName source_filename;
@@ -279,7 +295,6 @@ private:
 	
 	int brace_1,brace_2;
 	void MyBraceHighLight(int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);
-	
 	
 	DECLARE_EVENT_TABLE();
 };

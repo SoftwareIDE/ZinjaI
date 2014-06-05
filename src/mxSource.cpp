@@ -25,6 +25,8 @@
 #include "error_recovery.h"
 using namespace std;
 
+
+
 NavigationHistory navigation_history;
 
 void NavigationHistory::OnClose(mxSource *src) {
@@ -1440,8 +1442,9 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					return;
 				}
 			}
-			int p=WordStartPosition(e,true);
+			int p=WordStartPosition(e,true); int pos_key=p; // pos_key guarda la posición donde comienza la palabra a autocompletar
 			wxString key = GetTextRange(p,e+1);
+			if (last_failed_autocompletion.IsSameLocation(pos_key,key)) return; // no intentar autocompletar nuevamente si ya se intentó un caracter atrás
 			if (e-p+1>=config->Help.min_len_for_completion || chr==',' || chr=='(') {
 				s=GetStyleAt(p-1);
 				if (p && s==wxSTC_C_PREPROCESSOR && GetCharAt(p-1)=='#') {
@@ -2520,7 +2523,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 				} else {
 					scope = FindScope(p);
 				}
-				wxString type=code_helper->GetCalltip(scope,func_name,true,true);
+				wxString type=code_helper->GetCalltip(scope,func_name,false,true);
 				if (!type.Len()) { // sera sobrecarga del operator() ?
 					type=FindTypeOf(func_name,p0_name);
 					type=code_helper->GetCalltip(type,"operator()",true,true);
