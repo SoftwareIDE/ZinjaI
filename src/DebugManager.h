@@ -103,6 +103,12 @@ struct inspectinfo {
 	}
 };
 
+/// estructura para guardar la configuración del manejo de una señal en gdb (ver Debug::GetSignals)
+struct SignalHandlingInfo {
+	wxString name, description;
+	bool pass,print,stop;
+};
+
 class wxProcess;
 class wxOutputStream;
 class wxInputStream;
@@ -121,6 +127,7 @@ class DebugManager {
 	friend class mxInspectionMatrix;
 	friend class DebuggerInspection;
 	friend class DebugPatcher;
+	friend class mxGdbCommandsPanel;
 #ifdef DEBUG
 	wxFFile debug_log_file;
 #endif
@@ -283,6 +290,10 @@ public:
 	void ListThreads();
 	void ThreadListClean();
 	void SelectThread(wxString id);
+	
+	void SendSignal(const wxString &signame);
+	bool GetSignals(vector<SignalHandlingInfo> &v);
+	bool SetSignalHandling(SignalHandlingInfo &si);
 	
 	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print elements ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
 	void SetFullOutput(bool on=false);

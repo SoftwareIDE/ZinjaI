@@ -37,6 +37,8 @@ void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxSt
 	wxBoxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
+	if (!(style&(mxMD_YES_NO_CANCEL|mxMD_OK))) style|=mxMD_OK;
+	
 	if (style&mxMD_NO) {
 		mxBitmapButton *btn = new mxBitmapButton(this,wxID_NO,bitmaps->buttons.cancel, LANG(GENERAL_NO_BUTTON," &No "));
 		btn->SetMinSize(wxSize(btn->GetSize().GetWidth()<90?90:btn->GetSize().GetWidth(),btn->GetSize().GetHeight()<30?30:btn->GetSize().GetHeight()));

@@ -2894,3 +2894,66 @@ void DebugManager::ShowBreakPointConditionErrorMessage (BreakPointInfo *_bpi) {
 		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
 	if (res&mxMD_CHECKED) show_breakpoint_error=false;
 }
+
+void DebugManager::SendSignal (const wxString & signame) {
+	if (waiting || !debugging || status==DBGST_STOPPING) return;
+	running = true; MarkCurrentPoint();
+	wxString ans = SendCommand("signal ",signame);
+	if (ans.Contains("^running")) {
+		HowDoesItRuns();
+		if (config->Debug.raise_main_window)
+			main_window->Raise();
+	}
+	running = false;
+}
+
+bool DebugManager::GetSignals (vector<SignalHandlingInfo> & v) {
+	if (!debugging || waiting) return false;
+	wxString ans = SendCommand("info signals");
+	if (!ans.Contains("^done")) return false;
+	while (ans.Contains('\n')) {
+		wxString line=ans.BeforeFirst('\n');
+		ans=ans.AfterFirst('\n');
+		// para saber si esta linea es una señal o no, vemos si empieza con ~"XXX, con XXX mayúsculas 
+		// otras lineas son por ej la cabecera de la tabla (~"Signal...), lineas en blanco /~"\n"), o de ayuda (~"Use...)
+		if (! (line.Len()>4 && line[0]=='~' && line[1]=='\"' && (line[2]>='A'&&line[2]<='Z') && (line[3]>='A'&&line[3]<='Z') && (line[4]>='A'&&line[4]<='Z') ) ) continue;
+		line = utils->UnEscapeString(line.Mid(1));
+		SignalHandlingInfo si;
+		// la primer palabra es el nombre
+		int i=0,i0=0, l=line.Len();
+		while (i<l && (line[i]!=' '&&line[i]!='\t')) i++;
+		si.name=line.Mid(i0,i-i0);
+		// la segunda es un Yes/No que corresponde a Stop
+		while (i<l && (line[i]==' '||line[i]=='\t')) i++;
+		i0=i;
+		while (i<l && (line[i]!=' '&&line[i]!='\t')) i++;
+		si.stop=line.Mid(i0,i-i0)=="Yes";
+		// la segunda es un Yes/No que corresponde a Print
+		while (i<l && (line[i]==' '||line[i]=='\t')) i++;
+		i0=i;
+		while (i<l && (line[i]!=' '&&line[i]!='\t')) i++;
+		si.print=line.Mid(i0,i-i0)=="Yes";
+		// la segunda es un Yes/No que corresponde a Pass
+		while (i<l && (line[i]==' '||line[i]=='\t')) i++;
+		i0=i;
+		while (i<l && (line[i]!=' '&&line[i]!='\t')) i++;
+		si.pass=line.Mid(i0,i-i0)=="Yes";
+		// lo que queda es la descripcion
+		while (i<l && (line[i]==' '||line[i]=='\t')) i++;
+		si.description=line.Mid(i);
+		if (si.description.EndsWith("\n")) si.description.RemoveLast();
+		v.push_back(si);
+	}
+	return true;
+}
+
+bool DebugManager::SetSignalHandling (SignalHandlingInfo & si) {
+	if (!debugging || waiting) return false;
+	wxString cmd("handle "); cmd<<si.name;
+	cmd<<" "<<(si.print?"print":"noprint");
+	cmd<<" "<<(si.stop?"stop":"nostop");
+	cmd<<" "<<(si.pass?"pass":"nopass");
+	wxString ans = SendCommand(cmd);
+	return ans.Contains("^done");
+}
+

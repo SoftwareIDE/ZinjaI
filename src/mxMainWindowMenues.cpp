@@ -776,6 +776,9 @@ void mxMainWindow::SetMenusForDebugging(bool debug_mode) {
 	menu.debug_jump->Enable(debug_mode);
 	menu.debug_pause->Enable(debug_mode);
 	menu.debug_patch->Enable(debug_mode);
+	menu.debug_gdb_command->Enable(debug_mode);
+	menu.debug_send_signal->Enable(debug_mode);
+	menu.debug_set_signals->Enable(debug_mode);
 #ifndef __WIN32__
 	menu.debug_attach->Enable(!debug_mode);
 	menu.debug_enable_inverse_execution->Enable(debug_mode);

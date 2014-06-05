@@ -67,6 +67,8 @@
 #include "mxGCovSideBar.h"
 #include "mxReferenceWindow.h"
 #include "DebugPatcher.h"
+#include "mxGdbCommandsPanel.h"
+#include "mxSignalsSettings.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -4934,32 +4936,26 @@ void mxMainWindow::UpdateStylesInSources ( ) {
 }
 
 void mxMainWindow::OnDebugSendSignal (wxCommandEvent & event) {
-#warning IMPLEMENTAR
+	wxArrayString signames; signames.Add("<none>: continuar sin enviar ninguna señal)");
+	vector<SignalHandlingInfo> vsig;
+	debug->GetSignals(vsig);
+	for(unsigned int i=0;i<vsig.size();i++) signames.Add(vsig[i].name+": "+vsig[i].description);
+	wxString ans = wxGetSingleChoice("Signal:","Send signal to running process",signames,this);
+	if (ans.Len()) {
+		ans=ans.BeforeFirst(':');
+		if (ans=="<none>") ans="0";
+		debug->SendSignal(ans);
+	}
 }
 
 void mxMainWindow::OnDebugSetSignals (wxCommandEvent & event) {
-#warning IMPLEMENTAR
+	mxSignalsSettings();
 }
 
 void mxMainWindow::OnDebugGdbCommand (wxCommandEvent & event) {
-	if (!debug->debugging||debug->waiting) return;
-	static wxString what;
-	wxString ans= mxGetTextFromUser("Comando para gdb:", "Comando para gdb", what, this);
-	if (!what.Len()) return; else what=ans;
-	
-	wxString res = debug->SendCommand(what)+"\n";
-	res<<"\n"; wxString msg;
-	do {
-		wxString line=msg.BeforeFirst('\n');
-		msg=msg.AfterFirst('\n');
-		
-		if (line.StartsWith("^")) {
-			if (line.StartsWith("^error")) msg<<"^error: "<<debug->GetValueFromAns(res,"msg",true,true)<<"\n";
-			else res<<line<<"\n";
-		} else 
-			msg<<"   "<<utils->UnEscapeString(line.Mid(1))<<"\n";
-	} while(res.size());
-	wxMessageBox(msg);
-	
+	mxGdbCommandsPanel *gdb_cmd = new mxGdbCommandsPanel();
+	aui_manager.AddPane(gdb_cmd, wxAuiPaneInfo().Name("gdb_command").Float().CloseButton(true).MaximizeButton(true).Caption("gdb").Show());
+	aui_manager.Update();
+	gdb_cmd->SetFocus();
 }
 
