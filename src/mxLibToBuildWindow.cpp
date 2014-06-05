@@ -157,7 +157,7 @@ void mxLibToBuildWindow::OnCancelButton(wxCommandEvent &evt) {
 }
 
 void mxLibToBuildWindow::OnHelpButton(wxCommandEvent &evt) {
-	SHOW_HELP(_T("lib_to_build.html"));
+	SHOW_HELP_FROM_MODAL("lib_to_build.html");
 }
 
 void mxLibToBuildWindow::OnOutButton(wxCommandEvent &evt) {

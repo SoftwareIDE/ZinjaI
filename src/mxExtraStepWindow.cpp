@@ -115,7 +115,7 @@ void mxExtraStepWindow::OnCancelButton(wxCommandEvent &evt) {
 }
 
 void mxExtraStepWindow::OnHelpButton(wxCommandEvent &evt) {
-	SHOW_HELP(_T("compile_extra_steps.html"));
+	SHOW_HELP_FROM_MODAL("compile_extra_steps.html");
 }
 
 void mxExtraStepWindow::OnPopup(wxCommandEvent &evt) {

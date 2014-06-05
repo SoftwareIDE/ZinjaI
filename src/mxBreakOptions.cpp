@@ -131,5 +131,5 @@ void mxBreakOptions::OnBreakpointCheck(wxCommandEvent &evt) {
 }
 
 void mxBreakOptions::OnHelpButton(wxCommandEvent &evt) {
-	SHOW_HELP(_T("break_options.html"));
+	SHOW_HELP_FROM_MODAL("break_options.html");
 }

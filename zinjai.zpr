@@ -10,7 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxGenericInspectionCtrl.cpp
+current_source=src/mxLibToBuildWindow.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -55,7 +55,8 @@ path=src/mxProjectStatistics.cpp
 cursor=29:88
 [source]
 path=src/mxLibToBuildWindow.cpp
-cursor=35:88
+cursor=8:0
+open=true
 [source]
 path=src/Parser.cpp
 cursor=407:36
@@ -347,7 +348,7 @@ path=src/Inspection.cpp
 cursor=0:23
 [source]
 path=src/mxGenericInspectionCtrl.cpp
-cursor=17:0
+cursor=5:11
 open=true
 [source]
 path=src/DebugPatcher.cpp

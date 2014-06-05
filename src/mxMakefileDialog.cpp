@@ -7,6 +7,7 @@
 #include "mxBitmapButton.h"
 #include "mxSizers.h"
 #include "Language.h"
+#include "mxMessageDialog.h"
 
 BEGIN_EVENT_TABLE(mxMakefileDialog, wxDialog)
 	EVT_BUTTON(wxID_OK,mxMakefileDialog::OnOkButton)
@@ -100,5 +101,5 @@ void mxMakefileDialog::OnClose(wxCloseEvent &event) {
 }
 
 void mxMakefileDialog::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP("makefile.html");
+	SHOW_HELP_FROM_MODAL("makefile.html");
 }
