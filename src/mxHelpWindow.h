@@ -36,6 +36,9 @@ public:
 };
 
 #define SHOW_HELP(page) mxHelpWindow::ShowHelp(page)
-
+#define SHOW_HELP_FROM_MODAL(page) \
+	if (mxMD_OK==mxMessageDialog(this,"Se cerrará este cuadro de diálogo (perdiendo los cambios) para poder acceder a la ventana de ayuda.",LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK_CANCEL|mxMD_WARNING).ShowModal()) { \
+		EndModal(0); mxHelpWindow::ShowHelp(page); \
+	}
 #endif
 

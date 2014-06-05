@@ -5,10 +5,13 @@
 #include "mxMainWindow.h"
 #include "mxBitmapButton.h"
 #include "Language.h"
+#include "mxHelpWindow.h"
+#include "mxMessageDialog.h"
 
 BEGIN_EVENT_TABLE(mxSignalsSettings,wxDialog)
 	EVT_BUTTON(wxID_OK,mxSignalsSettings::OnButtonOk)
 	EVT_BUTTON(wxID_CANCEL,mxSignalsSettings::OnButtonCancel)
+	EVT_BUTTON(wxID_HELP,mxSignalsSettings::OnButtonHelp)
 END_EVENT_TABLE()
 
 mxSignalsSettings::mxSignalsSettings():wxDialog(main_window,wxID_ANY,"Singnals handling settings",wxDefaultPosition,wxDefaultSize) {
@@ -47,14 +50,17 @@ mxSignalsSettings::mxSignalsSettings():wxDialog(main_window,wxID_ANY,"Singnals h
 	
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxButton *help_button = new wxBitmapButton (this, wxID_HELP, *bitmaps->buttons.help); 
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar")); 
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(GENERAL_OK_BUTTON,"&Aceptar"));
 //	ok_button->SetMinSize(wxSize(ok_button->GetSize().GetWidth()<80?80:ok_button->GetSize().GetWidth(),ok_button->GetSize().GetHeight()));
 	ok_button->SetDefault(); 
+	bottomSizer->Add(help_button,sizers->BA5);
+	bottomSizer->AddStretchSpacer();
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
-	mySizer->Add(bottomSizer,sizers->BA5_Right);
+	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	
 	SetSizer(mySizer);
 	ShowModal();
@@ -78,5 +84,9 @@ void mxSignalsSettings::OnButtonOk (wxCommandEvent & evt) {
 
 void mxSignalsSettings::OnButtonCancel (wxCommandEvent & evt) {
 	EndModal(0);
+}
+
+void mxSignalsSettings::OnButtonHelp (wxCommandEvent & evt) {
+	SHOW_HELP_FROM_MODAL("signals.html");	
 }
 

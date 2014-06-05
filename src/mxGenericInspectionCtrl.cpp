@@ -11,7 +11,7 @@ mxGenericInspectionCtrl::~mxGenericInspectionCtrl() {
 }
 
 void mxGenericInspectionCtrl::UpdateAll ( ) {
-	for(unsigned int i=0;i<list.GetSize();i++) { 
+	for(int i=0;i<list.GetSize();i++) { 
 		list[i]->OnInspectionsUpdated();
 	}
 }

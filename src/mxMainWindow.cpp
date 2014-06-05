@@ -4936,12 +4936,18 @@ void mxMainWindow::UpdateStylesInSources ( ) {
 }
 
 void mxMainWindow::OnDebugSendSignal (wxCommandEvent & event) {
+	static wxString prev;
 	wxArrayString signames; signames.Add("<none>: continuar sin enviar ninguna señal)");
 	vector<SignalHandlingInfo> vsig;
 	debug->GetSignals(vsig);
 	for(unsigned int i=0;i<vsig.size();i++) signames.Add(vsig[i].name+": "+vsig[i].description);
-	wxString ans = wxGetSingleChoice("Signal:","Send signal to running process",signames,this);
+	wxSingleChoiceDialog dlg(this,"Signal:","Send signal to running process",signames);
+	int pprev=signames.Index(prev);
+	if (pprev!=wxNOT_FOUND) dlg.SetSelection(pprev);
+	dlg.ShowModal();
+	wxString ans=dlg.GetStringSelection();
 	if (ans.Len()) {
+		prev=ans;
 		ans=ans.BeforeFirst(':');
 		if (ans=="<none>") ans="0";
 		debug->SendSignal(ans);
