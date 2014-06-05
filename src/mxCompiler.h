@@ -34,6 +34,7 @@ enum CAR_ERROR_LINE { // information about last error line that may condicion cu
 	CAR_EL_WARNING,
 	CAR_EL_CHILD_LAST,
 	CAR_EL_CHILD_NEXT,
+	CAR_EL_CHILD_SWAP,
 	CAR_EL_IGNORE
 };
 
@@ -54,7 +55,6 @@ struct compile_and_run_struct_single {
 	CAR_LAST_LINE error_line_flag; ///< flag for mxCompiler::ParseSomeErrorsOneLine
 	wxTreeItemId last_error_item; ///< ultima error/advertencia (para poner las "note:")
 	wxTreeItemId last_all_item; ///< ultima linea en la rama "toda la salida"
-	mxCompilerItemData *last_item_data;
 	wxArrayString full_output; ///< guarda toda la salida sin procesar		
 	wxString valgrind_cmd; ///< prefijo para la ejecucion con la llamada a valgrind
 	compile_and_run_struct_single(const compile_and_run_struct_single *o);

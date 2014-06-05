@@ -29,6 +29,7 @@
 #define EN_COMPOUT_WITHIN_THIS_CONTEXT ": within this context"
 #define EN_COMPOUT_NOTE ": note: "
 #define EN_COMPOUT_IN_FILE_INCLUDED_FROM "In file included from "
+#define EN_COMPOUT_IN_EXPANSION_OF_MACRO "in expansion of macro"
 
 //#define EN_COMPOUT_IN_PASSING_ARGUMENT ": in passing argument"
 //#define EN_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
@@ -97,7 +98,6 @@ compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
 	output_type=MXC_NULL;
 	process=NULL;
 	pid=0;
-	last_item_data=NULL;
 	valgrind_cmd=compiler->valgrind_cmd;
 	mxMutexCompiler.Lock();
 	prev=NULL;
@@ -346,7 +346,10 @@ CAR_ERROR_LINE mxCompiler::ParseSomeErrorsOneLine(compile_and_run_struct_single 
 	}
 	
 	// esto va antes de testear si es error o warning, porque ambos tests (por ejemplo, este y el de si es error) pueden dar verdaderos, y en ese caso debe primar este
-	if (ErrorLineIsChild(error_line)) return CAR_EL_CHILD_LAST;
+	if (ErrorLineIsChild(error_line)) {
+		if (error_line.Contains(EN_COMPOUT_NOTE)) return CAR_EL_CHILD_SWAP;
+		return CAR_EL_CHILD_LAST;
+	}
 	
 	// errores "fatales" (como cuando no encuentra los archivos que tiene que compilar)
 	if (error_line.Contains(EN_COMPOUT_FATAL_ERROR) || error_line.Contains(ES_COMPOUT_FATAL_ERROR)) {
@@ -434,17 +437,17 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 				compile_and_run->last_error_item_IsOk=false;
 				continue;
 			}
-		} else if (action==CAR_EL_CHILD_LAST) {
+		} else if (action==CAR_EL_CHILD_LAST||action==CAR_EL_CHILD_SWAP) {
 			if (!compile_and_run->last_error_item_IsOk && (num_warnings>config->Init.max_errors||num_errors>config->Init.max_errors)) 
 				continue;
 		}
 		
 		if (action==CAR_EL_ERROR||action==CAR_EL_WARNING) { // nuevo error o warning
 			if (action==CAR_EL_ERROR) { // nuevo error
-				compile_and_run->last_error_item=tree->AppendItem(errors,nice_error_line,4,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
+				compile_and_run->last_error_item=tree->AppendItem(errors,nice_error_line,4,-1,new mxCompilerItemData(error_line));
 				compile_and_run->last_error_item_IsOk=true;
 			} else { // nuevo warning
-				compile_and_run->last_error_item=tree->AppendItem(warnings,nice_error_line,3,-1,compile_and_run->last_item_data=new mxCompilerItemData(error_line));
+				compile_and_run->last_error_item=tree->AppendItem(warnings,nice_error_line,3,-1,new mxCompilerItemData(error_line));
 				compile_and_run->last_error_item_IsOk=true;
 			}
 			if (!compile_and_run->pending_error_lines.IsEmpty()) { // agregar los hijos que estaban pendientes
@@ -455,9 +458,18 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 				compile_and_run->pending_error_nices.Clear();
 				compile_and_run->pending_error_lines.Clear();
 			}
-		} else if (action==CAR_EL_CHILD_LAST) { // continua el último error
+		} else if (action==CAR_EL_CHILD_LAST||action==CAR_EL_CHILD_SWAP) { // continua el último error
 			if (compile_and_run->last_error_item_IsOk) {
-				tree->AppendItem(compile_and_run->last_error_item,nice_error_line,5,-1,new mxCompilerItemData(error_line));
+				wxTreeItemId it = tree->AppendItem(compile_and_run->last_error_item,nice_error_line,5,-1,new mxCompilerItemData(error_line));
+				if (action==CAR_EL_CHILD_SWAP) {
+					wxString schld=main_window->compiler_tree.treeCtrl->GetItemText(it);
+					wxString sprnt=main_window->compiler_tree.treeCtrl->GetItemText(compile_and_run->last_error_item);
+					main_window->compiler_tree.treeCtrl->SetItemText(it,sprnt);
+					main_window->compiler_tree.treeCtrl->SetItemText(compile_and_run->last_error_item,schld);
+					mxCompilerItemData &ichld=*((mxCompilerItemData*)main_window->compiler_tree.treeCtrl->GetItemData(it));
+					mxCompilerItemData &iprnt=*((mxCompilerItemData*)main_window->compiler_tree.treeCtrl->GetItemData(compile_and_run->last_error_item));
+					mxCompilerItemData iaux(ichld); ichld=iprnt; iprnt=iaux;
+				}
 			} else
 				compile_and_run->parsing_errors_was_ok=false;
 		} else if (action==CAR_EL_CHILD_NEXT) { // parte (hijos) del siguiente error
