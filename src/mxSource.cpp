@@ -1443,9 +1443,9 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				}
 			}
 			int p=WordStartPosition(e,true); int pos_key=p; // pos_key guarda la posición donde comienza la palabra a autocompletar
-			wxString key = GetTextRange(p,e+1);
-			if (last_failed_autocompletion.IsSameLocation(pos_key,key)) return; // no intentar autocompletar nuevamente si ya se intentó un caracter atrás
 			if (e-p+1>=config->Help.min_len_for_completion || chr==',' || chr=='(') {
+				wxString key = GetTextRange(p,e+1);
+				if (last_failed_autocompletion.IsSameLocation(pos_key,key)) return; // no intentar autocompletar nuevamente si ya se intentó un caracter atrás
 				s=GetStyleAt(p-1);
 				if (p && s==wxSTC_C_PREPROCESSOR && GetCharAt(p-1)=='#') {
 					code_helper->AutocompletePreprocesorDirective(this,key);
