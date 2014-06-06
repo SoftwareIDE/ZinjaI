@@ -3,6 +3,7 @@
 
 #include <wx/dialog.h>
 
+#ifndef __WIN32__
 struct LinuxTerminalInfo {
 	wxString name; ///< nombre para mostrar en el cuadro de preferencias
 	wxString test_command; ///< comando para probar si existe (usualmente ejecutable+" --version")
@@ -17,6 +18,7 @@ struct LinuxTerminalInfo {
 	static LinuxTerminalInfo *list;
 	static void Init();
 };
+#endif
 
 class wxCheckBox;
 class wxComboBox;

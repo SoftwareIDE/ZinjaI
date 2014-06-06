@@ -33,20 +33,26 @@
 
 static cfgStyles old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
 
+#ifndef __WIN32__
 int LinuxTerminalInfo::count=0;
 LinuxTerminalInfo *LinuxTerminalInfo::list=NULL;
 void LinuxTerminalInfo::Init() {
-	list = new LinuxTerminalInfo[9];
+	const int term_count=10;
+	list = new LinuxTerminalInfo[term_count];
 	count=0;
 	list[count++]=LinuxTerminalInfo("xterm","xterm -version","xterm -T \"${TITLE}\" -e");
+	list[count++]=LinuxTerminalInfo("xterm (+FreeType)","xterm -version","xterm -T \"${TITLE}\" -fa \"Liberation Mono\" -fs 12 -e");
 	list[count++]=LinuxTerminalInfo("lxterminal","lxterminal -version","lxterminal -T \"${TITLE}\" -e");
 	list[count++]=LinuxTerminalInfo("aterm","aterm --version","aterm -title \"${TITLE}\" -e");
 	list[count++]=LinuxTerminalInfo("roxterm","roxterm --help","roxterm --separate --hide-menubar -T \"${TITLE}\" -e");
 	list[count++]=LinuxTerminalInfo("xfce4-terminal","xfce4-terminal --version","xfce4-terminal --hide-menubar --hide-toolbar -T \"${TITLE}\" -x");
 	list[count++]=LinuxTerminalInfo("konsole (kde3)","konsole --version","konsole --nomenubar --notoolbar -T \"${TITLE}\" -e",false,"KDE: 3");
-	list[count++]=LinuxTerminalInfo("konsole (kde4)","konsole --version","konsole -e",false,"~KDE: 3");
 	list[count++]=LinuxTerminalInfo("mate-terminal","mate-terminal --version","mate-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x");
+	list[count++]=LinuxTerminalInfo("konsole (kde4)","konsole --version","konsole -e",true,"~KDE: 3");
 	list[count++]=LinuxTerminalInfo("gnome-terminal","gnome-terminal --version","gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x",true);
+#ifdef DEBUG
+	if (term_count!=count) wxMessageBox("LinuxTerminalInfo::Init: term_count!=count");
+#endif
 };
 bool LinuxTerminalInfo::Test() {
 	wxString out = utils->GetOutput(test_command);
@@ -58,6 +64,7 @@ bool LinuxTerminalInfo::Test() {
 	}
 	else return out.Length();
 }
+#endif
 
 static mxPreferenceWindow *preference_window=NULL;
 

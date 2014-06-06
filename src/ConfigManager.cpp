@@ -66,6 +66,7 @@ void ConfigManager::DoInitialChecks() {
 		else if (utils->GetOutput("thunar --version").Len())
 			Files.explorer_command = "thunar";
 	} 
+	
 	// elegir un terminal
 	if (Files.terminal_command=="<<sin configurar>>") { // tratar de detectar automaticamente un terminal adecuado
 		LinuxTerminalInfo::Init();
@@ -73,22 +74,28 @@ void ConfigManager::DoInitialChecks() {
 			if (LinuxTerminalInfo::list[i].Test()) {
 				Files.terminal_command = LinuxTerminalInfo::list[i].run_command;
 				if (LinuxTerminalInfo::list[i].warning) {
-					wxMessageBox(LANG1(CONFIG_TERMINAL_WARNING,"La aplicacion terminal que se ha encontrado instalada\n"
+					wxString chk_message; 
+					if (utils->GetOutput("apt-get --version").Len()) chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
+					int ans= mxMessageDialog(NULL,LANG1(CONFIG_TERMINAL_WARNING,"La aplicacion terminal que se ha encontrado instalada\n"
 						"es <{1}>. Algunas versiones de esta terminal pueden generar\n"
 						"problemas al intentar ejecutar un programa o proyecto. Si no logra\n"
 						"ejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\n"
 						"que compile, intente configurar otra terminal (menú Archivo->Preferencias...\n"
 						"pestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\n"
-						"recomendada es xterm).",LinuxTerminalInfo::list[i].name),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"));
+						"recomendada es xterm).",LinuxTerminalInfo::list[i].name),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
+					if (ans&mxMD_CHECKED) {
+						wxExecute(Files.terminal_command+"sudo apt-get install xterm");
+						Files.terminal_command = LinuxTerminalInfo::list[0].run_command;
+					}
 				}
 			}
 			break;
 		}
 		if (Files.terminal_command=="<<sin configurar>>") {
-			mxMessageDialog(NULL,LANG(CONFIG_NO_TERMINAL_FOUND,"No se ha encontrado una terminal conocida.\n"
-			                "Instale xterm, konsole, lxterminal o gnome-terminal;\n"
-							"luego configure el parametro \"Comando del Terminal\"\n"
-							"en la seccion \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING).ShowModal();
+			mxMessageDialog(NULL,LANG(CONFIG_NO_TERMINAL_FOUND,""
+							"No se ha encontrado una terminal conocida. Se recomienda instalar\n"
+			                "xterm; luego configure el parametro \"Comando del Terminal\" en la\n"
+							"seccion \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING).ShowModal();
 		}
 	}
 	// verificar si hay compilador

@@ -5,6 +5,7 @@
 #include "mxInspectionGrid.h" // por IG_COLS_COUNT
 #include "mxBacktraceGrid.h" // por BG_COLS_COUNT
 //#include "mxThreadGrid.h" // por TG_COLS_COUNT
+#include "mxCustomTools.h" // por MAX_CUSTOM_TOOLS
 
 #define CM_HISTORY_MAX_LEN 50
 
@@ -22,7 +23,6 @@
 #define CFG_GENERIC_WRITE(where,what) fil.AddLine(wxString(#what"=")<<where.what);
 #define CFG_GENERIC_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<what);
 #define CFG_TEXT_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<utils->Text2Line(what));
-#include "mxCustomTools.h"
 
 //! Elementos de la configuración relacionados a la depuración
 struct cfgDebug {
