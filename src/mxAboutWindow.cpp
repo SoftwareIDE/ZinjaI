@@ -32,7 +32,7 @@ mxAboutWindow::mxAboutWindow(wxWindow* parent) : wxDialog(parent, wxID_ANY, LANG
 	SetEscapeId(wxID_OK);
 	
 	wxString version(wxString(_T("ZinjaI-"))<<ARCHITECTURE
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 		<<_T("-debug")
 #endif
 		<<_T("-")<<VERSION);

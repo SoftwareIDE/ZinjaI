@@ -12,6 +12,7 @@
 #include "mxSizers.h"
 #include "Language.h"
 #include "mxGotoFileDialog.h"
+#include "MenusAndToolsConfig.h"
 
 BEGIN_EVENT_TABLE(mxGotoFunctionDialog, wxDialog)
 	EVT_BUTTON(mxID_EDIT_GOTO_FILE,mxGotoFunctionDialog::OnGotoFileButton)
@@ -122,14 +123,14 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 	parser->OnGotoDef(main_window->notebook_sources);
 	// select the item in symbols tree and ensure definition/declaration visibility in its mxSource (at this point should be the current one)
 	if (main_window->left_panels) {
-		if (main_window->menu.view_left_panels->IsChecked()) {
+		if (_menu_item(mxID_VIEW_LEFT_PANELS)->IsChecked()) {
 			main_window->left_panels->SetSelection(1);
 			main_window->symbols_tree.treeCtrl->EnsureVisible(tree_item);
 			main_window->symbols_tree.treeCtrl->ScrollTo(tree_item);
 			main_window->symbols_tree.treeCtrl->SelectItem(tree_item);
 		}
 	} else {
-		if (main_window->symbols_tree.menuItem->IsChecked()) {
+		if (_menu_item(mxID_VIEW_SYMBOLS_TREE)->IsChecked()) {
 			main_window->symbols_tree.treeCtrl->EnsureVisible(tree_item);
 			main_window->symbols_tree.treeCtrl->ScrollTo(tree_item);
 			main_window->symbols_tree.treeCtrl->SelectItem(tree_item);

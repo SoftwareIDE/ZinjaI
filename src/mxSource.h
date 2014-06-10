@@ -78,12 +78,12 @@ extern NavigationHistory navigation_history;
 class mxSource: public wxStyledTextCtrl {
 
 	class AutocompletionLocation {
-		int pos;
+		int pos, age;
 		wxString key;
 	public:
-		bool IsSameLocation(int p, const wxString &k) {
-			if (p==pos && k.StartsWith(key)) return true;
-			key=k; pos=p; return false;
+		bool IsSameLocation(int p, const wxString &k, int parser_age) {
+			if (p==pos && k.StartsWith(key) && parser_age==age) return true;
+			age=parser_age; key=k; pos=p; return false;
 		}
 		void Reset() { pos=-1; }
 	};

@@ -148,6 +148,8 @@ public:
 	wxTreeItemId item_macros;
 	wxTreeItemId item_globals;
 	
+	unsigned int data_age; ///< se incrementa cada vez que cambian los datos del parser, para desde afuera se pueda saber si luego de una consulta puede haber cambiado el resultado
+	
 	bool working;
 	bool follow_includes;
 	bool sort_items;

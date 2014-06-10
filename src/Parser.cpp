@@ -22,6 +22,7 @@
 Parser *parser;
 
 Parser::Parser (mxMainWindow *mainwin) {
+	data_age=0;
 	on_end = NULL;
 	wxString pd_aux;
 	symbol_tree=mainwin->symbols_tree.treeCtrl;
@@ -631,6 +632,7 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 		int progress_now=0;
 		bool async=false; // si un paso lanza un proceso asincrono, esta bandera lo indica, para cortar el loop y esperar el evento terminate de ese proceso
 		do {
+			data_age++;
 			list<parserAction>::iterator it=actions.begin();
 			parserAction pa=*it; actions.erase(it);
 			if (debug->debugging || should_stop) {

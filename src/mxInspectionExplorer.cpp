@@ -154,7 +154,7 @@ void mxInspectionExplorer::OnCloseButton(wxCommandEvent &evt) {
 
 //void mxInspectionExplorer::OnClose(wxCloseEvent &evt) {
 //	Destroy();
-//}
+// }
 
 void mxInspectionExplorer::OnItemExpanding(wxTreeEvent &event) {
 	wxTreeItemId item = event.GetItem();

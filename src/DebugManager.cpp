@@ -33,7 +33,7 @@
 #include "DebugPatcher.h"
 using namespace std;
 
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 #define DEBUG_MANAGER_LOG_TALK
 #define DEBUG_LOG_FILE "/mnt/rm/debug.log"
 #endif
@@ -67,7 +67,7 @@ DebugManager::~DebugManager() {
 }
 
 bool DebugManager::Start(bool update) {
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 	debug_log_file.Open(DEBUG_LOG_FILE,"w+");
 #endif
 	if (update && project->PrepareForBuilding()) { // ver si hay que recompilar antes
@@ -91,7 +91,7 @@ bool DebugManager::Start(bool update) {
 }
 
 bool DebugManager::Start(bool update, mxSource *source) {
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 	debug_log_file.Open(DEBUG_LOG_FILE,_T("w+"));
 #endif
 	if (source) {
@@ -312,7 +312,7 @@ void DebugManager::ResetDebuggingStuff() {
 
 
 bool DebugManager::Attach(long apid, mxSource *source) {
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 	debug_log_file.Open(DEBUG_LOG_FILE,"w+");
 #endif
 	mxOSD osd(main_window,LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."));
@@ -388,7 +388,7 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 **/
 
 bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 	debug_log_file.Open(DEBUG_LOG_FILE,"w+");
 #endif
 	
@@ -493,7 +493,7 @@ void DebugManager::HowDoesItRuns() {
 		if (st_pos==wxNOT_FOUND) {
 			_IF_DEBUGMODE(wxMessageBox(wxString("HowDoesItRuns answer: ")<<ans));
 			SetStateText(state_text);
-	#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 			wxString debug_log_string; debug_log_string<<"ERROR RUNNING: "<<ans;
 			debug_log_file.Write(debug_log_string);
 			debug_log_file.Flush();
@@ -591,7 +591,7 @@ void DebugManager::HowDoesItRuns() {
 			mark = mxSTC_MARK_STOP;
 			state_text=LANG(DEBUG_STATUS_TERMINAL_CLOSED,"La terminal del programa ha sido cerrada");
 		} 
-	#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 		else{ 
 			wxString debug_log_string; debug_log_string<<"NEW REASON: "<<ans;
 			debug_log_file.Write(debug_log_string);
@@ -1048,7 +1048,7 @@ wxString DebugManager::WaitAnswer() {
 				buffer[i++]=buffer[c++];
 			buffer[i]='\0';
 
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 		wxString debug_log_string; debug_log_string<<"\n<<< "<<ret;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1093,7 +1093,7 @@ wxString DebugManager::WaitAnswer() {
 
 wxString DebugManager::SendCommand(wxString command) {
 	waiting = true;
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<command;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1107,7 +1107,7 @@ wxString DebugManager::SendCommand(wxString command) {
 
 wxString DebugManager::SendCommand(wxString command, int i) {
 	waiting = true;
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<command<<i;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1121,7 +1121,7 @@ wxString DebugManager::SendCommand(wxString command, int i) {
 
 wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 	waiting = true;
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<cmd1<<cmd2;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1430,7 +1430,7 @@ bool DebugManager::Return(wxString what) {
 
 void DebugManager::ProcessKilled() {
 	delete debug_patcher;
-#ifdef DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_MANAGER_LOG_TALK
 	debug_log_file.Close();
 #endif
 	MarkCurrentPoint();
@@ -2150,7 +2150,7 @@ bool DebugManager::BreakCompoundInspection(int n) {
 //	if (add_comillas)
 //		str.Append('\"');
 //	return str;
-//}
+// }
 
 
 bool DebugManager::CreateVO(wxString expr, wxString &name, wxString &type, int &children) {
@@ -2507,7 +2507,7 @@ void DebugManager::SetBreakPointEnable(int num, bool enable, bool once) {
 //		}
 //	}
 //	return NULL;
-//}
+// }
 
 int DebugManager::GetBreakHitCount(int num) {
 	long l=0;

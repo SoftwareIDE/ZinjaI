@@ -143,7 +143,7 @@ wxString mxArt::GetSkinImagePath(wxString fname, bool replace_if_missing) {
 	static wxString skin_path=DIR_PLUS_FILE(config->zinjai_dir,config->Files.skin_dir);
 	static bool is_default = default_path==skin_path;
 	if (is_default) {
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 		if (!wxFileName::FileExists(DIR_PLUS_FILE(default_path,fname)))
 			cerr<<"MISSING IMAGE: "<<DIR_PLUS_FILE(default_path,fname)<<endl;
 #endif
@@ -151,13 +151,13 @@ wxString mxArt::GetSkinImagePath(wxString fname, bool replace_if_missing) {
 	} else {
 		wxString fskin = DIR_PLUS_FILE(skin_path,fname);
 		if (!replace_if_missing || wxFileName::FileExists(fskin)) {
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 			if (!wxFileName::FileExists(fskin))
 				cerr<<"MISSING IMAGE: "<<fskin<<endl;
 #endif
 			return fskin;
 		} else {
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 			if (!wxFileName::FileExists(DIR_PLUS_FILE(default_path,fname)))
 				cerr<<"MISSING IMAGE: "<<DIR_PLUS_FILE(default_path,fname)<<endl;
 #endif

@@ -168,7 +168,7 @@ const Toolchain &Toolchain::GetInfo (const wxString &fname) {
 	}
 	if (fname!=config->Files.toolchain) // if not found, returns default one
 		return GetInfo(config->Files.toolchain);
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 		wxMessageBox(wxString("invalid toolchain fname: ")<<fname);
 #endif
 	return current_toolchain; // this should never reach this point

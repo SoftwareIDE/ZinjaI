@@ -37,11 +37,11 @@ static cfgStyles old_config_styles; // aquí para evitar tener que hacer el inclu
 int LinuxTerminalInfo::count=0;
 LinuxTerminalInfo *LinuxTerminalInfo::list=NULL;
 void LinuxTerminalInfo::Init() {
-	const int term_count=10;
+	const int term_count=9;
 	list = new LinuxTerminalInfo[term_count];
 	count=0;
-	list[count++]=LinuxTerminalInfo("xterm","xterm -version","xterm -T \"${TITLE}\" -e");
-	list[count++]=LinuxTerminalInfo("xterm (+FreeType)","xterm -version","xterm -T \"${TITLE}\" -fa \"Liberation Mono\" -fs 12 -e");
+//	list[count++]=LinuxTerminalInfo("xterm","xterm -version","xterm -T \"${TITLE}\" -e");
+	list[count++]=LinuxTerminalInfo("xterm","xterm -version","xterm -T \"${TITLE}\" -fa \"Liberation Mono\" -fs 12 -e");
 	list[count++]=LinuxTerminalInfo("lxterminal","lxterminal -version","lxterminal -T \"${TITLE}\" -e");
 	list[count++]=LinuxTerminalInfo("aterm","aterm --version","aterm -title \"${TITLE}\" -e");
 	list[count++]=LinuxTerminalInfo("roxterm","roxterm --help","roxterm --separate --hide-menubar -T \"${TITLE}\" -e");
@@ -50,7 +50,7 @@ void LinuxTerminalInfo::Init() {
 	list[count++]=LinuxTerminalInfo("mate-terminal","mate-terminal --version","mate-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x");
 	list[count++]=LinuxTerminalInfo("konsole (kde4)","konsole --version","konsole -e",true,"~KDE: 3");
 	list[count++]=LinuxTerminalInfo("gnome-terminal","gnome-terminal --version","gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x",true);
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	if (term_count!=count) wxMessageBox("LinuxTerminalInfo::Init: term_count!=count");
 #endif
 };
@@ -58,7 +58,7 @@ bool LinuxTerminalInfo::Test() {
 	wxString out = utils->GetOutput(test_command);
 	if (extra_test.Len()) {
 		if (extra_test[0]=='~')
-			return !out.Contains(extra_test.Mid(1));
+			return out.Len() && !out.Contains(extra_test.Mid(1));
 		else
 			return out.Contains(extra_test);
 	}
@@ -714,10 +714,10 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
 	wxCommandEvent evt;
 	bool toolbar_changed=false;
-#define _update_toolbar_visibility_0(name) \
+#define _update_toolbar_visibility_0(NAME,name) \
 	if (toolbars_wich_##name->GetValue()!=config->Toolbars.positions.name.visible) { toolbar_changed=true; \
-	main_window->OnToggleToolbar(main_window->menu.view_toolbar_##name,main_window->toolbar_##name,config->Toolbars.positions.name.visible,false); }
-#define _update_toolbar_visibility(name) _update_toolbar_visibility_0(name); \
+	main_window->OnToggleToolbar(mxID_VIEW_TOOLBAR_##NAME,main_window->toolbar_##name,config->Toolbars.positions.name.visible,false); }
+#define _update_toolbar_visibility(NAME,name) _update_toolbar_visibility_0(NAME,name); \
 	{ int s=toolbars_side_##name->GetSelection(); \
 	if ( (s==0&&!config->Toolbars.positions.name.top) || (s==1&&!config->Toolbars.positions.name.left) || (s==2&&!config->Toolbars.positions.name.right) ) { \
 		if (s==2) { config->Toolbars.positions.name.right=true; config->Toolbars.positions.name.left=config->Toolbars.positions.name.top=false; } \
@@ -725,15 +725,15 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		else { config->Toolbars.positions.name.top=true; config->Toolbars.positions.name.left=config->Toolbars.positions.name.right=false; } \
 		main_window->CreateToolbars(main_window->toolbar_##name,true); toolbar_changed=true; } \
 	}
-	_update_toolbar_visibility(file);
-	_update_toolbar_visibility(edit);
-	_update_toolbar_visibility(view);
-	_update_toolbar_visibility(run);
-	_update_toolbar_visibility(debug);
-	_update_toolbar_visibility(tools);
-	_update_toolbar_visibility(misc);
-	_update_toolbar_visibility_0(find);
-	if (project) { _update_toolbar_visibility_0(project); } else config->Toolbars.positions.project.visible=toolbars_wich_project->GetValue();
+	_update_toolbar_visibility(FILE,file);
+	_update_toolbar_visibility(EDIT,edit);
+	_update_toolbar_visibility(VIEW,view);
+	_update_toolbar_visibility(RUN,run);
+	_update_toolbar_visibility(DEBUG,debug);
+	_update_toolbar_visibility(TOOLS,tools);
+	_update_toolbar_visibility(MISC,misc);
+	_update_toolbar_visibility_0(FIND,find);
+	if (project) { _update_toolbar_visibility_0(PROJECT,project); } else config->Toolbars.positions.project.visible=toolbars_wich_project->GetValue();
 	if (toolbar_icon_size->GetValue().BeforeFirst('x').ToLong(&l)) {
 		if (l!=config->Toolbars.icon_size) {
 			toolbar_changed=true;
@@ -845,7 +845,7 @@ void mxPreferenceWindow::OnHelpButton(wxCommandEvent &event){
 //	wxDirDialog dlg(this,_T("Directorio de binarios de MinGW:"),files_mingw_dir->GetValue());
 //	if (wxID_OK==dlg.ShowModal())
 //		files_mingw_dir->SetValue(dlg.GetPath());
-//}
+// }
 
 #else
 

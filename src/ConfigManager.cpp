@@ -559,6 +559,8 @@ bool ConfigManager::Load() {
 			Help.autocomp_indexes+=",AAA_Palabras_Reservadas_11";
 	}
 	
+	if (Init.version<20140606 && Files.terminal_command=="xterm -T \"${TITLE}\" -e") Files.terminal_command="xterm -T \"${TITLE}\" -fa \"Liberation Mono\" -fs 12 -e";
+		
 	fil.Close();
 	if (last_files.GetCount()) {
 		int ps=0, pp=0;
@@ -641,7 +643,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("fullpath_on_project_tree",Init.fullpath_on_project_tree);
 	CFG_BOOL_WRITE_DN("beautify_compiler_errors",Init.beautify_compiler_errors);
 	CFG_GENERIC_WRITE_DN("colour_theme",Init.colour_theme);
-	fil.AddLine(_(""));
+	fil.AddLine("");
 
 	fil.AddLine("[Debug]");
 	CFG_BOOL_WRITE_DN("allow_edition",Debug.allow_edition);
@@ -664,7 +666,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
 	for(unsigned int i=0;i<Debug.inspection_improving_template_from.GetCount();i++)
 		CFG_GENERIC_WRITE_DN("inspection_improving_template",Debug.inspection_improving_template_from[i]+"|"+Debug.inspection_improving_template_to[i]);
-	fil.AddLine(_(""));
+	fil.AddLine("");
 	
 	fil.AddLine("[Styles]");
 	CFG_GENERIC_WRITE_DN("print_size",Styles.print_size);

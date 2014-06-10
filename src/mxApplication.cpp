@@ -8,6 +8,7 @@
 #include <wx/thread.h>
 #include "mxIconInstaller.h"
 #include <wx/log.h>
+#include "MenusAndToolsConfig.h"
 
 IMPLEMENT_APP(mxApplication)
 
@@ -37,7 +38,7 @@ using namespace std;
 
 mxApplication *app;
 
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 wxLongLong start_time = wxGetLocalTimeMillis();
 wxLongLong aux_start_time;
 #endif
@@ -174,7 +175,7 @@ bool mxApplication::OnInit() {
 	SetTopWindow(main_window);
 	
 #if !defined(__WIN32__) && !defined(__APPLE__)
-//#ifdef DEBUG
+//#ifdef _ZINJAI_DEBUG
 	if (config->first_run) new mxIconInstaller(true);
 //#else
 //	if (config->first_run && 
@@ -231,8 +232,8 @@ bool mxApplication::OnInit() {
 	if ( (project || main_window->notebook_sources->GetPageCount()>0) && config->Init.show_beginner_panel && !config->Init.autohide_panels) {
 		if (config->Init.show_beginner_panel && !beginner_panel) {
 			beginner_panel = new mxBeginnerPanel(main_window);
-			main_window->aui_manager.InsertPane(beginner_panel, wxAuiPaneInfo().Name(_T("beginner_panel")).Caption(_T("Panel de Asistencias")).Right().Layer(0).Show(), wxAUI_INSERT_ROW);
-			main_window->menu.view_beginner_panel->Check(true);
+			main_window->aui_manager.InsertPane(beginner_panel, wxAuiPaneInfo().Name("beginner_panel").Caption("Panel de Asistencias").Right().Layer(0).Show(), wxAUI_INSERT_ROW);
+			_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(true);
 			main_window->aui_manager.Update();
 		}
 		

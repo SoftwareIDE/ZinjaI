@@ -61,7 +61,7 @@ struct compile_and_run_struct_single {
 	compile_and_run_struct_single(const char *name);
 	~compile_and_run_struct_single();
 	compile_and_run_struct_single *next, *prev;
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	const char* mname;
 	static int count;
 #endif

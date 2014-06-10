@@ -68,14 +68,14 @@ public:
 	mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
 	
 	~mxMainWindow();
-private:
-	void PopulateMenuFile(const wxString &ipre);
-	void PopulateMenuEdit(const wxString &ipre);
-	void PopulateMenuView(const wxString &ipre);
-	void PopulateMenuRun(const wxString &ipre);
-	void PopulateMenuDebug(const wxString &ipre);
-	void PopulateMenuTools(const wxString &ipre);
-	void PopulateMenuHelp(const wxString &ipre);
+//private:
+//	void PopulateMenuFile(const wxString &ipre);
+//	void PopulateMenuEdit(const wxString &ipre);
+//	void PopulateMenuView(const wxString &ipre);
+//	void PopulateMenuRun(const wxString &ipre);
+//	void PopulateMenuDebug(const wxString &ipre);
+//	void PopulateMenuTools(const wxString &ipre);
+//	void PopulateMenuHelp(const wxString &ipre);
 public:
 	void CreateMenues();
 	void CreateToolbars(wxToolBar *wich_one=NULL, bool delete_old=false);
@@ -135,7 +135,7 @@ public:
 	void OnViewLineWrap (wxCommandEvent &event);
 	void OnViewCodeColours (wxCommandEvent &event);
 	void OnViewCodeStyle (wxCommandEvent &event);
-	void OnToggleToolbar(wxMenuItem *menu_item, wxToolBar *toolbar, bool &config_entry, bool update_aui=true);
+	void OnToggleToolbar(int menu_item_id, wxToolBar *toolbar, bool &config_entry, bool update_aui=true);
 	void OnViewToolbarProject (wxCommandEvent &event);
 	void OnViewToolbarTools (wxCommandEvent &event);
 	void OnViewToolbarView (wxCommandEvent &event);
@@ -402,7 +402,7 @@ public:
 	mxSource *IsOpen (wxTreeItemId tree_item);
 	bool CloseSource(int i);
 	bool CloseSource(mxSource *src);
-	void UpdateInHistory(wxString filename);
+	void UpdateInHistory(wxString filename, bool is_project);
 	
 	void UpdateCustomTools(bool for_project);
 
@@ -414,8 +414,8 @@ public:
 	void LoadInQuickHelpPanel(wxString file, bool hide_compiler_tree=true); ///< carga una pagina desde un archivo en el panel de ayuda rápida y lo muestra
 	
 private:
-	void SetMenusForDebugging(bool debug_mode);
-	void SetMenusForProject(bool project_mode);
+//	void SetMenusForDebugging(bool debug_mode);
+//	void SetMenusForProject(bool project_mode);
 public:
 	void PrepareGuiForDebugging(bool debug_mode);
 	void PrepareGuiForProject(bool project_mode);
@@ -449,14 +449,14 @@ public:
 		bool show_only_sources;
 		wxString path;
 		wxTreeCtrl *treeCtrl;
-		wxMenuItem *menuItem;
+//		wxMenuItem *menuItem;
 		wxTreeItemId selected_item, root;
 	} explorer_tree;
 	
 	//! Componentes del árbol de proyecto
 	struct project_tree_struct {
 		wxTreeCtrl *treeCtrl;
-		wxMenuItem *menuItem;
+//		wxMenuItem *menuItem;
 		wxTreeItemId selected_item, selected_parent;
 		wxTreeItemId root ,sources, headers, others;
 	} project_tree;
@@ -464,7 +464,7 @@ public:
 	//! Componentes del árbol de resultados de la compilación
 	struct compiler_tree_struct {
 		wxTreeCtrl *treeCtrl;
-		wxMenuItem *menuItem;
+//		wxMenuItem *menuItem;
 		wxTreeItemId root, state, errors, warnings, all;
 	} compiler_tree;
 	//! Componentes del árbol de resultados de la compilación
@@ -475,94 +475,10 @@ public:
 	//! Componentes del árbol de simbolos
 	struct symbols_tree_struct {
 		wxTreeCtrl *treeCtrl;
-		wxMenuItem *menuItem;
+//		wxMenuItem *menuItem;
 	} symbols_tree; 
 
 	wxAuiManager aui_manager;
-
-	//! Componentes de la barra de menúes de la ventana principal
-	struct menu_struct {
-		wxMenuBar *menu;
-		wxMenu *file;
-		wxMenu *edit;
-		wxMenu *run;
-		wxMenu *help;
-		wxMenu *tools;
-		wxMenu *view;
-		wxMenuItem *file_save_project;
-		wxMenuItem *file_close_project;
-		wxMenuItem *file_project_config;
-		wxMenu *file_source_recent;
-		wxMenu *file_project_recent;
-		wxMenuItem **file_source_history;
-		wxMenuItem **file_project_history;
-		wxMenuItem *run_stop;
-		wxMenuItem *run_build;
-		wxMenuItem *run_run;
-		wxMenuItem *run_compile;
-		wxMenuItem *run_clean;
-		wxMenuItem *tools_makefile;
-		wxMenuItem *tools_proy_graph;
-		wxMenuItem *tools_stats;
-		wxMenuItem *tools_doxygen;
-		wxMenuItem *tools_wxfb;
-		wxMenuItem *tools_cppcheck;
-		wxMenuItem *tools_wxfb_config;
-		wxMenuItem *tools_wxfb_regen;
-		wxMenuItem *tools_wxfb_inherit;
-		wxMenuItem *tools_wxfb_update_inherit;
-		wxMenuItem *tools_project_tools;
-		wxMenu *tools_custom_menu;
-		wxMenuItem **tools_custom_item;
-		wxMenu *debug;
-		wxMenuItem *debug_run;
-		wxMenuItem *debug_attach;
-		wxMenuItem *debug_pause;
-#if !defined(_WIN32) && !defined(__WIN32__)
-		wxMenuItem *debug_patch;
-		wxMenuItem *debug_load_core_dump;
-		wxMenuItem *debug_generate_core_dump;
-#endif
-		wxMenuItem *debug_continue;
-		wxMenuItem *debug_stop;
-		wxMenuItem *debug_threadlist;
-		wxMenuItem *debug_backtrace;
-		wxMenuItem *debug_inspect;
-		wxMenuItem *debug_step_in;
-		wxMenuItem *debug_step_out;
-		wxMenuItem *debug_step_over;
-		wxMenuItem *debug_return;
-		wxMenuItem *debug_jump;
-		wxMenuItem *debug_run_until;
-		wxMenuItem *debug_function_breakpoint;
-		wxMenuItem *debug_list_breakpoints;
-		wxMenuItem *debug_toggle_breakpoint;
-		wxMenuItem *debug_list_watchpoints;
-		wxMenuItem *debug_inverse_execution;
-		wxMenuItem *debug_enable_inverse_execution;
-		wxMenuItem *debug_insert_watchpoint;
-		wxMenuItem *debug_set_signals;
-		wxMenuItem *debug_send_signal;
-		wxMenuItem *debug_gdb_command;
-		wxMenuItem *view_left_panels;
-		wxMenuItem *view_fullscreen;
-		wxMenuItem *view_white_space;
-		wxMenuItem *view_line_wrap;
-		wxMenuItem *view_code_style;
-		wxMenuItem *view_toolbar_view;
-		wxMenuItem *view_toolbar_debug;
-		wxMenuItem *view_toolbar_project;
-		wxMenuItem *view_toolbar_tools;
-		wxMenuItem *view_toolbar_file;
-		wxMenuItem *view_toolbar_edit;
-		wxMenuItem *view_toolbar_run;
-		wxMenuItem *view_toolbar_misc;
-		wxMenuItem *view_toolbar_find;
-		wxMenuItem *view_beginner_panel;
-		wxMenuItem *tools_gprof_dot;
-		wxMenuItem *tools_gprof_fdp;
-		wxMenuItem *file_open;
-	} menu;
 
 	wxTimer *parser_timer;
 
@@ -574,7 +490,7 @@ public:
 	wxAuiNotebook *CreateLeftPanels();
 	void OnNotebookPanelsChanged(wxAuiNotebookEvent& event);
 	
-	wxMenuItem *view_quick_help;
+//	wxMenuItem *view_quick_help;
 
 	wxHtmlWindow* quick_help;
 	wxHtmlWindow* CreateQuickHelp(wxWindow* parent = NULL);

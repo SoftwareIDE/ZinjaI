@@ -64,7 +64,7 @@ void mxThreadGrid::OnDblClick(wxGridEvent &event) {
 //		}
 //		debug->SelectThread(GetCellValue(r,TG_COL_ID));
 //	}
-//}
+// }
 
 void mxThreadGrid::OnKey(wxKeyEvent &event) {
 	int r = GetGridCursorRow();
@@ -110,7 +110,7 @@ void mxThreadGrid::OnKey(wxKeyEvent &event) {
 //	menu.AppendSeparator();
 //	menu.Append(mxID_Thread_UPDATE,_T("Actualizar"));
 //	PopupMenu(&menu);
-//}
+// }
 
 void mxThreadGrid::OnResize(wxSizeEvent &evt) {
 	int w;
@@ -143,7 +143,7 @@ void mxThreadGrid::OnColResize(wxGridSizeEvent &evt) {
 //	menu.AppendCheckItem(mxID_COL_ID+TG_COL_LINE,_T("Encoger  Columna \"Linea\""))->Check(!cols_visibles[TG_COL_LINE]);
 //	menu.AppendCheckItem(mxID_COL_ID+TG_COL_ARGS,_T("Encoger Columna \"Argumentos\""))->Check(!cols_visibles[TG_COL_ARGS]);
 //	PopupMenu(&menu);
-//}
+// }
 //
 //void mxThreadGrid::OnShowHideCol(wxCommandEvent &evt) {
 //	int cn=evt.GetId()-mxID_COL_ID;
@@ -166,7 +166,7 @@ void mxThreadGrid::OnColResize(wxGridSizeEvent &evt) {
 //			SetColSize(i,int(cols_sizes[i]));
 //		}
 //	Refresh();
-//}
+// }
 
 void mxThreadGrid::SetData(int row, wxString id, wxString func, wxString file, wxString line) {
 	if (row==GetNumberRows()) InsertRows(GetNumberRows(),1);

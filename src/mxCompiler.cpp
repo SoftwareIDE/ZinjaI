@@ -54,7 +54,7 @@
 //#define ES_COMPOUT_IN_PASSING_ARGUMENT ": en el paso del argumento"
 //#define ES_COMPOUT_FORWARD_DECLARATION_OF ": forward declaration of "
 
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 #include<iostream>
 #include <cstdlib>
 using namespace std;
@@ -74,7 +74,7 @@ static bool EnsureCompilerNotRunning() {
 
 compile_and_run_struct_single::compile_and_run_struct_single(const compile_and_run_struct_single *o) {
 	*this=*o;
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	cerr<<"compile_and_run: *"<<mname<<endl;
 	count++;
 #endif
@@ -88,7 +88,7 @@ compile_and_run_struct_single::compile_and_run_struct_single(const compile_and_r
 
 compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
 	error_line_flag=CAR_LL_NULL;
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	mname=name;
 	cerr<<"compile_and_run: +"<<name<<endl;
 	count++;
@@ -119,7 +119,7 @@ compile_and_run_struct_single::~compile_and_run_struct_single() {
 		for (unsigned int i=0;i<full_output.GetCount();i++)
 			compiler->full_output.Add(full_output[i]);
 	}
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	cerr<<"compile_and_run: -"<<mname<<endl;
 	count--;
 #endif
@@ -133,14 +133,14 @@ wxString compile_and_run_struct_single::GetInfo() {
 	if (linking) info<<"l";
 	if (for_debug) info<<"d";
 	if (run_after_compile) info<<"r";
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	info<<" "<<mname;
 	info<<" "<<step_label;
 #endif
 	return info;
 }
 
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG 
 int compile_and_run_struct_single::count=0;
 #endif
 

@@ -15,6 +15,7 @@
 #include "Parser.h"
 #include "mxWelcomePanel.h"
 #include "Language.h"
+#include "MenusAndToolsConfig.h"
 
 BEGIN_EVENT_TABLE(mxErrorRecovering, wxDialog)
 	
@@ -79,10 +80,6 @@ mxErrorRecovering::mxErrorRecovering() : wxDialog(main_window, wxID_ANY, LANG(ER
 	
 }
 
-
-mxErrorRecovering::~mxErrorRecovering() {
-}
-
 void mxErrorRecovering::OnAllButton(wxCommandEvent &evt) {
 	for (unsigned int i=0;i<files.GetCount();i++) {
 		mxSource *src =	main_window->OpenFile(DIR_PLUS_FILE(config->home_dir,files[i]));
@@ -124,8 +121,8 @@ void mxErrorRecovering::OnHelpButton(wxCommandEvent &evt) {
 
 
 bool mxErrorRecovering::RecoverSomething() {
-	if (!wxFileName::FileExists(DIR_PLUS_FILE(config->home_dir,_T("recovery_log")))) return false;
-	if (wxFileName::FileExists(DIR_PLUS_FILE(config->home_dir,_T("kboom.zpr")))) {
+	if (!wxFileName::FileExists(DIR_PLUS_FILE(config->home_dir,"recovery_log"))) return false;
+	if (wxFileName::FileExists(DIR_PLUS_FILE(config->home_dir,"kboom.zpr"))) {
 		if (mxMD_YES == mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_MESSAGE,""
 			"ZinjaI no se cerro correctamente durante su ultima ejecucion.\n"
 			"El proyecto en el que trabajaba fue guardado automaticamente.\n"
@@ -136,16 +133,16 @@ bool mxErrorRecovering::RecoverSomething() {
 			),LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos"), mxMD_YES_NO|mxMD_WARNING).ShowModal()) {
 				wxTextFile tf(DIR_PLUS_FILE(config->home_dir,_T("kboom.zpr")));
 				tf.Open();
-				if (wxFileName::FileExists(tf[0])) wxCopyFile(tf[0],tf[0]+_T(".bakcup"));
-				if (!wxFileName::FileExists(tf[0]+_T(".kaboom"))) {
+				if (wxFileName::FileExists(tf[0])) wxCopyFile(tf[0],tf[0]+".bakcup");
+				if (!wxFileName::FileExists(tf[0]+".kaboom")) {
 					mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_PROBLEM,"Ha ocurrido un error al intentar recuperar el proyecto."),LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos"),mxMD_OK|mxMD_ERROR).ShowModal();
 					return true;
 				}
-				project = new ProjectManager(tf[0]+_T(".kaboom"));
+				project = new ProjectManager(tf[0]+".kaboom");
 				project->filename=tf[1];
 				tf.Close();
 				// abrir los archivos recuperados
-				wxTextFile fil(DIR_PLUS_FILE(config->home_dir,_T("recovery_log")));	
+				wxTextFile fil(DIR_PLUS_FILE(config->home_dir,"recovery_log"));
 				fil.Open();
 				fil.GetFirstLine();
 				wxString str;
@@ -169,19 +166,17 @@ bool mxErrorRecovering::RecoverSomething() {
 			if (welcome_panel) main_window->ShowWelcome(false);
 			
 			if (main_window->left_panels) {
-				main_window->menu.view_left_panels->Check(true);
+				_menu_item(mxID_VIEW_LEFT_PANELS)->Check(true);
 				main_window->aui_manager.GetPane(main_window->left_panels).Show();
 				main_window->left_panels->SetSelection(config->Init.prefer_explorer_tree?2:0);
 			} else {
+				_menu_item(mxID_VIEW_EXPLORER_TREE)->Check(config->Init.prefer_explorer_tree);
+				_menu_item(mxID_VIEW_PROJECT_TREE)->Check(!config->Init.prefer_explorer_tree);
 				if (config->Init.prefer_explorer_tree) {
-					main_window->explorer_tree.menuItem->Check(true);
 					main_window->aui_manager.GetPane(main_window->explorer_tree.treeCtrl).Show();
-					main_window->project_tree.menuItem->Check(false);
 					main_window->aui_manager.GetPane(main_window->project_tree.treeCtrl).Hide();
 				} else {
-					main_window->explorer_tree.menuItem->Check(false);
 					main_window->aui_manager.GetPane(main_window->explorer_tree.treeCtrl).Hide();
-					main_window->project_tree.menuItem->Check(true);
 					main_window->aui_manager.GetPane(main_window->project_tree.treeCtrl).Show();
 					main_window->project_tree.treeCtrl->ExpandAll();
 				}
@@ -189,8 +184,8 @@ bool mxErrorRecovering::RecoverSomething() {
 			// parsear los archivos recuperados
 			parser->ParseProject();
 		}
-		wxRemoveFile(DIR_PLUS_FILE(config->home_dir,_T("kboom.zpr")));
-		wxRemoveFile(DIR_PLUS_FILE(config->home_dir,_T("recovery_log")));
+		wxRemoveFile(DIR_PLUS_FILE(config->home_dir,"kboom.zpr"));
+		wxRemoveFile(DIR_PLUS_FILE(config->home_dir,"recovery_log"));
 	} else new mxErrorRecovering;
 	return true;
 }

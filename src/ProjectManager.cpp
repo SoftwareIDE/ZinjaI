@@ -34,6 +34,7 @@
 #include "CodeHelper.h"
 #include "execution_workaround.h"
 #include "mxWxfbInheriter.h"
+#include "MenusAndToolsConfig.h"
 using namespace std;
 
 #define ICON_LINE(filename) (wxString(_T("0 ICON \""))<<filename<<"\"")
@@ -2758,10 +2759,9 @@ void ProjectManager::FixTemplateData(wxString name) {
 
 void ProjectManager::ActivateWxfb() {
 	GetWxfbConfiguration()->activate_integration=true;
-	main_window->menu.tools_wxfb_config->Enable(true);
-	main_window->menu.tools_wxfb_regen->Enable(true);
-	main_window->menu.tools_wxfb_inherit->Enable(true);
-	main_window->menu.tools_wxfb_update_inherit->Enable(true);
+	_menu_item(mxID_TOOLS_WXFB_REGEN)->Enable(true);
+	_menu_item(mxID_TOOLS_WXFB_INHERIT_CLASS)->Enable(true);
+	_menu_item(mxID_TOOLS_WXFB_UPDATE_INHERIT)->Enable(true);
 	WxfbGetFiles();
 	config->CheckWxfbPresent();
 }
@@ -3502,7 +3502,7 @@ wxString ProjectManager::GetTempFolderEx (wxString path, bool create) {
 **/
 void ProjectManager::SetEnvironment (bool set, bool for_running) {
 	
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	if (for_running) {
 		static bool last_was_for_set=false;
 		if (set==last_was_for_set) wxMessageBox("WRONG USE OF ProjectManager::SetEnvironment");

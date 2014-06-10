@@ -42,7 +42,7 @@ class wxComboBox;
 class wxButton;
 class wxBitmapButton;
 
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	extern wxString debug_string;
 	#define DEBUG_QH_SET(lala) debug_string=""; debug_string<<utils->ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
 	#define DEBUG_QH_ADD(lala) debug_string<<utils->ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(debug_string);

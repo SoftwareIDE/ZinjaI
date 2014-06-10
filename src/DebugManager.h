@@ -128,7 +128,7 @@ class DebugManager {
 	friend class DebuggerInspection;
 	friend class DebugPatcher;
 	friend class mxGdbCommandsPanel;
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	wxFFile debug_log_file;
 #endif
 private:

@@ -42,6 +42,7 @@
 #include "mxGprofOutput.h"
 #include "execution_workaround.h"
 #include "mxWxfbConfigDialog.h"
+#include "MenusAndToolsConfig.h"
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -562,14 +563,14 @@ void mxMainWindow::OnToolsGprofSet (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsGprofDot (wxCommandEvent &event) {
-	menu.tools_gprof_dot->Check(true);
-	menu.tools_gprof_fdp->Check(false);
+	_menu_item(mxID_TOOLS_GPROF_DOT)->Check(true);
+	_menu_item(mxID_TOOLS_GPROF_FDP)->Check(false);
 	config->Init.graphviz_dot=true;
 }
 
 void mxMainWindow::OnToolsGprofFdp (wxCommandEvent &event) {
-	menu.tools_gprof_dot->Check(false);
-	menu.tools_gprof_fdp->Check(true);
+	_menu_item(mxID_TOOLS_GPROF_DOT)->Check(false);
+	_menu_item(mxID_TOOLS_GPROF_FDP)->Check(true);
 	config->Init.graphviz_dot=false;	
 }
 

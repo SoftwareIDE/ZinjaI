@@ -13,13 +13,13 @@ BEGIN_EVENT_TABLE(mxFlowWindow, wxFrame)
 END_EVENT_TABLE()
 
 
-mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_ANY,_(""),wxDefaultPosition,wxSize(500,500)) {
+mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_ANY,"",wxDefaultPosition,wxSize(500,500)) {
 	source = src;
 	int s,ps = source->GetSelectionStart()<source->GetSelectionEnd()?source->GetSelectionStart():source->GetSelectionEnd();
 	int p=ps;
 	if (source->GetCharAt(p)=='}') {
 			if ((p=source->BraceMatch(p))==wxSTC_INVALID_POSITION) {
-				mxMessageDialog(_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog("El cursor no se encuentra en una funcion o la sintaxis no es correcta","Error",mxMD_OK|mxMD_ERROR).ShowModal();
 				Destroy();
 				return;
 			}
@@ -28,7 +28,7 @@ mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_A
 		if (FC_IS('}')) {
 			p=source->BraceMatch(p);
 			if (p==wxSTC_INVALID_POSITION || source->GetCharAt(p)!='{') {
-				mxMessageDialog(_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog("El cursor no se encuentra en una funcion o la sintaxis no es correcta","Error",mxMD_OK|mxMD_ERROR).ShowModal();
 				Destroy();
 				return;
 			}
@@ -37,7 +37,7 @@ mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_A
 	}
 	int pe = source->BraceMatch(ps=p);
 	if (pe==wxSTC_INVALID_POSITION || source->GetCharAt(ps)!='{') {
-		mxMessageDialog (_T("El cursor no se encuentra en una funcion o la sintaxis no es correcta"),_("Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog ("El cursor no se encuentra en una funcion o la sintaxis no es correcta","Error",mxMD_OK|mxMD_ERROR).ShowModal();
 		Destroy();
 		return;
 	}

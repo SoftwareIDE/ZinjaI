@@ -288,7 +288,7 @@ void mxInspectionMatrix::OnColResize(wxGridSizeEvent &evt) {
 //void mxInspectionMatrix::OnClose(wxCloseEvent &evt) {
 ////	debug->UnRegisterMatrix(this);
 //	Destroy();
-//}
+// }
 
 void mxInspectionMatrix::OnAdaptCheck(wxCommandEvent &evt) {
 	if (!(dont_adapt=!adapt->GetValue())) {

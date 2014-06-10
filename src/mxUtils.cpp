@@ -31,7 +31,7 @@
 
 bool zinjai_debug_mode=false;
 
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 wxString debug_string;
 #endif 
 
@@ -684,7 +684,7 @@ void mxUtils::ParameterReplace(wxString &str, wxString from, wxString to) {
 //	fil.AddLine(wxString(_T("URL="))<<DIR_PLUS_FILE(config->zinjai_dir,_T("zinjai")));
 //	fil.Write();
 //	fil.Close();
-//}
+// }
 
 
 wxString mxUtils::GetOnePath(wxString orig_path, wxString project_path, wxString fname, wxArrayString &header_dirs) {

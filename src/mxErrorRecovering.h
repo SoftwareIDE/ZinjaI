@@ -12,7 +12,6 @@ private:
 	wxArrayString files,names;
 public:
 	mxErrorRecovering();
-	~mxErrorRecovering();
 	void OnClose(wxCloseEvent &evt);
 	void OnAllButton(wxCommandEvent &evt);
 	void OnSomeButton(wxCommandEvent &evt);

@@ -699,7 +699,7 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 //	int lineStart = PositionFromLine (GetCurrentLine());
 //	int lineEnd = PositionFromLine (GetCurrentLine() + 1);
 //	SetSelection (lineStart, lineEnd);
-//}
+// }
 
 void mxSource::OnEditSelectAll (wxCommandEvent &event) {
 	SetSelection (0, GetTextLength ());
@@ -1445,7 +1445,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			int p=WordStartPosition(e,true); int pos_key=p; // pos_key guarda la posición donde comienza la palabra a autocompletar
 			if (e-p+1>=config->Help.min_len_for_completion || chr==',' || chr=='(') {
 				wxString key = GetTextRange(p,e+1);
-				if (last_failed_autocompletion.IsSameLocation(pos_key,key)) return; // no intentar autocompletar nuevamente si ya se intentó un caracter atrás
+				if (last_failed_autocompletion.IsSameLocation(pos_key,key,parser->data_age)) return; // no intentar autocompletar nuevamente si ya se intentó un caracter atrás
 				s=GetStyleAt(p-1);
 				if (p && s==wxSTC_C_PREPROCESSOR && GetCharAt(p-1)=='#') {
 					code_helper->AutocompletePreprocesorDirective(this,key);
@@ -1950,7 +1950,7 @@ bool mxSource::AddInclude(wxString header) {
 			if (uncomment_line)
 				ShowBaloon(LANG2(SOURCE_UNCOMMENTED_FOR_HEADER,"Descomentada linea <{1}>: \"#include <{2}>\".",wxString()<<uncomment_line,oHeader));
 			else
-				ShowBaloon(LANG1(SOURCE_ADDED_HEADER,"Cabecera agregadad: <{1}>.",oHeader));
+				ShowBaloon(LANG1(SOURCE_ADDED_HEADER,"Cabecera agregada: <{1}>.",oHeader));
 		} else {
 			ShowBaloon(LANG(SOURCE_ADDED_USING_NAMESPACE_STD,"Agregado \"using namespace std;\""));
 		}
@@ -3645,7 +3645,7 @@ void mxSource::SetSourceTime(wxDateTime stime) {
 wxString mxSource::WhereAmI() {
 	int cp=GetCurrentPos(); wxString args;
 	wxString res = FindScope(cp,&args,true); res<<args;
-#ifdef DEBUG
+#ifdef _ZINJAI_DEBUG
 	res<<"\n"<<cp;
 #endif
 	return res;
@@ -3745,7 +3745,7 @@ wxString mxSource::WhereAmI() {
 //		}
 //	}
 //	return scope
-//#ifdef DEBUG
+//#ifdef _ZINJAI_DEBUG
 //		<<"\n"<<GetCurrentPos()
 //#endif
 //		;

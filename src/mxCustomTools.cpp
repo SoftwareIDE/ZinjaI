@@ -113,9 +113,9 @@ void mxCustomTools::OnButtonOk(wxCommandEvent &event) {
 		"¿Desea activarla para ver los controles personalizados?"), _T("Reiniciar Barras de Herramientas"), mxMD_YES_NO).ShowModal()) {
 			visible=true;
 			if (for_project) {
-				main_window->OnToggleToolbar(main_window->menu.view_toolbar_project,main_window->toolbar_project,visible,true);
+				main_window->OnToggleToolbar(mxID_VIEW_TOOLBAR_PROJECT,main_window->toolbar_project,visible,true);
 			} else {
-				main_window->OnToggleToolbar(main_window->menu.view_toolbar_tools,main_window->toolbar_tools,visible,true);
+				main_window->OnToggleToolbar(mxID_VIEW_TOOLBAR_TOOLS,main_window->toolbar_tools,visible,true);
 			}
 		}
 	main_window->CreateToolbars(for_project?main_window->toolbar_project:main_window->toolbar_tools);
