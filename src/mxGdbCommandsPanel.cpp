@@ -7,12 +7,55 @@
 #include "mxSizers.h"
 #include "mxMessageDialog.h"
 
+
+class gdbTextCtrl:public wxTextCtrl {
+	wxArrayString comp_options;
+public:
+	gdbTextCtrl(wxWindow *parent):wxTextCtrl(parent,wxID_FIND,"",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB) {}
+	void OnChar(wxKeyEvent &evt) {
+		if (evt.GetKeyCode()==WXK_TAB) {
+			if (debug->debugging && !debug->waiting) {
+				comp_options.Clear();
+				wxString ans = debug->SendCommand("complete ",GetValue());
+				while (ans.Contains("\n")) {
+					wxString line=ans.BeforeFirst('\n');
+					ans=ans.AfterFirst('\n');
+					if (line.StartsWith("~\"")) {
+						wxString ue=utils->UnEscapeString(line.Mid(1));
+						if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
+						comp_options.Add(ue);
+					}
+				}
+				if (!comp_options.GetCount()) return;
+				wxMenu menu("");
+				for(unsigned int i=0;i<comp_options.GetCount();i++)
+					menu.Append(wxID_HIGHEST+1000+i, comp_options[i]);
+				wxPoint pos=GetPosition();
+				pos.y+=GetSize().GetHeight();
+				PopupMenu(&menu,pos);
+				
+			}
+		} else evt.Skip();
+	}
+	void OnMenu(wxCommandEvent &evt) {
+		int i=evt.GetId()-wxID_HIGHEST-1000;
+		SetValue(comp_options[i]); 
+		SetSelection(comp_options[i].Len(),comp_options[i].Len());
+	}
+	DECLARE_EVENT_TABLE();
+};
+
+BEGIN_EVENT_TABLE(gdbTextCtrl,wxTextCtrl)
+	EVT_CHAR(gdbTextCtrl::OnChar)
+	EVT_MENU_RANGE(wxID_HIGHEST+1000,wxID_HIGHEST+5000,gdbTextCtrl::OnMenu)
+END_EVENT_TABLE()
+
 BEGIN_EVENT_TABLE(mxGdbCommandsPanel,wxPanel)
 	EVT_TEXT_ENTER(wxID_FIND,mxGdbCommandsPanel::OnInput)
 END_EVENT_TABLE()
 
 mxGdbCommandsPanel::mxGdbCommandsPanel():wxPanel(main_window) {
-	input = new wxTextCtrl(this,wxID_FIND,"",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
+	input = new gdbTextCtrl(this);
 	output = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(input,sizers->Exp0);
@@ -57,4 +100,5 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 void mxGdbCommandsPanel::AppendText (const wxString & str) {
 	output->AppendText(str);
 }
+
 

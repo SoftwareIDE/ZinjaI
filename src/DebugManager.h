@@ -127,7 +127,6 @@ class DebugManager {
 	friend class mxInspectionMatrix;
 	friend class DebuggerInspection;
 	friend class DebugPatcher;
-	friend class mxGdbCommandsPanel;
 #ifdef _ZINJAI_DEBUG
 	wxFFile debug_log_file;
 #endif
@@ -167,14 +166,14 @@ private:
 	wxOutputStream *output;
 	wxInputStream *input;
 	long pid;
-	wxString SendCommand(wxString command);
-	wxString SendCommand(wxString cmd1,wxString cmd2);
-	wxString SendCommand(wxString command, int i);
 //	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
 	wxString RewriteExpressionForBreaking(wxString expr);
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
 	BreakPointInfo *pause_breakpoint; ///< puntero al breakpoint que hay que agregar/sacar en una pausa, para el usuario los modifica durante la ejecución
 public:
+	wxString SendCommand(wxString command);
+	wxString SendCommand(wxString cmd1,wxString cmd2);
+	wxString SendCommand(wxString command, int i);
 	wxString last_command, last_answer;
 	DEBUG_STATUS status;
 	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible;
