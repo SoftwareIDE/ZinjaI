@@ -11,7 +11,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/MenusAndToolsConfig.h
+current_source=src/MenusAndToolsConfig.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -369,7 +369,7 @@ path=src/mxSignalsSettings.cpp
 cursor=65:13
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=304:7
+cursor=371:4
 open=true
 [header]
 path=src/CodeHelper.h
@@ -714,7 +714,7 @@ path=src/mxSignalsSettings.h
 cursor=19:18
 [header]
 path=src/MenusAndToolsConfig.h
-cursor=90:78
+cursor=109:0
 open=true
 [other]
 path=guihelp/ChangeLog.html

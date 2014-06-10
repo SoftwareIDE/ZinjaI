@@ -356,7 +356,7 @@ void MenusAndToolsConfig::CreateMenues () {
 				wxMenu *new_menu = new wxMenu;
 				wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,menu_icon_prefix+mi.icon);
 				if (props&maMAPPED) {
-					mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
+//					mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
 					mapped_menues.push_back(MappedMenu(mi.wx_id,new_menu));
 				}
 				menu_stack.push_back(current_menu);
@@ -369,7 +369,6 @@ void MenusAndToolsConfig::CreateMenues () {
 				else 
 					wx_item = utils->AddItemToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,menu_icon_prefix+mi.icon);
 				if (props&maMAPPED) mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
-//				menues[menu_id].wx_items.push_back(wx_item);
 			}
 			if (props&maDEBUG) { items_debug.push_back(AutoenabligItem(wx_item,true)); }
 			else if (props&maNODEBUG) { items_debug.push_back(AutoenabligItem(wx_item,false)); }

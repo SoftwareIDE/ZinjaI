@@ -91,7 +91,7 @@ mxFindDialog::~mxFindDialog() {
 void mxFindDialog::ShowFind(mxSource *source) {
 	replace_mode=false;
 	check_close->SetValue(true);
-	if (source) {
+	if (source && !check_regexp->GetValue()) {
 		int i=source->GetSelectionStart();
 		int f=source->GetSelectionEnd();
 //		if (i==f) {
