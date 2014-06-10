@@ -347,7 +347,7 @@ CAR_ERROR_LINE mxCompiler::ParseSomeErrorsOneLine(compile_and_run_struct_single 
 	
 	// esto va antes de testear si es error o warning, porque ambos tests (por ejemplo, este y el de si es error) pueden dar verdaderos, y en ese caso debe primar este
 	if (ErrorLineIsChild(error_line)) {
-		if (error_line.Contains(EN_COMPOUT_NOTE)) return CAR_EL_CHILD_SWAP;
+		if (error_line.Contains(EN_COMPOUT_IN_EXPANSION_OF_MACRO)) return CAR_EL_CHILD_SWAP;
 		return CAR_EL_CHILD_LAST;
 	}
 	

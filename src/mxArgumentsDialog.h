@@ -21,7 +21,7 @@ private:
 public:
 	static wxString last_workdir;
 	static wxString last_arguments;
-	mxArgumentsDialog(wxWindow *parent, wxString def_args);
+	mxArgumentsDialog(wxWindow *parent, const wxString &def_args, const wxString &def_dir);
 	void OnYesButton(wxCommandEvent &evt);
 	void OnNoButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

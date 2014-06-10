@@ -1625,12 +1625,12 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	
 	// agregar los argumentos de ejecucion
 	if (active_configuration->always_ask_args) {
-		int res = mxArgumentsDialog(main_window,active_configuration->args).ShowModal();
+		int res = mxArgumentsDialog(main_window,active_configuration->args,active_configuration->working_folder).ShowModal();
 		if (res&AD_CANCEL) return 0;
 		active_configuration->working_folder = mxArgumentsDialog::last_workdir;
 		active_configuration->args = (res&AD_EMPTY) ? "" : mxArgumentsDialog::last_arguments;
 		if (res&AD_REMEMBER) active_configuration->always_ask_args=false;
-	}
+	} 
 	
 	wxString exe_pref;
 #ifndef __WIN32__
@@ -2220,15 +2220,13 @@ bool ProjectManager::Debug() {
 		return false;
 	}
 	wxString command ( wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetShortPath() );
-	wxString working_path = (active_configuration->working_folder=="")?path:DIR_PLUS_FILE(path,active_configuration->working_folder);
-	if (working_path.Last()==path_sep)
-		working_path.RemoveLast();
 	wxString args = active_configuration->args;
 	if (active_configuration->always_ask_args) {
-		int res = mxArgumentsDialog(main_window,active_configuration->args).ShowModal();
+		int res = mxArgumentsDialog(main_window,active_configuration->args,active_configuration->working_folder).ShowModal();
 		if (res&AD_CANCEL) return false;
 		if (res&AD_ARGS) {
-			active_configuration->args = mxArgumentsDialog::last_arguments;;
+			active_configuration->args = mxArgumentsDialog::last_arguments;
+			active_configuration->working_folder = mxArgumentsDialog::last_workdir;
 			args=active_configuration->args;
 		}
 		if (res&AD_REMEMBER) {
@@ -2236,6 +2234,8 @@ bool ProjectManager::Debug() {
 			if (res&AD_EMPTY) active_configuration->args="";
 		}
 	}
+	wxString working_path = (active_configuration->working_folder=="")?path:DIR_PLUS_FILE(path,active_configuration->working_folder);
+	if (working_path.Last()==path_sep) working_path.RemoveLast();
 	
 	SetEnvironment(true,true);
 	bool ret = debug->Start(working_path,command,args,active_configuration->console_program,active_configuration->wait_for_key);

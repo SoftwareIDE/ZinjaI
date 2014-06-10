@@ -34,20 +34,20 @@ BEGIN_EVENT_TABLE(mxArgumentsDialog, wxDialog)
 END_EVENT_TABLE()
 
 	
-mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent,wxString def_text) : wxDialog(parent,wxID_ANY,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),wxDefaultPosition,wxDefaultSize,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent, const wxString &def_args, const wxString &def_dir) : wxDialog(parent,wxID_ANY,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),wxDefaultPosition,wxDefaultSize,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	
 	mySizer->Add(new wxStaticText(this, wxID_ANY, LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Left);
 	wxBoxSizer *comboSizer1 = new wxBoxSizer(wxHORIZONTAL);
-	combo_args = new wxComboBox(this, wxID_ANY,def_text, wxDefaultPosition, wxDefaultSize, list_for_combo_args);
+	combo_args = new wxComboBox(this, wxID_ANY,def_args, wxDefaultPosition, wxDefaultSize, list_for_combo_args);
 	comboSizer1->Add(combo_args, sizers->Exp1);
 	comboSizer1->Add(new wxButton(this,mxID_ARGS_BUTTON,_T("..."),wxDefaultPosition,wxSize(30,10)), sizers->Exp0);
 	mySizer->Add(comboSizer1, sizers->BA5_Exp1);
 	
 	mySizer->Add(new wxStaticText(this, wxID_ANY, LANG(COMPILECONF_WORKDIR,"Directorio de trabajo:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Left);
 	wxBoxSizer *comboSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	combo_work = new wxComboBox(this, wxID_ANY,def_text, wxDefaultPosition, wxDefaultSize, list_for_combo_work);
+	combo_work = new wxComboBox(this, wxID_ANY,def_dir, wxDefaultPosition, wxDefaultSize, list_for_combo_work);
 	comboSizer2->Add(combo_work, sizers->Exp1);
 	comboSizer2->Add(new wxButton(this,mxID_WORKING_FOLDER,_T("..."),wxDefaultPosition,wxSize(30,10)), sizers->Exp0);
 	mySizer->Add(comboSizer2, sizers->BA5_Exp1);

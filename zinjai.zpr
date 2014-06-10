@@ -11,7 +11,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/MenusAndToolsConfig.cpp
+current_source=src/ProjectManager.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -36,7 +36,7 @@ cursor=117:1
 marker=141
 [source]
 path=src/mxMainWindow.cpp
-cursor=669:1
+cursor=1760:1
 marker=1322
 marker=1789
 [source]
@@ -114,16 +114,17 @@ marker=496
 marker=3307
 marker=3342
 marker=3352
+open=true
 [source]
 path=src/mxThreadGrid.cpp
 cursor=168:4
 [source]
 path=src/DebugManager.cpp
 cursor=35:13
-breakpoint=2944
+breakpoint=2945
 breakpoint_annotation=
-marker=524
-marker=2067
+marker=525
+marker=2068
 [source]
 path=src/mxFlowWindow.cpp
 cursor=39:98
@@ -194,7 +195,7 @@ path=src/mxFlowCanvas.cpp
 cursor=766:7
 [source]
 path=src/mxArgumentsDialog.cpp
-cursor=35:1
+cursor=49:36
 [source]
 path=src/mxEnumerationEditor.cpp
 cursor=114:55
@@ -283,8 +284,9 @@ path=src/mxMultipleFileChooser.cpp
 cursor=184:0
 [source]
 path=src/mxCompiler.cpp
-cursor=135:20
+cursor=349:26
 marker=614
+open=true
 [source]
 path=src/Autocoder.cpp
 cursor=64:2
@@ -360,7 +362,6 @@ cursor=46:2
 [source]
 path=src/mxMainWindowMenues.cpp
 cursor=48:1
-open=true
 [source]
 path=src/mxGdbCommandsPanel.cpp
 cursor=22:27
@@ -369,8 +370,7 @@ path=src/mxSignalsSettings.cpp
 cursor=65:13
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=545:1
-open=true
+cursor=555:22
 [header]
 path=src/CodeHelper.h
 cursor=36:76
@@ -514,7 +514,7 @@ path=src/mxDrawClasses.h
 cursor=-1:394
 [header]
 path=src/mxArgumentsDialog.h
-cursor=28:21
+cursor=23:86
 [header]
 path=src/mxEnumerationEditor.h
 cursor=-1:519
@@ -620,7 +620,8 @@ path=src/mxMultipleFileChooser.h
 cursor=27:74
 [header]
 path=src/mxCompiler.h
-cursor=63:20
+cursor=36:18
+open=true
 [header]
 path=src/Autocoder.h
 cursor=-1:0
@@ -714,8 +715,7 @@ path=src/mxSignalsSettings.h
 cursor=19:18
 [header]
 path=src/MenusAndToolsConfig.h
-cursor=121:0
-open=true
+cursor=162:0
 [other]
 path=guihelp/ChangeLog.html
 cursor=14:259

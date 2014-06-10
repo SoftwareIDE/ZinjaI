@@ -321,7 +321,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	
 }
 
-void MenusAndToolsConfig::LoadToolbarData ( ) {
+void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	
 	toolbars[tbFILE].label = LANG(CAPTION_TOOLBAR_FILE,"Archivo"); {
 		AddToolbarItem(tbFILE,myToolbarItem("file.new_file",menues[tbFILE],wxID_NEW)); // ,LANG(TOOLBAR_CAPTION_FILE_NEW,"Nuevo..."),ipre+_T("nuevo.png"),LANG(TOOLBAR_DESC_FILE_NEW,"Archivo -> Nuevo..."));
