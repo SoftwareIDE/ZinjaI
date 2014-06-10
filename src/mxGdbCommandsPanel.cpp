@@ -10,8 +10,19 @@
 
 class gdbTextCtrl:public wxTextCtrl {
 	wxArrayString comp_options;
+	unsigned int input_history_pos;
+	wxArrayString input_history;
 public:
-	gdbTextCtrl(wxWindow *parent):wxTextCtrl(parent,wxID_FIND,"",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB) {}
+	gdbTextCtrl(wxWindow *parent):wxTextCtrl(parent,wxID_FIND,"",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB) {
+		input_history_pos=0;
+	}
+	void OnEnter(wxCommandEvent &event) {
+		wxString cmd=GetValue(); if (cmd.IsEmpty()) return;
+		if (!input_history.GetCount() || input_history.Last()!=cmd) input_history.Add(cmd);
+		input_history_pos=input_history.GetCount();
+		if (input_history_pos) --input_history_pos;
+		event.Skip();
+	}
 	void OnChar(wxKeyEvent &evt) {
 		if (evt.GetKeyCode()==WXK_TAB) {
 			if (debug->debugging && !debug->waiting) {
@@ -35,18 +46,31 @@ public:
 				PopupMenu(&menu,pos);
 				
 			}
-		} else evt.Skip();
+		} else if (evt.GetKeyCode()==WXK_UP) {
+			if (input_history_pos>0) 
+				SetText(input_history[--input_history_pos]);
+		} else if (evt.GetKeyCode()==WXK_DOWN) {
+			if (input_history_pos+1==input_history.GetCount())
+				SetText("");
+			else if (input_history_pos+1<input_history.GetCount()) 
+				SetText(input_history[++input_history_pos]);
+		} else {
+			evt.Skip();
+		}
 	}
 	void OnMenu(wxCommandEvent &evt) {
-		int i=evt.GetId()-wxID_HIGHEST-1000;
-		SetValue(comp_options[i]); 
-		SetSelection(comp_options[i].Len(),comp_options[i].Len());
+		SetText(comp_options[evt.GetId()-wxID_HIGHEST-1000]);
+	}
+	void SetText(const wxString &text) {
+		SetValue(text); 
+		SetSelection(text.Len(),text.Len());
 	}
 	DECLARE_EVENT_TABLE();
 };
 
 BEGIN_EVENT_TABLE(gdbTextCtrl,wxTextCtrl)
 	EVT_CHAR(gdbTextCtrl::OnChar)
+	EVT_TEXT_ENTER(wxID_ANY,gdbTextCtrl::OnEnter)
 	EVT_MENU_RANGE(wxID_HIGHEST+1000,wxID_HIGHEST+5000,gdbTextCtrl::OnMenu)
 END_EVENT_TABLE()
 
@@ -71,7 +95,6 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 	if (debug->waiting) { mxMessageDialog("No puede enviar comandos sin antes interrumpir/pausar la ejecución.","Error",mxMD_ERROR).ShowModal(); return; }
 	wxString cmd=input->GetValue(); input->SetSelection(0,cmd.Len());
 	if (!cmd.Len()) return;
-	if (input_history.GetCount() && input_history.Last()!=cmd) input_history.Add(cmd);
 	AppendText(wxString("> ")+cmd+"\n");
 	wxString ans = debug->SendCommand(cmd);
 	if (ans.Len() && !ans.Last()=='\n') ans<<"\n";
