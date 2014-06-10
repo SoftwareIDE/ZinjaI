@@ -1,0 +1,9 @@
+type=extern
+desc=custom building script
+build_command=${ARG1}
+clean_command=${ARG2}
+argument1=Build Command=build.sh
+argument2=Clean Command=clean.sh
+use_return_vale=0
+base_path=MinGW
+bin_path=MinGW/bin
