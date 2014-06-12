@@ -107,6 +107,9 @@ struct inspectinfo {
 struct SignalHandlingInfo {
 	wxString name, description;
 	bool pass,print,stop;
+	bool operator!=(const SignalHandlingInfo &si) { // to compare states (betweeen same signal structures)
+		return si.pass!=pass||si.print!=print||si.stop!=stop;
+	}
 };
 
 class wxProcess;
@@ -131,6 +134,7 @@ class DebugManager {
 	wxFFile debug_log_file;
 #endif
 private:
+	vector<SignalHandlingInfo> *signal_handlers_state; ///< signals states to be setted before running, first one has defaults, second one desired settings (if NULL no setting is required, will be created and modified my mxSignalsSettings)
 	DebugPatcher *debug_patcher;
 public:
 	DebugPatcher *GetPatcher() { return debug_patcher; } // retorna puntero y no instancia para poder poner en ese h solo una forward declaration y evitar tener que recompilar mucho al cambiar el patcher
@@ -183,7 +187,8 @@ public:
 	void BacktraceClean();
 	bool Start(bool update); ///< starts debugging for current project
 	bool Start(bool update, mxSource *source); ///< starts debugging for a simple program
-	bool Start(wxString workdir, wxString exe, wxString args, bool show_console, bool wait_for_key);
+	bool Start(wxString workdir, wxString exe, wxString args, bool show_console, bool wait_for_key); ///< common code Starting a program (the other two Starts will end up calling this one)
+	void Start_ConfigureGdb(); ///< sends commands to gdb to set its initial state (common code for Start, Attach and LoadCoreDump)
 	bool Stop();
 	bool Run();
 	void StepIn();
@@ -292,7 +297,7 @@ public:
 	
 	void SendSignal(const wxString &signame);
 	bool GetSignals(vector<SignalHandlingInfo> &v);
-	bool SetSignalHandling(SignalHandlingInfo &si);
+	bool SetSignalHandling(SignalHandlingInfo &si, int i=-1);
 	
 	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print elements ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
 	void SetFullOutput(bool on=false);

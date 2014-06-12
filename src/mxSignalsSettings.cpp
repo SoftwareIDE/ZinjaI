@@ -76,7 +76,7 @@ void mxSignalsSettings::OnButtonOk (wxCommandEvent & evt) {
 		if (checks_pass[i]->GetValue()!=vsig[i].pass || checks_stop[i]->GetValue()!=vsig[i].stop) {
 			vsig[i].pass=checks_pass[i]->GetValue();
 			vsig[i].stop=checks_stop[i]->GetValue();
-			debug->SetSignalHandling(vsig[i]);
+			debug->SetSignalHandling(vsig[i],i);
 		}
 	}
 	EndModal(1);

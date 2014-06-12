@@ -44,6 +44,7 @@ using namespace std;
 DebugManager *debug;
 
 DebugManager::DebugManager() {
+	signal_handlers_state=NULL;
 	backtrace_shows_args=true;
 	status = DBGST_NULL;
 	pause_breakpoint = NULL;
@@ -238,13 +239,12 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			main_window->SetCompilingStatus("Error al iniciar depuracion");
 			return false;
 		}
+		Start_ConfigureGdb();
 		// configure debugger
 #if defined(_WIN32) || defined(__WIN32__)
 		SendCommand(_T("-gdb-set new-console on"));
 #endif
-		if (!config->Debug.auto_solibs) SendCommand(_T("set auto-solib-add off"));
 		if (args.Len()) cerr<<SendCommand("set args ",args);
-		SetFullOutput(false);
 //		SendCommand(_T(BACKTRACE_MACRO));
 		SendCommand(wxString(_T("-environment-cd "))<<utils->EscapeString(workdir,true));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
@@ -257,7 +257,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 							"paquetes que corresponda a su distribucion\n"
 							"(apt-get, yum, yast, installpkg, etc.)")
 #endif
-				,_T("Error al iniciar depurador"),mxMD_OK|mxMD_ERROR).ShowModal();
+				,"Error al iniciar depurador",mxMD_OK|mxMD_ERROR).ShowModal();
 			main_window->PrepareGuiForDebugging(false);
 	}
 	pid=0;
@@ -342,7 +342,7 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 			return false;
 		}
 		// configure debugger
-		SetFullOutput(false);
+		Start_ConfigureGdb();
 //		SendCommand(_T(BACKTRACE_MACRO));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
@@ -422,7 +422,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 //			return false;
 //		}
 		// configure debugger
-		SetFullOutput(false);
+		Start_ConfigureGdb();
 //		SendCommand(_T(BACKTRACE_MACRO));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
@@ -2909,10 +2909,18 @@ void DebugManager::SendSignal (const wxString & signame) {
 	running = false;
 }
 
-bool DebugManager::GetSignals (vector<SignalHandlingInfo> & v) {
-	if (!debugging || waiting) return false;
-	wxString ans = SendCommand("info signals");
-	if (!ans.Contains("^done")) return false;
+bool DebugManager::GetSignals(vector<SignalHandlingInfo> & v) {
+	wxString ans; v.clear();
+	if (debugging) {
+		if (waiting) {
+			mxMessageDialog(main_window,"Debe pausar o detener la ejecución para modificar el comportamiento ante señales.",LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal(); return false;
+		} else {
+			ans = SendCommand("info signals");
+			if (!ans.Contains("^done")) return false;
+		}
+	} else {
+		ans = utils->GetOutput("gdb --interpreter=mi --quiet --batch -ex \"info signal\"",true);
+	}
 	while (ans.Contains('\n')) {
 		wxString line=ans.BeforeFirst('\n');
 		ans=ans.AfterFirst('\n');
@@ -2946,16 +2954,36 @@ bool DebugManager::GetSignals (vector<SignalHandlingInfo> & v) {
 		if (si.description.EndsWith("\n")) si.description.RemoveLast();
 		v.push_back(si);
 	}
+	if (!signal_handlers_state) {
+		signal_handlers_state = new vector<SignalHandlingInfo>[2];
+		signal_handlers_state[0]=signal_handlers_state[1]=v;
+	}
 	return true;
 }
 
-bool DebugManager::SetSignalHandling (SignalHandlingInfo & si) {
-	if (!debugging || waiting) return false;
-	wxString cmd("handle "); cmd<<si.name;
-	cmd<<" "<<(si.print?"print":"noprint");
-	cmd<<" "<<(si.stop?"stop":"nostop");
-	cmd<<" "<<(si.pass?"pass":"nopass");
-	wxString ans = SendCommand(cmd);
-	return ans.Contains("^done");
+bool DebugManager::SetSignalHandling (SignalHandlingInfo & si, int i) {
+	if (debugging) {
+		if (waiting) return false;
+		wxString cmd("handle "); cmd<<si.name;
+		cmd<<" "<<(si.print?"print":"noprint");
+		cmd<<" "<<(si.stop?"stop":"nostop");
+		cmd<<" "<<(si.pass?"pass":"nopass");
+		wxString ans = SendCommand(cmd);
+		if (!ans.Contains("^done")) return false;
+	}
+	if (i!=-1 && signal_handlers_state) signal_handlers_state[1][i]=si;
+	return true;
 }
 
+void DebugManager::Start_ConfigureGdb ( ) {
+	if (!config->Debug.auto_solibs) SendCommand(_T("set auto-solib-add off"));
+	SetFullOutput(false);
+	if (signal_handlers_state) {
+		for(unsigned int i=0;i<signal_handlers_state[0].size();i++) { 
+			if (signal_handlers_state[0][i]!=signal_handlers_state[1][i])
+				debug->SetSignalHandling(signal_handlers_state[1][i]);
+		}
+	}
+}
+
+	
