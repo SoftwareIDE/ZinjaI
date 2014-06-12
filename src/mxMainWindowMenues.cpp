@@ -59,18 +59,21 @@ void mxMainWindow::UpdateCustomTools(bool for_project) {
 	int count=(for_project?MAX_PROJECT_CUSTOM_TOOLS:MAX_CUSTOM_TOOLS);
 	cfgCustomTool *tools=(for_project?project->custom_tools:config->CustomTools);
 	
-	wxMenu *menu_custom_tools = menu_data->GetMenu(mxID_TOOLS_CUSTOM_TOOLS);
 	if (!for_project) {
-		wxString ipre=DIR_PLUS_FILE("16","customTool");
+		wxMenu *menu_custom_tools = menu_data->GetMenu(mxID_TOOLS_CUSTOM_TOOLS);
+		// remove previous items
 		for (int i=0;i<count;i++) {
-			if (menu_data->tools_custom_item[i])
-				menu_custom_tools->Remove(menu_data->tools_custom_item[i]);
-			menu_data->tools_custom_item[i]=NULL;
+			wxMenuItem *wx_mi = menu_custom_tools->FindItem(mxID_CUSTOM_TOOL_0+i);
+			if (wx_mi) menu_custom_tools->Delete(wx_mi);
 		}
-		int c=0;
-		for (int i=0;i<count;i++) {
-			if (tools[i].name.Len() && tools[i].command.Len())
-				menu_data->tools_custom_item[i] = utils->AddItemToMenu(menu_custom_tools, mxID_CUSTOM_TOOL_0+i,tools[i].name,"",tools[i].command,SKIN_FILE(wxString(ipre)<<i<<".png"),c++);
+		// update data in menu_data->menues based con data on config
+		menu_data->TransferStatesFromConfig();
+		// create new items
+		wxString ipre=DIR_PLUS_FILE("16","customTool");
+		for (int i=0,c=0;i<count;i++) {
+			MenusAndToolsConfig::myMenuItem &mitem = *menu_data->GetMyMenuItem(MenusAndToolsConfig::mnTOOLS,mxID_CUSTOM_TOOL_0+i);
+			if (!(mitem.properties&MenusAndToolsConfig::maHIDDEN))
+				utils->AddItemToMenu(menu_custom_tools, mxID_CUSTOM_TOOL_0+i,mitem.label,mitem.shortcut,mitem.description,ipre+mitem.icon,c++);
 		}
 	}
 	

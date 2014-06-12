@@ -31,7 +31,8 @@ private:
 		maMAPPED=64, ///< store a reference to this item, to be used outside this class
 		maBEGIN_SUBMENU=128, ///< indica el comienzo de un submenu
 		maEND_SUBMENU=256, ///< indica el final de un submenu
-		maSEPARATOR=512 ///< representa un separatod
+		maSEPARATOR=512, ///< representa un separatod
+		maHIDDEN=1024 ///< este item no se agregará al menú
 	};
 	
 	/// @brief for storing menues structure before really creating them, and for simplifing AddMenuItem interface (only one flexible parameter for that method)
@@ -45,11 +46,13 @@ private:
 		myMenuItem &Description(const wxString &_description) { description=_description; return *this; }
 		/*myMenuItem &Key(const wxString &_key) { key=_key; return *this; }*/
 		myMenuItem &Icon(const wxString &_icon) { icon=_icon; return *this; }
-		myMenuItem &Checkeable(bool checked) { properties|=(checked?maCHECKED:maCHECKEABLE)|maMAPPED; return *this; }
 		myMenuItem &Debug(bool enabled_on_debug_mode) { properties|=(enabled_on_debug_mode?maDEBUG:maNODEBUG); return *this; }
 		myMenuItem &Project(bool enabled_on_project_mode) { properties|=(enabled_on_project_mode?maPROJECT:maNOPROJECT); return *this; }
 		myMenuItem &Map() { properties|=maMAPPED; return *this; }
 		myMenuItem &AddProps(int props) { properties|=props; return *this; }
+		myMenuItem &Checkeable(bool checked) { properties|=(checked?maCHECKED:maCHECKEABLE)|maMAPPED; properties&=~(checked?maCHECKEABLE:maCHECKED); return *this; }
+		myMenuItem &Hide() { properties|=maHIDDEN; return *this; }
+		myMenuItem &SetVisible(bool v) { if (v) properties&=~maHIDDEN; else properties|=maHIDDEN; return *this; }
 	};
 	
 	/// struct for storing wich items should be enabled/disabled when changing project mode or debug mode
@@ -116,7 +119,7 @@ private:
 	// submenues de tratamiento especial (porque se actualizan dinamicamente durante la ejecucion)
 	wxMenuItem **file_source_history;
 	wxMenuItem **file_project_history;
-	wxMenuItem **tools_custom_item;
+//	wxMenuItem **tools_custom_item;
 	friend class mxOpenRecentDialog;
 	friend class mxMainWindow;
 	
@@ -151,9 +154,10 @@ private:
 			description.Replace("&","",true);
 		}
 		myToolbarItem &Label(const wxString &_label) { label=_label; return *this; }
-		myToolbarItem &Visible() { visible=true; return *this; }
 		myToolbarItem &Checkeable() { checkeable=true; return *this; }
 		myToolbarItem &Description(const wxString &_description) { description=_description; return *this; }
+		myToolbarItem &Visible() { visible=true; return *this; }
+		myToolbarItem &SetVisible(bool v) { visible=v; return *this; }
 	};
 	
 	
@@ -219,6 +223,7 @@ public:
 private:
 	void CreateMenues();
 	void PopulateMenu(int menu_id);
+	myMenuItem *GetMyMenuItem(int menu_id, int item_id);
 public:
 	wxMenuItem *GetItem(int wx_id) {
 		for(unsigned int i=0;i<mapped_items.size();i++) { 
@@ -239,6 +244,7 @@ public:
 	bool ParseToolbarConfigLine(const wxString &key, const wxString &value);
 private:
 	void CreateWxToolbar(int tb_id);
+	myToolbarItem *GetMyToolbarItem(int toolbar_id, int item_id);
 	void PopulateToolbar(int tb_id);
 	void AdjustToolbarSize(int tb_id);
 	void CreateToolbars();
@@ -256,6 +262,7 @@ public:
 	void SetDebugMode(bool mode);
 	void SetProjectMode(bool mode);
 	
+	void TransferStatesFromConfig();
 	void CreateMenuesAndToolbars(mxMainWindow *_main_window);
 	
 };

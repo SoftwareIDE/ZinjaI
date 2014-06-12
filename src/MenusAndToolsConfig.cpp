@@ -19,8 +19,8 @@ MenusAndToolsConfig *menu_data;
 #endif
 
 MenusAndToolsConfig::MenusAndToolsConfig () {
-	tools_custom_item=new wxMenuItem*[10];
-	for (int i=0;i<10;i++) tools_custom_item[i] = NULL;
+//	tools_custom_item=new wxMenuItem*[10];
+//	for (int i=0;i<10;i++) tools_custom_item[i] = NULL;
 	file_source_history = new wxMenuItem*[CM_HISTORY_MAX_LEN];
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) file_source_history[i]=NULL;
 	file_project_history = new wxMenuItem*[CM_HISTORY_MAX_LEN];
@@ -116,22 +116,22 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddSeparator(mnVIEW);
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_FULLSCREEN, LANG(MENUITEM_VIEW_FULLSCREEN,"Ver a Pantalla &Completa")).ShortCut("F11").Description("Muestra el editor a pantalla completa, ocultando tambien los demas paneles").Icon("fullScreen.png").Checkeable(false));
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_BEGINNER_PANEL, LANG(MENUITEM_VIEW_BEGINNER_PANEL,"Mostrar Panel de Mini-Plantillas")).Description("Muestra un panel con plantillas y estructuras basicas de c++").Icon("beginer_panel.png").Checkeable(false));
-		if (config->Init.left_panels) 
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LEFT_PANELS, LANG(MENUITEM_VIEW_LEFT_PANELS,"&Mostrar Panel de Arboles")).Description("Muestra el panel con los arboles de proyecto, simbolos y explorador de archivos").Checkeable(false));
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LEFT_PANELS, LANG(MENUITEM_VIEW_LEFT_PANELS,"&Mostrar Panel de Arboles")).Description("Muestra el panel con los arboles de proyecto, simbolos y explorador de archivos").Checkeable(false));
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_PROJECT_TREE, LANG(MENUITEM_VIEW_PROJECT_TREE,"&Mostrar Arbol de &Proyecto")).Description("Muestra el panel del arbol de proyecto/archivos abiertos").Icon("projectTree.png").Checkeable(false));
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_EXPLORER_TREE, LANG(MENUITEM_VIEW_EXPLORER_TREE,"Mostrar &Explorardor de Archivos")).ShortCut("Ctrl+E").Description("Muestra el panel explorador de archivos").Icon("explorerTree.png").Checkeable(false));
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos")).Description("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo.").Icon("symbolsTree.png").Checkeable(false));
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion")).Description("Muestra un panel con la salida del compilador").Icon("compilerTree.png").Checkeable(false));
 		BeginSubMenu(mnVIEW, LANG(MENUITEM_VIEW_TOOLBARS,"Barras de herramientas"));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo")).Description("Muestra la barra de herramientas para el manejo de archivos").Checkeable(_toolbar_visible(tbFILE)));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion")).Description("Muestra la barra de herramientas para la edicion del fuente").Checkeable(_toolbar_visible(tbEDIT)));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver")).Description("Muestra la barra de herramientas para las opciones de visualizacion").Checkeable(_toolbar_visible(tbVIEW)));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida")).Description("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente").Checkeable(_toolbar_visible(tbFIND)));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion")).Description("Muestra la barra de herramientas para la compilacion y ejecucion del programa").Checkeable(_toolbar_visible(tbRUN)));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas")).Description("Muestra la barra de herramientas para las herramientas adicionales").Checkeable(_toolbar_visible(tbTOOLS)));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto")).Description("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto").Checkeable(_toolbar_visible(tbPROJECT)).Project(true));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion")).Description("Muestra la barra de herramientas para la depuracion del programa").Checkeable(_toolbar_visible(tbDEBUG)));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea")).Description("Muestra la barra de herramientas con commandos miselaneos").Checkeable(_toolbar_visible(tbMISC)));
+			// los atributos de Checkeable se setean más tarde porque a esta altura todavía no se leyó la configuracion
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo")).Description("Muestra la barra de herramientas para el manejo de archivos")/*.Checkeable(_toolbar_visible(tbFILE))*/);
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion")).Description("Muestra la barra de herramientas para la edicion del fuente")/*.Checkeable(_toolbar_visible(tbEDIT))*/);
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver")).Description("Muestra la barra de herramientas para las opciones de visualizacion")/*.Checkeable(_toolbar_visible(tbVIEW))*/);
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida")).Description("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente")/*.Checkeable(_toolbar_visible(tbFIND))*/);
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion")).Description("Muestra la barra de herramientas para la compilacion y ejecucion del programa")/*.Checkeable(_toolbar_visible(tbRUN))*/);
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas")).Description("Muestra la barra de herramientas para las herramientas adicionales")/*.Checkeable(_toolbar_visible(tbTOOLS))*/);
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto")).Description("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto")/*.Checkeable(_toolbar_visible(tbPROJECT))*/.Project(true));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion")).Description("Muestra la barra de herramientas para la depuracion del programa")/*.Checkeable(_toolbar_visible(tbDEBUG))*/);
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea")).Description("Muestra la barra de herramientas con commandos miselaneos")/*.Checkeable(_toolbar_visible(tbMISC))*/);
 			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBARS_CONFIG, LANG(MENUITEM_VIEW_TOOLBARS_CONFIG,"&Configurar...")).Icon("preferencias.png"));
 		EndSubMenu(mnVIEW);
 		AddSeparator(mnVIEW);
@@ -271,8 +271,8 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		BeginSubMenu(mnTOOLS,LANG(MENUITEM_TOOLS_GPROF,"Perfil de Ejecución (gprof)"),"Gprof permite analizar las llamadas a funciones y sus tiempos de ejecucion.","gprof.png");
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_GPROF_SET, LANG(MENUITEM_TOOLS_GPROF_ACTIVATE,"Habilitar/Deshabilitar")).Description("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable.").Icon("comp_for_prof.png"));
 			BeginSubMenu(mnTOOLS,LANG(MENUITEM_TOOLS_GPROF_LAYOUT,"Algoritmo de Dibujo"),"Permite seleccionar entre dos algoritmos diferentes para dibujar el grafo","dotfdp.png");
-				AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_GPROF_DOT, LANG(MENUITEM_TOOLS_GPROF_DOT,"dot")).Checkeable(config->Init.graphviz_dot));
-				AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_GPROF_FDP, LANG(MENUITEM_TOOLS_GPROF_FDP,"fdp")).Checkeable(config->Init.graphviz_dot));
+				AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_GPROF_DOT, LANG(MENUITEM_TOOLS_GPROF_DOT,"dot"))/*.Checkeable(config->Init.graphviz_dot)*/);
+				AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_GPROF_FDP, LANG(MENUITEM_TOOLS_GPROF_FDP,"fdp"))/*.Checkeable(config->Init.graphviz_dot)*/);
 			EndSubMenu(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_GPROF_SHOW, LANG(MENUITEM_TOOLS_GPROF_SHOW,"Visualizar Resultados (grafo)...")).Description("Muestra graficamente la informacion de profiling de la ultima ejecucion.").Icon("showgprof.png"));
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_GPROF_LIST, LANG(MENUITEM_TOOLS_GPROF_LIST,"Listar Resultados (texto)")).Description("Muestra la informacion de profiling de la ultima ejecucion sin procesar.").Icon("listgprof.png"));
@@ -298,6 +298,8 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	#endif
 		
 		BeginSubMenu(mnTOOLS, LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables"),"","customTools.png",mxID_TOOLS_CUSTOM_TOOLS,maMAPPED);
+			for (int i=0;i<MAX_CUSTOM_TOOLS;i++)
+				AddMenuItem(mnTOOLS, myMenuItem(mxID_CUSTOM_TOOL_0+i, wxString()<<i<<": <NULL>").Description(wxString(LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables"))<<" -> "<<i<<": <NULL>").Icon(wxString("customTool")<<i<<".png"));
 			AddSeparator(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_CUSTOM_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS,"&Configurar (generales)...")).Icon("customToolsSettings.png"));
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_PROJECT_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS,"&Configurar (de proyecto)...")).Icon("projectToolsSettings.png").Project(true));
@@ -500,12 +502,8 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbTOOLS,myToolbarItem("valgrind_run",menues[mnTOOLS],mxID_TOOLS_VALGRIND_RUN));
 		AddToolbarItem(tbTOOLS,myToolbarItem("valgrind_view",menues[mnTOOLS],mxID_TOOLS_VALGRIND_VIEW));
 #endif
-		for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
-			if (config->CustomTools[i].on_toolbar) {
-				wxString str(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada ")); str<<i<<" ("<<config->CustomTools[i].name<<")";
-				AddToolbarItem(tbTOOLS,myToolbarItem("",mxID_CUSTOM_TOOL_0+i,wxString("customTool")<<i<<".png",str).Description(str));
-			}
-		}
+		for (int i=0;i<MAX_CUSTOM_TOOLS;i++)
+			AddToolbarItem(tbTOOLS,myToolbarItem("",menues[mnTOOLS],mxID_CUSTOM_TOOL_0+i));
 		AddToolbarItem(tbTOOLS,myToolbarItem("custom_settings",menues[mnTOOLS],mxID_TOOLS_CUSTOM_TOOLS_SETTINGS));
 	}
 	
@@ -553,7 +551,7 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 			current_menu=new_menu;
 		} else if (props&maEND_SUBMENU) {
 			current_menu=menu_stack.back(); menu_stack.pop_back();
-		} else {
+		} else if (!(props&maHIDDEN)) {
 			if (props&(maCHECKED|maCHECKEABLE))
 				wx_item = utils->AddCheckToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,props&maCHECKED);
 			else 
@@ -579,7 +577,7 @@ void MenusAndToolsConfig::CreateMenues () {
 	for(unsigned int menu_id=0;menu_id<mnCOUNT;menu_id++) PopulateMenu(menu_id);
 	
 	// create some special submenues
-	main_window->UpdateCustomTools(false);
+//	main_window->UpdateCustomTools(false);
 	wxString ipre=DIR_PLUS_FILE("16","recent");
 	for(int k=0;k<2;k++) { 
 		wxString *cfglast = k==0?config->Files.last_project:config->Files.last_source;
@@ -784,7 +782,45 @@ int MenusAndToolsConfig::ToolbarFromTool(int tool_id) {
 
 void MenusAndToolsConfig::CreateMenuesAndToolbars (mxMainWindow * _main_window) {
 	main_window=_main_window;
+	TransferStatesFromConfig();
 	CreateToolbars();
 	CreateMenues();
 }
 
+MenusAndToolsConfig::myMenuItem *MenusAndToolsConfig::GetMyMenuItem (int menu_id, int item_id) {
+	vector<myMenuItem> &v = menues[menu_id].items;
+	for(unsigned int i=0;i<v.size();i++) { 
+		if (v[i].wx_id==item_id) return &(v[i]);
+	}
+	return NULL;
+}
+
+MenusAndToolsConfig::myToolbarItem *MenusAndToolsConfig::GetMyToolbarItem (int toolbar_id, int item_id) {
+	vector<myToolbarItem> &v = toolbars[toolbar_id].items;
+	for(unsigned int i=0;i<v.size();i++) { 
+		if (v[i].wx_id==item_id) return &(v[i]);
+	}
+	return NULL;
+}
+
+void MenusAndToolsConfig::TransferStatesFromConfig() {
+	// sync menu check item with toolbar visibility status
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_FILE)->Checkeable(_toolbar_visible(tbFILE));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_EDIT)->Checkeable(_toolbar_visible(tbEDIT));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_VIEW)->Checkeable(_toolbar_visible(tbVIEW));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_FIND)->Checkeable(_toolbar_visible(tbFIND));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_RUN)->Checkeable(_toolbar_visible(tbRUN));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_TOOLS)->Checkeable(_toolbar_visible(tbTOOLS));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_PROJECT)->Checkeable(_toolbar_visible(tbPROJECT));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_DEBUG)->Checkeable(_toolbar_visible(tbDEBUG));
+	GetMyMenuItem(mnVIEW,mxID_VIEW_TOOLBAR_MISC)->Checkeable(_toolbar_visible(tbMISC));
+	if (!config->Init.left_panels) GetMyMenuItem(mnVIEW,mxID_VIEW_LEFT_PANELS)->Hide();
+	GetMyMenuItem(mnTOOLS,mxID_TOOLS_GPROF_DOT)->Checkeable(config->Init.graphviz_dot);
+	GetMyMenuItem(mnTOOLS,mxID_TOOLS_GPROF_FDP)->Checkeable(config->Init.graphviz_dot);
+	for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
+		wxString str; str<<i<<": "<<config->CustomTools[i].name;
+		wxString desc(LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables")); desc<<" -> "<<i<<": "<<config->CustomTools[i].command;
+		GetMyMenuItem(mnTOOLS,mxID_CUSTOM_TOOL_0+i)->Label(str).Description(config->CustomTools[i].command).SetVisible(!config->CustomTools[i].name.IsEmpty());
+		GetMyToolbarItem(mnTOOLS,mxID_CUSTOM_TOOL_0+i)->Label(str).Description(desc).SetVisible(config->CustomTools[i].on_toolbar);
+	}
+}

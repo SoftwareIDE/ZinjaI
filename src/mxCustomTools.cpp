@@ -115,6 +115,7 @@ void mxCustomTools::OnButtonOk(wxCommandEvent &event) {
 		"¿Desea activarla para ver los controles personalizados?"), _T("Reiniciar Barras de Herramientas"), mxMD_YES_NO).ShowModal()) {
 			main_window->OnToggleToolbar(wx_id,tb_id,true);
 		}
+	menu_data->TransferStatesFromConfig();
 	menu_data->UpdateToolbar(tb_id,true);
 	main_window->UpdateCustomTools(for_project);
 	Close();
