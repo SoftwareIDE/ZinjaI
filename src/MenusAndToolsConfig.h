@@ -127,8 +127,8 @@ private:
 		int wx_id; bool visible, checkeable;
 		wxString key, label, description, icon;
 		myToolbarItem(){}
-		myToolbarItem(const wxString &_key, int _id, const wxString &_icon, const wxString &_label):wx_id(_id),visible(false),key(_key),label(_label),icon(_icon) {}
-		myToolbarItem(const wxString &_key, myMenu &menu, int _wx_id) : wx_id(_wx_id), visible(false), key(_key) {
+		myToolbarItem(const wxString &_key, int _id, const wxString &_icon, const wxString &_label):wx_id(_id),visible(false),checkeable(false),key(_key),label(_label),icon(_icon) {}
+		myToolbarItem(const wxString &_key, myMenu &menu, int _wx_id) : wx_id(_wx_id), visible(false),checkeable(false),key(_key) {
 			wxString menulabel=menu.label; int submenu_deep=0;
 			for(unsigned int i=0,l=menu.items.size();i<l;i++) { 
 				myMenuItem &mi = menu.items[i];
