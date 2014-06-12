@@ -586,7 +586,7 @@ void MenusAndToolsConfig::CreateMenues () {
 		int history_id = k==0?mxID_FILE_PROJECT_HISTORY_0:mxID_FILE_SOURCE_HISTORY_0;
 		for (int i=0;i<config->Init.history_len;i++)
 			if (!cfglast[i].IsEmpty()) 
-				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],wxString(ipre+"recent")<<i<<(".png"),i);
+				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],wxString(ipre)<<i<<(".png"),i);
 	}
 	
 	// set items state

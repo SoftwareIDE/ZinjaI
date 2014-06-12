@@ -31,21 +31,20 @@ void mxMainWindow::UpdateInHistory(wxString filename, bool is_project) {
 	cfglast[0]=filename;
 	// actualizar el menu archivo
 	for (i=0;i<config->Init.history_len;i++) {
-		wxString icon_fname=wxString("recent")<<i<<".png";
+		wxString icon_fname=wxString(ipre)<<i<<".png";
 #if defined(_WIN32) || defined(__WIN32__)
 		if (mnihistory[i])
 			mnurecent->Remove(mnihistory[i]);
 		if (cfglast[i][0])
-			mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],icon_fname,i);
+			mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],ipre+icon_fname,i);
 #else
 		if (cfglast[i][0])
 			if (mnihistory[i]) {
-				icon_fname=SKIN_FILE_OPT(icon_fname);
 				if (wxFileName::FileExists(icon_fname))
-					mnihistory[i]->SetBitmap(wxBitmap(icon_fname,wxBITMAP_TYPE_PNG));
+					mnihistory[i]->SetBitmap(wxBitmap(ipre+icon_fname,wxBITMAP_TYPE_PNG));
 				mnurecent->SetLabel(mnihistory[i]->GetId(),cfglast[i]);
 			} else {
-				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],icon_fname,i);
+				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],ipre+icon_fname,i);
 			}
 			else
 				break;
