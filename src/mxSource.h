@@ -51,19 +51,19 @@ class NavigationHistory {
 	struct Location {
 		wxString file;
 		mxSource *src;
-		int pos;
-		Location():src(NULL),pos(0){}
+		int line;
+		Location():src(NULL),line(0){}
 	};
 	Location locs[MAX_NAVIGATION_HISTORY_LEN];
 	int hsize, hcur, hbase; // hcur y hsize son relativos a hbase
 	mxSource *focus_source;
 	bool jumping;
 	void Goto(int i);
-	void Add(mxSource *src, int pos);
+	void Add(mxSource *src, int line);
 public:
 	NavigationHistory():hsize(1),hcur(0),hbase(0),focus_source(NULL),jumping(false) {}
 	void OnFocus(mxSource *src);
-	void OnJump(mxSource *src, int current_line, int current_pos);
+	void OnJump(mxSource *src, int current_line);
 	void OnClose(mxSource *src);
 	void Prev();
 	void Next();

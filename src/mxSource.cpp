@@ -56,7 +56,7 @@ void NavigationHistory::Goto(int i) {
 			}
 	}
 	if (loc.src) {
-		loc.src->GotoPos(loc.pos);
+		loc.src->GotoPos(loc.src->GetLineIndentPosition(loc.line));
 		loc.src->SetFocus();
 	}
 	jumping=false;
@@ -71,7 +71,7 @@ void NavigationHistory::OnFocus(mxSource *src) {
 //	if (!jumping) Add(src,src->GetCurrentPos());
 }
 
-void NavigationHistory::OnJump(mxSource *src, int current_line, int current_pos) {
+void NavigationHistory::OnJump(mxSource *src, int current_line) {
 //cerr<<"NAV:OnJump("<<src<<","<<current_line<<")"<<endl;
 	const int min_long_jump_len=10;
 	if (!jumping) {
@@ -80,24 +80,24 @@ void NavigationHistory::OnJump(mxSource *src, int current_line, int current_pos)
 			||
 			current_line<=src->old_current_line-min_long_jump_len
 		) {
-			Add(src,current_pos);
+			Add(src,current_line);
 		} else {
 			Location &old_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
-			old_loc.pos=current_pos;
+			old_loc.line=current_line;
 		}
 	}
 	src->old_current_line=current_line;
 }
 
-void NavigationHistory::Add(mxSource *src, int pos) {
+void NavigationHistory::Add(mxSource *src, int line) {
 	Location &old_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
-	if (old_loc.src==src&&old_loc.pos==pos) return;
+	if (old_loc.src==src&&old_loc.line==line) return;
 //cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 //cerr<<"NAV:Add("<<this<<","<<pos<<")"<<endl;
 	if (hsize<MAX_NAVIGATION_HISTORY_LEN) hsize=(++hcur)+1;
 	else hbase=(hbase+1)%MAX_NAVIGATION_HISTORY_LEN;
 	Location &new_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
-	new_loc.src=src; new_loc.pos=pos;
+	new_loc.src=src; new_loc.line=line;
 //cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 }
 
@@ -799,35 +799,10 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 	int ss = GetSelectionStart();
 	int min=LineFromPosition(ss);
 	
-	
-	/// @todo: recuperar el funcionamiento de esto que está comentado (descomentar seleccion comentada con /* y */)
-//	if (GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!=_T("//")) {
-//		BeginUndoAction();
-//		int se=ss, l=GetLength();
-//		while (ss>0 && (GetCharAt(ss)!='/' || GetCharAt(ss+1)!='*') )
-//			ss--;
-//		if (!se) 
-//			se++;
-//		while (se<l && (GetCharAt(se-1)!='*' || GetCharAt(se)!='/') )
-//			se++;
-//		if (GetCharAt(se)=='/' && GetCharAt(se-1)=='*') {
-//			SetTargetStart(se-1);
-//			SetTargetEnd(se+1);
-//			ReplaceTarget("");
-//		}
-//		if (GetCharAt(ss)=='/' && GetCharAt(ss+1)=='*') {
-//			SetTargetStart(ss);
-//			SetTargetEnd(ss+2);
-//			ReplaceTarget("");
-//		}
-//		SetSelection(ss,se-3);
-//		EndUndoAction();
-//		return;
-//	}
-	
 	int max=LineFromPosition(GetSelectionEnd());
 	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 	BeginUndoAction();
+	bool did_something=false;
 	for (int i=min;i<=max;i++) {
 		int s, p=GetLineIndentPosition(i); char c=GetCharAt(p+1);; // s y c se reutilizan para II_*
 		if (II_IS_COMMENT(p)) {
@@ -859,9 +834,36 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 					SetTargetEnd(p);
 					ReplaceTarget("/*");
 				}
+				did_something=true; // can we just return now?
 			} 
 		}
 	}
+	
+	// si no hizo nada por linea, recupera el funcionamiento original para comentarios con /* y */ dentro de una linea
+	if (!did_something && GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!=_T("//")) {
+		BeginUndoAction();
+		int se=ss, l=GetLength();
+		while (ss>0 && (GetCharAt(ss)!='/' || GetCharAt(ss+1)!='*') )
+			ss--;
+		if (!se) 
+			se++;
+		while (se<l && (GetCharAt(se-1)!='*' || GetCharAt(se)!='/') )
+			se++;
+		if (GetCharAt(se)=='/' && GetCharAt(se-1)=='*') {
+			SetTargetStart(se-1);
+			SetTargetEnd(se+1);
+			ReplaceTarget("");
+		}
+		if (GetCharAt(ss)=='/' && GetCharAt(ss+1)=='*') {
+			SetTargetStart(ss);
+			SetTargetEnd(ss+2);
+			ReplaceTarget("");
+		}
+		SetSelection(ss,se-3);
+		EndUndoAction();
+		return;
+	}
+	
 	EndUndoAction();
 }
 
@@ -982,7 +984,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	}
 	int p=GetCurrentPos();
 	
-	navigation_history.OnJump(this,cl,p);
+	navigation_history.OnJump(this,cl);
 	
 	if (!config_source.lineNumber)
 		main_window->status_bar->SetStatusText(wxString("Lin ")<<cl<<" - Col "<<p-PositionFromLine(cl),1);
