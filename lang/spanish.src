@@ -2,14 +2,14 @@ HTMLEXPORT_STATUS
 Exportando...
 GENERAL_READY
 Listo
+CONFIG_APTGET_BUILD_ESSENTIAL
+Intentar instalar ahora
 CONFIG_TERMINAL_WARNING
 La aplicacion terminal que se ha encontrado instalada\nes <{1}>. Algunas versiones de esta terminal pueden generar\nproblemas al intentar ejecutar un programa o proyecto. Si no logra\nejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\nque compile, intente configurar otra terminal (menú Archivo->Preferencias...\npestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\nrecomendada es xterm).
 CONFIG_TERMINAL
 Terminal de ejecucion
 CONFIG_NO_TERMINAL_FOUND
-No se ha encontrado una terminal conocida.\nInstale xterm, konsole, lxterminal o gnome-terminal;\nluego configure el parametro \"Comando del Terminal\"\nen la seccion \"Rutas 2\" del cuadro de \"Preferencias\".
-CONFIG_APTGET_BUILD_ESSENTIAL
-Intentar instalar ahora
+No se ha encontrado una terminal conocida. Se recomienda instalar\nxterm; luego configure el parametro \"Comando del Terminal\" en la\nseccion \"Rutas 2\" del cuadro de \"Preferencias\".
 CONFIG_COMPILER_NOT_FOUND
 No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
 CONFIG_COMPILER
@@ -196,6 +196,1016 @@ PARSERHELP_NO_RESULTS
 No se encontro ayuda rápida para la palabra seleccionada: <{1}>
 PARSERHELP_GOTO_CPPREFENCE
 Buscar \"<{1}>\" en la referencia C/C++...
+MENUITEM_FILE
+&Archivo
+MENUITEM_FILE_NEW
+&Nuevo...
+MENUITEM_FILE_NEW_PROJECT
+&Nuevo Proyecto...
+MENUITEM_FILE_OPEN
+&Abrir...
+MENUITEM_FILE_RECENT_SOURCES
+Fuentes Abiertos Recientemente
+MENU_FILE_RECENT_MORE
+Mas...
+MENUITEM_FILE_RECENT_PROJECTS
+Proyectos Abiertos Recientemente
+MENUITEM_FILE_SAVE
+&Guardar
+MENUITEM_FILE_SAVE_AS
+G&uardar Como...
+MENUITEM_FILE_SAVE_ALL
+Guardar &Todo...
+MENUITEM_FILE_SAVE_PROJECT
+Guar&dar Proyecto
+MENUITEM_FILE_EXPORT_HTML
+Exportar a HTML...
+MENUITEM_FILE_PRINT
+&Imprimir...
+MENUITEM_FILE_RELOAD
+&Recargar
+MENUITEM_FILE_CLOSE
+&Cerrar
+MENUITEM_FILE_CLOSE_ALL
+Cerrar &Todo
+MENUITEM_FILE_CLOSE_PROJECT
+Cerrar Pro&yecto
+MENUITEM_FILE_PROJECT_CONFIG
+&Configuracion del Proyecto...
+MENUITEM_FILE_PREFERENCES
+&Preferencias...
+MENUITEM_FILE_EXIT
+&Salir
+MENUITEM_EDIT
+&Edicion
+MENUITEM_EDIT_UNDO
+&Deshacer
+MENUITEM_EDIT_REDO
+&Rehacer
+MENUITEM_EDIT_CUT
+C&ortar
+MENUITEM_EDIT_COPY
+&Copiar
+MENUITEM_EDIT_PASTE
+&Pegar
+MENUITEM_EDIT_LINES_UP
+Mover Hacia Arriba
+MENUITEM_EDIT_LINES_DOWN
+Mover Hacia Abajo
+MENUITEM_EDIT_DUPLICATE_LINES
+&Duplicar Linea(s)
+MENUITEM_EDIT_DELETE_LINES
+&Eliminar Linea(s)
+MENUITEM_EDIT_GOTO_FUNCTION
+&Ir a Funcion/Clase/Metodo...
+MENUITEM_EDIT_GOTO_FILE
+&Ir a Archivo...
+MENUITEM_EDIT_GOTO_LINE
+&Ir a Linea...
+MENUITEM_EDIT_FIND
+&Buscar...
+MENUITEM_EDIT_FIND_PREV
+Buscar &Anterior
+MENUITEM_EDIT_FIND_NEXT
+Buscar &Siguiente
+MENUITEM_EDIT_REPLACE
+&Reemplazar...
+MENUITEM_EDIT_INSERT_INCLUDE
+Insertar #include Correspondiente
+MENUITEM_EDIT_COMMENT
+Comentar
+MENUITEM_EDIT_UNCOMMENT
+Descomentar
+MENUITEM_EDIT_INDENT
+Indentar Blo&que
+MENUITEM_EDIT_BRACEMATCH
+Seleccionar Blo&que
+MENUITEM_EDIT_SELECT_ALL
+&Seleccionar Todo
+MENUITEM_EDIT_HIGHLIGHT_LINES
+&Resaltar Linea(s)/Quitar Resaltado
+MENUITEM_EDIT_FIND_HIGHLIGHTS
+Buscar &Resaltado
+MENUITEM_EDIT_LIST_HIGHLIGHTS
+&Listar Lineas Resaltadas
+MENUITEM_VIEW
+if_not_apple(
+MENUITEM_VIEW_SPLIT_VIEW
+&Duplicar vista
+MENUITEM_VIEW_LINE_WRAP
+&Ajuste de linea
+MENUITEM_VIEW_WHITE_SPACES
+Mostrar espacios y caracteres de &fin de linea
+MENUITEM_VIEW_SYNTAX_HIGHLIGHT
+&Colorear Sintaxis
+MENUITEM_VIEW_CODE_COLOURS
+Configurar esquema de colores...
+MENUITEM_VIEW_FOLDING
+Plegado
+MENUITEM_FOLD_FOLD_THIS_LINE
+Plegar en esta linea
+MENUITEM_FOLD_UNFOLD_THIS_LINE
+Desplegar en esta linea
+MENUITEM_FOLD_FOLD_LEVEL_1
+Plegar el primer nivel
+MENUITEM_FOLD_FOLD_LEVEL_2
+Plegar el segundo nivel
+MENUITEM_FOLD_FOLD_LEVEL_3
+Plegar el tercer nivel
+MENUITEM_FOLD_FOLD_LEVEL_4
+Plegar el cuarto nivel
+MENUITEM_FOLD_FOLD_LEVEL_5
+Plegar el quinto nivel
+MENUITEM_FOLD_FOLD_ALL_LEVELS
+Plegar todos los niveles
+MENUITEM_FOLD_UNFOLD_LEVEL_1
+Desplegar el primer nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_2
+Desplegar el segundo nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_3
+Desplegar el tercer nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_4
+Desplegar el cuarto nivel
+MENUITEM_FOLD_UNFOLD_LEVEL_5
+Desplegar el quinto nivel
+MENUITEM_FOLD_UNFOLD_ALL_LEVELS
+Desplegar todos los niveles
+MENUITEM_VIEW_FULLSCREEN
+Ver a Pantalla &Completa
+MENUITEM_VIEW_BEGINNER_PANEL
+Mostrar Panel de Mini-Plantillas
+MENUITEM_VIEW_LEFT_PANELS
+&Mostrar Panel de Arboles
+MENUITEM_VIEW_PROJECT_TREE
+&Mostrar Arbol de &Proyecto
+MENUITEM_VIEW_EXPLORER_TREE
+Mostrar &Explorardor de Archivos
+MENUITEM_VIEW_SYMBOLS_TREE
+Mostrar Arbol de &Simbolos
+MENUITEM_VIEW_COMPILER_TREE
+&Mostrar Resultados de la Compilacion
+MENUITEM_VIEW_TOOLBARS
+Barras de herramientas
+MENUITEM_VIEW_TOOLBAR_FILE
+&Mostrar Barra de Herramientas Archivo
+MENUITEM_VIEW_TOOLBAR_EDIT
+&Mostrar Barra de Herramientas Edicion
+MENUITEM_VIEW_TOOLBAR_VIEW
+&Mostrar Barra de Herramientas Ver
+MENUITEM_VIEW_TOOLBAR_FIND
+&Mostrar Barra de Busqueda Rapida
+MENUITEM_VIEW_TOOLBAR_RUN
+&Mostrar Barra de Herramientas Ejecucion
+MENUITEM_VIEW_TOOLBAR_TOOLS
+&Mostrar Barra de Herramientas Herramientas
+MENUITEM_VIEW_TOOLBAR_PROJECT
+&Mostrar Barra de Herramientas Proyecto
+MENUITEM_VIEW_TOOLBAR_DEBUG
+&Mostrar Barra de Herramientas Depuracion
+MENUITEM_VIEW_TOOLBAR_MISC
+&Mostrar Barra de Herramientas Miscelanea
+MENUITEM_VIEW_TOOLBARS_CONFIG
+&Configurar...
+MENUITEM_VIEW_PREV_ERROR
+&Ir a error anterior
+MENUITEM_VIEW_NEXT_ERROR
+&Ir a siguiente error
+MENUITEM_RUN
+E&jecucion
+MENUITEM_RUN_RUN
+&Ejecutar...
+MENUITEM_RUN_OLD
+Ejecutar (sin recompilar)...
+MENUITEM_RUN_COMPILE
+&Compilar
+MENUITEM_RUN_CLEAN
+&Limpiar
+MENUITEM_RUN_STOP
+&Detener
+MENUITEM_RUN_OPTIONS
+&Opciones...
+MENUITEM_DEBUG
+&Depuracion
+MENUITEM_DEBUG_START
+&Iniciar/Continuar
+MENUITEM_DEBUG_PAUSE
+Interrum&pir
+MENUITEM_DEBUG_STOP
+&Detener
+MENUITEM_DEBUG_STEP_IN
+Step &In
+MENUITEM_DEBUG_STEP_OVER
+Step &Over
+MENUITEM_DEBUG_STEP_OUT
+Step O&ut
+MENUITEM_DEBUG_RUN_UNTIL
+Ejecutar &Hasta el Cursor
+MENUITEM_DEBUG_RETURN
+&Return
+MENUITEM_DEBUG_JUMP
+Continuar Desde Aqui
+MENUITEM_DEBUG_TOGGLE_BREAKPOINT
+&Agregar/quitar Breakpoint
+MENUITEM_DEBUG_BREAKPOINT_OPTIONS
+&Opciones del Breakpoint...
+MENUITEM_DEBUG_LIST_BREAKPOINTS
+&Listar Watch/Break points...
+MENUITEM_DEBUG_INSPECT
+Panel de In&specciones
+MENUITEM_DEBUG_BACKTRACE
+&Trazado Inverso
+MENUITEM_DEBUG_THREADLIST
+&Hilos de Ejecucion
+MENUITEM_DEBUG_SHOW_LOG_PANEL
+&Mostrar mensajes del depurador
+MENUITEM_DEBUG_MORE
+Más...
+MENUITEM_DEBUG_ATTACH
+&Adjuntar...
+MENUITEM_DEBUG_LOAD_CORE_DUMP
+Cargar &Volcado de Memoria...
+MENUITEM_SAVE_CORE_DUMP
+Guardar &Volcado de Memoria...
+MENUITEM_DEBUG_ENABLE_INVERSE
+Habilitar Ejecucion Hacia Atras
+MENUITEM_DEBUG_INVERSE
+Ejecutar Hacia Atras
+MENUITEM_DEBUG_SET_SIGNALS
+Configurar comportamiento ante señales...
+MENUITEM_DEBUG_SEND_SIGNALS
+Enviar señal...
+MENUITEM_DEBUG_GDB_COMMAND
+Introducir comandos gdb...
+MENUITEM_DEBUG_PATCH
+Actualizar ejecutable (experimental)...
+MENUITEM_TOOLS
+&Herramientas
+MENUITEM_TOOLS_DRAW_FLOWCHART
+Dibujar Diagrama de &Flujo...
+MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
+Dibujar &Jerarquia de Clases...
+MENUITEM_TOOLS_CODE_COPY_FROM_H
+Implementar Métodos/Funciones faltantes...
+MENUITEM_TOOLS_COMMENTS
+Coment&arios
+MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
+&Alinear Comentarios...
+MENUITEM_TOOLS_COMMENTS_COMMENT
+&Comentar
+MENUITEM_TOOLS_COMMENTS_UNCOMMENT
+&Descomentar
+MENUITEM_TOOLS_COMMENTS_DELETE_COMMENTS
+&Eliminar Comentarios
+MENUITEM_TOOLS_PREPROC
+Preprocesador
+MENUITEM_TOOLS_PREPROC_EXPAND_MACROS
+Expandir Macros
+MENUITEM_TOOLS_PREPROC_MARK_VALID
+Marcar Lineas No Compiladas
+MENUITEM_TOOLS_PREPROC_UNMARK_ALL
+Borrar Marcas
+MENUITEM_TOOLS_PREPROC_HELP
+Ayuda...
+MENUITEM_TOOLS_GENERATE_MAKEFILE
+&Generar Makefile...
+MENUITEM_TOOLS_OPEN_TERMINAL
+Abrir Co&nsola...
+MENUITEM_TOOLS_EXE_INFO
+&Propiedades del Ejecutable...
+MENUITEM_TOOLS_PROJECT_STATISTICS
+E&stadisticas del Proyecto...
+MENUITEM_TOOLS_DRAW_PROJECT
+Grafo del Proyecto...
+MENUITEM_TOOLS_SHARE
+Compartir Archivos en la &Red Local
+MENUITEM_TOOLS_SHARE_OPEN
+&Abrir compartido...
+MENUITEM_TOOLS_SHARE_SHARE
+&Compartir actual...
+MENUITEM_TOOLS_SHARE_LIST
+&Ver lista de compartidos propios...
+MENUITEM_TOOLS_SHARE_HELP
+A&yuda...
+MENUITEM_TOOLS_DIFF
+&Comparar Archivos (diff)
+MENUITEM_TOOLS_DIFF_TWO
+&Dos fuentes abiertos...
+MENUITEM_TOOLS_DIFF_DISK
+&Fuente actual contra archivo en disco...
+MENUITEM_TOOLS_DIFF_HIMSELF
+&Cambios en fuente actual contra su version en disco...
+MENUITEM_TOOLS_DIFF_PREV
+Ir a Diferencia Anterior
+MENUITEM_TOOLS_DIFF_NEXT
+Ir a Siguiente Diferencia
+MENUITEM_TOOLS_DIFF_SHOW
+Mostrar Cambio
+MENUITEM_TOOLS_DIFF_APPLY
+Apl&icar Cambio
+MENUITEM_TOOLS_DIFF_DISCARD
+De&scartar Cambio
+MENUITEM_TOOLS_DIFF_CLEAR
+&Borrar Marcas
+MENUITEM_TOOLS_DIFF_HELP
+A&yuda...
+MENUITEM_TOOLS_DOXYGEN
+Generar &Documentación (doxygen)
+MENUITEM_TOOLS_DOXYGEN_GENERATE
+&Generar...
+MENUITEM_TOOLS_DOXYGEN_CONFIGURE
+&Configurar...
+MENUITEM_TOOLS_DOXYGEN_VIEW
+&Ver...
+MENUITEM_TOOLS_DOXYGE_HELP
+A&yuda...
+MENUITEM_TOOLS_WXFB
+Diseñar &Interfases (wxFormBuilder)
+MENUITEM_TOOLS_WXFB_CONFIG
+Configurar &Integracion con wxFormBuilder...
+MENUITEM_TOOLS_WXFB_NEW_RESOURCE
+&Adjuntar un Nuevo Proyecto wxFB...
+MENUITEM_TOOLS_WXFB_LOAD_RESOURCE
+&Adjuntar un Proyecto wxFB Existente...
+MENUITEM_TOOLS_WXFB_REGENERATE
+&Regenerar Proyectos wxFB
+MENUITEM_TOOLS_WXFB_INHERIT
+&Generar Clase Heredada...
+MENUITEM_TOOLS_WXFB_UPDATE_INHERIT
+Act&ualizar Clase Heredada...
+MENUITEM_TOOLS_WXFB_REFERENCE
+Referencia &wxWidgets...
+MENUITEM_TOOLS_WXFB_HELP
+A&yuda wxFB...
+MENUITEM_TOOLS_CPPCHECK
+Análisis Estático (cppcheck)
+MENUITEM_TOOLS_CPPCHECK_RUN
+Iniciar...
+MENUITEM_TOOLS_CPPCHECK_CONFIG
+Configurar...
+MENUITEM_TOOLS_CPPCHECK_VIEW
+Mostrar Panel de Resultados
+MENUITEM_TOOLS_CPPCHECK_HELP
+A&yuda...
+MENUITEM_TOOLS_GPROF
+Perfil de Ejecución (gprof)
+MENUITEM_TOOLS_GPROF_ACTIVATE
+Habilitar/Deshabilitar
+MENUITEM_TOOLS_GPROF_LAYOUT
+Algoritmo de Dibujo
+MENUITEM_TOOLS_GPROF_DOT
+dot
+MENUITEM_TOOLS_GPROF_FDP
+fdp
+MENUITEM_TOOLS_GPROF_SHOW
+Visualizar Resultados (grafo)...
+MENUITEM_TOOLS_GPROF_LIST
+Listar Resultados (texto)
+MENUITEM_TOOLS_GPROF_HELP
+A&yuda...
+MENUITEM_TOOLS_GCOV
+&Test de Cobertura (experimental, gcov)
+MENUITEM_TOOLS_GCOV_ACTIVATE
+Habilitar/Deshabilitar
+MENUITEM_TOOLS_GCOV_SHOW_BAR
+Mostrar barra de resultados
+MENUITEM_TOOLS_GCOV_RESET
+Eliminar resultados
+MENUITEM_TOOLS_GCOV_HELP
+A&yuda...
+MENUITEM_TOOLS_VALGRIND
+Análisis Dinámico (valgrind)
+MENUITEM_TOOLS_VALGRIND_RUN
+Ejecutar...
+MENUITEM_TOOLS_VALGRIND_VIEW
+Mostrar Panel de Resultados
+MENUITEM_TOOLS_VALGRIND_HELP
+A&yuda...
+MENUITEM_TOOLS_CUSTOM_TOOLS
+Herramientas Personalizables
+MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS
+&Configurar (generales)...
+MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS
+&Configurar (de proyecto)...
+MENUITEM_TOOLS_CUSTOM_HELP
+A&yuda...
+MENUITEM_TOOLS_CREATE_TEMPLATE
+Guardar como nueva plantilla...
+MENUITEM_TOOLS_INSTALL_COMPLEMENTS
+Instalar Complementos...
+MENUITEM_HELP
+A&yuda
+MENUITEM_HELP_ABOUT
+Acerca de...
+MENUITEM_HELP_TUTORIALS
+Tutoriales...
+MENUITEM_HELP_ZINJAI
+Ayuda sobre ZinjaI...
+MENUITEM_HELP_CPP
+Referencia C/C++...
+MENUITEM_HELP_TIPS
+&Mostrar sugerencias de uso...
+MENUITEM_HELP_OPINION
+Enviar sugerencia o reportar error...
+MENUITEM_HELP_UPDATES
+&Buscar actualizaciones...
+CAPTION_TOOLBAR_FILE
+Archivo
+TOOLBAR_CAPTION_FILE_NEW
+Nuevo...
+TOOLBAR_DESC_FILE_NEW
+Archivo -> Nuevo...
+TOOLBAR_CAPTION_FILE_NEW_PROJECT
+Nuevo Proyecto...
+TOOLBAR_DESC_FILE_NEW_PROJECT
+Archivo -> Nuevo Proyecto...
+TOOLBAR_CAPTION_FILE_OPEN
+Abrir...
+TOOLBAR_DESC_FILE_OPEN
+Archivo -> Abrir...
+TOOLBAR_CAPTION_FILE_RECENT_SOURCES
+Fuentes Recientes...
+TOOLBAR_DESC_FILE_RECENT_SOURCES
+Archivo -> Fuentes Abiertos Recientemente...
+TOOLBAR_CAPTION_FILE_RECENT_PROJECTS
+Proyectos Recientes...
+TOOLBAR_DESC_FILE_RECENT_PROJECTS
+Archivo -> Proyectos Abiertos Recientemete...
+TOOLBAR_CAPTION_FILE_OPEN_H
+Abrir h/cpp Complementario
+TOOLBAR_DESC_FILE_OPEN_H
+Abrir h/cpp Complementario
+TOOLBAR_CAPTION_FILE_OPEN_SELECTED
+Abrir Seleccionado
+TOOLBAR_DESC_FILE_OPEN_SELECTED
+Archivo -> Abrir Seleccionado
+TOOLBAR_CAPTION_FILE_SAVE
+Guardar
+TOOLBAR_DESC_FILE_SABE
+Archivo -> Guardar
+TOOLBAR_CAPTION_FILE_SAVE_AS
+Guardar Como...
+TOOLBAR_DESC_FILE_SAVE_AS
+Archivo -> Guardar Como...
+TOOLBAR_CAPTION_FILE_SAVE_ALL
+Guardar Todo
+TOOLBAR_DESC_FILE_SAVE_ALL
+Archivo -> Guardar Todo
+TOOLBAR_CAPTION_FILE_SAVE_PROJECT
+Guardar Proyecto
+TOOLBAR_DESC_FILE_SAVE_PROJECT
+Archivo -> Guardar Proyecto
+TOOLBAR_CAPTION_FILE_EXPORT_HTML
+Exportar a HTML...
+TOOLBAR_DESC_FILE_EXPORT_HTML
+Archivo -> Exportar a HTML...
+TOOLBAR_CAPTION_FILE_PRINT
+Imprimir...
+TOOLBAR_DESC_FILE_PRINT
+Archivo -> Imprimir...
+TOOLBAR_CAPTION_FILE_RELOAD
+Recargar
+TOOLBAR_DESC_FILE_RELOAD
+Archivo -> Recargar
+TOOLBAR_CAPTION_FILE_CLOSE
+Cerrar
+TOOLBAR_DESC_FILE_CLOSE
+Archivo -> Cerrar
+TOOLBAR_CAPTION_FILE_CLOSE_ALL
+Cerrar Todo
+TOOLBAR_DESC_FILE_CLOSE_ALL
+Archivo -> Cerrar Todo
+TOOLBAR_CAPTION_FILE_CLOSE_PROJECT
+Cerrar Proyecto
+TOOLBAR_DESC_FILE_CLOSE_PROJECT
+Archivo -> Cerrar Proyecto
+TOOLBAR_CAPTION_FILE_PROJECT_CONFIG
+Configuracion de proyecto...
+TOOLBAR_DESC_FILE_PROJECT_CONFIG
+Archivo -> Configuracion del Proyecto...
+CAPTION_TOOLBAR_EDIT
+Edición
+TOOLBAR_CAPTION_EDIT_UNDO
+Deshacer
+TOOLBAR_DESC_EDIT_UNDO
+Editar -> Deshacer
+TOOLBAR_CAPTION_EDIT_REDO
+Rehacer
+TOOLBAR_DESC_EDIT_REDO
+Editar -> Rehacer
+TOOLBAR_CAPTION_EDIT_COPY
+Copiar
+TOOLBAR_DESC_EDIT_COPY
+Editar -> Copiar
+TOOLBAR_CAPTION_EDIT_CUT
+Cortar
+TOOLBAR_DESC_EDIT_CUT
+Editar -> Cortar
+TOOLBAR_CAPTION_EDIT_PASTE
+Pegar
+TOOLBAR_DESC_EDIT_PASTE
+Editar -> Pegar
+TOOLBAR_CAPTION_EDIT_LINES_UP
+Mover Hacia Arriba
+TOOLBAR_DESC_EDIT_LINES_UP
+Editar -> Mover Hacia Arriba
+TOOLBAR_CAPTION_EDIT_LINES_DOWN
+Mover Hacia Abajo
+TOOLBAR_DESC_EDIT_LINES_DOWN
+Editar -> Mover Hacia Abajo
+TOOLBAR_CAPTION_EDIT_DUPLICATE_LINES
+Duplicar Linea(s)
+TOOLBAR_DESC_EDIT_DUPLICATE_LINES
+Editar -> Duplicar Linea(s)
+TOOLBAR_CAPTION_EDIT_DELETE_LINES
+Eliminar Linea(s)
+TOOLBAR_DESC_EDIT_DELETE_LINES
+Editar -> Eliminar Linea(s)
+TOOLBAR_CAPTION_EDIT_GOTO_LINE
+Ir a Linea...
+TOOLBAR_DESC_EDIT_GOTO_LINE
+Editar -> Ir a linea...
+TOOLBAR_CAPTION_EDIT_GOTO_FUNCTION
+Ir a Clase/Metodo/Funcion...
+TOOLBAR_DESC_EDIT_GOTO_FUNCTION
+Editar -> Ir a Clase/Metodo/Funcion...
+TOOLBAR_CAPTION_EDIT_GOTO_FILE
+Ir a Archivo...
+TOOLBAR_DESC_EDIT_GOTO_FILE
+Editar -> Ir a Archivo...
+TOOLBAR_CAPTION_EDIT_FIND
+Buscar...
+TOOLBAR_DESC_EDIT_FIND
+Editar -> Buscar...
+TOOLBAR_CAPTION_EDIT_FIND_PREV
+Buscar anterior
+TOOLBAR_DESC_EDIT_FIND_PREV
+Editar -> Buscar Anterior
+TOOLBAR_CAPTION_EDIT_FIND_NEXT
+Buscar siguiente
+TOOLBAR_DESC_EDIT_FIND_NEXT
+Editar -> Buscar Siguiente
+TOOLBAR_CAPTION_EDIT_REPLACE
+Reemplazar...
+TOOLBAR_DESC_EDIT_REPLACE
+Editar -> Reemplazar...
+TOOLBAR_CAPTION_EDIT_INSERT_INCLUDE
+Insertar #include Correspondiente
+TOOLBAR_DESC_EDIT_INSERT_INCLUDE
+Editar -> Insertar #include Correspondiente
+TOOLBAR_CAPTION_EDIT_COMMENT
+Comentar
+TOOLBAR_DESC_EDIT_COMMNENT
+Editar -> Comentar
+TOOLBAR_CAPTION_EDIT_UNCOMMENT
+Descomentar
+TOOLBAR_DESC_EDIT_UNCOMMENT
+Editar -> Descomentar
+TOOLBAR_CAPTION_EDIT_INDENT
+Indentar
+TOOLBAR_DESC_EDIT_INDENT
+Editar -> Indentar
+TOOLBAR_CAPTION_EDIT_BRACEMATCH
+Seleccionar Bloque
+TOOLBAR_DESC_EDIT_BRACEMATCH
+Editar -> Seleccionar Bloque
+TOOLBAR_CAPTION_EDIT_SELECT_ALL
+Seleccionar Todo
+TOOLBAR_DESC_EDIT_SELECT_ALL
+Editar -> Seleccionar Todo
+TOOLBAR_CAPTION_EDIT_HIGHLIGHT_LINES
+Resaltar Linea(s)/Quitar Resaltado
+TOOLBAR_DESC_EDIT_HIGHLIGHT_LINES
+Editar -> Resaltar Linea(s)/Quitar Resaltado
+TOOLBAR_CAPTION_EDIT_FIND_HIGHLIGHTS
+Buscar Resaltado
+TOOLBAR_DESC_EDIT_FIND_HIGHLIGHTS
+Editar -> Buscar Resaltado
+TOOLBAR_CAPTION_EDIT_LIST_HIGHLIGHTS
+Listar Lineas Resaltadas
+TOOLBAR_DESC_EDIT_LIST_HIGHLIGHTS
+Editar -> Listar Lineas Resaltadas
+TOOLBAR_CAPTION_EDIT_FORCE_AUTOCOMPLETE
+Autocompletar
+TOOLBAR_DESC_EDIT_FORCE_AUTOCOMPLETE
+Editar -> Autocompletar
+CAPTION_TOOLBAR_VIEW
+Ver
+TOOLBAR_CAPTION_VIEW_SPLIT_VIEW
+Duplicar Vista
+TOOLBAR_DESC_VIEW_SPLIT_VIEW
+
+TOOLBAR_CAPTION_VIEW_LINE_WRAP
+Ajuste de Linea
+TOOLBAR_DESC_VIEW_LINE_WRAP
+
+TOOLBAR_CAPTION_VIEW_WHITE_SPACES
+Mostrar espacios y caracteres de de fin de linea
+TOOLBAR_DESC_VIEW_WHITE_SPACES
+
+TOOLBAR_CAPTION_VIEW_SYNTAX_HIGHLIGHT
+Colorear Sintaxis
+TOOLBAR_DESC_VIEW_SYNTAX_HIGHLIGHT
+
+TOOLBAR_CAPTION_VIEW_SYMBOLS_TREE
+Arbol de simbolos
+TOOLBAR_DESC_VIEW_SYMBOLS_TREE
+
+TOOLBAR_CAPTION_VIEW_EXPLORER_TREE
+Explorador de Archivos
+TOOLBAR_DESC_VIEW_EXPLORER_TREE
+
+TOOLBAR_CAPTION_VIEW_PROJECT_TREE
+Arbol de Proyecto
+TOOLBAR_DESC_VIEW_PROJECT_TREE
+
+TOOLBAR_CAPTION_VIEW_COMPILER_TREE
+Resultados de La Compilacion
+TOOLBAR_DESC_VIEW_COMPILER_TREE
+
+TOOLBAR_CAPTION_VIEW_FULLSCREEN
+Pantalla Completa
+TOOLBAR_DESC_VIEW_FULLSCREEN
+
+TOOLBAR_CAPTION_VIEW_BEGINNER_PANEL
+Panel de Asistencias
+TOOLBAR_DESC_VIEW_BEGINER_PANEL
+
+TOOLBAR_CAPTION_VIEW_PREV_ERROR
+Ir a Error Anterior
+TOOLBAR_DESC_VIEW_PREV_ERROR
+
+TOOLBAR_CAPTION_VIEW_NEXT_ERROR
+Ir a siguiente error
+TOOLBAR_DESC_VIEW_NEXT_ERROR
+
+TOOLBAR_CAPTION_FOLD_ALL_LEVELS
+Plegar Todos los Niveles
+TOOLBAR_DESC_FOLD_ALL_LEVELS
+
+TOOLBAR_CAPTION_FOLD_LEVEL_1
+Plegar el Primer Nivel
+TOOLBAR_DESC_FOLD_LEVEL_1
+
+TOOLBAR_CAPTION_FOLD_LEVEL_2
+Plegar el Segundo Nivel
+TOOLBAR_DESC_FOLD_LEVEL_2
+
+TOOLBAR_CAPTION_FOLD_LEVEL_3
+Plegar el Tercer Nivel
+TOOLBAR_DESC_FOLD_LEVEL_3
+
+TOOLBAR_CAPTION_UNFOLD_ALL_LEVELS
+Desplegar Todos los Niveles
+TOOLBAR_DESC_UNFOLD_ALL_LEVELS
+
+TOOLBAR_CAPTION_UNFOLD_LEVEL_1
+Desplegar el Primer Nivel
+TOOLBAR_DESC_UNFOLD_LEVEL_1
+
+TOOLBAR_CAPTION_UNFOLD_LEVEL_2
+Desplegar el Segundo Nivel
+TOOLBAR_DESC_UNFOLD_LEVEL_2
+
+TOOLBAR_CAPTION_UNFOLD_LEVEL_3
+Desplegar el Tercer Nivel
+TOOLBAR_DESC_UNFOLD_LEVEL_3
+
+CAPTION_TOOLBAR_RUN
+Ejecución
+TOOLBAR_CAPTION_RUN_COMPILE
+Compilar
+TOOLBAR_DESC_RUN_COMPILE
+Ejecucion -> Compilar
+TOOLBAR_CAPTION_RUN_RUN
+Guardar, Compilar y Ejecutar...
+TOOLBAR_DESC_RUN_RUN
+Ejecucion -> Guardar, Compilar y Ejecutar
+TOOLBAR_CAPTION_RUN_OLD
+Ejecutar Sin Recompilar...
+TOOLBAR_DESC_RUN_OLD
+Ejecucion -> Ejecutar Sin Recompilar
+TOOLBAR_CAPTION_RUN_STOP
+Detener
+TOOLBAR_DESC_RUN_STOP
+Ejecucion -> Detener
+TOOLBAR_CAPTION_RUN_CLEAN
+Limpiar
+TOOLBAR_DESC_RUN_CLEAN
+Ejecucion -> Limpiar
+TOOLBAR_CAPTION_RUN_OPTIONS
+Opciones de compilacion y ejecucion...
+TOOLBAR_DESC_RUN_OPTIONS
+Ejecucion -> Opciones...
+TOOLBAR_CAPTION_DEBUG_RUN
+Depurar
+TOOLBAR_DESC_DEBUG_RUN
+Depurar -> Iniciar
+TOOLBAR_CAPTION_DEBUG_ATTACH
+Attachear Depurador
+TOOLBAR_DESC_DEBUG_ATTACH
+Depurar -> Adjuntar
+TOOLBAR_CAPTION_DEBUG_CORE_DUMP
+Cargar Volcado de Memoria
+TOOLBAR_DESC_DEBUG_CORE_DUMP
+Depurar -> Cargar Volcado de Memoria
+TOOLBAR_CAPTION_DEBUG_TOGGLE_BREAKPOINT
+Agregar/Quitar Breakpointo
+TOOLBAR_DESC_DEBUG_TOGGLE_BREAKPOINT
+Agregar/Quitar Breakpoint
+TOOLBAR_CAPTION_DEBUG_BREAKPOINT_OPTIONS
+Opciones del Breakpoint...
+TOOLBAR_DESC_DEBUG_BREAKPOINT_OPTIONS
+Depurar -> Opciones del Breakpoint...
+TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS
+Listar Watch/Break points...
+TOOLBAR_DESC_DEBUG_LIST_BREAKPOINTS
+Depurar -> Listar Watch/Break points...
+TOOLBAR_CAPTION_INSPECT
+Panel de Inspecciones
+TOOLBAR_DESC_INSPECT
+Depurar -> Panel de Inspecciones
+CAPTION_TOOLBAR_DEBUG
+Depuración
+TOOLBAR_CAPTION_DEBUG_START
+Comenzar/Continuar Depuracion
+TOOLBAR_DESC_DEBUG_START
+Depurar -> Comenzar/Continuar
+TOOLBAR_CAPTION_DEBUG_PAUSE
+Interrumpir Ejecucion en Depuracion
+TOOLBAR_DESC_DEBUG_PAUSE
+Depurar -> Interrumpir
+TOOLBAR_CAPTION_DEBUG_STOP
+Detener Depuracion
+TOOLBAR_DESC_DEBUG_STOP
+Depurar -> Detener
+TOOLBAR_CAPTION_DEBUG_STEP_IP
+Step In
+TOOLBAR_DESC_DEBUG_STEP_IN
+Depurar -> Step In
+TOOLBAR_CAPTION_DEBUG_STEP_OVER
+Step Over
+TOOLBAR_DESC_DEBUG_STEP_OVER
+Depurar -> Step Over
+TOOLBAR_CAPTION_DEBUG_STEP_OUT
+Step Out
+TOOLBAR_DESC_DEBUG_STEP_OUT
+Depurar -> Step Out
+TOOLBAR_CAPTION_DEBUG_RUN_UNTIL
+Ejecutar Hasta El Cursor
+TOOLBAR_DESC_DEBUG_RUN_UNTIL
+Depurar -> Ejecutar Hasta el Cursos
+TOOLBAR_CAPTION_DEBUG_RETURN
+Return
+TOOLBAR_DESC_DEBUG_RETURN
+Depurar -> Return
+TOOLBAR_CAPTION_DEBUG_JUMP
+Continuar desde aqui
+TOOLBAR_DESC_DEBUG_JUMP
+Depurar -> Continuar Desde Aqui
+TOOLBAR_CAPTION_DEBUG_ENABLE_INVERSE
+Habilitar Ejecucion Hacia Atras
+TOOLBAR_DESC_DEBUG_ENABLE_INVERSE
+Depurar -> Habilitar Ejecucion Hacia Atras
+TOOLBAR_CAPTION_DEBUG_INVERSE
+Ejecutar Hacia Atras
+TOOLBAR_DESC_DEBUG_INVERSE
+Depurar -> Ejecutar Hacia Atras...
+TOOLBAR_CAPTION_BACKTRACE
+Trazado Inverso
+TOOLBAR_DESC_BACKTRACE
+Depurar -> Trazado Inverso
+TOOLBAR_CAPTION_THREADLIST
+Hilos de Ejecucion
+TOOLBAR_DESC_THREADLIST
+Depurar -> Hilos de Ejecucion
+TOOLBAR_CAPTION_DEBUG_SHOW_LOG_PANEL
+Mostrar Mensajes del Depurador
+TOOLBAR_DESC_DEBUG_SHOW_LOG_PANEL
+Depurar -> Mostrar Mensajes del Depurador...
+CAPTION_TOOLBAR_TOOLS
+Herramientas
+TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART
+Dibujar Diagrama de Flujo...
+TOOLBAR_DESC_TOOLS_DRAW_FLOWCHART
+Herramientas -> Dibujar Diagrama de Flujo...
+TOOLBAR_CAPTION_TOOLS_DRAW_CLASS_HIERARCHY
+Dibujar Jerarquia de Clases...
+TOOLBAR_DESC_TOOLS_DRAW_CLASS_HIERARCHY
+Herramientas -> Dibujar Jerarquia de Clases...
+TOOLBAR_CAPTION_TOOLS_COPY_CODE_FROM_H
+Implementar Metodos/Funciones Faltantes...
+TOOLBAR_DESC_TOOLS_COPY_CODE_FROM_H
+Herramientas -> Implementar Metodos/Funciones Faltantes...
+TOOLBAR_CAPTION_TOOLS_COMMENTS_ALIGN_COMMENTS
+Alinear Comentarios...
+TOOLBAR_TOOLS_DESC_COMMENTS_ALIGN_COMMENTS
+Herramientas -> Comentarios -> Alinear Comentarios...
+TOOLBAR_CAPTION_TOOLS_COMMENTS_DELETE_COMMENTS
+Eliminar Comentarios
+TOOLBAR_DESC_TOOLS_COMMENTS_DELETE_COMMENTS
+Herramientas -> Comtearios -> Eliminar Comentarios
+TOOLBAR_CAPTION_TOOLS_PREPROC_MARK_VALID
+Marcar Lineas No Compiladas
+TOOLBAR_DESC_TOOLS_PREPROC_MARK_VALID
+Herramientas -> Preprocesador -> Marcar Lineas No Compiladas
+TOOLBAR_CAPTION_TOOLS_PREPROC_UNMARK_ALL
+Borrar Marcas
+TOOLBAR_DESC_TOOLS_PREPROC_UNMARK_ALL
+Herramientas -> Preprocesador -> Borrar Marcas
+TOOLBAR_CAPTION_TOOLS_PREPROC_EXPAND_MACROS
+Expandir Macros
+TOOLBAR_DESC_TOOLS_PREPROC_EXPAND_MACROS
+Herramientas -> Preprocesador -> Expandir Macros
+TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE
+Generar Makefile...
+TOOLBAR_DESC_TOOLS_GENERATE_MAKEFILE
+Herramientas -> Generar Makefile...
+TOOLBAR_CAPTION_TOOLS_OPEN_TERMINAL
+Abrir terminal...
+TOOLBAR_DESC_OPEN_TERMINAL
+Herramientas -> Abrir consola...
+TOOLBAR_CAPTION_TOOLS_EXE_INFO
+Propiedades del Ejecutable...
+TOOLBAR_DESC_EXE_INFO
+Herramientas -> Propiedades del Ejecutable...
+TOOLBAR_CAPTION_TOOLS_PROY_STATS
+Estadisticas del Proyecto...
+TOOLBAR_DESC_PROY_STATS
+Herramientas -> Estadisticas del Proyecto...
+TOOLBAR_CAPTION_TOOLS_DRAW_PROJECT
+Grafo del Proyecto...
+TOOLBAR_DESC_TOOLS_DRAW_PROJECT
+Herramientas -> Grafo del Proyecto...
+TOOLBAR_CAPTION_TOOLS_SHARE_OPEN
+Abrir Archivo Compartido...
+TOOLBAR_DESC_TOOLS_SHARE_OPEN
+Herramientas -> Compartir Archivos en la Red Local -> Abrir Compartido...
+TOOLBAR_CAPTION_TOOLS_SHARE_SHARE
+Compartir Fuente...
+TOOLBAR_DESC_TOOLS_SHARE_SHARE
+Herramientas -> Compartir Archivos en la Red Local -> Compartir Actual...
+TOOLBAR_CAPTION_TOOLS_SHARE_LIST
+Listar Compartidos Propios...
+TOOLBAR_DESC_TOOLS_SHARE_LIST
+Herramientas -> Compartir Archivos en la Red Local -> Listar Compartidos Propios...
+TOOLBAR_CAPTION_TOOLS_DIFF_TWO
+Compara Dos Fuentes Abiertos...
+TOOLBAR_DESC_TOOLS_DIFF_TWO
+Herramientas -> Comparar Archivos -> Dos Fuentes Abiertos
+TOOLBAR_CAPTION_TOOLS_DIFF_DISK
+Comparar Fuente con Archivo en Disco...
+TOOLBAR_DESC_TOOLS_DIFF_DISK
+Herramientas -> Comparar Archivos -> Fuente Actual Contra Archivo en Disco
+TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF
+Comparar Cambios en el Fuente con su Version en Disco...
+TOOLBAR_DESC_TOOLS_DIFF_HIMSELF
+Herramientas -> Comparar Archivos -> Fuente Actual Contra Version en Disco
+TOOLBAR_CAPTION_TOOLS_DIFF_SHOW
+Mostrar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_SHOW
+Herramientas -> Comparar Archivos -> Mostrar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_APPLY
+Aplicar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_APPLY
+Herramientas -> Comparar Archivos -> Aplicar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD
+Descartar Cambio
+TOOLBAR_DESC_TOOLS_DIFF_DISCARD
+Herramientas -> Comparar Archivos -> Descartar Cambio
+TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
+Borrar Marcas de Comparacion
+TOOLBAR_DESC_TOOLS_DIFF_CLEAR
+Herramientas -> Comparar Archivos -> Borrar Marcas
+TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE
+Generar Documentacion Doxygen...
+TOOLBAR_DESC_TOOLS_DOXYGEN_GENERATE
+Herramientas -> Generar Documentacion -> Generar...
+TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE
+Configurar Documentacion Doxygen...
+TOOLBAR_DESC_TOOLS_DOXYGEN_CONFIGURE
+Herramientas -> Generar Documentacion -> Configurar...
+TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW
+Ver Documentacion Doxygen...
+TOOLBAR_DESC_TOOLS_DOXYGEN_VIEW
+Herramientas -> Generar Documentacion -> Ver...
+TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG
+Activar Integracion wxFormBuilder
+TOOLBAR_DESC_TOOLS_WXFB_ACTIVATE
+Herramientas -> wxFormBuilder -> Configurar Integracion wxFormBuilder
+TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE
+Adjuntar un Nuevo Proyecto wxFB
+TOOLBAR_DESC_TOOLS_WXFB_NEW_RESOURCE
+Herramientas -> wxFormBuilder -> Adjuntar un Nuevo Proyecto wxFB
+TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE
+Adjuntar un Proyecto wxFB Existente
+TOOLBAR_DESC_TOOLS_WXFB_LOAD_RESOURCE
+Herramientas -> wxFormBuilder -> Adjuntar un Proyecto wxFB Existente
+TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE
+Regenerar Proyectos wxFB
+TOOLBAR_DESC_TOOLS_WXFB_REGENERATE
+Herramientas -> wxFormBuilder -> Regenerar Proyectos wxFB
+TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT
+Generar Clase Heredada...
+TOOLBAR_DESC_TOOLS_WXFB_INHERIT
+Herramientas -> wxFormBuilder -> Generar Clase Heredada...
+TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT
+Actualizar Clase Heredada...
+TOOLBAR_DESC_TOOLS_WXFB_UPDATE_INHERIT
+Herramientas -> wxFormBuilder -> Actualizar Clase Heredada...
+TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE
+Referencia wxWidgets...
+TOOLBAR_DESC_TOOLS_WXFB_REFERENCE
+Herramientas -> wxFormBuilder -> Referencia wxWidgets...
+TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN
+Comenzar Analisis Estatico...
+TOOLBAR_DESC_TOOLS_CPPCHECK_RUN
+Herramientas -> Analisis Estatico -> Iniciar...
+TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG
+Configurar Analisis Estatico...
+TOOLBAR_DESC_TOOLS_CPPCHECK_CONFIG
+Herramientas -> Analisis Estatico-> Configurar...
+TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW
+Mostrar Resultados del Analisis Estatico
+TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW
+Herramientas -> Analisis Estatico -> Mostrar Panel de Resultados
+TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE
+Activar Perfilado de Ejecucion
+TOOLBAR_DESC_TOOLS_GPROF_ACTIVATE
+Herramientas -> Perfil de Ejecucion -> Activar
+TOOLBAR_CAPTION_TOOLS_GPROF_SHOW
+Graficar Resultados del Perfilado de Ejecucion
+TOOLBAR_DESC_TOOLS_GPROF_SHOW
+Herramientas -> Perfil de Ejecucion -> Visualizar Resultados (grafo)...
+TOOLBAR_CAPTION_TOOLS_GPROF_LIST
+Listar Resultados del Perfilado de Ejecucion
+TOOLBAR_DESC_TOOLS_GPROF_LIST
+Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)...
+TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE
+Activar Test de Cobertura
+TOOLBAR_DESC_TOOLS_GCOV_ACTIVATE
+Herramientas -> Test de Cobertura -> Habilitar/Deshabilitar
+TOOLBAR_CAPTION_TOOLS_GCOV_RESET
+Mostrar barra de resultados de Test de Cobertura
+TOOLBAR_DESC_TOOLS_GCOV_SHOW_BAR
+Herramientas -> Test de Cobertura -> Mostrar Barra de Resultados
+TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR
+Eliminar resultados de Test de Cobertura
+TOOLBAR_DESC_TOOLS_GCOV_RESET
+Herramientas -> Test de Cobertura -> Eliminar Resultados
+TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN
+Ejecutar Para Analisis Dinamico
+TOOLBAR_DESC_TOOLS_VALGRIND_RUN
+Herramientas -> Analisis Dinámico -> Ejecutar...
+TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW
+Mostrar Resultados del Analisis Dinamico
+TOOLBAR_DESC_TOOLS_VALGRIND_VIEW
+Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados
+TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
+Herramienta Personalizada 
+TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
+Configurar Herramientas Personalizadas
+TOOLBAR_DESC_TOOLS_CUSTOM_TOOLS_SETTINGS
+Herramientas -> Herramientas Personalizadas -> Configurar (generales)...
+CAPTION_TOOLBAR_MISC
+Miscelánea
+TOOLBAR_CAPTION_FILE_PREFERENCES
+Preferencias...
+TOOLBAR_DESC_FILE_PREFERENCES
+Archivo -> Preferencias...
+TOOLBAR_CAPTION_HELP_TUTORIALS
+Tutoriales...
+TOOLBAR_DESC_HELP_TUTORIALS
+Ayuda -> Tutoriales...
+TOOLBAR_CAPTION_HELP_ZINJAI
+Ayuda Sobre ZinjaI...
+TOOLBAR_DESC_HELP_ZINJAI
+Ayuda -> Ayuda sobre ZinjaI...
+TOOLBAR_CAPTION_HELP_CPP
+Ayuda Sobre C/C++...
+TOOLBAR_DESC_HELP_CPP
+Ayuda -> Ayuda sobre C++...
+TOOLBAR_CAPTION_HELP_TIPS
+Sugerencias...
+TOOLBAR_DESC_HELP_TIPS
+Ayuda -> Mostrar Sugerencias...
+TOOLBAR_CAPTION_HELP_ABOUT
+Acerca de...
+TOOLBAR_DESC_HELP_ABOUT
+Ayuda -> Acerca de...
+TOOLBAR_DESC_HELP_OPINION
+Ayuda -> Opina sobre ZinjaI...
+TOOLBAR_CAPTION_HELP_UPDATES
+Buscar Actualizaciones...
+TOOLBAR_DESC_HELP_UPDATES
+Ayuda -> Buscar Actualizaciones...
+TOOLBAR_CAPTION_FILE_EXIT
+Salir
+TOOLBAR_DESC_FILE_EXIT
+Archivo -> Salir
+CAPTION_TOOLBAR_PROJECT
+Proyecto
+TOOLBAR_DESC_TOOLS_PROJECT_TOOLS_SETTINGS
+Herramientas -> Herramientas Personalizadas -> Configurar (de proyecto)...
 SYMBOLS_MACROS
 Macros y Otros
 SYMBOLS_GLOBALS
@@ -214,8 +1224,6 @@ SYMBOLS_POPUP_UPDATE_TREE
 &Actualizar arbol
 SYMBOLS_POPUP_GENERATE_INDEX
 &Generar indice para autocompletado...
-MENUITEM_EDIT_FIND
-&Buscar...
 PARSER_PARSING_FILE
 Analizando
 OSD_LOADING_PROJECT_PRE
@@ -314,8 +1322,10 @@ APP_WELCOME_TO_ZINJAI
 Bienvenido a ZinjaI
 ARGUMENTS_CAPTION
 Argumentos para la ejecucion
-ARGUMENTS_ARGUMENTS
+COMPILECONF_RUNNING_ARGS
 Argumentos para la ejecucion:
+COMPILECONF_WORKDIR
+Directorio de trabajo:
 GENERAL_DONT_ASK_AGAIN
 no volver a preguntar
 GENERAL_OK_BUTTON
@@ -344,6 +1354,8 @@ GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER
 Reemplazar todo por directorio:
 GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER
 Reemplazar seleccion por directorio:
+COMPILECONF_WORKDIR_DLG
+Directorio de trabajo
 BACKTRACE_LEVEL
 Nivel
 BACKTRACE_FUNCTION
@@ -582,10 +1594,6 @@ GENERAL_SAVE
 Guardar
 COMPILECONF_COMPILER_ARGS
 Parametros extra para el compilador
-COMPILECONF_WORKDIR
-Directorio de trabajo
-COMPILECONF_RUNNING_ARGS
-Argumentos para la ejecucion
 COMPILECONF_ALWAYS_ASK_ARGS
 Siempre pedir argumentos al ejecutar
 COMPILECONF_WAIT_KEY
@@ -594,8 +1602,6 @@ COMPILECONF_SOURCE_CLOSED
 El fuente en cual se debe aplicar esta configuracion ha sido cerrado.
 COMPILECONF_INVALID_WORKDIR
 El directorio de trabajo no es valido.
-COMPILECONF_WORKDIR_DLG
-Directorio de trabajo:
 COMPILECONF_POPUP_DEFAULT
 valores por defecto
 COMPILECONF_POPUP_COPY_FROM_TEMPLATE
@@ -1312,8 +2318,6 @@ MAINW_PROJECT_FILE_POPUP_OPEN_H
 &Abrir complementario...\tF12
 MAINW_PROJECT_FILE_POPUP_SHARE
 Compartir archivo...
-MENUITEM_VIEW_SPLIT_VIEW
-&Duplicar vista
 MAINW_PROJECT_FILE_POPUP_SAVE
 &Guardar\tCtrl+S
 MAINW_PROJECT_FILE_POPUP_SAVE_AS
@@ -1454,10 +2458,34 @@ MAINW_BEGGINERS_PANEL
 Asistencias
 MAINW_CANNOT_SPLIT_VIEW
 No se puede duplicar archivos sin nombre
+MENUITEM_FILE_OPEN_ON_PROJECT
+&Abrir/Agregar al proyecto...\tCtrl+O
 MAINW_MACRO_START
 Generando macro, presione Ctrl+Shift+Q para finalizar.
 MAINW_MACRO_STOP
 Macro guardada, presione Ctrl+Q para reproducirla.
+MAIN_WINDOW_NO_ICON_SIZE
+El tema de iconos seleccionado no tiene iconos del tamano elegido (<{1}>)\nSe utilizaran los iconos del tamano predeterminado (16x16).\nPara modificarlo utilice el cuadro de Preferencias (menu Archivo).
+TOOLBAR_FIND_TEXT
+Texto a Buscar
+TOOLBAR_FIND_CAPTION
+Busqueda Rapida
+TOOLBAR_FIND_BUTTON
+Buscar siguiente
+CAPTION_TOOLBAR_FIND
+Busqueda
+CAPTION_TOOLBAR_STATUS
+Status Toolbar
+TOOLBAR_CAPTION_TOOLS_DIFF_PREV
+Diferencia Anterior
+TOOLBAR_DESC_TOOLS_DIFF_PREV
+Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior
+TOOLBAR_CAPTION_TOOLS_DIFF_NEXT
+Siguiente Diferencia
+TOOLBAR_DESC_TOOLS_DIFF_NEXT
+Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia
+CAPTION_TOOLBAR_DIFF
+Diff
 MAINW_VALGRIND_MISSING
 Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_GPROF_GPROF_ENABLED
@@ -1492,8 +2520,6 @@ MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION
 No se encontraron funciones/metodos sin implementar.
 MAINW_CODETOOLS_CHOOSE_FUNCTIONS_METHODS
 Seleccione las funciones/metodos a implementar:
-MENUITEM_TOOLS_CODE_COPY_FROM_H
-Implementar Metodos/Funciones faltantes
 MAINW_PREPROC_OSD
 Preprocesando...
 MAINW_PREPROC_ERROR
@@ -1510,1050 +2536,6 @@ MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Ingrese el nombre del archivo del nuevo template de programa simple
 MAINW_TEMPLATE_GENERATED
 Plantilla generada
-MENUITEM_TOOLS_CREATE_TEMPLATE
-Guardar como nueva plantilla...
-MENUITEM_FILE
-&Archivo
-MENUITEM_EDIT
-&Edicion
-MENUITEM_VIEW
-Ver
-MENUITEM_RUN
-E&jecucion
-MENUITEM_DEBUG
-&Depuracion
-MENUITEM_TOOLS
-&Herramientas
-MENUITEM_HELP
-A&yuda
-MENUITEM_FILE_NEW
-&Nuevo...
-MENUITEM_FILE_NEW_PROJECT
-&Nuevo Proyecto...
-MENUITEM_FILE_OPEN
-&Abrir...
-MENUITEM_FILE_RECENT_SOURCES
-Fuentes Abiertos Recientemente
-MENUITEM_FILE_RECENT_PROJECTS
-Proyectos Abiertos Recientemente
-MENUITEM_FILE_OPEN_H
-Abrir &h/cpp complementario
-MENUITEM_FILE_OPEN_SELECTED
-Abrir Se&leccionado
-MENUITEM_FILE_SAVE
-&Guardar
-MENUITEM_FILE_SAVE_AS
-G&uardar Como...
-MENUITEM_FILE_SAVE_ALL
-Guardar &Todo...
-MENUITEM_FILE_SAVE_PROJECT
-Guar&dar Proyecto
-MENUITEM_FILE_EXPORT_HTML
-Exportar a HTML...
-MENUITEM_FILE_PRINT
-&Imprimir...
-MENUITEM_FILE_RELOAD
-&Recargar
-MENUITEM_FILE_CLOSE
-&Cerrar
-MENUITEM_FILE_CLOSE_ALL
-Cerrar &Todo
-MENUITEM_FILE_CLOSE_PROJECT
-Cerrar Pro&yecto
-MENUITEM_FILE_PROJECT_CONFIG
-&Configuracion del Proyecto...
-MENUITEM_FILE_PREFERENCES
-&Preferencias...
-MENUITEM_FILE_EXIT
-&Salir
-MENU_FILE_RECENT_MORE
-Mas...
-MENUITEM_EDIT_UNDO
-&Deshacer
-MENUITEM_EDIT_REDO
-&Rehacer
-MENUITEM_EDIT_CUT
-C&ortar
-MENUITEM_EDIT_COPY
-&Copiar
-MENUITEM_EDIT_PASTE
-&Pegar
-MENUITEM_EDIT_LINES_UP
-Mover Hacia Arriba
-MENUITEM_EDIT_LINES_DOWN
-Mover Hacia Abajo
-MENUITEM_EDIT_DUPLICATE_LINES
-&Duplicar Linea(s)
-MENUITEM_EDIT_DELETE_LINES
-&Eliminar Linea(s)
-MENUITEM_EDIT_GOTO_FUNCTION
-&Ir a Funcion/Clase/Metodo...
-MENUITEM_EDIT_GOTO_FILE
-&Ir a Archivo...
-MENUITEM_EDIT_GOTO_LINE
-&Ir a Linea...
-MENUITEM_EDIT_FIND_PREV
-Buscar &Anterior
-MENUITEM_EDIT_FIND_NEXT
-Buscar &Siguiente
-MENUITEM_EDIT_REPLACE
-&Reemplazar...
-MENUITEM_EDIT_INSERT_INCLUDE
-Insertar #include Correspondiente
-MENUITEM_EDIT_COMMENT
-Comentar
-MENUITEM_EDIT_UNCOMMENT
-Descomentar
-MENUITEM_EDIT_INDENT
-Indentar Blo&que
-MENUITEM_EDIT_BRACEMATCH
-Seleccionar Blo&que
-MENUITEM_EDIT_SELECT_ALL
-&Seleccionar Todo
-MENUITEM_EDIT_HIGHLIGHT_LINES
-&Resaltar Linea(s)/Quitar Resaltado
-MENUITEM_EDIT_FIND_HIGHLIGHTS
-Buscar &Resaltado
-MENUITEM_EDIT_LIST_HIGHLIGHTS
-&Listar Lineas Resaltadas
-MENUITEM_EDIT_FORCE_AUTOCOMPLETE
-Autocompletar
-MENUITEM_VIEW_LINE_WRAP
-&Ajuste de linea
-MENUITEM_VIEW_WHITE_SPACES
-Mostrar espacios y caracteres de &fin de linea
-MENUITEM_VIEW_SYNTAX_HIGHLIGHT
-&Colorear Sintaxis
-MENUITEM_VIEW_CODE_COLOURS
-Configurar esquema de colores...
-MENUITEM_VIEW_FOLDING
-Plegado
-MENUITEM_VIEW_FULLSCREEN
-Ver a Pantalla &Completa
-MENUITEM_VIEW_BEGINNER_PANEL
-Mostrar Panel de Mini-Plantillas
-MENUITEM_VIEW_LEFT_PANELS
-&Mostrar Panel de Arboles
-MENUITEM_VIEW_PROJECT_TREE
-&Mostrar Arbol de &Proyecto
-MENUITEM_VIEW_EXPLORER_TREE
-Mostrar &Explorardor de Archivos
-MENUITEM_VIEW_SYMBOLS_TREE
-Mostrar Arbol de &Simbolos
-MENUITEM_VIEW_COMPILER_TREE
-&Mostrar Resultados de la Compilacion
-MENUITEM_VIEW_UPDATE_SYMBOLS
-&Actualizar Arbol de Simbolos
-MENUITEM_VIEW_TOOLBARS
-Barras de herramientas
-MENUITEM_VIEW_TOOLBAR_FILE
-&Mostrar Barra de Herramientas Archivo
-MENUITEM_VIEW_TOOLBAR_EDIT
-&Mostrar Barra de Herramientas Edicion
-MENUITEM_VIEW_TOOLBAR_VIEW
-&Mostrar Barra de Herramientas Ver
-MENUITEM_VIEW_TOOLBAR_FIND
-&Mostrar Barra de Busqueda Rapida
-MENUITEM_VIEW_TOOLBAR_RUN
-&Mostrar Barra de Herramientas Ejecucion
-MENUITEM_VIEW_TOOLBAR_TOOLS
-&Mostrar Barra de Herramientas Herramientas
-MENUITEM_VIEW_TOOLBAR_PROJECT
-&Mostrar Barra de Herramientas Proyecto
-MENUITEM_VIEW_TOOLBAR_DEBUG
-&Mostrar Barra de Herramientas Depuracion
-MENUITEM_VIEW_TOOLBAR_MISC
-&Mostrar Barra de Herramientas Miscelanea
-MENUITEM_VIEW_TOOLBARS_CONFIG
-&Configurar...
-MENUITEM_VIEW_PREV_ERROR
-&Ir a error anterior
-MENUITEM_VIEW_NEXT_ERROR
-&Ir a siguiente error
-MENUITEM_VIEW_PREV_SOURCE
-&Fuente anterior
-MENUITEM_VIEW_NEXT_SOURCE
-&Fuente siguiente
-MENUITEM_FOLD_FOLD_THIS_LINE
-Plegar en esta linea
-MENUITEM_FOLD_UNFOLD_THIS_LINE
-Desplegar en esta linea
-MENUITEM_FOLD_FOLD_LEVEL_1
-Plegar el primer nivel
-MENUITEM_FOLD_FOLD_LEVEL_2
-Plegar el segundo nivel
-MENUITEM_FOLD_FOLD_LEVEL_3
-Plegar el tercer nivel
-MENUITEM_FOLD_FOLD_LEVEL_4
-Plegar el cuarto nivel
-MENUITEM_FOLD_FOLD_LEVEL_5
-Plegar el quinto nivel
-MENUITEM_FOLD_FOLD_ALL_LEVELS
-Plegar todos los niveles
-MENUITEM_FOLD_UNFOLD_LEVEL_1
-Desplegar el primer nivel
-MENUITEM_FOLD_UNFOLD_LEVEL_2
-Desplegar el segundo nivel
-MENUITEM_FOLD_UNFOLD_LEVEL_3
-Desplegar el tercer nivel
-MENUITEM_FOLD_UNFOLD_LEVEL_4
-Desplegar el cuarto nivel
-MENUITEM_FOLD_UNFOLD_LEVEL_5
-Desplegar el quinto nivel
-MENUITEM_FOLD_UNFOLD_ALL_LEVELS
-Desplegar todos los niveles
-MENUITEM_RUN_RUN
-&Ejecutar...
-MENUITEM_RUN_OLD
-Ejecutar (sin recompilar)...
-MENUITEM_RUN_COMPILE
-&Compilar
-MENUITEM_RUN_BUILD
-Co&nstruir
-MENUITEM_RUN_CLEAN
-&Limpiar
-MENUITEM_RUN_STOP
-&Detener
-MENUITEM_RUN_OPTIONS
-&Opciones...
-MENUITEM_DEBUG_START
-&Iniciar/Continuar
-MENUITEM_DEBUG_PAUSE
-Interrum&pir
-MENUITEM_DEBUG_STOP
-&Detener
-MENUITEM_DEBUG_STEP_IN
-Step &In
-MENUITEM_DEBUG_STEP_OVER
-Step &Over
-MENUITEM_DEBUG_STEP_OUT
-Step O&ut
-MENUITEM_DEBUG_RUN_UNTIL
-Ejecutar &Hasta el Cursor
-MENUITEM_DEBUG_RETURN
-&Return
-MENUITEM_DEBUG_JUMP
-Continuar Desde Aqui
-MENUITEM_DEBUG_TOGGLE_BREAKPOINT
-&Agregar/quitar Breakpoint
-MENUITEM_DEBUG_BREAKPOINT_OPTIONS
-&Opciones del Breakpoint...
-MENUITEM_DEBUG_LIST_BREAKPOINTS
-&Listar Watch/Break points...
-MENUITEM_DEBUG_INSPECT
-Panel de In&specciones
-MENUITEM_DEBUG_BACKTRACE
-&Trazado Inverso
-MENUITEM_DEBUG_THREADLIST
-&Hilos de Ejecucion
-MENUITEM_DEBUG_SHOW_LOG_PANEL
-&Mostrar mensajes del depurador
-MENUITEM_DEBUG_ATTACH
-&Adjuntar...
-MENUITEM_DEBUG_LOAD_CORE_DUMP
-Cargar &Volcado de Memoria...
-MENUITEM_SAVE_CORE_DUMP
-Guardar &Volcado de Memoria...
-MENUITEM_DEBUG_ENABLE_INVERSE
-Habilitar Ejecucion Hacia Atras
-MENUITEM_DEBUG_INVERSE
-Ejecutar Hacia Atras
-MENUITEM_DEBUG_SET_SIGNALS
-Configurar comportamiento ante señales
-MENUITEM_DEBUG_SEND_SIGNALS
-Enviar señal
-MENUITEM_DEBUG_GDB_COMMAND
-Introducir comandos gdb...
-MENUITEM_DEBUG_PATCH
-Actualizar ejecutable...
-MENUITEM_DEBUG_MORE
-Más...
-MENUITEM_DEBUG_DO_THAT
-DO_THAT
-MENUITEM_TOOLS_DRAW_FLOWCHART
-Dibujar Diagrama de &Flujo...
-MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
-Dibujar &Jerarquia de Clases...
-MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
-&Alinear Comentarios...
-MENUITEM_TOOLS_COMMENTS_COMMENT
-&Comentar
-MENUITEM_TOOLS_COMMENTS_UNCOMMENT
-&Descomentar
-MENUITEM_TOOLS_COMMENTS_DELETE_COMMENTS
-&Eliminar Comentarios
-MENUITEM_TOOLS_COMMENTS
-Coment&arios
-MENUITEM_TOOLS_PREPROC_EXPAND_MACROS
-Expandir Macros
-MENUITEM_TOOLS_PREPROC_MARK_VALID
-Marcar Lineas No Compiladas
-MENUITEM_TOOLS_PREPROC_UNMARK_ALL
-Borrar Marcas
-MENUITEM_TOOLS_PREPROC_HELP
-Ayuda...
-MENUITEM_TOOLS_PREPROC
-Preprocesador
-MENUITEM_TOOLS_GENERATE_MAKEFILE
-&Generar Makefile...
-MENUITEM_TOOLS_OPEN_TERMINAL
-Abrir Co&nsola...
-MENUITEM_TOOLS_EXE_INFO
-&Propiedades del Ejecutable...
-MENUITEM_TOOLS_PROJECT_STATISTICS
-E&stadisticas del Proyecto...
-MENUITEM_TOOLS_DRAW_PROJECT
-Grafo del Proyecto...
-MENUITEM_TOOLS_SHARE_OPEN
-&Abrir compartido...
-MENUITEM_TOOLS_SHARE_SHARE
-&Compartir actual...
-MENUITEM_TOOLS_SHARE_LIST
-&Ver lista de compartidos propios...
-MENUITEM_TOOLS_SHARE_HELP
-A&yuda...
-MENUITEM_TOOLS_SHARE
-Compartir Archivos en la &Red Local
-MENUITEM_TOOLS_DIFF_TWO
-&Dos fuentes abiertos...
-MENUITEM_TOOLS_DIFF_DISK
-&Fuente actual contra archivo en disco...
-MENUITEM_TOOLS_DIFF_HIMSELF
-&Cambios en fuente actual contra su version en disco...
-MENUITEM_TOOLS_DIFF_PREV
-Ir a Diferencia Anterior
-MENUITEM_TOOLS_DIFF_NEXT
-Ir a Siguiente Diferencia
-MENUITEM_TOOLS_DIFF_SHOW
-Mostrar Cambio
-MENUITEM_TOOLS_DIFF_APPLY
-Apl&icar Cambio
-MENUITEM_TOOLS_DIFF_DISCARD
-De&scartar Cambio
-MENUITEM_TOOLS_DIFF_CLEAR
-&Borrar Marcas
-MENUITEM_TOOLS_DIFF_HELP
-A&yuda...
-MENUITEM_TOOLS_DIFF
-&Comparar Archivos (diff)
-MENUITEM_TOOLS_DOXYGEN_GENERATE
-&Generar...
-MENUITEM_TOOLS_DOXYGEN_CONFIGURE
-&Configurar...
-MENUITEM_TOOLS_DOXYGEN_VIEW
-&Ver...
-MENUITEM_TOOLS_DOXYGE_HELP
-A&yuda...
-MENUITEM_TOOLS_DOXYGEN
-Generar &Documentación (doxygen)
-MENUITEM_TOOLS_WXFB_CONFIG
-Configurar &Integracion con wxFormBuilder...
-MENUITEM_TOOLS_WXFB_NEW_RESOURCE
-&Adjuntar un Nuevo Proyecto wxFB...
-MENUITEM_TOOLS_WXFB_LOAD_RESOURCE
-&Adjuntar un Proyecto wxFB Existente...
-MENUITEM_TOOLS_WXFB_REGENERATE
-&Regenerar Proyectos wxFB
-MENUITEM_TOOLS_WXFB_INHERIT
-&Generar Clase Heredada...
-MENUITEM_TOOLS_WXFB_UPDATE_INHERIT
-Act&ualizar Clase Heredada...
-MENUITEM_TOOLS_WXFB_REFERENCE
-Referencia &wxWidgets...
-MENUITEM_TOOLS_WXFB_HELP
-A&yuda wxFB...
-MENUITEM_TOOLS_WXFB
-Diseñar &Interfases (wxFormBuilder)
-MENUITEM_TOOLS_CPPCHECK_RUN
-Iniciar...
-MENUITEM_TOOLS_CPPCHECK_CONFIG
-Configurar...
-MENUITEM_TOOLS_CPPCHECK_VIEW
-Mostrar Panel de Resultados
-MENUITEM_TOOLS_CPPCHECK_HELP
-A&yuda...
-MENUITEM_TOOLS_CPPCHECK
-Análisis Estático (cppcheck)
-MENUITEM_TOOLS_GPROF_ACTIVATE
-Habilitar/Deshabilitar
-MENUITEM_TOOLS_GPROF_DOT
-dot
-MENUITEM_TOOLS_GPROF_FDP
-fdp
-MENUITEM_TOOLS_GPROF_LAYOUT
-Algoritmo de Dibujo
-MENUITEM_TOOLS_GPROF_SHOW
-Visualizar Resultados (grafo)...
-MENUITEM_TOOLS_GPROF_LIST
-Listar Resultados (texto)
-MENUITEM_TOOLS_GPROF_HELP
-A&yuda...
-MENUITEM_TOOLS_GPROF
-Perfil de Ejecución (gprof)
-MENUITEM_TOOLS_GCOV_ACTIVATE
-Habilitar/Deshabilitar
-MENUITEM_TOOLS_GCOV_SHOW_BAR
-Mostrar barra de resultados
-MENUITEM_TOOLS_GCOV_RESET
-Eliminar resultados
-MENUITEM_TOOLS_GCOV_HELP
-A&yuda...
-MENUITEM_TOOLS_GCOV
-&Test de Cobertura (experimental, gcov)
-MENUITEM_TOOLS_VALGRIND_RUN
-Ejecutar...
-MENUITEM_TOOLS_VALGRIND_VIEW
-Mostrar Panel de Resultados
-MENUITEM_TOOLS_VALGRIND_HELP
-A&yuda...
-MENUITEM_TOOLS_VALGRIND
-Análisis Dinámico (valgrind)
-MENUITEM_TOOLS_CUSTOM_TOOLS
-Herramientas Personalizables
-MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS
-&Configurar (generales)...
-MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS
-&Configurar (de proyecto)...
-MENUITEM_TOOLS_CUSTOM_HELP
-A&yuda...
-MENUITEM_TOOLS_INSTALL_COMPLEMENTS
-Instalar Complementos...
-MENUITEM_HELP_ABOUT
-Acerca de...
-MENUITEM_HELP_TUTORIALS
-Tutoriales...
-MENUITEM_HELP_ZINJAI
-Ayuda sobre ZinjaI...
-MENUITEM_HELP_CPP
-Referencia C/C++...
-MENUITEM_HELP_TIPS
-&Mostrar sugerencias de uso...
-MENUITEM_HELP_OPINION
-Enviar sugerencia o reportar error...
-MENUITEM_HELP_UPDATES
-&Buscar actualizaciones...
-CAPTION_TOOLBAR_FILE
-Archivo
-CAPTION_TOOLBAR_EDIT
-Edición
-CAPTION_TOOLBAR_VIEW
-Ver
-CAPTION_TOOLBAR_RUN
-Ejecución
-CAPTION_TOOLBAR_TOOLS
-Herramientas
-CAPTION_TOOLBAR_MISC
-Miscelánea
-CAPTION_TOOLBAR_PROJECT
-Proyecto
-CAPTION_TOOLBAR_DEBUG
-Depuración
-MAIN_WINDOW_NO_ICON_SIZE
-El tema de iconos seleccionado no tiene iconos del tamano elegido (<{1}>)\nSe utilizaran los iconos del tamano predeterminado (16x16).\nPara modificarlo utilice el cuadro de Preferencias (menu Archivo).
-TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART
-Dibujar Diagrama de Flujo...
-TOOLBAR_DESC_TOOLS_DRAW_FLOWCHART
-Herramientas -> Dibujar Diagrama de Flujo...
-TOOLBAR_CAPTION_TOOLS_DRAW_CLASS_HIERARCHY
-Dibujar Jerarquia de Clases...
-TOOLBAR_DESC_TOOLS_DRAW_CLASS_HIERARCHY
-Herramientas -> Dibujar Jerarquia de Clases...
-TOOLBAR_CAPTION_TOOLS_COPY_CODE_FROM_H
-Implementar Metodos/Funciones Faltantes...
-TOOLBAR_DESC_TOOLS_COPY_CODE_FROM_H
-Herramientas -> Implementar Metodos/Funciones Faltantes...
-TOOLBAR_CAPTION_TOOLS_COMMENTS_ALIGN_COMMENTS
-Alinear Comentarios...
-TOOLBAR_TOOLS_DESC_COMMENTS_ALIGN_COMMENTS
-Herramientas -> Comentarios -> Alinear Comentarios...
-TOOLBAR_CAPTION_TOOLS_COMMENTS_DELETE_COMMENTS
-Eliminar Comentarios
-TOOLBAR_DESC_TOOLS_COMMENTS_DELETE_COMMENTS
-Herramientas -> Comtearios -> Eliminar Comentarios
-TOOLBAR_CAPTION_TOOLS_PREPROC_MARK_VALID
-Marcar Lineas No Compiladas
-TOOLBAR_DESC_TOOLS_PREPROC_MARK_VALID
-Herramientas -> Preprocesador -> Marcar Lineas No Compiladas
-TOOLBAR_CAPTION_TOOLS_PREPROC_UNMARK_ALL
-Borrar Marcas
-TOOLBAR_DESC_TOOLS_PREPROC_UNMARK_ALL
-Herramientas -> Preprocesador -> Borrar Marcas
-TOOLBAR_CAPTION_TOOLS_PREPROC_EXPAND_MACROS
-Expandir Macros
-TOOLBAR_DESC_TOOLS_PREPROC_EXPAND_MACROS
-Herramientas -> Preprocesador -> Expandir Macros
-TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE
-Generar Makefile...
-TOOLBAR_DESC_TOOLS_GENERATE_MAKEFILE
-Herramientas -> Generar Makefile...
-TOOLBAR_CAPTION_TOOLS_OPEN_TERMINAL
-Abrir terminal...
-TOOLBAR_DESC_OPEN_TERMINAL
-Herramientas -> Abrir consola...
-TOOLBAR_CAPTION_TOOLS_EXE_INFO
-Propiedades del Ejecutable...
-TOOLBAR_DESC_EXE_INFO
-Herramientas -> Propiedades del Ejecutable...
-TOOLBAR_CAPTION_TOOLS_PROY_STATS
-Estadisticas del Proyecto...
-TOOLBAR_DESC_PROY_STATS
-Herramientas -> Estadisticas del Proyecto...
-TOOLBAR_CAPTION_TOOLS_DRAW_PROJECT
-Grafo del Proyecto...
-TOOLBAR_DESC_TOOLS_DRAW_PROJECT
-Herramientas -> Grafo del Proyecto...
-TOOLBAR_CAPTION_TOOLS_SHARE_OPEN
-Abrir Archivo Compartido...
-TOOLBAR_DESC_TOOLS_SHARE_OPEN
-Herramientas -> Compartir Archivos en la Red Local -> Abrir Compartido...
-TOOLBAR_CAPTION_TOOLS_SHARE_SHARE
-Compartir Fuente...
-TOOLBAR_DESC_TOOLS_SHARE_SHARE
-Herramientas -> Compartir Archivos en la Red Local -> Compartir Actual...
-TOOLBAR_CAPTION_TOOLS_SHARE_LIST
-Listar Compartidos Propios...
-TOOLBAR_DESC_TOOLS_SHARE_LIST
-Herramientas -> Compartir Archivos en la Red Local -> Listar Compartidos Propios...
-TOOLBAR_CAPTION_TOOLS_DIFF_TWO
-Compara Dos Fuentes Abiertos...
-TOOLBAR_DESC_TOOLS_DIFF_TWO
-Herramientas -> Comparar Archivos -> Dos Fuentes Abiertos
-TOOLBAR_CAPTION_TOOLS_DIFF_DISK
-Comparar Fuente con Archivo en Disco...
-TOOLBAR_DESC_TOOLS_DIFF_DISK
-Herramientas -> Comparar Archivos -> Fuente Actual Contra Archivo en Disco
-TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF
-Comparar Cambios en el Fuente con su Version en Disco...
-TOOLBAR_DESC_TOOLS_DIFF_HIMSELF
-Herramientas -> Comparar Archivos -> Fuente Actual Contra Version en Disco
-TOOLBAR_CAPTION_TOOLS_DIFF_SHOW
-Mostrar Cambio
-TOOLBAR_DESC_TOOLS_DIFF_SHOW
-Herramientas -> Comparar Archivos -> Mostrar Cambio
-TOOLBAR_CAPTION_TOOLS_DIFF_APPLY
-Aplicar Cambio
-TOOLBAR_DESC_TOOLS_DIFF_APPLY
-Herramientas -> Comparar Archivos -> Aplicar Cambio
-TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD
-Descartar Cambio
-TOOLBAR_DESC_TOOLS_DIFF_DISCARD
-Herramientas -> Comparar Archivos -> Descartar Cambio
-TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
-Borrar Marcas de Comparacion
-TOOLBAR_DESC_TOOLS_DIFF_CLEAR
-Herramientas -> Comparar Archivos -> Borrar Marcas
-TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE
-Generar Documentacion Doxygen...
-TOOLBAR_DESC_TOOLS_DOXYGEN_GENERATE
-Herramientas -> Generar Documentacion -> Generar...
-TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE
-Configurar Documentacion Doxygen...
-TOOLBAR_DESC_TOOLS_DOXYGEN_CONFIGURE
-Herramientas -> Generar Documentacion -> Configurar...
-TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW
-Ver Documentacion Doxygen...
-TOOLBAR_DESC_TOOLS_DOXYGEN_VIEW
-Herramientas -> Generar Documentacion -> Ver...
-TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG
-Activar Integracion wxFormBuilder
-TOOLBAR_DESC_TOOLS_WXFB_ACTIVATE
-Herramientas -> wxFormBuilder -> Configurar Integracion wxFormBuilder
-TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE
-Adjuntar un Nuevo Proyecto wxFB
-TOOLBAR_DESC_TOOLS_WXFB_NEW_RESOURCE
-Herramientas -> wxFormBuilder -> Adjuntar un Nuevo Proyecto wxFB
-TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE
-Adjuntar un Proyecto wxFB Existente
-TOOLBAR_DESC_TOOLS_WXFB_LOAD_RESOURCE
-Herramientas -> wxFormBuilder -> Adjuntar un Proyecto wxFB Existente
-TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE
-Regenerar Proyectos wxFB
-TOOLBAR_DESC_TOOLS_WXFB_REGENERATE
-Herramientas -> wxFormBuilder -> Regenerar Proyectos wxFB
-TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT
-Generar Clase Heredada...
-TOOLBAR_DESC_TOOLS_WXFB_INHERIT
-Herramientas -> wxFormBuilder -> Generar Clase Heredada...
-TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT
-Actualizar Clase Heredada...
-TOOLBAR_DESC_TOOLS_WXFB_UPDATE_INHERIT
-Herramientas -> wxFormBuilder -> Actualizar Clase Heredada...
-TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE
-Referencia wxWidgets...
-TOOLBAR_DESC_TOOLS_WXFB_REFERENCE
-Herramientas -> wxFormBuilder -> Referencia wxWidgets...
-TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN
-Comenzar Analisis Estatico...
-TOOLBAR_DESC_TOOLS_CPPCHECK_RUN
-Herramientas -> Analisis Estatico -> Iniciar...
-TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG
-Configurar Analisis Estatico...
-TOOLBAR_DESC_TOOLS_CPPCHECK_CONFIG
-Herramientas -> Analisis Estatico-> Configurar...
-TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW
-Mostrar Resultados del Analisis Estatico
-TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW
-Herramientas -> Analisis Estatico -> Mostrar Panel de Resultados
-TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE
-Activar Perfilado de Ejecucion
-TOOLBAR_DESC_TOOLS_GPROF_ACTIVATE
-Herramientas -> Perfil de Ejecucion -> Activar
-TOOLBAR_CAPTION_TOOLS_GPROF_SHOW
-Graficar Resultados del Perfilado de Ejecucion
-TOOLBAR_DESC_TOOLS_GPROF_SHOW
-Herramientas -> Perfil de Ejecucion -> Visualizar Resultados (grafo)...
-TOOLBAR_CAPTION_TOOLS_GPROF_LIST
-Listar Resultados del Perfilado de Ejecucion
-TOOLBAR_DESC_TOOLS_GPROF_LIST
-Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)...
-TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE
-Activar Test de Cobertura
-TOOLBAR_DESC_TOOLS_GCOV_ACTIVATE
-Herramientas -> Test de Cobertura -> Habilitar/Deshabilitar
-TOOLBAR_CAPTION_TOOLS_GCOV_RESET
-Mostrar barra de resultados de Test de Cobertura
-TOOLBAR_DESC_TOOLS_GCOV_SHOW_BAR
-Herramientas -> Test de Cobertura -> Mostrar Barra de Resultados
-TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR
-Eliminar resultados de Test de Cobertura
-TOOLBAR_DESC_TOOLS_GCOV_RESET
-Herramientas -> Test de Cobertura -> Eliminar Resultados
-TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN
-Ejecutar Para Analisis Dinamico
-TOOLBAR_DESC_TOOLS_VALGRIND_RUN
-Herramientas -> Analisis Dinámico -> Ejecutar...
-TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW
-Mostrar Resultados del Analisis Dinamico
-TOOLBAR_DESC_TOOLS_VALGRIND_VIEW
-Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados
-TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
-Herramienta Personalizada 
-TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
-Configurar Herramientas Personalizadas
-TOOLBAR_DESC_TOOLS_CUSTOM_TOOLS_SETTINGS
-Herramientas -> Herramientas Personalizadas -> Configurar (generales)...
-TOOLBAR_DESC_TOOLS_PROJECT_TOOLS_SETTINGS
-Herramientas -> Herramientas Personalizadas -> Configurar (de proyecto)...
-TOOLBAR_CAPTION_VIEW_SPLIT_VIEW
-Duplicar Vista
-TOOLBAR_DESC_VIEW_SPLIT_VIEW
-
-TOOLBAR_CAPTION_VIEW_LINE_WRAP
-Ajuste de Linea
-TOOLBAR_DESC_VIEW_LINE_WRAP
-
-TOOLBAR_CAPTION_VIEW_WHITE_SPACES
-Mostrar espacios y caracteres de de fin de linea
-TOOLBAR_DESC_VIEW_WHITE_SPACES
-
-TOOLBAR_CAPTION_VIEW_SYNTAX_HIGHLIGHT
-Colorear Sintaxis
-TOOLBAR_DESC_VIEW_SYNTAX_HIGHLIGHT
-
-TOOLBAR_CAPTION_VIEW_SYMBOLS_TREE
-Arbol de simbolos
-TOOLBAR_DESC_VIEW_SYMBOLS_TREE
-
-TOOLBAR_CAPTION_VIEW_EXPLORER_TREE
-Explorador de Archivos
-TOOLBAR_DESC_VIEW_EXPLORER_TREE
-
-TOOLBAR_CAPTION_VIEW_PROJECT_TREE
-Arbol de Proyecto
-TOOLBAR_DESC_VIEW_PROJECT_TREE
-
-TOOLBAR_CAPTION_VIEW_COMPILER_TREE
-Resultados de La Compilacion
-TOOLBAR_DESC_VIEW_COMPILER_TREE
-
-TOOLBAR_CAPTION_VIEW_FULLSCREEN
-Pantalla Completa
-TOOLBAR_DESC_VIEW_FULLSCREEN
-
-TOOLBAR_CAPTION_VIEW_BEGINNER_PANEL
-Panel de Asistencias
-TOOLBAR_DESC_VIEW_BEGINER_PANEL
-
-TOOLBAR_CAPTION_VIEW_PREV_ERROR
-Ir a Error Anterior
-TOOLBAR_DESC_VIEW_PREV_ERROR
-
-TOOLBAR_CAPTION_VIEW_NEXT_ERROR
-Ir a siguiente error
-TOOLBAR_DESC_VIEW_NEXT_ERROR
-
-TOOLBAR_CAPTION_FOLD_ALL_LEVELS
-Plegar Todos los Niveles
-TOOLBAR_DESC_FOLD_ALL_LEVELS
-
-TOOLBAR_CAPTION_FOLD_LEVEL_1
-Plegar el Primer Nivel
-TOOLBAR_DESC_FOLD_LEVEL_1
-
-TOOLBAR_CAPTION_FOLD_LEVEL_2
-Plegar el Segundo Nivel
-TOOLBAR_DESC_FOLD_LEVEL_2
-
-TOOLBAR_CAPTION_FOLD_LEVEL_3
-Plegar el Tercer Nivel
-TOOLBAR_DESC_FOLD_LEVEL_3
-
-TOOLBAR_CAPTION_UNFOLD_ALL_LEVELS
-Desplegar Todos los Niveles
-TOOLBAR_DESC_UNFOLD_ALL_LEVELS
-
-TOOLBAR_CAPTION_UNFOLD_LEVEL_1
-Desplegar el Primer Nivel
-TOOLBAR_DESC_UNFOLD_LEVEL_1
-
-TOOLBAR_CAPTION_UNFOLD_LEVEL_2
-Desplegar el Segundo Nivel
-TOOLBAR_DESC_UNFOLD_LEVEL_2
-
-TOOLBAR_CAPTION_UNFOLD_LEVEL_3
-Desplegar el Tercer Nivel
-TOOLBAR_DESC_UNFOLD_LEVEL_3
-
-TOOLBAR_CAPTION_FILE_NEW
-Nuevo...
-TOOLBAR_DESC_FILE_NEW
-Archivo -> Nuevo...
-TOOLBAR_CAPTION_FILE_NEW_PROJECT
-Nuevo Proyecto...
-TOOLBAR_DESC_FILE_NEW_PROJECT
-Archivo -> Nuevo Proyecto...
-TOOLBAR_CAPTION_FILE_OPEN
-Abrir...
-TOOLBAR_DESC_FILE_OPEN
-Archivo -> Abrir...
-TOOLBAR_CAPTION_FILE_RECENT_SOURCES
-Fuentes Recientes...
-TOOLBAR_DESC_FILE_RECENT_SOURCES
-Archivo -> Fuentes Abiertos Recientemente...
-TOOLBAR_CAPTION_FILE_RECENT_PROJECTS
-Proyectos Recientes...
-TOOLBAR_DESC_FILE_RECENT_PROJECTS
-Archivo -> Proyectos Abiertos Recientemete...
-TOOLBAR_CAPTION_FILE_OPEN_H
-Abrir h/cpp Complementario
-TOOLBAR_DESC_FILE_OPEN_H
-Abrir h/cpp Complementario
-TOOLBAR_CAPTION_FILE_OPEN_SELECTED
-Abrir Seleccionado
-TOOLBAR_DESC_FILE_OPEN_SELECTED
-Archivo -> Abrir Seleccionado
-TOOLBAR_CAPTION_FILE_SAVE
-Guardar
-TOOLBAR_DESC_FILE_SABE
-Archivo -> Guardar
-TOOLBAR_CAPTION_FILE_SAVE_AS
-Guardar Como...
-TOOLBAR_DESC_FILE_SAVE_AS
-Archivo -> Guardar Como...
-TOOLBAR_CAPTION_FILE_SAVE_ALL
-Guardar Todo
-TOOLBAR_DESC_FILE_SAVE_ALL
-Archivo -> Guardar Todo
-TOOLBAR_CAPTION_FILE_SAVE_PROJECT
-Guardar Proyecto
-TOOLBAR_DESC_FILE_SAVE_PROJECT
-Archivo -> Guardar Proyecto
-TOOLBAR_CAPTION_FILE_EXPORT_HTML
-Exportar a HTML...
-TOOLBAR_DESC_FILE_EXPORT_HTML
-Archivo -> Exportar a HTML...
-TOOLBAR_CAPTION_FILE_PRINT
-Imprimir...
-TOOLBAR_DESC_FILE_PRINT
-Archivo -> Imprimir...
-TOOLBAR_CAPTION_FILE_RELOAD
-Recargar
-TOOLBAR_DESC_FILE_RELOAD
-Archivo -> Recargar
-TOOLBAR_CAPTION_FILE_CLOSE
-Cerrar
-TOOLBAR_DESC_FILE_CLOSE
-Archivo -> Cerrar
-TOOLBAR_CAPTION_FILE_CLOSE_ALL
-Cerrar Todo
-TOOLBAR_DESC_FILE_CLOSE_ALL
-Archivo -> Cerrar Todo
-TOOLBAR_CAPTION_FILE_CLOSE_PROJECT
-Cerrar Proyecto
-TOOLBAR_DESC_FILE_CLOSE_PROJECT
-Archivo -> Cerrar Proyecto
-TOOLBAR_CAPTION_FILE_PROJECT_CONFIG
-Configuracion de proyecto...
-TOOLBAR_DESC_FILE_PROJECT_CONFIG
-Archivo -> Configuracion del Proyecto...
-TOOLBAR_CAPTION_FILE_PREFERENCES
-Preferencias...
-TOOLBAR_DESC_FILE_PREFERENCES
-Archivo -> Preferencias...
-TOOLBAR_CAPTION_HELP_TUTORIALS
-Tutoriales...
-TOOLBAR_DESC_HELP_TUTORIALS
-Ayuda -> Tutoriales...
-TOOLBAR_CAPTION_HELP_ZINJAI
-Ayuda Sobre ZinjaI...
-TOOLBAR_DESC_HELP_ZINJAI
-Ayuda -> Ayuda sobre ZinjaI...
-TOOLBAR_CAPTION_HELP_CPP
-Ayuda Sobre C/C++...
-TOOLBAR_DESC_HELP_CPP
-Ayuda -> Ayuda sobre C++...
-TOOLBAR_CAPTION_HELP_TIPS
-Sugerencias...
-TOOLBAR_DESC_HELP_TIPS
-Ayuda -> Mostrar Sugerencias...
-TOOLBAR_CAPTION_HELP_ABOUT
-Acerca de...
-TOOLBAR_DESC_HELP_ABOUT
-Ayuda -> Acerca de...
-TOOLBAR_DESC_HELP_OPINION
-Ayuda -> Opina sobre ZinjaI...
-TOOLBAR_CAPTION_HELP_UPDATES
-Buscar Actualizaciones...
-TOOLBAR_DESC_HELP_UPDATES
-Ayuda -> Buscar Actualizaciones...
-TOOLBAR_CAPTION_FILE_EXIT
-Salir
-TOOLBAR_DESC_FILE_EXIT
-Archivo -> Salir
-TOOLBAR_CAPTION_EDIT_UNDO
-Deshacer
-TOOLBAR_DESC_EDIT_UNDO
-Editar -> Deshacer
-TOOLBAR_CAPTION_EDIT_REDO
-Rehacer
-TOOLBAR_DESC_EDIT_REDO
-Editar -> Rehacer
-TOOLBAR_CAPTION_EDIT_COPY
-Copiar
-TOOLBAR_DESC_EDIT_COPY
-Editar -> Copiar
-TOOLBAR_CAPTION_EDIT_CUT
-Cortar
-TOOLBAR_DESC_EDIT_CUT
-Editar -> Cortar
-TOOLBAR_CAPTION_EDIT_PASTE
-Pegar
-TOOLBAR_DESC_EDIT_PASTE
-Editar -> Pegar
-TOOLBAR_CAPTION_EDIT_LINES_UP
-Mover Hacia Arriba
-TOOLBAR_DESC_EDIT_LINES_UP
-Editar -> Mover Hacia Arriba
-TOOLBAR_CAPTION_EDIT_LINES_DOWN
-Mover Hacia Abajo
-TOOLBAR_DESC_EDIT_LINES_DOWN
-Editar -> Mover Hacia Abajo
-TOOLBAR_CAPTION_EDIT_DUPLICATE_LINES
-Duplicar Linea(s)
-TOOLBAR_DESC_EDIT_DUPLICATE_LINES
-Editar -> Duplicar Linea(s)
-TOOLBAR_CAPTION_EDIT_DELETE_LINES
-Eliminar Linea(s)
-TOOLBAR_DESC_EDIT_DELETE_LINES
-Editar -> Eliminar Linea(s)
-TOOLBAR_CAPTION_EDIT_GOTO_LINE
-Ir a Linea...
-TOOLBAR_DESC_EDIT_GOTO_LINE
-Editar -> Ir a linea...
-TOOLBAR_CAPTION_EDIT_GOTO_FUNCTION
-Ir a Clase/Metodo/Funcion...
-TOOLBAR_DESC_EDIT_GOTO_FUNCTION
-Editar -> Ir a Clase/Metodo/Funcion...
-TOOLBAR_CAPTION_EDIT_GOTO_FILE
-Ir a Archivo...
-TOOLBAR_DESC_EDIT_GOTO_FILE
-Editar -> Ir a Archivo...
-TOOLBAR_CAPTION_EDIT_FIND
-Buscar...
-TOOLBAR_DESC_EDIT_FIND
-Editar -> Buscar...
-TOOLBAR_CAPTION_EDIT_FIND_PREV
-Buscar anterior
-TOOLBAR_DESC_EDIT_FIND_PREV
-Editar -> Buscar Anterior
-TOOLBAR_CAPTION_EDIT_FIND_NEXT
-Buscar siguiente
-TOOLBAR_DESC_EDIT_FIND_NEXT
-Editar -> Buscar Siguiente
-TOOLBAR_CAPTION_EDIT_REPLACE
-Reemplazar...
-TOOLBAR_DESC_EDIT_REPLACE
-Editar -> Reemplazar...
-TOOLBAR_CAPTION_EDIT_INSERT_INCLUDE
-Insertar #include Correspondiente
-TOOLBAR_DESC_EDIT_INSERT_INCLUDE
-Editar -> Insertar #include Correspondiente
-TOOLBAR_CAPTION_EDIT_COMMENT
-Comentar
-TOOLBAR_DESC_EDIT_COMMNENT
-Editar -> Comentar
-TOOLBAR_CAPTION_EDIT_UNCOMMENT
-Descomentar
-TOOLBAR_DESC_EDIT_UNCOMMENT
-Editar -> Descomentar
-TOOLBAR_CAPTION_EDIT_INDENT
-Indentar
-TOOLBAR_DESC_EDIT_INDENT
-Editar -> Indentar
-TOOLBAR_CAPTION_EDIT_BRACEMATCH
-Seleccionar Bloque
-TOOLBAR_DESC_EDIT_BRACEMATCH
-Editar -> Seleccionar Bloque
-TOOLBAR_CAPTION_EDIT_SELECT_ALL
-Seleccionar Todo
-TOOLBAR_DESC_EDIT_SELECT_ALL
-Editar -> Seleccionar Todo
-TOOLBAR_CAPTION_EDIT_HIGHLIGHT_LINES
-Resaltar Linea(s)/Quitar Resaltado
-TOOLBAR_DESC_EDIT_HIGHLIGHT_LINES
-Editar -> Resaltar Linea(s)/Quitar Resaltado
-TOOLBAR_CAPTION_EDIT_FIND_HIGHLIGHTS
-Buscar Resaltado
-TOOLBAR_DESC_EDIT_FIND_HIGHLIGHTS
-Editar -> Buscar Resaltado
-TOOLBAR_CAPTION_EDIT_LIST_HIGHLIGHTS
-Listar Lineas Resaltadas
-TOOLBAR_DESC_EDIT_LIST_HIGHLIGHTS
-Editar -> Listar Lineas Resaltadas
-TOOLBAR_CAPTION_EDIT_FORCE_AUTOCOMPLETE
-Autocompletar
-TOOLBAR_DESC_EDIT_FORCE_AUTOCOMPLETE
-Editar -> Autocompletar
-TOOLBAR_CAPTION_DEBUG_START
-Comenzar/Continuar Depuracion
-TOOLBAR_DESC_DEBUG_START
-Depurar -> Comenzar/Continuar
-TOOLBAR_CAPTION_DEBUG_PAUSE
-Interrumpir Ejecucion en Depuracion
-TOOLBAR_DESC_DEBUG_PAUSE
-Depurar -> Interrumpir
-TOOLBAR_CAPTION_DEBUG_STOP
-Detener Depuracion
-TOOLBAR_DESC_DEBUG_STOP
-Depurar -> Detener
-TOOLBAR_CAPTION_DEBUG_STEP_IP
-Step In
-TOOLBAR_DESC_DEBUG_STEP_IN
-Depurar -> Step In
-TOOLBAR_CAPTION_DEBUG_STEP_OVER
-Step Over
-TOOLBAR_DESC_DEBUG_STEP_OVER
-Depurar -> Step Over
-TOOLBAR_CAPTION_DEBUG_STEP_OUT
-Step Out
-TOOLBAR_DESC_DEBUG_STEP_OUT
-Depurar -> Step Out
-TOOLBAR_CAPTION_DEBUG_RUN_UNTIL
-Ejecutar Hasta El Cursor
-TOOLBAR_DESC_DEBUG_RUN_UNTIL
-Depurar -> Ejecutar Hasta el Cursos
-TOOLBAR_CAPTION_DEBUG_RETURN
-Return
-TOOLBAR_DESC_DEBUG_RETURN
-Depurar -> Return
-TOOLBAR_CAPTION_DEBUG_JUMP
-Continuar desde aqui
-TOOLBAR_DESC_DEBUG_JUMP
-Depurar -> Continuar Desde Aqui
-TOOLBAR_CAPTION_DEBUG_ENABLE_INVERSE
-Habilitar Ejecucion Hacia Atras
-TOOLBAR_DESC_DEBUG_ENABLE_INVERSE
-Depurar -> Habilitar Ejecucion Hacia Atras
-TOOLBAR_CAPTION_DEBUG_INVERSE
-Ejecutar Hacia Atras
-TOOLBAR_DESC_DEBUG_INVERSE
-Depurar -> Ejecutar Hacia Atras...
-TOOLBAR_CAPTION_INSPECT
-Panel de Inspecciones
-TOOLBAR_DESC_INSPECT
-Depurar -> Panel de Inspecciones
-TOOLBAR_CAPTION_BACKTRACE
-Trazado Inverso
-TOOLBAR_DESC_BACKTRACE
-Depurar -> Trazado Inverso
-TOOLBAR_CAPTION_THREADLIST
-Hilos de Ejecucion
-TOOLBAR_DESC_THREADLIST
-Depurar -> Hilos de Ejecucion
-TOOLBAR_CAPTION_DEBUG_TOGGLE_BREAKPOINT
-Agregar/Quitar Breakpointo
-TOOLBAR_DESC_DEBUG_TOGGLE_BREAKPOINT
-Agregar/Quitar Breakpoint
-TOOLBAR_CAPTION_DEBUG_BREAKPOINT_OPTIONS
-Opciones del Breakpoint...
-TOOLBAR_DESC_DEBUG_BREAKPOINT_OPTIONS
-Depurar -> Opciones del Breakpoint...
-TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS
-Listar Watch/Break points...
-TOOLBAR_DESC_DEBUG_LIST_BREAKPOINTS
-Depurar -> Listar Watch/Break points...
-TOOLBAR_CAPTION_DEBUG_SHOW_LOG_PANEL
-Mostrar Mensajes del Depurador
-TOOLBAR_DESC_DEBUG_SHOW_LOG_PANEL
-Depurar -> Mostrar Mensajes del Depurador...
-TOOLBAR_CAPTION_RUN_COMPILE
-Compilar
-TOOLBAR_DESC_RUN_COMPILE
-Ejecucion -> Compilar
-TOOLBAR_CAPTION_RUN_RUN
-Guardar, Compilar y Ejecutar...
-TOOLBAR_DESC_RUN_RUN
-Ejecucion -> Guardar, Compilar y Ejecutar
-TOOLBAR_CAPTION_RUN_OLD
-Ejecutar Sin Recompilar...
-TOOLBAR_DESC_RUN_OLD
-Ejecucion -> Ejecutar Sin Recompilar
-TOOLBAR_CAPTION_RUN_STOP
-Detener
-TOOLBAR_DESC_RUN_STOP
-Ejecucion -> Detener
-TOOLBAR_CAPTION_RUN_CLEAN
-Limpiar
-TOOLBAR_DESC_RUN_CLEAN
-Ejecucion -> Limpiar
-TOOLBAR_CAPTION_RUN_OPTIONS
-Opciones de compilacion y ejecucion...
-TOOLBAR_DESC_RUN_OPTIONS
-Ejecucion -> Opciones...
-TOOLBAR_CAPTION_DEBUG_RUN
-Depurar
-TOOLBAR_DESC_DEBUG_RUN
-Depurar -> Iniciar
-TOOLBAR_CAPTION_DEBUG_ATTACH
-Attachear Depurador
-TOOLBAR_DESC_DEBUG_ATTACH
-Depurar -> Adjuntar
-TOOLBAR_CAPTION_DEBUG_CORE_DUMP
-Cargar Volcado de Memoria
-TOOLBAR_DESC_DEBUG_CORE_DUMP
-Depurar -> Cargar Volcado de Memoria
-TOOLBAR_FIND_TEXT
-Texto a Buscar
-TOOLBAR_FIND_CAPTION
-Busqueda Rapida
-TOOLBAR_FIND_BUTTON
-Buscar siguiente
-CAPTION_TOOLBAR_FIND
-Busqueda
-CAPTION_TOOLBAR_STATUS
-Status Toolbar
-TOOLBAR_CAPTION_TOOLS_DIFF_PREV
-Diferencia Anterior
-TOOLBAR_DESC_TOOLS_DIFF_PREV
-Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior
-TOOLBAR_CAPTION_TOOLS_DIFF_NEXT
-Siguiente Diferencia
-TOOLBAR_DESC_TOOLS_DIFF_NEXT
-Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia
-CAPTION_TOOLBAR_DIFF
-Diff
-MENUITEM_FILE_OPEN_ON_PROJECT
-&Abrir/Agregar al proyecto...
 MAKEFILE_CAPTION
 Generar Makefile
 MAKEFILE_PROFILE
@@ -3030,6 +3012,8 @@ PREFERENCES_OPEN_FILE
 &Buscar archivo...
 PREFERENCES_EDIT_FILE
 &Editar archivo...
+PREFERENCES_EDIT_TOOLBAR
+Barra de Herramientas <{1}>
 PREFERENCES_EDIT_TOOLBAR_FILE_CAPTION
 Barra de Herramientas Archivo
 PREFERENCES_EDIT_TOOLBAR_EDIT_CAPTION
@@ -3317,7 +3301,7 @@ Tip: Probablemente deba desreferenciar este objeto.
 SOURCE_UNCOMMENTED_FOR_HEADER
 Descomentada linea <{1}>: \"#include <{2}>\".
 SOURCE_ADDED_HEADER
-Cabecera agregadad: <{1}>.
+Cabecera agregada: <{1}>.
 SOURCE_ADDED_USING_NAMESPACE_STD
 Agregado \"using namespace std;\"
 SOURCE_HEADER_WAS_ALREADY

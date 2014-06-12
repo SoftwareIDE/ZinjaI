@@ -11,6 +11,7 @@
 #include "mxHelpWindow.h"
 #include "mxMessageDialog.h"
 #include "ProjectManager.h"
+#include "MenusAndToolsConfig.h"
 
 BEGIN_EVENT_TABLE(mxCustomTools, wxDialog)
 	EVT_BUTTON(wxID_OK,mxCustomTools::OnButtonOk)
@@ -107,18 +108,14 @@ void mxCustomTools::OnButtonOk(wxCommandEvent &event) {
 		orig[i].on_toolbar=tools[i].on_toolbar;
 		someone_ontoolbar|=tools[i].on_toolbar;
 	}
-	bool &visible=for_project?config->Toolbars.positions.project.visible:config->Toolbars.positions.tools.visible;
-	if (someone_ontoolbar && !visible && 
+	int tb_id = for_project?MenusAndToolsConfig::tbPROJECT:MenusAndToolsConfig::tbTOOLS;
+	int wx_id = for_project?mxID_VIEW_TOOLBAR_PROJECT:mxID_VIEW_TOOLBAR_TOOLS;
+	if (someone_ontoolbar && !menu_data->GetToolbarPosition(tb_id).visible && 
 		mxMD_YES==mxMessageDialog(this,LANG(CUSTOM_TOOLS_SHOW_TOOLBAR,"La barra de herramientas \"Herramientas\" no esta visible.\n"
 		"¿Desea activarla para ver los controles personalizados?"), _T("Reiniciar Barras de Herramientas"), mxMD_YES_NO).ShowModal()) {
-			visible=true;
-			if (for_project) {
-				main_window->OnToggleToolbar(mxID_VIEW_TOOLBAR_PROJECT,main_window->toolbar_project,visible,true);
-			} else {
-				main_window->OnToggleToolbar(mxID_VIEW_TOOLBAR_TOOLS,main_window->toolbar_tools,visible,true);
-			}
+			main_window->OnToggleToolbar(wx_id,tb_id,true);
 		}
-	main_window->CreateToolbars(for_project?main_window->toolbar_project:main_window->toolbar_tools);
+	menu_data->UpdateToolbar(tb_id,true);
 	main_window->UpdateCustomTools(for_project);
 	Close();
 }

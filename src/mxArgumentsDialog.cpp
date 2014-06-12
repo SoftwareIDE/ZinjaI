@@ -78,11 +78,11 @@ mxArgumentsDialog::~mxArgumentsDialog() {
 
 void mxArgumentsDialog::OnYesButton(wxCommandEvent &evt) {
 	last_workdir=combo_work->GetValue();
-	if (list_for_combo_work.GetCount()==0 || (list_for_combo_work.GetCount() && list_for_combo_work[list_for_combo_work.GetCount()-1]!=last_workdir))
+	if (list_for_combo_work.GetCount()==0 || list_for_combo_work.Last()!=last_workdir)
 		list_for_combo_work.Add(last_workdir);
 	if (combo_args->GetValue().Len()) {
 		last_arguments=combo_args->GetValue();
-		if (list_for_combo_args.GetCount()==0 || (list_for_combo_args.GetCount() && list_for_combo_args[list_for_combo_args.GetCount()-1]!=last_arguments))
+		if (list_for_combo_args.GetCount()==0 || list_for_combo_args.Last()!=last_arguments)
 			list_for_combo_args.Add(last_arguments);
 		EndModal(AD_ARGS|(check->GetValue()?AD_REMEMBER:0));
 	} else {

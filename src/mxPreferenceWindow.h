@@ -205,6 +205,7 @@ public:
 	void OnAutocodesEdit(wxCommandEvent &event);
 	void OnAutocodesButton(wxCommandEvent &event);
 	void OnDebugBlacklistButton(wxCommandEvent &event);
+	void OnToolbarsCommon(mxToolbarEditor *wx_toolbar, int tb_id);
 	void OnToolbarsFile(wxCommandEvent &evt);
 	void OnToolbarsView(wxCommandEvent &evt);
 	void OnToolbarsEdit(wxCommandEvent &evt);

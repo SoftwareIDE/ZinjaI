@@ -31,6 +31,7 @@
 #include <fstream>
 #include <vector>
 #include "DebugPatcher.h"
+#include "MenusAndToolsConfig.h"
 using namespace std;
 
 #ifdef _ZINJAI_DEBUG
@@ -1316,7 +1317,7 @@ wxString DebugManager::GetSubValueFromAns(wxString ans, wxString key1, wxString 
 
 void DebugManager::SetStateText(wxString text, bool refresh) {
 	main_window->SetCompilingStatus(text);
-	main_window->toolbar_status_text->SetLabel(wxString(LANG(DEBUG_STATUS_PREFIX,"  Depuracion: "))+text);
+	_get_toolbar(tbSTATUS)->SetLabel(wxString(LANG(DEBUG_STATUS_PREFIX,"  Depuracion: "))+text);
 	if (refresh) wxYield();
 }
 

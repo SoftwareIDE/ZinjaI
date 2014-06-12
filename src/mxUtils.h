@@ -140,11 +140,11 @@ public:
 	// copia una cadena wx en una cadena c
 	void strcpy(wxChar *cstr, wxString wstr);
 	void strcpy(wxChar *cstr, wxChar *wstr);
-	//! Ordena una wxArrayString mediante QuickSort
+	/// Ordena una wxArrayString mediante QuickSort
 	void SortArrayString(wxArrayString &array, int inf=-1, int sup=-1);
-	// devuelve verdadero si el dato value empieza con '1','V','v','T','t','S' o 's'
-	bool ToInt(wxString &value, int &what);
-	bool IsTrue(wxString &value);
+	bool ToInt(const wxString &value, int &what) { static long l; if (value.ToLong(&l)) { what=int(l); return true; } else return false; }
+	/// devuelve verdadero si el dato value empieza con '1','V','v','T','t','S' o 's'
+	bool IsTrue(const wxString &value) { return (value[0]=='1' || value[0]=='V' || value[0]=='v' || value[0]=='s' || value[0]=='S' || value[0]=='T' || value[0]=='t'); }
 	wxString UnSplit(wxArrayString &array); ///< joins all strins in array into a single string using a single space as separator
 	wxString Split(wxString str, wxString pre);
 	int Split(wxString str, wxArrayString &array, bool coma_splits=true,bool keep_quotes=true);

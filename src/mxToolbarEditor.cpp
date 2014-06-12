@@ -11,6 +11,7 @@
 #include "mxArt.h"
 #include "mxMainWindow.h"
 #include "Language.h"
+#include "MenusAndToolsConfig.h"
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxToolbarEditor, wxDialog)
@@ -18,11 +19,10 @@ BEGIN_EVENT_TABLE(mxToolbarEditor, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxToolbarEditor::OnButtonCancel)
 END_EVENT_TABLE()
 
-mxToolbarEditor::mxToolbarEditor(wxWindow *parent, wxToolBar *atoolbar, wxString name):wxDialog(parent,wxID_ANY,name,wxDefaultPosition,wxSize(350,400),wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
+mxToolbarEditor::mxToolbarEditor(wxWindow *parent, int toolbar_id, wxString name):wxDialog(parent,wxID_ANY,name,wxDefaultPosition,wxSize(350,400),wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
 	
-	ipre=DIR_PLUS_FILE(wxString()<<config->Toolbars.icon_size,"");
-	
-	toolbar = atoolbar;
+	this->toolbar_id=toolbar_id;
+	ipre=DIR_PLUS_FILE(wxString()<<menu_data->GetToolbarIconSize(),"");
 	
 	count = 0;
 	
@@ -68,7 +68,8 @@ void mxToolbarEditor::Add(wxString name, wxString file, bool &config_entry) {
 void mxToolbarEditor::OnButtonOk(wxCommandEvent &evt) {
 	for (int i=0;i<count;i++)
 		(*booleans[i])=checkboxs[i]->GetValue();
-	main_window->CreateToolbars(toolbar);
+	menu_data->UpdateToolbar(toolbar_id,true);
+	main_window->SortToolbars(true);
 	Hide();
 }
 

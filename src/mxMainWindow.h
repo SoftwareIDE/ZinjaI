@@ -77,8 +77,6 @@ public:
 //	void PopulateMenuTools(const wxString &ipre);
 //	void PopulateMenuHelp(const wxString &ipre);
 public:
-	void CreateMenues();
-	void CreateToolbars(wxToolBar *wich_one=NULL, bool delete_old=false);
 	void GetToolbarsPositions();
 	void SortToolbars(bool update_aui=true);
 	void OnExit(wxCommandEvent& event);
@@ -135,7 +133,7 @@ public:
 	void OnViewLineWrap (wxCommandEvent &event);
 	void OnViewCodeColours (wxCommandEvent &event);
 	void OnViewCodeStyle (wxCommandEvent &event);
-	void OnToggleToolbar(int menu_item_id, wxToolBar *toolbar, bool &config_entry, bool update_aui=true);
+	void OnToggleToolbar(int menu_item_id, int toolbar_id, bool update_aui=true);
 	void OnViewToolbarProject (wxCommandEvent &event);
 	void OnViewToolbarTools (wxCommandEvent &event);
 	void OnViewToolbarView (wxCommandEvent &event);
@@ -482,8 +480,8 @@ public:
 
 	wxTimer *parser_timer;
 
-	wxToolBar *toolbar_file, *toolbar_edit, *toolbar_run, *toolbar_misc, *toolbar_debug, *toolbar_find, *toolbar_status, *toolbar_tools, *toolbar_view, *toolbar_diff, *toolbar_project;
-	wxStaticText *toolbar_status_text;
+//	wxToolBar *toolbar_file, *toolbar_edit, *toolbar_run, *toolbar_misc, *toolbar_debug, *toolbar_find, *toolbar_status, *toolbar_tools, *toolbar_view, *toolbar_diff, *toolbar_project;
+//	wxStaticText *toolbar_status_text;
 
 	wxAuiNotebook *CreateNotebookSources();
 	
@@ -497,7 +495,7 @@ public:
 	
 	void ShowWelcome(bool show=true); ///< alterna entre mostrar el notebook de fuentes y el panel de bienvenida
 
-	wxTextCtrl* toolbar_find_text;
+//	wxTextCtrl* toolbar_find_text;
 	
 	wxTreeCtrl* CreateSymbolsTree();
 	wxTreeCtrl* CreateExplorerTree();

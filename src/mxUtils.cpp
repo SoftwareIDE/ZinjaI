@@ -304,20 +304,6 @@ void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxStr
 	}
 }
 
-bool mxUtils::ToInt(wxString &value, int &what){
-	static long l;
-	if (value.ToLong(&l)) {
-		what=int(l);
-		return true;
-	} else return false;
-}
-
-bool mxUtils::IsTrue(wxString &value){
-	return (value[0]=='1' || value[0]=='V' || value[0]=='v' || value[0]=='s' || value[0]=='S' || value[0]=='T' || value[0]=='t');
-}
-
-
-
 wxString mxUtils::FindObjectDeps(wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
 	wxArrayString already_processed;
 	already_processed.Add(filename.GetFullPath());

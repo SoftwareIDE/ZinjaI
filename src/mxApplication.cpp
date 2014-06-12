@@ -88,8 +88,6 @@ bool mxApplication::OnInit() {
 						"working path is the right one."),_T("Error"));
 	}
 	
-	// agregar colores personalizados a la base de datos
-
 	// inicialize mxUtils and ConfigManager
 	utils = new mxUtils;
 	config = new ConfigManager(zpath);

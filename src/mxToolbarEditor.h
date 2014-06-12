@@ -12,14 +12,13 @@ class wxToolBar;
 class mxToolbarEditor : public wxDialog {
 private:
 	wxString ipre;
-	wxToolBar *toolbar;
 	wxBoxSizer *sizer;
 	wxScrolledWindow *scroll;
 	bool *booleans[MAX_TOOLBAR_BUTTONS];
 	wxCheckBox *checkboxs[MAX_TOOLBAR_BUTTONS];
-	int count;
+	int count, toolbar_id;
 public:
-	mxToolbarEditor(wxWindow *parent, wxToolBar *toolbar,wxString name);
+	mxToolbarEditor(wxWindow *parent, int toolbar_id, wxString name);
 	~mxToolbarEditor();
 	void Add(wxString name, wxString file, bool &config_entry);
 	void ShowUp();

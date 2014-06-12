@@ -3,6 +3,8 @@
 #include "mxUtils.h"
 #include "ConfigManager.h"
 #include "ProjectManager.h"
+#include "mxMainWindow.h"
+#include "mxMessageDialog.h"
 
 MenusAndToolsConfig *menu_data;
 #if defined(__APPLE__)
@@ -16,7 +18,7 @@ MenusAndToolsConfig *menu_data;
 	#define _if_win32(a,b) b
 #endif
 
-MenusAndToolsConfig::MenusAndToolsConfig (wxMenuBar * _menu_bar) :wx_menu_bar(_menu_bar) {
+MenusAndToolsConfig::MenusAndToolsConfig () {
 	tools_custom_item=new wxMenuItem*[10];
 	for (int i=0;i<10;i++) tools_custom_item[i] = NULL;
 	file_source_history = new wxMenuItem*[CM_HISTORY_MAX_LEN];
@@ -91,9 +93,9 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	
 	menues[mnVIEW].label = LANG(MENUITEM_VIEW,_if_not_apple("&Ver","Ver")); {
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista")).Icon("duplicarVista.png"));
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LINE_WRAP, LANG(MENUITEM_VIEW_LINE_WRAP,"&Ajuste de linea")).ShortCut("Alt+F11").Description("Muestra las lineas largas como en varios renglones").Checkeable(false));	
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_WHITE_SPACE, LANG(MENUITEM_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de &fin de linea")).Description("Muestra las lineas largas como en varios renglones").Checkeable(false));	
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_CODE_STYLE, LANG(MENUITEM_VIEW_SYNTAX_HIGHLIGHT,"&Colorear Sintaxis")).ShortCut("Shift+F11").Description("Resalta el codigo con diferentes colores y formatos de fuente.").Checkeable(false));	
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LINE_WRAP, LANG(MENUITEM_VIEW_LINE_WRAP,"&Ajuste de linea")).ShortCut("Alt+F11").Description("Muestra las lineas largas como en varios renglones").Icon("lineWrap.png").Checkeable(false));	
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_WHITE_SPACE, LANG(MENUITEM_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de &fin de linea")).Description("Muestra las lineas largas como en varios renglones").Icon("whiteSpace.png").Checkeable(false));	
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_CODE_STYLE, LANG(MENUITEM_VIEW_SYNTAX_HIGHLIGHT,"&Colorear Sintaxis")).ShortCut("Shift+F11").Description("Resalta el codigo con diferentes colores y formatos de fuente.").Icon("syntaxColour.png").Checkeable(false));	
 		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_CODE_COLOURS, LANG(MENUITEM_VIEW_CODE_COLOURS,"Configurar esquema de colores...")).Icon("preferencias.png"));
 		BeginSubMenu(mnVIEW,LANG(MENUITEM_VIEW_FOLDING,"Plegado"),"Muestra opciones para plegar y desplegar codigo en distintos niveles","folding.png");
 			AddMenuItem(mnVIEW, myMenuItem(mxID_FOLD_FOLD,LANG(MENUITEM_FOLD_FOLD_THIS_LINE,"Plegar en esta linea")).ShortCut(_if_not_apple("Alt+Up","")).Icon("foldOne.png"));
@@ -112,24 +114,24 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnVIEW, myMenuItem(mxID_FOLD_SHOW_ALL,LANG(MENUITEM_FOLD_UNFOLD_ALL_LEVELS,"Desplegar todos los niveles")).ShortCut(_if_not_apple("Alt+0","")).Description("Abre todos los bolques de todos los niveles").Icon("unfoldAll.png"));
 		EndSubMenu(mnVIEW);
 		AddSeparator(mnVIEW);
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_FULLSCREEN, LANG(MENUITEM_VIEW_FULLSCREEN,"Ver a Pantalla &Completa")).ShortCut("F11").Description("Muestra el editor a pantalla completa, ocultando tambien los demas paneles").Checkeable(false));
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_BEGINNER_PANEL, LANG(MENUITEM_VIEW_BEGINNER_PANEL,"Mostrar Panel de Mini-Plantillas")).Description("Muestra un panel con plantillas y estructuras basicas de c++").Checkeable(false));
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_FULLSCREEN, LANG(MENUITEM_VIEW_FULLSCREEN,"Ver a Pantalla &Completa")).ShortCut("F11").Description("Muestra el editor a pantalla completa, ocultando tambien los demas paneles").Icon("fullScreen.png").Checkeable(false));
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_BEGINNER_PANEL, LANG(MENUITEM_VIEW_BEGINNER_PANEL,"Mostrar Panel de Mini-Plantillas")).Description("Muestra un panel con plantillas y estructuras basicas de c++").Icon("beginer_panel.png").Checkeable(false));
 		if (config->Init.left_panels) 
 			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LEFT_PANELS, LANG(MENUITEM_VIEW_LEFT_PANELS,"&Mostrar Panel de Arboles")).Description("Muestra el panel con los arboles de proyecto, simbolos y explorador de archivos").Checkeable(false));
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_PROJECT_TREE, LANG(MENUITEM_VIEW_PROJECT_TREE,"&Mostrar Arbol de &Proyecto")).Description("Muestra el panel del arbol de proyecto/archivos abiertos").Checkeable(false));
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_EXPLORER_TREE, LANG(MENUITEM_VIEW_EXPLORER_TREE,"Mostrar &Explorardor de Archivos")).ShortCut("Ctrl+E").Description("Muestra el panel explorador de archivos").Checkeable(false));
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos")).Description("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo.").Checkeable(false));
-		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion")).Description("Muestra un panel con la salida del compilador").Checkeable(false));
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_PROJECT_TREE, LANG(MENUITEM_VIEW_PROJECT_TREE,"&Mostrar Arbol de &Proyecto")).Description("Muestra el panel del arbol de proyecto/archivos abiertos").Icon("projectTree.png").Checkeable(false));
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_EXPLORER_TREE, LANG(MENUITEM_VIEW_EXPLORER_TREE,"Mostrar &Explorardor de Archivos")).ShortCut("Ctrl+E").Description("Muestra el panel explorador de archivos").Icon("explorerTree.png").Checkeable(false));
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos")).Description("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo.").Icon("symbolsTree.png").Checkeable(false));
+		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion")).Description("Muestra un panel con la salida del compilador").Icon("compilerTree.png").Checkeable(false));
 		BeginSubMenu(mnVIEW, LANG(MENUITEM_VIEW_TOOLBARS,"Barras de herramientas"));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo")).Description("Muestra la barra de herramientas para el manejo de archivos").Checkeable(config->Toolbars.positions.file.visible));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion")).Description("Muestra la barra de herramientas para la edicion del fuente").Checkeable(config->Toolbars.positions.edit.visible));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver")).Description("Muestra la barra de herramientas para las opciones de visualizacion").Checkeable(config->Toolbars.positions.view.visible));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida")).Description("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente").Checkeable(config->Toolbars.positions.find.visible));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion")).Description("Muestra la barra de herramientas para la compilacion y ejecucion del programa").Checkeable(config->Toolbars.positions.run.visible));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas")).Description("Muestra la barra de herramientas para las herramientas adicionales").Checkeable(config->Toolbars.positions.tools.visible));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto")).Description("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto").Checkeable(config->Toolbars.positions.project.visible).Project(true));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion")).Description("Muestra la barra de herramientas para la depuracion del programa").Checkeable(config->Toolbars.positions.debug.visible));
-			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea")).Description("Muestra la barra de herramientas con commandos miselaneos").Checkeable(config->Toolbars.positions.misc.visible));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo")).Description("Muestra la barra de herramientas para el manejo de archivos").Checkeable(_toolbar_visible(tbFILE)));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion")).Description("Muestra la barra de herramientas para la edicion del fuente").Checkeable(_toolbar_visible(tbEDIT)));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver")).Description("Muestra la barra de herramientas para las opciones de visualizacion").Checkeable(_toolbar_visible(tbVIEW)));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida")).Description("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente").Checkeable(_toolbar_visible(tbFIND)));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion")).Description("Muestra la barra de herramientas para la compilacion y ejecucion del programa").Checkeable(_toolbar_visible(tbRUN)));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas")).Description("Muestra la barra de herramientas para las herramientas adicionales").Checkeable(_toolbar_visible(tbTOOLS)));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto")).Description("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto").Checkeable(_toolbar_visible(tbPROJECT)).Project(true));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion")).Description("Muestra la barra de herramientas para la depuracion del programa").Checkeable(_toolbar_visible(tbDEBUG)));
+			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea")).Description("Muestra la barra de herramientas con commandos miselaneos").Checkeable(_toolbar_visible(tbMISC)));
 			AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBARS_CONFIG, LANG(MENUITEM_VIEW_TOOLBARS_CONFIG,"&Configurar...")).Icon("preferencias.png"));
 		EndSubMenu(mnVIEW);
 		AddSeparator(mnVIEW);
@@ -173,8 +175,8 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_ATTACH, LANG(MENUITEM_DEBUG_ATTACH,"&Adjuntar...")).Icon("debug_attach.png").Debug(false));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria...")).Icon("core_dump.png").Debug(false));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_CORE_DUMP,LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")).Icon("core_dump.png").Debug(true));
-			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras")).Checkeable(false).Debug(true));
-			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_INVERSE_EXEC, LANG(MENUITEM_DEBUG_INVERSE,"Ejecutar Hacia Atras")).Checkeable(false).Debug(true));
+			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras")).Icon("reverse_enable.png").Checkeable(false).Debug(true));
+			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_INVERSE_EXEC, LANG(MENUITEM_DEBUG_INVERSE,"Ejecutar Hacia Atras")).Icon("reverse_toggle.png").Checkeable(false).Debug(true));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SET_SIGNALS, LANG(MENUITEM_DEBUG_SET_SIGNALS,"Configurar comportamiento ante señales...")).Icon("debug_set_signals.png").Debug(true));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SEND_SIGNAL, LANG(MENUITEM_DEBUG_SEND_SIGNALS,"Enviar señal...")).Icon("debug_send_signal.png").Debug(true));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_GDB_COMMAND, LANG(MENUITEM_DEBUG_GDB_COMMAND,"Introducir comandos gdb...")).Icon("gdb_command.png").Debug(true));
@@ -247,7 +249,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,LANG(MENUITEM_TOOLS_WXFB,"Diseñar &Interfases (wxFormBuilder)"),"Diseño visual de interfaces con la biblioteca wxWidgets","wxfb.png",wxID_ANY,maPROJECT);
-			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_CONFIG,LANG(MENUITEM_TOOLS_WXFB_CONFIG,"Configurar &Integracion con wxFormBuilder...")).Description("Añade los pasos necesarios a la compilacion para utilizar wxFormBuilder").Icon("wxfb_activate.png"));
+			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_CONFIG,LANG(MENUITEM_TOOLS_WXFB_CONFIG,"Configurar &Integracion con wxFormBuilder...")).Description("Configura características adicionales que facilitan el uso de wxFormBuilder").Icon("wxfb_activate.png"));
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_NEW_RES,LANG(MENUITEM_TOOLS_WXFB_NEW_RESOURCE,"&Adjuntar un Nuevo Proyecto wxFB...")).Description("Crea un nuevo proyecto wxFormBuilder y lo agrega al proyecto en ZinjaI").Icon("wxfb_new_res.png"));
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_LOAD_RES,LANG(MENUITEM_TOOLS_WXFB_LOAD_RESOURCE,"&Adjuntar un Proyecto wxFB Existente...")).Description("Agrega un proyecto wxFormBuilder ya existente al proyecto en ZinjaI").Icon("wxfb_load_res.png"));
 			AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_REGEN,LANG(MENUITEM_TOOLS_WXFB_REGENERATE,"&Regenerar Proyectos wxFB")).ShortCut("Shift+Alt+F9").Description("Ejecuta wxFormBuilder para regenerar los archivos de recurso o fuentes que correspondan").Icon("wxfb_regen.png").Map());
@@ -323,174 +325,180 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 
 void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	
-	toolbars[tbFILE].label = LANG(CAPTION_TOOLBAR_FILE,"Archivo"); {
-		AddToolbarItem(tbFILE,myToolbarItem("file.new_file",menues[tbFILE],wxID_NEW)); // ,LANG(TOOLBAR_CAPTION_FILE_NEW,"Nuevo..."),ipre+_T("nuevo.png"),LANG(TOOLBAR_DESC_FILE_NEW,"Archivo -> Nuevo..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.new_project",menues[tbFILE],mxID_FILE_PROJECT)); // ,LANG(TOOLBAR_CAPTION_FILE_NEW_PROJECT,"Nuevo Proyecto..."),ipre+_T("proyecto.png"),LANG(TOOLBAR_DESC_FILE_NEW_PROJECT,"Archivo -> Nuevo Proyecto..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.open",menues[tbFILE],wxID_OPEN)); // ,LANG(TOOLBAR_CAPTION_FILE_OPEN,"Abrir..."),ipre+_T("abrir.png"),LANG(TOOLBAR_DESC_FILE_OPEN,"Archivo -> Abrir..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.recent_simple",menues[tbFILE],mxID_FILE_SOURCE_HISTORY_MORE)); // ,LANG(TOOLBAR_CAPTION_FILE_RECENT_SOURCES,"Fuentes Recientes..."),ipre+_T("recentSimple.png"),LANG(TOOLBAR_DESC_FILE_RECENT_SOURCES,"Archivo -> Fuentes Abiertos Recientemente..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.recent_project",menues[tbFILE],mxID_FILE_PROJECT_HISTORY_MORE)); // ,LANG(TOOLBAR_CAPTION_FILE_RECENT_PROJECTS,"Proyectos Recientes..."),ipre+_T("recentProject.png"),LANG(TOOLBAR_DESC_FILE_RECENT_PROJECTS,"Archivo -> Proyectos Abiertos Recientemete..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.open_header",menues[tbFILE],mxID_FILE_OPEN_H)); // ,LANG(TOOLBAR_CAPTION_FILE_OPEN_H,"Abrir h/cpp Complementario"),ipre+_T("abrirp.png"),LANG(TOOLBAR_DESC_FILE_OPEN_H,"Abrir h/cpp Complementario"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.open_selected",menues[tbFILE],mxID_FILE_OPEN_SELECTED)); // ,LANG(TOOLBAR_CAPTION_FILE_OPEN_SELECTED,"Abrir Seleccionado"),ipre+_T("abrirh.png"),LANG(TOOLBAR_DESC_FILE_OPEN_SELECTED,"Archivo -> Abrir Seleccionado"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.save",menues[tbFILE],wxID_SAVE)); // ,LANG(TOOLBAR_CAPTION_FILE_SAVE,"Guardar"),ipre+_T("guardar.png"),LANG(TOOLBAR_DESC_FILE_SABE,"Archivo -> Guardar"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.save_as",menues[tbFILE],wxID_SAVEAS)); // ,LANG(TOOLBAR_CAPTION_FILE_SAVE_AS,"Guardar Como..."),ipre+_T("guardarComo.png"),LANG(TOOLBAR_DESC_FILE_SAVE_AS,"Archivo -> Guardar Como..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.save_all",menues[tbFILE],mxID_FILE_SAVE_ALL)); // ,LANG(TOOLBAR_CAPTION_FILE_SAVE_ALL,"Guardar Todo"),ipre+_T("guardarTodo.png"),LANG(TOOLBAR_DESC_FILE_SAVE_ALL,"Archivo -> Guardar Todo"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.save_project",menues[tbFILE],mxID_FILE_SAVE_PROJECT)); // ,LANG(TOOLBAR_CAPTION_FILE_SAVE_PROJECT,"Guardar Proyecto"),ipre+_T("guardarProyecto.png"),LANG(TOOLBAR_DESC_FILE_SAVE_PROJECT,"Archivo -> Guardar Proyecto"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.export_html",menues[tbFILE],mxID_FILE_EXPORT_HTML)); // ,LANG(TOOLBAR_CAPTION_FILE_EXPORT_HTML,"Exportar a HTML..."),ipre+_T("exportHtml.png"),LANG(TOOLBAR_DESC_FILE_EXPORT_HTML,"Archivo -> Exportar a HTML..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.print",menues[tbFILE],mxID_FILE_PRINT)); // ,LANG(TOOLBAR_CAPTION_FILE_PRINT,"Imprimir..."),ipre+_T("imprimir.png"),LANG(TOOLBAR_DESC_FILE_PRINT,"Archivo -> Imprimir..."));
-		AddToolbarItem(tbFILE,myToolbarItem("file.reload",menues[tbFILE],mxID_FILE_RELOAD)); // ,LANG(TOOLBAR_CAPTION_FILE_RELOAD,"Recargar"),ipre+_T("recargar.png"),LANG(TOOLBAR_DESC_FILE_RELOAD,"Archivo -> Recargar"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.close",menues[tbFILE],wxID_CLOSE)); // ,LANG(TOOLBAR_CAPTION_FILE_CLOSE,"Cerrar"),ipre+_T("cerrar.png"),LANG(TOOLBAR_DESC_FILE_CLOSE,"Archivo -> Cerrar"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.close_all",menues[tbFILE],mxID_FILE_CLOSE_ALL)); // ,LANG(TOOLBAR_CAPTION_FILE_CLOSE_ALL,"Cerrar Todo"),ipre+_T("cerrarTodo.png"),LANG(TOOLBAR_DESC_FILE_CLOSE_ALL,"Archivo -> Cerrar Todo"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.close_project",menues[tbFILE],mxID_FILE_CLOSE_PROJECT)); // ,LANG(TOOLBAR_CAPTION_FILE_CLOSE_PROJECT,"Cerrar Proyecto"),ipre+_T("cerrarProyecto.png"),LANG(TOOLBAR_DESC_FILE_CLOSE_PROJECT,"Archivo -> Cerrar Proyecto"));
-		AddToolbarItem(tbFILE,myToolbarItem("file.project_config",menues[tbFILE],mxID_FILE_PROJECT_CONFIG)); // ,LANG(TOOLBAR_CAPTION_FILE_PROJECT_CONFIG,"Configuracion de proyecto..."),ipre+_T("projectConfig.png"),LANG(TOOLBAR_DESC_FILE_PROJECT_CONFIG,"Archivo -> Configuracion del Proyecto..."));
+	icon_size=24;
+	
+	toolbars[tbFILE].Init("file",LANG(CAPTION_TOOLBAR_FILE,"Archivo"),"T:1:0"); {
+		AddToolbarItem(tbFILE,myToolbarItem("new_file",menues[mnFILE],wxID_NEW).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("new_project",menues[mnFILE],mxID_FILE_PROJECT));
+		AddToolbarItem(tbFILE,myToolbarItem("open",menues[mnFILE],wxID_OPEN).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("recent_simple",menues[mnFILE],mxID_FILE_SOURCE_HISTORY_MORE));
+		AddToolbarItem(tbFILE,myToolbarItem("recent_project",menues[mnFILE],mxID_FILE_PROJECT_HISTORY_MORE));
+		AddToolbarItem(tbFILE,myToolbarItem("open_header",mxID_FILE_OPEN_H,"abrir_h.png",LANG(TOOLBAR_CAPTION_FILE_OPEN_H,"Abrir h/cpp Complementario")));
+		AddToolbarItem(tbFILE,myToolbarItem("open_selected",mxID_FILE_OPEN_SELECTED,"abrir_sel.png",LANG(TOOLBAR_CAPTION_FILE_OPEN_SELECTED,"Abrir Seleccionado")));
+		AddToolbarItem(tbFILE,myToolbarItem("save",menues[mnFILE],wxID_SAVE).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("save_as",menues[mnFILE],wxID_SAVEAS).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("save_all",menues[mnFILE],mxID_FILE_SAVE_ALL));
+		AddToolbarItem(tbFILE,myToolbarItem("save_project",menues[mnFILE],mxID_FILE_SAVE_PROJECT));
+		AddToolbarItem(tbFILE,myToolbarItem("export_html",menues[mnFILE],mxID_FILE_EXPORT_HTML));
+		AddToolbarItem(tbFILE,myToolbarItem("print",menues[mnFILE],mxID_FILE_PRINT));
+		AddToolbarItem(tbFILE,myToolbarItem("reload",menues[mnFILE],mxID_FILE_RELOAD));
+		AddToolbarItem(tbFILE,myToolbarItem("close",menues[mnFILE],wxID_CLOSE));
+		AddToolbarItem(tbFILE,myToolbarItem("close_all",menues[mnFILE],mxID_FILE_CLOSE_ALL));
+		AddToolbarItem(tbFILE,myToolbarItem("close_project",menues[mnFILE],mxID_FILE_CLOSE_PROJECT));
+		AddToolbarItem(tbFILE,myToolbarItem("project_config",menues[mnFILE],mxID_FILE_PROJECT_CONFIG));
 	}
 	
 	
-	toolbars[tbEDIT].label = LANG(CAPTION_TOOLBAR_EDIT,"Edición"); {
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.undo",menues[tbEDIT],wxID_UNDO)); // ,LANG(TOOLBAR_CAPTION_EDIT_UNDO,"Deshacer"),ipre+_T("deshacer.png"),LANG(TOOLBAR_DESC_EDIT_UNDO,"Editar -> Deshacer"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.redo",menues[tbEDIT],wxID_REDO)); // ,LANG(TOOLBAR_CAPTION_EDIT_REDO,"Rehacer"),ipre+_T("rehacer.png"),LANG(TOOLBAR_DESC_EDIT_REDO,"Editar -> Rehacer"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.copy",menues[tbEDIT],wxID_COPY)); // ,LANG(TOOLBAR_CAPTION_EDIT_COPY,"Copiar"),ipre+_T("copiar.png"),LANG(TOOLBAR_DESC_EDIT_COPY,"Editar -> Copiar"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.cut",menues[tbEDIT],wxID_CUT)); // ,LANG(TOOLBAR_CAPTION_EDIT_CUT,"Cortar"),ipre+_T("cortar.png"),LANG(TOOLBAR_DESC_EDIT_CUT,"Editar -> Cortar"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.paste",menues[tbEDIT],wxID_PASTE)); // ,LANG(TOOLBAR_CAPTION_EDIT_PASTE,"Pegar"),ipre+_T("pegar.png"),LANG(TOOLBAR_DESC_EDIT_PASTE,"Editar -> Pegar"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.move_up",menues[tbEDIT],mxID_EDIT_TOGGLE_LINES_UP)); // ,LANG(TOOLBAR_CAPTION_EDIT_LINES_UP,"Mover Hacia Arriba"),ipre+_T("toggleLinesUp.png"),LANG(TOOLBAR_DESC_EDIT_LINES_UP,"Editar -> Mover Hacia Arriba"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.move_down",menues[tbEDIT],mxID_EDIT_TOGGLE_LINES_DOWN)); // ,LANG(TOOLBAR_CAPTION_EDIT_LINES_DOWN,"Mover Hacia Abajo"),ipre+_T("toggleLinesDown.png"),LANG(TOOLBAR_DESC_EDIT_LINES_DOWN,"Editar -> Mover Hacia Abajo"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.duplicate",menues[tbEDIT],mxID_EDIT_DUPLICATE_LINES)); // ,LANG(TOOLBAR_CAPTION_EDIT_DUPLICATE_LINES,"Duplicar Linea(s)"),ipre+_T("duplicarLineas.png"),LANG(TOOLBAR_DESC_EDIT_DUPLICATE_LINES,"Editar -> Duplicar Linea(s)"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.delete_lines",menues[tbEDIT],mxID_EDIT_DELETE_LINES)); // ,LANG(TOOLBAR_CAPTION_EDIT_DELETE_LINES,"Eliminar Linea(s)"),ipre+_T("borrarLineas.png"),LANG(TOOLBAR_DESC_EDIT_DELETE_LINES,"Editar -> Eliminar Linea(s)"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.goto_line",menues[tbEDIT],mxID_EDIT_GOTO)); // ,LANG(TOOLBAR_CAPTION_EDIT_GOTO_LINE,"Ir a Linea..."),ipre+_T("irALinea.png"),LANG(TOOLBAR_DESC_EDIT_GOTO_LINE,"Editar -> Ir a linea..."));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.goto_class",menues[tbEDIT],mxID_EDIT_GOTO_FUNCTION)); // ,LANG(TOOLBAR_CAPTION_EDIT_GOTO_FUNCTION,"Ir a Clase/Metodo/Funcion..."),ipre+_T("irAFuncion.png"),LANG(TOOLBAR_DESC_EDIT_GOTO_FUNCTION,"Editar -> Ir a Clase/Metodo/Funcion..."));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.goto_file",menues[tbEDIT],mxID_EDIT_GOTO_FILE)); // ,LANG(TOOLBAR_CAPTION_EDIT_GOTO_FILE,"Ir a Archivo..."),ipre+_T("irAArchivo.png"),LANG(TOOLBAR_DESC_EDIT_GOTO_FILE,"Editar -> Ir a Archivo..."));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.find",menues[tbEDIT],mxID_EDIT_FIND)); // ,LANG(TOOLBAR_CAPTION_EDIT_FIND,"Buscar..."),ipre+_T("buscar.png"),LANG(TOOLBAR_DESC_EDIT_FIND,"Editar -> Buscar..."));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.find_prev",menues[tbEDIT],mxID_EDIT_FIND_PREV)); // ,LANG(TOOLBAR_CAPTION_EDIT_FIND_PREV,"Buscar anterior"),ipre+_T("buscarAnterior.png"),LANG(TOOLBAR_DESC_EDIT_FIND_PREV,"Editar -> Buscar Anterior"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.find_next",menues[tbEDIT],mxID_EDIT_FIND_NEXT)); // ,LANG(TOOLBAR_CAPTION_EDIT_FIND_NEXT,"Buscar siguiente"),ipre+_T("buscarSiguiente.png"),LANG(TOOLBAR_DESC_EDIT_FIND_NEXT,"Editar -> Buscar Siguiente"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.replace",menues[tbEDIT],mxID_EDIT_REPLACE)); // ,LANG(TOOLBAR_CAPTION_EDIT_REPLACE,"Reemplazar..."),ipre+_T("reemplazar.png"),LANG(TOOLBAR_DESC_EDIT_REPLACE,"Editar -> Reemplazar..."));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.inser_header",menues[tbEDIT],mxID_EDIT_INSERT_HEADER)); // ,LANG(TOOLBAR_CAPTION_EDIT_INSERT_INCLUDE,"Insertar #include Correspondiente"),ipre+_T("insertarInclude.png"),LANG(TOOLBAR_DESC_EDIT_INSERT_INCLUDE,"Editar -> Insertar #include Correspondiente"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.comment",menues[tbEDIT],mxID_EDIT_COMMENT)); // ,LANG(TOOLBAR_CAPTION_EDIT_COMMENT,"Comentar"),ipre+_T("comentar.png"),LANG(TOOLBAR_DESC_EDIT_COMMNENT,"Editar -> Comentar"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.uncomment",menues[tbEDIT],mxID_EDIT_UNCOMMENT)); // ,LANG(TOOLBAR_CAPTION_EDIT_UNCOMMENT,"Descomentar"),ipre+_T("descomentar.png"),LANG(TOOLBAR_DESC_EDIT_UNCOMMENT,"Editar -> Descomentar"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.indent",menues[tbEDIT],mxID_EDIT_INDENT)); // ,LANG(TOOLBAR_CAPTION_EDIT_INDENT,"Indentar"),ipre+_T("indent.png"),LANG(TOOLBAR_DESC_EDIT_INDENT,"Editar -> Indentar"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.select_block",menues[tbEDIT],mxID_EDIT_BRACEMATCH)); // ,LANG(TOOLBAR_CAPTION_EDIT_BRACEMATCH,"Seleccionar Bloque"),ipre+_T("mostrarLlave.png"),LANG(TOOLBAR_DESC_EDIT_BRACEMATCH,"Editar -> Seleccionar Bloque"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.select_all",menues[tbEDIT],wxID_SELECTALL)); // ,LANG(TOOLBAR_CAPTION_EDIT_SELECT_ALL,"Seleccionar Todo"),ipre+_T("seleccionarTodo.png"),LANG(TOOLBAR_DESC_EDIT_SELECT_ALL,"Editar -> Seleccionar Todo"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.toggle_user_mark",menues[tbEDIT],mxID_EDIT_MARK_LINES)); // ,LANG(TOOLBAR_CAPTION_EDIT_HIGHLIGHT_LINES,"Resaltar Linea(s)/Quitar Resaltado"),ipre+_T("marcar.png"),LANG(TOOLBAR_DESC_EDIT_HIGHLIGHT_LINES,"Editar -> Resaltar Linea(s)/Quitar Resaltado"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.find_user_mark",menues[tbEDIT],mxID_EDIT_GOTO_MARK)); // ,LANG(TOOLBAR_CAPTION_EDIT_FIND_HIGHLIGHTS,"Buscar Resaltado"),ipre+_T("irAMarca.png"),LANG(TOOLBAR_DESC_EDIT_FIND_HIGHLIGHTS,"Editar -> Buscar Resaltado"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.list_user_marks",menues[tbEDIT],mxID_EDIT_LIST_MARKS)); // ,LANG(TOOLBAR_CAPTION_EDIT_LIST_HIGHLIGHTS,"Listar Lineas Resaltadas"),ipre+_T("listarMarcas.png"),LANG(TOOLBAR_DESC_EDIT_LIST_HIGHLIGHTS,"Editar -> Listar Lineas Resaltadas"));
-		AddToolbarItem(tbEDIT,myToolbarItem("edit.autocomplete",menues[tbEDIT],mxID_EDIT_FORCE_AUTOCOMPLETE)); // ,LANG(TOOLBAR_CAPTION_EDIT_FORCE_AUTOCOMPLETE,"Autocompletar"),ipre+_T("autocompletar.png"),LANG(TOOLBAR_DESC_EDIT_FORCE_AUTOCOMPLETE,"Editar -> Autocompletar"));
+	toolbars[tbEDIT].Init("edit",LANG(CAPTION_TOOLBAR_EDIT,"Edición"),"T:1:1"); {
+		AddToolbarItem(tbEDIT,myToolbarItem("undo",menues[mnEDIT],wxID_UNDO).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("redo",menues[mnEDIT],wxID_REDO).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("copy",menues[mnEDIT],wxID_COPY).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("cut",menues[mnEDIT],wxID_CUT).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("paste",menues[mnEDIT],wxID_PASTE).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("move_up",menues[mnEDIT],mxID_EDIT_TOGGLE_LINES_UP));
+		AddToolbarItem(tbEDIT,myToolbarItem("move_down",menues[mnEDIT],mxID_EDIT_TOGGLE_LINES_DOWN));
+		AddToolbarItem(tbEDIT,myToolbarItem("duplicate",menues[mnEDIT],mxID_EDIT_DUPLICATE_LINES));
+		AddToolbarItem(tbEDIT,myToolbarItem("delete_lines",menues[mnEDIT],mxID_EDIT_DELETE_LINES));
+		AddToolbarItem(tbEDIT,myToolbarItem("goto_line",menues[mnEDIT],mxID_EDIT_GOTO).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("goto_class",menues[mnEDIT],mxID_EDIT_GOTO_FUNCTION).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("goto_file",menues[mnEDIT],mxID_EDIT_GOTO_FILE).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("find",menues[mnEDIT],mxID_EDIT_FIND).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("find_prev",menues[mnEDIT],mxID_EDIT_FIND_PREV));
+		AddToolbarItem(tbEDIT,myToolbarItem("find_next",menues[mnEDIT],mxID_EDIT_FIND_NEXT).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("replace",menues[mnEDIT],mxID_EDIT_REPLACE).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("inser_header",menues[mnEDIT],mxID_EDIT_INSERT_HEADER).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("comment",menues[mnEDIT],mxID_EDIT_COMMENT).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("uncomment",menues[mnEDIT],mxID_EDIT_UNCOMMENT).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("indent",menues[mnEDIT],mxID_EDIT_INDENT).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("select_block",menues[mnEDIT],mxID_EDIT_BRACEMATCH));
+		AddToolbarItem(tbEDIT,myToolbarItem("select_all",menues[mnEDIT],wxID_SELECTALL));
+		AddToolbarItem(tbEDIT,myToolbarItem("toggle_user_mark",menues[mnEDIT],mxID_EDIT_MARK_LINES));
+		AddToolbarItem(tbEDIT,myToolbarItem("find_user_mark",menues[mnEDIT],mxID_EDIT_GOTO_MARK));
+		AddToolbarItem(tbEDIT,myToolbarItem("list_user_marks",menues[mnEDIT],mxID_EDIT_LIST_MARKS));
+		AddToolbarItem(tbEDIT,myToolbarItem("autocomplete",mxID_EDIT_FORCE_AUTOCOMPLETE,"autocompletar.png",LANG(TOOLBAR_CAPTION_EDIT_FORCE_AUTOCOMPLETE,"Autocompletar")));
 	}
 	
 	
-	toolbars[tbVIEW].label = LANG(CAPTION_TOOLBAR_VIEW,"Ver"); {
-		AddToolbarItem(tbVIEW,myToolbarItem("view.split_view",menues[tbVIEW],mxID_VIEW_DUPLICATE_TAB)); // ,LANG(TOOLBAR_CAPTION_VIEW_SPLIT_VIEW,"Duplicar Vista"),ipre+_T("duplicarVista.png"),LANG(TOOLBAR_DESC_VIEW_SPLIT_VIEW,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.line_wrap",menues[tbVIEW],mxID_VIEW_LINE_WRAP)); // ,LANG(TOOLBAR_CAPTION_VIEW_LINE_WRAP,"Ajuste de Linea"),ipre+_T("lineWrap.png"),LANG(TOOLBAR_DESC_VIEW_LINE_WRAP,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.white_space",menues[tbVIEW],mxID_VIEW_WHITE_SPACE)); // ,LANG(TOOLBAR_CAPTION_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de de fin de linea"),ipre+_T("whiteSpace.png"),LANG(TOOLBAR_DESC_VIEW_WHITE_SPACES,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.sintax_colour",menues[tbVIEW],mxID_VIEW_CODE_STYLE)); // ,LANG(TOOLBAR_CAPTION_VIEW_SYNTAX_HIGHLIGHT,"Colorear Sintaxis"),ipre+_T("syntaxColour.png"),LANG(TOOLBAR_DESC_VIEW_SYNTAX_HIGHLIGHT,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.update_symbols",menues[tbVIEW],mxID_VIEW_UPDATE_SYMBOLS)); // ,LANG(TOOLBAR_CAPTION_VIEW_SYMBOLS_TREE,"Arbol de simbolos"),ipre+_T("symbolsTree.png"),LANG(TOOLBAR_DESC_VIEW_SYMBOLS_TREE,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.explorer_tree",menues[tbVIEW],mxID_VIEW_EXPLORER_TREE)); // ,LANG(TOOLBAR_CAPTION_VIEW_EXPLORER_TREE,"Explorador de Archivos"),ipre+_T("explorerTree.png"),LANG(TOOLBAR_DESC_VIEW_EXPLORER_TREE,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.project_tree",menues[tbVIEW],mxID_VIEW_PROJECT_TREE)); // ,LANG(TOOLBAR_CAPTION_VIEW_PROJECT_TREE,"Arbol de Proyecto"),ipre+_T("projectTree.png"),LANG(TOOLBAR_DESC_VIEW_PROJECT_TREE,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.compiler_tree",menues[tbVIEW],mxID_VIEW_COMPILER_TREE)); // ,LANG(TOOLBAR_CAPTION_VIEW_COMPILER_TREE,"Resultados de La Compilacion"),ipre+_T("compilerTree.png"),LANG(TOOLBAR_DESC_VIEW_COMPILER_TREE,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.full_screen",menues[tbVIEW],mxID_VIEW_FULLSCREEN)); // ,LANG(TOOLBAR_CAPTION_VIEW_FULLSCREEN,"Pantalla Completa"),ipre+_T("fullScreen.png"),LANG(TOOLBAR_DESC_VIEW_FULLSCREEN,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.beginner_panel",menues[tbVIEW],mxID_VIEW_BEGINNER_PANEL)); // ,LANG(TOOLBAR_CAPTION_VIEW_BEGINNER_PANEL,"Panel de Asistencias"),ipre+_T("beginer_panel.png"),LANG(TOOLBAR_DESC_VIEW_BEGINER_PANEL,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.prev_error",menues[tbVIEW],mxID_VIEW_PREV_ERROR)); // ,LANG(TOOLBAR_CAPTION_VIEW_PREV_ERROR,"Ir a Error Anterior"),ipre+_T("errorPrev.png"),LANG(TOOLBAR_DESC_VIEW_PREV_ERROR,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.next_error",menues[tbVIEW],mxID_VIEW_NEXT_ERROR)); // ,LANG(TOOLBAR_CAPTION_VIEW_NEXT_ERROR,"Ir a siguiente error"),ipre+_T("errorNext.png"),LANG(TOOLBAR_DESC_VIEW_NEXT_ERROR,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.fold_all",menues[tbVIEW],mxID_FOLD_HIDE_ALL)); // ,LANG(TOOLBAR_CAPTION_FOLD_ALL_LEVELS,"Plegar Todos los Niveles"),ipre+_T("foldAll.png"),LANG(TOOLBAR_DESC_FOLD_ALL_LEVELS,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.fold_1",menues[tbVIEW],mxID_FOLD_HIDE_1)); // 1,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_1,"Plegar el Primer Nivel"),ipre+_T("fold1.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_1,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.fold_2",menues[tbVIEW],mxID_FOLD_HIDE_2)); // 2,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_2,"Plegar el Segundo Nivel"),ipre+_T("fold2.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_2,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.fold_3",menues[tbVIEW],mxID_FOLD_HIDE_3)); // 3,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_3,"Plegar el Tercer Nivel"),ipre+_T("fold3.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_3,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.fold_4",menues[tbVIEW],mxID_FOLD_HIDE_4)); // 3,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_3,"Plegar el Tercer Nivel"),ipre+_T("fold3.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_3,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.fold_5",menues[tbVIEW],mxID_FOLD_HIDE_5)); // 3,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_3,"Plegar el Tercer Nivel"),ipre+_T("fold3.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_3,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.unfold_all",menues[tbVIEW],mxID_FOLD_SHOW_ALL)); // ,LANG(TOOLBAR_CAPTION_UNFOLD_ALL_LEVELS,"Desplegar Todos los Niveles"),ipre+_T("unfoldAll.png"),LANG(TOOLBAR_DESC_UNFOLD_ALL_LEVELS,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.unfold_1",menues[tbVIEW],mxID_FOLD_SHOW_1)); // 1,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_1,"Desplegar el Primer Nivel"),ipre+_T("unfold1.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_1,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.unfold_2",menues[tbVIEW],mxID_FOLD_SHOW_2)); // 2,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_2,"Desplegar el Segundo Nivel"),ipre+_T("unfold2.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_2,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.unfold_3",menues[tbVIEW],mxID_FOLD_SHOW_3)); // 3,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),ipre+_T("unfold3.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_3,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.unfold_4",menues[tbVIEW],mxID_FOLD_SHOW_4)); // 3,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),ipre+_T("unfold3.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_3,""));
-		AddToolbarItem(tbVIEW,myToolbarItem("view.unfold_5",menues[tbVIEW],mxID_FOLD_SHOW_5)); // 3,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),ipre+_T("unfold3.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_3,""));
+	toolbars[tbVIEW].Init("view",LANG(CAPTION_TOOLBAR_VIEW,"Ver"),"t:1:3"); {
+		AddToolbarItem(tbVIEW,myToolbarItem("split_view",menues[mnVIEW],mxID_VIEW_DUPLICATE_TAB).Visible());
+		AddToolbarItem(tbVIEW,myToolbarItem("line_wrap",menues[mnVIEW],mxID_VIEW_LINE_WRAP).Visible());
+		AddToolbarItem(tbVIEW,myToolbarItem("white_space",menues[mnVIEW],mxID_VIEW_WHITE_SPACE).Visible());
+		AddToolbarItem(tbVIEW,myToolbarItem("sintax_colour",menues[mnVIEW],mxID_VIEW_CODE_STYLE).Visible());
+		AddToolbarItem(tbVIEW,myToolbarItem("update_symbols",mxID_VIEW_UPDATE_SYMBOLS,"symbolsTree.png",LANG(TOOLBAR_CAPTION_VIEW_SYMBOLS_TREE,"Arbol de simbolos")));
+		AddToolbarItem(tbVIEW,myToolbarItem("explorer_tree",menues[mnVIEW],mxID_VIEW_EXPLORER_TREE));
+		AddToolbarItem(tbVIEW,myToolbarItem("project_tree",menues[mnVIEW],mxID_VIEW_PROJECT_TREE));
+		AddToolbarItem(tbVIEW,myToolbarItem("compiler_tree",menues[mnVIEW],mxID_VIEW_COMPILER_TREE));
+		AddToolbarItem(tbVIEW,myToolbarItem("full_screen",menues[mnVIEW],mxID_VIEW_FULLSCREEN).Visible());
+		AddToolbarItem(tbVIEW,myToolbarItem("beginner_panel",menues[mnVIEW],mxID_VIEW_BEGINNER_PANEL));
+		AddToolbarItem(tbVIEW,myToolbarItem("prev_error",menues[mnVIEW],mxID_VIEW_PREV_ERROR).Visible());
+		AddToolbarItem(tbVIEW,myToolbarItem("next_error",menues[mnVIEW],mxID_VIEW_NEXT_ERROR).Visible());
+		AddToolbarItem(tbVIEW,myToolbarItem("fold_all",menues[mnVIEW],mxID_FOLD_HIDE_ALL));
+		AddToolbarItem(tbVIEW,myToolbarItem("fold_1",menues[mnVIEW],mxID_FOLD_HIDE_1)); // 1,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_1,"Plegar el Primer Nivel"),ipre+_T("fold1.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_1,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("fold_2",menues[mnVIEW],mxID_FOLD_HIDE_2)); // 2,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_2,"Plegar el Segundo Nivel"),ipre+_T("fold2.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_2,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("fold_3",menues[mnVIEW],mxID_FOLD_HIDE_3)); // 3,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_3,"Plegar el Tercer Nivel"),ipre+_T("fold3.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_3,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("fold_4",menues[mnVIEW],mxID_FOLD_HIDE_4)); // 3,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_3,"Plegar el Tercer Nivel"),ipre+_T("fold3.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_3,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("fold_5",menues[mnVIEW],mxID_FOLD_HIDE_5)); // 3,LANG(TOOLBAR_CAPTION_FOLD_LEVEL_3,"Plegar el Tercer Nivel"),ipre+_T("fold3.png"),LANG(TOOLBAR_DESC_FOLD_LEVEL_3,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("unfold_all",menues[mnVIEW],mxID_FOLD_SHOW_ALL));
+		AddToolbarItem(tbVIEW,myToolbarItem("unfold_1",menues[mnVIEW],mxID_FOLD_SHOW_1)); // 1,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_1,"Desplegar el Primer Nivel"),ipre+_T("unfold1.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_1,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("unfold_2",menues[mnVIEW],mxID_FOLD_SHOW_2)); // 2,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_2,"Desplegar el Segundo Nivel"),ipre+_T("unfold2.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_2,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("unfold_3",menues[mnVIEW],mxID_FOLD_SHOW_3)); // 3,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),ipre+_T("unfold3.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_3,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("unfold_4",menues[mnVIEW],mxID_FOLD_SHOW_4)); // 3,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),ipre+_T("unfold3.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_3,""));
+		AddToolbarItem(tbVIEW,myToolbarItem("unfold_5",menues[mnVIEW],mxID_FOLD_SHOW_5)); // 3,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),ipre+_T("unfold3.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_3,""));
 	}
 	
-	toolbars[tbRUN].label = LANG(CAPTION_TOOLBAR_RUN,"Ejecución"); {
-		AddToolbarItem(tbRUN,myToolbarItem("run.compile",menues[tbRUN],mxID_RUN_COMPILE)); // ,LANG(TOOLBAR_CAPTION_RUN_COMPILE,"Compilar"),ipre+_T("compilar.png"),LANG(TOOLBAR_DESC_RUN_COMPILE,"Ejecucion -> Compilar"));
-		AddToolbarItem(tbRUN,myToolbarItem("run.run",menues[tbRUN],mxID_RUN_RUN)); // ,LANG(TOOLBAR_CAPTION_RUN_RUN,"Guardar, Compilar y Ejecutar..."),ipre+_T("ejecutar.png"),LANG(TOOLBAR_DESC_RUN_RUN,"Ejecucion -> Guardar, Compilar y Ejecutar"));
-		AddToolbarItem(tbRUN,myToolbarItem("run.run_old",menues[tbRUN],mxID_RUN_RUN_OLD)); // ,LANG(TOOLBAR_CAPTION_RUN_OLD,"Ejecutar Sin Recompilar..."),ipre+_T("ejecutar_old.png"),LANG(TOOLBAR_DESC_RUN_OLD,"Ejecucion -> Ejecutar Sin Recompilar"));
-		AddToolbarItem(tbRUN,myToolbarItem("run.stop",menues[tbRUN],mxID_RUN_STOP)); // ,LANG(TOOLBAR_CAPTION_RUN_STOP,"Detener"),ipre+_T("detener.png"),LANG(TOOLBAR_DESC_RUN_STOP,"Ejecucion -> Detener"));
-		AddToolbarItem(tbRUN,myToolbarItem("run.clean",menues[tbRUN],mxID_RUN_CLEAN)); // ,LANG(TOOLBAR_CAPTION_RUN_CLEAN,"Limpiar"),ipre+_T("limpiar.png"),LANG(TOOLBAR_DESC_RUN_CLEAN,"Ejecucion -> Limpiar"));
-		AddToolbarItem(tbRUN,myToolbarItem("run.options",menues[tbRUN],mxID_RUN_CONFIG)); // ,LANG(TOOLBAR_CAPTION_RUN_OPTIONS,"Opciones de compilacion y ejecucion..."),ipre+_T("opciones.png"),LANG(TOOLBAR_DESC_RUN_OPTIONS,"Ejecucion -> Opciones..."));
-		AddToolbarItem(tbRUN,myToolbarItem("run.debug",menues[tbRUN],mxID_DEBUG_RUN)); // ,LANG(TOOLBAR_CAPTION_DEBUG_RUN,"Depurar"),ipre+_T("depurar.png"),LANG(TOOLBAR_DESC_DEBUG_RUN,"Depurar -> Iniciar"));
+	toolbars[tbRUN].Init("run",LANG(CAPTION_TOOLBAR_RUN,"Ejecución"),"T:1:2"); {
+		AddToolbarItem(tbRUN,myToolbarItem("compile",menues[mnRUN],mxID_RUN_COMPILE).Visible());
+		AddToolbarItem(tbRUN,myToolbarItem("run",menues[mnRUN],mxID_RUN_RUN).Label(LANG(TOOLBAR_CAPTION_RUN_RUN,"Guardar, compilar y ejecutar...")).Visible());
+		AddToolbarItem(tbRUN,myToolbarItem("run_old",menues[mnRUN],mxID_RUN_RUN_OLD));
+		AddToolbarItem(tbRUN,myToolbarItem("stop",menues[mnRUN],mxID_RUN_STOP).Visible());
+		AddToolbarItem(tbRUN,myToolbarItem("clean",menues[mnRUN],mxID_RUN_CLEAN));
+		AddToolbarItem(tbRUN,myToolbarItem("options",menues[mnRUN],mxID_RUN_CONFIG).Visible());
+		AddToolbarItem(tbRUN,myToolbarItem("debug",menues[mnDEBUG],mxID_DEBUG_RUN).Visible());
 #ifndef __WIN32__
-		AddToolbarItem(tbRUN,myToolbarItem("run.debug_attach",menues[tbRUN],mxID_DEBUG_ATTACH)); // ,LANG(TOOLBAR_CAPTION_DEBUG_ATTACH,"Attachear Depurador"),ipre+_T("debug_attach.png"),LANG(TOOLBAR_DESC_DEBUG_ATTACH,"Depurar -> Adjuntar"));
-		AddToolbarItem(tbRUN,myToolbarItem("run.load_core_dump",menues[tbRUN],mxID_DEBUG_CORE_DUMP)); // ,LANG(TOOLBAR_CAPTION_DEBUG_CORE_DUMP,"Cargar Volcado de Memoria"),ipre+_T("core_dump.png"),LANG(TOOLBAR_DESC_DEBUG_CORE_DUMP,"Depurar -> Cargar Volcado de Memoria"));
+		AddToolbarItem(tbRUN,myToolbarItem("debug_attach",menues[mnDEBUG],mxID_DEBUG_ATTACH));
+		AddToolbarItem(tbRUN,myToolbarItem("load_core_dump",menues[mnDEBUG],mxID_DEBUG_CORE_DUMP));
 #endif
-		AddToolbarItem(tbRUN,myToolbarItem("run.break_toggle",menues[tbRUN],mxID_DEBUG_TOGGLE_BREAKPOINT)); // ,LANG(TOOLBAR_CAPTION_DEBUG_TOGGLE_BREAKPOINT,"Agregar/Quitar Breakpointo"),ipre+_T("breakpoint.png"),LANG(TOOLBAR_DESC_DEBUG_TOGGLE_BREAKPOINT,"Agregar/Quitar Breakpoint"));
-		AddToolbarItem(tbRUN,myToolbarItem("run.break_options",menues[tbRUN],mxID_DEBUG_BREAKPOINT_OPTIONS)); // ,LANG(TOOLBAR_CAPTION_DEBUG_BREAKPOINT_OPTIONS,"Opciones del Breakpoint..."),ipre+_T("breakpoint_options.png"),LANG(TOOLBAR_DESC_DEBUG_BREAKPOINT_OPTIONS,"Depurar -> Opciones del Breakpoint..."));
-		AddToolbarItem(tbRUN,myToolbarItem("run.break_list",menues[tbRUN],mxID_DEBUG_LIST_BREAKPOINTS)); // ,LANG(TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS,"Listar Watch/Break points..."),ipre+_T("breakpoint_list.png"),LANG(TOOLBAR_DESC_DEBUG_LIST_BREAKPOINTS,"Depurar -> Listar Watch/Break points..."));
-		AddToolbarItem(tbRUN,myToolbarItem("run.inspections",menues[tbRUN],mxID_DEBUG_INSPECT)); // ,LANG(TOOLBAR_CAPTION_INSPECT,"Panel de Inspecciones"),ipre+_T("inspect.png"),LANG(TOOLBAR_DESC_INSPECT,"Depurar -> Panel de Inspecciones"));
+		AddToolbarItem(tbRUN,myToolbarItem("break_toggle",menues[mnDEBUG],mxID_DEBUG_TOGGLE_BREAKPOINT));
+		AddToolbarItem(tbRUN,myToolbarItem("break_options",menues[mnDEBUG],mxID_DEBUG_BREAKPOINT_OPTIONS));
+		AddToolbarItem(tbRUN,myToolbarItem("break_list",menues[mnDEBUG],mxID_DEBUG_LIST_BREAKPOINTS));
+		AddToolbarItem(tbRUN,myToolbarItem("inspections",menues[mnDEBUG],mxID_DEBUG_INSPECT));
 	}
 	
 	
-	toolbars[tbDEBUG].label = LANG(CAPTION_TOOLBAR_DEBUG,"Depuración"); {
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.start",menues[tbDEBUG],mxID_DEBUG_RUN)); // ,LANG(TOOLBAR_CAPTION_DEBUG_START,"Comenzar/Continuar Depuracion"),ipre+_T("ejecutar.png"),LANG(TOOLBAR_DESC_DEBUG_START,"Depurar -> Comenzar/Continuar"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.pause",menues[tbDEBUG],mxID_DEBUG_PAUSE)); // ,LANG(TOOLBAR_CAPTION_DEBUG_PAUSE,"Interrumpir Ejecucion en Depuracion"),ipre+_T("pausar.png"),LANG(TOOLBAR_DESC_DEBUG_PAUSE,"Depurar -> Interrumpir"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.stop",menues[tbDEBUG],mxID_DEBUG_STOP)); // ,LANG(TOOLBAR_CAPTION_DEBUG_STOP,"Detener Depuracion"),ipre+_T("detener.png"),LANG(TOOLBAR_DESC_DEBUG_STOP,"Depurar -> Detener"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.step_in",menues[tbDEBUG],mxID_DEBUG_STEP_IN)); // ,LANG(TOOLBAR_CAPTION_DEBUG_STEP_IP,"Step In"),ipre+_T("step_in.png"),LANG(TOOLBAR_DESC_DEBUG_STEP_IN,"Depurar -> Step In"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.step_over",menues[tbDEBUG],mxID_DEBUG_STEP_OVER)); // ,LANG(TOOLBAR_CAPTION_DEBUG_STEP_OVER,"Step Over"),ipre+_T("step_over.png"),LANG(TOOLBAR_DESC_DEBUG_STEP_OVER,"Depurar -> Step Over"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.step_out",menues[tbDEBUG],mxID_DEBUG_STEP_OUT)); // ,LANG(TOOLBAR_CAPTION_DEBUG_STEP_OUT,"Step Out"),ipre+_T("step_out.png"),LANG(TOOLBAR_DESC_DEBUG_STEP_OUT,"Depurar -> Step Out"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.run_until",menues[tbDEBUG],mxID_DEBUG_RUN_UNTIL)); // ,LANG(TOOLBAR_CAPTION_DEBUG_RUN_UNTIL,"Ejecutar Hasta El Cursor"),ipre+_T("run_until.png"),LANG(TOOLBAR_DESC_DEBUG_RUN_UNTIL,"Depurar -> Ejecutar Hasta el Cursos"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.function_return",menues[tbDEBUG],mxID_DEBUG_RETURN)); // ,LANG(TOOLBAR_CAPTION_DEBUG_RETURN,"Return"),ipre+_T("return.png"),LANG(TOOLBAR_DESC_DEBUG_RETURN,"Depurar -> Return"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.jump",menues[tbDEBUG],mxID_DEBUG_JUMP)); // ,LANG(TOOLBAR_CAPTION_DEBUG_JUMP,"Continuar desde aqui"),ipre+_T("debug_jump.png"),LANG(TOOLBAR_DESC_DEBUG_JUMP,"Depurar -> Continuar Desde Aqui"));
+	toolbars[tbDEBUG].Init("debug",LANG(CAPTION_TOOLBAR_DEBUG,"Depuración"),"t:3:0"); {
+		AddToolbarItem(tbDEBUG,myToolbarItem("start",menues[mnDEBUG],mxID_DEBUG_RUN).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("pause",menues[mnDEBUG],mxID_DEBUG_PAUSE).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("stop",menues[mnDEBUG],mxID_DEBUG_STOP).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("step_in",menues[mnDEBUG],mxID_DEBUG_STEP_IN).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("step_over",menues[mnDEBUG],mxID_DEBUG_STEP_OVER).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("step_out",menues[mnDEBUG],mxID_DEBUG_STEP_OUT).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("run_until",menues[mnDEBUG],mxID_DEBUG_RUN_UNTIL).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("function_return",menues[mnDEBUG],mxID_DEBUG_RETURN).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("jump",menues[mnDEBUG],mxID_DEBUG_JUMP).Visible());
 #ifndef __WIN32__
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.enable_inverse_exec",menues[tbDEBUG],mxID_DEBUG_ENABLE_INVERSE_EXEC)); // ,LANG(TOOLBAR_CAPTION_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras"),ipre+_T("reverse_enable.png"),LANG(TOOLBAR_DESC_DEBUG_ENABLE_INVERSE,"Depurar -> Habilitar Ejecucion Hacia Atras"),wxITEM_CHECK);
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.inverse_exec",menues[tbDEBUG],mxID_DEBUG_INVERSE_EXEC)); // ,LANG(TOOLBAR_CAPTION_DEBUG_INVERSE,"Ejecutar Hacia Atras"),ipre+_T("reverse_toggle.png"),LANG(TOOLBAR_DESC_DEBUG_INVERSE,"Depurar -> Ejecutar Hacia Atras..."),wxITEM_CHECK);
+		AddToolbarItem(tbDEBUG,myToolbarItem("enable_inverse_exec",menues[mnDEBUG],mxID_DEBUG_ENABLE_INVERSE_EXEC).Checkeable());
+		AddToolbarItem(tbDEBUG,myToolbarItem("inverse_exec",menues[mnDEBUG],mxID_DEBUG_INVERSE_EXEC).Checkeable());
+		AddToolbarItem(tbDEBUG,myToolbarItem("set_signals",menues[mnDEBUG],mxID_DEBUG_SET_SIGNALS));
+		AddToolbarItem(tbDEBUG,myToolbarItem("send_signal",menues[mnDEBUG],mxID_DEBUG_SEND_SIGNAL));
 #endif
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.inspections",menues[tbDEBUG],mxID_DEBUG_INSPECT)); // ,LANG(TOOLBAR_CAPTION_INSPECT,"Panel de Inspecciones"),ipre+_T("inspect.png"),LANG(TOOLBAR_DESC_INSPECT,"Depurar -> Panel de Inspecciones"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.backtrace",menues[tbDEBUG],mxID_DEBUG_BACKTRACE)); // ,LANG(TOOLBAR_CAPTION_BACKTRACE,"Trazado Inverso"),ipre+_T("backtrace.png"),LANG(TOOLBAR_DESC_BACKTRACE,"Depurar -> Trazado Inverso"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.threadlist",menues[tbDEBUG],mxID_DEBUG_THREADLIST)); // ,LANG(TOOLBAR_CAPTION_THREADLIST,"Hilos de Ejecucion"),ipre+_T("threadlist.png"),LANG(TOOLBAR_DESC_THREADLIST,"Depurar -> Hilos de Ejecucion"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.break_toggle",menues[tbDEBUG],mxID_DEBUG_TOGGLE_BREAKPOINT)); // ,LANG(TOOLBAR_CAPTION_DEBUG_TOGGLE_BREAKPOINT,"Agregar/Quitar Breakpointo"),ipre+_T("breakpoint.png"),LANG(TOOLBAR_DESC_DEBUG_TOGGLE_BREAKPOINT,"Agregar/Quitar Breakpoint"));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.break_options",menues[tbDEBUG],mxID_DEBUG_BREAKPOINT_OPTIONS)); // ,LANG(TOOLBAR_CAPTION_DEBUG_BREAKPOINT_OPTIONS,"Opciones del Breakpoint..."),ipre+_T("breakpoint_options.png"),LANG(TOOLBAR_DESC_DEBUG_BREAKPOINT_OPTIONS,"Depurar -> Opciones del Breakpoint..."));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.break_list",menues[tbDEBUG],mxID_DEBUG_LIST_BREAKPOINTS)); // ,LANG(TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS,"Listar Watch/Break points..."),ipre+_T("breakpoint_list.png"),LANG(TOOLBAR_DESC_DEBUG_LIST_BREAKPOINTS,"Depurar -> Listar Watch/Break points..."));
-		AddToolbarItem(tbDEBUG,myToolbarItem("debug.log_panel",menues[tbDEBUG],mxID_DEBUG_LOG_PANEL)); // ,LANG(TOOLBAR_CAPTION_DEBUG_SHOW_LOG_PANEL,"Mostrar Mensajes del Depurador"),ipre+_T("debug_log_panel.png"),LANG(TOOLBAR_DESC_DEBUG_SHOW_LOG_PANEL,"Depurar -> Mostrar Mensajes del Depurador..."));
+		AddToolbarItem(tbDEBUG,myToolbarItem("inspections",menues[mnDEBUG],mxID_DEBUG_INSPECT));
+		AddToolbarItem(tbDEBUG,myToolbarItem("backtrace",menues[mnDEBUG],mxID_DEBUG_BACKTRACE));
+		AddToolbarItem(tbDEBUG,myToolbarItem("threadlist",menues[mnDEBUG],mxID_DEBUG_THREADLIST));
+		AddToolbarItem(tbDEBUG,myToolbarItem("break_toggle",menues[mnDEBUG],mxID_DEBUG_TOGGLE_BREAKPOINT));
+		AddToolbarItem(tbDEBUG,myToolbarItem("break_options",menues[mnDEBUG],mxID_DEBUG_BREAKPOINT_OPTIONS));
+		AddToolbarItem(tbDEBUG,myToolbarItem("break_list",menues[mnDEBUG],mxID_DEBUG_LIST_BREAKPOINTS).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem("log_panel",menues[mnDEBUG],mxID_DEBUG_LOG_PANEL));
+		AddToolbarItem(tbDEBUG,myToolbarItem("gdb_command",menues[mnDEBUG],mxID_DEBUG_GDB_COMMAND));
+		AddToolbarItem(tbDEBUG,myToolbarItem("gdb_patch",menues[mnDEBUG],mxID_DEBUG_PATCH));
 	}
 	
 	
-	toolbars[tbTOOLS].label = LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas"); {
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.draw_flow",menues[tbTOOLS],mxID_TOOLS_DRAW_FLOW)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de Flujo..."),ipre+_T("flujo.png"),LANG(TOOLBAR_DESC_TOOLS_DRAW_FLOWCHART,"Herramientas -> Dibujar Diagrama de Flujo..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.draw_classes",menues[tbTOOLS],mxID_TOOLS_DRAW_CLASSES)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar Jerarquia de Clases..."),ipre+_T("clases.png"),LANG(TOOLBAR_DESC_TOOLS_DRAW_CLASS_HIERARCHY,"Herramientas -> Dibujar Jerarquia de Clases..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.copy_code_from_h",menues[tbTOOLS],mxID_TOOLS_CODE_COPY_FROM_H)); // ,LANG(TOOLBAR_CAPTION_TOOLS_COPY_CODE_FROM_H,"Implementar Metodos/Funciones Faltantes..."),ipre+_T("copy_code_from_h.png"),LANG(TOOLBAR_DESC_TOOLS_COPY_CODE_FROM_H,"Herramientas -> Implementar Metodos/Funciones Faltantes..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.align_comments",menues[tbTOOLS],mxID_TOOLS_ALIGN_COMMENTS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_COMMENTS_ALIGN_COMMENTS,"Alinear Comentarios..."),ipre+_T("align_comments.png"),LANG(TOOLBAR_TOOLS_DESC_COMMENTS_ALIGN_COMMENTS,"Herramientas -> Comentarios -> Alinear Comentarios..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.remove_comments",menues[tbTOOLS],mxID_TOOLS_REMOVE_COMMENTS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_COMMENTS_DELETE_COMMENTS,"Eliminar Comentarios"),ipre+_T("remove_comments.png"),LANG(TOOLBAR_DESC_TOOLS_COMMENTS_DELETE_COMMENTS,"Herramientas -> Comtearios -> Eliminar Comentarios"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.preproc_mark_valid",menues[tbTOOLS],mxID_TOOLS_PREPROC_MARK_VALID)); // ,LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_MARK_VALID,"Marcar Lineas No Compiladas"),ipre+_T("preproc_mark_valid.png"),LANG(TOOLBAR_DESC_TOOLS_PREPROC_MARK_VALID,"Herramientas -> Preprocesador -> Marcar Lineas No Compiladas"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.preproc_unmark_all",menues[tbTOOLS],mxID_TOOLS_PREPROC_UNMARK_ALL)); // ,LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_UNMARK_ALL,"Borrar Marcas"),ipre+_T("preproc_unmark_all.png"),LANG(TOOLBAR_DESC_TOOLS_PREPROC_UNMARK_ALL,"Herramientas -> Preprocesador -> Borrar Marcas"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.preproc_expand_macros",menues[tbTOOLS],mxID_TOOLS_PREPROC_EXPAND_MACROS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_EXPAND_MACROS,"Expandir Macros"),ipre+_T("preproc_expand_macros.png"),LANG(TOOLBAR_DESC_TOOLS_PREPROC_EXPAND_MACROS,"Herramientas -> Preprocesador -> Expandir Macros"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.generate_makefile",menues[tbTOOLS],mxID_TOOLS_MAKEFILE)); // ,LANG(TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE,"Generar Makefile..."),ipre+_T("makefile.png"),LANG(TOOLBAR_DESC_TOOLS_GENERATE_MAKEFILE,"Herramientas -> Generar Makefile..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.open_terminal",menues[tbTOOLS],mxID_TOOLS_CONSOLE)); // ,LANG(TOOLBAR_CAPTION_TOOLS_OPEN_TERMINAL,"Abrir terminal..."),ipre+_T("console.png"),LANG(TOOLBAR_DESC_OPEN_TERMINAL,"Herramientas -> Abrir consola..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.exe_info",menues[tbTOOLS],mxID_TOOLS_EXE_PROPS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_EXE_INFO,"Propiedades del Ejecutable..."),ipre+_T("exeinfo.png"),LANG(TOOLBAR_DESC_EXE_INFO,"Herramientas -> Propiedades del Ejecutable..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.proy_stats",menues[tbTOOLS],mxID_TOOLS_PROJECT_STATISTICS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_PROY_STATS,"Estadisticas del Proyecto..."),ipre+_T("proystats.png"),LANG(TOOLBAR_DESC_PROY_STATS,"Herramientas -> Estadisticas del Proyecto..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.draw_classes",menues[tbTOOLS],mxID_TOOLS_DRAW_CLASSES)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DRAW_PROJECT,"Grafo del Proyecto..."),ipre+_T("draw_project.png"),LANG(TOOLBAR_DESC_TOOLS_DRAW_PROJECT,"Herramientas -> Grafo del Proyecto..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.open_shared",menues[tbTOOLS],mxID_TOOLS_SHARE_OPEN)); // ,LANG(TOOLBAR_CAPTION_TOOLS_SHARE_OPEN,"Abrir Archivo Compartido..."),ipre+_T("abrirs.png"),LANG(TOOLBAR_DESC_TOOLS_SHARE_OPEN,"Herramientas -> Compartir Archivos en la Red Local -> Abrir Compartido..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.share_source",menues[tbTOOLS],mxID_TOOLS_SHARE_SHARE)); // ,LANG(TOOLBAR_CAPTION_TOOLS_SHARE_SHARE,"Compartir Fuente..."),ipre+_T("compartir.png"),LANG(TOOLBAR_DESC_TOOLS_SHARE_SHARE,"Herramientas -> Compartir Archivos en la Red Local -> Compartir Actual..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.share_list",menues[tbTOOLS],mxID_TOOLS_SHARE_LIST)); // ,LANG(TOOLBAR_CAPTION_TOOLS_SHARE_LIST,"Listar Compartidos Propios..."),ipre+_T("share_list.png"),LANG(TOOLBAR_DESC_TOOLS_SHARE_LIST,"Herramientas -> Compartir Archivos en la Red Local -> Listar Compartidos Propios..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.diff_two_sources",menues[tbTOOLS],mxID_TOOLS_DIFF_TWO)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_TWO,"Compara Dos Fuentes Abiertos..."),ipre+_T("diff_sources.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_TWO,"Herramientas -> Comparar Archivos -> Dos Fuentes Abiertos"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.diff_other_file",menues[tbTOOLS],mxID_TOOLS_DIFF_DISK)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_DISK,"Comparar Fuente con Archivo en Disco..."),ipre+_T("diff_source_file.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_DISK,"Herramientas -> Comparar Archivos -> Fuente Actual Contra Archivo en Disco"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.diff_himself",menues[tbTOOLS],mxID_TOOLS_DIFF_HIMSELF)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF,"Comparar Cambios en el Fuente con su Version en Disco..."),ipre+_T("diff_source_himself.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_HIMSELF,"Herramientas -> Comparar Archivos -> Fuente Actual Contra Version en Disco"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.diff_show",menues[tbTOOLS],mxID_TOOLS_DIFF_SHOW)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_SHOW,"Mostrar Cambio"),ipre+_T("diff_show.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_SHOW,"Herramientas -> Comparar Archivos -> Mostrar Cambio"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.diff_apply",menues[tbTOOLS],mxID_TOOLS_DIFF_APPLY)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_APPLY,"Aplicar Cambio"),ipre+_T("diff_apply.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_APPLY,"Herramientas -> Comparar Archivos -> Aplicar Cambio"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.diff_discard",menues[tbTOOLS],mxID_TOOLS_DIFF_DISCARD)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD,"Descartar Cambio"),ipre+_T("diff_discard.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_DISCARD,"Herramientas -> Comparar Archivos -> Descartar Cambio"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.diff_clear",menues[tbTOOLS],mxID_TOOLS_DIFF_CLEAR)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR,"Borrar Marcas de Comparacion"),ipre+_T("diff_clear.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_CLEAR,"Herramientas -> Comparar Archivos -> Borrar Marcas"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.doxy_generate",menues[tbTOOLS],mxID_TOOLS_DOXY_GENERATE)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE,"Generar Documentacion Doxygen..."),ipre+_T("doxy_run.png"),LANG(TOOLBAR_DESC_TOOLS_DOXYGEN_GENERATE,"Herramientas -> Generar Documentacion -> Generar..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.doxy_config",menues[tbTOOLS],mxID_TOOLS_DOXY_CONFIG)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE,"Configurar Documentacion Doxygen..."),ipre+_T("doxy_config.png"),LANG(TOOLBAR_DESC_TOOLS_DOXYGEN_CONFIGURE,"Herramientas -> Generar Documentacion -> Configurar..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.doxy_view",menues[tbTOOLS],mxID_TOOLS_DOXY_VIEW)); // ,LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW,"Ver Documentacion Doxygen..."),ipre+_T("doxy_view.png"),LANG(TOOLBAR_DESC_TOOLS_DOXYGEN_VIEW,"Herramientas -> Generar Documentacion -> Ver..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.wxfb_config",menues[tbTOOLS],mxID_TOOLS_WXFB_CONFIG)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG,"Activar Integracion wxFormBuilder"),ipre+_T("wxfb_activate.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_ACTIVATE,"Herramientas -> wxFormBuilder -> Configurar Integracion wxFormBuilder"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.wxfb_new_res",menues[tbTOOLS],mxID_TOOLS_WXFB_NEW_RES)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE,"Adjuntar un Nuevo Proyecto wxFB"),ipre+_T("wxfb_new_res.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_NEW_RESOURCE,"Herramientas -> wxFormBuilder -> Adjuntar un Nuevo Proyecto wxFB"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.wxfb_load_res",menues[tbTOOLS],mxID_TOOLS_WXFB_LOAD_RES)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE,"Adjuntar un Proyecto wxFB Existente"),ipre+_T("wxfb_load_res.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_LOAD_RESOURCE,"Herramientas -> wxFormBuilder -> Adjuntar un Proyecto wxFB Existente"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.wxfb_regen",menues[tbTOOLS],mxID_TOOLS_WXFB_REGEN)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE,"Regenerar Proyectos wxFB"),ipre+_T("wxfb_regen.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REGENERATE,"Herramientas -> wxFormBuilder -> Regenerar Proyectos wxFB"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.wxfb_inherit",menues[tbTOOLS],mxID_TOOLS_WXFB_INHERIT_CLASS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.wxfb_update_inherit",menues[tbTOOLS],mxID_TOOLS_WXFB_UPDATE_INHERIT)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT,"Actualizar Clase Heredada..."),ipre+_T("wxfb_update_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_UPDATE_INHERIT,"Herramientas -> wxFormBuilder -> Actualizar Clase Heredada..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.wxfb_help_wx",menues[tbTOOLS],mxID_TOOLS_WXFB_HELP_WX)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.cppcheck_run",menues[tbTOOLS],mxID_TOOLS_CPPCHECK_RUN)); // ,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN,"Comenzar Analisis Estatico..."),ipre+_T("cppcheck_run.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_RUN,"Herramientas -> Analisis Estatico -> Iniciar..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.cppcheck_config",menues[tbTOOLS],mxID_TOOLS_CPPCHECK_CONFIG)); // ,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG,"Configurar Analisis Estatico..."),ipre+_T("cppcheck_config.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_CONFIG,"Herramientas -> Analisis Estatico-> Configurar..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.cppcheck_view",menues[tbTOOLS],mxID_TOOLS_CPPCHECK_VIEW)); // ,LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW,"Mostrar Resultados del Analisis Estatico"),ipre+_T("cppcheck_view.png"),LANG(TOOLBAR_DESC_TOOLS_CPPCHECK_VIEW,"Herramientas -> Analisis Estatico -> Mostrar Panel de Resultados"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.gprof_activate",menues[tbTOOLS],mxID_TOOLS_GPROF_SET)); // ,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE,"Activar Perfilado de Ejecucion"),ipre+_T("comp_for_prof.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_ACTIVATE,"Herramientas -> Perfil de Ejecucion -> Activar"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.gprof_show_graph",menues[tbTOOLS],mxID_TOOLS_GPROF_SHOW)); // ,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_SHOW,"Graficar Resultados del Perfilado de Ejecucion"),ipre+_T("showgprof.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_SHOW,"Herramientas -> Perfil de Ejecucion -> Visualizar Resultados (grafo)..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.gprof_list_output",menues[tbTOOLS],mxID_TOOLS_GPROF_LIST)); // ,LANG(TOOLBAR_CAPTION_TOOLS_GPROF_LIST,"Listar Resultados del Perfilado de Ejecucion"),ipre+_T("listgprof.png"),LANG(TOOLBAR_DESC_TOOLS_GPROF_LIST,"Herramientas -> Perfil de Ejecucion -> Listar Resultados (texto)..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.gcov_activate",menues[tbTOOLS],mxID_TOOLS_GCOV_SET)); // ,LANG(TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE,"Activar Test de Cobertura"),ipre+_T("gcov_set.png"),LANG(TOOLBAR_DESC_TOOLS_GCOV_ACTIVATE,"Herramientas -> Test de Cobertura -> Habilitar/Deshabilitar"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.gcov_show_bar",menues[tbTOOLS],mxID_TOOLS_GCOV_SHOW)); // ,LANG(TOOLBAR_CAPTION_TOOLS_GCOV_RESET,"Mostrar barra de resultados de Test de Cobertura"),ipre+_T("gcov_show.png"),LANG(TOOLBAR_DESC_TOOLS_GCOV_SHOW_BAR,"Herramientas -> Test de Cobertura -> Mostrar Barra de Resultados"));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.gcov_reset",menues[tbTOOLS],mxID_TOOLS_GCOV_RESET)); // ,LANG(TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR,"Eliminar resultados de Test de Cobertura"),ipre+_T("gcov_reset.png"),LANG(TOOLBAR_DESC_TOOLS_GCOV_RESET,"Herramientas -> Test de Cobertura -> Eliminar Resultados"));
+	toolbars[tbTOOLS].Init("tools",LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas"),"t:1:4"); {
+		AddToolbarItem(tbTOOLS,myToolbarItem("draw_flow",menues[mnTOOLS],mxID_TOOLS_DRAW_FLOW));
+		AddToolbarItem(tbTOOLS,myToolbarItem("draw_classes",menues[mnTOOLS],mxID_TOOLS_DRAW_CLASSES));
+		AddToolbarItem(tbTOOLS,myToolbarItem("copy_code_from_h",menues[mnTOOLS],mxID_TOOLS_CODE_COPY_FROM_H).Visible());
+		AddToolbarItem(tbTOOLS,myToolbarItem("align_comments",menues[mnTOOLS],mxID_TOOLS_ALIGN_COMMENTS));
+		AddToolbarItem(tbTOOLS,myToolbarItem("remove_comments",menues[mnTOOLS],mxID_TOOLS_REMOVE_COMMENTS));
+		AddToolbarItem(tbTOOLS,myToolbarItem("preproc_mark_valid",menues[mnTOOLS],mxID_TOOLS_PREPROC_MARK_VALID));
+		AddToolbarItem(tbTOOLS,myToolbarItem("preproc_unmark_all",menues[mnTOOLS],mxID_TOOLS_PREPROC_UNMARK_ALL));
+		AddToolbarItem(tbTOOLS,myToolbarItem("preproc_expand_macros",menues[mnTOOLS],mxID_TOOLS_PREPROC_EXPAND_MACROS).Visible());
+		AddToolbarItem(tbTOOLS,myToolbarItem("generate_makefile",menues[mnTOOLS],mxID_TOOLS_MAKEFILE));
+		AddToolbarItem(tbTOOLS,myToolbarItem("open_terminal",menues[mnTOOLS],mxID_TOOLS_CONSOLE).Visible());
+		AddToolbarItem(tbTOOLS,myToolbarItem("exe_info",menues[mnTOOLS],mxID_TOOLS_EXE_PROPS));
+		AddToolbarItem(tbTOOLS,myToolbarItem("proy_stats",menues[mnTOOLS],mxID_TOOLS_PROJECT_STATISTICS));
+		AddToolbarItem(tbTOOLS,myToolbarItem("draw_classes",menues[mnTOOLS],mxID_TOOLS_DRAW_CLASSES));
+		AddToolbarItem(tbTOOLS,myToolbarItem("open_shared",menues[mnTOOLS],mxID_TOOLS_SHARE_OPEN).Visible());
+		AddToolbarItem(tbTOOLS,myToolbarItem("share_source",menues[mnTOOLS],mxID_TOOLS_SHARE_SHARE));
+		AddToolbarItem(tbTOOLS,myToolbarItem("share_list",menues[mnTOOLS],mxID_TOOLS_SHARE_LIST));
+		AddToolbarItem(tbTOOLS,myToolbarItem("diff_two_sources",menues[mnTOOLS],mxID_TOOLS_DIFF_TWO).Visible());
+		AddToolbarItem(tbTOOLS,myToolbarItem("diff_other_file",menues[mnTOOLS],mxID_TOOLS_DIFF_DISK));
+		AddToolbarItem(tbTOOLS,myToolbarItem("diff_himself",menues[mnTOOLS],mxID_TOOLS_DIFF_HIMSELF));
+		AddToolbarItem(tbTOOLS,myToolbarItem("diff_show",menues[mnTOOLS],mxID_TOOLS_DIFF_SHOW));
+		AddToolbarItem(tbTOOLS,myToolbarItem("diff_apply",menues[mnTOOLS],mxID_TOOLS_DIFF_APPLY));
+		AddToolbarItem(tbTOOLS,myToolbarItem("diff_discard",menues[mnTOOLS],mxID_TOOLS_DIFF_DISCARD));
+		AddToolbarItem(tbTOOLS,myToolbarItem("diff_clear",menues[mnTOOLS],mxID_TOOLS_DIFF_CLEAR));
+		AddToolbarItem(tbTOOLS,myToolbarItem("doxy_generate",menues[mnTOOLS],mxID_TOOLS_DOXY_GENERATE).Visible());
+		AddToolbarItem(tbTOOLS,myToolbarItem("doxy_config",menues[mnTOOLS],mxID_TOOLS_DOXY_CONFIG));
+		AddToolbarItem(tbTOOLS,myToolbarItem("doxy_view",menues[mnTOOLS],mxID_TOOLS_DOXY_VIEW));
+		AddToolbarItem(tbTOOLS,myToolbarItem("wxfb_config",menues[mnTOOLS],mxID_TOOLS_WXFB_CONFIG));
+		AddToolbarItem(tbTOOLS,myToolbarItem("wxfb_new_res",menues[mnTOOLS],mxID_TOOLS_WXFB_NEW_RES));
+		AddToolbarItem(tbTOOLS,myToolbarItem("wxfb_load_res",menues[mnTOOLS],mxID_TOOLS_WXFB_LOAD_RES));
+		AddToolbarItem(tbTOOLS,myToolbarItem("wxfb_regen",menues[mnTOOLS],mxID_TOOLS_WXFB_REGEN));
+		AddToolbarItem(tbTOOLS,myToolbarItem("wxfb_inherit",menues[mnTOOLS],mxID_TOOLS_WXFB_INHERIT_CLASS));
+		AddToolbarItem(tbTOOLS,myToolbarItem("wxfb_update_inherit",menues[mnTOOLS],mxID_TOOLS_WXFB_UPDATE_INHERIT));
+		AddToolbarItem(tbTOOLS,myToolbarItem("wxfb_help_wx",menues[mnTOOLS],mxID_TOOLS_WXFB_HELP_WX));
+		AddToolbarItem(tbTOOLS,myToolbarItem("cppcheck_run",menues[mnTOOLS],mxID_TOOLS_CPPCHECK_RUN));
+		AddToolbarItem(tbTOOLS,myToolbarItem("cppcheck_config",menues[mnTOOLS],mxID_TOOLS_CPPCHECK_CONFIG));
+		AddToolbarItem(tbTOOLS,myToolbarItem("cppcheck_view",menues[mnTOOLS],mxID_TOOLS_CPPCHECK_VIEW));
+		AddToolbarItem(tbTOOLS,myToolbarItem("gprof_activate",menues[mnTOOLS],mxID_TOOLS_GPROF_SET));
+		AddToolbarItem(tbTOOLS,myToolbarItem("gprof_show_graph",menues[mnTOOLS],mxID_TOOLS_GPROF_SHOW));
+		AddToolbarItem(tbTOOLS,myToolbarItem("gprof_list_output",menues[mnTOOLS],mxID_TOOLS_GPROF_LIST));
+		AddToolbarItem(tbTOOLS,myToolbarItem("gcov_activate",menues[mnTOOLS],mxID_TOOLS_GCOV_SET));
+		AddToolbarItem(tbTOOLS,myToolbarItem("gcov_show_bar",menues[mnTOOLS],mxID_TOOLS_GCOV_SHOW));
+		AddToolbarItem(tbTOOLS,myToolbarItem("gcov_reset",menues[mnTOOLS],mxID_TOOLS_GCOV_RESET));
 #ifndef __WIN32__
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.valgrind_run",menues[tbTOOLS],mxID_TOOLS_VALGRIND_RUN)); // ,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN,"Ejecutar Para Analisis Dinamico"),ipre+_T("valgrind_run.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_RUN,"Herramientas -> Analisis Dinámico -> Ejecutar..."));
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.valgrind_view",menues[tbTOOLS],mxID_TOOLS_VALGRIND_VIEW)); // ,LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW,"Mostrar Resultados del Analisis Dinamico"),ipre+_T("valgrind_view.png"),LANG(TOOLBAR_DESC_TOOLS_VALGRIND_VIEW,"Herramientas -> Analisis Dinámico -> Mostrar Panel de Resultados"));
+		AddToolbarItem(tbTOOLS,myToolbarItem("valgrind_run",menues[mnTOOLS],mxID_TOOLS_VALGRIND_RUN));
+		AddToolbarItem(tbTOOLS,myToolbarItem("valgrind_view",menues[mnTOOLS],mxID_TOOLS_VALGRIND_VIEW));
 #endif
 		for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
 			if (config->CustomTools[i].on_toolbar) {
@@ -498,97 +506,247 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 				AddToolbarItem(tbTOOLS,myToolbarItem("",mxID_CUSTOM_TOOL_0+i,wxString("customTool")<<i<<".png",str).Description(str));
 			}
 		}
-		AddToolbarItem(tbTOOLS,myToolbarItem("tools.custom_settings",menues[tbTOOLS],mxID_TOOLS_CUSTOM_TOOLS_SETTINGS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),ipre+_T("customToolsSettings.png"),LANG(TOOLBAR_DESC_TOOLS_CUSTOM_TOOLS_SETTINGS,"Herramientas -> Herramientas Personalizadas -> Configurar (generales)..."));
+		AddToolbarItem(tbTOOLS,myToolbarItem("custom_settings",menues[mnTOOLS],mxID_TOOLS_CUSTOM_TOOLS_SETTINGS));
 	}
 	
 	
-	toolbars[tbMISC].label = LANG(CAPTION_TOOLBAR_MISC,"Miscelánea"); {
-		AddToolbarItem(tbMISC,myToolbarItem("misc.preferences",menues[tbMISC],mxID_FILE_PREFERENCES)); // ,LANG(TOOLBAR_CAPTION_FILE_PREFERENCES,"Preferencias..."),ipre+_T("preferencias.png"),LANG(TOOLBAR_DESC_FILE_PREFERENCES,"Archivo -> Preferencias..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.tutorials",menues[tbMISC],mxID_HELP_TUTORIAL)); // ,LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Tutoriales..."),ipre+_T("tutoriales.png"),LANG(TOOLBAR_DESC_HELP_TUTORIALS,"Ayuda -> Tutoriales..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.help_ide",menues[tbMISC],mxID_HELP_GUI)); // ,LANG(TOOLBAR_CAPTION_HELP_ZINJAI,"Ayuda Sobre ZinjaI..."),ipre+_T("ayuda.png"),LANG(TOOLBAR_DESC_HELP_ZINJAI,"Ayuda -> Ayuda sobre ZinjaI..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.help_cpp",menues[tbMISC],mxID_HELP_CPP)); // ,LANG(TOOLBAR_CAPTION_HELP_CPP,"Ayuda Sobre C/C++..."),ipre+_T("referencia.png"),LANG(TOOLBAR_DESC_HELP_CPP,"Ayuda -> Ayuda sobre C++..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.show_tips",menues[tbMISC],mxID_HELP_TIP)); // ,LANG(TOOLBAR_CAPTION_HELP_TIPS,"Sugerencias..."),ipre+_T("tip.png"),LANG(TOOLBAR_DESC_HELP_TIPS,"Ayuda -> Mostrar Sugerencias..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.about",menues[tbMISC],mxID_HELP_ABOUT)); // ,LANG(TOOLBAR_CAPTION_HELP_ABOUT,"Acerca de..."),ipre+_T("acercaDe.png"),LANG(TOOLBAR_DESC_HELP_ABOUT,"Ayuda -> Acerca de..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.opinion",menues[tbMISC],mxID_HELP_OPINION)); // ,LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Enviar sugerencia o reportar error..."),ipre+_T("opinion.png"),LANG(TOOLBAR_DESC_HELP_OPINION,"Ayuda -> Opina sobre ZinjaI..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.find_updates",menues[tbMISC],mxID_HELP_UPDATES)); // ,LANG(TOOLBAR_CAPTION_HELP_UPDATES,"Buscar Actualizaciones..."),ipre+_T("updates.png"),LANG(TOOLBAR_DESC_HELP_UPDATES,"Ayuda -> Buscar Actualizaciones..."));
-		AddToolbarItem(tbMISC,myToolbarItem("misc.exit",menues[tbMISC],wxID_EXIT)); // ,LANG(TOOLBAR_CAPTION_FILE_EXIT,"Salir"),ipre+_T("salir.png"),LANG(TOOLBAR_DESC_FILE_EXIT,"Archivo -> Salir"));
+	toolbars[tbMISC].Init("misc",LANG(CAPTION_TOOLBAR_MISC,"Miscelánea"),"T:1:6"); {
+		AddToolbarItem(tbMISC,myToolbarItem("preferences",menues[mnFILE],mxID_FILE_PREFERENCES).Visible());
+		AddToolbarItem(tbMISC,myToolbarItem("tutorials",menues[mnHELP],mxID_HELP_TUTORIAL));
+		AddToolbarItem(tbMISC,myToolbarItem("help_ide",menues[mnHELP],mxID_HELP_GUI).Visible());
+		AddToolbarItem(tbMISC,myToolbarItem("help_cpp",menues[mnHELP],mxID_HELP_CPP).Visible());
+		AddToolbarItem(tbMISC,myToolbarItem("show_tips",menues[mnHELP],mxID_HELP_TIP));
+		AddToolbarItem(tbMISC,myToolbarItem("about",menues[mnHELP],mxID_HELP_ABOUT));
+		AddToolbarItem(tbMISC,myToolbarItem("opinion",menues[mnHELP],mxID_HELP_OPINION).Visible());
+		AddToolbarItem(tbMISC,myToolbarItem("find_updates",menues[mnHELP],mxID_HELP_UPDATES));
+		AddToolbarItem(tbMISC,myToolbarItem("exit",menues[mnFILE],wxID_EXIT));
 	}
 	
+#warning agregar la de proyecto para que sea mas facil abajo crearla???
+	toolbars[tbFIND].Init("find",LANG(CAPTION_TOOLBAR_FIND,"Búsqueda"),"T:1:5");
+	toolbars[tbPROJECT].Init("project",LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"),"T:1:7");
+	toolbars[tbDIFF].Init("diff",LANG(CAPTION_TOOLBAR_DIFF,"Diff"),"t:3:1");
 	
-	toolbars[tbPROJECT].label = LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"); {
-		if (project->GetWxfbActivated()) {
-			AddToolbarItem(tbPROJECT,myToolbarItem("",menues[tbPROJECT],mxID_TOOLS_WXFB_INHERIT_CLASS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),ipre+_T("wxfb_inherit.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_INHERIT,"Herramientas -> wxFormBuilder -> Generar Clase Heredada..."));
-			AddToolbarItem(tbPROJECT,myToolbarItem("",menues[tbPROJECT],mxID_TOOLS_WXFB_HELP_WX)); // ,LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),ipre+_T("ayuda_wx.png"),LANG(TOOLBAR_DESC_TOOLS_WXFB_REFERENCE,"Herramientas -> wxFormBuilder -> Referencia wxWidgets..."));
+}
+
+	
+void MenusAndToolsConfig::PopulateMenu(int menu_id) {
+	vector<wxMenu*> menu_stack;
+	wxString menu_icon_prefix = DIR_PLUS_FILE("16","");
+	wxMenu *current_menu = menues[menu_id].wx_menu = new wxMenu;
+	wx_menu_bar->Append(current_menu,menues[menu_id].label);
+	unsigned int items_size = menues[menu_id].items.size();
+	for(unsigned int j=0;j<items_size;j++) { 
+		myMenuItem &mi=menues[menu_id].items[j];
+		int props=mi.properties;
+		wxMenuItem *wx_item=NULL;
+		if (props&maSEPARATOR) {
+			current_menu->AppendSeparator();
+		} else if (props&maBEGIN_SUBMENU) {
+			wxMenu *new_menu = new wxMenu;
+			wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,menu_icon_prefix+mi.icon);
+			if (props&maMAPPED) {
+//					mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
+				mapped_menues.push_back(MappedSomething<wxMenu*>(mi.wx_id,new_menu));
+			}
+			menu_stack.push_back(current_menu);
+			current_menu=new_menu;
+		} else if (props&maEND_SUBMENU) {
+			current_menu=menu_stack.back(); menu_stack.pop_back();
+		} else {
+			if (props&(maCHECKED|maCHECKEABLE))
+				wx_item = utils->AddCheckToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,props&maCHECKED);
+			else 
+				wx_item = utils->AddItemToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,menu_icon_prefix+mi.icon);
+			if (props&maMAPPED) mapped_items.push_back(MappedSomething<wxMenuItem*>(mi.wx_id,wx_item));
 		}
+		if (props&maDEBUG) { items_debug.push_back(AutoenabligItem(wx_item,true)); }
+		else if (props&maNODEBUG) { items_debug.push_back(AutoenabligItem(wx_item,false)); }
+		if (props&maPROJECT) { items_project.push_back(AutoenabligItem(wx_item,true)); }
+		else if (props&maNOPROJECT) { items_project.push_back(AutoenabligItem(wx_item,false)); }
+	}
+}
+
+/**
+* @brief Crea los menúes de la ventana principal y los configura en el modo inicial (no debug, no project)
+**/
+void MenusAndToolsConfig::CreateMenues () {		
+	
+	wx_menu_bar = new wxMenuBar;
+	main_window->SetMenuBar(wx_menu_bar);
+		
+	// create regular menus
+	for(unsigned int menu_id=0;menu_id<mnCOUNT;menu_id++) PopulateMenu(menu_id);
+	
+	// create some special submenues
+	main_window->UpdateCustomTools(false);
+	wxString ipre=DIR_PLUS_FILE("16","recent");
+	for(int k=0;k<2;k++) { 
+		wxString *cfglast = k==0?config->Files.last_project:config->Files.last_source;
+		wxMenuItem **mnihistory = k==0?menu_data->file_project_history:menu_data->file_source_history;
+		wxMenu *mnurecent = menu_data->GetMenu(k==0?mxID_FILE_PROJECT_RECENT:mxID_FILE_SOURCE_RECENT);
+		int history_id = k==0?mxID_FILE_PROJECT_HISTORY_0:mxID_FILE_SOURCE_HISTORY_0;
+		for (int i=0;i<config->Init.history_len;i++)
+			if (!cfglast[i].IsEmpty()) 
+				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],wxString(ipre+"recent")<<i<<(".png"),i);
+	}
+	
+	// set items state
+	SetProjectMode(false);
+	SetDebugMode(false);
+}
+
+void MenusAndToolsConfig::CreateWxToolbar(int tb_id) {
+	toolbars[tb_id].wx_toolbar = new wxToolBar(main_window, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | (toolbars[tb_id].position.top?wxTB_HORIZONTAL:wxTB_VERTICAL));
+	toolbars[tb_id].wx_toolbar->SetToolBitmapSize(wxSize(icon_size,icon_size)); 
+	main_window->aui_manager.AddPane(toolbars[tb_id].wx_toolbar, wxAuiPaneInfo().Name(wxString("toolbar_")+toolbars[tb_id].key).Caption(toolbars[tb_id].label).ToolbarPane().Hide());
+}
+
+void MenusAndToolsConfig::UpdateToolbar(int tb_id, bool only_items) {
+	if (!only_items) {
+		// destroy the previous one
+		main_window->aui_manager.DetachPane(toolbars[tb_id].wx_toolbar);
+		toolbars[tb_id].wx_toolbar->Destroy();
+		toolbars[tb_id].wx_toolbar=NULL;
+		CreateWxToolbar(tb_id);
+	} else {
+		toolbars[tb_id].wx_toolbar->ClearTools();
+	}
+	PopulateToolbar(tb_id);
+	AdjustToolbarSize(tb_id);
+}
+	
+void MenusAndToolsConfig::CreateToolbars() {
+	
+	wxString ipre=DIR_PLUS_FILE(wxString()<<icon_size,"");
+	
+	if (!wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,wxString()<<icon_size))) {
+		wxString icsz = wxString()<<icon_size<<"x"<<icon_size;
+		mxMessageDialog(NULL,
+			wxString()<<LANG1(MAIN_WINDOW_NO_ICON_SIZE,""
+			"El tema de iconos seleccionado no tiene iconos del tamaño elegido (<{1}>)\n"
+			"Se utilizaran los iconos del tamaño predeterminado (16x16).\n"
+			"Para modificarlo utilice el cuadro de Preferencias (menu Archivo).",wxString()<<icsz),
+			LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+		icon_size=16;
+		ipre=DIR_PLUS_FILE("16","");
+	}
+	
+	// create empty wxToolBars 
+	for(unsigned int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) CreateWxToolbar(tb_id);
+	
+	// barras estandar: FILE, EDIT, VIEW, RUN, DEBUG, TOOLS, MISC, PROJECT
+	for(int tb_id=0;tb_id<tbPROJECT;tb_id++) PopulateToolbar(tb_id); 
+	
+	// barras especiales: busqueda
+	{
+		myToolbar &tb = toolbars[tbFIND];
+//		tb.wx_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
+//		tb.wx_toolbar->SetToolBitmapSize(wxSize(icon_size,icon_size));
+		tb.wx_toolbar->AddControl( toolbar_find_text = new wxTextCtrl(tb.wx_toolbar,mxID_TOOLBAR_FIND,wxEmptyString,wxDefaultPosition,wxSize(100,20),wxTE_PROCESS_ENTER) );
+		toolbar_find_text->SetToolTip(LANG(TOOLBAR_FIND_TEXT,"Texto a Buscar"));
+		utils->AddTool(tb.wx_toolbar,mxID_EDIT_TOOLBAR_FIND,LANG(TOOLBAR_FIND_CAPTION,"Busqueda Rapida"),ipre+_T("buscar.png"),LANG(TOOLBAR_FIND_BUTTON,"Buscar siguiente"));
+//		main_window->aui_manager.AddPane(tb.wx_toolbar, wxAuiPaneInfo().Name(wxString("toolbar_")+tb.key).Caption(tb.label).ToolbarPane().Hide());
+	}
+	
+	// barras especiales: estado de la depuracion
+	{
+		myToolbar &tb = toolbars[tbSTATUS];
+//		tb.wx_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
+//		tb.wx_toolbar->SetToolBitmapSize(wxSize(icon_size,icon_size));
+		tb.wx_toolbar->AddControl( toolbar_status_text = new wxStaticText(tb.wx_toolbar,wxID_ANY,"",wxDefaultPosition,wxSize(2500,20)) );
+		toolbar_status_text->SetForegroundColour(wxColour("Z DARK BLUE"));
+//		main_window->aui_manager.AddPane(tb.wx_toolbar, wxAuiPaneInfo().Name(wxString("toolbar_")+tb.key).Caption(tb.label).ToolbarPane().Top().Hide());
+	}
+	
+	// barras especiales: diff
+	{
+		myToolbar &tb = toolbars[tbDIFF];
+//		tb.wx_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
+//		tb.wx_toolbar->SetToolBitmapSize(wxSize(icon_size,icon_size));
+		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_PREV,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_PREV,"Diferencia Anterior"),ipre+_T("diff_prev.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_PREV,"Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior"));
+		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_NEXT,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_NEXT,"Siguiente Diferencia"),ipre+_T("diff_next.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_NEXT,"Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia"));
+		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_SHOW,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_SHOW,"Mostrar Cambio"),ipre+_T("diff_show.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_SHOW,"Herramientas -> Comparar Archivos -> Mostrar Cambio"));
+		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_APPLY,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_APPLY,"Aplicar Cambio"),ipre+_T("diff_apply.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_APPLY,"Herramientas -> Comparar Archivos -> Aplicar Cambio"));
+		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_DISCARD,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD,"Descartar Cambio"),ipre+_T("diff_discard.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_DISCARD,"Herramientas -> Comparar Archivos -> Descartar Cambio"));
+		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_CLEAR,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR,"Borrar Marcas de Comparacion"),ipre+_T("diff_clear.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_CLEAR,"Herramientas -> Comparar Archivos -> Borrar Marcas"));
+//		main_window->aui_manager.AddPane(tb.wx_toolbar, wxAuiPaneInfo().Name(wxString("toolbar_")+tb.key).Caption(tb.label).ToolbarPane().Top().Float().LeftDockable(false).RightDockable(false).Hide());
+	}
+	
+	// ajustar tamaños
+	for(unsigned int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) AdjustToolbarSize(tb_id);
+	main_window->SortToolbars(false);
+}
+
+void MenusAndToolsConfig::PopulateToolbar(int tb_id) {
+	
+	wxToolBar *wx_toolbar = toolbars[tb_id].wx_toolbar;
+	wxString ipre=DIR_PLUS_FILE(wxString()<<icon_size,"");
+	
+	if (tb_id!=tbPROJECT) { // items de la base de items
+		vector<myToolbarItem> &items = toolbars[tb_id].items;
+		for(unsigned int i=0;i<items.size();i++)
+			if (items[i].visible) 
+				utils->AddTool(wx_toolbar,items[i].wx_id,items[i].label,ipre+items[i].icon,items[i].description,items[i].checkeable?wxITEM_CHECK:wxITEM_NORMAL);
+	
+	} else { // caso especial, barra de proyecto
+		// elementos especificos de proyectos wx
+		if (project->GetWxfbActivated()) {
+			int wx_ids[3] = { mxID_TOOLS_WXFB_CONFIG, mxID_TOOLS_WXFB_INHERIT_CLASS, mxID_TOOLS_WXFB_HELP_WX };
+			for(int i=0;i<3;i++) {
+				myToolbarItem item("",menues[mnTOOLS],wx_ids[i]);
+				utils->AddTool(wx_toolbar,item.wx_id,item.label,ipre+item.icon,item.description,item.checkeable?wxITEM_CHECK:wxITEM_NORMAL);
+			}
+		}
+		// herramientas personalizadas
 		bool have_tool=false;
 		for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) {
 			if (project->custom_tools[i].on_toolbar) {
 				have_tool=true;
 				wxString str(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada ")); str<<i<<" ("<<project->custom_tools[i].name<<")";;
-				AddToolbarItem(tbPROJECT,myToolbarItem("",mxID_CUSTOM_PROJECT_TOOL_0+i,wxString("projectTool")<<i<<".png",str).Description(str));
+				utils->AddTool(wx_toolbar,mxID_CUSTOM_PROJECT_TOOL_0+i,str,ipre+wxString("projectTool")<<i<<".png",str);
 			}
 		}
-		if (!have_tool) AddToolbarItem(tbPROJECT,myToolbarItem("",menues[tbPROJECT],mxID_TOOLS_PROJECT_TOOLS_SETTINGS)); // ,LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),ipre+_T("projectToolsSettings.png"),LANG(TOOLBAR_DESC_TOOLS_PROJECT_TOOLS_SETTINGS,"Herramientas -> Herramientas Personalizadas -> Configurar (de proyecto)..."));
+		if (!have_tool) { // si no hay definidas herramientas personalizadas, muestra el boton para configurarlas
+			myToolbarItem item("",menues[mnTOOLS],mxID_TOOLS_PROJECT_TOOLS_SETTINGS);
+			utils->AddTool(wx_toolbar,item.wx_id,item.label,ipre+item.icon,item.description,item.checkeable?wxITEM_CHECK:wxITEM_NORMAL);
+		}
 	}
 	
 }
 
-void MenusAndToolsConfig::CreateMenues () {
-	
-	vector<wxMenu*> menu_stack;
-	wxMenu *current_menu;
-	wxString menu_icon_prefix = DIR_PLUS_FILE("16","");
-	
-	for(unsigned int menu_id=0;menu_id<mnHIDDEN;menu_id++) { 
-		menu_stack.clear();
-		current_menu = menues[menu_id].wx_menu = new wxMenu;
-		wx_menu_bar->Append(current_menu,menues[menu_id].label);
-		unsigned int items_size = menues[menu_id].items.size();
-		for(unsigned int j=0;j<items_size;j++) { 
-			myMenuItem &mi=menues[menu_id].items[j];
-			int props=mi.properties;
-			wxMenuItem *wx_item=NULL;
-			if (props&maSEPARATOR) {
-				current_menu->AppendSeparator();
-			} else if (props&maBEGIN_SUBMENU) {
-				wxMenu *new_menu = new wxMenu;
-				wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,menu_icon_prefix+mi.icon);
-				if (props&maMAPPED) {
-//					mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
-					mapped_menues.push_back(MappedSomething<wxMenu*>(mi.wx_id,new_menu));
+void MenusAndToolsConfig::AdjustToolbarSize(int tb_id) {
+	wxToolBar *wx_toolbar = toolbars[tb_id].wx_toolbar;
+	if (wx_toolbar) { wx_toolbar->Realize(); main_window->aui_manager.GetPane(wx_toolbar).BestSize(wx_toolbar->GetBestSize()); }
+}
+
+bool MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wxString & value) {
+	if (key=="icon_size") { utils->ToInt(value,icon_size); return true; }
+	int p=key.Index('.'); if (p==wxNOT_FOUND) return false;
+	wxString tb_name=key.Mid(0,p);
+	if (tb_name=="positions") {
+		tb_name = key.AfterFirst('.');
+		for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) { 
+			if (toolbars[tb_id].key==tb_name) {
+				toolbars[tb_id].position=value;
+				return true;
+			}
+		}
+	} else {
+		for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) { 
+			if (toolbars[tb_id].key==tb_name) {
+				wxString name = key.AfterFirst('.');
+				vector<myToolbarItem> &items = toolbars[tb_id].items;
+				for(unsigned int i=0;i<items.size();i++) { 
+					if (items[i].key==name) {
+						items[i].visible = utils->IsTrue(value);
+						return true;
+					}
 				}
-				menu_stack.push_back(current_menu);
-				current_menu=new_menu;
-			} else if (props&maEND_SUBMENU) {
-				current_menu=menu_stack.back(); menu_stack.pop_back();
-			} else {
-				if (props&(maCHECKED|maCHECKEABLE))
-					wx_item = utils->AddCheckToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,props&maCHECKED);
-				else 
-					wx_item = utils->AddItemToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,menu_icon_prefix+mi.icon);
-				if (props&maMAPPED) mapped_items.push_back(MappedSomething<wxMenuItem*>(mi.wx_id,wx_item));
 			}
-			if (props&maDEBUG) { items_debug.push_back(AutoenabligItem(wx_item,true)); }
-			else if (props&maNODEBUG) { items_debug.push_back(AutoenabligItem(wx_item,false)); }
-			if (props&maPROJECT) { items_project.push_back(AutoenabligItem(wx_item,true)); }
-			else if (props&maNOPROJECT) { items_project.push_back(AutoenabligItem(wx_item,false)); }
 		}
 	}
-	
-	SetProjectMode(false);
-	SetDebugMode(false);
-}
-
-void MenusAndToolsConfig::CreateToolbars ( ) {
-	
-}
-
-void MenusAndToolsConfig::ParseMenuConfigLine (const wxString & key, const wxString & value) {
-	
-}
-
-void MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wxString & value) {
-	
+	return false;
 }
 
 void MenusAndToolsConfig::SetDebugMode (bool mode) {
@@ -600,3 +758,33 @@ void MenusAndToolsConfig::SetProjectMode (bool mode) {
 	for(unsigned int i=0;i<items_project.size();i++) 
 		items_project[i].Enable(mode);
 }
+
+void MenusAndToolsConfig::SaveToolbarConfig (wxTextFile & file) {
+	file.AddLine(wxString("icon_size=")<<icon_size);
+	for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) {
+		file.AddLine(wxString("positions.")+toolbars[tb_id].key+"="+(wxString)toolbars[tb_id].position);
+		wxString toolbar_key = toolbars[tb_id].key+".";
+		vector<myToolbarItem> &items = toolbars[tb_id].items;
+		for(unsigned int i=0;i<items.size();i++) {
+			if (!items[i].key.IsEmpty())
+				file.AddLine(toolbar_key+items[i].key+(items[i].visible?"=1":"=0"));
+		}
+	}
+}
+
+int MenusAndToolsConfig::ToolbarFromTool(int tool_id) {
+	for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) { 
+		vector<myToolbarItem> &items = toolbars[tb_id].items;
+		for(unsigned int i=0;i<items.size();i++) {
+			if (items[i].wx_id==tool_id) return tb_id;
+		}
+	}
+	return -1;
+}
+
+void MenusAndToolsConfig::CreateMenuesAndToolbars (mxMainWindow * _main_window) {
+	main_window=_main_window;
+	CreateToolbars();
+	CreateMenues();
+}
+

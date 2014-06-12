@@ -479,12 +479,9 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 #endif
 	
  	aui_manager.SetManagedWindow(this);
-	toolbar_tools=NULL;
-	CreateMenues();
+	menu_data->CreateMenuesAndToolbars(this); 
 	CreateStatusBar(1,0);
 	status_bar->SetStatusText(LANG(MAINW_INITIALIZING,"Inicializando..."));	
-
-	CreateToolbars(); 
 
 	if (config->Init.left_panels && !config->Init.autohiding_panels) {
 		aui_manager.AddPane(CreateLeftPanels(), wxAuiPaneInfo().Name("left_panels").Left().CloseButton(true).MaximizeButton(true).Caption(_T("Arboles")).Hide());
@@ -1308,15 +1305,15 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	} else if (event.pane->name == "symbols_tree") {
 		_menu_item(mxID_VIEW_SYMBOLS_TREE)->Check(false);
 	}
-	else if (event.pane->name == "toolbar_misc") { _menu_item(mxID_VIEW_TOOLBAR_MISC)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.misc.visible=false; }
-	else if (event.pane->name == "toolbar_find") { _menu_item(mxID_VIEW_TOOLBAR_FIND)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.find.visible=false; }
-	else if (event.pane->name == "toolbar_view") { _menu_item(mxID_VIEW_TOOLBAR_VIEW)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.view.visible=false; }
-	else if (event.pane->name == "toolbar_project") { _menu_item(mxID_VIEW_TOOLBAR_PROJECT)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.project.visible=false; }
-	else if (event.pane->name == "toolbar_tools") { _menu_item(mxID_VIEW_TOOLBAR_TOOLS)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.tools.visible=false; }
-	else if (event.pane->name == "toolbar_file") { _menu_item(mxID_VIEW_TOOLBAR_FILE)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.file.visible=false; }
-	else if (event.pane->name == "toolbar_edit") { _menu_item(mxID_VIEW_TOOLBAR_EDIT)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.edit.visible=false; }
-	else if (event.pane->name == "toolbar_run") { _menu_item(mxID_VIEW_TOOLBAR_RUN)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.run.visible=false; }
-	else if (event.pane->name == "toolbar_debug") { _menu_item(mxID_VIEW_TOOLBAR_DEBUG)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) config->Toolbars.positions.debug.visible=false; }
+	else if (event.pane->name == "toolbar_misc") { _menu_item(mxID_VIEW_TOOLBAR_MISC)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbMISC)=false; }
+	else if (event.pane->name == "toolbar_find") { _menu_item(mxID_VIEW_TOOLBAR_FIND)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbFIND)=false; }
+	else if (event.pane->name == "toolbar_view") { _menu_item(mxID_VIEW_TOOLBAR_VIEW)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbVIEW)=false; }
+	else if (event.pane->name == "toolbar_project") { _menu_item(mxID_VIEW_TOOLBAR_PROJECT)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbPROJECT)=false; }
+	else if (event.pane->name == "toolbar_tools") { _menu_item(mxID_VIEW_TOOLBAR_TOOLS)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbTOOLS)=false; }
+	else if (event.pane->name == "toolbar_file") { _menu_item(mxID_VIEW_TOOLBAR_FILE)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbFILE)=false; }
+	else if (event.pane->name == "toolbar_edit") { _menu_item(mxID_VIEW_TOOLBAR_EDIT)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbEDIT)=false; }
+	else if (event.pane->name == "toolbar_run") { _menu_item(mxID_VIEW_TOOLBAR_RUN)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbRUN)=false; }
+	else if (event.pane->name == "toolbar_debug") { _menu_item(mxID_VIEW_TOOLBAR_DEBUG)->Check(false); if (!gui_debug_mode && !gui_fullscreen_mode) _toolbar_visible(tbDEBUG)=false; }
 	else if (event.pane->name == "threadlist" && !config->Init.autohide_panels) debug->threadlist_visible=false;
 //	else if (event.pane->name == "backtrace") debug->backtrace_visible=false;
 	else if (event.pane->name == "beginner_panel") _menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(false);
@@ -1345,7 +1342,7 @@ void mxMainWindow::OnEdit (wxCommandEvent &event) {
 void mxMainWindow::OnEditNeedFocus (wxCommandEvent &event) {
 	_record_this_action_in_macro(event.GetId());
 	wxWindow *focus = main_window->FindFocus();
-	if (focus && focus->IsKindOf(toolbar_find_text->GetClassInfo())) {
+	if (focus && focus->IsKindOf(menu_data->toolbar_find_text->GetClassInfo())) {
 		focus->ProcessEvent(event);
 	} else if (focus && (focus==inspection_ctrl || focus->GetParent()==inspection_ctrl)) {
 		inspection_ctrl->OnRedirectedEditEvent(event);
@@ -2060,18 +2057,18 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 	if (!gui_fullscreen_mode) { // sale de la pantalla completa y vuelve a ser ventana
 		_menu_item(mxID_VIEW_FULLSCREEN)->Check(false);
 		if (config->Init.autohide_toolbars_fs && (!debug->debugging || !config->Debug.autohide_toolbars)) { // reacomodar las barras de herramientas (si no esta depurando, por que si esta depurando las reacomoda el depurador cuando termina)
-#define _aux_fstb_1(NAME,name) \
-			if (config->Toolbars.positions.name.visible) { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(true); aui_manager.GetPane(toolbar_##name).Show(); } \
-			else { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(false); aui_manager.GetPane(toolbar_##name).Hide(); }
-			_aux_fstb_1(FILE,file);
-			_aux_fstb_1(EDIT,edit);
-			_aux_fstb_1(VIEW,view);
-			_aux_fstb_1(RUN,run);
-			_aux_fstb_1(TOOLS,tools);
-			_aux_fstb_1(MISC,misc);
-			_aux_fstb_1(FIND,find);
-			if (project) { _aux_fstb_1(PROJECT,project); }
-			_aux_fstb_1(DEBUG,debug);
+#define _aux_fstb_1(NAME) \
+			if (_toolbar_visible(tb##NAME)) { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(true); aui_manager.GetPane(_get_toolbar(tb##NAME)).Show(); } \
+			else { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(false); aui_manager.GetPane(_get_toolbar(tb##NAME)).Hide(); }
+			_aux_fstb_1(FILE);
+			_aux_fstb_1(EDIT);
+			_aux_fstb_1(VIEW);
+			_aux_fstb_1(RUN);
+			_aux_fstb_1(TOOLS);
+			_aux_fstb_1(MISC);
+			_aux_fstb_1(FIND);
+			if (project) { _aux_fstb_1(PROJECT); }
+			_aux_fstb_1(DEBUG);
 		}
 		
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
@@ -2162,19 +2159,19 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 		if (valgrind_panel) aui_manager.GetPane(valgrind_panel).Hide();
 		if (config->Init.autohide_toolbars_fs) { // reacomodar las barras de herramientas
 			if (!debug->debugging || !config->Debug.autohide_toolbars) { // si esta depurando, las oculta el depurador cuando termina, sino...
-#define _on_view_fullscreen_aux_1(ID,id) { \
+#define _on_view_fullscreen_aux_1(ID) { \
 	wxMenuItem *menu_item = _menu_item(mxID_VIEW_TOOLBAR_##ID); \
-	if (menu_item->IsChecked()) { menu_item->Check(false); aui_manager.GetPane(toolbar_##id).Hide(); } \
+	if (menu_item->IsChecked()) { menu_item->Check(false); aui_manager.GetPane(_get_toolbar(tb##ID)).Hide(); } \
 }
-				_on_view_fullscreen_aux_1(FILE,file);
-				_on_view_fullscreen_aux_1(VIEW,view);
-				_on_view_fullscreen_aux_1(EDIT,edit);
-				_on_view_fullscreen_aux_1(RUN,run);
-				_on_view_fullscreen_aux_1(DEBUG,debug);
-				_on_view_fullscreen_aux_1(TOOLS,tools);
-				_on_view_fullscreen_aux_1(MISC,misc);
-				_on_view_fullscreen_aux_1(FIND,find);
-				if (project) _on_view_fullscreen_aux_1(PROJECT,project);
+				_on_view_fullscreen_aux_1(FILE);
+				_on_view_fullscreen_aux_1(VIEW);
+				_on_view_fullscreen_aux_1(EDIT);
+				_on_view_fullscreen_aux_1(RUN);
+				_on_view_fullscreen_aux_1(DEBUG);
+				_on_view_fullscreen_aux_1(TOOLS);
+				_on_view_fullscreen_aux_1(MISC);
+				_on_view_fullscreen_aux_1(FIND);
+				if (project) _on_view_fullscreen_aux_1(PROJECT);
 			}
 		}
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
@@ -2405,8 +2402,10 @@ void mxMainWindow::OnViewToolbarsConfig (wxCommandEvent &event) {
 	mxPreferenceWindow::ShowUp()->SetToolbarPage();
 }
 
-void mxMainWindow::OnToggleToolbar (int menu_item_id, wxToolBar *toolbar, bool &config_entry, bool update_aui) {
+void mxMainWindow::OnToggleToolbar (int menu_item_id, int toolbar_id, bool update_aui) {
 	wxMenuItem *menu_item = _menu_item(menu_item_id);
+	wxToolBar *toolbar = menu_data->GetToolbar(toolbar_id);
+	bool &config_entry = menu_data->GetToolbarPosition(toolbar_id).visible;
 	if (config_entry) {
 		menu_item->Check(false);
 		aui_manager.GetPane(toolbar).Hide();
@@ -2420,39 +2419,39 @@ void mxMainWindow::OnToggleToolbar (int menu_item_id, wxToolBar *toolbar, bool &
 }
 
 void mxMainWindow::OnViewToolbarView (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_VIEW,toolbar_view,config->Toolbars.positions.view.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_VIEW,MenusAndToolsConfig::tbVIEW);
 }
 
 void mxMainWindow::OnViewToolbarTools (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_TOOLS,toolbar_tools,config->Toolbars.positions.tools.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_TOOLS,MenusAndToolsConfig::tbTOOLS);
 }
 
 void mxMainWindow::OnViewToolbarProject (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_PROJECT,toolbar_project,config->Toolbars.positions.project.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_PROJECT,MenusAndToolsConfig::tbPROJECT);
 }
 
 void mxMainWindow::OnViewToolbarFile (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_FILE,toolbar_file,config->Toolbars.positions.file.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_FILE,MenusAndToolsConfig::tbFILE);
 }
 
 void mxMainWindow::OnViewToolbarFind (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_FIND,toolbar_find,config->Toolbars.positions.find.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_FIND,MenusAndToolsConfig::tbFIND);
 	aui_manager.Update();
 }
 
 void mxMainWindow::OnViewToolbarDebug (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_DEBUG,toolbar_debug,config->Toolbars.positions.debug.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_DEBUG,MenusAndToolsConfig::tbDEBUG);
 }
 
 void mxMainWindow::OnViewToolbarMisc (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_MISC,toolbar_misc,config->Toolbars.positions.misc.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_MISC,MenusAndToolsConfig::tbMISC);
 }
 
 void mxMainWindow::OnViewToolbarEdit (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_EDIT,toolbar_edit,config->Toolbars.positions.edit.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_EDIT,MenusAndToolsConfig::tbEDIT);
 }
 void mxMainWindow::OnViewToolbarRun (wxCommandEvent &event) {
-	OnToggleToolbar(mxID_VIEW_TOOLBAR_RUN,toolbar_run,config->Toolbars.positions.run.visible);
+	OnToggleToolbar(mxID_VIEW_TOOLBAR_RUN,MenusAndToolsConfig::tbRUN);
 }
 
 void mxMainWindow::OnViewCompilerTree (wxCommandEvent &event) {
@@ -2667,7 +2666,7 @@ mxSource *mxMainWindow::OpenFile (const wxString &filename) {
 *   cuando elegimo hacer lo mismo para todos en la primer pregunta), como flags por bits
 **/
 void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
-	cerr<<"*"<<filename.GetFullPath()<<"*"<<endl;
+//	cerr<<"*"<<filename.GetFullPath()<<"*"<<endl;
 	if (!filename.FileExists()) {
 		if (wxFileName::DirExists(DIR_PLUS_FILE(filename.GetFullPath(),"."))) {
 			SetExplorerPath(filename.GetFullPath());
@@ -2676,7 +2675,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 			mxMessageDialog(main_window,LANG(MAINW_FILE_NOT_EXISTS,"El archivo no existe."),filename.GetFullPath(),mxMD_OK|mxMD_INFO).ShowModal();
 		return;
 	}
-	status_bar->SetStatusText(wxString(_T("Abriendo "))<<filename.GetFullPath());
+	status_bar->SetStatusText(wxString("Abriendo ")<<filename.GetFullPath());
 	if (!project) config->Files.last_dir=filename.GetPath();
 	if (filename.GetExt().CmpNoCase(_T(PROJECT_EXT))==0) { // si es un proyecto
 		// cerrar si habia un proyecto anterior
@@ -3516,12 +3515,13 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 	
 	wxCommandEvent evt;
 	if (debug_mode) { // si comienza la depuracion...
-#ifdef __WIN32__
-		menu.debug_inverse_execution->Check(false);
-		menu.debug_enable_inverse_execution->Check(false);
-		main_window->toolbar_debug->EnableTool(mxID_DEBUG_INVERSE_EXEC,false);
-		main_window->toolbar_debug->ToggleTool(mxID_DEBUG_INVERSE_EXEC,false);
-		main_window->toolbar_debug->ToggleTool(mxID_DEBUG_ENABLE_INVERSE_EXEC,false);
+#ifndef __WIN32__
+		_menu_item(mxID_DEBUG_INVERSE_EXEC)->Check(false);
+		_menu_item(mxID_DEBUG_ENABLE_INVERSE_EXEC)->Check(false);
+#warning ACTUALIZAR ESTO PARA LA NUEVA TOOLBAR
+//		main_window->toolbar_debug->EnableTool(mxID_DEBUG_INVERSE_EXEC,false);
+//		main_window->toolbar_debug->ToggleTool(mxID_DEBUG_INVERSE_EXEC,false);
+//		main_window->toolbar_debug->ToggleTool(mxID_DEBUG_ENABLE_INVERSE_EXEC,false);
 #endif
 		
 		if (!config->Debug.allow_edition) { // no permitir editar los fuentes durante la depuracion
@@ -3530,24 +3530,24 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 		}
 
 		if (config->Debug.autohide_toolbars) { // reacomodar las barras de herramientas
-			aui_manager.GetPane(toolbar_status).Show();
+			aui_manager.GetPane(_get_toolbar(tbSTATUS)).Show();
 			
-#define _aux_pfd_2(NAME,name) \
+#define _aux_pfd_2(NAME) \
 			{ wxMenuItem *mitem = _menu_item(mxID_VIEW_TOOLBAR_##NAME); \
-			if (mitem->IsChecked()) { mitem->Check(false); aui_manager.GetPane(toolbar_##name).Hide(); } }
-#define _aux_pfd_2_not(NAME,name) \
+			if (mitem->IsChecked()) { mitem->Check(false); aui_manager.GetPane(_get_toolbar(tb##NAME)).Hide(); } }
+#define _aux_pfd_2_not(NAME) \
 			{ wxMenuItem *mitem = _menu_item(mxID_VIEW_TOOLBAR_##NAME); \
-			if (!mitem->IsChecked()) { mitem->Check(true); aui_manager.GetPane(toolbar_##name).Show(); } }
+			if (!mitem->IsChecked()) { mitem->Check(true); aui_manager.GetPane(_get_toolbar(tb##NAME)).Show(); } }
 			
-			_aux_pfd_2(FILE,file);
-			_aux_pfd_2(EDIT,edit);
-			_aux_pfd_2(VIEW,view);
-			_aux_pfd_2(RUN,run);
-			_aux_pfd_2_not(DEBUG,debug);
-			_aux_pfd_2(TOOLS,tools);
-			_aux_pfd_2(MISC,misc);
-			_aux_pfd_2(FIND,find);
-			if (project) _aux_pfd_2(PROJECT,project);
+			_aux_pfd_2(FILE);
+			_aux_pfd_2(EDIT);
+			_aux_pfd_2(VIEW);
+			_aux_pfd_2(RUN);
+			_aux_pfd_2_not(DEBUG);
+			_aux_pfd_2(TOOLS);
+			_aux_pfd_2(MISC);
+			_aux_pfd_2(FIND);
+			if (project) _aux_pfd_2(PROJECT);
 		}
 		
 		if (config->Debug.autohide_panels) { // reacomodar los paneles
@@ -3591,23 +3591,23 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 			((mxSource*)(notebook_sources->GetPage(i)))->SetReadOnlyMode(ROM_DEL_DEBUG);
 		
 		if (config->Debug.autohide_toolbars) { // reacomodar las barras de herramientas
-			aui_manager.GetPane(toolbar_status).Hide();
+			aui_manager.GetPane(_get_toolbar(tbSTATUS)).Hide();
 			if (gui_fullscreen_mode) {
-				_menu_item(mxID_VIEW_TOOLBAR_DEBUG)->Check(false); aui_manager.GetPane(toolbar_debug).Hide();
+				_menu_item(mxID_VIEW_TOOLBAR_DEBUG)->Check(false); aui_manager.GetPane(_get_toolbar(tbDEBUG)).Hide();
 			} else {
-			#define _aux_pfd_1(NAME,name) \
-				if (config->Toolbars.positions.name.visible) { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(true); aui_manager.GetPane(toolbar_##name).Show(); } \
-				else { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(false); aui_manager.GetPane(toolbar_##name).Hide(); }
-				_aux_pfd_1(DEBUG,debug);
-				_aux_pfd_1(FILE,file);
-				_aux_pfd_1(EDIT,edit);
-				_aux_pfd_1(VIEW,view);
-				_aux_pfd_1(RUN,run);
-				_aux_pfd_1(TOOLS,tools);
-				_aux_pfd_1(MISC,misc);
-				_aux_pfd_1(FIND,find);
-				if (project) { _aux_pfd_1(PROJECT,project); }
-				_aux_pfd_1(DEBUG,debug);
+			#define _aux_pfd_1(NAME) \
+				if (_toolbar_visible(tb##NAME)) { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(true); aui_manager.GetPane(_get_toolbar(tb##NAME)).Show(); } \
+				else { _menu_item(mxID_VIEW_TOOLBAR_##NAME)->Check(false); aui_manager.GetPane(_get_toolbar(tb##NAME)).Hide(); }
+				_aux_pfd_1(DEBUG);
+				_aux_pfd_1(FILE);
+				_aux_pfd_1(EDIT);
+				_aux_pfd_1(VIEW);
+				_aux_pfd_1(RUN);
+				_aux_pfd_1(TOOLS);
+				_aux_pfd_1(MISC);
+				_aux_pfd_1(FIND);
+				if (project) { _aux_pfd_1(PROJECT); }
+				_aux_pfd_1(DEBUG);
 			}
 		}
 		
@@ -3697,18 +3697,18 @@ void mxMainWindow::SetFocusToSource() {
 }
 
 void mxMainWindow::OnGotoToolbarFind (wxCommandEvent &evt) {
-	if (FindFocus()==toolbar_find_text)
+	if (FindFocus()==menu_data->toolbar_find_text)
 		FocusToSource();
 	else
-		toolbar_find_text->SetFocus();
+		menu_data->toolbar_find_text->SetFocus();
 }
 
 void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
-	wxString stext = toolbar_find_text->GetValue();
+	wxString stext = menu_data->toolbar_find_text->GetValue();
 	if (stext.Len()==0)
 		return;
 	if (!project && stext==_T("Cuack Attack!")) { // are you looking for a duck?
-		toolbar_find_text->SetValue("");
+		menu_data->toolbar_find_text->SetValue("");
 		NewFileFromText(_T(
 "#include <iostream>\n#include <cstdlib>\n#include <ctime>\nusing namespace std;\n"
 "char *cuack() {\nstatic char cuack[] = \"cuack\";\nfor (int i=0;i<4;i++)\nif (rand()%2)\ncuack[i]=cuack[i]|32;\nelse\ncuack[i]=cuack[i]&(~32);\nreturn cuack;\n}\n"
@@ -3747,9 +3747,9 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 	}
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		int pos = source->FindText(source->GetSelectionEnd(),source->GetLength(),toolbar_find_text->GetValue(),0);
+		int pos = source->FindText(source->GetSelectionEnd(),source->GetLength(),menu_data->toolbar_find_text->GetValue(),0);
 		if (pos==wxSTC_INVALID_POSITION) 
-			pos = source->FindText(0,source->GetSelectionEnd()+stext.Len(),toolbar_find_text->GetValue(),0);
+			pos = source->FindText(0,source->GetSelectionEnd()+stext.Len(),menu_data->toolbar_find_text->GetValue(),0);
 		if (pos!=wxSTC_INVALID_POSITION) {
 			source->EnsureVisibleEnforcePolicy(source->LineFromPosition(pos));
 			source->SetSelection(pos,pos+stext.Len());
@@ -3758,14 +3758,14 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnToolbarFindChange (wxCommandEvent &evt) {
-	wxString stext = toolbar_find_text->GetValue();
+	wxString stext = menu_data->toolbar_find_text->GetValue();
 	if (stext.Len()==0)
 		return;
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		int pos = source->FindText(source->GetSelectionStart(),source->GetLength(),toolbar_find_text->GetValue(),0);
+		int pos = source->FindText(source->GetSelectionStart(),source->GetLength(),menu_data->toolbar_find_text->GetValue(),0);
 		if (pos==wxSTC_INVALID_POSITION) 
-			pos = source->FindText(0,source->GetSelectionStart()+stext.Len(),toolbar_find_text->GetValue(),0);
+			pos = source->FindText(0,source->GetSelectionStart()+stext.Len(),menu_data->toolbar_find_text->GetValue(),0);
 		if (pos!=wxSTC_INVALID_POSITION) {
 			source->EnsureVisibleEnforcePolicy(source->LineFromPosition(pos));
 			source->SetSelection(pos,pos+stext.Len());
@@ -4037,35 +4037,6 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_ERROR,"Ha ocurrido un error al intentar generar el archivo."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_ERROR).ShowModal();
 }
 
-void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
-	int id=evt.GetId();
-	if (project && id==mxID_RUN_CONFIG) {
-		wxMenu menu;
-		for(int i=0;i<project->configurations_count;i++) {
-			wxMenuItem *mi=menu.AppendRadioItem(mxID_LAST_ID+i,project->configurations[i]->name); // para mostrar en el dialogo
-			if (project->configurations[i]==project->active_configuration) mi->Check(true);
-		}
-		PopupMenu(&menu);
-		return;
-	}
-	if (id>=mxID_CUSTOM_TOOL_0 && id<mxID_CUSTOM_TOOL_0+MAX_CUSTOM_TOOLS) {
-		new mxCustomTools(false,id-mxID_CUSTOM_TOOL_0);
-		return;
-	}
-	if (id>=mxID_CUSTOM_PROJECT_TOOL_0 && id<mxID_CUSTOM_PROJECT_TOOL_0+MAX_PROJECT_CUSTOM_TOOLS) {
-		new mxCustomTools(true,id-mxID_CUSTOM_PROJECT_TOOL_0);
-		return;
-	}
-	wxString stoolbar;
-	if (toolbar_file->FindById(id)) stoolbar="file";
-	else if (toolbar_edit->FindById(id)) stoolbar="edit";
-	else if (toolbar_view->FindById(id)) stoolbar="view";
-	else if (toolbar_debug->FindById(id)) stoolbar="debug";
-	else if (toolbar_run->FindById(id)) stoolbar="run";
-	else if (toolbar_misc->FindById(id)) stoolbar="misc";
-	else if (toolbar_tools->FindById(id)) stoolbar="tools";
-	mxPreferenceWindow::ShowUp()->SetToolbarPage(stoolbar);
-}
 
 void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 	if (project) {
@@ -4377,15 +4348,16 @@ void mxMainWindow::OnDebugEnableInverseExecution (wxCommandEvent &event) {
 	_menu_item(mxID_DEBUG_INVERSE_EXEC)->Check(false);
 	_menu_item(mxID_DEBUG_INVERSE_EXEC)->Enable(inv);
 	_menu_item(mxID_DEBUG_ENABLE_INVERSE_EXEC)->Check(inv);
-	main_window->toolbar_debug->ToggleTool(mxID_DEBUG_ENABLE_INVERSE_EXEC,inv);
-	main_window->toolbar_debug->ToggleTool(mxID_DEBUG_INVERSE_EXEC,false);
-	main_window->toolbar_debug->EnableTool(mxID_DEBUG_INVERSE_EXEC,inv);
+	wxToolBar *toolbar_debug = _get_toolbar(tbDEBUG);
+	toolbar_debug->ToggleTool(mxID_DEBUG_ENABLE_INVERSE_EXEC,inv);
+	toolbar_debug->ToggleTool(mxID_DEBUG_INVERSE_EXEC,false);
+	toolbar_debug->EnableTool(mxID_DEBUG_INVERSE_EXEC,inv);
 }
 
 void mxMainWindow::OnDebugInverseExecution (wxCommandEvent &event) {
 	bool inv=debug->ToggleInverseExec();
 	_menu_item(mxID_DEBUG_INVERSE_EXEC)->Check(inv);
-	toolbar_debug->ToggleTool(mxID_DEBUG_INVERSE_EXEC,inv);
+	_get_toolbar(tbDEBUG)->ToggleTool(mxID_DEBUG_INVERSE_EXEC,inv);
 }
 
 void mxMainWindow::AddToDebugLog(wxString str) {
@@ -4453,7 +4425,7 @@ void mxMainWindow::ShowDiffSideBar(bool bar, bool map) {
 		}
 	}
 	if (bar)
-		aui_manager.GetPane(toolbar_diff).Show();
+		aui_manager.GetPane(_get_toolbar(tbDIFF)).Show();
 	if (bar||map) aui_manager.Update();
 }
 
@@ -4657,16 +4629,16 @@ void mxMainWindow::FocusToSource() {
 }
 
 void mxMainWindow::PrepareGuiForProject (bool project_mode) {
-	CreateToolbars(toolbar_project);
-	if (config->Toolbars.positions.project.visible) {
+	
+	menu_data->UpdateToolbar(MenusAndToolsConfig::tbPROJECT,true);
+	if (_toolbar_visible(tbPROJECT)) {
 		if (project_mode) {
-			aui_manager.GetPane(toolbar_project).Show();
+			aui_manager.GetPane(_get_toolbar(tbPROJECT)).Show();
 			SortToolbars(false);
 		} else
-			aui_manager.GetPane(toolbar_project).Hide();
+			aui_manager.GetPane(_get_toolbar(tbPROJECT)).Hide();
 		aui_manager.Update();
 	}
-	
 	
 	// acomodar los menues
 	menu_data->SetProjectMode(project_mode); // habilitar/deshabilitar items exclusivos de proyecto
@@ -4876,49 +4848,6 @@ void mxMainWindow::SetFocusToSourceAfterEvents () {
 
 void mxMainWindow::OnParserContinueProcess(wxTimerEvent &event) {
 	parser->OnParserProcessTimer();
-}
-
-void mxMainWindow::GetToolbarsPositions() {
-	if ((gui_debug_mode&&config->Debug.autohide_toolbars) || (gui_fullscreen_mode&&config->Init.autohide_toolbars_fs)) return;
-#define _aui_get_toolbar_row(name) { wxAuiPaneInfo &pi=aui_manager.GetPane(toolbar_##name); \
-  if (pi.IsOk() && pi.IsShown() && !pi.IsFloating()) { \
-	config->Toolbars.positions.name.visible=true; \
-	config->Toolbars.positions.name.row=pi.dock_row; } \
-	else config->Toolbars.positions.name.visible=false; }
-	_aui_get_toolbar_row(file);
-	_aui_get_toolbar_row(edit);
-	_aui_get_toolbar_row(view);
-	_aui_get_toolbar_row(run);
-	_aui_get_toolbar_row(debug);
-	_aui_get_toolbar_row(tools);
-	_aui_get_toolbar_row(misc);
-	_aui_get_toolbar_row(find);
-	if (project) _aui_get_toolbar_row(project);
-}
-
-void mxMainWindow::SortToolbars(bool update_aui) {
-	wxAuiManager &a=aui_manager;
-	int c[10]={0};
-#define _aui_update_toolbar_pos(name) { \
-	wxAuiPaneInfo &pi=a.GetPane(toolbar_##name); \
-	cfgToolBars::cfgTbPositions::pos_item &t=config->Toolbars.positions.name; \
-	pi.LeftDockable(t.right||t.left); \
-	pi.RightDockable(t.right||t.left); \
-	pi.TopDockable(t.top); \
-	if (t.left) pi.Left(); else if (t.right) pi.Right(); else pi.Top(); \
-	pi.Row(t.row).Position(c[t.row]++); \
-	if (t.visible) pi.Show(); else pi.Hide(); }
-	_aui_update_toolbar_pos(file);
-	_aui_update_toolbar_pos(edit);
-	_aui_update_toolbar_pos(view);
-	_aui_update_toolbar_pos(tools);
-	_aui_update_toolbar_pos(run);
-	_aui_update_toolbar_pos(misc);
-	_aui_update_toolbar_pos(find);
-	_aui_update_toolbar_pos(debug);
-	_aui_update_toolbar_pos(status);
-	if (project) _aui_update_toolbar_pos(project);
-	if (update_aui) a.Update();
 }
 
 void mxMainWindow::OnMacroRecord (wxCommandEvent & evt) {
