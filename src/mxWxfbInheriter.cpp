@@ -64,7 +64,7 @@ mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, wxString classname, bool upda
 		childSizer->Add(new wxStaticText(this, wxID_ANY, LANG(WXFB_INHERITEDCLASS,"Clase heredada:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5_Left);
 		childSizer->Add(child_class, sizers->BA5_Exp1);
 		mySizer->Add(childSizer, sizers->BA5_Exp1);
-	}
+	} else child_class=NULL;
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	mxBitmapButton *button_yes = new mxBitmapButton(this,wxID_OK,bitmaps->buttons.ok, LANG(GENERAL_OK_BUTTON,"&Aceptar"));
@@ -79,7 +79,7 @@ mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, wxString classname, bool upda
 	SetMinSize(GetSize());
 	SetSizerAndFit(mySizer);
 	if (mode==WXFBI_NEW_CLASS_ANY) base_class->SetFocus();
-	else child_class->SetFocus();
+	else if (mode!=WXFBI_UPDATE_EXISTING_CLASS) child_class->SetFocus();
 	
 	ShowModal();
 }
