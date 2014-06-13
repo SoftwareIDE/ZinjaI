@@ -680,11 +680,15 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 	//	symbol_tree->Thaw();
 		if (main_window && !compiler->IsCompiling())
 			main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
-		while (on_end) {
-			OnEndAction *aux=on_end;
-			on_end=on_end->next;
-			aux->Do();
-			delete aux;
+		// se va a operar sobre una "copia" de on_end, para evitar que una de estas acciones 
+		// se introduzca a sí misma en esta lista y genere un loop infinito (pasaba al crear
+		// ventanas hijas al volver el foco desde wxfb)
+		OnEndAction *aux_oe = on_end; on_end=NULL;
+		while (aux_oe) {
+			OnEndAction *aux_i=aux_oe;
+			aux_oe=aux_oe->next;
+			aux_i->Do();
+			delete aux_i;
 		}
 		if (show_progress) main_window->SetStatusProgress(-1);
 	}
