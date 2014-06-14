@@ -24,6 +24,7 @@ public:
 	void OnAdaptCheck(wxCommandEvent &evt);
 	void OnResize(wxSizeEvent &evt);
 	void OnColResize(wxGridSizeEvent &evt);
+	void OnChar(wxKeyEvent &event);
 //	void OnClose(wxCloseEvent &evt);
 	void AutoSizeRowLabel();
 	~mxInspectionMatrix();

@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE(mxInspectionMatrix, wxDialog)
 	EVT_CHECKBOX(wxID_ANY,mxInspectionMatrix::OnAdaptCheck)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionMatrix::OnDoubleClick)
 //	EVT_CLOSE(mxInspectionMatrix::OnClose)
-//	EVT_KEY_DOWN(mxInspectionMatrix::OnCharHook)
+	EVT_KEY_DOWN(mxInspectionMatrix::OnChar)
 END_EVENT_TABLE()
 
 mxInspectionMatrix::mxInspectionMatrix(int inspection_num) : mxExternInspection(debug->inspections[inspection_num].frame,debug->inspections[inspection_num].expr) {
@@ -313,4 +313,8 @@ bool mxInspectionMatrix::SetOutdated() {
 	mySizer->Add(st,sizers->BA5_Center);
 	Layout();
 	return true;
+}
+
+void mxInspectionMatrix::OnChar (wxKeyEvent & event) {
+	wxMessageBox("lala");
 }

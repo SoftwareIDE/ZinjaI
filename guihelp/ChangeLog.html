@@ -6,13 +6,13 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
+	<LI>New: Ahora se puede invocar un menú de autocompletado al ingresar una expresión en el panel de inspecciones presionando la tecla tab.</LI>
 	<LI>New: Se agregó un nuevo panel acoplable desde el que se pueden enviar comandos directamente al depurador (comandos gdb), accesible desde el menú Depuración.</LI>
 	<LI>New: Ahora se puede configurar el manejo que el depurador hace de las señales que recibe el procesos, y generar señales arbitrariamente, desde el menú Depuración.</LI>
 	<LI>New: Ahora se puede cambiar la fuente que se utiliza para mostrar el código (desde la pestaña "Estilo" del cuadro de "Preferencias").</LI>
 	<LI>New: Ahora se pueden utilizar los atajos de teclado Alt+Derecha y Alt+Izquierda para moverse por un historial de navegación de los fuentes (para saltar a las posiciones/fuentes anteriores donde estuvo el cursor de edición).</LI>
 	<LI>New: Al intentar compilar un programa simple, si la compilación falla por símbolos indefinidos o por no encontrar headers de bibliotecas, se buscan estas bibliotecas en las plantillas y se ofrece copiar la configuración de la compilación de las plantillas coincidentes (por ahora el único ejemplo es OpenGL).</LI>
 	<LI>New: Se agregó un opción en el menú "Depuración" en la versión para GNU/Linux que permite modificar un ejecutable que se está depurando (recompilar y aplicar los cambios) sin reiniciar la depuración en algunos casos especiales.</LI>
-<!--	<LI>Imp: Entre las opciones disponibles para la configuración del "comando de la terminal" en GNU/Linux, se agregó una variante para xterm que utiliza fuentes mediante FreeType para mejorar la legibilidad y permitir cambiar el tamaño de la misma.</LI>-->
 	<LI>Imp: Corregido un bug por el cual el autocompletado no reconocía instanciaciones temporales anónimas de clases.</LI>
 	<LI>Imp: Si el autocompletado falla (no encuentra opciones para mostrar), ya no se intenta autocompletar nuevamente si se sigue tipeando la misma palabra.</LI>
 	<LI>Imp: Se reorganizaron los elementos de los menúes de la ventana principal.</LI>
@@ -32,6 +32,7 @@
 	<LI>Imp: El atajo de teclado para comentar lineas de código utiliza siempre /* si es un programa C.</LI>
 	<LI>Imp: Los argumentos de compilación por defecto para programas simple ahora distinguen entre programas C y programas C++.</LI>
 	<LI>Imp: Ahora se puede utilizar más de un filtro en una misma búsqueda en el cuadro de diálogo para insertar múltiples archivos desde un directorio.</LI>
+	<LI>Fix: Corregido un bug por el cual algunas acciones que requerían la actualización del árbol de símbolos entrar en loops infinitos (como el crear ventanas heredadas en proyectos wxfb).</LI>
 	<LI>Fix: Corregido un bug por el cual se mostraba el fuente equivocado durante la depuración de un programa simple sin título en algunas situaciones.</LI>
 	<LI>Fix: Se cambió agregó una opción que faltaba a los posibles niveles de optimizaciones a utilizar en la compilación de un proyecto (Velocidad, que equivale a -Ofast en gcc).</LI>
 	<LI>Fix: Se cambión el nivel de optimizaciones por defecto en el perfil de compilación de proyecto Debug por defecto al nivel 0 (porque el nivel específico para depuración impide evaluar ciertas inspecciones).</LI>
