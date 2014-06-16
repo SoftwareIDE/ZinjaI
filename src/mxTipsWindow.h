@@ -9,7 +9,6 @@ class wxCheckBox;
 class wxHtmlWindow;
 class wxTextFile;
 
-#define TIP_INITIAL_TEXT "<B>Sabias que...?</B><BR><BR>"
 #define TIPS_TO_SKIP 2
 
 /** 
