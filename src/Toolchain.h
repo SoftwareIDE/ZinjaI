@@ -11,7 +11,7 @@ enum TC_TYPE {
 	TC_CLANG, ///< real clang, zinjai will for controling error messages format
 	TC_GCC_LIKE, ///< some that acts like gcc, but its not, zinjai wont add argument and wont try to simplify errors
 	TC_EXTERN, ///< the whole building process is managed by some extern tool, such as make, cmake, scons, or some script
-	TC_UNKNOWN ///< should not happend
+	TC_COUNT ///< should not happend
 };
 
 struct Toolchain {
@@ -21,7 +21,7 @@ struct Toolchain {
 	
 	// common options
 	wxString file; ///< toolchain filename
-	wxString desc; ///< toolchain name
+//	wxString desc; ///< toolchain name
 	
 	// options for extern toolchains
 	wxString build_command; ///< command to run for building the project
@@ -60,6 +60,7 @@ struct Toolchain {
 	static Toolchain *toolchains; ///< array with all known toolchains
 	static int toolchains_count; ///< number of items in toolchains
 	static void GetNames(wxArrayString &names, bool exclude_extern=false); ///< populate the array with known toolchains' names
+	static Toolchain *GetToolchain(const wxString &name);
 };
 
 extern Toolchain current_toolchain; ///< toolchain in use, setted by Toolchain::SelectToolchain

@@ -3518,10 +3518,9 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 #ifndef __WIN32__
 		_menu_item(mxID_DEBUG_INVERSE_EXEC)->Check(false);
 		_menu_item(mxID_DEBUG_ENABLE_INVERSE_EXEC)->Check(false);
-#warning ACTUALIZAR ESTO PARA LA NUEVA TOOLBAR
-//		main_window->toolbar_debug->EnableTool(mxID_DEBUG_INVERSE_EXEC,false);
-//		main_window->toolbar_debug->ToggleTool(mxID_DEBUG_INVERSE_EXEC,false);
-//		main_window->toolbar_debug->ToggleTool(mxID_DEBUG_ENABLE_INVERSE_EXEC,false);
+		_get_toolbar(tbDEBUG)->EnableTool(mxID_DEBUG_INVERSE_EXEC,false);
+		_get_toolbar(tbDEBUG)->ToggleTool(mxID_DEBUG_INVERSE_EXEC,false);
+		_get_toolbar(tbDEBUG)->ToggleTool(mxID_DEBUG_ENABLE_INVERSE_EXEC,false);
 #endif
 		
 		if (!config->Debug.allow_edition) { // no permitir editar los fuentes durante la depuracion

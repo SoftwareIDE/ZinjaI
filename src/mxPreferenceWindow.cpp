@@ -31,6 +31,7 @@
 #include "mxInspectionsImprovingEditor.h"
 #include <wx/fontenum.h>
 #include "MenusAndToolsConfig.h"
+#include "mxToolchainConfig.h"
 
 static cfgStyles old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
 
@@ -1439,7 +1440,7 @@ void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & even
 }
 
 void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
-	
+	mxToolchainConfig(this,files_toolchain->GetValue());
 }
 
 void mxPreferenceWindow::Delete ( ) {

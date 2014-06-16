@@ -27,8 +27,8 @@ void Toolchain::LoadToolchains ( ) {
 			for (wxString line = file.GetFirstLine();!file.Eof();line = file.GetNextLine()) {
 				key=line.BeforeFirst('=');
 				value=line.AfterFirst('=');
-				if (key=="desc") toolchains[i].desc = value;
-				else if (key=="base_path") toolchains[i].base_path = value;
+				if (key=="base_path") toolchains[i].base_path = value;
+//				else if (key=="desc") toolchains[i].desc = value;
 				else if (key=="bin_path") toolchains[i].bin_path = value;
 				else if (key=="build_command") toolchains[i].build_command = value;
 				else if (key=="clean_command") toolchains[i].clean_command = value;
@@ -44,7 +44,7 @@ void Toolchain::LoadToolchains ( ) {
 					else if (value=="gcc-like") toolchains[i].type = TC_GCC_LIKE;
 					else if (value=="clang") toolchains[i].type = TC_CLANG;
 					else if (value=="extern") toolchains[i].type = TC_EXTERN;
-					else toolchains[i].type = TC_UNKNOWN;
+					else toolchains[i].type = TC_COUNT;
 				}
 				else if (key=="c_compiler") toolchains[i].c_compiler = value;
 				else if (key=="c_compiling_options") toolchains[i].c_compiling_options = value;
@@ -66,7 +66,7 @@ void Toolchain::Save(const wxString &fname) {
 		fil.Create();
 	fil.Clear();
 				
-	fil.AddLine(wxString("desc=")+desc);
+//	fil.AddLine(wxString("desc=")+desc);
 	fil.AddLine(wxString("base_path=")+base_path);
 	fil.AddLine(wxString("bin_path=")+bin_path);
 	fil.AddLine(wxString("build_command=")+build_command);
@@ -80,7 +80,7 @@ void Toolchain::Save(const wxString &fname) {
 	case TC_GCC_LIKE: fil.AddLine("type=gcc-like"); break;
 	case TC_CLANG: fil.AddLine("type=clang"); break;
 	case TC_EXTERN: fil.AddLine("type=extern"); break;
-	case TC_UNKNOWN:;
+	case TC_COUNT:;
 	}
 	fil.AddLine(wxString("c_compiler=")+c_compiler);
 	fil.AddLine(wxString("c_compiling_options=")+c_compiling_options);
@@ -98,7 +98,7 @@ void Toolchain::Save(const wxString &fname) {
 Toolchain::Toolchain () {
 	version_c=version_cpp=-1;
 	file="<null>";
-	desc="<null>";
+//	desc="<null>";
 	type=TC_GCC;
 #if defined(__WIN32__)
 	linker="mingw32-g++";
@@ -251,5 +251,11 @@ wxString Toolchain::FixArgument (bool cpp, wxString arg) {
 	if (arg=="-std=c++11" && !CheckVersion(cpp,4,7)) return "-std=c++0x";
 	if (arg=="-std=gnu++11" && !CheckVersion(cpp,4,7)) return "-std=gnu++0x";
 	return arg;
+}
+
+Toolchain *Toolchain::GetToolchain (const wxString & name) {
+	for(int i=0;i<toolchains_count;i++) 
+		if (toolchains[i].file==name) return toolchains+i;
+	return NULL;
 }
 

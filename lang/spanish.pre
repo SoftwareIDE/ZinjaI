@@ -656,8 +656,6 @@ CAPTION_TOOLBAR_DEBUG
 Depuración
 CAPTION_TOOLBAR_TOOLS
 Herramientas
-TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
-Herramienta Personalizada 
 CAPTION_TOOLBAR_MISC
 Miscelánea
 CAPTION_TOOLBAR_FIND
@@ -698,6 +696,8 @@ TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
 Borrar Marcas de Comparacion
 TOOLBAR_DESC_TOOLS_DIFF_CLEAR
 Herramientas -> Comparar Archivos -> Borrar Marcas
+TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
+Herramienta Personalizada 
 SYMBOLS_MACROS
 Macros y Otros
 SYMBOLS_GLOBALS
@@ -3090,6 +3090,44 @@ TIPS_CLOSE
 Cerrar
 TOOLBAREDITOR_SELECT_ICONS
 Seleccione los iconos que desea en la barra:
+TOOLCHAINS_CAPTION
+Personalizar herramientas de compilación
+TOOLCHAINS_DESCRIPTION
+Descripción
+TOOLCHAINS_TYPE
+Tipo de herramienta
+TOOLCHAINS_BASE_PATH
+Directorio del compilador
+TOOLCHAINS_BIN_PATH
+Directorios con ejecutables
+TOOLCHAINS_BUILD_COMMAND
+Comando de construcción
+TOOLCHAINS_CLEAN_COMMAND
+Comando de limpieza
+TOOLCHAINS_C_COMMAND
+Comando del compilador C
+TOOLCHAINS_C_OPTIONS
+Argumentos para la compilación C
+TOOLCHAINS_CPP_COMMAND
+Comando del compilador C++
+TOOLCHAINS_CPP_OPTIONS
+Argumentos para la compilación C++
+TOOLCHAINS_LINKER_COMMAND
+Comando del enlazador
+TOOLCHAINS_LINKER_C_OPTIONS
+Argumentos para el enlazado C
+TOOLCHAINS_LINKER_CPP_OPTIONS
+Argumentos para el enlazado C++
+TOOLCHAINS_ARGUMENT_NAME
+Nombre del argumento de usuario (${ARG<{1}>})
+TOOLCHAINS_ARGUMENT_DEFAULT
+   Valor por defecto (${ARG<{1}>})
+TOOLCHAINS_FIXED_SETTINGS
+Configuarción fija
+TOOLCHAINS_USER_ARGUMENTS
+Argumentos configurables
+TOOLCHAINS_TEST
+&Ejecutar
 UPDATE_CAPTION
 Buscar Actualizaciones
 UPDATE_CHECK_AT_STARTUP

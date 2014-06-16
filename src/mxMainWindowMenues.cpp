@@ -56,7 +56,7 @@ void mxMainWindow::UpdateInHistory(wxString filename, bool is_project) {
 void mxMainWindow::UpdateCustomTools(bool for_project) {
 	
 	int count=(for_project?MAX_PROJECT_CUSTOM_TOOLS:MAX_CUSTOM_TOOLS);
-	cfgCustomTool *tools=(for_project?project->custom_tools:config->CustomTools);
+//	cfgCustomTool *tools=(for_project?project->custom_tools:config->CustomTools);
 	
 	if (!for_project) {
 		wxMenu *menu_custom_tools = menu_data->GetMenu(mxID_TOOLS_CUSTOM_TOOLS);

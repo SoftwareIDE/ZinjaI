@@ -520,7 +520,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbMISC,myToolbarItem("exit",menues[mnFILE],wxID_EXIT));
 	}
 	
-#warning agregar la de proyecto para que sea mas facil abajo crearla???
+	/// @todo: agregar la de proyecto para que sea mas facil abajo crearla???
 	toolbars[tbFIND].Init("find",LANG(CAPTION_TOOLBAR_FIND,"Búsqueda"),"T:1:5");
 	toolbars[tbPROJECT].Init("project",LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"),"T:1:7");
 	toolbars[tbDIFF].Init("diff",LANG(CAPTION_TOOLBAR_DIFF,"Diff"),"t:3:1");
