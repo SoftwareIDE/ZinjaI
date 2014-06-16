@@ -128,7 +128,6 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 			current_toolchain=toolchains[i];
 			current_toolchain.SetArgumets();
 			current_toolchain.SetPaths();
-			toolchains[i].CheckVersion(true,0,0);
 			toolchains[i].CheckVersion(false,0,0);
 			return current_toolchain;
 		}
