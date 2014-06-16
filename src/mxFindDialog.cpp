@@ -134,7 +134,7 @@ void mxFindDialog::ShowReplace(mxSource *source) {
 	}
 	if (combo_replace->GetCount()>1)
 		combo_replace->SetSelection(combo_find->GetCount()-2);
-	if (source && check_regexp->GetValue()) {
+	if (source && !check_regexp->GetValue()) {
 		int i=source->GetSelectionStart();
 		int f=source->GetSelectionEnd();
 //		if (i==f) {
