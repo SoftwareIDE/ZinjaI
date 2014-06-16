@@ -2476,6 +2476,10 @@ PREFERENCES_COMMANDS_VALGRIND
 Ubicación del ejecutable de Valgrind
 PREFERENCES_COMMANDS_CPPCHECK
 Ubicación del ejecutable de CppCheck
+PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN
+La herramienta de compilación por defecto (pestaña Programa/Proyecto) no puede ser de tipo externa
+PREFERENCES_THEME_WILL_APPLY_ON_RESTART
+El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI
 PREFERENCES_OPEN_FILE
 &Buscar archivo...
 PREFERENCES_EDIT_FILE
@@ -2730,6 +2734,8 @@ TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS
 Listar Breakpoints...
 TOOLBAR_CAPTION_INSPECT
 Panel de Inspecciones
+PREFERENCES_TOOLBARS_RESET_WARNING
+Perdera todas las modificiaciones realizadas a las barras\n de herramientas. Desea continuar?
 LANG_MAX_JOBS_TIP
 Este campo define la cantidad de objetos que se compilan en simultaneo al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad de nucleos, o la mitad son valores recomendables. Consulte la ayuda para más detalles. ZinjaI detecta en el sistema actual <{1}> nucleos
 PROJECTCONFIG_CAPTION
@@ -3129,7 +3135,7 @@ Argumentos configurables
 TOOLCHAINS_TEST
 &Ejecutar
 TOOLCHAINS_ERROR_EMPTY_NAME
-Debe completar el nombre
+Debe completar el nombre.
 UPDATE_CAPTION
 Buscar Actualizaciones
 UPDATE_CHECK_AT_STARTUP

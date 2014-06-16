@@ -2476,6 +2476,10 @@ PREFERENCES_COMMANDS_VALGRIND
 Valgrind binary path
 PREFERENCES_COMMANDS_CPPCHECK
 CppCheck binary path
+PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN
+The default toolchain (Promgra/Proyect tab) cannot be an extern one.
+PREFERENCES_THEME_WILL_APPLY_ON_RESTART
+Current icon theme will apply on next ZinjaI start.
 PREFERENCES_OPEN_FILE
 &Find file...
 PREFERENCES_EDIT_FILE
@@ -2730,6 +2734,8 @@ TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS
 List Break/Watchpoints...
 TOOLBAR_CAPTION_INSPECT
 Show Inspections Panel
+PREFERENCES_TOOLBARS_RESET_WARNING
+You will loose al changes made to toolbar. Continue?
 LANG_MAX_JOBS_TIP
 This field contains the max number of simultaneous objets compilations while building a project. The amount of cores in your PC, or half this number are usually good values. For furtherdeatail read ZinjaI's help. ZinjaI detect's <{1}> in this system.
 PROJECTCONFIG_CAPTION
@@ -3092,6 +3098,8 @@ TOOLCHAINS_CAPTION
 Toolchain config
 TOOLCHAINS_DESCRIPTION
 Description
+TOOLCHAINS_NAME
+Toolchain's filename
 TOOLCHAINS_TYPE
 Type
 TOOLCHAINS_BASE_PATH
@@ -3126,6 +3134,8 @@ TOOLCHAINS_USER_ARGUMENTS
 User arguments
 TOOLCHAINS_TEST
 Run
+TOOLCHAINS_ERROR_EMPTY_NAME
+Filename cannot be left empty.
 UPDATE_CAPTION
 Check for Updates
 UPDATE_CHECK_AT_STARTUP

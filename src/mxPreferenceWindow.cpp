@@ -1257,7 +1257,7 @@ void mxPreferenceWindow::SetToolbarPage(const wxString &edit_one) {
 }
 
 void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
-	if (mxMD_YES == mxMessageDialog(main_window,LANG(PREFERENCES_TOOLBARS_RESET_WARNING,"Perdera todas las modificiaciones realizadas a las barras\n de herramientas. Desea continuar?",LANG(PREFERENCES_CAPTION,"Preferencias"), mxMD_YES_NO).ShowModal()) {
+	if (mxMD_YES == mxMessageDialog(main_window,LANG(PREFERENCES_TOOLBARS_RESET_WARNING,"Perdera todas las modificiaciones realizadas a las barras\n de herramientas. ¿Desea continuar?"),LANG(PREFERENCES_CAPTION,"Preferencias"), mxMD_YES_NO).ShowModal()) {
 #define _aux_on_toolbar_reset(NAME,name) \
 		bool baux_##name = _toolbar_visible(tb##NAME); \
 		toolbars_wich_##name->SetValue(_toolbar_visible(tb##NAME)); \
