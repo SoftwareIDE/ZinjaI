@@ -102,6 +102,7 @@ void mxInspectionGridCellEditorControl::Autocomplete() {
 		}
 	}
 	if (!comp_options.GetCount()) return;
+	if (comp_options.GetCount()==1) { SetText(comp_options[0]); return; }
 	wxMenu menu("");
 	for(unsigned int i=0;i<comp_options.GetCount();i++)
 		menu.Append(wxID_HIGHEST+1000+i, comp_options[i]);
