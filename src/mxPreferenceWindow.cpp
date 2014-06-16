@@ -359,7 +359,7 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 //	init_close_files_for_project = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING,"Cerrar todos los demas archivos al abrir un proyecto"),config->Init.close_files_for_project);
 	init_prefer_explorer_tree = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto"),config->Init.prefer_explorer_tree);
 	
-	wxArrayString tc_array; Toolchain::GetNames(tc_array,true); int tc_i=tc_array.Index(config->Files.toolchain);
+	wxArrayString tc_array; Toolchain::GetNames(tc_array,false); int tc_i=tc_array.Index(config->Files.toolchain);
 	files_toolchain = new wxComboBox(panel, wxID_ANY, config->Files.toolchain, wxDefaultPosition, wxDefaultSize, tc_array, wxCB_READONLY);
 	files_toolchain->SetSelection(tc_i);
 	wxBoxSizer *tc_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -573,6 +573,11 @@ static void RecreateAllToolbars ( ) {
 
 void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
+	if (Toolchain::GetToolchain(files_toolchain->GetValue())->type==TC_EXTERN) {
+		mxMessageDialog(this,LANG(PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN,"La herramienta de compilación por defecto (pestaña Programa/Proyecto) no puede ser de tipo externa"),LANG(PREFERENCES_CAPTION,"Preferencias"),mxMD_WARNING|mxMD_OK).ShowModal();
+		return;
+	}
+	
 	long int l;
 	config->Init.left_panels = init_left_panels->GetValue();
 	config->Init.check_for_updates = init_check_for_updates->GetValue();
@@ -582,7 +587,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Init.show_tip_on_startup = init_show_tip_on_startup->GetValue();
 	if (config->Init.show_welcome && !welcome_panel) {
 		welcome_panel=new mxWelcomePanel(main_window);
-		main_window->aui_manager.AddPane(welcome_panel, wxAuiPaneInfo().Name(_T("welcome_panel")).CenterPane().PaneBorder(false).Hide());
+		main_window->aui_manager.AddPane(welcome_panel, wxAuiPaneInfo().Name("welcome_panel").CenterPane().PaneBorder(false).Hide());
 		if (!project && !main_window->notebook_sources->GetPageCount()) main_window->ShowWelcome(true);
 	} else if (!config->Init.show_welcome && welcome_panel) {
 		main_window->ShowWelcome(false);
@@ -765,7 +770,7 @@ void mxPreferenceWindow::OnSkinButton(wxCommandEvent &event){
 	if (selection<0) return;
 	config->Files.skin_dir=skin_paths[selection];
 	RecreateAllToolbars(); main_window->SortToolbars(true);
-	mxMessageDialog(main_window,_T("El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI"),_T("Tema de iconos"), mxMD_OK|mxMD_INFO).ShowModal();
+	mxMessageDialog(main_window,LANG(PREFERENCES_THEME_WILL_APPLY_ON_RESTART,"El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI"),LANG(PREFERENCES_CAPTION,"Preferencias"), mxMD_OK|mxMD_INFO).ShowModal();
 }
 
 void mxPreferenceWindow::OnWxHelpButton(wxCommandEvent &event){
@@ -1252,7 +1257,7 @@ void mxPreferenceWindow::SetToolbarPage(const wxString &edit_one) {
 }
 
 void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
-	if (mxMD_YES == mxMessageDialog(main_window,"Perdera todas las modificiaciones realizadas a las barras\n de herramientas. Desea continuar?", "Reiniciar Barras de Herramientas", mxMD_YES_NO).ShowModal()) {
+	if (mxMD_YES == mxMessageDialog(main_window,LANG(PREFERENCES_TOOLBARS_RESET_WARNING,"Perdera todas las modificiaciones realizadas a las barras\n de herramientas. Desea continuar?",LANG(PREFERENCES_CAPTION,"Preferencias"), mxMD_YES_NO).ShowModal()) {
 #define _aux_on_toolbar_reset(NAME,name) \
 		bool baux_##name = _toolbar_visible(tb##NAME); \
 		toolbars_wich_##name->SetValue(_toolbar_visible(tb##NAME)); \
@@ -1440,7 +1445,13 @@ void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & even
 }
 
 void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
+	wxArrayString tc_prev; Toolchain::GetNames(tc_prev,false);
 	mxToolchainConfig(this,files_toolchain->GetValue());
+	wxArrayString tc_post; Toolchain::GetNames(tc_post,false);
+	for(unsigned int i=0;i<tc_post.GetCount();i++) {
+		if (tc_prev.Index(tc_post[i])==wxNOT_FOUND)
+			files_toolchain->Append(tc_post[i]);
+	}
 }
 
 void mxPreferenceWindow::Delete ( ) {

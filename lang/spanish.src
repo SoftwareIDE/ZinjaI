@@ -3092,6 +3092,8 @@ TOOLCHAINS_CAPTION
 Personalizar herramientas de compilación
 TOOLCHAINS_DESCRIPTION
 Descripción
+TOOLCHAINS_NAME
+Nombre de archivo
 TOOLCHAINS_TYPE
 Tipo de herramienta
 TOOLCHAINS_BASE_PATH
@@ -3117,15 +3119,17 @@ Argumentos para el enlazado C
 TOOLCHAINS_LINKER_CPP_OPTIONS
 Argumentos para el enlazado C++
 TOOLCHAINS_ARGUMENT_NAME
-Nombre del argumento de usuario (${ARG<{1}>})
+Nombre (${ARG<{1}>})
 TOOLCHAINS_ARGUMENT_DEFAULT
    Valor por defecto (${ARG<{1}>})
 TOOLCHAINS_FIXED_SETTINGS
-Configuarción fija
+Configuración fija
 TOOLCHAINS_USER_ARGUMENTS
 Argumentos configurables
 TOOLCHAINS_TEST
 &Ejecutar
+TOOLCHAINS_ERROR_EMPTY_NAME
+Debe completar el nombre
 UPDATE_CAPTION
 Buscar Actualizaciones
 UPDATE_CHECK_AT_STARTUP

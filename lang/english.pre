@@ -3119,7 +3119,7 @@ C linker arguments
 TOOLCHAINS_LINKER_CPP_OPTIONS
 C++ linker arguments
 TOOLCHAINS_ARGUMENT_NAME
-User argument's name (for ${ARG<{1}>})
+Label (${ARG<{1}>})
 TOOLCHAINS_ARGUMENT_DEFAULT
    User argument's default value (${ARG<{1}>})
 TOOLCHAINS_FIXED_SETTINGS

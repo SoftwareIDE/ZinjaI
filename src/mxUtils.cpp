@@ -175,6 +175,7 @@ wxCheckBox *mxUtils::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	} else 
 		sizer->Add(checkbox,sizers->BA5_Exp0);
 	checkbox->SetValue(value);
+	last_button=NULL;
 	return checkbox;	
 }
 
@@ -183,6 +184,7 @@ wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp0);
 	textctrl->SetValue(value);
+	last_button=NULL;
 	return textctrl;
 }
 
@@ -191,6 +193,7 @@ wxTextCtrl *mxUtils::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStri
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp1);
 	textctrl->SetValue(value);
+	last_button=NULL;
 	return textctrl;
 }
 
@@ -215,6 +218,7 @@ wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
 	textctrl->SetValue(wxString::Format(_T("%d"), value));
+	last_button=NULL;
 	return textctrl;
 }
 
@@ -226,6 +230,7 @@ wxStaticText* mxUtils::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxStri
 	sizerRow->AddStretchSpacer(1);
 	sizerRow->Add(textctrl, sizers->Exp0);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
+	last_button=NULL;
 	return textctrl;	
 }
 
@@ -236,6 +241,7 @@ wxTextCtrl *mxUtils::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStr
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
+	last_button=NULL;
 	return textctrl;
 }
 
@@ -247,6 +253,7 @@ wxTextCtrl *mxUtils::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStr
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizerRow->Add(new wxStaticText(panel, wxID_ANY, wxString(" ")<<foot, wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
+	last_button=NULL;
 	return textctrl;
 }
 
