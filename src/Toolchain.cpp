@@ -125,11 +125,11 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 		fname=project->active_configuration->toolchain;
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
-			toolchains[i].CheckVersion(true,0,0);
-			toolchains[i].CheckVersion(false,0,0);
 			current_toolchain=toolchains[i];
 			current_toolchain.SetArgumets();
 			current_toolchain.SetPaths();
+			toolchains[i].CheckVersion(true,0,0);
+			toolchains[i].CheckVersion(false,0,0);
 			return current_toolchain;
 		}
 	}
