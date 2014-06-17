@@ -173,8 +173,8 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 #ifndef __WIN32__
 		BeginSubMenu(mnDEBUG, LANG(MENUITEM_DEBUG_MORE,"Más..."));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_ATTACH, LANG(MENUITEM_DEBUG_ATTACH,"&Adjuntar...")).Icon("debug_attach.png").Debug(false));
-			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria...")).Icon("core_dump.png").Debug(false));
-			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_CORE_DUMP,LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")).Icon("core_dump.png").Debug(true));
+			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_LOAD_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria...")).Icon("core_dump.png").Debug(false));
+			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SAVE_CORE_DUMP,LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")).Icon("core_dump.png").Debug(true));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras")).Icon("reverse_enable.png").Checkeable(false).Debug(true));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_INVERSE_EXEC, LANG(MENUITEM_DEBUG_INVERSE,"Ejecutar Hacia Atras")).Icon("reverse_toggle.png").Checkeable(false).Debug(true));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SET_SIGNALS, LANG(MENUITEM_DEBUG_SET_SIGNALS,"Configurar comportamiento ante señales...")).Icon("debug_set_signals.png"));
@@ -420,7 +420,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbRUN,myToolbarItem("debug",menues[mnDEBUG],mxID_DEBUG_RUN).Visible());
 #ifndef __WIN32__
 		AddToolbarItem(tbRUN,myToolbarItem("debug_attach",menues[mnDEBUG],mxID_DEBUG_ATTACH));
-		AddToolbarItem(tbRUN,myToolbarItem("load_core_dump",menues[mnDEBUG],mxID_DEBUG_CORE_DUMP));
+		AddToolbarItem(tbRUN,myToolbarItem("core_dump",menues[mnDEBUG],mxID_DEBUG_LOAD_CORE_DUMP));
 #endif
 		AddToolbarItem(tbRUN,myToolbarItem("break_toggle",menues[mnDEBUG],mxID_DEBUG_TOGGLE_BREAKPOINT));
 		AddToolbarItem(tbRUN,myToolbarItem("break_options",menues[mnDEBUG],mxID_DEBUG_BREAKPOINT_OPTIONS));
@@ -450,11 +450,12 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbDEBUG,myToolbarItem("threadlist",menues[mnDEBUG],mxID_DEBUG_THREADLIST));
 		AddToolbarItem(tbDEBUG,myToolbarItem("break_toggle",menues[mnDEBUG],mxID_DEBUG_TOGGLE_BREAKPOINT));
 		AddToolbarItem(tbDEBUG,myToolbarItem("break_options",menues[mnDEBUG],mxID_DEBUG_BREAKPOINT_OPTIONS));
+		AddToolbarItem(tbDEBUG,myToolbarItem("break_enable",mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT,"breakpoint_enable.png",LANG(TOOLBAR_DEBUG_BREAK_ENABLE,"Habilitar/deshabilitar breakpoint")));
 		AddToolbarItem(tbDEBUG,myToolbarItem("break_list",menues[mnDEBUG],mxID_DEBUG_LIST_BREAKPOINTS).Visible());
 		AddToolbarItem(tbDEBUG,myToolbarItem("log_panel",menues[mnDEBUG],mxID_DEBUG_LOG_PANEL));
 		AddToolbarItem(tbDEBUG,myToolbarItem("gdb_command",menues[mnDEBUG],mxID_DEBUG_GDB_COMMAND));
 #ifndef __WIN32__
-		AddToolbarItem(tbDEBUG,myToolbarItem("core_dump",menues[mnDEBUG],mxID_DEBUG_CORE_DUMP).Label(LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")));
+		AddToolbarItem(tbDEBUG,myToolbarItem("save_core_dump",menues[mnDEBUG],mxID_DEBUG_SAVE_CORE_DUMP));
 		AddToolbarItem(tbDEBUG,myToolbarItem("gdb_patch",menues[mnDEBUG],mxID_DEBUG_PATCH));
 #endif
 	}

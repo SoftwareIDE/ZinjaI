@@ -115,7 +115,7 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 		else delete bpi;
 	}
 	if (bpi->gdb_status==BPS_ERROR_CONDITION) {
-		if (mxMD_NO==mxMessageDialog(this,LANG(BREAKOPTS_ERROR_SETTING_CONDITION,"La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?."),LANG(GENERAL_ERROR,"Advertencia"),mxMD_ERROR|mxMD_OK).ShowModal())
+		if (mxMD_NO==mxMessageDialog(this,LANG(BREAKOPTS_ERROR_SETTING_CONDITION,"La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?."),LANG(GENERAL_ERROR,"Advertencia"),mxMD_ERROR|mxMD_YES_NO).ShowModal())
 			return;
 	}
 	Close();

@@ -488,17 +488,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="-232.67288"
-     inkscape:cy="103.65486"
+     inkscape:zoom="1.3246154"
+     inkscape:cx="93.45621"
+     inkscape:cy="241.72675"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g353"
      showgrid="false"
-     inkscape:window-width="484"
-     inkscape:window-height="471"
-     inkscape:window-x="158"
-     inkscape:window-y="149"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1354"
+     inkscape:window-height="707"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata14648">
     <rdf:RDF>
@@ -983,21 +983,25 @@
          y="838.62256"
          x="-158.17015"
          sodipodi:role="line"
-         id="tspan7169">Mostrar mensajes del depurador - debug_log_panel.png</tspan><tspan
+         id="tspan7169">Habilitar/Deshabilitar breakpoint - breakpoint_enable.png</tspan><tspan
          y="888.62256"
          x="-158.17015"
          sodipodi:role="line"
-         id="tspan7171">Cargar Volcado de Memoria... - core_dump.png</tspan><tspan
+         id="tspan326">Mostrar mensajes del depurador - debug_log_panel.png</tspan><tspan
          y="938.62256"
          x="-158.17015"
          sodipodi:role="line"
-         id="tspan3989">Enviar señal... - debug_send_signal.pngb</tspan><tspan
+         id="tspan7171">Cargar Volcado de Memoria... - core_dump.png</tspan><tspan
          y="988.62256"
+         x="-158.17015"
+         sodipodi:role="line"
+         id="tspan3989">Enviar señal... - debug_send_signal.pngb</tspan><tspan
+         y="1038.6226"
          x="-158.17015"
          sodipodi:role="line"
          id="tspan3991">Configurar señales... - debug_set_signals.png</tspan><tspan
          id="tspan6715"
-         y="1038.6226"
+         y="1088.6226"
          x="-158.17015"
          sodipodi:role="line" /></text>
     <rect
@@ -1169,12 +1173,12 @@
        width="36.547398"
        height="36.547398"
        x="-218.91356"
-       y="807.57947" />
+       y="867.57947" />
     <rect
        inkscape:export-ydpi="78.801857"
        inkscape:export-xdpi="78.801857"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/core_dump.png"
-       y="857.18884"
+       y="917.18884"
        x="-218.91356"
        height="36.547398"
        width="36.547398"
@@ -1752,7 +1756,7 @@
          inkscape:connector-curvature="0" />
     </g>
     <g
-       transform="matrix(0.38843483,0,0,0.38843483,1421.1876,-149.85237)"
+       transform="matrix(0.38843483,0,0,0.38843483,1421.1876,-89.85237)"
        id="g6586">
       <path
          d="m -4145.0598,2653.4287 c 0,16.1091 -13.5339,29.1682 -30.2288,29.1682 -16.6949,0 -30.2288,-13.0591 -30.2288,-29.1682 0,-16.1091 13.5339,-29.1681 30.2288,-29.1681 16.6949,0 30.2288,13.059 30.2288,29.1681 z"
@@ -1803,7 +1807,7 @@
     </g>
     <g
        id="g4871"
-       transform="matrix(0.15738004,0,0,0.15738004,132.60806,497.71368)">
+       transform="matrix(0.15738004,0,0,0.15738004,132.60806,557.71368)">
       <path
          sodipodi:nodetypes="cccc"
          inkscape:connector-curvature="0"
@@ -1877,14 +1881,14 @@
        inkscape:export-ydpi="78.800003"
        inkscape:export-xdpi="78.800003"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/debug_set_signals.png"
-       style="opacity:0.75000000000000000;fill:none;stroke:none"
+       style="opacity:0.75;fill:none;stroke:none"
        id="rect4869"
        width="36.547398"
        height="36.547398"
        x="-218.91356"
-       y="947.57947" />
+       y="1007.5795" />
     <g
-       transform="matrix(0.16056207,0,0,0.16056207,139.68976,529.39202)"
+       transform="matrix(0.16056207,0,0,0.16056207,139.68976,589.39202)"
        id="g4879"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/debug_set_signals.png"
        inkscape:export-xdpi="78.800003"
@@ -1961,7 +1965,7 @@
     <path
        inkscape:connector-curvature="0"
        style="fill:#ffd800;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.4209584;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m -196.04437,976.36987 c -10.78374,-10.06567 -10.58111,-2.45661 -5.59162,1.80868 4.79883,4.10226 3.43118,3.53292 6.36116,3.92101 0.82197,0.10893 2.44878,-0.35193 2.64925,-1.96342 1.30719,-10.51029 9.45559,-18.40797 8.12549,-19.56377 -5.71737,-1.29055 -10.00113,9.55626 -11.54428,15.7975 z"
+       d="m -196.04437,1036.3699 c -10.78374,-10.0657 -10.58111,-2.4566 -5.59162,1.8086 4.79883,4.1023 3.43118,3.533 6.36116,3.9211 0.82197,0.1089 2.44878,-0.352 2.64925,-1.9635 1.30719,-10.5102 9.45559,-18.4079 8.12549,-19.5637 -5.71737,-1.2906 -10.00113,9.5562 -11.54428,15.7975 z"
        id="path8523-0-3-2"
        sodipodi:nodetypes="czsscc"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/32/debug_set_signals.png"
@@ -1970,14 +1974,14 @@
     <path
        inkscape:connector-curvature="0"
        style="fill:#00a800;fill-opacity:1;stroke:#000000;stroke-width:1.70117736;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m -198.11905,924.30559 c -2.38337,0.0301 -1.80155,13.84772 0.43238,16.76742 4.25166,1.25127 12.97122,-2.33578 14.48455,-8.00832 -0.4324,-3.25333 -10.37701,-10.17723 -14.91693,-8.7591 z"
+       d="m -198.11905,984.30559 c -2.38337,0.0301 -1.80155,13.84772 0.43238,16.76741 4.25166,1.2513 12.97122,-2.33577 14.48455,-8.00831 -0.4324,-3.25333 -10.37701,-10.17723 -14.91693,-8.7591 z"
        id="path11185-7"
        sodipodi:nodetypes="cccc"
        inkscape:export-filename="/mnt/ex/zinjai/imgs/doxy_run.png"
        inkscape:export-xdpi="36.837387"
        inkscape:export-ydpi="36.837387" />
     <rect
-       y="907.57947"
+       y="967.57947"
        x="-218.91356"
        height="36.547398"
        width="36.547398"
@@ -1986,5 +1990,80 @@
        inkscape:export-filename="/mnt/ex/zinjai/imgs/16/debug_send_signal.png"
        inkscape:export-xdpi="39.400002"
        inkscape:export-ydpi="39.400002" />
+    <g
+       transform="matrix(1.8721567,0,0,1.8721567,-1105.9708,2869.3457)"
+       id="g343"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/breakpoint_enable.png"
+       inkscape:export-xdpi="78.800003"
+       inkscape:export-ydpi="78.800003">
+      <path
+         transform="matrix(0.6785002,-0.1818036,0.1818036,0.6785002,422.00387,-1080.9047)"
+         d="m 97.22718,14.556718 -2.77571,1.733088 -4.4713,2.378222 -3.188202,-0.737245 -4.843344,-1.480029 -1.733088,-2.775711 -2.378222,-4.4712998 0.737245,-3.1882019 1.480029,-4.8433438 2.775711,-1.73308815 4.4713,-2.37822235 3.188202,0.7372451 4.843343,1.48002952 1.733089,2.77571018 2.378222,4.4713002 -0.737245,3.1882019 z"
+         inkscape:randomized="0"
+         inkscape:rounded="0"
+         inkscape:flatsided="false"
+         sodipodi:arg2="0.96704693"
+         sodipodi:arg1="0.66206046"
+         sodipodi:r2="10.234715"
+         sodipodi:r1="10.886268"
+         sodipodi:cy="7.8644576"
+         sodipodi:cx="88.640884"
+         sodipodi:sides="8"
+         id="path345"
+         style="fill:#ff0000;fill-opacity:1;stroke:none"
+         sodipodi:type="star" />
+      <text
+         inkscape:export-ydpi="124.99979"
+         inkscape:export-xdpi="124.99979"
+         inkscape:export-filename="/mnt/ms/zinjai/imgs/as_virt_unk.png"
+         id="text347"
+         y="-1088.3867"
+         x="478.2554"
+         style="font-size:8.42922211px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="fill:#ffffff;stroke:none;font-family:Hobbit SF"
+           y="-1088.3867"
+           x="478.2554"
+           id="tspan349"
+           sodipodi:role="line">BP</tspan></text>
+    </g>
+    <rect
+       inkscape:export-ydpi="78.800003"
+       inkscape:export-xdpi="78.800003"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/32/breakpoint_enable.png"
+       y="807.26868"
+       x="-218.91356"
+       height="36.547398"
+       width="36.547398"
+       id="rect351"
+       style="opacity:0.75;fill:none;stroke:none" />
+    <g
+       id="g353"
+       transform="matrix(1.8721567,0,0,1.8721567,-1105.9708,2869.3457)">
+      <path
+         transform="matrix(0.6785002,-0.1818036,0.1818036,0.6785002,422.00387,-1080.9047)"
+         style="fill:#808080;fill-opacity:1;stroke:none"
+         d="m 97.22718,14.556718 -2.77571,1.733088 -4.4713,2.378222 -3.188202,-0.737245 -4.843344,-1.480029 13.38452,-17.17259238 1.733089,2.77571018 2.378222,4.4713002 -0.737245,3.1882019 z"
+         id="path355"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccccccccc"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/32/breakpoint_enable.png"
+         inkscape:export-xdpi="78.800003"
+         inkscape:export-ydpi="78.800003" />
+      <text
+         xml:space="preserve"
+         style="font-size:8.42922211px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         x="478.2554"
+         y="-1088.3867"
+         id="text357"
+         inkscape:export-filename="/mnt/ex/zinjai/imgs/32/breakpoint_enable.png"
+         inkscape:export-xdpi="78.800003"
+         inkscape:export-ydpi="78.800003"><tspan
+           sodipodi:role="line"
+           id="tspan359"
+           x="478.2554"
+           y="-1088.3867"
+           style="fill:#ffffff;stroke:none;font-family:Hobbit SF">BP</tspan></text>
+    </g>
   </g>
 </svg>

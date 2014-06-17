@@ -18,7 +18,7 @@ class project_file_item;
 **/
 
 enum BREAK_POINT_STATUS { 
-	BPS_UNKNOWN=0, ///< dafault status, should never be this one while debug->debugging
+	BPS_UNKNOWN=0, ///< default status, should never be this one while debug->debugging
 	BPS_PENDING, ///< waiting for the debugger to pause to set this breakpoint
 	BPS_ERROR_SETTING, ///< there was a problem trying to set the breakpoint in gdb
 	BPS_GDB_KNOWS_IT, ///< states lower than this one are states for breakpoints not inserted into gdb, over this one has a valid gdb_id, no one should take this state
@@ -57,6 +57,7 @@ public:
 	void SetStatus(BREAK_POINT_STATUS _status, int _gdb_id=-1);
 	void UpdateLineNumber();
 	void SetSource(mxSource *_source);
+	void SetEnabled(bool do_enable); ///< to be called from gui, sets the bp as enabled or disable (toggles) in gui and in its internal state (not in DebugManager, that should be done by caller)
 	bool IsInGDB();
 	void SetMarker();
 	static BreakPointInfo *FindFromNumber(int _id, bool use_gdb_id);

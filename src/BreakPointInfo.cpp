@@ -114,3 +114,9 @@ GlobalListIterator<BreakPointInfo*> BreakPointInfo::GetGlobalIterator ( ) {
 	return GlobalListIterator<BreakPointInfo*>(&global_list);
 }
 
+void BreakPointInfo::SetEnabled (bool do_enable) {
+	enabled = do_enable; 
+	gdb_status = enabled?BPS_SETTED:BPS_USER_DISABLED;
+	SetMarker();
+}
+

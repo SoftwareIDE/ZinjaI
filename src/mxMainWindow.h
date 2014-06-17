@@ -199,6 +199,7 @@ public:
 	void OnDebugInspect (wxCommandEvent &event);
 	void OnDebugThreadList (wxCommandEvent &event);
 	void OnDebugBacktrace (wxCommandEvent &event);
+	void OnDebugEnableDisableBreakpoint (wxCommandEvent &event);
 	void OnDebugToggleBreakpoint (wxCommandEvent &event);
 	void OnDebugListBreakpoints (wxCommandEvent &event);
 	void OnDebugListWatchpoints (wxCommandEvent &event);

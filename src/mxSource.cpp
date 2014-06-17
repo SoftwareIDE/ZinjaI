@@ -1976,11 +1976,15 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	if (GetCurrentLine()!=l) GotoPos(PositionFromLine(l));
 	wxMenu menu("");
 	
-	if (m_extras->FindBreakpointFromLine(this,l)) {
+	BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
+	if (bpi) {
 		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"))<<"\tF8");
+		if (!debug->debugging||!debug->waiting)
+			menu.Append(mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT, bpi->enabled ? LANG(SOURCE_POPUP_DISABLE_BREAKPOINT,"Deshabilitar breakpoint") : LANG(SOURCE_POPUP_ENABLE_BREAKPOINT,"Habilitar breakpoint"));
 	} else if (!IsEmptyLine(l))
 		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"))<<"\tF8");
 	menu.Append(mxID_DEBUG_BREAKPOINT_OPTIONS, wxString(LANG(SOURCE_POPUP_BREAKPOINT_OPTIONS,"Opciones del breakpoint..."))<<"\tCtrl+Shift+F8");
+	menu.AppendSeparator();
 	int s=GetStyleAt(p);
 	if (MarkerGet(l)&(1<<mxSTC_MARK_USER))
 		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltaso"))<<"\tCtrl+B");

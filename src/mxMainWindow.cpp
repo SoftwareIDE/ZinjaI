@@ -208,7 +208,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	
 	EVT_MENU(mxID_DEBUG_ATTACH, mxMainWindow::OnDebugAttach)
 	EVT_MENU(mxID_DEBUG_PATCH, mxMainWindow::OnDebugPatch)
-	EVT_MENU(mxID_DEBUG_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
+	EVT_MENU(mxID_DEBUG_SAVE_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
+	EVT_MENU(mxID_DEBUG_LOAD_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
 	EVT_MENU(mxID_DEBUG_SEND_SIGNAL, mxMainWindow::OnDebugSendSignal)
 	EVT_MENU(mxID_DEBUG_SET_SIGNALS, mxMainWindow::OnDebugSetSignals)
 	EVT_MENU(mxID_DEBUG_GDB_COMMAND, mxMainWindow::OnDebugGdbCommand)
@@ -225,6 +226,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_INSERT_WATCHPOINT, mxMainWindow::OnDebugInsertWatchpoint)
 	EVT_MENU(mxID_DEBUG_LIST_BREAKPOINTS, mxMainWindow::OnDebugListBreakpoints)
 	EVT_MENU(mxID_DEBUG_TOGGLE_BREAKPOINT, mxMainWindow::OnDebugToggleBreakpoint)
+	EVT_MENU(mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT, mxMainWindow::OnDebugEnableDisableBreakpoint)
 	EVT_MENU(mxID_DEBUG_RETURN, mxMainWindow::OnDebugReturn)
 	EVT_MENU(mxID_DEBUG_JUMP, mxMainWindow::OnDebugJump)
 	EVT_MENU(mxID_DEBUG_RUN_UNTIL, mxMainWindow::OnDebugRunUntil)
@@ -3430,6 +3432,17 @@ void mxMainWindow::OnDebugToggleBreakpoint ( wxCommandEvent &event ) {
 		source->OnMarginClick(evt);
 	}
 	
+}
+
+void mxMainWindow::OnDebugEnableDisableBreakpoint ( wxCommandEvent &event ) {
+	if (debug->debugging && debug->waiting) return;
+	IF_THERE_IS_SOURCE {
+		mxSource *source = CURRENT_SOURCE;
+		BreakPointInfo *bpi = source->m_extras->FindBreakpointFromLine(source,source->GetCurrentLine());
+		if (!bpi) return;
+		if (debug->debugging) debug->SetBreakPointEnable(bpi->gdb_id,!bpi->enabled,bpi->action==BPA_STOP_ONCE); // debugger state
+		bpi->SetEnabled(!bpi->enabled); // gui and bpi state
+	}
 }
 
 void mxMainWindow::OnDebugBreakpointOptions ( wxCommandEvent &event ) {
