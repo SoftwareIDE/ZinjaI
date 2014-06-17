@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=src/mxMainWindowMenues.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -371,9 +372,10 @@ path=src/DebugPatcher.cpp
 cursor=46:2
 [source]
 path=src/mxMainWindowMenues.cpp
-cursor=36:36
+cursor=0:0
 breakpoint=46
 breakpoint_annotation=
+open=true
 [source]
 path=src/mxGdbCommandsPanel.cpp
 cursor=40:73
@@ -382,9 +384,11 @@ path=src/mxSignalsSettings.cpp
 cursor=92:0
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=343:23
+cursor=444:91
 marker=118
-marker=785
+marker=456
+marker=790
+open=true
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=0:0

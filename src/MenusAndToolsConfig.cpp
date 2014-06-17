@@ -179,7 +179,9 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_INVERSE_EXEC, LANG(MENUITEM_DEBUG_INVERSE,"Ejecutar Hacia Atras")).Icon("reverse_toggle.png").Checkeable(false).Debug(true));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SET_SIGNALS, LANG(MENUITEM_DEBUG_SET_SIGNALS,"Configurar comportamiento ante señales...")).Icon("debug_set_signals.png"));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SEND_SIGNAL, LANG(MENUITEM_DEBUG_SEND_SIGNALS,"Enviar señal...")).Icon("debug_send_signal.png").Debug(true));
+#endif
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_GDB_COMMAND, LANG(MENUITEM_DEBUG_GDB_COMMAND,"Introducir comandos gdb...")).Icon("gdb_command.png").Debug(true));
+#ifndef __WIN32__
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable (experimental)...")).Icon("debug_patch.png").Debug(true));
 		EndSubMenu(mnDEBUG);
 #endif
@@ -451,7 +453,10 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbDEBUG,myToolbarItem("break_list",menues[mnDEBUG],mxID_DEBUG_LIST_BREAKPOINTS).Visible());
 		AddToolbarItem(tbDEBUG,myToolbarItem("log_panel",menues[mnDEBUG],mxID_DEBUG_LOG_PANEL));
 		AddToolbarItem(tbDEBUG,myToolbarItem("gdb_command",menues[mnDEBUG],mxID_DEBUG_GDB_COMMAND));
+#ifndef __WIN32__
+		AddToolbarItem(tbDEBUG,myToolbarItem("core_dump",menues[mnDEBUG],mxID_DEBUG_CORE_DUMP).Label(LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")));
 		AddToolbarItem(tbDEBUG,myToolbarItem("gdb_patch",menues[mnDEBUG],mxID_DEBUG_PATCH));
+#endif
 	}
 	
 	
