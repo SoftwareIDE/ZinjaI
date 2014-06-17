@@ -1561,9 +1561,15 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 				inspections[num]=ii;
 			return true;
 		} else {
-			if (!ans.Len()) last_error=_T("<killed>"); else
-				last_error = GetValueFromAns(ans,_T("msg"),true,true);
-			inspection_grid->SetCellValue(num,IG_COL_EXPR,"");
+			if (!ans.Len()) last_error="<killed>"; else
+				last_error = GetValueFromAns(ans,"msg",true,true);
+			if (ans.Find("unable to create variable object")!=wxNOT_FOUND)
+				inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_INCORRECT_EXPRESSION,"<<<expresion incorrecta>>>"));
+			else
+				inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
+			inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
+			inspection_grid->HightlightDisable(num);
+//			inspection_grid->SetCellValue(num,IG_COL_EXPR,"");
 		}
 	} else /*if (inspections[num].expr!=expr)*/ {
 		if (!inspections[num].frameless && inspections[num].is_vo && inspections[num].on_scope && !SelectFrameForInspeccion(inspections[num].frame))
@@ -1662,7 +1668,7 @@ bool DebugManager::DuplicateInspection(int num) {
 		inspection_grid->SetCellValue(num+1,IG_COL_LEVEL,inspection_grid->GetCellValue(num,IG_COL_LEVEL));
 	} else {
 		inspection_grid->HightlightDisable(num+1);
-		inspection_grid->SetCellValue(num+1,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de Scope >>>"));
+		inspection_grid->SetCellValue(num+1,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de Ambito >>>"));
 	}
 	SelectFrameForInspeccion(current_frame);
 	return retval;
@@ -2777,14 +2783,14 @@ bool DebugManager::OffLineInspectionModify(int i, wxString value) {
 	if (!value.Len()) return false;
 	if (i>=0 && i<inspections_count) {
 		inspections[i].expr=value;
-		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
+		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
 		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
 		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
 		return true;
 	} else if (i==inspections_count) {
 		inspections.push_back(inspectinfo(value,"",value));
 		inspection_grid->AddRow(); inspections_count++;
-		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
+		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
 		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
 		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
 		return true;

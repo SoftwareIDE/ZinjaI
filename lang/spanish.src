@@ -88,8 +88,12 @@ INSPECTGRID_TYPE_ARRAY
 arreglo
 INSPECTGRID_FORMAT_NATURAL
 natural
+INSPECTGRID_INCORRECT_EXPRESSION
+<<<expresion incorrecta>>>
+INSPECTGRID_CANT_EVALUATE
+<<<no se puede evaluar>>>
 INSPECTGRID_OUT_OF_SCOPE
-<<< Fuera de Scope >>>
+<<< Fuera de Ambito >>>
 DEBUG_INSPECTION_NOT_AVAILABLE
 <<<No Disponible>>>
 DEBUG_ERROR_REVERSE
@@ -1654,12 +1658,6 @@ INSPECTGRID_DEBUGGING_HAS_ENDED
 La sesion de depuracion ha finalizado.
 INSPECTGRID_DEBUGGER_ERROR
 Ha ocurrido un error en el depurador.
-INSPECTGRID_INCORRECT_EXPRESSION
-La expresion ingresada no es correcta.
-INSPECTGRID_MODIFY_CAPTION
-Modificar Expresion
-INSPECTGRID_CANT_EVALUATE
-No se puede evaluar la expresion:\n
 INSPECTGRID_ERROR_OFFLINE_DELETE
 Error al eliminar inspecciones.
 INSPECTEXPLORER_CAPTION
@@ -2735,7 +2733,7 @@ Listar Breakpoints...
 TOOLBAR_CAPTION_INSPECT
 Panel de Inspecciones
 PREFERENCES_TOOLBARS_RESET_WARNING
-Perdera todas las modificiaciones realizadas a las barras\n de herramientas. Desea continuar?
+Perdera todas las modificiaciones realizadas a las barras\n de herramientas. ¿Desea continuar?
 LANG_MAX_JOBS_TIP
 Este campo define la cantidad de objetos que se compilan en simultaneo al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad de nucleos, o la mitad son valores recomendables. Consulte la ayuda para más detalles. ZinjaI detecta en el sistema actual <{1}> nucleos
 PROJECTCONFIG_CAPTION

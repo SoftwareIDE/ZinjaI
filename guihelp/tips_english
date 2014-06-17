@@ -1,5 +1,5 @@
 If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-This release includes improvements in autocompletion system, the ability to integrate a complete an updated C/C++ reference (available as a complement), an updated MinGW version in Windows' installer, several improvements in wxWidgets integration, and many other changes. Read the <A href="help:ChangeLog.html">full changelog</A>.
+This release includes several improvements in debugging system (autocompletion in inspections grid, configurable signals handling, a new panel for direct communication with gdb, etc), in interface (reworked main windows' menus and several contextual menues, possibility to change code font, and more), and for GNU/Linux's automatic configuration (more terminal emulators are recognized automatically, and ZinjaI can install missing apps (such as gdb or gcc) in Debian based systems). Finally, as always, there are many bug-fixes and minor improvements everywhere. Read the <A href="help:ChangeLog.html">full changelog</A>.
 These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.

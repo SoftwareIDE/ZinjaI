@@ -280,9 +280,7 @@ void mxInspectionGrid::AddRow(int cant) {
 	int n = GetNumberRows();
 	AppendRows(cant);
 	for (int i=0;i<cant;i++) {
-#ifdef _ZINJAI_DEBUG
 		SetCellEditor(n+i,IG_COL_EXPR,new gdbInspCtrl);
-#endif
 		SetReadOnly(n+i,IG_COL_LEVEL);
 		SetReadOnly(n+i,IG_COL_FORMAT);
 		SetReadOnly(n+i,IG_COL_TYPE);
@@ -550,10 +548,10 @@ bool mxInspectionGrid::ModifyExpresion(int row, wxString expr) {
 				if (debug->last_error==_T("<killed>")) {
 					mxMessageDialog(main_window,LANG(INSPECTGRID_DEBUGGER_ERROR,"Ha ocurrido un error en el depurador."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 					return ignore_changing=false;
-				} else if (debug->last_error.Len()==0 || debug->last_error.Find(_T("unable to create variable object"))!=wxNOT_FOUND)
-					expr = mxGetTextFromUser(LANG(INSPECTGRID_INCORRECT_EXPRESSION,"La expresion ingresada no es correcta."),LANG(INSPECTGRID_MODIFY_CAPTION,"Modificar Expresion"),expr,main_window);
-				else
-					expr = mxGetTextFromUser(wxString(LANG(INSPECTGRID_CANT_EVALUATE,"No se puede evaluar la expresion:\n"))<<debug->last_error,LANG(INSPECTGRID_MODIFY_CAPTION,"Modificar Expresion"),expr,main_window);
+				} else {
+					ignore_changing=false;
+					return true;
+				}
 		} else if (sd==1) break;
 		if (!expr.Len()) return ignore_changing=false;
 	}
