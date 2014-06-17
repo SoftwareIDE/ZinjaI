@@ -6886,6 +6886,10 @@ extern int skip_member_macro( void )  /* 01.08.97 rigo */
             {
                break;
             }
+            else if( token( 0 ) == 0 ) // agregado por Zaskar para saber evitar loops infinitos en código mal escritos (donde falta cerrar los paréntesis del prototipo de un método en una clase)
+            {
+               break; // en of file
+            }
             step( 1 );
          }
 
