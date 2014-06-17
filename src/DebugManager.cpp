@@ -1569,6 +1569,8 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 				inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
 			inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
 			inspection_grid->HightlightDisable(num);
+			inspections.push_back(inspectinfo(value,"",value));
+			inspection_grid->AddRow(); inspections_count++;
 //			inspection_grid->SetCellValue(num,IG_COL_EXPR,"");
 		}
 	} else /*if (inspections[num].expr!=expr)*/ {
@@ -1647,7 +1649,9 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		} else { // si no se pudo crear el VO
 			if (!ans.Len()) last_error=_T("<killed>"); else
 				last_error = GetValueFromAns(ans,_T("msg"),true,true);
-			inspection_grid->SetCellValue(num,IG_COL_EXPR,inspections[num].expr);
+			inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_INCORRECT_EXPRESSION,"<<<expresion incorrecta>>>"));inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
+			inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
+			inspection_grid->HightlightDisable(num);
 		}
 	}
 	return false;
