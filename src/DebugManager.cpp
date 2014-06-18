@@ -553,7 +553,7 @@ void DebugManager::HowDoesItRuns() {
 				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
 					state_text<<inspections[i].expr;
 					inspections[i].watch_read = inspections[i].watch_write = false;
-					inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
+//					inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
 					inspection_grid->SelectRow(i);
 					break;
 				}
@@ -1539,10 +1539,10 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 //				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
 				if (ii.is_class) {
 //					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
-					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
+//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
 				} else {
 //					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
-					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
+//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
 				}
 			} else {
 				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
@@ -1550,9 +1550,9 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 				inspection_grid->SetCellValue(num,IG_COL_VALUE, value );
 //				inspection_grid->SetReadOnly(num,IG_COL_WATCH,false);
 //				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
-				inspection_grid->SetCellValue(num,IG_COL_FORMAT,is_vo?LANG(INSPECTGRID_FORMAT_NATURAL,"natural"):_T("macro"));
+//				inspection_grid->SetCellValue(num,IG_COL_FORMAT,is_vo?LANG(INSPECTGRID_FORMAT_NATURAL,"natural"):_T("macro"));
 			}
-			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
+//			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
 			if (num==inspections_count) {
 				inspection_grid->AddRow();
 				inspections_count++;
@@ -1599,11 +1599,11 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		if (ii.name.Len()) { // si se pudo crea el nuevo VO
 			inspection_grid->SetCellValue(num,IG_COL_TYPE,ii.type);
 			if (is_vo) {
-				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+" "+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)==_T("error")) 
-					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+//				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+" "+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)==_T("error")) 
+//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
 				value = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),ii.name),_T("value"),true,true);
 			} else {
-				inspection_grid->SetCellValue(num,IG_COL_FORMAT,_T("macro"));
+//				inspection_grid->SetCellValue(num,IG_COL_FORMAT,_T("macro"));
 				value = GetMacroOutput(ii.name);
 			}
 			if (value[0]=='@') {
@@ -1627,10 +1627,10 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 //				inspection_grid->SetReadOnly(num,IG_COL_WATCH,true);
 //				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
 				if (ii.is_class) {
-					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
+//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
 //					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
 				} else {
-					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
+//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
 //					inspection_grid->SetReadOnly(inspections_count,IG_COL_FORMAT,false);
 				}
 			} else {
@@ -1640,7 +1640,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 //				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
 //				inspection_grid->SetReadOnly(num,IG_COL_WATCH,false);
 			}
-			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
+//			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
 			// reemplazar las datos de la inspeccion y borrar el VO viejo
 			if (inspections[num].is_vo) SendCommand(_T("-var-delete "),inspections[num].name);
 			inspections[num]=ii;
@@ -1703,7 +1703,7 @@ bool DebugManager::ModifyInspectionFormat(int num, wxString format) {
 	wxString ans = SendCommand(_T("-var-set-format "),inspections[num].name+" "+format);
 	if (ans.SubString(1,5)==_T("error"))
 		return false;
-	inspection_grid->SetCellValue(num,IG_COL_FORMAT,format);
+//	inspection_grid->SetCellValue(num,IG_COL_FORMAT,format);
 	inspection_grid->SetCellValue(num,IG_COL_VALUE,
 		GetValueFromAns( SendCommand(_T("-var-evaluate-expression "), inspections[num].name) , _T("value") ,true, true ) );
 	return false;
@@ -1798,8 +1798,8 @@ bool DebugManager::UpdateInspection() {
 					}
 					inspection_grid->SetCellValue(i,IG_COL_LEVEL,"");
 					inspection_grid->SetReadOnly(i,IG_COL_VALUE,true);
-					inspection_grid->SetReadOnly(i,IG_COL_FORMAT,true);
-					inspection_grid->SetReadOnly(i,IG_COL_WATCH,true);
+//					inspection_grid->SetReadOnly(i,IG_COL_FORMAT,true);
+//					inspection_grid->SetReadOnly(i,IG_COL_WATCH,true);
 					inspections[i].on_scope=false;
 					if (inspections[i].is_vo) SendCommand(_T("-var-delete "),inspections[i].name);
 					break;
@@ -2117,20 +2117,20 @@ bool DebugManager::BreakCompoundInspection(int n) {
 							inspection_grid->SetReadOnly(n,IG_COL_VALUE,true);
 //							inspection_grid->SetReadOnly(n,IG_COL_FORMAT,true);
 //							inspection_grid->SetReadOnly(n,IG_COL_WATCH,true);
-							if (inspections[n].is_array)
-								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
-							else
-								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
+//							if (inspections[n].is_array)
+//								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
+//							else
+//								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
 						} else {
 							inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new wxGridCellStringRenderer());
 							inspection_grid->SetReadOnly(n,IG_COL_VALUE,false);
 							inspection_grid->SetCellValue(n,IG_COL_VALUE, value );
 //							inspection_grid->SetReadOnly(n,IG_COL_FORMAT,false);
 //							inspection_grid->SetReadOnly(n,IG_COL_WATCH,false);
-							inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+//							inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
 						}
 						inspection_grid->SetReadOnly(n,IG_COL_TYPE,true);
-						inspection_grid->SetCellValue(n,IG_COL_WATCH,_T("no"));
+//						inspection_grid->SetCellValue(n,IG_COL_WATCH,_T("no"));
 						n++;
 						item = GetNextItem(ans,p);
 					}
@@ -2712,8 +2712,8 @@ void DebugManager::LoadInspectionsTable(inspectlist *il) {
 		inspection_grid->SetCellValue(i,IG_COL_EXPR,il->vars[i]);
 		inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("*"));
 		inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
-		inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
-		inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
+//		inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
+//		inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
 		inspections[i].expr=il->vars[i];
 		inspections[i].frameless=true;
 		inspections[i].is_vo=false;
@@ -2741,8 +2741,8 @@ void DebugManager::SetFramelessInspection(int i) {
 	if (!inspections[i].freezed) inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
 	inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("*"));
 	inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
-	inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
-	inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
+//	inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
+//	inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
 	inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
 }
 

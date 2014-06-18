@@ -197,8 +197,8 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent, wxWindowID id ):wxGrid(pare
 	SetColLabelValue(IG_COL_EXPR,LANG(INSPECTGRID_EXPRESSION,"Expresion"));
 	SetColLabelValue(IG_COL_TYPE,LANG(INSPECTGRID_TYPE,"Tipo"));
 	SetColLabelValue(IG_COL_VALUE,LANG(INSPECTGRID_VALUE,"Valor"));
-	SetColLabelValue(IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT,"Formato"));
-	SetColLabelValue(IG_COL_WATCH,LANG(INSPECTGRID_WATCH,"WatchPoint"));
+//	SetColLabelValue(IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT,"Formato"));
+//	SetColLabelValue(IG_COL_WATCH,LANG(INSPECTGRID_WATCH,"WatchPoint"));
 	SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
 	SetRowLabelSize(0);
 	SetSelectionMode(wxGrid::wxGridSelectRows);
@@ -211,13 +211,13 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent, wxWindowID id ):wxGrid(pare
 	for (int i=0;i<IG_COLS_COUNT;i++)
 		SetColMinimalWidth(i,GetColMinimalAcceptableWidth());
 	
-	old_size=100;
 	cols_sizes[IG_COL_LEVEL]=8;
 	cols_sizes[IG_COL_EXPR]=29;
 	cols_sizes[IG_COL_TYPE]=12;
 	cols_sizes[IG_COL_VALUE]=27;
-	cols_sizes[IG_COL_FORMAT]=11;
-	cols_sizes[IG_COL_WATCH]=12;
+//	cols_sizes[IG_COL_FORMAT]=11;
+//	cols_sizes[IG_COL_WATCH]=12;
+	old_size=1; for(int i=0;i<IG_COLS_COUNT;i++) old_size+=cols_sizes[i];
 	cols_visibles=config->Cols.inspections_grid;
 //	cols_marginal=0;
 	for (int i=0;i<IG_COLS_COUNT;i++)
@@ -282,10 +282,10 @@ void mxInspectionGrid::AddRow(int cant) {
 	for (int i=0;i<cant;i++) {
 		SetCellEditor(n+i,IG_COL_EXPR,new gdbInspCtrl);
 		SetReadOnly(n+i,IG_COL_LEVEL);
-		SetReadOnly(n+i,IG_COL_FORMAT);
+//		SetReadOnly(n+i,IG_COL_FORMAT);
 		SetReadOnly(n+i,IG_COL_TYPE);
 		SetReadOnly(n+i,IG_COL_VALUE);
-		SetReadOnly(n+i,IG_COL_WATCH);
+//		SetReadOnly(n+i,IG_COL_WATCH);
 	}
 }
 
@@ -312,11 +312,12 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 		return;
 	}
 	ignore_changing=true;
-	if (event.GetCol()==IG_COL_WATCH) {
-		wxString value = GetCellValue(event.GetRow(),event.GetCol());
-		if (!debug->ModifyInspectionWatch(event.GetRow(),LANG(INSPECTGRID_WATCH_WRITE,"lectura"),value.Contains(LANG(INSPECTGRID_WATCH_WRITE,"escritura"))))
-			SetCellValue(event.GetRow(),event.GetCol(),LANG(INSPECTGRID_WATCH_WRITE,"no"));
-	} else if (event.GetCol()==IG_COL_EXPR) {
+//	if (event.GetCol()==IG_COL_WATCH) {
+//		wxString value = GetCellValue(event.GetRow(),event.GetCol());
+//		if (!debug->ModifyInspectionWatch(event.GetRow(),LANG(INSPECTGRID_WATCH_WRITE,"lectura"),value.Contains(LANG(INSPECTGRID_WATCH_WRITE,"escritura"))))
+//			SetCellValue(event.GetRow(),event.GetCol(),LANG(INSPECTGRID_WATCH_WRITE,"no"));
+//	} else 
+	if (event.GetCol()==IG_COL_EXPR) {
 		wxString expr = GetCellValue(event.GetRow(),event.GetCol());
 		if (event.ShiftDown()) {
 		} else {
@@ -343,14 +344,14 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 		} else {
 			SetCellValue(num,event.GetCol(),nexpr);
 		}
-	} else if (event.GetCol()==IG_COL_FORMAT) {
-		wxString format=GetCellValue(event.GetRow(),event.GetCol());
-		if (format==LANG(INSPECTGRID_FORMAT_NATURAL,"natural")) format=LANG(INSPECTGRID_FORMAT_NATURAL,"natural");
-		if (format==LANG(INSPECTGRID_FORMAT_OCTAL,"octal")) format=LANG(INSPECTGRID_FORMAT_OCTAL,"octal");
-		if (format==LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal")) format=LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal");
-		if (format==LANG(INSPECTGRID_FORMAT_BINARY,"binario")) format=LANG(INSPECTGRID_FORMAT_BINARY,"binary");
-		if (format==LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal")) format=LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal");
-		debug->ModifyInspectionFormat(event.GetRow(),format);
+//	} else if (event.GetCol()==IG_COL_FORMAT) {
+//		wxString format=GetCellValue(event.GetRow(),event.GetCol());
+//		if (format==LANG(INSPECTGRID_FORMAT_NATURAL,"natural")) format=LANG(INSPECTGRID_FORMAT_NATURAL,"natural");
+//		if (format==LANG(INSPECTGRID_FORMAT_OCTAL,"octal")) format=LANG(INSPECTGRID_FORMAT_OCTAL,"octal");
+//		if (format==LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal")) format=LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal");
+//		if (format==LANG(INSPECTGRID_FORMAT_BINARY,"binario")) format=LANG(INSPECTGRID_FORMAT_BINARY,"binary");
+//		if (format==LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal")) format=LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal");
+//		debug->ModifyInspectionFormat(event.GetRow(),format);
 	}
 	ignore_changing=false;
 }
@@ -367,30 +368,30 @@ void mxInspectionGrid::OnDoubleClick(wxGridEvent &event) {
 			else if (debug->inspections[selected_row].is_vo)
 				OnSetFrameless(evt);
 		}
-	} else if (event.GetCol()==IG_COL_WATCH) {
-		if (GetCellValue(selected_row,IG_COL_WATCH).Len()) {
-			SelectRow(selected_row=event.GetRow());
-			if (debug->inspections[selected_row].is_vo && !debug->inspections[selected_row].frameless) {
-				wxMenu menu;
-				menu.Append(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
-				menu.Append(mxID_INSPECTION_WATCH_RW,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
-				menu.Append(mxID_INSPECTION_WATCH_READ,LANG(INSPECTGRID_WATCH_READ,"lectura"));
-				menu.Append(mxID_INSPECTION_WATCH_WRITE,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
-				PopupMenu(&menu);
-			}
-		}
-	}
-	else if (event.GetCol()==IG_COL_FORMAT) {
-		if (GetCellValue(selected_row,IG_COL_FORMAT).Len() && GetCellValue(selected_row,IG_COL_FORMAT)!=LANG(INSPECTGRID_TYPE_STRUCT,"estructura") && GetCellValue(selected_row,IG_COL_FORMAT)!=LANG(INSPECTGRID_TYPE_ARRAY,"arreglo") ) {
-			SelectRow(selected_row=event.GetRow());
-			wxMenu menu;
-			menu.Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
-			menu.Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
-			menu.Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
-			menu.Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
-			menu.Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
-			PopupMenu(&menu);
-		}
+//	} else if (event.GetCol()==IG_COL_WATCH) {
+//		if (GetCellValue(selected_row,IG_COL_WATCH).Len()) {
+//			SelectRow(selected_row=event.GetRow());
+//			if (debug->inspections[selected_row].is_vo && !debug->inspections[selected_row].frameless) {
+//				wxMenu menu;
+//				menu.Append(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
+//				menu.Append(mxID_INSPECTION_WATCH_RW,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
+//				menu.Append(mxID_INSPECTION_WATCH_READ,LANG(INSPECTGRID_WATCH_READ,"lectura"));
+//				menu.Append(mxID_INSPECTION_WATCH_WRITE,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
+//				PopupMenu(&menu);
+//			}
+//		}
+//	}
+//	else if (event.GetCol()==IG_COL_FORMAT) {
+//		if (GetCellValue(selected_row,IG_COL_FORMAT).Len() && GetCellValue(selected_row,IG_COL_FORMAT)!=LANG(INSPECTGRID_TYPE_STRUCT,"estructura") && GetCellValue(selected_row,IG_COL_FORMAT)!=LANG(INSPECTGRID_TYPE_ARRAY,"arreglo") ) {
+//			SelectRow(selected_row=event.GetRow());
+//			wxMenu menu;
+//			menu.Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+//			menu.Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
+//			menu.Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
+//			menu.Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
+//			menu.Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
+//			PopupMenu(&menu);
+//		}
 	}
 //	if (event.GetCol()==IG_COL_VALUE && event.GetRow()<debug->inspections_count)
 //		new mxInspectionExplorer(main_window,debug->inspections[event.GetRow()].expr,debug->inspections[event.GetRow()].expr);
@@ -402,8 +403,8 @@ void mxInspectionGrid::OnLabelPopup(wxGridEvent &event) {
 	menu.AppendCheckItem(mxID_COL_ID+IG_COL_EXPR,LANG(INSPECTGRID_SHRINK_EXPRESSION,"Encoger  Columna \"Expresion\""))->Check(!cols_visibles[IG_COL_EXPR]);
 	menu.AppendCheckItem(mxID_COL_ID+IG_COL_TYPE,LANG(INSPECTGRID_SHRINK_TYPE,"Encoger  Columna \"Tipo\""))->Check(!cols_visibles[IG_COL_TYPE]);
 	menu.AppendCheckItem(mxID_COL_ID+IG_COL_VALUE,LANG(INSPECTGRID_SHRINK_VALUE,"Encoger  Columna \"Valor\""))->Check(!cols_visibles[IG_COL_VALUE]);
-	menu.AppendCheckItem(mxID_COL_ID+IG_COL_FORMAT,LANG(INSPECTGRID_SHRINK_FORMAT,"Encoger Columna \"Formato\""))->Check(!cols_visibles[IG_COL_FORMAT]);
-	menu.AppendCheckItem(mxID_COL_ID+IG_COL_WATCH,LANG(INSPECTGRID_SHRINK_WATCH,"Encoger Columna \"WatchPoint\""))->Check(!cols_visibles[IG_COL_WATCH]);
+//	menu.AppendCheckItem(mxID_COL_ID+IG_COL_FORMAT,LANG(INSPECTGRID_SHRINK_FORMAT,"Encoger Columna \"Formato\""))->Check(!cols_visibles[IG_COL_FORMAT]);
+//	menu.AppendCheckItem(mxID_COL_ID+IG_COL_WATCH,LANG(INSPECTGRID_SHRINK_WATCH,"Encoger Columna \"WatchPoint\""))->Check(!cols_visibles[IG_COL_WATCH]);
 	PopupMenu(&menu);
 }
 
@@ -480,9 +481,28 @@ void mxInspectionGrid::OnRightClick(wxGridEvent &event) {
 		wxTheClipboard->Close();
 	}
 	if (debug->inspections_count) {
-		menu.AppendSeparator();
-		if (selected_row<debug->inspections_count)
+		if (selected_row<debug->inspections_count) {
 			menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
+			if (debug->inspections[selected_row].is_vo && !debug->inspections[selected_row].frameless) {
+				wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
+				it[0] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
+				it[1] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_READ,LANG(INSPECTGRID_WATCH_READ,"lectura"));
+				it[2] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_WRITE,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
+				it[3] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_RW,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
+				it[(debug->inspections[selected_row].watch_read?1:0)+(debug->inspections[selected_row].watch_write?2:0)]->Check(true);
+				menu.AppendSubMenu(submenu,LANG(INSPECTGRID_WATCH,"WatchPoint"));
+			}
+			if (debug->inspections[selected_row].is_vo && !debug->inspections[selected_row].frameless && !debug->inspections[selected_row].is_array && !debug->inspections[selected_row].is_class) {
+				wxMenu *submenu = new wxMenu;
+				submenu->Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+				submenu->Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
+				submenu->Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
+				submenu->Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
+				submenu->Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
+				menu.AppendSubMenu(submenu,LANG(INSPECTGRID_FORMAT,"Formato"));
+			}
+		}
+		menu.AppendSeparator();
 		menu.Append(mxID_INSPECTION_CLEAR_ALL,LANG(INSPECTGRID_POPUP_CLEAN_TABLE,"&Limpiar Tabla de Inspeccion"));
 		menu.Append(mxID_INSPECTION_SAVE_TABLE,LANG(INSPECTGRID_POPUP_SAVE_TABLE,"&Guardar Lista de Inspecciones..."));
 	}
@@ -673,50 +693,34 @@ int mxInspectionGrid::ShouldDivide(int row, wxString expr, bool frameless) {
 }
 
 void mxInspectionGrid::OnWatchNo(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_WATCH,LANG(INSPECTGRID_WATCH_NO,"no"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_WATCH);
-	OnCellChange(event);
+	debug->ModifyInspectionWatch(selected_row,false,false);
 }
 void mxInspectionGrid::OnWatchReadWrite(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_WATCH,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_WATCH);
-	OnCellChange(event);
+	debug->ModifyInspectionWatch(selected_row,true,true);
 }
 void mxInspectionGrid::OnWatchRead(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_WATCH,LANG(INSPECTGRID_WATCH_READ,"lectura"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_WATCH);
-	OnCellChange(event);
+	debug->ModifyInspectionWatch(selected_row,true,false);
 }
 void mxInspectionGrid::OnWatchWrite(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_WATCH,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_WATCH);
-	OnCellChange(event);
+	debug->ModifyInspectionWatch(selected_row,false,true);
 }
 
 void mxInspectionGrid::OnFormatNatural(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_FORMAT);
-	OnCellChange(event);
+	debug->ModifyInspectionFormat(selected_row,"natural");
 }
+
 void mxInspectionGrid::OnFormatDecimal(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_FORMAT);
-	OnCellChange(event);
+	debug->ModifyInspectionFormat(selected_row,"decimal");
 }
 void mxInspectionGrid::OnFormatOctal(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_FORMAT);
-	OnCellChange(event);
+	debug->ModifyInspectionFormat(selected_row,"octal");
 }
 void mxInspectionGrid::OnFormatHexadecimal(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_FORMAT);
-	OnCellChange(event);
+	debug->ModifyInspectionFormat(selected_row,"hexadecimal");
 }
+
 void mxInspectionGrid::OnFormatBinary(wxCommandEvent &evt) {
-	SetCellValue(selected_row,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
-	wxGridEvent event(wxID_ANY,0,this,selected_row,IG_COL_FORMAT);
-	OnCellChange(event);
+	debug->ModifyInspectionFormat(selected_row,"binary");
 }
 
 void mxInspectionGrid::OnResize(wxSizeEvent &evt) {

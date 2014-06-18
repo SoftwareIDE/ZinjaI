@@ -4,7 +4,7 @@
 #include <wx/dc.h>
 #include <wx/dnd.h>
 
-enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COL_FORMAT,IG_COL_WATCH,IG_COLS_COUNT};
+enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,/*IG_COL_FORMAT,IG_COL_WATCH,*/IG_COLS_COUNT};
 
 
 class mxInspectionGrid;
