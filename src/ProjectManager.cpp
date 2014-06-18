@@ -2767,7 +2767,7 @@ void ProjectManager::ActivateWxfb(bool do_activate) {
 		WxfbGetFiles();
 		config->CheckWxfbPresent();
 	}
-	main_window->aui_manager.Update(); // para que se de cuenta del cambio en la barra de herramientas
+	main_window->aui_manager.Update(); // para que se de cuenta de el cambio en la barra de herramientas
 }
 
 long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_run, wxString icon_name) {
