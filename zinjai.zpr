@@ -10,7 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/MenusAndToolsConfig.cpp
+current_source=src/mxSource.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -46,13 +46,14 @@ marker=3535
 marker=3536
 [source]
 path=src/mxSource.cpp
-cursor=1982:3
-breakpoint=2073
+cursor=1989:21
+breakpoint=2075
 breakpoint_annotation=
 marker=1449
 marker=1515
-marker=3125
-marker=3650
+marker=3127
+marker=3652
+open=true
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=-1:349
