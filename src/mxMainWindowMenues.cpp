@@ -115,7 +115,7 @@ void mxMainWindow::GetToolbarsPositions() {
 			position.visible=true;
 			position.row=pi.dock_row; 
 		} else {
-			position.visible=false;
+			if (!project || tb_id!=MenusAndToolsConfig::tbPROJECT) position.visible=false;
 		}
 	}
 }

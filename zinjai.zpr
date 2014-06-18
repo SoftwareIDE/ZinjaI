@@ -10,7 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/MenusAndToolsConfig.cpp
+current_source=src/DebugManager.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -38,12 +38,13 @@ cursor=0:0
 marker=142
 [source]
 path=src/mxMainWindow.cpp
-cursor=4947:0
+cursor=3329:11
 marker=1322
 marker=1789
 marker=3535
 marker=3536
 marker=3537
+open=true
 [source]
 path=src/mxSource.cpp
 cursor=1981:11
@@ -124,7 +125,7 @@ path=src/mxThreadGrid.cpp
 cursor=0:0
 [source]
 path=src/DebugManager.cpp
-cursor=1338:75
+cursor=1448:19
 breakpoint=1500
 breakpoint_annotation=
 breakpoint=1674
@@ -142,6 +143,7 @@ breakpoint_annotation=
 marker=1568
 marker=1651
 marker=2079
+open=true
 [source]
 path=src/mxFlowWindow.cpp
 cursor=39:98
@@ -386,10 +388,9 @@ path=src/mxSignalsSettings.cpp
 cursor=16:168
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=766:31
+cursor=838:26
 marker=458
-marker=792
-open=true
+marker=793
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=0:0
@@ -736,8 +737,7 @@ path=src/mxSignalsSettings.h
 cursor=25:0
 [header]
 path=src/MenusAndToolsConfig.h
-cursor=37:154
-open=true
+cursor=34:53
 [header]
 path=src/mxToolchainConfig.h
 cursor=17:41
