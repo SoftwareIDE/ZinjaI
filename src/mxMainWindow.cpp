@@ -130,6 +130,7 @@ mxSource *EXTERNAL_SOURCE; // will be main_window address, an impossible address
 BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	
 	EVT_SIZE(mxMainWindow::OnResize)
+	EVT_MENU_OPEN(mxMainWindow::OnMenuOpen)
 	
 	EVT_TOOL_RCLICKED(wxID_ANY,mxMainWindow::OnToolRightClick)
 	
@@ -3524,7 +3525,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 	static bool log_visible=true;
 	
 	// habilitar y deshabilitar cosas en los menues
-	menu_data->SetDebugMode(debug_mode);
+//	menu_data->SetDebugMode(debug_mode); // ahora gestionado en el evento menu_open
 	
 	wxCommandEvent evt;
 	if (debug_mode) { // si comienza la depuracion...
@@ -4652,8 +4653,8 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 		aui_manager.Update();
 	}
 	
-	// acomodar los menues
-	menu_data->SetProjectMode(project_mode); // habilitar/deshabilitar items exclusivos de proyecto
+	// acomodar los menues // ahora gestionado en el evento menu_open
+//	menu_data->SetProjectMode(project_mode); // habilitar/deshabilitar items exclusivos de proyecto
 	// cambiar el nombre del Archivo->Abrir
 	wxMenuItem *fo_item= _menu_item(wxID_OPEN); wxString fo_shortcut = fo_item->GetItemLabel(); 
 	if (fo_shortcut.Contains("\t")) fo_shortcut=fo_shortcut.AfterLast('\t'); else fo_shortcut="";
@@ -4940,5 +4941,9 @@ void mxMainWindow::OnDebugGdbCommand (wxCommandEvent & event) {
 	aui_manager.AddPane(gdb_cmd, wxAuiPaneInfo().Name("gdb_command").Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("gdb").Show());
 	aui_manager.Update();
 	gdb_cmd->SetFocus();
+}
+
+void mxMainWindow::OnMenuOpen(wxMenuEvent & evt) {
+	menu_data->SetMenuItemsStates(evt.GetMenu());
 }
 

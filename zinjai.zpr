@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxHidenPanel.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -34,9 +33,8 @@ path=src/mxCustomTools.cpp
 cursor=131:0
 [source]
 path=src/mxHidenPanel.cpp
-cursor=210:11
+cursor=198:17
 marker=142
-open=true
 [source]
 path=src/mxMainWindow.cpp
 cursor=4136:45
@@ -637,7 +635,6 @@ cursor=-1:195
 [header]
 path=src/mxHidenPanel.h
 cursor=35:33
-open=true
 [header]
 path=src/mxTextDialog.h
 cursor=-1:86

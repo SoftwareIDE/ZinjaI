@@ -416,6 +416,8 @@ private:
 //	void SetMenusForDebugging(bool debug_mode);
 //	void SetMenusForProject(bool project_mode);
 public:
+	void OnMenuOpen(wxMenuEvent &evt);
+	
 	void PrepareGuiForDebugging(bool debug_mode);
 	void PrepareGuiForProject(bool project_mode);
 	
