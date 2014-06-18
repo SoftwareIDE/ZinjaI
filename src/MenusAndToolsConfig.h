@@ -24,10 +24,10 @@ private:
 	enum mnAttribs { 
 		maCHECKEABLE=1, ///< check item, default unchecked
 		maCHECKED=2, ///< check item, default checked
-//		maPROJECT=4, ///< only enabled for project mode
+		maPROJECT=4, ///< only enabled for project mode
 //		maNOPROJECT=8, ///< only enabled for simple program mode
-//		maDEBUG=16, ///< only enabled while debugging
-//		maNODEBUG=32, ///< only enabled while no debugging
+		maDEBUG=16, ///< only enabled while debugging
+		maNODEBUG=32, ///< only enabled while no debugging
 		maMAPPED=64, ///< store a reference to this item, to be used outside this class
 		maBEGIN_SUBMENU=128, ///< indica el comienzo de un submenu
 		maEND_SUBMENU=256, ///< indica el final de un submenu
@@ -35,15 +35,15 @@ private:
 		maHIDDEN=1024 ///< este item no se agregará al menú
 	};
 	
-	enum { ecALWAYS, ecPROJECT, ecSOURCE, ecPROJECT_OR_SOURCE, ecCOUNT, ecDEBUG, ecNOT_DEBUG, ecDEBUG_PAUSED, ecDEBUG_NOT_PAUSED };
+	enum { ecALWAYS, ecPROJECT, ecSOURCE, ecPROJECT_OR_SOURCE, ecDEBUG, ecNOT_DEBUG, ecDEBUG_PAUSED, ecNOT_DEBUG_OR_DEBUG_PAUSED, ecDEBUG_NOT_PAUSED, ecCOUNT };
 	
 	/// @brief for storing menues structure before really creating them, and for simplifing AddMenuItem interface (only one flexible parameter for that method)
 	struct myMenuItem {
-		int wx_id, properties, enabling_condition;
+		int wx_id, properties/*, enabling_condition*/;
 		wxString label, description, icon, shortcut;
 		wxMenuItem *wx_item;
-		myMenuItem(int _id=0, int _props=0):wx_id(_id),properties(_props),enabling_condition(ecALWAYS),wx_item(NULL){}
-		myMenuItem(int _id, const wxString &_label):wx_id(_id),properties(0),enabling_condition(ecALWAYS),label(_label),wx_item(NULL) {}
+		myMenuItem(int _id=0, int _props=0):wx_id(_id),properties(_props),/*enabling_condition(ecALWAYS),*/wx_item(NULL){}
+		myMenuItem(int _id, const wxString &_label):wx_id(_id),properties(0),/*enabling_condition(ecALWAYS),*/label(_label),wx_item(NULL) {}
 		myMenuItem &Label(const wxString &_label) { label=_label; return *this; }
 		myMenuItem &ShortCut(const wxString &_shortcut) { shortcut=_shortcut; return *this; }
 		myMenuItem &Description(const wxString &_description) { description=_description; return *this; }
@@ -57,7 +57,16 @@ private:
 		myMenuItem &EnableIf() { properties|=maHIDDEN; return *this; }
 		myMenuItem &Hide() { properties|=maHIDDEN; return *this; }
 		myMenuItem &SetVisible(bool v) { if (v) properties&=~maHIDDEN; else properties|=maHIDDEN; return *this; }
-		myMenuItem &EnableIf(int ec) { enabling_condition=ec; return *this; }
+		myMenuItem &EnableIf(int ec) { 
+			switch(ec) {
+			case ecPROJECT: properties|=maPROJECT; break;
+//			case ecNOT_PROJECT: properties|=maNOPROJECT; break;
+			case ecDEBUG: case ecDEBUG_PAUSED: case ecDEBUG_NOT_PAUSED: properties|=maDEBUG; break;
+			case ecNOT_DEBUG: properties|=maNODEBUG; break;
+			case ecALWAYS: case ecSOURCE: case ecPROJECT_OR_SOURCE: case ecNOT_DEBUG_OR_DEBUG_PAUSED: case ecCOUNT: break;
+			}
+			return *this;
+		}
 	};
 	
 	/// struct for storing wich items should be enabled/disabled when changing project mode or debug mode
@@ -71,9 +80,9 @@ private:
 		}
 	};
 	/// list with items that should be enabled/disabled when openning/closing a project
-//	vector<AutoenabligItem> items_project;
+	vector<AutoenabligItem> items_project;
 	/// list with items that should be enabled/disabled when starting/ending a debug session
-//	vector<AutoenabligItem> items_debug;
+	vector<AutoenabligItem> items_debug;
 	
 	/// struct for storing refences to items that will be needed later outside this class
 	template<class T>
@@ -235,7 +244,7 @@ public:
 private:
 	void CreateMenues();
 	void PopulateMenu(int menu_id);
-	void SetMenuItemsStates(wxMenu *wx_menu);
+//	void SetMenuItemsStates(wxMenu *wx_menu);
 	myMenuItem *GetMyMenuItem(int menu_id, int item_id);
 public:
 	wxMenuItem *GetItem(int wx_id) {
@@ -272,8 +281,8 @@ public:
 	
 	void SaveToolbarConfig(wxTextFile &file);
 	
-//	void SetDebugMode(bool mode);
-//	void SetProjectMode(bool mode);
+	void SetDebugMode(bool mode);
+	void SetProjectMode(bool mode);
 	
 	void TransferStatesFromConfig();
 	void CreateMenuesAndToolbars(mxMainWindow *_main_window);

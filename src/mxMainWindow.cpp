@@ -130,7 +130,7 @@ mxSource *EXTERNAL_SOURCE; // will be main_window address, an impossible address
 BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	
 	EVT_SIZE(mxMainWindow::OnResize)
-	EVT_MENU_OPEN(mxMainWindow::OnMenuOpen)
+//	EVT_MENU_OPEN(mxMainWindow::OnMenuOpen)
 	
 	EVT_TOOL_RCLICKED(wxID_ANY,mxMainWindow::OnToolRightClick)
 	
@@ -3525,7 +3525,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 	static bool log_visible=true;
 	
 	// habilitar y deshabilitar cosas en los menues
-//	menu_data->SetDebugMode(debug_mode); // ahora gestionado en el evento menu_open
+	menu_data->SetDebugMode(debug_mode); 
 	
 	wxCommandEvent evt;
 	if (debug_mode) { // si comienza la depuracion...
@@ -4653,8 +4653,8 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 		aui_manager.Update();
 	}
 	
-	// acomodar los menues // ahora gestionado en el evento menu_open
-//	menu_data->SetProjectMode(project_mode); // habilitar/deshabilitar items exclusivos de proyecto
+	// acomodar los menues 
+	menu_data->SetProjectMode(project_mode); // habilitar/deshabilitar items exclusivos de proyecto
 	// cambiar el nombre del Archivo->Abrir
 	wxMenuItem *fo_item= _menu_item(wxID_OPEN); wxString fo_shortcut = fo_item->GetItemLabel(); 
 	if (fo_shortcut.Contains("\t")) fo_shortcut=fo_shortcut.AfterLast('\t'); else fo_shortcut="";
@@ -4943,7 +4943,14 @@ void mxMainWindow::OnDebugGdbCommand (wxCommandEvent & event) {
 	gdb_cmd->SetFocus();
 }
 
+/**
+* @brief Enables/disables menu items according to current state (project,debug,current_source,etc)
+*
+* This is not the best idea... this will disable some items when a menu is shown, and if the state 
+* changes but the user don't open the menu again, thoose items will stay disabled, and then their
+* respective shortcuts won't work, but they should do so.
+**/
 void mxMainWindow::OnMenuOpen(wxMenuEvent & evt) {
-	menu_data->SetMenuItemsStates(evt.GetMenu());
+//	menu_data->SetMenuItemsStates(evt.GetMenu());
 }
 

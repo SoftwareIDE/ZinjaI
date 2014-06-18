@@ -163,7 +163,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnDEBUG, myMenuItem( mxID_DEBUG_JUMP, LANG(MENUITEM_DEBUG_JUMP,"Continuar Desde Aqui")).ShortCut("Ctrl+F5").Icon("debug_jump.png").EnableIf(ecDEBUG_PAUSED));
 		AddSeparator(mnDEBUG);
 		AddMenuItem(mnDEBUG, myMenuItem( mxID_DEBUG_TOGGLE_BREAKPOINT, LANG(MENUITEM_DEBUG_TOGGLE_BREAKPOINT,"&Agregar/quitar Breakpoint")).ShortCut("F8").Icon("breakpoint.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnDEBUG, myMenuItem( mxID_DEBUG_BREAKPOINT_OPTIONS, LANG(MENUITEM_DEBUG_BREAKPOINT_OPTIONS,"&Opciones del Breakpoint...")).ShortCut("Ctrl+F8").Icon("breakpoint_options.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnDEBUG, myMenuItem( mxID_DEBUG_BREAKPOINT_OPTIONS, LANG(MENUITEM_DEBUG_BREAKPOINT_OPTIONS,"&Opciones del Breakpoint...")).ShortCut("Ctrl+F8").Icon("breakpoint_options.png").EnableIf(ecNOT_DEBUG_OR_DEBUG_PAUSED));
 		AddMenuItem(mnDEBUG, myMenuItem( mxID_DEBUG_LIST_BREAKPOINTS, LANG(MENUITEM_DEBUG_LIST_BREAKPOINTS,"&Listar Watch/Break points...")).ShortCut("Shift+F8").Icon("breakpoint_list.png").EnableIf(ecPROJECT_OR_SOURCE));
 		AddSeparator(mnDEBUG);
 		AddMenuItem(mnDEBUG, myMenuItem( mxID_DEBUG_INSPECT, LANG(MENUITEM_DEBUG_INSPECT,"Panel de In&specciones")).Icon("inspect.png"));
@@ -178,7 +178,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SAVE_CORE_DUMP,LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")).Icon("core_dump.png").EnableIf(ecDEBUG_PAUSED));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras")).Icon("reverse_enable.png").Checkeable(false).EnableIf(ecDEBUG_PAUSED));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_INVERSE_EXEC, LANG(MENUITEM_DEBUG_INVERSE,"Ejecutar Hacia Atras")).Icon("reverse_toggle.png").Checkeable(false).EnableIf(ecDEBUG_PAUSED));
-			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SET_SIGNALS, LANG(MENUITEM_DEBUG_SET_SIGNALS,"Configurar comportamiento ante señales...")).Icon("debug_set_signals.png"));
+			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SET_SIGNALS, LANG(MENUITEM_DEBUG_SET_SIGNALS,"Configurar comportamiento ante señales...")).Icon("debug_set_signals.png").EnableIf(ecNOT_DEBUG_OR_DEBUG_PAUSED));
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_SEND_SIGNAL, LANG(MENUITEM_DEBUG_SEND_SIGNALS,"Enviar señal...")).Icon("debug_send_signal.png").EnableIf(ecDEBUG_PAUSED));
 #endif
 			AddMenuItem(mnDEBUG, myMenuItem(mxID_DEBUG_GDB_COMMAND, LANG(MENUITEM_DEBUG_GDB_COMMAND,"Introducir comandos gdb...")).Icon("gdb_command.png").EnableIf(ecDEBUG_PAUSED));
@@ -545,11 +545,12 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 	for(unsigned int j=0;j<items_size;j++) { 
 		myMenuItem &mi=menues[menu_id].items[j];
 		int props=mi.properties;
+		wxMenuItem *wx_item = NULL;
 		if (props&maSEPARATOR) {
 			current_menu->AppendSeparator();
 		} else if (props&maBEGIN_SUBMENU) {
 			wxMenu *new_menu = new wxMenu;
-			mi.wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,menu_icon_prefix+mi.icon);
+			/*mi.*/wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,menu_icon_prefix+mi.icon);
 			if (props&maMAPPED) {
 //					mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
 				mapped_menues.push_back(MappedSomething<wxMenu*>(mi.wx_id,new_menu));
@@ -560,15 +561,15 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 			current_menu=menu_stack.back(); menu_stack.pop_back();
 		} else if (!(props&maHIDDEN)) {
 			if (props&(maCHECKED|maCHECKEABLE))
-				mi.wx_item = utils->AddCheckToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,props&maCHECKED);
+				/*mi.*/wx_item = utils->AddCheckToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,props&maCHECKED);
 			else 
-				mi.wx_item = utils->AddItemToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,menu_icon_prefix+mi.icon);
-			if (props&maMAPPED) mapped_items.push_back(MappedSomething<wxMenuItem*>(mi.wx_id,mi.wx_item));
+				/*mi.*/wx_item = utils->AddItemToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,menu_icon_prefix+mi.icon);
+			if (props&maMAPPED) mapped_items.push_back(MappedSomething<wxMenuItem*>(mi.wx_id,/*mi.*/wx_item));
 		}
-//		if (props&maDEBUG) { items_debug.push_back(AutoenabligItem(mi.wx_item,true)); }
-//		else if (props&maNODEBUG) { items_debug.push_back(AutoenabligItem(mi.wx_item,false)); }
-//		if (props&maPROJECT) { items_project.push_back(AutoenabligItem(mi.wx_item,true)); }
-//		else if (props&maNOPROJECT) { items_project.push_back(AutoenabligItem(mi.wx_item,false)); }
+		if (props&maDEBUG) { items_debug.push_back(AutoenabligItem(wx_item,true)); }
+		else if (props&maNODEBUG) { items_debug.push_back(AutoenabligItem(wx_item,false)); }
+		if (props&maPROJECT) { items_project.push_back(AutoenabligItem(wx_item,true)); }
+//		else if (props&maNOPROJECT) { items_project.push_back(AutoenabligItem(wx_item,false)); }
 	}
 }
 
@@ -597,8 +598,8 @@ void MenusAndToolsConfig::CreateMenues () {
 	}
 	
 	// set items state // ahora gestionado en el evento menu_open
-//	SetProjectMode(false);
-//	SetDebugMode(false);
+	SetProjectMode(false);
+	SetDebugMode(false);
 }
 
 void MenusAndToolsConfig::CreateWxToolbar(int tb_id) {
@@ -754,15 +755,15 @@ bool MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wx
 	return false;
 }
 
-//void MenusAndToolsConfig::SetDebugMode (bool mode) {
-//	for(unsigned int i=0;i<items_debug.size();i++) 
-//		items_debug[i].Enable(mode);
-//}
-//
-//void MenusAndToolsConfig::SetProjectMode (bool mode) {
-//	for(unsigned int i=0;i<items_project.size();i++) 
-//		items_project[i].Enable(mode);
-//}
+void MenusAndToolsConfig::SetDebugMode (bool mode) {
+	for(unsigned int i=0;i<items_debug.size();i++) 
+		items_debug[i].Enable(mode);
+}
+
+void MenusAndToolsConfig::SetProjectMode (bool mode) {
+	for(unsigned int i=0;i<items_project.size();i++) 
+		items_project[i].Enable(mode);
+}
 
 void MenusAndToolsConfig::SaveToolbarConfig (wxTextFile & file) {
 	file.AddLine(wxString("icon_size=")<<icon_size);
@@ -832,57 +833,59 @@ void MenusAndToolsConfig::TransferStatesFromConfig() {
 	}
 }
 
-void MenusAndToolsConfig::SetMenuItemsStates (wxMenu * wx_menu) {
-	bool vec[ecCOUNT], source=main_window->notebook_sources->GetPageCount()!=0;
-	vec[ecSOURCE]=source;
-	vec[ecPROJECT]=project;
-	vec[ecPROJECT_OR_SOURCE]=source||project;
-	vec[ecDEBUG]=debug->debugging;
-	vec[ecNOT_DEBUG]=!debug->debugging;
-	vec[ecDEBUG_PAUSED]=debug->debugging&&!debug->waiting;
-	vec[ecDEBUG_NOT_PAUSED]=debug->debugging&&debug->waiting;
-	for(int menu_id=0;menu_id<mnCOUNT;menu_id++) {
-		if (menues[menu_id].wx_menu==wx_menu) {
-			vector<myMenuItem> &items=menues[menu_id].items;
-			for(int i=0;i<items.size();i++) { 
-				if (items[i].enabling_condition!=ecALWAYS)
-					items[i].wx_item->Enable(vec[items[i].enabling_condition]);
-			}
-			break;
-		}
-	}
-	// casos especiales
-//	if (wx_menu==menues[mnVIEW].wx_menu) {
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LINE_WRAP, LANG(MENUITEM_VIEW_LINE_WRAP,"&Ajuste de linea")).ShortCut("Alt+F11").Description("Muestra las lineas largas como en varios renglones").Icon("lineWrap.png").Checkeable(false).EnableIf(ecSOURCE));	
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_WHITE_SPACE, LANG(MENUITEM_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de &fin de linea")).Description("Muestra las lineas largas como en varios renglones").Icon("whiteSpace.png").Checkeable(false).EnableIf(ecSOURCE));	
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_CODE_STYLE, LANG(MENUITEM_VIEW_SYNTAX_HIGHLIGHT,"&Colorear Sintaxis")).ShortCut("Shift+F11").Description("Resalta el codigo con diferentes colores y formatos de fuente.").Icon("syntaxColour.png").Checkeable(false).EnableIf(ecSOURCE));	
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_FULLSCREEN, LANG(MENUITEM_VIEW_FULLSCREEN,"Ver a Pantalla &Completa")).ShortCut("F11").Description("Muestra el editor a pantalla completa, ocultando tambien los demas paneles").Icon("fullScreen.png").Checkeable(false));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_BEGINNER_PANEL, LANG(MENUITEM_VIEW_BEGINNER_PANEL,"Mostrar Panel de Mini-Plantillas")).Description("Muestra un panel con plantillas y estructuras basicas de c++").Icon("beginer_panel.png").Checkeable(false));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LEFT_PANELS, LANG(MENUITEM_VIEW_LEFT_PANELS,"&Mostrar Panel de Arboles")).Description("Muestra el panel con los arboles de proyecto, simbolos y explorador de archivos").Checkeable(false));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_PROJECT_TREE, LANG(MENUITEM_VIEW_PROJECT_TREE,"&Mostrar Arbol de &Proyecto")).Description("Muestra el panel del arbol de proyecto/archivos abiertos").Icon("projectTree.png").Checkeable(false));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_EXPLORER_TREE, LANG(MENUITEM_VIEW_EXPLORER_TREE,"Mostrar &Explorardor de Archivos")).ShortCut("Ctrl+E").Description("Muestra el panel explorador de archivos").Icon("explorerTree.png").Checkeable(false));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos")).Description("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo.").Icon("symbolsTree.png").Checkeable(false));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion")).Description("Muestra un panel con la salida del compilador").Icon("compilerTree.png").Checkeable(false));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo")).Description("Muestra la barra de herramientas para el manejo de archivos")/*.Checkeable(_toolbar_visible(tbFILE))*/);
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion")).Description("Muestra la barra de herramientas para la edicion del fuente")/*.Checkeable(_toolbar_visible(tbEDIT))*/);
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver")).Description("Muestra la barra de herramientas para las opciones de visualizacion")/*.Checkeable(_toolbar_visible(tbVIEW))*/);
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida")).Description("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente")/*.Checkeable(_toolbar_visible(tbFIND))*/);
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion")).Description("Muestra la barra de herramientas para la compilacion y ejecucion del programa")/*.Checkeable(_toolbar_visible(tbRUN))*/);
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas")).Description("Muestra la barra de herramientas para las herramientas adicionales")/*.Checkeable(_toolbar_visible(tbTOOLS))*/);
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto")).Description("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto")/*.Checkeable(_toolbar_visible(tbPROJECT))*/.EnableIf(ecPROJECT));
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion")).Description("Muestra la barra de herramientas para la depuracion del programa")/*.Checkeable(_toolbar_visible(tbDEBUG))*/);
-//		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea")).Description("Muestra la barra de herramientas con commandos miselaneos")/*.Checkeable(_toolbar_visible(tbMISC))*/);
-//	} else if (wx_menu==menues[mnTOOLS]) {
-//		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_CONFIG,LANG(MENUITEM_TOOLS_WXFB_CONFIG,"Configurar &Integracion con wxFormBuilder...")).Description("Configura características adicionales que facilitan el uso de wxFormBuilder").Icon("wxfb_activate.png"));
-//		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_NEW_RES,LANG(MENUITEM_TOOLS_WXFB_NEW_RESOURCE,"&Adjuntar un Nuevo Proyecto wxFB...")).Description("Crea un nuevo proyecto wxFormBuilder y lo agrega al proyecto en ZinjaI").Icon("wxfb_new_res.png"));
-//		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_LOAD_RES,LANG(MENUITEM_TOOLS_WXFB_LOAD_RESOURCE,"&Adjuntar un Proyecto wxFB Existente...")).Description("Agrega un proyecto wxFormBuilder ya existente al proyecto en ZinjaI").Icon("wxfb_load_res.png"));
-//		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_REGEN,LANG(MENUITEM_TOOLS_WXFB_REGENERATE,"&Regenerar Proyectos wxFB")).ShortCut("Shift+Alt+F9").Description("Ejecuta wxFormBuilder para regenerar los archivos de recurso o fuentes que correspondan").Icon("wxfb_regen.png").Map());
-//		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(MENUITEM_TOOLS_WXFB_INHERIT,"&Generar Clase Heredada...")).Description("Genera una nueva clase a partir de las definidas por algun proyecto wxfb").Icon("wxfb_inherit.png").Map());
-//		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_UPDATE_INHERIT,LANG(MENUITEM_TOOLS_WXFB_UPDATE_INHERIT,"Act&ualizar Clase Heredada...")).Description("Actualiza los metodos de una clase que hereda de las definidas por algun proyecto wxfb").Icon("wxfb_update_inherit.png").Map());
-//	} else if (wx_menu==menues[mnRUN]) {
-//		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_COMPILE, LANG(MENUITEM_RUN_COMPILE,"&Compilar")).ShortCut("Shift+F9").Description("Guarda y compila el fuente actual").Icon("compilar.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
-//		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_CLEAN, LANG(MENUITEM_RUN_CLEAN,"&Limpiar")).ShortCut("Ctrl+Shift+F9").Description("Elimina los objetos y ejecutables compilados").Icon("limpiar.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
-//		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_STOP, LANG(MENUITEM_RUN_STOP,"&Detener")).Description("Detiene la ejecucion del programa").Icon("detener.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
+//void MenusAndToolsConfig::SetMenuItemsStates (wxMenu * wx_menu) {
+//	bool vec[ecCOUNT], source=main_window->notebook_sources->GetPageCount()!=0;
+//	vec[ecSOURCE]=source;
+//	vec[ecPROJECT]=project;
+//	vec[ecPROJECT_OR_SOURCE]=source||project;
+//	vec[ecDEBUG]=debug->debugging;
+//	vec[ecNOT_DEBUG]=!debug->debugging;
+//	vec[ecDEBUG_PAUSED]=debug->debugging&&(!debug->waiting);
+//	vec[ecDEBUG_NOT_PAUSED]=debug->debugging&&debug->waiting;
+//	vec[ecNOT_DEBUG_OR_DEBUG_PAUSED]=(!debug->debugging)||(!debug->waiting);
+//	for(int menu_id=0;menu_id<mnCOUNT;menu_id++) {
+//		if (menues[menu_id].wx_menu==wx_menu) {
+//			vector<myMenuItem> &items=menues[menu_id].items;
+//			for(int i=0;i<items.size();i++) { 
+//				if (items[i].enabling_condition!=ecALWAYS)
+//					items[i].wx_item->Enable(vec[items[i].enabling_condition]);
+//			}
+//			break;
+//		}
 //	}
-}
+//	// casos especiales
+////	if (wx_menu==menues[mnVIEW].wx_menu) {
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LINE_WRAP, LANG(MENUITEM_VIEW_LINE_WRAP,"&Ajuste de linea")).ShortCut("Alt+F11").Description("Muestra las lineas largas como en varios renglones").Icon("lineWrap.png").Checkeable(false).EnableIf(ecSOURCE));	
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_WHITE_SPACE, LANG(MENUITEM_VIEW_WHITE_SPACES,"Mostrar espacios y caracteres de &fin de linea")).Description("Muestra las lineas largas como en varios renglones").Icon("whiteSpace.png").Checkeable(false).EnableIf(ecSOURCE));	
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_CODE_STYLE, LANG(MENUITEM_VIEW_SYNTAX_HIGHLIGHT,"&Colorear Sintaxis")).ShortCut("Shift+F11").Description("Resalta el codigo con diferentes colores y formatos de fuente.").Icon("syntaxColour.png").Checkeable(false).EnableIf(ecSOURCE));	
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_FULLSCREEN, LANG(MENUITEM_VIEW_FULLSCREEN,"Ver a Pantalla &Completa")).ShortCut("F11").Description("Muestra el editor a pantalla completa, ocultando tambien los demas paneles").Icon("fullScreen.png").Checkeable(false));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_BEGINNER_PANEL, LANG(MENUITEM_VIEW_BEGINNER_PANEL,"Mostrar Panel de Mini-Plantillas")).Description("Muestra un panel con plantillas y estructuras basicas de c++").Icon("beginer_panel.png").Checkeable(false));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_LEFT_PANELS, LANG(MENUITEM_VIEW_LEFT_PANELS,"&Mostrar Panel de Arboles")).Description("Muestra el panel con los arboles de proyecto, simbolos y explorador de archivos").Checkeable(false));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_PROJECT_TREE, LANG(MENUITEM_VIEW_PROJECT_TREE,"&Mostrar Arbol de &Proyecto")).Description("Muestra el panel del arbol de proyecto/archivos abiertos").Icon("projectTree.png").Checkeable(false));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_EXPLORER_TREE, LANG(MENUITEM_VIEW_EXPLORER_TREE,"Mostrar &Explorardor de Archivos")).ShortCut("Ctrl+E").Description("Muestra el panel explorador de archivos").Icon("explorerTree.png").Checkeable(false));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_SYMBOLS_TREE, LANG(MENUITEM_VIEW_SYMBOLS_TREE,"Mostrar Arbol de &Simbolos")).Description("Analiza el codigo fuente y construye un arbol con los simbolos declarados en el mismo.").Icon("symbolsTree.png").Checkeable(false));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_COMPILER_TREE, LANG(MENUITEM_VIEW_COMPILER_TREE,"&Mostrar Resultados de la Compilacion")).Description("Muestra un panel con la salida del compilador").Icon("compilerTree.png").Checkeable(false));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FILE, LANG(MENUITEM_VIEW_TOOLBAR_FILE,"&Mostrar Barra de Herramientas Archivo")).Description("Muestra la barra de herramientas para el manejo de archivos")/*.Checkeable(_toolbar_visible(tbFILE))*/);
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_EDIT, LANG(MENUITEM_VIEW_TOOLBAR_EDIT,"&Mostrar Barra de Herramientas Edicion")).Description("Muestra la barra de herramientas para la edicion del fuente")/*.Checkeable(_toolbar_visible(tbEDIT))*/);
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_VIEW, LANG(MENUITEM_VIEW_TOOLBAR_VIEW,"&Mostrar Barra de Herramientas Ver")).Description("Muestra la barra de herramientas para las opciones de visualizacion")/*.Checkeable(_toolbar_visible(tbVIEW))*/);
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_FIND, LANG(MENUITEM_VIEW_TOOLBAR_FIND,"&Mostrar Barra de Busqueda Rapida")).Description("Muestra un cuadro de texto en la barra de herramientas que permite buscar rapidamente en un fuente")/*.Checkeable(_toolbar_visible(tbFIND))*/);
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_RUN, LANG(MENUITEM_VIEW_TOOLBAR_RUN,"&Mostrar Barra de Herramientas Ejecucion")).Description("Muestra la barra de herramientas para la compilacion y ejecucion del programa")/*.Checkeable(_toolbar_visible(tbRUN))*/);
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_TOOLS, LANG(MENUITEM_VIEW_TOOLBAR_TOOLS,"&Mostrar Barra de Herramientas Herramientas")).Description("Muestra la barra de herramientas para las herramientas adicionales")/*.Checkeable(_toolbar_visible(tbTOOLS))*/);
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_PROJECT, LANG(MENUITEM_VIEW_TOOLBAR_PROJECT,"&Mostrar Barra de Herramientas Proyecto")).Description("Muestra la barra de herramientas para las herramientas personalizables propias del proyecto")/*.Checkeable(_toolbar_visible(tbPROJECT))*/.EnableIf(ecPROJECT));
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_DEBUG, LANG(MENUITEM_VIEW_TOOLBAR_DEBUG,"&Mostrar Barra de Herramientas Depuracion")).Description("Muestra la barra de herramientas para la depuracion del programa")/*.Checkeable(_toolbar_visible(tbDEBUG))*/);
+////		AddMenuItem(mnVIEW, myMenuItem(mxID_VIEW_TOOLBAR_MISC, LANG(MENUITEM_VIEW_TOOLBAR_MISC,"&Mostrar Barra de Herramientas Miscelanea")).Description("Muestra la barra de herramientas con commandos miselaneos")/*.Checkeable(_toolbar_visible(tbMISC))*/);
+////	} else if (wx_menu==menues[mnTOOLS]) {
+////		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_CONFIG,LANG(MENUITEM_TOOLS_WXFB_CONFIG,"Configurar &Integracion con wxFormBuilder...")).Description("Configura características adicionales que facilitan el uso de wxFormBuilder").Icon("wxfb_activate.png"));
+////		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_NEW_RES,LANG(MENUITEM_TOOLS_WXFB_NEW_RESOURCE,"&Adjuntar un Nuevo Proyecto wxFB...")).Description("Crea un nuevo proyecto wxFormBuilder y lo agrega al proyecto en ZinjaI").Icon("wxfb_new_res.png"));
+////		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_LOAD_RES,LANG(MENUITEM_TOOLS_WXFB_LOAD_RESOURCE,"&Adjuntar un Proyecto wxFB Existente...")).Description("Agrega un proyecto wxFormBuilder ya existente al proyecto en ZinjaI").Icon("wxfb_load_res.png"));
+////		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_REGEN,LANG(MENUITEM_TOOLS_WXFB_REGENERATE,"&Regenerar Proyectos wxFB")).ShortCut("Shift+Alt+F9").Description("Ejecuta wxFormBuilder para regenerar los archivos de recurso o fuentes que correspondan").Icon("wxfb_regen.png").Map());
+////		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_INHERIT_CLASS,LANG(MENUITEM_TOOLS_WXFB_INHERIT,"&Generar Clase Heredada...")).Description("Genera una nueva clase a partir de las definidas por algun proyecto wxfb").Icon("wxfb_inherit.png").Map());
+////		AddMenuItem(mnTOOLS, myMenuItem(mxID_TOOLS_WXFB_UPDATE_INHERIT,LANG(MENUITEM_TOOLS_WXFB_UPDATE_INHERIT,"Act&ualizar Clase Heredada...")).Description("Actualiza los metodos de una clase que hereda de las definidas por algun proyecto wxfb").Icon("wxfb_update_inherit.png").Map());
+////	} else if (wx_menu==menues[mnRUN]) {
+////		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_COMPILE, LANG(MENUITEM_RUN_COMPILE,"&Compilar")).ShortCut("Shift+F9").Description("Guarda y compila el fuente actual").Icon("compilar.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
+////		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_CLEAN, LANG(MENUITEM_RUN_CLEAN,"&Limpiar")).ShortCut("Ctrl+Shift+F9").Description("Elimina los objetos y ejecutables compilados").Icon("limpiar.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
+////		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_STOP, LANG(MENUITEM_RUN_STOP,"&Detener")).Description("Detiene la ejecucion del programa").Icon("detener.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
+////	}
+//}
+
 
