@@ -531,7 +531,7 @@ ProjectManager::ProjectManager(wxFileName name) {
 
 	main_window->PrepareGuiForProject(true);
 	if (GetWxfbActivated()) {
-		project->ActivateWxfb(); // para que marque en el menu y verifique si esta instalado
+		project->ActivateWxfb(true); // para que marque en el menu y verifique si esta instalado
 	}
 	
 	navigation_history.Reset();
@@ -2757,13 +2757,17 @@ void ProjectManager::FixTemplateData(wxString name) {
 	main_window->SetOpenedFileName(project_name=name);
 }
 
-void ProjectManager::ActivateWxfb() {
-	GetWxfbConfiguration()->activate_integration=true;
-	_menu_item(mxID_TOOLS_WXFB_REGEN)->Enable(true);
-	_menu_item(mxID_TOOLS_WXFB_INHERIT_CLASS)->Enable(true);
-	_menu_item(mxID_TOOLS_WXFB_UPDATE_INHERIT)->Enable(true);
-	WxfbGetFiles();
-	config->CheckWxfbPresent();
+void ProjectManager::ActivateWxfb(bool do_activate) {
+	GetWxfbConfiguration()->activate_integration=do_activate;
+	_menu_item(mxID_TOOLS_WXFB_REGEN)->Enable(do_activate);
+	_menu_item(mxID_TOOLS_WXFB_INHERIT_CLASS)->Enable(do_activate);
+	_menu_item(mxID_TOOLS_WXFB_UPDATE_INHERIT)->Enable(do_activate);
+	menu_data->UpdateToolbar(MenusAndToolsConfig::tbPROJECT,true);
+	if (do_activate) {
+		WxfbGetFiles();
+		config->CheckWxfbPresent();
+	}
+	main_window->aui_manager.Update(); // para que se de cuenta del cambio en la barra de herramientas
 }
 
 long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_run, wxString icon_name) {

@@ -226,7 +226,7 @@ void mxMainWindow::OnToolsWxfbConfig(wxCommandEvent &event) {
 void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 	if (project) {
 		
-		if (!project->GetWxfbActivated()) project->ActivateWxfb();
+		if (!project->GetWxfbActivated()) project->ActivateWxfb(true);
 		
 		wxString name=mxGetTextFromUser(_T("Nombre del archivo:"),_T("Nuevo Proyecto wxFormBuilder"),"",this);
 		if (name.Len()==0) return;
@@ -359,7 +359,7 @@ void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 		fn_source.Normalize();
 		wxString cpp_name=fn_source.GetFullPath();
 		
-		if (!project->GetWxfbActivated()) project->ActivateWxfb();
+		if (!project->GetWxfbActivated()) project->ActivateWxfb(true);
 		
 		if (!project->HasFile(cpp_name))
 			project->AddFile(FT_SOURCE,cpp_name);

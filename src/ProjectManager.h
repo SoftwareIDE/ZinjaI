@@ -611,8 +611,8 @@ public:
 	/** @brief Reemplaza nombre de proyecto y demás cosas por el nombre, para usar al crear desde un template **/
 	void FixTemplateData(wxString name);
 	
-	/// @brief Activa el uso de wxFormsBuilder para el proyecto y verifica si encuentra el ejecutabel
-	void ActivateWxfb();
+	/// @brief Activa o desactiva el uso de wxFormsBuilder para el proyecto y verifica si encuentra el ejecutable (de wxfb)
+	void ActivateWxfb(bool do_activate);
 	
 	/// @brief Devuelve la minima versión necesaria para que otro ZinjaI más viejo abra correctamente el proyecto
 	int GetRequiredVersion();
