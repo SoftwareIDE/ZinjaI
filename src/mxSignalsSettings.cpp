@@ -14,7 +14,7 @@ BEGIN_EVENT_TABLE(mxSignalsSettings,wxDialog)
 	EVT_BUTTON(wxID_HELP,mxSignalsSettings::OnButtonHelp)
 END_EVENT_TABLE()
 
-mxSignalsSettings::mxSignalsSettings():wxDialog(main_window,wxID_ANY,"Singnals handling settings",wxDefaultPosition,wxDefaultSize) {
+mxSignalsSettings::mxSignalsSettings():wxDialog(main_window,wxID_ANY,"Singnals handling settings",wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
 	
 	checks_pass=checks_stop=NULL;
 	if (!debug->GetSignals(vsig)) return;

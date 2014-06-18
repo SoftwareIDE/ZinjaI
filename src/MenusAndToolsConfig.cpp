@@ -331,7 +331,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	
 	icon_size=24;
 	
-	toolbars[tbFILE].Init("file",LANG(CAPTION_TOOLBAR_FILE,"Archivo"),"T:1:0"); {
+	toolbars[tbFILE].Init("file",LANG(CAPTION_TOOLBAR_FILE,"Archivo"),"T1"); {
 		AddToolbarItem(tbFILE,myToolbarItem("new_file",menues[mnFILE],wxID_NEW).Visible());
 		AddToolbarItem(tbFILE,myToolbarItem("new_project",menues[mnFILE],mxID_FILE_PROJECT));
 		AddToolbarItem(tbFILE,myToolbarItem("open",menues[mnFILE],wxID_OPEN).Visible());
@@ -353,7 +353,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	}
 	
 	
-	toolbars[tbEDIT].Init("edit",LANG(CAPTION_TOOLBAR_EDIT,"Edición"),"T:1:1"); {
+	toolbars[tbEDIT].Init("edit",LANG(CAPTION_TOOLBAR_EDIT,"Edición"),"T1"); {
 		AddToolbarItem(tbEDIT,myToolbarItem("undo",menues[mnEDIT],wxID_UNDO).Visible());
 		AddToolbarItem(tbEDIT,myToolbarItem("redo",menues[mnEDIT],wxID_REDO).Visible());
 		AddToolbarItem(tbEDIT,myToolbarItem("copy",menues[mnEDIT],wxID_COPY).Visible());
@@ -383,7 +383,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	}
 	
 	
-	toolbars[tbVIEW].Init("view",LANG(CAPTION_TOOLBAR_VIEW,"Ver"),"t:1:3"); {
+	toolbars[tbVIEW].Init("view",LANG(CAPTION_TOOLBAR_VIEW,"Ver"),"t1"); {
 		AddToolbarItem(tbVIEW,myToolbarItem("split_view",menues[mnVIEW],mxID_VIEW_DUPLICATE_TAB).Visible());
 		AddToolbarItem(tbVIEW,myToolbarItem("line_wrap",menues[mnVIEW],mxID_VIEW_LINE_WRAP).Visible());
 		AddToolbarItem(tbVIEW,myToolbarItem("white_space",menues[mnVIEW],mxID_VIEW_WHITE_SPACE).Visible());
@@ -410,7 +410,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbVIEW,myToolbarItem("unfold_5",menues[mnVIEW],mxID_FOLD_SHOW_5)); // 3,LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),ipre+_T("unfold3.png"),LANG(TOOLBAR_DESC_UNFOLD_LEVEL_3,""));
 	}
 	
-	toolbars[tbRUN].Init("run",LANG(CAPTION_TOOLBAR_RUN,"Ejecución"),"T:1:2"); {
+	toolbars[tbRUN].Init("run",LANG(CAPTION_TOOLBAR_RUN,"Ejecución"),"T1"); {
 		AddToolbarItem(tbRUN,myToolbarItem("compile",menues[mnRUN],mxID_RUN_COMPILE).Visible());
 		AddToolbarItem(tbRUN,myToolbarItem("run",menues[mnRUN],mxID_RUN_RUN).Label(LANG(TOOLBAR_CAPTION_RUN_RUN,"Guardar, compilar y ejecutar...")).Visible());
 		AddToolbarItem(tbRUN,myToolbarItem("run_old",menues[mnRUN],mxID_RUN_RUN_OLD));
@@ -429,7 +429,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	}
 	
 	
-	toolbars[tbDEBUG].Init("debug",LANG(CAPTION_TOOLBAR_DEBUG,"Depuración"),"t:3:0"); {
+	toolbars[tbDEBUG].Init("debug",LANG(CAPTION_TOOLBAR_DEBUG,"Depuración"),"t3"); {
 		AddToolbarItem(tbDEBUG,myToolbarItem("start",menues[mnDEBUG],mxID_DEBUG_RUN).Visible());
 		AddToolbarItem(tbDEBUG,myToolbarItem("pause",menues[mnDEBUG],mxID_DEBUG_PAUSE).Visible());
 		AddToolbarItem(tbDEBUG,myToolbarItem("stop",menues[mnDEBUG],mxID_DEBUG_STOP).Visible());
@@ -461,7 +461,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	}
 	
 	
-	toolbars[tbTOOLS].Init("tools",LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas"),"t:1:4"); {
+	toolbars[tbTOOLS].Init("tools",LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas"),"t1"); {
 		AddToolbarItem(tbTOOLS,myToolbarItem("draw_flow",menues[mnTOOLS],mxID_TOOLS_DRAW_FLOW));
 		AddToolbarItem(tbTOOLS,myToolbarItem("draw_classes",menues[mnTOOLS],mxID_TOOLS_DRAW_CLASSES));
 		AddToolbarItem(tbTOOLS,myToolbarItem("copy_code_from_h",menues[mnTOOLS],mxID_TOOLS_CODE_COPY_FROM_H).Visible());
@@ -514,7 +514,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	}
 	
 	
-	toolbars[tbMISC].Init("misc",LANG(CAPTION_TOOLBAR_MISC,"Miscelánea"),"T:1:6"); {
+	toolbars[tbMISC].Init("misc",LANG(CAPTION_TOOLBAR_MISC,"Miscelánea"),"T1"); {
 		AddToolbarItem(tbMISC,myToolbarItem("preferences",menues[mnFILE],mxID_FILE_PREFERENCES).Visible());
 		AddToolbarItem(tbMISC,myToolbarItem("tutorials",menues[mnHELP],mxID_HELP_TUTORIAL));
 		AddToolbarItem(tbMISC,myToolbarItem("help_ide",menues[mnHELP],mxID_HELP_GUI).Visible());
@@ -527,9 +527,10 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	}
 	
 	/// @todo: agregar la de proyecto para que sea mas facil abajo crearla???
-	toolbars[tbFIND].Init("find",LANG(CAPTION_TOOLBAR_FIND,"Búsqueda"),"T:1:5");
-	toolbars[tbPROJECT].Init("project",LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"),"T:1:7");
-	toolbars[tbDIFF].Init("diff",LANG(CAPTION_TOOLBAR_DIFF,"Diff"),"t:3:1");
+	toolbars[tbFIND].Init("find",LANG(CAPTION_TOOLBAR_FIND,"Búsqueda"),"T1");
+	toolbars[tbPROJECT].Init("project",LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"),"T1");
+	toolbars[tbSTATUS].Init("status",LANG(CAPTION_TOOLBAR_STATUS,"Estado de la depuración"),"t3");
+	toolbars[tbDIFF].Init("diff",LANG(CAPTION_TOOLBAR_DIFF,"Diff"),"f");
 	
 }
 
@@ -601,7 +602,7 @@ void MenusAndToolsConfig::CreateMenues () {
 }
 
 void MenusAndToolsConfig::CreateWxToolbar(int tb_id) {
-	toolbars[tb_id].wx_toolbar = new wxToolBar(main_window, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | (toolbars[tb_id].position.top?wxTB_HORIZONTAL:wxTB_VERTICAL));
+	toolbars[tb_id].wx_toolbar = new wxToolBar(main_window, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | (toolbars[tb_id].position.left||toolbars[tb_id].position.right?wxTB_VERTICAL:wxTB_HORIZONTAL));
 	toolbars[tb_id].wx_toolbar->SetToolBitmapSize(wxSize(icon_size,icon_size)); 
 	main_window->aui_manager.AddPane(toolbars[tb_id].wx_toolbar, wxAuiPaneInfo().Name(wxString("toolbar_")+toolbars[tb_id].key).Caption(toolbars[tb_id].label).ToolbarPane().Hide());
 }

@@ -122,6 +122,7 @@ private:
 //	wxMenuItem **tools_custom_item;
 	friend class mxOpenRecentDialog;
 	friend class mxMainWindow;
+	friend class DebugManager; // para el toolbar_status_text
 	
 	
 	
@@ -165,11 +166,13 @@ private:
 	
 	//! Información sobre la posición y visibilidad de una barra de herramientas
 	struct toolbarPosition {
-		bool top,left,right,visible;
+		bool top,left,right,visible; // docking position and visibility (if there's no true docking position, its floating)
 		long row/*,pos*/;
 		toolbarPosition():top(true),left(false),right(false),visible(false),row(0)/*,pos(0)*/ {}
 		void operator=(wxString s) { 
 			if (s.Len()==0) return;
+			else if (s[0]=='f') { top=false; left=right=false; visible=false; }
+			else if (s[0]=='F') { top=false; left=right=false; visible=true; }
 			else if (s[0]=='T') { top=true; left=right=false; visible=true; }
 			else if (s[0]=='R') { right=true; left=top=false; visible=true; }
 			else if (s[0]=='L') { left=true; top=right=false; visible=true; }
@@ -180,9 +183,10 @@ private:
 		}
 		operator wxString() {
 			wxString s;
-			if (left) s<<"L"<<row; 
+			if (left) s<<"Lx"<<row; 
 			else if (right) s<<"R"<<row; 
-			else s<<"T"<<row;
+			else if (top) s<<"T"<<row;
+			else s<<"F";
 			if (!visible) s[0]+=32;
 			return s;
 		}

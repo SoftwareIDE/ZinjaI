@@ -279,7 +279,7 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_TOOLBARS_WICH,"Barra de herramientas a utilizar:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
 	
-	wxArrayString poss; poss.Add("Arriba"); poss.Add("Izquierda"); poss.Add("Derecha");
+	wxArrayString poss; poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_TOP,"Arriba")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_LEFT,"Izquierda")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_RIGHT,"Derecha")); poss.Add(LANG(PREFERENCES_TOOLBARS_FLOAT,"Flotante"));
 #define _aux_ctp_1(name,ID,label) { \
 	MenusAndToolsConfig::toolbarPosition &position = menu_data->GetToolbarPosition(MenusAndToolsConfig::tb##ID); \
 	wxBoxSizer *sz= new wxBoxSizer(wxHORIZONTAL); \
@@ -289,7 +289,7 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	wxButton *bt = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_##ID,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar...")); \
 	sz->Add(toolbars_wich_##name,sizers->BA5_Center); sz->AddStretchSpacer(); sz->Add(bt,sizers->BLR10); \
 	toolbars_side_##name = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,poss,wxCB_READONLY); \
-	toolbars_side_##name->SetSelection(position.top?0:(position.left?1:2)); \
+	toolbars_side_##name->SetSelection(position.top?0:(position.left?1:(position.right?2:3))); \
 	sz->Add(new wxStaticText(panel,wxID_ANY,"Ubicación:"), sizers->BA5_Center); \
 	sz->Add(toolbars_side_##name,sizers->BA5_Center); \
 	sizer->Add(sz,sizers->BA5_Exp0); }
@@ -723,8 +723,9 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 #define _update_toolbar_visibility(NAME,name) _update_toolbar_visibility_0(NAME,name); \
 	{ int s=toolbars_side_##name->GetSelection(); \
 	MenusAndToolsConfig::toolbarPosition &position = menu_data->GetToolbarPosition(MenusAndToolsConfig::tb##NAME); \
-	if ( (s==0&&!position.top) || (s==1&&!position.left) || (s==2&&!position.right) ) { \
-		if (s==2) { position.right=true; position.left=position.top=false; } \
+	if ( (s==0&&!position.top) || (s==1&&!position.left) || (s==2&&!position.right) || (s==3&&(position.right||position.left||position.top)) ) { \
+		if (s==3) { position.right=false; position.left=position.top=false; } \
+		else if (s==2) { position.right=true; position.left=position.top=false; } \
 		else if (s==1) { position.left=true; position.top=position.right=false; } \
 		else { position.top=true; position.left=position.right=false; } \
 		menu_data->UpdateToolbar(MenusAndToolsConfig::tb##NAME,false); toolbar_changed=true; } \

@@ -89,7 +89,7 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 	pi.LeftDockable(t.right||t.left); \
 	pi.RightDockable(t.right||t.left); \
 	pi.TopDockable(t.top); \
-	if (t.left) pi.Left(); else if (t.right) pi.Right(); else pi.Top(); \
+	if (t.left) pi.Left(); else if (t.right) pi.Right(); else if (t.top) pi.Top(); else pi.Float(); \
 	pi.Row(t.row).Position(c[t.row]++); \
 	if (t.visible) pi.Show(); else pi.Hide(); }
 	_aui_update_toolbar_pos(FILE);
@@ -107,21 +107,17 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 
 void mxMainWindow::GetToolbarsPositions() {
 	if ((gui_debug_mode&&config->Debug.autohide_toolbars) || (gui_fullscreen_mode&&config->Init.autohide_toolbars_fs)) return;
-#define _aui_get_toolbar_row(NAME) { wxAuiPaneInfo &pi=aui_manager.GetPane(_get_toolbar(tb##NAME)); \
-	if (pi.IsOk() && pi.IsShown() && !pi.IsFloating()) { \
-	MenusAndToolsConfig::toolbarPosition &position = menu_data->GetToolbarPosition(MenusAndToolsConfig::tb##NAME); \
-	position.visible=true; \
-	position.row=pi.dock_row; } \
-	else _toolbar_visible(tb##NAME)=false; }
-	_aui_get_toolbar_row(FILE);
-	_aui_get_toolbar_row(EDIT);
-	_aui_get_toolbar_row(VIEW);
-	_aui_get_toolbar_row(RUN);
-	_aui_get_toolbar_row(DEBUG);
-	_aui_get_toolbar_row(TOOLS);
-	_aui_get_toolbar_row(MISC);
-	_aui_get_toolbar_row(FIND);
-	if (project) _aui_get_toolbar_row(PROJECT);
+	
+	for(int tb_id=0;tb_id<MenusAndToolsConfig::tbCOUNT_FULL;tb_id++) {
+		wxAuiPaneInfo &pi=aui_manager.GetPane(menu_data->GetToolbar(tb_id));
+		MenusAndToolsConfig::toolbarPosition &position = menu_data->GetToolbarPosition(tb_id);
+		if (pi.IsOk() && pi.IsShown()) {
+			position.visible=true;
+			position.row=pi.dock_row; 
+		} else {
+			position.visible=false;
+		}
+	}
 }
 
 void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
