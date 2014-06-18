@@ -33,6 +33,7 @@ public:
 	void OnClick(wxMouseEvent &evt);
 	void OnMotion(wxMouseEvent &evt);
 	void OnTimer(wxTimerEvent &evt);
+	void OnResize(wxSizeEvent &evt);
 	bool IsDocked();
 	DECLARE_EVENT_TABLE();
 };

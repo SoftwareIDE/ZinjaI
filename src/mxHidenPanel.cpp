@@ -12,6 +12,7 @@ BEGIN_EVENT_TABLE(mxHidenPanel,wxPanel)
 	EVT_RIGHT_DOWN(mxHidenPanel::OnClick)
 	EVT_LEFT_DOWN(mxHidenPanel::OnClick)
 	EVT_TIMER(wxID_ANY,mxHidenPanel::OnTimer)
+	EVT_SIZE(mxHidenPanel::OnResize)
 END_EVENT_TABLE()
 
 //mxHidenPanel *mxHidenPanel::lockeds[3]={NULL,NULL,NULL};
@@ -204,3 +205,9 @@ void mxHidenPanel::Select() {
 //	if (pane.IsDocked()) ShowDock();
 //	else { selected=true; pane.Show(); main_window->aui_manager.Update(); }
 }
+
+void mxHidenPanel::OnResize (wxSizeEvent & evt) {
+	evt.Skip();
+	Refresh();
+}
+
