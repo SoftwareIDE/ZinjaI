@@ -43,23 +43,23 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 	
 	wxArrayString pre_actions;
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_NONE,"Ninguna"));
-	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ONE,"Guardar el fuente actual."));
-	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ALL,"Guardar todos los fuentes abiertos."));
-	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_PROJECT,"Guardar todo el proyecto."));
+	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ONE,"Guardar el fuente actual"));
+	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ALL,"Guardar todos los fuentes abiertos"));
+	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_PROJECT,"Guardar todo el proyecto"));
 	pre_action_ctrl = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_PRE,"Acción antes de ejecutar"),pre_actions,false);
 		
 	async_exec_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ASYNC_EXEC,"Ejecución asíncrona"),false);
 		
 	wxArrayString output_destinations;
-	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_HIDDEN,"Ocultas.")); // (en windows requiere redirect al pedo)
-	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_TERMINAL,"En terminal.")); // (en linux requiere lanzar con terminal)
-	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_DIALOG,"En cuadro de dialogo."));
+	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_HIDDEN,"Ocultas")); // (en windows requiere redirect al pedo)
+	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_TERMINAL,"En terminal")); // (en linux requiere lanzar con terminal)
+	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_DIALOG,"En cuadro de dialogo"));
 	output_mode_ctrl = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_OUTPUT,"Salidas (std y err)"),output_destinations,0);
 		
 	wxArrayString post_actions;
-	post_actions.Add(LANG(CUSTOM_TOOLS_POST_NONE,"Ninguna."));
-	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ONE,"Recargar fuente actual."));
-	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ALL,"Recargar todos los fuentes."));
+	post_actions.Add(LANG(CUSTOM_TOOLS_POST_NONE,"Ninguna"));
+	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ONE,"Recargar fuente actual"));
+	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ALL,"Recargar todos los fuentes"));
 	post_action_ctrl = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_POST,"Acción luego de ejecutar:"),post_actions,0);
 	
 	
