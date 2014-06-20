@@ -273,7 +273,6 @@ public:
 #endif
 	void OnToolsCustomTool(wxCommandEvent &event);
 	void OnToolsCustomProjectTool(wxCommandEvent &event);
-	void RunCustomTool(cfgCustomTool tool);
 	void OnToolsCustomToolsSettings(wxCommandEvent &event);
 	void OnToolsProjectToolsSettings(wxCommandEvent &event);
 	void OnToolsCustomHelp(wxCommandEvent &event);

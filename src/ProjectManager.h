@@ -30,6 +30,7 @@
 #include "mxCustomTools.h"
 #include "enums.h"
 #include "SourceExtras.h"
+#include "CustomTools.h"
 class BreakPointInfo;
 class mxSource;
 class mxOSD;
@@ -455,7 +456,7 @@ public:
 	wxString autocomp_extra; ///< indices de autocompletado adicionales para este proyecto
 	wxString autocodes_file; ///< archivo con definiciones de autocodigos adicionales
 	wxString macros_file; ///< archivo con definiciones de macros para gdb
-	cfgCustomTool custom_tools[MAX_PROJECT_CUSTOM_TOOLS]; ///< herramientas personalizables asociadas al proyecto
+	CustomToolsPack custom_tools; ///< herramientas personalizables asociadas al proyecto
 private:
 	wxString temp_folder; ///< guarda la ruta de temporales (objetos) completa para la configuracion actual, solo para uso interno
 	wxString temp_folder_short; ///< guarda la ruta de temporales (objetos) relativa (como la ingresa el usuario), solo para uso interno

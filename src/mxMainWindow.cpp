@@ -1979,15 +1979,7 @@ void mxMainWindow::OnFileExportHtml (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnFileReload (wxCommandEvent &event) {
-	IF_THERE_IS_SOURCE {
-		mxSource *source = CURRENT_SOURCE;
-		if (!source->sin_titulo) {
-			if (source->GetModify() && mxMD_NO==mxMessageDialog(this,LANG(MAINW_CHANGES_CONFIRM_RELOAD,"Hay Cambios sin guardar, desea recargar igualmente la version del disco?"),source->source_filename.GetFullPath(),mxMD_YES_NO|mxMD_QUESTION).ShowModal())
-				return;
-			source->Reload();
-			parser->ParseFile(source->source_filename.GetFullPath());
-		}
-	}
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->UserReload();
 }
 
 bool mxMainWindow::CloseSource (mxSource *src) {

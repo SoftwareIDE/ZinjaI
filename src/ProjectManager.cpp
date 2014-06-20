@@ -63,7 +63,7 @@ static void fix_path_char(wxChar file_path_char, wxString &value) {
 }
 	
 // abrir un proyecto existente
-ProjectManager::ProjectManager(wxFileName name) {
+ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_TOOLS) {
 	loading=true;
 	mxOSD osd(main_window,wxString(LANG(OSD_LOADING_PROJECT_PRE,"Abriendo "))<<name.GetName()<<LANG(OSD_LOADING_PROJECT_POST,"..."));
 	
@@ -347,23 +347,8 @@ ProjectManager::ProjectManager(wxFileName name) {
 				} else if (key==_T("expr") && current_inspectlist) {
 					current_inspectlist->vars.Add(value);
 				}
-			} else if (section==_T("custom_tools")) {
-				if (key.StartsWith("name_")) {
-					if (key.Mid(5).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
-						custom_tools[l].name=value;
-				} else if (key.StartsWith("command_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
-						custom_tools[l].command=value;
-				} else if (key.StartsWith("workdir_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
-						custom_tools[l].workdir=value;
-				} else if (key.StartsWith("console_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
-						custom_tools[l].console=utils->IsTrue(value);
-				} else if (key.StartsWith("on_toolbar_")) {
-					if (key.Mid(11).ToLong(&l) && l>=0 && l<MAX_PROJECT_CUSTOM_TOOLS)
-						custom_tools[l].on_toolbar=utils->IsTrue(value);
-				}
+			} else if (section=="custom_tools") {
+				custom_tools.ParseConfigLine(key,value);
 			}
 		}
 	}
@@ -885,16 +870,8 @@ bool ProjectManager::Save (bool as_template) {
 	}
 	
 	// guardar herramientas personalizadas
-	fil.AddLine(_T("[custom_tools]"));
-	for(int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) {
-		if (custom_tools[i].command.Len()) {
-			fil.AddLine(wxString(_T("name_"))<<i<<_T("=")<<custom_tools[i].name);
-			fil.AddLine(wxString(_T("command_"))<<i<<_T("=")<<custom_tools[i].command);
-			fil.AddLine(wxString(_T("workdir_"))<<i<<_T("=")<<custom_tools[i].workdir);
-			fil.AddLine(wxString(_T("console_"))<<i<<_T("=")<<(custom_tools[i].console?_T("1"):_T("0")));
-			fil.AddLine(wxString(_T("on_toolbar_"))<<i<<_T("=")<<(custom_tools[i].on_toolbar?_T("1"):_T("0")));
-		}
-	}
+	fil.AddLine("[custom_tools]");
+	custom_tools.WriteConfig(fil);
 	
 	// sellar, escribir, cerrar y terminar
 	fil.AddLine(_T("[end]"));

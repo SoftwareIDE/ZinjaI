@@ -16,10 +16,11 @@
 #include "mxColoursEditor.h"
 #include "Toolchain.h"
 #include "MenusAndToolsConfig.h"
+#include "CustomTools.h"
 
 ConfigManager *config;
 
-ConfigManager::ConfigManager(wxString a_path) {
+ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 	config=this;
 	zinjai_dir = a_path;
 	color_theme::Init();
@@ -327,31 +328,16 @@ bool ConfigManager::Load() {
 //				}
 				
 			} else if (section=="CustomTools") {
-				if (key.StartsWith("name_")) {
-					if (key.Mid(5).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
-						CustomTools[l].name=value;
-				} else if (key.StartsWith("command_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
-						CustomTools[l].command=value;
-				} else if (key.StartsWith("workdir_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
-						CustomTools[l].workdir=value;
-				} else if (key.StartsWith("console_")) {
-					if (key.Mid(8).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
-						CustomTools[l].console=utils->IsTrue(value);
-				} else if (key.StartsWith("on_toolbar_")) {
-					if (key.Mid(11).ToLong(&l) && l>=0 && l<MAX_CUSTOM_TOOLS)
-						CustomTools[l].on_toolbar=utils->IsTrue(value);
-				}
+				custom_tools.ParseConfigLine(key,value);
 				
 			} else if (section=="Toolbars") {
-				if (!menu_data->ParseToolbarConfigLine(key,value)) {
-					if (Init.version<20131115) {
-						for(int i=0;i<MAX_CUSTOM_TOOLS;i++) { 
-							CFG_BOOL_READ_DN(wxString("custom_tool_")<<i,CustomTools[i].on_toolbar);
-						}
-					}
-				}
+				menu_data->ParseToolbarConfigLine(key,value);
+//					if (Init.version<20131115) {
+//						for(int i=0;i<MAX_CUSTOM_TOOLS;i++) { 
+//							CFG_BOOL_READ_DN(wxString("custom_tool_")<<i,CustomTools[i].on_toolbar);
+//						}
+//					}
+//				}
 			}
 		} 
 	}
@@ -603,15 +589,7 @@ bool ConfigManager::Save(){
 	fil.AddLine("");
 	
 	fil.AddLine("[CustomTools]");
-	for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
-		if (CustomTools[i].command.Len()) {
-			fil.AddLine(wxString("name_")<<i<<"="<<CustomTools[i].name);
-			fil.AddLine(wxString("command_")<<i<<"="<<CustomTools[i].command);
-			fil.AddLine(wxString("workdir_")<<i<<"="<<CustomTools[i].workdir);
-			fil.AddLine(wxString("console_")<<i<<"="<<(CustomTools[i].console?"1":"0"));
-			fil.AddLine(wxString("on_toolbar_")<<i<<"="<<(CustomTools[i].on_toolbar?"1":"0"));
-		}
-	}
+	custom_tools.WriteConfig(fil);
 	fil.AddLine("");
 	
 	fil.AddLine("[Toolbars]");

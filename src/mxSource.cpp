@@ -3420,7 +3420,7 @@ void mxSource::ShowDiffChange() {
 
 void mxSource::Reload() {
 	m_extras->FromSource(this);
-	LoadFile(source_filename.GetFullPath());
+	LoadFile(GetFullPath());
 	m_extras->ToSource(this);
 }
 
@@ -3992,3 +3992,15 @@ int mxSource::GetMarginForThisX (int x) {
 	if (x<x0) return MARGIN_FOLD;
 	return MARGIN_NULL;
 }
+
+void mxSource::UserReload ( ) {
+	if (GetModify()) {
+		main_window->notebook_sources->SetSelection(main_window->notebook_sources->GetPageIndex(this));
+		if (mxMD_NO==mxMessageDialog(this,LANG(MAINW_CHANGES_CONFIRM_RELOAD,"Hay Cambios sin guardar, desea recargar igualmente la version del disco?"),GetFullPath(),mxMD_YES_NO|mxMD_QUESTION).ShowModal()) 
+			return;
+	}
+	SetSourceTime((sin_titulo?temp_filename:source_filename).GetModificationTime());
+	Reload();
+	parser->ParseFile(GetFullPath());
+}
+

@@ -745,104 +745,11 @@ void mxMainWindow::OnToolsCustomHelp(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnToolsCustomTool(wxCommandEvent &event) {
-	RunCustomTool(config->CustomTools[event.GetId()-mxID_CUSTOM_TOOL_0]);
+	config->custom_tools.Run(event.GetId()-mxID_CUSTOM_TOOL_0);
 }
 
 void mxMainWindow::OnToolsCustomProjectTool(wxCommandEvent &event) {
-	RunCustomTool(project->custom_tools[event.GetId()-mxID_CUSTOM_PROJECT_TOOL_0]);
-}
-
-void mxMainWindow::RunCustomTool(cfgCustomTool tool) {
-	
-	wxString name=tool.name;
-	wxString workdir=tool.workdir;
-	wxString cmd=tool.command;
-	bool console=tool.console;
-	
-	if (!name.Len()) name=" ";
-	name.Replace("\"","\\\"");
-	if (!cmd.Len()) {
-		mxMessageDialog(main_window,LANG(MAINW_CUSTOM_TOOL_UNDEFINED,"Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\"."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-	} else {
-		wxString project_path, project_bin, bin_workdir, current_source, current_dir, temp_dir;
-		IF_THERE_IS_SOURCE {
-			mxSource *src=CURRENT_SOURCE;
-			current_source=src->GetFullPath();
-			current_dir=src->GetPath();
-			if (current_dir.EndsWith("\\")||current_dir.EndsWith("/")) current_dir.RemoveLast();
-			bin_workdir=src->working_folder.GetFullPath();
-			project_bin=src->GetBinaryFileName().GetFullPath();
-			project_path=current_dir;
-			temp_dir=src->temp_filename.GetPath();
-		}
-		if (project) {
-			project_path = project->path;
-			project_bin = DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
-			bin_workdir=project->active_configuration->working_folder;
-			temp_dir=DIR_PLUS_FILE(project->path,project->active_configuration->temp_folder);
-		}
-		if (bin_workdir.EndsWith("\\")||bin_workdir.EndsWith("/")) bin_workdir.RemoveLast();
-		if (project_path.EndsWith("\\")||project_path.EndsWith("/")) project_path.RemoveLast();
-		if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
-		
-		cmd.Replace("${BIN_WORKDIR}",bin_workdir);
-		cmd.Replace("${CURRENT_FILE}",current_source);
-		cmd.Replace("${CURRENT_DIR}",current_dir);
-		cmd.Replace("${PROJECT_PATH}",project_path);
-		cmd.Replace("${TEMP_DIR}",temp_dir);
-		cmd.Replace("${PROJECT_BIN}",project_bin);
-		cmd.Replace("${MINGW_DIR}",current_toolchain.mingw_dir);
-		if (config->Files.browser_command.Len())
-			cmd.Replace("${BROWSER}",config->Files.browser_command);
-		else {
-#ifdef __WIN32__
-			utils->ParameterReplace(cmd,"${BROWSER}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
-#else
-			cmd.Replace("${BROWSER}","xdg-open");
-#endif
-		}
-#ifdef __WIN32__
-		utils->ParameterReplace(cmd,"${OPEN}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
-#else
-		cmd.Replace("${OPEN}","xdg-open");
-#endif
-		cmd.Replace("${ZINJAI_DIR}",config->zinjai_dir);
-		
-		if (workdir.Len()) {
-			workdir.Replace("${TEMP_DIR}",temp_dir);
-			workdir.Replace("${BIN_WORKDIR}",bin_workdir);
-			workdir.Replace("${CURRENT_DIR}",current_dir);
-			workdir.Replace("${PROJECT_PATH}",project_path);
-			workdir.Replace("${MINGW_DIR}",current_toolchain.mingw_dir);
-			workdir.Replace("${ZINJAI_DIR}",config->zinjai_dir);
-		} else 
-			workdir=project?project_path:current_dir;
-		
-#if defined(__WIN32__)
-		workdir.Replace("/","\\");
-#else
-		workdir.Replace("\\","/");
-#endif
-		wxSetWorkingDirectory(workdir);
-		
-		if (console) {
-#if defined(__WIN32__)
-			wxExecute(cmd, wxEXEC_NOHIDE|wxEXEC_MAKE_GROUP_LEADER);
-#else
-			wxString term_cmd = config->Files.terminal_command;
-			term_cmd.Replace("${TITLE}",name,true);
-			wxExecute(term_cmd+" "+cmd, wxEXEC_NOHIDE|wxEXEC_MAKE_GROUP_LEADER);
-#endif
-		} else {
-#if defined(__WIN32__)
-			wxExecute(cmd, wxEXEC_MAKE_GROUP_LEADER);
-#else
-			wxExecute(cmd, wxEXEC_NOHIDE|wxEXEC_MAKE_GROUP_LEADER);
-#endif
-		}
-		wxSetWorkingDirectory(config->zinjai_dir);
-	}
-	
+	project->custom_tools.Run(event.GetId()-mxID_CUSTOM_PROJECT_TOOL_0);
 }
 
 class ToolsCodeCopyFromHAction : public Parser::OnEndAction {

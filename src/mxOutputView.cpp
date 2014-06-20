@@ -116,21 +116,42 @@ void mxOutputView::Launch(wxString path, wxString command) {
 	}
 }
 
+void mxOutputView::Launched(wxProcess *_process, int _pid) {
+	process = _process;
+	pid = _pid;
+	if (pid) { 
+		working=true;
+		if (extra_button) extra_button->Enable(true);
+		timer->Start(500,true);
+		state->SetLabel(LANG(LAUNCH_STATUS_RUNNING,"Estado: Ejecutando"));
+	}
+}
+
 void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
+	OnProcessTerminate(evt.GetExitCode());
+	delete process;
+	process=NULL;
+}
+
+void mxOutputView::OnProcessTerminate(int exit_code) {
 	close_button->Enable(true);
 	working=false;
 	if (extra_mode!=mxOV_EXTRA_NULL) {
-		extra_button->SetThings(bitmaps->buttons.next,extra_label);
-		GetSizer()->Layout();
-		extra_button->SetFocus();
+		if (extra_label.IsEmpty()) {
+			extra_button->Disable();
+		} else {
+			extra_button->SetThings(bitmaps->buttons.next,extra_label);
+			GetSizer()->Layout();
+			extra_button->SetFocus();
+		}
 	} else {
 		extra_button->Enable(false);
 		close_button->SetFocus();
 	}
 	timer->Stop();
 	GetProcessOutput();
-	if (evt.GetExitCode())
-		state->SetLabel(wxString(LANG(LAUNCH_STATUS_EXITCODE,"Estado: Codigo de salida: "))<<evt.GetExitCode());
+	if (exit_code)
+		state->SetLabel(wxString(LANG(LAUNCH_STATUS_EXITCODE,"Estado: Codigo de salida: "))<<exit_code);
 	else {
 		state->SetLabel(LANG(LAUNCH_STATUS_FINISH,"Estado: Terminado"));
 		if (textfile) {
@@ -139,8 +160,6 @@ void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
 			if (extra_mode==mxOV_EXTRA_NULL) Close();
 		}
 	}
-	delete process;
-	process=NULL;
 }
 
 void mxOutputView::OnTimer(wxTimerEvent &evt) {

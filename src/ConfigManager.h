@@ -23,6 +23,7 @@
 #define CFG_GENERIC_WRITE(where,what) fil.AddLine(wxString(#what"=")<<where.what);
 #define CFG_GENERIC_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<what);
 #define CFG_TEXT_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<utils->Text2Line(what));
+#include "CustomTools.h"
 
 //! Elementos de la configuración relacionados a la depuración
 struct cfgDebug {
@@ -204,7 +205,7 @@ public:
 	cfgFiles Files;
 	cfgCols Cols;
 	cfgDebug Debug;
-	cfgCustomTool CustomTools[MAX_CUSTOM_TOOLS];
+	CustomToolsPack custom_tools;
 	ConfigManager(wxString a_path);
 	void DoInitialChecks();
 	bool Load();

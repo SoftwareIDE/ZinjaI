@@ -2,29 +2,22 @@
 #define MXCUSTOMTOOLS_H
 #include <wx/dialog.h>
 
-#define MAX_PROJECT_CUSTOM_TOOLS 5
-#define MAX_CUSTOM_TOOLS 10
-struct cfgCustomTool {
-	wxString name;
-	wxString command;
-	wxString workdir;
-	bool console;
-	bool on_toolbar;
-	cfgCustomTool():console(false),on_toolbar(false){}
-};
+class CustomToolsPack;
 
 class wxComboBox;
 class wxTextCtrl;
 class wxCheckBox;
 class mxCustomTools : public wxDialog {
 private:
-	wxComboBox *the_combo;
+	wxComboBox *the_combo, *pre_action_ctrl, *post_action_ctrl, *output_mode_ctrl;
 	wxTextCtrl *command_ctrl, *name_ctrl, *workdir_ctrl;
-	wxCheckBox *console_ctrl, *ontoolbar_ctrl;
-	cfgCustomTool *tools, *orig;
+	wxCheckBox *ontoolbar_ctrl, *async_exec_ctrl;
+	CustomToolsPack *tools;
 	int tool_count;
 	bool for_project;
 	static int prev_sel;
+	void ToolToDialog(int i);
+	void DialogToTool(int i);
 public:
 	mxCustomTools(bool for_project, int cual);
 	void OnButtonOk(wxCommandEvent &event);

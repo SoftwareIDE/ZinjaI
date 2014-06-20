@@ -219,7 +219,8 @@ public:
 	void LoadSourceConfig();
 	void SetLineNumbers();
 	bool LoadFile (const wxFileName &filename);
-	void Reload();
+	void Reload(); ///< only reload the code from its source-file (or temp file if its sin_titulo)
+	void UserReload(); ///< reloads code, previously asking for unsaved changes, and also setting the reload time_stamp
 	bool MySaveFile (const wxString &filename);
 	bool SaveSource ();
 	bool SaveTemp ();

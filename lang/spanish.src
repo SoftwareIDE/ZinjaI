@@ -28,12 +28,14 @@ MAINW_DOXYGEN_MISSING
 Doxygen no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CPPCHECK_MISSING
 CppCheck no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+MAINW_CUSTOM_TOOL_UNDEFINED
+Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
+GENERAL_ERROR
+Error
 DEBUG_STATUS_STARTING
 Iniciando depuracion...
 DEBUG_ERROR_STARTING_SPACES
 Error al iniciar el proceso. Puede intentar mover el ejecutable o el proyecto a una ruta sin espacios.
-GENERAL_ERROR
-Error
 DEBUG_ERROR_STARTING
 Error al iniciar el proceso.
 OSD_STARTING_DEBUGGER
@@ -1182,10 +1184,34 @@ CUSTOM_TOOLS_COMMAND
 Comando
 CUSTOM_TOOLS_WORKDIR
 Directorio de trabajo
-CUSTOM_TOOLS_CONSOLE_WINDOWS
-Ocultar ventana
-CUSTOM_TOOLS_CONSOLE_LINUX
-Correr en terminal
+CUSTOM_TOOLS_PRE_NONE
+Ninguna
+CUSTOM_TOOLS_PRE_SAVE_ONE
+Guardar el fuente actual.
+CUSTOM_TOOLS_PRE_SAVE_ALL
+Guardar todos los fuentes abiertos.
+CUSTOM_TOOLS_PRE_SAVE_PROJECT
+Guardar todo el proyecto.
+CUSTOM_TOOLS_PRE
+Acción antes de ejecutar
+CUSTOM_TOOLS_ASYNC_EXEC
+Ejecución asíncrona
+CUSTOM_TOOLS_OUTPUT_HIDDEN
+Ocultas.
+CUSTOM_TOOLS_OUTPUT_TERMINAL
+En terminal.
+CUSTOM_TOOLS_OUTPUT_DIALOG
+En cuadro de dialogo.
+CUSTOM_TOOLS_OUTPUT
+Salidas (std y err)
+CUSTOM_TOOLS_POST_NONE
+Ninguna.
+CUSTOM_TOOLS_POST_RELOAD_ONE
+Recargar fuente actual.
+CUSTOM_TOOLS_POST_RELOAD_ALL
+Recargar todos los fuentes.
+CUSTOM_TOOLS_POST
+Acción luego de ejecutar:
 CUSTOM_TOOLS_ONTOOLBAR_LINUX
 Mostrar en la barra de herramientas
 CUSTOM_TOOLS_TEST
@@ -1982,8 +2008,6 @@ MAINW_GPROF_SHOWING
 Mostrando resultados...
 MAINW_GPROF_GRAPH_TITLE
 Informacion de Profiling
-MAINW_CUSTOM_TOOL_UNDEFINED
-Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
 MAINW_CODETOOLS_NO_HEADER_FOUND
 No se pudo determinar el archivo de cabecera asociado.
 MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION

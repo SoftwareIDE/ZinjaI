@@ -5,14 +5,18 @@
 
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
+	<LI>New: Durante la depuración, se puede invocar un mecanismo de autocompletado al ingresar expresiones en el panel de inspecciones mediante la tecla TAB.</LI>
 	<LI>New: Se agregó un cuadro de diálogo para modificar los toolchains disponibles.</LI>
-	<LI>New: Ahora se puede invocar un menú de autocompletado al ingresar una expresión en el panel de inspecciones presionando la tecla tab.</LI>
 	<LI>New: Se agregó un nuevo panel acoplable desde el que se pueden enviar comandos directamente al depurador (comandos gdb), accesible desde el menú Depuración.</LI>
 	<LI>New: Ahora se puede configurar el manejo que el depurador hace de las señales que recibe el procesos, y generar señales arbitrariamente, desde el menú Depuración.</LI>
 	<LI>New: Ahora se puede cambiar la fuente que se utiliza para mostrar el código (desde la pestaña "Estilo" del cuadro de "Preferencias").</LI>
 	<LI>New: Ahora se pueden utilizar los atajos de teclado Alt+Derecha y Alt+Izquierda para moverse por un historial de navegación de los fuentes (para saltar a las posiciones/fuentes anteriores donde estuvo el cursor de edición).</LI>
 	<LI>New: Al intentar compilar un programa simple, si la compilación falla por símbolos indefinidos o por no encontrar headers de bibliotecas, se buscan estas bibliotecas en las plantillas y se ofrece copiar la configuración de la compilación de las plantillas coincidentes (por ahora el único ejemplo es OpenGL).</LI>
 	<LI>New: Se agregó un opción en el menú "Depuración" en la versión para GNU/Linux que permite modificar un ejecutable que se está depurando (recompilar y aplicar los cambios) sin reiniciar la depuración en algunos casos especiales.</LI>
+	<LI>Imp: Se agregó una opción en la configuración de herramientas personalizables para indicar que si la ejecución debe ser en una terminal, oculta, o un cuadro de diálogo especial de ZinjaI.</LI>
+	<LI>Imp: Se agregó una opción en la configuración de herramientas personalizables para indicar que si se deben guardar los fuentes y/o proyectos abiertos antes de ejecutarla, y si se deben recargar luego.</LI>
+	<LI>Imp: Se agregó una opción en la configuración de herramientas personalizables para elegir si la ejecución de una herramienta debe ser síncrona o asíncrona.</LI>
+	<LI>Imp: Se simplificó el panel de inspecciones eliminando las columnas de Watch y Formato (dichas funcionalidades están ahora accesibles desde el menú contextual de dicho panel).</LI>
 	<LI>Imp: Corregido un bug por el cual el autocompletado no reconocía instanciaciones temporales anónimas de clases.</LI>
 	<LI>Imp: Si el autocompletado falla (no encuentra opciones para mostrar), ya no se intenta autocompletar nuevamente si se sigue tipeando la misma palabra.</LI>
 	<LI>Imp: Se reorganizaron los elementos de los menúes de la ventana principal.</LI>
@@ -23,16 +27,23 @@
 	<LI>Imp: Se agregaron botones y atajos de teclado en los cuadros de diálogo para buscar archivos y funciones para alternar entre los mismos.</LI>
 	<LI>Imp: Se implementó un menú contextual específico para el click derecho sobre un márgen del área de código, con comandos específicos de operaciones por líneas y relacionados al uso de puntos de interrupción.</LI>
 	<LI>Imp: Mejoras en las organización y contextualización del menú contextual para el área de código.</LI>
-	<LI>Imp: Mejorada la búsqueda y configuración de una terminal adecuada para la ejecución al inciar por primera vez en GNU/Linux (ahora reconoce aterm, xterm, roxterm, gnome-terminal, mate-terminal, lxterminal y konsole).</LI>
+	<LI>Imp: Mejorada la búsqueda y configuración de una terminal adecuada para la ejecución al inciar por primera vez en GNU/Linux (ahora reconocen aterm, xterm, roxterm, gnome-terminal, mate-terminal, lxterminal y konsole).</LI>
 	<LI>Imp: Al iniciar ZinjaI por primera vez en GNU/Linux, si no se encuetra un compilador adecuado (gcc o clang) y el sistema utiliza apt-get, ZinjaI ofrece instalar él mismo los paquetes de desarrollo necesarios (build-essential).</LI>
 	<LI>Imp: Las rutas del compilador (MINGW_DIR y la ruta a los ejecutables que se agrega a PATH) se configuran por toolchain.</LI>
 	<LI>Imp: En el cuadro para abrir archivos/proyectos recientes, ya no se muestra por defecto la fecha de modificación, pero esta funcionalidad se puede re-activar con una checkbox dentro del mismo cuador de diálogo (para evitar que demore mucho al llenar la lista si el historial contiene archivos en unidades de red).</LI>
 	<LI>Imp: Al intentar ejecutar un programa/proyecto en GNU/Linux, si ZinjaI detecta que hay un ejecutable compilado y actualizado pero sin permisos de ejecución, intenta cambiarle los permisos. Si lo logra genera una advertencia, sino un error.</LI>
 	<LI>Imp: La ventana de ayuda sobre C++ agrega al final de cada página de referencia un enlace para visualizarla en el navegador por defecto (para poder visualizarla con su formato completo).</LI>
 	<LI>Imp: Al finalizar la compilación de manera exitosa, si hay warnings el panel de resultados se hace visible automáticamente.</LI>
-	<LI>Imp: El atajo de teclado para comentar lineas de código utiliza siempre /* si es un programa C.</LI>
+	<LI>Imp: El atajo de teclado para comentar lineas de código utiliza siempre /* y */ si es un programa C.</LI>
 	<LI>Imp: Los argumentos de compilación por defecto para programas simple ahora distinguen entre programas C y programas C++.</LI>
 	<LI>Imp: Ahora se puede utilizar más de un filtro en una misma búsqueda en el cuadro de diálogo para insertar múltiples archivos desde un directorio.</LI>
+	<LI>Imp: El panel de resultados de la compilación se hace visible siempre que se generen warnings, aún cuando la compilación es exitosa.</LI>
+	<LI>Imp: Mejoras menores en la ventana de referencia C/C++.</LI>
+	<LI>Imp: Las fechas de modificación de la ventana de archivos/proyectos recientes se muestran solo al activar una casilla de verificación (ya que de otro modo puede tardar mucho en cargar la ventana cuando hay archivos en unidades de red).</LI>
+	<LI>Fix: Corregido un bug que congelaba el parseo para el árbol de símbolos en ciertos casos al procesar una declaración de método incompleta.</LI>
+	<LI>Fix: Corregida la detección de la versión del compilador cuando se usa un toolchain alternativo también que invoca a una versión de gcc diferente a la disponible por defecto en el sistema.</LI>
+	<LI>Fix: Corregido un bug que podía generar un cuelgue al reccibir el foco en ZinjaI luego de modificar un proyecto wxfb desde el diseñador.</LI>
+	<LI>Fix: Corregido el problema por el que ZinjaI se cerraba al invocar la generación de la herencia de clases generadas por wxfb manualmente a través del menú herramientas.</LI>
 	<LI>Fix: Corregido un bug por el cual algunas acciones que requerían la actualización del árbol de símbolos entrar en loops infinitos (como el crear ventanas heredadas en proyectos wxfb).</LI>
 	<LI>Fix: Corregido un bug por el cual se mostraba el fuente equivocado durante la depuración de un programa simple sin título en algunas situaciones.</LI>
 	<LI>Fix: Se cambió agregó una opción que faltaba a los posibles niveles de optimizaciones a utilizar en la compilación de un proyecto (Velocidad, que equivale a -Ofast en gcc).</LI>

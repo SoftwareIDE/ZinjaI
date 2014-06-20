@@ -826,10 +826,10 @@ void MenusAndToolsConfig::TransferStatesFromConfig() {
 	GetMyMenuItem(mnTOOLS,mxID_TOOLS_GPROF_DOT)->Checkeable(config->Init.graphviz_dot);
 	GetMyMenuItem(mnTOOLS,mxID_TOOLS_GPROF_FDP)->Checkeable(config->Init.graphviz_dot);
 	for (int i=0;i<MAX_CUSTOM_TOOLS;i++) {
-		wxString str; str<<i<<": "<<config->CustomTools[i].name;
-		wxString desc(LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables")); desc<<" -> "<<i<<": "<<config->CustomTools[i].command;
-		GetMyMenuItem(mnTOOLS,mxID_CUSTOM_TOOL_0+i)->Label(str).Description(config->CustomTools[i].command).SetVisible(!config->CustomTools[i].name.IsEmpty());
-		GetMyToolbarItem(mnTOOLS,mxID_CUSTOM_TOOL_0+i)->Label(str).Description(desc).SetVisible(config->CustomTools[i].on_toolbar);
+		wxString str; str<<i<<": "<<config->custom_tools[i].name;
+		wxString desc(LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables")); desc<<" -> "<<i<<": "<<config->custom_tools[i].command;
+		GetMyMenuItem(mnTOOLS,mxID_CUSTOM_TOOL_0+i)->Label(str).Description(config->custom_tools[i].command).SetVisible(!config->custom_tools[i].name.IsEmpty());
+		GetMyToolbarItem(mnTOOLS,mxID_CUSTOM_TOOL_0+i)->Label(str).Description(desc).SetVisible(config->custom_tools[i].on_toolbar);
 	}
 }
 
