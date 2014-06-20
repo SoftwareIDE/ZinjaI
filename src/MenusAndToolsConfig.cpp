@@ -317,13 +317,15 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	
 	
 	menues[mnHELP].label = LANG(MENUITEM_HELP,"A&yuda"); {
-		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_ABOUT, LANG(MENUITEM_HELP_ABOUT,"Acerca de...")).Description("Acerca de...").Icon("acercaDe.png"));
-		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_TUTORIAL, LANG(MENUITEM_HELP_TUTORIALS,"Tutoriales...")).Description("Abre el cuadro de ayuda y muestra el indice de tutoriales disponibles").Icon("tutoriales.png"));
-		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_GUI, LANG(MENUITEM_HELP_ZINJAI,"Ayuda sobre ZinjaI...")).ShortCut("F1").Description("Muestra la ayuda sobre el uso y las caracteristicas de este entorno...").Icon("ayuda.png"));
 		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_CPP, LANG(MENUITEM_HELP_CPP,"Referencia C/C++...")).ShortCut("Alt+F1").Description("Muestra una completa referencia sobre el lenguaje").Icon("referencia.png"));
+		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_GUI, LANG(MENUITEM_HELP_ZINJAI,"Ayuda sobre ZinjaI...")).ShortCut("F1").Description("Muestra la ayuda sobre el uso y las caracteristicas de este entorno...").Icon("ayuda.png"));
+		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_TUTORIAL, LANG(MENUITEM_HELP_TUTORIALS,"Tutoriales...")).Description("Abre el cuadro de ayuda y muestra el indice de tutoriales disponibles").Icon("tutoriales.png"));
+		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_SHORTCUTS, LANG(MENUITEM_HELP_SHORTCUTS,"Atajos de teclado...")).Description("Muestra en la ventana de ayuda la lista de atajos de teclado disponibles en ZinjaI").Icon("shortcuts.png"));
 		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_TIP, LANG(MENUITEM_HELP_TIPS,"&Mostrar sugerencias de uso...")).Description("Muestra sugerencias sobre el uso del programa...").Icon("tip.png"));
+		AddSeparator(mnHELP);
 		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_OPINION, LANG(MENUITEM_HELP_OPINION,"Enviar sugerencia o reportar error...")).Description("Permite acceder a los foros oficiales de ZinjaI para dejar sugerencias, comentarios o reportar errores").Icon("opinion.png"));
 		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_UPDATES, LANG(MENUITEM_HELP_UPDATES,"&Buscar actualizaciones...")).Description("Comprueba a traves de Internet si hay versiones mas recientes de ZinjaI disponibles...").Icon("updates.png"));
+		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_ABOUT, LANG(MENUITEM_HELP_ABOUT,"Acerca de...")).Description("Acerca de...").Icon("acercaDe.png"));
 	}
 	
 }
@@ -517,9 +519,10 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	
 	toolbars[tbMISC].Init("misc",LANG(CAPTION_TOOLBAR_MISC,"Miscelánea"),"T1"); {
 		AddToolbarItem(tbMISC,myToolbarItem("preferences",menues[mnFILE],mxID_FILE_PREFERENCES).Visible());
-		AddToolbarItem(tbMISC,myToolbarItem("tutorials",menues[mnHELP],mxID_HELP_TUTORIAL));
-		AddToolbarItem(tbMISC,myToolbarItem("help_ide",menues[mnHELP],mxID_HELP_GUI).Visible());
 		AddToolbarItem(tbMISC,myToolbarItem("help_cpp",menues[mnHELP],mxID_HELP_CPP).Visible());
+		AddToolbarItem(tbMISC,myToolbarItem("help_ide",menues[mnHELP],mxID_HELP_GUI).Visible());
+		AddToolbarItem(tbMISC,myToolbarItem("tutorials",menues[mnHELP],mxID_HELP_TUTORIAL));
+		AddToolbarItem(tbMISC,myToolbarItem("shortcuts",menues[mnHELP],mxID_HELP_SHORTCUTS));
 		AddToolbarItem(tbMISC,myToolbarItem("show_tips",menues[mnHELP],mxID_HELP_TIP));
 		AddToolbarItem(tbMISC,myToolbarItem("about",menues[mnHELP],mxID_HELP_ABOUT));
 		AddToolbarItem(tbMISC,myToolbarItem("opinion",menues[mnHELP],mxID_HELP_OPINION).Visible());

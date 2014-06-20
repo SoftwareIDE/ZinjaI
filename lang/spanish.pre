@@ -602,14 +602,16 @@ MENUITEM_TOOLS_INSTALL_COMPLEMENTS
 Instalar Complementos...
 MENUITEM_HELP
 A&yuda
-MENUITEM_HELP_ABOUT
-Acerca de...
-MENUITEM_HELP_TUTORIALS
-Tutoriales...
-MENUITEM_HELP_ZINJAI
-Ayuda sobre ZinjaI...
 MENUITEM_HELP_CPP
 Referencia C/C++...
+MENUITEM_HELP_ZINJAI
+Ayuda sobre ZinjaI...
+MENUITEM_HELP_TUTORIALS
+Tutoriales...
+MENUITEM_HELP_SHORTCUTS
+Atajos de teclado...
+MENUITEM_HELP_ABOUT
+Acerca de...
 MENUITEM_HELP_TIPS
 &Mostrar sugerencias de uso...
 MENUITEM_HELP_OPINION
@@ -1894,8 +1896,6 @@ MAINW_CHANGE_CLOSE_ALL_QUESTION
 Hay cambios sin guardar. Se cerraran todos los archivos. Desea Continuar?
 MAINW_COULD_NOT_EXPORT_HTML
 No se pudo guardar el archivo
-MAINW_CHANGES_CONFIRM_RELOAD
-Hay Cambios sin guardar, desea recargar igualmente la version del disco?
 MAINW_FULLSCREEN_OUT_TIP
 Presione F11 para salir del modo pantalla completa
 WXFB_OPENING
@@ -3108,6 +3108,8 @@ DEBUG_CANT_EDIT_WHILE_DEBUGGING
 Por defecto, no se puede modificar el fuente mientras se encuentra\ndepurando un programa, ya que de esta forma pierde la relación que\nexiste entre la información que brinda el depurador a partir del\narchivo binario, y el fuente que está visualizando. Puede configurar\neste comportamiento en la seccion Depuracion del cuadro de\nPreferencias (desde menu Archivo)
 DEBUG_ALLOW_EDIT_WHILE_DEBUGGING
 Permitir editar igualemente
+MAINW_CHANGES_CONFIRM_RELOAD
+Hay Cambios sin guardar, desea recargar igualmente la version del disco?
 THREADS_ID
 Id
 THREADS_FUNCTION

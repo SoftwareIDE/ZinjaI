@@ -15,7 +15,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.48+devel r10517"
-   sodipodi:docname="art.svg"
+   sodipodi:docname="menu_misc.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/mnt/hda7/zinjai/imgs/acercaDe.png"
    inkscape:export-xdpi="4.8099999"
@@ -32,9 +32,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.22029746"
-     inkscape:cx="-390.322"
-     inkscape:cy="30.718801"
+     inkscape:zoom="0.58954403"
+     inkscape:cx="-679.74227"
+     inkscape:cy="-168.13367"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showguides="true"
@@ -49,6 +49,26 @@
      inkscape:snap-nodes="false" />
   <defs
      id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6646">
+      <stop
+         style="stop-color:#808080;stop-opacity:1;"
+         offset="0"
+         id="stop6648" />
+      <stop
+         id="stop6666"
+         offset="0.43562144"
+         style="stop-color:#999999;stop-opacity:1" />
+      <stop
+         style="stop-color:#ececec;stop-opacity:1"
+         offset="0.56785411"
+         id="stop6668" />
+      <stop
+         style="stop-color:#808080;stop-opacity:0;"
+         offset="1"
+         id="stop6650" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient5020">
@@ -6197,6 +6217,70 @@
        fx="-714.28571"
        fy="416.98254"
        r="181.92857" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6646"
+       id="linearGradient6652"
+       x1="-1454.8879"
+       y1="843.36444"
+       x2="-1430.3"
+       y2="879.047"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.103357,0,0,1.1078789,149.12892,-92.918801)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6646"
+       id="linearGradient6680"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.103357,0,0,1.1078789,149.12892,-92.918801)"
+       x1="-1454.8879"
+       y1="843.36444"
+       x2="-1430.3"
+       y2="879.047" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4251"
+       id="radialGradient6696"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-0.04015055,3.197754,-1.1297147,-0.01418508,-732.96221,-559.47164)"
+       cx="515.87799"
+       cy="298.76428"
+       fx="515.87799"
+       fy="298.76428"
+       r="97.414886" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4553"
+       id="radialGradient6698"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-0.07521022,0.74902997,-0.47300171,-0.04749418,601.15955,37.378696)"
+       cx="412.14285"
+       cy="334.07764"
+       fx="412.14285"
+       fy="334.07764"
+       r="12.371428" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4553"
+       id="radialGradient6700"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-0.07521022,0.74902997,-0.47300171,-0.04749418,601.15955,37.378696)"
+       cx="412.14285"
+       cy="334.07764"
+       fx="412.14285"
+       fy="334.07764"
+       r="12.371428" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4243"
+       id="radialGradient6702"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9065764,0.01536569,-0.01278102,0.75408069,-1556.5616,814.30164)"
+       cx="518.73517"
+       cy="160.21075"
+       fx="518.73517"
+       fy="160.21075"
+       r="185.94286" />
   </defs>
   <metadata
      id="metadata7">
@@ -7007,11 +7091,11 @@
     <image
        sodipodi:absref="/mnt/ex/zinjai/imgs/src/abrir.png"
        xlink:href="abrir.png"
-       width="16"
-       height="14"
-       id="image2222"
+       y="323.35617"
        x="73.929314"
-       y="323.35617" />
+       id="image2222"
+       height="14"
+       width="16" />
     <path
        inkscape:export-ydpi="99.618126"
        inkscape:export-xdpi="99.618126"
@@ -7525,14 +7609,14 @@
     <image
        sodipodi:absref="/mnt/ex/zinjai/imgs/src/buscar.png"
        xlink:href="buscar.png"
-       inkscape:export-ydpi="93.66082"
-       inkscape:export-xdpi="93.66082"
-       inkscape:export-filename="/mnt/sh/zinjai/imgs/IrAMarca.png"
-       width="11.535714"
-       height="11.071428"
-       id="image3727"
+       y="492.85358"
        x="32.96143"
-       y="492.85358" />
+       id="image3727"
+       height="11.071428"
+       width="11.535714"
+       inkscape:export-filename="/mnt/sh/zinjai/imgs/IrAMarca.png"
+       inkscape:export-xdpi="93.66082"
+       inkscape:export-ydpi="93.66082" />
     <path
        inkscape:export-ydpi="56.482735"
        inkscape:export-xdpi="56.482735"
@@ -7727,15 +7811,15 @@
         <image
            sodipodi:absref="/mnt/ex/zinjai/imgs/src/ejecutar.png"
            xlink:href="ejecutar.png"
-           y="70.18618"
-           x="126.72401"
-           id="image3581"
-           height="14"
-           width="15"
-           inkscape:export-filename="/mnt/sh/zinjai/imgs/depurar.png"
-           inkscape:export-xdpi="88.25"
+           transform="matrix(1.6881603,0,0,1.6881603,-94.98297,35.836553)"
            inkscape:export-ydpi="88.25"
-           transform="matrix(1.6881603,0,0,1.6881603,-94.98297,35.836553)" />
+           inkscape:export-xdpi="88.25"
+           inkscape:export-filename="/mnt/sh/zinjai/imgs/depurar.png"
+           width="15"
+           height="14"
+           id="image3581"
+           x="126.72401"
+           y="70.18618" />
         <path
            sodipodi:nodetypes="csssssssc"
            id="path3500"
@@ -10747,7 +10831,11 @@
          sodipodi:role="line"
          x="-1105.5807"
          y="1003.0459"
-         id="tspan8884">buscar actualizaciones</tspan></text>
+         id="tspan8884">buscar actualizaciones</tspan><tspan
+         sodipodi:role="line"
+         x="-1105.5807"
+         y="1053.0459"
+         id="tspan6634">atajos de teclado</tspan></text>
     <rect
        y="721.34833"
        x="-1166.3241"
@@ -12412,5 +12500,46 @@
          x="43.883774"
          y="839.40009"
          style="fill:#000000;font-family:Hobbit SF">P</tspan></text>
+    <g
+       id="g6674"
+       transform="matrix(0.67359725,0,0,0.76102978,-176.14908,383.73743)">
+      <rect
+         style="fill:url(#linearGradient6680);fill-opacity:1;stroke:#000000;stroke-width:1.41159248"
+         id="rect6644"
+         width="49.776405"
+         height="35.567848"
+         x="-1467.7405"
+         y="843.54083"
+         ry="7.0090919" />
+      <rect
+         ry="5.0975056"
+         y="848.39099"
+         x="-1460.0266"
+         height="25.867449"
+         width="34.348579"
+         id="rect6642"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text6670"
+         y="870.79047"
+         x="-1443.4224"
+         style="font-size:16.84723663px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="870.79047"
+           x="-1443.4224"
+           id="tspan6672"
+           sodipodi:role="line">Ctrl</tspan></text>
+    </g>
+    <rect
+       style="opacity:0.75;fill:none;stroke:none"
+       id="rect6704"
+       width="36.547398"
+       height="36.547398"
+       x="-1166.3241"
+       y="1020.9575"
+       inkscape:export-filename="/mnt/ex/zinjai/imgs/24/shortcuts.png"
+       inkscape:export-xdpi="59.099998"
+       inkscape:export-ydpi="59.099998" />
   </g>
 </svg>

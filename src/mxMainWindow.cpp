@@ -350,6 +350,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CUSTOM_HELP, mxMainWindow::OnToolsCustomHelp)
 	EVT_MENU(mxID_TOOLS_INSTALL_COMPLEMENTS, mxMainWindow::OnToolsInstallComplements)
 	
+	EVT_MENU(mxID_HELP_SHORTCUTS, mxMainWindow::OnHelpShortcuts)
 	EVT_MENU(mxID_HELP_OPINION, mxMainWindow::OnHelpOpinion)
 	EVT_MENU(mxID_HELP_TUTORIAL, mxMainWindow::OnHelpTutorial)
 	EVT_MENU(mxID_HELP_ABOUT, mxMainWindow::OnHelpAbout)
@@ -4944,5 +4945,9 @@ void mxMainWindow::OnDebugGdbCommand (wxCommandEvent & event) {
 **/
 void mxMainWindow::OnMenuOpen(wxMenuEvent & evt) {
 //	menu_data->SetMenuItemsStates(evt.GetMenu());
+}
+
+void mxMainWindow::OnHelpShortcuts (wxCommandEvent & event) {
+	mxHelpWindow::ShowHelp("atajos.html");
 }
 

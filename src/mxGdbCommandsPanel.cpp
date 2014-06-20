@@ -109,7 +109,7 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 			if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
 			msg<<"   "<<line[0]<<" "<<ue<<"\n";
 		} else if (line.StartsWith("^")) {
-			if (line.StartsWith("^error")) msg<<"^error: "<<debug->GetValueFromAns(ans,"msg",true,true)<<"\n";
+			if (line.StartsWith("^error")) msg<<"^error: "<<debug->GetValueFromAns(line,"msg",true,true)<<"\n";
 			else msg<<"   ^ "<<line.Mid(1)<<"\n";
 		} else if (line.StartsWith("=")) {
 			msg<<"   = "<<line.Mid(1)<<"\n";
