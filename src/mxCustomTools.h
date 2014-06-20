@@ -15,7 +15,7 @@ private:
 	CustomToolsPack *tools;
 	int tool_count;
 	bool for_project;
-	static int prev_sel;
+	int prev_sel;
 	void ToolToDialog(int i);
 	void DialogToTool(int i);
 public:

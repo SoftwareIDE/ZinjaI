@@ -27,15 +27,13 @@ BEGIN_EVENT_TABLE(mxCustomTools, wxDialog)
 	EVT_CLOSE(mxCustomTools::OnClose)
 END_EVENT_TABLE()
 
-int mxCustomTools::prev_sel=0;
-	
 mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wxID_ANY,_CAPTION,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
 	this->for_project=for_project;
-	if (cual<0) cual=prev_sel; else prev_sel=cual;
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	wxArrayString array;
 	tool_count=for_project?MAX_PROJECT_CUSTOM_TOOLS:MAX_CUSTOM_TOOLS;
 	tools = new CustomToolsPack(for_project?project->custom_tools:config->custom_tools);
+	if (cual<0||cual>=tools->GetCount()) cual=0; 
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	wxArrayString array;
 	for(int i=0;i<tools->GetCount();i++) array.Add(wxString(LANG(CUSTOM_TOOLS_ITEM,"Herramienta "))<<i);
 	
 	the_combo = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_COMBO,"Herramienta a editar"),array,cual,mxID_CUSTOM_TOOLS_COMBO);
@@ -85,6 +83,9 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 	sizer->Add(bottomSizer,sizers->Exp0);
 	
 	SetSizerAndFit(sizer);
+	
+	prev_sel=cual;
+	ToolToDialog(cual);
 	
 	Show();
 	

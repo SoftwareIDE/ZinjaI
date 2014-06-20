@@ -342,6 +342,10 @@ bool ConfigManager::Load() {
 		} 
 	}
 	
+	if (Init.version<20140620) { 
+		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
+		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
+	}
 	if (Init.version<20110418) Debug.select_modified_inspections=true;
 	if (Init.version<20110420) Init.check_for_updates=true;
 	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");

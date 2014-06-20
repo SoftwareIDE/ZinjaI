@@ -25,14 +25,14 @@ void CustomToolsPack::ParseConfigLine (const wxString & key, const wxString & va
 	if (!key.Mid(p).ToLong(&l)) return;
 	if (l<0||l>=cant) return;
 	wxString mkey=key.Mid(0,p-1);
-	if (mkey=="name_") tools[l].name=value;
-	else if (mkey=="command_") tools[l].command=value;
-	else if (mkey=="workdir_") tools[l].workdir=value;
-	else if (mkey=="async_exec_") tools[l].async_exec=utils->IsTrue(value);
-	else if (mkey=="pre_action_") utils->ToInt(value,tools[l].pre_action);
-	else if (mkey=="post_action_") utils->ToInt(value,tools[l].post_action);
-	else if (mkey=="output_mode_") utils->ToInt(value,tools[l].output_mode);
-	else if (mkey=="on_toolbar_") tools[l].on_toolbar=utils->IsTrue(value);
+	if (mkey=="name") tools[l].name=value;
+	else if (mkey=="command") tools[l].command=value;
+	else if (mkey=="workdir") tools[l].workdir=value;
+	else if (mkey=="async_exec") tools[l].async_exec=utils->IsTrue(value);
+	else if (mkey=="pre_action") utils->ToInt(value,tools[l].pre_action);
+	else if (mkey=="post_action") utils->ToInt(value,tools[l].post_action);
+	else if (mkey=="output_mode") utils->ToInt(value,tools[l].output_mode);
+	else if (mkey=="on_toolbar") tools[l].on_toolbar=utils->IsTrue(value);
 }
 
 void CustomToolsPack::WriteConfig (wxTextFile & file) {
@@ -43,7 +43,7 @@ void CustomToolsPack::WriteConfig (wxTextFile & file) {
 		file.AddLine(wxString("workdir_")<<i<<"="<<tools[i].workdir);
 		file.AddLine(wxString("pre_action_")<<i<<"="<<tools[i].pre_action);
 		file.AddLine(wxString("post_action_")<<i<<"="<<tools[i].post_action);
-		file.AddLine(wxString("output_mode")<<i<<"="<<tools[i].output_mode);
+		file.AddLine(wxString("output_mode_")<<i<<"="<<tools[i].output_mode);
 		file.AddLine(wxString("async_exec_")<<i<<"="<<(tools[i].async_exec?"1":"0"));
 		file.AddLine(wxString("on_toolbar_")<<i<<"="<<(tools[i].on_toolbar?"1":"0"));
 	}
@@ -107,7 +107,7 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
 	
 	cmd.Replace("${BIN_WORKDIR}",bin_workdir);
-	cmd.Replace("${CURRENT_FILE}",current_source);
+	cmd.Replace("${CURRENT_SOURCE}",current_source);
 	cmd.Replace("${CURRENT_DIR}",current_dir);
 	cmd.Replace("${PROJECT_PATH}",project_path);
 	cmd.Replace("${TEMP_DIR}",temp_dir);
@@ -149,6 +149,7 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	int exec_flags = wxEXEC_MAKE_GROUP_LEADER | (tool.async_exec?wxEXEC_ASYNC:wxEXEC_SYNC);
 	
 	if (tool.output_mode==CT_OUTPUT_DIALOG) {
+		exec_flags = wxEXEC_MAKE_GROUP_LEADER|wxEXEC_ASYNC;
 		SetOutputView(new mxOutputView(name));
 #ifdef __WIN32__
 	} else if (tool.output_mode==CT_OUTPUT_HIDDEN) {
@@ -163,8 +164,12 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 #endif
 	}
 	
-	wxExecute(cmd,exec_flags,this);
+	wxSetWorkingDirectory(workdir);
+	int pid = wxExecute(cmd,exec_flags,this);
 	wxSetWorkingDirectory(config->zinjai_dir);
+	
+	if (tool.output_mode==CT_OUTPUT_DIALOG) output_view->Launched(this,pid);
+	else if (!tool.async_exec) OnTerminate(0,pid);
 }
 
 void mxCustomToolProcess::OnTerminate (int pid, int status) {
@@ -182,10 +187,7 @@ void mxCustomToolProcess::OnTerminate (int pid, int status) {
 		}
 	}
 	if (output_view) output_view->OnProcessTerminate(status);
-}
-
-mxCustomToolProcess::~mxCustomToolProcess ( ) {
-	cerr<<"Custom tool's process destroyed"<<endl;
+	wxProcess::OnTerminate(pid,status); // so this will be self-deleted
 }
 
 void mxCustomToolProcess::SetOutputView (mxOutputView * _output_view) {

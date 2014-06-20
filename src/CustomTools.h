@@ -31,7 +31,6 @@ public:
 	mxCustomToolProcess(const OneCustomTool &_tool);
 	void OnTerminate(int pid, int status);
 	void SetOutputView(mxOutputView *_output_view);
-	~mxCustomToolProcess();
 };
 
 class CustomToolsPack {

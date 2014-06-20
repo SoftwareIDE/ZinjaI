@@ -3420,7 +3420,9 @@ void mxSource::ShowDiffChange() {
 
 void mxSource::Reload() {
 	m_extras->FromSource(this);
+	bool old_sin_titulo=sin_titulo;
 	LoadFile(GetFullPath());
+	sin_titulo=old_sin_titulo; // to keep as untitled when reloading an untitled source (usefull for custom tools such as clang-format)
 	m_extras->ToSource(this);
 }
 
@@ -3994,7 +3996,7 @@ int mxSource::GetMarginForThisX (int x) {
 }
 
 void mxSource::UserReload ( ) {
-	if (GetModify()) {
+	if (!sin_titulo && GetModify()) {
 		main_window->notebook_sources->SetSelection(main_window->notebook_sources->GetPageIndex(this));
 		if (mxMD_NO==mxMessageDialog(this,LANG(MAINW_CHANGES_CONFIRM_RELOAD,"Hay Cambios sin guardar, desea recargar igualmente la version del disco?"),GetFullPath(),mxMD_YES_NO|mxMD_QUESTION).ShowModal()) 
 			return;
