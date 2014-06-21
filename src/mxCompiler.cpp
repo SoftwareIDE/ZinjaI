@@ -730,7 +730,7 @@ wxString mxCompiler::GetCompilingStatusText() {
 bool mxCompiler::CheckForExecutablePermision(wxString file) {
 #ifndef __WIN32__
 	if (!wxFileName::IsFileExecutable(file)) {
-		system((string("chmod a+x ")+utils->Quotize(file)).c_str());
+		system((string("chmod a+x ")+utils->Quotize(file).c_str()).c_str());
 		if (!wxFileName::IsFileExecutable(file)) {
 			tree->AppendItem(errors,LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución."),7);
 			main_window->ShowCompilerTreePanel();

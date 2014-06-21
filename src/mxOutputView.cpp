@@ -128,12 +128,12 @@ void mxOutputView::Launched(wxProcess *_process, int _pid) {
 }
 
 void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
-	OnProcessTerminate(evt.GetExitCode());
+	OnProcessTerminateCommon(evt.GetExitCode());
 	delete process;
 	process=NULL;
 }
 
-void mxOutputView::OnProcessTerminate(int exit_code) {
+void mxOutputView::OnProcessTerminateCommon(int exit_code) {
 	close_button->Enable(true);
 	working=false;
 	if (extra_mode!=mxOV_EXTRA_NULL) {

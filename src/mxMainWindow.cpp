@@ -864,7 +864,7 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 	main_window=NULL;
 	er_uninit();
 #if defined(__APPLE__)
-	aui_manager.GetPane(toolbar_find).Hide();
+	aui_manager.GetPane(_get_toolbar(tbFIND)).Hide();
 	aui_manager.Update(); wxYield();
 #endif
 	wxExit();

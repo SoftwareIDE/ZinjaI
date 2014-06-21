@@ -45,7 +45,7 @@ public:
 	void OnOkButton(wxCommandEvent &evt);
 	void OnExtraButton(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);
-	void OnProcessTerminate(int exit_code);
+	void OnProcessTerminateCommon(int exit_code);
 	void OnProcessTerminate(wxProcessEvent &evt);
 	void OnTimer(wxTimerEvent &evt);
 	~mxOutputView();

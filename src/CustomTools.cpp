@@ -186,7 +186,7 @@ void mxCustomToolProcess::OnTerminate (int pid, int status) {
 			if (src) src->UserReload();
 		}
 	}
-	if (output_view) output_view->OnProcessTerminate(status);
+	if (output_view) output_view->OnProcessTerminateCommon(status);
 	wxProcess::OnTerminate(pid,status); // so this will be self-deleted
 }
 

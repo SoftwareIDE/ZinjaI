@@ -94,9 +94,8 @@ zmkdir fuentes
     cp -u $SRC/src_extras/complement/* fuentes/src_extras/complement
 #  zmkdir fuentes/src_extras/wx_autocomp
 #    cp -u $SRC/src_extras/wx_autocomp/* fuentes/src_extras/wx_autocomp
-  zmkdir fuentes/imgs
-    cp -u $SRC/imgs/art.svg fuentes/imgs/
-    cp -u $SRC/imgs/logos.svg fuentes/imgs/
+  zmkdir fuentes/imgs/src
+    cp -u $SRC/imgs/src/* fuentes/imgs/src/
   zmkdir fuentes/lang
     cp $SRC/lang/*.src fuentes/lang/
     cp $SRC/lang/spanish.pre fuentes/lang/
