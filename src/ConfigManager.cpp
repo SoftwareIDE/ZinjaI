@@ -53,6 +53,7 @@ ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 						"El sistema utilizará el predeterminado (spanish).\n"
 						"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
 		
+	menu_data = new MenusAndToolsConfig();
 	RecalcStuff();
 }
 
@@ -881,16 +882,17 @@ bool ConfigManager::CheckCppCheckPresent() {
 
 void ConfigManager::RecalcStuff ( ) {
 	// create regular menus and toolbars' data (required for Load())
-	menu_data = new MenusAndToolsConfig();
-	for(unsigned int i=0;i<delayed_config_lines->toolbars_keys.GetCount();i++)
-		menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
-//	for(unsigned int i=0;i<delayed_config_lines->menus_keys.GetCount();i++)
-//		menu_data->ParseMenuConfigLine(key,value); 
-	if (Init.version<20140620) { 
-		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
-		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
+	if (delayed_config_lines) {
+		for(unsigned int i=0;i<delayed_config_lines->toolbars_keys.GetCount();i++)
+			menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
+	//	for(unsigned int i=0;i<delayed_config_lines->menus_keys.GetCount();i++)
+	//		menu_data->ParseMenuConfigLine(key,value); 
+		if (Init.version<20140620) { 
+			menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
+			menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
+		}
+		delete delayed_config_lines; delayed_config_lines=NULL;
 	}
-	delete delayed_config_lines; delayed_config_lines=NULL;
 	// setup some required paths
 	temp_dir = DIR_PLUS_FILE(zinjai_dir,Files.temp_dir);
 	if (zinjai_dir.EndsWith("\\")||zinjai_dir.EndsWith("/")) zinjai_dir.RemoveLast();

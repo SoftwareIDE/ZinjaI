@@ -11,14 +11,14 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/MenusAndToolsConfig.cpp
+current_source=src/ConfigManager.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
 cursor=121:106
 [source]
 path=src/ConfigManager.cpp
-cursor=882:38
+cursor=892:28
 marker=333
 marker=793
 marker=794
@@ -734,7 +734,7 @@ path=src/mxSignalsSettings.h
 cursor=25:0
 [header]
 path=src/MenusAndToolsConfig.h
-cursor=16:22
+cursor=16:0
 open=true
 [header]
 path=src/mxToolchainConfig.h
