@@ -26,6 +26,9 @@ MenusAndToolsConfig::MenusAndToolsConfig () {
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) file_source_history[i]=NULL;
 	file_project_history = new wxMenuItem*[CM_HISTORY_MAX_LEN];
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) file_project_history[i]=NULL;
+	
+	LoadMenuData();
+	LoadToolbarsData();
 }
 
 void MenusAndToolsConfig::LoadMenuData ( ) {

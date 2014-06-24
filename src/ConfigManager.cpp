@@ -26,10 +26,7 @@ ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 	color_theme::Init();
 	LoadDefaults();
 	
-	// create regular menues (required for Load())
-	menu_data = new MenusAndToolsConfig();
-	menu_data->LoadMenuData();
-	menu_data->LoadToolbarsData();
+	delayed_config_lines = new DelayedConfigLines;
 	
 	Toolchain::LoadToolchains();
 	er_init(home_dir.char_str());
@@ -331,7 +328,9 @@ bool ConfigManager::Load() {
 				custom_tools.ParseConfigLine(key,value);
 				
 			} else if (section=="Toolbars") {
-				menu_data->ParseToolbarConfigLine(key,value);
+				delayed_config_lines->toolbars_keys.Add(key);
+				delayed_config_lines->toolbars_values.Add(value);
+//				menu_data->ParseToolbarConfigLine(key,value); // done in RecalcStuff
 //					if (Init.version<20131115) {
 //						for(int i=0;i<MAX_CUSTOM_TOOLS;i++) { 
 //							CFG_BOOL_READ_DN(wxString("custom_tool_")<<i,CustomTools[i].on_toolbar);
@@ -342,10 +341,6 @@ bool ConfigManager::Load() {
 		} 
 	}
 	
-	if (Init.version<20140620) { 
-		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
-		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
-	}
 	if (Init.version<20110418) Debug.select_modified_inspections=true;
 	if (Init.version<20110420) Init.check_for_updates=true;
 	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");
@@ -885,6 +880,18 @@ bool ConfigManager::CheckCppCheckPresent() {
 }
 
 void ConfigManager::RecalcStuff ( ) {
+	// create regular menus and toolbars' data (required for Load())
+	menu_data = new MenusAndToolsConfig();
+	for(unsigned int i=0;i<delayed_config_lines->toolbars_keys.GetCount();i++)
+		menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
+//	for(unsigned int i=0;i<delayed_config_lines->menus_keys.GetCount();i++)
+//		menu_data->ParseMenuConfigLine(key,value); 
+	if (Init.version<20140620) { 
+		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
+		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
+	}
+	delete delayed_config_lines; delayed_config_lines=NULL;
+	// setup some required paths
 	temp_dir = DIR_PLUS_FILE(zinjai_dir,Files.temp_dir);
 	if (zinjai_dir.EndsWith("\\")||zinjai_dir.EndsWith("/")) zinjai_dir.RemoveLast();
 	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();

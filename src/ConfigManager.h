@@ -212,6 +212,15 @@ public:
 	bool Save();	
 	void LoadDefaults();
 	
+	// toolbars and menus related config lines are processed in a delayed mode because 
+	// we need to hava an initialized MenusAndToolsConfig to do it, but MenusAndToolsConfig
+	// needs an initialized ConfigManager to use the proper language
+	struct DelayedConfigLines{
+//		wxArrayString menus_keys;
+//		wxArrayString menus_values;
+		wxArrayString toolbars_keys;
+		wxArrayString toolbars_values;
+	} *delayed_config_lines;
 	void RecalcStuff(); /// @brief arma las cadenas (paths) que no se graban en la configuracion, pero que dependen de esta (ejemplo: temp_dir)
 	
 	/// @brief Verifica si esta instalado y configurado el path para llamar a wxFormBuilder
