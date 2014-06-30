@@ -806,29 +806,29 @@ bool mxUtils::Compare(const wxArrayString &array1, const wxArrayString &array2, 
 wxString mxUtils::GetComplementaryFile(wxFileName the_one, eFileType force_ext) {
 	if (force_ext==FT_NULL) force_ext=GetFileType(the_one.GetFullPath());
 	if (force_ext==FT_SOURCE) {
-		the_one.SetExt(_T("h"));
+		the_one.SetExt("h");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
-		the_one.SetExt(_T("hpp"));
+		the_one.SetExt("hpp");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
-		the_one.SetExt(_T("hxx"));
+		the_one.SetExt("hxx");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
-		the_one.SetExt(_T("h++"));
+		the_one.SetExt("h++");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
 	} else {
-		the_one.SetExt(_T("cpp"));
+		the_one.SetExt("cpp");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
-		the_one.SetExt(_T("cxx"));
+		the_one.SetExt("cxx");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
-		the_one.SetExt(_T("c++"));
+		the_one.SetExt("c++");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
-		the_one.SetExt(_T("c"));
+		the_one.SetExt("c");
 		if (the_one.FileExists())
 			return the_one.GetFullPath();	
 	}
@@ -1170,9 +1170,9 @@ eFileType mxUtils::GetFileType(wxString name, bool recognize_projects) {
 	if (!name.Len()) return FT_OTHER;
 	if (name.Last()=='\"') name.RemoveLast();
 	pto[0]=path_sep; if (name.Contains(pto)) return FT_OTHER;
-	if (name=="cpp"||name=="c"||name=="c++"||name=="cxx")
+	if (ExtensionIsCpp(name))
 		return FT_SOURCE;
-	if (name=="h"||name=="hpp"||name=="hxx")
+	if (ExtensionIsH(name))
 		return FT_HEADER;
 	if (recognize_projects && name==PROJECT_EXT)
 		return FT_PROJECT;

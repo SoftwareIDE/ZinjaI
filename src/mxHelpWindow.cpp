@@ -5,7 +5,7 @@
 #include "mxMessageDialog.h"
 #include "mxMainWindow.h"
 
-#define ERROR_PAGE(page) wxString(_T("<I>ERROR</I>: La pagina \""))<<page<<_T("\" no se encuentra. <br><br> La ayuda de <I>ZinjaI</I> aun esta en contruccion.")
+#define ERROR_PAGE(page) wxString("<I>ERROR</I>: La pagina \"")<<page<<"\" no se encuentra. <br><br> La ayuda de <I>ZinjaI</I> aun esta en contruccion."
 #define _index "index"
 #include "ids.h"
 #include "mxSizers.h"
@@ -16,13 +16,13 @@ mxHelpWindow *mxHelpWindow::instance=NULL;
 mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(LANG(HELPW_CAPTION,"Ayuda de ZinjaI"),true) { 
 	ignore_tree_event=false;
 	// populate index tree
-	wxString index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,_T("index_")+config->Init.language_file);
+	wxString index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,"index_"+config->Init.language_file);
 	if (!wxFileName::FileExists(index_file))
-		index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,_T("index_spanish"));
+		index_file=DIR_PLUS_FILE(config->Help.guihelp_dir,"index_spanish");
 	wxTextFile fil(index_file);
 	if (fil.Exists()) {
 		fil.Open();
-		wxTreeItemId root = tree->AddRoot(_T("Temas de Ayuda"),0);
+		wxTreeItemId root = tree->AddRoot("Temas de Ayuda",0);
 		wxTreeItemId node = root;
 		unsigned int tabs=0;
 		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
@@ -103,7 +103,7 @@ void mxHelpWindow::OnSearch(wxString value) {
 				}
 				if (fc==kc) {
 					count++;
-					aresults.Add(wxString(_T("<!--"))<<tree->GetItemText(it->second)<<_T("--><LI><A href=\"")<<it->first<<_T("\">")<<tree->GetItemText(it->second)<<_T("</A></LI>"));
+					aresults.Add(wxString("<!--")<<tree->GetItemText(it->second)<<"--><LI><A href=\""<<it->first<<"\">"<<tree->GetItemText(it->second)<<"</A></LI>");
 					break;
 				}
 			}
@@ -115,11 +115,11 @@ void mxHelpWindow::OnSearch(wxString value) {
 	aresults.Sort();
 	for (unsigned int i=0;i<aresults.GetCount();i++)
 		result<<aresults[i];
-	result<<_T("</UL></BODY></HTML>");
+	result<<"</UL></BODY></HTML>";
 	if (count)		
 		html->SetPage(result);
 	else
-		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<value<<_T("\".</B></BODY></HTML>"));
+		html->SetPage(wxString("<HTML><HEAD></HEAD><BODY><B>")<<LANG(HELPW_SEARCH_NO_RESULTS_FOR,"No se encontraron coincidencias para \"")<<value<<"\".</B></BODY></HTML>");
 	delete [] bfound;
 }
 
@@ -127,7 +127,15 @@ void mxHelpWindow::ShowIndex() {
 	LoadHelp(_index);
 }
 
-void mxHelpWindow::ShowHelp(wxString page) {
+void mxHelpWindow::ShowHelp(wxString page, wxDialog *from_modal) {
+	
+	if (from_modal) {
+		if (mxMD_OK==mxMessageDialog(from_modal,"Se cerrará este cuadro de diálogo (perdiendo los cambios) para poder acceder a la ventana de ayuda.",LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK_CANCEL|mxMD_WARNING).ShowModal())
+			from_modal->EndModal(0);
+		else
+			return;
+	}
+	
 	if (page=="") page=_index;
 	if (instance) {
 		if (!instance->IsShown()) instance->Show(); 
@@ -141,7 +149,7 @@ void mxHelpWindow::ShowHelp(wxString page) {
 
 
 void mxHelpWindow::LoadHelp(wxString file) {
-	if (file.Len()>5 && file.Mid(0,5)==_T("http:"))
+	if (file.Len()>5 && file.Mid(0,5)=="http:")
 		utils->OpenInBrowser(file);
 	else FixLoadPage(file);
 	SelectTreeItem(file);
@@ -153,9 +161,9 @@ void mxHelpWindow::LoadHelp(wxString file) {
 bool mxHelpWindow::OnLink (wxString href) {
 	if (href=="cppreference:") {
 		Close(); mxReferenceWindow::ShowPage();
-	} else if (href.StartsWith(_T("foropen:"))) {
+	} else if (href.StartsWith("foropen:")) {
 		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,href.AfterFirst(':')));
-	} else if (href.StartsWith(_T("http://"))) {
+	} else if (href.StartsWith("http://")) {
 		utils->OpenInBrowser(href);
 	} else {
 		wxString fname=(href+"#").BeforeFirst('#');

@@ -171,7 +171,7 @@ wxPanel *mxDoxyDialog::CreateMorePanel (wxNotebook *notebook) {
 }
 
 void mxDoxyDialog::OnHelpButton(wxCommandEvent &event) {
-	SHOW_HELP(_T("doxygen.html"));
+	mxHelpWindow::ShowHelp("doxygen.html");
 }
 
 void mxDoxyDialog::OnBaseDirButton(wxCommandEvent &event){

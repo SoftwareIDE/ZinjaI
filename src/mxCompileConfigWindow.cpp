@@ -122,7 +122,7 @@ void mxCompileConfigWindow::OnButtonFolder(wxCommandEvent &event){
 }
 
 void mxCompileConfigWindow::OnHelpButton(wxCommandEvent &evt) {
-	SHOW_HELP(_T("compile_config.html"));
+	mxHelpWindow::ShowHelp("compile_config.html");
 }
 
 void mxCompileConfigWindow::OnArgsButton(wxCommandEvent &evt) {
@@ -219,11 +219,11 @@ void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {
 		if (file.IsOpened()) { 
 			// buscar si tiene nombre
 			wxString line = file.GetFirstLine();
-			while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
-				if (line.Left(15)==_T("// !Z! Options:")) {
+			while (!file.Eof() && line.Left(7)=="// !Z! ") {
+				if (line.Left(15)=="// !Z! Options:") {
 					options = line.Mid(15).Trim(false).Trim(true);
 				}
-				if (line.Left(12)==_T("// !Z! Name:")) {
+				if (line.Left(12)=="// !Z! Name:") {
 					name = line.Mid(12).Trim(false).Trim(true);
 				}
 				line = file.GetNextLine();

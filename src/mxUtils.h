@@ -260,6 +260,10 @@ public:
 	wxString ReplaceLangArgs(wxString src, wxString arg1, wxString arg2);
 	/// for replacing aguments in translate strings for gui messages (version for 3 arguments)
 	wxString ReplaceLangArgs(wxString src, wxString arg1, wxString arg2, wxString arg3);
+	
+	
+	bool ExtensionIsCpp(const wxString &ext) { return ext=="c" || ext=="cpp" || ext=="cxx" || ext=="c++"; }
+	bool ExtensionIsH(const wxString &ext) { return ext=="h" || ext=="hpp" || ext=="hxx" || ext=="h++"; }
 
 };
 

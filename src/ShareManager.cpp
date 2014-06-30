@@ -54,7 +54,7 @@ bool ShareManager::CheckServer() {
 		}
 	}
 	wxIPV4address adrs;
-//	adrs.Hostname(_T("127.0.0.1")); // esta linea era el problema por el cual no se aceptaban conexiones externas
+//	adrs.Hostname("127.0.0.1"); // esta linea era el problema por el cual no se aceptaban conexiones externas
 	adrs.Service(config->Init.zinjai_server_port);
 	index_server = new wxSocketServer(adrs);
 	index_server->SetEventHandler(*(main_window->GetEventHandler()), mxID_SOCKET_SERVER);
@@ -207,7 +207,7 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 	// if we have to ask for the list
 	if (event->GetSocket()==index_client) { // someone ask for the shared sources list
 		if (event->GetSocketEvent()==wxSOCKET_CONNECTION) {
-			index_client->Write(_T("l"),1);
+			index_client->Write("l",1);
 		} else if (event->GetSocketEvent()==wxSOCKET_INPUT) {
 			int n=0;
 			wxChar buf[26];
@@ -263,11 +263,11 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 				mxMessageDialog(main_window,LANG(OPENSHARED_ERROR_GETTING_SOURCE,"Ha ocurrido un error al intentar obtener el fuente. Pruebe actualizar la lista de fuentes compartidos."), LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 			}
 		} else if (event->GetSocketEvent()==wxSOCKET_CONNECTION) {
-			event->GetSocket()->Write((wxString(_T("*"))+it->second.name).c_str(),it->second.name.Len()+1);
+			event->GetSocket()->Write((wxString("*")+it->second.name).c_str(),it->second.name.Len()+1);
 		} else if (event->GetSocketEvent()==wxSOCKET_INPUT) { // if comes a piece of source
 			int n=0;
 			if (it->second.len==-1) { // if that's the first message, get the source len
-				wxChar buf[25]=_T("a");
+				wxChar buf[25]="a";
 				while (n<25) {
 					sock->Read(buf+n,1);
 					if (buf[n++]==' ') break;

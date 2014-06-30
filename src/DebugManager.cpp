@@ -478,9 +478,9 @@ bool DebugManager::Run() {
 
 void DebugManager::HowDoesItRuns() {
 #if defined(_WIN32) || defined(__WIN32__)
-	static wxString sep=_T("\\"),wrong_sep=_T("/");
+	static wxString sep="\\",wrong_sep="/";
 #else
-	static wxString sep=_T("/"),wrong_sep=_T("\\");
+	static wxString sep="/",wrong_sep="\\";
 #endif
 	SetStateText(LANG(DEBUG_STATUS_RUNNING,"Ejecutando..."));
 	MarkCurrentPoint();
@@ -697,16 +697,16 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 	if (waiting || !debugging) return 0;
 	wxString adr = GetAddress(_bpi->fname,_bpi->line_number);
 	if (!adr.Len()) { _bpi->SetStatus(BPS_ERROR_SETTING); ShowBreakPointLocationErrorMessage(_bpi); return -1;  }
-	wxString ans = SendCommand(wxString(_T("-break-insert \"\\\""))<<_bpi->fname<<_T(":")<<_bpi->line_number+1<<_T("\\\"\""));
-	wxString num = GetSubValueFromAns(ans,_T("bkpt"),_T("number"),true);
+	wxString ans = SendCommand(wxString("-break-insert \"\\\"")<<_bpi->fname<<":"<<_bpi->line_number+1<<"\\\"\"");
+	wxString num = GetSubValueFromAns(ans,"bkpt","number",true);
 	if (!num.Len()) { // a veces hay que poner dos barras (//) antes del nombre del archivo en vez de una (en los .h? ¿por que?)
 		wxString file=_bpi->fname;
 		int p = file.Find('/',true);
 		if (p!=wxNOT_FOUND) {
 			wxString file2 = file.Mid(0,p);
 			file2<<'/'<<file.Mid(p);
-			ans = SendCommand(wxString(_T("-break-insert \""))<<file2<<_T(":")<<_bpi->line_number+1<<"\"");
-			num = GetSubValueFromAns(ans,_T("bkpt"),_T("number"),true);
+			ans = SendCommand(wxString("-break-insert \"")<<file2<<":"<<_bpi->line_number+1<<"\"");
+			num = GetSubValueFromAns(ans,"bkpt","number",true);
 		}
 	}
 	int id=-1;
@@ -750,9 +750,9 @@ void DebugManager::SetBacktraceShowsArgs(bool show) {
 }
 bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all) {
 #if defined(_WIN32) || defined(__WIN32__)
-	static wxString sep=_T("\\"),wrong_sep=_T("/");
+	static wxString sep="\\",wrong_sep="/";
 #else
-	static wxString sep=_T("/"),wrong_sep=_T("\\");
+	static wxString sep="/",wrong_sep="\\";
 #endif
 	if (waiting || !debugging) 
 		return false;
@@ -945,8 +945,8 @@ void DebugManager::StepIn() {
 	if (waiting || !debugging) return;
 	running = true;
 	stepping_in=true; really_running=true;
-	wxString ans = SendCommand(_T("-exec-step"));
-	if (ans.Mid(1,7)=_T("running"))
+	wxString ans = SendCommand("-exec-step");
+	if (ans.Mid(1,7)="running")
 		HowDoesItRuns();
 	running = false;
 }
@@ -954,8 +954,8 @@ void DebugManager::StepIn() {
 void DebugManager::StepOut() {
 	if (waiting || !debugging) return;
 	running = true; really_running=true;
-	wxString ans = SendCommand(_T("-exec-finish"));
-	if (ans.Mid(1,7)=_T("running"))
+	wxString ans = SendCommand("-exec-finish");
+	if (ans.Mid(1,7)="running")
 		HowDoesItRuns();
 	running = false;
 }
@@ -963,8 +963,8 @@ void DebugManager::StepOut() {
 void DebugManager::StepOver() {
 	if (waiting || !debugging) return;
 	running = true; really_running=true;
-	wxString ans = SendCommand(_T("-exec-next"));
-	if (ans.Mid(1,7)=_T("running"))
+	wxString ans = SendCommand("-exec-next");
+	if (ans.Mid(1,7)="running")
 		HowDoesItRuns();
 	running = false;
 }
@@ -975,7 +975,7 @@ void DebugManager::Pause() {
 	if (!waiting && !debugging) return;
 #if defined(_WIN32) || defined(__WIN32__)
 	if (!winLoadDBP()) {
-		mxMessageDialog(main_window,_T("Esta caracteristica no se encuentra presente en versiones de Windows previas a XP-SP2"),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();		
+		mxMessageDialog(main_window,"Esta caracteristica no se encuentra presente en versiones de Windows previas a XP-SP2",LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 		return;
 	}
 	long child_pid = winGetChildPid(pid);
@@ -990,8 +990,8 @@ void DebugManager::Continue() {
 	if (waiting || !debugging || status==DBGST_STOPPING) return;
 	running = true;
 	MarkCurrentPoint();
-	wxString ans = SendCommand(_T("-exec-continue"));
-	if (ans.Mid(1,7)==_T("running")) {
+	wxString ans = SendCommand("-exec-continue");
+	if (ans.Mid(1,7)=="running") {
 		HowDoesItRuns();
 		if (config->Debug.raise_main_window)
 			main_window->Raise();
@@ -1349,11 +1349,11 @@ wxString DebugManager::GetAddress(wxString fname, int line) {
 		if (fname[i]=='\\') 
 			fname[i]='/';
 #endif
-	wxString ans = SendCommand(wxString(_T("info line \""))<<fname<<_T(":")<<line+1<<"\"");
-	int r=ans.Find(_T("starts at"));
+	wxString ans = SendCommand(wxString("info line \"")<<fname<<":"<<line+1<<"\"");
+	int r=ans.Find("starts at");
 	if (r!=wxNOT_FOUND) {
 		ans=ans.Mid(r);
-		r=ans.Find(_T("0x"));
+		r=ans.Find("0x");
 		if (r!=wxNOT_FOUND)
 			return ans.Mid(r).BeforeFirst(' ');
 	}
@@ -1371,8 +1371,8 @@ bool DebugManager::Jump(wxString fname, int line) {
 	running = true;
 	wxString adr = GetAddress(fname,line);
 	if (adr.Len()) {
-		wxString ans=SendCommand(_T("-gdb-set $pc="),adr);
-		if (ans.SubString(1,5)!=_T("error")) {
+		wxString ans=SendCommand("-gdb-set $pc=",adr);
+		if (ans.SubString(1,5)!="error") {
 			MarkCurrentPoint(fname,line+1,mxSTC_MARK_EXECPOINT);
 			Backtrace(true);
 			running = false;
@@ -1401,8 +1401,8 @@ bool DebugManager::RunUntil(wxString fname, int line) {
 	running = true;
 	wxString adr = GetAddress(fname,line);
 	if (adr.Len()) {
-		wxString ans = SendCommand(_T("advance *"),adr); // aca estaba exec-until pero until solo funciona en un mismo frame, advance se los salta sin problemas
-		if (ans.SubString(1,5)==_T("error"))
+		wxString ans = SendCommand("advance *",adr); // aca estaba exec-until pero until solo funciona en un mismo frame, advance se los salta sin problemas
+		if (ans.SubString(1,5)=="error")
 			return false;
 		HowDoesItRuns(); /// @todo: guardar adr para comparar en HowDoesItRuns y saber si realmente llego o no a ese punto (siempre dice que si, aunque termine el programa sin pasar por ahi)
 		running = false;
@@ -1414,7 +1414,7 @@ bool DebugManager::RunUntil(wxString fname, int line) {
 bool DebugManager::Return(wxString what) {
 	if (waiting || !debugging) return false;
 	wxString ans = SendCommand(wxString(_T("-exec-return "))<<what);
-	if (ans.SubString(1,4)!=_T("done")) 
+	if (ans.SubString(1,4)!="done") 
 		return false;
 	
 	wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true);
@@ -1575,7 +1575,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		}
 	} else /*if (inspections[num].expr!=expr)*/ {
 		if (!inspections[num].frameless && inspections[num].is_vo && inspections[num].on_scope && !SelectFrameForInspeccion(inspections[num].frame))
-			inspection_grid->SetCellValue(num,IG_COL_LEVEL,_T("Error"));	
+			inspection_grid->SetCellValue(num,IG_COL_LEVEL,"Error");	
 		else 
 			inspection_grid->SetCellValue(num,IG_COL_LEVEL,current_frame_num);
 		ModifyInspectionWatch(num,false,false);
@@ -1599,7 +1599,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		if (ii.name.Len()) { // si se pudo crea el nuevo VO
 			inspection_grid->SetCellValue(num,IG_COL_TYPE,ii.type);
 			if (is_vo) {
-//				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+" "+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)==_T("error")) 
+//				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+" "+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)=="error") 
 //					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
 				value = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),ii.name),_T("value"),true,true);
 			} else {
@@ -1682,7 +1682,7 @@ bool DebugManager::DeleteInspection(int num) {
 	if (!debugging || waiting) return false;
 	if (inspections[num].on_scope && inspections[num].is_vo) {
 		wxString ans = SendCommand(_T("-var-delete "),inspections[num].name);
-		if (ans.SubString(1,5)==_T("error"))
+		if (ans.SubString(1,5)=="error")
 			return false;
 	}
 	inspections.erase(inspections.begin()+num);
@@ -1693,15 +1693,15 @@ bool DebugManager::DeleteInspection(int num) {
 bool DebugManager::ModifyInspectionValue(int num, wxString value) {
 	if (!debugging || waiting) return false;
 	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+" "+utils->EscapeString(value,true));
-	if (ans.Mid(1,4)==_T("done"))
+	if (ans.Mid(1,4)=="done")
 		UpdateInspection();
-	return ans.Mid(1,4)==_T("done");
+	return ans.Mid(1,4)=="done";
 }
 
 bool DebugManager::ModifyInspectionFormat(int num, wxString format) {
 	if (!debugging || waiting) return false;
 	wxString ans = SendCommand(_T("-var-set-format "),inspections[num].name+" "+format);
-	if (ans.SubString(1,5)==_T("error"))
+	if (ans.SubString(1,5)=="error")
 		return false;
 //	inspection_grid->SetCellValue(num,IG_COL_FORMAT,format);
 	inspection_grid->SetCellValue(num,IG_COL_VALUE,
@@ -1762,9 +1762,9 @@ bool DebugManager::UpdateInspection() {
 					}
 				}
 				if (!found) {
-					ii.frame=_T("Error");
-					ii.frame_num=_T("Error");
-					inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("Error"));
+					ii.frame="Error";
+					ii.frame_num="Error";
+					inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
 				}
 			} else {
 				ii.frame=my_frame;
@@ -1819,7 +1819,7 @@ bool DebugManager::UpdateInspection() {
 //					} else 
 //						do_inspect=true;
 //					if (!do_inspect) 
-//						inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("Error"));
+//						inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
 //					else {
 					if (inspections[i].frame_num[0]!='E') {
 						inspection_grid->SetCellValue(i,IG_COL_VALUE,
@@ -1881,7 +1881,7 @@ bool DebugManager::UpdateInspection() {
 						inspection_grid->SetCellValue(i,IG_COL_VALUE,GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[i].name),_T("value"),true,true));
 				}
 //			} else {
-//				inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("Error"));
+//				inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
 			}
 		} else if (!inspections[i].is_vo) { // no es vo
 			if (config->Debug.select_modified_inspections) {
@@ -2000,7 +2000,7 @@ bool DebugManager::SelectFrame(wxString strnum, int idx) {
 	wxString ans = SendCommand(_T("-stack-select-frame "),strnum);
 	current_frame = frames_addrs[idx];
 	current_frame_num = strnum;
-	return ans.Mid(1,4)==_T("done");
+	return ans.Mid(1,4)=="done";
 }
 
 bool DebugManager::DoThat(wxString what) {
@@ -2015,8 +2015,8 @@ bool DebugManager::BreakCompoundInspection(int n) {
 		return false;
 	int p=0;
 	if (!inspections[n].is_array && !inspections[n].is_class) {
-		inspection_grid->SetCellValue(n,IG_COL_EXPR,wxString(_T("*"))<<RewriteExpressionForBreaking(inspections[n].expr));
-		ModifyInspection(n,wxString(_T("*"))<<RewriteExpressionForBreaking(inspections[n].expr),false);
+		inspection_grid->SetCellValue(n,IG_COL_EXPR,wxString("*")<<RewriteExpressionForBreaking(inspections[n].expr));
+		ModifyInspection(n,wxString("*")<<RewriteExpressionForBreaking(inspections[n].expr),false);
 		return true;
 	}
 	bool first = true, breaking_class=inspections[n].is_class;
@@ -2074,7 +2074,7 @@ bool DebugManager::BreakCompoundInspection(int n) {
 				if (p!=wxNOT_FOUND) {
 					p++;
 					wxString item = GetNextItem(ans,p);
-					wxString pre_expr=main_expr+_T(".");
+					wxString pre_expr=main_expr+".";
 					if (breaking_class && main_expr.StartsWith("(*") && main_expr.Last()==')') {
 						wxString aux=main_expr.Mid(2); aux.RemoveLast();
 						if (aux==RewriteExpressionForBreaking(aux))
@@ -2201,11 +2201,11 @@ int DebugManager::GetVOChildrenData(mxIEItemData **data, wxString name, wxString
 			if (what_is==DI_IN_FATHER_POINTER || what_is==DI_IN_FATHER_CLASS)
 				expr = main_expr+_T("::")+new_expr;
 			else if (what_is==DI_IN_CLASS)
-				expr = RewriteExpressionForBreaking(main_expr)+_T(".")+new_expr;
+				expr = RewriteExpressionForBreaking(main_expr)+"."+new_expr;
 			else if (what_is==DI_IN_CLASS_POINTER)
 				expr = RewriteExpressionForBreaking(main_expr)+_T("->")+new_expr;
 			else if (what_is==DI_POINTER)
-				expr = wxString(_T("*"))<<main_expr;
+				expr = wxString("*")<<main_expr;
 			else if (what_is==DI_ARRAY)
 				expr = main_expr+_T("[")+new_expr+_T("]");
 			else
@@ -2235,14 +2235,14 @@ int DebugManager::GetVOChildrenData(mxIEItemData **data, wxString name, wxString
 				if (data[n]->expr==_("public")||data[n]->expr==_("protected")||data[n]->expr==_("private"))
 					data[n]->what_is = DI_IN_CLASS;
 				else {
-					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+_T(".")+data[n]->expr;
+					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+"."+data[n]->expr;
 					data[n]->what_is = DI_FATHER_CLASS;
 				}
 			} else if (what_is==DI_FATHER_CLASS) {
 				if (data[n]->expr==_("public")||data[n]->expr==_("protected")||data[n]->expr==_("private"))
 					data[n]->what_is = DI_IN_FATHER_CLASS;
 				else {
-					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+_T(".")+data[n]->expr;
+					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+"."+data[n]->expr;
 					data[n]->what_is = DI_FATHER_CLASS;
 				}
 			} else {
@@ -2465,7 +2465,7 @@ bool DebugManager::SetBreakPointOptions(int num, wxString condition) {
 	wxString cmd(_T("-break-condition "));
 	cmd<<num<<" "<<utils->EscapeString(condition);
 	wxString ans = SendCommand(cmd);
-	return ans.Len()>4 && ans.Mid(1,4)==_T("done");
+	return ans.Len()>4 && ans.Mid(1,4)=="done";
 }
 
 void DebugManager::SetBreakPointEnable(int num, bool enable, bool once) {
@@ -2573,7 +2573,7 @@ bool DebugManager::SelectFrameForInspeccion(wxString addr) {
 	for (int i=0;i<last_backtrace_size;i++) {
 		if (frames_addrs[i]==addr) {
 			wxString ans = SendCommand(_T("-stack-select-frame "),frames_nums[i]);
-			return ans.Mid(1,4)==_T("done");
+			return ans.Mid(1,4)=="done";
 		}
 	}
 	return false;
@@ -2611,7 +2611,7 @@ wxString DebugManager::GetMacroOutput(wxString cmd, bool keep_endl) {
 				p++;
 			}
 			ret<<ans.Mid(s,p-s);
-		} else if (ans[p]==94 && ans.Mid(p+1,5)==_T("error")) {
+		} else if (ans[p]==94 && ans.Mid(p+1,5)=="error") {
 			int s=p+1;
 			while (p<l && ans[p]!='\n' && ans[p]!='\r') p++;
 			if (ans[p]=='\n' || ans[p]=='\r') p++;
@@ -2640,7 +2640,7 @@ bool DebugManager::EnableInverseExec() {
 		recording_for_reverse=false;
 	} else {
 		wxString ans=SendCommand("record");
-		if (!ans.Contains(_T("error"))) {
+		if (!ans.Contains("error")) {
 			recording_for_reverse=true;
 			return true;
 		} else 
@@ -2653,7 +2653,7 @@ bool DebugManager::ToggleInverseExec() {
 	if (!debugging || waiting) return false;
 	if (recording_for_reverse) {
 		wxString ans=inverse_exec?SendCommand("-gdb-set exec-direction forward"):SendCommand("-gdb-set exec-direction reverse");
-		if (!ans.Contains(_T("error"))) inverse_exec=!inverse_exec;
+		if (!ans.Contains("error")) inverse_exec=!inverse_exec;
 	} else {
 		mxMessageDialog(main_window,LANG(DEBUG_REVERSE_DISABLED,"Solo se puede retroceder la ejecucion hasta el punto en donde la ejecucion hacia atras fue habilitada.\n"
 			                           "Actualmente esta caracteristica no esta habilitada. Utilice el comando \"Habilitar Ejecucion Hacia Atras\"\n"
@@ -2710,7 +2710,7 @@ void DebugManager::LoadInspectionsTable(inspectlist *il) {
 			if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
 		}
 		inspection_grid->SetCellValue(i,IG_COL_EXPR,il->vars[i]);
-		inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("*"));
+		inspection_grid->SetCellValue(i,IG_COL_LEVEL,"*");
 		inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
 //		inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
 //		inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
@@ -2739,7 +2739,7 @@ void DebugManager::SetFramelessInspection(int i) {
 		vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
 	}
 	if (!inspections[i].freezed) inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-	inspection_grid->SetCellValue(i,IG_COL_LEVEL,_T("*"));
+	inspection_grid->SetCellValue(i,IG_COL_LEVEL,"*");
 	inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
 //	inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
 //	inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));

@@ -31,11 +31,11 @@ mxAboutWindow::mxAboutWindow(wxWindow* parent) : wxDialog(parent, wxID_ANY, LANG
 	ok_button->SetDefault(); 
 	SetEscapeId(wxID_OK);
 	
-	wxString version(wxString(_T("ZinjaI-"))<<ARCHITECTURE
+	wxString version(wxString("ZinjaI-")<<ARCHITECTURE
 #ifdef _ZINJAI_DEBUG
-		<<_T("-debug")
+		<<"-debug"
 #endif
-		<<_T("-")<<VERSION);
+		<<"-"<<VERSION);
 	
 	bottomSizer->Add(new wxStaticText(this,wxID_ANY,version),sizers->BA5_Center);
 	bottomSizer->AddStretchSpacer();
@@ -46,7 +46,7 @@ mxAboutWindow::mxAboutWindow(wxWindow* parent) : wxDialog(parent, wxID_ANY, LANG
 		,sizers->Exp1);
 	mySizer->Add(bottomSizer,sizers->Exp0);
 	SetSizerAndFit(mySizer);
-	html->LoadPage(DIR_PLUS_FILE(config->Help.guihelp_dir,wxString(_T("about_"))<<config->Init.language_file<<_T(".html")));
+	html->LoadPage(DIR_PLUS_FILE(config->Help.guihelp_dir,wxString("about_")<<config->Init.language_file<<".html"));
 	ShowModal();
 
 }
@@ -61,7 +61,7 @@ void mxAboutWindow::OnClose(wxCloseEvent &event){
 
 
 void mxAboutWindow::OnLink (wxHtmlLinkEvent &event) {
-	if (event.GetLinkInfo().GetHref().StartsWith(_T("http://"))) {
+	if (event.GetLinkInfo().GetHref().StartsWith("http://")) {
 		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else {
 		event.Skip();

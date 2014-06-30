@@ -88,7 +88,7 @@ void mxWxfbConfigDialog::OnCancelButton (wxCommandEvent & evt) {
 }
 
 void mxWxfbConfigDialog::OnHelpButton (wxCommandEvent & evt) {
-	SHOW_HELP("wxfb_config.html");
+	mxHelpWindow::ShowHelp("wxfb_config.html");
 }
 
 void mxWxfbConfigDialog::OnActivateClick (wxCommandEvent & evt) {

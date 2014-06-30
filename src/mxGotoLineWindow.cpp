@@ -62,7 +62,7 @@ void mxGotoLineWindow::OnClose(wxCloseEvent &event){
 }
 
 void mxGotoLineWindow::OnScroll(wxScrollEvent &event) {
-	text_ctrl->SetValue(wxString::Format(_T("%d"), slider->GetValue()));
+	text_ctrl->SetValue(wxString::Format("%d", slider->GetValue()));
 }
 
 void mxGotoLineWindow::OnTextChange(wxCommandEvent &event) {

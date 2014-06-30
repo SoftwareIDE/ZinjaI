@@ -134,28 +134,28 @@ void NavigationHistory::Next() {
 #define STYLE_IS_COMMENT(s) (s==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTLINEDOC || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR)
 
 const wxChar* mxSourceWords1 =
-	_T("and asm auto break case catch class const const_cast ")
-	_T("continue default delete do dynamic_cast else enum explicit ")
-	_T("export extern false for friend if goto inline ")
-	_T("mutable namespace new not operator or private protected public ")
-	_T("reinterpret_cast return sizeof static_cast ")
-	_T("struct switch template this throw true try typedef typeid ")
-	_T("typename union using virtual while xor ")
-	_T("auto constexp decltype static_assert final override noexcept nullptr"); // c++ 2011
+	"and asm auto break case catch class const const_cast "
+	"continue default delete do dynamic_cast else enum explicit "
+	"export extern false for friend if goto inline "
+	"mutable namespace new not operator or private protected public "
+	"reinterpret_cast return sizeof static_cast "
+	"struct switch template this throw true try typedef typeid "
+	"typename union using virtual while xor "
+	"auto constexp decltype static_assert final override noexcept nullptr"; // c++ 2011
 const wxChar* mxSourceWords2 =
-	_T("bool char const double float int long mutable register ")
-	_T("short signed static unsigned void volatile wchar_t");
+	"bool char const double float int long mutable register "
+	"short signed static unsigned void volatile wchar_t";
 const wxChar* mxSourceWords3 =
-	_T("a addindex addtogroup anchor arg attention author b brief bug c ")
-	_T("class code date def defgroup deprecated dontinclude e em endcode ")
-	_T("endhtmlonly endif endlatexonly endlink endverbatim enum example ")
-	_T("exception f$ f[ f] file fn hideinitializer htmlinclude ")
-	_T("htmlonly if image include ingroup internal invariant interface ")
-	_T("latexonly li line link mainpage n name namespace nosubgrouping note ")
-	_T("overload p page par param post pre ref relates remarks return ")
-	_T("retval sa section see showinitializer since skip skipline struct ")
-	_T("subsection test throw todo tparam typedef union until var verbatim ")
-	_T("verbinclude version warning weakgroup $ @ \"\" & < > # { }");
+	"a addindex addtogroup anchor arg attention author b brief bug c "
+	"class code date def defgroup deprecated dontinclude e em endcode "
+	"endhtmlonly endif endlatexonly endlink endverbatim enum example "
+	"exception f$ f[ f] file fn hideinitializer htmlinclude "
+	"htmlonly if image include ingroup internal invariant interface "
+	"latexonly li line link mainpage n name namespace nosubgrouping note "
+	"overload p page par param post pre ref relates remarks return "
+	"retval sa section see showinitializer since skip skipline struct "
+	"subsection test throw todo tparam typedef union until var verbatim "
+	"verbinclude version warning weakgroup $ @ \"\" & < > # { }";
 
 
 enum Margins { MARGIN_LINENUM=0, MARGIN_BREAKS, MARGIN_FOLD, MARGIN_NULL };
@@ -273,8 +273,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	config_running=config->Running;
 	
 	source_filename = wxEmptyString;
-	temp_filename = DIR_PLUS_FILE(config->temp_dir,_T("sin_titulo.cpp"));
-	binary_filename = DIR_PLUS_FILE(config->temp_dir,_T("sin_titulo"))+_T(BINARY_EXTENSION);
+	temp_filename = DIR_PLUS_FILE(config->temp_dir,"sin_titulo.cpp");
+	binary_filename = DIR_PLUS_FILE(config->temp_dir,"sin_titulo")+_T(BINARY_EXTENSION);
 	working_folder = wxFileName::GetHomeDir();
 
 	sin_titulo = true;
@@ -305,7 +305,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	//SetCaretLineVisible(true);
 
 	// numeros de linea
-//	SetMarginWidth (MARGIN_LINENUM, TextWidth (wxSTC_STYLE_LINENUMBER, _T(" XXX")));
+//	SetMarginWidth (MARGIN_LINENUM, TextWidth (wxSTC_STYLE_LINENUMBER, " XXX"));
 
 	// set margin as unused
 	SetMarginType (MARGIN_BREAKS, wxSTC_MARGIN_SYMBOL);
@@ -757,7 +757,7 @@ void mxSource::OnComment (wxCommandEvent &event) {
 	int min=LineFromPosition(ss);
 	int max=LineFromPosition(se);
 	if (min==max && se!=ss) {
-		ReplaceSelection(wxString(_T("/*"))<<GetSelectedText()<<_T("*/"));
+		ReplaceSelection(wxString("/*")<<GetSelectedText()<<"*/");
 		SetSelection(ss,se+4);
 		return;
 	}
@@ -840,7 +840,7 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 	}
 	
 	// si no hizo nada por linea, recupera el funcionamiento original para comentarios con /* y */ dentro de una linea
-	if (!did_something && GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!=_T("//")) {
+	if (!did_something && GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!="//") {
 		BeginUndoAction();
 		int se=ss, l=GetLength();
 		while (ss>0 && (GetCharAt(ss)!='/' || GetCharAt(ss+1)!='*') )
@@ -869,16 +869,16 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 
 
 bool mxSource::LoadFile (const wxFileName &filename) {
-	wxString ext = filename.GetExt().MakeUpper();
-	if (ext==_T("C") || ext==_T("CPP") || ext==_T("CXX") || ext==_T("C++") || ext==_T("H") || ext==_T("HPP") || ext==_T("HXX") || ext==_T("H++")) {
+	wxString ext = filename.GetExt().MakeLower();
+	if (utils->ExtensionIsCpp(ext) || utils->ExtensionIsH(ext)) {
 		SetStyle(wxSTC_LEX_CPP);
-	} else if (ext==_T("HTM") || ext==_T("HTML")) {
+	} else if (ext=="htm" || ext=="html") {
 		SetStyle(wxSTC_LEX_HTML);
-	} else if (ext==_T("SH")) {
+	} else if (ext=="sh") {
 		SetStyle(wxSTC_LEX_BASH);
-	} else if (ext==_T("XML")) {
+	} else if (ext=="xml") {
 		SetStyle(wxSTC_LEX_XML);
-	} else if (filename.GetName().MakeUpper()==_T("MAKEFILE")) {
+	} else if (filename.GetName().MakeUpper()=="MAKEFILE") {
 		SetStyle(wxSTC_LEX_MAKEFILE);
 	} else {
 		SetStyle(wxSTC_LEX_NULL);
@@ -952,7 +952,7 @@ bool mxSource::SaveSource (const wxFileName &filename) {
 		working_folder = filename.GetPath();
 		cpp_or_just_c = source_filename.GetExt().Lower()!="c";
 		if (project)
-			binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+_T(".o");
+			binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+".o";
 		else
 			binary_filename=source_filename.GetPathWithSep()+source_filename.GetName()+_T(BINARY_EXTENSION);
 		sin_titulo = false;
@@ -1063,7 +1063,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			int e=GetCurrentPos(), p=PositionFromLine(GetCurrentLine());
 			while (p<e && (GetCharAt(p)==' ' || GetCharAt(p)=='\t')) 
 				p++;
-			if (p+4==e && GetTextRange(p,e)==_T("else")) {
+			if (p+4==e && GetTextRange(p,e)=="else") {
 				char c; int s;
 				p=PositionFromLine(GetCurrentLine())-1;
 				while (p>=0 && ((c=GetCharAt(p))==' ' || c=='\t'  || c=='\r'  || c=='\n' || (s=GetStyleAt(p))==wxSTC_C_COMMENT || s==wxSTC_C_COMMENTLINE || s==wxSTC_C_COMMENTDOC || s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_COMMENTDOCKEYWORD || s==wxSTC_C_COMMENTDOCKEYWORDERROR))
@@ -1094,11 +1094,11 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			Colourise(e-1,e);
 			while (p<e && (GetCharAt(p)==' ' || GetCharAt(p)=='\t')) 
 				p++;
-			if ( (p+7==e && GetTextRange(p,e)==_T("public:")) ||
-				(p+8==e && GetTextRange(p,e)==_T("private:")) ||
-				(p+10==e && GetTextRange(p,e)==_T("protected:")) ||
-				(p+8==e && GetTextRange(p,e)==_T("default:")) ||
-				(p+6<e && GetTextRange(p,p+5)==_T("case ") && (s=GetStyleAt(e))!=wxSTC_C_CHARACTER && s!=wxSTC_C_STRING && s!=wxSTC_C_STRINGEOL) 
+			if ( (p+7==e && GetTextRange(p,e)=="public:") ||
+				(p+8==e && GetTextRange(p,e)=="private:") ||
+				(p+10==e && GetTextRange(p,e)=="protected:") ||
+				(p+8==e && GetTextRange(p,e)=="default:") ||
+				(p+6<e && GetTextRange(p,p+5)=="case " && (s=GetStyleAt(e))!=wxSTC_C_CHARACTER && s!=wxSTC_C_STRING && s!=wxSTC_C_STRINGEOL) 
 				)  {
 					char c; e=p-1;
 					while (e>0 && (c=GetCharAt(e))!='{') {
@@ -1200,7 +1200,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					} else {
 						if (c!='}' && LineFromPosition(e)==cl) {
 							if ( (e=BraceMatch(p))==wxSTC_INVALID_POSITION || GetLineIndentation(LineFromPosition(e))<GetLineIndentation(cl-1)){
-								InsertText(PositionFromLine(cl+1),_T("}\n"));
+								InsertText(PositionFromLine(cl+1),"}\n");
 								SetLineIndentation(cl+1,GetLineIndentation(cl-1));
 								// sacar la llave si ya estaba al final de la linea, porque la acabamos de agregar abajo
 								int pf = GetLineEndPosition(cl)-1; int opf=pf+1;
@@ -1218,9 +1218,9 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 							return;
 						}
 					}
-				} else if (e==l || GetLineIndentation(LineFromPosition(e))<GetLineIndentation(cl-1) || ( c!='}' && GetLineIndentation(LineFromPosition(e))==GetLineIndentation(cl-1)  && GetTextRange(e,e+7)!=_T("public:") && GetTextRange(e,e+8)!=_T("private:") && GetTextRange(e,e+10)!=_T("protected:") && GetTextRange(e,e+5)!=_T("case ") ) ) {
+				} else if (e==l || GetLineIndentation(LineFromPosition(e))<GetLineIndentation(cl-1) || ( c!='}' && GetLineIndentation(LineFromPosition(e))==GetLineIndentation(cl-1)  && GetTextRange(e,e+7)!="public:" && GetTextRange(e,e+8)!="private:" && GetTextRange(e,e+10)!="protected:" && GetTextRange(e,e+5)!="case " ) ) {
 					e=GetLineIndentPosition(cl-1);
-					if (GetTextRange(e,e+8)==_T("template") && GetStyleAt(e)==wxSTC_C_WORD) {
+					if (GetTextRange(e,e+8)=="template" && GetStyleAt(e)==wxSTC_C_WORD) {
 						e+=8;
 						II_FRONT(e,II_IS_2(e,' ','\t') || II_SHOULD_IGNORE(e));
 						if (c=='<' && (p=BraceMatch(e))!=wxSTC_INVALID_POSITION) {
@@ -1228,10 +1228,10 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 							II_FRONT(e,II_IS_2(e,' ','\t') || II_SHOULD_IGNORE(e));
 						}
 					}
-					if ( (GetTextRange(e,e+5)==_T("class") || GetTextRange(e,e+6)==_T("struct")) && GetStyleAt(e)==wxSTC_C_WORD)
-						InsertText(PositionFromLine(cl),_T("\n};"));
+					if ( (GetTextRange(e,e+5)=="class" || GetTextRange(e,e+6)=="struct") && GetStyleAt(e)==wxSTC_C_WORD)
+						InsertText(PositionFromLine(cl),"\n};");
 					else
-						InsertText(PositionFromLine(cl),_T("\n}"));
+						InsertText(PositionFromLine(cl),"\n}");
 					SetLineIndentation(cl+1,GetLineIndentation(cl-1));
 					SetLineIndentation(cl,GetLineIndentation(cl-1)+config_source.tabWidth);
 					wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
@@ -1252,7 +1252,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				if (e!=wxSTC_INVALID_POSITION) {
 					e--;
 					II_BACK(e,II_IS_2(e,' ','\t') || II_SHOULD_IGNORE(e));
-					if (e>8 && GetStyleAt(e)==wxSTC_C_WORD && c=='e' && GetTextRange(e-7,e)==_T("templat")) {
+					if (e>8 && GetStyleAt(e)==wxSTC_C_WORD && c=='e' && GetTextRange(e-7,e)=="templat") {
 						SetLineIndentation(cl,GetLineIndentation(LineFromPosition(e)));
 						wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
 						return;
@@ -1302,7 +1302,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				}
 			}
 			if (was_instruction) {
-				if (s==wxSTC_C_WORD && ( (c=='p' && (GetTextRange(l+1,l+6)==_T("ublic") || GetTextRange(l+1,l+7)==_T("rivate") || GetTextRange(l+1,l+9)==_T("rotected")) ) || (c=='c' && GetTextRange(l+1,l+4)==_T("ase")) || (c=='d' && GetTextRange(l+1,l+7)==_T("efault")) ) ) 
+				if (s==wxSTC_C_WORD && ( (c=='p' && (GetTextRange(l+1,l+6)=="ublic" || GetTextRange(l+1,l+7)=="rivate" || GetTextRange(l+1,l+9)=="rotected") ) || (c=='c' && GetTextRange(l+1,l+4)=="ase") || (c=='d' && GetTextRange(l+1,l+7)=="efault") ) ) 
 					SetLineIndentation(cl,GetLineIndentation(LineFromPosition(p))+config_source.tabWidth);
 				else
 					SetLineIndentation(cl,GetLineIndentation(LineFromPosition(p)));
@@ -1564,7 +1564,7 @@ void mxSource::MoveCursorTo(long pos, bool focus) {
 }
 
 void mxSource::OnIndentSelection(wxCommandEvent &event) {
-	main_window->SetStatusText(wxString(_T("Indentando...")));
+	main_window->SetStatusText(wxString("Indentando..."));
 	int min = LineFromPosition(GetSelectionStart());
 	int max = LineFromPosition(GetSelectionEnd());
 //  int pfl = PositionFromLine(min);
@@ -1635,23 +1635,23 @@ void mxSource::Indent(int min, int max) {
 			evt.SetKey('e');
 			SetCurrentPos(p+4);
 			OnCharAdded(evt);
-		} else if (c=='p' && GetTextRange(p,p+8)==_T("private:") && !II_SHOULD_IGNORE(p)) {
+		} else if (c=='p' && GetTextRange(p,p+8)=="private:" && !II_SHOULD_IGNORE(p)) {
 			evt.SetKey(':');
 			SetCurrentPos(p+8);
 			OnCharAdded(evt);
-		} else if (c=='p' && GetTextRange(p,p+7)==_T("public:") && !II_SHOULD_IGNORE(p)) {
+		} else if (c=='p' && GetTextRange(p,p+7)=="public:" && !II_SHOULD_IGNORE(p)) {
 			evt.SetKey(':');
 			SetCurrentPos(p+7);
 			OnCharAdded(evt);
-		} else if (c=='p' && GetTextRange(p,p+10)==_T("protected:") && !II_SHOULD_IGNORE(p)) {
+		} else if (c=='p' && GetTextRange(p,p+10)=="protected:" && !II_SHOULD_IGNORE(p)) {
 			evt.SetKey(':');
 			SetCurrentPos(p+10);
 			OnCharAdded(evt);
-		} else if (c=='d' && GetTextRange(p,p+8)==_T("default:") && !II_SHOULD_IGNORE(p)) {
+		} else if (c=='d' && GetTextRange(p,p+8)=="default:" && !II_SHOULD_IGNORE(p)) {
 			evt.SetKey(':');
 			SetCurrentPos(p+8);
 			OnCharAdded(evt);
-		} else if (c=='c' && GetTextRange(p,p+5)==_T("case ") && !II_SHOULD_IGNORE(p)) {
+		} else if (c=='c' && GetTextRange(p,p+5)=="case " && !II_SHOULD_IGNORE(p)) {
 			int a=GetLineEndPosition(i);
 			p+=5;
 			II_FRONT_NC(p,p<=a && (GetCharAt(p)!=':' || II_SHOULD_IGNORE(p)));
@@ -1756,8 +1756,8 @@ void mxSource::SetStyle(bool color) {
 		case wxSTC_LEX_HTML: case wxSTC_LEX_XML:
 //			config_source.stdCalltips=config_source.stdCompletion=config_source.parserCalltips=config_source.parserCompletion=config_source.smartIndent=config_source.indentPaste=false;
 			config_source.callTips=config_source.autoCompletion=config_source.smartIndent=config_source.indentPaste=false;
-			SetProperty (_T("fold.html"),_T("0"));
-			SetProperty (_T("fold.html.preprocessor"), _T("0"));
+			SetProperty ("fold.html","0");
+			SetProperty ("fold.html.preprocessor", "0");
 			AUXSetStyle(H,DEFAULT); // keywords
 			AUXSetStyle3(H,TAG,WORD); // keywords
 			AUXSetStyle3(H,TAGUNKNOWN,WORD); // keywords
@@ -1862,8 +1862,8 @@ bool mxSource::AddInclude(wxString header) {
 	for (int i=0;i<cl;i++) {
 		p=GetLineIndentPosition(i);
 		int le=GetLineEndPosition(i);
-		if (GetTextRange(p,p+8)==_T("#include") || GetTextRange(p,p+10)==_T("//#include") || GetTextRange(p,p+11)==_T("// #include")) {
-			if ( ( comment = (GetTextRange(p,p+2)==_T("//")) ) ) {
+		if (GetTextRange(p,p+8)=="#include" || GetTextRange(p,p+10)=="//#include" || GetTextRange(p,p+11)=="// #include") {
+			if ( ( comment = (GetTextRange(p,p+2)=="//") ) ) {
 				p+=2;
 				if (GetCharAt(p)==' ')
 					p++;
@@ -1892,7 +1892,7 @@ bool mxSource::AddInclude(wxString header) {
 				lta=1;
 			else if (flag && GetCharAt(p)=='#') // para que saltee defines e ifdefs
 				lta=i+1;
-		} else if (GetTextRange(p,p+5)==_T("using")) {
+		} else if (GetTextRange(p,p+5)=="using") {
 			if (flag) {
 				lta=i;
 				flag=false;
@@ -1900,14 +1900,14 @@ bool mxSource::AddInclude(wxString header) {
 			p+=5;
 			while (GetCharAt(p)==' ' || GetCharAt(p)=='\t')
 				p++;
-			if (GetTextRange(p,p+9)==_T("namespace")) {
+			if (GetTextRange(p,p+9)=="namespace") {
 				p+=9;
 				while (GetCharAt(p)==' ' || GetCharAt(p)=='\t')
 					p++;
-				if (GetTextRange(p,p+3)==_T("std") && (GetCharAt(p+3)==';' || GetCharAt(p+3)==' ' || GetCharAt(p+3)=='\t' || GetCharAt(p+3)=='/'))
+				if (GetTextRange(p,p+3)=="std" && (GetCharAt(p+3)==';' || GetCharAt(p+3)==' ' || GetCharAt(p+3)=='\t' || GetCharAt(p+3)=='/'))
 					using_namespace_std_present=true;
 			}
-		} else if (!II_SHOULD_IGNORE(p)/* && GetTextRange(p,p+7)!=_T("#define")*/)
+		} else if (!II_SHOULD_IGNORE(p)/* && GetTextRange(p,p+7)!="#define"*/)
 			flag=false;
 	}
 	if (!header_present) {
@@ -1920,7 +1920,7 @@ bool mxSource::AddInclude(wxString header) {
 			ReplaceTarget("");
 		} else {
 			p = PositionFromLine(lta);
-			wxString line = wxString(_T("#include "))+oHeader+"\n";
+			wxString line = wxString("#include ")+oHeader+"\n";
 			if (p<=lp)
 				lp+=line.Len();
 			InsertText(p,line);
@@ -1930,9 +1930,9 @@ bool mxSource::AddInclude(wxString header) {
 			lta++;
 		}
 	}
-	if (!using_namespace_std_present && header.Find(_T("."))==wxNOT_FOUND && header.Last()!='\"') {
+	if (!using_namespace_std_present && header.Find(".")==wxNOT_FOUND && header.Last()!='\"') {
 		p = PositionFromLine(lta);
-		wxString line = wxString(_T("using namespace std;\n"));
+		wxString line = wxString("using namespace std;\n");
 		if (p<=lp)
 			lp+=line.Len();
 		InsertText(p,line);
@@ -2262,15 +2262,15 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 			}
 		}
 		
-//		p_llave_a = FindText(p_from-1,0,_T("{"));
+//		p_llave_a = FindText(p_from-1,0,"{");
 //		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
-//			p_llave_a = FindText(p_llave_c-1,0,_T("}"));
-		int p_llave_c = FindText(p_from-1,0,_T("}"));
+//			p_llave_a = FindText(p_llave_c-1,0,"}");
+		int p_llave_c = FindText(p_from-1,0,"}");
 		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
-			p_llave_c = FindText(p_llave_c-1,0,_T("}"));
-		int p_par_c = FindText(p_from-1,0,_T(")"));
+			p_llave_c = FindText(p_llave_c-1,0,"}");
+		int p_par_c = FindText(p_from-1,0,")");
 		while (p_par_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_par_c))
-			p_par_c = FindText(p_par_c-1,0,_T(")"));
+			p_par_c = FindText(p_par_c-1,0,")");
 
 		
 //		if (notSpace && p_llave_a!=wxSTC_INVALID_POSITION && (p_llave_c==wxSTC_INVALID_POSITION || p_llave_a>p_llave_c) ) { // ver si es una declaracion de clase para encontrar el scope
@@ -2282,7 +2282,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 //				II_BACK (p, !II_SHOULD_IGNORE(p) && II_IS_KEYWORD_CHAR(c));
 //				bool cont=true;
 ////				while (cont) {
-//					if (c=='s' && p>=5 && GetTextRange(p-5,p)==_T("clas") ) {
+//					if (c=='s' && p>=5 && GetTextRange(p-5,p)=="clas" ) {
 //						notSpace=false;
 //						space=GetTextRange(WordStartPosition(p_llave_a,true),p_llave_a+1);
 //					}
@@ -2331,7 +2331,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 				while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
 					p++;
 				}
-			} while (GetTextRange(p1,p2)==_T("const") || GetTextRange(p1,p2)==_T("volatile") || GetTextRange(p1,p2)==_T("static") || GetTextRange(p1,p2)==_T("extern"));
+			} while (GetTextRange(p1,p2)=="const" || GetTextRange(p1,p2)=="volatile" || GetTextRange(p1,p2)=="static" || GetTextRange(p1,p2)=="extern");
 			// saltar los parametros del template si es template (mejorar: aqui no se tienen en cuenta comentarios y literales)
 			int tplt_deep = 0;
 			if (c=='<' && GetCharAt(p+1)!='<') {
@@ -2391,7 +2391,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		}
 		p2=WordEndPosition(p_type,true);
 		ret=GetTextRange(p_type,p2);
-		while ( !(ret!=_T("unsigned") && ret!=_T("const") && ret!=_T("signed") && ret!=_T("extern") && ret!=_T("volatile") && ret!=_T("long") && ret!=_T("static") && (ret!=_T("public") || GetCharAt(p2)!=':') && (ret!=_T("protected") || GetCharAt(p2)!=':') && (ret!=_T("private") || GetCharAt(p2)!=':') ) ) {
+		while ( !(ret!="unsigned" && ret!="const" && ret!="signed" && ret!="extern" && ret!="volatile" && ret!="long" && ret!="static" && (ret!="public" || GetCharAt(p2)!=':') && (ret!="protected" || GetCharAt(p2)!=':') && (ret!="private" || GetCharAt(p2)!=':') ) ) {
 			p_type=p2;
 			while (II_IS_4(p_type,' ','\t','\r','\n') || II_SHOULD_IGNORE(p_type)) {
 				p_type++;
@@ -2426,7 +2426,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		}
 		pos=dims;
 	} else {
-		if (key==_T("this")) {
+		if (key=="this") {
 			if ( (ret=space).Len()!=0) 
 				dims=1;
 		} else {
@@ -2466,7 +2466,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			p = BraceMatch(p);
 			if (p==wxSTC_INVALID_POSITION) {
 				dims=SRC_PARSING_ERROR;
-				return _T("La cantidad de corchetes no concuerda.");
+				return "La cantidad de corchetes no concuerda.";
 			}
 		}
 		p--;
@@ -2482,7 +2482,7 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 		p = BraceMatch(p);
 		if (p==wxSTC_INVALID_POSITION) {
 			dims=SRC_PARSING_ERROR;
-			return _T("Error: Se cerraron parentesis demas.");
+			return "Error: Se cerraron parentesis demas.";
 		}
 		int p2 = p-1;
 		II_BACK(p2,II_IS_NOTHING_4(p2));
@@ -2631,12 +2631,12 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 	int first_p=-1; // guarda el primer scope, para buscar argumentos si es funcion
 	char c;
 	while (true) {
-		int p_llave_a = FindText(pos,0,_T("{"));
+		int p_llave_a = FindText(pos,0,"{");
 		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
-			p_llave_a = FindText(p_llave_a-1,0,_T("{"));
-		int p_llave_c = FindText(pos,0,_T("}"));
+			p_llave_a = FindText(p_llave_a-1,0,"{");
+		int p_llave_c = FindText(pos,0,"}");
 		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
-			p_llave_c = FindText(p_llave_c-1,0,_T("}"));
+			p_llave_c = FindText(p_llave_c-1,0,"}");
 		if (p_llave_c==wxSTC_INVALID_POSITION && p_llave_a==wxSTC_INVALID_POSITION) {
 			break;
 		} else if (p_llave_c!=wxSTC_INVALID_POSITION && (p_llave_a==wxSTC_INVALID_POSITION || p_llave_c>p_llave_a) ) {
@@ -2671,7 +2671,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 							wxString aux = code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1)); // nombre de la clase?
 							if (full_scope) scope=aux+"::"+scope; else { scope=aux; break; }
 						} else { // puede ser constructor
-							p = FindText(p,0,_T("::"));
+							p = FindText(p,0,"::");
 							if (p!=wxSTC_INVALID_POSITION) {
 								int e=p+2;
 								p--;
@@ -2691,11 +2691,11 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 				II_FRONT(p,II_IS_NOTHING_4(p));
 				if (GetStyleAt(p)==wxSTC_C_WORD) {
 					bool some=false;
-					if (GetTextRange(p,p+6)==_T("struct"))
+					if (GetTextRange(p,p+6)=="struct")
 					{ if (!type.Len()) type="struct"; p+=6; some=true; }
-					else if (GetTextRange(p,p+5)==_T("class"))
+					else if (GetTextRange(p,p+5)=="class")
 					{ if (!type.Len()) type="class"; p+=5; some=true; }
-					else if (GetTextRange(p,p+p)==_T("namespace"))
+					else if (GetTextRange(p,p+p)=="namespace")
 					{ if (!type.Len()) type="namespace"; p+=9; some=true; }
 					if (some) {
 						II_FRONT(p,II_IS_NOTHING_4(p));
@@ -2737,12 +2737,12 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 //	int l=pos,s;
 //	char c;
 //	while (true) {
-//		int p_llave_a = FindText(pos,0,_T("{"));
+//		int p_llave_a = FindText(pos,0,"{");
 //		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
-//			p_llave_a = FindText(p_llave_a-1,0,_T("{"));
-//		int p_llave_c = FindText(pos,0,_T("}"));
+//			p_llave_a = FindText(p_llave_a-1,0,"{");
+//		int p_llave_c = FindText(pos,0,"}");
 //		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
-//			p_llave_c = FindText(p_llave_c-1,0,_T("}"));
+//			p_llave_c = FindText(p_llave_c-1,0,"}");
 //		if (p_llave_c==wxSTC_INVALID_POSITION && p_llave_a==wxSTC_INVALID_POSITION) {
 //			break;
 //		} else if (p_llave_c!=wxSTC_INVALID_POSITION && (p_llave_a==wxSTC_INVALID_POSITION || p_llave_c>p_llave_a) ) {
@@ -2772,7 +2772,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 //							II_BACK(p,II_IS_NOTHING_4(p));
 //							return code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1));
 //						} else { // puede ser constructor
-//							p = FindText(p,0,_T("::"));
+//							p = FindText(p,0,"::");
 //							if (p!=wxSTC_INVALID_POSITION) {
 //								int e=p+2;
 //								p--;
@@ -2790,15 +2790,15 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 //				p++;
 //				II_FRONT(p,II_IS_NOTHING_4(p));
 //				if (GetStyleAt(p)==wxSTC_C_WORD) {
-//					if (GetTextRange(p,p+6)==_T("struct")) {
+//					if (GetTextRange(p,p+6)=="struct") {
 //						p+=6;
 //						II_FRONT(p,II_IS_NOTHING_4(p));
 //						return code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
-//					} else if (GetTextRange(p,p+5)==_T("class")) {
+//					} else if (GetTextRange(p,p+5)=="class") {
 //						p+=5;
 //						II_FRONT(p,II_IS_NOTHING_4(p));
 //						return code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
-//					} else if (GetTextRange(p,p+p)==_T("namespace")) {
+//					} else if (GetTextRange(p,p+p)=="namespace") {
 //						p+=9;
 //						II_FRONT(p,II_IS_NOTHING_4(p));
 //						return code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
@@ -2850,7 +2850,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 //					type<<_("*");
 //					s--;
 //				}
-//				ShowBaloon ( bkey +_T(": ")+type , p );
+//				ShowBaloon ( bkey +": "+type , p );
 //			}
 			
 			// buscar en la funcion/metodo
@@ -2860,7 +2860,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 					type<<_("*");
 					s--;
 				}
-				ShowBaloon ( bkey +_T(": ")+type , p );
+				ShowBaloon ( bkey +": "+type , p );
 			} else { // buscar el scope y averiguar si es algo de la clase
 				type = FindScope(s);
 				if (type.Len()) {
@@ -2875,7 +2875,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 						type<<_("*");
 						s--;
 					}
-					ShowBaloon ( bkey +_T(": ")+type , p );
+					ShowBaloon ( bkey +": "+type , p );
 				}
 			}
 		}
@@ -2890,7 +2890,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 			wxString key = GetTextRange(s,e);
 			wxString ans = debug->InspectExpression(key,true);
 			if (ans.Len())
-				ShowBaloon ( key +_T(": ")+ ans , p );
+				ShowBaloon ( key +": "+ ans , p );
 		}
 	}
 }
@@ -2909,7 +2909,7 @@ void mxSource::OnSavePointReached (wxStyledTextEvent &event) {
 }
 
 void mxSource::OnSavePointLeft (wxStyledTextEvent &event) {
-	main_window->notebook_sources->SetPageText(main_window->notebook_sources->GetPageIndex(this),page_text+_T("*"));
+	main_window->notebook_sources->SetPageText(main_window->notebook_sources->GetPageIndex(this),page_text+"*");
 }
 
 void mxSource::OnKillFocus(wxFocusEvent &event) {
@@ -3168,7 +3168,7 @@ void mxSource::ShowCallTip(int p, wxString str, bool fix_pos) {
 						while (j && ( str[j]!=' ' && str[j]!=',' && str[j]!='(' && str[j]!=')' ) ) j--;
 						if (j && !(j>2 && str[j]==' ' && str[j-1]==' ' && str[j-2]==' ' && str[j-3]=='\n') ) {
 							i=j;
-							str = str.SubString(0,j)+_T("\n   ")+str.Mid(j+1);
+							str = str.SubString(0,j)+"\n   "+str.Mid(j+1);
 							l+=4;
 						}
 					}
@@ -3275,10 +3275,10 @@ void mxSource::LoadSourceConfig() {
 
 void mxSource::SetLineNumbers() {
 	// establecer el margen para los nros de lineas
-	wxString ancho(_T("  X"));
+	wxString ancho("  X");
 	int lnct=GetLineCount();
 	while (lnct>10) {
-		ancho+=_T("X");
+		ancho+="X";
 		lnct/=10;
 	}
 	SetMarginWidth (MARGIN_LINENUM, config_source.lineNumber?TextWidth (wxSTC_STYLE_LINENUMBER, ancho):0);
@@ -3548,7 +3548,7 @@ void mxSource::CheckForExternalModifications() {
 void mxSource::ThereAreExternalModifications() {
 	SetSourceTime(source_filename.GetModificationTime());
 	if (!source_time_dont_ask) {
-		int res=mxMessageDialog(main_window,LANG(SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD,"El archivo fue modificado por otro programa.\nDesea recargarlo para obtener las modificaciones?"), source_filename.GetFullPath(), mxMD_YES_NO|mxMD_WARNING,_T("No volver a preguntar"),false).ShowModal();
+		int res=mxMessageDialog(main_window,LANG(SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD,"El archivo fue modificado por otro programa.\nDesea recargarlo para obtener las modificaciones?"), source_filename.GetFullPath(), mxMD_YES_NO|mxMD_WARNING,"No volver a preguntar",false).ShowModal();
 		source_time_reload=(res&mxMD_YES);
 		source_time_dont_ask=(res&mxMD_CHECKED);
 	}
@@ -3668,12 +3668,12 @@ wxString mxSource::WhereAmI() {
 //	int first_p=-1; // guarda el primer scope, para buscar argumentos si es funcion
 //	char c;
 //	while (true) {
-//		int p_llave_a = FindText(pos,0,_T("{"));
+//		int p_llave_a = FindText(pos,0,"{");
 //		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
-//			p_llave_a = FindText(p_llave_a-1,0,_T("{"));
-//		int p_llave_c = FindText(pos,0,_T("}"));
+//			p_llave_a = FindText(p_llave_a-1,0,"{");
+//		int p_llave_c = FindText(pos,0,"}");
 //		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
-//			p_llave_c = FindText(p_llave_c-1,0,_T("}"));
+//			p_llave_c = FindText(p_llave_c-1,0,"}");
 //		if (p_llave_c==wxSTC_INVALID_POSITION && p_llave_a==wxSTC_INVALID_POSITION) {
 //			break;
 //		} else if (p_llave_c!=wxSTC_INVALID_POSITION && (p_llave_a==wxSTC_INVALID_POSITION || p_llave_c>p_llave_a) ) {
@@ -3705,7 +3705,7 @@ wxString mxSource::WhereAmI() {
 //							II_BACK(p,II_IS_NOTHING_4(p));
 //							scope=code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1))+"::"+scope;
 //						} else { // puede ser constructor
-//							p = FindText(p,0,_T("::"));
+//							p = FindText(p,0,"::");
 //							if (p!=wxSTC_INVALID_POSITION) {
 //								int e=p+2;
 //								p--;
@@ -3728,11 +3728,11 @@ wxString mxSource::WhereAmI() {
 ////				cerr<<GetTextRange(p,p+10)<<endl;
 //				if (GetStyleAt(p)==wxSTC_C_WORD) {
 //					bool some=false;
-//					if (GetTextRange(p,p+6)==_T("struct"))
+//					if (GetTextRange(p,p+6)=="struct")
 //						{ if (!type.Len()) type="struct"; p+=6; some=true; }
-//					else if (GetTextRange(p,p+5)==_T("class"))
+//					else if (GetTextRange(p,p+5)=="class")
 //						{ if (!type.Len()) type="class"; p+=5; some=true; }
-//					else if (GetTextRange(p,p+p)==_T("namespace"))
+//					else if (GetTextRange(p,p+p)=="namespace")
 //						{ if (!type.Len()) type="namespace"; p+=9; some=true; }
 //					if (some) {
 //						II_FRONT(p,II_IS_NOTHING_4(p));
@@ -3795,25 +3795,25 @@ void mxSource::SetColours(bool also_style) {
 	
 	bool dark = (ctheme->DEFAULT_BACK.Green()+ctheme->DEFAULT_BACK.Blue()+ctheme->DEFAULT_BACK.Red()<256*3/2);
 	if (dark) {
-		MarkerDefine(mxSTC_MARK_DIFF_ADD,wxSTC_MARK_BACKGROUND,_T("DARK GREEN"),_T("DARK GREEN"));
-		MarkerDefine(mxSTC_MARK_DIFF_DEL,wxSTC_MARK_ARROW,_T("WHITE"),_T("RED"));
-		MarkerDefine(mxSTC_MARK_DIFF_CHANGE,wxSTC_MARK_BACKGROUND,_T("BROWN"),_T("BROWN"));
+		MarkerDefine(mxSTC_MARK_DIFF_ADD,wxSTC_MARK_BACKGROUND,"DARK GREEN","DARK GREEN");
+		MarkerDefine(mxSTC_MARK_DIFF_DEL,wxSTC_MARK_ARROW,"WHITE","RED");
+		MarkerDefine(mxSTC_MARK_DIFF_CHANGE,wxSTC_MARK_BACKGROUND,"BROWN","BROWN");
 		
-		MarkerDefine(mxSTC_MARK_BAD_BREAKPOINT,wxSTC_MARK_CIRCLE, _T("BLACK"), _T("LIGHT GRAY"));
-		MarkerDefine(mxSTC_MARK_BREAKPOINT,wxSTC_MARK_CIRCLE, _T("BLACK"), _T("RED"));
-		MarkerDefine(mxSTC_MARK_EXECPOINT,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
-		MarkerDefine(mxSTC_MARK_FUNCCALL,wxSTC_MARK_SHORTARROW, _T("WHITE"), _T("YELLOW"));
-		MarkerDefine(mxSTC_MARK_STOP,wxSTC_MARK_SHORTARROW, _T("WHITE"), _T("RED"));
+		MarkerDefine(mxSTC_MARK_BAD_BREAKPOINT,wxSTC_MARK_CIRCLE, "BLACK", "LIGHT GRAY");
+		MarkerDefine(mxSTC_MARK_BREAKPOINT,wxSTC_MARK_CIRCLE, "BLACK", "RED");
+		MarkerDefine(mxSTC_MARK_EXECPOINT,wxSTC_MARK_SHORTARROW, "BLACK", "GREEN");
+		MarkerDefine(mxSTC_MARK_FUNCCALL,wxSTC_MARK_SHORTARROW, "WHITE", "YELLOW");
+		MarkerDefine(mxSTC_MARK_STOP,wxSTC_MARK_SHORTARROW, "WHITE", "RED");
 	} else {
-		MarkerDefine(mxSTC_MARK_DIFF_ADD,wxSTC_MARK_BACKGROUND,_T("Z DIFF GREEN"),_T("Z DIFF GREEN"));
-		MarkerDefine(mxSTC_MARK_DIFF_DEL,wxSTC_MARK_ARROW,_T("BLACK"),_T("RED"));
-		MarkerDefine(mxSTC_MARK_DIFF_CHANGE,wxSTC_MARK_BACKGROUND,_T("Z DIFF YELLOW"),_T("Z DIFF YELLOW"));
+		MarkerDefine(mxSTC_MARK_DIFF_ADD,wxSTC_MARK_BACKGROUND,"Z DIFF GREEN","Z DIFF GREEN");
+		MarkerDefine(mxSTC_MARK_DIFF_DEL,wxSTC_MARK_ARROW,"BLACK","RED");
+		MarkerDefine(mxSTC_MARK_DIFF_CHANGE,wxSTC_MARK_BACKGROUND,"Z DIFF YELLOW","Z DIFF YELLOW");
 		
-		MarkerDefine(mxSTC_MARK_BAD_BREAKPOINT,wxSTC_MARK_CIRCLE, _T("WHITE"), _T("Z DARK GRAY"));
-		MarkerDefine(mxSTC_MARK_BREAKPOINT,wxSTC_MARK_CIRCLE, _T("WHITE"), _T("RED"));
-		MarkerDefine(mxSTC_MARK_EXECPOINT,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("GREEN"));
-		MarkerDefine(mxSTC_MARK_FUNCCALL,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("YELLOW"));
-		MarkerDefine(mxSTC_MARK_STOP,wxSTC_MARK_SHORTARROW, _T("BLACK"), _T("RED"));
+		MarkerDefine(mxSTC_MARK_BAD_BREAKPOINT,wxSTC_MARK_CIRCLE, "WHITE", "Z DARK GRAY");
+		MarkerDefine(mxSTC_MARK_BREAKPOINT,wxSTC_MARK_CIRCLE, "WHITE", "RED");
+		MarkerDefine(mxSTC_MARK_EXECPOINT,wxSTC_MARK_SHORTARROW, "BLACK", "GREEN");
+		MarkerDefine(mxSTC_MARK_FUNCCALL,wxSTC_MARK_SHORTARROW, "BLACK", "YELLOW");
+		MarkerDefine(mxSTC_MARK_STOP,wxSTC_MARK_SHORTARROW, "BLACK", "RED");
 	}
 	
 	if (also_style) SetStyle(config_source.syntaxEnable);
@@ -3894,7 +3894,7 @@ bool mxSource::IsCppOrJustC() {
 
 wxFileName mxSource::GetBinaryFileName ( ) {
 	if (project && !sin_titulo) 
-		return DIR_PLUS_FILE(project->GetTempFolder(),source_filename.GetName()+_T(".o"));
+		return DIR_PLUS_FILE(project->GetTempFolder(),source_filename.GetName()+".o");
 	else
 		return binary_filename;
 }

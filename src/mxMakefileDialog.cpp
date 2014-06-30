@@ -101,5 +101,5 @@ void mxMakefileDialog::OnClose(wxCloseEvent &event) {
 }
 
 void mxMakefileDialog::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP_FROM_MODAL("makefile.html");
+	mxHelpWindow::ShowHelp("makefile.html",this);
 }

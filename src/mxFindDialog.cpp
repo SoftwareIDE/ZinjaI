@@ -738,7 +738,7 @@ void mxFindDialog::OnComboScope(wxCommandEvent &event) {
 }
 
 void mxFindDialog::OnHelpButton(wxCommandEvent &event) {
-	SHOW_HELP(_T("search_dialog.html"));
+	mxHelpWindow::ShowHelp("search_dialog.html");
 }
 
 void mxFindDialog::OnCancel(wxCommandEvent &event) {

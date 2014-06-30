@@ -54,7 +54,7 @@ void mxMainWindow::OnToolsCppCheckConfig(wxCommandEvent &event) {
 void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	if (!config->CheckCppCheckPresent()) return;
 	if (!project && !notebook_sources->GetPageCount()) return;
-	mxOutputView *cppcheck = new mxOutputView("CppCheck",mxOV_EXTRA_NULL,"","",mxVO_CPPCHECK,DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")));
+	mxOutputView *cppcheck = new mxOutputView("CppCheck",mxOV_EXTRA_NULL,"","",mxVO_CPPCHECK,DIR_PLUS_FILE(config->temp_dir,"cppcheck.out"));
 	
 	wxString file_args, cppargs, toargs, extra_args, path;
 	
@@ -152,11 +152,11 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 
 /// @brief Despliega el panel de valgrind para mostrar los resultados de CppCheck
 void mxMainWindow::OnToolsCppCheckView(wxCommandEvent &event) {
-	ShowValgrindPanel(mxVO_CPPCHECK,DIR_PLUS_FILE(config->temp_dir,_T("cppcheck.out")));
+	ShowValgrindPanel(mxVO_CPPCHECK,DIR_PLUS_FILE(config->temp_dir,"cppcheck.out"));
 }
 
 void mxMainWindow::OnToolsCppCheckHelp(wxCommandEvent &event) {
-	SHOW_HELP("cppcheck.html");	
+	mxHelpWindow::ShowHelp("cppcheck.html");	
 }
 
 void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
@@ -173,7 +173,7 @@ void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 * vuelva a ser normal
 **/
 void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
-	if (!config->Init.valgrind_seen && !utils->GetOutput(wxString("\"")<<config->Files.valgrind_command<<_T("\" --version")).Len()) {
+	if (!config->Init.valgrind_seen && !utils->GetOutput(wxString("\"")<<config->Files.valgrind_command<<"\" --version").Len()) {
 		mxMessageDialog(main_window,LANG(MAINW_VALGRIND_MISSING,"Valgrind no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
 			"http://www.valgrind.org. Si ya se encuentra instalado,\n"
@@ -186,8 +186,8 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 	if (!valgrind_config) valgrind_config=new mxValgrindConfigDialog(this);
 	if (valgrind_config->ShowModal()==0) return;
 	
-	wxString val_file = DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out"));
-	val_file.Replace(" ",_T("\\ "));
+	wxString val_file = DIR_PLUS_FILE(config->temp_dir,"valgrind.out");
+	val_file.Replace(" ","\\ ");
 	compiler->valgrind_cmd = config->Files.valgrind_command+" "<<valgrind_config->GetArgs()<<" --log-file="+val_file;
 	OnRunRun(event);
 	compiler->valgrind_cmd="";
@@ -195,11 +195,11 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 
 /// @brief Despliega el panel de Valgrind para mostrar los resultados del analisis dinamico
 void mxMainWindow::OnToolsValgrindView(wxCommandEvent &event) {
-	ShowValgrindPanel(mxVO_VALGRIND,DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out")));
+	ShowValgrindPanel(mxVO_VALGRIND,DIR_PLUS_FILE(config->temp_dir,"valgrind.out"));
 }
 
 void mxMainWindow::OnToolsValgrindHelp(wxCommandEvent &event) {
-	SHOW_HELP(_T("valgrind.html"));	
+	mxHelpWindow::ShowHelp("valgrind.html");	
 }
 
 #endif
@@ -211,9 +211,9 @@ void mxMainWindow::OnToolsConsole(wxCommandEvent &evt) {
 	else IF_THERE_IS_SOURCE 
 		path=CURRENT_SOURCE->GetPath(true);
 #if defined(__APPLE__)
-	utils->Execute(path,_T("/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"),wxEXEC_NOHIDE);
+	utils->Execute(path,"/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal",wxEXEC_NOHIDE);
 #elif defined(__WIN32__)
-	utils->Execute(path,_T("cmd"),wxEXEC_NOHIDE);
+	utils->Execute(path,"cmd",wxEXEC_NOHIDE);
 #else
 	utils->Execute(path,config->Files.terminal_command.BeforeFirst(' '),wxEXEC_NOHIDE);
 #endif
@@ -228,15 +228,15 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		
 		if (!project->GetWxfbActivated()) project->ActivateWxfb(true);
 		
-		wxString name=mxGetTextFromUser(_T("Nombre del archivo:"),_T("Nuevo Proyecto wxFormBuilder"),"",this);
+		wxString name=mxGetTextFromUser("Nombre del archivo:","Nuevo Proyecto wxFormBuilder","",this);
 		if (name.Len()==0) return;
 		
 		wxString fname=DIR_PLUS_FILE(project->path,name);
 		wxString fbase=fname;
-		if (utils->EndsWithNC(fbase,_T(".FBP")))
+		if (utils->EndsWithNC(fbase,".FBP"))
 			fbase=fbase.Mid(0,fbase.Len()-4);
 		else
-			fname = fname+_T(".fbp");
+			fname = fname+".fbp";
 		
 		wxString folder=project->path;
 		int pos1=fname.Find('\\',true);
@@ -256,15 +256,15 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		if (wxNOT_FOUND!=name.Find('-') 
 			|| wxNOT_FOUND!=name.Find('<') || wxNOT_FOUND!=name.Find('?') 
 			|| wxNOT_FOUND!=name.Find('>') || wxNOT_FOUND!=name.Find('*') ) {
-				mxMessageDialog(this,_T("El nombre ingresado no es valido"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog(this,"El nombre ingresado no es valido",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 				return;
 			}
 		
 		// controlar que no exista
-		wxString cpp_name = fbase+_T(".cpp");
-		wxString h_name = fbase+_T(".h");
+		wxString cpp_name = fbase+".cpp";
+		wxString h_name = fbase+".h";
 		if (wxFileName::FileExists(fname)) {
-			if (mxMD_NO==mxMessageDialog(this,_T("Ya existe un archivo con ese nombre. Desea conservarlo?\nSi elige No se borrara su contenido."),name,(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
+			if (mxMD_NO==mxMessageDialog(this,"Ya existe un archivo con ese nombre. Desea conservarlo?\nSi elige No se borrara su contenido.",name,(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
 				wxRemoveFile(fname);
 		} 
 		
@@ -284,33 +284,33 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 			h_file.Close();
 		}
 		
-		if (utils->EndsWithNC(name,_T(".FBP"))) name=name.Mid(0,name.Len()-4);
+		if (utils->EndsWithNC(name,".FBP")) name=name.Mid(0,name.Len()-4);
 		if (!wxFileName::FileExists(fname)) {
 			// crear el fbp
 			wxTextFile fbp_file(fname);
 			fbp_file.Create();
-			fbp_file.AddLine(_T("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"));
-			fbp_file.AddLine(_T("<wxFormBuilder_Project>"));
-			fbp_file.AddLine(_T("<FileVersion major=\"1\" minor=\"10\" />"));
-			fbp_file.AddLine(_T("<object class=\"Project\" expanded=\"1\">"));
-			fbp_file.AddLine(_T("<property name=\"class_decoration\"></property>"));
-			fbp_file.AddLine(_T("<property name=\"code_generation\">C++</property>"));
-			fbp_file.AddLine(_T("<property name=\"disconnect_events\">1</property>"));
-			fbp_file.AddLine(_T("<property name=\"encoding\">ANSI</property>"));
-			fbp_file.AddLine(_T("<property name=\"event_generation\">connect</property>"));
-			fbp_file.AddLine(wxString(_T("<property name=\"file\">"))<<name<<_T("</property>"));
-			fbp_file.AddLine(_T("<property name=\"first_id\">1000</property>"));
-			fbp_file.AddLine(_T("<property name=\"help_provider\">none</property>"));
-			fbp_file.AddLine(_T("<property name=\"internationalize\">0</property>"));
-			fbp_file.AddLine(wxString(_T("<property name=\"name\">"))<<name<<_T("</property>"));
-			fbp_file.AddLine(_T("<property name=\"namespace\"></property>"));
-			fbp_file.AddLine(_T("<property name=\"path\">.</property>"));
-			fbp_file.AddLine(_T("<property name=\"precompiled_header\"></property>"));
-			fbp_file.AddLine(_T("<property name=\"relative_path\">1</property>"));
-			fbp_file.AddLine(_T("<property name=\"use_enum\">0</property>"));
-			fbp_file.AddLine(_T("<property name=\"use_microsoft_bom\">0</property>"));
-			fbp_file.AddLine(_T("</object>"));
-			fbp_file.AddLine(_T("</wxFormBuilder_Project>"));
+			fbp_file.AddLine("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>");
+			fbp_file.AddLine("<wxFormBuilder_Project>");
+			fbp_file.AddLine("<FileVersion major=\"1\" minor=\"10\" />");
+			fbp_file.AddLine("<object class=\"Project\" expanded=\"1\">");
+			fbp_file.AddLine("<property name=\"class_decoration\"></property>");
+			fbp_file.AddLine("<property name=\"code_generation\">C++</property>");
+			fbp_file.AddLine("<property name=\"disconnect_events\">1</property>");
+			fbp_file.AddLine("<property name=\"encoding\">ANSI</property>");
+			fbp_file.AddLine("<property name=\"event_generation\">connect</property>");
+			fbp_file.AddLine(wxString("<property name=\"file\">")<<name<<"</property>");
+			fbp_file.AddLine("<property name=\"first_id\">1000</property>");
+			fbp_file.AddLine("<property name=\"help_provider\">none</property>");
+			fbp_file.AddLine("<property name=\"internationalize\">0</property>");
+			fbp_file.AddLine(wxString("<property name=\"name\">")<<name<<"</property>");
+			fbp_file.AddLine("<property name=\"namespace\"></property>");
+			fbp_file.AddLine("<property name=\"path\">.</property>");
+			fbp_file.AddLine("<property name=\"precompiled_header\"></property>");
+			fbp_file.AddLine("<property name=\"relative_path\">1</property>");
+			fbp_file.AddLine("<property name=\"use_enum\">0</property>");
+			fbp_file.AddLine("<property name=\"use_microsoft_bom\">0</property>");
+			fbp_file.AddLine("</object>");
+			fbp_file.AddLine("</wxFormBuilder_Project>");
 			fbp_file.Write();
 			fbp_file.Close();
 		}
@@ -341,7 +341,7 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 	if (project) {
 		
-		wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
+		wxFileDialog dlg (this, "Abrir Archivo", project?project->last_dir:config->Files.last_dir, " ", "Any file (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST );
 		dlg.SetWildcard("wxFormBuilder projects|"WILDCARD_WXFB);
 		if (dlg.ShowModal() != wxID_OK) return;
 		
@@ -351,11 +351,11 @@ void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 		
 		wxString fbase = project->WxfbGetSourceFile(fbp_name);
 		
-		wxFileName fn_header(fbase+_T(".h"));
+		wxFileName fn_header(fbase+".h");
 		fn_header.Normalize();
 		wxString h_name=fn_header.GetFullPath();
 		
-		wxFileName fn_source(fbase+_T(".cpp"));
+		wxFileName fn_source(fbase+".cpp");
 		fn_source.Normalize();
 		wxString cpp_name=fn_source.GetFullPath();
 		
@@ -376,7 +376,7 @@ void mxMainWindow::OnToolsWxfbLoadRes(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsWxfbRegen(wxCommandEvent &event) {
 	if (project && project->GetWxfbActivated()) {
-		status_bar->SetStatusText(_T("Regenerando proyectos wxFormBuilder..."));
+		status_bar->SetStatusText("Regenerando proyectos wxFormBuilder...");
 		project->WxfbGenerate();
 //		parser->Parse();
 //		status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
@@ -384,14 +384,14 @@ void mxMainWindow::OnToolsWxfbRegen(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsWxfbHelp(wxCommandEvent &event) {
-	SHOW_HELP(_T("wxformbuilder.html"));
+	mxHelpWindow::ShowHelp("wxformbuilder.html");
 }
 
 void mxMainWindow::OnToolsWxfbHelpWx(wxCommandEvent &event) {
 	if (wxFileName::FileExists(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index)))
 		utils->OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
-	else if (mxMD_OK==mxMessageDialog(this,_T("ZinjaI no pudo encontrar la ayuda de wxWidgets. A continuacion le permitira buscarla\nmanualmente y luego recordara esta seleccion (en cualquier momento se puede modificar\ndesde el cuadro de Preferencias). Usualmente, el archivo indice es \"wx_contents.html\"."),_T("Ayuda wxWidgets"),(mxMD_INFO|mxMD_OK_CANCEL)).ShowModal()) {
-		wxFileDialog dlg(this,_T("Indice de ayuda wxWidgets:"),config->Help.wxhelp_index);
+	else if (mxMD_OK==mxMessageDialog(this,"ZinjaI no pudo encontrar la ayuda de wxWidgets. A continuacion le permitira buscarla\nmanualmente y luego recordara esta seleccion (en cualquier momento se puede modificar\ndesde el cuadro de Preferencias). Usualmente, el archivo indice es \"wx_contents.html\".","Ayuda wxWidgets",(mxMD_INFO|mxMD_OK_CANCEL)).ShowModal()) {
+		wxFileDialog dlg(this,"Indice de ayuda wxWidgets:",config->Help.wxhelp_index);
 		if (wxID_OK==dlg.ShowModal()) {
 			config->Help.wxhelp_index=dlg.GetPath();
 			utils->OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
@@ -425,7 +425,7 @@ void mxMainWindow::OnToolsAlignComments (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
 		long l=-1;
-		wxString input=mxGetTextFromUser(_T("Alinear Comentarios"),_T("Nro de Columna:"),wxString()<<config->Source.alignComments,this);
+		wxString input=mxGetTextFromUser("Alinear Comentarios","Nro de Columna:",wxString()<<config->Source.alignComments,this);
 		if (input.Len() && input.ToLong(&l) && l>=0) 
 			src->AlignComments(config->Source.alignComments=l);
 	}
@@ -445,28 +445,28 @@ void mxMainWindow::OnToolsDiffTwoSources(wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()>1)
 		new mxDiffWindow(NULL);
 	else
-		mxMessageDialog(main_window,_T("Debe tener al menos dos archivos abiertos para poder compararlos"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+		mxMessageDialog(main_window,"Debe tener al menos dos archivos abiertos para poder compararlos",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
 }
 
 void mxMainWindow::OnToolsDiffToHimself(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src = CURRENT_SOURCE;
 		if (src->sin_titulo)
-			mxMessageDialog(main_window,_T("El archivo actual no ha sido guardado"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+			mxMessageDialog(main_window,"El archivo actual no ha sido guardado",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
 		else {
 			if (src->GetModify())
 				new mxDiffWindow(CURRENT_SOURCE,src->source_filename.GetFullPath());
 			else
-				mxMessageDialog(main_window,_T("El archivo actual no ha sido modificado"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+				mxMessageDialog(main_window,"El archivo actual no ha sido modificado",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
 		}
 	} else
-		mxMessageDialog(main_window,_T("Debe tener al menos un archivo abierto para poder compararlo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+		mxMessageDialog(main_window,"Debe tener al menos un archivo abierto para poder compararlo",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
 }
 
 void mxMainWindow::OnToolsDiffToDiskFile(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
-		wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST );
-		dlg.SetWildcard(_T("Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Todos los archivos|*"));
+		wxFileDialog dlg (this, "Abrir Archivo", project?project->last_dir:config->Files.last_dir, " ", "Any file (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST );
+		dlg.SetWildcard("Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Todos los archivos|*");
 		if (dlg.ShowModal() == wxID_OK) {
 			if (project)
 				project->last_dir=dlg.GetDirectory();
@@ -475,7 +475,7 @@ void mxMainWindow::OnToolsDiffToDiskFile(wxCommandEvent &event) {
 			new mxDiffWindow(CURRENT_SOURCE,dlg.GetPath());
 		}
 	} else
-		mxMessageDialog(main_window,_T("Debe tener al menos un archivo abierto para poder compararlo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();				
+		mxMessageDialog(main_window,"Debe tener al menos un archivo abierto para poder compararlo",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();				
 }
 
 void mxMainWindow::OnToolsDiffClear(wxCommandEvent &event) {
@@ -495,36 +495,36 @@ void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
 	if (project) {
 		if (config->CheckDoxygenPresent()) {
 			mxOutputView *doxy = new mxOutputView("Doxygen",mxOV_EXTRA_URL,"Ver HTMLs",
-				DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))),
-				mxVO_DOXYGEN,DIR_PLUS_FILE(config->temp_dir,_T("doxygen.out")));
+				DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE("html","index.html"))),
+				mxVO_DOXYGEN,DIR_PLUS_FILE(config->temp_dir,"doxygen.out"));
 			project->SaveAll(false);
-			project->GenerateDoxyfile(DIR_PLUS_FILE(project->path,_T("Doxyfile")));
-			doxy->Launch(project->path,wxString("\"")<<config->Files.doxygen_command<<_T("\" Doxyfile"));
+			project->GenerateDoxyfile(DIR_PLUS_FILE(project->path,"Doxyfile"));
+			doxy->Launch(project->path,wxString("\"")<<config->Files.doxygen_command<<"\" Doxyfile");
 		}
 	}
 }
 
 void mxMainWindow::OnToolsDoxyView(wxCommandEvent &event) {
 	if (project) {
-		utils->OpenInBrowser(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE(_T("html"),_T("index.html")))));
+		utils->OpenInBrowser(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE("html","index.html"))));
 	}
 }
 
 
 void mxMainWindow::OnToolsDoxyHelp(wxCommandEvent &event) {
-	SHOW_HELP(_T("doxygen.html"));
+	mxHelpWindow::ShowHelp("doxygen.html");
 }
 
 void mxMainWindow::OnToolsDiffHelp(wxCommandEvent &event) {
-	SHOW_HELP(_T("diff.html"));
+	mxHelpWindow::ShowHelp("diff.html");
 }
 
 void mxMainWindow::OnToolsShareHelp(wxCommandEvent &event) {
-	SHOW_HELP(_T("share.html"));
+	mxHelpWindow::ShowHelp("share.html");
 }
 
 void mxMainWindow::OnToolsGprofHelp (wxCommandEvent &event) {
-	SHOW_HELP(_T("gprof.html"));
+	mxHelpWindow::ShowHelp("gprof.html");
 }
 
 bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, wxString arg) {
@@ -583,7 +583,7 @@ wxString mxMainWindow::OnToolsGprofShowListAux(bool include_command) {
 	if (!project && notebook_sources->GetPageCount()==0) return "";
 	
 	// ver si hay informacion de profiling
-	wxString gmon = project ? (DIR_PLUS_FILE(project->active_configuration->working_folder.Len()?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):project->path,_T("gmon.out"))) : (DIR_PLUS_FILE(CURRENT_SOURCE->working_folder.GetFullPath(),_T("gmon.out")));
+	wxString gmon = project ? (DIR_PLUS_FILE(project->active_configuration->working_folder.Len()?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):project->path,"gmon.out")) : (DIR_PLUS_FILE(CURRENT_SOURCE->working_folder.GetFullPath(),"gmon.out"));
 	if (!wxFile::Exists(gmon)) {
 		mxMessageDialog(this,LANG(MAINW_GPROF_OUTPUT_MISSING,"No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return "";
@@ -741,7 +741,7 @@ void mxMainWindow::OnToolsProjectToolsSettings(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnToolsCustomHelp(wxCommandEvent &evt) {
-	SHOW_HELP(_T("custom_tools.html"));	
+	mxHelpWindow::ShowHelp("custom_tools.html");	
 }
 
 void mxMainWindow::OnToolsCustomTool(wxCommandEvent &event) {
@@ -862,7 +862,7 @@ void mxMainWindow::OnToolsPreprocReplaceMacros ( wxCommandEvent &event ) {
 }
 
 void mxMainWindow::OnToolsPreprocHelp ( wxCommandEvent &event ) {
-	SHOW_HELP(_T("menu_herramientas.html#expandir_macros"));	
+	mxHelpWindow::ShowHelp("menu_herramientas.html#expandir_macros");	
 }
 
 /**
@@ -902,10 +902,10 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" ";
 //		z_opts<<current_toolchain.linker_options<<" ";
 		wxString ext=src->source_filename.GetExt();
-		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<_T("-x c++ "); 
+		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<"-x c++ "; 
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
 		wxString comp_opts = src->GetCompilerOptions();
-		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+fname+"\" "+comp_opts+_T(" -o \"")+bin_name<<"\"";
+		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+fname+"\" "+comp_opts+" -o \""+bin_name<<"\"";
 		_IF_DEBUGMODE(command);
 		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
@@ -990,7 +990,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		wxFileName::Mkdir(dest_dir); utils->XCopy(project->path,dest_dir,true); // copy all project files
 		wxString zpr=wxFileName(project->filename).GetFullName(); 
 		wxString orig_zpr=DIR_PLUS_FILE(dest_dir,zpr);
-		wxString dest_zpr=DIR_PLUS_FILE(dest_dir,filename+".zpr");
+		wxString dest_zpr=DIR_PLUS_FILE(dest_dir,filename+DOT_PROJECT_EXT);
 		if (dest_zpr!=orig_zpr) wxRenameFile(orig_zpr,dest_zpr); // rename .zpr
 		project->Save(); // restore real project file to non-template status
 	} else IF_THERE_IS_SOURCE {
@@ -1053,5 +1053,5 @@ void mxMainWindow::OnToolsGcovShow (wxCommandEvent & event) {
 }
 
 void mxMainWindow::OnToolsGcovHelp (wxCommandEvent & event) {
-	SHOW_HELP(_T("gcov.html"));
+	mxHelpWindow::ShowHelp("gcov.html");
 }

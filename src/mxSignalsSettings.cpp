@@ -87,6 +87,6 @@ void mxSignalsSettings::OnButtonCancel (wxCommandEvent & evt) {
 }
 
 void mxSignalsSettings::OnButtonHelp (wxCommandEvent & evt) {
-	SHOW_HELP_FROM_MODAL("signals.html");	
+	mxHelpWindow::ShowHelp("signals.html",this);	
 }
 

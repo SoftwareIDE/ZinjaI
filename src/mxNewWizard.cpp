@@ -67,7 +67,7 @@ mxNewWizard::mxNewWizard(mxMainWindow* parent, wxWindowID id, const wxPoint& pos
 	cancelButton = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(NEWWIZARD_CANCEL," Cancelar ")); 
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
 	
-	sizerU->Add(new wxStaticBitmap(this,wxID_ANY, wxBitmap(SKIN_FILE(_T("newWizard.png")), wxBITMAP_TYPE_PNG)), sizers->BA10);
+	sizerU->Add(new wxStaticBitmap(this,wxID_ANY, wxBitmap(SKIN_FILE("newWizard.png"), wxBITMAP_TYPE_PNG)), sizers->BA10);
 	sizerU->Add(panel, sizers->BA10_Exp1);
 	
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -235,8 +235,8 @@ void mxNewWizard::OnProjectCreate() {
 			return;
 		}
 		// controlar que no exista
-		wxString cpp_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+_T(".cpp"));
-		wxString h_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+_T(".h"));
+		wxString cpp_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".cpp");
+		wxString h_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".h");
 		if (wxFileName::FileExists(cpp_name)) {
 			mxMessageDialog(this,LANG(NEWWIZARD_FILE_EXISTS,"Ya existe un archivo con ese nombre"),cpp_name,mxMD_OK|mxMD_ERROR).ShowModal();
 			return;
@@ -306,24 +306,24 @@ void mxNewWizard::OnProjectCreate() {
 			// crear el cpp
 			wxTextFile cpp_file(cpp_name);
 			cpp_file.Create();
-			cpp_file.AddLine(wxString(_T("#include \""))+name+_T(".h\""));
+			cpp_file.AddLine(wxString("#include \"")+name+".h\"");
 			cpp_file.AddLine("");
 			if (onproject_const_def->GetValue()) { // constructor por defecto
-				cpp_file.AddLine(name+_T("::")+name+_T("() {"));
+				cpp_file.AddLine(name+"::"+name+"() {");
 				cpp_file.AddLine("\t");
-				cpp_file.AddLine(_T("}"));
+				cpp_file.AddLine("}");
 				cpp_file.AddLine("");
 			}
 			if (onproject_const_copy->GetValue()) { // constructor de copia
-				cpp_file.AddLine(name+_T("::")+name+_T("(const ")<<name<<_T(" &arg) {"));
+				cpp_file.AddLine(name+"::"+name+"(const "<<name<<" &arg) {");
 				cpp_file.AddLine("\t");
-				cpp_file.AddLine(_T("}"));
+				cpp_file.AddLine("}");
 				cpp_file.AddLine("");
 			}
 			if (onproject_dest->GetValue()) { // destructor
-				cpp_file.AddLine(name+_T("::~")+name+_T("() {"));
+				cpp_file.AddLine(name+"::~"+name+"() {");
 				cpp_file.AddLine("\t");
-				cpp_file.AddLine(_T("}"));
+				cpp_file.AddLine("}");
 				cpp_file.AddLine("");
 			}
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) { // métodos virtuales heredados
@@ -336,7 +336,7 @@ void mxNewWizard::OnProjectCreate() {
 					virtual_methods[i].AfterFirst('(');
 				cpp_file.AddLine(virtual_methods[i].AfterFirst(' ')+" {");
 				cpp_file.AddLine("\t");
-				cpp_file.AddLine(_T("}"));
+				cpp_file.AddLine("}");
 				cpp_file.AddLine("");
 				// sacar el nombre de la clase del prototipo para que no ponerlo despues en el .h
 				virtual_methods[i]=
@@ -354,8 +354,8 @@ void mxNewWizard::OnProjectCreate() {
 			def.MakeUpper();
 			wxTextFile h_file(h_name);
 			h_file.Create();
-			h_file.AddLine(wxString(_T("#ifndef "))+def+_T("_H"));
-			h_file.AddLine(wxString(_T("#define "))+def+_T("_H"));
+			h_file.AddLine(wxString("#ifndef ")+def+"_H");
+			h_file.AddLine(wxString("#define ")+def+"_H");
 			
 			for (int i=0;i<config->Init.inherit_num;i++) { // #includes para las clases bases
 				wxString aux = onproject_inherit_class[i]->GetValue();
@@ -370,34 +370,34 @@ void mxNewWizard::OnProjectCreate() {
 			for (int i=0;i<config->Init.inherit_num;i++)
 				if (onproject_inherit_class[i]->GetValue().Len()) {
 					if (inherits.Len())
-						inherits<<_T(", ")<<onproject_inherit_visibility[i]->GetValue()<<" "<<onproject_inherit_class[i]->GetValue();
+						inherits<<", "<<onproject_inherit_visibility[i]->GetValue()<<" "<<onproject_inherit_class[i]->GetValue();
 					else
-						inherits<<_T(" : ")<<onproject_inherit_visibility[i]->GetValue()<<" "<<onproject_inherit_class[i]->GetValue();
+						inherits<<" : "<<onproject_inherit_visibility[i]->GetValue()<<" "<<onproject_inherit_class[i]->GetValue();
 				}
 			// cuerpo de la clase
-			h_file.AddLine(wxString(_T("class "))+name+inherits+_T(" {"));
-			h_file.AddLine(_T("private:"));
+			h_file.AddLine(wxString("class ")+name+inherits+" {");
+			h_file.AddLine("private:");
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
 				if (virtual_methods[i].StartsWith("private "))
 					h_file.AddLine(wxString("\t")+virtual_methods[i].AfterFirst(' ')+";");
-			h_file.AddLine(_T("protected:"));
+			h_file.AddLine("protected:");
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
 				if (virtual_methods[i].StartsWith("protected "))
 					h_file.AddLine(wxString("\t")+virtual_methods[i].AfterFirst(' ')+";");
-			h_file.AddLine(_T("public:"));
+			h_file.AddLine("public:");
 			if (onproject_const_def->GetValue())
-				h_file.AddLine(wxString("\t")+name+_T("();"));
+				h_file.AddLine(wxString("\t")+name+"();");
 			if (onproject_const_copy->GetValue())
-				h_file.AddLine(wxString("\t")+name+_T("(const ")<<name<<_T(" &arg);"));
+				h_file.AddLine(wxString("\t")+name+"(const "<<name<<" &arg);");
 			if (onproject_dest->GetValue())
-				h_file.AddLine(wxString(_T("\t~"))+name+_T("();"));
+				h_file.AddLine(wxString("\t~")+name+"();");
 			for(unsigned int i=0;i<virtual_methods.GetCount();i++) 
 				if (virtual_methods[i].StartsWith("public "))
 					h_file.AddLine(wxString("\t")+virtual_methods[i].AfterFirst(' ')+";");
-			h_file.AddLine(_T("};"));
+			h_file.AddLine("};");
 			
 			h_file.AddLine("");
-			h_file.AddLine(_T("#endif"));
+			h_file.AddLine("#endif");
 			h_file.AddLine("");
 			h_file.Write();
 			h_file.Close();
@@ -422,9 +422,9 @@ void mxNewWizard::OnProjectCreate() {
 		wxFileName filename(DIR_PLUS_FILE(project->path,name));
 		if (filename.GetExt()=="") {
 			if (sel==0)
-				filename.SetExt(_T("cpp"));
+				filename.SetExt("cpp");
 			else if (sel==1)
-				filename.SetExt(_T("h"));
+				filename.SetExt("h");
 		}
 		if (filename.FileExists()) {
 			mxMessageDialog(this,LANG(NEWWIZARD_FILE_EXISTS,"Ya existe un archivo con ese nombre"),filename.GetFullPath(),mxMD_OK|mxMD_ERROR).ShowModal();				
@@ -433,12 +433,12 @@ void mxNewWizard::OnProjectCreate() {
 			wxTextFile cpp_file(filename.GetFullPath());
 			cpp_file.Create();
 			if (sel==1) {
-				wxString cte = filename.GetName()+_T("_H");
+				wxString cte = filename.GetName()+"_H";
 				cte.MakeUpper();
-				cpp_file.AddLine(wxString(_T("#ifndef "))+cte);
-				cpp_file.AddLine(wxString(_T("#define "))+cte);
+				cpp_file.AddLine(wxString("#ifndef ")+cte);
+				cpp_file.AddLine(wxString("#define ")+cte);
 				cpp_file.AddLine("");
-				cpp_file.AddLine(_T("#endif"));
+				cpp_file.AddLine("#endif");
 			}
 			cpp_file.Write();
 			cpp_file.Close();
@@ -525,37 +525,37 @@ void mxNewWizard::ProjectCreate() {
 			project_file.Create();
 		project_file.Clear();
 		
-		project_file.AddLine(_T("[general]"));
+		project_file.AddLine("[general]");
 		project_file.AddLine(wxString("version_saved=")<<VERSION);
 		
 		if (cual==1 && !custom_files) { // si quiere un main
 			// registrarlo en el proyecto
-			project_file.AddLine(_T("[source]"));
-			project_file.AddLine(_T("path=main.cpp"));
-			project_file.AddLine(_T("cursor=78"));
-			project_file.AddLine(_T("open=true"));
+			project_file.AddLine("[source]");
+			project_file.AddLine("path=main.cpp");
+			project_file.AddLine("cursor=78");
+			project_file.AddLine("open=true");
 			// crearlo en disco
-			wxString main_file=DIR_PLUS_FILE(full,_T("main.cpp"));
+			wxString main_file=DIR_PLUS_FILE(full,"main.cpp");
 			wxTextFile fil(main_file);
 			if (fil.Exists())
 				fil.Open();
 			else
 				fil.Create();
 			fil.Clear();
-			fil.AddLine(_T("#include<iostream>"));
-			fil.AddLine(_T("using namespace std;"));
+			fil.AddLine("#include<iostream>");
+			fil.AddLine("using namespace std;");
 			fil.AddLine("");
-			fil.AddLine(_T("int main (int argc, char *argv[]) {"));
+			fil.AddLine("int main (int argc, char *argv[]) {");
 			fil.AddLine("\t");
-			fil.AddLine(_T("\treturn 0;"));
-			fil.AddLine(_T("}"));
+			fil.AddLine("\treturn 0;");
+			fil.AddLine("}");
 			fil.AddLine("");
 			fil.Write();
 			fil.Close();
 		}
 		
 		// guardar y abrir el proyecto
-		project_file.AddLine(_T("[end]"));
+		project_file.AddLine("[end]");
 		project_file.Write();
 		project_file.Close();
 	} else {
@@ -569,10 +569,10 @@ void mxNewWizard::ProjectCreate() {
 			bool add=true;
 			for ( wxString str = fin.GetFirstLine(); !fin.Eof(); str = fin.GetNextLine() ) {
 				if (str[0]=='[') {
-					add = ( !str.StartsWith(_T("[source]")) && !str.StartsWith(_T("[header]")) && !str.StartsWith(_T("[other]")) );
+					add = ( !str.StartsWith("[source]") && !str.StartsWith("[header]") && !str.StartsWith("[other]") );
 				}
 				if (add) {
-					if (!str.StartsWith(_T("current_source=")))
+					if (!str.StartsWith("current_source="))
 						fout.AddLine(str);
 				}
 			}
@@ -651,72 +651,72 @@ void mxNewWizard::OnButtonNext(wxCommandEvent &event){
 
 void mxNewWizard::WizardCreate() {
 	int pos=78;
-	wxString source(_T("#include <iostream>\n"));
+	wxString source("#include <iostream>\n");
 	
 	if (wizard_fstream->GetValue()) {
-		source+=_T("#include <fstream>\n");
+		source+="#include <fstream>\n";
 		pos+=19;
 	}
 	if (wizard_iomanip->GetValue()) {
-		source+=_T("#include <iomanip>\n");
+		source+="#include <iomanip>\n";
 		pos+=19;
 	}
 	if (wizard_cstring->GetValue()) {
-		source+=_T("#include <cstring>\n");
+		source+="#include <cstring>\n";
 		pos+=19;
 	}
 	if (wizard_rand->GetValue()) {
-		source+=_T("#include <ctime>\n");
-		source+=_T("#include <cstdlib>\n");
+		source+="#include <ctime>\n";
+		source+="#include <cstdlib>\n";
 		pos+=36;
 	}
 	if (wizard_cmath->GetValue()) {
-		source+=_T("#include <cmath>\n");
+		source+="#include <cmath>\n";
 		pos+=17;
 	}
 	if (wizard_algorithm->GetValue()) {
-		source+=_T("#include <algorithm>\n");
+		source+="#include <algorithm>\n";
 		pos+=21;
 	}
 	if (wizard_vector->GetValue()) {
-		source+=_T("#include <vector>\n");
+		source+="#include <vector>\n";
 		pos+=18;
 	}
 	if (wizard_list->GetValue()) {
-		source+=_T("#include <list>\n");
+		source+="#include <list>\n";
 		pos+=16;
 	}
 	if (wizard_map->GetValue()) {
-		source+=_T("#include <map>\n");
+		source+="#include <map>\n";
 		pos+=15;
 	}
 	if (wizard_set->GetValue()) {
-		source+=_T("#include <set>\n");
+		source+="#include <set>\n";
 		pos+=15;
 	}
 	if (wizard_queue->GetValue()) {
-		source+=_T("#include <queue>\n");
+		source+="#include <queue>\n";
 		pos+=17;
 	}
 	if (wizard_deque->GetValue()) {
-		source+=_T("#include <deque>\n");
+		source+="#include <deque>\n";
 		pos+=17;
 	}
 	if (wizard_stack->GetValue()) {
-		source+=_T("#include <stack>\n");
+		source+="#include <stack>\n";
 		pos+=17;
 	}
 	
-	source+=_T("using namespace std;\n\n");
+	source+="using namespace std;\n\n";
 	
-	source+=_T("int main(int argc, char *argv[]) {\n");
+	source+="int main(int argc, char *argv[]) {\n";
 	
 	if (wizard_rand->GetValue()) {
-		source+=_T("\tsrand(time(NULL));\n");
+		source+="\tsrand(time(NULL));\n";
 		pos+=20;
 	}
 	
-	source+=_T("\t\n\treturn 0;\n}\n\n");
+	source+="\t\n\treturn 0;\n}\n\n";
 	
 	main_window->NewFileFromText(source,pos);//->SetFocus();
 
@@ -765,7 +765,7 @@ void mxNewWizard::CreatePanelStart() {
 	if (config->Help.show_extra_panels) {
 		wxHtmlWindow *html = new wxHtmlWindow(panel_start,wxID_ANY);
 		sizer->Add(html,sizers->Exp1);
-		html->LoadFile(DIR_PLUS_FILE(config->Help.guihelp_dir,wxString(_T("new_help_"))<<config->Init.language_file<<(".html")));
+		html->LoadFile(DIR_PLUS_FILE(config->Help.guihelp_dir,wxString("new_help_")<<config->Init.language_file<<(".html")));
 	}
 	
 	
@@ -801,7 +801,7 @@ void mxNewWizard::CreatePanelOnProject() {
 	sizer->Add(onproject_label,sizers->BT10);
 	wxBoxSizer *sizer_name = new wxBoxSizer(wxHORIZONTAL);
 	sizer_name->Add(onproject_name,sizers->Exp1);
-	wxButton *button_name = new wxButton(panel_onproject,mxID_WIZARD_NEW_FILE_PATH,_T("..."),wxDefaultPosition,wxSize(30,10));	
+	wxButton *button_name = new wxButton(panel_onproject,mxID_WIZARD_NEW_FILE_PATH,"...",wxDefaultPosition,wxSize(30,10));	
 	sizer_name->Add(button_name,sizers->Exp0);
 	sizer->Add(sizer_name,sizers->BL10_Exp0);
 	
@@ -824,12 +824,12 @@ void mxNewWizard::CreatePanelOnProject() {
 	onproject_inherit_label = new wxStaticText(panel_onproject,wxID_ANY,LANG(NEWWIZARD_INHERIT_FROM,"Heredar de"));
 	sizer->Add(onproject_inherit_label,sizers->BT5);
 	wxArrayString inherit_choices;
-	inherit_choices.Add(_T("public"));
-	inherit_choices.Add(_T("protected"));
-	inherit_choices.Add(_T("private"));
+	inherit_choices.Add("public");
+	inherit_choices.Add("protected");
+	inherit_choices.Add("private");
 	for (int i=0;i<config->Init.inherit_num;i++) {
 		wxBoxSizer *inhSizer = new wxBoxSizer(wxHORIZONTAL);
-		onproject_inherit_visibility[i] = new wxComboBox(panel_onproject,wxID_ANY,_T("public"),wxDefaultPosition,wxDefaultSize,inherit_choices,wxCB_READONLY);
+		onproject_inherit_visibility[i] = new wxComboBox(panel_onproject,wxID_ANY,"public",wxDefaultPosition,wxDefaultSize,inherit_choices,wxCB_READONLY);
 		onproject_inherit_class[i] = new wxTextCtrl(panel_onproject,wxID_ANY,"");
 		inhSizer->Add(onproject_inherit_visibility[i]);
 		inhSizer->Add(onproject_inherit_class[i],sizers->BL5_Exp1);
@@ -862,7 +862,7 @@ void mxNewWizard::CreatePanelTemplates() {
 	utils->GetFilesFromBothDirs(templates,"templates",true);
 	
 	for (unsigned int i=0; i<templates.GetCount();i++) {
-		wxString name_prefix = wxString(_T("// !Z! Name_"))<<config->Init.language_file<<_T(":");
+		wxString name_prefix = wxString("// !Z! Name_")<<config->Init.language_file<<":";
 		wxString name = templates[i];
 		wxString local_name = "";
 		if (config->Files.default_template==name)	templates_default = i;
@@ -872,8 +872,8 @@ void mxNewWizard::CreatePanelTemplates() {
 		if (file.IsOpened()) { 
 			// buscar si tiene nombre
 			wxString line = file.GetFirstLine();
-			while (!file.Eof() && line.Left(7)==_T("// !Z! ")) {
-				if (line.StartsWith(_T("// !Z! Name:"))) {
+			while (!file.Eof() && line.Left(7)=="// !Z! ") {
+				if (line.StartsWith("// !Z! Name:")) {
 					name = line.Mid(12).Trim(false).Trim(true);
 				} else if (line.StartsWith(name_prefix)) {
 					local_name = line.Mid(13+config->Init.language_file.Len()).Trim(false).Trim(true);
@@ -968,7 +968,7 @@ void mxNewWizard::CreatePanelProject1() {
 	
 	sizer->Add(new wxStaticText(panel_project_1,wxID_ANY,LANG(NEWWIZARD_PROJECT_PATH,"Ubicacion del Proyecto:"),wxDefaultPosition,wxDefaultSize),sizers->BT10_Exp0);
 	project_folder_path = new wxTextCtrl(panel_project_1,mxID_WIZARD_PROJECT_FOLDER_TEXT,DIR_PLUS_FILE(config->zinjai_dir,config->Files.project_folder),wxDefaultPosition,wxDefaultSize);
-	wxButton *folders = new wxButton(panel_project_1,mxID_WIZARD_FOLDER,_T("..."),wxDefaultPosition,wxSize(30,10));	
+	wxButton *folders = new wxButton(panel_project_1,mxID_WIZARD_FOLDER,"...",wxDefaultPosition,wxSize(30,10));	
 	
 	wxString choices[4];
 	choices[0] = LANG(NEWWIZARD_PROJECTS_DIR,"Directorio de Proyectos");
@@ -1009,8 +1009,8 @@ void mxNewWizard::CreatePanelProject2() {
 
 	wxArrayString templates;
 	project_default=1;
-	project_templates.Add(_T("<null>"));
-	project_templates.Add(_T("<main>"));
+	project_templates.Add("<null>");
+	project_templates.Add("<main>");
 	templates.Add(LANG(NEWWIZARD_TEMPLATE_EMPTY,"<proyecto en blanco>"));
 	templates.Add(LANG(NEWWIZARD_TEMPLATE_MAIN,"<incluir archivo y funcion main>"));
 	if (project_templates[0]==config->Files.default_project)
@@ -1022,12 +1022,12 @@ void mxNewWizard::CreatePanelProject2() {
 	for(unsigned int i=0;i<templates_array.GetCount();i++) {
 		wxString name = templates_array[i];
 		wxString full = utils->WichOne(name,"templates",false);
-		if (wxFileName::FileExists(DIR_PLUS_FILE(full,name+_T(".zpr")))) {
+		if (wxFileName::FileExists(DIR_PLUS_FILE(full,name+DOT_PROJECT_EXT))) {
 			if (name==config->Files.default_project) project_default=i;
 			wxTextFile file(DIR_PLUS_FILE(full,name+"."+_T(PROJECT_EXT)));
 			file.Open();
 			for (wxString line=file.GetFirstLine();!file.Eof();line=file.GetNextLine()) {
-				if (line.Left(13)==_T("project_name=")) {
+				if (line.Left(13)=="project_name=") {
 					name = line.Mid(13).Trim(true).Trim(false);
 					break;
 				}
@@ -1080,31 +1080,31 @@ void mxNewWizard::CreatePanelWizard1() {
 	panel_wizard_1 = new wxPanel(this,wxID_ANY);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-	sizer->Add(new wxStaticText(panel_wizard_1,wxID_ANY,_T("Selecciones las acciones que va a realizar\n en su programa:"),wxDefaultPosition,wxDefaultSize),sizers->BB5);
+	sizer->Add(new wxStaticText(panel_wizard_1,wxID_ANY,"Selecciones las acciones que va a realizar\n en su programa:",wxDefaultPosition,wxDefaultSize),sizers->BB5);
 
-	wizard_cstring = new wxCheckBox(panel_wizard_1, wxID_ANY, _T("trabajar con cadenas de caracteres C"),wxDefaultPosition,wxDefaultSize);
+	wizard_cstring = new wxCheckBox(panel_wizard_1, wxID_ANY, "trabajar con cadenas de caracteres C",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_cstring,sizers->BLT5_Exp0);
-	wizard_cstring->SetToolTip(_T("incluye <cstring> que contiene funciones como strcmp, strcat, strcpy, strlen, ..."));
+	wizard_cstring->SetToolTip("incluye <cstring> que contiene funciones como strcmp, strcat, strcpy, strlen, ...");
 	
-	wizard_rand = new wxCheckBox(panel_wizard_1, wxID_ANY, _T("utilizar numeros aleatorios"),wxDefaultPosition,wxDefaultSize);
+	wizard_rand = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar numeros aleatorios",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_rand,sizers->BLT5_Exp0);
-	wizard_rand->SetToolTip(_T("inicializa la semilla del generador de numeros pseudoaleatorios: srand(time(NULL))"));
+	wizard_rand->SetToolTip("inicializa la semilla del generador de numeros pseudoaleatorios: srand(time(NULL))");
 	
-	wizard_cmath = new wxCheckBox(panel_wizard_1, wxID_ANY, _T("utilizar funciones matematicas"),wxDefaultPosition,wxDefaultSize);
+	wizard_cmath = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar funciones matematicas",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_cmath,sizers->BLT5_Exp0);
-	wizard_cmath->SetToolTip(_T("incluye <cmath> que contiene funciones sin, cos, tan, pow, sqrt, floor, ..."));
+	wizard_cmath->SetToolTip("incluye <cmath> que contiene funciones sin, cos, tan, pow, sqrt, floor, ...");
 	
-	wizard_fstream = new wxCheckBox(panel_wizard_1, wxID_ANY, _T("trabajar con archivos"),wxDefaultPosition,wxDefaultSize);
+	wizard_fstream = new wxCheckBox(panel_wizard_1, wxID_ANY, "trabajar con archivos",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_fstream,sizers->BLT5_Exp0);
-	wizard_fstream->SetToolTip(_T("incluye <fstream> que contiene las clases fstream, ifstream y ofstream para lectura y escritura en archivos."));
+	wizard_fstream->SetToolTip("incluye <fstream> que contiene las clases fstream, ifstream y ofstream para lectura y escritura en archivos.");
 	
-	wizard_iomanip = new wxCheckBox(panel_wizard_1, wxID_ANY, _T("utilizar manipuladores de flujo"),wxDefaultPosition,wxDefaultSize);
+	wizard_iomanip = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar manipuladores de flujo",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_iomanip,sizers->BLT5_Exp0);
-	wizard_iomanip->SetToolTip(_T("incluye <iomanip> que permite formatear flujos con manipuladores como fixed, setprecision, setw, setfill, ..."));
+	wizard_iomanip->SetToolTip("incluye <iomanip> que permite formatear flujos con manipuladores como fixed, setprecision, setw, setfill, ...");
 	
-	wizard_algorithm = new wxCheckBox(panel_wizard_1, wxID_ANY, _T("utilizar algoritmos STL"),wxDefaultPosition,wxDefaultSize);
+	wizard_algorithm = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar algoritmos STL",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_algorithm,sizers->BLT5_Exp0);
-	wizard_algorithm->SetToolTip(_T("incluye <algorithm> que contiene funciones de busqueda, ordenamiento, operaciones de conjuntos, etc"));
+	wizard_algorithm->SetToolTip("incluye <algorithm> que contiene funciones de busqueda, ordenamiento, operaciones de conjuntos, etc");
 
 	panel_wizard_1->SetSizerAndFit(sizer);
 	panel_wizard_1->Hide();
@@ -1114,20 +1114,20 @@ void mxNewWizard::CreatePanelWizard2() {
 	panel_wizard_2 = new wxPanel(this,wxID_ANY);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-	sizer->Add(new wxStaticText(panel_wizard_2,wxID_ANY,_T("Selecciones la(s) estructura(s) de datos STL\n que va a utilizar en su programa:"),wxDefaultPosition,wxDefaultSize),sizers->BB5_Exp0);
-	wizard_vector = new wxCheckBox(panel_wizard_2, wxID_ANY, _T("vector (vector)"),wxDefaultPosition,wxDefaultSize);
+	sizer->Add(new wxStaticText(panel_wizard_2,wxID_ANY,"Selecciones la(s) estructura(s) de datos STL\n que va a utilizar en su programa:",wxDefaultPosition,wxDefaultSize),sizers->BB5_Exp0);
+	wizard_vector = new wxCheckBox(panel_wizard_2, wxID_ANY, "vector (vector)",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_vector,sizers->BLT5_Exp0);
-	wizard_list = new wxCheckBox(panel_wizard_2, wxID_ANY, _T("listas enlazada (list)"),wxDefaultPosition,wxDefaultSize);
+	wizard_list = new wxCheckBox(panel_wizard_2, wxID_ANY, "listas enlazada (list)",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_list,sizers->BLT5_Exp0);
-	wizard_queue = new wxCheckBox(panel_wizard_2, wxID_ANY, _T("cola (queue)"),wxDefaultPosition,wxDefaultSize);
+	wizard_queue = new wxCheckBox(panel_wizard_2, wxID_ANY, "cola (queue)",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_queue,sizers->BLT5_Exp0);
-	wizard_deque = new wxCheckBox(panel_wizard_2, wxID_ANY, _T("doble cola (deque)"),wxDefaultPosition,wxDefaultSize);
+	wizard_deque = new wxCheckBox(panel_wizard_2, wxID_ANY, "doble cola (deque)",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_deque,sizers->BLT5_Exp0);
-	wizard_stack = new wxCheckBox(panel_wizard_2, wxID_ANY, _T("pila (stack)"),wxDefaultPosition,wxDefaultSize);
+	wizard_stack = new wxCheckBox(panel_wizard_2, wxID_ANY, "pila (stack)",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_stack,sizers->BLT5_Exp0);
-	wizard_map = new wxCheckBox(panel_wizard_2, wxID_ANY, _T("correspondencia (map)"),wxDefaultPosition,wxDefaultSize);
+	wizard_map = new wxCheckBox(panel_wizard_2, wxID_ANY, "correspondencia (map)",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_map,sizers->BLT5_Exp0);
-	wizard_set = new wxCheckBox(panel_wizard_2, wxID_ANY, _T("conjunto (set)"),wxDefaultPosition,wxDefaultSize);
+	wizard_set = new wxCheckBox(panel_wizard_2, wxID_ANY, "conjunto (set)",wxDefaultPosition,wxDefaultSize);
 	sizer->Add(wizard_set,sizers->BLT5_Exp0);
 
 	panel_wizard_2->SetSizerAndFit(sizer);
@@ -1135,12 +1135,12 @@ void mxNewWizard::CreatePanelWizard2() {
 }	
 
 void mxNewWizard::RunWizard(wxString how) {
-	if (how==_T("new_project")) {
+	if (how=="new_project") {
 		only_for_project=true;
 		ShowPanelProject1();
-	} else if (how==_T("on_project")) {
+	} else if (how=="on_project") {
 		ShowPanelOnProject();
-	} else if (how==_T("templates")) {
+	} else if (how=="templates") {
 		ShowPanelTemplates();
 	} else {
 		only_for_project=false;
@@ -1160,18 +1160,18 @@ void mxNewWizard::OnButtonFolder(wxCommandEvent &event){
 void mxNewWizard::OnButtonHelp(wxCommandEvent &event){
 	wxString file;
 	if (panel==panel_onproject)
-		file = _T("new_wizard.html#on_project");
+		file = "new_wizard.html#on_project";
 	else if (panel==panel_project_1)
-		file = _T("new_wizard.html#project");
+		file = "new_wizard.html#project";
 	else if (panel==panel_project_2)
-		file = _T("new_wizard.html#project");
+		file = "new_wizard.html#project";
 	else if (panel==panel_start)
-		file = _T("new_wizard.html#start");
+		file = "new_wizard.html#start";
 	else if (panel==panel_templates)
-		file = _T("new_wizard.html#templates");
+		file = "new_wizard.html#templates";
 //	else if (panel==panel_wizard_1 || panel==panel_wizard_2)
-//		file = _T("new_wizard.html#wizard";
-	SHOW_HELP(file);
+//		file = "new_wizard.html#wizard";
+	mxHelpWindow::ShowHelp(file);
 }
 
 
@@ -1233,13 +1233,13 @@ void mxNewWizard::UpdateProjectFullPath() {
 
 void mxNewWizard::OnButtonNewFilePath(wxCommandEvent &evt) {
 	wxFileName fname(DIR_PLUS_FILE(project->path,onproject_name->GetValue()));
-	wxFileDialog dlg(this, LANG(NEWWIZARD_CREATE_FILE,"Crear Archivo"), fname.GetPath(), fname.GetFullName(), wxString(LANG(WILDCARD_ANY,"Todos los archivos"))<<_T("|*"), wxFD_SAVE);
+	wxFileDialog dlg(this, LANG(NEWWIZARD_CREATE_FILE,"Crear Archivo"), fname.GetPath(), fname.GetFullName(), wxString(LANG(WILDCARD_ANY,"Todos los archivos"))<<"|*", wxFD_SAVE);
 	switch (onproject_radio->GetSelection()) {
 	case 0:
-		dlg.SetWildcard(wxString(LANG(WILDCARD_SOURCES,"Fuentes"))<<_T("|"WILDCARD_SOURCE"|")<<LANG(WILDCARD_ANY,"Todos los archivos")<<_T("|*"));
+		dlg.SetWildcard(wxString(LANG(WILDCARD_SOURCES,"Fuentes"))<<"|"WILDCARD_SOURCE"|"<<LANG(WILDCARD_ANY,"Todos los archivos")<<"|*");
 		break;
 	case 1:
-		dlg.SetWildcard(wxString(LANG(WILDCARD_HEADERS,"Cabeceras"))<<_T("|"WILDCARD_HEADER"|")<<LANG(WILDCARD_ANY,"Todos los archivos")<<_T("|*"));
+		dlg.SetWildcard(wxString(LANG(WILDCARD_HEADERS,"Cabeceras"))<<"|"WILDCARD_HEADER"|"<<LANG(WILDCARD_ANY,"Todos los archivos")<<"|*");
 		break;
 	}
 	if (dlg.ShowModal() == wxID_OK) {

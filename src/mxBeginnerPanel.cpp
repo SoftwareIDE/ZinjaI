@@ -127,10 +127,10 @@ wxPanel *mxBeginnerPanel::CreateOptionsFor(wxPanel *parent) {
 	
 	opt_for_var = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_COUNTER,"Contador"),_T("i"));
 	opt_for_dec = utils->AddCheckBox(sizer,panel,LANG(BEGPANEL_FOR_DECLARE_COUNTER,"Declarar contador"),true);
-	opt_for_from = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_FROM,"Desde"),_T("0"));
-	opt_for_to = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_TO,"Hasta"),_T("n"));
+	opt_for_from = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_FROM,"Desde"),"0");
+	opt_for_to = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_TO,"Hasta"),"n");
 	opt_for_last = utils->AddCheckBox(sizer,panel,LANG(BEGPANEL_FOR_INCLUDE_LAST,"Incluir el ultimo valor"),false);
-	opt_for_step = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_INCREMENT,"Incremento"),_T("1"));
+	opt_for_step = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_INCREMENT,"Incremento"),"1");
 	
 	sizer->Add(new wxButton(panel,mxID_BEGINNER_FOR,LANG(BEGPANEL_APPLY,"Aplicar")),sizers->BA5_Exp0);
 	
@@ -157,11 +157,11 @@ void mxBeginnerPanel::OnButtonFor(wxCommandEvent &evt) {
 	if (!opt_for_var->GetValue().Trim().Len())
 		opt_for_var->SetValue(_T("i"));
 	if (!opt_for_from->GetValue().Trim().Len())
-		opt_for_from->SetValue(_T("0"));
+		opt_for_from->SetValue("0");
 	if (!opt_for_to->GetValue().Trim().Len())
-		opt_for_to->SetValue(_T("n"));
+		opt_for_to->SetValue("n");
 	if (!opt_for_step->GetValue().Trim().Len())
-		opt_for_step->SetValue(_T("1"));
+		opt_for_step->SetValue("1");
 	str<<_T("for (");
 	if (opt_for_dec->GetValue()) str<<_T("int ");
 	str<<opt_for_var->GetValue()<<_T("=")<<opt_for_from->GetValue()<<_T(";");

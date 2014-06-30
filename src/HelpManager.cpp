@@ -609,7 +609,7 @@ bool HelpManager::ReloadDoxyIndex() {
 						func = ntop.name+_T("::")+func;
 					HashStringString::iterator it = doxy_index.find(func);
 					while (it!=doxy_index.end()) {
-						func<<_T("*");
+						func<<"*";
 						it = doxy_index.find(func);
 					}
 					doxy_index[func]=link;
@@ -664,7 +664,7 @@ wxString HelpManager::GetDoxyInfo(pd_func *afunc, wxString &desc) {
 		wxString auxp = ParseDoxyText(it->second,desc);
 		if (auxp==args)
 			return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html"))),it->second);
-		key<<_T("*");
+		key<<"*";
 		it = doxy_index.find(key);
 	}
 	return "";	

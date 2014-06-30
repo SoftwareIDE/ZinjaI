@@ -104,6 +104,6 @@ void mxShareSourceWindow::OnClose(wxCloseEvent &event) {
 }
 
 void mxShareSourceWindow::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP("share_source.html");
+	mxHelpWindow::ShowHelp("share_source.html");
 }
 

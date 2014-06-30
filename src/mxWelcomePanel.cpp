@@ -79,7 +79,7 @@ void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 	if (action==_T("http")) {
 		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else if (action==_T("help")) {
-		SHOW_HELP(event.GetLinkInfo().GetHref().AfterFirst(':'));
+		mxHelpWindow::ShowHelp(event.GetLinkInfo().GetHref().AfterFirst(':'));
 	} else if (action==_T("open")) {
 		main_window->OpenFileFromGui(event.GetLinkInfo().GetHref().AfterFirst(':') );
 	} else if (action==_T("new_simple")) {

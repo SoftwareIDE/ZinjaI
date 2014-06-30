@@ -2,6 +2,8 @@
 #define MXHELPWINDOW_H
 #include "mxGenericHelpWindow.h"
 
+class wxDialog;
+
 class mxHelpWindow:public mxGenericHelpWindow {
 	
 	static mxHelpWindow *instance;
@@ -11,7 +13,7 @@ class mxHelpWindow:public mxGenericHelpWindow {
 	wxString GetHelpFile(wxString file);
 	
 public:
-	static void ShowHelp(wxString page="");
+	static void ShowHelp(wxString page="", wxDialog *from_modal=NULL);
 	
 	void LoadHelp(wxString file);
 	
@@ -35,10 +37,4 @@ public:
 	~mxHelpWindow();
 };
 
-#define SHOW_HELP(page) mxHelpWindow::ShowHelp(page)
-#define SHOW_HELP_FROM_MODAL(page) \
-	if (mxMD_OK==mxMessageDialog(this,"Se cerrará este cuadro de diálogo (perdiendo los cambios) para poder acceder a la ventana de ayuda.",LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK_CANCEL|mxMD_WARNING).ShowModal()) { \
-		EndModal(0); mxHelpWindow::ShowHelp(page); \
-	}
 #endif
-

@@ -11,7 +11,7 @@ BEGIN_EVENT_TABLE(mxSourceProperties, wxDialog)
 	EVT_CLOSE(mxSourceProperties::OnClose)
 END_EVENT_TABLE()
 
-mxSourceProperties::mxSourceProperties(wxString afname, mxSource *src) : wxDialog(main_window, wxID_ANY, _T("Propiedades del Archivo"), wxDefaultPosition, wxSize(450,400),wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxSourceProperties::mxSourceProperties(wxString afname, mxSource *src) : wxDialog(main_window, wxID_ANY, "Propiedades del Archivo", wxDefaultPosition, wxSize(450,400),wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
 	fname=afname;
 	
@@ -20,30 +20,30 @@ mxSourceProperties::mxSourceProperties(wxString afname, mxSource *src) : wxDialo
 	wxFileName filename(fname);
 	filename.Normalize();
 	
-	wxTextCtrl *name_ctrl=utils->AddTextCtrl(mySizer,this,_T("Ubicacion"),filename.GetFullPath());
+	wxTextCtrl *name_ctrl=utils->AddTextCtrl(mySizer,this,"Ubicacion",filename.GetFullPath());
 	name_ctrl->SetEditable(false);
 	
 	double fsize = filename.GetSize().ToDouble();
 	wxString tsize;
 	if (fsize>1024) {
 		if (fsize>1024*1024) {
-			tsize<<int((fsize/1024/1024))<<_T(".")<<int(fsize/1024/1.024)%1000<<_T(" MB = ");
+			tsize<<int((fsize/1024/1024))<<"."<<int(fsize/1024/1.024)%1000<<" MB = ";
 		} else
-			tsize<<int(fsize/1024)<<_T(".")<<int(fsize/1.024)%1000<<_T(" KB = ");
+			tsize<<int(fsize/1024)<<"."<<int(fsize/1.024)%1000<<" KB = ";
 	}
-	tsize<<filename.GetSize()<<_T(" B");
-	utils->AddTextCtrl(mySizer,this,_T("Tamaño"),tsize)->SetEditable(false);
-	utils->AddTextCtrl(mySizer,this,_T("Fecha ultima modifiacion"),filename.GetModificationTime().Format(_T("%H:%M:%S - %d/%B/%Y")))->SetEditable(false);
+	tsize<<filename.GetSize()<<" B";
+	utils->AddTextCtrl(mySizer,this,"Tamaño",tsize)->SetEditable(false);
+	utils->AddTextCtrl(mySizer,this,"Fecha ultima modifiacion",filename.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"))->SetEditable(false);
 	
 	if (!src) src=main_window->FindSource(fname);
-	utils->AddShortTextCtrl(mySizer,this,_T("Abierto"),(src?_T("Si"):_T("No")))->SetEditable(false);
-	if (src) utils->AddShortTextCtrl(mySizer,this,_T("Modificado"),(src->GetModify()?_T("Si"):_T("No")))->SetEditable(false);
+	utils->AddShortTextCtrl(mySizer,this,"Abierto",(src?"Si":"No"))->SetEditable(false);
+	if (src) utils->AddShortTextCtrl(mySizer,this,"Modificado",(src->GetModify()?"Si":"No"))->SetEditable(false);
 	
-	wxString file_type = utils->GetOutput(wxString(_T("file -b \""))<<fname<<"\"");
+	wxString file_type = utils->GetOutput(wxString("file -b \"")<<fname<<"\"");
 	
-	utils->AddLongTextCtrl(mySizer,this,_T("Tipo de Archivo"),file_type)->SetEditable(false);
+	utils->AddLongTextCtrl(mySizer,this,"Tipo de Archivo",file_type)->SetEditable(false);
 	
-	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, _T("Cerrar"));
+	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, "Cerrar");
 
 	mySizer->Add(ok_button,sizers->BA5_Right);
 	

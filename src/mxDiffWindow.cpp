@@ -241,5 +241,5 @@ void mxDiffWindow::OnClose(wxCloseEvent &event) {
 }
 
 void mxDiffWindow::OnHelpButton(wxCommandEvent &event) {
-	SHOW_HELP("diff.html");
+	mxHelpWindow::ShowHelp("diff.html");
 }

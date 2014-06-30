@@ -73,16 +73,16 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	wxString tsize;
 	if (fsize>1024) {
 		if (fsize>1024*1024) {
-			tsize<<int((fsize/1024/1024))<<_T(".")<<int(fsize/1024/1.024)%1000<<_T(" MB = ");
+			tsize<<int((fsize/1024/1024))<<"."<<int(fsize/1024/1.024)%1000<<" MB = ";
 		} else
-			tsize<<int(fsize/1024)<<_T(".")<<int(fsize/1.024)%1000<<_T(" KB = ");
+			tsize<<int(fsize/1024)<<"."<<int(fsize/1.024)%1000<<" KB = ";
 	}
-	tsize<<fname.GetSize()<<_T(" B");
+	tsize<<fname.GetSize()<<" B";
 	
 	text_size = utils->AddTextCtrl(sizer,panel,LANG(EXEINFO_SIZE,"Tamaño"),tsize);
 	text_size->SetEditable(false);
 	
-	text_time = utils->AddTextCtrl(sizer,panel,LANG(EXEINFO_LAST_MOD_DATE,"Fecha ultima modifiacion"),fname.GetModificationTime().Format(_T("%H:%M:%S - %d/%B/%Y")));
+	text_time = utils->AddTextCtrl(sizer,panel,LANG(EXEINFO_LAST_MOD_DATE,"Fecha ultima modifiacion"),fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
 	text_time->SetEditable(false);
 
 	if (!source || !source->sin_titulo) {
@@ -122,9 +122,9 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	
 	if (!parser->working) {
 #if !defined(_WIN32) && !defined(__WIN32__)
-		ldd = utils->GetOutput(wxString(_T("ldd \""))<<fname.GetFullPath()<<"\"");
+		ldd = utils->GetOutput(wxString("ldd \"")<<fname.GetFullPath()<<"\"");
 #else
-		ldd = utils->GetOutput(wxString(_T("lsdeps \""))<<fname.GetFullPath()<<"\"");
+		ldd = utils->GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\"");
 #endif
 	} else if (!wait_for_parser) {
 		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
@@ -132,9 +132,9 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	}
 	
 #if !defined(_WIN32) && !defined(__WIN32__)
-	ldd_ctrl = utils->AddLongTextCtrl(sizer,panel,_T("ldd"),ldd);
+	ldd_ctrl = utils->AddLongTextCtrl(sizer,panel,"ldd",ldd);
 #else
-	ldd_ctrl = utils->AddLongTextCtrl(sizer,panel,_T("lsdeps"),ldd);
+	ldd_ctrl = utils->AddLongTextCtrl(sizer,panel,"lsdeps",ldd);
 #endif
 	
 	panel->SetSizer(sizer);
@@ -154,27 +154,27 @@ void mxExeInfo::OnCloseButton(wxCommandEvent &evt) {
 }
 
 void mxExeInfo::OnStripButton(wxCommandEvent &evt) {
-	utils->GetOutput(wxString(_T("strip \""))<<fname.GetFullPath()<<"\"");
+	utils->GetOutput(wxString("strip \"")<<fname.GetFullPath()<<"\"");
 	wxString tsize;
 	double fsize = fname.GetSize().ToDouble();
 	if (fsize>1024) {
 		if (fsize>1024*1024) {
-			tsize<<int((fsize/1024/1024))<<_T(".")<<int(fsize/1024/1.024)%1000<<_T(" MB = ");
+			tsize<<int((fsize/1024/1024))<<"."<<int(fsize/1024/1.024)%1000<<" MB = ";
 		} else
-			tsize<<int(fsize/1024)<<_T(".")<<int(fsize/1.024)%1000<<_T(" KB = ");
+			tsize<<int(fsize/1024)<<"."<<int(fsize/1.024)%1000<<" KB = ";
 	}
-	tsize<<fname.GetSize()<<_T(" B");
+	tsize<<fname.GetSize()<<" B";
 	text_size->SetValue(tsize);	
-	text_type->SetValue(utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\""));
-	text_time->SetValue(fname.GetModificationTime().Format(_T("%H:%M:%S - %d/%B/%Y")));
+	text_type->SetValue(utils->GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
+	text_time->SetValue(fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
 }
 
 void mxExeInfo::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP(_T("exe_info.html"));
+	mxHelpWindow::ShowHelp("exe_info.html");
 }
 
 void mxExeInfo::OnTimer(wxTimerEvent &evt) {
 	if (parser->working) { wait_for_parser->Start(1000,true); return; }
-	ldd_ctrl->SetValue(utils->GetOutput(wxString(_T("lsdeps \""))<<fname.GetFullPath()<<"\""));
-	text_type->SetValue(utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\""));
+	ldd_ctrl->SetValue(utils->GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\""));
+	text_type->SetValue(utils->GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
 }

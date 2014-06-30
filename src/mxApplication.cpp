@@ -45,7 +45,7 @@ wxLongLong aux_start_time;
 
 bool mxApplication::OnInit() {
 	
-	if (argc==2 && wxString(argv[1])==_T("--version")) {
+	if (argc==2 && wxString(argv[1])=="--version") {
 		cout<<"ZinjaI "<<VERSION<<endl;
 		return false;
 	}
@@ -69,11 +69,11 @@ bool mxApplication::OnInit() {
 	wxString zpath(f_zpath.GetPathWithSep());
 	bool flag=false;
 	if (f_zpath!=f_path) {
-		if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("zinjai.dir"))) ||wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("ZinjaI.dir")))) ) )
+		if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,"zinjai.dir")) ||wxFileName::FileExists(DIR_PLUS_FILE(zpath,"ZinjaI.dir"))) ) )
 			wxSetWorkingDirectory(zpath);
 #ifdef __APPLE__
-		else if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("../Resources/zinjai.dir"))) ||wxFileName::FileExists(DIR_PLUS_FILE(zpath,_T("../Resources/ZinjaI.dir")))) ) ) {
-			zpath = DIR_PLUS_FILE(zpath,_T("../Resources"));
+		else if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,"../Resources/zinjai.dir")) ||wxFileName::FileExists(DIR_PLUS_FILE(zpath,"../Resources/ZinjaI.dir"))) ) ) {
+			zpath = DIR_PLUS_FILE(zpath,"../Resources");
 			wxSetWorkingDirectory(zpath);
 		}
 #endif
@@ -81,11 +81,11 @@ bool mxApplication::OnInit() {
 			zpath = cmd_path;
 	}
 
-	if (!flag && !wxFileName::FileExists(_T("zinjai.dir")) && !wxFileName::FileExists(_T("ZinjaI.dir"))) {
- 		wxMessageBox(_T("ZinjaI no pudo determinar el directorio donde fue instalado.\n"
+	if (!flag && !wxFileName::FileExists("zinjai.dir") && !wxFileName::FileExists("ZinjaI.dir")) {
+ 		wxMessageBox("ZinjaI no pudo determinar el directorio donde fue instalado.\n"
 			            "Compruebe que el directorio de trabajo actual sea el correcto.\n"
 						"ZinjaI cannot determinate installation path. Please verify that\n"
-						"working path is the right one."),_T("Error"));
+						"working path is the right one.","Error");
 	}
 	
 	// inicialize mxUtils and ConfigManager
@@ -100,7 +100,7 @@ bool mxApplication::OnInit() {
 			bool done=true;
 			for (int i=1; i<argc;i++) {
 				wxString name = argv[i];
-				if (name!=_T("--last-source") && name!=_T("--last-project") && name!=_T("--no-splash") && name.AfterLast('.').Lower()!=PROJECT_EXT) {
+				if (name!="--last-source" && name!="--last-project" && name!="--no-splash" && name.AfterLast('.').Lower()!=PROJECT_EXT) {
 					bool opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
 					int ret=0;
 					while (!opened && ret<2) { // dos reintentos, por si estaba muy ocupado
@@ -146,8 +146,6 @@ bool mxApplication::OnInit() {
 		wxSetEnv("LANGUAGE","en_US");
 	}
 	
-//	wxSetEnv(_T("LD_LIBRARY_PATH"),_T("/home/santiago/OpenFOAM/ThirdParty/ParaView3.3-cvs/platforms/linuxGcc/bin:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug/openmpi-1.2.6:/home/santiago/OpenFOAM/ThirdParty/openmpi-1.2.6/platforms/linuxGccDPDebug/lib:/home/santiago/OpenFOAM/ThirdParty/gcc-4.3.1/platforms/linux/lib:/home/santiago/OpenFOAM/santiago-1.5/lib/linuxGccDPDebug:/home/santiago/OpenFOAM/OpenFOAM-1.5/lib/linuxGccDPDebug"));
-	
 	// inicialize HelpManager
 	help = new HelpManager;
 	
@@ -161,9 +159,9 @@ bool mxApplication::OnInit() {
 	
 	// create main window
 	if (config->Init.size_x==0 || config->Init.size_y==0)
-		main_window = new mxMainWindow(NULL, wxID_ANY, _T("ZinjaI "), wxDefaultPosition, wxSize(800, 600));
+		main_window = new mxMainWindow(NULL, wxID_ANY, "ZinjaI ", wxDefaultPosition, wxSize(800, 600));
 	else
-		main_window = new mxMainWindow(NULL, wxID_ANY, _T("ZinjaI"), wxPoint(config->Init.pos_x,config->Init.pos_y), wxSize(config->Init.size_x,config->Init.size_y));
+		main_window = new mxMainWindow(NULL, wxID_ANY, "ZinjaI", wxPoint(config->Init.pos_x,config->Init.pos_y), wxSize(config->Init.size_x,config->Init.size_y));
 
 	// inicialize debug manager
 	debug = new DebugManager();
@@ -177,13 +175,13 @@ bool mxApplication::OnInit() {
 	if (config->first_run) new mxIconInstaller(true);
 //#else
 //	if (config->first_run && 
-//		!wxFileName::FileExists(DIR_PLUS_FILE(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Desktop")),_T("ZinjaI.desktop"))) &&
-//		!wxFileName::FileExists(DIR_PLUS_FILE(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Escritorio")),_T("ZinjaI.desktop"))) &&
+//		!wxFileName::FileExists(DIR_PLUS_FILE(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop"),"ZinjaI.desktop")) &&
+//		!wxFileName::FileExists(DIR_PLUS_FILE(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio"),"ZinjaI.desktop")) &&
 //		mxMD_YES == mxMessageDialog(main_window,LANG(APP_CREATE_ICON_QUESTION,"Desea crear un acceso rapido para ZinjaI en su escritorio?"),LANG(APP_WELCOME_TO_ZINJAI,"Bienvenido a ZinjaI"), mxMD_YES_NO).ShowModal()) {
-//			if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Desktop"))))
-//				utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Desktop")));
-//			if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Escritorio"))))
-//				utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),_T("Escritorio")));
+//			if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop")))
+//				utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop"));
+//			if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio")))
+//				utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio"));
 //		}
 //#endif
 #endif

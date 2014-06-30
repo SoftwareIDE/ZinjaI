@@ -122,7 +122,7 @@ void mxProjectGeneralConfig::OnClose(wxCloseEvent &event) {
 }
 
 void mxProjectGeneralConfig::OnHelpButton(wxCommandEvent &event) {
-	SHOW_HELP(_T("project1_general_config.html"));
+	mxHelpWindow::ShowHelp("project1_general_config.html");
 }
 
 void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {

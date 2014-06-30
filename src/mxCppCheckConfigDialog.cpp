@@ -237,6 +237,6 @@ void mxCppCheckConfigDialog::OnButtonCancel (wxCommandEvent & evt) {
 }
 
 void mxCppCheckConfigDialog::OnButtonHelp (wxCommandEvent & evt) {
-	SHOW_HELP("cppcheck_config.html");
+	mxHelpWindow::ShowHelp("cppcheck_config.html");
 }
 

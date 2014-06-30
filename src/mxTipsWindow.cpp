@@ -122,7 +122,7 @@ void mxTipsWindow::OnKeyDown(wxKeyEvent &evt) {
 		ShowAnyTip();
 	} else if (evt.GetKeyCode()==WXK_F1) {
 		Close();
-		SHOW_HELP(changelog?"ChangeLog.html":"index.html");
+		mxHelpWindow::ShowHelp(changelog?"ChangeLog.html":"index.html");
 	} else evt.Skip();
 }
 
@@ -131,6 +131,6 @@ void mxTipsWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 	if (action=="http") {
 		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else if (action=="help") {
-		SHOW_HELP(event.GetLinkInfo().GetHref().AfterFirst(':'));
+		mxHelpWindow::ShowHelp(event.GetLinkInfo().GetHref().AfterFirst(':'));
 	}
 }

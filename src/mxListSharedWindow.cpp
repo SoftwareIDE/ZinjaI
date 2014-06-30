@@ -60,7 +60,7 @@ void mxListSharedWindow::OnStopSharingButton(wxCommandEvent &event){
 }
 
 void mxListSharedWindow::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP_FROM_MODAL("list_shared.html");
+	mxHelpWindow::ShowHelp("list_shared.html",this);
 }
 
 void mxListSharedWindow::OnCloseButton(wxCommandEvent &event){

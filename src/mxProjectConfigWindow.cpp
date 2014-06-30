@@ -142,7 +142,7 @@ wxPanel *mxProjectConfigWindow::CreateQuickHelpPanel (wxNotebook *notebook) {
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	wxHtmlWindow *html = new wxHtmlWindow(panel,wxID_ANY);
 	sizer->Add(html,sizers->Exp1);
-	html->LoadFile(DIR_PLUS_FILE(config->Help.guihelp_dir,wxString(_T("proy_help_"))<<config->Init.language_file<<_T(".html")));
+	html->LoadFile(DIR_PLUS_FILE(config->Help.guihelp_dir,wxString("proy_help_")<<config->Init.language_file<<".html"));
 	panel->SetSizerAndFit(sizer);
 	return panel;	
 }
@@ -355,31 +355,31 @@ void mxProjectConfigWindow::OnClose(wxCloseEvent &event){
 }
 
 void mxProjectConfigWindow::OnIconDirButton(wxCommandEvent &event){
-	wxFileDialog dlg(this,_T("Icono:"),DIR_PLUS_FILE(project->path,linking_icon->GetValue()));
-	dlg.SetWildcard(_T("Iconos|*.ico;*.ICO"));
+	wxFileDialog dlg(this,"Icono:",DIR_PLUS_FILE(project->path,linking_icon->GetValue()));
+	dlg.SetWildcard("Iconos|*.ico;*.ICO");
 	if (wxID_OK==dlg.ShowModal()) 
 		linking_icon->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 void mxProjectConfigWindow::OnManifestDirButton(wxCommandEvent &event){
-	wxFileDialog dlg(this,_T("Manifest:"),DIR_PLUS_FILE(project->path,linking_manifest->GetValue()));
-	dlg.SetWildcard(_T("XMLs|*.xml;*.XML"));
+	wxFileDialog dlg(this,"Manifest:",DIR_PLUS_FILE(project->path,linking_manifest->GetValue()));
+	dlg.SetWildcard("XMLs|*.xml;*.XML");
 	if (wxID_OK==dlg.ShowModal()) 
 		linking_manifest->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 void mxProjectConfigWindow::OnTempDirButton(wxCommandEvent &event){
-	wxDirDialog dlg(this,_T("Carpeta para archivos temporales e intermedios:"),DIR_PLUS_FILE(project->path,compiling_temp_folder->GetValue()));
+	wxDirDialog dlg(this,"Carpeta para archivos temporales e intermedios:",DIR_PLUS_FILE(project->path,compiling_temp_folder->GetValue()));
 	if (wxID_OK==dlg.ShowModal())
 		compiling_temp_folder->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
 
 void mxProjectConfigWindow::OnEnvVarsButton(wxCommandEvent &event){
-	new mxEnumerationEditor(this,_T("Parametros extra para el compilador"),general_env_vars,false);
+	new mxEnumerationEditor(this,"Parametros extra para el compilador",general_env_vars,false);
 }
 
 void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {
-	wxDirDialog dlg(this,_T("Carpeta de trabajo:"),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
+	wxDirDialog dlg(this,"Carpeta de trabajo:",DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
 	if (wxID_OK==dlg.ShowModal())
 		general_working_folder->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
@@ -606,7 +606,7 @@ bool mxProjectConfigWindow::SaveValues() {
 }
 
 void mxProjectConfigWindow::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP(_T("project_config.html"));
+	mxHelpWindow::ShowHelp("project_config.html");
 }
 
 void mxProjectConfigWindow::OnCompilingExtraOptionsButton(wxCommandEvent &evt) {
@@ -689,7 +689,7 @@ void mxProjectConfigWindow::OnGeneralArgsButton(wxCommandEvent &evt) {
 
 void mxProjectConfigWindow::OnGeneralExePathButton(wxCommandEvent &evt) {
 	wxString sel = general_output_file->GetStringSelection();
-	wxFileDialog dlg(this,_T("Ubicacion del ejecutable:"),DIR_PLUS_FILE(project->path,general_output_file->GetValue()));
+	wxFileDialog dlg(this,"Ubicacion del ejecutable:",DIR_PLUS_FILE(project->path,general_output_file->GetValue()));
 	if (wxID_OK==dlg.ShowModal())
 		general_output_file->SetValue(utils->Relativize(dlg.GetPath(),project->path));
 }
@@ -742,11 +742,11 @@ void mxProjectConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
 	}
 }
 void mxProjectConfigWindow::OnArgsEditText(wxCommandEvent &evt) {
-	new mxLongTextEditor(this,_T("Parametros extra para el compilador"),text_for_edit);
+	new mxLongTextEditor(this,"Parametros extra para el compilador",text_for_edit);
 }
 
 void mxProjectConfigWindow::OnArgsEditList(wxCommandEvent &evt) {
-	new mxEnumerationEditor(this,_T("Parametros extra para el compilador"),text_for_edit,comma_splits_for_edit);
+	new mxEnumerationEditor(this,"Parametros extra para el compilador",text_for_edit,comma_splits_for_edit);
 }
 
 

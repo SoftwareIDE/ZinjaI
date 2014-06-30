@@ -488,7 +488,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	status_bar->SetStatusText(LANG(MAINW_INITIALIZING,"Inicializando..."));	
 
 	if (config->Init.left_panels && !config->Init.autohiding_panels) {
-		aui_manager.AddPane(CreateLeftPanels(), wxAuiPaneInfo().Name("left_panels").Left().CloseButton(true).MaximizeButton(true).Caption(_T("Arboles")).Hide());
+		aui_manager.AddPane(CreateLeftPanels(), wxAuiPaneInfo().Name("left_panels").Left().CloseButton(true).MaximizeButton(true).Caption("Arboles").Hide());
 		left_panels->AddPage(CreateProjectTree(),"P");
 		left_panels->AddPage(CreateSymbolsTree(),"S");
 		left_panels->AddPage(CreateExplorerTree(),"E");
@@ -676,7 +676,7 @@ void mxMainWindow::OnCompilerTreePopup(wxTreeEvent &event) {
 
 void mxMainWindow::OnCompilerTreeShowFull(wxCommandEvent &event) {
 	if (config->Init.show_welcome) main_window->ShowWelcome(false);
-	wxString name = _T("<ultima_compilacion>");
+	wxString name = "<ultima_compilacion>";
 	mxSource* source = new mxSource(notebook_sources, AvoidDuplicatePageText(name));
 	source->SetStyle(false);
 	for (unsigned int i=0;i<compiler->full_output.GetCount();i++)
@@ -727,7 +727,7 @@ void mxMainWindow::OnProjectTreeOpenAll(wxCommandEvent &event) {
 	wxTreeItemIdValue cookie;
 	wxTreeItemId item = project_tree.treeCtrl->GetFirstChild(project_tree.selected_item,cookie);
 	while ( item.IsOk() ) {
-		SetStatusText(wxString(LANG(MAINW_OPENING,"Abriendo"))<<" \""<<project_tree.treeCtrl->GetItemText(item)<<_T("\"..."));
+		SetStatusText(wxString(LANG(MAINW_OPENING,"Abriendo"))<<" \""<<project_tree.treeCtrl->GetItemText(item)<<"\"...");
 		project_tree.selected_item = item;
 		OnProjectTreeOpen(event);
 		item = project_tree.treeCtrl->GetNextSibling( item );
@@ -737,17 +737,17 @@ void mxMainWindow::OnProjectTreeOpenAll(wxCommandEvent &event) {
 
 void mxMainWindow::OnProjectTreeRename(wxCommandEvent &event) {
 	wxFileName fn(DIR_PLUS_FILE(project->path,project->GetNameFromItem(project_tree.selected_item,true)));
-	wxFileDialog dlg (this, _T("Renombrar"),fn.GetPath(),fn.GetFullName(), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog dlg (this, "Renombrar",fn.GetPath(),fn.GetFullName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	dlg.SetDirectory(fn.GetPath());
-	dlg.SetWildcard(_T("Todos los archivos|"WILDCARD_ALL"|Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER));
+	dlg.SetWildcard("Todos los archivos|"WILDCARD_ALL"|Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER);
 	if (dlg.ShowModal() == wxID_OK)
 		if (!project->RenameFile(project_tree.selected_item,dlg.GetPath()))
 			mxMessageDialog(main_window,LANG(MAINW_PROBLEM_RENAMING,"No se pudo renombrar el archivo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		
-//	wxString res = mxGetTextFromUser(_T("Nuevo nombre:"), _T("Renombrar archivo") , project->GetNameFromItem(project_tree.selected_item,true), this);
+//	wxString res = mxGetTextFromUser("Nuevo nombre:", "Renombrar archivo" , project->GetNameFromItem(project_tree.selected_item,true), this);
 //	if (res!="")
 //		if (!project->RenameFile(project_tree.selected_item,res))
-//			mxMessageDialog(main_window,_T("No se pudo renombrar el archivo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+//			mxMessageDialog(main_window,"No se pudo renombrar el archivo",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 }
 
 void mxMainWindow::OnProjectTreeDelete(wxCommandEvent &event) {
@@ -776,8 +776,8 @@ void mxMainWindow::OnProjectTreeAddSelected(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnProjectTreeAdd(wxCommandEvent &event) {
-	wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_MULTIPLE);
-	dlg.SetWildcard(_T("Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Todos los archivos|*"));
+	wxFileDialog dlg (this, "Abrir Archivo", project?project->last_dir:config->Files.last_dir, " ", "Any file (*)|*", wxFD_OPEN | wxFD_MULTIPLE);
+	dlg.SetWildcard("Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Todos los archivos|*");
 	if (project_tree.selected_parent==project_tree.sources)
 		dlg.SetFilterIndex(1);
 	else if (project_tree.selected_parent==project_tree.headers)
@@ -968,7 +968,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 			}
 		}
 		// si no esta abierto
-		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
+		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString("El archivo ")<<the_one.GetFullName()<<" no esta cargado. Desea cargarlo?", the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
 		mxSource *src=OpenFile(the_one);
 		if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
 	} else if (action=="gotopos") { // not used anymore?
@@ -986,7 +986,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 			}
 		}
 		// si no esta abierto
-		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
+		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString("El archivo ")<<the_one.GetFullName()<<" no esta cargado. Desea cargarlo?", the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
 		if (!source) source = OpenFile(the_one);
 		if (source && source!=EXTERNAL_SOURCE) {
 			int line=source->LineFromPosition(p1);
@@ -1009,7 +1009,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 			}
 		}
 		// si no esta abierto
-		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
+		//		if (mxMD_YEW == mxMessageDialog(main_window,wxString("El archivo ")<<the_one.GetFullName()<<" no esta cargado. Desea cargarlo?", the_one.GetFullPath(), mxMD_YES_NO|mxMD_QUESTION).ShowModal();
 		if (!source) source = OpenFile(the_one);
 		if (source && source!=EXTERNAL_SOURCE) {
 			p1+=source->PositionFromLine(line);
@@ -1139,7 +1139,7 @@ void mxMainWindow::OnHelpOpinion (wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpTutorial (wxCommandEvent &event){
-	SHOW_HELP("tutorials.html");
+	mxHelpWindow::ShowHelp("tutorials.html");
 }
 
 void mxMainWindow::OnHelpAbout (wxCommandEvent &event){
@@ -1396,12 +1396,12 @@ wxTreeCtrl* mxMainWindow::CreateExplorerTree() {
 					
 	wxImageList* imglist = new wxImageList(16, 16,true,5);
 	
-	imglist->Add(wxBitmap(SKIN_FILE(_T("ap_folder.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("ap_folder.png"),wxBITMAP_TYPE_PNG));
 	imglist->Add(*(bitmaps->files.source));
 	imglist->Add(*(bitmaps->files.header));
 	imglist->Add(*(bitmaps->files.other));
 	imglist->Add(*(bitmaps->files.blank));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("ap_zpr.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("ap_zpr.png"),wxBITMAP_TYPE_PNG));
 	explorer_tree.treeCtrl->AssignImageList(imglist);
 	
 	explorer_tree.show_only_sources = false;
@@ -1419,15 +1419,15 @@ wxTreeCtrl* mxMainWindow::CreateProjectTree() {
 					
 	wxImageList* imglist = new wxImageList(16, 16,true,5);
 	
-	imglist->Add(wxBitmap(SKIN_FILE(_T("ap_folder.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("ap_folder.png"),wxBITMAP_TYPE_PNG));
 	imglist->Add(*(bitmaps->files.source));
 	imglist->Add(*(bitmaps->files.header));
 	imglist->Add(*(bitmaps->files.other));
 	imglist->Add(*(bitmaps->files.blank));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("ap_wxfb.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("ap_wxfb.png"),wxBITMAP_TYPE_PNG));
 	project_tree.treeCtrl->AssignImageList(imglist);
 	
-	project_tree.root = project_tree.treeCtrl->AddRoot(_T("Archivos Abiertos"), 0);
+	project_tree.root = project_tree.treeCtrl->AddRoot("Archivos Abiertos", 0);
 	wxArrayTreeItemIds items;
 	project_tree.sources = project_tree.treeCtrl->AppendItem(project_tree.root, LANG(MAINW_PT_SOURCES,"Fuentes"), 0);
 	project_tree.headers = project_tree.treeCtrl->AppendItem(project_tree.root, LANG(MAINW_PT_HEADERS,"Cabeceras"), 0);
@@ -1447,7 +1447,7 @@ wxTreeCtrl* mxMainWindow::CreateProjectTree() {
 wxTreeCtrl* mxMainWindow::CreateSymbolsTree() {
 	symbols_tree.treeCtrl = new wxTreeCtrl(this, mxID_TREE_SYMBOLS, wxPoint(0,0), wxSize(160,100), wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT);
 	wxImageList* imglist = new wxImageList(16, 16, true, 15);
-	imglist->Add(wxBitmap(SKIN_FILE(_T("as_folder.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("as_folder.png"),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
 	
 	imglist->Add(*(bitmaps->parser.icon02_define));
@@ -1467,7 +1467,7 @@ wxTreeCtrl* mxMainWindow::CreateSymbolsTree() {
 	imglist->Add(*(bitmaps->parser.icon19_enum_const));
 	
 	symbols_tree.treeCtrl->AssignImageList(imglist);
-//	symbols_tree.treeCtrl->AddRoot(_T("Simbolos encontrados"), 0);
+//	symbols_tree.treeCtrl->AddRoot("Simbolos encontrados", 0);
 	
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_SYMBOL] = new mxHidenPanel(this,symbols_tree.treeCtrl,HP_LEFT,LANG(MAINW_AUTOHIDE_SYMBOLS,"Simbolos"));
@@ -1486,19 +1486,19 @@ wxPanel* mxMainWindow::CreateCompilerTree() {
 // 	compiler_tree.treeCtrl->SetFont(tree_font);
 	
 	wxImageList* imglist = new wxImageList(16, 16, true, 2);
-	imglist->Add(wxBitmap(SKIN_FILE(_T("co_folder.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("co_folder.png"),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("co_info.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("co_warning.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("co_error.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("co_err_info.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("co_out.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("co_project_warning.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("co_info.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("co_warning.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("co_error.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("co_err_info.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("co_out.png"),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE("co_project_warning.png"),wxBITMAP_TYPE_PNG));
 	compiler_tree.treeCtrl->AssignImageList(imglist);
 	
-	compiler_tree.root = compiler_tree.treeCtrl->AddRoot(_T("Resultados de la Compilacion:"), 0);
+	compiler_tree.root = compiler_tree.treeCtrl->AddRoot("Resultados de la Compilacion:", 0);
 	wxArrayTreeItemIds items;
-	compiler_tree.state = compiler_tree.treeCtrl->AppendItem(compiler_tree.root, _T("ZinjaI"),2);
+	compiler_tree.state = compiler_tree.treeCtrl->AppendItem(compiler_tree.root, "ZinjaI",2);
 	compiler_tree.errors = compiler_tree.treeCtrl->AppendItem(compiler_tree.root, LANG(MAINW_CT_ERRORS,"Errores"), 0);
 	compiler_tree.warnings = compiler_tree.treeCtrl->AppendItem(compiler_tree.root, LANG(MAINW_CT_WARNINGS,"Advertencias"), 0);
 	compiler_tree.all = compiler_tree.treeCtrl->AppendItem(compiler_tree.root, LANG(MAINW_CT_ALL,"Toda la salida"), 0);
@@ -1570,7 +1570,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 		compiler->ParseCompilerOutput(compile_and_run,event.GetExitCode()==0);
 	} else { // si termino la ejecucion
 		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
-		if (compile_and_run->valgrind_cmd.Len()) ShowValgrindPanel(mxVO_VALGRIND,DIR_PLUS_FILE(config->temp_dir,_T("valgrind.out")));
+		if (compile_and_run->valgrind_cmd.Len()) ShowValgrindPanel(mxVO_VALGRIND,DIR_PLUS_FILE(config->temp_dir,"valgrind.out"));
 		delete compile_and_run->process;
 		delete compile_and_run;
 		if (gcov_sidebar) gcov_sidebar->LoadData();
@@ -1652,14 +1652,14 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 		source->AutoCompCancel();
 		source->CallTipCancel();
 		if (source->sin_titulo) { // si no esta guardado, siempre compilar
-			if (source->GetLine(0).StartsWith(_T("make me a sandwich"))) { wxMessageBox("No way!"); return; }
-			else if (source->GetLine(0).StartsWith(_T("sudo make me a sandwich"))) source->SetText(wxString(_T("/** Ok, you win! **/"))+wxString(250,' ')+_T("#include <iostream>\n")+wxString(250,' ')+_T("int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n"));
+			if (source->GetLine(0).StartsWith("make me a sandwich")) { wxMessageBox("No way!"); return; }
+			else if (source->GetLine(0).StartsWith("sudo make me a sandwich")) source->SetText(wxString("/** Ok, you win! **/")+wxString(250,' ')+"#include <iostream>\n"+wxString(250,' ')+"int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n");
 			source->SaveTemp();
 			compiler->CompileSource(source,true,false);
 		} else { // si estaba guardado ver si cambio
 			// si es un .h, preguntar si no es mejor ejecutar un cpp
-			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeUpper();
-			if (ext==_T("H") || ext==_T("HPP") || ext==_T("HXX") || ext==_T("H++")) {
+			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeLower();
+			if (utils->ExtensionIsH(ext)) {
 				if (source->GetModify())
 					source->SaveSource();
 				if (compiler->last_runned) {
@@ -1780,14 +1780,14 @@ void mxMainWindow::RunSource (mxSource *source) {
 			command<<" ";
 	}
 	command<<"\""<<config->Files.runner_command<<"\" ";
-	command<<_T("-lang \"")<<config->Init.language_file<<"\" ";
-	if (source->config_running.wait_for_key) command<<_T("-waitkey ");
-	command<<"\""<<source->working_folder.GetFullPath()<<(source->working_folder.GetFullPath().Last()=='\\'?_T("\\\" "):"\" ");
+	command<<"-lang \""<<config->Init.language_file<<"\" ";
+	if (source->config_running.wait_for_key) command<<"-waitkey ";
+	command<<"\""<<source->working_folder.GetFullPath()<<(source->working_folder.GetFullPath().Last()=='\\'?"\\\" ":"\" ");
 
 	compiler->CheckForExecutablePermision(source->GetBinaryFileName().GetFullPath());
 	
 	command<<exe_pref<<"\""<<source->GetBinaryFileName().GetFullPath()<<"\"";
-//	utils->ParameterReplace(command,_T("${ZINJAI_DIR}"),wxGetCwd());
+//	utils->ParameterReplace(command,"${ZINJAI_DIR}",wxGetCwd());
 	// agregar los argumentos de ejecucion
 	if (source->exec_args.Len()) command<<' '<<source->exec_args;	
 	
@@ -1813,7 +1813,7 @@ void mxMainWindow::OnRunStop (wxCommandEvent &event) {
 			}
 			compile_and_run=next;
 		}
-		SetCompilingStatus(_T("Detenido!"));
+		SetCompilingStatus("Detenido!");
 	} else if (compiler->compile_and_run_single) {
 		compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;;
 		compile_and_run->killed=true;
@@ -1965,7 +1965,7 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 void mxMainWindow::OnFileExportHtml (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->GetPath(true),source->GetFileName()+".html", _T("Documento HTML | *.html"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog dlg (this, LANG(GENERAL_SAVE,"Guardar"),source->GetPath(true),source->GetFileName()+".html", "Documento HTML | *.html", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		dlg.SetDirectory(wxString(project?project->last_dir:config->Files.last_dir));
 		if (dlg.ShowModal() == wxID_OK) {
 			project?project->last_dir:config->Files.last_dir=dlg.GetPath();
@@ -1993,7 +1993,7 @@ bool mxMainWindow::CloseSource (mxSource *src) {
 bool mxMainWindow::CloseSource (int i) {
 	mxSource *source=(mxSource*)notebook_sources->GetPage(i);
 	if (share && share->Exists(source))  {
-		int ans =mxMessageDialog(main_window,_T("El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\nRealmente desea cerrar el archivo?"),source->page_text, mxMD_YES_NO,_T("Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo."),false).ShowModal();
+		int ans =mxMessageDialog(main_window,"El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\nRealmente desea cerrar el archivo?",source->page_text, mxMD_YES_NO,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo.",false).ShowModal();
 		if (mxMD_YES&ans) {
 			if (mxMD_CHECKED&ans)
 				share->Freeze(source);
@@ -2529,7 +2529,7 @@ wxTreeItemId mxMainWindow::AddToProjectTreeProject(wxString name, eFileType wher
 		if (sort) project_tree.treeCtrl->SortChildren(main_window->project_tree.headers);
 		break;
 	default:
-		item = project_tree.treeCtrl->AppendItem(project_tree.others, iname, wxFileName(name).GetExt().MakeUpper()==_T("FBP")?5:3);
+		item = project_tree.treeCtrl->AppendItem(project_tree.others, iname, wxFileName(name).GetExt().MakeUpper()=="FBP"?5:3);
 		if (sort) project_tree.treeCtrl->SortChildren(main_window->project_tree.others);
 		break;
 	};
@@ -2546,7 +2546,7 @@ wxTreeItemId mxMainWindow::AddToProjectTreeSimple(wxFileName filename, eFileType
 			return project_tree.treeCtrl->AppendItem(project_tree.headers, filename.GetFullName(), 2);
 			break;
 		default:
-			if (filename.GetExt().MakeUpper()==_T("FBP"))
+			if (filename.GetExt().MakeUpper()=="FBP")
 				return project_tree.treeCtrl->AppendItem(project_tree.others, filename.GetFullName(), 5);
 			else
 				return project_tree.treeCtrl->AppendItem(project_tree.others, filename.GetFullName(), 3);
@@ -2579,12 +2579,12 @@ mxSource *mxMainWindow::OpenFile (const wxString &filename, bool add_to_project)
 	if (filename=="" || !wxFileName::FileExists(filename))
 		return NULL;
 	
-	if (project && project->GetWxfbActivated() && filename.Len()>4 && filename.Mid(filename.Len()-4).CmpNoCase(_T(".fbp"))==0) {
+	if (project && project->GetWxfbActivated() && filename.Len()>4 && filename.Mid(filename.Len()-4).CmpNoCase(".fbp")==0) {
 		if (add_to_project) {
 			project->AddFile(FT_OTHER,filename);
 		} else {
 			mxOSD osd(this,LANG(WXFB_OPENING,"Abriendo wxFormBuilder..."));
-			wxExecute(wxString("\"")+config->Files.wxfb_command+_T("\" \"")+filename+"\"");
+			wxExecute(wxString("\"")+config->Files.wxfb_command+"\" \""+filename+"\"");
 DEBUG_INFO("wxYield:in  mxMainWindow::OpenFile");
 			wxYield(); 
 DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
@@ -2607,8 +2607,8 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		source->LoadFile(filename);
 		if (project) source->m_extras->ToSource(source);
 	}
-	wxString ext=wxFileName(filename).GetExt().MakeUpper();
-	if (ext==_T("CPP") || ext==_T("CXX") || ext==_T("C") || ext==_T("C++")) {
+	wxString ext=wxFileName(filename).GetExt().MakeLower();
+	if (utils->ExtensionIsCpp(ext)) {
 		if (not_opened) notebook_sources->AddPage(source, source->page_text, true, *bitmaps->files.source);
 		if (add_to_project) {
 			if (project) {
@@ -2622,7 +2622,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 			source->never_parsed=false;
 			parser->ParseFile(filename);
 		}
-	} else if (ext=="" || ext==_T("H") || ext==_T("HXX") || ext==_T("HPP")) {
+	} else if (ext=="" || utils->ExtensionIsH(ext)) {
 		if (not_opened) notebook_sources->AddPage(source, source->page_text, true, *bitmaps->files.header);
 		if (add_to_project) {
 			if (project) {
@@ -2806,8 +2806,8 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 	
 
 void mxMainWindow::OnFileOpen (wxCommandEvent &event) {
-	wxFileDialog dlg (this, _T("Abrir Archivo"), project?project->last_dir:config->Files.last_dir, " ", _T("Any file (*)|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-	dlg.SetWildcard(_T("Archivos de C/C++ y Proyectos|"WILDCARD_CPP_EXT"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Proyectos|"WILDCARD_PROJECT"|Todos los archivos|*"));
+	wxFileDialog dlg (this, "Abrir Archivo", project?project->last_dir:config->Files.last_dir, " ", "Any file (*)|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+	dlg.SetWildcard("Archivos de C/C++ y Proyectos|"WILDCARD_CPP_EXT"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER"|Proyectos|"WILDCARD_PROJECT"|Todos los archivos|*");
 	if (dlg.ShowModal() == wxID_OK) {
 		if (project)
 			project->last_dir=dlg.GetDirectory();
@@ -2863,7 +2863,7 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 //		wxPrinter printer(&printDialogData);
 //		if (!printer.Print(this, &printout, true)) {
 //			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
-//				mxMessageDialog(this,_T("Ha ocurrido un error al intentar imprimir"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();;
+//				mxMessageDialog(this,"Ha ocurrido un error al intentar imprimir",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();;
 //		} else
 //			(*printData) = printer.GetPrintDialogData().GetPrintData();
 	}
@@ -2871,13 +2871,13 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 
 void mxMainWindow::OnFileNewProject (wxCommandEvent &event) {
 	if (!wizard) wizard = new mxNewWizard(this);
-	wizard->RunWizard(_T("new_project"));
+	wizard->RunWizard("new_project");
 }
 
 void mxMainWindow::OnFileNew (wxCommandEvent &event) {
 	if (project) {
 		if (!wizard) wizard = new mxNewWizard(this);
-		wizard->RunWizard(_T("on_project"));
+		wizard->RunWizard("on_project");
 	} else 
 		switch (config->Init.new_file){
 			case 0:
@@ -2923,13 +2923,13 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 	if (file.IsOpened()) {
 		long pos=0;
 		wxString line = file.GetFirstLine();
-		while (line.Left(7)==_T("// !Z! ")) {
-			if (line==_T("// !Z! Type: C")) {
+		while (line.Left(7)=="// !Z! ") {
+			if (line=="// !Z! Type: C") {
 				source->cpp_or_just_c=false;
 				source->temp_filename.SetExt("c");
-			} else if (line.Left(13)==_T("// !Z! Caret:")) {
+			} else if (line.Left(13)=="// !Z! Caret:") {
 				line.Mid(13).Trim(false).Trim(true).ToLong(&pos);
-			} else if (line.Left(15)==_T("// !Z! Options:")) {
+			} else if (line.Left(15)=="// !Z! Options:") {
 				wxString comp_opts=line.Mid(15).Trim(false).Trim(true);
 				// here we assume Type is before Options
 				comp_opts.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(source->IsCppOrJustC()),true);
@@ -3203,7 +3203,7 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 					header.Replace("\\","/");
 					source->AddInclude(header);
 				}
-			} else if (key==_T("Clippo"))
+			} else if (key=="Clippo")
 				new mxSplashScreen(clpeg,GetPosition().x+GetSize().x-215,GetPosition().y+GetSize().y-230);
 			else
 				mxMessageDialog(main_window,LANG1(MAINW_NO_HEADER_FOR,"No se encontro cabecera correspondiente a \"<{1}>\".",key),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
@@ -3237,15 +3237,15 @@ wxStatusBar* mxMainWindow::OnCreateStatusBar(int number, long style, wxWindowID 
 void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 	long dpid=0;
 	wxArrayString options;
-	wxString otro=_T("<<<Otro>>>"),cual;
+	wxString otro="<<<Otro>>>",cual;
 	if (!dpid) utils->GetRunningChilds(options);
 	options.Add(cual=otro);
 	if (options.GetCount()>1) {
-		cual=wxGetSingleChoice(_T("Proceso:"),_T("Adjuntar Depurador"),options,this,-1,-1,true);
+		cual=wxGetSingleChoice("Proceso:","Adjuntar Depurador",options,this,-1,-1,true);
 		if (!cual.Len()) return;
 	}
 	if (cual==otro) 
-		mxGetTextFromUser(_T("PID:"),_T("Adjuntar Depurador"),"",this).ToLong(&dpid);
+		mxGetTextFromUser("PID:","Adjuntar Depurador","",this).ToLong(&dpid);
 	else
 		cual.BeforeFirst(' ').ToLong(&dpid);
 	if (!dpid) return;
@@ -3268,7 +3268,7 @@ void mxMainWindow::OnDebugRun ( wxCommandEvent &event ) {
 		if (!debug->running && !debug->waiting)
 			debug->Continue();
 	} else {
-		SetCompilingStatus(_T("Preparando depuracion..."));
+		SetCompilingStatus("Preparando depuracion...");
 DEBUG_INFO("wxYield:in mxMainWindow::OnDebugRun");
 		wxYield();
 DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
@@ -3281,23 +3281,23 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 		} else IF_THERE_IS_SOURCE {
 			mxSource *source=CURRENT_SOURCE;
 			// si es un .h, preguntar si no es mejor ejecutar un cpp
-			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeUpper();
-			if (ext==_T("H") || ext==_T("HPP") || ext==_T("HXX") || ext==_T("H++")) {
+			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeLower();
+			if (utils->ExtensionIsH(ext)) {
 				if (source->GetModify())
 					source->SaveSource();
 				if (compiler->last_runned) {
 					if (config->Running.dont_run_headers)
 						source=compiler->last_runned;
 					else {
-						int ans = mxMessageDialog(this,wxString(_T("Esta intentando ejecutar un archivo de cabecera.\n"
-							"Desea ejecutar en su lugar "))<<compiler->last_caption<<_T("?"),
-							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,_T("Siempre ejecutar el ultimo cpp.")).ShowModal();
+						int ans = mxMessageDialog(this,wxString("Esta intentando ejecutar un archivo de cabecera.\n"
+							"Desea ejecutar en su lugar ")<<compiler->last_caption<<"?",
+							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,"Siempre ejecutar el ultimo cpp.").ShowModal();
 						if (ans&mxMD_CANCEL) return;
 						if (ans&mxMD_CHECKED) config->Running.dont_run_headers = true;
 						if (ans&mxMD_YES) source = compiler->last_runned;
 					}
 				} else {
-					int ans = mxMessageDialog(this,_T("Esta intentando ejecutar un archivo de cabecera. Desea continuar?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_CANCEL).ShowModal();
+					int ans = mxMessageDialog(this,"Esta intentando ejecutar un archivo de cabecera. Desea continuar?",LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_CANCEL).ShowModal();
 					if (ans&mxMD_CANCEL) return;
 				}
 			}				
@@ -3713,21 +3713,21 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 	wxString stext = menu_data->toolbar_find_text->GetValue();
 	if (stext.Len()==0)
 		return;
-	if (!project && stext==_T("Cuack Attack!")) { // are you looking for a duck?
+	if (!project && stext=="Cuack Attack!") { // are you looking for a duck?
 		menu_data->toolbar_find_text->SetValue("");
 		NewFileFromText(_T(
 "#include <iostream>\n#include <cstdlib>\n#include <ctime>\nusing namespace std;\n"
 "char *cuack() {\nstatic char cuack[] = \"cuack\";\nfor (int i=0;i<4;i++)\nif (rand()%2)\ncuack[i]=cuack[i]|32;\nelse\ncuack[i]=cuack[i]&(~32);\nreturn cuack;\n}\n"
 "int main(int argc, char *argv[]) {\nsrand(time(0));\nwhile (true) {\nclock_t t1=clock();\nwhile (clock()==t1);\ncout<<string(rand()%50,' ')<<cuack()<<\"!\"<<endl;\n}\nreturn 0;\n}"
-			),_T("Cuack Attack!"));
+			),"Cuack Attack!");
 		wxYield();
 		CURRENT_SOURCE->OnEditSelectAll(evt);
 		CURRENT_SOURCE->OnIndentSelection(evt);
 		OnRunRun(evt);
 		return;
 	}
-	if (!project && stext==_T("moonwalk")) { // are you looking for a duck?
-		NewFileFromText(_T("\n\n\n\n\n\n\n"));
+	if (!project && stext=="moonwalk") { // are you looking for a duck?
+		NewFileFromText("\n\n\n\n\n\n\n");
 		parser_timer->Stop();
 		wxYield();
 		mxSource *src=CURRENT_SOURCE;
@@ -3735,17 +3735,17 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 		int delay=200;
 		for (int i=0;i<20;i++) {
 			wxString s("\n"), d(i,' ');
-			s<<d<<_T(" _A_\n")<<d<<_T("  O \n")<<d<<_T("  |\\\n")<<d<<_T("  |/\n");
-			if (i%4==0)	s<<d<<_T(" /|\n")<<d<<_T(" \\|\n");
-			if (i%4==1) s<<d<<_T(" /|\n")<<d<<_T(" ||\n");
-			if (i%4==2) s<<d<<_T(" /|\n")<<d<<_T("/ |\n");
-			if (i%4==3) s<<d<<_T(" /|\n")<<d<<_T(" |\\\n");
+			s<<d<<" _A_\n"<<d<<"  O \n"<<d<<"  |\\\n"<<d<<"  |/\n";
+			if (i%4==0)	s<<d<<" /|\n"<<d<<" \\|\n";
+			if (i%4==1) s<<d<<" /|\n"<<d<<" ||\n";
+			if (i%4==2) s<<d<<" /|\n"<<d<<"/ |\n";
+			if (i%4==3) s<<d<<" /|\n"<<d<<" |\\\n";
 			src->SetText(s); wxYield();	wxMilliSleep(delay);
 		}
 		wxString d(23,' ');
-		src->SetText(wxString()<<"\n"<<d<<_T(" _A_\n")<<d<<_T("  O |\n")<<d<<_T(" /|/\n")<<d<<_T(" || \n")<<d<<_T(" / \\\n")<<d<<_T(" | |\n"));
+		src->SetText(wxString()<<"\n"<<d<<" _A_\n"<<d<<"  O |\n"<<d<<" /|/\n"<<d<<" || \n"<<d<<" / \\\n"<<d<<" | |\n");
 		wxYield(); wxMilliSleep(delay*2);
-		src->SetText(wxString()<<"\n"<<d<<_T("\\\n")<<d<<_T(" \\O \n")<<d<<_T("  |\\\n")<<d<<_T("  |_A_\n")<<d<<_T(" / \\\n")<<d<<_T(" | |\n"));
+		src->SetText(wxString()<<"\n"<<d<<"\\\n"<<d<<" \\O \n"<<d<<"  |\\\n"<<d<<"  |_A_\n"<<d<<" / \\\n"<<d<<" | |\n");
 		wxYield(); wxMilliSleep(delay*3);
 		src->SetModify(false);
 		OnFileClose(evt);
@@ -3788,7 +3788,7 @@ void mxMainWindow::SetExplorerPath(wxString path) {
 	explorer_tree.treeCtrl->Freeze();
 //	explorer_tree.treeCtrl->DeleteChildren(explorer_tree.root);
 	explorer_tree.treeCtrl->DeleteAllItems();
-	explorer_tree.root = explorer_tree.treeCtrl->AddRoot(_T("Archivos Abiertos"), 0);
+	explorer_tree.root = explorer_tree.treeCtrl->AddRoot("Archivos Abiertos", 0);
 	if (!wxFileName(path).DirExists()) { // corregir si no existe
 		wxFileName fn(path);
 		while (fn.GetDirCount()>0 && !fn.DirExists()) fn.RemoveLastDir();
@@ -3839,7 +3839,7 @@ void mxMainWindow::OnSelectExplorerItem (wxTreeEvent &event) {
 	
 	if (explorer_tree.selected_item==explorer_tree.root) {
 		
-		wxDirDialog dlg(this,_T("Seleccione la ubicacion:"),explorer_tree.path);
+		wxDirDialog dlg(this,"Seleccione la ubicacion:",explorer_tree.path);
 		if (wxID_OK==dlg.ShowModal()) {
 			SetExplorerPath(dlg.GetPath());
 			config->Files.last_dir = dlg.GetPath();
@@ -4050,7 +4050,7 @@ void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 		for (int i=notebook_sources->GetPageCount()-1;i>=0;i--)
 			((mxSource*)(notebook_sources->GetPage(i)))->UpdateExtras();
 		
-		wxString res(_T("<HTML><HEAD><TITLE>Lineas Resaltadas</TITLE></HEAD><BODY><B>Lineas Resaltadas:</B><BR><UL>"));
+		wxString res("<HTML><HEAD><TITLE>Lineas Resaltadas</TITLE></HEAD><BODY><B>Lineas Resaltadas:</B><BR><UL>");
 		wxString restmp;
 		
 		GlobalListIterator<project_file_item*> fi(&project->files_all);
@@ -4058,25 +4058,25 @@ void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 			const SingleList<int> &markers_list=fi->extras.GetHighlightedLines();
 			restmp="";
 			for(int i=0;i<markers_list.GetSize();i++)
-				restmp=wxString(_T("<LI><A href=\"gotoline:"))<<DIR_PLUS_FILE(project->path,fi->name)<<_T(":")<<markers_list[i]+1<<_T("\">")<<fi->name<<_T(": linea ")<<markers_list[i]+1<<_T("</A></LI>")<<restmp;
+				restmp=wxString("<LI><A href=\"gotoline:")<<DIR_PLUS_FILE(project->path,fi->name)<<":"<<markers_list[i]+1<<"\">"<<fi->name<<": linea "<<markers_list[i]+1<<"</A></LI>"<<restmp;
 			res<<restmp;	
 			fi.Next();
 		}
 		
-		res<<_T("</UL><BR><BR></BODY></HTML>");
+		res<<"</UL><BR><BR></BODY></HTML>";
 		main_window->ShowInQuickHelpPanel(res);	
 	} else {
-		wxString res(_T("<HTML><HEAD><TITLE>Lineas Resaltadas</TITLE></HEAD><BODY><B>Lineas Resaltadas:</B><BR><UL>"));
+		wxString res("<HTML><HEAD><TITLE>Lineas Resaltadas</TITLE></HEAD><BODY><B>Lineas Resaltadas:</B><BR><UL>");
 		for (int i=0,j=notebook_sources->GetPageCount();i<j;i++) {
 			mxSource *src= (mxSource*)(notebook_sources->GetPage(i));
 			for (int k=0;k<src->GetLineCount();k++) {
 				wxString file_name = src->sin_titulo?src->page_text:src->source_filename.GetFullPath();
 				wxString page_text = utils->ToHtml(src->page_text);
 				if (src->MarkerGet(k)&1<<mxSTC_MARK_USER)
-					res<<_T("<LI><A href=\"gotoline:")<<file_name<<_T(":")<<k+1<<_T("\">")<<page_text<<_T(": linea ")<<k+1<<_T("</A></LI>");
+					res<<"<LI><A href=\"gotoline:"<<file_name<<":"<<k+1<<"\">"<<page_text<<": linea "<<k+1<<"</A></LI>";
 			}
 		}
-		res<<_T("</UL><BR><BR></BODY></HTML>");
+		res<<"</UL><BR><BR></BODY></HTML>";
 		main_window->ShowInQuickHelpPanel(res);	
 	}
 }
@@ -4093,7 +4093,7 @@ wxString mxMainWindow::AvoidDuplicatePageText(wxString ptext) {
 		if (i<np) {
 			n++;
 			text=ptext;
-			text<<_T("(")<<n<<_T(")");
+			text<<"("<<n<<")";
 			i=0;
 		} else
 			return text;
@@ -4109,14 +4109,14 @@ void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()>0||project) {
 		if (!debug->debugging && (project || notebook_sources->GetPageCount())) {
 			wxString dir = project?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):CURRENT_SOURCE->working_folder.GetFullPath();
-			wxFileDialog dlg (this, _T("Abrir Archivo"), dir, " ", _T("Volcados de memoria|core*|Todos los Archivos|*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+			wxFileDialog dlg (this, "Abrir Archivo", dir, " ", "Volcados de memoria|core*|Todos los Archivos|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (dlg.ShowModal() == wxID_OK)
 				debug->LoadCoreDump(dlg.GetPath(),project?NULL:CURRENT_SOURCE);
 		} else if (debug->debugging && !debug->waiting) {
 			wxString sPath = project?project->path:(CURRENT_SOURCE->GetPath(true));
-			wxFileDialog dlg (this, _T("Guardar Volcade de Memoria"),sPath,_T("core"), _T("Any file (*)|*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			wxFileDialog dlg (this, "Guardar Volcade de Memoria",sPath,"core", "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			dlg.SetDirectory(sPath);
-			dlg.SetWildcard(_T("Volcados de memoria|core*|Todos los Archivos|*"));
+			dlg.SetWildcard("Volcados de memoria|core*|Todos los Archivos|*");
 			if (dlg.ShowModal() == wxID_OK)
 				debug->SaveCoreDump(dlg.GetPath());
 		}
@@ -4124,7 +4124,7 @@ void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
 }
 
 void mxMainWindow::SetOpenedFileName(wxString name) {
-	SetTitle(wxString(_T("ZinjaI - "))+name);
+	SetTitle(wxString("ZinjaI - ")+name);
 }
 
 void mxMainWindow::OnKeyEvent(wxWindow *who, wxKeyEvent &evt) {
@@ -4388,7 +4388,7 @@ void mxMainWindow::ShowValgrindPanel(int what, wxString file, bool force) {
 	} else {
 		aui_manager.AddPane(
 			valgrind_panel = new mxValgrindOuput(this,(mxVOmode)what,file)
-			, wxAuiPaneInfo().Name(_T("valgrind_output")).Bottom().Caption(LANG(CAPTION_TOOLS_RESULTS_PANEL,"Panel de resultados")).CloseButton(true).MaximizeButton(true).Row(8));
+			, wxAuiPaneInfo().Name("valgrind_output").Bottom().Caption(LANG(CAPTION_TOOLS_RESULTS_PANEL,"Panel de resultados")).CloseButton(true).MaximizeButton(true).Row(8));
 	}
 	if (valgrind_panel->LoadOutput() || force) {
 		aui_manager.GetPane(valgrind_panel).Show();
@@ -4427,7 +4427,7 @@ void mxMainWindow::ShowDiffSideBar(bool bar, bool map) {
 	if (map) {
 		if (!diff_sidebar) {
 			diff_sidebar=new mxDiffSideBar;
-			aui_manager.AddPane(diff_sidebar, wxAuiPaneInfo().Name(_T("diff_sidebar")).Caption(_T("diff")).Right().Row(2).Show().MaxSize(20,-1));
+			aui_manager.AddPane(diff_sidebar, wxAuiPaneInfo().Name("diff_sidebar").Caption("diff").Right().Row(2).Show().MaxSize(20,-1));
 		}
 	}
 	if (bar)
@@ -4438,7 +4438,7 @@ void mxMainWindow::ShowDiffSideBar(bool bar, bool map) {
 void mxMainWindow::ShowGCovSideBar() {
 	if (gcov_sidebar) return;
 	gcov_sidebar=new mxGCovSideBar(this);
-	aui_manager.AddPane(gcov_sidebar, wxAuiPaneInfo().Name(_T("gcov_sidebar")).Caption(_T("gcov")).Left().Row(3).Show());
+	aui_manager.AddPane(gcov_sidebar, wxAuiPaneInfo().Name("gcov_sidebar").Caption("gcov").Left().Row(3).Show());
 	aui_manager.Update();
 }
 
@@ -4545,7 +4545,7 @@ void mxMainWindow::CreateBeginnersPanel() {
 		autohide_handlers[ATH_BEGINNERS] = new mxHidenPanel(this,beginner_panel,HP_RIGHT,LANG(MAINW_BEGGINERS_PANEL,"Asistencias"));
 		aui_manager.AddPane(autohide_handlers[ATH_BEGINNERS], wxAuiPaneInfo().CaptionVisible(false).Right().Position(0).Show());
 	}
-	aui_manager.AddPane(beginner_panel, wxAuiPaneInfo().Name(_T("beginner_panel")).Caption(LANG(MAINW_BEGGINERS_PANEL,"Panel de Asistencias")).Right().Hide());
+	aui_manager.AddPane(beginner_panel, wxAuiPaneInfo().Name("beginner_panel").Caption(LANG(MAINW_BEGGINERS_PANEL,"Panel de Asistencias")).Right().Hide());
 	aui_manager.Update();
 }
 

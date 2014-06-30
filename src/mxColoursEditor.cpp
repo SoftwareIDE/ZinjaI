@@ -326,8 +326,8 @@ void color_theme::SetDefaults (bool inverted) {
 #define CTWrite(what)\
 	fil.AddLine(wxString(#what"_FORE=")<<what##_FORE.GetAsString(wxC2S_HTML_SYNTAX)); \
 	fil.AddLine(wxString(#what"_BACK=")<<what##_BACK.GetAsString(wxC2S_HTML_SYNTAX)); \
-	fil.AddLine(wxString(#what"_BOLD=")<<(what##_BOLD?_T("1"):_T("0"))); \
-	fil.AddLine(wxString(#what"_ITALIC=")<<(what##_ITALIC?_T("1"):_T("0")));
+	fil.AddLine(wxString(#what"_BOLD=")<<(what##_BOLD?"1":"0")); \
+	fil.AddLine(wxString(#what"_ITALIC=")<<(what##_ITALIC?"1":"0"));
 #define CTWrite0(what)\
 	fil.AddLine(wxString(#what"_FORE=")<<what##_FORE.GetAsString(wxC2S_HTML_SYNTAX)); \
 	fil.AddLine(wxString(#what"_BACK=")<<what##_BACK.GetAsString(wxC2S_HTML_SYNTAX));
@@ -478,26 +478,26 @@ void mxStaticText::SetData (wxColour * fore, wxColour * back, bool * italic, boo
 
 void color_theme::Init() {
 	
-	wxTheColourDatabase->AddColour(_T("Z LIGHT GREEN"),wxColour(120,255,120));
-	wxTheColourDatabase->AddColour(_T("Z DARK GREEN"),wxColour(0,80,0));
-	wxTheColourDatabase->AddColour(_T("Z LIGHT BLUE"),wxColour(235,235,255));
-	wxTheColourDatabase->AddColour(_T("Z DOXY BLUE"),wxColour(80,80,255));
-	wxTheColourDatabase->AddColour(_T("Z ALMOST BLUE"),wxColour(100,100,230));
-	wxTheColourDatabase->AddColour(_T("Z LIGHT RED"),wxColour(255,220,220));
-	wxTheColourDatabase->AddColour(_T("Z LIGHT YELLOW"),wxColour(250,250,215));
-	wxTheColourDatabase->AddColour(_T("Z REALLY DARK BLUE"),wxColour(0,0,50));
-	wxTheColourDatabase->AddColour(_T("Z REALLY DARK RED"),wxColour(50,0,0));
-	wxTheColourDatabase->AddColour(_T("Z ALMOST RED"),wxColour(230,100,100));
-	wxTheColourDatabase->AddColour(_T("Z ALMOST GREEN"),wxColour(100,230,100));
-	wxTheColourDatabase->AddColour(_T("Z DARK BLUE"),wxColour(0,0,128));
-	wxTheColourDatabase->AddColour(_T("Z DARK RED"),wxColour(128,0,0));
-	wxTheColourDatabase->AddColour(_T("Z LIGHT GRAY"),wxColour(200,200,200));
-	wxTheColourDatabase->AddColour(_T("Z DARK GRAY"),wxColour(150,150,150));
-	wxTheColourDatabase->AddColour(_T("Z DARKER GRAY"),wxColour(100,100,100)); // para el texto del tooltip
-	wxTheColourDatabase->AddColour(_T("Z REALLY DARKER GRAY"),wxColour(66,66,66)); // para el texto del tooltip
-	wxTheColourDatabase->AddColour(_T("Z DIFF GREEN"),wxColour(128,255,128));
-	wxTheColourDatabase->AddColour(_T("Z DIFF YELLOW"),wxColour(255,255,128));
-	wxTheColourDatabase->AddColour(_T("Z CORNFLOWER BLUE"),wxColour(100,150,240));
+	wxTheColourDatabase->AddColour("Z LIGHT GREEN",wxColour(120,255,120));
+	wxTheColourDatabase->AddColour("Z DARK GREEN",wxColour(0,80,0));
+	wxTheColourDatabase->AddColour("Z LIGHT BLUE",wxColour(235,235,255));
+	wxTheColourDatabase->AddColour("Z DOXY BLUE",wxColour(80,80,255));
+	wxTheColourDatabase->AddColour("Z ALMOST BLUE",wxColour(100,100,230));
+	wxTheColourDatabase->AddColour("Z LIGHT RED",wxColour(255,220,220));
+	wxTheColourDatabase->AddColour("Z LIGHT YELLOW",wxColour(250,250,215));
+	wxTheColourDatabase->AddColour("Z REALLY DARK BLUE",wxColour(0,0,50));
+	wxTheColourDatabase->AddColour("Z REALLY DARK RED",wxColour(50,0,0));
+	wxTheColourDatabase->AddColour("Z ALMOST RED",wxColour(230,100,100));
+	wxTheColourDatabase->AddColour("Z ALMOST GREEN",wxColour(100,230,100));
+	wxTheColourDatabase->AddColour("Z DARK BLUE",wxColour(0,0,128));
+	wxTheColourDatabase->AddColour("Z DARK RED",wxColour(128,0,0));
+	wxTheColourDatabase->AddColour("Z LIGHT GRAY",wxColour(200,200,200));
+	wxTheColourDatabase->AddColour("Z DARK GRAY",wxColour(150,150,150));
+	wxTheColourDatabase->AddColour("Z DARKER GRAY",wxColour(100,100,100)); // para el texto del tooltip
+	wxTheColourDatabase->AddColour("Z REALLY DARKER GRAY",wxColour(66,66,66)); // para el texto del tooltip
+	wxTheColourDatabase->AddColour("Z DIFF GREEN",wxColour(128,255,128));
+	wxTheColourDatabase->AddColour("Z DIFF YELLOW",wxColour(255,255,128));
+	wxTheColourDatabase->AddColour("Z CORNFLOWER BLUE",wxColour(100,150,240));
 	
 	ctheme = new color_theme;
 #if 0
@@ -561,7 +561,7 @@ void mxColoursEditor::SetValues() {
 }
 
 void mxColoursEditor::OnOpen (wxCommandEvent & evt) {
-	wxFileDialog dlg (this, LANG(GENERAL_OPEN,"Abrir"),config->Files.last_dir,"", _T("Zinjai Colour Schemes (*.zcs)|*.zcs;*.ZCS|All files(*)|*"), wxFD_OPEN);
+	wxFileDialog dlg (this, LANG(GENERAL_OPEN,"Abrir"),config->Files.last_dir,"", "Zinjai Colour Schemes (*.zcs)|*.zcs;*.ZCS|All files(*)|*", wxFD_OPEN);
 	if (dlg.ShowModal() == wxID_OK) {
 		config->Files.last_dir=wxFileName(dlg.GetPath()).GetPath();
 		ctheme->Load(dlg.GetPath());

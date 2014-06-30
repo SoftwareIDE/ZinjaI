@@ -91,24 +91,24 @@ void mxThreadGrid::OnKey(wxKeyEvent &event) {
 //	selected_row = event.GetRow();
 //	if (!GetCellValue(selected_row,TG_COL_LEVEL).Len()) {
 //		wxMenu menu; 
-//		menu.Append(mxID_Thread_UPDATE,_T("Actualizar"));
+//		menu.Append(mxID_Thread_UPDATE,"Actualizar");
 //		PopupMenu(&menu);
 //		return;
 //	}
 //	wxMenu menu; 
 //	if (GetCellValue(selected_row,TG_COL_LINE).Len()) {
-//		menu.Append(mxID_Thread_GOTO_POS,wxString(_T("Ir a "))+GetCellValue(selected_row,TG_COL_FILE)+_T(" : ")+GetCellValue(selected_row,TG_COL_LINE));
-//		menu.Append(mxID_Thread_ADD_TO_BLACKLIST,_T("Evitar detenerse este fuente (para step in)"));
+//		menu.Append(mxID_Thread_GOTO_POS,wxString("Ir a ")+GetCellValue(selected_row,TG_COL_FILE)+" : "+GetCellValue(selected_row,TG_COL_LINE));
+//		menu.Append(mxID_Thread_ADD_TO_BLACKLIST,"Evitar detenerse este fuente (para step in)");
 //	}
 //	this->SetGridCursor(selected_row,event.GetCol());
 //	if (GetCellValue(selected_row,TG_COL_ARGS).Len()) {
-//		menu.Append(mxID_Thread_INSPECT_ARGS,_T("Inspeccionar Argumentos"));
-//		menu.Append(mxID_Thread_EXPLORE_ARGS,_T("Explorar Argumentos"));
+//		menu.Append(mxID_Thread_INSPECT_ARGS,"Inspeccionar Argumentos");
+//		menu.Append(mxID_Thread_EXPLORE_ARGS,"Explorar Argumentos");
 //	}
-//	menu.Append(mxID_Thread_INSPECT_LOCALS,_T("Inspeccionar Variables Locales"));
-//	menu.Append(mxID_Thread_EXPLORE_LOCALS,_T("Explorar Variables Locales"));
+//	menu.Append(mxID_Thread_INSPECT_LOCALS,"Inspeccionar Variables Locales");
+//	menu.Append(mxID_Thread_EXPLORE_LOCALS,"Explorar Variables Locales");
 //	menu.AppendSeparator();
-//	menu.Append(mxID_Thread_UPDATE,_T("Actualizar"));
+//	menu.Append(mxID_Thread_UPDATE,"Actualizar");
 //	PopupMenu(&menu);
 // }
 
@@ -134,39 +134,6 @@ void mxThreadGrid::OnColResize(wxGridSizeEvent &evt) {
 //		cols_visibles[i]=GetColMinimalWidth(i)!=cols_sizes[i];
 	}
 }
-
-//void mxThreadGrid::OnLabelPopup(wxGridEvent &event) {
-//	wxMenu menu;
-//	menu.AppendCheckItem(mxID_COL_ID+TG_COL_LEVEL,_T("Encoger  Columna \"Nivel\""))->Check(!cols_visibles[TG_COL_LEVEL]);
-//	menu.AppendCheckItem(mxID_COL_ID+TG_COL_FUNCTION,_T("Encoger  Columna \"Funcion\""))->Check(!cols_visibles[TG_COL_FUNCTION]);
-//	menu.AppendCheckItem(mxID_COL_ID+TG_COL_FILE,_T("Encoger  Columna \"Archivo\""))->Check(!cols_visibles[TG_COL_FILE]);
-//	menu.AppendCheckItem(mxID_COL_ID+TG_COL_LINE,_T("Encoger  Columna \"Linea\""))->Check(!cols_visibles[TG_COL_LINE]);
-//	menu.AppendCheckItem(mxID_COL_ID+TG_COL_ARGS,_T("Encoger Columna \"Argumentos\""))->Check(!cols_visibles[TG_COL_ARGS]);
-//	PopupMenu(&menu);
-// }
-//
-//void mxThreadGrid::OnShowHideCol(wxCommandEvent &evt) {
-//	int cn=evt.GetId()-mxID_COL_ID;
-//	float sum=0, fs=cols_sizes[cn];
-//	int mw=cols_visibles[cn]?GetColMinimalWidth(cn):-GetColMinimalWidth(cn);
-//	for (int i=0;i<TG_COLS_COUNT;i++)
-//		if (cols_visibles[i] && i!=cn) 
-//			sum+=cols_sizes[i];
-//	cols_visibles[cn]=!cols_visibles[cn];
-//	cols_sizes[cn]=-cols_sizes[cn];
-//	if (!cols_visibles[cn])
-//		SetColSize(cn,mw);
-//	else
-//		SetColSize(cn,int(cols_sizes[cn]));
-//	cols_marginal+=mw;
-//	fs-=mw;
-//	for (int i=0;i<TG_COLS_COUNT;i++)
-//		if (cols_visibles[i] && i!=cn) {
-//			cols_sizes[i]+=cols_sizes[i]/sum*fs;
-//			SetColSize(i,int(cols_sizes[i]));
-//		}
-//	Refresh();
-// }
 
 void mxThreadGrid::SetData(int row, wxString id, wxString func, wxString file, wxString line) {
 	if (row==GetNumberRows()) InsertRows(GetNumberRows(),1);

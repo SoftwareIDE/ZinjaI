@@ -157,7 +157,7 @@ void mxLibToBuildWindow::OnCancelButton(wxCommandEvent &evt) {
 }
 
 void mxLibToBuildWindow::OnHelpButton(wxCommandEvent &evt) {
-	SHOW_HELP_FROM_MODAL("lib_to_build.html");
+	mxHelpWindow::ShowHelp("lib_to_build.html",this);
 }
 
 void mxLibToBuildWindow::OnOutButton(wxCommandEvent &evt) {
@@ -188,17 +188,17 @@ void mxLibToBuildWindow::OnCombo(wxCommandEvent &evt) {
 void mxLibToBuildWindow::SetFName() {
 	if (!constructed) return;
 	bool is_static = type->GetSelection()==1;
-	wxString fname = DIR_PLUS_FILE(path->GetValue(),wxString(_T("lib"))<<name->GetValue());
+	wxString fname = DIR_PLUS_FILE(path->GetValue(),wxString("lib")<<name->GetValue());
 #if defined(_WIN32) || defined(__WIN32__)
 	if (is_static)
-		fname<<_T(".a");
+		fname<<".a";
 	else
-		fname<<_T(".dll");
+		fname<<".dll";
 #else
 	if (is_static)
-		fname<<_T(".a");
+		fname<<".a";
 	else
-		fname<<_T(".so");
+		fname<<".so";
 #endif
 	filename->SetValue(fname);
 }

@@ -60,7 +60,7 @@ void mxValgrindConfigDialog::OnButtonCancel (wxCommandEvent & evt) {
 }
 
 void mxValgrindConfigDialog::OnButtonHelp (wxCommandEvent & evt) {
-	SHOW_HELP("valgrind.html");
+	mxHelpWindow::ShowHelp("valgrind.html");
 }
 
 void mxValgrindConfigDialog::OnClose (wxCloseEvent & evt) {

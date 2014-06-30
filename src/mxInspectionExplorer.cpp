@@ -184,7 +184,7 @@ void mxInspectionExplorer::OnItemClick(wxTreeEvent &event) {
 		if (item_data->what_is==DI_IN_CLASS || item_data->what_is==DI_IN_CLASS_POINTER || item_data->what_is==DI_IN_FATHER_CLASS || item_data->what_is==DI_IN_FATHER_POINTER) {
 			wxString oName = item_data->real_expr;
 			if (item_data->what_is==DI_IN_CLASS_POINTER)
-				oName = wxString(_T("*"))<<debug->RewriteExpressionForBreaking(oName);
+				oName = wxString("*")<<debug->RewriteExpressionForBreaking(oName);
 			if (item_data->expr==_T("private"))
 				item_data->value=wxString(_T("< atributos privados del objeto \""))<<oName<<_T("\">");
 			else if (item_data->expr==_T("public"))
@@ -197,7 +197,7 @@ void mxInspectionExplorer::OnItemClick(wxTreeEvent &event) {
 		} else if (item_data->what_is==DI_FATHER_CLASS || item_data->what_is==DI_FATHER_POINTER) {
 			wxString oName = item_data->real_expr;
 			if (item_data->what_is==DI_IN_FATHER_POINTER)
-				oName = wxString(_T("*"))<<debug->RewriteExpressionForBreaking(oName);
+				oName = wxString("*")<<debug->RewriteExpressionForBreaking(oName);
 			item_data->value=wxString(_T("< atributos heredados desde la clase \""))<<item_data->name.AfterLast('.')<<_T("\" del objeto \"")<<oName<<_T("\">");
 			item_data->type=_T("---");
 		} else {

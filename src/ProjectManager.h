@@ -18,6 +18,7 @@
 #include "mxUtils.h"
 
 #define PROJECT_EXT "zpr"
+#define DOT_PROJECT_EXT "." PROJECT_EXT
 
 #if defined(_WIN32) || defined(__WIN32__)
 // maldito seas "winbase.h" (ahi se hacen defines como los que estan aca abajo, entonces cualquiera que los incluya esta cambiando los nombres)

@@ -835,13 +835,13 @@ void mxPreferenceWindow::OnValgrindButton(wxCommandEvent &event){
 }
 
 void mxPreferenceWindow::OnCppCheckButton(wxCommandEvent &event){
-	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de CppCheck"),files_cppcheck_command->GetValue());
+	wxFileDialog dlg(this,"Ubicacion del ejecutable de CppCheck",files_cppcheck_command->GetValue());
 	if (wxID_OK==dlg.ShowModal())
 		files_cppcheck_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP(_T("preferences.html"));
+	mxHelpWindow::ShowHelp("preferences.html");
 }
 
 #if defined(_WIN32) || defined(__WIN32__)
@@ -993,250 +993,31 @@ void mxPreferenceWindow::OnToolbarsCommon(mxToolbarEditor *wx_toolbar, int tb_id
 	wx_toolbar->ShowUp();
 }
 void mxPreferenceWindow::OnToolbarsFile(wxCommandEvent &evt) {
-	
 	OnToolbarsCommon(toolbar_editor_file,MenusAndToolsConfig::tbFILE);
-	
-//	if (toolbar_editor_file)
-//		toolbar_editor_file->ShowUp();
-//	else {
-//		toolbar_editor_file = new mxToolbarEditor(this,main_window->toolbar_file,LANG(PREFERENCES_EDIT_TOOLBAR_FILE_CAPTION,"Barra de Herramientas Archivo"));
-//
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_NEW,"Nuevo..."),_T("nuevo.png"),config->Toolbars.file.new_file);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_NEW_PROJECT,"Nuevo Proyecto..."),_T("proyecto.png"),config->Toolbars.file.new_project);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_OPEN,"Abrir..."),_T("abrir.png"),config->Toolbars.file.open);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_RECENT_SOURCES,"Fuentes Recientes..."),_T("recentSimple.png"),config->Toolbars.file.recent_simple);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_RECENT_PROJECTS,"Proyectos Recientes..."),_T("recentProject.png"),config->Toolbars.file.recent_project);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_OPEN_H,"Abrir h/cpp Complementario"),_T("abrirp.png"),config->Toolbars.file.open_header);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_OPEN_SELECTED,"Abrir Seleccionado"),_T("abrirh.png"),config->Toolbars.file.open_selected);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_SAVE,"Guardar"),_T("guardar.png"),config->Toolbars.file.save);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_SAVE_AS,"Guardar Como..."),_T("guardarComo.png"),config->Toolbars.file.save_as);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_SAVE_ALL,"Guardar Todo"),_T("guardarTodo.png"),config->Toolbars.file.save_all);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_SAVE_PROJECT,"Guardar Proyecto"),_T("guardarProyecto.png"),config->Toolbars.file.save_project);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_EXPORT_HTML,"Exportar a HTML..."),_T("exportHtml.png"),config->Toolbars.file.export_html);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_PRINT,"Imprimir..."),_T("imprimir.png"),config->Toolbars.file.print);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_RELOAD,"Recargar"),_T("recargar.png"),config->Toolbars.file.reload);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_CLOSE,"Cerrar"),_T("cerrar.png"),config->Toolbars.file.close);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_CLOSE_ALL,"Cerrar Todo"),_T("cerrarTodo.png"),config->Toolbars.file.close_all);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_CLOSE_PROJECT,"Cerrar Proyecto"),_T("cerrarProyecto.png"),config->Toolbars.file.close_project);
-//		toolbar_editor_file->Add(LANG(TOOLBAR_CAPTION_FILE_PROJECT_CONFIG,"Configuracion de Proyecto..."),_T("projectConfig.png"),config->Toolbars.file.project_config);
-//
-//		toolbar_editor_file->ShowUp();
-//	}
 }
 
 void mxPreferenceWindow::OnToolbarsEdit(wxCommandEvent &evt) {
-	
 	OnToolbarsCommon(toolbar_editor_edit,MenusAndToolsConfig::tbEDIT);
-	
-//	if (toolbar_editor_edit)
-//		toolbar_editor_edit->ShowUp();
-//	else {
-//		toolbar_editor_edit = new mxToolbarEditor(this,main_window->toolbar_edit,LANG(PREFERENCES_EDIT_TOOLBAR_EDIT_CAPTION,"Barra de Herramientas \"Edicion\""));
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_UNDO,"Deshacer"),_T("deshacer.png"),config->Toolbars.edit.undo);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_REDO,"Rehacer"),_T("rehacer.png"),config->Toolbars.edit.redo);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_COPY,"Copiar"),_T("copiar.png"),config->Toolbars.edit.copy);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_CUT,"Cortar"),_T("cortar.png"),config->Toolbars.edit.cut);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_PASTE,"Pegar"),_T("pegar.png"),config->Toolbars.edit.paste);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_LINES_UP,"Mover Hacia Arriba"),_T("toggleLinesUp.png"),config->Toolbars.edit.move_up);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_LINES_DOWN,"Mover Hacia Abajo"),_T("toggleLinesDown.png"),config->Toolbars.edit.move_down);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_DUPLICATE_LINES,"Duplicar Linea(s)"),_T("duplicarLineas.png"),config->Toolbars.edit.duplicate);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_DELETE_LINES,"Eliminar Linea(s)"),_T("borrarLineas.png"),config->Toolbars.edit.delete_lines);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_GOTO_LINE,"Ir a Linea..."),_T("irALinea.png"),config->Toolbars.edit.goto_line);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_GOTO_FUNCTION,"Ir a Fucion/Clase/Metodo..."),_T("irAFuncion.png"),config->Toolbars.edit.goto_class);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_GOTO_FILE,"Ir a Archivo..."),_T("irAArchivo.png"),config->Toolbars.edit.goto_file);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_FIND,"Buscar..."),_T("buscar.png"),config->Toolbars.edit.find);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_FIND_PREV,"Buscar Anterior"),_T("buscarAnterior.png"),config->Toolbars.edit.find_prev);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_FIND_NEXT,"Buscar Siguiente"),_T("buscarSiguiente.png"),config->Toolbars.edit.find_next);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_REPLACE,"Reemplazar..."),_T("reemplazar.png"),config->Toolbars.edit.replace);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_INSERT_INCLUDE,"Insertar #include Correspondiente"),_T("insertarInclude.png"),config->Toolbars.edit.inser_header);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_COMMENT,"Comentar"),_T("comentar.png"),config->Toolbars.edit.comment);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_UNCOMMENT,"Descomentar"),_T("descomentar.png"),config->Toolbars.edit.uncomment);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_INDENT,"Indentar"),_T("indent.png"),config->Toolbars.edit.indent);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_BRACEMATCH,"Seleccionar Bloque"),_T("mostrarLlave.png"),config->Toolbars.edit.select_block);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_SELECT_ALL,"Seleccionar Todo"),_T("seleccionarTodo.png"),config->Toolbars.edit.select_all);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_HIGHLIGHT_LINES,"Resaltar Linea(s)/Quitar Resaltado"),_T("marcar.png"),config->Toolbars.edit.toggle_user_mark);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_FIND_HIGHLIGHTS,"Buscar Resaltado"),_T("irAMarca.png"),config->Toolbars.edit.find_user_mark);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_LIST_HIGHLIGHTS,"Listar Lineas Resaltadas"),_T("listarMarcas.png"),config->Toolbars.edit.list_user_marks);
-//		toolbar_editor_edit->Add(LANG(TOOLBAR_CAPTION_EDIT_FORCE_AUTOCOMPLETE,"Autocompletar"),_T("autocompletar.png"),config->Toolbars.edit.autocomplete);
-//		toolbar_editor_edit->ShowUp();
-//	}	
 }
 
 void mxPreferenceWindow::OnToolbarsMisc(wxCommandEvent &evt) {
-	
 	OnToolbarsCommon(toolbar_editor_misc,MenusAndToolsConfig::tbMISC);
-	
-//	if (toolbar_editor_misc)
-//		toolbar_editor_misc->ShowUp();
-//	else {
-//		toolbar_editor_misc = new mxToolbarEditor(this,main_window->toolbar_misc,LANG(PREFERENCES_EDIT_TOOLBAR_MISC_CAPTION,"Barra de Herramientas \"Miscelanea\""));
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_FILE_PREFERENCES,"Preferencias..."),_T("preferencias.png"),config->Toolbars.misc.preferences);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_TUTORIALS,"Tutoriales..."),_T("tutoriales.png"),config->Toolbars.misc.tutorials);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_ZINJAI,"Ayuda Sobre ZinjaI..."),_T("ayuda.png"),config->Toolbars.misc.help_ide);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_CPP,"Ayuda Sobre C++..."),_T("referencia.png"),config->Toolbars.misc.help_cpp);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_TIPS,"Sugerencias..."),_T("tip.png"),config->Toolbars.misc.show_tips);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_ABOUT,"Acerca de..."),_T("acercaDe.png"),config->Toolbars.misc.about);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_OPINION,"Opina sobre ZinjaI..."),_T("opinion.png"),config->Toolbars.misc.opinion);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_HELP_UPDATES,"Buscar Actualizaciones..."),_T("updates.png"),config->Toolbars.misc.find_updates);
-//		toolbar_editor_misc->Add(LANG(TOOLBAR_CAPTION_FILE_EXIT,"Salir de ZinjaI"),_T("salir.png"),config->Toolbars.misc.exit);
-//		toolbar_editor_misc->ShowUp();
-//	}	
 }
 
 void mxPreferenceWindow::OnToolbarsView(wxCommandEvent &evt) {
-	
 	OnToolbarsCommon(toolbar_editor_view,MenusAndToolsConfig::tbVIEW);
-	
-//	if (toolbar_editor_view)
-//		toolbar_editor_view->ShowUp();
-//	else {
-//		toolbar_editor_view = new mxToolbarEditor(this,main_window->toolbar_view,LANG(PREFERENCES_EDIT_TOOLBAR_VIEW_CAPTION,"Barra de Herramientas \"ver\""));
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_SPLIT_VIEW,"Duplicar Vista"),_T("duplicarVista.png"),config->Toolbars.view.split_view);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_LINE_WRAP,"Ajuste de Linea"),_T("lineWrap.png"),config->Toolbars.view.line_wrap);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_WHITE_SPACES,"Mostrar Espacios y Caracteres de Fin de Linea"),_T("whiteSpace.png"),config->Toolbars.view.white_space);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_SYNTAX_HIGHLIGHT,"Colorear Sintaxis"),_T("syntaxColour.png"),config->Toolbars.view.sintax_colour);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_SYMBOLS_TREE,"Arbol de Simbolos"),_T("symbolsTree.png"),config->Toolbars.view.update_symbols);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_EXPLORER_TREE,"Explorador de Archivos"),_T("explorerTree.png"),config->Toolbars.view.explorer_tree);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_PROJECT_TREE,"Arbol de Proyecto"),_T("projectTree.png"),config->Toolbars.view.project_tree);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_COMPILER_TREE,"Resultados de La Compilacion"),_T("compilerTree.png"),config->Toolbars.view.compiler_tree);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_FULLSCREEN,"Pantalla Completa"),_T("fullScreen.png"),config->Toolbars.view.full_screen);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_BEGINNER_PANEL,"Panel de Mini-Plantillas"),_T("beginnerPanel.png"),config->Toolbars.view.beginner_panel);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_PREV_ERROR,"Ir a Error Anterior"),_T("errorPrev.png"),config->Toolbars.view.prev_error);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_VIEW_NEXT_ERROR,"Ir a siguiente error"),_T("errorNext.png"),config->Toolbars.view.next_error);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_FOLD_ALL_LEVELS,"Plegar Todos los Niveles"),_T("foldAll.png"),config->Toolbars.view.fold_all);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_FOLD_LEVEL_1,"Plegar el Primer Nivel"),_T("fold1.png"),config->Toolbars.view.fold_1);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_FOLD_LEVEL_2,"Plegar el Segundo Nivel"),_T("fold2.png"),config->Toolbars.view.fold_2);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_FOLD_LEVEL_3,"Plegar el Tercer Nivel"),_T("fold3.png"),config->Toolbars.view.fold_3);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_UNFOLD_ALL_LEVELS,"Desplegar Todos los Niveles"),_T("unfoldAll.png"),config->Toolbars.view.unfold_all);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_1,"Desplegar el Primer Nivel"),_T("unfold1.png"),config->Toolbars.view.unfold_1);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_2,"Desplegar el Segundo Nivel"),_T("unfold2.png"),config->Toolbars.view.unfold_2);
-//		toolbar_editor_view->Add(LANG(TOOLBAR_CAPTION_UNFOLD_LEVEL_3,"Desplegar el Tercer Nivel"),_T("unfold3.png"),config->Toolbars.view.unfold_3);
-//		toolbar_editor_view->ShowUp();
-//	}	
 }
 
 void mxPreferenceWindow::OnToolbarsTools(wxCommandEvent &evt) {
-	
 	OnToolbarsCommon(toolbar_editor_tools,MenusAndToolsConfig::tbTOOLS);
-	
-//	if (toolbar_editor_tools)
-//		toolbar_editor_tools->ShowUp();
-//	else {
-//		toolbar_editor_tools = new mxToolbarEditor(this,main_window->toolbar_tools,LANG(PREFERENCES_EDIT_TOOLBAR_TOOLS_CAPTION,"Barra de Herramientas \"Herramientas\""));
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de Flujo..."),_T("flujo.png"),config->Toolbars.tools.draw_flow);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar Jerarquia de Clases..."),_T("clases.png"),config->Toolbars.tools.draw_classes);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_COMMENTS_COPY_CODE_FROM_H,"Implementar Metodos/Funciones Faltantes..."),_T("copy_code_from_h.png"),config->Toolbars.tools.copy_code_from_h);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_COMMENTS_ALIGN_COMMENTS,"Alinear Comentarios..."),_T("align_comments.png"),config->Toolbars.tools.align_comments);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_COMMENTS_DELETE_COMMENTS,"Eliminar Comentarios..."),_T("remove_comments.png"),config->Toolbars.tools.remove_comments);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_MARK_VALID,"Marcar Lineas No Compiladas..."),_T("preproc_mark_valid.png"),config->Toolbars.tools.preproc_mark_valid);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_UNMARK_ALL,"Borrar Marcas..."),_T("preproc_unmark_all.png"),config->Toolbars.tools.preproc_unmark_all);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_PREPROC_EXPAND_MACROS,"Expandir Macros..."),_T("preproc_expand_macros.png"),config->Toolbars.tools.preproc_expand_macros);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE,"Generar Makefile..."),_T("makefile.png"),config->Toolbars.tools.generate_makefile);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_OPEN_TERMINAL,"Abrir Consola..."),_T("console.png"),config->Toolbars.tools.open_terminal);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_EXE_INFO,"Propiedades del Ejecutable..."),_T("exeinfo.png"),config->Toolbars.tools.exe_info);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_SHARE_OPEN,"Abrir Archivo Compartido..."),_T("abrirs.png"),config->Toolbars.tools.open_shared);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_SHARE_SHARE,"Compartir Fuente..."),_T("compartir.png"),config->Toolbars.tools.share_source);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_SHARE_LIST,"Ver Lista de Compartidos Propios..."),_T("share_list.png"),config->Toolbars.tools.share_list);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_PROJECT_STATISTICS,"Estadisticas del Proyecto..."),_T("proystats.png"),config->Toolbars.tools.proy_stats);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DRAW_PROJECT,"Grafo del Proyecto..."),_T("draw_project.png"),config->Toolbars.tools.draw_classes);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DIFF_TWO,"Compara Dos Fuentes Abiertos..."),_T("diff_sources.png"),config->Toolbars.tools.diff_two_sources);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DIFF_DISK,"Comparar Fuente con Archivo en Disco..."),_T("diff_source_file.png"),config->Toolbars.tools.diff_other_file);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF,"Comparar Cambios en el Fuente con su Version en Disco..."),_T("diff_source_himself.png"),config->Toolbars.tools.diff_himself);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DIFF_SHOW,"Mostrar Cambio"),_T("diff_show.png"),config->Toolbars.tools.diff_show);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DIFF_APPLY,"Aplicar Cambio"),_T("diff_apply.png"),config->Toolbars.tools.diff_apply);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD,"Descartar Cambio"),_T("diff_discard.png"),config->Toolbars.tools.diff_discard);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR,"Borrar Marcas de Comparacion"),_T("diff_clear.png"),config->Toolbars.tools.diff_clear);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE,"Generar Documentacion Doxygen..."),_T("doxy_run.png"),config->Toolbars.tools.doxy_generate);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE,"Configurar Documentacion Doxygen..."),_T("doxy_config.png"),config->Toolbars.tools.doxy_config);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW,"Ver Documentacion Doxygen..."),_T("doxy_view.png"),config->Toolbars.tools.doxy_view);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG,"Configurar Integracion wxFormBuilder"),_T("wxfb_activate.png"),config->Toolbars.tools.wxfb_config);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE,"Adjuntar un Nuevo Proyecto wxFB"),_T("wxfb_new_res.png"),config->Toolbars.tools.wxfb_new_res);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE,"Adjuntar un Proyecto wxFB Existente"),_T("wxfb_load_res.png"),config->Toolbars.tools.wxfb_load_res);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE,"Regenerar Proyectos wxFB"),_T("wxfb_regen.png"),config->Toolbars.tools.wxfb_regen);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT,"Generar Clase Heredada..."),_T("wxfb_inherit.png"),config->Toolbars.tools.wxfb_inherit);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT,"Actualizar Clase Heredada..."),_T("wxfb_update_inherit.png"),config->Toolbars.tools.wxfb_update_inherit);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE,"Referencia wxWidgets..."),_T("ayuda_wx.png"),config->Toolbars.tools.wxfb_help_wx);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE,"Activar/Desactivar Perfilado de Ejecucion"),_T("comp_for_prof.png"),config->Toolbars.tools.gprof_activate);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_SHOW,"Graficar Resultados del Perfilado de Ejecucion..."),_T("showgprof.png"),config->Toolbars.tools.gprof_show_graph);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GPROF_LIST,"Listar Resultados del Perfilado de Ejecucion"),_T("listgprof.png"),config->Toolbars.tools.gprof_list_output);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE,"Activar/Desactivar Test de Cobertura"),_T("gcov_set.png"),config->Toolbars.tools.gcov_activate);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR,"Mostrar Barra Lateral de Test de Cobertura"),_T("gcov_show.png"),config->Toolbars.tools.gcov_show_bar);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_GCOV_RESET,"Eliminar resultados de Test de Cobertura"),_T("gcov_reset.png"),config->Toolbars.tools.gcov_reset);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN,"Ejecutar Para Analisis Estatico"),_T("cppcheck_run.png"),config->Toolbars.tools.cppcheck_run);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG,"Configurar Analisis Estatico"),_T("cppcheck_config.png"),config->Toolbars.tools.cppcheck_config);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW,"Mostrar Resultados del Analisis Dinamico"),_T("cppcheck_view.png"),config->Toolbars.tools.cppcheck_view);
-//#if !defined(_WIN32) && !defined(__WIN32__)
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN,"Ejecutar Para Analisis Dinamico"),_T("valgrind_run.png"),config->Toolbars.tools.valgrind_run);
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW,"Mostrar Resultados del Analisis Dinamico"),_T("valgrind_view.png"),config->Toolbars.tools.valgrind_view);
-//#endif
-//		for (int i=0;i<10;i++) {
-//			if (config->CustomTools[i].name.Len())
-//				toolbar_editor_tools->Add(wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<config->CustomTools[i].name<<")",wxString("customTool")<<i<<".png",config->CustomTools[i].on_toolbar);
-//			else
-//				toolbar_editor_tools->Add(wxString(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada "))<<i<<" ("<<LANG(CUSTOM_TOOLS_NOT_CONFIGURED,"no configurada")<<")",wxString("customTool")<<i<<".png",config->CustomTools[i].on_toolbar);
-//		}
-//		toolbar_editor_tools->Add(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS,"Configurar Herramientas Personalizadas"),_T("customToolsSettings.png"),config->Toolbars.tools.custom_settings);
-//		toolbar_editor_tools->ShowUp();
-//	}	
 }
 
 void mxPreferenceWindow::OnToolbarsDebug(wxCommandEvent &evt) {
-	
 	OnToolbarsCommon(toolbar_editor_debug,MenusAndToolsConfig::tbDEBUG);
-	
-//	if (toolbar_editor_debug)
-//		toolbar_editor_debug->ShowUp();
-//	else {
-//		toolbar_editor_debug = new mxToolbarEditor(this,main_window->toolbar_debug,LANG(PREFERENCES_EDIT_TOOLBAR_DEBUG_CAPTION,"Barra de Herramientas \"Depuracion\""));
-//		toolbar_editor_debug->Add(_T("Comenzar/Continuar Depuracion"),_T("depurar.png"),config->Toolbars.debug.start);
-//		toolbar_editor_debug->Add(_T("Interrumpir Ejecucion en Depuracion"),_T("pausar.png"),config->Toolbars.debug.pause);
-//		toolbar_editor_debug->Add(_T("Detener Depuracion"),_T("detener.png"),config->Toolbars.debug.stop);
-//		toolbar_editor_debug->Add(_T("Step In"),_T("step_in.png"),config->Toolbars.debug.step_in);
-//		toolbar_editor_debug->Add(_T("Step Over"),_T("step_over.png"),config->Toolbars.debug.step_over);
-//		toolbar_editor_debug->Add(_T("Step Out"),_T("step_out.png"),config->Toolbars.debug.step_out);
-//		toolbar_editor_debug->Add(_T("Return..."),_T("return.png"),config->Toolbars.debug.function_return);
-//		toolbar_editor_debug->Add(_T("Ejecutar Hasta El Cursor"),_T("run_until.png"),config->Toolbars.debug.run_until);
-//		toolbar_editor_debug->Add(_T("Continuar Desde Aqui"),_T("debug_jump.png"),config->Toolbars.debug.jump);
-//#if !defined(__WIN32__)
-//		toolbar_editor_debug->Add(_T("Habilitar Ejecucion Hacia Atras"),_T("reverse_enable.png"),config->Toolbars.debug.enable_inverse_exec);
-//		toolbar_editor_debug->Add(_T("Ejecutar Hacia Atras"),_T("reverse_toggle.png"),config->Toolbars.debug.inverse_exec);
-//#endif
-//		toolbar_editor_debug->Add(_T("Panel de Inspecciones"),_T("inspect.png"),config->Toolbars.debug.inspections);
-//		toolbar_editor_debug->Add(_T("Trazado Inverso"),_T("backtrace.png"),config->Toolbars.debug.backtrace);
-//		toolbar_editor_debug->Add(_T("Hilos de Ejecucion"),_T("threadlist.png"),config->Toolbars.debug.threadlist);
-//		toolbar_editor_debug->Add(_T("Agregar/Quitar Breakpoint"),_T("breakpoint.png"),config->Toolbars.debug.break_toggle);
-//		toolbar_editor_debug->Add(_T("Opciones del Breakpoint..."),_T("breakpoint_options.png"),config->Toolbars.debug.break_options);
-//		toolbar_editor_debug->Add(_T("Listar Watch/Break points..."),_T("breakpoint_list.png"),config->Toolbars.debug.break_list);
-//		toolbar_editor_debug->Add(_T("Mostrar Mensajes del Depurador"),_T("show_log_panel.png"),config->Toolbars.debug.log_panel);
-//		toolbar_editor_debug->ShowUp();
-//	}		
 }
 
 void mxPreferenceWindow::OnToolbarsRun(wxCommandEvent &evt) {
-	
 	OnToolbarsCommon(toolbar_editor_run,MenusAndToolsConfig::tbRUN);
-	
-//	if (toolbar_editor_run)
-//		toolbar_editor_run->ShowUp();
-//	else {
-//		toolbar_editor_run = new mxToolbarEditor(this,main_window->toolbar_run,LANG(PREFERENCES_EDIT_TOOLBAR_RUN_CAPTION,"Barra de Herramientas \"Ejecucion\""));
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_COMPILE,"Compilar"),_T("compilar.png"),config->Toolbars.run.compile);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_RUN,"Guardar, Compilar y Ejecutar..."),_T("ejecutar.png"),config->Toolbars.run.run);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_OLD,"Ejecutar Sin Recompilar..."),_T("ejecutar_old.png"),config->Toolbars.run.run_old);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_STOP,"Detener"),_T("detener.png"),config->Toolbars.run.stop);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_CLEAN,"Limpiar"),_T("limpiar.png"),config->Toolbars.run.clean);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_RUN_OPTIONS,"Opciones..."),_T("opciones.png"),config->Toolbars.run.options);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_DEBUG_RUN,"Depurar"),_T("depurar.png"),config->Toolbars.run.debug);
-//#if !defined(__WIN32__)
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_DEBUG_ATTACH,"Adjuntar Depurador..."),_T("debug_attach.png"),config->Toolbars.run.debug_attach);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_DEBUG_CORE_DUMP,"Cargar Volcado de Memoria..."),_T("core_dump.png"),config->Toolbars.run.load_core_dump);
-//#endif
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_DEBUG_TOGGLE_BREAKPOINT,"Agregar/Quitar Breakpoint"),_T("breakpoint.png"),config->Toolbars.run.break_toggle);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_DEBUG_BREAKPOINT_OPTIONS,"Opciones del Breakpoint..."),_T("breakpoint_options.png"),config->Toolbars.run.break_options);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS,"Listar Breakpoints..."),_T("breakpoint_list.png"),config->Toolbars.run.break_list);
-//		toolbar_editor_run->Add(LANG(TOOLBAR_CAPTION_INSPECT,"Panel de Inspecciones"),_T("inspect.png"),config->Toolbars.run.inspections);
-//		toolbar_editor_run->ShowUp();
-//	}	
 }
 
 void mxPreferenceWindow::SetToolbarPage(const wxString &edit_one) {

@@ -81,7 +81,7 @@ void mxComplementInstallerWindow::OnOkButton (wxCommandEvent & evt) {
 }
 
 void mxComplementInstallerWindow::OnHelpButton (wxCommandEvent & evt) {
-	SHOW_HELP("complements.html");
+	mxHelpWindow::ShowHelp("complements.html");
 }
 
 void mxComplementInstallerWindow::OnDownloadButton (wxCommandEvent & evt) {

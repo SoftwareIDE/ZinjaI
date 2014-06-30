@@ -68,7 +68,7 @@ void mxOpenSharedWindow::OnGetListButton(wxCommandEvent &event){
 }
 
 void mxOpenSharedWindow::OnHelpButton(wxCommandEvent &event){
-	SHOW_HELP("open_shared.html");
+	mxHelpWindow::ShowHelp("open_shared.html");
 }
 
 void mxOpenSharedWindow::OnCloseButton(wxCommandEvent &event){
