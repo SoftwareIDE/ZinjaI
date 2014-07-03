@@ -37,7 +37,7 @@ public:
 	bool AutocompleteGeneral(mxSource *source, wxString scope, wxString key, wxString *args=NULL, int max_str_dist=3);
 	bool AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words, int max_str_dist=3);
 	wxString GetCalltip(wxString scope, wxString key, bool onlyScope, bool only_type=false);
-	bool ShowCalltip(int p, mxSource *source, wxString scope, wxString key, bool onlyScope=true);
+	bool ShowFunctionCalltip(int p, mxSource *source, wxString scope, wxString key, bool onlyScope=true);
 	bool ShowConstructorCalltip(int p, mxSource *source, wxString name);
 	wxString GetAttribType(wxString &scope, wxString &key, int &dims);
 	wxString GetGlobalType(wxString &key, int &dims);

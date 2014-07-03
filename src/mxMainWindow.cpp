@@ -881,10 +881,7 @@ void mxMainWindow::OnEditFind (wxCommandEvent &event) {
 
 void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 	_record_this_action_in_macro(event.GetId());
-	IF_THERE_IS_SOURCE {
-		CURRENT_SOURCE->CallTipCancel();
-		CURRENT_SOURCE->AutoCompCancel();
-	}
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (!find_replace_dialog) find_replace_dialog = new mxFindDialog(this,wxID_ANY);
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindNext())
@@ -896,10 +893,7 @@ void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 
 void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
 	_record_this_action_in_macro(event.GetId());
-	IF_THERE_IS_SOURCE {
-		CURRENT_SOURCE->CallTipCancel();
-		CURRENT_SOURCE->AutoCompCancel();
-	}
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (!find_replace_dialog) find_replace_dialog = new mxFindDialog(this,wxID_ANY);
 	if (find_replace_dialog->last_search.Len()) {
 		if (!find_replace_dialog->FindPrev())
@@ -1191,11 +1185,8 @@ void mxMainWindow::OnNotebookPageChanged(wxAuiNotebookEvent& event) {
 	static wxMenuItem *menu_view_code_style=_menu_item(mxID_VIEW_CODE_STYLE);
 //	if (page_change_event_on) {
 		if (diff_sidebar) diff_sidebar->Refresh();
-		mxSource *source = (mxSource*)notebook_sources->GetPage(event.GetOldSelection());
-		if (source) {
-			source->CallTipCancel();
-			source->AutoCompCancel();
-		}
+		mxSource *old_source = (mxSource*)notebook_sources->GetPage(event.GetOldSelection());
+		if (old_source) old_source->HideCalltip();
 		menu_view_white_space->Check(CURRENT_SOURCE->config_source.whiteSpace);
 		menu_view_line_wrap->Check(CURRENT_SOURCE->config_source.wrapMode);
 		menu_view_code_style->Check(CURRENT_SOURCE->config_source.syntaxEnable);
@@ -1641,16 +1632,12 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 	}
 	
 	if (project) { // si hay que ejecutar un proyecto
-		IF_THERE_IS_SOURCE {
-			CURRENT_SOURCE->AutoCompCancel();
-			CURRENT_SOURCE->CallTipCancel();
-		}
+		IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 		compiler->BuildOrRunProject(true,false,false);
 		
 	} else IF_THERE_IS_SOURCE { // si hay que ejecutar un ejercicio
 		mxSource *source=CURRENT_SOURCE;
-		source->AutoCompCancel();
-		source->CallTipCancel();
+		source->HideCalltip();
 		if (source->sin_titulo) { // si no esta guardado, siempre compilar
 			if (source->GetLine(0).StartsWith("make me a sandwich")) { wxMessageBox("No way!"); return; }
 			else if (source->GetLine(0).StartsWith("sudo make me a sandwich")) source->SetText(wxString("/** Ok, you win! **/")+wxString(250,' ')+"#include <iostream>\n"+wxString(250,' ')+"int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n");
@@ -1698,17 +1685,13 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 
 void mxMainWindow::OnRunRunOld (wxCommandEvent &event) {
 	if (project) { // si hay que ejecutar un proyecto
-		IF_THERE_IS_SOURCE {
-			CURRENT_SOURCE->AutoCompCancel();
-			CURRENT_SOURCE->CallTipCancel();
-		}
+		IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("OnRunRunOld");
 		project->Run(compile_and_run);
 		StartExecutionStuff(false,true,compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
 	} else IF_THERE_IS_SOURCE { // si hay que ejecutar un ejercicio
 		mxSource *source=CURRENT_SOURCE;
-		source->AutoCompCancel();
-		source->CallTipCancel();
+		source->HideCalltip();
 		RunSource(source);
 	}
 }
@@ -2385,11 +2368,7 @@ void mxMainWindow::OnSymbolTreeIncludes (wxCommandEvent &event) {
 
 void mxMainWindow::ShowQuickHelp (wxString keyword, bool hide_compiler_tree) {
 	// load help text
-	IF_THERE_IS_SOURCE {
-		CURRENT_SOURCE->AutoCompCancel();
-		CURRENT_SOURCE->CallTipCancel();
-	}
-	
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	quick_help->SetPage(help->GetQuickHelp(keyword));
 	ShowQuickHelpPanel(hide_compiler_tree);
 }
@@ -3260,10 +3239,7 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 * o reanuda la depuracion si ya estaba en proceso pero interrumpida
 **/
 void mxMainWindow::OnDebugRun ( wxCommandEvent &event ) {
-	IF_THERE_IS_SOURCE {
-		CURRENT_SOURCE->AutoCompCancel();
-		CURRENT_SOURCE->CallTipCancel();
-	}
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (debug->debugging) {
 		if (!debug->running && !debug->waiting)
 			debug->Continue();

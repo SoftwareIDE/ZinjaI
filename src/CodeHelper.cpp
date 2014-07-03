@@ -663,12 +663,9 @@ bool CodeHelper::AutocompleteAutocode(mxSource *source, wxString typed, int max_
 	return true;
 }
 
-bool CodeHelper::ShowCalltip(int p, mxSource *source, wxString scope, wxString key, bool onlyScope) {
+bool CodeHelper::ShowFunctionCalltip(int p, mxSource *source, wxString scope, wxString key, bool onlyScope) {
 	wxString result=GetCalltip(scope,key,onlyScope);
-	if (result.Len()) {
-		source->ShowCallTip(p-key.Len(),result);
-		source->calltip_brace=p;
-	}
+	if (result.Len()) source->ShowCallTip(p,p-key.Len(),result);
 	return result.Len();
 }
 	
@@ -1256,9 +1253,7 @@ bool CodeHelper::ShowConstructorCalltip(int p, mxSource *source, wxString name) 
 		}
 	}
 		
-	if (t!=0)
-		source->ShowCallTip(p-name.Len(),text);
-	source->calltip_brace=p;
+	if (t!=0) source->ShowCallTip(p,p-name.Len(),text);
 	return t!=0;
 	
 }

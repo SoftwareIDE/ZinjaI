@@ -5,6 +5,7 @@
 #include <wx/filename.h>
 #include <wx/treebase.h>
 #include "ConfigManager.h"
+//#include <wx/timer.h>
 
 class er_source_register;
 
@@ -20,6 +21,7 @@ class SourceExtras;
 class wxString;
 class wxTreeItemId;
 class DiffInfo;
+class mxCalltip;
 
 enum MXS_MARKER {
 //	mxSTC_MARK_CURRENT=0, 	///< resaltar la linea actual en el editor (fondo celeste)
@@ -122,11 +124,9 @@ public:
 	bool m_owns_extras; ///< if true, this objtec is the owner of m_extras and should delete it on its destructor; if false, m_owns_extras points to an instance owned by ProjectManager
 	void UpdateExtras(); ///< updates info in m_extras
 	
-	int calltip_brace;
 	int lexer;
 	bool first_view;
 	bool never_parsed;
-	bool false_calltip;
 	er_source_register *er_register;
 	
 private:
@@ -154,7 +154,6 @@ public:
 	wxString page_text;
 	void SetPageText(wxString ptext);
 	void MakeUntitled(wxString ptext); // para abrir resultados de compilacion, salidas de gprof, y cosas asi
-	void ShowBaloon(wxString text, int pos = -1);
 	
 	void SetColours(bool also_style=true);
 	bool IsComment(int pos);
@@ -253,11 +252,31 @@ public:
 	wxString FindScope(int pos, wxString *args=NULL, bool full_scope=false);
 	wxString WhereAmI();
 	
-	void ShowCallTip(int p, wxString str, bool fix_pos=true);
+	
 private:
-	void AutoCompShow(int p, const wxString &s) {} // solo para evitar llamarla sin querer
+	// solo protipos (son los que provee wxStyledTextCtrl), para que produzcan undefined reference si intento usar alguno en lugar de los propios
+	void CallTipShow(int pos, const wxString& definition);
+	void CallTipCancel();
+	bool CallTipActive();
+	void AutoCompShow(int lenEntered, const wxString& itemList);
+	void AutoCompCancel();
+	bool AutoCompActive();
+	
+private:
+	enum MXS_CALLTIP_MODE { MXS_NULL, MXS_CALLTIP, MXS_BALOON, MXS_AUTOCOMP } calltip_mode;
+	void SetCalltipMode(MXS_CALLTIP_MODE new_mode) { if (new_mode!=calltip_mode) HideCalltip(); calltip_mode=new_mode; }
+	mxCalltip *calltip;
+	int calltip_brace, calltip_line;
+	wxArrayString autocomp_help_text;
+	void OnAutocompSelection(wxStyledTextEvent &event);
+	bool mask_kill_focus_event; // para evitar que al mostrarse el autocompletado o el calltip (y recibir asi el foco) el event kill_focus del source los cierre inmediatamente
+//	wxTimer timer_autocomp;
+//	void OnAutocompTimer(wxTimerEvent &event);
 public:
-	void ShowAutoComp(int p, const wxString &s) { last_failed_autocompletion.Reset(); wxStyledTextCtrl::AutoCompShow(p,s); }
+	void HideCalltip();
+	void ShowBaloon(wxString str, int p = -1);
+	void ShowCallTip(int brace_pos, int calltip_pos, const wxString &s);
+	void ShowAutoComp(int p, const wxString &s);
 
 	wxFileName working_folder;
 	wxFileName source_filename;

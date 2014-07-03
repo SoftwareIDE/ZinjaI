@@ -635,7 +635,7 @@ void DebugManager::HowDoesItRuns() {
 		SetStateText(state_text); should_pause=false;
 		if (bpi && bpi->annotation.Len() && current_source) {
 			wxYield();
-			current_source->CallTipShow(current_source->PositionFromLine(current_source->GetCurrentLine()),bpi->annotation);
+			current_source->ShowBaloon(bpi->annotation,current_source->PositionFromLine(current_source->GetCurrentLine()));
 		}
 		return;
 	}

@@ -962,7 +962,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 			ret<<(v[i]?fil.GetLine(v[i]):"")<<"\n";
 		}
 		ret.RemoveLast();
-		src->ShowCallTip(src->PositionFromLine(l0?l0-1:0),ret,false);
+		src->ShowBaloon(ret,src->PositionFromLine(l0?l0-1:0));
 	}
 //	src->SetFocus();
 }

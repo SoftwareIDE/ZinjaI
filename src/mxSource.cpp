@@ -23,6 +23,7 @@
 #include "Autocoder.h"
 #include "mxColoursEditor.h"
 #include "error_recovery.h"
+#include "mxCalltip.h"
 using namespace std;
 
 
@@ -44,7 +45,6 @@ void NavigationHistory::OnClose(mxSource *src) {
 void NavigationHistory::Goto(int i) {
 	jumping=true;
 	Location &loc=locs[i%MAX_NAVIGATION_HISTORY_LEN];
-//cerr<<"NAV:Goto("<<loc.src<<","<<loc.pos<<")"<<endl;
 	if (!loc.src) {
 		if (!loc.file.Len()) return;
 		loc.src=main_window->OpenFile(loc.file);
@@ -64,15 +64,11 @@ void NavigationHistory::Goto(int i) {
 
 
 void NavigationHistory::OnFocus(mxSource *src) {
-//cerr<<"NAV:OnFocus("<<src<<")"<<endl;
 	if (src==focus_source) return;
 	focus_source=src; 
-//	src->old_current_line=src->GetCurrentLine();
-//	if (!jumping) Add(src,src->GetCurrentPos());
 }
 
 void NavigationHistory::OnJump(mxSource *src, int current_line) {
-//cerr<<"NAV:OnJump("<<src<<","<<current_line<<")"<<endl;
 	const int min_long_jump_len=10;
 	if (!jumping) {
 		if (
@@ -92,27 +88,20 @@ void NavigationHistory::OnJump(mxSource *src, int current_line) {
 void NavigationHistory::Add(mxSource *src, int line) {
 	Location &old_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
 	if (old_loc.src==src&&old_loc.line==line) return;
-//cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
-//cerr<<"NAV:Add("<<this<<","<<pos<<")"<<endl;
 	if (hsize<MAX_NAVIGATION_HISTORY_LEN) hsize=(++hcur)+1;
 	else hbase=(hbase+1)%MAX_NAVIGATION_HISTORY_LEN;
 	Location &new_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
 	new_loc.src=src; new_loc.line=line;
-//cerr<<"NAV: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 }
 
 void NavigationHistory::Prev() {
-//cerr<<"NAV:Prev In:  hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 	if (hcur==0) return;
 	Goto(hbase+(--hcur));
-//cerr<<"NAV:Prev Out: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 }
 
 void NavigationHistory::Next() {
-//cerr<<"NAV:Next In:  hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;	
 	if (hcur+1==hsize) return; // no hay historial para adelante
 	Goto(hbase+(++hcur));
-//cerr<<"NAV:Next Out: hbase="<<hbase<<" hsize="<<hsize<<" hpos="<<hcur<<endl;
 }
 
 #define II_BACK(p,a) while(p>0 && (a)) p--;
@@ -203,10 +192,16 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	
 	EVT_KEY_DOWN(mxSource::OnKeyDown)
 	EVT_STC_MACRORECORD(wxID_ANY,mxSource::OnMacroAction)
+	EVT_STC_AUTOCOMP_SELECTION(wxID_ANY,mxSource::OnAutocompSelection)
+	
+//	EVT_TIMER(wxID_ANY,mxSource::OnAutocompTimer)
 	
 END_EVENT_TABLE()
 
-mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) : wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL) {
+mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
+	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL)
+//	, timer_autocomp(GetEventHandler(),wxID_ANY)
+{
 
 	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
 	// with this patch, text shows ok, but files can be saved with utf8 encoding and then it's shown differently when oppened somewhere else with the same zinjai
@@ -217,6 +212,9 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 //#endif
 	
 //	AutoCompSetDropRestOfWord(true); // esto se torna muy molesto en muchos casos (por ejemplo, intentar agregar unsigned antes de int), mejor no usar
+	
+	mask_kill_focus_event = false;
+	calltip = NULL;	calltip_mode = MXS_NULL;
 	
 	old_current_line=-1000;
 	
@@ -265,8 +263,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	RegisterImage(18,*(bitmaps->parser.icon18_typedef));
 	RegisterImage(19,*(bitmaps->parser.icon19_enum_const));
 	RegisterImage(20,*(bitmaps->parser.icon20_argument));
-	
-	false_calltip=false;
 	
 	lexer=wxSTC_LEX_CPP;
 	
@@ -380,6 +376,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 
 
 mxSource::~mxSource () {
+	HideCalltip(); if (calltip) { calltip->Destroy(); calltip=NULL; }
 	
 	bool only_view=next_source_with_same_file==this; // there can be more than one view of the same source
 	
@@ -597,11 +594,7 @@ void mxSource::OnEditPaste (wxCommandEvent &event) {
 		wxTheClipboard->Close();
 		EndUndoAction();
 		// is that the problem?
-		if (CallTipActive())
-			CallTipCancel();
-		else if (AutoCompActive())
-			AutoCompCancel();
-		
+		HideCalltip();
 	} else {
 		if (!CanPaste()) return;
 		Paste ();
@@ -969,41 +962,31 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	if (first_view) {
 		ScrollToColumn(0);
 		first_view=false;
-//		current_marker=MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
 	} else {
-		if (false_calltip) {
-			CallTipCancel();
-			false_calltip=false;
+		if (calltip_mode==MXS_BALOON) HideCalltip();
+		else if (calltip_mode==MXS_CALLTIP) {
+			if (GetCurrentLine()!=calltip_line) HideCalltip();
+			else {
+				int cp=GetCurrentPos();
+				if (cp<=calltip_brace) { 
+					HideCalltip();
+				} else {
+					int p=calltip_brace+1, cur_arg=0, par=0, s, l=cp+1; // s y l son para II_*
+					while (p<l) {
+						II_FRONT(p, II_SHOULD_IGNORE(p));
+						char c=GetCharAt(p++);
+						if (c==',' && par==0) { cur_arg++; }
+						else if (c=='(' || c=='[') { par++; }
+						else if (c==')' || c=='}') { par--; }
+					}
+					calltip->SetArg(cur_arg);
+				}
+			}
 		}
-//		if (cl!=current_line) {
-//	//		MarkerDelete(current_line,mxSTC_MARK_CURRENT);
-//	//		MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
-//			MarkerDeleteHandle(current_marker);
-//			current_marker=MarkerAdd(current_line=cl,mxSTC_MARK_CURRENT);
-//		}
 	}
-	int p=GetCurrentPos();
-	
 	navigation_history.OnJump(this,cl);
+	if (!config_source.lineNumber) main_window->status_bar->SetStatusText(wxString("Lin ")<<cl<<" - Col "<<GetCurrentPos()-PositionFromLine(cl),1);
 	
-	if (!config_source.lineNumber)
-		main_window->status_bar->SetStatusText(wxString("Lin ")<<cl<<" - Col "<<p-PositionFromLine(cl),1);
-//	char c;
-//	if ((c=GetCharAt(p))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
-//		int m=BraceMatch(p);
-//		if (m!=wxSTC_INVALID_POSITION)
-//			BraceHighlight (p,m);
-//		else
-//			BraceBadLight (p);
-//	} else if ((c=GetCharAt(p-1))=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']') {
-//		int m=BraceMatch(p-1);
-//		if (m!=wxSTC_INVALID_POSITION)
-//			BraceHighlight (p-1,m);
-//		else
-//			BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
-//	} else
-//		BraceHighlight (wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
-//	event.Skip();
 	
 	// tomado de pseint, para resaltar las partes a completar
 //	if (GetStyleAt(p)&wxSTC_INDIC2_MASK) {
@@ -1343,12 +1326,11 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		SetLineIndentation (currentLine, lineInd);
 		wxStyledTextCtrl::GotoPos(GetLineIndentPosition(currentLine));
 	}
-	if (CallTipActive() && chr==')') {
+	if (calltip_mode==MXS_CALLTIP && chr==')') {
 		int p=GetCurrentPos()-1;
 		Colourise(p,p+1);
-		if (BraceMatch(p)==calltip_brace)
-			CallTipCancel();
-	} else if ( ((!AutoCompActive() || chr=='.') && config_source.autoCompletion) || ((chr==',' || chr=='(') && config_source.callTips) ) {
+		if (BraceMatch(p)==calltip_brace) HideCalltip();
+	} else if ( ((calltip_mode!=MXS_AUTOCOMP || chr=='.') && config_source.autoCompletion) || ((chr==',' || chr=='(') && config_source.callTips) ) {
 		if (chr==':') {
 			int p=GetCurrentPos();
 			if (p>1 && GetCharAt(p-2)==':') {
@@ -1418,8 +1400,9 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (c=='(') {
 						e=p-1;
 						II_BACK(e,II_IS_NOTHING_4(e));
-						if (calltip_brace==p && CallTipActive())
+						if (calltip_brace==p && calltip_mode==MXS_CALLTIP) {
 							return;
+						}
 						ctp=p;
 						chr='(';
 						break;
@@ -1464,7 +1447,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					wxString type = FindTypeOf(p-1,dims);
 					if (dims==0) {
 						if (chr=='(' && config_source.callTips)
-							code_helper->ShowCalltip(ctp,this,type,key);
+							code_helper->ShowFunctionCalltip(ctp,this,type,key);
 						else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 							code_helper->AutocompleteScope(this,type,key,true,false);
 					}
@@ -1473,7 +1456,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					wxString type = FindTypeOf(p-1,dims);
 					if (dims==1) {
 						if (chr=='(' && config_source.callTips)
-							code_helper->ShowCalltip(ctp,this,type,key);
+							code_helper->ShowFunctionCalltip(ctp,this,type,key);
 						else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 							code_helper->AutocompleteScope(this,type,key,true,false);
 					}
@@ -1482,12 +1465,12 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					II_BACK(p,II_IS_NOTHING_4(p));
 					wxString type = GetTextRange(WordStartPosition(p,true),p+1);
 					if (chr=='(' && config_source.callTips)
-						code_helper->ShowCalltip(ctp,this,type,key);
+						code_helper->ShowFunctionCalltip(ctp,this,type,key);
 					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 						code_helper->AutocompleteScope(this,type,key,true,false);
 				} else {
 					if (chr=='(' && config_source.callTips) {
-						if (!code_helper->ShowCalltip(ctp,this,FindScope(GetCurrentPos()),key,false)) {
+						if (!code_helper->ShowFunctionCalltip(ctp,this,FindScope(GetCurrentPos()),key,false)) {
 							// mostrar calltips para constructores
 							p=ctp-1;
 							bool f;
@@ -1505,7 +1488,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 									// mostrar sobrecarga del operador()
 									wxString type=FindTypeOf(key,p1);
 									if (type.Len()) {
-										code_helper->ShowCalltip(ctp,this,type,"operator()",true);
+										code_helper->ShowFunctionCalltip(ctp,this,type,"operator()",true);
 									}
 								}
 							}
@@ -2441,17 +2424,54 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 	return code_helper->UnMacro(ret,pos);
 }
 
-void mxSource::ShowBaloon(wxString text, int pos) {
-	if (CallTipActive())
-		CallTipCancel();
-	else if (AutoCompActive())
-		AutoCompCancel();
-	ShowCallTip(pos==-1?GetCurrentPos():pos,text,false);
-DEBUG_INFO("wxYield:in  mxSource::ShowBaloon");
+void mxSource::ShowBaloon(wxString str, int p) {
+	int cp = GetCurrentPos(); 
+	if (p==-1) p = cp;
+	// evitar que tape el cursor (reveer, parece solo tener sentido si se muestra en una posicion que no es la actual, cuando pasa esto?)
+	int cl = LineFromPosition(cp);
+	int l = LineFromPosition(p);
+	if (l!=cl) {
+		int dp = p-PositionFromLine(l);
+		p = PositionFromLine(cl)+dp;
+		if (LineFromPosition(p)!=cl) 
+			p = GetLineEndPosition(cl);
+	}
+	
+	int x1 = PointFromPosition(p).x;
+	int x2 = PointFromPosition(p+1).x;
+	char c = GetCharAt(p);
+	if (x1!=x2 && c!='\n' && c!='\t' && c!='\r') {
+		int l=str.Len(), ll = (GetSize().GetWidth()-x1)/(x2-x1)-1;
+		if (ll>5) {
+			int ac=0;
+			for (int i = 0;i<l; i++) {
+				if (str[i]=='\n') ac=0;
+				else {
+					ac++;
+					if (ac>ll) {
+						int j=i;
+						while (j && ( str[j]!=' ' && str[j]!=',' && str[j]!='(' && str[j]!=')' ) ) j--;
+						if (j && !(j>2 && str[j]==' ' && str[j-1]==' ' && str[j-2]==' ' && str[j-3]=='\n') ) {
+							i=j;
+							str = str.SubString(0,j)+"\n   "+str.Mid(j+1);
+							l+=4;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	// mostrar utilizando el mecanismo de calltip de scintilla
+	SetCalltipMode(MXS_BALOON);
+	wxStyledTextCtrl::CallTipShow(p,str);
+	// para que queríamos un yield aca???
+	DEBUG_INFO("wxYield:in  mxSource::ShowBaloon");
 	wxYield();
-DEBUG_INFO("wxYield:out mxSource::ShowBaloon");
-	false_calltip=true;
+	DEBUG_INFO("wxYield:out mxSource::ShowBaloon");
 }
+	
+	
 
 wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 	if (first_call)
@@ -2811,7 +2831,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 // }
 
 void mxSource::OnToolTipTimeOut (wxStyledTextEvent &event) {
-	if (CallTipActive()) CallTipCancel();
+	HideCalltip();
 }
 
 void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
@@ -2829,7 +2849,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 			x=10; for(int i=0;i<MARGIN_NULL;i++) { x+=GetMarginWidth(i); }
 			int l=LineFromPosition( PositionFromPointClose(x,y) );
 			BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
-			if (bpi && bpi->annotation.Len()) CallTipShow(PositionFromLine(l),bpi->annotation);
+			if (bpi && bpi->annotation.Len()) ShowBaloon(bpi->annotation,PositionFromLine(l));
 		}
 		return;
 	}
@@ -2913,10 +2933,7 @@ void mxSource::OnSavePointLeft (wxStyledTextEvent &event) {
 }
 
 void mxSource::OnKillFocus(wxFocusEvent &event) {
-	if (CallTipActive())
-		CallTipCancel();
-	else if (AutoCompActive())
-		AutoCompCancel();
+	if (!mask_kill_focus_event) HideCalltip();
 	event.Skip();
 }
 
@@ -2933,21 +2950,19 @@ void mxSource::OnSetFocus(wxFocusEvent &event) {
 }
 
 void mxSource::OnEditAutoCompleteAutocode(wxCommandEvent &evt) {
+	HideCalltip();
 	int p=GetCurrentPos();
-	if (CallTipActive()) CallTipCancel();
-	else if (AutoCompActive()) AutoCompCancel();
 	int ws=WordStartPosition(p,true);
 	code_helper->AutocompleteAutocode(this,GetTextRange(ws,p));
 }
 
 
-//#ifndef DEBUG
+//#ifndef _ZINJAI_DEBUG
 void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 	int p=GetCurrentPos();
 	char chr = p>0?GetCharAt(p-1):' ';
 
-	if (CallTipActive()) CallTipCancel();
-	else if (AutoCompActive()) AutoCompCancel();
+	HideCalltip();
 	
 	int s=GetStyleAt(p-1);
 	if (s==wxSTC_C_PREPROCESSOR) {
@@ -3050,7 +3065,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				if (c=='(') {
 					e=p-1;
 					II_BACK(e,II_IS_NOTHING_4(e));
-					if (calltip_brace==p && CallTipActive())
+					if (calltip_brace==p && calltip_mode==MXS_CALLTIP)
 						return;
 					ctp=p;
 					chr='(';
@@ -3077,7 +3092,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				wxString type = FindTypeOf(p-1,dims);
 				if (dims==0) {
 					if (chr=='(' && config_source.callTips)
-						code_helper->ShowCalltip(ctp,this,type,key);
+						code_helper->ShowFunctionCalltip(ctp,this,type,key);
 					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 						code_helper->AutocompleteScope(this,type,key,true,false);
 				}
@@ -3086,7 +3101,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				wxString type = FindTypeOf(p-1,dims);
 				if (dims==1) {
 					if (chr=='(' && config_source.callTips)
-						code_helper->ShowCalltip(ctp,this,type,key);
+						code_helper->ShowFunctionCalltip(ctp,this,type,key);
 					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 						code_helper->AutocompleteScope(this,type,key,true,false);
 				}
@@ -3095,12 +3110,12 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				II_BACK(p,II_IS_NOTHING_4(p));
 				wxString type = GetTextRange(WordStartPosition(p,true),p+1);
 				if (chr=='(' && config_source.callTips)
-					code_helper->ShowCalltip(ctp,this,type,key);
+					code_helper->ShowFunctionCalltip(ctp,this,type,key);
 				else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 					code_helper->AutocompleteScope(this,type,key,true,false);
 			} else {
 				if (chr=='(' && config_source.callTips) {
-					if (!code_helper->ShowCalltip(ctp,this,FindScope(GetCurrentPos()),key,false)) {
+					if (!code_helper->ShowFunctionCalltip(ctp,this,FindScope(GetCurrentPos()),key,false)) {
 						// mostrar calltips para constructores
 						p=ctp-1;
 						bool f;
@@ -3118,7 +3133,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 							// mostrar sobrecarga del operador()
 							wxString type=FindTypeOf(key,p1);
 							if (type.Len()) {
-								code_helper->ShowCalltip(ctp,this,type,"operator()",true);
+								code_helper->ShowFunctionCalltip(ctp,this,type,"operator()",true);
 							}
 						}
 					}
@@ -3134,50 +3149,10 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				code_helper->AutocompleteScope(this,scope,"",true,true);
 		}
 	}
-	if (!CallTipActive() && !AutoCompActive())
-		ShowBaloon(LANG(SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION,"No se encontraron opciones para autocompletar"),p);
+	if (calltip_mode==MXS_NULL)	ShowBaloon(LANG(SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION,"No se encontraron opciones para autocompletar"),p);
 }
 
 //#endif
-
-void mxSource::ShowCallTip(int p, wxString str, bool fix_pos) {
-	if (fix_pos) { // evitar que tape el cursor
-		int cp = GetCurrentPos();
-		int cl = LineFromPosition(cp);
-		int l = LineFromPosition(p);
-		if (l!=cl) {
-			int dp = p-PositionFromLine(l);
-			p = PositionFromLine(cl)+dp;
-			if (LineFromPosition(p)!=cl) 
-				p = GetLineEndPosition(cl);
-		}
-	}
-	int x1 = PointFromPosition(p).x;
-	int x2 = PointFromPosition(p+1).x;
-	char c = GetCharAt(p);
-	if (x1!=x2 && c!='\n' && c!='\t' && c!='\r') {
-		int l=str.Len(), ll = (GetSize().GetWidth()-x1)/(x2-x1)-1;
-		if (ll>5) {
-			int ac=0;
-			for (int i = 0;i<l; i++) {
-				if (str[i]=='\n') ac=0;
-				else {
-					ac++;
-					if (ac>ll) {
-						int j=i;
-						while (j && ( str[j]!=' ' && str[j]!=',' && str[j]!='(' && str[j]!=')' ) ) j--;
-						if (j && !(j>2 && str[j]==' ' && str[j-1]==' ' && str[j-2]==' ' && str[j-3]=='\n') ) {
-							i=j;
-							str = str.SubString(0,j)+"\n   "+str.Mid(j+1);
-							l+=4;
-						}
-					}
-				}
-			}
-		}
-	}
-	CallTipShow(p,str);
-}
 
 DiffInfo *mxSource::MarkDiffs(int from, int to, MXS_MARKER marker, wxString extra) {
 	if (mxSTC_MARK_DIFF_NONE==marker) {
@@ -3618,13 +3593,19 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 			}
 		}
 	}
-	if (evt.GetKeyCode()==WXK_ESCAPE && !CallTipActive() && !AutoCompActive()){
-		wxCommandEvent evt;
-		main_window->OnEscapePressed(evt);
+	if (evt.GetKeyCode()==WXK_ESCAPE) {
+		if (calltip_mode!=MXS_NULL) {
+			HideCalltip();
+		} else {
+			wxCommandEvent evt;
+			main_window->OnEscapePressed(evt);
+		}
 	} else if (config_source.autotextEnabled && evt.GetKeyCode()==WXK_TAB && ApplyAutotext()){
 		return;
-	} else
+	} else {
 		evt.Skip();
+//		if (calltip_mode==MXS_AUTOCOMP) timer_autocomp.Start(250,true);
+	}
 }
 
 void mxSource::SplitFrom(mxSource *orig) {
@@ -3699,7 +3680,6 @@ wxString mxSource::WhereAmI() {
 //					// el "GetCharAt(p)==','" se agrego el 29/09 para los constructores en constructores
 //					if (GetCharAt(p)==':' || GetCharAt(p)==',' || (p && GetCharAt(p)=='~' && GetCharAt(p-1)==':')) {
 //						if (GetCharAt(p)=='~') { p--; scope=wxString("~")+scope; } // agregado para arreglar el scope de un destructor
-////						cerr<<GetTextRange(p-1,p+10)<<endl;
 //						if (GetCharAt(p-1)==':') {
 //							p-=2;
 //							II_BACK(p,II_IS_NOTHING_4(p));
@@ -3720,12 +3700,9 @@ wxString mxSource::WhereAmI() {
 //					}
 //				}
 //			} else { // puede ser clase o struct
-////				cerr<<GetTextRange(p,p+10)<<endl;
 //				II_BACK(p,II_IS_NOTHING_4(p) || !II_IS_6(p,'{','}',':',';',')','('));
-////				cerr<<GetTextRange(p,p+10)<<endl;
 //				p++;
 //				II_FRONT(p,II_IS_NOTHING_4(p));
-////				cerr<<GetTextRange(p,p+10)<<endl;
 //				if (GetStyleAt(p)==wxSTC_C_WORD) {
 //					bool some=false;
 //					if (GetTextRange(p,p+6)=="struct")
@@ -3972,7 +3949,6 @@ void mxSource::SetReadOnlyMode (ReadOnlyModeEnum mode) {
 
 void mxSource::OnMacroAction (wxStyledTextEvent & evt) {
 	if (main_window->m_macro&&(*main_window->m_macro)[0].msg==1) {
-//		cerr<<evt.GetMessage()<<" "<<evt.GetWParam()<<" "<<evt.GetLParam()<<endl;
 		main_window->m_macro->Add(MacroAction(evt.GetMessage(),evt.GetWParam(),evt.GetLParam()));
 	}
 }
@@ -4006,3 +3982,45 @@ void mxSource::UserReload ( ) {
 	parser->ParseFile(GetFullPath());
 }
 
+void mxSource::ShowCallTip (int brace_pos, int calltip_pos, const wxString & s) {
+	mask_kill_focus_event=true;
+	SetCalltipMode(MXS_CALLTIP);
+	last_failed_autocompletion.Reset(); 
+	if (!calltip) calltip = new mxCalltip(this);
+	calltip_brace = brace_pos;
+	calltip_line = LineFromPosition(brace_pos);
+	calltip->Show(calltip_pos,s);
+	wxYield(); // para que el mxsource procese el evento KillFocus y lo ignore gracias a la bandera de la siguiente linea
+	mask_kill_focus_event=false;
+}
+
+void mxSource::HideCalltip ( ) {
+	switch (calltip_mode) { 
+		case MXS_NULL: break;
+		case MXS_CALLTIP: calltip->Hide(); break;
+		case MXS_BALOON: wxStyledTextCtrl::CallTipCancel(); break;
+		case MXS_AUTOCOMP: wxStyledTextCtrl::AutoCompCancel(); break;
+	}
+	calltip_mode = MXS_NULL;
+}
+
+void mxSource::ShowAutoComp (int p, const wxString & s) { 
+	mask_kill_focus_event=true;
+	SetCalltipMode(MXS_AUTOCOMP);
+	last_failed_autocompletion.Reset(); 
+	wxStyledTextCtrl::AutoCompShow(p,s);
+	mask_kill_focus_event=false;
+}
+
+
+void mxSource::OnAutocompSelection(wxStyledTextEvent &event) {
+	calltip_mode = MXS_NULL;
+}
+
+
+//void mxSource::OnAutocompTimer(wxTimerEvent &event) {
+//	if (!wxStyledTextCtrl::AutoCompActive()) calltip_mode=MXS_NULL;
+//	if (calltip_mode!=MXS_AUTOCOMP) return;
+//	wxString lala="ASFAFDFAFSAS "; lala<<AutoCompGetCurrent();
+//	main_window->SetStatusText(lala);
+//}

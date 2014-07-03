@@ -50,7 +50,7 @@ bool mxApplication::OnInit() {
 		return false;
 	}
 	
-#ifndef DEBUG
+#ifndef _ZINJAI_DEBUG
 	wxLog::SetActiveTarget(new wxLogStderr());
 #endif
 	
