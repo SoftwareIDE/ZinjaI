@@ -131,7 +131,7 @@ void mxCalltip::SetArg (int cur_arg) {
 	int my_max_x=my_min_x+my_w, win_max_x=win_min_x+mwr.GetWidth(), win_max_y=mwr.GetTop()+win_h;
 	if (my_max_x>win_max_x) { 
 		if (delta_chars) {
-			int new_min_x = my_min_x = pos_x-my_w-30;
+			int new_min_x = pos_x-my_w-30;
 			if (new_min_x>=0) my_min_x = new_min_x;
 		}
 		else {

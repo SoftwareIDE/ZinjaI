@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=src/mxCalltip.cpp
 path_char=/
 [source]
 path=src/mxHelpWindow.cpp
@@ -393,7 +394,8 @@ breakpoint=62
 breakpoint_annotation=
 [source]
 path=src/mxCalltip.cpp
-cursor=18:72
+cursor=139:3
+open=true
 [header]
 path=src/CodeHelper.h
 cursor=27:79
