@@ -55,11 +55,12 @@ void mxCalltip::ShowCommon (wxString text) {
 	entries.Clear();
 	int p = text.Index('\n');
 	while (p!=wxNOT_FOUND) {
-		entries.Add(text.Mid(0,p));
+		if (0!=p) entries.Add(text.Mid(0,p));
 		text=text.Mid(p+1);
 		p = text.Index('\n');
 	}
-	entries.Add(text);
+	if (!text.IsEmpty()) entries.Add(text);
+	if (entries.GetSize()==0) return;
 	SetArg(-2);
 	wxFrame::Show();
 	main_window->Raise();
