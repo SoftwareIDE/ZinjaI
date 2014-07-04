@@ -22,9 +22,9 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
 	dc.SetBackground(ctheme->CALLTIP_BACK);
-	wxFont f1(config->Styles.font_size, wxMODERN, wxNORMAL, wxNORMAL,false,config->Styles.font_name);
-	dc.Clear(); dc.SetFont(f1);
+	dc.Clear(); dc.SetFont(my_font);
 //	dc.SetTextBackground(*back);
+	my_font.SetWeight(wxFONTWEIGHT_NORMAL); 
 	dc.SetTextForeground(ctheme->CALLTIP_FORE);
 	int w,h; GetClientSize(&w,&h);
 	
@@ -33,7 +33,8 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 		if (!entries[i].ShouldDraw(current_arg)) continue;
 		dc.DrawText(entries[i].line,2,cur_y); cur_y+=char_h;
 	}
-	f1.SetWeight(wxFONTWEIGHT_BOLD); dc.SetFont(f1);
+	my_font.SetWeight(wxFONTWEIGHT_BOLD); 
+	dc.SetFont(my_font);
 	cur_y=1;
 	for(int i=0;i<entries.GetSize();i++) {
 		if (!entries[i].ShouldDraw(current_arg)) continue;
@@ -50,6 +51,7 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 }
 
 void mxCalltip::ShowCommon (wxString text) {
+	my_font = wxFont(config->Styles.font_size+parent->GetZoom(), wxMODERN, wxNORMAL, wxNORMAL,false,config->Styles.font_name);
 	entries.Clear();
 	int p = text.Index('\n');
 	while (p!=wxNOT_FOUND) {
@@ -89,7 +91,7 @@ void mxCalltip::SetArg (int cur_arg) {
 			max_len=entries[i].len; max_i=i;
 		}
 	// obtener tamaño de letrasa para calcular el tamaño de la ventana y la longitud de las lineas
-	wxMemoryDC dc; wxFont f1(config->Styles.font_size, wxMODERN, wxNORMAL, wxNORMAL,false,config->Styles.font_name); dc.SetFont(f1);
+	wxMemoryDC dc; dc.SetFont(my_font);
 	wxSize sz = dc.GetTextExtent(entries[max_i].line);
 	char_h = sz.GetHeight(); 
 	int char_w=sz.GetWidth()/max_len;

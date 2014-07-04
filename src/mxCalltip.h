@@ -19,6 +19,7 @@ private:
 	SingleList<entry> entries;
 	mxSource *parent;
 	int current_arg, max_line, char_h, pos_x, pos_y, delta_chars;
+	wxFont my_font;
 	friend class mxSource;
 public:
 	mxCalltip(mxSource *src);
