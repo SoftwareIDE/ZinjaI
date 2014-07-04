@@ -194,13 +194,13 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_MACRORECORD(wxID_ANY,mxSource::OnMacroAction)
 	EVT_STC_AUTOCOMP_SELECTION(wxID_ANY,mxSource::OnAutocompSelection)
 	
-//	EVT_TIMER(wxID_ANY,mxSource::OnAutocompTimer)
+	EVT_TIMER(wxID_ANY,mxSource::OnAutocompTimer)
 	
 END_EVENT_TABLE()
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL)
-//	, timer_autocomp(GetEventHandler(),wxID_ANY)
+	, timer_autocomp(GetEventHandler(),wxID_ANY)
 {
 
 	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
@@ -958,6 +958,7 @@ bool mxSource::SaveSource (const wxFileName &filename) {
 
 
 void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
+	if (calltip_mode==MXS_AUTOCOMP && calltip && !wxStyledTextCtrl::AutoCompActive()) HideCalltip();
 	int cl=GetCurrentLine();
 	if (first_view) {
 		ScrollToColumn(0);
@@ -3604,7 +3605,7 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 		return;
 	} else {
 		evt.Skip();
-//		if (calltip_mode==MXS_AUTOCOMP) timer_autocomp.Start(250,true);
+		if (calltip_mode==MXS_AUTOCOMP) timer_autocomp.Start(250,true);
 	}
 }
 
@@ -3999,7 +4000,7 @@ void mxSource::HideCalltip ( ) {
 		case MXS_NULL: break;
 		case MXS_CALLTIP: calltip->Hide(); break;
 		case MXS_BALOON: wxStyledTextCtrl::CallTipCancel(); break;
-		case MXS_AUTOCOMP: wxStyledTextCtrl::AutoCompCancel(); break;
+		case MXS_AUTOCOMP: wxStyledTextCtrl::AutoCompCancel(); if (calltip) calltip->Hide(); break;
 	}
 	calltip_mode = MXS_NULL;
 }
@@ -4010,17 +4011,29 @@ void mxSource::ShowAutoComp (int p, const wxString & s) {
 	last_failed_autocompletion.Reset(); 
 	wxStyledTextCtrl::AutoCompShow(p,s);
 	mask_kill_focus_event=false;
+	wxPoint pt1=PointFromPosition(GetCurrentPos()-p);
+	wxPoint pt2=GetScreenPosition();
+	autocomp_x = pt1.x+pt2.x; autocomp_y = pt1.y+pt2.y;
+	if (calltip_mode==MXS_AUTOCOMP) timer_autocomp.Start(250,true);
 }
 
 
 void mxSource::OnAutocompSelection(wxStyledTextEvent &event) {
+	if (calltip) calltip->Hide();
 	calltip_mode = MXS_NULL;
 }
 
 
-//void mxSource::OnAutocompTimer(wxTimerEvent &event) {
-//	if (!wxStyledTextCtrl::AutoCompActive()) calltip_mode=MXS_NULL;
-//	if (calltip_mode!=MXS_AUTOCOMP) return;
-//	wxString lala="ASFAFDFAFSAS "; lala<<AutoCompGetCurrent();
-//	main_window->SetStatusText(lala);
-//}
+void mxSource::OnAutocompTimer(wxTimerEvent &event) {
+	if (!wxStyledTextCtrl::AutoCompActive()) calltip_mode=MXS_NULL;
+	if (calltip_mode!=MXS_AUTOCOMP) return;
+	wxString help_text = autocomp_list.GetHelp(AutoCompGetCurrent());
+	if (!help_text.Len()) { if (calltip) calltip->Hide(); return; }
+	if (!calltip) calltip = new mxCalltip(this);
+	int autocomp_max_len = autocomp_list.GetMaxLen();
+	if (autocomp_max_len<6) autocomp_max_len = 6;
+	mask_kill_focus_event=true;
+	calltip->Show(autocomp_x+40,autocomp_y,autocomp_max_len,help_text);
+	wxYield(); // para que el mxsource procese el evento KillFocus y lo ignore gracias a la bandera de la siguiente linea
+	mask_kill_focus_event=false;
+}

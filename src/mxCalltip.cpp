@@ -28,17 +28,25 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 	dc.SetTextForeground(ctheme->CALLTIP_FORE);
 	int w,h; GetClientSize(&w,&h);
 	
-	int cur_y=0;
+	int cur_y=1;
 	for(int i=0;i<entries.GetSize();i++) {
 		if (!entries[i].ShouldDraw(current_arg)) continue;
-		dc.DrawText(entries[i].line,0,cur_y); cur_y+=char_h;
+		dc.DrawText(entries[i].line,2,cur_y); cur_y+=char_h;
 	}
 	f1.SetWeight(wxFONTWEIGHT_BOLD); dc.SetFont(f1);
-	cur_y=0;
+	cur_y=1;
 	for(int i=0;i<entries.GetSize();i++) {
 		if (!entries[i].ShouldDraw(current_arg)) continue;
-		dc.DrawText(entries[i].bold_line,0,cur_y); cur_y+=char_h;
+		dc.DrawText(entries[i].bold_line,2,cur_y); cur_y+=char_h;
 	}
+	
+	
+	wxSize sz = dc.GetSize();
+	dc.SetPen(wxPen(ctheme->CALLTIP_FORE));
+	dc.DrawLine(0				,0					,sz.GetWidth()-1	,0);
+	dc.DrawLine(0				,sz.GetHeight()-1	,sz.GetWidth()-1	,sz.GetHeight()-1);
+	dc.DrawLine(0				,0					,0					,sz.GetHeight()-1);
+	dc.DrawLine(sz.GetWidth()-1	,0					,sz.GetWidth()-1	,sz.GetHeight()-1);
 }
 
 void mxCalltip::ShowCommon (wxString text) {
@@ -55,14 +63,17 @@ void mxCalltip::ShowCommon (wxString text) {
 	main_window->Raise();
 }
 
-void mxCalltip::Show (int sp, const wxString &text) {
-	wxPoint pt = parent->PointFromPosition(sp);
-	pos_x=pt.x; pos_y=pt.y;
+void mxCalltip::Show (int source_pos, const wxString &text) {
+	wxPoint pt = parent->PointFromPosition(source_pos);
+	wxPoint sp=parent->GetScreenPosition();
+	pos_x=sp.x+pt.x; pos_y=sp.y+pt.y;
+	delta_chars=0;
 	ShowCommon(text);
 }
 
-void mxCalltip::Show (int x, int y, const wxString &text) {
+void mxCalltip::Show (int x, int y, int delta_chars, const wxString &text) {
 	pos_x = x; pos_y = y;
+	this->delta_chars=delta_chars;
 	ShowCommon(text);
 }
 
@@ -82,7 +93,7 @@ void mxCalltip::SetArg (int cur_arg) {
 	wxSize sz = dc.GetTextExtent(entries[max_i].line);
 	char_h = sz.GetHeight(); 
 	int char_w=sz.GetWidth()/max_len;
-	wxRect mwr = main_window->GetScreenRect(); wxPoint sp=parent->GetScreenPosition();
+	wxRect mwr = main_window->GetScreenRect();
 //	max_line = (mwr.GetLeft()+mwr.GetWidth()-pos_x-sp.x)/char_w-1; if (max_line<5) max_line=5;
 	// ver cuales lineas se van a mostrar y cuan largas son
 	int cant_lines=0; max_len=0;
@@ -101,12 +112,28 @@ void mxCalltip::SetArg (int cur_arg) {
 		for (int j=entries[i].argp[cur_arg+1];j<entries[i].len;j++) entries[i].bold_line[j]=' ';
 	}
 	if (cant_lines==0) cant_lines=max_len=1;
-	// redimensionar acorde a lo que se conto, y pintar
-	int my_w=max_len*char_w, my_min_x=sp.x+pos_x, win_min_x=mwr.GetLeft();
-	int my_max_x=my_min_x+my_w, win_max_x=win_min_x+mwr.GetWidth();
-	if (my_max_x>win_max_x) { my_min_x=win_max_x-my_w; if (my_min_x<0) my_min_x=0; }
-	SetSize(my_w,cant_lines*char_h);
-	Move(my_min_x,sp.y+pos_y+char_h+5);
+	// redimensionar acorde a lo que se conto, y controlar que no se salga de la pantalla 
+	// (delta_char!=0 indica que es para el autocompletado)
+	// (como no se sabe el tamaño de la pantalla, se asume de 0,0 a la esquina inferior derecha de main_window)
+	int my_w=max_len*char_w, my_min_x=pos_x+delta_chars*char_w, win_min_x=mwr.GetLeft(), win_h=mwr.GetHeight();
+	int my_h=cant_lines*char_h, my_min_y=pos_y+char_h+2;
+	int my_max_x=my_min_x+my_w, win_max_x=win_min_x+mwr.GetWidth(), win_max_y=mwr.GetTop()+mwr.GetHeight();
+	if (my_max_x>win_max_x) { 
+		if (delta_chars) my_min_x = pos_x-my_w-70;
+		else my_min_x=win_max_x-my_w; 
+		if (my_min_x<0) my_min_x=0;
+	}
+	if (my_min_y+my_h>win_max_y) {
+		if (delta_chars) {
+			my_min_y = win_max_y-my_h;
+			if (my_min_y<0) my_min_y=0;
+		} else {
+			int new_min_y = pos_y-2-my_h;
+			if (new_min_y>0) my_min_y=new_min_y;
+		} 
+	}
+	SetSize(my_w+4,my_h+4);
+	Move(my_min_x,my_min_y);
 	Refresh();
 }
 

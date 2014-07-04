@@ -8,6 +8,33 @@
 
 class mxSource;
 
+#include <iostream>
+using namespace std;
+
+
+class MyAutocompList {
+	wxArrayString keywords;
+	wxArrayString helps;
+	unsigned int max_len, count;
+public:
+	bool Empty() { 
+		return count==0;
+	}
+	void Init() {
+		max_len=count=0;
+		keywords.Clear();
+		helps.Clear();
+	}
+	void Add(const wxString &keyword, const wxString &icon, const wxString &help);
+	wxString GetResult(bool sort=true);
+	wxString GetHelp(unsigned int sel);
+	unsigned int GetMaxLen() { 
+		return max_len;
+	}
+};
+extern MyAutocompList autocomp_list;
+
+
 /**
 * @brief encapsula las funciones relacionadas al autocompletado y los calltips
 * 
@@ -22,10 +49,13 @@ class CodeHelper {
 private:
 	int min_len;
 	wxArrayString actual_indexes; ///< la lista de indices de autocompletado cargados actualmente
-	wxArrayString comp_array;
-	wxArrayString reserved_words;
-	wxArrayString preproc_directives;
-	wxArrayString doxygen_directives;
+	struct CodeHelperSpecialArray {
+		wxArrayString keywords;
+		wxString icon, help;
+	};
+	CodeHelperSpecialArray reserved_words;
+	CodeHelperSpecialArray preproc_directives;
+	CodeHelperSpecialArray doxygen_directives;
 public:
 	CodeHelper(int ml);
 	~CodeHelper();	
@@ -44,8 +74,8 @@ public:
 	wxString UnMacro(wxString name);
 	wxString UnMacro(wxString name,int &dims);
 	void UnTemplate(wxString &var);
-	int AddReservedWords(wxArrayString &comp_list, wxString &typed, int max_str_dist=3);
-	bool AutocompleteFromArray(mxSource *source, wxArrayString &words, wxString typed);
+	void AddReservedWords(wxString &typed, int max_str_dist=3);
+	bool AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray &words, wxString typed);
 	bool AutocompletePreprocesorDirective(mxSource *source, wxString typed="");
 	bool AutocompleteDoxygen(mxSource *source, wxString typed="");
 	bool GenerateAutocompletionIndex(wxString path, wxString filename);

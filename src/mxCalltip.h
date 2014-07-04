@@ -18,15 +18,15 @@ private:
 	};
 	SingleList<entry> entries;
 	mxSource *parent;
-	int current_arg, max_line, char_h, pos_x, pos_y;
+	int current_arg, max_line, char_h, pos_x, pos_y, delta_chars;
 	friend class mxSource;
 public:
 	mxCalltip(mxSource *src);
 	void OnPaint(wxPaintEvent &event);
 	void OnFocus(wxFocusEvent &event);
 	void ShowCommon(wxString text);
-	void Show(int sp, const wxString &text);
-	void Show(int x, int y, const wxString &text);
+	void Show(int source_pos, const wxString &text);
+	void Show(int x, int y, int delta_chars, const wxString &text);
 	void Hide();
 	void SetArg(int cur_arg);
 	bool AcceptsFocus() const { return false; }

@@ -270,8 +270,9 @@ private:
 	wxArrayString autocomp_help_text;
 	void OnAutocompSelection(wxStyledTextEvent &event);
 	bool mask_kill_focus_event; // para evitar que al mostrarse el autocompletado o el calltip (y recibir asi el foco) el event kill_focus del source los cierre inmediatamente
-//	wxTimer timer_autocomp;
-//	void OnAutocompTimer(wxTimerEvent &event);
+	wxTimer timer_autocomp;
+	int autocomp_x, autocomp_y;
+	void OnAutocompTimer(wxTimerEvent &event);
 public:
 	void HideCalltip();
 	void ShowBaloon(wxString str, int p = -1);
