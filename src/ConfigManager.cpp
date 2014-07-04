@@ -342,6 +342,7 @@ bool ConfigManager::Load() {
 		} 
 	}
 	
+	if (Init.version<20140704) if (Init.proxy=="") Init.proxy="$http_proxy";
 	if (Init.version<20110418) Debug.select_modified_inspections=true;
 	if (Init.version<20110420) Init.check_for_updates=true;
 	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");
@@ -741,7 +742,11 @@ void ConfigManager::LoadDefaults(){
 	Running.dont_run_headers=false;
 	Running.check_includes=true;
 	
+#ifdef __WIN32__
 	Init.proxy="";
+#else
+	Init.proxy="$http_proxy";
+#endif
 	Init.language_file="spanish";
 	Init.max_errors=500;
 	Init.max_jobs=wxThread::GetCPUCount();

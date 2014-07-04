@@ -85,8 +85,13 @@ void mxUpdatesChecker::CheckNow() {
 	command<<"--postfix linux ";
 #endif
 	
-	if (config->Init.proxy.Len())
-		command<<"--proxy "<<config->Init.proxy<<" ";
+	wxString proxy_address=config->Init.proxy;
+	if (proxy_address=="$http_proxy") {
+		if (!wxGetEnv("http_proxy",&proxy_address)) proxy_address="";
+		else if (proxy_address.StartsWith("http://")) proxy_address=proxy_address.Mid(7);
+	}
+	if (proxy_address.Len()) 
+		command<<"--proxy "<<proxy_address<<" ";
 	
 	wxString temp_file(DIR_PLUS_FILE(config->temp_dir,"updatem.res"));
 	command<<"--child \""<<temp_file<<"\"";
