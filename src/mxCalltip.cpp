@@ -28,7 +28,6 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 //	dc.SetTextBackground(*back);
 	dc.SetTextForeground(ctheme->CALLTIP_FORE);
 	int w,h; GetClientSize(&w,&h);
-	
 	int cur_y=1;
 	for(int i=0;i<entries.GetSize();i++) {
 		if (!entries[i].ShouldDraw(current_arg)) continue;
@@ -149,7 +148,10 @@ void mxCalltip::SetArg (int cur_arg) {
 			if (new_min_y>0) my_min_y=new_min_y;
 		} 
 	}
-	SetSize(my_w+4,my_h+4);
+	wxSize dsz(my_w+4,my_h+4);
+	SetMinSize(dsz);
+	SetMaxSize(dsz);
+	SetSize(dsz);
 	Move(my_min_x,my_min_y);
 	Refresh();
 }
