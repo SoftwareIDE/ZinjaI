@@ -7,7 +7,7 @@
 
 BEGIN_EVENT_TABLE(mxCalltip,wxFrame)
 	EVT_PAINT(mxCalltip::OnPaint)
-//	EVT_SET_FOCUS(mxCalltip::OnFocus)
+	EVT_SET_FOCUS(mxCalltip::OnFocus)
 //	EVT_ACTIVATE(mxCalltip::OnFocus)
 //	EVT_LEFT_DOWN(wxSTCCallTip::OnLeftDown)
 END_EVENT_TABLE()
@@ -16,15 +16,16 @@ mxCalltip::mxCalltip (mxSource * src) :
 	wxFrame(src, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxFRAME_NO_TASKBAR|wxFRAME_FLOAT_ON_PARENT|wxBORDER_NONE), 
 	parent(src), current_arg(-1)
 {
+	Disable(); // workaround para el no-efecto de AcceptsFocus, ver OnFocus
 }
 
 void mxCalltip::OnPaint (wxPaintEvent & event) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
 	dc.SetBackground(ctheme->CALLTIP_BACK);
+	my_font.SetWeight(wxFONTWEIGHT_NORMAL); 
 	dc.Clear(); dc.SetFont(my_font);
 //	dc.SetTextBackground(*back);
-	my_font.SetWeight(wxFONTWEIGHT_NORMAL); 
 	dc.SetTextForeground(ctheme->CALLTIP_FORE);
 	int w,h; GetClientSize(&w,&h);
 	
@@ -118,13 +119,26 @@ void mxCalltip::SetArg (int cur_arg) {
 	// redimensionar acorde a lo que se conto, y controlar que no se salga de la pantalla 
 	// (delta_char!=0 indica que es para el autocompletado)
 	// (como no se sabe el tamaño de la pantalla, se asume de 0,0 a la esquina inferior derecha de main_window)
-	int my_w=max_len*char_w, my_min_x=pos_x+delta_chars*char_w, win_min_x=mwr.GetLeft(), win_h=mwr.GetHeight();
+	
+	int delta_w=0;
+	if (delta_chars) {
+		int vscrool_x = wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+		delta_w=delta_chars*char_w+2*wxSystemSettings::GetMetric(wxSYS_VSCROLL_X)+10;
+		if (delta_w<100-30+vscrool_x) delta_w=100-30+vscrool_x;
+		if (delta_w>350-30+vscrool_x) delta_w=350-30+vscrool_x;; // 100  y 250 salen de los fuentes del stc
+	}
+	int my_w=max_len*char_w, my_min_x=pos_x+delta_w, win_min_x=mwr.GetLeft(), win_h=mwr.GetHeight();
 	int my_h=cant_lines*char_h, my_min_y=pos_y+char_h+2;
-	int my_max_x=my_min_x+my_w, win_max_x=win_min_x+mwr.GetWidth(), win_max_y=mwr.GetTop()+mwr.GetHeight();
+	int my_max_x=my_min_x+my_w, win_max_x=win_min_x+mwr.GetWidth(), win_max_y=mwr.GetTop()+win_h;
 	if (my_max_x>win_max_x) { 
-		if (delta_chars) my_min_x = pos_x-my_w-70;
-		else my_min_x=win_max_x-my_w; 
-		if (my_min_x<0) my_min_x=0;
+		if (delta_chars) {
+			int new_min_x = my_min_x = pos_x-my_w-30;
+			if (new_min_x>=0) my_min_x = new_min_x;
+		}
+		else {
+			my_min_x=win_max_x-my_w; 
+			if (my_min_x<0) my_min_x=0;
+		}
 	}
 	if (my_min_y+my_h>win_max_y) {
 		if (delta_chars) {
@@ -185,4 +199,13 @@ void mxCalltip::Hide() {
 	wxFrame::Hide();
 }
 
+
+void mxCalltip::OnFocus (wxFocusEvent & event) {
+	// esto evita un "flickering" en la barra de titulo de la main_window cuando pierde su foco
+	// solo funciona (aparentemente) en gnu/linux... 
+	// la solucion "oficial" de sobreescribir el metodo AcceptsFocus no funciona en ningun caso, pero
+	// la implemntacion original dice "return IsShown()&&IsEnabled()", por eso el "Disable()" del constructor
+	parent->SetFocus();
+	event.Skip();
+}
 

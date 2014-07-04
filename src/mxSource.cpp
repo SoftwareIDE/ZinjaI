@@ -200,7 +200,7 @@ END_EVENT_TABLE()
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL)
-	, timer_autocomp(GetEventHandler(),wxID_ANY)
+	, timer_autocomp(GetEventHandler(),wxID_ANY), timer_focus(GetEventHandler(),wxID_ANY)
 {
 
 	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
@@ -213,7 +213,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	
 //	AutoCompSetDropRestOfWord(true); // esto se torna muy molesto en muchos casos (por ejemplo, intentar agregar unsigned antes de int), mejor no usar
 	
-	mask_kill_focus_event = false;
 	calltip = NULL;	calltip_mode = MXS_NULL;
 	
 	old_current_line=-1000;
@@ -2934,7 +2933,8 @@ void mxSource::OnSavePointLeft (wxStyledTextEvent &event) {
 }
 
 void mxSource::OnKillFocus(wxFocusEvent &event) {
-	if (!mask_kill_focus_event) HideCalltip();
+	if (!mask_kill_focus_event) 
+		HideCalltip(); 
 	event.Skip();
 }
 
@@ -3984,15 +3984,13 @@ void mxSource::UserReload ( ) {
 }
 
 void mxSource::ShowCallTip (int brace_pos, int calltip_pos, const wxString & s) {
-	mask_kill_focus_event=true;
+	mask_kill_focus_event=true; timer_focus.Start(150,true);
 	SetCalltipMode(MXS_CALLTIP);
 	last_failed_autocompletion.Reset(); 
 	if (!calltip) calltip = new mxCalltip(this);
 	calltip_brace = brace_pos;
 	calltip_line = LineFromPosition(brace_pos);
 	calltip->Show(calltip_pos,s);
-	wxYield(); // para que el mxsource procese el evento KillFocus y lo ignore gracias a la bandera de la siguiente linea
-	mask_kill_focus_event=false;
 }
 
 void mxSource::HideCalltip ( ) {
@@ -4006,11 +4004,10 @@ void mxSource::HideCalltip ( ) {
 }
 
 void mxSource::ShowAutoComp (int p, const wxString & s) { 
-	mask_kill_focus_event=true;
 	SetCalltipMode(MXS_AUTOCOMP);
 	last_failed_autocompletion.Reset(); 
+	mask_kill_focus_event=true; timer_focus.Start(150,true);
 	wxStyledTextCtrl::AutoCompShow(p,s);
-	mask_kill_focus_event=false;
 	wxPoint pt1=PointFromPosition(GetCurrentPos()-p);
 	wxPoint pt2=GetScreenPosition();
 	autocomp_x = pt1.x+pt2.x; autocomp_y = pt1.y+pt2.y;
@@ -4025,15 +4022,13 @@ void mxSource::OnAutocompSelection(wxStyledTextEvent &event) {
 
 
 void mxSource::OnAutocompTimer(wxTimerEvent &event) {
+	if (event.GetEventObject()==&timer_focus) { mask_kill_focus_event=false; return; }
 	if (!wxStyledTextCtrl::AutoCompActive()) calltip_mode=MXS_NULL;
 	if (calltip_mode!=MXS_AUTOCOMP) return;
 	wxString help_text = autocomp_list.GetHelp(AutoCompGetCurrent());
 	if (!help_text.Len()) { if (calltip) calltip->Hide(); return; }
 	if (!calltip) calltip = new mxCalltip(this);
 	int autocomp_max_len = autocomp_list.GetMaxLen();
-	if (autocomp_max_len<6) autocomp_max_len = 6;
-	mask_kill_focus_event=true;
-	calltip->Show(autocomp_x+40,autocomp_y,autocomp_max_len,help_text);
-	wxYield(); // para que el mxsource procese el evento KillFocus y lo ignore gracias a la bandera de la siguiente linea
-	mask_kill_focus_event=false;
+	mask_kill_focus_event=true; timer_focus.Start(150,true);
+	calltip->Show(autocomp_x,autocomp_y,autocomp_max_len,help_text);
 }

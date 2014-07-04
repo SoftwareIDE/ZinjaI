@@ -30,7 +30,7 @@ public:
 	void Show(int x, int y, int delta_chars, const wxString &text);
 	void Hide();
 	void SetArg(int cur_arg);
-	bool AcceptsFocus() const { return false; }
+	bool AcceptsFocus() const { return false; } // parece no tener efecto
 	DECLARE_EVENT_TABLE();
 };
 

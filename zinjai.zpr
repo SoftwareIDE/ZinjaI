@@ -42,9 +42,11 @@ path=src/mxMainWindow.cpp
 cursor=3242:2
 [source]
 path=src/mxSource.cpp
-cursor=3986:28
+cursor=2468:20
 marker=203
-marker=1018
+marker=1017
+marker=3985
+marker=4030
 open=true
 [source]
 path=src/mxDiffSideBar.cpp
@@ -67,12 +69,11 @@ cursor=1024:68
 marker=597
 [source]
 path=src/CodeHelper.cpp
-cursor=1187:26
+cursor=1157:0
 breakpoint=1184
 breakpoint_annotation=
 marker=584
 marker=730
-open=true
 [source]
 path=src/HelpManager.cpp
 cursor=667:2
@@ -395,7 +396,7 @@ breakpoint=62
 breakpoint_annotation=
 [source]
 path=src/mxCalltip.cpp
-cursor=66:1
+cursor=130:93
 open=true
 [header]
 path=src/CodeHelper.h
@@ -452,7 +453,8 @@ path=src/mxShareSourceWindow.h
 cursor=-1:0
 [header]
 path=src/mxSource.h
-cursor=273:5
+cursor=272:36
+open=true
 [header]
 path=src/mxTipsWindow.h
 cursor=11:0
@@ -749,7 +751,7 @@ path=src/CustomTools.h
 cursor=21:45
 [header]
 path=src/mxCalltip.h
-cursor=20:61
+cursor=26:35
 open=true
 [other]
 path=guihelp/ChangeLog.html
