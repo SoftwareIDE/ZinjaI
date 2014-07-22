@@ -8,7 +8,7 @@
 BEGIN_EVENT_TABLE(mxCalltip,wxFrame)
 	EVT_PAINT(mxCalltip::OnPaint)
 	EVT_SET_FOCUS(mxCalltip::OnFocus)
-//	EVT_ACTIVATE(mxCalltip::OnFocus)
+	EVT_ACTIVATE(mxCalltip::OnActivate)
 //	EVT_LEFT_DOWN(wxSTCCallTip::OnLeftDown)
 END_EVENT_TABLE()
 
@@ -207,6 +207,12 @@ void mxCalltip::OnFocus (wxFocusEvent & event) {
 	// solo funciona (aparentemente) en gnu/linux... 
 	// la solucion "oficial" de sobreescribir el metodo AcceptsFocus no funciona en ningun caso, pero
 	// la implemntacion original dice "return IsShown()&&IsEnabled()", por eso el "Disable()" del constructor
+	parent->SetFocus();
+	event.Skip();
+}
+
+void mxCalltip::OnActivate(wxActivateEvent & event) {
+	// en algunos linux esto es necesario (como usaurio) y en otros no (como mambanegra)... no se porque
 	parent->SetFocus();
 	event.Skip();
 }

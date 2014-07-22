@@ -31,6 +31,7 @@ public:
 	void Hide();
 	void SetArg(int cur_arg);
 	bool AcceptsFocus() const { return false; } // parece no tener efecto
+	void OnActivate(wxActivateEvent & event);
 	DECLARE_EVENT_TABLE();
 };
 
