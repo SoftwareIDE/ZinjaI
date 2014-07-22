@@ -22,9 +22,8 @@ mxCalltip::mxCalltip (mxSource * src) :
 void mxCalltip::OnPaint (wxPaintEvent & event) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-	dc.SetBackground(ctheme->CALLTIP_BACK);
-	my_font.SetWeight(wxFONTWEIGHT_NORMAL); 
-	dc.Clear(); dc.SetFont(my_font);
+	dc.SetBackground(ctheme->CALLTIP_BACK); dc.Clear(); 
+	my_font.SetWeight(wxFONTWEIGHT_NORMAL); dc.SetFont(my_font);
 //	dc.SetTextBackground(*back);
 	dc.SetTextForeground(ctheme->CALLTIP_FORE);
 	int w,h; GetClientSize(&w,&h);
@@ -104,6 +103,7 @@ void mxCalltip::SetArg (int cur_arg) {
 			max_len=entries[i].len; max_i=i;
 		}
 	// obtener tamaño de letrasa para calcular el tamaño de la ventana y la longitud de las lineas
+	my_font.SetWeight(wxFONTWEIGHT_BOLD); 
 	wxMemoryDC dc; dc.SetFont(my_font);
 	wxSize sz = dc.GetTextExtent(entries[max_i].line);
 	char_h = sz.GetHeight(); 
@@ -225,7 +225,7 @@ void mxCalltip::OnFocus (wxFocusEvent & event) {
 
 void mxCalltip::OnActivate(wxActivateEvent & event) {
 	// en algunos linux esto es necesario (como usaurio) y en otros no (como mambanegra)... no se porque
-	parent->Raise();
+	main_window->Raise();
 	event.Skip();
 }
 
