@@ -31,17 +31,29 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 	int cur_y=1;
 	for(int i=0;i<entries.GetSize();i++) {
 		if (!entries[i].ShouldDraw(current_arg)) continue;
-		dc.DrawText(entries[i].line,2,cur_y); cur_y+=char_h;
+		int j=0,l=entries[i].bold_line.Len();
+		while (j<l && entries[i].bold_line[j]==' ') j++;
+		if (j>=l) {
+			dc.DrawText(entries[i].line,2,cur_y);
+		} else {
+			while (entries[i].bold_line[l-1]==' ') --l;
+			int cur_x=2; 
+			wxString pre=entries[i].line.Mid(0,j), mid=entries[i].bold_line.Mid(j,l-j), post=entries[i].line.Mid(l);
+			dc.DrawText(pre,cur_x,cur_y); cur_x+=dc.GetTextExtent(pre).GetWidth();
+			my_font.SetWeight(wxFONTWEIGHT_BOLD); dc.SetFont(my_font);
+			dc.DrawText(mid,cur_x,cur_y); cur_x+=dc.GetTextExtent(mid).GetWidth();
+			my_font.SetWeight(wxFONTWEIGHT_NORMAL); dc.SetFont(my_font);
+			dc.DrawText(post,cur_x,cur_y); 
+		}
+		cur_y+=char_h;
 	}
-	my_font.SetWeight(wxFONTWEIGHT_BOLD); 
-	dc.SetFont(my_font);
-	cur_y=1;
-	for(int i=0;i<entries.GetSize();i++) {
-		if (!entries[i].ShouldDraw(current_arg)) continue;
-		dc.DrawText(entries[i].bold_line,2,cur_y); cur_y+=char_h;
-	}
-	
-	
+//	my_font.SetWeight(wxFONTWEIGHT_BOLD); 
+//	dc.SetFont(my_font);
+//	cur_y=1;
+//	for(int i=0;i<entries.GetSize();i++) {
+//		if (!entries[i].ShouldDraw(current_arg)) continue;
+//		dc.DrawText(entries[i].bold_line,2,cur_y); cur_y+=char_h;
+//	}
 	wxSize sz = dc.GetSize();
 	dc.SetPen(wxPen(ctheme->CALLTIP_FORE));
 	dc.DrawLine(0				,0					,sz.GetWidth()-1	,0);
@@ -213,7 +225,7 @@ void mxCalltip::OnFocus (wxFocusEvent & event) {
 
 void mxCalltip::OnActivate(wxActivateEvent & event) {
 	// en algunos linux esto es necesario (como usaurio) y en otros no (como mambanegra)... no se porque
-	parent->SetFocus();
+	parent->Raise();
 	event.Skip();
 }
 
