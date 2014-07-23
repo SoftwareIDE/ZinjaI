@@ -41,7 +41,7 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 	array1.Add(LANG(DRAWCLASSES_RELATED_NONE,"No incluir"));
 	array1.Add(LANG(DRAWCLASSES_RELATED_DIRECT,"Incluir solo las relacionadas directamente"));
 	array1.Add(LANG(DRAWCLASSES_RELATED_ALL,"Incluir todas la relacionadas"));
-	related_classes = utils->AddComboBox(mySizer,this,LANG(DRAWCLASSES_RELATED,"Clases externas"),array1,1);
+	related_classes = mxUT::AddComboBox(mySizer,this,LANG(DRAWCLASSES_RELATED,"Clases externas"),array1,1);
 
 	wxArrayString array2;
 	array2.Add(_T("dot"));
@@ -49,7 +49,7 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 //	array2.Add(_T("neato"));
 //	array2.Add(_T("twopi"));
 //	array2.Add(_T("circo"));
-	wich_command = utils->AddComboBox(mySizer,this,LANG(DRAWCLASSES_GENERADOR,"Generador"),array2,0);
+	wich_command = mxUT::AddComboBox(mySizer,this,LANG(DRAWCLASSES_GENERADOR,"Generador"),array2,0);
 	
 	wxArrayString array3;
 	pd_class *it_class = parser->last_class->next;
@@ -59,7 +59,7 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 	}
 	array3.Sort();
 	array3.Add(LANG(DRAWCLASSES_WICH_ALL,"<todas las clases>"));
-	wich_class = utils->AddComboBox(mySizer,this,LANG(DRAWCLASSES_DRAW_FROM,"Dibujar relaciones de:"),array3,array3.GetCount()-1);
+	wich_class = mxUT::AddComboBox(mySizer,this,LANG(DRAWCLASSES_DRAW_FROM,"Dibujar relaciones de:"),array3,array3.GetCount()-1);
 	
 	wxArrayString array4;
 	pd_file *it_file = parser->last_file->next;
@@ -69,7 +69,7 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 	}
 	array4.Sort();
 	array4.Add(LANG(DRAWCLASSES_FILES_ALL,"<todos los archivos>"));
-	wich_file = utils->AddComboBox(mySizer,this,LANG(DRAWCLASSES_FROM_FILE,"Dibujar relaciones de:"),array4,array4.GetCount()-1);
+	wich_file = mxUT::AddComboBox(mySizer,this,LANG(DRAWCLASSES_FROM_FILE,"Dibujar relaciones de:"),array4,array4.GetCount()-1);
 	if (!project && main_window->notebook_sources->GetPageCount()) {
 		mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
 		wich_file->SetValue(source->GetFullPath());
@@ -81,7 +81,7 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 	array5.Add(LANG(DRAWCLASSES_WHAT_PUBLIC_FULL,"Atributos y Metodos Publicos (prototipo completo)"));
 	array5.Add(LANG(DRAWCLASSES_WHAT_ALL_NAME,"Todos los Atributos y Metodos (solo nombre)"));
 	array5.Add(LANG(DRAWCLASSES_WHAT_ALL_FULL,"Todos los Atributos y Metodos (prototipo completo)"));
-	what_inside = utils->AddComboBox(mySizer,this,LANG(DRAWCLASSES_WHAT,"Mostrar en cada clase"),array5,4);
+	what_inside = mxUT::AddComboBox(mySizer,this,LANG(DRAWCLASSES_WHAT,"Mostrar en cada clase"),array5,4);
 	
 	wxArrayString array6;
 	array6.Add(LANG(DRAWCLASSES_WHERE_SHOW,"Visualizar"));
@@ -92,7 +92,7 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 	array6.Add(LANG(DRAWCLASSES_WHERE_PS,"Guardar como documento ps"));
 	array6.Add(LANG(DRAWCLASSES_WHERE_SVG,"Guardar como dibujo svg"));
 	array6.Add(LANG(DRAWCLASSES_WHERE_DIA,"Guardar como diagrama dia"));
-	where_store = utils->AddComboBox(mySizer,this,LANG(DRAWCLASSES_WHERE,"Resultado"),array6,0);
+	where_store = mxUT::AddComboBox(mySizer,this,LANG(DRAWCLASSES_WHERE,"Resultado"),array6,0);
 	
 	mySizer->Add(buttonSizer,sizers->Right);
 	SetSizerAndFit(mySizer);
@@ -129,7 +129,7 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 		if (dlg.ShowModal() != wxID_OK) return;
 		output=dlg.GetPath();
 	}
-	/*int retval = */utils->ProcessGraph(gout,false,"",LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases"));
+	/*int retval = */mxUT::ProcessGraph(gout,false,"",LANG(DRAW_CLASSES_TITLE,"Jerarquia de Clases"));
 	// todo: mostrar mensaje de error si falla retval
 }
 

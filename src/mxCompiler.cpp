@@ -659,7 +659,7 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	ResetCompileData();
-	compile_and_run->pid = utils->Execute(source->GetPath(false),command,wxEXEC_ASYNC,compile_and_run->process);
+	compile_and_run->pid = mxUT::Execute(source->GetPath(false),command,wxEXEC_ASYNC,compile_and_run->process);
 	main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
 	compile_and_run->full_output.Add("");
 	if (!project) compile_and_run->full_output.Add(wxString(_T("> "))+command); // lo hace el proyecto si hay
@@ -730,7 +730,7 @@ wxString mxCompiler::GetCompilingStatusText() {
 bool mxCompiler::CheckForExecutablePermision(wxString file) {
 #ifndef __WIN32__
 	if (!wxFileName::IsFileExecutable(file)) {
-		system((string("chmod a+x ")+utils->Quotize(file).c_str()).c_str());
+		system((string("chmod a+x ")+mxUT::Quotize(file).c_str()).c_str());
 		if (!wxFileName::IsFileExecutable(file)) {
 			tree->AppendItem(errors,LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución."),7);
 			main_window->ShowCompilerTreePanel();

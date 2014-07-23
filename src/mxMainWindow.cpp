@@ -939,7 +939,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 //	else if (action=="quickfile")
 //		quick_help->LoadPage(DIR_PLUS_FILE(config->Help.quickhelp_dir,post));
 	else if (action=="doxygen")
-		utils->OpenInBrowser(wxString("file://")<<post);
+		mxUT::OpenInBrowser(wxString("file://")<<post);
 //	else if (action=="example")
 //		NewFileFromTemplate(DIR_PLUS_FILE(config->Help.quickhelp_dir,post));
 	else if (action=="cppreference")
@@ -1085,7 +1085,7 @@ void mxMainWindow::OnFileOpenH(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		if (source->sin_titulo) return;
-		wxString the_one(utils->GetComplementaryFile(source->source_filename));
+		wxString the_one(mxUT::GetComplementaryFile(source->source_filename));
 		if (the_one.Len()) OpenFile(the_one);
 	}
 }
@@ -1126,7 +1126,7 @@ void mxMainWindow::OnFileOpenSelected(wxCommandEvent &event){
 }
 
 void mxMainWindow::OnHelpOpinion (wxCommandEvent &event){
-	utils->OpenZinjaiSite("contacto.php");
+	mxUT::OpenZinjaiSite("contacto.php");
 //	new mxOpinionWindow(this);
 }
 
@@ -1213,19 +1213,19 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 		}
 	}
 	menu.AppendSeparator();
-	if (!src->sin_titulo && utils->GetComplementaryFile(src->source_filename).Len())
+	if (!src->sin_titulo && mxUT::GetComplementaryFile(src->source_filename).Len())
 		menu.Append(mxID_FILE_OPEN_H, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_H,"&Abrir complementario...\tF12"));
 	
 	wxMenuItem *shared = menu.AppendCheckItem(mxID_TOOLS_SHARE_SHARE, LANG(MAINW_PROJECT_FILE_POPUP_SHARE,"Compartir archivo..."));
 	shared->Check(share && share->Exists(src));
 		
 	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE));
-	if (!project) utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE_AS));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_RELOAD));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_CLOSE));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE));
+	if (!project) mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE_AS));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_RELOAD));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_CLOSE));
 	if (notebook_sources->GetPageCount()>1)
-		utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_CLOSE_ALL_BUT_ONE));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_CLOSE_ALL_BUT_ONE));
 	notebook_sources->PopupMenu(&menu);
 }
 
@@ -1643,7 +1643,7 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 		} else { // si estaba guardado ver si cambio
 			// si es un .h, preguntar si no es mejor ejecutar un cpp
 			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeLower();
-			if (utils->ExtensionIsH(ext)) {
+			if (mxUT::ExtensionIsH(ext)) {
 				if (source->GetModify())
 					source->SaveSource();
 				if (compiler->last_runned) {
@@ -1670,7 +1670,7 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 			} else { // si no cambio nada, ver si cambiaron sus includes
 				if (source->GetModify())
 					source->SaveSource();
-				if (config->Running.check_includes && utils->AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),CURRENT_SOURCE->source_filename)) {
+				if (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),CURRENT_SOURCE->source_filename)) {
 					compiler->CompileSource(source,true,false);
 				} else { // si no cambio nada, correr el ya compilado
 					RunSource(source);
@@ -1767,7 +1767,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 	compiler->CheckForExecutablePermision(source->GetBinaryFileName().GetFullPath());
 	
 	command<<exe_pref<<"\""<<source->GetBinaryFileName().GetFullPath()<<"\"";
-//	utils->ParameterReplace(command,"${ZINJAI_DIR}",wxGetCwd());
+//	mxUT::ParameterReplace(command,"${ZINJAI_DIR}",wxGetCwd());
 	// agregar los argumentos de ejecucion
 	if (source->exec_args.Len()) command<<' '<<source->exec_args;	
 	
@@ -1937,7 +1937,7 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	if (welcome_panel) 
 		ShowWelcome(true);
 	else {
-		NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
+		NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
 		aui_manager.Update();
 	}
 }
@@ -2481,7 +2481,7 @@ wxTreeItemId mxMainWindow::AddToProjectTreeProject(wxString name, eFileType wher
 }
 
 wxTreeItemId mxMainWindow::AddToProjectTreeSimple(wxFileName filename, eFileType where) {
-	if (where==FT_NULL) where=utils->GetFileType(filename.GetFullName(),false);
+	if (where==FT_NULL) where=mxUT::GetFileType(filename.GetFullName(),false);
 	switch (where) {
 		case FT_SOURCE:
 			return project_tree.treeCtrl->AppendItem(project_tree.sources, filename.GetFullName(), 1);
@@ -2552,7 +2552,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		if (project) source->m_extras->ToSource(source);
 	}
 	wxString ext=wxFileName(filename).GetExt().MakeLower();
-	if (utils->ExtensionIsCpp(ext)) {
+	if (mxUT::ExtensionIsCpp(ext)) {
 		if (not_opened) notebook_sources->AddPage(source, source->page_text, true, *bitmaps->files.source);
 		if (add_to_project) {
 			if (project) {
@@ -2566,7 +2566,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 			source->never_parsed=false;
 			parser->ParseFile(filename);
 		}
-	} else if (ext=="" || utils->ExtensionIsH(ext)) {
+	} else if (ext=="" || mxUT::ExtensionIsH(ext)) {
 		if (not_opened) notebook_sources->AddPage(source, source->page_text, true, *bitmaps->files.header);
 		if (add_to_project) {
 			if (project) {
@@ -2828,7 +2828,7 @@ void mxMainWindow::OnFileNew (wxCommandEvent &event) {
 				NewFileFromText("");
 				break;
 			case 1:
-				main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
+				main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
 				break;
 			default: {
 				if (!wizard) wizard = new mxNewWizard(this);
@@ -2939,7 +2939,7 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 			if (source->SaveSource(file)) {
 				parser->RenameFile(source->GetFullPath(),file.GetFullPath());
 				wxString filename = file.GetFullName();
-				eFileType ftype=utils->GetFileType(filename);
+				eFileType ftype=mxUT::GetFileType(filename);
 				source->SetPageText(filename);
 				if (project)
 					project->last_dir=dlg.GetDirectory();
@@ -3141,7 +3141,7 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 				}
 			}
 			if (header.Len()) {
-				if (utils->GetFileType(header)==FT_SOURCE)
+				if (mxUT::GetFileType(header)==FT_SOURCE)
 					mxMessageDialog(main_window,key+LANG(MAINW_INSERT_HEADIR_CPP," esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
 				else {
 					header.Replace("\\","/");
@@ -3182,7 +3182,7 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 	long dpid=0;
 	wxArrayString options;
 	wxString otro="<<<Otro>>>",cual;
-	if (!dpid) utils->GetRunningChilds(options);
+	if (!dpid) mxUT::GetRunningChilds(options);
 	options.Add(cual=otro);
 	if (options.GetCount()>1) {
 		cual=wxGetSingleChoice("Proceso:","Adjuntar Depurador",options,this,-1,-1,true);
@@ -3223,7 +3223,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 			mxSource *source=CURRENT_SOURCE;
 			// si es un .h, preguntar si no es mejor ejecutar un cpp
 			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeLower();
-			if (utils->ExtensionIsH(ext)) {
+			if (mxUT::ExtensionIsH(ext)) {
 				if (source->GetModify())
 					source->SaveSource();
 				if (compiler->last_runned) {
@@ -3759,7 +3759,7 @@ void mxMainWindow::SetExplorerPath(wxString path) {
 		}
 		as.Sort();
 		for (unsigned int i=0;i<as.GetCount();i++) {
-			eFileType ctype=utils->GetFileType(as[i]);
+			eFileType ctype=mxUT::GetFileType(as[i]);
 			int t=4;
 			if (ctype==FT_SOURCE)	t=1;
 			else if (ctype==FT_HEADER) t=2;
@@ -3895,7 +3895,7 @@ void mxMainWindow::OnExplorerTreeOpenOne(wxCommandEvent &evt) {
 			}
 			as.Sort();
 			for (unsigned int i=0;i<as.GetCount();i++) {
-				eFileType ctype=utils->GetFileType(as[i]);
+				eFileType ctype=mxUT::GetFileType(as[i]);
 				int t=4;
 				if (ctype==FT_SOURCE) t=1;
 				else if (ctype==FT_HEADER) t=2;
@@ -4012,7 +4012,7 @@ void mxMainWindow::OnEditListMarks (wxCommandEvent &event) {
 			mxSource *src= (mxSource*)(notebook_sources->GetPage(i));
 			for (int k=0;k<src->GetLineCount();k++) {
 				wxString file_name = src->sin_titulo?src->page_text:src->source_filename.GetFullPath();
-				wxString page_text = utils->ToHtml(src->page_text);
+				wxString page_text = mxUT::ToHtml(src->page_text);
 				if (src->MarkerGet(k)&1<<mxSTC_MARK_USER)
 					res<<"<LI><A href=\"gotoline:"<<file_name<<":"<<k+1<<"\">"<<page_text<<": linea "<<k+1<<"</A></LI>";
 			}
@@ -4162,13 +4162,13 @@ void mxMainWindow::OnProjectTreeProperties (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnProjectTreeOpenFolder (wxCommandEvent &event) {
-	utils->OpenFolder(wxFileName(project->GetNameFromItem(project_tree.selected_item)).GetPath());
+	mxUT::OpenFolder(wxFileName(project->GetNameFromItem(project_tree.selected_item)).GetPath());
 }
 
 void mxMainWindow::OnFileOpenFolder(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
-		utils->OpenFolder(src->GetPath());
+		mxUT::OpenFolder(src->GetPath());
 	}
 }
 

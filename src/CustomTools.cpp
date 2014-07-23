@@ -28,11 +28,11 @@ void CustomToolsPack::ParseConfigLine (const wxString & key, const wxString & va
 	if (mkey=="name") tools[l].name=value;
 	else if (mkey=="command") tools[l].command=value;
 	else if (mkey=="workdir") tools[l].workdir=value;
-	else if (mkey=="async_exec") tools[l].async_exec=utils->IsTrue(value);
-	else if (mkey=="pre_action") utils->ToInt(value,tools[l].pre_action);
-	else if (mkey=="post_action") utils->ToInt(value,tools[l].post_action);
-	else if (mkey=="output_mode") utils->ToInt(value,tools[l].output_mode);
-	else if (mkey=="on_toolbar") tools[l].on_toolbar=utils->IsTrue(value);
+	else if (mkey=="async_exec") tools[l].async_exec=mxUT::IsTrue(value);
+	else if (mkey=="pre_action") mxUT::ToInt(value,tools[l].pre_action);
+	else if (mkey=="post_action") mxUT::ToInt(value,tools[l].post_action);
+	else if (mkey=="output_mode") mxUT::ToInt(value,tools[l].output_mode);
+	else if (mkey=="on_toolbar") tools[l].on_toolbar=mxUT::IsTrue(value);
 }
 
 void CustomToolsPack::WriteConfig (wxTextFile & file) {
@@ -117,13 +117,13 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 		cmd.Replace("${BROWSER}",config->Files.browser_command);
 	else {
 #ifdef __WIN32__
-		utils->ParameterReplace(cmd,"${BROWSER}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
+		mxUT::ParameterReplace(cmd,"${BROWSER}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
 #else
 		cmd.Replace("${BROWSER}","xdg-open");
 #endif
 	}
 #ifdef __WIN32__
-	utils->ParameterReplace(cmd,"${OPEN}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
+	mxUT::ParameterReplace(cmd,"${OPEN}",DIR_PLUS_FILE(config->zinjai_dir,"shellexecute.exe"));
 #else
 	cmd.Replace("${OPEN}","xdg-open");
 #endif

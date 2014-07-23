@@ -49,18 +49,18 @@ mxProjectGeneralConfig::mxProjectGeneralConfig() : wxDialog(main_window, wxID_AN
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
-	project_name = utils->AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_NAME,"Nombre del proyecto"),project->project_name);
-	custom_tab = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_CUSTOM_TABS,"Utilizar tabulado propio"),project->custom_tabs!=0);
-	tab_width = utils->AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_TAB_WIDTH,"Ancho del tabulado"),project->custom_tabs==0?config->Source.tabWidth:project->custom_tabs,true);
-	tab_use_spaces = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY);
-	project_autocomp = utils->AddDirCtrl(mySizer,this,LANG(PROJECTGENERAL_AUTOCOMP_EXTRA,"Indices de autocompletado adicionales"),project->autocomp_extra,mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES);
-	project_autocodes = utils->AddDirCtrl(mySizer,this,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de autocódigos"),project->autocodes_file,mxID_AUTOCODES_FILE);
-	project_debug_macros = utils->AddDirCtrl(mySizer,this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
+	project_name = mxUT::AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_NAME,"Nombre del proyecto"),project->project_name);
+	custom_tab = mxUT::AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_CUSTOM_TABS,"Utilizar tabulado propio"),project->custom_tabs!=0);
+	tab_width = mxUT::AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_TAB_WIDTH,"Ancho del tabulado"),project->custom_tabs==0?config->Source.tabWidth:project->custom_tabs,true);
+	tab_use_spaces = mxUT::AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY);
+	project_autocomp = mxUT::AddDirCtrl(mySizer,this,LANG(PROJECTGENERAL_AUTOCOMP_EXTRA,"Indices de autocompletado adicionales"),project->autocomp_extra,mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES);
+	project_autocodes = mxUT::AddDirCtrl(mySizer,this,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de autocódigos"),project->autocodes_file,mxID_AUTOCODES_FILE);
+	project_debug_macros = mxUT::AddDirCtrl(mySizer,this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
 	
 	mySizer->Add(new wxButton(this,mxID_RUN_CONFIG,LANG(PROJECTGENERAL_COMPILE_AND_RUN," Compilacion y Ejecucion... ")),sizers->BA5);
 	mySizer->Add(new wxButton(this,mxID_TOOLS_DOXY_CONFIG,LANG(PROJECTGENERAL_DOXYGEN," Opciones Doxygen... ")),sizers->BA5);
 	mySizer->Add(new wxButton(this,mxID_PROJECT_CONFIG_CUSTOM_TOOLS,LANG(PROJECTGENERAL_CUSTOM_TOOLS," Herramientas Personalizadas... ")),sizers->BA5);
-//	use_wxfb = utils->AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_ACTIVATE_WXFORMBUILDER,"Activar integracion con wxFormBuilder"),project->use_wxfb,wxID_ANY);
+//	use_wxfb = mxUT::AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_ACTIVATE_WXFORMBUILDER,"Activar integracion con wxFormBuilder"),project->use_wxfb,wxID_ANY);
 	
 	mySizer->Add(bottomSizer,sizers->Exp0);
 	
@@ -128,7 +128,7 @@ void mxProjectGeneralConfig::OnHelpButton(wxCommandEvent &event) {
 void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {
 
 	wxArrayString autocomp_array_all;
-	utils->GetFilesFromBothDirs(autocomp_array_all,"autocomp");
+	mxUT::GetFilesFromBothDirs(autocomp_array_all,"autocomp");
 	
 	mxMultipleChoiceEditor(this,LANG(PROJECTGENERAL_AUTOCOMPLETION,"Autocompletado"),LANG(PROJECTGENERAL_INDEXES,"Indices:"),project_autocomp,autocomp_array_all);
 	

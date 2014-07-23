@@ -173,7 +173,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 			// interpretar clave y valor
 			if (section=="general") {
 				if (key=="files_to_open") {
-					utils->ToInt(value,files_to_open);
+					mxUT::ToInt(value,files_to_open);
 					if(files_to_open>0) {
 						files_to_open++;
 						main_window->SetStatusProgress((100*num_files_opened)/files_to_open);
@@ -270,9 +270,9 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 					if (last_file) 
 						last_file->extras.SetCurrentPos(value);
 				} else if (key=="readonly") {
-					if (last_file) last_file->read_only=utils->IsTrue(value);
+					if (last_file) last_file->read_only=mxUT::IsTrue(value);
 				} else if (key=="hide_symbols") {
-					if (last_file) last_file->hide_symbols=utils->IsTrue(value);
+					if (last_file) last_file->hide_symbols=mxUT::IsTrue(value);
 				} else if (key=="marker") {
 					value.ToLong(&l);
 					if (last_file)
@@ -288,12 +288,12 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				} else if (key=="breakpoint_only_once"||key=="breakpoint_action") {
 					value.ToLong(&l); if (last_breakpoint) last_breakpoint->action=l;
 				} else if (key=="enabled") {
-					if (last_breakpoint) last_breakpoint->enabled=utils->IsTrue(value);
+					if (last_breakpoint) last_breakpoint->enabled=mxUT::IsTrue(value);
 				} else if (key=="breakpoint_condition") {
 					if (last_breakpoint) last_breakpoint->cond=value;
 				} else if (key=="breakpoint_annotation") {
-					if (last_breakpoint) last_breakpoint->annotation=utils->Line2Text(value);
-				} else if (key=="open" && utils->IsTrue(value)) {
+					if (last_breakpoint) last_breakpoint->annotation=mxUT::Line2Text(value);
+				} else if (key=="open" && mxUT::IsTrue(value)) {
 					if (files_to_open>0)
 						main_window->SetStatusProgress((100*(++num_files_opened))/files_to_open);
 					if (last_file) {
@@ -536,7 +536,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 			"obtener además nuevas versiones de las mismas. En caso de no hacerlo, su programa\n"
 			"podría finalizar anormalmente al intentar ejecutarlo."
 			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_YES_NO,LANG(PROJECT_MINGW_CC_PROBLEM_MORE,"Mostrar información (web)..."),false).ShowModal();
-		if (ret&mxMD_CHECKED) utils->OpenInBrowser("http://cucarachasracing.blogspot.com.ar/2013/07/mingw-y-las-calling-conventions.html");
+		if (ret&mxMD_CHECKED) mxUT::OpenInBrowser("http://cucarachasracing.blogspot.com.ar/2013/07/mingw-y-las-calling-conventions.html");
 		if (ret&mxMD_YES) { wxCommandEvent evt; main_window->OnRunClean(evt); }
 	}
 #endif
@@ -611,7 +611,7 @@ project_file_item *ProjectManager::AddFile (eFileType where, wxFileName filename
 				project_library *lib = configurations[i]->libs_to_build;
 				while (lib) {
 					if (lib->default_lib) {
-						lib->sources<<" "<<utils->Quotize(name);
+						lib->sources<<" "<<mxUT::Quotize(name);
 						break;
 					}
 					lib = lib->next;
@@ -683,7 +683,7 @@ bool ProjectManager::Save (bool as_template) {
 	CFG_GENERIC_WRITE_DN("version_required",version_required);
 	CFG_GENERIC_WRITE_DN("custom_tabs",custom_tabs);
 	CFG_BOOL_WRITE_DN("tab_use_spaces",tab_use_spaces);
-	CFG_GENERIC_WRITE_DN("explorer_path",utils->Relativize(main_window->explorer_tree.path,path));
+	CFG_GENERIC_WRITE_DN("explorer_path",mxUT::Relativize(main_window->explorer_tree.path,path));
 	
 	if (main_window->notebook_sources->GetPageCount()>0) {
 		mxSource *source=(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
@@ -718,7 +718,7 @@ bool ProjectManager::Save (bool as_template) {
 					if (!breakpoints[j]->enabled) CFG_BOOL_WRITE_DN("breakpoint_enabled",false);
 					if (breakpoints[j]->action) CFG_GENERIC_WRITE_DN("breakpoint_action",true);
 					if (breakpoints[j]->ignore_count) CFG_GENERIC_WRITE_DN("breakpoint_ignore",breakpoints[j]->ignore_count);
-					if (breakpoints[j]->annotation) CFG_GENERIC_WRITE_DN("breakpoint_annotation",utils->Text2Line(breakpoints[j]->annotation));
+					if (breakpoints[j]->annotation) CFG_GENERIC_WRITE_DN("breakpoint_annotation",mxUT::Text2Line(breakpoints[j]->annotation));
 					if (breakpoints[j]->cond.Len()) CFG_GENERIC_WRITE_DN("breakpoint_condition",breakpoints[j]->cond);
 	//				breakpoint->enabled=true; // que hace esto aca?
 				}
@@ -1033,7 +1033,7 @@ bool ProjectManager::DeleteFile(wxTreeItemId tree_item) {
 			ans=mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_DETACH_FILE,"¿Desea quitar el archivo del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
 		if (ans&mxMD_CANCEL || ans&mxMD_NO)
 			return false;
-		wxString comp = utils->GetComplementaryFile(DIR_PLUS_FILE(project->path,item->name));
+		wxString comp = mxUT::GetComplementaryFile(DIR_PLUS_FILE(project->path,item->name));
 		DeleteFile(item,ans&mxMD_CHECKED);
 		if (comp.Len()==0 || !HasFile(comp)) return true;
 		tree_item=HasFile(comp)->item; also=true;
@@ -1138,8 +1138,8 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	wxArrayString dif_mac;
 	if (!only_one && active_configuration->old_macros!=active_configuration->macros) {
 		wxArrayString omac,nmac; 
-		utils->Split(active_configuration->old_macros,omac,true,true);
-		utils->Split(active_configuration->macros,nmac,true,true);
+		mxUT::Split(active_configuration->old_macros,omac,true,true);
+		mxUT::Split(active_configuration->macros,nmac,true,true);
 		for (unsigned int i=0;i<omac.GetCount();i++) {
 			int j=nmac.Index(omac[i]);
 			if (j==wxNOT_FOUND) dif_mac.Add(omac[i]);
@@ -1160,7 +1160,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	
 	// ver si cambiaron 
 	wxArrayString header_dirs_array;
-	utils->Split(active_configuration->headers_dirs,header_dirs_array,true,false);
+	mxUT::Split(active_configuration->headers_dirs,header_dirs_array,true,false);
 	for (unsigned int i=0;i<header_dirs_array.GetCount();i++) 
 		header_dirs_array[i]=DIR_PLUS_FILE(path,header_dirs_array[i]);
 	
@@ -1180,7 +1180,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				mxSource *src = main_window->IsOpen(item->item);
 				if (src) src->Reload();
 				warnings.Add(LANG1(PROJMNGR_FUTURE_SOURCE,"El fuente <{1}> tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.",full_path));
-				utils->AreIncludesUpdated(bin_date,full_path,header_dirs_array);
+				mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array);
 				flag=true;
 			} else 
 			if (bin_name.FileExists()) {
@@ -1193,7 +1193,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 					warnings.Add(LANG1(PROJMNGR_FUTURE_OBJECT,"El objeto <{1}> tenia fecha de modificacion en el futuro. Se recompilara el fuente.",full_path));
 					flag=true;
 				} else { // ver si el objeto esta desactualizado respecto a los includes del fuente
-					flag=utils->AreIncludesUpdated(bin_date,full_path,header_dirs_array);
+					flag=mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array);
 					if (!flag && dif_mac.GetCount()) flag=DependsOnMacro(*item,dif_mac); // si cambiaron las macros y el fuente las usa
 				}
 			} else { // si el objeto no existe, hay que compilar
@@ -1453,7 +1453,7 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
-	return utils->Execute(path,command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);	
+	return mxUT::Execute(path,command, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);	
 }
 
 
@@ -1559,7 +1559,7 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 long int ProjectManager::Link(compile_and_run_struct_single *compile_and_run, linking_info *info) {
 	(*info->flag_relink)=false;
 	wxString command = info->command;
-	command<<" "+utils->Quotize(info->output_file)+" ";
+	command<<" "+mxUT::Quotize(info->output_file)+" ";
 	command<<info->objects_list+" "+info->extra_args;
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
@@ -1569,7 +1569,7 @@ long int ProjectManager::Link(compile_and_run_struct_single *compile_and_run, li
 	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");
-	return utils->Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
+	return mxUT::Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
 }
 
 /**
@@ -1577,9 +1577,9 @@ long int ProjectManager::Link(compile_and_run_struct_single *compile_and_run, li
 **/
 long int ProjectManager::Strip(compile_and_run_struct_single *compile_and_run, stripping_info *info) {
 	wxString command;
-	if (info->current_step==0) command<<"objcopy --only-keep-debug "<<utils->Quotize(info->fullpath)<<" "<<utils->Quotize(info->fullpath+".dbg");
-	else if (info->current_step==1) command<<"strip "<<utils->Quotize(info->fullpath);
-	else if (info->current_step==2) command<<"objcopy --add-gnu-debuglink="<<utils->Quotize(info->fullpath+".dbg")<<" "<<utils->Quotize(info->fullpath);
+	if (info->current_step==0) command<<"objcopy --only-keep-debug "<<mxUT::Quotize(info->fullpath)<<" "<<mxUT::Quotize(info->fullpath+".dbg");
+	else if (info->current_step==1) command<<"strip "<<mxUT::Quotize(info->fullpath);
+	else if (info->current_step==2) command<<"objcopy --add-gnu-debuglink="<<mxUT::Quotize(info->fullpath+".dbg")<<" "<<mxUT::Quotize(info->fullpath);
 	compile_and_run->compiling=compile_and_run->linking=false;
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
@@ -1589,7 +1589,7 @@ long int ProjectManager::Strip(compile_and_run_struct_single *compile_and_run, s
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
-	return utils->Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
+	return mxUT::Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
 }
 
 long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
@@ -1620,12 +1620,12 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	wxString working_path = active_configuration->working_folder.Len()?DIR_PLUS_FILE(path,active_configuration->working_folder):path;
 	if (working_path.Last()==path_sep) working_path.RemoveLast();
 	
-	wxString command=exe_pref<<utils->Quotize(wxFileName(executable_name).GetFullPath());
+	wxString command=exe_pref<<mxUT::Quotize(wxFileName(executable_name).GetFullPath());
 	if (active_configuration->exec_method==EMETHOD_SCRIPT) 
 #ifdef __WIN32__
-		command=utils->Quotize(DIR_PLUS_FILE(path,active_configuration->exec_script));
+		command=mxUT::Quotize(DIR_PLUS_FILE(path,active_configuration->exec_script));
 #else
-		command="/bin/sh "+utils->Quotize(DIR_PLUS_FILE(path,active_configuration->exec_script));
+		command="/bin/sh "+mxUT::Quotize(DIR_PLUS_FILE(path,active_configuration->exec_script));
 #endif
 	
 	if (active_configuration->args.Len()) command<<' '<<active_configuration->args;	
@@ -1634,7 +1634,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 #ifdef __WIN32__
 		command=DIR_PLUS_FILE(path,active_configuration->exec_script)<<" & "<<command;
 #else
-		command=wxString()<<"/bin/sh -c "<<utils->SingleQuotes(wxString()
+		command=wxString()<<"/bin/sh -c "<<mxUT::SingleQuotes(wxString()
 			<<". "<<DIR_PLUS_FILE(path,active_configuration->exec_script)<<"; "<<command);
 #endif
 	}
@@ -1647,11 +1647,11 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 			else if (terminal_cmd[terminal_cmd.Len()-1]!=' ') terminal_cmd<<" ";
 		}
 		// invocar al runner
-		terminal_cmd<<utils->Quotize(config->Files.runner_command); 
-		terminal_cmd<<" -lang "<<utils->Quotize(config->Init.language_file)<<" ";
+		terminal_cmd<<mxUT::Quotize(config->Files.runner_command); 
+		terminal_cmd<<" -lang "<<mxUT::Quotize(config->Init.language_file)<<" ";
 		if (active_configuration->wait_for_key==WKEY_ALWAYS) terminal_cmd<<"-waitkey ";
 		else if (active_configuration->wait_for_key==WKEY_ON_ERROR) terminal_cmd<<"-waitkey-onerror ";
-		terminal_cmd<<utils->Quotize(working_path)<<" ";
+		terminal_cmd<<mxUT::Quotize(working_path)<<" ";
 		// corregir el comando final
 		command=terminal_cmd+command;
 	}
@@ -1672,7 +1672,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 	if (active_configuration->console_program)
 		pid = wxExecute(command, wxEXEC_NOHIDE|wxEXEC_MAKE_GROUP_LEADER, compile_and_run->process);
 	else
-		pid = utils->Execute(working_path,command,wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);
+		pid = mxUT::Execute(working_path,command,wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);
 
 	SetEnvironment(false,true);
 	return compile_and_run->pid=pid;
@@ -1695,22 +1695,22 @@ wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step, wx
 	wxString command = step->command;
 	output = step->out;
 	deps = step->deps;
-	utils->ParameterReplace(deps,"${TEMP_DIR}",project->temp_folder);
-	utils->ParameterReplace(deps,"${PROJECT_PATH}",project->path);
-	utils->ParameterReplace(deps,"${PROJECT_BIN}",project->executable_name);
-	utils->ParameterReplace(output,"${TEMP_DIR}",project->temp_folder);
-	utils->ParameterReplace(output,"${PROJECT_PATH}",project->path);
-	utils->ParameterReplace(output,"${PROJECT_BIN}",project->executable_name);
-	utils->ParameterReplace(command,"${TEMP_DIR}",project->temp_folder);
-	utils->ParameterReplace(command,"${PROJECT_PATH}",project->path);
-	utils->ParameterReplace(command,"${PROJECT_BIN}",project->executable_name);
+	mxUT::ParameterReplace(deps,"${TEMP_DIR}",project->temp_folder);
+	mxUT::ParameterReplace(deps,"${PROJECT_PATH}",project->path);
+	mxUT::ParameterReplace(deps,"${PROJECT_BIN}",project->executable_name);
+	mxUT::ParameterReplace(output,"${TEMP_DIR}",project->temp_folder);
+	mxUT::ParameterReplace(output,"${PROJECT_PATH}",project->path);
+	mxUT::ParameterReplace(output,"${PROJECT_BIN}",project->executable_name);
+	mxUT::ParameterReplace(command,"${TEMP_DIR}",project->temp_folder);
+	mxUT::ParameterReplace(command,"${PROJECT_PATH}",project->path);
+	mxUT::ParameterReplace(command,"${PROJECT_BIN}",project->executable_name);
 //#if defined(_WIN32) || defined(__WIN32__)
-	utils->ParameterReplace(output,"${MINGW_DIR}",mingw_dir);
-	utils->ParameterReplace(deps,"${MINGW_DIR}",mingw_dir);
-	utils->ParameterReplace(command,"${MINGW_DIR}",mingw_dir);
+	mxUT::ParameterReplace(output,"${MINGW_DIR}",mingw_dir);
+	mxUT::ParameterReplace(deps,"${MINGW_DIR}",mingw_dir);
+	mxUT::ParameterReplace(command,"${MINGW_DIR}",mingw_dir);
 //#endif
-	utils->ParameterReplace(command,"${DEPS}",deps);
-	utils->ParameterReplace(command,"${OUTPUT}",output);
+	mxUT::ParameterReplace(command,"${DEPS}",deps);
+	mxUT::ParameterReplace(command,"${OUTPUT}",output);
 	return command;
 }
 
@@ -1799,12 +1799,12 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			}
 			estep=estep->next;
 		}
-		utils->ParameterReplace(extra_post,"${TEMP_DIR}",temp_folder);
-		utils->ParameterReplace(extra_pre,"${TEMP_DIR}",temp_folder);
-		utils->ParameterReplace(extra_post,"${PROJECT_PATH}",project->path);
-		utils->ParameterReplace(extra_pre,"${PROJECT_PATH}",project->path);
-		utils->ParameterReplace(extra_post,"${PROJECT_BIN}",executable_name);
-		utils->ParameterReplace(extra_pre,"${PROJECT_BIN}",executable_name);
+		mxUT::ParameterReplace(extra_post,"${TEMP_DIR}",temp_folder);
+		mxUT::ParameterReplace(extra_pre,"${TEMP_DIR}",temp_folder);
+		mxUT::ParameterReplace(extra_post,"${PROJECT_PATH}",project->path);
+		mxUT::ParameterReplace(extra_pre,"${PROJECT_PATH}",project->path);
+		mxUT::ParameterReplace(extra_post,"${PROJECT_BIN}",executable_name);
+		mxUT::ParameterReplace(extra_pre,"${PROJECT_BIN}",executable_name);
 		
 		fil.AddLine("clean:");
 	#if defined(_WIN32) || defined(__WIN32__)
@@ -1823,7 +1823,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 //			}
 //			estep=estep->next;
 //		}
-//		utils->ParameterReplace(extra_deps,"${TEMP_DIR}",temp_folder);
+//		mxUT::ParameterReplace(extra_deps,"${TEMP_DIR}",temp_folder);
 		
 		fil.AddLine(executable_name+": ${OBJS}"/*+extra_deps*/+extra_pre);
 		if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_objs+steps_extras,steps_total)+" Linking executable "+executable_name);
@@ -1855,21 +1855,21 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		project_library *lib = active_configuration->libs_to_build;
 		steps_current=steps_objs;
 		while (lib) {
-			wxString libdep = utils->Quotize(lib->filename);
+			wxString libdep = mxUT::Quotize(lib->filename);
 			wxString objs;
 			libdep<<":";
 			LocalListIterator<project_file_item*> item(&files_sources);
 			while (item.IsValid()) {
 				if (item->lib==lib) {
 					wxString bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".o");
-					objs<<" "<<utils->Quotize(bin_name);
+					objs<<" "<<mxUT::Quotize(bin_name);
 				}
 				item.Next();
 			}
 			fil.AddLine(libdep+objs);
 			
 			if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_current++,steps_total)+" Linking library "+libdep);
-			fil.AddLine(tab+(cmake_style?"@":"")+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+" "+utils->Quotize(lib->filename)+objs+" "+lib->extra_link);
+			fil.AddLine(tab+(cmake_style?"@":"")+(lib->is_static?current_toolchain.static_lib_linker:current_toolchain.dynamic_lib_linker)+" "+mxUT::Quotize(lib->filename)+objs+" "+lib->extra_link);
 			fil.AddLine("");
 			lib = lib->next;
 		}
@@ -1878,7 +1878,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	if (mktype!=MKTYPE_CONFIG) {
 		// agregar las secciones de los objetos
 		wxArrayString header_dirs_array;
-		utils->Split(active_configuration->headers_dirs,header_dirs_array,true,false);
+		mxUT::Split(active_configuration->headers_dirs,header_dirs_array,true,false);
 		for (unsigned int i=0;i<header_dirs_array.GetCount();i++) 
 			header_dirs_array[i]=DIR_PLUS_FILE(path,header_dirs_array[i]);
 		
@@ -1886,8 +1886,8 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		wxString bin_full_path; steps_current=0;
 		while(item.IsValid()) {
 			bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".o");
-			bin_full_path=utils->Quotize(bin_name.GetFullPath());
-			fil.AddLine(bin_full_path+": "+utils->FindObjectDeps(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
+			bin_full_path=mxUT::Quotize(bin_name.GetFullPath());
+			fil.AddLine(bin_full_path+": "+mxUT::FindObjectDeps(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
 			bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
 			
 			if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_current++,steps_total)+" Building "+(cpp?"C++":"C")+" object "+bin_full_path);
@@ -1934,11 +1934,11 @@ void ProjectManager::Clean() {
 	while (step) {
 		if (step->delete_on_clean&&step->out.Len()){
 			wxString out=step->out;
-			utils->ParameterReplace(out,"${TEMP_DIR}",temp_folder);
-			utils->ParameterReplace(out,"${PROJECT_BIN}",executable_name);
-			utils->ParameterReplace(out,"${PROJECT_PATH}",path);
+			mxUT::ParameterReplace(out,"${TEMP_DIR}",temp_folder);
+			mxUT::ParameterReplace(out,"${PROJECT_BIN}",executable_name);
+			mxUT::ParameterReplace(out,"${PROJECT_PATH}",path);
 #ifdef __WIN32__
-			utils->ParameterReplace(out,"${MINGW_DIR}",current_toolchain.mingw_dir);
+			mxUT::ParameterReplace(out,"${MINGW_DIR}",current_toolchain.mingw_dir);
 #endif
 			file=DIR_PLUS_FILE(path,out);
 			if (wxFileName::FileExists(file))
@@ -2035,21 +2035,21 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	// ansi_compliance
 	if (active_configuration->pedantic_errors) compiling_options<<"-pedantic-errors ";
 	// headers_dirs
-	compiling_options<<utils->Split(active_configuration->headers_dirs,"-I");
+	compiling_options<<mxUT::Split(active_configuration->headers_dirs,"-I");
 	// parametros variables
 	wxString compiling_extra = active_configuration->compiling_extra;
-	utils->ParameterReplace(compiling_extra,"${MINGW_DIR}",mingw_dir);
-	utils->ParameterReplace(compiling_extra,"${TEMP_DIR}",temp_folder_short);
-	utils->ParameterReplace(compiling_options,"${MINGW_DIR}",mingw_dir);
-	utils->ParameterReplace(compiling_options,"${TEMP_DIR}",temp_folder_short);
+	mxUT::ParameterReplace(compiling_extra,"${MINGW_DIR}",mingw_dir);
+	mxUT::ParameterReplace(compiling_extra,"${TEMP_DIR}",temp_folder_short);
+	mxUT::ParameterReplace(compiling_options,"${MINGW_DIR}",mingw_dir);
+	mxUT::ParameterReplace(compiling_options,"${TEMP_DIR}",temp_folder_short);
 	// reemplazar subcomandos y agregar extras
 	if (exec_comas)
-		compiling_options<<utils->ExecComas(path, compiling_extra);
+		compiling_options<<mxUT::ExecComas(path, compiling_extra);
 	else
 		compiling_options<<compiling_extra;
 	// macros predefinidas
 	if (active_configuration->macros.Len())
-		compiling_options<<" "<<utils->Split(active_configuration->macros,"-D");
+		compiling_options<<" "<<mxUT::Split(active_configuration->macros,"-D");
 	
 	c_compiling_options=cpp_compiling_options=compiling_options;
 	if (active_configuration->std_c.Len())
@@ -2068,18 +2068,18 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	if (active_configuration->strip_executable==DBSACTION_STRIP)
 		linking_options<<"-s ";
 	// directorios para bibliotecas
-	linking_options<<utils->Split(active_configuration->libraries_dirs,"-L");
+	linking_options<<mxUT::Split(active_configuration->libraries_dirs,"-L");
 	// bibliotecas
-	linking_options<<utils->Split(active_configuration->libraries,"-l");
+	linking_options<<mxUT::Split(active_configuration->libraries,"-l");
 	// reemplazar variables
 	wxString linking_extra = active_configuration->linking_extra;
-	utils->ParameterReplace(linking_extra,"${MINGW_DIR}",mingw_dir);
-	utils->ParameterReplace(linking_extra,"${TEMP_DIR}",temp_folder_short);
-	utils->ParameterReplace(linking_options,"${MINGW_DIR}",mingw_dir);
-	utils->ParameterReplace(linking_options,"${TEMP_DIR}",temp_folder_short);
+	mxUT::ParameterReplace(linking_extra,"${MINGW_DIR}",mingw_dir);
+	mxUT::ParameterReplace(linking_extra,"${TEMP_DIR}",temp_folder_short);
+	mxUT::ParameterReplace(linking_options,"${MINGW_DIR}",mingw_dir);
+	mxUT::ParameterReplace(linking_options,"${TEMP_DIR}",temp_folder_short);
 	// reemplazar subcomandos y agregar extras
 	if (exec_comas)
-		linking_options<<" "<<utils->ExecComas(path,linking_extra);
+		linking_options<<" "<<mxUT::ExecComas(path,linking_extra);
 	else
 		linking_options<<" "<<linking_extra;
 
@@ -2102,7 +2102,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		||
 		( active_configuration->manifest_file.Len() && wxFileName::FileExists(DIR_PLUS_FILE(path,active_configuration->manifest_file)) ) 
 		)
-			objects_list<<utils->Quotize(DIR_PLUS_FILE(temp_folder,"zpr_resource.o"))<<" ";
+			objects_list<<mxUT::Quotize(DIR_PLUS_FILE(temp_folder,"zpr_resource.o"))<<" ";
 #endif
 	
 	wxString extra_step_objs;
@@ -2114,12 +2114,12 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		step = step->next;
 	}
 	if (extra_step_objs.Len()) {
-		utils->ParameterReplace(extra_step_objs,"${TEMP_DIR}",temp_folder);
-		utils->ParameterReplace(extra_step_objs,"${TEMP_DIR}",temp_folder);
-		utils->ParameterReplace(extra_step_objs,"${PROJECT_PATH}",project->path);
-		utils->ParameterReplace(extra_step_objs,"${PROJECT_PATH}",project->path);
-		utils->ParameterReplace(extra_step_objs,"${PROJECT_BIN}",executable_name);
-		utils->ParameterReplace(extra_step_objs,"${PROJECT_BIN}",executable_name);
+		mxUT::ParameterReplace(extra_step_objs,"${TEMP_DIR}",temp_folder);
+		mxUT::ParameterReplace(extra_step_objs,"${TEMP_DIR}",temp_folder);
+		mxUT::ParameterReplace(extra_step_objs,"${PROJECT_PATH}",project->path);
+		mxUT::ParameterReplace(extra_step_objs,"${PROJECT_PATH}",project->path);
+		mxUT::ParameterReplace(extra_step_objs,"${PROJECT_BIN}",executable_name);
+		mxUT::ParameterReplace(extra_step_objs,"${PROJECT_BIN}",executable_name);
 		objects_list<<" "<<extra_step_objs;
 	}
 	
@@ -2128,7 +2128,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	while(item.IsValid()) {
 		bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".o");
 		wxString *olist = item->lib?&(item->lib->objects_list):&objects_list;
-		(*olist)<<utils->Quotize(bin_name.GetFullPath())<<" ";
+		(*olist)<<mxUT::Quotize(bin_name.GetFullPath())<<" ";
 		item.Next();
 	}
 	
@@ -2138,20 +2138,20 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	while (lib) {
 		if (lib->objects_list.Len()) {
 			lib->objects_list.RemoveLast();
-			lib->parsed_extra = utils->ExecComas(path,lib->extra_link);
-			utils->ParameterReplace(lib->parsed_extra,"${MINGW_DIR}",mingw_dir);
-			utils->ParameterReplace(lib->parsed_extra,"${TEMP_DIR}",temp_folder_short);
+			lib->parsed_extra = mxUT::ExecComas(path,lib->extra_link);
+			mxUT::ParameterReplace(lib->parsed_extra,"${MINGW_DIR}",mingw_dir);
+			mxUT::ParameterReplace(lib->parsed_extra,"${TEMP_DIR}",temp_folder_short);
 			bin_name = DIR_PLUS_FILE(path,lib->filename);
 			wxString libfile = lib->is_static ? bin_name.GetFullPath():wxString("-l")<<lib->libname;
-				objects_list<<utils->Quotize(libfile)<<" ";
+				objects_list<<mxUT::Quotize(libfile)<<" ";
 			if (!lib->is_static) {
 				bin_name.MakeRelativeTo(path);
 				if (bin_name.GetPath().Len())
-					linking_options<<" -L"<<utils->Quotize(bin_name.GetPath());
+					linking_options<<" -L"<<mxUT::Quotize(bin_name.GetPath());
 				else
 					linking_options<<" -L./";
 			}
-			exe_deps<<utils->Quotize(lib->filename)<<" ";
+			exe_deps<<mxUT::Quotize(lib->filename)<<" ";
 		}
 		lib = lib->next;
 	}	
@@ -2284,12 +2284,12 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	}
 	
 	wxArrayString array;
-	utils->Split(doxygen->extra_files,array,true,false);
+	mxUT::Split(doxygen->extra_files,array,true,false);
 	for (unsigned int i=0;i<array.GetCount();i++)
 		input.Add(array[i]);
 	
 	array.Clear();
-	utils->Split(doxygen->exclude_files,array,true,false);
+	mxUT::Split(doxygen->exclude_files,array,true,false);
 	for (unsigned int i=0;i<array.GetCount();i++) {
 		for (unsigned int j=0;i<input.GetCount();j++) {
 #if defined(_WIN32) || defined(__WIN32__)
@@ -2317,7 +2317,7 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	fil.AddLine(wxString("GENERATE_TREEVIEW = ")<<(doxygen->html_navtree?"YES":"NO"));
 	fil.AddLine(wxString("SEARCHENGINE = ")<<(doxygen->html_searchengine?"YES":"NO"));
 	fil.AddLine("SEARCH_INCLUDES = YES");
-	utils->Split(active_configuration->headers_dirs,array,true,false);
+	mxUT::Split(active_configuration->headers_dirs,array,true,false);
 	if (array.GetCount()) {
 		wxString defs("INCLUDE_PATH = ");
 		for (unsigned int i=0;i<array.GetCount();i++)
@@ -2329,7 +2329,7 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	fil.AddLine(wxString("EXTRACT_STATIC = ")<<(doxygen->extra_static?"YES":"NO"));
 	if (doxygen->preprocess) {
 		array.Clear();
-		utils->Split(active_configuration->macros,array,true,false);
+		mxUT::Split(active_configuration->macros,array,true,false);
 		if (array.GetCount()) {
 			wxString defs("PREDEFINED = ");
 			for (unsigned int i=0;i<array.GetCount();i++)
@@ -2646,7 +2646,7 @@ long int ProjectManager::CompileExtra(compile_and_run_struct_single *compile_and
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
-	return utils->Execute(path,command, wxEXEC_ASYNC|(step->hide_window?0:wxEXEC_NOHIDE),compile_and_run->process);
+	return mxUT::Execute(path,command, wxEXEC_ASYNC|(step->hide_window?0:wxEXEC_NOHIDE),compile_and_run->process);
 }
 
 long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_single *compile_and_run, bool build) {
@@ -2656,12 +2656,12 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 		command.Replace(wxString("${ARG")<<i+1<<"}",current_toolchain.arguments[i][1],true);
 	
 #if defined(_WIN32) || defined(__WIN32__)
-	utils->ParameterReplace(command,"${MINGW_DIR}",current_toolchain.mingw_dir);
+	mxUT::ParameterReplace(command,"${MINGW_DIR}",current_toolchain.mingw_dir);
 #endif
-	utils->ParameterReplace(command,"${PROJECT_PATH}",project->path);
-	utils->ParameterReplace(command,"${PROJECT_BIN}",project->executable_name);
-	utils->ParameterReplace(command,"${TEMP_DIR}",temp_folder_short);
-	utils->ParameterReplace(command,"${NUM_PROCS}",wxString()<<config->Init.max_jobs);
+	mxUT::ParameterReplace(command,"${PROJECT_PATH}",project->path);
+	mxUT::ParameterReplace(command,"${PROJECT_BIN}",project->executable_name);
+	mxUT::ParameterReplace(command,"${TEMP_DIR}",temp_folder_short);
+	mxUT::ParameterReplace(command,"${NUM_PROCS}",wxString()<<config->Init.max_jobs);
 	
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
@@ -2672,7 +2672,7 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");
 	main_window->AddExternCompilerOutput("> ",command);
-	return utils->Execute(path,command, wxEXEC_ASYNC/*|(step->hide_window?0:wxEXEC_NOHIDE)*/,compile_and_run->process);
+	return mxUT::Execute(path,command, wxEXEC_ASYNC/*|(step->hide_window?0:wxEXEC_NOHIDE)*/,compile_and_run->process);
 }
 
 
@@ -2690,22 +2690,22 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 bool ProjectManager::ShouldDoExtraStep(compile_extra_step *step) {
 	if (step->out.Len()==0) return true;
 	wxString str_out(step->out);
-	utils->ParameterReplace(str_out,"${TEMP_DIR}",temp_folder_short);
-	utils->ParameterReplace(str_out,"${PROJECT_BIN}",executable_name);
-	utils->ParameterReplace(str_out,"${PROJECT_PATH}",path);
-	utils->ParameterReplace(str_out,"${MINGW_DIR}",current_toolchain.mingw_dir);
+	mxUT::ParameterReplace(str_out,"${TEMP_DIR}",temp_folder_short);
+	mxUT::ParameterReplace(str_out,"${PROJECT_BIN}",executable_name);
+	mxUT::ParameterReplace(str_out,"${PROJECT_PATH}",path);
+	mxUT::ParameterReplace(str_out,"${MINGW_DIR}",current_toolchain.mingw_dir);
 	str_out=DIR_PLUS_FILE(path,str_out);
 	wxFileName fn_out(str_out);
 	if (!fn_out.FileExists()) return true;
 	wxDateTime dt_out = fn_out.GetModificationTime();
 	wxArrayString array;
-	utils->Split(step->deps,array,true,false);
+	mxUT::Split(step->deps,array,true,false);
 	for (unsigned int i=0;i<array.GetCount();i++) {
 		wxString str_dep(array[i]);
-		utils->ParameterReplace(str_dep,"${TEMP_DIR}",temp_folder_short);
-		utils->ParameterReplace(str_dep,"${PROJECT_BIN}",executable_name);
-		utils->ParameterReplace(str_dep,"${PROJECT_PATH}",path);
-		utils->ParameterReplace(str_dep,"${MINGW_DIR}",current_toolchain.mingw_dir);
+		mxUT::ParameterReplace(str_dep,"${TEMP_DIR}",temp_folder_short);
+		mxUT::ParameterReplace(str_dep,"${PROJECT_BIN}",executable_name);
+		mxUT::ParameterReplace(str_dep,"${PROJECT_PATH}",path);
+		mxUT::ParameterReplace(str_dep,"${MINGW_DIR}",current_toolchain.mingw_dir);
 		str_dep = DIR_PLUS_FILE(path,str_dep);
 		wxFileName fn_dep = wxFileName(str_dep);
 		if (fn_dep.FileExists() && fn_dep.GetModificationTime()>dt_out)
@@ -2724,10 +2724,10 @@ bool ProjectManager::ShouldDoExtraStep(compile_extra_step *step) {
 void ProjectManager::FixTemplateData(wxString name) {
 	project_name=name;
 	for (int i=0;i<configurations_count;i++) {
-		utils->ParameterReplace(configurations[i]->output_file,"${FILENAME}",name);
+		mxUT::ParameterReplace(configurations[i]->output_file,"${FILENAME}",name);
 		project_library *lib = configurations[i]->libs_to_build;
 		while (lib) {
-			utils->ParameterReplace(lib->libname,"${FILENAME}",name);
+			mxUT::ParameterReplace(lib->libname,"${FILENAME}",name);
 			lib = lib->next;
 		}
 	}
@@ -2760,7 +2760,7 @@ long int ProjectManager::CompileIcon(compile_and_run_struct_single *compile_and_
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
-	return utils->Execute(path,command, wxEXEC_ASYNC,compile_and_run->process);
+	return mxUT::Execute(path,command, wxEXEC_ASYNC,compile_and_run->process);
 }
 
 int ProjectManager::GetRequiredVersion() {
@@ -2926,7 +2926,7 @@ void ProjectManager::AssociateLibsAndSources(project_configuration *conf) {
 	wxArrayString srcs;
 	while (lib) {
 		srcs.Clear();
-		utils->Split(lib->sources,srcs);
+		mxUT::Split(lib->sources,srcs);
 		for (unsigned int i=0;i<srcs.GetCount();i++) {
 			LocalListIterator<project_file_item*> fi(&files_sources);
 			while(fi.IsValid()) {
@@ -2939,7 +2939,7 @@ void ProjectManager::AssociateLibsAndSources(project_configuration *conf) {
 		}
 		// armar tambien el nombre del archivo
 		lib->filename = lib->path;
-		utils->ParameterReplace(lib->filename,"${TEMP_DIR}",temp_folder);
+		mxUT::ParameterReplace(lib->filename,"${TEMP_DIR}",temp_folder);
 		lib->filename = DIR_PLUS_FILE(lib->filename,wxString("lib")<<lib->libname);
 #if defined(_WIN32) || defined(__WIN32__)
 		if (lib->is_static)
@@ -2971,7 +2971,7 @@ void ProjectManager::DrawGraph() {
 	mxOSD osd(main_window,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
 	
 	wxArrayString header_dirs_array;
-	utils->Split(active_configuration->headers_dirs,header_dirs_array,true,false);
+	mxUT::Split(active_configuration->headers_dirs,header_dirs_array,true,false);
 
 	wxString graph_file=DIR_PLUS_FILE(config->temp_dir,"graph.dot");
 	wxTextFile fil(graph_file);
@@ -3058,7 +3058,7 @@ void ProjectManager::DrawGraph() {
 	
 	wxArrayString deps;
 	for (int i=0;i<c;i++) {
-		utils->FindIncludes(deps,dgi[i].fullpath,path,header_dirs_array);
+		mxUT::FindIncludes(deps,dgi[i].fullpath,path,header_dirs_array);
 		for (unsigned int j=0;j<deps.GetCount();j++) {
 			wxString header=DIR_PLUS_FILE(path,deps[j]);
 			for (int k=0;k<c;k++) {
@@ -3076,7 +3076,7 @@ void ProjectManager::DrawGraph() {
 	
 	delete [] dgi;
 	
-	utils->ProcessGraph(graph_file,true,"",LANG(PROJMNGR_PROJECT_GRAPH_TITLE,"Grafo de Proyecto"));
+	mxUT::ProcessGraph(graph_file,true,"",LANG(PROJMNGR_PROJECT_GRAPH_TITLE,"Grafo de Proyecto"));
 
 }
 
@@ -3090,14 +3090,14 @@ void static GetFatherMethods(wxString base_header, wxString class_name, wxArrayS
 	wxString str, class_tag = wxString("class ")+class_name;
 	bool on_the_class=false;
 	for ( str = btf.GetFirstLine(); !btf.Eof(); str = btf.GetNextLine() ) {
-		if (str.Contains("class ") && utils->LeftTrim(str.Mid(0,2))!="//") {
+		if (str.Contains("class ") && mxUT::LeftTrim(str.Mid(0,2))!="//") {
 			if (str.Contains(class_tag)) {
 				on_the_class=true;
 			} else if (on_the_class) 
 				break;
 		} else if (on_the_class) {
-			if (str.Contains("virtual ") && utils->LeftTrim(str.Mid(0,2))!="//")
-				methods.Add(utils->LeftTrim(str.BeforeFirst('{')).Mid(8));
+			if (str.Contains("virtual ") && mxUT::LeftTrim(str.Mid(0,2))!="//")
+				methods.Add(mxUT::LeftTrim(str.BeforeFirst('{')).Mid(8));
 		}
 	}
 	btf.Close();
@@ -3105,7 +3105,7 @@ void static GetFatherMethods(wxString base_header, wxString class_name, wxArrayS
 
 bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 	pd_class *pdc_son = parser->GetClass(user_class);
-	wxString cfile = utils->GetComplementaryFile(pdc_son->file->name,FT_HEADER);
+	wxString cfile = mxUT::GetComplementaryFile(pdc_son->file->name,FT_HEADER);
 	if (cfile.Len()==0) { // si tampoco hay "public:", no hay caso
 		mxMessageDialog(main_window,"No se pudo determinar donde definir los nuevos metodos.\nNo se encontró el archivo fuente complementario.","Error",mxMD_OK|mxMD_ERROR).ShowModal();
 		return false;
@@ -3312,7 +3312,7 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 			pd_class *pd_aux = parser->GetClass(children[i]);
 			if (!pd_aux) continue;
 			wxString fname1 = pd_aux->file->name;
-			wxString fname2 = utils->GetComplementaryFile(fname1);
+			wxString fname2 = mxUT::GetComplementaryFile(fname1);
 			// buscarlos en el proyecto
 			project_file_item *fitem1=HasFile(fname1),*fitem2=HasFile(fname2);
 			if (!fitem1&&!fitem2) continue;
@@ -3517,7 +3517,7 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 					has_libs=true;
 					if (ld_library_path.Len())
 						ld_library_path<<(ldlp_sep);
-					ld_library_path<<utils->Quotize(DIR_PLUS_FILE(path,lib->path));
+					ld_library_path<<mxUT::Quotize(DIR_PLUS_FILE(path,lib->path));
 				}
 				lib = lib->next;
 			}
@@ -3529,14 +3529,14 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 			// add user defined environmental variables
 			if (active_configuration->env_vars.Len()) {
 				wxArrayString array;
-				utils->Split(active_configuration->env_vars,array,false,false);
+				mxUT::Split(active_configuration->env_vars,array,false,false);
 				for(unsigned int i=0;i<array.GetCount();i++) {  
 					wxString name=array[i].BeforeFirst('='); 
 					wxString value=array[i].AfterFirst('='); 
 					if (!name.Len()) continue;
-					utils->ParameterReplace(value,"${MINGW_DIR}",current_toolchain.mingw_dir);
-					utils->ParameterReplace(value,"${TEMP_DIR}",temp_folder);
-					utils->ParameterReplace(value,"${PROJECT_PATH}",project->path);
+					mxUT::ParameterReplace(value,"${MINGW_DIR}",current_toolchain.mingw_dir);
+					mxUT::ParameterReplace(value,"${TEMP_DIR}",temp_folder);
+					mxUT::ParameterReplace(value,"${PROJECT_PATH}",project->path);
 					bool add = name.Last()=='+'; 
 					if (add) name.RemoveLast();
 					wxString old_value; wxGetEnv(name,&old_value);

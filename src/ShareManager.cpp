@@ -129,7 +129,7 @@ void ShareManager::Insert(wxString name, mxSource *source, bool freezed) {
 		ss.len=0;
 		for (int l,i=0;i<source->GetLineCount();i++) {
 			if ((l=source->GetLine(i).Len())!=0){
-				utils->strcpy(((wxChar*)ss.source)+ss.len,source->GetLine(i));
+				mxUT::strcpy(((wxChar*)ss.source)+ss.len,source->GetLine(i));
 				ss.len+=l;
 			}
 		}
@@ -149,7 +149,7 @@ void ShareManager::Replace(wxString name, mxSource *source, bool freezed) {
 		ss.source=(void*) new wxChar[ss.len];
 		int c=0;
 		for (int i=0;i<source->GetLineCount();i++) {
-			utils->strcpy(((wxChar*)ss.source)+c,source->GetLine(i));
+			mxUT::strcpy(((wxChar*)ss.source)+c,source->GetLine(i));
 			c+=source->GetLine(i).Len();
 		}
 	} else {

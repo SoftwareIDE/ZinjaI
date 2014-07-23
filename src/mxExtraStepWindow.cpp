@@ -27,10 +27,10 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *butSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	name = utils->AddTextCtrl(mySizer,this,LANG(EXTRASTEP_NAME,"Nombre"),step?step->name:"");
-	command = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_COMMAND,"Comando"),step?step->command:"",mxID_EXTRA_STEP_COMMAND);
-	deps = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_DEPS,"Dependencias"),step?step->deps:"",mxID_EXTRA_STEP_DEPS);
-	output = utils->AddDirCtrl(mySizer,this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),step?step->out:"",mxID_EXTRA_STEP_OUTPUT);
+	name = mxUT::AddTextCtrl(mySizer,this,LANG(EXTRASTEP_NAME,"Nombre"),step?step->name:"");
+	command = mxUT::AddDirCtrl(mySizer,this,LANG(EXTRASTEP_COMMAND,"Comando"),step?step->command:"",mxID_EXTRA_STEP_COMMAND);
+	deps = mxUT::AddDirCtrl(mySizer,this,LANG(EXTRASTEP_DEPS,"Dependencias"),step?step->deps:"",mxID_EXTRA_STEP_DEPS);
+	output = mxUT::AddDirCtrl(mySizer,this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),step?step->out:"",mxID_EXTRA_STEP_OUTPUT);
 	if (!step) {
 		wxArrayString pos_array;
 		pos_array.Add("",CES_COUNT);
@@ -38,13 +38,13 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 		pos_array[CES_BEFORE_LIBS]=LANG(EXTRASTEP_BEFORE_LIBS,"Antes de generar las bibliotecas");
 		pos_array[CES_BEFORE_EXECUTABLE]=LANG(EXTRASTEP_BEFORE_EXECUTABLE,"Antes de enlazar el ejecutable");
 		pos_array[CES_AFTER_LINKING]=LANG(EXTRASTEP_AFTER_LINKING,"Despues de enlazar el ejecutable");
-		position = utils->AddComboBox(mySizer,this,LANG(EXTRASTEP_LOCATION_ON_SEQ,"Ubicacion en la secuencia"),pos_array,0);
+		position = mxUT::AddComboBox(mySizer,this,LANG(EXTRASTEP_LOCATION_ON_SEQ,"Ubicacion en la secuencia"),pos_array,0);
 	} else
 		position = NULL;
-	link_output = utils->AddCheckBox(mySizer,this,LANG(EXTRASTEP_LINK_FORCE_RELINK,"Enlazar el archivo de salida en el ejecutable"),step?step->link_output:true);
-	delclean = utils->AddCheckBox(mySizer,this,LANG(EXTRASTEP_DELETE_ON_CLEAN,"Eliminar al limpiar el proyecto"),step?step->delete_on_clean:true);
-	check_rv = utils->AddCheckBox(mySizer,this,LANG(EXTRASTEP_CHECK_EXIT_CODE,"Verificar codigo de salida"),step?step->check_retval:false);
-	hide_win = utils->AddCheckBox(mySizer,this,LANG(EXTRASTEP_HIDE_RUNNING_WINDOW,"Ocultar ventana de ejecucion"),step?step->hide_window:true);
+	link_output = mxUT::AddCheckBox(mySizer,this,LANG(EXTRASTEP_LINK_FORCE_RELINK,"Enlazar el archivo de salida en el ejecutable"),step?step->link_output:true);
+	delclean = mxUT::AddCheckBox(mySizer,this,LANG(EXTRASTEP_DELETE_ON_CLEAN,"Eliminar al limpiar el proyecto"),step?step->delete_on_clean:true);
+	check_rv = mxUT::AddCheckBox(mySizer,this,LANG(EXTRASTEP_CHECK_EXIT_CODE,"Verificar codigo de salida"),step?step->check_retval:false);
+	hide_win = mxUT::AddCheckBox(mySizer,this,LANG(EXTRASTEP_HIDE_RUNNING_WINDOW,"Ocultar ventana de ejecucion"),step?step->hide_window:true);
 	
 	wxBitmapButton *help_button = new wxBitmapButton(this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
 	butSizer->Add(help_button,sizers->BA5);
@@ -119,17 +119,17 @@ void mxExtraStepWindow::OnHelpButton(wxCommandEvent &evt) {
 }
 
 void mxExtraStepWindow::OnPopup(wxCommandEvent &evt) {
-	utils->ProcessTextPopup(evt.GetId());
+	mxUT::ProcessTextPopup(evt.GetId());
 }
 
 void mxExtraStepWindow::OnCommandButton(wxCommandEvent &evt) {
-	utils->ShowTextPopUp(this,LANG(EXTRASTEP_COMMAND,"Comando"),command,"TEXT|LIST|FILE|DIR|DEPS|OUTPUT|MINGW_DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
+	mxUT::ShowTextPopUp(this,LANG(EXTRASTEP_COMMAND,"Comando"),command,"TEXT|LIST|FILE|DIR|DEPS|OUTPUT|MINGW_DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
 }
 
 void mxExtraStepWindow::OnDepsButton(wxCommandEvent &evt) {
-	utils->ShowTextPopUp(this,LANG(EXTRASTEP_DEPS,"Dependencias"),deps,"TEXT|LIST|FILE|DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
+	mxUT::ShowTextPopUp(this,LANG(EXTRASTEP_DEPS,"Dependencias"),deps,"TEXT|LIST|FILE|DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
 }
 
 void mxExtraStepWindow::OnOutputButton(wxCommandEvent &evt) {
-	utils->ShowTextPopUp(this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),output,"TEXT|LIST|FILE|DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
+	mxUT::ShowTextPopUp(this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),output,"TEXT|LIST|FILE|DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
 }

@@ -67,7 +67,7 @@ mxHelpWindow::~mxHelpWindow() { instance=NULL; }
 
 void mxHelpWindow::OnSearch(wxString value) {
 	wxArrayString aresults, keywords;
-	utils->Split(value.MakeUpper(),keywords,true,false);
+	mxUT::Split(value.MakeUpper(),keywords,true,false);
 	unsigned int kc=keywords.GetCount();
 	if (kc==0) {
 		mxMessageDialog(this,LANG(HELPW_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
@@ -150,7 +150,7 @@ void mxHelpWindow::ShowHelp(wxString page, wxDialog *from_modal) {
 
 void mxHelpWindow::LoadHelp(wxString file) {
 	if (file.Len()>5 && file.Mid(0,5)=="http:")
-		utils->OpenInBrowser(file);
+		mxUT::OpenInBrowser(file);
 	else FixLoadPage(file);
 	SelectTreeItem(file);
 	Show();
@@ -164,7 +164,7 @@ bool mxHelpWindow::OnLink (wxString href) {
 	} else if (href.StartsWith("foropen:")) {
 		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,href.AfterFirst(':')));
 	} else if (href.StartsWith("http://")) {
-		utils->OpenInBrowser(href);
+		mxUT::OpenInBrowser(href);
 	} else {
 		wxString fname=(href+"#").BeforeFirst('#');
 		if (fname.Len()) {
@@ -199,7 +199,7 @@ wxString mxHelpWindow::GetHelpFile(wxString file) {
 }
 
 void mxHelpWindow::OnForum (wxCommandEvent & event) {
-	utils->OpenInBrowser(LANG(HELPW_ADDRESS,"http://zinjai.sourceforge.net/index.php?page=contacto.php"));
+	mxUT::OpenInBrowser(LANG(HELPW_ADDRESS,"http://zinjai.sourceforge.net/index.php?page=contacto.php"));
 }
 
 void mxHelpWindow::FixLoadPage (const wxString &href) {

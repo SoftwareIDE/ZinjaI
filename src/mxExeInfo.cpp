@@ -67,7 +67,7 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
-	utils->AddTextCtrl(sizer,panel,LANG(EXEINFO_LOCATION,"Ubicacion"),fname.GetFullPath())->SetEditable(false);
+	mxUT::AddTextCtrl(sizer,panel,LANG(EXEINFO_LOCATION,"Ubicacion"),fname.GetFullPath())->SetEditable(false);
 
 	double fsize = fname.GetSize().ToDouble();
 	wxString tsize;
@@ -79,10 +79,10 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	}
 	tsize<<fname.GetSize()<<" B";
 	
-	text_size = utils->AddTextCtrl(sizer,panel,LANG(EXEINFO_SIZE,"Tamaño"),tsize);
+	text_size = mxUT::AddTextCtrl(sizer,panel,LANG(EXEINFO_SIZE,"Tamaño"),tsize);
 	text_size->SetEditable(false);
 	
-	text_time = utils->AddTextCtrl(sizer,panel,LANG(EXEINFO_LAST_MOD_DATE,"Fecha ultima modifiacion"),fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
+	text_time = mxUT::AddTextCtrl(sizer,panel,LANG(EXEINFO_LAST_MOD_DATE,"Fecha ultima modifiacion"),fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
 	text_time->SetEditable(false);
 
 	if (!source || !source->sin_titulo) {
@@ -90,23 +90,23 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 		if (source) {
 			if (source->GetModify() || !source->GetBinaryFileName().FileExists() || source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime())
 				updated=false;
-			else if (config->Running.check_includes && utils->AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source->source_filename))
+			else if (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source->source_filename))
 				updated=false;
 		} else {
 			if (project->PrepareForBuilding())
 				updated=false;
 		}
-		utils->AddShortTextCtrl(sizer,panel,LANG(EXEINFO_UPDATED,"Actualizado"),updated?LANG(EXEINFO_YES,"Si"):LANG(EXEINFO_NO,"No"))->SetEditable(false);
+		mxUT::AddShortTextCtrl(sizer,panel,LANG(EXEINFO_UPDATED,"Actualizado"),updated?LANG(EXEINFO_YES,"Si"):LANG(EXEINFO_NO,"No"))->SetEditable(false);
 	}
 	
 	wxString file_type = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar el tipo mientras el parser esta analizando fuentes");
 	if (!parser->working) 
-		file_type = utils->GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\"");
+		file_type = mxUT::GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\"");
 	else if (!wait_for_parser) {
 		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
 		wait_for_parser->Start(1000,true);
 	}
-	text_type = utils->AddLongTextCtrl(sizer,panel,LANG(EXEINFO_FILE_TYPE,"Tipo de Archivo"),file_type);
+	text_type = mxUT::AddLongTextCtrl(sizer,panel,LANG(EXEINFO_FILE_TYPE,"Tipo de Archivo"),file_type);
 	text_type ->SetEditable(false);
 	
 	panel->SetSizer(sizer);
@@ -122,9 +122,9 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	
 	if (!parser->working) {
 #if !defined(_WIN32) && !defined(__WIN32__)
-		ldd = utils->GetOutput(wxString("ldd \"")<<fname.GetFullPath()<<"\"");
+		ldd = mxUT::GetOutput(wxString("ldd \"")<<fname.GetFullPath()<<"\"");
 #else
-		ldd = utils->GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\"");
+		ldd = mxUT::GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\"");
 #endif
 	} else if (!wait_for_parser) {
 		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
@@ -132,9 +132,9 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	}
 	
 #if !defined(_WIN32) && !defined(__WIN32__)
-	ldd_ctrl = utils->AddLongTextCtrl(sizer,panel,"ldd",ldd);
+	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,"ldd",ldd);
 #else
-	ldd_ctrl = utils->AddLongTextCtrl(sizer,panel,"lsdeps",ldd);
+	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,"lsdeps",ldd);
 #endif
 	
 	panel->SetSizer(sizer);
@@ -154,7 +154,7 @@ void mxExeInfo::OnCloseButton(wxCommandEvent &evt) {
 }
 
 void mxExeInfo::OnStripButton(wxCommandEvent &evt) {
-	utils->GetOutput(wxString("strip \"")<<fname.GetFullPath()<<"\"");
+	mxUT::GetOutput(wxString("strip \"")<<fname.GetFullPath()<<"\"");
 	wxString tsize;
 	double fsize = fname.GetSize().ToDouble();
 	if (fsize>1024) {
@@ -165,7 +165,7 @@ void mxExeInfo::OnStripButton(wxCommandEvent &evt) {
 	}
 	tsize<<fname.GetSize()<<" B";
 	text_size->SetValue(tsize);	
-	text_type->SetValue(utils->GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
+	text_type->SetValue(mxUT::GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
 	text_time->SetValue(fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
 }
 
@@ -175,6 +175,6 @@ void mxExeInfo::OnHelpButton(wxCommandEvent &event){
 
 void mxExeInfo::OnTimer(wxTimerEvent &evt) {
 	if (parser->working) { wait_for_parser->Start(1000,true); return; }
-	ldd_ctrl->SetValue(utils->GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\""));
-	text_type->SetValue(utils->GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
+	ldd_ctrl->SetValue(mxUT::GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\""));
+	text_type->SetValue(mxUT::GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
 }

@@ -30,11 +30,11 @@ END_EVENT_TABLE()
 mxMultipleFileChooser::mxMultipleFileChooser(wxString apath, bool modal) : wxDialog(main_window, wxID_ANY, LANG(MULTIFILE_CAPTION,"Agregar Archivos al Proyecto"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	basedir = utils->AddDirCtrl(sizer,this,LANG(MULTIFILE_DIR,"1) Seleccione el directorio donde buscar los archivos"),apath.Len()?apath:project->last_dir,mxID_MULTIPLEFILE_DIR);
-	subdirs = utils->AddCheckBox(sizer,this,LANG(MULTIFILE_SUBDIRS,"buscar tambien en subdirectorios"),true);
-	filter  = utils->AddDirCtrl(sizer,this,LANG(MULTIFILE_FILTER,"2) Ingrese un filtro para los nombres de archivos"),"*",mxID_MULTIPLEFILE_FIND,LANG(MULTIFILE_FIND," Buscar "));
+	basedir = mxUT::AddDirCtrl(sizer,this,LANG(MULTIFILE_DIR,"1) Seleccione el directorio donde buscar los archivos"),apath.Len()?apath:project->last_dir,mxID_MULTIPLEFILE_DIR);
+	subdirs = mxUT::AddCheckBox(sizer,this,LANG(MULTIFILE_SUBDIRS,"buscar tambien en subdirectorios"),true);
+	filter  = mxUT::AddDirCtrl(sizer,this,LANG(MULTIFILE_FILTER,"2) Ingrese un filtro para los nombres de archivos"),"*",mxID_MULTIPLEFILE_FIND,LANG(MULTIFILE_FIND," Buscar "));
 	
-	utils->AddStaticText(sizer,this,LANG(MULTIFILE_LIST,"Seleccione los archivos a agregar"));
+	mxUT::AddStaticText(sizer,this,LANG(MULTIFILE_LIST,"Seleccione los archivos a agregar"));
 	list = new wxCheckListBox(this,wxID_ANY,wxDefaultPosition,wxSize(320,230));
 	list->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( mxMultipleFileChooser::OnListRightClick ), NULL, this );
 	sizer->Add(list,sizers->BA5_Exp1);
@@ -44,7 +44,7 @@ mxMultipleFileChooser::mxMultipleFileChooser(wxString apath, bool modal) : wxDia
 	awhere.Add(LANG(MAINW_PT_HEADERS,"Cabeceras"));
 	awhere.Add(LANG(MAINW_PT_OTHERS,"Otros"));
 	awhere.Add(LANG(MAINW_PT_AUTO,"<determinar por extension>"));
-	cmb_where = utils->AddComboBox(sizer,this,LANG(MULTIFILE_WHERE,"Agregar en categoría"),awhere,3);
+	cmb_where = mxUT::AddComboBox(sizer,this,LANG(MULTIFILE_WHERE,"Agregar en categoría"),awhere,3);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
@@ -90,7 +90,7 @@ void mxMultipleFileChooser::OnButtonOk(wxCommandEvent &event) {
 	for (int i=0;i<n;i++) {
 		wxString fname=DIR_PLUS_FILE(search_base,list->GetString(i));
 		if (list->IsChecked(i) && !project->HasFile(fname)) {
-			eFileType aux_where = where==FT_NULL?utils->GetFileType(fname,false):where;
+			eFileType aux_where = where==FT_NULL?mxUT::GetFileType(fname,false):where;
 			project->AddFile(aux_where,fname);
 			if (aux_where==FT_SOURCE||aux_where==FT_HEADER) parser->ParseFile(fname);
 		}
@@ -124,7 +124,7 @@ void mxMultipleFileChooser::OnButtonDir(wxCommandEvent &event) {
 	wxDirDialog dlg(this,LANG(MULTIFILE_DIR_CAPTION,"Directorio donde buscar"),text.Len()?text:project->last_dir);
 	if (wxID_OK!=dlg.ShowModal()) return;
 	wxString dir=project->last_dir =dlg.GetPath();
-	basedir->SetValue(utils->Relativize(dir,project->path));
+	basedir->SetValue(mxUT::Relativize(dir,project->path));
 }
 
 void mxMultipleFileChooser::OnButtonFind(wxCommandEvent &event) {
@@ -132,7 +132,7 @@ void mxMultipleFileChooser::OnButtonFind(wxCommandEvent &event) {
 	list->Clear();
 	
 	wxArrayString filter_array;
-	utils->Split(filter->GetValue(),filter_array,true,false);
+	mxUT::Split(filter->GetValue(),filter_array,true,false);
 	
 	FindFiles(search_base=DIR_PLUS_FILE(project->path,basedir->GetValue()),"",filter_array,subdirs->GetValue());
 	for (int i=0,n=list->GetCount();i<n;i++) 

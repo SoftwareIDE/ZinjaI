@@ -127,7 +127,7 @@ void mxUpdatesChecker::OnCloseButton(wxCommandEvent &evt) {
 }
 
 void mxUpdatesChecker::OnChangesButton(wxCommandEvent &evt) {
-	utils->OpenZinjaiSite("actualizacion.php&os="ARCHITECTURE);
+	mxUT::OpenZinjaiSite("actualizacion.php&os="ARCHITECTURE);
 	Close();
 }
 

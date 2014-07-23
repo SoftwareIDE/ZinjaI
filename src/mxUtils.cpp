@@ -35,9 +35,10 @@ bool zinjai_debug_mode=false;
 #ifdef _ZINJAI_DEBUG
 wxString debug_string;
 #endif 
-
-mxUtils *utils;
 char path_sep = wxFileName::GetPathSeparator();
+
+static wxStaticText *last_label; ///< guarda la ultima etiqueta que se uso en alguno de los AddAlgo
+static wxButton *last_button; ///< guarda el ultimo boton colocado por AddDirCtrl
 
 /** 
 * Concatena una ruta y un nombre de archivo. Si este es relativo, agregando la 
@@ -49,7 +50,7 @@ char path_sep = wxFileName::GetPathSeparator();
 * @param fil El archivo. Puede ser solo un nombre, la parte final de una ruta, o una ruta completa
 * @return Un wxString con la ruta resultante completa
 **/
-wxString mxUtils::JoinDirAndFile(wxString dir, wxString fil) {
+wxString mxUT::JoinDirAndFile(wxString dir, wxString fil) {
 	if (dir.Len()==0 || (fil.Len()>1 && (fil[0]=='\\' || fil[0]=='/' || fil[1]==':')))
 		return fil;
 	else if (dir.Last()==path_sep)
@@ -58,7 +59,7 @@ wxString mxUtils::JoinDirAndFile(wxString dir, wxString fil) {
 		return dir+path_sep+fil;
 }
 
-/*wxBoxSizer *mxUtils::CreateSizerWithLabelAndText(wxWindow *win, wxWindowID id, wxTextCtrl * &text, wxString label) {
+/*wxBoxSizer *mxUT::CreateSizerWithLabelAndText(wxWindow *win, wxWindowID id, wxTextCtrl * &text, wxString label) {
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	text = new wxTextCtrl(win, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	sizerRow->Add(new wxStaticText(win, wxID_ANY, label, wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
@@ -66,14 +67,14 @@ wxString mxUtils::JoinDirAndFile(wxString dir, wxString fil) {
 	return sizerRow;
 }*/
 
-void mxUtils::strcpy(wxChar *cstr, wxString wstr) {
+void mxUT::strcpy(wxChar *cstr, wxString wstr) {
 	unsigned int i;
 	for (i=0;i<wstr.Len();i++)
 		cstr[i]=wstr[i];
 	cstr[i]='\0';
 } 
 
-void mxUtils::strcpy(wxChar *cstr, wxChar *wstr) {
+void mxUT::strcpy(wxChar *cstr, wxChar *wstr) {
 	unsigned int i=0;
 	while (wstr[i]!='\0') {
 		cstr[i]=wstr[i];
@@ -82,7 +83,7 @@ void mxUtils::strcpy(wxChar *cstr, wxChar *wstr) {
 	cstr[i]='\0';
 } 
 
-void mxUtils::SortArrayString(wxArrayString &array, int inf, int sup) {
+void mxUT::SortArrayString(wxArrayString &array, int inf, int sup) {
 
 	if (inf==-1) { inf=0; sup=array.GetCount()-1; if (sup==-1) return; }
 /*	cout<<endl;
@@ -166,7 +167,7 @@ void mxUtils::SortArrayString(wxArrayString &array, int inf, int sup) {
 	
 }
 
-wxCheckBox *mxUtils::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value, wxWindowID id, bool margin) {
+wxCheckBox *mxUT::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value, wxWindowID id, bool margin) {
 	wxCheckBox *checkbox = new wxCheckBox(panel, id, text+_T("   "));
 	if (margin) {
 		wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
@@ -180,7 +181,7 @@ wxCheckBox *mxUtils::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	return checkbox;	
 }
 
-wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, int id) {
+wxTextCtrl *mxUT::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, int id) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp0);
@@ -189,7 +190,7 @@ wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	return textctrl;
 }
 
-wxTextCtrl *mxUtils::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value) {
+wxTextCtrl *mxUT::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp1);
@@ -198,7 +199,7 @@ wxTextCtrl *mxUtils::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStri
 	return textctrl;
 }
 
-wxTextCtrl *mxUtils::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text, bool margin) {
+wxTextCtrl *mxUT::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text, bool margin) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *button = last_button = new wxButton(panel,id,button_text,wxDefaultPosition,button_text== _T("...")?wxSize(30,10):wxSize(-1,10));
@@ -211,7 +212,7 @@ wxTextCtrl *mxUtils::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString te
 	return textctrl;
 }
 
-wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value, bool margin, int id) {
+wxTextCtrl *mxUT::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value, bool margin, int id) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(15);
@@ -223,7 +224,7 @@ wxTextCtrl *mxUtils::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	return textctrl;
 }
 
-wxStaticText* mxUtils::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
+wxStaticText* mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
 	wxStaticText *textctrl = new wxStaticText(panel, wxID_ANY, str, wxDefaultPosition, wxDefaultSize);
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
@@ -235,7 +236,7 @@ wxStaticText* mxUtils::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxStri
 	return textctrl;	
 }
 
-wxTextCtrl *mxUtils::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
+wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, str, wxDefaultPosition, wxDefaultSize);
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
@@ -246,7 +247,7 @@ wxTextCtrl *mxUtils::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStr
 	return textctrl;
 }
 
-wxTextCtrl *mxUtils::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString foot, bool margin) {
+wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString foot, bool margin) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxString()<<n, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
@@ -258,7 +259,7 @@ wxTextCtrl *mxUtils::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStr
 	return textctrl;
 }
 
-wxComboBox *mxUtils::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID id, bool margin) {
+wxComboBox *mxUT::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID id, bool margin) {
 	wxString sdef=def==-1?"":values[def];
 	wxComboBox *combo = new wxComboBox(panel, id, sdef, wxDefaultPosition, wxDefaultSize, values, wxCB_READONLY);
 	combo->SetSelection(def);
@@ -271,31 +272,31 @@ wxComboBox *mxUtils::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString t
 	return combo;
 }
 
-wxStaticText *mxUtils::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text) {
+wxStaticText *mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text) {
 	wxStaticText *statictext;
 	sizer->Add( statictext = new wxStaticText(panel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE), sizers->BA5_Center);
 	return statictext;
 }
 
-wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem) {
+wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem) {
 	const MenusAndToolsConfig::myMenuItem *mi = reinterpret_cast<const MenusAndToolsConfig::myMenuItem*>(a_myMenuItem);
 	if (!mi) return NULL;
 	if (mi->properties&(MenusAndToolsConfig::maCHECKED|MenusAndToolsConfig::maCHECKEABLE))
-		return utils->AddCheckToMenu(menu,mi->wx_id,mi->label,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
+		return mxUT::AddCheckToMenu(menu,mi->wx_id,mi->label,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
 	else 
-		return utils->AddItemToMenu(menu,mi->wx_id,mi->label,mi->shortcut,mi->description,mi->icon);
+		return mxUT::AddItemToMenu(menu,mi->wx_id,mi->label,mi->shortcut,mi->description,mi->icon);
 }
 
-wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem, const wxString &caption) {
+wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem, const wxString &caption) {
 	const MenusAndToolsConfig::myMenuItem *mi = reinterpret_cast<const MenusAndToolsConfig::myMenuItem*>(a_myMenuItem);
 	if (!mi) return NULL;
 	if (mi->properties&(MenusAndToolsConfig::maCHECKED|MenusAndToolsConfig::maCHECKEABLE))
-		return utils->AddCheckToMenu(menu,mi->wx_id,caption,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
+		return mxUT::AddCheckToMenu(menu,mi->wx_id,caption,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
 	else 
-		return utils->AddItemToMenu(menu,mi->wx_id,caption,mi->shortcut,mi->description,mi->icon);
+		return mxUT::AddItemToMenu(menu,mi->wx_id,caption,mi->shortcut,mi->description,mi->icon);
 }
 
-wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, const wxString &filename, int where) {
+wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, const wxString &filename, int where) {
 	wxMenuItem *item = new wxMenuItem(menu,id,accel.Len()?caption+"\t"+accel:caption,help);
 	if (filename.Len()) {
 		wxString full_filename=SKIN_FILE_OPT(DIR_PLUS_FILE("16",filename));
@@ -307,7 +308,7 @@ wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id, const wxString &
 }
 
 
-wxMenuItem *mxUtils::AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, const wxString &caption, const wxString &help, const wxString &filename) {
+wxMenuItem *mxUT::AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, const wxString &caption, const wxString &help, const wxString &filename) {
 	wxMenuItem *item = 	menu->AppendSubMenu(menu_h, caption, help);
 	if (filename.Len()) {
 		wxString full_filename=SKIN_FILE(DIR_PLUS_FILE("16",filename));
@@ -316,21 +317,21 @@ wxMenuItem *mxUtils::AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, const wxStri
 	return item;
 }
 
-wxMenuItem *mxUtils::AddCheckToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, bool value) {
+wxMenuItem *mxUT::AddCheckToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, bool value) {
 	wxMenuItem *item = menu->AppendCheckItem (id, accel.Len()?caption+"\t"+accel:caption,help);
 	item->Check(value);
 	return item;
 }
 
-void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, const wxString &caption, const wxString &filename, const wxString &status_text, wxItemKind kind) {
-	wxString full_filename=mxUtils::JoinDirAndFile(config->Files.skin_dir,filename);
+void mxUT::AddTool(wxToolBar *toolbar, wxWindowID id, const wxString &caption, const wxString &filename, const wxString &status_text, wxItemKind kind) {
+	wxString full_filename=mxUT::JoinDirAndFile(config->Files.skin_dir,filename);
 	if (wxFileName::FileExists(full_filename)) {
 		toolbar->AddTool(id, caption, wxBitmap(full_filename,wxBITMAP_TYPE_PNG),caption, kind);
 		toolbar->SetToolLongHelp(id,status_text);
 	}
 }
 
-wxString mxUtils::FindObjectDeps(wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
+wxString mxUT::FindObjectDeps(wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
 	wxArrayString already_processed;
 	already_processed.Add(filename.GetFullPath());
 	FindIncludes(filename.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR),filename.GetFullName(),already_processed,header_dirs);
@@ -347,7 +348,7 @@ wxString mxUtils::FindObjectDeps(wxFileName filename, wxString ref_path, wxArray
 		return deps.RemoveLast();
 }
 
-void mxUtils::FindIncludes(wxArrayString &deps, wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
+void mxUT::FindIncludes(wxArrayString &deps, wxFileName filename, wxString ref_path, wxArrayString &header_dirs) {
 	deps.Clear();
 	wxArrayString already_processed;
 	already_processed.Add(filename.GetFullPath()); // FindIncludes usa el primer item para sacar el path?
@@ -360,12 +361,12 @@ void mxUtils::FindIncludes(wxArrayString &deps, wxFileName filename, wxString re
 	}
 }
 
-bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename) {
+bool mxUT::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename) {
 	wxArrayString header_dirs;
 	return AreIncludesUpdated(bin_date,filename,header_dirs);
 }
 
-bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs) {
+bool mxUT::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs) {
 	// inicializar la lista
 	wxArrayString already_processed;
 	wxString my_path=filename.GetPathWithSep();
@@ -401,7 +402,7 @@ bool mxUtils::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArr
 * Busca los includes del archivo filename que esta en el directorio path, relativo 
 * al directorio original first->name 
 **/
-void mxUtils::FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive) {
+void mxUT::FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive) {
 	wxTextFile text_file(DIR_PLUS_FILE(DIR_PLUS_FILE(already_processed[0],path),filename));
 	wxFileName file_name;
 	text_file.Open();
@@ -451,7 +452,7 @@ void mxUtils::FindIncludes(wxString path, wxString filename, wxArrayString &alre
 	}
 }
 
-wxString mxUtils::UnSplit(wxArrayString &array) {
+wxString mxUT::UnSplit(wxArrayString &array) {
 	wxString ret;
 	if (array.GetCount()) {
 		ret<<array[0];
@@ -462,7 +463,7 @@ wxString mxUtils::UnSplit(wxArrayString &array) {
 	return ret;
 }
 
-wxString mxUtils::Split(wxString str, wxString pre) {
+wxString mxUT::Split(wxString str, wxString pre) {
 	/// @todo: reescribir este método reusando el otro Split
 	int i=0, l=str.Len();
 	wxString ret;
@@ -484,7 +485,7 @@ wxString mxUtils::Split(wxString str, wxString pre) {
 	return ret;
 }
 
-int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits, bool keep_quotes) {
+int mxUT::Split(wxString str, wxArrayString &array, bool coma_splits, bool keep_quotes) {
 	int c=0, i=0, l=str.Len();
 	wxString ret;
 	bool comillas = false; char cual_comilla;
@@ -515,13 +516,13 @@ int mxUtils::Split(wxString str, wxArrayString &array, bool coma_splits, bool ke
 	return c;
 }
 
-int mxUtils::Execute(wxString path, wxString command, int sync) {
+int mxUT::Execute(wxString path, wxString command, int sync) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
 	static wxProcess *p=NULL;
 	return Execute(path,command,sync,p);
 }
 
-int mxUtils::Execute(wxString path, wxString command, int sync, wxProcess *&process) {
+int mxUT::Execute(wxString path, wxString command, int sync, wxProcess *&process) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
 	wxSetWorkingDirectory(path);
 	int ret = (sync&wxEXEC_SYNC) ? mxExecute(command, sync, process) : wxExecute(command, sync, process);
@@ -529,7 +530,7 @@ int mxUtils::Execute(wxString path, wxString command, int sync, wxProcess *&proc
 	return ret;
 }
 
-bool mxUtils::XCopy(wxString src,wxString dst, bool ask, bool replace) {
+bool mxUT::XCopy(wxString src,wxString dst, bool ask, bool replace) {
 	if (src.Last()=='/' || src.Last()=='\\')
 		src.RemoveLast();
 	if (dst.Last()=='/' || dst.Last()=='\\')
@@ -574,7 +575,7 @@ bool mxUtils::XCopy(wxString src,wxString dst, bool ask, bool replace) {
 	return true;
 }
 
-wxString mxUtils::ExecComas(wxString where, wxString line) {
+wxString mxUT::ExecComas(wxString where, wxString line) {
 	wxSetWorkingDirectory(where);
 	wxString ret;
 	int p=0;
@@ -598,7 +599,7 @@ wxString mxUtils::ExecComas(wxString where, wxString line) {
 	return ret;
 }
 
-wxString mxUtils::GetOutput(wxString command, bool also_error) {
+wxString mxUT::GetOutput(wxString command, bool also_error) {
 	wxString ret;
 	wxArrayString output,errors;
 	if (also_error)
@@ -627,7 +628,7 @@ wxString mxUtils::GetOutput(wxString command, bool also_error) {
 * @param full Determina si reemplazar tambien espacios y \\r (true) o solo operadores y \\n (false)
 * @retval La cadena en formato HTML
 **/
-wxString mxUtils::ToHtml(wxString text, bool full) {
+wxString mxUT::ToHtml(wxString text, bool full) {
 	static wxString tabs;
 	static int tabs_n;
 	if (tabs_n!=config->Source.tabWidth) {
@@ -650,7 +651,7 @@ wxString mxUtils::ToHtml(wxString text, bool full) {
 	return text;
 }
 
-void mxUtils::ParameterReplace(wxString &str, wxString from, wxString to) {
+void mxUT::ParameterReplace(wxString &str, wxString from, wxString to) {
 	if (str.Find(' ')==wxNOT_FOUND)
 		str.Replace(from,to);
 	else {
@@ -668,7 +669,7 @@ void mxUtils::ParameterReplace(wxString &str, wxString from, wxString to) {
 			if (str[p2]==' ' || str[p2]=='\t')
 				p2--;
 			final<<str.SubString(0,p1-1);
-			final<<utils->Quotize(str.SubString(p1,p-1)+to+str.SubString(p+from.Len(),p2));
+			final<<mxUT::Quotize(str.SubString(p1,p-1)+to+str.SubString(p+from.Len(),p2));
 			str=str.Mid(p2+1);
 			p=str.Find(from);
 			l=str.Len();
@@ -678,7 +679,7 @@ void mxUtils::ParameterReplace(wxString &str, wxString from, wxString to) {
 	}
 }
 
-//void mxUtils::MakeDesktopIcon (wxString desk_dir) {
+//void mxUT::MakeDesktopIcon (wxString desk_dir) {
 //	wxTextFile fil(DIR_PLUS_FILE(desk_dir,_T("ZinjaI.desktop")));
 //	if (fil.Exists())
 //		fil.Open();
@@ -699,7 +700,7 @@ void mxUtils::ParameterReplace(wxString &str, wxString from, wxString to) {
 // }
 
 
-wxString mxUtils::GetOnePath(wxString orig_path, wxString project_path, wxString fname, wxArrayString &header_dirs) {
+wxString mxUT::GetOnePath(wxString orig_path, wxString project_path, wxString fname, wxArrayString &header_dirs) {
 	wxString theone(DIR_PLUS_FILE(orig_path,fname));
 	if (wxFileName::FileExists(theone))
 		return theone;
@@ -720,7 +721,7 @@ wxString mxUtils::GetOnePath(wxString orig_path, wxString project_path, wxString
 * @param s2 segunda cadena
 * @return true si el final de s1 es igual a s2 (case-insensitive)
 **/
-bool mxUtils::EndsWithNC(wxString s1, wxString s2) {
+bool mxUT::EndsWithNC(wxString s1, wxString s2) {
 	if (s2.Len()>s1.Len()) 
 		return false;
 	else return (s1.Mid(s1.Len()-s2.Len()).CmpNoCase(s2)==0);
@@ -732,7 +733,7 @@ bool mxUtils::EndsWithNC(wxString s1, wxString s2) {
 * @param str la cadena a procesar
 * @return La cadena porcesada
 **/
-wxString mxUtils::LeftTrim(wxString str) {
+wxString mxUT::LeftTrim(wxString str) {
 	int i=0, l=str.Len();
 	while (i<l && (str[i]==' ' || str[i]=='\t')) i++;
 	return str.Mid(i); 
@@ -748,7 +749,7 @@ wxString mxUtils::LeftTrim(wxString str) {
 * @param s2 segunda cadena 
 * @param n2 longitud de la segunda cadena
 **/
-int mxUtils::Levenshtein(const char *s1, int n1, const char *s2, int n2) {
+int mxUT::Levenshtein(const char *s1, int n1, const char *s2, int n2) {
 	int i, j;
 	if (n2+1>150) return 150;
 	static int t[150]; //N2+1
@@ -775,7 +776,7 @@ int mxUtils::Levenshtein(const char *s1, int n1, const char *s2, int n2) {
 * @param array el arreglo a purgar
 * @param sort falso si el arreglo ya viene ordenado, true si se debe ordenar aqui
 **/
-void mxUtils::Purgue(wxArrayString &array, bool sort) {
+void mxUT::Purgue(wxArrayString &array, bool sort) {
 	if (sort) array.Sort();
 	unsigned int i=1, r=0, d=0, n=array.GetCount();
 	while (i<n) {
@@ -799,7 +800,7 @@ void mxUtils::Purgue(wxArrayString &array, bool sort) {
 * @retval true si son iguales
 * @retval false si son diferentes
 **/
-bool mxUtils::Compare(const wxArrayString &array1, const wxArrayString &array2, bool check_case) {
+bool mxUT::Compare(const wxArrayString &array1, const wxArrayString &array2, bool check_case) {
 	unsigned int n1=array1.GetCount(), n2=array2.GetCount();
 	if (n1!=n2) return false;
 	if (check_case) {
@@ -822,7 +823,7 @@ bool mxUtils::Compare(const wxArrayString &array1, const wxArrayString &array2, 
 	               fuente. El default adivina según la extensión
 * @return el nombre del complementario, o una cadena vacia si no lo encuentra
 **/
-wxString mxUtils::GetComplementaryFile(wxFileName the_one, eFileType force_ext) {
+wxString mxUT::GetComplementaryFile(wxFileName the_one, eFileType force_ext) {
 	if (force_ext==FT_NULL) force_ext=GetFileType(the_one.GetFullPath());
 	if (force_ext==FT_SOURCE) {
 		the_one.SetExt("h");
@@ -860,7 +861,7 @@ wxString mxUtils::GetComplementaryFile(wxFileName the_one, eFileType force_ext) 
 * (proyectos lanzados sin terminal y runner) y los "bisnietos" (lanzados en un terminal,
 * zinjai->consola->runner->bisnieto). En windows no está implementado.
 **/
-void mxUtils::GetRunningChilds(wxArrayString &childs) {
+void mxUT::GetRunningChilds(wxArrayString &childs) {
 	long pid = wxGetProcessId();
 	if (!pid) return;
 
@@ -923,7 +924,7 @@ void mxUtils::GetRunningChilds(wxArrayString &childs) {
 	
 }
 
-void mxUtils::OpenInBrowser(wxString url) {
+void mxUT::OpenInBrowser(wxString url) {
 	if (config->Files.browser_command.Len()) {
 		if (config->Files.browser_command=="shellexecute.exe" && url.StartsWith("file://"))
 			url=url.Mid(7);
@@ -936,7 +937,7 @@ void mxUtils::OpenInBrowser(wxString url) {
 * Convierte un path absoluto en relativo, siempre y cuando no deba subir más
 * de 2 niveles desde el path de referencia
 **/
-wxString mxUtils::Relativize(wxString name, wxString path) {
+wxString mxUT::Relativize(wxString name, wxString path) {
 	if (path.Last()=='\\' || path.Last()=='/') path.RemoveLast();
 	bool rr=false;
 	if (rr) name.RemoveLast();
@@ -949,7 +950,7 @@ wxString mxUtils::Relativize(wxString name, wxString path) {
 		return rname;
 }
 
-void mxUtils::OpenFolder(wxString path) {
+void mxUT::OpenFolder(wxString path) {
 	if (config->Files.explorer_command==_T("<<sin configurar>>")) {
 		wxMessageBox(LANG(CONFIG_EXPLORER_PROBLEM,"No se ha definido el explorador de archivos a utilizar\n"
 			                                       "Puede configurar el mismo en la pestana \"Rutas 2\" del\n"
@@ -957,19 +958,19 @@ void mxUtils::OpenFolder(wxString path) {
 	} else {
 		wxString cmd = config->Files.explorer_command;
 		cmd<<" \""<<path<<"\"";
-		utils->Execute(path,cmd,wxEXEC_NOHIDE);
+		mxUT::Execute(path,cmd,wxEXEC_NOHIDE);
 	}
 }
 
 
-wxString mxUtils::Quotize(const wxString &what) {
+wxString mxUT::Quotize(const wxString &what) {
 	if (what.Find(' ')!=wxNOT_FOUND)
 		return wxString("\"")<<what<<"\"";
 	else
 		return what;
 }
 
-wxString mxUtils::QuotizeEx(const wxString &what) {
+wxString mxUT::QuotizeEx(const wxString &what) {
 	if (what.Find(' ')==wxNOT_FOUND&&what.Find(',')==wxNOT_FOUND&&what.Find(';')==wxNOT_FOUND&&what.Find('\'')==wxNOT_FOUND&&what.Find('\"')==wxNOT_FOUND)
 		return what;
 	else if (what.Find('\"')==wxNOT_FOUND)
@@ -985,12 +986,12 @@ wxString mxUtils::QuotizeEx(const wxString &what) {
 	return r;
 }
 
-wxString mxUtils::SingleQuotes(wxString what) {
+wxString mxUT::SingleQuotes(wxString what) {
 	what.Replace("\'","\'\\\'\'",true);
 	return wxString("\'")<<what<<"\'";
 }
 
-wxString mxUtils::EscapeString(wxString str, bool add_comillas) {
+wxString mxUT::EscapeString(wxString str, bool add_comillas) {
 	int i=0, l=str.Len();
 	if (add_comillas) {
 		i=1;
@@ -1009,7 +1010,7 @@ wxString mxUtils::EscapeString(wxString str, bool add_comillas) {
 	return str;
 }
 
-wxString mxUtils::UnEscapeString(wxString str) {
+wxString mxUT::UnEscapeString(wxString str) {
 	int i=0, l=str.Len();
 	while(i<l) {
 		if (str[i]=='\\' || str[i]=='\"' || str[i]=='\'') {
@@ -1026,7 +1027,7 @@ wxString mxUtils::UnEscapeString(wxString str) {
 }
 
 
-wxString mxUtils::Text2Line(const wxString &text) {
+wxString mxUT::Text2Line(const wxString &text) {
 	int l=text.Len(),i,p=0;
 	wxString line;
 	for (i=0;i<l;i++) {
@@ -1042,7 +1043,7 @@ wxString mxUtils::Text2Line(const wxString &text) {
 	return line;
 }
 
-wxString mxUtils::Line2Text(const wxString &line) {
+wxString mxUT::Line2Text(const wxString &line) {
 	int l=line.Len(),i,p=0;
 	wxString text;
 	for (i=0;i<l;i++) {
@@ -1060,7 +1061,7 @@ wxString mxUtils::Line2Text(const wxString &line) {
 	return text;
 }
 
-wxString mxUtils::UrlEncode(wxString str) {
+wxString mxUT::UrlEncode(wxString str) {
 	str.Replace("%","%25");
 	str.Replace(",","%2C");
 	str.Replace(";","%3B");
@@ -1091,7 +1092,7 @@ wxString mxUtils::UrlEncode(wxString str) {
 
 
 // options = "REPLACE|COMMA|TEXT|LIST|FILE|DIR|OUTPUT|DEPS|TEMP_DIR|MINGW_DIR|BROWSER|PROJECT_PATH|PROJECT_BIN|CURRENT_FILE|CURRENT_DIR"
-void mxUtils::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxString options, wxString path) {
+void mxUT::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxString options, wxString path) {
 	wxString opt; bool replace=false, comma=false;
 	wxMenu menu;
 	do {
@@ -1125,7 +1126,7 @@ void mxUtils::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, 
 	parent->PopupMenu(&menu);
 }
 
-void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString path, wxString title, bool replace, bool comma_splits) {
+void mxUT::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString path, wxString title, bool replace, bool comma_splits) {
 	static wxWindow *win = NULL;
 	static wxString caption;
 	static wxString dir;
@@ -1142,13 +1143,13 @@ void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString
 			wxFileDialog dlg(win,caption,text.Len()?text:(project?project->last_dir:config->Files.last_dir));
 			if (wxID_OK!=dlg.ShowModal()) return;
 			(project?project->last_dir:config->Files.last_dir) = wxFileName(dlg.GetPath()).GetPath(); 
-			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
+			if (path.Len()) text = mxUT::Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
 			if (text.Contains(' ')) text = wxString("\"")<<text<<"\"";
 		} else if (id==mxID_POPUPS_INSERT_DIR) {
 			wxDirDialog dlg(win,caption,text.Len()?text:(project?project->last_dir:config->Files.last_dir));
 			if (wxID_OK!=dlg.ShowModal()) return;
 			(project?project->last_dir:config->Files.last_dir) = dlg.GetPath(); 
-			if (path.Len()) text = utils->Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
+			if (path.Len()) text = mxUT::Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
 			if (text.Contains(' ')) text = wxString("\"")<<text<<"\"";
 		} else if (id==mxID_POPUPS_INSERT_MINGW_DIR) {
 			text="${MINGW_DIR}";
@@ -1183,7 +1184,7 @@ void mxUtils::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString
 	ctrl=t; caption=title; comma=comma_splits; win=parent; dir=path; repl=replace;
 }
 
-eFileType mxUtils::GetFileType(wxString name, bool recognize_projects) {
+eFileType mxUT::GetFileType(wxString name, bool recognize_projects) {
 	wxString pto="."; if (!name.Contains(pto)) return FT_OTHER;
 	name=name.AfterLast('.').Lower();
 	if (!name.Len()) return FT_OTHER;
@@ -1207,7 +1208,7 @@ eFileType mxUtils::GetFileType(wxString name, bool recognize_projects) {
 * @param files true for retriving files, false for retrieving folders
 * @return number of files/folder if path exists, -1 if path does not exists
 **/
-int mxUtils::GetFilesFromDir (wxArrayString & array, wxString path, bool files) {
+int mxUT::GetFilesFromDir (wxArrayString & array, wxString path, bool files) {
 	if (!wxDirExists(path)) return -1;
 	int n=0;
 	wxDir dir(path);
@@ -1222,7 +1223,7 @@ int mxUtils::GetFilesFromDir (wxArrayString & array, wxString path, bool files) 
 	return n;
 }
 
-int mxUtils::Unique (wxArrayString &array, bool do_sort) {
+int mxUT::Unique (wxArrayString &array, bool do_sort) {
 	if (do_sort) array.Sort();
 	int n=array.GetCount(),d=0,i=1;
 	while (i<n) {
@@ -1234,11 +1235,11 @@ int mxUtils::Unique (wxArrayString &array, bool do_sort) {
 	return d;
 }
 
-wxString mxUtils::WichOne(wxString file, wxString dir_name, bool is_file) {
+wxString mxUT::WichOne(wxString file, wxString dir_name, bool is_file) {
 	return WichOne(file,DIR_PLUS_FILE(config->home_dir,dir_name),DIR_PLUS_FILE(config->zinjai_dir,dir_name),is_file);
 }
 
-wxString mxUtils::WichOne(wxString file, wxString path1, wxString path2, bool is_file) {
+wxString mxUT::WichOne(wxString file, wxString path1, wxString path2, bool is_file) {
 	wxString res=DIR_PLUS_FILE(path1,file);
 	if (is_file) { if (wxFileExists(res)) return res; }
 	else { if (wxDirExists(res)) return res; }
@@ -1248,23 +1249,23 @@ wxString mxUtils::WichOne(wxString file, wxString path1, wxString path2, bool is
 	return "";
 }
 
-void mxUtils::GetFilesFromBothDirs (wxArrayString & array, wxString dir_name, bool is_file, wxString extra_element) {
+void mxUT::GetFilesFromBothDirs (wxArrayString & array, wxString dir_name, bool is_file, wxString extra_element) {
 	GetFilesFromDir(array,DIR_PLUS_FILE(config->zinjai_dir,dir_name),is_file);
 	GetFilesFromDir(array,DIR_PLUS_FILE(config->home_dir,dir_name),is_file);
-	utils->Unique(array,true);
+	mxUT::Unique(array,true);
 	if (extra_element.Len()) array.Add(extra_element);
 }
 
 
-bool mxUtils::IsArgumentPresent (const wxString &full, const wxString &arg) {
+bool mxUT::IsArgumentPresent (const wxString &full, const wxString &arg) {
 	wxArrayString array;
 	Split(full,array,false,false);
 	return array.Index(arg)!=wxNOT_FOUND;
 }
 
-void mxUtils::SetArgument (wxString &full, const wxString &arg, bool add) {
+void mxUT::SetArgument (wxString &full, const wxString &arg, bool add) {
 	if (add) {
-		full=utils->Quotize(arg)+" "+full;
+		full=mxUT::Quotize(arg)+" "+full;
 	} else {
 		wxArrayString array;
 		Split(full,array,false,true);
@@ -1288,7 +1289,7 @@ void mxUtils::SetArgument (wxString &full, const wxString &arg, bool add) {
 * @retval 2 graphviz error
 * @retval 3 xdot/viewer error
 **/
-int mxUtils::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxString title) {
+int mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxString title) {
 	bool show=!output.Len();
 	if (show) {
 		if (config->Files.xdot_command.Len())
@@ -1317,20 +1318,20 @@ int mxUtils::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, w
 	return 0;
 }
 
-wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1) {
+wxString mxUT::ReplaceLangArgs(wxString src, wxString arg1) {
 	src.Replace("<{1}>",arg1);
 	return src;
 	
 }
 
-wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2) {
+wxString mxUT::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2) {
 	src.Replace("<{1}>",arg1);
 	src.Replace("<{2}>",arg2);
 	return src;
 	
 }
 
-wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2, wxString arg3) {
+wxString mxUT::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2, wxString arg3) {
 	src.Replace("<{1}>",arg1);
 	src.Replace("<{2}>",arg2);
 	src.Replace("<{3}>",arg3);
@@ -1338,7 +1339,7 @@ wxString mxUtils::ReplaceLangArgs(wxString src, wxString arg1, wxString arg2, wx
 	
 }
 
-void mxUtils::OpenZinjaiSite(wxString page) {
+void mxUT::OpenZinjaiSite(wxString page) {
 	if (!page.Len()) page="portada.php";
 	wxString base("http://zinjai.sourceforge.net");
 	if (config->Init.language_file=="spanish") {
@@ -1346,6 +1347,14 @@ void mxUtils::OpenZinjaiSite(wxString page) {
 	} else {
 		base<<"/index_en.php?page="<<(page.BeforeFirst('.')+"_en."+page.AfterFirst('.'));
 	}
-	utils->OpenInBrowser(base);
+	mxUT::OpenInBrowser(base);
+}
+
+wxStaticText * mxUT::GetLastLabel ( ) {
+	return last_label;
+}
+
+wxButton * mxUT::GetLastButton ( ) {
+	return last_button;
 }
 

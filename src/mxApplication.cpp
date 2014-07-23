@@ -86,7 +86,6 @@ bool mxApplication::OnInit() {
 	}
 	
 	// inicialize mxUtils and ConfigManager
-	utils = new mxUtils;
 	bool first_run = ConfigManager::Initialize(zpath);
 	
 	// cargar archivo de internacionalizacion
@@ -223,7 +222,7 @@ void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {
 			if (config->Init.new_file==0)
 				main_window->NewFileFromText("");
 			else
-				main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
+				main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
 			main_window->Refresh();
 		} 
 		if (splash) splash->ShouldClose();

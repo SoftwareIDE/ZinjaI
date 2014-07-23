@@ -77,7 +77,7 @@ void mxWelcomePanel::Reload() {
 void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':'));
 	if (action==_T("http")) {
-		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
+		mxUT::OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else if (action==_T("help")) {
 		mxHelpWindow::ShowHelp(event.GetLinkInfo().GetHref().AfterFirst(':'));
 	} else if (action==_T("open")) {
@@ -104,7 +104,7 @@ void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 		if (config->Init.new_file==0)
 			main_window->NewFileFromText("");
 		else
-			main_window->NewFileFromTemplate(utils->WichOne(config->Files.default_template,"templates",true));
+			main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
 	} else if (action==_T("open_file")) {
 		wxCommandEvent evt;
 		main_window->OnFileOpen(evt);

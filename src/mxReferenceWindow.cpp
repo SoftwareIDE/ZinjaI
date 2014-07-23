@@ -103,9 +103,9 @@ void mxReferenceWindow::OnSearch (wxString value, bool update_history) {
 
 bool mxReferenceWindow::OnLink (wxString href) {
 	if (href.StartsWith("http:")) {
-		utils->OpenInBrowser(href);
+		mxUT::OpenInBrowser(href);
 	} else if (href.StartsWith("file:")) {
-		utils->OpenInBrowser(DIR_PLUS_FILE(current_path,href.Mid(5)));
+		mxUT::OpenInBrowser(DIR_PLUS_FILE(current_path,href.Mid(5)));
 	} else if (href[0]=='#') {
 		html->ScrollToAnchor(href.AfterFirst('#'));
 	} else if (href.Contains("#")) {
@@ -264,7 +264,7 @@ bool mxReferenceWindow::PopulateInitialTree ( ) {
 						LANG(CPPREF_INSTALL_NOW,"Descargar e instalar ahora"),true).ShowModal();
 		if (res&mxMD_CHECKED) {
 			new mxComplementInstallerWindow(this); wxYield();
-			utils->OpenZinjaiSite("cppreference.html");
+			mxUT::OpenZinjaiSite("cppreference.html");
 		}
 		return false;
 	}

@@ -26,7 +26,7 @@ mxMultipleChoiceEditor::mxMultipleChoiceEditor(wxWindow *parent, wxString title,
 	
 	wxArrayString splitted_array;
 	wxArrayInt selection;
-	utils->Split(text->GetValue(),splitted_array,comma_splits,true);
+	mxUT::Split(text->GetValue(),splitted_array,comma_splits,true);
 	options_array.Sort();
 	int p=options_array.Index("all");
 	if (p!=wxNOT_FOUND) {

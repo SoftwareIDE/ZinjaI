@@ -54,11 +54,11 @@ mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* paren
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 
-	compiler_options_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_COMPILER_ARGS,"Parametros extra para el compilador"),source->GetCompilerOptions(false),mxID_COMPILE_OPTIONS_COMP_EXTRA);
-	working_folder_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_WORKDIR,"Directorio de trabajo"),source->working_folder.GetFullPath(),mxID_WORKING_FOLDER);
-	args_ctrl = utils->AddDirCtrl(mySizer,this,LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion"),source->exec_args,mxID_ARGS_BUTTON);
-	always_ask_args_ctrl = utils->AddCheckBox(mySizer,this,LANG(COMPILECONF_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),source->config_running.always_ask_args);
-	wait_for_key_ctrl = utils->AddCheckBox(mySizer,this,LANG(COMPILECONF_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),source->config_running.wait_for_key);
+	compiler_options_ctrl = mxUT::AddDirCtrl(mySizer,this,LANG(COMPILECONF_COMPILER_ARGS,"Parametros extra para el compilador"),source->GetCompilerOptions(false),mxID_COMPILE_OPTIONS_COMP_EXTRA);
+	working_folder_ctrl = mxUT::AddDirCtrl(mySizer,this,LANG(COMPILECONF_WORKDIR,"Directorio de trabajo"),source->working_folder.GetFullPath(),mxID_WORKING_FOLDER);
+	args_ctrl = mxUT::AddDirCtrl(mySizer,this,LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion"),source->exec_args,mxID_ARGS_BUTTON);
+	always_ask_args_ctrl = mxUT::AddCheckBox(mySizer,this,LANG(COMPILECONF_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),source->config_running.always_ask_args);
+	wait_for_key_ctrl = mxUT::AddCheckBox(mySizer,this,LANG(COMPILECONF_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),source->config_running.wait_for_key);
 	mySizer->Add(new wxStaticText(this,wxID_ANY," "),sizers->Exp0);
 
 	last_dir=source->working_folder.GetFullPath();
@@ -210,10 +210,10 @@ void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {
 
 	wxMenu *templates=new wxMenu; opts_list.Clear();
 	wxArrayString templates_list;
-	utils->GetFilesFromBothDirs(templates_list,"templates");
+	mxUT::GetFilesFromBothDirs(templates_list,"templates");
 	for(unsigned int i=0;i<templates_list.GetCount();i++) {
 		wxString name=templates_list[i], options;
-		wxString filename = utils->WichOne(name,"templates",true);
+		wxString filename = mxUT::WichOne(name,"templates",true);
 		wxTextFile file(filename);
 		file.Open();
 		if (file.IsOpened()) { 

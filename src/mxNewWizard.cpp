@@ -188,7 +188,7 @@ void mxNewWizard::OnClose(wxCloseEvent &event){
 
 void mxNewWizard::OnProjectCreate() {
 	int sel=onproject_radio->GetSelection();	
-	wxString name = utils->LeftTrim(onproject_name->GetValue());
+	wxString name = mxUT::LeftTrim(onproject_name->GetValue());
 	if (sel==3) { // clase
 		wxString folder;
 		int pos1=name.Find('\\',true);
@@ -559,7 +559,7 @@ void mxNewWizard::ProjectCreate() {
 		project_file.Write();
 		project_file.Close();
 	} else {
-		wxString ofull=utils->WichOne(project_templates[cual],"templates",false);
+		wxString ofull=mxUT::WichOne(project_templates[cual],"templates",false);
 		if (custom_files) { // si usa los archivos actuales, copiar solo el archivo de proyecto
 			wxString str;
 			wxTextFile fin(DIR_PLUS_FILE(ofull,project_templates[cual]+"."+_T(PROJECT_EXT))); fin.Open();
@@ -580,7 +580,7 @@ void mxNewWizard::ProjectCreate() {
 			fout.Close();
 			fin.Close();
 		} else {
-			if (!utils->XCopy(ofull,full,true)) {
+			if (!mxUT::XCopy(ofull,full,true)) {
 				mxMessageDialog(this,LANG(NEWWIZARD_ERROR_ON_FILE_COPY,"Error al copiar los archivos del proyecto. Compruebe que la ubicacion sea correcta."),LANG(GENERIC_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 				return;
 			}
@@ -859,14 +859,14 @@ void mxNewWizard::CreatePanelTemplates() {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
 	wxArrayString templates;
-	utils->GetFilesFromBothDirs(templates,"templates",true);
+	mxUT::GetFilesFromBothDirs(templates,"templates",true);
 	
 	for (unsigned int i=0; i<templates.GetCount();i++) {
 		wxString name_prefix = wxString("// !Z! Name_")<<config->Init.language_file<<":";
 		wxString name = templates[i];
 		wxString local_name = "";
 		if (config->Files.default_template==name)	templates_default = i;
-		wxString filename = utils->WichOne(name,"templates",true);
+		wxString filename = mxUT::WichOne(name,"templates",true);
 		wxTextFile file(filename);
 		file.Open();
 		if (file.IsOpened()) { 
@@ -1017,11 +1017,11 @@ void mxNewWizard::CreatePanelProject2() {
 		project_default=0;
 	
 	wxArrayString templates_array;
-	utils->GetFilesFromBothDirs(templates_array,"templates",false);
+	mxUT::GetFilesFromBothDirs(templates_array,"templates",false);
 	
 	for(unsigned int i=0;i<templates_array.GetCount();i++) {
 		wxString name = templates_array[i];
-		wxString full = utils->WichOne(name,"templates",false);
+		wxString full = mxUT::WichOne(name,"templates",false);
 		if (wxFileName::FileExists(DIR_PLUS_FILE(full,name+DOT_PROJECT_EXT))) {
 			if (name==config->Files.default_project) project_default=i;
 			wxTextFile file(DIR_PLUS_FILE(full,name+"."+_T(PROJECT_EXT)));
@@ -1203,7 +1203,7 @@ void mxNewWizard::OnOnProjectNameChange(wxCommandEvent &evt) {
 	if (name.Contains("/")) name=name.AfterLast('/');
 	if (name.Contains("\\")) name=name.AfterLast('\\');
 	if (name.Contains(".")) {
-		eFileType t = utils->GetFileType(name,false);
+		eFileType t = mxUT::GetFileType(name,false);
 		if (t==FT_SOURCE) onproject_radio->SetSelection(0);
 		else if (t==FT_HEADER) onproject_radio->SetSelection(1);
 		else onproject_radio->SetSelection(2);

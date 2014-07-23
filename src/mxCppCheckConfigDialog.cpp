@@ -76,23 +76,23 @@ wxPanel *mxCppCheckConfigDialog::CreateGeneralPanel(wxNotebook *notebook) {
 	
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	
-	copy_from_config = utils->AddCheckBox(mySizer,panel,LANG(CPPCHECK_COPY_FROM_CONFIG,"Copiar configuración (macros definidas) de las opciones del proyecto"),ccc->copy_from_config,mxID_CPPCHECK_COPYCONFIG);
-	config_d = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_D,"  Configuraciones a verificar"),ccc->config_d,mxID_CPPCHECK_CONFIG_D,"...",false);
-	config_u = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_U,"  Configuraciones a saltear"),ccc->config_u,mxID_CPPCHECK_CONFIG_U,"...",false);
+	copy_from_config = mxUT::AddCheckBox(mySizer,panel,LANG(CPPCHECK_COPY_FROM_CONFIG,"Copiar configuración (macros definidas) de las opciones del proyecto"),ccc->copy_from_config,mxID_CPPCHECK_COPYCONFIG);
+	config_d = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_D,"  Configuraciones a verificar"),ccc->config_d,mxID_CPPCHECK_CONFIG_D,"...",false);
+	config_u = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_U,"  Configuraciones a saltear"),ccc->config_u,mxID_CPPCHECK_CONFIG_U,"...",false);
 	
 	config_u->Enable(!copy_from_config->GetValue()); config_d->Enable(!copy_from_config->GetValue());
 	
-	style = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STYLE,"Verificaciones adicionales"),ccc->style,mxID_CPPCHECK_STYLE,"...");
+	style = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STYLE,"Verificaciones adicionales"),ccc->style,mxID_CPPCHECK_STYLE,"...");
 	
-	platform = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_PLATFORM,"Verificaciones especificas de una plataforma"),ccc->platform,mxID_CPPCHECK_PLATFORM);
+	platform = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_PLATFORM,"Verificaciones especificas de una plataforma"),ccc->platform,mxID_CPPCHECK_PLATFORM);
 	
-	standard = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STANDARD,"Verificaciones especificas de un estándar"),ccc->standard,mxID_CPPCHECK_STANDARD);
+	standard = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STANDARD,"Verificaciones especificas de un estándar"),ccc->standard,mxID_CPPCHECK_STANDARD);
 	
-	suppress_ids = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_IDS,"Supresiones"),ccc->suppress_ids,mxID_CPPCHECK_SUPPRESS_IDS);
-	suppress_file = utils->AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_FILE,"Archivo con lista de supresiones"),ccc->suppress_file,mxID_CPPCHECK_SUPPRESS_FILE);
-	inline_suppr = utils->AddCheckBox(mySizer,panel,LANG(CPPCHECK_INLINE_SUPPR,"Habilitar supresiones inline"),ccc->inline_suppr);
+	suppress_ids = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_IDS,"Supresiones"),ccc->suppress_ids,mxID_CPPCHECK_SUPPRESS_IDS);
+	suppress_file = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_FILE,"Archivo con lista de supresiones"),ccc->suppress_file,mxID_CPPCHECK_SUPPRESS_FILE);
+	inline_suppr = mxUT::AddCheckBox(mySizer,panel,LANG(CPPCHECK_INLINE_SUPPR,"Habilitar supresiones inline"),ccc->inline_suppr);
 	
-	save_in_project = utils->AddCheckBox(mySizer,panel,LANG(CPPCHECK_SAVE,"Guardar esta configuración con el proyecto"),ccc->save_in_project);
+	save_in_project = mxUT::AddCheckBox(mySizer,panel,LANG(CPPCHECK_SAVE,"Guardar esta configuración con el proyecto"),ccc->save_in_project);
 	
 	panel->SetSizer(mySizer);
 	return panel;
@@ -120,7 +120,7 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	src_sizer->Add(szsrc_in,sizers->Exp1);
 	
 	wxArrayString array;
-	utils->Split(ccc->exclude_list,array,true,false);
+	mxUT::Split(ccc->exclude_list,array,true,false);
 	LocalListIterator<project_file_item*> fi(&project->files_sources);
 	while(fi.IsValid()) {
 		if (array.Index(fi->name)==wxNOT_FOUND)
@@ -183,7 +183,7 @@ void mxCppCheckConfigDialog::OnButtonStandard (wxCommandEvent & evt) {
 void mxCppCheckConfigDialog::OnButtonSuppressFile (wxCommandEvent & evt) {
 	wxFileDialog dlg(this,_T("Ubicacion del ejecutable:"),DIR_PLUS_FILE(project->path,suppress_file->GetValue()));
 	if (wxID_OK==dlg.ShowModal())
-		suppress_file->SetValue(utils->Relativize(dlg.GetPath(),project->path));
+		suppress_file->SetValue(mxUT::Relativize(dlg.GetPath(),project->path));
 }
 
 void mxCppCheckConfigDialog::OnButtonSuppressIds (wxCommandEvent & evt) {
@@ -218,7 +218,7 @@ void mxCppCheckConfigDialog::OnButtonOk (wxCommandEvent & evt) {
 	if (!project) return;
 	ccc->exclude_list.Clear();
 	for (unsigned int i=0;i<sources_out->GetCount();i++)
-		ccc->exclude_list<<utils->Quotize(sources_out->GetString(i))<<" ";
+		ccc->exclude_list<<mxUT::Quotize(sources_out->GetString(i))<<" ";
 	ccc->copy_from_config=copy_from_config->GetValue();
 	ccc->config_d=config_d->GetValue();
 	ccc->config_u=config_u->GetValue();

@@ -58,11 +58,11 @@ bool CodeExporter::ExportHtml(mxSource *src, wxString title, wxString fname) {
 			
 		if (styles[s].used) {
 			wxString code(_T("<SPAN class=\"SS"));
-			code<<s<<_T("\">")<<utils->ToHtml(src->GetTextRange(p0,p1))<<_T("</SPAN>");
+			code<<s<<_T("\">")<<mxUT::ToHtml(src->GetTextRange(p0,p1))<<_T("</SPAN>");
 			fil.Write(code);
 		} else {
 			wxString code(_T("<SPAN class=\"SSD"));
-			code<<s<<_T("\">")<<utils->ToHtml(src->GetTextRange(p0,p1))<<_T("</SPAN>");
+			code<<s<<_T("\">")<<mxUT::ToHtml(src->GetTextRange(p0,p1))<<_T("</SPAN>");
 			fil.Write(code);
 		}
 		
@@ -76,7 +76,7 @@ bool CodeExporter::ExportHtml(mxSource *src, wxString title, wxString fname) {
 
 	fil.Close();
 	
-	utils->OpenInBrowser(fname);
+	mxUT::OpenInBrowser(fname);
 	
 	main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	

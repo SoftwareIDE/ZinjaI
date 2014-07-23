@@ -19,13 +19,13 @@ MyAutocompList autocomp_list;
 // comparacion con distancia de Levenshtein
 /*#define CH_COMPARE(typed,aux,i,l,max_str_dist)\*/
 /*	if (max_str_dist) \*/
-/*		i = utils->Levenshtein(typed.mb_str(),typed.Len(),aux.mb_str(),aux.Len())<=max_str_dist?l:0; \*/
+/*		i = mxUT::Levenshtein(typed.mb_str(),typed.Len(),aux.mb_str(),aux.Len())<=max_str_dist?l:0; \*/
 /*	else { \*/
 /*		i=0; \*/
 /*		while (i<l && (amux[i]|32)==typed[i]) \*/
 /*			i++; \*/
 /*	}\*/
-/*	if (i==l) cerr<<typed<<"  "<<aux<<"  "<<utils->Levenshtein(typed.mb_str(),l,aux.mb_str(),aux.Len())<<"   "<<max_str_dist<<endl; \*/
+/*	if (i==l) cerr<<typed<<"  "<<aux<<"  "<<mxUT::Levenshtein(typed.mb_str(),l,aux.mb_str(),aux.Len())<<"   "<<max_str_dist<<endl; \*/
 
 // comparacion con normal letra a letra no case sensitive
 #define CH_COMPARE(typed,aux,i,l,max_str_dist)\
@@ -818,7 +818,7 @@ void CodeHelper::ResetStdData() {
 }
 
 bool CodeHelper::LoadData(wxString index) {
-	wxString filepath=utils->WichOne(index,"autocomp",true);
+	wxString filepath=mxUT::WichOne(index,"autocomp",true);
 	if (!filepath.Len()) return false;
 	wxTextFile fil(filepath);
 	actual_indexes.Add(index);
@@ -1002,8 +1002,8 @@ bool CodeHelper::LoadData(wxString index) {
 		}
 	}
 	
-	utils->SortArrayString(preproc_directives.keywords);
-	utils->SortArrayString(doxygen_directives.keywords);
+	mxUT::SortArrayString(preproc_directives.keywords);
+	mxUT::SortArrayString(doxygen_directives.keywords);
 	
 	parser->last_file=parser->first_file;
 	if (parser->last_file->next) {
@@ -1049,7 +1049,7 @@ wxString CodeHelper::GetInclude(wxString path, wxString key) {
 				wxFileName fn(aux_class->file->name);
 				if (project) {
 					wxArrayString header_dirs_array;
-					utils->Split(project->active_configuration->headers_dirs,header_dirs_array,true,false);
+					mxUT::Split(project->active_configuration->headers_dirs,header_dirs_array,true,false);
 					unsigned int i;
 					for (i=0;i<header_dirs_array.GetCount();i++) {
 						if (wxFileName(DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,header_dirs_array[i]),fn.GetFullName()))==fn)
@@ -1305,10 +1305,10 @@ bool CodeHelper::GenerateAutocompletionIndex(wxString path, wxString filename) {
 **/
 void CodeHelper::ReloadIndexes(wxString indexes) {
 	wxArrayString new_list;
-	utils->Split(indexes,new_list,true,false); // cortar indices
-	utils->Purgue(new_list,true); // ordenar y eliminar repetidos
+	mxUT::Split(indexes,new_list,true,false); // cortar indices
+	mxUT::Purgue(new_list,true); // ordenar y eliminar repetidos
 	actual_indexes.Clear();
-	if (!utils->Compare(actual_indexes,new_list)) { // comparar
+	if (!mxUT::Compare(actual_indexes,new_list)) { // comparar
 		ResetStdData(); // borrar la lista actual
 		for (unsigned int i=0;i<new_list.GetCount();i++)
 			LoadData(new_list[i]); // cargar datos y agregar a la lista
@@ -1323,7 +1323,7 @@ void CodeHelper::ReloadIndexes(wxString indexes) {
 **/
 void CodeHelper::AppendIndexes(wxString indexes) {
 	wxArrayString new_list;
-	utils->Split(indexes,new_list,true,false);
+	mxUT::Split(indexes,new_list,true,false);
 	for (unsigned int i=0;i<new_list.GetCount();i++) {
 #if defined(_WIN32) || defined(__WIN32__)
 		if (actual_indexes.Index(new_list[i],false)==wxNOT_FOUND)
@@ -1352,10 +1352,10 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 	
 	if (!template_map_filled) {
 		template_map_filled=true; wxArrayString templates_list;
-		utils->GetFilesFromBothDirs(templates_list,"templates");
+		mxUT::GetFilesFromBothDirs(templates_list,"templates");
 		for(unsigned int i=0;i<templates_list.GetCount();i++) {
 			wxString name=templates_list[i], options, includes;
-			wxString filename = utils->WichOne(name,"templates",true);
+			wxString filename = mxUT::WichOne(name,"templates",true);
 			wxTextFile file(filename);
 			file.Open();
 			if (file.IsOpened()) { 
@@ -1375,7 +1375,7 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 				}
 				file.Close();
 				if (options.Len() && includes.Len()) {
-					wxArrayString ainc; utils->Split(includes,ainc,true,true);
+					wxArrayString ainc; mxUT::Split(includes,ainc,true,true);
 					temp_names.Add(name);
 					temp_args.Add(options);
 					for(unsigned int j=0;j<ainc.Count();j++) {
@@ -1466,7 +1466,7 @@ void MyAutocompList::Add(const wxString &keyword, const wxString &icon, const wx
 }
 
 wxString MyAutocompList::GetResult (bool sort) {
-	if (sort) utils->SortArrayString(keywords,0,count-1);
+	if (sort) mxUT::SortArrayString(keywords,0,count-1);
 	wxString text(keywords[0]);
 	for (unsigned int li=0,i=1;i<keywords.GetCount();i++)
 		if (keywords[li]!=keywords[i])

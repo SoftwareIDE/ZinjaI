@@ -46,7 +46,7 @@ mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_AN
 	
 
 	wxArrayString color_profiles;
-	utils->GetFilesFromBothDirs(color_profiles,"colours",true,"<personalizado>");
+	mxUT::GetFilesFromBothDirs(color_profiles,"colours",true,"<personalizado>");
 	bottomSizer->Add(new wxStaticText(this,wxID_ANY,LANG(COLOURS_ESCHEME,"Esquema:")),sizers->BA5_Center);
 	combo=new wxComboBox(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,color_profiles,wxCB_READONLY);
 	bottomSizer->Add(combo,sizers->BA5_Center);
@@ -380,8 +380,8 @@ bool color_theme::Save (const wxString &full_path) {
 #define CTLoad(name)\
 	else if (key==_T(#name"_FORE")) name##_FORE=wxColour(value);\
 	else if (key==_T(#name"_BACK")) name##_BACK=wxColour(value);\
-	else if (key==_T(#name"_BOLD")) name##_BOLD=utils->IsTrue(value);\
-	else if (key==_T(#name"_ITALIC")) name##_ITALIC=utils->IsTrue(value)
+	else if (key==_T(#name"_BOLD")) name##_BOLD=mxUT::IsTrue(value);\
+	else if (key==_T(#name"_ITALIC")) name##_ITALIC=mxUT::IsTrue(value)
 #define CTLoad0(name)\
 	else if (key==_T(#name"_FORE")) name##_FORE=wxColour(value);\
 	else if (key==_T(#name"_BACK")) name##_BACK=wxColour(value)
@@ -539,7 +539,7 @@ void mxColoursEditor::OnCombo (wxCommandEvent & evt) {
 		(*ctheme)=custom_theme;
 	} else {
 		wxString filename = combo->GetString(combo->GetSelection());
-		wxString fullpath = utils->WichOne(filename,"colours",true);
+		wxString fullpath = mxUT::WichOne(filename,"colours",true);
 		ctheme->Load(fullpath);
 	}
 	SetValues();

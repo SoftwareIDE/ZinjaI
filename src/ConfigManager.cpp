@@ -50,13 +50,13 @@ void ConfigManager::DoInitialChecks() {
 #else
 	// elegir un explorador de archivos
 	if (Files.explorer_command=="<<sin configurar>>") { // tratar de detectar automaticamente un terminal adecuado
-		if (utils->GetOutput("dolphin --version").Len())
+		if (mxUT::GetOutput("dolphin --version").Len())
 			Files.explorer_command = "dolphin";
-		if (utils->GetOutput("konqueror --version").Len())
+		if (mxUT::GetOutput("konqueror --version").Len())
 			Files.explorer_command = "konqueror";
-		else if (utils->GetOutput("nautilus --version").Len())
+		else if (mxUT::GetOutput("nautilus --version").Len())
 			Files.explorer_command = "nautilus";
-		else if (utils->GetOutput("thunar --version").Len())
+		else if (mxUT::GetOutput("thunar --version").Len())
 			Files.explorer_command = "thunar";
 	} 
 	
@@ -68,7 +68,7 @@ void ConfigManager::DoInitialChecks() {
 				Files.terminal_command = LinuxTerminalInfo::list[i].run_command;
 				if (LinuxTerminalInfo::list[i].warning) {
 					wxString chk_message; 
-					if (utils->GetOutput("apt-get --version").Len()) chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
+					if (mxUT::GetOutput("apt-get --version").Len()) chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 					int ans= mxMessageDialog(NULL,LANG1(CONFIG_TERMINAL_WARNING,"La aplicacion terminal que se ha encontrado instalada\n"
 						"es <{1}>. Algunas versiones de esta terminal pueden generar\n"
 						"problemas al intentar ejecutar un programa o proyecto. Si no logra\n"
@@ -92,15 +92,15 @@ void ConfigManager::DoInitialChecks() {
 		}
 	}
 	// verificar si hay compilador
-	if (!Init.compiler_seen && !utils->GetOutput("g++ --version").Len()) {
+	if (!Init.compiler_seen && !mxUT::GetOutput("g++ --version").Len()) {
 		// try to use clang if g++ not found
 		wxArrayString toolchains;
 		Toolchain::GetNames(toolchains,true);
-		if (toolchains.Index("clang")!=wxNOT_FOUND && utils->GetOutput("clang --version").Len()) {
+		if (toolchains.Index("clang")!=wxNOT_FOUND && mxUT::GetOutput("clang --version").Len()) {
 			Files.toolchain="clang"; Toolchain::SelectToolchain(); 
 		} else {
 			wxString chk_message; 
-			if (Files.terminal_command!="<<sin configurar>>" && utils->GetOutput("apt-get --version").Len())
+			if (Files.terminal_command!="<<sin configurar>>" && mxUT::GetOutput("apt-get --version").Len())
 				chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 			int ans = mxMessageDialog(NULL,LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
 				"con el gestor de paquetes que corresponda a su distribucion\n"
@@ -109,9 +109,9 @@ void ConfigManager::DoInitialChecks() {
 		}
 	} else Init.compiler_seen=true;
 	// verificar si hay depurador
-	if (!Init.debugger_seen && !utils->GetOutput("gdb --version").Len()) {
+	if (!Init.debugger_seen && !mxUT::GetOutput("gdb --version").Len()) {
 		wxString chk_message; 
-		if (Files.terminal_command!="<<sin configurar>>" && utils->GetOutput("apt-get --version").Len())
+		if (Files.terminal_command!="<<sin configurar>>" && mxUT::GetOutput("apt-get --version").Len())
 			chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 		int ans = mxMessageDialog(NULL,LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
 		                "el gestor de paquetes que corresponda a su distribucion\n"
@@ -145,7 +145,7 @@ bool ConfigManager::Load() {
 				else CFG_INT_READ_DN("font_size",Styles.font_size);
 				else CFG_GENERIC_READ_DN("font_name",Styles.font_name);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
-				else if (key=="dark") { if (utils->IsTrue(value)) Init.colour_theme="inverted.zcs";	}
+				else if (key=="dark") { if (mxUT::IsTrue(value)) Init.colour_theme="inverted.zcs";	}
 				
 			} else if (section=="Source") {
 				CFG_INT_READ_DN("tabWidth",Source.tabWidth);
@@ -303,14 +303,14 @@ bool ConfigManager::Load() {
 			} else if (section=="Columns") {
 				if (key.StartsWith("inspections_grid_")	) {
 					if (key.Mid(17).ToLong(&l) && l>=0 && l<IG_COLS_COUNT)
-						Cols.inspections_grid[l]=utils->IsTrue(value);
+						Cols.inspections_grid[l]=mxUT::IsTrue(value);
 				} else if (key.StartsWith("backtrace_grid_")	) {
 					if (key.Mid(15).ToLong(&l) && l>=0 && l<BG_COLS_COUNT)
-						Cols.backtrace_grid[l]=utils->IsTrue(value);
+						Cols.backtrace_grid[l]=mxUT::IsTrue(value);
 				}
 //				} else if (key.StartsWith("threadlist_grid_")	) {
 //					if (key.Mid(15).ToLong(&l) && l>=0 && l<TG_COLS_COUNT)
-//						Cols.threadlist_grid[l]=utils->IsTrue(value);
+//						Cols.threadlist_grid[l]=mxUT::IsTrue(value);
 //				}
 				
 			} else if (section=="CustomTools") {
@@ -780,7 +780,7 @@ bool ConfigManager::CheckWxfbPresent() {
 	if (config->Init.wxfb_seen) return true;
 	wxString out;
 	if (config->Files.wxfb_command.Len())
-		out = utils->GetOutput(wxString("\"")<<config->Files.wxfb_command<<"\" -h",true);
+		out = mxUT::GetOutput(wxString("\"")<<config->Files.wxfb_command<<"\" -h",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe"))
@@ -810,7 +810,7 @@ bool ConfigManager::CheckDoxygenPresent() {
 	if (config->Init.doxygen_seen) return true;
 	wxString out;
 	if (config->Files.doxygen_command.Len())
-		out = utils->GetOutput(wxString("\"")<<config->Files.doxygen_command<<"\" --version",true);
+		out = mxUT::GetOutput(wxString("\"")<<config->Files.doxygen_command<<"\" --version",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\doxygen\\bin\\doxygen.exe"))
@@ -839,7 +839,7 @@ bool ConfigManager::CheckCppCheckPresent() {
 	if (config->Init.cppcheck_seen) return true;
 	wxString out;
 	if (config->Files.cppcheck_command.Len())
-		out = utils->GetOutput(wxString("\"")<<config->Files.cppcheck_command<<"\" --version",true);
+		out = mxUT::GetOutput(wxString("\"")<<config->Files.cppcheck_command<<"\" --version",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\cppcheck\\cppcheck.exe"))
@@ -892,7 +892,7 @@ void ConfigManager::FinishiLoading ( ) {
 	// load syntax highlighting colors' scheme
 	color_theme::Initialize();
 	if (Init.colour_theme.IsEmpty()) ctheme->Load(DIR_PLUS_FILE(home_dir,"colours.zcs"));
-	else ctheme->Load(utils->WichOne(Init.colour_theme,"colours",true));
+	else ctheme->Load(mxUT::WichOne(Init.colour_theme,"colours",true));
 	
 	// check if extern tools are present and set some paths
 	Toolchain::LoadToolchains();

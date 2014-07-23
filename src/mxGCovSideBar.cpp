@@ -97,8 +97,8 @@ void mxGCovSideBar::LoadData () {
 	wxFileName binary= src->GetBinaryFileName();
 	wxFileName fname= binary.GetFullPath().BeforeLast('.')+"."+src->GetFileName(true).AfterLast('.')+".gcov";
 	if (binary.FileExists() && (!fname.FileExists() || fname.GetModificationTime()<binary.GetModificationTime())) { 
-		wxString command="gcov "; command<<utils->Quotize(binary.GetName());
-		utils->Execute(binary.GetPath(),command,wxEXEC_SYNC);
+		wxString command="gcov "; command<<mxUT::Quotize(binary.GetName());
+		mxUT::Execute(binary.GetPath(),command,wxEXEC_SYNC);
 	}
 	
 	wxTextFile fil(fname.GetFullPath());

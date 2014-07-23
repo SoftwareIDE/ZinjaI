@@ -62,7 +62,7 @@ void mxAboutWindow::OnClose(wxCloseEvent &event){
 
 void mxAboutWindow::OnLink (wxHtmlLinkEvent &event) {
 	if (event.GetLinkInfo().GetHref().StartsWith("http://")) {
-		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
+		mxUT::OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else {
 		event.Skip();
 	}

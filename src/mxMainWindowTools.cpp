@@ -64,33 +64,33 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		project->SaveAll(false);
 		if (!project->cppcheck) project->cppcheck=new cppcheck_configuration;
 		wxArrayString files,exclude_list;
-		utils->Split(project->cppcheck->exclude_list,exclude_list,true,false);
+		mxUT::Split(project->cppcheck->exclude_list,exclude_list,true,false);
 		project->GetFileList(files,FT_SOURCE,true);
 		wxString list(DIR_PLUS_FILE(config->temp_dir,"cppcheck.lst"));
 		wxFile flist(list,wxFile::write);
 		char el='\n';
 		for (unsigned int i=0;i<files.GetCount();i++) {
 			if (exclude_list.Index(files[i])==wxNOT_FOUND) {
-				flist.Write(/*utils->Quotize(*/DIR_PLUS_FILE(project->path,files[i])/*)*/);
+				flist.Write(/*mxUT::Quotize(*/DIR_PLUS_FILE(project->path,files[i])/*)*/);
 				flist.Write((void*)&el,1);
 			}
 		}
 		flist.Close();
-		file_args=wxString("--file-list=")<<utils->Quotize(list);
+		file_args=wxString("--file-list=")<<mxUT::Quotize(list);
 
 		project->AnalizeConfig(project->path,true,current_toolchain.mingw_dir,true);
 		toargs=project->cpp_compiling_options;
 		
 		// extra_args
 		if (project->cppcheck->copy_from_config)
-			extra_args<<utils->Split(project->cppcheck->config_d,"-D")<<" "<<utils->Split(project->cppcheck->config_u,"-U");
+			extra_args<<mxUT::Split(project->cppcheck->config_d,"-D")<<" "<<mxUT::Split(project->cppcheck->config_u,"-U");
 		
 		// cppargs
-		cppargs<<utils->Split(project->cppcheck->style,"--enable=")<<" ";
-		cppargs<<utils->Split(project->cppcheck->platform,"--platform=")<<" ";
-		cppargs<<utils->Split(project->cppcheck->standard,"--std=")<<" ";
-		cppargs<<utils->Split(project->cppcheck->suppress_ids,"--suppress=")<<" ";
-		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list="<<utils->Quotize(DIR_PLUS_FILE(project->path,project->cppcheck->suppress_file))<<" ";
+		cppargs<<mxUT::Split(project->cppcheck->style,"--enable=")<<" ";
+		cppargs<<mxUT::Split(project->cppcheck->platform,"--platform=")<<" ";
+		cppargs<<mxUT::Split(project->cppcheck->standard,"--std=")<<" ";
+		cppargs<<mxUT::Split(project->cppcheck->suppress_ids,"--suppress=")<<" ";
+		if (project->cppcheck->suppress_file.Len()) cppargs<<"--suppressions_list="<<mxUT::Quotize(DIR_PLUS_FILE(project->path,project->cppcheck->suppress_file))<<" ";
 		if (project->cppcheck->inline_suppr) cppargs<<"--inline-suppr ";
 		
 		// path
@@ -101,7 +101,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		mxSource *src = CURRENT_SOURCE;
 		
 		//files
-		file_args = utils->Quotize(src->SaveSourceForSomeTool());
+		file_args = mxUT::Quotize(src->SaveSourceForSomeTool());
 		
 		// toargs
 		toargs=src->GetCompilerOptions(true);
@@ -117,7 +117,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	// args, lo que sale de las opciones de compilacion
 	wxString args; // -D..., -I...., -U....
 	wxArrayString array;
-	utils->Split(toargs,array,false,true);
+	mxUT::Split(toargs,array,false,true);
 	for (unsigned int i=0;i<array.GetCount();i++) {
 		if ((!project || project->cppcheck->copy_from_config) && array[i].StartsWith("-D")) {
 			if (array[i].Len()==2) {
@@ -145,7 +145,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	}
 	if (extra_args.Len()) args<<" "<<extra_args;
 	
-	wxString command = utils->Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \"[{file}:{line}] ({severity},{id}) {message}\" "<<args<<" "<<file_args;
+	wxString command = mxUT::Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \"[{file}:{line}] ({severity},{id}) {message}\" "<<args<<" "<<file_args;
 	cppcheck->Launch(path,command);
 	
 }
@@ -173,7 +173,7 @@ void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 * vuelva a ser normal
 **/
 void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
-	if (!config->Init.valgrind_seen && !utils->GetOutput(wxString("\"")<<config->Files.valgrind_command<<"\" --version").Len()) {
+	if (!config->Init.valgrind_seen && !mxUT::GetOutput(wxString("\"")<<config->Files.valgrind_command<<"\" --version").Len()) {
 		mxMessageDialog(main_window,LANG(MAINW_VALGRIND_MISSING,"Valgrind no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
 			"http://www.valgrind.org. Si ya se encuentra instalado,\n"
@@ -211,11 +211,11 @@ void mxMainWindow::OnToolsConsole(wxCommandEvent &evt) {
 	else IF_THERE_IS_SOURCE 
 		path=CURRENT_SOURCE->GetPath(true);
 #if defined(__APPLE__)
-	utils->Execute(path,"/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal",wxEXEC_NOHIDE);
+	mxUT::Execute(path,"/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal",wxEXEC_NOHIDE);
 #elif defined(__WIN32__)
-	utils->Execute(path,"cmd",wxEXEC_NOHIDE);
+	mxUT::Execute(path,"cmd",wxEXEC_NOHIDE);
 #else
-	utils->Execute(path,config->Files.terminal_command.BeforeFirst(' '),wxEXEC_NOHIDE);
+	mxUT::Execute(path,config->Files.terminal_command.BeforeFirst(' '),wxEXEC_NOHIDE);
 #endif
 }
 
@@ -233,7 +233,7 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		
 		wxString fname=DIR_PLUS_FILE(project->path,name);
 		wxString fbase=fname;
-		if (utils->EndsWithNC(fbase,".FBP"))
+		if (mxUT::EndsWithNC(fbase,".FBP"))
 			fbase=fbase.Mid(0,fbase.Len()-4);
 		else
 			fname = fname+".fbp";
@@ -284,7 +284,7 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 			h_file.Close();
 		}
 		
-		if (utils->EndsWithNC(name,".FBP")) name=name.Mid(0,name.Len()-4);
+		if (mxUT::EndsWithNC(name,".FBP")) name=name.Mid(0,name.Len()-4);
 		if (!wxFileName::FileExists(fname)) {
 			// crear el fbp
 			wxTextFile fbp_file(fname);
@@ -389,12 +389,12 @@ void mxMainWindow::OnToolsWxfbHelp(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsWxfbHelpWx(wxCommandEvent &event) {
 	if (wxFileName::FileExists(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index)))
-		utils->OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
+		mxUT::OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
 	else if (mxMD_OK==mxMessageDialog(this,"ZinjaI no pudo encontrar la ayuda de wxWidgets. A continuacion le permitira buscarla\nmanualmente y luego recordara esta seleccion (en cualquier momento se puede modificar\ndesde el cuadro de Preferencias). Usualmente, el archivo indice es \"wx_contents.html\".","Ayuda wxWidgets",(mxMD_INFO|mxMD_OK_CANCEL)).ShowModal()) {
 		wxFileDialog dlg(this,"Indice de ayuda wxWidgets:",config->Help.wxhelp_index);
 		if (wxID_OK==dlg.ShowModal()) {
 			config->Help.wxhelp_index=dlg.GetPath();
-			utils->OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
+			mxUT::OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
 		}
 	}
 }
@@ -506,7 +506,7 @@ void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsDoxyView(wxCommandEvent &event) {
 	if (project) {
-		utils->OpenInBrowser(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE("html","index.html"))));
+		mxUT::OpenInBrowser(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,DIR_PLUS_FILE("html","index.html"))));
 	}
 }
 
@@ -529,9 +529,9 @@ void mxMainWindow::OnToolsGprofHelp (wxCommandEvent &event) {
 
 bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, wxString arg) {
 	if (project) {
-		bool present = utils->IsArgumentPresent(project->active_configuration->compiling_extra,arg);
-		utils->SetArgument(project->active_configuration->compiling_extra,arg,!present);
-		utils->SetArgument(project->active_configuration->linking_extra,arg,!present);
+		bool present = mxUT::IsArgumentPresent(project->active_configuration->compiling_extra,arg);
+		mxUT::SetArgument(project->active_configuration->compiling_extra,arg,!present);
+		mxUT::SetArgument(project->active_configuration->linking_extra,arg,!present);
 		if (mxMD_YES==mxMessageDialog(this,wxString(!present?
 			(LANG1(MAINW_GPROF_GPROF_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.",tool)):
 			(LANG1(MAINW_GPROF_GPROF_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.",tool))
@@ -546,8 +546,8 @@ bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, w
 	} else IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE; 
 		wxString comp_opts=src->GetCompilerOptions(false);
-		bool present = utils->IsArgumentPresent(comp_opts,arg);
-		utils->SetArgument(comp_opts,arg,!present);
+		bool present = mxUT::IsArgumentPresent(comp_opts,arg);
+		mxUT::SetArgument(comp_opts,arg,!present);
 		src->SetCompilerOptions(comp_opts);
 		mxMessageDialog(this,wxString(!present?
 			(LANG1(MAINW_GPROF_GPROF_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.",tool)):
@@ -594,10 +594,10 @@ wxString mxMainWindow::OnToolsGprofShowListAux(bool include_command) {
 	mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
 	wxString command("gprof -b ");
 	if (project)
-		command<<utils->Quotize(project->GetExePath());
+		command<<mxUT::Quotize(project->GetExePath());
 	else IF_THERE_IS_SOURCE
-		command<<utils->Quotize(CURRENT_SOURCE->GetBinaryFileName().GetFullPath());
-	command<<" "<<utils->Quotize(gmon);
+		command<<mxUT::Quotize(CURRENT_SOURCE->GetBinaryFileName().GetFullPath());
+	command<<" "<<mxUT::Quotize(gmon);
 	// ...y capturar salida en un archivo de texto
 	wxString gout = DIR_PLUS_FILE(config->temp_dir,"gprof.txt");
 	wxRemoveFile(gout); // eliminar resultados previos para evitar problemas
@@ -644,13 +644,13 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	wxString command="python graphviz/gprof2dot/gprof2dot.py ";
 #endif
 	nodt.ToDouble(&edge_tres); edgt.ToDouble(&node_tres);
-	command<<utils->Quotize(gout)<<" -e "<<edge_tres<<" -n "<<node_tres<<" -o "<<utils->Quotize(pout);
+	command<<mxUT::Quotize(gout)<<" -e "<<edge_tres<<" -n "<<node_tres<<" -o "<<mxUT::Quotize(pout);
 	int retval=mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
 	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 2).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
 	
 	// mostrar el grafo
 	status_bar->SetStatusText(LANG(MAINW_GPROF_SHOWING,"Mostrando resultados..."));
-	retval = utils->ProcessGraph(pout,!config->Init.graphviz_dot,"",LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling"));
+	retval = mxUT::ProcessGraph(pout,!config->Init.graphviz_dot,"",LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling"));
 	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 3).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
 	status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	
@@ -764,7 +764,7 @@ void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		wxString the_one;
-		if (source->sin_titulo || !(the_one=utils->GetComplementaryFile(source->source_filename,FT_SOURCE)).Len()) {
+		if (source->sin_titulo || !(the_one=mxUT::GetComplementaryFile(source->source_filename,FT_SOURCE)).Len()) {
 			mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_HEADER_FOUND,"No se pudo determinar el archivo de cabecera asociado."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 			return;
 		}
@@ -883,10 +883,10 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		project->AnalizeConfig(project->path,true,current_toolchain.mingw_dir,true);
 		bool cpp = fname.Last()!='c';
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
-			(cpp?project->cpp_compiling_options:project->c_compiling_options)+" "+utils->Quotize(fname)+" -c -E -o "+utils->Quotize(bin_name);
+			(cpp?project->cpp_compiling_options:project->c_compiling_options)+" "+mxUT::Quotize(fname)+" -c -E -o "+mxUT::Quotize(bin_name);
 		if (id_command==1) command<<" -fdirectives-only -C";
 		_IF_DEBUGMODE(command);
-		int x =utils->Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
+		int x =mxUT::Execute(project->path,command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
 			_IF_DEBUGMODE(x);
 			osd.Hide();
@@ -907,7 +907,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		wxString comp_opts = src->GetCompilerOptions();
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+fname+"\" "+comp_opts+" -o \""+bin_name<<"\"";
 		_IF_DEBUGMODE(command);
-		int x =utils->Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
+		int x =mxUT::Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
 		if (x!=0) { 
 			_IF_DEBUGMODE(x);
 			osd.Hide();
@@ -987,7 +987,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		project->project_name=project_name; // restore original project name
 		project->CleanAll(); // remove temp files
 		wxString dest_dir=DIR_PLUS_FILE(user_templates_dir,filename);
-		wxFileName::Mkdir(dest_dir); utils->XCopy(project->path,dest_dir,true); // copy all project files
+		wxFileName::Mkdir(dest_dir); mxUT::XCopy(project->path,dest_dir,true); // copy all project files
 		wxString zpr=wxFileName(project->filename).GetFullName(); 
 		wxString orig_zpr=DIR_PLUS_FILE(dest_dir,zpr);
 		wxString dest_zpr=DIR_PLUS_FILE(dest_dir,filename+DOT_PROJECT_EXT);
@@ -1035,7 +1035,7 @@ void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
 		wxString path=project->GetTempFolder();
 		if (mxMD_NO==mxMessageDialog(this,wxString("Se eliminarán todos los archivos con extensión .gcov, .gcno y .gcda del\ndirectorio de temporales (")<<path<<")\n¿Desea Continuar?","gcov",(mxMD_YES_NO|mxMD_WARNING)).ShowModal()) return;
 		wxArrayString array;
-		utils->GetFilesFromDir(array,path,true);
+		mxUT::GetFilesFromDir(array,path,true);
 		for(unsigned int i=0;i<array.GetCount();i++) { 
 			if (array[i].EndsWith(".gcov")||array[i].EndsWith(".gcda")||array[i].EndsWith(".gcno"))
 				wxRemoveFile(DIR_PLUS_FILE(path,array[i]));

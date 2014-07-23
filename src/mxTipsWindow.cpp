@@ -129,7 +129,7 @@ void mxTipsWindow::OnKeyDown(wxKeyEvent &evt) {
 void mxTipsWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':'));
 	if (action=="http") {
-		utils->OpenInBrowser(event.GetLinkInfo().GetHref());
+		mxUT::OpenInBrowser(event.GetLinkInfo().GetHref());
 	} else if (action=="help") {
 		mxHelpWindow::ShowHelp(event.GetLinkInfo().GetHref().AfterFirst(':'));
 	}

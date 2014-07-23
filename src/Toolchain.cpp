@@ -15,12 +15,12 @@ Toolchain current_toolchain;
 void Toolchain::LoadToolchains ( ) {
 	if (toolchains) delete [] toolchains;
 	wxArrayString toolchain_files;
-	utils->GetFilesFromBothDirs(toolchain_files,"toolchains");
+	mxUT::GetFilesFromBothDirs(toolchain_files,"toolchains");
 	toolchains_count=toolchain_files.GetCount();
 	toolchains=new Toolchain[toolchains_count];
 	for (int i=0; i<toolchains_count;i++) {
 		toolchains[i].file = toolchains[i].file = toolchain_files[i];
-		wxString filename = utils->WichOne(toolchain_files[i],"toolchains",true);
+		wxString filename = mxUT::WichOne(toolchain_files[i],"toolchains",true);
 		wxTextFile file(filename); file.Open();
 		if (file.IsOpened()) {
 			wxString key, value;
@@ -146,7 +146,7 @@ void Toolchain::SetPaths() {
 		if (!original_path.Len()) wxGetEnv("PATH",&original_path);
 		if (current_toolchain.bin_path.Len()) {
 			wxString new_path=original_path;
-			wxArrayString array; utils->Split(current_toolchain.bin_path,array,true,false);
+			wxArrayString array; mxUT::Split(current_toolchain.bin_path,array,true,false);
 			for(unsigned int i=0;i<array.GetCount();i++) 
 				new_path=wxFileName(DIR_PLUS_FILE(config->zinjai_dir,array[i])).GetShortPath()+";"+new_path;
 			wxSetEnv("PATH",new_path);
@@ -221,7 +221,7 @@ wxString Toolchain::GetExtraCompilingArguments (bool cpp) {
 bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 	if (cpp) {
 		if (version_cpp<0) {
-			wxString str=utils->GetOutput(cpp_compiler+" -dumpversion");
+			wxString str=mxUT::GetOutput(cpp_compiler+" -dumpversion");
 			if (str.Len()==0) return false;
 			long v,s;
 			str.BeforeFirst('.').ToLong(&v);
@@ -232,7 +232,7 @@ bool Toolchain::CheckVersion(bool cpp, int _v, int _s) {
 		return version_cpp>=_v*1000+_s;
 	} else {
 		if (version_c<0) {
-			wxString str=utils->GetOutput(c_compiler+" -dumpversion");
+			wxString str=mxUT::GetOutput(c_compiler+" -dumpversion");
 			if (str.Len()==0) return false;
 			long v,s;
 			str.BeforeFirst('.').ToLong(&v);

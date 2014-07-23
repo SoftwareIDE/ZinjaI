@@ -29,23 +29,23 @@ mxMakefileDialog::mxMakefileDialog(wxWindow* parent, wxWindowID id, const wxPoin
 		if (project->configurations[i]==project->active_configuration)
 			sel=i;
 	}
-	configuration_name = utils->AddComboBox(mySizer,this,LANG(MAKEFILE_PROFILE,"Perfil"),values,sel);
-	mingw_dir = utils->AddTextCtrl(mySizer,this,LANG(MAKEFILE_REPLACE_MINGW,"Reemplazar \"${MINGW_DIR}\" con"),current_toolchain.mingw_dir);
+	configuration_name = mxUT::AddComboBox(mySizer,this,LANG(MAKEFILE_PROFILE,"Perfil"),values,sel);
+	mingw_dir = mxUT::AddTextCtrl(mySizer,this,LANG(MAKEFILE_REPLACE_MINGW,"Reemplazar \"${MINGW_DIR}\" con"),current_toolchain.mingw_dir);
 #if defined(__WIN32__)
-	expand_comas = utils->AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),true);
+	expand_comas = mxUT::AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),true);
 #else
-	expand_comas = utils->AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),false);
+	expand_comas = mxUT::AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),false);
 #endif
 	
-	file_path = utils->AddDirCtrl(mySizer,this,LANG(MAKEFILE_DESTINATION_FILE,"Destino"),DIR_PLUS_FILE(project->path,"Makefile"),mxID_MAKEFILE_EXPLORE);
+	file_path = mxUT::AddDirCtrl(mySizer,this,LANG(MAKEFILE_DESTINATION_FILE,"Destino"),DIR_PLUS_FILE(project->path,"Makefile"),mxID_MAKEFILE_EXPLORE);
 	
 	wxArrayString split_values;
 	split_values.Add(LANG(MAKEFILE_TYPE_FULL,"Completo"));
 	split_values.Add(LANG(MAKEFILE_TYPE_CONFIG,"Por partes: configuracion"));
 	split_values.Add(LANG(MAKEFILE_TYPE_OBJECTS,"Por partes: objetos"));
-	split_type = utils->AddComboBox(mySizer,this,LANG(MAKEFILE_TYPE,"Formato"),split_values,0);
+	split_type = mxUT::AddComboBox(mySizer,this,LANG(MAKEFILE_TYPE,"Formato"),split_values,0);
 	
-	cmake_style = utils->AddCheckBox(mySizer,this,LANG(MAKEFILE_CMAKE_STYLE,"Mostrar progreso al compilar (estilo cmake)"),false);
+	cmake_style = mxUT::AddCheckBox(mySizer,this,LANG(MAKEFILE_CMAKE_STYLE,"Mostrar progreso al compilar (estilo cmake)"),false);
 	
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(MAKEFILE_GENERATE,"Generar"));

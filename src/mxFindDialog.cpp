@@ -41,11 +41,11 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	combo_replace = new wxComboBox(this, wxID_ANY);
 	optSizer->Add(combo_replace,sizers->BLB5_Exp0);
 	
-	check_word = utils->AddCheckBox(optSizer,this,LANG(FIND_WHOLE_WORD,"Solo palabras completas"),false);
-	check_start = utils->AddCheckBox(optSizer,this,LANG(FIND_BEGINNING_OF_WORD,"Solo al comienzo de la palabra"),false);
-	check_case = utils->AddCheckBox(optSizer,this,LANG(FIND_MATCH_CASE,"Distinguir mayusculas y minusculas"),false);
-	check_nocomments = utils->AddCheckBox(optSizer,this,LANG(FIND_IGNORE_COMMENTS,"Ignorar comentarios"),false);
-	check_regexp = utils->AddCheckBox(optSizer,this,LANG(FIND_USE_REGULAR_EXPRESSIONS,"Es una expresion regular"),false);
+	check_word = mxUT::AddCheckBox(optSizer,this,LANG(FIND_WHOLE_WORD,"Solo palabras completas"),false);
+	check_start = mxUT::AddCheckBox(optSizer,this,LANG(FIND_BEGINNING_OF_WORD,"Solo al comienzo de la palabra"),false);
+	check_case = mxUT::AddCheckBox(optSizer,this,LANG(FIND_MATCH_CASE,"Distinguir mayusculas y minusculas"),false);
+	check_nocomments = mxUT::AddCheckBox(optSizer,this,LANG(FIND_IGNORE_COMMENTS,"Ignorar comentarios"),false);
+	check_regexp = mxUT::AddCheckBox(optSizer,this,LANG(FIND_USE_REGULAR_EXPRESSIONS,"Es una expresion regular"),false);
 	wxArrayString scopes;
 	scopes.Add(LANG(FIND_SELECTION,"Seleccion"));
 	scopes.Add(LANG(FIND_CURRENT_FILE,"Archivo actual"));
@@ -54,8 +54,8 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	scopes.Add(LANG(FIND_ALL_PROJECT_HEADERS,"Todas las Cabeceras del Proyecto"));
 	scopes.Add(LANG(FIND_ALL_PROJECT_OTHERS,"Todos los Otros Archivos del Proyecto"));
 	scopes.Add(LANG(FIND_ALL_PROJECT_FILES,"Todos los Archivos del Proyecto"));
-	combo_scope = utils->AddComboBox(optSizer,this,LANG(FIND_FIND_SCOPE,"Buscar en"),scopes,1,mxID_FIND_SCOPE);
-	check_close = utils->AddCheckBox(optSizer,this,LANG(FIND_CLOSE_AFTER_FIND,"Cerrar este dialogo despues de encontrar"),true);
+	combo_scope = mxUT::AddComboBox(optSizer,this,LANG(FIND_FIND_SCOPE,"Buscar en"),scopes,1,mxID_FIND_SCOPE);
+	check_close = mxUT::AddCheckBox(optSizer,this,LANG(FIND_CLOSE_AFTER_FIND,"Cerrar este dialogo despues de encontrar"),true);
 	
 	replace_button = new mxBitmapButton (this, mxID_FIND_REPLACE, bitmaps->buttons.replace, LANG(FIND_REPLACE,"Reemplazar"));
 	replace_all_button = new mxBitmapButton (this, mxID_FIND_REPLACE_ALL, bitmaps->buttons.replace, LANG(FIND_REPLACE_ALL,"Reemplazar Todo"));
@@ -623,7 +623,7 @@ bool mxFindDialog::MultifindAux(int count, const wxString &res) {
 	} else {
 		wxString html("<HTML><HEAD><TITLE>");
 		html<<LANG(FIND_FIND_IN_FILES,"Buscar en archivos")<<"</TITLE></HEAD><BODY><B>";
-		html<<LANG2(FIND_IN_FILES_RESULT,"Resultados para la busqueda \"<I><{1}></I>\" (<{2}> resultados):",utils->ToHtml(last_search),wxString()<<count);
+		html<<LANG2(FIND_IN_FILES_RESULT,"Resultados para la busqueda \"<I><{1}></I>\" (<{2}> resultados):",mxUT::ToHtml(last_search),wxString()<<count);
 		html<<"</B><BR><TABLE>"<<res<<"</TABLE><BR><BR></BODY></HTML>";
 		main_window->ShowInQuickHelpPanel(html);
 		return true;
@@ -649,14 +649,14 @@ wxString mxFindDialog::GetHtmlEntry(wxString fname, int line, int pos, int len, 
 		return wxString("<TR><TD><B>...</B></TD>")<<LANG(FIND_TOO_MANY_RESULTS,"demasiados resultados, solo se muestran los primeros 500")<<"<TD></TD></TR>";
 	} else if (num_results>500) return "";
 	res<<"<TR><TD><A href=\"gotolinepos:"<<fname<<":"<<line<<":"<<pos<<":"<<len<<"\">"<<falias<<": "<<LANG(FIND_LINE,"linea")<<" "<<line+1<<"</A></TD>";
-	res<<"<TD>"<<utils->ToHtml(the_line.Mid(0,pos).Trim(false))+"<B>"+utils->ToHtml(the_line.Mid(pos,len))+"</B>"+utils->ToHtml(the_line.Mid(pos+len).Trim(true))<<"</TD></TR>";
+	res<<"<TD>"<<mxUT::ToHtml(the_line.Mid(0,pos).Trim(false))+"<B>"+mxUT::ToHtml(the_line.Mid(pos,len))+"</B>"+mxUT::ToHtml(the_line.Mid(pos+len).Trim(true))<<"</TD></TR>";
 	return res;
 }
 
 int mxFindDialog::FindInSource(mxSource *source,wxString &res) {
 	int count=0;
 	wxString file_name = source->GetFullPath();
-	wxString page_text = utils->ToHtml(source->page_text);
+	wxString page_text = mxUT::ToHtml(source->page_text);
 	source->SetSearchFlags(last_flags);
 	int l = source->GetLength();
 	source->SetTargetStart(0);

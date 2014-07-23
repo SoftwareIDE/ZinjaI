@@ -22,7 +22,7 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,LANG(XDG
 	
 	xdg_not_found=icon_installed=false;
 	
-	wxString res = utils->GetOutput("xdg-desktop-menu --version");
+	wxString res = mxUT::GetOutput("xdg-desktop-menu --version");
 	if (!res.Len()||res.Find("bash")!=wxNOT_FOUND) { 
 		if (!first_run) 
 			mxMessageDialog(NULL,LANG(XDG_NO_XDG,"Debe instalar xdg-utils para tener acceso todas las funcionalidades"),LANG(XDG_CAPTION,"Iconos lanzadores"), mxMD_OK|mxMD_INFO).ShowModal();
@@ -34,11 +34,11 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,LANG(XDG
 	
 	if (first_run) sizer->Add(new wxStaticText(this,wxID_ANY,LANG(XDG_FIRST_TIME,"¿Desea crear un icono para acceder a ZinjaI desde el menu del sistema o el escritorio?")),sizers->BA5_Exp0);
 	
-	desktop = utils->AddCheckBox(sizer,this,LANG(XDG_CREATE_DESKTOP,"Crear un icono en el escritorio"),false);
-	menu = utils->AddCheckBox(sizer,this,LANG(XDG_CREATE_MENU,"Crear un icono en el menu (en la categoria Programacion/Desarrollo)"),!xdg_not_found);
+	desktop = mxUT::AddCheckBox(sizer,this,LANG(XDG_CREATE_DESKTOP,"Crear un icono en el escritorio"),false);
+	menu = mxUT::AddCheckBox(sizer,this,LANG(XDG_CREATE_MENU,"Crear un icono en el menu (en la categoria Programacion/Desarrollo)"),!xdg_not_found);
 	if (xdg_not_found) menu->Enable(false);
-//	zpr = utils->AddCheckBox(sizer,this,"Asociar los archivos de proyecto (.zpr)",true);
-//	cpp = utils->AddCheckBox(sizer,this,"Asociar archivos .c/.cc/.cpp/.cxx/.c++/.h/.hh/.hxx/.hpp/.h++",true);
+//	zpr = mxUT::AddCheckBox(sizer,this,"Asociar los archivos de proyecto (.zpr)",true);
+//	cpp = mxUT::AddCheckBox(sizer,this,"Asociar archivos .c/.cc/.cpp/.cxx/.c++/.h/.hh/.hxx/.hpp/.h++",true);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	

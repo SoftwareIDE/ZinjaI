@@ -863,7 +863,7 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 
 bool mxSource::LoadFile (const wxFileName &filename) {
 	wxString ext = filename.GetExt().MakeLower();
-	if (utils->ExtensionIsCpp(ext) || utils->ExtensionIsH(ext)) {
+	if (mxUT::ExtensionIsCpp(ext) || mxUT::ExtensionIsH(ext)) {
 		SetStyle(wxSTC_LEX_CPP);
 	} else if (ext=="htm" || ext=="html") {
 		SetStyle(wxSTC_LEX_HTML);
@@ -1963,25 +1963,25 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	
 	BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
 	if (bpi) {
-		utils->AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"));
 		if (bpi->IsInGDB() && (!debug->debugging||!debug->waiting)) 
-			utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT),LANG(SOURCE_POPUP_ENABLE_BREAKPOINT,"Habilitar breakpoint"))->Check(bpi->enabled);
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT),LANG(SOURCE_POPUP_ENABLE_BREAKPOINT,"Habilitar breakpoint"))->Check(bpi->enabled);
 	} else if (!IsEmptyLine(l))
-		utils->AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_BREAKPOINT_OPTIONS));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_BREAKPOINT_OPTIONS));
 	menu.AppendSeparator();
 	int s=GetStyleAt(p);
 	if (MarkerGet(l)&(1<<mxSTC_MARK_USER))
-		utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_MARK_LINES), LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltado"));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_MARK_LINES), LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltado"));
 	else 
-		utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_MARK_LINES), LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"Resaltar linea"));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
-	if (STYLE_IS_COMMENT(s)) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNCOMMENT));
-	else utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COMMENT));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_DUPLICATE_LINES));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_DELETE_LINES));
-	if (l>1) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_TOGGLE_LINES_UP));
-	if (l+1<GetLineCount()) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_TOGGLE_LINES_DOWN));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_MARK_LINES), LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"Resaltar linea"));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
+	if (STYLE_IS_COMMENT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNCOMMENT));
+	else mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COMMENT));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_DUPLICATE_LINES));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_DELETE_LINES));
+	if (l>1) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_TOGGLE_LINES_UP));
+	if (l+1<GetLineCount()) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_TOGGLE_LINES_DOWN));
 	
 	main_window->PopupMenu(&menu);
 	
@@ -2002,9 +2002,9 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	int p=GetCurrentPos(); int s=GetStyleAt(p);
 	wxString key=GetCurrentKeyword(p);
 	if (key.Len()!=0) {
-		if (!key[0]!='#') utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
-		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
-		if (s==wxSTC_C_IDENTIFIER) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
+		if (!key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
+		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
+		if (s==wxSTC_C_IDENTIFIER) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
 		if (s==wxSTC_C_IDENTIFIER) menu.Append(mxID_EDIT_HIGHLIGHT_WORD, LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
 	}
 	
@@ -2020,23 +2020,23 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 		}
 		wxFileName the_one (sin_titulo?GetTextRange(p1,p2):DIR_PLUS_FILE(source_filename.GetPath(),GetTextRange(p1,p2)));
 		if (wxFileName::FileExists(the_one.GetFullPath()))
-			utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_OPEN_SELECTED),LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2)));
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_OPEN_SELECTED),LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2)));
 	}
-	utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_WHERE_AM_I));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_WHERE_AM_I));
 	menu.AppendSeparator();
 	
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNDO));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_REDO));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNDO));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_REDO));
 	menu.AppendSeparator();
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_CUT));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COPY));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_PASTE));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_CUT));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COPY));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_PASTE));
 	menu.AppendSeparator();
-	if (STYLE_IS_COMMENT(s)) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNCOMMENT));
-	else utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COMMENT));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_BRACEMATCH));
-	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_SELECT_ALL));
+	if (STYLE_IS_COMMENT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNCOMMENT));
+	else mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COMMENT));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_BRACEMATCH));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_SELECT_ALL));
 	
 	main_window->PopupMenu(&menu);
 	
@@ -3846,11 +3846,11 @@ wxString mxSource::GetCompilerOptions(bool parsed) {
 	wxString comp_opts = cpp_or_just_c?config_running.cpp_compiler_options:config_running.c_compiler_options;
 	if (parsed) {
 		wxArrayString args; 
-		utils->Split(comp_opts,args,false,true);
+		mxUT::Split(comp_opts,args,false,true);
 		for(unsigned int i=0;i<args.GetCount();i++) args[i]=current_toolchain.FixArgument(cpp_or_just_c,args[i]);
-		comp_opts=utils->UnSplit(args);
-		utils->ParameterReplace(comp_opts,"${MINGW_DIR}",current_toolchain.mingw_dir);
-		comp_opts = utils->ExecComas(working_folder.GetFullPath(),comp_opts);
+		comp_opts=mxUT::UnSplit(args);
+		mxUT::ParameterReplace(comp_opts,"${MINGW_DIR}",current_toolchain.mingw_dir);
+		comp_opts = mxUT::ExecComas(working_folder.GetFullPath(),comp_opts);
 	}
 	return comp_opts;
 }

@@ -124,7 +124,7 @@ void mxWxfbInheriter::OkUpdateClass() {
 
 void mxWxfbInheriter::OkNewClass() {
 	wxString base_name = base_class->GetValue();
-	wxString name = utils->LeftTrim(child_class->GetValue());
+	wxString name = mxUT::LeftTrim(child_class->GetValue());
 	if (name=="") {
 		mxMessageDialog(LANG(WXFB_CLASSNAME_MISSING,"Debe introducir el nombre de la clase"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return;

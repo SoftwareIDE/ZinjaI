@@ -221,7 +221,6 @@ private:
 		expression=expr; is_frameless=frameless;
 		wxString cmd="-var-create - ";
 		if (frameless) cmd<<"@ "; else cmd<<"* ";
-		cmd<<utils->EscapeString(expr,true);
 		wxString ans=debug->SendCommand(cmd);
 		
 		if (ans.Left(5)!="^done") { DIET_type=DIET_ERROR; return; }

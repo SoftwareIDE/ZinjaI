@@ -155,7 +155,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 			if (avar->properties&PD_CONST_STATIC) one_attrib<<"static ";
 			if (avar->properties&PD_CONST_VOLATILE) one_attrib<<"volatile ";
 		}
-		wxString proto = utils->ToHtml(avar->proto),link;
+		wxString proto = mxUT::ToHtml(avar->proto),link;
 		if (help->IsHelpForType(avar->type,link))
 			proto.Replace(avar->type,wxString("<A href=\"quickhelp:")<<link<<"\">"<<avar->type<<"</A>",true);
 		one_attrib<<proto<<"</LI>";
@@ -181,7 +181,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 		one_method<<"<A href=\"quickhelp:"<<afunc->name<<"\">";
 		if (afunc->properties&PD_CONST_STATIC)	one_method<<"static ";
 		if (afunc->properties&PD_CONST_VIRTUAL)	one_method<<"virtual ";
-		one_method<<utils->ToHtml(afunc->proto);
+		one_method<<mxUT::ToHtml(afunc->proto);
 		if (afunc->properties&PD_CONST_CONST) one_method<<" const";
 		if (afunc->properties&PD_CONST_VIRTUAL_PURE) one_method<<" = 0";
 		one_method<<"</A></LI>";
@@ -210,16 +210,16 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 	int id=index_ref_counter++;
 	if (afunc->space) {
-		wxString proto = MakeClassLinks(utils->ToHtml(afunc->full_proto)), link;
+		wxString proto = MakeClassLinks(mxUT::ToHtml(afunc->full_proto)), link;
 		if (afunc->space->name==afunc->name) {
-			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_PRE,"Constructor")<<_T(" <I>")<<utils->ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
-			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_PRE,"Constructor")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<utils->ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
+			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_PRE,"Constructor")<<_T(" <I>")<<mxUT::ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
+			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_PRE,"Constructor")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<mxUT::ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_CONSTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
 		} else if (afunc->name[0]=='~') {
-			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_PRE,"Destructor")<<_T(" <I>")<<utils->ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
-			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_PRE,"Destructor")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<utils->ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
+			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_PRE,"Destructor")<<_T(" <I>")<<mxUT::ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
+			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_PRE,"Destructor")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<mxUT::ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_DESTRUCTOR_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
 		} else {
-			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Método")<<_T(" <I>")<<utils->ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
-			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Método")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<utils->ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
+			index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Método")<<_T(" <I>")<<mxUT::ToHtml(afunc->proto)<<_T("</I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I>")<<afunc->space->name<<_T("</I></A></LI>");
+			content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_METHOD_FROM_CLASS_PRE,"Método")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<mxUT::ToHtml(afunc->proto)<<_T("</A></I> ")<<LANG(PARSERHELP_METHOD_FROM_CLASS_POST,"de la clase")<<_T(" <I><A href=\"quickhelp:")<<afunc->space->name<<_T("\">")<<afunc->space->name<<_T("</A></I></B><BR><BR>");
 		}
 		if (afunc->properties&PD_CONST_PUBLIC)
 			content<<LANG(PARSERHELP_VISIBILITY_PUBLIC,"Visibilidad: Publico")<<_T("<BR><BR>");
@@ -234,9 +234,9 @@ void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 		if (afunc->file_dec) AddDefRef(content,LANG(PARSERHELP_DECLARED_IN_PRE,"Declarado en"),afunc->file_dec->name,afunc->line_dec);
 		if (afunc->file_def) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definido en"),afunc->file_def->name,afunc->line_def);
 	} else {
-		wxString proto = MakeClassLinks(utils->ToHtml(afunc->proto)), link;
-		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_FUNCTION,"Funcion")<<_T(" <I>")<<utils->ToHtml(afunc->proto)<<_T("</I></A></LI>");
-		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_FUNCTION,"Funcion")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<utils->ToHtml(afunc->proto)<<_T("</A></I></B><BR><BR>");
+		wxString proto = MakeClassLinks(mxUT::ToHtml(afunc->proto)), link;
+		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_FUNCTION,"Funcion")<<_T(" <I>")<<mxUT::ToHtml(afunc->proto)<<_T("</I></A></LI>");
+		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_FUNCTION,"Funcion")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<mxUT::ToHtml(afunc->proto)<<_T("</A></I></B><BR><BR>");
 		content<<LANG(PARSERHELP_PROTOTYPE,"Prototipo:")<<_T(" <BR><UL><LI>")<<proto<<(afunc->properties&PD_CONST_CONST?" const":"")<<_T("</LI></UL><BR><BR>");
 		if (afunc->file_dec) AddDefRef(content,LANG(PARSERHELP_DECLARED_IN_PRE,"Declarada en"),afunc->file_dec->name,afunc->line_dec);
 		if (afunc->file_def) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),afunc->file_def->name,afunc->line_def);
@@ -328,7 +328,7 @@ void HelpManager::HelpFor(pd_macro *amacro, wxString &content, wxString &index) 
 	// incluir el contenido
 	if (amacro->props&PD_CONST_TYPEDEF) {
 		content<<LANG(PARSERHELP_DEFINED_AS,"Definida como:")<<_T(" <BR>&nbsp;&nbsp;&nbsp;&nbsp;")<<
-			utils->ToHtml(wxString("typedef ")<<amacro->cont<<" "<<amacro->name)<<"<BR>";
+			mxUT::ToHtml(wxString("typedef ")<<amacro->cont<<" "<<amacro->name)<<"<BR>";
 	} else {
 		wxTextFile fil(amacro->file->name);
 		if (!fil.Exists()) return;
@@ -347,9 +347,9 @@ void HelpManager::HelpFor(pd_macro *amacro, wxString &content, wxString &index) 
 			if (line.Mid(i,amacro->name.Len())==amacro->name) { // si es el define que buscamos
 				i+=amacro->name.Len();
 				if (line.Len()>i && (line[i]==' ' || line[i]=='(' || line[i]=='\t') ) {
-					content<<LANG(PARSERHELP_DEFINED_AS,"Definida como:")<<_T(" <BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;")<<utils->ToHtml(line)<<_T("<BR>");
+					content<<LANG(PARSERHELP_DEFINED_AS,"Definida como:")<<_T(" <BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;")<<mxUT::ToHtml(line)<<_T("<BR>");
 					while(line[line.Len()-1]=='\\' && !fil.Eof()) {
-						content<<_T("&nbsp;&nbsp;&nbsp;&nbsp;")<<utils->ToHtml(line=fil.GetNextLine())<<_T("<BR>");
+						content<<_T("&nbsp;&nbsp;&nbsp;&nbsp;")<<mxUT::ToHtml(line=fil.GetNextLine())<<_T("<BR>");
 					}
 				}
 			}
@@ -523,7 +523,7 @@ wxString HelpManager::MakeClassLinks(wxString what) {
 	return what;
 //	
 //	wxArrayString types;
-//	utils->Split(afunc->proto,types);
+//	mxUT::Split(afunc->proto,types);
 //	types.Sort();
 //	for (unsigned int i=0;i<types.GetCount();i++) {
 //		if (types[i].Len()) {

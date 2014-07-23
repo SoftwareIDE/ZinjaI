@@ -36,7 +36,7 @@ void mxMainWindow::UpdateInHistory(wxString filename, bool is_project) {
 		if (mnihistory[i])
 			mnurecent->Remove(mnihistory[i]);
 		if (cfglast[i][0])
-			mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],ipre+icon_fname,i);
+			mnihistory[i] = mxUT::AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],ipre+icon_fname,i);
 #else
 		if (cfglast[i][0])
 			if (mnihistory[i]) {
@@ -44,7 +44,7 @@ void mxMainWindow::UpdateInHistory(wxString filename, bool is_project) {
 					mnihistory[i]->SetBitmap(wxBitmap(ipre+icon_fname,wxBITMAP_TYPE_PNG));
 				mnurecent->SetLabel(mnihistory[i]->GetId(),cfglast[i]);
 			} else {
-				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],ipre+icon_fname,i);
+				mnihistory[i] = mxUT::AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],ipre+icon_fname,i);
 			}
 			else
 				break;
@@ -72,7 +72,7 @@ void mxMainWindow::UpdateCustomTools(bool for_project) {
 		for (int i=0,c=0;i<count;i++) {
 			MenusAndToolsConfig::myMenuItem &mitem = *menu_data->GetMyMenuItem(MenusAndToolsConfig::mnTOOLS,mxID_CUSTOM_TOOL_0+i);
 			if (!(mitem.properties&MenusAndToolsConfig::maHIDDEN))
-				utils->AddItemToMenu(menu_custom_tools, mxID_CUSTOM_TOOL_0+i,mitem.label,mitem.shortcut,mitem.description,ipre+mitem.icon,c++);
+				mxUT::AddItemToMenu(menu_custom_tools, mxID_CUSTOM_TOOL_0+i,mitem.label,mitem.shortcut,mitem.description,ipre+mitem.icon,c++);
 		}
 	}
 	

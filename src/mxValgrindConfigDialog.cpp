@@ -28,9 +28,9 @@ mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent
 	tools.Add("helgrind");
 	tools.Add("drd");
 	
-	cmb_tool=utils->AddComboBox(sizer,this,"Tool",tools,0);
-	suppressions=utils->AddTextCtrl(sizer,this,"Suppression files:","");
-	additional_args=utils->AddTextCtrl(sizer,this,"Additional arguments:","");
+	cmb_tool=mxUT::AddComboBox(sizer,this,"Tool",tools,0);
+	suppressions=mxUT::AddTextCtrl(sizer,this,"Suppression files:","");
+	additional_args=mxUT::AddTextCtrl(sizer,this,"Additional arguments:","");
 	
 	wxSizer *bottomSizer=new wxBoxSizer(wxHORIZONTAL);
 	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
@@ -79,7 +79,7 @@ wxString mxValgrindConfigDialog::GetArgs() {
 	case 5: args="--tool=drd"; break;
 	}
 	if (suppressions->GetValue().Len()) 
-		args<<" "<<utils->Split(suppressions->GetValue(),"--suppressions=");
+		args<<" "<<mxUT::Split(suppressions->GetValue(),"--suppressions=");
 	if (additional_args->GetValue().Len()) 
 		args<<" "<<additional_args->GetValue();
 	return args;

@@ -107,7 +107,7 @@ bool DebugManager::Start(bool update, mxSource *source) {
 				source->SaveSource();
 				compiler->CompileSource(source,true,true);
 				return false;
-			} else if (config->Running.check_includes && utils->AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source->source_filename)) {
+			} else if (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source->source_filename)) {
 				compiler->CompileSource(source,true,true);
 				return false;
 			}
@@ -168,7 +168,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		tty_cmd<<config->Files.terminal_command<<" "<<config->Files.runner_command<<_T(" -tty ")<<tty_file;
 		tty_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
 		if (wait_for_key) tty_cmd<<_T(" -waitkey");
-	//	utils->ParameterReplace(tty_cmd,_T("${ZINJAI_DIR}"),wxGetCwd());
+	//	mxUT::ParameterReplace(tty_cmd,_T("${ZINJAI_DIR}"),wxGetCwd());
 		tty_process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 		tty_pid = wxExecute(tty_cmd,wxEXEC_ASYNC,tty_process);
 		tty_running = tty_pid!=0;
@@ -214,7 +214,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		command<<_T(" -tty=/dev/null");
 #endif
 //	if (args.Len())
-//		command<<_T(" --args \"")<<exe<<"\" "<</*utils->EscapeString(*/args/*)*/;	
+//		command<<_T(" --args \"")<<exe<<"\" "<</*mxUT::EscapeString(*/args/*)*/;	
 //	else
 		command<<" \""<<exe<<"\"";	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
@@ -222,7 +222,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	
 #ifndef __WIN32__
 	if (project && project->active_configuration->exec_method==EMETHOD_INIT) {
-		command=wxString()<<"/bin/sh -c "<<utils->SingleQuotes(wxString()
+		command=wxString()<<"/bin/sh -c "<<mxUT::SingleQuotes(wxString()
 			<<". "<<DIR_PLUS_FILE(project->path,project->active_configuration->exec_script)<<" &>/dev/null; "<<command);
 	}
 #endif
@@ -246,7 +246,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 #endif
 		if (args.Len()) cerr<<SendCommand("set args ",args);
 //		SendCommand(_T(BACKTRACE_MACRO));
-		SendCommand(wxString(_T("-environment-cd "))<<utils->EscapeString(workdir,true));
+		SendCommand(wxString(_T("-environment-cd "))<<mxUT::EscapeString(workdir,true));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		return true;
 	} else  {
@@ -279,7 +279,7 @@ void DebugManager::ResetDebuggingStuff() {
 	tty_running = false;
 #endif
 	black_list.Clear(); stepping_in=false;
-	utils->Split(config->Debug.blacklist,black_list,true,false);
+	mxUT::Split(config->Debug.blacklist,black_list,true,false);
 	gui_is_prepared = false;
 	pause_breakpoint=NULL;
 	
@@ -729,10 +729,10 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 wxString DebugManager::InspectExpression(wxString var, bool pretty) {
 	if (waiting || !debugging) return "";
 	if (!pretty) {
-		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),utils->EscapeString(var,true)),_T("value") ,true,true);
+		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
 	} else {
 		SendCommand("-gdb-set print pretty on");
-		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),utils->EscapeString(var,true)),_T("value") ,true,true);
+		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
 		SendCommand("-gdb-set print pretty off");
 		return ret;
 	}
@@ -1468,7 +1468,7 @@ void DebugManager::TtyProcessKilled() {
 * @brief type is output argument
 **/
 wxString DebugManager::CreateVO(wxString &expr, wxString &type) {
-	wxString ans = SendCommand("-var-create - * ",utils->EscapeString(expr,true));
+	wxString ans = SendCommand("-var-create - * ",mxUT::EscapeString(expr,true));
 	type = GetValueFromAns(ans,"type",true);
 	wxArrayString &from=config->Debug.inspection_improving_template_from;
 	if (config->Debug.improve_inspections_by_type) {
@@ -1478,7 +1478,7 @@ wxString DebugManager::CreateVO(wxString &expr, wxString &type) {
 				wxString e=config->Debug.inspection_improving_template_to[i];
 				e.Replace("${EXP}",expr,true); expr=e;
 				SendCommand("-var-delete ",GetValueFromAns(ans,"name",true));
-				ans = SendCommand("-var-create - * ",utils->EscapeString(expr,true));
+				ans = SendCommand("-var-create - * ",mxUT::EscapeString(expr,true));
 				break;
 			}
 		}
@@ -1581,7 +1581,7 @@ bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
 		ModifyInspectionWatch(num,false,false);
 		// para modificar una expresion se crea una nueva y destruye la anterior
 		wxString ans,value,vo_type;
-		if (is_vo) ans = CreateVO(expr,vo_type); // SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
+		if (is_vo) ans = CreateVO(expr,vo_type); // SendCommand(_T("-var-create - * "),mxUT::EscapeString(expr,true));
 		inspection_grid->SetCellValue(num,IG_COL_EXPR,expr);
 		inspectinfo ii(
 			is_vo?GetValueFromAns(ans,_T("name"),true):expr.Mid(1),
@@ -1692,7 +1692,7 @@ bool DebugManager::DeleteInspection(int num) {
 
 bool DebugManager::ModifyInspectionValue(int num, wxString value) {
 	if (!debugging || waiting) return false;
-	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+" "+utils->EscapeString(value,true));
+	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+" "+mxUT::EscapeString(value,true));
 	if (ans.Mid(1,4)=="done")
 		UpdateInspection();
 	return ans.Mid(1,4)=="done";
@@ -2145,7 +2145,7 @@ bool DebugManager::BreakCompoundInspection(int n) {
 	return true;
 }
 
-//wxString DebugManager::utils->EscapeString(wxString str, bool add_comillas) {
+//wxString DebugManager::mxUT::EscapeString(wxString str, bool add_comillas) {
 //	int i=0, l=str.Len();
 //	if (add_comillas) {
 //		i=1;
@@ -2166,7 +2166,7 @@ bool DebugManager::BreakCompoundInspection(int n) {
 
 
 bool DebugManager::CreateVO(wxString expr, wxString &name, wxString &type, int &children) {
-	wxString ans = SendCommand(_T("-var-create - * "),utils->EscapeString(expr,true));
+	wxString ans = SendCommand(_T("-var-create - * "),mxUT::EscapeString(expr,true));
 //	if (ans.Left(5)!=_T("^done")) DEBUG_INFO("ans");
 	if (ans.Left(5)!=_T("^done")) return false;
 	name = GetValueFromAns(ans,_T("name"),true);
@@ -2387,7 +2387,7 @@ bool DebugManager::ModifyInspectionWatch(int num, bool read, bool write) {
 			wxString cmd(_T("-break-watch "));
 			if (read && write) cmd<<_T("-a ");
 			else if (read) cmd<<_T("-r ");
-			wxString ans = GetValueFromAns(SendCommand(cmd,utils->EscapeString(ii.expr,true)).AfterFirst('{'),_T("number"),true);
+			wxString ans = GetValueFromAns(SendCommand(cmd,mxUT::EscapeString(ii.expr,true)).AfterFirst('{'),_T("number"),true);
 			if (ans.Len()) {
 				long l;
 				ans.ToLong(&l);
@@ -2463,7 +2463,7 @@ void DebugManager::SetBreakPointOptions(int num, int ignore_count) {
 /// @brief Define the condition for a conditional breakpoint and returns true if the condition was correctly setted
 bool DebugManager::SetBreakPointOptions(int num, wxString condition) {
 	wxString cmd(_T("-break-condition "));
-	cmd<<num<<" "<<utils->EscapeString(condition);
+	cmd<<num<<" "<<mxUT::EscapeString(condition);
 	wxString ans = SendCommand(cmd);
 	return ans.Len()>4 && ans.Mid(1,4)=="done";
 }
@@ -2929,7 +2929,7 @@ bool DebugManager::GetSignals(vector<SignalHandlingInfo> & v) {
 			if (!ans.Contains("^done")) return false;
 		}
 	} else {
-		ans = utils->GetOutput("gdb --interpreter=mi --quiet --batch -ex \"info signal\"",true);
+		ans = mxUT::GetOutput("gdb --interpreter=mi --quiet --batch -ex \"info signal\"",true);
 	}
 	while (ans.Contains('\n')) {
 		wxString line=ans.BeforeFirst('\n');
@@ -2937,7 +2937,7 @@ bool DebugManager::GetSignals(vector<SignalHandlingInfo> & v) {
 		// para saber si esta linea es una señal o no, vemos si empieza con ~"XXX, con XXX mayúsculas 
 		// otras lineas son por ej la cabecera de la tabla (~"Signal...), lineas en blanco /~"\n"), o de ayuda (~"Use...)
 		if (! (line.Len()>4 && line[0]=='~' && line[1]=='\"' && (line[2]>='A'&&line[2]<='Z') && (line[3]>='A'&&line[3]<='Z') && (line[4]>='A'&&line[4]<='Z') ) ) continue;
-		line = utils->UnEscapeString(line.Mid(1));
+		line = mxUT::UnEscapeString(line.Mid(1));
 		SignalHandlingInfo si;
 		// la primer palabra es el nombre
 		int i=0,i0=0, l=line.Len();

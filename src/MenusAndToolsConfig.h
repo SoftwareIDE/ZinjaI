@@ -17,7 +17,7 @@ class mxMainWindow;
 class MenusAndToolsConfig {
 	friend class mxPreferenceWindow;
 	friend class mxShortcutsDialog;
-	friend class mxUtils;
+	friend class mxUT;
 private:
 	
 	wxMenuBar *wx_menu_bar; ///< main window's menu bar

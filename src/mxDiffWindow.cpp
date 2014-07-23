@@ -47,8 +47,8 @@ mxDiffWindow::mxDiffWindow(mxSource *asource, wxString fname) : wxDialog(main_wi
 			array.Add(((mxSource*)(main_window->notebook_sources->GetPage(i)))->page_text);
 		}
 		
-		file1 = utils->AddComboBox(mySizer,this,LANG(DIFF_SOURCE_A,"Archivo A"),array,array.GetCount()-1);
-		file2 = utils->AddComboBox(mySizer,this,LANG(DIFF_SOURCE_B,"Archivo B"),array,array.GetCount()-1);
+		file1 = mxUT::AddComboBox(mySizer,this,LANG(DIFF_SOURCE_A,"Archivo A"),array,array.GetCount()-1);
+		file2 = mxUT::AddComboBox(mySizer,this,LANG(DIFF_SOURCE_B,"Archivo B"),array,array.GetCount()-1);
 		
 		if (main_window->notebook_sources->GetPageCount()) {
 			file1->SetSelection(main_window->notebook_sources->GetSelection());

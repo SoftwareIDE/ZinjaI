@@ -41,13 +41,13 @@ mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDia
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
-	utils->AddStaticText(tSizer,this,LANG(COMPLEMENTS_WHATIS,""
+	mxUT::AddStaticText(tSizer,this,LANG(COMPLEMENTS_WHATIS,""
 		"Los complementos consisten en packs de archivos adicionales\n"
 		"para ZinjaI, que pueden incluir bibliotecas, documentación,\n"
 		"temas de íconos, plantillas de proyectos, indices para el \n"
 		"autocompletado, etc."
 		));
-	utils->AddStaticText(tSizer,this,LANG(COMPLEMENTS_INSTRUCCIONS,""
+	mxUT::AddStaticText(tSizer,this,LANG(COMPLEMENTS_INSTRUCCIONS,""
 		"Para instalar un complemento debe: 1) descargarlo desde la\n"
 		"sección de descargas del sitio de ZinjaI (haga click\n"
 		"en el botón \"Descargar...\" para ir al sitio); 2) presionar\n"
@@ -85,7 +85,7 @@ void mxComplementInstallerWindow::OnHelpButton (wxCommandEvent & evt) {
 }
 
 void mxComplementInstallerWindow::OnDownloadButton (wxCommandEvent & evt) {
-	utils->OpenZinjaiSite("downextras.php");
+	mxUT::OpenZinjaiSite("downextras.php");
 }
 
 void mxComplementInstallerWindow::OnCancelButton (wxCommandEvent & evt) {
@@ -128,13 +128,13 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 #ifdef __WIN32__
 		caller = DIR_PLUS_FILE(config->zinjai_dir,"complement_wrap.exe");
 #else
-		wxString gksu = utils->GetOutput("gksu --version",true);
+		wxString gksu = mxUT::GetOutput("gksu --version",true);
 		if (gksu.Contains("--message"))
 			caller = "gksu";
 		else {
 			caller<<config->Files.terminal_command;
 			caller.Replace("${TITLE}",LANG(COMPLEMENTS_CAPTION,"Instalacion de Complementos"));
-			caller<<" "<<utils->Quotize(DIR_PLUS_FILE(config->zinjai_dir,"complement_wrap.bin"));
+			caller<<" "<<mxUT::Quotize(DIR_PLUS_FILE(config->zinjai_dir,"complement_wrap.bin"));
 		}
 #endif
 	}
@@ -144,7 +144,7 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 #ifdef __WIN32__
 	if (zdir.Last()=='\\') zdir.RemoveLast(); // wx parsea mal los argumentos, si uno termina en \ lo pega con el que sigue
 #endif
-	wxString command = utils->Quotize(DIR_PLUS_FILE(config->temp_dir,installer))+" --lang="+config->Init.language_file+" "+utils->Quotize(zdir)+" "+utils->Quotize(fname);
+	wxString command = mxUT::Quotize(DIR_PLUS_FILE(config->temp_dir,installer))+" --lang="+config->Init.language_file+" "+mxUT::Quotize(zdir)+" "+mxUT::Quotize(fname);
 #ifdef __WIN32__
 	if (!writable) {
 		char *cmd=new char[command.Len()+1];
@@ -170,6 +170,6 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 		
 	} else
 #endif
-	wxExecute(caller.Len()?caller+" "+utils->EscapeString(command,true):command);
+	wxExecute(caller.Len()?caller+" "+mxUT::EscapeString(command,true):command);
 }
 

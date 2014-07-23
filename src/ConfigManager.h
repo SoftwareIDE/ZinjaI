@@ -9,20 +9,20 @@
 
 #define CM_HISTORY_MAX_LEN 50
 
-#define CFG_BOOL_READ_DN(name,what) if (key==_T(name)) what=utils->IsTrue(value)
-#define CFG_BOOL_READ(where,what) if (key==_T(#what)) where.what=utils->IsTrue(value)
-#define CFG_INT_READ(where,what) if (key==_T(#what)) utils->ToInt(value,where.what)
-#define CFG_INT_READ_DN(name,what) if (key==_T(name)) utils->ToInt(value,what)
+#define CFG_BOOL_READ_DN(name,what) if (key==_T(name)) what=mxUT::IsTrue(value)
+#define CFG_BOOL_READ(where,what) if (key==_T(#what)) where.what=mxUT::IsTrue(value)
+#define CFG_INT_READ(where,what) if (key==_T(#what)) mxUT::ToInt(value,where.what)
+#define CFG_INT_READ_DN(name,what) if (key==_T(name)) mxUT::ToInt(value,what)
 #define CFG_GENERIC_READ(where,what) if (key==_T(#what)) where.what=value
 #define CFG_GENERIC_READ_DN(name,what) if (key==_T(name)) what=value
-#define CFG_TEXT_READ_DN(name,what) if (key==_T(name)) what=utils->Line2Text(value)
+#define CFG_TEXT_READ_DN(name,what) if (key==_T(name)) what=mxUT::Line2Text(value)
 #define CFG_CHAR_READ_DN(name,what) if (key==_T(name)) what=value[0]
 
 #define CFG_BOOL_WRITE(where,what) fil.AddLine(wxString(#what"=")<<(where.what?"1":"0"))
 #define CFG_BOOL_WRITE_DN(name,what) fil.AddLine(wxString(name)<<(what?"=1":"=0"))
 #define CFG_GENERIC_WRITE(where,what) fil.AddLine(wxString(#what"=")<<where.what);
 #define CFG_GENERIC_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<what);
-#define CFG_TEXT_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<utils->Text2Line(what));
+#define CFG_TEXT_WRITE_DN(name,what) fil.AddLine(wxString(name"=")<<mxUT::Text2Line(what));
 #include "CustomTools.h"
 
 //! Elementos de la configuración relacionados a la depuración

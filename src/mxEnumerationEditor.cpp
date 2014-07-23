@@ -63,7 +63,7 @@ void mxEnumerationEditor::CreateCommonStuff(wxString value, bool comma_splits) {
 	
 	wxArrayString array;
 	this->comma_splits=comma_splits;
-	utils->Split(value,array,comma_splits,false);
+	mxUT::Split(value,array,comma_splits,false);
 	list->InsertItems(array,0);
 	list->SetFocus();
 	SetSizer(main_sizer);
@@ -78,9 +78,9 @@ void mxEnumerationEditor::OnOkButton(wxCommandEvent &evt) {
 	wxString str;
 	for (unsigned int i=0;i<list->GetCount();i++) {
 		if (comma_splits)
-			str<<utils->QuotizeEx(list->GetString(i))<<' ';
+			str<<mxUT::QuotizeEx(list->GetString(i))<<' ';
 		else
-			str<<utils->Quotize(list->GetString(i))<<' ';
+			str<<mxUT::Quotize(list->GetString(i))<<' ';
 	}
 	if (str.Len()) str.RemoveLast();
 	if (text) text->SetValue(str);

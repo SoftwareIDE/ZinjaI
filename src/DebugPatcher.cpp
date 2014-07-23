@@ -67,7 +67,7 @@ void DebugPatcher::Patch ( ) {
 		return;
 	}
 	int ms_ok=0,ms_err=0,ms_eq=0,ms_partial=0,ch_ok=0,ch_err=0,ms_can=0;
-	ans=utils->UnEscapeString(ans);
+	ans=mxUT::UnEscapeString(ans);
 	wxArrayString lines; Split(lines,ans);
 	for(unsigned int i=0;i<lines.GetCount();i++) { 
 		if (lines[i].EndsWith(" (deleted)")) lines[i]=lines[i].Mid(0,lines[i].Len()-10);
@@ -118,7 +118,7 @@ int DebugPatcher::Patch (mem_seg & ms) {
 	
 	if (!temp_file.Len()) temp_file=DIR_PLUS_FILE(config->temp_dir,"gdb_dump.for_patch");
 	
-	wxString ans=debug->SendCommand(wxString("dump memory ")<<utils->EscapeString(temp_file)<<" "<<ms.mini<<" "<<ms.mend);
+	wxString ans=debug->SendCommand(wxString("dump memory ")<<mxUT::EscapeString(temp_file)<<" "<<ms.mini<<" "<<ms.mend);
 	if (!ans.Contains("^done")) return DP_ERROR_DUMP;
 	
 //	wxString fnew=project?project->GetExePath():main_window->GetCurrentSource()->GetBinaryFileName().GetFullPath();

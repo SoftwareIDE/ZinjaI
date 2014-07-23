@@ -36,34 +36,34 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 	wxArrayString array;
 	for(int i=0;i<tools->GetCount();i++) array.Add(wxString(LANG(CUSTOM_TOOLS_ITEM,"Herramienta "))<<i);
 	
-	the_combo = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_COMBO,"Herramienta a editar"),array,cual,mxID_CUSTOM_TOOLS_COMBO);
-	name_ctrl  =utils->AddTextCtrl(sizer,this,LANG(CUSTOM_TOOLS_NAME,"Nombre"),"");
-	command_ctrl = utils->AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),"",mxID_CUSTOM_TOOLS_COMMAND);
-	workdir_ctrl = utils->AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),"",mxID_CUSTOM_TOOLS_WORKDIR);
+	the_combo = mxUT::AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_COMBO,"Herramienta a editar"),array,cual,mxID_CUSTOM_TOOLS_COMBO);
+	name_ctrl  =mxUT::AddTextCtrl(sizer,this,LANG(CUSTOM_TOOLS_NAME,"Nombre"),"");
+	command_ctrl = mxUT::AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),"",mxID_CUSTOM_TOOLS_COMMAND);
+	workdir_ctrl = mxUT::AddDirCtrl(sizer,this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),"",mxID_CUSTOM_TOOLS_WORKDIR);
 	
 	wxArrayString pre_actions;
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_NONE,"Ninguna"));
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ONE,"Guardar el fuente actual"));
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ALL,"Guardar todos los fuentes abiertos"));
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_PROJECT,"Guardar todo el proyecto"));
-	pre_action_ctrl = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_PRE,"Acción antes de ejecutar"),pre_actions,false);
+	pre_action_ctrl = mxUT::AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_PRE,"Acción antes de ejecutar"),pre_actions,false);
 		
-	async_exec_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ASYNC_EXEC,"Ejecución asíncrona"),false);
+	async_exec_ctrl = mxUT::AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ASYNC_EXEC,"Ejecución asíncrona"),false);
 		
 	wxArrayString output_destinations;
 	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_HIDDEN,"Ocultas")); // (en windows requiere redirect al pedo)
 	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_TERMINAL,"En terminal")); // (en linux requiere lanzar con terminal)
 	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_DIALOG,"En cuadro de dialogo"));
-	output_mode_ctrl = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_OUTPUT,"Salidas (std y err)"),output_destinations,0);
+	output_mode_ctrl = mxUT::AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_OUTPUT,"Salidas (std y err)"),output_destinations,0);
 		
 	wxArrayString post_actions;
 	post_actions.Add(LANG(CUSTOM_TOOLS_POST_NONE,"Ninguna"));
 	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ONE,"Recargar fuente actual"));
 	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ALL,"Recargar todos los fuentes"));
-	post_action_ctrl = utils->AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_POST,"Acción luego de ejecutar:"),post_actions,0);
+	post_action_ctrl = mxUT::AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_POST,"Acción luego de ejecutar:"),post_actions,0);
 	
 	
-	ontoolbar_ctrl = utils->AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ONTOOLBAR_LINUX,"Mostrar en la barra de herramientas"),false);
+	ontoolbar_ctrl = mxUT::AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ONTOOLBAR_LINUX,"Mostrar en la barra de herramientas"),false);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
@@ -94,16 +94,16 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 }
 
 void mxCustomTools::OnCommandPopup(wxCommandEvent &event) {
-	utils->ShowTextPopUp(this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),command_ctrl,"TEXT|LIST|FILE|DIR|TEMP_DIR|SHELL_EXECUTE|MINGW_DIR|BROWSER|PROJECT_PATH|PROJECT_BIN|CURRENT_FILE|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR");
+	mxUT::ShowTextPopUp(this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),command_ctrl,"TEXT|LIST|FILE|DIR|TEMP_DIR|SHELL_EXECUTE|MINGW_DIR|BROWSER|PROJECT_PATH|PROJECT_BIN|CURRENT_FILE|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR");
 }
 
 void mxCustomTools::OnWorkdirPopup(wxCommandEvent &event) {
-	utils->ShowTextPopUp(this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),workdir_ctrl,"REPLACE|DIR|TEMP_DIR|MINGW_DIR|PROJECT_PATH|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR|WORK_DIR");
+	mxUT::ShowTextPopUp(this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),workdir_ctrl,"REPLACE|DIR|TEMP_DIR|MINGW_DIR|PROJECT_PATH|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR|WORK_DIR");
 }
 
 
 void mxCustomTools::OnPopup(wxCommandEvent &evt) {
-	utils->ProcessTextPopup(evt.GetId());
+	mxUT::ProcessTextPopup(evt.GetId());
 }
 
 void mxCustomTools::OnButtonOk(wxCommandEvent &event) {

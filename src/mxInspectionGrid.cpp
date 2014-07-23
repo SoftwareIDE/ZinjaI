@@ -96,7 +96,7 @@ void mxInspectionGridCellEditorControl::Autocomplete() {
 		wxString line=ans.BeforeFirst('\n');
 		ans=ans.AfterFirst('\n');
 		if (line.StartsWith("~\"")) {
-			wxString ue=utils->UnEscapeString(line.Mid(1));
+			wxString ue=mxUT::UnEscapeString(line.Mid(1));
 			if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
 			comp_options.Add(ue.Mid(2));
 		}

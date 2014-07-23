@@ -97,8 +97,8 @@ wxPanel *mxBeginnerPanel::CreateOptionsIf(wxPanel *parent) {
 	wxPanel *panel = new wxPanel(parent, wxID_ANY);
 	wxStaticBoxSizer *sizer= new wxStaticBoxSizer(wxVERTICAL,panel,LANG(BEGPANEL_OPTIONS_IF,"Opciones: if"));
 	
-	opt_if_cond = utils->AddTextCtrl(sizer,panel,LANG(BEGPANEL_IF_CONDITION,"Condicion"),_T("cond"));
-	opt_if_else = utils->AddCheckBox(sizer,panel,LANG(BEGPANEL_IF_INCLUDE_FALSE,"Incluir acciones por falso"),true);
+	opt_if_cond = mxUT::AddTextCtrl(sizer,panel,LANG(BEGPANEL_IF_CONDITION,"Condicion"),_T("cond"));
+	opt_if_else = mxUT::AddCheckBox(sizer,panel,LANG(BEGPANEL_IF_INCLUDE_FALSE,"Incluir acciones por falso"),true);
 	
 	sizer->Add(new wxButton(panel,mxID_BEGINNER_IF,LANG(BEGPANEL_APPLY,"Aplicar")),sizers->BA5_Exp0);
 	
@@ -125,12 +125,12 @@ wxPanel *mxBeginnerPanel::CreateOptionsFor(wxPanel *parent) {
 	wxPanel *panel = new wxPanel(parent, wxID_ANY);
 	wxStaticBoxSizer *sizer= new wxStaticBoxSizer(wxVERTICAL,panel,LANG(BEGPANEL_OPTIONS_FOR,"Opciones: for"));
 	
-	opt_for_var = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_COUNTER,"Contador"),_T("i"));
-	opt_for_dec = utils->AddCheckBox(sizer,panel,LANG(BEGPANEL_FOR_DECLARE_COUNTER,"Declarar contador"),true);
-	opt_for_from = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_FROM,"Desde"),"0");
-	opt_for_to = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_TO,"Hasta"),"n");
-	opt_for_last = utils->AddCheckBox(sizer,panel,LANG(BEGPANEL_FOR_INCLUDE_LAST,"Incluir el ultimo valor"),false);
-	opt_for_step = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_INCREMENT,"Incremento"),"1");
+	opt_for_var = mxUT::AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_COUNTER,"Contador"),_T("i"));
+	opt_for_dec = mxUT::AddCheckBox(sizer,panel,LANG(BEGPANEL_FOR_DECLARE_COUNTER,"Declarar contador"),true);
+	opt_for_from = mxUT::AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_FROM,"Desde"),"0");
+	opt_for_to = mxUT::AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_FOR_TO,"Hasta"),"n");
+	opt_for_last = mxUT::AddCheckBox(sizer,panel,LANG(BEGPANEL_FOR_INCLUDE_LAST,"Incluir el ultimo valor"),false);
+	opt_for_step = mxUT::AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_INCREMENT,"Incremento"),"1");
 	
 	sizer->Add(new wxButton(panel,mxID_BEGINNER_FOR,LANG(BEGPANEL_APPLY,"Aplicar")),sizers->BA5_Exp0);
 	
@@ -202,7 +202,7 @@ wxPanel *mxBeginnerPanel::CreateOptionsWhile(wxPanel *parent) {
 	wxPanel *panel = new wxPanel(parent, wxID_ANY);
 	wxStaticBoxSizer *sizer= new wxStaticBoxSizer(wxVERTICAL,panel,LANG(BEGPANEL_OPTIONS_WHILE,"Opciones: while"));
 	
-	opt_while_cond = utils->AddTextCtrl(sizer,panel,LANG(BEGPANEL_WHILE_CONDITION,"Condicion"),_T("cond"));
+	opt_while_cond = mxUT::AddTextCtrl(sizer,panel,LANG(BEGPANEL_WHILE_CONDITION,"Condicion"),_T("cond"));
 	
 	sizer->Add(new wxButton(panel,mxID_BEGINNER_WHILE,LANG(BEGPANEL_APPLY,"Aplicar")),sizers->BA5_Exp0);
 	
@@ -227,7 +227,7 @@ wxPanel *mxBeginnerPanel::CreateOptionsDo(wxPanel *parent) {
 	wxPanel *panel = new wxPanel(parent, wxID_ANY);
 	wxStaticBoxSizer *sizer= new wxStaticBoxSizer(wxVERTICAL,panel,LANG(BEGPANEL_OPTIONES_DO,"Opciones: do"));
 	
-	opt_do_cond = utils->AddTextCtrl(sizer,panel,LANG(BEGPANEL_DO_CONDITION,"Condicion"),_T("cond"));
+	opt_do_cond = mxUT::AddTextCtrl(sizer,panel,LANG(BEGPANEL_DO_CONDITION,"Condicion"),_T("cond"));
 	
 	sizer->Add(new wxButton(panel,mxID_BEGINNER_DO,LANG(BEGPANEL_APPLY,"Aplicar")),sizers->BA5_Exp0);
 	
@@ -252,9 +252,9 @@ wxPanel *mxBeginnerPanel::CreateOptionsSwitch(wxPanel *parent) {
 	wxPanel *panel = new wxPanel(parent, wxID_ANY);
 	wxStaticBoxSizer *sizer= new wxStaticBoxSizer(wxVERTICAL,panel,LANG(BEGPANEL_OPTIONS_SWITCH,"Opciones: switch"));
 	
-	opt_switch_expr = utils->AddTextCtrl(sizer,panel,LANG(BEGPANEL_SWITCH_EXPRESSION,"Expresion"),_T("num"));
-	opt_switch_cases = utils->AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_SWITCH_NUM_CASES,"Cantidad de casos"),_T("3"));
-	opt_switch_default = utils->AddCheckBox(sizer,panel,LANG(BEGPANEL_SWITCH_INCLUDE_DEFAULT,"Incluir default"),true);
+	opt_switch_expr = mxUT::AddTextCtrl(sizer,panel,LANG(BEGPANEL_SWITCH_EXPRESSION,"Expresion"),_T("num"));
+	opt_switch_cases = mxUT::AddShortTextCtrl(sizer,panel,LANG(BEGPANEL_SWITCH_NUM_CASES,"Cantidad de casos"),_T("3"));
+	opt_switch_default = mxUT::AddCheckBox(sizer,panel,LANG(BEGPANEL_SWITCH_INCLUDE_DEFAULT,"Incluir default"),true);
 	
 	sizer->Add(new wxButton(panel,mxID_BEGINNER_SWITCH,LANG(BEGPANEL_APPLY,"Aplicar")),sizers->BA5_Exp0);
 	

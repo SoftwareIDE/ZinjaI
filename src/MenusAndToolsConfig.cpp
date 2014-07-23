@@ -580,7 +580,7 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 			current_menu->AppendSeparator();
 		} else if (props&maBEGIN_SUBMENU) {
 			wxMenu *new_menu = new wxMenu;
-			/*mi.*/wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,mi.icon);
+			/*mi.*/wx_item = mxUT::AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,mi.icon);
 			if (props&maMAPPED) {
 //					mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
 				mapped_menues.push_back(MappedSomething<wxMenu*>(mi.wx_id,new_menu));
@@ -590,7 +590,7 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 		} else if (props&maEND_SUBMENU) {
 			current_menu=menu_stack.back(); menu_stack.pop_back();
 		} else if (!(props&maHIDDEN)) {
-			wx_item = utils->AddItemToMenu(current_menu,&mi);
+			wx_item = mxUT::AddItemToMenu(current_menu,&mi);
 			if (props&maMAPPED) mapped_items.push_back(MappedSomething<wxMenuItem*>(mi.wx_id,/*mi.*/wx_item));
 		}
 		if (props&maDEBUG) { items_debug.push_back(AutoenabligItem(wx_item,true)); }
@@ -734,7 +734,7 @@ void MenusAndToolsConfig::CreateMenues () {
 		int history_id = k==0?mxID_FILE_PROJECT_HISTORY_0:mxID_FILE_SOURCE_HISTORY_0;
 		for (int i=0;i<config->Init.history_len;i++)
 			if (!cfglast[i].IsEmpty()) 
-				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],wxString(ipre)<<i<<(".png"),i);
+				mnihistory[i] = mxUT::AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],wxString(ipre)<<i<<(".png"),i);
 	}
 	
 	wxAcceleratorEntry *aentries = new wxAcceleratorEntry[menues[mnHIDDEN].items.size()]; int ac=0;
@@ -809,7 +809,7 @@ void MenusAndToolsConfig::CreateToolbars() {
 //		tb.wx_toolbar->SetToolBitmapSize(wxSize(icon_size,icon_size));
 		tb.wx_toolbar->AddControl( toolbar_find_text = new wxTextCtrl(tb.wx_toolbar,mxID_TOOLBAR_FIND,wxEmptyString,wxDefaultPosition,wxSize(100,20),wxTE_PROCESS_ENTER) );
 		toolbar_find_text->SetToolTip(LANG(TOOLBAR_FIND_TEXT,"Texto a Buscar"));
-		utils->AddTool(tb.wx_toolbar,mxID_EDIT_TOOLBAR_FIND,LANG(TOOLBAR_FIND_CAPTION,"Busqueda Rapida"),ipre+_T("buscar.png"),LANG(TOOLBAR_FIND_BUTTON,"Buscar siguiente"));
+		mxUT::AddTool(tb.wx_toolbar,mxID_EDIT_TOOLBAR_FIND,LANG(TOOLBAR_FIND_CAPTION,"Busqueda Rapida"),ipre+_T("buscar.png"),LANG(TOOLBAR_FIND_BUTTON,"Buscar siguiente"));
 //		main_window->aui_manager.AddPane(tb.wx_toolbar, wxAuiPaneInfo().Name(wxString("toolbar_")+tb.key).Caption(tb.label).ToolbarPane().Hide());
 	}
 	
@@ -828,12 +828,12 @@ void MenusAndToolsConfig::CreateToolbars() {
 		myToolbar &tb = toolbars[tbDIFF];
 //		tb.wx_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
 //		tb.wx_toolbar->SetToolBitmapSize(wxSize(icon_size,icon_size));
-		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_PREV,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_PREV,"Diferencia Anterior"),ipre+_T("diff_prev.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_PREV,"Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior"));
-		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_NEXT,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_NEXT,"Siguiente Diferencia"),ipre+_T("diff_next.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_NEXT,"Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia"));
-		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_SHOW,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_SHOW,"Mostrar Cambio"),ipre+_T("diff_show.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_SHOW,"Herramientas -> Comparar Archivos -> Mostrar Cambio"));
-		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_APPLY,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_APPLY,"Aplicar Cambio"),ipre+_T("diff_apply.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_APPLY,"Herramientas -> Comparar Archivos -> Aplicar Cambio"));
-		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_DISCARD,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD,"Descartar Cambio"),ipre+_T("diff_discard.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_DISCARD,"Herramientas -> Comparar Archivos -> Descartar Cambio"));
-		utils->AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_CLEAR,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR,"Borrar Marcas de Comparacion"),ipre+_T("diff_clear.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_CLEAR,"Herramientas -> Comparar Archivos -> Borrar Marcas"));
+		mxUT::AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_PREV,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_PREV,"Diferencia Anterior"),ipre+_T("diff_prev.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_PREV,"Herramientas -> Comparar Archivos -> Ir a Diferencia Anterior"));
+		mxUT::AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_NEXT,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_NEXT,"Siguiente Diferencia"),ipre+_T("diff_next.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_NEXT,"Herramientas -> Comparar Archivos -> Ir a Siguiente Diferencia"));
+		mxUT::AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_SHOW,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_SHOW,"Mostrar Cambio"),ipre+_T("diff_show.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_SHOW,"Herramientas -> Comparar Archivos -> Mostrar Cambio"));
+		mxUT::AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_APPLY,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_APPLY,"Aplicar Cambio"),ipre+_T("diff_apply.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_APPLY,"Herramientas -> Comparar Archivos -> Aplicar Cambio"));
+		mxUT::AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_DISCARD,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_DISCARD,"Descartar Cambio"),ipre+_T("diff_discard.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_DISCARD,"Herramientas -> Comparar Archivos -> Descartar Cambio"));
+		mxUT::AddTool(tb.wx_toolbar,mxID_TOOLS_DIFF_CLEAR,LANG(TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR,"Borrar Marcas de Comparacion"),ipre+_T("diff_clear.png"),LANG(TOOLBAR_DESC_TOOLS_DIFF_CLEAR,"Herramientas -> Comparar Archivos -> Borrar Marcas"));
 //		main_window->aui_manager.AddPane(tb.wx_toolbar, wxAuiPaneInfo().Name(wxString("toolbar_")+tb.key).Caption(tb.label).ToolbarPane().Top().Float().LeftDockable(false).RightDockable(false).Hide());
 	}
 	
@@ -851,7 +851,7 @@ void MenusAndToolsConfig::PopulateToolbar(int tb_id) {
 		vector<myToolbarItem> &items = toolbars[tb_id].items;
 		for(unsigned int i=0;i<items.size();i++)
 			if (items[i].visible) 
-				utils->AddTool(wx_toolbar,items[i].wx_id,items[i].label,ipre+items[i].icon,items[i].description,items[i].checkeable?wxITEM_CHECK:wxITEM_NORMAL);
+				mxUT::AddTool(wx_toolbar,items[i].wx_id,items[i].label,ipre+items[i].icon,items[i].description,items[i].checkeable?wxITEM_CHECK:wxITEM_NORMAL);
 	
 	} else { // caso especial, barra de proyecto
 		// elementos especificos de proyectos wx
@@ -859,7 +859,7 @@ void MenusAndToolsConfig::PopulateToolbar(int tb_id) {
 			int wx_ids[3] = { mxID_TOOLS_WXFB_CONFIG, mxID_TOOLS_WXFB_INHERIT_CLASS, mxID_TOOLS_WXFB_HELP_WX };
 			for(int i=0;i<3;i++) {
 				myToolbarItem item("",menues[mnTOOLS],wx_ids[i]);
-				utils->AddTool(wx_toolbar,item.wx_id,item.label,ipre+item.icon,item.description,item.checkeable?wxITEM_CHECK:wxITEM_NORMAL);
+				mxUT::AddTool(wx_toolbar,item.wx_id,item.label,ipre+item.icon,item.description,item.checkeable?wxITEM_CHECK:wxITEM_NORMAL);
 			}
 		}
 		// herramientas personalizadas
@@ -868,12 +868,12 @@ void MenusAndToolsConfig::PopulateToolbar(int tb_id) {
 			if (project->custom_tools[i].on_toolbar) {
 				have_tool=true;
 				wxString str(LANG(TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL,"Herramienta Personalizada ")); str<<i<<" ("<<project->custom_tools[i].name<<")";;
-				utils->AddTool(wx_toolbar,mxID_CUSTOM_PROJECT_TOOL_0+i,str,ipre+wxString("projectTool")<<i<<".png",str);
+				mxUT::AddTool(wx_toolbar,mxID_CUSTOM_PROJECT_TOOL_0+i,str,ipre+wxString("projectTool")<<i<<".png",str);
 			}
 		}
 		if (!have_tool) { // si no hay definidas herramientas personalizadas, muestra el boton para configurarlas
 			myToolbarItem item("",menues[mnTOOLS],mxID_TOOLS_PROJECT_TOOLS_SETTINGS);
-			utils->AddTool(wx_toolbar,item.wx_id,item.label,ipre+item.icon,item.description,item.checkeable?wxITEM_CHECK:wxITEM_NORMAL);
+			mxUT::AddTool(wx_toolbar,item.wx_id,item.label,ipre+item.icon,item.description,item.checkeable?wxITEM_CHECK:wxITEM_NORMAL);
 		}
 	}
 	
@@ -1007,7 +1007,7 @@ void MenusAndToolsConfig::TransferStatesFromConfig() {
 
 
 bool MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wxString & value) {
-	if (key=="icon_size") { utils->ToInt(value,icon_size); return true; }
+	if (key=="icon_size") { mxUT::ToInt(value,icon_size); return true; }
 	int p=key.Index('.'); if (p==wxNOT_FOUND) return false;
 	wxString tb_name=key.Mid(0,p);
 	if (tb_name=="positions") {
@@ -1025,7 +1025,7 @@ bool MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wx
 				vector<myToolbarItem> &items = toolbars[tb_id].items;
 				for(unsigned int i=0;i<items.size();i++) { 
 					if (items[i].key==name) {
-						items[i].visible = utils->IsTrue(value);
+						items[i].visible = mxUT::IsTrue(value);
 						return true;
 					}
 				}
