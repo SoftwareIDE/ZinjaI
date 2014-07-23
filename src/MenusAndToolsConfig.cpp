@@ -20,6 +20,7 @@ MenusAndToolsConfig *menu_data;
 #endif
 
 MenusAndToolsConfig::MenusAndToolsConfig () {
+	wx_menu_bar = NULL;
 //	tools_custom_item=new wxMenuItem*[10];
 //	for (int i=0;i<10;i++) tools_custom_item[i] = NULL;
 	file_source_history = new wxMenuItem*[CM_HISTORY_MAX_LEN];
@@ -34,9 +35,9 @@ MenusAndToolsConfig::MenusAndToolsConfig () {
 void MenusAndToolsConfig::LoadMenuData ( ) {
 	
 	menues[mnFILE].label = LANG(MENUITEM_FILE,"&Archivo"); {
-		AddMenuItem(mnFILE, myMenuItem(wxID_NEW, LANG(MENUITEM_FILE_NEW,"&Nuevo...")).ShortCut("Ctrl+N").Description("Crear un nuevo archivo").Icon("nuevo.png"));
+		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_NEW, LANG(MENUITEM_FILE_NEW,"&Nuevo...")).ShortCut("Ctrl+N").Description("Crear un nuevo archivo").Icon("nuevo.png"));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_PROJECT, LANG(MENUITEM_FILE_NEW_PROJECT,"&Nuevo Proyecto...")).ShortCut("Ctrl+Shift+N").Description("Crear un nuevo proyecto").Icon("proyecto.png"));
-		AddMenuItem(mnFILE, myMenuItem(wxID_OPEN, LANG(MENUITEM_FILE_OPEN,"&Abrir...")).ShortCut("Ctrl+O").Description("Abrir un archivo o un proyecto existente...").Icon("abrir.png").Map());
+		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_OPEN, LANG(MENUITEM_FILE_OPEN,"&Abrir...")).ShortCut("Ctrl+O").Description("Abrir un archivo o un proyecto existente...").Icon("abrir.png").Map());
 		BeginSubMenu(mnFILE,LANG(MENUITEM_FILE_RECENT_SOURCES,"Fuentes Abiertos Recientemente"),"Muestra los ultimos archivos abiertos como programas simples","recentSimple.png",mxID_FILE_SOURCE_RECENT,maMAPPED);
 			AddSeparator(mnFILE);
 			AddMenuItem(mnFILE, myMenuItem(mxID_FILE_SOURCE_HISTORY_MORE,LANG(MENU_FILE_RECENT_MORE,"Mas...")).Description("Muestra un dialogo con la lista completa de archivos recientes").Icon("recentMore.png"));
@@ -45,31 +46,31 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddSeparator(mnFILE);
 			AddMenuItem(mnFILE, myMenuItem(mxID_FILE_PROJECT_HISTORY_MORE,LANG(MENU_FILE_RECENT_MORE,"Mas...")).Description("Muestra un dialogo con la lista completa de archivos recientes").Icon("recentMore.png"));
 		EndSubMenu(mnFILE);
-		AddMenuItem(mnFILE, myMenuItem(wxID_SAVE, LANG(MENUITEM_FILE_SAVE,"&Guardar")).ShortCut("Ctrl+S").Description("Guardar el archivo actual").Icon("guardar.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnFILE, myMenuItem(wxID_SAVEAS, LANG(MENUITEM_FILE_SAVE_AS,"G&uardar Como...")).ShortCut("Ctrl+Shift+S").Description("Guardar el archivo actual con otro nombre...").Icon("guardarComo.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_SAVE, LANG(MENUITEM_FILE_SAVE,"&Guardar")).ShortCut("Ctrl+S").Description("Guardar el archivo actual").Icon("guardar.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_SAVE_AS, LANG(MENUITEM_FILE_SAVE_AS,"G&uardar Como...")).ShortCut("Ctrl+Shift+S").Description("Guardar el archivo actual con otro nombre...").Icon("guardarComo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_SAVE_ALL, LANG(MENUITEM_FILE_SAVE_ALL,"Guardar &Todo...")).ShortCut("Ctrl+Alt+Shift+S").Description("Guarda todos los archivos abiertos y el proyecto actual...").Icon("guardarTodo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_SAVE_PROJECT, LANG(MENUITEM_FILE_SAVE_PROJECT,"Guar&dar Proyecto")).ShortCut("Ctrl+Alt+S").Description("Guardar la configuaricion actual del proyecto").Icon("guardarProyecto.png").EnableIf(ecPROJECT));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_EXPORT_HTML, LANG(MENUITEM_FILE_EXPORT_HTML,"Exportar a HTML...")).Description("Genera un archiv HTML con el codigo fuente").Icon("exportHtml.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_PRINT, LANG(MENUITEM_FILE_PRINT,"&Imprimir...")).Description("Imprime el codigo fuente actual").Icon("imprimir.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_RELOAD, LANG(MENUITEM_FILE_RELOAD,"&Recargar")).ShortCut("Ctrl+Shift+R").Description("Recarga la version en disco del archivo actual.").Icon("recargar.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnFILE, myMenuItem(wxID_CLOSE, LANG(MENUITEM_FILE_CLOSE,"&Cerrar")).ShortCut("Ctrl+W").Description("Cerrar el archivo actual").Icon("cerrar.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_CLOSE, LANG(MENUITEM_FILE_CLOSE,"&Cerrar")).ShortCut("Ctrl+W").Description("Cerrar el archivo actual").Icon("cerrar.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_CLOSE_ALL, LANG(MENUITEM_FILE_CLOSE_ALL,"Cerrar &Todo")).ShortCut("Ctrl+Alt+Shift+W").Description("Cierra todos los archivos abiertos").Icon("cerrarTodo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_CLOSE_PROJECT, LANG(MENUITEM_FILE_CLOSE_PROJECT,"Cerrar Pro&yecto")).ShortCut("Ctrl+Shift+W").Description("Cierra el proyecto actual").Icon("cerrarProyecto.png").EnableIf(ecPROJECT));
 		AddSeparator(mnFILE);
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_PROJECT_CONFIG, LANG(MENUITEM_FILE_PROJECT_CONFIG,"&Configuracion del Proyecto...")).ShortCut("Ctrl+Shift+P").Description("Configurar las propiedades generales de un proyecto...").Icon("projectConfig.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_PREFERENCES, LANG(MENUITEM_FILE_PREFERENCES,"&Preferencias...")).ShortCut("Ctrl+P").Description("Configurar el entorno...").Icon("preferencias.png"));
 		AddSeparator(mnFILE);
-		AddMenuItem(mnFILE, myMenuItem(wxID_EXIT, LANG(MENUITEM_FILE_EXIT,"&Salir")).ShortCut("Alt+F4").Description("Salir del programa!").Icon("salir.png"));
+		AddMenuItem(mnFILE, myMenuItem(mxID_FILE_EXIT, LANG(MENUITEM_FILE_EXIT,"&Salir")).ShortCut("Alt+F4").Description("Salir del programa!").Icon("salir.png"));
 	}
 	
 	
 	menues[mnEDIT].label = LANG(MENUITEM_EDIT,"&Edicion"); {
-		AddMenuItem(mnEDIT, myMenuItem(wxID_UNDO, LANG(MENUITEM_EDIT_UNDO,"&Deshacer")).ShortCut("Ctrl+Z").Description("Deshacer el ultimo cambio").Icon("deshacer.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnEDIT, myMenuItem(wxID_REDO, LANG(MENUITEM_EDIT_REDO,"&Rehacer")).ShortCut("Ctrl+Shift+Z").Description("Rehacer el ultimo cambio desecho").Icon("rehacer.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_UNDO, LANG(MENUITEM_EDIT_UNDO,"&Deshacer")).ShortCut("Ctrl+Z").Description("Deshacer el ultimo cambio").Icon("deshacer.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_REDO, LANG(MENUITEM_EDIT_REDO,"&Rehacer")).ShortCut("Ctrl+Shift+Z").Description("Rehacer el ultimo cambio desecho").Icon("rehacer.png").EnableIf(ecSOURCE));
 		AddSeparator(mnEDIT);
-		AddMenuItem(mnEDIT, myMenuItem(wxID_CUT, LANG(MENUITEM_EDIT_CUT,"C&ortar")).ShortCut("Ctrl+X").Description("Cortar la seleccion al portapapeles").Icon("cortar.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnEDIT, myMenuItem(wxID_COPY, LANG(MENUITEM_EDIT_COPY,"&Copiar")).ShortCut("Ctrl+C").Description("Copiar la seleccion al portapapeles").Icon("copiar.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnEDIT, myMenuItem(wxID_PASTE, LANG(MENUITEM_EDIT_PASTE,"&Pegar")).ShortCut("Ctrl+V").Description("Pegar el contenido del portapapeles").Icon("pegar.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_CUT, LANG(MENUITEM_EDIT_CUT,"C&ortar")).ShortCut("Ctrl+X").Description("Cortar la seleccion al portapapeles").Icon("cortar.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_COPY, LANG(MENUITEM_EDIT_COPY,"&Copiar")).ShortCut("Ctrl+C").Description("Copiar la seleccion al portapapeles").Icon("copiar.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_PASTE, LANG(MENUITEM_EDIT_PASTE,"&Pegar")).ShortCut("Ctrl+V").Description("Pegar el contenido del portapapeles").Icon("pegar.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_TOGGLE_LINES_UP, LANG(MENUITEM_EDIT_LINES_UP,"Mover Hacia Arriba")).ShortCut("Ctrl+T").Description("Mueve la o las lineas seleccionadas hacia arriba").Icon("toggleLinesUp.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_TOGGLE_LINES_DOWN, LANG(MENUITEM_EDIT_LINES_DOWN,"Mover Hacia Abajo")).ShortCut("Ctrl+Shift+T").Description("Mueve la o las lineas seleccionadas hacia abajo").Icon("toggleLinesDown.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_DUPLICATE_LINES, LANG(MENUITEM_EDIT_DUPLICATE_LINES,"&Duplicar Linea(s)")).ShortCut("Ctrl+L").Description("Copia la linea actual del cursor, o las lineas seleccionadas, nuevamente a continuacion").Icon("duplicarLineas.png").EnableIf(ecSOURCE));
@@ -88,7 +89,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_UNCOMMENT, LANG(MENUITEM_EDIT_UNCOMMENT,"Descomentar")).ShortCut("Shift+Ctrl+D").Description("Descomente el texto seleccionado eliminando \"//\" de cada linea").Icon("descomentar.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_INDENT, LANG(MENUITEM_EDIT_INDENT,"Indentar Blo&que")).ShortCut("Ctrl+I").Description("Corrige el indentado de un bloque de codigo agregando o quitando tabs segun corresponda").Icon("indent.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_BRACEMATCH, LANG(MENUITEM_EDIT_BRACEMATCH,"Seleccionar Blo&que")).ShortCut("Ctrl+M").Description("Seleccionar todo el bloque correspondiente a la llave o parentesis sobre el cursor").Icon("mostrarLlave.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnEDIT, myMenuItem(wxID_SELECTALL, LANG(MENUITEM_EDIT_SELECT_ALL,"&Seleccionar Todo")).ShortCut("Ctrl+A").Description("Seleccionar todo el contenido del archivo").Icon("seleccionarTodo.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_SELECT_ALL, LANG(MENUITEM_EDIT_SELECT_ALL,"&Seleccionar Todo")).ShortCut("Ctrl+A").Description("Seleccionar todo el contenido del archivo").Icon("seleccionarTodo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_MARK_LINES, LANG(MENUITEM_EDIT_HIGHLIGHT_LINES,"&Resaltar Linea(s)/Quitar Resaltado")).ShortCut("Ctrl+B").Description("Resalta la linea pintandola de otro color").Icon("marcar.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_GOTO_MARK, LANG(MENUITEM_EDIT_FIND_HIGHLIGHTS,"Buscar &Resaltado")).ShortCut("Ctrl+Shift+B").Description("Mueve el cursor a la siguiente linea resaltada").Icon("irAMarca.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnEDIT, myMenuItem(mxID_EDIT_LIST_MARKS, LANG(MENUITEM_EDIT_LIST_HIGHLIGHTS,"&Listar Lineas Resaltadas")).ShortCut("Ctrl+Alt+B").Description("Muestra una lista de las lineas marcadas en todos los archivos").Icon("listarMarcas.png").EnableIf(ecPROJECT_OR_SOURCE));
@@ -331,6 +332,30 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnHELP, myMenuItem(mxID_HELP_ABOUT, LANG(MENUITEM_HELP_ABOUT,"Acerca de...")).Description("Acerca de...").Icon("acercaDe.png"));
 	}
 	
+	menues[mnHIDDEN].label = LANG(MENUITEM_GLOBAL_SHORTCUTS,"Otros atajos"); {
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_VIEW_UPDATE_SYMBOLS,LANG(MENUITEM_HIDDEN_UPDATE_SYMBOLS,"Actualizar arbol de simbolos")).ShortCut("F2"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_EDIT_FORCE_AUTOCOMPLETE,LANG(MENUITEM_HIDDEN_FORCE_AUTOCOMPLETE,"Autocompletar")).ShortCut("Ctrl+Space"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_FILE_OPEN_SELECTED,LANG(MENUITEM_HIDDEN_OPEN_SELECTED,"Abrir archivo seleccionado en el código")).ShortCut("Ctrl+Return"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_VIEW_NOTEBOOK_PREV,LANG(MENUITEM_HIDDEN_PREV_TAB,"Pestaña de código anterior")).ShortCut("Ctrl+Shift+Tab"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_VIEW_NOTEBOOK_NEXT,LANG(MENUITEM_HIDDEN_NEXT_TAB,"Pestaña de código siguiente")).ShortCut("Ctrl+Tab"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_VIEW_NOTEBOOK_PREV,LANG(MENUITEM_HIDDEN_PREV_TAB,"Pestaña de código anterior")).ShortCut("Ctrl+PageUp"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_VIEW_NOTEBOOK_NEXT,LANG(MENUITEM_HIDDEN_NEXT_TAB,"Pestaña de código siguiente")).ShortCut("Ctrl+PageDown"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_DEBUG_DO_THAT,"").ShortCut("Ctrl+Shift+F5"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_FILE_OPEN_H,LANG(MENUITEM_HIDDEN_OPEN_H,"Alternar entre .h y .cpp")).ShortCut("F12"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_RUN_CONFIG,LANG(MENUITEM_HIDDEN_RUN_CONFIG,"Opciones de compilación y ejecución")).ShortCut("Ctrl+Alt+P"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_INTERNAL_INFO,"").ShortCut("Ctrl+Shift+F6"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_WHERE_AM_I,LANG(MENUITEM_HIDDEN_WHERE_I_AM,"Mostrar ubicación y contexto en el código")).ShortCut("Ctrl+Alt+Space"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_EDIT_AUTOCODE_AUTOCOMPLETE,LANG(MENUITEM_HIDDEN_AUTOCODE_AUTOCOMPLETE,"Autocompletado de autocódigos")).ShortCut("Crtl+Shift+Space"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_FILE_CLOSE_ALL_BUT_ONE,LANG(MENUITEM_HIDDEN_CLOSE_ALL_BUT_ONE,"Cerrar todos los fuentes excepto el actual")).ShortCut("Ctrl+Alt+W"));	
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_EDIT_FIND_FROM_TOOLBAR,LANG(MENUITEM_HIDDEN_FIND_FROM_TOOLBAR,"Ir a la barra de herramienta de búsqueda")).ShortCut("Ctrl+Alt+F"));	
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_MACRO_RECORD,LANG(MENUITEM_HIDDEN_MACRO_RECORD,"Iniciar/Detener grabación de macro de teclado")).ShortCut("Ctrl+Shift+Q"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_MACRO_REPLAY,LANG(MENUITEM_HIDDEN_MACRO_REPLAY,"Reproducir macro de teclado")).ShortCut("Ctrl+Q"));	
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_HELP_CODE,LANG(MENUITEM_HIDDEN_HELP_CODE,"Ayuda rápida")).ShortCut("Shift+F1"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_NAVIGATION_HISTORY_PREV,LANG(MENUITEM_HIDDEN_NAVIGATION_HISTORY_PREV,"Historial de navegación -> ubicación anterior")).ShortCut("Alt+Left"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_NAVIGATION_HISTORY_NEXT,LANG(MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT,"Historial de navegación -> ubicación siguiente")).ShortCut("Alt+Right"));
+		AddMenuItem(mnHIDDEN, myMenuItem(mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT,LANG(MENUITEM_HIDDEN_ENABLE_BREAKPOINT,"Habilitar/deshabilitar punto de interrupcion")).ShortCut(""));
+	}
+	
 }
 
 void MenusAndToolsConfig::LoadToolbarsData ( ) {
@@ -338,21 +363,21 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	icon_size=24;
 	
 	toolbars[tbFILE].Init("file",LANG(CAPTION_TOOLBAR_FILE,"Archivo"),"T1"); {
-		AddToolbarItem(tbFILE,myToolbarItem("new_file",menues[mnFILE],wxID_NEW).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("new_file",menues[mnFILE],mxID_FILE_NEW).Visible());
 		AddToolbarItem(tbFILE,myToolbarItem("new_project",menues[mnFILE],mxID_FILE_PROJECT));
-		AddToolbarItem(tbFILE,myToolbarItem("open",menues[mnFILE],wxID_OPEN).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("open",menues[mnFILE],mxID_FILE_OPEN).Visible());
 		AddToolbarItem(tbFILE,myToolbarItem("recent_simple",menues[mnFILE],mxID_FILE_SOURCE_HISTORY_MORE));
 		AddToolbarItem(tbFILE,myToolbarItem("recent_project",menues[mnFILE],mxID_FILE_PROJECT_HISTORY_MORE));
 		AddToolbarItem(tbFILE,myToolbarItem("open_header",mxID_FILE_OPEN_H,"abrir_h.png",LANG(TOOLBAR_CAPTION_FILE_OPEN_H,"Abrir h/cpp Complementario")));
 		AddToolbarItem(tbFILE,myToolbarItem("open_selected",mxID_FILE_OPEN_SELECTED,"abrir_sel.png",LANG(TOOLBAR_CAPTION_FILE_OPEN_SELECTED,"Abrir Seleccionado")));
-		AddToolbarItem(tbFILE,myToolbarItem("save",menues[mnFILE],wxID_SAVE).Visible());
-		AddToolbarItem(tbFILE,myToolbarItem("save_as",menues[mnFILE],wxID_SAVEAS).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("save",menues[mnFILE],mxID_FILE_SAVE).Visible());
+		AddToolbarItem(tbFILE,myToolbarItem("save_as",menues[mnFILE],mxID_FILE_SAVE_AS).Visible());
 		AddToolbarItem(tbFILE,myToolbarItem("save_all",menues[mnFILE],mxID_FILE_SAVE_ALL));
 		AddToolbarItem(tbFILE,myToolbarItem("save_project",menues[mnFILE],mxID_FILE_SAVE_PROJECT));
 		AddToolbarItem(tbFILE,myToolbarItem("export_html",menues[mnFILE],mxID_FILE_EXPORT_HTML));
 		AddToolbarItem(tbFILE,myToolbarItem("print",menues[mnFILE],mxID_FILE_PRINT));
 		AddToolbarItem(tbFILE,myToolbarItem("reload",menues[mnFILE],mxID_FILE_RELOAD));
-		AddToolbarItem(tbFILE,myToolbarItem("close",menues[mnFILE],wxID_CLOSE));
+		AddToolbarItem(tbFILE,myToolbarItem("close",menues[mnFILE],mxID_FILE_CLOSE));
 		AddToolbarItem(tbFILE,myToolbarItem("close_all",menues[mnFILE],mxID_FILE_CLOSE_ALL));
 		AddToolbarItem(tbFILE,myToolbarItem("close_project",menues[mnFILE],mxID_FILE_CLOSE_PROJECT));
 		AddToolbarItem(tbFILE,myToolbarItem("project_config",menues[mnFILE],mxID_FILE_PROJECT_CONFIG));
@@ -360,11 +385,11 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	
 	
 	toolbars[tbEDIT].Init("edit",LANG(CAPTION_TOOLBAR_EDIT,"Edición"),"T1"); {
-		AddToolbarItem(tbEDIT,myToolbarItem("undo",menues[mnEDIT],wxID_UNDO).Visible());
-		AddToolbarItem(tbEDIT,myToolbarItem("redo",menues[mnEDIT],wxID_REDO).Visible());
-		AddToolbarItem(tbEDIT,myToolbarItem("copy",menues[mnEDIT],wxID_COPY).Visible());
-		AddToolbarItem(tbEDIT,myToolbarItem("cut",menues[mnEDIT],wxID_CUT).Visible());
-		AddToolbarItem(tbEDIT,myToolbarItem("paste",menues[mnEDIT],wxID_PASTE).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("undo",menues[mnEDIT],mxID_EDIT_UNDO).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("redo",menues[mnEDIT],mxID_EDIT_REDO).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("copy",menues[mnEDIT],mxID_EDIT_COPY).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("cut",menues[mnEDIT],mxID_EDIT_CUT).Visible());
+		AddToolbarItem(tbEDIT,myToolbarItem("paste",menues[mnEDIT],mxID_EDIT_PASTE).Visible());
 		AddToolbarItem(tbEDIT,myToolbarItem("move_up",menues[mnEDIT],mxID_EDIT_TOGGLE_LINES_UP));
 		AddToolbarItem(tbEDIT,myToolbarItem("move_down",menues[mnEDIT],mxID_EDIT_TOGGLE_LINES_DOWN));
 		AddToolbarItem(tbEDIT,myToolbarItem("duplicate",menues[mnEDIT],mxID_EDIT_DUPLICATE_LINES));
@@ -381,7 +406,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbEDIT,myToolbarItem("uncomment",menues[mnEDIT],mxID_EDIT_UNCOMMENT).Visible());
 		AddToolbarItem(tbEDIT,myToolbarItem("indent",menues[mnEDIT],mxID_EDIT_INDENT).Visible());
 		AddToolbarItem(tbEDIT,myToolbarItem("select_block",menues[mnEDIT],mxID_EDIT_BRACEMATCH));
-		AddToolbarItem(tbEDIT,myToolbarItem("select_all",menues[mnEDIT],wxID_SELECTALL));
+		AddToolbarItem(tbEDIT,myToolbarItem("select_all",menues[mnEDIT],mxID_EDIT_SELECT_ALL));
 		AddToolbarItem(tbEDIT,myToolbarItem("toggle_user_mark",menues[mnEDIT],mxID_EDIT_MARK_LINES));
 		AddToolbarItem(tbEDIT,myToolbarItem("find_user_mark",menues[mnEDIT],mxID_EDIT_GOTO_MARK));
 		AddToolbarItem(tbEDIT,myToolbarItem("list_user_marks",menues[mnEDIT],mxID_EDIT_LIST_MARKS));
@@ -530,7 +555,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbMISC,myToolbarItem("about",menues[mnHELP],mxID_HELP_ABOUT));
 		AddToolbarItem(tbMISC,myToolbarItem("opinion",menues[mnHELP],mxID_HELP_OPINION).Visible());
 		AddToolbarItem(tbMISC,myToolbarItem("find_updates",menues[mnHELP],mxID_HELP_UPDATES));
-		AddToolbarItem(tbMISC,myToolbarItem("exit",menues[mnFILE],wxID_EXIT));
+		AddToolbarItem(tbMISC,myToolbarItem("exit",menues[mnFILE],mxID_FILE_EXIT));
 	}
 	
 	/// @todo: agregar la de proyecto para que sea mas facil abajo crearla???
@@ -544,7 +569,6 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	
 void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 	vector<wxMenu*> menu_stack;
-	wxString menu_icon_prefix = DIR_PLUS_FILE("16","");
 	wxMenu *current_menu = menues[menu_id].wx_menu = new wxMenu;
 	wx_menu_bar->Append(current_menu,menues[menu_id].label);
 	unsigned int items_size = menues[menu_id].items.size();
@@ -556,7 +580,7 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 			current_menu->AppendSeparator();
 		} else if (props&maBEGIN_SUBMENU) {
 			wxMenu *new_menu = new wxMenu;
-			/*mi.*/wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,menu_icon_prefix+mi.icon);
+			/*mi.*/wx_item = utils->AddSubMenuToMenu(current_menu,new_menu,mi.label,mi.description,mi.icon);
 			if (props&maMAPPED) {
 //					mapped_items.push_back(MappedItem(mi.wx_id,wx_item));
 				mapped_menues.push_back(MappedSomething<wxMenu*>(mi.wx_id,new_menu));
@@ -566,10 +590,7 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 		} else if (props&maEND_SUBMENU) {
 			current_menu=menu_stack.back(); menu_stack.pop_back();
 		} else if (!(props&maHIDDEN)) {
-			if (props&(maCHECKED|maCHECKEABLE))
-				/*mi.*/wx_item = utils->AddCheckToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,props&maCHECKED);
-			else 
-				/*mi.*/wx_item = utils->AddItemToMenu(current_menu,mi.wx_id,mi.label,mi.shortcut,mi.description,menu_icon_prefix+mi.icon);
+			wx_item = utils->AddItemToMenu(current_menu,&mi);
 			if (props&maMAPPED) mapped_items.push_back(MappedSomething<wxMenuItem*>(mi.wx_id,/*mi.*/wx_item));
 		}
 		if (props&maDEBUG) { items_debug.push_back(AutoenabligItem(wx_item,true)); }
@@ -579,16 +600,129 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 	}
 }
 
+
+int getKeyCode(const wxString &key) {
+	if (key.Len()==1) return key[0];
+	if (key=="BACK") return WXK_BACK;
+	if (key=="TAB") return WXK_TAB;
+	if (key=="RETURN") return WXK_RETURN;
+	if (key=="ESCAPE") return WXK_ESCAPE;
+	if (key=="SPACE") return WXK_SPACE;
+	if (key=="DELETE") return WXK_DELETE;
+	if (key=="START") return WXK_START;
+	if (key=="LBUTTON") return WXK_LBUTTON;
+	if (key=="RBUTTON") return WXK_RBUTTON;
+	if (key=="CANCEL") return WXK_CANCEL;
+	if (key=="MBUTTON") return WXK_MBUTTON;
+	if (key=="CLEAR") return WXK_CLEAR;
+	if (key=="SHIFT") return WXK_SHIFT;
+	if (key=="ALT") return WXK_ALT;
+	if (key=="CONTROL") return WXK_CONTROL;
+	if (key=="MENU") return WXK_MENU;
+	if (key=="PAUSE") return WXK_PAUSE;
+	if (key=="CAPITAL") return WXK_CAPITAL;
+	if (key=="END") return WXK_END;
+	if (key=="HOME") return WXK_HOME;
+	if (key=="LEFT") return WXK_LEFT;
+	if (key=="UP") return WXK_UP;
+	if (key=="RIGHT") return WXK_RIGHT;
+	if (key=="DOWN") return WXK_DOWN;
+	if (key=="SELECT") return WXK_SELECT;
+	if (key=="PRINT") return WXK_PRINT;
+	if (key=="EXECUTE") return WXK_EXECUTE;
+	if (key=="SNAPSHOT") return WXK_SNAPSHOT;
+	if (key=="INSERT") return WXK_INSERT;
+	if (key=="HELP") return WXK_HELP;
+	if (key=="NUMPAD0") return WXK_NUMPAD0;
+	if (key=="NUMPAD1") return WXK_NUMPAD1;
+	if (key=="NUMPAD2") return WXK_NUMPAD2;
+	if (key=="NUMPAD3") return WXK_NUMPAD3;
+	if (key=="NUMPAD4") return WXK_NUMPAD4;
+	if (key=="NUMPAD5") return WXK_NUMPAD5;
+	if (key=="NUMPAD6") return WXK_NUMPAD6;
+	if (key=="NUMPAD7") return WXK_NUMPAD7;
+	if (key=="NUMPAD8") return WXK_NUMPAD8;
+	if (key=="NUMPAD9") return WXK_NUMPAD9;
+	if (key=="MULTIPLY") return WXK_MULTIPLY;
+	if (key=="ADD") return WXK_ADD;
+	if (key=="SEPARATOR") return WXK_SEPARATOR;
+	if (key=="SUBTRACT") return WXK_SUBTRACT;
+	if (key=="DECIMAL") return WXK_DECIMAL;
+	if (key=="DIVIDE") return WXK_DIVIDE;
+	if (key=="F1") return WXK_F1;
+	if (key=="F2") return WXK_F2;
+	if (key=="F3") return WXK_F3;
+	if (key=="F4") return WXK_F4;
+	if (key=="F5") return WXK_F5;
+	if (key=="F6") return WXK_F6;
+	if (key=="F7") return WXK_F7;
+	if (key=="F8") return WXK_F8;
+	if (key=="F9") return WXK_F9;
+	if (key=="F10") return WXK_F10;
+	if (key=="F11") return WXK_F11;
+	if (key=="F12") return WXK_F12;
+	if (key=="F13") return WXK_F13;
+	if (key=="F14") return WXK_F14;
+	if (key=="F15") return WXK_F15;
+	if (key=="F16") return WXK_F16;
+	if (key=="F17") return WXK_F17;
+	if (key=="F18") return WXK_F18;
+	if (key=="F19") return WXK_F19;
+	if (key=="F20") return WXK_F20;
+	if (key=="F21") return WXK_F21;
+	if (key=="F22") return WXK_F22;
+	if (key=="F23") return WXK_F23;
+	if (key=="F24") return WXK_F24;
+	if (key=="NUMLOCK") return WXK_NUMLOCK;
+	if (key=="SCROLL") return WXK_SCROLL;
+	if (key=="PAGEUP") return WXK_PAGEUP;
+	if (key=="PAGEDOWN") return WXK_PAGEDOWN;
+	if (key=="NUMPAD_SPACE") return WXK_NUMPAD_SPACE;
+	if (key=="NUMPAD_TAB") return WXK_NUMPAD_TAB;
+	if (key=="NUMPAD_ENTER") return WXK_NUMPAD_ENTER;
+	if (key=="NUMPAD_F1") return WXK_NUMPAD_F1;
+	if (key=="NUMPAD_F2") return WXK_NUMPAD_F2;
+	if (key=="NUMPAD_F3") return WXK_NUMPAD_F3;
+	if (key=="NUMPAD_F4") return WXK_NUMPAD_F4;
+	if (key=="NUMPAD_HOME") return WXK_NUMPAD_HOME;
+	if (key=="NUMPAD_LEFT") return WXK_NUMPAD_LEFT;
+	if (key=="NUMPAD_UP") return WXK_NUMPAD_UP;
+	if (key=="NUMPAD_RIGHT") return WXK_NUMPAD_RIGHT;
+	if (key=="NUMPAD_DOWN") return WXK_NUMPAD_DOWN;
+	if (key=="NUMPAD_PAGEUP") return WXK_NUMPAD_PAGEUP;
+	if (key=="NUMPAD_PAGEDOWN") return WXK_NUMPAD_PAGEDOWN;
+	if (key=="NUMPAD_END") return WXK_NUMPAD_END;
+	if (key=="NUMPAD_BEGIN") return WXK_NUMPAD_BEGIN;
+	if (key=="NUMPAD_INSERT") return WXK_NUMPAD_INSERT;
+	if (key=="NUMPAD_DELETE") return WXK_NUMPAD_DELETE;
+	if (key=="NUMPAD_EQUAL") return WXK_NUMPAD_EQUAL;
+	if (key=="NUMPAD_MULTIPLY") return WXK_NUMPAD_MULTIPLY;
+	if (key=="NUMPAD_ADD") return WXK_NUMPAD_ADD;
+	if (key=="NUMPAD_SEPARATOR") return WXK_NUMPAD_SEPARATOR;
+	if (key=="NUMPAD_SUBTRACT") return WXK_NUMPAD_SUBTRACT;
+	if (key=="NUMPAD_DECIMAL") return WXK_NUMPAD_DECIMAL;
+	if (key=="NUMPAD_DIVIDE") return WXK_NUMPAD_DIVIDE;
+	// the following key codes are only generated under Windows currently
+	if (key=="WINDOWS_LEFT") return WXK_WINDOWS_LEFT;
+	if (key=="WINDOWS_RIGHT") return WXK_WINDOWS_RIGHT;
+	if (key=="WINDOWS_MENU") return WXK_WINDOWS_MENU;
+	if (key=="COMMAND") return WXK_COMMAND;
+	return 0;
+}
 /**
 * @brief Crea los menúes de la ventana principal y los configura en el modo inicial (no debug, no project)
 **/
-void MenusAndToolsConfig::CreateMenues () {		
+void MenusAndToolsConfig::CreateMenues () {
 	
-	wx_menu_bar = new wxMenuBar;
-	main_window->SetMenuBar(wx_menu_bar);
+	if (!wx_menu_bar) {
+		wx_menu_bar = new wxMenuBar;
+		main_window->SetMenuBar(wx_menu_bar);
+	} else {
+		while (wx_menu_bar->GetMenuCount()) wx_menu_bar->Remove(0);
+	}
 		
 	// create regular menus
-	for(unsigned int menu_id=0;menu_id<mnCOUNT;menu_id++) PopulateMenu(menu_id);
+	for(unsigned int menu_id=0;menu_id<mnHIDDEN;menu_id++) PopulateMenu(menu_id);
 	
 	// create some special submenues
 //	main_window->UpdateCustomTools(false);
@@ -603,9 +737,27 @@ void MenusAndToolsConfig::CreateMenues () {
 				mnihistory[i] = utils->AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],wxString(ipre)<<i<<(".png"),i);
 	}
 	
+	wxAcceleratorEntry *aentries = new wxAcceleratorEntry[menues[mnHIDDEN].items.size()]; int ac=0;
+	for(unsigned int i=0;i<menues[mnHIDDEN].items.size();i++) {
+		int id=menues[mnHIDDEN].items[i].wx_id;
+		wxString str=menues[mnHIDDEN].items[i].shortcut;
+		str.MakeUpper(); str.Replace(" ","");
+		if (!str.Len()) continue;
+		int flags=0;
+		if (str.Contains("CTRL+")) { flags|=wxACCEL_CTRL; str.Replace("CTRL+",""); }
+		if (str.Contains("SHIFT+")) { flags|=wxACCEL_SHIFT; str.Replace("SHIFT+",""); }
+		if (str.Contains("ALT+")) { flags|=wxACCEL_ALT; str.Replace("ALT+",""); }
+		int keycode=getKeyCode(str);
+		if (!keycode) continue;
+		aentries[ac++].Set(flags,keycode,id);
+	}
+	wxAcceleratorTable accel(ac,aentries);
+	main_window->SetAcceleratorTable(accel);
+	delete []aentries;
+	
 	// set items state // ahora gestionado en el evento menu_open
-	SetProjectMode(false);
-	SetDebugMode(false);
+	SetProjectMode(project);
+	SetDebugMode(debug?debug->debugging:false);
 }
 
 void MenusAndToolsConfig::CreateWxToolbar(int tb_id) {
@@ -732,35 +884,6 @@ void MenusAndToolsConfig::AdjustToolbarSize(int tb_id) {
 	if (wx_toolbar) { wx_toolbar->Realize(); main_window->aui_manager.GetPane(wx_toolbar).BestSize(wx_toolbar->GetBestSize()); }
 }
 
-bool MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wxString & value) {
-	if (key=="icon_size") { utils->ToInt(value,icon_size); return true; }
-	int p=key.Index('.'); if (p==wxNOT_FOUND) return false;
-	wxString tb_name=key.Mid(0,p);
-	if (tb_name=="positions") {
-		tb_name = key.AfterFirst('.');
-		for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) { 
-			if (toolbars[tb_id].key==tb_name) {
-				toolbars[tb_id].position=value;
-				return true;
-			}
-		}
-	} else {
-		for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) { 
-			if (toolbars[tb_id].key==tb_name) {
-				wxString name = key.AfterFirst('.');
-				vector<myToolbarItem> &items = toolbars[tb_id].items;
-				for(unsigned int i=0;i<items.size();i++) { 
-					if (items[i].key==name) {
-						items[i].visible = utils->IsTrue(value);
-						return true;
-					}
-				}
-			}
-		}
-	}
-	return false;
-}
-
 void MenusAndToolsConfig::SetDebugMode (bool mode) {
 	for(unsigned int i=0;i<items_debug.size();i++) 
 		items_debug[i].Enable(mode);
@@ -769,19 +892,6 @@ void MenusAndToolsConfig::SetDebugMode (bool mode) {
 void MenusAndToolsConfig::SetProjectMode (bool mode) {
 	for(unsigned int i=0;i<items_project.size();i++) 
 		items_project[i].Enable(mode);
-}
-
-void MenusAndToolsConfig::SaveToolbarConfig (wxTextFile & file) {
-	file.AddLine(wxString("icon_size=")<<icon_size);
-	for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) {
-		file.AddLine(wxString("positions.")+toolbars[tb_id].key+"="+(wxString)toolbars[tb_id].position);
-		wxString toolbar_key = toolbars[tb_id].key+".";
-		vector<myToolbarItem> &items = toolbars[tb_id].items;
-		for(unsigned int i=0;i<items.size();i++) {
-			if (!items[i].key.IsEmpty())
-				file.AddLine(toolbar_key+items[i].key+(items[i].visible?"=1":"=0"));
-		}
-	}
 }
 
 int MenusAndToolsConfig::ToolbarFromTool(int tool_id) {
@@ -893,4 +1003,95 @@ void MenusAndToolsConfig::TransferStatesFromConfig() {
 ////		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_STOP, LANG(MENUITEM_RUN_STOP,"&Detener")).Description("Detiene la ejecucion del programa").Icon("detener.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
 ////	}
 //}
+
+
+
+bool MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wxString & value) {
+	if (key=="icon_size") { utils->ToInt(value,icon_size); return true; }
+	int p=key.Index('.'); if (p==wxNOT_FOUND) return false;
+	wxString tb_name=key.Mid(0,p);
+	if (tb_name=="positions") {
+		tb_name = key.AfterFirst('.');
+		for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) { 
+			if (toolbars[tb_id].key==tb_name) {
+				toolbars[tb_id].position=value;
+				return true;
+			}
+		}
+	} else {
+		for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) { 
+			if (toolbars[tb_id].key==tb_name) {
+				wxString name = key.AfterFirst('.');
+				vector<myToolbarItem> &items = toolbars[tb_id].items;
+				for(unsigned int i=0;i<items.size();i++) { 
+					if (items[i].key==name) {
+						items[i].visible = utils->IsTrue(value);
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+
+bool MenusAndToolsConfig::LoadToolbarsSettings (const wxString & full_path) {
+	wxTextFile fil(full_path);
+	if (!fil.Exists()) return false;
+	fil.Open();
+	wxString key, value;
+	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
+		key=str.BeforeFirst('=');
+		value=str.AfterFirst('=');
+		if (str[0]=='#') continue;
+		ParseToolbarConfigLine(key,value);
+	}
+	fil.Close();
+	return true;
+}
+
+bool MenusAndToolsConfig::SaveToolbarsSettings (const wxString & full_path) {
+	// open
+	wxTextFile file(full_path);
+	if (file.Exists()) file.Open();
+	else file.Create();
+	file.Clear();
+	// write
+	file.AddLine(wxString("icon_size=")<<icon_size);
+	for(int tb_id=0;tb_id<tbCOUNT_FULL;tb_id++) {
+		file.AddLine(wxString("positions.")+toolbars[tb_id].key+"="+(wxString)toolbars[tb_id].position);
+		wxString toolbar_key = toolbars[tb_id].key+".";
+		vector<myToolbarItem> &items = toolbars[tb_id].items;
+		for(unsigned int i=0;i<items.size();i++) {
+			if (!items[i].key.IsEmpty())
+				file.AddLine(toolbar_key+items[i].key+(items[i].visible?"=1":"=0"));
+		}
+	}
+	// close
+	file.Write();
+	file.Close();
+	return true;
+}
+
+bool MenusAndToolsConfig::LoadShortcutsSettings(const wxString &full_path) {
+//	wxTextFile fil(full_path);
+//	if (!fil.Exists()) return false;
+//	fil.Open();
+//	wxString key, value;
+//	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
+//		key=str.BeforeFirst('=');
+//		value=str.AfterFirst('=');
+//		if (str[0]=='#') continue;
+//		ParseToolbarConfigLine(key,value);
+//	}
+//	fil.Close();
+	return true;
+}
+	
+
+bool MenusAndToolsConfig::SaveShortcutsSettings (const wxString & full_path) {
+	return true;
+}
+
 

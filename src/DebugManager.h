@@ -174,6 +174,11 @@ private:
 	wxString RewriteExpressionForBreaking(wxString expr);
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
 	BreakPointInfo *pause_breakpoint; ///< puntero al breakpoint que hay que agregar/sacar en una pausa, para el usuario los modifica durante la ejecución
+private:
+	DebugManager();
+public:
+	static void Initialize();
+	~DebugManager();
 public:
 	wxString SendCommand(wxString command);
 	wxString SendCommand(wxString cmd1,wxString cmd2);
@@ -182,8 +187,6 @@ public:
 	DEBUG_STATUS status;
 	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible;
 	bool really_running; ///< solo para indicar desde al WaitAnswer que esta esperando el resultado de una ejecución del programa que se esta depurando y no de un comando gdb para setear o averiguar algo (para que en el primer caso haga yield y en el otro no)
-	DebugManager();
-	~DebugManager();
 	void BacktraceClean();
 	bool Start(bool update); ///< starts debugging for current project
 	bool Start(bool update, mxSource *source); ///< starts debugging for a simple program

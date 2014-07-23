@@ -20,41 +20,29 @@
 
 ConfigManager *config;
 
+/**
+* @brief Config lines fron main config files related to toolbar settings, 
+*
+* important: it is still here just for backward compatibility, since 20140723
+* these lines goto to a different config file that is read later
+*
+* toolbars and menus related config lines are processed in a delayed mode because 
+* we need to have an initialized MenusAndToolsConfig to do it, but MenusAndToolsConfig
+* needs an initialized ConfigManager to use the proper language
+*
+* ver la descripción de la clase para entender la secuencia de inicialización
+**/
+struct DelayedConfigLines {
+	wxArrayString toolbars_keys;
+	wxArrayString toolbars_values;
+} *delayed_config_lines;
+
 ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 	config=this;
+	delayed_config_lines = NULL; 
 	zinjai_dir = a_path;
-	color_theme::Init();
 	LoadDefaults();
-	
-	delayed_config_lines = new DelayedConfigLines;
-	
-	Toolchain::LoadToolchains();
 	er_init(home_dir.char_str());
-	first_run = !Load();
-	// cargar archivo de internacionalizacion
-	if (first_run) {
-		wxDir dir("lang");
-		wxString spec="*.pre", filename;
-		bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
-		wxArrayString langs;
-		while ( cont ) {
-			langs.Add(filename.BeforeLast('.'));
-			cont = dir.GetNext(&filename);
-		}
-		if (langs.Index("spanish")==wxNOT_FOUND) langs.Add("spanish");
-		if (langs.GetCount()>1) {
-			wxString newlang = wxGetSingleChoice("Select a Language:\nSeleccione el idioma:","ZinjaI",langs);
-			if (newlang.Len()) Init.language_file=newlang;
-		}
-	}
-	if (Init.language_file!="spanish")
-		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(home_dir,"lang_cache").c_str()))
-		mxMessageDialog(NULL,"No se pudo cargar el diccionario del idioma seleccionado.\n"
-						"El sistema utilizará el predeterminado (spanish).\n"
-						"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
-		
-	menu_data = new MenusAndToolsConfig();
-	RecalcStuff();
 }
 
 void ConfigManager::DoInitialChecks() {
@@ -74,7 +62,7 @@ void ConfigManager::DoInitialChecks() {
 	
 	// elegir un terminal
 	if (Files.terminal_command=="<<sin configurar>>") { // tratar de detectar automaticamente un terminal adecuado
-		LinuxTerminalInfo::Init();
+		LinuxTerminalInfo::Initialize();
 		for(int i=0;i<LinuxTerminalInfo::count;i++) { 
 			if (LinuxTerminalInfo::list[i].Test()) {
 				Files.terminal_command = LinuxTerminalInfo::list[i].run_command;
@@ -329,15 +317,9 @@ bool ConfigManager::Load() {
 				custom_tools.ParseConfigLine(key,value);
 				
 			} else if (section=="Toolbars") {
+				if (!delayed_config_lines) delayed_config_lines = new DelayedConfigLines;
 				delayed_config_lines->toolbars_keys.Add(key);
 				delayed_config_lines->toolbars_values.Add(value);
-//				menu_data->ParseToolbarConfigLine(key,value); // done in RecalcStuff
-//					if (Init.version<20131115) {
-//						for(int i=0;i<MAX_CUSTOM_TOOLS;i++) { 
-//							CFG_BOOL_READ_DN(wxString("custom_tool_")<<i,CustomTools[i].on_toolbar);
-//						}
-//					}
-//				}
 			}
 		} 
 	}
@@ -402,11 +384,6 @@ bool ConfigManager::Load() {
 				Files.last_source[ps++]=last_files[i];
 		}
 	}
-	
-	if (Init.colour_theme.Len())
-		ctheme->Load(DIR_PLUS_FILE(DIR_PLUS_FILE(zinjai_dir,"colours"),Init.colour_theme));
-	else
-		ctheme->Load(DIR_PLUS_FILE(home_dir,"colours.zcs"));
 	
 	Init.autohiding_panels=Init.autohide_panels;
 	
@@ -594,7 +571,9 @@ bool ConfigManager::Save(){
 	fil.AddLine("");
 	
 	fil.AddLine("[Toolbars]");
-	menu_data->SaveToolbarConfig(fil);
+
+	menu_data->SaveShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc"));
+	menu_data->SaveToolbarsSettings(DIR_PLUS_FILE(home_dir,"toolbar.ztb"));
 	
 	fil.Write();
 	fil.Close();
@@ -886,22 +865,58 @@ bool ConfigManager::CheckCppCheckPresent() {
 }
 
 void ConfigManager::RecalcStuff ( ) {
-	// create regular menus and toolbars' data (required for Load())
-	if (delayed_config_lines) {
+	// setup some required paths
+	temp_dir = DIR_PLUS_FILE(zinjai_dir,Files.temp_dir);
+	if (zinjai_dir.EndsWith("\\")||zinjai_dir.EndsWith("/")) zinjai_dir.RemoveLast();
+	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
+	// poner el idioma del compilador en castellano
+	if (config->Init.lang_es) {
+		wxSetEnv("LANG","es_ES");
+		wxSetEnv("LANGUAGE","es_ES");
+	} else {
+		wxSetEnv("LANG","en_US");
+		wxSetEnv("LANGUAGE","en_US");
+	}
+}
+
+void ConfigManager::FinishiLoading ( ) {
+	
+	// load language translations
+	if (Init.language_file!="spanish") {
+		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(home_dir,"lang_cache").c_str()))
+			mxMessageDialog(NULL,"No se pudo cargar el diccionario del idioma seleccionado.\n"
+			"El sistema utilizará el predeterminado (spanish).\n"
+			"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
+	}
+	
+	// load syntax highlighting colors' scheme
+	color_theme::Initialize();
+	if (Init.colour_theme.IsEmpty()) ctheme->Load(DIR_PLUS_FILE(home_dir,"colours.zcs"));
+	else ctheme->Load(utils->WichOne(Init.colour_theme,"colours",true));
+	
+	// check if extern tools are present and set some paths
+	Toolchain::LoadToolchains();
+	DoInitialChecks(); 
+	RecalcStuff();
+	
+	// create regular menus and toolbars' data
+	menu_data = new MenusAndToolsConfig();
+	if (delayed_config_lines) { // old way
 		for(unsigned int i=0;i<delayed_config_lines->toolbars_keys.GetCount();i++)
 			menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
-	//	for(unsigned int i=0;i<delayed_config_lines->menus_keys.GetCount();i++)
-	//		menu_data->ParseMenuConfigLine(key,value); 
 		if (Init.version<20140620) { 
 			menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
 			menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
 		}
 		delete delayed_config_lines; delayed_config_lines=NULL;
+	} else { // new way
+		menu_data->LoadShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc"));
+		menu_data->LoadToolbarsSettings(DIR_PLUS_FILE(home_dir,"toolbar.ztb"));
 	}
-	// setup some required paths
-	temp_dir = DIR_PLUS_FILE(zinjai_dir,Files.temp_dir);
-	if (zinjai_dir.EndsWith("\\")||zinjai_dir.EndsWith("/")) zinjai_dir.RemoveLast();
-	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
 }
 
+bool ConfigManager::Initialize(const wxString & a_path) {
+	config = new ConfigManager(a_path);
+	return !config->Load();
+}
 

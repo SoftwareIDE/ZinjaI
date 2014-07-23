@@ -1,27 +1,23 @@
+#include <wx/thread.h>
+#include <wx/log.h>
+#include <wx/dir.h>
+#include <wx/image.h>
+#include <wx/filename.h>
+#include <wx/utils.h>
 #include "mxApplication.h"
 #include "mxSource.h"
 #include "ShareManager.h"
-#include <iostream>
 #include "Language.h"
 #include "mxSingleton.h"
 #include "mxBeginnerPanel.h"
-#include <wx/thread.h>
 #include "mxIconInstaller.h"
-#include <wx/log.h>
 #include "MenusAndToolsConfig.h"
-
-IMPLEMENT_APP(mxApplication)
-
-#include <wx/image.h>
-#include <wx/filename.h>
-
 #include "ConfigManager.h"
 #include "HelpManager.h"
 #include "Parser.h"
 #include "CodeHelper.h"
 #include "ProjectManager.h"
 #include "DebugManager.h"
-
 #include "mxMainWindow.h"
 #include "mxHelpWindow.h"
 #include "mxTipsWindow.h"
@@ -33,10 +29,11 @@ IMPLEMENT_APP(mxApplication)
 #include "mxSizers.h"
 #include "mxErrorRecovering.h"
 #include "mxSplashScreen.h"
-#include <wx/utils.h>
 using namespace std;
 
-mxApplication *app;
+IMPLEMENT_APP(mxApplication)
+	
+mxApplication *app = NULL;
 
 #ifdef _ZINJAI_DEBUG
 wxLongLong start_time = wxGetLocalTimeMillis();
@@ -90,72 +87,33 @@ bool mxApplication::OnInit() {
 	
 	// inicialize mxUtils and ConfigManager
 	utils = new mxUtils;
-	config = new ConfigManager(zpath);
+	bool first_run = ConfigManager::Initialize(zpath);
+	
+	// cargar archivo de internacionalizacion
+	if (first_run) SelectLanguage();
+	
+	// si delega la carga a otra instancia termina inmediatamente
+	if (InitSingleton(cmd_path)) return false;
 
-	// inicialize singleton manager
-	singleton = new mxSingleton;
-	if (config->Init.singleton) {
-		singleton->Start();
-		if (!singleton->IsRunning() && argc!=1) {
-			bool done=true;
-			for (int i=1; i<argc;i++) {
-				wxString name = argv[i];
-				if (name!="--last-source" && name!="--last-project" && name!="--no-splash" && name.AfterLast('.').Lower()!=PROJECT_EXT) {
-					bool opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
-					int ret=0;
-					while (!opened && ret<2) { // dos reintentos, por si estaba muy ocupado
-						wxMilliSleep(10*rand()%50); // delay aleatorio tip ethernet
-						opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
-						ret++;
-					}
-					if (opened)
-						argv[i][0]='\0';
-					else
-						done=false;
-				} else {
-					done=false;
-				}
-			}
-			if (done) return false;
-		}
-	}
-
-	// show splash screen
-	splash = NULL;
+	// init image handlers and show splash screen
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImage::AddHandler(new wxXPMHandler);
-	wxBitmap bitmap;
-	bool no_splash=false;
-	for (int i=1;i<argc;i++) 
-		if (wxString(argv[i])=="--no-splash") {
-			argv[i][0]='\0';
-			no_splash=true;
-		}
-	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE("imgs",SPLASH_FILE)).FileExists()) 
-		splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",_T(SPLASH_FILE)));
-//	wxYield();
+	ShowSplash();
 	
-	bitmaps = new mxArt(config->Files.skin_dir);
-
-	// poner el idioma del compilador en castellano
-	if (config->Init.lang_es) {
-		wxSetEnv("LANG","es_ES");
-		wxSetEnv("LANGUAGE","es_ES");
-	} else {
-		wxSetEnv("LANG","en_US");
-		wxSetEnv("LANGUAGE","en_US");
-	}
-	
+	// load art and help files
+	mxArt::Initialize();
 	// inicialize HelpManager
-	help = new HelpManager;
+	HelpManager::Initialize();
 	
 	// inicialize CodeHelper
-	code_helper = new CodeHelper(config->Help.min_len_for_completion);
+	CodeHelper::Initialize();
 
 	// inicialize ProjectManager
 	project = NULL;
 	
-	config->DoInitialChecks(); // verifica si hay compilador, terminal, etc instalado y configurado
+	// verifica si hay compilador, terminal, etc instalado y configurado...
+	// ...y carga el resto de la configuracion (toolchains, colores, atajos, toolbars, etc)
+	config->FinishiLoading(); 
 	
 	// create main window
 	if (config->Init.size_x==0 || config->Init.size_y==0)
@@ -164,26 +122,13 @@ bool mxApplication::OnInit() {
 		main_window = new mxMainWindow(NULL, wxID_ANY, "ZinjaI", wxPoint(config->Init.pos_x,config->Init.pos_y), wxSize(config->Init.size_x,config->Init.size_y));
 
 	// inicialize debug manager
-	debug = new DebugManager();
-	debug->inspection_grid=main_window->inspection_ctrl;
+	DebugManager::Initialize();
 	
 	// set top window and let the magic do the rest
 	SetTopWindow(main_window);
 	
 #if !defined(__WIN32__) && !defined(__APPLE__)
-//#ifdef _ZINJAI_DEBUG
-	if (config->first_run) new mxIconInstaller(true);
-//#else
-//	if (config->first_run && 
-//		!wxFileName::FileExists(DIR_PLUS_FILE(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop"),"ZinjaI.desktop")) &&
-//		!wxFileName::FileExists(DIR_PLUS_FILE(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio"),"ZinjaI.desktop")) &&
-//		mxMD_YES == mxMessageDialog(main_window,LANG(APP_CREATE_ICON_QUESTION,"Desea crear un acceso rapido para ZinjaI en su escritorio?"),LANG(APP_WELCOME_TO_ZINJAI,"Bienvenido a ZinjaI"), mxMD_YES_NO).ShowModal()) {
-//			if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop")))
-//				utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Desktop"));
-//			if (wxFileName::DirExists(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio")))
-//				utils->MakeDesktopIcon(DIR_PLUS_FILE(wxFileName::GetHomeDir(),"Escritorio"));
-//		}
-//#endif
+	if (first_run) new mxIconInstaller(true);
 #endif
 	
 	// show startup tip
@@ -193,6 +138,83 @@ bool mxApplication::OnInit() {
 		if (splash) splash->ShouldClose();
 	}
 	
+	LoadFilesOrWelcomePanel(cmd_path);
+	
+	// si estaba abriendo un proyecto el usuario puede haber cerrado la ventana antes de que el parser termine
+	if (!main_window) return false;
+	
+	// puede haber llegado algo para el singleton mientras cargabamos
+	if (singleton) singleton->ProcessToOpenQueue();
+	
+	// devolver el foco a la ventana de sugerencias si existe, para que se pueda cerrar con Esc
+	if (tips_window) tips_window->Raise();
+	
+	// recuperarse de un segfault y/o buscar actualizaciones
+	if (!mxErrorRecovering::RecoverSomething()) {
+		if (config->Init.check_for_updates) 
+			mxUpdatesChecker::BackgroundCheck();
+	}
+	
+	return true;
+}
+
+void mxApplication::SelectLanguage ( ) {
+	wxDir dir("lang");
+	wxString spec="*.pre", filename;
+	bool cont = dir.GetFirst(&filename, spec , wxDIR_FILES);
+	wxArrayString langs;
+	while ( cont ) {
+		langs.Add(filename.BeforeLast('.'));
+		cont = dir.GetNext(&filename);
+	}
+	if (langs.Index("spanish")==wxNOT_FOUND) langs.Add("spanish");
+	if (langs.GetCount()>1) {
+		wxString newlang = wxGetSingleChoice("Select a Language:\nSeleccione el idioma:","ZinjaI",langs);
+		if (newlang.Len()) config->Init.language_file=newlang;
+	}
+}
+
+bool mxApplication::InitSingleton(const wxString &cmd_path) {
+	// inicialize singleton manager
+	singleton = new mxSingleton; // siempre debe existir la instancia...
+	if (!config->Init.singleton) return false; // ...aunque no se use
+	singleton->Start();
+	if (singleton->IsRunning() || argc==1) return false; // si no hay otra instancia o no hay argumentos
+	// intentar cargar todo en la otra instancia
+	bool done=true;
+	for (int i=1; i<argc;i++) {
+		wxString name = argv[i];
+		if (name!="--last-source" && name!="--last-project" && name!="--no-splash" && name.AfterLast('.').Lower()!=PROJECT_EXT) {
+			bool opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
+			int ret=0;
+			while (!opened && ret<2) { // dos reintentos, por si estaba muy ocupado
+				wxMilliSleep(10*rand()%50); // delay aleatorio tip ethernet
+				opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
+				ret++;
+			}
+			if (opened)
+				argv[i][0]='\0';
+			else
+				done=false;
+		} else {
+			done=false;
+		}
+	}
+	return done;
+}
+
+void mxApplication::ShowSplash ( ) {
+	bool no_splash=false;
+	for (int i=1;i<argc;i++) 
+		if (wxString(argv[i])=="--no-splash") {
+			argv[i][0]='\0';
+			no_splash=true;
+		}
+	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE("imgs",SPLASH_FILE)).FileExists()) 
+			splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",_T(SPLASH_FILE)));
+}
+
+void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {
 	// load files or create and empty one
 	if (argc==1 || (argc==2&&argv[1][0]=='\0')) {
 		if (config->Init.show_welcome) {
@@ -234,20 +256,4 @@ bool mxApplication::OnInit() {
 		}
 		
 	}
-	
-	// si estaba abriendo un proyecto el usuario puede haber cerrado la ventana antes de que el parser termine
-	if (!main_window) return false;
-	
-	if (singleton) singleton->ProcessToOpenQueue();
-	
-	if (tips_window) tips_window->Raise();
-	
-	if (!mxErrorRecovering::RecoverSomething()) {
-		if (config->Init.check_for_updates) 
-			mxUpdatesChecker::BackgroundCheck();
-	}
-	
-//	cerr<<wxThread::GetCPUCount()<<endl;
-	
-	return true;
 }

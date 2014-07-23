@@ -45,9 +45,9 @@ struct color_theme {
 	
 	color_theme(wxString file="");
 	void SetDefaults(bool inverted=false);
-	bool Save(wxString fname);
-	bool  Load(wxString fname);
-	static void Init();
+	bool Save(const wxString &full_path);
+	bool Load(const wxString &full_path);
+	static void Initialize();
 };
 
 class mxStaticText : public wxPanel {

@@ -16,6 +16,8 @@ class mxMainWindow;
 
 class MenusAndToolsConfig {
 	friend class mxPreferenceWindow;
+	friend class mxShortcutsDialog;
+	friend class mxUtils;
 private:
 	
 	wxMenuBar *wx_menu_bar; ///< main window's menu bar
@@ -105,7 +107,7 @@ private:
 
 public:
 	/// enums with menus names to be used as indexes
-	enum mnID { mnFILE, mnEDIT, mnVIEW, mnRUN, mnDEBUG, mnTOOLS, mnHELP, mnCOUNT };
+	enum mnID { mnFILE, mnEDIT, mnVIEW, mnRUN, mnDEBUG, mnTOOLS, mnHELP, mnHIDDEN, mnCOUNT };
 private:
 	/// array containing the information for each menu
 	myMenu menues[mnCOUNT];
@@ -245,14 +247,15 @@ private:
 	void CreateMenues();
 	void PopulateMenu(int menu_id);
 //	void SetMenuItemsStates(wxMenu *wx_menu);
-	myMenuItem *GetMyMenuItem(int menu_id, int item_id);
 public:
+	myMenuItem *GetMyMenuItem(int menu_id, int item_id);
 	wxMenuItem *GetItem(int wx_id) {
 		for(unsigned int i=0;i<mapped_items.size();i++) { 
 			if (mapped_items[i].wx_id==wx_id) return mapped_items[i].something;
 		}
 		return NULL;
 	}
+	myMenu &GetMyMenu(int menu_id) { return menues[menu_id]; }
 	wxMenu *GetMenu(int wx_id) {
 		for(unsigned int i=0;i<mapped_menues.size();i++) { 
 			if (mapped_menues[i].wx_id==wx_id) return mapped_menues[i].something;
@@ -279,18 +282,23 @@ public:
 	int ToolbarFromTool(int tool_id);
 	int GetToolbarIconSize() { return icon_size; }
 	
-	void SaveToolbarConfig(wxTextFile &file);
-	
 	void SetDebugMode(bool mode);
 	void SetProjectMode(bool mode);
 	
 	void TransferStatesFromConfig();
 	void CreateMenuesAndToolbars(mxMainWindow *_main_window);
+
+public:
+	bool LoadShortcutsSettings(const wxString &full_path);
+	bool SaveShortcutsSettings(const wxString &full_path);
+	bool LoadToolbarsSettings(const wxString &full_path);
+	bool SaveToolbarsSettings(const wxString &full_path);
 	
 };
 
 extern MenusAndToolsConfig *menu_data;
 
+#define _menu_item_2(menu_id,item_id) menu_data->GetMyMenuItem(MenusAndToolsConfig::menu_id,item_id)
 #define _menu_item(id) menu_data->GetItem(id)
 #define _get_toolbar(id) menu_data->GetToolbar(MenusAndToolsConfig::id)
 #define _toolbar_visible(id) menu_data->GetToolbarPosition(MenusAndToolsConfig::id).visible

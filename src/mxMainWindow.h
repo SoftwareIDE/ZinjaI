@@ -519,7 +519,6 @@ public:
 	
 	mxSource *GetCurrentSource();
 	
-	void SetAccelerators();
 	void OnEscapePressed(wxCommandEvent &event);
 	
 

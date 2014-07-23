@@ -191,10 +191,12 @@ public:
 	* @name para agregar items a los menues y barras de herramientas
 	**/
 	/*@{*/
-	wxMenuItem *AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, wxString filename, int where=-1);
-	wxMenuItem *AddCheckToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, bool value);
-	void AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text, wxItemKind=wxITEM_NORMAL);
-	wxMenuItem *AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, wxString caption, wxString help, wxString filename);
+	wxMenuItem *AddItemToMenu(wxMenu *menu, const void *a_myMenuItem);
+	wxMenuItem *AddItemToMenu(wxMenu *menu, const void *a_myMenuItem, const wxString &caption);
+	wxMenuItem *AddItemToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, const wxString &filename, int where=-1);
+	wxMenuItem *AddCheckToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, bool value);
+	void AddTool(wxToolBar *toolbar, wxWindowID id, const wxString &caption, const wxString &filename, const wxString &status_text, wxItemKind=wxITEM_NORMAL);
+	wxMenuItem *AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, const wxString &caption, const wxString &help, const wxString &filename);
 	/*@}*/
 	
 public:

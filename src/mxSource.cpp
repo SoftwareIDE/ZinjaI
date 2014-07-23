@@ -24,6 +24,7 @@
 #include "mxColoursEditor.h"
 #include "error_recovery.h"
 #include "mxCalltip.h"
+#include "MenusAndToolsConfig.h"
 using namespace std;
 
 
@@ -151,13 +152,13 @@ enum Margins { MARGIN_LINENUM=0, MARGIN_BREAKS, MARGIN_FOLD, MARGIN_NULL };
 
 BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	// edit
-	EVT_MENU (wxID_CLEAR, mxSource::OnEditClear)
-	EVT_MENU (wxID_CUT, mxSource::OnEditCut)
-	EVT_MENU (wxID_COPY, mxSource::OnEditCopy)
-	EVT_MENU (wxID_PASTE, mxSource::OnEditPaste)
-	EVT_MENU (wxID_SELECTALL, mxSource::OnEditSelectAll)
-	EVT_MENU (wxID_REDO, mxSource::OnEditRedo)
-	EVT_MENU (wxID_UNDO, mxSource::OnEditUndo)
+//	EVT_MENU (mxID_EDIT_CLEAR, mxSource::OnEditClear)
+	EVT_MENU (mxID_EDIT_CUT, mxSource::OnEditCut)
+	EVT_MENU (mxID_EDIT_COPY, mxSource::OnEditCopy)
+	EVT_MENU (mxID_EDIT_PASTE, mxSource::OnEditPaste)
+	EVT_MENU (mxID_EDIT_SELECT_ALL, mxSource::OnEditSelectAll)
+	EVT_MENU (mxID_EDIT_REDO, mxSource::OnEditRedo)
+	EVT_MENU (mxID_EDIT_UNDO, mxSource::OnEditUndo)
 	EVT_MENU (mxID_EDIT_DUPLICATE_LINES, mxSource::OnEditDuplicateLines)
 	EVT_MENU (mxID_EDIT_DELETE_LINES, mxSource::OnEditDeleteLines)
 	EVT_MENU (mxID_EDIT_MARK_LINES, mxSource::OnEditMarkLines)
@@ -512,10 +513,10 @@ void mxSource::OnEditUndo (wxCommandEvent &event) {
 	EnsureVisibleEnforcePolicy(GetCurrentLine());
 }
 
-void mxSource::OnEditClear (wxCommandEvent &event) {
-    if (GetReadOnly()) return;
-    Clear ();
-}
+//void mxSource::OnEditClear (wxCommandEvent &event) {
+//    if (GetReadOnly()) return;
+//    Clear ();
+//}
 
 void mxSource::OnEditCut (wxCommandEvent &event) {
 //    if (GetReadOnly() || (GetSelectionEnd()-GetSelectionStart() <= 0)) return;
@@ -1829,6 +1830,7 @@ void mxSource::SelectError(int indic, int p1, int p2) {
 }
 
 bool mxSource::AddInclude(wxString header) {
+	
 	BeginUndoAction();
 
 	bool using_namespace_std_present=false;
@@ -1925,7 +1927,7 @@ bool mxSource::AddInclude(wxString header) {
 	}
 	
 	EndUndoAction();
-	
+//	wxYield(); // sin esto no se ve el calltip (posiblemente un problema con el evento OnUpdateUI
 	if (!header_present || (!using_namespace_std_present && header.Last()!='\"' && header.Right(3)!=_(".h>"))) {
 		int lse = GetEndStyled();
 		StartStyling(0,wxSTC_INDICS_MASK);
@@ -1961,27 +1963,25 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	
 	BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
 	if (bpi) {
-		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"))<<"\tF8");
-		if (bpi->IsInGDB() && (!debug->debugging||!debug->waiting)) {
-			wxMenuItem *it=menu.AppendCheckItem(mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT, LANG(SOURCE_POPUP_ENABLE_BREAKPOINT,"Habilitar breakpoint"));
-			it->Check(bpi->enabled);
-		}
+		utils->AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"));
+		if (bpi->IsInGDB() && (!debug->debugging||!debug->waiting)) 
+			utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT),LANG(SOURCE_POPUP_ENABLE_BREAKPOINT,"Habilitar breakpoint"))->Check(bpi->enabled);
 	} else if (!IsEmptyLine(l))
-		menu.Append(mxID_DEBUG_TOGGLE_BREAKPOINT, wxString(LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"))<<"\tF8");
-	menu.Append(mxID_DEBUG_BREAKPOINT_OPTIONS, wxString(LANG(SOURCE_POPUP_BREAKPOINT_OPTIONS,"Opciones del breakpoint..."))<<"\tCtrl+Shift+F8");
+		utils->AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_BREAKPOINT_OPTIONS));
 	menu.AppendSeparator();
 	int s=GetStyleAt(p);
 	if (MarkerGet(l)&(1<<mxSTC_MARK_USER))
-		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltaso"))<<"\tCtrl+B");
+		utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_MARK_LINES), LANG(SOURCE_POPUP_REMOVE_HIGHLIGHT,"Quitar resaltado"));
 	else 
-		menu.Append(mxID_EDIT_MARK_LINES, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"Resaltar linea"))<<"\tCtrl+B");
-	menu.Append(mxID_EDIT_INDENT, wxString(LANG(SOURCE_POPUP_INDENTE,"Indentar Linea"))<<"\tCtrl+I");
-	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar linea"))<<"\tShift+Ctrl+D");
-	else menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"Comentar linea"))<<"\tCtrl+D");
-	menu.Append(mxID_EDIT_DUPLICATE_LINES, wxString(LANG(SOURCE_POPUP_DUPLICATE_LINES,"Duplicar linea"))<<"\tCtrl+L");
-	menu.Append(mxID_EDIT_DELETE_LINES, wxString(LANG(SOURCE_POPUP_DELETE_LINES,"Eliminar linea"))<<"\tCtrl+Shift+L");
-	if (l>1) menu.Append(mxID_EDIT_TOGGLE_LINES_UP, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_UP,"Mover linea hacia arriba"))<<"\tCtrl+T");
-	if (l+1<GetLineCount()) menu.Append(mxID_EDIT_TOGGLE_LINES_DOWN, wxString(LANG(SOURCE_POPUP_TOGGLE_LINES_DOWN,"Mover linea hacia abajo"))<<"\tCtrl+Shift+T");
+		utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_MARK_LINES), LANG(SOURCE_POPUP_HIGHLIGHT_LINES,"Resaltar linea"));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
+	if (STYLE_IS_COMMENT(s)) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNCOMMENT));
+	else utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COMMENT));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_DUPLICATE_LINES));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_DELETE_LINES));
+	if (l>1) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_TOGGLE_LINES_UP));
+	if (l+1<GetLineCount()) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_TOGGLE_LINES_DOWN));
 	
 	main_window->PopupMenu(&menu);
 	
@@ -2002,14 +2002,10 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	int p=GetCurrentPos(); int s=GetStyleAt(p);
 	wxString key=GetCurrentKeyword(p);
 	if (key.Len()!=0) {
-		if (!key[0]!='#') 
-			menu.Append(mxID_SOURCE_GOTO_DEFINITION, wxString(LANG(SOURCE_POPUP_FIND_SYMBOL,"&Ir a definición..."))<<"\tCtrl+Shift+G");
-		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) 
-			menu.Append(mxID_HELP_CODE, LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key)<<"\tShift+F1");
-		if (s==wxSTC_C_IDENTIFIER) {
-			menu.Append(mxID_EDIT_INSERT_HEADER, LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key)<<"\tCtrl+H");
-			menu.Append(mxID_EDIT_HIGHLIGHT_WORD, wxString(LANG(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \""))<<key<<"\"");
-		}
+		if (!key[0]!='#') utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
+		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
+		if (s==wxSTC_C_IDENTIFIER) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
+		if (s==wxSTC_C_IDENTIFIER) menu.Append(mxID_EDIT_HIGHLIGHT_WORD, LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
 	}
 	
 	if (s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_STRING) {
@@ -2024,23 +2020,23 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 		}
 		wxFileName the_one (sin_titulo?GetTextRange(p1,p2):DIR_PLUS_FILE(source_filename.GetPath(),GetTextRange(p1,p2)));
 		if (wxFileName::FileExists(the_one.GetFullPath()))
-			menu.Append(mxID_FILE_OPEN_SELECTED, LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2))<<"\tCtrl+Enter");
+			utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_OPEN_SELECTED),LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2)));
 	}
-	menu.Append(mxID_WHERE_AM_I, wxString(LANG(SOURCE_POPUP_WHERE_AM_I,"Mostrar contexto (clase/método/función)"))<<"\tCtrl+Alt+Space");
+	utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_WHERE_AM_I));
 	menu.AppendSeparator();
 	
-	menu.Append(wxID_UNDO, wxString(LANG(SOURCE_POPUP_UNDO,"&Deshacer"))<<"\tCtrl+Z");
-	menu.Append(wxID_REDO, wxString(LANG(SOURCE_POPUP_REDO,"&Rehacer"))<<"\tCtrl+Shift+Z");
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNDO));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_REDO));
 	menu.AppendSeparator();
-	menu.Append(wxID_CUT, wxString(LANG(SOURCE_POPUP_CUT,"C&ortar"))<<"\tCtrl+X");
-	menu.Append(wxID_COPY, wxString(LANG(SOURCE_POPUP_COPY,"&Copiar"))<<"\tCtrl+C");
-	menu.Append(wxID_PASTE, wxString(LANG(SOURCE_POPUP_PASTE,"&Pegar"))<<"\tCtrl+V");
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_CUT));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COPY));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_PASTE));
 	menu.AppendSeparator();
-	if (STYLE_IS_COMMENT(s)) menu.Append(mxID_EDIT_UNCOMMENT, wxString(LANG(SOURCE_POPUP_UNCOMMENT_LINES,"&Descomentar"))<<"\tShift+Ctrl+D");
-	else menu.Append(mxID_EDIT_COMMENT, wxString(LANG(SOURCE_POPUP_COMMENT_LINES,"&Comentar"))<<"\tCtrl+D");
-	menu.Append(mxID_EDIT_INDENT, wxString(LANG(SOURCE_POPUP_INDENTE,"Indentar Linea"))<<"\tCtrl+I");
-	menu.Append(mxID_EDIT_BRACEMATCH, wxString(LANG(SOURCE_POPUP_SELECT_BLOCK,"&Seleccionar Bloque"))<<"\tCtrl+M");
-	menu.Append(wxID_SELECTALL, wxString(LANG(SOURCE_POPUP_SELECT_ALL,"Seleccionar &Todo"))<<"\tCtrl+A");
+	if (STYLE_IS_COMMENT(s)) utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNCOMMENT));
+	else utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_COMMENT));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_BRACEMATCH));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_SELECT_ALL));
 	
 	main_window->PopupMenu(&menu);
 	

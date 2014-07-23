@@ -28,6 +28,7 @@
 
 #define min2(a,b) ((a)<(b)?(a):(b))
 #include "execution_workaround.h"
+#include "MenusAndToolsConfig.h"
 
 bool zinjai_debug_mode=false;
 
@@ -276,37 +277,55 @@ wxStaticText *mxUtils::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxStri
 	return statictext;
 }
 
-wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, wxString filename, int where) {
-	if (accel.Len()) caption<<"\t"<<accel;
-	wxMenuItem *item = new wxMenuItem(menu,id,caption,help);
-	filename=SKIN_FILE_OPT(filename);
-	if (wxFileName::FileExists(filename))
-		item->SetBitmap(wxBitmap(filename,wxBITMAP_TYPE_PNG));
+wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem) {
+	const MenusAndToolsConfig::myMenuItem *mi = reinterpret_cast<const MenusAndToolsConfig::myMenuItem*>(a_myMenuItem);
+	if (!mi) return NULL;
+	if (mi->properties&(MenusAndToolsConfig::maCHECKED|MenusAndToolsConfig::maCHECKEABLE))
+		return utils->AddCheckToMenu(menu,mi->wx_id,mi->label,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
+	else 
+		return utils->AddItemToMenu(menu,mi->wx_id,mi->label,mi->shortcut,mi->description,mi->icon);
+}
+
+wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem, const wxString &caption) {
+	const MenusAndToolsConfig::myMenuItem *mi = reinterpret_cast<const MenusAndToolsConfig::myMenuItem*>(a_myMenuItem);
+	if (!mi) return NULL;
+	if (mi->properties&(MenusAndToolsConfig::maCHECKED|MenusAndToolsConfig::maCHECKEABLE))
+		return utils->AddCheckToMenu(menu,mi->wx_id,caption,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
+	else 
+		return utils->AddItemToMenu(menu,mi->wx_id,caption,mi->shortcut,mi->description,mi->icon);
+}
+
+wxMenuItem *mxUtils::AddItemToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, const wxString &filename, int where) {
+	wxMenuItem *item = new wxMenuItem(menu,id,accel.Len()?caption+"\t"+accel:caption,help);
+	if (filename.Len()) {
+		wxString full_filename=SKIN_FILE_OPT(DIR_PLUS_FILE("16",filename));
+		if (wxFileName::FileExists(full_filename)) item->SetBitmap(wxBitmap(full_filename,wxBITMAP_TYPE_PNG));
+	}
 	if (where==-1) menu->Append (item);
 	else menu->Insert(where,item);
 	return item;
 }
 
 
-wxMenuItem *mxUtils::AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, wxString caption, wxString help, wxString filename) {
+wxMenuItem *mxUtils::AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, const wxString &caption, const wxString &help, const wxString &filename) {
 	wxMenuItem *item = 	menu->AppendSubMenu(menu_h, caption, help);
-	filename=SKIN_FILE(filename);
-	if (wxFileName::FileExists(filename))
-		item->SetBitmap(wxBitmap(filename,wxBITMAP_TYPE_PNG));
+	if (filename.Len()) {
+		wxString full_filename=SKIN_FILE(DIR_PLUS_FILE("16",filename));
+		if (wxFileName::FileExists(full_filename)) item->SetBitmap(wxBitmap(full_filename,wxBITMAP_TYPE_PNG));
+	}
 	return item;
 }
 
-wxMenuItem *mxUtils::AddCheckToMenu(wxMenu *menu, wxWindowID id,wxString caption, wxString accel, wxString help, bool value) {
-	if (accel.Len()) caption<<"\t"<<accel;
-	wxMenuItem *item = menu->AppendCheckItem (id, caption,help);
+wxMenuItem *mxUtils::AddCheckToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, bool value) {
+	wxMenuItem *item = menu->AppendCheckItem (id, accel.Len()?caption+"\t"+accel:caption,help);
 	item->Check(value);
 	return item;
 }
 
-void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, wxString caption, wxString filename, wxString status_text, wxItemKind kind) {
-	filename=mxUtils::JoinDirAndFile(config->Files.skin_dir,filename);
-	if (wxFileName::FileExists(filename)) {
-		toolbar->AddTool(id, caption, wxBitmap(filename,wxBITMAP_TYPE_PNG),caption, kind);
+void mxUtils::AddTool(wxToolBar *toolbar, wxWindowID id, const wxString &caption, const wxString &filename, const wxString &status_text, wxItemKind kind) {
+	wxString full_filename=mxUtils::JoinDirAndFile(config->Files.skin_dir,filename);
+	if (wxFileName::FileExists(full_filename)) {
+		toolbar->AddTool(id, caption, wxBitmap(full_filename,wxBITMAP_TYPE_PNG),caption, kind);
 		toolbar->SetToolLongHelp(id,status_text);
 	}
 }

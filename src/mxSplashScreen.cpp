@@ -8,7 +8,7 @@ using namespace std;
 #include "mxSplashScreen.h"
 #include "mxApplication.h" // for SHOW_MILLIS
 
-mxSplashScreen *splash;
+mxSplashScreen *splash = NULL;
 
 BEGIN_EVENT_TABLE(mxSplashScreen, wxFrame)
 	EVT_PAINT(mxSplashScreen::OnPaint)

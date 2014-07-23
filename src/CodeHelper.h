@@ -56,8 +56,9 @@ private:
 	CodeHelperSpecialArray reserved_words;
 	CodeHelperSpecialArray preproc_directives;
 	CodeHelperSpecialArray doxygen_directives;
-public:
 	CodeHelper(int ml);
+public:
+	static void Initialize();
 	~CodeHelper();	
 	bool LoadData(wxString index);
 	void ResetStdData();

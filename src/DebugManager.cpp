@@ -41,7 +41,7 @@ using namespace std;
 
 //#define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
 
-DebugManager *debug;
+DebugManager *debug = NULL;
 
 DebugManager::DebugManager() {
 	signal_handlers_state=NULL;
@@ -2997,3 +2997,9 @@ void DebugManager::Start_ConfigureGdb ( ) {
 }
 
 	
+
+void DebugManager::Initialize() {
+	debug = new DebugManager();
+	debug->inspection_grid=main_window->inspection_ctrl;
+}
+

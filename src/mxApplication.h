@@ -4,6 +4,10 @@
 #include <wx/app.h>
 
 class mxApplication : public wxApp {
+	void SelectLanguage();
+	bool InitSingleton(const wxString &cmd_path);
+	void ShowSplash();
+	void LoadFilesOrWelcomePanel(const wxString &cmd_path);
 public:
 	virtual bool OnInit();
 };

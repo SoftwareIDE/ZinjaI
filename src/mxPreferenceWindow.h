@@ -16,7 +16,7 @@ struct LinuxTerminalInfo {
 	bool Test();
 	static int count;
 	static LinuxTerminalInfo *list;
-	static void Init();
+	static void Initialize();
 };
 #endif
 
@@ -222,6 +222,7 @@ public:
 	static void Delete(); ///< to force reloading of some things that Reset won't redo, such as the list of autocompletion indexes
 	void ResetChanges();
 	void OnFontChange(wxCommandEvent &evt);
+	void OnCustomizeShortcuts(wxCommandEvent &evt);
 private:
 	DECLARE_EVENT_TABLE()
 

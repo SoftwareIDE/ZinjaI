@@ -59,7 +59,10 @@ public:
 		wxBitmap *info;
 		wxBitmap *error;
 	} icons;
+private:
 	mxArt(wxString img_dir);
+public:
+	static void Initialize();
 	~mxArt();
 };
 

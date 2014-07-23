@@ -168,7 +168,7 @@ public:
 	// edit
 	void OnEditRedo (wxCommandEvent &event);
 	void OnEditUndo (wxCommandEvent &event);
-	void OnEditClear (wxCommandEvent &event);
+//	void OnEditClear (wxCommandEvent &event);
 	void OnEditCut (wxCommandEvent &event);
 	void OnEditCopy (wxCommandEvent &event);
 	void OnEditPaste (wxCommandEvent &event);

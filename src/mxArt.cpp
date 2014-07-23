@@ -11,7 +11,7 @@
 #include <iostream>
 using namespace std;
 	
-mxArt *bitmaps;
+mxArt *bitmaps = NULL;
 
 mxArt::mxArt(wxString img_dir) {
 	
@@ -165,3 +165,8 @@ wxString mxArt::GetSkinImagePath(wxString fname, bool replace_if_missing) {
 		}
 	}
 }
+
+void mxArt::Initialize ( ) {
+	bitmaps = new mxArt(config->Files.skin_dir);
+}
+

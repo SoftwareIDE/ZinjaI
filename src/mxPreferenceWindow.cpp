@@ -7,6 +7,7 @@
 #include <wx/imaglist.h>
 
 #include "mxPreferenceWindow.h"
+#include "mxShortcutsDialog.h"
 #include "ConfigManager.h"
 #include "mxHelpWindow.h"
 #include "mxUtils.h"
@@ -36,9 +37,9 @@
 static cfgStyles old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
 
 #ifndef __WIN32__
-int LinuxTerminalInfo::count=0;
-LinuxTerminalInfo *LinuxTerminalInfo::list=NULL;
-void LinuxTerminalInfo::Init() {
+int LinuxTerminalInfo::count = 0;
+LinuxTerminalInfo *LinuxTerminalInfo::list = NULL;
+void LinuxTerminalInfo::Initialize() {
 	const int term_count=9;
 	list = new LinuxTerminalInfo[term_count];
 	count=0;
@@ -97,6 +98,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_MENU(mxID_DEBUG_MACROS_OPEN,mxPreferenceWindow::OnDebugMacrosOpen)
 	EVT_MENU(mxID_DEBUG_MACROS_EDIT,mxPreferenceWindow::OnDebugMacrosEdit)
 	EVT_BUTTON(mxID_DEBUG_BLACKLIST,mxPreferenceWindow::OnDebugBlacklistButton)
+	EVT_BUTTON(mxID_PREFERENCES_CUSTOMIZE_SHORTCUTS,mxPreferenceWindow::OnCustomizeShortcuts)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_FILE,mxPreferenceWindow::OnToolbarsFile)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_EDIT,mxPreferenceWindow::OnToolbarsEdit)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_RUN,mxPreferenceWindow::OnToolbarsRun)
@@ -219,9 +221,10 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (wxListbook *notebook) {
 #else
 	init_lang_es = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT,"Mostrar errores de compilación en Español (Ver Ayuda!) (*)"),config->Init.lang_es);
 //	desktop_icon = utils->AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON,"Crear/Actualizar icono de ZinjaI en el escritorio"),false);
-	wxButton *xdg_button = new wxButton(panel,mxID_PREFERENCES_XDG,LANG(PREFERENCES_CREATE_ICONS,"Crear/Actualizar accesos directos en el escritorio/menú del sistema"));
-	sizer->Add(xdg_button,sizers->BA10);
+	sizer->Add(new wxButton(panel,mxID_PREFERENCES_XDG,LANG(PREFERENCES_CREATE_ICONS,"Crear/Actualizar accesos directos en el escritorio/menú del sistema...")),sizers->BA10);
 #endif
+	sizer->Add(new wxButton(panel,mxID_PREFERENCES_CUSTOMIZE_SHORTCUTS,LANG(PREFERENCES_CUSTOMIZE_SHORTCUTS,"Personalizar atajos de teclado...")),sizers->BA10);
+	sizer->AddStretchSpacer(1);
 	utils->AddStaticText(sizer,panel,LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,"(*) tendrá efecto la proxima vez que inicie ZinjaI"));
 	panel->SetSizerAndFit(sizer);
 	return panel;
@@ -535,6 +538,7 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 	files_debugger_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GDB,"Comando del depurador"),config->Files.debugger_command,mxID_GDB_PATH);
 	files_terminal_command = utils->AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CONSOLE,"Comando de la terminal"),config->Files.terminal_command,mxID_TERMINALS_BUTTON);
 	
+	sizer->AddStretchSpacer(1);
 	utils->AddStaticText(sizer,panel,/*LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,*/"Nota: Las configuración de las rutas relacionadas al compilador se realiza\n"
 																								"desde la pestaña \"Programa/Proyecto\" utilizando el botón \"...\" de la\n"
 																								"opción \"Herramientas de compilación\"."/*)*/);
@@ -897,7 +901,7 @@ void mxPreferenceWindow::OnExplorerThunar(wxCommandEvent &event) {
 }
 
 void mxPreferenceWindow::OnTerminalButton(wxCommandEvent &event) {
-	LinuxTerminalInfo::Init();
+	LinuxTerminalInfo::Initialize();
 	wxMenu menu; int count=0;
 	for(int i=0;i<LinuxTerminalInfo::count;i++) { 
 		if (LinuxTerminalInfo::list[i].Test()) {
@@ -1246,5 +1250,9 @@ void mxPreferenceWindow::OnFontChange (wxCommandEvent & evt) {
 	config->Styles.font_name = styles_font_name->GetValue();
 	long l=0; if (styles_font_size->GetValue().ToLong(&l)&&l>0) config->Styles.font_size=l;
 	main_window->UpdateStylesInSources();
+}
+
+void mxPreferenceWindow::OnCustomizeShortcuts (wxCommandEvent & evt) {
+	mxShortcutsDialog(this);
 }
 

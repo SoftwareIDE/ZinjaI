@@ -188,6 +188,17 @@ struct cfgCols {
 
 /**
 * @brief Administra la configuración completa del sistema
+*
+* Inicializacion:
+* 1) crearlo, esto carga los defaults para lo que él gestiona
+* 2) LoadMainConfig(), carga las configuraciones de usuario para lo que él 
+*    gestiona, retorna false si no había nada, lo cual indica que es la primer
+*    corrida de zinjai para ese usuario
+* 2.5) aqui ya podemos mostrar el splash desde el mxApplication::OnOnInit
+* 3) InitThirdPartyConfig() crear utils, menu_data, e inicializar menu_data con 
+*    sus defaults porque los va a necesitar el paso 4, además hace los checkeos 
+*    iniciales que miran si hay compilador, terminal, explorador, etc
+* 4) LoadThirdPartyConfig() cargar las conf de menues, toolbars y colores
 **/
 class ConfigManager {
 public:
@@ -195,9 +206,7 @@ public:
 	wxString home_dir;
 	wxString zinjai_dir;
 	wxString temp_dir;
-//	wxString mingw_real_path;
 	cfgSource Source;
-	bool first_run;
 	cfgRunning Running;
 	cfgHelp Help;
 	cfgStyles Styles;
@@ -207,21 +216,18 @@ public:
 	cfgDebug Debug;
 	CustomToolsPack custom_tools;
 	ConfigManager(wxString a_path);
+public:
+	static bool Initialize(const wxString &a_path);
+	void FinishiLoading();
+	bool Save();	
+private:
 	void DoInitialChecks();
 	bool Load();
-	bool Save();	
 	void LoadDefaults();
 	
-	// toolbars and menus related config lines are processed in a delayed mode because 
-	// we need to hava an initialized MenusAndToolsConfig to do it, but MenusAndToolsConfig
-	// needs an initialized ConfigManager to use the proper language
-	struct DelayedConfigLines{
-//		wxArrayString menus_keys;
-//		wxArrayString menus_values;
-		wxArrayString toolbars_keys;
-		wxArrayString toolbars_values;
-	} *delayed_config_lines;
-	void RecalcStuff(); /// @brief arma las cadenas (paths) que no se graban en la configuracion, pero que dependen de esta (ejemplo: temp_dir)
+public:
+	/// @brief arma las cadenas (paths) que no se graban en la configuracion, pero que dependen de esta (ejemplo: temp_dir)
+	void RecalcStuff(); 
 	
 	/// @brief Verifica si esta instalado y configurado el path para llamar a wxFormBuilder
 	bool CheckWxfbPresent();

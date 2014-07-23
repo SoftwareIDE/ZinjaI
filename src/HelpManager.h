@@ -26,8 +26,9 @@ private:
 	wxString GetDoxyInfo(pd_class *aclass, wxString &desc); ///< busca info en la doc de doxygen para una clase dada
 	wxString GetDoxyInfo(pd_func *afunc, wxString &desc); ///< busca info en la doc de doxygen para un prototipo dado
 	wxString ParseDoxyText(wxString link, wxString &desc); ///< arma el prototipo y extrae la descripcion desde el html
-public:
 	HelpManager();
+public:
+	static void Initialize();
 	wxString GetQuickHelp(wxString keyword);
 	bool IsHelpForType(wxString what, wxString &link);
 	void HelpFor(pd_func *afunc, wxString &content, wxString &index);

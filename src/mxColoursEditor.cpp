@@ -15,7 +15,7 @@
 #include "ConfigManager.h"
 #include "mxSource.h"
 
-color_theme *ctheme=NULL;
+color_theme *ctheme = NULL;
 
 BEGIN_EVENT_TABLE(mxColoursEditor,wxDialog)
 	EVT_BUTTON(wxID_SAVE,mxColoursEditor::OnSave)
@@ -334,13 +334,11 @@ void color_theme::SetDefaults (bool inverted) {
 #define CTWrite1(what) fil.AddLine(wxString(#what"=")<<what.GetAsString(wxC2S_HTML_SYNTAX))
 #define CTWrite2(what) fil.AddLine(wxString(#what"=")<<what.GetAsString(wxC2S_HTML_SYNTAX))
 
-bool color_theme::Save (wxString fname) {
+bool color_theme::Save (const wxString &full_path) {
 	
-	wxTextFile fil(fname);
-	if (fil.Exists())
-		fil.Open();
-	else
-		fil.Create();
+	wxTextFile fil(full_path);
+	if (fil.Exists()) fil.Open();
+	else fil.Create();
 	fil.Clear();
 	
 	CTWrite(DEFAULT);
@@ -392,13 +390,12 @@ bool color_theme::Save (wxString fname) {
 
 
 
-bool color_theme::Load (wxString fname) {
+bool color_theme::Load (const wxString &full_path) {
 	
-	wxTextFile fil(fname);
+	wxTextFile fil(full_path);
 	if (!fil.Exists()) return false;
 	fil.Open();
-	wxString section, key, value;
-	wxArrayString last_files; // para compatibilidad hacia atras, guarda el historial unificado y despues lo divide
+	wxString key, value;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		
 		key=str.BeforeFirst('=');
@@ -476,7 +473,7 @@ void mxStaticText::SetData (wxColour * fore, wxColour * back, bool * italic, boo
 	this->back=back;
 }
 
-void color_theme::Init() {
+void color_theme::Initialize() {
 	
 	wxTheColourDatabase->AddColour("Z LIGHT GREEN",wxColour(120,255,120));
 	wxTheColourDatabase->AddColour("Z DARK GREEN",wxColour(0,80,0));

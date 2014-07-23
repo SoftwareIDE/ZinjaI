@@ -135,22 +135,22 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_TOOL_RCLICKED(wxID_ANY,mxMainWindow::OnToolRightClick)
 	
 	EVT_MENU(mxID_FILE_PRINT, mxMainWindow::OnFilePrint)
-	EVT_MENU(wxID_NEW, mxMainWindow::OnFileNew)
+	EVT_MENU(mxID_FILE_NEW, mxMainWindow::OnFileNew)
 	EVT_MENU(mxID_FILE_PROJECT, mxMainWindow::OnFileNewProject)
-	EVT_MENU(wxID_OPEN, mxMainWindow::OnFileOpen)
+	EVT_MENU(mxID_FILE_OPEN, mxMainWindow::OnFileOpen)
 	EVT_MENU(mxID_FILE_OPEN_SELECTED, mxMainWindow::OnFileOpenSelected)
 	EVT_MENU(mxID_FILE_OPEN_H, mxMainWindow::OnFileOpenH)
 	EVT_MENU(mxID_FILE_RELOAD, mxMainWindow::OnFileReload)
 	EVT_MENU(mxID_FILE_EXPORT_HTML, mxMainWindow::OnFileExportHtml)
-	EVT_MENU(wxID_CLOSE, mxMainWindow::OnFileClose)
+	EVT_MENU(mxID_FILE_CLOSE, mxMainWindow::OnFileClose)
 	EVT_MENU(mxID_FILE_CLOSE_ALL, mxMainWindow::OnFileCloseAll)
 	EVT_MENU(mxID_FILE_CLOSE_ALL_BUT_ONE, mxMainWindow::OnFileCloseAllButOne)
 	EVT_MENU(mxID_FILE_SAVE_PROJECT, mxMainWindow::OnFileSaveProject)
 	EVT_MENU(mxID_FILE_CLOSE_PROJECT, mxMainWindow::OnFileCloseProject)
-	EVT_MENU(wxID_SAVE, mxMainWindow::OnFileSave)
-	EVT_MENU(wxID_SAVEAS, mxMainWindow::OnFileSaveAs)
+	EVT_MENU(mxID_FILE_SAVE, mxMainWindow::OnFileSave)
+	EVT_MENU(mxID_FILE_SAVE_AS, mxMainWindow::OnFileSaveAs)
 	EVT_MENU(mxID_FILE_SAVE_ALL, mxMainWindow::OnFileSaveAll)
-	EVT_MENU(wxID_EXIT, mxMainWindow::OnExit)
+	EVT_MENU(mxID_FILE_EXIT, mxMainWindow::OnExit)
 	EVT_MENU(mxID_FILE_EXPLORE_FOLDER, mxMainWindow::OnFileExploreFolder)
 	EVT_MENU(mxID_FILE_OPEN_FOLDER, mxMainWindow::OnFileOpenFolder)
 	EVT_MENU(mxID_FILE_PROPERTIES, mxMainWindow::OnFileProperties)
@@ -161,12 +161,12 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU_RANGE(mxID_FILE_SOURCE_HISTORY_0, mxID_FILE_SOURCE_HISTORY_30,mxMainWindow::OnFileSourceHistory)
 	EVT_MENU_RANGE(mxID_FILE_PROJECT_HISTORY_0, mxID_FILE_PROJECT_HISTORY_30,mxMainWindow::OnFileProjectHistory)
 	
-	EVT_MENU(wxID_SELECTALL, mxMainWindow::OnEdit)
-	EVT_MENU(wxID_UNDO, mxMainWindow::OnEdit)
-	EVT_MENU(wxID_REDO, mxMainWindow::OnEdit)
-	EVT_MENU(wxID_COPY, mxMainWindow::OnEditNeedFocus)
-	EVT_MENU(wxID_CUT, mxMainWindow::OnEditNeedFocus)
-	EVT_MENU(wxID_PASTE, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_SELECT_ALL, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_UNDO, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_REDO, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_COPY, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_CUT, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_PASTE, mxMainWindow::OnEditNeedFocus)
 	EVT_MENU(mxID_EDIT_TOOLBAR_FIND, mxMainWindow::OnToolbarFindEnter)
 	EVT_MENU(mxID_EDIT_FIND_FROM_TOOLBAR, mxMainWindow::OnGotoToolbarFind)
 	EVT_MENU(mxID_EDIT_FIND, mxMainWindow::OnEditFind)
@@ -465,8 +465,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	EXTERNAL_SOURCE=(mxSource*)this;
 
 	m_macro=NULL;
-	
-	SetAccelerators();
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
 	untitled_count=0;
@@ -1222,13 +1220,12 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 	shared->Check(share && share->Exists(src));
 		
 	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));
-	menu.Append(wxID_SAVE, LANG(MAINW_PROJECT_FILE_POPUP_SAVE,"&Guardar\tCtrl+S"));
-	if (!project)
-		menu.Append(wxID_SAVEAS, LANG(MAINW_PROJECT_FILE_POPUP_SAVE_AS,"G&uardar Como...\tCtrl+Shift+S"));
-	menu.Append(mxID_FILE_RELOAD, LANG(MAINW_PROJECT_FILE_POPUP_RELOAD,"&Recargar\tCtrl+Shift+R"))->Enable(!src->sin_titulo);
-	menu.Append(wxID_CLOSE, LANG(MAINW_PROJECT_FILE_POPUP_CLOSE,"&Cerrar\tCtrl+W"));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE));
+	if (!project) utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE_AS));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_RELOAD));
+	utils->AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_CLOSE));
 	if (notebook_sources->GetPageCount()>1)
-		menu.Append(mxID_FILE_CLOSE_ALL_BUT_ONE, LANG(MAINW_PROJECT_FILE_POPUP_CLOSE_ALL_BUT_ONE,"Cerrar &todas las demas\tCtrl+Alt+W"));
+		utils->AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_CLOSE_ALL_BUT_ONE));
 	notebook_sources->PopupMenu(&menu);
 }
 
@@ -2001,36 +1998,6 @@ bool mxMainWindow::CloseSource (int i) {
 	return true;
 }
 
-void mxMainWindow::SetAccelerators() {
-	const int accel_count=20; int i=0;
-	wxAcceleratorEntry entries[accel_count];
-	entries[i++].Set(	0,								WXK_F2, 		mxID_VIEW_UPDATE_SYMBOLS);
-	entries[i++].Set(	wxACCEL_CTRL,					WXK_SPACE, 		mxID_EDIT_FORCE_AUTOCOMPLETE);
-	entries[i++].Set(	wxACCEL_CTRL,					WXK_RETURN,		mxID_FILE_OPEN_SELECTED);
-	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_TAB, 		mxID_VIEW_NOTEBOOK_PREV);
-	entries[i++].Set(	wxACCEL_CTRL,					WXK_TAB, 		mxID_VIEW_NOTEBOOK_NEXT);
-	entries[i++].Set(	wxACCEL_CTRL,					WXK_PAGEUP, 	mxID_VIEW_NOTEBOOK_PREV);
-	entries[i++].Set(	wxACCEL_CTRL,					WXK_PAGEDOWN, 	mxID_VIEW_NOTEBOOK_NEXT);
-	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_F5, 		mxID_DEBUG_DO_THAT);
-	entries[i++].Set(	0 ,								WXK_F12, 		mxID_FILE_OPEN_H);
-	entries[i++].Set(	wxACCEL_ALT|wxACCEL_CTRL,		'p', 			mxID_RUN_CONFIG);
-	entries[i++].Set(	wxACCEL_SHIFT|wxACCEL_CTRL,		WXK_F6, 		mxID_INTERNAL_INFO);
-	entries[i++].Set(	wxACCEL_ALT|wxACCEL_CTRL,		WXK_SPACE, 		mxID_WHERE_AM_I);
-	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		WXK_SPACE, 		mxID_EDIT_AUTOCODE_AUTOCOMPLETE);
-	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_ALT,		'w', 			mxID_FILE_CLOSE_ALL_BUT_ONE);
-	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_ALT,		'f', 			mxID_EDIT_FIND_FROM_TOOLBAR);
-	entries[i++].Set(	wxACCEL_CTRL,					'q', 			mxID_MACRO_REPLAY);
-	entries[i++].Set(	wxACCEL_CTRL|wxACCEL_SHIFT,		'q', 			mxID_MACRO_RECORD);
-	entries[i++].Set(	wxACCEL_SHIFT,					WXK_F1, 		mxID_HELP_CODE);
-	entries[i++].Set(	wxACCEL_ALT,					WXK_LEFT, 		mxID_NAVIGATION_HISTORY_PREV);
-	entries[i++].Set(	wxACCEL_ALT,					WXK_RIGHT, 		mxID_NAVIGATION_HISTORY_NEXT);
-	wxAcceleratorTable accel(accel_count,entries);
-#ifdef _ZINJAI_DEBUG
-	if (i!=accel_count) wxMessageBox("mxMainWindow::SetAccelerators i!=cont");
-#endif
-	SetAcceleratorTable(accel);
-}
-
 void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 	gui_fullscreen_mode=!gui_fullscreen_mode;
 	if (!gui_fullscreen_mode) { // sale de la pantalla completa y vuelve a ser ventana
@@ -2204,8 +2171,6 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnViewFullScreen");
 	}
 	
 	aui_manager.Update();
-	
-	SetAccelerators();
 	
 }
 
@@ -4625,7 +4590,7 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	// acomodar los menues 
 	menu_data->SetProjectMode(project_mode); // habilitar/deshabilitar items exclusivos de proyecto
 	// cambiar el nombre del Archivo->Abrir
-	wxMenuItem *fo_item= _menu_item(wxID_OPEN); wxString fo_shortcut = fo_item->GetItemLabel(); 
+	wxMenuItem *fo_item= _menu_item(mxID_FILE_OPEN); wxString fo_shortcut = fo_item->GetItemLabel(); 
 	if (fo_shortcut.Contains("\t")) fo_shortcut=fo_shortcut.AfterLast('\t'); else fo_shortcut="";
 	fo_item->SetItemLabel(wxString(project_mode?LANG(MENUITEM_FILE_OPEN_ON_PROJECT,"&Abrir/Agregar al proyecto...\tCtrl+O"):LANG(MENUITEM_FILE_OPEN,"&Abrir...\tCtrl+O"))+fo_shortcut);
 	// resetear opciones de wxfb

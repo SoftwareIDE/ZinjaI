@@ -610,14 +610,50 @@ MENUITEM_HELP_TUTORIALS
 Tutoriales...
 MENUITEM_HELP_SHORTCUTS
 Atajos de teclado...
-MENUITEM_HELP_ABOUT
-Acerca de...
 MENUITEM_HELP_TIPS
 &Mostrar sugerencias de uso...
 MENUITEM_HELP_OPINION
 Enviar sugerencia o reportar error...
 MENUITEM_HELP_UPDATES
 &Buscar actualizaciones...
+MENUITEM_HELP_ABOUT
+Acerca de...
+MENUITEM_GLOBAL_SHORTCUTS
+Otros atajos
+MENUITEM_HIDDEN_UPDATE_SYMBOLS
+Actualizar arbol de simbolos
+MENUITEM_HIDDEN_FORCE_AUTOCOMPLETE
+Autocompletar
+MENUITEM_HIDDEN_OPEN_SELECTED
+Abrir archivo seleccionado en el código
+MENUITEM_HIDDEN_PREV_TAB
+Pestaña de código anterior
+MENUITEM_HIDDEN_NEXT_TAB
+Pestaña de código siguiente
+MENUITEM_HIDDEN_OPEN_H
+Alternar entre .h y .cpp
+MENUITEM_HIDDEN_RUN_CONFIG
+Opciones de compilación y ejecución
+MENUITEM_HIDDEN_WHERE_I_AM
+Mostrar ubicación y contexto en el código
+MENUITEM_HIDDEN_AUTOCODE_AUTOCOMPLETE
+Autocompletado de autocódigos
+MENUITEM_HIDDEN_CLOSE_ALL_BUT_ONE
+Cerrar todos los fuentes excepto el actual
+MENUITEM_HIDDEN_FIND_FROM_TOOLBAR
+Ir a la barra de herramienta de búsqueda
+MENUITEM_HIDDEN_MACRO_RECORD
+Iniciar/Detener grabación de macro de teclado
+MENUITEM_HIDDEN_MACRO_REPLAY
+Reproducir macro de teclado
+MENUITEM_HIDDEN_HELP_CODE
+Ayuda rápida
+MENUITEM_HIDDEN_NAVIGATION_HISTORY_PREV
+Historial de navegación -> ubicación anterior
+MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT
+Historial de navegación -> ubicación siguiente
+MENUITEM_HIDDEN_ENABLE_BREAKPOINT
+Habilitar/deshabilitar punto de interrupcion
 CAPTION_TOOLBAR_FILE
 Archivo
 TOOLBAR_CAPTION_FILE_OPEN_H
@@ -1191,29 +1227,29 @@ Directorio de trabajo
 CUSTOM_TOOLS_PRE_NONE
 Ninguna
 CUSTOM_TOOLS_PRE_SAVE_ONE
-Guardar el fuente actual.
+Guardar el fuente actual
 CUSTOM_TOOLS_PRE_SAVE_ALL
-Guardar todos los fuentes abiertos.
+Guardar todos los fuentes abiertos
 CUSTOM_TOOLS_PRE_SAVE_PROJECT
-Guardar todo el proyecto.
+Guardar todo el proyecto
 CUSTOM_TOOLS_PRE
 Acción antes de ejecutar
 CUSTOM_TOOLS_ASYNC_EXEC
 Ejecución asíncrona
 CUSTOM_TOOLS_OUTPUT_HIDDEN
-Ocultas.
+Ocultas
 CUSTOM_TOOLS_OUTPUT_TERMINAL
-En terminal.
+En terminal
 CUSTOM_TOOLS_OUTPUT_DIALOG
-En cuadro de dialogo.
+En cuadro de dialogo
 CUSTOM_TOOLS_OUTPUT
 Salidas (std y err)
 CUSTOM_TOOLS_POST_NONE
-Ninguna.
+Ninguna
 CUSTOM_TOOLS_POST_RELOAD_ONE
-Recargar fuente actual.
+Recargar fuente actual
 CUSTOM_TOOLS_POST_RELOAD_ALL
-Recargar todos los fuentes.
+Recargar todos los fuentes
 CUSTOM_TOOLS_POST
 Acción luego de ejecutar:
 CUSTOM_TOOLS_ONTOOLBAR_LINUX
@@ -1840,16 +1876,6 @@ MAINW_PROJECT_FILE_POPUP_OPEN_H
 &Abrir complementario...\tF12
 MAINW_PROJECT_FILE_POPUP_SHARE
 Compartir archivo...
-MAINW_PROJECT_FILE_POPUP_SAVE
-&Guardar\tCtrl+S
-MAINW_PROJECT_FILE_POPUP_SAVE_AS
-G&uardar Como...\tCtrl+Shift+S
-MAINW_PROJECT_FILE_POPUP_RELOAD
-&Recargar\tCtrl+Shift+R
-MAINW_PROJECT_FILE_POPUP_CLOSE
-&Cerrar\tCtrl+W
-MAINW_PROJECT_FILE_POPUP_CLOSE_ALL_BUT_ONE
-Cerrar &todas las demas\tCtrl+Alt+W
 MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION
 Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?
 MAINW_ASK_CLOSE_SHARED
@@ -2325,7 +2351,9 @@ Mostrar errores de compilación en Español (Ver Ayuda!) (*)
 PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON
 Crear/Actualizar icono de ZinjaI en el escritorio
 PREFERENCES_CREATE_ICONS
-Crear/Actualizar accesos directos en el escritorio/menú del sistema
+Crear/Actualizar accesos directos en el escritorio/menú del sistema...
+PREFERENCES_CUSTOMIZE_SHORTCUTS
+Personalizar atajos de teclado...
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME
 (*) tendrá efecto la proxima vez que inicie ZinjaI
 PREFERENCES_DEBUG_ALLOW_EDITION
@@ -2522,254 +2550,6 @@ PREFERENCES_EDIT_FILE
 &Editar archivo...
 PREFERENCES_EDIT_TOOLBAR
 Barra de Herramientas <{1}>
-PREFERENCES_EDIT_TOOLBAR_FILE_CAPTION
-Barra de Herramientas Archivo
-TOOLBAR_CAPTION_FILE_NEW
-Nuevo...
-TOOLBAR_CAPTION_FILE_NEW_PROJECT
-Nuevo Proyecto...
-TOOLBAR_CAPTION_FILE_OPEN
-Abrir...
-TOOLBAR_CAPTION_FILE_RECENT_SOURCES
-Fuentes Recientes...
-TOOLBAR_CAPTION_FILE_RECENT_PROJECTS
-Proyectos Recientes...
-TOOLBAR_CAPTION_FILE_SAVE
-Guardar
-TOOLBAR_CAPTION_FILE_SAVE_AS
-Guardar Como...
-TOOLBAR_CAPTION_FILE_SAVE_ALL
-Guardar Todo
-TOOLBAR_CAPTION_FILE_SAVE_PROJECT
-Guardar Proyecto
-TOOLBAR_CAPTION_FILE_EXPORT_HTML
-Exportar a HTML...
-TOOLBAR_CAPTION_FILE_PRINT
-Imprimir...
-TOOLBAR_CAPTION_FILE_RELOAD
-Recargar
-TOOLBAR_CAPTION_FILE_CLOSE
-Cerrar
-TOOLBAR_CAPTION_FILE_CLOSE_ALL
-Cerrar Todo
-TOOLBAR_CAPTION_FILE_CLOSE_PROJECT
-Cerrar Proyecto
-TOOLBAR_CAPTION_FILE_PROJECT_CONFIG
-Configuracion de Proyecto...
-PREFERENCES_EDIT_TOOLBAR_EDIT_CAPTION
-Barra de Herramientas \"Edicion\"
-TOOLBAR_CAPTION_EDIT_UNDO
-Deshacer
-TOOLBAR_CAPTION_EDIT_REDO
-Rehacer
-TOOLBAR_CAPTION_EDIT_COPY
-Copiar
-TOOLBAR_CAPTION_EDIT_CUT
-Cortar
-TOOLBAR_CAPTION_EDIT_PASTE
-Pegar
-TOOLBAR_CAPTION_EDIT_LINES_UP
-Mover Hacia Arriba
-TOOLBAR_CAPTION_EDIT_LINES_DOWN
-Mover Hacia Abajo
-TOOLBAR_CAPTION_EDIT_DUPLICATE_LINES
-Duplicar Linea(s)
-TOOLBAR_CAPTION_EDIT_DELETE_LINES
-Eliminar Linea(s)
-TOOLBAR_CAPTION_EDIT_GOTO_LINE
-Ir a Linea...
-TOOLBAR_CAPTION_EDIT_GOTO_FUNCTION
-Ir a Fucion/Clase/Metodo...
-TOOLBAR_CAPTION_EDIT_GOTO_FILE
-Ir a Archivo...
-TOOLBAR_CAPTION_EDIT_FIND
-Buscar...
-TOOLBAR_CAPTION_EDIT_FIND_PREV
-Buscar Anterior
-TOOLBAR_CAPTION_EDIT_FIND_NEXT
-Buscar Siguiente
-TOOLBAR_CAPTION_EDIT_REPLACE
-Reemplazar...
-TOOLBAR_CAPTION_EDIT_INSERT_INCLUDE
-Insertar #include Correspondiente
-TOOLBAR_CAPTION_EDIT_COMMENT
-Comentar
-TOOLBAR_CAPTION_EDIT_UNCOMMENT
-Descomentar
-TOOLBAR_CAPTION_EDIT_INDENT
-Indentar
-TOOLBAR_CAPTION_EDIT_BRACEMATCH
-Seleccionar Bloque
-TOOLBAR_CAPTION_EDIT_SELECT_ALL
-Seleccionar Todo
-TOOLBAR_CAPTION_EDIT_HIGHLIGHT_LINES
-Resaltar Linea(s)/Quitar Resaltado
-TOOLBAR_CAPTION_EDIT_FIND_HIGHLIGHTS
-Buscar Resaltado
-TOOLBAR_CAPTION_EDIT_LIST_HIGHLIGHTS
-Listar Lineas Resaltadas
-PREFERENCES_EDIT_TOOLBAR_MISC_CAPTION
-Barra de Herramientas \"Miscelanea\"
-TOOLBAR_CAPTION_FILE_PREFERENCES
-Preferencias...
-TOOLBAR_CAPTION_HELP_TUTORIALS
-Tutoriales...
-TOOLBAR_CAPTION_HELP_ZINJAI
-Ayuda Sobre ZinjaI...
-TOOLBAR_CAPTION_HELP_CPP
-Ayuda Sobre C++...
-TOOLBAR_CAPTION_HELP_TIPS
-Sugerencias...
-TOOLBAR_CAPTION_HELP_ABOUT
-Acerca de...
-TOOLBAR_CAPTION_HELP_OPINION
-Opina sobre ZinjaI...
-TOOLBAR_CAPTION_HELP_UPDATES
-Buscar Actualizaciones...
-TOOLBAR_CAPTION_FILE_EXIT
-Salir de ZinjaI
-PREFERENCES_EDIT_TOOLBAR_VIEW_CAPTION
-Barra de Herramientas \"ver\"
-TOOLBAR_CAPTION_VIEW_SPLIT_VIEW
-Duplicar Vista
-TOOLBAR_CAPTION_VIEW_LINE_WRAP
-Ajuste de Linea
-TOOLBAR_CAPTION_VIEW_WHITE_SPACES
-Mostrar Espacios y Caracteres de Fin de Linea
-TOOLBAR_CAPTION_VIEW_SYNTAX_HIGHLIGHT
-Colorear Sintaxis
-TOOLBAR_CAPTION_VIEW_EXPLORER_TREE
-Explorador de Archivos
-TOOLBAR_CAPTION_VIEW_PROJECT_TREE
-Arbol de Proyecto
-TOOLBAR_CAPTION_VIEW_COMPILER_TREE
-Resultados de La Compilacion
-TOOLBAR_CAPTION_VIEW_FULLSCREEN
-Pantalla Completa
-TOOLBAR_CAPTION_VIEW_BEGINNER_PANEL
-Panel de Mini-Plantillas
-TOOLBAR_CAPTION_VIEW_PREV_ERROR
-Ir a Error Anterior
-TOOLBAR_CAPTION_VIEW_NEXT_ERROR
-Ir a siguiente error
-TOOLBAR_CAPTION_FOLD_ALL_LEVELS
-Plegar Todos los Niveles
-TOOLBAR_CAPTION_UNFOLD_ALL_LEVELS
-Desplegar Todos los Niveles
-PREFERENCES_EDIT_TOOLBAR_TOOLS_CAPTION
-Barra de Herramientas \"Herramientas\"
-TOOLBAR_CAPTION_TOOLS_DRAW_FLOWCHART
-Dibujar Diagrama de Flujo...
-TOOLBAR_CAPTION_TOOLS_DRAW_CLASS_HIERARCHY
-Dibujar Jerarquia de Clases...
-TOOLBAR_CAPTION_TOOLS_COMMENTS_COPY_CODE_FROM_H
-Implementar Metodos/Funciones Faltantes...
-TOOLBAR_CAPTION_TOOLS_COMMENTS_ALIGN_COMMENTS
-Alinear Comentarios...
-TOOLBAR_CAPTION_TOOLS_COMMENTS_DELETE_COMMENTS
-Eliminar Comentarios...
-TOOLBAR_CAPTION_TOOLS_PREPROC_MARK_VALID
-Marcar Lineas No Compiladas...
-TOOLBAR_CAPTION_TOOLS_PREPROC_UNMARK_ALL
-Borrar Marcas...
-TOOLBAR_CAPTION_TOOLS_PREPROC_EXPAND_MACROS
-Expandir Macros...
-TOOLBAR_CAPTION_TOOLS_GENERATE_MAKEFILE
-Generar Makefile...
-TOOLBAR_CAPTION_TOOLS_OPEN_TERMINAL
-Abrir Consola...
-TOOLBAR_CAPTION_TOOLS_EXE_INFO
-Propiedades del Ejecutable...
-TOOLBAR_CAPTION_TOOLS_SHARE_OPEN
-Abrir Archivo Compartido...
-TOOLBAR_CAPTION_TOOLS_SHARE_SHARE
-Compartir Fuente...
-TOOLBAR_CAPTION_TOOLS_SHARE_LIST
-Ver Lista de Compartidos Propios...
-TOOLBAR_CAPTION_TOOLS_PROJECT_STATISTICS
-Estadisticas del Proyecto...
-TOOLBAR_CAPTION_TOOLS_DRAW_PROJECT
-Grafo del Proyecto...
-TOOLBAR_CAPTION_TOOLS_DIFF_TWO
-Compara Dos Fuentes Abiertos...
-TOOLBAR_CAPTION_TOOLS_DIFF_DISK
-Comparar Fuente con Archivo en Disco...
-TOOLBAR_CAPTION_TOOLS_DIFF_HIMSELF
-Comparar Cambios en el Fuente con su Version en Disco...
-TOOLBAR_CAPTION_TOOLS_DOXYGEN_GENERATE
-Generar Documentacion Doxygen...
-TOOLBAR_CAPTION_TOOLS_DOXYGEN_CONFIGURE
-Configurar Documentacion Doxygen...
-TOOLBAR_CAPTION_TOOLS_DOXYGEN_VIEW
-Ver Documentacion Doxygen...
-TOOLBAR_CAPTION_TOOLS_WXFB_CONFIG
-Configurar Integracion wxFormBuilder
-TOOLBAR_CAPTION_TOOLS_WXFB_NEW_RESOURCE
-Adjuntar un Nuevo Proyecto wxFB
-TOOLBAR_CAPTION_TOOLS_WXFB_LOAD_RESOURCE
-Adjuntar un Proyecto wxFB Existente
-TOOLBAR_CAPTION_TOOLS_WXFB_REGENERATE
-Regenerar Proyectos wxFB
-TOOLBAR_CAPTION_TOOLS_WXFB_INHERIT
-Generar Clase Heredada...
-TOOLBAR_CAPTION_TOOLS_WXFB_UPDATE_INHERIT
-Actualizar Clase Heredada...
-TOOLBAR_CAPTION_TOOLS_WXFB_REFERENCE
-Referencia wxWidgets...
-TOOLBAR_CAPTION_TOOLS_GPROF_ACTIVATE
-Activar/Desactivar Perfilado de Ejecucion
-TOOLBAR_CAPTION_TOOLS_GPROF_SHOW
-Graficar Resultados del Perfilado de Ejecucion...
-TOOLBAR_CAPTION_TOOLS_GPROF_LIST
-Listar Resultados del Perfilado de Ejecucion
-TOOLBAR_CAPTION_TOOLS_GCOV_ACTIVATE
-Activar/Desactivar Test de Cobertura
-TOOLBAR_CAPTION_TOOLS_GCOV_SHOW_BAR
-Mostrar Barra Lateral de Test de Cobertura
-TOOLBAR_CAPTION_TOOLS_GCOV_RESET
-Eliminar resultados de Test de Cobertura
-TOOLBAR_CAPTION_TOOLS_CPPCHECK_RUN
-Ejecutar Para Analisis Estatico
-TOOLBAR_CAPTION_TOOLS_CPPCHECK_CONFIG
-Configurar Analisis Estatico
-TOOLBAR_CAPTION_TOOLS_CPPCHECK_VIEW
-Mostrar Resultados del Analisis Dinamico
-TOOLBAR_CAPTION_TOOLS_VALGRIND_RUN
-Ejecutar Para Analisis Dinamico
-TOOLBAR_CAPTION_TOOLS_VALGRIND_VIEW
-Mostrar Resultados del Analisis Dinamico
-CUSTOM_TOOLS_NOT_CONFIGURED
-no configurada
-TOOLBAR_CAPTION_TOOLS_CUSTOM_SETTINGS
-Configurar Herramientas Personalizadas
-PREFERENCES_EDIT_TOOLBAR_DEBUG_CAPTION
-Barra de Herramientas \"Depuracion\"
-PREFERENCES_EDIT_TOOLBAR_RUN_CAPTION
-Barra de Herramientas \"Ejecucion\"
-TOOLBAR_CAPTION_RUN_COMPILE
-Compilar
-TOOLBAR_CAPTION_RUN_OLD
-Ejecutar Sin Recompilar...
-TOOLBAR_CAPTION_RUN_STOP
-Detener
-TOOLBAR_CAPTION_RUN_CLEAN
-Limpiar
-TOOLBAR_CAPTION_RUN_OPTIONS
-Opciones...
-TOOLBAR_CAPTION_DEBUG_RUN
-Depurar
-TOOLBAR_CAPTION_DEBUG_ATTACH
-Adjuntar Depurador...
-TOOLBAR_CAPTION_DEBUG_CORE_DUMP
-Cargar Volcado de Memoria...
-TOOLBAR_CAPTION_DEBUG_TOGGLE_BREAKPOINT
-Agregar/Quitar Breakpoint
-TOOLBAR_CAPTION_DEBUG_BREAKPOINT_OPTIONS
-Opciones del Breakpoint...
-TOOLBAR_CAPTION_DEBUG_LIST_BREAKPOINTS
-Listar Breakpoints...
-TOOLBAR_CAPTION_INSPECT
-Panel de Inspecciones
 PREFERENCES_TOOLBARS_RESET_WARNING
 Perdera todas las modificiaciones realizadas a las barras\n de herramientas. ¿Desea continuar?
 LANG_MAX_JOBS_TIP
@@ -3026,6 +2806,12 @@ SHARESOURCE_COULDNT_START_SERVER
 No se pudo inciar el servidor. Compruebe que el puerto este correctamente configuardo y libre.
 SHARESOURCE_SOURCE_ALREADY_EXISTS_REPLACE
 Ya existe un archivo compartido con ese nombre. Desea reemplazarlo?
+SHORCUTS_CAPTION
+Atajos de teclado
+SHORCUTS_FILTER
+Buscar:
+SHORCUTS_COLLISION
+Dos acciones tienen el mismo atajo:\n     <{1}>\n     <{2}>
 DEBUG_NO_BREAKPOINT_ON_EMPTY_LINE
 Los puntos de interrupcion no pueden colocarse en lineas vacias\n que contengan solo comentarios o directivas de preprocesador
 DEBUG_BREAKPOINT_CAPTION
@@ -3048,52 +2834,18 @@ SOURCE_POPUP_ENABLE_BREAKPOINT
 Habilitar breakpoint
 SOURCE_POPUP_INSERT_BREAKPOINT
 Insertar breakpoint
-SOURCE_POPUP_BREAKPOINT_OPTIONS
-Opciones del breakpoint...
 SOURCE_POPUP_REMOVE_HIGHLIGHT
-Quitar resaltaso
+Quitar resaltado
 SOURCE_POPUP_HIGHLIGHT_LINES
 Resaltar linea
-SOURCE_POPUP_INDENTE
-Indentar Linea
-SOURCE_POPUP_UNCOMMENT_LINES
-&Descomentar linea
-SOURCE_POPUP_COMMENT_LINES
-Comentar linea
-SOURCE_POPUP_DUPLICATE_LINES
-Duplicar linea
-SOURCE_POPUP_DELETE_LINES
-Eliminar linea
-SOURCE_POPUP_TOGGLE_LINES_UP
-Mover linea hacia arriba
-SOURCE_POPUP_TOGGLE_LINES_DOWN
-Mover linea hacia abajo
-SOURCE_POPUP_FIND_SYMBOL
-&Ir a definición...
 SOURCE_POPUP_HELP_ON
 Ayuda sobre \"<{1}>\"...
 SOURCE_POPUP_INSERT_INCLUDE
 Insertar #incl&ude correspondiente a \"<{1}>\"
 SOURCE_POPUP_HIGHLIGHT_WORD
-Resaltar identificador \"
+Resaltar identificador \"<{1}>\"
 SOURCE_POPUP_OPEN_SELECTED
 &Abrir \"<{1}>\"
-SOURCE_POPUP_WHERE_AM_I
-Mostrar contexto (clase/método/función)
-SOURCE_POPUP_UNDO
-&Deshacer
-SOURCE_POPUP_REDO
-&Rehacer
-SOURCE_POPUP_CUT
-C&ortar
-SOURCE_POPUP_COPY
-&Copiar
-SOURCE_POPUP_PASTE
-&Pegar
-SOURCE_POPUP_SELECT_BLOCK
-&Seleccionar Bloque
-SOURCE_POPUP_SELECT_ALL
-Seleccionar &Todo
 SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION
 No se encontraron elementos para autocompletar el ambito 
 SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION

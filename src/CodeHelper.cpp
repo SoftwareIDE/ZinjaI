@@ -34,7 +34,7 @@ MyAutocompList autocomp_list;
 		i++; \
 	
 
-CodeHelper *code_helper;
+CodeHelper *code_helper = NULL;
 
 CodeHelper::CodeHelper(int ml) {
 	min_len=ml;
@@ -1487,5 +1487,9 @@ wxString MyAutocompList::GetHelp (unsigned int sel) {
 		}
 	}
 	return help;
+}
+
+void CodeHelper::Initialize ( ) {
+	code_helper = new CodeHelper(config->Help.min_len_for_completion);
 }
 

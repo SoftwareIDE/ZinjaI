@@ -13,7 +13,7 @@
 #include "CodeHelper.h"
 using namespace std;
 
-HelpManager *help;
+HelpManager *help = NULL;
 
 HelpManager::HelpManager() {
 //	HashStringString::iterator it;
@@ -766,3 +766,8 @@ wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 	fil.Close();
 	return "";
 }
+
+void HelpManager::Initialize ( ) {
+	help = new HelpManager();
+}
+
