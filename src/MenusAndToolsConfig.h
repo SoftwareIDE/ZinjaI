@@ -42,10 +42,10 @@ private:
 	/// @brief for storing menues structure before really creating them, and for simplifing AddMenuItem interface (only one flexible parameter for that method)
 	struct myMenuItem {
 		int wx_id, properties/*, enabling_condition*/;
-		wxString label, description, icon, shortcut;
+		wxString key, label, description, icon, shortcut;
 		wxMenuItem *wx_item;
 		myMenuItem(int _id=0, int _props=0):wx_id(_id),properties(_props),/*enabling_condition(ecALWAYS),*/wx_item(NULL){}
-		myMenuItem(int _id, const wxString &_label):wx_id(_id),properties(0),/*enabling_condition(ecALWAYS),*/label(_label),wx_item(NULL) {}
+		myMenuItem(const wxString &_key, int _id, const wxString &_label):wx_id(_id),properties(0),key(_key),/*enabling_condition(ecALWAYS),*/label(_label),wx_item(NULL) {}
 		myMenuItem &Label(const wxString &_label) { label=_label; return *this; }
 		myMenuItem &ShortCut(const wxString &_shortcut) { shortcut=_shortcut; return *this; }
 		myMenuItem &Description(const wxString &_description) { description=_description; return *this; }
@@ -100,9 +100,12 @@ private:
 	
 	/// struct for storing information for a single menu and all its items
 	struct myMenu {
-		wxString label;
+		wxString label, key;
 		wxMenu *wx_menu;
 		vector<myMenuItem> items;
+		void Init(const wxString &_key, const wxString &_label) {
+			key=_key; label=_label;
+		}
 	};
 
 public:
@@ -151,7 +154,7 @@ private:
 		wxString key, label, description, icon;
 		myToolbarItem(){}
 		myToolbarItem(const wxString &_key, int _id, const wxString &_icon, const wxString &_label):wx_id(_id),visible(false),checkeable(false),key(_key),label(_label),icon(_icon) {}
-		myToolbarItem(const wxString &_key, myMenu &menu, int _wx_id) : wx_id(_wx_id), visible(false),checkeable(false),key(_key) {
+		myToolbarItem(myMenu &menu, int _wx_id) : wx_id(_wx_id), visible(false),checkeable(false) {
 			wxString menulabel=menu.label; int submenu_deep=0;
 			for(unsigned int i=0,l=menu.items.size();i<l;i++) { 
 				myMenuItem &mi = menu.items[i];
@@ -161,6 +164,7 @@ private:
 					submenu_deep--; if (submenu_deep==0) menulabel = menu.label;
 				}
 				if (mi.wx_id==_wx_id) {
+					key = mi.key;
 					icon = mi.icon;
 					label = menulabel + " -> " + mi.label;
 					description = mi.description;
@@ -241,8 +245,6 @@ public:
 	
 	MenusAndToolsConfig();
 	
-	void LoadMenuData();
-//	bool ParseMenuConfigLine(const wxString &key, const wxString &value);
 private:
 	void CreateMenues();
 	void PopulateMenu(int menu_id);
@@ -264,9 +266,6 @@ public:
 	}
 //	void SaveMenuConfig(wxTextFile &file);
 	
-	
-	void LoadToolbarsData();
-	bool ParseToolbarConfigLine(const wxString &key, const wxString &value);
 private:
 	void CreateWxToolbar(int tb_id);
 	myToolbarItem *GetMyToolbarItem(int toolbar_id, int item_id);
@@ -287,8 +286,15 @@ public:
 	
 	void TransferStatesFromConfig();
 	void CreateMenuesAndToolbars(mxMainWindow *_main_window);
+	void RecreateAllMenues();
 
 public:
+	void LoadMenuData();
+	void LoadToolbarsData();
+	
+	bool ParseMenuConfigLine(const wxString &key, const wxString &value);
+	bool ParseToolbarConfigLine(const wxString &key, const wxString &value);
+	
 	bool LoadShortcutsSettings(const wxString &full_path);
 	bool SaveShortcutsSettings(const wxString &full_path);
 	bool LoadToolbarsSettings(const wxString &full_path);

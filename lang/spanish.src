@@ -652,20 +652,14 @@ MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT
 Historial de navegación -> ubicación siguiente
 MENUITEM_HIDDEN_ENABLE_BREAKPOINT
 Habilitar/deshabilitar punto de interrupcion
+MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL
+Herramienta personalizada de project <{1}>
 CAPTION_TOOLBAR_FILE
 Archivo
-TOOLBAR_CAPTION_FILE_OPEN_H
-Abrir h/cpp Complementario
-TOOLBAR_CAPTION_FILE_OPEN_SELECTED
-Abrir Seleccionado
 CAPTION_TOOLBAR_EDIT
 Edición
-TOOLBAR_CAPTION_EDIT_FORCE_AUTOCOMPLETE
-Autocompletar
 CAPTION_TOOLBAR_VIEW
 Ver
-TOOLBAR_CAPTION_VIEW_SYMBOLS_TREE
-Arbol de simbolos
 TOOLBAR_CAPTION_FOLD_LEVEL_1
 Plegar el Primer Nivel
 TOOLBAR_DESC_FOLD_LEVEL_1
@@ -696,8 +690,6 @@ TOOLBAR_CAPTION_RUN_RUN
 Guardar, compilar y ejecutar...
 CAPTION_TOOLBAR_DEBUG
 Depuración
-TOOLBAR_DEBUG_BREAK_ENABLE
-Habilitar/deshabilitar breakpoint
 CAPTION_TOOLBAR_TOOLS
 Herramientas
 CAPTION_TOOLBAR_MISC
@@ -854,10 +846,6 @@ ABOUT_CAPTION
 Acerca de...
 ABOUT_CLOSE
 Cerrar
-APP_CREATE_ICON_QUESTION
-Desea crear un acceso rapido para ZinjaI en su escritorio?
-APP_WELCOME_TO_ZINJAI
-Bienvenido a ZinjaI
 ARGUMENTS_CAPTION
 Argumentos para la ejecucion
 COMPILECONF_RUNNING_ARGS
