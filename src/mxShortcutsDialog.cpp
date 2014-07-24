@@ -164,6 +164,13 @@ public:
 };
 
 
+static wxString normalize(wxString str) {
+	str.MakeUpper();
+	if (str.Contains("SHIFT+")) { str.Replace("SHIFT+","",true); str=wxString("SHIFT+")+str; }
+	if (str.Contains("ALT+")) { str.Replace("ALT+","",true); str=wxString("ALT+")+str; }
+	if (str.Contains("CTRL+")) { str.Replace("CTRL+","",true); str=wxString("CTRL+")+str; }
+	return str;
+}
 
 
 
@@ -237,8 +244,9 @@ mxShortcutsDialog::~mxShortcutsDialog() {
 
 void mxShortcutsDialog::OnTimer (wxTimerEvent & evt) {
 	wxString text = filter->GetValue().Upper();
+	wxString keys = normalize(filter->GetValue());
 	for(int i=0;i<actions.GetSize();i++) { 
-		bool visible = text.Len()==0 || actions[i].search_text.Upper().Contains(text) || actions[i].text->GetValue().Upper().Contains(text);;
+		bool visible = text.Len()==0 || actions[i].search_text.Upper().Contains(text) || normalize(actions[i].text->GetValue()).Contains(keys);
 		actions[i].text->Show(visible);
 		actions[i].label->Show(visible);
 		actions[i].button->Show(visible);
@@ -260,14 +268,6 @@ void mxShortcutsDialog::OnGrabButton (wxCommandEvent & evt) {
 	}
 }
 
-wxString normalize(wxString str) {
-	str.MakeUpper();
-	if (str.Contains("SHIFT+")) { str.Replace("SHIFT+","",true); str=wxString("SHIFT+")+str; }
-	if (str.Contains("ALT+")) { str.Replace("ALT+","",true); str=wxString("ALT+")+str; }
-	if (str.Contains("CTRL+")) { str.Replace("CTRL+","",true); str=wxString("CTRL+")+str; }
-	return str;
-}
-
 void mxShortcutsDialog::OnOkButton (wxCommandEvent & evt) {
 	// verificar que no se repitan
 	for(int i=0;i<actions.GetSize();i++) {
@@ -276,6 +276,8 @@ void mxShortcutsDialog::OnOkButton (wxCommandEvent & evt) {
 		for(int j=i+1;j<actions.GetSize();j++) {
 			if (norm == normalize(actions[j].text->GetValue())) {
 				mxMessageDialog(this,LANG2(SHORCUTS_COLLISION,"Dos acciones tienen el mismo atajo:\n     <{1}>\n     <{2}>",actions[i].label->GetLabel(),actions[j].label->GetLabel()),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				filter->SetValue(actions[j].text->GetValue());
+				wxTimerEvent t_evt;	OnTimer(t_evt);
 				return;
 			}
 		}
