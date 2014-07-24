@@ -1050,7 +1050,7 @@ bool MenusAndToolsConfig::LoadToolbarsSettings (const wxString & full_path) {
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		key=str.BeforeFirst('=');
 		value=str.AfterFirst('=');
-		if (str[0]=='#') continue;
+		if (str.IsEmpty() || str[0]=='#' || str[0]=='[') continue;
 		ParseToolbarConfigLine(key,value);
 	}
 	fil.Close();
@@ -1107,7 +1107,7 @@ bool MenusAndToolsConfig::LoadShortcutsSettings(const wxString &full_path) {
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		key=str.BeforeFirst('=');
 		value=str.AfterFirst('=');
-		if (str[0]=='#') continue;
+		if (str.IsEmpty() || str[0]=='#' || str[0]=='[') continue;
 		ParseMenuConfigLine(key,value);
 	}
 	fil.Close();

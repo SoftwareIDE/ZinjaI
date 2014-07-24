@@ -57,9 +57,8 @@ Puedes cerrar todas las pestañas de código a excepción de la activa con el atajo
 En la ayuda hay una tabla con la mayoría de los <A href="help:atajos.html">atajos de teclado</A> que puedes utilizar en ZinjaI para acelerar el desarrollo.
 Puede leer más información y otras notas útiles sobre <I>ZinjaI</I> y otros proyectos en el blog <A href="http://cucarachasracing.blogspot.com.ar">http://cucarachasracing.blogspot.com.ar</A>.
 Puedes cambiar rápidamente el perfil de compilación y ejecución activo en un proyecto haciendo click derecho sobre el botón de Opciones de Compilación y Ejecución (Ejecución->Opciones) de la barra de herramientas "Ejecutar".
-
-Puedes cambiar los colores con que ZinjaI colorea el código fuente para ajustarlos a tus preferencias. ZinjaI incluye dos perfiles predefinidos, uno para fondo claro (blanco) y uno para fondo oscuro (negro), pero puedes crear nuevos esquemas de colores y compartirlos. Para acceder a estas opciones utiliza el bótón "Definir Colores..." de la pestaña "Estilo" del cuadro de "Preferencias" (al cual se accede desde el menú "Archivo").
-
+Puedes cambiar los colores con que ZinjaI colorea el código fuente para ajustarlos a tus preferencias. ZinjaI incluye dos perfiles predefinidos, uno para fondo claro (blanco) y uno para fondo oscuro (negro), pero puedes crear nuevos esquemas de colores y compartirlos. Para acceder a estas opciones utiliza la opción "Configurar esquema de colores..." del menú "Ver".
 Puedes utilizar Alt+Derecha y Alt+Izquierda para saltar entre las últimas lineas de código sobre las que trabajaste. Por ejemplo, si saltas de una función a otra para corregir algo, puedes volver a la anterior con Alt+Izquierda.
 Al hacer doble click sobre un identificador, este se resalta inmediatamente en todo el código para ver fácilmente donde se utiliza el mismo. Para quitar el resaltado simplemente debe hacer doble click en un espacio vacío. Puede evitar el resaltado configurando el perfil de colores.
 Durante una sesión de depuración, ZinjaI puede proporcionar un autocompletado especial para la grilla de inspecciones si presiona la tecla TAB luego de haber ingresado parte de la expresión.
+Puedes cambiar los atajos de teclado desde la pestaña "General" del cuadro de diálog "Preferencias" (menú "Archivo"->"Preferencias...").

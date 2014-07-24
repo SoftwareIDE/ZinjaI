@@ -1223,8 +1223,8 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 		if (comp.Len()) menu.Append(mxID_FILE_OPEN_H, LANG1(MAINW_OPEN_FILENAME,"Abrir \"<{1}>\"",comp));
 	}
 	
-	wxMenuItem *shared = menu.AppendCheckItem(mxID_TOOLS_SHARE_SHARE, LANG(MAINW_PROJECT_FILE_POPUP_SHARE,"Compartir archivo..."));
-	shared->Check(share && share->Exists(src));
+	/*wxMenuItem *shared = */mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_SHARE_SHARE));
+//	shared->Check(share && share->Exists(src));
 		
 	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE));

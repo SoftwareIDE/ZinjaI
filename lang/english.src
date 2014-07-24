@@ -305,7 +305,7 @@ Show WhiteSpace and EOL Characters
 MENUITEM_VIEW_SYNTAX_HIGHLIGHT
 Enable Syntax Highlighting
 MENUITEM_VIEW_CODE_COLOURS
-Configure colors' profile...
+Configure colors' scheme...
 MENUITEM_VIEW_FOLDING
 Code Folding
 MENUITEM_FOLD_FOLD_THIS_LINE
