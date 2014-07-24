@@ -333,6 +333,9 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	}
 	
 	menues[mnHIDDEN].Init("hidden",LANG(MENUITEM_GLOBAL_SHORTCUTS,"Otros atajos")); {
+		AddMenuItem(mnHIDDEN, myMenuItem("highlight_keyword",mxID_EDIT_HIGHLIGHT_WORD,LANG(MENUITEM_HIDDEN_HIGHLIGHT_KEYWORD,"Resaltar identificador")));
+		AddMenuItem(mnHIDDEN, myMenuItem("lowercase",mxID_EDIT_MAKE_LOWERCASE,LANG(MENUITEM_HIDDEN_MAKE_LOWERCASE,"Pasar a minúsuculas")).ShortCut("Ctrl+U"));
+		AddMenuItem(mnHIDDEN, myMenuItem("uppercase",mxID_EDIT_MAKE_UPPERCASE,LANG(MENUITEM_HIDDEN_MAKE_UPPERCASE,"Pasar a mayúsuculas")).ShortCut("Ctrl+Shift+U"));
 		AddMenuItem(mnHIDDEN, myMenuItem("update_symbols",mxID_VIEW_UPDATE_SYMBOLS,LANG(MENUITEM_HIDDEN_UPDATE_SYMBOLS,"Actualizar arbol de simbolos")).ShortCut("F2"));
 		AddMenuItem(mnHIDDEN, myMenuItem("autocomplete",mxID_EDIT_FORCE_AUTOCOMPLETE,LANG(MENUITEM_HIDDEN_FORCE_AUTOCOMPLETE,"Autocompletar")).ShortCut("Ctrl+Space"));
 		AddMenuItem(mnHIDDEN, myMenuItem("open_selected",mxID_FILE_OPEN_SELECTED,LANG(MENUITEM_HIDDEN_OPEN_SELECTED,"Abrir archivo seleccionado en el código")).ShortCut("Ctrl+Return"));
@@ -355,6 +358,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnHIDDEN, myMenuItem("history_next",mxID_NAVIGATION_HISTORY_NEXT,LANG(MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT,"Historial de navegación -> ubicación siguiente")).ShortCut("Alt+Right"));
 		AddMenuItem(mnHIDDEN, myMenuItem("break_enable",mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT,LANG(MENUITEM_HIDDEN_ENABLE_BREAKPOINT,"Habilitar/deshabilitar punto de interrupcion")).ShortCut(""));
 		for(int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) AddMenuItem(mnHIDDEN, myMenuItem(wxString("project_tool_")<<i,mxID_CUSTOM_PROJECT_TOOL_0+i,LANG1(MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL,"Herramienta personalizada de project <{1}>",wxString()<<i)).ShortCut(""));
+		AddMenuItem(mnHIDDEN, myMenuItem("change_shortcuts",mxID_CHANGE_SHORTCUTS, LANG(MENUITEM_HELP_SHORTCUTS,"Atajos de teclado...")).ShortCut("Ctrl+Alt+Z"));
 	}
 	
 }

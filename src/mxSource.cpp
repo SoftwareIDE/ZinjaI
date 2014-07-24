@@ -172,6 +172,8 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_BRACEMATCH, mxSource::OnBraceMatch)
 	EVT_MENU (mxID_EDIT_INDENT, mxSource::OnIndentSelection)
 	EVT_MENU (mxID_EDIT_HIGHLIGHT_WORD, mxSource::OnHighLightWord)
+	EVT_MENU (mxID_EDIT_MAKE_LOWERCASE, mxSource::OnEditMakeLowerCase)
+	EVT_MENU (mxID_EDIT_MAKE_UPPERCASE, mxSource::OnEditMakeUpperCase)
 	// view
 	EVT_MENU (mxID_FOLDTOGGLE, mxSource::OnFoldToggle)
 	EVT_SET_FOCUS (mxSource::OnSetFocus)
@@ -4028,3 +4030,12 @@ void mxSource::OnAutocompTimer(wxTimerEvent &event) {
 	mask_kill_focus_event=true; timer_focus.Start(150,true);
 	calltip->Show(autocomp_x,autocomp_y,autocomp_max_len,help_text);
 }
+
+void mxSource::OnEditMakeLowerCase (wxCommandEvent & event) {
+	LowerCase();
+}
+
+void mxSource::OnEditMakeUpperCase (wxCommandEvent & event) {
+	UpperCase();
+}
+

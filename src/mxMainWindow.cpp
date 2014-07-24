@@ -70,6 +70,7 @@
 #include "mxGdbCommandsPanel.h"
 #include "mxSignalsSettings.h"
 #include "MenusAndToolsConfig.h"
+#include "mxShortcutsDialog.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -164,6 +165,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_SELECT_ALL, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_UNDO, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_REDO, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_MAKE_LOWERCASE, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_MAKE_UPPERCASE, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_COPY, mxMainWindow::OnEditNeedFocus)
 	EVT_MENU(mxID_EDIT_CUT, mxMainWindow::OnEditNeedFocus)
 	EVT_MENU(mxID_EDIT_PASTE, mxMainWindow::OnEditNeedFocus)
@@ -195,6 +198,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 //	EVT_MENU(mxID_EDIT_FUZZY_AUTOCOMPLETE, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_NAVIGATION_HISTORY_PREV, mxMainWindow::OnNavigationHistoryPrev)
 	EVT_MENU(mxID_NAVIGATION_HISTORY_NEXT, mxMainWindow::OnNavigationHistoryNext)
+	
+	EVT_MENU(mxID_CHANGE_SHORTCUTS, mxMainWindow::OnChangeShortcuts)
 	
 	EVT_MENU(mxID_MACRO_RECORD, mxMainWindow::OnMacroRecord)
 	EVT_MENU(mxID_MACRO_REPLAY, mxMainWindow::OnMacroReplay)
@@ -1213,8 +1218,10 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 		}
 	}
 	menu.AppendSeparator();
-	if (!src->sin_titulo && mxUT::GetComplementaryFile(src->source_filename).Len())
-		menu.Append(mxID_FILE_OPEN_H, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_H,"&Abrir complementario...\tF12"));
+	if (!src->sin_titulo) { 
+		wxString comp = mxUT::GetComplementaryFile(src->source_filename); 
+		if (comp.Len()) menu.Append(mxID_FILE_OPEN_H, LANG1(MAINW_OPEN_FILENAME,"Abrir \"<{1}>\"",comp));
+	}
 	
 	wxMenuItem *shared = menu.AppendCheckItem(mxID_TOOLS_SHARE_SHARE, LANG(MAINW_PROJECT_FILE_POPUP_SHARE,"Compartir archivo..."));
 	shared->Check(share && share->Exists(src));
@@ -4890,5 +4897,13 @@ void mxMainWindow::OnMenuOpen(wxMenuEvent & evt) {
 
 void mxMainWindow::OnHelpShortcuts (wxCommandEvent & event) {
 	mxHelpWindow::ShowHelp("atajos.html");
+}
+
+void mxMainWindow::OnChangeShortcuts (wxCommandEvent & event) {
+	mxShortcutsDialog(this);
+}
+
+void mxMainWindow::OnHighlightKeyword (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->OnHighLightWord(event);
 }
 

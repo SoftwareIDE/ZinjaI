@@ -166,6 +166,8 @@ public:
 	int InstructionBegin(int p);
 
 	// edit
+	void OnEditMakeLowerCase (wxCommandEvent &event);
+	void OnEditMakeUpperCase (wxCommandEvent &event);
 	void OnEditRedo (wxCommandEvent &event);
 	void OnEditUndo (wxCommandEvent &event);
 //	void OnEditClear (wxCommandEvent &event);

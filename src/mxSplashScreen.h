@@ -6,10 +6,10 @@
 
 #if defined(DEBUG) || defined(__APPLE__)
 //#define SPLASH_FILE "splashvb.png"
-#define SPLASH_FILE "splashv2k.png"
+#define SPLASH_FILE "splashv2l.png"
 #else
 //#warning SHOULD DEFINE CORRECT SPLASH BEFORE RELEASE
-#define SPLASH_FILE "splashv2k.png"
+#define SPLASH_FILE "splashv2l.png"
 #endif
 
 /**

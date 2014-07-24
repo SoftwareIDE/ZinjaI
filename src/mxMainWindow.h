@@ -109,6 +109,8 @@ public:
 	void OnFileSaveAs (wxCommandEvent &event);
 	void OnFileSaveAll (wxCommandEvent &event);
 	void OnFileProjectConfig (wxCommandEvent &event);
+	void OnHighlightKeyword(wxCommandEvent &event);
+	void OnChangeShortcuts(wxCommandEvent &event);
 	
 	void OnGotoToolbarFind (wxCommandEvent &event);
 	void OnToolbarFindEnter (wxCommandEvent &event);
