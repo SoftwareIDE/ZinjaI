@@ -1478,7 +1478,7 @@ wxString MyAutocompList::GetHelp (unsigned int sel) {
 	wxString text(keywords[0]); unsigned int c=0;
 	unsigned int li=0;
 	for (unsigned int i=1;c!=sel && i<keywords.GetCount();i++)
-		if (keywords[li]!=keywords[i]) { li=i; c++; }
+		if (keywords[li]!=keywords[i]) { li=i; c++; }				
 	wxString key = keywords[li]+"\n", help;
 	for (unsigned int i=0;i<helps.GetCount();i++) {
 		if (helps[i].StartsWith(key)) {
