@@ -140,7 +140,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnVIEW, myMenuItem("toolbar_config",mxID_VIEW_TOOLBARS_CONFIG, LANG(MENUITEM_VIEW_TOOLBARS_CONFIG,"&Configurar...")).Icon("preferencias.png"));
 		EndSubMenu(mnVIEW);
 		AddSeparator(mnVIEW);
-		AddMenuItem(mnVIEW, myMenuItem("prev_error",mxID_VIEW_PREV_ERROR, LANG(MENUITEM_VIEW_PREV_ERROR,"&Ir a error anterior")).ShortCut(_if_win32("Ctrl+>","Ctrl+Shift+<")).Description("Selecciona el error/advertencia anterior de la salida del compilador.").Icon("errorPrev.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnVIEW, myMenuItem("prev_error",mxID_VIEW_PREV_ERROR, LANG(MENUITEM_VIEW_PREV_ERROR,"&Ir a error anterior")).ShortCut(_if_win32("Ctrl+Shift+<","Ctrl+>")).Description("Selecciona el error/advertencia anterior de la salida del compilador.").Icon("errorPrev.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnVIEW, myMenuItem("next_error",mxID_VIEW_NEXT_ERROR, LANG(MENUITEM_VIEW_NEXT_ERROR,"&Ir a siguiente error")).ShortCut("Ctrl+<").Description("Selecciona el proximo error/advertencia de la salida del compilador.").Icon("errorNext.png").EnableIf(ecSOURCE));
 	}
 	

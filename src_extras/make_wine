@@ -118,7 +118,7 @@ zmkdir fuentes
     rm -rf $SRC/src_extras/wxWidgets
     rm -rf $SRC/src_extras/*.bin
 
-nsis /DPRODUCT_VERSION\=`cat fuentes/src/version.h | head -n 1 | cut -d ' ' -f 3` zinjai.nsh || exit 1
+wine e:/NSIS/makensis.exe /DPRODUCT_VERSION\=`cat fuentes/src/version.h | head -n 1 | cut -d ' ' -f 3` zinjai.nsh || exit 1
 
 echo
 echo All done

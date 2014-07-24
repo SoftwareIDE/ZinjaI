@@ -145,7 +145,7 @@ bool ConfigManager::Load() {
 				else CFG_INT_READ_DN("font_size",Styles.font_size);
 				else CFG_GENERIC_READ_DN("font_name",Styles.font_name);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
-				else if (key=="dark") { if (mxUT::IsTrue(value)) Init.colour_theme="inverted.zcs";	}
+				else if (key=="dark") { if (mxUT::IsTrue(value)) Init.colour_theme="inverted.zcs";	} // just for backward compatibility
 				
 			} else if (section=="Source") {
 				CFG_INT_READ_DN("tabWidth",Source.tabWidth);

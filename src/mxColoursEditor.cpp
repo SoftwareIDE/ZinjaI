@@ -373,8 +373,8 @@ bool color_theme::Load (const wxString &full_path) {
 		key=str.BeforeFirst('=');
 		value=str.AfterFirst('=');
 		if (str[0]=='#') continue;
-		else if (str=="inverted=0") { /*SetDefaults(false); */continue; }
-		else if (str=="inverted=1") { SetDefaults(true); continue; }
+		else if (str=="inverted=0") { inverted=false; /*SetDefaults(false); */continue; }
+		else if (str=="inverted=1") { inverted=true; SetDefaults(true); continue; }
 		CTForAll(CTLoad);
 	}
 	fil.Close();
