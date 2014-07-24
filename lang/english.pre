@@ -1050,6 +1050,8 @@ COLORS_CAPTION
 Define Colours
 GENERAL_APPLY_BUTTON
 A&pply
+COLOURS_INVERTED
+this is an inverted scheme (bright text on dark background)
 COLOURS_ESCHEME
 Scheme:
 COLOURS_TIP_OPEN

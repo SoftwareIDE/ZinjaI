@@ -43,8 +43,10 @@ mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_AN
 	wxButton *apply_button = new mxBitmapButton (this, wxID_FIND, bitmaps->buttons.next, LANG(GENERAL_APPLY_BUTTON,"A&plicar"));
 	ok_button->SetMinSize(wxSize(ok_button->GetSize().GetWidth()<80?80:ok_button->GetSize().GetWidth(),ok_button->GetSize().GetHeight()));
 	apply_button->SetDefault(); 
-	
 
+	inverted = new wxCheckBox(this,wxID_ANY,LANG(COLOURS_INVERTED,"Es un esquema de colores invertidos (texto claro sobre fondo oscuro)"));
+	inverted->SetValue(ctheme->inverted);
+	
 	wxArrayString color_profiles;
 	mxUT::GetFilesFromBothDirs(color_profiles,"colours",true,"<personalizado>");
 	bottomSizer->Add(new wxStaticText(this,wxID_ANY,LANG(COLOURS_ESCHEME,"Esquema:")),sizers->BA5_Center);
@@ -86,8 +88,8 @@ mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_AN
 		"los tres punto para inciar un selector grafico. El formato html es \"#ABCDEF\" "
 		"donde AB, CD y EF son los valores en notación hexadecimal para R, G y B."));
 	mySizer->Add(helpt,sizers->BA5_Exp0);
-	
 	mySizer->Add(scroll,sizers->BA5_Exp1);
+	mySizer->Add(inverted,sizers->BA5_Center);
 	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	SetSizer(mySizer);
 	setting=false;
@@ -193,13 +195,6 @@ void mxColoursEditor::LoadList ( ) {
 	MXCAdd1(CARET,LANG(COLORS_ID_CARET,"Cursor de texto"));
 }
 
-void mxColoursEditor::LoadTheme (wxString name) {
-	
-}
-
-void mxColoursEditor::SaveTheme (wxString name) {
-	
-}
 
 void mxColoursEditor::OnClose (wxCloseEvent & evt) {
 	Destroy();
@@ -241,9 +236,13 @@ void mxColoursEditor::OnButtonApply (wxCommandEvent & evt) {
 	main_window->UpdateStylesInSources();
 }
 
+
+color_theme::color_theme (bool inverted) {
+	SetDefaults(inverted);
+}
+
 color_theme::color_theme (wxString file) {
-	SetDefaults();
-	if (file.Len()) Load(file);
+	if (file.Len()) Load(file); else SetDefaults();
 }
 
 #define ctSet0(id,f,b) id##_FORE=f; id##_BACK=b;
@@ -252,6 +251,7 @@ color_theme::color_theme (wxString file) {
 #define ctSetB(id,f,b) id##_FORE=f; id##_BACK=b; id##_BOLD=true; id##_ITALIC=false;
 
 void color_theme::SetDefaults (bool inverted) {
+	this->inverted = inverted;
 	if (inverted) {
 		
 		ctSet(DEFAULT,"WHITE","BLACK"); // default
@@ -324,119 +324,59 @@ void color_theme::SetDefaults (bool inverted) {
 
 
 #define CTWrite(what)\
-	fil.AddLine(wxString(#what"_FORE=")<<what##_FORE.GetAsString(wxC2S_HTML_SYNTAX)); \
-	fil.AddLine(wxString(#what"_BACK=")<<what##_BACK.GetAsString(wxC2S_HTML_SYNTAX)); \
-	fil.AddLine(wxString(#what"_BOLD=")<<(what##_BOLD?"1":"0")); \
-	fil.AddLine(wxString(#what"_ITALIC=")<<(what##_ITALIC?"1":"0"));
+	if (ref.what##_FORE!=what##_FORE) fil.AddLine(wxString(#what"_FORE=")<<what##_FORE.GetAsString(wxC2S_HTML_SYNTAX)); \
+	if (ref.what##_BACK!=what##_BACK) fil.AddLine(wxString(#what"_BACK=")<<what##_BACK.GetAsString(wxC2S_HTML_SYNTAX)); \
+	if (ref.what##_BOLD!=what##_BOLD) fil.AddLine(wxString(#what"_BOLD=")<<(what##_BOLD?"1":"0")); \
+	if (ref.what##_ITALIC!=what##_ITALIC) fil.AddLine(wxString(#what"_ITALIC=")<<(what##_ITALIC?"1":"0"));
 #define CTWrite0(what)\
-	fil.AddLine(wxString(#what"_FORE=")<<what##_FORE.GetAsString(wxC2S_HTML_SYNTAX)); \
-	fil.AddLine(wxString(#what"_BACK=")<<what##_BACK.GetAsString(wxC2S_HTML_SYNTAX));
-#define CTWrite1(what) fil.AddLine(wxString(#what"=")<<what.GetAsString(wxC2S_HTML_SYNTAX))
-#define CTWrite2(what) fil.AddLine(wxString(#what"=")<<what.GetAsString(wxC2S_HTML_SYNTAX))
+	if (ref.what##_FORE!=what##_FORE) fil.AddLine(wxString(#what"_FORE=")<<what##_FORE.GetAsString(wxC2S_HTML_SYNTAX)); \
+	if (ref.what##_BACK!=what##_BACK) fil.AddLine(wxString(#what"_BACK=")<<what##_BACK.GetAsString(wxC2S_HTML_SYNTAX));
+#define CTWrite1(what) \
+	if (ref.what!=what) fil.AddLine(wxString(#what"=")<<what.GetAsString(wxC2S_HTML_SYNTAX)); 
 
 bool color_theme::Save (const wxString &full_path) {
-	
+	// open
 	wxTextFile fil(full_path);
 	if (fil.Exists()) fil.Open();
 	else fil.Create();
 	fil.Clear();
-	
-	CTWrite(DEFAULT);
-	CTWrite(IDENTIFIER);
-	CTWrite(NUMBER);
-	CTWrite(WORD);
-	CTWrite(WORD2);
-	CTWrite(STRING);
-	CTWrite(STRINGEOL);
-	CTWrite(CHARACTER);
-	CTWrite(OPERATOR);
-	CTWrite(BRACELIGHT);
-	CTWrite(BRACEBAD);
-	CTWrite(PREPROCESSOR);
-	CTWrite(COMMENT);
-	CTWrite(COMMENTLINE);
-	CTWrite(COMMENTDOC);
-	CTWrite(COMMENTLINEDOC);
-	CTWrite(COMMENTDOCKEYWORD);
-	CTWrite(COMMENTDOCKEYWORDERROR);
-	
-	CTWrite0(CALLTIP);
-	CTWrite0(LINENUMBER);
-	CTWrite0(FOLD);
-	CTWrite0(FOLD_TRAMA);
-	CTWrite1(INDENTGUIDE);
-	
-	CTWrite2(SELBACKGROUND);
-	CTWrite2(CURRENT_LINE);
-	CTWrite2(USER_LINE);
-	CTWrite(GLOBALCLASS);
-	CTWrite1(CARET);
-	
+	// write
+	color_theme ref(inverted);
+	fil.AddLine(wxString("inverted=")<<(inverted?1:0));
+	CTForAll(CTWrite);
+	// close
 	fil.Write();
 	fil.Close();
 	return true;
 }
 
 #define CTLoad(name)\
-	else if (key==_T(#name"_FORE")) name##_FORE=wxColour(value);\
-	else if (key==_T(#name"_BACK")) name##_BACK=wxColour(value);\
-	else if (key==_T(#name"_BOLD")) name##_BOLD=mxUT::IsTrue(value);\
-	else if (key==_T(#name"_ITALIC")) name##_ITALIC=mxUT::IsTrue(value)
+	else if (key==#name"_FORE") name##_FORE=wxColour(value);\
+	else if (key==#name"_BACK") name##_BACK=wxColour(value);\
+	else if (key==#name"_BOLD") name##_BOLD=mxUT::IsTrue(value);\
+	else if (key==#name"_ITALIC") name##_ITALIC=mxUT::IsTrue(value)
 #define CTLoad0(name)\
-	else if (key==_T(#name"_FORE")) name##_FORE=wxColour(value);\
-	else if (key==_T(#name"_BACK")) name##_BACK=wxColour(value)
-#define CTLoad1(name) else if (key==_T(#name)) name=wxColour(value)
-#define CTLoad2(name) else if (key==_T(#name)) name=wxColour(value)
+	else if (key==#name"_FORE") name##_FORE=wxColour(value);\
+	else if (key==#name"_BACK") name##_BACK=wxColour(value)
+#define CTLoad1(name)\
+	else if (key==#name) name=wxColour(value)
 
 
 
 bool color_theme::Load (const wxString &full_path) {
-	
+	SetDefaults(false);
 	wxTextFile fil(full_path);
 	if (!fil.Exists()) return false;
 	fil.Open();
 	wxString key, value;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
-		
 		key=str.BeforeFirst('=');
 		value=str.AfterFirst('=');
-		
 		if (str[0]=='#') continue;
-		
-		CTLoad(DEFAULT);
-		CTLoad(IDENTIFIER);
-		CTLoad(NUMBER);
-		CTLoad(WORD);
-		CTLoad(WORD2);
-		CTLoad(STRING);
-		CTLoad(STRINGEOL);
-		CTLoad(CHARACTER);
-		CTLoad(OPERATOR);
-		CTLoad(BRACELIGHT);
-		CTLoad(BRACEBAD);
-		CTLoad(PREPROCESSOR);
-		CTLoad(COMMENT);
-		CTLoad(COMMENTLINE);
-		CTLoad(COMMENTDOC);
-		CTLoad(COMMENTLINEDOC);
-		CTLoad(COMMENTDOCKEYWORD);
-		CTLoad(COMMENTDOCKEYWORDERROR);
-		
-		CTLoad0(CALLTIP);
-		CTLoad0(LINENUMBER);
-		CTLoad0(FOLD);
-		CTLoad0(FOLD_TRAMA);
-		
-		CTLoad1(INDENTGUIDE);
-		
-		CTLoad2(SELBACKGROUND);
-		CTLoad2(CURRENT_LINE);
-		CTLoad2(USER_LINE);
-		CTLoad(GLOBALCLASS);
-		CTLoad1(CARET);
-		
+		else if (str=="inverted=0") { /*SetDefaults(false); */continue; }
+		else if (str=="inverted=1") { SetDefaults(true); continue; }
+		CTForAll(CTLoad);
 	}
-	
 	fil.Close();
 	return true;
 }
@@ -514,9 +454,10 @@ void mxColoursEditor::OnCheck (wxCommandEvent & evt) {
 	for (int i=0;i<lcount;i++)
 		if (w==lbold[i]) (*lvalbol[i])=lbold[i]->GetValue();
 		else if (w==lcur[i]) (*lvalita[i])=lcur[i]->GetValue();
-	if (!setting) { 
+	if (!setting) {
 		combo->SetSelection(combo->GetCount()-1); 
 		custom_theme=*ctheme;
+		ctheme->inverted=inverted->GetValue();
 	}
 	scroll->Refresh();
 }
@@ -547,6 +488,7 @@ void mxColoursEditor::OnCombo (wxCommandEvent & evt) {
 
 void mxColoursEditor::SetValues() {
 	setting=true;
+	inverted->SetValue(ctheme->inverted);
 	for (int i=0;i<lcount;i++) {
 		if (lvalfor[i]) ltfore[i]->SetValue(lvalfor[i]->GetAsString(wxC2S_HTML_SYNTAX));
 		if (lvalbak[i]) ltback[i]->SetValue(lvalbak[i]->GetAsString(wxC2S_HTML_SYNTAX));

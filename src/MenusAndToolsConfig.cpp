@@ -47,7 +47,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnFILE, myMenuItem("recent_project",mxID_FILE_PROJECT_HISTORY_MORE,LANG(MENU_FILE_RECENT_MORE,"Mas...")).Description("Muestra un dialogo con la lista completa de archivos recientes").Icon("recentMore.png"));
 		EndSubMenu(mnFILE);
 		AddMenuItem(mnFILE, myMenuItem("save",mxID_FILE_SAVE, LANG(MENUITEM_FILE_SAVE,"&Guardar")).ShortCut("Ctrl+S").Description("Guardar el archivo actual").Icon("guardar.png").EnableIf(ecSOURCE));
-		AddMenuItem(mnFILE, myMenuItem("save_ass",mxID_FILE_SAVE_AS, LANG(MENUITEM_FILE_SAVE_AS,"G&uardar Como...")).ShortCut("Ctrl+Shift+S").Description("Guardar el archivo actual con otro nombre...").Icon("guardarComo.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnFILE, myMenuItem("save_as",mxID_FILE_SAVE_AS, LANG(MENUITEM_FILE_SAVE_AS,"G&uardar Como...")).ShortCut("Ctrl+Shift+S").Description("Guardar el archivo actual con otro nombre...").Icon("guardarComo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem("save_all",mxID_FILE_SAVE_ALL, LANG(MENUITEM_FILE_SAVE_ALL,"Guardar &Todo...")).ShortCut("Ctrl+Alt+Shift+S").Description("Guarda todos los archivos abiertos y el proyecto actual...").Icon("guardarTodo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem("save_project",mxID_FILE_SAVE_PROJECT, LANG(MENUITEM_FILE_SAVE_PROJECT,"Guar&dar Proyecto")).ShortCut("Ctrl+Alt+S").Description("Guardar la configuaricion actual del proyecto").Icon("guardarProyecto.png").EnableIf(ecPROJECT));
 		AddMenuItem(mnFILE, myMenuItem("export_html",mxID_FILE_EXPORT_HTML, LANG(MENUITEM_FILE_EXPORT_HTML,"Exportar a HTML...")).Description("Genera un archiv HTML con el codigo fuente").Icon("exportHtml.png").EnableIf(ecSOURCE));
@@ -1014,7 +1014,7 @@ void MenusAndToolsConfig::TransferStatesFromConfig() {
 
 bool MenusAndToolsConfig::ParseToolbarConfigLine (const wxString & key, const wxString & value) {
 	if (key=="icon_size") { mxUT::ToInt(value,icon_size); return true; }
-	int p=key.Index('.'); if (p==wxNOT_FOUND || p==key.Len()-1) return false;
+	int p=key.Index('.'); if (p==wxNOT_FOUND || p==int(key.Len()-1)) return false;
 	wxString tb_name=key.Mid(0,p);
 	if (tb_name=="positions") {
 		tb_name = key.AfterFirst('.');
@@ -1082,7 +1082,7 @@ bool MenusAndToolsConfig::SaveToolbarsSettings (const wxString & full_path) {
 }
 
 bool MenusAndToolsConfig::ParseMenuConfigLine (const wxString & key, const wxString & value) {
-	int p=key.Index('.'); if (p==wxNOT_FOUND || p==key.Len()-1) return false;
+	int p=key.Index('.'); if (p==wxNOT_FOUND || p==int(key.Len()-1)) return false;
 	wxString mn_name=key.Mid(0,p); 
 	for(int mn_id=0;mn_id<mnCOUNT;mn_id++) { 
 		if (menues[mn_id].key==mn_name) {
@@ -1090,7 +1090,7 @@ bool MenusAndToolsConfig::ParseMenuConfigLine (const wxString & key, const wxStr
 			vector<myMenuItem> &items = menues[mn_id].items;
 			for(unsigned int i=0;i<items.size();i++) { 
 				if (items[i].key==name) {
-					items[i].shortcut = value;
+					items[i].RedefineShortcut(value);
 					return true;
 				}
 			}
@@ -1122,12 +1122,13 @@ bool MenusAndToolsConfig::SaveShortcutsSettings (const wxString & full_path) {
 	else file.Create();
 	file.Clear();
 	// write
+	int avoid_props = maSEPARATOR|maBEGIN_SUBMENU|maEND_SUBMENU|maDEFAULT_SHORTCUT;
 	file.AddLine("[ShortCuts]");
 	for(unsigned int i=0;i<mnCOUNT;i++) { 
 		wxString menu_key = menues[i].key+".";
 		myMenu &menu = menues[i];
 		for(unsigned int j=0;j<menu.items.size();j++) {
-			if (menu.items[j].properties&(maSEPARATOR|maBEGIN_SUBMENU|maEND_SUBMENU)) continue;
+			if (menu.items[j].properties&avoid_props) continue;
 			if (menu.items[j].key.IsEmpty()) continue;
 			file.AddLine(menu_key+menu.items[j].key+"="+menu.items[j].shortcut);
 		}

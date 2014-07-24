@@ -11,38 +11,46 @@ class wxCheckBox;
 class wxRichTextCtrl;
 class wxComboBox;
 
+#define CTDeclare(NAME) wxColour NAME##_FORE, NAME##_BACK; bool NAME##_ITALIC, NAME##_BOLD;
+#define CTDeclare0(NAME) wxColour NAME##_FORE, NAME##_BACK;
+#define CTDeclare1(NAME) wxColour NAME;
+
+#define CTForAll(CTMacro) \
+	CTMacro(DEFAULT); \
+	CTMacro(IDENTIFIER); \
+	CTMacro(NUMBER); \
+	CTMacro(WORD); \
+	CTMacro(WORD2); \
+	CTMacro(STRING); \
+	CTMacro(STRINGEOL); \
+	CTMacro(CHARACTER); \
+	CTMacro(OPERATOR); \
+	CTMacro(BRACELIGHT); \
+	CTMacro(BRACEBAD); \
+	CTMacro(PREPROCESSOR); \
+	CTMacro(COMMENT); \
+	CTMacro(COMMENTLINE); \
+	CTMacro(COMMENTDOC); \
+	CTMacro(COMMENTLINEDOC); \
+	CTMacro(COMMENTDOCKEYWORD); \
+	CTMacro(COMMENTDOCKEYWORDERROR); \
+	CTMacro##0(CALLTIP); \
+	CTMacro##0(LINENUMBER); \
+	CTMacro##0(FOLD); \
+	CTMacro##0(FOLD_TRAMA); \
+	CTMacro##1(INDENTGUIDE); \
+	CTMacro##1(SELBACKGROUND); \
+	CTMacro##1(CURRENT_LINE); \
+	CTMacro##1(USER_LINE); \
+	CTMacro(GLOBALCLASS); \
+	CTMacro##1(CARET);
+
 struct color_theme {
 	wxString name;
+	bool inverted;
+	CTForAll(CTDeclare)
 	
-	wxColour DEFAULT_FORE, DEFAULT_BACK; bool DEFAULT_ITALIC, DEFAULT_BOLD;
-	wxColour IDENTIFIER_FORE, IDENTIFIER_BACK; bool IDENTIFIER_ITALIC, IDENTIFIER_BOLD;
-	wxColour NUMBER_FORE, NUMBER_BACK; bool NUMBER_ITALIC, NUMBER_BOLD;
-	wxColour WORD_FORE, WORD_BACK; bool WORD_ITALIC, WORD_BOLD;
-	wxColour WORD2_FORE, WORD2_BACK; bool WORD2_ITALIC, WORD2_BOLD;
-	wxColour GLOBALCLASS_FORE, GLOBALCLASS_BACK; bool GLOBALCLASS_ITALIC, GLOBALCLASS_BOLD;
-	wxColour STRING_FORE, STRING_BACK; bool STRING_ITALIC, STRING_BOLD;
-	wxColour STRINGEOL_FORE, STRINGEOL_BACK; bool STRINGEOL_ITALIC, STRINGEOL_BOLD;
-	wxColour CHARACTER_FORE, CHARACTER_BACK; bool CHARACTER_ITALIC, CHARACTER_BOLD;
-	wxColour OPERATOR_FORE, OPERATOR_BACK; bool OPERATOR_ITALIC, OPERATOR_BOLD;
-	wxColour BRACELIGHT_FORE, BRACELIGHT_BACK; bool BRACELIGHT_ITALIC, BRACELIGHT_BOLD;
-	wxColour BRACEBAD_FORE, BRACEBAD_BACK; bool BRACEBAD_ITALIC, BRACEBAD_BOLD;
-	wxColour PREPROCESSOR_FORE, PREPROCESSOR_BACK; bool PREPROCESSOR_ITALIC, PREPROCESSOR_BOLD;
-	wxColour COMMENT_FORE, COMMENT_BACK; bool COMMENT_ITALIC, COMMENT_BOLD;
-	wxColour COMMENTLINE_FORE, COMMENTLINE_BACK; bool COMMENTLINE_ITALIC, COMMENTLINE_BOLD;
-	wxColour COMMENTDOC_FORE, COMMENTDOC_BACK; bool COMMENTDOC_ITALIC, COMMENTDOC_BOLD;
-	wxColour COMMENTLINEDOC_FORE, COMMENTLINEDOC_BACK; bool COMMENTLINEDOC_ITALIC, COMMENTLINEDOC_BOLD;
-	wxColour COMMENTDOCKEYWORD_FORE, COMMENTDOCKEYWORD_BACK; bool COMMENTDOCKEYWORD_ITALIC, COMMENTDOCKEYWORD_BOLD;
-	wxColour COMMENTDOCKEYWORDERROR_FORE, COMMENTDOCKEYWORDERROR_BACK; bool COMMENTDOCKEYWORDERROR_ITALIC, COMMENTDOCKEYWORDERROR_BOLD;
-//	wxColour GLOBALCLASS_FORE, GLOBALCLASS_BACK; bool GLOBALCLASS_ITALIC, GLOBALCLASS_BOLD; // no se usan, ver para que pueden servir mas keywords
-	wxColour CALLTIP_FORE, CALLTIP_BACK;
-	wxColour LINENUMBER_FORE, LINENUMBER_BACK;
-	wxColour FOLD_FORE, FOLD_BACK, FOLD_TRAMA_FORE, FOLD_TRAMA_BACK;
-	wxColour SELBACKGROUND;
-	wxColour CARET;
-	wxColour CURRENT_LINE;
-	wxColour USER_LINE;
-	wxColour INDENTGUIDE;
-	
+	color_theme(bool inverted);
 	color_theme(wxString file="");
 	void SetDefaults(bool inverted=false);
 	bool Save(const wxString &full_path);
@@ -81,6 +89,7 @@ class mxColoursEditor:public wxDialog {
 	int lcount;
 	wxComboBox *combo;
 	wxWindow *parent;
+	wxCheckBox *inverted;
 	bool setting; ///< enmascara eventos en los text y checks para cuando carga una conf nueva
 	color_theme old_theme; ///< tema viejo, por si cancela el dialogo
 	color_theme custom_theme; ///< tema personalizado, por si cambia el combo
@@ -88,8 +97,6 @@ public:
 	mxColoursEditor(wxWindow *parent);
 	void LoadList();
 	void Add(wxString name, wxColour *fore, wxColour *back, bool *italic, bool *bold);
-	void LoadTheme(wxString name);
-	void SaveTheme(wxString name);
 	void OnClose(wxCloseEvent &evt);
 	void OnButtonOk(wxCommandEvent &evt);
 	void OnButtonCancel(wxCommandEvent &evt);

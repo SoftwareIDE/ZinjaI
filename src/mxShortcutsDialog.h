@@ -1,8 +1,9 @@
 #ifndef MXSHORTCUTSDIALOG_H
 #define MXSHORTCUTSDIALOG_H
 #include <wx/dialog.h>
-#include "SingleList.h"
 #include <wx/timer.h>
+#include "SingleList.h"
+#include "MenusAndToolsConfig.h"
 
 class wxStaticText;
 class wxTextCtrl;
@@ -13,7 +14,7 @@ class mxShortcutsDialog : public wxDialog {
 	wxSizer *sizer;
 	struct entry {
 		int id;
-		wxString *real_value;
+		MenusAndToolsConfig::myMenuItem *menu_item;
 		wxString search_text;
 		wxStaticText *label;
 		wxTextCtrl *text;

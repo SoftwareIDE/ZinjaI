@@ -1048,6 +1048,8 @@ COLORS_CAPTION
 Definir Colores
 GENERAL_APPLY_BUTTON
 A&plicar
+COLOURS_INVERTED
+Es un esquema de colores invertidos (texto claro sobre fondo oscuro)
 COLOURS_ESCHEME
 Esquema:
 COLOURS_TIP_OPEN

@@ -12,6 +12,7 @@
 #define _CAPTION LANG(SHORCUTS_CAPTION,"Atajos de teclado")
 #include "mxHelpWindow.h"
 #include "mxMessageDialog.h"
+#include "ConfigManager.h"
 
 class mxShortcutGrabber:public wxDialog {
 	wxTextCtrl *destiny,*current;
@@ -227,7 +228,7 @@ mxShortcutsDialog::mxShortcutsDialog(wxWindow *parent) : wxDialog(parent,wxID_AN
 			btsizer->Add(e.text = new wxTextCtrl(scroll,wxID_ANY,menu.items[j].shortcut),sizers->Center);
 			btsizer->Add(e.button = new wxButton(scroll,wxID_OPEN,"...",wxDefaultPosition,wxSize(30,10)),sizers->BA5_Exp0);
 			e.text->SetMinSize(wxSize(e.text->GetSize().GetWidth()*2,e.text->GetSize().GetHeight()));
-			e.real_value=&(menu.items[j].shortcut);
+			e.menu_item=&(menu.items[j]);
 			sizer->Add(btsizer,sizers->Exp0); actions.Add(e);
 		}
 	}
@@ -284,7 +285,8 @@ void mxShortcutsDialog::OnOkButton (wxCommandEvent & evt) {
 	}
 	
 	for(int i=0;i<actions.GetSize();i++) 
-		(*actions[i].real_value) = actions[i].text->GetValue();
+		actions[i].menu_item->RedefineShortcut(actions[i].text->GetValue());
+	menu_data->SaveShortcutsSettings(DIR_PLUS_FILE(config->home_dir,"shortcuts.zsc"));
 	
 	menu_data->CreateMenues();
 	EndModal(1);

@@ -572,7 +572,7 @@ bool ConfigManager::Save(){
 	
 	fil.AddLine("[Toolbars]");
 
-	menu_data->SaveShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc"));
+//	menu_data->SaveShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc")); // se hace en e Ok del mxShortcutsDialog
 	menu_data->SaveToolbarsSettings(DIR_PLUS_FILE(home_dir,"toolbar.ztb"));
 	
 	fil.Write();

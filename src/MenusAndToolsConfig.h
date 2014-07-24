@@ -34,7 +34,8 @@ private:
 		maBEGIN_SUBMENU=128, ///< indica el comienzo de un submenu
 		maEND_SUBMENU=256, ///< indica el final de un submenu
 		maSEPARATOR=512, ///< representa un separatod
-		maHIDDEN=1024 ///< este item no se agregará al menú
+		maHIDDEN=1024, ///< este item no se agregará al menú
+		maDEFAULT_SHORTCUT=2048 ///< if current shortcut is default one this setting won't de saved to shortcuts.zsc
 	};
 	
 	enum { ecALWAYS, ecPROJECT, ecSOURCE, ecPROJECT_OR_SOURCE, ecDEBUG, ecNOT_DEBUG, ecDEBUG_PAUSED, ecNOT_DEBUG_OR_DEBUG_PAUSED, ecDEBUG_NOT_PAUSED, ecCOUNT };
@@ -45,7 +46,7 @@ private:
 		wxString key, label, description, icon, shortcut;
 		wxMenuItem *wx_item;
 		myMenuItem(int _id=0, int _props=0):wx_id(_id),properties(_props),/*enabling_condition(ecALWAYS),*/wx_item(NULL){}
-		myMenuItem(const wxString &_key, int _id, const wxString &_label):wx_id(_id),properties(0),key(_key),/*enabling_condition(ecALWAYS),*/label(_label),wx_item(NULL) {}
+		myMenuItem(const wxString &_key, int _id, const wxString &_label):wx_id(_id),properties(maDEFAULT_SHORTCUT),key(_key),/*enabling_condition(ecALWAYS),*/label(_label),wx_item(NULL) {}
 		myMenuItem &Label(const wxString &_label) { label=_label; return *this; }
 		myMenuItem &ShortCut(const wxString &_shortcut) { shortcut=_shortcut; return *this; }
 		myMenuItem &Description(const wxString &_description) { description=_description; return *this; }
@@ -68,6 +69,10 @@ private:
 			case ecALWAYS: case ecSOURCE: case ecPROJECT_OR_SOURCE: case ecNOT_DEBUG_OR_DEBUG_PAUSED: case ecCOUNT: break;
 			}
 			return *this;
+		}
+		void RedefineShortcut(const wxString &new_shortcut) {
+			if (properties&maDEFAULT_SHORTCUT && new_shortcut==shortcut) return;
+			shortcut=new_shortcut; properties&=~maDEFAULT_SHORTCUT;
 		}
 	};
 	
