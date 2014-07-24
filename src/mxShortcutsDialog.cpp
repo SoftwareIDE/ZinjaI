@@ -181,7 +181,7 @@ BEGIN_EVENT_TABLE(mxShortcutsDialog,wxDialog)
 	EVT_BUTTON(wxID_OPEN,mxShortcutsDialog::OnGrabButton)
 	EVT_BUTTON(wxID_OK,mxShortcutsDialog::OnOkButton)
 	EVT_BUTTON(wxID_CANCEL,mxShortcutsDialog::OnCancelButton)
-	EVT_BUTTON(wxID_HELP,mxShortcutsDialog::OnHelpButton)
+	EVT_BUTTON(mxID_HELP_BUTTON,mxShortcutsDialog::OnHelpButton)
 END_EVENT_TABLE()
 
 mxShortcutsDialog::mxShortcutsDialog(wxWindow *parent) : wxDialog(parent,wxID_ANY,_CAPTION,wxDefaultPosition,wxSize(350,400),wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER), timer(GetEventHandler(),wxID_ANY) {
@@ -189,13 +189,16 @@ mxShortcutsDialog::mxShortcutsDialog(wxWindow *parent) : wxDialog(parent,wxID_AN
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
+	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar")); 
-	wxButton *goto_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	goto_button->SetMinSize(wxSize(goto_button->GetSize().GetWidth()<80?80:goto_button->GetSize().GetWidth(),goto_button->GetSize().GetHeight()));
-	goto_button->SetDefault(); 
+	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(GENERAL_OK_BUTTON,"&Aceptar"));
+	ok_button->SetMinSize(wxSize(ok_button->GetSize().GetWidth()<80?80:ok_button->GetSize().GetWidth(),ok_button->GetSize().GetHeight()));
+	ok_button->SetDefault(); 
 	
+	bottomSizer->Add(help_button,sizers->BA5);
+	bottomSizer->AddStretchSpacer(1);
 	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(goto_button,sizers->BA5);
+	bottomSizer->Add(ok_button,sizers->BA5);
 	
 	wxScrolledWindow *scroll = new wxScrolledWindow(this,wxID_ANY);
 	sizer = new wxBoxSizer(wxVERTICAL);
@@ -209,7 +212,7 @@ mxShortcutsDialog::mxShortcutsDialog(wxWindow *parent) : wxDialog(parent,wxID_AN
 	mySizer->Add(filterSizer,sizers->BA5_Exp0);
 	
 	mySizer->Add(scroll,sizers->BA5_Exp1);
-	mySizer->Add(bottomSizer,sizers->BA5_Right);
+	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	SetSizer(mySizer);
 	
 	for(unsigned int i=0;i<MenusAndToolsConfig::mnCOUNT;i++) { 

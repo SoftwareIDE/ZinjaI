@@ -3769,8 +3769,7 @@ void mxSource::SetColours(bool also_style) {
 	MarkerDefine(mxSTC_MARK_USER,wxSTC_MARK_BACKGROUND,ctheme->USER_LINE,ctheme->USER_LINE);
 	// markers
 	
-	bool dark = (ctheme->DEFAULT_BACK.Green()+ctheme->DEFAULT_BACK.Blue()+ctheme->DEFAULT_BACK.Red()<256*3/2);
-	if (dark) {
+	if (ctheme->inverted) {
 		MarkerDefine(mxSTC_MARK_DIFF_ADD,wxSTC_MARK_BACKGROUND,"DARK GREEN","DARK GREEN");
 		MarkerDefine(mxSTC_MARK_DIFF_DEL,wxSTC_MARK_ARROW,"WHITE","RED");
 		MarkerDefine(mxSTC_MARK_DIFF_CHANGE,wxSTC_MARK_BACKGROUND,"BROWN","BROWN");
