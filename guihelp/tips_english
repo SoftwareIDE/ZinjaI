@@ -62,3 +62,4 @@ You can modify syntax highlighting colours to adapt ZinjaI to your own preferenc
 On a debugging session, ZinjaI can present an special autocompletion menu for the expressions entered in the inspection table. You can invoke this feature by pressing TAB key after typing the first characters of your expression.
 You can change ZinjaI's shortcuts from "General" tab in Preference dialog ("File" menu->"Preferences....").
 Doble-clicking an identifier in your code will highlight all its occurrences in current file, so you can easily find where it's being referenced. To remove that highlight just doble-click in an empty space. You can hide this feature changing the color scheme.
+When ZinjaI starts, it is ready to work as soon as its main window is displayed. If this happens too fast, the splash screen will remain visible a few seconds, but you can hide it with a click and start working inmediatly.

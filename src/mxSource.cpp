@@ -420,7 +420,7 @@ void mxSource::OnEditDeleteLines (wxCommandEvent &event) {
 		else
 			GotoPos(ss);
 	} else {
-		if (min>max) { int aux=min; min=max; max=aux; aux=ss; ss=se; se=aux;}
+		if (min>max) { int aux=min; min=max; max=aux; /*aux=ss; */ss=se; /*se=aux;*/}
 		if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 		GotoPos(ss);
 		BeginUndoAction();

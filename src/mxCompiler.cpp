@@ -231,7 +231,7 @@ void mxCompiler::UnSTD(wxString &line) {
 			int pos_fin=pos_ini; // pos donde termina el termino de la derecha
 			lev=0; // no deberia ser necesario
 			while (pos_fin<p1&&(lev>0||(line[pos_fin]!=']'&&line[pos_fin]!=','))) {	
-				if (line[pos_fin]=='>'||line[pos_fin]==')') lev++;
+				if (line[pos_fin]=='<'||line[pos_fin]=='(') lev++;
 				else if (line[pos_fin]==')'||line[pos_fin]=='>') lev--;
 				pos_fin++;
 			}

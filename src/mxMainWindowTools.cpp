@@ -316,11 +316,10 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		}
 		
 		// asociar al proyecto y abrir
-		project_file_item *item;
 		
 		wxfb_configuration *wxfb = project->GetWxfbConfiguration();
 		
-		item=project->HasFile(cpp_name);
+		project_file_item *item=project->HasFile(cpp_name);
 		if (!item) item=project->AddFile(FT_SOURCE,cpp_name);
 		if (wxfb->set_wxfb_sources_as_readonly) project->SetFileReadOnly(item,true);
 		if (wxfb->dont_show_base_classes_in_goto) project->SetFileHideSymbols(item,true);
@@ -330,8 +329,7 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		if (wxfb->set_wxfb_sources_as_readonly) project->SetFileReadOnly(item,true);
 		if (wxfb->dont_show_base_classes_in_goto) project->SetFileHideSymbols(item,true);
 		
-		item=project->HasFile(fname);
-		if (!item) item=project->AddFile(FT_OTHER,fname);
+		if (!project->HasFile(fname)) project->AddFile(FT_OTHER,fname);
 		
 		main_window->OpenFile(fname,false);
 		return;
