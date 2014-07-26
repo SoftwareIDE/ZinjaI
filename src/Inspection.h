@@ -10,43 +10,35 @@ using namespace std;
 
 ///< Tipo/estado de una inspeccion
 enum DEBUG_INSPECTION_EXPRESSION_TYPE {
-	DIET_VARIABLE_OBJECT, ///< la expresion tienen un variable object asociado
-	DIET_GDB_COMMAND, ///< la expresion es en realidad una macro o comando para gdb
-	DIET_PENDING, ///< la ultima operacion sobre la inspeccion no se ejecutó porque el depurador estaba ocupado, por lo que quedó encolada para cuando se detenga
-	DIET_ERROR
+	DIT_VARIABLE_OBJECT, ///< la expresion tienen un variable object asociado
+	DIT_GDB_COMMAND, ///< la expresion es en realidad una macro o comando para gdb
+	DIT_PENDING, ///< la ultima operacion sobre la inspeccion no se ejecutó porque el depurador estaba ocupado, por lo que quedó encolada para cuando se detenga
+	DIT_ERROR
 };
 
-///< Accion sobre una inspeccion cuyo compando para gdb no pudo ejecutarse cuando fue requerida porque el depurador no esta ejecutandos o pausado, y fue encolada para ejecurse luego
-enum DEBUG_INSPECTION_PENDING_ACTION {
-	DIPA_NULL,
-	DIPA_CREATE,
-	DIPA_DELETE,
-	DIPA_EDIT_EXPRESSION
-};
+class DebuggerInspection;
 
+///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de las inspecciones
+class myDIEventHandler {
+public:
+	virtual void OnCreated(DebuggerInspection *di) {}
+	virtual void OnValueChanded(DebuggerInspection *di) {}
+	virtual void OnOutOfScope(DebuggerInspection *di) {}
+	virtual void OnOnInScope(DebuggerInspection *di) {}
+	virtual void OnNewType(DebuggerInspection *di) {}
+};
 
 /**
 * @brief Clase para gestionar todo lo relacionado a las inspecciones a nivel zinjai-gdb (no interfaz de usuario)
 *
-* Esta clase represanta en sus atributos regulares una inspeccion, que puede ser "consumida"
-* por cualquier componente de la interfaz. La inspeccion encapsula la comunicacion con el depurador
+* Esta clase representa en sus atributos regulares una inspeccion, que puede ser "consumida"
+* por cualquier componente de la interfaz. La inspeccion encapsula la comunicación con el depurador
 * y la gestion de su estado interno en zinjai, para que las clases que la usan solo se preocupen
-* de como mostrarla. Además tiene métodos staticos para gestionar el conjunto completo de inspecciones
-* de forma de poner aca toda la comunicacion con gdb que venga que ver con inspecciones y que
-* DebugManager solo llama un par de métodos y se desligue del tema.
+* por cómo mostrarla. Además tiene métodos staticos para gestionar el conjunto completo de inspecciones
+* de forma de poner acá toda la comunicación con gdb que tenga que ver con inspecciones y que
+* DebugManager solo llame a un par de métodos y se desligue del tema.
 **/
 struct DebuggerInspection {
-	
-private:
-	/// estructura para encolar acciones que se invoquen cuando el depurador esta ocupado y entonces deben ser ejecutadas mas adelante cuando se detenga
-	struct DIPendingAction {
-		DEBUG_INSPECTION_PENDING_ACTION action;
-		DebuggerInspection *inspection;
-		DIPendingAction(DEBUG_INSPECTION_PENDING_ACTION _action=DIPA_NULL, DebuggerInspection *_inspection=NULL):action(_action),inspection(_inspection) {}
-	};
-	
-	/// lista de acciones en cola para ejecutarse cuando el depurador se detenga
-	static SingleList<DIPendingAction> pending_actions;
 	
 	/// asocia los variable_objects (por nombre, como lo da gdb) a las instancias de esta clase que los representan internamente en ZinjaI
 	static map<wxString,DebuggerInspection*> vo2di_map;
@@ -57,56 +49,73 @@ private:
 		if (it!=vo2di_map.end()) return it->second; else return NULL;
 	}
 	
+	
+	typedef void (DebuggerInspection::*pending_action)();
+	
+	/// estructura para encolar acciones que se invoquen cuando el depurador esta ocupado y entonces deben ser ejecutadas mas adelante cuando se detenga
+	struct DIPendingAction {
+		DebuggerInspection *inspection;
+		pending_action action;
+		DIPendingAction(DebuggerInspection *_inspection=NULL, pending_action _action=NULL):inspection(_inspection),action(_action) {}
+	};
+	
+	/// lista de acciones en cola para ejecutarse cuando el depurador se detenga
+	static SingleList<DIPendingAction> pending_actions;
+	
+	static void AddPendingAction(DebuggerInspection *inspection, pending_action action) {
+		pending_actions.Add(DIPendingAction(inspection,action));
+	}
+	
+	
 	/**
 	* @brief metodo a usar antes de intentar dialogar con gdb... 
 	*
-	* Si no se puede dialogar ahora (esta ejecutando), retorna falso y ademas 
+	* Si no se puede dialogar ahora (esta ejecutando), retorna falso y además
 	* encola el intento para que se intente nuevamente cuando se pueda (en UpdateAll)
 	**/
-	bool CanSendCommand(DEBUG_INSPECTION_PENDING_ACTION action) {
+	bool TryToExec(pending_action action) {
 		if (debug->waiting) {
-			pending_actions.Add(DIPendingAction(action,this));
-			return false; // si no se esta depurando o si esta ocupado (deberia ser ejecutando), no se puede hacer, encolar el mensaje
+			AddPendingAction(this,action);
+			return false;
 		} else {
+			(this->*action)();
 			return true;
 		}
 	}
 		
 	static void ProcessPendingCommands() {
+		if (!debug->debugging || debug->waiting) { 
+			DEBUG_INFO("ERROR: ProcessPendingCommands: !debug->debugging || debug->waiting");
+		}
 		for(int i=0;i<pending_actions.GetSize();i++) { 
 			DIPendingAction &pa=pending_actions[i];
-			switch(pa.action) {
-			case DIPA_CREATE:
-				/// @todo: completar accion
-				break;
-			case DIPA_DELETE:
-				/// @todo: completar accion
-				break;
-			case DIPA_EDIT_EXPRESSION:
-				/// @todo: completar accion
-				break;
-			case DIPA_NULL: // no deberia llegar, es solo para que el analisis estatico no se queje que faltan opciones por considerar
-				break;
-			}
+			if (pa.action) (pa.inspection->*pa.action)();
+			else delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
 		}
 	}
 	
+	/// para notificar los cambios a los componentes de interfaz que utilizan estas inspecciones
+	void GenerateEvent(void (myDIEventHandler::*foo)(DebuggerInspection*)) { 
+		if (consumer) (consumer->*foo)(this);
+	}
+	
+	
 public:
-//	static int date; ///< instante de tiempo actual en la depuración (cambia con cada paso en el depurador, para saber cuando fue la ultima vez que cambió una inspección)
 	
 	/// Metodo que actualiza todas las inspecciones (consultando a gdb, se debe invocar desde DebugManager cuando hay una pausa/interrupción en la ejecución)
 	static void UpdateAll() {
 		
 		ProcessPendingCommands();
 		
-		struct update {
-			wxString name,value,in_scope,new_type,new_num_children;
-		};
+		// struct para guardar los campos que interesan de cada vo actualizada
+		struct update { wxString name,value,in_scope,new_type,new_num_children; };
 		
+		// consulta cuales vo cambiaron
 		wxString s = debug->SendCommand("-var-update --all-values *");
 		unsigned int l=s.Len();
 		for(unsigned int i=6;i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
-			if (s[i]=='n' && s[i+1]=='a' && s[i+2]=='m' && s[i+3]=='e' && s[i+4]=='=') {
+			if (s[i]=='n' && s[i+1]=='a' && s[i+2]=='m' && s[i+3]=='e' && s[i+4]=='=') { // por cada "name=" empieza un vo...
+				// busca los campos del vo
 				update u;
 				while(true) {
 					int p0=i; // posicion donde empieza el nombre del "campo"
@@ -123,131 +132,115 @@ public:
 					else if (name=="new_type") u.new_type=s.Mid(p1+2,p2-p1-2);
 					else if (name=="new_num_children") u.new_num_children=s.Mid(p1+2,p2-p1-2);
 				}
+				// busca el DebuggerInspection para el vo (por su nombre gdb)
 				map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(u.name);
 				if (it==vo2di_map.end()) {
-					DEBUG_INFO("Inspection::UpdateAll vo name not found in vo2di_map");
+					DEBUG_INFO("ERROR: Inspection::UpdateAll: it==vo2di_map.end()");
 					continue;
 				}
-//				DebuggerInspection &di=*(it->second);
-				/// @todo: procesar u
+				// actualiza el estado del DebuggerInspection y notifica a la interfaz mediante consumer
+				DebuggerInspection &di=*(it->second);
+				if (u.in_scope=="true") {
+					di.gdb_value=u.value;
+					if (u.new_type!="") { di.value_type=u.new_type; di.GenerateEvent(&myDIEventHandler::OnNewType); }
+					else if (!di.is_in_scope) di.GenerateEvent(&myDIEventHandler::OnOnInScope);
+					else di.GenerateEvent(&myDIEventHandler::OnValueChanded);
+				} else if (di.is_in_scope) {
+					di.is_in_scope=false;
+					di.GenerateEvent(&myDIEventHandler::OnOutOfScope);
+				}
 			}
 		}
-		
-//		while (p!=wxNOT_FOUND) {
-//			int p2 = p+6;
-//			while (ans[p2]!='\"')
-//				p2++;
-//			wxString name = ans.SubString(p+6,p2-1);
-//			ans.Remove(0,p2);
-//			p = ans.Find("in_scope=");
-//			if (p!=wxNOT_FOUND && ans[p+10]=='f') {
-//				for (unsigned int i=0;i<inspections.size();i++)
-//					if (inspections[i].on_scope && inspections[i].name==name && inspections[i].is_vo) {
-//						if (!inspections[i].freezed) {
-//							inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
-//							inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-//							if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-//						}
-//						inspection_grid->SetCellValue(i,IG_COL_LEVEL,"");
-//						inspection_grid->SetReadOnly(i,IG_COL_VALUE,true);
-//						inspection_grid->SetReadOnly(i,IG_COL_FORMAT,true);
-//						inspection_grid->SetReadOnly(i,IG_COL_WATCH,true);
-//						inspections[i].on_scope=false;
-//						if (inspections[i].is_vo) SendCommand("-var-delete ",inspections[i].name);
-//						break;
-//					}
-//			} else {
-//				for (unsigned int i=0;i<inspections.size();i++) {
-//					if (!inspections[i].freezed && inspections[i].on_scope && inspections[i].is_vo && inspections[i].name==name) {
-////					bool do_inspect=false; // ver si esta el scope en el backtrace y seleccionar el frame
-////					if (inspections[i].frame!=my_frame) {
-////						for (int j=0;j<last_backtrace_size;j++)
-////							if (frames_addrs[j]==inspections[i].frame) {
-////								do_inspect=true;
-////								my_frame=frames_addrs[j];
-////								inspection_grid->SetCellValue(i,IG_COL_LEVEL,frames_nums[j]);
-////								break;
-////							}
-////					} else 
-////						do_inspect=true;
-////					if (!do_inspect) 
-////						inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
-////					else {
-//						if (inspections[i].frame_num[0]!='E') {
-//							inspection_grid->SetCellValue(i,IG_COL_VALUE,
-//								GetValueFromAns( SendCommand("-var-evaluate-expression ", name) , "value" ,true,true ) );
-//							if (config->Debug.select_modified_inspections)
-//								inspection_grid->HightlightChange(i);
-//						}
-//						break;
-//					}
-//				}
-//			}
-//			p = ans.Find("name=");
-//		}
-		
-		
 	}
 	
+	
 private:
-	DEBUG_INSPECTION_EXPRESSION_TYPE DIET_type; /// si es una vo, una macro, o incorrecto
-	wxString expression; ///< expresión que está siendo inspeccionada
-	wxString variable_object; ///< si es variable object (der DIET_type) guarda el nombre de la vo; si es macro/comando gdb guarda el comando
+	DEBUG_INSPECTION_EXPRESSION_TYPE dit_type; ///< si es una vo, una macro, todavía no se creo, o fallo la creacion
+	// inf definida por el usuario/consumidor de la inspeccion
+	wxString expression; ///< expresión que está siendo inspeccionada (DIT_VARIABLE_OBJECT) o comando gdb que se evalua (DIT_GDB_COMMAND)
+	wxString variable_object; ///< si es variable object (der dit_type) guarda el nombre de la vo
 	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
+	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
+	bool is_frozen; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
+	myDIEventHandler *consumer; ///< puntero a quien utiliza esta inspección, para notificarle los cambios
 	// informacion "calculada"
 	wxString value_type; ///< tipo de dato c/c++ del resultado de la expresión
 	long num_childs; ///< si es una inspeccion compuesta, cantidad de "partes" (campos en un struct, elementos en un arreglo, etc)
+	wxString gdb_value;///< valor tal como lo da gdb, sin alterar
 	
 //	int age; ///< indica cuando fue la última vez que se actualizó esta información
 //	int bt_frame; ///< en que nivel del backtrace está actualmente
 //	wxString pretty_value; ///< valor en versión "para mostrar" (puede no ser como lo da gdb, por ejemplo, los vo de structs no muestran sus campos)
-	wxString gdb_value;///< valor tal como lo da gdb, sin alterar
-//	bool on_scope; ///< indica si la expresión existe en el scope actual
-//	DEBUG_INSPECTION_TYPE itype; ///< tipo de inspección, ver DEBUG_INSPECTION_TYPE
 	
-	void DeleteVO() {
-		if (DIET_type==DIET_VARIABLE_OBJECT) { // si era vo, eliminarla del mapa
-			map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(variable_object);
-			if (it!=vo2di_map.end()) vo2di_map.erase(it); // el if siempre debería dar verdadero
-		}
+	void VODelete() {
+		debug->SendCommand("-var-delete - ",variable_object);
 	}
 	
-	void SetCommand(const wxString &expr, bool framless=false) {
-		DIET_type=DIET_GDB_COMMAND; variable_object=expr.Mid(1);
-	}
-	
-	void SetVO(const wxString &expr, bool frameless=false) {
-		DIET_type=DIET_VARIABLE_OBJECT;
-		expression=expr; is_frameless=frameless;
-		wxString cmd="-var-create - ";
-		if (frameless) cmd<<"@ "; else cmd<<"* ";
-		wxString ans=debug->SendCommand(cmd);
-		
-		if (ans.Left(5)!="^done") { DIET_type=DIET_ERROR; return; }
+	void VOCreate() {
+		wxString cmd = "-var-create - ";
+		if (is_frameless) cmd<<"@ "; else cmd<<"* ";
+		wxString ans = debug->SendCommand(cmd);
+		if (ans.Left(5)!="^done") { dit_type=DIT_ERROR; return; } 
+		else dit_type = DIT_VARIABLE_OBJECT;
 		variable_object = debug->GetValueFromAns(ans,"name",true);
 		value_type = debug->GetValueFromAns(ans,"type",true);
 		gdb_value = debug->GetValueFromAns(ans,"value",true);
 		debug->GetValueFromAns(ans,"numchild",true).ToLong(&num_childs);
 	}
 	
-public:
-	DebuggerInspection(const wxString &expr, bool frameless=false) {
-		if (expr.size() && expr[0]=='>') SetCommand(expr,frameless);
-		else SetVO(expr,frameless);
+	void VOSetFrozen() {
+		debug->SendCommand(wxString("-var-set-frozen ")+variable_object,is_frozen?1:0);
 	}
 	
-	DEBUG_INSPECTION_EXPRESSION_TYPE GetDbiType() { return DIET_type; }
+	/// las instancias se construyen solo a través de Create
+	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) 
+		: dit_type(type),expression(expr),is_frameless(frameless), consumer(event_handler) {};
+	/// las instancias se destruyen a través de Destroy, esto evita que alguien de afuera le quiera hacer delete
+	~DebuggerInspection() {}; 
+		
+	DebuggerInspection(const DebuggerInspection &); ///< esta clase no es copiable
+	void operator=(const DebuggerInspection &); ///< esta clase no es copiable
+	
+public:
+		
+	static DebuggerInspection *Create(const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) {
+		bool is_cmd = expr.size()&&expr[0]=='>';
+		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,is_cmd?expr.Mid(1):expr,frameless,event_handler);
+		if (!is_cmd && debug->debugging) di->TryToExec(&DebuggerInspection::VOCreate); // si es variable-object y estamos en depuracion, crearla en gdb
+		return di;
+	}
+	
+	void Destroy() {
+		if (dit_type==DIT_VARIABLE_OBJECT) { // si tenia una vo asociada....
+			// eliminarla en gdb
+			if (debug->debugging) TryToExec(&DebuggerInspection::VODelete);
+			// eliminarla del mapa
+			map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(variable_object);
+			if (it!=vo2di_map.end()) vo2di_map.erase(it); // el if siempre debería dar true
+			else { DEBUG_INFO("ERROR: Inspection::Destroy: it==vo2di_map.end()"); }
+		}
+		AddPendingAction(this,NULL);
+	}
+	
+	void Freeze() {
+		is_frozen=true;
+		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
+			TryToExec(&DebuggerInspection::VOSetFrozen);
+	}
+	
+	void UnFreeze() {
+		is_frozen=false;
+		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
+			TryToExec(&DebuggerInspection::VOSetFrozen);
+	}
+	
+	DEBUG_INSPECTION_EXPRESSION_TYPE GetDbiType() { return dit_type; }
 	wxString GetExpression() { return expression; }
 	wxString GetValue() { return gdb_value; }
 	wxString GetValueType() { return value_type; }
-//	DEBUG_INSPECTION_TYPE GetInspectionType() { return itype; }
 	bool IsFrameless() { return is_frameless; }
-
-	~DebuggerInspection() { 
-		for(int i=pending_actions.GetSize()-1;i>=0;i--)
-			if (pending_actions[i].inspection==this) pending_actions.Remove(i);
-		DeleteVO();
-	}
+	bool IsInScope() { return is_in_scope; }
+	bool IsInFrozen() { return is_frozen; }
 	
 };
 
