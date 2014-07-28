@@ -72,21 +72,22 @@ static struct mxIGStatusOpts {
 	wxColour color;
 	bool have_message;
 	wxString message;
-	void Init(const wxColour &c) { color=c; have_message=false; }
-	void Init(const wxColour &c, const wxString &m) { color=c; have_message=true; message=m; }
+	bool editable_value;
+	void Init(bool ev, const wxColour &c) { color=c; have_message=false; editable_value=ev; }
+	void Init(bool ev, const wxColour &c, const wxString &m) { color=c; have_message=true; message=m; editable_value=ev; }
 } mxig_status_opts[mxInspectionGrid::IGRS_COUNT];
 //
 mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COUNT) {
 	
 	last_return_had_shift_down = mask_cell_change_event = false;
 	
-	mxig_status_opts[IGRS_UNINIT].Init(wxColour(100,100,100),"");
-	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(wxColour(100,100,100),LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de ámbito >>>"));
-	mxig_status_opts[IGRS_IN_SCOPE].Init(wxColour(196,0,0));
-	mxig_status_opts[IGRS_CHANGED].Init(wxColour(196,0,0));
-	mxig_status_opts[IGRS_NORMAL].Init(wxColour(0,0,0));
-	mxig_status_opts[IGRS_ERROR].Init(wxColour(196,0,0),"<<ERROR>>");
-	mxig_status_opts[IGRS_FREEZE].Init(wxColour(0,100,200));
+	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),"");
+	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de ámbito >>>"));
+	mxig_status_opts[IGRS_IN_SCOPE].Init(true,wxColour(196,0,0));
+	mxig_status_opts[IGRS_CHANGED].Init(true,wxColour(196,0,0));
+	mxig_status_opts[IGRS_NORMAL].Init(true,wxColour(0,0,0));
+	mxig_status_opts[IGRS_ERROR].Init(false,wxColour(196,0,0),"<<ERROR>>");
+	mxig_status_opts[IGRS_FREEZE].Init(false,wxColour(0,100,200));
 	
 //	can_drop=true;
 //	ignore_changing=true;
@@ -144,7 +145,7 @@ void mxInspectionGrid::OnKey(wxKeyEvent &event) {
 	if (key==WXK_DELETE) {
 		vector<int> sel; int min=-1;
 		if (mxGrid::GetSelectedRows(sel,true)==0) sel.push_back(GetGridCursorRow());
-		for(int i=0;i<sel.size();i++) {
+		for(unsigned int i=0;i<sel.size();i++) {
 			if (sel[i]<0||sel[i]>=inspections.GetSize()) continue;
 			if (sel[i]<min) min=sel[i];
 			inspections[sel[i]]->Destroy(); // quitar de gdb
@@ -171,21 +172,36 @@ void mxInspectionGrid::OnKey(wxKeyEvent &event) {
 }
 
 void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
-//	if (mask_cell_change_event) return;
-	if (event.GetCol()==IG_COL_EXPR) {
+	event.Skip();
+	wxString new_value = wxGrid::GetCellValue(event.GetRow(),event.GetCol());
+	if (event.GetCol()==GetRealCol(IG_COL_EXPR)) {
 		int row = event.GetRow();
-		wxString expression = mxGrid::GetCellValue(event.GetRow(),IG_COL_EXPR);
 		if (row<inspections.GetSize()) {
-			if (inspections[row]->GetExpression()==expression) return; // si en realidad no cambio
+			if (inspections[row]->GetExpression()==new_value) return; // si en realidad no cambio
 			inspections[row]->Destroy(); // si es una que ya existía
 		} else {
 			inspections.Add(NULL);
 			InsertRows();
 		}
-		DebuggerInspection *di = DebuggerInspection::Create(expression,last_return_had_shift_down,this,false);
+		OnFullTableUpdateBegin();
+		DebuggerInspection *di = DebuggerInspection::Create(new_value,last_return_had_shift_down,this,false);
 		inspections[row]=di;
 		if (!di->Init()) SetRowStatus(row,IGRS_UNINIT);
 		if (di->GetDbiType()!=DIT_ERROR) Select(row+1);
+		DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
+		OnFullTableUpdateEnd();
+	} else {
+		if (event.GetCol()==GetRealCol(IG_COL_VALUE)) {
+			int row = event.GetRow(); 
+			if (row<0||row>=inspections.GetSize()) return;
+			OnFullTableUpdateBegin();
+			if (inspections[row]->ModifyValue(new_value)) {
+				mxGrid::SetCellValue(row,IG_COL_VALUE,inspections[row]->GetValue());
+				event.Skip(); 
+				DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
+			} else event.Veto();
+			OnFullTableUpdateEnd();
+		}
 	}
 //	if (!debug->debugging) {
 //		if (event.GetCol()==IG_COL_EXPR) {
@@ -905,10 +921,15 @@ void mxInspectionGrid::OnDIOutOfScope(DebuggerInspection *di) {
 }
 
 void mxInspectionGrid::SetRowStatus (int r, int status) {
-	if (inspections[r].status==status) return;
+	int prev_status = inspections[r].status;
+	if (prev_status==status) return;
 	inspections[r].status=status;
-	mxGrid::SetCellColour(r,IG_COL_VALUE,mxig_status_opts[status].color);
-	if (mxig_status_opts[status].have_message) mxGrid::SetCellValue(r,IG_COL_VALUE,mxig_status_opts[status].message);
+	if (mxig_status_opts[prev_status].color!=mxig_status_opts[status].color)
+		mxGrid::SetCellColour(r,IG_COL_VALUE,mxig_status_opts[status].color);
+	if (mxig_status_opts[status].have_message) 
+		mxGrid::SetCellValue(r,IG_COL_VALUE,mxig_status_opts[status].message);
+	if (mxig_status_opts[prev_status].editable_value!=mxig_status_opts[status].editable_value)
+		mxGrid::SetReadOnly(r,IG_COL_VALUE,!mxig_status_opts[status].editable_value);
 }
 
 void mxInspectionGrid::OnFullTableUpdateBegin( ) {

@@ -43,7 +43,7 @@ public:
 	virtual void OnCellPopupMenu(int row, int col) {}
 	virtual void OnCellDoubleClick(int row, int col) {}
 	virtual void OnLabelPopupMenu(int col) {}
-	
+	int GetRealCol(int col) { return cols[col].real_pos; }
 	
 	// wrappers for wxGrid methods, that considers column hidding
 	void SetCellValue(int r, int c, const wxString &value) {

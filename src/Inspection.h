@@ -232,10 +232,16 @@ private:
 		gdb_value = debug->GetValueFromAns(ans,"value",true,true);
 	}
 	
+	bool VOAssign(const wxString &new_value) {
+		wxString ans = debug->SendCommand(wxString("-var-assign ")<<variable_object<<" "<<mxUT::EscapeString(new_value,true));
+		return ans.StartsWith("^done");
+	}
+	
+	
 	void CreateVO() {
 		VOCreate();
 		if (dit_type==DIT_ERROR) GenerateEvent(&myDIEventHandler::OnDIError);
-		else { VOEvaluate(); GenerateEvent(&myDIEventHandler::OnDICreated); }
+		else { VOEvaluate(); is_in_scope = true; GenerateEvent(&myDIEventHandler::OnDICreated); }
 	}
 	
 	/// las instancias se construyen solo a través de Create
@@ -287,6 +293,12 @@ public:
 		}
 		all_inspections.Remove(all_inspections.Find(this));
 		AddPendingAction(this,NULL);
+	}
+	
+	bool ModifyValue(const wxString &new_value) {
+		if (dit_type!=DIT_VARIABLE_OBJECT) return false;
+		if (!debug->debugging || debug->waiting) return false;
+		return VOAssign(new_value);
 	}
 	
 	void Freeze() {
