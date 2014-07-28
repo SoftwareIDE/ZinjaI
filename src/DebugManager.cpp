@@ -35,9 +35,11 @@
 using namespace std;
 
 #ifdef _ZINJAI_DEBUG
-#define DEBUG_MANAGER_LOG_TALK
-#define DEBUG_LOG_FILE "/mnt/rm/debug.log"
+#define _DEBUG_MANAGER_LOG_TALK
+	#define DEBUG_LOG_FILE "/mnt/rm/debug.log"
+	wxFFile debug_log_file;
 #endif
+
 
 //#define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
 
@@ -526,7 +528,7 @@ void DebugManager::HowDoesItRuns() {
 				if (sbn.ToLong(&bn)) {
 					bpi=BreakPointInfo::FindFromNumber(bn,true);
 					if (!should_pause && bpi && bpi->action==BPA_INSPECTIONS) {
-						DebuggerInspection::OnDebugPause();
+						UpdateInspections();
 						_aux_continue;
 					}
 				}
@@ -625,7 +627,7 @@ void DebugManager::HowDoesItRuns() {
 					if (threadlist_visible) ListThreads();
 					Backtrace(false);
 				}
-				DebuggerInspection::OnDebugPause();
+				UpdateInspections();
 			}
 		} else {
 	//		if (config->Debug.autoupdate_backtrace)
@@ -1429,7 +1431,7 @@ bool DebugManager::Return(wxString what) {
 	MarkCurrentPoint(fname,fline,mxSTC_MARK_EXECPOINT);
 	//if (backtrace_visible && config->Debug.autoupdate_backtrace)
 	Backtrace(true);
-	DebuggerInspection::OnDebugPause();
+	UpdateInspections();
 	return true;
 }
 
@@ -1729,10 +1731,11 @@ void DebugManager::TtyProcessKilled() {
 //	}
 //}
 
-//void  DebugManager::UpdateInspections() {
-//	DebuggerInspection::UpdateAll();
-//	mxGenericInspectionCtrl::UpdateAll();
-//}
+void  DebugManager::UpdateInspections() {
+	inspection_grid->OnFullTableUpdateBegin();
+	DebuggerInspection::OnDebugPause();
+	inspection_grid->OnFullTableUpdateEnd();
+}
 
 //bool DebugManager::UpdateInspection() {
 //	if (!debugging || waiting || inspections_count==0) return false;

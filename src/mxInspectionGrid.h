@@ -43,12 +43,10 @@ enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COLS_COUNT};
 //};
 //
 
-class mxIGEventHandler;
-
 /**
 * @brief Representa a la grilla del panel de inspecciones
 **/
-class mxInspectionGrid : public mxGrid {
+class mxInspectionGrid : public mxGrid, public myDIEventHandler {
 //	bool can_drop; // para evitar hacer drag y drop sobre si misma
 //	bool created;
 //	int selected_row;
@@ -57,13 +55,11 @@ class mxInspectionGrid : public mxGrid {
 //	float cols_sizes[IG_COLS_COUNT];
 //	bool *cols_visibles;
 ////	int cols_marginal;
-//	wxColour disable_colour;
-//	wxColour default_colour;
-//	wxColour change_colour;
-//	wxColour special_colour;
-//	wxColour freeze_colour;
+public:
+	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_COUNT };
+private:
 	struct InspectionGridRow {
-		enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_ON_SCOPE, IGRS_ERROR } status;
+		int status;
 		DebuggerInspection *di;
 		InspectionGridRow(DebuggerInspection *_di=NULL) : status(IGRS_UNINIT),di(_di) {}
 		bool operator==(const InspectionGridRow &o) { return di==o.di; }
@@ -77,11 +73,16 @@ class mxInspectionGrid : public mxGrid {
 		return current_row!=inspections.NotFound();
 	}
 	
+	bool mask_cell_change_event;
+	bool last_return_had_shift_down;
+	
 public:
 	mxInspectionGrid(wxWindow *parent);
 //	void AddRow(int cant=1);
 //	void AppendInspections(wxArrayString &vars);
 //	~mxInspectionGrid();
+	void OnFullTableUpdateBegin();
+	void OnFullTableUpdateEnd();
 	void OnKey(wxKeyEvent &event);
 //	void OnSelectCell(wxGridEvent &event);
 	void OnCellChange(wxGridEvent &event);
@@ -125,7 +126,6 @@ public:
 ////	void OnCellEditorShown(wxGridEvent &evt);
 ////	void OnCellEditorHidden(wxGridEvent &evt);
 //	void HightlightChange(int r);
-//	void HightlightSpecial(int r);
 //	void HightlightDisable(int r);
 //	void HightlightNone(int r);
 //	void HightlightFreeze(int r);
@@ -136,20 +136,17 @@ public:
 	void InsertRows(int pos=-1, int cant=1);
 	void OnRedirectedEditEvent(wxCommandEvent &event);
 	
-	class mxIGEventHandler : public myDIEventHandler {
-		mxInspectionGrid *parent;
-	public:
-		mxIGEventHandler(mxInspectionGrid *p):parent(p) {}
-		void OnCreated(DebuggerInspection *di);
-		void OnError(DebuggerInspection *di);
-		void OnValueChanded(DebuggerInspection *di);
-		void OnOutOfScope(DebuggerInspection *di);
-		void OnInScope(DebuggerInspection *di);
-		void OnNewType(DebuggerInspection *di);
-	};
-	
-	mxIGEventHandler di_event_handler;
-	
+	void ModifyInspectionExpression(int row, const wxString &expression, bool is_frameless);
+
+	// eventos generados por DebuggerInspection
+	void OnDICreated(DebuggerInspection *di);
+	void OnDIError(DebuggerInspection *di);
+	void OnDIValueChanded(DebuggerInspection *di);
+	void OnDIOutOfScope(DebuggerInspection *di);
+	void OnDIInScope(DebuggerInspection *di);
+	void OnDINewType(DebuggerInspection *di);
+
+	void SetRowStatus(int r, int status);
 	DECLARE_EVENT_TABLE();
 	
 };

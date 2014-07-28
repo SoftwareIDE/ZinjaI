@@ -1,4 +1,6 @@
 #include "mxGrid.h"
+#include <algorithm>
+using namespace std;
 
 mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id) : wxGrid(parent,id,wxDefaultPosition,wxSize(400,300),wxWANTS_CHARS), cols(number_of_cols) {
 	CreateGrid(0,number_of_cols);
@@ -76,5 +78,32 @@ void mxGrid::OnRightClick (wxGridEvent & event) {
 
 void mxGrid::OnLabelPopup (wxGridEvent & event) {
 	OnLabelPopupMenu(event.GetCol());
+}
+
+void mxGrid::SetRowSelectionMode ( ) {
+	SetSelectionMode(wxGrid::wxGridSelectRows);
+	SetCellHighlightPenWidth(0);
+}
+
+void mxGrid::Select(int row, int col) {
+	if (col==-1) col=GetGridCursorCol();
+	SelectRow(row);
+	SetGridCursor(row,col);
+	MakeCellVisible(row,col);
+}
+
+int mxGrid::GetSelectedRows (vector<int> & rows, bool inverted) {
+	wxArrayInt sr = wxGrid::GetSelectedRows();
+	for(unsigned int i=0;i<sr.GetCount();i++) rows.push_back(sr[i]);
+	wxGridCellCoordsArray c = wxGrid::GetSelectedCells();
+	for(unsigned int i=0;i<c.GetCount();i++) rows.push_back(c[i].GetRow());
+	wxGridCellCoordsArray tl = GetSelectionBlockTopLeft();
+	wxGridCellCoordsArray br = wxGrid::GetSelectionBlockBottomRight();
+	for(unsigned int i=0;i<tl.GetCount();i++) 
+		for(int j=tl[i].GetRow();j<=br[i].GetRow();j++) rows.push_back(j);
+	sort(rows.begin(),rows.end());
+	rows.erase(unique(rows.begin(),rows.end()),rows.end());
+	if (inverted) reverse(rows.begin(),rows.end());
+	return rows.size();
 }
 

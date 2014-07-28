@@ -118,6 +118,7 @@ class wxInputStream;
 class mxSource;
 class DebugPatcher;
 
+
 /**
 * @brief Administra la comunicación entre la interfaz y el depurador gdb
 **/
@@ -134,6 +135,7 @@ class DebugManager {
 	wxFFile debug_log_file;
 #endif
 private:
+	friend class DebugEventListener;
 	vector<SignalHandlingInfo> *signal_handlers_state; ///< signals states to be setted before running, first one has defaults, second one desired settings (if NULL no setting is required, will be created and modified my mxSignalsSettings)
 	DebugPatcher *debug_patcher;
 public:
@@ -234,7 +236,7 @@ public:
 //	bool ModifyInspectionFormat(int num, wxString format);
 //	bool ModifyInspectionWatch(int num, bool read, bool write);
 //	bool UpdateInspection(); ///< @todo: metodo viejo, a eliminar cuando termine de reescribir el manejo de inspecciones
-//	void UpdateInspections();
+	void UpdateInspections();
 	wxString GetNextItem(wxString &ans, int &from);
 	bool SelectFrame(wxString framenum, int idx);
 	bool SelectFrameForInspeccion(wxString addr);
@@ -316,3 +318,4 @@ public:
 extern DebugManager *debug;
 
 #endif
+

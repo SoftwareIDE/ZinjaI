@@ -22,12 +22,20 @@ class DebuggerInspection;
 ///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de las inspecciones
 class myDIEventHandler {
 public:
-	virtual void OnCreated(DebuggerInspection *di) {}
-	virtual void OnError(DebuggerInspection *di) {}
-	virtual void OnValueChanded(DebuggerInspection *di) {}
-	virtual void OnOutOfScope(DebuggerInspection *di) {}
-	virtual void OnInScope(DebuggerInspection *di) {}
-	virtual void OnNewType(DebuggerInspection *di) {}
+	virtual void OnDICreated(DebuggerInspection *di) {}
+	virtual void OnDIError(DebuggerInspection *di) {}
+	virtual void OnDIValueChanded(DebuggerInspection *di) {}
+	virtual void OnDIOutOfScope(DebuggerInspection *di) {}
+	virtual void OnDIInScope(DebuggerInspection *di) {}
+	virtual void OnDINewType(DebuggerInspection *di) {}
+};
+
+class myDIGlobal {
+public:
+	virtual void OnDIDebugStart() {}
+	virtual void OnDIFullUpdateBegin() {}
+	virtual void OnDIFullUpdateEnd() {}
+	virtual void OnDIDebugStop() {}
 };
 
 /**
@@ -147,7 +155,6 @@ public:
 					int p1=i; // posicion del igual
 					if (++i>=l || s[i]!='\"') break; 
 					while (++i<l && s[i]!='\"') { if (i=='\\') i++; }
-					if (i==l) break; 
 					int p2=i; // posicion de la comilla que cierra
 					wxString name=s.Mid(p0,p1-p0);
 					if (name=="name") u.name=s.Mid(p1+2,p2-p1-2);
@@ -155,7 +162,9 @@ public:
 					else if (name=="in_scope") u.in_scope=s.Mid(p1+2,p2-p1-2);
 					else if (name=="new_type") u.new_type=s.Mid(p1+2,p2-p1-2);
 					else if (name=="new_num_children") u.new_num_children=s.Mid(p1+2,p2-p1-2);
-					while (++i<l && s[i]!=','); while (++i<l && s[i]==' ');
+					while (++i<l && s[i]!=',' && s[i]!=']' && s[i]!='}'); 
+					if (i==l || s[i]==']' || s[i]=='}') break; else i++;
+//					while (++i<l && s[i]==' '); // pareciera no ser necesario
 				}
 				// busca el DebuggerInspection para el vo (por su nombre gdb)
 				map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(u.name);
@@ -167,12 +176,12 @@ public:
 				DebuggerInspection &di=*(it->second);
 				if (u.in_scope=="true") {
 					di.gdb_value=u.value;
-					if (u.new_type!="") { di.value_type=u.new_type; di.GenerateEvent(&myDIEventHandler::OnNewType); }
-					else if (!di.is_in_scope) { di.is_in_scope=true; di.GenerateEvent(&myDIEventHandler::OnInScope); }
-					else di.GenerateEvent(&myDIEventHandler::OnValueChanded);
+					if (u.new_type!="") { di.value_type=u.new_type; di.GenerateEvent(&myDIEventHandler::OnDINewType); }
+					else if (!di.is_in_scope) { di.is_in_scope=true; di.GenerateEvent(&myDIEventHandler::OnDIInScope); }
+					else di.GenerateEvent(&myDIEventHandler::OnDIValueChanded);
 				} else if (di.is_in_scope) {
 					di.is_in_scope=false;
-					di.GenerateEvent(&myDIEventHandler::OnOutOfScope);
+					di.GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
 				}
 			}
 		}
@@ -225,8 +234,8 @@ private:
 	
 	void CreateVO() {
 		VOCreate();
-		if (dit_type==DIT_ERROR) GenerateEvent(&myDIEventHandler::OnError);
-		else { VOEvaluate(); GenerateEvent(&myDIEventHandler::OnCreated); }
+		if (dit_type==DIT_ERROR) GenerateEvent(&myDIEventHandler::OnDIError);
+		else { VOEvaluate(); GenerateEvent(&myDIEventHandler::OnDICreated); }
 	}
 	
 	/// las instancias se construyen solo a través de Create

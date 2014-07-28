@@ -15,125 +15,11 @@
 //#include "mxInspectionMatrix.h"
 //#include "mxTextDialog.h"
 //#include "mxInspectionPrint.h"
-//
-//
-///**
-//* @brief This wxTextCtrl derived class will substitute the one used in wxGridCellTextEditor to add an autocompletion feature
-//**/
-//class mxInspectionGridCellEditorControl:public wxTextCtrl {
-//	wxArrayString comp_options;
-//public:
-//	mxInspectionGridCellEditorControl(wxWindow* parent, wxWindowID id):wxTextCtrl(parent,id,"lala",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB|wxTE_AUTO_SCROLL|wxNO_BORDER) {}
-//	void Autocomplete();
-//	void OnMenu(wxCommandEvent &evt) {
-//		SetText(comp_options[evt.GetId()-wxID_HIGHEST-1000]);
-//	}
-//	void SetText(const wxString &text) {
-//		SetValue(text); 
-//		SetSelection(text.Len(),text.Len());
-//	}
-//	void OnChar(wxKeyEvent &evt) {
-//		if (evt.GetKeyCode()==WXK_TAB) Autocomplete(); 
-//		else evt.Skip();
-//	}
-//	DECLARE_EVENT_TABLE();
-//};
-//
-//BEGIN_EVENT_TABLE(mxInspectionGridCellEditorControl,wxTextCtrl)
-//	EVT_CHAR(mxInspectionGridCellEditorControl::OnChar)
-//	EVT_MENU_RANGE(wxID_HIGHEST+1000,wxID_HIGHEST+5000,mxInspectionGridCellEditorControl::OnMenu)
-//END_EVENT_TABLE()
-//
-///**
-//* @brief This class will replaces the event handler use by a grid cell editor, to intercept some events
-//*
-//* A cell editor use an event special handler that is passed by the grid (and whose implementation is hidden in the grid code).
-//* That event handler control things such as destroying the editor when the editor's control looses focus.
-//* My class will encapsulate that editor, and normally forward all the useful events. But, when the focus is lost
-//* due to the creation of the autocompletion menu, the generated kill focus event will be filtered out.
-//* mxInspectionGridCellEditorControl will enable/disable this filtering. The three events overriden by
-//* this class are the three that overrides the handler used regularly by the grid (wxGridCellEditorEvtHandler, 
-//* seen in wx/src/generic/grid.cpp, might change in the future and then be erroneous).
-//* Some less intrusive methods did not worked (such as chaining the event handlers with SetNextHandler).
-//**/
-//class myCellEditorEventHandler : public wxEvtHandler {
-//	static bool ignore_focus_kill_event;
-//	wxEvtHandler *m_evt;
-//	mxInspectionGridCellEditorControl *m_text;
-//public:
-//	myCellEditorEventHandler(wxEvtHandler *evt, mxInspectionGridCellEditorControl*text):m_evt(evt),m_text(text) { /*SetNextHandler(evt); */}
-//	void OnKeyDown( wxKeyEvent& event ) {
-//		if (event.GetKeyCode()==WXK_TAB)
-//			m_text->Autocomplete();
-//		else
-//			m_evt->ProcessEvent(event);
-//	}
-//	void OnChar( wxKeyEvent& event ) { 
-//		m_evt->ProcessEvent(event);
-//	}
-//	void OnKillFocus(wxFocusEvent& event) {
-//		if (!ignore_focus_kill_event) m_evt->ProcessEvent(event);
-//	}
-//	static void IgnoreFocusKill(bool ignore) { ignore_focus_kill_event=ignore; }
-//	~myCellEditorEventHandler() { delete m_evt; }
-//	DECLARE_EVENT_TABLE();
-//};
-//
-//bool myCellEditorEventHandler::ignore_focus_kill_event = false;
-//
-//BEGIN_EVENT_TABLE(myCellEditorEventHandler,wxEvtHandler)
-//	EVT_KILL_FOCUS(myCellEditorEventHandler::OnKillFocus)
-//	EVT_KEY_DOWN(myCellEditorEventHandler::OnKeyDown )
-//	EVT_CHAR(myCellEditorEventHandler::OnChar)
-//END_EVENT_TABLE()
-//
-//
-//void mxInspectionGridCellEditorControl::Autocomplete() {
-//	if (GetValue().IsEmpty()) return;
-//	if (!debug->debugging || debug->waiting) return;
-//	comp_options.Clear(); 
-//	wxString ans = debug->SendCommand("complete p ",GetValue());
-//	while (ans.Contains("\n")) {
-//		wxString line=ans.BeforeFirst('\n');
-//		ans=ans.AfterFirst('\n');
-//		if (line.StartsWith("~\"")) {
-//			wxString ue=mxUT::UnEscapeString(line.Mid(1));
-//			if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
-//			comp_options.Add(ue.Mid(2));
-//		}
-//	}
-//	if (!comp_options.GetCount()) return;
-//	if (comp_options.GetCount()==1) { SetText(comp_options[0]); return; }
-//	wxMenu menu("");
-//	for(unsigned int i=0;i<comp_options.GetCount();i++)
-//		menu.Append(wxID_HIGHEST+1000+i, comp_options[i]);
-//	myCellEditorEventHandler::IgnoreFocusKill(true);
-//	wxRect r = GetScreenRect();
-//	PopupMenu(&menu,0,r.height);
-//	myCellEditorEventHandler::IgnoreFocusKill(false);
-//}
-//
-///**
-//* @brief The actual cell editor used by Expression column. 
-//*
-//* This one replaces the text control used in wxGridCellTextEditor by a
-//* different one that adds an autocompletion feature. That feature will
-//* be triggered by TAB key, so this class also changes the event handler
-//* provided by the grid by a custom one that will filter some events in
-//* order to launch the autocompletion menu, and to avoid that the text's
-//* lost of focus produced by the menu kill finishes the edition.
-//**/
-//class gdbInspCtrl:public wxGridCellTextEditor {
-//public:
-//	void Create(wxWindow* parent, wxWindowID id, wxEvtHandler* evtHandler) {
-//		m_control = new mxInspectionGridCellEditorControl(parent, id);
-//		wxGridCellEditor::Create(parent, id, new myCellEditorEventHandler(evtHandler,(mxInspectionGridCellEditorControl*)m_control));
-//	}
-//	// I don't know if this method is required, but all the editors provided by wx have it
-//	virtual wxGridCellEditor *Clone() const	{ return new gdbInspCtrl(); }
-//};
-//
-//
+#include "mxInspectionGridCellEditor.h"
+#include <algorithm>
+using namespace std;
+
+
 
 //
 //
@@ -141,7 +27,7 @@
 //
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_GRID_CELL_CHANGE(mxInspectionGrid::OnCellChange)
-//	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
+	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
 //	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionGrid::OnDoubleClick)
 //	EVT_GRID_CELL_RIGHT_CLICK(mxInspectionGrid::OnRightClick)
@@ -181,15 +67,27 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 ////	EVT_GRID_SELECT_CELL(mxInspectionGrid::OnSelectCell)
 END_EVENT_TABLE()
 //	
+
+static struct mxIGStatusOpts {
+	wxColour color;
+	bool have_message;
+	wxString message;
+	void Init(const wxColour &c) { color=c; have_message=false; }
+	void Init(const wxColour &c, const wxString &m) { color=c; have_message=true; message=m; }
+} mxig_status_opts[mxInspectionGrid::IGRS_COUNT];
 //
-mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COUNT), di_event_handler(this) {
-//	
-//	disable_colour = wxColour(100,100,100);
-//	default_colour = wxColour(0,0,0);
-//	change_colour = wxColour(196,0,0);
-//	special_colour = wxColour(0,150,0);
-//	freeze_colour = wxColour(0,100,200);
-//	
+mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COUNT) {
+	
+	last_return_had_shift_down = mask_cell_change_event = false;
+	
+	mxig_status_opts[IGRS_UNINIT].Init(wxColour(100,100,100),"");
+	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(wxColour(100,100,100),LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de ámbito >>>"));
+	mxig_status_opts[IGRS_IN_SCOPE].Init(wxColour(196,0,0));
+	mxig_status_opts[IGRS_CHANGED].Init(wxColour(196,0,0));
+	mxig_status_opts[IGRS_NORMAL].Init(wxColour(0,0,0));
+	mxig_status_opts[IGRS_ERROR].Init(wxColour(196,0,0),"<<ERROR>>");
+	mxig_status_opts[IGRS_FREEZE].Init(wxColour(0,100,200));
+	
 //	can_drop=true;
 //	ignore_changing=true;
 //	created=false;
@@ -201,10 +99,10 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	mxGrid::DoCreate();
 	InsertRows();
 	
-//	SetSelectionMode(wxGrid::wxGridSelectRows);
-//	SetCellHighlightPenWidth(0);
-//	EnableDragRowSize(false);	
-//	
+	mxGrid::SetRowSelectionMode();
+	
+//	EnableDragRowSize(false);
+	
 //	// la ayuda de wx dice que SetColMinimalAcceptableWidth(muy bajo) podría penalizar la performance cuando busca en que celda
 //	// clickeo el usuario segun las coordenadas de pantalla, pero asumo que como hay muy pocas columnas no debería notarse
 //	SetColMinimalAcceptableWidth(1);
@@ -238,77 +136,56 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 //	created=true;
 //	ignore_changing=false;
 }
-//
-//mxInspectionGrid::~mxInspectionGrid() {
-//}
-//
+
+
+
 void mxInspectionGrid::OnKey(wxKeyEvent &event) {
-	current_row = GetGridCursorRow();
-	if (event.GetKeyCode()==WXK_DELETE) {
-		if (current_row>=0&&current_row<inspections.GetSize()) {
-			inspections[current_row]->Destroy(); // quitar de gdb
-			inspections.Remove(current_row); // quitar de la lista propia de inspecciones
-			DeleteRows(current_row,1); // eliminar fila de la tabla
+	int key = event.GetKeyCode();
+	if (key==WXK_DELETE) {
+		vector<int> sel; int min=-1;
+		if (mxGrid::GetSelectedRows(sel,true)==0) sel.push_back(GetGridCursorRow());
+		for(int i=0;i<sel.size();i++) {
+			if (sel[i]<0||sel[i]>=inspections.GetSize()) continue;
+			if (sel[i]<min) min=sel[i];
+			inspections[sel[i]]->Destroy(); // quitar de gdb
+			inspections.Remove(sel[i]); // quitar de la lista propia de inspecciones
+			DeleteRows(sel[i],1); // eliminar fila de la tabla
 		}
-	}
-}
-//	if (event.GetKeyCode()==WXK_DOWN) {
-//		if (r+1!=GetNumberRows()) {
-//			SelectRow(r+1);
-//			SetGridCursor(r+1,GetGridCursorCol());
-//			MakeCellVisible(r+1,GetGridCursorCol());
-//		}
-//	} else if (event.GetKeyCode()==WXK_UP) {
-//		if (r) {
-//			SetGridCursor(r-1,GetGridCursorCol());
-//			SelectRow(r-1);
-//			MakeCellVisible(r-1,GetGridCursorCol());
-//		}
-//	} else if (event.GetKeyCode()==WXK_DELETE) {
-////		wxGridCellCoordsArray sel = GetSelectedCells();
-////		DEBUG_INFO(sel.Count());
-////		wxArrayInt a = GetSelectedRows();
-////		for (int i=a.Count()-1;i>=0;i--) {
-////			if (a[i]+1!=GetNumberRows() && debug->DeleteInspection(a[i]))
-////				DeleteRows(a[i]);
-////		}
-//		if (r+1!=GetNumberRows() &&
-//			( (debug->debugging && debug->DeleteInspection(r)) || 
-//			(!debug->debugging && debug->OffLineInspectionDelete(r)) ) )
-//				DeleteRows(r);
-//		SetGridCursor(r,0);
+		if (min!=-1) min=GetGridCursorRow();
+		if (min<0||min>inspections.GetSize()) min=0;
+		Select(min);
+	} else if (key==WXK_DOWN) {
+		int r = GetGridCursorRow();
+		if (r+1!=GetNumberRows()) mxGrid::Select(r+1);
+	} else if (key==WXK_UP) {
+		int r = GetGridCursorRow();
+		if (r) Select(r-1);
 //	} else if (event.GetKeyCode()==WXK_INSERT) {
 //		SetGridCursor(GetNumberRows()-1,0);
 //		SelectRow(GetGridCursorRow());
-//	} else
-//		event.Skip();
-//}
-//
-//void mxInspectionGrid::AddRow(int cant) {
-//	int n = GetNumberRows();
-//	AppendRows(cant);
-//	for (int i=0;i<cant;i++) {
-//		SetCellEditor(n+i,IG_COL_EXPR,new gdbInspCtrl);
-//		SetReadOnly(n+i,IG_COL_LEVEL);
-////		SetReadOnly(n+i,IG_COL_FORMAT);
-//		SetReadOnly(n+i,IG_COL_TYPE);
-//		SetReadOnly(n+i,IG_COL_VALUE);
-////		SetReadOnly(n+i,IG_COL_WATCH);
-//	}
-//}
-//
+	} else if (key==WXK_RETURN) {
+		last_return_had_shift_down=event.ShiftDown();
+		event.Skip(); 
+	} else
+		event.Skip();
+}
+
 void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
+//	if (mask_cell_change_event) return;
 	if (event.GetCol()==IG_COL_EXPR) {
-		current_row = event.GetRow();
-		wxString new_value = mxGrid::GetCellValue(event.GetRow(),IG_COL_EXPR);
-		if (current_row<inspections.GetSize()) {
-			if (inspections[current_row]->GetExpression()==new_value) return; // si en realidad no cambio
-			inspections[current_row]->Destroy(); // si es una que ya existía
-		} else { // si era la ultima fila (en blanco, para agregar)
-			inspections.Add(NULL); 
+		int row = event.GetRow();
+		wxString expression = mxGrid::GetCellValue(event.GetRow(),IG_COL_EXPR);
+		if (row<inspections.GetSize()) {
+			if (inspections[row]->GetExpression()==expression) return; // si en realidad no cambio
+			inspections[row]->Destroy(); // si es una que ya existía
+		} else {
+			inspections.Add(NULL);
 			InsertRows();
 		}
-		(inspections[current_row] = DebuggerInspection::Create(new_value,true,&di_event_handler,false))->Init();
+		DebuggerInspection *di = DebuggerInspection::Create(expression,last_return_had_shift_down,this,false);
+		inspections[row]=di;
+		if (!di->Init()) SetRowStatus(row,IGRS_UNINIT);
+		if (di->GetDbiType()!=DIT_ERROR) Select(row+1);
 	}
 //	if (!debug->debugging) {
 //		if (event.GetCol()==IG_COL_EXPR) {
@@ -843,26 +720,6 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 //	
 //}
 //
-//void mxInspectionGrid::HightlightNone(int r) {
-//	SetCellTextColour(r,IG_COL_VALUE,default_colour);
-//}
-//
-//void mxInspectionGrid::HightlightFreeze(int r) {
-//	SetCellTextColour(r,IG_COL_VALUE,freeze_colour);
-//}
-//
-//void mxInspectionGrid::HightlightChange(int r) {
-//	SetCellTextColour(r,IG_COL_VALUE,change_colour);
-//}
-//
-//void mxInspectionGrid::HightlightDisable(int r) {
-//	SetCellTextColour(r,IG_COL_VALUE,disable_colour);
-//}
-//
-//void mxInspectionGrid::HightlightSpecial(int r) {
-//	SetCellTextColour(r,IG_COL_VALUE,special_colour);
-//}
-//
 //void mxInspectionGrid::ResetChangeHightlights() {
 //	int i,r=GetNumberRows()-1;
 //	if (config->Debug.select_modified_inspections) {
@@ -999,42 +856,75 @@ void mxInspectionGrid::OnRedirectedEditEvent (wxCommandEvent & event) {
 }
 
 void mxInspectionGrid::InsertRows (int pos, int cant) {
-	if (pos==-1) AppendRows(cant,false);
-	else InsertRows(pos,cant);
-#warning setear readonly para las nuevas celdas
+	if (pos==-1) { pos=wxGrid::GetNumberRows(); wxGrid::AppendRows(cant,false); }
+	else wxGrid::InsertRows(pos,cant,false);
+	for(int i=pos;i<pos+cant;i++) {
+		mxGrid::SetReadOnly(i,IG_COL_LEVEL,true);
+		mxGrid::SetReadOnly(i,IG_COL_TYPE,true);
+		mxGrid::SetReadOnly(i,IG_COL_VALUE,true);
+//		mxGrid::SetCellEditor(i,IG_COL_EXPR,new gdbInspCtrl);
+		wxGrid::SetCellEditor(i,IG_COL_EXPR,new gdbInspCtrl);
+	}
 }
 
 
 // eventos de DebuggerInspection
 
-void mxInspectionGrid::mxIGEventHandler::OnError(DebuggerInspection *di) {
-	if (!parent->SetCurrentRow(di)) return;
-	parent->mxGrid::SetCellValue(parent->current_row,IG_COL_VALUE,"<<ERROR>>");
+void mxInspectionGrid::OnDIError(DebuggerInspection *di) {
+	if (!SetCurrentRow(di)) return;
+	mxGrid::SetCellValue(current_row,IG_COL_VALUE,"<<ERROR>>");
+	SetRowStatus(current_row,IGRS_ERROR);
 }
 
-void mxInspectionGrid::mxIGEventHandler::OnCreated(DebuggerInspection *di) {
-	OnNewType(di);
+void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
+	OnDINewType(di);
 }
 
-void mxInspectionGrid::mxIGEventHandler::OnValueChanded(DebuggerInspection *di) {
-	if (!parent->SetCurrentRow(di)) return;
-	parent->mxGrid::SetCellValue(parent->current_row,IG_COL_VALUE,di->GetValue());
+void mxInspectionGrid::OnDIValueChanded(DebuggerInspection *di) {
+	if (!SetCurrentRow(di)) return;
+	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
+	SetRowStatus(current_row,IGRS_CHANGED);
 }
 
-void mxInspectionGrid::mxIGEventHandler::OnNewType(DebuggerInspection *di) {
-	if (!parent->SetCurrentRow(di)) return;
-	parent->mxGrid::SetCellValue(parent->current_row,IG_COL_TYPE,di->GetValueType());
-	parent->mxGrid::SetCellValue(parent->current_row,IG_COL_VALUE,di->GetValue());
+void mxInspectionGrid::OnDINewType(DebuggerInspection *di) {
+	if (!SetCurrentRow(di)) return;
+	mxGrid::SetCellValue(current_row,IG_COL_TYPE,di->GetValueType());
+	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
+	SetRowStatus(current_row,IGRS_CHANGED);
 }
 
-void mxInspectionGrid::mxIGEventHandler::OnInScope(DebuggerInspection *di) {
-	if (!parent->SetCurrentRow(di)) return;
-	parent->mxGrid::SetCellValue(parent->current_row,IG_COL_VALUE,di->GetValue());
+void mxInspectionGrid::OnDIInScope(DebuggerInspection *di) {
+	if (!SetCurrentRow(di)) return;
+	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
+	SetRowStatus(current_row,IGRS_IN_SCOPE);
 }
 
-void mxInspectionGrid::mxIGEventHandler::OnOutOfScope(DebuggerInspection *di) {
-	if (!parent->SetCurrentRow(di)) return;
-	parent->mxGrid::SetCellValue(parent->current_row,IG_COL_VALUE,"<<OUT OF SCOPE>>");
+void mxInspectionGrid::OnDIOutOfScope(DebuggerInspection *di) {
+	if (!SetCurrentRow(di)) return;
+	SetRowStatus(current_row,IGRS_OUT_OF_SCOPE);
 }
 
+void mxInspectionGrid::SetRowStatus (int r, int status) {
+	if (inspections[r].status==status) return;
+	inspections[r].status=status;
+	mxGrid::SetCellColour(r,IG_COL_VALUE,mxig_status_opts[status].color);
+	if (mxig_status_opts[status].have_message) mxGrid::SetCellValue(r,IG_COL_VALUE,mxig_status_opts[status].message);
+}
+
+void mxInspectionGrid::OnFullTableUpdateBegin( ) {
+	BeginBatch();
+	for(int i=0;i<inspections.GetSize();i++)
+		if (inspections[i].status==IGRS_IN_SCOPE||inspections[i].status==IGRS_CHANGED)
+			SetRowStatus(i,IGRS_NORMAL);
+}
+
+void mxInspectionGrid::OnFullTableUpdateEnd ( ) {
+	EndBatch();
+}
+
+void mxInspectionGrid::ModifyInspectionExpression (int row, const wxString & expression, bool is_frameless) {
+	if (row==-1) row=inspections.GetSize()-1;
+	last_return_had_shift_down = is_frameless;
+	mxGrid::SetCellValue(row,IG_COL_EXPR,expression);
+}
 

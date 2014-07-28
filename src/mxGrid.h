@@ -1,7 +1,9 @@
 #ifndef MXGRID_H
 #define MXGRID_H
 #include <wx/grid.h>
+#include <vector>
 #include "SingleList.h"
+using namespace std;
 
 class mxGrid : public wxGrid {
 private:
@@ -25,6 +27,25 @@ protected:
 	void DoCreate(); 
 public:
 	mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id=wxID_ANY);
+	
+	void SetRowSelectionMode();
+		
+	void SetColumnVisible(int c, bool visible);
+	bool IsColumnVisible(int c);
+	
+	void Select(int row, int col=-1);
+	int GetSelectedRows(vector<int> &rows, bool inverted=false);
+	
+		
+	/// @brief callback that will be called when user unhides a column so child class can update its content
+	virtual void OnColumnUnhide(int c) {}
+	
+	virtual void OnCellPopupMenu(int row, int col) {}
+	virtual void OnCellDoubleClick(int row, int col) {}
+	virtual void OnLabelPopupMenu(int col) {}
+	
+	
+	// wrappers for wxGrid methods, that considers column hidding
 	void SetCellValue(int r, int c, const wxString &value) {
 		int rc=cols[c].real_pos;
 		if (rc!=-1) wxGrid::SetCellValue(r,rc,value);
@@ -34,15 +55,18 @@ public:
 		if (rc==-1) return "";
 		return wxGrid::GetCellValue(r,rc);
 	}
-	void SetColumnVisible(int c, bool visible);
-	bool IsColumnVisible(int c);
-	
-	/// @brief callback that will be called when user unhides a column so child class can update its content
-	virtual void OnColumnUnhide(int c) {}
-	
-	virtual void OnCellPopupMenu(int row, int col) {}
-	virtual void OnCellDoubleClick(int row, int col) {}
-	virtual void OnLabelPopupMenu(int col) {}
+	void SetReadOnly(int r, int c, bool is_read_only) {
+		if (cols[c].real_pos==-1) return;
+		wxGrid::SetReadOnly(r,cols[c].real_pos,is_read_only);
+	}
+	void SetCellColour(int r, int c, const wxColour &color) {
+		if (cols[c].real_pos==-1) return;
+		wxGrid::SetCellTextColour(r,cols[c].real_pos,color);
+	}
+	void SetCellEditor(int r, int c, wxGridCellEditor *editor) {
+		if (cols[c].real_pos==-1) return;
+		wxGrid::SetCellEditor(r,cols[c].real_pos,editor);
+	}
 //	~mxGrid();
 };
 
