@@ -759,7 +759,7 @@ void MenusAndToolsConfig::CreateMenues () {
 	}
 	wxAcceleratorTable accel(ac,aentries);
 	main_window->SetAcceleratorTable(accel);
-	delete []aentries;
+//	delete []aentries;
 	
 	// set items state // ahora gestionado en el evento menu_open
 	SetProjectMode(project);
