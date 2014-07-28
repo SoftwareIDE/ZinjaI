@@ -1,4 +1,5 @@
 #ifndef INSPECTION_H
+#define INSPECTION_H
 #include <map>
 #include <wx/string.h>
 #include "DebugManager.h"
@@ -22,9 +23,10 @@ class DebuggerInspection;
 class myDIEventHandler {
 public:
 	virtual void OnCreated(DebuggerInspection *di) {}
+	virtual void OnError(DebuggerInspection *di) {}
 	virtual void OnValueChanded(DebuggerInspection *di) {}
 	virtual void OnOutOfScope(DebuggerInspection *di) {}
-	virtual void OnOnInScope(DebuggerInspection *di) {}
+	virtual void OnInScope(DebuggerInspection *di) {}
 	virtual void OnNewType(DebuggerInspection *di) {}
 };
 
@@ -40,8 +42,11 @@ public:
 **/
 struct DebuggerInspection {
 	
+	static SingleList<DebuggerInspection*> all_inspections;
+	
 	/// asocia los variable_objects (por nombre, como lo da gdb) a las instancias de esta clase que los representan internamente en ZinjaI
-	static map<wxString,DebuggerInspection*> vo2di_map;
+	typedef map<wxString,DebuggerInspection*> vo2di_type;
+	static vo2di_type vo2di_map;
 	
 	/// busca una instancia de esta clase DebuggerInspection a partir del nombre de su variable-object en gdb
 	static DebuggerInspection *GetFromVO(const wxString &variable_object) {
@@ -102,10 +107,29 @@ struct DebuggerInspection {
 	
 public:
 	
+	static void OnDebugStop() {
+		ProcessPendingCommands(); // delete pending commands, they shoud not be run in next debugging session
+		vo2di_map.clear();
+	}
+	
+	static void OnDebugStart() {
+		ProcessPendingCommands(); // commands for creating new variable objects should be here
+		// re-create al vo-based inspections on next pause
+		for(int i=0;i<all_inspections.GetSize();i++) { 
+			DebuggerInspection *di = all_inspections[i];
+			if (di->dit_type==DIT_GDB_COMMAND) continue;
+			di->is_frameless=true;
+			AddPendingAction(di,&DebuggerInspection::CreateVO);
+		}
+	}
+	
+	static void OnDebugPause() {
+		ProcessPendingCommands();
+		UpdateAll();
+	}
+		
 	/// Metodo que actualiza todas las inspecciones (consultando a gdb, se debe invocar desde DebugManager cuando hay una pausa/interrupción en la ejecución)
 	static void UpdateAll() {
-		
-		ProcessPendingCommands();
 		
 		// struct para guardar los campos que interesan de cada vo actualizada
 		struct update { wxString name,value,in_scope,new_type,new_num_children; };
@@ -122,7 +146,7 @@ public:
 					while (i<l && s[i]!=']' && s[i]!='}' && s[i]!='=') i++;
 					int p1=i; // posicion del igual
 					if (++i>=l || s[i]!='\"') break; 
-					while (i<l && s[i]!='\"') { if (i=='\\') i++; i++; }
+					while (++i<l && s[i]!='\"') { if (i=='\\') i++; }
 					if (i==l) break; 
 					int p2=i; // posicion de la comilla que cierra
 					wxString name=s.Mid(p0,p1-p0);
@@ -131,6 +155,7 @@ public:
 					else if (name=="in_scope") u.in_scope=s.Mid(p1+2,p2-p1-2);
 					else if (name=="new_type") u.new_type=s.Mid(p1+2,p2-p1-2);
 					else if (name=="new_num_children") u.new_num_children=s.Mid(p1+2,p2-p1-2);
+					while (++i<l && s[i]!=','); while (++i<l && s[i]==' ');
 				}
 				// busca el DebuggerInspection para el vo (por su nombre gdb)
 				map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(u.name);
@@ -143,7 +168,7 @@ public:
 				if (u.in_scope=="true") {
 					di.gdb_value=u.value;
 					if (u.new_type!="") { di.value_type=u.new_type; di.GenerateEvent(&myDIEventHandler::OnNewType); }
-					else if (!di.is_in_scope) di.GenerateEvent(&myDIEventHandler::OnOnInScope);
+					else if (!di.is_in_scope) { di.is_in_scope=true; di.GenerateEvent(&myDIEventHandler::OnInScope); }
 					else di.GenerateEvent(&myDIEventHandler::OnValueChanded);
 				} else if (di.is_in_scope) {
 					di.is_in_scope=false;
@@ -166,7 +191,7 @@ private:
 	// informacion "calculada"
 	wxString value_type; ///< tipo de dato c/c++ del resultado de la expresión
 	long num_childs; ///< si es una inspeccion compuesta, cantidad de "partes" (campos en un struct, elementos en un arreglo, etc)
-	wxString gdb_value;///< valor tal como lo da gdb, sin alterar
+	wxString gdb_value; ///< valor tal como lo da gdb, sin alterar
 	
 //	int age; ///< indica cuando fue la última vez que se actualizó esta información
 //	int bt_frame; ///< en que nivel del backtrace está actualmente
@@ -179,17 +204,29 @@ private:
 	void VOCreate() {
 		wxString cmd = "-var-create - ";
 		if (is_frameless) cmd<<"@ "; else cmd<<"* ";
-		wxString ans = debug->SendCommand(cmd);
+		wxString ans = debug->SendCommand(cmd,mxUT::EscapeString(expression,true));
 		if (ans.Left(5)!="^done") { dit_type=DIT_ERROR; return; } 
 		else dit_type = DIT_VARIABLE_OBJECT;
 		variable_object = debug->GetValueFromAns(ans,"name",true);
 		value_type = debug->GetValueFromAns(ans,"type",true);
 		gdb_value = debug->GetValueFromAns(ans,"value",true);
 		debug->GetValueFromAns(ans,"numchild",true).ToLong(&num_childs);
+		vo2di_map[variable_object] = this;
 	}
 	
 	void VOSetFrozen() {
 		debug->SendCommand(wxString("-var-set-frozen ")+variable_object,is_frozen?1:0);
+	}
+	
+	void VOEvaluate() {
+		wxString ans = debug->SendCommand(wxString("-var-evaluate-expression "),variable_object);
+		gdb_value = debug->GetValueFromAns(ans,"value",true,true);
+	}
+	
+	void CreateVO() {
+		VOCreate();
+		if (dit_type==DIT_ERROR) GenerateEvent(&myDIEventHandler::OnError);
+		else { VOEvaluate(); GenerateEvent(&myDIEventHandler::OnCreated); }
 	}
 	
 	/// las instancias se construyen solo a través de Create
@@ -202,12 +239,32 @@ private:
 	void operator=(const DebuggerInspection &); ///< esta clase no es copiable
 	
 public:
-		
-	static DebuggerInspection *Create(const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) {
+
+	/**
+	* @brief Crea una instancia a partir de una expresion
+	*
+	* @para init_now si es falso, no se inicializa (no se registra en gdb la variable_object).
+	*   			 se debe llamar inmediatamente a Init con la instancia... esto es para que
+	*                el que la crea pueda conocer el puntero antes de recibir los eventos
+	**/ 
+	static DebuggerInspection *Create(const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL, bool init_now=true) {
 		bool is_cmd = expr.size()&&expr[0]=='>';
 		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,is_cmd?expr.Mid(1):expr,frameless,event_handler);
-		if (!is_cmd && debug->debugging) di->TryToExec(&DebuggerInspection::VOCreate); // si es variable-object y estamos en depuracion, crearla en gdb
+		all_inspections.Add(di);
+		if (init_now) di->Init();
 		return di;
+	}
+	
+	/**
+	* @brief registra la vo de una inspeccion en gdb, ver DebuggerInspection::Create
+	*
+	* @retval true si se completó la inicialización ahora (o si no era necesario 
+	* hacer nada), false si quedó pendiente para la próxima pausa
+	**/ 
+	bool Init() {
+		if (dit_type==DIT_PENDING) // si es variable-object y estamos en depuracion, crearla en gdb
+			return (!debug->debugging || TryToExec(&DebuggerInspection::CreateVO)); 
+		return true;
 	}
 	
 	void Destroy() {
@@ -219,6 +276,7 @@ public:
 			if (it!=vo2di_map.end()) vo2di_map.erase(it); // el if siempre debería dar true
 			else { DEBUG_INFO("ERROR: Inspection::Destroy: it==vo2di_map.end()"); }
 		}
+		all_inspections.Remove(all_inspections.Find(this));
 		AddPendingAction(this,NULL);
 	}
 	

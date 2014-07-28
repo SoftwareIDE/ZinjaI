@@ -1,7 +1,9 @@
 #include "mxGrid.h"
 
-mxGrid::mxGrid(int number_of_cols) {
-	if (number_of_cols) cols.Reserve(number_of_cols);
+mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id) : wxGrid(parent,id,wxDefaultPosition,wxSize(400,300),wxWANTS_CHARS), cols(number_of_cols) {
+	CreateGrid(0,number_of_cols);
+	SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
+	SetRowLabelSize(0);
 }
 
 void mxGrid::SetColumnVisible (int c, bool visible) {
@@ -38,17 +40,20 @@ void mxGrid::RecalcColumns(int new_w) {
 	}
 }
 
-void mxGrid::AddColumn (wxString name, int width, bool visible) {
-	mxGridCol gc;
-	gc.name=name;
-	gc.width=width;
-	gc.orig_pos=cols.GetSize();
-	gc.real_pos=visible?1:-1;
-	cols.Add(gc);
+void mxGrid::InitColumn (int col_idx, wxString name, int width/*, bool visible*/) {
+	mxGridCol &gc=cols[col_idx];
+	gc.name =name;
+	gc.width = width;
+	gc.orig_pos = col_idx;
+	gc.real_pos = col_idx;
+//	gc.real_pos = visible?1:-1;
+	SetColLabelValue(col_idx,name);
+	SetColSize(col_idx,width);
 }
 
 
 void mxGrid::DoCreate ( ) {
+	RecalcColumns(GetSize().GetWidth());
 	Connect(wxEVT_SIZE,wxSizeEventHandler(mxGrid::OnResize),NULL,this);
 //	Connect(wxEVT_GRID_COL_SIZE,wxGridEventHandler(mxGrid::OnColResize),NULL,this);
 	Connect(wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEventHandler(mxGrid::OnDblClick),NULL,this);

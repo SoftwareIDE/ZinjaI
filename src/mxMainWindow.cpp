@@ -507,9 +507,9 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	aui_manager.AddPane(CreateCompilerTree(), wxAuiPaneInfo().Name("compiler_tree").Bottom().Caption(LANG(CAPTION_COMPILER_OUTPUT,"Resultados de la Compilacion")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	aui_manager.AddPane(CreateQuickHelp(), wxAuiPaneInfo().Name("quick_help").Bottom().Caption(LANG(CAPTION_QUIKHELP,"Ayuda Rapida")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Debug.inspections_on_right)
-		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Right().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
+		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Right().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
 	else
-		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
+		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_INSPECTIONS] = new mxHidenPanel(this,inspection_ctrl,config->Debug.inspections_on_right?HP_RIGHT:HP_BOTTOM,LANG(MAINW_AUTOHIDE_INSPECTIONS,"Inspecciones"));
 	aui_manager.AddPane((wxGrid*)(backtrace_ctrl = new mxBacktraceGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("backtrace").Caption(LANG(CAPTION_BACKTRACE,"Trazado Inverso")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(1).MaximizeButton(!config->Init.autohiding_panels));
@@ -1339,6 +1339,7 @@ void mxMainWindow::OnEdit (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnEditNeedFocus (wxCommandEvent &event) {
+#warning usar esto para las demas acciones de edicion que tambien tengan atajos compartidos
 	_record_this_action_in_macro(event.GetId());
 	wxWindow *focus = main_window->FindFocus();
 	if (focus && focus->IsKindOf(menu_data->toolbar_find_text->GetClassInfo())) {
@@ -3281,9 +3282,10 @@ void mxMainWindow::OnDebugInspect ( wxCommandEvent &event ) {
 		aui_manager.Update();
 	}
 	inspection_ctrl->SetFocus();
-	wxKeyEvent evt;
-	evt.m_keyCode=WXK_INSERT;
-	inspection_ctrl->OnKey(evt);
+#warning ver si reestablecer esto
+//	wxKeyEvent evt;
+//	evt.m_keyCode=WXK_INSERT;
+//	inspection_ctrl->OnKey(evt);
 }
 
 void mxMainWindow::OnDebugBacktrace ( wxCommandEvent &event ) {

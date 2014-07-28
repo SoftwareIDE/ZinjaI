@@ -21,18 +21,18 @@ private:
 	void OnLabelPopup(wxGridEvent &event);
 	
 protected:
-	void AddColumn(wxString name, int width, bool visible=true); 
+	void InitColumn(int col_idx, wxString name, int width/*, bool visible=true*/); 
 	void DoCreate(); 
 public:
-	mxGrid(int number_of_cols=0);
+	mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id=wxID_ANY);
 	void SetCellValue(int r, int c, const wxString &value) {
 		int rc=cols[c].real_pos;
-		if (rc!=-1) SetCellValue(r,rc,value);
+		if (rc!=-1) wxGrid::SetCellValue(r,rc,value);
 	}
 	wxString GetCellValue(int r, int c) {
 		int rc=cols[c].real_pos;
 		if (rc==-1) return "";
-		return GetCellValue(r,rc);
+		return wxGrid::GetCellValue(r,rc);
 	}
 	void SetColumnVisible(int c, bool visible);
 	bool IsColumnVisible(int c);

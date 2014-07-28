@@ -9,7 +9,7 @@
 #include "mxSource.h"
 #include "ProjectManager.h"
 #include "ids.h"
-#include "mxInspectionGrid.h"
+//#include "mxInspectionGrid.h"
 #include "mxBacktraceGrid.h"
 #include <wx/grid.h>
 #include "Parser.h"
@@ -50,7 +50,7 @@ DebugManager::DebugManager() {
 	pause_breakpoint = NULL;
 	current_handle = -1;
 	last_backtrace_size = 0;
-	inspections_count = 0;
+//	inspections_count = 0;
 //	backtrace_visible = false;
 	threadlist_visible = false;
 	waiting = debugging = running = really_running = false;
@@ -290,14 +290,15 @@ void DebugManager::ResetDebuggingStuff() {
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
 	while (bpi.IsValid()) { bpi->gdb_id=-1; bpi.Next(); }
 	
-	for (int i=0;i<inspections_count;i++)
-		if (inspections[i].is_vo) {
-			SetFramelessInspection(i);
-		} else if (inspections[i].expr.StartsWith(">")) {
-			inspections[i].name=inspections[i].expr.Mid(1);
-			inspections[i].on_scope=true;
-			inspections[i].frameless=false;
-		}
+#warning Ver si aca hay que hacer algo con mxInspectionGrid
+//	for (int i=0;i<inspections_count;i++)
+//		if (inspections[i].is_vo) {
+//			SetFramelessInspection(i);
+//		} else if (inspections[i].expr.StartsWith(">")) {
+//			inspections[i].name=inspections[i].expr.Mid(1);
+//			inspections[i].on_scope=true;
+//			inspections[i].frameless=false;
+//		}
 	
 	buffer[0]=buffer[1]=buffer[2]=buffer[3]=buffer[4]=buffer[5]=' ';
 	buffer[6]='\0';
@@ -427,7 +428,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
 		Backtrace(true);
-		UpdateInspection();
+		DebuggerInspection::OnDebugStart();
 		long line;
 		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
 		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
@@ -525,7 +526,7 @@ void DebugManager::HowDoesItRuns() {
 				if (sbn.ToLong(&bn)) {
 					bpi=BreakPointInfo::FindFromNumber(bn,true);
 					if (!should_pause && bpi && bpi->action==BPA_INSPECTIONS) {
-						UpdateInspection();
+						DebuggerInspection::OnDebugPause();
 						_aux_continue;
 					}
 				}
@@ -536,28 +537,30 @@ void DebugManager::HowDoesItRuns() {
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text=LANG(DEBUG_STATUS_WATCH,"El programa se interrumpio por un WatchPoint: ");
 			long l;
-			GetValueFromAns(ans.AfterFirst('{'),_T("number"),true).ToLong(&l);
-			for (int i=0;i<inspections_count;i++) {
-				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
-					state_text<<inspections[i].expr;
-					inspection_grid->SelectRow(i);
-					break;
-				}
-			}
+			GetValueFromAns(ans.AfterFirst('{'),"number",true).ToLong(&l);
+#warning Reestablecer funcionalidad de los watchpoints
+//			for (int i=0;i<inspections_count;i++) {
+//				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
+//					state_text<<inspections[i].expr;
+//					inspection_grid->SelectRow(i);
+//					break;
+//				}
+//			}
 		} else if (how==_T("watchpoint-scope")) {
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text=LANG(DEBUG_STATUS_WATCH_OUT,"El WatchPoint ha dejado de ser valido: ");
 			long l;
 			GetValueFromAns(ans,_T("wpnum"),true).ToLong(&l);
-			for (int i=0;i<inspections_count;i++) {
-				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
-					state_text<<inspections[i].expr;
-					inspections[i].watch_read = inspections[i].watch_write = false;
-//					inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
-					inspection_grid->SelectRow(i);
-					break;
-				}
-			}
+#warning Reestablecer funcionalidad de los watchpoints
+//			for (int i=0;i<inspections_count;i++) {
+//				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
+//					state_text<<inspections[i].expr;
+//					inspections[i].watch_read = inspections[i].watch_write = false;
+////					inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
+//					inspection_grid->SelectRow(i);
+//					break;
+//				}
+//			}
 		} else if (how==_T("location-reached")) {
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text=LANG(DEBUG_STATUS_LOCATION_REACHED,"El programa alcanzo la ubicacion seleccionada");
@@ -622,7 +625,7 @@ void DebugManager::HowDoesItRuns() {
 					if (threadlist_visible) ListThreads();
 					Backtrace(false);
 				}
-				UpdateInspection();
+				DebuggerInspection::OnDebugPause();
 			}
 		} else {
 	//		if (config->Debug.autoupdate_backtrace)
@@ -1425,8 +1428,8 @@ bool DebugManager::Return(wxString what) {
 	line.ToLong(&fline);
 	MarkCurrentPoint(fname,fline,mxSTC_MARK_EXECPOINT);
 	//if (backtrace_visible && config->Debug.autoupdate_backtrace)
-		Backtrace(true);
-	UpdateInspection();
+	Backtrace(true);
+	DebuggerInspection::OnDebugPause();
 	return true;
 }
 
@@ -1448,9 +1451,8 @@ void DebugManager::ProcessKilled() {
 	running = debugging = waiting = false;
 	status=DBGST_NULL;
 	wxCommandEvent evt;
-	if (gui_is_prepared) {
-		main_window->PrepareGuiForDebugging(false);
-	}
+	if (gui_is_prepared) main_window->PrepareGuiForDebugging(false);
+	DebuggerInspection::OnDebugStop();
 }
 
 #if !defined(_WIN32) && !defined(__WIN32__)
@@ -1463,503 +1465,503 @@ void DebugManager::TtyProcessKilled() {
 }
 #endif
 
-/**
-* @brief expr is input and ouput argument
-* @brief type is output argument
-**/
-wxString DebugManager::CreateVO(wxString &expr, wxString &type) {
-	wxString ans = SendCommand("-var-create - * ",mxUT::EscapeString(expr,true));
-	type = GetValueFromAns(ans,"type",true);
-	wxArrayString &from=config->Debug.inspection_improving_template_from;
-	if (config->Debug.improve_inspections_by_type) {
-		wxString mtype=type; if (mtype.EndsWith(" &")) { mtype.RemoveLast(); mtype.RemoveLast(); }
-		for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
-			if (from[i]==mtype) {
-				wxString e=config->Debug.inspection_improving_template_to[i];
-				e.Replace("${EXP}",expr,true); expr=e;
-				SendCommand("-var-delete ",GetValueFromAns(ans,"name",true));
-				ans = SendCommand("-var-create - * ",mxUT::EscapeString(expr,true));
-				break;
-			}
-		}
-	}
-	return ans;
-}
-
-bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
-	if (waiting || !debugging) return false;
-	last_error.Clear();
-	if (!expr.Len()) {
-		if (num!=inspections_count) {
-			inspection_grid->SetCellValue(num,IG_COL_EXPR,inspections[num].expr);
-		}
-		return false;
-	}
-	bool is_vo=expr[0]!='>';
-	if (config->Debug.select_modified_inspections)
-		inspection_grid->HightlightChange(num);
-	if (num==inspections_count || force_new) {
-		wxString ans,value,vo_type;
-		if (is_vo) ans = CreateVO(expr,vo_type);
-		inspection_grid->SetCellValue(num,IG_COL_EXPR,expr);
-		inspectinfo ii(
-			is_vo?GetValueFromAns(ans,"name",true):expr.Mid(1),
-			is_vo?vo_type:wxString("<cmd>"),
-			expr);
-		ii.frame=current_frame;
-		ii.is_vo=is_vo;
-		if (ii.name.Len()) {
-			inspection_grid->SetReadOnly(num,IG_COL_LEVEL,true);
-			inspection_grid->SetCellValue(num,IG_COL_LEVEL,current_frame_num);
-			inspection_grid->SetCellValue(num,IG_COL_TYPE,ii.type);
-			if (is_vo) {
-				value = GetValueFromAns( SendCommand(_T("-var-evaluate-expression "),ii.name) , _T("value") ,true ,true);
-			} else {
-				value = GetMacroOutput(ii.name);
-			}
-			if (value[0]=='@') {
-				wxString value2=value.Mid(value.Find(':')+2);
-				ii.is_class = value2[0]=='{';
-				ii.is_array = value2[0]=='[';
-				ii.always_evaluate = true;
-			} else {
-//				ii.use_data_evaluate = true;
-				ii.is_class = value[0]=='{';
-				ii.is_array = value[0]=='[';
-				ii.use_data_evaluate = ii.always_evaluate = ii.is_array||ii.is_class;
-			}
-			if (( ii.is_class || ii.is_array ) && ii.is_vo) {
-				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new mxPlusCellRenderer());
-				if (ii.use_data_evaluate)
-					inspection_grid->SetCellValue(num,IG_COL_VALUE, InspectExpression(ii.expr));
-				else
-					inspection_grid->SetCellValue(num,IG_COL_VALUE,value);
-				inspection_grid->SetReadOnly(num,IG_COL_VALUE,true);
-//				inspection_grid->SetReadOnly(num,IG_COL_WATCH,true);
-//				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
-				if (ii.is_class) {
-//					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
-//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
-				} else {
-//					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
-//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
-				}
-			} else {
-				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
-				inspection_grid->SetReadOnly(num,IG_COL_VALUE,!is_vo);
-				inspection_grid->SetCellValue(num,IG_COL_VALUE, value );
-//				inspection_grid->SetReadOnly(num,IG_COL_WATCH,false);
-//				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
-//				inspection_grid->SetCellValue(num,IG_COL_FORMAT,is_vo?LANG(INSPECTGRID_FORMAT_NATURAL,"natural"):_T("macro"));
-			}
-//			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
-			if (num==inspections_count) {
-				inspection_grid->AddRow();
-				inspections_count++;
-				inspections.push_back(ii);
-			} else 
-				inspections[num]=ii;
-			return true;
-		} else {
-			if (!ans.Len()) last_error="<killed>"; else
-				last_error = GetValueFromAns(ans,"msg",true,true);
-			if (ans.Find("unable to create variable object")!=wxNOT_FOUND)
-				inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_INCORRECT_EXPRESSION,"<<<expresion incorrecta>>>"));
-			else
-				inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
-			inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
-			inspection_grid->HightlightDisable(num);
-			inspections.push_back(inspectinfo(value,"",value));
-			inspection_grid->AddRow(); inspections_count++;
-//			inspection_grid->SetCellValue(num,IG_COL_EXPR,"");
-		}
-	} else /*if (inspections[num].expr!=expr)*/ {
-		if (!inspections[num].frameless && inspections[num].is_vo && inspections[num].on_scope && !SelectFrameForInspeccion(inspections[num].frame))
-			inspection_grid->SetCellValue(num,IG_COL_LEVEL,"Error");	
-		else 
-			inspection_grid->SetCellValue(num,IG_COL_LEVEL,current_frame_num);
-		ModifyInspectionWatch(num,false,false);
-		// para modificar una expresion se crea una nueva y destruye la anterior
-		wxString ans,value,vo_type;
-		if (is_vo) ans = CreateVO(expr,vo_type); // SendCommand(_T("-var-create - * "),mxUT::EscapeString(expr,true));
-		inspection_grid->SetCellValue(num,IG_COL_EXPR,expr);
-		inspectinfo ii(
-			is_vo?GetValueFromAns(ans,_T("name"),true):expr.Mid(1),
-			is_vo?vo_type:wxString(_T("<cmd>")),
-			expr);
-		ii.is_vo=is_vo;
-		ii.frameless=false;
-		if (!inspections[num].frameless && inspections[num].is_vo && inspections[num].on_scope) {
-			ii.frame_num = inspections[num].frame_num;
-			ii.frame = inspections[num].frame;
-		} else {
-			ii.frame_num = current_frame_num;
-			ii.frame = current_frame;
-		}
-		if (ii.name.Len()) { // si se pudo crea el nuevo VO
-			inspection_grid->SetCellValue(num,IG_COL_TYPE,ii.type);
-			if (is_vo) {
-//				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+" "+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)=="error") 
-//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
-				value = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),ii.name),_T("value"),true,true);
-			} else {
-//				inspection_grid->SetCellValue(num,IG_COL_FORMAT,_T("macro"));
-				value = GetMacroOutput(ii.name);
-			}
-			if (value[0]=='@') {
-				wxString value2 = value.Mid(value.Find(':')+2);
-				ii.is_class = value2[0]=='{';
-				ii.is_array = value2[0]=='[';
-				ii.always_evaluate = true;
-			} else {
-				ii.use_data_evaluate = true;
-				ii.is_class = value[0]=='{';
-				ii.is_array = value[0]=='[';
-				ii.always_evaluate = ii.is_array||ii.is_class;
-			}
-			if ( (ii.is_class || ii.is_array) && is_vo ) {
-				inspection_grid->SetReadOnly(num,IG_COL_VALUE,true);
-				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new mxPlusCellRenderer());
-				if (ii.use_data_evaluate)
-					inspection_grid->SetCellValue(num,IG_COL_VALUE, InspectExpression(ii.expr));
-				else
-					inspection_grid->SetCellValue(num,IG_COL_VALUE,value);
-//				inspection_grid->SetReadOnly(num,IG_COL_WATCH,true);
-//				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
-				if (ii.is_class) {
-//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
-//					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
-				} else {
-//					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
-//					inspection_grid->SetReadOnly(inspections_count,IG_COL_FORMAT,false);
-				}
-			} else {
-				inspection_grid->SetReadOnly(num,IG_COL_VALUE,!is_vo);
-				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
-				inspection_grid->SetCellValue(num,IG_COL_VALUE, value );
-//				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
-//				inspection_grid->SetReadOnly(num,IG_COL_WATCH,false);
-			}
-//			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
-			// reemplazar las datos de la inspeccion y borrar el VO viejo
-			if (inspections[num].is_vo) SendCommand(_T("-var-delete "),inspections[num].name);
-			inspections[num]=ii;
-			SelectFrameForInspeccion(current_frame);
-			return true;
-		} else { // si no se pudo crear el VO
-			if (!ans.Len()) last_error=_T("<killed>"); else
-				last_error = GetValueFromAns(ans,_T("msg"),true,true);
-			inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_INCORRECT_EXPRESSION,"<<<expresion incorrecta>>>"));inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
-			inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
-			inspection_grid->HightlightDisable(num);
-		}
-	}
-	return false;
-}
-
-bool DebugManager::DuplicateInspection(int num) {
-	if (waiting || !debugging) return false;
-	last_error.Clear();
-	wxString expr=inspection_grid->GetCellValue(num,IG_COL_EXPR);
-	inspection_grid->InsertRows(num+1,1);
-	inspections.insert(inspections.begin()+num,inspections[num]);
-	inspection_grid->SetCellValue(num+1,IG_COL_EXPR,expr);
-	inspections_count++;
-	if (!inspections[num+1].frameless) SelectFrameForInspeccion(inspections[num].frame);
-	bool retval=ModifyInspection(num+1,expr,true);
-	if (!inspections[num+1].frameless) {
-		inspections[num+1].frame=inspections[num].frame; 
-		inspection_grid->SetCellValue(num+1,IG_COL_LEVEL,inspection_grid->GetCellValue(num,IG_COL_LEVEL));
-	} else {
-		inspection_grid->HightlightDisable(num+1);
-		inspection_grid->SetCellValue(num+1,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de Ambito >>>"));
-	}
-	SelectFrameForInspeccion(current_frame);
-	return retval;
-}
-
-bool DebugManager::DeleteInspection(int num) {
-	if (!debugging || waiting) return false;
-	if (inspections[num].on_scope && inspections[num].is_vo) {
-		wxString ans = SendCommand(_T("-var-delete "),inspections[num].name);
-		if (ans.SubString(1,5)=="error")
-			return false;
-	}
-	inspections.erase(inspections.begin()+num);
-	inspections_count--;
-	return true;
-}
-
-bool DebugManager::ModifyInspectionValue(int num, wxString value) {
-	if (!debugging || waiting) return false;
-	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+" "+mxUT::EscapeString(value,true));
-	if (ans.Mid(1,4)=="done")
-		UpdateInspection();
-	return ans.Mid(1,4)=="done";
-}
-
-bool DebugManager::ModifyInspectionFormat(int num, wxString format) {
-	if (!debugging || waiting) return false;
-	wxString ans = SendCommand(_T("-var-set-format "),inspections[num].name+" "+format);
-	if (ans.SubString(1,5)=="error")
-		return false;
-//	inspection_grid->SetCellValue(num,IG_COL_FORMAT,format);
-	inspection_grid->SetCellValue(num,IG_COL_VALUE,
-		GetValueFromAns( SendCommand(_T("-var-evaluate-expression "), inspections[num].name) , _T("value") ,true, true ) );
-	return false;
-}
-
-void DebugManager::UpdateFramelessInspection() {
-	if (!debugging || waiting || inspections_count==0) return;
-	for (unsigned int i=0;i<inspections.size();i++) {
-		if (!inspections[i].frameless || inspections[i].freezed) continue;
-		wxString vnew = InspectExpression(inspections[i].expr);
-		if (!vnew.Len()) {
-			vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
-			if (config->Debug.select_modified_inspections) 
-				inspection_grid->HightlightDisable(i);
-		} else if (config->Debug.select_modified_inspections) {
-			wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
-			if (vold!=vnew) inspection_grid->HightlightChange(i);
-			else inspection_grid->HightlightNone(i);
-		}
-		inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-	}
-}
-
-void  DebugManager::UpdateInspections() {
-	DebuggerInspection::UpdateAll();
-	mxGenericInspectionCtrl::UpdateAll();
-}
-
-bool DebugManager::UpdateInspection() {
-	if (!debugging || waiting || inspections_count==0) return false;
-	inspection_grid->BeginBatch();
-	if (config->Debug.select_modified_inspections)
-		for (int i=0;i<inspections_count;i++)
-			if (inspections[i].is_vo && inspections[i].on_scope && !inspections[i].always_evaluate && !inspections[i].freezed)
-				inspection_grid->HightlightNone(i);
-	wxString my_frame=current_frame, my_frame_num=current_frame_num;
-//	if (config->Debug.select_modified_inspections) 
-//		inspection_grid->ResetChangeHightlights();
-	UpdateFramelessInspection();
-	// actualizar los numeros de frame segun el backtrace
-//	if (config->Debug.inspection_frame_address) {
-		for (int i=0;i<inspections_count;i++) {
-			inspectinfo &ii = inspections[i];
-			if (ii.frameless || !ii.on_scope) continue;
-			if (ii.frame!=my_frame) {
-				bool found=false;
-				for (int j=0;j<last_backtrace_size;j++) {
-					if (frames_addrs[j]==ii.frame) {
-						found=true;
-						my_frame=frames_addrs[j];
-						my_frame_num=frames_nums[j];
-						ii.frame=my_frame;
-						ii.frame_num=my_frame_num;
-						inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
-						break;
-					}
-				}
-				if (!found) {
-					ii.frame="Error";
-					ii.frame_num="Error";
-					inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
-				}
-			} else {
-				ii.frame=my_frame;
-				ii.frame_num=my_frame_num;
-				inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
-			}
-		}
-//	} else {
-//		for (int i=0;i<inspections_count;i++)
-//			inspections[i].frame_num=_T("<ND>");
+///**
+//* @brief expr is input and ouput argument
+//* @brief type is output argument
+//**/
+//wxString DebugManager::CreateVO(wxString &expr, wxString &type) {
+//	wxString ans = SendCommand("-var-create - * ",mxUT::EscapeString(expr,true));
+//	type = GetValueFromAns(ans,"type",true);
+//	wxArrayString &from=config->Debug.inspection_improving_template_from;
+//	if (config->Debug.improve_inspections_by_type) {
+//		wxString mtype=type; if (mtype.EndsWith(" &")) { mtype.RemoveLast(); mtype.RemoveLast(); }
+//		for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
+//			if (from[i]==mtype) {
+//				wxString e=config->Debug.inspection_improving_template_to[i];
+//				e.Replace("${EXP}",expr,true); expr=e;
+//				SendCommand("-var-delete ",GetValueFromAns(ans,"name",true));
+//				ans = SendCommand("-var-create - * ",mxUT::EscapeString(expr,true));
+//				break;
+//			}
+//		}
 //	}
-	
-	my_frame=current_frame; my_frame_num=current_frame_num;
-	
-	wxString ans = SendCommand(_T("-var-update *"));
-	int p = ans.Find(_T("name="));
-	while (p!=wxNOT_FOUND) {
-		int p2 = p+6;
-		while (ans[p2]!='\"')
-			p2++;
-		wxString name = ans.SubString(p+6,p2-1);
-		ans.Remove(0,p2);
-		p = ans.Find(_T("in_scope="));
-		if (p!=wxNOT_FOUND && ans[p+10]=='f') {
-			for (unsigned int i=0;i<inspections.size();i++)
-				if (inspections[i].on_scope && inspections[i].name==name && inspections[i].is_vo) {
-					if (!inspections[i].freezed) {
-						inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
-						inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-						if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-					}
-					inspection_grid->SetCellValue(i,IG_COL_LEVEL,"");
-					inspection_grid->SetReadOnly(i,IG_COL_VALUE,true);
-//					inspection_grid->SetReadOnly(i,IG_COL_FORMAT,true);
-//					inspection_grid->SetReadOnly(i,IG_COL_WATCH,true);
-					inspections[i].on_scope=false;
-					if (inspections[i].is_vo) SendCommand(_T("-var-delete "),inspections[i].name);
-					break;
-				}
-		} else {
-			for (unsigned int i=0;i<inspections.size();i++) {
-				if (!inspections[i].freezed && inspections[i].on_scope && inspections[i].is_vo && inspections[i].name==name) {
-//					bool do_inspect=false; // ver si esta el scope en el backtrace y seleccionar el frame
-//					if (inspections[i].frame!=my_frame) {
-//						for (int j=0;j<last_backtrace_size;j++)
-//							if (frames_addrs[j]==inspections[i].frame) {
-//								do_inspect=true;
-//								my_frame=frames_addrs[j];
-//								inspection_grid->SetCellValue(i,IG_COL_LEVEL,frames_nums[j]);
-//								break;
-//							}
-//					} else 
-//						do_inspect=true;
-//					if (!do_inspect) 
-//						inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
-//					else {
-					if (inspections[i].frame_num[0]!='E') {
-						inspection_grid->SetCellValue(i,IG_COL_VALUE,
-							GetValueFromAns( SendCommand(_T("-var-evaluate-expression "), name) , _T("value") ,true,true ) );
-						if (config->Debug.select_modified_inspections)
-							inspection_grid->HightlightChange(i);
-					}
-					break;
-				}
-			}
-		}
-		p = ans.Find(_T("name="));
-	}
+//	return ans;
+//}
 
-	// actualizar los tipos compuestos (habria que buscar algo mas eficiente)
-	for (unsigned int i=0;i<inspections.size();i++) {
-		if (!inspections[i].on_scope || inspections[i].frameless || inspections[i].freezed) continue;
-		if (inspections[i].is_vo && inspections[i].always_evaluate) {
-//			bool do_inspect=false; // ver si esta el scope en el backtrace y seleccionar el frame
-//			if (inspections[i].frame!=my_frame) {
-//				for (int j=0;j<last_backtrace_size;j++) {
-//					if (frames_addrs[j]==inspections[i].frame) {
-//						do_inspect=true;
-//						my_frame=frames_addrs[j];
-//						SendCommand(_T("-stack-select-frame "),my_frame_num=frames_nums[j]);
-//						break;
-//					}
-//				}
-//			} else do_inspect=true;
-//			if (do_inspect) {
-			if (inspections[i].frame_num[0]!='E') {
-				if (my_frame_num!=inspections[i].frame_num) {
-					my_frame=inspections[i].frame;
-					my_frame_num=inspections[i].frame_num;
-					SendCommand(_T("-stack-select-frame "),my_frame_num);
-				}
-				if (inspections[i].use_data_evaluate) {
-					inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
-					if (config->Debug.select_modified_inspections) {
-						wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
-						wxString vnew = InspectExpression(inspections[i].expr);
-						if (vold!=vnew) {
-							inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-							inspection_grid->HightlightChange(i);
-						} else
-							inspection_grid->HightlightNone(i);
-					} else
-						inspection_grid->SetCellValue(i,IG_COL_VALUE,InspectExpression(inspections[i].expr));
-				} else {
-					if (config->Debug.select_modified_inspections) {
-						wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
-						wxString vnew = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[i].name),_T("value"),true,true);
-						if (vold!=vnew) {
-							inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-							inspection_grid->HightlightChange(i);
-						} else
-							inspection_grid->HightlightNone(i);
-					} else
-						inspection_grid->SetCellValue(i,IG_COL_VALUE,GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[i].name),_T("value"),true,true));
-				}
+//bool DebugManager::ModifyInspection(int num, wxString expr, bool force_new) {
+//	if (waiting || !debugging) return false;
+//	last_error.Clear();
+//	if (!expr.Len()) {
+//		if (num!=inspections_count) {
+//			inspection_grid->SetCellValue(num,IG_COL_EXPR,inspections[num].expr);
+//		}
+//		return false;
+//	}
+//	bool is_vo=expr[0]!='>';
+//	if (config->Debug.select_modified_inspections)
+//		inspection_grid->HightlightChange(num);
+//	if (num==inspections_count || force_new) {
+//		wxString ans,value,vo_type;
+//		if (is_vo) ans = CreateVO(expr,vo_type);
+//		inspection_grid->SetCellValue(num,IG_COL_EXPR,expr);
+//		inspectinfo ii(
+//			is_vo?GetValueFromAns(ans,"name",true):expr.Mid(1),
+//			is_vo?vo_type:wxString("<cmd>"),
+//			expr);
+//		ii.frame=current_frame;
+//		ii.is_vo=is_vo;
+//		if (ii.name.Len()) {
+//			inspection_grid->SetReadOnly(num,IG_COL_LEVEL,true);
+//			inspection_grid->SetCellValue(num,IG_COL_LEVEL,current_frame_num);
+//			inspection_grid->SetCellValue(num,IG_COL_TYPE,ii.type);
+//			if (is_vo) {
+//				value = GetValueFromAns( SendCommand(_T("-var-evaluate-expression "),ii.name) , _T("value") ,true ,true);
 //			} else {
-//				inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
-			}
-		} else if (!inspections[i].is_vo) { // no es vo
-			if (config->Debug.select_modified_inspections) {
-				wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
-				wxString vnew = GetMacroOutput(inspections[i].name);
-				if (vold!=vnew) {
-					inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-					inspection_grid->HightlightChange(i);
-				} else
-					inspection_grid->HightlightNone(i);
-			} else
-				inspection_grid->SetCellValue(i,IG_COL_VALUE,GetMacroOutput(inspections[i].name));
-		}
-	}
-//	// opacar las que no estan en scope
-//	if (config->Debug.select_modified_inspections) {
-//		for (unsigned int i=0;i<inspections.size();i++) {
-//			if (!inspections[i].on_scope && inspections[i].is_vo)
-//				inspection_grid->HightlightDisable(i);
+//				value = GetMacroOutput(ii.name);
+//			}
+//			if (value[0]=='@') {
+//				wxString value2=value.Mid(value.Find(':')+2);
+//				ii.is_class = value2[0]=='{';
+//				ii.is_array = value2[0]=='[';
+//				ii.always_evaluate = true;
+//			} else {
+////				ii.use_data_evaluate = true;
+//				ii.is_class = value[0]=='{';
+//				ii.is_array = value[0]=='[';
+//				ii.use_data_evaluate = ii.always_evaluate = ii.is_array||ii.is_class;
+//			}
+//			if (( ii.is_class || ii.is_array ) && ii.is_vo) {
+//				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new mxPlusCellRenderer());
+//				if (ii.use_data_evaluate)
+//					inspection_grid->SetCellValue(num,IG_COL_VALUE, InspectExpression(ii.expr));
+//				else
+//					inspection_grid->SetCellValue(num,IG_COL_VALUE,value);
+//				inspection_grid->SetReadOnly(num,IG_COL_VALUE,true);
+////				inspection_grid->SetReadOnly(num,IG_COL_WATCH,true);
+////				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
+//				if (ii.is_class) {
+////					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
+////					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
+//				} else {
+////					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
+////					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
+//				}
+//			} else {
+//				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
+//				inspection_grid->SetReadOnly(num,IG_COL_VALUE,!is_vo);
+//				inspection_grid->SetCellValue(num,IG_COL_VALUE, value );
+////				inspection_grid->SetReadOnly(num,IG_COL_WATCH,false);
+////				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
+////				inspection_grid->SetCellValue(num,IG_COL_FORMAT,is_vo?LANG(INSPECTGRID_FORMAT_NATURAL,"natural"):_T("macro"));
+//			}
+////			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
+//			if (num==inspections_count) {
+//				inspection_grid->AddRow();
+//				inspections_count++;
+//				inspections.push_back(ii);
+//			} else 
+//				inspections[num]=ii;
+//			return true;
+//		} else {
+//			if (!ans.Len()) last_error="<killed>"; else
+//				last_error = GetValueFromAns(ans,"msg",true,true);
+//			if (ans.Find("unable to create variable object")!=wxNOT_FOUND)
+//				inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_INCORRECT_EXPRESSION,"<<<expresion incorrecta>>>"));
+//			else
+//				inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
+//			inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
+//			inspection_grid->HightlightDisable(num);
+//			inspections.push_back(inspectinfo(value,"",value));
+//			inspection_grid->AddRow(); inspections_count++;
+////			inspection_grid->SetCellValue(num,IG_COL_EXPR,"");
+//		}
+//	} else /*if (inspections[num].expr!=expr)*/ {
+//		if (!inspections[num].frameless && inspections[num].is_vo && inspections[num].on_scope && !SelectFrameForInspeccion(inspections[num].frame))
+//			inspection_grid->SetCellValue(num,IG_COL_LEVEL,"Error");	
+//		else 
+//			inspection_grid->SetCellValue(num,IG_COL_LEVEL,current_frame_num);
+//		ModifyInspectionWatch(num,false,false);
+//		// para modificar una expresion se crea una nueva y destruye la anterior
+//		wxString ans,value,vo_type;
+//		if (is_vo) ans = CreateVO(expr,vo_type); // SendCommand(_T("-var-create - * "),mxUT::EscapeString(expr,true));
+//		inspection_grid->SetCellValue(num,IG_COL_EXPR,expr);
+//		inspectinfo ii(
+//			is_vo?GetValueFromAns(ans,_T("name"),true):expr.Mid(1),
+//			is_vo?vo_type:wxString(_T("<cmd>")),
+//			expr);
+//		ii.is_vo=is_vo;
+//		ii.frameless=false;
+//		if (!inspections[num].frameless && inspections[num].is_vo && inspections[num].on_scope) {
+//			ii.frame_num = inspections[num].frame_num;
+//			ii.frame = inspections[num].frame;
+//		} else {
+//			ii.frame_num = current_frame_num;
+//			ii.frame = current_frame;
+//		}
+//		if (ii.name.Len()) { // si se pudo crea el nuevo VO
+//			inspection_grid->SetCellValue(num,IG_COL_TYPE,ii.type);
+//			if (is_vo) {
+////				if (inspection_grid->GetCellValue(num,IG_COL_FORMAT)==LANG(INSPECTGRID_TYPE_STRUCT,"estructura") || SendCommand(_T("-var-set-format "),ii.name+" "+inspection_grid->GetCellValue(num,IG_COL_FORMAT)).Mid(1,5)=="error") 
+////					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+//				value = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),ii.name),_T("value"),true,true);
+//			} else {
+////				inspection_grid->SetCellValue(num,IG_COL_FORMAT,_T("macro"));
+//				value = GetMacroOutput(ii.name);
+//			}
+//			if (value[0]=='@') {
+//				wxString value2 = value.Mid(value.Find(':')+2);
+//				ii.is_class = value2[0]=='{';
+//				ii.is_array = value2[0]=='[';
+//				ii.always_evaluate = true;
+//			} else {
+//				ii.use_data_evaluate = true;
+//				ii.is_class = value[0]=='{';
+//				ii.is_array = value[0]=='[';
+//				ii.always_evaluate = ii.is_array||ii.is_class;
+//			}
+//			if ( (ii.is_class || ii.is_array) && is_vo ) {
+//				inspection_grid->SetReadOnly(num,IG_COL_VALUE,true);
+//				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new mxPlusCellRenderer());
+//				if (ii.use_data_evaluate)
+//					inspection_grid->SetCellValue(num,IG_COL_VALUE, InspectExpression(ii.expr));
+//				else
+//					inspection_grid->SetCellValue(num,IG_COL_VALUE,value);
+////				inspection_grid->SetReadOnly(num,IG_COL_WATCH,true);
+////				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
+//				if (ii.is_class) {
+////					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
+////					inspection_grid->SetReadOnly(num,IG_COL_FORMAT,true);
+//				} else {
+////					inspection_grid->SetCellValue(num,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
+////					inspection_grid->SetReadOnly(inspections_count,IG_COL_FORMAT,false);
+//				}
+//			} else {
+//				inspection_grid->SetReadOnly(num,IG_COL_VALUE,!is_vo);
+//				inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
+//				inspection_grid->SetCellValue(num,IG_COL_VALUE, value );
+////				inspection_grid->SetReadOnly(num,IG_COL_FORMAT,false);
+////				inspection_grid->SetReadOnly(num,IG_COL_WATCH,false);
+//			}
+////			inspection_grid->SetCellValue(num,IG_COL_WATCH,_T("no"));
+//			// reemplazar las datos de la inspeccion y borrar el VO viejo
+//			if (inspections[num].is_vo) SendCommand(_T("-var-delete "),inspections[num].name);
+//			inspections[num]=ii;
+//			SelectFrameForInspeccion(current_frame);
+//			return true;
+//		} else { // si no se pudo crear el VO
+//			if (!ans.Len()) last_error=_T("<killed>"); else
+//				last_error = GetValueFromAns(ans,_T("msg"),true,true);
+//			inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_INCORRECT_EXPRESSION,"<<<expresion incorrecta>>>"));inspection_grid->SetCellValue(num,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
+//			inspection_grid->SetCellRenderer(num,IG_COL_VALUE,new wxGridCellStringRenderer());
+//			inspection_grid->HightlightDisable(num);
 //		}
 //	}
-	inspection_grid->EndBatch();
-	
-	list<mxExternInspection*>::iterator i1=extern_list.begin(), i2=extern_list.end();
-	if (i1!=i2) {
-		// el print-repeats se desactiva para que las otras ventanas puedan mostrar todo, 
-		// y despues se activa ya que en la tabla de inspecciones no entran muchos datos seguro
-		SetFullOutput(true);
-		while (i1!=i2) {
-			bool do_inspect=false;
-			if ((*i1)->frame.Len()) {
-				if ((*i1)->frame!=my_frame) {
-					for (int j=0;j<last_backtrace_size;j++) {
-						if (frames_addrs[j]==(*i1)->frame) {
-							do_inspect=true;
-							my_frame=frames_addrs[j];
-							my_frame_num=frames_nums[j];
-							SendCommand(_T("-stack-select-frame "),my_frame_num);
-							break;
-						}
-					}
-				} else do_inspect=true;
-			} else do_inspect=true;
-			if (do_inspect) (*i1)->Update(); ++i1;
-		}
-		SetFullOutput(false);
-	}
-	
-//	list<mxInspectionMatrix*>::iterator i1=matrix_list.begin(), i2=matrix_list.end();
-//	if (i1!=i2) {
-//		SendCommand(_T("-gdb-set print elements 0"));
-//		while (i1!=i2) { 
-//			bool do_inspect=false;
-//			if ((*i1)->frame!=my_frame) {
+//	return false;
+//}
+
+//bool DebugManager::DuplicateInspection(int num) {
+//	if (waiting || !debugging) return false;
+//	last_error.Clear();
+//	wxString expr=inspection_grid->GetCellValue(num,IG_COL_EXPR);
+//	inspection_grid->InsertRows(num+1,1);
+//	inspections.insert(inspections.begin()+num,inspections[num]);
+//	inspection_grid->SetCellValue(num+1,IG_COL_EXPR,expr);
+//	inspections_count++;
+//	if (!inspections[num+1].frameless) SelectFrameForInspeccion(inspections[num].frame);
+//	bool retval=ModifyInspection(num+1,expr,true);
+//	if (!inspections[num+1].frameless) {
+//		inspections[num+1].frame=inspections[num].frame; 
+//		inspection_grid->SetCellValue(num+1,IG_COL_LEVEL,inspection_grid->GetCellValue(num,IG_COL_LEVEL));
+//	} else {
+//		inspection_grid->HightlightDisable(num+1);
+//		inspection_grid->SetCellValue(num+1,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de Ambito >>>"));
+//	}
+//	SelectFrameForInspeccion(current_frame);
+//	return retval;
+//}
+
+//bool DebugManager::DeleteInspection(int num) {
+//	if (!debugging || waiting) return false;
+//	if (inspections[num].on_scope && inspections[num].is_vo) {
+//		wxString ans = SendCommand(_T("-var-delete "),inspections[num].name);
+//		if (ans.SubString(1,5)=="error")
+//			return false;
+//	}
+//	inspections.erase(inspections.begin()+num);
+//	inspections_count--;
+//	return true;
+//}
+
+//bool DebugManager::ModifyInspectionValue(int num, wxString value) {
+//	if (!debugging || waiting) return false;
+//	wxString ans = SendCommand(_T("-var-assign "),inspections[num].name+" "+mxUT::EscapeString(value,true));
+//	if (ans.Mid(1,4)=="done")
+//		UpdateInspections();
+//	return ans.Mid(1,4)=="done";
+//}
+
+//bool DebugManager::ModifyInspectionFormat(int num, wxString format) {
+//	if (!debugging || waiting) return false;
+//	wxString ans = SendCommand(_T("-var-set-format "),inspections[num].name+" "+format);
+//	if (ans.SubString(1,5)=="error")
+//		return false;
+////	inspection_grid->SetCellValue(num,IG_COL_FORMAT,format);
+//	inspection_grid->SetCellValue(num,IG_COL_VALUE,
+//		GetValueFromAns( SendCommand(_T("-var-evaluate-expression "), inspections[num].name) , _T("value") ,true, true ) );
+//	return false;
+//}
+
+//void DebugManager::UpdateFramelessInspection() {
+//	if (!debugging || waiting || inspections_count==0) return;
+//	for (unsigned int i=0;i<inspections.size();i++) {
+//		if (!inspections[i].frameless || inspections[i].freezed) continue;
+//		wxString vnew = InspectExpression(inspections[i].expr);
+//		if (!vnew.Len()) {
+//			vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
+//			if (config->Debug.select_modified_inspections) 
+//				inspection_grid->HightlightDisable(i);
+//		} else if (config->Debug.select_modified_inspections) {
+//			wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
+//			if (vold!=vnew) inspection_grid->HightlightChange(i);
+//			else inspection_grid->HightlightNone(i);
+//		}
+//		inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
+//	}
+//}
+
+//void  DebugManager::UpdateInspections() {
+//	DebuggerInspection::UpdateAll();
+//	mxGenericInspectionCtrl::UpdateAll();
+//}
+
+//bool DebugManager::UpdateInspection() {
+//	if (!debugging || waiting || inspections_count==0) return false;
+//	inspection_grid->BeginBatch();
+//	if (config->Debug.select_modified_inspections)
+//		for (int i=0;i<inspections_count;i++)
+//			if (inspections[i].is_vo && inspections[i].on_scope && !inspections[i].always_evaluate && !inspections[i].freezed)
+//				inspection_grid->HightlightNone(i);
+//	wxString my_frame=current_frame, my_frame_num=current_frame_num;
+////	if (config->Debug.select_modified_inspections) 
+////		inspection_grid->ResetChangeHightlights();
+//	UpdateFramelessInspection();
+//	// actualizar los numeros de frame segun el backtrace
+////	if (config->Debug.inspection_frame_address) {
+//		for (int i=0;i<inspections_count;i++) {
+//			inspectinfo &ii = inspections[i];
+//			if (ii.frameless || !ii.on_scope) continue;
+//			if (ii.frame!=my_frame) {
+//				bool found=false;
 //				for (int j=0;j<last_backtrace_size;j++) {
-//					if (frames_addrs[j]==(*i1)->frame) {
-//						do_inspect=true;
+//					if (frames_addrs[j]==ii.frame) {
+//						found=true;
 //						my_frame=frames_addrs[j];
-//						SendCommand(_T("-stack-select-frame "),my_frame_num=frames_nums[j]);
+//						my_frame_num=frames_nums[j];
+//						ii.frame=my_frame;
+//						ii.frame_num=my_frame_num;
+//						inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
 //						break;
 //					}
 //				}
-//			} else do_inspect=true;
-//			if (do_inspect)
-//				(*i1)->UpdateTable(); i1++;
+//				if (!found) {
+//					ii.frame="Error";
+//					ii.frame_num="Error";
+//					inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
+//				}
+//			} else {
+//				ii.frame=my_frame;
+//				ii.frame_num=my_frame_num;
+//				inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
+//			}
 //		}
-//		SendCommand(_T("-gdb-set print elements 10"));
+////	} else {
+////		for (int i=0;i<inspections_count;i++)
+////			inspections[i].frame_num=_T("<ND>");
+////	}
+//	
+//	my_frame=current_frame; my_frame_num=current_frame_num;
+//	
+//	wxString ans = SendCommand(_T("-var-update *"));
+//	int p = ans.Find(_T("name="));
+//	while (p!=wxNOT_FOUND) {
+//		int p2 = p+6;
+//		while (ans[p2]!='\"')
+//			p2++;
+//		wxString name = ans.SubString(p+6,p2-1);
+//		ans.Remove(0,p2);
+//		p = ans.Find(_T("in_scope="));
+//		if (p!=wxNOT_FOUND && ans[p+10]=='f') {
+//			for (unsigned int i=0;i<inspections.size();i++)
+//				if (inspections[i].on_scope && inspections[i].name==name && inspections[i].is_vo) {
+//					if (!inspections[i].freezed) {
+//						inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
+//						inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
+//						if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
+//					}
+//					inspection_grid->SetCellValue(i,IG_COL_LEVEL,"");
+//					inspection_grid->SetReadOnly(i,IG_COL_VALUE,true);
+////					inspection_grid->SetReadOnly(i,IG_COL_FORMAT,true);
+////					inspection_grid->SetReadOnly(i,IG_COL_WATCH,true);
+//					inspections[i].on_scope=false;
+//					if (inspections[i].is_vo) SendCommand(_T("-var-delete "),inspections[i].name);
+//					break;
+//				}
+//		} else {
+//			for (unsigned int i=0;i<inspections.size();i++) {
+//				if (!inspections[i].freezed && inspections[i].on_scope && inspections[i].is_vo && inspections[i].name==name) {
+////					bool do_inspect=false; // ver si esta el scope en el backtrace y seleccionar el frame
+////					if (inspections[i].frame!=my_frame) {
+////						for (int j=0;j<last_backtrace_size;j++)
+////							if (frames_addrs[j]==inspections[i].frame) {
+////								do_inspect=true;
+////								my_frame=frames_addrs[j];
+////								inspection_grid->SetCellValue(i,IG_COL_LEVEL,frames_nums[j]);
+////								break;
+////							}
+////					} else 
+////						do_inspect=true;
+////					if (!do_inspect) 
+////						inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
+////					else {
+//					if (inspections[i].frame_num[0]!='E') {
+//						inspection_grid->SetCellValue(i,IG_COL_VALUE,
+//							GetValueFromAns( SendCommand(_T("-var-evaluate-expression "), name) , _T("value") ,true,true ) );
+//						if (config->Debug.select_modified_inspections)
+//							inspection_grid->HightlightChange(i);
+//					}
+//					break;
+//				}
+//			}
+//		}
+//		p = ans.Find(_T("name="));
 //	}
-	if (my_frame!=current_frame) SendCommand(_T("-stack-select-frame "),current_frame_num);
-	
-//	list<mxInspectionExplorer*>::iterator i3=explorer_list.begin(), i4=explorer_list.end();
-//	while (i3!=i4) { 
-//		(*i3)->Grow();
-//		i3++;
+//
+//	// actualizar los tipos compuestos (habria que buscar algo mas eficiente)
+//	for (unsigned int i=0;i<inspections.size();i++) {
+//		if (!inspections[i].on_scope || inspections[i].frameless || inspections[i].freezed) continue;
+//		if (inspections[i].is_vo && inspections[i].always_evaluate) {
+////			bool do_inspect=false; // ver si esta el scope en el backtrace y seleccionar el frame
+////			if (inspections[i].frame!=my_frame) {
+////				for (int j=0;j<last_backtrace_size;j++) {
+////					if (frames_addrs[j]==inspections[i].frame) {
+////						do_inspect=true;
+////						my_frame=frames_addrs[j];
+////						SendCommand(_T("-stack-select-frame "),my_frame_num=frames_nums[j]);
+////						break;
+////					}
+////				}
+////			} else do_inspect=true;
+////			if (do_inspect) {
+//			if (inspections[i].frame_num[0]!='E') {
+//				if (my_frame_num!=inspections[i].frame_num) {
+//					my_frame=inspections[i].frame;
+//					my_frame_num=inspections[i].frame_num;
+//					SendCommand(_T("-stack-select-frame "),my_frame_num);
+//				}
+//				if (inspections[i].use_data_evaluate) {
+//					inspection_grid->SetCellValue(i,IG_COL_LEVEL,my_frame_num);
+//					if (config->Debug.select_modified_inspections) {
+//						wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
+//						wxString vnew = InspectExpression(inspections[i].expr);
+//						if (vold!=vnew) {
+//							inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
+//							inspection_grid->HightlightChange(i);
+//						} else
+//							inspection_grid->HightlightNone(i);
+//					} else
+//						inspection_grid->SetCellValue(i,IG_COL_VALUE,InspectExpression(inspections[i].expr));
+//				} else {
+//					if (config->Debug.select_modified_inspections) {
+//						wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
+//						wxString vnew = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[i].name),_T("value"),true,true);
+//						if (vold!=vnew) {
+//							inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
+//							inspection_grid->HightlightChange(i);
+//						} else
+//							inspection_grid->HightlightNone(i);
+//					} else
+//						inspection_grid->SetCellValue(i,IG_COL_VALUE,GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[i].name),_T("value"),true,true));
+//				}
+////			} else {
+////				inspection_grid->SetCellValue(i,IG_COL_LEVEL,"Error");
+//			}
+//		} else if (!inspections[i].is_vo) { // no es vo
+//			if (config->Debug.select_modified_inspections) {
+//				wxString vold = inspection_grid->GetCellValue(i,IG_COL_VALUE);
+//				wxString vnew = GetMacroOutput(inspections[i].name);
+//				if (vold!=vnew) {
+//					inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
+//					inspection_grid->HightlightChange(i);
+//				} else
+//					inspection_grid->HightlightNone(i);
+//			} else
+//				inspection_grid->SetCellValue(i,IG_COL_VALUE,GetMacroOutput(inspections[i].name));
+//		}
 //	}
-	
-	return true;
-}
+////	// opacar las que no estan en scope
+////	if (config->Debug.select_modified_inspections) {
+////		for (unsigned int i=0;i<inspections.size();i++) {
+////			if (!inspections[i].on_scope && inspections[i].is_vo)
+////				inspection_grid->HightlightDisable(i);
+////		}
+////	}
+//	inspection_grid->EndBatch();
+//	
+//	list<mxExternInspection*>::iterator i1=extern_list.begin(), i2=extern_list.end();
+//	if (i1!=i2) {
+//		// el print-repeats se desactiva para que las otras ventanas puedan mostrar todo, 
+//		// y despues se activa ya que en la tabla de inspecciones no entran muchos datos seguro
+//		SetFullOutput(true);
+//		while (i1!=i2) {
+//			bool do_inspect=false;
+//			if ((*i1)->frame.Len()) {
+//				if ((*i1)->frame!=my_frame) {
+//					for (int j=0;j<last_backtrace_size;j++) {
+//						if (frames_addrs[j]==(*i1)->frame) {
+//							do_inspect=true;
+//							my_frame=frames_addrs[j];
+//							my_frame_num=frames_nums[j];
+//							SendCommand(_T("-stack-select-frame "),my_frame_num);
+//							break;
+//						}
+//					}
+//				} else do_inspect=true;
+//			} else do_inspect=true;
+//			if (do_inspect) (*i1)->Update(); ++i1;
+//		}
+//		SetFullOutput(false);
+//	}
+//	
+////	list<mxInspectionMatrix*>::iterator i1=matrix_list.begin(), i2=matrix_list.end();
+////	if (i1!=i2) {
+////		SendCommand(_T("-gdb-set print elements 0"));
+////		while (i1!=i2) { 
+////			bool do_inspect=false;
+////			if ((*i1)->frame!=my_frame) {
+////				for (int j=0;j<last_backtrace_size;j++) {
+////					if (frames_addrs[j]==(*i1)->frame) {
+////						do_inspect=true;
+////						my_frame=frames_addrs[j];
+////						SendCommand(_T("-stack-select-frame "),my_frame_num=frames_nums[j]);
+////						break;
+////					}
+////				}
+////			} else do_inspect=true;
+////			if (do_inspect)
+////				(*i1)->UpdateTable(); i1++;
+////		}
+////		SendCommand(_T("-gdb-set print elements 10"));
+////	}
+//	if (my_frame!=current_frame) SendCommand(_T("-stack-select-frame "),current_frame_num);
+//	
+////	list<mxInspectionExplorer*>::iterator i3=explorer_list.begin(), i4=explorer_list.end();
+////	while (i3!=i4) { 
+////		(*i3)->Grow();
+////		i3++;
+////	}
+//	
+//	return true;
+//}
 
 wxString DebugManager::GetNextItem(wxString &ans, int &from) {
 	char stack[50];
@@ -2008,142 +2010,142 @@ bool DebugManager::DoThat(wxString what) {
 	return true;
 }
 
-/// @brief replace one inspection for a class/array with several inspection with its members (or a pointer with the pointed data)
-bool DebugManager::BreakCompoundInspection(int n) {
-	if (!debugging || waiting) return false;
-	if (inspections_count<=n || (!inspections[n].is_array && !inspections[n].is_class && inspections[n].type[inspections[n].type.Len()-1]!='*') || !inspections[n].on_scope )
-		return false;
-	int p=0;
-	if (!inspections[n].is_array && !inspections[n].is_class) {
-		inspection_grid->SetCellValue(n,IG_COL_EXPR,wxString("*")<<RewriteExpressionForBreaking(inspections[n].expr));
-		ModifyInspection(n,wxString("*")<<RewriteExpressionForBreaking(inspections[n].expr),false);
-		return true;
-	}
-	bool first = true, breaking_class=inspections[n].is_class;
-	wxString fans, ans, main_name=inspections[n].name; // main expr es la expresion "original", a la que se le agregar\Uffffffffn subindice, o un punto el nombre de atributo para armar las expresiones hijas
-	wxString main_expr = RewriteExpressionForBreaking(inspections[n].expr);
-	wxString frame = inspections[n].frame, level = inspection_grid->GetCellValue(n,IG_COL_LEVEL);
-	bool is_cpp = GetValueFromAns(SendCommand(_T("-var-info-expression "),inspections[n].name),"lang",true,false)=="C++";
-	if (inspections[n].is_class) {
-		fans = SendCommand(_T("-var-list-children "),inspections[n].name);
-		p = fans.Find(_T("name=\""));
-	} else {
-		fans<<_T("name=\"")<<main_name<<"\"";
-		// ver si era un "arreglo" artificial (sintaxis gdb)
-		if (main_expr.Find('@')!=wxNOT_FOUND) { 
-			if (main_expr[0]=='*')
-				main_expr = main_expr.Mid(1,main_expr.Find('@',true)-1);
-			else
-				main_expr = wxString(_T("(&"))+main_expr.Mid(0,main_expr.Find('@',true))+_T(")");
-		}
-	}
-	wxArrayInt to_break;
-	while (p!=wxNOT_FOUND) {
-		fans.Remove(0,p+6);
-		wxString name = fans.Mid(0,fans.Find('\"'));
-		bool is_parent = breaking_class && name!=main_name+_T(".private") && name!=main_name+_T(".public") && name!=main_name+_T(".protected");
-		long cant=1;
-		if (!is_cpp) { // los structs de C no tienen todo junto en el mismo nivel
-			name=inspections[n].name;
-			is_parent=false;
-		}
-		if (!is_parent) {
-			ans = SendCommand(_T("-var-list-children "),name);
-			GetValueFromAns(ans,_T("numchild"),true).ToLong(&cant);
-		}
-		if (cant) {
-			if (first) {
-				if (cant>1) {
-					MakeRoomForInspections(n,cant-1);
-				}
-				first=false;
-			} else {
-				MakeRoomForInspections(n,cant);
-			}
-			if (is_parent) {
-				inspections[n].frame = frame;
-				inspections[n].name = name;
-				inspections[n].expr = main_expr;
-				inspections[n].is_class = true;
-				inspections[n].frame = frame;
-				inspections[n].on_scope = true;
-				to_break.Add(n);
-				n++;
-			} else {
-				p = ans.Find('[');
-				if (p!=wxNOT_FOUND) {
-					p++;
-					wxString item = GetNextItem(ans,p);
-					wxString pre_expr=main_expr+".";
-					if (breaking_class && main_expr.StartsWith("(*") && main_expr.Last()==')') {
-						wxString aux=main_expr.Mid(2); aux.RemoveLast();
-						if (aux==RewriteExpressionForBreaking(aux))
-						pre_expr=aux+"->";
-					}
-					while (item.Left(6)==_T("child=")) {
-						item.Remove(0,7);
-						inspections[n].frame = frame;
-						inspections[n].is_vo = true;
-						inspections[n].on_scope = true;
-						inspections[n].name = GetValueFromAns(item,_T("name"),true);
-						inspections[n].type = GetValueFromAns(item,_T("type"),true);
-						wxString new_exp = GetValueFromAns(item,_T("exp"),true);
-						if (breaking_class)
-							inspections[n].expr = pre_expr+new_exp;
-						else
-							inspections[n].expr = main_expr+"["+new_exp+"]";
-						inspection_grid->SetCellValue(n,IG_COL_LEVEL, level);
-						inspection_grid->SetCellValue(n,IG_COL_TYPE, inspections[n].type);
-						inspection_grid->SetCellValue(n,IG_COL_EXPR, inspections[n].expr);
-						
-						wxString value = GetValueFromAns( SendCommand(_T("-var-evaluate-expression "),inspections[n].name) , _T("value") ,true, true );
-						if (value[0]=='@') {
-							wxString value2=value.Mid(value.Find(':')+2);
-							inspections[n].is_class = value2[0]=='{';
-							inspections[n].is_array = value2[0]=='[';
-							inspections[n].always_evaluate = true;
-						} else {
-							inspections[n].use_data_evaluate = true;
-							inspections[n].is_class = value[0]=='{';
-							inspections[n].is_array = value[0]=='[';
-							inspections[n].always_evaluate = inspections[n].is_class||inspections[n].is_array;
-						}
-						if (inspections[n].is_class || inspections[n].is_array) {
-							inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new mxPlusCellRenderer());
-							if (inspections[n].use_data_evaluate)
-								inspection_grid->SetCellValue(n,IG_COL_VALUE, InspectExpression(inspections[n].expr));
-							else
-								inspection_grid->SetCellValue(n,IG_COL_VALUE,value);
-							inspection_grid->SetReadOnly(n,IG_COL_VALUE,true);
-//							inspection_grid->SetReadOnly(n,IG_COL_FORMAT,true);
-//							inspection_grid->SetReadOnly(n,IG_COL_WATCH,true);
-//							if (inspections[n].is_array)
-//								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
+///// @brief replace one inspection for a class/array with several inspection with its members (or a pointer with the pointed data)
+//bool DebugManager::BreakCompoundInspection(int n) {
+//	if (!debugging || waiting) return false;
+//	if (inspections_count<=n || (!inspections[n].is_array && !inspections[n].is_class && inspections[n].type[inspections[n].type.Len()-1]!='*') || !inspections[n].on_scope )
+//		return false;
+//	int p=0;
+//	if (!inspections[n].is_array && !inspections[n].is_class) {
+//		inspection_grid->SetCellValue(n,IG_COL_EXPR,wxString("*")<<RewriteExpressionForBreaking(inspections[n].expr));
+//		ModifyInspection(n,wxString("*")<<RewriteExpressionForBreaking(inspections[n].expr),false);
+//		return true;
+//	}
+//	bool first = true, breaking_class=inspections[n].is_class;
+//	wxString fans, ans, main_name=inspections[n].name; // main expr es la expresion "original", a la que se le agregar\Uffffffffn subindice, o un punto el nombre de atributo para armar las expresiones hijas
+//	wxString main_expr = RewriteExpressionForBreaking(inspections[n].expr);
+//	wxString frame = inspections[n].frame, level = inspection_grid->GetCellValue(n,IG_COL_LEVEL);
+//	bool is_cpp = GetValueFromAns(SendCommand(_T("-var-info-expression "),inspections[n].name),"lang",true,false)=="C++";
+//	if (inspections[n].is_class) {
+//		fans = SendCommand(_T("-var-list-children "),inspections[n].name);
+//		p = fans.Find(_T("name=\""));
+//	} else {
+//		fans<<_T("name=\"")<<main_name<<"\"";
+//		// ver si era un "arreglo" artificial (sintaxis gdb)
+//		if (main_expr.Find('@')!=wxNOT_FOUND) { 
+//			if (main_expr[0]=='*')
+//				main_expr = main_expr.Mid(1,main_expr.Find('@',true)-1);
+//			else
+//				main_expr = wxString(_T("(&"))+main_expr.Mid(0,main_expr.Find('@',true))+_T(")");
+//		}
+//	}
+//	wxArrayInt to_break;
+//	while (p!=wxNOT_FOUND) {
+//		fans.Remove(0,p+6);
+//		wxString name = fans.Mid(0,fans.Find('\"'));
+//		bool is_parent = breaking_class && name!=main_name+_T(".private") && name!=main_name+_T(".public") && name!=main_name+_T(".protected");
+//		long cant=1;
+//		if (!is_cpp) { // los structs de C no tienen todo junto en el mismo nivel
+//			name=inspections[n].name;
+//			is_parent=false;
+//		}
+//		if (!is_parent) {
+//			ans = SendCommand(_T("-var-list-children "),name);
+//			GetValueFromAns(ans,_T("numchild"),true).ToLong(&cant);
+//		}
+//		if (cant) {
+//			if (first) {
+//				if (cant>1) {
+//					MakeRoomForInspections(n,cant-1);
+//				}
+//				first=false;
+//			} else {
+//				MakeRoomForInspections(n,cant);
+//			}
+//			if (is_parent) {
+//				inspections[n].frame = frame;
+//				inspections[n].name = name;
+//				inspections[n].expr = main_expr;
+//				inspections[n].is_class = true;
+//				inspections[n].frame = frame;
+//				inspections[n].on_scope = true;
+//				to_break.Add(n);
+//				n++;
+//			} else {
+//				p = ans.Find('[');
+//				if (p!=wxNOT_FOUND) {
+//					p++;
+//					wxString item = GetNextItem(ans,p);
+//					wxString pre_expr=main_expr+".";
+//					if (breaking_class && main_expr.StartsWith("(*") && main_expr.Last()==')') {
+//						wxString aux=main_expr.Mid(2); aux.RemoveLast();
+//						if (aux==RewriteExpressionForBreaking(aux))
+//						pre_expr=aux+"->";
+//					}
+//					while (item.Left(6)==_T("child=")) {
+//						item.Remove(0,7);
+//						inspections[n].frame = frame;
+//						inspections[n].is_vo = true;
+//						inspections[n].on_scope = true;
+//						inspections[n].name = GetValueFromAns(item,_T("name"),true);
+//						inspections[n].type = GetValueFromAns(item,_T("type"),true);
+//						wxString new_exp = GetValueFromAns(item,_T("exp"),true);
+//						if (breaking_class)
+//							inspections[n].expr = pre_expr+new_exp;
+//						else
+//							inspections[n].expr = main_expr+"["+new_exp+"]";
+//						inspection_grid->SetCellValue(n,IG_COL_LEVEL, level);
+//						inspection_grid->SetCellValue(n,IG_COL_TYPE, inspections[n].type);
+//						inspection_grid->SetCellValue(n,IG_COL_EXPR, inspections[n].expr);
+//						
+//						wxString value = GetValueFromAns( SendCommand(_T("-var-evaluate-expression "),inspections[n].name) , _T("value") ,true, true );
+//						if (value[0]=='@') {
+//							wxString value2=value.Mid(value.Find(':')+2);
+//							inspections[n].is_class = value2[0]=='{';
+//							inspections[n].is_array = value2[0]=='[';
+//							inspections[n].always_evaluate = true;
+//						} else {
+//							inspections[n].use_data_evaluate = true;
+//							inspections[n].is_class = value[0]=='{';
+//							inspections[n].is_array = value[0]=='[';
+//							inspections[n].always_evaluate = inspections[n].is_class||inspections[n].is_array;
+//						}
+//						if (inspections[n].is_class || inspections[n].is_array) {
+//							inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new mxPlusCellRenderer());
+//							if (inspections[n].use_data_evaluate)
+//								inspection_grid->SetCellValue(n,IG_COL_VALUE, InspectExpression(inspections[n].expr));
 //							else
-//								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
-						} else {
-							inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new wxGridCellStringRenderer());
-							inspection_grid->SetReadOnly(n,IG_COL_VALUE,false);
-							inspection_grid->SetCellValue(n,IG_COL_VALUE, value );
-//							inspection_grid->SetReadOnly(n,IG_COL_FORMAT,false);
-//							inspection_grid->SetReadOnly(n,IG_COL_WATCH,false);
-//							inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
-						}
-						inspection_grid->SetReadOnly(n,IG_COL_TYPE,true);
-//						inspection_grid->SetCellValue(n,IG_COL_WATCH,_T("no"));
-						n++;
-						item = GetNextItem(ans,p);
-					}
-				}
-			}
-		}
-		if (!is_cpp) break;
-		p = fans.Find(_T("name=\""));
-	}
-	for (int i=to_break.Count()-1;i>=0;i--)
-		BreakCompoundInspection(to_break[i]);
-	return true;
-}
+//								inspection_grid->SetCellValue(n,IG_COL_VALUE,value);
+//							inspection_grid->SetReadOnly(n,IG_COL_VALUE,true);
+////							inspection_grid->SetReadOnly(n,IG_COL_FORMAT,true);
+////							inspection_grid->SetReadOnly(n,IG_COL_WATCH,true);
+////							if (inspections[n].is_array)
+////								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_ARRAY,"arreglo"));
+////							else
+////								inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_TYPE_STRUCT,"estructura"));
+//						} else {
+//							inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new wxGridCellStringRenderer());
+//							inspection_grid->SetReadOnly(n,IG_COL_VALUE,false);
+//							inspection_grid->SetCellValue(n,IG_COL_VALUE, value );
+////							inspection_grid->SetReadOnly(n,IG_COL_FORMAT,false);
+////							inspection_grid->SetReadOnly(n,IG_COL_WATCH,false);
+////							inspection_grid->SetCellValue(n,IG_COL_FORMAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+//						}
+//						inspection_grid->SetReadOnly(n,IG_COL_TYPE,true);
+////						inspection_grid->SetCellValue(n,IG_COL_WATCH,_T("no"));
+//						n++;
+//						item = GetNextItem(ans,p);
+//					}
+//				}
+//			}
+//		}
+//		if (!is_cpp) break;
+//		p = fans.Find(_T("name=\""));
+//	}
+//	for (int i=to_break.Count()-1;i>=0;i--)
+//		BreakCompoundInspection(to_break[i]);
+//	return true;
+//}
 
 //wxString DebugManager::mxUT::EscapeString(wxString str, bool add_comillas) {
 //	int i=0, l=str.Len();
@@ -2301,15 +2303,15 @@ wxString DebugManager::RewriteExpressionForBreaking(wxString main_expr) {
 	return main_expr;
 }
 
-void DebugManager::ClearInspections() {
-	if (!debugging || waiting) return;
-	for (int i=0;i<inspections_count;i++)
-		if (inspections[i].on_scope && inspections[i].is_vo)
-			SendCommand(_T("-var-delete "),inspections[i].name);
-	inspections.clear();
-	inspection_grid->DeleteRows(0,inspections_count);
-	inspections_count=0;
-}
+//void DebugManager::ClearInspections() {
+//	if (!debugging || waiting) return;
+//	for (int i=0;i<inspections_count;i++)
+//		if (inspections[i].on_scope && inspections[i].is_vo)
+//			SendCommand(_T("-var-delete "),inspections[i].name);
+//	inspections.clear();
+//	inspection_grid->DeleteRows(0,inspections_count);
+//	inspections_count=0;
+//}
 
 bool DebugManager::GetArgs (wxArrayString &array, wxString level) {
 	if (!debugging || waiting) return false;
@@ -2360,46 +2362,46 @@ bool DebugManager::GetLocals (wxArrayString &array, wxString level) {
 	return true;
 }
 
-void DebugManager::MakeRoomForInspections(int pos, int cant) {
-	if (pos==inspections_count)
-		inspection_grid->AppendRows(cant);
-	else
-		inspection_grid->InsertRows(pos,cant);
-	inspections.resize(inspections_count+cant);
-	inspections_count+=cant;
-	for (int i=0;i<cant;i++)
-		inspections[i].frame=current_frame;
-	for (int i=inspections_count-1;i>=pos+cant;i--)
-		inspections[i]=inspections[i-cant];
-}
+//void DebugManager::MakeRoomForInspections(int pos, int cant) {
+//	if (pos==inspections_count)
+//		inspection_grid->AppendRows(cant);
+//	else
+//		inspection_grid->InsertRows(pos,cant);
+//	inspections.resize(inspections_count+cant);
+//	inspections_count+=cant;
+//	for (int i=0;i<cant;i++)
+//		inspections[i].frame=current_frame;
+//	for (int i=inspections_count-1;i>=pos+cant;i--)
+//		inspections[i]=inspections[i-cant];
+//}
 
-bool DebugManager::ModifyInspectionWatch(int num, bool read, bool write) {
-	if (waiting || !debugging) return false;
-	if (num>=inspections_count) return false;
-	inspectinfo &ii = inspections[num];
-	if (read!=ii.watch_read || write!=ii.watch_write) { // si cambio
-		// borrar el anterior
-		if (ii.watch_read || ii.watch_write)
-			SendCommand(_T("-break-delete "),ii.watch_num);
-		ii.watch_read=ii.watch_write=false;
-		// hacer el nuevo si es necesario
-		if (read || write) {
-			wxString cmd(_T("-break-watch "));
-			if (read && write) cmd<<_T("-a ");
-			else if (read) cmd<<_T("-r ");
-			wxString ans = GetValueFromAns(SendCommand(cmd,mxUT::EscapeString(ii.expr,true)).AfterFirst('{'),_T("number"),true);
-			if (ans.Len()) {
-				long l;
-				ans.ToLong(&l);
-				ii.watch_num=l;
-				ii.watch_read=read;
-				ii.watch_write=write;
-			} else
-				return false;
-		}
-	}
-	return true;
-}
+//bool DebugManager::ModifyInspectionWatch(int num, bool read, bool write) {
+//	if (waiting || !debugging) return false;
+//	if (num>=inspections_count) return false;
+//	inspectinfo &ii = inspections[num];
+//	if (read!=ii.watch_read || write!=ii.watch_write) { // si cambio
+//		// borrar el anterior
+//		if (ii.watch_read || ii.watch_write)
+//			SendCommand(_T("-break-delete "),ii.watch_num);
+//		ii.watch_read=ii.watch_write=false;
+//		// hacer el nuevo si es necesario
+//		if (read || write) {
+//			wxString cmd(_T("-break-watch "));
+//			if (read && write) cmd<<_T("-a ");
+//			else if (read) cmd<<_T("-r ");
+//			wxString ans = GetValueFromAns(SendCommand(cmd,mxUT::EscapeString(ii.expr,true)).AfterFirst('{'),_T("number"),true);
+//			if (ans.Len()) {
+//				long l;
+//				ans.ToLong(&l);
+//				ii.watch_num=l;
+//				ii.watch_read=read;
+//				ii.watch_write=write;
+//			} else
+//				return false;
+//		}
+//	}
+//	return true;
+//}
 
 /**
 * @brief Agrega los breakpoints y watchpoints a la tabla de puntos de interrupcion
@@ -2444,10 +2446,11 @@ void DebugManager::PopulateBreakpointsList(mxBreakList *break_list, bool also_wa
 			grid->SetCellValue(cont,BL_COL_ENABLE,GetValueFromAns(item,_T("enabled"),true)==_T("y")?_T("Si"):_T("No"));
 			long l;
 			GetValueFromAns(item,_T("number"),true).ToLong(&l);
-			for (int i=0, n=l;i<inspections_count;i++) {
-				if ( (inspections[i].watch_read || inspections[i].watch_write) && inspections[i].watch_num==n)
-					grid->SetCellValue(cont,BL_COL_WHY,inspections[i].expr);
-			}
+#warning recuperar watchs
+//			for (int i=0, n=l;i<inspections_count;i++) {
+//				if ( (inspections[i].watch_read || inspections[i].watch_write) && inspections[i].watch_num==n)
+//					grid->SetCellValue(cont,BL_COL_WHY,inspections[i].expr);
+//			}
 		}
 		item=GetNextItem(ans,p);
 	}
@@ -2662,157 +2665,157 @@ bool DebugManager::ToggleInverseExec() {
 	return inverse_exec;
 }
 
-void DebugManager::SaveInspectionsTable(wxString name) {
-	SaveInspectionsTable(GetInspectionsTable(name,true));
-}
+#warning mover esto a mxInspectionGrid
+//void DebugManager::SaveInspectionsTable(wxString name) {
+//	SaveInspectionsTable(GetInspectionsTable(name,true));
+//}
+//
+//void DebugManager::SaveInspectionsTable(inspectlist *il) {
+//	il->vars.Clear();
+//	for (int i=0;i<inspections_count;i++)
+//		il->vars.Add(inspections[i].expr);
+//}
+//inspectlist *DebugManager::GetInspectionsTable(wxString name, bool create_if_not_exists) {
+//	name.MakeLower();
+//	for (unsigned int i=0;i<inspections_tables.size();i++)
+//		if (inspections_tables[i]->name.Lower()==name)
+//			return inspections_tables[i];
+//	if (create_if_not_exists) {
+//		inspections_tables.push_back(new inspectlist(name));
+//		return inspections_tables[inspections_tables.size()-1];
+//	}
+//	return NULL;
+//}
+//
+//void DebugManager::LoadInspectionsTable(wxString name) {
+//	inspectlist *il = GetInspectionsTable(name);
+//	if (!il) return;
+//	LoadInspectionsTable(il);
+//}
+//
+//void DebugManager::LoadInspectionsTable(inspectlist *il) {
+//	unsigned int cant = inspection_grid->GetNumberRows()-1;
+//	if (cant<il->vars.size()) inspection_grid->AddRow(il->vars.size()-cant);
+//	if (cant>il->vars.size()) inspection_grid->DeleteRows(il->vars.size(),cant-il->vars.size());
+//	inspections.resize(inspections_count=il->vars.size());
+//	for (unsigned int i=0;i<il->vars.size();i++) {
+//		inspection_grid->SetCellValue(i,IG_COL_VALUE,il->vars[i]);
+//		if (debugging && !running && !waiting) {
+//			wxString vnew = InspectExpression(inspections[i].expr);
+//			if (!vnew.Len()) {
+//				vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
+//				if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
+//			} else
+//				if (config->Debug.select_modified_inspections) inspection_grid->HightlightChange(i);
+//			inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
+//		} else {
+//			inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>"));
+//			if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
+//		}
+//		inspection_grid->SetCellValue(i,IG_COL_EXPR,il->vars[i]);
+//		inspection_grid->SetCellValue(i,IG_COL_LEVEL,"*");
+//		inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
+////		inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
+////		inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
+//		inspections[i].expr=il->vars[i];
+//		inspections[i].frameless=true;
+//		inspections[i].is_vo=false;
+//		inspections[i].use_data_evaluate=true;
+//	}
+//	UpdateFramelessInspection();
+//}
+//
+//void DebugManager::ClearSavedInspectionTables() {
+//	for (unsigned int i=0;i<inspections_tables.size();i++)
+//		delete inspections_tables[i];
+//	inspections_tables.clear();
+//}
 
-void DebugManager::SaveInspectionsTable(inspectlist *il) {
-	il->vars.Clear();
-	for (int i=0;i<inspections_count;i++)
-		il->vars.Add(inspections[i].expr);
-}
+//void DebugManager::DeleteInspectionsTable(wxString name) {
+//	for (unsigned int i=0;i<inspections_tables.size();i++)
+//		if (inspections_tables[i]->name.Lower()==name) {
+//			inspections_tables.erase(inspections_tables.begin()+i);
+//			return;
+//		}
+//}
 
-inspectlist *DebugManager::GetInspectionsTable(wxString name, bool create_if_not_exists) {
-	name.MakeLower();
-	for (unsigned int i=0;i<inspections_tables.size();i++)
-		if (inspections_tables[i]->name.Lower()==name)
-			return inspections_tables[i];
-	if (create_if_not_exists) {
-		inspections_tables.push_back(new inspectlist(name));
-		return inspections_tables[inspections_tables.size()-1];
-	}
-	return NULL;
-}
-
-void DebugManager::LoadInspectionsTable(wxString name) {
-	inspectlist *il = GetInspectionsTable(name);
-	if (!il) return;
-	LoadInspectionsTable(il);
-}
-
-void DebugManager::LoadInspectionsTable(inspectlist *il) {
-	unsigned int cant = inspection_grid->GetNumberRows()-1;
-	if (cant<il->vars.size()) inspection_grid->AddRow(il->vars.size()-cant);
-	if (cant>il->vars.size()) inspection_grid->DeleteRows(il->vars.size(),cant-il->vars.size());
-	inspections.resize(inspections_count=il->vars.size());
-	for (unsigned int i=0;i<il->vars.size();i++) {
-		inspection_grid->SetCellValue(i,IG_COL_VALUE,il->vars[i]);
-		if (debugging && !running && !waiting) {
-			wxString vnew = InspectExpression(inspections[i].expr);
-			if (!vnew.Len()) {
-				vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
-				if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-			} else
-				if (config->Debug.select_modified_inspections) inspection_grid->HightlightChange(i);
-			inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-		} else {
-			inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>"));
-			if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-		}
-		inspection_grid->SetCellValue(i,IG_COL_EXPR,il->vars[i]);
-		inspection_grid->SetCellValue(i,IG_COL_LEVEL,"*");
-		inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
-//		inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
-//		inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
-		inspections[i].expr=il->vars[i];
-		inspections[i].frameless=true;
-		inspections[i].is_vo=false;
-		inspections[i].use_data_evaluate=true;
-	}
-	UpdateFramelessInspection();
-}
-
-void DebugManager::ClearSavedInspectionTables() {
-	for (unsigned int i=0;i<inspections_tables.size();i++)
-		delete inspections_tables[i];
-	inspections_tables.clear();
-}
-
-void DebugManager::SetFramelessInspection(int i) {
-	if (inspections[i].is_vo) DeleteVO(inspections[i].name);
-	inspections[i].is_vo=false;
-	inspections[i].frameless=true;
-	wxString vnew = InspectExpression(inspections[i].expr);
-	if (!vnew.Len()) {
-		if (config->Debug.select_modified_inspections && !inspections[i].freezed)
-			inspection_grid->HightlightDisable(i);
-		vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
-	}
-	if (!inspections[i].freezed) inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-	inspection_grid->SetCellValue(i,IG_COL_LEVEL,"*");
-	inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
-//	inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
-//	inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
-	inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-}
-
-void DebugManager::DeleteInspectionsTable(wxString name) {
-	for (unsigned int i=0;i<inspections_tables.size();i++)
-		if (inspections_tables[i]->name.Lower()==name) {
-			inspections_tables.erase(inspections_tables.begin()+i);
-			return;
-		}
-}
-
-bool DebugManager::ToggleInspectionFreeze(int n) {
-	if ((inspections[n].freezed=!inspections[n].freezed)) {
-		if (config->Debug.select_modified_inspections)
-			inspection_grid->HightlightFreeze(n);
-	} else if (!inspections[n].on_scope && inspections[n].is_vo) {
-		inspection_grid->SetCellValue(n,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
-		inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new wxGridCellStringRenderer());
-		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(n);
-	} else if (inspections[n].is_vo && !inspections[n].always_evaluate) {
-		wxString vold = inspection_grid->GetCellValue(n,IG_COL_VALUE);
-		wxString vnew = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[n].name),_T("value"),true,true);
-		inspection_grid->SetCellValue(n,IG_COL_VALUE,vnew);
-		if (config->Debug.select_modified_inspections) {
-			if (vold==vnew)
-				inspection_grid->HightlightNone(n);
-			else
-				inspection_grid->HightlightChange(n);
-		}
-	} else {
-		UpdateInspection();
-	}
-	return inspections[n].freezed;
-}
+//void DebugManager::SetFramelessInspection(int i) {
+//	if (inspections[i].is_vo) DeleteVO(inspections[i].name);
+//	inspections[i].is_vo=false;
+//	inspections[i].frameless=true;
+//	wxString vnew = InspectExpression(inspections[i].expr);
+//	if (!vnew.Len()) {
+//		if (config->Debug.select_modified_inspections && !inspections[i].freezed)
+//			inspection_grid->HightlightDisable(i);
+//		vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
+//	}
+//	if (!inspections[i].freezed) inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
+//	inspection_grid->SetCellValue(i,IG_COL_LEVEL,"*");
+//	inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
+////	inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
+////	inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
+//	inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
+//}
+//
+//bool DebugManager::ToggleInspectionFreeze(int n) {
+//	if ((inspections[n].freezed=!inspections[n].freezed)) {
+//		if (config->Debug.select_modified_inspections)
+//			inspection_grid->HightlightFreeze(n);
+//	} else if (!inspections[n].on_scope && inspections[n].is_vo) {
+//		inspection_grid->SetCellValue(n,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
+//		inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new wxGridCellStringRenderer());
+//		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(n);
+//	} else if (inspections[n].is_vo && !inspections[n].always_evaluate) {
+//		wxString vold = inspection_grid->GetCellValue(n,IG_COL_VALUE);
+//		wxString vnew = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[n].name),_T("value"),true,true);
+//		inspection_grid->SetCellValue(n,IG_COL_VALUE,vnew);
+//		if (config->Debug.select_modified_inspections) {
+//			if (vold==vnew)
+//				inspection_grid->HightlightNone(n);
+//			else
+//				inspection_grid->HightlightChange(n);
+//		}
+//	} else {
+//		UpdateInspection();
+//	}
+//	return inspections[n].freezed;
+//}
 
 void DebugManager::UnregisterSource(mxSource *src) {
 	if (current_source==src) current_source=NULL;
 	if (notitle_source==src) notitle_source=NULL;
 }
 
-bool DebugManager::OffLineInspectionModify(int i, wxString value) {
-	if (!value.Len()) return false;
-	if (i>=0 && i<inspections_count) {
-		inspections[i].expr=value;
-		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
-		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-		return true;
-	} else if (i==inspections_count) {
-		inspections.push_back(inspectinfo(value,"",value));
-		inspection_grid->AddRow(); inspections_count++;
-		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
-		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-		return true;
-	} else
-		return false;
-}
+//bool DebugManager::OffLineInspectionModify(int i, wxString value) {
+//	if (!value.Len()) return false;
+//	if (i>=0 && i<inspections_count) {
+//		inspections[i].expr=value;
+//		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
+//		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
+//		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
+//		return true;
+//	} else if (i==inspections_count) {
+//		inspections.push_back(inspectinfo(value,"",value));
+//		inspection_grid->AddRow(); inspections_count++;
+//		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
+//		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
+//		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
+//		return true;
+//	} else
+//		return false;
+//}
 
-bool DebugManager::OffLineInspectionDelete(int i) {
-	if (i==-1) {
-		inspections.clear();
-		inspections_count=0;
-		return true;
-	} else if (i>=0 && i<inspections_count) {
-		inspections.erase(inspections.begin()+i);
-		return true;
-	} else
-		return false;
-}
+//bool DebugManager::OffLineInspectionDelete(int i) {
+//	if (i==-1) {
+//		inspections.clear();
+//		inspections_count=0;
+//		return true;
+//	} else if (i>=0 && i<inspections_count) {
+//		inspections.erase(inspections.begin()+i);
+//		return true;
+//	} else
+//		return false;
+//}
 
 void DebugManager::ListThreads() {
 	wxString ans=SendCommand("-thread-list-ids");
@@ -2994,9 +2997,8 @@ void DebugManager::Start_ConfigureGdb ( ) {
 				debug->SetSignalHandling(signal_handlers_state[1][i]);
 		}
 	}
+	DebuggerInspection::OnDebugStart();
 }
-
-	
 
 void DebugManager::Initialize() {
 	debug = new DebugManager();

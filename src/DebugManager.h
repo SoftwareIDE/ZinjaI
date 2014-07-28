@@ -154,8 +154,8 @@ private:
 	wxString frames_addrs[BACKTRACE_SIZE];
 	wxString frames_nums[BACKTRACE_SIZE];
 	int last_backtrace_size;
-	int inspections_count;
-	vector<inspectinfo> inspections;
+//	int inspections_count;
+//	vector<inspectinfo> inspections;
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxProcess *tty_process;
 	long tty_pid;
@@ -227,14 +227,14 @@ public:
 	void TtyProcessKilled();
 #endif
 	void ProcessKilled();
-	bool DuplicateInspection(int num);
-	bool ModifyInspection(int num, wxString expr, bool force_new=false);
-	bool DeleteInspection(int num);
-	bool ModifyInspectionValue(int num, wxString value);
-	bool ModifyInspectionFormat(int num, wxString format);
-	bool ModifyInspectionWatch(int num, bool read, bool write);
-	bool UpdateInspection(); ///< @todo: metodo viejo, a eliminar cuando termine de reescribir el manejo de inspecciones
-	void UpdateInspections();
+//	bool DuplicateInspection(int num);
+//	bool ModifyInspection(int num, wxString expr, bool force_new=false);
+//	bool DeleteInspection(int num);
+//	bool ModifyInspectionValue(int num, wxString value);
+//	bool ModifyInspectionFormat(int num, wxString format);
+//	bool ModifyInspectionWatch(int num, bool read, bool write);
+//	bool UpdateInspection(); ///< @todo: metodo viejo, a eliminar cuando termine de reescribir el manejo de inspecciones
+//	void UpdateInspections();
 	wxString GetNextItem(wxString &ans, int &from);
 	bool SelectFrame(wxString framenum, int idx);
 	bool SelectFrameForInspeccion(wxString addr);
@@ -245,10 +245,10 @@ public:
 	wxString GetVOValue(wxString name);
 	bool DeleteVO(wxString name);
 	int GetVOChildrenData(mxIEItemData **data, wxString name, wxString main_expr, wxString main_frame, int what_is);
-	void ClearInspections();
+//	void ClearInspections();
 	bool GetArgs (wxArrayString &args, wxString level);
 	bool GetLocals (wxArrayString &locals, wxString level);
-	void MakeRoomForInspections(int pos, int cant);
+//	void MakeRoomForInspections(int pos, int cant);
 	void PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints);
 //	BreakPointInfo *FindBreakInfoFromNumber(int _id, bool use_gdb_id=true);
 	void RegisterExternInspection(mxExternInspection* ei);
@@ -275,24 +275,24 @@ public:
 	bool EnableInverseExec();
 	bool ToggleInverseExec();
 
-	vector<inspectlist*> inspections_tables;
-	void SaveInspectionsTable(wxString name);
-	void SaveInspectionsTable(inspectlist *il);
-	void LoadInspectionsTable(wxString name);
-	void LoadInspectionsTable(inspectlist *il);
-	void DeleteInspectionsTable(wxString name);
-	inspectlist *GetInspectionsTable(wxString name, bool create_if_not_exists=false);
-	void ClearSavedInspectionTables();
-	void UpdateFramelessInspection();
-	void SetFramelessInspection(int i);
+//	vector<inspectlist*> inspections_tables;
+//	void SaveInspectionsTable(wxString name);
+//	void SaveInspectionsTable(inspectlist *il);
+//	void LoadInspectionsTable(wxString name);
+//	void LoadInspectionsTable(inspectlist *il);
+//	void DeleteInspectionsTable(wxString name);
+//	inspectlist *GetInspectionsTable(wxString name, bool create_if_not_exists=false);
+//	void ClearSavedInspectionTables();
+//	void UpdateFramelessInspection();
+//	void SetFramelessInspection(int i);
 	
 	/// @brief los fuentes avisan al destruirse, para evitar usar punteros invalidos
 	void UnregisterSource(mxSource *src); 
 	
 	/// @brief modifica una inspeccion cuando no hay sesion de depuración en curso
-	bool OffLineInspectionModify(int i, wxString value);
+//	bool OffLineInspectionModify(int i, wxString value);
 	/// @brief elimina inspecciones cuando no hay sesion de depuración en curso
-	bool OffLineInspectionDelete(int i=-1);
+//	bool OffLineInspectionDelete(int i=-1);
 	
 	void ListThreads();
 	void ThreadListClean();
@@ -309,8 +309,8 @@ public:
 	void ShowBreakPointLocationErrorMessage(BreakPointInfo *_bpi);
 	void ShowBreakPointConditionErrorMessage(BreakPointInfo *_bpi);
 	
-	/// @brief  calls -var-create and returns its output, but applying improving_inspections_templates
-	wxString CreateVO(wxString &expr, wxString &type);
+//	/// @brief  calls -var-create and returns its output, but applying improving_inspections_templates
+//	wxString CreateVO(wxString &expr, wxString &type);
 };
 
 extern DebugManager *debug;

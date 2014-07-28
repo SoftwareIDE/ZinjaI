@@ -78,7 +78,8 @@ void mxBacktraceGrid::OnDblClick(wxGridEvent &event) {
 		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT))
 			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
-		debug->UpdateFramelessInspection();
+#warning actualizar inspecciones frameless
+//		debug->UpdateFramelessInspection();
 	}
 }
 
@@ -177,8 +178,9 @@ void mxBacktraceGrid::OnInspectArgs(wxCommandEvent &event) {
 		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
 	}
 	wxArrayString vars;
-	if (debug->GetArgs(vars,GetCellValue(selected_row,BG_COL_LEVEL)))
-		main_window->inspection_ctrl->AppendInspections(vars);
+#warning reestablecer esto
+//	if (debug->GetArgs(vars,GetCellValue(selected_row,BG_COL_LEVEL)))
+//		main_window->inspection_ctrl->AppendInspections(vars);
 }
 
 void mxBacktraceGrid::OnInspectLocals(wxCommandEvent &event) {
@@ -195,8 +197,9 @@ void mxBacktraceGrid::OnInspectLocals(wxCommandEvent &event) {
 		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
 	}
 	wxArrayString vars;
-	if (debug->GetLocals(vars,GetCellValue(selected_row,BG_COL_LEVEL)))
-		main_window->inspection_ctrl->AppendInspections(vars);
+#warning reestablecer esto
+//	if (debug->GetLocals(vars,GetCellValue(selected_row,BG_COL_LEVEL)))
+//		main_window->inspection_ctrl->AppendInspections(vars);
 }
 
 
