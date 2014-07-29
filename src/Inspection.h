@@ -176,9 +176,17 @@ public:
 				DebuggerInspection &di=*(it->second);
 				if (u.in_scope=="true") {
 					di.gdb_value=u.value;
-					if (u.new_type!="") { di.value_type=u.new_type; di.GenerateEvent(&myDIEventHandler::OnDINewType); }
-					else if (!di.is_in_scope) { di.is_in_scope=true; di.GenerateEvent(&myDIEventHandler::OnDIInScope); }
-					else di.GenerateEvent(&myDIEventHandler::OnDIValueChanded);
+					if (!u.new_num_children.IsEmpty()) { 
+						u.new_num_children.ToLong(&di.num_children);
+						if (!u.new_type.IsEmpty()) di.value_type=u.new_type; 
+						di.GenerateEvent(&myDIEventHandler::OnDINewType);
+					} else if (!u.new_type.IsEmpty()) { 
+						di.value_type=u.new_type; di.GenerateEvent(&myDIEventHandler::OnDINewType);
+					} else if (!di.is_in_scope) { 
+						di.is_in_scope=true; di.GenerateEvent(&myDIEventHandler::OnDIInScope);
+					} else {
+						di.GenerateEvent(&myDIEventHandler::OnDIValueChanded);
+					}
 				} else if (di.is_in_scope) {
 					di.is_in_scope=false;
 					di.GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
@@ -191,15 +199,15 @@ public:
 private:
 	DEBUG_INSPECTION_EXPRESSION_TYPE dit_type; ///< si es una vo, una macro, todavía no se creo, o fallo la creacion
 	// inf definida por el usuario/consumidor de la inspeccion
-	wxString expression; ///< expresión que está siendo inspeccionada (DIT_VARIABLE_OBJECT) o comando gdb que se evalua (DIT_GDB_COMMAND)
-	wxString variable_object; ///< si es variable object (der dit_type) guarda el nombre de la vo
+	wxString expression; ///< expresión que está siendo inspeccionada 
+	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
 	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
 	bool is_frozen; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
 	myDIEventHandler *consumer; ///< puntero a quien utiliza esta inspección, para notificarle los cambios
 	// informacion "calculada"
 	wxString value_type; ///< tipo de dato c/c++ del resultado de la expresión
-	long num_childs; ///< si es una inspeccion compuesta, cantidad de "partes" (campos en un struct, elementos en un arreglo, etc)
+	long num_children; ///< si es una inspeccion compuesta, cantidad de "partes" (campos en un struct, elementos en un arreglo, etc)
 	wxString gdb_value; ///< valor tal como lo da gdb, sin alterar
 	
 //	int age; ///< indica cuando fue la última vez que se actualizó esta información
@@ -219,7 +227,7 @@ private:
 		variable_object = debug->GetValueFromAns(ans,"name",true);
 		value_type = debug->GetValueFromAns(ans,"type",true);
 		gdb_value = debug->GetValueFromAns(ans,"value",true);
-		debug->GetValueFromAns(ans,"numchild",true).ToLong(&num_childs);
+		debug->GetValueFromAns(ans,"numchild",true).ToLong(&num_children);
 		vo2di_map[variable_object] = this;
 	}
 	
@@ -246,7 +254,7 @@ private:
 	
 	/// las instancias se construyen solo a través de Create
 	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) 
-		: dit_type(type),expression(expr),is_frameless(frameless), consumer(event_handler) {};
+		: dit_type(type),expression(expr),is_frameless(frameless), is_frozen(false), consumer(event_handler) { };
 	/// las instancias se destruyen a través de Destroy, esto evita que alguien de afuera le quiera hacer delete
 	~DebuggerInspection() {}; 
 		
@@ -264,10 +272,15 @@ public:
 	**/ 
 	static DebuggerInspection *Create(const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL, bool init_now=true) {
 		bool is_cmd = expr.size()&&expr[0]=='>';
-		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,is_cmd?expr.Mid(1):expr,frameless,event_handler);
+		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,expr,frameless,event_handler);
 		all_inspections.Add(di);
 		if (init_now) di->Init();
 		return di;
+	}
+	
+	void FirstManualEvaluation() {
+		UpdateValue(false);
+		GenerateEvent(&myDIEventHandler::OnDICreated);
 	}
 	
 	/**
@@ -277,8 +290,12 @@ public:
 	* hacer nada), false si quedó pendiente para la próxima pausa
 	**/ 
 	bool Init() {
-		if (dit_type==DIT_PENDING) // si es variable-object y estamos en depuracion, crearla en gdb
+		if (dit_type==DIT_PENDING) { // si es variable-object y estamos en depuracion, crearla en gdb
 			return (!debug->debugging || TryToExec(&DebuggerInspection::CreateVO)); 
+		} else if (dit_type==DIT_GDB_COMMAND) {
+			variable_object = expression.Mid(1);
+			return (!debug->debugging || TryToExec(&DebuggerInspection::FirstManualEvaluation));
+		}
 		return true;
 	}
 	
@@ -319,7 +336,24 @@ public:
 	wxString GetValueType() { return value_type; }
 	bool IsFrameless() { return is_frameless; }
 	bool IsInScope() { return is_in_scope; }
-	bool IsInFrozen() { return is_frozen; }
+	bool IsFrozen() { return is_frozen; }
+	bool RequiresManualUpdate() { return dit_type==DIT_GDB_COMMAND; }
+	bool UpdateValue(bool generate_event=true) { // solo para cuando RequiresManualUpdate()==true
+		if (!debug->debugging || debug->waiting) return false;
+		if (dit_type==DIT_GDB_COMMAND) {
+			wxString new_value = debug->GetMacroOutput(variable_object);
+			if (new_value!=gdb_value) {
+				gdb_value=new_value;
+				if (generate_event) GenerateEvent(&myDIEventHandler::OnDIValueChanded);
+				return true;
+			}
+		}
+		return false;
+	}
+	// solo llamar a estas funciones si GetDbiType()==DIT_VARIABLE_OBJECT
+	bool IsSimpleType() { return num_children==0; } 
+	bool IsClass() { return num_children!=0 && gdb_value.Len() && gdb_value[0]=='{'; }
+	bool IsArray() { return num_children!=0 && gdb_value.Len() && gdb_value[0]!='{'; }
 	
 };
 

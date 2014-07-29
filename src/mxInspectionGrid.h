@@ -50,7 +50,7 @@ class mxInspectionGrid : public mxGrid, public myDIEventHandler {
 //	bool can_drop; // para evitar hacer drag y drop sobre si misma
 //	bool created;
 //	int selected_row;
-//	bool ignore_changing;
+	bool ignore_cell_change_event;
 //	int old_size;
 //	float cols_sizes[IG_COLS_COUNT];
 //	bool *cols_visibles;
@@ -137,6 +137,11 @@ public:
 	void OnRedirectedEditEvent(wxCommandEvent &event);
 	
 	void ModifyInspectionExpression(int row, const wxString &expression, bool is_frameless);
+	
+	// eventos generados por mxGrid
+	void OnCellPopupMenu(int row, int col);
+//	void OnCellDoubleClick(int row, int col);
+//	void OnLabelPopupMenu(int col);
 
 	// eventos generados por DebuggerInspection
 	void OnDICreated(DebuggerInspection *di);

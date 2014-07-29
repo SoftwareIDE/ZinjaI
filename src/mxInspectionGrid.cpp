@@ -1,36 +1,28 @@
 
 //#include <wx/wx.h> // for wxGetSingleChoice, for some reasom <wx/choicdlg.h> doesn't work????
 //#include <wx/choicdlg.h>
-//#include <wx/menu.h>
-//#include <wx/clipbrd.h>
+#include <wx/menu.h>
+#include <wx/clipbrd.h>
 #include "mxInspectionGrid.h"
 #include "Language.h"
 //#include "mxUtils.h"
 //#include "DebugManager.h"
 //#include "mxSource.h"
 //#include "ids.h"
-//#include "mxMainWindow.h"
+#include "mxMainWindow.h"
 //#include "mxInspectionExplorer.h"
 //#include "mxMessageDialog.h"
 //#include "mxInspectionMatrix.h"
 //#include "mxTextDialog.h"
 //#include "mxInspectionPrint.h"
 #include "mxInspectionGridCellEditor.h"
-#include <algorithm>
 using namespace std;
 
-
-
-//
-//
-//
-//
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_GRID_CELL_CHANGE(mxInspectionGrid::OnCellChange)
 	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
 //	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionGrid::OnDoubleClick)
-//	EVT_GRID_CELL_RIGHT_CLICK(mxInspectionGrid::OnRightClick)
 //	EVT_MENU(mxID_INSPECTION_FREEZE,mxInspectionGrid::OnFreeze)
 //	EVT_MENU(mxID_INSPECTION_BREAK,mxInspectionGrid::OnBreakClassOrArray)
 //	EVT_MENU(mxID_INSPECTION_RESCOPE,mxInspectionGrid::OnReScope)
@@ -67,6 +59,16 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 ////	EVT_GRID_SELECT_CELL(mxInspectionGrid::OnSelectCell)
 END_EVENT_TABLE()
 //	
+	
+class FlagGuard {
+	bool *flag;
+public:
+	FlagGuard(bool &f, bool force):flag(&f) { *flag=true; }
+	FlagGuard(bool &f):flag(&f) { if (*flag) { flag=NULL; } else *flag=true; }
+	bool IsOk() { return flag!=NULL; }
+	void Release() { if (flag) *flag=false; flag=NULL; }
+	~FlagGuard() { if (flag) *flag=false; }
+};
 
 static struct mxIGStatusOpts {
 	wxColour color;
@@ -76,17 +78,19 @@ static struct mxIGStatusOpts {
 	void Init(bool ev, const wxColour &c) { color=c; have_message=false; editable_value=ev; }
 	void Init(bool ev, const wxColour &c, const wxString &m) { color=c; have_message=true; message=m; editable_value=ev; }
 } mxig_status_opts[mxInspectionGrid::IGRS_COUNT];
-//
+
 mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COUNT) {
+	
+	FlagGuard icce_guard(ignore_cell_change_event,true);
 	
 	last_return_had_shift_down = mask_cell_change_event = false;
 	
-	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),"");
-	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de ámbito >>>"));
+	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),"<<< evaluación pendiente >>>");
+	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< fuera de ámbito >>>"));
 	mxig_status_opts[IGRS_IN_SCOPE].Init(true,wxColour(196,0,0));
 	mxig_status_opts[IGRS_CHANGED].Init(true,wxColour(196,0,0));
 	mxig_status_opts[IGRS_NORMAL].Init(true,wxColour(0,0,0));
-	mxig_status_opts[IGRS_ERROR].Init(false,wxColour(196,0,0),"<<ERROR>>");
+	mxig_status_opts[IGRS_ERROR].Init(false,wxColour(196,0,0),"<<< Error >>>");
 	mxig_status_opts[IGRS_FREEZE].Init(false,wxColour(0,100,200));
 	
 //	can_drop=true;
@@ -136,6 +140,8 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 //	SetDropTarget(new mxInspectionDropTarget(this));
 //	created=true;
 //	ignore_changing=false;
+	
+	ignore_cell_change_event=false;
 }
 
 
@@ -173,6 +179,8 @@ void mxInspectionGrid::OnKey(wxKeyEvent &event) {
 
 void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 	event.Skip();
+	FlagGuard icce_guard(ignore_cell_change_event);
+	if (!icce_guard.IsOk()) return;
 	wxString new_value = wxGrid::GetCellValue(event.GetRow(),event.GetCol());
 	if (event.GetCol()==GetRealCol(IG_COL_EXPR)) {
 		int row = event.GetRow();
@@ -269,7 +277,7 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 //	ignore_changing=false;
 }
 //
-//void mxInspectionGrid::OnDoubleClick(wxGridEvent &event) {
+//void mxInspectionGrid::OnCellDoubleClick(int row, int col) {
 //	if (event.GetCol()==IG_COL_VALUE) {
 //		debug->BreakCompoundInspection(event.GetRow());
 //	} else if (event.GetCol()==IG_COL_LEVEL) {
@@ -344,77 +352,84 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 //	Refresh();
 //}
 //
-//void mxInspectionGrid::OnRightClick(wxGridEvent &event) {
-//	selected_row = event.GetRow();
-//	this->SetGridCursor(selected_row,event.GetCol());
-//	this->SelectRow(selected_row);
-//	wxMenu menu; //(selected_row<debug->inspections_count?debug->inspections[selected_row].expr:wxString(_T("<inspecciones>")));
-////	menu.AppendSeparator();
-//	if (debug->debugging) {
-//		inspectinfo &ii=debug->inspections[selected_row];
-//		if (selected_row<debug->inspections_count && ii.on_scope && !ii.frameless) {
-//			if (ii.is_class&&ii.is_vo) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
-//			if (ii.is_array&&ii.is_vo) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_ARRAY,"&Separar arreglo en elementos"));
-//			menu.Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"&Mostrar en tabla separada"));
-//			menu.Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"&Mostrar en ventana separada"));
-//			if (ii.is_vo) menu.Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos"));
-//			menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
-//			menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
-//		} else if (selected_row<debug->inspections_count) {
-//			menu.Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"&Mostrar en ventana separada"));
-//			menu.Append(mxID_INSPECTION_RESCOPE,wxString(LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"))+(ii.frameless?"\tCtrl+I":""));
-//			if (!ii.frameless) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
-//		}
-//		if (debug->inspections_count)
-//			menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
-//	}
-//	if (selected_row<debug->inspections_count) {
-//		if (debug->debugging) menu.Append(mxID_INSPECTION_DUPLICATE,wxString(LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"))+"\tCtrl+L");
-//		menu.Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"))+"\tCtrl+C");
-//		menu.Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"&Copiar Valor"));
-//		if (debug->inspections[selected_row].freezed)
-//			menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"))+"\tCtrl+B");
-//		else
-//			menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
-//	}
-//	if (debug->inspections_count)
-//		menu.Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"Copiar Toda la Ta&bla"));
-//	if (main_window->notebook_sources->GetPageCount()>0) {
-//		mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-//		int s = source->GetSelectionStart(), e = source->GetSelectionEnd();
-//		if (s!=e && source->LineFromPosition(s)==source->LineFromPosition(e))
-//			menu.Append(mxID_INSPECTION_FROM_SOURCE,LANG(INSPECTGRID_POPUP_COPY_FROM_SELECTION,"Insertar Expresion Desde la &Seleccion"));
+
+void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
+	// ensure that clicked cell is selected, so generated events will use that one
+	// selection policy is: if theres a multiple selection, keep, else select only clicked cell
+	vector<int> sel; mxGrid::GetSelectedRows(sel); 
+	if (sel.size()==0) sel.push_back(row); 
+	else if (sel.size()==1 && sel[0]!=row) { sel[0]=row; mxGrid::Select(row,col); }
+	bool there_are_inspections = inspections.GetSize()!=0;
+	bool sel_is_single = sel.size()==1; // hay una sola inspeccion seleccionada
+	bool sel_is_last = sel_is_single && row==inspections.GetSize(); // la seleccionada es la ultima de la tabla (en blanco, invalida)
+	bool sel_is_vo = sel_is_single && !sel_is_last && inspections[row]->GetDbiType()==DIT_VARIABLE_OBJECT; // la seleccionada corresponde a una variable_object
+	DebuggerInspection *di = (sel_is_single && !sel_is_last)?inspections[row].di:NULL; // puntero a la seleccionada si es unica y valida
+	bool sel_has_vo = sel_is_vo; // si hay al menos una variable object seleccionada
+	bool sel_has_frozen = false, sel_has_unfrozen=false; // si hay inspecciones congeladas y descongeladas
+	if (!sel_has_vo && !sel_is_single) {
+		for(unsigned int i=0;i<sel.size();i++) {
+			if (sel[i]>=inspections.GetSize()) continue;
+			DebuggerInspection *di = inspections[sel[i]].di;
+			if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; }
+			if (di->IsFrozen()) sel_has_frozen=true; else sel_has_unfrozen=true; 
+		}
+	}
+	bool there_are_sources = main_window->notebook_sources->GetPageCount()!=0;
+	mxSource *current_source = there_are_sources?(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection())):NULL;
+
+#warning restablecer funcionalidad de todo lo que este comentado
+	wxMenu menu; 
+//	if (sel_is_vo && di->IsClass()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
+//	if (sel_is_vo && di->IsArray()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_ARRAY,"&Separar arreglo en elementos"));
+//	wxMenu *extern_v = new wxMenu; wxMenuItem *it[4];
+//		if (!sel_is_last && (!sel_is_vo || !di->IsSimpleType())) extern_v->Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
+//		if (sel_is_single && !sel_is_last) extern_v->Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
+//		if (sel_is_vo) extern_v->Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
+//	if (extern_v->GetMenuItemCount()) menu.AppendSubMenu(extern_v,LANG(INSPECTGRID_EXTERN_VISUALIZATION,"Otras &visualizaciones")); else delete extern_v;
+//	if (inspections.GetSize()) menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
+//	if (sel_has_vo && !(sel_is_vo && !di->IsFrameless())) menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
+//	if (sel_has_vo && !(sel_is_vo && di->IsFrameless())) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
+//	if (!sel_is_last) menu.Append(mxID_INSPECTION_DUPLICATE,wxString(LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"))+"\tCtrl+L");
+//	if (!sel_is_last) menu.Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"))+"\tCtrl+C");
+//	if (!sel_is_last) menu.Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"&Copiar Valor"));
+//	if (sel_has_unfrozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
+//	if (sel_has_frozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"))+"\tCtrl+B");
+//	if (there_are_inspections) menu.Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"Copiar Toda la Ta&bla"));
+//	if (current_source) {
+//		int s = current_source->GetSelectionStart(), e = current_source->GetSelectionEnd();
+//		if (s!=e && current_source->LineFromPosition(s)==current_source->LineFromPosition(e))
+//			menu.Append(mxID_INSPECTION_FROM_SOURCE,LANG1(INSPECTGRID_POPUP_COPY_FROM_SELECTION,"Insertar Expresion Desde la &Seleccion <{1}>",current_source->GetTextRange(s,e)));
 //	}
 //	if (wxTheClipboard->Open()) {
 //		wxTextDataObject clip_data;
-//		if (wxTheClipboard->GetData(clip_data)) {
-//			if (clip_data.GetText().Find('\n')==wxNOT_FOUND)
-//				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD,"Pegar Expresion Desde el &Portapapeles"))+"\tCtrl+V");
-//		}
+//		if (wxTheClipboard->GetData(clip_data) {
+//			wxString clip_text = clip_data.GetText();
+//			if (clip_text.Contains('\n')) 
+//				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE,"Insertar Expresiones Desde el &Portapapeles"))+"\tCtrl+V");
+//			else if (!clip_text.IsEmpty())
+//				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (<{1}>)",(<{1}>)",clip_text)+"\tCtrl+V");
 //		wxTheClipboard->Close();
 //	}
-//	if (debug->inspections_count) {
-//		if (selected_row<debug->inspections_count) {
-//			menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
-//			if (debug->inspections[selected_row].is_vo && !debug->inspections[selected_row].frameless) {
-//				wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
-//				it[0] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
-//				it[1] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_READ,LANG(INSPECTGRID_WATCH_READ,"lectura"));
-//				it[2] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_WRITE,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
-//				it[3] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_RW,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
-//				it[(debug->inspections[selected_row].watch_read?1:0)+(debug->inspections[selected_row].watch_write?2:0)]->Check(true);
-//				menu.AppendSubMenu(submenu,LANG(INSPECTGRID_WATCH,"WatchPoint"));
-//			}
-//			if (debug->inspections[selected_row].is_vo && !debug->inspections[selected_row].frameless && !debug->inspections[selected_row].is_array && !debug->inspections[selected_row].is_class) {
-//				wxMenu *submenu = new wxMenu;
-//				submenu->Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
-//				submenu->Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
-//				submenu->Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
-//				submenu->Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
-//				submenu->Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
-//				menu.AppendSubMenu(submenu,LANG(INSPECTGRID_FORMAT,"Formato"));
-//			}
-//		}
+//	if (!sel_is_last) menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
+//	if (sel_is_vo && di->IsSimpleType()) {
+//		wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
+//		it[0] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
+//		it[1] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_READ,LANG(INSPECTGRID_WATCH_READ,"lectura"));
+//		it[2] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_WRITE,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
+//		it[3] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_RW,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
+//		it[(debug->inspections[selected_row].watch_read?1:0)+(debug->inspections[selected_row].watch_write?2:0)]->Check(true);
+//		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_WATCH,"WatchPoint"));
+//	}
+//	if (sel_is_vo && di->IsSimpleType()) {
+//		wxMenu *submenu = new wxMenu;
+//		submenu->Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+//		submenu->Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
+//		submenu->Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
+//		submenu->Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
+//		submenu->Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
+//		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_FORMAT,"Formato"));
+//	}
+//	if (there_are_inspections) {
 //		menu.AppendSeparator();
 //		menu.Append(mxID_INSPECTION_CLEAR_ALL,LANG(INSPECTGRID_POPUP_CLEAN_TABLE,"&Limpiar Tabla de Inspeccion"));
 //		menu.Append(mxID_INSPECTION_SAVE_TABLE,LANG(INSPECTGRID_POPUP_SAVE_TABLE,"&Guardar Lista de Inspecciones..."));
@@ -423,9 +438,8 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 //		menu.Append(mxID_INSPECTION_LOAD_TABLE,LANG(INSPECTGRID_POPUP_LOAD_TABLE,"Ca&rgar Lista de Inspecciones..."));
 //		menu.Append(mxID_INSPECTION_MANAGE_TABLES,LANG(INSPECTGRID_POPUP_MANAGE_TABLES,"Administrar Listas de Inspecciones..."));
 //	}
-//	
-//	PopupMenu(&menu);
-//}
+	PopupMenu(&menu);
+}
 //
 //void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
 //	debug->BreakCompoundInspection(selected_row);
@@ -934,9 +948,19 @@ void mxInspectionGrid::SetRowStatus (int r, int status) {
 
 void mxInspectionGrid::OnFullTableUpdateBegin( ) {
 	BeginBatch();
-	for(int i=0;i<inspections.GetSize();i++)
-		if (inspections[i].status==IGRS_IN_SCOPE||inspections[i].status==IGRS_CHANGED)
+	for(int i=0;i<inspections.GetSize();i++) {
+		InspectionGridRow &di = inspections[i];
+		if (di.status==IGRS_UNINIT || di->IsFrozen()) continue;
+		if (di->RequiresManualUpdate()) {
+			if (di->UpdateValue()) {
+				mxGrid::SetCellValue(i,IG_COL_VALUE,di->GetValue());
+				SetRowStatus(i,IGRS_CHANGED);	
+			} else
+				SetRowStatus(i,IGRS_NORMAL);
+		} else if (di.status==IGRS_IN_SCOPE||di.status==IGRS_CHANGED) {
 			SetRowStatus(i,IGRS_NORMAL);
+		}
+	}
 }
 
 void mxInspectionGrid::OnFullTableUpdateEnd ( ) {
