@@ -381,7 +381,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	wxMenu menu; 
 //	if (sel_is_vo && di->IsClass()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
 //	if (sel_is_vo && di->IsArray()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_ARRAY,"&Separar arreglo en elementos"));
-//	wxMenu *extern_v = new wxMenu; wxMenuItem *it[4];
+//	wxMenu *extern_v = new wxMenu;
 //		if (!sel_is_last && (!sel_is_vo || !di->IsSimpleType())) extern_v->Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
 //		if (sel_is_single && !sel_is_last) extern_v->Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
 //		if (sel_is_vo) extern_v->Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
@@ -910,7 +910,7 @@ void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
 	OnDINewType(di);
 }
 
-void mxInspectionGrid::OnDIValueChanded(DebuggerInspection *di) {
+void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
 	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
 	SetRowStatus(current_row,IGRS_CHANGED);

@@ -68,7 +68,7 @@ private:
 	SingleList<InspectionGridRow> inspections;
 	
 	int current_row;
-	bool SetCurrentRow(DebuggerInspection* di) { 
+	bool SetCurrentRow(DebuggerInspection* di) {
 		current_row = inspections.Find(di); 
 		return current_row!=inspections.NotFound();
 	}
@@ -146,7 +146,7 @@ public:
 	// eventos generados por DebuggerInspection
 	void OnDICreated(DebuggerInspection *di);
 	void OnDIError(DebuggerInspection *di);
-	void OnDIValueChanded(DebuggerInspection *di);
+	void OnDIValueChanged(DebuggerInspection *di);
 	void OnDIOutOfScope(DebuggerInspection *di);
 	void OnDIInScope(DebuggerInspection *di);
 	void OnDINewType(DebuggerInspection *di);
