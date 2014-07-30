@@ -4015,7 +4015,7 @@ void mxSource::OnAutocompSelection(wxStyledTextEvent &event) {
 void mxSource::OnAutocompTimer(wxTimerEvent &event) {
 	if (event.GetEventObject()==&timer_focus) { mask_kill_focus_event=false; return; }
 	if (!wxStyledTextCtrl::AutoCompActive()) { // si se cancelo el menu (por ejemplo, el usuario siguio escribiendo la palabra y ya no hay conicidencias)
-		calltip_mode=MXS_NULL; if (calltip_mode==MXS_AUTOCOMP) calltip_mode=MXS_NULL;
+		if (calltip_mode==MXS_AUTOCOMP) calltip_mode=MXS_NULL; // solo si el modo es autocomp, porque puede ya haber lanzado un calltip real
 	}
 	if (calltip_mode!=MXS_AUTOCOMP) return;
 	wxString help_text = autocomp_list.GetHelp(AutoCompGetCurrent());
