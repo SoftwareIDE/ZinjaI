@@ -277,7 +277,25 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 //	ignore_changing=false;
 }
 //
-//void mxInspectionGrid::OnCellDoubleClick(int row, int col) {
+bool mxInspectionGrid::OnCellDoubleClick(int row, int col) {
+	if (row<inspections.GetSize() && col==GetRealCol(IG_COL_VALUE)) {
+		SingleList<DebuggerInspection *> children;
+		DebuggerInspection *old_di = inspections[row].di;
+		if (!old_di->Break(children,true,true)) return false;
+		if (children.GetSize()>1) {
+			inspections.MakeRoomForMultipleInsert(row,children.GetSize()-1);
+			InsertRows(row,children.GetSize()-1);
+		}
+		for(int i=0;i<children.GetSize();i++) { 
+			inspections[row+i].di=children[i];
+			mxGrid::SetCellValue(row+i,IG_COL_EXPR,children[i]->GetExpression());
+			mxGrid::SetCellValue(row+i,IG_COL_TYPE,children[i]->GetValueType());
+			mxGrid::SetCellValue(row+i,IG_COL_VALUE,children[i]->GetValue());
+		}
+		old_di->Destroy();
+	}
+	return true;
+}
 //	if (event.GetCol()==IG_COL_VALUE) {
 //		debug->BreakCompoundInspection(event.GetRow());
 //	} else if (event.GetCol()==IG_COL_LEVEL) {

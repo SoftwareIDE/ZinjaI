@@ -140,7 +140,7 @@ public:
 	
 	// eventos generados por mxGrid
 	void OnCellPopupMenu(int row, int col);
-//	void OnCellDoubleClick(int row, int col);
+	bool OnCellDoubleClick(int row, int col);
 //	void OnLabelPopupMenu(int col);
 
 	// eventos generados por DebuggerInspection

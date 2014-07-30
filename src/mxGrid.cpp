@@ -69,7 +69,7 @@ void mxGrid::OnResize (wxSizeEvent & event) {
 }
 
 void mxGrid::OnDblClick (wxGridEvent & event) {
-	OnCellDoubleClick(event.GetRow(),event.GetCol());
+	if (!OnCellDoubleClick(event.GetRow(),event.GetCol())) event.Skip();
 }
 
 void mxGrid::OnRightClick (wxGridEvent & event) {

@@ -9,13 +9,14 @@ using namespace std;
 
 ////! Información acerca de una inspección en el depurador
 
-///< Tipo/estado de una inspeccion
+/// Tipo/estado de una inspeccion
 enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 	DIT_VARIABLE_OBJECT, ///< la expresion tienen un variable object asociado
+	DIT_AUXILIAR_VO, ///< es un vo auxiliar para evaluar otro (parent) vo compuesto (se usa como expresion "&(parent->expresion)", para evaluar "p *((parent->value_type*)gdb_value)" y asignar en parent->gdb_value)
 	DIT_GDB_COMMAND, ///< la expresion es en realidad una macro o comando para gdb
-	DIT_PENDING, ///< la ultima operacion sobre la inspeccion no se ejecutó porque el depurador estaba ocupado, por lo que quedó encolada para cuando se detenga
-	DIT_CHILD, ///< inspeccion auxiliar para un variable object de array o class (esta tiene la direccion del objeto (&x), y entonces se usa para hacer "p *((tipo*)direccion)")
-	DIT_ERROR
+	DIT_PENDING, ///< la expresión creará un vo, pero su creación esta en cola para la próxima pausa
+	DIT_GHOST, ///< vo que no está en el mapa ni recibe actualizaciones, solo existe porque otras dependen de ella (ver VOBreak)
+	DIT_ERROR ///< la expresión debía crear un vo, pero ocurrió un error al intentarlo
 };
 
 class DebuggerInspection;
@@ -51,6 +52,27 @@ public:
 **/
 struct DebuggerInspection {
 	
+	class CallLogger {
+		static int lev;
+		DebuggerInspection *di;
+		const char *method;
+	public:
+		CallLogger(const char *_method, DebuggerInspection *_di=NULL) : di(_di),method(_method) {
+			cerr<<"DI::"<<string((++lev)*2,' ')<<method<<"  in";
+			if (di) cerr<<": this="<<this<<" dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"");
+				cerr<<endl;
+		}
+		~CallLogger() { 
+			cerr<<"DI::"<<string((lev--)*2,' ')<<method<<" out";
+			if (di) cerr<<": this="<<this<<" dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"");
+			cerr<<endl;
+		}
+	};
+#define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
+#define __debug_log_static_method__ CallLogger _call_logger_(__FUNCTION__)
+	
+	
+	/// inspecciones a reestablecer al reiniciar la depuración, guarda todas las útiles para el usuario
 	static SingleList<DebuggerInspection*> all_inspections;
 	
 	/// asocia los variable_objects (por nombre, como lo da gdb) a las instancias de esta clase que los representan internamente en ZinjaI
@@ -97,15 +119,17 @@ struct DebuggerInspection {
 		}
 	}
 		
-	static void ProcessPendingCommands() {
-		if (!debug->debugging || debug->waiting) { 
-			DEBUG_INFO("ERROR: ProcessPendingCommands: !debug->debugging || debug->waiting");
+	static void ProcessPendingActions() {
+		__debug_log_static_method__;
+		if (debug->debugging && debug->waiting) {
+			DEBUG_INFO("ERROR: ProcessPendingActions: debug->debugging && debug->waiting");
 		}
-		for(int i=0;i<pending_actions.GetSize();i++) { 
+		for(int i=0;i<pending_actions.GetSize();i++) {
 			DIPendingAction &pa=pending_actions[i];
 			if (pa.action) (pa.inspection->*pa.action)();
 			else delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
 		}
+		pending_actions.Clear();
 	}
 	
 	/// para notificar los cambios a los componentes de interfaz que utilizan estas inspecciones
@@ -117,12 +141,20 @@ struct DebuggerInspection {
 public:
 	
 	static void OnDebugStop() {
-		ProcessPendingCommands(); // delete pending commands, they shoud not be run in next debugging session
+		__debug_log_static_method__;
+		// delete ghost inspections by unlinking its children
+		for(int i=0;i<all_inspections.GetSize();i++) { 
+			DebuggerInspection *di = all_inspections[i];
+			if (di->dit_type==DIT_VARIABLE_OBJECT) 
+				di->RemoveParentLink();
+		}
+		ProcessPendingActions(); // delete pending commands, they shoud not be run in next debugging session
 		vo2di_map.clear();
 	}
 	
 	static void OnDebugStart() {
-		ProcessPendingCommands(); // commands for creating new variable objects should be here
+		__debug_log_static_method__;
+		ProcessPendingActions(); // commands for creating new variable objects should be here
 		// re-create al vo-based inspections on next pause
 		for(int i=0;i<all_inspections.GetSize();i++) { 
 			DebuggerInspection *di = all_inspections[i];
@@ -133,78 +165,19 @@ public:
 	}
 	
 	static void OnDebugPause() {
-		ProcessPendingCommands();
+		__debug_log_static_method__;
+		ProcessPendingActions();
 		UpdateAll();
 	}
-		
-	/// Metodo que actualiza todas las inspecciones (consultando a gdb, se debe invocar desde DebugManager cuando hay una pausa/interrupción en la ejecución)
-	static void UpdateAll() {
-		
-		// struct para guardar los campos que interesan de cada vo actualizada
-		struct update { wxString name,value,in_scope,new_type,new_num_children; };
-		
-		// consulta cuales vo cambiaron
-		wxString s = debug->SendCommand("-var-update --all-values *");
-		unsigned int l=s.Len();
-		for(unsigned int i=6;i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
-			if (s[i]=='n' && s[i+1]=='a' && s[i+2]=='m' && s[i+3]=='e' && s[i+4]=='=') { // por cada "name=" empieza un vo...
-				// busca los campos del vo
-				update u;
-				while(true) {
-					int p0=i; // posicion donde empieza el nombre del "campo"
-					while (i<l && s[i]!=']' && s[i]!='}' && s[i]!='=') i++;
-					int p1=i; // posicion del igual
-					if (++i>=l || s[i]!='\"') break; 
-					while (++i<l && s[i]!='\"') { if (i=='\\') i++; }
-					int p2=i; // posicion de la comilla que cierra
-					wxString name=s.Mid(p0,p1-p0);
-					if (name=="name") u.name=s.Mid(p1+2,p2-p1-2);
-					else if (name=="value") u.value=s.Mid(p1+2,p2-p1-2);
-					else if (name=="in_scope") u.in_scope=s.Mid(p1+2,p2-p1-2);
-					else if (name=="new_type") u.new_type=s.Mid(p1+2,p2-p1-2);
-					else if (name=="new_num_children") u.new_num_children=s.Mid(p1+2,p2-p1-2);
-					while (++i<l && s[i]!=',' && s[i]!=']' && s[i]!='}'); 
-					if (i==l || s[i]==']' || s[i]=='}') break; else i++;
-//					while (++i<l && s[i]==' '); // pareciera no ser necesario
-				}
-				// busca el DebuggerInspection para el vo (por su nombre gdb)
-				map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(u.name);
-				if (it==vo2di_map.end()) {
-					DEBUG_INFO("ERROR: Inspection::UpdateAll: it==vo2di_map.end()");
-					continue;
-				}
-				// actualiza el estado del DebuggerInspection y notifica a la interfaz mediante consumer
-				DebuggerInspection &di=*(it->second);
-				if (di.dit_type==DIT_VARIABLE_OBJECT) {
-					if (u.in_scope=="true") {
-						di.gdb_value=u.value;
-						bool new_scope=false,new_type=false;
-						if (!u.new_num_children.IsEmpty()) { u.new_num_children.ToLong(&di.num_children); new_type=true; } 
-						if (!u.new_type.IsEmpty()) { di.value_type=u.new_type; new_type=true; }
-						if (!di.is_in_scope) { di.is_in_scope=true; new_scope=true; }
-						if (new_type||new_scope) di.SetupChildInspection();
-						if (new_scope) di.GenerateEvent(&myDIEventHandler::OnDIInScope);
-						else if (new_type) di.GenerateEvent(&myDIEventHandler::OnDINewType);
-						else di.GenerateEvent(&myDIEventHandler::OnDIValueChanged);
-					} else if (di.is_in_scope) {
-						di.is_in_scope=false;
-						di.GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
-					}
-				} else /*if (di.dit_type==DIT_CHILD)*/ {
-					if (u.in_scope=="true") {
-						di.UpdateValue();
-						di.other->GenerateEvent(&myDIEventHandler::OnDIValueChanged);
-					}
-				}
-			}
-		}
-	}
+	
+	/// Actualiza todas las inspecciones (consultando a gdb, se debe invocar desde DebugManager cuando hay una pausa/interrupción en la ejecución)
+	static void UpdateAll();
 	
 	
 private:
 	DEBUG_INSPECTION_EXPRESSION_TYPE dit_type; ///< si es una vo, una macro, todavía no se creo, o fallo la creacion
 	// inf definida por el usuario/consumidor de la inspeccion
-	wxString expression; ///< expresión que está siendo inspeccionada (si dit_type!=DIT_CHILD, sino es el comando para inspeccionar con "p" la expresion padre)
+	wxString expression; ///< expresión que está siendo inspeccionada (si dit_type!=DIT_AUXILIAR_VO, sino es el comando para inspeccionar con "p" la expresion padre)
 	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
 	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
@@ -214,17 +187,21 @@ private:
 	wxString value_type; ///< tipo de dato c/c++ del resultado de la expresión
 	long num_children; ///< si es una inspeccion compuesta, cantidad de "partes" (campos en un struct, elementos en un arreglo, etc)
 	wxString gdb_value; ///< valor tal como lo da gdb, sin alterar
-	DebuggerInspection *other; ///< if this is a compound variable object, uses this helper inspection for displaying full content, else its NULL
+	DebuggerInspection *helper; ///< vo auxiliar para mostrar mejor este cuando es compuesto
+	DebuggerInspection *parent; ///< otro vo del cual depende este (el otro era compuesto, este es hijo)
+	int di_children; ///< cantidad de vo hijos que dependen de este
 	
 //	int age; ///< indica cuando fue la última vez que se actualizó esta información
 //	int bt_frame; ///< en que nivel del backtrace está actualmente
 //	wxString pretty_value; ///< valor en versión "para mostrar" (puede no ser como lo da gdb, por ejemplo, los vo de structs no muestran sus campos)
 	
 	void VODelete() {
+		__debug_log_method__;
 		debug->SendCommand("-var-delete - ",variable_object);
 	}
 	
 	bool VOCreate() {
+		__debug_log_method__;
 		wxString cmd = "-var-create - ";
 		if (is_frameless) cmd<<"@ "; else cmd<<"* ";
 		wxString ans = debug->SendCommand(cmd,mxUT::EscapeString(expression,true));
@@ -242,37 +219,42 @@ private:
 	}
 	
 	void VOEvaluate() {
+		__debug_log_method__;
 		wxString ans = debug->SendCommand(wxString("-var-evaluate-expression "),variable_object);
 		gdb_value = debug->GetValueFromAns(ans,"value",true,true);
 	}
 	
 	bool VOAssign(const wxString &new_value) {
+		__debug_log_method__;
 		wxString ans = debug->SendCommand(wxString("-var-assign ")<<variable_object<<" "<<mxUT::EscapeString(new_value,true));
 		return ans.StartsWith("^done");
 	}
 	
 	bool SetupChildInspection() {
+		__debug_log_method__;
 		// si habia, borrar la inspeccion auxiliar previa
-		if (other) other->Destroy();
+		if (helper) helper->Destroy();
 		// si no tiene hijos, no necesita la inspeccion auxiliar
 		if (num_children==0 || value_type.EndsWith("*")) 
-			{ other=NULL; return false; }
+			{ helper=NULL; return false; }
 		// si tiene hijos, intentar crear la expresion auxiliar
-		other = new DebuggerInspection(this);
+		helper = new DebuggerInspection(this);
 		// evaluarla 
-		if (other->VOCreate()) { 
-			other->VOEvaluate(); 
-			other->MakeEvaluationExpressionForParent();
+		if (helper->VOCreate()) { 
+			helper->VOEvaluate(); 
+			helper->MakeEvaluationExpressionForParent();
 			UpdateValue(false);
 			return true;
 		} else { 
-			other->Destroy(); other=NULL; 
+			helper->Destroy(); helper=NULL; 
 			return false;
 		}
 	}
 	
+	/// solo debe ser llamado cuando dit_type==DIT_AUXILIAR_VO
 	void MakeEvaluationExpressionForParent() {
-		const wxString &type = other->value_type;
+		__debug_log_method__;
+		const wxString &type = parent->value_type;
 		int i=type.Len(), plev=0,pend=-1,pbeg=-1;
 		while (--i>=0) {
 			if (type[i]==']') { if (plev++==0) pend=i; }
@@ -286,10 +268,10 @@ private:
 	}
 	
 	void CreateVO() {
+		__debug_log_method__;
 		if (VOCreate()) {
 			dit_type = DIT_VARIABLE_OBJECT;
 			if (!SetupChildInspection()) VOEvaluate();
-			is_in_scope = true;
 			GenerateEvent(&myDIEventHandler::OnDICreated);
 		} else {
 			dit_type=DIT_ERROR; 
@@ -297,15 +279,62 @@ private:
 		}
 	}
 	
-	/// las instancias se construyen solo a través de Create
-	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL)
-		: dit_type(type),expression(expr),is_frameless(frameless), is_frozen(false), consumer(event_handler), other(NULL) { };
+	/// las de los clientes de esta clase instancias se construyen solo a través de Create (que usará este ctor)
+	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) :
+		dit_type(type),
+		expression(expr),
+		is_frameless(frameless), 
+		is_in_scope(true),
+		is_frozen(false),
+		consumer(event_handler),
+		helper(NULL),
+		parent(NULL),
+		di_children(0) 
+		{ 
+			__debug_log_method__;
+		};
 	
 	/// ctor para inspecciones que solo son auxiliares de otras inspecciones
-	DebuggerInspection(DebuggerInspection *parent) : dit_type(DIT_CHILD),expression(wxString("&(")<<parent->expression<<")"),is_frameless(parent->is_frameless), is_frozen(false), consumer(NULL), other(parent) { };
+	DebuggerInspection(DebuggerInspection *_parent) : 
+		dit_type(DIT_AUXILIAR_VO),
+		expression(wxString("&(")<<_parent->expression<<")"),
+		is_frameless(_parent->is_frameless), 
+		is_in_scope(true),
+		is_frozen(false), 
+		consumer(NULL), 
+		helper(NULL),
+		parent(_parent),
+		di_children(0) 
+		{
+			__debug_log_method__;
+		};
+	
+	/// ctor para una vo hija, creada por VOBreak
+	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, int num_child) : 
+		dit_type(DIT_VARIABLE_OBJECT),
+		expression(expr),
+		variable_object(vo_name),
+		is_frameless(_parent->is_frameless), 
+		is_in_scope(true),
+		is_frozen(_parent->is_frozen), 
+		consumer(_parent->consumer), 
+		num_children(num_child),
+		helper(NULL),
+		parent(_parent),
+		di_children(0) 
+		{ 
+			__debug_log_method__;
+		};
+	
+	void RemoveParentLink() {
+		if (parent && --parent->di_children==0) 
+			{ parent->Destroy(); parent=NULL; }
+	}
 	
 	/// las instancias se destruyen a través de Destroy, esto evita que alguien de afuera le quiera hacer delete
-	~DebuggerInspection() {}; 
+	~DebuggerInspection() {
+		__debug_log_method__;
+	}; 
 		
 	DebuggerInspection(const DebuggerInspection &); ///< esta clase no es copiable
 	void operator=(const DebuggerInspection &); ///< esta clase no es copiable
@@ -320,6 +349,7 @@ public:
 	*                el que la crea pueda conocer el puntero antes de recibir los eventos
 	**/ 
 	static DebuggerInspection *Create(const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL, bool init_now=true) {
+		__debug_log_static_method__;
 		bool is_cmd = expr.size()&&expr[0]=='>';
 		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,expr,frameless,event_handler);
 		all_inspections.Add(di);
@@ -328,6 +358,7 @@ public:
 	}
 	
 	void FirstManualEvaluation() {
+		__debug_log_method__;
 		UpdateValue(false);
 		GenerateEvent(&myDIEventHandler::OnDICreated);
 	}
@@ -339,6 +370,7 @@ public:
 	* hacer nada), false si quedó pendiente para la próxima pausa
 	**/ 
 	bool Init() {
+		__debug_log_method__;
 		if (dit_type==DIT_PENDING) { // si es variable-object y estamos en depuracion, crearla en gdb
 			return (!debug->debugging || TryToExec(&DebuggerInspection::CreateVO)); 
 		} else if (dit_type==DIT_GDB_COMMAND) {
@@ -348,20 +380,34 @@ public:
 		return true;
 	}
 	
+	/// delete lógico, el real se hará en ProcessPendingActions (considera las dependencias, y funciona para cualquier tipo de inspeccion)
 	void Destroy() {
-		if (dit_type==DIT_VARIABLE_OBJECT||dit_type==DIT_CHILD) { // si tenia una vo asociada....
-			// eliminarla en gdb
-			if (debug->debugging) TryToExec(&DebuggerInspection::VODelete);
-			// eliminarla del mapa
-			map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(variable_object);
-			if (it!=vo2di_map.end()) vo2di_map.erase(it); // el if siempre debería dar true
-			else { DEBUG_INFO("ERROR: Inspection::Destroy: it==vo2di_map.end()"); }
+		__debug_log_method__;
+		if (dit_type==DIT_VARIABLE_OBJECT||dit_type==DIT_AUXILIAR_VO||dit_type==DIT_GHOST) { // si tenia una vo asociado....
+			// si tenía otra inspección auxiliar asociada, eliminar esa también
+			if (helper) { helper->Destroy(); helper=NULL; } // poner en NULL por si queda como DIT_GHOST
+			// si no tiene dependencias, eliminarla en gdb
+			if (di_children==0) {
+				if (debug->debugging) TryToExec(&DebuggerInspection::VODelete);
+				// si es hijo (dependiente, no helper), restarle un hijo al padre, y si llega a 0 y es GHOST eliminarlo tambien
+				if (dit_type!=DIT_AUXILIAR_VO&&parent) RemoveParentLink();
+			}
+			// eliminarla del mapa para que ya no reciba actualizaciones (si no estaba ya eliminada)
+			if (dit_type!=DIT_GHOST) {
+				map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(variable_object);
+				if (it!=vo2di_map.end()) vo2di_map.erase(it); // el if siempre debería dar true
+				else { DEBUG_INFO("ERROR: Inspection::Destroy: it==vo2di_map.end(): "<<variable_object); }
+			}
 		}
-		all_inspections.Remove(all_inspections.Find(this));
-		AddPendingAction(this,NULL);
+		// quitarla de la lista total de inspecciones a reestablecer al reiniciar la depuración
+		if (dit_type!=DIT_AUXILIAR_VO&&dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
+		// si quedan hijos que dependen de este, dejar como fantasma, sino hacerle el delete
+		if (dit_type==DIT_VARIABLE_OBJECT && di_children!=0) dit_type=DIT_GHOST;
+		else AddPendingAction(this,NULL);
 	}
 	
 	bool ModifyValue(const wxString &new_value) {
+		__debug_log_method__;
 		if (dit_type!=DIT_VARIABLE_OBJECT) return false;
 		if (!debug->debugging || debug->waiting) return false;
 		return VOAssign(new_value);
@@ -379,6 +425,8 @@ public:
 			TryToExec(&DebuggerInspection::VOSetFrozen);
 	}
 	
+	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance);
+	
 	DEBUG_INSPECTION_EXPRESSION_TYPE GetDbiType() { return dit_type; }
 	wxString GetExpression() { return expression; }
 	wxString GetValue() { return gdb_value; }
@@ -386,12 +434,12 @@ public:
 	bool IsFrameless() { return is_frameless; }
 	bool IsInScope() { return is_in_scope; }
 	bool IsFrozen() { return is_frozen; }
-	bool RequiresManualUpdate() { return dit_type==DIT_GDB_COMMAND || (dit_type==DIT_VARIABLE_OBJECT && other); }
+	bool RequiresManualUpdate() { return dit_type==DIT_GDB_COMMAND || (dit_type==DIT_VARIABLE_OBJECT && helper); }
 	bool UpdateValue(bool generate_event=true) { // solo para cuando RequiresManualUpdate()==true
+		__debug_log_method__;
 		if (!debug->debugging || debug->waiting) return false;
-		if (dit_type==DIT_VARIABLE_OBJECT) { // si es vo para un tipo compuesto...
-			if (!other) return false;
-			wxString new_value = debug->InspectExpression(other->expression,false);
+		if (dit_type==DIT_VARIABLE_OBJECT && helper) { // si es vo para un tipo compuesto...
+			wxString new_value = debug->InspectExpression(helper->expression,false);
 			if (new_value!=gdb_value) {
 				gdb_value=new_value;
 				if (generate_event) GenerateEvent(&myDIEventHandler::OnDIValueChanged);

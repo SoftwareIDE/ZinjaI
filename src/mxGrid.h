@@ -41,7 +41,7 @@ public:
 	virtual void OnColumnUnhide(int c) {}
 	
 	virtual void OnCellPopupMenu(int row, int col) {}
-	virtual void OnCellDoubleClick(int row, int col) {}
+	virtual bool OnCellDoubleClick(int row, int col) { return false; }
 	virtual void OnLabelPopupMenu(int col) {}
 	int GetRealCol(int col) { return cols[col].real_pos; }
 	

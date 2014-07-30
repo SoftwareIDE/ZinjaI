@@ -14,6 +14,22 @@ protected:
 	int m_size; ///< actual number of user elements in the array (<=capacity)
 	int m_capacity; ///< amount of memory reserved in m_vec (usually more than needed for the actual number of elements)
 	SingleList(const SingleList &other) {} ///< it is not allowed to duplicate a SingleList
+	void CreateVector() {
+		T *new_vec=new T[m_capacity];
+		for(int i=0;i<m_size;i++) new_vec[i]=m_vec[i];
+		delete []m_vec; m_vec=new_vec;
+	}
+	void GrowMem() {
+		if (!m_vec) m_capacity=10; 
+		else m_capacity*=2; 
+		CreateVector();
+	}
+	void EnsureMemFor(int num_elems) {
+		if (num_elems>=m_capacity) return;
+		if (!m_capacity) { m_capacity=10; }
+		while (m_capacity<num_elems) m_capacity*=2;
+		CreateVector();
+	}
 public:
 	static int NotFound() { return -1; }
 	SingleList():m_vec(NULL),m_size(0),m_capacity(0) {
@@ -36,28 +52,19 @@ public:
 		return m_size;
 	}
 	void Reserve(int n) {
-		if (!m_capacity) {
-			m_capacity=n; 
-			m_vec=new T[n];
-		} else {
-			m_capacity=n; if (m_size<n) m_size=n;
-			T *new_vec=new T[m_capacity];
-			for(int i=0;i<m_size;i++) new_vec[i]=m_vec[i];
-			delete []m_vec; m_vec=new_vec;
-		}
+		m_capacity=n; 
+		CreateVector();
 	}
 	int Add(const T &data) {
-		if (!m_capacity) {
-			m_capacity=10; 
-			m_vec=new T[m_capacity];
-		} else if (m_size==m_capacity) {
-			m_capacity*=2; 
-			T *new_vec=new T[m_capacity];
-			for(int i=0;i<m_size;i++) new_vec[i]=m_vec[i];
-			delete []m_vec; m_vec=new_vec;
-		}
+		if (m_size==m_capacity) GrowMem();
 		m_vec[m_size]=data;
 		return m_size++;
+	}
+	void MakeRoomForMultipleInsert(int pos, int cant) {
+		EnsureMemFor(m_size+cant);
+		for(int i=m_size;i>pos;i--) 
+			m_vec[i+cant-1] = m_vec[i-1];
+		m_size+=cant;
 	}
 	void Swap(int i, int j) {
 		T aux=m_vec[i]; m_vec[i]=m_vec[j]; m_vec[j]=aux;
