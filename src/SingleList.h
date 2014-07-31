@@ -51,20 +51,22 @@ public:
 	int GetSize() const { 
 		return m_size;
 	}
-	void Reserve(int n) {
-		m_capacity=n; 
-		CreateVector();
-	}
 	int Add(const T &data) {
 		if (m_size==m_capacity) GrowMem();
 		m_vec[m_size]=data;
 		return m_size++;
 	}
+	/// inserta elementos vacios (valor por default/basura) en la pos indicada
 	void MakeRoomForMultipleInsert(int pos, int cant) {
 		EnsureMemFor(m_size+cant);
 		for(int i=m_size;i>pos;i--) 
 			m_vec[i+cant-1] = m_vec[i-1];
 		m_size+=cant;
+	}
+	/// redimensionamiento lógico, no se pierden datos
+	void Resize(int new_size) {
+		EnsureMemFor(new_size);
+		m_size=new_size;
 	}
 	void Swap(int i, int j) {
 		T aux=m_vec[i]; m_vec[i]=m_vec[j]; m_vec[j]=aux;
@@ -75,11 +77,13 @@ public:
 	const T &operator[](int i) const { 
 		return m_vec[i];
 	}
+	/// reset completo, libera la memoria eliminando todos los datos
 	void Reset() {
 		delete []m_vec;
 		m_vec=NULL;
 		m_capacity=m_size=0;
 	}
+	/// reset logico, no libera memoria
 	void Clear() {
 		m_size=0;
 	}

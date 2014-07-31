@@ -88,18 +88,24 @@ struct DebuggerInspection {
 	
 	typedef void (DebuggerInspection::*pending_action)();
 	
-	/// estructura para encolar acciones que se invoquen cuando el depurador esta ocupado y entonces deben ser ejecutadas mas adelante cuando se detenga
+	/**
+	* Estructura para encolar acciones que se invoacn cuando el depurador esta ocupado y entonces deben pospuestas para la próxima pausa (ver ProcessPendingActions)
+	**/
 	struct DIPendingAction {
-		DebuggerInspection *inspection;
-		pending_action action;
-		DIPendingAction(DebuggerInspection *_inspection=NULL, pending_action _action=NULL):inspection(_inspection),action(_action) {}
+		DebuggerInspection *inspection; ///< inspeccion a la que se refiere
+		pending_action action; ///< metodo a ejecutar (si es null, delete)
+		bool ignore_if_debug_stops; ///< si es true y es intenta ejecutar cuando termino la depuracion, simplemente se lo ignore
+		bool dont_run_now; ///< para cuando se agrega en la cola desde una llamada de la propia cola, para que no se procese a continuacion, sino que se deje para la proxima pasada por la cola
+		DIPendingAction() {}
+		DIPendingAction(DebuggerInspection *_inspection, pending_action _action, bool _ignore_if_debug_stops, bool _dont_run_now):
+			inspection(_inspection),action(_action),ignore_if_debug_stops(_ignore_if_debug_stops),dont_run_now(_dont_run_now) {}
 	};
 	
 	/// lista de acciones en cola para ejecutarse cuando el depurador se detenga
 	static SingleList<DIPendingAction> pending_actions;
 	
-	static void AddPendingAction(DebuggerInspection *inspection, pending_action action) {
-		pending_actions.Add(DIPendingAction(inspection,action));
+	static void AddPendingAction(DebuggerInspection *inspection, pending_action action, bool ignore_if_debug_stops, bool dont_run_now=false) {
+		pending_actions.Add(DIPendingAction(inspection,action,ignore_if_debug_stops,dont_run_now));
 	}
 	
 	
@@ -109,11 +115,11 @@ struct DebuggerInspection {
 	* Si no se puede dialogar ahora (esta ejecutando), retorna falso y además
 	* encola el intento para que se intente nuevamente cuando se pueda (en UpdateAll)
 	**/
-	bool TryToExec(pending_action action) {
+	bool TryToExec(pending_action action, bool ignore_if_debug_stops) {
 		if (debug->waiting) {
-			AddPendingAction(this,action);
+			AddPendingAction(this,action,ignore_if_debug_stops);
 			return false;
-		} else {
+		} else if (debug->debugging || !ignore_if_debug_stops) {
 			(this->*action)();
 			return true;
 		}
@@ -124,12 +130,18 @@ struct DebuggerInspection {
 		if (debug->debugging && debug->waiting) {
 			DEBUG_INFO("ERROR: ProcessPendingActions: debug->debugging && debug->waiting");
 		}
+		int dont_run_now_count = 0, initial_size = pending_actions.GetSize();
 		for(int i=0;i<pending_actions.GetSize();i++) {
 			DIPendingAction &pa=pending_actions[i];
-			if (pa.action) (pa.inspection->*pa.action)();
-			else delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
+			if (i>=initial_size && pa.dont_run_now) { 
+				pending_actions[dont_run_now_count++]=pa;
+			} else if (pa.action) {
+				if (debug->debugging||!pa.ignore_if_debug_stops)
+					(pa.inspection->*pa.action)();
+			} else 
+				delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
 		}
-		pending_actions.Clear();
+		pending_actions.Resize(dont_run_now_count);
 	}
 	
 	/// para notificar los cambios a los componentes de interfaz que utilizan estas inspecciones
@@ -160,7 +172,7 @@ public:
 			DebuggerInspection *di = all_inspections[i];
 			if (di->dit_type==DIT_GDB_COMMAND) continue;
 			di->is_frameless=true;
-			AddPendingAction(di,&DebuggerInspection::CreateVO);
+			AddPendingAction(di,&DebuggerInspection::CreateVO,true,true);
 		}
 	}
 	
@@ -272,10 +284,14 @@ private:
 		if (VOCreate()) {
 			dit_type = DIT_VARIABLE_OBJECT;
 			if (!SetupChildInspection()) VOEvaluate();
-			GenerateEvent(&myDIEventHandler::OnDICreated);
+			if (is_frozen) VOSetFrozen();
+			else GenerateEvent(&myDIEventHandler::OnDICreated);
 		} else {
 			dit_type=DIT_ERROR; 
 			GenerateEvent(&myDIEventHandler::OnDIError);
+			// si no se pudo crear en este scope, probar otra vez en el proximo
+			if (is_frameless) 
+				AddPendingAction(this,&DebuggerInspection::CreateVO,true,true);
 		}
 	}
 	
@@ -372,10 +388,10 @@ public:
 	bool Init() {
 		__debug_log_method__;
 		if (dit_type==DIT_PENDING) { // si es variable-object y estamos en depuracion, crearla en gdb
-			return (!debug->debugging || TryToExec(&DebuggerInspection::CreateVO)); 
+			return (!debug->debugging || TryToExec(&DebuggerInspection::CreateVO,true)); 
 		} else if (dit_type==DIT_GDB_COMMAND) {
 			variable_object = expression.Mid(1);
-			return (!debug->debugging || TryToExec(&DebuggerInspection::FirstManualEvaluation));
+			return (!debug->debugging || TryToExec(&DebuggerInspection::FirstManualEvaluation,true));
 		}
 		return true;
 	}
@@ -388,7 +404,7 @@ public:
 			if (helper) { helper->Destroy(); helper=NULL; } // poner en NULL por si queda como DIT_GHOST
 			// si no tiene dependencias, eliminarla en gdb
 			if (di_children==0) {
-				if (debug->debugging) TryToExec(&DebuggerInspection::VODelete);
+				if (debug->debugging) TryToExec(&DebuggerInspection::VODelete,true);
 				// si es hijo (dependiente, no helper), restarle un hijo al padre, y si llega a 0 y es GHOST eliminarlo tambien
 				if (dit_type!=DIT_AUXILIAR_VO&&parent) RemoveParentLink();
 			}
@@ -403,7 +419,7 @@ public:
 		if (dit_type!=DIT_AUXILIAR_VO&&dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
 		// si quedan hijos que dependen de este, dejar como fantasma, sino hacerle el delete
 		if (dit_type==DIT_VARIABLE_OBJECT && di_children!=0) dit_type=DIT_GHOST;
-		else AddPendingAction(this,NULL);
+		else AddPendingAction(this,NULL,false);
 	}
 	
 	bool ModifyValue(const wxString &new_value) {
@@ -416,13 +432,13 @@ public:
 	void Freeze() {
 		is_frozen=true;
 		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
-			TryToExec(&DebuggerInspection::VOSetFrozen);
+			TryToExec(&DebuggerInspection::VOSetFrozen,true);
 	}
 	
 	void UnFreeze() {
 		is_frozen=false;
 		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
-			TryToExec(&DebuggerInspection::VOSetFrozen);
+			TryToExec(&DebuggerInspection::VOSetFrozen,true);
 	}
 	
 	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance);

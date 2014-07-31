@@ -10,6 +10,7 @@ int DebuggerInspection::CallLogger::lev=0;
 
 void DebuggerInspection::UpdateAll ( ) {
 	__debug_log_static_method__;
+	if (!debug->debugging||debug->waiting) return;
 	// struct para guardar los campos que interesan de cada vo actualizada
 	struct update { wxString name,value,in_scope,new_type,new_num_children; };
 	
