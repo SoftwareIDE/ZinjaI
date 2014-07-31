@@ -635,7 +635,7 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 			data_age++;
 			list<parserAction>::iterator it=actions.begin();
 			parserAction pa=*it; actions.erase(it);
-			if (debug->debugging || should_stop) {
+			if (debug->IsDebugging() || should_stop) {
 				working=false;
 	//			symbol_tree->Thaw();
 				if (show_progress) main_window->SetStatusProgress(-1);

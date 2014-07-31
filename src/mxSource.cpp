@@ -370,7 +370,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 //	SetTwoPhaseDraw (false);
 	SetMouseDwellTime(1000); // mis tooltips bizarros (con showbaloon = calltip)
 	
-	if (debug->debugging && !config->Debug.allow_edition) SetReadOnlyMode(ROM_ADD_DEBUG);
+	if (debug->IsDebugging() && !config->Debug.allow_edition) SetReadOnlyMode(ROM_ADD_DEBUG);
 
 	er_register_source(this);
 	
@@ -659,10 +659,10 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 		
 		// si apretó shift o ctrl (por alguna razon en linux solo me anda shift) mostrar el cuadro de opciones
 		if (event.GetModifiers()&wxSTC_SCMOD_SHIFT || event.GetModifiers()&wxSTC_SCMOD_CTRL) {
-			if (!debug->debugging || !debug->waiting) {
+			if (!debug->IsDebugging() || debug->CanTalkToGDB()) {
 				if (!bpi) { // si no habia, lo crea
 					bpi=new BreakPointInfo(this,l);
-					if (debug->debugging) debug->SetBreakPoint(bpi);
+					if (debug->IsDebugging()) debug->SetBreakPoint(bpi);
 					else bpi->SetStatus(BPS_UNKNOWN);
 				}
 				new mxBreakOptions(bpi); // muestra el dialogo de opciones del bp
@@ -670,7 +670,7 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 		
 		// si hay que sacar el breakpoint
 		} else if (bpi) { 
-			if (debug->debugging) debug->DeleteBreakPoint(bpi); // debug se encarga de hacer el delete y eso se lleva el marker en el destructor
+			if (debug->IsDebugging()) debug->DeleteBreakPoint(bpi); // debug se encarga de hacer el delete y eso se lleva el marker en el destructor
 			else delete bpi;
 		
 		// si hay que poner un breakpoint nuevo
@@ -683,7 +683,7 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 				return;
 			}
 			bpi=new BreakPointInfo(this,l);
-			if (debug->debugging) debug->SetLiveBreakPoint(bpi); // esta llamada cambia el estado del bpi y eso pone la marca en el margen
+			if (debug->IsDebugging()) debug->SetLiveBreakPoint(bpi); // esta llamada cambia el estado del bpi y eso pone la marca en el margen
 			else bpi->SetStatus(BPS_SETTED);
 		}
 		
@@ -1966,11 +1966,12 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
 	if (bpi) {
 		mxUT::AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_REMOVE_BREAKPOINT,"Quitar breakpoint"));
-		if (bpi->IsInGDB() && (!debug->debugging||!debug->waiting)) 
+		if (bpi->IsInGDB() && (!debug->IsDebugging()||debug->CanTalkToGDB())) 
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT),LANG(SOURCE_POPUP_ENABLE_BREAKPOINT,"Habilitar breakpoint"))->Check(bpi->enabled);
 	} else if (!IsEmptyLine(l))
 		mxUT::AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_TOGGLE_BREAKPOINT), LANG(SOURCE_POPUP_INSERT_BREAKPOINT,"Insertar breakpoint"));
-	mxUT::AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_BREAKPOINT_OPTIONS));
+	if (!debug->IsDebugging()||debug->CanTalkToGDB())
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnDEBUG,mxID_DEBUG_BREAKPOINT_OPTIONS));
 	menu.AppendSeparator();
 	int s=GetStyleAt(p);
 	if (MarkerGet(l)&(1<<mxSTC_MARK_USER))
@@ -2853,7 +2854,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 		return;
 	}
 	
-	if (!debug->debugging) {
+	if (!debug->IsDebugging()) {
 		if (!config_source.toolTips)
 			return;
 		int s;

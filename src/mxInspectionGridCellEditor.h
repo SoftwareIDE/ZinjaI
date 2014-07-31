@@ -76,7 +76,7 @@ END_EVENT_TABLE()
 	
 void mxInspectionGridCellEditorControl::Autocomplete() {
 	if (GetValue().IsEmpty()) return;
-	if (!debug->debugging || debug->waiting) return;
+	if (!debug->CanTalkToGDB()) return;
 	comp_options.Clear(); 
 	wxString ans = debug->SendCommand("complete p ",GetValue());
 	while (ans.Contains("\n")) {

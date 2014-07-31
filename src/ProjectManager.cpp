@@ -1358,7 +1358,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 			if (relink_exe) {
 				AnalizeConfig(path,true,current_toolchain.mingw_dir,false);
 				wxString output_bin_file=executable_name;
-				if (debug->debugging) debug->GetPatcher()->AlterOuputFileName(output_bin_file);
+				if (debug->IsDebugging()) debug->GetPatcher()->AlterOuputFileName(output_bin_file);
 				step = step->next = new compile_step(CNS_LINK,
 													new linking_info(current_toolchain.linker+" -o",
 													output_bin_file,objects_list,linking_options,&force_relink));
@@ -1369,7 +1369,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 					// en windows no podemos modificar archivos que se esten usando, y ademas compilamos 
 					// en uno alternativo para parchearlo en gdb, asi que solo lo stripeamos y linkamos 
 					// para que quede como el original, pero no reescribimos el archivo de la info de depuracion
-					if (debug->debugging) ini=1;
+					if (debug->IsDebugging()) ini=1;
 #endif
 					for(int k=ini;k<3;k++) step = step->next = new compile_step(CNS_DEBUGSYM,new stripping_info(output_bin_file,"",k));
 					steps_count++;

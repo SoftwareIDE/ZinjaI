@@ -694,7 +694,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.auto_solibs = debug_auto_solibs->GetValue();
 	config->Debug.readnow = debug_readnow->GetValue();
 	config->Debug.allow_edition = debug_allow_edition->GetValue();
-	if (debug->debugging) {
+	if (debug->IsDebugging()) {
 		for (unsigned int i=0;i<ns->GetPageCount();i++)
 			((mxSource*)(ns->GetPage(i)))->SetReadOnlyMode(config->Debug.allow_edition?ROM_DEBUG:ROM_ADD_DEBUG);
 	}

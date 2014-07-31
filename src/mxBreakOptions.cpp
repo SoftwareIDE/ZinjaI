@@ -43,7 +43,7 @@ mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxI
 	enable_check = mxUT::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ENABLE,"Habilitar punto de interrupcion"),bpi->enabled);
 //	once_check = mxUT::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ONCE,"Interrumpir solo una vez"),bpi->only_once);
 	ignore_text = mxUT::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_IGNORE_TIMES_PRE,"Ignorar"),bpi->ignore_count,wxString(LANG(BREAKOPTS_IGNORE_TIMES_POST,"veces")));
-	if (debug->debugging && !debug->waiting && bpi->IsInGDB()) {
+	if (debug->CanTalkToGDB() && bpi->IsInGDB()) {
 		count_text = mxUT::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado"),debug->GetBreakHitCount(bpi->gdb_id),wxString(LANG(BREAKOPTS_HIT_TIMES_POST,"veces")));
 		count_text->SetEditable(false);
 	} else {
@@ -83,7 +83,7 @@ void mxBreakOptions::OnCancelButton(wxCommandEvent &evt) {
 
 void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 	if (break_check->GetValue()) {
-		if (debug->debugging) {
+		if (debug->IsDebugging()) {
 			BREAK_POINT_STATUS status=BPS_SETTED;
 			long l;	ignore_text->GetValue().ToLong(&l); // ignore count
 			if (bpi->ignore_count!=l) {
@@ -110,7 +110,7 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 		}
 		bpi->annotation=annotation_text->GetValue();
 	} else {
-		if (debug->debugging)
+		if (debug->IsDebugging())
 			debug->DeleteBreakPoint(bpi);
 		else delete bpi;
 	}

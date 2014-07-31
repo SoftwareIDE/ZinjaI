@@ -72,7 +72,7 @@ void DebuggerInspection::UpdateAll ( ) {
 
 bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance) {
 	__debug_log_method__;
-	if (!debug->debugging || debug->waiting) return false;
+	if (!debug->CanTalkToGDB()) return false;
 	wxString s = debug->SendCommand("-var-list-children ",variable_object);
 	
 	struct child { wxString name,exp,type; int num_children; child():num_children(0){} };

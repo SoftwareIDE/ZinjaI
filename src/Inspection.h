@@ -94,18 +94,18 @@ struct DebuggerInspection {
 	struct DIPendingAction {
 		DebuggerInspection *inspection; ///< inspeccion a la que se refiere
 		pending_action action; ///< metodo a ejecutar (si es null, delete)
-		bool ignore_if_debug_stops; ///< si es true y es intenta ejecutar cuando termino la depuracion, simplemente se lo ignore
+		bool requires_debug_pause; ///< si es true solo se ejecuta si los eventos pendientes se procesan en una pausa de la depuracion (para cuando son comandos gdb), sino simplemente se ignora
 		bool dont_run_now; ///< para cuando se agrega en la cola desde una llamada de la propia cola, para que no se procese a continuacion, sino que se deje para la proxima pasada por la cola
 		DIPendingAction() {}
-		DIPendingAction(DebuggerInspection *_inspection, pending_action _action, bool _ignore_if_debug_stops, bool _dont_run_now):
-			inspection(_inspection),action(_action),ignore_if_debug_stops(_ignore_if_debug_stops),dont_run_now(_dont_run_now) {}
+		DIPendingAction(DebuggerInspection *_inspection, pending_action _action, bool _requires_debug_pause, bool _dont_run_now):
+			inspection(_inspection),action(_action),requires_debug_pause(_requires_debug_pause),dont_run_now(_dont_run_now) {}
 	};
 	
 	/// lista de acciones en cola para ejecutarse cuando el depurador se detenga
 	static SingleList<DIPendingAction> pending_actions;
 	
-	static void AddPendingAction(DebuggerInspection *inspection, pending_action action, bool ignore_if_debug_stops, bool dont_run_now=false) {
-		pending_actions.Add(DIPendingAction(inspection,action,ignore_if_debug_stops,dont_run_now));
+	static void AddPendingAction(DebuggerInspection *inspection, pending_action action, bool requires_debug_pause, bool dont_run_now=false) {
+		pending_actions.Add(DIPendingAction(inspection,action,requires_debug_pause,dont_run_now));
 	}
 	
 	
@@ -115,11 +115,11 @@ struct DebuggerInspection {
 	* Si no se puede dialogar ahora (esta ejecutando), retorna falso y además
 	* encola el intento para que se intente nuevamente cuando se pueda (en UpdateAll)
 	**/
-	bool TryToExec(pending_action action, bool ignore_if_debug_stops) {
+	bool TryToExec(pending_action action, bool requires_debug_pause) {
 		if (debug->waiting) {
-			AddPendingAction(this,action,ignore_if_debug_stops);
+			AddPendingAction(this,action,requires_debug_pause);
 			return false;
-		} else if (debug->debugging || !ignore_if_debug_stops) {
+		} else if (debug->debugging || !requires_debug_pause) {
 			(this->*action)();
 			return true;
 		}
@@ -127,8 +127,8 @@ struct DebuggerInspection {
 		
 	static void ProcessPendingActions() {
 		__debug_log_static_method__;
-		if (debug->debugging && debug->waiting) {
-			DEBUG_INFO("ERROR: ProcessPendingActions: debug->debugging && debug->waiting");
+		if (debug->debugging && !debug->waiting) {
+			DEBUG_INFO("ERROR: ProcessPendingActions: debug->debugging && !debug->waiting");
 		}
 		int dont_run_now_count = 0, initial_size = pending_actions.GetSize();
 		for(int i=0;i<pending_actions.GetSize();i++) {
@@ -136,7 +136,7 @@ struct DebuggerInspection {
 			if (i>=initial_size && pa.dont_run_now) { 
 				pending_actions[dont_run_now_count++]=pa;
 			} else if (pa.action) {
-				if (debug->debugging||!pa.ignore_if_debug_stops)
+				if (debug->debugging||!pa.requires_debug_pause)
 					(pa.inspection->*pa.action)();
 			} else 
 				delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
@@ -425,7 +425,7 @@ public:
 	bool ModifyValue(const wxString &new_value) {
 		__debug_log_method__;
 		if (dit_type!=DIT_VARIABLE_OBJECT) return false;
-		if (!debug->debugging || debug->waiting) return false;
+		if (!debug->CanTalkToGDB()) return false;
 		return VOAssign(new_value);
 	}
 	
@@ -453,7 +453,7 @@ public:
 	bool RequiresManualUpdate() { return dit_type==DIT_GDB_COMMAND || (dit_type==DIT_VARIABLE_OBJECT && helper); }
 	bool UpdateValue(bool generate_event=true) { // solo para cuando RequiresManualUpdate()==true
 		__debug_log_method__;
-		if (!debug->debugging || debug->waiting) return false;
+		if (!debug->CanTalkToGDB()) return false;
 		if (dit_type==DIT_VARIABLE_OBJECT && helper) { // si es vo para un tipo compuesto...
 			wxString new_value = debug->InspectExpression(helper->expression,false);
 			if (new_value!=gdb_value) {

@@ -920,7 +920,6 @@ void mxInspectionGrid::InsertRows (int pos, int cant) {
 
 void mxInspectionGrid::OnDIError(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	mxGrid::SetCellValue(current_row,IG_COL_VALUE,"<<ERROR>>");
 	SetRowStatus(current_row,IGRS_ERROR);
 }
 

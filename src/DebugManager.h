@@ -186,9 +186,17 @@ public:
 	wxString SendCommand(wxString cmd1,wxString cmd2);
 	wxString SendCommand(wxString command, int i);
 	wxString last_command, last_answer;
+	bool /*backtrace_visible,*/ threadlist_visible;
 	DEBUG_STATUS status;
-	bool debugging, running, waiting, /*backtrace_visible,*/ threadlist_visible;
-	bool really_running; ///< solo para indicar desde al WaitAnswer que esta esperando el resultado de una ejecución del programa que se esta depurando y no de un comando gdb para setear o averiguar algo (para que en el primer caso haga yield y en el otro no)
+private:
+	bool debugging; ///< indica que hay una sesion de depuracion en marcha (en cualquier estado)
+	bool waiting; ///< indica que se esta esperando una respuesta a un comando gdb, por lo que no se puede enviar otro
+	bool running; ///< indica que se esta estarando por un comando gdb que involucra la real ejecucion del programa, y no es consulta o configuracion del estado
+public:
+	bool CanTalkToGDB() { return debugging && !waiting; }
+	bool IsPaused() { return debugging && !running; }
+	bool IsDebugging() { return debugging; }
+	
 	void BacktraceClean();
 	bool Start(bool update); ///< starts debugging for current project
 	bool Start(bool update, mxSource *source); ///< starts debugging for a simple program
@@ -313,6 +321,7 @@ public:
 	
 //	/// @brief  calls -var-create and returns its output, but applying improving_inspections_templates
 //	wxString CreateVO(wxString &expr, wxString &type);
+	
 };
 
 extern DebugManager *debug;

@@ -158,7 +158,7 @@ void mxBreakList::OnDeleteAllButton(wxCommandEvent &evt) {
 void mxBreakList::RemoveBreakPoint(int _row) {
 	BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[_row],false);
 	if (!bpi) return;
-	if (debug->debugging) {
+	if (debug->IsDebugging()) {
 		if (!debug->DeleteBreakPoint(bpi)) return;
 	} else {
 		delete bpi;
@@ -179,7 +179,7 @@ void mxBreakList::OnDeleteButton(wxCommandEvent &evt) {
 }
 
 void mxBreakList::OnEditButton(wxCommandEvent &evt) {
-	if (debug->running && debug->waiting) return;
+	if (!debug->CanTalkToGDB()) return;
 	int r = grid->GetGridCursorRow();
 	if (r<0 || r>=grid->GetNumberRows()) return;
 	wxGridEvent event(wxID_ANY,0,this,r,BL_COL_COND);
@@ -187,7 +187,6 @@ void mxBreakList::OnEditButton(wxCommandEvent &evt) {
 }
 
 void mxBreakList::OnGotoButton(wxCommandEvent &evt) {
-	if (debug->running && debug->waiting) return;
 	int r = grid->GetGridCursorRow();
 	if (r<0 || r>=grid->GetNumberRows()) return;
 	wxGridEvent event(wxID_ANY,0,this,r,BL_COL_WHY);
@@ -198,7 +197,7 @@ void mxBreakList::OnGotoButton(wxCommandEvent &evt) {
 void mxBreakList::PopulateGrid ( ) {
 	grid->DeleteRows(0,grid->GetNumberRows()); ids.clear();
 	
-	bool ask_debug=debug->debugging && !debug->waiting;
+	bool ask_debug=debug->CanTalkToGDB();
 	if (ask_debug) debug->PopulateBreakpointsList(this,true);
 	
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();

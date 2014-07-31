@@ -24,6 +24,7 @@ public:
 	void OnInspectArgs(wxCommandEvent &event);
 	void OnInspectLocals(wxCommandEvent &event);
 	void OnGotoPos(wxCommandEvent &event);
+	void SelectFrame(int r);
 	void OnAddToBlackList(wxCommandEvent &event);
 	void OnResize(wxSizeEvent &evt);
 	void OnColResize(wxGridSizeEvent &evt);

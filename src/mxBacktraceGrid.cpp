@@ -69,34 +69,25 @@ mxBacktraceGrid::~mxBacktraceGrid() {
 }
 
 void mxBacktraceGrid::OnDblClick(wxGridEvent &event) {
-	if (debug->running||debug->waiting) return;
-	int r = event.GetRow();
+	SelectFrame(event.GetRow());
+}
+
+void mxBacktraceGrid::SelectFrame(int r) {
+	if (debug->IsDebugging() && !debug->CanTalkToGDB()) return;
 	long line;
 	GetCellValue(r,BG_COL_LINE).ToLong(&line);
 	wxString file = GetCellValue(r,BG_COL_FILE);
 	if (file.Len()) {
 		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT))
 			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
+		if (debug->CanTalkToGDB()) debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
 #warning actualizar inspecciones frameless
 //		debug->UpdateFramelessInspection();
 	}
 }
 
 void mxBacktraceGrid::OnGotoPos(wxCommandEvent &event) {
-	if (debug->running||debug->waiting) return;
-	int r = selected_row;
-	long line;
-	GetCellValue(r,BG_COL_LINE).ToLong(&line);
-	wxString file = GetCellValue(r,BG_COL_FILE);
-	if (file.Len()) {
-		if (r) {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_FUNCCALL);
-		} else {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
-		}
-		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
-	}
+	SelectFrame(selected_row);
 }
 
 void mxBacktraceGrid::OnKey(wxKeyEvent &event) {

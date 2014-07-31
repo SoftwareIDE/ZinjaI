@@ -763,7 +763,7 @@ void MenusAndToolsConfig::CreateMenues () {
 	
 	// set items state // ahora gestionado en el evento menu_open
 	SetProjectMode(project);
-	SetDebugMode(debug?debug->debugging:false);
+	SetDebugMode(debug?debug->IsDebugging():false);
 }
 
 void MenusAndToolsConfig::CreateWxToolbar(int tb_id) {
@@ -964,7 +964,7 @@ void MenusAndToolsConfig::TransferStatesFromConfig() {
 //	vec[ecNOT_DEBUG]=!debug->debugging;
 //	vec[ecDEBUG_PAUSED]=debug->debugging&&(!debug->waiting);
 //	vec[ecDEBUG_NOT_PAUSED]=debug->debugging&&debug->waiting;
-//	vec[ecNOT_DEBUG_OR_DEBUG_PAUSED]=(!debug->debugging)||(!debug->waiting);
+//	vec[ecNOT_DEBUG_OR_DEBUG_PAUSED]=(!debug->IsDebugging())||(!debug->waiting);
 //	for(int menu_id=0;menu_id<mnCOUNT;menu_id++) {
 //		if (menues[menu_id].wx_menu==wx_menu) {
 //			vector<myMenuItem> &items=menues[menu_id].items;

@@ -55,7 +55,7 @@ DebugManager::DebugManager() {
 //	inspections_count = 0;
 //	backtrace_visible = false;
 	threadlist_visible = false;
-	waiting = debugging = running = really_running = false;
+	waiting = debugging = running = false;
 	process = NULL;
 	input = NULL;
 	output = NULL;
@@ -472,11 +472,11 @@ bool DebugManager::Run() {
 		HowDoesItRuns();
 		if (config->Debug.raise_main_window)
 			main_window->Raise();
-		running = false;
 		return true;
+	} else {
+		running = false;
+		return false;
 	}
-	running = false;
-	return false;
 }
 
 void DebugManager::HowDoesItRuns() {
@@ -489,9 +489,9 @@ void DebugManager::HowDoesItRuns() {
 	MarkCurrentPoint();
 	
 	while (true) { // para que vuelva a este punto cuando llega a un break point que no debe detener la ejecucion
-		really_running = true;
+		running = true; 
 		wxString ans = WaitAnswer();
-		really_running = false;
+		running = false;
 		wxString state_text=LANG(DEBUG_STATUS_UNKNOWN,"Estado desconocido"); 
 		if (!process || status==DBGST_STOPPING) return;
 		int st_pos = ans.Find(_T("*stopped"));
@@ -633,7 +633,7 @@ void DebugManager::HowDoesItRuns() {
 	//		if (config->Debug.autoupdate_backtrace)
 				BacktraceClean();
 				ThreadListClean();
-			running = false;
+			running = false; // es necesario esto?
 			Stop();
 		}
 		if (bpi && bpi->action==BPA_STOP_ONCE) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
@@ -649,7 +649,7 @@ void DebugManager::HowDoesItRuns() {
 /**
 * @brief Removes a breakpoint from gdb and from ZinjaI's list
 *
-* If !debug->running it deletes the brekapoint inmediatly, but if its running
+* If !debug->waiting it deletes the brekapoint inmediatly, but if its running
 * it marks the breakpoint to be deleted with pause_* and Pause the execution.
 * Next time debug see the execution paused will invoke this method again and 
 * resume the execution, so user can delete breakpoint without directly pausing
@@ -948,30 +948,26 @@ bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all)
 
 void DebugManager::StepIn() {
 	if (waiting || !debugging) return;
-	running = true;
-	stepping_in=true; really_running=true;
+	stepping_in=true; running=true;
 	wxString ans = SendCommand("-exec-step");
-	if (ans.Mid(1,7)="running")
-		HowDoesItRuns();
-	running = false;
+	if (ans.Mid(1,7)="running") HowDoesItRuns();
+	else running = false;
 }
 
 void DebugManager::StepOut() {
 	if (waiting || !debugging) return;
-	running = true; really_running=true;
+	running = true;
 	wxString ans = SendCommand("-exec-finish");
-	if (ans.Mid(1,7)="running")
-		HowDoesItRuns();
-	running = false;
+	if (ans.Mid(1,7)="running") HowDoesItRuns();
+	else running = false;
 }
 
 void DebugManager::StepOver() {
 	if (waiting || !debugging) return;
-	running = true; really_running=true;
+	running = true; 
 	wxString ans = SendCommand("-exec-next");
-	if (ans.Mid(1,7)="running")
-		HowDoesItRuns();
-	running = false;
+	if (ans.Mid(1,7)="running")	HowDoesItRuns();
+	else running = false;
 }
 
 
@@ -1000,8 +996,8 @@ void DebugManager::Continue() {
 		HowDoesItRuns();
 		if (config->Debug.raise_main_window)
 			main_window->Raise();
-	}
-	running = false;
+	} else 
+		running = false;
 }
 
 wxString DebugManager::WaitAnswer() {
@@ -1077,7 +1073,7 @@ wxString DebugManager::WaitAnswer() {
 		}
 		wxDateTime t1=wxDateTime::Now();
 		while ( process && ! input->CanRead() && input->IsOk()) {
-			if (really_running)  {
+			if (running) {
 				app->Yield(true);
 				wxMilliSleep(50);
 			} else {
@@ -1182,7 +1178,8 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 				current_source = notitle_source;
 			else {
 				current_source = main_window->IsOpen(cfile);
-				current_source = main_window->OpenFile(cfile);
+				if (!current_source) 
+					current_source = main_window->OpenFile(cfile);
 			}
 		}
 		if (current_source==EXTERNAL_SOURCE) current_source=NULL;

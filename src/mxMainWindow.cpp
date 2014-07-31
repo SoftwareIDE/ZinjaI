@@ -810,7 +810,7 @@ void mxMainWindow::OnProjectTreeAdd(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnClose (wxCloseEvent &event) {
-	if (debug->debugging) {
+	if (debug->IsDebugging()) {
 		debug->Stop();
 		return;
 	}
@@ -1882,7 +1882,7 @@ void mxMainWindow::OnFileCloseAllButOne (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
-	if (debug->debugging) debug->Stop();
+	if (debug->IsDebugging()) debug->Stop();
 //	if (project->modified) {
 		if (config->Init.save_project)
 			project->Save();
@@ -3213,8 +3213,8 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 **/
 void mxMainWindow::OnDebugRun ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
-	if (debug->debugging) {
-		if (!debug->running && !debug->waiting)
+	if (debug->IsDebugging()) {
+		if (debug->IsPaused())
 			debug->Continue();
 	} else {
 		SetCompilingStatus("Preparando depuracion...");
@@ -3266,7 +3266,7 @@ void mxMainWindow::OnDebugContinue ( wxCommandEvent &event ) {
 
 
 void mxMainWindow::OnDebugStop ( wxCommandEvent &event ) {
-	if (!debug->debugging)
+	if (!debug->IsDebugging())
 		OnRunStop(event);
 	else
 		debug->Stop();
@@ -3333,7 +3333,7 @@ void mxMainWindow::OnDebugStepOver ( wxCommandEvent &event ) {
 }
 
 void mxMainWindow::OnDebugReturn ( wxCommandEvent &event ) {
-	if (debug->debugging && !debug->waiting) {
+	if (debug->CanTalkToGDB()) {
 		wxString res;
 		if (mxGetTextFromUser(res,LANG(DEBUG_RETURN_VALUE,"Valor de retorno:"), LANG(DEBUG_RETURN_FROM_FUNCTION,"Salir de la funcion") , "", this))
 			debug->Return(res);
@@ -3379,7 +3379,7 @@ void mxMainWindow::OnDebugToggleBreakpoint ( wxCommandEvent &event ) {
 }
 
 void mxMainWindow::OnDebugEnableDisableBreakpoint ( wxCommandEvent &event ) {
-	if (debug->debugging && debug->waiting) return;
+	if (!debug->CanTalkToGDB()) return;
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		BreakPointInfo *bpi = source->m_extras->FindBreakpointFromLine(source,source->GetCurrentLine());
@@ -3392,7 +3392,7 @@ void mxMainWindow::OnDebugEnableDisableBreakpoint ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugBreakpointOptions ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source=CURRENT_SOURCE;
-		if (!debug->debugging || !debug->waiting) {
+		if (!debug->IsDebugging() || debug->CanTalkToGDB()) {
 			
 			// buscar si habia un breakpoint en esa linea
 			int l = source->LineFromPosition (source->GetCurrentPos());
@@ -3400,7 +3400,7 @@ void mxMainWindow::OnDebugBreakpointOptions ( wxCommandEvent &event ) {
 			
 			if (!bpi) { // si no habia, lo crea
 				bpi=new BreakPointInfo(source,l);
-				if (debug->debugging) debug->SetBreakPoint(bpi);
+				if (debug->IsDebugging()) debug->SetBreakPoint(bpi);
 			}
 			new mxBreakOptions(bpi); // muestra el dialogo de opciones del bp
 		}
@@ -3442,7 +3442,7 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	} else if (res.Len() && debug->debugging) {
 		SetStatusText(wxString("DoThat: comando para gdb: ")<<res);
 		debug->DoThat(what=res);
-	} else if (!debug->debugging) {
+	} else if (!debug->IsDebugging()) {
 		SetStatusText(wxString("DoThat: gdb is not running")<<res);
 	}
 }
@@ -4052,19 +4052,19 @@ wxString mxMainWindow::AvoidDuplicatePageText(wxString ptext) {
 }
 
 void mxMainWindow::OnDebugPatch (wxCommandEvent &event) {
-	if (debug->debugging&&!debug->waiting) debug->GetPatcher()->Patch();
+	if (debug->CanTalkToGDB()) debug->GetPatcher()->Patch();
 }
 
 void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()>0||project) {
-		if (!debug->debugging && (project || notebook_sources->GetPageCount())) {
+		if (!debug->IsDebugging() && (project || notebook_sources->GetPageCount())) {
 			wxString dir = project?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):CURRENT_SOURCE->working_folder.GetFullPath();
 			wxFileDialog dlg (this, "Abrir Archivo", dir, " ", "Volcados de memoria|core*|Todos los Archivos|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (dlg.ShowModal() == wxID_OK)
 				debug->LoadCoreDump(dlg.GetPath(),project?NULL:CURRENT_SOURCE);
-		} else if (debug->debugging && !debug->waiting) {
+		} else if (debug->CanTalkToGDB()) {
 			wxString sPath = project?project->path:(CURRENT_SOURCE->GetPath(true));
-			wxFileDialog dlg (this, "Guardar Volcade de Memoria",sPath,"core", "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			wxFileDialog dlg (this, "Guardar Volcado de Memoria",sPath,"core", "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			dlg.SetDirectory(sPath);
 			dlg.SetWildcard("Volcados de memoria|core*|Todos los Archivos|*");
 			if (dlg.ShowModal() == wxID_OK)
