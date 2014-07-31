@@ -152,12 +152,12 @@ private:
 	bool inverse_exec;
 	bool gui_is_prepared;
 	list<mxExternInspection*> extern_list;
-	wxString current_frame, current_frame_num;
-	wxString frames_addrs[BACKTRACE_SIZE];
-	wxString frames_nums[BACKTRACE_SIZE];
-	int last_backtrace_size;
-//	int inspections_count;
-//	vector<inspectinfo> inspections;
+	long stack_depth; ///< profundidad del backtrace actual, ver current_frame
+	// nota para identificaicion de frames: el id (interno de zinjai) tiene base 0, el level (usuario/gdb) tiene base 1
+	long current_frame_id; ///< id interno del frame actual, se usa un nro basado en su level en el backtrace, pero inverso (el main seria 0, que figura en la salida de gdb con level=stack_depth-1)
+	long GetFrameID(long level) { return stack_depth-level; } 
+	long GetFrameLevel(long id) { return stack_depth-id; }
+	wxString current_thread_id; ///< id del thread actual, lo da gdb al detenerse o al cambiar de hilo
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxProcess *tty_process;
 	long tty_pid;
@@ -232,7 +232,7 @@ private:
 	bool backtrace_shows_args; ///< determine wheter backtrace table should show an extra column with arguments (with values) for each function in the stack
 public:
 	void SetBacktraceShowsArgs(bool show);
-	bool Backtrace(bool dont_select_if_first=false, bool dont_select_at_all=false);
+	bool UpdateBacktrace();
 #if !defined(_WIN32) && !defined(__WIN32__)
 	void TtyProcessKilled();
 #endif
@@ -246,8 +246,13 @@ public:
 //	bool UpdateInspection(); ///< @todo: metodo viejo, a eliminar cuando termine de reescribir el manejo de inspecciones
 	void UpdateInspections();
 	wxString GetNextItem(wxString &ans, int &from);
-	bool SelectFrame(wxString framenum, int idx);
-	bool SelectFrameForInspeccion(wxString addr);
+	/**
+	* Cambia el frame actual, solo en gdb, no hace nada de interfaz ni mantenimiento
+	*
+	* cualquiera de los dos argumentos identifica un frame, pasar uno y dejar el otro en -1 para que se calcule solo
+	**/
+	bool SelectFrame(long frame_id, long frame_level); 
+//	bool SelectFrameForInspeccion(wxString addr);
 	bool ToggleInspectionFreeze(int n);
 	bool DoThat(wxString what);
 	bool BreakCompoundInspection(int n);

@@ -3297,7 +3297,7 @@ void mxMainWindow::OnDebugBacktrace ( wxCommandEvent &event ) {
 		aui_manager.Update();
 	}
 //	debug->backtrace_visible=true;
-	debug->Backtrace();
+	debug->UpdateBacktrace();
 	backtrace_ctrl->SetFocus();
 //	backtrace_ctrl->SelectRow(0);
 }
@@ -4601,7 +4601,7 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	// cambiar el nombre del Archivo->Abrir
 	wxMenuItem *fo_item= _menu_item(mxID_FILE_OPEN); wxString fo_shortcut = fo_item->GetItemLabel(); 
 	if (fo_shortcut.Contains("\t")) fo_shortcut=fo_shortcut.AfterLast('\t'); else fo_shortcut="";
-	fo_item->SetItemLabel(wxString(project_mode?LANG(MENUITEM_FILE_OPEN_ON_PROJECT,"&Abrir/Agregar al proyecto...\tCtrl+O"):LANG(MENUITEM_FILE_OPEN,"&Abrir...\tCtrl+O"))+fo_shortcut);
+	fo_item->SetItemLabel(wxString(project_mode?LANG(MENUITEM_FILE_OPEN_ON_PROJECT,"&Abrir/Agregar al proyecto..."):LANG(MENUITEM_FILE_OPEN,"&Abrir..."))+fo_shortcut);
 	// resetear opciones de wxfb
 	_menu_item(mxID_TOOLS_WXFB_REGEN)->Enable(false);
 	_menu_item(mxID_TOOLS_WXFB_INHERIT_CLASS)->Enable(false);

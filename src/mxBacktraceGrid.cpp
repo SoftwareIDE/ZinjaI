@@ -80,7 +80,7 @@ void mxBacktraceGrid::SelectFrame(int r) {
 	if (file.Len()) {
 		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT))
 			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		if (debug->CanTalkToGDB()) debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
+		if (debug->CanTalkToGDB()) debug->SelectFrame(-1,r+1);
 #warning actualizar inspecciones frameless
 //		debug->UpdateFramelessInspection();
 	}
@@ -112,47 +112,49 @@ void mxBacktraceGrid::OnKey(wxKeyEvent &event) {
 }
 
 void mxBacktraceGrid::OnExploreArgs(wxCommandEvent &event) {
-	int r = selected_row;
-	long line;
-	GetCellValue(r,BG_COL_LINE).ToLong(&line);
-	wxString file = GetCellValue(r,BG_COL_FILE);
-	if (file.Len()) {
-		if (r) {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_FUNCCALL);
-		} else {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
-		}
-		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
-	}
-	wxArrayString vars;
-	if (debug->GetArgs(vars,GetCellValue(selected_row,BG_COL_LEVEL))) {
-		wxArrayString frames(vars.GetCount());
-		for (unsigned int i=0;i<frames.GetCount();i++)
-			frames[i]=debug->current_frame;
-		new mxInspectionExplorer(GetCellValue(selected_row,BG_COL_FUNCTION),vars,frames);
-	}
+#warning reestablecer funcionalidad
+//	int r = selected_row;
+//	long line;
+//	GetCellValue(r,BG_COL_LINE).ToLong(&line);
+//	wxString file = GetCellValue(r,BG_COL_FILE);
+//	if (file.Len()) {
+//		if (r) {
+//			debug->MarkCurrentPoint(file,line,mxSTC_MARK_FUNCCALL);
+//		} else {
+//			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
+//		}
+//		debug->SelectFrame(-1,r+1);
+//	}
+//	wxArrayString vars;
+//	if (debug->GetArgs(vars,GetCellValue(selected_row,BG_COL_LEVEL))) {
+//		wxArrayString frames(vars.GetCount());
+//		for (unsigned int i=0;i<frames.GetCount();i++)
+//			frames[i]=debug->current_frame;
+//		new mxInspectionExplorer(GetCellValue(selected_row,BG_COL_FUNCTION),vars,frames);
+//	}
 }
 
 void mxBacktraceGrid::OnExploreLocals(wxCommandEvent &event) {
-	int r = selected_row;
-	long line;
-	GetCellValue(r,BG_COL_LINE).ToLong(&line);
-	wxString file = GetCellValue(r,BG_COL_FILE);
-	if (file.Len()) {
-		if (r) {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_FUNCCALL);
-		} else {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
-		}
-		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
-	}
-	wxArrayString vars;
-	if (debug->GetLocals(vars,GetCellValue(selected_row,BG_COL_LEVEL))) {
-		wxArrayString frames(vars.GetCount());
-		for (unsigned int i=0;i<frames.GetCount();i++)
-			frames[i]=debug->current_frame;
-		new mxInspectionExplorer(GetCellValue(selected_row,BG_COL_FUNCTION),vars,frames);
-	}
+#warning restablecer funcionalidad
+//	int r = selected_row;
+//	long line;
+//	GetCellValue(r,BG_COL_LINE).ToLong(&line);
+//	wxString file = GetCellValue(r,BG_COL_FILE);
+//	if (file.Len()) {
+//		if (r) {
+//			debug->MarkCurrentPoint(file,line,mxSTC_MARK_FUNCCALL);
+//		} else {
+//			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
+//		}
+//		debug->SelectFrame(-1,r+1);
+//	}
+//	wxArrayString vars;
+//	if (debug->GetLocals(vars,GetCellValue(selected_row,BG_COL_LEVEL))) {
+//		wxArrayString frames(vars.GetCount());
+//		for (unsigned int i=0;i<frames.GetCount();i++)
+//			frames[i]=debug->current_frame;
+//		new mxInspectionExplorer(GetCellValue(selected_row,BG_COL_FUNCTION),vars,frames);
+//	}
 }
 
 void mxBacktraceGrid::OnInspectArgs(wxCommandEvent &event) {
@@ -166,7 +168,7 @@ void mxBacktraceGrid::OnInspectArgs(wxCommandEvent &event) {
 		} else {
 			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
 		}
-		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
+		debug->SelectFrame(-1,r+1);
 	}
 	wxArrayString vars;
 #warning reestablecer esto
@@ -185,7 +187,7 @@ void mxBacktraceGrid::OnInspectLocals(wxCommandEvent &event) {
 		} else {
 			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
 		}
-		debug->SelectFrame(GetCellValue(r,BG_COL_LEVEL),r);
+		debug->SelectFrame(-1,r+1);
 	}
 	wxArrayString vars;
 #warning reestablecer esto

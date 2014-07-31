@@ -1,3 +1,5 @@
+#warnining mantener thread-id
+
 #include "DebugManager.h"
 #include "mxCompiler.h"
 #include "ConfigManager.h"
@@ -51,7 +53,7 @@ DebugManager::DebugManager() {
 	status = DBGST_NULL;
 	pause_breakpoint = NULL;
 	current_handle = -1;
-	last_backtrace_size = 0;
+	stack_depth = -1;
 //	inspections_count = 0;
 //	backtrace_visible = false;
 	threadlist_visible = false;
@@ -351,13 +353,13 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 		// mostrar el backtrace y marcar el punto donde corto
 		SendCommand(wxString(_T("attach "))<<apid);
 		SetStateText(wxString(LANG(DEBUG_STATUS_ATTACHING_TO,"Depurador adjuntado al proceso "))<<apid);
-		Backtrace(true);
+		UpdateBacktrace();
 		long line;
 		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
 		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
 		if (file.Len()) {
 			debug->MarkCurrentPoint(file,line,mxSTC_MARK_STOP);
-			debug->SelectFrame(main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LEVEL),0);
+			debug->SelectFrame(-1,1);
 		}
 		if (project) 
 			project->SetBreakpoints();
@@ -429,15 +431,15 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 //		SendCommand(_T(BACKTRACE_MACRO));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
-		Backtrace(true);
+		UpdateBacktrace();
 		DebuggerInspection::OnDebugStart();
-		long line;
-		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
-		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
-		if (file.Len()) {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_STOP);
-			debug->SelectFrame(main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LEVEL),0);
-		}
+//		long line;
+//		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
+//		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
+//		if (file.Len()) {
+//			debug->MarkCurrentPoint(file,line,mxSTC_MARK_STOP);
+//			debug->SelectFrame(-1,0);
+//		}
 		return true;
 	}
 	pid=0;
@@ -622,11 +624,10 @@ void DebugManager::HowDoesItRuns() {
 				if (line.ToLong(&fline)) {
 					MarkCurrentPoint(fname,fline,mark);
 					if (threadlist_visible) ListThreads();
-					Backtrace(true);
 				} else {
 					if (threadlist_visible) ListThreads();
-					Backtrace(false);
 				}
+				UpdateBacktrace();
 				UpdateInspections();
 			}
 		} else {
@@ -751,106 +752,95 @@ wxString DebugManager::InspectExpression(wxString var, bool pretty) {
 
 void DebugManager::SetBacktraceShowsArgs(bool show) {
 	backtrace_shows_args=show;
-	Backtrace(false,false);
+	UpdateBacktrace();
 }
-bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all) {
+bool DebugManager::UpdateBacktrace() {
 #if defined(_WIN32) || defined(__WIN32__)
 	static wxString sep="\\",wrong_sep="/";
 #else
 	static wxString sep="/",wrong_sep="\\";
 #endif
-	if (waiting || !debugging) 
-		return false;
+	if (waiting || !debugging) return false;
 	main_window->backtrace_ctrl->BeginBatch();
+	
+	int visible_depth = BACKTRACE_SIZE; // cuantos frames se ven en la tabla (el maximo es BACKTRACE_SIZE)
+	int last_stack_depth = stack_depth>BACKTRACE_SIZE?BACKTRACE_SIZE:stack_depth; 
 	
 	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion V2 
 	// ya no se usan "direcciones", sino que simplemente se numeran desde el punto de entrada para "arriba"
-	long fdepth=0;
-	if (GetValueFromAns(SendCommand(_T("-stack-info-depth")),_T("depth"),true).ToLong(&fdepth)) {
-		if (fdepth>BACKTRACE_SIZE) fdepth=BACKTRACE_SIZE;
-		for (int i=0;i<fdepth;i++) frames_addrs[i]=wxString()<<fdepth+1-i;
+	if (GetValueFromAns(SendCommand("-stack-info-depth"),"depth",true).ToLong(&stack_depth)) {
+		if (stack_depth<BACKTRACE_SIZE) visible_depth=stack_depth;
 	} else {
-		for (int i=0;i<BACKTRACE_SIZE;i++) frames_addrs[i]="error"; 
+		stack_depth=0;
 	}
 	
-	wxString frames = fdepth?SendCommand("-stack-list-frames 0 ",fdepth-1):"";
-	int i=0,p,c,n=0,sll=frames.Len();
+	wxString frames = stack_depth?SendCommand("-stack-list-frames 0 ",stack_depth-1):"";
+	
 	const wxChar * chfr = frames.c_str();
 	// to_select* es para marcar el primer frame que tenga info de depuracion
-	wxString line_str,to_select, to_select_file; 
-	int to_select_line, to_select_row=-1;
-	i=frames.Find(_T("stack="));
+	int i=frames.Find("stack=");
 	if (i==wxNOT_FOUND) {
-		for (int c=0;c<fdepth;c++) {
-			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,_T("<<Imposible determinar ubicacion>>"));
-			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,_T("<<Imposible determinar ubicacion>>"));
+		current_frame_id=-1;
+		for (int c=0;c<last_stack_depth;c++) {
+			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,"<<Imposible determinar ubicacion>>");
+			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,"<<Imposible determinar ubicacion>>");
 		}
 		main_window->backtrace_ctrl->EndBatch();
-	} else {
-		bool to_select_done=false;
-		i+=7;
-		while (true) {
-			while (i<sll && chfr[i]!='{') 
-				i++; 
-			if (i<sll) c=n++; else break;
-			if (c==BACKTRACE_SIZE) break; // ver que consecuecias tiene
-			p=i+1;
-			while (chfr[i]!='}') 
-				i++; 
-			wxString s(frames.SubString(p,i-1));
-			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_LEVEL,frames_nums[c]=GetValueFromAns(s,_T("level"),true));
-			wxString func = GetValueFromAns(s,_T("func"),true);
-			if (func[0]=='?') {
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,_T("<<informacion no disponible>>"));
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,"");
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_LINE,"");
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,"");
-			} else {
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,func);
-	//			frames_addrs[c]=SendCommand(_T("info frame "),frames_nums[c]).BeforeFirst(':').AfterLast(' ');
-				wxString fname = GetValueFromAns(s,_T("fullname"),true,true);
-				if (!fname.Len())
-					fname = GetValueFromAns(s,_T("file"),true,true);
-				fname.Replace(_T("\\\\"),sep,true);
-				fname.Replace(_T("//"),sep,true);
-				fname.Replace(wrong_sep,sep,true);
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,fname);
-				// seleccionar el frame de mas arriba que tenga info de depuracion (que en line diga algo)
-				line_str=GetValueFromAns(s,_T("line"),true);
-				if (!to_select_done && line_str.Len() && wxFileName::FileExists(fname)) {
-					to_select_done=true; 
-					to_select=GetValueFromAns(s,_T("level"),true);
-					long l=0;
-					line_str.ToLong(&l);
-					to_select_line=l;
-					to_select_file=fname;
-
-					to_select_row=c;
-				}
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_LINE,line_str);
-			}
+		return false;
+	} else i+=7; 
+	int cant_levels=0, to_select_level=-1, sll=frames.Len();
+	while (cant_levels<BACKTRACE_SIZE) {
+		while (i<sll && chfr[i]!='{') i++; 
+		if (i==sll) break;
+		int p=i+1;
+		while (chfr[i]!='}') i++; 
+		wxString s(frames.SubString(p,i-1));
+#ifdef _ZINJAI_DEBUG
+		if (GetValueFromAns(s,"level",true)!=(wxString()<<(cant_levels+1)))
+			cerr<<"ERROR: DebugManager::Backtrace  wrong frame level!!!"<<endl;
+#endif
+		main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LEVEL,wxString()<<(cant_levels+1));
+		wxString func = GetValueFromAns(s,"func",true);
+		if (func[0]=='?') {
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FUNCTION,"<<informacion no disponible>>"); /// @todo: traducir
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FILE,"");
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LINE,"");
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_ARGS,"");
+		} else {
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FUNCTION,func);
+			wxString fname = GetValueFromAns(s,"fullname",true,true);
+			if (!fname.Len()) fname = GetValueFromAns(s,"file",true,true);
+			fname.Replace("\\\\",sep,true);
+			fname.Replace("//",sep,true);
+			fname.Replace(wrong_sep,sep,true);
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FILE,fname);
+			// seleccionar el frame de mas arriba que tenga info de depuracion (que en line diga algo)
+			wxString line_str=GetValueFromAns(s,"line",true);
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LINE,line_str);
+			if (to_select_level==-1 && line_str.Len() && wxFileName::FileExists(fname))
+				to_select_level=cant_levels;
 		}
+		cant_levels++;
 	}
 	
 	// completar la columna de argumentos si es que está visible
 	if (backtrace_shows_args) { 
-		wxString args ,args_list = n?SendCommand("-stack-list-arguments 1 0 ",n-1):"";
+		wxString args ,args_list = cant_levels?SendCommand("-stack-list-arguments 1 0 ",cant_levels-1):"";
 		const wxChar * chag = args_list.c_str();
 	//cerr<<"CHAG="<<endl<<chag<<endl<<endl;
-		i=args_list.Find(_T("stack-args="));
+		i=args_list.Find("stack-args=");
 		if (i==wxNOT_FOUND) {
-			for (int c=0;c<fdepth;c++)
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,_T("<<Imposible determinar argumentos>>"));
+			for (int c=0;c<last_stack_depth;c++)
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,"<<Imposible determinar argumentos>>");
 			main_window->backtrace_ctrl->EndBatch();
 		} else {
 			bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
 			i+=12;
-			for (int c=0;c<n;c++) {
+			for (int c=0;c<cant_levels;c++) {
 				// chag+i = frame={level="0",args={{name="...
 				while (chag[i]!='[' && chag[i]!='{') 
 					i++; 
-				p=++i;
-				int arglev=0;
+				int p=++i, arglev=0;
 				// chag+i = level="0",args={{name="...
 				while ((chag[i]!=']' && chag[i]!='}') || comillas || arglev>0) {
 					if (comillas) {
@@ -903,9 +893,8 @@ bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all)
 						j++;
 					}
 					sub=s.SubString(p,j-1);
-					if (args.Len())
-						args<<_T(", ");
-					args<<GetValueFromAns(sub,_T("name"),true)<<_T("=")<<GetValueFromAns(sub,_T("value"),true,true);
+					if (args.Len()) args<<", ";
+					args<<GetValueFromAns(sub,"name",true)<<"="<<GetValueFromAns(sub,"value",true,true);
 				}
 				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,args);
 			}	
@@ -913,33 +902,21 @@ bool DebugManager::Backtrace(bool dont_select_if_first, bool dont_select_at_all)
 	}
 	
 	// "limpiar" los renglones que sobran
-	c=n;
-	while (c<last_backtrace_size) { 
+	for (int c=stack_depth; c<last_stack_depth; c++) {
 		for (int i=0;i<BG_COLS_COUNT;i++)
 			main_window->backtrace_ctrl->SetCellValue(c,i,"");
-		c++;
 	}
 	
 	// seleccionar el frame actual, o el más cercano que tenga info de depuración
-	if (!dont_select_at_all) {
+	if (to_select_level>0) {
+		main_window->backtrace_ctrl->SelectRow(to_select_level);
+		SelectFrame(-1,to_select_level);
+		wxString file=main_window->backtrace_ctrl->GetCellValue(to_select_level,BG_COL_FILE);
+		wxString sline=main_window->backtrace_ctrl->GetCellValue(to_select_level,BG_COL_LINE);
+		long line=0; if (sline.ToLong(&line)) debug->MarkCurrentPoint(file,line,mxSTC_MARK_FUNCCALL);
+	} else {
 		main_window->backtrace_ctrl->SelectRow(0);
-		last_backtrace_size = n;
-		if (!dont_select_if_first || to_select!=frames_nums[0]) {
-			if (to_select_row==-1) {
-				current_frame_num=frames_nums[0];
-				current_frame=frames_addrs[0];
-				debug->MarkCurrentPoint(to_select_file,to_select_line);
-			} else {
-				main_window->backtrace_ctrl->SelectRow(to_select_row);
-				SelectFrame(to_select,to_select_row);
-				debug->MarkCurrentPoint(to_select_file,to_select_line,mxSTC_MARK_FUNCCALL);
-			}
-		}
-		else if (last_backtrace_size>0) {
-			current_frame_num=frames_nums[0];
-			current_frame=frames_addrs[0];
-		} else 
-			current_frame=current_frame_num="";
+		current_frame_id = GetFrameID(0);
 	}
 	
 	main_window->backtrace_ctrl->EndBatch();
@@ -1325,13 +1302,12 @@ void DebugManager::SetStateText(wxString text, bool refresh) {
 
 
 void DebugManager::BacktraceClean() {
-	int c=0;
-	while (c<last_backtrace_size) { // borrar los renglones que sobran
+	if (stack_depth>BACKTRACE_SIZE) stack_depth=BACKTRACE_SIZE;
+	for(int c=0;c<stack_depth;c++) {
 		for (int i=0;i<BG_COLS_COUNT;i++)
 			main_window->backtrace_ctrl->SetCellValue(c,i,"");
-		c++;
 	}
-	last_backtrace_size = 0;
+	stack_depth = 0;
 }
 
 /**
@@ -1376,7 +1352,7 @@ bool DebugManager::Jump(wxString fname, int line) {
 		wxString ans=SendCommand("-gdb-set $pc=",adr);
 		if (ans.SubString(1,5)!="error") {
 			MarkCurrentPoint(fname,line+1,mxSTC_MARK_EXECPOINT);
-			Backtrace(true);
+			UpdateBacktrace();
 			running = false;
 			return true;
 		}
@@ -1427,7 +1403,7 @@ bool DebugManager::Return(wxString what) {
 	line.ToLong(&fline);
 	MarkCurrentPoint(fname,fline,mxSTC_MARK_EXECPOINT);
 	//if (backtrace_visible && config->Debug.autoupdate_backtrace)
-	Backtrace(true);
+	UpdateBacktrace();
 	UpdateInspections();
 	return true;
 }
@@ -1998,11 +1974,12 @@ wxString DebugManager::GetNextItem(wxString &ans, int &from) {
 	return ans.SubString(p1,p-1);
 }
 
-bool DebugManager::SelectFrame(wxString strnum, int idx) {
-	wxString ans = SendCommand(_T("-stack-select-frame "),strnum);
-	current_frame = frames_addrs[idx];
-	current_frame_num = strnum;
-	return ans.Mid(1,4)=="done";
+bool DebugManager::SelectFrame(long frame_id, long frame_level) {
+	if (frame_level==-1) GetFrameLevel(frame_id); 
+	else if (frame_id==-1) GetFrameID(frame_level); 
+	wxString ans = SendCommand("-stack-select-frame ",frame_level);
+	if (ans.Mid(1,4)=="done") { current_frame_id = frame_id; return true; }
+	else return false;
 }
 
 bool DebugManager::DoThat(wxString what) {
@@ -2572,15 +2549,15 @@ void DebugManager::UnRegisterExternInspection(mxExternInspection *ei) {
 //	}
 // }
 
-bool DebugManager::SelectFrameForInspeccion(wxString addr) {
-	for (int i=0;i<last_backtrace_size;i++) {
-		if (frames_addrs[i]==addr) {
-			wxString ans = SendCommand(_T("-stack-select-frame "),frames_nums[i]);
-			return ans.Mid(1,4)=="done";
-		}
-	}
-	return false;
-}
+//bool DebugManager::SelectFrameForInspeccion(wxString addr) {
+//	for (int i=0;i<last_backtrace_size;i++) {
+//		if (frames_addrs[i]==addr) {
+//			wxString ans = SendCommand(_T("-stack-select-frame "),frames_nums[i]);
+//			return ans.Mid(1,4)=="done";
+//		}
+//	}
+//	return false;
+//}
 
 bool DebugManager::SaveCoreDump(wxString core_file) {
 	if (!debugging || waiting) return false;
@@ -2867,7 +2844,7 @@ void DebugManager::ThreadListClean() {
 
 void DebugManager::SelectThread(wxString id) {
 	SendCommand("-thread-select ",id);
-	Backtrace();
+	UpdateBacktrace();
 //	UpdateFramelessInspection();
 }
 
