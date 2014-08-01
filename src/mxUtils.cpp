@@ -1019,7 +1019,7 @@ wxString mxUT::UnEscapeString(wxString str) {
 			else if (str[i]=='\\' && i+1<l && str[i+1]=='r') str[i+1]='\r';
 			else if (str[i]=='\\' && i+1<l && str[i+1]=='b') str[i+1]='\b';
 			str=str.Mid(0,i)+str.Mid(i+1);
-			/*i++;*/ l--;
+			/*i++;*/ l--; i--;
 		}
 		i++;
 	}

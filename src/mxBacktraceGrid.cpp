@@ -81,8 +81,7 @@ void mxBacktraceGrid::SelectFrame(int r) {
 		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT))
 			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		if (debug->CanTalkToGDB()) debug->SelectFrame(-1,r+1);
-#warning actualizar inspecciones frameless
-//		debug->UpdateFramelessInspection();
+		debug->UpdateInspections();
 	}
 }
 

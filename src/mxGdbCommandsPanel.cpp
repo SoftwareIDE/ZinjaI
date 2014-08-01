@@ -100,25 +100,31 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 	wxString ans = debug->SendCommand(cmd);
 	if (ans.Len() && !ans.Last()=='\n') ans<<"\n";
 	
-	wxString msg;
+	wxString mi_msg, reg_msg;
 	do {
 		wxString line=ans.BeforeFirst('\n');
 		ans=ans.AfterFirst('\n');
-		if (line.StartsWith("~") || line.StartsWith("&")) {
+		if (line.StartsWith("~")) {
+			reg_msg<<mxUT::UnEscapeString(line.Mid(1));
+		} else if (line.StartsWith("&")) {
 			wxString ue=mxUT::UnEscapeString(line.Mid(1));
 			if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
-			msg<<"   "<<line[0]<<" "<<ue<<"\n";
+			mi_msg<<"   & "<<ue<<"\n";
 		} else if (line.StartsWith("^")) {
-			if (line.StartsWith("^error")) msg<<"^error: "<<debug->GetValueFromAns(line,"msg",true,true)<<"\n";
-			else msg<<"   ^ "<<line.Mid(1)<<"\n";
+			if (line.StartsWith("^error")) 
+				mi_msg<<"^error: "<<debug->GetValueFromAns(line,"msg",true,true)<<"\n";
+			else mi_msg<<"   ^ "<<line.Mid(1)<<"\n";
 		} else if (line.StartsWith("=")) {
-			msg<<"   = "<<line.Mid(1)<<"\n";
-		} else if (line.StartsWith("&")) {
+			mi_msg<<"   = "<<line.Mid(1)<<"\n";
 		} else // creo que no llega nunca aca, no hay caso no contemplado arriba, o si?
-			msg<<"   "<<line.Mid(1)<<"\n";
+			mi_msg<<"   ? "<<line.Mid(1)<<"\n";
 	} while(ans.size());
-	
-	AppendText(msg);
+	if (reg_msg.Len()>1) {
+		if (reg_msg.Last()=='\n') reg_msg.RemoveLast();
+		reg_msg.Replace("\n","\n  ~ ");
+		reg_msg = wxString("  ~ ")<<reg_msg<<"\n";
+	}
+	AppendText(reg_msg+mi_msg);
 }
 
 void mxGdbCommandsPanel::AppendText (const wxString & str) {

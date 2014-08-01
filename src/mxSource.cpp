@@ -28,7 +28,6 @@
 using namespace std;
 
 
-
 NavigationHistory navigation_history;
 
 void NavigationHistory::OnClose(mxSource *src) {

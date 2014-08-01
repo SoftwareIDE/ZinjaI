@@ -290,16 +290,6 @@ void DebugManager::ResetDebuggingStuff() {
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
 	while (bpi.IsValid()) { bpi->gdb_id=-1; bpi.Next(); }
 	
-#warning Ver si aca hay que hacer algo con mxInspectionGrid
-//	for (int i=0;i<inspections_count;i++)
-//		if (inspections[i].is_vo) {
-//			SetFramelessInspection(i);
-//		} else if (inspections[i].expr.StartsWith(">")) {
-//			inspections[i].name=inspections[i].expr.Mid(1);
-//			inspections[i].on_scope=true;
-//			inspections[i].frameless=false;
-//		}
-	
 	buffer[0]=buffer[1]=buffer[2]=buffer[3]=buffer[4]=buffer[5]=' ';
 	buffer[6]='\0';
 	debugging = true;
@@ -2715,83 +2705,10 @@ bool DebugManager::ToggleInverseExec() {
 //		}
 //}
 
-//void DebugManager::SetFramelessInspection(int i) {
-//	if (inspections[i].is_vo) DeleteVO(inspections[i].name);
-//	inspections[i].is_vo=false;
-//	inspections[i].frameless=true;
-//	wxString vnew = InspectExpression(inspections[i].expr);
-//	if (!vnew.Len()) {
-//		if (config->Debug.select_modified_inspections && !inspections[i].freezed)
-//			inspection_grid->HightlightDisable(i);
-//		vnew = LANG(DEBUG_INSPECTION_NOT_AVAILABLE,"<<<No Disponible>>>");
-//	}
-//	if (!inspections[i].freezed) inspection_grid->SetCellValue(i,IG_COL_VALUE,vnew);
-//	inspection_grid->SetCellValue(i,IG_COL_LEVEL,"*");
-//	inspection_grid->SetCellValue(i,IG_COL_TYPE,_T("<<?>>"));
-////	inspection_grid->SetCellValue(i,IG_COL_FORMAT,_T("<<?>>"));
-////	inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
-//	inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-//}
-//
-//bool DebugManager::ToggleInspectionFreeze(int n) {
-//	if ((inspections[n].freezed=!inspections[n].freezed)) {
-//		if (config->Debug.select_modified_inspections)
-//			inspection_grid->HightlightFreeze(n);
-//	} else if (!inspections[n].on_scope && inspections[n].is_vo) {
-//		inspection_grid->SetCellValue(n,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<<Fuera de Ambito>>>"));
-//		inspection_grid->SetCellRenderer(n,IG_COL_VALUE,new wxGridCellStringRenderer());
-//		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(n);
-//	} else if (inspections[n].is_vo && !inspections[n].always_evaluate) {
-//		wxString vold = inspection_grid->GetCellValue(n,IG_COL_VALUE);
-//		wxString vnew = GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),inspections[n].name),_T("value"),true,true);
-//		inspection_grid->SetCellValue(n,IG_COL_VALUE,vnew);
-//		if (config->Debug.select_modified_inspections) {
-//			if (vold==vnew)
-//				inspection_grid->HightlightNone(n);
-//			else
-//				inspection_grid->HightlightChange(n);
-//		}
-//	} else {
-//		UpdateInspection();
-//	}
-//	return inspections[n].freezed;
-//}
-
 void DebugManager::UnregisterSource(mxSource *src) {
 	if (current_source==src) current_source=NULL;
 	if (notitle_source==src) notitle_source=NULL;
 }
-
-//bool DebugManager::OffLineInspectionModify(int i, wxString value) {
-//	if (!value.Len()) return false;
-//	if (i>=0 && i<inspections_count) {
-//		inspections[i].expr=value;
-//		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
-//		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-//		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-//		return true;
-//	} else if (i==inspections_count) {
-//		inspections.push_back(inspectinfo(value,"",value));
-//		inspection_grid->AddRow(); inspections_count++;
-//		inspection_grid->SetCellValue(i,IG_COL_VALUE,LANG(INSPECTGRID_CANT_EVALUATE,"<<<no se puede evaluar>>>"));
-//		inspection_grid->SetCellRenderer(i,IG_COL_VALUE,new wxGridCellStringRenderer());
-//		if (config->Debug.select_modified_inspections) inspection_grid->HightlightDisable(i);
-//		return true;
-//	} else
-//		return false;
-//}
-
-//bool DebugManager::OffLineInspectionDelete(int i) {
-//	if (i==-1) {
-//		inspections.clear();
-//		inspections_count=0;
-//		return true;
-//	} else if (i>=0 && i<inspections_count) {
-//		inspections.erase(inspections.begin()+i);
-//		return true;
-//	} else
-//		return false;
-//}
 
 void DebugManager::ListThreads() {
 	wxString ans=SendCommand("-thread-list-ids");
@@ -2808,7 +2725,6 @@ void DebugManager::ListThreads() {
 			ans=ans.Mid(i+11);
 			id=ans.BeforeFirst('\"');
 			det = SendCommand("-thread-info ",id);
-//			cerr<<det<<endl;
 			i = det.Find("threads=");
 			func.Clear();
 			if (i!=wxNOT_FOUND) {
@@ -2828,10 +2744,7 @@ void DebugManager::ListThreads() {
 			main_window->threadlist_ctrl->SetData(c++,id,func,file,line);
 			if (id==cur) main_window->threadlist_ctrl->SelectRow(c-1);
 			i=ans.Find("thread-id=");
-//			cerr<<c<<"   "<<func<<endl;
 		}
-//		cerr<<endl;
-//		cerr<<endl;
 		main_window->threadlist_ctrl->SetNumber(c);
 	}
 }
