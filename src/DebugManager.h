@@ -157,7 +157,7 @@ private:
 	long current_frame_id; ///< id interno del frame actual, se usa un nro basado en su level en el backtrace, pero inverso (el main seria 0, que figura en la salida de gdb con level=stack_depth-1)
 	long GetFrameID(long level) { return stack_depth-level; } 
 	long GetFrameLevel(long id) { return stack_depth-id; }
-	wxString current_thread_id; ///< id del thread actual, lo da gdb al detenerse o al cambiar de hilo
+	long current_thread_id; ///< id del thread actual, lo da gdb al detenerse o al cambiar de hilo
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxProcess *tty_process;
 	long tty_pid;
@@ -311,7 +311,7 @@ public:
 	
 	void ListThreads();
 	void ThreadListClean();
-	void SelectThread(wxString id);
+	bool SelectThread(long thread_id);
 	
 	void SendSignal(const wxString &signame);
 	bool GetSignals(vector<SignalHandlingInfo> &v);

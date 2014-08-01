@@ -1,37 +1,33 @@
-#warnining mantener thread-id
-
+#include <wx/process.h>
+#include <wx/stream.h>
+#include <wx/msgdlg.h>
+#include <algorithm>
+#include <fstream>
+#include <vector>
+#include <iostream>
 #include "DebugManager.h"
 #include "mxCompiler.h"
 #include "ConfigManager.h"
 #include "mxMainWindow.h"
-#include <wx/process.h>
-#include <wx/stream.h>
 #include "mxMessageDialog.h"
 #include "mxUtils.h"
 #include "mxSource.h"
 #include "ProjectManager.h"
 #include "ids.h"
-//#include "mxInspectionGrid.h"
 #include "mxBacktraceGrid.h"
-#include <wx/grid.h>
 #include "Parser.h"
 #include "mxInspectionExplorer.h"
 #include "mxBreakList.h"
 #include "mxInspectionMatrix.h"
 #include "mxArgumentsDialog.h"
-#include <wx/msgdlg.h>
 #include "mxApplication.h"
-#include <iostream>
 #include "Language.h"
 #include "mxOSD.h"
 #include "winStuff.h"
 #include "mxExternInspection.h"
-#include <algorithm>
 #include "mxThreadGrid.h"
 #include "Inspection.h"
 #include "mxGenericInspectionCtrl.h"
-#include <fstream>
-#include <vector>
 #include "DebugPatcher.h"
 #include "MenusAndToolsConfig.h"
 using namespace std;
@@ -315,6 +311,7 @@ void DebugManager::ResetDebuggingStuff() {
 	has_symbols=true;
 	should_pause=false;
 	debug_patcher = new DebugPatcher();
+	current_thread_id = -1; current_frame_id = -1;
 }
 
 
@@ -508,7 +505,9 @@ void DebugManager::HowDoesItRuns() {
 			return;
 		}
 		ans=ans.Mid(st_pos);
-		wxString how = GetValueFromAns(ans,_T("reason"),true);
+		wxString how = GetValueFromAns(ans,"reason",true);
+		wxString thread_id = GetValueFromAns(ans,"thread-id",true);
+		if (!thread_id.ToLong(&current_thread_id)) current_thread_id=-1;
 		
 #define _aux_continue SendCommand(_T("-exec-continue")); waiting=true; wxYield(); waiting=false; continue;
 		bool should_continue=false; // cuando se pauso solo para colocar un brekapoint y seguir, esto indica que siga sin analizar la salida... puede ser how diga signal-received (lo normal) o que se haya pausado justo por un bp de los que solo actualizan la tabla de inspecciones
@@ -523,8 +522,8 @@ void DebugManager::HowDoesItRuns() {
 		}
 		
 		BreakPointInfo *bpi=NULL; int mark = 0;
-		if (how==_T("breakpoint-hit")) {
-			wxString sbn = GetValueFromAns(ans,_T("bkptno"),true);
+		if (how=="breakpoint-hit") {
+			wxString sbn = GetValueFromAns(ans,"bkptno",true);
 			if (sbn.Len()) {
 				long bn;
 				if (sbn.ToLong(&bn)) {
@@ -2842,10 +2841,12 @@ void DebugManager::ThreadListClean() {
 	main_window->threadlist_ctrl->SetNumber(1);
 }
 
-void DebugManager::SelectThread(wxString id) {
-	SendCommand("-thread-select ",id);
-	UpdateBacktrace();
-//	UpdateFramelessInspection();
+bool DebugManager::SelectThread(long thread_id) {
+	wxString ans = SendCommand("-thread-select ",thread_id);
+	if (!ans.StartsWith("^done")) return false;
+	current_thread_id=thread_id; 
+	UpdateInspections();
+	return true;
 }
 
 void DebugManager::SetFullOutput (bool on) {

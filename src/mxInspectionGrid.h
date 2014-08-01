@@ -59,9 +59,10 @@ public:
 	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_COUNT };
 private:
 	struct InspectionGridRow {
-		int status;
 		DebuggerInspection *di;
-		InspectionGridRow(DebuggerInspection *_di=NULL) : status(IGRS_UNINIT),di(_di) {}
+		// estado de la fila en la grilla, para no invocar metodos de grilla si no cambio nada... 
+		int status; long frame_level; bool on_thread; // frame_id==-1 para las frameless
+		InspectionGridRow(DebuggerInspection *_di=NULL) : di(_di),status(IGRS_UNINIT),frame_level(-2),on_thread(true) {}
 		bool operator==(const InspectionGridRow &o) { return di==o.di; }
 		DebuggerInspection *operator->() { return di; }
 	};
@@ -151,6 +152,7 @@ public:
 	void OnDIInScope(DebuggerInspection *di);
 	void OnDINewType(DebuggerInspection *di);
 
+	void UpdateLevelColumn(int r);
 	void SetRowStatus(int r, int status);
 	DECLARE_EVENT_TABLE();
 	

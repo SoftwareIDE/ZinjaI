@@ -1,4 +1,3 @@
-
 //#include <wx/wx.h> // for wxGetSingleChoice, for some reasom <wx/choicdlg.h> doesn't work????
 //#include <wx/choicdlg.h>
 #include <wx/menu.h>
@@ -17,7 +16,7 @@
 //#include "mxInspectionPrint.h"
 #include "mxInspectionGridCellEditor.h"
 using namespace std;
-
+ 
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_GRID_CELL_CHANGE(mxInspectionGrid::OnCellChange)
 	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
@@ -187,6 +186,7 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 		if (row<inspections.GetSize()) {
 			if (inspections[row]->GetExpression()==new_value) return; // si en realidad no cambio
 			inspections[row]->Destroy(); // si es una que ya existía
+			inspections[row]=NULL; // para que OnFullTableUpdateBegin no la considere más
 		} else {
 			inspections.Add(NULL);
 			InsertRows();
@@ -925,6 +925,7 @@ void mxInspectionGrid::OnDIError(DebuggerInspection *di) {
 
 void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
 	OnDINewType(di);
+	UpdateLevelColumn(current_row);
 }
 
 void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
@@ -966,6 +967,8 @@ void mxInspectionGrid::SetRowStatus (int r, int status) {
 void mxInspectionGrid::OnFullTableUpdateBegin( ) {
 	BeginBatch();
 	for(int i=0;i<inspections.GetSize();i++) {
+		if (inspections[i]==NULL) continue; ///< pasa cuando se crea una nuevo, se llama a este metodo antes de hacerlo, pero ya habiendo reservado el espacio en inspections
+		UpdateLevelColumn(i);
 		InspectionGridRow &di = inspections[i];
 		if (di.status==IGRS_UNINIT || di->IsFrozen()) continue;
 		if (di->RequiresManualUpdate()) {
@@ -988,5 +991,22 @@ void mxInspectionGrid::ModifyInspectionExpression (int row, const wxString & exp
 	if (row==-1) row=inspections.GetSize()-1;
 	last_return_had_shift_down = is_frameless;
 	mxGrid::SetCellValue(row,IG_COL_EXPR,expression);
+}
+
+void mxInspectionGrid::UpdateLevelColumn (int r) {
+	InspectionGridRow &di=inspections[r];
+	if (debug->current_thread_id!=di->GetFrameID()) {
+		if (di.on_thread) { 
+			di.on_thread=false;
+			mxGrid::SetCellValue(r,IG_COL_LEVEL,wxString("(t ")<<di->GetThreadID()<<")");
+		}
+	} else {
+		long di_frame_level = di->IsFrameless()?-1:debug->GetFrameLevel(di->GetFrameID());
+		if (!di.on_thread || di.frame_level!=di_frame_level) {
+			di.on_thread=true;
+			di.frame_level=di_frame_level;
+			mxGrid::SetCellValue(r,IG_COL_LEVEL,di_frame_level==-1?"*":wxString()<<di_frame_level);
+		}
+	}
 }
 

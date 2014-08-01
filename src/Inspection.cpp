@@ -115,3 +115,35 @@ bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool s
 	return children.GetSize()!=0;
 }
 
+
+void DebuggerInspection::OnDebugStop() {
+	__debug_log_static_method__;
+	// delete helpers and ghost inspections by unlinking its children
+	for(int i=0;i<all_inspections.GetSize();i++) { 
+		DebuggerInspection *di = all_inspections[i];
+		if (di->dit_type==DIT_VARIABLE_OBJECT) {
+			if (di->parent) di->RemoveParentLink();
+			if (di->helper) di->helper->Destroy();
+		} 
+	}
+	ProcessPendingActions(); // delete pending commands, they shoud not be run in next debugging session
+	vo2di_map.clear();
+}
+
+void DebuggerInspection::OnDebugStart() {
+	__debug_log_static_method__;
+	ProcessPendingActions(); // commands for creating new variable objects should be here
+	// re-create al vo-based inspections on next pause
+	for(int i=0;i<all_inspections.GetSize();i++) { 
+		DebuggerInspection *di = all_inspections[i];
+		if (di->dit_type==DIT_GDB_COMMAND) continue;
+		di->is_frameless=true;
+		AddPendingAction(di,&DebuggerInspection::CreateVO,true,true);
+	}
+}
+
+void DebuggerInspection::OnDebugPause() {
+	__debug_log_static_method__;
+	ProcessPendingActions();
+	UpdateAll();
+}

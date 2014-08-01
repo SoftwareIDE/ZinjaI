@@ -127,8 +127,8 @@ struct DebuggerInspection {
 		
 	static void ProcessPendingActions() {
 		__debug_log_static_method__;
-		if (debug->debugging && !debug->waiting) {
-			DEBUG_INFO("ERROR: ProcessPendingActions: debug->debugging && !debug->waiting");
+		if (debug->debugging && debug->waiting) {
+			DEBUG_INFO("ERROR: ProcessPendingActions: debug->debugging && debug->waiting");
 		}
 		int dont_run_now_count = 0, initial_size = pending_actions.GetSize();
 		for(int i=0;i<pending_actions.GetSize();i++) {
@@ -152,35 +152,11 @@ struct DebuggerInspection {
 	
 public:
 	
-	static void OnDebugStop() {
-		__debug_log_static_method__;
-		// delete ghost inspections by unlinking its children
-		for(int i=0;i<all_inspections.GetSize();i++) { 
-			DebuggerInspection *di = all_inspections[i];
-			if (di->dit_type==DIT_VARIABLE_OBJECT) 
-				di->RemoveParentLink();
-		}
-		ProcessPendingActions(); // delete pending commands, they shoud not be run in next debugging session
-		vo2di_map.clear();
-	}
+	static void OnDebugStop();
 	
-	static void OnDebugStart() {
-		__debug_log_static_method__;
-		ProcessPendingActions(); // commands for creating new variable objects should be here
-		// re-create al vo-based inspections on next pause
-		for(int i=0;i<all_inspections.GetSize();i++) { 
-			DebuggerInspection *di = all_inspections[i];
-			if (di->dit_type==DIT_GDB_COMMAND) continue;
-			di->is_frameless=true;
-			AddPendingAction(di,&DebuggerInspection::CreateVO,true,true);
-		}
-	}
+	static void OnDebugStart();
 	
-	static void OnDebugPause() {
-		__debug_log_static_method__;
-		ProcessPendingActions();
-		UpdateAll();
-	}
+	static void OnDebugPause();
 	
 	/// Actualiza todas las inspecciones (consultando a gdb, se debe invocar desde DebugManager cuando hay una pausa/interrupción en la ejecución)
 	static void UpdateAll();
@@ -192,6 +168,7 @@ private:
 	wxString expression; ///< expresión que está siendo inspeccionada (si dit_type!=DIT_AUXILIAR_VO, sino es el comando para inspeccionar con "p" la expresion padre)
 	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
+	long thread_id, frame_id; ///< si no es frameless, aqui se guarda el scope al que está asociada
 	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
 	bool is_frozen; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
 	myDIEventHandler *consumer; ///< puntero a quien utiliza esta inspección, para notificarle los cambios
@@ -215,7 +192,8 @@ private:
 	bool VOCreate() {
 		__debug_log_method__;
 		wxString cmd = "-var-create - ";
-		if (is_frameless) cmd<<"@ "; else cmd<<"* ";
+		if (is_frameless) cmd<<"@ "; else cmd<<"* "; 
+		thread_id=debug->current_thread_id; frame_id=debug->current_frame_id;
 		wxString ans = debug->SendCommand(cmd,mxUT::EscapeString(expression,true));
 		if (ans.Left(5)!="^done") return false;
 		variable_object = debug->GetValueFromAns(ans,"name",true);
@@ -247,8 +225,7 @@ private:
 		// si habia, borrar la inspeccion auxiliar previa
 		if (helper) helper->Destroy();
 		// si no tiene hijos, no necesita la inspeccion auxiliar
-		if (num_children==0 || value_type.EndsWith("*")) 
-			{ helper=NULL; return false; }
+		if (num_children==0 || value_type.EndsWith("*")) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
 		helper = new DebuggerInspection(this);
 		// evaluarla 
@@ -343,7 +320,7 @@ private:
 		};
 	
 	void RemoveParentLink() {
-		if (parent && --parent->di_children==0) 
+		if (--parent->di_children==0) 
 			{ parent->Destroy(); parent=NULL; }
 	}
 	
@@ -405,8 +382,10 @@ public:
 			// si no tiene dependencias, eliminarla en gdb
 			if (di_children==0) {
 				if (debug->debugging) TryToExec(&DebuggerInspection::VODelete,true);
+				// si es helper, quitar el link en el vo padre
+				if (dit_type==DIT_AUXILIAR_VO) parent->helper = NULL;
 				// si es hijo (dependiente, no helper), restarle un hijo al padre, y si llega a 0 y es GHOST eliminarlo tambien
-				if (dit_type!=DIT_AUXILIAR_VO&&parent) RemoveParentLink();
+				else if (parent) RemoveParentLink();
 			}
 			// eliminarla del mapa para que ya no reciba actualizaciones (si no estaba ya eliminada)
 			if (dit_type!=DIT_GHOST) {
@@ -476,7 +455,9 @@ public:
 	bool IsCompount() { return num_children!=0; }
 	bool IsClass() { return num_children!=0 && !value_type.EndsWith("]"); }
 	bool IsArray() { return num_children!=0 && value_type.EndsWith("]"); }
-	
+	long GetThreadID() { return thread_id; }
+	long GetFrameID() { return frame_id; }
+	bool IsFromCurrentThread() { return !debug->debugging || debug->waiting || thread_id==debug->current_thread_id; }
 };
 
 #endif
