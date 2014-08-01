@@ -136,7 +136,7 @@ bool DebugManager::Start(bool update, mxSource *source) {
 			for (int i=0;i<cuantos_sources;i++) {
 				mxSource *src = (mxSource*)(main_window->notebook_sources->GetPage(i));
 				if (!src->sin_titulo && source!=src)
-					SetBreakPoints(src);
+					SetBreakPoints(src,true);
 			}
 			SetBreakPoints(source);
 			if (source->sin_titulo) notitle_source=source;
@@ -687,10 +687,10 @@ int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {
 * Antes de colocar el breakpoint se fija si es una direccion valida, porque
 * sino gdb lo coloca más adelante sin avisar.
 **/
-int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
+int DebugManager::SetBreakPoint(BreakPointInfo *_bpi, bool quiet) {
 	if (waiting || !debugging) return 0;
 	wxString adr = GetAddress(_bpi->fname,_bpi->line_number);
-	if (!adr.Len()) { _bpi->SetStatus(BPS_ERROR_SETTING); ShowBreakPointLocationErrorMessage(_bpi); return -1;  }
+	if (!adr.Len()) { _bpi->SetStatus(BPS_ERROR_SETTING); if (!quiet) ShowBreakPointLocationErrorMessage(_bpi); return -1;  }
 	wxString ans = SendCommand(wxString("-break-insert \"\\\"")<<_bpi->fname<<":"<<_bpi->line_number+1<<"\\\"\"");
 	wxString num = GetSubValueFromAns(ans,"bkpt","number",true);
 	if (!num.Len()) { // a veces hay que poner dos barras (//) antes del nombre del archivo en vez de una (en los .h? ¿por que?)
@@ -714,7 +714,7 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi) {
 		if (_bpi->cond.Len()) if (!SetBreakPointOptions(id,_bpi->cond)) { status=BPS_ERROR_SETTING; ShowBreakPointConditionErrorMessage(_bpi); }
 	} else { // si no se pudo colocar correctamente
 		status=BPS_ERROR_SETTING; 
-		ShowBreakPointLocationErrorMessage(_bpi);
+		if (!quiet) ShowBreakPointLocationErrorMessage(_bpi);
 	}
 	_bpi->SetStatus(status,id);
 	return id;
@@ -1097,12 +1097,12 @@ wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 }
 
 /// @brief Sets all breakpoints from an untitled or out of project mxSource
-void DebugManager::SetBreakPoints(mxSource *source) {
+void DebugManager::SetBreakPoints(mxSource *source, bool quiet) {
 	if (waiting || !debugging) return;
 	const LocalList<BreakPointInfo*> &breakpoints=source->m_extras->GetBreakpoints();
 	for(int i=0;i<breakpoints.GetSize();i++) { 
 		breakpoints[i]->UpdateLineNumber();
-		debug->SetBreakPoint(breakpoints[i]);
+		debug->SetBreakPoint(breakpoints[i],quiet);
 	}
 }
 

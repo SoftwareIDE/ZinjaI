@@ -216,9 +216,9 @@ public:
 	bool MarkCurrentPoint(wxString cf="", int cline=-1, int cmark=-1);
 	void HowDoesItRuns();
 	void SetStateText(wxString text, bool refresh=false);
-	void SetBreakPoints(mxSource *source);
+	void SetBreakPoints(mxSource *source, bool quiet=false);
 	int SetLiveBreakPoint(BreakPointInfo *_bpi);
-	int SetBreakPoint(BreakPointInfo *_bpi);
+	int SetBreakPoint(BreakPointInfo *_bpi, bool quiet=false);
 	void SetBreakPointEnable(int num, bool enable, bool once=false);
 	void SetBreakPointOptions(int num, int ignore_count);
 	bool SetBreakPointOptions(int num, wxString condition);
