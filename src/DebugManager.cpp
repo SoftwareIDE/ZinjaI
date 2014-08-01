@@ -779,7 +779,7 @@ bool DebugManager::UpdateBacktrace() {
 		while (chfr[i]!='}') i++; 
 		wxString s(frames.SubString(p,i-1));
 #ifdef _ZINJAI_DEBUG
-		if (GetValueFromAns(s,"level",true)!=(wxString()<<(cant_levels+1)))
+		if (GetValueFromAns(s,"level",true)!=(wxString()<<(cant_levels)))
 			cerr<<"ERROR: DebugManager::Backtrace  wrong frame level!!!"<<endl;
 #endif
 		main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LEVEL,wxString()<<(cant_levels+1));

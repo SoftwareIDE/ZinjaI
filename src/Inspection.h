@@ -58,13 +58,13 @@ struct DebuggerInspection {
 		const char *method;
 	public:
 		CallLogger(const char *_method, DebuggerInspection *_di=NULL) : di(_di),method(_method) {
-			cerr<<"DI::"<<string((++lev)*2,' ')<<method<<"  in";
-			if (di) cerr<<": this="<<this<<" dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"");
-				cerr<<endl;
+			cerr<<"DI("<<di<<")::"<<string((++lev)*2,' ')<<method<<"  in";
+			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->is_frameless?"f":"")<<(di->is_in_scope?"s":"");
+			cerr<<endl;
 		}
 		~CallLogger() { 
-			cerr<<"DI::"<<string((lev--)*2,' ')<<method<<" out";
-			if (di) cerr<<": this="<<this<<" dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"");
+			cerr<<"DI("<<di<<")::"<<string((lev--)*2,' ')<<method<<" out";
+			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->is_frameless?"f":"")<<(di->is_in_scope?"s":"");
 			cerr<<endl;
 		}
 	};
@@ -293,8 +293,10 @@ private:
 		dit_type(DIT_AUXILIAR_VO),
 		expression(wxString("&(")<<_parent->expression<<")"),
 		is_frameless(_parent->is_frameless), 
+		thread_id(_parent->thread_id),
+		frame_id(_parent->frame_id),
 		is_in_scope(true),
-		is_frozen(false), 
+		is_frozen(false),
 		consumer(NULL), 
 		helper(NULL),
 		parent(_parent),
@@ -309,6 +311,8 @@ private:
 		expression(expr),
 		variable_object(vo_name),
 		is_frameless(_parent->is_frameless), 
+		thread_id(_parent->thread_id),
+		frame_id(_parent->frame_id),
 		is_in_scope(true),
 		is_frozen(_parent->is_frozen), 
 		consumer(_parent->consumer), 
@@ -421,7 +425,35 @@ public:
 			TryToExec(&DebuggerInspection::VOSetFrozen,true);
 	}
 	
-	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance);
+	/**
+	* @brief break an inspections based on a compound vo, into its child vos
+	*
+	* If its variable objects' num_child is different from 0, this will create
+	* a new inspections for avery child vo. Original vo and inspection will remain
+	* valid.
+	* @param skip_visibility_groups		a class has public, private and/or protected
+	*                                   as children vos, and the real attributes 
+	*                                   are inside thoose, one more level in. If
+	*                                   skip_visibility_groups==true will also 
+	*                                   break those children vos, and return their
+	*									children instead.
+	* @param recursive_on_inheritance 	an inherited class has a vo named as its
+	*									base class as child, and the real inherited
+	*									stuff as children of that child. If
+	*									recursive_on_inheritance=true will also
+	*                                   break those children vos, and return their
+	*									children instead.
+	* @param set_full_expressions		a children vo has as name the identifier 
+	*									of the attribute, the base class name, or
+	*									the visibility tag... thoose are not
+	*									valid c++ expressions. If 
+	*									set_full_expressions==true will set as
+	*									"expression" for the new children valid
+	*									and complete c++ expressions, including
+	*									the original object/array. If false, the
+	*									vo name will be used.
+	**/
+	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool set_full_expressions);
 	
 	DEBUG_INSPECTION_EXPRESSION_TYPE GetDbiType() { return dit_type; }
 	wxString GetExpression() { return expression; }

@@ -75,13 +75,17 @@ void DebuggerInspection::UpdateAll ( ) {
 	}
 }
 
-bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance) {
+bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool set_full_expressions) {
 	__debug_log_method__;
 	if (!debug->CanTalkToGDB()) return false;
+	
+	// auxiliares para escribir la expresión final a partir de la expresión base y los nombre de los hijos
+	wxString base_exp = set_full_expressions?debug->RewriteExpressionForBreaking(expression):"";
+	bool is_array = IsArray(); wxString base_pre = is_array?"[":".", base_post=is_array?"]":"";
+	
+	// crear y obtener vos hijos
 	wxString s = debug->SendCommand("-var-list-children ",variable_object);
-	
 	struct child { wxString name,exp,type; int num_children; child():num_children(0){} };
-	
 	for(unsigned int i=6,l=s.Len();i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
 		if (s[i]=='n' && s[i+1]=='a' && s[i+2]=='m' && s[i+3]=='e' && s[i+4]=='=') { // por cada "child=" empieza un hijo...
 			// busca los campos del hijo
@@ -110,7 +114,8 @@ bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool s
 			// ver si hay que romper este tambien (porque es clase baso, o grupo de visibilidad)
 			bool break_again = (recursive_on_inheritance && c.type==c.exp) ||
 				(skip_visibility_groups && ((c.exp=="public"||c.exp=="private"||c.exp=="protected")&&c.type==""));
-			if (break_again && di->Break(children,skip_visibility_groups,recursive_on_inheritance)) di->Destroy();
+			if (break_again) di->expression=base_exp; else di->expression=base_exp+base_pre+di->expression+base_post;
+			if (break_again && di->Break(children,skip_visibility_groups,recursive_on_inheritance,set_full_expressions)) di->Destroy();
 			else { 
 				if (!di->SetupChildInspection()) di->VOEvaluate();
 				children.Add(di);

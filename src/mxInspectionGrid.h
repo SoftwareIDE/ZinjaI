@@ -65,6 +65,7 @@ private:
 		InspectionGridRow(DebuggerInspection *_di=NULL) : di(_di),status(IGRS_UNINIT),frame_level(-2),on_thread(true) {}
 		bool operator==(const InspectionGridRow &o) { return di==o.di; }
 		DebuggerInspection *operator->() { return di; }
+		bool IsNull() { return di==NULL; }
 	};
 	SingleList<InspectionGridRow> inspections;
 	
@@ -154,6 +155,8 @@ public:
 
 	void UpdateLevelColumn(int r);
 	void SetRowStatus(int r, int status);
+	void DeleteInspection(int r, bool for_reuse);
+	bool CreateInspection(int r, const wxString &expression, bool frameless);
 	DECLARE_EVENT_TABLE();
 	
 };

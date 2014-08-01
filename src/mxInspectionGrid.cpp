@@ -84,8 +84,8 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	
 	last_return_had_shift_down = mask_cell_change_event = false;
 	
-	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),"<<< evaluación pendiente >>>");
-	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< fuera de ámbito >>>"));
+	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),"<<< evaluación pendiente >>>"); /// @todo: traducir
+	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< fuera de ámbito >>>"));  /// @todo: traducir
 	mxig_status_opts[IGRS_IN_SCOPE].Init(true,wxColour(196,0,0));
 	mxig_status_opts[IGRS_CHANGED].Init(true,wxColour(196,0,0));
 	mxig_status_opts[IGRS_NORMAL].Init(true,wxColour(0,0,0));
@@ -151,11 +151,9 @@ void mxInspectionGrid::OnKey(wxKeyEvent &event) {
 		vector<int> sel; int min=-1;
 		if (mxGrid::GetSelectedRows(sel,true)==0) sel.push_back(GetGridCursorRow());
 		for(unsigned int i=0;i<sel.size();i++) {
-			if (sel[i]<0||sel[i]>=inspections.GetSize()) continue;
+			if (sel[i]<0||sel[i]+1>=inspections.GetSize()) continue;
 			if (sel[i]<min) min=sel[i];
-			inspections[sel[i]]->Destroy(); // quitar de gdb
-			inspections.Remove(sel[i]); // quitar de la lista propia de inspecciones
-			DeleteRows(sel[i],1); // eliminar fila de la tabla
+			DeleteInspection(sel[i],false);
 		}
 		if (min!=-1) min=GetGridCursorRow();
 		if (min<0||min>inspections.GetSize()) min=0;
@@ -166,9 +164,8 @@ void mxInspectionGrid::OnKey(wxKeyEvent &event) {
 	} else if (key==WXK_UP) {
 		int r = GetGridCursorRow();
 		if (r) Select(r-1);
-//	} else if (event.GetKeyCode()==WXK_INSERT) {
-//		SetGridCursor(GetNumberRows()-1,0);
-//		SelectRow(GetGridCursorRow());
+	} else if (event.GetKeyCode()==WXK_INSERT) {
+		InsertRows(GetGridCursorRow(),1);
 	} else if (key==WXK_RETURN) {
 		last_return_had_shift_down=event.ShiftDown();
 		event.Skip(); 
@@ -183,25 +180,19 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 	wxString new_value = wxGrid::GetCellValue(event.GetRow(),event.GetCol());
 	if (event.GetCol()==GetRealCol(IG_COL_EXPR)) {
 		int row = event.GetRow();
-		if (row<inspections.GetSize()) {
+		if (row+1==inspections.GetSize()) InsertRows();
+		if (!inspections[row].IsNull()) {
 			if (inspections[row]->GetExpression()==new_value) return; // si en realidad no cambio
-			inspections[row]->Destroy(); // si es una que ya existía
-			inspections[row]=NULL; // para que OnFullTableUpdateBegin no la considere más
-		} else {
-			inspections.Add(NULL);
-			InsertRows();
+			DeleteInspection(row,true);
 		}
 		OnFullTableUpdateBegin();
-		DebuggerInspection *di = DebuggerInspection::Create(new_value,last_return_had_shift_down,this,false);
-		inspections[row]=di;
-		if (!di->Init()) SetRowStatus(row,IGRS_UNINIT);
-		if (di->GetDbiType()!=DIT_ERROR) Select(row+1);
+		if (CreateInspection(row,new_value,last_return_had_shift_down)) Select(row+1);
 		DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
 		OnFullTableUpdateEnd();
 	} else {
 		if (event.GetCol()==GetRealCol(IG_COL_VALUE)) {
 			int row = event.GetRow(); 
-			if (row<0||row>=inspections.GetSize()) return;
+			if (row<0||row>inspections.GetSize()) return;
 			OnFullTableUpdateBegin();
 			if (inspections[row]->ModifyValue(new_value)) {
 				mxGrid::SetCellValue(row,IG_COL_VALUE,inspections[row]->GetValue());
@@ -278,21 +269,38 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 }
 //
 bool mxInspectionGrid::OnCellDoubleClick(int row, int col) {
-	if (row<inspections.GetSize() && col==GetRealCol(IG_COL_VALUE)) {
+	if (inspections[row].IsNull()) return false;
+	if (col==GetRealCol(IG_COL_VALUE)) {
+		// try to break the vo
 		SingleList<DebuggerInspection *> children;
-		DebuggerInspection *old_di = inspections[row].di;
-		if (!old_di->Break(children,true,true)) return false;
-		if (children.GetSize()>1) {
-			inspections.MakeRoomForMultipleInsert(row,children.GetSize()-1);
-			InsertRows(row,children.GetSize()-1);
-		}
+		InspectionGridRow old=inspections[row];
+		if (!old->Break(children,true,true,true)) return false;
+		// delete the old one
+		wxString old_level = mxGrid::GetCellValue(row,IG_COL_LEVEL);
+		DeleteInspection(row,true);
+		// make room for new children
+		if (children.GetSize()>1) InsertRows(row,children.GetSize()-1);
+		// fill grid with new children
 		for(int i=0;i<children.GetSize();i++) { 
+			// copy status from original one, and assign new DebuggerInspection
+			inspections[row+1]=old; 
+			mxGrid::SetCellValue(row+i,IG_COL_LEVEL,old_level);
 			inspections[row+i].di=children[i];
+			// fill grid with new expressions
 			mxGrid::SetCellValue(row+i,IG_COL_EXPR,children[i]->GetExpression());
 			mxGrid::SetCellValue(row+i,IG_COL_TYPE,children[i]->GetValueType());
 			mxGrid::SetCellValue(row+i,IG_COL_VALUE,children[i]->GetValue());
 		}
-		old_di->Destroy();
+	} else if (col==GetRealCol(IG_COL_LEVEL)) {
+		bool was_frameless = inspections[row]->IsFrameless();
+		wxString old_expression = inspections[row]->GetExpression();
+		// delete old inspection
+		DeleteInspection(row,true);
+		// create new one
+		OnFullTableUpdateBegin();
+		CreateInspection(row,old_expression,!was_frameless);
+		DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
+		OnFullTableUpdateEnd();
 	}
 	return true;
 }
@@ -377,9 +385,9 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel); 
 	if (sel.size()==0) sel.push_back(row); 
 	else if (sel.size()==1 && sel[0]!=row) { sel[0]=row; mxGrid::Select(row,col); }
-	bool there_are_inspections = inspections.GetSize()!=0;
+	bool there_are_inspections = inspections.GetSize()>1;
 	bool sel_is_single = sel.size()==1; // hay una sola inspeccion seleccionada
-	bool sel_is_last = sel_is_single && row==inspections.GetSize(); // la seleccionada es la ultima de la tabla (en blanco, invalida)
+	bool sel_is_last = sel_is_single && row+1==inspections.GetSize(); // la seleccionada es la ultima de la tabla (en blanco, invalida)
 	bool sel_is_vo = sel_is_single && !sel_is_last && inspections[row]->GetDbiType()==DIT_VARIABLE_OBJECT; // la seleccionada corresponde a una variable_object
 	DebuggerInspection *di = (sel_is_single && !sel_is_last)?inspections[row].di:NULL; // puntero a la seleccionada si es unica y valida
 	bool sel_has_vo = sel_is_vo; // si hay al menos una variable object seleccionada
@@ -903,9 +911,16 @@ void mxInspectionGrid::OnRedirectedEditEvent (wxCommandEvent & event) {
 //	}
 }
 
-void mxInspectionGrid::InsertRows (int pos, int cant) {
-	if (pos==-1) { pos=wxGrid::GetNumberRows(); wxGrid::AppendRows(cant,false); }
-	else wxGrid::InsertRows(pos,cant,false);
+void mxInspectionGrid::InsertRows(int pos, int cant) {
+	if (pos==-1) { 
+		pos=wxGrid::GetNumberRows(); 
+		wxGrid::AppendRows(cant,false);
+		for(unsigned int i=0;i<cant;i++) 
+			inspections.Add(NULL);
+	} else {
+		wxGrid::InsertRows(pos,cant,false);
+		inspections.MakeRoomForMultipleInsert(pos,cant);
+	}
 	for(int i=pos;i<pos+cant;i++) {
 		mxGrid::SetReadOnly(i,IG_COL_LEVEL,true);
 		mxGrid::SetReadOnly(i,IG_COL_TYPE,true);
@@ -925,7 +940,7 @@ void mxInspectionGrid::OnDIError(DebuggerInspection *di) {
 
 void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
 	OnDINewType(di);
-	UpdateLevelColumn(current_row);
+	if (current_row!=-1) UpdateLevelColumn(current_row);
 }
 
 void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
@@ -967,7 +982,7 @@ void mxInspectionGrid::SetRowStatus (int r, int status) {
 void mxInspectionGrid::OnFullTableUpdateBegin( ) {
 	BeginBatch();
 	for(int i=0;i<inspections.GetSize();i++) {
-		if (inspections[i]==NULL) continue; ///< pasa cuando se crea una nuevo, se llama a este metodo antes de hacerlo, pero ya habiendo reservado el espacio en inspections
+		if (inspections[i].IsNull()) continue; ///< pasa cuando se crea una nuevo, se llama a este metodo antes de hacerlo, pero ya habiendo reservado el espacio en inspections
 		UpdateLevelColumn(i);
 		InspectionGridRow &di = inspections[i];
 		if (di.status==IGRS_UNINIT || di->IsFrozen()) continue;
@@ -997,6 +1012,9 @@ void mxInspectionGrid::ModifyInspectionExpression (int row, const wxString & exp
 
 void mxInspectionGrid::UpdateLevelColumn (int r) {
 	InspectionGridRow &di=inspections[r];
+	if (di.IsNull()) { mxGrid::SetCellValue(r,IG_COL_LEVEL,""); return; }
+	if (!debug->debugging) { mxGrid::SetCellValue(r,IG_COL_LEVEL,di->IsFrameless()?"*":"?"); return; }
+	if (di->GetDbiType()==DIT_ERROR) { mxGrid::SetCellValue(r,IG_COL_LEVEL,"?"); return; }
 	if (debug->current_thread_id!=di->GetThreadID()) {
 		if (di.on_thread) { 
 			di.on_thread=false;
@@ -1012,3 +1030,19 @@ void mxInspectionGrid::UpdateLevelColumn (int r) {
 	}
 }
 
+bool mxInspectionGrid::CreateInspection (int r, const wxString &expression, bool frameless) {
+	inspections[r] = DebuggerInspection::Create(expression,frameless,this,false);
+	if (!inspections[r]->Init()) SetRowStatus(r,IGRS_UNINIT);
+	else UpdateLevelColumn(r);
+	return inspections[r]->GetDbiType()!=DIT_ERROR;
+}
+
+void mxInspectionGrid::DeleteInspection (int r, bool for_reuse) {
+	if (inspections[r].di) inspections[r]->Destroy(); // si es una que ya existía
+	if (for_reuse) {
+		inspections[r]=InspectionGridRow(NULL); // para que OnFullTableUpdateBegin no la considere más
+	} else {
+		inspections.Remove(r); // quitar de la lista propia de inspecciones
+		DeleteRows(r,1); // eliminar fila de la tabla
+	}
+}

@@ -155,8 +155,8 @@ private:
 	long stack_depth; ///< profundidad del backtrace actual, ver current_frame
 	// nota para identificaicion de frames: el id (interno de zinjai) tiene base 0, el level (usuario/gdb) tiene base 1
 	long current_frame_id; ///< id interno del frame actual, se usa un nro basado en su level en el backtrace, pero inverso (el main seria 0, que figura en la salida de gdb con level=stack_depth-1)
-	long GetFrameID(long level) { return stack_depth-level; } 
-	long GetFrameLevel(long id) { return stack_depth-id; }
+	long GetFrameID(long level) { return stack_depth-level-1; } 
+	long GetFrameLevel(long id) { return stack_depth-id-1; }
 	long current_thread_id; ///< id del thread actual, lo da gdb al detenerse o al cambiar de hilo
 #if !defined(_WIN32) && !defined(__WIN32__)
 	wxProcess *tty_process;
