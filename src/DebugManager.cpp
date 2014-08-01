@@ -33,7 +33,6 @@
 using namespace std;
 
 #ifdef _ZINJAI_DEBUG
-#define _DEBUG_MANAGER_LOG_TALK
 	#define DEBUG_LOG_FILE "/mnt/rm/debug.log"
 	wxFFile debug_log_file;
 #endif
@@ -752,16 +751,11 @@ bool DebugManager::UpdateBacktrace() {
 	if (waiting || !debugging) return false;
 	main_window->backtrace_ctrl->BeginBatch();
 	
-	int visible_depth = BACKTRACE_SIZE; // cuantos frames se ven en la tabla (el maximo es BACKTRACE_SIZE)
 	int last_stack_depth = stack_depth>BACKTRACE_SIZE?BACKTRACE_SIZE:stack_depth; 
 	
 	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion V2 
 	// ya no se usan "direcciones", sino que simplemente se numeran desde el punto de entrada para "arriba"
-	if (GetValueFromAns(SendCommand("-stack-info-depth"),"depth",true).ToLong(&stack_depth)) {
-		if (stack_depth<BACKTRACE_SIZE) visible_depth=stack_depth;
-	} else {
-		stack_depth=0;
-	}
+	if (!GetValueFromAns(SendCommand("-stack-info-depth"),"depth",true).ToLong(&stack_depth)) stack_depth=0;
 	
 	wxString frames = stack_depth?SendCommand("-stack-list-frames 0 ",stack_depth-1):"";
 	

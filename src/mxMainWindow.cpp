@@ -4632,7 +4632,7 @@ void mxMainWindow::SetCompilingStatus (const wxString &message, bool also_status
 	if (current_toolchain.type>=TC_EXTERN) AddExternCompilerOutput("= ",message);
 	else {
 		compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
-		main_window->compiler_tree.treeCtrl->SelectItem(main_window->compiler_tree.state);
+		if (also_statusbar) main_window->compiler_tree.treeCtrl->SelectItem(main_window->compiler_tree.state);
 	}
 	if (also_statusbar) main_window->SetStatusText(message);
 }

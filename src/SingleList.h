@@ -13,7 +13,7 @@ protected:
 	T *m_vec; ///< the actual data, stored in a dinamyc array
 	int m_size; ///< actual number of user elements in the array (<=capacity)
 	int m_capacity; ///< amount of memory reserved in m_vec (usually more than needed for the actual number of elements)
-	SingleList(const SingleList &other) {} ///< it is not allowed to duplicate a SingleList
+	SingleList(const SingleList &other); ///< it is not allowed to duplicate a SingleList
 	void CreateVector() {
 		T *new_vec=new T[m_capacity];
 		for(int i=0;i<m_size;i++) new_vec[i]=m_vec[i];
