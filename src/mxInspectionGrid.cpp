@@ -972,11 +972,13 @@ void mxInspectionGrid::OnFullTableUpdateBegin( ) {
 		InspectionGridRow &di = inspections[i];
 		if (di.status==IGRS_UNINIT || di->IsFrozen()) continue;
 		if (di->RequiresManualUpdate()) {
-			if (di->UpdateValue()) {
-				mxGrid::SetCellValue(i,IG_COL_VALUE,di->GetValue());
-				SetRowStatus(i,IGRS_CHANGED);	
-			} else
-				SetRowStatus(i,IGRS_NORMAL);
+			if (di->IsInScope()) {
+				if (di->UpdateValue()) {
+					mxGrid::SetCellValue(i,IG_COL_VALUE,di->GetValue());
+					SetRowStatus(i,IGRS_CHANGED);	
+				} else
+					SetRowStatus(i,IGRS_NORMAL);
+			}
 		} else if (di.status==IGRS_IN_SCOPE||di.status==IGRS_CHANGED) {
 			SetRowStatus(i,IGRS_NORMAL);
 		}

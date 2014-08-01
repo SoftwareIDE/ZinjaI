@@ -45,25 +45,30 @@ void DebuggerInspection::UpdateAll ( ) {
 			}
 			// actualiza el estado del DebuggerInspection y notifica a la interfaz mediante consumer
 			DebuggerInspection &di=*(it->second);
+			bool new_scope=false,new_type=false, in_scope=u.in_scope=="true";
+			if (!u.new_num_children.IsEmpty()) { u.new_num_children.ToLong(&di.num_children); new_type=true; } 
+			if (!u.new_type.IsEmpty()) { di.value_type=u.new_type; new_type=true; }
+			if (di.is_in_scope!=in_scope) { di.is_in_scope=in_scope; new_scope=true; }
+			if (in_scope) di.gdb_value=u.value;
+			DebuggerInspection *di_for_event=&di;
+			
 			if (di.dit_type==DIT_VARIABLE_OBJECT) {
-				if (u.in_scope=="true") {
-					di.gdb_value=u.value;
-					bool new_scope=false,new_type=false;
-					if (!u.new_num_children.IsEmpty()) { u.new_num_children.ToLong(&di.num_children); new_type=true; } 
-					if (!u.new_type.IsEmpty()) { di.value_type=u.new_type; new_type=true; }
-					if (!di.is_in_scope) { di.is_in_scope=true; new_scope=true; }
+				if (in_scope) {
 					if (new_type||new_scope) di.SetupChildInspection();
 					if (new_scope) di.GenerateEvent(&myDIEventHandler::OnDIInScope);
 					else if (new_type) di.GenerateEvent(&myDIEventHandler::OnDINewType);
 					else di.GenerateEvent(&myDIEventHandler::OnDIValueChanged);
-				} else if (di.is_in_scope) {
-					di.is_in_scope=false;
-					di.GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
+				} else {
+					if (new_scope) {
+						if (di.helper) di.helper->Destroy();
+						di.GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
+					}
 				}
-			} else /*if (di.dit_type==DIT_CHILD)*/ {
-				if (u.in_scope=="true") {
-					di.UpdateValue();
-					di.parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);
+			} else /*if (di.dit_type==DIT_AUXILIAR_VO)*/ { // la condicion comentada se cumple siempre, no hay otro tipo de inspeccion que use vo mas que estas dos
+				if (in_scope && !new_type && !new_scope) { // los eventos de cambio de tipo y/o scope se lanzan en la inspeccion padre
+					di.MakeEvaluationExpressionForParent(); // cambia el puntero que usa
+					di.parent->UpdateValue();
+					di.parent->GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
 				}
 			}
 		}

@@ -186,7 +186,7 @@ private:
 	
 	void VODelete() {
 		__debug_log_method__;
-		debug->SendCommand("-var-delete - ",variable_object);
+		debug->SendCommand("-var-delete ",variable_object);
 	}
 	
 	bool VOCreate() {
@@ -196,6 +196,7 @@ private:
 		thread_id=debug->current_thread_id; frame_id=debug->current_frame_id;
 		wxString ans = debug->SendCommand(cmd,mxUT::EscapeString(expression,true));
 		if (ans.Left(5)!="^done") return false;
+		is_in_scope=true; // si no existen en el scope actual gdb no la crea, aunque se frameless
 		variable_object = debug->GetValueFromAns(ans,"name",true);
 		value_type = debug->GetValueFromAns(ans,"type",true);
 		gdb_value = debug->GetValueFromAns(ans,"value",true);
