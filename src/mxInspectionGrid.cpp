@@ -997,7 +997,7 @@ void mxInspectionGrid::ModifyInspectionExpression (int row, const wxString & exp
 
 void mxInspectionGrid::UpdateLevelColumn (int r) {
 	InspectionGridRow &di=inspections[r];
-	if (debug->current_thread_id!=di->GetFrameID()) {
+	if (debug->current_thread_id!=di->GetThreadID()) {
 		if (di.on_thread) { 
 			di.on_thread=false;
 			mxGrid::SetCellValue(r,IG_COL_LEVEL,wxString("(t ")<<di->GetThreadID()<<")");
