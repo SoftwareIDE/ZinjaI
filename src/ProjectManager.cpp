@@ -1728,11 +1728,11 @@ static wxString get_percent(int cur, int tot) {
 
 void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxString mingw_dir, MakefileTypeEnum mktype, bool cmake_style) {
 #warning Falta considerar el nuevo significado de strip_executable
-	int steps_total=0, steps_extras, steps_objs, steps_libs, steps_current;
+	int steps_total=0, steps_extras, steps_objs, steps_current;
 	if (cmake_style) { // calcular cuantos pasos hay en cada etapa para saber que porcentajes de progreso mostrar en cada comando
 		steps_objs = files_sources.GetSize();
 		project_library *lib = active_configuration->libs_to_build;
-		steps_libs=0; while (lib) { lib = lib->next; steps_libs++; }
+		int steps_libs=0; while (lib) { lib = lib->next; steps_libs++; }
 		compile_extra_step *estep=active_configuration->extra_steps;
 		steps_extras=0; while (estep) { if (estep->out.Len()) steps_extras++; estep=estep->next;	}
 		steps_total=/*steps_extras+*/steps_objs+steps_libs+(active_configuration->dont_generate_exe?0:1);

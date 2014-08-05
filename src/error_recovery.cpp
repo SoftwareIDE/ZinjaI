@@ -122,7 +122,6 @@ void er_sigsev(int sig) {
 						"proxima vez que inicie el entorno."),_T("OOOPS!!!"),mxMD_OK|mxMD_ERROR).ShowModal();
 	}
 	exit(sig);
-	return;
 }
 
 void er_init(const char *dir) {

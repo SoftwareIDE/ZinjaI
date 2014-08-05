@@ -1233,7 +1233,7 @@ void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & even
 
 void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
 	wxArrayString tc_prev; Toolchain::GetNames(tc_prev,false);
-	mxToolchainConfig(this,files_toolchain->GetValue());
+	mxToolchainConfig(this,files_toolchain->GetValue()).ShowModal();
 	wxArrayString tc_post; Toolchain::GetNames(tc_post,false);
 	for(unsigned int i=0;i<tc_post.GetCount();i++) {
 		if (tc_prev.Index(tc_post[i])==wxNOT_FOUND)

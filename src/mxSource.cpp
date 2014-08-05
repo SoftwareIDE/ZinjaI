@@ -2428,7 +2428,7 @@ void mxSource::ShowBaloon(wxString str, int p) {
 //	if (p==-1) p = cp;
 //	// evitar que tape el cursor (reveer, parece solo tener sentido si se muestra en una posicion que no es la actual, cuando pasa esto?)
 //	int cl = LineFromPosition(cp);
-	int l = LineFromPosition(p);
+//	int l = LineFromPosition(p);
 //	if (l!=cl) {
 //		int dp = p-PositionFromLine(l);
 //		p = PositionFromLine(cl)+dp;

@@ -88,8 +88,6 @@ mxToolchainConfig::mxToolchainConfig(wxWindow *parent, const wxString &tc_name) 
 	
 	wxCommandEvent evt;
 	OnComboChange(evt);
-	
-	ShowModal();
 }
 
 void mxToolchainConfig::OnButtonOk (wxCommandEvent & event) {
