@@ -3,7 +3,34 @@
 #include <wx/grid.h>
 #include <vector>
 #include "SingleList.h"
+#include <wx/dc.h>
 using namespace std;
+
+class mxGridCellRenderer : public wxGridCellStringRenderer {
+	bool show_icon;
+public:
+	mxGridCellRenderer():show_icon(false) {}
+	void SetIconNull() { show_icon=false; }
+	void SetIconPlus() { show_icon=true; }
+	virtual void Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect& rect, int row, int col, bool isSelected) {
+		if (!show_icon) {
+			wxGridCellStringRenderer::Draw(grid, attr, dc, rect, row, col, isSelected);
+		} else {
+			wxRect rect2=rect; 
+			rect2.x+=20; rect2.width-=20;
+			wxGridCellStringRenderer::Draw(grid, attr, dc, rect2, row, col, isSelected);
+			rect2.x-=20; rect2.width=20;
+			dc.DrawRectangle(rect2);
+			dc.SetPen(*wxMEDIUM_GREY_PEN);
+			rect2.x+=3;
+			rect2.y+=(rect2.height-14)/2;
+			rect2.width=rect2.height=13;
+			dc.DrawRectangle(rect2);
+			dc.DrawLine(rect2.x+2,rect2.y+rect2.height/2,rect2.x+rect2.width-2,rect2.y+rect2.height/2);
+			dc.DrawLine(rect2.x+rect2.width/2,rect2.y+2,rect2.x+rect2.width/2,rect2.y+rect2.height-2);
+		}
+	}
+};
 
 class mxGrid : public wxGrid {
 private:
@@ -66,6 +93,10 @@ public:
 	void SetCellEditor(int r, int c, wxGridCellEditor *editor) {
 		if (cols[c].real_pos==-1) return;
 		wxGrid::SetCellEditor(r,cols[c].real_pos,editor);
+	}
+	void SetCellRenderer(int r, int c, wxGridCellRenderer *renderer) {
+		if (cols[c].real_pos==-1) return;
+		wxGrid::SetCellRenderer(r,cols[c].real_pos,renderer);
 	}
 //	~mxGrid();
 };

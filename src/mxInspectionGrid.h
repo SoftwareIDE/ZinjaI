@@ -24,24 +24,6 @@ enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COLS_COUNT};
 ////	wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
 //};
 //
-//class mxPlusCellRenderer : public wxGridCellStringRenderer {
-//public:
-//	virtual void Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect& rect, int row, int col, bool isSelected) {
-//		wxRect rect2=rect; 
-//		rect2.x+=20; rect2.width-=20;
-//		wxGridCellStringRenderer::Draw(grid, attr, dc, rect2, row, col, isSelected);
-//		rect2.x-=20; rect2.width=20;
-//		dc.DrawRectangle(rect2);
-//		dc.SetPen(*wxMEDIUM_GREY_PEN);
-//		rect2.x+=3;
-//		rect2.y+=(rect2.height-14)/2;
-//		rect2.width=rect2.height=13;
-//		dc.DrawRectangle(rect2);
-//		dc.DrawLine(rect2.x+2,rect2.y+rect2.height/2,rect2.x+rect2.width-2,rect2.y+rect2.height/2);
-//		dc.DrawLine(rect2.x+rect2.width/2,rect2.y+2,rect2.x+rect2.width/2,rect2.y+rect2.height-2);
-//	}
-//};
-//
 
 /**
 * @brief Representa a la grilla del panel de inspecciones
@@ -60,12 +42,15 @@ public:
 private:
 	struct InspectionGridRow {
 		DebuggerInspection *di;
+		mxGridCellRenderer *renderer;
 		// estado de la fila en la grilla, para no invocar metodos de grilla si no cambio nada... 
 		int status; long frame_level; bool on_thread; // frame_id==-1 para las frameless
-		InspectionGridRow(DebuggerInspection *_di=NULL) : di(_di),status(IGRS_UNINIT),frame_level(-2),on_thread(true) {}
+		InspectionGridRow(DebuggerInspection *_di=NULL) : di(_di),renderer(NULL),status(IGRS_UNINIT),frame_level(-2),on_thread(true) {}
 		bool operator==(const InspectionGridRow &o) { return di==o.di; }
+		void operator=(DebuggerInspection *_di) { Reset(); di=_di; }
 		DebuggerInspection *operator->() { return di; }
 		bool IsNull() { return di==NULL; }
+		void Reset() { di=NULL; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar el renderer*/ }
 	};
 	SingleList<InspectionGridRow> inspections;
 	
@@ -156,6 +141,8 @@ public:
 	void OnDINewType(DebuggerInspection *di);
 
 	void UpdateLevelColumn(int r);
+	void UpdateValueColumn(int r);
+	void UpdateTypeColumn(int r);
 	void SetRowStatus(int r, int status);
 	void DeleteInspection(int r, bool for_reuse);
 	bool CreateInspection(int r, const wxString &expression, bool frameless);

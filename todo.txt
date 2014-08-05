@@ -66,8 +66,6 @@ Documentacion:
 Sitio:
 	Sistema de votacion en el sitio para nuevas funcionalidades???
 
-3. shift+enter en la grilla de inspecciones
-
 otras:
 	4. avivarse si el directorio del explorador cambia
 	4. rename en el explorador

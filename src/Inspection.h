@@ -228,7 +228,7 @@ private:
 		// si habia, borrar la inspeccion auxiliar previa
 		if (helper) helper->Destroy();
 		// si no tiene hijos, no necesita la inspeccion auxiliar
-		if (num_children==0 || value_type.EndsWith("*")) return false;
+		if (!IsCompound()) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
 		helper = new DebuggerInspection(this);
 		return InitChildInspection();
@@ -511,7 +511,7 @@ public:
 	}
 	// solo llamar a estas funciones si GetDbiType()==DIT_VARIABLE_OBJECT
 	bool IsSimpleType() { return num_children==0; } 
-	bool IsCompount() { return num_children!=0; }
+	bool IsCompound() { return num_children!=0 && !value_type.EndsWith("*"); }
 	bool IsClass() { return num_children!=0 && !value_type.EndsWith("]"); }
 	bool IsArray() { return num_children!=0 && value_type.EndsWith("]"); }
 	long GetThreadID() { return thread_id; }

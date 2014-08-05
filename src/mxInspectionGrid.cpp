@@ -202,7 +202,7 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 	} else {
 		if (event.GetCol()==GetRealCol(IG_COL_VALUE)) {
 			int row = event.GetRow(); 
-			if (row<0||row>inspections.GetSize()) return;
+			if (row<0||row>inspections.GetSize()||inspections[row].IsNull()) return;
 			OnFullTableUpdateBegin();
 			if (inspections[row]->ModifyValue(new_value)) {
 				mxGrid::SetCellValue(row,IG_COL_VALUE,inspections[row]->GetValue());
@@ -282,8 +282,9 @@ bool mxInspectionGrid::OnCellDoubleClick(int row, int col) {
 	if (inspections[row].IsNull()) return false;
 	if (col==GetRealCol(IG_COL_VALUE)) {
 		// try to break the vo
-		SingleList<DebuggerInspection *> children;
 		InspectionGridRow old=inspections[row];
+		if (!old->IsCompound()) return false;
+		SingleList<DebuggerInspection *> children;
 		if (!old->Break(children,true,true,true)) return false;
 		// delete the old one
 		wxString old_level = mxGrid::GetCellValue(row,IG_COL_LEVEL);
@@ -298,8 +299,8 @@ bool mxInspectionGrid::OnCellDoubleClick(int row, int col) {
 			inspections[row+i].di=children[i];
 			// fill grid with new expressions
 			mxGrid::SetCellValue(row+i,IG_COL_EXPR,children[i]->GetExpression());
-			mxGrid::SetCellValue(row+i,IG_COL_TYPE,children[i]->GetValueType());
-			mxGrid::SetCellValue(row+i,IG_COL_VALUE,children[i]->GetValue());
+			UpdateTypeColumn(row+i);
+			UpdateValueColumn(row+i);
 		}
 	} else if (col==GetRealCol(IG_COL_LEVEL)) {
 		bool was_frameless = inspections[row]->IsFrameless();
@@ -933,10 +934,10 @@ void mxInspectionGrid::InsertRows(int pos, int cant) {
 	}
 	for(int i=pos;i<pos+cant;i++) {
 		mxGrid::SetReadOnly(i,IG_COL_LEVEL,true);
+		mxGrid::SetCellEditor(i,IG_COL_EXPR,new gdbInspCtrl);
 		mxGrid::SetReadOnly(i,IG_COL_TYPE,true);
 		mxGrid::SetReadOnly(i,IG_COL_VALUE,true);
-//		mxGrid::SetCellEditor(i,IG_COL_EXPR,new gdbInspCtrl);
-		wxGrid::SetCellEditor(i,IG_COL_EXPR,new gdbInspCtrl);
+		mxGrid::SetCellRenderer(i,IG_COL_VALUE,inspections[i].renderer = new mxGridCellRenderer());
 	}
 }
 
@@ -955,21 +956,21 @@ void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
 
 void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
+	UpdateValueColumn(current_row);
 	SetRowStatus(current_row,IGRS_CHANGED);
 }
 
 void mxInspectionGrid::OnDINewType(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
 	TryToSimplify(current_row);
-	mxGrid::SetCellValue(current_row,IG_COL_TYPE,di->GetValueType());
-	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
+	UpdateTypeColumn(current_row);
+	UpdateValueColumn(current_row);
 	SetRowStatus(current_row,IGRS_CHANGED);
 }
 
 void mxInspectionGrid::OnDIInScope(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
+	UpdateValueColumn(current_row);
 	SetRowStatus(current_row,IGRS_IN_SCOPE);
 }
 
@@ -1000,7 +1001,7 @@ void mxInspectionGrid::OnFullTableUpdateBegin( ) {
 		if (di->RequiresManualUpdate()) {
 			if (di->IsInScope()) {
 				if (di->UpdateValue()) {
-					mxGrid::SetCellValue(i,IG_COL_VALUE,di->GetValue());
+					UpdateValueColumn(current_row);
 					SetRowStatus(i,IGRS_CHANGED);	
 				} else
 					SetRowStatus(i,IGRS_NORMAL);
@@ -1058,7 +1059,7 @@ bool mxInspectionGrid::CreateInspection (int r, const wxString &expression, bool
 void mxInspectionGrid::DeleteInspection (int r, bool for_reuse) {
 	if (inspections[r].di) inspections[r]->Destroy(); // si es una que ya existía
 	if (for_reuse) {
-		inspections[r]=InspectionGridRow(NULL); // para que OnFullTableUpdateBegin no la considere más
+		inspections[r].Reset(); // para que OnFullTableUpdateBegin no la considere más
 	} else {
 		inspections.Remove(r); // quitar de la lista propia de inspecciones
 		DeleteRows(r,1); // eliminar fila de la tabla
@@ -1081,5 +1082,22 @@ bool mxInspectionGrid::TryToSimplify (int row) {
 		}
 	}
 	return false;
+}
+
+void mxInspectionGrid::UpdateValueColumn (int r) {
+	mxGrid::SetCellValue(r,IG_COL_VALUE,inspections[r]->GetValue());
+}
+
+void mxInspectionGrid::UpdateTypeColumn (int r) {
+	DebuggerInspection *di = inspections[r].di;
+	mxGrid::SetCellValue(r,IG_COL_TYPE,di->GetValueType());
+	if (di->GetDbiType()==DIT_VARIABLE_OBJECT) {
+		if (di->IsCompound()) inspections[r].renderer->SetIconPlus();
+		else inspections[r].renderer->SetIconNull();
+		mxGrid::SetReadOnly(r,IG_COL_VALUE,true);
+	} else {
+		mxGrid::SetReadOnly(r,IG_COL_VALUE,true);
+		inspections[r].renderer->SetIconNull();
+	}
 }
 
