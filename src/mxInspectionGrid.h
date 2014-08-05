@@ -140,6 +140,8 @@ public:
 	
 	void ModifyInspectionExpression(int row, const wxString &expression, bool is_frameless);
 	
+	bool TryToSimplify(int row);
+	
 	// eventos generados por mxGrid
 	void OnCellPopupMenu(int row, int col);
 	bool OnCellDoubleClick(int row, int col);

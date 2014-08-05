@@ -49,7 +49,7 @@ void DebuggerInspection::UpdateAll ( ) {
 			if (!u.new_num_children.IsEmpty()) { u.new_num_children.ToLong(&di.num_children); new_type=true; } 
 			if (!u.new_type.IsEmpty()) { di.value_type=u.new_type; new_type=true; }
 			if (di.is_in_scope!=in_scope) { di.is_in_scope=in_scope; new_scope=true; }
-			if (in_scope) di.gdb_value=u.value;
+			if (in_scope && (new_type || !di.helper)) di.gdb_value=u.value;
 			
 			if (di.dit_type==DIT_VARIABLE_OBJECT) {
 				if (in_scope) {
@@ -63,7 +63,7 @@ void DebuggerInspection::UpdateAll ( ) {
 						di.GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
 					}
 				}
-			} else /*if (di.dit_type==DIT_AUXILIAR_VO)*/ { // la condicion comentada se cumple siempre, no hay otro tipo de inspeccion que use vo mas que estas dos
+			} else /*if (di.dit_type==DIT_HELPER_VO)*/ { // la condicion comentada se cumple siempre, no hay otro tipo de inspeccion que use vo mas que estas dos
 				if (in_scope && !new_type && !new_scope) { // los eventos de cambio de tipo y/o scope se lanzan en la inspeccion padre
 					di.MakeEvaluationExpressionForParent(); // cambia el puntero que usa
 					di.parent->UpdateValue();
@@ -157,7 +157,7 @@ void DebuggerInspection::RecreateAllFramelessInspections() {
 	__debug_log_static_method__;
 	for(int i=0;i<all_inspections.GetSize();i++) {
 		DebuggerInspection *di = all_inspections[i];
-		if (!di->is_frameless || di->dit_type==DIT_GDB_COMMAND || di->dit_type==DIT_AUXILIAR_VO) continue;
+		if (!di->is_frameless || di->dit_type==DIT_GDB_COMMAND || di->dit_type==DIT_HELPER_VO) continue;
 		if (di->parent) di->RemoveParentLink();
 		if (di->variable_object.Len()) AddPendingAction(di,&DebuggerInspection::VODelete,true,true);
 		AddPendingAction(di,&DebuggerInspection::CreateVO,true,true);

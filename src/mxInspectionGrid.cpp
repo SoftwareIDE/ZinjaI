@@ -179,6 +179,16 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 	if (!icce_guard.IsOk()) return;
 	wxString new_value = wxGrid::GetCellValue(event.GetRow(),event.GetCol());
 	if (event.GetCol()==GetRealCol(IG_COL_EXPR)) {
+		// caso especial, ayuda para las macros gdb
+		if (new_value.StartsWith(">?")) new_value=">help "+new_value.Mid(2);
+		if (new_value.Trim()==">help") { 
+			wxMessageBox(debug->GetMacroOutput("help user-defined",true),"help user-defined");
+			return;
+		} else if (new_value.StartsWith(">help")) {
+			wxMessageBox(debug->GetMacroOutput(new_value.Mid(1),true),new_value.Mid(1));
+			return;
+		}
+		// caso normal, inspeccion
 		int row = event.GetRow();
 		if (row+1==inspections.GetSize()) InsertRows();
 		if (!inspections[row].IsNull()) {
@@ -940,7 +950,7 @@ void mxInspectionGrid::OnDIError(DebuggerInspection *di) {
 
 void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
 	OnDINewType(di);
-	if (current_row!=-1) UpdateLevelColumn(current_row);
+	UpdateLevelColumn(current_row);
 }
 
 void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
@@ -951,6 +961,7 @@ void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
 
 void mxInspectionGrid::OnDINewType(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
+	TryToSimplify(current_row);
 	mxGrid::SetCellValue(current_row,IG_COL_TYPE,di->GetValueType());
 	mxGrid::SetCellValue(current_row,IG_COL_VALUE,di->GetValue());
 	SetRowStatus(current_row,IGRS_CHANGED);
@@ -1046,3 +1057,22 @@ void mxInspectionGrid::DeleteInspection (int r, bool for_reuse) {
 		DeleteRows(r,1); // eliminar fila de la tabla
 	}
 }
+
+bool mxInspectionGrid::TryToSimplify (int row) {
+	wxArrayString &from=config->Debug.inspection_improving_template_from;
+	if (config->Debug.improve_inspections_by_type) {
+		wxString mtype=inspections[row]->GetValueType();
+		if (mtype.EndsWith(" &")) { mtype.RemoveLast(); mtype.RemoveLast(); }
+		if (mtype.StartsWith("const ")) { mtype=mtype.Mid(6); }
+		for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
+			if (from[i]==mtype) {
+				wxString expr=config->Debug.inspection_improving_template_to[i];
+				expr.Replace("${EXP}",inspections[row]->GetExpression(),true);
+				inspections[row]->SetHelperInspection(expr);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+

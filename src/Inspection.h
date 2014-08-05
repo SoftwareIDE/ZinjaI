@@ -12,7 +12,7 @@ using namespace std;
 /// Tipo/estado de una inspeccion
 enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 	DIT_VARIABLE_OBJECT, ///< la expresion tienen un variable object asociado
-	DIT_AUXILIAR_VO, ///< es un vo auxiliar para evaluar otro (parent) vo compuesto (se usa como expresion "&(parent->expresion)", para evaluar "p *((parent->value_type*)gdb_value)" y asignar en parent->gdb_value)
+	DIT_HELPER_VO, ///< es un vo auxiliar para evaluar otro (parent) vo compuesto (se usa como expresion "&(parent->expresion)", para evaluar "p *((parent->value_type*)gdb_value)" y asignar en parent->gdb_value)
 	DIT_GDB_COMMAND, ///< la expresion es en realidad una macro o comando para gdb
 	DIT_PENDING, ///< la expresión creará un vo, pero su creación esta en cola para la próxima pausa
 	DIT_GHOST, ///< vo que no está en el mapa ni recibe actualizaciones, solo existe porque otras dependen de ella (num_children!=0, ver VOBreak)
@@ -166,7 +166,7 @@ public:
 private:
 	DEBUG_INSPECTION_EXPRESSION_TYPE dit_type; ///< si es una vo, una macro, todavía no se creo, o fallo la creacion
 	// inf definida por el usuario/consumidor de la inspeccion
-	wxString expression; ///< expresión que está siendo inspeccionada (si dit_type!=DIT_AUXILIAR_VO, sino es el comando para inspeccionar con "p" la expresion padre)
+	wxString expression; ///< expresión que está siendo inspeccionada (si dit_type!=DIT_HELPER_VO, sino es el comando para inspeccionar con "p" la expresion padre)
 	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
 	long thread_id, frame_id; ///< si no es frameless, aqui se guarda el scope al que está asociada
@@ -178,6 +178,7 @@ private:
 	long num_children; ///< si es una inspeccion compuesta, cantidad de "partes" (campos en un struct, elementos en un arreglo, etc)
 	wxString gdb_value; ///< valor tal como lo da gdb, sin alterar
 	DebuggerInspection *helper; ///< vo auxiliar para mostrar mejor este cuando es compuesto
+	bool direct_helper;
 	DebuggerInspection *parent; ///< otro vo del cual depende este (el otro era compuesto, este es hijo)
 	int di_children; ///< cantidad de vo hijos que dependen de este
 	
@@ -230,6 +231,10 @@ private:
 		if (num_children==0 || value_type.EndsWith("*")) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
 		helper = new DebuggerInspection(this);
+		return InitChildInspection();
+	}
+	
+	bool InitChildInspection() {
 		// evaluarla 
 		if (helper->VOCreate()) { 
 			helper->VOEvaluate(); 
@@ -242,7 +247,19 @@ private:
 		}
 	}
 	
-	/// solo debe ser llamado cuando dit_type==DIT_AUXILIAR_VO
+public:
+	bool SetHelperInspection(const wxString &expression) {
+		__debug_log_method__;
+		// si habia, borrar la inspeccion auxiliar previa
+		if (helper) helper->Destroy();
+		// intentar crear la expresion auxiliar
+		helper = new DebuggerInspection(this,expression);
+		return InitChildInspection();
+	}
+	
+	
+private:
+	/// solo debe ser llamado cuando dit_type==DIT_HELPER_VO
 	void MakeEvaluationExpressionForParent() {
 		__debug_log_method__;
 		const wxString &type = parent->value_type;
@@ -295,9 +312,9 @@ private:
 		};
 	
 	/// ctor para inspecciones que solo son auxiliares de otras inspecciones
-	DebuggerInspection(DebuggerInspection *_parent) : 
-		dit_type(DIT_AUXILIAR_VO),
-		expression(wxString("&(")<<_parent->expression<<")"),
+	DebuggerInspection(DebuggerInspection *_parent, const wxString &expr="") : 
+		dit_type(DIT_HELPER_VO),
+		expression(expr.IsEmpty()?wxString("&(")<<_parent->expression<<")":expr),
 		is_frameless(_parent->is_frameless), 
 		thread_id(_parent->thread_id),
 		frame_id(_parent->frame_id),
@@ -305,6 +322,7 @@ private:
 		is_frozen(false),
 		consumer(NULL), 
 		helper(NULL),
+		direct_helper(!expr.IsEmpty()),
 		parent(_parent),
 		di_children(0) 
 		{
@@ -388,14 +406,14 @@ public:
 	/// delete lógico, el real se hará en ProcessPendingActions (considera las dependencias, y funciona para cualquier tipo de inspeccion)
 	void Destroy() {
 		__debug_log_method__;
-		if (dit_type==DIT_VARIABLE_OBJECT||dit_type==DIT_AUXILIAR_VO||dit_type==DIT_GHOST) { // si tenia una vo asociado....
+		if (dit_type==DIT_VARIABLE_OBJECT||dit_type==DIT_HELPER_VO||dit_type==DIT_GHOST) { // si tenia una vo asociado....
 			// si tenía otra inspección auxiliar asociada, eliminar esa también
 			if (helper) { helper->Destroy(); helper=NULL; } // poner en NULL por si queda como DIT_GHOST
 			// si no tiene dependencias, eliminarla en gdb
 			if (di_children==0) {
 				if (debug->debugging) TryToExec(&DebuggerInspection::VODelete,true);
 				// si es helper, quitar el link en el vo padre
-				if (dit_type==DIT_AUXILIAR_VO) parent->helper = NULL;
+				if (dit_type==DIT_HELPER_VO) parent->helper = NULL;
 				// si es hijo (dependiente, no helper), restarle un hijo al padre, y si llega a 0 y es GHOST eliminarlo tambien
 				else if (parent) RemoveParentLink();
 			}
@@ -407,7 +425,7 @@ public:
 			}
 		}
 		// quitarla de la lista total de inspecciones a reestablecer al reiniciar la depuración
-		if (dit_type!=DIT_AUXILIAR_VO&&dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
+		if (dit_type!=DIT_HELPER_VO&&dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
 		// si quedan hijos que dependen de este, dejar como fantasma, sino hacerle el delete
 		if (dit_type==DIT_VARIABLE_OBJECT && di_children!=0) dit_type=DIT_GHOST;
 		else AddPendingAction(this,NULL,false);
@@ -474,7 +492,7 @@ public:
 		__debug_log_method__;
 		if (!debug->CanTalkToGDB()) return false;
 		if (dit_type==DIT_VARIABLE_OBJECT && helper) { // si es vo para un tipo compuesto...
-			wxString new_value = debug->InspectExpression(helper->expression,false);
+			wxString new_value = helper->direct_helper?helper->gdb_value:debug->InspectExpression(helper->expression,false);
 			if (new_value!=gdb_value) {
 				gdb_value=new_value;
 				if (generate_event) GenerateEvent(&myDIEventHandler::OnDIValueChanged);
