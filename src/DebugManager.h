@@ -142,6 +142,7 @@ public:
 	DebugPatcher *GetPatcher() { return debug_patcher; } // retorna puntero y no instancia para poder poner en ese h solo una forward declaration y evitar tener que recompilar mucho al cambiar el patcher
 
 private:
+	long gdb_version; ///< version de gdb, se consulta al iniciar la depuracion, si es 7.6 por ej, guarda 7006
 	bool should_pause; ///< puede que al hacer click en la pausa no se pause realmente (que la señal que envía no llegue a término, no se por qué, pero pasa cuando hay un breakpoint de los que solo actualizan la tabla de inspecciones)
 	bool has_symbols; ///< si cuando el debugger no inicia es porque no el ejecutable no tiene info de depuracion se baja esta bandera
 	mxInspectionGrid *inspection_grid;

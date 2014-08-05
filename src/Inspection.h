@@ -15,7 +15,7 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 	DIT_AUXILIAR_VO, ///< es un vo auxiliar para evaluar otro (parent) vo compuesto (se usa como expresion "&(parent->expresion)", para evaluar "p *((parent->value_type*)gdb_value)" y asignar en parent->gdb_value)
 	DIT_GDB_COMMAND, ///< la expresion es en realidad una macro o comando para gdb
 	DIT_PENDING, ///< la expresión creará un vo, pero su creación esta en cola para la próxima pausa
-	DIT_GHOST, ///< vo que no está en el mapa ni recibe actualizaciones, solo existe porque otras dependen de ella (ver VOBreak)
+	DIT_GHOST, ///< vo que no está en el mapa ni recibe actualizaciones, solo existe porque otras dependen de ella (num_children!=0, ver VOBreak)
 	DIT_ERROR ///< la expresión debía crear un vo, pero ocurrió un error al intentarlo
 };
 
@@ -123,6 +123,7 @@ struct DebuggerInspection {
 			(this->*action)();
 			return true;
 		}
+		return true;
 	}
 		
 	static void ProcessPendingActions() {
@@ -264,6 +265,9 @@ private:
 			if (!SetupChildInspection()) VOEvaluate();
 			if (is_frozen) VOSetFrozen();
 			else GenerateEvent(&myDIEventHandler::OnDICreated);
+			// this is just a fix for a gdb-bug... when you create a not-frameless vo for an expresion, 
+			// previous frameless vos for the same expression may show a wrong result (tested: bad on gdb 7.6.1, good on 7.8.0)
+			if (!is_frameless && debug->gdb_version<7008) RecreateAllFramelessInspections();
 		} else {
 			dit_type=DIT_ERROR; 
 			GenerateEvent(&myDIEventHandler::OnDIError);
@@ -272,6 +276,8 @@ private:
 				AddPendingAction(this,&DebuggerInspection::CreateVO,true,true);
 		}
 	}
+	
+	void RecreateAllFramelessInspections();
 	
 	/// las de los clientes de esta clase instancias se construyen solo a través de Create (que usará este ctor)
 	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) :
@@ -306,7 +312,7 @@ private:
 		};
 	
 	/// ctor para una vo hija, creada por VOBreak
-	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, int num_child) : 
+	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, const wxString &type, int num_child) : 
 		dit_type(DIT_VARIABLE_OBJECT),
 		expression(expr),
 		variable_object(vo_name),
@@ -316,6 +322,7 @@ private:
 		is_in_scope(true),
 		is_frozen(_parent->is_frozen), 
 		consumer(_parent->consumer), 
+		value_type(type),
 		num_children(num_child),
 		helper(NULL),
 		parent(_parent),
@@ -325,8 +332,8 @@ private:
 		};
 	
 	void RemoveParentLink() {
-		if (--parent->di_children==0) 
-			{ parent->Destroy(); parent=NULL; }
+		if (--parent->di_children==0 && parent->dit_type==DIT_GHOST)  parent->Destroy(); 
+		parent=NULL;
 	}
 	
 	/// las instancias se destruyen a través de Destroy, esto evita que alguien de afuera le quiera hacer delete

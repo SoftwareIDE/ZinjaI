@@ -2874,14 +2874,38 @@ bool DebugManager::SetSignalHandling (SignalHandlingInfo & si, int i) {
 }
 
 void DebugManager::Start_ConfigureGdb ( ) {
-	if (!config->Debug.auto_solibs) SendCommand(_T("set auto-solib-add off"));
-	SetFullOutput(false);
+	// averiguar la version de gdb
+	gdb_version = 0;
+	wxString ver=SendCommand("-gdb-version");
+	unsigned int i=0; 
+	bool have_main_version=false;
+	while (i<ver.Len() && !have_main_version) {
+		if (i+2<ver.Len() && ver[i]==' ' && (ver[i+1]>='0'&&ver[i+1]<='9') && ver[i+2]=='.') { // 1-digit main version
+			gdb_version=(ver[i+1]-'0')*1000; have_main_version=true; i+=2;
+		} else if (i+3<ver.Len() && ver[i]!=' ' && (ver[i+1]>='0'&&ver[i+1]<='9') && (ver[i+2]>='0'&&ver[i+2]<='9') && ver[i+3]=='.') { // 2-digits main version
+			gdb_version=(ver[i+1]-'0')*10000+(ver[i+2]-'0')*1000; have_main_version=true; i+=3;
+		}
+		if (have_main_version) {
+			if (i+1<ver.Len() && (ver[i+1]>='0'&&ver[i+1]<='9')) {
+				if (i+2<ver.Len() && (ver[i+2]>='0'&&ver[i+2]<='9')) // 2-digits sub version
+					gdb_version+=(ver[i+1]-'0')*10+(ver[i+2]-'0');
+				else // 1-digit sub version
+					gdb_version+=(ver[i+1]-'0');
+			}	
+		}
+		i++;
+	}
+	// configurar comportamiento ante señales
 	if (signal_handlers_state) {
 		for(unsigned int i=0;i<signal_handlers_state[0].size();i++) { 
 			if (signal_handlers_state[0][i]!=signal_handlers_state[1][i])
 				debug->SetSignalHandling(signal_handlers_state[1][i]);
 		}
 	}
+	// otras configuraciones varias
+	if (!config->Debug.auto_solibs) SendCommand("set auto-solib-add off");
+	SetFullOutput(false);
+	// reiniciar sistema de inspecciones
 	DebuggerInspection::OnDebugStart();
 }
 
