@@ -374,7 +374,8 @@ public:
 	static DebuggerInspection *Create(const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL, bool init_now=true) {
 		__debug_log_static_method__;
 		bool is_cmd = expr.size()&&expr[0]=='>';
-		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,expr,frameless,event_handler);
+		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,expr,is_cmd?true:frameless,event_handler);
+		if (is_cmd) di->value_type="<gdb command>";
 		all_inspections.Add(di);
 		if (init_now) di->Init();
 		return di;
@@ -501,7 +502,7 @@ public:
 		} else if (dit_type==DIT_GDB_COMMAND) { // si es comando/macro gdb...
 			wxString new_value = debug->GetMacroOutput(variable_object);
 			if (new_value!=gdb_value) {
-				gdb_value=new_value; MakeEvaluationExpressionForParent();
+				gdb_value=new_value;
 				if (generate_event) GenerateEvent(&myDIEventHandler::OnDIValueChanged);
 				return true;
 			}

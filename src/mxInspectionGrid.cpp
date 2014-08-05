@@ -1026,17 +1026,24 @@ void mxInspectionGrid::UpdateLevelColumn (int r) {
 	if (di.IsNull()) { mxGrid::SetCellValue(r,IG_COL_LEVEL,""); return; }
 	if (!debug->debugging) { mxGrid::SetCellValue(r,IG_COL_LEVEL,di->IsFrameless()?"*":"?"); return; }
 	if (di->GetDbiType()==DIT_ERROR) { mxGrid::SetCellValue(r,IG_COL_LEVEL,"?"); return; }
-	if (debug->current_thread_id!=di->GetThreadID()) {
-		if (di.on_thread) { 
-			di.on_thread=false;
-			mxGrid::SetCellValue(r,IG_COL_LEVEL,wxString("(t ")<<di->GetThreadID()<<")");
+	if (di->IsFrameless()) {
+		if (di.frame_level!=-1) {
+			di.frame_level=-1;
+			mxGrid::SetCellValue(r,IG_COL_LEVEL,"*");
 		}
 	} else {
-		long di_frame_level = di->IsFrameless()?-1:debug->GetFrameLevel(di->GetFrameID());
-		if (!di.on_thread || di.frame_level!=di_frame_level) {
-			di.on_thread=true;
-			di.frame_level=di_frame_level;
-			mxGrid::SetCellValue(r,IG_COL_LEVEL,di_frame_level==-1?"*":wxString()<<di_frame_level);
+		if (debug->current_thread_id!=di->GetThreadID()) {
+			if (di.on_thread) { 
+				di.on_thread=false;
+				mxGrid::SetCellValue(r,IG_COL_LEVEL,wxString("(t ")<<di->GetThreadID()<<")");
+			}
+		} else {
+			long di_frame_level = debug->GetFrameLevel(di->GetFrameID());
+			if (!di.on_thread || di.frame_level!=di_frame_level) {
+				di.on_thread=true;
+				di.frame_level=di_frame_level;
+				mxGrid::SetCellValue(r,IG_COL_LEVEL,wxString()<<di_frame_level);
+			}
 		}
 	}
 }
