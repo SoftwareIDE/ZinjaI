@@ -1100,7 +1100,7 @@ void mxInspectionGrid::OnSetFrameless (wxCommandEvent & evt) {
 }
 
 bool mxInspectionGrid::ValidInspection (int r) {
-	return r>0&&r<inspections.GetSize()&&!inspections[r].IsNull();
+	return r>=0&&r<inspections.GetSize()&&!inspections[r].IsNull();
 }
 
 void mxInspectionGrid::ChangeFrameless (int r, bool frameless, bool full_table_update) {
