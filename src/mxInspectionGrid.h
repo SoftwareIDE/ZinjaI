@@ -80,9 +80,10 @@ public:
 //	void OnFreeze(wxCommandEvent &evt);
 //	void OnPasteFromClipboard(wxCommandEvent &evt);
 //	void OnCopyFromSelecction(wxCommandEvent &evt);
-//	void OnBreakClassOrArray(wxCommandEvent &evt);
+	void OnBreakClassOrArray(wxCommandEvent &evt);
 //	void OnDuplicate(wxCommandEvent &evt);
-//	void OnReScope(wxCommandEvent &evt);
+	void OnReScope(wxCommandEvent &evt);
+	void OnSetFrameless(wxCommandEvent &evt);
 //	void OnExploreExpression(wxCommandEvent &evt);
 //	void OnExploreAll(wxCommandEvent &evt);
 //	void OnShowInText(wxCommandEvent &evt);
@@ -107,7 +108,6 @@ public:
 //	void OnSaveTable(wxCommandEvent &evt);
 //	void OnLoadTable(wxCommandEvent &evt);
 //	void OnManageTables(wxCommandEvent &evt);
-//	void OnSetFrameless(wxCommandEvent &evt);
 //	void OnShowAppart(wxCommandEvent &evt);
 //	void OnCopyAll(wxCommandEvent &evt);
 ////	void OnCellEditorShown(wxGridEvent &evt);
@@ -139,6 +139,10 @@ public:
 	void OnDIOutOfScope(DebuggerInspection *di);
 	void OnDIInScope(DebuggerInspection *di);
 	void OnDINewType(DebuggerInspection *di);
+	
+	bool ValidInspection(int r);
+	void BreakCompoundInspection(int r);
+	void ChangeFrameless(int r, bool frameless, bool full_table_update=true);
 
 	void UpdateLevelColumn(int r);
 	void UpdateValueColumn(int r);

@@ -61,6 +61,7 @@ mxBacktraceGrid::mxBacktraceGrid(wxWindow *parent, wxWindowID id ):wxGrid(parent
 			SetColSize(i,GetColMinimalWidth(i));
 		}
 	cols_marginal=0;
+	SetColLabelSize(wxGRID_AUTOSIZE);
 	created=true;
 }
 

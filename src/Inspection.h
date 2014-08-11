@@ -512,8 +512,8 @@ public:
 	// solo llamar a estas funciones si GetDbiType()==DIT_VARIABLE_OBJECT
 	bool IsSimpleType() { return num_children==0; } 
 	bool IsCompound() { return num_children!=0 && !value_type.EndsWith("*"); }
-	bool IsClass() { return num_children!=0 && !value_type.EndsWith("]"); }
-	bool IsArray() { return num_children!=0 && value_type.EndsWith("]"); }
+	bool IsClass() { return IsCompound() && !value_type.EndsWith("]"); }
+	bool IsArray() { return IsCompound() && value_type.EndsWith("]"); }
 	long GetThreadID() { return thread_id; }
 	long GetFrameID() { return frame_id; }
 	bool IsFromCurrentThread() { return !debug->debugging || debug->waiting || thread_id==debug->current_thread_id; }

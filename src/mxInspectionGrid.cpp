@@ -4,17 +4,17 @@
 #include <wx/clipbrd.h>
 #include "mxInspectionGrid.h"
 #include "Language.h"
+#include "ids.h"
+#include "mxMainWindow.h"
+#include "mxInspectionGridCellEditor.h"
 //#include "mxUtils.h"
 //#include "DebugManager.h"
 //#include "mxSource.h"
-//#include "ids.h"
-#include "mxMainWindow.h"
 //#include "mxInspectionExplorer.h"
 //#include "mxMessageDialog.h"
 //#include "mxInspectionMatrix.h"
 //#include "mxTextDialog.h"
 //#include "mxInspectionPrint.h"
-#include "mxInspectionGridCellEditor.h"
 using namespace std;
  
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
@@ -23,8 +23,9 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 //	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionGrid::OnDoubleClick)
 //	EVT_MENU(mxID_INSPECTION_FREEZE,mxInspectionGrid::OnFreeze)
-//	EVT_MENU(mxID_INSPECTION_BREAK,mxInspectionGrid::OnBreakClassOrArray)
-//	EVT_MENU(mxID_INSPECTION_RESCOPE,mxInspectionGrid::OnReScope)
+	EVT_MENU(mxID_INSPECTION_BREAK,mxInspectionGrid::OnBreakClassOrArray)
+	EVT_MENU(mxID_INSPECTION_RESCOPE,mxInspectionGrid::OnReScope)
+	EVT_MENU(mxID_INSPECTION_SET_FRAMELESS,mxInspectionGrid::OnSetFrameless)
 //	EVT_MENU(mxID_INSPECTION_DUPLICATE,mxInspectionGrid::OnDuplicate)
 //	EVT_MENU(mxID_INSPECTION_FROM_CLIPBOARD,mxInspectionGrid::OnPasteFromClipboard)
 //	EVT_MENU(mxID_INSPECTION_FROM_SOURCE,mxInspectionGrid::OnCopyFromSelecction)
@@ -48,7 +49,6 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 //	EVT_MENU(mxID_INSPECTION_SAVE_TABLE,mxInspectionGrid::OnSaveTable)
 //	EVT_MENU(mxID_INSPECTION_LOAD_TABLE,mxInspectionGrid::OnLoadTable)
 //	EVT_MENU(mxID_INSPECTION_MANAGE_TABLES,mxInspectionGrid::OnManageTables)
-//	EVT_MENU(mxID_INSPECTION_SET_FRAMELESS,mxInspectionGrid::OnSetFrameless)
 //	EVT_MENU(mxID_INSPECTION_SHOW_APPART,mxInspectionGrid::OnShowAppart)
 //	EVT_MENU(mxID_INSPECTION_COPY_ALL,mxInspectionGrid::OnCopyAll)
 //	EVT_SIZE(mxInspectionGrid::OnResize)
@@ -139,8 +139,8 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 //	SetDropTarget(new mxInspectionDropTarget(this));
 //	created=true;
 //	ignore_changing=false;
+	SetColLabelSize(wxGRID_AUTOSIZE);
 	
-	ignore_cell_change_event=false;
 }
 
 
@@ -277,41 +277,14 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 //	}
 //	ignore_changing=false;
 }
-//
+
 bool mxInspectionGrid::OnCellDoubleClick(int row, int col) {
 	if (inspections[row].IsNull()) return false;
 	if (col==GetRealCol(IG_COL_VALUE)) {
-		// try to break the vo
-		InspectionGridRow old=inspections[row];
-		if (!old->IsCompound()) return false;
-		SingleList<DebuggerInspection *> children;
-		if (!old->Break(children,true,true,true)) return false;
-		// delete the old one
-		wxString old_level = mxGrid::GetCellValue(row,IG_COL_LEVEL);
-		DeleteInspection(row,true);
-		// make room for new children
-		if (children.GetSize()>1) InsertRows(row,children.GetSize()-1);
-		// fill grid with new children
-		for(int i=0;i<children.GetSize();i++) { 
-			// copy status from original one, and assign new DebuggerInspection
-			inspections[row+1]=old; 
-			mxGrid::SetCellValue(row+i,IG_COL_LEVEL,old_level);
-			inspections[row+i].di=children[i];
-			// fill grid with new expressions
-			mxGrid::SetCellValue(row+i,IG_COL_EXPR,children[i]->GetExpression());
-			UpdateTypeColumn(row+i);
-			UpdateValueColumn(row+i);
-		}
+		if (inspections[row]->IsCompound()) 
+			BreakCompoundInspection(row);
 	} else if (col==GetRealCol(IG_COL_LEVEL)) {
-		bool was_frameless = inspections[row]->IsFrameless();
-		wxString old_expression = inspections[row]->GetExpression();
-		// delete old inspection
-		DeleteInspection(row,true);
-		// create new one
-		OnFullTableUpdateBegin();
-		CreateInspection(row,old_expression,!was_frameless);
-		DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
-		OnFullTableUpdateEnd();
+		ChangeFrameless(row,!inspections[row]->IsFrameless(),true);
 	}
 	return true;
 }
@@ -393,7 +366,7 @@ bool mxInspectionGrid::OnCellDoubleClick(int row, int col) {
 void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	// ensure that clicked cell is selected, so generated events will use that one
 	// selection policy is: if theres a multiple selection, keep, else select only clicked cell
-	vector<int> sel; mxGrid::GetSelectedRows(sel); 
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
 	if (sel.size()==0) sel.push_back(row); 
 	else if (sel.size()==1 && sel[0]!=row) { sel[0]=row; mxGrid::Select(row,col); }
 	bool there_are_inspections = inspections.GetSize()>1;
@@ -416,16 +389,16 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 
 #warning restablecer funcionalidad de todo lo que este comentado
 	wxMenu menu; 
-//	if (sel_is_vo && di->IsClass()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
-//	if (sel_is_vo && di->IsArray()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_ARRAY,"&Separar arreglo en elementos"));
+	if (sel_is_vo && di->IsClass()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
+	if (sel_is_vo && di->IsArray()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_ARRAY,"&Separar arreglo en elementos"));
 //	wxMenu *extern_v = new wxMenu;
 //		if (!sel_is_last && (!sel_is_vo || !di->IsSimpleType())) extern_v->Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
 //		if (sel_is_single && !sel_is_last) extern_v->Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
 //		if (sel_is_vo) extern_v->Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
 //	if (extern_v->GetMenuItemCount()) menu.AppendSubMenu(extern_v,LANG(INSPECTGRID_EXTERN_VISUALIZATION,"Otras &visualizaciones")); else delete extern_v;
 //	if (inspections.GetSize()) menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
-//	if (sel_has_vo && !(sel_is_vo && !di->IsFrameless())) menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
-//	if (sel_has_vo && !(sel_is_vo && di->IsFrameless())) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
+	if (sel_has_vo && !(sel_is_vo && !di->IsFrameless())) menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
+	if (sel_has_vo && !(sel_is_vo && di->IsFrameless())) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
 //	if (!sel_is_last) menu.Append(mxID_INSPECTION_DUPLICATE,wxString(LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"))+"\tCtrl+L");
 //	if (!sel_is_last) menu.Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"))+"\tCtrl+C");
 //	if (!sel_is_last) menu.Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"&Copiar Valor"));
@@ -477,11 +450,11 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 //	}
 	PopupMenu(&menu);
 }
-//
-//void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
-//	debug->BreakCompoundInspection(selected_row);
-//}
-//
+
+void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
+	BreakCompoundInspection(GetGridCursorRow());
+}
+
 //void mxInspectionGrid::OnPasteFromClipboard(wxCommandEvent &evt) {
 //	if (!wxTheClipboard->Open()) return;
 //	wxTextDataObject clip_data;
@@ -725,21 +698,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 //		new mxInspectionPrint(debug->inspections[selected_row].frame,debug->inspections[selected_row].expr,debug->inspections[selected_row].frameless);
 //}
 //
-//void mxInspectionGrid::OnReScope(wxCommandEvent &event) {
-//	if (selected_row>=debug->inspections_count) return;
-//	wxString expr = GetCellValue(selected_row,IG_COL_EXPR);
-//	if (!debug->debugging) {
-//		mxMessageDialog(main_window,LANG(INSPECTGRID_DEBUGGING_HAS_ENDED,"La sesion de depuracion ha finalizado."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
-//		return;
-//	} else if (!debug->ModifyInspection(selected_row,expr,true)) {
-//		debug->inspections[selected_row].on_scope=false;
-//		SetCellValue(selected_row,IG_COL_EXPR,expr);
-//		main_window->inspection_ctrl->SetCellRenderer(selected_row,IG_COL_VALUE,new wxGridCellStringRenderer());
-//		HightlightDisable(selected_row);
-//		SetCellValue(selected_row,IG_COL_VALUE,LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< Fuera de Scope >>>"));
-//	}
-//}
-//
+
 //void mxInspectionGrid::OnSelectCell(wxGridEvent &event) {
 //	if (created) { // porque esto no anda?
 //		if (event.GetCol()==IG_COL_LEVEL || (event.GetRow()==debug->inspections_count && event.GetCol()!=IG_COL_EXPR)) {
@@ -779,9 +738,6 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 //		debug->DeleteInspectionsTable(name);	
 //}
 //
-//void mxInspectionGrid::OnSetFrameless(wxCommandEvent &evt) {
-//	debug->SetFramelessInspection(selected_row);
-//}
 //
 //void mxInspectionGrid::OnShowAppart(wxCommandEvent &evt) {
 //	
@@ -1099,5 +1055,64 @@ void mxInspectionGrid::UpdateTypeColumn (int r) {
 		mxGrid::SetReadOnly(r,IG_COL_VALUE,true);
 		inspections[r].renderer->SetIconNull();
 	}
+}
+
+void mxInspectionGrid::BreakCompoundInspection (int r) {
+	if (!ValidInspection(r)) return;
+	InspectionGridRow old=inspections[r];
+	if (!old->IsCompound()) return;
+	SingleList<DebuggerInspection *> children;
+	if (!old->Break(children,true,true,true)) return;
+	// delete the old one
+	wxString old_level = mxGrid::GetCellValue(r,IG_COL_LEVEL);
+	DeleteInspection(r,true);
+	// make room for new children
+	if (children.GetSize()>1) InsertRows(r,children.GetSize()-1);
+	// fill grid with new children
+	for(int i=0;i<children.GetSize();i++) { 
+		// copy status from original one, and assign new DebuggerInspection
+		inspections[r+1]=old; 
+		mxGrid::SetCellValue(r+i,IG_COL_LEVEL,old_level);
+		inspections[r+i].di=children[i];
+		// fill grid with new expressions
+		mxGrid::SetCellValue(r+i,IG_COL_EXPR,children[i]->GetExpression());
+		UpdateTypeColumn(r+i);
+		UpdateValueColumn(r+i);
+	}
+}
+
+void mxInspectionGrid::OnReScope(wxCommandEvent &event) {
+	OnFullTableUpdateBegin();
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
+	for(int i=0;i<sel.size();i++) 
+		ChangeFrameless(sel[i],false,false);
+	DebuggerInspection::UpdateAll(); 
+	OnFullTableUpdateEnd();
+}
+
+void mxInspectionGrid::OnSetFrameless (wxCommandEvent & evt) {
+	OnFullTableUpdateBegin();
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
+	for(int i=0;i<sel.size();i++) 
+		ChangeFrameless(sel[i],true,false);
+	DebuggerInspection::UpdateAll(); 
+	OnFullTableUpdateEnd();
+}
+
+bool mxInspectionGrid::ValidInspection (int r) {
+	return r>0&&r<inspections.GetSize()&&!inspections[r].IsNull();
+}
+
+void mxInspectionGrid::ChangeFrameless (int r, bool frameless, bool full_table_update) {
+	if (!ValidInspection(r)) return;
+	bool was_frameless = inspections[r]->IsFrameless();
+	wxString old_expression = inspections[r]->GetExpression();
+	// delete old inspection
+	DeleteInspection(r,true);
+	// create new one
+	if (full_table_update) OnFullTableUpdateBegin();
+	CreateInspection(r,old_expression,!was_frameless);
+	if (full_table_update) DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
+	if (full_table_update) OnFullTableUpdateEnd();
 }
 
