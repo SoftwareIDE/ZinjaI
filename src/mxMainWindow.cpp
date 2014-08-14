@@ -4600,7 +4600,7 @@ void mxMainWindow::PrepareGuiForProject (bool project_mode) {
 	menu_data->SetProjectMode(project_mode); // habilitar/deshabilitar items exclusivos de proyecto
 	// cambiar el nombre del Archivo->Abrir
 	wxMenuItem *fo_item= _menu_item(mxID_FILE_OPEN); wxString fo_shortcut = fo_item->GetItemLabel(); 
-	if (fo_shortcut.Contains("\t")) fo_shortcut=fo_shortcut.AfterLast('\t'); else fo_shortcut="";
+	if (fo_shortcut.Contains("\t")) fo_shortcut=wxString("\t")+fo_shortcut.AfterLast('\t'); else fo_shortcut="";
 	fo_item->SetItemLabel(wxString(project_mode?LANG(MENUITEM_FILE_OPEN_ON_PROJECT,"&Abrir/Agregar al proyecto..."):LANG(MENUITEM_FILE_OPEN,"&Abrir..."))+fo_shortcut);
 	// resetear opciones de wxfb
 	_menu_item(mxID_TOOLS_WXFB_REGEN)->Enable(false);
