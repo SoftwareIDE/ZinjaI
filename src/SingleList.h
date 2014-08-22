@@ -232,7 +232,7 @@ public:
 	/// steals data from other LocalList (and update global list references, *this should be an empty list)
 	void StealFrom(LocalList<T> *local_list) {
 		SingleList<LocalListNode<T> >::StealFrom(local_list);
-		for(int i=0;i<local_list->m_size;i++)
+		for(int i=0;i<SingleList<LocalListNode<T> >::m_size;i++)
 			m_global_list->UpdateList(SingleList<LocalListNode<T> >::m_vec+i,this);
 	}
 	/// creates an emtpy LocalList (attached to the given global list)
