@@ -1,11 +1,11 @@
 GPP=g++
 
 all: ../updatem.bin ../runner.bin ../graphviz/draw.bin ../graphviz/viewer.bin ../zinjai
-	make -f Makefile.lnx -C complement
+	$(MAKE) -f Makefile.lnx -C complement
 
 clean:
 	rm -f ../updatem.bin ../runner.bin ../graphviz/draw.bin ../graphviz/viewer.bin ../zinjai
-	make -f Makefile.lnx -C complement clean
+	$(MAKE) -f Makefile.lnx -C complement clean
 
 
 ../runner.bin: runner.cpp

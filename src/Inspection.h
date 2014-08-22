@@ -51,7 +51,8 @@ public:
 * DebugManager solo llame a un par de métodos y se desligue del tema.
 **/
 struct DebuggerInspection {
-	
+
+#ifdef _ZINJAI_DEBUG
 	class CallLogger {
 		static int lev;
 		DebuggerInspection *di;
@@ -68,9 +69,12 @@ struct DebuggerInspection {
 			cerr<<endl;
 		}
 	};
-#define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
-#define __debug_log_static_method__ CallLogger _call_logger_(__FUNCTION__)
-	
+	#define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
+	#define __debug_log_static_method__ CallLogger _call_logger_(__FUNCTION__)
+#else
+	#define __debug_log_method__ 
+	#define __debug_log_static_method__ 
+#endif
 	
 	/// inspecciones a reestablecer al reiniciar la depuración, guarda todas las útiles para el usuario
 	static SingleList<DebuggerInspection*> all_inspections;

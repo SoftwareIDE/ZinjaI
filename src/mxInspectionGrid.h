@@ -81,7 +81,7 @@ public:
 //	void OnPasteFromClipboard(wxCommandEvent &evt);
 //	void OnCopyFromSelecction(wxCommandEvent &evt);
 	void OnBreakClassOrArray(wxCommandEvent &evt);
-//	void OnDuplicate(wxCommandEvent &evt);
+	void OnDuplicate(wxCommandEvent &evt);
 	void OnReScope(wxCommandEvent &evt);
 	void OnSetFrameless(wxCommandEvent &evt);
 //	void OnExploreExpression(wxCommandEvent &evt);

@@ -3282,10 +3282,6 @@ void mxMainWindow::OnDebugInspect ( wxCommandEvent &event ) {
 		aui_manager.Update();
 	}
 	inspection_ctrl->SetFocus();
-#warning ver si reestablecer esto
-//	wxKeyEvent evt;
-//	evt.m_keyCode=WXK_INSERT;
-//	inspection_ctrl->OnKey(evt);
 }
 
 void mxMainWindow::OnDebugBacktrace ( wxCommandEvent &event ) {

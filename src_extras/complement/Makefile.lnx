@@ -1,6 +1,6 @@
 GPP=g++
-FLAGS=-O2 `wx-config --cppflags --unicode=no`
-LIBS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs` 
+FLAGS=-O2 `wx-config --cppflags --unicode=no --version=2.8`
+LIBS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs --version=2.8` 
 OBJS_DIR=../../release.lnx/complement
 
 all: ../../complement.bin ../../complement_wrap.bin

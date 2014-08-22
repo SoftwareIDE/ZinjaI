@@ -118,6 +118,9 @@ class wxInputStream;
 class mxSource;
 class DebugPatcher;
 
+class DebugManager;
+extern DebugManager *debug;
+
 
 /**
 * @brief Administra la comunicación entre la interfaz y el depurador gdb
@@ -328,9 +331,27 @@ public:
 //	/// @brief  calls -var-create and returns its output, but applying improving_inspections_templates
 //	wxString CreateVO(wxString &expr, wxString &type);
 	
+public:
+	struct TemporaryScopeChange {
+		long orig_frame_id, orig_thread_id;
+		TemporaryScopeChange(long frame_id=-1, long thread_id=-1) : 
+			orig_frame_id(debug->current_frame_id), 
+			orig_thread_id(debug->current_thread_id) { 
+				if (frame_id!=-1) ChangeTo(frame_id,thread_id);
+			}
+		void ChangeTo(long frame_id, long thread_id=-1) {
+			if (thread_id!=-1 && debug->current_thread_id!=thread_id) debug->SelectThread(thread_id);
+			if (debug->current_frame_id!=frame_id) debug->SelectFrame(frame_id,-1);
+		}
+		void Reset() {
+			if (debug->current_thread_id!=orig_thread_id) debug->SelectThread(orig_thread_id);
+			if (debug->current_frame_id!=orig_frame_id) debug->SelectFrame(orig_frame_id,-1);
+		}
+		~TemporaryScopeChange() { Reset(); }
+	};
+	
 };
 
-extern DebugManager *debug;
 
 #endif
 

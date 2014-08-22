@@ -6,7 +6,9 @@ SingleList<DebuggerInspection::DIPendingAction> DebuggerInspection::pending_acti
 
 SingleList<DebuggerInspection*> DebuggerInspection::all_inspections;
 
+#ifdef _ZINJAI_DEBUG
 int DebuggerInspection::CallLogger::lev=0;
+#endif
 
 void DebuggerInspection::UpdateAll ( ) {
 	__debug_log_static_method__;

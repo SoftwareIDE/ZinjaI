@@ -46,8 +46,9 @@ mxThreadGrid::mxThreadGrid(wxWindow *parent, wxWindowID id ):wxGrid(parent,id, w
 
 void mxThreadGrid::OnDblClick(wxGridEvent &event) {
 	long thread_id; 
-	if (debug->CanTalkToGDB() && GetCellValue(event.GetRow(),TG_COL_ID).ToLong(&thread_id))
-		debug->SelectThread(thread_id);
+	if (debug->CanTalkToGDB() && GetCellValue(event.GetRow(),TG_COL_ID).ToLong(&thread_id)) {
+		if (debug->SelectThread(thread_id)) debug->UpdateInspections();
+	}
 }
 
 //void mxThreadGrid::OnGotoPos(wxCommandEvent &event) {

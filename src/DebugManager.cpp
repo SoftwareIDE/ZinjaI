@@ -1958,8 +1958,8 @@ wxString DebugManager::GetNextItem(wxString &ans, int &from) {
 }
 
 bool DebugManager::SelectFrame(long frame_id, long frame_level) {
-	if (frame_level==-1) GetFrameLevel(frame_id); 
-	else if (frame_id==-1) GetFrameID(frame_level); 
+	if (frame_level==-1) frame_level = GetFrameLevel(frame_id); 
+	else if (frame_id==-1) frame_id = GetFrameID(frame_level); 
 	wxString ans = SendCommand("-stack-select-frame ",frame_level);
 	if (ans.Mid(1,4)=="done") { current_frame_id = frame_id; return true; }
 	else return false;
@@ -2752,7 +2752,7 @@ bool DebugManager::SelectThread(long thread_id) {
 	wxString ans = SendCommand("-thread-select ",thread_id);
 	if (!ans.StartsWith("^done")) return false;
 	current_thread_id=thread_id; 
-	UpdateInspections();
+	current_frame_id = GetFrameID(0);
 	return true;
 }
 
