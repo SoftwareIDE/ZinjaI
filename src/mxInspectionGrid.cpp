@@ -1071,7 +1071,7 @@ void mxInspectionGrid::BreakCompoundInspection (int r) {
 	// fill grid with new children
 	for(int i=0;i<children.GetSize();i++) { 
 		// copy status from original one, and assign new DebuggerInspection
-		inspections[r+1]=old; 
+		inspections[r+i]=old; 
 		mxGrid::SetCellValue(r+i,IG_COL_LEVEL,old_level);
 		inspections[r+i].di=children[i];
 		// fill grid with new expressions
