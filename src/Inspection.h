@@ -273,10 +273,13 @@ private:
 			else if (type[i]=='[') { if (--plev==0) pbeg=i; }
 			else if (type[i]<'0'||type[i]>'9') break;
 		}
+		wxString mtype = type.Mid(0,pbeg);
+		while (mtype.Contains("::") && debug->SendCommand(wxString("p (")<<mtype<<"*)0x0").StartsWith("^error")) // gdb seems to simplify some nested typenames and the does not recognize them with their full scoped name
+			mtype=mtype.AfterFirst(':').Mid(1);
 		if (pbeg!=-1 && pbeg+1<pend) // arreglo
-			expression = wxString("*((")<<type.Mid(0,pbeg)<<"(*)"<<type.Mid(pend+1)<<")"<<gdb_value<<")@"<<type.Mid(pbeg+1,pend-pbeg-1);
+			expression = wxString("*((")<<mtype<<"(*)"<<type.Mid(pend+1)<<")"<<gdb_value<<")@"<<type.Mid(pbeg+1,pend-pbeg-1);
 		else // clase
-			expression = wxString("*((")<<type<<"*)"<<gdb_value<<")";
+			expression = wxString("*((")<<mtype<<"*)"<<gdb_value<<")";
 	}
 	
 	void CreateVO() {

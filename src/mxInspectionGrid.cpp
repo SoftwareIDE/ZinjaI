@@ -152,7 +152,7 @@ void mxInspectionGrid::OnKey(wxKeyEvent &event) {
 		if (mxGrid::GetSelectedRows(sel,true)==0) sel.push_back(GetGridCursorRow());
 		for(unsigned int i=0;i<sel.size();i++) {
 			if (sel[i]<0||sel[i]+1>=inspections.GetSize()) continue;
-			if (sel[i]<min) min=sel[i];
+			if (min==-1||sel[i]<min) min=sel[i];
 			DeleteInspection(sel[i],false);
 		}
 		if (min!=-1) min=GetGridCursorRow();
