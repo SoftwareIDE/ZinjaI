@@ -821,9 +821,9 @@ bool ConfigManager::CheckDoxygenPresent() {
 #endif
 	if ((out.Len()==0 || out.Find("bash")!=wxNOT_FOUND || out.Find("exec")!=wxNOT_FOUND)) {
 		mxMessageDialog(main_window,LANG(MAINW_DOXYGEN_MISSING,"Doxygen no se ecuentra correctamente instalado/configurado\n"
-			"en su pc. Para descargar e instalar CppCheck dirijase a\n"
+			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
 			"http://www.doxygen.org. Si ya se encuentra instalado,\n"
-			"configure su ubiciacion en la pestania \"Rutas 2\" del\n"
+			"configure su ubiciacion en la pestaña \"Rutas 2\" del\n"
 			"dialog de \"Preferencias\" (menu \"Archivo\")."),
 			LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return false;
@@ -852,7 +852,7 @@ bool ConfigManager::CheckCppCheckPresent() {
 		mxMessageDialog(main_window,LANG(MAINW_CPPCHECK_MISSING,"CppCheck no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar CppCheck dirijase a\n"
 			"http://cppcheck.sourceforge.net. Si ya se encuentra instalado,\n"
-			"configure su ubiciacion en la pestania \"Rutas 2\" del\n"
+			"configure su ubiciacion en la pestaña \"Rutas 2\" del\n"
 			"dialog de \"Preferencias\" (menu \"Archivo\")."),
 			LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return false;

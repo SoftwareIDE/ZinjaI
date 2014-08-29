@@ -177,7 +177,7 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 		mxMessageDialog(main_window,LANG(MAINW_VALGRIND_MISSING,"Valgrind no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
 			"http://www.valgrind.org. Si ya se encuentra instalado,\n"
-			"configure su ubiciacion en la pestania \"Rutas 2\" del\n"
+			"configure su ubiciacion en la pestaña \"Rutas 2\" del\n"
 			"dialog de \"Preferencias\" (menu \"Archivo\")."),
 			LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return;

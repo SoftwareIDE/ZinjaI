@@ -133,7 +133,7 @@ bool mxErrorRecovering::RecoverSomething() {
 			),LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos"), mxMD_YES_NO|mxMD_WARNING).ShowModal()) {
 				wxTextFile tf(DIR_PLUS_FILE(config->home_dir,_T("kboom.zpr")));
 				tf.Open();
-				if (wxFileName::FileExists(tf[0])) wxCopyFile(tf[0],tf[0]+".bakcup");
+				if (wxFileName::FileExists(tf[0])) wxCopyFile(tf[0],tf[0]+".backup");
 				if (!wxFileName::FileExists(tf[0]+".kaboom")) {
 					mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_PROBLEM,"Ha ocurrido un error al intentar recuperar el proyecto."),LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos"),mxMD_OK|mxMD_ERROR).ShowModal();
 					return true;
