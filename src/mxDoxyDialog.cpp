@@ -59,8 +59,8 @@ mxDoxyDialog::~mxDoxyDialog() {
 void mxDoxyDialog::OnOkButton(wxCommandEvent &evt) {
 	if (!project) { return; }
 	dox->destdir = destdir_ctrl->GetValue();
-	dox->do_cpps = base_files_ctrl->GetSelection()==2 || base_files_ctrl->GetSelection()==3;
-	dox->do_headers = base_files_ctrl->GetSelection()==1 || base_files_ctrl->GetSelection()==3;
+	dox->do_cpps = base_files_ctrl->GetSelection()==1 || base_files_ctrl->GetSelection()==3;
+	dox->do_headers = base_files_ctrl->GetSelection()==2 || base_files_ctrl->GetSelection()==3;
 	dox->base_path = base_path_ctrl->GetValue();
 	dox->exclude_files = exclude_files_ctrl->GetValue();
 	dox->extra_files = extra_files_ctrl->GetValue();
