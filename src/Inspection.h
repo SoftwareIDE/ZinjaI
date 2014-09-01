@@ -11,9 +11,8 @@ using namespace std;
 
 /// Tipo/estado de una inspeccion
 enum DEBUG_INSPECTION_EXPRESSION_TYPE {
-	DIT_VARIABLE_OBJECT, ///< la expresion tienen un variable object asociado
-	DIT_HELPER_VO, ///< es un vo auxiliar para evaluar otro (parent) vo compuesto (se usa como expresion "&(parent->expresion)", para evaluar "p *((parent->value_type*)gdb_value)" y asignar en parent->gdb_value)
 	DIT_GDB_COMMAND, ///< la expresion es en realidad una macro o comando para gdb
+	DIT_VARIABLE_OBJECT, ///< la expresion tienen un variable object asociado
 	DIT_PENDING, ///< la expresión creará un vo, pero su creación esta en cola para la próxima pausa
 	DIT_GHOST, ///< vo que no está en el mapa ni recibe actualizaciones, solo existe porque otras dependen de ella (num_children!=0, ver VOBreak)
 	DIT_ERROR ///< la expresión debía crear un vo, pero ocurrió un error al intentarlo
@@ -30,6 +29,22 @@ public:
 	virtual void OnDIOutOfScope(DebuggerInspection *di) {}
 	virtual void OnDIInScope(DebuggerInspection *di) {}
 	virtual void OnDINewType(DebuggerInspection *di) {}
+	virtual ~myDIEventHandler() {};
+};
+
+class myCompoundHelperDIEH : public myDIEventHandler {
+	DebuggerInspection *helper_parent;
+	friend class DebuggerInspection;
+public:
+	myCompoundHelperDIEH(DebuggerInspection *parent):helper_parent(parent) {}
+	virtual void OnDIValueChanged(DebuggerInspection *di);
+};
+
+class myUserHelperDIEH : public myDIEventHandler {
+	DebuggerInspection *helper_parent;
+public:
+	myUserHelperDIEH(DebuggerInspection *parent):helper_parent(parent) {}
+	virtual void OnDIValueChanged(DebuggerInspection *di);
 };
 
 class myDIGlobal {
@@ -155,6 +170,9 @@ struct DebuggerInspection {
 	}
 	
 	
+	friend class myCompoundHelperDIEH;
+	friend class myUserHelperDIEH;
+	
 public:
 	
 	static void OnDebugStop();
@@ -169,8 +187,9 @@ public:
 	
 private:
 	DEBUG_INSPECTION_EXPRESSION_TYPE dit_type; ///< si es una vo, una macro, todavía no se creo, o fallo la creacion
+	bool requieres_manual_update; ///< false, para los VOs comunes, true para los comandos gdb y para VOs que son intermediarios para otros VOs (helpers de compuestas)
 	// inf definida por el usuario/consumidor de la inspeccion
-	wxString expression; ///< expresión que está siendo inspeccionada (si dit_type!=DIT_HELPER_VO, sino es el comando para inspeccionar con "p" la expresion padre)
+	wxString expression; ///< expresión que está siendo inspeccionada
 	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
 	long thread_id, frame_id; ///< si no es frameless, aqui se guarda el scope al que está asociada
@@ -181,14 +200,9 @@ private:
 	wxString value_type; ///< tipo de dato c/c++ del resultado de la expresión
 	long num_children; ///< si es una inspeccion compuesta, cantidad de "partes" (campos en un struct, elementos en un arreglo, etc)
 	wxString gdb_value; ///< valor tal como lo da gdb, sin alterar
-	DebuggerInspection *helper; ///< vo auxiliar para mostrar mejor este cuando es compuesto
-	bool direct_helper;
+	DebuggerInspection *helper; ///< vo auxiliar para mostrar mejor este cuando es compuesto, helper sera responsable de actualizar this->gdb_value y generar sus eventos
 	DebuggerInspection *parent; ///< otro vo del cual depende este (el otro era compuesto, este es hijo)
 	int di_children; ///< cantidad de vo hijos que dependen de este
-	
-//	int age; ///< indica cuando fue la última vez que se actualizó esta información
-//	int bt_frame; ///< en que nivel del backtrace está actualmente
-//	wxString pretty_value; ///< valor en versión "para mostrar" (puede no ser como lo da gdb, por ejemplo, los vo de structs no muestran sus campos)
 	
 	void VODelete() {
 		__debug_log_method__;
@@ -227,44 +241,45 @@ private:
 		return ans.StartsWith("^done");
 	}
 	
+	void DeleteHelper() {
+		delete helper->consumer;
+		helper->consumer=NULL; 
+		helper->Destroy(); 
+		helper=NULL;
+	}
+	
 	bool SetupChildInspection() {
 		__debug_log_method__;
 		// si habia, borrar la inspeccion auxiliar previa
-		if (helper) helper->Destroy();
+		if (helper) DeleteHelper();
 		// si no tiene hijos, no necesita la inspeccion auxiliar
 		if (!IsCompound()) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
-		helper = new DebuggerInspection(this);
-		return InitChildInspection();
-	}
-	
-	bool InitChildInspection() {
-		// evaluarla 
-		if (helper->VOCreate()) { 
-			helper->VOEvaluate(); 
-			helper->MakeEvaluationExpressionForParent();
-			UpdateValue(false);
-			return true;
-		} else { 
-			helper->Destroy(); helper=NULL; 
-			return false;
-		}
+		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",is_frameless,new myCompoundHelperDIEH(this),true);
+		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
+		helper->MakeEvaluationExpressionForParent(this);
+		helper->requieres_manual_update = true;
+		helper->UpdateValue();
+		return true;
 	}
 	
 public:
-	bool SetHelperInspection(const wxString &expression) {
+	/// for automatic inspections improvement, provided by client
+	bool SetHelperInspection(const wxString &new_expression) {
 		__debug_log_method__;
 		// si habia, borrar la inspeccion auxiliar previa
-		if (helper) helper->Destroy();
+		if (helper) DeleteHelper();
 		// intentar crear la expresion auxiliar
-		helper = new DebuggerInspection(this,expression);
-		return InitChildInspection();
+		helper = DebuggerInspection::Create(new_expression,is_frameless,new myUserHelperDIEH(this),true);
+		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
+		gdb_value = helper->gdb_value; // Create does a first evaluation
+		return true;
 	}
 	
 	
 private:
 	/// solo debe ser llamado cuando dit_type==DIT_HELPER_VO
-	void MakeEvaluationExpressionForParent() {
+	void MakeEvaluationExpressionForParent(DebuggerInspection *parent) {
 		__debug_log_method__;
 		const wxString &type = parent->value_type;
 		int i=type.Len(), plev=0,pend=-1,pbeg=-1;
@@ -303,9 +318,10 @@ private:
 	
 	void RecreateAllFramelessInspections();
 	
-	/// las de los clientes de esta clase instancias se construyen solo a través de Create (que usará este ctor)
+	/// las instancias de los clientes de esta clase se construyen solo a través de Create (que usará este ctor)
 	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) :
 		dit_type(type),
+		requieres_manual_update(type==DIT_GDB_COMMAND),
 		expression(expr),
 		is_frameless(frameless), 
 		is_in_scope(true),
@@ -318,27 +334,10 @@ private:
 			__debug_log_method__;
 		};
 	
-	/// ctor para inspecciones que solo son auxiliares de otras inspecciones
-	DebuggerInspection(DebuggerInspection *_parent, const wxString &expr="") : 
-		dit_type(DIT_HELPER_VO),
-		expression(expr.IsEmpty()?wxString("&(")<<_parent->expression<<")":expr),
-		is_frameless(_parent->is_frameless), 
-		thread_id(_parent->thread_id),
-		frame_id(_parent->frame_id),
-		is_in_scope(true),
-		is_frozen(false),
-		consumer(NULL), 
-		helper(NULL),
-		direct_helper(!expr.IsEmpty()),
-		parent(_parent),
-		di_children(0) 
-		{
-			__debug_log_method__;
-		};
-	
 	/// ctor para una vo hija, creada por VOBreak
 	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, const wxString &type, int num_child) : 
 		dit_type(DIT_VARIABLE_OBJECT),
+		requieres_manual_update(false),
 		expression(expr),
 		variable_object(vo_name),
 		is_frameless(_parent->is_frameless), 
@@ -414,16 +413,14 @@ public:
 	/// delete lógico, el real se hará en ProcessPendingActions (considera las dependencias, y funciona para cualquier tipo de inspeccion)
 	void Destroy() {
 		__debug_log_method__;
-		if (dit_type==DIT_VARIABLE_OBJECT||dit_type==DIT_HELPER_VO||dit_type==DIT_GHOST) { // si tenia una vo asociado....
+		if (dit_type==DIT_VARIABLE_OBJECT||dit_type==DIT_GHOST) { // si tenia una vo asociado....
 			// si tenía otra inspección auxiliar asociada, eliminar esa también
-			if (helper) { helper->Destroy(); helper=NULL; } // poner en NULL por si queda como DIT_GHOST
+			if (helper) DeleteHelper(); // poner en NULL por si queda como DIT_GHOST
 			// si no tiene dependencias, eliminarla en gdb
 			if (di_children==0) {
 				if (debug->debugging) TryToExec(&DebuggerInspection::VODelete,true);
-				// si es helper, quitar el link en el vo padre
-				if (dit_type==DIT_HELPER_VO) parent->helper = NULL;
 				// si es hijo (dependiente, no helper), restarle un hijo al padre, y si llega a 0 y es GHOST eliminarlo tambien
-				else if (parent) RemoveParentLink();
+				if (parent) RemoveParentLink();
 			}
 			// eliminarla del mapa para que ya no reciba actualizaciones (si no estaba ya eliminada)
 			if (dit_type!=DIT_GHOST) {
@@ -433,7 +430,7 @@ public:
 			}
 		}
 		// quitarla de la lista total de inspecciones a reestablecer al reiniciar la depuración
-		if (dit_type!=DIT_HELPER_VO&&dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
+		if (dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
 		// si quedan hijos que dependen de este, dejar como fantasma, sino hacerle el delete
 		if (dit_type==DIT_VARIABLE_OBJECT && di_children!=0) dit_type=DIT_GHOST;
 		else AddPendingAction(this,NULL,false);
@@ -495,15 +492,18 @@ public:
 	bool IsFrameless() { return is_frameless; }
 	bool IsInScope() { return is_in_scope; }
 	bool IsFrozen() { return is_frozen; }
-	bool RequiresManualUpdate() { return dit_type==DIT_GDB_COMMAND || (dit_type==DIT_VARIABLE_OBJECT && helper); }
+	bool RequiresManualUpdate() { return helper?helper->RequiresManualUpdate():requieres_manual_update; }
 	bool UpdateValue(bool generate_event=true) { // solo para cuando RequiresManualUpdate()==true
 		__debug_log_method__;
 		if (!debug->CanTalkToGDB()) return false;
-		if (dit_type==DIT_VARIABLE_OBJECT && helper) { // si es vo para un tipo compuesto...
-			wxString new_value = helper->direct_helper?helper->gdb_value:debug->InspectExpression(helper->expression,false);
-			if (new_value!=gdb_value) {
-				gdb_value=new_value;
-				if (generate_event) GenerateEvent(&myDIEventHandler::OnDIValueChanged);
+		if (dit_type==DIT_VARIABLE_OBJECT) { // si es vo.... 
+			if (helper) return helper->UpdateValue(true); // ...o bien tiene un helper (y el evento del helper actualiza this)...
+			// ...o bien es el helper de un compuesto (unico caso de vo que directamente requiere actualizacion manual)
+			gdb_value = debug->InspectExpression(expression,false);
+			DebuggerInspection *helper_parent = reinterpret_cast<myCompoundHelperDIEH*>(consumer)->helper_parent;
+			if (helper_parent->gdb_value!=gdb_value) {
+				helper_parent->gdb_value=gdb_value;
+				if (generate_event) helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);
 				return true;
 			}
 		} else if (dit_type==DIT_GDB_COMMAND) { // si es comando/macro gdb...
@@ -524,6 +524,7 @@ public:
 	long GetThreadID() { return thread_id; }
 	long GetFrameID() { return frame_id; }
 	bool IsFromCurrentThread() { return !debug->debugging || debug->waiting || thread_id==debug->current_thread_id; }
+	wxString GetHelperExpression() { return helper?helper->expression:""; }
 };
 
 #endif

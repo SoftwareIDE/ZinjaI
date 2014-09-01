@@ -1,3 +1,5 @@
+cuando un proyecto define un archivo de macros gdb, usarlo en combinacion con el general, y no reemplazanod (para mantener las macros para stl)
+
 enum const
 	agregar el nombre del enum al parser además de las constantes (hecho?)
 

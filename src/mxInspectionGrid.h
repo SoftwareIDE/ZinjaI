@@ -42,15 +42,15 @@ public:
 private:
 	struct InspectionGridRow {
 		DebuggerInspection *di;
-		mxGridCellRenderer *renderer;
+		mxGridCellRenderer *expression_renderer, *value_renderer;
 		// estado de la fila en la grilla, para no invocar metodos de grilla si no cambio nada... 
 		int status; long frame_level; bool on_thread; // frame_id==-1 para las frameless
-		InspectionGridRow(DebuggerInspection *_di=NULL) : di(_di),renderer(NULL),status(IGRS_UNINIT),frame_level(-2),on_thread(true) {}
+		InspectionGridRow(DebuggerInspection *_di=NULL) : di(_di),expression_renderer(NULL),value_renderer(NULL),status(IGRS_UNINIT),frame_level(-2),on_thread(true) {}
 		bool operator==(const InspectionGridRow &o) { return di==o.di; }
 		void operator=(DebuggerInspection *_di) { Reset(); di=_di; }
 		DebuggerInspection *operator->() { return di; }
 		bool IsNull() { return di==NULL; }
-		void Reset() { di=NULL; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar el renderer*/ }
+		void Reset() { di=NULL; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar los renderer*/ }
 	};
 	SingleList<InspectionGridRow> inspections;
 	
@@ -75,7 +75,6 @@ public:
 	void OnCellChange(wxGridEvent &event);
 //	void OnDoubleClick(wxGridEvent &event);
 //	void OnLabelPopup(wxGridEvent &event);
-//	void OnClick(wxGridEvent &event);
 //	void OnRightClick(wxGridEvent &event);
 //	void OnFreeze(wxCommandEvent &evt);
 //	void OnPasteFromClipboard(wxCommandEvent &evt);
@@ -128,6 +127,7 @@ public:
 	bool TryToSimplify(int row);
 	
 	// eventos generados por mxGrid
+	bool OnCellClick(int row, int col);
 	void OnCellPopupMenu(int row, int col);
 	bool OnCellDoubleClick(int row, int col);
 //	void OnLabelPopupMenu(int col);
@@ -143,6 +143,9 @@ public:
 	bool ValidInspection(int r);
 	void BreakCompoundInspection(int r);
 	void ChangeFrameless(int r, bool frameless, bool full_table_update=true);
+	void ExposeImprovedExpression(int r);
+	
+	bool TryToImproveExpression(const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
 
 	void UpdateLevelColumn(int r);
 	void UpdateValueColumn(int r);

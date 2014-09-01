@@ -61,16 +61,16 @@ void DebuggerInspection::UpdateAll ( ) {
 					else di.GenerateEvent(&myDIEventHandler::OnDIValueChanged);
 				} else {
 					if (new_scope) {
-						if (di.helper) di.helper->Destroy();
+						if (di.helper) di.DeleteHelper();
 						di.GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
 					}
 				}
-			} else /*if (di.dit_type==DIT_HELPER_VO)*/ { // la condicion comentada se cumple siempre, no hay otro tipo de inspeccion que use vo mas que estas dos
-				if (in_scope && !new_type && !new_scope) { // los eventos de cambio de tipo y/o scope se lanzan en la inspeccion padre
-					di.MakeEvaluationExpressionForParent(); // cambia el puntero que usa
-					di.parent->UpdateValue();
-					di.parent->GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
-				}
+//			} else /*if (di.dit_type==DIT_HELPER_VO)*/ { // la condicion comentada se cumple siempre, no hay otro tipo de inspeccion que use vo mas que estas dos
+//				if (in_scope && !new_type && !new_scope) { // los eventos de cambio de tipo y/o scope se lanzan en la inspeccion padre
+//					di.MakeEvaluationExpressionForParent(); // cambia el puntero que usa
+//					di.parent->UpdateValue();
+//					di.parent->GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
+//				}
 			}
 		}
 	}
@@ -159,7 +159,7 @@ void DebuggerInspection::RecreateAllFramelessInspections() {
 	__debug_log_static_method__;
 	for(int i=0;i<all_inspections.GetSize();i++) {
 		DebuggerInspection *di = all_inspections[i];
-		if (!di->is_frameless || di->dit_type==DIT_GDB_COMMAND || di->dit_type==DIT_HELPER_VO) continue;
+		if (!di->is_frameless || di->dit_type==DIT_GDB_COMMAND) continue;
 		if (di->parent) di->RemoveParentLink();
 		if (di->variable_object.Len()) AddPendingAction(di,&DebuggerInspection::VODelete,true,true);
 		AddPendingAction(di,&DebuggerInspection::CreateVO,true,true);
@@ -171,3 +171,15 @@ void DebuggerInspection::OnDebugPause() {
 	ProcessPendingActions();
 	UpdateAll();
 }
+
+
+void myCompoundHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
+	di->MakeEvaluationExpressionForParent(helper_parent);
+	helper_parent->UpdateValue(true);
+}
+
+void myUserHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
+	helper_parent->gdb_value=di->gdb_value;
+	helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);	
+}
+

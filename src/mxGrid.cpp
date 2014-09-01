@@ -58,6 +58,7 @@ void mxGrid::DoCreate ( ) {
 	RecalcColumns(GetSize().GetWidth());
 	Connect(wxEVT_SIZE,wxSizeEventHandler(mxGrid::OnResize),NULL,this);
 //	Connect(wxEVT_GRID_COL_SIZE,wxGridEventHandler(mxGrid::OnColResize),NULL,this);
+	Connect(wxEVT_GRID_CELL_LEFT_CLICK,wxGridEventHandler(mxGrid::OnLeftClick),NULL,this);
 	Connect(wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEventHandler(mxGrid::OnDblClick),NULL,this);
 	Connect(wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnRightClick),NULL,this);
 	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),NULL,this);
@@ -69,14 +70,22 @@ void mxGrid::OnResize (wxSizeEvent & event) {
 }
 
 void mxGrid::OnDblClick (wxGridEvent & event) {
+	last_event_x=event.GetPosition().x; last_event_y=event.GetPosition().y;
 	if (!OnCellDoubleClick(event.GetRow(),event.GetCol())) event.Skip();
 }
 
 void mxGrid::OnRightClick (wxGridEvent & event) {
+	last_event_x=event.GetPosition().x; last_event_y=event.GetPosition().y;
 	OnCellPopupMenu(event.GetRow(),event.GetCol());
 }
 
+void mxGrid::OnLeftClick (wxGridEvent & event) {
+	last_event_x=event.GetPosition().x; last_event_y=event.GetPosition().y;
+	if (!OnCellClick(event.GetRow(),event.GetCol())) event.Skip();
+}
+
 void mxGrid::OnLabelPopup (wxGridEvent & event) {
+	last_event_x=event.GetPosition().x; last_event_y=event.GetPosition().y;
 	OnLabelPopupMenu(event.GetCol());
 }
 

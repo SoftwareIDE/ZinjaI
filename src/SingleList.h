@@ -83,7 +83,7 @@ public:
 		m_vec=NULL;
 		m_capacity=m_size=0;
 	}
-	/// reset logico, no libera memoria
+	/// reset logico, no libera memoriaººº
 	void Clear() {
 		m_size=0;
 	}

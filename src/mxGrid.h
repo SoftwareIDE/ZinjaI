@@ -30,6 +30,7 @@ public:
 			dc.DrawLine(rect2.x+rect2.width/2,rect2.y+2,rect2.x+rect2.width/2,rect2.y+rect2.height-2);
 		}
 	}
+	bool HasIcon() { return show_icon; }
 };
 
 class mxGrid : public wxGrid {
@@ -45,13 +46,15 @@ private:
 	
 	void OnResize(wxSizeEvent &event);
 //	void OnColResize(wxGridEvent &evt);
-	void OnDblClick(wxGridEvent &event);
+	void OnLeftClick(wxGridEvent &event);
 	void OnRightClick(wxGridEvent &event);
+	void OnDblClick(wxGridEvent &event);
 	void OnLabelPopup(wxGridEvent &event);
 	
 protected:
 	void InitColumn(int col_idx, wxString name, int width/*, bool visible=true*/); 
 	void DoCreate(); 
+	int last_event_x, last_event_y;
 public:
 	mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id=wxID_ANY);
 	
@@ -68,6 +71,7 @@ public:
 	virtual void OnColumnUnhide(int c) {}
 	
 	virtual void OnCellPopupMenu(int row, int col) {}
+	virtual bool OnCellClick(int row, int col) { return false; }
 	virtual bool OnCellDoubleClick(int row, int col) { return false; }
 	virtual void OnLabelPopupMenu(int col) {}
 	int GetRealCol(int col) { return cols[col].real_pos; }
@@ -97,6 +101,9 @@ public:
 	void SetCellRenderer(int r, int c, wxGridCellRenderer *renderer) {
 		if (cols[c].real_pos==-1) return;
 		wxGrid::SetCellRenderer(r,cols[c].real_pos,renderer);
+	}
+	int GetColLeft(int c) {
+		return wxGrid::GetColLeft(cols[c].real_pos);
 	}
 //	~mxGrid();
 };
