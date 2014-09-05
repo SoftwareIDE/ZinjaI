@@ -1242,7 +1242,7 @@ void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
 }
 
 void mxPreferenceWindow::Delete ( ) {
-	preference_window->Destroy();
+	if (preference_window) preference_window->Destroy();
 	preference_window=NULL;
 }
 
