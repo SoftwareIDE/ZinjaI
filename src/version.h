@@ -1,4 +1,4 @@
-#define VERSION 20140901
+#define VERSION 20140905
 
 #if defined(__WIN32__)
 #define ARCHITECTURE "w32"

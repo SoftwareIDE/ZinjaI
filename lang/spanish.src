@@ -25,9 +25,9 @@ Advertencia
 GENERAL_DONT_REMEMBER_AGAIN
 No volver a recordar
 MAINW_DOXYGEN_MISSING
-Doxygen no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+Doxygen no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CPPCHECK_MISSING
-CppCheck no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+CppCheck no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CUSTOM_TOOL_UNDEFINED
 Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
 GENERAL_ERROR
@@ -1634,10 +1634,6 @@ INSPECTGRID_TYPE
 Tipo
 INSPECTGRID_VALUE
 Valor
-INSPECTGRID_FORMAT
-Formato
-INSPECTGRID_WATCH
-WatchPoint
 INSPECTGRID_ERROR_OFFLINE_MODIFY
 Error al modificar la inspeccion.
 INSPECTGRID_NO_DEBUGGER_RUNNING
@@ -1681,35 +1677,43 @@ INSPECTGRID_POPUP_SPLIT_CLASS
 INSPECTGRID_POPUP_SPLIT_ARRAY
 &Separar arreglo en elementos
 INSPECTGRID_POPUP_SHOW_IN_TABLE
-&Mostrar en tabla separada
+Mostrar en &tabla separada...
 INSPECTGRID_POPUP_SHOW_IN_TEXT
-&Mostrar en ventana separada
+Mostrar en &ventana separada...
 INSPECTGRID_POPUP_EXPLORE
-&Explorar datos
+&Explorar datos...
+INSPECTGRID_EXTERN_VISUALIZATION
+Otras &visualizaciones
+INSPECTGRID_POPUP_EXPLORE_ALL
+Explorar &todos los datos
 INSPECTGRID_POPUP_SET_CURRENT_FRAME
 Evaluar en el &ambito actual
 INSPECTGRID_POPUP_SET_NO_FRAME
 &Independizar del ambito
-INSPECTGRID_POPUP_EXPLORE_ALL
-Explorar &todos los datos
 INSPECTGRID_POPUP_DUPLICATE_EXPRESSION
 Duplicar Inspeccion
 INSPECTGRID_POPUP_COPY_EXPRESSION
 Copiar E&xpresion
 INSPECTGRID_POPUP_COPY_DATA
 &Copiar Valor
-INSPECTGRID_POPUP_UNFREEZE_VALUE
-Desco&ngelar Valor
 INSPECTGRID_POPUP_FREEZE_VALUE
 Co&ngelar Valor
+INSPECTGRID_POPUP_UNFREEZE_VALUE
+Desco&ngelar Valor
 INSPECTGRID_POPUP_COPY_ALL
 Copiar Toda la Ta&bla
 INSPECTGRID_POPUP_COPY_FROM_SELECTION
-Insertar Expresion Desde la &Seleccion
-INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD
-Pegar Expresion Desde el &Portapapeles
+Insertar Expresion Desde la &Seleccion <{1}>
+INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE
+Insertar Expresiones Desde el &Portapapeles
+INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE
+Pegar Expresion Desde el &Portapapeles (<{1}>)
 INSPECTGRID_POPUP_DELETE
 Eliminar Inspeccion
+INSPECTGRID_WATCH
+WatchPoint
+INSPECTGRID_FORMAT
+Formato
 INSPECTGRID_POPUP_CLEAN_TABLE
 &Limpiar Tabla de Inspeccion
 INSPECTGRID_POPUP_SAVE_TABLE
@@ -1868,8 +1872,6 @@ CAPTION_QUICKHELP
 Ayuda Rapida
 MAINW_OPEN_FILENAME
 Abrir \"<{1}>\"
-MAINW_PROJECT_FILE_POPUP_SHARE
-Compartir archivo...
 MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION
 Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?
 MAINW_ASK_CLOSE_SHARED
@@ -1980,10 +1982,12 @@ MAINW_EXPLORER_POPUP_SHOW_SOURCES
 &Mostrar Solo los Fuentes
 MAINW_EXPLORER_SELECT_PATH
 Seleccione la ubicacion:
-MAINW_GENERATE_AUTOCOMP_INDEX_NAME
-Nombre del nuevo índice
+MAINW_GENERATE_AUTOCOMP_INDEX_EMPTY
+No hay fuentes para generar el índice. Abra uno \no más archivos para que ZinjaI analice y extraiga \nlos símbolos que conformarán el nuevo índice
 MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
 Generación de índice de autocompletado
+MAINW_GENERATE_AUTOCOMP_INDEX_NAME
+Nombre del nuevo índice
 MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE
 El indice ya existe, ¿desea reemplazarlo?
 MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR
@@ -1999,13 +2003,13 @@ Asistencias
 MAINW_CANNOT_SPLIT_VIEW
 No se puede duplicar archivos sin nombre
 MENUITEM_FILE_OPEN_ON_PROJECT
-&Abrir/Agregar al proyecto...\tCtrl+O
+&Abrir/Agregar al proyecto...
 MAINW_MACRO_START
 Generando macro, presione Ctrl+Shift+Q para finalizar.
 MAINW_MACRO_STOP
 Macro guardada, presione Ctrl+Q para reproducirla.
 MAINW_VALGRIND_MISSING
-Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestania \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_GPROF_GPROF_ENABLED
 Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.
 MAINW_GPROF_GPROF_DISABLED

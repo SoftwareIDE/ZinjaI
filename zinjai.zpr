@@ -11,7 +11,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxGrid.h
+current_source=src/mxMainWindow.cpp
 path_char=/
 [source]
 path=src/DebugManager.cpp
@@ -40,8 +40,9 @@ cursor=48:52
 marker=142
 [source]
 path=src/mxMainWindow.cpp
-cursor=1522:2
-marker=4626
+cursor=1354:47
+marker=4651
+open=true
 [source]
 path=src/mxSource.cpp
 cursor=233:1
@@ -66,9 +67,10 @@ cursor=1205:16
 marker=597
 [source]
 path=src/CodeHelper.cpp
-cursor=1325:1
+cursor=1294:13
 marker=584
 marker=730
+open=true
 [source]
 path=src/HelpManager.cpp
 cursor=180:22
@@ -87,7 +89,8 @@ path=src/mxCompileConfigWindow.cpp
 cursor=56:25
 [source]
 path=src/mxPreferenceWindow.cpp
-cursor=712:0
+cursor=1234:30
+open=true
 [source]
 path=src/mxGotoLineWindow.cpp
 cursor=64:42
@@ -154,7 +157,6 @@ cursor=951:30
 marker=419
 marker=684
 marker=730
-open=true
 [source]
 path=src/mxBacktraceGrid.cpp
 cursor=192:8
@@ -262,7 +264,6 @@ cursor=181:13
 [source]
 path=src/mxGrid.cpp
 cursor=87:72
-open=true
 [source]
 path=src/mxUtils.cpp
 cursor=53:1
@@ -488,7 +489,6 @@ cursor=23:20
 [header]
 path=src/mxInspectionGrid.h
 cursor=129:34
-open=true
 [header]
 path=src/mxBacktraceGrid.h
 cursor=26:23
@@ -606,8 +606,7 @@ path=src/mxDiffSideBar.h
 cursor=-1:369
 [header]
 path=src/mxGrid.h
-cursor=32:13
-open=true
+cursor=52:0
 [header]
 path=src/mxCustomTools.h
 cursor=30:35
@@ -752,6 +751,7 @@ cursor=0:16
 [other]
 path=src/version.h
 cursor=0:24
+open=true
 [other]
 path=todo.txt
 cursor=0:0

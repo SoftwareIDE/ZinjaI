@@ -3032,4 +3032,6 @@ WXFB_INHERITEDCLASS
 Inherited class:
 WXFB_CLASSNAME_MISSING
 Class name missing
+MAINW_GENERATE_AUTOCOMP_INDEX_EMPTY
+There are no source files for generating the autocompletion index.\nOpen one or more files to be used by ZinjaI for extrating the symbols\nto be included in the new autocompletion index.
 END

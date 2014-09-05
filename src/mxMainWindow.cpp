@@ -3970,6 +3970,13 @@ wxString mxMainWindow::GetExplorerItemPath(wxTreeItemId item) {
 }
 
 void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
+	
+	if (!parser->last_file->next) {
+		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_EMPTY,"No hay fuentes para generar el índice. Abra uno \n"
+																			 "o más archivos para que ZinjaI analice y extraiga \n"
+																			 "los símbolos que conformarán el nuevo índice"),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_ERROR).ShowModal();
+	}
+	
 	wxString fname = wxGetTextFromUser(
 		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_NAME,"Nombre del nuevo índice"),
 		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),
@@ -3980,7 +3987,25 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 		if (mxMD_NO==mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE,"El indice ya existe, ¿desea reemplazarlo?"),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_YES_NO).ShowModal()) 
 			return;
 	}
-	wxDirDialog dlg2(this,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR,"Directorio base (para formar las rutas relativas para los #includes):"),"");
+	
+	// buscar un buen valor por defecto para "diretorio base", buscando la parte
+	// inicial comun al path de todos los archivos que van a parar al indice
+	wxString def_dir="<NULL>";
+	pd_file *fil = parser->last_file->next;
+	while (fil) {
+		wxFileName fn(fil->name); fn.Normalize();
+		wxString new_path = fn.GetPath();
+		if (def_dir=="<NULL>") def_dir=new_path;
+		else {
+			int i=0;
+			while (i<def_dir.Len() && i<new_path.Len() && def_dir[i]==new_path[i]) 
+				i++; 
+			def_dir=def_dir.Mid(0,i);
+		}
+		fil = fil->next;
+	}
+	
+	wxDirDialog dlg2(this,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR,"Directorio base (para formar las rutas relativas para los #includes):"),def_dir);
 	if (wxID_OK!=dlg2.ShowModal()) return;
 	if (code_helper->GenerateAutocompletionIndex(dlg2.GetPath(),fname)) {
 		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED,"Indice generado correctamente."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_INFO).ShowModal();
