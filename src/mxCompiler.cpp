@@ -646,9 +646,10 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	z_opts<<(cpp?current_toolchain.cpp_linker_options:current_toolchain.c_linker_options)<<" "; // forced linker arguments
 	z_opts<<current_toolchain.GetExtraCompilingArguments(cpp);
 	z_opts<<" -g "; // always include debugging information
-	wxString ext=source->source_filename.GetExt();
-	if (!source->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9')))
-		z_opts<<_T("-x c++ "); // avoid not recognizing files without extension
+	if (!source->sin_titulo) { // avoid not recognizing files without extension
+		eFileType ftype = mxUT::GetFileType(source->source_filename.GetFullName(),false);
+		if (ftype!=FT_HEADER&&ftype!=FT_SOURCE) z_opts<<(source->IsCppOrJustC()?"-x c++ ":"-x c "); 
+	}
 	// prepare command line
 	wxString comp_opts = source->GetCompilerOptions();
 	wxString output_file = source->GetBinaryFileName().GetFullPath();

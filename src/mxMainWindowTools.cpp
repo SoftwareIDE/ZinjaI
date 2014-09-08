@@ -899,14 +899,16 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		if (config->Debug.format.Len()) z_opts<<config->Debug.format<<" ";
 		z_opts<<(cpp?current_toolchain.cpp_compiling_options:current_toolchain.c_compiling_options)<<" ";
 //		z_opts<<current_toolchain.linker_options<<" ";
-		wxString ext=src->source_filename.GetExt();
-		if (!src->sin_titulo && (!ext.Len()||(ext[0]>='0'&&ext[0]<='9'))) z_opts<<"-x c++ "; 
+		if (!src->sin_titulo) {
+			eFileType ftype = mxUT::GetFileType(src->source_filename.GetFullName(),false);
+			if (ftype!=FT_HEADER&&ftype!=FT_SOURCE) z_opts<<(src->IsCppOrJustC()?"-x c++ ":"-x c "); 
+		}
 		z_opts<<"-E "; if (id_command==1) z_opts<<"-fdirectives-only -C ";
 		wxString comp_opts = src->GetCompilerOptions();
 		wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+fname+"\" "+comp_opts+" -o \""+bin_name<<"\"";
 		_IF_DEBUGMODE(command);
 		int x =mxUT::Execute(src->source_filename.GetPath(),command, wxEXEC_SYNC/*|wxEXEC_HIDE*/);	
-		if (x!=0) { 
+		if (x!=0) {
 			_IF_DEBUGMODE(x);
 			osd.Hide();
 			mxMessageDialog(this,LANG(MAINW_PREPROC_ERROR,"No se pudo preprocesar correctamente el fuente."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
