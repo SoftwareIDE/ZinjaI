@@ -18,6 +18,8 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 	DIT_ERROR ///< la expresión debía crear un vo, pero ocurrió un error al intentarlo
 };
 
+enum GDB_VO_FORMAT { GVF_NATURAL, GVF_BINARY, GVF_OCTAL, GVF_DECIMAL, GVF_HEXADECIMAL };
+
 class DebuggerInspection;
 
 ///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de las inspecciones
@@ -203,6 +205,7 @@ private:
 	DebuggerInspection *helper; ///< vo auxiliar para mostrar mejor este cuando es compuesto, helper sera responsable de actualizar this->gdb_value y generar sus eventos
 	DebuggerInspection *parent; ///< otro vo del cual depende este (el otro era compuesto, este es hijo)
 	int di_children; ///< cantidad de vo hijos que dependen de este
+	GDB_VO_FORMAT vo_value_format; ///< con que formato debe gdb mostrar el valor, solo para tipos simples
 	
 	void VODelete() {
 		__debug_log_method__;
@@ -227,6 +230,20 @@ private:
 	
 	void VOSetFrozen() {
 		debug->SendCommand(wxString("-var-set-frozen ")+variable_object,is_frozen?1:0);
+	}
+	
+	void VOSetFormat() {
+		const char *format;
+		switch (vo_value_format) {
+			case GVF_NATURAL: format=" natural"; break;
+			case GVF_BINARY: format=" binary"; break;
+			case GVF_OCTAL: format=" octal"; break;
+			case GVF_DECIMAL: format=" decimal"; break;
+			case GVF_HEXADECIMAL: format=" hexadecimal"; break;
+			default: return;
+		}
+		debug->SendCommand(wxString("-var-set-format ")+variable_object,format);
+		VOEvaluate();
 	}
 	
 	void VOEvaluate() {
@@ -301,7 +318,10 @@ private:
 		__debug_log_method__;
 		if (VOCreate()) {
 			dit_type = DIT_VARIABLE_OBJECT;
-			if (!SetupChildInspection()) VOEvaluate();
+			if (!SetupChildInspection()) {
+				if (vo_value_format!=GVF_NATURAL) VOSetFormat();
+				VOEvaluate();
+			}
 			if (is_frozen) VOSetFrozen();
 			else GenerateEvent(&myDIEventHandler::OnDICreated);
 			// this is just a fix for a gdb-bug... when you create a not-frameless vo for an expresion, 
@@ -329,7 +349,8 @@ private:
 		consumer(event_handler),
 		helper(NULL),
 		parent(NULL),
-		di_children(0) 
+		di_children(0),
+		vo_value_format(GVF_NATURAL)
 		{ 
 			__debug_log_method__;
 		};
@@ -350,7 +371,8 @@ private:
 		num_children(num_child),
 		helper(NULL),
 		parent(_parent),
-		di_children(0) 
+		di_children(0),
+		vo_value_format(GVF_NATURAL)
 		{ 
 			__debug_log_method__;
 		};
@@ -447,6 +469,11 @@ public:
 		is_frozen=true;
 		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
 			TryToExec(&DebuggerInspection::VOSetFrozen,true);
+	}
+
+	void SetFormat(GDB_VO_FORMAT format) { 
+		vo_value_format=format;
+		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) TryToExec(&DebuggerInspection::VOSetFormat,true);
 	}
 	
 	void UnFreeze() {

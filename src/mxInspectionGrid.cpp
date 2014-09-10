@@ -1,5 +1,6 @@
 //#include <wx/wx.h> // for wxGetSingleChoice, for some reasom <wx/choicdlg.h> doesn't work????
 //#include <wx/choicdlg.h>
+#include <algorithm>
 #include <wx/menu.h>
 #include <wx/clipbrd.h>
 #include "mxInspectionGrid.h"
@@ -32,25 +33,25 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 //	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxInspectionGrid::OnShowInText)
 //	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionGrid::OnShowInTable)
 //	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionGrid::OnExploreExpression)
-//	EVT_MENU(mxID_INSPECTION_COPY_DATA,mxInspectionGrid::OnCopyData)
-//	EVT_MENU(mxID_INSPECTION_COPY_EXPRESSION,mxInspectionGrid::OnCopyExpression)
+	EVT_MENU(mxID_INSPECTION_COPY_DATA,mxInspectionGrid::OnCopyData)
+	EVT_MENU(mxID_INSPECTION_COPY_EXPRESSION,mxInspectionGrid::OnCopyExpression)
+	EVT_MENU(mxID_INSPECTION_COPY_ALL,mxInspectionGrid::OnCopyAll)
 //	EVT_MENU(mxID_INSPECTION_EXPLORE_ALL,mxInspectionGrid::OnExploreAll)
-//	EVT_MENU(mxID_INSPECTION_CLEAR_ALL,mxInspectionGrid::OnClearAll)
-//	EVT_MENU(mxID_INSPECTION_CLEAR_ONE,mxInspectionGrid::OnClearOne)
+	EVT_MENU(mxID_INSPECTION_CLEAR_ALL,mxInspectionGrid::OnClearAll)
+	EVT_MENU(mxID_INSPECTION_CLEAR_ONE,mxInspectionGrid::OnClearOne)
 //	EVT_MENU(mxID_INSPECTION_WATCH_NO,mxInspectionGrid::OnWatchNo)
 //	EVT_MENU(mxID_INSPECTION_WATCH_RW,mxInspectionGrid::OnWatchReadWrite)
 //	EVT_MENU(mxID_INSPECTION_WATCH_READ,mxInspectionGrid::OnWatchRead)
 //	EVT_MENU(mxID_INSPECTION_WATCH_WRITE,mxInspectionGrid::OnWatchWrite)
-//	EVT_MENU(mxID_INSPECTION_FORMAT_NAT,mxInspectionGrid::OnFormatNatural)
-//	EVT_MENU(mxID_INSPECTION_FORMAT_BIN,mxInspectionGrid::OnFormatBinary)
-//	EVT_MENU(mxID_INSPECTION_FORMAT_DEC,mxInspectionGrid::OnFormatDecimal)
-//	EVT_MENU(mxID_INSPECTION_FORMAT_OCT,mxInspectionGrid::OnFormatOctal)
-//	EVT_MENU(mxID_INSPECTION_FORMAT_HEX,mxInspectionGrid::OnFormatHexadecimal)
+	EVT_MENU(mxID_INSPECTION_FORMAT_NAT,mxInspectionGrid::OnFormatNatural)
+	EVT_MENU(mxID_INSPECTION_FORMAT_BIN,mxInspectionGrid::OnFormatBinary)
+	EVT_MENU(mxID_INSPECTION_FORMAT_DEC,mxInspectionGrid::OnFormatDecimal)
+	EVT_MENU(mxID_INSPECTION_FORMAT_OCT,mxInspectionGrid::OnFormatOctal)
+	EVT_MENU(mxID_INSPECTION_FORMAT_HEX,mxInspectionGrid::OnFormatHexadecimal)
 //	EVT_MENU(mxID_INSPECTION_SAVE_TABLE,mxInspectionGrid::OnSaveTable)
 //	EVT_MENU(mxID_INSPECTION_LOAD_TABLE,mxInspectionGrid::OnLoadTable)
 //	EVT_MENU(mxID_INSPECTION_MANAGE_TABLES,mxInspectionGrid::OnManageTables)
 //	EVT_MENU(mxID_INSPECTION_SHOW_APPART,mxInspectionGrid::OnShowAppart)
-//	EVT_MENU(mxID_INSPECTION_COPY_ALL,mxInspectionGrid::OnCopyAll)
 //	EVT_SIZE(mxInspectionGrid::OnResize)
 //	EVT_GRID_COL_SIZE(mxInspectionGrid::OnColResize)
 //	EVT_GRID_LABEL_RIGHT_CLICK(mxInspectionGrid::OnLabelPopup)
@@ -384,8 +385,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	// ensure that clicked cell is selected, so generated events will use that one
 	// selection policy is: if theres a multiple selection, keep, else select only clicked cell
 	vector<int> sel; mxGrid::GetSelectedRows(sel);
-	if (sel.size()==0) sel.push_back(row); 
-	else if (sel.size()==1 && sel[0]!=row) { sel[0]=row; mxGrid::Select(row,col); }
+	if (find(sel.begin(),sel.end(),row)==sel.end()) { sel.clear(); mxGrid::Select(row); sel.push_back(row); }
 	bool there_are_inspections = inspections.GetSize()>1;
 	bool sel_is_single = sel.size()==1; // hay una sola inspeccion seleccionada
 	bool sel_is_last = sel_is_single && row+1==inspections.GetSize(); // la seleccionada es la ultima de la tabla (en blanco, invalida)
@@ -417,11 +417,14 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	if (sel_has_vo && !(sel_is_vo && !di->IsFrameless())) menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
 	if (sel_has_vo && !(sel_is_vo && di->IsFrameless())) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
 	if (!sel_is_last) menu.Append(mxID_INSPECTION_DUPLICATE,wxString(LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"))+"\tCtrl+L");
-//	if (!sel_is_last) menu.Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"))+"\tCtrl+C");
-//	if (!sel_is_last) menu.Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"&Copiar Valor"));
+	wxMenu *copy_menu = new wxMenu;
+	if (!sel_is_last) copy_menu->Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"))+"\tCtrl+C");
+	if (!sel_is_last) copy_menu->Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"&Copiar Valor"));
+	if (there_are_inspections) copy_menu->Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"Copiar Toda la Ta&bla"));
+	if (copy_menu->GetMenuItemCount()) menu.AppendSubMenu(copy_menu,LANG(INSPECTGRID_POPUP_COPY,"Copiar")); else delete copy_menu;
+	
 //	if (sel_has_unfrozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
 //	if (sel_has_frozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"))+"\tCtrl+B");
-//	if (there_are_inspections) menu.Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"Copiar Toda la Ta&bla"));
 //	if (current_source) {
 //		int s = current_source->GetSelectionStart(), e = current_source->GetSelectionEnd();
 //		if (s!=e && current_source->LineFromPosition(s)==current_source->LineFromPosition(e))
@@ -437,7 +440,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 //				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (<{1}>)",(<{1}>)",clip_text)+"\tCtrl+V");
 //		wxTheClipboard->Close();
 //	}
-//	if (!sel_is_last) menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
+	if (!sel_is_last) menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
 //	if (sel_is_vo && di->IsSimpleType()) {
 //		wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
 //		it[0] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
@@ -447,20 +450,20 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 //		it[(debug->inspections[selected_row].watch_read?1:0)+(debug->inspections[selected_row].watch_write?2:0)]->Check(true);
 //		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_WATCH,"WatchPoint"));
 //	}
-//	if (sel_is_vo && di->IsSimpleType()) {
-//		wxMenu *submenu = new wxMenu;
-//		submenu->Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
-//		submenu->Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
-//		submenu->Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
-//		submenu->Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
-//		submenu->Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
-//		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_FORMAT,"Formato"));
-//	}
-//	if (there_are_inspections) {
-//		menu.AppendSeparator();
-//		menu.Append(mxID_INSPECTION_CLEAR_ALL,LANG(INSPECTGRID_POPUP_CLEAN_TABLE,"&Limpiar Tabla de Inspeccion"));
+	if (sel_is_vo && di->IsSimpleType()) {
+		wxMenu *submenu = new wxMenu;
+		submenu->Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
+		submenu->Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
+		submenu->Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
+		submenu->Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
+		submenu->Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
+		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_FORMAT,"Formato"));
+	}
+	if (there_are_inspections) {
+		menu.AppendSeparator();
+		menu.Append(mxID_INSPECTION_CLEAR_ALL,LANG(INSPECTGRID_POPUP_CLEAN_TABLE,"&Limpiar Tabla de Inspecciones"));
 //		menu.Append(mxID_INSPECTION_SAVE_TABLE,LANG(INSPECTGRID_POPUP_SAVE_TABLE,"&Guardar Lista de Inspecciones..."));
-//	}
+	}
 //	if (debug->inspections_tables.size()) {
 //		menu.Append(mxID_INSPECTION_LOAD_TABLE,LANG(INSPECTGRID_POPUP_LOAD_TABLE,"Ca&rgar Lista de Inspecciones..."));
 //		menu.Append(mxID_INSPECTION_MANAGE_TABLES,LANG(INSPECTGRID_POPUP_MANAGE_TABLES,"Administrar Listas de Inspecciones..."));
@@ -538,45 +541,47 @@ void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
 //		new mxInspectionExplorer(debug->inspections[selected_row].frame,debug->inspections[selected_row].expr);
 //}
 //
-//void mxInspectionGrid::OnCopyData(wxCommandEvent &evt) {
-//	if (!wxTheClipboard->Open()) return;
-//	wxTextDataObject clip_data;
-//	if (selected_row<=debug->inspections_count)
-//		wxTheClipboard->SetData(new wxTextDataObject(GetCellValue(selected_row,IG_COL_VALUE)));
-//	wxTheClipboard->Close();
-//}
+void mxInspectionGrid::OnCopyData(wxCommandEvent &evt) {
+	// obtener los datos a copiar
+	wxString data;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
+	for(int i=0;i<sel.size();i++) {
+		if (data.size()) data<<"\n";
+		mxGrid::GetCellValue(i,IG_COL_VALUE);
+	}
+	// colocarlos en el portapapeles
+	if (!data.Len() || !wxTheClipboard->Open()) return;
+	wxTextDataObject clip_data;
+	wxTheClipboard->SetData(new wxTextDataObject(data));
+	wxTheClipboard->Close();
+}
+
+void mxInspectionGrid::OnCopyExpression(wxCommandEvent &evt) {
+	// obtener los datos a copiar
+	wxString data;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
+	for(int i=0;i<sel.size();i++) {
+		if (data.size()) data<<"\n";
+		mxGrid::GetCellValue(i,IG_COL_EXPR);
+	}
+	// colocarlos en el portapapeles
+	if (!data.Len() || !wxTheClipboard->Open()) return;
+	wxTextDataObject clip_data;
+	wxTheClipboard->SetData(new wxTextDataObject(data));
+	wxTheClipboard->Close();
+}
+
+void mxInspectionGrid::OnClearAll(wxCommandEvent &evt) {
+	for(int i=0;i<inspections.GetSize()-1;i++) 
+		DeleteInspection(i,true);
+	DeleteRows(0,inspections.GetSize()-1);
+}
+
 //
-//void mxInspectionGrid::OnCopyExpression(wxCommandEvent &evt) {
-//	if (!wxTheClipboard->Open()) return;
-//	wxTextDataObject clip_data;
-//	if (selected_row<=debug->inspections_count)
-//		wxTheClipboard->SetData(new wxTextDataObject(GetCellValue(selected_row,IG_COL_EXPR)));
-//	wxTheClipboard->Close();
-//}
-//
-//void mxInspectionGrid::OnClearAll(wxCommandEvent &evt) {
-//	if (debug->debugging)
-//		debug->ClearInspections();
-//	else {
-//		if (debug->OffLineInspectionDelete())
-//			DeleteRows(0,GetNumberRows()-1);
-//		else
-//			mxMessageDialog(main_window,LANG(INSPECTGRID_ERROR_OFFLINE_DELETE,"Error al eliminar inspecciones."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
-//	}	
-//}
-//
-//void mxInspectionGrid::OnClearOne(wxCommandEvent &evt) {
-//	if (debug->debugging) {
-//		if (selected_row+1!=GetNumberRows() && debug->DeleteInspection(selected_row))
-//			DeleteRows(selected_row);
-//		SetGridCursor(selected_row,0);
-//	} else {
-//		if (debug->OffLineInspectionDelete(selected_row))
-//			DeleteRows(selected_row,1);
-//		else
-//			mxMessageDialog(main_window,LANG(INSPECTGRID_ERROR_OFFLINE_DELETE,"Error al eliminar inspecciones."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
-//	}
-//}
+void mxInspectionGrid::OnClearOne(wxCommandEvent &evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(int i=0;i<sel.size();i++) DeleteInspection(i,false);
+}
 //
 //void mxInspectionGrid::OnExploreAll(wxCommandEvent &event) {
 //	wxArrayString array,frames;
@@ -658,25 +663,33 @@ void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
 //void mxInspectionGrid::OnWatchWrite(wxCommandEvent &evt) {
 //	debug->ModifyInspectionWatch(selected_row,false,true);
 //}
-//
-//void mxInspectionGrid::OnFormatNatural(wxCommandEvent &evt) {
-//	debug->ModifyInspectionFormat(selected_row,"natural");
-//}
-//
-//void mxInspectionGrid::OnFormatDecimal(wxCommandEvent &evt) {
-//	debug->ModifyInspectionFormat(selected_row,"decimal");
-//}
-//void mxInspectionGrid::OnFormatOctal(wxCommandEvent &evt) {
-//	debug->ModifyInspectionFormat(selected_row,"octal");
-//}
-//void mxInspectionGrid::OnFormatHexadecimal(wxCommandEvent &evt) {
-//	debug->ModifyInspectionFormat(selected_row,"hexadecimal");
-//}
-//
-//void mxInspectionGrid::OnFormatBinary(wxCommandEvent &evt) {
-//	debug->ModifyInspectionFormat(selected_row,"binary");
-//}
-//
+
+void mxInspectionGrid::SetFormat(int format) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
+	for(int i=0;i<sel.size();i++) 
+		if (inspections[i]->IsSimpleType()) {
+			inspections[i]->SetFormat((GDB_VO_FORMAT)format);
+			UpdateValueColumn(i);
+		}
+}
+void mxInspectionGrid::OnFormatNatural(wxCommandEvent &evt) {
+	SetFormat(GVF_NATURAL);
+}
+
+void mxInspectionGrid::OnFormatDecimal(wxCommandEvent &evt) {
+	SetFormat(GVF_DECIMAL);
+}
+void mxInspectionGrid::OnFormatOctal(wxCommandEvent &evt) {
+	SetFormat(GVF_OCTAL);
+}
+void mxInspectionGrid::OnFormatHexadecimal(wxCommandEvent &evt) {
+	SetFormat(GVF_HEXADECIMAL);
+}
+
+void mxInspectionGrid::OnFormatBinary(wxCommandEvent &evt) {
+	SetFormat(GVF_BINARY);
+}
+
 //void mxInspectionGrid::OnResize(wxSizeEvent &evt) {
 //	int w; // la segunda condicion es para evitar problemas en windows al agrandar una columna
 //	if (created && (w=evt.GetSize().GetWidth())!=old_size) {
@@ -792,35 +805,38 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 //	debug->ToggleInspectionFreeze(selected_row);
 //}
 //
-//void mxInspectionGrid::OnCopyAll(wxCommandEvent &evt) {
-//	wxString text;
-//	bool formatted_copy=true;
-//	if (formatted_copy) {
-//		unsigned int c[4]={IG_COL_LEVEL,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE}, w[3]={0,0,0};;
-//		for (int i=0;i<debug->inspections_count;i++) {
-//			for (int j=0;j<3;j++) {
-//				wxString sw; sw<<GetCellValue(i,c[j]);
-//				if (sw.Len()>w[j]) w[j]=sw.Len();
-//			}
-//		}
-//		for (int i=0;i<debug->inspections_count;i++) {
-//			for (int j=0;j<3;j++)
-//				text<<GetCellValue(i,c[j])<<wxString(' ',w[j]+3-GetCellValue(i,c[j]).Len());
-//			text<<GetCellValue(i,c[3])<<"\n";
-//		}
-//	} else {
-//		for (int i=0;i<debug->inspections_count;i++) {
-//			text<<GetCellValue(i,IG_COL_LEVEL)<<"\t";
-//			text<<GetCellValue(i,IG_COL_EXPR)<<"\t";
-//			text<<GetCellValue(i,IG_COL_TYPE)<<"\t";
-//			text<<GetCellValue(i,IG_COL_VALUE)<<"\n";
-//		}
-//	}
-//	if (wxTheClipboard->Open()) {
-//		wxTheClipboard->SetData( new wxTextDataObject(text) );
-//		wxTheClipboard->Close();
-//	}
-//}
+void mxInspectionGrid::OnCopyAll(wxCommandEvent &evt) {
+	wxString text;
+	bool formatted_copy=true;
+	if (formatted_copy) {
+		unsigned int c[4]={IG_COL_LEVEL,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE}, w[3]={0,0,0};;
+		for (int i=0;i<inspections.GetSize();i++) {
+			if (inspections[i].IsNull()) continue;
+			for (int j=0;j<3;j++) {
+				wxString sw; sw<<mxGrid::GetCellValue(i,c[j]);
+				if (sw.Len()>w[j]) w[j]=sw.Len();
+			}
+		}
+		for (int i=0;i<inspections.GetSize();i++) {
+			if (inspections[i].IsNull()) continue;
+			for (int j=0;j<3;j++)
+				text<<mxGrid::GetCellValue(i,c[j])<<wxString(' ',w[j]+3-mxGrid::GetCellValue(i,c[j]).Len());
+			text<<mxGrid::GetCellValue(i,c[3])<<"\n";
+		}
+	} else {
+		for (int i=0;i<inspections.GetSize();i++) {
+			if (inspections[i].IsNull()) continue;
+			text<<mxGrid::GetCellValue(i,IG_COL_LEVEL)<<"\t";
+			text<<mxGrid::GetCellValue(i,IG_COL_EXPR)<<"\t";
+			text<<mxGrid::GetCellValue(i,IG_COL_TYPE)<<"\t";
+			text<<mxGrid::GetCellValue(i,IG_COL_VALUE)<<"\n";
+		}
+	}
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData( new wxTextDataObject(text) );
+		wxTheClipboard->Close();
+	}
+}
 //
 //wxDragResult mxInspectionDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
 //	if (!grid->CanDrop()) return wxDragCancel;

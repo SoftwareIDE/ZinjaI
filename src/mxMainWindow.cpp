@@ -3997,7 +3997,7 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 		wxString new_path = fn.GetPath();
 		if (def_dir=="<NULL>") def_dir=new_path;
 		else {
-			int i=0;
+			unsigned int i=0;
 			while (i<def_dir.Len() && i<new_path.Len() && def_dir[i]==new_path[i]) 
 				i++; 
 			def_dir=def_dir.Mid(0,i);
