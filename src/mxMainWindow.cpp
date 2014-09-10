@@ -2180,6 +2180,8 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnViewFullScreen");
 	
 	aui_manager.Update();
 	
+	menu_data->SetAccelerators(); // por alguna razon, pasar a pantalla completa hace que se pierdan los accelerators
+	
 }
 
 void mxMainWindow::OnViewHideBottom (wxCommandEvent &event) {

@@ -305,6 +305,8 @@ public:
 	bool LoadToolbarsSettings(const wxString &full_path);
 	bool SaveToolbarsSettings(const wxString &full_path);
 	
+	void SetAccelerators();
+	
 };
 
 extern MenusAndToolsConfig *menu_data;

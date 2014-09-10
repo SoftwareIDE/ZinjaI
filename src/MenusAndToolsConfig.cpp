@@ -742,7 +742,15 @@ void MenusAndToolsConfig::CreateMenues () {
 				mnihistory[i] = mxUT::AddItemToMenu(mnurecent, history_id+i,cfglast[i],"",cfglast[i],wxString(ipre)<<i<<(".png"),i);
 	}
 	
-	// set accelerators fot commands that are not in any menu
+	SetAccelerators();
+	
+	// set items state // ahora gestionado en el evento menu_open
+	SetProjectMode(project);
+	SetDebugMode(debug?debug->IsDebugging():false);
+}
+
+void MenusAndToolsConfig::SetAccelerators() {
+	// set accelerators for commands that are not in any menu
 	wxAcceleratorEntry *aentries = new wxAcceleratorEntry[menues[mnHIDDEN].items.size()]; int ac=0;
 	for(unsigned int i=0;i<menues[mnHIDDEN].items.size();i++) {
 		int id=menues[mnHIDDEN].items[i].wx_id;
@@ -759,11 +767,7 @@ void MenusAndToolsConfig::CreateMenues () {
 	}
 	wxAcceleratorTable accel(ac,aentries);
 	main_window->SetAcceleratorTable(accel);
-//	delete []aentries;
-	
-	// set items state // ahora gestionado en el evento menu_open
-	SetProjectMode(project);
-	SetDebugMode(debug?debug->IsDebugging():false);
+	delete []aentries;
 }
 
 void MenusAndToolsConfig::CreateWxToolbar(int tb_id) {
