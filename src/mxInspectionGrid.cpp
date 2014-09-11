@@ -394,14 +394,12 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	DebuggerInspection *di = (sel_is_single && !sel_is_last)?inspections[row].di:NULL; // puntero a la seleccionada si es unica y valida
 	bool sel_has_vo = sel_is_vo; // si hay al menos una variable object seleccionada
 	bool sel_has_frozen = false, sel_has_unfrozen=false; // si hay inspecciones congeladas y descongeladas
-//	if (!sel_has_vo && !sel_is_single) {
-		for(unsigned int i=0;i<sel.size();i++) {
-			if (sel[i]>=inspections.GetSize()) continue;
-			DebuggerInspection *di = inspections[sel[i]].di;
-			if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; }
-			if (inspections[i].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
-		}
-//	}
+	for(unsigned int i=0;i<sel.size();i++) {
+		if (sel[i]>=inspections.GetSize()) continue;
+		DebuggerInspection *di = inspections[sel[i]].di;
+		if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; }
+		if (inspections[i].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
+	}
 	bool there_are_sources = main_window->notebook_sources->GetPageCount()!=0;
 	mxSource *current_source = there_are_sources?(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection())):NULL;
 
@@ -814,13 +812,13 @@ void mxInspectionGrid::OnUnFreeze(wxCommandEvent &evt) {
 void mxInspectionGrid::SetFreezed(int row, bool freeze) {
 	if (inspections[row].IsNull()) return;
 	if (freeze) {
-		SetRowStatus(current_row,IGRS_FREEZE);
+		SetRowStatus(row,IGRS_FREEZE);
 		inspections[row].is_frozen=true; // after SetRowStatus (SetRowStatus only changes what user sees if inspection is not frozen)
 	} else {
 		inspections[row].is_frozen=false; // before SetRowStatus (SetRowStatus only changes what user sees if inspection is not frozen)
 		int real_status = inspections[row].status;
 		inspections[row].status=IGRS_FREEZE; // to force SetRowStatus apply the real status
-		SetRowStatus(current_row,inspections[row].status);
+		SetRowStatus(row,inspections[row].status);
 		UpdateValueColumn(row); 
 		if (inspections[row]->IsFrameless()) TryToSimplify(row); // type can change when a frameless inspection is frozen
 	}
