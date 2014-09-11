@@ -168,7 +168,7 @@ struct DebuggerInspection {
 	
 	/// para notificar los cambios a los componentes de interfaz que utilizan estas inspecciones
 	void GenerateEvent(void (myDIEventHandler::*foo)(DebuggerInspection*)) { 
-		if (consumer) (consumer->*foo)(this);
+		if (/* !is_frozen && */consumer) (consumer->*foo)(this);
 	}
 	
 	
@@ -196,7 +196,7 @@ private:
 	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
 	long thread_id, frame_id; ///< si no es frameless, aqui se guarda el scope al que está asociada
 	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
-	bool is_frozen; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
+//	bool is_frozen; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
 	myDIEventHandler *consumer; ///< puntero a quien utiliza esta inspección, para notificarle los cambios
 	// informacion "calculada"
 	wxString value_type; ///< tipo de dato c/c++ del resultado de la expresión
@@ -228,9 +228,9 @@ private:
 		return true;
 	}
 	
-	void VOSetFrozen() {
-		debug->SendCommand(wxString("-var-set-frozen ")+variable_object,is_frozen?1:0);
-	}
+//	void VOSetFrozen() {
+//		debug->SendCommand(wxString("-var-set-frozen ")+variable_object,is_frozen?" 1":" 0");
+//	}
 	
 	void VOSetFormat() {
 		const char *format;
@@ -322,8 +322,8 @@ private:
 				if (vo_value_format!=GVF_NATURAL) VOSetFormat();
 				VOEvaluate();
 			}
-			if (is_frozen) VOSetFrozen();
-			else GenerateEvent(&myDIEventHandler::OnDICreated);
+//			if (is_frozen) VOSetFrozen();
+			/*else */GenerateEvent(&myDIEventHandler::OnDICreated);
 			// this is just a fix for a gdb-bug... when you create a not-frameless vo for an expresion, 
 			// previous frameless vos for the same expression may show a wrong result (tested: bad on gdb 7.6.1, good on 7.8.0)
 			if (!is_frameless && debug->gdb_version<7008) RecreateAllFramelessInspections();
@@ -345,7 +345,7 @@ private:
 		expression(expr),
 		is_frameless(frameless), 
 		is_in_scope(true),
-		is_frozen(false),
+//		is_frozen(false),
 		consumer(event_handler),
 		helper(NULL),
 		parent(NULL),
@@ -365,7 +365,7 @@ private:
 		thread_id(_parent->thread_id),
 		frame_id(_parent->frame_id),
 		is_in_scope(true),
-		is_frozen(_parent->is_frozen), 
+//		is_frozen(_parent->is_frozen), 
 		consumer(_parent->consumer), 
 		value_type(type),
 		num_children(num_child),
@@ -465,22 +465,25 @@ public:
 		return VOAssign(new_value);
 	}
 	
-	void Freeze() {
-		is_frozen=true;
-		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
-			TryToExec(&DebuggerInspection::VOSetFrozen,true);
-	}
+//	void Freeze() {
+//		is_frozen=true;
+//		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
+//			TryToExec(&DebuggerInspection::VOSetFrozen,true);
+//	}
 
 	void SetFormat(GDB_VO_FORMAT format) { 
 		vo_value_format=format;
 		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) TryToExec(&DebuggerInspection::VOSetFormat,true);
 	}
 	
-	void UnFreeze() {
-		is_frozen=false;
-		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
-			TryToExec(&DebuggerInspection::VOSetFrozen,true);
-	}
+//	void UnFreeze() {
+//		is_frozen=false;
+//		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) {
+//			TryToExec(&DebuggerInspection::VOSetFrozen,true);
+////			TryToExec(&DebuggerInspection::VOEvaluate,true);
+//		}
+//		if (dit_type!=DIT_VARIABLE_OBJECT || helper) UpdateValue();
+//	}
 	
 	/**
 	* @brief break an inspections based on a compound vo, into its child vos
@@ -518,7 +521,7 @@ public:
 	wxString GetValueType() { return value_type; }
 	bool IsFrameless() { return is_frameless; }
 	bool IsInScope() { return is_in_scope; }
-	bool IsFrozen() { return is_frozen; }
+//	bool IsFrozen() { return is_frozen; }
 	bool RequiresManualUpdate() { return helper?helper->RequiresManualUpdate():requieres_manual_update; }
 	bool UpdateValue(bool generate_event=true) { // solo para cuando RequiresManualUpdate()==true
 		__debug_log_method__;
@@ -530,14 +533,14 @@ public:
 			DebuggerInspection *helper_parent = reinterpret_cast<myCompoundHelperDIEH*>(consumer)->helper_parent;
 			if (helper_parent->gdb_value!=gdb_value) {
 				helper_parent->gdb_value=gdb_value;
-				if (generate_event) helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);
+				if (generate_event /*&& !helper_parent->is_frozen*/) helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);
 				return true;
 			}
 		} else if (dit_type==DIT_GDB_COMMAND) { // si es comando/macro gdb...
 			wxString new_value = debug->GetMacroOutput(variable_object);
 			if (new_value!=gdb_value) {
 				gdb_value=new_value;
-				if (generate_event) GenerateEvent(&myDIEventHandler::OnDIValueChanged);
+				if (generate_event /*&& is_frozen*/) GenerateEvent(&myDIEventHandler::OnDIValueChanged);
 				return true;
 			}
 		}

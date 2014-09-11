@@ -180,6 +180,6 @@ void myCompoundHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
 
 void myUserHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
 	helper_parent->gdb_value=di->gdb_value;
-	helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);	
+	/*if (!helper_parent->is_frozen) */helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);	
 }
 

@@ -23,7 +23,8 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
 //	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionGrid::OnDoubleClick)
-//	EVT_MENU(mxID_INSPECTION_FREEZE,mxInspectionGrid::OnFreeze)
+	EVT_MENU(mxID_INSPECTION_FREEZE,mxInspectionGrid::OnFreeze)
+	EVT_MENU(mxID_INSPECTION_UNFREEZE,mxInspectionGrid::OnUnFreeze)
 	EVT_MENU(mxID_INSPECTION_BREAK,mxInspectionGrid::OnBreakClassOrArray)
 	EVT_MENU(mxID_INSPECTION_RESCOPE,mxInspectionGrid::OnReScope)
 	EVT_MENU(mxID_INSPECTION_SET_FRAMELESS,mxInspectionGrid::OnSetFrameless)
@@ -393,14 +394,14 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	DebuggerInspection *di = (sel_is_single && !sel_is_last)?inspections[row].di:NULL; // puntero a la seleccionada si es unica y valida
 	bool sel_has_vo = sel_is_vo; // si hay al menos una variable object seleccionada
 	bool sel_has_frozen = false, sel_has_unfrozen=false; // si hay inspecciones congeladas y descongeladas
-	if (!sel_has_vo && !sel_is_single) {
+//	if (!sel_has_vo && !sel_is_single) {
 		for(unsigned int i=0;i<sel.size();i++) {
 			if (sel[i]>=inspections.GetSize()) continue;
 			DebuggerInspection *di = inspections[sel[i]].di;
 			if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; }
-			if (di->IsFrozen()) sel_has_frozen=true; else sel_has_unfrozen=true; 
+			if (inspections[i].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
 		}
-	}
+//	}
 	bool there_are_sources = main_window->notebook_sources->GetPageCount()!=0;
 	mxSource *current_source = there_are_sources?(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection())):NULL;
 
@@ -423,8 +424,8 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	if (there_are_inspections) copy_menu->Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"Copiar Toda la Ta&bla"));
 	if (copy_menu->GetMenuItemCount()) menu.AppendSubMenu(copy_menu,LANG(INSPECTGRID_POPUP_COPY,"Copiar")); else delete copy_menu;
 	
-//	if (sel_has_unfrozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
-//	if (sel_has_frozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"))+"\tCtrl+B");
+	if (sel_has_unfrozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
+	if (sel_has_frozen) menu.Append(mxID_INSPECTION_UNFREEZE,wxString(LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"))+"\tCtrl+B");
 //	if (current_source) {
 //		int s = current_source->GetSelectionStart(), e = current_source->GetSelectionEnd();
 //		if (s!=e && current_source->LineFromPosition(s)==current_source->LineFromPosition(e))
@@ -540,7 +541,7 @@ void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
 //	if (selected_row<=debug->inspections_count)
 //		new mxInspectionExplorer(debug->inspections[selected_row].frame,debug->inspections[selected_row].expr);
 //}
-//
+
 void mxInspectionGrid::OnCopyData(wxCommandEvent &evt) {
 	// obtener los datos a copiar
 	wxString data;
@@ -755,7 +756,7 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 	}
 //	DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
 }
-//
+
 //void mxInspectionGrid::OnSaveTable(wxCommandEvent &evt) {
 //	wxString name = mxGetTextFromUser(LANG(INSPECTGRID_TABLE_NAME,"Nombre de la lista:"),_T("Guardar Lista"),"",this);
 //	if (name.Len()) debug->SaveInspectionsTable(name);
@@ -799,12 +800,32 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 //			SetCellTextColour(i,IG_COL_VALUE,default_colour);
 //	}
 //}
-//
-//void mxInspectionGrid::OnFreeze(wxCommandEvent &evt) {
-//	if (selected_row>=debug->inspections_count) return;
-//	debug->ToggleInspectionFreeze(selected_row);
-//}
-//
+
+void mxInspectionGrid::OnFreeze(wxCommandEvent &evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
+	for(int i=0;i<sel.size();i++) SetFreezed(sel[i],true);
+}
+
+void mxInspectionGrid::OnUnFreeze(wxCommandEvent &evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
+	for(int i=0;i<sel.size();i++) SetFreezed(sel[i],false);
+}
+
+void mxInspectionGrid::SetFreezed(int row, bool freeze) {
+	if (inspections[row].IsNull()) return;
+	if (freeze) {
+		SetRowStatus(current_row,IGRS_FREEZE);
+		inspections[row].is_frozen=true; // after SetRowStatus (SetRowStatus only changes what user sees if inspection is not frozen)
+	} else {
+		inspections[row].is_frozen=false; // before SetRowStatus (SetRowStatus only changes what user sees if inspection is not frozen)
+		int real_status = inspections[row].status;
+		inspections[row].status=IGRS_FREEZE; // to force SetRowStatus apply the real status
+		SetRowStatus(current_row,inspections[row].status);
+		UpdateValueColumn(row); 
+		if (inspections[row]->IsFrameless()) TryToSimplify(row); // type can change when a frameless inspection is frozen
+	}
+}
+
 void mxInspectionGrid::OnCopyAll(wxCommandEvent &evt) {
 	wxString text;
 	bool formatted_copy=true;
@@ -956,21 +977,21 @@ void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
 
 void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	UpdateValueColumn(current_row);
+	if (!inspections[current_row].is_frozen) UpdateValueColumn(current_row);
 	SetRowStatus(current_row,IGRS_CHANGED);
 }
 
 void mxInspectionGrid::OnDINewType(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	TryToSimplify(current_row);
-	UpdateTypeColumn(current_row);
-	UpdateValueColumn(current_row);
+	if (!inspections[current_row].is_frozen) TryToSimplify(current_row);
+	if (!inspections[current_row].is_frozen) UpdateTypeColumn(current_row);
+	if (!inspections[current_row].is_frozen) UpdateValueColumn(current_row);
 	SetRowStatus(current_row,IGRS_CHANGED);
 }
 
 void mxInspectionGrid::OnDIInScope(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	UpdateValueColumn(current_row);
+	TryToSimplify(current_row);UpdateValueColumn(current_row);
 	SetRowStatus(current_row,IGRS_IN_SCOPE);
 }
 
@@ -982,7 +1003,8 @@ void mxInspectionGrid::OnDIOutOfScope(DebuggerInspection *di) {
 void mxInspectionGrid::SetRowStatus (int r, int status) {
 	int prev_status = inspections[r].status;
 	if (prev_status==status) return;
-	inspections[r].status=status;
+	if (status!=IGRS_FREEZE) inspections[r].status=status;
+	if (inspections[r].is_frozen) return;
 	if (mxig_status_opts[prev_status].color!=mxig_status_opts[status].color)
 		mxGrid::SetCellColour(r,IG_COL_VALUE,mxig_status_opts[status].color);
 	if (mxig_status_opts[status].have_message) 
@@ -997,7 +1019,7 @@ void mxInspectionGrid::OnFullTableUpdateBegin( ) {
 		if (inspections[i].IsNull()) continue; ///< pasa cuando se crea una nuevo, se llama a este metodo antes de hacerlo, pero ya habiendo reservado el espacio en inspections
 		UpdateLevelColumn(i);
 		InspectionGridRow &di = inspections[i];
-		if (di.status==IGRS_UNINIT || di->IsFrozen()) continue;
+		if (di.status==IGRS_UNINIT || inspections[i].is_frozen) continue;
 		if (di->RequiresManualUpdate()) {
 			if (di->IsInScope()) {
 				if (di->UpdateValue()) {
