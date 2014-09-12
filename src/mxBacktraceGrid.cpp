@@ -81,7 +81,7 @@ void mxBacktraceGrid::SelectFrame(int r) {
 	if (file.Len()) {
 		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT))
 			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		if (debug->CanTalkToGDB()) debug->SelectFrame(-1,r+1);
+		if (debug->CanTalkToGDB()) debug->SelectFrame(-1,r);
 		debug->UpdateInspections();
 	}
 }
@@ -123,7 +123,7 @@ void mxBacktraceGrid::OnExploreArgs(wxCommandEvent &event) {
 //		} else {
 //			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
 //		}
-//		debug->SelectFrame(-1,r+1);
+//		debug->SelectFrame(-1,r);
 //	}
 //	wxArrayString vars;
 //	if (debug->GetArgs(vars,GetCellValue(selected_row,BG_COL_LEVEL))) {
@@ -146,7 +146,7 @@ void mxBacktraceGrid::OnExploreLocals(wxCommandEvent &event) {
 //		} else {
 //			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
 //		}
-//		debug->SelectFrame(-1,r+1);
+//		debug->SelectFrame(-1,r);
 //	}
 //	wxArrayString vars;
 //	if (debug->GetLocals(vars,GetCellValue(selected_row,BG_COL_LEVEL))) {
@@ -168,7 +168,7 @@ void mxBacktraceGrid::OnInspectArgs(wxCommandEvent &event) {
 		} else {
 			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
 		}
-		debug->SelectFrame(-1,r+1);
+		debug->SelectFrame(-1,r);
 	}
 	wxArrayString vars;
 #warning reestablecer esto
@@ -187,7 +187,7 @@ void mxBacktraceGrid::OnInspectLocals(wxCommandEvent &event) {
 		} else {
 			debug->MarkCurrentPoint(file,line,mxSTC_MARK_EXECPOINT);
 		}
-		debug->SelectFrame(-1,r+1);
+		debug->SelectFrame(-1,r);
 	}
 	wxArrayString vars;
 #warning reestablecer esto
