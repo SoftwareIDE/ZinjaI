@@ -525,6 +525,26 @@ int mxUT::Execute(wxString path, wxString command, int sync) {
 int mxUT::Execute(wxString path, wxString command, int sync, wxProcess *&process) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
 	wxSetWorkingDirectory(path);
+#ifndef __WIN32__
+	// por alguna razon, con wx 2.8 no podemos tener mas de 127 argumentos (ver WXEXECUTE_NARGS en los fuentes de wx 2.8)
+	// asi que hacemos un script con el comando y llamamos al script si ese es el caso
+	int num_args=0, i=0,l=command.Len();
+	while (++i<l) {
+		if (command[i]=='\'') { while (++i<l && command[i]!='\''); }
+		else if (command[i]=='\"') { while (++i<l && command[i]!='\'') if (command[i]=='\\') i++; }
+		else if (command[i]=='\\') i++;
+		else if (command[i]==' ') num_args++;
+	}
+	if (num_args>=127) {
+		wxString aux_file(DIR_PLUS_FILE(config->home_dir,"long_command"));
+		wxTextFile file(aux_file); 
+		file.Create();
+		file.AddLine(command);
+		file.Write();
+		file.Close();
+		command=wxString("sh ")+aux_file;
+	}
+#endif
 	int ret = (sync&wxEXEC_SYNC) ? mxExecute(command, sync, process) : wxExecute(command, sync, process);
 	wxSetWorkingDirectory(config->zinjai_dir);
 	return ret;
