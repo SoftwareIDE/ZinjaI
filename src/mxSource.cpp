@@ -25,6 +25,7 @@
 #include "error_recovery.h"
 #include "mxCalltip.h"
 #include "MenusAndToolsConfig.h"
+#include "mxInspectionExplorerDialog.h"
 using namespace std;
 
 
@@ -3177,6 +3178,9 @@ void mxSource::JumpToCurrentSymbolDefinition() {
 	int s=WordStartPosition(pos,true);
 	int e=WordEndPosition(pos,true);
 	wxString key = GetTextRange(s,e);
+#ifdef _ZINJAI_DEBUG
+	new mxInspectionExplorerDialog(key,false); return;
+#endif
 	if (key.Len()) {
 		new mxGotoFunctionDialog(key,main_window,GetFileName(false));
 	}

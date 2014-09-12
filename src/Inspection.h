@@ -24,7 +24,9 @@ class DebuggerInspection;
 
 ///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de las inspecciones
 class myDIEventHandler {
+	bool owned_by_the_inspection; ///< if true, the inspections will do the delete
 public:
+	myDIEventHandler(bool _owned_by_the_inspection=false) : owned_by_the_inspection(_owned_by_the_inspection) {}
 	virtual void OnDICreated(DebuggerInspection *di) {}
 	virtual void OnDIError(DebuggerInspection *di) {}
 	virtual void OnDIValueChanged(DebuggerInspection *di) {}
@@ -38,14 +40,14 @@ class myCompoundHelperDIEH : public myDIEventHandler {
 	DebuggerInspection *helper_parent;
 	friend class DebuggerInspection;
 public:
-	myCompoundHelperDIEH(DebuggerInspection *parent):helper_parent(parent) {}
+	myCompoundHelperDIEH(DebuggerInspection *parent):myDIEventHandler(true),helper_parent(parent) {}
 	virtual void OnDIValueChanged(DebuggerInspection *di);
 };
 
 class myUserHelperDIEH : public myDIEventHandler {
 	DebuggerInspection *helper_parent;
 public:
-	myUserHelperDIEH(DebuggerInspection *parent):helper_parent(parent) {}
+	myUserHelperDIEH(DebuggerInspection *parent):myDIEventHandler(true),helper_parent(parent) {}
 	virtual void OnDIValueChanged(DebuggerInspection *di);
 };
 

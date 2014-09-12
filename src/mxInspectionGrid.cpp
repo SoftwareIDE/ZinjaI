@@ -818,7 +818,7 @@ void mxInspectionGrid::SetFreezed(int row, bool freeze) {
 		inspections[row].is_frozen=false; // before SetRowStatus (SetRowStatus only changes what user sees if inspection is not frozen)
 		int real_status = inspections[row].status;
 		inspections[row].status=IGRS_FREEZE; // to force SetRowStatus apply the real status
-		SetRowStatus(row,inspections[row].status);
+		SetRowStatus(row,real_status);
 		UpdateValueColumn(row); 
 		if (inspections[row]->IsFrameless()) TryToSimplify(row); // type can change when a frameless inspection is frozen
 	}
