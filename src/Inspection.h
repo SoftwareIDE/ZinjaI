@@ -5,6 +5,7 @@
 #include "DebugManager.h"
 #include "mxUtils.h"
 #include "SingleList.h"
+#include "Flag.h"
 using namespace std;
 
 ////! Información acerca de una inspección en el depurador
@@ -17,6 +18,11 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 	DIT_GHOST, ///< vo que no está en el mapa ni recibe actualizaciones, solo existe porque otras dependen de ella (num_children!=0, ver VOBreak)
 	DIT_ERROR ///< la expresión debía crear un vo, pero ocurrió un error al intentarlo
 };
+
+#define DIF_FRAMELESS 1
+#define DIF_IN_SCOPE 2
+#define DIF_REQUIRES_MANUAL_UPDATE 4
+#define DIF_DONT_USE_HELPER 8
 
 enum GDB_VO_FORMAT { GVF_NATURAL, GVF_BINARY, GVF_OCTAL, GVF_DECIMAL, GVF_HEXADECIMAL };
 
@@ -79,12 +85,12 @@ struct DebuggerInspection {
 	public:
 		CallLogger(const char *_method, DebuggerInspection *_di=NULL) : di(_di),method(_method) {
 			cerr<<"DI("<<di<<")::"<<string((++lev)*2,' ')<<method<<"  in";
-			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->is_frameless?"f":"")<<(di->is_in_scope?"s":"");
+			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
 		}
 		~CallLogger() { 
 			cerr<<"DI("<<di<<")::"<<string((lev--)*2,' ')<<method<<" out";
-			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->is_frameless?"f":"")<<(di->is_in_scope?"s":"");
+			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
 		}
 	};
@@ -191,13 +197,14 @@ public:
 	
 private:
 	DEBUG_INSPECTION_EXPRESSION_TYPE dit_type; ///< si es una vo, una macro, todavía no se creo, o fallo la creacion
-	bool requieres_manual_update; ///< false, para los VOs comunes, true para los comandos gdb y para VOs que son intermediarios para otros VOs (helpers de compuestas)
+//	bool requieres_manual_update; ///< false, para los VOs comunes, true para los comandos gdb y para VOs que son intermediarios para otros VOs (helpers de compuestas)
 	// inf definida por el usuario/consumidor de la inspeccion
 	wxString expression; ///< expresión que está siendo inspeccionada
 	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
-	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
+	Flag flags; /// combinacion de DIF_FRAMELESS, DIF_IN_SCOPE, DIF_REQUIRES_MANUAL_UPDATE, DIF_DONT_USE_HELPER
+//	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
 	long thread_id, frame_id; ///< si no es frameless, aqui se guarda el scope al que está asociada
-	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
+//	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
 //	bool is_frozen; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
 	myDIEventHandler *consumer; ///< puntero a quien utiliza esta inspección, para notificarle los cambios
 	// informacion "calculada"
@@ -217,11 +224,11 @@ private:
 	bool VOCreate() {
 		__debug_log_method__;
 		wxString cmd = "-var-create - ";
-		if (is_frameless) cmd<<"@ "; else cmd<<"* "; 
+		if (IsFrameless()) cmd<<"@ "; else cmd<<"* "; 
 		thread_id=debug->current_thread_id; frame_id=debug->current_frame_id;
 		wxString ans = debug->SendCommand(cmd,mxUT::EscapeString(expression,true));
 		if (ans.Left(5)!="^done") return false;
-		is_in_scope=true; // si no existen en el scope actual gdb no la crea, aunque se frameless
+		flags.Set(DIF_IN_SCOPE); // si no existen en el scope actual gdb no la crea, aunque se frameless
 		variable_object = debug->GetValueFromAns(ans,"name",true);
 		value_type = debug->GetValueFromAns(ans,"type",true);
 		gdb_value = debug->GetValueFromAns(ans,"value",true);
@@ -272,12 +279,12 @@ private:
 		// si habia, borrar la inspeccion auxiliar previa
 		if (helper) DeleteHelper();
 		// si no tiene hijos, no necesita la inspeccion auxiliar
-		if (!IsCompound()) return false;
+		if (flags.Get(DIF_DONT_USE_HELPER) || !IsCompound()) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
-		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",is_frameless,new myCompoundHelperDIEH(this),true);
+		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless()),new myCompoundHelperDIEH(this),true);
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		helper->MakeEvaluationExpressionForParent(this);
-		helper->requieres_manual_update = true;
+		helper->flags.Set(DIF_REQUIRES_MANUAL_UPDATE);
 		helper->UpdateValue();
 		return true;
 	}
@@ -289,7 +296,7 @@ public:
 		// si habia, borrar la inspeccion auxiliar previa
 		if (helper) DeleteHelper();
 		// intentar crear la expresion auxiliar
-		helper = DebuggerInspection::Create(new_expression,is_frameless,new myUserHelperDIEH(this),true);
+		helper = DebuggerInspection::Create(new_expression,FlagIf(DIF_FRAMELESS,IsFrameless()),new myUserHelperDIEH(this),true);
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		gdb_value = helper->gdb_value; // Create does a first evaluation
 		return true;
@@ -328,12 +335,12 @@ private:
 			/*else */GenerateEvent(&myDIEventHandler::OnDICreated);
 			// this is just a fix for a gdb-bug... when you create a not-frameless vo for an expresion, 
 			// previous frameless vos for the same expression may show a wrong result (tested: bad on gdb 7.6.1, good on 7.8.0)
-			if (!is_frameless && debug->gdb_version<7008) RecreateAllFramelessInspections();
+			if (!IsFrameless() && debug->gdb_version<7008) RecreateAllFramelessInspections();
 		} else {
 			dit_type=DIT_ERROR; 
 			GenerateEvent(&myDIEventHandler::OnDIError);
 			// si no se pudo crear en este scope, probar otra vez en el proximo
-			if (is_frameless) 
+			if (IsFrameless()) 
 				AddPendingAction(this,&DebuggerInspection::CreateVO,true,true);
 		}
 	}
@@ -341,12 +348,10 @@ private:
 	void RecreateAllFramelessInspections();
 	
 	/// las instancias de los clientes de esta clase se construyen solo a través de Create (que usará este ctor)
-	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL) :
+	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, const Flag &flags, myDIEventHandler *event_handler=NULL) :
 		dit_type(type),
-		requieres_manual_update(type==DIT_GDB_COMMAND),
+		flags( FlagIf(DIF_REQUIRES_MANUAL_UPDATE,type==DIT_GDB_COMMAND) | flags.Get() | DIF_IN_SCOPE ),
 		expression(expr),
-		is_frameless(frameless), 
-		is_in_scope(true),
 //		is_frozen(false),
 		consumer(event_handler),
 		helper(NULL),
@@ -360,13 +365,11 @@ private:
 	/// ctor para una vo hija, creada por VOBreak
 	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, const wxString &type, int num_child) : 
 		dit_type(DIT_VARIABLE_OBJECT),
-		requieres_manual_update(false),
+		flags(DIF_IN_SCOPE|(_parent->IsFrameless()?DIF_FRAMELESS:0)),
 		expression(expr),
 		variable_object(vo_name),
-		is_frameless(_parent->is_frameless), 
 		thread_id(_parent->thread_id),
 		frame_id(_parent->frame_id),
-		is_in_scope(true),
 //		is_frozen(_parent->is_frozen), 
 		consumer(_parent->consumer), 
 		value_type(type),
@@ -401,10 +404,10 @@ public:
 	*   			 se debe llamar inmediatamente a Init con la instancia... esto es para que
 	*                el que la crea pueda conocer el puntero antes de recibir los eventos
 	**/ 
-	static DebuggerInspection *Create(const wxString &expr, bool frameless, myDIEventHandler *event_handler=NULL, bool init_now=true) {
+	static DebuggerInspection *Create(const wxString &expr, Flag flags, myDIEventHandler *event_handler=NULL, bool init_now=true) {
 		__debug_log_static_method__;
 		bool is_cmd = expr.size()&&expr[0]=='>';
-		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,expr,is_cmd?true:frameless,event_handler);
+		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,expr,is_cmd?DIF_FRAMELESS:flags,event_handler);
 		if (is_cmd) di->value_type="<gdb command>";
 		all_inspections.Add(di);
 		if (init_now) di->Init();
@@ -521,10 +524,10 @@ public:
 	wxString GetExpression() { return expression; }
 	wxString GetValue() { return gdb_value; }
 	wxString GetValueType() { return value_type; }
-	bool IsFrameless() { return is_frameless; }
-	bool IsInScope() { return is_in_scope; }
+	bool IsFrameless() { return flags.Get(DIF_FRAMELESS); }
+	bool IsInScope() { return flags.Get(DIF_IN_SCOPE); }
 //	bool IsFrozen() { return is_frozen; }
-	bool RequiresManualUpdate() { return helper?helper->RequiresManualUpdate():requieres_manual_update; }
+	bool RequiresManualUpdate() { return helper?helper->RequiresManualUpdate():flags.Get(DIF_REQUIRES_MANUAL_UPDATE); }
 	bool UpdateValue(bool generate_event=true) { // solo para cuando RequiresManualUpdate()==true
 		__debug_log_method__;
 		if (!debug->CanTalkToGDB()) return false;

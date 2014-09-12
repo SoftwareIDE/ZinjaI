@@ -1070,7 +1070,7 @@ void mxInspectionGrid::UpdateLevelColumn (int r) {
 }
 
 bool mxInspectionGrid::CreateInspection (int r, const wxString &expression, bool frameless) {
-	inspections[r] = DebuggerInspection::Create(expression,frameless,this,false);
+	inspections[r] = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless),this,false);
 	if (!inspections[r]->Init()) SetRowStatus(r,IGRS_UNINIT);
 	else UpdateLevelColumn(r);
 	return inspections[r]->GetDbiType()!=DIT_ERROR;

@@ -50,7 +50,7 @@ void DebuggerInspection::UpdateAll ( ) {
 			bool new_scope=false,new_type=false, in_scope=u.in_scope=="true";
 			if (!u.new_num_children.IsEmpty()) { u.new_num_children.ToLong(&di.num_children); new_type=true; } 
 			if (!u.new_type.IsEmpty()) { di.value_type=u.new_type; new_type=true; }
-			if (di.is_in_scope!=in_scope) { di.is_in_scope=in_scope; new_scope=true; }
+			if (di.flags.Get(DIF_IN_SCOPE)!=in_scope) { di.flags.Set(DIF_IN_SCOPE,in_scope); new_scope=true; }
 			if (in_scope && (new_type || !di.helper)) di.gdb_value=u.value;
 			
 			if (di.dit_type==DIT_VARIABLE_OBJECT) {
@@ -149,7 +149,7 @@ void DebuggerInspection::OnDebugStart() {
 	// re-create al vo-based inspections on next pause
 	for(int i=0;i<all_inspections.GetSize();i++) { 
 		if (all_inspections[i]->dit_type!=DIT_GDB_COMMAND) {
-			all_inspections[i]->is_frameless=true;
+			all_inspections[i]->flags.Set(DIF_FRAMELESS);
 			AddPendingAction(all_inspections[i],&DebuggerInspection::CreateVO,true,true);
 		}
 	}
@@ -159,7 +159,7 @@ void DebuggerInspection::RecreateAllFramelessInspections() {
 	__debug_log_static_method__;
 	for(int i=0;i<all_inspections.GetSize();i++) {
 		DebuggerInspection *di = all_inspections[i];
-		if (!di->is_frameless || di->dit_type==DIT_GDB_COMMAND) continue;
+		if (!di->IsFrameless() || di->dit_type==DIT_GDB_COMMAND) continue;
 		if (di->parent) di->RemoveParentLink();
 		if (di->variable_object.Len()) AddPendingAction(di,&DebuggerInspection::VODelete,true,true);
 		AddPendingAction(di,&DebuggerInspection::CreateVO,true,true);
