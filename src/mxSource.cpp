@@ -131,7 +131,7 @@ const wxChar* mxSourceWords1 =
 	"reinterpret_cast return sizeof static_cast "
 	"struct switch template this throw true try typedef typeid "
 	"typename union using virtual while xor "
-	"auto constexp decltype static_assert final override noexcept nullptr"; // c++ 2011
+	"auto constexpr decltype static_assert final override noexcept nullptr"; // c++ 2011
 const wxChar* mxSourceWords2 =
 	"bool char const double float int long mutable register "
 	"short signed static unsigned void volatile wchar_t";

@@ -1,5 +1,5 @@
 	\auto
-	\constexp
+	\constexpr
 	\decltype
 	\static_assert
 	\final
