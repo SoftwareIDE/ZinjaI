@@ -131,7 +131,11 @@ bool mxApplication::OnInit() {
 #endif
 	
 	// show startup tip
-	if ( (config->Init.show_tip_on_startup && !config->Init.show_welcome) || config->Init.version!=VERSION) {
+	if ( (config->Init.show_tip_on_startup && !config->Init.show_welcome) 
+#ifndef _ZINJAI_DEBUG
+		|| config->Init.version!=VERSION
+#endif
+	) {
 		main_window->Refresh();
 		tips_window = new mxTipsWindow(main_window, wxID_ANY);
 		if (splash) splash->ShouldClose();

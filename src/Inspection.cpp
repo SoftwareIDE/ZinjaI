@@ -136,7 +136,7 @@ void DebuggerInspection::OnDebugStop() {
 		DebuggerInspection *di = all_inspections[i];
 		if (di->dit_type==DIT_VARIABLE_OBJECT) {
 			if (di->parent) di->RemoveParentLink();
-			if (di->helper) di->helper->Destroy();
+			if (di->helper) di->DeleteHelper();
 		}
 	}
 	ProcessPendingActions(); // delete pending commands, they shoud not be run in next debugging session

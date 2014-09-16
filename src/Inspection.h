@@ -200,8 +200,8 @@ private:
 //	bool requieres_manual_update; ///< false, para los VOs comunes, true para los comandos gdb y para VOs que son intermediarios para otros VOs (helpers de compuestas)
 	// inf definida por el usuario/consumidor de la inspeccion
 	wxString expression; ///< expresión que está siendo inspeccionada
-	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 	Flag flags; /// combinacion de DIF_FRAMELESS, DIF_IN_SCOPE, DIF_REQUIRES_MANUAL_UPDATE, DIF_DONT_USE_HELPER
+	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 //	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
 	long thread_id, frame_id; ///< si no es frameless, aqui se guarda el scope al que está asociada
 //	bool is_in_scope; ///< autoexplicativo (solo para vo, los comandos gdb siempre tendran true)
@@ -352,8 +352,8 @@ private:
 	/// las instancias de los clientes de esta clase se construyen solo a través de Create (que usará este ctor)
 	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, const Flag &flags, myDIEventHandler *event_handler=NULL) :
 		dit_type(type),
-		flags( FlagIf(DIF_REQUIRES_MANUAL_UPDATE,type==DIT_GDB_COMMAND) | flags.Get() | DIF_IN_SCOPE ),
 		expression(expr),
+		flags( FlagIf(DIF_REQUIRES_MANUAL_UPDATE,type==DIT_GDB_COMMAND) | flags.Get() | DIF_IN_SCOPE ),
 //		is_frozen(false),
 		consumer(event_handler),
 		helper(NULL),
@@ -367,8 +367,8 @@ private:
 	/// ctor para una vo hija, creada por VOBreak
 	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, const wxString &type, int num_child) : 
 		dit_type(DIT_VARIABLE_OBJECT),
-		flags(DIF_IN_SCOPE|(_parent->IsFrameless()?DIF_FRAMELESS:0)),
 		expression(expr),
+		flags(DIF_IN_SCOPE|(_parent->IsFrameless()?DIF_FRAMELESS:0)),
 		variable_object(vo_name),
 		thread_id(_parent->thread_id),
 		frame_id(_parent->frame_id),
