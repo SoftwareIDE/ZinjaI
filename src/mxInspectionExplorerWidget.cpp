@@ -10,7 +10,7 @@ mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const
 	AddRoot(expression); 
 	if (expression!="") {
 		DebuggerInspection *di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_DONT_USE_HELPER,this,false);
-		int p = AddItem(NULL,di,true);
+		/*int p =*/ AddItem(NULL,di,true);
 		wxTreeCtrl::SetItemHasChildren(GetRootItem());
 		wxTreeCtrl::Expand(GetRootItem());
 	}

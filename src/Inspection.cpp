@@ -10,6 +10,15 @@ SingleList<DebuggerInspection*> DebuggerInspection::all_inspections;
 int DebuggerInspection::CallLogger::lev=0;
 #endif
 
+static wxString &RemoveEscapeChar(wxString &s) {
+	int i=0, l=s.Len();
+	while (i<l) {
+		if (s[i]=='\\') { s.erase(i,1); l--; } 
+		i++;
+	}
+	return s;
+}
+
 void DebuggerInspection::UpdateAll ( ) {
 	__debug_log_static_method__;
 	if (!debug->debugging||debug->waiting) return;
@@ -27,7 +36,7 @@ void DebuggerInspection::UpdateAll ( ) {
 				while (i<l && s[i]!=']' && s[i]!='}' && s[i]!='=') i++;
 				int p1=i; // posicion del igual
 				if (++i>=l || s[i]!='\"') break; 
-				while (++i<l && s[i]!='\"') { if (i=='\\') i++; }
+				while (++i<l && s[i]!='\"') { if (s[i]=='\\') i++; }
 				int p2=i; // posicion de la comilla que cierra
 				wxString name=s.Mid(p0,p1-p0);
 				if (name=="name") u.name=s.Mid(p1+2,p2-p1-2);
@@ -51,7 +60,7 @@ void DebuggerInspection::UpdateAll ( ) {
 			if (!u.new_num_children.IsEmpty()) { u.new_num_children.ToLong(&di.num_children); new_type=true; } 
 			if (!u.new_type.IsEmpty()) { di.value_type=u.new_type; new_type=true; }
 			if (di.flags.Get(DIF_IN_SCOPE)!=in_scope) { di.flags.Set(DIF_IN_SCOPE,in_scope); new_scope=true; }
-			if (in_scope && (new_type || !di.helper)) di.gdb_value=u.value;
+			if (in_scope && (new_type || !di.helper)) di.gdb_value=RemoveEscapeChar(u.value);
 			
 			if (di.dit_type==DIT_VARIABLE_OBJECT) {
 				if (in_scope) {

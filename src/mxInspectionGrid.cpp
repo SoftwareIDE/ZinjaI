@@ -1080,6 +1080,7 @@ void mxInspectionGrid::DeleteInspection (int r, bool for_reuse) {
 	if (inspections[r].di) inspections[r]->Destroy(); // si es una que ya existía
 	if (for_reuse) {
 		inspections[r].Reset(); // para que OnFullTableUpdateBegin no la considere más
+		inspections[r].expression_renderer->SetIconNull();
 	} else {
 		inspections.Remove(r); // quitar de la lista propia de inspecciones
 		DeleteRows(r,1); 														// eliminar fila de la tabla

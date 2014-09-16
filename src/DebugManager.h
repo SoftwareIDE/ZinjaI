@@ -259,7 +259,7 @@ public:
 //	bool SelectFrameForInspeccion(wxString addr);
 	bool ToggleInspectionFreeze(int n);
 	bool DoThat(wxString what);
-	bool BreakCompoundInspection(int n);
+//	bool BreakCompoundInspection(int n);
 	bool CreateVO(wxString expr, wxString &name, wxString &type, int &children);
 	wxString GetVOValue(wxString name);
 	bool DeleteVO(wxString name);
