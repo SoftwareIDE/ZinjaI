@@ -386,23 +386,33 @@ void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {
 
 
 void mxProjectConfigWindow::OnAddConfigButton(wxCommandEvent &event) {
-	wxString res = mxGetTextFromUser(LANG(PROJECTCONFIG_PROFILE_NAME,"Nombre:"), LANG(PROJECTCONFIG_ADD_PROFILE,"Agregar configuracion:"), "", this);
-	if (res!="") {
-		for (int i=0;i<project->configurations_count;i++)
-			if (project->configurations[i]->name==res) {
-				mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuracion con ese nombre"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-				return;
-			}
-		configuration = project->configurations[project->configurations_count++] = new project_configuration(wxFileName(project->filename).GetName(),res);
-//		configuration_name->SetString(configuration_name->GetSelection(),res);
-		configuration_name->Append(res);
-		// seleccionar la nueva configuracion
-		for (unsigned int i=0;i<configuration_name->GetCount();i++) {
-			if (configuration_name->GetString(i)==res) {
-				configuration_name->SetSelection(i);
-				configuration_name->SetValue(res);
-				LoadValues();
-			}
+	// ask for a name for the new configuration
+	wxString new_name = mxGetTextFromUser(LANG(PROJECTCONFIG_PROFILE_NAME,"Nombre:"), LANG(PROJECTCONFIG_ADD_PROFILE,"Agregar configuracion"), "", this);
+	if (new_name.IsEmpty()) return;
+	// check if the name is unique
+	for (int i=0;i<project->configurations_count;i++)
+		if (project->configurations[i]->name==new_name) {
+			mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuracion con ese nombre"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			return;
+		}
+	// ask for an old configuration to copy settings from
+	wxArrayString copy_from_arr; copy_from_arr.Add(LANG(PROJECTCONFIG_PROFILE_NULL,"<ninguna>"));
+	for(int i=0;i<project->configurations_count;i++) copy_from_arr.Add(project->configurations[i]->name);
+	wxString copy_from_name = wxGetSingleChoice(LANG(PROJECTCONFIG_COPY_PROFILE_FROM,"Copiar de:"),LANG(PROJECTCONFIG_ADD_PROFILE,"Agregar configuracion:"),copy_from_arr);
+	if (copy_from_name.IsEmpty()) return;
+	int copy_from_idx = copy_from_arr.Index(copy_from_name);
+	// create the new configuration
+	project_configuration *new_conf;
+	if (copy_from_idx==0) new_conf = new project_configuration(wxFileName(project->filename).GetName(),new_name);
+	else new_conf = new project_configuration(new_name,project->configurations[copy_from_idx-1]);
+	configuration = project->configurations[project->configurations_count++] = new_conf;
+	configuration_name->Append(new_name);
+	// select the new configuration
+	for (unsigned int i=0;i<configuration_name->GetCount();i++) {
+		if (configuration_name->GetString(i)==new_name) {
+			configuration_name->SetSelection(i);
+			configuration_name->SetValue(new_name);
+			LoadValues();
 		}
 	}
 }

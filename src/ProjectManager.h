@@ -314,6 +314,29 @@ struct project_configuration {
 		std_c=std_cpp="";
 		for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) toolchain_arguments[i]="${DEFAULT}";
 	}
+	
+	/// inicializa una nueva configuracion a partir de una existente
+	project_configuration(wxString cname, project_configuration *copy_from) {
+		(*this)=*copy_from; // this copy is not correct, copies ptrs
+		bakup=NULL;
+		name=cname;
+		if (extra_steps) {
+			compile_extra_step *aux = extra_steps = new compile_extra_step(*extra_steps);
+			while (aux->next) { 
+				compile_extra_step * niu = new compile_extra_step(*aux->next); 
+				aux->next = niu; niu->prev=aux;
+				aux=niu;
+			}
+		}
+		if (libs_to_build) {
+			project_library *aux = libs_to_build = new project_library(*libs_to_build);
+			while (aux->next) { 
+				project_library * niu = new project_library(*aux->next); 
+				aux->next = niu; niu->prev=aux;
+				aux=niu;
+			}
+		}
+	}
 };
 
 //! Información acerca de una linea de código resaltada por el usuario
