@@ -45,7 +45,7 @@ marker=4654
 open=true
 [source]
 path=src/mxSource.cpp
-cursor=4081:4
+cursor=4103:8
 open=true
 [source]
 path=src/mxDiffSideBar.cpp

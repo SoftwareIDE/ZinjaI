@@ -321,16 +321,18 @@ private:
 	
 	
 private:
-	struct RectSel { 
+	struct RectSel {
 		bool is_on; ///< si estamos o no editando "rectangularmente"
+		bool was_rect_select; ///< para saber al aplicar un cambio si habia en el estado anterior una seleccion rectangular (porque en ese caso se modicaron todas las lineas)
 		int offset_beg, offset_end; ///< dentro de la line, en que posicion estamos editando (posicion en la que empezaria ref_str, y cuanto mide)
 		int line_from, line_to; ///< cuales lineas estamos editando "rectangularmente" (desde line_from hasta line_to, incluidos ambos extremos)
 		wxString ref_str; ///< string de la primer linea de la seleccion rectangular, para comparar y ver como cambio y hacer lo mismo en las otras
 		RectSel():is_on(false){}
 		operator bool() { return is_on; }
 	} rect_sel;
+	void OnClickUp(wxMouseEvent &evt);
 	void OnEditRectangularEdition(wxCommandEvent &evt);
-	void InitRectEdit();
+	void InitRectEdit(bool keep_rect_select);
 	void ApplyRectEdit();
 	
 	DECLARE_EVENT_TABLE();
