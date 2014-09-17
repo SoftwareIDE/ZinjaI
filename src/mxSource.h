@@ -319,6 +319,20 @@ private:
 	int brace_1,brace_2;
 	void MyBraceHighLight(int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);
 	
+	
+private:
+	struct RectSel { 
+		bool is_on; ///< si estamos o no editando "rectangularmente"
+		int offset_beg, offset_end; ///< dentro de la line, en que posicion estamos editando (posicion en la que empezaria ref_str, y cuanto mide)
+		int line_from, line_to; ///< cuales lineas estamos editando "rectangularmente" (desde line_from hasta line_to, incluidos ambos extremos)
+		wxString ref_str; ///< string de la primer linea de la seleccion rectangular, para comparar y ver como cambio y hacer lo mismo en las otras
+		RectSel():is_on(false){}
+		operator bool() { return is_on; }
+	} rect_sel;
+	void OnEditRectangularEdition(wxCommandEvent &evt);
+	void InitRectEdit();
+	void ApplyRectEdit();
+	
 	DECLARE_EVENT_TABLE();
 };
 

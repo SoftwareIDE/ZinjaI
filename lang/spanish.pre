@@ -632,6 +632,8 @@ MENUITEM_HIDDEN_FORCE_AUTOCOMPLETE
 Autocompletar
 MENUITEM_HIDDEN_OPEN_SELECTED
 Abrir archivo seleccionado en el código
+MENUITEM_HIDDEN_RECTANGULAR_EDITION
+Activar edición rectangular
 MENUITEM_HIDDEN_PREV_TAB
 Pestaña de código anterior
 MENUITEM_HIDDEN_NEXT_TAB
@@ -1719,7 +1721,7 @@ WatchPoint
 INSPECTGRID_FORMAT
 Formato
 INSPECTGRID_POPUP_CLEAN_TABLE
-&Limpiar Tabla de Inspeccion
+&Limpiar Tabla de Inspecciones
 INSPECTGRID_POPUP_SAVE_TABLE
 &Guardar Lista de Inspecciones...
 INSPECTGRID_POPUP_LOAD_TABLE
@@ -2677,9 +2679,13 @@ Directorio para archivos temporales e intermedios
 PROJECTCONFIG_PROFILE_NAME
 Nombre:
 PROJECTCONFIG_ADD_PROFILE
-Agregar configuracion:
+Agregar configuracion
 PROJECTCONFIG_PROFILE_NAME_REPEATED
 Ya existe otra configuracion con ese nombre
+PROJECTCONFIG_PROFILE_NULL
+<ninguna>
+PROJECTCONFIG_COPY_PROFILE_FROM
+Copiar de:
 PROJECTCONFIG_CANT_DELETE_LAST_PROFILE
 No puedes eliminar la unica configuracion existente
 PROJECTCONFIG_CONFIRM_DELETE_PRE
@@ -2862,6 +2868,8 @@ DEBUG_ALLOW_EDIT_WHILE_DEBUGGING
 Permitir editar igualemente
 MAINW_CHANGES_CONFIRM_RELOAD
 Hay Cambios sin guardar, desea recargar igualmente la version del disco?
+MAINW_PRESS_ESC_TO_FINISH_RECT_EDIT
+Presione ESC o mueva el cursor de texto fuera de la selección para volver a la edición regular.
 THREADS_ID
 Id
 THREADS_FUNCTION

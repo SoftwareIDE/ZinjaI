@@ -339,6 +339,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnHIDDEN, myMenuItem("update_symbols",mxID_VIEW_UPDATE_SYMBOLS,LANG(MENUITEM_HIDDEN_UPDATE_SYMBOLS,"Actualizar arbol de simbolos")).ShortCut("F2"));
 		AddMenuItem(mnHIDDEN, myMenuItem("autocomplete",mxID_EDIT_FORCE_AUTOCOMPLETE,LANG(MENUITEM_HIDDEN_FORCE_AUTOCOMPLETE,"Autocompletar")).ShortCut("Ctrl+Space"));
 		AddMenuItem(mnHIDDEN, myMenuItem("open_selected",mxID_FILE_OPEN_SELECTED,LANG(MENUITEM_HIDDEN_OPEN_SELECTED,"Abrir archivo seleccionado en el código")).ShortCut("Ctrl+Return"));
+		AddMenuItem(mnHIDDEN, myMenuItem("rect_edit",mxID_EDIT_RECTANGULAR_EDITION,LANG(MENUITEM_HIDDEN_RECTANGULAR_EDITION,"Activar edición rectangular")).ShortCut("Alt+Return"));
 		AddMenuItem(mnHIDDEN, myMenuItem("prev_tab_1",mxID_VIEW_NOTEBOOK_PREV,LANG(MENUITEM_HIDDEN_PREV_TAB,"Pestaña de código anterior")).ShortCut("Ctrl+Shift+Tab"));
 		AddMenuItem(mnHIDDEN, myMenuItem("next_tab_1",mxID_VIEW_NOTEBOOK_NEXT,LANG(MENUITEM_HIDDEN_NEXT_TAB,"Pestaña de código siguiente")).ShortCut("Ctrl+Tab"));
 		AddMenuItem(mnHIDDEN, myMenuItem("prev_tab_2",mxID_VIEW_NOTEBOOK_PREV,LANG(MENUITEM_HIDDEN_PREV_TAB,"Pestaña de código anterior")).ShortCut("Ctrl+PageUp"));

@@ -164,6 +164,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_MARK_LINES, mxSource::OnEditMarkLines)
 	EVT_MENU (mxID_EDIT_GOTO_MARK, mxSource::OnEditGotoMark)
 	EVT_MENU (mxID_EDIT_FORCE_AUTOCOMPLETE, mxSource::OnEditForceAutoComplete)
+	EVT_MENU (mxID_EDIT_RECTANGULAR_EDITION, mxSource::OnEditRectangularEdition)
 	EVT_MENU (mxID_EDIT_AUTOCODE_AUTOCOMPLETE, mxSource::OnEditAutoCompleteAutocode)
 	EVT_MENU (mxID_EDIT_TOGGLE_LINES_UP, mxSource::OnEditToggleLinesUp)
 	EVT_MENU (mxID_EDIT_TOGGLE_LINES_DOWN, mxSource::OnEditToggleLinesDown)
@@ -1015,6 +1016,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 //		}
 //		last_s1=GetSelectionStart(); last_s2=GetSelectionEnd();
 //	}
+	if (rect_sel) ApplyRectEdit();
 }
 
 
@@ -3195,16 +3197,16 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 		int p=PositionFromPointClose(evt.GetX(),evt.GetY());
 		SetSelectionStart(p); SetSelectionEnd(p);
 		JumpToCurrentSymbolDefinition();
-	} else if (evt.AltDown()) {
-		int pos = PositionFromPointClose(evt.GetX(),evt.GetY());
-		int s=WordStartPosition(pos,true);
-		int e=WordEndPosition(pos,true);
-		wxString key = GetTextRange(s,e);
-		if (key.Len()!=0) { // puede ser una directiva de preprocesador
-			if (GetCharAt(s-1)=='#')
-				key = GetTextRange(s-1,e);
-		}
-		if (key.Len()) main_window->ShowQuickHelp(key); 
+//	} else if (evt.AltDown()) {
+//		int pos = PositionFromPointClose(evt.GetX(),evt.GetY());
+//		int s=WordStartPosition(pos,true);
+//		int e=WordEndPosition(pos,true);
+//		wxString key = GetTextRange(s,e);
+//		if (key.Len()!=0) { // puede ser una directiva de preprocesador
+//			if (GetCharAt(s-1)=='#')
+//				key = GetTextRange(s-1,e);
+//		}
+//		if (key.Len()) main_window->ShowQuickHelp(key); 
 	} else {
 		wxPoint point=evt.GetPosition();
 		int ss=GetSelectionStart(), se=GetSelectionEnd(), p=PositionFromPointClose(point.x,point.y);
@@ -3596,6 +3598,7 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 		}
 	}
 	if (evt.GetKeyCode()==WXK_ESCAPE) {
+		rect_sel.is_on=false;
 		if (calltip_mode!=MXS_NULL) {
 			HideCalltip();
 		} else {
@@ -4034,5 +4037,57 @@ void mxSource::OnEditMakeLowerCase (wxCommandEvent & event) {
 
 void mxSource::OnEditMakeUpperCase (wxCommandEvent & event) {
 	UpperCase();
+}
+
+void mxSource::InitRectEdit ( ) {
+	int beg=GetSelectionStart(), end=GetSelectionEnd();
+	if (beg>end) swap(beg,end);
+	rect_sel.is_on=true;
+	rect_sel.line_from=LineFromPosition(beg);
+	rect_sel.line_to=LineFromPosition(end);
+	rect_sel.offset_beg=beg-PositionFromLine(rect_sel.line_from);
+	int aux_off_end=end-PositionFromLine(rect_sel.line_to);
+	int aux_from_len=GetLineEndPosition(rect_sel.line_from)-PositionFromLine(rect_sel.line_from); 
+	rect_sel.offset_end = aux_from_len-aux_off_end;
+	rect_sel.ref_str=GetTextRange(beg,GetLineEndPosition(rect_sel.line_from)-rect_sel.offset_end);
+	SetSelection(beg,beg+rect_sel.ref_str.Len());
+//	main_window->SetStatusText(wxString("*")<<rect_sel.ref_str<<"*   "<<rect_sel.offset_beg<<" - "<<rect_sel.offset_end);
+}
+
+void mxSource::ApplyRectEdit ( ) {
+	if (GetCurrentLine()!=rect_sel.line_from) { 
+		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
+		rect_sel.is_on=false; return;
+	}
+	int /*cur=GetCurrentPos(), */lbeg=PositionFromLine(rect_sel.line_from),lend=GetLineEndPosition(rect_sel.line_from); 
+//	if (cur-lbeg<rect_sel.offset_beg || cur>lend-rect_sel.offset_end) { rect_sel.is_on=false; return; }
+	int pbeg=lbeg+rect_sel.offset_beg, pend=lend-rect_sel.offset_end;
+	wxString new_str = GetTextRange(pbeg,pend);
+	wxString &ref_str = rect_sel.ref_str;
+	int i=0, lr=ref_str.Len(), ln=new_str.Len(); 
+	while (i<lr && i<ln && ref_str[i]==new_str[i]) { i++; }
+	while (lr>i && ln>i && ref_str[lr]==new_str[ln]) { lr--; ln--; }
+	if (i==lr && lr==ln) return;
+	wxString sfrom=ref_str.Mid(i,lr-i+1),sto=new_str.Mid(i,ln-i+1);
+	BeginUndoAction();
+	for(int line=rect_sel.line_from+1;line<=rect_sel.line_to;line++) { 
+		int tbeg = PositionFromLine(line)+rect_sel.offset_beg+i;
+		int tend = PositionFromLine(line)+rect_sel.offset_beg+i+sfrom.Len();
+		int lend = GetLineEndPosition(line);
+		if (tend>lend) continue;
+		SetTargetStart(tbeg);
+		SetTargetEnd(tend);
+		ReplaceTarget(sto);
+	}
+	EndUndoAction();
+	ref_str=new_str;
+	
+}
+
+void mxSource::OnEditRectangularEdition (wxCommandEvent & evt) {
+	if (SelectionIsRectangle()) {
+		InitRectEdit();
+		main_window->SetStatusText(LANG(MAINW_PRESS_ESC_TO_FINISH_RECT_EDIT,"Presione ESC o mueva el cursor de texto a otra linea para volver al modo de edición normal."));
+	}
 }
 

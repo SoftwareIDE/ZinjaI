@@ -1,3 +1,7 @@
+error: intentar ejecutar un .h, y luego uno sin_titlo
+
+
+
 cuando un proyecto define un archivo de macros gdb, usarlo en combinacion con el general, y no reemplazanod (para mantener las macros para stl)
 
 guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo
