@@ -1,14 +1,11 @@
 #ifndef MXINSPECTIONGRID_H
 #define MXINSPECTIONGRID_H
 #include "mxGrid.h"
-
-//#include <wx/dc.h>
-//#include <wx/dnd.h>
 #include "SingleList.h"
 #include "Inspection.h"
-//
+
 enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COLS_COUNT};
-//
+
 //
 //class mxInspectionGrid;
 //
@@ -39,7 +36,7 @@ class mxInspectionGrid : public mxGrid, public myDIEventHandler {
 ////	int cols_marginal;
 public:
 	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_UNFREEZE, IGRS_COUNT };
-private:
+
 	struct InspectionGridRow {
 		DebuggerInspection *di;
 		mxGridCellRenderer *expression_renderer, *value_renderer;
@@ -52,6 +49,8 @@ private:
 		bool IsNull() { return di==NULL; }
 		void Reset() { is_frozen=false; di=NULL; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar los renderer*/ }
 	};
+	
+private:
 	SingleList<InspectionGridRow> inspections;
 	
 	int current_row;
@@ -85,8 +84,8 @@ public:
 	void OnDuplicate(wxCommandEvent &evt);
 	void OnReScope(wxCommandEvent &evt);
 	void OnSetFrameless(wxCommandEvent &evt);
-//	void OnExploreExpression(wxCommandEvent &evt);
-//	void OnExploreAll(wxCommandEvent &evt);
+	void OnExploreExpression(wxCommandEvent &evt);
+	void OnExploreAll(wxCommandEvent &evt);
 //	void OnShowInText(wxCommandEvent &evt);
 //	void OnShowInTable(wxCommandEvent &evt);
 	void OnCopyData(wxCommandEvent &evt);

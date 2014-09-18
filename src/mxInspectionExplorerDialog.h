@@ -8,7 +8,8 @@ class mxInspectionExplorerWidget;
 class mxInspectionExplorerDialog : public wxDialog {
 	mxInspectionExplorerWidget *exp;
 public:
-	mxInspectionExplorerDialog(const wxString &expression, bool frameless);
+	mxInspectionExplorerDialog(const wxString &expression="", bool frameless=false);
+	void AddExpression(wxString expression, bool frameless);
 };
 
 #endif

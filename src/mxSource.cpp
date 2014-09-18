@@ -3174,7 +3174,7 @@ void mxSource::JumpToCurrentSymbolDefinition() {
 	int e=WordEndPosition(pos,true);
 	wxString key = GetTextRange(s,e);
 #ifdef _ZINJAI_DEBUG
-	if (debug->IsDebugging()) { new mxInspectionExplorerDialog(key,false); return; }
+	if (debug->IsDebugging() && debug->IsPaused()) { new mxInspectionExplorerDialog(key,false); return; }
 #endif
 	if (key.Len()) new mxGotoFunctionDialog(key,main_window,GetFileName(false));
 }

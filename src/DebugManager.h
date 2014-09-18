@@ -117,6 +117,7 @@ class wxOutputStream;
 class wxInputStream;
 class mxSource;
 class DebugPatcher;
+class DebuggerInspection;
 
 class DebugManager;
 extern DebugManager *debug;
@@ -343,6 +344,7 @@ public:
 			if (thread_id!=-1 && debug->current_thread_id!=thread_id) debug->SelectThread(thread_id);
 			if (debug->current_frame_id!=frame_id) debug->SelectFrame(frame_id,-1);
 		}
+		void ChangeIfNeeded(DebuggerInspection *di);
 		void Reset() {
 			if (debug->current_thread_id!=orig_thread_id) debug->SelectThread(orig_thread_id);
 			if (debug->current_frame_id!=orig_frame_id) debug->SelectFrame(orig_frame_id,-1);

@@ -2914,3 +2914,6 @@ void DebugManager::Initialize() {
 	debug->inspection_grid=main_window->inspection_ctrl;
 }
 
+void DebugManager::TemporaryScopeChange::ChangeIfNeeded(DebuggerInspection *di) {
+	if (!di->IsFrameless()) ChangeTo(di->GetFrameID(),di->GetThreadID());
+}

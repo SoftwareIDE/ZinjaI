@@ -14,3 +14,7 @@ mxInspectionExplorerDialog::mxInspectionExplorerDialog (const wxString & express
 	Show();
 }
 
+void mxInspectionExplorerDialog::AddExpression (wxString expression, bool frameless) {
+	exp->AddExpression(expression,frameless);
+}
+
