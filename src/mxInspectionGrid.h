@@ -1,32 +1,33 @@
 #ifndef MXINSPECTIONGRID_H
 #define MXINSPECTIONGRID_H
+#include <wx/dnd.h>
 #include "mxGrid.h"
 #include "SingleList.h"
 #include "Inspection.h"
 
 enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COLS_COUNT};
 
-//
-//class mxInspectionGrid;
-//
-//class mxInspectionDropTarget : public wxDropTarget {
-//	mxInspectionGrid *grid;
-//	wxTextDataObject *data;
-//public:
-//	mxInspectionDropTarget(mxInspectionGrid *agrid);
-//	bool OnDrop(wxCoord x, wxCoord y);
-//	wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def);
-//	wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def);
-////	void OnLeave();
-////	wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
-//};
-//
+
+class mxInspectionGrid;
+
+class mxInspectionDropTarget : public wxDropTarget {
+	mxInspectionGrid *grid;
+	wxTextDataObject *data;
+public:
+	mxInspectionDropTarget(mxInspectionGrid *agrid);
+	bool OnDrop(wxCoord x, wxCoord y);
+	wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def);
+	wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def);
+//	void OnLeave();
+//	wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
+};
+
 
 /**
 * @brief Representa a la grilla del panel de inspecciones
 **/
 class mxInspectionGrid : public mxGrid, public myDIEventHandler {
-//	bool can_drop; // para evitar hacer drag y drop sobre si misma
+	bool can_drop; // para evitar hacer drag y drop sobre si misma
 //	bool created;
 //	int selected_row;
 	bool ignore_cell_change_event;
@@ -119,7 +120,9 @@ public:
 //	void HightlightFreeze(int r);
 //	void ResetChangeHightlights();
 //	bool ModifyExpresion(int r, wxString expr);
-//	bool CanDrop();
+	void OnClick(wxGridEvent &evt);
+	bool CanDrop();
+	void SwapInspections(int r1, int r2);
 //	
 	void InsertRows(int pos=-1, int cant=1);
 	void OnRedirectedEditEvent(wxCommandEvent &event);
@@ -152,6 +155,7 @@ public:
 	void UpdateLevelColumn(int r);
 	void UpdateValueColumn(int r);
 	void UpdateTypeColumn(int r);
+	void UpdateExpressionColumn(int r);
 	void SetRowStatus(int r, int status);
 	void DeleteInspection(int r, bool for_reuse);
 	bool CreateInspection(int r, const wxString &expression, bool frameless);

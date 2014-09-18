@@ -21,7 +21,7 @@ using namespace std;
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_GRID_CELL_CHANGE(mxInspectionGrid::OnCellChange)
 	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
-//	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
+	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionGrid::OnDoubleClick)
 	EVT_MENU(mxID_INSPECTION_FREEZE,mxInspectionGrid::OnFreeze)
 	EVT_MENU(mxID_INSPECTION_UNFREEZE,mxInspectionGrid::OnUnFreeze)
@@ -94,7 +94,7 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	mxig_status_opts[IGRS_ERROR].Init(false,wxColour(196,0,0),"<<< Error >>>");
 	mxig_status_opts[IGRS_FREEZE].Init(false,wxColour(0,100,200));
 	
-//	can_drop=true;
+	can_drop=true;
 //	ignore_changing=true;
 //	created=false;
 	
@@ -138,7 +138,7 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 ////	SetColAttr(IG_COL_WATCH,attr_watch);
 ////	SetColAttr(IG_COL_FORMAT,attr_format);
 //	AddRow();
-//	SetDropTarget(new mxInspectionDropTarget(this));
+	SetDropTarget(new mxInspectionDropTarget(this));
 //	created=true;
 //	ignore_changing=false;
 	SetColLabelSize(wxGRID_AUTOSIZE);
@@ -866,58 +866,63 @@ void mxInspectionGrid::OnCopyAll(wxCommandEvent &evt) {
 	mxUT::SetClipboardText(text);
 }
 //
-//wxDragResult mxInspectionDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
-//	if (!grid->CanDrop()) return wxDragCancel;
-//	int ux,uy,vx,vy;
-//	grid->GetScrollPixelsPerUnit(&ux,&uy);
-//	grid->GetViewStart(&vx,&vy);
-//	int r=grid->YToRow(y+vy*uy-grid->GetColLabelSize());
-//	if (r!=wxNOT_FOUND) grid->SelectRow(r);
-//	return wxDragCopy;
-//}
-//
-//
-//mxInspectionDropTarget::mxInspectionDropTarget(mxInspectionGrid *agrid) {
-//	grid=agrid; 
-//	SetDataObject(data=new wxTextDataObject());
-//}
-//
-//bool mxInspectionDropTarget::OnDrop(wxCoord x, wxCoord y) {
-//	return true;
-//}
-//
-//wxDragResult mxInspectionDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult ref) {
-//	if (!grid->CanDrop()) return wxDragCancel;
-//	int ux,uy,vx,vy;
-//	grid->GetScrollPixelsPerUnit(&ux,&uy);
-//	grid->GetViewStart(&vx,&vy);
-//	int r=grid->YToRow(y+vy*uy-grid->GetColLabelSize());
-//	if (r==wxNOT_FOUND) return wxDragCancel;
-//	GetData(); grid->SelectRow(r);
-//	wxString str=data->GetText();
-//	if (!str.size()) return wxDragCancel;
-//	str.Replace("\n"," ");
-//	str.Replace("\r"," ");
-//	grid->ModifyExpresion(r,str);
-//	return wxDragCopy;
-//}
-//
-//bool mxInspectionGrid::CanDrop() {
-//	return can_drop;
-//}
-//
-//void mxInspectionGrid::OnClick(wxGridEvent &event) {
-//	if (event.AltDown()) {
-//		SelectRow(event.GetRow());
-//		can_drop=false;
-//		wxTextDataObject my_data(GetCellValue(event.GetRow(),event.GetCol()));
-//		wxDropSource dragSource(this);
-//		dragSource.SetData(my_data);
-//		dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
-//		can_drop=true;
-//	} else event.Skip();
-//}
-//
+wxDragResult mxInspectionDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {
+	int ux,uy,vx,vy;
+	grid->GetScrollPixelsPerUnit(&ux,&uy);
+	grid->GetViewStart(&vx,&vy);
+	int r = grid->YToRow(y+vy*uy-grid->GetColLabelSize());
+	if (grid->CanDrop() && r!=wxNOT_FOUND) grid->SelectRow(r);
+	return grid->CanDrop()?wxDragCopy:wxDragMove;
+}
+
+
+mxInspectionDropTarget::mxInspectionDropTarget(mxInspectionGrid *agrid) {
+	grid=agrid;
+	SetDataObject(data=new wxTextDataObject());
+}
+
+bool mxInspectionDropTarget::OnDrop(wxCoord x, wxCoord y) {
+	return true;
+}
+
+wxDragResult mxInspectionDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult ref) {
+	int ux,uy,vx,vy;
+	grid->GetScrollPixelsPerUnit(&ux,&uy);
+	grid->GetViewStart(&vx,&vy);
+	int r=grid->YToRow(y+vy*uy-grid->GetColLabelSize());
+	if (r==wxNOT_FOUND) return wxDragCancel;
+	if (grid->CanDrop()) {
+		GetData(); grid->SelectRow(r);
+		wxString str=data->GetText();
+		if (!str.size()) return wxDragCancel;
+		str.Replace("\n"," ");
+		str.Replace("\r"," ");
+		grid->InsertRows(r,1);
+		grid->mxGrid::SetCellValue(r,IG_COL_EXPR,str);
+		grid->CreateInspection(r,str,false);
+		return wxDragCopy;
+	} else {
+		grid->SwapInspections(grid->GetGridCursorRow(),r);
+		return wxDragMove;
+	}
+}
+
+bool mxInspectionGrid::CanDrop() {
+	return can_drop;
+}
+
+void mxInspectionGrid::OnClick(wxGridEvent &event) {
+	if (event.AltDown()) {
+		SelectRow(event.GetRow());
+		can_drop=false;
+		wxTextDataObject my_data(wxGrid::GetCellValue(event.GetRow(),event.GetCol()));
+		wxDropSource dragSource(this);
+		dragSource.SetData(my_data);
+		dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
+		can_drop=true;
+	} else event.Skip();
+}
+
 void mxInspectionGrid::OnRedirectedEditEvent (wxCommandEvent & event) {
 #warning probar esto
 //	selected_row=GetGridCursorRow();
@@ -1267,5 +1272,27 @@ void mxInspectionGrid::ExposeImprovedExpression (int r) {
 	di->Destroy();
 	CreateInspection(r,new_expr,was_frameless);
 	mxGrid::SetCellValue(r,IG_COL_EXPR,new_expr);
+}
+
+void mxInspectionGrid::SwapInspections (int r1, int r2) {
+	DebuggerInspection *dr1=inspections[r1].di;
+	DebuggerInspection *dr2=inspections[r2].di;
+	inspections[r1]=dr2; inspections[r2]=dr1;
+	UpdateExpressionColumn(r1); UpdateLevelColumn(r1); UpdateTypeColumn(r1); UpdateValueColumn(r1);
+	UpdateExpressionColumn(r2); UpdateLevelColumn(r2); UpdateTypeColumn(r2); UpdateValueColumn(r2);
+}
+
+void mxInspectionGrid::UpdateExpressionColumn (int r) {
+	if (inspections[r].IsNull()) {
+		mxGrid::SetCellValue(r,IG_COL_EXPR,"");
+		inspections[r].expression_renderer->SetIconNull();
+	} else {
+		mxGrid::SetCellValue(r,IG_COL_EXPR,inspections[r]->GetExpression());
+		if (inspections[r]->GetHelperExpression().IsEmpty()) {
+			inspections[r].expression_renderer->SetIconNull();
+		} else {
+			inspections[r].expression_renderer->SetIconPlus();
+		}
+	}
 }
 
