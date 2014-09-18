@@ -4040,6 +4040,14 @@ void mxSource::OnEditMakeUpperCase (wxCommandEvent & event) {
 	UpperCase();
 }
 
+
+
+/// @todo: ver si es mejor sacar todo esto y delegarselo a scintilla
+///
+/// nota importante: despues de implementar la edicion en multiples lineas
+/// para el scintilla de wx2.8, veo que el de 3.0 ya lo tiene resuelto 
+/// (ver SetAdditionalSelectionTyping)... cuando logra migrar a wx3 tendre
+/// que cambiar esto :(
 void mxSource::InitRectEdit (bool keep_rect_select) {
 	// get ordered selection limits
 	int beg=GetSelectionStart(), end=GetSelectionEnd(); if (beg>end) swap(beg,end);
@@ -4065,8 +4073,11 @@ void mxSource::ApplyRectEdit ( ) {
 		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 		rect_sel.is_on=false; return;
 	}
-	int /*cur=GetCurrentPos(), */lbeg=PositionFromLine(rect_sel.line_from),lend=GetLineEndPosition(rect_sel.line_from); 
-//	if (cur-lbeg<rect_sel.offset_beg || cur>lend-rect_sel.offset_end) { rect_sel.is_on=false; return; }
+	int cur=GetCurrentPos(), lbeg=PositionFromLine(rect_sel.line_from),lend=GetLineEndPosition(rect_sel.line_from); 
+	if (cur-lbeg<rect_sel.offset_beg || cur>lend-rect_sel.offset_end) { 
+		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
+		rect_sel.is_on=false; return;
+	}
 	int pbeg=lbeg+rect_sel.offset_beg, pend=lend-rect_sel.offset_end;
 	wxString new_str = GetTextRange(pbeg,pend);
 	wxString &ref_str = rect_sel.ref_str;
@@ -4098,11 +4109,11 @@ void mxSource::ApplyRectEdit ( ) {
 
 void mxSource::OnClickUp(wxMouseEvent & evt) {
 	evt.Skip();
-//	if (evt.AltDown() && SelectionIsRectangle()) InitRectEdit(true);
+	if (evt.AltDown() && SelectionIsRectangle()) InitRectEdit(true);
 }
 
 void mxSource::OnEditRectangularEdition (wxCommandEvent & evt) {
 	InitRectEdit(false);
-	main_window->SetStatusText(LANG(MAINW_PRESS_ESC_TO_FINISH_RECT_EDIT,"Presione ESC o mueva el cursor de texto a otra linea para volver al modo de edición normal."));
+	if (rect_sel.is_on) main_window->SetStatusText(LANG(MAINW_PRESS_ESC_TO_FINISH_RECT_EDIT,"Presione ESC o mueva el cursor de texto a otra linea para volver al modo de edición normal."));
 }
 

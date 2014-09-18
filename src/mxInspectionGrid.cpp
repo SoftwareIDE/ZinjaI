@@ -29,8 +29,8 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_RESCOPE,mxInspectionGrid::OnReScope)
 	EVT_MENU(mxID_INSPECTION_SET_FRAMELESS,mxInspectionGrid::OnSetFrameless)
 	EVT_MENU(mxID_INSPECTION_DUPLICATE,mxInspectionGrid::OnDuplicate)
-//	EVT_MENU(mxID_INSPECTION_FROM_CLIPBOARD,mxInspectionGrid::OnPasteFromClipboard)
-//	EVT_MENU(mxID_INSPECTION_FROM_SOURCE,mxInspectionGrid::OnCopyFromSelecction)
+	EVT_MENU(mxID_INSPECTION_FROM_CLIPBOARD,mxInspectionGrid::OnPasteFromClipboard)
+	EVT_MENU(mxID_INSPECTION_FROM_SOURCE,mxInspectionGrid::OnCopyFromSelecction)
 //	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxInspectionGrid::OnShowInText)
 //	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionGrid::OnShowInTable)
 //	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionGrid::OnExploreExpression)
@@ -395,7 +395,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	bool sel_has_vo = sel_is_vo; // si hay al menos una variable object seleccionada
 	bool sel_has_frozen = false, sel_has_unfrozen=false; // si hay inspecciones congeladas y descongeladas
 	for(unsigned int i=0;i<sel.size();i++) {
-		if (sel[i]>=inspections.GetSize()) continue;
+		if (sel[i]>=inspections.GetSize() || inspections[sel[i]].IsNull()) continue;
 		DebuggerInspection *di = inspections[sel[i]].di;
 		if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; }
 		if (inspections[i].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
@@ -424,21 +424,22 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	
 	if (sel_has_unfrozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
 	if (sel_has_frozen) menu.Append(mxID_INSPECTION_UNFREEZE,wxString(LANG(INSPECTGRID_POPUP_UNFREEZE_VALUE,"Desco&ngelar Valor"))+"\tCtrl+B");
-//	if (current_source) {
-//		int s = current_source->GetSelectionStart(), e = current_source->GetSelectionEnd();
-//		if (s!=e && current_source->LineFromPosition(s)==current_source->LineFromPosition(e))
-//			menu.Append(mxID_INSPECTION_FROM_SOURCE,LANG1(INSPECTGRID_POPUP_COPY_FROM_SELECTION,"Insertar Expresion Desde la &Seleccion <{1}>",current_source->GetTextRange(s,e)));
-//	}
-//	if (wxTheClipboard->Open()) {
-//		wxTextDataObject clip_data;
-//		if (wxTheClipboard->GetData(clip_data) {
-//			wxString clip_text = clip_data.GetText();
-//			if (clip_text.Contains('\n')) 
-//				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE,"Insertar Expresiones Desde el &Portapapeles"))+"\tCtrl+V");
-//			else if (!clip_text.IsEmpty())
-//				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (<{1}>)",(<{1}>)",clip_text)+"\tCtrl+V");
-//		wxTheClipboard->Close();
-//	}
+	if (current_source) {
+		int s = current_source->GetSelectionStart(), e = current_source->GetSelectionEnd();
+		if (s!=e && current_source->LineFromPosition(s)==current_source->LineFromPosition(e))
+			menu.Append(mxID_INSPECTION_FROM_SOURCE,LANG1(INSPECTGRID_POPUP_COPY_FROM_SELECTION,"Insertar Expresion Desde la &Seleccion <{1}>",current_source->GetTextRange(s,e)));
+	}
+	if (wxTheClipboard->Open()) {
+		wxTextDataObject clip_data;
+		if (wxTheClipboard->GetData(clip_data)) {
+			wxString clip_text = clip_data.GetText();
+			if (clip_text.Contains('\n')) 
+				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE,"Insertar Expresiones Desde el &Portapapeles"))+"\tCtrl+V");
+			else if (!clip_text.IsEmpty())
+				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (<{1}>)",clip_text)+"\tCtrl+V");
+		}
+		wxTheClipboard->Close();
+	}
 	if (!sel_is_last) menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
 //	if (sel_is_vo && di->IsSimpleType()) {
 //		wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
@@ -474,25 +475,39 @@ void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
 	BreakCompoundInspection(GetGridCursorRow());
 }
 
-//void mxInspectionGrid::OnPasteFromClipboard(wxCommandEvent &evt) {
-//	if (!wxTheClipboard->Open()) return;
-//	wxTextDataObject clip_data;
-//	if (wxTheClipboard->GetData(clip_data)) {
-//		wxString expr = clip_data.GetText();
-//		if (expr.Len()) ModifyExpresion(selected_row,expr);
-//	}
-//	wxTheClipboard->Close();
-//}
-//
-//void mxInspectionGrid::OnCopyFromSelecction(wxCommandEvent &evt) {
-//	if (main_window->notebook_sources->GetPageCount()>0) {
-//		mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
-//		int s = source->GetSelectionStart(), e = source->GetSelectionEnd();
-//		wxString expr = source->GetTextRange(s,e);
-//		if (expr.Len()) ModifyExpresion(selected_row,expr);
-//	}
-//}
-//
+void mxInspectionGrid::OnPasteFromClipboard(wxCommandEvent &evt) {
+	if (!wxTheClipboard->Open()) return;
+	wxTextDataObject clip_data;
+	if (wxTheClipboard->GetData(clip_data)) {
+		wxString data = clip_data.GetText();
+		data<<"\n"; data.Replace("\r","",true);
+		int row=GetGridCursorRow();
+		while (data.Contains('\n')) {
+			wxString expr = data.BeforeFirst('\n');
+			data = data.AfterFirst('\n');
+			if (expr.IsEmpty()) continue;
+			InsertRows(row,1);
+			mxGrid::SetCellValue(row,IG_COL_EXPR,expr);
+			CreateInspection(row,expr,false);
+			row++;
+		}
+	}
+	wxTheClipboard->Close();
+}
+
+void mxInspectionGrid::OnCopyFromSelecction(wxCommandEvent &evt) {
+	if (main_window->notebook_sources->GetPageCount()>0) {
+		mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
+		int s = source->GetSelectionStart(), e = source->GetSelectionEnd();
+		wxString expr = source->GetTextRange(s,e);
+		if (expr.IsEmpty()) return;
+		int row=GetGridCursorRow();
+		InsertRows(row,1);
+		mxGrid::SetCellValue(row,IG_COL_EXPR,expr);
+		CreateInspection(row,expr,false);
+	}
+}
+
 //bool mxInspectionGrid::ModifyExpresion(int row, wxString expr) {
 //	ignore_changing=true;
 //	while (expr.Len()) {

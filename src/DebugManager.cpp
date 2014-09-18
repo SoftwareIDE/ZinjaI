@@ -1687,7 +1687,7 @@ void DebugManager::TtyProcessKilled() {
 //	}
 //}
 
-void  DebugManager::UpdateInspections() {
+void DebugManager::UpdateInspections() {
 	inspection_grid->OnFullTableUpdateBegin();
 	DebuggerInspection::OnDebugPause();
 	inspection_grid->OnFullTableUpdateEnd();

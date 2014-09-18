@@ -79,8 +79,8 @@ public:
 	void OnFreeze(wxCommandEvent &evt);
 	void OnUnFreeze(wxCommandEvent &evt);
 	void SetFreezed(int row, bool freezed);
-//	void OnPasteFromClipboard(wxCommandEvent &evt);
-//	void OnCopyFromSelecction(wxCommandEvent &evt);
+	void OnPasteFromClipboard(wxCommandEvent &evt);
+	void OnCopyFromSelecction(wxCommandEvent &evt);
 	void OnBreakClassOrArray(wxCommandEvent &evt);
 	void OnDuplicate(wxCommandEvent &evt);
 	void OnReScope(wxCommandEvent &evt);
