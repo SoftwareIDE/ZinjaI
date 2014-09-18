@@ -1,5 +1,4 @@
 #include <wx/bmpbuttn.h>
-#include <wx/clipbrd.h>
 #include <wx/sashwin.h>
 #include <wx/laywin.h>
 #include <wx/treectrl.h>
@@ -121,11 +120,8 @@ void mxGenericHelpWindow::OnNextEvent(wxCommandEvent &event) {
 }
 
 void mxGenericHelpWindow::OnCopyEvent(wxCommandEvent &event) {
-	if (html->SelectionToText()=="") 
-		return;
-	wxTheClipboard->Open();
-	wxTheClipboard->SetData(new wxTextDataObject(html->SelectionToText()));
-	wxTheClipboard->Close();
+	if (html->SelectionToText()=="") return;
+	mxUT::SetClipboardText(html->SelectionToText());
 }
 
 void mxGenericHelpWindow::OnSashDragEvent(wxSashEvent& event) {

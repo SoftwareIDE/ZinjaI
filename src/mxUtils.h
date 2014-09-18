@@ -266,6 +266,11 @@ public:
 	
 	static bool ExtensionIsCpp(const wxString &ext) { return ext=="c" || ext=="cpp" || ext=="cxx" || ext=="c++"; }
 	static bool ExtensionIsH(const wxString &ext) { return ext=="h" || ext=="hpp" || ext=="hxx" || ext=="h++"; }
+	
+	/// for retrieving text data from clipboard (for paste)
+	static wxString GetClipboardText();
+	/// for writing text data into clipboard (for copy)
+	static void SetClipboardText(const wxString &text);
 
 };
 

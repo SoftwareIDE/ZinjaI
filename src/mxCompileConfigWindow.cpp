@@ -1,6 +1,5 @@
 #include <wx/wx.h>
 #include <wx/aui/auibook.h>
-#include <wx/clipbrd.h>
 #include <wx/dir.h>
 #include <wx/textfile.h>
 #include "mxCompileConfigWindow.h"
@@ -103,11 +102,6 @@ void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 }
 
 void mxCompileConfigWindow::OnCancelButton(wxCommandEvent &event){
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData( new wxTextDataObject(compiler_options_ctrl->GetValue()) );
-		wxTheClipboard->Close();
-	}
-	
 	Destroy();
 }
 

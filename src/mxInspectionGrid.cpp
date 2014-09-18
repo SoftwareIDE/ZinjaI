@@ -2,7 +2,6 @@
 //#include <wx/choicdlg.h>
 #include <algorithm>
 #include <wx/menu.h>
-#include <wx/clipbrd.h>
 #include "mxInspectionGrid.h"
 #include "Language.h"
 #include "ids.h"
@@ -429,17 +428,11 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 		if (s!=e && current_source->LineFromPosition(s)==current_source->LineFromPosition(e))
 			menu.Append(mxID_INSPECTION_FROM_SOURCE,LANG1(INSPECTGRID_POPUP_COPY_FROM_SELECTION,"Insertar Expresion Desde la &Seleccion <{1}>",current_source->GetTextRange(s,e)));
 	}
-	if (wxTheClipboard->Open()) {
-		wxTextDataObject clip_data;
-		if (wxTheClipboard->GetData(clip_data)) {
-			wxString clip_text = clip_data.GetText();
-			if (clip_text.Contains('\n')) 
-				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE,"Insertar Expresiones Desde el &Portapapeles"))+"\tCtrl+V");
-			else if (!clip_text.IsEmpty())
-				menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (<{1}>)",clip_text)+"\tCtrl+V");
-		}
-		wxTheClipboard->Close();
-	}
+	wxString clip_text = mxUT::GetClipboardText();
+	if (clip_text.Contains('\n')) 
+		menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE,"Insertar Expresiones Desde el &Portapapeles"))+"\tCtrl+V");
+	else if (!clip_text.IsEmpty())
+		menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (<{1}>)",clip_text)+"\tCtrl+V");
 	if (!sel_is_last) menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
 //	if (sel_is_vo && di->IsSimpleType()) {
 //		wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
@@ -476,23 +469,18 @@ void mxInspectionGrid::OnBreakClassOrArray(wxCommandEvent &evt) {
 }
 
 void mxInspectionGrid::OnPasteFromClipboard(wxCommandEvent &evt) {
-	if (!wxTheClipboard->Open()) return;
-	wxTextDataObject clip_data;
-	if (wxTheClipboard->GetData(clip_data)) {
-		wxString data = clip_data.GetText();
-		data<<"\n"; data.Replace("\r","",true);
-		int row=GetGridCursorRow();
-		while (data.Contains('\n')) {
-			wxString expr = data.BeforeFirst('\n');
-			data = data.AfterFirst('\n');
-			if (expr.IsEmpty()) continue;
-			InsertRows(row,1);
-			mxGrid::SetCellValue(row,IG_COL_EXPR,expr);
-			CreateInspection(row,expr,false);
-			row++;
-		}
+	wxString data = mxUT::GetClipboardText();
+	data<<"\n"; data.Replace("\r","",true);
+	int row=GetGridCursorRow();
+	while (data.Contains('\n')) {
+		wxString expr = data.BeforeFirst('\n');
+		data = data.AfterFirst('\n');
+		if (expr.IsEmpty()) continue;
+		InsertRows(row,1);
+		mxGrid::SetCellValue(row,IG_COL_EXPR,expr);
+		CreateInspection(row,expr,false);
+		row++;
 	}
-	wxTheClipboard->Close();
 }
 
 void mxInspectionGrid::OnCopyFromSelecction(wxCommandEvent &evt) {
@@ -560,14 +548,11 @@ void mxInspectionGrid::OnCopyData(wxCommandEvent &evt) {
 	wxString data;
 	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
 	for(int i=0;i<sel.size();i++) {
-		if (data.size()) data<<"\n";
+		if (!data.IsEmpty()) data<<"\n";
 		mxGrid::GetCellValue(i,IG_COL_VALUE);
 	}
 	// colocarlos en el portapapeles
-	if (!data.Len() || !wxTheClipboard->Open()) return;
-	wxTextDataObject clip_data;
-	wxTheClipboard->SetData(new wxTextDataObject(data));
-	wxTheClipboard->Close();
+	if (!data.IsEmpty()) mxUT::SetClipboardText(data);
 }
 
 void mxInspectionGrid::OnCopyExpression(wxCommandEvent &evt) {
@@ -575,14 +560,11 @@ void mxInspectionGrid::OnCopyExpression(wxCommandEvent &evt) {
 	wxString data;
 	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
 	for(int i=0;i<sel.size();i++) {
-		if (data.size()) data<<"\n";
+		if (!data.IsEmpty()) data<<"\n";
 		mxGrid::GetCellValue(i,IG_COL_EXPR);
 	}
 	// colocarlos en el portapapeles
-	if (!data.Len() || !wxTheClipboard->Open()) return;
-	wxTextDataObject clip_data;
-	wxTheClipboard->SetData(new wxTextDataObject(data));
-	wxTheClipboard->Close();
+	if (!data.IsEmpty()) mxUT::SetClipboardText(data);
 }
 
 void mxInspectionGrid::OnClearAll(wxCommandEvent &evt) {
@@ -866,10 +848,7 @@ void mxInspectionGrid::OnCopyAll(wxCommandEvent &evt) {
 			text<<mxGrid::GetCellValue(i,IG_COL_VALUE)<<"\n";
 		}
 	}
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData( new wxTextDataObject(text) );
-		wxTheClipboard->Close();
-	}
+	mxUT::SetClipboardText(text);
 }
 //
 //wxDragResult mxInspectionDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def) {

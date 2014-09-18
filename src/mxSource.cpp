@@ -1,5 +1,4 @@
 #include <iostream>
-#include <wx/clipbrd.h>
 #include <wx/encconv.h>
 #include <wx/file.h>
 #include "mxGCovSideBar.h"
@@ -549,14 +548,9 @@ void mxSource::OnEditCopy (wxCommandEvent &event) {
 }
 
 void mxSource::OnEditPaste (wxCommandEvent &event) {
-	if (config_source.indentPaste && config_source.syntaxEnable && wxTheClipboard->Open()) {
-		wxTextDataObject data;
-		if (!wxTheClipboard->GetData(data)) {
-			wxTheClipboard->Close();
-			return;
-		}
-		ignore_char_added=true;
-		wxString str = data.GetText();
+	if (config_source.indentPaste && config_source.syntaxEnable) {
+		wxString str = mxUT::GetClipboardText();
+		if (str.IsEmpty()) return;
 		BeginUndoAction();
 		// borrar la seleccion previa
 		if (GetSelectionEnd()-GetSelectionStart()!=0)
@@ -595,13 +589,11 @@ void mxSource::OnEditPaste (wxCommandEvent &event) {
 			SetSelection(pos,pos);
 		} else
 			SetSelection(cp,cp);
-		wxTheClipboard->Close();
 		EndUndoAction();
 		// is that the problem?
 		HideCalltip();
 	} else {
-		if (!CanPaste()) return;
-		Paste ();
+		if (CanPaste()) Paste();
 	}
 }
 

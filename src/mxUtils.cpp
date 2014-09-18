@@ -9,6 +9,7 @@
 #include <wx/combobox.h>
 #include <wx/textfile.h>
 #include <wx/dir.h>
+#include <wx/clipbrd.h>
 
 #include "ids.h"
 #include "mxUtils.h"
@@ -1376,5 +1377,22 @@ wxStaticText * mxUT::GetLastLabel ( ) {
 
 wxButton * mxUT::GetLastButton ( ) {
 	return last_button;
+}
+
+wxString mxUT::GetClipboardText ( ) {
+	wxString text;
+	if (wxTheClipboard->Open()) {
+		wxTextDataObject clip_data;
+		if (wxTheClipboard->GetData(clip_data))
+			text = clip_data.GetText();
+		wxTheClipboard->Close();
+	}
+	return text;
+}
+
+void mxUT::SetClipboardText (const wxString & text) {
+	if (!wxTheClipboard->Open()) return;
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+	wxTheClipboard->Close();
 }
 
