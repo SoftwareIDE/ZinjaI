@@ -1,5 +1,9 @@
 #include "mxGrid.h"
 #include <algorithm>
+#include <wx/menu.h>
+#include "ids.h"
+#include "Language.h"
+#include "mxUtils.h"
 using namespace std;
 
 mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id) : wxGrid(parent,id,wxDefaultPosition,wxSize(400,300),wxWANTS_CHARS), cols(number_of_cols) {
@@ -10,18 +14,31 @@ mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id) : wxGrid(par
 
 void mxGrid::SetColumnVisible (int c, bool visible) {
 	if ( (cols[c].real_pos!=-1)==visible ) return;
+	wxGrid::Freeze();
 	if (visible) {
+		// find its real col position
 		int p=0; 
-		for(int i=0;i<p;i++)
-			if (cols[i].real_pos!=-1) p++;
-		for(int i=p+1;i<cols.GetSize();i++)
+		for(int i=0;i<c;i++) if (cols[i].real_pos!=-1) p++;
+		cols[c].real_pos=p;
+		// insert the column
+		InsertCols(p,1,true);
+		wxGrid::SetColSize(p,cols[c].width);
+		// update the following column's real positions
+		for(int i=c+1;i<cols.GetSize();i++)
 			if (cols[i].real_pos!=-1) cols[i].real_pos++;
-		InsertCols(p);
-		OnColumnUnhide(c);
+		// fill cells in that column
 	} else {
-		DeleteCols(cols[c].real_pos);
+		DeleteCols(cols[c].real_pos,1,false);
 		cols[c].real_pos=-1;
+		for(int i=c+1;i<cols.GetSize();i++)
+			if (cols[i].real_pos!=-1) cols[i].real_pos--;
 	}
+	for(int i=0;i<cols.GetSize();i++) 
+		if (cols[i].real_pos!=-1)
+			SetColLabelValue(cols[i].real_pos,cols[i].name);
+	RecalcColumns(GetSize().GetWidth());
+	OnColumnHideOrUnhide(c,visible);
+	wxGrid::Thaw();
 }
 
 bool mxGrid::IsColumnVisible (int c) {
@@ -35,8 +52,8 @@ void mxGrid::RecalcColumns(int new_w) {
 		if (cols[i].real_pos!=-1) old_w+=cols[i].width;
 	float ratio=new_w/old_w;
 	for(int i=0;i<cols.GetSize();i++) {
+		cols[i].width*=ratio;
 		if (cols[i].real_pos!=-1) {
-			cols[i].width*=ratio;
 			SetColSize(cols[i].real_pos,int(cols[i].width));
 		}
 	}
@@ -62,6 +79,7 @@ void mxGrid::DoCreate ( ) {
 	Connect(wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEventHandler(mxGrid::OnDblClick),NULL,this);
 	Connect(wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnRightClick),NULL,this);
 	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),NULL,this);
+	Connect(wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(mxGrid::OnShowHideCol),NULL,this);
 }
 
 void mxGrid::OnResize (wxSizeEvent & event) {
@@ -85,8 +103,12 @@ void mxGrid::OnLeftClick (wxGridEvent & event) {
 }
 
 void mxGrid::OnLabelPopup (wxGridEvent & event) {
-	last_event_x=event.GetPosition().x; last_event_y=event.GetPosition().y;
-	OnLabelPopupMenu(event.GetCol());
+	wxMenu menu;
+	for(int i=0;i<cols.GetSize();i++)
+		if (CanHideColumn(i))
+			menu.AppendCheckItem(mxID_COL_ID+i,LANG1(MXGRID_SHOW_COL,"Mostrar Columna \"<{1}>\"",cols[i].name))
+				->Check(mxGrid::IsColumnVisible(i));
+	PopupMenu(&menu);
 }
 
 void mxGrid::SetRowSelectionMode ( ) {
@@ -116,3 +138,12 @@ int mxGrid::GetSelectedRows (vector<int> & rows, bool inverted) {
 	return rows.size();
 }
 
+void mxGrid::OnShowHideCol(wxCommandEvent &evt) {
+	int cn=evt.GetId()-mxID_COL_ID;
+	cerr<<cn<<endl;
+	if (cn<0||cn>=cols.GetSize()) { evt.Skip(); return; }
+	mxGrid::SetColumnVisible(cn,!mxGrid::IsColumnVisible(cn));
+	Refresh();
+}
+
+	

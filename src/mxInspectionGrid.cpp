@@ -55,8 +55,6 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 //	EVT_MENU(mxID_INSPECTION_SHOW_APPART,mxInspectionGrid::OnShowAppart)
 //	EVT_SIZE(mxInspectionGrid::OnResize)
 //	EVT_GRID_COL_SIZE(mxInspectionGrid::OnColResize)
-//	EVT_GRID_LABEL_RIGHT_CLICK(mxInspectionGrid::OnLabelPopup)
-//	EVT_MENU_RANGE(mxID_COL_ID, mxID_COL_ID+IG_COLS_COUNT,mxInspectionGrid::OnShowHideCol)
 ////	EVT_GRID_SELECT_CELL(mxInspectionGrid::OnSelectCell)
 END_EVENT_TABLE()
 //	
@@ -94,12 +92,12 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	mxig_status_opts[IGRS_ERROR].Init(false,wxColour(196,0,0),"<<< Error >>>");
 	mxig_status_opts[IGRS_FREEZE].Init(false,wxColour(0,100,200));
 	
-	can_drop=true;
+	dragging_inspection=false;
 //	ignore_changing=true;
 //	created=false;
 	
 	mxGrid::InitColumn(IG_COL_LEVEL,LANG(INSPECTGRID_LEVEL,"Nivel"),8);
-	mxGrid::InitColumn(IG_COL_EXPR,LANG(INSPECTGRID_EXPRESSION,"Expresion"),29);
+	mxGrid::InitColumn(IG_COL_EXPR,LANG(INSPECTGRID_EXPRESSION,"Expresión"),29);
 	mxGrid::InitColumn(IG_COL_TYPE,LANG(INSPECTGRID_TYPE,"Tipo"),12);
 	mxGrid::InitColumn(IG_COL_VALUE,LANG(INSPECTGRID_VALUE,"Valor"),27);
 	mxGrid::DoCreate();
@@ -138,9 +136,8 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 ////	SetColAttr(IG_COL_WATCH,attr_watch);
 ////	SetColAttr(IG_COL_FORMAT,attr_format);
 //	AddRow();
+	
 	SetDropTarget(new mxInspectionDropTarget(this));
-//	created=true;
-//	ignore_changing=false;
 	SetColLabelSize(wxGRID_AUTOSIZE);
 	
 }
@@ -346,41 +343,6 @@ bool mxInspectionGrid::OnCellClick(int row, int col) {
 ////	if (event.GetCol()==IG_COL_VALUE && event.GetRow()<debug->inspections_count)
 ////		new mxInspectionExplorer(main_window,debug->inspections[event.GetRow()].expr,debug->inspections[event.GetRow()].expr);
 //}
-//
-//void mxInspectionGrid::OnLabelPopup(wxGridEvent &event) {
-//	wxMenu menu;
-//	menu.AppendCheckItem(mxID_COL_ID+IG_COL_LEVEL,LANG(INSPECTGRID_SHRINK_LEVEL,"Encoger  Columna \"Nivel\""))->Check(!cols_visibles[IG_COL_LEVEL]);
-//	menu.AppendCheckItem(mxID_COL_ID+IG_COL_EXPR,LANG(INSPECTGRID_SHRINK_EXPRESSION,"Encoger  Columna \"Expresion\""))->Check(!cols_visibles[IG_COL_EXPR]);
-//	menu.AppendCheckItem(mxID_COL_ID+IG_COL_TYPE,LANG(INSPECTGRID_SHRINK_TYPE,"Encoger  Columna \"Tipo\""))->Check(!cols_visibles[IG_COL_TYPE]);
-//	menu.AppendCheckItem(mxID_COL_ID+IG_COL_VALUE,LANG(INSPECTGRID_SHRINK_VALUE,"Encoger  Columna \"Valor\""))->Check(!cols_visibles[IG_COL_VALUE]);
-////	menu.AppendCheckItem(mxID_COL_ID+IG_COL_FORMAT,LANG(INSPECTGRID_SHRINK_FORMAT,"Encoger Columna \"Formato\""))->Check(!cols_visibles[IG_COL_FORMAT]);
-////	menu.AppendCheckItem(mxID_COL_ID+IG_COL_WATCH,LANG(INSPECTGRID_SHRINK_WATCH,"Encoger Columna \"WatchPoint\""))->Check(!cols_visibles[IG_COL_WATCH]);
-//	PopupMenu(&menu);
-//}
-//
-//void mxInspectionGrid::OnShowHideCol(wxCommandEvent &evt) {
-//	int cn=evt.GetId()-mxID_COL_ID;
-//	float sum=0, fs=cols_sizes[cn];
-//	int mw=cols_visibles[cn]?GetColMinimalWidth(cn):-GetColMinimalWidth(cn);
-//	for (int i=0;i<IG_COLS_COUNT;i++)
-//		if (cols_visibles[i] && i!=cn) 
-//			sum+=cols_sizes[i];
-//	cols_visibles[cn]=!cols_visibles[cn];
-//	cols_sizes[cn]=-cols_sizes[cn];
-//	if (!cols_visibles[cn])
-//		SetColSize(cn,mw);
-//	else
-//		SetColSize(cn,int(cols_sizes[cn]));
-////	cols_marginal+=mw;
-//	fs-=mw;
-//	for (int i=0;i<IG_COLS_COUNT;i++)
-//		if (cols_visibles[i] && i!=cn) {
-//			cols_sizes[i]+=cols_sizes[i]/sum*fs;
-//			SetColSize(i,int(cols_sizes[i]));
-//		}
-//	Refresh();
-//}
-//
 
 void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	// ensure that clicked cell is selected, so generated events will use that one
@@ -412,7 +374,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 //		if (sel_is_single && !sel_is_last) extern_v->Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
 		if (sel_is_vo) extern_v->Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
 	if (extern_v->GetMenuItemCount()) menu.AppendSubMenu(extern_v,LANG(INSPECTGRID_EXTERN_VISUALIZATION,"Otras &visualizaciones")); else delete extern_v;
-	if (inspections.GetSize()) menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
+	if (there_are_inspections) menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
 	if (sel_has_vo && !(sel_is_vo && !di->IsFrameless())) menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
 	if (sel_has_vo && !(sel_is_vo && di->IsFrameless())) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
 	if (!sel_is_last) menu.Append(mxID_INSPECTION_DUPLICATE,wxString(LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"))+"\tCtrl+L");
@@ -478,8 +440,7 @@ void mxInspectionGrid::OnPasteFromClipboard(wxCommandEvent &evt) {
 		data = data.AfterFirst('\n');
 		if (expr.IsEmpty()) continue;
 		InsertRows(row,1);
-		mxGrid::SetCellValue(row,IG_COL_EXPR,expr);
-		CreateInspection(row,expr,false);
+		CreateInspection(row,expr,false,true);
 		row++;
 	}
 }
@@ -492,8 +453,7 @@ void mxInspectionGrid::OnCopyFromSelecction(wxCommandEvent &evt) {
 		if (expr.IsEmpty()) return;
 		int row=GetGridCursorRow();
 		InsertRows(row,1);
-		mxGrid::SetCellValue(row,IG_COL_EXPR,expr);
-		CreateInspection(row,expr,false);
+		CreateInspection(row,expr,false,true);
 	}
 }
 
@@ -702,34 +662,6 @@ void mxInspectionGrid::OnFormatBinary(wxCommandEvent &evt) {
 	SetFormat(GVF_BINARY);
 }
 
-//void mxInspectionGrid::OnResize(wxSizeEvent &evt) {
-//	int w; // la segunda condicion es para evitar problemas en windows al agrandar una columna
-//	if (created && (w=evt.GetSize().GetWidth())!=old_size) {
-//		int mw=0; // para contar los pixeles que no cambian por las colapsadas
-//		for (int i=0;i<IG_COLS_COUNT;i++)
-//			if (!cols_visibles[i])
-//				mw+=GetColMinimalWidth(i);
-//		w-=mw;
-//		double p = double(w)/old_size;
-//		for (int i=0;i<IG_COLS_COUNT;i++)
-//			cols_sizes[i]*=p;
-//		old_size=w;
-//		for (int i=0;i<IG_COLS_COUNT;i++)
-//			if (cols_visibles[i])
-//				SetColSize(i,int(cols_sizes[i]));
-//	}
-//	evt.Skip();
-//}
-//
-//void mxInspectionGrid::OnColResize(wxGridSizeEvent &evt) {
-//	if (!created) return;
-//	if (old_size) {
-//		int i=evt.GetRowOrCol();
-//		cols_sizes[i]=GetColSize(i);
-//		cols_visibles[i]=GetColMinimalWidth(i)!=cols_sizes[i];
-//	}
-//}
-//
 //void mxInspectionGrid::OnShowInTable(wxCommandEvent &evt) {
 //	if (selected_row<=debug->inspections_count)
 //		new mxInspectionMatrix(selected_row);
@@ -761,8 +693,7 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 		DebuggerInspection *di = inspections[sel[i]].di;
 		scope.ChangeIfNeeded(di);
 		InsertRows(sel[i],1);
-		mxGrid::SetCellValue(sel[i],IG_COL_EXPR,di->GetExpression());
-		CreateInspection(sel[i],di->GetExpression(),di->IsFrameless());
+		CreateInspection(sel[i],di->GetExpression(),di->IsFrameless(),true);
 	}
 //	DebuggerInspection::UpdateAll(); // la expresion podría haber modificado algo
 }
@@ -871,8 +802,8 @@ wxDragResult mxInspectionDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResu
 	grid->GetScrollPixelsPerUnit(&ux,&uy);
 	grid->GetViewStart(&vx,&vy);
 	int r = grid->YToRow(y+vy*uy-grid->GetColLabelSize());
-	if (grid->CanDrop() && r!=wxNOT_FOUND) grid->SelectRow(r);
-	return grid->CanDrop()?wxDragCopy:wxDragMove;
+	if (!grid->IsDraggingAnInspection() && r!=wxNOT_FOUND) grid->SelectRow(r);
+	return grid->IsDraggingAnInspection()?wxDragMove:wxDragCopy;
 }
 
 
@@ -891,35 +822,35 @@ wxDragResult mxInspectionDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult r
 	grid->GetViewStart(&vx,&vy);
 	int r=grid->YToRow(y+vy*uy-grid->GetColLabelSize());
 	if (r==wxNOT_FOUND) return wxDragCancel;
-	if (grid->CanDrop()) {
+	if (grid->IsDraggingAnInspection()) {
+		grid->SwapInspections(grid->GetGridCursorRow(),r);
+		return wxDragMove;
+	} else {
 		GetData(); grid->SelectRow(r);
 		wxString str=data->GetText();
 		if (!str.size()) return wxDragCancel;
 		str.Replace("\n"," ");
 		str.Replace("\r"," ");
 		grid->InsertRows(r,1);
-		grid->mxGrid::SetCellValue(r,IG_COL_EXPR,str);
-		grid->CreateInspection(r,str,false);
+		grid->CreateInspection(r,str,false,true);
+		grid->Select(r);
 		return wxDragCopy;
-	} else {
-		grid->SwapInspections(grid->GetGridCursorRow(),r);
-		return wxDragMove;
 	}
 }
 
-bool mxInspectionGrid::CanDrop() {
-	return can_drop;
+bool mxInspectionGrid::IsDraggingAnInspection() {
+	return dragging_inspection;
 }
 
 void mxInspectionGrid::OnClick(wxGridEvent &event) {
 	if (event.AltDown()) {
-		SelectRow(event.GetRow());
-		can_drop=false;
+		mxGrid::Select(event.GetRow());
+		dragging_inspection=true;
 		wxTextDataObject my_data(wxGrid::GetCellValue(event.GetRow(),event.GetCol()));
 		wxDropSource dragSource(this);
 		dragSource.SetData(my_data);
 		dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
-		can_drop=true;
+		dragging_inspection=false;
 	} else event.Skip();
 }
 
@@ -1082,7 +1013,8 @@ void mxInspectionGrid::UpdateLevelColumn (int r) {
 	}
 }
 
-bool mxInspectionGrid::CreateInspection (int r, const wxString &expression, bool frameless) {
+bool mxInspectionGrid::CreateInspection (int r, const wxString &expression, bool frameless, bool set_expr) {
+	if (set_expr) mxGrid::SetCellValue(r,IG_COL_EXPR,expression);
 	inspections[r] = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless),this,false);
 	if (!inspections[r]->Init()) SetRowStatus(r,IGRS_UNINIT);
 	else UpdateLevelColumn(r);
@@ -1294,5 +1226,18 @@ void mxInspectionGrid::UpdateExpressionColumn (int r) {
 			inspections[r].expression_renderer->SetIconPlus();
 		}
 	}
+}
+
+void mxInspectionGrid::OnColumnHideOrUnhide (int c, bool visible) {
+		for(int i=0;i<inspections.GetSize();i++) { 
+			if (visible) {
+				switch (c) {
+					case IG_COL_LEVEL: UpdateLevelColumn(i); break;
+					case IG_COL_EXPR: UpdateExpressionColumn(i); break;
+					case IG_COL_TYPE: UpdateTypeColumn(i); break;
+					case IG_COL_VALUE: UpdateValueColumn(i); break;
+				}
+			}
+		}
 }
 

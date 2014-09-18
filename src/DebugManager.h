@@ -314,7 +314,7 @@ public:
 	/// @brief elimina inspecciones cuando no hay sesion de depuración en curso
 //	bool OffLineInspectionDelete(int i=-1);
 	
-	void ListThreads();
+	void UpdateThreads();
 	void ThreadListClean();
 	bool SelectThread(long thread_id);
 	

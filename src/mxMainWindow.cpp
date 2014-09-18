@@ -513,10 +513,10 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_INSPECTIONS] = new mxHidenPanel(this,inspection_ctrl,config->Debug.inspections_on_right?HP_RIGHT:HP_BOTTOM,LANG(MAINW_AUTOHIDE_INSPECTIONS,"Inspecciones"));
-	aui_manager.AddPane((wxGrid*)(backtrace_ctrl = new mxBacktraceGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("backtrace").Caption(LANG(CAPTION_BACKTRACE,"Trazado Inverso")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(1).MaximizeButton(!config->Init.autohiding_panels));
+	aui_manager.AddPane((wxGrid*)(backtrace_ctrl = new mxBacktraceGrid(this)), wxAuiPaneInfo().Name("backtrace").Caption(LANG(CAPTION_BACKTRACE,"Trazado Inverso")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(1).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_BACKTRACE] = new mxHidenPanel(this,backtrace_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_BACKTRACE,"Trazado Inverso"));
-	aui_manager.AddPane((wxGrid*)(threadlist_ctrl = new mxThreadGrid(this,wxID_ANY)), wxAuiPaneInfo().Name("threadlist").Caption(LANG(CAPTION_THREADLIST,"Hilos de Ejecucion")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
+	aui_manager.AddPane((wxGrid*)(threadlist_ctrl = new mxThreadGrid(this)), wxAuiPaneInfo().Name("threadlist").Caption(LANG(CAPTION_THREADLIST,"Hilos de Ejecucion")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_THREADS] = new mxHidenPanel(this,threadlist_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_THREADS,"Hilos"));
 	aui_manager.AddPane(CreateNotebookSources(), wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
@@ -3313,12 +3313,12 @@ void mxMainWindow::OnDebugThreadList ( wxCommandEvent &event ) {
 		if (!aui_manager.GetPane(threadlist_ctrl).IsShown())
 			autohide_handlers[ATH_THREADS]->ForceShow(false);
 		debug->threadlist_visible=true;
-		debug->ListThreads();
+		debug->UpdateThreads();
 	} else {
 		aui_manager.GetPane(threadlist_ctrl).Show();
 		aui_manager.Update();
 		debug->threadlist_visible=true;
-		debug->ListThreads();
+		debug->UpdateThreads();
 		threadlist_ctrl->SetFocus();
 	}
 }

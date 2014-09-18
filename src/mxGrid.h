@@ -50,6 +50,7 @@ private:
 	void OnRightClick(wxGridEvent &event);
 	void OnDblClick(wxGridEvent &event);
 	void OnLabelPopup(wxGridEvent &event);
+	void OnShowHideCol(wxCommandEvent &evt);
 	
 protected:
 	void InitColumn(int col_idx, wxString name, int width/*, bool visible=true*/); 
@@ -68,12 +69,16 @@ public:
 	
 		
 	/// @brief callback that will be called when user unhides a column so child class can update its content
-	virtual void OnColumnUnhide(int c) {}
+	virtual void OnColumnHideOrUnhide(int col, bool visible) {}
 	
+	/// @brief cell right click event
 	virtual void OnCellPopupMenu(int row, int col) {}
+	/// @brief cell left click event
 	virtual bool OnCellClick(int row, int col) { return false; }
+	/// @brief cell double left click event
 	virtual bool OnCellDoubleClick(int row, int col) { return false; }
-	virtual void OnLabelPopupMenu(int col) {}
+	virtual bool CanHideColumn(int col) { return true; }
+	
 	int GetRealCol(int col) { return cols[col].real_pos; }
 	
 	// wrappers for wxGrid methods, that considers column hidding

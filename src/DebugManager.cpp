@@ -611,9 +611,9 @@ void DebugManager::HowDoesItRuns() {
 				stepping_in=false;
 				if (line.ToLong(&fline)) {
 					MarkCurrentPoint(fname,fline,mark);
-					if (threadlist_visible) ListThreads();
+					if (threadlist_visible) UpdateThreads();
 				} else {
-					if (threadlist_visible) ListThreads();
+					if (threadlist_visible) UpdateThreads();
 				}
 				UpdateBacktrace();
 				UpdateInspections();
@@ -2704,7 +2704,7 @@ void DebugManager::UnregisterSource(mxSource *src) {
 	if (notitle_source==src) notitle_source=NULL;
 }
 
-void DebugManager::ListThreads() {
+void DebugManager::UpdateThreads() {
 	wxString ans=SendCommand("-thread-list-ids");
 	if (ans.Contains("number-of-threads=\"0\"")) {
 		main_window->threadlist_ctrl->SetData(0,"-",LANG(THREADS_NO_THREADS,"<<No hay hilos>>"),"--","--");

@@ -893,7 +893,7 @@ Directorio de trabajo
 BACKTRACE_LEVEL
 Nivel
 BACKTRACE_FUNCTION
-Funcion
+Función
 BACKTRACE_FILE
 Archivo
 BACKTRACE_LINE
@@ -918,16 +918,6 @@ BACKTRACE_INSPECT_LOCALS
 Inspeccionar Variables Locales
 BACKTRACE_EXPLORE_LOCALS
 Explorar Variables Locales
-BACKTRACE_SHRINK_LEVEL
-Encoger  Columna \"Nivel\"
-BACKTRACE_SHRINK_FUNCTION
-Encoger  Columna \"Funcion\"
-BACKTRACE_SHRINK_FILE
-Encoger  Columna \"Archivo\"
-BACKTRACE_SHRINK_LINE
-Encoger  Columna \"Linea\"
-BACKTRACE_SHRINK_ARGS
-Encoger Columna \"Argumentos\"
 BEGPANEL_CONTROL_STRUCTURES
 Estructuras de Control
 BEGPANEL_SHOW_QUICKHELP
@@ -1602,6 +1592,8 @@ GOTOLINE_CAPTION
 Ir a linea
 GOTOLINE_YOURE_HERE
 Estas en la linea <{1}> de <{2}>.
+MXGRID_SHOW_COL
+Show Columna \"<{1}>\"
 HELPW_CAPTION
 Ayuda de ZinjaI
 HELPW_FORUM_TEXT
@@ -1631,7 +1623,7 @@ Crear un icono en el menu (en la categoria Programacion/Desarrollo)
 INSPECTGRID_LEVEL
 Nivel
 INSPECTGRID_EXPRESSION
-Expresion
+Expresión
 INSPECTGRID_TYPE
 Tipo
 INSPECTGRID_VALUE
@@ -1662,18 +1654,6 @@ INSPECTGRID_WATCH_READ_WRITE
 lectura y escritura
 INSPECTGRID_WATCH_READ
 lectura
-INSPECTGRID_SHRINK_LEVEL
-Encoger  Columna \"Nivel\"
-INSPECTGRID_SHRINK_EXPRESSION
-Encoger  Columna \"Expresion\"
-INSPECTGRID_SHRINK_TYPE
-Encoger  Columna \"Tipo\"
-INSPECTGRID_SHRINK_VALUE
-Encoger  Columna \"Valor\"
-INSPECTGRID_SHRINK_FORMAT
-Encoger Columna \"Formato\"
-INSPECTGRID_SHRINK_WATCH
-Encoger Columna \"WatchPoint\"
 INSPECTGRID_POPUP_SPLIT_CLASS
 &Separar clase en atributos
 INSPECTGRID_POPUP_SPLIT_ARRAY
@@ -1730,8 +1710,6 @@ INSPECTGRID_DEBUGGING_HAS_ENDED
 La sesion de depuracion ha finalizado.
 INSPECTGRID_DEBUGGER_ERROR
 Ha ocurrido un error en el depurador.
-INSPECTEXPLORER_CAPTION
-Explorador de Inspecciones
 INSPECTGRID_TABLE_NAME
 Nombre de la lista:
 INSPECTGRID_LOAD_TABLE
@@ -2867,7 +2845,7 @@ Permitir editar igualemente
 MAINW_CHANGES_CONFIRM_RELOAD
 Hay Cambios sin guardar, desea recargar igualmente la version del disco?
 MAINW_PRESS_ESC_TO_FINISH_RECT_EDIT
-Presione ESC o mueva el cursor de texto fuera de la selección para volver a la edición regular.
+Presione ESC o mueva el cursor de texto a otra linea para volver al modo de edición normal.
 THREADS_ID
 Id
 THREADS_FUNCTION

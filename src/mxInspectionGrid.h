@@ -27,14 +27,7 @@ public:
 * @brief Representa a la grilla del panel de inspecciones
 **/
 class mxInspectionGrid : public mxGrid, public myDIEventHandler {
-	bool can_drop; // para evitar hacer drag y drop sobre si misma
-//	bool created;
-//	int selected_row;
 	bool ignore_cell_change_event;
-//	int old_size;
-//	float cols_sizes[IG_COLS_COUNT];
-//	bool *cols_visibles;
-////	int cols_marginal;
 public:
 	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_UNFREEZE, IGRS_COUNT };
 
@@ -65,17 +58,12 @@ private:
 	
 public:
 	mxInspectionGrid(wxWindow *parent);
-//	void AddRow(int cant=1);
-//	void AppendInspections(wxArrayString &vars);
 //	~mxInspectionGrid();
 	void OnFullTableUpdateBegin();
 	void OnFullTableUpdateEnd();
 	void OnKey(wxKeyEvent &event);
 //	void OnSelectCell(wxGridEvent &event);
 	void OnCellChange(wxGridEvent &event);
-//	void OnDoubleClick(wxGridEvent &event);
-//	void OnLabelPopup(wxGridEvent &event);
-//	void OnRightClick(wxGridEvent &event);
 	void OnFreeze(wxCommandEvent &evt);
 	void OnUnFreeze(wxCommandEvent &evt);
 	void SetFreezed(int row, bool freezed);
@@ -105,9 +93,6 @@ public:
 	void OnFormatBinary(wxCommandEvent &evt);
 	void SetFormat(int format);
 //	int ShouldDivide(int row, wxString expr, bool frameless=false);
-//	void OnResize(wxSizeEvent &evt);
-//	void OnColResize(wxGridSizeEvent &evt);
-//	void OnShowHideCol(wxCommandEvent &evt);
 //	void OnSaveTable(wxCommandEvent &evt);
 //	void OnLoadTable(wxCommandEvent &evt);
 //	void OnManageTables(wxCommandEvent &evt);
@@ -120,10 +105,13 @@ public:
 //	void HightlightFreeze(int r);
 //	void ResetChangeHightlights();
 //	bool ModifyExpresion(int r, wxString expr);
+	
+	// drag/drop
+	bool dragging_inspection; // para evitar hacer drag y drop sobre si misma
 	void OnClick(wxGridEvent &evt);
-	bool CanDrop();
+	bool IsDraggingAnInspection();
 	void SwapInspections(int r1, int r2);
-//	
+	
 	void InsertRows(int pos=-1, int cant=1);
 	void OnRedirectedEditEvent(wxCommandEvent &event);
 	
@@ -135,8 +123,10 @@ public:
 	bool OnCellClick(int row, int col);
 	void OnCellPopupMenu(int row, int col);
 	bool OnCellDoubleClick(int row, int col);
-//	void OnLabelPopupMenu(int col);
-
+	void OnColumnHideOrUnhide(int c, bool visible);
+	
+	bool CanHideColumn(int c) { return c==IG_COL_LEVEL||IG_COL_TYPE; }
+	
 	// eventos generados por DebuggerInspection
 	void OnDICreated(DebuggerInspection *di);
 	void OnDIError(DebuggerInspection *di);
@@ -158,7 +148,7 @@ public:
 	void UpdateExpressionColumn(int r);
 	void SetRowStatus(int r, int status);
 	void DeleteInspection(int r, bool for_reuse);
-	bool CreateInspection(int r, const wxString &expression, bool frameless);
+	bool CreateInspection(int r, const wxString &expression, bool frameless, bool set_expr=false);
 	DECLARE_EVENT_TABLE();
 	
 };
