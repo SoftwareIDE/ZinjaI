@@ -1892,6 +1892,8 @@ MAINW_COULDNOT_RUN
 No se pudo lanzar la ejecucion!
 MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION
 Esta intentando ejecutar un archivo de cabecera.\n¿Desea ejecutar en su lugar <{1}>?
+MAINW_ALWAYS_RUN_SOURCE_INSTEAD_OF_HEADER
+Siempre ejecutar el ultimo cpp.
 MAINW_RUN_HEADER_QUESTION
 Esta intentando ejecutar un archivo de cabecera. Desea continuar?
 MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION

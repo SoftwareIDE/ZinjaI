@@ -1677,14 +1677,14 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 			if (mxUT::ExtensionIsH(ext)) {
 				if (source->GetModify())
 					source->SaveSource();
-				if (compiler->last_runned) {
+				if (compiler->last_runned && !compiler->last_runned->sin_titulo) {
 					if (config->Running.dont_run_headers)
 						source=compiler->last_runned;
 					else {
 						int ans = mxMessageDialog(this,LANG1(MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION,""
 							"Esta intentando ejecutar un archivo de cabecera.\n"
 							"¿Desea ejecutar en su lugar <{1}>?",compiler->last_caption),
-							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,"Siempre ejecutar el ultimo cpp.").ShowModal();
+							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,LANG(MAINW_ALWAYS_RUN_SOURCE_INSTEAD_OF_HEADER,"Siempre ejecutar el ultimo cpp.")).ShowModal();
 						if (ans&mxMD_CANCEL) return;
 						if (ans&mxMD_CHECKED) config->Running.dont_run_headers = true;
 						if (ans&mxMD_YES) source = compiler->last_runned;
@@ -3259,19 +3259,20 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 			if (mxUT::ExtensionIsH(ext)) {
 				if (source->GetModify())
 					source->SaveSource();
-				if (compiler->last_runned) {
+				if (compiler->last_runned && !compiler->last_runned->sin_titulo) {
 					if (config->Running.dont_run_headers)
 						source=compiler->last_runned;
 					else {
-						int ans = mxMessageDialog(this,wxString("Esta intentando ejecutar un archivo de cabecera.\n"
-							"Desea ejecutar en su lugar ")<<compiler->last_caption<<"?",
-							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,"Siempre ejecutar el ultimo cpp.").ShowModal();
+						int ans = mxMessageDialog(this,LANG1(MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION,""
+							"Esta intentando ejecutar un archivo de cabecera.\n"
+							"¿Desea ejecutar en su lugar <{1}>?",compiler->last_caption),
+							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,LANG(MAINW_ALWAYS_RUN_SOURCE_INSTEAD_OF_HEADER,"Siempre ejecutar el ultimo cpp.")).ShowModal();
 						if (ans&mxMD_CANCEL) return;
 						if (ans&mxMD_CHECKED) config->Running.dont_run_headers = true;
 						if (ans&mxMD_YES) source = compiler->last_runned;
 					}
 				} else {
-					int ans = mxMessageDialog(this,"Esta intentando ejecutar un archivo de cabecera. Desea continuar?",LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_CANCEL).ShowModal();
+					int ans = mxMessageDialog(this,LANG(MAINW_RUN_HEADER_QUESTION,"Esta intentando ejecutar un archivo de cabecera. Desea continuar?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_CANCEL).ShowModal();
 					if (ans&mxMD_CANCEL) return;
 				}
 			}				

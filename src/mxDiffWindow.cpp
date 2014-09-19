@@ -128,11 +128,11 @@ void mxDiffWindow::DiffSourceFile(mxSource *src, wxString fname) {
 			} else
 				n4=n3;
 			n1--; n2--; n3--; n4--;
-			int skip=0;
+			int skip=0, line_count=text_file.GetLineCount();
 			if (c=='c') {
 				wxString s;
 				for (int n=n1;n<=n2;n++) 
-					if (n<text_file.GetLineCount())
+					if (n<line_count)
 						s<<text_file.GetLine(n)<<"\n";
 				s.RemoveLast();
 				src->MarkDiffs(n1,n2,mxSTC_MARK_DIFF_CHANGE,s);
@@ -140,7 +140,7 @@ void mxDiffWindow::DiffSourceFile(mxSource *src, wxString fname) {
 			} else if (c=='a') {
 				wxString s;
 				for (int n=n3;n<=n4;n++) 
-					if (n<text_file.GetLineCount())
+					if (n<line_count)
 						s<<text_file.GetLine(n)<<"\n";
 				s.RemoveLast();
 				src->MarkDiffs(n1+1,n1+1,mxSTC_MARK_DIFF_DEL,s);

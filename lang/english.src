@@ -1892,6 +1892,8 @@ MAINW_COULDNOT_RUN
 Could not run program!
 MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION
 You're trying to run a header file. Do you want to run \n"<{1}>" instead?
+MAINW_ALWAYS_RUN_SOURCE_INSTEAD_OF_HEADER
+Always run last cpp file.
 MAINW_RUN_HEADER_QUESTION
 You're trying to run a header file. Continue anyway?
 MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
