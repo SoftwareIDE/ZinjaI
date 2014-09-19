@@ -707,7 +707,12 @@ void mxMainWindow::OnProjectTreeToggleHideSymbols(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnProjectTreeCompileNow(wxCommandEvent &event) {
-	project->PrepareForBuilding(project->FindFromItem(project_tree.selected_item));
+	project_file_item *item = project->FindFromItem(project_tree.selected_item);
+	if (item) AuxCompileOne(item);
+}
+
+void mxMainWindow::AuxCompileOne(project_file_item *item) {
+	project->PrepareForBuilding(item);
 	status_bar->SetStatusText(LANG(MAINW_COMPILING_DOTS,"Compilando..."));
 	compiler->ResetCompileData();
 	wxString current;
@@ -1066,6 +1071,8 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 	}
 }
 
+#define EN_COMPOUT_FILE_NOT_RECOGNIZED ".o: file not recognized"
+
 void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 	// ver si es alguno de los mensajes de zinjai
 	wxString item_text=(compiler_tree.treeCtrl->GetItemText(event.GetItem()));
@@ -1075,6 +1082,21 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_futuretimestamp.html"),false); return;
 	} else if (item_text==LANG(PROJMNGR_MANIFEST_NOT_FOUND,"No se ha encontrado el archivo manifest.xml.")) {
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_missingiconmanifest.html"),false); return;
+	} else if (item_text.Contains(EN_COMPOUT_FILE_NOT_RECOGNIZED)) {
+		wxString obj_name = item_text.Mid(0,item_text.Find(EN_COMPOUT_FILE_NOT_RECOGNIZED));
+		LocalListIterator<project_file_item*> fi(&project->files_sources);
+		while(fi.IsValid()) {
+			project_file_item *p = *fi;
+			if (obj_name == wxFileName(p->name).GetName()) {
+				int res=mxMessageDialog(main_window,LANG1(MAINW_SAVE_LINK_ERROR_TRUNCATED_FILE,"Este error puede deberse a compilaciones interrumpidas, o a la presencia\n"
+																								"de objetos compilados en otros sistemas. Si este fuera el caso, podría\n"
+																								" solucionarse simplemente recompilando el fuente asociado. ¿Desea recompilar\n"
+																								"\"<{1}>\" ahora?",p->name), p->name, mxMD_YES_NO|mxMD_QUESTION).ShowModal();
+				if (res==mxMD_YES) { AuxCompileOne(p); return; }
+				break;
+			}
+			fi.Next();
+		}
 	}
 	// ver que dijo el compilador
 DEBUG_INFO("wxYield:in  mxMainWindow::OnSelectError");

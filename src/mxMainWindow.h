@@ -337,6 +337,7 @@ public:
 	void OnProjectTreeProperties(wxCommandEvent &event);
 	void OnProjectTreeOpen(wxCommandEvent &event);
 	void OnProjectTreeOpenAll(wxCommandEvent &event);
+	void AuxCompileOne(project_file_item *item);
 	void OnProjectTreeCompileNow(wxCommandEvent &event);
 	void OnProjectTreeCompileFirst(wxCommandEvent &event);
 	void OnProjectTreeToggleReadOnly(wxCommandEvent &event);

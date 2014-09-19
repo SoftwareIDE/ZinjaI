@@ -1846,6 +1846,8 @@ MAINW_SAVE_CHANGES_BEFORE_EXIT_QUESTION
 There are unsaved changes. Do you want to save them before exiting?
 PROJMNGR_FUTURE_SOURCE_POST
 had future timestamp. It was replaced with current time.
+MAINW_SAVE_LINK_ERROR_TRUNCATED_FILE
+This error can be generated due to an interrupted previous compilation\nor the presence of objects previously compiled in other systems. If that\nis the case, it can be solved by recompiling it's source file. Do you want to\nrecompile <{1}> now?
 QUICKHELP_WORDS_TO_SEARCH
 Keyword:
 CAPTION_QUICKHELP

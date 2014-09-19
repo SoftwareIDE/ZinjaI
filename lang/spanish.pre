@@ -1595,7 +1595,7 @@ Ir a linea
 GOTOLINE_YOURE_HERE
 Estas en la linea <{1}> de <{2}>.
 MXGRID_SHOW_COL
-Show Columna \"<{1}>\"
+Mostrar Columna \"<{1}>\"
 HELPW_CAPTION
 Ayuda de ZinjaI
 HELPW_FORUM_TEXT
@@ -1848,6 +1848,8 @@ MAINW_SAVE_CHANGES_BEFORE_EXIT_QUESTION
 Hay cambios sin guardar. Desea guardarlos antes de salir?
 PROJMNGR_FUTURE_SOURCE_POST
  tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.
+MAINW_SAVE_LINK_ERROR_TRUNCATED_FILE
+Este error puede deberse a compilaciones interrumpidas, o a la presencia\nde objetos compilados en otros sistemas. Si este fuera el caso, podría\n solucionarse simplemente recompilando el fuente asociado. ¿Desea recompilar\n\"<{1}>\" ahora?
 QUICKHELP_WORDS_TO_SEARCH
 Palabra a buscar:
 CAPTION_QUICKHELP
