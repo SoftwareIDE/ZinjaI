@@ -1344,7 +1344,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 		// si ningun objeto esta desactualizado, ver si hay que relinkar
 		if (!active_configuration->dont_generate_exe) {
 			wxFileName fn_output(DIR_PLUS_FILE(path,active_configuration->output_file));
-			if (!wxFileName::DirExists(fn_output.GetPath()) ) // si el directorio del exe no existe, crearl
+			if (!wxFileName::DirExists(fn_output.GetPath()) ) // si el directorio del exe no existe, crearlo
 				wxFileName::Mkdir(fn_output.GetPath(),0777,wxPATH_MKDIR_FULL);
 			if (!relink_exe) { // si no hay que actualizar ningun objeto, preguntar por el exe
 				executable_name=fn_output.GetFullPath();

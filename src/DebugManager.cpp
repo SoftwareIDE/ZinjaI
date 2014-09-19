@@ -755,9 +755,9 @@ bool DebugManager::UpdateBacktrace() {
 	
 	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion V2 
 	// ya no se usan "direcciones", sino que simplemente se numeran desde el punto de entrada para "arriba"
-	if (!GetValueFromAns(SendCommand("-stack-info-depth"),"depth",true).ToLong(&stack_depth)) stack_depth=0;
+	if (!GetValueFromAns(SendCommand("-stack-info-depth ",BACKTRACE_SIZE),"depth",true).ToLong(&stack_depth)) stack_depth=0;
 	
-	wxString frames = stack_depth?SendCommand("-stack-list-frames 0 ",stack_depth-1):"";
+	wxString frames = stack_depth>0?SendCommand("-stack-list-frames 0 ",stack_depth-1):"";
 	
 	const wxChar * chfr = frames.c_str();
 	// to_select* es para marcar el primer frame que tenga info de depuracion

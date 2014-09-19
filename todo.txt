@@ -1,5 +1,7 @@
 error: intentar ejecutar un .h, y luego uno sin_titlo
 
+mejora: que reconozca el error de objeto truncado o de otra arquitectura y ofrezca borrarlo
+
 
 
 cuando un proyecto define un archivo de macros gdb, usarlo en combinacion con el general, y no reemplazanod (para mantener las macros para stl)

@@ -125,7 +125,7 @@ public:
 	bool OnCellDoubleClick(int row, int col);
 	void OnColumnHideOrUnhide(int c, bool visible);
 	
-	bool CanHideColumn(int c) { return c==IG_COL_LEVEL||IG_COL_TYPE; }
+	bool CanHideColumn(int col) { return col==IG_COL_LEVEL||col==IG_COL_TYPE; }
 	
 	// eventos generados por DebuggerInspection
 	void OnDICreated(DebuggerInspection *di);
