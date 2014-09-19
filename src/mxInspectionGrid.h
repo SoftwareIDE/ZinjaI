@@ -61,7 +61,6 @@ public:
 //	~mxInspectionGrid();
 	void OnFullTableUpdateBegin();
 	void OnFullTableUpdateEnd();
-	void OnKey(wxKeyEvent &event);
 //	void OnSelectCell(wxGridEvent &event);
 	void OnCellChange(wxGridEvent &event);
 	void OnFreeze(wxCommandEvent &evt);
@@ -124,6 +123,7 @@ public:
 	void OnCellPopupMenu(int row, int col);
 	bool OnCellDoubleClick(int row, int col);
 	void OnColumnHideOrUnhide(int c, bool visible);
+	bool OnKey(int row, int col, int key, int modifiers);
 	
 	bool CanHideColumn(int col) { return col==IG_COL_LEVEL||col==IG_COL_TYPE; }
 	

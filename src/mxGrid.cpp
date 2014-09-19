@@ -80,6 +80,7 @@ void mxGrid::DoCreate ( ) {
 	Connect(wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnRightClick),NULL,this);
 	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),NULL,this);
 	Connect(wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(mxGrid::OnShowHideCol),NULL,this);
+	Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(mxGrid::OnKey),NULL,this);
 }
 
 void mxGrid::OnResize (wxSizeEvent & event) {
@@ -147,3 +148,15 @@ void mxGrid::OnShowHideCol(wxCommandEvent &evt) {
 }
 
 	
+
+void mxGrid::OnKey (wxKeyEvent & event) {
+	int key = event.GetKeyCode();
+	int r = GetGridCursorRow();
+	if (key==WXK_DOWN) {
+		if (r+1!=GetNumberRows()) mxGrid::Select(r+1);
+	} else if (event.GetKeyCode()==WXK_UP) {
+		if (r) mxGrid::Select(r-1);
+	} else if (!OnKey(r,GetGridCursorCol(),key,event.GetModifiers()))
+		event.Skip();
+}
+

@@ -20,9 +20,7 @@ using namespace std;
  
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_GRID_CELL_CHANGE(mxInspectionGrid::OnCellChange)
-	EVT_KEY_DOWN(mxInspectionGrid::OnKey)
 	EVT_GRID_CELL_LEFT_CLICK(mxInspectionGrid::OnClick)
-//	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionGrid::OnDoubleClick)
 	EVT_MENU(mxID_INSPECTION_FREEZE,mxInspectionGrid::OnFreeze)
 	EVT_MENU(mxID_INSPECTION_UNFREEZE,mxInspectionGrid::OnUnFreeze)
 	EVT_MENU(mxID_INSPECTION_BREAK,mxInspectionGrid::OnBreakClassOrArray)
@@ -143,9 +141,7 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 }
 
 
-
-void mxInspectionGrid::OnKey(wxKeyEvent &event) {
-	int key = event.GetKeyCode();
+bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
 	if (key==WXK_DELETE) {
 		vector<int> sel; int min=-1;
 		if (mxGrid::GetSelectedRows(sel,true)==0) sel.push_back(GetGridCursorRow());
@@ -157,21 +153,16 @@ void mxInspectionGrid::OnKey(wxKeyEvent &event) {
 		if (min!=-1) min=GetGridCursorRow();
 		if (min<0||min>inspections.GetSize()) min=0;
 		Select(min);
-	} else if (key==WXK_DOWN) {
-		int r = GetGridCursorRow();
-		if (r+1!=GetNumberRows()) mxGrid::Select(r+1);
-	} else if (key==WXK_UP) {
-		int r = GetGridCursorRow();
-		if (r) Select(r-1);
-	} else if (event.GetKeyCode()==WXK_INSERT) {
-		int row = GetGridCursorRow();
+		return true;
+	} else if (key==WXK_INSERT) {
 		InsertRows(row,1);
 		mxGrid::Select(row,IG_COL_EXPR);
-	} else if (key==WXK_RETURN) {
-		last_return_had_shift_down=event.ShiftDown();
-		event.Skip(); 
+		return true;
+	} else if (key==WXK_RETURN || key==WXK_NUMPAD_ENTER) {
+		last_return_had_shift_down=modifiers&wxMOD_SHIFT;
+		return false;
 	} else
-		event.Skip();
+		return false;
 }
 
 void mxInspectionGrid::OnCellChange(wxGridEvent &event) {

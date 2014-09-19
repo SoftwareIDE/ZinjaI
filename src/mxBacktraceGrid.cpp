@@ -9,7 +9,7 @@
 #include "mxMessageDialog.h"
 
 BEGIN_EVENT_TABLE(mxBacktraceGrid, wxGrid)
-	EVT_KEY_DOWN(mxBacktraceGrid::OnKey)
+//	EVT_KEY_DOWN(mxBacktraceGrid::OnKey)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxBacktraceGrid::OnDblClick)
 //	EVT_GRID_CELL_RIGHT_CLICK(mxBacktraceGrid::OnRightClick)
 	EVT_MENU(mxID_BACKTRACE_GOTO_POS,mxBacktraceGrid::OnGotoPos)
@@ -21,7 +21,7 @@ END_EVENT_TABLE()
 	
 
 mxBacktraceGrid::mxBacktraceGrid(wxWindow *parent):mxGrid(parent,BG_COLS_COUNT) {
-	mxGrid::InitColumn(BG_COL_LINE,LANG(BACKTRACE_LEVEL,"Nivel"),10);
+	mxGrid::InitColumn(BG_COL_LEVEL,LANG(BACKTRACE_LEVEL,"Nivel"),10);
 	mxGrid::InitColumn(BG_COL_FUNCTION,LANG(BACKTRACE_FUNCTION,"Función"),19);
 	mxGrid::InitColumn(BG_COL_FILE,LANG(BACKTRACE_FILE,"Archivo"),21);
 	mxGrid::InitColumn(BG_COL_LINE,LANG(BACKTRACE_LINE,"Linea"),10);
@@ -59,24 +59,12 @@ void mxBacktraceGrid::OnGotoPos(wxCommandEvent &event) {
 	SelectFrame(selected_row);
 }
 
-void mxBacktraceGrid::OnKey(wxKeyEvent &event) {
-	int r = GetGridCursorRow();
-	if (event.GetKeyCode()==WXK_DOWN) {
-		if (r+1!=GetNumberRows()) {
-			SelectRow(r+1);
-			SetGridCursor(r+1,GetGridCursorCol());
-			MakeCellVisible(r+1,GetGridCursorCol());
-		}
-	} else if (event.GetKeyCode()==WXK_UP) {
-		if (r) {
-			SetGridCursor(r-1,GetGridCursorCol());
-			SelectRow(r-1);
-			MakeCellVisible(r-1,GetGridCursorCol());
-		}
-	} else if (event.GetKeyCode()==WXK_RETURN || event.GetKeyCode()==WXK_NUMPAD_ENTER) {
-		OnCellDoubleClick(GetGridCursorRow(),0);
-	} else
-		event.Skip();
+bool mxBacktraceGrid::OnKey(int row, int col, int key, int modifiers) {
+	if (key==WXK_RETURN || key==WXK_NUMPAD_ENTER) {
+		OnCellDoubleClick(row,col);
+		return true;
+	} else 
+		return false;
 }
 
 void mxBacktraceGrid::OnExploreArgs(wxCommandEvent &event) {

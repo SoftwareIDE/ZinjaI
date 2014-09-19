@@ -20,6 +20,7 @@ public:
 //	bool OnCellClick(int row, int col);
 	bool OnCellDoubleClick(int row, int col);
 //	bool CanHideColumn(int col);
+	bool OnKey(int row, int col, int key, int modifiers);
 };
 
 #endif

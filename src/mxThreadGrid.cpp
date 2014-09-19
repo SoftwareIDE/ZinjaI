@@ -3,7 +3,7 @@
 #include "Language.h"
 
 BEGIN_EVENT_TABLE(mxThreadGrid, wxGrid)
-	EVT_KEY_DOWN(mxThreadGrid::OnKey)
+//	EVT_KEY_DOWN(mxThreadGrid::OnKey)
 //	EVT_GRID_CELL_LEFT_DCLICK(mxThreadGrid::OnDblClick)
 //	EVT_GRID_CELL_RIGHT_CLICK(mxThreadGrid::OnRightClick)
 //	EVT_MENU(mxID_Thread_GOTO_POS,mxThreadGrid::OnGotoPos)
@@ -31,25 +31,14 @@ bool mxThreadGrid::OnCellDoubleClick(int row, int col) {
 	return true;
 }
 
-void mxThreadGrid::OnKey(wxKeyEvent &event) {
-	int r = GetGridCursorRow();
-	if (event.GetKeyCode()==WXK_DOWN) {
-		if (r+1!=GetNumberRows()) {
-			SelectRow(r+1);
-			SetGridCursor(r+1,GetGridCursorCol());
-			MakeCellVisible(r+1,GetGridCursorCol());
-		}
-	} else if (event.GetKeyCode()==WXK_UP) {
-		if (r) {
-			SetGridCursor(r-1,GetGridCursorCol());
-			SelectRow(r-1);
-			MakeCellVisible(r-1,GetGridCursorCol());
-		}
-	} else if (event.GetKeyCode()==WXK_RETURN || event.GetKeyCode()==WXK_NUMPAD_ENTER) {
-		OnCellDoubleClick(GetGridCursorRow(),0);
-	} else
-		event.Skip();
+bool mxThreadGrid::OnKey(int row, int col, int key, int modifiers) {
+	if (key==WXK_RETURN || key==WXK_NUMPAD_ENTER) {
+		OnCellDoubleClick(row,col);
+		return true;
+	} else 
+		return false;
 }
+
 
 void mxThreadGrid::SetData(int row, wxString id, wxString func, wxString file, wxString line) {
 	if (row==GetNumberRows()) InsertRows(GetNumberRows(),1);

@@ -51,7 +51,7 @@ private:
 	void OnDblClick(wxGridEvent &event);
 	void OnLabelPopup(wxGridEvent &event);
 	void OnShowHideCol(wxCommandEvent &evt);
-	
+	void OnKey(wxKeyEvent &event);
 protected:
 	void InitColumn(int col_idx, wxString name, int width/*, bool visible=true*/); 
 	void DoCreate(); 
@@ -70,6 +70,7 @@ public:
 		
 	/// @brief callback that will be called when user unhides a column so child class can update its content
 	virtual void OnColumnHideOrUnhide(int col, bool visible) {}
+	virtual bool CanHideColumn(int col) { return true; }
 	
 	/// @brief cell right click event
 	virtual void OnCellPopupMenu(int row, int col) {}
@@ -77,7 +78,8 @@ public:
 	virtual bool OnCellClick(int row, int col) { return false; }
 	/// @brief cell double left click event
 	virtual bool OnCellDoubleClick(int row, int col) { return false; }
-	virtual bool CanHideColumn(int col) { return true; }
+	/// @brief key pressed
+	virtual bool OnKey(int row, int col, int key, int modifiers) { return false; }
 	
 	int GetRealCol(int col) { return cols[col].real_pos; }
 	
