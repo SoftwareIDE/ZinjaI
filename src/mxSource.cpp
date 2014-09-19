@@ -25,6 +25,7 @@
 #include "mxCalltip.h"
 #include "MenusAndToolsConfig.h"
 #include "mxInspectionExplorerDialog.h"
+#include "mxInspectionBaloon.h"
 using namespace std;
 
 
@@ -217,7 +218,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	
 //	AutoCompSetDropRestOfWord(true); // esto se torna muy molesto en muchos casos (por ejemplo, intentar agregar unsigned antes de int), mejor no usar
 	
-	calltip = NULL;	calltip_mode = MXS_NULL;
+	calltip = NULL;	calltip_mode = MXS_NULL; inspection_baloon = NULL;
 	
 	old_current_line=-1000;
 	
@@ -2894,7 +2895,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 				}
 			}
 		}
-	} else {
+	} else if (debug->IsPaused()) {
 		int e = GetSelectionEnd();
 		int s = GetSelectionStart();
 		if (e==s || p<s || p>e) {
@@ -2904,8 +2905,13 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 		if (s!=e) {
 			wxString key = GetTextRange(s,e);
 			wxString ans = debug->InspectExpression(key,true);
-			if (ans.Len())
-				ShowBaloon ( key +": "+ ans , p );
+			if (ans.Len()) {
+				HideInspection();
+				wxRect r=GetScreenRect();
+				int x=event.GetX()+r.GetLeft(),y=event.GetY()+r.GetTop();
+				ShowInspection(wxPoint(x,y),key,ans);
+//				ShowBaloon ( key +": "+ ans , p ); // old method
+			}
 		}
 	}
 }
@@ -3173,6 +3179,7 @@ void mxSource::JumpToCurrentSymbolDefinition() {
 	int s=WordStartPosition(pos,true);
 	int e=WordEndPosition(pos,true);
 	wxString key = GetTextRange(s,e);
+#warning fix for release
 #ifdef _ZINJAI_DEBUG
 	if (debug->IsDebugging() && debug->IsPaused()) { new mxInspectionExplorerDialog(key,false); return; }
 #endif
@@ -3985,6 +3992,7 @@ void mxSource::ShowCallTip (int brace_pos, int calltip_pos, const wxString & s) 
 void mxSource::HideCalltip ( ) {
 	switch (calltip_mode) { 
 		case MXS_NULL: break;
+		case MXS_INSPECTION: HideInspection(); break;
 		case MXS_CALLTIP: calltip->Hide(); break;
 		case MXS_BALOON: wxStyledTextCtrl::CallTipCancel(); break;
 		case MXS_AUTOCOMP: wxStyledTextCtrl::AutoCompCancel(); if (calltip) calltip->Hide(); break;
@@ -4107,5 +4115,17 @@ void mxSource::OnClickUp(wxMouseEvent & evt) {
 void mxSource::OnEditRectangularEdition (wxCommandEvent & evt) {
 	InitRectEdit(false);
 	if (rect_sel.is_on) main_window->SetStatusText(LANG(MAINW_PRESS_ESC_TO_FINISH_RECT_EDIT,"Presione ESC o mueva el cursor de texto a otra linea para volver al modo de edición normal."));
+}
+
+void mxSource::HideInspection ( ) {
+	if (!inspection_baloon) return;
+	inspection_baloon->Destroy();
+	inspection_baloon = NULL;
+}
+
+void mxSource::ShowInspection (const wxPoint &pos, const wxString &exp, const wxString &val) {
+	mask_kill_focus_event=true; timer_focus.Start(150,true);
+	SetCalltipMode(MXS_INSPECTION);
+	inspection_baloon = new mxInspectionBaloon(pos,exp,val);
 }
 

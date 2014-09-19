@@ -22,6 +22,7 @@ class wxString;
 class wxTreeItemId;
 class DiffInfo;
 class mxCalltip;
+class mxInspectionBaloon;
 
 enum MXS_MARKER {
 //	mxSTC_MARK_CURRENT=0, 	///< resaltar la linea actual en el editor (fondo celeste)
@@ -265,7 +266,8 @@ private:
 	bool AutoCompActive();
 	
 private:
-	enum MXS_CALLTIP_MODE { MXS_NULL, MXS_CALLTIP, MXS_BALOON, MXS_AUTOCOMP } calltip_mode;
+	mxInspectionBaloon *inspection_baloon;
+	enum MXS_CALLTIP_MODE { MXS_NULL, MXS_CALLTIP, MXS_INSPECTION, MXS_BALOON, MXS_AUTOCOMP } calltip_mode;
 	void SetCalltipMode(MXS_CALLTIP_MODE new_mode) { if (new_mode!=calltip_mode) HideCalltip(); calltip_mode=new_mode; }
 	mxCalltip *calltip;
 	int calltip_brace, calltip_line;
@@ -276,6 +278,8 @@ private:
 	int autocomp_x, autocomp_y;
 	void OnAutocompTimer(wxTimerEvent &event);
 public:
+	void HideInspection();
+	void ShowInspection(const wxPoint &pos, const wxString &exp, const wxString & val);
 	void HideCalltip();
 	void ShowBaloon(wxString str, int p = -1);
 	void ShowCallTip(int brace_pos, int calltip_pos, const wxString &s);

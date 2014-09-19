@@ -19,12 +19,23 @@ class mxInspectionExplorerWidget : public wxTreeCtrl, public myDIEventHandler  {
 			return retval;
 		}
 	};
+	
+
+	
 	SingleList<mxIEWAux> inspections;
 	int AddItem (wxTreeItemId *parent, DebuggerInspection *di, bool is_root=false);
 public:
 	
 	mxInspectionExplorerWidget(wxWindow *parent, const wxString &expression="", bool frameless=false);
+	~mxInspectionExplorerWidget();
 	void AddExpression(wxString expression, bool frameless);
+	
+	class EventListener {
+	public:
+		virtual void OnSize()=0;
+		virtual void OnType(const wxString &type)=0;
+	} * event_listener;
+	void SetEventListener(EventListener *s);
 //	void Expand(int pos);
 	
 	// eventos generados por DebuggerInspection
@@ -37,6 +48,11 @@ public:
 	
 	// eventos generados por el wxTreeCtrl
 	void OnItemExpanding(wxTreeEvent &event);
+	void OnItemExpanded(wxTreeEvent &event);
+	void OnItemTooltip(wxTreeEvent &event);
+	
+	wxString GetRootType();
+	
 	DECLARE_EVENT_TABLE();
 };
 
