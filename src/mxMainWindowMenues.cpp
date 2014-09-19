@@ -101,6 +101,7 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 	_aui_update_toolbar_pos(FIND);
 	_aui_update_toolbar_pos(DEBUG);
 	_aui_update_toolbar_pos(STATUS);
+	_aui_update_toolbar_pos(DIFF);
 	if (project) _aui_update_toolbar_pos(PROJECT);
 	if (update_aui) a.Update();
 }
