@@ -1831,7 +1831,7 @@ bool mxSource::AddInclude(wxString header) {
 	
 	BeginUndoAction();
 
-	bool using_namespace_std_present=false;
+//	bool using_namespace_std_present=false;
 	bool header_present=false;
 	
 	int lp = GetCurrentPos() , cl = GetCurrentLine();
@@ -1875,21 +1875,21 @@ bool mxSource::AddInclude(wxString header) {
 				lta=1;
 			else if (flag && GetCharAt(p)=='#') // para que saltee defines e ifdefs
 				lta=i+1;
-		} else if (GetTextRange(p,p+5)=="using") {
-			if (flag) {
-				lta=i;
-				flag=false;
-			}
-			p+=5;
-			while (GetCharAt(p)==' ' || GetCharAt(p)=='\t')
-				p++;
-			if (GetTextRange(p,p+9)=="namespace") {
-				p+=9;
-				while (GetCharAt(p)==' ' || GetCharAt(p)=='\t')
-					p++;
-				if (GetTextRange(p,p+3)=="std" && (GetCharAt(p+3)==';' || GetCharAt(p+3)==' ' || GetCharAt(p+3)=='\t' || GetCharAt(p+3)=='/'))
-					using_namespace_std_present=true;
-			}
+//		} else if (GetTextRange(p,p+5)=="using") {
+//			if (flag) {
+//				lta=i;
+//				flag=false;
+//			}
+//			p+=5;
+//			while (GetCharAt(p)==' ' || GetCharAt(p)=='\t')
+//				p++;
+//			if (GetTextRange(p,p+9)=="namespace") {
+//				p+=9;
+//				while (GetCharAt(p)==' ' || GetCharAt(p)=='\t')
+//					p++;
+//				if (GetTextRange(p,p+3)=="std" && (GetCharAt(p+3)==';' || GetCharAt(p+3)==' ' || GetCharAt(p+3)=='\t' || GetCharAt(p+3)=='/'))
+//					using_namespace_std_present=true;
+//			}
 		} else if (!II_SHOULD_IGNORE(p)/* && GetTextRange(p,p+7)!="#define"*/)
 			flag=false;
 	}
@@ -1913,20 +1913,20 @@ bool mxSource::AddInclude(wxString header) {
 			lta++;
 		}
 	}
-	if (!using_namespace_std_present && header.Find(".")==wxNOT_FOUND && header.Last()!='\"') {
-		p = PositionFromLine(lta);
-		wxString line = wxString("using namespace std;\n");
-		if (p<=lp)
-			lp+=line.Len();
-		InsertText(p,line);
-		if (config_source.syntaxEnable)
-			Colourise(p,p+line.Len());
-		GotoPos(lp);
-	}
+//	if (!using_namespace_std_present && header.Find(".")==wxNOT_FOUND && header.Last()!='\"') {
+//		p = PositionFromLine(lta);
+//		wxString line = wxString("using namespace std;\n");
+//		if (p<=lp)
+//			lp+=line.Len();
+//		InsertText(p,line);
+//		if (config_source.syntaxEnable)
+//			Colourise(p,p+line.Len());
+//		GotoPos(lp);
+//	}
 	
 	EndUndoAction();
 //	wxYield(); // sin esto no se ve el calltip (posiblemente un problema con el evento OnUpdateUI
-	if (!header_present || (!using_namespace_std_present && header.Last()!='\"' && header.Right(3)!=_(".h>"))) {
+	if (!header_present /*|| (!using_namespace_std_present && header.Last()!='\"' && header.Right(3)!=_(".h>"))*/) {
 		int lse = GetEndStyled();
 		StartStyling(0,wxSTC_INDICS_MASK);
 		SetStyling(GetLength(),0);
@@ -1936,8 +1936,8 @@ bool mxSource::AddInclude(wxString header) {
 				ShowBaloon(LANG2(SOURCE_UNCOMMENTED_FOR_HEADER,"Descomentada linea <{1}>: \"#include <{2}>\".",wxString()<<uncomment_line,oHeader));
 			else
 				ShowBaloon(LANG1(SOURCE_ADDED_HEADER,"Cabecera agregada: <{1}>.",oHeader));
-		} else {
-			ShowBaloon(LANG(SOURCE_ADDED_USING_NAMESPACE_STD,"Agregado \"using namespace std;\""));
+//		} else {
+//			ShowBaloon(LANG(SOURCE_ADDED_USING_NAMESPACE_STD,"Agregado \"using namespace std;\""));
 		}
 		return true;
 	} else {
@@ -2903,10 +2903,14 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 			s = WordStartPosition(p,true);
 		}
 		if (s!=e) {
+			while ( s>2 && GetTextRange(s-1,s)=="." || GetTextRange(s-2,s)=="->" || GetTextRange(s-2,s)=="::") {
+				int s2=s-2; if (GetTextRange(s-1,s)!=".") s2--;
+				int s3 = WordStartPosition(s2,true);
+				if (s3<s2) s=s3;
+			}
 			wxString key = GetTextRange(s,e);
 			wxString ans = debug->InspectExpression(key,true);
 			if (ans.Len()) {
-				HideInspection();
 				wxRect r=GetScreenRect();
 				int x=event.GetX()+r.GetLeft(),y=event.GetY()+r.GetTop();
 				ShowInspection(wxPoint(x,y),key,ans);
