@@ -1,3 +1,5 @@
+agregar las improvements de inspecciones por defecto para stl y cia
+
 pegar con ctrl+c en la tabla de inspecciones mientras se edita la expresion revienta
 
 cuando un proyecto define un archivo de macros gdb, usarlo en combinacion con el general, y no reemplazando (para mantener las macros para stl)

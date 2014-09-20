@@ -16,8 +16,8 @@ mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const
 	if (expression!="") {
 		DebuggerInspection *di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_DONT_USE_HELPER,this,false);
 		/*int p =*/ AddItem(NULL,di,true);
-		wxTreeCtrl::SetItemHasChildren(GetRootItem());
-		wxTreeCtrl::Expand(GetRootItem());
+		wxTreeCtrl::SetItemHasChildren(GetRootItem(),di->IsCompound());
+//		wxTreeCtrl::Expand(GetRootItem());
 	}
 }
 
@@ -69,6 +69,7 @@ void mxInspectionExplorerWidget::OnDINewType (DebuggerInspection * di) {
 
 void mxInspectionExplorerWidget::OnItemExpanding (wxTreeEvent & event) {
 	int pos = inspections.Find(event.GetItem()); 
+	if (pos==0) SetItemText(inspections[0].item,inspections[0].MakeItemLabel());
 	if (pos==inspections.NotFound()) return; // no deberia pasar
 	mxIEWAux aux = inspections[pos];
 	if (aux.is_open) return; 
@@ -91,6 +92,7 @@ void mxInspectionExplorerWidget::SetEventListener (EventListener * s) {
 }
 
 mxInspectionExplorerWidget::~mxInspectionExplorerWidget ( ) {
+	for(int i=0;i<inspections.GetSize();i++) inspections[i].di->Destroy();
 	delete event_listener;
 }
 
@@ -104,4 +106,5 @@ void mxInspectionExplorerWidget::OnItemTooltip (wxTreeEvent & event) {
 wxString mxInspectionExplorerWidget::GetRootType ( ) {
 	return inspections[0].di->GetValueType();
 }
+
 

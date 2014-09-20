@@ -1,4 +1,5 @@
 #include "Inspection.h"
+#include "ConfigManager.h"
 
 DebuggerInspection::vo2di_type DebuggerInspection::vo2di_map;
 
@@ -192,3 +193,78 @@ void myUserHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
 	/*if (!helper_parent->is_frozen) */helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);	
 }
 
+/**
+* @brief intenta hacer el match entre el tipo de una inspección y un patrón configurado en la lista de mejoras automáticas
+*
+* Ejemplo: si pattern="std::list<${TYPE}, std::allocator<${TYPE}> >", type="std::list<int, std::alocator<int> >"
+* new_expr=">plist ${EXP} ${TYPE}" y expr="lista1", la funcion modificara new_expr a ">plist lista1 int" 
+* y retornara true.
+*
+* @param pattern    el patron de tipo con el que se intenta matchear la inspeccion real
+* @param type       el tipo de la inspeccion real, como es arrojado por gdb
+* @param new_expre  el patron de expresion mejorada, argumento de entrada/salida
+* @param expr       la expresion real original
+* @retval 
+**/
+bool DebuggerInspection::TryToImproveExpression (const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr) {
+	if (type.StartsWith("const ")) type=type.Mid(6);
+	if (type.EndsWith(" &")) type.RemoveLast().RemoveLast();
+	if (!pattern.Contains("${")) {
+		if (pattern==type) {
+			new_expr.Replace("${EXP}",expr,true);
+			return true;
+		}
+	} else {
+		map<wxString,wxString> the_map;
+		int lp=pattern.Len(), ip=0;
+		int lt=type.Len(), it=0;
+		while (ip<lp && it<lt) {
+			if (pattern[ip]=='$' && pattern[ip+1]=='{') {
+				// buscar donde termina la variable en pattern
+				int pos_ip0=ip; ip+=2;
+				while (ip<lp && pattern[ip]!='}') ip++;
+				if (ip==lp) return false;
+				wxString vname = pattern.Mid(pos_ip0,ip-pos_ip0+1);
+				// ver que sigue en pattern para buscarlo en type
+				int ip0=++ip;
+				while (ip<lp && (pattern[ip]!='$'||pattern[ip+1]!='{')) ip++;
+				wxString subpat = pattern.Mid(ip0,ip-ip0);
+				int lev=0, lsp=subpat.Len(), it0=it++;
+				while (it<lt && (lev!=0 || type.Mid(it,lsp)!=subpat)) {
+					if (type[it]=='{' || type[it]=='<' || type[it]=='(') lev++;
+					else if (type[it]=='}' || type[it]=='>' || type[it]==')') lev--;
+					it++;
+				}
+				if ((lev!=0 || type.Mid(it,lsp)!=subpat)) return false;
+				// guardar el match, y dejar los dos contadores listos para el proximo
+				wxString vvalue = type.Mid(it0,it-it0);
+				the_map[vname] = vvalue;
+				it+=lsp;
+			} else 
+				if (pattern[ip++]!=type[it++]) return false;
+		}
+		if (ip==lp&&it==lt) {
+			map<wxString,wxString>::iterator it1=the_map.begin(), it2=the_map.end();
+			while(it1!=it2) {
+				new_expr.Replace(it1->first,it1->second,true);
+				it1++;
+			}
+			new_expr.Replace("${EXP}",expr,true);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool DebuggerInspection::TryToImproveExpression (wxString type, wxString &new_expr, const wxString &expr) {
+	wxArrayString &from=config->Debug.inspection_improving_template_from;
+	if (!config->Debug.improve_inspections_by_type) return false;
+	if (type.EndsWith(" &")) { type.RemoveLast(); type.RemoveLast(); }
+	if (type.StartsWith("const ")) { type=type.Mid(6); }
+	for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
+		new_expr = config->Debug.inspection_improving_template_to[i];
+		if (TryToImproveExpression(from[i],type,new_expr,expr))
+			return true;
+	}
+	return false;
+}

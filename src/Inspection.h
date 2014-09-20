@@ -562,6 +562,11 @@ public:
 	long GetFrameID() { return frame_id; }
 	bool IsFromCurrentThread() { return !debug->debugging || debug->waiting || thread_id==debug->current_thread_id; }
 	wxString GetHelperExpression() { return helper?helper->expression:""; }
+	
+	// some ramdon inspections related functions
+	static bool TryToImproveExpression (const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
+	static bool TryToImproveExpression (wxString type, wxString &new_expr, const wxString &expr);
+	
 };
 
 #endif

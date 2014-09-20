@@ -140,7 +140,7 @@ public:
 	void ChangeFrameless(int r, bool frameless, bool full_table_update=true);
 	void ExposeImprovedExpression(int r);
 	
-	bool TryToImproveExpression(const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
+//	bool TryToImproveExpression(const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
 
 	void UpdateLevelColumn(int r);
 	void UpdateValueColumn(int r);

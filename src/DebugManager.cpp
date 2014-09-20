@@ -725,9 +725,9 @@ wxString DebugManager::InspectExpression(wxString var, bool pretty) {
 	if (!pretty) {
 		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
 	} else {
-		SendCommand("-gdb-set print pretty on");
+//		SendCommand("-gdb-set print pretty on");
 		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
-		SendCommand("-gdb-set print pretty off");
+//		SendCommand("-gdb-set print pretty off");
 		return ret;
 	}
 //	wxString ret = GetValueFromAns( SendCommand(wxString(_T("-data-evaluate-expression "))<<var),_T("value") ,true);
