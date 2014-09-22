@@ -25,7 +25,7 @@ protected:
 		CreateVector();
 	}
 	void EnsureMemFor(int num_elems) {
-		if (num_elems>=m_capacity) return;
+		if (num_elems<=m_capacity) return;
 		if (!m_capacity) { m_capacity=10; }
 		while (m_capacity<num_elems) m_capacity*=2;
 		CreateVector();
