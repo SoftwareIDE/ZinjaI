@@ -16,7 +16,7 @@ mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const
 	if (expression!="") {
 		DebuggerInspection *di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_DONT_USE_HELPER,this,false);
 		/*int p =*/ AddItem(NULL,di,true);
-		wxTreeCtrl::SetItemHasChildren(GetRootItem(),di->IsCompound());
+		wxTreeCtrl::SetItemHasChildren(GetRootItem(),!di->IsSimpleType());
 //		wxTreeCtrl::Expand(GetRootItem());
 	}
 }
@@ -25,7 +25,7 @@ int mxInspectionExplorerWidget::AddItem (wxTreeItemId *parent, DebuggerInspectio
 	mxIEWAux aux (di, parent?AppendItem(*parent,di->GetExpression()):GetRootItem(), is_root);
 	int p = inspections.Add(aux);
 	if (is_root) aux.di->Init(); else SetItemText(aux.item,aux.MakeItemLabel());
-	if (aux.di->IsCompound()) SetItemHasChildren(aux.item,true);
+	if (!aux.di->IsSimpleType()) SetItemHasChildren(aux.item,true);
 	return p;
 }
 

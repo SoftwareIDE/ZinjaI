@@ -289,8 +289,8 @@ private:
 		int x,y; ///< position where autocompletion menu was displayed
 	public:
 		AutocompHelper(mxSource *src) : timer(src->GetEventHandler(),wxID_ANY),x(-1),y(-1) {}
-		void Start(int _x, int _y) { x=_x; y=_y; Start(250,true); } ///< to be called when autocomp menu is created, will show the calltip next to it on timer event
-		void Restart() { Start(250,true); } ///< to be called when an existing autocompletion list changes its selection
+		void Start(int _x, int _y) { x=_x; y=_y; timer.Start(250,true); } ///< to be called when autocomp menu is created, will show the calltip next to it on timer event
+		void Restart() { timer.Start(250,true); } ///< to be called when an existing autocompletion list changes its selection
 		bool IsThisYourTimer(const wxTimer *t) { return t==&timer; } ///< to query in mxSource::OnTimer it the current event if for this timer
 		int GetX() { return x; }
 		int GetY() { return y; }

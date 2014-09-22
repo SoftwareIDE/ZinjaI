@@ -141,7 +141,6 @@ int mxGrid::GetSelectedRows (vector<int> & rows, bool inverted) {
 
 void mxGrid::OnShowHideCol(wxCommandEvent &evt) {
 	int cn=evt.GetId()-mxID_COL_ID;
-	cerr<<cn<<endl;
 	if (cn<0||cn>=cols.GetSize()) { evt.Skip(); return; }
 	mxGrid::SetColumnVisible(cn,!mxGrid::IsColumnVisible(cn));
 	Refresh();

@@ -34,6 +34,7 @@ public:
 	public:
 		virtual void OnSize()=0;
 		virtual void OnType(const wxString &type)=0;
+		virtual ~EventListener(){}
 	} * event_listener;
 	void SetEventListener(EventListener *s);
 //	void Expand(int pos);

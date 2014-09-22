@@ -205,7 +205,7 @@ END_EVENT_TABLE()
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL)
-	, autocomp_helper(this), focus_helper(this)
+	, focus_helper(this), autocomp_helper(this)
 {
 
 	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
