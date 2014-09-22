@@ -46,8 +46,8 @@ marker=3274
 marker=4655
 [source]
 path=src/mxSource.cpp
-cursor=4135:0
-marker=3998
+cursor=1997:2
+marker=3995
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=-1:349
@@ -65,7 +65,7 @@ path=src/Parser.cpp
 cursor=637:27
 [source]
 path=src/mxNewWizard.cpp
-cursor=1205:16
+cursor=724:1
 marker=597
 [source]
 path=src/CodeHelper.cpp
@@ -153,7 +153,7 @@ path=src/mxGotoFileDialog.cpp
 cursor=122:13
 [source]
 path=src/mxInspectionGrid.cpp
-cursor=162:14
+cursor=1028:25
 marker=655
 [source]
 path=src/mxBacktraceGrid.cpp
@@ -344,7 +344,7 @@ path=src/mxReferenceWindow.cpp
 cursor=119:25
 [source]
 path=src/Inspection.cpp
-cursor=0:0
+cursor=259:27
 [source]
 path=src/mxGenericInspectionCtrl.cpp
 cursor=17:0
@@ -384,7 +384,7 @@ path=src/mxInspectionExplorerDialog.cpp
 cursor=13:1
 [source]
 path=src/mxInspectionBaloon.cpp
-cursor=38:0
+cursor=20:26
 [header]
 path=src/CodeHelper.h
 cursor=60:26
@@ -495,7 +495,7 @@ path=src/mxGotoFileDialog.h
 cursor=23:20
 [header]
 path=src/mxInspectionGrid.h
-cursor=125:52
+cursor=5:17
 [header]
 path=src/mxBacktraceGrid.h
 cursor=29:39
@@ -713,7 +713,7 @@ path=src/mxReferenceWindow.h
 cursor=28:50
 [header]
 path=src/Inspection.h
-cursor=563:1
+cursor=568:1
 marker=311
 marker=317
 [header]
@@ -773,7 +773,7 @@ path=src/version.h
 cursor=0:24
 [other]
 path=todo.txt
-cursor=0:84
+cursor=0:0
 [other]
 path=src/mainpage.h
 cursor=-1:715

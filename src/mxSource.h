@@ -119,15 +119,12 @@ public:
 
 	bool ignore_char_added; ///< algunas operaciones (pegar,autocode,etc) necesitan desactivar el evento
 	
-	int last_s1, last_s2; ///< para el resaltado de campos
-	
 	SourceExtras *m_extras; ///< breakpoints, highlighted lines, saved cursor positio (see m_owns_extras)
 	bool m_owns_extras; ///< if true, this objtec is the owner of m_extras and should delete it on its destructor; if false, m_owns_extras points to an instance owned by ProjectManager
 	void UpdateExtras(); ///< updates info in m_extras
 	
 	int lexer;
-	bool first_view;
-	bool never_parsed;
+	bool first_view, never_parsed;
 	er_source_register *er_register;
 	
 private:
@@ -151,7 +148,7 @@ public:
 	void CheckForExternalModifications(); ///< checks if the file has changed, if it did, enqueue a call to ThereAreExternalModifications for the end of the main_window event loop
 	void ThereAreExternalModifications(); ///< show the warning dialog or reload the file when we know it has changed
 	mxSource *diff_brother;
-	DiffInfo *first_diff_info,*last_diff_info;
+	DiffInfo *first_diff_info, *last_diff_info;
 	wxString page_text;
 	void SetPageText(wxString ptext);
 	void MakeUntitled(wxString ptext); // para abrir resultados de compilacion, salidas de gprof, y cosas asi
@@ -267,16 +264,39 @@ private:
 	
 private:
 	mxInspectionBaloon *inspection_baloon;
-	enum MXS_CALLTIP_MODE { MXS_NULL, MXS_CALLTIP, MXS_INSPECTION, MXS_BALOON, MXS_AUTOCOMP } calltip_mode;
+	enum MXS_CALLTIP_MODE { MXS_NULL, MXS_CALLTIP, MXS_INSPECTION, MXS_BALOON, MXS_AUTOCOMP };
+	MXS_CALLTIP_MODE calltip_mode;
 	void SetCalltipMode(MXS_CALLTIP_MODE new_mode) { if (new_mode!=calltip_mode) HideCalltip(); calltip_mode=new_mode; }
-	mxCalltip *calltip;
+	mxCalltip *calltip; ///< frame used (and reuse) for custom calltip (null until first use, created on ShowCalltip)
 	int calltip_brace, calltip_line;
 	wxArrayString autocomp_help_text;
 	void OnAutocompSelection(wxStyledTextEvent &event);
-	bool mask_kill_focus_event; // para evitar que al mostrarse el autocompletado o el calltip (y recibir asi el foco) el event kill_focus del source los cierre inmediatamente
-	wxTimer timer_autocomp, timer_focus;
-	int autocomp_x, autocomp_y;
-	void OnAutocompTimer(wxTimerEvent &event);
+	
+	/// para evitar que al mostrarse el autocompletado o el calltip (y recibir asi el foco) el evento kill_focus del source los cierre inmediatamente
+	class FocusHelper {
+		wxTimer timer;
+		bool mask;
+	public:
+		FocusHelper(mxSource *src) : timer(src->GetEventHandler(),wxID_ANY),mask(false) {}
+		void Mask() { mask=true; timer.Start(150,true); } ///< masks next killfocus event
+		void Unmask() { mask=false; } ///< unmask killfocus event
+		bool KillIsMasked() { return mask; } ///< to query if killfocus event is currently masked
+		bool IsThisYourTimer(const wxTimer *t) { return t==&timer; } ///< to query in mxSource::OnTimer it the current event if for this timer
+	} focus_helper;
+	
+	class AutocompHelper {
+		wxTimer timer;
+		int x,y; ///< position where autocompletion menu was displayed
+	public:
+		AutocompHelper(mxSource *src) : timer(src->GetEventHandler(),wxID_ANY),x(-1),y(-1) {}
+		void Start(int _x, int _y) { x=_x; y=_y; Start(250,true); } ///< to be called when autocomp menu is created, will show the calltip next to it on timer event
+		void Restart() { Start(250,true); } ///< to be called when an existing autocompletion list changes its selection
+		bool IsThisYourTimer(const wxTimer *t) { return t==&timer; } ///< to query in mxSource::OnTimer it the current event if for this timer
+		int GetX() { return x; }
+		int GetY() { return y; }
+	} autocomp_helper;
+	
+	void OnTimer(wxTimerEvent &event);
 public:
 	void HideInspection();
 	void ShowInspection(const wxPoint &pos, const wxString &exp, const wxString & val);
@@ -320,7 +340,7 @@ public:
 	
 private:
 	
-	int brace_1,brace_2;
+	int brace_1, brace_2;
 	void MyBraceHighLight(int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);
 	
 	

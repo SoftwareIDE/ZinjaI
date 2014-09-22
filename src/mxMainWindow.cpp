@@ -469,7 +469,7 @@ bool PreventExecuteYieldExecuteProblem::flag=false;
 mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
 	
 	EXTERNAL_SOURCE=(mxSource*)this;
-
+	focus_source=NULL;
 	m_macro=NULL;
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
@@ -1412,7 +1412,7 @@ wxAuiNotebook *mxMainWindow::CreateNotebookSources() {
 wxTreeCtrl* mxMainWindow::CreateExplorerTree() {
 
 	explorer_tree.treeCtrl = new mxTreeCtrl(this, mxID_TREE_EXPLORER, wxDefaultPosition, wxSize(160,100), wxTR_DEFAULT_STYLE | wxNO_BORDER /*| wxTR_HIDE_ROOT*/);
-					
+	
 	wxImageList* imglist = new wxImageList(16, 16,true,5);
 	
 	imglist->Add(wxBitmap(SKIN_FILE("ap_folder.png"),wxBITMAP_TYPE_PNG));

@@ -199,13 +199,13 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_MACRORECORD(wxID_ANY,mxSource::OnMacroAction)
 	EVT_STC_AUTOCOMP_SELECTION(wxID_ANY,mxSource::OnAutocompSelection)
 	
-	EVT_TIMER(wxID_ANY,mxSource::OnAutocompTimer)
+	EVT_TIMER(wxID_ANY,mxSource::OnTimer)
 	
 END_EVENT_TABLE()
 
 mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem) 
 	: wxStyledTextCtrl (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL)
-	, timer_autocomp(GetEventHandler(),wxID_ANY), timer_focus(GetEventHandler(),wxID_ANY)
+	, autocomp_helper(this), focus_helper(this)
 {
 
 	// LC_CTYPE and LANG env vars are altered in the launcher, so this is commented now
@@ -226,9 +226,8 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	
 	next_source_with_same_file=this;
 	
-	source_time_dont_ask=false;
-	diff_brother=NULL;
-	first_diff_info=last_diff_info=NULL;
+	source_time_dont_ask = false; source_time_reload = false;
+	diff_brother=NULL; first_diff_info=last_diff_info=NULL;
 	
 	readonly_mode = ROM_NONE;
 	
@@ -268,9 +267,9 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	RegisterImage(19,*(bitmaps->parser.icon19_enum_const));
 	RegisterImage(20,*(bitmaps->parser.icon20_argument));
 	
-	lexer=wxSTC_LEX_CPP;
+	lexer = wxSTC_LEX_CPP;
 	
-	config_running=config->Running;
+	config_running = config->Running;
 	
 	source_filename = wxEmptyString;
 	temp_filename = DIR_PLUS_FILE(config->temp_dir,"sin_titulo.cpp");
@@ -1988,6 +1987,7 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 
 void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	
+	// mover el cursor a la posición del click (a menos que haya una selección y se clickeó dentro)
 	int p1=GetSelectionStart();
 	int p2=GetSelectionEnd();
 	if (p1==p2) {
@@ -2903,7 +2903,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 			s = WordStartPosition(p,true);
 		}
 		if (s!=e) {
-			while ( s>2 && GetTextRange(s-1,s)=="." || GetTextRange(s-2,s)=="->" || GetTextRange(s-2,s)=="::") {
+			while ( s>2 && (GetTextRange(s-1,s)=="." || GetTextRange(s-2,s)=="->" || GetTextRange(s-2,s)=="::")) {
 				int s2=s-2; if (GetTextRange(s-1,s)!=".") s2--;
 				int s3 = WordStartPosition(s2,true);
 				if (s3<s2) s=s3;
@@ -2938,8 +2938,7 @@ void mxSource::OnSavePointLeft (wxStyledTextEvent &event) {
 }
 
 void mxSource::OnKillFocus(wxFocusEvent &event) {
-	if (!mask_kill_focus_event) 
-		HideCalltip(); 
+	if (!focus_helper.KillIsMasked()) HideCalltip(); 
 	event.Skip();
 }
 
@@ -3183,10 +3182,6 @@ void mxSource::JumpToCurrentSymbolDefinition() {
 	int s=WordStartPosition(pos,true);
 	int e=WordEndPosition(pos,true);
 	wxString key = GetTextRange(s,e);
-#warning fix for release
-#ifdef _ZINJAI_DEBUG
-	if (debug->IsDebugging() && debug->IsPaused()) { new mxInspectionExplorerDialog(key,false); return; }
-#endif
 	if (key.Len()) new mxGotoFunctionDialog(key,main_window,GetFileName(false));
 }
 
@@ -3613,7 +3608,8 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 		return;
 	} else {
 		evt.Skip();
-		if (calltip_mode==MXS_AUTOCOMP) timer_autocomp.Start(250,true);
+		// autocompletion list selected item could have been changed
+		if (calltip_mode==MXS_AUTOCOMP) autocomp_helper.Restart();
 	}
 }
 
@@ -3984,7 +3980,7 @@ void mxSource::UserReload ( ) {
 }
 
 void mxSource::ShowCallTip (int brace_pos, int calltip_pos, const wxString & s) {
-	mask_kill_focus_event=true; timer_focus.Start(150,true);
+	focus_helper.Mask();
 	SetCalltipMode(MXS_CALLTIP);
 	last_failed_autocompletion.Reset(); 
 	if (!calltip) calltip = new mxCalltip(this);
@@ -4007,12 +4003,12 @@ void mxSource::HideCalltip ( ) {
 void mxSource::ShowAutoComp (int p, const wxString & s) { 
 	SetCalltipMode(MXS_AUTOCOMP);
 	last_failed_autocompletion.Reset(); 
-	mask_kill_focus_event=true; timer_focus.Start(150,true);
+	focus_helper.Mask();
 	wxStyledTextCtrl::AutoCompShow(p,s);
 	wxPoint pt1=PointFromPosition(GetCurrentPos()-p);
 	wxPoint pt2=GetScreenPosition();
-	autocomp_x = pt1.x+pt2.x; autocomp_y = pt1.y+pt2.y;
-	if (calltip_mode==MXS_AUTOCOMP) timer_autocomp.Start(250,true);
+	if (calltip_mode==MXS_AUTOCOMP) 
+		autocomp_helper.Start(pt1.x+pt2.x, pt1.y+pt2.y);
 }
 
 
@@ -4022,18 +4018,22 @@ void mxSource::OnAutocompSelection(wxStyledTextEvent &event) {
 }
 
 
-void mxSource::OnAutocompTimer(wxTimerEvent &event) {
-	if (event.GetEventObject()==&timer_focus) { mask_kill_focus_event=false; return; }
-	if (!wxStyledTextCtrl::AutoCompActive()) { // si se cancelo el menu (por ejemplo, el usuario siguio escribiendo la palabra y ya no hay conicidencias)
-		if (calltip_mode==MXS_AUTOCOMP) calltip_mode=MXS_NULL; // solo si el modo es autocomp, porque puede ya haber lanzado un calltip real
+void mxSource::OnTimer(wxTimerEvent &event) {
+	wxTimer *timer = reinterpret_cast<wxTimer*>(event.GetEventObject());
+	if (focus_helper.IsThisYourTimer(timer)) { 
+		focus_helper.Unmask();
+	} else if (autocomp_helper.IsThisYourTimer(timer)) {
+		if (!wxStyledTextCtrl::AutoCompActive()) { // si se cancelo el menu (por ejemplo, el usuario siguio escribiendo la palabra y ya no hay conicidencias)
+			if (calltip_mode==MXS_AUTOCOMP) calltip_mode=MXS_NULL; // solo si el modo es autocomp, porque puede ya haber lanzado un calltip real
+		}
+		if (calltip_mode!=MXS_AUTOCOMP) return;
+		wxString help_text = autocomp_list.GetHelp(AutoCompGetCurrent());
+		if (!help_text.Len()) { if (calltip) calltip->Hide(); return; }
+		if (!calltip) calltip = new mxCalltip(this);
+		int autocomp_max_len = autocomp_list.GetMaxLen();
+		focus_helper.Mask();
+		calltip->Show(autocomp_helper.GetX(),autocomp_helper.GetY(),autocomp_max_len,help_text);
 	}
-	if (calltip_mode!=MXS_AUTOCOMP) return;
-	wxString help_text = autocomp_list.GetHelp(AutoCompGetCurrent());
-	if (!help_text.Len()) { if (calltip) calltip->Hide(); return; }
-	if (!calltip) calltip = new mxCalltip(this);
-	int autocomp_max_len = autocomp_list.GetMaxLen();
-	mask_kill_focus_event=true; timer_focus.Start(150,true);
-	calltip->Show(autocomp_x,autocomp_y,autocomp_max_len,help_text);
 }
 
 void mxSource::OnEditMakeLowerCase (wxCommandEvent & event) {
@@ -4128,7 +4128,7 @@ void mxSource::HideInspection ( ) {
 }
 
 void mxSource::ShowInspection (const wxPoint &pos, const wxString &exp, const wxString &val) {
-	mask_kill_focus_event=true; timer_focus.Start(150,true);
+	focus_helper.Mask();
 	SetCalltipMode(MXS_INSPECTION);
 	inspection_baloon = new mxInspectionBaloon(pos,exp,val);
 }

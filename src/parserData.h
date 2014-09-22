@@ -775,6 +775,7 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 	pd_ref *first_include;
 	pd_ref *first_inherit;
 	pd_file (pd_file *aprev,wxString aname, wxDateTime atime, pd_file *anext) : hide_symbols(false) {
+		counter=0;
 		ref_count=1;
 		name=aname;
 		time=atime;
