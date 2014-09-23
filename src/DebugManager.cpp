@@ -722,14 +722,15 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi, bool quiet) {
 
 wxString DebugManager::InspectExpression(wxString var, bool pretty) {
 	if (waiting || !debugging) return "";
-	if (!pretty) {
+//	if (!pretty) {
+		if (var.StartsWith(">")) return GetMacroOutput(var.Mid(1));
 		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
-	} else {
+//	} else {
 //		SendCommand("-gdb-set print pretty on");
-		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
+//		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
 //		SendCommand("-gdb-set print pretty off");
-		return ret;
-	}
+//		return ret;
+//	}
 //	wxString ret = GetValueFromAns( SendCommand(wxString(_T("-data-evaluate-expression "))<<var),_T("value") ,true);
 //	if (ret.Mid(0,2)==_T("\\\"") && ret.Mid(ret.Len()-2,2)==_T("\\\"")) {
 //		ret[ret.Len()-2]='\"';
