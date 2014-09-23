@@ -4130,6 +4130,7 @@ void mxSource::HideInspection ( ) {
 void mxSource::ShowInspection (const wxPoint &pos, const wxString &exp, const wxString &val) {
 	focus_helper.Mask();
 	SetCalltipMode(MXS_INSPECTION);
-	inspection_baloon = new mxInspectionBaloon(pos,exp,val);
+	wxPoint p2(pos.x-5, pos.y-5); // para que el mouse quede dentro del inspection_baloon
+	inspection_baloon = new mxInspectionBaloon(p2,exp,val);
 }
 

@@ -1648,7 +1648,7 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 		compiler->timer->Start(500);
 	}
 	// informar al usuario
-	if (msg.Len()) SetCompilingStatus(msg,false);
+	if (msg.Len()) SetCompilingStatus(msg,true);
 }
 
 

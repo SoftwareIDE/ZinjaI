@@ -7,7 +7,7 @@
 #include "DebugManager.h"
 
 mxInspectionBaloon::mxInspectionBaloon (const wxPoint &pos, const wxString & expression, const wxString &value) 
-	:wxFrame(main_window,wxID_ANY,expression,pos,wxDefaultSize,wxFRAME_NO_TASKBAR|wxFRAME_FLOAT_ON_PARENT|wxRESIZE_BORDER) 
+	:wxFrame(main_window,wxID_ANY,expression,pos,wxDefaultSize,wxFRAME_NO_TASKBAR|wxFRAME_FLOAT_ON_PARENT|wxNO_BORDER) 
 {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	// create the tree for exploring the VO
@@ -36,10 +36,13 @@ void mxInspectionBaloon::AddExpression (wxString expression, bool frameless) {
 }
 
 void mxInspectionBaloon::OnTreeSize ( ) {
-	wxSize sz = exp->GetBestSize();
-	sz.IncBy(wxSystemSettings::GetMetric(wxSYS_VSCROLL_X),text->GetSize().GetHeight()+5); 
-	SetSize(sz);
-	cerr<<sz.GetWidth()<<" x "<<sz.GetHeight()<<endl;
+	wxSize sz = exp->GetFullSize();
+	sz.IncBy(wxSystemSettings::GetMetric(wxSYS_VSCROLL_X),
+#ifdef __WIN32__
+		wxSystemSettings::GetMetric(wxSYS_HSCROLL_Y)+
+#endif
+		text->GetSize().GetHeight()+5);
+	SetSize(ClientToWindowSize(sz));
 }
 
 void mxInspectionBaloon::OnTreeType (const wxString & type) {

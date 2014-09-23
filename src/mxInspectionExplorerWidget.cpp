@@ -1,5 +1,6 @@
 #include "mxInspectionExplorerWidget.h"
 #include <wx/msgdlg.h>
+#include <wx/dcscreen.h>
 
 BEGIN_EVENT_TABLE(mxInspectionExplorerWidget,wxTreeCtrl)
 	EVT_TREE_ITEM_EXPANDING(wxID_ANY,mxInspectionExplorerWidget::OnItemExpanding)
@@ -13,7 +14,8 @@ mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const
 {
 	event_listener=NULL;
 	AddRoot(expression); 
-	if (expression!="") {
+	hidden_root = expression=="";
+	if (!hidden_root) {
 		DebuggerInspection *di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_DONT_USE_HELPER,this,false);
 		/*int p =*/ AddItem(NULL,di,true);
 		wxTreeCtrl::SetItemHasChildren(GetRootItem(),!di->IsSimpleType());
@@ -107,4 +109,37 @@ wxString mxInspectionExplorerWidget::GetRootType ( ) {
 	return inspections[0].di->GetValueType();
 }
 
+#ifdef __WIN32__
+static void SetMax(wxSize &size, wxScreenDC &dc, wxTreeCtrl *tree, wxTreeItemId &item, int depth) {
+	wxSize aux = dc.GetTextExtent(tree->GetItemText(item));
+	int w = aux.GetWidth()+tree->GetIndent()*depth;
+	if (w>size.GetWidth()) size.SetWidth(w);
+	size.SetHeight(aux.GetHeight()+size.GetHeight()+5);
+}
 
+static void ForAllChildren(wxSize &size, wxScreenDC &dc, wxTreeCtrl *tree, wxTreeItemId &item, int depth) {
+	wxTreeItemIdValue cookie;
+	wxTreeItemId it = tree->GetFirstChild(item,cookie);
+	while (it.IsOk()) {
+		/*if (tree->IsVisible(it)) */SetMax(size,dc,tree,it,depth);
+		if (tree->ItemHasChildren(it)) ForAllChildren(size,dc,tree,it,depth+1);
+		it = tree->GetNextChild(item,cookie);
+	}
+}
+
+wxSize mxInspectionExplorerWidget::GetFullSize ( ) {
+	/// based on code from: http://stackoverflow.com/questions/960489/what-is-the-proper-way-to-compute-the-fully-expanded-width-of-wx-treectrl
+	wxSize sz(5,5);
+	wxScreenDC dc;
+	dc.SetFont(GetFont());
+	wxTreeItemId it = GetRootItem();
+	if (!hidden_root) SetMax(sz,dc,this,it,1);
+	ForAllChildren(sz,dc,this,it,2);
+	return sz;
+}
+
+#else
+wxSize mxInspectionExplorerWidget::GetFullSize ( ) {
+	InvalidateBestSize(); return GetBestSize();
+}
+#endif

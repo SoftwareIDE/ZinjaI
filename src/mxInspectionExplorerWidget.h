@@ -20,7 +20,7 @@ class mxInspectionExplorerWidget : public wxTreeCtrl, public myDIEventHandler  {
 		}
 	};
 	
-
+	bool hidden_root;
 	
 	SingleList<mxIEWAux> inspections;
 	int AddItem (wxTreeItemId *parent, DebuggerInspection *di, bool is_root=false);
@@ -53,6 +53,8 @@ public:
 	void OnItemTooltip(wxTreeEvent &event);
 	
 	wxString GetRootType();
+	
+	wxSize GetFullSize();
 	
 	DECLARE_EVENT_TABLE();
 };
