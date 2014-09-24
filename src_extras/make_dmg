@@ -5,6 +5,7 @@ cp -u /mnt/ex/zinjai/readme.txt zinjai.app/Contents/Resources/
 cp -Hur /mnt/ex/zinjai/templates-mac/* zinjai.app/Contents/Resources/templates/
 cp -u /mnt/ex/zinjai/src_extras/* zinjai.app/Contents/Resources/src_extras/
 cp -u /mnt/ex/zinjai/src_extras/complement/* zinjai.app/Contents/Resources/src_extras/complement
+cp -u /mnt/ex/zinjai/src_extras/img_viewer/* zinjai.app/Contents/Resources/src_extras/img_viewer
 cp -u /mnt/ex/zinjai/src_extras/wx_autocomp/* zinjai.app/Contents/Resources/src_extras/wx_autocomp
 cp -u /mnt/ex/zinjai/autocomp/* zinjai.app/Contents/Resources/autocomp/
 cp -u /mnt/ex/zinjai/colours/* zinjai.app/Contents/Resources/colours/
@@ -50,6 +51,7 @@ dd if=/dev/zero of=zinjai-ppc.dmg bs=512k count=80
 mkfs.hfsplus -v ZinjaI zinjai-ppc.dmg
 sudo mount -o loop zinjai-ppc.dmg mnt || exit 1
 rm -f zinjai.app/Contents/MacOS/zinjai
+rm -f zinjai.app/Contents/Resources/img_viewer.bin
 rm -f zinjai.app/Contents/Resources/complement.bin
 rm -f zinjai.app/Contents/Resources/complement_wrap.bin
 rm -f zinjai.app/Contents/Resources/cbrowser
@@ -68,6 +70,7 @@ dd if=/dev/zero of=zinjai-m32.dmg bs=512k count=80
 mkfs.hfsplus -v ZinjaI zinjai-m32.dmg
 sudo mount -o loop zinjai-m32.dmg mnt || exit 1
 rm -f zinjai.app/Contents/MacOS/zinjai
+rm -f zinjai.app/Contents/Resources/img_viewer.bin
 rm -f zinjai.app/Contents/Resources/complement.bin
 rm -f zinjai.app/Contents/Resources/complement_wrap.bin
 rm -f zinjai.app/Contents/Resources/cbrowser

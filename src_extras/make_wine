@@ -29,6 +29,7 @@ zmkdir zinjai
     cp -u $SRC/cbrowser.exe zinjai/
     cp -u $SRC/zinjai.exe zinjai/
     cp -u $SRC/zinjai.dir zinjai/
+    cp -u $SRC/img_viewer.exe zinjai/
     cp -u $SRC/complement.exe zinjai/
     cp -u $SRC/complement_wrap.exe zinjai/
     cp -u $SRC/shellexecute.exe zinjai/
@@ -92,6 +93,8 @@ zmkdir fuentes
     cp -u $SRC/src_extras/* fuentes/src_extras
   zmkdir fuentes/src_extras/complement
     cp -u $SRC/src_extras/complement/* fuentes/src_extras/complement
+  zmkdir fuentes/src_extras/img_viewer
+    cp -u $SRC/src_extras/complement/* fuentes/src_extras/img_viewer
 #  zmkdir fuentes/src_extras/wx_autocomp
 #    cp -u $SRC/src_extras/wx_autocomp/* fuentes/src_extras/wx_autocomp
   zmkdir fuentes/imgs/src
@@ -118,7 +121,7 @@ zmkdir fuentes
     rm -rf $SRC/src_extras/wxWidgets
     rm -rf $SRC/src_extras/*.bin
 
-wine e:/NSIS/makensis.exe /DPRODUCT_VERSION\=`cat fuentes/src/version.h | head -n 1 | cut -d ' ' -f 3` zinjai.nsh || exit 1
+wine d:/NSIS/makensis.exe /DPRODUCT_VERSION\=`cat fuentes/src/version.h | head -n 1 | cut -d ' ' -f 3` zinjai.nsh || exit 1
 
 echo
 echo All done

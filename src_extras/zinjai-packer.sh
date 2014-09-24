@@ -30,6 +30,7 @@ if [ "$1" = "prepare" ]; then
   mkdir zinjai/src_extras
 #  mkdir zinjai/src_extras/wx_autocomp
   mkdir zinjai/src_extras/complement
+  mkdir zinjai/src_extras/img_viewer
   mkdir zinjai/lsdeps
 
   echo "remember to copy manually graphviz binaries and deps"
@@ -54,6 +55,7 @@ elif [ "$1" = "update" ]; then
   scp $2/zinjai/src_extras/*				zinjai/src_extras/
 #  scp $2/zinjai/src_extras/wx_autocomp/*		zinjai/src_extras/wx_autocomp
   scp $2/zinjai/src_extras/complement/*			zinjai/src_extras/complement
+  scp $2/zinjai/src_extras/img_viewer/*			zinjai/src_extras/img_viewer
   scp $2/zinjai/src/*					zinjai/src/
 
   scp $2/zinjai/imgs/art.svg				zinjai/imgs/
