@@ -259,7 +259,7 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel (wxListbook *notebook) {
 	debug_close_on_normal_exit= mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION,"Salir del modo depuración si el programa finaliza normalmente"),config->Debug.close_on_normal_exit);
 	debug_always_debug = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER,"Siempre ejecutar en el depurador"),config->Debug.always_debug);
 	debug_raise_main_window = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION,"Mostrar ZinjaI cuando se interrumpe la ejecución"),config->Debug.raise_main_window);
-	debug_select_modified_inspections = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS,"Utilizar colores en la tabla de inspecciones"),config->Debug.select_modified_inspections);
+	debug_use_colours_for_inspections = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_USE_COLOURS_FOR_INSPECTIONS,"Utilizar colores en la tabla de inspecciones"),config->Debug.use_colours_for_inspections);
 	
 	wxBoxSizer *type_replace_sizer = new wxBoxSizer(wxHORIZONTAL);
 	improve_inspections_by_type = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Mejorar inspecciones automáticamente segun tipo"))+_T("   "));
@@ -708,7 +708,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.inspections_on_right = debug_inspections_on_right->GetValue();
 	config->Debug.show_thread_panel = debug_show_thread_panel->GetValue();
 	config->Debug.show_log_panel = debug_show_log_panel->GetValue();
-	config->Debug.select_modified_inspections = debug_select_modified_inspections->GetValue();
+	config->Debug.use_colours_for_inspections = debug_use_colours_for_inspections->GetValue();
 #warning ver si hay que reestablecer esto
 //	main_window->inspection_ctrl->ResetChangeHightlights(); // aplica los colores
 	config->Files.autocodes_file = files_autocode->GetValue();
@@ -1188,7 +1188,7 @@ void mxPreferenceWindow::ResetChanges() {
 	debug_inspections_on_right->SetValue(config->Debug.inspections_on_right);
 	debug_show_thread_panel->SetValue(config->Debug.show_thread_panel);
 	debug_show_log_panel->SetValue(config->Debug.show_log_panel);
-	debug_select_modified_inspections->SetValue(config->Debug.select_modified_inspections);
+	debug_use_colours_for_inspections->SetValue(config->Debug.use_colours_for_inspections);
 	improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
 	debug_macros_file->SetValue(config->Debug.macros_file);
 	debug_blacklist->SetValue(config->Debug.blacklist);

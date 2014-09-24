@@ -176,7 +176,7 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("blacklist",Debug.blacklist);
 				else CFG_GENERIC_READ_DN("macros_file",Debug.macros_file);
 				else CFG_BOOL_READ_DN("compile_again",Debug.compile_again);
-				else CFG_BOOL_READ_DN("select_modified_inspections",Debug.select_modified_inspections);
+				else CFG_BOOL_READ_DN("use_colours_for_inspections",Debug.use_colours_for_inspections);
 				else CFG_BOOL_READ_DN("raise_main_window",Debug.raise_main_window);
 				else CFG_BOOL_READ_DN("always_debug",Debug.always_debug);
 				else CFG_BOOL_READ_DN("close_on_normal_exit",Debug.close_on_normal_exit);
@@ -324,24 +324,10 @@ bool ConfigManager::Load() {
 		} 
 	}
 	
-	if (Init.version<20140924) {
-#ifdef __WIN32__
-		Files.img_browser = "img_viewer.exe";
-#else
-		Files.img_browser = DIR_PLUS_FILE(zinjai_dir,"img_viewer.bin");
-#endif
-	}
-	if (Init.version<20140704) if (Init.proxy=="") Init.proxy="$http_proxy";
-	if (Init.version<20110418) Debug.select_modified_inspections=true;
-	if (Init.version<20110420) Init.check_for_updates=true;
 	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");
 	if (Init.version<20101112 && Help.autocomp_indexes.Len()) Help.autocomp_indexes<<",STL_Iteradores";
-	if (Init.version<20120929) 	{
-		Debug.inspection_improving_template_from.Add("std::string");
-		Debug.inspection_improving_template_to.Add("${EXP}._M_dataplus._M_p");
-		Debug.inspection_improving_template_from.Add("wxString");
-		Debug.inspection_improving_template_to.Add("${EXP}.m_pchData");
-	}
+	if (Init.version<20110418) Debug.use_colours_for_inspections=true;
+	if (Init.version<20110420) Init.check_for_updates=true;
 	
 //#if defined(__WIN32__)
 //	if (Init.version<20120208 && !Init.forced_linker_options.Contains("-static-libstdc++")) Init.forced_linker_options<<" -static-libstdc++";
@@ -390,6 +376,17 @@ bool ConfigManager::Load() {
 			else
 				Files.last_source[ps++]=last_files[i];
 		}
+	}
+	if (Init.version<20140704) {
+		if (Init.proxy=="") Init.proxy="$http_proxy";
+	}
+	if (Init.version<20140924) {
+#ifdef __WIN32__
+		Files.img_browser = "img_viewer.exe";
+#else
+		Files.img_browser = DIR_PLUS_FILE(zinjai_dir,"img_viewer.bin");
+#endif
+		SetDefaultInspectionsImprovingTemplates();
 	}
 	
 	Init.autohiding_panels=Init.autohide_panels;
@@ -464,7 +461,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("allow_edition",Debug.allow_edition);
 	CFG_BOOL_WRITE_DN("autohide_panels",Debug.autohide_panels);
 	CFG_BOOL_WRITE_DN("autohide_toolbars",Debug.autohide_toolbars);
-	CFG_BOOL_WRITE_DN("select_modified_inspections",Debug.select_modified_inspections);
+	CFG_BOOL_WRITE_DN("use_colours_for_inspections",Debug.use_colours_for_inspections);
 	CFG_BOOL_WRITE_DN("raise_main_window",Debug.raise_main_window);
 	CFG_BOOL_WRITE_DN("compile_again",Debug.compile_again);
 	CFG_BOOL_WRITE_DN("always_debug",Debug.always_debug);
@@ -752,7 +749,7 @@ void ConfigManager::LoadDefaults(){
 	Help.min_len_for_completion=3;
 	Help.show_extra_panels=true;
 	
-	Debug.select_modified_inspections = true;
+	Debug.use_colours_for_inspections = true;
 	Debug.allow_edition = false;
 	Debug.autohide_panels = true;
 	Debug.autohide_toolbars = true;
@@ -771,6 +768,7 @@ void ConfigManager::LoadDefaults(){
 	Debug.readnow = false;
 	Debug.show_do_that = false;
 	Debug.improve_inspections_by_type = true;
+//	SetDefaultInspectionsImprovingTemplates(); // not needed, done (only on first run) in ConfigManager::Load when version<20140924
 	
 	for (int i=0;i<IG_COLS_COUNT;i++)
 		Cols.inspections_grid[i]=true;
@@ -923,5 +921,24 @@ void ConfigManager::FinishiLoading ( ) {
 bool ConfigManager::Initialize(const wxString & a_path) {
 	config = new ConfigManager(a_path);
 	return !config->Load();
+}
+
+
+void ConfigManager::AddInspectionImprovingTemplate(const wxString &from, const wxString &to) {
+	if (Debug.inspection_improving_template_from.Index(from)!=wxNOT_FOUND) return;
+	Debug.inspection_improving_template_from.Add(from);
+	Debug.inspection_improving_template_to.Add(to);
+}
+
+void ConfigManager::SetDefaultInspectionsImprovingTemplates ( ) {
+	AddInspectionImprovingTemplate("std::string","${EXP}._M_dataplus._M_p");
+	AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">pvector ${EXP} ${T}");
+	AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} ${T1} ${T2}");
+	AddInspectionImprovingTemplate("std::stack<${T}, std::deque<${T}, std::allocator<${T}> > >",">pstack ${EXP}");
+	AddInspectionImprovingTemplate("std::set<${T}, ${C}, std::allocator<${T}> >",">pset ${EXP} ${T}");
+	AddInspectionImprovingTemplate("std::deque<${T}, std::allocator<${T}> >",">pdeque ${EXP}");
+	AddInspectionImprovingTemplate("std::queue<${T}, std::deque<${T}, std::allocator<${T}> > >",">pqueue ${EXP}");
+	AddInspectionImprovingTemplate("std::priority_queue<${T}, std::vector<${T}, std::allocator<${T}> >, ${C} >",">ppqueue ${EXP}");
+	AddInspectionImprovingTemplate("std::bitset<${N}>",">pbitset ${EXP}");
 }
 

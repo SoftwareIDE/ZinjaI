@@ -34,7 +34,7 @@ struct cfgDebug {
 	bool always_debug;
 	bool compile_again;
 	bool raise_main_window;
-	bool select_modified_inspections;
+	bool use_colours_for_inspections;
 	wxString blacklist;
 	wxString format;
 	wxString macros_file;
@@ -224,6 +224,8 @@ private:
 	void DoInitialChecks();
 	bool Load();
 	void LoadDefaults();
+	void AddInspectionImprovingTemplate(const wxString &from, const wxString &to);
+	void SetDefaultInspectionsImprovingTemplates();
 	
 public:
 	/// @brief arma las cadenas (paths) que no se graban en la configuracion, pero que dependen de esta (ejemplo: temp_dir)

@@ -242,13 +242,6 @@ public:
 	void TtyProcessKilled();
 #endif
 	void ProcessKilled();
-//	bool DuplicateInspection(int num);
-//	bool ModifyInspection(int num, wxString expr, bool force_new=false);
-//	bool DeleteInspection(int num);
-//	bool ModifyInspectionValue(int num, wxString value);
-//	bool ModifyInspectionFormat(int num, wxString format);
-//	bool ModifyInspectionWatch(int num, bool read, bool write);
-//	bool UpdateInspection(); ///< @todo: metodo viejo, a eliminar cuando termine de reescribir el manejo de inspecciones
 	void UpdateInspections();
 	wxString GetNextItem(wxString &ans, int &from);
 	/**
@@ -257,18 +250,14 @@ public:
 	* cualquiera de los dos argumentos identifica un frame, pasar uno y dejar el otro en -1 para que se calcule solo
 	**/
 	bool SelectFrame(long frame_id, long frame_level); 
-//	bool SelectFrameForInspeccion(wxString addr);
 	bool ToggleInspectionFreeze(int n);
 	bool DoThat(wxString what);
-//	bool BreakCompoundInspection(int n);
 	bool CreateVO(wxString expr, wxString &name, wxString &type, int &children);
 	wxString GetVOValue(wxString name);
 	bool DeleteVO(wxString name);
 	int GetVOChildrenData(mxIEItemData **data, wxString name, wxString main_expr, wxString main_frame, int what_is);
-//	void ClearInspections();
 	bool GetArgs (wxArrayString &args, wxString level);
 	bool GetLocals (wxArrayString &locals, wxString level);
-//	void MakeRoomForInspections(int pos, int cant);
 	void PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints);
 //	BreakPointInfo *FindBreakInfoFromNumber(int _id, bool use_gdb_id=true);
 	void RegisterExternInspection(mxExternInspection* ei);
@@ -303,16 +292,9 @@ public:
 //	void DeleteInspectionsTable(wxString name);
 //	inspectlist *GetInspectionsTable(wxString name, bool create_if_not_exists=false);
 //	void ClearSavedInspectionTables();
-//	void UpdateFramelessInspection();
-//	void SetFramelessInspection(int i);
 	
 	/// @brief los fuentes avisan al destruirse, para evitar usar punteros invalidos
 	void UnregisterSource(mxSource *src); 
-	
-	/// @brief modifica una inspeccion cuando no hay sesion de depuración en curso
-//	bool OffLineInspectionModify(int i, wxString value);
-	/// @brief elimina inspecciones cuando no hay sesion de depuración en curso
-//	bool OffLineInspectionDelete(int i=-1);
 	
 	void UpdateThreads();
 	void ThreadListClean();
@@ -328,9 +310,6 @@ public:
 	/// @brief muestra un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint
 	void ShowBreakPointLocationErrorMessage(BreakPointInfo *_bpi);
 	void ShowBreakPointConditionErrorMessage(BreakPointInfo *_bpi);
-	
-//	/// @brief  calls -var-create and returns its output, but applying improving_inspections_templates
-//	wxString CreateVO(wxString &expr, wxString &type);
 	
 public:
 	struct TemporaryScopeChange {

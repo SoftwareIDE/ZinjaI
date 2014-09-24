@@ -76,6 +76,7 @@ public:
 	void OnExploreAll(wxCommandEvent &evt);
 //	void OnShowInText(wxCommandEvent &evt);
 //	void OnShowInTable(wxCommandEvent &evt);
+	void OnCopyType(wxCommandEvent &evt);
 	void OnCopyData(wxCommandEvent &evt);
 	void OnCopyExpression(wxCommandEvent &evt);
 	void OnCopyAll(wxCommandEvent &evt);

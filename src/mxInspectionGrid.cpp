@@ -17,6 +17,8 @@
 //#include "mxInspectionPrint.h"
 #include "mxInspectionExplorerDialog.h"
 using namespace std;
+
+#warning no se toma en cuenta config->Debug.use_colours_for_inspections
  
 BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_GRID_CELL_CHANGE(mxInspectionGrid::OnCellChange)
@@ -33,6 +35,7 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 //	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionGrid::OnShowInTable)
 	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionGrid::OnExploreExpression)
 	EVT_MENU(mxID_INSPECTION_COPY_DATA,mxInspectionGrid::OnCopyData)
+	EVT_MENU(mxID_INSPECTION_COPY_TYPE,mxInspectionGrid::OnCopyType)
 	EVT_MENU(mxID_INSPECTION_COPY_EXPRESSION,mxInspectionGrid::OnCopyExpression)
 	EVT_MENU(mxID_INSPECTION_COPY_ALL,mxInspectionGrid::OnCopyAll)
 	EVT_MENU(mxID_INSPECTION_EXPLORE_ALL,mxInspectionGrid::OnExploreAll)
@@ -370,9 +373,10 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	if (sel_has_vo && !(sel_is_vo && di->IsFrameless())) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
 	if (!sel_is_last) menu.Append(mxID_INSPECTION_DUPLICATE,wxString(LANG(INSPECTGRID_POPUP_DUPLICATE_EXPRESSION,"Duplicar Inspeccion"))+"\tCtrl+L");
 	wxMenu *copy_menu = new wxMenu;
-	if (!sel_is_last) copy_menu->Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar E&xpresion"))+"\tCtrl+C");
-	if (!sel_is_last) copy_menu->Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"&Copiar Valor"));
-	if (there_are_inspections) copy_menu->Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"Copiar Toda la Ta&bla"));
+	if (!sel_is_last) copy_menu->Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar &Expresion"))+"\tCtrl+C");
+	if (!sel_is_last) copy_menu->Append(mxID_INSPECTION_COPY_TYPE,LANG(INSPECTGRID_POPUP_COPY_TYPE,"Copiar &Tipo"));
+	if (!sel_is_last) copy_menu->Append(mxID_INSPECTION_COPY_DATA,LANG(INSPECTGRID_POPUP_COPY_DATA,"Copiar &Valor"));
+	if (there_are_inspections) copy_menu->Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"&Copiar Toda la Tabla"));
 	if (copy_menu->GetMenuItemCount()) menu.AppendSubMenu(copy_menu,LANG(INSPECTGRID_POPUP_COPY,"Copiar")); else delete copy_menu;
 	
 	if (sel_has_unfrozen) menu.Append(mxID_INSPECTION_FREEZE,wxString(LANG(INSPECTGRID_POPUP_FREEZE_VALUE,"Co&ngelar Valor"))+"\tCtrl+B");
@@ -496,7 +500,19 @@ void mxInspectionGrid::OnCopyData(wxCommandEvent &evt) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
 	for(unsigned int i=0;i<sel.size();i++) {
 		if (!data.IsEmpty()) data<<"\n";
-		mxGrid::GetCellValue(i,IG_COL_VALUE);
+		data+=mxGrid::GetCellValue(i,IG_COL_VALUE);
+	}
+	// colocarlos en el portapapeles
+	if (!data.IsEmpty()) mxUT::SetClipboardText(data);
+}
+
+void mxInspectionGrid::OnCopyType(wxCommandEvent &evt) {
+	// obtener los datos a copiar
+	wxString data;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
+	for(unsigned int i=0;i<sel.size();i++) {
+		if (!data.IsEmpty()) data<<"\n";
+		data+=mxGrid::GetCellValue(i,IG_COL_TYPE);
 	}
 	// colocarlos en el portapapeles
 	if (!data.IsEmpty()) mxUT::SetClipboardText(data);
@@ -508,7 +524,7 @@ void mxInspectionGrid::OnCopyExpression(wxCommandEvent &evt) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
 	for(unsigned int i=0;i<sel.size();i++) {
 		if (!data.IsEmpty()) data<<"\n";
-		mxGrid::GetCellValue(i,IG_COL_EXPR);
+		data+=mxGrid::GetCellValue(i,IG_COL_EXPR);
 	}
 	// colocarlos en el portapapeles
 	if (!data.IsEmpty()) mxUT::SetClipboardText(data);

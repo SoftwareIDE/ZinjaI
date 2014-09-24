@@ -84,24 +84,12 @@ DEBUG_STATUS_TERMINAL_CLOSED
 Program's terminal was closed
 DEBUG_STATUS_PREFIX
    Debug: 
-INSPECTGRID_TYPE_STRUCT
-struct/class
-INSPECTGRID_TYPE_ARRAY
-array
-INSPECTGRID_FORMAT_NATURAL
-natural
-INSPECTGRID_INCORRECT_EXPRESSION
-<<<Invalid expression>>>
-INSPECTGRID_CANT_EVALUATE
-<<<Error evaluating expression>>>
-INSPECTGRID_OUT_OF_SCOPE
-<<< Out of Scope >>>
-DEBUG_INSPECTION_NOT_AVAILABLE
-<<<Not Available>>>
 DEBUG_ERROR_REVERSE
 There was an error trying to activate this feature.\nYou need gdb 7.0 or newer to use it, and it's no supported\non every platform.
 DEBUG_REVERSE_DISABLED
 You can only step back to the point where you have enabled inverse execution.\nBut it haven't been enable. Use the command "Enable Inverse Execution"\nfrom debug menu to do it.
+DEBUG_INSPECTION_NOT_AVAILABLE
+<<<Not Available>>>
 THREADS_NO_THREADS
 <<No threads>>
 THREADS_NO_INFO
@@ -1620,6 +1608,8 @@ XDG_CREATE_DESKTOP
 Create an icon for ZinjaI in desktop
 XDG_CREATE_MENU
 Create an icon for ZinjaI in system menu (in Development category)
+INSPECTGRID_OUT_OF_SCOPE
+<<< Out of Scope >>>
 INSPECTGRID_LEVEL
 Level
 INSPECTGRID_EXPRESSION
@@ -1640,6 +1630,8 @@ INSPECTGRID_COULDNOT_RESCOPE_FOR_MODIFY
 The expression could not be evaluated in current scope.
 INSPECTGRID_NO_MODIFIABLE_EXPRESSION
 The expression could not be modified.
+INSPECTGRID_FORMAT_NATURAL
+natural
 INSPECTGRID_FORMAT_OCTAL
 octal
 INSPECTGRID_FORMAT_DECIMAL
@@ -1654,6 +1646,10 @@ INSPECTGRID_WATCH_READ_WRITE
 read and write
 INSPECTGRID_WATCH_READ
 read
+INSPECTGRID_TYPE_STRUCT
+struct/class
+INSPECTGRID_TYPE_ARRAY
+array
 INSPECTGRID_POPUP_SPLIT_CLASS
 &Split Class Into Its Attributes
 INSPECTGRID_POPUP_SPLIT_ARRAY
@@ -1676,6 +1672,8 @@ INSPECTGRID_POPUP_DUPLICATE_EXPRESSION
 Duplicate Inspection
 INSPECTGRID_POPUP_COPY_EXPRESSION
 Copy E&xpression
+INSPECTGRID_POPUP_COPY_TYPE
+Copy Type
 INSPECTGRID_POPUP_COPY_DATA
 &Copy Value
 INSPECTGRID_POPUP_COPY_ALL
@@ -2364,8 +2362,8 @@ PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER
 Always run in debugging mode
 PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
 Focus ZinjaI's window when debugging is interrupted
-PREFERENCES_DEBUG_SELECT_UPDATES_IN_INSPECTIONS
-Use colours in inspections' grid
+PREFERENCES_DEBUG_USE_COLOURS_FOR_INSPECTIONS
+Use colours in inspections grid
 PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
 Aumotatically improve inspections by type
 PREFERENCES_DEBUG_GDB_MACROS_FILE
