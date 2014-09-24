@@ -1,0 +1,18 @@
+GPP=g++
+CXXFLAGS=-O2 `wx-config --unicode=no --cppflags`
+LDFLAGS=-s -lwx_gtk2_mac-2.8 `wx-config --libs` 
+OBJS_DIR=../../release.mac/img_viewer
+
+all: ../../img_viewer.bin
+
+include Makefile.common
+
+clean:
+	rm -rf ${OBJS} ../../img_viewer.bin
+	rm -f core
+
+../../img_viewer.bin: ${OBJS_DIR} ${OBJS}
+	${GPP} ${OBJS} ${LDFLAGS} -o $@
+
+${OBJS_DIR}:
+	mkdir ${OBJS_DIR}

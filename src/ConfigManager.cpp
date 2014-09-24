@@ -324,6 +324,13 @@ bool ConfigManager::Load() {
 		} 
 	}
 	
+	if (Init.version<20140924) {
+#ifdef __WIN32__
+		Files.img_browser = "img_viewer.exe";
+#else
+		Files.img_browser = DIR_PLUS_FILE(zinjai_dir,"img_viewer.bin");
+#endif
+	}
 	if (Init.version<20140704) if (Init.proxy=="") Init.proxy="$http_proxy";
 	if (Init.version<20110418) Debug.select_modified_inspections=true;
 	if (Init.version<20110420) Init.check_for_updates=true;
@@ -604,7 +611,7 @@ void ConfigManager::LoadDefaults(){
 	Files.runner_command="runner.exe";
 	Files.terminal_command="";
 	Files.explorer_command="explorer";
-	Files.img_browser="graphviz\\viewerw.exe";
+	Files.img_browser="img_viewer.exe";
 	Files.doxygen_command="c:\\archivos de programa\\doxygen\\bin\\doxygen.exe";
 	Files.wxfb_command="";
 //	Files.browser_command="shellexecute.exe";
@@ -627,7 +634,7 @@ void ConfigManager::LoadDefaults(){
 	Files.runner_command=DIR_PLUS_FILE(zinjai_dir,"runner.bin");
 	Files.explorer_command="<<sin configurar>>";
 	Files.terminal_command="<<sin configurar>>";
-	Files.img_browser=DIR_PLUS_FILE(zinjai_dir,"graphviz/viewer.bin");
+	Files.img_browser=DIR_PLUS_FILE(zinjai_dir,"img_viewer.bin");
 	Files.wxfb_command="wxformbuilder";
 	Files.cppcheck_command="cppcheck";
 	Files.valgrind_command="valgrind";

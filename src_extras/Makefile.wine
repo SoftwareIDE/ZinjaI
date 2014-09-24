@@ -3,12 +3,14 @@ GPP=wine "${MINGW_DIR}"/bin/mingw32-g++
 WINDRES=wine "${MINGW_DIR}"/bin/windres
 FLAGS=-O2 -s -static-libgcc -static-libstdc++
 
-all: ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/viewerw.exe ../graphviz/draw.exe ../graphviz/viewer.exe
-	make -f Makefile.wine -C complement
+all: ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/draw.exe 
+	$(MAKE) -f Makefile.wine -C complement
+	$(MAKE) -f Makefile.wine -C img_viewer
 
 clean:
-	rm -f ../release.w32/xmlres.o ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/viewer.exe ../graphviz/viewerw.exe ../graphviz/draw.exe
-	make -f Makefile.wine -C complement clean
+	rm -f ../release.w32/xmlres.o ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/draw.exe
+	$(MAKE) -f Makefile.wine -C complement clean
+	$(MAKE) -f Makefile.wine -C img_viewer clean
 
 ../release.w32:
 	mkdir ../release.w32
@@ -28,13 +30,6 @@ clean:
 ../updatem.exe: updatem.cpp zockets.cpp zockets.h ../release.w32/xmlres.o
 	${GPP} ${FLAGS} -mwindows updatem.cpp zockets.cpp -lwsock32 xmlres.o -o $@
 
-../graphviz/viewerw.exe: viewerw.cpp
-	${GPP} ${FLAGS} viewerw.cpp -o $@ -mwindows
-
 ../graphviz/draw.exe: draw.cpp
 	${GPP} ${FLAGS} draw.cpp -o $@ -mwindows
-
-../graphviz/viewer.exe: viewer.cpp
-	@echo ${GPP} ${FLAGS} viewer.cpp -o $@ -I "${MINGW_DIR}"/misc/include -L "${MINGW_DIR}"/misc/lib -lpng -lzlib -mwindows
-	@${GPP} ${FLAGS} viewer.cpp -o $@ -I "${MINGW_DIR}"/misc/include -L "${MINGW_DIR}"/misc/lib -llibpng -lzlib -mwindows || echo "WARNING: viewer.exe won't be available due to missing dependencies (see zinjai/compiling.txt)"
 

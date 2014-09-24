@@ -1,21 +1,18 @@
 GPP=i686-apple-darwin8-g++
 CXXFLAGS=-O2 `/opt/mac/wx/bin/wx-config --cppflags`
 LDFLAGS=-lwx_mac_stc-2.8-i686-apple-darwin8 `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8`
-OBJS_DIR=../../../../../release.m32/complement
+OBJS_DIR=../../release.m32/img_viewer
 
-all: ../../complement.bin ../../complement_wrap.bin
+all: ../../img_viewer.bin
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../../complement.bin ../../complement_wrap.bin
+	rm -rf ${OBJS} ../../img_viewer.bin
 	rm -f core
 
-../../complement.bin: ${OBJS_DIR} ${OBJS}
+../../img_viewer.bin: ${OBJS_DIR} ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
-
-../../complement_wrap.bin: complement_wrap.cpp
-	${GPP} complement_wrap.cpp -O2 -o $@
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}

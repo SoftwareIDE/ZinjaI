@@ -1,0 +1,8 @@
+OBJS=${OBJS_DIR}/Application.o ${OBJS_DIR}/VentanaPrincipal.o 
+
+${OBJS_DIR}/Application.o: Application.cpp Application.h VentanaPrincipal.h
+	${GPP} ${CXXFLAGS} -c Application.cpp -o $@
+
+${OBJS_DIR}/VentanaPrincipal.o: VentanaPrincipal.cpp VentanaPrincipal.h
+	${GPP} ${CXXFLAGS} -c VentanaPrincipal.cpp -o $@
+

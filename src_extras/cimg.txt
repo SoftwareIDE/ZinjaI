@@ -1,3 +1,0 @@
-viewer.cpp utiliza una versión ahora desactualizada de la biblioteca CImg, proyecto liderador por David Tschumperlé. Esta biblioteca fue descargada de http://cimg.sourceforge.net. Más referencias de sus licencias (CeCILL y CeCILL-C) se encuentran en el sitio mencionado y en la cabecera del archivo CImg.h.
-
-viewer.cpp uses and old version of CImg library, a project leaded by David Tschumperlé. This library was downloaded from http://cimg.sourceforge.net. Further references to this library's licence can be found at the beginning of CImg.h and in the official site.

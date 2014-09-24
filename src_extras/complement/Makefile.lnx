@@ -1,6 +1,6 @@
 GPP=g++
-FLAGS=-O2 `wx-config --cppflags --unicode=no --version=2.8`
-LIBS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs --version=2.8` 
+CXXFLAGS=-O2 `wx-config --cppflags --unicode=no --version=2.8`
+LDFLAGS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs --version=2.8` 
 OBJS_DIR=../../release.lnx/complement
 
 all: ../../complement.bin ../../complement_wrap.bin
@@ -12,7 +12,7 @@ clean:
 	rm -f core
 
 ../../complement.bin: ${OBJS_DIR} ${OBJS}
-	${GPP} ${OBJS} ${LIBS} -o $@
+	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ../../complement_wrap.bin: complement_wrap.cpp
 	${GPP} complement_wrap.cpp -O2 -o $@

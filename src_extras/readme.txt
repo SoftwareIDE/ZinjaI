@@ -2,11 +2,8 @@
 draw (needed for generation of project graphs and class hierarchy graphs in GNU/Linux)
   wrapper for running GraphViz binaries with its special LD_LIBRARY_PATH
 
-viewer (recommended for viewing project graphs and class hierarchy graphs in all platforms)
-  CImg based image viewer, for displaying graphviz results
-
-viewerw (recommended for viewing project graphs and class hierarchy graphs in Windows)
-  wrapper for calling viewer in Windows
+img_viewer (recommended for viewing project graphs and class hierarchy graphs in all platforms)
+  wxWidgets based image viewer, for displaying graphviz results
 
 mac-terminal.sh
   script for openning a new terminal window and running some command (will be runner) in MacOs

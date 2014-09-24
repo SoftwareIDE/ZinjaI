@@ -1,17 +1,21 @@
-agregar las improvements de inspecciones por defecto para stl y cia
+show stopers:
 
-pegar con ctrl+c en la tabla de inspecciones mientras se edita la expresion revienta
+	* agregar las improvements de inspecciones por defecto para stl y cia
 
-cuando un proyecto define un archivo de macros gdb, usarlo en combinacion con el general, y no reemplazando (para mantener las macros para stl)
+	* pegar con ctrl+c en la tabla de inspecciones mientras se edita la expresion revienta
 
-guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo
+	* cuando un proyecto define un archivo de macros gdb, usarlo en combinacion con el general, y no reemplazando (para mantener las macros para stl)
 
+	* guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo
+
+
+
+Otras:
 
 
 enum const
 	agregar el nombre del enum al parser además de las constantes (hecho?)
 
-ZinjaI todo
 
 corregir el problema del drag and drop que le jode a nestor
 

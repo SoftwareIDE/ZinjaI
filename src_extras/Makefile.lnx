@@ -1,11 +1,13 @@
 GPP=g++
 
-all: ../updatem.bin ../runner.bin ../graphviz/draw.bin ../graphviz/viewer.bin ../zinjai
+all: ../updatem.bin ../runner.bin ../graphviz/draw.bin ../zinjai
 	$(MAKE) -f Makefile.lnx -C complement
+	$(MAKE) -f Makefile.lnx -C img_viewer
 
 clean:
-	rm -f ../updatem.bin ../runner.bin ../graphviz/draw.bin ../graphviz/viewer.bin ../zinjai
+	rm -f ../updatem.bin ../runner.bin ../graphviz/draw.bin ../zinjai
 	$(MAKE) -f Makefile.lnx -C complement clean
+	$(MAKE) -f Makefile.lnx -C img_viewer clean
 
 
 ../runner.bin: runner.cpp
@@ -13,9 +15,6 @@ clean:
 
 ../updatem.bin: updatem.cpp zockets.cpp zockets.h
 	${GPP} -O2 updatem.cpp zockets.cpp -o $@
-
-../graphviz/viewer.bin: viewer.cpp
-	${GPP} -Dcimg_use_png viewer.cpp -o $@ -lpthread -lX11 -O2 -lpng -fpermissive
 
 ../graphviz/draw.bin: draw.cpp
 	${GPP} draw.cpp -o $@
