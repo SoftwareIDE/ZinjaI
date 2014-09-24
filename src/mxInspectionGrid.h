@@ -26,8 +26,9 @@ public:
 /**
 * @brief Representa a la grilla del panel de inspecciones
 **/
-class mxInspectionGrid : public mxGrid, public myDIEventHandler {
+class mxInspectionGrid : public mxGrid, public myDIEventHandler, public myDIGlobalEventHandler {
 	bool ignore_cell_change_event;
+	bool full_table_update_began; ///< para poder llamar dos veces a begin sin que la segunda haga nada (la primera desde aca, la segunda desde DebuggerInspection::UpdateAll)
 public:
 	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_UNFREEZE, IGRS_COUNT };
 
@@ -74,8 +75,8 @@ public:
 	void OnSetFrameless(wxCommandEvent &evt);
 	void OnExploreExpression(wxCommandEvent &evt);
 	void OnExploreAll(wxCommandEvent &evt);
-//	void OnShowInText(wxCommandEvent &evt);
-//	void OnShowInTable(wxCommandEvent &evt);
+	void OnShowInText(wxCommandEvent &evt);
+	void OnShowInTable(wxCommandEvent &evt);
 	void OnCopyType(wxCommandEvent &evt);
 	void OnCopyData(wxCommandEvent &evt);
 	void OnCopyExpression(wxCommandEvent &evt);
@@ -128,7 +129,12 @@ public:
 	
 	bool CanHideColumn(int col) { return col==IG_COL_LEVEL||col==IG_COL_TYPE; }
 	
-	// eventos generados por DebuggerInspection
+	// eventos generados por DebuggerInspection globalmente
+//	void OnDebugStart();
+	void OnDebugPausePre();
+	void OnDebugPausePost();
+//	void OnDebugStop();
+	// eventos generados por inspecciones individuales DebuggerInspection 
 	void OnDICreated(DebuggerInspection *di);
 	void OnDIError(DebuggerInspection *di);
 	void OnDIValueChanged(DebuggerInspection *di);

@@ -192,6 +192,12 @@ PARSERHELP_NO_RESULTS
 No quickhelp results found for keyword "<{1}>".
 PARSERHELP_GOTO_CPPREFENCE
 Search "<{1}>" in C/C++ reference...
+INSPECTION_MSG_PENDING
+<<< not evaluated yet >>>
+INSPECTION_MSG_PENDING_OUT_OF_SCOPE
+<<< out of scope >>>
+INSPECTION_MSG_ERROR
+<<< error >>>
 MENUITEM_FILE
 &File
 MENUITEM_FILE_NEW

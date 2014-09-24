@@ -1,11 +1,14 @@
 #include "Inspection.h"
 #include "ConfigManager.h"
+#include "Language.h"
 
 DebuggerInspection::vo2di_type DebuggerInspection::vo2di_map;
 
 SingleList<DebuggerInspection::DIPendingAction> DebuggerInspection::pending_actions;
 
 SingleList<DebuggerInspection*> DebuggerInspection::all_inspections;
+
+SingleList<myDIGlobalEventHandler*> DebuggerInspection::global_consumers;
 
 #ifdef _ZINJAI_DEBUG
 int DebuggerInspection::CallLogger::lev=0;
@@ -20,7 +23,7 @@ static wxString &RemoveEscapeChar(wxString &s) {
 	return s;
 }
 
-void DebuggerInspection::UpdateAll ( ) {
+void DebuggerInspection::UpdateAllVO() {
 	__debug_log_static_method__;
 	if (!debug->debugging||debug->waiting) return;
 	// struct para guardar los campos que interesan de cada vo actualizada
@@ -52,7 +55,7 @@ void DebuggerInspection::UpdateAll ( ) {
 			// busca el DebuggerInspection para el vo (por su nombre gdb)
 			map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(u.name);
 			if (it==vo2di_map.end()) {
-				DEBUG_INFO("ERROR: Inspection::UpdateAll: it==vo2di_map.end()");
+				DEBUG_INFO("ERROR: Inspection::UpdateAllVO: it==vo2di_map.end()");
 				continue;
 			}
 			// actualiza el estado del DebuggerInspection y notifica a la interfaz mediante consumer
@@ -151,6 +154,7 @@ void DebuggerInspection::OnDebugStop() {
 	}
 	ProcessPendingActions(); // delete pending commands, they shoud not be run in next debugging session
 	vo2di_map.clear();
+	for(int i=0;i<global_consumers.GetSize();i++) global_consumers[i]->OnDebugStop();
 }
 
 void DebuggerInspection::OnDebugStart() {
@@ -163,6 +167,7 @@ void DebuggerInspection::OnDebugStart() {
 			AddPendingAction(all_inspections[i],&DebuggerInspection::CreateVO,true,true);
 		}
 	}
+	for(int i=0;i<global_consumers.GetSize();i++) global_consumers[i]->OnDebugStart();
 }
 
 void DebuggerInspection::RecreateAllFramelessInspections() {
@@ -179,7 +184,10 @@ void DebuggerInspection::RecreateAllFramelessInspections() {
 void DebuggerInspection::OnDebugPause() {
 	__debug_log_static_method__;
 	ProcessPendingActions();
-	UpdateAll();
+	for(int i=0;i<global_consumers.GetSize();i++) global_consumers[i]->OnDebugPausePre();
+	UpdateAllManual();
+	UpdateAllVO();
+	for(int i=0;i<global_consumers.GetSize();i++) global_consumers[i]->OnDebugPausePost();
 }
 
 
@@ -268,3 +276,41 @@ bool DebuggerInspection::TryToImproveExpression (wxString type, wxString &new_ex
 	}
 	return false;
 }
+
+wxString DebuggerInspection::GetUserStatusText (DEBUG_INSPECTION_MESSAGE type) {
+	switch(type) {
+	case DIMSG_PENDING:
+		return LANG(INSPECTION_MSG_PENDING,"<<< evaluación pendiente >>>");
+	case DIMSG_OUT_OF_SCOPE:
+		return LANG(INSPECTION_MSG_PENDING_OUT_OF_SCOPE,"<<< fuera de ámbito >>>");
+	case DIMSG_ERROR:
+		return LANG(INSPECTION_MSG_ERROR,"<<< error >>>");
+	}
+	return "";
+}
+
+myDIGlobalEventHandler::myDIGlobalEventHandler ( ) { 
+	DebuggerInspection::global_consumers.Add(this); 
+	registered=true;
+}
+
+myDIGlobalEventHandler::~myDIGlobalEventHandler ( ) { 
+	UnRegister();
+}
+
+void myDIGlobalEventHandler::UnRegister ( ) {
+	if (!registered) return;
+	int pos = DebuggerInspection::global_consumers.Find(this); 
+	if (pos!=DebuggerInspection::global_consumers.NotFound())
+		DebuggerInspection::global_consumers.Remove(pos);
+	registered=false;
+}
+
+void DebuggerInspection::UpdateAllManual ( ) {
+	__debug_log_static_method__;
+	for(int i=0;i<all_inspections.GetSize();i++) { 
+		if (all_inspections[i]->RequiresManualUpdate())
+			all_inspections[i]->UpdateValue(true);
+	}
+}
+

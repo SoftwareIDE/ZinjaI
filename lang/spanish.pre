@@ -192,6 +192,12 @@ PARSERHELP_NO_RESULTS
 No se encontro ayuda rápida para la palabra seleccionada: <{1}>
 PARSERHELP_GOTO_CPPREFENCE
 Buscar \"<{1}>\" en la referencia C/C++...
+INSPECTION_MSG_PENDING
+<<< evaluación pendiente >>>
+INSPECTION_MSG_PENDING_OUT_OF_SCOPE
+<<< fuera de ámbito >>>
+INSPECTION_MSG_ERROR
+<<< error >>>
 MENUITEM_FILE
 &Archivo
 MENUITEM_FILE_NEW

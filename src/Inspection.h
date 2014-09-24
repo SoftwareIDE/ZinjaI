@@ -26,9 +26,11 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 
 enum GDB_VO_FORMAT { GVF_NATURAL, GVF_BINARY, GVF_OCTAL, GVF_DECIMAL, GVF_HEXADECIMAL };
 
+enum DEBUG_INSPECTION_MESSAGE { DIMSG_PENDING, DIMSG_OUT_OF_SCOPE, DIMSG_ERROR };
+
 class DebuggerInspection;
 
-///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de las inspecciones
+///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de las inspecciones de forma individual
 class myDIEventHandler {
 	bool owned_by_the_inspection; ///< if true, the inspections will do the delete
 public:
@@ -40,6 +42,23 @@ public:
 	virtual void OnDIInScope(DebuggerInspection *di) {}
 	virtual void OnDINewType(DebuggerInspection *di) {}
 	virtual ~myDIEventHandler() {};
+};
+
+///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de la depuracion
+class myDIGlobalEventHandler {
+	bool registered;
+public:
+	myDIGlobalEventHandler();
+	void UnRegister();
+	virtual ~myDIGlobalEventHandler();
+	/// debug session is starting
+	virtual void OnDebugStart() {}
+	/// debug session is ending
+	virtual void OnDebugStop() {}
+	/// debug session is paused, before updating inspections
+	virtual void OnDebugPausePre() {}
+	/// debug session is paused, after updating inspections
+	virtual void OnDebugPausePost() {}
 };
 
 class myCompoundHelperDIEH : public myDIEventHandler {
@@ -55,14 +74,6 @@ class myUserHelperDIEH : public myDIEventHandler {
 public:
 	myUserHelperDIEH(DebuggerInspection *parent):myDIEventHandler(true),helper_parent(parent) {}
 	virtual void OnDIValueChanged(DebuggerInspection *di);
-};
-
-class myDIGlobal {
-public:
-	virtual void OnDIDebugStart() {}
-	virtual void OnDIFullUpdateBegin() {}
-	virtual void OnDIFullUpdateEnd() {}
-	virtual void OnDIDebugStop() {}
 };
 
 /**
@@ -142,7 +153,7 @@ struct DebuggerInspection {
 	* @brief metodo a usar antes de intentar dialogar con gdb... 
 	*
 	* Si no se puede dialogar ahora (esta ejecutando), retorna falso y además
-	* encola el intento para que se intente nuevamente cuando se pueda (en UpdateAll)
+	* encola el intento para que se intente nuevamente cuando se pueda (en la proxima pausa)
 	**/
 	bool TryToExec(pending_action action, bool requires_debug_pause) {
 		if (debug->waiting) {
@@ -183,16 +194,18 @@ struct DebuggerInspection {
 	friend class myCompoundHelperDIEH;
 	friend class myUserHelperDIEH;
 	
+	friend class myDIGlobalEventHandler;
+	static SingleList<myDIGlobalEventHandler*> global_consumers;
+	
 public:
 	
+	static void OnDebugStart();
+	static void OnDebugPause();
 	static void OnDebugStop();
 	
-	static void OnDebugStart();
-	
-	static void OnDebugPause();
-	
 	/// Actualiza todas las inspecciones (consultando a gdb, se debe invocar desde DebugManager cuando hay una pausa/interrupción en la ejecución)
-	static void UpdateAll();
+	static void UpdateAllVO();
+	static void UpdateAllManual();
 	
 	
 private:
@@ -567,6 +580,7 @@ public:
 	static bool TryToImproveExpression (const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
 	static bool TryToImproveExpression (wxString type, wxString &new_expr, const wxString &expr);
 	
+	static wxString GetUserStatusText(DEBUG_INSPECTION_MESSAGE type);
 };
 
-#endif
+#endif 

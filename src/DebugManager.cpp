@@ -16,7 +16,6 @@
 #include "ids.h"
 #include "mxBacktraceGrid.h"
 #include "Parser.h"
-#include "mxInspectionExplorer.h"
 #include "mxBreakList.h"
 #include "mxInspectionMatrix.h"
 #include "mxArgumentsDialog.h"
@@ -24,10 +23,8 @@
 #include "Language.h"
 #include "mxOSD.h"
 #include "winStuff.h"
-#include "mxExternInspection.h"
 #include "mxThreadGrid.h"
 #include "Inspection.h"
-#include "mxGenericInspectionCtrl.h"
 #include "DebugPatcher.h"
 #include "MenusAndToolsConfig.h"
 using namespace std;
@@ -282,8 +279,7 @@ void DebugManager::ResetDebuggingStuff() {
 	gui_is_prepared = false;
 	pause_breakpoint=NULL;
 	
-	list<mxExternInspection*>::iterator i1=extern_list.begin();
-	while (i1!=extern_list.end()) if ((*i1)->SetOutdated()) i1=extern_list.erase(i1); else ++i1;
+#warning ver como marcar las inspecciones fuera de la tabla como obsoletas (o ya no?)
 	
 	// setear en -1 todos los ids de los pts de todos interrupcion, para evitar confusiones con depuraciones anteriores
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
@@ -1425,9 +1421,7 @@ void DebugManager::TtyProcessKilled() {
 #endif
 
 void DebugManager::UpdateInspections() {
-	inspection_grid->OnFullTableUpdateBegin();
 	DebuggerInspection::OnDebugPause();
-	inspection_grid->OnFullTableUpdateEnd();
 }
 
 wxString DebugManager::GetNextItem(wxString &ans, int &from) {
@@ -1478,101 +1472,6 @@ bool DebugManager::DoThat(wxString what) {
 	return true;
 }
 
-
-bool DebugManager::CreateVO(wxString expr, wxString &name, wxString &type, int &children) {
-	wxString ans = SendCommand(_T("-var-create - * "),mxUT::EscapeString(expr,true));
-//	if (ans.Left(5)!=_T("^done")) DEBUG_INFO("ans");
-	if (ans.Left(5)!=_T("^done")) return false;
-	name = GetValueFromAns(ans,_T("name"),true);
-	type = GetValueFromAns(ans,_T("type"),true);
-	long c=0; 
-	GetValueFromAns(ans,_T("numchild"),true).ToLong(&c);
-	children = c;
-	return false;
-}
-
-wxString DebugManager::GetVOValue(wxString name) {
-	if (!debugging || waiting) return "";
-	return GetValueFromAns(SendCommand(_T("-var-evaluate-expression "),name),_T("value"),true,true);
-}
-
-bool DebugManager::DeleteVO(wxString name) {
-	if (!debugging || waiting) return false;
-	return SendCommand(_T("-var-delete "),name).Left(5)==_T("^done");
-}
-
-int DebugManager::GetVOChildrenData(mxIEItemData **data, wxString name, wxString main_expr, wxString main_frame, int what_is) {
-	if (!debugging || waiting) return -1;
-	wxString ans = SendCommand(_T("-var-list-children "),name);
-	int n=0, p=ans.Find('[');
-	if (p!=wxNOT_FOUND) {
-		p++;
-		wxString item = GetNextItem(ans,p);
-		while (item.Left(6)==_T("child=")) {
-			item.Remove(0,7);
-			wxString new_expr = GetValueFromAns(item,_T("exp"),true);
-			wxString expr;
-			if (what_is==DI_IN_FATHER_POINTER || what_is==DI_IN_FATHER_CLASS)
-				expr = main_expr+_T("::")+new_expr;
-			else if (what_is==DI_IN_CLASS)
-				expr = RewriteExpressionForBreaking(main_expr)+"."+new_expr;
-			else if (what_is==DI_IN_CLASS_POINTER)
-				expr = RewriteExpressionForBreaking(main_expr)+_T("->")+new_expr;
-			else if (what_is==DI_POINTER)
-				expr = wxString("*")<<main_expr;
-			else if (what_is==DI_ARRAY)
-				expr = main_expr+_T("[")+new_expr+_T("]");
-			else
-				expr = main_expr;
-			long l;
-			GetValueFromAns(item,_T("numchild"),true).ToLong(&l);
-			data[n] = new mxIEItemData(
-				GetValueFromAns(item,_T("name"),true),
-				expr, new_expr, main_frame,
-				GetValueFromAns(item,_T("type"),true),
-				l);		
-			if (what_is==DI_CLASS_POINTER) {
-				if (data[n]->expr==_("public")||data[n]->expr==_("protected")||data[n]->expr==_("private"))
-					data[n]->what_is = DI_IN_CLASS_POINTER;
-				else {
-					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+_T("->")+data[n]->expr;
-					data[n]->what_is = DI_FATHER_POINTER;
-				}
-			} else if (what_is==DI_FATHER_POINTER) {
-				if (data[n]->expr==_("public")||data[n]->expr==_("protected")||data[n]->expr==_("private"))
-					data[n]->what_is = DI_IN_FATHER_POINTER;
-				else {
-					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+_T("->")+data[n]->expr;
-					data[n]->what_is = DI_FATHER_POINTER;
-				}
-			} else if (what_is==DI_CLASS) {
-				if (data[n]->expr==_("public")||data[n]->expr==_("protected")||data[n]->expr==_("private"))
-					data[n]->what_is = DI_IN_CLASS;
-				else {
-					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+"."+data[n]->expr;
-					data[n]->what_is = DI_FATHER_CLASS;
-				}
-			} else if (what_is==DI_FATHER_CLASS) {
-				if (data[n]->expr==_("public")||data[n]->expr==_("protected")||data[n]->expr==_("private"))
-					data[n]->what_is = DI_IN_FATHER_CLASS;
-				else {
-					data[n]->real_expr = RewriteExpressionForBreaking(main_expr)+"."+data[n]->expr;
-					data[n]->what_is = DI_FATHER_CLASS;
-				}
-			} else {
-				if (data[n]->type.Last()=='*' || data[n]->type.Last()==']') {
-					if (InspectExpression(wxString(_T("*("))<<data[n]->real_expr<<_T(")"))[0]=='{')
-						data[n]->what_is = DI_CLASS_POINTER;
-					else
-						data[n]->what_is = DI_POINTER;
-				}
-			}
-			item = GetNextItem(ans,p);
-			n++;
-		}
-	}
-	return n;
-}
 
 wxString DebugManager::RewriteExpressionForBreaking(wxString main_expr) {
 	int i=0,l=main_expr.Len();
@@ -1831,55 +1730,6 @@ int DebugManager::GetBreakHitCount(int num) {
 	GetValueFromAns(ans.Mid(p),_T("times"),true).ToLong(&l);
 	return l;
 }
-
-//void DebugManager::RegisterMatrix(mxInspectionMatrix *matrix) {
-//	matrix_list.push_back(matrix);
-// }
-//
-//void DebugManager::UnRegisterMatrix(mxInspectionMatrix *matrix) {
-//	list<mxInspectionMatrix*>::iterator i1=matrix_list.begin(), i2=matrix_list.end();
-//	while (i1!=i2) {
-//		if (*i1==matrix) {
-//			matrix_list.erase(i1);
-//			return;
-//		} else
-//			i1++;
-//	}
-// }
-
-void DebugManager::RegisterExternInspection(mxExternInspection *ei) {
-	extern_list.push_back(ei);
-}
-
-void DebugManager::UnRegisterExternInspection(mxExternInspection *ei) {
-	list<mxExternInspection*>::iterator it=find(extern_list.begin(),extern_list.end(),ei);
-	if (it!=extern_list.end()) extern_list.erase(it);
-}
-
-//void DebugManager::RegisterExplorer(mxInspectionExplorer *explorer) {
-//	explorer_list.push_back(explorer);
-// }
-//
-//void DebugManager::UnRegisterExplorer(mxInspectionExplorer *explorer) {
-//	list<mxInspectionExplorer*>::iterator i1=explorer_list.begin(), i2=explorer_list.end();
-//	while (i1!=i2) {
-//		if (*i1==explorer) {
-//			explorer_list.erase(i1);
-//			return;
-//		} else
-//			i1++;
-//	}
-// }
-
-//bool DebugManager::SelectFrameForInspeccion(wxString addr) {
-//	for (int i=0;i<last_backtrace_size;i++) {
-//		if (frames_addrs[i]==addr) {
-//			wxString ans = SendCommand(_T("-stack-select-frame "),frames_nums[i]);
-//			return ans.Mid(1,4)=="done";
-//		}
-//	}
-//	return false;
-//}
 
 bool DebugManager::SaveCoreDump(wxString core_file) {
 	if (!debugging || waiting) return false;

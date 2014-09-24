@@ -15,7 +15,6 @@ class wxGrid;
 class project_file_item;
 class mxInspectionMatrix;
 class mxInspectionExplorer;
-class mxExternInspection;
 class mxBreakList;
 
 enum {	DI_NONE, 
@@ -156,7 +155,6 @@ private:
 	bool stepping_in;
 	bool inverse_exec;
 	bool gui_is_prepared;
-	list<mxExternInspection*> extern_list;
 	long stack_depth; ///< profundidad del backtrace actual, ver current_frame
 	// nota para identificaicion de frames: el id (interno de zinjai) tiene base 0, el level (usuario/gdb) tiene base 1
 	long current_frame_id; ///< id interno del frame actual, se usa un nro basado en su level en el backtrace, pero inverso (el main seria 0, que figura en la salida de gdb con level=stack_depth-1)
@@ -252,20 +250,9 @@ public:
 	bool SelectFrame(long frame_id, long frame_level); 
 	bool ToggleInspectionFreeze(int n);
 	bool DoThat(wxString what);
-	bool CreateVO(wxString expr, wxString &name, wxString &type, int &children);
-	wxString GetVOValue(wxString name);
-	bool DeleteVO(wxString name);
-	int GetVOChildrenData(mxIEItemData **data, wxString name, wxString main_expr, wxString main_frame, int what_is);
 	bool GetArgs (wxArrayString &args, wxString level);
 	bool GetLocals (wxArrayString &locals, wxString level);
 	void PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints);
-//	BreakPointInfo *FindBreakInfoFromNumber(int _id, bool use_gdb_id=true);
-	void RegisterExternInspection(mxExternInspection* ei);
-	void UnRegisterExternInspection(mxExternInspection* ei);
-//	void RegisterMatrix(mxInspectionMatrix* matrix);
-//	void UnRegisterMatrix(mxInspectionMatrix* matrix);
-//	void RegisterExplorer(mxInspectionExplorer* explorer);
-//	void UnRegisterExplorer(mxInspectionExplorer* explorer);
 	
 	bool Attach(long pid, mxSource *source);
 	
