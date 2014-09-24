@@ -27,7 +27,7 @@ class mxNewWizard;
 class mxFindDialog;
 class mxThreadGrid;
 class mxBacktraceGrid;
-class mxInspectionGrid;
+class mxInspectionsPanel;
 class mxPreferenceWindow;
 class mxSplashScreen;
 class mxCompilerItemData;
@@ -512,7 +512,7 @@ public:
 
 	mxThreadGrid *threadlist_ctrl;
 	mxBacktraceGrid *backtrace_ctrl;
-	mxInspectionGrid *inspection_ctrl;
+	mxInspectionsPanel *inspection_ctrl;
 	
 	mxDiffSideBar *diff_sidebar;
 	void ShowDiffSideBar(bool bar, bool map);

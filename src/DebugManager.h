@@ -148,7 +148,6 @@ private:
 	long gdb_version; ///< version de gdb, se consulta al iniciar la depuracion, si es 7.6 por ej, guarda 7006
 	bool should_pause; ///< puede que al hacer click en la pausa no se pause realmente (que la señal que envía no llegue a término, no se por qué, pero pasa cuando hay un breakpoint de los que solo actualizan la tabla de inspecciones)
 	bool has_symbols; ///< si cuando el debugger no inicia es porque no el ejecutable no tiene info de depuracion se baja esta bandera
-	mxInspectionGrid *inspection_grid;
 	bool recording_for_reverse; ///< indica si se ejecuto el comando "record" para habilitar luega la ejecucion hacia atras
 	bool attached; ///< indica si el programa se inicio en el depurador, o el depurador es "attacheo" mas tarde, para saber como salir
 	wxArrayString black_list;

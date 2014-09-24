@@ -7,13 +7,6 @@
 #include "ids.h"
 #include "mxMainWindow.h"
 #include "mxInspectionGridCellEditor.h"
-//#include "mxUtils.h"
-//#include "DebugManager.h"
-//#include "mxSource.h"
-//#include "mxInspectionExplorer.h"
-//#include "mxMessageDialog.h"
-//#include "mxInspectionMatrix.h"
-//#include "mxTextDialog.h"
 #include "mxInspectionPrint.h"
 #include "mxInspectionExplorerDialog.h"
 using namespace std;
@@ -54,9 +47,6 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 //	EVT_MENU(mxID_INSPECTION_LOAD_TABLE,mxInspectionGrid::OnLoadTable)
 //	EVT_MENU(mxID_INSPECTION_MANAGE_TABLES,mxInspectionGrid::OnManageTables)
 //	EVT_MENU(mxID_INSPECTION_SHOW_APPART,mxInspectionGrid::OnShowAppart)
-//	EVT_SIZE(mxInspectionGrid::OnResize)
-//	EVT_GRID_COL_SIZE(mxInspectionGrid::OnColResize)
-////	EVT_GRID_SELECT_CELL(mxInspectionGrid::OnSelectCell)
 END_EVENT_TABLE()
 //	
 	
@@ -338,6 +328,12 @@ bool mxInspectionGrid::OnCellClick(int row, int col) {
 ////	if (event.GetCol()==IG_COL_VALUE && event.GetRow()<debug->inspections_count)
 ////		new mxInspectionExplorer(main_window,debug->inspections[event.GetRow()].expr,debug->inspections[event.GetRow()].expr);
 //}
+ 
+static wxString Shorten(wxString str) {
+	str.Replace("\t","   ",true);
+	if (str.Len()>15) str=str.Mid(0,15)+"...";
+	return str;
+}
 
 void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	// ensure that clicked cell is selected, so generated events will use that one
@@ -361,7 +357,6 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	bool there_are_sources = main_window->notebook_sources->GetPageCount()!=0;
 	mxSource *current_source = there_are_sources?(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection())):NULL;
 
-#warning restablecer funcionalidad de todo lo que este comentado
 	wxMenu menu; 
 	if (sel_is_vo && di->IsClass()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
 	if (sel_is_vo && di->IsArray()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_ARRAY,"&Separar arreglo en elementos"));
@@ -386,14 +381,15 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	if (current_source) {
 		int s = current_source->GetSelectionStart(), e = current_source->GetSelectionEnd();
 		if (s!=e && current_source->LineFromPosition(s)==current_source->LineFromPosition(e))
-			menu.Append(mxID_INSPECTION_FROM_SOURCE,LANG1(INSPECTGRID_POPUP_COPY_FROM_SELECTION,"Insertar Expresion Desde la &Seleccion <{1}>",current_source->GetTextRange(s,e)));
+			menu.Append(mxID_INSPECTION_FROM_SOURCE,LANG1(INSPECTGRID_POPUP_COPY_FROM_SELECTION,"Insertar Expresion Desde la &Seleccion (\"<{1}>\")",Shorten(current_source->GetTextRange(s,e))));
 	}
 	wxString clip_text = mxUT::GetClipboardText();
 	if (clip_text.Contains('\n')) 
 		menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,wxString(LANG(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE,"Insertar Expresiones Desde el &Portapapeles"))+"\tCtrl+V");
 	else if (!clip_text.IsEmpty())
-		menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (<{1}>)",clip_text)+"\tCtrl+V");
+		menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (\"<{1}>\")",Shorten(clip_text))+"\tCtrl+V");
 	if (!sel_is_empty) menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
+#warning restablecer funcionalidad de todo lo que este comentado
 //	if (sel_is_vo && di->IsSimpleType()) {
 //		wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
 //		it[0] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
@@ -412,6 +408,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 		submenu->Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
 		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_FORMAT,"Formato"));
 	}
+#warning restablecer funcionalidad de todo lo que este comentado
 	if (there_are_inspections) {
 		menu.AppendSeparator();
 		menu.Append(mxID_INSPECTION_CLEAR_ALL,LANG(INSPECTGRID_POPUP_CLEAN_TABLE,"&Limpiar Tabla de Inspecciones"));
@@ -533,9 +530,11 @@ void mxInspectionGrid::OnCopyExpression(wxCommandEvent &evt) {
 }
 
 void mxInspectionGrid::OnClearAll(wxCommandEvent &evt) {
-	for(int i=0;i<inspections.GetSize()-1;i++) 
-		DeleteInspection(i,true);
-	DeleteRows(0,inspections.GetSize()-1);
+	int n = inspections.GetSize()-1;
+	for(int i=0;i<n;i++) 
+		DeleteInspection(n-i-1,true);
+	inspections.Remove(0,n);
+	DeleteRows(0,n);
 }
 
 
@@ -574,64 +573,6 @@ void mxInspectionGrid::OnExploreExpression(wxCommandEvent &evt) {
 	}
 }
 
-//void mxInspectionGrid::AppendInspections(wxArrayString &vars) {
-//	int r = GetNumberRows()-1;
-//	for (unsigned int i=0;i<vars.GetCount();i++) {
-//		if (debug->ModifyInspection(r,vars[i]))
-//			SetCellValue(r++,IG_COL_EXPR,vars[i]);
-//	}
-//}
-//
-//
-///**
-//* @retval 0   expresion unica que no se divide
-//* @retval 1   expresion que se divide pero incorrecta
-//* @retval 2   expresion que se dividio correctamente
-//**/
-//int mxInspectionGrid::ShouldDivide(int row, wxString expr, bool frameless) {
-//	int c = 0, i, l = expr.Len();
-//	bool comillas = false;
-//	for (i=0; i<l; i++) {
-//		if (expr[i]=='\"') comillas = !comillas;
-//		else if (!comillas && expr[i]=='.') {
-//			c++;
-//			if (c==3) 
-//				break;
-//		} else 
-//			c = 0;
-//	}
-//	if (i!=l) {
-//		int t1=i-3, f1=i-3, t2=i+1, f2=i+1;
-//		long n1=0, n2=0;
-//		while (f1>0 && expr[f1]>='0' && expr[f1]<='9')
-//			f1--;
-//		l--;
-//		while (t2<l && expr[t2]>='0' && expr[t2]<='9')
-//			t2++;
-//		expr.SubString(f1+1,t1).ToLong(&n1);
-//		expr.SubString(f2,t2).ToLong(&n2);
-//		if (n2<n1) swap(n2,n1);
-//		if (n2>=n1) {
-//			wxString p1 = expr.Mid(0,f1+1), p2 = expr.Mid(t2);
-//			if (debug->ModifyInspection(row,wxString(p1)<<n1<<p2)) {
-//				SetCellValue(row,IG_COL_EXPR,wxString(p1)<<n1<<p2);
-//				if (n2-n1)
-//					debug->MakeRoomForInspections(row+1,n2-n1);
-//				for (i = n1+1; i<=n2; i++) {
-//					row++;
-//					SetCellValue(row,IG_COL_EXPR,wxString(p1)<<i<<p2);
-////					if (frameless)
-////						debug->ModifyInspectionFrameless(row,wxString(p1)<<i<<p2,true);
-////					else
-//						debug->ModifyInspection(row,wxString(p1)<<i<<p2,true);
-//				}
-//			} else return false;
-//		}
-//		return true;
-//	}
-//	return false;
-//}
-//
 //void mxInspectionGrid::OnWatchNo(wxCommandEvent &evt) {
 //	debug->ModifyInspectionWatch(selected_row,false,false);
 //}
@@ -687,16 +628,6 @@ void mxInspectionGrid::OnShowInText(wxCommandEvent &evt) {
 	}
 }
 
-
-//void mxInspectionGrid::OnSelectCell(wxGridEvent &event) {
-//	if (created) { // porque esto no anda?
-//		if (event.GetCol()==IG_COL_LEVEL || (event.GetRow()==debug->inspections_count && event.GetCol()!=IG_COL_EXPR)) {
-//			SetGridCursor(IG_COL_EXPR,event.GetRow());
-//		} else
-//			event.Skip();
-//	}
-//}
-//
 /**
 * @brief Duplica una inspeccion de la grilla, colocando la copia justo debajo del original
 **/
@@ -735,27 +666,6 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 //		debug->DeleteInspectionsTable(name);	
 //}
 //
-//
-//void mxInspectionGrid::OnShowAppart(wxCommandEvent &evt) {
-//	
-//}
-//
-//void mxInspectionGrid::ResetChangeHightlights() {
-//	int i,r=GetNumberRows()-1;
-//	if (config->Debug.select_modified_inspections) {
-//		for (i=0;i<r;i++) {
-//			if (debug->inspections[i].freezed)
-//				SetCellTextColour(i,IG_COL_VALUE,freeze_colour);
-//			else if (debug->inspections[i].is_vo && !debug->inspections[i].on_scope)
-//				SetCellTextColour(i,IG_COL_VALUE,disable_colour);
-//			else
-//				SetCellTextColour(i,IG_COL_VALUE,default_colour);
-//		}
-//	} else {
-//		for (i=0;i<r;i++)
-//			SetCellTextColour(i,IG_COL_VALUE,default_colour);
-//	}
-//}
 
 void mxInspectionGrid::OnFreeze(wxCommandEvent &evt) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel);
@@ -978,6 +888,7 @@ void mxInspectionGrid::OnFullTableUpdateBegin( ) {
 		UpdateLevelColumn(i);
 		InspectionGridRow &di = inspections[i];
 		if (di.status==IGRS_UNINIT || inspections[i].is_frozen) continue;
+		// no es mas necesario preguntar por las manuales, avisa solo el DebuggerInspection
 //		if (di->RequiresManualUpdate()) {
 //			if (di->IsInScope()) {
 //				if (di->UpdateValue()) {

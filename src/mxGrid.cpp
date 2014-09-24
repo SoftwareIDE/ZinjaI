@@ -4,9 +4,11 @@
 #include "ids.h"
 #include "Language.h"
 #include "mxUtils.h"
+#include <wx/msgdlg.h>
 using namespace std;
 
 mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id) : wxGrid(parent,id,wxDefaultPosition,wxSize(400,300),wxWANTS_CHARS), cols(number_of_cols) {
+	created=false;
 	CreateGrid(0,number_of_cols);
 	SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
 	SetRowLabelSize(0);
@@ -37,7 +39,7 @@ void mxGrid::SetColumnVisible (int c, bool visible) {
 		if (cols[i].real_pos!=-1)
 			SetColLabelValue(cols[i].real_pos,cols[i].name);
 	RecalcColumns(GetSize().GetWidth());
-	OnColumnHideOrUnhide(c,visible);
+	if (created) OnColumnHideOrUnhide(c,visible);
 	wxGrid::Thaw();
 }
 
@@ -47,6 +49,7 @@ bool mxGrid::IsColumnVisible (int c) {
 
 void mxGrid::RecalcColumns(int new_w) {
 	if (new_w==0) return;
+	BeginBatch();
 	float old_w=0;
 	for(int i=0;i<cols.GetSize();i++) 
 		if (cols[i].real_pos!=-1) old_w+=cols[i].width;
@@ -57,6 +60,8 @@ void mxGrid::RecalcColumns(int new_w) {
 			SetColSize(cols[i].real_pos,int(cols[i].width));
 		}
 	}
+	EndBatch();
+	Refresh();
 }
 
 void mxGrid::InitColumn (int col_idx, wxString name, int width/*, bool visible*/) {
@@ -74,16 +79,22 @@ void mxGrid::InitColumn (int col_idx, wxString name, int width/*, bool visible*/
 void mxGrid::DoCreate ( ) {
 	RecalcColumns(GetSize().GetWidth());
 	Connect(wxEVT_SIZE,wxSizeEventHandler(mxGrid::OnResize),NULL,this);
-//	Connect(wxEVT_GRID_COL_SIZE,wxGridEventHandler(mxGrid::OnColResize),NULL,this);
+	Connect(wxEVT_GRID_COL_SIZE,wxGridSizeEventHandler(mxGrid::OnColResize),NULL,this);
 	Connect(wxEVT_GRID_CELL_LEFT_CLICK,wxGridEventHandler(mxGrid::OnLeftClick),NULL,this);
 	Connect(wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEventHandler(mxGrid::OnDblClick),NULL,this);
 	Connect(wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnRightClick),NULL,this);
 	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),NULL,this);
 	Connect(wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(mxGrid::OnShowHideCol),NULL,this);
 	Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(mxGrid::OnKey),NULL,this);
+	created=true;
 }
 
+void mxGrid::OnColResize (wxGridSizeEvent & event) {
+	cols[GetRealCol(event.GetRowOrCol())].width=GetColSize(event.GetRowOrCol());
+	event.Skip();
+}
 void mxGrid::OnResize (wxSizeEvent & event) {
+	cerr<<"OnResize: "<<endl;
 	RecalcColumns(event.GetSize().GetWidth());
 	event.Skip();
 }
@@ -145,8 +156,6 @@ void mxGrid::OnShowHideCol(wxCommandEvent &evt) {
 	mxGrid::SetColumnVisible(cn,!mxGrid::IsColumnVisible(cn));
 	Refresh();
 }
-
-	
 
 void mxGrid::OnKey (wxKeyEvent & event) {
 	int key = event.GetKeyCode();

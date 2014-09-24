@@ -93,19 +93,12 @@ public:
 	void OnFormatHexadecimal(wxCommandEvent &evt);
 	void OnFormatBinary(wxCommandEvent &evt);
 	void SetFormat(int format);
-//	int ShouldDivide(int row, wxString expr, bool frameless=false);
 //	void OnSaveTable(wxCommandEvent &evt);
 //	void OnLoadTable(wxCommandEvent &evt);
 //	void OnManageTables(wxCommandEvent &evt);
 //	void OnShowAppart(wxCommandEvent &evt);
 ////	void OnCellEditorShown(wxGridEvent &evt);
 ////	void OnCellEditorHidden(wxGridEvent &evt);
-//	void HightlightChange(int r);
-//	void HightlightDisable(int r);
-//	void HightlightNone(int r);
-//	void HightlightFreeze(int r);
-//	void ResetChangeHightlights();
-//	bool ModifyExpresion(int r, wxString expr);
 	
 	// drag/drop
 	bool dragging_inspection; // para evitar hacer drag y drop sobre si misma

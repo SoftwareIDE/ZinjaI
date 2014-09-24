@@ -1691,11 +1691,11 @@ Co&ngelar Valor
 INSPECTGRID_POPUP_UNFREEZE_VALUE
 Desco&ngelar Valor
 INSPECTGRID_POPUP_COPY_FROM_SELECTION
-Insertar Expresion Desde la &Seleccion <{1}>
+Insertar Expresion Desde la &Seleccion (\"<{1}>\")
 INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_MULTIPLE
 Insertar Expresiones Desde el &Portapapeles
 INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE
-Pegar Expresion Desde el &Portapapeles (<{1}>)
+Pegar Expresion Desde el &Portapapeles (\"<{1}>\")
 INSPECTGRID_POPUP_DELETE
 Eliminar Inspeccion
 INSPECTGRID_WATCH
@@ -1766,6 +1766,12 @@ LISTSHARED_REMOVE
 &Quitar de la lista
 LISTSHARED_SELECT_SOMETHING
 Debe seleccionar uno o más fuentes compartidos de la lista.
+LOCALS_NAME
+Nombre
+LOCALS_TYPE
+Tipo
+LOCALS_VALUE
+Valor
 UNTITLED
 sin_titulo_
 MAINW_INITIALIZING

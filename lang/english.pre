@@ -1768,6 +1768,12 @@ LISTSHARED_REMOVE
 &Remove from the list
 LISTSHARED_SELECT_SOMETHING
 You must choose at least one file from the list.
+LOCALS_NAME
+Name
+LOCALS_TYPE
+Type
+LOCALS_VALUE
+Value
 UNTITLED
 untitled_
 MAINW_INITIALIZING

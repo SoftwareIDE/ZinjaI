@@ -31,7 +31,7 @@
 #include "mxValgrindOuput.h"
 #include "mxGotoFunctionDialog.h"
 #include "mxGotoFileDialog.h"
-#include "mxInspectionGrid.h"
+#include "mxInspectionsPanel.h"
 #include "mxThreadGrid.h"
 #include "mxBacktraceGrid.h"
 #include "CodeExporter.h"
@@ -508,9 +508,9 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	aui_manager.AddPane(CreateCompilerTree(), wxAuiPaneInfo().Name("compiler_tree").Bottom().Caption(LANG(CAPTION_COMPILER_OUTPUT,"Resultados de la Compilacion")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	aui_manager.AddPane(CreateQuickHelp(), wxAuiPaneInfo().Name("quick_help").Bottom().Caption(LANG(CAPTION_QUIKHELP,"Ayuda Rapida")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Debug.inspections_on_right)
-		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Right().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
+		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionsPanel()), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Right().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
 	else
-		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionGrid(this)), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
+		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionsPanel()), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_INSPECTIONS] = new mxHidenPanel(this,inspection_ctrl,config->Debug.inspections_on_right?HP_RIGHT:HP_BOTTOM,LANG(MAINW_AUTOHIDE_INSPECTIONS,"Inspecciones"));
 	aui_manager.AddPane((wxGrid*)(backtrace_ctrl = new mxBacktraceGrid(this)), wxAuiPaneInfo().Name("backtrace").Caption(LANG(CAPTION_BACKTRACE,"Trazado Inverso")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(1).MaximizeButton(!config->Init.autohiding_panels));
@@ -1368,7 +1368,7 @@ void mxMainWindow::OnEditNeedFocus (wxCommandEvent &event) {
 	if (focus && focus->IsKindOf(menu_data->toolbar_find_text->GetClassInfo())) {
 		focus->ProcessEvent(event);
 	} else if (focus && (focus==inspection_ctrl || focus->GetParent()==inspection_ctrl)) {
-		inspection_ctrl->OnRedirectedEditEvent(event);
+//		inspection_ctrl->OnRedirectedEditEvent(event);
 	} else IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->ProcessEvent(event);
 	}
@@ -1648,7 +1648,7 @@ void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_
 		compiler->timer->Start(500);
 	}
 	// informar al usuario
-	if (msg.Len()) SetCompilingStatus(msg,true);
+	if (msg.Len()) SetCompilingStatus(msg,!project);
 }
 
 
@@ -2327,12 +2327,13 @@ void mxMainWindow::OnViewSymbolsTree (wxCommandEvent &event) {
 void mxMainWindow::OnViewUpdateSymbols (wxCommandEvent &event) {
 	wxWindow *focus = main_window->FindFocus();
 	if (focus) focus = focus->GetParent();
-	if (focus==inspection_ctrl) {
-		int r =inspection_ctrl->GetGridCursorRow();
-		inspection_ctrl->SetGridCursor(r,IG_COL_EXPR);
-		inspection_ctrl->EnableCellEditControl(true);
-		return;
-	}
+#warning reestablecer lo del F2
+//	if (focus==inspection_ctrl) {
+//		int r =inspection_ctrl->GetGridCursorRow();
+//		inspection_ctrl->SetGridCursor(r,IG_COL_EXPR);
+//		inspection_ctrl->EnableCellEditControl(true);
+//		return;
+//	}
 	if (config->Init.autohiding_panels) {
 //		if (!aui_manager.GetPane(symbols_tree.treeCtrl).IsShown())
 //			autohide_handlers[ATH_SYMBOL]->ForceShow();

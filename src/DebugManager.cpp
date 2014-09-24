@@ -2100,7 +2100,6 @@ void DebugManager::Start_ConfigureGdb ( ) {
 
 void DebugManager::Initialize() {
 	debug = new DebugManager();
-	debug->inspection_grid=main_window->inspection_ctrl;
 }
 
 void DebugManager::TemporaryScopeChange::ChangeIfNeeded(DebuggerInspection *di) {

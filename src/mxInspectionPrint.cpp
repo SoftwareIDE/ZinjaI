@@ -9,9 +9,6 @@
 #include "mxMainWindow.h"
 #include <cmath>
 
-//BEGIN_EVENT_TABLE(mxInspectionPrint, mxExternInspection)
-//END_EVENT_TABLE()
-
 mxInspectionPrint::mxInspectionPrint(wxString expression, bool frameless) : wxPanel(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
 	wxBoxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	value  = new wxTextCtrl(this,wxID_ANY,DebuggerInspection::GetUserStatusText(DIMSG_PENDING),wxDefaultPosition,wxDefaultSize,wxTE_READONLY|wxTE_MULTILINE);
@@ -68,8 +65,4 @@ void mxInspectionPrint::OnDINewType (DebuggerInspection * di) {
 	type->SetLabel(di->GetValueType());
 	value->SetValue(di->GetValue());
 }
-
-//void mxInspectionPrint::OnDebugPausePre ( ) {
-//	if (di->RequiresManualUpdate()) di->UpdateValue(true);
-//}
 

@@ -35,6 +35,7 @@ public:
 
 class mxGrid : public wxGrid {
 private:
+	bool created; ///< for masking some events until DoCreate
 	struct mxGridCol {
 		wxString name; ///< column label
 		int orig_pos; ///< column original position (as hardcoded in inheritance constructor, assuming all columns visible)
@@ -45,7 +46,7 @@ private:
 	void RecalcColumns(int new_w);
 	
 	void OnResize(wxSizeEvent &event);
-//	void OnColResize(wxGridEvent &evt);
+	void OnColResize(wxGridSizeEvent &evt);
 	void OnLeftClick(wxGridEvent &event);
 	void OnRightClick(wxGridEvent &event);
 	void OnDblClick(wxGridEvent &event);

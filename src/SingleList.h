@@ -105,6 +105,12 @@ public:
 			m_vec[i]=m_vec[i+1];
 		}
 	}
+	void Remove(int pos, int cant) {
+		m_size-=cant;
+		for(int i=pos;i<m_size;i++) { 
+			m_vec[i]=m_vec[i+cant];
+		}
+	}
 	void FastRemove(int pos) {
 		m_vec[pos]=m_vec[--m_size];
 	}
