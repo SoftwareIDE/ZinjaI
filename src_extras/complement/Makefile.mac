@@ -1,7 +1,7 @@
 GPP=g++
 CXXFLAGS=-O2 `wx-config --unicode=no --cppflags`
 LDFLAGS=-s -lwx_gtk2_mac-2.8 `wx-config --libs` 
-OBJS_DIR=../release.mac
+OBJS_DIR=../../release.mac/complement
 
 all: ../../complement.bin ../../complement_wrap.bin
 

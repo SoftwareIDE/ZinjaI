@@ -1,7 +1,7 @@
 GPP=i686-apple-darwin8-g++
 CXXFLAGS=-O2 `/opt/mac/wx/bin/wx-config --cppflags`
 LDFLAGS=-lwx_mac_stc-2.8-i686-apple-darwin8 `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8`
-OBJS_DIR=../../release.m32/img_viewer
+OBJS_DIR=../../../../../release.m32/img_viewer
 
 all: ../../img_viewer.bin
 
