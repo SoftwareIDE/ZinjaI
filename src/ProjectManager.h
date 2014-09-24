@@ -384,6 +384,10 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 		Init();
 		where=FT_NULL;
 	}
+	/// true=c++, false=c
+	bool IsCppOrJustC() {
+		return name.Len()<=2 || (name[name.Len()-1]!='c'&&name[name.Len()-1]!='C') || name[name.Len()-2]!='.';
+	}
 };
 
 enum ces_type{

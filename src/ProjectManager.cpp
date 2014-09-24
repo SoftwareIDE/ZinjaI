@@ -1442,7 +1442,8 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 	
 	// preparar la linea de comando 
 	wxFileName bin_name = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".o");
-	bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
+	
+	bool cpp = item->IsCppOrJustC();
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
 #if !defined(_WIN32) && !defined(__WIN32__)
 		(item->lib?" -fPIC ":" ")+
@@ -1759,13 +1760,19 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	// definir las variables
 	if (mktype==MKTYPE_CONFIG) fil.AddLine(wxString("OBJS_DIR=")+old_temp_folder);
 	if (mktype!=MKTYPE_OBJS) {
+		bool have_c_source=false;
+		LocalListIterator<project_file_item*> item(&files_sources);
+		while(!have_c_source && item.IsValid()) {
+			have_c_source = !item->IsCppOrJustC();
+			item.Next();
+		}
 		if (mingw_dir=="${MINGW_DIR}")
 			fil.AddLine(wxString("MINGW_DIR=")+current_toolchain.mingw_dir);
-		fil.AddLine(wxString("GCC=")+current_toolchain.c_compiler);
+		if (have_c_source) fil.AddLine(wxString("GCC=")+current_toolchain.c_compiler);
 		fil.AddLine(wxString("GPP=")+current_toolchain.cpp_compiler);
-		fil.AddLine(wxString("CFLAGS=")+c_compiling_options);
+		if (have_c_source) fil.AddLine(wxString("CFLAGS=")+c_compiling_options);
 		fil.AddLine(wxString("CXXFLAGS=")+cpp_compiling_options);
-		fil.AddLine(wxString("LIBS=")+linking_options);
+		fil.AddLine(wxString("LDFLAGS=")+linking_options);
 	}
 	
 	wxString libs_deps;
@@ -1832,7 +1839,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 		
 		fil.AddLine(executable_name+": ${OBJS}"/*+extra_deps*/+extra_pre);
 		if (cmake_style) fil.AddLine(tab+"@echo "+get_percent(steps_objs+steps_extras,steps_total)+" Linking executable "+executable_name);
-		fil.AddLine(tab+(cmake_style?"@":"")+"${GPP} ${OBJS} ${LIBS} -o $@");
+		fil.AddLine(tab+(cmake_style?"@":"")+"${GPP} ${OBJS} ${LDFLAGS} -o $@");
 		fil.AddLine("");
 
 		if (temp_folder.Len()!=0) {

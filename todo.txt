@@ -1,7 +1,4 @@
 show stopers:
-
-	* agregar las improvements de inspecciones por defecto para stl y cia
-
 	* guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo
 
 

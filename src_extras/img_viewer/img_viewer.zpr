@@ -11,11 +11,11 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=VentanaPrincipal.cpp
+current_source=Application.cpp
 path_char=/
 [source]
 path=Application.cpp
-cursor=7:0
+cursor=5:0
 open=true
 [source]
 path=VentanaPrincipal.cpp
