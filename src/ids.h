@@ -3,6 +3,12 @@
 
 #include <wx/wx.h>
 
+// some ids must be the same as wxids because where are going to redirect this 
+// events and we want default wx handlers to process it (see mxMainWindow::OnEditNeedFocus)
+#define mxID_EDIT_COPY wxID_COPY
+#define mxID_EDIT_CUT wxID_CUT
+#define mxID_EDIT_PASTE wxID_PASTE
+
 enum {
 	mxID_MAIN = wxID_HIGHEST+1,
 	mxID_NOTEBOOK_SOURCES,
@@ -144,9 +150,9 @@ enum {
 	mxID_EDIT_SELECT_ALL,
 	mxID_EDIT_UNDO,
 	mxID_EDIT_REDO,
-	mxID_EDIT_COPY,
-	mxID_EDIT_CUT,
-	mxID_EDIT_PASTE,
+//	mxID_EDIT_COPY,
+//	mxID_EDIT_CUT,
+//	mxID_EDIT_PASTE,
 	mxID_EDIT_BRACEMATCH,
 	mxID_EDIT_GOTO,
 	mxID_EDIT_GOTO_FUNCTION,
