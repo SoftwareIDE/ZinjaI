@@ -7,7 +7,7 @@
 #include <wx/msgdlg.h>
 using namespace std;
 
-mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id) : wxGrid(parent,id,wxDefaultPosition,wxSize(400,300),wxWANTS_CHARS), cols(number_of_cols) {
+mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id, wxSize sz) : wxGrid(parent,id,wxDefaultPosition,sz,wxWANTS_CHARS), cols(number_of_cols) {
 	created=false;
 	CreateGrid(0,number_of_cols);
 	SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);

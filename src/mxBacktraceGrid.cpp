@@ -19,7 +19,7 @@ BEGIN_EVENT_TABLE(mxBacktraceGrid, wxGrid)
 END_EVENT_TABLE()
 	
 
-mxBacktraceGrid::mxBacktraceGrid(wxWindow *parent):mxGrid(parent,BG_COLS_COUNT) {
+mxBacktraceGrid::mxBacktraceGrid(wxWindow *parent):mxGrid(parent,BG_COLS_COUNT,wxID_ANY,wxSize(400,300)) {
 	mxGrid::InitColumn(BG_COL_LEVEL,LANG(BACKTRACE_LEVEL,"Nivel"),10);
 	mxGrid::InitColumn(BG_COL_FUNCTION,LANG(BACKTRACE_FUNCTION,"Función"),19);
 	mxGrid::InitColumn(BG_COL_FILE,LANG(BACKTRACE_FILE,"Archivo"),21);

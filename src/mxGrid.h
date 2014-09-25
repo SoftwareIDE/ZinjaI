@@ -58,7 +58,7 @@ protected:
 	void DoCreate(); 
 	int last_event_x, last_event_y;
 public:
-	mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id=wxID_ANY);
+	mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id=wxID_ANY, wxSize sz=wxDefaultSize);
 	
 	void SetRowSelectionMode();
 		

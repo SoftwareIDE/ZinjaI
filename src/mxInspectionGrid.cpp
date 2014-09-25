@@ -1105,3 +1105,7 @@ void mxInspectionGrid::OnDebugPausePost ( ) {
 	OnFullTableUpdateEnd();
 }
 
+mxInspectionGrid::~mxInspectionGrid ( ) {
+	while(inspections.GetSize()) DeleteInspection(0,false);
+}
+

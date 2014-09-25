@@ -3,8 +3,8 @@
 
 mxLocalsGrid::mxLocalsGrid(wxWindow *parent):mxGrid(parent,LG_COLS_COUNT) {
 	mxGrid::InitColumn(LG_COL_NAME,LANG(LOCALS_NAME,"Nombre"),10);
-	mxGrid::InitColumn(LG_COL_TYPE,LANG(LOCALS_TYPE,"Tipo"),19);
-	mxGrid::InitColumn(LG_COL_VALUE,LANG(LOCALS_VALUE,"Valor"),21);
+	mxGrid::InitColumn(LG_COL_TYPE,LANG(LOCALS_TYPE,"Tipo"),20);
+	mxGrid::InitColumn(LG_COL_VALUE,LANG(LOCALS_VALUE,"Valor"),30);
 	mxGrid::SetColumnVisible(LG_COL_TYPE,false);
 	mxGrid::DoCreate();
 	mxGrid::SetRowSelectionMode();

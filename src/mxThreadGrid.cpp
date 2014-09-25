@@ -10,7 +10,7 @@ BEGIN_EVENT_TABLE(mxThreadGrid, wxGrid)
 END_EVENT_TABLE()
 	
 	
-mxThreadGrid::mxThreadGrid(wxWindow *parent ):mxGrid(parent,TG_COLS_COUNT) {
+mxThreadGrid::mxThreadGrid(wxWindow *parent ):mxGrid(parent,TG_COLS_COUNT,wxID_ANY,wxSize(400,300)) {
 	mxGrid::InitColumn(TG_COL_ID,LANG(THREADS_ID,"Id"),5);
 	mxGrid::InitColumn(TG_COL_FUNCTION,LANG(THREADS_FUNCTION,"Funcion"),20);
 	mxGrid::InitColumn(TG_COL_FILE,LANG(THREADS_FILE,"Archivo"),30);

@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxInspectionsPanel.cpp
 path_char=/
 [source]
 path=src/mxSource.cpp
@@ -382,8 +381,7 @@ path=src/mxLocalsGrid.cpp
 cursor=59:49
 [source]
 path=src/mxInspectionsPanel.cpp
-cursor=17:15
-open=true
+cursor=0:18
 [header]
 path=src/CodeHelper.h
 cursor=60:26

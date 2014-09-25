@@ -370,8 +370,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 		
 	EVT_AUI_PANE_CLOSE(mxMainWindow::OnPaneClose)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(mxID_NOTEBOOK_SOURCES, mxMainWindow::OnNotebookPageClose)
-	EVT_AUINOTEBOOK_PAGE_CHANGED(mxID_NOTEBOOK_SOURCES, mxMainWindow::OnNotebookPageChanged)
 	EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(mxID_NOTEBOOK_SOURCES, mxMainWindow::OnNotebookRightClick)
+	EVT_AUINOTEBOOK_PAGE_CHANGED(mxID_NOTEBOOK_SOURCES, mxMainWindow::OnNotebookPageChanged)
 	EVT_AUINOTEBOOK_PAGE_CHANGED(mxID_LEFT_PANELS, mxMainWindow::OnNotebookPanelsChanged)
 	
 	EVT_END_PROCESS(wxID_ANY, mxMainWindow::OnProcessTerminate)

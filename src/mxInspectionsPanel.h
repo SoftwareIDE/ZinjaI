@@ -1,6 +1,6 @@
 #ifndef MXINSPECTIONSPANEL_H
 #define MXINSPECTIONSPANEL_H
-#include <wx/notebook.h>
+#include <wx/aui/auibook.h>
 #include "SingleList.h"
 
 class mxInspectionsPanelTab {
@@ -15,7 +15,7 @@ public:
 class mxInspectionGrid;
 class mxLocalsGrid;
 
-class mxInspectionsPanel : public wxNotebook {
+class mxInspectionsPanel : public wxAuiNotebook {
 	struct Tab {
 		enum { TYPE_NULL,TYPE_GRID, TYPE_LOCAL } type;
 		wxWindow *ctrl;
@@ -31,7 +31,9 @@ class mxInspectionsPanel : public wxNotebook {
 	bool created;
 public:
 	mxInspectionsPanel();
-	void OnPageChange(wxNotebookEvent &event);
+	void OnPageChanging(wxAuiNotebookEvent &event);
+	void OnPageChanged(wxAuiNotebookEvent &event);
+	void OnPageClosing(wxAuiNotebookEvent &event);
 	void SelectPage(int p);
 };
 

@@ -60,7 +60,7 @@ private:
 	
 public:
 	mxInspectionGrid(wxWindow *parent);
-//	~mxInspectionGrid();
+	~mxInspectionGrid();
 	void OnFullTableUpdateBegin();
 	void OnFullTableUpdateEnd();
 //	void OnSelectCell(wxGridEvent &event);
