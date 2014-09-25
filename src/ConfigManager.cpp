@@ -932,7 +932,8 @@ void ConfigManager::AddInspectionImprovingTemplate(const wxString &from, const w
 
 void ConfigManager::SetDefaultInspectionsImprovingTemplates ( ) {
 	AddInspectionImprovingTemplate("std::string","${EXP}._M_dataplus._M_p");
-	AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">pvector ${EXP} ${T}");
+	AddInspectionImprovingTemplate("std::vector<${T}, std::allocator<${T}> >",">pvector ${EXP}");
+	AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">plist ${EXP} ${T}");
 	AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} ${T1} ${T2}");
 	AddInspectionImprovingTemplate("std::stack<${T}, std::deque<${T}, std::allocator<${T}> > >",">pstack ${EXP}");
 	AddInspectionImprovingTemplate("std::set<${T}, ${C}, std::allocator<${T}> >",">pset ${EXP} ${T}");
