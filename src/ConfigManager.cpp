@@ -380,7 +380,7 @@ bool ConfigManager::Load() {
 	if (Init.version<20140704) {
 		if (Init.proxy=="") Init.proxy="$http_proxy";
 	}
-	if (Init.version<20140924) {
+	if (Init.version<20140925) {
 #ifdef __WIN32__
 		Files.img_browser = "img_viewer.exe";
 #else

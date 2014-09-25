@@ -94,7 +94,6 @@ void mxGrid::OnColResize (wxGridSizeEvent & event) {
 	event.Skip();
 }
 void mxGrid::OnResize (wxSizeEvent & event) {
-	cerr<<"OnResize: "<<endl;
 	RecalcColumns(event.GetSize().GetWidth());
 	event.Skip();
 }
