@@ -968,7 +968,7 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 				if (cp<=calltip_brace) { 
 					HideCalltip();
 				} else {
-					int p=calltip_brace+1, cur_arg=0, par=0, s, l=cp+1; // s y l son para II_*
+					int p=calltip_brace+1, cur_arg=0, par=0, s, l=cp/*+1*/; // s y l son para II_*
 					while (p<l) {
 						II_FRONT(p, II_SHOULD_IGNORE(p));
 						char c=GetCharAt(p++);

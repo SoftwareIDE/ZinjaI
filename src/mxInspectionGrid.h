@@ -4,6 +4,7 @@
 #include "mxGrid.h"
 #include "SingleList.h"
 #include "Inspection.h"
+#include "mxInspectionsPanel.h"
 
 enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COLS_COUNT};
 
@@ -26,7 +27,7 @@ public:
 /**
 * @brief Representa a la grilla del panel de inspecciones
 **/
-class mxInspectionGrid : public mxGrid, public myDIEventHandler, public myDIGlobalEventHandler {
+class mxInspectionGrid : public mxGrid, public myDIEventHandler, public myDIGlobalEventHandler, public mxInspectionsPanelTab {
 	bool ignore_cell_change_event;
 	bool full_table_update_began; ///< para poder llamar dos veces a begin sin que la segunda haga nada (la primera desde aca, la segunda desde DebuggerInspection::UpdateAll)
 public:
