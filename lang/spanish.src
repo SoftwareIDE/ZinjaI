@@ -2378,6 +2378,8 @@ PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
 Mostrar ZinjaI cuando se interrumpe la ejecución
 PREFERENCES_DEBUG_USE_COLOURS_FOR_INSPECTIONS
 Utilizar colores en la tabla de inspecciones
+PREFERENCES_DEBUG_INSPECTIONS_CAN_HAVE_SIDE_EFFECTS
+Considerar side-effects al evaluar inspecciones
 PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
 Mejorar inspecciones automáticamente segun tipo
 PREFERENCES_DEBUG_GDB_MACROS_FILE

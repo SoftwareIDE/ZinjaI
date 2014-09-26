@@ -177,6 +177,7 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("macros_file",Debug.macros_file);
 				else CFG_BOOL_READ_DN("compile_again",Debug.compile_again);
 				else CFG_BOOL_READ_DN("use_colours_for_inspections",Debug.use_colours_for_inspections);
+				else CFG_BOOL_READ_DN("inspections_can_have_side_effects",Debug.inspections_can_have_side_effects);
 				else CFG_BOOL_READ_DN("raise_main_window",Debug.raise_main_window);
 				else CFG_BOOL_READ_DN("always_debug",Debug.always_debug);
 				else CFG_BOOL_READ_DN("close_on_normal_exit",Debug.close_on_normal_exit);
@@ -462,6 +463,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("autohide_panels",Debug.autohide_panels);
 	CFG_BOOL_WRITE_DN("autohide_toolbars",Debug.autohide_toolbars);
 	CFG_BOOL_WRITE_DN("use_colours_for_inspections",Debug.use_colours_for_inspections);
+	CFG_BOOL_WRITE_DN("inspections_can_have_side_effects",Debug.inspections_can_have_side_effects);
 	CFG_BOOL_WRITE_DN("raise_main_window",Debug.raise_main_window);
 	CFG_BOOL_WRITE_DN("compile_again",Debug.compile_again);
 	CFG_BOOL_WRITE_DN("always_debug",Debug.always_debug);
@@ -750,6 +752,7 @@ void ConfigManager::LoadDefaults(){
 	Help.show_extra_panels=true;
 	
 	Debug.use_colours_for_inspections = true;
+	Debug.inspections_can_have_side_effects = false;
 	Debug.allow_edition = false;
 	Debug.autohide_panels = true;
 	Debug.autohide_toolbars = true;

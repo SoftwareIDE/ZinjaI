@@ -133,6 +133,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *debug_always_debug;
 	wxCheckBox *debug_raise_main_window;
 	wxCheckBox *debug_use_colours_for_inspections;
+	wxCheckBox *debug_inspections_can_have_side_effects;
 	wxCheckBox *debug_show_thread_panel;
 	wxCheckBox *debug_show_log_panel;
 	wxCheckBox *debug_inspections_on_right;

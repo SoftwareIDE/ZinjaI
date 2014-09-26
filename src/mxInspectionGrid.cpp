@@ -51,6 +51,18 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 END_EVENT_TABLE()
 //	
 	
+	
+struct mxIG_SideEffectUpdate {
+	bool do_update;
+	mxIG_SideEffectUpdate(mxInspectionGrid *grid) {
+		do_update = grid && config->Debug.inspections_can_have_side_effects;
+		if (do_update) grid->OnFullTableUpdateBegin();
+	}
+	~mxIG_SideEffectUpdate() {
+		if (do_update) debug->UpdateInspections();;
+	}
+};
+	
 class FlagGuard {
 	bool *flag;
 public:
@@ -183,20 +195,18 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 			if (inspections[row]->GetExpression()==new_value) return; // si en realidad no cambio
 			DeleteInspection(row,true);
 		}
-		OnFullTableUpdateBegin();
+		mxIG_SideEffectUpdate sda(this); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 		if (CreateInspection(row,new_value,last_return_had_shift_down)) Select(row+1);
-		DebuggerInspection::OnDebugPause(); // la expresion podría haber modificado algo
 	} else {
 		if (event.GetCol()==GetRealCol(IG_COL_VALUE)) {
 			int row = event.GetRow(); 
 			if (row<0||row>inspections.GetSize()||inspections[row].IsNull()) return;
-			OnFullTableUpdateBegin();
+			mxIG_SideEffectUpdate sda(this); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 			if (inspections[row]->ModifyValue(new_value)) {
 				mxGrid::SetCellValue(row,IG_COL_VALUE,inspections[row]->GetValue());
 				event.Skip(); 
 				DebuggerInspection::OnDebugPause(); // la expresion podría haber modificado algo
 			} else event.Veto();
-			OnFullTableUpdateEnd();
 		}
 	}
 //	if (!debug->debugging) {
@@ -1023,19 +1033,17 @@ void mxInspectionGrid::BreakCompoundInspection (int r) {
 }
 
 void mxInspectionGrid::OnReScope(wxCommandEvent &event) {
-	OnFullTableUpdateBegin();
+	mxIG_SideEffectUpdate sda(this); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 	vector<int> sel; mxGrid::GetSelectedRows(sel);
 	for(unsigned int i=0;i<sel.size();i++) 
 		ChangeFrameless(sel[i],false,false);
-	DebuggerInspection::OnDebugPause();
 }
 
 void mxInspectionGrid::OnSetFrameless (wxCommandEvent & evt) {
-	OnFullTableUpdateBegin();
+	mxIG_SideEffectUpdate sda(this); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 	vector<int> sel; mxGrid::GetSelectedRows(sel);
 	for(unsigned int i=0;i<sel.size();i++) 
 		ChangeFrameless(sel[i],true,false);
-	DebuggerInspection::OnDebugPause(); 
 }
 
 bool mxInspectionGrid::ValidInspection (int r) {
@@ -1049,9 +1057,8 @@ void mxInspectionGrid::ChangeFrameless (int r, bool frameless, bool full_table_u
 	// delete old inspection
 	DeleteInspection(r,true);
 	// create new one
-	if (full_table_update) OnFullTableUpdateBegin();
+	mxIG_SideEffectUpdate sda(full_table_update?this:NULL); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 	CreateInspection(r,old_expression,!was_frameless);
-	if (full_table_update) DebuggerInspection::OnDebugPause(); // la expresion podría haber modificado algo
 }
 
 

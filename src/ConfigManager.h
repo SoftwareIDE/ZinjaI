@@ -35,6 +35,7 @@ struct cfgDebug {
 	bool compile_again;
 	bool raise_main_window;
 	bool use_colours_for_inspections;
+	bool inspections_can_have_side_effects;
 	wxString blacklist;
 	wxString format;
 	wxString macros_file;
