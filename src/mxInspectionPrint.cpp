@@ -66,3 +66,7 @@ void mxInspectionPrint::OnDINewType (DebuggerInspection * di) {
 	value->SetValue(di->GetValue());
 }
 
+mxInspectionPrint::~mxInspectionPrint ( ) {
+	di->Destroy();
+}
+

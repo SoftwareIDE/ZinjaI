@@ -9,6 +9,7 @@
 #include "mxInspectionGridCellEditor.h"
 #include "mxInspectionPrint.h"
 #include "mxInspectionExplorerDialog.h"
+#include "mxInspectionMatrix.h"
 using namespace std;
 
 #warning no se toma en cuenta config->Debug.use_colours_for_inspections
@@ -613,8 +614,14 @@ void mxInspectionGrid::OnFormatBinary(wxCommandEvent &evt) {
 }
 
 void mxInspectionGrid::OnShowInTable(wxCommandEvent &evt) {
-//	if (selected_row<=debug->inspections_count)
-//		new mxInspectionMatrix(selected_row);
+	DebugManager::TemporaryScopeChange scope;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++) {
+		if (inspections[sel[i]].IsNull()) continue;
+		DebuggerInspection *di = inspections[sel[i]].di;
+		scope.ChangeIfNeeded(di);
+		new mxInspectionMatrix(di->GetExpression(),di->IsFrameless());
+	}
 }
 
 void mxInspectionGrid::OnShowInText(wxCommandEvent &evt) {

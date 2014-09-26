@@ -170,11 +170,11 @@ void DebuggerInspection::OnDebugStart() {
 	for(int i=0;i<global_consumers.GetSize();i++) global_consumers[i]->OnDebugStart();
 }
 
-void DebuggerInspection::RecreateAllFramelessInspections() {
+void DebuggerInspection::RecreateAllFramelessInspections(const wxString &expression) {
 	__debug_log_static_method__;
 	for(int i=0;i<all_inspections.GetSize();i++) {
 		DebuggerInspection *di = all_inspections[i];
-		if (!di->IsFrameless() || di->dit_type==DIT_GDB_COMMAND) continue;
+		if (!di->IsFrameless() || di->dit_type==DIT_GDB_COMMAND || di->expression!=expression) continue;
 		if (di->parent) di->RemoveParentLink();
 		if (di->variable_object.Len()) AddPendingAction(di,&DebuggerInspection::VODelete,true,true);
 		AddPendingAction(di,&DebuggerInspection::CreateVO,true,true);

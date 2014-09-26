@@ -1,31 +1,30 @@
-//#include <wx/grid.h>
+#include <wx/grid.h>
 //#include <wx/textdlg.h>
-//#include <wx/checkbox.h>
+#include <wx/checkbox.h>
 //#include <wx/stattext.h>
-//#include "mxInspectionMatrix.h"
+#include "mxInspectionMatrix.h"
 //#include "DebugManager.h"
-//#include "mxMainWindow.h"
+#include "mxMainWindow.h"
 //#include "mxBitmapButton.h"
 //#include "Language.h"
-//#include "mxSizers.h"
+#include "mxSizers.h"
 //#include "mxTextDialog.h"
+#include "Inspection.h"
 //
-//BEGIN_EVENT_TABLE(mxInspectionMatrix, wxDialog)
-//	EVT_SIZE(mxInspectionMatrix::OnResize)
-//	EVT_GRID_COL_SIZE(mxInspectionMatrix::OnColResize)
-//	EVT_CHECKBOX(wxID_ANY,mxInspectionMatrix::OnAdaptCheck)
+BEGIN_EVENT_TABLE(mxInspectionMatrix, wxPanel)
+	EVT_SIZE(mxInspectionMatrix::OnResize)
+	EVT_GRID_COL_SIZE(mxInspectionMatrix::OnColResize)
+	EVT_CHECKBOX(wxID_ANY,mxInspectionMatrix::OnAdaptCheck)
 ////	EVT_GRID_CELL_LEFT_DCLICK(mxInspectionMatrix::OnDoubleClick)
 ////	EVT_CLOSE(mxInspectionMatrix::OnClose)
 //	EVT_KEY_DOWN(mxInspectionMatrix::OnChar)
-//END_EVENT_TABLE()
+END_EVENT_TABLE()
 //
-//mxInspectionMatrix::mxInspectionMatrix(int inspection_num) : mxExternInspection(debug->inspections[inspection_num].frame,debug->inspections[inspection_num].expr) {
-//	
-//	inspectinfo &ii=debug->inspections[inspection_num];
-//	
-//	expression=ii.is_vo?ii.expr:ii.name; is_vo=ii.is_vo;
-//	
-//	created=false; is_class=ii.is_class;
+mxInspectionMatrix::mxInspectionMatrix(const wxString &expression, bool is_frameless) : wxPanel(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
+	
+	created=false; do_adapt=true; cols=rows=0; 
+	
+//	is_class=ii.is_class;
 //	frame=debug->current_frame; is_cstring=false;
 //	// findo out size
 //	wxString data = ii.is_vo?debug->InspectExpression(expression):debug->GetMacroOutput(ii.name);
@@ -109,7 +108,7 @@
 //	}
 ////	
 //	cols_sizes=new int[cols=dim1];
-//	grid = new wxGrid(this,wxID_ANY);
+	
 //	if (!is_class)
 //		grid->SetDefaultCellAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
 //	grid->CreateGrid(rows=dim1,cols=dim2);
@@ -144,37 +143,141 @@
 //		}
 //	}
 //	
-//	mySizer = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 ////	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 ////	wxButton *close_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.ok,_T("&Cerrar"));
 ////	SetEscapeId(wxID_CANCEL);
 ////	buttonSizer->Add(close_button,sizers->BA5_Right);
 ////	
-//	mySizer->Add(grid,sizers->Exp1);
-//	mySizer->Add(adapt=new wxCheckBox(this,wxID_ANY,_T("Ajustar columnas")),sizers->Right);
+	grid = new wxGrid(this,wxID_ANY); grid->CreateGrid(0,0);
+	mySizer->Add(grid,sizers->Exp1);
+	mySizer->Add(adapt=new wxCheckBox(this,wxID_ANY,LANG(IMATRIX_AUTOFIT_COLUMNS,"Auto-ajustar columnas")),sizers->Right);
 ////	mySizer->Add(buttonSizer,sizers->Exp0);
 ////	
-//	SetSize(400,300);
-//	SetSizer(mySizer);
-//	if (is_class) Fit();
-////	
-//	created=true;
-//	wxSizeEvent evt(this->GetSize());
-//	OnResize(evt);
-//	
-////	grid->SetFocus();
-//	adapt->SetValue(!dont_adapt);
-////	debug->RegisterMatrix(this);
-//	grid->EnableEditing(false);
-//	Update(); grid->AutoSize();
-//	Show();	
-//}
-//
-//mxInspectionMatrix::~mxInspectionMatrix() {
-//}
-//
-//void mxInspectionMatrix::Update() {
-//	grid->BeginBatch();
+	wxSize sz(400,300);
+	SetSizer(mySizer);
+	
+	di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless),this,false);
+	di->Init();
+	
+	
+	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Name("inspection_matrix").Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
+	main_window->aui_manager.Update();
+	
+	created = true;
+	
+	wxCommandEvent e; OnAdaptCheck(e); // para que ajuste los tamaños de columnas.... mejorar! 
+}
+
+void mxInspectionMatrix::SetMatrixSize(int w, int h) {
+	if (w<cols) grid->DeleteCols(w,cols-w);
+	else if (w>cols) grid->InsertCols(cols,w-cols);
+	if (h<rows) grid->DeleteRows(h,rows-h);
+	else if (h>rows) grid->InsertRows(rows,h-rows);
+	cols=w; rows=h;
+}
+
+
+/**
+* @brief Saltea una cadena completa
+*
+* Dada una posición donde comienza una lista (donde hay un '{')
+* avanza la posición hasta llegar al final de la misma
+**/
+void GdbParse_SkipList(const wxString &s, int &i, int l) {
+	wxChar c=s[i++];
+	while (i<l && s[i]!=c) {
+		if (s[i]=='\\') i++;
+		i++;
+	}
+}
+
+/**
+* @brief Saltea una lista completa
+*
+* Dada una posición donde comienza una lista (donde hay un '{')
+* avanza la posición hasta llegar al final de la misma.
+* Para determinar los limites de la lista (y sublistas dentro
+* de esta), los delimitares validos son {..}, [..] y (..), y
+* son todos equivalentes.
+**/
+void GdbParse_SkipString(const wxString &s, int &i, int l) {
+	int balance=0;
+	do {
+		if (s[i]=='\"'||s[i]=='\'') GdbParse_SkipString(s,i,l);
+		else if (s[i]=='['||s[i]=='{'||s[i]=='(') balance++;
+		else if (s[i]==']'||s[i]=='}'||s[i]==')') balance--;
+		i++;
+	} while (balance && i<l);
+}
+
+/**
+* @brief Saltea espacios en blanco
+*
+* Avanza i mientras sea menor a la longitud de la cadena (l), y 
+* los caracteres sean enter, espacio o tab.
+**/
+static void GdbParse_SkipEmpty(const wxString &s, int &i, int l) {
+	while(i<l && (s[i]==' '||s[i]=='\t'||s[i]=='\n')) i++;
+}
+
+/**
+* @brief Determina si el siguiente elemento es el comienzo de una lista
+*
+* A partir de la posición i, busca el primer caracter que no nulo (nulo=enter,
+* tab,espacio) y returna true si este es una llave que abre una lisat ('{'), o
+* false si es otra cosa, o si se llegó al final de la cadena
+**/
+static bool GdbParse_IsList(const wxString s, int &i) {
+	int l=s.Len(); 
+	GdbParse_SkipEmpty(s,i,l);
+	return i<l && s[i]=='{';
+}
+
+static bool GdbParse_GetPair(const wxString &s, int &i, int &pos_st, int &pos_eq, int &pos_end) {
+	int l=s.Len(); 
+	GdbParse_SkipEmpty(s,i,l);
+	if (i>=l || s[i]=='}' || s[i]==']' || s[i]==')') return false;
+	pos_st=i; pos_eq=-1;
+	while(i<l && s[i]!='}' && s[i]!=']' && s[i]!=')' && s[i]!=',') {
+		if (s[i]=='=') {
+			if (pos_eq==-1) pos_eq=i;
+		} else if (s[i]=='{'||s[i]=='('||s[i]=='[') {
+			GdbParse_SkipList(s,i,l);
+		} else if (s[i]=='\"'||s[i]=='\'') {
+			GdbParse_SkipString(s,i,l); 
+		}
+		i++;
+	}
+	pos_end=i;
+	return true;
+}
+
+void mxInspectionMatrix::Update() {
+	grid->BeginBatch();
+	const wxString &s = di->GetValue();
+	
+	int w=0, h=0, i=0, i0, pos_st, pos_eq, pos_end;
+	
+	if (GdbParse_IsList(s,i)) i0=++i;
+	else {
+		// no parece ser vector ni clase
+		SetMatrixSize(1,1);
+		grid->SetCellValue(0,0,s);
+		grid->SetColLabelValue(0,"");
+		grid->SetRowLabelValue(0,"");
+		return;
+	}
+	while (GdbParse_GetPair(s,i,pos_st,pos_eq,pos_end)) { h++; i++; }
+	SetMatrixSize(1,h);
+	
+	i=i0; h=0;
+	while (GdbParse_GetPair(s,i,pos_st,pos_eq,pos_end)) {
+		grid->SetRowLabelValue( h, pos_eq==-1 ? wxString()<<h : s.Mid(pos_st,pos_eq-pos_st) ); 
+		grid->SetCellValue( h, 0, pos_eq==-1 ? s.Mid(pos_st,pos_end-pos_st) : s.Mid(pos_eq+1,pos_end-pos_eq-1) ); 
+		h++; i++;
+	}
+	
 //	debug->SetFullOutput(true);
 //	wxString data = is_vo?debug->InspectExpression(expression):debug->GetMacroOutput(expression);
 //	debug->SetFullOutput(false);
@@ -258,49 +361,49 @@
 //		}
 //	}
 ////	grid->AutoSize();
-//	grid->EndBatch();
-//}
-//
-//void mxInspectionMatrix::OnResize(wxSizeEvent &evt) {
-//	if (created && !dont_adapt) {
-//		if (is_class || cols==1) {
-//			int ns = evt.GetSize().GetWidth()-grid->GetRowLabelSize()-10;
-//			grid->SetColSize(0,ns);
-//		} else {
-//			int csize=int(float(evt.GetSize().GetWidth()-grid->GetRowLabelSize()-10)/(cols));
-//			for (int i=0;i<cols;i++) grid->SetColSize(i,csize);
-//		}
-//	}
-//	evt.Skip();
-//	Refresh();
-//}
-//
-//void mxInspectionMatrix::OnColResize(wxGridSizeEvent &evt) {
-//	int x=grid->GetColSize(evt.GetRowOrCol());
-//	grid->BeginBatch();
-//	for (int i=0;i<cols;i++)
-//		grid->SetColSize(i,x);
-//	grid->EndBatch();
-//	grid->ForceRefresh();	
-////	if (old_size) cols_sizes[evt.GetRowOrCol()]=grid->GetColSize(evt.GetRowOrCol());
-//}
-//
+	grid->EndBatch();
+}
+
+void mxInspectionMatrix::OnResize(wxSizeEvent &evt) {
+	if (created && do_adapt) {
+		if (/*is_class || */cols==1) {
+			int ns = evt.GetSize().GetWidth()-grid->GetRowLabelSize()-10;
+			grid->SetColSize(0,ns);
+		} else {
+			int csize=int(float(evt.GetSize().GetWidth()-grid->GetRowLabelSize()-10)/(cols));
+			for (int i=0;i<cols;i++) grid->SetColSize(i,csize);
+		}
+	}
+	evt.Skip();
+	Refresh();
+}
+
+void mxInspectionMatrix::OnColResize(wxGridSizeEvent &evt) {
+	int x=grid->GetColSize(evt.GetRowOrCol());
+	grid->BeginBatch();
+	for (int i=0;i<cols;i++)
+		grid->SetColSize(i,x);
+	grid->EndBatch();
+	grid->ForceRefresh();	
+//	if (old_size) cols_sizes[evt.GetRowOrCol()]=grid->GetColSize(evt.GetRowOrCol());
+}
+
 ////void mxInspectionMatrix::OnClose(wxCloseEvent &evt) {
 //////	debug->UnRegisterMatrix(this);
 ////	Destroy();
 //// }
-//
-//void mxInspectionMatrix::OnAdaptCheck(wxCommandEvent &evt) {
-//	if (!(dont_adapt=!adapt->GetValue())) {
-//		int ancho = this->GetSize().GetWidth();
-//		if (is_class || cols==1) {
-//			grid->SetColSize(1,ancho-grid->GetRowLabelSize()-10);
-//		} else {
-//			int csize=int(float(ancho-grid->GetRowLabelSize()-10)/(cols));
-//			for (int i=0;i<cols;i++) grid->SetColSize(i,csize);
-//		}
-//	}
-//}
+
+void mxInspectionMatrix::OnAdaptCheck(wxCommandEvent &evt) {
+	if ((do_adapt==adapt->GetValue())) {
+		int ancho = this->GetSize().GetWidth();
+		if (/*is_class || */cols==1) {
+			grid->SetColSize(1,ancho-grid->GetRowLabelSize()-10);
+		} else {
+			int csize=int(float(ancho-grid->GetRowLabelSize()-10)/(cols));
+			for (int i=0;i<cols;i++) grid->SetColSize(i,csize);
+		}
+	}
+}
 //
 //void mxInspectionMatrix::AutoSizeRowLabel() {
 //	grid->SetRowLabelSize(wxGRID_AUTOSIZE);	
@@ -318,3 +421,32 @@
 //void mxInspectionMatrix::OnChar (wxKeyEvent & event) {
 //	wxMessageBox("lala");
 //}
+
+void mxInspectionMatrix::OnDICreated (DebuggerInspection * di) {
+	this->di=di; Update();
+}
+
+void mxInspectionMatrix::OnDIError (DebuggerInspection * di) {
+	this->di=di; Update();
+}
+
+void mxInspectionMatrix::OnDIValueChanged (DebuggerInspection * di) {
+	Update();
+}
+
+void mxInspectionMatrix::OnDIOutOfScope (DebuggerInspection * di) {
+	
+}
+
+void mxInspectionMatrix::OnDIInScope (DebuggerInspection * di) {
+	Update();
+}
+
+void mxInspectionMatrix::OnDINewType (DebuggerInspection * di) {
+	Update();
+}
+
+mxInspectionMatrix::~mxInspectionMatrix ( ) {
+	di->Destroy();
+}
+

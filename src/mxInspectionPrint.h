@@ -12,6 +12,7 @@ class mxInspectionPrint : public wxPanel, public myDIEventHandler {
 	DebuggerInspection *di;
 public:
 	mxInspectionPrint(wxString expression, bool frameless);
+	~mxInspectionPrint();
 	// eventos de una instancia individual de DebuggerInspection
 	void OnDICreated(DebuggerInspection *di);
 	void OnDIError(DebuggerInspection *di);

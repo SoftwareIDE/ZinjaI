@@ -13,8 +13,6 @@ class mxInspectionGrid;
 class mxIEItemData;
 class wxGrid;
 class project_file_item;
-class mxInspectionMatrix;
-class mxInspectionExplorer;
 class mxBreakList;
 
 enum {	DI_NONE, 
@@ -59,7 +57,7 @@ struct breakinfo {
 * de inspecciones entre sesiones de depuracion. Si es un proyecto se guarda y lee
 * con el archivo de proyecto, sino se guardan temporalmente aca y por ahora se
 * pierden al salir o abrir un proyecto. Cuando se cargan, las inspecciones 
-* se cargan siemper como inspecciones insensibles al contexto.
+* se cargan siempre como inspecciones insensibles al contexto.
 **/
 struct inspectlist {
 	wxString name; ///< nombre de la tabla de inspecciones

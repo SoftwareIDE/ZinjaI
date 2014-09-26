@@ -1728,6 +1728,8 @@ GENERAL_CONFIRM
 Confirmn
 IMATRIX_ENTER_NUM
 Enter number of elements to show
+IMATRIX_AUTOFIT_COLUMNS
+Auto-fit columns width
 IMATRIX_OBSOLETE
 Obsolete table
 LIBTOBUILD_CAPTION

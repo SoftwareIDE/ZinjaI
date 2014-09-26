@@ -294,7 +294,7 @@ private:
 		// si no tiene hijos, no necesita la inspeccion auxiliar
 		if (flags.Get(DIF_DONT_USE_HELPER) || !IsCompound()) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
-		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless()),new myCompoundHelperDIEH(this),true);
+		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless())|DIF_DONT_USE_HELPER,new myCompoundHelperDIEH(this),true);
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		helper->MakeEvaluationExpressionForParent(this);
 		helper->flags.Set(DIF_REQUIRES_MANUAL_UPDATE);
@@ -348,9 +348,9 @@ private:
 			}
 //			if (is_frozen) VOSetFrozen();
 			/*else */GenerateEvent(&myDIEventHandler::OnDICreated);
-			// this is just a fix for a gdb-bug... when you create a not-frameless vo for an expresion, 
+			// this is an ugly hack for a gdb-bug... when you create a not-frameless vo for an expresion, 
 			// previous frameless vos for the same expression may show a wrong result (tested: bad on gdb 7.6.1, good on 7.8.0)
-			if (!IsFrameless() && debug->gdb_version<7008) RecreateAllFramelessInspections();
+			if (!IsFrameless() && debug->gdb_version<7008) RecreateAllFramelessInspections(expression);
 		} else {
 			dit_type=DIT_ERROR; 
 			GenerateEvent(&myDIEventHandler::OnDIError);
@@ -360,7 +360,7 @@ private:
 		}
 	}
 	
-	void RecreateAllFramelessInspections();
+	void RecreateAllFramelessInspections(const wxString &expression);
 	
 	/// las instancias de los clientes de esta clase se construyen solo a través de Create (que usará este ctor)
 	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, const Flag &flags, myDIEventHandler *event_handler=NULL) :
@@ -536,9 +536,9 @@ public:
 	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool set_full_expressions);
 	
 	DEBUG_INSPECTION_EXPRESSION_TYPE GetDbiType() { return dit_type; }
-	wxString GetExpression() { return expression; }
-	wxString GetValue() { return gdb_value; }
-	wxString GetValueType() { return value_type; }
+	const wxString &GetExpression() const { return expression; }
+	const wxString &GetValue() const { return gdb_value; }
+	const wxString &GetValueType() const { return value_type; }
 	bool IsFrameless() { return flags.Get(DIF_FRAMELESS); }
 	bool IsInScope() { return flags.Get(DIF_IN_SCOPE); }
 //	bool IsFrozen() { return is_frozen; }

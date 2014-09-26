@@ -1730,6 +1730,8 @@ GENERAL_CONFIRM
 Confirmacion
 IMATRIX_ENTER_NUM
 Ingrese la cantidad de elementos a mostrar
+IMATRIX_AUTOFIT_COLUMNS
+Auto-ajustar columnas
 IMATRIX_OBSOLETE
 Tabla obsoleta
 LIBTOBUILD_CAPTION

@@ -14,16 +14,7 @@ mxLocalsGrid::mxLocalsGrid(wxWindow *parent):mxGrid(parent,LG_COLS_COUNT) {
 	command = "-stack-list-variables";
 }
 
-static int AuxParsingFindFirst(const wxString &s, const wxString &name) {
-	for(int i=6,l=s.Len(),ln=name.Len();i<l-ln-1;i++) { // empieza en 6 porque primero dice algo como "^done,...."
-		bool found=true;
-		for(int j=0;found&&j<ln;j++) { if (s[i+j]!=name[j]) found=false; }
-		if (found && s[i+ln]=='=') return i;
-	}
-	return -1;
-}
-
-static bool AuxParsingGetNext(const wxString &s, int &i, wxString &key, wxString &val) {
+static bool GdbParse_GetNext(const wxString &s, int &i, wxString &key, wxString &val) {
 	int l=s.Len();
 	while (i<l && (s[i]<='a'||s[i]>='z')) i++;
 	while(true) {
@@ -46,7 +37,7 @@ static bool AuxParsingGetNext(const wxString &s, int &i, wxString &key, wxString
 	}
 }
 
-void mxLocalsGrid::Update ( ) {
+void mxLocalsGrid::Update () {
 	if (!IsCurrentInspectionsTab()) return;
 	int n = GetNumberRows();
 	if (!debug->IsDebugging() || !debug->IsPaused()) {
@@ -62,10 +53,10 @@ void mxLocalsGrid::Update ( ) {
 		s = debug->SendCommand(command," --all-values");
 	}
 	
-	int i = /*DebugManager::*/AuxParsingFindFirst(s,"name"), c=0;
+	int i = s.Find("name="), c=0;
 	wxString name,value, key,val;
 	while(true) {
-		bool add = /*DebugManager::*/AuxParsingGetNext(s,i,key,val);
+		bool add = GdbParse_GetNext(s,i,key,val);
 		if (i==-1) break;
 		if (key=="name") name=val;
 		else if (key=="value") value=val;
@@ -79,9 +70,9 @@ void mxLocalsGrid::Update ( ) {
 	
 	if (mxGrid::IsColumnVisible(LG_COL_TYPE)) {
 		wxString s = debug->SendCommand(command," --simple-values");
-		int i = /*DebugManager::*/AuxParsingFindFirst(s,"name"), c=0;
+		int i =  s.Find("name="), c=0;
 		while(true) {
-			/*bool add =*/ /*DebugManager::*/AuxParsingGetNext(s,i,key,val);
+			/*bool add =*/ GdbParse_GetNext(s,i,key,val);
 			if (c==n||i==-1) break;
 			if (key=="type") mxGrid::SetCellValue(c++,LG_COL_TYPE,val);
 		}
