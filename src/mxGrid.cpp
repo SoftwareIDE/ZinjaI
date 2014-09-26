@@ -85,7 +85,7 @@ void mxGrid::DoCreate ( ) {
 	Connect(wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnRightClick),NULL,this);
 	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),NULL,this);
 	Connect(wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(mxGrid::OnShowHideCol),NULL,this);
-	Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(mxGrid::OnKey),NULL,this);
+	Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(mxGrid::OnKeyDown),NULL,this);
 	created=true;
 }
 
@@ -156,7 +156,7 @@ void mxGrid::OnShowHideCol(wxCommandEvent &evt) {
 	Refresh();
 }
 
-void mxGrid::OnKey (wxKeyEvent & event) {
+void mxGrid::OnKeyDown (wxKeyEvent & event) {
 	int key = event.GetKeyCode();
 	int r = GetGridCursorRow();
 	if (key==WXK_DOWN) {

@@ -837,41 +837,39 @@ bool mxUT::Compare(const wxArrayString &array1, const wxArrayString &array2, boo
 }
 
 /** 
-* Dado un nombre de archivo, busca el complementario. Es decir, para un .h busca
+* @brief Dado un nombre de archivo, busca el complementario. Es decir, para un .h busca
 * (verificando que exista) un .c/.cpp /.cxx/.c++ con el mismo nombre y viseversa.
+*
+* Busca primero en el mismo directorio que the_one, sino, si hay un proyecto
+* abierto, busca en los archivos del proyecto (que podrían estar en otros
+* directorios)
+*
 * @param the_one path completo del archivo
 * @param force_ext sirve para forzar el tipo de archivo que recibe: cabecera  o
-	               fuente. El default adivina según la extensión
+fuente. El default adivina según la extensión
 * @return el nombre del complementario, o una cadena vacia si no lo encuentra
 **/
 wxString mxUT::GetComplementaryFile(wxFileName the_one, eFileType force_ext) {
 	if (force_ext==FT_NULL) force_ext=GetFileType(the_one.GetFullPath());
-	if (force_ext==FT_SOURCE) {
-		the_one.SetExt("h");
+	static char h_exts[][5]={"h","hpp","hxx","h++"};
+	static char cpp_exts[][5]={"c","cpp","cxx","c++"};
+	char (*exts)[5] = force_ext==FT_HEADER ? cpp_exts : h_exts;
+	// primero, ver si el otro archivo esta en el mismo dierctorio
+	for(int i=0;i<4;i++) { 
+		the_one.SetExt(exts[i]);
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
-		the_one.SetExt("hpp");
-		if (the_one.FileExists())
-			return the_one.GetFullPath();
-		the_one.SetExt("hxx");
-		if (the_one.FileExists())
-			return the_one.GetFullPath();
-		the_one.SetExt("h++");
-		if (the_one.FileExists())
-			return the_one.GetFullPath();
-	} else {
-		the_one.SetExt("cpp");
-		if (the_one.FileExists())
-			return the_one.GetFullPath();
-		the_one.SetExt("cxx");
-		if (the_one.FileExists())
-			return the_one.GetFullPath();
-		the_one.SetExt("c++");
-		if (the_one.FileExists())
-			return the_one.GetFullPath();
-		the_one.SetExt("c");
-		if (the_one.FileExists())
-			return the_one.GetFullPath();	
+	}
+	// si es proyecto, buscar si esta en otro directorio (usando las clategorias de sus archivos y no la extension)
+	if (project) {
+		wxString only_name = the_one.GetName();
+		LocalListIterator<project_file_item*> it( force_ext==FT_HEADER ? &project->files_sources : &project->files_headers );
+		while (it.IsValid()) {
+			if (wxFileName(it->name).GetName()==only_name) {
+				return DIR_PLUS_FILE(project->path,it->name);
+			}
+			it.Next();
+		}
 	}
 	return wxString();
 }

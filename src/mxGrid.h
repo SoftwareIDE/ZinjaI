@@ -52,7 +52,7 @@ private:
 	void OnDblClick(wxGridEvent &event);
 	void OnLabelPopup(wxGridEvent &event);
 	void OnShowHideCol(wxCommandEvent &evt);
-	void OnKey(wxKeyEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 protected:
 	void InitColumn(int col_idx, wxString name, int width/*, bool visible=true*/); 
 	void DoCreate(); 
