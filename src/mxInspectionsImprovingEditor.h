@@ -12,7 +12,7 @@ private:
 	wxTextCtrl *type_from, *expression_to;
 	wxArrayString array_from, array_to;
 public:
-	mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type="");
+	mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type="", const wxString &expr="");
 	void OnFrom(wxCommandEvent &evt);
 	void OnTo(wxCommandEvent &evt);
 	void OnAdd(wxCommandEvent &evt);

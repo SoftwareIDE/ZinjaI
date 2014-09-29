@@ -4,10 +4,12 @@ show stopers:
 	
 	* IMPORTANTE: el nuevo explorador de inspecciones basado en mxInspectionExplorerWidget no
 				  actualiza los datos al avanzar el programa!
-	
-	* guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo
 
-	* agregar pestañas al panel de inspecciones, y agregar la pestaña de "locals"
+	* IMPORTANTE: la nueva vista en matriz para inspecciones no considera más de una dimensión, ni trata especialmente a cstrings
+	
+	* guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
+
+
 
 Otras:
 

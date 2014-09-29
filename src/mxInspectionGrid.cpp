@@ -2,10 +2,10 @@
 //#include <wx/choicdlg.h>
 #include <algorithm>
 #include <wx/menu.h>
-#include "mxInspectionGrid.h"
 #include "Language.h"
 #include "ids.h"
 #include "mxMainWindow.h"
+#include "mxInspectionGrid.h"
 #include "mxInspectionGridCellEditor.h"
 #include "mxInspectionPrint.h"
 #include "mxInspectionExplorerDialog.h"
@@ -1164,9 +1164,9 @@ void mxInspectionGrid::OnRegisterNewImprovedExpression (wxCommandEvent & event) 
 	if (inspections[sel[0]].IsNull()) return;
 	if (inspections[sel[0]]->GetDbiType()==DIT_GDB_COMMAND) return;
 	if (inspections[sel[0]]->GetValueType().IsEmpty()) return;
-	mxInspectionsImprovingEditor(this,inspections[sel[0]]->GetValueType());
+	mxInspectionsImprovingEditor(main_window,inspections[sel[0]]->GetValueType(),inspections[sel[0]]->GetExpression());
 }
 
 void mxInspectionGrid::OnInspectionsImprovingSettings (wxCommandEvent & event) {
-	mxInspectionsImprovingEditor(this);
+	mxInspectionsImprovingEditor(main_window,"");
 }

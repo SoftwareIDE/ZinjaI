@@ -1,4 +1,5 @@
 # Theme ported from http://ethanschoonover.com/solarized by Navarro Jerónimo
+inverted=1
 DEFAULT_FORE=#839496
 DEFAULT_BACK=#002B36
 DEFAULT_BOLD=0

@@ -1,4 +1,5 @@
 # Theme ported from http://slinky.imukuppi.org/zenburnpage/ by Navarro Jerónimo
+inverted=1
 DEFAULT_FORE=#DCDCCC
 DEFAULT_BACK=#3F3F3F
 DEFAULT_BOLD=0

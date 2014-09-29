@@ -22,7 +22,7 @@ BEGIN_EVENT_TABLE(mxInspectionsImprovingEditor,wxDialog)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxInspectionsImprovingEditor::OnHelp)
 END_EVENT_TABLE()
 	
-mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type) 
+mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type, const wxString &expr) 
 	: wxDialog(parent,wxID_ANY,"Reemplaza automático de inspecciones",wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) 
 {
 	
@@ -80,10 +80,10 @@ mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, con
 			sel_pos=array_from.Index(type);
 		} else {
 			array_from.Insert(type,0);
-			array_to.Insert("${EXP}",0);
+			array_to.Insert(expr+" (use ${EXP} as the original expression)",0);
 			list->Insert(array_from.Last(),0);
 		}
-		list->Select(0);
+		list->Select(sel_pos);
 		wxCommandEvent evt; OnList(evt);
 	}
 	
@@ -149,7 +149,6 @@ void mxInspectionsImprovingEditor::OnList (wxCommandEvent & evt) {
 
 void mxInspectionsImprovingEditor::OnUp (wxCommandEvent & evt) {
 	if (selected<1) return;
-	if (selected==-1 || selected>list->GetCount()-2) return;
 	swap(array_to[selected],array_to[selected-1]);
 	swap(array_from[selected],array_from[selected-1]);
 	list->SetString(selected,array_from[selected]);
@@ -158,7 +157,7 @@ void mxInspectionsImprovingEditor::OnUp (wxCommandEvent & evt) {
 }
 
 void mxInspectionsImprovingEditor::OnDown (wxCommandEvent &evt) {
-	if (selected==-1 || selected>list->GetCount()-2) return;
+	if (selected==-1 || selected>int(list->GetCount())-2) return;
 	swap(array_to[selected],array_to[selected+1]);
 	swap(array_from[selected],array_from[selected+1]);
 	list->SetString(selected,array_from[selected]);
