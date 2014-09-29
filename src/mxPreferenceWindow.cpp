@@ -1190,7 +1190,7 @@ void mxPreferenceWindow::ResetChanges() {
 	debug_inspections_on_right->SetValue(config->Debug.inspections_on_right);
 	debug_show_thread_panel->SetValue(config->Debug.show_thread_panel);
 	debug_show_log_panel->SetValue(config->Debug.show_log_panel);
-	debug_use_colours_for_inspections->SetValue(config->Debug.use_colours_for_inspections);
+//	debug_use_colours_for_inspections->SetValue(config->Debug.use_colours_for_inspections);
 	debug_inspections_can_have_side_effects->SetValue(config->Debug.inspections_can_have_side_effects);
 	improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
 	debug_macros_file->SetValue(config->Debug.macros_file);
