@@ -851,11 +851,12 @@ fuente. El default adivina según la extensión
 **/
 wxString mxUT::GetComplementaryFile(wxFileName the_one, eFileType force_ext) {
 	if (force_ext==FT_NULL) force_ext=GetFileType(the_one.GetFullPath());
-	static char h_exts[][5]={"h","hpp","hxx","h++"};
-	static char cpp_exts[][5]={"c","cpp","cxx","c++"};
-	char (*exts)[5] = force_ext==FT_HEADER ? cpp_exts : h_exts;
+	const int n=5;
+	static char h_exts[][n]={"h","hpp","hxx","h++","hh"};
+	static char cpp_exts[][n]={"c","cpp","cxx","c++","cc"};
+	char (*exts)[n] = force_ext==FT_HEADER ? cpp_exts : h_exts;
 	// primero, ver si el otro archivo esta en el mismo dierctorio
-	for(int i=0;i<4;i++) { 
+	for(int i=0;i<n;i++) { 
 		the_one.SetExt(exts[i]);
 		if (the_one.FileExists())
 			return the_one.GetFullPath();
