@@ -10,6 +10,7 @@
 #include "mxInspectionPrint.h"
 #include "mxInspectionExplorerDialog.h"
 #include "mxInspectionMatrix.h"
+#include "mxInspectionsImprovingEditor.h"
 using namespace std;
 
 #warning no se toma en cuenta config->Debug.use_colours_for_inspections
@@ -44,12 +45,12 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_FORMAT_DEC,mxInspectionGrid::OnFormatDecimal)
 	EVT_MENU(mxID_INSPECTION_FORMAT_OCT,mxInspectionGrid::OnFormatOctal)
 	EVT_MENU(mxID_INSPECTION_FORMAT_HEX,mxInspectionGrid::OnFormatHexadecimal)
-//	EVT_MENU(mxID_INSPECTION_SAVE_TABLE,mxInspectionGrid::OnSaveTable)
-//	EVT_MENU(mxID_INSPECTION_LOAD_TABLE,mxInspectionGrid::OnLoadTable)
-//	EVT_MENU(mxID_INSPECTION_MANAGE_TABLES,mxInspectionGrid::OnManageTables)
-//	EVT_MENU(mxID_INSPECTION_SHOW_APPART,mxInspectionGrid::OnShowAppart)
+	
+	EVT_MENU(mxID_INSPECTION_IMPR_ADD,mxInspectionGrid::OnRegisterNewImprovedExpression)
+	EVT_MENU(mxID_INSPECTION_IMPR_EXPOSE,mxInspectionGrid::OnExposeImprovedExpression)
+	EVT_MENU(mxID_INSPECTION_IMPR_DISCARD,mxInspectionGrid::OnDiscardImprovedExpression)
+	EVT_MENU(mxID_INSPECTION_IMPR_CONF,mxInspectionGrid::OnInspectionsImprovingSettings)
 END_EVENT_TABLE()
-//	
 	
 	
 struct mxIG_SideEffectUpdate {
@@ -358,11 +359,12 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	DebuggerInspection *di = (sel_is_single)?inspections[row].di:NULL; // puntero a la seleccionada si es unica y valida
 	bool sel_has_vo = sel_is_vo; // si hay al menos una variable object seleccionada
 	bool sel_has_frozen = false, sel_has_unfrozen=false; // si hay inspecciones congeladas y descongeladas
+	bool sel_has_improved = false;
 	for(unsigned int i=0;i<sel.size();i++) {
 		if (sel[i]>=inspections.GetSize() || inspections[sel[i]].IsNull()) continue;
 		sel_is_empty = false;
 		DebuggerInspection *di = inspections[sel[i]].di;
-		if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; }
+		if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; if (!di->GetHelperExpression().IsEmpty()) sel_has_improved=true; }
 		if (inspections[i].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
 	}
 	bool there_are_sources = main_window->notebook_sources->GetPageCount()!=0;
@@ -419,16 +421,18 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 		submenu->Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
 		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_FORMAT,"Formato"));
 	}
-#warning restablecer funcionalidad de todo lo que este comentado
+//	if (sel_is_vo) {
+	wxMenu *imprv_submenu = new wxMenu;
+	if (sel_has_improved) imprv_submenu->Append(mxID_INSPECTION_IMPR_EXPOSE,LANG(INSPECTGRID_IMPRV_SHOW_IMPROVE,"Mostrar expresión mejorada"));
+	if (sel_has_improved) imprv_submenu->Append(mxID_INSPECTION_IMPR_DISCARD,LANG(INSPECTGRID_IMPRV_DONT_IMPROVE,"No mejorar expresión automáticamente"));
+	if (sel_is_single && sel_is_vo) imprv_submenu->Append(mxID_INSPECTION_IMPR_ADD,LANG(INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE,"Agregar mejora para este tipo..."));
+	imprv_submenu->Append(mxID_INSPECTION_IMPR_CONF,LANG(INSPECTGRID_IMPRV_CONF,"Configurar..."));
+	menu.AppendSubMenu(imprv_submenu,LANG(INSPECTGRID_IMPRV_SUBMENU,"Mejoras automáticas según tipo"));
+//	}
 	if (there_are_inspections) {
 		menu.AppendSeparator();
 		menu.Append(mxID_INSPECTION_CLEAR_ALL,LANG(INSPECTGRID_POPUP_CLEAN_TABLE,"&Limpiar Tabla de Inspecciones"));
-//		menu.Append(mxID_INSPECTION_SAVE_TABLE,LANG(INSPECTGRID_POPUP_SAVE_TABLE,"&Guardar Lista de Inspecciones..."));
 	}
-//	if (debug->inspections_tables.size()) {
-//		menu.Append(mxID_INSPECTION_LOAD_TABLE,LANG(INSPECTGRID_POPUP_LOAD_TABLE,"Ca&rgar Lista de Inspecciones..."));
-//		menu.Append(mxID_INSPECTION_MANAGE_TABLES,LANG(INSPECTGRID_POPUP_MANAGE_TABLES,"Administrar Listas de Inspecciones..."));
-//	}
 	PopupMenu(&menu);
 }
 
@@ -705,7 +709,9 @@ void mxInspectionGrid::SetFreezed(int row, bool freeze) {
 		inspections[row].status=IGRS_FREEZE; // to force SetRowStatus apply the real status
 		SetRowStatus(row,real_status);
 		UpdateValueColumn(row); 
-		if (inspections[row]->IsFrameless()) TryToSimplify(row); // type can change when a frameless inspection is frozen
+		UpdateTypeColumn(row); 
+		UpdateExpressionColumn(row,true); 
+//		if (inspections[row]->IsFrameless()) TryToSimplify(row); // type can change when a frameless inspection is frozen
 	}
 }
 
@@ -867,15 +873,19 @@ void mxInspectionGrid::OnDIValueChanged(DebuggerInspection *di) {
 
 void mxInspectionGrid::OnDINewType(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	if (!inspections[current_row].is_frozen) TryToSimplify(current_row);
-	if (!inspections[current_row].is_frozen) UpdateTypeColumn(current_row);
-	if (!inspections[current_row].is_frozen) UpdateValueColumn(current_row);
+//	if (!inspections[current_row].is_frozen) TryToSimplify(current_row);
+	if (!inspections[current_row].is_frozen) {
+		UpdateTypeColumn(current_row);
+		UpdateValueColumn(current_row);
+		UpdateExpressionColumn(current_row,true);
+	}
 	SetRowStatus(current_row,IGRS_CHANGED);
 }
 
 void mxInspectionGrid::OnDIInScope(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
-	TryToSimplify(current_row);UpdateValueColumn(current_row);
+//	TryToSimplify(current_row);
+	UpdateValueColumn(current_row);
 	SetRowStatus(current_row,IGRS_IN_SCOPE);
 }
 
@@ -961,7 +971,7 @@ void mxInspectionGrid::UpdateLevelColumn (int r) {
 
 bool mxInspectionGrid::CreateInspection (int r, const wxString &expression, bool frameless, bool set_expr) {
 	if (set_expr) mxGrid::SetCellValue(r,IG_COL_EXPR,expression);
-	inspections[r] = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless),this,false);
+	inspections[r] = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_AUTO_IMPROVE,this,false);
 	if (!inspections[r]->Init()) SetRowStatus(r,IGRS_UNINIT);
 	else UpdateLevelColumn(r);
 	return inspections[r]->GetDbiType()!=DIT_ERROR;
@@ -978,18 +988,18 @@ void mxInspectionGrid::DeleteInspection (int r, bool for_reuse) {
 	}
 }
 
-bool mxInspectionGrid::TryToSimplify (int row) {
-	FlagGuard icce_guard(ignore_cell_change_event);
-	wxString mtype=inspections[row]->GetValueType(), new_expr;
-	if (DebuggerInspection::TryToImproveExpression(mtype,new_expr,inspections[row]->GetExpression())) {
-		if (inspections[row]->SetHelperInspection(new_expr)) {
-			inspections[row].expression_renderer->SetIconPlus();
-			return true;
-		}		
-	}
-	inspections[row].expression_renderer->SetIconNull();
-	return false;
-}
+//bool mxInspectionGrid::TryToSimplify (int row) {
+//	FlagGuard icce_guard(ignore_cell_change_event);
+//	wxString mtype=inspections[row]->GetValueType(), new_expr;
+//	if (DebuggerInspection::TryToImproveExpression(mtype,new_expr,inspections[row]->GetExpression())) {
+//		if (inspections[row]->SetHelperInspection(new_expr)) {
+//			inspections[row].expression_renderer->SetIconPlus();
+//			return true;
+//		}		
+//	}
+//	inspections[row].expression_renderer->SetIconNull();
+//	return false;
+//}
 
 void mxInspectionGrid::UpdateValueColumn (int r) {
 	mxGrid::SetCellValue(r,IG_COL_VALUE,inspections[r]->GetValue());
@@ -1029,6 +1039,7 @@ void mxInspectionGrid::BreakCompoundInspection (int r) {
 		mxGrid::SetCellValue(r+i,IG_COL_EXPR,children[i]->GetExpression());
 		UpdateTypeColumn(r+i);
 		UpdateValueColumn(r+i);
+		UpdateExpressionColumn(r+i,true);
 	}
 }
 
@@ -1062,20 +1073,6 @@ void mxInspectionGrid::ChangeFrameless (int r, bool frameless, bool full_table_u
 }
 
 
-void mxInspectionGrid::ExposeImprovedExpression (int r) {
-	FlagGuard icce_guard(ignore_cell_change_event);
-	if (inspections[r].IsNull()) return;
-	DebuggerInspection *di = inspections[r].di;
-	wxString new_expr = di->GetHelperExpression();
-	if (!new_expr.Len()) return;
-	DebugManager::TemporaryScopeChange scope;
-	scope.ChangeIfNeeded(di);
-	bool was_frameless=di->IsFrameless();
-	di->Destroy();
-	CreateInspection(r,new_expr,was_frameless);
-	mxGrid::SetCellValue(r,IG_COL_EXPR,new_expr);
-}
-
 void mxInspectionGrid::SwapInspections (int r1, int r2) {
 	DebuggerInspection *dr1=inspections[r1].di;
 	DebuggerInspection *dr2=inspections[r2].di;
@@ -1084,12 +1081,12 @@ void mxInspectionGrid::SwapInspections (int r1, int r2) {
 	UpdateExpressionColumn(r2); UpdateLevelColumn(r2); UpdateTypeColumn(r2); UpdateValueColumn(r2);
 }
 
-void mxInspectionGrid::UpdateExpressionColumn (int r) {
+void mxInspectionGrid::UpdateExpressionColumn (int r, bool only_icon) {
 	if (inspections[r].IsNull()) {
-		mxGrid::SetCellValue(r,IG_COL_EXPR,"");
+		if (!only_icon) mxGrid::SetCellValue(r,IG_COL_EXPR,"");
 		inspections[r].expression_renderer->SetIconNull();
 	} else {
-		mxGrid::SetCellValue(r,IG_COL_EXPR,inspections[r]->GetExpression());
+		if (!only_icon) mxGrid::SetCellValue(r,IG_COL_EXPR,inspections[r]->GetExpression());
 		if (inspections[r]->GetHelperExpression().IsEmpty()) {
 			inspections[r].expression_renderer->SetIconNull();
 		} else {
@@ -1123,3 +1120,53 @@ mxInspectionGrid::~mxInspectionGrid ( ) {
 	while(inspections.GetSize()) DeleteInspection(0,false);
 }
 
+
+void mxInspectionGrid::OnDiscardImprovedExpression (wxCommandEvent & event) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
+	for(unsigned int i=0;i<sel.size();i++) 
+		DiscardImprovedExpression(sel[i]);
+}
+
+void mxInspectionGrid::DiscardImprovedExpression (int r) {
+	if (inspections[r].IsNull()) return;
+	inspections[r].di->DeleteHelperInspection();
+	UpdateExpressionColumn(r,true);
+}
+
+
+void mxInspectionGrid::OnExposeImprovedExpression (wxCommandEvent & event) {
+	mxIG_SideEffectUpdate sda(this); // la expresion podría haber modificado algo, esto actualiza toda la tabla
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
+	for(unsigned int i=0;i<sel.size();i++) 
+		ExposeImprovedExpression(sel[i]);
+}
+
+void mxInspectionGrid::ExposeImprovedExpression (int r) {
+	if (inspections[r].IsNull()) return;
+	FlagGuard icce_guard(ignore_cell_change_event);
+	DebuggerInspection *di = inspections[r].di;
+	wxString new_expr = di->GetHelperExpression();
+	if (!new_expr.Len()) return;
+	DebugManager::TemporaryScopeChange scope;
+	scope.ChangeIfNeeded(di);
+	bool was_frameless=di->IsFrameless();
+	di->Destroy();
+	CreateInspection(r,new_expr,was_frameless);
+	mxGrid::SetCellValue(r,IG_COL_EXPR,new_expr);
+}
+
+
+
+
+void mxInspectionGrid::OnRegisterNewImprovedExpression (wxCommandEvent & event) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel); 
+	if (sel.size()!=1) return;
+	if (inspections[sel[0]].IsNull()) return;
+	if (inspections[sel[0]]->GetDbiType()==DIT_GDB_COMMAND) return;
+	if (inspections[sel[0]]->GetValueType().IsEmpty()) return;
+	mxInspectionsImprovingEditor(this,inspections[sel[0]]->GetValueType());
+}
+
+void mxInspectionGrid::OnInspectionsImprovingSettings (wxCommandEvent & event) {
+	mxInspectionsImprovingEditor(this);
+}

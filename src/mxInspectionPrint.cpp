@@ -9,7 +9,7 @@
 #include "mxMainWindow.h"
 #include <cmath>
 
-mxInspectionPrint::mxInspectionPrint(wxString expression, bool frameless) : wxPanel(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
+mxInspectionPrint::mxInspectionPrint(wxString expression, bool is_frameless) : wxPanel(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize) {
 	wxBoxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	value  = new wxTextCtrl(this,wxID_ANY,DebuggerInspection::GetUserStatusText(DIMSG_PENDING),wxDefaultPosition,wxDefaultSize,wxTE_READONLY|wxTE_MULTILINE);
 	type = new wxStaticText(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE);
@@ -17,7 +17,9 @@ mxInspectionPrint::mxInspectionPrint(wxString expression, bool frameless) : wxPa
 	sizer->Add(type,sizers->Exp0);
 	SetSizer(sizer);
 	wxSize sz(150,50);
-	di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless),this,true);
+	
+	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE,this,false))->Init();
+	
 	wxString s = di->GetValue();
 	if (s.Len()) {
 		// calcular tamaño de la ventana para el texto que tiene y con la relacion de aspecto a

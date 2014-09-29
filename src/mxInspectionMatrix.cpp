@@ -157,9 +157,7 @@ mxInspectionMatrix::mxInspectionMatrix(const wxString &expression, bool is_frame
 	wxSize sz(400,300);
 	SetSizer(mySizer);
 	
-	di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless),this,false);
-	di->Init();
-	
+	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE,this,false))->Init();
 	
 	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Name("inspection_matrix").Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
 	main_window->aui_manager.Update();
@@ -175,6 +173,7 @@ void mxInspectionMatrix::SetMatrixSize(int w, int h) {
 	if (h<rows) grid->DeleteRows(h,rows-h);
 	else if (h>rows) grid->InsertRows(rows,h-rows);
 	cols=w; rows=h;
+	grid->SetColLabelSize(w>1?wxGRID_AUTOSIZE:0);
 }
 
 

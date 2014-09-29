@@ -94,12 +94,6 @@ public:
 	void OnFormatHexadecimal(wxCommandEvent &evt);
 	void OnFormatBinary(wxCommandEvent &evt);
 	void SetFormat(int format);
-//	void OnSaveTable(wxCommandEvent &evt);
-//	void OnLoadTable(wxCommandEvent &evt);
-//	void OnManageTables(wxCommandEvent &evt);
-//	void OnShowAppart(wxCommandEvent &evt);
-////	void OnCellEditorShown(wxGridEvent &evt);
-////	void OnCellEditorHidden(wxGridEvent &evt);
 	
 	// drag/drop
 	bool dragging_inspection; // para evitar hacer drag y drop sobre si misma
@@ -112,7 +106,7 @@ public:
 	
 	void ModifyInspectionExpression(int row, const wxString &expression, bool is_frameless);
 	
-	bool TryToSimplify(int row);
+//	bool TryToSimplify(int row);
 	
 	// eventos generados por mxGrid
 	bool OnCellClick(int row, int col);
@@ -140,13 +134,19 @@ public:
 	void BreakCompoundInspection(int r);
 	void ChangeFrameless(int r, bool frameless, bool full_table_update=true);
 	void ExposeImprovedExpression(int r);
+	void DiscardImprovedExpression(int r);
+	
+	void OnExposeImprovedExpression(wxCommandEvent &event);
+	void OnDiscardImprovedExpression(wxCommandEvent &event);
+	void OnRegisterNewImprovedExpression(wxCommandEvent &event);
+	void OnInspectionsImprovingSettings(wxCommandEvent &event);
 	
 //	bool TryToImproveExpression(const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
 
 	void UpdateLevelColumn(int r);
 	void UpdateValueColumn(int r);
 	void UpdateTypeColumn(int r);
-	void UpdateExpressionColumn(int r);
+	void UpdateExpressionColumn(int r, bool only_icon=false);
 	void SetRowStatus(int r, int status);
 	void DeleteInspection(int r, bool for_reuse);
 	bool CreateInspection(int r, const wxString &expression, bool frameless, bool set_expr=false);

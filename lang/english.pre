@@ -1704,14 +1704,18 @@ INSPECTGRID_WATCH
 WatchPoint
 INSPECTGRID_FORMAT
 Format
+INSPECTGRID_IMPRV_SHOW_IMPROVE
+Show improved expression
+INSPECTGRID_IMPRV_DONT_IMPROVE
+Don't improve this inspection
+INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE
+Add improvement template for this type...
+INSPECTGRID_IMPRV_CONF
+Configure...
+INSPECTGRID_IMPRV_SUBMENU
+Type based automatic improvements
 INSPECTGRID_POPUP_CLEAN_TABLE
 Cl&ear Inspections' Table
-INSPECTGRID_POPUP_SAVE_TABLE
-Save Inspections' List...
-INSPECTGRID_POPUP_LOAD_TABLE
-Load Inspections' List...
-INSPECTGRID_POPUP_MANAGE_TABLES
-Manage Inspections' Lists...
 INSPECTGRID_DEBUGGING_HAS_ENDED
 Debugging session has finished.
 INSPECTGRID_DEBUGGER_ERROR

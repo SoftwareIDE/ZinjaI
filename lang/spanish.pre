@@ -1704,14 +1704,18 @@ INSPECTGRID_WATCH
 WatchPoint
 INSPECTGRID_FORMAT
 Formato
+INSPECTGRID_IMPRV_SHOW_IMPROVE
+Mostrar expresión mejorada
+INSPECTGRID_IMPRV_DONT_IMPROVE
+No mejorar expresión automáticamente
+INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE
+Agregar mejora para este tipo...
+INSPECTGRID_IMPRV_CONF
+Configurar...
+INSPECTGRID_IMPRV_SUBMENU
+Mejoras automáticas según tipo
 INSPECTGRID_POPUP_CLEAN_TABLE
 &Limpiar Tabla de Inspecciones
-INSPECTGRID_POPUP_SAVE_TABLE
-&Guardar Lista de Inspecciones...
-INSPECTGRID_POPUP_LOAD_TABLE
-Ca&rgar Lista de Inspecciones...
-INSPECTGRID_POPUP_MANAGE_TABLES
-Administrar Listas de Inspecciones...
 INSPECTGRID_DEBUGGING_HAS_ENDED
 La sesion de depuracion ha finalizado.
 INSPECTGRID_DEBUGGER_ERROR

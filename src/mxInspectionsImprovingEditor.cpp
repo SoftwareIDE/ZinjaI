@@ -12,13 +12,15 @@ BEGIN_EVENT_TABLE(mxInspectionsImprovingEditor,wxDialog)
 	EVT_LISTBOX(wxID_ANY,mxInspectionsImprovingEditor::OnList)
 	EVT_BUTTON(wxID_OK,mxInspectionsImprovingEditor::OnOk)
 	EVT_BUTTON(wxID_CANCEL,mxInspectionsImprovingEditor::OnCancel)
+	EVT_BUTTON(mxID_INSPECTION_TEMPLATES_UP,mxInspectionsImprovingEditor::OnUp)
+	EVT_BUTTON(mxID_INSPECTION_TEMPLATES_DOWN,mxInspectionsImprovingEditor::OnDown)
 	EVT_BUTTON(mxID_INSPECTION_TEMPLATES_ADD,mxInspectionsImprovingEditor::OnAdd)
 	EVT_BUTTON(mxID_INSPECTION_TEMPLATES_DEL,mxInspectionsImprovingEditor::OnDel)
 	EVT_TEXT(mxID_INSPECTION_TEMPLATES_FROM,mxInspectionsImprovingEditor::OnFrom)
 	EVT_TEXT(mxID_INSPECTION_TEMPLATES_TO,mxInspectionsImprovingEditor::OnTo)
 END_EVENT_TABLE()
 	
-mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent):wxDialog(parent,wxID_ANY,"Reemplaza automático de inspecciones",wxDefaultPosition,wxDefaultSize) {
+mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type):wxDialog(parent,wxID_ANY,"Reemplaza automático de inspecciones",wxDefaultPosition,wxDefaultSize) {
 	
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	wxSizer *sizer_top=new wxBoxSizer(wxHORIZONTAL);
@@ -34,6 +36,9 @@ mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent):wxD
 	sizer_options->Add(new wxStaticText(this,wxID_ANY,"Expresion"));
 	sizer_options->Add(expression_to=new wxTextCtrl(this,mxID_INSPECTION_TEMPLATES_TO,""),sizers->BA5_Exp0);
 	wxSizer *sizer_add_del=new wxBoxSizer(wxHORIZONTAL);
+	sizer_add_del->Add(new wxButton(this,mxID_INSPECTION_TEMPLATES_UP,"Move Up"),sizers->BA5);
+	sizer_add_del->Add(new wxButton(this,mxID_INSPECTION_TEMPLATES_DOWN,"Move Down"),sizers->BA5);
+	sizer_add_del->AddStretchSpacer(1);
 	sizer_add_del->Add(new wxButton(this,mxID_INSPECTION_TEMPLATES_ADD,"Add"),sizers->BA5);
 	sizer_add_del->Add(new wxButton(this,mxID_INSPECTION_TEMPLATES_DEL,"Del"),sizers->BA5);
 	sizer_options->Add(sizer_add_del,sizers->Exp0);
@@ -52,15 +57,27 @@ mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent):wxD
 	
 	SetSizerAndFit(sizer);
 	
-	if (list->GetCount()) {
-		list->Select(selected=0);
-		wxCommandEvent evt;
-		OnList(evt);
-		type_from->SetFocus();
-	} else {
+//	if (list->GetCount()) {
+//		list->Select(selected=0);
+//		wxCommandEvent evt; OnList(evt);
+//		type_from->SetFocus();
+//	} else {
 		selected=-1;
 		type_from->Enable(false);
 		expression_to->Enable(false);
+//	}
+	
+	if (!type.IsEmpty()) {
+		int sel_pos=0;
+		if (array_from.Index(type)!=wxNOT_FOUND) {
+			sel_pos=array_from.Index(type);
+		} else {
+			array_from.Insert(type,0);
+			array_to.Insert("${EXP}",0);
+			list->Insert(array_from.Last(),0);
+		}
+		list->Select(0);
+		wxCommandEvent evt; OnList(evt);
 	}
 	
 	ShowModal();
@@ -105,8 +122,8 @@ void mxInspectionsImprovingEditor::OnDel (wxCommandEvent & evt) {
 }
 
 void mxInspectionsImprovingEditor::OnOk (wxCommandEvent & evt) {
-	config->Debug.inspection_improving_template_from=array_from;
-	config->Debug.inspection_improving_template_to=array_to;
+	config->Debug.inspection_improving_template_from = array_from;
+	config->Debug.inspection_improving_template_to = array_to;
 	EndModal(1);
 }
 
@@ -115,11 +132,30 @@ void mxInspectionsImprovingEditor::OnCancel (wxCommandEvent & evt) {
 }
 
 void mxInspectionsImprovingEditor::OnList (wxCommandEvent & evt) {
-	selected=list->GetSelection();
+	selected = list->GetSelection();
 	if (selected<0||selected>=int(list->GetCount())) return; // delete method can launch this event
 	type_from->Enable();
 	expression_to->Enable();
 	type_from->SetValue(array_from[selected]);
 	expression_to->SetValue(array_to[selected]);
+}
+
+void mxInspectionsImprovingEditor::OnUp (wxCommandEvent & evt) {
+	if (selected<1) return;
+	if (selected==-1 || selected>list->GetCount()-2) return;
+	swap(array_to[selected],array_to[selected-1]);
+	swap(array_from[selected],array_from[selected-1]);
+	list->SetString(selected,array_from[selected]);
+	list->SetString(selected-1,array_from[selected-1]);
+	selected--; list->Select(selected); OnList(evt);
+}
+
+void mxInspectionsImprovingEditor::OnDown (wxCommandEvent &evt) {
+	if (selected==-1 || selected>list->GetCount()-2) return;
+	swap(array_to[selected],array_to[selected+1]);
+	swap(array_from[selected],array_from[selected+1]);
+	list->SetString(selected,array_from[selected]);
+	list->SetString(selected+1,array_from[selected+1]);
+	selected++; list->Select(selected); OnList(evt);
 }
 

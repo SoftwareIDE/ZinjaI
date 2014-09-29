@@ -23,6 +23,8 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 #define DIF_IN_SCOPE 2
 #define DIF_REQUIRES_MANUAL_UPDATE 4
 #define DIF_DONT_USE_HELPER 8
+#define DIF_AUTO_IMPROVE 16
+#define DIF_IS_INTERNAL_HELPER 32
 
 enum GDB_VO_FORMAT { GVF_NATURAL, GVF_BINARY, GVF_OCTAL, GVF_DECIMAL, GVF_HEXADECIMAL };
 
@@ -291,10 +293,14 @@ private:
 		__debug_log_method__;
 		// si habia, borrar la inspeccion auxiliar previa
 		if (helper) DeleteHelper();
+		// si no hay que intentar simplificar esta
+		if (flags.Get(DIF_DONT_USE_HELPER)) return false;
+		// si hay una mejora automática para este tipo
+		if (flags.Get(DIF_AUTO_IMPROVE)&&AutoImprove()) return true;
 		// si no tiene hijos, no necesita la inspeccion auxiliar
-		if (flags.Get(DIF_DONT_USE_HELPER) || !IsCompound()) return false;
+		if (!IsCompound()) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
-		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless())|DIF_DONT_USE_HELPER,new myCompoundHelperDIEH(this),true);
+		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless())|DIF_IS_INTERNAL_HELPER|DIF_DONT_USE_HELPER,new myCompoundHelperDIEH(this),true);
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		helper->MakeEvaluationExpressionForParent(this);
 		helper->flags.Set(DIF_REQUIRES_MANUAL_UPDATE);
@@ -313,6 +319,11 @@ public:
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		gdb_value = helper->gdb_value; // Create does a first evaluation
 		return true;
+	}
+	
+	void DeleteHelperInspection() {
+		if (helper) DeleteHelper();
+		UpdateValue(true);
 	}
 	
 	
@@ -358,6 +369,13 @@ private:
 			if (IsFrameless()) 
 				AddPendingAction(this,&DebuggerInspection::CreateVO,true,true);
 		}
+	}
+	
+	bool AutoImprove() {
+		wxString new_expr;
+		bool ret = TryToImproveExpression(value_type,new_expr,expression);
+		if (ret) SetHelperInspection(new_expr);
+		return ret;
 	}
 	
 	void RecreateAllFramelessInspections(const wxString &expression);
@@ -548,13 +566,18 @@ public:
 		if (!debug->CanTalkToGDB()) return false;
 		if (dit_type==DIT_VARIABLE_OBJECT) { // si es vo.... 
 			if (helper) return helper->UpdateValue(true); // ...o bien tiene un helper (y el evento del helper actualiza this)...
-			// ...o bien es el helper de un compuesto (unico caso de vo que directamente requiere actualizacion manual)
-			gdb_value = debug->InspectExpression(expression,false);
-			DebuggerInspection *helper_parent = reinterpret_cast<myCompoundHelperDIEH*>(consumer)->helper_parent;
-			if (helper_parent->gdb_value!=gdb_value) {
-				helper_parent->gdb_value=gdb_value;
-				if (generate_event /*&& !helper_parent->is_frozen*/) helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);
-				return true;
+			if (flags.Get(DIF_IS_INTERNAL_HELPER)) { // ...o bien es el helper de un compuesto...
+				gdb_value = debug->InspectExpression(expression,false);
+				DebuggerInspection *helper_parent = reinterpret_cast<myCompoundHelperDIEH*>(consumer)->helper_parent;
+				if (helper_parent->gdb_value!=gdb_value) {
+					helper_parent->gdb_value=gdb_value;
+					if (generate_event) helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);
+					return true;
+				}
+			} else { // ... o era un vo comun y no requeria actualizacion manual (se usa por ej luego de eliminar un helper)
+				wxString old_value = gdb_value;
+				VOEvaluate(); 
+				if (generate_event && old_value!=gdb_value) GenerateEvent(&myDIEventHandler::OnDIValueChanged);
 			}
 		} else if (dit_type==DIT_GDB_COMMAND) { // si es comando/macro gdb...
 			wxString new_value = debug->GetMacroOutput(variable_object);
@@ -574,7 +597,7 @@ public:
 	long GetThreadID() { return thread_id; }
 	long GetFrameID() { return frame_id; }
 	bool IsFromCurrentThread() { return !debug->debugging || debug->waiting || thread_id==debug->current_thread_id; }
-	wxString GetHelperExpression() { return helper?helper->expression:""; }
+	wxString GetHelperExpression() { return helper&&!helper->flags.Get(DIF_IS_INTERNAL_HELPER)?helper->expression:""; }
 	
 	// some ramdon inspections related functions
 	static bool TryToImproveExpression (const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);

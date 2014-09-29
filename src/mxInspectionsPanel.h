@@ -28,6 +28,7 @@ class mxInspectionsPanel : public wxAuiNotebook {
 	SingleList<Tab> tabs;
 	DECLARE_EVENT_TABLE();
 	int current_tab;
+	int name_aux;
 	bool created;
 public:
 	mxInspectionsPanel();

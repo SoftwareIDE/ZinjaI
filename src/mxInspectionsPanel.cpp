@@ -13,9 +13,9 @@ END_EVENT_TABLE()
 mxInspectionsPanel::mxInspectionsPanel():wxAuiNotebook(main_window,mxID_NOTEBOOK_INSPECTIONS,wxDefaultPosition,wxSize(400,300),
 	wxAUI_NB_MIDDLE_CLICK_CLOSE|wxAUI_NB_BOTTOM|wxNO_BORDER|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_CLOSE_ON_ACTIVE_TAB) 
 {
+	created = false;
 	SetTabCtrlHeight(24);
-	created=false;
-	current_tab = 0;
+	name_aux = current_tab = 0;
 	tabs.Add(Tab(new mxLocalsGrid(this),"Locals"));
 	tabs.Add(Tab(new mxInspectionGrid(this),"Table 1"));
 	for(int i=0;i<tabs.GetSize();i++)
@@ -30,7 +30,7 @@ void mxInspectionsPanel::OnPageChanging (wxAuiNotebookEvent &event) {
 	if (!created) return;
 	int p = event.GetSelection();
 	if (p==tabs.GetSize()) {
-		tabs.Add(Tab(new mxInspectionGrid(this),wxString("Table ")<<p));
+		tabs.Add(Tab(new mxInspectionGrid(this),wxString("Table ")<<(++name_aux)));
 		InsertPage(p,tabs[p].ctrl,tabs[p].name);
 		SetSelection(p);
 		event.Veto();
