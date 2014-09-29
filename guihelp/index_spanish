@@ -113,32 +113,13 @@
 		0 debug_break.html Puntos de Interrupcion
 		0 debug_inspect.html Inspecciones
 		0 debug_backtrace.html Trazado Inverso
+		0 debug_advance.html Características avanzadas
+			0 debug_patch.html Interfaz directo con gdb
+			0 debug_patch.html Corrección de un ejecutable durante la depuración
+			0 inspections_improving.html Mejora automática de inspecciones
 	0 about.html Notas sobre ZinjaI
 		0 license.html Licencias y Contactos
 		0 ChangeLog.html Registro de Cambios
-		0 gcc_index.html Ayuda del Compilador Utilizado (GCC)
-			0 gcc_desc.html#lbAD Description
-			0 gcc_opts.html#lbAF Option Summary
-			0 gcc_ko.html#lbAG Options Controlling the Kind of Output
-			0 gcc_ccc.html#lbAH Compiling C++ Programs
-			0 gcc_ccc.html#lbAI Options Controlling C Dialect
-			0 gcc_ccc.html#lbAJ Options Controlling C++ Dialect
-			0 gcc_ccc.html#lbAK Options Controlling Objective-C Dialect
-			0 gcc_wrn.html#lbAL Options to Control Diagnostic Messages Formatting
-			0 gcc_wrn.html#lbAM Options to Request or Suppress Warnings
-			0 gcc_dbg.html#lbAN Options for Debugging Your Program or GCC
-			0 gcc_omz.html#lbAO Options That Control Optimization
-			0 gcc_pp.html#lbAP Options Controlling the Preprocessor
-			0 gcc_asmlnk.html#lbAQ Passing Options to the Assembler
-			0 gcc_asmlnk.html#lbAR Options for Linking
-			0 gcc_ds.html#lbAS Options for Directory Search
-			0 gcc_hwd.html#lbAT Specifying Target Machine and Compiler Version
-			0 gcc_hwd.html#lbAU Hardware Models and Configurations
-			0 gcc_cgc.html#lbAV Options for Code Generation Conventions
-			0 gcc_env.html#lbAW Environment
-			0 gcc_bfac.html#lbAX Bugs
-			0 gcc_bfac.html#lbAY Footnores
-			0 gcc_bfac.html#lbAZ Author
-			0 gcc_bfac.html#lbBB Copyright
-		0 gpl.html General Public License
+		0 gcc_help.html Ayuda del Compilador Utilizado (GCC)
+		0 gpl.html General Public License v2
 		0 cucarachasracing.html Cucarachas Racing

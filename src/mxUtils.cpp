@@ -851,7 +851,7 @@ fuente. El default adivina según la extensión
 **/
 wxString mxUT::GetComplementaryFile(wxFileName the_one, eFileType force_ext) {
 	if (force_ext==FT_NULL) force_ext=GetFileType(the_one.GetFullPath());
-	const int n=5;
+	const int n=5 ;
 	static char h_exts[][n]={"h","hpp","hxx","h++","hh"};
 	static char cpp_exts[][n]={"c","cpp","cxx","c++","cc"};
 	char (*exts)[n] = force_ext==FT_HEADER ? cpp_exts : h_exts;

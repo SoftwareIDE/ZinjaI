@@ -7,6 +7,7 @@
 #include "ids.h"
 #include "mxSizers.h"
 #include "Language.h"
+#include "mxHelpWindow.h"
 
 BEGIN_EVENT_TABLE(mxInspectionsImprovingEditor,wxDialog)
 	EVT_LISTBOX(wxID_ANY,mxInspectionsImprovingEditor::OnList)
@@ -18,12 +19,15 @@ BEGIN_EVENT_TABLE(mxInspectionsImprovingEditor,wxDialog)
 	EVT_BUTTON(mxID_INSPECTION_TEMPLATES_DEL,mxInspectionsImprovingEditor::OnDel)
 	EVT_TEXT(mxID_INSPECTION_TEMPLATES_FROM,mxInspectionsImprovingEditor::OnFrom)
 	EVT_TEXT(mxID_INSPECTION_TEMPLATES_TO,mxInspectionsImprovingEditor::OnTo)
+	EVT_BUTTON(mxID_HELP_BUTTON,mxInspectionsImprovingEditor::OnHelp)
 END_EVENT_TABLE()
 	
-mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type):wxDialog(parent,wxID_ANY,"Reemplaza automático de inspecciones",wxDefaultPosition,wxDefaultSize) {
+mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type) 
+	: wxDialog(parent,wxID_ANY,"Reemplaza automático de inspecciones",wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) 
+{
 	
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
-	wxSizer *sizer_top=new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *sizer_top=new wxBoxSizer(wxVERTICAL);
 	
 	array_from=config->Debug.inspection_improving_template_from;
 	array_to=config->Debug.inspection_improving_template_to;
@@ -43,15 +47,18 @@ mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, con
 	sizer_add_del->Add(new wxButton(this,mxID_INSPECTION_TEMPLATES_DEL,"Del"),sizers->BA5);
 	sizer_options->Add(sizer_add_del,sizers->Exp0);
 	
-	sizer_top->Add(sizer_options,sizers->Exp1);
+	sizer_top->Add(sizer_options,sizers->Exp0);
 	sizer->Add(sizer_top,sizers->Exp1);
 	
 	wxSizer *sizer_buttons=new wxBoxSizer(wxHORIZONTAL);
+	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
 	mxBitmapButton *bt_ok=new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	mxBitmapButton *bt_cancel=new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(GENERAL_OK_BUTTON,"&Aceptar"));
+	sizer_buttons->Add(help_button,sizers->BA5); 
+	sizer_buttons->AddStretchSpacer(1);
 	sizer_buttons->Add(bt_ok,sizers->BA5); 
 	sizer_buttons->Add(bt_cancel,sizers->BA5);
-	sizer->Add(sizer_buttons,sizers->Right);
+	sizer->Add(sizer_buttons,sizers->Exp0);
 	bt_cancel->SetDefault();
 	SetEscapeId(wxID_CANCEL);
 	
@@ -157,5 +164,9 @@ void mxInspectionsImprovingEditor::OnDown (wxCommandEvent &evt) {
 	list->SetString(selected,array_from[selected]);
 	list->SetString(selected+1,array_from[selected+1]);
 	selected++; list->Select(selected); OnList(evt);
+}
+
+void mxInspectionsImprovingEditor::OnHelp (wxCommandEvent & evt) {
+	mxHelpWindow::ShowHelp("inspections_improving.html",this);
 }
 

@@ -22,6 +22,7 @@ public:
 	void OnOk(wxCommandEvent &evt);
 	void OnCancel(wxCommandEvent &evt);
 	void OnList(wxCommandEvent &evt);
+	void OnHelp(wxCommandEvent &evt);
 	DECLARE_EVENT_TABLE();
 };
 

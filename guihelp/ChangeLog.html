@@ -7,10 +7,12 @@
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
 </UL><BR><B>Release 201408XX</B><BR><UL>
-	<LI>New: Se pueden realizar selecciones rectangulares (con el mouse, manteniendo presionado Alt) y ediciones en múltiples lines a la vez (luego de la selección rectangular, o con Alt+Enter).</LI>
+	<LI>New: Se pueden realizar selecciones rectangulares en el código (con el mouse, manteniendo presionado Alt) y ediciones en múltiples lines a la vez (luego de la selección rectangular, o con Alt+Enter).</LI>
 	<LI>New: Se pueden configurar los atajos de teclado desde el cuadro de diálogo Preferencias.</LI>
 	<LI>New: El menú de autocompletado muestra a un costado los protipos completos de las sobrecargas del ítem seleccionado.</LI>
 	<LI>New: Los calltips remarcan en negrita el argumento actual a medida que se completa la llamada a una función, y quitan de la lista sobrecargas sin la cantidad suficiente de argumentos.</LI>
+	<LI>Imp: Se mejoró el funcionamiento y la apariencia de las ventanas para visualización de inspecciones fuera de la tabla de inspecciones (accesibles desde el menú contextual de dicha tabla).</LI>
+	<LI>Imp: Se agregaron tres temas de colores nuevos para el coloreado de sintaxis, ports de los temas Zenburn (http://slinky.imukuppi.org/zenburnpage/) y Solarized (http://ethanschoonover.com/solarized) realizados por Jerónimo Navarro.</LI>
 	<LI>Imp: Se reemplazo el visor de imágenes utilizado para mostrar los resultados de graphviz por uno nuevo basado en wxWidgets.</LI>
 	<LI>Imp: Si al intentar enlazar un proyecto el enlazado falla informando que un binario objeto esta corrupto o truncado, al hacer doble click sobre este error ZinjaI ofrece recompilar dicho objeto para solucionar el problema.</LI>
 	<LI>Imp: Se pueden reordenar las inspecciones de la tabla de inspecciones manteniendo presionada la tecla Alt y arrastrandolas con el mouse.</LI>
@@ -25,6 +27,7 @@
 	<LI>Imp: Al guardar las configuraciones de colores y atajos de teclado ya no se guardan los valores que coinciden con la configuración por defecto.</LI>
 	<LI>Imp: Al configurar el proxy para la búsqueda de actualizaciones se puede ingresar la variable de entorno "$http_proxy" para que se autoconfigure en sistemas GNU/Linux.</LI>
 	<LI>Imp: Los elementos de lo menúes contextuales muestran ahora los mismos íconos y atajos de teclado que los elementos de los menúes de la ventana principal.</LI>
+	<LI>Fix: Se reconoce la asociación entre archivos fuente y cabecera homónimos aunque se encuentren en diferentes directorios.</LI>
 	<LI>Fix: Se corrigió un error que a veces provocaba el cierre de ZinjaI al intentar quitar un archivo de un proyecto si el archivo estaba abierto y tenía puntos de interrupción o lineas resaltadas.</LI>
 	<LI>Fix: Cuando hay múltiples programas simples independientes con breakpoints definidos, ya no se muestra el mensaje que indica la imposibilidad de definir un breakpoin al intentar definir los de un fuente mientras se inicializa la depuración de otro.</LI>
 
