@@ -355,7 +355,7 @@
 		bool operator!= (const type_info& rhs) const;
 		bool before (const type_info& rhs) const;
 		const char* name() const;
-<limit>
+<limits>
 	class numeric_limits
 		static const bool is_specialized 
 		static T min()
