@@ -113,6 +113,9 @@ public:
 	int GetColLeft(int c) {
 		return wxGrid::GetColLeft(cols[c].real_pos);
 	}
+	
+	// other useful grid functions
+	void CopyToClipboard(bool only_selected, int col=-1);
 //	~mxGrid();
 };
 

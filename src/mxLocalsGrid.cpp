@@ -1,5 +1,22 @@
 #include "mxLocalsGrid.h"
 #include "Language.h"
+#include "ids.h"
+#include "mxMainWindow.h"
+#include "mxInspectionExplorerDialog.h"
+#include "mxInspectionPrint.h"
+#include "mxInspectionMatrix.h"
+#include <algorithm>
+
+BEGIN_EVENT_TABLE(mxLocalsGrid,wxGrid)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxLocalsGrid::OnShowInText)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxLocalsGrid::OnShowInTable)
+	EVT_MENU(mxID_INSPECTION_EXPLORE,mxLocalsGrid::OnExploreExpression)
+	EVT_MENU(mxID_INSPECTION_COPY_VALUE,mxLocalsGrid::OnCopyValue)
+	EVT_MENU(mxID_INSPECTION_COPY_TYPE,mxLocalsGrid::OnCopyType)
+	EVT_MENU(mxID_INSPECTION_COPY_EXPRESSION,mxLocalsGrid::OnCopyExpression)
+	EVT_MENU(mxID_INSPECTION_COPY_ALL,mxLocalsGrid::OnCopyAll)
+	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxLocalsGrid::OnAddToInspectionsGrid)
+END_EVENT_TABLE()
 
 mxLocalsGrid::mxLocalsGrid(wxWindow *parent):mxGrid(parent,LG_COLS_COUNT) {
 	mxGrid::InitColumn(LG_COL_NAME,LANG(LOCALS_NAME,"Nombre"),10);
@@ -82,4 +99,80 @@ void mxLocalsGrid::Update () {
 	
 }
 
+
+void mxLocalsGrid::OnCellPopupMenu (int row, int col) {
+	
+	vector<int> sel; mxGrid::GetSelectedRows(sel);
+	// ensure clicked row is selected... if it is, use current selection, if not make it current selection
+	if (find(sel.begin(),sel.end(),row)==sel.end()) { sel.clear(); mxGrid::Select(row); sel.push_back(row); }
+	
+	wxMenu menu; 
+	
+	menu.Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
+	menu.Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
+	menu.Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
+	
+	menu.AppendSeparator();
+	for(unsigned int i=0;i<main_window->inspection_ctrl->GetPageCount();i++) {
+		if (main_window->inspection_ctrl->PageIsInspectionsGrid(i))
+			menu.Append(mxID_LAST_ID+i,LANG1(LOCALGRID_POPUP_ADD_TO_INSPECTIONS_GRID,"Agregar como inspección en \"<{1}>\"",main_window->inspection_ctrl->GetPageTitle(i)));
+	}
+	menu.AppendSeparator();
+	
+	menu.Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar &Expresion")));
+	if (mxGrid::IsColumnVisible(LG_COL_TYPE)) menu.Append(mxID_INSPECTION_COPY_TYPE,LANG(INSPECTGRID_POPUP_COPY_TYPE,"Copiar &Tipo"));
+	menu.Append(mxID_INSPECTION_COPY_VALUE,LANG(INSPECTGRID_POPUP_COPY_DATA,"Copiar &Valor"));
+	menu.Append(mxID_INSPECTION_COPY_ALL,LANG(INSPECTGRID_POPUP_COPY_ALL,"&Copiar Toda la Tabla"));
+		
+	PopupMenu(&menu);
+}
+
+
+void mxLocalsGrid::OnAddToInspectionsGrid (wxCommandEvent & evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	mxInspectionGrid *grid = main_window->inspection_ctrl->GetInspectionGrid(evt.GetId()-mxID_LAST_ID);
+	for(unsigned int i=0;i<sel.size();i++) {
+		grid->ModifyExpression(-1,mxGrid::GetCellValue(sel[i],LG_COL_NAME),false);
+	}
+	main_window->inspection_ctrl->SetSelection(evt.GetId()-mxID_LAST_ID);
+}
+
+void mxLocalsGrid::OnShowInTable(wxCommandEvent &evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++)
+		new mxInspectionMatrix(mxGrid::GetCellValue(sel[i],LG_COL_NAME),false);
+}
+
+void mxLocalsGrid::OnShowInText(wxCommandEvent &evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++)
+		new mxInspectionPrint(mxGrid::GetCellValue(sel[i],LG_COL_NAME),false);
+}
+
+void mxLocalsGrid::OnExploreExpression (wxCommandEvent & evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	if (sel.size()==1) {
+		new mxInspectionExplorerDialog(mxGrid::GetCellValue(sel[0],LG_COL_NAME),false);
+	} else {
+		mxInspectionExplorerDialog *dialog = new mxInspectionExplorerDialog();
+		for(unsigned int i=0;i<sel.size();i++)
+			dialog->AddExpression(mxGrid::GetCellValue(sel[i],LG_COL_NAME),false);
+	}
+}
+
+void mxLocalsGrid::OnCopyValue (wxCommandEvent & evt) {
+	CopyToClipboard(true,LG_COL_VALUE);
+}
+
+void mxLocalsGrid::OnCopyType (wxCommandEvent & evt) {
+	CopyToClipboard(true,LG_COL_TYPE);
+}
+
+void mxLocalsGrid::OnCopyExpression (wxCommandEvent & evt) {
+	CopyToClipboard(true,LG_COL_NAME);
+}
+
+void mxLocalsGrid::OnCopyAll (wxCommandEvent & evt) {
+	CopyToClipboard(false);
+}
 

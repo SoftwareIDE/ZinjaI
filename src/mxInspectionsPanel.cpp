@@ -17,7 +17,7 @@ mxInspectionsPanel::mxInspectionsPanel():wxAuiNotebook(main_window,mxID_NOTEBOOK
 	SetTabCtrlHeight(24);
 	name_aux = current_tab = 0;
 	tabs.Add(Tab(new mxLocalsGrid(this),"Locals"));
-	tabs.Add(Tab(new mxInspectionGrid(this),"Table 1"));
+	tabs.Add(Tab(new mxInspectionGrid(this),"Table 0"));
 	for(int i=0;i<tabs.GetSize();i++)
 		AddPage(tabs[i].ctrl,tabs[i].name);
 	AddPage(new wxStaticText(this,wxID_ANY,""),"+");
@@ -70,3 +70,14 @@ void mxInspectionsPanel::OnPageClosing (wxAuiNotebookEvent & event) {
 	if (p==tabs.GetSize()) SetSelection(p-1);
 }
 
+wxString mxInspectionsPanel::GetPageTitle(int p) { 
+	return tabs[p].name; 
+}
+
+bool mxInspectionsPanel::PageIsInspectionsGrid(int p) { 
+	return tabs[p].type==Tab::TYPE_GRID; 
+}
+
+mxInspectionGrid *mxInspectionsPanel::GetInspectionGrid(int p) { 
+	return static_cast<mxInspectionGrid*>(tabs[p].ctrl); 
+}

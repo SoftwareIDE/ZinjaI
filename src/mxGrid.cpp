@@ -167,3 +167,41 @@ void mxGrid::OnKeyDown (wxKeyEvent & event) {
 		event.Skip();
 }
 
+void mxGrid::CopyToClipboard (bool only_selected, int col) {
+	// determinar cules filas copiar
+	vector<int> sel; 
+	if (only_selected) {
+		GetSelectedRows(sel,false);
+	} else {
+		int n = GetNumberRows(); sel.resize(n);
+		for(int i=0;i<n;i++) sel[i]=i;
+	}
+	// obtener los datos a copiar
+	wxString data;
+	if (col==-1) {
+		for(unsigned int i=0;i<sel.size();i++) {
+			if (!data.IsEmpty()) data<<"\n";
+			data+=mxGrid::GetCellValue(i,col);
+		}
+	} else {
+		// calcular anchos de columna
+		int nc = wxGrid::GetNumberCols();
+		vector<int> w(nc-1); for (int i=0;i<nc-1;i++) w[i] = i;
+		for (int i=0;i<sel.size();i++) {
+			for (int j=0;j<nc-1;j++) {
+				wxString val = wxGrid::GetCellValue(i,j);
+				if (val.Len()>w[j]) w[j]=val.Len();
+			}
+		}
+		for (int i=0;i<sel.size();i++) {
+			for (int j=0;j<nc-1;j++) {
+				wxString val = wxGrid::GetCellValue(i,j);
+				data<<val<<wxString(' ',w[j]+3-val.Len());
+			}
+			data<<wxGrid::GetCellValue(i,nc-1)<<"\n";
+		}
+	}
+	// colocarlos en el portapapeles
+	if (!data.IsEmpty()) mxUT::SetClipboardText(data);
+}
+

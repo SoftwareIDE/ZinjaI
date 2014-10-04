@@ -79,7 +79,7 @@ public:
 	void OnShowInText(wxCommandEvent &evt);
 	void OnShowInTable(wxCommandEvent &evt);
 	void OnCopyType(wxCommandEvent &evt);
-	void OnCopyData(wxCommandEvent &evt);
+	void OnCopyValue(wxCommandEvent &evt);
 	void OnCopyExpression(wxCommandEvent &evt);
 	void OnCopyAll(wxCommandEvent &evt);
 	void OnClearAll(wxCommandEvent &evt);
@@ -104,7 +104,7 @@ public:
 	void InsertRows(int pos=-1, int cant=1);
 	void OnRedirectedEditEvent(wxCommandEvent &event);
 	
-	void ModifyInspectionExpression(int row, const wxString &expression, bool is_frameless);
+	bool ModifyExpression(int row, const wxString &expression, bool is_frameless, bool do_update_cell=true);
 	
 //	bool TryToSimplify(int row);
 	

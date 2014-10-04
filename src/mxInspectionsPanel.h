@@ -36,6 +36,11 @@ public:
 	void OnPageChanged(wxAuiNotebookEvent &event);
 	void OnPageClosing(wxAuiNotebookEvent &event);
 	void SelectPage(int p);
+	
+//	int GetPageCount(); // inherited from wxAuiNotebook
+	wxString GetPageTitle(int p);
+	bool PageIsInspectionsGrid(int p);
+	mxInspectionGrid *GetInspectionGrid(int p);
 };
 
 #endif

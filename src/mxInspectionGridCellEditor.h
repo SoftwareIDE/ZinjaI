@@ -12,7 +12,7 @@ public:
 	mxInspectionGridCellEditorControl(wxWindow* parent, wxWindowID id):wxTextCtrl(parent,id,"lala",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB|wxTE_AUTO_SCROLL|wxNO_BORDER) {}
 	void Autocomplete();
 	void OnMenu(wxCommandEvent &evt) {
-		SetText(comp_options[evt.GetId()-wxID_HIGHEST-2000]);
+		SetText(comp_options[evt.GetId()-mxID_LAST_ID-2000]);
 	}
 	void SetText(const wxString &text) {
 		SetValue(text); 
@@ -27,7 +27,7 @@ public:
 
 BEGIN_EVENT_TABLE(mxInspectionGridCellEditorControl,wxTextCtrl)
 	EVT_CHAR(mxInspectionGridCellEditorControl::OnChar)
-	EVT_MENU_RANGE(wxID_HIGHEST+2000,wxID_HIGHEST+5000,mxInspectionGridCellEditorControl::OnMenu)
+	EVT_MENU_RANGE(mxID_LAST_ID+2000,mxID_LAST_ID+5000,mxInspectionGridCellEditorControl::OnMenu)
 END_EVENT_TABLE()
 	
 /**

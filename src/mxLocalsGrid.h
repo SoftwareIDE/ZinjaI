@@ -14,6 +14,18 @@ public:
 	void OnColumnHideOrUnhide (int col, bool visible) /*override*/ { Update(); }
 	void OnDebugPausePost() /*override*/ { Update(); }
 	void OnInspectionsPanelTabSelected() /*override*/ { Update(); }
+	void OnCellPopupMenu(int row, int col);
+	
+	void OnAddToInspectionsGrid(wxCommandEvent &evt);
+	void OnShowInText(wxCommandEvent &evt);
+	void OnShowInTable(wxCommandEvent &evt);
+	void OnExploreExpression(wxCommandEvent &evt);
+	void OnCopyValue(wxCommandEvent &evt);
+	void OnCopyType(wxCommandEvent &evt);
+	void OnCopyExpression(wxCommandEvent &evt);
+	void OnCopyAll(wxCommandEvent &evt);
+	
+	DECLARE_EVENT_TABLE();
 };
 
 #endif
