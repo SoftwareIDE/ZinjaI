@@ -52,7 +52,7 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_IMPR_CONF,mxInspectionGrid::OnInspectionsImprovingSettings)
 END_EVENT_TABLE()
 	
-	
+
 struct mxIG_SideEffectUpdate {
 	bool do_update;
 	mxIG_SideEffectUpdate(mxInspectionGrid *grid) {
@@ -82,6 +82,7 @@ static struct mxIGStatusOpts {
 	void Init(bool ev, const wxColour &c) { color=c; have_message=false; editable_value=ev; }
 	void Init(bool ev, const wxColour &c, const wxString &m) { color=c; have_message=true; message=m; editable_value=ev; }
 } mxig_status_opts[mxInspectionGrid::IGRS_COUNT];
+
 
 mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COUNT) {
 	
@@ -148,7 +149,6 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	SetColLabelSize(wxGRID_AUTOSIZE);
 	
 }
-
 
 bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
 	if (key==WXK_DELETE) {
@@ -238,47 +238,6 @@ bool mxInspectionGrid::OnCellClick(int row, int col) {
 	return false;
 }
 
-
-//	if (event.GetCol()==IG_COL_VALUE) {
-//		debug->BreakCompoundInspection(event.GetRow());
-//	} else if (event.GetCol()==IG_COL_LEVEL) {
-//		SelectRow(selected_row=event.GetRow());
-//		if (selected_row<debug->inspections_count) {
-//			wxCommandEvent evt;
-//			if (debug->inspections[selected_row].frameless)
-//				OnReScope(evt);
-//			else if (debug->inspections[selected_row].is_vo)
-//				OnSetFrameless(evt);
-//		}
-////	} else if (event.GetCol()==IG_COL_WATCH) {
-////		if (GetCellValue(selected_row,IG_COL_WATCH).Len()) {
-////			SelectRow(selected_row=event.GetRow());
-////			if (debug->inspections[selected_row].is_vo && !debug->inspections[selected_row].frameless) {
-////				wxMenu menu;
-////				menu.Append(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
-////				menu.Append(mxID_INSPECTION_WATCH_RW,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
-////				menu.Append(mxID_INSPECTION_WATCH_READ,LANG(INSPECTGRID_WATCH_READ,"lectura"));
-////				menu.Append(mxID_INSPECTION_WATCH_WRITE,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
-////				PopupMenu(&menu);
-////			}
-////		}
-////	}
-////	else if (event.GetCol()==IG_COL_FORMAT) {
-////		if (GetCellValue(selected_row,IG_COL_FORMAT).Len() && GetCellValue(selected_row,IG_COL_FORMAT)!=LANG(INSPECTGRID_TYPE_STRUCT,"estructura") && GetCellValue(selected_row,IG_COL_FORMAT)!=LANG(INSPECTGRID_TYPE_ARRAY,"arreglo") ) {
-////			SelectRow(selected_row=event.GetRow());
-////			wxMenu menu;
-////			menu.Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
-////			menu.Append(mxID_INSPECTION_FORMAT_BIN,LANG(INSPECTGRID_FORMAT_BINARY,"binario"));
-////			menu.Append(mxID_INSPECTION_FORMAT_OCT,LANG(INSPECTGRID_FORMAT_OCTAL,"octal"));
-////			menu.Append(mxID_INSPECTION_FORMAT_DEC,LANG(INSPECTGRID_FORMAT_DECIMAL,"decimal"));
-////			menu.Append(mxID_INSPECTION_FORMAT_HEX,LANG(INSPECTGRID_FORMAT_HEXADECIMAL,"hexadecimal"));
-////			PopupMenu(&menu);
-////		}
-//	}
-////	if (event.GetCol()==IG_COL_VALUE && event.GetRow()<debug->inspections_count)
-////		new mxInspectionExplorer(main_window,debug->inspections[event.GetRow()].expr,debug->inspections[event.GetRow()].expr);
-//}
- 
 static wxString Shorten(wxString str) {
 	str.Replace("\t","   ",true);
 	if (str.Len()>15) str=str.Mid(0,15)+"...";
@@ -405,48 +364,6 @@ void mxInspectionGrid::OnCopyFromSelecction(wxCommandEvent &evt) {
 		CreateInspection(row,expr,false,true);
 	}
 }
-
-//bool mxInspectionGrid::ModifyExpresion(int row, wxString expr) {
-//	ignore_changing=true;
-//	while (expr.Len()) {
-//		if (expr.StartsWith(">?")) expr=">help "+expr.Mid(2);
-//		if (expr.Trim()==">help") { 
-//			wxMessageBox(debug->GetMacroOutput("help user-defined",true),"help user-defined");
-//			return false;
-//		} else if (expr.StartsWith(">help")) {
-//			wxMessageBox(debug->GetMacroOutput(expr.Mid(1),true),expr.Mid(1));
-//			return false;
-//		}
-//		int sd=ShouldDivide(row,expr);
-//		if (sd==0) {
-//			if (debug->ModifyInspection(row,expr)) {
-////				SetCellValue(row,IG_COL_EXPR,expr);
-//				if (row==GetNumberRows()-2) {
-//					SelectRow(row+1);
-//					SetGridCursor(row+1,IG_COL_EXPR);
-////					} else {
-////						SelectRow(row);
-////						SetGridCursor(row,IG_COL_EXPR);
-//				}
-//				break;
-//			}
-//			if (!debug->debugging) {
-//				mxMessageDialog(main_window,LANG(INSPECTGRID_DEBUGGING_HAS_ENDED,"La sesion de depuracion ha finalizado."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
-//				return ignore_changing=false;
-//			} else
-//				if (debug->last_error==_T("<killed>")) {
-//					mxMessageDialog(main_window,LANG(INSPECTGRID_DEBUGGER_ERROR,"Ha ocurrido un error en el depurador."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-//					return ignore_changing=false;
-//				} else {
-//					ignore_changing=false;
-//					return true;
-//				}
-//		} else if (sd==1) break;
-//		if (!expr.Len()) return ignore_changing=false;
-//	}
-//	ignore_changing=false;
-//	return true;
-//}
 
 void mxInspectionGrid::OnCopyValue(wxCommandEvent &evt) {
 	mxGrid::CopyToClipboard(true,IG_COL_VALUE);
@@ -578,29 +495,6 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 	}
 //	DebuggerInspection::OnDebugPause(); // la expresion podría haber modificado algo
 }
-
-//void mxInspectionGrid::OnSaveTable(wxCommandEvent &evt) {
-//	wxString name = mxGetTextFromUser(LANG(INSPECTGRID_TABLE_NAME,"Nombre de la lista:"),_T("Guardar Lista"),"",this);
-//	if (name.Len()) debug->SaveInspectionsTable(name);
-//}
-//
-//void mxInspectionGrid::OnLoadTable(wxCommandEvent &evt) {
-//	wxArrayString as;
-//	for (unsigned int i=0;i<debug->inspections_tables.size();i++)
-//		as.Add(debug->inspections_tables[i]->name);
-//	wxString name = wxGetSingleChoice(LANG(INSPECTGRID_LOAD_TABLE,"Cargar Lista:"),LANG(INSPECTGRID_INSPECTIONS_TABLE,"Lista de Inspecciones"),as);
-//	if (name.Len()) debug->LoadInspectionsTable(name);
-//}
-//
-//void mxInspectionGrid::OnManageTables(wxCommandEvent &evt) {
-//	wxArrayString as;
-//	for (unsigned int i=0;i<debug->inspections_tables.size();i++)
-//		as.Add(debug->inspections_tables[i]->name);
-//	wxString name = wxGetSingleChoice(LANG(INSPECTGRID_DELETE_TABLE,"Eliminar Lista:"),LANG(INSPECTGRID_INSPECTIONS_TABLE,"Lista de Inspecciones"),as);
-//	if (name.Len() && mxMD_YES==mxMessageDialog(main_window,LANG1(INSPECTGRID_CONFIRM_DELETE_TABLE,"Desea eliminar la lista \"<{1}>\"?",name),LANG(GENERAL_CONFIRM,"Confirmacion"),mxMD_YES_NO).ShowModal())
-//		debug->DeleteInspectionsTable(name);	
-//}
-//
 
 void mxInspectionGrid::OnFreeze(wxCommandEvent &evt) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel);
@@ -871,19 +765,6 @@ void mxInspectionGrid::DeleteInspection (int r, bool for_reuse) {
 	}
 }
 
-//bool mxInspectionGrid::TryToSimplify (int row) {
-//	FlagGuard icce_guard(ignore_cell_change_event);
-//	wxString mtype=inspections[row]->GetValueType(), new_expr;
-//	if (DebuggerInspection::TryToImproveExpression(mtype,new_expr,inspections[row]->GetExpression())) {
-//		if (inspections[row]->SetHelperInspection(new_expr)) {
-//			inspections[row].expression_renderer->SetIconPlus();
-//			return true;
-//		}		
-//	}
-//	inspections[row].expression_renderer->SetIconNull();
-//	return false;
-//}
-
 void mxInspectionGrid::UpdateValueColumn (int r) {
 	mxGrid::SetCellValue(r,IG_COL_VALUE,inspections[r]->GetValue());
 }
@@ -954,7 +835,6 @@ void mxInspectionGrid::ChangeFrameless (int r, bool frameless, bool full_table_u
 	mxIG_SideEffectUpdate sda(full_table_update?this:NULL); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 	CreateInspection(r,old_expression,!was_frameless);
 }
-
 
 void mxInspectionGrid::SwapInspections (int r1, int r2) {
 	DebuggerInspection *dr1=inspections[r1].di;

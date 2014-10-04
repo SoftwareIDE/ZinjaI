@@ -114,9 +114,9 @@
 		0 debug_inspect.html Inspecciones
 		0 debug_backtrace.html Trazado Inverso
 		0 debug_advance.html Características avanzadas
-			0 debug_patch.html Interfaz directo con gdb
-			0 debug_patch.html Corrección de un ejecutable durante la depuración
 			0 inspections_improving.html Mejora automática de inspecciones
+			0 debug_patch.html Corrección de un ejecutable durante la depuración
+			0 debug_gdb_panel.html Interfaz directa con gdb
 	0 about.html About ZinjaI
 		0 license.html Licencias y Contactos
 		0 ChangeLog.html Registro de Cambios

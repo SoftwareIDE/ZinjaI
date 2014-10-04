@@ -106,8 +106,6 @@ public:
 	
 	bool ModifyExpression(int row, const wxString &expression, bool is_frameless, bool do_update_cell=true);
 	
-//	bool TryToSimplify(int row);
-	
 	// eventos generados por mxGrid
 	bool OnCellClick(int row, int col);
 	void OnCellPopupMenu(int row, int col);
@@ -141,8 +139,6 @@ public:
 	void OnRegisterNewImprovedExpression(wxCommandEvent &event);
 	void OnInspectionsImprovingSettings(wxCommandEvent &event);
 	
-//	bool TryToImproveExpression(const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
-
 	void UpdateLevelColumn(int r);
 	void UpdateValueColumn(int r);
 	void UpdateTypeColumn(int r);

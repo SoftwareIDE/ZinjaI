@@ -1,0 +1,19 @@
+<HTML>
+<HEAD><TITLE>ZinjaI - Help</TITLE></HEAD><BODY>
+<B>Corrección de un ejecutable durante la depuración</B><BR>
+<BR>
+Usualmente, un ejecutable no cambia a lo largo de su ejecución (ya sea mediante el depurador o su ejecución regular). En general, al corregir un error en el código fuente detectado curante una sesión de depuración se debe detener completamente el programa (finalizar), recompilar el ejecutable y volver a iniciar la ejecución (desde cero). ZinjaI permite en algunos casos muy particulares recompilar el ejecutable durante una pausa en la depuración, y continuar luego la misma utilizando el nuevo ejecutable corregido. Este mecanismo utiliza gdb para modificar bytes de la imágen en memoria que el depurador tiene del ejecutable, pero no actualiza variables en memoria ni ningún otro contenido generado por la ejecución (como la pila de llamadas a funciones, memoria reservada, archivos abiertos, etc). Se puede aplicar para casos la estructura en memoria del nuevo ejecutable coincide con la del anterior, pero varían ciertas constantes o expresiones. Por ejemplo, cuando en una función cambia el valor con que se inicializa una variable, o cuando se invierte una condición en una estructura de control.<BR>
+<BR>
+Para modificar un ejecutable debe:<OL>
+<LI>Pausar la depuración, mediante el comando "Interrumpir" del menú "Depuracion" o mediante un punto de interrupción.</LI>
+<LI>Reliazar las modificaciones al código fuente. Por defecto, ZinjaI no permite modificar un código fuente mientras se está depurando, por los que podría ver un mensaje de advertencia. El cuadro de diálogo de dicho mensaje incluye en la parte inferior un checkbox para desactivar la advertencia y permitir la modificación.</LI>
+<LI>Recompilar el ejecutable, utilizando el comando "Compilar" del menú "Ejecución".</LI>
+<LI>Aplicar los cambios del nuevo ejecutable en la versión en memoria que está utilizando el depurador, mediante el comando "Actualizar ejecutable..." del submenú "Más..." del menú "Depuración". Luego de la actualización verá un cuadro de diálogo con un resúmen indicando cuantos cambios se detectaron y cuantos han sido aplicados con éxito. No es necesario que todos los cambios detectados sean aplicados con éxito para que el mecanismo funcione de la forma esperada.</LI>
+<LI>Continuar la depuración. La próxima vez que el programa ejecute el código modificado observará la diferencia.</LI>
+</OL><BR>
+<BR>
+Nota: Actualmente esta funcionalidad no está disponible en la versión para Windows por limitaciones del depurador gdb.<BR>
+<BR>
+<BR>
+Puede encontra más detalles del funcionamiento y un video demostrando el uso de esta funcionalidad en <A href="http://cucarachasracing.blogspot.com.ar/2014/06/corrigiendo-un-ejecutable-sin-reiniciar.html">http://cucarachasracing.blogspot.com.ar/2014/06/corrigiendo-un-ejecutable-sin-reiniciar.html</A>.
+</BODY></HTML>

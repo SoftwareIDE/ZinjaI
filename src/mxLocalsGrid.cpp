@@ -65,7 +65,7 @@ void mxLocalsGrid::Update () {
 	
 	wxString s = debug->SendCommand(command," --all-values");
 	if (s.StartsWith("^error") && s.Contains("Undefined MI command")) {
-		// fallback to deprecated command is gdb is old
+		// fallback to deprecated command if gdb is old
 		command = "-stack-list-locals";
 		s = debug->SendCommand(command," --all-values");
 	}
