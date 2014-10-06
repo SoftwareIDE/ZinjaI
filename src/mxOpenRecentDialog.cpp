@@ -213,9 +213,10 @@ void mxOpenRecentDialog::OnListDClick (wxListEvent & event) {
 }
 
 void mxOpenRecentDialog::ResizeColums ( ) {
+	Layout();
 	list_ctrl->SetColumnWidth(1,show_mod_date->GetValue()?wxLIST_AUTOSIZE:0);
 	list_ctrl->SetColumnWidth(1,list_ctrl->GetColumnWidth(1)+5);
-	list_ctrl->SetColumnWidth(0,list_ctrl->GetSize().GetWidth()-list_ctrl->GetColumnWidth(1)-5);
+	list_ctrl->SetColumnWidth(0,list_ctrl->GetClientSize().GetWidth()-list_ctrl->GetColumnWidth(1)-wxSystemSettings::GetMetric(wxSYS_VSCROLL_X)-1);
 }
 
 void mxOpenRecentDialog::OnShowDates (wxCommandEvent & evt) {
