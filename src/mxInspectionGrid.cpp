@@ -1,5 +1,3 @@
-//#include <wx/wx.h> // for wxGetSingleChoice, for some reasom <wx/choicdlg.h> doesn't work????
-//#include <wx/choicdlg.h>
 #include <algorithm>
 #include <wx/menu.h>
 #include "Language.h"
@@ -195,6 +193,34 @@ bool mxInspectionGrid::ModifyExpression (int row, const wxString & expression, b
 	return CreateInspection(row,expression,is_frameless);
 }
 
+bool AuxShouldExpand(const wxString &expr, wxArrayString *arr=NULL) {
+	int l=expr.Len();
+	for(int i=0;i<l-3;i++) { 
+		if (expr[i]=='\'') { if (expr[++i]=='\\') i++; }
+		else if (expr[i]=='\"') { i++; while (i<l && expr[i]!='\"') if (expr[i]=='\\') i++; }
+		if (i && expr[i]=='.' && expr[i+1]=='.' && expr[i+2]=='.') {
+			int i1=i, i2=i; 
+			while (i1-1>0 && (expr[i1-1]>='0'&&expr[i1-1]<='9')) i1--;
+			int i3=i+3, i4=i+3; 
+			while (i4<l && (expr[i4]>='0'&&expr[i4]<='9')) i4++;
+			if (i2!=i1 && i3!=i4) {
+				long from; expr.Mid(i1,i2-i1+1).ToLong(&from);
+				long to; expr.Mid(i3,i4-i3+1).ToLong(&to);
+				if (to==from) return false;
+				if (arr) {
+					if (to<from) swap(to,from);
+					for(int j=from;j<=to;j++) {
+						wxString new_expr = expr.Mid(0,i1)<<j<<expr.Mid(i4);
+						if (!AuxShouldExpand(new_expr,arr)) arr->Add(new_expr);
+					}
+				}
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 	event.Skip();
 	FlagGuard icce_guard(ignore_cell_change_event);
@@ -203,13 +229,22 @@ void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 	wxString new_value = wxGrid::GetCellValue(event.GetRow(),event.GetCol());
 	if (col==GetRealCol(IG_COL_EXPR)) {
 		mxIG_SideEffectUpdate sda(this); // la expresion podría haber modificado algo, esto actualiza toda la tabla
-		if ( ModifyExpression(row,new_value,last_return_had_shift_down,false) ) Select(row+1);
+		if ( AuxShouldExpand(new_value) ) {
+			wxArrayString arr; AuxShouldExpand(new_value,&arr);
+			if ( ModifyExpression(row,arr[0],last_return_had_shift_down,false) ) {
+				InsertRows(row+1,arr.GetCount()-1);
+				for(unsigned int i=1;i<arr.GetCount();i++)
+					ModifyExpression(row+i,arr[i],last_return_had_shift_down,true);
+				mxGrid::SetCellValue(row,IG_COL_EXPR,arr[0]); // for some reason, SetCellValue effect is dismissed at InsertRows
+			}
+		} else {
+			if ( ModifyExpression(row,new_value,last_return_had_shift_down,false) ) Select(row+1);
+		}
 	} else if (col==GetRealCol(IG_COL_VALUE)) {
 		if (row<0||row>inspections.GetSize()||inspections[row].IsNull()) return;
-		mxIG_SideEffectUpdate sda(this); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 		if (inspections[row]->ModifyValue(new_value)) {
 			mxGrid::SetCellValue(row,IG_COL_VALUE,inspections[row]->GetValue());
-			DebuggerInspection::OnDebugPause(); // la expresion podría haber modificado algo
+			DebuggerInspection::OnDebugPause(); // este cambio podría afectar a otras expresiones
 		} else event.Veto();
 	}
 }
