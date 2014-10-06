@@ -1138,7 +1138,7 @@ void mxUT::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxS
 		else if (opt=="CURRENT_FILE") menu.Append(mxID_POPUPS_INSERT_CURRENT_FILE,LANG(GENERAL_POPUP_INSERT_CURRENT_FILE,"insertar archivo actual"));
 		else if (opt=="CURRENT_DIR") menu.Append(mxID_POPUPS_INSERT_CURRENT_DIR,LANG(GENERAL_POPUP_INSERT_CURRENT_DIR,"insertar directorio del archivo actual"));
 		else if (opt=="BIN_WORKDIR") menu.Append(mxID_POPUPS_INSERT_WORKDIR,LANG(GENERAL_POPUP_INSERT_WORKDIR,"insertar el directorio de trabajo"));
-		else if (opt=="ZINJAI_DIR") menu.Append(mxID_POPUPS_INSERT_ZINJAI_DIR,LANG(GENERAL_POPUP_INSERT_ZINJAI_DIR,"insertar el directorio de instalacion de ZinjaI"));
+		else if (opt=="ZINJAI_DIR") menu.Append(mxID_POPUPS_INSERT_ZINJAI_DIR,LANG(GENERAL_POPUP_INSERT_ZINJAI_DIR,"insertar el directorio de instalación de ZinjaI"));
 		else if (opt=="BROWSER") menu.Append(mxID_POPUPS_INSERT_BROWSER,LANG(GENERAL_POPUP_INSERT_BROWSER,"insertar comando del navegador"));
 		else if (opt=="SHELL_EXECUTE") menu.Append(mxID_POPUPS_INSERT_SHELL_EXECUTE,LANG(GENERAL_POPUP_INSERT_SHELL_EXECUTE,"insertar comando para abrir con el programa asociado"));
 	} while (options.Len());
@@ -1185,6 +1185,8 @@ void mxUT::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString pa
 			text="${WORK_DIR}";
 		} else if (id==mxID_POPUPS_INSERT_PROJECT_BIN) {
 			text="${PROJECT_BIN}";
+		} else if (id==mxID_POPUPS_INSERT_ZINJAI_DIR) {
+			text="${ZINJAI_DIR}";
 		} else if (id==mxID_POPUPS_INSERT_CURRENT_FILE) {
 			text="${CURRENT_SOURCE}";
 		} else if (id==mxID_POPUPS_INSERT_CURRENT_DIR) {
