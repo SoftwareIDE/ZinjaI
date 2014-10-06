@@ -2327,13 +2327,6 @@ void mxMainWindow::OnViewSymbolsTree (wxCommandEvent &event) {
 void mxMainWindow::OnViewUpdateSymbols (wxCommandEvent &event) {
 	wxWindow *focus = main_window->FindFocus();
 	if (focus) focus = focus->GetParent();
-#warning reestablecer lo del F2
-//	if (focus==inspection_ctrl) {
-//		int r =inspection_ctrl->GetGridCursorRow();
-//		inspection_ctrl->SetGridCursor(r,IG_COL_EXPR);
-//		inspection_ctrl->EnableCellEditControl(true);
-//		return;
-//	}
 	if (config->Init.autohiding_panels) {
 //		if (!aui_manager.GetPane(symbols_tree.treeCtrl).IsShown())
 //			autohide_handlers[ATH_SYMBOL]->ForceShow();

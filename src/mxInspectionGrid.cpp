@@ -168,6 +168,11 @@ bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
 	} else if (key==WXK_RETURN || key==WXK_NUMPAD_ENTER) {
 		last_return_had_shift_down=modifiers&wxMOD_SHIFT;
 		return false;
+	} else if (key==WXK_F2) {
+		if (mxGrid::SetGridCursor(row,IG_COL_EXPR)) {
+			EnableCellEditControl(true);
+			return true;
+		}
 	} else
 		return false;
 }

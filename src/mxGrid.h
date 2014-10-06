@@ -89,6 +89,12 @@ public:
 		int rc=cols[c].real_pos;
 		if (rc!=-1) wxGrid::SetCellValue(r,rc,value);
 	}
+	bool SetGridCursor (int r, int c) {
+		int rc=cols[c].real_pos;
+		if (rc==-1) return false;
+		wxGrid::SetGridCursor(r,rc);
+		return true;
+	}
 	wxString GetCellValue(int r, int c) {
 		int rc=cols[c].real_pos;
 		if (rc==-1) return "";
