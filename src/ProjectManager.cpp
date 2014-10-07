@@ -85,13 +85,11 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	int version_saved=0; // vesion del zinjai que guardo al proyecto (suele diferir de la requerida)
 	int files_to_open=0, num_files_opened=0; // para la barra de progreso
 	
-	inspectlist current_inspections(_("<current_inspections>")), *current_inspectlist=NULL;
-	
+		
 	main_window->SetStatusText(wxString(LANG(PROJMNGR_OPENING,"Abriendo"))<<" \""+name.GetFullPath()+"\"...");
 	main_window->notebook_sources->Freeze();
 	
-#warning recuperar funcionalidad
-//	debug->ClearSavedInspectionTables();
+	mxInspectionGrid *inspections_grid = main_window->inspection_ctrl->Reset(); bool first_inspection_grid=true;
 	
 	name.MakeAbsolute();
 	wxString conf_name="Debug";
@@ -166,6 +164,9 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				GetDoxygenConfiguration();
 			} else if (section=="wxfb" && !wxfb) { 
 				GetWxfbConfiguration(true);
+			} else if (section=="inspections") { 
+				if (first_inspection_grid) first_inspection_grid=false;
+				else inspections_grid = main_window->inspection_ctrl->AddGrid(false);
 			}
 		} else {
 			// separar clave y valor, y arreglar valor si es un path
@@ -340,15 +341,8 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_GENERIC_READ_DN("exclude_list",cppcheck->exclude_list);
 				else CFG_BOOL_READ_DN("inline_suppr",cppcheck->inline_suppr);
 #warning recuperar funcionalidad
-//			} else if (section=="inspections") {
-//				if (key=="name") {
-//					if (value=="<current_inspections>")
-//						current_inspectlist = &current_inspections;
-//					else
-//						current_inspectlist = debug->GetInspectionsTable(value,true);
-//				} else if (key=="expr" && current_inspectlist) {
-//					current_inspectlist->vars.Add(value);
-//				}
+			} else if (section=="inspections") {
+				if (key=="expr") inspections_grid->ModifyExpression(-1,value,true,true);
 			} else if (section=="custom_tools") {
 				custom_tools.ParseConfigLine(key,value);
 			}
@@ -859,20 +853,16 @@ bool ProjectManager::Save (bool as_template) {
 	}
 	
 	// guardar inspecciones actuales y tablas guardadas
-#warning recuperar funcionalidad
-//	fil.AddLine("[inspections]");
-//	fil.AddLine("name=<current_inspections>");
-//	inspectlist il("<current_inspections>"); debug->SaveInspectionsTable(&il);
-//	for (unsigned int j=0;j<il.vars.GetCount();j++) 
-//		CFG_GENERIC_WRITE_DN("expr",il.vars[j]);
-//	
-//	for (unsigned int i=0;i<debug->inspections_tables.size();i++) {
-//		fil.AddLine("[inspections]");
-//		inspectlist &ii = *debug->inspections_tables[i];
-//		CFG_GENERIC_WRITE_DN("name",ii.name);
-//		for (unsigned int j=0;j<ii.vars.GetCount();j++) 
-//			CFG_GENERIC_WRITE_DN("expr",ii.vars[j]);
-//	}
+	for(unsigned int i=0;i<main_window->inspection_ctrl->GetTabsCount();i++) {
+		if (main_window->inspection_ctrl->PageIsInspectionsGrid(i)) {
+			wxArrayString expressions;
+			main_window->inspection_ctrl->GetInspectionGrid(i)->GetInspectionsList(expressions);
+			if (expressions.IsEmpty()) continue;
+			fil.AddLine("[inspections]");
+			for(unsigned int j=0;j<expressions.GetCount();j++) 
+				CFG_GENERIC_WRITE_DN("expr",expressions[j]);
+		}
+	}
 	
 	// guardar herramientas personalizadas
 	fil.AddLine("[custom_tools]");

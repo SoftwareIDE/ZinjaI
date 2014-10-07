@@ -83,6 +83,7 @@ public:
 	void OnCopyExpression(wxCommandEvent &evt);
 	void OnCopyAll(wxCommandEvent &evt);
 	void OnClearAll(wxCommandEvent &evt);
+	void ClearAll();
 	void OnClearOne(wxCommandEvent &evt);
 //	void OnWatchNo(wxCommandEvent &evt);
 //	void OnWatchRead(wxCommandEvent &evt);
@@ -146,6 +147,11 @@ public:
 	void SetRowStatus(int r, int status);
 	void DeleteInspection(int r, bool for_reuse);
 	bool CreateInspection(int r, const wxString &expression, bool frameless, bool set_expr=false);
+	
+	
+	void GetInspectionsList(wxArrayString &expressions);
+	void SetInspectionsList(const wxArrayString &expressions);
+		
 	DECLARE_EVENT_TABLE();
 	
 };

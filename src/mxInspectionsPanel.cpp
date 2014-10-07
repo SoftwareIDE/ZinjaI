@@ -30,9 +30,7 @@ void mxInspectionsPanel::OnPageChanging (wxAuiNotebookEvent &event) {
 	if (!created) return;
 	int p = event.GetSelection();
 	if (p==tabs.GetSize()) {
-		tabs.Add(Tab(new mxInspectionGrid(this),wxString("Table ")<<(++name_aux)));
-		InsertPage(p,tabs[p].ctrl,tabs[p].name);
-		SetSelection(p);
+		AddGrid(true);
 		event.Veto();
 	} 
 }
@@ -81,3 +79,31 @@ bool mxInspectionsPanel::PageIsInspectionsGrid(int p) {
 mxInspectionGrid *mxInspectionsPanel::GetInspectionGrid(int p) { 
 	return static_cast<mxInspectionGrid*>(tabs[p].ctrl); 
 }
+
+mxInspectionGrid *mxInspectionsPanel::Reset ( ) {
+	mxInspectionGrid *first_grid;
+	for(int i=0;i<tabs.GetSize();i++) { 
+		while (i<tabs.GetSize() && tabs[i].type==Tab::TYPE_GRID) {
+			if (first_grid) {
+				first_grid = static_cast<mxInspectionGrid*>(tabs[i].ctrl);
+				first_grid->ClearAll(); 
+				wxAuiNotebook::SetPageText(i,"Table 0"); 
+				name_aux=0; i++;
+			} else {
+				tabs.Remove(i);
+			}
+		}
+	}
+	if (!first_grid) { name_aux=-1; AddGrid(true); }
+	return first_grid;
+}
+
+mxInspectionGrid *mxInspectionsPanel::AddGrid (bool and_select) {
+	mxInspectionGrid *new_grid = new mxInspectionGrid(this);
+	int p=tabs.GetSize();
+	tabs.Add(Tab(new_grid,wxString("Table ")<<(++name_aux)));
+	InsertPage(p,tabs[p].ctrl,tabs[p].name);
+	if (and_select) SetSelection(p);
+	return new_grid;
+}
+

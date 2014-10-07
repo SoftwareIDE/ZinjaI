@@ -37,10 +37,14 @@ public:
 	void OnPageClosing(wxAuiNotebookEvent &event);
 	void SelectPage(int p);
 	
-//	int GetPageCount(); // inherited from wxAuiNotebook
+	int GetTabsCount() { return tabs.GetSize(); }
 	wxString GetPageTitle(int p);
 	bool PageIsInspectionsGrid(int p);
 	mxInspectionGrid *GetInspectionGrid(int p);
+	
+	mxInspectionGrid *AddGrid(bool and_select=false);
+	mxInspectionGrid *Reset();
+	
 };
 
 #endif

@@ -179,6 +179,7 @@ bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
 
 bool mxInspectionGrid::ModifyExpression (int row, const wxString & expression, bool is_frameless, bool do_update_cell) {
 	FlagGuard icce_guard(ignore_cell_change_event);
+	if (row==-1) row = inspections.GetSize()-1;
 	if (do_update_cell) mxGrid::SetCellValue(row,IG_COL_EXPR,expression);
 	// caso especial, ayuda para las macros gdb
 	if (expression==">help" || expression==">?") {
@@ -189,7 +190,6 @@ bool mxInspectionGrid::ModifyExpression (int row, const wxString & expression, b
 		return false;
 	}
 	// caso normal, inspeccion
-	if (row==-1) row = inspections.GetSize()-1;
 	if (row+1==inspections.GetSize()) InsertRows();
 	if (!inspections[row].IsNull()) {
 		if (inspections[row]->GetExpression()==expression) return false; // si en realidad no cambio
@@ -418,11 +418,7 @@ void mxInspectionGrid::OnCopyExpression(wxCommandEvent &evt) {
 }
 
 void mxInspectionGrid::OnClearAll(wxCommandEvent &evt) {
-	int n = inspections.GetSize()-1;
-	for(int i=0;i<n;i++) 
-		DeleteInspection(n-i-1,true);
-	inspections.Remove(0,n);
-	DeleteRows(0,n);
+	ClearAll();
 }
 
 
@@ -970,3 +966,24 @@ void mxInspectionGrid::OnRegisterNewImprovedExpression (wxCommandEvent & event) 
 void mxInspectionGrid::OnInspectionsImprovingSettings (wxCommandEvent & event) {
 	mxInspectionsImprovingEditor(main_window,"");
 }
+
+void mxInspectionGrid::GetInspectionsList (wxArrayString &expressions) {
+	for(int i=0;i<inspections.GetSize();i++) {
+		if (!inspections[i].IsNull())
+			expressions.Add(inspections[i]->GetExpression());
+	}
+}
+
+void mxInspectionGrid::SetInspectionsList (const wxArrayString &expressions) {
+	for(unsigned int i=0;i<expressions.GetCount();i++)
+		ModifyExpression(-1,expressions[i],true,true);
+}
+
+void mxInspectionGrid::ClearAll ( ) {
+	int n = inspections.GetSize()-1;
+	for(int i=0;i<n;i++) 
+		DeleteInspection(n-i-1,true);
+	inspections.Remove(0,n);
+	DeleteRows(0,n);
+}
+
