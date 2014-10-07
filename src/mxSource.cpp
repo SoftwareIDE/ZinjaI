@@ -4087,9 +4087,9 @@ void mxSource::ApplyRectEdit ( ) {
 	wxString &ref_str = rect_sel.ref_str;
 	int i=0, lr=ref_str.Len(), ln=new_str.Len(); 
 	while (i<lr && i<ln && ref_str[i]==new_str[i]) { i++; }
-	while (lr>i && ln>i && ref_str[lr]==new_str[ln]) { lr--; ln--; }
+	while (lr>i && ln>i && ref_str[lr-1]==new_str[ln-1]) { lr--; ln--; }
 	if (i==lr && lr==ln) return;
-	wxString sfrom=ref_str.Mid(i,lr-i+1),sto=new_str.Mid(i,ln-i+1);
+	wxString sfrom=ref_str.Mid(i,lr-i),sto=new_str.Mid(i,ln-i);
 	BeginUndoAction();
 	// get positions for the modified part, and translate them to column (to take care of tabs and other multibyete chars)
 	pbeg = PositionFromLine(rect_sel.line_from)+rect_sel.offset_beg+i;

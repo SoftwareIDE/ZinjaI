@@ -227,14 +227,14 @@ static void GdbParse_SkipEmpty(const wxString &s, int &i, int l) {
 * tab,espacio) y returna true si este es una llave que abre una lisat ('{'), o
 * false si es otra cosa, o si se llegó al final de la cadena
 **/
-static bool GdbParse_IsList(const wxString s, int &i) {
-	int l=s.Len(); 
+static bool GdbParse_IsList(const wxString s, int &i, int l=-1) {
+	if (l==-1) l=s.Len(); 
 	GdbParse_SkipEmpty(s,i,l);
 	return i<l && s[i]=='{';
 }
 
-static bool GdbParse_GetPair(const wxString &s, int &i, int &pos_st, int &pos_eq, int &pos_end) {
-	int l=s.Len(); 
+static bool GdbParse_GetPair(const wxString &s, int &i, int &pos_st, int &pos_eq, int &pos_end, int l=-1) {
+	if (l==-1) l=s.Len(); 
 	GdbParse_SkipEmpty(s,i,l);
 	if (i>=l || s[i]=='}' || s[i]==']' || s[i]==')') return false;
 	pos_st=i; pos_eq=-1;
@@ -256,7 +256,7 @@ void mxInspectionMatrix::Update() {
 	grid->BeginBatch();
 	const wxString &s = di->GetValue();
 	
-	int w=0, h=0, i=0, i0, pos_st, pos_eq, pos_end;
+	int w=1, h=0, i=0, i0, pos_st, pos_eq, pos_end;
 	
 	if (GdbParse_IsList(s,i)) i0=++i;
 	else {
@@ -267,13 +267,37 @@ void mxInspectionMatrix::Update() {
 		grid->SetRowLabelValue(0,"");
 		return;
 	}
-	while (GdbParse_GetPair(s,i,pos_st,pos_eq,pos_end)) { h++; i++; }
-	SetMatrixSize(1,h);
+	
+	while (GdbParse_GetPair(s,i,pos_st,pos_eq,pos_end)) { 
+		h++; i++;
+		// ver si el elemento es lista para armar la matriz 2D
+		int aux_i = pos_eq==-1?pos_st:pos_eq+1;
+		if (GdbParse_IsList(s,aux_i,pos_end)) {
+			aux_i++;
+			int aux_w=0,  aux_st, aux_eq, aux_end;
+			while (GdbParse_GetPair(s,aux_i,aux_st,aux_eq,aux_end,pos_end)) { 
+				aux_w++; aux_i++;
+			}
+			if (aux_w>w) w=aux_w;
+		}
+	}
+	SetMatrixSize(w,h);
 	
 	i=i0; h=0;
 	while (GdbParse_GetPair(s,i,pos_st,pos_eq,pos_end)) {
-		grid->SetRowLabelValue( h, pos_eq==-1 ? wxString()<<h : s.Mid(pos_st,pos_eq-pos_st) ); 
-		grid->SetCellValue( h, 0, pos_eq==-1 ? s.Mid(pos_st,pos_end-pos_st) : s.Mid(pos_eq+1,pos_end-pos_eq-1) ); 
+		int aux_i=pos_eq==-1?pos_st:pos_eq+1;
+		if (GdbParse_IsList(s,aux_i,pos_end)) {
+			aux_i++;
+			int aux_w=0, aux_st, aux_eq, aux_end;
+			while (GdbParse_GetPair(s,aux_i,aux_st,aux_eq,aux_end,pos_end)) { 
+				grid->SetCellValue( h, aux_w, aux_eq==-1 ? s.Mid(aux_st,aux_end-aux_st) : s.Mid(aux_eq+1,aux_end-aux_eq-1) ); 
+				aux_w++; aux_i++;
+			}
+			if (aux_w>w) w=aux_w;
+		} else {
+			grid->SetRowLabelValue( h, pos_eq==-1 ? wxString()<<h : s.Mid(pos_st,pos_eq-pos_st) ); 
+			grid->SetCellValue( h, 0, pos_eq==-1 ? s.Mid(pos_st,pos_end-pos_st) : s.Mid(pos_eq+1,pos_end-pos_eq-1) ); 
+		}
 		h++; i++;
 	}
 	
