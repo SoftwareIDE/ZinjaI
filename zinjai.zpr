@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxOpenRecentDialog.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -249,8 +248,7 @@ path=src/mxSourceProperties.cpp
 cursor=39:16
 [source]
 path=src/mxOpenRecentDialog.cpp
-cursor=215:10
-open=true
+cursor=165:8
 [source]
 path=src/Language.cpp
 cursor=-1:790
@@ -588,7 +586,6 @@ cursor=11:16
 [header]
 path=src/mxOpenRecentDialog.h
 cursor=7:0
-open=true
 [header]
 path=src/Language.h
 cursor=6:0

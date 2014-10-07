@@ -173,8 +173,8 @@ bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
 			EnableCellEditControl(true);
 			return true;
 		}
-	} else
-		return false;
+	}
+	return false;
 }
 
 bool mxInspectionGrid::ModifyExpression (int row, const wxString & expression, bool is_frameless, bool do_update_cell) {
@@ -683,7 +683,7 @@ void mxInspectionGrid::OnDIError(DebuggerInspection *di) {
 }
 
 void mxInspectionGrid::OnDICreated(DebuggerInspection *di) {
-	OnDINewType(di);
+	OnDINewType(di); if (current_row==-1) return;
 	UpdateLevelColumn(current_row);
 }
 

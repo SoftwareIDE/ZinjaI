@@ -187,13 +187,13 @@ void mxGrid::CopyToClipboard (bool only_selected, int col) {
 		// calcular anchos de columna
 		int nc = wxGrid::GetNumberCols();
 		vector<int> w(nc-1); for (int i=0;i<nc-1;i++) w[i] = i;
-		for (int i=0;i<sel.size();i++) {
+		for (unsigned int i=0;i<sel.size();i++) {
 			for (int j=0;j<nc-1;j++) {
 				wxString val = wxGrid::GetCellValue(i,j);
-				if (val.Len()>w[j]) w[j]=val.Len();
+				if (int(val.Len())>w[j]) w[j]=val.Len();
 			}
 		}
-		for (int i=0;i<sel.size();i++) {
+		for (unsigned int i=0;i<sel.size();i++) {
 			for (int j=0;j<nc-1;j++) {
 				wxString val = wxGrid::GetCellValue(i,j);
 				data<<val<<wxString(' ',w[j]+3-val.Len());

@@ -1,7 +1,5 @@
 show stopers:
 	
-	* IMPORTANTE: recuperar lo de poner "x[0...10]" en la tabla de inspecciones!!!!
-	
 	* IMPORTANTE: el nuevo explorador de inspecciones basado en mxInspectionExplorerWidget no
 				  actualiza los datos al avanzar el programa!
 
