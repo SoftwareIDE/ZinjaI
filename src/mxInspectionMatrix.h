@@ -36,16 +36,18 @@ public:
 	void OnDINewType(DebuggerInspection *di);
 	
 	void SetMatrixSize(int w, int h);
-	void Update();
+	void UpdateMatrix();
 	
 //	bool SetOutdated();
 	void OnAdaptCheck(wxCommandEvent &evt);
 	void OnResize(wxSizeEvent &evt);
-	void OnColResize(wxGridSizeEvent &evt);
+//	void OnColResize(wxGridSizeEvent &evt);
 //	void OnChar(wxKeyEvent &event);
 ////	void OnClose(wxCloseEvent &evt);
 //	void AutoSizeRowLabel();
 //	~mxInspectionMatrix();
+	
+	void CalculateColumnSizes();
 	DECLARE_EVENT_TABLE();
 };
 

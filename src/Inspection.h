@@ -177,6 +177,7 @@ struct DebuggerInspection {
 		for(int i=0;i<pending_actions.GetSize();i++) {
 			DIPendingAction &pa=pending_actions[i];
 			if (i>=initial_size && pa.dont_run_now) { 
+				pa.dont_run_now=false;
 				pending_actions[dont_run_now_count++]=pa;
 			} else if (pa.action) {
 				if (debug->debugging||!pa.requires_debug_pause)
@@ -304,7 +305,7 @@ private:
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		helper->MakeEvaluationExpressionForParent(this);
 		helper->flags.Set(DIF_REQUIRES_MANUAL_UPDATE);
-		helper->UpdateValue();
+		helper->UpdateValue(false);
 		return true;
 	}
 	

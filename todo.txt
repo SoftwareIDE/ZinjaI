@@ -3,7 +3,7 @@ show stopers:
 	* IMPORTANTE: el nuevo explorador de inspecciones basado en mxInspectionExplorerWidget no
 				  actualiza los datos al avanzar el programa!
 
-	* IMPORTANTE: la nueva vista en matriz para inspecciones no considera más de una dimensión, ni trata especialmente a cstrings
+	* IMPORTANTE: ver si las inspecciones abrevian o no arreglos de muchos elementos (el set print repeat de gdb)
 	
 	* guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 
