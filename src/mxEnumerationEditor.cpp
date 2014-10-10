@@ -106,9 +106,9 @@ void mxEnumerationEditor::OnAdd(wxCommandEvent &evt) {
 void mxEnumerationEditor::OnDelete(wxCommandEvent &evt) {
 	wxArrayInt ai;
 	list->GetSelections(ai);
-	if (ai.GetCount())
-		for (int i=(int)ai.GetCount()-1;i>=0;i--)
-			list->Delete(ai[i]);
+	if (!ai.GetCount()) return;
+	for (int i=(int)ai.GetCount()-1;i>=0;i--)
+		list->Delete(ai[i]);
 	if (ai[0]<int(list->GetCount())) list->SetSelection(ai[0]);
 }
 
