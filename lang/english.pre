@@ -90,8 +90,6 @@ DEBUG_ERROR_REVERSE
 There was an error trying to activate this feature.\nYou need gdb 7.0 or newer to use it, and it's no supported\non every platform.
 DEBUG_REVERSE_DISABLED
 You can only step back to the point where you have enabled inverse execution.\nBut it haven't been enable. Use the command "Enable Inverse Execution"\nfrom debug menu to do it.
-DEBUG_INSPECTION_NOT_AVAILABLE
-<<<Not Available>>>
 THREADS_NO_THREADS
 <<No threads>>
 THREADS_NO_INFO
@@ -1626,38 +1624,6 @@ INSPECTGRID_TYPE
 Type
 INSPECTGRID_VALUE
 Value
-INSPECTGRID_ERROR_OFFLINE_MODIFY
-Error modifying inspection.
-INSPECTGRID_NO_DEBUGGER_RUNNING
-No program is being debugged now. To start a debugging\nsession use "Run" command from "Debug" menu.
-INSPECTGRID_CANT_MODIFY_WHILE_RUNNING
-You must interrupt running in order to modify inspections.
-INSPECTGRID_WATCH_WRITE
-write
-INSPECTGRID_COULDNOT_RESCOPE_FOR_MODIFY
-The expression could not be evaluated in current scope.
-INSPECTGRID_NO_MODIFIABLE_EXPRESSION
-The expression could not be modified.
-INSPECTGRID_FORMAT_NATURAL
-natural
-INSPECTGRID_FORMAT_OCTAL
-octal
-INSPECTGRID_FORMAT_DECIMAL
-decimal
-INSPECTGRID_FORMAT_BINARY
-binary
-INSPECTGRID_FORMAT_HEXADECIMAL
-hexadecimal
-INSPECTGRID_WATCH_NO
-no
-INSPECTGRID_WATCH_READ_WRITE
-read and write
-INSPECTGRID_WATCH_READ
-read
-INSPECTGRID_TYPE_STRUCT
-struct/class
-INSPECTGRID_TYPE_ARRAY
-array
 INSPECTGRID_POPUP_SPLIT_CLASS
 &Split Class Into Its Attributes
 INSPECTGRID_POPUP_SPLIT_ARRAY
@@ -1666,6 +1632,8 @@ INSPECTGRID_POPUP_SHOW_IN_TABLE
 Show in its Own &Table
 INSPECTGRID_POPUP_SHOW_IN_TEXT
 Show full value in a new window
+INSPECTGRID_POPUP_SHOW_IN_HISTORY
+Generate value history...
 INSPECTGRID_POPUP_EXPLORE
 Explore data
 INSPECTGRID_EXTERN_VISUALIZATION
@@ -1700,8 +1668,26 @@ INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE
 Paste expression (<{1}>) from clipboard
 INSPECTGRID_POPUP_DELETE
 Remove inspection
+INSPECTGRID_WATCH_NO
+no
+INSPECTGRID_WATCH_READ
+read
+INSPECTGRID_WATCH_WRITE
+write
+INSPECTGRID_WATCH_READ_WRITE
+read and write
 INSPECTGRID_WATCH
 WatchPoint
+INSPECTGRID_FORMAT_NATURAL
+natural
+INSPECTGRID_FORMAT_BINARY
+binary
+INSPECTGRID_FORMAT_OCTAL
+octal
+INSPECTGRID_FORMAT_DECIMAL
+decimal
+INSPECTGRID_FORMAT_HEXADECIMAL
+hexadecimal
 INSPECTGRID_FORMAT
 Format
 INSPECTGRID_IMPRV_SHOW_IMPROVE
@@ -1716,26 +1702,22 @@ INSPECTGRID_IMPRV_SUBMENU
 Type based automatic improvements
 INSPECTGRID_POPUP_CLEAN_TABLE
 Cl&ear Inspections' Table
-INSPECTGRID_DEBUGGING_HAS_ENDED
-Debugging session has finished.
-INSPECTGRID_DEBUGGER_ERROR
-There was an error in debugger.
-INSPECTGRID_TABLE_NAME
-List's name:
-INSPECTGRID_LOAD_TABLE
-Load list:
-INSPECTGRID_INSPECTIONS_TABLE
-Inspections' list
-INSPECTGRID_DELETE_TABLE
-Remove list:
-INSPECTGRID_CONFIRM_DELETE_TABLE
-Do you want to erase list "<{1}>"?
-GENERAL_CONFIRM
-Confirmn
-IMATRIX_ENTER_NUM
-Enter number of elements to show
+INSPECTION_HISTORY_LOG_NONE
+Do not log values
+INSPECTION_HISTORY_LOG_CHANGE
+Log only changes
+INSPECTION_HISTORY_LOG_ALL
+Log always (on every pause)
+INSPECTION_HISTORY_SELECT_ALL
+Select all
+INSPECTION_HISTORY_COPY
+Copy
+INSPECTION_HISTORY_CLEAR_LOG
+Clear log
 IMATRIX_AUTOFIT_COLUMNS
 Auto-fit columns width
+IMATRIX_ENTER_NUM
+Enter number of elements to show
 IMATRIX_OBSOLETE
 Obsolete table
 LIBTOBUILD_CAPTION
@@ -2104,6 +2086,8 @@ MULTIFILE_WHERE
 Add to category: 
 MULTIFILE_CONFIRM_ADD
 Do you want to add <{1}> files to project?
+GENERAL_CONFIRM
+Confirmn
 OSD_ADDING_FILES
 Attaching files... 
 MULTIFILE_DIR_CAPTION

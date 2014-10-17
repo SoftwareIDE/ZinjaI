@@ -853,7 +853,7 @@ bool ProjectManager::Save (bool as_template) {
 	}
 	
 	// guardar inspecciones actuales y tablas guardadas
-	for(unsigned int i=0;i<main_window->inspection_ctrl->GetTabsCount();i++) {
+	for(int i=0;i<main_window->inspection_ctrl->GetTabsCount();i++) {
 		if (main_window->inspection_ctrl->PageIsInspectionsGrid(i)) {
 			wxArrayString expressions;
 			main_window->inspection_ctrl->GetInspectionGrid(i)->GetInspectionsList(expressions);

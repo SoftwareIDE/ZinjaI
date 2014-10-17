@@ -90,8 +90,6 @@ DEBUG_ERROR_REVERSE
 Ha ocurrido un error al intentar activar esta caracteristica.\nPara utilizarla debe instalar gdb version 7.0 o superior.\nAdema, no todas las plataformas soportan este tipo de ejecucion.
 DEBUG_REVERSE_DISABLED
 Solo se puede retroceder la ejecucion hasta el punto en donde la ejecucion hacia atras fue habilitada.\nActualmente esta caracteristica no esta habilitada. Utilice el comando \"Habilitar Ejecucion Hacia Atras\"\ndel menu de Depuracion para habilitarla.
-DEBUG_INSPECTION_NOT_AVAILABLE
-<<<No Disponible>>>
 THREADS_NO_THREADS
 <<No hay hilos>>
 THREADS_NO_INFO
@@ -1626,38 +1624,6 @@ INSPECTGRID_TYPE
 Tipo
 INSPECTGRID_VALUE
 Valor
-INSPECTGRID_ERROR_OFFLINE_MODIFY
-Error al modificar la inspeccion.
-INSPECTGRID_NO_DEBUGGER_RUNNING
-Actualmente no se esta depurando ningun programa.\nPara comenzar la depuracion utilice la opcion \"Iniciar\" del menu \"Depuracion\".
-INSPECTGRID_CANT_MODIFY_WHILE_RUNNING
-Debe interrumpir la ejecucion para poder modificar las inspecciones.
-INSPECTGRID_WATCH_WRITE
-lectura
-INSPECTGRID_COULDNOT_RESCOPE_FOR_MODIFY
-La expresion no pudo ser evaluada en el ambito actual para su modificacion.
-INSPECTGRID_NO_MODIFIABLE_EXPRESSION
-La expresion no puede ser modificada.
-INSPECTGRID_FORMAT_NATURAL
-natural
-INSPECTGRID_FORMAT_OCTAL
-octal
-INSPECTGRID_FORMAT_DECIMAL
-decimal
-INSPECTGRID_FORMAT_BINARY
-binario
-INSPECTGRID_FORMAT_HEXADECIMAL
-hexadecimal
-INSPECTGRID_WATCH_NO
-no
-INSPECTGRID_WATCH_READ_WRITE
-lectura y escritura
-INSPECTGRID_WATCH_READ
-lectura
-INSPECTGRID_TYPE_STRUCT
-estructura
-INSPECTGRID_TYPE_ARRAY
-arreglo
 INSPECTGRID_POPUP_SPLIT_CLASS
 &Separar clase en atributos
 INSPECTGRID_POPUP_SPLIT_ARRAY
@@ -1666,6 +1632,8 @@ INSPECTGRID_POPUP_SHOW_IN_TABLE
 Mostrar en &tabla separada...
 INSPECTGRID_POPUP_SHOW_IN_TEXT
 Mostrar en &ventana separada...
+INSPECTGRID_POPUP_SHOW_IN_HISTORY
+Generar historial de valores...
 INSPECTGRID_POPUP_EXPLORE
 &Explorar datos...
 INSPECTGRID_EXTERN_VISUALIZATION
@@ -1700,8 +1668,26 @@ INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE
 Pegar Expresion Desde el &Portapapeles (\"<{1}>\")
 INSPECTGRID_POPUP_DELETE
 Eliminar Inspeccion
+INSPECTGRID_WATCH_NO
+no
+INSPECTGRID_WATCH_READ
+lectura
+INSPECTGRID_WATCH_WRITE
+escritura
+INSPECTGRID_WATCH_READ_WRITE
+lectura y escritura
 INSPECTGRID_WATCH
 WatchPoint
+INSPECTGRID_FORMAT_NATURAL
+natural
+INSPECTGRID_FORMAT_BINARY
+binario
+INSPECTGRID_FORMAT_OCTAL
+octal
+INSPECTGRID_FORMAT_DECIMAL
+decimal
+INSPECTGRID_FORMAT_HEXADECIMAL
+hexadecimal
 INSPECTGRID_FORMAT
 Formato
 INSPECTGRID_IMPRV_SHOW_IMPROVE
@@ -1716,26 +1702,22 @@ INSPECTGRID_IMPRV_SUBMENU
 Mejoras automáticas según tipo
 INSPECTGRID_POPUP_CLEAN_TABLE
 &Limpiar Tabla de Inspecciones
-INSPECTGRID_DEBUGGING_HAS_ENDED
-La sesion de depuracion ha finalizado.
-INSPECTGRID_DEBUGGER_ERROR
-Ha ocurrido un error en el depurador.
-INSPECTGRID_TABLE_NAME
-Nombre de la lista:
-INSPECTGRID_LOAD_TABLE
-Cargar Lista:
-INSPECTGRID_INSPECTIONS_TABLE
-Lista de Inspecciones
-INSPECTGRID_DELETE_TABLE
-Eliminar Lista:
-INSPECTGRID_CONFIRM_DELETE_TABLE
-Desea eliminar la lista \"<{1}>\"?
-GENERAL_CONFIRM
-Confirmacion
-IMATRIX_ENTER_NUM
-Ingrese la cantidad de elementos a mostrar
+INSPECTION_HISTORY_LOG_NONE
+No registrar
+INSPECTION_HISTORY_LOG_CHANGE
+Registrar solo cuando cambia
+INSPECTION_HISTORY_LOG_ALL
+Registrar en cada pausa
+INSPECTION_HISTORY_SELECT_ALL
+Seleccionar todo
+INSPECTION_HISTORY_COPY
+Copiar
+INSPECTION_HISTORY_CLEAR_LOG
+Limpiar lista
 IMATRIX_AUTOFIT_COLUMNS
 Auto-ajustar columnas
+IMATRIX_ENTER_NUM
+Ingrese la cantidad de elementos a mostrar
 IMATRIX_OBSOLETE
 Tabla obsoleta
 LIBTOBUILD_CAPTION
@@ -2104,6 +2086,8 @@ MULTIFILE_WHERE
 Agregar en categoría
 MULTIFILE_CONFIRM_ADD
 ¿Desea agregar <{1}> archivos al proyecto?
+GENERAL_CONFIRM
+Confirmacion
 OSD_ADDING_FILES
 Agregando archivos...
 MULTIFILE_DIR_CAPTION
@@ -3003,7 +2987,7 @@ insertar directorio del archivo actual
 GENERAL_POPUP_INSERT_WORKDIR
 insertar el directorio de trabajo
 GENERAL_POPUP_INSERT_ZINJAI_DIR
-insertar el directorio de instalacion de ZinjaI
+insertar el directorio de instalación de ZinjaI
 GENERAL_POPUP_INSERT_BROWSER
 insertar comando del navegador
 GENERAL_POPUP_INSERT_SHELL_EXECUTE

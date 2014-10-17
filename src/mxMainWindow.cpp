@@ -1907,9 +1907,9 @@ void mxMainWindow::OnFileCloseAllButOne (wxCommandEvent &event) {
 void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	if (debug->IsDebugging()) debug->Stop();
 //	if (project->modified) {
-		if (config->Init.save_project)
+		if (config->Init.save_project) {
 			project->Save();
-		else {
+		} else {
 			int ret = mxMessageDialog(main_window,LANG(MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION,"Desea guardar los cambios del proyecto anterior antes de cerrarlo?"),project->GetFileName(),mxMD_YES_NO_CANCEL|mxMD_QUESTION,LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false).ShowModal();
 			if (mxMD_CANCEL&ret)
 				return;

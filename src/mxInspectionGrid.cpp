@@ -9,6 +9,7 @@
 #include "mxInspectionExplorerDialog.h"
 #include "mxInspectionMatrix.h"
 #include "mxInspectionsImprovingEditor.h"
+#include "mxInspectionHistory.h"
 using namespace std;
 
 #warning no se toma en cuenta config->Debug.use_colours_for_inspections
@@ -24,6 +25,7 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_DUPLICATE,mxInspectionGrid::OnDuplicate)
 	EVT_MENU(mxID_INSPECTION_FROM_CLIPBOARD,mxInspectionGrid::OnPasteFromClipboard)
 	EVT_MENU(mxID_INSPECTION_FROM_SOURCE,mxInspectionGrid::OnCopyFromSelecction)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_HISTORY,mxInspectionGrid::OnShowInHistory)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxInspectionGrid::OnShowInText)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionGrid::OnShowInTable)
 	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionGrid::OnExploreExpression)
@@ -315,6 +317,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	wxMenu *extern_v = new wxMenu;
 		if (!sel_is_empty && (!sel_is_vo || !di->IsSimpleType())) extern_v->Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
 		if (!sel_is_empty) extern_v->Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
+		if (!sel_is_empty) extern_v->Append(mxID_INSPECTION_SHOW_IN_HISTORY,LANG(INSPECTGRID_POPUP_SHOW_IN_HISTORY,"Generar historial de valores..."));
 		if (sel_is_vo) extern_v->Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
 	if (extern_v->GetMenuItemCount()) menu.AppendSubMenu(extern_v,LANG(INSPECTGRID_EXTERN_VISUALIZATION,"Otras &visualizaciones")); else delete extern_v;
 	if (there_are_inspections) menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
@@ -985,5 +988,16 @@ void mxInspectionGrid::ClearAll ( ) {
 		DeleteInspection(n-i-1,true);
 	inspections.Remove(0,n);
 	DeleteRows(0,n);
+}
+
+void mxInspectionGrid::OnShowInHistory (wxCommandEvent & evt) {
+	DebugManager::TemporaryScopeChange scope;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++) {
+		if (inspections[sel[i]].IsNull()) continue;
+		DebuggerInspection *di = inspections[sel[i]].di;
+		scope.ChangeIfNeeded(di);
+		new mxInspectionHistory(di->GetExpression(),di->IsFrameless());
+	}
 }
 
