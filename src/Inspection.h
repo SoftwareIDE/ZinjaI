@@ -6,7 +6,6 @@
 #include "mxUtils.h"
 #include "SingleList.h"
 #include "Flag.h"
-#warning DEBUG INCLUDE REMOVE AFTER FIX
 #include <wx/msgdlg.h>
 using namespace std;
 
@@ -188,7 +187,7 @@ struct DebuggerInspection {
 				delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
 				// delete all pending actions for this inspection to avoid future references
 				for(int j=i+1;j<pending_actions.GetSize();j++) { 
-					while (pending_actions[j].inspection==pa.inspection) 
+					while (j<pending_actions.GetSize() && pending_actions[j].inspection==pa.inspection) 
 						pending_actions.Remove(j);
 				}
 			}
@@ -432,13 +431,6 @@ private:
 	/// las instancias se destruyen a través de Destroy, esto evita que alguien de afuera le quiera hacer delete
 	~DebuggerInspection() {
 		__debug_log_method__;
-#warning DEBUG CODE REMOVE AFTER FIX
-		for(int i=0;i<pending_actions.GetSize();i++) { 
-			if (pending_actions[i].inspection==this && pending_actions[i].action) {
-				wxMessageBox("ERROR: action on deleted inspection");
-				wxMessageBox(expression);
-			}
-		}
 	}; 
 		
 	DebuggerInspection(const DebuggerInspection &); ///< esta clase no es copiable

@@ -51,6 +51,17 @@ public:
 	void OnItemExpanding(wxTreeEvent &event);
 	void OnItemExpanded(wxTreeEvent &event);
 	void OnItemTooltip(wxTreeEvent &event);
+	void OnItemPopup(wxTreeEvent &event);
+	
+	// popup menu
+	void OnAddToInspectionsGrid(wxCommandEvent &evt);
+	void OnShowInText(wxCommandEvent &evt);
+	void OnShowInTable(wxCommandEvent &evt);
+	void OnExploreExpression(wxCommandEvent &evt);
+	void OnShowInHistory(wxCommandEvent &evt);
+	void OnCopyValue(wxCommandEvent &evt);
+	void OnCopyType(wxCommandEvent &evt);
+	void OnCopyExpression(wxCommandEvent &evt);
 	
 	wxString GetRootType();
 	

@@ -628,6 +628,7 @@ static void aux_AddToCalltip(int &t, wxString &text, const wxString &full_proto,
 		aux.Replace("static ","",true);
 		aux.Replace("const ","",true);
 		aux.Replace("constexpr ","",true);
+		aux.Replace("virtual ","",true);
 		aux.Replace("volatile ","",true);
 		wxString type=aux.BeforeFirst(' ');
 		aux.Replace(" ","",true);

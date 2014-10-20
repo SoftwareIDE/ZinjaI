@@ -20,6 +20,7 @@ public:
 	void OnShowInText(wxCommandEvent &evt);
 	void OnShowInTable(wxCommandEvent &evt);
 	void OnExploreExpression(wxCommandEvent &evt);
+	void OnShowInHistory(wxCommandEvent &evt);
 	void OnCopyValue(wxCommandEvent &evt);
 	void OnCopyType(wxCommandEvent &evt);
 	void OnCopyExpression(wxCommandEvent &evt);

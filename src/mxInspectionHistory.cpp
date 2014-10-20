@@ -11,7 +11,7 @@ BEGIN_EVENT_TABLE(mxInspectionHistory,wxListBox)
 	EVT_MENU(mxID_INSPHISTORY_CLEAR_LOG,mxInspectionHistory::OnClearLog)
 	EVT_MENU(wxID_SELECTALL,mxInspectionHistory::OnSelectAll)
 	EVT_MENU(wxID_COPY,mxInspectionHistory::OnCopy)
-	EVT_RIGHT_UP(mxInspectionHistory::OnPopupMenu)
+	EVT_RIGHT_DOWN(mxInspectionHistory::OnPopupMenu)
 END_EVENT_TABLE()
 	
 mxInspectionHistory::mxInspectionHistory(wxString expression, bool is_frameless) 
@@ -106,11 +106,8 @@ void mxInspectionHistory::OnCopy (wxCommandEvent & evt) {
 }
 
 void mxInspectionHistory::OnSelectAll (wxCommandEvent & evt) {
-	for(unsigned int i=0;i<lista->GetCount();i++) { 
-		if (lista->IsSelected(i)) {
-			lista->Select(i);
-		}
-	}
+	for(unsigned int i=0;i<lista->GetCount();i++)
+		lista->Select(i);
 }
 
 void mxInspectionHistory::OnDebugPausePost ( ) {

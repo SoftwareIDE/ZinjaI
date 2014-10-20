@@ -1,12 +1,30 @@
 #include "mxInspectionExplorerWidget.h"
 #include <wx/msgdlg.h>
 #include <wx/dcscreen.h>
+#include "ids.h"
+#include "mxMainWindow.h"
+#include "mxInspectionPrint.h"
+#include "mxInspectionMatrix.h"
+#include "mxInspectionExplorerDialog.h"
+#include "mxInspectionHistory.h"
 
 BEGIN_EVENT_TABLE(mxInspectionExplorerWidget,wxTreeCtrl)
 	EVT_TREE_ITEM_EXPANDING(wxID_ANY,mxInspectionExplorerWidget::OnItemExpanding)
 	EVT_TREE_ITEM_EXPANDED(wxID_ANY,mxInspectionExplorerWidget::OnItemExpanded)
 	EVT_TREE_ITEM_COLLAPSED(wxID_ANY,mxInspectionExplorerWidget::OnItemExpanded)
 	EVT_TREE_ITEM_GETTOOLTIP(wxID_ANY,mxInspectionExplorerWidget::OnItemTooltip)
+	EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,mxInspectionExplorerWidget::OnItemPopup)
+	
+	
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxInspectionExplorerWidget::OnShowInText)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionExplorerWidget::OnShowInTable)
+	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionExplorerWidget::OnExploreExpression)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_HISTORY,mxInspectionExplorerWidget::OnShowInHistory)
+	EVT_MENU(mxID_INSPECTION_COPY_VALUE,mxInspectionExplorerWidget::OnCopyValue)
+	EVT_MENU(mxID_INSPECTION_COPY_TYPE,mxInspectionExplorerWidget::OnCopyType)
+	EVT_MENU(mxID_INSPECTION_COPY_EXPRESSION,mxInspectionExplorerWidget::OnCopyExpression)
+	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxInspectionExplorerWidget::OnAddToInspectionsGrid)
+	
 END_EVENT_TABLE()
 
 mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const wxString &expression, bool frameless) 
@@ -143,3 +161,68 @@ wxSize mxInspectionExplorerWidget::GetFullSize ( ) {
 	InvalidateBestSize(); return GetBestSize();
 }
 #endif
+
+void mxInspectionExplorerWidget::OnItemPopup (wxTreeEvent & event) {
+	wxMenu menu; 
+	
+	menu.Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
+	menu.Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
+	menu.Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
+	menu.Append(mxID_INSPECTION_SHOW_IN_HISTORY,LANG(INSPECTGRID_POPUP_SHOW_IN_HISTORY,"Generar historial de valores..."));
+	
+	menu.AppendSeparator();
+	for(int i=0;i<main_window->inspection_ctrl->GetTabsCount();i++) {
+		if (main_window->inspection_ctrl->PageIsInspectionsGrid(i))
+			menu.Append(mxID_LAST_ID+i,LANG1(LOCALGRID_POPUP_ADD_TO_INSPECTIONS_GRID,"Agregar como inspección en \"<{1}>\"",main_window->inspection_ctrl->GetPageTitle(i)));
+	}
+	menu.AppendSeparator();
+	
+	menu.Append(mxID_INSPECTION_COPY_EXPRESSION,wxString(LANG(INSPECTGRID_POPUP_COPY_EXPRESSION,"Copiar &Expresion")));
+	menu.Append(mxID_INSPECTION_COPY_TYPE,LANG(INSPECTGRID_POPUP_COPY_TYPE,"Copiar &Tipo"));
+	menu.Append(mxID_INSPECTION_COPY_VALUE,LANG(INSPECTGRID_POPUP_COPY_DATA,"Copiar &Valor"));
+	
+	PopupMenu(&menu);
+}
+
+void mxInspectionExplorerWidget::OnAddToInspectionsGrid (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	mxInspectionGrid *grid = main_window->inspection_ctrl->GetInspectionGrid(evt.GetId()-mxID_LAST_ID);
+	grid->ModifyExpression(-1,aux.di->GetExpression(),false);
+	main_window->inspection_ctrl->SetSelection(evt.GetId()-mxID_LAST_ID);
+}
+
+void mxInspectionExplorerWidget::OnShowInText (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	new mxInspectionPrint(aux.di->GetExpression(),false);
+}
+
+void mxInspectionExplorerWidget::OnShowInTable (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	new mxInspectionMatrix(aux.di->GetExpression(),false);
+}
+
+void mxInspectionExplorerWidget::OnExploreExpression (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	new mxInspectionExplorerDialog(aux.di->GetExpression(),false);
+}
+
+void mxInspectionExplorerWidget::OnShowInHistory (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	new mxInspectionHistory(aux.di->GetExpression(),false);
+}
+
+void mxInspectionExplorerWidget::OnCopyValue (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	mxUT::SetClipboardText(aux.di->GetValue());
+}
+
+void mxInspectionExplorerWidget::OnCopyType (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	mxUT::SetClipboardText(aux.di->GetValueType());
+}
+
+void mxInspectionExplorerWidget::OnCopyExpression (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	mxUT::SetClipboardText(aux.di->GetExpression());
+}
+

@@ -6,11 +6,13 @@
 #include "mxInspectionPrint.h"
 #include "mxInspectionMatrix.h"
 #include <algorithm>
+#include "mxInspectionHistory.h"
 
 BEGIN_EVENT_TABLE(mxLocalsGrid,wxGrid)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxLocalsGrid::OnShowInText)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxLocalsGrid::OnShowInTable)
 	EVT_MENU(mxID_INSPECTION_EXPLORE,mxLocalsGrid::OnExploreExpression)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_HISTORY,mxLocalsGrid::OnShowInHistory)
 	EVT_MENU(mxID_INSPECTION_COPY_VALUE,mxLocalsGrid::OnCopyValue)
 	EVT_MENU(mxID_INSPECTION_COPY_TYPE,mxLocalsGrid::OnCopyType)
 	EVT_MENU(mxID_INSPECTION_COPY_EXPRESSION,mxLocalsGrid::OnCopyExpression)
@@ -111,9 +113,10 @@ void mxLocalsGrid::OnCellPopupMenu (int row, int col) {
 	menu.Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
 	menu.Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
 	menu.Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
+	menu.Append(mxID_INSPECTION_SHOW_IN_HISTORY,LANG(INSPECTGRID_POPUP_SHOW_IN_HISTORY,"Generar historial de valores..."));
 	
 	menu.AppendSeparator();
-	for(unsigned int i=0;i<main_window->inspection_ctrl->GetTabsCount();i++) {
+	for(int i=0;i<main_window->inspection_ctrl->GetTabsCount();i++) {
 		if (main_window->inspection_ctrl->PageIsInspectionsGrid(i))
 			menu.Append(mxID_LAST_ID+i,LANG1(LOCALGRID_POPUP_ADD_TO_INSPECTIONS_GRID,"Agregar como inspección en \"<{1}>\"",main_window->inspection_ctrl->GetPageTitle(i)));
 	}
@@ -174,5 +177,11 @@ void mxLocalsGrid::OnCopyExpression (wxCommandEvent & evt) {
 
 void mxLocalsGrid::OnCopyAll (wxCommandEvent & evt) {
 	CopyToClipboard(false);
+}
+
+void mxLocalsGrid::OnShowInHistory (wxCommandEvent & evt) {
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++)
+		new mxInspectionHistory(mxGrid::GetCellValue(sel[i],LG_COL_NAME),false);
 }
 
