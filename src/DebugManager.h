@@ -163,7 +163,7 @@ private:
 	long tty_pid;
 	bool tty_running;
 #endif
-	wxString current_file;
+//	wxString current_file;
 	mxSource *current_source; ///< el fuente en cual se marco la ultima posicion para ejecutar
 	mxSource *notitle_source; ///< el ultimo fuente sin nombre que se le procesaron los breakpoints
 	int current_handle;
@@ -173,7 +173,6 @@ private:
 	wxInputStream *input;
 	long pid;
 //	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
-	wxString RewriteExpressionForBreaking(wxString expr);
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
 	BreakPointInfo *pause_breakpoint; ///< puntero al breakpoint que hay que agregar/sacar en una pausa, para el usuario los modifica durante la ejecución
 private:
@@ -247,8 +246,6 @@ public:
 	bool SelectFrame(long frame_id, long frame_level); 
 	bool ToggleInspectionFreeze(int n);
 	bool DoThat(wxString what);
-	bool GetArgs (wxArrayString &args, wxString level);
-	bool GetLocals (wxArrayString &locals, wxString level);
 	void PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints);
 	
 	bool Attach(long pid, mxSource *source);

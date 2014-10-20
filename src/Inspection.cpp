@@ -94,7 +94,7 @@ bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool s
 	if (!debug->CanTalkToGDB()) return false;
 	
 	// auxiliares para escribir la expresión final a partir de la expresión base y los nombre de los hijos
-	wxString base_exp = set_full_expressions?debug->RewriteExpressionForBreaking(expression):"";
+	wxString base_exp = set_full_expressions?RewriteExpressionForBreaking(expression):"";
 	bool is_array = IsArray(); wxString base_pre = is_array?"[":".", base_post=is_array?"]":"";
 	
 	// crear y obtener vos hijos
@@ -314,3 +314,43 @@ void DebuggerInspection::UpdateAllManual ( ) {
 	}
 }
 
+wxString DebuggerInspection::RewriteExpressionForBreaking(wxString main_expr) {
+	int i=0,l=main_expr.Len();
+	bool comillas=false;
+	int parentesis=0; bool first_level0_parentesis=true;
+	while (i<l) { 	// agregar parentesis si la expresion no es simple
+		char c=main_expr[i];
+		if (c=='\'') { 
+			if (main_expr[++i]=='\\') i++;
+		} else if (c=='\"') {
+			comillas=!comillas;
+		} else if (!comillas) {
+			if (first_level0_parentesis && c=='(') {
+				first_level0_parentesis=false;
+				parentesis++;
+			} else if (parentesis) {
+				if (c==')') parentesis--;
+			} else {
+				if (c=='[') {
+					int l=1; i++;
+					while (l) {
+						c=main_expr[i];
+						if (c=='\'') { if (main_expr[++i]=='\\') i++; }
+						else if (c=='\"') comillas=!comillas;
+						else if (c=='[') l++;
+						else if (c==']') l--;
+						i++;
+					}
+				} else if (c=='@') {
+					break;
+				} else if ( ! ( (c>='a'&&c<='z') || (c>='A'&&c<='Z') || (c>='0'&&c<='9') || c=='_' || c=='.') ) {
+					main_expr.Prepend(wxChar('('));
+					main_expr.Append(wxChar(')'));
+					break;
+				}
+			}
+		}
+		i++;
+	}
+	return main_expr;
+}

@@ -1473,105 +1473,54 @@ bool DebugManager::DoThat(wxString what) {
 }
 
 
-wxString DebugManager::RewriteExpressionForBreaking(wxString main_expr) {
-	int i=0,l=main_expr.Len();
-	bool comillas=false;
-	int parentesis=0; bool first_level0_parentesis=true;
-	while (i<l) { 	// agregar parentesis si la expresion no es simple
-		char c=main_expr[i];
-		if (c=='\'') { 
-			if (main_expr[++i]=='\\') i++;
-		} else if (c=='\"') {
-			comillas=!comillas;
-		} else if (!comillas) {
-			if (first_level0_parentesis && c=='(') {
-				first_level0_parentesis=false;
-				parentesis++;
-			} else if (parentesis) {
-				if (c==')') parentesis--;
-			} else {
-				if (c=='[') {
-					int l=1; i++;
-					while (l) {
-						c=main_expr[i];
-						if (c=='\'') { if (main_expr[++i]=='\\') i++; }
-						else if (c=='\"') comillas=!comillas;
-						else if (c=='[') l++;
-						else if (c==']') l--;
-						i++;
-					}
-				} else if (c=='@') {
-					break;
-				} else if ( ! ( (c>='a'&&c<='z') || (c>='A'&&c<='Z') || (c>='0'&&c<='9') || c=='_' || c=='.') ) {
-					main_expr.Prepend(wxChar('('));
-					main_expr.Append(wxChar(')'));
-					break;
-				}
-			}
-		}
-		i++;
-	}
-	return main_expr;
-}
-
-//void DebugManager::ClearInspections() {
-//	if (!debugging || waiting) return;
-//	for (int i=0;i<inspections_count;i++)
-//		if (inspections[i].on_scope && inspections[i].is_vo)
-//			SendCommand(_T("-var-delete "),inspections[i].name);
-//	inspections.clear();
-//	inspection_grid->DeleteRows(0,inspections_count);
-//	inspections_count=0;
+//bool DebugManager::GetArgs (wxArrayString &array, wxString level) {
+//	if (!debugging || waiting) return false;
+//	wxString args_list = SendCommand(_T("-stack-list-arguments 0 "),level+" "+level);
+//	const wxChar * chag = args_list.c_str();
+//	bool comillas = false;
+//	int i=args_list.Find('[')+1;
+//	while (chag[i]!='[') 
+//		i++; 
+//	int p=++i;
+//	while (chag[i]!=']' && !comillas) {
+//		if (chag[i]=='\"' && !chag[i-1]=='\\')
+//			comillas=!comillas;
+//		i++;
+//	}
+//	wxString s(args_list.SubString(p,i-1));
+//	wxString args, sub;
+//	int j=0, l=s.Len();
+//	const wxChar * choa = s.c_str();
+//	while (true) {
+//		while ( j<l && !(choa[j]=='n' && choa[j+1]=='a' && choa[j+2]=='m' && choa[j+3]=='e' && choa[j+4]=='=') )
+//			j++;
+//		if (j==l) break;
+//		j+=6;
+//		p=j;
+//		while (choa[j]!='\"')
+//			j++;
+//		array.Add(s.SubString(p,j-1));
+//	}
+//	return true;
 //}
 
-bool DebugManager::GetArgs (wxArrayString &array, wxString level) {
-	if (!debugging || waiting) return false;
-	wxString args_list = SendCommand(_T("-stack-list-arguments 0 "),level+" "+level);
-	const wxChar * chag = args_list.c_str();
-	bool comillas = false;
-	int i=args_list.Find('[')+1;
-	while (chag[i]!='[') 
-		i++; 
-	int p=++i;
-	while (chag[i]!=']' && !comillas) {
-		if (chag[i]=='\"' && !chag[i-1]=='\\')
-			comillas=!comillas;
-		i++;
-	}
-	wxString s(args_list.SubString(p,i-1));
-	wxString args, sub;
-	int j=0, l=s.Len();
-	const wxChar * choa = s.c_str();
-	while (true) {
-		while ( j<l && !(choa[j]=='n' && choa[j+1]=='a' && choa[j+2]=='m' && choa[j+3]=='e' && choa[j+4]=='=') )
-			j++;
-		if (j==l) break;
-		j+=6;
-		p=j;
-		while (choa[j]!='\"')
-			j++;
-		array.Add(s.SubString(p,j-1));
-	}
-	return true;
-}
-
-bool DebugManager::GetLocals (wxArrayString &array, wxString level) {
-	if (!debugging || waiting) return false;
-	wxString args_list = SendCommand(_T("-stack-list-locals 0"));
-	const wxChar * choa = args_list.c_str();
-	int j=args_list.Find('[')+1, l= args_list.Len();
-	while (true) {
-		while ( j<l && !(choa[j]=='n' && choa[j+1]=='a' && choa[j+2]=='m' && choa[j+3]=='e' && choa[j+4]=='=') )
-			j++;
-		if (j==l) break;
-		j+=6;
-		int p=j;
-		while (choa[j]!='\"')
-			j++;
-		array.Add(args_list.SubString(p,j-1));
-	}
-	return true;
-}
+//bool DebugManager::GetLocals (wxArrayString &array, wxString level) {
+//	if (!debugging || waiting) return false;
+//	wxString args_list = SendCommand(_T("-stack-list-locals 0"));
+//	const wxChar * choa = args_list.c_str();
+//	int j=args_list.Find('[')+1, l= args_list.Len();
+//	while (true) {
+//		while ( j<l && !(choa[j]=='n' && choa[j+1]=='a' && choa[j+2]=='m' && choa[j+3]=='e' && choa[j+4]=='=') )
+//			j++;
+//		if (j==l) break;
+//		j+=6;
+//		int p=j;
+//		while (choa[j]!='\"')
+//			j++;
+//		array.Add(args_list.SubString(p,j-1));
+//	}
+//	return true;
+//}
 
 //bool DebugManager::ModifyInspectionWatch(int num, bool read, bool write) {
 //	if (waiting || !debugging) return false;

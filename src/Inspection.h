@@ -6,6 +6,8 @@
 #include "mxUtils.h"
 #include "SingleList.h"
 #include "Flag.h"
+#warning DEBUG INCLUDE REMOVE AFTER FIX
+#include <wx/msgdlg.h>
 using namespace std;
 
 ////! Información acerca de una inspección en el depurador
@@ -182,8 +184,14 @@ struct DebuggerInspection {
 			} else if (pa.action) {
 				if (debug->debugging||!pa.requires_debug_pause)
 					(pa.inspection->*pa.action)();
-			} else 
+			} else {
 				delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
+				// delete all pending actions for this inspection to avoid future references
+				for(int j=i+1;j<pending_actions.GetSize();j++) { 
+					while (pending_actions[j].inspection==pa.inspection) 
+						pending_actions.Remove(j);
+				}
+			}
 		}
 		pending_actions.Resize(dont_run_now_count);
 	}
@@ -424,6 +432,13 @@ private:
 	/// las instancias se destruyen a través de Destroy, esto evita que alguien de afuera le quiera hacer delete
 	~DebuggerInspection() {
 		__debug_log_method__;
+#warning DEBUG CODE REMOVE AFTER FIX
+		for(int i=0;i<pending_actions.GetSize();i++) { 
+			if (pending_actions[i].inspection==this && pending_actions[i].action) {
+				wxMessageBox("ERROR: action on deleted inspection");
+				wxMessageBox(expression);
+			}
+		}
 	}; 
 		
 	DebuggerInspection(const DebuggerInspection &); ///< esta clase no es copiable
@@ -603,6 +618,7 @@ public:
 	// some ramdon inspections related functions
 	static bool TryToImproveExpression (const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
 	static bool TryToImproveExpression (wxString type, wxString &new_expr, const wxString &expr);
+	static wxString RewriteExpressionForBreaking(wxString expr);
 	
 	static wxString GetUserStatusText(DEBUG_INSPECTION_MESSAGE type);
 };
