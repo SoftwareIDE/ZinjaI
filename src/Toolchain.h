@@ -61,6 +61,8 @@ struct Toolchain {
 	static int toolchains_count; ///< number of items in toolchains
 	static void GetNames(wxArrayString &names, bool exclude_extern=false); ///< populate the array with known toolchains' names
 	static Toolchain *GetToolchain(const wxString &name);
+	
+	bool IsExtern() const { return type>=TC_EXTERN; }
 };
 
 extern Toolchain current_toolchain; ///< toolchain in use, setted by Toolchain::SelectToolchain

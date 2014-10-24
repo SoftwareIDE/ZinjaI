@@ -35,6 +35,7 @@
 #include "execution_workaround.h"
 #include "mxWxfbInheriter.h"
 #include "MenusAndToolsConfig.h"
+#include "mxExternCompilerOutput.h"
 using namespace std;
 
 #define ICON_LINE(filename) (wxString("0 ICON \"")<<filename<<"\"")
@@ -1079,7 +1080,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	compile_was_ok=true; // inicialmente no hay errores, se va a activar si un paso falla
 	
 	// si se encarga otro....
-	if (current_toolchain.type>=TC_EXTERN) {
+	if (current_toolchain.IsExtern()) {
 		current_step=0;
 		steps_count=1;
 		SaveAll(false);
@@ -1913,7 +1914,7 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 
 void ProjectManager::Clean() {
 	
-	if (current_toolchain.type>=TC_EXTERN) {
+	if (current_toolchain.IsExtern()) {
 		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("clean");
 		compile_and_run->killed=true; // para que no lo procese el evento main_window->ProcessKilled
 		compile_and_run->pid=CompileWithExternToolchain(compile_and_run,false);
@@ -2673,7 +2674,7 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");
-	main_window->AddExternCompilerOutput("> ",command);
+	main_window->extern_compiler_output->AddLine("> ",command);
 	return mxUT::Execute(path,command, wxEXEC_ASYNC/*|(step->hide_window?0:wxEXEC_NOHIDE)*/,compile_and_run->process);
 }
 
@@ -3457,7 +3458,7 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 
 void ProjectManager::SetActiveConfiguration (project_configuration * aconf) {
 	active_configuration=aconf;
-	main_window->SetToolchainMode(Toolchain::SelectToolchain().type>=TC_EXTERN);
+	main_window->SetToolchainMode(Toolchain::SelectToolchain().IsExtern());
 }
 
 wxString ProjectManager::GetTempFolder (bool create) {

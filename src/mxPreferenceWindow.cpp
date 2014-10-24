@@ -578,7 +578,7 @@ static void RecreateAllToolbars ( ) {
 
 void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
-	if (Toolchain::GetToolchain(files_toolchain->GetValue())->type==TC_EXTERN) {
+	if (Toolchain::GetToolchain(files_toolchain->GetValue())->IsExtern()) {
 		mxMessageDialog(this,LANG(PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN,"La herramienta de compilación por defecto (pestaña Programa/Proyecto) no puede ser de tipo externa"),LANG(PREFERENCES_CAPTION,"Preferencias"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return;
 	}

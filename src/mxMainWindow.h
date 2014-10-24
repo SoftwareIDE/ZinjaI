@@ -37,6 +37,7 @@ class wxTreeCtrl;
 class wxTextCtrl;
 class compile_and_run_struct_single;
 class project_file_item;
+class mxExternCompilerOutput;
 
 template<class T> class SingleList;
 
@@ -327,6 +328,7 @@ public:
 	void OnSymbolTreeDef(wxCommandEvent &event);
 	void OnSymbolTreeIncludes(wxCommandEvent &event);
 
+	void ShowSpecilaUnnamedSource(const wxString &tab_name, const wxArrayString &lines);
 	void OnCompilerTreeShowFull(wxCommandEvent &event);
 	void OnCompilerTreePopup(wxTreeEvent &event);
 
@@ -472,7 +474,7 @@ public:
 		wxTreeItemId root, state, errors, warnings, all;
 	} compiler_tree;
 	//! Componentes del árbol de resultados de la compilación
-	wxListBox *extern_compiler_output;
+	mxExternCompilerOutput *extern_compiler_output;
 	//! this sizer will hold both compiler_tree.treeCtrl and extern_compiler_output, but only one could be visible at a given time
 	wxPanel *compiler_panel;
 
@@ -540,12 +542,6 @@ public:
 	///@brief set the message in compiler panel and status bar
 	void SetCompilingStatus(const wxString &message, bool also_statusbar=true); 
 	
-	///@brief clear the content of extern_compiler_output
-	void ClearExternCompilerOutput(); 
-	///@brief adds a new line to the content of extern_compiler_output
-	void AddExternCompilerOutput(const wxString &pre, const wxString &message); 
-	
-	void OnExternCompilerOutput(wxCommandEvent &evt);
 	void OnSelectErrorCommon(const wxString &error); ///< to be called from OnExternCompilerOutput y OnSelectError
 	
 	

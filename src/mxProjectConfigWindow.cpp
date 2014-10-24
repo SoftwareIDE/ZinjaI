@@ -111,7 +111,7 @@ mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent, wxWindowID id, co
 	notebook->AddPage(CreateLibsPanel(notebook), LANG(PROJECTCONFIG_LIBRARIES,"Bibliotecas"));
 
 	wx_noexe.EnableAll(!configuration->dont_generate_exe);
-	wx_extern.EnableAll(Toolchain::GetInfo(toolchains_combo->GetStringSelection()).type<TC_EXTERN);
+	wx_extern.EnableAll(!Toolchain::GetInfo(toolchains_combo->GetStringSelection()).IsExtern());
 	wx_noscript.EnableAll(configuration->exec_method);
 	
 	// crear los botones de aceptar y cancelar
@@ -551,7 +551,7 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG1(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE,"Desea establecer la configuracion \"<{1}>\" como la configuracion a utilizar?",configuration->name),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
 		project->SetActiveConfiguration(configuration);
 	else
-		main_window->SetToolchainMode(Toolchain::SelectToolchain().type>=TC_EXTERN);
+		main_window->SetToolchainMode(Toolchain::SelectToolchain().IsExtern());
 	Close();
 }
 
@@ -1069,7 +1069,7 @@ void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
 }
 
 void mxProjectConfigWindow::OnComboToolchainChange(wxCommandEvent &evt) {
-	wx_extern.EnableAll(Toolchain::GetInfo(toolchains_combo->GetStringSelection()).type<TC_EXTERN);
+	wx_extern.EnableAll(!Toolchain::GetInfo(toolchains_combo->GetStringSelection()).IsExtern());
 }
 
 void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {

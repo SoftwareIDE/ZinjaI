@@ -71,6 +71,7 @@
 #include "mxSignalsSettings.h"
 #include "MenusAndToolsConfig.h"
 #include "mxShortcutsDialog.h"
+#include "mxExternCompilerOutput.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -377,7 +378,6 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_END_PROCESS(wxID_ANY, mxMainWindow::OnProcessTerminate)
 	
 	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, mxMainWindow::OnSelectTreeItem)
-	EVT_LISTBOX_DCLICK(mxID_EXTERN_COMPILER_OUTPUT,mxMainWindow::OnExternCompilerOutput)
 	
 	EVT_HTML_LINK_CLICKED(wxID_ANY, mxMainWindow::OnQuickHelpLink)
 	
@@ -679,14 +679,16 @@ void mxMainWindow::OnCompilerTreePopup(wxTreeEvent &event) {
 }
 
 void mxMainWindow::OnCompilerTreeShowFull(wxCommandEvent &event) {
+	ShowSpecilaUnnamedSource("<ultima_compilacion>",compiler->full_output);
+}
+
+void mxMainWindow::ShowSpecilaUnnamedSource(const wxString &tab_name, const wxArrayString &lines) {
 	if (config->Init.show_welcome) main_window->ShowWelcome(false);
-	wxString name = "<ultima_compilacion>";
-	mxSource* source = new mxSource(notebook_sources, AvoidDuplicatePageText(name));
+	mxSource* source = new mxSource(notebook_sources, AvoidDuplicatePageText(tab_name));
 	source->SetStyle(false);
-	for (unsigned int i=0;i<compiler->full_output.GetCount();i++)
-		source->AppendText(compiler->full_output[i]+"\n");
-	notebook_sources->AddPage(source, name ,true, *bitmaps->files.other);
-	if (!project) source->treeId = AddToProjectTreeSimple(name,FT_OTHER);
+	for (unsigned int i=0;i<lines.GetCount();i++) source->AppendText(lines[i]+"\n");
+	notebook_sources->AddPage(source, tab_name ,true, *bitmaps->files.other);
+	if (!project) source->treeId = AddToProjectTreeSimple(tab_name,FT_OTHER);
 	source->SetModify(false);
 	source->SetReadOnlyMode(ROM_SPECIAL);
 	source->SetFocus();
@@ -1528,7 +1530,7 @@ wxPanel* mxMainWindow::CreateCompilerTree() {
 	
 	// added for enabling extern toolchains, output will go to a textbox instead of a tree
 	wxBoxSizer *compiler_sizer = new wxBoxSizer(wxVERTICAL);
-	extern_compiler_output = new wxListBox(compiler_panel,mxID_EXTERN_COMPILER_OUTPUT,wxDefaultPosition,wxDefaultSize);
+	extern_compiler_output = new mxExternCompilerOutput(compiler_panel);
 	wxSizerFlags sf; sf.Expand().Proportion(1).Border(0,0);
 	compiler_sizer->Add(compiler_tree.treeCtrl,sf);
 	compiler_sizer->Add(extern_compiler_output,sf);
@@ -4238,6 +4240,7 @@ void mxMainWindow::OnFileProperties (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnViewNextError (wxCommandEvent &event) {
+	if (current_toolchain.IsExtern()) { extern_compiler_output->OnErrorNext(); return; }
 	wxTreeCtrl *t = compiler_tree.treeCtrl;
 	wxTreeItemId ip,it = t->GetSelection();
 	if (!it.IsOk() || it==compiler_tree.root || it==compiler_tree.state) it=ip=compiler_tree.root; else {
@@ -4282,6 +4285,7 @@ void mxMainWindow::OnViewNextError (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnViewPrevError (wxCommandEvent &event) {
+	if (current_toolchain.IsExtern()) { extern_compiler_output->OnErrorPrev(); return; }
 	wxTreeCtrl *t = compiler_tree.treeCtrl;
 	wxTreeItemId ip,it = t->GetSelection();
 	if (!it.IsOk() || it==compiler_tree.root || it==compiler_tree.state) it=ip=compiler_tree.root; else {
@@ -4670,27 +4674,12 @@ void mxMainWindow::SetToolchainMode (bool is_extern) {
 }
 
 void mxMainWindow::SetCompilingStatus (const wxString &message, bool also_statusbar) {
-	if (current_toolchain.type>=TC_EXTERN) AddExternCompilerOutput("= ",message);
+	if (current_toolchain.IsExtern()) extern_compiler_output->AddLine("= ",message);
 	else {
 		compiler_tree.treeCtrl->SetItemText(compiler_tree.state,message);
 		if (also_statusbar) main_window->compiler_tree.treeCtrl->SelectItem(main_window->compiler_tree.state);
 	}
 	if (also_statusbar) main_window->SetStatusText(message);
-}
-
-void mxMainWindow::ClearExternCompilerOutput ( ) {
-	extern_compiler_output->Clear();
-}
-
-void mxMainWindow::AddExternCompilerOutput(const wxString &pre, const wxString &message) {
-	extern_compiler_output->Append(pre+message);
-	extern_compiler_output->ScrollLines(1);
-}
-
-void mxMainWindow::OnExternCompilerOutput (wxCommandEvent & evt) {
-	wxString str=extern_compiler_output->GetStringSelection().AfterFirst(' ');
-	if (str.Len()) OnSelectErrorCommon(str);
-	
 }
 
 void mxMainWindow::OnSelectErrorCommon (const wxString & error) {

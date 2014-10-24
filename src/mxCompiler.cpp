@@ -13,6 +13,8 @@
 #include "mxUtils.h"
 #include "Toolchain.h"
 #include "CodeHelper.h"
+#include "mxExternCompilerOutput.h"
+
 
 #define EN_COMPOUT_FATAL_ERROR ": fatal error: "
 #define EN_COMPOUT_ERROR ": error: "
@@ -153,7 +155,7 @@ mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTree
 
 void mxCompiler::BuildOrRunProject(bool run, bool for_debug, bool prepared) {
 	if (project->GetWxfbActivated() && project->GetWxfbConfiguration()->working) return;
-	main_window->ClearExternCompilerOutput();
+	main_window->extern_compiler_output->Clear();
 	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
 DEBUG_INFO("wxYield:in  mxCompiler::BuildOrRunProject");
 	wxYield();
@@ -418,7 +420,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
 		
 		// reemplazar templates para que sea más legible
-		if (config->Init.beautify_compiler_errors && current_toolchain.type>=TC_EXTERN) UnSTD(nice_error_line);
+		if (config->Init.beautify_compiler_errors && !current_toolchain.IsExtern()) UnSTD(nice_error_line);
 		
 		// averiguar si es error, warning, o parte de un error/warning anterior/siguiente
 		CAR_ERROR_LINE action=ParseSomeErrorsOneLine(compile_and_run,error_line);
@@ -489,14 +491,14 @@ void mxCompiler::ParseSomeExternErrors(compile_and_run_struct_single *compile_an
 		error_line=input1.ReadLine();
 		if (error_line.Len()==0) continue;
 		compile_and_run->full_output.Add(error_line);
-		main_window->AddExternCompilerOutput("< ",error_line);
+		main_window->extern_compiler_output->AddLine("< ",error_line);
 	}
 	wxTextInputStream input2(*(process->GetErrorStream()));	
 	while ( process->IsErrorAvailable() ) {
 		error_line=input2.ReadLine();
 		if (error_line.Len()==0) continue;
 		compile_and_run->full_output.Add(error_line);
-		main_window->AddExternCompilerOutput("!! ",error_line);
+		main_window->extern_compiler_output->AddLine("!! ",error_line);
 	}
 }
 

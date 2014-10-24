@@ -175,7 +175,7 @@ const Toolchain &Toolchain::GetInfo (const wxString &fname) {
 
 void Toolchain::GetNames (wxArrayString & names, bool exclude_extern) {
 	for(int i=0;i<toolchains_count;i++) { 
-		if (!exclude_extern || toolchains[i].type<TC_EXTERN)
+		if (!exclude_extern || !toolchains[i].IsExtern())
 			names.Add(toolchains[i].file);
 	}
 }
@@ -195,7 +195,7 @@ void Toolchain::SetArgumets ( ) {
 			aux1_SetProjectArguments(arguments[i][1],project->active_configuration->toolchain_arguments[i]);
 	}
 	// if its extern, ProjectManager will apply arguments, but if its not we must do it now so they became transparent for clients
-	if (type<TC_EXTERN) {
+	if (!IsExtern()) {
 		aux2_SetProjectArguments(c_compiler,arguments);
 		aux2_SetProjectArguments(cpp_compiler,arguments);
 		aux2_SetProjectArguments(linker,arguments);

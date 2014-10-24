@@ -1,3 +1,5 @@
+evitar calltips de inspecciones si el raton no esta dentro del codigo visible
+
 show stopers:
 	
 	* IMPORTANTE: el nuevo explorador de inspecciones basado en mxInspectionExplorerWidget no
