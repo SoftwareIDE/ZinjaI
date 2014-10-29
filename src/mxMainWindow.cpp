@@ -4682,7 +4682,7 @@ void mxMainWindow::SetCompilingStatus (const wxString &message, bool also_status
 	if (also_statusbar) main_window->SetStatusText(message);
 }
 
-void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
+void mxMainWindow::OnSelectErrorCommon (const wxString & error, bool set_focus_timer) {
 	long line;
 	wxString preline=error[1]==':'?error.AfterFirst(':').AfterFirst(':'):error.AfterFirst(':');
 	if ( preline.BeforeFirst(':').ToLong(&line) ) {
@@ -4721,9 +4721,10 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error) {
 			if (i==preline.Len()) {
 				n+=source->PositionFromLine(line-1)-1;
 				source->SelectError(0,n,n);
-#if defined(_WIN32) || defined(__WIN32__)
-				SetFocusToSourceAfterEvents();
+#ifndef __WIN32__
+				if (set_focus_timer)
 #endif
+					SetFocusToSourceAfterEvents();
 				ShowCompilerTreePanel();
 				return;
 			}

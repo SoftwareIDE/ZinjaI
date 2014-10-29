@@ -542,7 +542,7 @@ public:
 	///@brief set the message in compiler panel and status bar
 	void SetCompilingStatus(const wxString &message, bool also_statusbar=true); 
 	
-	void OnSelectErrorCommon(const wxString &error); ///< to be called from OnExternCompilerOutput y OnSelectError
+	void OnSelectErrorCommon(const wxString &error, bool set_focus_timer=false); ///< to be called from OnExternCompilerOutput y OnSelectError
 	
 	
 	SingleList<mxSource::MacroAction> *m_macro;

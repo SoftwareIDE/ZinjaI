@@ -86,7 +86,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	int version_saved=0; // vesion del zinjai que guardo al proyecto (suele diferir de la requerida)
 	int files_to_open=0, num_files_opened=0; // para la barra de progreso
 	
-		
+	
 	main_window->SetStatusText(wxString(LANG(PROJMNGR_OPENING,"Abriendo"))<<" \""+name.GetFullPath()+"\"...");
 	main_window->notebook_sources->Freeze();
 	

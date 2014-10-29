@@ -2838,6 +2838,12 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	// no mostrar tooltips si no es la pestana del notebook seleccionada, o el foco no esta en esta ventana
 	if (!main_window->IsActive() || main_window->focus_source!=this) return; 
 	
+	wxRect psrc = GetScreenRect();
+	wxPoint pmouse = wxGetMousePosition()-psrc.GetTopLeft();
+	if (pmouse.x<0||pmouse.y<0) return;
+	if (pmouse.x>=psrc.GetWidth()||pmouse.y>=psrc.GetHeight()) return;
+	
+	
 	int p = event.GetPosition();
 	if (p==-1) {
 		int x=event.GetX(), y=event.GetY();
@@ -2860,15 +2866,6 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 		s = WordStartPosition(p,true);
 		if (s!=e) {
 			wxString key = GetTextRange(s,e);
-//			wxString bkey=key, type = FindTypeOf(key,s);
-//			if ( s!=SRC_PARSING_ERROR && type.Len() ) {
-//				while (s>0) {
-//					type<<_("*");
-//					s--;
-//				}
-//				ShowBaloon ( bkey +": "+type , p );
-//			}
-			
 			// buscar en la funcion/metodo
 			wxString bkey=key, type = FindTypeOf(e-1,s);
 			if ( s!=SRC_PARSING_ERROR && type.Len() ) {
