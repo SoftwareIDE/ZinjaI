@@ -1,13 +1,8 @@
-evitar calltips de inspecciones si el raton no esta dentro del codigo visible
-
-show stopers:
 	
-	* IMPORTANTE: el nuevo explorador de inspecciones basado en mxInspectionExplorerWidget no
-				  actualiza los datos al avanzar el programa!
-
 	* IMPORTANTE: ver si las inspecciones abrevian o no arreglos de muchos elementos (el set print repeat de gdb)
+
 	
-	* guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
+bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 
 
 bug: personalizar toolbar durante la depuracion (y tal vez en pantalla completa tambien)
@@ -15,11 +10,6 @@ bug: personalizar toolbar durante la depuracion (y tal vez en pantalla completa 
 
 
 Otras:
-
-
-enum const
-	agregar el nombre del enum al parser además de las constantes (hecho?)
-
 
 corregir el problema del drag and drop que le jode a nestor
 
@@ -29,7 +19,6 @@ reacomodar markers en las ediciones por lineas (ctrl+L, ctrl+T, Ctrl+Shift+T)
 
 posibles bugs:
 	revisar lo de agregar .cpp al guardar
-	revisar el icono que pone a la nueva pestaña al duplicar vista
 	revisar lo de correr un cpp cuando se intenta correr un h
 
 mas opciones para crear un proyecto:

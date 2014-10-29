@@ -18,6 +18,11 @@ class mxInspectionExplorerWidget : public wxTreeCtrl, public myDIEventHandler  {
 			if (!is_open) retval<<": "<<di->GetValue();
 			return retval;
 		}
+		wxString MakeItemLabel(DEBUG_INSPECTION_MESSAGE err) { // para cuando hay errores
+			wxString retval = di->GetExpression();
+			retval<<": "<<DebuggerInspection::GetUserStatusText(err);
+			return retval;
+		}
 	};
 	
 	bool hidden_root;
@@ -37,7 +42,9 @@ public:
 		virtual ~EventListener(){}
 	} * event_listener;
 	void SetEventListener(EventListener *s);
-//	void Expand(int pos);
+	
+	/// Cuando una inspeccion deja de ser valida, esta función elimina las hijas del arbol y del sistema de depuracion
+	void DeleteChildrenInspections(int pos, bool destroy_root=false);
 	
 	// eventos generados por DebuggerInspection
 	void OnDICreated(DebuggerInspection *di);

@@ -36,7 +36,6 @@ mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const
 	if (!hidden_root) {
 		DebuggerInspection *di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_DONT_USE_HELPER,this,false);
 		/*int p =*/ AddItem(NULL,di,true);
-		wxTreeCtrl::SetItemHasChildren(GetRootItem(),!di->IsSimpleType());
 //		wxTreeCtrl::Expand(GetRootItem());
 	}
 }
@@ -53,38 +52,48 @@ void mxInspectionExplorerWidget::AddExpression (wxString expression, bool framel
 	wxTreeItemId item = GetRootItem(); AddItem(&item,DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_DONT_USE_HELPER,this,false),true);
 }
 
-//void mxInspectionExplorerWidget::Expand (int pos) {
-	
-//	wxTreeCtrl::Expand(aux.item);
-//}
-
-
 void mxInspectionExplorerWidget::OnDICreated (DebuggerInspection * di) {
-	int pos = inspections.Find(di); 
-	if (pos==inspections.NotFound()) return; // no deberia pasar
+	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return;// no deberia pasar
 	SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel());
+	DeleteChildrenInspections(pos);
+	wxTreeCtrl::SetItemHasChildren(GetRootItem(),!di->IsSimpleType());
 }
 
 void mxInspectionExplorerWidget::OnDIError (DebuggerInspection * di) {
-//	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return; // no deberia pasar
-}
-
-void mxInspectionExplorerWidget::OnDIValueChanged (DebuggerInspection * di) {
-//	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return; // no deberia pasar
-//	SetItemText(inspections[pos].item,inspections[pos].di->GetExpression()+": "<<inspections[pos].di->GetValue());
+	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return; // no deberia pasar
+	SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel(DIMSG_ERROR));
+	DeleteChildrenInspections(pos);
 }
 
 void mxInspectionExplorerWidget::OnDIOutOfScope (DebuggerInspection * di) {
-//	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return; // no deberia pasar
-//	SetItemText(inspections[pos].item,inspections[pos].di->GetExpression()+": "<<LANG(INSPECTGRID_OUT_OF_SCOPE,"<<< fuera de ámbito >>>"));
+	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return; // no deberia pasar
+	SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel(DIMSG_OUT_OF_SCOPE));
+	DeleteChildrenInspections(pos);
 }
 
+void mxInspectionExplorerWidget::OnDIValueChanged (DebuggerInspection * di) {
+	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return;// no deberia pasar
+	SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel());
+}
+
+
 void mxInspectionExplorerWidget::OnDIInScope (DebuggerInspection * di) {
-	
+	OnDICreated(di);
 }
 
 void mxInspectionExplorerWidget::OnDINewType (DebuggerInspection * di) {
-	
+	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return; // no deberia pasar
+	bool has_children = !inspections[pos].di->IsSimpleType();
+	if (inspections[pos].is_open) {
+		bool was_expanded = IsExpanded(inspections[pos].item); 	
+		DeleteChildrenInspections(pos);	
+		SetItemHasChildren(inspections[pos].item,has_children);
+		if (was_expanded && has_children) Expand(inspections[pos].item);
+		else SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel());
+	} else {
+		SetItemHasChildren(inspections[pos].item,has_children);
+		SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel());
+	}
 }
 
 void mxInspectionExplorerWidget::OnItemExpanding (wxTreeEvent & event) {
@@ -128,19 +137,19 @@ wxString mxInspectionExplorerWidget::GetRootType ( ) {
 }
 
 #ifdef __WIN32__
-static void SetMax(wxSize &size, wxScreenDC &dc, wxTreeCtrl *tree, wxTreeItemId &item, int depth) {
+static void auxSetMax(wxSize &size, wxScreenDC &dc, wxTreeCtrl *tree, wxTreeItemId &item, int depth) {
 	wxSize aux = dc.GetTextExtent(tree->GetItemText(item));
 	int w = aux.GetWidth()+tree->GetIndent()*depth;
 	if (w>size.GetWidth()) size.SetWidth(w);
 	size.SetHeight(aux.GetHeight()+size.GetHeight()+5);
 }
 
-static void ForAllChildren(wxSize &size, wxScreenDC &dc, wxTreeCtrl *tree, wxTreeItemId &item, int depth) {
+static void auxForAllChildren(wxSize &size, wxScreenDC &dc, wxTreeCtrl *tree, wxTreeItemId &item, int depth) {
 	wxTreeItemIdValue cookie;
 	wxTreeItemId it = tree->GetFirstChild(item,cookie);
 	while (it.IsOk()) {
-		/*if (tree->IsVisible(it)) */SetMax(size,dc,tree,it,depth);
-		if (tree->ItemHasChildren(it)) ForAllChildren(size,dc,tree,it,depth+1);
+		/*if (tree->IsVisible(it)) */auxSetMax(size,dc,tree,it,depth);
+		if (tree->ItemHasChildren(it)) auxForAllChildren(size,dc,tree,it,depth+1);
 		it = tree->GetNextChild(item,cookie);
 	}
 }
@@ -151,8 +160,8 @@ wxSize mxInspectionExplorerWidget::GetFullSize ( ) {
 	wxScreenDC dc;
 	dc.SetFont(GetFont());
 	wxTreeItemId it = GetRootItem();
-	if (!hidden_root) SetMax(sz,dc,this,it,1);
-	ForAllChildren(sz,dc,this,it,2);
+	if (!hidden_root) auxSetMax(sz,dc,this,it,1);
+	auxForAllChildren(sz,dc,this,it,2);
 	return sz;
 }
 
@@ -224,5 +233,30 @@ void mxInspectionExplorerWidget::OnCopyType (wxCommandEvent & evt) {
 void mxInspectionExplorerWidget::OnCopyExpression (wxCommandEvent & evt) {
 	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
 	mxUT::SetClipboardText(aux.di->GetExpression());
+}
+
+
+void mxInspectionExplorerWidget::DeleteChildrenInspections (int pos, bool destroy_root) {
+	wxTreeItemIdValue cookie;
+	// quitarla del arreglo de inspecciones local
+	wxTreeItemId item = inspections[pos].item;
+	DebuggerInspection *di = inspections[pos].di;
+	bool was_open = inspections[pos].is_open;
+	inspections[pos].is_open = false;
+	if (destroy_root) inspections.Remove(pos);
+	// eliminar los hijos del arbol
+	if (was_open) {
+		Collapse(item);
+		wxTreeItemId it = GetFirstChild(item,cookie);
+		while (it.IsOk()) {
+			int cpos = inspections.Find(it);
+			if (cpos!=inspections.NotFound()) // no deberia dar nunca falso
+				DeleteChildrenInspections(cpos,true);
+			it = GetNextChild(item,cookie);
+		}
+		DeleteChildren(item);
+	}
+	// eliminar la inspeccion de DebuggerInspection
+	if (destroy_root) di->Destroy();
 }
 
