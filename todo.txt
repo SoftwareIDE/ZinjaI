@@ -10,6 +10,9 @@ show stopers:
 	* guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 
 
+bug: personalizar toolbar durante la depuracion (y tal vez en pantalla completa tambien)
+
+
 
 Otras:
 
@@ -42,6 +45,7 @@ refactory:
 	renombrar funciones/metodos
 	agregar getters/setters
 	ctrl+shift+h inverso
+	
 drag and drop en arbol de proyectos
 
 buscar skins en home/.zinjai
@@ -88,5 +92,8 @@ otras:
 		Alternativa a jerarquia de proyectos, jerarquia de perfiles, usando ${FROM:otro_perfil} en los campos de texto?
 
 Rehacer dibujo de diagramas de flujo usando graphviz esta vez?
-Rehacer visor de imágenes de modo que sea interno?
 
+clang-based-tools: 
+		clang-format 
+		clang --analize
+		??exitoo

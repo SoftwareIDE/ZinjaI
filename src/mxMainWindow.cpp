@@ -1282,7 +1282,7 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 		}
 	}
 	if (!project) {
-		project_tree.treeCtrl->Delete(source->treeId);
+		if (source->next_source_with_same_file==source) project_tree.treeCtrl->Delete(source->treeId);
 	} else {
 		source->UpdateExtras();
 	}
@@ -4584,7 +4584,7 @@ void mxMainWindow::OnViewDuplicateTab(wxCommandEvent &evt) {
 		int opage=notebook_sources->GetSelection();
 		mxSource *source = new mxSource(notebook_sources, orig->source_filename.GetFullName());
 		source->SplitFrom(orig);
-		notebook_sources->AddPage(source, source->page_text, true, *bitmaps->files.source);
+		notebook_sources->AddPage(source, source->page_text, true, notebook_sources->GetPageBitmap(opage));
 		
 		main_window->notebook_sources->Split(notebook_sources->GetPageCount()-1,wxBOTTOM);
 		main_window->notebook_sources->SetSelection(opage);

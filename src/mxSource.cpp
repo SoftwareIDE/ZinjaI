@@ -2838,12 +2838,14 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 	// no mostrar tooltips si no es la pestana del notebook seleccionada, o el foco no esta en esta ventana
 	if (!main_window->IsActive() || main_window->focus_source!=this) return; 
 	
+	// no mostrar si el mouse no está dentro del area del fuente
 	wxRect psrc = GetScreenRect();
 	wxPoint pmouse = wxGetMousePosition()-psrc.GetTopLeft();
 	if (pmouse.x<0||pmouse.y<0) return;
 	if (pmouse.x>=psrc.GetWidth()||pmouse.y>=psrc.GetHeight()) return;
 	
 	
+	// si esta en un margen....
 	int p = event.GetPosition();
 	if (p==-1) {
 		int x=event.GetX(), y=event.GetY();
@@ -2856,6 +2858,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 		return;
 	}
 	
+	// si no esta depurando, buscar el tipo de dato del simbolo y mostrarlo
 	if (!debug->IsDebugging()) {
 		if (!config_source.toolTips)
 			return;
@@ -2892,7 +2895,9 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 				}
 			}
 		}
-	} else if (debug->IsPaused()) {
+	} else 
+	// si se esta depurando, evaluar la inspeccion	
+	if (debug->IsPaused()) {
 		int e = GetSelectionEnd();
 		int s = GetSelectionStart();
 		if (e==s || p<s || p>e) {
