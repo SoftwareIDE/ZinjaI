@@ -10,8 +10,9 @@ SingleList<DebuggerInspection*> DebuggerInspection::all_inspections;
 
 SingleList<myDIGlobalEventHandler*> DebuggerInspection::global_consumers;
 
-#ifdef _ZINJAI_DEBUG
-int DebuggerInspection::CallLogger::lev=0;
+#ifdef _INSPECTION_LOG
+	int DebuggerInspection::CallLogger::lev=0;
+	wxFFile inspection_log_file(_INSPECTION_LOG,"w+");
 #endif
 
 static wxString &RemoveEscapeChar(wxString &s) {

@@ -70,7 +70,7 @@ void mxExternCompilerOutput::Clear ( ) {
 }
 
 void mxExternCompilerOutput::OnErrorNext ( ) {
-	int p = GetSelection(); if (p<0||p>=GetCount()) p=-1; p++;
+	int p = GetSelection(); if (p==wxNOT_FOUND) p=-1; p++;
 	while (p<int(GetCount()) && !IsErrorLine(p)) p++;
 	if (p==int(GetCount())) return;
 	main_window->ShowCompilerTreePanel();
@@ -78,7 +78,7 @@ void mxExternCompilerOutput::OnErrorNext ( ) {
 }
 
 void mxExternCompilerOutput::OnErrorPrev ( ) {
-	int p = GetSelection(); if (p<0||p>=GetCount()) p=GetCount(); p--;
+	int p = GetSelection(); if (p==wxNOT_FOUND) p=GetCount(); p--;
 	while (p>=0 && !IsErrorLine(p)) p--;
 	if (p<0) return;
 	main_window->ShowCompilerTreePanel();

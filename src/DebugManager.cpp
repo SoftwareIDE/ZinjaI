@@ -29,8 +29,7 @@
 #include "MenusAndToolsConfig.h"
 using namespace std;
 
-#ifdef _ZINJAI_DEBUG
-	#define DEBUG_LOG_FILE "/mnt/rm/debug.log"
+#ifdef _DEBUG_LOG
 	wxFFile debug_log_file;
 #endif
 
@@ -65,8 +64,8 @@ DebugManager::~DebugManager() {
 }
 
 bool DebugManager::Start(bool update) {
-#ifdef _DEBUG_MANAGER_LOG_TALK
-	debug_log_file.Open(DEBUG_LOG_FILE,"w+");
+#ifdef _DEBUG_LOG
+	debug_log_file.Open(_DEBUG_LOG,"w+");
 #endif
 	if (update && project->PrepareForBuilding()) { // ver si hay que recompilar antes
 		compiler->BuildOrRunProject(true,true,true);
@@ -89,8 +88,8 @@ bool DebugManager::Start(bool update) {
 }
 
 bool DebugManager::Start(bool update, mxSource *source) {
-#ifdef _DEBUG_MANAGER_LOG_TALK
-	debug_log_file.Open(DEBUG_LOG_FILE,_T("w+"));
+#ifdef _DEBUG_LOG
+	debug_log_file.Open(_DEBUG_LOG,_T("w+"));
 #endif
 	if (source) {
 		// ver si hay que compilar antes
@@ -301,8 +300,8 @@ void DebugManager::ResetDebuggingStuff() {
 
 
 bool DebugManager::Attach(long apid, mxSource *source) {
-#ifdef _DEBUG_MANAGER_LOG_TALK
-	debug_log_file.Open(DEBUG_LOG_FILE,"w+");
+#ifdef _DEBUG_LOG
+	debug_log_file.Open(_DEBUG_LOG,"w+");
 #endif
 	mxOSD osd(main_window,LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."));
 	ResetDebuggingStuff();
@@ -377,8 +376,8 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 **/
 
 bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
-#ifdef _DEBUG_MANAGER_LOG_TALK
-	debug_log_file.Open(DEBUG_LOG_FILE,"w+");
+#ifdef _DEBUG_LOG
+	debug_log_file.Open(_DEBUG_LOG,"w+");
 #endif
 	
 	mxOSD osd(main_window,project?LANG(OSD_LOADING_CORE_DUMP,"Cargando volcado de memoria..."):"");
@@ -482,7 +481,7 @@ void DebugManager::HowDoesItRuns() {
 		if (st_pos==wxNOT_FOUND) {
 			_IF_DEBUGMODE(wxMessageBox(wxString("HowDoesItRuns answer: ")<<ans));
 			SetStateText(state_text);
-#ifdef _DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_LOG
 			wxString debug_log_string; debug_log_string<<"ERROR RUNNING: "<<ans;
 			debug_log_file.Write(debug_log_string);
 			debug_log_file.Flush();
@@ -584,7 +583,7 @@ void DebugManager::HowDoesItRuns() {
 			mark = mxSTC_MARK_STOP;
 			state_text=LANG(DEBUG_STATUS_TERMINAL_CLOSED,"La terminal del programa ha sido cerrada");
 		} 
-#ifdef _DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_LOG
 		else{ 
 			wxString debug_log_string; debug_log_string<<"NEW REASON: "<<ans;
 			debug_log_file.Write(debug_log_string);
@@ -1008,7 +1007,7 @@ wxString DebugManager::WaitAnswer() {
 				buffer[i++]=buffer[c++];
 			buffer[i]='\0';
 
-#ifdef _DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_LOG
 		wxString debug_log_string; debug_log_string<<"\n<<< "<<ret;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1053,7 +1052,7 @@ wxString DebugManager::WaitAnswer() {
 
 wxString DebugManager::SendCommand(wxString command) {
 	waiting = true;
-#ifdef _DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_LOG
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<command;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1067,7 +1066,7 @@ wxString DebugManager::SendCommand(wxString command) {
 
 wxString DebugManager::SendCommand(wxString command, int i) {
 	waiting = true;
-#ifdef _DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_LOG
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<command<<i;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1081,7 +1080,7 @@ wxString DebugManager::SendCommand(wxString command, int i) {
 
 wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 	waiting = true;
-#ifdef _DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_LOG
 		wxString debug_log_string; debug_log_string<<"\n>>> "<<cmd1<<cmd2;
 		debug_log_file.Write(debug_log_string);
 		debug_log_file.Flush();
@@ -1390,7 +1389,7 @@ bool DebugManager::Return(wxString what) {
 
 void DebugManager::ProcessKilled() {
 	delete debug_patcher;
-#ifdef _DEBUG_MANAGER_LOG_TALK
+#ifdef _DEBUG_LOG
 	debug_log_file.Close();
 #endif
 	MarkCurrentPoint();

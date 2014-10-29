@@ -1,5 +1,9 @@
-	
+
 	* IMPORTANTE: ver si las inspecciones abrevian o no arreglos de muchos elementos (el set print repeat de gdb)
+	
+	* IMPORTANTE: revisar porque por defecto no aparece la barra de herramientas de proyecto
+	
+	* IMPORTANTE: al abrir las inspecciones en el explorador, las expresiones hijas quedan mal formadas para evaluar con un helper
 
 	
 bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?

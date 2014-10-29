@@ -56,7 +56,8 @@ void mxInspectionExplorerWidget::OnDICreated (DebuggerInspection * di) {
 	int pos = inspections.Find(di); if (pos==inspections.NotFound()) return;// no deberia pasar
 	SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel());
 	DeleteChildrenInspections(pos);
-	wxTreeCtrl::SetItemHasChildren(GetRootItem(),!di->IsSimpleType());
+	SetItemHasChildren(GetRootItem(),!di->IsSimpleType());
+	if (inspections[pos].is_root) Expand(inspections[pos].item);
 }
 
 void mxInspectionExplorerWidget::OnDIError (DebuggerInspection * di) {

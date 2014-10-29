@@ -27,6 +27,12 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 #define DIF_AUTO_IMPROVE 16
 #define DIF_IS_INTERNAL_HELPER 32
 
+#ifdef _INSPECTION_LOG
+#include <sstream>
+#include <wx/ffile.h>
+	extern wxFFile inspection_log_file;
+#endif
+
 enum GDB_VO_FORMAT { GVF_NATURAL, GVF_BINARY, GVF_OCTAL, GVF_DECIMAL, GVF_HEXADECIMAL };
 
 enum DEBUG_INSPECTION_MESSAGE { DIMSG_PENDING, DIMSG_OUT_OF_SCOPE, DIMSG_ERROR };
@@ -91,21 +97,25 @@ public:
 **/
 struct DebuggerInspection {
 
-#ifdef _ZINJAI_DEBUG
+#ifdef _INSPECTION_LOG
 	class CallLogger {
 		static int lev;
 		DebuggerInspection *di;
 		const char *method;
 	public:
 		CallLogger(const char *_method, DebuggerInspection *_di=NULL) : di(_di),method(_method) {
+			stringstream cerr;
 			cerr<<"DI("<<di<<")::"<<string((++lev)*2,' ')<<method<<"  in";
 			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
+			inspection_log_file.Write(cerr.str().c_str()); inspection_log_file.Flush();
 		}
 		~CallLogger() { 
+			stringstream cerr;
 			cerr<<"DI("<<di<<")::"<<string((lev--)*2,' ')<<method<<" out";
 			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
+			inspection_log_file.Write(cerr.str().c_str()); inspection_log_file.Flush();
 		}
 	};
 	#define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
@@ -177,6 +187,7 @@ struct DebuggerInspection {
 		int dont_run_now_count = 0, initial_size = pending_actions.GetSize();
 		for(int i=0;i<pending_actions.GetSize();i++) {
 			DIPendingAction &pa=pending_actions[i];
+			if (!pa.inspection) continue; // skip actions for deleted inspections
 			if (i>=initial_size && pa.dont_run_now) { 
 				pa.dont_run_now=false;
 				pending_actions[dont_run_now_count++]=pa;
@@ -186,9 +197,9 @@ struct DebuggerInspection {
 			} else {
 				delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
 				// delete all pending actions for this inspection to avoid future references
-				for(int j=i+1;j<pending_actions.GetSize();j++) { 
-					while (j<pending_actions.GetSize() && pending_actions[j].inspection==pa.inspection) 
-						pending_actions.Remove(j);
+				for(int j=0;j<pending_actions.GetSize();j++) { 
+					if (j!=i && pending_actions[j].inspection==pa.inspection) 
+						pending_actions[j].inspection=NULL;
 				}
 			}
 		}
