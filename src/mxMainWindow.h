@@ -186,6 +186,8 @@ public:
 	void OnDebugSetSignals(wxCommandEvent &event);
 	void OnDebugGdbCommand(wxCommandEvent &event);
 	void OnDebugAttach (wxCommandEvent &event);
+	void OnDebugTarget (wxCommandEvent &event);
+	wxString OnDebugTarget (wxString target);
 	void OnDebugPatch (wxCommandEvent &event);
 	void OnDebugCoreDump (wxCommandEvent &event);
 	void OnDebugDoThat (wxCommandEvent &event);
@@ -271,6 +273,8 @@ public:
 	void OnToolsCppCheckHelp(wxCommandEvent &event);
 #if !defined(_WIN32) && !defined(__WIN32__)
 	void OnToolsValgrindRun(wxCommandEvent &event);
+	void OnToolsValgrindDebug(wxCommandEvent &event);
+	void OnToolsValgrindCommon(bool debug);
 	void OnToolsValgrindView(wxCommandEvent &event);
 	void OnToolsValgrindHelp(wxCommandEvent &event);
 #endif

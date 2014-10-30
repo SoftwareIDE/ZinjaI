@@ -260,9 +260,9 @@ wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString
 	return textctrl;
 }
 
-wxComboBox *mxUT::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID id, bool margin) {
+wxComboBox *mxUT::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID id, bool margin, bool editable) {
 	wxString sdef=def==-1?"":values[def];
-	wxComboBox *combo = new wxComboBox(panel, id, sdef, wxDefaultPosition, wxDefaultSize, values, wxCB_READONLY);
+	wxComboBox *combo = new wxComboBox(panel, id, sdef, wxDefaultPosition, wxDefaultSize, values, editable?0:wxCB_READONLY);
 	combo->SetSelection(def);
 	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);

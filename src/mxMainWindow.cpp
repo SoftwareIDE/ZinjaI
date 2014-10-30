@@ -215,6 +215,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_RUN_CONFIG, mxMainWindow::OnRunCompileConfig)
 	
 	EVT_MENU(mxID_DEBUG_ATTACH, mxMainWindow::OnDebugAttach)
+	EVT_MENU(mxID_DEBUG_TARGET, mxMainWindow::OnDebugTarget)
 	EVT_MENU(mxID_DEBUG_PATCH, mxMainWindow::OnDebugPatch)
 	EVT_MENU(mxID_DEBUG_SAVE_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
 	EVT_MENU(mxID_DEBUG_LOAD_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
@@ -347,6 +348,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_HELP, mxMainWindow::OnToolsCppCheckHelp)
 #if !defined(_WIN32) && !defined(__WIN32__)
 	EVT_MENU(mxID_TOOLS_VALGRIND_RUN, mxMainWindow::OnToolsValgrindRun)
+	EVT_MENU(mxID_TOOLS_VALGRIND_DEBUG, mxMainWindow::OnToolsValgrindDebug)
 	EVT_MENU(mxID_TOOLS_VALGRIND_VIEW, mxMainWindow::OnToolsValgrindView)
 	EVT_MENU(mxID_TOOLS_VALGRIND_HELP, mxMainWindow::OnToolsValgrindHelp)
 #endif
@@ -3214,19 +3216,41 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 	if (!dpid) mxUT::GetRunningChilds(options);
 	options.Add(cual=otro);
 	if (options.GetCount()>1) {
-		cual=wxGetSingleChoice("Proceso:","Adjuntar Depurador",options,this,-1,-1,true);
+		cual=wxGetSingleChoice("Process:",_menu_item_2(mnDEBUG,mxID_DEBUG_ATTACH)->GetPlainLabel(),options,this,-1,-1,true);
 		if (!cual.Len()) return;
 	}
 	if (cual==otro) 
-		mxGetTextFromUser("PID:","Adjuntar Depurador","",this).ToLong(&dpid);
+		mxGetTextFromUser("PID:",_menu_item_2(mnDEBUG,mxID_DEBUG_ATTACH)->GetPlainLabel(),"",this).ToLong(&dpid);
 	else
 		cual.BeforeFirst(' ').ToLong(&dpid);
 	if (!dpid) return;
+	wxString command = wxString("attach ")<<dpid;
+	wxString message = wxString(LANG(DEBUG_STATUS_ATTACHING_TO,"Depurador adjuntado al proceso "))<<dpid;
 	if (project) 
-		debug->Attach(dpid,NULL);
+		debug->SpecialStart(NULL,command,message,false);
 	else IF_THERE_IS_SOURCE
-		debug->Attach(dpid,CURRENT_SOURCE);
+		debug->SpecialStart(CURRENT_SOURCE,command,message,false);
 }
+
+void mxMainWindow::OnDebugTarget ( wxCommandEvent &event ) {
+	static wxString target;
+	wxString new_target = OnDebugTarget(target);
+	if (new_target.Len()) target=new_target;
+}
+
+wxString mxMainWindow::OnDebugTarget (wxString target) {
+	target = mxGetTextFromUser("Target (arguments for gdb's target command):",_menu_item_2(mnDEBUG,mxID_DEBUG_ATTACH)->GetPlainLabel(),target,this);
+	if (target.Len()) {
+		wxString command = wxString("target ")<<target;
+		wxString message = LANG(DEBUG_STATUS_TARGET_DONE,"Depuración iniciado correctamente.");
+		if (project) 
+			debug->SpecialStart(NULL,command,message,true);
+		else IF_THERE_IS_SOURCE
+			debug->SpecialStart(CURRENT_SOURCE,command,message,true);
+	}
+	return target;
+}
+
 
 /** 
 * inicia la depuracion ejecutando el programa
@@ -3315,7 +3339,7 @@ void mxMainWindow::OnDebugBacktrace ( wxCommandEvent &event ) {
 		aui_manager.Update();
 	}
 //	debug->backtrace_visible=true;
-	debug->UpdateBacktrace();
+	debug->UpdateBacktrace(false);
 	backtrace_ctrl->SetFocus();
 //	backtrace_ctrl->SelectRow(0);
 }
@@ -4102,14 +4126,14 @@ void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()>0||project) {
 		if (!debug->IsDebugging() && (project || notebook_sources->GetPageCount())) {
 			wxString dir = project?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):CURRENT_SOURCE->working_folder.GetFullPath();
-			wxFileDialog dlg (this, "Abrir Archivo", dir, " ", "Volcados de memoria|core*|Todos los Archivos|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+			wxFileDialog dlg (this, _menu_item_2(mnDEBUG,mxID_DEBUG_LOAD_CORE_DUMP)->GetPlainLabel(), dir, " ", "Core dumps|core*|Todos los Archivos|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (dlg.ShowModal() == wxID_OK)
 				debug->LoadCoreDump(dlg.GetPath(),project?NULL:CURRENT_SOURCE);
 		} else if (debug->CanTalkToGDB()) {
 			wxString sPath = project?project->path:(CURRENT_SOURCE->GetPath(true));
-			wxFileDialog dlg (this, "Guardar Volcado de Memoria",sPath,"core", "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			wxFileDialog dlg (this, _menu_item_2(mnDEBUG,mxID_DEBUG_SAVE_CORE_DUMP)->GetPlainLabel(),sPath,"core", "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			dlg.SetDirectory(sPath);
-			dlg.SetWildcard("Volcados de memoria|core*|Todos los Archivos|*");
+			dlg.SetWildcard("Core dumps|core*|Todos los Archivos|*");
 			if (dlg.ShowModal() == wxID_OK)
 				debug->SaveCoreDump(dlg.GetPath());
 		}

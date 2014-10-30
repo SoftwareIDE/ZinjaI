@@ -28,7 +28,7 @@ mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent
 	tools.Add("helgrind");
 	tools.Add("drd");
 	
-	cmb_tool=mxUT::AddComboBox(sizer,this,"Tool",tools,0);
+	cmb_tool=mxUT::AddComboBox(sizer,this,"Tool",tools,0,wxID_ANY,false,true);
 	suppressions=mxUT::AddTextCtrl(sizer,this,"Suppression files:","");
 	additional_args=mxUT::AddTextCtrl(sizer,this,"Additional arguments:","");
 	
@@ -68,19 +68,19 @@ void mxValgrindConfigDialog::OnClose (wxCloseEvent & evt) {
 }
 
 wxString mxValgrindConfigDialog::GetArgs() {
-	int i=cmb_tool->GetSelection();
-	wxString args;
-	switch (i) {
-	case 0: args="--leak-check=full --tool=memcheck"; break;
-	case 1: args="--tool=cachegrind"; break;
-	case 2: args="--tool=callgrind"; break;
-	case 3: args="--tool=massif"; break;
-	case 4: args="--tool=helgrind"; break;
-	case 5: args="--tool=drd"; break;
-	}
+	wxString tool = cmb_tool->GetValue();
+	wxString args = "--tool="; args<<tool;
+	if (tool=="memcheck") args<<" --leak-check=full";
 	if (suppressions->GetValue().Len()) 
 		args<<" "<<mxUT::Split(suppressions->GetValue(),"--suppressions=");
 	if (additional_args->GetValue().Len()) 
 		args<<" "<<additional_args->GetValue();
 	return args;
 }
+
+void mxValgrindConfigDialog::SetArg (const wxString & arg, bool present) {
+	wxString args = additional_args->GetValue();
+	mxUT::SetArgument(args,arg,present);
+	additional_args->SetValue(args);
+}
+

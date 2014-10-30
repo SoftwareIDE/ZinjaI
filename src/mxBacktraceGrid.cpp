@@ -188,6 +188,6 @@ void mxBacktraceGrid::OnAddToBlackList(wxCommandEvent &event) {
 
 void mxBacktraceGrid::OnColumnHideOrUnhide (int col, bool visible) {
 	if (col==BG_COL_ARGS) debug->backtrace_shows_args=visible;
-	if (visible) debug->UpdateBacktrace();
+	if (visible) debug->UpdateBacktrace(false);
 }
 

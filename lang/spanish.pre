@@ -46,14 +46,16 @@ GENERA_CONSOLE_CAPTION
 ZinjaI - Consola de Ejecucion
 DEBUG_ERROR_WITH_TERMINAL
 Ha ocurrido un error al iniciar la terminal para la ejecucion.\nCompruebe que el campo \"Comando del terminal\" de la pestaña\n\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto.
+DEBUG_STATUS_INIT_ERROR
+Error al iniciar depuracion
 DEBUG_NO_SYMBOLS
 El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depurarcion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar).
 DEBUG_ERROR_STATING_GDB
 Ha ocurrido un error al ejecutar el depurador.
 DEBUG_ERROR_STARTING_GDB_LINUX
 Si el depurador (gdb) no se encuentra instalado\nen su systema debe instalarlo con el gestor de\npaquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
-DEBUG_STATUS_ATTACHING_TO
-Depurador adjuntado al proceso 
+DEBUG_SPECIAL_START_FAILED
+Ha ocurrido un error al iniciar la depuración:
 OSD_LOADING_CORE_DUMP
 Cargando volcado de memoria...
 DEBUG_STATUS_RUNNING
@@ -422,6 +424,8 @@ MENUITEM_DEBUG_MORE
 Más...
 MENUITEM_DEBUG_ATTACH
 &Adjuntar...
+MENUITEM_DEBUG_TARGET
+&Conectar...
 MENUITEM_DEBUG_LOAD_CORE_DUMP
 Cargar &Volcado de Memoria...
 MENUITEM_SAVE_CORE_DUMP
@@ -1614,8 +1618,22 @@ XDG_CREATE_DESKTOP
 Crear un icono en el escritorio
 XDG_CREATE_MENU
 Crear un icono en el menu (en la categoria Programacion/Desarrollo)
-INSPECTGRID_OUT_OF_SCOPE
-<<< fuera de ámbito >>>
+INSPECTGRID_POPUP_SHOW_IN_TABLE
+Mostrar en &tabla separada...
+INSPECTGRID_POPUP_SHOW_IN_TEXT
+Mostrar en &ventana separada...
+INSPECTGRID_POPUP_EXPLORE
+&Explorar datos...
+INSPECTGRID_POPUP_SHOW_IN_HISTORY
+Generar historial de valores...
+LOCALGRID_POPUP_ADD_TO_INSPECTIONS_GRID
+Agregar como inspección en \"<{1}>\"
+INSPECTGRID_POPUP_COPY_EXPRESSION
+Copiar &Expresion
+INSPECTGRID_POPUP_COPY_TYPE
+Copiar &Tipo
+INSPECTGRID_POPUP_COPY_DATA
+Copiar &Valor
 INSPECTGRID_LEVEL
 Nivel
 INSPECTGRID_EXPRESSION
@@ -1628,14 +1646,6 @@ INSPECTGRID_POPUP_SPLIT_CLASS
 &Separar clase en atributos
 INSPECTGRID_POPUP_SPLIT_ARRAY
 &Separar arreglo en elementos
-INSPECTGRID_POPUP_SHOW_IN_TABLE
-Mostrar en &tabla separada...
-INSPECTGRID_POPUP_SHOW_IN_TEXT
-Mostrar en &ventana separada...
-INSPECTGRID_POPUP_SHOW_IN_HISTORY
-Generar historial de valores...
-INSPECTGRID_POPUP_EXPLORE
-&Explorar datos...
 INSPECTGRID_EXTERN_VISUALIZATION
 Otras &visualizaciones
 INSPECTGRID_POPUP_EXPLORE_ALL
@@ -1646,12 +1656,6 @@ INSPECTGRID_POPUP_SET_NO_FRAME
 &Independizar del ambito
 INSPECTGRID_POPUP_DUPLICATE_EXPRESSION
 Duplicar Inspeccion
-INSPECTGRID_POPUP_COPY_EXPRESSION
-Copiar &Expresion
-INSPECTGRID_POPUP_COPY_TYPE
-Copiar &Tipo
-INSPECTGRID_POPUP_COPY_DATA
-Copiar &Valor
 INSPECTGRID_POPUP_COPY_ALL
 &Copiar Toda la Tabla
 INSPECTGRID_POPUP_COPY
@@ -1762,8 +1766,6 @@ LOCALS_TYPE
 Tipo
 LOCALS_VALUE
 Valor
-LOCALGRID_POPUP_ADD_TO_INSPECTIONS_GRID
-Agregar como inspección en \"<{1}>\"
 UNTITLED
 sin_titulo_
 MAINW_INITIALIZING
@@ -1936,6 +1938,10 @@ MAINW_INSERT_HEADIR_CPP
  esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera.
 MAINW_NO_HEADER_FOR
 No se encontro cabecera correspondiente a \"<{1}>\".
+DEBUG_STATUS_ATTACHING_TO
+Depurador adjuntado al proceso 
+DEBUG_STATUS_TARGET_DONE
+Depuración iniciado correctamente.
 DEBUG_THREAD_SYSTEM_INCOMPLETE
 El manejo de hilos en la depuracion aun esta en construccion.\nPuede que los niveles en las inspecciones no se correspondan con\nel trazado inverso al cambiar de hilo.
 DEBUG_RETURN_VALUE

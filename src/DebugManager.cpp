@@ -190,7 +190,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			mxMessageDialog(main_window,LANG(DEBUG_ERROR_WITH_TERMINAL,"Ha ocurrido un error al iniciar la terminal para la ejecucion.\n"
 										   "Compruebe que el campo \"Comando del terminal\" de la pestaña\n"
 										   "\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
-			main_window->SetCompilingStatus("Error al iniciar depuracion");
+			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
 			return false;
 		}
 		while (true) {
@@ -231,7 +231,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,"El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depurarcion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar)."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 			SendCommand(_T("-gdb-exit"));
 			debugging = false; has_symbols=false;
-			main_window->SetCompilingStatus("Error al iniciar depuracion");
+			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
 			return false;
 		}
 		Start_ConfigureGdb();
@@ -257,7 +257,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	}
 	pid=0;
 	debugging = false;
-	main_window->SetCompilingStatus("Error al iniciar depuracion");
+	main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
 	return false;
 }
 
@@ -299,13 +299,13 @@ void DebugManager::ResetDebuggingStuff() {
 }
 
 
-bool DebugManager::Attach(long apid, mxSource *source) {
+bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, const wxString &status_message, bool should_continue) {
 #ifdef _DEBUG_LOG
 	debug_log_file.Open(_DEBUG_LOG,"w+");
 #endif
 	mxOSD osd(main_window,LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."));
 	ResetDebuggingStuff();
-//	wxString exe = source?source->GetBinaryFileName().GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
+	wxString exe = source?source->GetBinaryFileName().GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
 	wxString command(config->Files.debugger_command);
 	command<<_T(" -quiet -nx -interpreter=mi");
 	if (config->Debug.readnow)
@@ -314,6 +314,7 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<"\"";
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<"\"";
+	command<<" "<<mxUT::Quotize(exe);	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
@@ -321,9 +322,9 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 		input = process->GetInputStream();
 		output = process->GetOutputStream();
 		wxString hello = WaitAnswer();
-		if (hello.Find(_T("no debugging symbols found"))!=wxNOT_FOUND) {
+		if (hello.Find("no debugging symbols found")!=wxNOT_FOUND) {
 			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,"El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depurarcion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar)."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
-			SendCommand(_T("-gdb-exit"));
+			SendCommand("-gdb-exit");
 			debugging = false;
 			return false;
 		}
@@ -332,16 +333,21 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 //		SendCommand(_T(BACKTRACE_MACRO));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
-		SendCommand(wxString(_T("attach "))<<apid);
-		SetStateText(wxString(LANG(DEBUG_STATUS_ATTACHING_TO,"Depurador adjuntado al proceso "))<<apid);
-		UpdateBacktrace();
-		long line;
-		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
-		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
-		if (file.Len()) {
-			debug->MarkCurrentPoint(file,line,mxSTC_MARK_STOP);
-			debug->SelectFrame(-1,1);
+		wxString ans = SendCommand(gdb_command);
+		if (ans.StartsWith("^error")) {
+			mxMessageDialog(main_window,wxString(LANG(DEBUG_SPECIAL_START_FAILED,"Ha ocurrido un error al iniciar la depuración:"))+debug->GetValueFromAns(ans,"msg",true,true),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
+			Stop(); return false;
 		}
+		SetStateText(status_message);
+		UpdateBacktrace();
+//		long line;
+//		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
+//		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
+//		if (file.Len()) {
+//			debug->MarkCurrentPoint(file,line,mxSTC_MARK_STOP);
+//			debug->SelectFrame(-1,1);
+//		}
 		if (project) 
 			project->SetBreakpoints();
 		else {
@@ -353,6 +359,7 @@ bool DebugManager::Attach(long apid, mxSource *source) {
 			}
 			SetBreakPoints(source);
 		}
+		if (should_continue) Continue();
 		return true;
 	}
 	debugging = false;
@@ -392,7 +399,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<"\"";
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<"\"";
-	command<<_T(" -c \"")<<core_file<<_T("\" \"")<<exe<<"\"";	
+	command<<" -c "<<mxUT::Quotize(core_file)<<" "<<mxUT::Quotize(exe);	
 	process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 	process->Redirect();
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
@@ -441,7 +448,8 @@ bool DebugManager::Stop() {
 	waiting=true;
 	if (pid) {
 		last_command=_T("-gdb-exit\n");
-		output->Write(_T("-gdb-exit\n"),10);
+		output->Write("-exec-abort\n",12);
+		output->Write("-gdb-exit\n",10);
 	}
 	return true;
 }
@@ -605,7 +613,7 @@ void DebugManager::HowDoesItRuns() {
 			else {
 				stepping_in=false;
 				if (line.ToLong(&fline)) {
-					MarkCurrentPoint(fname,fline,mark);
+//					MarkCurrentPoint(fname,fline,mark);  // lo hace UpdateBacktrace
 					if (threadlist_visible) UpdateThreads();
 				} else {
 					if (threadlist_visible) UpdateThreads();
@@ -738,7 +746,8 @@ void DebugManager::SetBacktraceShowsArgs(bool show) {
 	backtrace_shows_args=show;
 	UpdateBacktrace();
 }
-bool DebugManager::UpdateBacktrace() {
+
+bool DebugManager::UpdateBacktrace(bool set_frame) {
 #if defined(_WIN32) || defined(__WIN32__)
 	static wxString sep="\\",wrong_sep="/";
 #else
@@ -887,7 +896,7 @@ bool DebugManager::UpdateBacktrace() {
 	}
 	
 	// seleccionar el frame actual, o el más cercano que tenga info de depuración
-	if (to_select_level>0) {
+	if (to_select_level>=0) {
 		main_window->backtrace_ctrl->SelectRow(to_select_level);
 		SelectFrame(-1,to_select_level);
 		wxString file=main_window->backtrace_ctrl->GetCellValue(to_select_level,BG_COL_FILE);

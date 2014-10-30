@@ -5,6 +5,7 @@
 	
 	* IMPORTANTE: al abrir las inspecciones en el explorador, las expresiones hijas quedan mal formadas para evaluar con un helper
 
+	* ver que manualupdate no actualice inspecciones helpers si es que las actualizan las inspecciones que las crearon
 	
 bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 

@@ -18,6 +18,7 @@ public:
 	void OnButtonHelp(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);
 	wxString GetArgs();
+	void SetArg(const wxString &arg, bool present);
 	DECLARE_EVENT_TABLE();
 };
 

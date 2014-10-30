@@ -74,6 +74,13 @@ private:
 			if (properties&maDEFAULT_SHORTCUT && new_shortcut==shortcut) return;
 			shortcut=new_shortcut; properties&=~maDEFAULT_SHORTCUT;
 		}
+		wxString GetPlainLabel() { 
+			wxString lab = label; 
+			lab.Replace("&","",true); 
+			if (lab.EndsWith("...")) 
+				lab = lab.Mid(0,lab.Len()-3); 
+			return lab;
+		}
 	};
 	
 	/// struct for storing wich items should be enabled/disabled when changing project mode or debug mode

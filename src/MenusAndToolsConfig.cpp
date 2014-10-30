@@ -178,6 +178,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 #ifndef __WIN32__
 		BeginSubMenu(mnDEBUG, LANG(MENUITEM_DEBUG_MORE,"Más..."));
 			AddMenuItem(mnDEBUG, myMenuItem("debug_attach",mxID_DEBUG_ATTACH, LANG(MENUITEM_DEBUG_ATTACH,"&Adjuntar...")).Icon("debug_attach.png").EnableIf(ecNOT_DEBUG));
+			AddMenuItem(mnDEBUG, myMenuItem("debug_target",mxID_DEBUG_TARGET, LANG(MENUITEM_DEBUG_TARGET,"&Conectar...")).Icon("debug_target.png").EnableIf(ecNOT_DEBUG));
 			AddMenuItem(mnDEBUG, myMenuItem("core_dump",mxID_DEBUG_LOAD_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria...")).Icon("core_dump.png").EnableIf(ecNOT_DEBUG));
 			AddMenuItem(mnDEBUG, myMenuItem("save_core_dump",mxID_DEBUG_SAVE_CORE_DUMP,LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")).Icon("core_dump.png").EnableIf(ecDEBUG_PAUSED));
 			AddMenuItem(mnDEBUG, myMenuItem("enable_inverse_exec",mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras")).Icon("reverse_enable.png").Checkeable(false).EnableIf(ecDEBUG_PAUSED));
@@ -298,6 +299,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	#if !defined(_WIN32) && !defined(__WIN32__)
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_VALGRIND,"Análisis Dinámico (valgrind)")).Description("Valgrind permite analizar el uso de memoria dinamica para detectar perdidas y otros errores").Icon("valgrind.png").EnableIf(ecPROJECT_OR_SOURCE));
 			AddMenuItem(mnTOOLS, myMenuItem("valgrind_run",mxID_TOOLS_VALGRIND_RUN, LANG(MENUITEM_TOOLS_VALGRIND_RUN,"Ejecutar...")).Icon("valgrind_run.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("valgrind_debug",mxID_TOOLS_VALGRIND_DEBUG, LANG(MENUITEM_TOOLS_VALGRIND_RUN,"Depurar...")).Icon("valgrind_debug.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("valgrind_view",mxID_TOOLS_VALGRIND_VIEW, LANG(MENUITEM_TOOLS_VALGRIND_VIEW,"Mostrar Panel de Resultados")).Icon("valgrind_view.png"));
 			AddSeparator(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_VALGRIND_HELP, LANG(MENUITEM_TOOLS_VALGRIND_HELP,"A&yuda...")).Icon("ayuda.png"));
@@ -457,6 +459,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_RUN).Visible());
 #ifndef __WIN32__
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_ATTACH));
+		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_TARGET));
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_LOAD_CORE_DUMP));
 #endif
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_TOGGLE_BREAKPOINT));
@@ -543,6 +546,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_GCOV_RESET));
 #ifndef __WIN32__
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_VALGRIND_RUN));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_VALGRIND_DEBUG));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_VALGRIND_VIEW));
 #endif
 		for (int i=0;i<MAX_CUSTOM_TOOLS;i++)

@@ -44,14 +44,16 @@ GENERA_CONSOLE_CAPTION
 ZinjaI - Execution Terminal
 DEBUG_ERROR_WITH_TERMINAL
 There's been an error starting the terminal for debugging.\nCheck if field "Console Application" in tab "Paths 2"\nin Preference's dialog" is correct.
+DEBUG_STATUS_INIT_ERROR
+Failed to start debugging
 DEBUG_NO_SYMBOLS
 The file you're trying to debug has no debugging symbols.\nCheck in debugging options that debug information is enable,\nand verify that the field "Strip executable" is not checked\nin "Linking" tab. Then recompile the project if it's needed\n(Run -> Clean, Run -> Compile).
 DEBUG_ERROR_STATING_GDB
 There's been an error starting debugger.
 DEBUG_ERROR_STARTING_GDB_LINUX
 If debbuger (gdb) is not installed in your system,\nyou must install it with your distribution's package\nmanager (apt-get, yum, yast, installpkg, ...).
-DEBUG_STATUS_ATTACHING_TO
-Attaching...
+DEBUG_SPECIAL_START_FAILED
+Failed to start debugging:
 OSD_LOADING_CORE_DUMP
 Loading core dump...
 DEBUG_STATUS_RUNNING
@@ -420,6 +422,8 @@ MENUITEM_DEBUG_MORE
 More...
 MENUITEM_DEBUG_ATTACH
 Attach To Running Instance...
+MENUITEM_DEBUG_TARGET
+&Connet...
 MENUITEM_DEBUG_LOAD_CORE_DUMP
 Load Core Dump...
 MENUITEM_SAVE_CORE_DUMP
@@ -1612,8 +1616,22 @@ XDG_CREATE_DESKTOP
 Create an icon for ZinjaI in desktop
 XDG_CREATE_MENU
 Create an icon for ZinjaI in system menu (in Development category)
-INSPECTGRID_OUT_OF_SCOPE
-<<< Out of Scope >>>
+INSPECTGRID_POPUP_SHOW_IN_TABLE
+Show in its Own &Table
+INSPECTGRID_POPUP_SHOW_IN_TEXT
+Show full value in a new window
+INSPECTGRID_POPUP_EXPLORE
+Explore data
+INSPECTGRID_POPUP_SHOW_IN_HISTORY
+Generate value history...
+LOCALGRID_POPUP_ADD_TO_INSPECTIONS_GRID
+Add as inspection in "<{1}>"
+INSPECTGRID_POPUP_COPY_EXPRESSION
+Copy E&xpression
+INSPECTGRID_POPUP_COPY_TYPE
+Copy Type
+INSPECTGRID_POPUP_COPY_DATA
+&Copy Value
 INSPECTGRID_LEVEL
 Level
 INSPECTGRID_EXPRESSION
@@ -1626,14 +1644,6 @@ INSPECTGRID_POPUP_SPLIT_CLASS
 &Split Class Into Its Attributes
 INSPECTGRID_POPUP_SPLIT_ARRAY
 &Split Array Into Its Elements
-INSPECTGRID_POPUP_SHOW_IN_TABLE
-Show in its Own &Table
-INSPECTGRID_POPUP_SHOW_IN_TEXT
-Show full value in a new window
-INSPECTGRID_POPUP_SHOW_IN_HISTORY
-Generate value history...
-INSPECTGRID_POPUP_EXPLORE
-Explore data
 INSPECTGRID_EXTERN_VISUALIZATION
 Other views
 INSPECTGRID_POPUP_EXPLORE_ALL
@@ -1644,12 +1654,6 @@ INSPECTGRID_POPUP_SET_NO_FRAME
 Convert to Frame &Independen Inspection
 INSPECTGRID_POPUP_DUPLICATE_EXPRESSION
 Duplicate Inspection
-INSPECTGRID_POPUP_COPY_EXPRESSION
-Copy E&xpression
-INSPECTGRID_POPUP_COPY_TYPE
-Copy Type
-INSPECTGRID_POPUP_COPY_DATA
-&Copy Value
 INSPECTGRID_POPUP_COPY_ALL
 Copy Full Table
 INSPECTGRID_POPUP_COPY
@@ -1760,8 +1764,6 @@ LOCALS_TYPE
 Type
 LOCALS_VALUE
 Value
-LOCALGRID_POPUP_ADD_TO_INSPECTIONS_GRID
-Add as inspection in "<{1}>"
 UNTITLED
 untitled_
 MAINW_INITIALIZING
@@ -1934,6 +1936,10 @@ MAINW_INSERT_HEADIR_CPP
  is declared in a source file. Only header files should be included.
 MAINW_NO_HEADER_FOR
 Could'nt find a header file related to "<{1}>".
+DEBUG_STATUS_ATTACHING_TO
+Attaching...
+DEBUG_STATUS_TARGET_DONE
+Debugger started.
 DEBUG_THREAD_SYSTEM_INCOMPLETE
 Thread displaying is still work in progress, so it may have errors.\nLevels in inspections table won't match backtrace.
 DEBUG_RETURN_VALUE

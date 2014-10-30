@@ -172,7 +172,7 @@ void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 * y al limpia limpia compiler->valgrind_cmd para que la proxima ejecucion
 * vuelva a ser normal
 **/
-void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
+void mxMainWindow::OnToolsValgrindCommon(bool debug) {
 	if (!config->Init.valgrind_seen && !mxUT::GetOutput(wxString("\"")<<config->Files.valgrind_command<<"\" --version").Len()) {
 		mxMessageDialog(main_window,LANG(MAINW_VALGRIND_MISSING,"Valgrind no se ecuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
@@ -184,13 +184,23 @@ void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
 	} else config->Init.valgrind_seen=true;
 	
 	if (!valgrind_config) valgrind_config=new mxValgrindConfigDialog(this);
+	valgrind_config->SetArg("--vgdb-error=0",debug);
 	if (valgrind_config->ShowModal()==0) return;
 	
 	wxString val_file = DIR_PLUS_FILE(config->temp_dir,"valgrind.out");
 	val_file.Replace(" ","\\ ");
 	compiler->valgrind_cmd = config->Files.valgrind_command+" "<<valgrind_config->GetArgs()<<" --log-file="+val_file;
+	wxCommandEvent event;
 	OnRunRun(event);
 	compiler->valgrind_cmd="";
+	if (debug) OnDebugTarget("remote | vgdb");
+}
+
+void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {
+	OnToolsValgrindCommon(false);
+}
+void mxMainWindow::OnToolsValgrindDebug(wxCommandEvent &event) {
+	OnToolsValgrindCommon(true);
 }
 
 /// @brief Despliega el panel de Valgrind para mostrar los resultados del analisis dinamico
