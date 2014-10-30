@@ -13,25 +13,25 @@ class mxInspectionExplorerWidget : public wxTreeCtrl, public myDIEventHandler  {
 		mxIEWAux(const wxTreeItemId &_item):di(NULL),item(_item){} // ctor solo para poder usar el Find de SingleList con un wxTreeItemId
 		bool operator==(const mxIEWAux &o) const { return o.di?(di==o.di):(item==o.item); } // para el Find de SingleList
 		wxString MakeItemLabel() {
-			wxString retval = di->GetExpression();
+			wxString retval = di->GetShortExpression();
 			if (!is_root && retval[0]=='.') retval.erase(0,1);
 			if (!is_open) retval<<": "<<di->GetValue();
 			return retval;
 		}
 		wxString MakeItemLabel(DEBUG_INSPECTION_MESSAGE err) { // para cuando hay errores
-			wxString retval = di->GetExpression();
+			wxString retval = di->GetShortExpression();
 			retval<<": "<<DebuggerInspection::GetUserStatusText(err);
 			return retval;
 		}
 	};
 	
-	bool hidden_root;
+	bool hidden_root, auto_expand_roots;
 	
 	SingleList<mxIEWAux> inspections;
 	int AddItem (wxTreeItemId *parent, DebuggerInspection *di, bool is_root=false);
 public:
 	
-	mxInspectionExplorerWidget(wxWindow *parent, const wxString &expression="", bool frameless=false);
+	mxInspectionExplorerWidget(wxWindow *parent, const wxString &expression="", bool frameless=false, bool expand_roots=true);
 	~mxInspectionExplorerWidget();
 	void AddExpression(wxString expression, bool frameless);
 	

@@ -11,7 +11,7 @@ mxInspectionBaloon::mxInspectionBaloon (const wxPoint &pos, const wxString & exp
 {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	// create the tree for exploring the VO
-	exp = new mxInspectionExplorerWidget(this,expression,false);
+	exp = new mxInspectionExplorerWidget(this,expression,false,false);
 	sizer->Add(exp,sizers->Exp1);
 	// create the text for the type
 	wxString type = exp->GetRootType(), new_expr;

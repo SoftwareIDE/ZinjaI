@@ -234,6 +234,7 @@ private:
 //	bool requieres_manual_update; ///< false, para los VOs comunes, true para los comandos gdb y para VOs que son intermediarios para otros VOs (helpers de compuestas)
 	// inf definida por el usuario/consumidor de la inspeccion
 	wxString expression; ///< expresión que está siendo inspeccionada
+	wxString short_expression; ///< solo para expresiones hijas, contiene solo la parte hija, y no es valida como tal (ej, se descompuso x en x.a y x.b, expression tendria x.a/x.b, mientras que short_expression a/b), solo lo tienen quienes se generaron con Break
 	Flag flags; /// combinacion de DIF_FRAMELESS, DIF_IN_SCOPE, DIF_REQUIRES_MANUAL_UPDATE, DIF_DONT_USE_HELPER
 	wxString variable_object; ///< si es variable object (ver dit_type) guarda el nombre de la vo, sino el comando gdb que se evalua
 //	bool is_frameless; ///< si su valor está asociado a un frame/scope particular o no (en gdb se conocen como "floating" variable objects)
@@ -560,17 +561,8 @@ public:
 	*									recursive_on_inheritance=true will also
 	*                                   break those children vos, and return their
 	*									children instead.
-	* @param set_full_expressions		a children vo has as name the identifier 
-	*									of the attribute, the base class name, or
-	*									the visibility tag... thoose are not
-	*									valid c++ expressions. If 
-	*									set_full_expressions==true will set as
-	*									"expression" for the new children valid
-	*									and complete c++ expressions, including
-	*									the original object/array. If false, the
-	*									vo name will be used.
 	**/
-	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool set_full_expressions);
+	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance);
 	
 	DEBUG_INSPECTION_EXPRESSION_TYPE GetDbiType() { return dit_type; }
 	const wxString &GetExpression() const { return expression; }
@@ -617,7 +609,7 @@ public:
 	long GetFrameID() { return frame_id; }
 	bool IsFromCurrentThread() { return !debug->debugging || debug->waiting || thread_id==debug->current_thread_id; }
 	wxString GetHelperExpression() { return helper&&!helper->flags.Get(DIF_IS_INTERNAL_HELPER)?helper->expression:""; }
-	
+	wxString GetShortExpression() { return short_expression.Len()?short_expression:expression; }
 	// some ramdon inspections related functions
 	static bool TryToImproveExpression (const wxString &pattern, wxString type, wxString &new_expr, const wxString &expr);
 	static bool TryToImproveExpression (wxString type, wxString &new_expr, const wxString &expr);

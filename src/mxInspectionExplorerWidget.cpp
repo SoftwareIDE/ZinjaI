@@ -27,8 +27,8 @@ BEGIN_EVENT_TABLE(mxInspectionExplorerWidget,wxTreeCtrl)
 	
 END_EVENT_TABLE()
 
-mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const wxString &expression, bool frameless) 
-	: wxTreeCtrl(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTR_DEFAULT_STYLE|wxTR_HAS_BUTTONS|(expression==""?wxTR_HIDE_ROOT:0)) 
+mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const wxString &expression, bool frameless, bool expand_roots) 
+	: wxTreeCtrl(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTR_DEFAULT_STYLE|wxTR_HAS_BUTTONS|(expression==""?wxTR_HIDE_ROOT:0)), auto_expand_roots(expand_roots) 
 {
 	event_listener=NULL;
 	AddRoot(expression); 
@@ -41,7 +41,7 @@ mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const
 }
 
 int mxInspectionExplorerWidget::AddItem (wxTreeItemId *parent, DebuggerInspection *di, bool is_root) {
-	mxIEWAux aux (di, parent?AppendItem(*parent,di->GetExpression()):GetRootItem(), is_root);
+	mxIEWAux aux (di, parent?AppendItem(*parent,di->GetShortExpression()):GetRootItem(), is_root);
 	int p = inspections.Add(aux);
 	if (is_root) aux.di->Init(); else SetItemText(aux.item,aux.MakeItemLabel());
 	if (!aux.di->IsSimpleType()) SetItemHasChildren(aux.item,true);
@@ -57,7 +57,7 @@ void mxInspectionExplorerWidget::OnDICreated (DebuggerInspection * di) {
 	SetItemText(inspections[pos].item,inspections[pos].MakeItemLabel());
 	DeleteChildrenInspections(pos);
 	SetItemHasChildren(GetRootItem(),!di->IsSimpleType());
-	if (inspections[pos].is_root) Expand(inspections[pos].item);
+	if (auto_expand_roots && inspections[pos].is_root) Expand(inspections[pos].item);
 }
 
 void mxInspectionExplorerWidget::OnDIError (DebuggerInspection * di) {
@@ -101,10 +101,10 @@ void mxInspectionExplorerWidget::OnItemExpanding (wxTreeEvent & event) {
 	int pos = inspections.Find(event.GetItem()); 
 	if (pos==0) SetItemText(inspections[0].item,inspections[0].MakeItemLabel());
 	if (pos==inspections.NotFound()) return; // no deberia pasar
-	mxIEWAux aux = inspections[pos];
+	mxIEWAux &aux = inspections[pos];
 	if (aux.is_open) return; 
 	SingleList<DebuggerInspection*> children;
-	if (!aux.di->Break(children,true,false,false) || !children.GetSize()) return;
+	if (!aux.di->Break(children,true,false) || !children.GetSize()) return;
 	inspections[pos].is_open=true; // don't try to generate same
 	for(int i=0;i<children.GetSize();i++) 
 		AddItem(&aux.item,children[i],false);

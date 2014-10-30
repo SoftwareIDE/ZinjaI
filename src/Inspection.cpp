@@ -90,12 +90,12 @@ void DebuggerInspection::UpdateAllVO() {
 	}
 }
 
-bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool set_full_expressions) {
+bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance) {
 	__debug_log_method__;
 	if (!debug->CanTalkToGDB()) return false;
 	
 	// auxiliares para escribir la expresión final a partir de la expresión base y los nombre de los hijos
-	wxString base_exp = set_full_expressions?RewriteExpressionForBreaking(expression):"";
+	wxString base_exp = RewriteExpressionForBreaking(expression);
 	bool is_array = IsArray(); wxString base_pre = is_array?"[":".", base_post=is_array?"]":"";
 	
 	// crear y obtener vos hijos
@@ -129,9 +129,14 @@ bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool s
 			// ver si hay que romper este tambien (porque es clase baso, o grupo de visibilidad)
 			bool break_again = (recursive_on_inheritance && c.type==c.exp) ||
 				(skip_visibility_groups && ((c.exp=="public"||c.exp=="private"||c.exp=="protected")&&c.type==""));
-			if (break_again) di->expression=base_exp; else di->expression=base_exp+base_pre+di->expression+base_post;
 			if (break_again) {
-				di->Break(children,skip_visibility_groups,recursive_on_inheritance,set_full_expressions);
+				di->expression = di->expression = base_exp; 
+			} else {
+				di->short_expression = base_pre+di->expression+base_post;
+				di->expression = base_exp+di->short_expression;
+			}
+			if (break_again) {
+				di->Break(children,skip_visibility_groups,recursive_on_inheritance);
 				di->Destroy();
 			} else { 
 				if (!di->SetupChildInspection()) di->VOEvaluate();
@@ -310,7 +315,7 @@ void myDIGlobalEventHandler::UnRegister ( ) {
 void DebuggerInspection::UpdateAllManual ( ) {
 	__debug_log_static_method__;
 	for(int i=0;i<all_inspections.GetSize();i++) { 
-		if (all_inspections[i]->RequiresManualUpdate())
+		if (!all_inspections[i]->helper && all_inspections[i]->RequiresManualUpdate())
 			all_inspections[i]->UpdateValue(true);
 	}
 }
