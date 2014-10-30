@@ -4075,40 +4075,54 @@ void mxSource::InitRectEdit (bool keep_rect_select) {
 }
 
 void mxSource::ApplyRectEdit ( ) {
+	// si cambia de linea, se termina la edicion
 	if (GetCurrentLine()!=rect_sel.line_from) { 
 		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 		rect_sel.is_on=false; return;
 	}
+	// cur = pos actual, lbeg y lend son las pos globales de inicio y fin de la linea editada
 	int cur=GetCurrentPos(), lbeg=PositionFromLine(rect_sel.line_from),lend=GetLineEndPosition(rect_sel.line_from); 
-	if (cur-lbeg<rect_sel.offset_beg || cur>lend-rect_sel.offset_end) { 
+	// [pbeg,pend) son las pos actuales donde empieza y termina la zona de edicion
+	int pbeg=lbeg+rect_sel.offset_beg, pend=lend-rect_sel.offset_end;
+	// si se salio de la zona de edicion en esa linea, termina la edicion
+	if (cur<pbeg || cur>pend) { 
 		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 		rect_sel.is_on=false; return;
 	}
-	int pbeg=lbeg+rect_sel.offset_beg, pend=lend-rect_sel.offset_end;
+	// new_str es el nuevo contenido en esa linea, ref_str el viejo, ambos para toda la zona de edicion
 	wxString new_str = GetTextRange(pbeg,pend);
 	wxString &ref_str = rect_sel.ref_str;
+	// lr y ln son los largos de ambos contenidos
 	int i=0, lr=ref_str.Len(), ln=new_str.Len(); 
+	// acotar la parte modificada, avanzando desde afuera hacia adentro mientras no haya cambio
 	while (i<lr && i<ln && ref_str[i]==new_str[i]) { i++; }
 	while (lr>i && ln>i && ref_str[lr-1]==new_str[ln-1]) { lr--; ln--; }
+	// si no cambio nada, no hacer nada
 	if (i==lr && lr==ln) return;
-	wxString sfrom=ref_str.Mid(i,lr-i),sto=new_str.Mid(i,ln-i);
+	// cortar las partes que son diferentes de cada cadena de ref
+	wxString sfrom = ref_str.Mid(i,lr-i), sto = new_str.Mid(i,ln-i);
 	BeginUndoAction();
-	// get positions for the modified part, and translate them to column (to take care of tabs and other multibyete chars)
-	pbeg = PositionFromLine(rect_sel.line_from)+rect_sel.offset_beg+i;
-	pend = PositionFromLine(rect_sel.line_from)+rect_sel.offset_beg+i+sfrom.Len();
-	int cbeg = GetColumn(pbeg), cend=GetColumn(pend);
+	// ahora pbeg y pend acotan solo la parte modificada, en terminos de la cadena original
+	pbeg += i; pend = pbeg+sfrom.Len();
+	// traducir a columnas (por los tabs y otros caracteres que ocupan mas de un espacio)
+	int cbeg = GetColumn(pbeg), cend=cbeg+sfrom.Len();
+	// para cada linea de la seleccion...
 	for(int line=rect_sel.line_from+1;line<=rect_sel.line_to;line++) { 
-		int tbeg = FindColumn(line,cbeg);
-		int tend = FindColumn(line,cend);
+		// obtenes posiciones para la linea actual, segun columnas
+		int tbeg = FindColumn(line,cbeg), tend = FindColumn(line,cend);
+		// si realmente habia un seleccion rectangular, la edicion ya borro lo seleccionado, por eso contraer a 0 el area original
 		if (rect_sel.was_rect_select) tend=tbeg;
-		int lend = GetLineEndPosition(line);
-		if (tend>lend) continue;
+		// asegurarse de que no se salga de la linea (puede pasar esto?)
+		if (tend>GetLineEndPosition(line)) continue;
+		// reemplazar desde tbeg a tend, con sto
 		SetTargetStart(tbeg);
 		SetTargetEnd(tend);
 		ReplaceTarget(sto);
 	}
+	// la selección ya no será rectangular
 	rect_sel.was_rect_select=false;
 	EndUndoAction();
+	// guardar la linea modificada como nueva referencia para la próxima edición
 	ref_str=new_str;
 	
 }
