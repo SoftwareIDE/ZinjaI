@@ -187,7 +187,7 @@ public:
 	void OnDebugGdbCommand(wxCommandEvent &event);
 	void OnDebugAttach (wxCommandEvent &event);
 	void OnDebugTarget (wxCommandEvent &event);
-	wxString OnDebugTarget (wxString target);
+	wxString DebugTargetCommon (wxString target);
 	void OnDebugPatch (wxCommandEvent &event);
 	void OnDebugCoreDump (wxCommandEvent &event);
 	void OnDebugDoThat (wxCommandEvent &event);

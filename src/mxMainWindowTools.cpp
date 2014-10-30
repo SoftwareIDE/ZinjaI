@@ -193,7 +193,7 @@ void mxMainWindow::OnToolsValgrindCommon(bool debug) {
 	wxCommandEvent event;
 	OnRunRun(event);
 	compiler->valgrind_cmd="";
-	if (debug) OnDebugTarget("remote | vgdb");
+	if (debug) DebugTargetCommon("remote | vgdb");
 }
 
 void mxMainWindow::OnToolsValgrindRun(wxCommandEvent &event) {

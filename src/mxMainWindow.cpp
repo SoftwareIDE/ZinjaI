@@ -3234,11 +3234,11 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 
 void mxMainWindow::OnDebugTarget ( wxCommandEvent &event ) {
 	static wxString target;
-	wxString new_target = OnDebugTarget(target);
+	wxString new_target = DebugTargetCommon(target);
 	if (new_target.Len()) target=new_target;
 }
 
-wxString mxMainWindow::OnDebugTarget (wxString target) {
+wxString mxMainWindow::DebugTargetCommon (wxString target) {
 	target = mxGetTextFromUser("Target (arguments for gdb's target command):",_menu_item_2(mnDEBUG,mxID_DEBUG_ATTACH)->GetPlainLabel(),target,this);
 	if (target.Len()) {
 		wxString command = wxString("target ")<<target;

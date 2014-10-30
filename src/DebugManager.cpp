@@ -278,8 +278,6 @@ void DebugManager::ResetDebuggingStuff() {
 	gui_is_prepared = false;
 	pause_breakpoint=NULL;
 	
-#warning ver como marcar las inspecciones fuera de la tabla como obsoletas (o ya no?)
-	
 	// setear en -1 todos los ids de los pts de todos interrupcion, para evitar confusiones con depuraciones anteriores
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
 	while (bpi.IsValid()) { bpi->gdb_id=-1; bpi.Next(); }
