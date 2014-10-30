@@ -910,14 +910,15 @@ void ConfigManager::FinishiLoading ( ) {
 	if (delayed_config_lines) { // old way
 		for(unsigned int i=0;i<delayed_config_lines->toolbars_keys.GetCount();i++)
 			menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
-		if (Init.version<20140620) { 
-			menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
-			menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
-		}
 		delete delayed_config_lines; delayed_config_lines=NULL;
 	} else { // new way
 		menu_data->LoadShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc"));
 		menu_data->LoadToolbarsSettings(DIR_PLUS_FILE(home_dir,"toolbar.ztb"));
+	}
+	if (Init.version<20141030) { 
+		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";
+		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbSTATUS)="t3";
+		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbPROJECT)="T1";
 	}
 }
 
