@@ -429,6 +429,7 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 		if (action==CAR_EL_ERROR) {
 			num_errors++; 
 			if (num_errors>config->Init.max_errors) {
+				compile_and_run->process->Kill(compile_and_run->pid,wxSIGKILL); // matar el proceso, por si entra en loop infinito, podría colgar zinjai
 				compile_and_run->last_error_item_IsOk=false;
 				continue;
 			}
@@ -440,8 +441,10 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 				continue;
 			}
 		} else if (action==CAR_EL_CHILD_LAST||action==CAR_EL_CHILD_SWAP) {
-			if (!compile_and_run->last_error_item_IsOk && (num_warnings>config->Init.max_errors||num_errors>config->Init.max_errors)) 
+			if (!compile_and_run->last_error_item_IsOk && (num_warnings>config->Init.max_errors||num_errors>config->Init.max_errors)) {
+				compile_and_run->process->Kill(compile_and_run->pid,wxSIGKILL); // matar el proceso, por si entra en loop infinito, podría colgar zinjai
 				continue;
+			}
 		}
 		
 		if (action==CAR_EL_ERROR||action==CAR_EL_WARNING) { // nuevo error o warning
