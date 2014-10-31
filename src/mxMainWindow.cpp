@@ -576,9 +576,9 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	compiler->timer = new wxTimer(GetEventHandler(),mxID_COMPILER_TIMER);
 	find_replace_dialog = NULL; // new mxFindDialog(this,wxID_ANY);
 	
-	call_after_events = NULL;
+	call_after_events = NULL; after_events_is_processing_now = false;
 	after_events_timer = new wxTimer(GetEventHandler(),mxID_TIMER_AFTER_EVENTS);
-
+	
 	SetDropTarget(new mxDropTarget(NULL));
 	
 	if (config->Init.show_beginner_panel) {
@@ -4838,16 +4838,21 @@ void mxMainWindow::CallAfterEvents (AfterEventsAction * action) {
 	if (!after_events_timer) return; // main_window not initialized yet
 	action->next=call_after_events;
 	call_after_events=action;
-	after_events_timer->Start(50,true);
+	if (!after_events_is_processing_now) 
+		after_events_timer->Start(50,true);
 }
 
 void mxMainWindow::OnAfterEventsTimer (wxTimerEvent & event) {
-	while (call_after_events) {
-		call_after_events->Do();
-		AfterEventsAction *aux=call_after_events;
-		call_after_events=call_after_events->next;
-		delete aux;
+	after_events_is_processing_now = true;
+	AfterEventsAction *current = call_after_events; 
+	call_after_events = NULL;
+	while (current) {
+		AfterEventsAction *next = current->next;
+		current->Do(); delete current;
+		current = next;
 	}
+	after_events_is_processing_now = false;
+	if (call_after_events) after_events_timer->Start(50,true);
 }
 
 void mxMainWindow::SetFocusToSourceAfterEvents () {

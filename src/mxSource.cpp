@@ -26,6 +26,7 @@
 #include "MenusAndToolsConfig.h"
 #include "mxInspectionExplorerDialog.h"
 #include "mxInspectionBaloon.h"
+#include <wx/utils.h>
 using namespace std;
 
 
@@ -3526,7 +3527,13 @@ void mxSource::CheckForExternalModifications() {
 }
 
 void mxSource::ThereAreExternalModifications() {
-	SetSourceTime(source_filename.GetModificationTime());
+	wxMouseState ms=wxGetMouseState();
+	if (ms.LeftDown()||ms.MiddleDown()||ms.RightDown()) {
+		CheckForExternalModifications();
+		return;
+	}
+	wxDateTime dt = source_filename.GetModificationTime();
+	if (dt==source_time) return; else SetSourceTime(dt);
 	if (!source_time_dont_ask) {
 		int res=mxMessageDialog(main_window,LANG(SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD,"El archivo fue modificado por otro programa.\nDesea recargarlo para obtener las modificaciones?"), source_filename.GetFullPath(), mxMD_YES_NO|mxMD_WARNING,"No volver a preguntar",false).ShowModal();
 		source_time_reload=(res&mxMD_YES);

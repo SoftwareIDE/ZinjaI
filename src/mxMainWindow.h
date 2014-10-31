@@ -382,6 +382,7 @@ public:
 private:
 	wxTimer *after_events_timer;
 	AfterEventsAction *call_after_events;
+	bool after_events_is_processing_now;
 public:
 	void CallAfterEvents(AfterEventsAction *action);
 	void OnAfterEventsTimer(wxTimerEvent &event);

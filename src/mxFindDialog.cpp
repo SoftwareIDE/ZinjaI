@@ -55,7 +55,7 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	scopes.Add(LANG(FIND_ALL_PROJECT_OTHERS,"Todos los Otros Archivos del Proyecto"));
 	scopes.Add(LANG(FIND_ALL_PROJECT_FILES,"Todos los Archivos del Proyecto"));
 	combo_scope = mxUT::AddComboBox(optSizer,this,LANG(FIND_FIND_SCOPE,"Buscar en"),scopes,1,mxID_FIND_SCOPE);
-	check_close = mxUT::AddCheckBox(optSizer,this,LANG(FIND_CLOSE_AFTER_FIND,"Cerrar este dialogo despues de encontrar"),true);
+	check_close = mxUT::AddCheckBox(optSizer,this,LANG(FIND_CLOSE_AFTER_FIND,"Cerrar este dialogo después de encontrar"),true);
 	
 	replace_button = new mxBitmapButton (this, mxID_FIND_REPLACE, bitmaps->buttons.replace, LANG(FIND_REPLACE,"Reemplazar"));
 	replace_all_button = new mxBitmapButton (this, mxID_FIND_REPLACE_ALL, bitmaps->buttons.replace, LANG(FIND_REPLACE_ALL,"Reemplazar Todo"));
