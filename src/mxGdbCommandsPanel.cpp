@@ -77,11 +77,21 @@ END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(mxGdbCommandsPanel,wxPanel)
 	EVT_TEXT_ENTER(wxID_FIND,mxGdbCommandsPanel::OnInput)
+	EVT_STC_MARGINCLICK (wxID_ANY, mxGdbCommandsPanel::OnMarginClick)
 END_EVENT_TABLE()
 
 mxGdbCommandsPanel::mxGdbCommandsPanel():wxPanel(main_window) {
 	input = new gdbTextCtrl(this);
-	output = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
+	output = new wxStyledTextCtrl(this,wxID_ANY);
+	output->SetWrapMode(wxSTC_WRAP_WORD);
+	output->MarkerDefine(0,wxSTC_MARK_MINUS, wxColour(255,255,255), wxColour(0,0,0));
+	output->MarkerDefine(1,wxSTC_MARK_PLUS, wxColour(255,255,255), wxColour(0,0,0));
+	output->SetMarginWidth (0, 0);
+	output->SetMarginWidth (1, 16);
+	output->SetMarginSensitive (1, true);
+//	output->SetReadOnly(true);
+	
+	
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(input,sizers->Exp0);
 	sizer->Add(output,sizers->Exp1);
@@ -112,7 +122,7 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 			mi_msg<<"   & "<<ue<<"\n";
 		} else if (line.StartsWith("^")) {
 			if (line.StartsWith("^error")) 
-				mi_msg<<"^error: "<<debug->GetValueFromAns(line,"msg",true,true)<<"\n";
+				mi_msg<<"   ^error: "<<debug->GetValueFromAns(line,"msg",true,true)<<"\n";
 			else mi_msg<<"   ^ "<<line.Mid(1)<<"\n";
 		} else if (line.StartsWith("=")) {
 			mi_msg<<"   = "<<line.Mid(1)<<"\n";
@@ -128,7 +138,33 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 }
 
 void mxGdbCommandsPanel::AppendText (const wxString & str) {
+	int n0 = output->GetLineCount()-1;
 	output->AppendText(str);
+	int n1 = output->GetLineCount()-1;
+	cerr<<n0<<":"<<n1<<endl;
+	for(int i=n0;i<n1;i++) { 
+		cerr<<"  "<<i<<"  *"<<output->GetLine(i)<<"*"<<endl;
+		if (output->GetLine(i).StartsWith("> "))
+			output->MarkerAdd(i,0);
+	}
+	output->GotoLine(n1-1);
 }
 
+void mxGdbCommandsPanel::OnMarginClick (wxStyledTextEvent & e) {
+	int l = output->LineFromPosition (e.GetPosition());
+	int m = output->MarkerGet(l);
+	if (m) {
+		int n=output->GetLineCount();
+		int l2=l+1; while (l2<n && output->GetLine(l2).Len() && output->GetLine(l2).StartsWith("> ")) l2++;
+		if (m==1) {
+			output->MarkerDelete(l,0);
+			output->MarkerAdd(l,1);
+			output->HideLines(l+1,l2);
+		} else {
+			output->MarkerDelete(l,1);
+			output->MarkerAdd(l,0);
+			output->ShowLines(l+1,l2);
+		}
+	}
+}
 

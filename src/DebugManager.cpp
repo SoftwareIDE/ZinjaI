@@ -357,7 +357,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 			}
 			SetBreakPoints(source);
 		}
-		if (should_continue) Continue();
+		if (should_continue) { osd.Hide(); Continue(); }
 		return true;
 	}
 	debugging = false;

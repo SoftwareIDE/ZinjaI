@@ -402,7 +402,8 @@ int ShareManager::GetSharedList(wxArrayString &a) {
 	#define sso_type void
 #endif 
 
-// basedo on http://cs.baylor.edu/~donahoo/practical/CSockets/code/BroadcastSender.c
+// based on http://cs.baylor.edu/~donahoo/practical/CSockets/code/BroadcastSender.c
+// made without wxWidgets because 2.8 doesn't support sending broadcasts
 bool ShareManager::SendBroadcast (const char * data) {
 	int sock;                         /* Socket */
 	struct sockaddr_in broadcastAddr; /* Broadcast address */
