@@ -46,7 +46,7 @@ ShareManager::ShareManager () {
 }
 
 bool ShareManager::CheckServer() {
-	StartBroadcastListener();
+	StartBroadcastListener(false);
 	if (index_server!=NULL) {
 		if(index_server->IsOk())
 			return true;
@@ -198,7 +198,7 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 		buf[broadcast_receiver->LastCount()]='\0';
 		wxString data = buf;
 		if (data=="who") {
-			share->SendBroadcast(wxString("zme=")+wxGetHostName());
+			StartBroadcastListener(false);
 		} else if (data.Len()>4 && data.StartsWith("zme=")) {
 			mxOpenSharedWindow::AddClient(data.Mid(4),addrss.IPAddress());
 		}
@@ -437,7 +437,7 @@ bool ShareManager::SendBroadcast (const char * data) {
 	return true;
 }
 
-bool ShareManager::StartBroadcastListener ( ) {
+void ShareManager::StartBroadcastListener (bool send_who_or_zme) {
 	if (!broadcast_receiver) {
 		wxIPV4address bc_addrs;
 		bc_addrs.AnyAddress();
@@ -449,6 +449,11 @@ bool ShareManager::StartBroadcastListener ( ) {
 			broadcast_receiver->Notify(true);
 		}
 	}
-	if (data.begin()!=data.end()) SendBroadcast(wxString("zme=")+wxGetHostName());
+	if (send_who_or_zme) {
+		SendBroadcast("who");
+	} else if (data.begin()!=data.end()) {
+		SendBroadcast(wxString("zme=")+wxGetHostName());
+	}
+
 }
 

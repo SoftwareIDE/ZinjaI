@@ -155,6 +155,6 @@ void mxOpenSharedWindow::Show ( ) {
 
 void mxOpenSharedWindow::DoShow ( ) {
 	wxDialog::Show();
-	share->StartBroadcastListener();
+	share->StartBroadcastListener(true);
 }
 
