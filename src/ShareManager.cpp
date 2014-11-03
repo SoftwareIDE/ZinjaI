@@ -9,6 +9,7 @@
 #define SHARE_SEND_BS 1024
 #include "Language.h"
 #include "mxMessageDialog.h"
+#include "mxOpenSharedWindow.h"
 
 ShareManager *share=NULL;
 
@@ -40,8 +41,8 @@ ShareManager *share=NULL;
 ShareManager::ShareManager () {
 	index_is_waiting=false;
 	index_server=NULL;
-//	if (config->Init.load_sharing_server)
-//		CheckServer();
+	open_shared_window=NULL;
+	broadcast_receiver=NULL;
 }
 
 bool ShareManager::CheckServer() {
@@ -53,14 +54,28 @@ bool ShareManager::CheckServer() {
 			index_server=NULL;
 		}
 	}
-	wxIPV4address adrs;
-//	adrs.Hostname("127.0.0.1"); // esta linea era el problema por el cual no se aceptaban conexiones externas
-	adrs.Service(config->Init.zinjai_server_port);
-	index_server = new wxSocketServer(adrs);
+	wxIPV4address serv_adrs;
+//	serv_adrs.Hostname("127.0.0.1"); // esta linea era el problema por el cual no se aceptaban conexiones externas
+	serv_adrs.Service(config->Init.zinjai_server_port);
+	index_server = new wxSocketServer(serv_adrs);
 	index_server->SetEventHandler(*(main_window->GetEventHandler()), mxID_SOCKET_SERVER);
 	index_server->SetNotify(wxSOCKET_CONNECTION_FLAG);
 	index_server->Notify(true);
-	return index_server->IsOk();
+	if (!index_server->IsOk()) return false;
+
+	if (broadcast_receiver) return true;
+	wxIPV4address bc_addrs;
+	bc_addrs.AnyAddress();
+	bc_addrs.Service(config->Init.zinjai_server_port);
+	broadcast_receiver = new wxDatagramSocket(bc_addrs,wxSOCKET_NOWAIT|wxSOCKET_REUSEADDR);
+	if (broadcast_receiver->Ok()) {
+		broadcast_receiver->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
+		broadcast_receiver->SetNotify(wxSOCKET_INPUT_FLAG);
+		broadcast_receiver->Notify(true);
+	}
+	SendBroadcast(wxString("zme=")+wxGetHostName());
+	
+	return true;
 }
 
 ShareManager::~ShareManager () {
@@ -185,16 +200,24 @@ bool ShareManager::GetList(wxString hostname, wxListBox *lst) {
 }
 
 void ShareManager::OnSocketEvent(wxSocketEvent *event) {
-	HashPtrClient::iterator it;
 	
-//wxString se;
-//se<<"GetSocket:"<<(int)event->GetSocket()<<"   is:"<<(int)index_server<<" ic:"<<(int)index_client;
-//wxString set;
-//if (event->GetSocketEvent()==wxSOCKET_LOST) set+="LOST ";
-//if (event->GetSocketEvent()==wxSOCKET_INPUT) set+="INPUT ";
-//if (event->GetSocketEvent()==wxSOCKET_CONNECTION) set+="CONNECTION ";
-//DEBUG_INFO(set);
-//DEBUG_INFO(se);
+	// if its the upd sockets, these are broadcast to find out who is sharing something
+	if (event->GetSocket()==broadcast_receiver) {
+		wxIPV4address addrss; char buf[256];
+		// input is the only active event for this socket
+		broadcast_receiver->RecvFrom(addrss,buf,255);
+		if (broadcast_receiver->Error()) return;
+		buf[broadcast_receiver->LastCount()]='\0';
+		wxString data = buf;
+		if (data=="who") {
+			SendBroadcast(wxString("zme=")+wxGetHostName());
+		} else if (data.Len()>4 && data.StartsWith("zme=")) {
+			if (open_shared_window) open_shared_window->AddClient(data.Mid(4),addrss.IPAddress());
+		}
+		return;
+	}
+	
+	HashPtrClient::iterator it;
 	
 	// someone wants to start a conversation
 	if (event->GetSocket()==index_server) { // someone ask for the shared sources list
@@ -377,3 +400,60 @@ int ShareManager::GetSharedList(wxArrayString &a) {
 	} 
 	return count;
 }
+
+
+
+#if defined(_WIN32) || defined(__WIN32__)
+	#include <windows.h>
+	#include <winsock.h>
+    #define sso_type char
+#else
+	#include <sys/socket.h> /* for socket() and bind() */
+	#include <arpa/inet.h>  /* for sockaddr_in */
+	#include <cstring>     /* for memset() */
+	#define sso_type void
+#endif 
+
+// basedo on http://cs.baylor.edu/~donahoo/practical/CSockets/code/BroadcastSender.c
+bool ShareManager::SendBroadcast (const char * data) {
+	int sock;                         /* Socket */
+	struct sockaddr_in broadcastAddr; /* Broadcast address */
+	const char *broadcastIP;                /* IP broadcast address */
+	unsigned short broadcastPort;     /* Server port */
+	const char *sendString;           /* String to broadcast */
+	int broadcastPermission;          /* Socket opt to set permission to broadcast */
+	unsigned int sendStringLen;       /* Length of string to broadcast */
+	
+	broadcastIP = "255.255.255.255";            /* First arg:  broadcast IP address */ 
+	broadcastPort = config->Init.zinjai_server_port;    /* Second arg:  broadcast port */
+	sendString = data;             /* Third arg:  string to broadcast */
+	
+	/* Create socket for sending/receiving datagrams */
+	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) return false;
+	
+	/* Set socket to allow broadcast */
+	broadcastPermission = 1;
+	if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (sso_type *) &broadcastPermission,sizeof(broadcastPermission)) < 0) return false;
+	
+	/* Construct local address structure */
+	memset(&broadcastAddr, 0, sizeof(broadcastAddr));   /* Zero out structure */
+	broadcastAddr.sin_family = AF_INET;                 /* Internet address family */
+	broadcastAddr.sin_addr.s_addr = inet_addr(broadcastIP);/* Broadcast IP address */
+	broadcastAddr.sin_port = htons(broadcastPort);         /* Broadcast port */
+	
+	sendStringLen = strlen(sendString);  /* Find length of sendString */
+	
+	/* Broadcast sendString in datagram to clients every 3 seconds*/
+	if (sendto(sock, sendString, sendStringLen, 0, (struct sockaddr *) &broadcastAddr, sizeof(broadcastAddr)) != sendStringLen)	return false;
+	
+	return true;
+}
+
+
+
+
+void ShareManager::RegisterOpenSharedWindow (mxOpenSharedWindow * win) {
+	open_shared_window = win;
+	if (win) SendBroadcast("who");
+}
+

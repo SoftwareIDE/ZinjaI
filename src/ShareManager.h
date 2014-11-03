@@ -1,5 +1,6 @@
 #include <wx/hashmap.h>
 #include <wx/string.h>
+#include <wx/socket.h>
 
 class mxSource;
 class wxSocketServer;
@@ -7,6 +8,7 @@ class wxSocketClient;
 class wxSocketBase;
 class wxSocketEvent;
 class wxControlWithItems;
+class mxOpenSharedWindow;
 
 //! for receiving sources
 struct share_conection_c {
@@ -58,6 +60,14 @@ public:
 	int GetMyList(wxControlWithItems *ctrl);
 	bool Freeze(mxSource *source);
 	int GetSharedList(wxArrayString &a); ///< append shared sources' titles (key from hash data) in a and return the count
+
+	
+private:
+	wxDatagramSocket *broadcast_receiver;
+	mxOpenSharedWindow *open_shared_window;
+public:
+	void RegisterOpenSharedWindow(mxOpenSharedWindow *win=NULL);
+	bool SendBroadcast(const char *data);
 };
 
 extern ShareManager *share;

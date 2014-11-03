@@ -18,6 +18,7 @@ BEGIN_EVENT_TABLE(mxOpenSharedWindow, wxDialog)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxOpenSharedWindow::OnHelpButton)
 	EVT_CLOSE(mxOpenSharedWindow::OnClose)
 	EVT_CHAR_HOOK(mxOpenSharedWindow::OnCharHook)
+	EVT_LISTBOX(mxID_SHARE_LIST,mxOpenSharedWindow::OnClientList)
 	EVT_LISTBOX_DCLICK(wxID_ANY,mxOpenSharedWindow::OnGetSourceButton)
 
 END_EVENT_TABLE()
@@ -26,42 +27,68 @@ mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wx
 
 	if (!share) share = new ShareManager();
 	
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *bottomSizer= new wxBoxSizer(wxHORIZONTAL);
-
+	clients_list = new wxListBox(this,mxID_SHARE_LIST,wxDefaultPosition, wxSize(200,150));
+	wxStaticText *help_text_1 = new wxStaticText(this,wxID_ANY,/*LANG(OPENSHARED_STEP_1,*/"1) Dirección de origen:"/*)*/);
 	hostname = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
+	wxBitmapButton *button_step_1 = new wxBitmapButton (this, mxID_SHARE_GET_LIST, *bitmaps->buttons.next);
 	
-	mySizer->Add(new wxStaticText(this, wxID_ANY, LANG(OPENSHARED_HOSTNAME_OR_ADDRESS,"Nombre/Direccion del host: "), wxDefaultPosition, wxDefaultSize, 0), sizers->BLRT5);
-	mySizer->Add(hostname,sizers->BLRB5_Exp0);
-
-	list = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(150,150));
-
-	mySizer->Add(list,sizers->BA5_Exp1);
-
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
+	wxBoxSizer *left_aux_sizer= new wxBoxSizer(wxHORIZONTAL);
+	left_aux_sizer->Add(hostname,sizers->Exp1);
+	left_aux_sizer->Add(button_step_1);
+	
+	wxBoxSizer *left_sizer = new wxBoxSizer(wxVERTICAL);
+	left_sizer->Add(help_text_1,sizers->BA5_Exp0);
+	left_sizer->Add(clients_list,sizers->BA5_Exp1);
+	left_sizer->Add(left_aux_sizer,sizers->BA5_Exp0);
+	
+	
+	
+	wxStaticText *help_text_2 = new wxStaticText(this,wxID_ANY,/*LANG(OPENSHARED_STEP_2,*/"2) Seleccion un archivo:"/*)*/);
+//	wxBitmapButton *button_step_2 = new wxBitmapButton (this, mxID_SHARE_GET_LIST, *bitmaps->buttons.next);
+	files_list = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(200,150));
+	
+//	wxBoxSizer *right_aux_sizer= new wxBoxSizer(wxHORIZONTAL);
+//	right_aux_sizer->Add(help_text_2,sizers->Exp1);
+//	right_aux_sizer->Add(button_step_2);
+	
+	wxBoxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
+//	right_sizer->Add(right_aux_sizer,sizers->BA5_Exp0);
+	right_sizer->Add(help_text_2,sizers->BA5_Exp0);
+	right_sizer->Add(files_list,sizers->BA5_Exp1);
+	
+	wxBoxSizer *top_sizer = new wxBoxSizer(wxHORIZONTAL);
+	top_sizer->Add(left_sizer,sizers->Exp1);
+	top_sizer->Add(right_sizer,sizers->Exp1);
+	
+	
 	wxButton *close_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CLOSE_BUTTON," &Cerrar ")); 
-	wxButton *list_button = new mxBitmapButton (this, mxID_SHARE_GET_LIST, bitmaps->buttons.next,LANG(OPENSHARED_UPDATE_LIST_BUTTON,"&Actualizar lista"));
+	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
 	wxButton *source_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(OPENSHARED_GET_SOURCE_BUTTON,"&Obtener fuente"));
 
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(close_button,sizers->BA5);
-	bottomSizer->Add(list_button,sizers->BA5);
-	bottomSizer->Add(source_button,sizers->BA5);
+	wxBoxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
+	bottom_sizer->Add(help_button,sizers->BA5_Exp0);
+	bottom_sizer->AddStretchSpacer();
+	bottom_sizer->Add(close_button,sizers->BA5);
+	bottom_sizer->Add(source_button,sizers->BA5);
 
-	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
-	SetSizerAndFit(mySizer);
+	
+	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(top_sizer,sizers->Exp1);
+	main_sizer->Add(bottom_sizer,sizers->BA5_Exp0);
+	SetSizerAndFit(main_sizer);
 
 	hostname->SetFocus();
 
+	share->RegisterOpenSharedWindow(this);
+	
 }
 
 void mxOpenSharedWindow::OnGetListButton(wxCommandEvent &event){
 	if (!(hostname->GetValue().Len())) {
 		mxMessageDialog(this,LANG(OPENSHARED_ENTER_HOSTNAME_OR_IP,"Debe introducir primero el nombre de host o el IP de la pc que esta compartiendo el archivo."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
 	} else {
-		if (share->GetList(hostname->GetValue(),list))
-			list->SetFocus();
+		if (share->GetList(hostname->GetValue(),files_list))
+			files_list->SetFocus();
 		else 
 			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
 	}
@@ -76,16 +103,16 @@ void mxOpenSharedWindow::OnCloseButton(wxCommandEvent &event){
 }
 
 void mxOpenSharedWindow::OnGetSourceButton(wxCommandEvent &event){
-	if (!list->GetStringSelection().Len() ) {
-		if (list->GetCount()==0) {
+	if (!files_list->GetStringSelection().Len() ) {
+		if (files_list->GetCount()==0) {
 			mxMessageDialog(this,LANG(OPENSHARED_GET_SHARED_LIST_FIRST,"Debe obtener la lista de fuentes compartidas primero. Para ello ingrese el nombre de host\no el IP de la pc que esta compartiendo el archivo y seleccione \"Actualizar lista\"."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
 			hostname->SetFocus();
 		} else {
 			mxMessageDialog(this,LANG(OPENSHARED_SELECT_ONE_FIRST,"Debe seleccionar un fuente de la lista primero."), LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-			list->SetFocus();
+			files_list->SetFocus();
 		}
 	} else {
-		if (share->AskFor(list->GetStringSelection()))
+		if (share->AskFor(files_list->GetStringSelection()))
 			Close();
 		else
 			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
@@ -103,10 +130,23 @@ void mxOpenSharedWindow::OnCharHook (wxKeyEvent &event) {
 		if (FindFocus()==hostname) {
 			wxCommandEvent evt;
 			OnGetListButton(evt);
-		} else if (FindFocus()==list) {
+		} else if (FindFocus()==files_list) {
 			wxCommandEvent evt;
 			OnGetSourceButton(evt);
 		}
 	} else event.Skip();
+}
+
+void mxOpenSharedWindow::OnClientList (wxCommandEvent & event) {
+	hostname->SetValue(clients_list->GetStringSelection().AfterLast('(').BeforeFirst(')'));
+	OnGetListButton(event);
+}
+
+void mxOpenSharedWindow::AddClient (const wxString & name, const wxString & ip) {
+	for(unsigned int i=0;i<clients_list->GetCount();i++) { 
+		wxString s = clients_list->GetString(i).AfterLast('(').BeforeFirst(')');
+		if (s==ip) { clients_list->SetString(i,name+" ("+ip+")"); return; }
+	}
+	clients_list->Append(name+" ("+ip+")");
 }
 
