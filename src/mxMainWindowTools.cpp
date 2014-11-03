@@ -703,8 +703,7 @@ void mxMainWindow::OnToolsShareShare (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsShareOpen (wxCommandEvent &event) {
-	if (!open_shared) open_shared = new mxOpenSharedWindow(this);
-	open_shared->Show();
+	mxOpenSharedWindow::Show();
 }
 
 void mxMainWindow::OnToolsShareList(wxCommandEvent &event) {

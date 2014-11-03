@@ -66,7 +66,7 @@ private:
 	wxDatagramSocket *broadcast_receiver;
 	mxOpenSharedWindow *open_shared_window;
 public:
-	void RegisterOpenSharedWindow(mxOpenSharedWindow *win=NULL);
+	bool StartBroadcastListener();
 	bool SendBroadcast(const char *data);
 };
 

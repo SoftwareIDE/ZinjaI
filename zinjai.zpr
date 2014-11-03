@@ -11,7 +11,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxSource.cpp
+current_source=src/mxShareSourceWindow.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -22,7 +22,7 @@ cursor=666:24
 marker=578
 [source]
 path=src/mxMainWindowTools.cpp
-cursor=789:24
+cursor=706:0
 marker=80
 open=true
 [source]
@@ -38,10 +38,10 @@ cursor=11:38
 marker=142
 [source]
 path=src/mxMainWindow.cpp
-cursor=4890:22
-marker=3284
-marker=3293
-marker=4676
+cursor=571:1
+marker=3283
+marker=3292
+marker=4675
 open=true
 [source]
 path=src/DebugManager.cpp
@@ -77,7 +77,7 @@ cursor=180:22
 marker=647
 [source]
 path=src/ShareManager.cpp
-cursor=211:14
+cursor=49:1
 open=true
 [source]
 path=src/mxAboutWindow.cpp
@@ -96,7 +96,7 @@ path=src/mxGotoLineWindow.cpp
 cursor=64:42
 [source]
 path=src/mxOpenSharedWindow.cpp
-cursor=10:21
+cursor=142:40
 open=true
 [source]
 path=src/mxProjectConfigWindow.cpp
@@ -104,13 +104,14 @@ cursor=113:84
 marker=377
 [source]
 path=src/mxShareSourceWindow.cpp
-cursor=56:55
+cursor=0:0
+open=true
 [source]
 path=src/mxTipsWindow.cpp
 cursor=53:1
 [source]
 path=src/ProjectManager.cpp
-cursor=3542:32
+cursor=92:72
 marker=485
 marker=3294
 marker=3329
@@ -127,7 +128,6 @@ cursor=39:98
 [source]
 path=src/mxDropTarget.cpp
 cursor=54:23
-open=true
 [source]
 path=src/mxStatusBar.cpp
 cursor=-1:0
@@ -147,7 +147,6 @@ cursor=-1:158
 path=src/mxFindDialog.cpp
 cursor=581:26
 marker=657
-open=true
 [source]
 path=src/mxGotoFunctionDialog.cpp
 cursor=132:40
@@ -156,7 +155,7 @@ path=src/mxGotoFileDialog.cpp
 cursor=122:13
 [source]
 path=src/mxInspectionGrid.cpp
-cursor=0:0
+cursor=178:14
 [source]
 path=src/mxBacktraceGrid.cpp
 cursor=131:1
@@ -183,10 +182,9 @@ path=src/mxOSD.cpp
 cursor=20:37
 [source]
 path=src/mxSource.cpp
-cursor=487:48
+cursor=502:22
 marker=4003
 marker=4019
-open=true
 [source]
 path=src/mxDrawClasses.cpp
 cursor=131:31
@@ -388,7 +386,7 @@ path=src/mxLocalsGrid.cpp
 cursor=175:1
 [source]
 path=src/mxInspectionsPanel.cpp
-cursor=88:20
+cursor=86:8
 [source]
 path=src/mxInspectionHistory.cpp
 cursor=63:43
@@ -414,11 +412,12 @@ marker=550
 marker=563
 [header]
 path=src/ShareManager.h
-cursor=69:36
+cursor=34:22
 open=true
 [header]
 path=src/ids.h
-cursor=472:20
+cursor=474:18
+open=true
 [header]
 path=src/mxAboutWindow.h
 cursor=-1:105
@@ -436,13 +435,14 @@ path=src/mxGotoLineWindow.h
 cursor=6:14
 [header]
 path=src/mxMainWindow.h
-cursor=386:16
+cursor=450:1
+open=true
 [header]
 path=src/mxNewWizard.h
 cursor=106:38
 [header]
 path=src/mxOpenSharedWindow.h
-cursor=12:0
+cursor=0:4
 open=true
 [header]
 path=src/mxProjectConfigWindow.h
@@ -787,7 +787,6 @@ cursor=0:16
 [other]
 path=src/version.h
 cursor=0:24
-open=true
 [other]
 path=todo.txt
 cursor=1:15
@@ -813,7 +812,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=/mnt/ex/zinjai
 always_ask_args=0
-args=--no-splash --last-source
+args=--no-splash
 exec_method=0
 exec_script=
 env_vars=

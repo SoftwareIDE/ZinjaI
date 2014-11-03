@@ -9,6 +9,7 @@
 #include "mxSizers.h"
 #include "mxHelpWindow.h"
 #include "Language.h"
+#include "mxMainWindow.h"
 
 BEGIN_EVENT_TABLE(mxOpenSharedWindow, wxDialog)
 
@@ -18,16 +19,19 @@ BEGIN_EVENT_TABLE(mxOpenSharedWindow, wxDialog)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxOpenSharedWindow::OnHelpButton)
 	EVT_CLOSE(mxOpenSharedWindow::OnClose)
 	EVT_CHAR_HOOK(mxOpenSharedWindow::OnCharHook)
-	EVT_LISTBOX(mxID_SHARE_LIST,mxOpenSharedWindow::OnClientList)
+	EVT_LISTBOX(mxID_SHARE_CLIENTS_LIST,mxOpenSharedWindow::OnClientList)
+	EVT_LISTBOX(mxID_SHARE_FILES_LIST,mxOpenSharedWindow::OnGetSourceButton)
 	EVT_LISTBOX_DCLICK(wxID_ANY,mxOpenSharedWindow::OnGetSourceButton)
 
 END_EVENT_TABLE()
 
+mxOpenSharedWindow *mxOpenSharedWindow::open_shared = NULL;
+	
 mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, LANG(OPENSHARED_CAPTION,"Abrir Compartido"), pos, size, style) {
 
 	if (!share) share = new ShareManager();
 	
-	clients_list = new wxListBox(this,mxID_SHARE_LIST,wxDefaultPosition, wxSize(200,150));
+	clients_list = new wxListBox(this,mxID_SHARE_CLIENTS_LIST,wxDefaultPosition, wxSize(200,150));
 	wxStaticText *help_text_1 = new wxStaticText(this,wxID_ANY,LANG(OPENSHARED_STEP_1,"1) Dirección de origen:"));
 	hostname = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
 	wxBitmapButton *button_step_1 = new wxBitmapButton (this, mxID_SHARE_GET_LIST, *bitmaps->buttons.next);
@@ -44,7 +48,7 @@ mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wx
 	
 	
 	wxStaticText *help_text_2 = new wxStaticText(this,wxID_ANY,LANG(OPENSHARED_STEP_2,"2) Seleccion un archivo:"));
-	files_list = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(200,150));
+	files_list = new wxListBox(this,mxID_SHARE_FILES_LIST,wxDefaultPosition, wxSize(200,150));
 	
 	wxBoxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
 	right_sizer->Add(help_text_2,sizers->BA5_Exp0);
@@ -73,8 +77,6 @@ mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wx
 
 	hostname->SetFocus();
 
-	share->RegisterOpenSharedWindow(this);
-	
 }
 
 void mxOpenSharedWindow::OnGetListButton(wxCommandEvent &event){
@@ -137,10 +139,22 @@ void mxOpenSharedWindow::OnClientList (wxCommandEvent & event) {
 }
 
 void mxOpenSharedWindow::AddClient (const wxString & name, const wxString & ip) {
+	if (!open_shared) return;
+	wxListBox *clients_list = open_shared->clients_list;
 	for(unsigned int i=0;i<clients_list->GetCount();i++) { 
-		wxString s = clients_list->GetString(i).AfterLast('(').BeforeFirst(')');
-		if (s==ip) { clients_list->SetString(i,name+" ("+ip+")"); return; }
+		wxString s = open_shared->clients_list->GetString(i).AfterLast('(').BeforeFirst(')');
+		if (s==ip) { open_shared->clients_list->SetString(i,name+" ("+ip+")"); return; }
 	}
 	clients_list->Append(name+" ("+ip+")");
+}
+
+void mxOpenSharedWindow::Show ( ) {
+	if (!open_shared) open_shared = new mxOpenSharedWindow(main_window);
+	open_shared->DoShow(); 
+}
+
+void mxOpenSharedWindow::DoShow ( ) {
+	wxDialog::Show();
+	share->StartBroadcastListener();
 }
 

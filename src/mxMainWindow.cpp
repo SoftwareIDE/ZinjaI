@@ -569,7 +569,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	compiler = new mxCompiler(compiler_tree.treeCtrl,compiler_tree.state,compiler_tree.errors,compiler_tree.warnings,compiler_tree.all);
 
 	wizard = NULL; //new mxNewWizard(this);
-	open_shared = NULL; // new mxOpenSharedWindow(this);
 	share = NULL; // new ShareManager();
 
 	parser_timer = new wxTimer(GetEventHandler(),mxID_PARSER_TIMER);

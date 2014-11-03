@@ -41,11 +41,12 @@ ShareManager *share=NULL;
 ShareManager::ShareManager () {
 	index_is_waiting=false;
 	index_server=NULL;
-	open_shared_window=NULL;
+//	open_shared_window=NULL;
 	broadcast_receiver=NULL;
 }
 
 bool ShareManager::CheckServer() {
+	StartBroadcastListener();
 	if (index_server!=NULL) {
 		if(index_server->IsOk())
 			return true;
@@ -62,19 +63,6 @@ bool ShareManager::CheckServer() {
 	index_server->SetNotify(wxSOCKET_CONNECTION_FLAG);
 	index_server->Notify(true);
 	if (!index_server->IsOk()) return false;
-
-	if (broadcast_receiver) return true;
-	wxIPV4address bc_addrs;
-	bc_addrs.AnyAddress();
-	bc_addrs.Service(config->Init.zinjai_server_port);
-	broadcast_receiver = new wxDatagramSocket(bc_addrs,wxSOCKET_NOWAIT|wxSOCKET_REUSEADDR);
-	if (broadcast_receiver->Ok()) {
-		broadcast_receiver->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
-		broadcast_receiver->SetNotify(wxSOCKET_INPUT_FLAG);
-		broadcast_receiver->Notify(true);
-	}
-	SendBroadcast(wxString("zme=")+wxGetHostName());
-	
 	return true;
 }
 
@@ -210,9 +198,9 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 		buf[broadcast_receiver->LastCount()]='\0';
 		wxString data = buf;
 		if (data=="who") {
-			SendBroadcast(wxString("zme=")+wxGetHostName());
+			share->SendBroadcast(wxString("zme=")+wxGetHostName());
 		} else if (data.Len()>4 && data.StartsWith("zme=")) {
-			if (open_shared_window) open_shared_window->AddClient(data.Mid(4),addrss.IPAddress());
+			mxOpenSharedWindow::AddClient(data.Mid(4),addrss.IPAddress());
 		}
 		return;
 	}
@@ -449,11 +437,18 @@ bool ShareManager::SendBroadcast (const char * data) {
 	return true;
 }
 
-
-
-
-void ShareManager::RegisterOpenSharedWindow (mxOpenSharedWindow * win) {
-	open_shared_window = win;
-	if (win) SendBroadcast("who");
+bool ShareManager::StartBroadcastListener ( ) {
+	if (!broadcast_receiver) {
+		wxIPV4address bc_addrs;
+		bc_addrs.AnyAddress();
+		bc_addrs.Service(config->Init.zinjai_server_port);
+		broadcast_receiver = new wxDatagramSocket(bc_addrs,wxSOCKET_NOWAIT|wxSOCKET_REUSEADDR);
+		if (broadcast_receiver->Ok()) {
+			broadcast_receiver->SetEventHandler(*(main_window->GetEventHandler()), wxID_ANY);
+			broadcast_receiver->SetNotify(wxSOCKET_INPUT_FLAG);
+			broadcast_receiver->Notify(true);
+		}
+	}
+	if (data.begin()!=data.end()) SendBroadcast(wxString("zme=")+wxGetHostName());
 }
 

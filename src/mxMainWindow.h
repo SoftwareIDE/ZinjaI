@@ -448,8 +448,6 @@ public:
 
 	mxFindDialog *find_replace_dialog;
 
-	mxOpenSharedWindow *open_shared;
-	
 	//! cambia el titulo de la ventana
 	void SetOpenedFileName(wxString name);
 	
