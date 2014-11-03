@@ -1507,7 +1507,7 @@ Todos los Archivos del Proyecto
 FIND_FIND_SCOPE
 Buscar en
 FIND_CLOSE_AFTER_FIND
-Cerrar este dialogo despues de encontrar
+Cerrar este dialogo después de encontrar
 FIND_REPLACE
 Reemplazar
 FIND_REPLACE_ALL
@@ -2264,10 +2264,10 @@ RECENT_CONFIRM_CLEAR_FILE_HISTORY
 Desea eliminar la lista de archivos recientes?
 OPENSHARED_CAPTION
 Abrir Compartido
-OPENSHARED_HOSTNAME_OR_ADDRESS
-Nombre/Direccion del host: 
-OPENSHARED_UPDATE_LIST_BUTTON
-&Actualizar lista
+OPENSHARED_STEP_1
+1) Dirección de origen:
+OPENSHARED_STEP_2
+2) Seleccion un archivo:
 OPENSHARED_GET_SOURCE_BUTTON
 &Obtener fuente
 OPENSHARED_ENTER_HOSTNAME_OR_IP

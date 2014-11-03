@@ -81,10 +81,10 @@ mxInspectionGrid *mxInspectionsPanel::GetInspectionGrid(int p) {
 }
 
 mxInspectionGrid *mxInspectionsPanel::Reset ( ) {
-	mxInspectionGrid *first_grid;
+	mxInspectionGrid *first_grid = NULL;
 	for(int i=0;i<tabs.GetSize();i++) { 
 		while (i<tabs.GetSize() && tabs[i].type==Tab::TYPE_GRID) {
-			if (first_grid) {
+			if (!first_grid) {
 				first_grid = static_cast<mxInspectionGrid*>(tabs[i].ctrl);
 				first_grid->ClearAll(); 
 				wxAuiNotebook::SetPageText(i,"Table 0"); 

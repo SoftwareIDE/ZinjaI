@@ -28,7 +28,7 @@ mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wx
 	if (!share) share = new ShareManager();
 	
 	clients_list = new wxListBox(this,mxID_SHARE_LIST,wxDefaultPosition, wxSize(200,150));
-	wxStaticText *help_text_1 = new wxStaticText(this,wxID_ANY,/*LANG(OPENSHARED_STEP_1,*/"1) Dirección de origen:"/*)*/);
+	wxStaticText *help_text_1 = new wxStaticText(this,wxID_ANY,LANG(OPENSHARED_STEP_1,"1) Dirección de origen:"));
 	hostname = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
 	wxBitmapButton *button_step_1 = new wxBitmapButton (this, mxID_SHARE_GET_LIST, *bitmaps->buttons.next);
 	
@@ -43,16 +43,10 @@ mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wx
 	
 	
 	
-	wxStaticText *help_text_2 = new wxStaticText(this,wxID_ANY,/*LANG(OPENSHARED_STEP_2,*/"2) Seleccion un archivo:"/*)*/);
-//	wxBitmapButton *button_step_2 = new wxBitmapButton (this, mxID_SHARE_GET_LIST, *bitmaps->buttons.next);
+	wxStaticText *help_text_2 = new wxStaticText(this,wxID_ANY,LANG(OPENSHARED_STEP_2,"2) Seleccion un archivo:"));
 	files_list = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(200,150));
 	
-//	wxBoxSizer *right_aux_sizer= new wxBoxSizer(wxHORIZONTAL);
-//	right_aux_sizer->Add(help_text_2,sizers->Exp1);
-//	right_aux_sizer->Add(button_step_2);
-	
 	wxBoxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
-//	right_sizer->Add(right_aux_sizer,sizers->BA5_Exp0);
 	right_sizer->Add(help_text_2,sizers->BA5_Exp0);
 	right_sizer->Add(files_list,sizers->BA5_Exp1);
 	
