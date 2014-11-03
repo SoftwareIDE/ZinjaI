@@ -161,8 +161,8 @@ void mxCalltip::SetArg (int cur_arg) {
 		} 
 	}
 	wxSize dsz(my_w+4,my_h+4);
-	SetMinSize(dsz);
-	SetMaxSize(dsz);
+//	SetMinSize(dsz);
+//	SetMaxSize(dsz);
 	SetSize(dsz);
 	Move(my_min_x,my_min_y);
 	Refresh();
