@@ -27,24 +27,28 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 //	dc.SetTextBackground(*back);
 	dc.SetTextForeground(ctheme->CALLTIP_FORE);
 	int w,h; GetClientSize(&w,&h);
-	int cur_y=1;
+	int cur_y=1; wrap_info wi;
 	for(int i=0;i<entries.GetSize();i++) {
 		if (!entries[i].ShouldDraw(current_arg)) continue;
-		int j=0,l=entries[i].bold_line.Len();
-		while (j<l && entries[i].bold_line[j]==' ') j++;
-		if (j>=l) {
-			dc.DrawText(entries[i].line,2,cur_y);
-		} else {
-			while (entries[i].bold_line[l-1]==' ') --l;
-			int cur_x=2; 
-			wxString pre=entries[i].line.Mid(0,j), mid=entries[i].bold_line.Mid(j,l-j), post=entries[i].line.Mid(l);
-			dc.DrawText(pre,cur_x,cur_y); cur_x+=dc.GetTextExtent(pre).GetWidth();
-			my_font.SetWeight(wxFONTWEIGHT_BOLD); dc.SetFont(my_font);
-			dc.DrawText(mid,cur_x,cur_y); cur_x+=dc.GetTextExtent(mid).GetWidth();
-			my_font.SetWeight(wxFONTWEIGHT_NORMAL); dc.SetFont(my_font);
-			dc.DrawText(post,cur_x,cur_y); 
+		wi.Reset(max_len);
+		while (entries[i].GetWrapPoint(wi)) {
+			int j=wi.from, l=wi.to, j0=wi.from, 
+				cur_x=2+wi.indent*char_w;
+			int bl = entries[i].bold_line.Len();
+			while (j<bl && entries[i].bold_line[j]==' ') j++;
+			if (j>=bl) {
+				dc.DrawText(entries[i].line.Mid(j0,l-j0),cur_x,cur_y);
+			} else {
+				while (entries[i].bold_line[bl-1]==' ') --bl;
+				wxString pre=entries[i].line.Mid(j0,j-j0), mid=entries[i].bold_line.Mid(j,bl-j), post=entries[i].line.Mid(bl,l-bl);
+				dc.DrawText(pre,cur_x,cur_y); cur_x+=dc.GetTextExtent(pre).GetWidth();
+				my_font.SetWeight(wxFONTWEIGHT_BOLD); dc.SetFont(my_font);
+				dc.DrawText(mid,cur_x,cur_y); cur_x+=dc.GetTextExtent(mid).GetWidth();
+				my_font.SetWeight(wxFONTWEIGHT_NORMAL); dc.SetFont(my_font);
+				dc.DrawText(post,cur_x,cur_y); 
+			}
+			cur_y+=char_h;
 		}
-		cur_y+=char_h;
 	}
 //	my_font.SetWeight(wxFONTWEIGHT_BOLD); 
 //	dc.SetFont(my_font);
@@ -97,30 +101,25 @@ void mxCalltip::SetArg (int cur_arg) {
 	current_arg=cur_arg;
 	if (entries.GetSize()==0) return;
 	// determinar cual es la linea mas larga para ver si entra en la ventana
-	int max_len=entries[0].len, max_i=0;
+	max_len=entries[0].len; int max_i=0;
 	for(int i=1;i<entries.GetSize();i++)
 		if (entries[i].len>max_len) { 
 			max_len=entries[i].len; max_i=i;
 		}
-	// obtener tamaño de letrasa para calcular el tamaño de la ventana y la longitud de las lineas
+	// obtener tamaño de letras para calcular el tamaño de la ventana y la longitud de las lineas
 	my_font.SetWeight(wxFONTWEIGHT_BOLD); 
 	wxMemoryDC dc; dc.SetFont(my_font);
 	wxSize sz = dc.GetTextExtent(entries[max_i].line);
 	char_h = sz.GetHeight(); 
-	int char_w=sz.GetWidth()/max_len;
+	char_w=sz.GetWidth()/max_len;
 	wxRect mwr = main_window->GetScreenRect();
-//	max_line = (mwr.GetLeft()+mwr.GetWidth()-pos_x-sp.x)/char_w-1; if (max_line<5) max_line=5;
 	// ver cuales lineas se van a mostrar y cuan largas son
 	int cant_lines=0; max_len=0;
 	for(int i=0;i<entries.GetSize();i++) {
 		if (!entries[i].ShouldDraw(cur_arg)) continue;
 		cant_lines++;
-//		if (entries[i].len>max_line) {
-//			cant_lines += (entries[i].len/max_line);
-//			max_len=max_line;
-//		}
-//		else 
-			if (entries[i].len>max_len) max_len=entries[i].len;
+		if (entries[i].len>max_len) max_len=entries[i].len;
+		// armar la "bold line" de cada argumento que se muestra
 		if (cur_arg==-1||entries[i].argc==-1) { entries[i].bold_line.Clear(); continue; }
 		entries[i].bold_line=entries[i].line;
 		for (int j=0;j<entries[i].argp[cur_arg]+1;j++) entries[i].bold_line[j]=' ';
@@ -129,18 +128,17 @@ void mxCalltip::SetArg (int cur_arg) {
 	if (cant_lines==0) cant_lines=max_len=1;
 	// redimensionar acorde a lo que se conto, y controlar que no se salga de la pantalla 
 	// (delta_char!=0 indica que es para el autocompletado)
-	// (como no se sabe el tamaño de la pantalla, se asume de 0,0 a la esquina inferior derecha de main_window)
-	
+	// (como no se sabe el tamaño de la pantalla, se asume de 0,0 hasta la esquina inferior derecha de main_window)
 	int delta_w=0;
 	if (delta_chars) {
 		int vscrool_x = wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 		delta_w=delta_chars*char_w+2*wxSystemSettings::GetMetric(wxSYS_VSCROLL_X)+10;
 		if (delta_w<100-30+vscrool_x) delta_w=100-30+vscrool_x;
-		if (delta_w>350-30+vscrool_x) delta_w=350-30+vscrool_x;; // 100  y 250 salen de los fuentes del stc
+		if (delta_w>350-30+vscrool_x) delta_w=350-30+vscrool_x; // 100  y 350 salen de los fuentes del stc
 	}
 	int my_w=max_len*char_w, my_min_x=pos_x+delta_w, win_min_x=mwr.GetLeft(), win_h=mwr.GetHeight();
-	int my_h=cant_lines*char_h, my_min_y=pos_y+char_h+2;
-	int my_max_x=my_min_x+my_w, win_max_x=win_min_x+mwr.GetWidth(), win_max_y=mwr.GetTop()+win_h;
+	int my_max_x=my_min_x+my_w, win_max_x=win_min_x+mwr.GetWidth();
+	// mover si no entra en x
 	if (my_max_x>win_max_x) { 
 		if (delta_chars) {
 			int new_min_x = pos_x-my_w-30;
@@ -151,6 +149,24 @@ void mxCalltip::SetArg (int cur_arg) {
 			if (my_min_x<0) my_min_x=0;
 		}
 	}
+	// hacer wrapping si las lineas siguen sin entrar en la pantalla
+	if (my_min_x+my_w>win_max_x) {
+		max_len = (win_max_x-my_min_x)/char_w -1;
+		int real_max_len = 0; wrap_info w;
+		for(int i=0;i<entries.GetSize();i++) {
+			if (!entries[i].ShouldDraw(cur_arg)) continue;
+			w.Reset(max_len);
+			while (entries[i].GetWrapPoint(w)) {
+				cant_lines++;
+				if (w.Len()>real_max_len) 
+					real_max_len = w.Len();
+			}
+		}
+		max_len = real_max_len;
+	}
+	my_w = max_len*char_w;
+	// mover si no entra en y
+	int my_h=cant_lines*char_h, my_min_y=pos_y+char_h+2, win_max_y = mwr.GetTop()+win_h;
 	if (my_min_y+my_h>win_max_y) {
 		if (delta_chars) {
 			my_min_y = win_max_y-my_h;
