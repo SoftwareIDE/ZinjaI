@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=src/MenusAndToolsConfig.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -35,7 +36,7 @@ cursor=11:38
 marker=142
 [source]
 path=src/mxMainWindow.cpp
-cursor=208:1
+cursor=0:0
 marker=3283
 marker=3292
 marker=4675
@@ -357,8 +358,9 @@ path=src/mxSignalsSettings.cpp
 cursor=72:0
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=227:72
+cursor=174:149
 marker=350
+open=true
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=134:38
@@ -367,10 +369,10 @@ path=src/CustomTools.cpp
 cursor=30:50
 [source]
 path=src/mxCalltip.cpp
-cursor=166:14
-breakpoint=80
+cursor=158:7
+breakpoint=98
 breakpoint_annotation=
-marker=162
+marker=163
 [source]
 path=src/mxShortcutsDialog.cpp
 cursor=239:40
@@ -778,7 +780,7 @@ path=src/version.h
 cursor=0:24
 [other]
 path=todo.txt
-cursor=0:0
+cursor=16:124
 [other]
 path=src/mainpage.h
 cursor=22:0
@@ -1115,9 +1117,6 @@ suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useI
 inline_suppr=1
 exclude_list=
 [inspections]
-expr=l
-expr=m
-expr=n
-expr=l2
+expr=line
 [custom_tools]
 [end]

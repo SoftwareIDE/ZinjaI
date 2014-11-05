@@ -150,8 +150,9 @@ void mxCalltip::SetArg (int cur_arg) {
 		}
 	}
 	// hacer wrapping si las lineas siguen sin entrar en la pantalla
-	if (my_min_x+my_w>win_max_x) {
-		max_len = (win_max_x-my_min_x)/char_w -1;
+	int wrapped_max_len = (win_max_x-my_min_x)/char_w-1;
+	if (max_len>wrapped_max_len && wrapped_max_len>5) {
+		max_len = wrapped_max_len;
 		int real_max_len = 0; wrap_info w;
 		for(int i=0;i<entries.GetSize();i++) {
 			if (!entries[i].ShouldDraw(cur_arg)) continue;

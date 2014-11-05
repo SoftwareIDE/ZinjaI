@@ -3,8 +3,6 @@
 	
 	* IMPORTANTE: ver si las inspecciones abrevian o no arreglos de muchos elementos (el set print repeat de gdb)
 	
-	que los resultados de valgrind se actualicen automaticamente a medida que el archivo de salida cambia (para la depuracion)
-	
 bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 
 
