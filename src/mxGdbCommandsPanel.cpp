@@ -141,9 +141,7 @@ void mxGdbCommandsPanel::AppendText (const wxString & str) {
 	int n0 = output->GetLineCount()-1;
 	output->AppendText(str);
 	int n1 = output->GetLineCount()-1;
-	cerr<<n0<<":"<<n1<<endl;
 	for(int i=n0;i<n1;i++) { 
-		cerr<<"  "<<i<<"  *"<<output->GetLine(i)<<"*"<<endl;
 		if (output->GetLine(i).StartsWith("> "))
 			output->MarkerAdd(i,0);
 	}
