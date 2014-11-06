@@ -57,7 +57,7 @@ public:
 	bool gui_fullscreen_mode, gui_debug_mode, gui_project_mode; 
 	bool fullscreen_panels_status[10];
 	bool debug_panels_status[10];
-	mxSource *focus_source;
+	mxSource *focus_source; // auxiliar para el NavigationHistory
 
 	mxValgrindOuput *valgrind_panel;
 	void ShowValgrindPanel(int what, wxString file, bool force=true);
@@ -374,15 +374,18 @@ public:
 public:
 	class AfterEventsAction {
 		AfterEventsAction *next;
+		bool do_do;
 		friend class mxMainWindow;
+	protected:
+		mxSource *source; // fuente del cual depende, para no ejecutarla si se cierra ese fuente (do_do en false)
 	public:
 		virtual void Do()=0;
+		AfterEventsAction(mxSource *src=NULL):next(NULL),do_do(true),source(src){};
 		virtual ~AfterEventsAction(){};
 	};
 private:
 	wxTimer *after_events_timer;
-	AfterEventsAction *call_after_events;
-	bool after_events_is_processing_now;
+	AfterEventsAction *call_after_events, *current_after_events_action;
 public:
 	void CallAfterEvents(AfterEventsAction *action);
 	void OnAfterEventsTimer(wxTimerEvent &event);
@@ -556,6 +559,8 @@ public:
 	void OnNavigationHistoryPrev(wxCommandEvent &evt);
 	
 	void UpdateStylesInSources();
+	
+	void UnregisterSource(mxSource *src);
 	
 	DECLARE_EVENT_TABLE();
 };

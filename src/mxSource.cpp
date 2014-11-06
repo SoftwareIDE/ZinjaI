@@ -390,6 +390,7 @@ mxSource::~mxSource () {
 	navigation_history.OnClose(this);
 	parser->UnregisterSource(this);
 	debug->UnregisterSource(this);
+	if (main_window) main_window->UnregisterSource(this);
 	er_unregister_source(this);
 	if (main_window) {
 		if (compiler->last_compiled==this) compiler->last_compiled=NULL;
@@ -3517,9 +3518,8 @@ void mxSource::CheckForExternalModifications() {
 	dt = source_filename.GetModificationTime();
 	if (dt!=source_time) {
 		class SourceModifAction:public mxMainWindow::AfterEventsAction {
-			mxSource *source;
 		public: 
-			SourceModifAction(mxSource *who):source(who){}
+			SourceModifAction(mxSource *who):AfterEventsAction(who){}
 			void Do() { source->ThereAreExternalModifications(); }
 		};
 		main_window->CallAfterEvents(new SourceModifAction(this));
