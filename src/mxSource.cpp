@@ -696,6 +696,43 @@ void mxSource::OnEditSelectAll (wxCommandEvent &event) {
 	SetSelection (0, GetTextLength ());
 }
 
+struct auxMarkersConserver {
+	struct amc_aux {
+		bool um; // user mark
+		BreakPointInfo *bpi;
+		void Get(mxSource *s, int l) { 
+			um = s->MarkerGet(l)&(1<<mxSTC_MARK_USER);
+			if (um) s->MarkerDelete(l,mxSTC_MARK_USER);
+			bpi = s->m_extras->FindBreakpointFromLine(s,l);
+			if (bpi) {
+				s->MarkerDeleteHandle(bpi->marker_handle);
+				bpi->marker_handle=-1;
+			}
+		}
+		void Set(mxSource *s, int l) { 
+			if (um) s->MarkerAdd(l,mxSTC_MARK_USER);
+			if (bpi) { bpi->line_number=l; bpi->SetMarker(); }
+		}
+	};
+	amc_aux v[1000];
+	bool u;
+	int m,n; 
+	mxSource *s;
+	auxMarkersConserver(mxSource *src, int min, int max, bool up) {
+		u=up; s=src; n = max-min+2; m = min-1;
+		if (n+1>1000) { n=0; return; }
+		for(int i=0;i<=n;i++) v[i].Get(s,m+i);
+	}
+	~auxMarkersConserver() {
+		if (u) {
+			for(int i=1;i<n;i++) v[i].Set(s,m+i-1);
+			v[0].Set(s,m+n-1); v[n].Set(s,m+n);
+		} else {
+			v[0].Set(s,m); v[n].Set(s,m+1);
+			for(int i=1;i<n;i++) v[i].Set(s,m+i+1);
+		}
+	}
+};
 
 void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 	int ss = GetSelectionStart(), se = GetSelectionEnd();
@@ -706,8 +743,8 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 	if (min>0) {
 		BeginUndoAction();
 		wxString line = GetLine(min-1);
-		if (max==GetLineCount()-1)
-			AppendText("\n");
+		if (max==GetLineCount()-1) AppendText("\n");
+		auxMarkersConserver aux_mc(this,min,max,true);
 		SetTargetStart(PositionFromLine(max+1));
 		SetTargetEnd(PositionFromLine(max+1));
 		ReplaceTarget(line);
@@ -728,6 +765,7 @@ void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
 	if (min>max) { int aux=min; min=max; max=aux; }
 	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
 	if (max+1<GetLineCount()) {
+		auxMarkersConserver aux_mc(this,min,max,false);
 		BeginUndoAction();
 		wxString line = GetLine(max+1);
 		SetTargetStart(GetLineEndPosition(max));

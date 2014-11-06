@@ -1255,7 +1255,7 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 	/*wxMenuItem *shared = */mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_SHARE_SHARE));
 //	shared->Check(share && share->Exists(src));
 		
-	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnVIEW,mxID_VIEW_DUPLICATE_TAB));
 	if (!project) menu.AppendCheckItem(mxID_FILE_SET_AS_MASTER, LANG(MENUITEM_FILE_SET_AS_MASTER,"Ejecutar siempre este fuente"))->Check(src==master_source);
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE));
 	if (!project) mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE_AS));
