@@ -1856,6 +1856,8 @@ CAPTION_QUICKHELP
 Quick Help
 MAINW_OPEN_FILENAME
 Open "<{1}>"
+MENUITEM_FILE_SET_AS_MASTER
+Always run this file
 MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION
 There are unsaved changes. Do you want to save the file before closing?
 MAINW_ASK_CLOSE_SHARED
@@ -1892,12 +1894,6 @@ MAINW_COULDNOT_LAUNCH_PROCESS
 Could not launch process
 MAINW_COULDNOT_RUN
 Could not run program!
-MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION
-You're trying to run a header file. Do you want to run \n"<{1}>" instead?
-MAINW_ALWAYS_RUN_SOURCE_INSTEAD_OF_HEADER
-Always run last cpp file.
-MAINW_RUN_HEADER_QUESTION
-You're trying to run a header file. Continue anyway?
 MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
 Do you want to save project's changes before closing it?
 MAINW_CHANGE_CLOSE_ALL_QUESTION
@@ -1998,6 +1994,10 @@ MAINW_MACRO_START
 Recording macro, press Ctrl+Shift+Q again to stop recording.
 MAINW_MACRO_STOP
 Macro saved, press Ctrl+Q to replay.
+MAINW_RUN_HEADER_WARNING
+You are trying to run a header file. It is probably a mistake\nand you might want to run a source file that includes this one\ninstead. Continue anyway?\n\nNote: you can force ZinjaI to run always the same source no\nmatter which one has the focus with right-click on its tab.\n
+MAINW_RUN_HEADER_CHECK
+Do not show this message again
 MAINW_VALGRIND_MISSING
 Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_GPROF_GPROF_ENABLED

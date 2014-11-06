@@ -58,6 +58,8 @@ public:
 	bool fullscreen_panels_status[10];
 	bool debug_panels_status[10];
 	mxSource *focus_source; // auxiliar para el NavigationHistory
+	
+	mxSource *master_source; /// if there's no project, defining a master source force zinjai to always compila and run that one, no the current one
 
 	mxValgrindOuput *valgrind_panel;
 	void ShowValgrindPanel(int what, wxString file, bool force=true);
@@ -109,6 +111,7 @@ public:
 	void OnFileSave (wxCommandEvent &event);
 	void OnFileSaveAs (wxCommandEvent &event);
 	void OnFileSaveAll (wxCommandEvent &event);
+	void OnFileSetAsMaster(wxCommandEvent &event);
 	void OnFileProjectConfig (wxCommandEvent &event);
 	void OnHighlightKeyword(wxCommandEvent &event);
 	void OnChangeShortcuts(wxCommandEvent &event);
@@ -419,6 +422,7 @@ public:
 	void UpdateCustomTools(bool for_project);
 
 	void ShowQuickHelp (wxString keyword, bool hide_compiler_tree=true);
+	void CompileOrRunSource(bool compile_if_needed, bool run, bool for_debug=false);
 	void RunSource(mxSource *source);
 	void UpdateSymbols();
 	

@@ -162,6 +162,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_FILE_PROJECT_HISTORY_MORE, mxMainWindow::OnFileProjectHistoryMore)
 	EVT_MENU_RANGE(mxID_FILE_SOURCE_HISTORY_0, mxID_FILE_SOURCE_HISTORY_30,mxMainWindow::OnFileSourceHistory)
 	EVT_MENU_RANGE(mxID_FILE_PROJECT_HISTORY_0, mxID_FILE_PROJECT_HISTORY_30,mxMainWindow::OnFileProjectHistory)
+	EVT_MENU(mxID_FILE_SET_AS_MASTER, mxMainWindow::OnFileSetAsMaster)
 	
 	EVT_MENU(mxID_EDIT_SELECT_ALL, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_UNDO, mxMainWindow::OnEdit)
@@ -470,9 +471,11 @@ bool PreventExecuteYieldExecuteProblem::flag=false;
 
 mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
 	
+	
 	EXTERNAL_SOURCE=(mxSource*)this;
 	focus_source=NULL;
 	m_macro=NULL;
+	master_source=NULL;
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
 	untitled_count=0;
@@ -1253,6 +1256,7 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 //	shared->Check(share && share->Exists(src));
 		
 	menu.Append(mxID_VIEW_DUPLICATE_TAB, LANG(MENUITEM_VIEW_SPLIT_VIEW,"&Duplicar vista"));
+	if (!project) menu.AppendCheckItem(mxID_FILE_SET_AS_MASTER, LANG(MENUITEM_FILE_SET_AS_MASTER,"Ejecutar siempre este fuente"))->Check(src==master_source);
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE));
 	if (!project) mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_SAVE_AS));
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnFILE,mxID_FILE_RELOAD));
@@ -1661,69 +1665,28 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 		OnDebugRun(event); // patearle la bocha
 		return;
 	}
-	
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (project) { // si hay que ejecutar un proyecto
-		IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 		compiler->BuildOrRunProject(true,false,false);
 		
 	} else IF_THERE_IS_SOURCE { // si hay que ejecutar un ejercicio
 		mxSource *source=CURRENT_SOURCE;
-		source->HideCalltip();
 		if (source->sin_titulo) { // si no esta guardado, siempre compilar
 			if (source->GetLine(0).StartsWith("make me a sandwich")) { wxMessageBox("No way!"); return; }
 			else if (source->GetLine(0).StartsWith("sudo make me a sandwich")) source->SetText(wxString("/** Ok, you win! **/")+wxString(250,' ')+"#include <iostream>\n"+wxString(250,' ')+"int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n");
-			source->SaveTemp();
-			compiler->CompileSource(source,true,false);
-		} else { // si estaba guardado ver si cambio
-			// si es un .h, preguntar si no es mejor ejecutar un cpp
-			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeLower();
-			if (mxUT::ExtensionIsH(ext)) {
-				if (source->GetModify())
-					source->SaveSource();
-				if (compiler->last_runned && !compiler->last_runned->sin_titulo) {
-					if (config->Running.dont_run_headers)
-						source=compiler->last_runned;
-					else {
-						int ans = mxMessageDialog(this,LANG1(MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION,""
-							"Esta intentando ejecutar un archivo de cabecera.\n"
-							"¿Desea ejecutar en su lugar <{1}>?",compiler->last_caption),
-							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,LANG(MAINW_ALWAYS_RUN_SOURCE_INSTEAD_OF_HEADER,"Siempre ejecutar el ultimo cpp.")).ShowModal();
-						if (ans&mxMD_CANCEL) return;
-						if (ans&mxMD_CHECKED) config->Running.dont_run_headers = true;
-						if (ans&mxMD_YES) source = compiler->last_runned;
-					}
-				} else {
-					int ans = mxMessageDialog(this,LANG(MAINW_RUN_HEADER_QUESTION,"Esta intentando ejecutar un archivo de cabecera. Desea continuar?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_CANCEL).ShowModal();
-					if (ans&mxMD_CANCEL) return;
-				}
-			}
-			
-			if (source->GetModify() || !source->GetBinaryFileName().FileExists() || source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime()) {
-				source->SaveSource();
-				compiler->CompileSource(source,true,false);
-			} else { // si no cambio nada, ver si cambiaron sus includes
-				if (source->GetModify())
-					source->SaveSource();
-				if (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),CURRENT_SOURCE->source_filename)) {
-					compiler->CompileSource(source,true,false);
-				} else { // si no cambio nada, correr el ya compilado
-					RunSource(source);
-				}
-			}
 		}
+		CompileOrRunSource(true,true,false);
 	}
 }
 
 void mxMainWindow::OnRunRunOld (wxCommandEvent &event) {
+	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (project) { // si hay que ejecutar un proyecto
-		IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("OnRunRunOld");
 		project->Run(compile_and_run);
 		StartExecutionStuff(false,true,compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
 	} else IF_THERE_IS_SOURCE { // si hay que ejecutar un ejercicio
-		mxSource *source=CURRENT_SOURCE;
-		source->HideCalltip();
-		RunSource(source);
+		CompileOrRunSource(false,true,false);
 	}
 }
 
@@ -1750,16 +1713,8 @@ void mxMainWindow::OnRunCompile (wxCommandEvent &event) {
 	_prevent_execute_yield_execute_problem;
 	if (project) {
 		compiler->BuildOrRunProject(false,false,false);
-	} else {
-		IF_THERE_IS_SOURCE {
-			mxSource *source=CURRENT_SOURCE;
-			// save the current source
-			if (source->sin_titulo)
-				source->SaveTemp();
-			else
-				source->SaveSource();
-			compiler->CompileSource(source,false,false);
-		}
+	} else IF_THERE_IS_SOURCE {
+		CompileOrRunSource(true,false,false);
 	}
 }
 
@@ -3272,30 +3227,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 			}
 			debug->Start(config->Debug.compile_again);
 		} else IF_THERE_IS_SOURCE {
-			mxSource *source=CURRENT_SOURCE;
-			// si es un .h, preguntar si no es mejor ejecutar un cpp
-			wxString ext=source->sin_titulo||compiler->last_runned==source?wxString(""):source->source_filename.GetExt().MakeLower();
-			if (mxUT::ExtensionIsH(ext)) {
-				if (source->GetModify())
-					source->SaveSource();
-				if (compiler->last_runned && !compiler->last_runned->sin_titulo) {
-					if (config->Running.dont_run_headers)
-						source=compiler->last_runned;
-					else {
-						int ans = mxMessageDialog(this,LANG1(MAINW_RUN_SOURCE_INSTEAD_OF_HEADER_QUESTION,""
-							"Esta intentando ejecutar un archivo de cabecera.\n"
-							"¿Desea ejecutar en su lugar <{1}>?",compiler->last_caption),
-							LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_NO|mxMD_CANCEL,LANG(MAINW_ALWAYS_RUN_SOURCE_INSTEAD_OF_HEADER,"Siempre ejecutar el ultimo cpp.")).ShowModal();
-						if (ans&mxMD_CANCEL) return;
-						if (ans&mxMD_CHECKED) config->Running.dont_run_headers = true;
-						if (ans&mxMD_YES) source = compiler->last_runned;
-					}
-				} else {
-					int ans = mxMessageDialog(this,LANG(MAINW_RUN_HEADER_QUESTION,"Esta intentando ejecutar un archivo de cabecera. Desea continuar?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES|mxMD_CANCEL).ShowModal();
-					if (ans&mxMD_CANCEL) return;
-				}
-			}				
-			debug->Start(config->Debug.compile_again,source);
+			CompileOrRunSource(config->Debug.compile_again,true,true);
 		}
 	}
 //	st->Destroy();
@@ -4968,6 +4900,7 @@ void mxMainWindow::OnHighlightKeyword (wxCommandEvent & event) {
 }
 
 void mxMainWindow::UnregisterSource (mxSource * src) {
+	if (src==master_source) master_source=NULL;
 	AfterEventsAction *current = call_after_events;
 	for(int i=0;i<2;i++) {
 		while (current) {
@@ -4977,6 +4910,55 @@ void mxMainWindow::UnregisterSource (mxSource * src) {
 		if (current_after_events_action) 
 			current = current_after_events_action->next;
 		else break;
+	}
+}
+
+void mxMainWindow::OnFileSetAsMaster (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE master_source=CURRENT_SOURCE;
+}
+
+void mxMainWindow::CompileOrRunSource (bool compile_if_needed, bool run, bool for_debug) {
+	mxSource *source = CURRENT_SOURCE;
+	if (master_source) {
+		if (!source->sin_titulo && source->GetModify()) source->SaveSource(); // guardar el actual
+		source = master_source;
+	}
+	if (source->sin_titulo) { // si no esta guardado, siempre compilar
+		if (source->GetLine(0).StartsWith("make me a sandwich")) { wxMessageBox("No way!"); return; }
+		else if (source->GetLine(0).StartsWith("sudo make me a sandwich")) source->SetText(wxString("/** Ok, you win! **/")+wxString(250,' ')+"#include <iostream>\n"+wxString(250,' ')+"int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n");
+		source->SaveTemp();
+		compiler->CompileSource(source,run,for_debug);
+	} else { // si estaba guardado ver si cambio
+		// si es un .h, avisar que probablemente sea un error intentar ejecutarlo
+		wxString ext=source->sin_titulo?wxString(""):source->source_filename.GetExt().MakeLower();
+		static bool ask=true;
+		if (ask && !master_source && mxUT::ExtensionIsH(ext)) {
+			int ans = mxMessageDialog(this,LANG(MAINW_RUN_HEADER_WARNING,""
+				"Esta intentando compilar/ejecutar un archivo de cabecera.\n"
+				"Probablemente deba intentar ejecutar un archivo fuente que\n"
+				"incluya esta cabecera. ¿Desea continuar?\n\n"
+				"Nota: puede configurar un fuente para que se ejecute siempre\n"
+				"dicho fuente sin importar cual otro tenga el foco con click\n"
+				"derecho sobre la pesataña del mismo."),
+				LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_WARNING,
+				LANG(MAINW_RUN_HEADER_CHECK,"No volver a mostrar este mensaje"),false).ShowModal();
+				if (ans&mxMD_NO) return;
+			if (ans&mxMD_CHECKED) ask=false;
+		}
+		// si cambio el fuente, guardarlo 
+		bool modified = source->GetModify();
+		if (modified) source->SaveSource();
+		// ver si hay que recompilar
+		bool should_compile 
+			= !compile_if_needed // si no habia que recompilar se marca igual como que si solo para evitar los tests que siguen
+			|| !run // si no hay que ejecutar, es porque se invoco exclusivamente para compilar
+			|| !source->GetBinaryFileName().FileExists() // si no hay binario, hay que recompilar
+			|| source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime() // si el binario es mas viejo que fuente
+			|| (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),CURRENT_SOURCE->source_filename)); // si el binario es mas viejo que algun include
+		// compilar, o depurar, o ejecutar, segun corresponda
+		if (should_compile && compile_if_needed) compiler->CompileSource(source,run,for_debug);
+		else if (for_debug) debug->Start(should_compile,source);
+		else RunSource(source);
 	}
 }
 
