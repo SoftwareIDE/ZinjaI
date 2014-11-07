@@ -798,21 +798,27 @@ bool ConfigManager::CheckWxfbPresent() {
 	}
 #endif
 	if (project->GetWxfbConfiguration(false)->ask_if_wxfb_is_missing && (out.Len()==0 || out.Find("bash")!=wxNOT_FOUND || out.Find("exec")!=wxNOT_FOUND)) {
-		int res = mxMessageDialog(main_window,LANG(PROJMNGR_WXFB_NOT_FOUND,"El proyecto utiliza wxFormBuilder, pero este software\n"
-			"no se ecuentra correctamente instalado/configurado en\n"
-			"su pc. Para descargar e instalar wxFormsBuilder dirijase\n"
-			"a http://wxformbuilder.org. Si ya se encuentra instalado,\n"
-			"configure su ubicacion en la pestaña \"Rutas 2\" del\n"
-			"dialogo de \"Preferencias\" (menu \"Archivo\")."),
-			LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING,
-			LANG(PROJMNGR_WXFB_OPEN_HOMEPAGE,"Ir al sitio de wxFormBuilder ahora"),
-#ifdef __WIN32__
-			true
-#else	
-			false
-#endif
-			).ShowModal();
-		if (res&mxMD_CHECKED) mxUT::OpenInBrowser("http://wxformbuilder.org");
+		class WxfbNotFoundWarning:public mxMainWindow::AfterEventsAction {
+		public: 
+			void Do() { 
+				int res = mxMessageDialog(main_window,LANG(PROJMNGR_WXFB_NOT_FOUND,"El proyecto utiliza wxFormBuilder, pero este software\n"
+					"no se ecuentra correctamente instalado/configurado en\n"
+					"su pc. Para descargar e instalar wxFormsBuilder dirijase\n"
+					"a http://wxformbuilder.org. Si ya se encuentra instalado,\n"
+					"configure su ubicacion en la pestaña \"Rutas 2\" del\n"
+					"dialogo de \"Preferencias\" (menu \"Archivo\")."),
+					LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING,
+					LANG(PROJMNGR_WXFB_OPEN_HOMEPAGE,"Ir al sitio de wxFormBuilder ahora"),
+		#ifdef __WIN32__
+					true
+		#else	
+					false
+		#endif
+					).ShowModal();
+				if (res&mxMD_CHECKED) mxUT::OpenInBrowser("http://wxformbuilder.org");
+			}
+		};
+		main_window->CallAfterEvents(new WxfbNotFoundWarning());
 		project->GetWxfbConfiguration()->ask_if_wxfb_is_missing=false;
 		return false;
 	} else {

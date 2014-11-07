@@ -163,11 +163,6 @@ void mxMessageDialog::OnCharHook(wxKeyEvent &event) {
 }
 
 int mxMessageDialog::ShowModal ( ) {
-	wxMouseState ms=wxGetMouseState();
-	while (ms.LeftDown()||ms.MiddleDown()||ms.RightDown()) {
-		wxSleep(50); ms=wxGetMouseState();
-	}
 	return wxDialog::ShowModal();
-
 }
 
