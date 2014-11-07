@@ -24,8 +24,8 @@ PROJMNGR_WXFB_NOT_FOUND
 El proyecto utiliza wxFormBuilder, pero este software\nno se ecuentra correctamente instalado/configurado en\nsu pc. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicacion en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
 GENERAL_WARNING
 Advertencia
-GENERAL_DONT_REMEMBER_AGAIN
-No volver a recordar
+PROJMNGR_WXFB_OPEN_HOMEPAGE
+Ir al sitio de wxFormBuilder ahora
 MAINW_DOXYGEN_MISSING
 Doxygen no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CPPCHECK_MISSING

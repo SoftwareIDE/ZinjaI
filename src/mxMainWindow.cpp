@@ -4774,6 +4774,10 @@ void mxMainWindow::CallAfterEvents (AfterEventsAction * action) {
 }
 
 void mxMainWindow::OnAfterEventsTimer (wxTimerEvent & event) {
+	wxMouseState ms=wxGetMouseState();
+	if (ms.LeftDown()||ms.MiddleDown()||ms.RightDown()) {
+		after_events_timer->Start(50,true); return;
+	}
 	AfterEventsAction * &current = current_after_events_action;
 	current = call_after_events; 
 	call_after_events = NULL;

@@ -24,8 +24,8 @@ PROJMNGR_WXFB_NOT_FOUND
 This projects need wxFormBuilder, but this ZinjaI can't find this\nsoftware. To download wxFormBuilder go to http://wxformbuilder.org.\nIf it is already installed enter the correct path in tab "Paths 2"\nin "Preference" windows (from "File" menu).
 GENERAL_WARNING
 Warning
-GENERAL_DONT_REMEMBER_AGAIN
-Don't remember me again
+PROJMNGR_WXFB_OPEN_HOMEPAGE
+Open wxFormBuilder's site now
 MAINW_DOXYGEN_MISSING
 Doxygen isn't present in your system or its path isn't correctly defined\nin ZinjaI's settings. To download Doxygen go to http://www.doxygen.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_CPPCHECK_MISSING

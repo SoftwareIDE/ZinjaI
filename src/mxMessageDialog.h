@@ -32,6 +32,7 @@ public:
 	void OnNoButton(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
 	void OnCharHook(wxKeyEvent &event);
+	int ShowModal();
 	DECLARE_EVENT_TABLE();
 };
 

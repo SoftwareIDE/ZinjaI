@@ -16,8 +16,6 @@ corregir el problema del drag and drop que le jode a nestor
 
 importante: revisar el GetOutput y evaluar implementarlo por fuera de wx para evitar el problema del wxyield (llamada a g++ --dumpversion como ejemplo)
 
-reacomodar markers en las ediciones por lineas (ctrl+L, ctrl+T, Ctrl+Shift+T)
-
 posibles bugs:
 	revisar lo de agregar .cpp al guardar
 	revisar lo de correr un cpp cuando se intenta correr un h

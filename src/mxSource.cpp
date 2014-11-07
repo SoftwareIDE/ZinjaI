@@ -3554,22 +3554,17 @@ void mxSource::CheckForExternalModifications() {
 	}
 	static wxDateTime dt;
 	dt = source_filename.GetModificationTime();
-	if (dt!=source_time) {
-		class SourceModifAction:public mxMainWindow::AfterEventsAction {
-		public: 
-			SourceModifAction(mxSource *who):AfterEventsAction(who){}
-			void Do() { source->ThereAreExternalModifications(); }
-		};
-		main_window->CallAfterEvents(new SourceModifAction(this));
-	}
+	if (dt==source_time) return;
+	class SourceModifAction:public mxMainWindow::AfterEventsAction {
+	public: 
+		SourceModifAction(mxSource *who):AfterEventsAction(who){}
+		void Do() { source->ThereAreExternalModifications(); }
+	};
+	main_window->CallAfterEvents(new SourceModifAction(this));
+//	ThereAreExternalModifications();
 }
 
 void mxSource::ThereAreExternalModifications() {
-	wxMouseState ms=wxGetMouseState();
-	if (ms.LeftDown()||ms.MiddleDown()||ms.RightDown()) {
-		CheckForExternalModifications();
-		return;
-	}
 	wxDateTime dt = source_filename.GetModificationTime();
 	if (dt==source_time) return; else SetSourceTime(dt);
 	if (!source_time_dont_ask) {
