@@ -10,6 +10,7 @@
 #include "mxInspectionMatrix.h"
 #include "mxInspectionsImprovingEditor.h"
 #include "mxInspectionHistory.h"
+#include "mxRealTimeInspectionEditor.h"
 using namespace std;
 
 #warning no se toma en cuenta config->Debug.use_colours_for_inspections
@@ -27,6 +28,7 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_FROM_SOURCE,mxInspectionGrid::OnCopyFromSelecction)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_HISTORY,mxInspectionGrid::OnShowInHistory)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxInspectionGrid::OnShowInText)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_RTEDITOR,mxInspectionGrid::OnShowInRTEditor)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionGrid::OnShowInTable)
 	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionGrid::OnExploreExpression)
 	EVT_MENU(mxID_INSPECTION_COPY_VALUE,mxInspectionGrid::OnCopyValue)
@@ -318,6 +320,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 		if (!sel_is_empty && (!sel_is_vo || !di->IsSimpleType())) extern_v->Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
 		if (!sel_is_empty) extern_v->Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
 		if (!sel_is_empty) extern_v->Append(mxID_INSPECTION_SHOW_IN_HISTORY,LANG(INSPECTGRID_POPUP_SHOW_IN_HISTORY,"Generar historial de valores..."));
+		if (debug->IsDebugging() && debug->IsPaused() && !sel_is_empty && sel_is_vo) extern_v->Append(mxID_INSPECTION_SHOW_IN_RTEDITOR,LANG(INSPECTGRID_POPUP_SHOW_IN_RTEDITOR,"Editar durante la ejecución..."));
 		if (sel_is_vo) extern_v->Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
 	if (extern_v->GetMenuItemCount()) menu.AppendSubMenu(extern_v,LANG(INSPECTGRID_EXTERN_VISUALIZATION,"Otras &visualizaciones")); else delete extern_v;
 	if (there_are_inspections) menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
@@ -998,6 +1001,18 @@ void mxInspectionGrid::OnShowInHistory (wxCommandEvent & evt) {
 		DebuggerInspection *di = inspections[sel[i]].di;
 		scope.ChangeIfNeeded(di);
 		new mxInspectionHistory(di->GetExpression(),di->IsFrameless());
+	}
+}
+
+void mxInspectionGrid::OnShowInRTEditor (wxCommandEvent & evt) {
+	DebugManager::TemporaryScopeChange scope;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++) {
+		if (inspections[sel[i]].IsNull()) continue;
+		if (inspections[sel[i]]->GetDbiType()==DIT_GDB_COMMAND) continue;
+		DebuggerInspection *di = inspections[sel[i]].di;
+		scope.ChangeIfNeeded(di);
+		new mxRealTimeInspectionEditor(di->GetExpression());
 	}
 }
 

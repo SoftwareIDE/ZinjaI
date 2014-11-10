@@ -174,7 +174,6 @@ private:
 	long pid;
 //	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
-	BreakPointInfo *pause_breakpoint; ///< puntero al breakpoint que hay que agregar/sacar en una pausa, para el usuario los modifica durante la ejecución
 private:
 	DebugManager();
 public:
@@ -290,6 +289,11 @@ public:
 	/// @brief muestra un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint
 	void ShowBreakPointLocationErrorMessage(BreakPointInfo *_bpi);
 	void ShowBreakPointConditionErrorMessage(BreakPointInfo *_bpi);
+	
+	
+	class OnPauseAction { public: virtual void Do()=0; virtual ~OnPauseAction(){} };
+	OnPauseAction *on_pause_action;
+	bool PauseFor(OnPauseAction *action);
 	
 public:
 	struct TemporaryScopeChange {

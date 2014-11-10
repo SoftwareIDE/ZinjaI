@@ -1646,6 +1646,8 @@ INSPECTGRID_POPUP_SPLIT_CLASS
 &Separar clase en atributos
 INSPECTGRID_POPUP_SPLIT_ARRAY
 &Separar arreglo en elementos
+INSPECTGRID_POPUP_SHOW_IN_RTEDITOR
+Editar durante la ejecución...
 INSPECTGRID_EXTERN_VISUALIZATION
 Otras &visualizaciones
 INSPECTGRID_POPUP_EXPLORE_ALL
@@ -2778,6 +2780,8 @@ PROYSTATS_NUM_MACROS
 Macros de Preprocesador
 PROYSTATS_NOTE_DISK_USAGE
 (*) no incluye binarios ni temporales
+REALTIMEINSP_ERROR_CREATING_INSPECTION
+Ha ocurrido un error al registrar la inspección
 CPPREF_CAPTION
 Referencia C/C++
 CPPREF_SEARCH_NO_RESULTS_FOR

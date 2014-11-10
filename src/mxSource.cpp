@@ -67,7 +67,7 @@ void NavigationHistory::Goto(int i) {
 
 void NavigationHistory::OnFocus(mxSource *src) {
 	if (src==focus_source) return;
-	focus_source=src; 
+	focus_source=src; Add(src,src->GetCurrentLine());
 }
 
 void NavigationHistory::OnJump(mxSource *src, int current_line) {

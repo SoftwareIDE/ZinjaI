@@ -346,6 +346,14 @@ public:
 		UpdateValue(true);
 	}
 	
+	bool AskGDBIfIsEditable() {
+		if (!debug->debugging||debug->waiting) return false;
+		if (dit_type!=DIT_VARIABLE_OBJECT) return false;
+		wxString ans = debug->SendCommand("-var-show-attributes ",variable_object);
+		if (ans.Contains("noneditable")) return false;
+		else return ans.Contains("editable");
+	}
+	
 	
 private:
 	/// solo debe ser llamado cuando dit_type==DIT_HELPER_VO
@@ -392,6 +400,7 @@ private:
 	}
 	
 	bool AutoImprove() {
+		__debug_log_method__;
 		wxString new_expr;
 		bool ret = TryToImproveExpression(value_type,new_expr,expression);
 		if (ret) SetHelperInspection(new_expr);
@@ -519,7 +528,18 @@ public:
 	bool ModifyValue(const wxString &new_value) {
 		__debug_log_method__;
 		if (dit_type!=DIT_VARIABLE_OBJECT) return false;
-		if (!debug->CanTalkToGDB()) return false;
+		if (!debug->CanTalkToGDB()) {
+			class OnPauseModifyInspectionValue : public DebugManager::OnPauseAction {
+			wxString command;
+			public: 
+				OnPauseModifyInspectionValue(DebuggerInspection *di, const wxString &new_value) {
+					command = wxString("-var-assign ")<<di->variable_object<<" "<<mxUT::EscapeString(new_value,true);
+				}
+				void Do() { debug->SendCommand(command); }
+			};
+			debug->PauseFor(new OnPauseModifyInspectionValue(this,new_value));
+			return true;
+		}
 		return VOAssign(new_value);
 	}
 	

@@ -63,6 +63,14 @@ public:
 			m_vec[i+cant-1] = m_vec[i-1];
 		m_size+=cant;
 	}
+	/// 
+	void Insert(int pos, const T &data) {
+		EnsureMemFor(m_size+1);
+		for(int i=m_size;i>pos;i--) 
+			m_vec[i] = m_vec[i-1];
+		m_size++; 
+		m_vec[pos]=data;
+	}
 	/// redimensionamiento lógico, no se pierden datos
 	void Resize(int new_size) {
 		EnsureMemFor(new_size);

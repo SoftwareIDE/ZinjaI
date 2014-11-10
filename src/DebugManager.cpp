@@ -39,10 +39,10 @@ using namespace std;
 DebugManager *debug = NULL;
 
 DebugManager::DebugManager() {
+	on_pause_action = NULL;
 	signal_handlers_state=NULL;
 	backtrace_shows_args=true;
 	status = DBGST_NULL;
-	pause_breakpoint = NULL;
 	current_handle = -1;
 	stack_depth = -1;
 //	inspections_count = 0;
@@ -276,7 +276,6 @@ void DebugManager::ResetDebuggingStuff() {
 	black_list.Clear(); stepping_in=false;
 	mxUT::Split(config->Debug.blacklist,black_list,true,false);
 	gui_is_prepared = false;
-	pause_breakpoint=NULL;
 	
 	// setear en -1 todos los ids de los pts de todos interrupcion, para evitar confusiones con depuraciones anteriores
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
@@ -294,6 +293,8 @@ void DebugManager::ResetDebuggingStuff() {
 	should_pause=false;
 	debug_patcher = new DebugPatcher();
 	current_thread_id = -1; current_frame_id = -1;
+	if (on_pause_action) delete on_pause_action;
+	on_pause_action = NULL;
 }
 
 
@@ -501,12 +502,11 @@ void DebugManager::HowDoesItRuns() {
 		
 #define _aux_continue SendCommand(_T("-exec-continue")); waiting=true; wxYield(); waiting=false; continue;
 		bool should_continue=false; // cuando se pauso solo para colocar un brekapoint y seguir, esto indica que siga sin analizar la salida... puede ser how diga signal-received (lo normal) o que se haya pausado justo por un bp de los que solo actualizan la tabla de inspecciones
-		if (pause_breakpoint) { // si se pauso solo para colocar un brekapoint, colocarlo y setear banderas para que siga ejecutando
-			if (pause_breakpoint->gdb_status==BPS_PENDING)
-				SetBreakPoint(pause_breakpoint);
-			else
-				DeleteBreakPoint(pause_breakpoint);
-			pause_breakpoint=NULL;
+		
+		if (on_pause_action) {// si se pauso solo para colocar un brekapoint o algo asi, hacerlo y setear banderas para que siga ejecutando
+			on_pause_action->Do(); 
+			delete on_pause_action; 
+			on_pause_action=NULL;
 			should_pause=false; // la pausa no la generó el usuario, sino que era solo para colocar el brakpoint
 			should_continue=true;
 		}
@@ -652,9 +652,14 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 		return true;
 	}
 	if (waiting) { // si esta ejecutando, anotar para sacar y mandar a pausar
-		if (pause_breakpoint) return false;
-		pause_breakpoint=_bpi;
-		Pause();
+		class OnPauseRemoveBreakpoint : public OnPauseAction {
+			BreakPointInfo *p;
+		public:
+			OnPauseRemoveBreakpoint(BreakPointInfo *bp) :p(bp) {}
+			void Do() /*override*/ { debug->DeleteBreakPoint(p); }
+		};
+		PauseFor(new OnPauseRemoveBreakpoint(_bpi));
+		return false;
 	} else {
 		// decirle a gdb que lo saque
 		SendCommand(_T("-break-delete "),_bpi->gdb_id);
@@ -665,10 +670,15 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 }
 
 int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {
-	if (debugging && waiting) { 
-		pause_breakpoint=_bpi;
+	if (debugging && waiting) {
+		class OnPauseAddBreakpoint : public OnPauseAction {
+			BreakPointInfo *p;
+		public:
+			OnPauseAddBreakpoint(BreakPointInfo *bp) :p(bp) {}
+			void Do() /*override*/ { debug->SetBreakPoint(p); }
+		};
+		PauseFor(new OnPauseAddBreakpoint(_bpi));
 		_bpi->SetStatus(BPS_PENDING);
-		Pause();
 		return -1;
 	} else {
 		return SetBreakPoint(_bpi);
@@ -1986,3 +1996,13 @@ void DebugManager::Initialize() {
 void DebugManager::TemporaryScopeChange::ChangeIfNeeded(DebuggerInspection *di) {
 	if (!di->IsFrameless()) ChangeTo(di->GetFrameID(),di->GetThreadID());
 }
+
+bool DebugManager::PauseFor (OnPauseAction * action) {
+	if (!debugging) { delete action; return false; } // si no estamos depurando, no hacer nada (no deberia pasar)
+	if (!waiting) { action->Do(); delete action; return true; } // si esta en pausa ejecuta en el momento (no deberia pasar)
+	if (on_pause_action) return false; // por ahora no se puede encolar mas de una accion
+	on_pause_action = action; // encolar la accion
+	Pause(); // pausar para que se ejecute
+	return true;
+}
+
