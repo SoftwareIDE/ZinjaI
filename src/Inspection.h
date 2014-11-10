@@ -354,6 +354,13 @@ public:
 		else return ans.Contains("editable");
 	}
 	
+	wxString ForceVOEvaluation() {
+		if (!debug->debugging||debug->waiting) return "";
+		if (dit_type!=DIT_VARIABLE_OBJECT) return "";
+		VOEvaluate();
+		return gdb_value;
+	}
+	
 	
 private:
 	/// solo debe ser llamado cuando dit_type==DIT_HELPER_VO

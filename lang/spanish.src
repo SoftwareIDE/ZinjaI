@@ -656,6 +656,8 @@ MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT
 Historial de navegación -> ubicación siguiente
 MENUITEM_HIDDEN_ENABLE_BREAKPOINT
 Habilitar/deshabilitar punto de interrupcion
+MENUITEM_DEBUG_UPDATE_INSPECTIONS
+Actualizar inspecciones
 MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL
 Herramienta personalizada de project <{1}>
 CAPTION_TOOLBAR_FILE
