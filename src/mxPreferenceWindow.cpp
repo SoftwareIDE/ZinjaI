@@ -283,6 +283,7 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_TOOLBARS_WICH,"Barra de herramientas a utilizar:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
 	
+	bool do_not_modify_toolbars = main_window->gui_debug_mode||main_window->gui_fullscreen_mode;
 	wxArrayString poss; poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_TOP,"Arriba")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_LEFT,"Izquierda")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_RIGHT,"Derecha")); poss.Add(LANG(PREFERENCES_TOOLBARS_FLOAT,"Flotante"));
 #define _aux_ctp_1(name,ID,label) { \
 	MenusAndToolsConfig::toolbarPosition &position = menu_data->GetToolbarPosition(MenusAndToolsConfig::tb##ID); \
@@ -290,10 +291,12 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	sz->Add(20,1,0); \
 	toolbars_wich_##name = new wxCheckBox(panel,wxID_ANY,label); \
 	toolbars_wich_##name->SetValue(position.visible); \
+	if (do_not_modify_toolbars) toolbars_wich_##name->Enable(false); \
 	wxButton *bt = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_##ID,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar...")); \
 	sz->Add(toolbars_wich_##name,sizers->BA5_Center); sz->AddStretchSpacer(); sz->Add(bt,sizers->BLR10); \
 	toolbars_side_##name = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,poss,wxCB_READONLY); \
 	toolbars_side_##name->SetSelection(position.top?0:(position.left?1:(position.right?2:3))); \
+	if (do_not_modify_toolbars) toolbars_side_##name->Enable(false); \
 	sz->Add(new wxStaticText(panel,wxID_ANY,"Ubicación:"), sizers->BA5_Center); \
 	sz->Add(toolbars_side_##name,sizers->BA5_Center); \
 	sizer->Add(sz,sizers->BA5_Exp0); }
@@ -333,6 +336,13 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	unsigned int idx_icsz = icon_sizes.Index(icsz);
 	if (idx_icsz>=icon_sizes.GetCount()) idx_icsz=0;
 	toolbar_icon_size = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_TOOLBAR_ICON_SIZE,"Tamaño de icono"),icon_sizes,idx_icsz);
+	
+	if (do_not_modify_toolbars) {
+		toolbars_wich_find->Enable(false);
+		toolbars_wich_project->Enable(false);
+		toolbar_icon_size->Enable(false);
+		btReset->Enable(false);
+	}
 	
 	panel->SetSizerAndFit(sizer);
 	return (panel_toolbars=panel);
@@ -722,7 +732,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	old_config_styles=config->Styles;
 	config->Save();
 	
-	wxCommandEvent evt;
 	bool toolbar_changed=false;
 #define _update_toolbar_visibility_0(NAME,name) \
 	if (toolbars_wich_##name->GetValue()!=_toolbar_visible(tb##NAME)) { toolbar_changed=true; \
@@ -755,6 +764,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	} else
 		menu_data->icon_size=16;
 	if (toolbar_changed) main_window->SortToolbars(true);
+	
 	Toolchain::SelectToolchain();
 	config->RecalcStuff();
 	

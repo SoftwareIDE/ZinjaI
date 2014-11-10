@@ -91,6 +91,7 @@ void mxMainWindow::SortToolbars(bool update_aui) {
 	pi.TopDockable(t.top); \
 	if (t.left) pi.Left(); else if (t.right) pi.Right(); else if (t.top) pi.Top(); else pi.Float(); \
 	pi.Row(t.row).Position(c[t.row]++); \
+	if (!gui_debug_mode&&!gui_fullscreen_mode) \
 	if (t.visible) pi.Show(); else pi.Hide(); }
 	_aui_update_toolbar_pos(FILE);
 	_aui_update_toolbar_pos(EDIT);

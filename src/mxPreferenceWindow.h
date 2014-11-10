@@ -46,7 +46,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *toolbars_wich_tools;
 	
 	wxComboBox *toolbars_side_file;
-	wxComboBox *toolbars_side_project;
+//	wxComboBox *toolbars_side_project;
 	wxComboBox *toolbars_side_edit;
 	wxComboBox *toolbars_side_view;
 	wxComboBox *toolbars_side_run;
