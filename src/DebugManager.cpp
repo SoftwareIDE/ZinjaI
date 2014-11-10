@@ -657,6 +657,7 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 		public:
 			OnPauseRemoveBreakpoint(BreakPointInfo *bp) :p(bp) {}
 			void Do() /*override*/ { debug->DeleteBreakPoint(p); }
+			bool Invalidate(void *ptr) /*override*/ { return p==ptr; }
 		};
 		PauseFor(new OnPauseRemoveBreakpoint(_bpi));
 		return false;
@@ -676,6 +677,7 @@ int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {
 		public:
 			OnPauseAddBreakpoint(BreakPointInfo *bp) :p(bp) {}
 			void Do() /*override*/ { debug->SetBreakPoint(p); }
+			bool Invalidate(void *ptr) /*override*/ { return p==ptr; }
 		};
 		PauseFor(new OnPauseAddBreakpoint(_bpi));
 		_bpi->SetStatus(BPS_PENDING);
@@ -2004,5 +2006,11 @@ bool DebugManager::PauseFor (OnPauseAction * action) {
 	on_pause_action = action; // encolar la accion
 	Pause(); // pausar para que se ejecute
 	return true;
+}
+
+void DebugManager::InvalidatePauseEvent(void *ptr) {
+	if (!on_pause_action) return;
+	if (!on_pause_action->Invalidate(ptr)) return;
+	delete on_pause_action; on_pause_action=NULL;
 }
 

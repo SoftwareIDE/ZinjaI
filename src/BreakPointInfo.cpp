@@ -47,6 +47,7 @@ BreakPointInfo::BreakPointInfo(mxSource *_source, int _line_number) {
 BreakPointInfo::~BreakPointInfo() {
 	if (source && marker_handle!=-1) source->MarkerDeleteHandle(marker_handle);
 	global_list.FindAndRemove(this);
+	debug->InvalidatePauseEvent(this);
 }
 
 /// @brief Change its gdb_status, set its gdb_id, and update the source's marker if needed

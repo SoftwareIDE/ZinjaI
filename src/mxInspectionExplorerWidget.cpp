@@ -7,6 +7,7 @@
 #include "mxInspectionMatrix.h"
 #include "mxInspectionExplorerDialog.h"
 #include "mxInspectionHistory.h"
+#include "mxRealTimeInspectionEditor.h"
 
 BEGIN_EVENT_TABLE(mxInspectionExplorerWidget,wxTreeCtrl)
 	EVT_TREE_ITEM_EXPANDING(wxID_ANY,mxInspectionExplorerWidget::OnItemExpanding)
@@ -17,6 +18,7 @@ BEGIN_EVENT_TABLE(mxInspectionExplorerWidget,wxTreeCtrl)
 	
 	
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxInspectionExplorerWidget::OnShowInText)
+	EVT_MENU(mxID_INSPECTION_SHOW_IN_RTEDITOR,mxInspectionExplorerWidget::OnShowInRTEditor)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionExplorerWidget::OnShowInTable)
 	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionExplorerWidget::OnExploreExpression)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_HISTORY,mxInspectionExplorerWidget::OnShowInHistory)
@@ -209,6 +211,11 @@ void mxInspectionExplorerWidget::OnShowInText (wxCommandEvent & evt) {
 void mxInspectionExplorerWidget::OnShowInTable (wxCommandEvent & evt) {
 	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
 	new mxInspectionMatrix(aux.di->GetExpression(),false);
+}
+
+void mxInspectionExplorerWidget::OnShowInRTEditor (wxCommandEvent & evt) {
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	new mxRealTimeInspectionEditor(aux.di->GetExpression());
 }
 
 void mxInspectionExplorerWidget::OnExploreExpression (wxCommandEvent & evt) {

@@ -290,10 +290,16 @@ public:
 	void ShowBreakPointLocationErrorMessage(BreakPointInfo *_bpi);
 	void ShowBreakPointConditionErrorMessage(BreakPointInfo *_bpi);
 	
-	
-	class OnPauseAction { public: virtual void Do()=0; virtual ~OnPauseAction(){} };
+	/// @ struct for executing tasks while debugger is runnin... the task is saved with this class, and a debugger pause is triggered, so the debugger can run it an continue
+	class OnPauseAction { 
+	public: 
+		virtual void Do()=0; /// action to perform on pause
+		virtual bool Invalidate(void *ptr){ return false; } /// to avoid action on deleted objects
+		virtual ~OnPauseAction(){}
+	};
 	OnPauseAction *on_pause_action;
 	bool PauseFor(OnPauseAction *action);
+	void InvalidatePauseEvent(void *ptr);
 	
 public:
 	struct TemporaryScopeChange {

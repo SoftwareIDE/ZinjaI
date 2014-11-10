@@ -66,6 +66,7 @@ public:
 	void OnShowInTable(wxCommandEvent &evt);
 	void OnExploreExpression(wxCommandEvent &evt);
 	void OnShowInHistory(wxCommandEvent &evt);
+	void OnShowInRTEditor(wxCommandEvent &evt);
 	void OnCopyValue(wxCommandEvent &evt);
 	void OnCopyType(wxCommandEvent &evt);
 	void OnCopyExpression(wxCommandEvent &evt);
