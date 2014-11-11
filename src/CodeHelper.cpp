@@ -832,7 +832,7 @@ bool CodeHelper::LoadData(wxString index) {
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (!str.Len()) 
 			continue;
-		while (str.Last()==';' || str.Last()==' ')
+		while (!str.IsEmpty() && (str.Last()==';' || str.Last()==' '))
 			str.RemoveLast();
 		tabs=0;
 		while (tabs+1<str.Len() && str[tabs]=='\t')
@@ -912,15 +912,15 @@ bool CodeHelper::LoadData(wxString index) {
 				char c;
 				while ( ! ((c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9')) )
 					pos--;
-				while ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') )
+				while (pos>0 && ((c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ))
 					pos--;
 				name=name.Mid(pos+1);
-				while (str[pos]==' ')
+				while (pos>0 && str[pos]==' ')
 					pos--;
 				wxString type = str.Mid(0,pos+1);
-				while (str[pos]==' ' || str[pos]=='*' || str[pos]=='&')
+				while (pos>0 && (str[pos]==' ' || str[pos]=='*' || str[pos]=='&') )
 					pos--;
-				while ( pos>0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ) )
+				while (pos>0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ))
 					pos--;
 				if (pos!=0)
 					pos++;
@@ -943,7 +943,7 @@ bool CodeHelper::LoadData(wxString index) {
 						props=PD_CONST_ENUM_CONST;
 						type=type.Mid(11); if (!type.Len()) type="anonymous";
 					}
-					char c=type.Last();
+					char c = type.IsEmpty()?0:type.Last();
 					int dims=0;
 					while (c=='&' || c=='*' || c==' ') {
 						if (c=='*')
