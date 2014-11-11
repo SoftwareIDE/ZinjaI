@@ -116,7 +116,7 @@ static void GdbParse_SkipEmpty(const wxString &s, int &i, int l) {
 * tab,espacio) y returna true si este es una llave que abre una lisat ('{'), o
 * false si es otra cosa, o si se llegó al final de la cadena
 **/
-static bool GdbParse_IsList(const wxString s, int &i, int l=-1) {
+static bool GdbParse_IsList(const wxString &s, int &i, int l=-1) {
 	if (l==-1) l=s.Len(); 
 	GdbParse_SkipEmpty(s,i,l);
 	return i<l && s[i]=='{';

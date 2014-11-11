@@ -320,7 +320,7 @@ private:
 		// si no tiene hijos, no necesita la inspeccion auxiliar
 		if (!IsCompound()) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
-		helper = DebuggerInspection::Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless())|DIF_IS_INTERNAL_HELPER|DIF_DONT_USE_HELPER,new myCompoundHelperDIEH(this),true);
+		helper = /*DebuggerInspection::*/Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless())|DIF_IS_INTERNAL_HELPER|DIF_DONT_USE_HELPER,new myCompoundHelperDIEH(this),true);
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		helper->MakeEvaluationExpressionForParent(this);
 		helper->flags.Set(DIF_REQUIRES_MANUAL_UPDATE);
@@ -335,7 +335,7 @@ public:
 		// si habia, borrar la inspeccion auxiliar previa
 		if (helper) DeleteHelper();
 		// intentar crear la expresion auxiliar
-		helper = DebuggerInspection::Create(new_expression,FlagIf(DIF_FRAMELESS,IsFrameless()),new myUserHelperDIEH(this),true);
+		helper = /*DebuggerInspection::*/Create(new_expression,FlagIf(DIF_FRAMELESS,IsFrameless()),new myUserHelperDIEH(this),true);
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		gdb_value = helper->gdb_value; // Create does a first evaluation
 		return true;

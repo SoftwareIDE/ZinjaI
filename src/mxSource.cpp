@@ -1008,8 +1008,9 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 				if (cp<=calltip_brace) { 
 					HideCalltip();
 				} else {
-					int p=calltip_brace+1, cur_arg=0, par=0, s, l=cp/*+1*/; // s y l son para II_*
+					int p=calltip_brace+1, cur_arg=0, par=0, l=cp/*+1*/; // s y l son para II_*
 					while (p<l) {
+						int s;
 						II_FRONT(p, II_SHOULD_IGNORE(p));
 						char c=GetCharAt(p++);
 						if (c==',' && par==0) { cur_arg++; }
@@ -3454,10 +3455,10 @@ void mxSource::AlignComments (int col) {
 	if (ss>se) { int aux=ss; ss=se; se=aux; }
 	bool sel = se>ss; char c;
 	int line_ss=sel?LineFromPosition(ss):0, line_se=sel?LineFromPosition(se):GetLineCount();
-	int p3,pl=PositionFromLine(line_ss),s;
+	int p3,pl=PositionFromLine(line_ss);
 	bool prev=false;
 	for (int i=line_ss;i<line_se;i++) {
-		int p1=pl;
+		int p1=pl, s;
 		int p2=PositionFromLine(i+1);
 		if (!II_IS_COMMENT(p1) || prev) {
 			if (!II_IS_COMMENT(p1)) {
@@ -3503,10 +3504,10 @@ void mxSource::RemoveComments () {
 	if (ss>se) { int aux=ss; ss=se; se=aux; }
 	bool sel = se>ss;
 	int line_ss=sel?LineFromPosition(ss):0, line_se=sel?LineFromPosition(se):GetLineCount();
-	int p1,p2,s;
+	int p1,p2;
 	for (int i=line_ss;i<line_se;i++) {
 
-		int p3=ss=PositionFromLine(i);
+		int p3=ss=PositionFromLine(i), s;
 		se=PositionFromLine(i+1);
 		
 		while (p3<se && !II_IS_COMMENT(p3)) p3++;
@@ -3609,9 +3610,9 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 }
 
 bool mxSource::IsEmptyLine(int l, bool ignore_comments, bool ignore_preproc) {
-	int p=PositionFromLine(l), s, pf=(l==GetLineCount()-1)?GetLength():PositionFromLine(l+1);
-	char c;
+	int p=PositionFromLine(l), pf=(l==GetLineCount()-1)?GetLength():PositionFromLine(l+1);
 	while (p<pf) {
+		char c; int s;
 		if ( ! ( II_IS_4(p,' ','\t','\n','\r') 
 			|| (ignore_comments && II_IS_COMMENT(p))
 			|| (ignore_preproc && s==wxSTC_C_PREPROCESSOR)
@@ -4143,7 +4144,7 @@ void mxSource::ApplyRectEdit ( ) {
 	wxString sfrom = ref_str.Mid(i,lr-i), sto = new_str.Mid(i,ln-i);
 	BeginUndoAction();
 	// ahora pbeg y pend acotan solo la parte modificada, en terminos de la cadena original
-	pbeg += i; pend = pbeg+sfrom.Len();
+	pbeg += i; /*pend = pbeg+sfrom.Len();*/
 	// traducir a columnas (por los tabs y otros caracteres que ocupan mas de un espacio)
 	int cbeg = GetColumn(pbeg), cend=cbeg+sfrom.Len();
 	// para cada linea de la seleccion...

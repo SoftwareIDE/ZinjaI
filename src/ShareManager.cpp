@@ -273,6 +273,11 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 			if (it->second.len==-1||it->second.count<it->second.len) {
 				mxMessageDialog(main_window,LANG(OPENSHARED_ERROR_GETTING_SOURCE,"Ha ocurrido un error al intentar obtener el fuente. Pruebe actualizar la lista de fuentes compartidos."), LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 			}
+			// las lineas que siguen son las que estaban abajo en un else-if con la condicion repetida
+			if (it->second.len!=-1) delete [] it->second.source; 
+			clients.erase(it);
+			event->GetSocket()->Destroy();
+			return;
 		} else if (event->GetSocketEvent()==wxSOCKET_CONNECTION) {
 			event->GetSocket()->Write((wxString("*")+it->second.name).c_str(),it->second.name.Len()+1);
 		} else if (event->GetSocketEvent()==wxSOCKET_INPUT) { // if comes a piece of source
@@ -316,12 +321,6 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 					return;
 				};
 			}
-		} else if (event->GetSocketEvent()==wxSOCKET_LOST) { /// @todo: este if esta repetido, es el primero arriba, ver si hay que mover ahí este código (que no se ejecuta nunca)
-			if (it->second.len!=-1)
-				delete [] it->second.source; 
-			clients.erase(it);
-			event->GetSocket()->Destroy();
-			return;
 		}	
 	} else {
 		

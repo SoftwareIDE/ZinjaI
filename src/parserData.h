@@ -554,16 +554,6 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 	delete amacro; \
 }
 
-//#define PD_ADD_OR_REPLACE_FILE(afile,aname,atime) \
-//	HashStringParserFile::iterator it = h_files.find(aname); \
-//	if (it!=h_files.end()) { \
-//		delete it->second; \
-//		it->second = afile = new pd_file(last_file, aname, atime, last_file->next); \
-//	} else \
-//		h_files[aname] = afile = new pd_file(last_file, aname, atime, last_file->next); \
-//	PD_INSERT(last_file,afile);
-
-
 struct pd_file;
 struct pd_class;
 

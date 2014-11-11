@@ -261,7 +261,7 @@ bool DebuggerInspection::TryToImproveExpression (const wxString &pattern, wxStri
 			map<wxString,wxString>::iterator it1=the_map.begin(), it2=the_map.end();
 			while(it1!=it2) {
 				new_expr.Replace(it1->first,it1->second,true);
-				it1++;
+				++it1;
 			}
 			new_expr.Replace("${EXP}",expr,true);
 			return true;

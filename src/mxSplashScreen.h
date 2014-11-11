@@ -9,7 +9,8 @@
 #define SPLASH_FILE "splashv2l.png"
 #else
 //#warning SHOULD DEFINE CORRECT SPLASH BEFORE RELEASE
-#define SPLASH_FILE "splashv2l.png"
+//#define SPLASH_FILE "splashv2l.png"
+#define SPLASH_FILE "splashvb.png"
 #endif
 
 /**
