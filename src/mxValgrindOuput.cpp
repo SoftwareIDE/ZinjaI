@@ -76,7 +76,7 @@ bool mxValgrindOuput::LoadOutputCppCheck() {
 	SetItemText(information,wxString("Information(")<<cinf<<")");
 	SetItemText(other,wxString("Other (")<<coth<<")");
 	
-	Expand(sel=root);
+//	Expand(sel=root);
 	return true;
 }	
 
@@ -110,7 +110,7 @@ bool mxValgrindOuput::LoadOutputValgrind() {
 		} else 
 			is_last=false;
 	}
-	Expand(sel=root);
+//	Expand(sel=root);
 	return true;
 }
 
@@ -140,7 +140,7 @@ bool mxValgrindOuput::LoadOutputDoxygen() {
 		}
 		count++;
 	}
-	Expand(sel=root);
+//	Expand(sel=root);
 	return count;
 }
 

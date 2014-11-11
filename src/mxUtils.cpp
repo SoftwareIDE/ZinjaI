@@ -86,16 +86,15 @@ void mxUT::strcpy(wxChar *cstr, wxChar *wstr) {
 
 void mxUT::SortArrayString(wxArrayString &array, int inf, int sup) {
 
+	// si no recibe limites, ordenar todo (los limites son incluyendo ambos extremos)
 	if (inf==-1) { inf=0; sup=array.GetCount()-1; if (sup==-1) return; }
-/*	cout<<endl;
-	cout<<"      "<<array[sup]<<endl;*/
-		
+	// si hay un solo elemento, no hay que hacer nada
 	if(inf==sup) return;
+	
 	int oinf=inf,osup=sup--;
 	wxString med=array[osup],aux;
-	int i,l,jl,ml=med.Len();
-	bool bi,bs;
-	i=0;
+	int i=0,ml=med.Len();
+//	bool bi,bs;
 	for (i=0;i<ml;i++)
 		med[i]|=32;
 	while (true) {
@@ -107,16 +106,17 @@ void mxUT::SortArrayString(wxArrayString &array, int inf, int sup) {
 // }
 // cout<<endl;
 
+		bool bi=true, bs=false; // si una cadena esta vacia, se considera menor
+		
 		while (true) {
-			jl=array[inf].Len(); l=(jl<ml?jl:ml)-2;
+			int jl=array[inf].Len(),  l=(jl<ml?jl:ml)-2;
 			for (i=0;i<l;i++) {
 				if ( (array[inf][i]|32)!=med[i] ) {
 					bi=( (array[inf][i]|32)<med[i] );
 					break;
 				}
 			}
-			if (i==l)
-				bi=jl<ml;
+			if (i==l) bi=jl<ml;
 			if (bi && inf!=sup)
 				inf++;
 			else
@@ -124,7 +124,7 @@ void mxUT::SortArrayString(wxArrayString &array, int inf, int sup) {
 		}
 
 		while (true) {
-			jl=array[sup].Len(); l=(jl<ml?jl:ml)-2;
+			int jl=array[sup].Len(), l=(jl<ml?jl:ml)-2;
 			for (i=0;i<l;i++) {
 				if ( (array[sup][i]|32)!=med[i] ) {
 					bs=( (array[sup][i]|32)>med[i] );
@@ -138,7 +138,6 @@ void mxUT::SortArrayString(wxArrayString &array, int inf, int sup) {
 			else
 				break;
 		}
-
 		if (inf<sup) {
 			aux=array[inf];
 			array[inf]=array[sup];
@@ -1291,8 +1290,9 @@ void mxUT::SetArgument (wxString &full, const wxString &arg, bool add) {
 	} else {
 		wxArrayString array;
 		Split(full,array,false,true);
-		array.Remove(arg);
-		array.Remove(wxString("\"")+arg+"\"");
+		int pos1 = array.Index(arg), pos2=array.Index(wxString("\"")+arg+"\"");
+		if (pos1!=wxNOT_FOUND) array.RemoveAt(pos1);
+		if (pos2!=wxNOT_FOUND) array.RemoveAt(pos2);
 		full=UnSplit(array);
 	}
 }

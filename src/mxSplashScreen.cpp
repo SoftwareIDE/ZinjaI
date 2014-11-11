@@ -36,13 +36,13 @@ mxSplashScreen::mxSplashScreen(wxString image_path):wxFrame(NULL,wxID_ANY,_T("Ca
 	timer_done=should_close=false;
 }
 
-mxSplashScreen::mxSplashScreen(const char *xpm[], int x, int y):wxFrame(NULL,wxID_ANY,"",wxPoint(x,y),wxDefaultSize, wxFRAME_SHAPED | wxNO_BORDER | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR ) {
+mxSplashScreen::mxSplashScreen(const char *xpm[], int x, int y):wxFrame(NULL,wxID_ANY,"",wxPoint(x,y),wxDefaultSize, /*wxFRAME_SHAPED | */wxNO_BORDER | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR ) {
 	m_bmp = wxBitmap(xpm);
 	SetSize(wxSize(m_bmp.GetWidth(), m_bmp.GetHeight()));
-#ifndef __WXGTK__
-	wxRegion region(m_bmp, wxColour(0,0,0,0));
-	SetShape(region);
-#endif
+//#ifndef __WXGTK__
+//	wxRegion region(m_bmp, wxColour(0,0,0,0));
+//	SetShape(region);
+//#endif
 	should_close=true;
 	timer=NULL;
 	Show(true);
@@ -65,8 +65,8 @@ void mxSplashScreen::OnPaint(wxPaintEvent& WXUNUSED(evt)) {
 }
 
 void mxSplashScreen::OnWindowCreate(wxWindowCreateEvent& WXUNUSED(evt)) {
-	wxRegion region(m_bmp, wxColour(0,0,0,0));
-	SetShape(region);
+//	wxRegion region(m_bmp, wxColour(0,0,0,0));
+//	SetShape(region);
 }
 
 void mxSplashScreen::OnTimer(wxTimerEvent &evt) {

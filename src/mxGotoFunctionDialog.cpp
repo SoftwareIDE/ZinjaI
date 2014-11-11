@@ -55,9 +55,6 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	wxAcceleratorEntry accel(wxACCEL_CTRL|wxACCEL_SHIFT,'f',mxID_EDIT_GOTO_FILE);
 	SetAcceleratorTable(wxAcceleratorTable(1,&accel));
 	
-	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(goto_button,sizers->BA5);
-	
 	if (!strict_compare) 
 		mySizer->Add(new wxStaticText(this,wxID_ANY,LANG(GOTOFUNCTION_ENTER_FUNC_NAME,"Ingrese el nombre de la funcion, clase o metodo:")),sizers->BLRT5_Exp0);
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
