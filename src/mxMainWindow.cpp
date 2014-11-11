@@ -526,7 +526,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_THREADS] = new mxHidenPanel(this,threadlist_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_THREADS,"Hilos"));
 	aui_manager.AddPane(CreateNotebookSources(), wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
-	aui_manager.AddPane(debug_log_panel=new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_HSCROLL),wxAuiPaneInfo().Name("quick_help").Bottom().Caption(LANG(CAPTION_DEBUGGER_LOG,"Mensajes del Depurador")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
+	aui_manager.AddPane(debug_log_panel=new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_HSCROLL),wxAuiPaneInfo().Name("debug_messages").Bottom().Caption(LANG(CAPTION_DEBUGGER_LOG,"Mensajes del Depurador")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_DEBUG_LOG] = new mxHidenPanel(this,debug_log_panel,HP_BOTTOM,LANG(MAINW_AUTOHIDE_DEBUG_LOG,"Log Depurador"));
 	
@@ -1218,8 +1218,11 @@ void mxMainWindow::OnNotebookPageChanged(wxAuiNotebookEvent& event) {
 	static wxMenuItem *menu_view_code_style=_menu_item(mxID_VIEW_CODE_STYLE);
 //	if (page_change_event_on) {
 		if (diff_sidebar) diff_sidebar->Refresh();
-		mxSource *old_source = (mxSource*)notebook_sources->GetPage(event.GetOldSelection());
-		if (old_source) old_source->HideCalltip();
+		int old_sel = event.GetOldSelection();
+		if (old_sel!=-1) {
+			mxSource *old_source = (mxSource*)notebook_sources->GetPage(old_sel);
+			if (old_source) old_source->HideCalltip();
+		}
 		menu_view_white_space->Check(CURRENT_SOURCE->config_source.whiteSpace);
 		menu_view_line_wrap->Check(CURRENT_SOURCE->config_source.wrapMode);
 		menu_view_code_style->Check(CURRENT_SOURCE->config_source.syntaxEnable);
@@ -4587,6 +4590,7 @@ void mxMainWindow::SetStatusText(wxString text) {
 
 /// @brief sets status bar progress (0-100 to show, -1 to hide)
 void mxMainWindow::SetStatusProgress(int prog) {
+	if (prog>100) prog=100;
 	status_bar->SetProgress(prog);
 }
 

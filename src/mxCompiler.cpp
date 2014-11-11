@@ -399,14 +399,17 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 	static wxString error_line, nice_error_line;
 	int p;
 //	char c;
+cerr<<"wxTextInputStream input(*(process->GetErrorStream()));"<<endl;
 	wxTextInputStream input(*(process->GetErrorStream()));	
+cerr<<"while ( process->IsErrorAvailable() ) {"<<endl;
 	while ( process->IsErrorAvailable() ) {
 		
+cerr<<"error_line=input.ReadLine();"<<endl;
 		error_line=input.ReadLine();
 		
 		// acortar el nombre de archivo
-		if ( error_line[1]==':' ) p=2; else p=0;
 		int l=error_line.Len();
+		if ( l>2 && error_line[1]==':' ) p=2; else p=0;
 		while (p<l && error_line[p]!=':') p++;
 		if (p<l) {
 			while (p>=0 && error_line[p]!='/' && error_line[p]!='\\') p--;
@@ -483,7 +486,9 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 			compile_and_run->pending_error_nices.Add(nice_error_line);
 		}
 			
+cerr<<"while ( process->IsErrorAvailable() ) {"<<endl;
 	}
+cerr<<"}"<<endl;
 }
 
 void mxCompiler::ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run) {

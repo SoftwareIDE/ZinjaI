@@ -1102,7 +1102,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 
 	LocalListIterator<project_file_item*> item(&files_sources);
 	wxString full_path;
-	wxDateTime bin_date, youngest_bin;
+	wxDateTime bin_date, youngest_bin(wxDateTime::Now());
 	youngest_bin.SetYear(1900);
 	wxFileName bin_name;
 	

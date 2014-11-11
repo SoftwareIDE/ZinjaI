@@ -14,6 +14,7 @@
 #include "Language.h"
 #include "mxApplication.h" // SHOW_MILLIS
 #include "mxHelpWindow.h"
+#include <wx/settings.h>
 
 mxWelcomePanel *welcome_panel;
 
@@ -48,8 +49,8 @@ void mxWelcomePanel::Reload() {
 	else
 		text.Replace(_T("src=\""),wxString(_T("src=\""))<<DIR_PLUS_FILE(_T("imgs"),""));
 	text.Replace(_T("${ZVERSION}"),wxString()<<VERSION);
-	wxColour background_colour=wxButton(NULL,wxID_ANY,_T("lala")).GetBackgroundColour();
-	wxColour foreground_colour=wxButton(NULL,wxID_ANY,_T("lala")).GetForegroundColour();
+	wxColour background_colour=wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE );
+	wxColour foreground_colour=wxSystemSettings::GetColour( wxSYS_COLOUR_BTNTEXT );
 	text.Replace(_T("${BUTTON_COLOR}"),background_colour.GetAsString(wxC2S_HTML_SYNTAX));
 	text.Replace(_T("${LABEL_COLOR}"),foreground_colour.GetAsString(wxC2S_HTML_SYNTAX));
 	text.Replace(_T("${FILE:01}"),config->Files.last_source[0]);

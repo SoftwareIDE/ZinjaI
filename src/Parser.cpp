@@ -339,11 +339,11 @@ long Parser::ParseNextFileStart(wxFileName filename, wxString HashName, bool hid
 void Parser::ParseNextFileContinue(const wxString &s) {
 	
 	// toda linea de cbrowser empieza con un entero indicando que es, de 1 o 2 digitos, seguido por punto y coma
-	int id, p[15];
-	if (s.GetChar(1)==';') {
+	int id, p[15]; int l=s.Len();
+	if (l>2 && s.GetChar(1)==';') {
 		id = s.GetChar(0)-'0';
 		p[0]=1;
-	} else if (s.GetChar(2)==';') {
+	} else if (l>3 && s.GetChar(2)==';') {
 		id = (s.GetChar(0)-'0')*10+s.GetChar(1)-'0';
 		p[0]=2;
 	} else return;
