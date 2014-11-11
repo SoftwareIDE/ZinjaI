@@ -3338,7 +3338,7 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 				LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false
 				).ShowModal();
 			// eliminar
-			if (ans==mxMD_YES) {
+			if (ans&mxMD_YES) {
 				if (fitem1) DeleteFile(fitem1,ans&mxMD_CHECKED);
 				if (fitem2) DeleteFile(fitem2,ans&mxMD_CHECKED);
 			}
@@ -3391,69 +3391,66 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 	// controlar que no exista
 	wxString cpp_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".cpp");
 	wxString h_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".h");
-	if (wxFileName::FileExists(cpp_name)) {
-		mxMessageDialog(main_window,LANG(PROJECT_WXFB_NEWFILE_EXISTS,"Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?"),cpp_name,mxMD_YES_NO|mxMD_ERROR).ShowModal();
-		return false;
-	} else if (wxFileName::FileExists(h_name)) {
-		mxMessageDialog(main_window,LANG(PROJECT_WXFB_NEWFILE_EXISTS,"Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?"),h_name,mxMD_YES_NO|mxMD_ERROR).ShowModal();				
-		return false;
-	} else {
-		wxArrayString methods;
-		GetFatherMethods(base_header,base_name,methods);
-		// crear el cpp
-		wxTextFile cpp_file(cpp_name);
-		cpp_file.Create();
-		cpp_file.AddLine(wxString("#include \"")+name+".h\"");
-		cpp_file.AddLine("");
-		cpp_file.AddLine(name+"::"+name+"(wxWindow *parent) : "+base_name+"(parent) {");
-		cpp_file.AddLine("\t");
-		cpp_file.AddLine("}");
-		cpp_file.AddLine("");
-		for (unsigned int i=0;i<methods.GetCount();i++) {
-			cpp_file.AddLine(methods[i].BeforeFirst(' ')+" "+name+"::"+methods[i].AfterFirst(' ')+" {");
-			cpp_file.AddLine("\tevent.Skip();");
-			cpp_file.AddLine("}");
-			cpp_file.AddLine("");
-		}
-		cpp_file.AddLine(name+"::~"+name+"() {");
-		cpp_file.AddLine("\t");
-		cpp_file.AddLine("}");
-		cpp_file.AddLine("");
-		cpp_file.Write();
-		cpp_file.Close();
-		// crear el h
-		wxString def=name;
-		def.MakeUpper();
-		wxTextFile h_file(h_name);
-		h_file.Create();
-		h_file.AddLine(wxString("#ifndef ")+def+"_H");
-		h_file.AddLine(wxString("#define ")+def+"_H");
-		wxFileName fn_base_header(base_header);
-		fn_base_header.MakeRelativeTo(folder);
-		h_file.AddLine(wxString("#include \"")+fn_base_header.GetFullPath()+"\"");
-		h_file.AddLine("");
-		h_file.AddLine(wxString("class ")+name+" : public "+base_name+" {");
-		h_file.AddLine("\t");
-		h_file.AddLine("private:");
-		h_file.AddLine("\t");
-		h_file.AddLine("protected:");
-		for (unsigned int i=0;i<methods.GetCount();i++)
-			h_file.AddLine(wxString("\t")<<methods[i]+";");
-		h_file.AddLine("\t");
-		h_file.AddLine("public:");
-		h_file.AddLine(wxString("\t")+name+"(wxWindow *parent=NULL);");
-		h_file.AddLine(wxString("\t~")+name+"();");
-		h_file.AddLine("};");
-		h_file.AddLine("");
-		h_file.AddLine("#endif");
-		h_file.AddLine("");
-		h_file.Write();
-		h_file.Close();
-		// abrir
-		main_window->OpenFile(cpp_name,true);
-		main_window->OpenFile(h_name,true);
-		return true;
+	if (wxFileName::FileExists(cpp_name) || wxFileName::FileExists(h_name)) {
+		int ans = mxMessageDialog(main_window,LANG(PROJECT_WXFB_NEWFILE_EXISTS,"Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?"),cpp_name,mxMD_YES_NO|mxMD_ERROR).ShowModal();
+		if (ans&mxMD_NO) return false;
 	}
+	
+	wxArrayString methods;
+	GetFatherMethods(base_header,base_name,methods);
+	// crear el cpp
+	wxTextFile cpp_file(cpp_name);
+	cpp_file.Create();
+	cpp_file.AddLine(wxString("#include \"")+name+".h\"");
+	cpp_file.AddLine("");
+	cpp_file.AddLine(name+"::"+name+"(wxWindow *parent) : "+base_name+"(parent) {");
+	cpp_file.AddLine("\t");
+	cpp_file.AddLine("}");
+	cpp_file.AddLine("");
+	for (unsigned int i=0;i<methods.GetCount();i++) {
+		cpp_file.AddLine(methods[i].BeforeFirst(' ')+" "+name+"::"+methods[i].AfterFirst(' ')+" {");
+		cpp_file.AddLine("\tevent.Skip();");
+		cpp_file.AddLine("}");
+		cpp_file.AddLine("");
+	}
+	cpp_file.AddLine(name+"::~"+name+"() {");
+	cpp_file.AddLine("\t");
+	cpp_file.AddLine("}");
+	cpp_file.AddLine("");
+	cpp_file.Write();
+	cpp_file.Close();
+	// crear el h
+	wxString def=name;
+	def.MakeUpper();
+	wxTextFile h_file(h_name);
+	h_file.Create();
+	h_file.AddLine(wxString("#ifndef ")+def+"_H");
+	h_file.AddLine(wxString("#define ")+def+"_H");
+	wxFileName fn_base_header(base_header);
+	fn_base_header.MakeRelativeTo(folder);
+	h_file.AddLine(wxString("#include \"")+fn_base_header.GetFullPath()+"\"");
+	h_file.AddLine("");
+	h_file.AddLine(wxString("class ")+name+" : public "+base_name+" {");
+	h_file.AddLine("\t");
+	h_file.AddLine("private:");
+	h_file.AddLine("\t");
+	h_file.AddLine("protected:");
+	for (unsigned int i=0;i<methods.GetCount();i++)
+		h_file.AddLine(wxString("\t")<<methods[i]+";");
+	h_file.AddLine("\t");
+	h_file.AddLine("public:");
+	h_file.AddLine(wxString("\t")+name+"(wxWindow *parent=NULL);");
+	h_file.AddLine(wxString("\t~")+name+"();");
+	h_file.AddLine("};");
+	h_file.AddLine("");
+	h_file.AddLine("#endif");
+	h_file.AddLine("");
+	h_file.Write();
+	h_file.Close();
+	// abrir
+	main_window->OpenFile(cpp_name,true);
+	main_window->OpenFile(h_name,true);
+	return true;
 }
 
 void ProjectManager::SetActiveConfiguration (project_configuration * aconf) {

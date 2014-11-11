@@ -242,7 +242,7 @@ void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {
 //			else if (wxString(argv[i])==".")
 //				main_window->ShowExplorerTreePanel();
 			else if (argv[i][0]!='\0')
-				main_window->OpenFileFromGui(DIR_PLUS_FILE(cmd_path,argv[i]));
+				main_window->OpenFileFromGui(DIR_PLUS_FILE(cmd_path,wxFileName(argv[i])).GetLongPath());
 		}
 		if (!project && main_window->notebook_sources->GetPageCount()==0 && config->Init.show_welcome) {
 			main_window->ShowWelcome(true);

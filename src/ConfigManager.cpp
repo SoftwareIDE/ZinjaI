@@ -783,9 +783,9 @@ void ConfigManager::LoadDefaults(){
 }
 
 bool ConfigManager::CheckWxfbPresent() {
-	if (config->Init.wxfb_seen) return true;
+	if (config->Init.wxfb_seen && !config->Files.wxfb_command.IsEmpty()) return true;
 	wxString out;
-	if (config->Files.wxfb_command.Len())
+	if (!config->Files.wxfb_command.IsEmpty())
 		out = mxUT::GetOutput(wxString("\"")<<config->Files.wxfb_command<<"\" -h",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
