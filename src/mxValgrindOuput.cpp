@@ -23,7 +23,9 @@ BEGIN_EVENT_TABLE(mxValgrindOuput,wxTreeCtrl)
 	EVT_KEY_DOWN(mxValgrindOuput::OnKey)
 END_EVENT_TABLE()
 
-mxValgrindOuput::mxValgrindOuput(wxWindow *parent, mxVOmode mode, wxString afilename):wxTreeCtrl(parent, wxID_ANY, wxPoint(0,0), wxSize(160,100), wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT) {
+mxValgrindOuput::mxValgrindOuput(wxWindow *parent, mxVOmode mode, wxString afilename)
+	: wxTreeCtrl(parent, wxID_ANY, wxPoint(0,0), wxSize(160,100), wxTR_DEFAULT_STYLE | wxNO_BORDER | wxTR_HIDE_ROOT) 
+{
 	SetMode(mode,afilename);
 }
 
@@ -39,7 +41,7 @@ bool mxValgrindOuput::LoadOutputCppCheck() {
 	set<wxString> all;
 		
 	DeleteAllItems();
-	root = AddRoot(_T("Salida"), 0);
+	root = AddRoot(_T("Salida"), -1);
 	
 	wxTreeItemId error=AppendItem(root,"Error (0)");
 	wxTreeItemId warning=AppendItem(root,"Warning (0)");
@@ -82,7 +84,7 @@ bool mxValgrindOuput::LoadOutputCppCheck() {
 
 bool mxValgrindOuput::LoadOutputValgrind() {
 	DeleteAllItems();
-	root = AddRoot(_T("Salida"), 0);
+	root = AddRoot(_T("Salida"), -1);
 	is_last=false;
 	if (!wxFileName(filename).FileExists()) {
 		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();

@@ -1160,6 +1160,7 @@ wxString CodeHelper::UnMacro(wxString name, int &dims) {
 }
 
 void CodeHelper::UnTemplate(wxString &var) {
+	if (var.IsEmpty()) return;
 	int i = var.Len()-1;
 	if (var[i]=='>') {
 		int p=var.Find('<');

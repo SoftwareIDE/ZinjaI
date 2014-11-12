@@ -420,7 +420,7 @@ cerr<<"error_line=input.ReadLine();"<<endl;
 		compile_and_run->full_output.Add(error_line);
 		if (compile_and_run->output_type==MXC_EXTRA || error_line.Len()==0) 
 			continue;
-		tree->AppendItem(compile_and_run->last_all_item,nice_error_line,6,-1,new mxCompilerItemData(error_line));
+		tree->AppendItem(compile_and_run->last_all_item,error_line,6,-1/*,new mxCompilerItemData(error_line)*/);
 		
 		// reemplazar templates para que sea más legible
 		if (config->Init.beautify_compiler_errors && !current_toolchain.IsExtern()) UnSTD(nice_error_line);
@@ -666,10 +666,12 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	if (debug->IsDebugging()) debug->GetPatcher()->AlterOuputFileName(output_file);
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+source->GetFullPath()+"\" "+comp_opts+_T(" -o \"")+output_file+"\"";
 	
+	
 	// lanzar la ejecucion
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	ResetCompileData();
+	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	compile_and_run->pid = mxUT::Execute(source->GetPath(false),command,wxEXEC_ASYNC,compile_and_run->process);
 	main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
 	compile_and_run->full_output.Add("");

@@ -79,6 +79,7 @@ void mxGotoFileDialog::OnGotoButton(wxCommandEvent &event) {
 		wxTimerEvent evt;
 		OnTimerInput(evt);
 	}
+	if (list_ctrl->IsEmpty()) return;
 	wxString key = list_ctrl->GetString(list_ctrl->GetSelection());
 	if (key.Len()) {
 		if (project) {

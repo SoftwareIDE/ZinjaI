@@ -1032,9 +1032,9 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 
 /// @brief evento generico para el doble click en cualquier arbol, desde aqui se llama al que corresponda
 void mxMainWindow::OnSelectTreeItem (wxTreeEvent &event){
-DEBUG_INFO("wxYield:in  mxMainWindow::OnSelectTreeItem");
-	wxYield();
-DEBUG_INFO("wxYield:out mxMainWindow::OnSelectTreeItem");
+//DEBUG_INFO("wxYield:in  mxMainWindow::OnSelectTreeItem");
+//	wxYield(); /// para que estaba este yield??
+//DEBUG_INFO("wxYield:out mxMainWindow::OnSelectTreeItem");
 	if (event.GetEventObject()==project_tree.treeCtrl)
 		OnSelectSource(event);
 	else if (event.GetEventObject()==compiler_tree.treeCtrl)
@@ -1110,8 +1110,7 @@ DEBUG_INFO("wxYield:in  mxMainWindow::OnSelectError");
 	wxYield();
 DEBUG_INFO("wxYield:out mxMainWindow::OnSelectError");
 	mxCompilerItemData *comp_data = (mxCompilerItemData*)(compiler_tree.treeCtrl->GetItemData(event.GetItem()));
-	if (!comp_data) return;
-	wxString error=comp_data->file_info;
+	wxString error = comp_data ? comp_data->file_info : compiler_tree.treeCtrl->GetItemText(event.GetItem());
 	if (!error.Len()) error=compiler_tree.treeCtrl->GetItemText(event.GetItem());;
 	if (error.Len()) OnSelectErrorCommon(error);
 }

@@ -106,6 +106,7 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 		wxTimerEvent evt;
 		OnTimerInput(evt);
 	}
+	if (list_ctrl->IsEmpty()) return;
 	// find selected item (list is alphabetically sorted, so order does not match m_results)
 	wxString key = list_ctrl->GetString(list_ctrl->GetSelection());
 	int i=0;
