@@ -44,7 +44,7 @@ mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(LANG(HELPW_CAPTI
 			}
 		}
 		fil.Close();
-		tree->Expand(root);
+//		tree->Expand(root);
 		wxTreeItemIdValue cokkie;
 		node = tree->GetFirstChild(root,cokkie);
 		while (node.IsOk()) {
