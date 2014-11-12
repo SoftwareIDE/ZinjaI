@@ -25,7 +25,7 @@ public:
 	
 	void Add(int pos, int lev, DebuggerInspection *di);
 	void Break(int num);
-	void Resize();
+	void Resize(bool only_grow_h);
 	
 	// eventos myDIGlobalEventHandler
 	void OnDebugStop() { Destroy(); }
@@ -35,7 +35,7 @@ public:
 	void OnDIOutOfScope(DebuggerInspection *di);
 	
 	// eventos propios
-//	void OnUpdateValues(wxCommandEvent &evt);
+	void OnUpdateValues(wxCommandEvent &evt);
 	void OnButton(wxCommandEvent &evt);
 	void OnText(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);

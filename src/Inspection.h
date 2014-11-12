@@ -225,7 +225,7 @@ public:
 	static void OnDebugStop();
 	
 	/// Actualiza todas las inspecciones (consultando a gdb, se debe invocar desde DebugManager cuando hay una pausa/interrupción en la ejecución)
-	static void UpdateAllVO();
+	static void UpdateAllVO(const wxString &voname="*");
 	static void UpdateAllManual();
 	
 	
@@ -354,11 +354,10 @@ public:
 		else return ans.Contains("editable");
 	}
 	
-	wxString ForceVOEvaluation() {
-		if (!debug->debugging||debug->waiting) return "";
-		if (dit_type!=DIT_VARIABLE_OBJECT) return "";
-		VOEvaluate();
-		return gdb_value;
+	void ForceVOUpdate() {
+		if (!debug->debugging||debug->waiting) return;
+		if (dit_type!=DIT_VARIABLE_OBJECT) return;
+		UpdateAllVO(variable_object);
 	}
 	
 	

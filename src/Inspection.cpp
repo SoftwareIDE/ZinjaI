@@ -24,14 +24,14 @@ static wxString &RemoveEscapeChar(wxString &s) {
 	return s;
 }
 
-void DebuggerInspection::UpdateAllVO() {
+void DebuggerInspection::UpdateAllVO(const wxString &voname) {
 	__debug_log_static_method__;
 	if (!debug->debugging||debug->waiting) return;
 	// struct para guardar los campos que interesan de cada vo actualizada
 	struct update { wxString name,value,in_scope,new_type,new_num_children; };
 	
 	// consulta cuales vo cambiaron
-	wxString s = debug->SendCommand("-var-update --all-values *");
+	wxString s = debug->SendCommand("-var-update --all-values ",voname);
 	for(unsigned int i=6,l=s.Len();i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
 		if (s[i]=='n' && s[i+1]=='a' && s[i+2]=='m' && s[i+3]=='e' && s[i+4]=='=') { // por cada "name=" empieza un vo...
 			// busca los campos del vo

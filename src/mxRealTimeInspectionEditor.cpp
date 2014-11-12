@@ -29,7 +29,7 @@ mxRealTimeInspectionEditor::mxRealTimeInspectionEditor(const wxString &expressio
 	sizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
 	
 	Add(0,0,di); if (inspections[0].button) Break(0);
-	SetSizer(sizer); sizer->Layout(); Resize();
+	SetSizer(sizer); sizer->Layout(); Resize(false);
 	Show();
 }
 
@@ -80,12 +80,12 @@ void mxRealTimeInspectionEditor::Add (int pos, int lev, DebuggerInspection * di)
 		aux_control = aux.button = new wxButton(this,wxID_ANY,di->GetValue(),wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_EXACTFIT);
 	}
 	
-//	if (pos==0) {
-//		wxBoxSizer *aux_sizer = new wxBoxSizer(wxHORIZONTAL);
-//		aux_sizer->Add(aux_control,sizers->Exp1);
-//		aux_sizer->Add(new wxBitmapButton(this,wxID_REDO,wxBitmap(SKIN_FILE("boton_recargar.png"),wxBITMAP_TYPE_PNG)));
-//		sizer->Insert(2*pos+1,aux_sizer,sizers->Exp1);
-//	} else 
+	if (pos==0) {
+		wxBoxSizer *aux_sizer = new wxBoxSizer(wxHORIZONTAL);
+		aux_sizer->Add(aux_control,sizers->Exp1);
+		aux_sizer->Add(new wxBitmapButton(this,wxID_REDO,wxBitmap(SKIN_FILE("boton_recargar.png"),wxBITMAP_TYPE_PNG)));
+		sizer->Insert(2*pos+1,aux_sizer,sizers->Exp1);
+	} else 
 		sizer->Insert(2*pos+1,aux_control,sizers->Exp1);
 	
 	inspections.Insert(pos,aux);
@@ -93,9 +93,9 @@ void mxRealTimeInspectionEditor::Add (int pos, int lev, DebuggerInspection * di)
 }
 
 void mxRealTimeInspectionEditor::OnButton (wxCommandEvent & evt) {
-//	if (evt.GetId()==wxID_REDO) { OnUpdateValues(evt); return; }
+	if (evt.GetId()==wxID_REDO) { OnUpdateValues(evt); return; }
 	for(int i=0;i<inspections.GetSize();i++) { 
-		if (evt.GetEventObject()==inspections[i].button) { Break(i); return; }
+		if (evt.GetEventObject()==inspections[i].button) { Break(i); Resize(true); return; }
 	}
 }
 
@@ -118,13 +118,22 @@ void mxRealTimeInspectionEditor::OnText (wxCommandEvent & evt) {
 	}
 }
 
-void mxRealTimeInspectionEditor::Resize ( ) {
+void mxRealTimeInspectionEditor::Resize(bool only_grow_h) {
+	wxSize old_size = GetSize();
 	Fit(); int w=0,h=GetSize().GetHeight(); 
-	for(int i=0;i<inspections.GetSize();i++) { 
-		wxSize sz = inspections[i].label->GetSize();
-		if (sz.GetWidth()>w) w=sz.GetWidth();
+	
+	if  (only_grow_h) {
+		if (h>old_size.GetHeight()) {
+			SetSize(ClientToWindowSize(wxSize(old_size.GetWidth(),h)));
+		}
+	} else {
+		
+		for(int i=0;i<inspections.GetSize();i++) { 
+			wxSize sz = inspections[i].label->GetSize();
+			if (sz.GetWidth()>w) w=sz.GetWidth();
+		}
+		SetSize(ClientToWindowSize(wxSize(w+100,h)));
 	}
-	SetSize(ClientToWindowSize(wxSize(w+200,h)));
 }
 
 void mxRealTimeInspectionEditor::OnDIError (DebuggerInspection * di) {
@@ -154,20 +163,18 @@ void mxRealTimeInspectionEditor::OnDIOutOfScope (DebuggerInspection * di) {
 
 // none of this seems to work if gdb is stopped without a breakpoint (so it stops 
 // but do not now where, evaluations gives old value or nothing)
-//void mxRealTimeInspectionEditor::OnUpdateValues (wxCommandEvent & evt) {
-//	if (!debug->IsPaused()) {
-//		class OnPauseUpdateRTIEditor : public DebugManager::OnPauseAction {
-//			mxRealTimeInspectionEditor *win;
-//		public:
-//			OnPauseUpdateRTIEditor(mxRealTimeInspectionEditor *w) : win(w) {}
-//			void Do() /*override*/ { wxCommandEvent evt; win->OnUpdateValues(evt); }
-//			bool Invalidate(void *p) /*override*/ { return win==p; }
-//		};
-//	}
-//	for(int i=0;i<inspections.GetSize();i++) { 
-//		if (inspections[i].text) 
-//			inspections[i].text->SetValue( inspections[i].di->ForceVOEvaluation() );
-//	}
-//
-//}
+void mxRealTimeInspectionEditor::OnUpdateValues (wxCommandEvent & evt) {
+	if (!debug->IsPaused()) {
+		class OnPauseUpdateRTIEditor : public DebugManager::OnPauseAction {
+			mxRealTimeInspectionEditor *win;
+		public:
+			OnPauseUpdateRTIEditor(mxRealTimeInspectionEditor *w) : win(w) {}
+			void Do() /*override*/ { wxCommandEvent evt; win->OnUpdateValues(evt); }
+			bool Invalidate(void *p) /*override*/ { return win==p; }
+		};
+		debug->PauseFor(new OnPauseUpdateRTIEditor(this));
+	} else {
+		inspections[0].di->ForceVOUpdate();
+	}
+}
 

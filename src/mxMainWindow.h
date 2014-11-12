@@ -204,7 +204,7 @@ public:
 	void OnDebugStepIn (wxCommandEvent &event);
 	void OnDebugStepOut (wxCommandEvent &event);
 	void OnDebugStepOver (wxCommandEvent &event);
-//	void OnDebugUpdateInspections (wxCommandEvent &event);
+	void OnDebugUpdateInspections (wxCommandEvent &event);
 	void OnDebugInspect (wxCommandEvent &event);
 	void OnDebugThreadList (wxCommandEvent &event);
 	void OnDebugBacktrace (wxCommandEvent &event);

@@ -225,7 +225,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_GDB_COMMAND, mxMainWindow::OnDebugGdbCommand)
 	EVT_MENU(mxID_DEBUG_THREADLIST, mxMainWindow::OnDebugThreadList)
 	EVT_MENU(mxID_DEBUG_BACKTRACE, mxMainWindow::OnDebugBacktrace)
-//	EVT_MENU(mxID_DEBUG_UPDATE_INSPECTIONS, mxMainWindow::OnDebugUpdateInspections)
+	EVT_MENU(mxID_DEBUG_UPDATE_INSPECTIONS, mxMainWindow::OnDebugUpdateInspections)
 	EVT_MENU(mxID_DEBUG_INSPECT, mxMainWindow::OnDebugInspect)
 	EVT_MENU(mxID_DEBUG_STOP, mxMainWindow::OnDebugStop)
 	EVT_MENU(mxID_DEBUG_PAUSE, mxMainWindow::OnDebugPause)
@@ -3252,15 +3252,15 @@ void mxMainWindow::OnDebugStop ( wxCommandEvent &event ) {
 		debug->Stop();
 }
 
-//void mxMainWindow::OnDebugUpdateInspections ( wxCommandEvent &event ) {
-//	if (!debug->IsDebugging()) return;
-//	if (debug->IsPaused()) debug->UpdateInspections();
-//	class OnPauseUpdateInspections : public DebugManager::OnPauseAction {
-//	public:
-//		void Do() { debug->UpdateInspections(); }
-//	};
-//	debug->PauseFor(new OnPauseUpdateInspections());
-//}
+void mxMainWindow::OnDebugUpdateInspections ( wxCommandEvent &event ) {
+	if (!debug->IsDebugging()) return;
+	if (debug->IsPaused()) debug->UpdateInspections();
+	class OnPauseUpdateInspections : public DebugManager::OnPauseAction {
+	public:
+		void Do() { debug->UpdateInspections(); }
+	};
+	debug->PauseFor(new OnPauseUpdateInspections());
+}
 
 void mxMainWindow::OnDebugInspect ( wxCommandEvent &event ) {
 	if (config->Init.autohiding_panels) {
