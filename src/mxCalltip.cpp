@@ -34,7 +34,7 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 		while (entries[i].GetWrapPoint(wi)) {
 			int j=wi.from, l=wi.to, j0=wi.from, 
 				cur_x=2+wi.indent*char_w;
-			int bl = entries[i].bold_line.Len();
+			int bl = entries[i].bold_line.Len(); if (bl>l) bl=l;
 			while (j<bl && entries[i].bold_line[j]==' ') j++;
 			if (j>=bl) {
 				dc.DrawText(entries[i].line.Mid(j0,l-j0),cur_x,cur_y);

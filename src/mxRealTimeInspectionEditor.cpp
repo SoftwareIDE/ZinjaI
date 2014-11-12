@@ -29,7 +29,7 @@ mxRealTimeInspectionEditor::mxRealTimeInspectionEditor(const wxString &expressio
 	sizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
 	
 	Add(0,0,di); if (inspections[0].button) Break(0);
-	SetSizer(sizer); sizer->Layout(); Resize(false);
+	SetSizer(sizer); Layout(); Resize(false);
 	Show();
 }
 
@@ -119,9 +119,10 @@ void mxRealTimeInspectionEditor::OnText (wxCommandEvent & evt) {
 }
 
 void mxRealTimeInspectionEditor::Resize(bool only_grow_h) {
-	wxSize old_size = GetSize();
-	Fit(); int w=0,h=GetSize().GetHeight(); 
-	
+	wxSize old_size = WindowToClientSize(GetSize());
+	GetSizer()->RecalcSizes();
+	wxSize fit_size = GetSizer()->ComputeFittingClientSize(this);
+	int w=0,h=fit_size.GetHeight(); 
 	if  (only_grow_h) {
 		if (h>old_size.GetHeight()) {
 			SetSize(ClientToWindowSize(wxSize(old_size.GetWidth(),h)));
