@@ -389,7 +389,7 @@ private:
 			dit_type = DIT_VARIABLE_OBJECT;
 			if (!SetupChildInspection()) {
 				if (vo_value_format!=GVF_NATURAL) VOSetFormat();
-				VOEvaluate();
+//				VOEvaluate(); // no es necesario, el create ya da un value
 			}
 //			if (is_frozen) VOSetFrozen();
 			/*else */GenerateEvent(&myDIEventHandler::OnDICreated);
