@@ -26,7 +26,7 @@ mxInspectionHistory::mxInspectionHistory(wxString expression, bool is_frameless)
 	wxSize sz(100,150);
 	log_mode = 1;
 	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE,this,false))->Init();
-	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Name("inspection_print").Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
+	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
 	main_window->aui_manager.Update();	
 }
 

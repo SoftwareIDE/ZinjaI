@@ -225,7 +225,7 @@ public:
 	bool DeleteBreakPoint(BreakPointInfo *_bpi);
 	wxString GetValueFromAns(wxString ans, wxString key, bool crop = false, bool fix_slash=false);
 	wxString GetSubValueFromAns(wxString ans, wxString key1, wxString key2, bool crop=false, bool fix_slash=false);
-	wxString InspectExpression(wxString var, bool pretty=false);
+	wxString InspectExpression(wxString var, bool full=false);
 	wxString WaitAnswer();
 private:
 	bool backtrace_shows_args; ///< determine wheter backtrace table should show an extra column with arguments (with values) for each function in the stack
@@ -284,7 +284,7 @@ public:
 	bool SetSignalHandling(SignalHandlingInfo &si, int i=-1);
 	
 	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print elements ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
-	void SetFullOutput(bool on=false);
+	void SetFullOutput(bool on=false, bool force=false);
 	
 	/// @brief muestra un mensaje de alerta/ayuda cuando no se pudo colocar un breakpoint
 	void ShowBreakPointLocationErrorMessage(BreakPointInfo *_bpi);

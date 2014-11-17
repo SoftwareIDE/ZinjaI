@@ -31,6 +31,7 @@ void DebuggerInspection::UpdateAllVO(const wxString &voname) {
 	struct update { wxString name,value,in_scope,new_type,new_num_children; };
 	
 	// consulta cuales vo cambiaron
+	debug->SetFullOutput(false);
 	wxString s = debug->SendCommand("-var-update --all-values ",voname);
 	for(unsigned int i=6,l=s.Len();i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
 		if (s[i]=='n' && s[i+1]=='a' && s[i+2]=='m' && s[i+3]=='e' && s[i+4]=='=') { // por cada "name=" empieza un vo...

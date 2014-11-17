@@ -209,7 +209,7 @@ void mxCompiler::UnSTD(wxString &line) {
 		}
 		int pos_last_igual=p0; 
 		int pos_igual=0; // posición donde encuentra un = que corresponda a esa lista de argumentos
-		while ((pos_igual=line.SubString(pos_last_igual+1,p1).Find("="))!=wxNOT_FOUND) {
+		while (pos_igual<p1 && (pos_igual=line.SubString(pos_last_igual+1,p1).Find("="))!=wxNOT_FOUND) {
 			pos_igual+=pos_last_igual+1; // para que quede como pos absoluta
 			pos_last_igual=pos_igual;
 			

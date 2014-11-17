@@ -733,23 +733,11 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi, bool quiet) {
 	return id;
 }
 
-wxString DebugManager::InspectExpression(wxString var, bool pretty) {
+wxString DebugManager::InspectExpression(wxString var, bool full) {
 	if (waiting || !debugging) return "";
-//	if (!pretty) {
-		if (var.StartsWith(">")) return GetMacroOutput(var.Mid(1));
-		return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
-//	} else {
-//		SendCommand("-gdb-set print pretty on");
-//		wxString ret = GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
-//		SendCommand("-gdb-set print pretty off");
-//		return ret;
-//	}
-//	wxString ret = GetValueFromAns( SendCommand(wxString(_T("-data-evaluate-expression "))<<var),_T("value") ,true);
-//	if (ret.Mid(0,2)==_T("\\\"") && ret.Mid(ret.Len()-2,2)==_T("\\\"")) {
-//		ret[ret.Len()-2]='\"';
-//		return ret.Mid(1,ret.Len()-2);
-//	}
-//	return ret;
+	SetFullOutput(full);
+	if (var.StartsWith(">")) return GetMacroOutput(var.Mid(1));
+	return GetValueFromAns( SendCommand(_T("-data-evaluate-expression "),mxUT::EscapeString(var,true)),_T("value") ,true,true);
 }
 
 void DebugManager::SetBacktraceShowsArgs(bool show) {
@@ -1838,14 +1826,12 @@ bool DebugManager::SelectThread(long thread_id) {
 	return true;
 }
 
-void DebugManager::SetFullOutput (bool on) {
-	if (on) {
-		SendCommand(_T("set print repeats 0"));
-		SendCommand(_T("set print elements 0"));
-	} else {
-		SendCommand(_T("set print repeats 100"));
-		SendCommand(_T("set print elements 100"));
-	}
+void DebugManager::SetFullOutput (bool on, bool force) {
+	static bool is_full=false;
+	if (!force&&is_full==on) return;
+	if (on) SendCommand("set print elements 0");
+	else SendCommand("set print elements 100"); /// @todo: put this number in preferences
+	is_full=on;
 }
 
 void DebugManager::ShowBreakPointLocationErrorMessage (BreakPointInfo *_bpi) {
@@ -1986,7 +1972,9 @@ void DebugManager::Start_ConfigureGdb ( ) {
 	}
 	// otras configuraciones varias
 	if (!config->Debug.auto_solibs) SendCommand("set auto-solib-add off");
-	SetFullOutput(false);
+//	SendCommand("set print addr off"); // necesito las direcciones para los helpers de los arreglos
+	SendCommand(_T("set print repeats 0"));
+	SetFullOutput(false,true);
 	// reiniciar sistema de inspecciones
 	DebuggerInspection::OnDebugStart();
 }

@@ -4889,7 +4889,7 @@ void mxMainWindow::OnDebugSetSignals (wxCommandEvent & event) {
 
 void mxMainWindow::OnDebugGdbCommand (wxCommandEvent & event) {
 	mxGdbCommandsPanel *gdb_cmd = new mxGdbCommandsPanel();
-	aui_manager.AddPane(gdb_cmd, wxAuiPaneInfo().Name("gdb_command").Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("gdb").Show());
+	aui_manager.AddPane(gdb_cmd, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("gdb").Show());
 	aui_manager.Update();
 	gdb_cmd->SetFocus();
 }

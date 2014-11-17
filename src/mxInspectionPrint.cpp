@@ -18,7 +18,7 @@ mxInspectionPrint::mxInspectionPrint(wxString expression, bool is_frameless) : w
 	SetSizer(sizer);
 	wxSize sz(150,50);
 	
-	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE,this,false))->Init();
+	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE|DIF_FULL_OUTPUT,this,false))->Init();
 	
 	wxString s = di->GetValue();
 	if (s.Len()) {
@@ -37,7 +37,7 @@ mxInspectionPrint::mxInspectionPrint(wxString expression, bool is_frameless) : w
 			sz = wxSize(w*cs,h*cs+h0);
 		}
 	}	
-	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Name("inspection_print").Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
+	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
 	main_window->aui_manager.Update();
 }
 

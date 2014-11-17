@@ -1,7 +1,6 @@
+	* revisar el DIF_FULL_OUTPUT para tablas, y que pasa cuando el arreglo es char*
 
 	* IMPORTANTE: buscar todos los #warning
-	
-	* IMPORTANTE: ver si las inspecciones abrevian o no arreglos de muchos elementos (el set print repeat de gdb)
 	
 bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 

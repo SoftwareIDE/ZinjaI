@@ -26,6 +26,7 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 #define DIF_DONT_USE_HELPER 8
 #define DIF_AUTO_IMPROVE 16
 #define DIF_IS_INTERNAL_HELPER 32
+#define DIF_FULL_OUTPUT 64
 
 #ifdef _INSPECTION_LOG
 #include <sstream>
@@ -318,9 +319,13 @@ private:
 		// si hay una mejora automática para este tipo
 		if (flags.Get(DIF_AUTO_IMPROVE)&&AutoImprove()) return true;
 		// si no tiene hijos, no necesita la inspeccion auxiliar
-		if (!IsCompound()) return false;
+		if (!IsCompound() && !flags.Get(DIF_FULL_OUTPUT)) return false;
 		// si tiene hijos, intentar crear la expresion auxiliar
-		helper = /*DebuggerInspection::*/Create(wxString("&(")<<expression<<")",FlagIf(DIF_FRAMELESS,IsFrameless())|DIF_IS_INTERNAL_HELPER|DIF_DONT_USE_HELPER,new myCompoundHelperDIEH(this),true);
+		helper = /*DebuggerInspection::*/Create( 
+			wxString("&(")<<expression<<")",
+			FlagIf(DIF_FRAMELESS,IsFrameless()) | FlagIf(DIF_FULL_OUTPUT,flags.Get(DIF_FULL_OUTPUT)) 
+			| DIF_IS_INTERNAL_HELPER | DIF_DONT_USE_HELPER,
+			new myCompoundHelperDIEH(this), true );
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		helper->MakeEvaluationExpressionForParent(this);
 		helper->flags.Set(DIF_REQUIRES_MANUAL_UPDATE);
@@ -328,19 +333,22 @@ private:
 		return true;
 	}
 	
-public:
-	/// for automatic inspections improvement, provided by client
+	/// for automatic inspections improvement
 	bool SetHelperInspection(const wxString &new_expression) {
 		__debug_log_method__;
 		// si habia, borrar la inspeccion auxiliar previa
 		if (helper) DeleteHelper();
 		// intentar crear la expresion auxiliar
-		helper = /*DebuggerInspection::*/Create(new_expression,FlagIf(DIF_FRAMELESS,IsFrameless()),new myUserHelperDIEH(this),true);
+		helper = /*DebuggerInspection::*/Create(
+			new_expression,
+			FlagIf(DIF_FRAMELESS,IsFrameless()) | FlagIf(DIF_FULL_OUTPUT,flags.Get(DIF_FULL_OUTPUT)),
+			new myUserHelperDIEH(this), true );
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		gdb_value = helper->gdb_value; // Create does a first evaluation
 		return true;
 	}
 	
+public:
 	void DeleteHelperInspection() {
 		if (helper) DeleteHelper();
 		UpdateValue(true);
@@ -604,7 +612,7 @@ public:
 		if (dit_type==DIT_VARIABLE_OBJECT) { // si es vo.... 
 			if (helper) return helper->UpdateValue(true); // ...o bien tiene un helper (y el evento del helper actualiza this)...
 			if (flags.Get(DIF_IS_INTERNAL_HELPER)) { // ...o bien es el helper de un compuesto...
-				gdb_value = debug->InspectExpression(expression,false);
+				gdb_value = debug->InspectExpression(expression,flags.Get(DIF_FULL_OUTPUT));
 				DebuggerInspection *helper_parent = reinterpret_cast<myCompoundHelperDIEH*>(consumer)->helper_parent;
 				if (helper_parent->gdb_value!=gdb_value) {
 					helper_parent->gdb_value=gdb_value;

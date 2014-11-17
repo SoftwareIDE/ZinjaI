@@ -19,7 +19,7 @@ mxInspectionBaloon::mxInspectionBaloon (const wxPoint &pos, const wxString & exp
 	sizer->Add(text,sizers->Exp0);
 	// try to use automatic inspection improving, and show full value in root node
 	if (DebuggerInspection::TryToImproveExpression(type,new_expr,expression))
-		exp->SetItemText(exp->GetRootItem(),expression+": "+debug->InspectExpression(new_expr,true));
+		exp->SetItemText(exp->GetRootItem(),expression+": "+debug->InspectExpression(new_expr));
 	else
 		exp->SetItemText(exp->GetRootItem(),expression+": "+value);
 	// deselect root node, so we don't see it with blue background

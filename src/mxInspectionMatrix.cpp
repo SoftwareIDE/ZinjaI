@@ -35,7 +35,7 @@ mxInspectionMatrix::mxInspectionMatrix(const wxString &expression, bool is_frame
 	wxSize sz(300,200);
 	SetSizer(mySizer);
 	
-	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE,this,false))->Init();
+	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE|DIF_FULL_OUTPUT,this,false))->Init();
 	// si la expresion correspondía a un puntero, preguntar cuantos elementos mostrar
 	if (!di->IsSimpleType() && !di->IsCompound()) {
 		wxString sn = mxGetTextFromUser(LANG(IMATRIX_ENTER_NUM,"Ingrese la cantidad de elementos a mostrar"),expression,"10",main_window);
@@ -47,7 +47,7 @@ mxInspectionMatrix::mxInspectionMatrix(const wxString &expression, bool is_frame
 		}
 	}
 	
-	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Name("inspection_matrix").Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
+	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
 	main_window->aui_manager.Update();
 	
 	grid->SetRowLabelSize(wxGRID_AUTOSIZE);

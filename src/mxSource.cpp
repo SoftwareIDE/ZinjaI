@@ -2952,7 +2952,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 				if (s3<s2) s=s3;
 			}
 			wxString key = GetTextRange(s,e);
-			wxString ans = debug->InspectExpression(key,true);
+			wxString ans = debug->InspectExpression(key);
 			if (ans.Len()) {
 				wxRect r=GetScreenRect();
 				int x=event.GetX()+r.GetLeft(),y=event.GetY()+r.GetTop();
