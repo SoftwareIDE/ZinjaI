@@ -65,6 +65,8 @@ void mxLocalsGrid::Update () {
 	
 	BeginBatch();
 	
+	debug->SetFullOutput(false);
+	
 	wxString s = debug->SendCommand(command," --all-values");
 	if (s.StartsWith("^error") && s.Contains("Undefined MI command")) {
 		// fallback to deprecated command if gdb is old

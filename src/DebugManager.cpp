@@ -811,6 +811,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame) {
 	
 	// completar la columna de argumentos si es que está visible
 	if (backtrace_shows_args) { 
+		debug->SetFullOutput(false);
 		wxString args ,args_list = cant_levels?SendCommand("-stack-list-arguments 1 0 ",cant_levels-1):"";
 		const wxChar * chag = args_list.c_str();
 	//cerr<<"CHAG="<<endl<<chag<<endl<<endl;

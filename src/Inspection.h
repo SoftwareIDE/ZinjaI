@@ -382,7 +382,7 @@ private:
 			else if (type[i]<'0'||type[i]>'9') break;
 		}
 //		if (type[pbeg-1]=='&') { pbeg--; if (type[pbeg-1]==' ') pbeg--; } // por si es referencia (van las dos copias de este if??)
-		wxString mtype = type.Mid(0,pbeg);
+		wxString mtype = type.Mid(0,pbeg); mtype.Replace("&","",true);
 		while (mtype.Contains("::") && debug->SendCommand(wxString("p (")<<mtype<<"*)0x0").StartsWith("^error")) // gdb seems to simplify some nested typenames and the does not recognize them with their full scoped name
 			mtype=mtype.AfterFirst(':').Mid(1);
 		if (pbeg!=-1 && pbeg+1<pend) // arreglo
