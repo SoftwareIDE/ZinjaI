@@ -912,17 +912,17 @@ bool CodeHelper::LoadData(wxString index) {
 				char c;
 				while ( ! ((c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9')) )
 					pos--;
-				while (pos>0 && ((c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ))
+				while (pos>=0 && ((c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ))
 					pos--;
 				name=name.Mid(pos+1);
-				while (pos>0 && str[pos]==' ')
+				while (pos>=0 && str[pos]==' ')
 					pos--;
 				wxString type = str.Mid(0,pos+1);
-				while (pos>0 && (str[pos]==' ' || str[pos]=='*' || str[pos]=='&') )
+				while (pos>=0 && (str[pos]==' ' || str[pos]=='*' || str[pos]=='&') )
 					pos--;
-				while (pos>0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ))
+				while (pos>=0 && ( (c=str[pos])=='_' || ((c|32)>='a' && (c|32)<='z') || (c>='0' && c<='9') ))
 					pos--;
-				if (pos!=0)
+//				if (pos!=0)
 					pos++;
 				type=type.Mid(pos);
 				if (type.Len()) {
