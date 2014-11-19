@@ -990,6 +990,16 @@ void mxInspectionGrid::OnSetWatch (wxCommandEvent & evt) {
 }
 
 void mxInspectionGrid::OnDerefPtr (wxCommandEvent & evt) {
-	
+	DebugManager::TemporaryScopeChange scope;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++) {
+		if (inspections[sel[i]].IsNull()) continue;
+		DebuggerInspection *di = inspections[sel[i]].di;
+		if (di->IsPointer()) {
+			ModifyExpression(sel[i],
+				wxString("*")+DebuggerInspection::RewriteExpressionForBreaking(di->GetExpression()),
+				di->IsFrameless(),true);
+		}
+	}
 }
 
