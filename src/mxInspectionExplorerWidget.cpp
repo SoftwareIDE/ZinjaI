@@ -8,6 +8,7 @@
 #include "mxInspectionExplorerDialog.h"
 #include "mxInspectionHistory.h"
 #include "mxRealTimeInspectionEditor.h"
+#include "mxMessageDialog.h"
 
 BEGIN_EVENT_TABLE(mxInspectionExplorerWidget,wxTreeCtrl)
 	EVT_TREE_ITEM_EXPANDING(wxID_ANY,mxInspectionExplorerWidget::OnItemExpanding)
@@ -26,6 +27,10 @@ BEGIN_EVENT_TABLE(mxInspectionExplorerWidget,wxTreeCtrl)
 	EVT_MENU(mxID_INSPECTION_COPY_TYPE,mxInspectionExplorerWidget::OnCopyType)
 	EVT_MENU(mxID_INSPECTION_COPY_EXPRESSION,mxInspectionExplorerWidget::OnCopyExpression)
 	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxInspectionExplorerWidget::OnAddToInspectionsGrid)
+	
+	EVT_MENU(mxID_INSPECTION_SET_WATCH_WRITE,mxInspectionExplorerWidget::OnSetWatch)
+	EVT_MENU(mxID_INSPECTION_SET_WATCH_READ,mxInspectionExplorerWidget::OnSetWatch)
+	EVT_MENU(mxID_INSPECTION_SET_WATCH_BOTH,mxInspectionExplorerWidget::OnSetWatch)
 	
 END_EVENT_TABLE()
 
@@ -183,6 +188,12 @@ void mxInspectionExplorerWidget::OnItemPopup (wxTreeEvent & event) {
 	menu.Append(mxID_INSPECTION_SHOW_IN_RTEDITOR,LANG(INSPECTGRID_POPUP_SHOW_IN_RTEDITOR,"Editar durante la ejecución..."));
 	menu.Append(mxID_INSPECTION_SHOW_IN_HISTORY,LANG(INSPECTGRID_POPUP_SHOW_IN_HISTORY,"Generar historial de valores..."));
 	
+	wxMenu *watch = new wxMenu;
+	watch->Append(mxID_INSPECTION_SET_WATCH_READ,LANG(WATCHPOINT_READ,"Lectura"));
+	watch->Append(mxID_INSPECTION_SET_WATCH_WRITE,LANG(WATCHPOINT_WRITE,"Escritura"));
+	watch->Append(mxID_INSPECTION_SET_WATCH_BOTH,LANG(WATCHPOINT_BOTH,"Lectura/Escritura"));
+	menu.AppendSubMenu(watch,LANG(INSPECTGRID_POPUP_SET_READ,"Agregar como watchpoint"));
+	
 	menu.AppendSeparator();
 	for(int i=0;i<main_window->inspection_ctrl->GetTabsCount();i++) {
 		if (main_window->inspection_ctrl->PageIsInspectionsGrid(i))
@@ -267,5 +278,17 @@ void mxInspectionExplorerWidget::DeleteChildrenInspections (int pos, bool destro
 	}
 	// eliminar la inspeccion de DebuggerInspection
 	if (destroy_root) di->Destroy();
+}
+
+void mxInspectionExplorerWidget::OnSetWatch (wxCommandEvent & evt) {
+	bool read = evt.GetId()!=mxID_INSPECTION_WATCH_WRITE;
+	bool write = evt.GetId()!=mxID_INSPECTION_WATCH_READ;
+	mxIEWAux aux = inspections[ inspections.Find(GetSelection()) ];
+	wxString expr = aux.di->GetExpression();
+	wxString num =debug->AddWatchPoint(expr,read,write);
+	if (!num.IsEmpty())
+		mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_OK,"Watchpoint insertado correctamente."),num+": "+expr,mxMD_OK|mxMD_INFO).ShowModal();
+	else
+		mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_ERROR,"Error al insertar watchpoint."),expr,mxMD_OK|mxMD_ERROR).ShowModal();
 }
 

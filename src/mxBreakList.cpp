@@ -156,12 +156,16 @@ void mxBreakList::OnDeleteAllButton(wxCommandEvent &evt) {
 }
 
 void mxBreakList::RemoveBreakPoint(int _row) {
-	BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[_row],false);
-	if (!bpi) return;
-	if (debug->IsDebugging()) {
-		if (!debug->DeleteBreakPoint(bpi)) return;
+	if (ids[_row]==-1) { // es watchpoint?
+		if (!debug->DeleteWatchPoint(grid->GetCellValue(_row,BL_COL_WHY).BeforeFirst(':'))) return;
 	} else {
-		delete bpi;
+		BreakPointInfo *bpi=BreakPointInfo::FindFromNumber(ids[_row],false);
+		if (!bpi) return;
+		if (debug->IsDebugging()) {
+			if (!debug->DeleteBreakPoint(bpi)) return;
+		} else {
+			delete bpi;
+		}
 	}
 	ids.erase(ids.begin()+_row);
 	grid->DeleteRows(_row,1);
@@ -169,7 +173,6 @@ void mxBreakList::RemoveBreakPoint(int _row) {
 
 void mxBreakList::OnDeleteButton(wxCommandEvent &evt) {
 	for (int r=int(grid->GetNumberRows())-1;r>=0;r--) {
-		if (ids[r]==-1) continue; // ignore watchpoints
 		for (unsigned int j=0;j<BL_COLS_COUNT;j++)
 			if (grid->IsInSelection(r,j)) {
 				RemoveBreakPoint(r); 
@@ -195,7 +198,7 @@ void mxBreakList::OnGotoButton(wxCommandEvent &evt) {
 
 
 void mxBreakList::PopulateGrid ( ) {
-	grid->DeleteRows(0,grid->GetNumberRows()); ids.clear();
+	if (grid->GetNumberRows()) grid->DeleteRows(0,grid->GetNumberRows()); ids.clear();
 	
 	bool ask_debug=debug->CanTalkToGDB();
 	if (ask_debug) debug->PopulateBreakpointsList(this,true);

@@ -5,6 +5,7 @@
 #include <wx/ffile.h>
 #include <vector>
 #include <list>
+#include <map>
 using namespace std;
 
 #define BACKTRACE_SIZE 100
@@ -183,6 +184,12 @@ public:
 	bool ToggleInspectionFreeze(int n);
 	bool DoThat(wxString what);
 	void PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints);
+
+private:
+	map<wxString,wxString> watchpoints;
+public:
+	wxString AddWatchPoint(const wxString &expression, bool read, bool write); 
+	bool DeleteWatchPoint(const wxString &num);
 	
 	/** @brief Inicia el depurador para explorar un archivo core de GNU/Linux **/
 	bool LoadCoreDump(wxString core_file, mxSource *source);

@@ -295,6 +295,7 @@ void DebugManager::ResetDebuggingStuff() {
 	current_thread_id = -1; current_frame_id = -1;
 	if (on_pause_action) delete on_pause_action;
 	on_pause_action = NULL;
+	watchpoints.clear();
 }
 
 
@@ -529,31 +530,13 @@ void DebugManager::HowDoesItRuns() {
 		} else if (how==_T("watchpoint-trigger") || how==_T("access-watchpoint-trigger") || how==_T("read-watchpoint-trigger")) {
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text=LANG(DEBUG_STATUS_WATCH,"El programa se interrumpio por un WatchPoint: ");
-			long l;
-			GetValueFromAns(ans.AfterFirst('{'),"number",true).ToLong(&l);
-#warning Reestablecer funcionalidad de los watchpoints
-//			for (int i=0;i<inspections_count;i++) {
-//				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
-//					state_text<<inspections[i].expr;
-//					inspection_grid->SelectRow(i);
-//					break;
-//				}
-//			}
+			wxString num = GetValueFromAns(ans.AfterFirst('{'),"wpnum",true);
+			state_text << num << ": " << watchpoints[num];
 		} else if (how==_T("watchpoint-scope")) {
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text=LANG(DEBUG_STATUS_WATCH_OUT,"El WatchPoint ha dejado de ser valido: ");
-			long l;
-			GetValueFromAns(ans,_T("wpnum"),true).ToLong(&l);
-#warning Reestablecer funcionalidad de los watchpoints
-//			for (int i=0;i<inspections_count;i++) {
-//				if (inspections[i].watch_read && inspections[i].watch_write && inspections[i].watch_num==l) {
-//					state_text<<inspections[i].expr;
-//					inspections[i].watch_read = inspections[i].watch_write = false;
-////					inspection_grid->SetCellValue(i,IG_COL_WATCH,_T("no"));
-//					inspection_grid->SelectRow(i);
-//					break;
-//				}
-//			}
+			wxString num = GetValueFromAns(ans.AfterFirst('{'),"wpnum",true);
+			state_text << num << ": " << watchpoints[num];
 		} else if (how==_T("location-reached")) {
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text=LANG(DEBUG_STATUS_LOCATION_REACHED,"El programa alcanzo la ubicacion seleccionada");
@@ -663,7 +646,7 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 		return false;
 	} else {
 		// decirle a gdb que lo saque
-		SendCommand(_T("-break-delete "),_bpi->gdb_id);
+		SendCommand("-break-delete ",_bpi->gdb_id);
 		// sacarlo de la memoria y las listas de zinjai
 		delete _bpi;
 	}
@@ -1480,83 +1463,6 @@ bool DebugManager::DoThat(wxString what) {
 }
 
 
-//bool DebugManager::GetArgs (wxArrayString &array, wxString level) {
-//	if (!debugging || waiting) return false;
-//	wxString args_list = SendCommand(_T("-stack-list-arguments 0 "),level+" "+level);
-//	const wxChar * chag = args_list.c_str();
-//	bool comillas = false;
-//	int i=args_list.Find('[')+1;
-//	while (chag[i]!='[') 
-//		i++; 
-//	int p=++i;
-//	while (chag[i]!=']' && !comillas) {
-//		if (chag[i]=='\"' && !chag[i-1]=='\\')
-//			comillas=!comillas;
-//		i++;
-//	}
-//	wxString s(args_list.SubString(p,i-1));
-//	wxString args, sub;
-//	int j=0, l=s.Len();
-//	const wxChar * choa = s.c_str();
-//	while (true) {
-//		while ( j<l && !(choa[j]=='n' && choa[j+1]=='a' && choa[j+2]=='m' && choa[j+3]=='e' && choa[j+4]=='=') )
-//			j++;
-//		if (j==l) break;
-//		j+=6;
-//		p=j;
-//		while (choa[j]!='\"')
-//			j++;
-//		array.Add(s.SubString(p,j-1));
-//	}
-//	return true;
-//}
-
-//bool DebugManager::GetLocals (wxArrayString &array, wxString level) {
-//	if (!debugging || waiting) return false;
-//	wxString args_list = SendCommand(_T("-stack-list-locals 0"));
-//	const wxChar * choa = args_list.c_str();
-//	int j=args_list.Find('[')+1, l= args_list.Len();
-//	while (true) {
-//		while ( j<l && !(choa[j]=='n' && choa[j+1]=='a' && choa[j+2]=='m' && choa[j+3]=='e' && choa[j+4]=='=') )
-//			j++;
-//		if (j==l) break;
-//		j+=6;
-//		int p=j;
-//		while (choa[j]!='\"')
-//			j++;
-//		array.Add(args_list.SubString(p,j-1));
-//	}
-//	return true;
-//}
-
-//bool DebugManager::ModifyInspectionWatch(int num, bool read, bool write) {
-//	if (waiting || !debugging) return false;
-//	if (num>=inspections_count) return false;
-//	inspectinfo &ii = inspections[num];
-//	if (read!=ii.watch_read || write!=ii.watch_write) { // si cambio
-//		// borrar el anterior
-//		if (ii.watch_read || ii.watch_write)
-//			SendCommand(_T("-break-delete "),ii.watch_num);
-//		ii.watch_read=ii.watch_write=false;
-//		// hacer el nuevo si es necesario
-//		if (read || write) {
-//			wxString cmd(_T("-break-watch "));
-//			if (read && write) cmd<<_T("-a ");
-//			else if (read) cmd<<_T("-r ");
-//			wxString ans = GetValueFromAns(SendCommand(cmd,mxUT::EscapeString(ii.expr,true)).AfterFirst('{'),_T("number"),true);
-//			if (ans.Len()) {
-//				long l;
-//				ans.ToLong(&l);
-//				ii.watch_num=l;
-//				ii.watch_read=read;
-//				ii.watch_write=write;
-//			} else
-//				return false;
-//		}
-//	}
-//	return true;
-//}
-
 /**
 * @brief Agrega los breakpoints y watchpoints a la tabla de puntos de interrupcion
 **/
@@ -1578,14 +1484,14 @@ void DebugManager::PopulateBreakpointsList(mxBreakList *break_list, bool also_wa
 			grid->SetCellValue(cont,BL_COL_HIT,GetValueFromAns(item,_T("times"),true));
 			if (GetValueFromAns(item,_T("enabled"),true)==_T("y")) {
 				if (GetValueFromAns(item,_T("disp"),true)==_T("dis"))
-					grid->SetCellValue(cont,BL_COL_ENABLE,_T("una vez"));
+					grid->SetCellValue(cont,BL_COL_ENABLE,_T("once"));
 				else
-					grid->SetCellValue(cont,BL_COL_ENABLE,_T("habilitado"));
+					grid->SetCellValue(cont,BL_COL_ENABLE,_T("enabled"));
 			} else
-				grid->SetCellValue(cont,BL_COL_ENABLE,_T("deshabilitado"));
+				grid->SetCellValue(cont,BL_COL_ENABLE,_T("diabled"));
 			wxString fname = GetValueFromAns(item,_T("fullname"),true);
 			if (!fname.Len()) fname = GetValueFromAns(item,_T("file"),true);
-			grid->SetCellValue(cont,BL_COL_WHY,fname + _T(": linea ") +GetValueFromAns(item,_T("line"),true));
+			grid->SetCellValue(cont,BL_COL_WHY,fname + _T(": line ") +GetValueFromAns(item,_T("line"),true));
 			grid->SetCellValue(cont,BL_COL_COND,GetValueFromAns(item,_T("cond"),true));
 		} else if (also_watchpoints && type.Contains("watchpoint")) {
 			int cont=break_list->AppendRow(-1);
@@ -1597,14 +1503,11 @@ void DebugManager::PopulateBreakpointsList(mxBreakList *break_list, bool also_wa
 				grid->SetCellValue(cont,BL_COL_TYPE,_T("w(l/e)"));
 			}
 			grid->SetCellValue(cont,BL_COL_HIT,GetValueFromAns(item,_T("times"),true));
-			grid->SetCellValue(cont,BL_COL_ENABLE,GetValueFromAns(item,_T("enabled"),true)==_T("y")?_T("Si"):_T("No"));
-			long l;
-			GetValueFromAns(item,_T("number"),true).ToLong(&l);
-#warning recuperar watchs
-//			for (int i=0, n=l;i<inspections_count;i++) {
-//				if ( (inspections[i].watch_read || inspections[i].watch_write) && inspections[i].watch_num==n)
-//					grid->SetCellValue(cont,BL_COL_WHY,inspections[i].expr);
-//			}
+			grid->SetCellValue(cont,BL_COL_ENABLE,GetValueFromAns(item,_T("enabled"),true)==_T("y")?_T("enabled"):_T("disabled"));
+			grid->SetCellValue(cont,BL_COL_WHY,
+				mxUT::UnEscapeString(GetValueFromAns(item,_T("number"),true)) + ": "
+				+GetValueFromAns(item,_T("what"),true)
+				);
 		}
 		item=GetNextItem(ans,p);
 	}
@@ -2001,5 +1904,20 @@ void DebugManager::InvalidatePauseEvent(void *ptr) {
 	if (!on_pause_action) return;
 	if (!on_pause_action->Invalidate(ptr)) return;
 	delete on_pause_action; on_pause_action=NULL;
+}
+
+/// @retval el numero id en gdb si lo agrego, "" si no pudo
+wxString DebugManager::AddWatchPoint (const wxString &expression, bool read, bool write) {
+	if (expression.IsEmpty()) return "";
+	wxString ans = SendCommand("-break-watch ",mxUT::EscapeString(expression));
+	if (!ans.StartsWith("^done")) return "";
+	wxString num = GetSubValueFromAns(ans,"wpt","number",true);
+	watchpoints[num] = expression;
+	return num;
+}
+
+bool DebugManager::DeleteWatchPoint (const wxString & num) {
+	wxString ans = SendCommand("-break-delete ",num);
+	return ans.StartsWith("^done");
 }
 

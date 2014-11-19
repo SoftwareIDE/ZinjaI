@@ -637,6 +637,7 @@ public:
 	// solo llamar a estas funciones si GetDbiType()==DIT_VARIABLE_OBJECT
 	bool IsSimpleType() { return num_children==0; } 
 	bool IsCompound() { return num_children!=0 && !value_type.EndsWith("*"); }
+	bool IsPointer() { return num_children==1 && value_type.EndsWith("*"); }
 	bool IsClass() { return IsCompound() && !value_type.EndsWith("]"); }
 	bool IsArray() { return IsCompound() && value_type.EndsWith("]"); }
 	long GetThreadID() { return thread_id; }

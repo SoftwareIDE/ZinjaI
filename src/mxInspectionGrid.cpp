@@ -11,6 +11,7 @@
 #include "mxInspectionsImprovingEditor.h"
 #include "mxInspectionHistory.h"
 #include "mxRealTimeInspectionEditor.h"
+#include "mxMessageDialog.h"
 using namespace std;
 
 #warning no se toma en cuenta config->Debug.use_colours_for_inspections
@@ -29,6 +30,10 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_HISTORY,mxInspectionGrid::OnShowInHistory)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxInspectionGrid::OnShowInText)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_RTEDITOR,mxInspectionGrid::OnShowInRTEditor)
+	EVT_MENU(mxID_INSPECTION_SET_WATCH_WRITE,mxInspectionGrid::OnSetWatch)
+	EVT_MENU(mxID_INSPECTION_SET_WATCH_READ,mxInspectionGrid::OnSetWatch)
+	EVT_MENU(mxID_INSPECTION_SET_WATCH_BOTH,mxInspectionGrid::OnSetWatch)
+	EVT_MENU(mxID_INSPECTION_DEREF_PTR,mxInspectionGrid::OnDerefPtr)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TABLE,mxInspectionGrid::OnShowInTable)
 	EVT_MENU(mxID_INSPECTION_EXPLORE,mxInspectionGrid::OnExploreExpression)
 	EVT_MENU(mxID_INSPECTION_COPY_VALUE,mxInspectionGrid::OnCopyValue)
@@ -38,10 +43,6 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_EXPLORE_ALL,mxInspectionGrid::OnExploreAll)
 	EVT_MENU(mxID_INSPECTION_CLEAR_ALL,mxInspectionGrid::OnClearAll)
 	EVT_MENU(mxID_INSPECTION_CLEAR_ONE,mxInspectionGrid::OnClearOne)
-//	EVT_MENU(mxID_INSPECTION_WATCH_NO,mxInspectionGrid::OnWatchNo)
-//	EVT_MENU(mxID_INSPECTION_WATCH_RW,mxInspectionGrid::OnWatchReadWrite)
-//	EVT_MENU(mxID_INSPECTION_WATCH_READ,mxInspectionGrid::OnWatchRead)
-//	EVT_MENU(mxID_INSPECTION_WATCH_WRITE,mxInspectionGrid::OnWatchWrite)
 	EVT_MENU(mxID_INSPECTION_FORMAT_NAT,mxInspectionGrid::OnFormatNatural)
 	EVT_MENU(mxID_INSPECTION_FORMAT_BIN,mxInspectionGrid::OnFormatBinary)
 	EVT_MENU(mxID_INSPECTION_FORMAT_DEC,mxInspectionGrid::OnFormatDecimal)
@@ -114,38 +115,6 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	InsertRows();
 	
 	mxGrid::SetRowSelectionMode();
-	
-//	EnableDragRowSize(false);
-	
-//	// la ayuda de wx dice que SetColMinimalAcceptableWidth(muy bajo) podría penalizar la performance cuando busca en que celda
-//	// clickeo el usuario segun las coordenadas de pantalla, pero asumo que como hay muy pocas columnas no debería notarse
-//	SetColMinimalAcceptableWidth(1);
-//	for (int i=0;i<IG_COLS_COUNT;i++)
-//		SetColMinimalWidth(i,GetColMinimalAcceptableWidth());
-//	
-//	cols_sizes[IG_COL_LEVEL]=8;
-//	cols_sizes[IG_COL_EXPR]=29;
-//	cols_sizes[IG_COL_TYPE]=12;
-//	cols_sizes[IG_COL_VALUE]=27;
-////	cols_sizes[IG_COL_FORMAT]=11;
-////	cols_sizes[IG_COL_WATCH]=12;
-//	old_size=1; for(int i=0;i<IG_COLS_COUNT;i++) old_size+=cols_sizes[i];
-//	cols_visibles=config->Cols.inspections_grid;
-////	cols_marginal=0;
-//	for (int i=0;i<IG_COLS_COUNT;i++)
-//		if (!cols_visibles[i]) {
-//			old_size-=int(cols_sizes[i]);
-//			cols_sizes[i]=-cols_sizes[i];
-//			SetColSize(i,GetColMinimalWidth(i));
-////			cols_marginal-=GetColMinimalWidth(i);
-//		}
-////	wxGridCellAttr *attr_format = new wxGridCellAttr;
-////	wxGridCellAttr *attr_watch = new wxGridCellAttr;
-////	attr_watch->SetEditor(new wxGridCellChoiceEditor(WXSIZEOF(inspect_watch_options),inspect_watch_options));
-////	attr_format->SetEditor(new wxGridCellChoiceEditor(WXSIZEOF(inspect_format_options),inspect_format_options));
-////	SetColAttr(IG_COL_WATCH,attr_watch);
-////	SetColAttr(IG_COL_FORMAT,attr_format);
-//	AddRow();
 	
 	SetDropTarget(new mxInspectionDropTarget(this));
 	SetColLabelSize(wxGRID_AUTOSIZE);
@@ -316,6 +285,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	wxMenu menu; 
 	if (sel_is_vo && di->IsClass()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
 	if (sel_is_vo && di->IsArray()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_ARRAY,"&Separar arreglo en elementos"));
+	if (sel_is_vo && di->IsPointer()) menu.Append(mxID_INSPECTION_DEREF_PTR,LANG(INSPECTGRID_POPUP_DEREF_PTR,"Desreferenciar puntero"));
 	wxMenu *extern_v = new wxMenu;
 		if (!sel_is_empty && (!sel_is_vo || !di->IsSimpleType())) extern_v->Append(mxID_INSPECTION_SHOW_IN_TABLE,LANG(INSPECTGRID_POPUP_SHOW_IN_TABLE,"Mostrar en &tabla separada..."));
 		if (!sel_is_empty) extern_v->Append(mxID_INSPECTION_SHOW_IN_TEXT,LANG(INSPECTGRID_POPUP_SHOW_IN_TEXT,"Mostrar en &ventana separada..."));
@@ -323,6 +293,15 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 		if (debug->IsDebugging() && debug->IsPaused() && !sel_is_empty && sel_is_vo) extern_v->Append(mxID_INSPECTION_SHOW_IN_RTEDITOR,LANG(INSPECTGRID_POPUP_SHOW_IN_RTEDITOR,"Editar durante la ejecución..."));
 		if (sel_is_vo) extern_v->Append(mxID_INSPECTION_EXPLORE,LANG(INSPECTGRID_POPUP_EXPLORE,"&Explorar datos..."));
 	if (extern_v->GetMenuItemCount()) menu.AppendSubMenu(extern_v,LANG(INSPECTGRID_EXTERN_VISUALIZATION,"Otras &visualizaciones")); else delete extern_v;
+	
+	if (!sel_is_empty) {
+		wxMenu *watch = new wxMenu;
+		watch->Append(mxID_INSPECTION_SET_WATCH_READ,LANG(WATCHPOINT_READ,"Lectura"));
+		watch->Append(mxID_INSPECTION_SET_WATCH_WRITE,LANG(WATCHPOINT_WRITE,"Escritura"));
+		watch->Append(mxID_INSPECTION_SET_WATCH_BOTH,LANG(WATCHPOINT_BOTH,"Lectura/Escritura"));
+		menu.AppendSubMenu(watch,LANG(INSPECTGRID_POPUP_SET_READ,"Agregar como watchpoint"));
+	}
+	
 	if (there_are_inspections) menu.Append(mxID_INSPECTION_EXPLORE_ALL,LANG(INSPECTGRID_POPUP_EXPLORE_ALL,"Explorar &todos los datos"));
 	if (sel_has_vo && !(sel_is_vo && !di->IsFrameless())) menu.Append(mxID_INSPECTION_RESCOPE,LANG(INSPECTGRID_POPUP_SET_CURRENT_FRAME,"Evaluar en el &ambito actual"));
 	if (sel_has_vo && !(sel_is_vo && di->IsFrameless())) menu.Append(mxID_INSPECTION_SET_FRAMELESS,wxString(LANG(INSPECTGRID_POPUP_SET_NO_FRAME,"&Independizar del ambito"))+"\tCtrl+I");
@@ -347,16 +326,6 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	else if (!clip_text.IsEmpty())
 		menu.Append(mxID_INSPECTION_FROM_CLIPBOARD,LANG1(INSPECTGRID_POPUP_COPY_FROM_CLIPBOARD_SINGLE,"Pegar Expresion Desde el &Portapapeles (\"<{1}>\")",Shorten(clip_text))+"\tCtrl+V");
 	if (!sel_is_empty) menu.Append(mxID_INSPECTION_CLEAR_ONE,wxString(LANG(INSPECTGRID_POPUP_DELETE,"Eliminar Inspeccion"))+"\tSupr");
-#warning restablecer funcionalidad de todo lo que este comentado
-//	if (sel_is_vo && di->IsSimpleType()) {
-//		wxMenu *submenu= new wxMenu; wxMenuItem *it[4];
-//		it[0] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_NO,LANG(INSPECTGRID_WATCH_NO,"no"));
-//		it[1] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_READ,LANG(INSPECTGRID_WATCH_READ,"lectura"));
-//		it[2] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_WRITE,LANG(INSPECTGRID_WATCH_WRITE,"escritura"));
-//		it[3] = submenu->AppendRadioItem(mxID_INSPECTION_WATCH_RW,LANG(INSPECTGRID_WATCH_READ_WRITE,"lectura y escritura"));
-//		it[(debug->inspections[selected_row].watch_read?1:0)+(debug->inspections[selected_row].watch_write?2:0)]->Check(true);
-//		menu.AppendSubMenu(submenu,LANG(INSPECTGRID_WATCH,"WatchPoint"));
-//	}
 	if (sel_is_vo && di->IsSimpleType()) {
 		wxMenu *submenu = new wxMenu;
 		submenu->Append(mxID_INSPECTION_FORMAT_NAT,LANG(INSPECTGRID_FORMAT_NATURAL,"natural"));
@@ -460,19 +429,6 @@ void mxInspectionGrid::OnExploreExpression(wxCommandEvent &evt) {
 			auxOnExplore(scope,inspections[sel[i]],dialog);
 	}
 }
-
-//void mxInspectionGrid::OnWatchNo(wxCommandEvent &evt) {
-//	debug->ModifyInspectionWatch(selected_row,false,false);
-//}
-//void mxInspectionGrid::OnWatchReadWrite(wxCommandEvent &evt) {
-//	debug->ModifyInspectionWatch(selected_row,true,true);
-//}
-//void mxInspectionGrid::OnWatchRead(wxCommandEvent &evt) {
-//	debug->ModifyInspectionWatch(selected_row,true,false);
-//}
-//void mxInspectionGrid::OnWatchWrite(wxCommandEvent &evt) {
-//	debug->ModifyInspectionWatch(selected_row,false,true);
-//}
 
 void mxInspectionGrid::SetFormat(int format) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel,false);
@@ -1014,5 +970,26 @@ void mxInspectionGrid::OnShowInRTEditor (wxCommandEvent & evt) {
 		scope.ChangeIfNeeded(di);
 		new mxRealTimeInspectionEditor(di->GetExpression());
 	}
+}
+
+void mxInspectionGrid::OnSetWatch (wxCommandEvent & evt) {
+	bool read = evt.GetId()!=mxID_INSPECTION_WATCH_WRITE;
+	bool write = evt.GetId()!=mxID_INSPECTION_WATCH_READ;
+	DebugManager::TemporaryScopeChange scope;
+	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	for(unsigned int i=0;i<sel.size();i++) {
+		if (inspections[sel[i]].IsNull()) continue;
+		if (inspections[sel[i]]->GetDbiType()==DIT_GDB_COMMAND) continue;
+		wxString expr= inspections[sel[i]]->GetExpression();
+		wxString num =debug->AddWatchPoint(expr,read,write);
+		if (!num.IsEmpty())
+			mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_OK,"Watchpoint insertado correctamente."),num+": "+expr,mxMD_OK|mxMD_INFO).ShowModal();
+		else
+			mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_ERROR,"Error al insertar watchpoint."),expr,mxMD_OK|mxMD_ERROR).ShowModal();
+	}
+}
+
+void mxInspectionGrid::OnDerefPtr (wxCommandEvent & evt) {
+	
 }
 

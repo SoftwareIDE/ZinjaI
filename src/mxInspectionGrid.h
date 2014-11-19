@@ -80,6 +80,8 @@ public:
 	void OnShowInRTEditor(wxCommandEvent &evt);
 	void OnShowInTable(wxCommandEvent &evt);
 	void OnShowInHistory(wxCommandEvent &evt);
+	void OnSetWatch(wxCommandEvent &evt);
+	void OnDerefPtr(wxCommandEvent &evt);
 	void OnCopyType(wxCommandEvent &evt);
 	void OnCopyValue(wxCommandEvent &evt);
 	void OnCopyExpression(wxCommandEvent &evt);
@@ -87,10 +89,6 @@ public:
 	void OnClearAll(wxCommandEvent &evt);
 	void ClearAll();
 	void OnClearOne(wxCommandEvent &evt);
-//	void OnWatchNo(wxCommandEvent &evt);
-//	void OnWatchRead(wxCommandEvent &evt);
-//	void OnWatchWrite(wxCommandEvent &evt);
-//	void OnWatchReadWrite(wxCommandEvent &evt);
 	void OnFormatNatural(wxCommandEvent &evt);
 	void OnFormatDecimal(wxCommandEvent &evt);
 	void OnFormatOctal(wxCommandEvent &evt);
