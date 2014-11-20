@@ -156,7 +156,7 @@ void mxCalltip::SetArg (int cur_arg) {
 		int real_max_len = 0; wrap_info w;
 		for(int i=0;i<entries.GetSize();i++) {
 			if (!entries[i].ShouldDraw(cur_arg)) continue;
-			w.Reset(max_len);
+			w.Reset(max_len); cant_lines--;
 			while (entries[i].GetWrapPoint(w)) {
 				cant_lines++;
 				if (w.Len()>real_max_len) 
