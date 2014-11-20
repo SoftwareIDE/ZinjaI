@@ -34,6 +34,12 @@ public:
 	}
 	const wxString &GetLastResult() { return result; }
 	wxString GetFiltered(const wxString &keyword);
+	bool Contains(const wxString &key) {
+		for(unsigned int i=0;i<keywords.GetCount();i++) 
+			if (keywords[i].StartsWith(key) && (keywords[i].Len()==key.Len()||keywords[i][key.Len()]=='?'))
+				return true;
+		return false;
+	}
 };
 extern MyAutocompList autocomp_list;
 
@@ -68,7 +74,8 @@ public:
 	wxString GetInclude(wxString path, wxString key);
 	wxString GetIncludeForClass(wxString path, wxString key);
 	bool AutocompleteAutocode(mxSource *source, wxString key/*, int max_str_dist=3*/);
-	bool AutocompleteGeneral(mxSource *source, wxString scope, wxString key, wxString *args=NULL/*, int max_str_dist=3*/);
+	bool AutocompleteGeneral(mxSource *source, wxString scope, wxString key, wxString *args=NULL, int scope_start=-1);
+	void AutocompleteLocals(mxSource *source, wxString key, int scope_start);
 	bool AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words/*, int max_str_dist=3*/);
 	wxString GetCalltip(wxString scope, wxString key, bool onlyScope, bool only_type=false);
 	bool ShowFunctionCalltip(int p, mxSource *source, wxString scope, wxString key, bool onlyScope=true);

@@ -312,7 +312,7 @@ wxString ExtractIdentifierFromDeclaration(const wxString &decl) {
 	
 }
 
-bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString typed, wxString *args/*, int max_str_dist*/) {
+bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString typed, wxString *args, int scope_start) {
 	UnTemplate(typed); UnTemplate(scope);
 	unsigned int len=typed.Len();
 	typed.MakeLower();
@@ -473,6 +473,8 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 		}
 	}
 	
+	// agregar otras cosas que puedan parecer variables locales
+	if (scope_start!=-1) code_helper->AutocompleteLocals(source,typed,scope_start);
 	
 	// mostrar la lista final
 	if (autocomp_list.Empty()) return false;
@@ -1419,5 +1421,24 @@ wxString MyAutocompList::GetFiltered (const wxString &typed) {
 	}
 	if (!n) return "";
 	return GetResult(true,n);
+}
+
+bool auxAutocompLocalsPreChar(char c) {
+	return c==' '||c=='\t'||c==','||c=='*'||c=='&'||c=='\n'||c=='\r';
+}
+
+void CodeHelper::AutocompleteLocals (mxSource * source, wxString key, int scope_start) {
+	int p_to = source->GetCurrentPos()-key.Len(), p=scope_start;
+	p = source->FindText(p,p_to,"{",0);
+	while(p!=wxSTC_INVALID_POSITION && p<p_to) {
+		if (p==0 || auxAutocompLocalsPreChar(source->GetCharAt(p-1))) { 
+			int s = source->GetStyleAt(p);
+			if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS) { 
+				wxString word = source->GetTextRange(p,source->WordEndPosition(p,true));
+				if (!autocomp_list.Contains(word)) autocomp_list.Add(word,"?21","");
+			}
+		}
+		p = source->FindText(p+key.Len(),p_to,key,0);
+	}
 }
 

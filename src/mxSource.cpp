@@ -267,6 +267,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	RegisterImage(18,*(bitmaps->parser.icon18_typedef));
 	RegisterImage(19,*(bitmaps->parser.icon19_enum_const));
 	RegisterImage(20,*(bitmaps->parser.icon20_argument));
+	RegisterImage(21,*(bitmaps->parser.icon21_local));
 	
 	lexer = wxSTC_LEX_CPP;
 	
@@ -1539,9 +1540,9 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 							}
 						}
 					} else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') ) {
-						wxString args;
-						wxString scope=FindScope(GetCurrentPos(),&args);
-						code_helper->AutocompleteGeneral(this,scope,key,&args);
+						wxString args; int scope_start;
+						wxString scope=FindScope(GetCurrentPos(),&args,false,&scope_start);
+						code_helper->AutocompleteGeneral(this,scope,key,&args,scope_start);
 					}
 				}
 			}
@@ -2691,7 +2692,8 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 * argumentos args no se modifica, por lo que debería entrar con valores
 * inválidos (como {-1,-1}) para saber desde afuera si el valor de retorno es real.
 **/ 
-wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
+wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scope_start) {
+	if (scope_start) *scope_start=0;
 	wxString scope, type;
 	int l=pos,s;
 	int first_p=-1; // guarda el primer scope, para buscar argumentos si es funcion
@@ -2726,6 +2728,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 					II_BACK(p,II_IS_NOTHING_4(p));
 					op=p; first_p=p+1;
 					p=WordStartPosition(p,true)-1;
+					if (scope_start) *scope_start=p;
 					if (full_scope) scope=GetTextRange(p+1,op+1); // nombre de un método?
 					II_BACK(p,II_IS_NOTHING_4(p));
 					// el "GetCharAt(p)==','" se agrego el 29/09 para los constructores en constructores
@@ -2735,6 +2738,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 							p-=2;
 							II_BACK(p,II_IS_NOTHING_4(p));
 							wxString aux = code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1)); // nombre de la clase?
+							if (scope_start) *scope_start=p;
 							if (full_scope) scope=aux+"::"+scope; else { scope=aux; break; }
 						} else { // puede ser constructor
 							p = FindText(p,0,"::");
@@ -2745,6 +2749,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 								II_FRONT_NC(e,II_IS_NOTHING_4(e));
 								if (GetTextRange(WordStartPosition(p,true),p+1)==GetTextRange(e,WordEndPosition(e,true))) {
 									wxString aux=code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1)); // nombre de la clase?
+									if (scope_start) *scope_start=p;
 									if (full_scope) scope=aux+"::"+aux; else { scope=aux; break; }
 								}
 							}
@@ -2766,6 +2771,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 					if (some) {
 						II_FRONT(p,II_IS_NOTHING_4(p));
 						wxString aux=code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
+						if (scope_start) *scope_start=p;
 						if (full_scope) scope=aux+"::"+scope; else { scope=scope; break; }
 					}
 				}
@@ -3002,17 +3008,6 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 		char c;
 		int s,p=GetCurrentPos()-2;
 		II_BACK(p,II_IS_NOTHING_4(p));
-// esto era para tratar de autocompletar funciones, pero hay que replantear para que tome varias llamadas, no la primera (recursivo?)
-//		if (GetCharAt(p)==')') { 
-//			if ( (p=BraceMatch(p))==wxSTC_INVALID_POSITION )
-//				ShowBaloon(LANG(SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION,"No se pudo determinar el ambito a autocompletar"));
-//			else {
-//				p--;
-//				II_BACK(p,II_IS_NOTHING_4(p));
-//				wxString key=GetTextRange(WordStartPosition(p,true),p+1);
-//				code_helper->AutoCompleteFunction(FindScope(p),key,"");
-//			}
-//		}
 		if ((c=GetCharAt(p))>='0' && c<='9') {
 			while ( (c=GetCharAt(p))>='0' && c<='9' ) {
 				p--;
@@ -3121,9 +3116,9 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 						}
 					}
 				} else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') ) {
-					wxString args;
-					wxString scope=FindScope(GetCurrentPos(),&args);
-					code_helper->AutocompleteGeneral(this,scope,key,&args);
+					wxString args; int scope_start;
+					wxString scope = FindScope(GetCurrentPos(),&args, false,&scope_start);
+					code_helper->AutocompleteGeneral(this,scope,key,&args,scope_start);
 				}
 			}
 		} else {
@@ -3624,102 +3619,6 @@ wxString mxSource::WhereAmI() {
 #endif
 	return res;
 }
-
-//wxString mxSource::WhereAmI() {
-//	wxString scope, type;
-//	int pos=GetCurrentPos();
-//	int s, l=pos;
-//	int first_p=-1; // guarda el primer scope, para buscar argumentos si es funcion
-//	char c;
-//	while (true) {
-//		int p_llave_a = FindText(pos,0,"{");
-//		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
-//			p_llave_a = FindText(p_llave_a-1,0,"{");
-//		int p_llave_c = FindText(pos,0,"}");
-//		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
-//			p_llave_c = FindText(p_llave_c-1,0,"}");
-//		if (p_llave_c==wxSTC_INVALID_POSITION && p_llave_a==wxSTC_INVALID_POSITION) {
-//			break;
-//		} else if (p_llave_c!=wxSTC_INVALID_POSITION && (p_llave_a==wxSTC_INVALID_POSITION || p_llave_c>p_llave_a) ) {
-//			pos=BraceMatch(p_llave_c);
-//			if (pos==wxSTC_INVALID_POSITION)
-//				break;
-//			else
-//				pos--;
-//		} else if (p_llave_a!=wxSTC_INVALID_POSITION && (p_llave_c==wxSTC_INVALID_POSITION || p_llave_c<p_llave_a) ) {
-//			int p=pos=p_llave_a-1;
-//			II_BACK(p,II_IS_NOTHING_4(p));
-//			if (c==')') { // puede ser funcion
-//				int op=p;
-//				p=BraceMatch(p);
-//				// sigue como antes
-//				if (p!=wxSTC_INVALID_POSITION) {
-//					p--;
-//					II_BACK(p,II_IS_NOTHING_4(p));
-//					op=p; first_p=p+1;
-//					p=WordStartPosition(p,true)-1;
-//					scope=GetTextRange(p+1,op+1);
-//					II_BACK(p,II_IS_NOTHING_4(p));
-//					// el "GetCharAt(p)==','" se agrego el 29/09 para los constructores en constructores
-//					if (GetCharAt(p)==':' || GetCharAt(p)==',' || (p && GetCharAt(p)=='~' && GetCharAt(p-1)==':')) {
-//						if (GetCharAt(p)=='~') { p--; scope=wxString("~")+scope; } // agregado para arreglar el scope de un destructor
-//						if (GetCharAt(p-1)==':') {
-//							p-=2;
-//							II_BACK(p,II_IS_NOTHING_4(p));
-//							scope=code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1))+"::"+scope;
-//						} else { // puede ser constructor
-//							p = FindText(p,0,"::");
-//							if (p!=wxSTC_INVALID_POSITION) {
-//								int e=p+2;
-//								p--;
-//								II_BACK(p,II_IS_NOTHING_4(p));
-//								II_FRONT_NC(e,II_IS_NOTHING_4(e));
-//								if (GetTextRange(WordStartPosition(p,true),p+1)==GetTextRange(e,WordEndPosition(e,true))) {
-//									scope = code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1));
-//									scope=scope+"::"+scope;
-//								}
-//							}
-//						}
-//					}
-//				}
-//			} else { // puede ser clase o struct
-//				II_BACK(p,II_IS_NOTHING_4(p) || !II_IS_6(p,'{','}',':',';',')','('));
-//				p++;
-//				II_FRONT(p,II_IS_NOTHING_4(p));
-//				if (GetStyleAt(p)==wxSTC_C_WORD) {
-//					bool some=false;
-//					if (GetTextRange(p,p+6)=="struct")
-//						{ if (!type.Len()) type="struct"; p+=6; some=true; }
-//					else if (GetTextRange(p,p+5)=="class")
-//						{ if (!type.Len()) type="class"; p+=5; some=true; }
-//					else if (GetTextRange(p,p+p)=="namespace")
-//						{ if (!type.Len()) type="namespace"; p+=9; some=true; }
-//					if (some) {
-//						II_FRONT(p,II_IS_NOTHING_4(p));
-//						scope=code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)))+"::"+scope;
-//					}
-//				}
-//			}
-//		}
-//	}
-//	if (scope.EndsWith("::")) { // si no es metodo ni funcion
-//		scope=scope.Mid(0,scope.Len()-2);
-//		scope=type+" "+scope;
-//	} else if (first_p!=-1) { // sino agregar argumentos
-//		int p=first_p;
-//		II_FRONT(p,II_IS_NOTHING_4(p));
-//		if (GetCharAt(p)=='(') {
-//			int p2=BraceMatch(p);
-//			if (p2!=wxSTC_INVALID_POSITION)
-//				scope=scope+" "+GetTextRange(p,p2+1);
-//		}
-//	}
-//	return scope
-//#ifdef _ZINJAI_DEBUG
-//		<<"\n"<<GetCurrentPos()
-//#endif
-//		;
-// }
 
 bool mxSource::ApplyAutotext() {
 	return autocoder->Apply(this);

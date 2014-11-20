@@ -50,6 +50,7 @@ mxArt::mxArt(wxString img_dir) {
 	parser.icon18_typedef = new wxBitmap(SKIN_FILE(_T("as_typedef.png")),wxBITMAP_TYPE_PNG);
 	parser.icon19_enum_const = new wxBitmap(SKIN_FILE(_T("as_enum_const.png")),wxBITMAP_TYPE_PNG);
 	parser.icon20_argument = new wxBitmap(SKIN_FILE(_T("as_arg.png")),wxBITMAP_TYPE_PNG);
+	parser.icon21_local = new wxBitmap(SKIN_FILE(_T("as_local.png")),wxBITMAP_TYPE_PNG);
 
 	icons.error = new wxBitmap(SKIN_FILE(_T("icono_error.png")),wxBITMAP_TYPE_PNG);
 	icons.info = new wxBitmap(SKIN_FILE(_T("icono_info.png")),wxBITMAP_TYPE_PNG);
