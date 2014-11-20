@@ -1615,7 +1615,7 @@ void mxSource::Indent(int min, int max) {
 	if (ds1<0) ds1=0; if (ds2<0) ds2=0;
 	// para evitar que al llamar a charadd se autocomplete o cierre algo
 	bool old_autocomp = config_source.autoCompletion;
-	config_source.autoCompletion=false;
+	config_source.autoCompletion=0;
 	bool old_autoclose=config_source.autocloseStuff;
 	config_source.autocloseStuff=false; 
 	bool old_autotext=config_source.autotextEnabled;
@@ -1777,7 +1777,8 @@ void mxSource::SetStyle(bool color) {
 			break;
 		case wxSTC_LEX_HTML: case wxSTC_LEX_XML:
 //			config_source.stdCalltips=config_source.stdCompletion=config_source.parserCalltips=config_source.parserCompletion=config_source.smartIndent=config_source.indentPaste=false;
-			config_source.callTips=config_source.autoCompletion=config_source.smartIndent=config_source.indentPaste=false;
+			config_source.callTips = config_source.smartIndent = config_source.indentPaste = false;
+			config_source.autoCompletion = 0;
 			SetProperty ("fold.html","0");
 			SetProperty ("fold.html.preprocessor", "0");
 			AUXSetStyle(H,DEFAULT); // keywords
@@ -1795,7 +1796,8 @@ void mxSource::SetStyle(bool color) {
 			break;
 		case wxSTC_LEX_MAKEFILE:
 //			config_source.stdCalltips=config_source.stdCompletion=config_source.parserCalltips=config_source.parserCompletion=config_source.smartIndent=config_source.indentPaste=false;
-			config_source.callTips=config_source.autoCompletion=config_source.smartIndent=config_source.indentPaste=false;
+			config_source.callTips = config_source.smartIndent = config_source.indentPaste = false;
+			config_source.autoCompletion = 0;
 			AUXSetStyle(MAKE,DEFAULT); // default
 			AUXSetStyle3(MAKE,IDENTIFIER,WORD); // keywords
 			AUXSetStyle3(MAKE,COMMENT,COMMENT); // comment doc

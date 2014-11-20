@@ -56,7 +56,7 @@ private:
 	CodeHelperSpecialArray reserved_words;
 	CodeHelperSpecialArray preproc_directives;
 	CodeHelperSpecialArray doxygen_directives;
-	CodeHelper(int ml);
+	CodeHelper(int ml, int mode);
 public:
 	static void Initialize();
 	~CodeHelper();	
@@ -64,9 +64,9 @@ public:
 	void ResetStdData();
 	wxString GetInclude(wxString path, wxString key);
 	wxString GetIncludeForClass(wxString path, wxString key);
-	bool AutocompleteAutocode(mxSource *source, wxString key, int max_str_dist=3);
-	bool AutocompleteGeneral(mxSource *source, wxString scope, wxString key, wxString *args=NULL, int max_str_dist=3);
-	bool AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words, int max_str_dist=3);
+	bool AutocompleteAutocode(mxSource *source, wxString key/*, int max_str_dist=3*/);
+	bool AutocompleteGeneral(mxSource *source, wxString scope, wxString key, wxString *args=NULL/*, int max_str_dist=3*/);
+	bool AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words/*, int max_str_dist=3*/);
 	wxString GetCalltip(wxString scope, wxString key, bool onlyScope, bool only_type=false);
 	bool ShowFunctionCalltip(int p, mxSource *source, wxString scope, wxString key, bool onlyScope=true);
 	bool ShowConstructorCalltip(int p, mxSource *source, wxString name);
@@ -75,7 +75,7 @@ public:
 	wxString UnMacro(wxString name);
 	wxString UnMacro(wxString name,int &dims);
 	void UnTemplate(wxString &var);
-	void AddReservedWords(wxString &typed, int max_str_dist=3);
+	void AddReservedWords(wxString &typed/*, int max_str_dist=3*/);
 	bool AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray &words, wxString typed);
 	bool AutocompletePreprocesorDirective(mxSource *source, wxString typed="");
 	bool AutocompleteDoxygen(mxSource *source, wxString typed="");
@@ -89,8 +89,19 @@ public:
 	
 	void TryToSuggestTemplateSolutionForLinkingErrors(const wxArrayString &full_output, bool for_running);
 	
+	/// @param mode  0=case-sensitive start, 1=case-insesitive start, 2=case-insensitive any, 3=case-insensitive Levenshtein
+	void SetAutocompletionMatchingMode(int mode);
+	
+	class RAIAutocompModeChanger {
+	public:
+		RAIAutocompModeChanger(int mode);
+		~RAIAutocompModeChanger();
+	};
+	
 };
 
 extern CodeHelper *code_helper;
 
 #endif
+
+

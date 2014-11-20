@@ -453,7 +453,11 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	source_indentPaste = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_INDENT_ON_PASTE,"Corregir indentado al pegar"),config->Source.indentPaste);
 	source_avoidNoNewLineWarning = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE,"Controlar que quede una linea en blanco al final de cada archivo"),config->Source.avoidNoNewLineWarning);
 	source_toolTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_SHOW_TOOLTIPS_FOR_VAR_TYPES,"Utilizar tooltips para identificar tipos de variables"),config->Source.toolTips);
-	source_autoCompletion = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_AUTOCOMPLETION,"Utilizar autocompletado mientras escribe"),config->Source.autoCompletion);
+	wxArrayString autocomp_methods;
+	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_NONE,"Deshabilitado"));
+	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_START,"Habilitado, por comienzo de palabra"));
+	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_FIND,"Habilitado, por cualquier parte de la palabra"));
+	source_autoCompletion = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCOMPLETION,"Autocompletado"),autocomp_methods,config->Source.autoCompletion);
 	source_callTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y métodos"),config->Source.callTips);
 	init_beautifyCompilerErrors  = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS,"Simplificar mensajes de error del compilador"),config->Init.beautify_compiler_errors);
 	files_autocode = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de plantillas de auto-código"),config->Files.autocodes_file,mxID_AUTOCODES_FILE);
@@ -669,7 +673,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Source.toolTips = source_toolTips->GetValue();
 	config->Init.beautify_compiler_errors = init_beautifyCompilerErrors->GetValue();
 	config->Source.callTips = source_callTips->GetValue();
-	config->Source.autoCompletion = source_autoCompletion->GetValue();
+	config->Source.autoCompletion = source_autoCompletion->GetSelection();
+	code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
 	config->Source.autocloseStuff = source_autocloseStuff->GetValue();
 	config->Help.wxhelp_index = help_wxhelp_index->GetValue();
 	
@@ -1100,7 +1105,7 @@ void mxPreferenceWindow::ResetChanges() {
 	source_avoidNoNewLineWarning->SetValue(config->Source.avoidNoNewLineWarning);
 	source_toolTips->SetValue(config->Source.toolTips);
 	init_beautifyCompilerErrors->SetValue(config->Init.beautify_compiler_errors);
-	source_autoCompletion->SetValue(config->Source.autoCompletion);
+	source_autoCompletion->SetSelection(config->Source.autoCompletion);
 	source_autocloseStuff->SetValue(config->Source.autocloseStuff);
 	source_callTips->SetValue(config->Source.callTips);
 	

@@ -117,7 +117,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *source_avoidNoNewLineWarning;
 	wxCheckBox *source_smartIndent;
 	wxCheckBox *source_autocloseStuff;
-	wxCheckBox *source_autoCompletion;
+	wxComboBox*source_autoCompletion;
 	wxCheckBox *source_toolTips;
 	wxCheckBox *init_beautifyCompilerErrors;
 	wxTextCtrl *styles_print_size;

@@ -164,7 +164,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("autotextEnabled",Source.autotextEnabled);
 				else CFG_BOOL_READ_DN("autocloseStuff",Source.autocloseStuff);
 				else CFG_BOOL_READ_DN("toolTips",Source.toolTips);
-				else CFG_BOOL_READ_DN("autoCompletion",Source.autoCompletion);
+				else CFG_INT_READ_DN("autoCompletion",Source.autoCompletion);
 				else CFG_BOOL_READ_DN("avoidNoNewLineWarning",Source.avoidNoNewLineWarning);
 			
 			} else if (section=="Debug") {
@@ -503,7 +503,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("toolTips",Source.toolTips);
 	CFG_BOOL_WRITE_DN("autotextEnabled",Source.autotextEnabled);
 	CFG_BOOL_WRITE_DN("autocloseStuff",Source.autocloseStuff);
-	CFG_BOOL_WRITE_DN("autoCompletion",Source.autoCompletion);
+	CFG_GENERIC_WRITE_DN("autoCompletion",Source.autoCompletion);
 	CFG_BOOL_WRITE_DN("avoidNoNewLineWarning",Source.avoidNoNewLineWarning);
 	CFG_GENERIC_WRITE_DN("alignComments",Source.alignComments);
 	CFG_GENERIC_WRITE_DN("tabWidth",Source.tabWidth);
@@ -714,7 +714,7 @@ void ConfigManager::LoadDefaults(){
 	Source.alignComments=80;
 	Source.tabWidth=4;
 	Source.tabUseSpaces=false;
-	Source.autoCompletion=true;
+	Source.autoCompletion=1;
 	Source.callTips=true;
 	Source.avoidNoNewLineWarning=true;
 
