@@ -81,9 +81,10 @@ extern NavigationHistory navigation_history;
 class mxSource: public wxStyledTextCtrl {
 
 	class AutocompletionLocation {
-		int pos, age;
+		int pos, age; 
 		wxString key;
 	public:
+		AutocompletionLocation():pos(-1),age(-1) {}
 		bool IsSameLocation(int p, const wxString &k, int parser_age) {
 			if (p==pos && k.StartsWith(key) && parser_age==age) return true;
 			age=parser_age; key=k; pos=p; return false;
@@ -286,14 +287,15 @@ private:
 	
 	class AutocompHelper {
 		wxTimer timer;
-		int x,y; ///< position where autocompletion menu was displayed
+		int x,y, pos; ///< position where autocompletion menu was displayed
 	public:
-		AutocompHelper(mxSource *src) : timer(src->GetEventHandler(),wxID_ANY),x(-1),y(-1) {}
-		void Start(int _x, int _y) { x=_x; y=_y; timer.Start(250,true); } ///< to be called when autocomp menu is created, will show the calltip next to it on timer event
+		AutocompHelper(mxSource *src) : timer(src->GetEventHandler(),wxID_ANY),x(-1),y(-1),pos(-1) {}
+		void Start(int p, int _x, int _y) { pos=p; x=_x; y=_y; timer.Start(250,true); } ///< to be called when autocomp menu is created, will show the calltip next to it on timer event
 		void Restart() { timer.Start(250,true); } ///< to be called when an existing autocompletion list changes its selection
 		bool IsThisYourTimer(const wxTimer *t) { return t==&timer; } ///< to query in mxSource::OnTimer it the current event if for this timer
 		int GetX() { return x; }
 		int GetY() { return y; }
+		int GetPos() { return pos; }
 	} autocomp_helper;
 	
 	void OnTimer(wxTimerEvent &event);

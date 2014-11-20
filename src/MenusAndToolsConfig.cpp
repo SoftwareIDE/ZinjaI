@@ -351,7 +351,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnHIDDEN, myMenuItem("compiling_options",mxID_RUN_CONFIG,LANG(MENUITEM_HIDDEN_RUN_CONFIG,"Opciones de compilación y ejecución")).ShortCut("Ctrl+Alt+P"));
 		AddMenuItem(mnHIDDEN, myMenuItem("",mxID_INTERNAL_INFO,"").ShortCut("Ctrl+Shift+F6"));
 		AddMenuItem(mnHIDDEN, myMenuItem("where_am_i",mxID_WHERE_AM_I,LANG(MENUITEM_HIDDEN_WHERE_I_AM,"Mostrar ubicación y contexto en el código")).ShortCut("Ctrl+Alt+Space"));
-		AddMenuItem(mnHIDDEN, myMenuItem("autocode_autocomplete",mxID_EDIT_AUTOCODE_AUTOCOMPLETE,LANG(MENUITEM_HIDDEN_AUTOCODE_AUTOCOMPLETE,"Autocompletado de autocódigos")).ShortCut("Crtl+Shift+Space"));
+		AddMenuItem(mnHIDDEN, myMenuItem("autocode_autocomplete",mxID_EDIT_AUTOCODE_AUTOCOMPLETE,LANG(MENUITEM_HIDDEN_AUTOCODE_AUTOCOMPLETE,"Autocompletado de autocódigos")).ShortCut("Ctrl+Shift+Space"));
 		AddMenuItem(mnHIDDEN, myMenuItem("close_all_but",mxID_FILE_CLOSE_ALL_BUT_ONE,LANG(MENUITEM_HIDDEN_CLOSE_ALL_BUT_ONE,"Cerrar todos los fuentes excepto el actual")).ShortCut("Ctrl+Alt+W"));	
 		AddMenuItem(mnHIDDEN, myMenuItem("toolbar_find",mxID_EDIT_FIND_FROM_TOOLBAR,LANG(MENUITEM_HIDDEN_FIND_FROM_TOOLBAR,"Ir a la barra de herramienta de búsqueda")).ShortCut("Ctrl+Alt+F"));	
 		AddMenuItem(mnHIDDEN, myMenuItem("macro_record",mxID_MACRO_RECORD,LANG(MENUITEM_HIDDEN_MACRO_RECORD,"Iniciar/Detener grabación de macro de teclado")).ShortCut("Ctrl+Shift+Q"));

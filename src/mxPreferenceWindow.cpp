@@ -457,7 +457,9 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_NONE,"Deshabilitado"));
 	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_START,"Habilitado, por comienzo de palabra"));
 	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_FIND,"Habilitado, por cualquier parte de la palabra"));
+	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_FUZZY,"Habilitado, por similaridad"));
 	source_autoCompletion = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCOMPLETION,"Autocompletado"),autocomp_methods,config->Source.autoCompletion);
+	source_autocompFilters = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCOM_FILTERS,"Filtrar resultados de autocompletado al continuar escribiendo"),config->Source.autocompFilters);
 	source_callTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y métodos"),config->Source.callTips);
 	init_beautifyCompilerErrors  = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS,"Simplificar mensajes de error del compilador"),config->Init.beautify_compiler_errors);
 	files_autocode = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de plantillas de auto-código"),config->Files.autocodes_file,mxID_AUTOCODES_FILE);
@@ -675,6 +677,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Source.callTips = source_callTips->GetValue();
 	config->Source.autoCompletion = source_autoCompletion->GetSelection();
 	code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
+	config->Source.autocompFilters = source_autocompFilters->GetValue();
 	config->Source.autocloseStuff = source_autocloseStuff->GetValue();
 	config->Help.wxhelp_index = help_wxhelp_index->GetValue();
 	
@@ -1107,6 +1110,7 @@ void mxPreferenceWindow::ResetChanges() {
 	init_beautifyCompilerErrors->SetValue(config->Init.beautify_compiler_errors);
 	source_autoCompletion->SetSelection(config->Source.autoCompletion);
 	source_autocloseStuff->SetValue(config->Source.autocloseStuff);
+	source_autocompFilters->SetValue(config->Source.autocompFilters);
 	source_callTips->SetValue(config->Source.callTips);
 	
 	help_autocomp_indexes->Clear();

@@ -15,22 +15,25 @@ using namespace std;
 class MyAutocompList {
 	wxArrayString keywords;
 	wxArrayString helps;
-	unsigned int max_len, count;
+	wxString result;
+	unsigned int max_len/*, count*/;
 public:
 	bool Empty() { 
-		return count==0;
+		return keywords.GetCount()==0;
 	}
 	void Init() {
-		max_len=count=0;
+		max_len=0;
 		keywords.Clear();
 		helps.Clear();
 	}
 	void Add(const wxString &keyword, const wxString &icon, const wxString &help);
-	wxString GetResult(bool sort=true);
-	wxString GetHelp(unsigned int sel);
+	const wxString &GetResult(bool sort=true, int n=-1);
+	wxString GetHelp(int sel);
 	unsigned int GetMaxLen() { 
 		return max_len;
 	}
+	const wxString &GetLastResult() { return result; }
+	wxString GetFiltered(const wxString &keyword);
 };
 extern MyAutocompList autocomp_list;
 
@@ -81,6 +84,8 @@ public:
 	bool AutocompleteDoxygen(mxSource *source, wxString typed="");
 	bool GenerateAutocompletionIndex(wxString path, wxString filename);
 	
+	void FilterAutocomp(mxSource *source, const wxString &key);
+	
 	//! Recarga los indices de autocompletado
 	void ReloadIndexes(wxString indexes);
 	
@@ -94,7 +99,8 @@ public:
 	
 	class RAIAutocompModeChanger {
 	public:
-		RAIAutocompModeChanger(int mode);
+		RAIAutocompModeChanger();
+		void Change(int mode);
 		~RAIAutocompModeChanger();
 	};
 	

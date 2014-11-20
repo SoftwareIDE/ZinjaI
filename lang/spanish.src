@@ -2491,11 +2491,15 @@ Utilizar tooltips para identificar tipos de variables
 PREFERENCES_WRITTING_AUTOCOMP_NONE
 Deshabilitado
 PREFERENCES_WRITTING_AUTOCOMP_START
-Habilitad, por comienzo de palabra
+Habilitado, por comienzo de palabra
 PREFERENCES_WRITTING_AUTOCOMP_FIND
 Habilitado, por cualquier parte de la palabra
+PREFERENCES_WRITTING_AUTOCOMP_FUZZY
+Habilitado, por similaridad
 PREFERENCES_WRITING_AUTOCOMPLETION
 Autocompletado
+PREFERENCES_WRITING_AUTOCOM_FILTERS
+Filtrar resultados de autocompletado al continuar escribiendo
 PREFERENCES_WRITING_ENABLE_CALLTIPS
 Mostrar ayuda de llamadas a funciones y métodos
 PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS

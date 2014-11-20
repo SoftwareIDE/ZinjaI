@@ -17,22 +17,24 @@ using namespace std;
 MyAutocompList autocomp_list;
 
 // comparacion con distancia de Levenshtein
-//static bool ShouldAddToAutocompFuzzy(const wxString &typed, int len, const wxString &candidate) {
-//	return mxUT::Levenshtein(typed.mb_str(),len,candidate.mb_str(),len) <= 1;
-//}
+static bool ShouldAddToAutocompFuzzy(const wxString &typed, int len, const wxString &candidate) {
+	return mxUT::Levenshtein(typed.mb_str(),len,candidate.mb_str(),len) <= 1+len/5;
+}
 
 // comparacion con normal letra a letra no case sensitive, solo el comienzo
 static bool ShouldAddToAutocompStart(const wxString &typed, int len, const wxString &candidate) {
 	int l2=candidate.Len(); 
 	if (l2<len) return false;
 	for(int i=0; i<len; i++) 
-		if ((candidate[i]|32)!=typed[i]) 
+		if (tolower(candidate[i])!=typed[i]) 
 			return false;
 	return true;
 }
 
  // comparacion con normal letra a letra no case sensitive, cualquier parte
 static bool ShouldAddToAutocompFind(const wxString &typed, int len, const wxString &candidate) {
+	if (candidate=="calltip_mode")
+		cerr<<"BOOO: "<<(len==0 || candidate.Lower().Contains(typed))<<endl;
 	return len==0 || candidate.Lower().Contains(typed);
 }
 
@@ -77,12 +79,12 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray 
 	}
 	
 	unsigned int i,l=typed.Len();
-	for (i=0;i<l;i++) typed[i]=(typed[i]|32);
+	typed.MakeLower();
 
 	int j, ll = words.keywords.GetCount();
 	for (j=0;j<ll;j++) {
 		i=0;
-		while (i<l && (words.keywords[j][i]|32)==typed[i])
+		while (i<l && (tolower(words.keywords[j][i])==typed[i]))
 			i++;
 		if (i==l) autocomp_list.Add(words.keywords[j],words.icon,words.help);
 	}
@@ -94,10 +96,9 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray 
 
 bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words/*, int max_str_dist*/) {
 	UnTemplate(key);
-	unsigned int i,len=typed.Len();
-	for (i=0;i<len;i++)
-		typed[i]=(typed[i]|32);
-	if (!key.Len()) return false;
+	unsigned int len=typed.Len();
+	if (len) return false;
+	typed.MakeLower();
 	HashStringParserClass::iterator it=parser->h_classes.find(key);
 	if (it!=parser->h_classes.end()) {
 		autocomp_list.Init();
@@ -313,8 +314,8 @@ wxString ExtractIdentifierFromDeclaration(const wxString &decl) {
 
 bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString typed, wxString *args/*, int max_str_dist*/) {
 	UnTemplate(typed); UnTemplate(scope);
-	unsigned int i,len=typed.Len();
-	for (i=0;i<len;i++) typed[i]=(typed[i]|32);
+	unsigned int len=typed.Len();
+	typed.MakeLower();
 	autocomp_list.Init();
 	pd_var *aux_var = parser->first_global;
 	while (aux_var) {
@@ -1345,25 +1346,27 @@ void MyAutocompList::Add(const wxString &keyword, const wxString &icon, const wx
 	if (keyword.Len()>max_len) max_len=keyword.Len();
 	if (icon.Len()) keywords.Add(keyword+icon); else keywords.Add(keyword);
 	if (help.Len()) helps.Add(keywords.Last()+"\n"+help);
-	count++;
+//	count++;
 }
 
-wxString MyAutocompList::GetResult (bool sort) {
-	if (sort) mxUT::SortArrayString(keywords,0,count-1);
+const wxString &MyAutocompList::GetResult (bool sort, int n) {
+	if (n==-1) n=keywords.GetCount();
+	if (sort) mxUT::SortArrayString(keywords,0,n-1);
 	wxString text(keywords[0]);
-	for (unsigned int li=0,i=1;i<keywords.GetCount();i++)
+	for (int li=0,i=1;i<n;i++)
 		if (keywords[li]!=keywords[i])
 			text<<"\n"<<keywords[li=i];
-	return text;
+	return result=text;
 }
 
-wxString MyAutocompList::GetHelp (unsigned int sel) {
-	wxString text(keywords[0]); unsigned int c=0;
-	unsigned int li=0;
-	for (unsigned int i=1;c!=sel && i<keywords.GetCount();i++)
+wxString MyAutocompList::GetHelp (int sel) {
+	if (sel==-1) return "";
+	wxString text(keywords[0]); int c=0;
+	int li=0;
+	for (int i=1;c!=sel && i<int(keywords.GetCount());i++)
 		if (keywords[li]!=keywords[i]) { li=i; c++; }				
 	wxString key = keywords[li]+"\n", help;
-	for (unsigned int i=0;i<helps.GetCount();i++) {
+	for (int i=0;i<int(helps.GetCount());i++) {
 		if (helps[i].StartsWith(key)) {
 			if (help.Len()) help<<"\n";
 			help<<helps[i].AfterFirst('\n');
@@ -1377,15 +1380,44 @@ void CodeHelper::Initialize ( ) {
 }
 
 void CodeHelper::SetAutocompletionMatchingMode (int mode) {
-	ShouldAddToAutocomp = mode==2?ShouldAddToAutocompFind:ShouldAddToAutocompStart;
+	switch (mode) {
+	case 2: ShouldAddToAutocomp = ShouldAddToAutocompFind; break;
+	case 3: ShouldAddToAutocomp = ShouldAddToAutocompFuzzy; break;
+	default: ShouldAddToAutocomp = ShouldAddToAutocompStart; break;
+	}
 }
 
-CodeHelper::RAIAutocompModeChanger::RAIAutocompModeChanger (int mode) {
-	code_helper->SetAutocompletionMatchingMode(mode);
-		
+CodeHelper::RAIAutocompModeChanger::RAIAutocompModeChanger () {
 }
 
 CodeHelper::RAIAutocompModeChanger::~RAIAutocompModeChanger ( ) {
 	code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
+}
+
+void CodeHelper::RAIAutocompModeChanger::Change (int mode) {
+	code_helper->SetAutocompletionMatchingMode(mode);
+}
+
+void CodeHelper::FilterAutocomp (mxSource *source, const wxString & key) {
+	wxString old_res = autocomp_list.GetLastResult();
+	const wxString &new_res = autocomp_list.GetFiltered(key);
+	if (new_res==old_res) return;
+	if (new_res.IsEmpty()) source->HideCalltip();
+	else source->ShowAutoComp(key.Len(),new_res);
+//	source->AutoCompSetSelection(0);
+}
+
+wxString MyAutocompList::GetFiltered (const wxString &typed) {
+	int len=typed.Len(), n=keywords.GetCount(), i=0; max_len=0;
+	while(i<n) { 
+		if (!ShouldAddToAutocomp(typed,len,keywords[i])) {
+			swap(keywords[i],keywords[--n]);
+		} else {
+			if (keywords[i].Len()>max_len) max_len=keywords[i].Len();
+			i++;
+		}
+	}
+	if (!n) return "";
+	return GetResult(true,n);
 }
 

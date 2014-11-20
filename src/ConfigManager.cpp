@@ -160,6 +160,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("whiteSpace",Source.whiteSpace);
 				else CFG_BOOL_READ_DN("lineNumber",Source.lineNumber);
 				else CFG_BOOL_READ_DN("overType",Source.overType);
+				else CFG_BOOL_READ_DN("autocompFilters",Source.autocompFilters);
 				else CFG_BOOL_READ_DN("callTips",Source.callTips);
 				else CFG_BOOL_READ_DN("autotextEnabled",Source.autotextEnabled);
 				else CFG_BOOL_READ_DN("autocloseStuff",Source.autocloseStuff);
@@ -499,6 +500,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("whiteSpace",Source.whiteSpace);
 	CFG_BOOL_WRITE_DN("lineNumber",Source.lineNumber);
 	CFG_BOOL_WRITE_DN("overType",Source.overType);
+	CFG_BOOL_WRITE_DN("autocompFilters",Source.autocompFilters);
 	CFG_BOOL_WRITE_DN("callTips",Source.callTips);
 	CFG_BOOL_WRITE_DN("toolTips",Source.toolTips);
 	CFG_BOOL_WRITE_DN("autotextEnabled",Source.autotextEnabled);
@@ -715,6 +717,7 @@ void ConfigManager::LoadDefaults(){
 	Source.tabWidth=4;
 	Source.tabUseSpaces=false;
 	Source.autoCompletion=1;
+	Source.autocompFilters=false;
 	Source.callTips=true;
 	Source.avoidNoNewLineWarning=true;
 

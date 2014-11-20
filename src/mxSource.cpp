@@ -341,6 +341,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 
 	AutoCompSetSeparator('\n');
 	AutoCompSetIgnoreCase(true);
+	AutoCompSetAutoHide(false);
 	
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetStyle(1,wxSTC_INDIC_SQUIGGLE);
@@ -1057,6 +1058,11 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	if (ignore_char_added) return;
 	char chr = (char)event.GetKey();
+	if (calltip_mode==MXS_AUTOCOMP) {
+		if (!II_IS_KEYWORD_CHAR(chr)) HideCalltip();
+		else if (config_source.autocompFilters) 
+			code_helper->FilterAutocomp(this,GetTextRange(autocomp_helper.GetPos(),GetCurrentPos()));
+	}
 	if (config_source.autocloseStuff) {
 		int pos=GetCurrentPos();
 		if ((chr==']'||chr==')'|| chr=='\''||chr=='}'||chr=='\"') && GetCharAt(pos)==chr) {
@@ -1487,7 +1493,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (dims==0) {
 						if (chr=='(' && config_source.callTips)
 							code_helper->ShowFunctionCalltip(ctp,this,type,key);
-						else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
+						else if ( II_IS_KEYWORD_CHAR(chr) )
 							code_helper->AutocompleteScope(this,type,key,true,false);
 					}
 				} else if (c=='>' && GetCharAt(p-1)=='-') {
@@ -1808,7 +1814,8 @@ void mxSource::SetStyle(bool color) {
 			break;
 		case wxSTC_LEX_BASH:
 //			config_source.stdCalltips=config_source.stdCompletion=config_source.parserCalltips=config_source.parserCompletion=config_source.smartIndent=config_source.indentPaste=false;
-			config_source.callTips=config_source.autoCompletion=config_source.smartIndent=config_source.indentPaste=false;
+			config_source.callTips=config_source.smartIndent=config_source.indentPaste=false;
+			config_source.autoCompletion=0;
 			AUXSetStyle(SH,DEFAULT);
 			AUXSetStyle3(SH,ERROR,COMMENTDOCKEYWORD);
 			AUXSetStyle(SH,COMMENTLINE);
@@ -2792,83 +2799,6 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope) {
 	return scope;
 }
 
-//wxString mxSource::FindScope(int pos) {
-//	int l=pos,s;
-//	char c;
-//	while (true) {
-//		int p_llave_a = FindText(pos,0,"{");
-//		while (p_llave_a!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_a))
-//			p_llave_a = FindText(p_llave_a-1,0,"{");
-//		int p_llave_c = FindText(pos,0,"}");
-//		while (p_llave_c!=wxSTC_INVALID_POSITION && II_SHOULD_IGNORE(p_llave_c))
-//			p_llave_c = FindText(p_llave_c-1,0,"}");
-//		if (p_llave_c==wxSTC_INVALID_POSITION && p_llave_a==wxSTC_INVALID_POSITION) {
-//			break;
-//		} else if (p_llave_c!=wxSTC_INVALID_POSITION && (p_llave_a==wxSTC_INVALID_POSITION || p_llave_c>p_llave_a) ) {
-//			pos=BraceMatch(p_llave_c);
-//			if (pos==wxSTC_INVALID_POSITION)
-//				break;
-//			else
-//				pos--;
-//		} else if (p_llave_a!=wxSTC_INVALID_POSITION && (p_llave_c==wxSTC_INVALID_POSITION || p_llave_c<p_llave_a) ) {
-//			int p=pos=p_llave_a-1;
-//			II_BACK(p,II_IS_NOTHING_4(p));
-//			if (p>4&&GetCharAt(p-4)=='c'&&GetCharAt(p-3)=='o'&&GetCharAt(p-2)=='n'&&GetCharAt(p-1)=='s'&&GetCharAt(p)=='t'&&(GetCharAt(p-5)==')'||II_IS_NOTHING_4(p-5))) {
-//				p-=5; II_BACK(p,II_IS_NOTHING_4(p));
-//			}
-//			if (c==')') { // puede ser funcion
-//				p=BraceMatch(p);
-//				if (p!=wxSTC_INVALID_POSITION) {
-//					p--;
-//					II_BACK(p,II_IS_NOTHING_4(p));
-//					p=WordStartPosition(p,true)-1;
-//					II_BACK(p,II_IS_NOTHING_4(p));
-//					// el "GetCharAt(p)==','" se agrego el 29/09 para los constructores en constructores
-//					if (GetCharAt(p)==':' || GetCharAt(p)==',' || (p && GetCharAt(p)=='~' && GetCharAt(p-1)==':')) {
-//						if (GetCharAt(p)=='~') p--; // agregado para arreglar el scope de un destructor
-//						if (GetCharAt(p-1)==':') {
-//							p-=2;
-//							II_BACK(p,II_IS_NOTHING_4(p));
-//							return code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1));
-//						} else { // puede ser constructor
-//							p = FindText(p,0,"::");
-//							if (p!=wxSTC_INVALID_POSITION) {
-//								int e=p+2;
-//								p--;
-//								II_BACK(p,II_IS_NOTHING_4(p));
-//								II_FRONT_NC(e,II_IS_NOTHING_4(e));
-//								if (GetTextRange(WordStartPosition(p,true),p+1)==GetTextRange(e,WordEndPosition(e,true))) {
-//									return code_helper->UnMacro(GetTextRange(WordStartPosition(p,true),p+1));
-//								}
-//							}
-//						}
-//					}
-//				}
-//			} else { // puede ser clase o struct
-//				II_BACK(p,II_IS_NOTHING_4(p) || !II_IS_5(p,'{','}',';',')','('));
-//				p++;
-//				II_FRONT(p,II_IS_NOTHING_4(p));
-//				if (GetStyleAt(p)==wxSTC_C_WORD) {
-//					if (GetTextRange(p,p+6)=="struct") {
-//						p+=6;
-//						II_FRONT(p,II_IS_NOTHING_4(p));
-//						return code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
-//					} else if (GetTextRange(p,p+5)=="class") {
-//						p+=5;
-//						II_FRONT(p,II_IS_NOTHING_4(p));
-//						return code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
-//					} else if (GetTextRange(p,p+p)=="namespace") {
-//						p+=9;
-//						II_FRONT(p,II_IS_NOTHING_4(p));
-//						return code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
-//					}
-//				}
-//			}
-//		}
-//	}
-//	return "";
-// }
-
 void mxSource::OnToolTipTimeOut (wxStyledTextEvent &event) {
 	HideCalltip();
 }
@@ -3012,6 +2942,9 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 	int p=GetCurrentPos();
 	char chr = p>0?GetCharAt(p-1):' ';
 
+//	CodeHelper::RAIAutocompModeChanger rai_acmc;
+//	if (calltip_mode==MXS_AUTOCOMP && p==AutoCompPosStart()) rai_acmc.Change(2);
+	
 	HideCalltip();
 	
 	int s=GetStyleAt(p-1);
@@ -4050,10 +3983,11 @@ void mxSource::ShowAutoComp (int p, const wxString & s) {
 	last_failed_autocompletion.Reset(); 
 	focus_helper.Mask();
 	wxStyledTextCtrl::AutoCompShow(p,s);
-	wxPoint pt1=PointFromPosition(GetCurrentPos()-p);
+	int pbase = GetCurrentPos()-p;
+	wxPoint pt1=PointFromPosition(pbase);
 	wxPoint pt2=GetScreenPosition();
 	if (calltip_mode==MXS_AUTOCOMP) 
-		autocomp_helper.Start(pt1.x+pt2.x, pt1.y+pt2.y);
+		autocomp_helper.Start(pbase, pt1.x+pt2.x, pt1.y+pt2.y);
 }
 
 
@@ -4192,4 +4126,3 @@ void mxSource::ShowInspection (const wxPoint &pos, const wxString &exp, const wx
 	wxPoint p2(pos.x-5, pos.y-5); // para que el mouse quede dentro del inspection_baloon
 	inspection_baloon = new mxInspectionBaloon(p2,exp,val);
 }
-

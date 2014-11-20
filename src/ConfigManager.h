@@ -70,7 +70,8 @@ struct cfgSource {
 	bool overType;
 	int tabWidth;
 	bool tabUseSpaces;
-	int autoCompletion; ///< 0=none, 1=start, 2=find
+	int autoCompletion; ///< 0=none, 1=start, 2=find, 3=leventhein
+	bool autocompFilters;
 	bool callTips;
 	bool avoidNoNewLineWarning;
 	bool toolTips;
