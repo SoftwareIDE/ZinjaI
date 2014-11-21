@@ -729,8 +729,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.show_log_panel = debug_show_log_panel->GetValue();
 //	config->Debug.use_colours_for_inspections = debug_use_colours_for_inspections->GetValue();
 	config->Debug.inspections_can_have_side_effects = debug_inspections_can_have_side_effects->GetValue();
-#warning ver si hay que reestablecer esto
-//	main_window->inspection_ctrl->ResetChangeHightlights(); // aplica los colores
 	config->Files.autocodes_file = files_autocode->GetValue();
 	autocoder->Reset(project?project->autocodes_file:"");
 	config->Debug.improve_inspections_by_type = improve_inspections_by_type->GetValue();

@@ -122,13 +122,13 @@ void mxRealTimeInspectionEditor::Resize(bool only_grow_h) {
 	wxSize old_size = WindowToClientSize(GetSize());
 	GetSizer()->RecalcSizes();
 	wxSize fit_size = GetSizer()->ComputeFittingClientSize(this);
-	int w=0,h=fit_size.GetHeight(); 
+	int h=fit_size.GetHeight(); 
 	if  (only_grow_h) {
 		if (h>old_size.GetHeight()) {
 			SetSize(ClientToWindowSize(wxSize(old_size.GetWidth(),h)));
 		}
 	} else {
-		
+		int w=0;
 		for(int i=0;i<inspections.GetSize();i++) { 
 			wxSize sz = inspections[i].label->GetSize();
 			if (sz.GetWidth()>w) w=sz.GetWidth();

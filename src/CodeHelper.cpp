@@ -79,12 +79,12 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray 
 		return true;
 	}
 	
-	unsigned int i,l=typed.Len();
+	unsigned int l=typed.Len();
 	typed.MakeLower();
 
 	int j, ll = words.keywords.GetCount();
 	for (j=0;j<ll;j++) {
-		i=0;
+		unsigned int i=0;
 		while (i<l && (tolower(words.keywords[j][i])==typed[i]))
 			i++;
 		if (i==l) autocomp_list.Add(words.keywords[j],words.icon,words.help);

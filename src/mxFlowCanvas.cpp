@@ -708,6 +708,7 @@ mxFlowCanvas::~mxFlowCanvas() {
 }
 
 void mxFlowCanvas::GetTextSize(wxString text, wxDC *dc, int &m_ancho, int &alto) {
+	// cppcheck-suppress deadpointer
 	wxSize s = dc->GetTextExtent(text);
 	m_ancho = s.GetWidth()/2;
 	alto = s.GetHeight();

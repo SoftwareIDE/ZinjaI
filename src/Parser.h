@@ -88,6 +88,9 @@ class mxParserProcess;
 
 class Parser {
 	
+	Parser(const Parser &); ///< esta clase no es copiable
+	void operator=(const Parser &); ///< esta clase no es copiable
+	
 	friend class mxParserProcess;
 
 	mxParserProcess *process; ///< curren async process (launched by ParseNextFile, interrupting ParseSomething, and waiting to call ParseContinue on termination)

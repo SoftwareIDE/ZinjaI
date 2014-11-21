@@ -341,7 +341,6 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_GENERIC_READ_DN("suppress_ids",cppcheck->suppress_ids);
 				else CFG_GENERIC_READ_DN("exclude_list",cppcheck->exclude_list);
 				else CFG_BOOL_READ_DN("inline_suppr",cppcheck->inline_suppr);
-#warning recuperar funcionalidad
 			} else if (section=="inspections") {
 				if (key=="expr") inspections_grid->ModifyExpression(-1,value,true,true);
 			} else if (section=="custom_tools") {
@@ -369,8 +368,6 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	
 	// cargar las inspecciones en la tabla
 	code_helper->AppendIndexes(autocomp_extra);
-#warning recuperar funcionalidad
-//	debug->LoadInspectionsTable(&current_inspections);
 	
 	if (configurations_count==0) { // si no tenia definida ninguna configuracion crear las dos predeterminadas
 		// crear configuracion Debug
@@ -546,8 +543,6 @@ ProjectManager::~ProjectManager() {
 
 	parser->CleanAll();
 	autocoder->Reset("");
-#warning recuperar funcionalidad
-//	debug->ClearSavedInspectionTables();
 	
 	// configurar interface para modo proyecto
 	main_window->PrepareGuiForProject(false);

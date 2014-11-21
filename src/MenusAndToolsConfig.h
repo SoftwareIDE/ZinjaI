@@ -15,6 +15,10 @@ class mxMainWindow;
 
 
 class MenusAndToolsConfig {
+	
+	MenusAndToolsConfig(const MenusAndToolsConfig &); ///< esta clase no es copiable
+	void operator=(const MenusAndToolsConfig &); ///< esta clase no es copiable
+	
 	friend class mxPreferenceWindow;
 	friend class mxShortcutsDialog;
 	friend class mxUT;

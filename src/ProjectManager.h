@@ -451,6 +451,10 @@ struct stripping_info {
 * actual; o es NULL si no hay proyecto abierto.
 **/
 class ProjectManager {
+	
+	ProjectManager(const ProjectManager &); ///< esta clase no es copiable
+	void operator=(const ProjectManager &); ///< esta clase no es copiable
+	
 	friend wxString doxygen_configuration::get_tag_index();
 public:
 	compile_step *first_compile_step;
