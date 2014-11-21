@@ -36,7 +36,7 @@ public:
 	wxString GetFiltered(const wxString &keyword);
 	bool Contains(const wxString &key) {
 		for(unsigned int i=0;i<keywords.GetCount();i++) 
-			if (keywords[i].StartsWith(key) && (keywords[i].Len()==key.Len()||keywords[i][key.Len()]=='?'))
+			if (keywords[i].StartsWith(key) && (keywords[i].Len()==key.Len()||keywords[i][key.Len()]=='$'))
 				return true;
 		return false;
 	}
@@ -91,7 +91,7 @@ public:
 	bool AutocompleteDoxygen(mxSource *source, wxString typed="");
 	bool GenerateAutocompletionIndex(wxString path, wxString filename);
 	
-	void FilterAutocomp(mxSource *source, const wxString &key);
+	void FilterAutocomp(mxSource *source, const wxString &key, bool force_show=false);
 	
 	//! Recarga los indices de autocompletado
 	void ReloadIndexes(wxString indexes);

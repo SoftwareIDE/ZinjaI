@@ -264,6 +264,7 @@ private:
 	bool AutoCompActive();
 	
 private:
+	friend class CodeHelper;
 	mxInspectionBaloon *inspection_baloon;
 	enum MXS_CALLTIP_MODE { MXS_NULL, MXS_CALLTIP, MXS_INSPECTION, MXS_BALOON, MXS_AUTOCOMP };
 	MXS_CALLTIP_MODE calltip_mode;
@@ -287,15 +288,20 @@ private:
 	
 	class AutocompHelper {
 		wxTimer timer;
-		int x,y, pos; ///< position where autocompletion menu was displayed
+		int x,y; /// ¿screen? coordinates for autocompletion menu
+		int base_pos; ///< position in code where autocompletion keyword starts
+		int user_pos; ///< position in code where user invoked autocompletion (base_pos+keyword.Len())
 	public:
-		AutocompHelper(mxSource *src) : timer(src->GetEventHandler(),wxID_ANY),x(-1),y(-1),pos(-1) {}
-		void Start(int p, int _x, int _y) { pos=p; x=_x; y=_y; timer.Start(250,true); } ///< to be called when autocomp menu is created, will show the calltip next to it on timer event
+		AutocompHelper(mxSource *src) : timer(src->GetEventHandler(),wxID_ANY),x(-1),y(-1),base_pos(-1),user_pos(-1) {}
+		void Start(int bp, int up, int _x, int _y) { /// up=-1 for filtered results
+			base_pos=bp; if (up!=-1) user_pos=up; x=_x; y=_y; timer.Start(250,true);
+		}
 		void Restart() { timer.Start(250,true); } ///< to be called when an existing autocompletion list changes its selection
 		bool IsThisYourTimer(const wxTimer *t) { return t==&timer; } ///< to query in mxSource::OnTimer it the current event if for this timer
 		int GetX() { return x; }
 		int GetY() { return y; }
-		int GetPos() { return pos; }
+		int GetBasePos() { return base_pos; }
+		int GetUserPos() { return user_pos; }
 	} autocomp_helper;
 	
 	void OnTimer(wxTimerEvent &event);
@@ -305,7 +311,7 @@ public:
 	void HideCalltip();
 	void ShowBaloon(wxString str, int p = -1);
 	void ShowCallTip(int brace_pos, int calltip_pos, const wxString &s);
-	void ShowAutoComp(int p, const wxString &s);
+	void ShowAutoComp(int p, const wxString &s, bool is_filter=false);
 
 	wxFileName working_folder;
 	wxFileName source_filename;

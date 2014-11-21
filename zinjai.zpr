@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=../../../src/manual/wx/2.8-ansi-debug/src/gtk/window.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -257,7 +258,7 @@ path=src/mxValgrindOuput.cpp
 cursor=67:38
 [source]
 path=src/mxGrid.cpp
-cursor=87:72
+cursor=62:1
 [source]
 path=src/mxUtils.cpp
 cursor=90:0
@@ -767,7 +768,7 @@ path=src/mxRealTimeInspectionEditor.h
 cursor=14:25
 [other]
 path=guihelp/ChangeLog.html
-cursor=21:53
+cursor=10:0
 [other]
 path=guihelp/tips_spanish
 cursor=1:462

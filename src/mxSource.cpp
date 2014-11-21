@@ -343,6 +343,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	AutoCompSetSeparator('\n');
 	AutoCompSetIgnoreCase(true);
 	AutoCompSetAutoHide(false);
+	AutoCompSetTypeSeparator('$');
 	
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetStyle(1,wxSTC_INDIC_SQUIGGLE);
@@ -1062,7 +1063,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	if (calltip_mode==MXS_AUTOCOMP) {
 		if (!II_IS_KEYWORD_CHAR(chr)) HideCalltip();
 		else if (config_source.autocompFilters) 
-			code_helper->FilterAutocomp(this,GetTextRange(autocomp_helper.GetPos(),GetCurrentPos()));
+			code_helper->FilterAutocomp(this,GetTextRange(autocomp_helper.GetBasePos(),GetCurrentPos()));
 	}
 	if (config_source.autocloseStuff) {
 		int pos=GetCurrentPos();
@@ -3553,6 +3554,15 @@ bool mxSource::IsEmptyLine(int l, bool ignore_comments, bool ignore_preproc) {
 }
 
 void mxSource::OnKeyDown(wxKeyEvent &evt) {
+	if (calltip_mode==MXS_AUTOCOMP && evt.GetKeyCode()==WXK_BACK && config_source.autocompFilters) {
+		/*evt.Skip();*/
+		int cp = GetCurrentPos()-1;
+		SetTargetStart(cp); SetTargetEnd(cp+1); ReplaceTarget(""); // manually delete character, event.Skip whould hide autocompletion menu
+		if (cp>=autocomp_helper.GetUserPos())
+			code_helper->FilterAutocomp(this,GetTextRange(autocomp_helper.GetBasePos(),cp),true);
+		else HideCalltip();
+		return;
+	}
 	if (config_source.autocloseStuff && evt.GetKeyCode()==WXK_BACK) {
 		int p=GetCurrentPos();
 		if (p) {
@@ -3866,7 +3876,7 @@ void mxSource::ShowCallTip (int brace_pos, int calltip_pos, const wxString & s) 
 	calltip->Show(calltip_pos,s);
 }
 
-void mxSource::HideCalltip ( ) {
+void mxSource::HideCalltip () {
 	switch (calltip_mode) { 
 		case MXS_NULL: break;
 		case MXS_INSPECTION: HideInspection(); break;
@@ -3877,7 +3887,7 @@ void mxSource::HideCalltip ( ) {
 	calltip_mode = MXS_NULL;
 }
 
-void mxSource::ShowAutoComp (int p, const wxString & s) { 
+void mxSource::ShowAutoComp (int p, const wxString & s, bool is_filter) { 
 	SetCalltipMode(MXS_AUTOCOMP);
 	last_failed_autocompletion.Reset(); 
 	focus_helper.Mask();
@@ -3886,7 +3896,7 @@ void mxSource::ShowAutoComp (int p, const wxString & s) {
 	wxPoint pt1=PointFromPosition(pbase);
 	wxPoint pt2=GetScreenPosition();
 	if (calltip_mode==MXS_AUTOCOMP) 
-		autocomp_helper.Start(pbase, pt1.x+pt2.x, pt1.y+pt2.y);
+		autocomp_helper.Start(pbase,is_filter?-1:(pbase+p), pt1.x+pt2.x, pt1.y+pt2.y);
 }
 
 

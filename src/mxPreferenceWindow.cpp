@@ -449,7 +449,7 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	
 	source_smartIndent = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_INTELLIGENT_EDITING,"Edición inteligente"),config->Source.smartIndent);
 	source_bracketInsertion = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCLOSE_BRACKETS,"Cerrar llaves automáticamente al presionar Enter"),config->Source.bracketInsertion);
-	source_autocloseStuff = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCLOSE_STUFF,"Siempre cerrar llaves, paréntesis y comillas al ingresar"),config->Source.autocloseStuff);
+	source_autocloseStuff = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCLOSE_STUFF,"Siempre cerrar llaves, paréntesis y comillas automáticamente"),config->Source.autocloseStuff);
 	source_indentPaste = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_INDENT_ON_PASTE,"Corregir indentado al pegar"),config->Source.indentPaste);
 	source_avoidNoNewLineWarning = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE,"Controlar que quede una linea en blanco al final de cada archivo"),config->Source.avoidNoNewLineWarning);
 	source_toolTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_SHOW_TOOLTIPS_FOR_VAR_TYPES,"Utilizar tooltips para identificar tipos de variables"),config->Source.toolTips);
