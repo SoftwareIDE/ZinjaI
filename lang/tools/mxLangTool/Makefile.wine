@@ -1,4 +1,4 @@
-MINGWDIR="D:/mingw"
+MINGWDIR="../../../MinGW"
 GPP=wine ${MINGWDIR}/bin/mingw32-g++
 FLAGS=-O2 "-I${MINGWDIR}/wx/include"
 LIBS=-s -static-libstdc++ -static-libgcc "-L${MINGWDIR}/wx/lib" -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -mwindows

@@ -14,8 +14,8 @@ public:
 	void OnKey(wxKeyEvent &event);
 //	void OnDblClick(wxGridEvent &event);
 //	void OnRightClick(wxGridEvent &event);
-//	void OnExploreArgs(wxCommandEvent &event);
-//	void OnExploreLocals(wxCommandEvent &event);
+	void OnExploreArgs(wxCommandEvent &event);
+	void OnExploreLocals(wxCommandEvent &event);
 	void OnInspectArgs(wxCommandEvent &event);
 	void OnInspectLocals(wxCommandEvent &event);
 	void OnGotoPos(wxCommandEvent &event);

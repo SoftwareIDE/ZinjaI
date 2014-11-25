@@ -12,6 +12,8 @@
 # el instalador final.
 # 
 
+export WINEPREFIX=$(pwd)/wine
+
 SRC=..
 
 make -j 2 -C $SRC/src -f Makefile.wine || exit 1
@@ -23,7 +25,7 @@ function zmkdir {
 }
 
 zmkdir zinjai
-    cp -u $SRC/lsdeps.exe zinjai/
+    cp -u $SRC/lsdeps.exe zinjai/ 
     cp -u $SRC/lsdeps.exe zinjai/
     cp -u $SRC/runner.exe zinjai/
     cp -u $SRC/cbrowser.exe zinjai/
@@ -40,6 +42,7 @@ zmkdir zinjai
     cp -u $SRC/imgs/descripcion.txt zinjai/imgs/
     cp -u $SRC/imgs/*.png zinjai/imgs/
     cp -u $SRC/imgs/*.html zinjai/imgs/
+    zmkdir fuentes/imgs
     cp -u $SRC/imgs/*.ico fuentes/imgs/
     zmkdir zinjai/imgs/16
       cp -u $SRC/imgs/16/* zinjai/imgs/16/
@@ -54,8 +57,8 @@ zmkdir zinjai
     cp $SRC/lang/*.txt zinjai/lang/
     rm -f zinjai/lang/spanish.*
     cp $SRC/lang/*.sgn zinjai/lang/
-  zmkdir cppreference/cppreference
-    cp -ru $SRC/cppreference/* cppreference/cppreference
+#  zmkdir cppreference/cppreference
+#    cp -ru $SRC/cppreference/* cppreference/cppreference
   zmkdir zinjai/guihelp
     cp -u $SRC/guihelp/* zinjai/guihelp/
   zmkdir zinjai/toolchains
@@ -63,25 +66,22 @@ zmkdir zinjai
   zmkdir zinjai/colours
     cp -u $SRC/colours/* zinjai/colours/
   zmkdir zinjai/templates
-    cp -Hru $SRC/templates-w32/zinjai/* zinjai/templates/
+    cp -Hru $SRC/templates/default* zinjai/templates/
+    cp -Hru $SRC/templates/MakefileBased zinjai/templates/
+    cp -Hru $SRC/templates/Biblioteca zinjai/templates/
   zmkdir zinjai/autocomp
     cp -Hru $SRC/autocomp/AAA* zinjai/autocomp/
-    cp -Hru $SRC/autocomp/STL* zinjai/autocomp/
+#    cp -Hru $SRC/autocomp/STL* zinjai/autocomp/
     cp -Hru $SRC/autocomp/Doc* zinjai/autocomp/
   zmkdir zinjai/graphviz
     cp -u $SRC/graphviz/*.exe zinjai/graphviz/
 
 zmkdir OpenGL
   zmkdir OpenGL/templates
-    cp -Hru $SRC/templates-w32/OpenGL/* OpenGL/templates
+    cp -Hru $SRC/templates/OpenGL OpenGL/templates
+    cp -Hru $SRC/templates/opengl-windows.tpl OpenGL/templates
   zmkdir OpenGL/autocomp
     cp -Hru $SRC/autocomp/OpenGL* OpenGL/autocomp
-
-#zmkdir wx
-#  zmkdir wx/templates
-#    cp -Hru $SRC/templates-w32/wx/* wx/templates
-#  zmkdir wx/autocomp
-#    cp -Hru $SRC/autocomp/wx* wx/autocomp/
 
 zmkdir fuentes
   cp -u $SRC/compiling.txt fuentes/
@@ -119,9 +119,9 @@ zmkdir fuentes
   zmkdir fuentes/src_extras
     cp -ru fuentes/src_extras/*.nsh .
     rm -rf $SRC/src_extras/wxWidgets
-    rm -rf $SRC/src_extras/*.bin
+    rm -rf $SRC/src_extras/*.bin 
 
-wine d:/NSIS/makensis.exe /DPRODUCT_VERSION\=`cat fuentes/src/version.h | head -n 1 | cut -d ' ' -f 3` zinjai.nsh || exit 1
+wine c:/NSIS/makensis.exe /DPRODUCT_VERSION\=`cat fuentes/src/version.h | head -n 1 | cut -d ' ' -f 3` zinjai.nsh || exit 1
 
 echo
 echo All done

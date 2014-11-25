@@ -15,8 +15,12 @@ using namespace std;
 
 #if defined(_WIN32)||defined(__WIN32__)
 // maldito seas "winbase.h" (ahi se hacen defines como los que estan aca abajo, entonces cualquiera que los incluya esta cambiando los nombres)
-#define MoveFile MoveFileA
-#define DeleteFile DeleteFileA
+	#ifdef MoveFile
+		#undef MoveFile
+	#endif
+	#ifdef DeleteFile
+		#undef DeleteFile
+	#endif
 #endif
 
 class ProjectManager;
