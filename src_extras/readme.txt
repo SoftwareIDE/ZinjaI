@@ -48,4 +48,8 @@ Tools and script for generating some non-executable ZinjaI files
     std_autocomp
       bash scripts and cpp files used to generate some std autocompletio indexes from cppreference html files
 
-  
+      
+Other files
+
+    stc-zaskar.tgz
+      files modified from wxWidgets-2.8.12 src's contrib folder, changes made to wxStiledTextCtrl and its scintilla's version that are used by ZinjaI (included in its binary version).
