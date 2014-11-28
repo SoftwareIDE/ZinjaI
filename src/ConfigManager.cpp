@@ -391,6 +391,13 @@ bool ConfigManager::Load() {
 		SetDefaultInspectionsImprovingTemplates();
 	}
 	
+#ifdef _STC_HAS_ZASKARS_RESHOW
+	if (Init.version<20141127) {
+		if (Source.autoCompletion) Source.autoCompletion=2;
+		Source.autocompFilters=true;
+	}
+#endif
+
 	Init.autohiding_panels=Init.autohide_panels;
 	
 	return true;
@@ -716,8 +723,8 @@ void ConfigManager::LoadDefaults(){
 	Source.alignComments=80;
 	Source.tabWidth=4;
 	Source.tabUseSpaces=false;
-	Source.autoCompletion=1;
-	Source.autocompFilters=false;
+	Source.autoCompletion=2;
+	Source.autocompFilters=true;
 	Source.callTips=true;
 	Source.avoidNoNewLineWarning=true;
 

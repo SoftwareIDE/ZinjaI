@@ -5,10 +5,6 @@
 bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 
 
-bug: personalizar toolbar durante la depuracion (y tal vez en pantalla completa tambien)
-
-
-
 Otras:
 
 corregir el problema del drag and drop que le jode a nestor

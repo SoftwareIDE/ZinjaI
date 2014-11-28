@@ -3891,7 +3891,11 @@ void mxSource::ShowAutoComp (int p, const wxString & s, bool is_filter) {
 	SetCalltipMode(MXS_AUTOCOMP);
 	last_failed_autocompletion.Reset(); 
 	focus_helper.Mask();
-	wxStyledTextCtrl::AutoCompShow(p,s);
+#ifdef _STC_HAS_ZASKARS_RESHOW
+	if (is_filter) wxStyledTextCtrl::AutoCompReShow(p,s);
+	else 
+#endif
+		wxStyledTextCtrl::AutoCompShow(p,s);
 	int pbase = GetCurrentPos()-p;
 	wxPoint pt1=PointFromPosition(pbase);
 	wxPoint pt2=GetScreenPosition();
