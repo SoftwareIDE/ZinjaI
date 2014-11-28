@@ -34,8 +34,6 @@ static bool ShouldAddToAutocompStart(const wxString &typed, int len, const wxStr
 
  // comparacion con normal letra a letra no case sensitive, cualquier parte
 static bool ShouldAddToAutocompFind(const wxString &typed, int len, const wxString &candidate) {
-	if (candidate=="calltip_mode")
-		cerr<<"BOOO: "<<(len==0 || candidate.Lower().Contains(typed))<<endl;
 	return len==0 || candidate.Lower().Contains(typed);
 }
 
@@ -95,6 +93,8 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray 
 	return true;	
 }
 
+
+// key es en realidad scope??
 bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words/*, int max_str_dist*/) {
 	UnTemplate(key);
 	unsigned int len=typed.Len();
@@ -1431,8 +1431,9 @@ bool auxAutocompLocalsPreChar(char c) {
 	return c==' '||c=='\t'||c==','||c=='*'||c=='&'||c=='\n'||c=='\r';
 }
 
-void CodeHelper::AutocompleteLocals (mxSource * source, wxString key, int scope_start) {
-	int p_to = source->GetCurrentPos()-key.Len(), p=scope_start;
+void CodeHelper::AutocompleteLocals (mxSource * source, wxString typed, int scope_start) {
+	typed.MakeLower();
+	int p_to = source->GetCurrentPos()-typed.Len(), p=scope_start;
 	p = source->FindText(p,p_to,"{",0);
 	while(p!=wxSTC_INVALID_POSITION && p<p_to) {
 		if (p==0 || auxAutocompLocalsPreChar(source->GetCharAt(p-1))) { 
@@ -1442,7 +1443,7 @@ void CodeHelper::AutocompleteLocals (mxSource * source, wxString key, int scope_
 				if (!autocomp_list.Contains(word)) autocomp_list.Add(word,"$21","");
 			}
 		}
-		p = source->FindText(p+key.Len(),p_to,key,0);
+		p = source->FindText(p+typed.Len(),p_to,typed,0);
 	}
 }
 
