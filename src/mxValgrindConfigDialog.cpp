@@ -80,7 +80,9 @@ wxString mxValgrindConfigDialog::GetArgs() {
 
 void mxValgrindConfigDialog::SetArg (const wxString & arg, bool present) {
 	wxString args = additional_args->GetValue();
-	mxUT::SetArgument(args,arg,present);
-	additional_args->SetValue(args);
+	if (mxUT::IsArgumentPresent(arg)!=present) {
+		mxUT::SetArgument(args,arg,present);
+		additional_args->SetValue(args);
+	}
 }
 
