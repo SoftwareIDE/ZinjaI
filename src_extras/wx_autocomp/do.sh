@@ -16,4 +16,5 @@ for A in $(cat $OPWD/func_list); do
     echo F $A
     $OPWD/wxAutocompFunctionsExtractor.bin $A >> $OPWD/wxWidgets
 done
+cat $OPWD/stc >> $OPWD/wxWidgets
 echo "all done"
