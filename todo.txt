@@ -2,10 +2,15 @@
 
 	* IMPORTANTE: buscar todos los #warning
 	
+	* cuando un paso de comp personalizado falla (por ejemplo, si no esta moc.exe) es re dificil darse cuenta... agregar un error en el compiler_output tree
+	
+	
 bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 
 
 Otras:
+
+alguna forma de herencia de configuraciones de proyectos???? algo para los mil msuites con qt5s
 
 corregir el problema del drag and drop que le jode a nestor
 

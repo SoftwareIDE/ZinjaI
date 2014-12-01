@@ -201,6 +201,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_STC_AUTOCOMP_SELECTION(wxID_ANY,mxSource::OnAutocompSelection)
 	
 	EVT_TIMER(wxID_ANY,mxSource::OnTimer)
+	EVT_MOUSEWHEEL(mxSource::OnMouseWheel)
 	
 END_EVENT_TABLE()
 
@@ -4038,4 +4039,15 @@ void mxSource::ShowInspection (const wxPoint &pos, const wxString &exp, const wx
 	SetCalltipMode(MXS_INSPECTION);
 	wxPoint p2(pos.x-5, pos.y-5); // para que el mouse quede dentro del inspection_baloon
 	inspection_baloon = new mxInspectionBaloon(p2,exp,val);
+}
+
+void mxSource::OnMouseWheel (wxMouseEvent & event) {
+	if (event.ControlDown()) {
+		if (event.m_wheelRotation>0) {
+			ZoomIn();
+		} else {
+			ZoomOut();
+		}
+	} else
+		event.Skip();
 }

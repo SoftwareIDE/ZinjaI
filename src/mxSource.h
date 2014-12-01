@@ -207,6 +207,7 @@ public:
 
 	int GetMarginForThisX(int x);
 	void OnClick(wxMouseEvent &evt);
+	void OnMouseWheel(wxMouseEvent & event);
 	void OnPopupMenu(wxMouseEvent &evt);
 	void OnPopupMenuInside(wxMouseEvent &evt);
 	void OnPopupMenuMargin(wxMouseEvent &evt);

@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=todo.txt
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -774,6 +775,7 @@ cursor=0:24
 [other]
 path=todo.txt
 cursor=0:0
+open=true
 [other]
 path=src/mainpage.h
 cursor=22:0
