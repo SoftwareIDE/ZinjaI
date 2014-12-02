@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=todo.txt
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -174,8 +173,8 @@ path=src/mxOSD.cpp
 cursor=20:37
 [source]
 path=src/mxSource.cpp
-cursor=3893:30
-marker=3957
+cursor=570:1
+marker=3958
 [source]
 path=src/mxDrawClasses.cpp
 cursor=131:31
@@ -440,7 +439,7 @@ path=src/mxShareSourceWindow.h
 cursor=25:8
 [header]
 path=src/mxSource.h
-cursor=0:19
+cursor=206:0
 [header]
 path=src/mxTipsWindow.h
 cursor=11:0
@@ -765,7 +764,7 @@ path=src/mxRealTimeInspectionEditor.h
 cursor=14:25
 [other]
 path=guihelp/ChangeLog.html
-cursor=23:181
+cursor=0:0
 [other]
 path=guihelp/tips_spanish
 cursor=1:462
@@ -775,7 +774,6 @@ cursor=0:24
 [other]
 path=todo.txt
 cursor=0:0
-open=true
 [other]
 path=src/mainpage.h
 cursor=22:0

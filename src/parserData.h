@@ -51,7 +51,9 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 //	DEBUG_INFO("Archivo: "<<aname);
 
 #define CH_REGISTER_CLASS(afile,aclass,aname) \
-	parser->h_classes[aname] = parser->first_class->next = aclass=new pd_class(NULL,afile,0,aname,"",parser->first_class->next);
+	pd_class* &aux=parser->h_classes[aname]; \
+	if (!aux) aux=parser->first_class->next = new pd_class(NULL,afile,0,aname,"",parser->first_class->next); \
+	aclass=aux;
 //	DEBUG_INFO("   Clase: "<<aname<<"*");
 
 #define CH_REGISTER_INHERIT(afather, aprops, ason) \

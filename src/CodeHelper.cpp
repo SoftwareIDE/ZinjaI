@@ -736,6 +736,16 @@ bool CodeHelper::LoadData(wxString index) {
 			CH_REGISTER_FILE(aux_file, header);
 		} else if (tabs==1) {
 			if (str.Mid(0,6)==_("class ")) { // es una clase
+				for (int i=0, l=str.Len(); i<l; i++) {
+					if (str[i]=='<') {
+						int i0=i++, templ_lev=1; 
+						do {
+							if (str[i]=='>') templ_lev--;
+							else if (str[i]=='<') templ_lev++;
+						} while (++i<l && templ_lev);
+						if (templ_lev==0) { str=str.Mid(0,i0)+str.Mid(i); l=str.Len(); }
+					}
+				}
 				str=str.Mid(6);
 				if ( (pos=str.Find(' '))==wxNOT_FOUND) { // si no hay herencia
 					CH_REGISTER_CLASS(aux_file, aux_class, str);
