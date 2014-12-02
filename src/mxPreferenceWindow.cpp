@@ -167,7 +167,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	bottomSizer->Add(ok_button,sizers->BA5);
 
 	if (config->Help.show_extra_panels) 
-		notebook->AddPage(CreateQuickHelpPanel(notebook), LANG(PREFERENCES_QUICK_HELP,"Ayuda Rapida"),false,9);
+		notebook->AddPage(CreateQuickHelpPanel(notebook), LANG(PREFERENCES_QUICK_HELP,"Ayuda Rapida"),false,8);
 	notebook->AddPage(CreateGeneralPanel(notebook), LANG(PREFERENCES_GENERAL,"General"),false,0);
 	notebook->AddPage(CreateSimplePanel(notebook), LANG(PREFERENCES_SIMPLE_PROGRAM,"Programa/Proyecto"),false,1);
 	notebook->AddPage(CreateStylePanel(notebook), LANG(PREFERENCES_STYLE,"Estilo"),false,2);
