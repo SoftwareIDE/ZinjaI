@@ -32,7 +32,7 @@ void mxMainWindow::UpdateInHistory(wxString filename, bool is_project) {
 	// actualizar el menu archivo
 	for (i=0;i<config->Init.history_len;i++) {
 		wxString icon_fname=wxString(ipre)<<i<<".png";
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		if (mnihistory[i])
 			mnurecent->Remove(mnihistory[i]);
 		if (cfglast[i][0])

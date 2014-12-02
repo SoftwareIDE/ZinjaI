@@ -95,8 +95,8 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	
 	last_return_had_shift_down = mask_cell_change_event = false;
 	
-	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),DebuggerInspection::GetUserStatusText(DIMSG_PENDING)); /// @todo: traducir
-	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),DebuggerInspection::GetUserStatusText(DIMSG_OUT_OF_SCOPE));  /// @todo: traducir
+	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),DebuggerInspection::GetUserStatusText(DIMSG_PENDING));
+	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),DebuggerInspection::GetUserStatusText(DIMSG_OUT_OF_SCOPE));
 	mxig_status_opts[IGRS_IN_SCOPE].Init(true,wxColour(196,0,0));
 	mxig_status_opts[IGRS_CHANGED].Init(true,wxColour(196,0,0));
 	mxig_status_opts[IGRS_NORMAL].Init(true,wxColour(0,0,0));

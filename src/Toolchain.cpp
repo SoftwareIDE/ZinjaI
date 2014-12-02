@@ -100,7 +100,7 @@ Toolchain::Toolchain () {
 	file="<null>";
 //	desc="<null>";
 	type=TC_GCC;
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	linker="mingw32-g++";
 	cpp_compiler="mingw32-g++";
 	c_compiler="mingw32-gcc";

@@ -46,7 +46,7 @@ ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 }
 
 void ConfigManager::DoInitialChecks() {
-#if defined(__WIN32__)
+#ifdef __WIN32__
 #else
 	// elegir un explorador de archivos
 	if (Files.explorer_command=="<<sin configurar>>") { // tratar de detectar automaticamente un terminal adecuado
@@ -239,7 +239,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("check_for_updates",Init.check_for_updates);
 				else CFG_BOOL_READ_DN("prefer_explorer_tree",Init.prefer_explorer_tree);
 				else CFG_BOOL_READ_DN("cppcheck_seen",Init.cppcheck_seen);
-#if !defined(__WIN32__)
+#ifndef __WIN32__
 				else CFG_BOOL_READ_DN("valgrind_seen",Init.valgrind_seen);
 				else CFG_BOOL_READ_DN("compiler_seen",Init.compiler_seen);
 				else CFG_BOOL_READ_DN("debugger_seen",Init.debugger_seen);
@@ -267,7 +267,7 @@ bool ConfigManager::Load() {
 			} else if (section=="Files") {
 				CFG_GENERIC_READ_DN("toolchain",Files.toolchain);
 				else CFG_GENERIC_READ_DN("debugger_command",Files.debugger_command);
-//#if defined(__WIN32__)
+//#ifdef __WIN32__
 //				else CFG_GENERIC_READ_DN("mingw_dir",Files.mingw_dir);
 //#endif
 				else CFG_GENERIC_READ_DN("terminal_command",Files.terminal_command);
@@ -282,7 +282,7 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("graphviz_dir",Files.graphviz_dir);
 				else CFG_GENERIC_READ_DN("browser_command",Files.browser_command);
 				else CFG_GENERIC_READ_DN("cppcheck_command",Files.cppcheck_command);
-#if !defined(__WIN32__)
+#ifndef __WIN32__
 				else CFG_GENERIC_READ_DN("valgrind_command",Files.valgrind_command);
 #endif
 				else CFG_GENERIC_READ_DN("doxygen_command",Files.doxygen_command);
@@ -331,14 +331,14 @@ bool ConfigManager::Load() {
 	if (Init.version<20110418) Debug.use_colours_for_inspections=true;
 	if (Init.version<20110420) Init.check_for_updates=true;
 	
-//#if defined(__WIN32__)
+//#ifdef __WIN32__
 //	if (Init.version<20120208 && !Init.forced_linker_options.Contains("-static-libstdc++")) Init.forced_linker_options<<" -static-libstdc++";
 //#else
 //	// " -static-libstdc++" estaba por error, solo se deberia haber agregado en windows, pero por error el if de arriba estaba fuera del #ifdef
 //	if (Init.version<20120229 && Init.forced_linker_options.Contains(" -static-libstdc++")) Init.forced_linker_options.Replace(" -static-libstdc++","",false);
 //#endif
 	if (Init.version<20100828) {
-//#if defined(__WIN32__)
+//#ifdef __WIN32__
 //		Init.forced_compiler_options<<" --show-column";
 //#endif
 		if (!Running.cpp_compiler_options.Contains("-O")) {
@@ -411,7 +411,7 @@ bool ConfigManager::Save(){
 		fil.Create();
 	fil.Clear();
 	
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	fil.AddLine(wxString("# generado por ZinjaI-w32-")<<VERSION);
 #elif defined(__APPLE__)
 	fil.AddLine(wxString("# generado por ZinjaI-mac-")<<VERSION);
@@ -442,7 +442,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("check_for_updates",Init.check_for_updates);
 	CFG_BOOL_WRITE_DN("prefer_explorer_tree",Init.prefer_explorer_tree);
 	CFG_BOOL_WRITE_DN("cppcheck_seen",Init.cppcheck_seen);
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	CFG_BOOL_WRITE_DN("valgrind_seen",Init.valgrind_seen);
 	CFG_BOOL_WRITE_DN("compiler_seen",Init.compiler_seen);
 	CFG_BOOL_WRITE_DN("debugger_seen",Init.debugger_seen);
@@ -546,7 +546,7 @@ bool ConfigManager::Save(){
 //	CFG_GENERIC_WRITE_DN("compiler_command",Files.compiler_command);
 //	CFG_GENERIC_WRITE_DN("compiler_c_command",Files.compiler_c_command);
 	CFG_GENERIC_WRITE_DN("cppcheck_command",Files.cppcheck_command);
-#if defined(__WIN32__)
+#ifdef __WIN32__
 //	CFG_GENERIC_WRITE_DN("mingw_dir",Files.mingw_dir);
 #else
 	CFG_GENERIC_WRITE_DN("valgrind_command",Files.valgrind_command);
@@ -597,7 +597,7 @@ bool ConfigManager::Save(){
 void ConfigManager::LoadDefaults(){
 
 	// crear el directorio para zinjai si no existe
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),"zinjai");
 #else
 	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),".zinjai");
@@ -612,7 +612,7 @@ void ConfigManager::LoadDefaults(){
 	Files.skin_dir="imgs";
 	Files.graphviz_dir="graphviz";
 //	Files.mingw_dir="MinGW";
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	Files.toolchain="gcc-mingw32";
 	Files.parser_command="cbrowser.exe";
 	Files.debugger_command="gdb";
@@ -689,7 +689,7 @@ void ConfigManager::LoadDefaults(){
 	Init.show_explorer_tree=false;
 	
 	Init.cppcheck_seen=false;
-#if !defined(__WIN32__)
+#ifndef __WIN32__
 	Init.valgrind_seen=false;
 	Init.compiler_seen=false;
 	Init.debugger_seen=false;
@@ -745,7 +745,7 @@ void ConfigManager::LoadDefaults(){
 	Init.max_jobs=wxThread::GetCPUCount();
 	if (Init.max_jobs<1) Init.max_jobs=1;
 	
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	Help.wxhelp_index="MinGW\\wx\\docs\\wx_contents.html";
 //	Help.quickhelp_index="quickhelp\\index";
 #else

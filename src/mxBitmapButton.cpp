@@ -58,7 +58,7 @@ wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, wxBitmap *bmp) {
 	wxMask *m=new wxMask();
 	m->Create(full,c);
 	full.SetMask(m);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	full.SetWidth(r.width);
 	full.SetHeight(r.height<bmp->GetHeight()?bmp->GetHeight():r.height);
 	return full;

@@ -143,7 +143,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *debug_macros_file;
 	wxCheckBox *improve_inspections_by_type;
 	wxTextCtrl *debug_blacklist;
-//#if defined(_WIN32) || defined(__WIN32__)
+//#ifdef __WIN32__
 //	wxTextCtrl *files_mingw_dir;
 //#endif
 	
@@ -175,7 +175,7 @@ public:
 	void OnSkinButton(wxCommandEvent &event);
 	void OnProjectButton(wxCommandEvent &event);
 	void OnTempButton(wxCommandEvent &event);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 //	void OnMingwButton(wxCommandEvent &event);
 #else
 	void OnExplorerButton(wxCommandEvent &event);

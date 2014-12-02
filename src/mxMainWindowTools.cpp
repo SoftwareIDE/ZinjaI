@@ -163,7 +163,7 @@ void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 	if (project) new mxProjectStatistics(this);
 }
 
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 /**
 * @brief Prepara una corrida para ejecutarse con Valgrind
 *
@@ -646,7 +646,7 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	// procesar salida con gprof2dot para obtener el grafo
 	status_bar->SetStatusText(LANG(MAINW_GPROF_DRAWING,"Dibujando grafo..."));
 	wxString pout = DIR_PLUS_FILE(config->temp_dir,"gprof.dot");
-#if defined(__WIN32__)	
+#ifdef __WIN32__	
 	wxString command="graphviz/gprof2dot/gprof2dot.exe ";
 #else
 	wxString command="python graphviz/gprof2dot/gprof2dot.py ";

@@ -121,7 +121,7 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	wxString ldd = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar esta informacion mientras el parser esta analizando fuentes");
 	
 	if (!parser->working) {
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 		ldd = mxUT::GetOutput(wxString("ldd \"")<<fname.GetFullPath()<<"\"");
 #else
 		ldd = mxUT::GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\"");
@@ -131,7 +131,7 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 		wait_for_parser->Start(1000,true);
 	}
 	
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,"ldd",ldd);
 #else
 	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,"lsdeps",ldd);

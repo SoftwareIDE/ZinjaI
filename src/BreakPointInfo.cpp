@@ -7,7 +7,7 @@ GlobalList<BreakPointInfo*> BreakPointInfo::global_list;
 
 BreakPointInfo::BreakPointInfo(project_file_item *_fitem, int _line_number) {
 	fname=DIR_PLUS_FILE(project->path,_fitem->name);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') fname[i]='/';
 #endif
@@ -27,7 +27,7 @@ BreakPointInfo::BreakPointInfo(project_file_item *_fitem, int _line_number) {
 BreakPointInfo::BreakPointInfo(mxSource *_source, int _line_number) {
 	// para la lista global de breakpoints, siempre se inserta al principio
 	fname=_source->GetFullPath();
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') fname[i]='/';
 #endif
@@ -61,7 +61,7 @@ void BreakPointInfo::SetStatus(BREAK_POINT_STATUS _gdb_status, int _gdb_id) {
 void BreakPointInfo::UpdateLineNumber() {
 	if (!source) return;
 	fname=source->GetFullPath();
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') fname[i]='/';
 #endif

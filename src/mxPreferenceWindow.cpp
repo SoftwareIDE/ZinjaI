@@ -107,7 +107,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_DEBUG,mxPreferenceWindow::OnToolbarsDebug)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_VIEW,mxPreferenceWindow::OnToolbarsView)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_RESET,mxPreferenceWindow::OnToolbarsReset)
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 //	EVT_BUTTON(mxID_MINGW_FOLDER,mxPreferenceWindow::OnMingwButton)
 #else
 	EVT_BUTTON(mxID_PREFERENCES_XDG,mxPreferenceWindow::OnXdgButton)
@@ -217,7 +217,7 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (wxListbook *notebook) {
 	init_autohide_panels = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_AUTOHIDE_PANELS,"Ocultar paneles automaticamente (*)"),config->Init.autohide_panels);
 	init_singleton = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SINGLETON,"Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos"),config->Init.singleton);
 	init_check_for_updates = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CHECK_FOR_UPDATES,"Verificar si existen nuevas versiones al iniciar"),config->Init.check_for_updates);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 #else
 	init_lang_es = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT,"Mostrar errores de compilación en Español (Ver Ayuda!) (*)"),config->Init.lang_es);
 //	desktop_icon = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON,"Crear/Actualizar icono de ZinjaI en el escritorio"),false);
@@ -543,7 +543,7 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 //	help_quickhelp_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_QUICKHELP,"Ubicacion de la ayuda rapida"),config->Help.quickhelp_dir,mxID_QUICKHELP_FOLDER);
 //	help_autocomp_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_AUTOCOMP,"Ubicacion de los indices de autocompletado"),config->Help.autocomp_dir,mxID_AUTOCOMP_FOLDER);
 	files_temp_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_TEMP,"Directorio temporal"),config->Files.temp_dir, mxID_TEMP_FOLDER);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 //	files_mingw_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_MINGW,"Directorio de MinGW (requiere reiniciar ZinjaI)"),config->Files.mingw_dir, mxID_MINGW_FOLDER);
 #endif
 	files_project_folder = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_PROJECTS,"Directorio de proyectos"),config->Files.project_folder, mxID_PROJECTS_FOLDER);
@@ -618,7 +618,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	}
 	config->Init.show_splash = init_show_splash->GetValue();
 	config->Init.always_add_extension = init_always_add_extension->GetValue();
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 #else
 	config->Init.lang_es = init_lang_es->GetValue();
 #endif
@@ -702,7 +702,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	styles_print_size->GetValue().ToLong(&l); config->Styles.print_size=l;
 	styles_font_size->GetValue().ToLong(&l); config->Styles.font_size=l;
 	config->Styles.font_name=styles_font_name->GetValue();
-//#if defined(_WIN32) || defined(__WIN32__)
+//#ifdef __WIN32__
 //	config->Files.mingw_dir = files_mingw_dir->GetValue();
 //#endif
 	wxAuiNotebook *ns=main_window->notebook_sources;
@@ -867,7 +867,7 @@ void mxPreferenceWindow::OnHelpButton(wxCommandEvent &event){
 	mxHelpWindow::ShowHelp("preferences.html");
 }
 
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 //
 //void mxPreferenceWindow::OnMingwButton(wxCommandEvent &event){
 //	wxDirDialog dlg(this,_T("Directorio de binarios de MinGW:"),files_mingw_dir->GetValue());
@@ -1089,7 +1089,7 @@ void mxPreferenceWindow::ResetChanges() {
 	// paths
 	help_wxhelp_index->SetValue(config->Help.wxhelp_index);
 	files_temp_dir->SetValue(config->Files.temp_dir);
-//#if defined(_WIN32) || defined(__WIN32__)
+//#ifdef __WIN32__
 //	files_mingw_dir->SetValue(config->Files.mingw_dir);
 //#endif
 	files_project_folder->SetValue(config->Files.project_folder);
@@ -1167,7 +1167,7 @@ void mxPreferenceWindow::ResetChanges() {
 	init_show_explorer_tree->SetValue(config->Init.show_explorer_tree);
 	init_left_panels->SetValue(config->Init.left_panels);
 	init_check_for_updates->SetValue(config->Init.check_for_updates);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 #else
 	init_lang_es->SetValue(config->Init.lang_es);
 //	desktop_icon->SetValue(false);

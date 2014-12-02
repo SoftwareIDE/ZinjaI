@@ -133,12 +133,12 @@ void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 	LocalListIterator<project_file_item*> fi(&project->files_sources);
 	while(fi.IsValid()) {
 		if (sources_in->FindString(fi->name)!=wxNOT_FOUND) {
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 			if (!fi->lib) fi->force_recompile=true; // por el fPIC
 #endif
 			fi->lib = lib;
 		} else if (fi->lib == lib) {
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 			if (!fi->lib) fi->force_recompile=true; // por el fPIC
 			fi->lib=NULL;
 #endif
@@ -189,7 +189,7 @@ void mxLibToBuildWindow::SetFName() {
 	if (!constructed) return;
 	bool is_static = type->GetSelection()==1;
 	wxString fname = DIR_PLUS_FILE(path->GetValue(),wxString("lib")<<name->GetValue());
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	if (is_static)
 		fname<<".a";
 	else

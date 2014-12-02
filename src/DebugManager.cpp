@@ -54,7 +54,7 @@ DebugManager::DebugManager() {
 	output = NULL;
 	pid = 0;
 	notitle_source = current_source = NULL;
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	tty_pid = 0;
 	tty_process = NULL;
 #endif
@@ -155,7 +155,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	mxOSD osd(main_window,project?LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."):"");
 	ResetDebuggingStuff(); 
 	debug_patcher->Init(exe);
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	wxString tty_cmd, tty_file(DIR_PLUS_FILE(config->temp_dir,_T("tty.id")));
 	if (show_console) {
 		if (wxFileName::FileExists(tty_file))
@@ -179,7 +179,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(config->zinjai_dir,config->Debug.macros_file)<<"\"";
 	if (project && project->macros_file.Len() && wxFileName(DIR_PLUS_FILE(project->path,project->macros_file)).FileExists())
 		command<<_T(" -x \"")<<DIR_PLUS_FILE(project->path,project->macros_file)<<"\"";
-#if !defined(__WIN32__)
+#ifndef __WIN32__
 	if (show_console) {
 		pid=0;
 		wxDateTime t0=wxDateTime::Now(); // algunas terminales no esperan a que lo de adentro se ejecute para devolver el control (mac por ejemplo)
@@ -236,7 +236,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		}
 		Start_ConfigureGdb();
 		// configure debugger
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		SendCommand(_T("-gdb-set new-console on"));
 #endif
 		if (args.Len()) cerr<<SendCommand("set args ",args);
@@ -246,7 +246,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		return true;
 	} else  {
 			mxMessageDialog(main_window,wxString(LANG(DEBUG_ERROR_STATING_GDB,"Ha ocurrido un error al ejecutar el depurador."))
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 							<<"\n"<<LANG(DEBUG_ERROR_STARTING_GDB_LINUX,"Si el depurador (gdb) no se encuentra instalado\n"
 							"en su systema debe instalarlo con el gestor de\n"
 							"paquetes que corresponda a su distribucion\n"
@@ -270,7 +270,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 
 void DebugManager::ResetDebuggingStuff() {
 	status=DBGST_STARTING;
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	tty_running = false;
 #endif
 	black_list.Clear(); stepping_in=false;
@@ -471,7 +471,7 @@ bool DebugManager::Run() {
 }
 
 void DebugManager::HowDoesItRuns() {
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	static wxString sep="\\",wrong_sep="/";
 #else
 	static wxString sep="/",wrong_sep="\\";
@@ -729,7 +729,7 @@ void DebugManager::SetBacktraceShowsArgs(bool show) {
 }
 
 bool DebugManager::UpdateBacktrace(bool set_frame) {
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	static wxString sep="\\",wrong_sep="/";
 #else
 	static wxString sep="/",wrong_sep="\\";
@@ -921,7 +921,7 @@ void DebugManager::StepOver() {
 void DebugManager::Pause() {
 	should_pause=true;
 	if (!waiting && !debugging) return;
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	if (!winLoadDBP()) {
 		mxMessageDialog(main_window,"Esta caracteristica no se encuentra presente en versiones de Windows previas a XP-SP2",LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 		return;
@@ -1292,7 +1292,7 @@ void DebugManager::BacktraceClean() {
 **/
 wxString DebugManager::GetAddress(wxString fname, int line) {
 	if (waiting || !debugging) return "";
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	for (unsigned int i=0;i<fname.Len();i++) // corregir las barras en windows para que no sean caracter de escape
 		if (fname[i]=='\\') 
 			fname[i]='/';
@@ -1386,7 +1386,7 @@ void DebugManager::ProcessKilled() {
 	MarkCurrentPoint();
 	notitle_source = NULL;
 	debugging=false;
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	if (tty_running)
 		tty_process->Kill(tty_pid,wxSIGKILL);
 #endif
@@ -1400,7 +1400,7 @@ void DebugManager::ProcessKilled() {
 	DebuggerInspection::OnDebugStop();
 }
 
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 void DebugManager::TtyProcessKilled() {
 	if (pid && debugging && status!=DBGST_STOPPING) Stop();
 	delete tty_process;

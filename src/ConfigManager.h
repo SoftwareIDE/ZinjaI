@@ -130,7 +130,7 @@ struct cfgInit {
 	bool show_explorer_tree;
 	bool graphviz_dot;
 	int inherit_num;
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	bool valgrind_seen; ///< indica si se ha detectado en el sistema el ejecutable de valgrind
 	bool compiler_seen; ///< indica si se ha detectado en el sistema el compilador instalado
 	bool debugger_seen; ///< indica si se ha detectado en el sistema el depurador instalado

@@ -1888,7 +1888,7 @@ bool mxSource::AddInclude(wxString header) {
 	
 	int lp = GetCurrentPos() , cl = GetCurrentLine();
 	wxString oHeader=header;
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	header=header.MakeLower();
 #endif
 	wxString str;
@@ -1913,7 +1913,7 @@ bool mxSource::AddInclude(wxString header) {
 				p++;
 			p2=p;
 			str=GetTextRange(p1,p2);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 			str=str.MakeLower();
 #endif
 			if (str==header) {

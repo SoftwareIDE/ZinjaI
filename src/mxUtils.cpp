@@ -884,7 +884,7 @@ void mxUT::GetRunningChilds(wxArrayString &childs) {
 	long pid = wxGetProcessId();
 	if (!pid) return;
 
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	
 	struct proc { wxString cmd; long pid,ppid; int sel; };
 	wxArrayString output;
@@ -1320,7 +1320,7 @@ int mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxSt
 			output=DIR_PLUS_FILE(config->temp_dir,"temp.png");
 	}
 	wxString format=output.AfterLast('.').Lower(); if (!format.Len()) return 1;
-#if defined(__WIN32__)	
+#ifdef __WIN32__	
 	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,"draw.exe"));
 #else
 	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,"draw.bin"));

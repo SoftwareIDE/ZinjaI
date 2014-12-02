@@ -13,7 +13,7 @@
 #include <wx/filename.h>
 #include <wx/treebase.h>
 
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 #define WILDCARD_SOURCE "*.cpp;*.c;*.c++;*.cxx;*.CPP;*.C;*.C++;*.CXX;*.cc;*.CC"
 #define WILDCARD_HEADER "*.h;*.hpp;*.hxx;*.H;*.HPP;*.HXX;*.hh;*.HH"
 #define WILDCARD_PROJECT "*.zpr;*.ZPR"
@@ -47,7 +47,7 @@ class wxBitmapButton;
 	#define DEBUG_QH_SET(lala) debug_string=""; debug_string<<mxUT::ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
 	#define DEBUG_QH_ADD(lala) debug_string<<mxUT::ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(debug_string);
 	#define DEBUG_QH_ADDNL(lala) debug_string<<mxUT::ToHtml(wxString()<<lala)<<"<BR> "; main_window->ShowInQuickHelpPanel(debug_string);
-//	#if defined(_WIN32) || defined(__WIN32__)
+//	#ifdef __WIN32__
 //		#include <wx/msgdlg.h>
 //		#define DEBUG_INFO(info) wxMessageBox(wxString()<<info);
 //	#else
@@ -65,7 +65,7 @@ class wxBitmapButton;
 #define LANG2(key,text,arg1,arg2) 		mxUT::ReplaceLangArgs(LANG(key,text),arg1,arg2)
 #define LANG3(key,text,arg1,arg2,arg3) 	mxUT::ReplaceLangArgs(LANG(key,text),arg1,arg2,arg3)
 
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 #define BINARY_EXTENSION ".exe"
 #else
 #define BINARY_EXTENSION ".bin"

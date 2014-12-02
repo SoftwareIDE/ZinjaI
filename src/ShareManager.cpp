@@ -390,7 +390,7 @@ int ShareManager::GetSharedList(wxArrayString &a) {
 
 
 
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	#include <windows.h>
 	#include <winsock.h>
     #define sso_type char

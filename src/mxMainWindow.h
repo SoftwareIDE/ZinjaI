@@ -275,7 +275,7 @@ public:
 	void OnToolsCppCheckConfig(wxCommandEvent &event);
 	void OnToolsCppCheckView(wxCommandEvent &event);
 	void OnToolsCppCheckHelp(wxCommandEvent &event);
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	void OnToolsValgrindRun(wxCommandEvent &event);
 	void OnToolsValgrindDebug(wxCommandEvent &event);
 	void OnToolsValgrindCommon(bool debug);

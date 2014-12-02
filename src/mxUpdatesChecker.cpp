@@ -77,7 +77,7 @@ void mxUpdatesChecker::CheckNow() {
 #endif
 	
 	command<<"--version "<<VERSION<<" ";
-#if defined(__WIN32__) || defined(__WIN64__)
+#ifdef __WIN32__
 	command<<"--postfix windows ";
 #elif defined(__APPLE__)
 	command<<"--postfix mac ";

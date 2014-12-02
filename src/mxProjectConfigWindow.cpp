@@ -574,7 +574,7 @@ bool mxProjectConfigWindow::SaveValues() {
 		configuration->strip_executable=linking_strip_executable->GetSelection();
 		project->force_relink=true;
 	}
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 	if (configuration->console_program!=linking_console_program->GetValue()) {
 		configuration->console_program=linking_console_program->GetValue();
 		project->force_relink=true;

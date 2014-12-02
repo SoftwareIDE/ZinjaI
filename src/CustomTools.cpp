@@ -140,7 +140,7 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	} else 
 		workdir=project?project_path:current_dir;
 	
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	workdir.Replace("/","\\");
 #else
 	workdir.Replace("\\","/");

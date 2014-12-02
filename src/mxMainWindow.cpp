@@ -348,7 +348,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_CONFIG, mxMainWindow::OnToolsCppCheckConfig)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_VIEW, mxMainWindow::OnToolsCppCheckView)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_HELP, mxMainWindow::OnToolsCppCheckHelp)
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	EVT_MENU(mxID_TOOLS_VALGRIND_RUN, mxMainWindow::OnToolsValgrindRun)
 	EVT_MENU(mxID_TOOLS_VALGRIND_DEBUG, mxMainWindow::OnToolsValgrindDebug)
 	EVT_MENU(mxID_TOOLS_VALGRIND_VIEW, mxMainWindow::OnToolsValgrindView)
@@ -879,7 +879,7 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 	if (share) delete share;
 	main_window=NULL;
 	er_uninit();
-#if defined(__APPLE__)
+#ifdef __APPLE__
 	aui_manager.GetPane(_get_toolbar(tbFIND)).Hide();
 	aui_manager.Update(); wxYield();
 #endif
@@ -1041,7 +1041,7 @@ void mxMainWindow::OnSelectTreeItem (wxTreeEvent &event){
 		OnSelectError(event);
 	else if (event.GetEventObject()==symbols_tree.treeCtrl) {
 		parser->OnSelectSymbol(event,notebook_sources);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		SetFocusToSourceAfterEvents();
 #endif
 	} else if (event.GetEventObject()==explorer_tree.treeCtrl)
@@ -1054,7 +1054,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 	for (int i=0,j=notebook_sources->GetPageCount();i<j;i++)
 		if (((mxSource*)(notebook_sources->GetPage(i)))->treeId==item) {
 			notebook_sources->SetSelection(i);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 			SetFocusToSourceAfterEvents();
 #endif
 			return;
@@ -1071,7 +1071,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 //			if (source && project_tree.treeCtrl->GetItemParent(item)==project_tree.others)
 				//source->SetStyle(false);
 //				_menu_item(mxID_VIEW_CODE_STYLE)->Check(false);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 			SetFocusToSourceAfterEvents();
 #endif
 		}
@@ -1555,7 +1555,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 	if (event.GetPid()==debug->pid) {
 		debug->ProcessKilled();
 		return;
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	} else if (event.GetPid()==debug->tty_pid) {
 		debug->TtyProcessKilled();
 		return;
@@ -1738,7 +1738,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 	
 	// agregar el prefijo para valgrind
 	wxString exe_pref;
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	if (compiler->valgrind_cmd.Len())
 		exe_pref = compiler->valgrind_cmd+" ";
 #endif
@@ -3862,7 +3862,7 @@ void mxMainWindow::OnExplorerTreeOpenOne(wxCommandEvent &evt) {
 	wxString path = GetExplorerItemPath(explorer_tree.selected_item);
 	if (explorer_tree.treeCtrl->GetItemImage(explorer_tree.selected_item)) {
 		OpenFileFromGui(path);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		SetFocusToSourceAfterEvents();
 #endif
 	} else {
@@ -4767,7 +4767,7 @@ void mxMainWindow::OnSelectErrorCommon (const wxString & error, bool set_focus_t
 				source->SelectError(0,pos,pos+keyword.Len());
 			}
 		}
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		SetFocusToSourceAfterEvents();
 #endif
 		ShowCompilerTreePanel();

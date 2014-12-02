@@ -4,7 +4,7 @@
 #include <wx/bitmap.h>
 #include <wx/timer.h>
 
-#if defined(DEBUG) || defined(__APPLE__)
+#if defined(_ZINJAI_DEBUG) || defined(__APPLE__)
 //#define SPLASH_FILE "splashvb.png"
 #define SPLASH_FILE "splashv2l.png"
 #else

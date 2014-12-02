@@ -56,7 +56,7 @@ mxArt::mxArt(wxString img_dir) {
 	icons.info = new wxBitmap(SKIN_FILE(_T("icono_info.png")),wxBITMAP_TYPE_PNG);
 	icons.warning = new wxBitmap(SKIN_FILE(_T("icono_warning.png")),wxBITMAP_TYPE_PNG);
 	icons.question = new wxBitmap(SKIN_FILE(_T("icono_question.png")),wxBITMAP_TYPE_PNG);
-//#if defined(_WIN32) || defined(__WIN32__)
+//#ifdef __WIN32__
 //	wxColour background_colour=wxButton(NULL,wxID_ANY,_T("lala")).GetBackgroundColour();
 //	wxMemoryDC dc;
 //	dc.SelectObject(*icons.question);

@@ -8,12 +8,12 @@
 #include "DebugManager.h"
 
 MenusAndToolsConfig *menu_data;
-#if defined(__APPLE__)
+#ifdef __APPLE__
 	#define _if_not_apple(a,b) b
 #else
 	#define _if_not_apple(a,b) a
 #endif
-#if defined(__WIN32__)
+#ifdef __WIN32__
 	#define _if_win32(a,b) a
 #else
 	#define _if_win32(a,b) b
@@ -296,7 +296,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_GCOV_HELP,LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda...")).Description("Muestra ayuda acerca de como generar e interpretar la informacion del test de cobertura").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
-	#if !defined(_WIN32) && !defined(__WIN32__)
+	#ifndef __WIN32__
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_VALGRIND,"Análisis Dinámico (valgrind)")).Description("Valgrind permite analizar el uso de memoria dinamica para detectar perdidas y otros errores").Icon("valgrind.png").EnableIf(ecPROJECT_OR_SOURCE));
 			AddMenuItem(mnTOOLS, myMenuItem("valgrind_run",mxID_TOOLS_VALGRIND_RUN, LANG(MENUITEM_TOOLS_VALGRIND_RUN,"Ejecutar...")).Icon("valgrind_run.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("valgrind_debug",mxID_TOOLS_VALGRIND_DEBUG, LANG(MENUITEM_TOOLS_VALGRIND_RUN,"Depurar...")).Icon("valgrind_debug.png"));

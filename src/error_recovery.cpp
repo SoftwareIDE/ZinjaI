@@ -127,7 +127,7 @@ void er_sigsev(int sig) {
 void er_init(const char *dir) {
 	er_dir = dir;
 	if (er_dir[er_dir.size()-1]!='/' && er_dir[er_dir.size()-1]!='\\') {
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		er_dir+="\\";
 #else
 		er_dir+="/";

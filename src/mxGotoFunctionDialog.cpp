@@ -78,7 +78,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	if (strict_compare && list_ctrl->GetCount()==1 && goto_button->IsEnabled()) {
 		wxCommandEvent evt;
 		OnGotoButton(evt);
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		main_window->SetFocusToSourceAfterEvents();
 #endif
 	} else {

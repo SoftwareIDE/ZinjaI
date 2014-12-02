@@ -95,7 +95,7 @@ private:
 	long GetFrameID(long level) { return stack_depth-level-1; } 
 	long GetFrameLevel(long id) { return stack_depth-id-1; }
 	long current_thread_id; ///< id del thread actual, lo da gdb al detenerse o al cambiar de hilo
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	wxProcess *tty_process;
 	long tty_pid;
 	bool tty_running;
@@ -169,7 +169,7 @@ private:
 public:
 	void SetBacktraceShowsArgs(bool show);
 	bool UpdateBacktrace(bool set_frame=true);
-#if !defined(_WIN32) && !defined(__WIN32__)
+#ifndef __WIN32__
 	void TtyProcessKilled();
 #endif
 	void ProcessKilled();

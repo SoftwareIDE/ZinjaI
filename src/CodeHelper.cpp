@@ -1222,7 +1222,7 @@ void CodeHelper::AppendIndexes(wxString indexes) {
 	wxArrayString new_list;
 	mxUT::Split(indexes,new_list,true,false);
 	for (unsigned int i=0;i<new_list.GetCount();i++) {
-#if defined(_WIN32) || defined(__WIN32__)
+#ifdef __WIN32__
 		if (actual_indexes.Index(new_list[i],false)==wxNOT_FOUND)
 #else
 		if (actual_indexes.Index(new_list[i],true)==wxNOT_FOUND)
