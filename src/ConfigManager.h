@@ -30,7 +30,7 @@ struct cfgDebug {
 	bool autohide_panels;
 	bool autohide_toolbars;
 	bool allow_edition;
-	bool close_on_normal_exit;
+//	bool close_on_normal_exit;
 	bool always_debug;
 	bool compile_again;
 	bool raise_main_window;
@@ -44,6 +44,7 @@ struct cfgDebug {
 	bool inspections_on_right;
 	bool show_thread_panel;
 	bool show_log_panel;
+	bool return_focus_on_continue;
 	bool auto_solibs;
 	bool improve_inspections_by_type;
 	wxArrayString inspection_improving_template_from, inspection_improving_template_to;
@@ -97,7 +98,6 @@ struct cfgHelp {
 	wxString cppreference_dir;
 	wxString guihelp_dir;
 	wxString autocomp_indexes;
-//	wxString autocomp_dir;
 	int min_len_for_completion;
 	bool show_extra_panels;
 };
@@ -157,7 +157,6 @@ struct cfgFiles {
 	wxString skin_dir;
 	wxString default_template; 
 	wxString default_project; 
-//	wxString templates_dir; 
 //	wxString mingw_dir;
 	wxString toolchain;
 	wxString runner_command;
@@ -165,7 +164,6 @@ struct cfgFiles {
 	wxString parser_command;
 	wxString terminal_command; ///< comando para abrir un terminal y ejecutar algo en el
 	wxString explorer_command; ///< comando para abrir un explorador de archivos
-//	wxString code_helper;
 	wxString project_folder;
 	wxString graphviz_dir;
 	wxString xdot_command; ///< nice python app for displaying graphs

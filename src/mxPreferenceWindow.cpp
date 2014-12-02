@@ -149,8 +149,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_skin.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_toolbars.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_debug.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_paths_1.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_paths_2.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_paths.png")),wxBITMAP_TYPE_PNG));
 	if (config->Help.show_extra_panels) imglist->Add(wxBitmap(SKIN_FILE(_T("pref_help.png")),wxBITMAP_TYPE_PNG));
 	notebook->SetImageList(imglist);
 
@@ -175,9 +174,8 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	notebook->AddPage(CreateWritingPanel(notebook), LANG(PREFERENCES_ASSISTANCES,"Asistencias"),false,3);
 	notebook->AddPage(CreateSkinPanel(notebook), LANG(PREFERENCES_ICON_THEME,"Tema de Iconos"),false,4);
 	notebook->AddPage(CreateToolbarsPanel(notebook), LANG(PREFERENCES_TOOLBARS,"Barras de Herram."),false,5);
-	notebook->AddPage(CreateDebugPanel(notebook), LANG(PREFERENCES_DEBUGGING,"Depuracion"),false,6);
-	notebook->AddPage(CreatePathsPanel(notebook), LANG(PREFERENCES_PATHS_1,"Rutas 1"),false,7);
-	notebook->AddPage(CreateCommandsPanel(notebook), LANG(PREFERENCES_PATHS_2,"Rutas 2"),false,8);
+	notebook->AddPage(CreateDebugPanels(notebook), LANG(PREFERENCES_DEBUGGING,"Depuración"),false,6);
+	notebook->AddPage(CreatePathsPanels(notebook), LANG(PREFERENCES_PATHS,"Rutas"),false,7);
 
 	mySizer->Add(notebook,sizers->Exp1);
 	mySizer->Add(bottomSizer,sizers->Exp0);
@@ -241,7 +239,15 @@ wxPanel *mxPreferenceWindow::CreateQuickHelpPanel(wxListbook *notebook) {
 	return panel;	
 }
 
-wxPanel *mxPreferenceWindow::CreateDebugPanel (wxListbook *notebook) {
+wxNotebook *mxPreferenceWindow::CreateDebugPanels (wxListbook *notebook) {
+	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
+	nbk->AddPage(CreateDebugPanel1(nbk), LANG(PREFERENCES_DEBUG_1,"Interfaz"),false);
+	nbk->AddPage(CreateDebugPanel2(nbk), LANG(PREFERENCES_DEBUG_2,"Avanzado"),false);
+	return nbk;
+}
+
+
+wxPanel *mxPreferenceWindow::CreateDebugPanel1 (wxNotebook *notebook) {
 
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -252,20 +258,29 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel (wxListbook *notebook) {
 	debug_show_thread_panel = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SHOW_THREAD_LIST,"Mostrar lista de hilos de ejecución"),config->Debug.show_thread_panel);
 	debug_show_log_panel = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_SHOW_DEBUGGER_LOG,"Mostrar el panel de mensajes del depurador"),config->Debug.show_log_panel);
 	debug_autohide_toolbars = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ORGANIZE_TOOLBARS,"Reacomodar las barras de herramienta al iniciar/finalizar la depuración"),config->Debug.autohide_toolbars);
-//	debug_autoupdate_backtrace = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_AUTOUPDATE_BACKTRACE,"Actualizar automaticamente el panel de trazado inverso en cada paso"),config->Debug.autoupdate_backtrace);
+	debug_raise_main_window = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION,"Mostrar ZinjaI cuando se interrumpe la ejecución"),config->Debug.raise_main_window);
+	debug_return_focus_on_continue = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE,"Devolver el foco a la aplicación en depuración luego de una pausa"),config->Debug.return_focus_on_continue);
+	
+	panel->SetSizerAndFit(sizer);
+	return panel;
+
+}
+wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
+
+	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
+	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+		
 	debug_readnow = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO,"Cargar toda la información de depuracion antes de comenzar"),config->Debug.readnow);
 	debug_auto_solibs = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO,"Cargar información de depuracion de bibliotecas externas"),config->Debug.auto_solibs);
 	debug_compile_again = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_RECOMPILE_AUTOMATICALLY,"Recompilar automaticamente antes de depurar si es necesario"),config->Debug.compile_again);
-	debug_close_on_normal_exit= mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION,"Salir del modo depuración si el programa finaliza normalmente"),config->Debug.close_on_normal_exit);
+//	debug_close_on_normal_exit= mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION,"Salir del modo depuración si el programa finaliza normalmente"),config->Debug.close_on_normal_exit);
 	debug_always_debug = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER,"Siempre ejecutar en el depurador"),config->Debug.always_debug);
-	debug_raise_main_window = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION,"Mostrar ZinjaI cuando se interrumpe la ejecución"),config->Debug.raise_main_window);
 //	debug_use_colours_for_inspections = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_USE_COLOURS_FOR_INSPECTIONS,"Utilizar colores en la tabla de inspecciones"),config->Debug.use_colours_for_inspections);
 	debug_inspections_can_have_side_effects = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_INSPECTIONS_CAN_HAVE_SIDE_EFFECTS,"Considerar side-effects al evaluar inspecciones"),config->Debug.inspections_can_have_side_effects);
-	
 	wxBoxSizer *type_replace_sizer = new wxBoxSizer(wxHORIZONTAL);
-	improve_inspections_by_type = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Mejorar inspecciones automáticamente segun tipo"))+_T("   "));
-	improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
-	type_replace_sizer->Add(improve_inspections_by_type,sizers->Center);
+	debug_improve_inspections_by_type = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Mejorar inspecciones automáticamente segun tipo"))+_T("   "));
+	debug_improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
+	type_replace_sizer->Add(debug_improve_inspections_by_type,sizers->Center);
 	type_replace_sizer->Add(new wxButton(panel,mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Configurar..."),sizers->Center);
 	sizer->Add(type_replace_sizer,sizers->BA5_Exp0);
 	
@@ -359,7 +374,6 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_CREATE_FROM_TEMPLATE,"Crear a partir de plantilla"));
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_SHOW_WIZARD,"Mostrar Asistente"));
 	init_new_file = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_SIMPLE_NEW_ACTION,"Accion para Nuevo Archivo"),a_new_file, config->Init.new_file);
-//	files_templates_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_TEMPLATES_FOLDER,"Carpeta de plantillas (necesita reiniciar)"),config->Files.templates_dir,mxID_TEMPLATES_FOLDER);
 	running_cpp_compiler_options = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador C++"),config->Running.cpp_compiler_options);
 	running_c_compiler_options = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador C"),config->Running.c_compiler_options);
 	running_wait_for_key = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING,"Esperar una tecla luego de la ejecución"),config->Running.wait_for_key);
@@ -405,8 +419,6 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (wxListbook *notebook) {
 	
 //	source_syntaxEnable = mxUT::AddCheckBox(sizer,panel,,config->Source.syntaxEnable);
 	
-//	styles_dark = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_INVERTED_COLOURS,"Colores inversos (fondo negro)"),config->Styles.dark);
-//	source_wrapMode = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_LINE_WRAP,"Ajuste de linea dinamico"),config->Source.wrapMode);
 	wxArrayString a_wrap;
 	a_wrap.Add(LANG(PREFERENCES_STYLE_WRAP_NONE,"Nunca"));
 	a_wrap.Add(LANG(PREFERENCES_STYLE_WRAP_ALL_BUT_SOURCES,"Todos menos fuentes"));
@@ -535,13 +547,18 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (wxListbook *notebook) {
 }
 
 
-wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
+wxNotebook *mxPreferenceWindow::CreatePathsPanels (wxListbook *notebook) {
+	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
+	nbk->AddPage(CreatePathsPanel1(nbk), LANG(PREFERENCES_PATHS_1,"Rutas 1"),false);
+	nbk->AddPage(CreatePathsPanel2(nbk), LANG(PREFERENCES_PATHS_1,"Rutas 2"),false);
+	return nbk;
+}
+
+wxPanel *mxPreferenceWindow::CreatePathsPanel1 (wxNotebook *notebook) {
 
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 
-//	help_quickhelp_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_QUICKHELP,"Ubicacion de la ayuda rapida"),config->Help.quickhelp_dir,mxID_QUICKHELP_FOLDER);
-//	help_autocomp_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_AUTOCOMP,"Ubicacion de los indices de autocompletado"),config->Help.autocomp_dir,mxID_AUTOCOMP_FOLDER);
 	files_temp_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_TEMP,"Directorio temporal"),config->Files.temp_dir, mxID_TEMP_FOLDER);
 #ifdef __WIN32__
 //	files_mingw_dir = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_PATHS_MINGW,"Directorio de MinGW (requiere reiniciar ZinjaI)"),config->Files.mingw_dir, mxID_MINGW_FOLDER);
@@ -565,7 +582,7 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel (wxListbook *notebook) {
 
 }
 
-wxPanel *mxPreferenceWindow::CreateCommandsPanel (wxListbook *notebook) {
+wxPanel *mxPreferenceWindow::CreatePathsPanel2 (wxNotebook *notebook) {
 
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -719,9 +736,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	}
 	config->Debug.autohide_panels = debug_autohide_panels->GetValue();
 	config->Debug.autohide_toolbars = debug_autohide_panels->GetValue();
-//	config->Debug.autoupdate_backtrace = debug_autoupdate_backtrace->GetValue();
 	config->Debug.compile_again = debug_compile_again->GetValue();
-	config->Debug.close_on_normal_exit = debug_close_on_normal_exit->GetValue();
+//	config->Debug.close_on_normal_exit = debug_close_on_normal_exit->GetValue();
 	config->Debug.always_debug = debug_always_debug->GetValue();
 	config->Debug.raise_main_window = debug_raise_main_window->GetValue();
 	config->Debug.inspections_on_right = debug_inspections_on_right->GetValue();
@@ -731,7 +747,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.inspections_can_have_side_effects = debug_inspections_can_have_side_effects->GetValue();
 	config->Files.autocodes_file = files_autocode->GetValue();
 	autocoder->Reset(project?project->autocodes_file:"");
-	config->Debug.improve_inspections_by_type = improve_inspections_by_type->GetValue();
+	config->Debug.return_focus_on_continue = debug_return_focus_on_continue->GetValue();
+	config->Debug.improve_inspections_by_type = debug_improve_inspections_by_type->GetValue();
 	config->Debug.macros_file = debug_macros_file->GetValue();
 	config->Debug.blacklist = debug_blacklist->GetValue();
 	
@@ -1125,7 +1142,6 @@ void mxPreferenceWindow::ResetChanges() {
 	// style
 	source_syntaxEnable->SetValue(config->Source.syntaxEnable);
 	source_whiteSpace->SetValue(config->Source.whiteSpace);
-//	source_wrapMode->SetValue(config->Source.wrapMode);
 	source_lineNumber->SetValue(config->Source.lineNumber);
 	source_foldEnable->SetValue(config->Source.foldEnable);
 	source_tabWidth->SetValue(wxString()<<config->Source.tabWidth);
@@ -1140,7 +1156,6 @@ void mxPreferenceWindow::ResetChanges() {
 	files_autocode->SetValue(config->Files.autocodes_file);
 	
 	// simple
-//	files_templates_dir->SetValue(config->Files.templates_dir);
 	running_cpp_compiler_options->SetValue(config->Running.cpp_compiler_options);
 	running_c_compiler_options->SetValue(config->Running.c_compiler_options);
 	running_wait_for_key->SetValue(config->Running.wait_for_key);
@@ -1199,9 +1214,8 @@ void mxPreferenceWindow::ResetChanges() {
 	debug_allow_edition->SetValue(config->Debug.allow_edition);
 	debug_autohide_panels->SetValue(config->Debug.autohide_panels);
 	debug_autohide_panels->SetValue(config->Debug.autohide_toolbars);
-//	debug_autoupdate_backtrace->SetValue(config->Debug.autoupdate_backtrace);
 	debug_compile_again->SetValue(config->Debug.compile_again);
-	debug_close_on_normal_exit->SetValue(config->Debug.close_on_normal_exit);
+//	debug_close_on_normal_exit->SetValue(config->Debug.close_on_normal_exit);
 	debug_always_debug->SetValue(config->Debug.always_debug);
 	debug_raise_main_window->SetValue(config->Debug.raise_main_window);
 	debug_inspections_on_right->SetValue(config->Debug.inspections_on_right);
@@ -1209,7 +1223,8 @@ void mxPreferenceWindow::ResetChanges() {
 	debug_show_log_panel->SetValue(config->Debug.show_log_panel);
 //	debug_use_colours_for_inspections->SetValue(config->Debug.use_colours_for_inspections);
 	debug_inspections_can_have_side_effects->SetValue(config->Debug.inspections_can_have_side_effects);
-	improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
+	debug_return_focus_on_continue->SetValue(config->Debug.return_focus_on_continue);
+	debug_improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
 	debug_macros_file->SetValue(config->Debug.macros_file);
 	debug_blacklist->SetValue(config->Debug.blacklist);
 	

@@ -84,6 +84,12 @@ DEBUG_STATUS_ABNORMAL_INTERRUPTION
 El programa se interrumpio anormalmente ( 
 DEBUG_STATUS_TERMINAL_CLOSED
 La terminal del programa ha sido cerrada
+BACKTRACE_NO_INFO
+<<Imposible determinar ubicacion>>
+BACKTRACE_NOT_AVAILABLE
+<<informacion no disponible>>
+BACKTRACE_NO_ARGUMENTS
+<<Imposible determinar argumentos>>
 DEBUG_STATUS_PREFIX
   Depuracion: 
 DEBUG_ERROR_REVERSE
@@ -2317,11 +2323,9 @@ Tema de Iconos
 PREFERENCES_TOOLBARS
 Barras de Herram.
 PREFERENCES_DEBUGGING
-Depuracion
-PREFERENCES_PATHS_1
-Rutas 1
-PREFERENCES_PATHS_2
-Rutas 2
+Depuración
+PREFERENCES_PATHS
+Rutas
 PREFERENCES_GENERAL_GUI_LANGUAGE
 Idioma de la interfaz (*)
 PREFERENCES_GENERAL_SHOW_SPLASH
@@ -2354,6 +2358,10 @@ PREFERENCES_CUSTOMIZE_SHORTCUTS
 Personalizar atajos de teclado...
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME
 (*) tendrá efecto la proxima vez que inicie ZinjaI
+PREFERENCES_DEBUG_1
+Interfaz
+PREFERENCES_DEBUG_2
+Avanzado
 PREFERENCES_DEBUG_ALLOW_EDITION
 Permitir editar los fuentes durante la depuración
 PREFERENCES_DEBUG_REORGANIZE_PANELS
@@ -2366,8 +2374,10 @@ PREFERENCES_DEBUG_SHOW_DEBUGGER_LOG
 Mostrar el panel de mensajes del depurador
 PREFERENCES_DEBUG_ORGANIZE_TOOLBARS
 Reacomodar las barras de herramienta al iniciar/finalizar la depuración
-PREFERENCES_DEBUG_AUTOUPDATE_BACKTRACE
-Actualizar automaticamente el panel de trazado inverso en cada paso
+PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
+Mostrar ZinjaI cuando se interrumpe la ejecución
+PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE
+Devolver el foco a la aplicación en depuración luego de una pausa
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
 Cargar toda la información de depuracion antes de comenzar
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
@@ -2378,8 +2388,6 @@ PREFERENCES_DEBUG_STOP_DEBBUGING_ON_ABNORMAL_TERMINATION
 Salir del modo depuración si el programa finaliza normalmente
 PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER
 Siempre ejecutar en el depurador
-PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
-Mostrar ZinjaI cuando se interrumpe la ejecución
 PREFERENCES_DEBUG_USE_COLOURS_FOR_INSPECTIONS
 Utilizar colores en la tabla de inspecciones
 PREFERENCES_DEBUG_INSPECTIONS_CAN_HAVE_SIDE_EFFECTS
@@ -2414,8 +2422,6 @@ PREFERENCES_SIMPLE_SHOW_WIZARD
 Mostrar Asistente
 PREFERENCES_SIMPLE_NEW_ACTION
 Accion para Nuevo Archivo
-PREFERENCES_SIMPLE_TEMPLATES_FOLDER
-Carpeta de plantillas (necesita reiniciar)
 PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS
 Parámetros adicionales para el compilador C++
 PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS
@@ -2444,16 +2450,14 @@ PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
 PREFERENCES_STYLE_DEFINE_COLOURS
 Definir colores...
-PREFERENCES_STYLE_INVERTED_COLOURS
-Colores inversos (fondo negro)
-PREFERENCES_STYLE_LINE_WRAP
-Ajuste de linea dinamico
 PREFERENCES_STYLE_WRAP_NONE
 Nunca
 PREFERENCES_STYLE_WRAP_ALL_BUT_SOURCES
 Todos menos fuentes
 PREFERENCES_STYLE_WRAP_ALWAYS
 Siempre
+PREFERENCES_STYLE_LINE_WRAP
+Ajuste de linea dinámico
 PREFERENCES_STYLE_SHOW_EOF_AND_WHITE_SPACES
 Mostrar espacios y caracteres de fin de linea
 PREFERENCES_STYLE_SHOW_LINE_NUMBERS
@@ -2481,7 +2485,7 @@ Edición inteligente
 PREFERENCES_WRITING_AUTOCLOSE_BRACKETS
 Cerrar llaves automáticamente al presionar Enter
 PREFERENCES_WRITING_AUTOCLOSE_STUFF
-Siempre cerrar llaves, paréntesis y comillas al ingresar
+Siempre cerrar llaves, paréntesis y comillas automáticamente
 PREFERENCES_WRITING_INDENT_ON_PASTE
 Corregir indentado al pegar
 PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE
@@ -2514,10 +2518,8 @@ PREFERENCES_SKIN_DEFAULT_THEME
 <Tema por defecto>
 PREFERENCES_SKIN_APPLY
 Aplicar
-PREFERENCES_PATHS_QUICKHELP
-Ubicacion de la ayuda rapida
-PREFERENCES_PATHS_AUTOCOMP
-Ubicacion de los indices de autocompletado
+PREFERENCES_PATHS_1
+Rutas 1
 PREFERENCES_PATHS_TEMP
 Directorio temporal
 PREFERENCES_PATHS_MINGW

@@ -17,8 +17,6 @@ class pd_class;
 **/
 class HelpManager {
 private:
-//	wxString quickhelp_dir;
-//	HashStringString quick_help_hash;
 	unsigned int index_ref_counter;
 	HashStringString doxy_index;
 	wxDateTime doxy_index_stamp;
@@ -36,7 +34,6 @@ public:
 	void HelpForEnum(pd_var *avar, wxString &content, wxString &index);
 	void HelpFor(pd_macro *amacro, wxString &content, wxString &index);
 	void HelpFor(pd_class *aclass, wxString &content, wxString &index);
-	int GetStandardHelp(wxString keyword, wxString &content);
 	int GetParserHelp(wxString keyword, wxString &content);
 	wxString MakeClassLinks(wxString what);
 };

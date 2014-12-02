@@ -954,12 +954,8 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':')), post=event.GetLinkInfo().GetHref().AfterFirst(':');
 	if (action=="quickhelp")
 		quick_help->SetPage(help->GetQuickHelp( post ));
-//	else if (action=="quickfile")
-//		quick_help->LoadPage(DIR_PLUS_FILE(config->Help.quickhelp_dir,post));
 	else if (action=="doxygen")
 		mxUT::OpenInBrowser(wxString("file://")<<post);
-//	else if (action=="example")
-//		NewFileFromTemplate(DIR_PLUS_FILE(config->Help.quickhelp_dir,post));
 	else if (action=="cppreference")
 		mxReferenceWindow::ShowAndSearch( post );
 	else if (action=="gotoline") {

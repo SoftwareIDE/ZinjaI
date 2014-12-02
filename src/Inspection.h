@@ -476,9 +476,9 @@ public:
 	/**
 	* @brief Crea una instancia a partir de una expresion
 	*
-	* @para init_now si es falso, no se inicializa (no se registra en gdb la variable_object).
-	*   			 se debe llamar inmediatamente a Init con la instancia... esto es para que
-	*                el que la crea pueda conocer el puntero antes de recibir los eventos
+	* @param init_now si es falso, no se inicializa (no se registra en gdb la variable_object).
+	*                 se debe llamar inmediatamente a Init con la instancia... esto es para que
+	*                 el que la crea pueda conocer el puntero antes de recibir los eventos
 	**/ 
 	static DebuggerInspection *Create(const wxString &expr, Flag flags, myDIEventHandler *event_handler=NULL, bool init_now=true) {
 		__debug_log_static_method__;

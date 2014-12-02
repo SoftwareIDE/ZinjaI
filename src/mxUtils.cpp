@@ -1300,7 +1300,7 @@ void mxUT::SetArgument (wxString &full, const wxString &arg, bool add) {
 /**
 * @param graph_file  file containing unprocessed graph description (input for dot or fpd)
 * @param use_fdp     if true then process graph_file with fdp, else process with dot
-* @param ouput       if empty, the result will be displayed with xdot or an image viewer, 
+* @param output       if empty, the result will be displayed with xdot or an image viewer, 
 *                    if not empty the result will be saved in ouput (a file path) and 
 *                    format will be guessed from its extension
 * @param title       if the file is displayed in an external viewer and the viewer allows

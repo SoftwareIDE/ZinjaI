@@ -96,9 +96,8 @@ private:
 	long GetFrameLevel(long id) { return stack_depth-id-1; }
 	long current_thread_id; ///< id del thread actual, lo da gdb al detenerse o al cambiar de hilo
 #ifndef __WIN32__
-	wxProcess *tty_process;
-	long tty_pid;
-	bool tty_running;
+	wxProcess *tty_process; ///< puntero al proceso de la terminal (solo en GNU/Linux), 0 si no hay ninguno
+	long tty_pid; ///< pid del proceso de la terminal (solo en GNU/Linux), 0 si no hay ninguno
 #endif
 //	wxString current_file;
 	mxSource *current_source; ///< el fuente en cual se marco la ultima posicion para ejecutar
@@ -108,7 +107,9 @@ private:
 	wxProcess *process;
 	wxOutputStream *output;
 	wxInputStream *input;
-	long pid;
+	long pid; ///< pid del proceso de gdb
+	long child_pid; ///< pid del proceso que esta siendo depurado, o 0, se averigua bajo demanda con FindOutChildPid
+	bool FindOutChildPid(); ///< @brief intenta determinar el pid del proceso depurado
 //	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
 private:

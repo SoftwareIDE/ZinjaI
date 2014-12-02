@@ -24,6 +24,7 @@ class wxCheckBox;
 class wxComboBox;
 class wxTextCtrl;
 class wxAuiNotebook;
+class wxNotebook;
 class wxListbook;
 class wxListBox;
 class wxPanel;
@@ -141,7 +142,8 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *debug_auto_solibs;
 	wxCheckBox *debug_readnow;
 	wxTextCtrl *debug_macros_file;
-	wxCheckBox *improve_inspections_by_type;
+	wxCheckBox *debug_return_focus_on_continue;
+	wxCheckBox *debug_improve_inspections_by_type;
 	wxTextCtrl *debug_blacklist;
 //#ifdef __WIN32__
 //	wxTextCtrl *files_mingw_dir;
@@ -164,11 +166,14 @@ public:
 	wxPanel *CreateSimplePanel (wxListbook *notebook);
 	wxPanel *CreateStylePanel (wxListbook *notebook);
 	wxPanel *CreateWritingPanel (wxListbook *notebook);
-	wxPanel *CreatePathsPanel (wxListbook *notebook);
-	wxPanel *CreateCommandsPanel (wxListbook *notebook);
+	wxNotebook *CreatePathsPanels (wxListbook *notebook);
+	wxPanel *CreatePathsPanel1 (wxNotebook *notebook);
+	wxPanel *CreatePathsPanel2 (wxNotebook *notebook);
 	wxPanel *CreateToolbarsPanel (wxListbook *notebook);
 	wxPanel *CreateSkinPanel (wxListbook *notebook);
-	wxPanel *CreateDebugPanel (wxListbook *notebook);
+	wxNotebook *CreateDebugPanels (wxListbook *notebook);
+	wxPanel *CreateDebugPanel1 (wxNotebook *notebook);
+	wxPanel *CreateDebugPanel2 (wxNotebook*notebook);
 	wxPanel *CreateQuickHelpPanel (wxListbook *notebook);
 	void OnWxHelpButton(wxCommandEvent &event);
 	void OnSkinList(wxCommandEvent &event);

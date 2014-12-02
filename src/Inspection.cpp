@@ -217,7 +217,7 @@ void myUserHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
 *
 * @param pattern    el patron de tipo con el que se intenta matchear la inspeccion real
 * @param type       el tipo de la inspeccion real, como es arrojado por gdb
-* @param new_expre  el patron de expresion mejorada, argumento de entrada/salida
+* @param new_expr   el patron de expresion mejorada, argumento de entrada/salida
 * @param expr       la expresion real original
 * @retval 
 **/

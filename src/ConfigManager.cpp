@@ -21,14 +21,15 @@
 ConfigManager *config;
 
 /**
-* @brief Config lines fron main config files related to toolbar settings, 
+* @brief Config lines from main config files related to toolbar settings, 
 *
 * important: it is still here just for backward compatibility, since 20140723
-* these lines goto to a different config file that is read later
+* these lines now belong to a different config file that is read later
 *
-* toolbars and menus related config lines are processed in a delayed mode because 
-* we need to have an initialized MenusAndToolsConfig to do it, but MenusAndToolsConfig
-* needs an initialized ConfigManager to use the proper language
+* old toolbars and menus related config lines are processed in a delayed mode 
+* because  we need to have an initialized MenusAndToolsConfig instance to do it,
+* but MenusAndToolsConfig needs an initialized ConfigManager to use the proper 
+* language
 *
 * ver la descripción de la clase para entender la secuencia de inicialización
 **/
@@ -169,7 +170,6 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("avoidNoNewLineWarning",Source.avoidNoNewLineWarning);
 			
 			} else if (section=="Debug") {
-//				CFG_BOOL_READ_DN("autoupdate_backtrace",Debug.autoupdate_backtrace);
 				CFG_BOOL_READ_DN("autohide_panels",Debug.autohide_panels);
 				else CFG_BOOL_READ_DN("autohide_toolbars",Debug.autohide_toolbars);
 				else CFG_BOOL_READ_DN("allow_edition",Debug.allow_edition);
@@ -181,13 +181,14 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("inspections_can_have_side_effects",Debug.inspections_can_have_side_effects);
 				else CFG_BOOL_READ_DN("raise_main_window",Debug.raise_main_window);
 				else CFG_BOOL_READ_DN("always_debug",Debug.always_debug);
-				else CFG_BOOL_READ_DN("close_on_normal_exit",Debug.close_on_normal_exit);
+//				else CFG_BOOL_READ_DN("close_on_normal_exit",Debug.close_on_normal_exit);
 				else CFG_BOOL_READ_DN("show_do_that",Debug.show_do_that);
 				else CFG_BOOL_READ_DN("auto_solibs",Debug.auto_solibs);
 				else CFG_BOOL_READ_DN("readnow",Debug.readnow);
 				else CFG_BOOL_READ_DN("inspections_on_right",Debug.inspections_on_right);
 				else CFG_BOOL_READ_DN("show_thread_panel",Debug.show_thread_panel);
 				else CFG_BOOL_READ_DN("show_log_panel",Debug.show_log_panel);
+				else CFG_BOOL_READ_DN("return_focus_on_continue",Debug.return_focus_on_continue);
 				else CFG_BOOL_READ_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
 				else if (key=="inspection_improving_template") {
 					Debug.inspection_improving_template_from.Add(value.BeforeFirst('|'));
@@ -206,11 +207,7 @@ bool ConfigManager::Load() {
 			} else if (section=="Help") {
 //				CFG_GENERIC_READ_DN("quickhelp_index",Help.quickhelp_index);
 				CFG_GENERIC_READ_DN("wxhelp_index",Help.wxhelp_index);
-//				else CFG_GENERIC_READ_DN("tips_file",Help.tips_file);
-//				else CFG_GENERIC_READ_DN("quickhelp_dir",Help.quickhelp_dir);
-//				else CFG_GENERIC_READ_DN("guihelp_dir",Help.guihelp_dir);
 				else CFG_GENERIC_READ_DN("autocomp_indexes",Help.autocomp_indexes);
-//				else CFG_GENERIC_READ_DN("autocomp_dir",Help.autocomp_dir);
 				else CFG_INT_READ_DN("min_len_for_completion",Help.min_len_for_completion);
 				else CFG_BOOL_READ_DN("show_extra_panels",Help.show_extra_panels);
 			
@@ -288,7 +285,6 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("doxygen_command",Files.doxygen_command);
 				else CFG_GENERIC_READ_DN("wxfb_command",Files.wxfb_command);
 				else CFG_GENERIC_READ_DN("parser_command",Files.parser_command);
-//				else CFG_GENERIC_READ_DN("code_helper",Files.code_helper);
 				else CFG_GENERIC_READ_DN("project_folder",Files.project_folder);
 				else CFG_GENERIC_READ_DN("last_project_dir",Files.last_project_dir);
 				else CFG_GENERIC_READ_DN("last_dir",Files.last_dir);
@@ -475,7 +471,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("raise_main_window",Debug.raise_main_window);
 	CFG_BOOL_WRITE_DN("compile_again",Debug.compile_again);
 	CFG_BOOL_WRITE_DN("always_debug",Debug.always_debug);
-	CFG_BOOL_WRITE_DN("close_on_normal_exit",Debug.close_on_normal_exit);
+//	CFG_BOOL_WRITE_DN("close_on_normal_exit",Debug.close_on_normal_exit);
 	if (Debug.format.Len()) CFG_GENERIC_WRITE_DN("format",Debug.format);
 	CFG_GENERIC_WRITE_DN("blacklist",Debug.blacklist);
 	CFG_GENERIC_WRITE_DN("macros_file",Debug.macros_file);
@@ -485,6 +481,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("inspections_on_right",Debug.inspections_on_right);
 	CFG_BOOL_WRITE_DN("readnow",Debug.readnow);
 	CFG_BOOL_WRITE_DN("auto_solibs",Debug.auto_solibs);
+	CFG_BOOL_WRITE_DN("return_focus_on_continue",Debug.return_focus_on_continue);
 	CFG_BOOL_WRITE_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
 	for(unsigned int i=0;i<Debug.inspection_improving_template_from.GetCount();i++)
 		CFG_GENERIC_WRITE_DN("inspection_improving_template",Debug.inspection_improving_template_from[i]+"|"+Debug.inspection_improving_template_to[i]);
@@ -556,13 +553,11 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("explorer_command",Files.explorer_command);
 	CFG_GENERIC_WRITE_DN("default_template",Files.default_template);
 	CFG_GENERIC_WRITE_DN("default_project",Files.default_project);
-//	CFG_GENERIC_WRITE_DN("templates_dir",Files.templates_dir);
 	CFG_GENERIC_WRITE_DN("autocodes_file",Files.autocodes_file);
 	CFG_GENERIC_WRITE_DN("doxygen_command",Files.doxygen_command);
 	CFG_GENERIC_WRITE_DN("wxfb_command",Files.wxfb_command);
 	CFG_GENERIC_WRITE_DN("browser_command",Files.browser_command);
 	CFG_GENERIC_WRITE_DN("graphviz_dir",Files.graphviz_dir);
-//	CFG_GENERIC_WRITE_DN("code_helper",Files.code_helper);
 	CFG_GENERIC_WRITE_DN("project_folder",Files.project_folder);
 	CFG_GENERIC_WRITE_DN("last_dir",Files.last_dir);
 	CFG_GENERIC_WRITE_DN("last_project_dir",Files.last_project_dir);
@@ -652,9 +647,7 @@ void ConfigManager::LoadDefaults(){
 	Files.project_folder=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
 	Files.default_template="default.tpl";
 	Files.default_project="<main>";
-//	Files.templates_dir="templates";
 	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
-//	Files.code_helper=DIR_PLUS_FILE("quickhelp","codehelper.txt");
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
 		Files.last_source[i]="";
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
@@ -747,16 +740,11 @@ void ConfigManager::LoadDefaults(){
 	
 #ifdef __WIN32__
 	Help.wxhelp_index="MinGW\\wx\\docs\\wx_contents.html";
-//	Help.quickhelp_index="quickhelp\\index";
 #else
 	Help.wxhelp_index="docs/wx/wx_contents.html";
-//	Help.quickhelp_index="quickhelp/index";
 #endif
-//	Help.tips_file=DIR_PLUS_FILE("quickhelp","tips");
-//	Help.quickhelp_dir="quickhelp";
 	Help.cppreference_dir="cppreference/en";
 	Help.guihelp_dir="guihelp";
-//	Help.autocomp_dir="autocomp";
 	Help.autocomp_indexes="AAA_Directivas_de_Preprocesador,AAA_Estandar_C,AAA_Estandar_Cpp,AAA_STL,AAA_Palabras_Reservadas,AAA_Estandar_Cpp_11,AAA_STL_11,AAA_Palabras_Reservadas_11";
 	Help.min_len_for_completion=3;
 	Help.show_extra_panels=true;
@@ -766,8 +754,7 @@ void ConfigManager::LoadDefaults(){
 	Debug.allow_edition = false;
 	Debug.autohide_panels = true;
 	Debug.autohide_toolbars = true;
-//	Debug.autoupdate_backtrace = true;
-	Debug.close_on_normal_exit = true;
+//	Debug.close_on_normal_exit = true;
 	Debug.always_debug = false;
 	Debug.raise_main_window = true;
 	Debug.compile_again = true;
@@ -780,6 +767,7 @@ void ConfigManager::LoadDefaults(){
 	Debug.auto_solibs = false;
 	Debug.readnow = false;
 	Debug.show_do_that = false;
+	Debug.return_focus_on_continue = true;
 	Debug.improve_inspections_by_type = true;
 //	SetDefaultInspectionsImprovingTemplates(); // not needed, done (only on first run) in ConfigManager::Load when version<20140924
 	

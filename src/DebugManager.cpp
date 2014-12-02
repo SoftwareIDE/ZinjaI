@@ -27,6 +27,7 @@
 #include "Inspection.h"
 #include "DebugPatcher.h"
 #include "MenusAndToolsConfig.h"
+#include "lnxStuff.h"
 using namespace std;
 
 #ifdef _DEBUG_LOG
@@ -166,9 +167,8 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	//	mxUT::ParameterReplace(tty_cmd,_T("${ZINJAI_DIR}"),wxGetCwd());
 		tty_process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 		tty_pid = wxExecute(tty_cmd,wxEXEC_ASYNC,tty_process);
-		tty_running = tty_pid!=0;
 	} else {
-		tty_pid=0; tty_running=false; tty_process=NULL;
+		tty_pid=0; tty_process=NULL;
 	}
 #endif
 	wxString command(config->Files.debugger_command);
@@ -183,9 +183,9 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 	if (show_console) {
 		pid=0;
 		wxDateTime t0=wxDateTime::Now(); // algunas terminales no esperan a que lo de adentro se ejecute para devolver el control (mac por ejemplo)
-		while ((tty_running || (wxDateTime::Now()-t0).GetSeconds()<10) && !wxFileName::FileExists(tty_file))
+		while ((tty_pid || (wxDateTime::Now()-t0).GetSeconds()<10) && !wxFileName::FileExists(tty_file))
 			{ wxYield(); wxMilliSleep(100); }
-		if (!tty_running && !wxFileName::FileExists(tty_file)) {
+		if (!tty_pid && !wxFileName::FileExists(tty_file)) {
 			debugging = false;
 			mxMessageDialog(main_window,LANG(DEBUG_ERROR_WITH_TERMINAL,"Ha ocurrido un error al iniciar la terminal para la ejecucion.\n"
 										   "Compruebe que el campo \"Comando del terminal\" de la pestaña\n"
@@ -271,7 +271,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 void DebugManager::ResetDebuggingStuff() {
 	status=DBGST_STARTING;
 #ifndef __WIN32__
-	tty_running = false;
+	tty_pid = 0; tty_process=NULL;
 #endif
 	black_list.Clear(); stepping_in=false;
 	mxUT::Split(config->Debug.blacklist,black_list,true,false);
@@ -284,7 +284,7 @@ void DebugManager::ResetDebuggingStuff() {
 	buffer[0]=buffer[1]=buffer[2]=buffer[3]=buffer[4]=buffer[5]=' ';
 	buffer[6]='\0';
 	debugging = true;
-	pid = 0;
+	child_pid = pid = 0;
 	input = NULL;
 	output = NULL;
 	recording_for_reverse=inverse_exec=false;
@@ -588,7 +588,6 @@ void DebugManager::HowDoesItRuns() {
 			fname.Replace(wrong_sep,sep);
 			wxString line =  GetSubValueFromAns(ans,_T("frame"),_T("line"),true);
 			long fline = -1;
-			//if (backtrace_visible && config->Debug.autoupdate_backtrace)
 			if (stepping_in && mark==mxSTC_MARK_EXECPOINT && black_list.Index(fname)!=wxNOT_FOUND)
 				StepIn();
 			else {
@@ -603,9 +602,8 @@ void DebugManager::HowDoesItRuns() {
 				UpdateInspections();
 			}
 		} else {
-	//		if (config->Debug.autoupdate_backtrace)
-				BacktraceClean();
-				ThreadListClean();
+			BacktraceClean();
+			ThreadListClean();
 			running = false; // es necesario esto?
 			Stop();
 		}
@@ -751,8 +749,8 @@ bool DebugManager::UpdateBacktrace(bool set_frame) {
 	if (i==wxNOT_FOUND) {
 		current_frame_id=-1;
 		for (int c=0;c<last_stack_depth;c++) {
-			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,"<<Imposible determinar ubicacion>>");
-			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,"<<Imposible determinar ubicacion>>");
+			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,LANG(BACKTRACE_NO_INFO,"<<Imposible determinar ubicacion>>"));
+			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,LANG(BACKTRACE_NO_INFO,"<<Imposible determinar ubicacion>>"));
 		}
 		main_window->backtrace_ctrl->EndBatch();
 		return false;
@@ -771,7 +769,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame) {
 		main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LEVEL,wxString()<<(cant_levels+1));
 		wxString func = GetValueFromAns(s,"func",true);
 		if (func[0]=='?') {
-			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FUNCTION,"<<informacion no disponible>>"); /// @todo: traducir
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FUNCTION,LANG(BACKTRACE_NOT_AVAILABLE,"<<informacion no disponible>>"));
 			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FILE,"");
 			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LINE,"");
 			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_ARGS,"");
@@ -801,7 +799,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame) {
 		i=args_list.Find("stack-args=");
 		if (i==wxNOT_FOUND) {
 			for (int c=0;c<last_stack_depth;c++)
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,"<<Imposible determinar argumentos>>");
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,LANG(BACKTRACE_NO_ARGUMENTS,"<<Imposible determinar argumentos>>"));
 			main_window->backtrace_ctrl->EndBatch();
 		} else {
 			bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
@@ -926,16 +924,45 @@ void DebugManager::Pause() {
 		mxMessageDialog(main_window,"Esta caracteristica no se encuentra presente en versiones de Windows previas a XP-SP2",LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 		return;
 	}
-	long child_pid = winGetChildPid(pid);
-	if (child_pid) winDebugBreak(child_pid);
-	
+	if (FindOutChildPid()) winDebugBreak(child_pid);
 #else
 	process->Kill(pid,wxSIGINT);
 #endif
 }
 
+/**
+* Si ya se conocia (child_pid!=0) retorna true sin hacer nada, sino retorna true 
+* si logra determinarlo, en cuyo caso lo coloca en child_pid.
+* En linux usa el comando gdb "info proc status", en windows busca un proceso 
+* hijo del proceso de gdb.
+**/
+bool DebugManager::FindOutChildPid() {
+	if (child_pid!=0) return true; // si ya se sabe cual es, no hace nada
+#ifdef __WIN32__
+	child_pid = winGetChildPid(pid);
+#else
+	wxString val= mxUT::UnEscapeString(SendCommand("info proc status"));
+	int pos = val.Find("Pid:"); 
+	if (pos==wxNOT_FOUND) return false;
+	pos+=4; while (val[pos]==' '||val[pos]=='\t') pos++;
+	child_pid=0; 
+	while (val[pos]>='0'&&val[pos]<='9') { 
+		child_pid*=10; child_pid+=val[pos]-'0'; pos++;
+	}
+#endif
+	return child_pid!=0;
+}
+
 void DebugManager::Continue() {
 	if (waiting || !debugging || status==DBGST_STOPPING) return;
+	
+#ifndef __WIN32__
+	if (config->Debug.return_focus_on_continue && FindOutChildPid()) {
+		// intentar darle el foco a alguna ventana de la aplicacion, o a la terminal si no hay ventana
+		if (!setFocus(child_pid)) setFocus(tty_pid);
+	}
+#endif
+	
 	running = true;
 	MarkCurrentPoint();
 	wxString ans = SendCommand("-exec-continue");
@@ -1372,7 +1399,6 @@ bool DebugManager::Return(wxString what) {
 	long fline = -1;
 	line.ToLong(&fline);
 	MarkCurrentPoint(fname,fline,mxSTC_MARK_EXECPOINT);
-	//if (backtrace_visible && config->Debug.autoupdate_backtrace)
 	UpdateBacktrace();
 	UpdateInspections();
 	return true;
@@ -1387,7 +1413,7 @@ void DebugManager::ProcessKilled() {
 	notitle_source = NULL;
 	debugging=false;
 #ifndef __WIN32__
-	if (tty_running)
+	if (tty_process)
 		tty_process->Kill(tty_pid,wxSIGKILL);
 #endif
 	delete process;
@@ -1406,7 +1432,6 @@ void DebugManager::TtyProcessKilled() {
 	delete tty_process;
 	tty_process = NULL;
 	tty_pid = 0;
-	tty_running = false;
 }
 #endif
 

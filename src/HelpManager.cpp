@@ -428,35 +428,11 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 	return cont;
 }
 
-int HelpManager::GetStandardHelp(wxString keyword, wxString &content) {
-//	HashStringString::iterator it;
-//	if ((it=quick_help_hash.find(keyword))!=quick_help_hash.end()) {
-//		int count=0;
-//		wxString files = it->second+"\n";
-//		while (files.Len()) {
-//			wxString fname = files.BeforeFirst('\n');
-//			files = files.AfterFirst('\n');
-//			if (wxFileName::FileExists(DIR_PLUS_FILE(config->Help.quickhelp_dir,fname))) {
-//				wxTextFile fil(DIR_PLUS_FILE(config->Help.quickhelp_dir,fname));
-//				fil.Open();	
-//				wxString lin;
-//				for (lin=fil.GetFirstLine();!fil.Eof();lin=fil.GetNextLine())
-//					content+=lin;
-//				content+=_T("<HR>");
-//				fil.Close();
-//				count++;
-//			}
-//		}
-//		return count;
-//	}
-	return 0;
-}
-
 wxString HelpManager::GetQuickHelp(wxString keyword) {
 
 	wxString ret("<HTML><HEAD><TITLE>ZinjaI Quick Help</TITLE></HEAD><BODY>");
 	wxString content;
-	int count=GetStandardHelp(keyword,content)+GetParserHelp(keyword,content);
+	int count=GetParserHelp(keyword,content);
 	
 	if (count)
 		ret+=content;

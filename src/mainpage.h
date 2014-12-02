@@ -18,7 +18,7 @@
 *
 * Para mayor información zaskar_@yahoo.com.ar
 * 
-* Copyleft 2007-2012, por Pablo Novara
+* Copyleft 2007-2014, por Pablo Novara
 * 
 * @page ChangeLog Registro de cambios
 * @htmlinclude ChangeLog.html

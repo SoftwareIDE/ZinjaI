@@ -11,10 +11,18 @@ bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonce
 Otras:
 
 alguna forma de herencia de configuraciones de proyectos???? algo para los mil msuites con qt5s
+	opcion, una forma de decir que lo lea de un campo de un archivo tipo ini, que podria ser o no un zpr
+		de otro zpr: "${ZPR|msuite_qt.zpr|debug_win32}" // si se omite el "|debug_win32" se busca una config con el mismo nombre que la actual
+		de un txt cualquiera: "${INI|opts.ini|cxxflags}" // si se omite el "|cxxflags" se busca con el nombre de campo que use zinjai en el zpr
+		de otro perfil del mismo proyecto: "${THIS|debug_win32}"
+		ver cómo hacer con los pasos personalizados
+
 
 corregir el problema del drag and drop que le jode a nestor
 
+
 importante: revisar el GetOutput y evaluar implementarlo por fuera de wx para evitar el problema del wxyield (llamada a g++ --dumpversion como ejemplo)
+
 
 posibles bugs:
 	revisar lo de agregar .cpp al guardar
