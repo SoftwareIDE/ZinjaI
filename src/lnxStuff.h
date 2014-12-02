@@ -1,3 +1,5 @@
+#ifdef __linux__
+
 #ifndef LNXSTUFF_H
 #define LNXSTUFF_H
 
@@ -123,5 +125,7 @@ inline bool setFocus(int pid) {
 }
 
 
+
+#endif
 
 #endif

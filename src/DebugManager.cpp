@@ -22,11 +22,11 @@
 #include "mxApplication.h"
 #include "Language.h"
 #include "mxOSD.h"
-#include "winStuff.h"
 #include "mxThreadGrid.h"
 #include "Inspection.h"
 #include "DebugPatcher.h"
 #include "MenusAndToolsConfig.h"
+#include "winStuff.h"
 #include "lnxStuff.h"
 using namespace std;
 
@@ -941,6 +941,7 @@ bool DebugManager::FindOutChildPid() {
 #ifdef __WIN32__
 	child_pid = winGetChildPid(pid);
 #else
+# ifdef __linux__
 	wxString val= mxUT::UnEscapeString(SendCommand("info proc status"));
 	int pos = val.Find("Pid:"); 
 	if (pos==wxNOT_FOUND) return false;
@@ -949,6 +950,7 @@ bool DebugManager::FindOutChildPid() {
 	while (val[pos]>='0'&&val[pos]<='9') { 
 		child_pid*=10; child_pid+=val[pos]-'0'; pos++;
 	}
+# endif
 #endif
 	return child_pid!=0;
 }
@@ -956,10 +958,14 @@ bool DebugManager::FindOutChildPid() {
 void DebugManager::Continue() {
 	if (waiting || !debugging || status==DBGST_STOPPING) return;
 	
-#ifndef __WIN32__
+#if defined(__WIN32__) || defined(__unix__)
 	if (config->Debug.return_focus_on_continue && FindOutChildPid()) {
 		// intentar darle el foco a alguna ventana de la aplicacion, o a la terminal si no hay ventana
+# ifdef __WIN32__
+		setFocus(child_pid);
+# else
 		if (!setFocus(child_pid)) setFocus(tty_pid);
+# endif
 	}
 #endif
 	
