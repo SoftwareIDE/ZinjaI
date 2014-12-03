@@ -33,7 +33,7 @@ public:
 		return max_len;
 	}
 	const wxString &GetLastResult() { return result; }
-	wxString GetFiltered(const wxString &keyword);
+	wxString GetFiltered(wxString keyword);
 	bool Contains(const wxString &key) {
 		for(unsigned int i=0;i<keywords.GetCount();i++) 
 			if (keywords[i].StartsWith(key) && (keywords[i].Len()==key.Len()||keywords[i][key.Len()]=='$'))

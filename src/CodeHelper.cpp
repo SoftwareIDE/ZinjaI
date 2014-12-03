@@ -1423,8 +1423,8 @@ void CodeHelper::FilterAutocomp (mxSource *source, const wxString & key, bool fo
 //	source->AutoCompSetSelection(0);
 }
 
-wxString MyAutocompList::GetFiltered (const wxString &typed) {
-	int len=typed.Len(), n=keywords.GetCount(), i=0; max_len=0;
+wxString MyAutocompList::GetFiltered (wxString typed) {
+	int len=typed.Len(), n=keywords.GetCount(), i=0; max_len=0; typed.MakeLower();
 	while(i<n) { 
 		if (!ShouldAddToAutocomp(typed,len,keywords[i])) {
 			swap(keywords[i],keywords[--n]);
