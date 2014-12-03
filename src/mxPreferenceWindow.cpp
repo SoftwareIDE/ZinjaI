@@ -3,6 +3,7 @@
 #include <wx/panel.h>
 #include <wx/dir.h>
 #include <wx/treebook.h>
+#include <wx/toolbook.h>
 #include <wx/listbook.h>
 #include <wx/imaglist.h>
 
@@ -140,7 +141,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	old_config_styles=config->Styles;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-	notebook = new wxListbook(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxBK_LEFT);
+	notebook = new mxBookCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxBK_LEFT);
 	wxImageList* imglist = new wxImageList(32, 32,true,8);
 	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_general.png")),wxBITMAP_TYPE_PNG));
 	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_simple_program.png")),wxBITMAP_TYPE_PNG));
@@ -171,11 +172,11 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	notebook->AddPage(CreateGeneralPanel(notebook), LANG(PREFERENCES_GENERAL,"General"),false,0);
 	notebook->AddPage(CreateSimplePanel(notebook), LANG(PREFERENCES_SIMPLE_PROGRAM,"Programa/Proyecto"),false,1);
 	notebook->AddPage(CreateStylePanel(notebook), LANG(PREFERENCES_STYLE,"Estilo"),false,2);
-	notebook->AddPage(CreateWritingPanel(notebook), LANG(PREFERENCES_ASSISTANCES,"Asistencias"),false,3);
+	notebook->AddPage(CreateWritingPanels(notebook), LANG(PREFERENCES_ASSIST,"Asistencias"),false,3);
 	notebook->AddPage(CreateSkinPanel(notebook), LANG(PREFERENCES_ICON_THEME,"Tema de Iconos"),false,4);
 	notebook->AddPage(CreateToolbarsPanel(notebook), LANG(PREFERENCES_TOOLBARS,"Barras de Herram."),false,5);
 	notebook->AddPage(CreateDebugPanels(notebook), LANG(PREFERENCES_DEBUGGING,"Depuración"),false,6);
-	notebook->AddPage(CreatePathsPanels(notebook), LANG(PREFERENCES_PATHS,"Rutas"),false,7);
+	notebook->AddPage(CreatePathsPanels(notebook), LANG(PREFERENCES_PATHS,"Rutas"),false,7); 
 
 	mySizer->Add(notebook,sizers->Exp1);
 	mySizer->Add(bottomSizer,sizers->Exp0);
@@ -188,7 +189,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	Show();
 }
 
-wxPanel *mxPreferenceWindow::CreateGeneralPanel (wxListbook *notebook) {
+wxPanel *mxPreferenceWindow::CreateGeneralPanel (mxBookCtrl *notebook) {
 
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -215,12 +216,6 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (wxListbook *notebook) {
 	init_autohide_panels = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_AUTOHIDE_PANELS,"Ocultar paneles automaticamente (*)"),config->Init.autohide_panels);
 	init_singleton = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SINGLETON,"Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos"),config->Init.singleton);
 	init_check_for_updates = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CHECK_FOR_UPDATES,"Verificar si existen nuevas versiones al iniciar"),config->Init.check_for_updates);
-#ifdef __WIN32__
-#else
-	init_lang_es = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT,"Mostrar errores de compilación en Español (Ver Ayuda!) (*)"),config->Init.lang_es);
-//	desktop_icon = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON,"Crear/Actualizar icono de ZinjaI en el escritorio"),false);
-	sizer->Add(new wxButton(panel,mxID_PREFERENCES_XDG,LANG(PREFERENCES_CREATE_ICONS,"Crear/Actualizar accesos directos en el escritorio/menú del sistema...")),sizers->BA10);
-#endif
 	sizer->Add(new wxButton(panel,mxID_PREFERENCES_CUSTOMIZE_SHORTCUTS,LANG(PREFERENCES_CUSTOMIZE_SHORTCUTS,"Personalizar atajos de teclado...")),sizers->BA10);
 	sizer->AddStretchSpacer(1);
 	mxUT::AddStaticText(sizer,panel,LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,"(*) tendrá efecto la proxima vez que inicie ZinjaI"));
@@ -229,7 +224,7 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (wxListbook *notebook) {
 
 }
 
-wxPanel *mxPreferenceWindow::CreateQuickHelpPanel(wxListbook *notebook) {
+wxPanel *mxPreferenceWindow::CreateQuickHelpPanel(mxBookCtrl *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	wxHtmlWindow *html = new wxHtmlWindow(panel,wxID_ANY);
@@ -239,7 +234,7 @@ wxPanel *mxPreferenceWindow::CreateQuickHelpPanel(wxListbook *notebook) {
 	return panel;	
 }
 
-wxNotebook *mxPreferenceWindow::CreateDebugPanels (wxListbook *notebook) {
+wxNotebook *mxPreferenceWindow::CreateDebugPanels (mxBookCtrl *notebook) {
 	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
 	nbk->AddPage(CreateDebugPanel1(nbk), LANG(PREFERENCES_DEBUG_1,"Interfaz"),false);
 	nbk->AddPage(CreateDebugPanel2(nbk), LANG(PREFERENCES_DEBUG_2,"Avanzado"),false);
@@ -291,12 +286,14 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 
 }
 
-wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
+wxPanel *mxPreferenceWindow::CreateToolbarsPanel (mxBookCtrl *notebook) {
 
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_TOOLBARS_WICH,"Barra de herramientas a utilizar:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
+	
+	wxBoxSizer *tbs_sizer = new wxBoxSizer(wxVERTICAL);
 	
 	bool do_not_modify_toolbars = main_window->gui_debug_mode||main_window->gui_fullscreen_mode;
 	wxArrayString poss; poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_TOP,"Arriba")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_LEFT,"Izquierda")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_RIGHT,"Derecha")); poss.Add(LANG(PREFERENCES_TOOLBARS_FLOAT,"Flotante"));
@@ -314,7 +311,7 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	if (do_not_modify_toolbars) toolbars_side_##name->Enable(false); \
 	sz->Add(new wxStaticText(panel,wxID_ANY,"Ubicación:"), sizers->BA5_Center); \
 	sz->Add(toolbars_side_##name,sizers->BA5_Center); \
-	sizer->Add(sz,sizers->BA5_Exp0); }
+	tbs_sizer->Add(sz,sizers->Exp0); }
 	
 	_aux_ctp_1(file,FILE,LANG(CAPTION_TOOLBAR_FILE,"Archivo"));
 	_aux_ctp_1(edit,EDIT,LANG(CAPTION_TOOLBAR_EDIT,"Editar"));
@@ -329,14 +326,16 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 	wxBoxSizer *szFind = new wxBoxSizer(wxHORIZONTAL);
 	szFind->Add(20,1,0);
 	szFind->Add(toolbars_wich_find,sizers->BA5_Center);
-	sizer->Add(szFind,sizers->BA5);
+	tbs_sizer->Add(szFind/*,sizers->BA5*/);
 	
 	toolbars_wich_project = new wxCheckBox(panel,wxID_ANY,LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"));
 	toolbars_wich_project->SetValue(_toolbar_visible(tbPROJECT));
 	wxBoxSizer *szProject = new wxBoxSizer(wxHORIZONTAL);
 	szProject->Add(20,1,0);
 	szProject->Add(toolbars_wich_project,sizers->BA5_Center);
-	sizer->Add(szProject,sizers->BA5);
+	tbs_sizer->Add(szProject/*,sizers->BA5*/);
+	
+	sizer->Add(tbs_sizer);
 	
 	wxButton *btReset = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RESET,LANG(PREFERENCES_TOOLBARS_RESET,"Reestablecer configuración por defecto"));
 	sizer->Add(btReset,sizers->BA5);
@@ -364,7 +363,7 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (wxListbook *notebook) {
 
 }
 
-wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
+wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
 	
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -405,7 +404,7 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (wxListbook *notebook) {
 
 
 
-wxPanel *mxPreferenceWindow::CreateStylePanel (wxListbook *notebook) {
+wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -454,7 +453,14 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (wxListbook *notebook) {
 
 }
 
-wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
+wxNotebook *mxPreferenceWindow::CreateWritingPanels (mxBookCtrl *notebook) {
+	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
+	nbk->AddPage(CreateWritingPanel1(nbk), LANG(PREFERENCES_ASSIST_1,"Generales"),false);
+	nbk->AddPage(CreateWritingPanel2(nbk), LANG(PREFERENCES_ASSIST_2,"Autocompletado"),false);
+	return nbk;
+}
+
+wxPanel *mxPreferenceWindow::CreateWritingPanel1 (wxNotebook *notebook) {
 	
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -465,6 +471,22 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	source_indentPaste = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_INDENT_ON_PASTE,"Corregir indentado al pegar"),config->Source.indentPaste);
 	source_avoidNoNewLineWarning = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE,"Controlar que quede una linea en blanco al final de cada archivo"),config->Source.avoidNoNewLineWarning);
 	source_toolTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_SHOW_TOOLTIPS_FOR_VAR_TYPES,"Utilizar tooltips para identificar tipos de variables"),config->Source.toolTips);
+	init_beautifyCompilerErrors  = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS,"Simplificar mensajes de error del compilador"),config->Init.beautify_compiler_errors);
+	files_autocode = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de plantillas de auto-código"),config->Files.autocodes_file,mxID_AUTOCODES_FILE);
+#ifndef __WIN32__
+	init_lang_es = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT,"Mostrar errores de compilación en Español (Ver Ayuda!) (*)"),config->Init.lang_es);
+#endif
+	
+	panel->SetSizerAndFit(sizer);
+	return panel;
+	
+}
+
+wxPanel *mxPreferenceWindow::CreateWritingPanel2 (wxNotebook *notebook) {
+	
+	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
+	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+	
 	wxArrayString autocomp_methods;
 	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_NONE,"Deshabilitado"));
 	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_START,"Habilitado, por comienzo de palabra"));
@@ -473,8 +495,6 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 	source_autoCompletion = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCOMPLETION,"Autocompletado"),autocomp_methods,config->Source.autoCompletion);
 	source_autocompFilters = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCOM_FILTERS,"Filtrar resultados de autocompletado al continuar escribiendo"),config->Source.autocompFilters);
 	source_callTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y métodos"),config->Source.callTips);
-	init_beautifyCompilerErrors  = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS,"Simplificar mensajes de error del compilador"),config->Init.beautify_compiler_errors);
-	files_autocode = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de plantillas de auto-código"),config->Files.autocodes_file,mxID_AUTOCODES_FILE);
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Índices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
 	help_autocomp_indexes = new wxCheckListBox(panel,mxID_AUTOCOMP_LIST,wxDefaultPosition,wxSize(100,100),0,NULL,wxLB_SORT);
@@ -497,7 +517,7 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel (wxListbook *notebook) {
 }
 
 
-wxPanel *mxPreferenceWindow::CreateSkinPanel (wxListbook *notebook) {
+wxPanel *mxPreferenceWindow::CreateSkinPanel (mxBookCtrl *notebook) {
 	
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -547,7 +567,7 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (wxListbook *notebook) {
 }
 
 
-wxNotebook *mxPreferenceWindow::CreatePathsPanels (wxListbook *notebook) {
+wxNotebook *mxPreferenceWindow::CreatePathsPanels (mxBookCtrl *notebook) {
 	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
 	nbk->AddPage(CreatePathsPanel1(nbk), LANG(PREFERENCES_PATHS_1,"Rutas 1"),false);
 	nbk->AddPage(CreatePathsPanel2(nbk), LANG(PREFERENCES_PATHS_1,"Rutas 2"),false);
@@ -571,6 +591,10 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel1 (wxNotebook *notebook) {
 //	files_compiler_c_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GCC,"Comando del compilador C"),config->Files.compiler_c_command,mxID_GCC_PATH);
 	files_debugger_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_GDB,"Comando del depurador"),config->Files.debugger_command,mxID_GDB_PATH);
 	files_terminal_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_CONSOLE,"Comando de la terminal"),config->Files.terminal_command,mxID_TERMINALS_BUTTON);
+	
+#ifndef __WIN32__
+	sizer->Add(new wxButton(panel,mxID_PREFERENCES_XDG,LANG(PREFERENCES_CREATE_ICONS,"Crear/Actualizar accesos directos en el escritorio/menú del sistema...")),sizers->BA10);
+#endif
 	
 	sizer->AddStretchSpacer(1);
 	mxUT::AddStaticText(sizer,panel,/*LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,*/"Nota: Las configuración de las rutas relacionadas al compilador se realiza\n"

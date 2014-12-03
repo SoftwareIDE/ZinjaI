@@ -2320,7 +2320,7 @@ PREFERENCES_SIMPLE_PROGRAM
 Programa/Proyecto
 PREFERENCES_STYLE
 Estilo
-PREFERENCES_ASSISTANCES
+PREFERENCES_ASSIST
 Asistencias
 PREFERENCES_ICON_THEME
 Tema de Iconos
@@ -2484,6 +2484,10 @@ PREFERENCES_STYLE_HIDE_TOOLBARS_ON_FULLSCREEN
 Ocultar barras de herramientas al pasar a pantalla completa
 PREFERENCES_STYLE_HIDE_PANELS_ON_FULLSCREEN
 Ocultar paneles al pasar a pantalla completa
+PREFERENCES_ASSIST_1
+Generales
+PREFERENCES_ASSIST_2
+Autocompletado
 PREFERENCES_WRITING_INTELLIGENT_EDITING
 Edición inteligente
 PREFERENCES_WRITING_AUTOCLOSE_BRACKETS
@@ -2496,6 +2500,10 @@ PREFERENCES_WRITING_CHECK_FOR_EMPTY_LAST_LINE
 Controlar que quede una linea en blanco al final de cada archivo
 PREFERENCES_WRITING_SHOW_TOOLTIPS_FOR_VAR_TYPES
 Utilizar tooltips para identificar tipos de variables
+PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS
+Simplificar mensajes de error del compilador
+PREFERENCES_WRITTING_AUTOCODES_FILE
+Archivo de definiciones de plantillas de auto-código
 PREFERENCES_WRITTING_AUTOCOMP_NONE
 Deshabilitado
 PREFERENCES_WRITTING_AUTOCOMP_START
@@ -2510,10 +2518,6 @@ PREFERENCES_WRITING_AUTOCOM_FILTERS
 Filtrar resultados de autocompletado al continuar escribiendo
 PREFERENCES_WRITING_ENABLE_CALLTIPS
 Mostrar ayuda de llamadas a funciones y métodos
-PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS
-Simplificar mensajes de error del compilador
-PREFERENCES_WRITTING_AUTOCODES_FILE
-Archivo de definiciones de plantillas de auto-código
 PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES
 Índices de autocompletado a utilizar
 PREFERENCES_SKIN_AVAILABLE_THEMES

@@ -20,12 +20,18 @@ struct LinuxTerminalInfo {
 };
 #endif
 
+#ifdef __WIN32__
+# define mxBookCtrl wxTreebook
+#else
+# define mxBookCtrl wxListbook
+#endif
+
 class wxCheckBox;
 class wxComboBox;
 class wxTextCtrl;
 class wxAuiNotebook;
 class wxNotebook;
-class wxListbook;
+class mxBookCtrl;
 class wxListBox;
 class wxPanel;
 class wxCheckListBox;
@@ -159,22 +165,31 @@ class mxPreferenceWindow : public wxDialog {
 
 public:
 
-	wxListbook *notebook;
+	mxBookCtrl *notebook;
 
 	mxPreferenceWindow(wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
-	wxPanel *CreateGeneralPanel (wxListbook *notebook);
-	wxPanel *CreateSimplePanel (wxListbook *notebook);
-	wxPanel *CreateStylePanel (wxListbook *notebook);
-	wxPanel *CreateWritingPanel (wxListbook *notebook);
-	wxNotebook *CreatePathsPanels (wxListbook *notebook);
+	
+	wxPanel *CreateQuickHelpPanel (mxBookCtrl *notebook);
+	
+	wxPanel *CreateGeneralPanel (mxBookCtrl *notebook);
+	
+	wxPanel *CreateSimplePanel (mxBookCtrl *notebook);
+	
+	wxPanel *CreateStylePanel (mxBookCtrl *notebook);
+	
+	wxNotebook *CreateWritingPanels (mxBookCtrl *notebook);
+	wxPanel *CreateWritingPanel1 (wxNotebook *notebook);
+	wxPanel *CreateWritingPanel2 (wxNotebook *notebook);
+	
+	wxNotebook *CreatePathsPanels (mxBookCtrl *notebook);
 	wxPanel *CreatePathsPanel1 (wxNotebook *notebook);
 	wxPanel *CreatePathsPanel2 (wxNotebook *notebook);
-	wxPanel *CreateToolbarsPanel (wxListbook *notebook);
-	wxPanel *CreateSkinPanel (wxListbook *notebook);
-	wxNotebook *CreateDebugPanels (wxListbook *notebook);
+	wxPanel *CreateToolbarsPanel (mxBookCtrl *notebook);
+	wxPanel *CreateSkinPanel (mxBookCtrl *notebook);
+	wxNotebook *CreateDebugPanels (mxBookCtrl *notebook);
 	wxPanel *CreateDebugPanel1 (wxNotebook *notebook);
 	wxPanel *CreateDebugPanel2 (wxNotebook*notebook);
-	wxPanel *CreateQuickHelpPanel (wxListbook *notebook);
+	
 	void OnWxHelpButton(wxCommandEvent &event);
 	void OnSkinList(wxCommandEvent &event);
 	void OnSkinButton(wxCommandEvent &event);
