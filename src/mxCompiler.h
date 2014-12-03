@@ -83,6 +83,7 @@ public:
 	void BuildOrRunProject(bool run, bool debug, bool prepared);
 	void ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run);
 	CAR_ERROR_LINE ParseSomeErrorsOneLine(compile_and_run_struct_single *compile_and_run, const wxString &error_line);
+	void SetWarningsAndErrorsNumbersOnTree();
 	void ParseSomeErrors(compile_and_run_struct_single *compile_and_run);
 	void ParseCompilerOutput(compile_and_run_struct_single *compile_and_run, bool success);
 	void ResetCompileData();

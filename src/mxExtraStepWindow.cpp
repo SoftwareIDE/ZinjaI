@@ -20,7 +20,11 @@ BEGIN_EVENT_TABLE(mxExtraStepWindow, wxDialog)
 	EVT_CLOSE(mxExtraStepWindow::OnClose)
 END_EVENT_TABLE()
 
-mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *conf, compile_extra_step *astep) : wxDialog(parent,wxID_ANY,_T("Paso de Compilacion Personalizable"),wxDefaultPosition,wxDefaultSize) {
+#define _CAPTION LANG(EXTRASTEP_CAPTION,"Paso de Compilacion Personalizado")
+	
+mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *conf, compile_extra_step *astep) 
+	: wxDialog(parent,wxID_ANY,_CAPTION,wxDefaultPosition,wxDefaultSize) 
+{
 	configuration=conf;
 	step=astep;
 	

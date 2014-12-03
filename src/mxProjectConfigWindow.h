@@ -124,13 +124,15 @@ public:
 	void OnStepsEdit(wxCommandEvent &evt);
 	void OnToolchainOptionsButton(wxCommandEvent &evt);
 	void OnComboToolchainChange(wxCommandEvent &evt);
-	void OnImportLibsButton(wxCommandEvent &evt);
+//	void OnImportLibsButton(wxCommandEvent &evt);
 	void OnLibsAdd(wxCommandEvent &evt);
 	void OnLibsEdit(wxCommandEvent &evt);
 	void OnLibsDel(wxCommandEvent &evt);
 	void ReloadSteps(wxString selection="");
 	void ReloadLibs(wxString selection="");
 	void OnLibsNoExe(wxCommandEvent &evt);
+	
+	void SelectCustomStep(const wxString &custom_step_name);
 private:
 	DECLARE_EVENT_TABLE()
 };

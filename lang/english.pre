@@ -1148,10 +1148,6 @@ MAINW_BINARY_ALREADY_UPDATED
 Binary file is up to date.
 GENERAL_RUNNING_DOTS
 Running...
-MAINW_CT_ERRORS
-Errors
-MAINW_CT_WARNINGS
-Warnings
 MAINW_COMPILER_OUTPUT_PARSING_ERROR
 There was an error when trying to reorganize compiler's output. Some errors may\nnot display correctly in compiler result's tree. To see the real output use right\nclick over the tree. If you like to help us improving ZinjaI, you're welcome to send\nthe code that produced that error to zaskar_84@yahoo.com.ar
 MAINW_COMPILING_DONE_SECONDS
@@ -1162,8 +1158,14 @@ MAINW_COMPILING_DONE_MINUTES_AND_SECONDS
 Compilation finished ( elapsed time: <{1}> minutes and <{2}> seconds ).
 MAINW_COMPILING_DONE
 Compilation finished.
+MAINW_COMPILATION_CUSTOM_STEP_ERROR
+Error running custom compiling step: 
 MAINW_COMPILING_DOTS
 Compiling...
+MAINW_CT_ERRORS
+Errors
+MAINW_CT_WARNINGS
+Warnings
 MAINW_WARNING_NO_EXCUTABLE_PERMISSION
 Binary file doesn't have execute permission
 MAINW_WARNING_EXCUTABLE_PERMISSION_CHANGED
@@ -1452,6 +1454,8 @@ EXEINFO_WAIT_FOR_PARSER
 Can't get file type while parser is working.
 EXEINFO_FILE_TYPE
 File type
+EXTRASTEP_CAPTION
+Customized Building Step
 EXTRASTEP_NAME
 Name
 EXTRASTEP_COMMAND

@@ -16,7 +16,7 @@ alguna forma de herencia de configuraciones de proyectos???? algo para los mil m
 		de un txt cualquiera: "${INI|opts.ini|cxxflags}" // si se omite el "|cxxflags" se busca con el nombre de campo que use zinjai en el zpr
 		de otro perfil del mismo proyecto: "${THIS|debug_win32}"
 		ver cómo hacer con los pasos personalizados
-
+	problemas... recursivos, subcomandos y paths relativos entre ellos, inis en mingw/algo, etc
 
 corregir el problema del drag and drop que le jode a nestor
 

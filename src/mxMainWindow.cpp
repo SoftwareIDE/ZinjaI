@@ -1085,6 +1085,11 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_futuretimestamp.html"),false); return;
 	} else if (item_text==LANG(PROJMNGR_MANIFEST_NOT_FOUND,"No se ha encontrado el archivo manifest.xml.")) {
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_missingiconmanifest.html"),false); return;
+	} else if (project && item_text.StartsWith(LANG(MAINW_COMPILATION_CUSTOM_STEP_ERROR,"Error al ejecutar paso de compilación personalizado: "))) {
+		int n = wxString(LANG(MAINW_COMPILATION_CUSTOM_STEP_ERROR,"Error al ejecutar paso de compilación personalizado: ")).Len();
+		wxString custom_step_name = item_text.Mid(n); 
+		mxProjectConfigWindow *pwin = new mxProjectConfigWindow(this);
+		pwin->SelectCustomStep(custom_step_name);
 	} else if (item_text.Contains(EN_COMPOUT_FILE_NOT_RECOGNIZED)) {
 		wxString obj_name = item_text.Mid(0,item_text.Find(EN_COMPOUT_FILE_NOT_RECOGNIZED));
 		LocalListIterator<project_file_item*> fi(&project->files_sources);

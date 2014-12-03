@@ -399,12 +399,12 @@ void mxCompiler::ParseSomeErrors(compile_and_run_struct_single *compile_and_run)
 	static wxString error_line, nice_error_line;
 	int p;
 //	char c;
-cerr<<"wxTextInputStream input(*(process->GetErrorStream()));"<<endl;
+//cerr<<"wxTextInputStream input(*(process->GetErrorStream()));"<<endl;
 	wxTextInputStream input(*(process->GetErrorStream()));	
-cerr<<"while ( process->IsErrorAvailable() ) {"<<endl;
+//cerr<<"while ( process->IsErrorAvailable() ) {"<<endl;
 	while ( process->IsErrorAvailable() ) {
 		
-cerr<<"error_line=input.ReadLine();"<<endl;
+//cerr<<"error_line=input.ReadLine();"<<endl;
 		error_line=input.ReadLine();
 		
 		// acortar el nombre de archivo
@@ -486,9 +486,9 @@ cerr<<"error_line=input.ReadLine();"<<endl;
 			compile_and_run->pending_error_nices.Add(nice_error_line);
 		}
 			
-cerr<<"while ( process->IsErrorAvailable() ) {"<<endl;
+//cerr<<"while ( process->IsErrorAvailable() ) {"<<endl;
 	}
-cerr<<"}"<<endl;
+//cerr<<"}"<<endl;
 }
 
 void mxCompiler::ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run) {
@@ -515,15 +515,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 	// poner los errores/warnings/etc en el arbol
 	ParseSomeErrors(compile_and_run); 
 	
-	wxString serrors=LANG(MAINW_CT_ERRORS,"Errores"); serrors<<" (";
-	if (num_errors<=config->Init.max_errors) serrors<<num_errors;
-	else serrors<<config->Init.max_errors<<"+";
-	serrors<<")"; tree->SetItemText(errors,serrors);
-	
-	wxString swarnings=LANG(MAINW_CT_WARNINGS,"Advertencias"); swarnings<<" (";
-	if (num_warnings<=config->Init.max_errors) swarnings<<num_warnings;
-	else swarnings<<config->Init.max_errors<<"+";
-	swarnings<<")"; tree->SetItemText(warnings,swarnings);
+	SetWarningsAndErrorsNumbersOnTree();
 	
 	if (!compile_and_run_single->killed && (!compile_and_run->parsing_errors_was_ok || !compile_and_run->pending_error_lines.IsEmpty())) {
 		mxMessageDialog(main_window,LANG(MAINW_COMPILER_OUTPUT_PARSING_ERROR,"ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\n"
@@ -615,10 +607,11 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			main_window->SetCompilingStatus(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
 			compile_and_run->compiling=false;
 			wxBell();
-			if (compile_and_run->output_type==MXC_EXTRA)
-				tree->SetItemText(state,wxString(_T("Error en: "))<<compile_and_run->step_label);
-			else
-				tree->SetItemText(state,LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
+			if (compile_and_run->output_type==MXC_EXTRA) {
+				tree->AppendItem(errors,wxString(LANG(MAINW_COMPILATION_CUSTOM_STEP_ERROR,"Error al ejecutar paso de compilación personalizado: "))<<compile_and_run->step_label,5);
+				num_errors++; SetWarningsAndErrorsNumbersOnTree();
+			}
+			tree->SetItemText(state,LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
 			tree->Expand(errors);
 			main_window->ShowCompilerTreePanel();
 			main_window->SetFocusToSourceAfterEvents();
@@ -756,4 +749,16 @@ bool mxCompiler::CheckForExecutablePermision(wxString file) {
 	}
 #endif
 	return true;
+}
+
+void mxCompiler::SetWarningsAndErrorsNumbersOnTree() {
+	wxString serrors=LANG(MAINW_CT_ERRORS,"Errores"); serrors<<" (";
+	if (num_errors<=config->Init.max_errors) serrors<<num_errors;
+	else serrors<<config->Init.max_errors<<"+";
+	serrors<<")"; tree->SetItemText(errors,serrors);
+
+	wxString swarnings=LANG(MAINW_CT_WARNINGS,"Advertencias"); swarnings<<" (";
+	if (num_warnings<=config->Init.max_errors) swarnings<<num_warnings;
+	else swarnings<<config->Init.max_errors<<"+";
+	swarnings<<")"; tree->SetItemText(warnings,swarnings);
 }

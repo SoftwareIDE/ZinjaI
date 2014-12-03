@@ -1148,10 +1148,6 @@ MAINW_BINARY_ALREADY_UPDATED
 El binario ya esta actualizado.
 GENERAL_RUNNING_DOTS
 Ejecutando...
-MAINW_CT_ERRORS
-Errores
-MAINW_CT_WARNINGS
-Advertencias
 MAINW_COMPILER_OUTPUT_PARSING_ERROR
 ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\nPuede que algun error no se muestre correctamente en el arbol. Para ver la salida\ncompleta haga click con el boton derecho del raton en cualquier elemento del arbol\ny seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\nenviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar
 MAINW_COMPILING_DONE_SECONDS
@@ -1162,8 +1158,14 @@ MAINW_COMPILING_DONE_MINUTES_AND_SECONDS
 Compilacion finalizada ( tiempo transcurrido: <{1}> minutos y <{2}> segundos ).
 MAINW_COMPILING_DONE
 Compilacion finalizada.
+MAINW_COMPILATION_CUSTOM_STEP_ERROR
+Error al ejecutar paso de compilación personalizado: 
 MAINW_COMPILING_DOTS
 Compilando...
+MAINW_CT_ERRORS
+Errores
+MAINW_CT_WARNINGS
+Advertencias
 MAINW_WARNING_NO_EXCUTABLE_PERMISSION
 El binario no tiene permisos de ejecución.
 MAINW_WARNING_EXCUTABLE_PERMISSION_CHANGED
@@ -1452,6 +1454,8 @@ EXEINFO_WAIT_FOR_PARSER
 No se puede determinar el tipo mientras el parser esta analizando fuentes
 EXEINFO_FILE_TYPE
 Tipo de Archivo
+EXTRASTEP_CAPTION
+Paso de Compilacion Personalizado
 EXTRASTEP_NAME
 Nombre
 EXTRASTEP_COMMAND

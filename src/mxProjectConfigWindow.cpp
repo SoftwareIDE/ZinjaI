@@ -72,7 +72,7 @@ BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	
 	EVT_CHECKBOX(mxID_PROJECT_CONFIG_LIBS_DONT_EXE,mxProjectConfigWindow::OnLibsNoExe)
 	
-	EVT_BUTTON(mxID_PROJECT_CONFIG_IMPORT_LIBS,mxProjectConfigWindow::OnImportLibsButton)
+//	EVT_BUTTON(mxID_PROJECT_CONFIG_IMPORT_LIBS,mxProjectConfigWindow::OnImportLibsButton)
 	
 	EVT_CLOSE(mxProjectConfigWindow::OnClose)
 END_EVENT_TABLE()
@@ -1076,9 +1076,9 @@ void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {
 	mxToolchainOptions(this,toolchains_combo->GetStringSelection(),configuration).ShowModal();
 }
 
-void mxProjectConfigWindow::OnImportLibsButton (wxCommandEvent & evt) {
-	
-}
+//void mxProjectConfigWindow::OnImportLibsButton (wxCommandEvent & evt) {
+//	
+//}
 
 void mxProjectConfigWindow::OnExecutionMethodButton (wxCommandEvent & evt) {
 	
@@ -1088,3 +1088,12 @@ void mxProjectConfigWindow::OnComboExecutionScript (wxCommandEvent & evt) {
 	wx_noscript.EnableAll(general_exec_method->GetSelection()!=0);
 }
 
+void mxProjectConfigWindow::SelectCustomStep(const wxString &custom_step_name) {
+	notebook->SetSelection(config->Help.show_extra_panels?4:3);
+	for(unsigned int i=0;i<steps_list->GetCount();i++) { 
+		if (steps_list->GetString(i)==custom_step_name) {
+			steps_list->Select(i);
+			break;
+		}
+	}
+}
