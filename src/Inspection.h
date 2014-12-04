@@ -375,20 +375,20 @@ private:
 		__debug_log_method__;
 		const wxString &type = parent->value_type;
 		int i=type.Len(); int  plev=0,pend=-1,pbeg=i;
-//		if (type[pbeg-1]=='&') { pbeg--; if (type[pbeg-1]==' ') pbeg--; } // por si es referencia (van las dos copias de este if??)
 		while (--i>=0) {
 			if (type[i]==']') { if (plev++==0) pend=i; }
 			else if (type[i]=='[') { if (--plev==0) pbeg=i; }
 			else if (type[i]<'0'||type[i]>'9') break;
 		}
-//		if (type[pbeg-1]=='&') { pbeg--; if (type[pbeg-1]==' ') pbeg--; } // por si es referencia (van las dos copias de este if??)
 		wxString mtype = type.Mid(0,pbeg); mtype.Replace("&","",true);
 		while (mtype.Contains("::") && debug->SendCommand(wxString("p (")<<mtype<<"*)0x0").StartsWith("^error")) // gdb seems to simplify some nested typenames and the does not recognize them with their full scoped name
 			mtype=mtype.AfterFirst(':').Mid(1);
+		wxString mvalue = gdb_value; // evaluar con un vo algo como "&(p)" puede dar "0xBOO <tipo_de_p>", solo queremos la direccion
+		if (mvalue.StartsWith("0x")&&mvalue.Contains(" ")) mvalue=mvalue.BeforeFirst(' ');
 		if (pbeg!=-1 && pbeg+1<pend) // arreglo
-			expression = wxString("*((")<<mtype<<"(*)"<<type.Mid(pend+1)<<")"<<gdb_value<<")@"<<type.Mid(pbeg+1,pend-pbeg-1);
+			expression = wxString("*((")<<mtype<<"(*)"<<type.Mid(pend+1)<<")"<<mvalue<<")@"<<type.Mid(pbeg+1,pend-pbeg-1);
 		else // clase
-			expression = wxString("*((")<<mtype<<"*)"<<gdb_value<<")";
+			expression = wxString("*((")<<mtype<<"*)"<<mvalue<<")";
 	}
 	
 	void CreateVO() {
