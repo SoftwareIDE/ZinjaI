@@ -1416,11 +1416,9 @@ void CodeHelper::FilterAutocomp (mxSource *source, const wxString & key, bool fo
 	const wxString &new_res = autocomp_list.GetFiltered(key);
 	if (!force_show && new_res==old_res) return;
 	if (new_res.IsEmpty()) {
-		reinterpret_cast<wxStyledTextCtrl*>(source)->AutoCompCancel(); 
-		if (source->calltip) source->calltip->Hide();
+		source->HideCalltip();
 	}
 	else source->ShowAutoComp(key.Len(),new_res,true);
-//	source->AutoCompSetSelection(0);
 }
 
 wxString MyAutocompList::GetFiltered (wxString typed) {
