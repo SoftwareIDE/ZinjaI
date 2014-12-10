@@ -1032,13 +1032,14 @@ wxString mxUT::EscapeString(wxString str, bool add_comillas) {
 wxString mxUT::UnEscapeString(wxString str) {
 	int i=0, l=str.Len();
 	while(i<l) {
-		if (str[i]=='\\' || str[i]=='\"' || str[i]=='\'') {
+		if (str[i]=='\\') {
 			if (str[i]=='\\' && i+1<l && str[i+1]=='t') str[i+1]='\t';
 			if (str[i]=='\\' && i+1<l && str[i+1]=='n') str[i+1]='\n';
 			else if (str[i]=='\\' && i+1<l && str[i+1]=='r') str[i+1]='\r';
 			else if (str[i]=='\\' && i+1<l && str[i+1]=='b') str[i+1]='\b';
-			str=str.Mid(0,i)+str.Mid(i+1);
-			/*i++;*/ l--; i--;
+			str=str.Mid(0,i)+str.Mid(i+1); l--;
+		} else if (str[i]=='\"' || str[i]=='\'') {
+			str=str.Mid(0,i)+str.Mid(i+1); l--; i--;
 		}
 		i++;
 	}
