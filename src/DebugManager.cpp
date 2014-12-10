@@ -330,6 +330,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
 			Stop(); return false;
 		}
+		while (!ans.Contains("*stopped")) ans=WaitAnswer();
 		SetStateText(status_message);
 		UpdateBacktrace();
 		DebuggerInspection::OnDebugStart();

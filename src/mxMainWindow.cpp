@@ -3192,11 +3192,11 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 
 void mxMainWindow::OnDebugTarget ( wxCommandEvent &event ) {
 	static wxString target;
-	wxString new_target = DebugTargetCommon(target);
+	wxString new_target = DebugTargetCommon(target,false);
 	if (new_target.Len()) target=new_target;
 }
 
-wxString mxMainWindow::DebugTargetCommon (wxString target) {
+wxString mxMainWindow::DebugTargetCommon (wxString target, bool should_continue) {
 	target = mxGetTextFromUser("Target (arguments for gdb's target command):",_menu_item_2(mnDEBUG,mxID_DEBUG_ATTACH)->GetPlainLabel(),target,this);
 	if (target.Len()) {
 		wxString command = wxString("target ")<<target;
@@ -3204,7 +3204,7 @@ wxString mxMainWindow::DebugTargetCommon (wxString target) {
 		if (project) 
 			debug->SpecialStart(NULL,command,message,true);
 		else IF_THERE_IS_SOURCE
-			debug->SpecialStart(CURRENT_SOURCE,command,message,true);
+			debug->SpecialStart(CURRENT_SOURCE,command,message,should_continue);
 	}
 	return target;
 }
