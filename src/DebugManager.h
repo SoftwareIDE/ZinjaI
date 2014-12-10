@@ -56,6 +56,20 @@ class DebuggerInspection;
 class DebugManager;
 extern DebugManager *debug;
 
+/// @brief Auxiliar class for logging gdb inputs and outputs for debugging pourposes (debugging ZinjaI)
+class DebuggerTalkLogger {
+	friend class DebugManager;
+	static DebuggerTalkLogger *the_logger;
+public:
+	virtual void Open(){};
+	virtual void Log(const wxString &)=0;
+	virtual void Close(){};
+	virtual ~DebuggerTalkLogger() {}
+	static void Set(DebuggerTalkLogger *logger) { the_logger = logger; }
+	static void UnSet() { if (the_logger) delete the_logger; the_logger = NULL; }
+};
+#  define _DBG_LOG_ST_CALL(x) DebuggerTalkLogger::x
+#  define _DBG_LOG_CALL(x) if (DebuggerTalkLogger::the_logger) DebuggerTalkLogger::the_logger->x 
 
 /**
 * @brief Administra la comunicación entre la interfaz y el depurador gdb

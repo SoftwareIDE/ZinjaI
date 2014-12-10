@@ -30,14 +30,11 @@
 #include "lnxStuff.h"
 using namespace std;
 
-#ifdef _DEBUG_LOG
-	wxFFile debug_log_file;
-#endif
-
-
 //#define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
 
 DebugManager *debug = NULL;
+
+DebuggerTalkLogger* DebuggerTalkLogger::the_logger = NULL;
 
 DebugManager::DebugManager() {
 	on_pause_action = NULL;
@@ -65,9 +62,7 @@ DebugManager::~DebugManager() {
 }
 
 bool DebugManager::Start(bool update) {
-#ifdef _DEBUG_LOG
-	debug_log_file.Open(_DEBUG_LOG,"w+");
-#endif
+	_DBG_LOG_CALL(Open());
 	if (update && project->PrepareForBuilding()) { // ver si hay que recompilar antes
 		compiler->BuildOrRunProject(true,true,true);
 		return false;
@@ -89,9 +84,7 @@ bool DebugManager::Start(bool update) {
 }
 
 bool DebugManager::Start(bool update, mxSource *source) {
-#ifdef _DEBUG_LOG
-	debug_log_file.Open(_DEBUG_LOG,_T("w+"));
-#endif
+	_DBG_LOG_CALL(Open());
 	if (source) {
 		// ver si hay que compilar antes
 		if (update) {
@@ -300,9 +293,7 @@ void DebugManager::ResetDebuggingStuff() {
 
 
 bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, const wxString &status_message, bool should_continue) {
-#ifdef _DEBUG_LOG
-	debug_log_file.Open(_DEBUG_LOG,"w+");
-#endif
+	_DBG_LOG_CALL(Open());
 	mxOSD osd(main_window,LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."));
 	ResetDebuggingStuff();
 	wxString exe = source?source->GetBinaryFileName().GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
@@ -383,9 +374,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 **/
 
 bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
-#ifdef _DEBUG_LOG
-	debug_log_file.Open(_DEBUG_LOG,"w+");
-#endif
+	_DBG_LOG_CALL(Open());
 	
 	mxOSD osd(main_window,project?LANG(OSD_LOADING_CORE_DUMP,"Cargando volcado de memoria..."):"");
 	
@@ -489,11 +478,7 @@ void DebugManager::HowDoesItRuns() {
 		if (st_pos==wxNOT_FOUND) {
 			_IF_DEBUGMODE(wxMessageBox(wxString("HowDoesItRuns answer: ")<<ans));
 			SetStateText(state_text);
-#ifdef _DEBUG_LOG
-			wxString debug_log_string; debug_log_string<<"ERROR RUNNING: "<<ans;
-			debug_log_file.Write(debug_log_string);
-			debug_log_file.Flush();
-	#endif
+			_DBG_LOG_CALL(Log(wxString()<<"ERROR RUNNING: "<<ans));
 			return;
 		}
 		ans=ans.Mid(st_pos);
@@ -572,13 +557,9 @@ void DebugManager::HowDoesItRuns() {
 			mark = mxSTC_MARK_STOP;
 			state_text=LANG(DEBUG_STATUS_TERMINAL_CLOSED,"La terminal del programa ha sido cerrada");
 		} 
-#ifdef _DEBUG_LOG
-		else{ 
-			wxString debug_log_string; debug_log_string<<"NEW REASON: "<<ans;
-			debug_log_file.Write(debug_log_string);
-			debug_log_file.Flush();
+		else { 
+			_DBG_LOG_CALL(Log(wxString()<<"NEW REASON: "<<ans));
 		}
-	#endif
 		if (mark) {
 			wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true,true);
 			if (!fname.Len())
@@ -1030,13 +1011,7 @@ wxString DebugManager::WaitAnswer() {
 			while (buffer[c]!='\0')
 				buffer[i++]=buffer[c++];
 			buffer[i]='\0';
-
-#ifdef _DEBUG_LOG
-		wxString debug_log_string; debug_log_string<<"\n<<< "<<ret;
-		debug_log_file.Write(debug_log_string);
-		debug_log_file.Flush();
-#endif
-			
+			_DBG_LOG_CALL(Log(wxString()<<"\n<<< "<<ret));
 			waiting = false;
 			last_answer = ret;
 			return ret;
@@ -1076,11 +1051,7 @@ wxString DebugManager::WaitAnswer() {
 
 wxString DebugManager::SendCommand(wxString command) {
 	waiting = true;
-#ifdef _DEBUG_LOG
-		wxString debug_log_string; debug_log_string<<"\n>>> "<<command;
-		debug_log_file.Write(debug_log_string);
-		debug_log_file.Flush();
-#endif
+	_DBG_LOG_CALL(Log(wxString()<<"\n>>> "<<command));
 	if (!process) return "";
 	last_command=command;
 	output->Write(command.c_str(),command.Len());
@@ -1090,11 +1061,7 @@ wxString DebugManager::SendCommand(wxString command) {
 
 wxString DebugManager::SendCommand(wxString command, int i) {
 	waiting = true;
-#ifdef _DEBUG_LOG
-		wxString debug_log_string; debug_log_string<<"\n>>> "<<command<<i;
-		debug_log_file.Write(debug_log_string);
-		debug_log_file.Flush();
-#endif
+	_DBG_LOG_CALL(Log(wxString()<<"\n>>> "<<command<<i));
 	if (!process) return "";
 	command<<i<<"\n";
 	last_command=command;
@@ -1104,11 +1071,7 @@ wxString DebugManager::SendCommand(wxString command, int i) {
 
 wxString DebugManager::SendCommand(wxString cmd1, wxString cmd2) {
 	waiting = true;
-#ifdef _DEBUG_LOG
-		wxString debug_log_string; debug_log_string<<"\n>>> "<<cmd1<<cmd2;
-		debug_log_file.Write(debug_log_string);
-		debug_log_file.Flush();
-#endif
+	_DBG_LOG_CALL(Log(wxString()<<"\n>>> "<<cmd1<<cmd2));
 	if (!process) return "";
 	cmd1<<cmd2<<"\n";
 	last_command=cmd1;
@@ -1412,9 +1375,7 @@ bool DebugManager::Return(wxString what) {
 
 void DebugManager::ProcessKilled() {
 	delete debug_patcher;
-#ifdef _DEBUG_LOG
-	debug_log_file.Close();
-#endif
+	_DBG_LOG_CALL(Close());
 	MarkCurrentPoint();
 	notitle_source = NULL;
 	debugging=false;

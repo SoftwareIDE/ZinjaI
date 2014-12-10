@@ -3403,7 +3403,35 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 	static wxString what;
 	wxString res = mxGetTextFromUser("Comando:", "Comandos internos" , what, this);
 	if (res=="help") {
-		wxMessageBox ("errorsave, kboom, debug on, debug off, wxlog on, wxlog off, gdb cmd, gdb ans");
+		wxMessageBox ("errorsave, kboom, debug on, debug off, wxlog on, wxlog off, gdb cmd, gdb ans, dbglog <file>/win/off");
+	} else if (res.StartsWith("dbglog ")) {
+		wxString arg=res.AfterFirst(' ');
+		if (arg=="off") _DBG_LOG_ST_CALL(UnSet());
+		else if (arg=="win") {
+			struct mxDbgLogWin : public DebuggerTalkLogger {
+				wxTextCtrl *ctrl;
+				mxDbgLogWin() { 
+					ctrl = new wxTextCtrl(main_window,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
+					main_window->aui_manager.AddPane(ctrl,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Debug Log").Show());
+					main_window->aui_manager.Update();
+				}
+				void Open() { ctrl->Clear(); }
+				void Close() {}
+				void Log(const wxString &s) { ctrl->AppendText(s); ctrl->SetSelection(ctrl->GetValue().Len(),ctrl->GetValue().Len()); }
+			};
+			_DBG_LOG_ST_CALL(Set(new mxDbgLogWin()));
+		}
+		else {
+			struct mxDbgLogFile : public DebuggerTalkLogger {
+				wxString fname;
+				wxFFile file;
+				mxDbgLogFile(const wxString &f):fname(f){}
+				void Open() { file.Open(fname,"w+"); }
+				void Close() { file.Close(); }
+				void Log(const wxString &s) { file.Write(s); file.Flush(); }
+			};
+			_DBG_LOG_ST_CALL(Set(new mxDbgLogFile(arg)));
+		}
 	} else if (res=="debug on") {
 		zinjai_debug_mode=true;
 		SetStatusText("DoThat: Modo debug activado");
@@ -3426,11 +3454,8 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 		int *p=NULL;
 		// cppcheck-suppress nullPointer
 		cout<<*p;
-	} else if (res.Len() && debug->debugging) {
-		SetStatusText(wxString("DoThat: comando para gdb: ")<<res);
-		debug->DoThat(what=res);
-	} else if (!debug->IsDebugging()) {
-		SetStatusText(wxString("DoThat: gdb is not running")<<res);
+	} else {
+		SetStatusText("Unknown command");
 	}
 }
 
