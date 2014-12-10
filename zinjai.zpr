@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/MenusAndToolsConfig.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -36,10 +35,9 @@ cursor=11:38
 marker=142
 [source]
 path=src/mxMainWindow.cpp
-cursor=217:27
+cursor=4615:1
 marker=1089
 marker=1676
-open=true
 [source]
 path=src/DebugManager.cpp
 cursor=1716:0
@@ -57,7 +55,9 @@ path=src/mxLibToBuildWindow.cpp
 cursor=191:16
 [source]
 path=src/Parser.cpp
-cursor=347:9
+cursor=623:2
+breakpoint=621
+breakpoint_annotation=
 [source]
 path=src/mxNewWizard.cpp
 cursor=724:1
@@ -110,7 +110,7 @@ marker=482
 marker=3289
 [source]
 path=src/mxThreadGrid.cpp
-cursor=0:25
+cursor=31:0
 [source]
 path=src/mxHelpWindow.cpp
 cursor=59:22
@@ -199,7 +199,7 @@ path=src/mxSizers.cpp
 cursor=25:14
 [source]
 path=src/error_recovery.cpp
-cursor=129:16
+cursor=20:15
 marker=70
 [source]
 path=src/mxErrorRecovering.cpp
@@ -357,7 +357,6 @@ cursor=72:0
 path=src/MenusAndToolsConfig.cpp
 cursor=191:6
 marker=350
-open=true
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=134:38
@@ -766,7 +765,7 @@ path=src/mxRealTimeInspectionEditor.h
 cursor=14:25
 [other]
 path=guihelp/ChangeLog.html
-cursor=0:6
+cursor=17:154
 [other]
 path=guihelp/tips_spanish
 cursor=0:0
@@ -1112,7 +1111,9 @@ suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useI
 inline_suppr=1
 exclude_list=
 [inspections]
-expr=args
-expr=di
+expr=progress_now
+expr=progress_total
+expr=prog
+expr=progress_now
 [custom_tools]
 [end]

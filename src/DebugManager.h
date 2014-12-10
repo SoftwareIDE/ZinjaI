@@ -183,7 +183,7 @@ private:
 	bool backtrace_shows_args; ///< determine wheter backtrace table should show an extra column with arguments (with values) for each function in the stack
 public:
 	void SetBacktraceShowsArgs(bool show);
-	bool UpdateBacktrace(bool set_frame=true);
+	bool UpdateBacktrace(bool set_frame=true, bool and_threadlist=true);
 #ifndef __WIN32__
 	void TtyProcessKilled();
 #endif

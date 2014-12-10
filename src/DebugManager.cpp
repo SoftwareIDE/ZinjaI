@@ -332,6 +332,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 		}
 		SetStateText(status_message);
 		UpdateBacktrace();
+		DebuggerInspection::OnDebugStart();
 //		long line;
 //		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
 //		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
@@ -573,12 +574,6 @@ void DebugManager::HowDoesItRuns() {
 				StepIn();
 			else {
 				stepping_in=false;
-				if (line.ToLong(&fline)) {
-//					MarkCurrentPoint(fname,fline,mark);  // lo hace UpdateBacktrace
-					if (threadlist_visible) UpdateThreads();
-				} else {
-					if (threadlist_visible) UpdateThreads();
-				}
 				UpdateBacktrace();
 				UpdateInspections();
 			}
@@ -704,10 +699,11 @@ wxString DebugManager::InspectExpression(wxString var, bool full) {
 
 void DebugManager::SetBacktraceShowsArgs(bool show) {
 	backtrace_shows_args=show;
-	UpdateBacktrace();
+	UpdateBacktrace(false,false);
 }
 
-bool DebugManager::UpdateBacktrace(bool set_frame) {
+bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
+	if (and_threadlist && threadlist_visible) UpdateThreads();
 #ifdef __WIN32__
 	static wxString sep="\\",wrong_sep="/";
 #else
@@ -1318,7 +1314,7 @@ bool DebugManager::Jump(wxString fname, int line) {
 		wxString ans=SendCommand("-gdb-set $pc=",adr);
 		if (ans.SubString(1,5)!="error") {
 			MarkCurrentPoint(fname,line+1,mxSTC_MARK_EXECPOINT);
-			UpdateBacktrace();
+			UpdateBacktrace(true,false);
 			running = false;
 			return true;
 		}
@@ -1368,7 +1364,7 @@ bool DebugManager::Return(wxString what) {
 	long fline = -1;
 	line.ToLong(&fline);
 	MarkCurrentPoint(fname,fline,mxSTC_MARK_EXECPOINT);
-	UpdateBacktrace();
+	UpdateBacktrace(true,false);
 	UpdateInspections();
 	return true;
 }

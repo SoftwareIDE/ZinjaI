@@ -672,6 +672,7 @@ void mxInspectionGrid::OnDIInScope(DebuggerInspection *di) {
 void mxInspectionGrid::OnDIOutOfScope(DebuggerInspection *di) {
 	if (!SetCurrentRow(di)) return;
 	SetRowStatus(current_row,IGRS_OUT_OF_SCOPE);
+	if (!di->IsInScope()) UpdateLevelColumn(current_row);
 }
 
 void mxInspectionGrid::SetRowStatus (int r, int status) {
@@ -720,6 +721,7 @@ void mxInspectionGrid::OnFullTableUpdateEnd ( ) {
 void mxInspectionGrid::UpdateLevelColumn (int r) {
 	InspectionGridRow &di=inspections[r];
 	if (di.IsNull()) { mxGrid::SetCellValue(r,IG_COL_LEVEL,""); return; }
+	if (!di->IsInScope()) { mxGrid::SetCellValue(r,IG_COL_LEVEL,"-"); return; }
 	if (!debug->debugging) { mxGrid::SetCellValue(r,IG_COL_LEVEL,di->IsFrameless()?"*":"?"); return; }
 	if (di->GetDbiType()==DIT_ERROR) { mxGrid::SetCellValue(r,IG_COL_LEVEL,"?"); return; }
 	if (di->IsFrameless()) {
