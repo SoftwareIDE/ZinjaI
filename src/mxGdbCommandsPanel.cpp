@@ -109,6 +109,9 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 	AppendText(wxString("> ")+cmd+"\n");
 	wxString ans = debug->SendCommand(cmd);
 	if (ans.Len() && !ans.Last()=='\n') ans<<"\n";
+#ifdef __WIN32__
+			line.Replace("\r","");
+#endif
 	
 	wxString mi_msg, reg_msg;
 	do {
@@ -116,14 +119,8 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 		ans=ans.AfterFirst('\n');
 		if (line.StartsWith("~")) {
 			reg_msg<<mxUT::UnEscapeString(line.Mid(1));
-#ifdef __WIN32__
-			ans.Replace("\r","");
-#endif
 		} else if (line.StartsWith("&")) {
 			wxString ue=mxUT::UnEscapeString(line.Mid(1));
-#ifdef __WIN32__
-			ans.Replace("\r","");
-#endif
 			if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
 			mi_msg<<"   & "<<ue<<"\n";
 		} else if (line.StartsWith("^")) {
