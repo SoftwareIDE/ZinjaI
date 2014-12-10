@@ -619,7 +619,9 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 	
 	static bool show_progress=false;
 	static int progress_total=0;
+	static int progress_now=0;
 	if (first) {
+		progress_now=0;
 		show_progress=arg_show_progress;
 		if (show_progress) {
 			list<parserAction>::iterator it=actions.begin();
@@ -629,7 +631,6 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 	}
 	
 	if (!actions.empty()) {
-		int progress_now=0;
 		bool async=false; // si un paso lanza un proceso asincrono, esta bandera lo indica, para cortar el loop y esperar el evento terminate de ese proceso
 		do {
 			data_age++;

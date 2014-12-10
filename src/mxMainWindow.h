@@ -55,8 +55,13 @@ class mxMainWindow : public wxFrame {
 public:
 	
 	bool gui_fullscreen_mode, gui_debug_mode, gui_project_mode; 
-	bool fullscreen_panels_status[10];
-	bool debug_panels_status[10];
+	
+	enum {fspsCOMPILER,fspsHELP,fspsBACKTRACE,fspsINSPECTIONS,fspsLEFT,fspsPROJECT,fspsEXPLORER,fspsBEGINNER,fspsTHREADS,fspsCOUNT};
+	bool fullscreen_panels_status[fspsCOUNT];
+	
+	enum {dbpsCOMPILER,dbpsHELP,dbpsBACKTRACE,dbpsINSPECTIONS,dbpsTHREADS,dbpsCOUNT};
+	bool debug_panels_status[dbpsCOUNT];
+	
 	mxSource *focus_source; // auxiliar para el NavigationHistory
 	
 	mxSource *master_source; /// if there's no project, defining a master source force zinjai to always compila and run that one, no the current one

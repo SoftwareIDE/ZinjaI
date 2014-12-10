@@ -26,7 +26,10 @@ mxThreadGrid::mxThreadGrid(wxWindow *parent ):mxGrid(parent,TG_COLS_COUNT,wxID_A
 bool mxThreadGrid::OnCellDoubleClick(int row, int col) {
 	long thread_id; 
 	if (debug->CanTalkToGDB() && GetCellValue(row,TG_COL_ID).ToLong(&thread_id)) {
-		if (debug->SelectThread(thread_id)) debug->UpdateInspections();
+		if (debug->SelectThread(thread_id)) {
+			debug->UpdateBacktrace();
+			debug->UpdateInspections();
+		}
 	}
 	return true;
 }

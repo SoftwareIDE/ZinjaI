@@ -175,10 +175,10 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnDEBUG, myMenuItem("threadlist", mxID_DEBUG_THREADLIST, LANG(MENUITEM_DEBUG_THREADLIST,"&Hilos de Ejecucion")).Icon("threadlist.png"));
 		AddMenuItem(mnDEBUG, myMenuItem("log_panel", mxID_DEBUG_LOG_PANEL, LANG(MENUITEM_DEBUG_SHOW_LOG_PANEL,"&Mostrar mensajes del depurador")).Icon("debug_log_panel.png"));
 		AddSeparator(mnDEBUG);
-#ifndef __WIN32__
 		BeginSubMenu(mnDEBUG, LANG(MENUITEM_DEBUG_MORE,"Más..."));
 			AddMenuItem(mnDEBUG, myMenuItem("debug_attach",mxID_DEBUG_ATTACH, LANG(MENUITEM_DEBUG_ATTACH,"&Adjuntar...")).Icon("debug_attach.png").EnableIf(ecNOT_DEBUG));
 			AddMenuItem(mnDEBUG, myMenuItem("debug_target",mxID_DEBUG_TARGET, LANG(MENUITEM_DEBUG_TARGET,"&Conectar...")).Icon("debug_target.png").EnableIf(ecNOT_DEBUG));
+#ifndef __WIN32__
 			AddMenuItem(mnDEBUG, myMenuItem("core_dump",mxID_DEBUG_LOAD_CORE_DUMP, LANG(MENUITEM_DEBUG_LOAD_CORE_DUMP,"Cargar &Volcado de Memoria...")).Icon("core_dump.png").EnableIf(ecNOT_DEBUG));
 			AddMenuItem(mnDEBUG, myMenuItem("save_core_dump",mxID_DEBUG_SAVE_CORE_DUMP,LANG(MENUITEM_SAVE_CORE_DUMP,"Guardar &Volcado de Memoria...")).Icon("core_dump.png").EnableIf(ecDEBUG_PAUSED));
 			AddMenuItem(mnDEBUG, myMenuItem("enable_inverse_exec",mxID_DEBUG_ENABLE_INVERSE_EXEC, LANG(MENUITEM_DEBUG_ENABLE_INVERSE,"Habilitar Ejecucion Hacia Atras")).Icon("reverse_enable.png").Checkeable(false).EnableIf(ecDEBUG_PAUSED));
@@ -189,8 +189,8 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnDEBUG, myMenuItem("gdb_command",mxID_DEBUG_GDB_COMMAND, LANG(MENUITEM_DEBUG_GDB_COMMAND,"Introducir comandos gdb...")).Icon("gdb_command.png").EnableIf(ecDEBUG_PAUSED));
 #ifndef __WIN32__
 			AddMenuItem(mnDEBUG, myMenuItem("gdb_patch",mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable (experimental)...")).Icon("debug_patch.png").EnableIf(ecDEBUG_PAUSED));
-		EndSubMenu(mnDEBUG);
 #endif
+		EndSubMenu(mnDEBUG);
 	}
 	
 	

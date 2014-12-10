@@ -65,7 +65,7 @@ public:
 	virtual void Log(const wxString &)=0;
 	virtual void Close(){};
 	virtual ~DebuggerTalkLogger() {}
-	static void Set(DebuggerTalkLogger *logger) { the_logger = logger; }
+	static void Set(DebuggerTalkLogger *logger) { if (the_logger) delete the_logger; the_logger = logger; }
 	static void UnSet() { if (the_logger) delete the_logger; the_logger = NULL; }
 };
 #  define _DBG_LOG_ST_CALL(x) DebuggerTalkLogger::x

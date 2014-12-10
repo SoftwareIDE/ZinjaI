@@ -2011,8 +2011,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 		}
 		
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
-			if ( fullscreen_panels_status[0]!=aui_manager.GetPane(compiler_panel).IsShown() ) {
-				if (fullscreen_panels_status[0]) {
+			if ( fullscreen_panels_status[fspsCOMPILER]!=aui_manager.GetPane(compiler_panel).IsShown() ) {
+				if (fullscreen_panels_status[fspsCOMPILER]) {
 					aui_manager.GetPane(compiler_panel).Show();
 					_menu_item(mxID_VIEW_COMPILER_TREE)->Check(true);
 				} else {
@@ -2020,21 +2020,21 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 					_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
 				}
 			}
-			if ( fullscreen_panels_status[1]!=aui_manager.GetPane(quick_help).IsShown() ) {
-				if (fullscreen_panels_status[1])
+			if ( fullscreen_panels_status[fspsHELP]!=aui_manager.GetPane(quick_help).IsShown() ) {
+				if (fullscreen_panels_status[fspsHELP])
 					aui_manager.GetPane(quick_help).Show();
 				else
 					aui_manager.GetPane(quick_help).Hide();
 			}
 			
-			if ( !fullscreen_panels_status[2] )
+			if ( !fullscreen_panels_status[fspsBACKTRACE] )
 				aui_manager.GetPane(backtrace_ctrl).Hide();
-			if ( !fullscreen_panels_status[3] )
+			if ( !fullscreen_panels_status[fspsINSPECTIONS] )
 				aui_manager.GetPane((wxGrid*)inspection_ctrl).Hide();
 
 			if (left_panels) {
-				if ( fullscreen_panels_status[4]!=aui_manager.GetPane(left_panels).IsShown() ) {
-					if (fullscreen_panels_status[4]) {
+				if ( fullscreen_panels_status[fspsLEFT]!=aui_manager.GetPane(left_panels).IsShown() ) {
+					if (fullscreen_panels_status[fspsLEFT]) {
 						aui_manager.GetPane(left_panels).Show();
 						_menu_item(mxID_VIEW_LEFT_PANELS)->Check(true);
 					} else {
@@ -2043,8 +2043,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 					}
 				}
 			} else {
-				if ( fullscreen_panels_status[4]!=aui_manager.GetPane(symbols_tree.treeCtrl).IsShown() ) {
-					if (fullscreen_panels_status[4]) {
+				if ( fullscreen_panels_status[fspsLEFT]!=aui_manager.GetPane(symbols_tree.treeCtrl).IsShown() ) {
+					if (fullscreen_panels_status[fspsLEFT]) {
 						aui_manager.GetPane(symbols_tree.treeCtrl).Show();
 						_menu_item(mxID_VIEW_SYMBOLS_TREE)->Check(true);
 					} else {
@@ -2052,8 +2052,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 						_menu_item(mxID_VIEW_SYMBOLS_TREE)->Check(false);
 					}
 				}
-				if ( fullscreen_panels_status[5]!=aui_manager.GetPane(project_tree.treeCtrl).IsShown() ) {
-					if (fullscreen_panels_status[5]) {
+				if ( fullscreen_panels_status[fspsPROJECT]!=aui_manager.GetPane(project_tree.treeCtrl).IsShown() ) {
+					if (fullscreen_panels_status[fspsPROJECT]) {
 						aui_manager.GetPane(project_tree.treeCtrl).Show();
 						_menu_item(mxID_VIEW_PROJECT_TREE)->Check(true);
 					} else {
@@ -2061,8 +2061,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 						_menu_item(mxID_VIEW_PROJECT_TREE)->Check(false);
 					}
 				}
-				if ( fullscreen_panels_status[6]!=aui_manager.GetPane(explorer_tree.treeCtrl).IsShown() ) {
-					if (fullscreen_panels_status[6]) {
+				if ( fullscreen_panels_status[fspsEXPLORER]!=aui_manager.GetPane(explorer_tree.treeCtrl).IsShown() ) {
+					if (fullscreen_panels_status[fspsEXPLORER]) {
 						aui_manager.GetPane(explorer_tree.treeCtrl).Show();
 						_menu_item(mxID_VIEW_EXPLORER_TREE)->Check(true);
 					} else {
@@ -2071,8 +2071,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 					}
 				}
 			}
-			if ( beginner_panel && fullscreen_panels_status[7]!=aui_manager.GetPane(beginner_panel).IsShown() ) {
-				if (fullscreen_panels_status[7]) {
+			if ( beginner_panel && fullscreen_panels_status[fspsBEGINNER]!=aui_manager.GetPane(beginner_panel).IsShown() ) {
+				if (fullscreen_panels_status[fspsBEGINNER]) {
 					aui_manager.GetPane(beginner_panel).Show();
 					_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(true);
 				} else {
@@ -2080,8 +2080,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 					_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(false);
 				}
 			}
-			if ( fullscreen_panels_status[8]!=aui_manager.GetPane(threadlist_ctrl).IsShown() ) {
-				if (fullscreen_panels_status[8]) {
+			if ( fullscreen_panels_status[fspsTHREADS]!=aui_manager.GetPane(threadlist_ctrl).IsShown() ) {
+				if (fullscreen_panels_status[fspsTHREADS]) {
 					debug->threadlist_visible=true;
 					aui_manager.GetPane(threadlist_ctrl).Show();
 				} else {
@@ -2114,41 +2114,41 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 			}
 		}
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
-			if ( (fullscreen_panels_status[0]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
+			if ( (fullscreen_panels_status[fspsCOMPILER]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
 				aui_manager.GetPane(compiler_panel).Hide();
 				_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
 			}
-			if ( (fullscreen_panels_status[1]=aui_manager.GetPane(quick_help).IsShown()) ) {
+			if ( (fullscreen_panels_status[fspsHELP]=aui_manager.GetPane(quick_help).IsShown()) ) {
 				aui_manager.GetPane(quick_help).Hide();
 			}
-			if ( (fullscreen_panels_status[2]=aui_manager.GetPane(backtrace_ctrl).IsShown()) )
+			if ( (fullscreen_panels_status[fspsBACKTRACE]=aui_manager.GetPane(backtrace_ctrl).IsShown()) )
 				aui_manager.GetPane(backtrace_ctrl).Hide();
-			if ( (fullscreen_panels_status[3]=aui_manager.GetPane((wxGrid*)inspection_ctrl).IsShown()) )
+			if ( (fullscreen_panels_status[fspsINSPECTIONS]=aui_manager.GetPane((wxGrid*)inspection_ctrl).IsShown()) )
 				aui_manager.GetPane((wxGrid*)inspection_ctrl).Hide();
 			if (left_panels) {
-				if ( (fullscreen_panels_status[4]=aui_manager.GetPane(left_panels).IsShown()) ) {
+				if ( (fullscreen_panels_status[fspsLEFT]=aui_manager.GetPane(left_panels).IsShown()) ) {
 					aui_manager.GetPane(left_panels).Hide();
 					_menu_item(mxID_VIEW_LEFT_PANELS)->Check(false);
 				}
 			} else {
-				if ( (fullscreen_panels_status[4]=aui_manager.GetPane(symbols_tree.treeCtrl).IsShown()) ) {
+				if ( (fullscreen_panels_status[fspsLEFT]=aui_manager.GetPane(symbols_tree.treeCtrl).IsShown()) ) {
 					aui_manager.GetPane(symbols_tree.treeCtrl).Hide();
 					_menu_item(mxID_VIEW_SYMBOLS_TREE)->Check(false);
 				}
-				if ( (fullscreen_panels_status[5]=aui_manager.GetPane(project_tree.treeCtrl).IsShown()) ) {
+				if ( (fullscreen_panels_status[fspsPROJECT]=aui_manager.GetPane(project_tree.treeCtrl).IsShown()) ) {
 					aui_manager.GetPane(project_tree.treeCtrl).Hide();
 					_menu_item(mxID_VIEW_PROJECT_TREE)->Check(false);
 				}
-				if ( (fullscreen_panels_status[6]=aui_manager.GetPane(explorer_tree.treeCtrl).IsShown()) ) {
+				if ( (fullscreen_panels_status[fspsEXPLORER]=aui_manager.GetPane(explorer_tree.treeCtrl).IsShown()) ) {
 					aui_manager.GetPane(explorer_tree.treeCtrl).Hide();
 					_menu_item(mxID_VIEW_EXPLORER_TREE)->Check(false);
 				}
 			}
-			if ( beginner_panel && (fullscreen_panels_status[7]=aui_manager.GetPane(beginner_panel).IsShown()) ) {
+			if ( beginner_panel && (fullscreen_panels_status[fspsBEGINNER]=aui_manager.GetPane(beginner_panel).IsShown()) ) {
 				aui_manager.GetPane(beginner_panel).Hide();
 				_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(false);
 			}
-			if ( (fullscreen_panels_status[8]=aui_manager.GetPane(threadlist_ctrl).IsShown()) ) {
+			if ( (fullscreen_panels_status[fspsTHREADS]=aui_manager.GetPane(threadlist_ctrl).IsShown()) ) {
 				debug->threadlist_visible=false;
 				aui_manager.GetPane(threadlist_ctrl).Hide();
 			}
@@ -3290,9 +3290,6 @@ void mxMainWindow::OnDebugBacktrace ( wxCommandEvent &event ) {
 }
 
 void mxMainWindow::OnDebugThreadList ( wxCommandEvent &event ) {
-	mxMessageDialog(main_window,LANG(DEBUG_THREAD_SYSTEM_INCOMPLETE,"El manejo de hilos en la depuracion aun esta en construccion.\n"
-									"Puede que los niveles en las inspecciones no se correspondan con\n"
-									"el trazado inverso al cambiar de hilo."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();
 	if (config->Init.autohiding_panels) {
 		if (!aui_manager.GetPane(autohide_handlers[ATH_THREADS]).IsShown()) {
 			aui_manager.GetPane(autohide_handlers[ATH_THREADS]).Show();
@@ -3415,6 +3412,7 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 					main_window->aui_manager.AddPane(ctrl,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Debug Log").Show());
 					main_window->aui_manager.Update();
 				}
+				~mxDbgLogWin() { main_window->aui_manager.DetachPane(ctrl); ctrl->Destroy(); }
 				void Open() { ctrl->Clear(); }
 				void Close() {}
 				void Log(const wxString &s) { ctrl->AppendText(s); ctrl->SetSelection(ctrl->GetValue().Len(),ctrl->GetValue().Len()); }
@@ -3529,18 +3527,18 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 				if (log_visible && aui_manager.GetPane(autohide_handlers[ATH_DEBUG_LOG]).IsShown())
 					autohide_handlers[ATH_DEBUG_LOG]->Select();
 			} else {
-				if ( (debug_panels_status[0]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
+				if ( (debug_panels_status[dbpsCOMPILER]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
 					aui_manager.GetPane(compiler_panel).Hide();
 					_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
 				}
-				if ( (debug_panels_status[1]=aui_manager.GetPane(quick_help).IsShown()) ) {
+				if ( (debug_panels_status[dbpsHELP]=aui_manager.GetPane(quick_help).IsShown()) ) {
 					aui_manager.GetPane(quick_help).Hide();
 				}
-				if ( backtrace_visible && !(debug_panels_status[2]=aui_manager.GetPane(backtrace_ctrl).IsShown()) )
+				if ( backtrace_visible && !(debug_panels_status[dbpsBACKTRACE]=aui_manager.GetPane(backtrace_ctrl).IsShown()) )
 					aui_manager.GetPane(backtrace_ctrl).Show();
-				if ( inspections_visible && !(debug_panels_status[3]=aui_manager.GetPane((wxGrid*)inspection_ctrl).IsShown()) )
+				if ( inspections_visible && !(debug_panels_status[dbpsINSPECTIONS]=aui_manager.GetPane((wxGrid*)inspection_ctrl).IsShown()) )
 					aui_manager.GetPane((wxGrid*)inspection_ctrl).Show();
-				if ( threads_visible && config->Debug.show_thread_panel &&  !(debug_panels_status[4]=aui_manager.GetPane((wxGrid*)threadlist_ctrl).IsShown()) ) {
+				if ( threads_visible && !(debug_panels_status[dbpsTHREADS]=aui_manager.GetPane((wxGrid*)threadlist_ctrl).IsShown()) && config->Debug.show_thread_panel) {
 					debug->threadlist_visible=true;
 					aui_manager.GetPane((wxGrid*)threadlist_ctrl).Show();
 				}
@@ -3593,8 +3591,8 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 					autohide_handlers[ATH_DEBUG_LOG]->Hide();
 			} else {
 				
-				if ( debug_panels_status[0]!=aui_manager.GetPane(compiler_panel).IsShown() ) {
-					if (debug_panels_status[0]) {
+				if ( debug_panels_status[dbpsCOMPILER]!=aui_manager.GetPane(compiler_panel).IsShown() ) {
+					if (debug_panels_status[dbpsCOMPILER]) {
 						aui_manager.GetPane(compiler_panel).Show();
 						_menu_item(mxID_VIEW_COMPILER_TREE)->Check(true);
 					} else {
@@ -3602,8 +3600,8 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 						_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
 					}
 				}
-				if ( debug_panels_status[1]!=aui_manager.GetPane(quick_help).IsShown() ) {
-					if (debug_panels_status[1])
+				if ( debug_panels_status[dbpsHELP]!=aui_manager.GetPane(quick_help).IsShown() ) {
+					if (debug_panels_status[dbpsHELP])
 						aui_manager.GetPane(quick_help).Show();
 					else
 						aui_manager.GetPane(quick_help).Hide();
@@ -3614,11 +3612,11 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 				backtrace_visible=aui_manager.GetPane(backtrace_ctrl).IsShown();
 				inspections_visible=aui_manager.GetPane((wxGrid*)inspection_ctrl).IsShown();
 				
-				if ( !debug_panels_status[2] )
+				if ( !debug_panels_status[dbpsBACKTRACE] )
 					aui_manager.GetPane(backtrace_ctrl).Hide();
-				if ( !debug_panels_status[3] )
+				if ( !debug_panels_status[dbpsINSPECTIONS] )
 					aui_manager.GetPane((wxGrid*)inspection_ctrl).Hide();
-				if ( !debug_panels_status[4] ) {
+				if ( !debug_panels_status[dbpsTHREADS] ) {
 					debug->threadlist_visible=false;
 					aui_manager.GetPane((wxGrid*)threadlist_ctrl).Hide();
 				}

@@ -10,7 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxSource.cpp
+current_source=src/MenusAndToolsConfig.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -36,12 +36,13 @@ cursor=11:38
 marker=142
 [source]
 path=src/mxMainWindow.cpp
-cursor=4982:0
+cursor=217:27
 marker=1089
 marker=1676
+open=true
 [source]
 path=src/DebugManager.cpp
-cursor=1372:0
+cursor=1716:0
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=6:40
@@ -63,9 +64,8 @@ cursor=724:1
 marker=597
 [source]
 path=src/CodeHelper.cpp
-cursor=1421:1
+cursor=0:0
 marker=1364
-open=true
 [source]
 path=src/HelpManager.cpp
 cursor=430:0
@@ -110,7 +110,7 @@ marker=482
 marker=3289
 [source]
 path=src/mxThreadGrid.cpp
-cursor=12:83
+cursor=0:25
 [source]
 path=src/mxHelpWindow.cpp
 cursor=59:22
@@ -147,7 +147,7 @@ path=src/mxGotoFileDialog.cpp
 cursor=42:17
 [source]
 path=src/mxInspectionGrid.cpp
-cursor=585:8
+cursor=411:0
 [source]
 path=src/mxBacktraceGrid.cpp
 cursor=147:8
@@ -156,7 +156,7 @@ path=src/CodeExporter.cpp
 cursor=60:23
 [source]
 path=src/mxInspectionExplorerDialog.cpp
-cursor=13:1
+cursor=15:83
 [source]
 path=src/mxExeInfo.cpp
 cursor=123:17
@@ -174,9 +174,8 @@ path=src/mxOSD.cpp
 cursor=20:37
 [source]
 path=src/mxSource.cpp
-cursor=3895:14
+cursor=0:0
 marker=3958
-open=true
 [source]
 path=src/mxDrawClasses.cpp
 cursor=131:31
@@ -281,7 +280,7 @@ path=src/mxIconInstaller.cpp
 cursor=36:96
 [source]
 path=src/mxInspectionPrint.cpp
-cursor=20:1
+cursor=40:35
 [source]
 path=src/mxInspectionExplorerWidget.cpp
 cursor=184:1
@@ -356,8 +355,9 @@ path=src/mxSignalsSettings.cpp
 cursor=72:0
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=0:0
+cursor=191:6
 marker=350
+open=true
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=134:38
@@ -426,7 +426,7 @@ path=src/mxGotoLineWindow.h
 cursor=6:14
 [header]
 path=src/mxMainWindow.h
-cursor=277:17
+cursor=58:117
 [header]
 path=src/mxNewWizard.h
 cursor=106:38
@@ -456,7 +456,7 @@ path=src/mxHelpWindow.h
 cursor=15:13
 [header]
 path=src/DebugManager.h
-cursor=97:17
+cursor=67:82
 [header]
 path=src/mxFlowWindow.h
 cursor=-1:0
@@ -620,7 +620,7 @@ path=src/mxCustomTools.h
 cursor=4:21
 [header]
 path=src/mxThreadGrid.h
-cursor=22:52
+cursor=20:17
 [header]
 path=src/mxHidenPanel.h
 cursor=35:33
@@ -644,10 +644,10 @@ path=src/mxIconInstaller.h
 cursor=8:0
 [header]
 path=src/mxInspectionPrint.h
-cursor=13:19
+cursor=7:0
 [header]
 path=src/mxInspectionExplorerDialog.h
-cursor=8:22
+cursor=3:0
 [header]
 path=src/mxListSharedWindow.h
 cursor=-1:84
@@ -808,7 +808,7 @@ output_file=debug.lnx/zinjai.bin
 icon_file=
 manifest_file=
 compiling_extra=`wx-config --version=2.8 --unicode=no --cppflags --debug=yes` -Wno-unused-local-typedefs
-macros=_ZINJAI_DEBUG _DEBUG_LOG="/mnt/rm/debug.log" _INSPECTION_LOG="/mnt/rm/inspection.log"
+macros=_ZINJAI_DEBUG _INSPECTION_LOG="/mnt/rm/inspection.log"
 warnings_level=2
 pedantic_errors=0
 std_c=
