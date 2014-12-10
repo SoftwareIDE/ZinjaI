@@ -116,8 +116,14 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 		ans=ans.AfterFirst('\n');
 		if (line.StartsWith("~")) {
 			reg_msg<<mxUT::UnEscapeString(line.Mid(1));
+#ifdef __WIN32__
+			ans.Replace("\r","");
+#endif
 		} else if (line.StartsWith("&")) {
 			wxString ue=mxUT::UnEscapeString(line.Mid(1));
+#ifdef __WIN32__
+			ans.Replace("\r","");
+#endif
 			if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
 			mi_msg<<"   & "<<ue<<"\n";
 		} else if (line.StartsWith("^")) {
