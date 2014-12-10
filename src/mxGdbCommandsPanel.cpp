@@ -133,7 +133,7 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 		} else if (line.StartsWith("=")) {
 			mi_msg<<"   = "<<line.Mid(1)<<"\n";
 		} else // creo que no llega nunca aca, no hay caso no contemplado arriba, o si?
-			mi_msg<<"   ? "<<line.Mid(1)<<"\n";
+			if (line.Len()>2) mi_msg<<"   ? "<<line.Mid(1)<<"\n";
 	} while(ans.size());
 	if (reg_msg.Len()>1) {
 		if (reg_msg.Last()=='\n') reg_msg.RemoveLast();
@@ -159,7 +159,7 @@ void mxGdbCommandsPanel::OnMarginClick (wxStyledTextEvent & e) {
 	int m = output->MarkerGet(l);
 	if (m) {
 		int n=output->GetLineCount();
-		int l2=l+1; while (l2<n && output->GetLine(l2).Len() && output->GetLine(l2).StartsWith("> ")) l2++;
+		int l2=l+1; while (l2<n && (!output->GetLine(l2).Len() || !output->GetLine(l2).StartsWith("> "))) l2++; l2--;
 		if (m==1) {
 			output->MarkerDelete(l,0);
 			output->MarkerAdd(l,1);
