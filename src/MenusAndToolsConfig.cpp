@@ -458,9 +458,9 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnRUN],mxID_RUN_CLEAN));
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnRUN],mxID_RUN_CONFIG).Visible());
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_RUN).Visible());
-#ifndef __WIN32__
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_ATTACH));
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_TARGET));
+#ifndef __WIN32__
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_LOAD_CORE_DUMP));
 #endif
 		AddToolbarItem(tbRUN,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_TOGGLE_BREAKPOINT));
