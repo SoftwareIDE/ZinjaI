@@ -1424,7 +1424,9 @@ void mxUT::SetClipboardText (const wxString & text) {
 wxString mxUT::GetRunnerBaseCommand(int wait_for_key) {
 	wxString command = Quotize(config->Files.runner_command);
 	command << " -lang \"" << config->Init.language_file << "\"";
+#ifdef __linux__
 	if (config->Debug.enable_core_dump) command << " -core";
+#endif
 	if (wait_for_key==WKEY_ALWAYS) command << " -waitkey ";
 	else if (wait_for_key==WKEY_ON_ERROR) command << " -waitkey-onerror ";
 	else command << " ";
