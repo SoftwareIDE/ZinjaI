@@ -3168,6 +3168,7 @@ wxStatusBar* mxMainWindow::OnCreateStatusBar(int number, long style, wxWindowID 
 
 
 void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
+	if (!main_window->notebook_sources->GetPageCount() && !project) return;
 	long dpid=0;
 	wxArrayString options;
 	wxString otro="<<<Otro>>>",cual;
@@ -3184,10 +3185,8 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 	if (!dpid) return;
 	wxString command = wxString("attach ")<<dpid;
 	wxString message = wxString(LANG(DEBUG_STATUS_ATTACHING_TO,"Depurador adjuntado al proceso "))<<dpid;
-	if (project) 
-		debug->SpecialStart(NULL,command,message,false);
-	else IF_THERE_IS_SOURCE
-		debug->SpecialStart(CURRENT_SOURCE,command,message,false);
+	debug->SpecialStart(project?NULL:CURRENT_SOURCE,command,message,false);
+	if (debug->IsDebugging()) debug->SetChildPid(dpid);
 }
 
 void mxMainWindow::OnDebugTarget ( wxCommandEvent &event ) {
@@ -3197,14 +3196,12 @@ void mxMainWindow::OnDebugTarget ( wxCommandEvent &event ) {
 }
 
 wxString mxMainWindow::DebugTargetCommon (wxString target, bool should_continue) {
+	if (!main_window->notebook_sources->GetPageCount() && !project) return "";
 	target = mxGetTextFromUser("Target (arguments for gdb's target command):",_menu_item_2(mnDEBUG,mxID_DEBUG_ATTACH)->GetPlainLabel(),target,this);
 	if (target.Len()) {
 		wxString command = wxString("target ")<<target;
-		wxString message = LANG(DEBUG_STATUS_TARGET_DONE,"Depuración iniciado correctamente.");
-		if (project) 
-			debug->SpecialStart(NULL,command,message,true);
-		else IF_THERE_IS_SOURCE
-			debug->SpecialStart(CURRENT_SOURCE,command,message,should_continue);
+		wxString message = LANG(DEBUG_STATUS_TARGET_DONE,"Depuración iniciada correctamente.");
+		debug->SpecialStart(project?NULL:CURRENT_SOURCE,command,message,should_continue);
 	}
 	return target;
 }

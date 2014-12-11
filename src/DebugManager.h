@@ -124,9 +124,11 @@ private:
 	long pid; ///< pid del proceso de gdb
 	long child_pid; ///< pid del proceso que esta siendo depurado, o 0, se averigua bajo demanda con FindOutChildPid
 	bool FindOutChildPid(); ///< @brief intenta determinar el pid del proceso depurado
+public:
+	void SetChildPid(long pid) { child_pid = pid; }
+private:
 //	wxString EscapeString(wxString str, bool add_comillas=false); // paso a mxutils
 	wxString last_error; ///< para evitar pasar strings por referencia a cada rato (ver ModifyInspection)
-private:
 	DebugManager();
 public:
 	static void Initialize();
