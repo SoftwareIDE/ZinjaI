@@ -110,7 +110,7 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 	wxString ans = debug->SendCommand(cmd);
 	if (ans.Len() && !ans.Last()=='\n') ans<<"\n";
 #ifdef __WIN32__
-			line.Replace("\r","");
+	ans.Replace("\r","");
 #endif
 	
 	wxString mi_msg, reg_msg;
