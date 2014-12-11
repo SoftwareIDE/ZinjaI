@@ -1956,8 +1956,6 @@ DEBUG_STATUS_ATTACHING_TO
 Attaching...
 DEBUG_STATUS_TARGET_DONE
 Debugger started.
-DEBUG_THREAD_SYSTEM_INCOMPLETE
-Thread displaying is still work in progress, so it may have errors.\nLevels in inspections table won't match backtrace.
 DEBUG_RETURN_VALUE
 Return value:
 DEBUG_RETURN_FROM_FUNCTION
@@ -2354,12 +2352,6 @@ PREFERENCES_SINGLETON
 Use only one ZinjaI's instance when opening files from command line
 PREFERENCES_GENERAL_CHECK_FOR_UPDATES
 Check for updates on startup
-PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT
-Show compiler output in Spanish (read help) (*)
-PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON
-Create/Update ZinjaI's desktop icon
-PREFERENCES_CREATE_ICONS
-Create/Update launcher icons in desktop or system menu
 PREFERENCES_CUSTOMIZE_SHORTCUTS
 Customize keyboard shortcuts...
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME
@@ -2384,6 +2376,8 @@ PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
 Focus ZinjaI's window when debugging is interrupted
 PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE
 Return focus to debugged application when continuing after a breakpoint
+PREFERENCES_DEBUG_ENABLE_CORE_DUMP
+Enable core dumps when running without debugger
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
 Load all debugging symbols before running
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
@@ -2506,6 +2500,8 @@ PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS
 Simplify compiler error's messages
 PREFERENCES_WRITTING_AUTOCODES_FILE
 File with autocodes definitions
+PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT
+Show compiler output in Spanish (read help) (*)
 PREFERENCES_WRITTING_AUTOCOMP_NONE
 Disabled
 PREFERENCES_WRITTING_AUTOCOMP_START
@@ -2546,6 +2542,8 @@ PREFERENCES_COMMANDS_GDB
 Debugger command
 PREFERENCES_COMMANDS_CONSOLE
 Console application command
+PREFERENCES_CREATE_ICONS
+Create/Update launcher icons in desktop or system menu
 PREFERENCES_COMMANDS_EXPLORER
 File's explorer's command
 PREFERENCES_COMMANDS_IMAGE_VIEWER

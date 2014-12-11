@@ -265,6 +265,9 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 		
+#ifdef __linux
+	debug_enable_core_dump = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ENABLE_CORE_DUMP,"Habilitar volcado de memoria al ejecutar sin depurador"),config->Debug.enable_core_dump);
+#endif
 	debug_readnow = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO,"Cargar toda la información de depuracion antes de comenzar"),config->Debug.readnow);
 	debug_auto_solibs = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO,"Cargar información de depuracion de bibliotecas externas"),config->Debug.auto_solibs);
 	debug_compile_again = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_RECOMPILE_AUTOMATICALLY,"Recompilar automaticamente antes de depurar si es necesario"),config->Debug.compile_again);
@@ -751,6 +754,9 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		((mxSource*)(ns->GetPage(i)))->LoadSourceConfig();
 	main_window->SetStatusBarFields(); // ocultar/mostrar nro de linea
 		
+#ifdef __linux__
+	config->Debug.enable_core_dump = debug_enable_core_dump->GetValue();
+#endif
 	config->Debug.auto_solibs = debug_auto_solibs->GetValue();
 	config->Debug.readnow = debug_readnow->GetValue();
 	config->Debug.allow_edition = debug_allow_edition->GetValue();
@@ -1233,6 +1239,9 @@ void mxPreferenceWindow::ResetChanges() {
 	toolbar_icon_size->SetSelection(idx_icsz);
 	
 	// debug
+#ifdef __linux__
+	debug_enable_core_dump->SetValue(config->Debug.enable_core_dump);
+#endif
 	debug_auto_solibs->SetValue(config->Debug.auto_solibs);
 	debug_readnow->SetValue(config->Debug.readnow);
 	debug_allow_edition->SetValue(config->Debug.allow_edition);

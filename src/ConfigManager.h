@@ -48,6 +48,9 @@ struct cfgDebug {
 	bool auto_solibs;
 	bool improve_inspections_by_type;
 	wxArrayString inspection_improving_template_from, inspection_improving_template_to;
+#ifdef __linux__
+	bool enable_core_dump;
+#endif
 };
 
 //! Elementos de la configuración relacionados al aspecto del código

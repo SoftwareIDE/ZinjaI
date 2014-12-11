@@ -190,6 +190,9 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("show_log_panel",Debug.show_log_panel);
 				else CFG_BOOL_READ_DN("return_focus_on_continue",Debug.return_focus_on_continue);
 				else CFG_BOOL_READ_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
+#ifdef __linux__
+				else CFG_BOOL_READ_DN("enable_core_dump",Debug.enable_core_dump);
+#endif
 				else if (key=="inspection_improving_template") {
 					Debug.inspection_improving_template_from.Add(value.BeforeFirst('|'));
 					Debug.inspection_improving_template_to.Add(value.AfterFirst('|'));
@@ -483,6 +486,9 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("auto_solibs",Debug.auto_solibs);
 	CFG_BOOL_WRITE_DN("return_focus_on_continue",Debug.return_focus_on_continue);
 	CFG_BOOL_WRITE_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
+#ifdef __linux__
+	CFG_BOOL_WRITE_DN("enable_core_dump",Debug.enable_core_dump);
+#endif
 	for(unsigned int i=0;i<Debug.inspection_improving_template_from.GetCount();i++)
 		CFG_GENERIC_WRITE_DN("inspection_improving_template",Debug.inspection_improving_template_from[i]+"|"+Debug.inspection_improving_template_to[i]);
 	fil.AddLine("");
@@ -769,6 +775,9 @@ void ConfigManager::LoadDefaults(){
 	Debug.show_do_that = false;
 	Debug.return_focus_on_continue = true;
 	Debug.improve_inspections_by_type = true;
+#ifdef __linux__
+	Debug.enable_core_dump = false;
+#endif
 //	SetDefaultInspectionsImprovingTemplates(); // not needed, done (only on first run) in ConfigManager::Load when version<20140924
 	
 	for (int i=0;i<IG_COLS_COUNT;i++)

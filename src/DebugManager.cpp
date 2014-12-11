@@ -570,7 +570,6 @@ void DebugManager::HowDoesItRuns() {
 			fname.Replace(_T("\\\\"),sep);
 			fname.Replace(wrong_sep,sep);
 			wxString line =  GetSubValueFromAns(ans,_T("frame"),_T("line"),true);
-			long fline = -1;
 			if (stepping_in && mark==mxSTC_MARK_EXECPOINT && black_list.Index(fname)!=wxNOT_FOUND)
 				StepIn();
 			else {

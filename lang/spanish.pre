@@ -1955,9 +1955,7 @@ No se encontro cabecera correspondiente a \"<{1}>\".
 DEBUG_STATUS_ATTACHING_TO
 Depurador adjuntado al proceso 
 DEBUG_STATUS_TARGET_DONE
-Depuración iniciado correctamente.
-DEBUG_THREAD_SYSTEM_INCOMPLETE
-El manejo de hilos en la depuracion aun esta en construccion.\nPuede que los niveles en las inspecciones no se correspondan con\nel trazado inverso al cambiar de hilo.
+Depuración iniciada correctamente.
 DEBUG_RETURN_VALUE
 Valor de retorno:
 DEBUG_RETURN_FROM_FUNCTION
@@ -2354,12 +2352,6 @@ PREFERENCES_SINGLETON
 Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos
 PREFERENCES_GENERAL_CHECK_FOR_UPDATES
 Verificar si existen nuevas versiones al iniciar
-PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT
-Mostrar errores de compilación en Español (Ver Ayuda!) (*)
-PREFERENCES_GENERAL_CREATE_ZINJAI_DESKTOP_ICON
-Crear/Actualizar icono de ZinjaI en el escritorio
-PREFERENCES_CREATE_ICONS
-Crear/Actualizar accesos directos en el escritorio/menú del sistema...
 PREFERENCES_CUSTOMIZE_SHORTCUTS
 Personalizar atajos de teclado...
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME
@@ -2384,6 +2376,8 @@ PREFERENCES_DEBUG_ACTIVATE_WINDOW_ON_INTERRUPTION
 Mostrar ZinjaI cuando se interrumpe la ejecución
 PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE
 Devolver el foco a la aplicación en depuración luego de una pausa
+PREFERENCES_DEBUG_ENABLE_CORE_DUMP
+Habilitar volcado de memoria al ejecutar sin depurador
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
 Cargar toda la información de depuracion antes de comenzar
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
@@ -2506,6 +2500,8 @@ PREFERENCES_WRITING_BEAUTIFY_COMPILER_ERRORS
 Simplificar mensajes de error del compilador
 PREFERENCES_WRITTING_AUTOCODES_FILE
 Archivo de definiciones de plantillas de auto-código
+PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT
+Mostrar errores de compilación en Español (Ver Ayuda!) (*)
 PREFERENCES_WRITTING_AUTOCOMP_NONE
 Deshabilitado
 PREFERENCES_WRITTING_AUTOCOMP_START
@@ -2546,6 +2542,8 @@ PREFERENCES_COMMANDS_GDB
 Comando del depurador
 PREFERENCES_COMMANDS_CONSOLE
 Comando de la terminal
+PREFERENCES_CREATE_ICONS
+Crear/Actualizar accesos directos en el escritorio/menú del sistema...
 PREFERENCES_COMMANDS_EXPLORER
 Comando del explorador de archivos
 PREFERENCES_COMMANDS_IMAGE_VIEWER

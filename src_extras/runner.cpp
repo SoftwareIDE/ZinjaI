@@ -1,22 +1,31 @@
 #include<cstring>
 #include<iostream>
-#if defined(__WIN32__)
+using namespace std;
+#ifdef __WIN32__
 	#define eternal_nothing while (true) Sleep(10000)
 	#include<io.h>
 	#include<windows.h>
 	#include <conio.h>
 #else
 	#include<cstdlib>
-	#if !defined(__APPLE__)
+	#ifndef __APPLE__
+		#include <errno.h>
 		#include<wait.h>
+		#include <sys/resource.h>
+		#define _ENABLE_CORE_DUMP
+		void enable_core_dump() {
+			struct rlimit core_limit;
+			core_limit.rlim_cur = RLIM_INFINITY;
+			core_limit.rlim_max = RLIM_INFINITY;
+			if(setrlimit(RLIMIT_CORE, &core_limit) < 0)
+				cerr << "Warning: core dumps may be truncated or non-existant (errno "<< strerror(errno) << ")" << endl;
+		}
 	#endif
 	#include <termios.h>
 	#include <unistd.h>
 	#define eternal_nothing while (true) sleep(10)
 #endif
 
-#include <fstream>
-using namespace std;
 
 
 const char *lang_debug_finished[] = {
@@ -102,6 +111,10 @@ int main(int argc, char *argv[]) {
 			waitkey=1;
 		} else if (strcmp(argv[i],"-waitkey")==0) {
 			waitkey=2;
+#ifdef _ENABLE_CORE_DUMP
+		} else if (strcmp(argv[i],"-core")==0) {
+			enable_core_dump();
+#endif
 		} else if (strcmp(argv[i],"-lang")==0) {
 			i++;
 			if (strcmp(argv[i],"english")==0)

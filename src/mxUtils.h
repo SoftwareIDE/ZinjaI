@@ -271,6 +271,9 @@ public:
 	static wxString GetClipboardText();
 	/// for writing text data into clipboard (for copy)
 	static void SetClipboardText(const wxString &text);
+	
+//	static wxString GetRunnerCommand(int wait, const wxString &workdir, const wxString &bin, const wxString &args="", const wxString &pref="");
+	static wxString GetRunnerBaseCommand(int wait_for_key);
 
 };
 

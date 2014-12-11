@@ -146,6 +146,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *debug_show_log_panel;
 	wxCheckBox *debug_inspections_on_right;
 	wxCheckBox *debug_auto_solibs;
+	wxCheckBox *debug_enable_core_dump;
 	wxCheckBox *debug_readnow;
 	wxTextCtrl *debug_macros_file;
 	wxCheckBox *debug_return_focus_on_continue;

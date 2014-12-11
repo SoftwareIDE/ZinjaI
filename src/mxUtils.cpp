@@ -1398,3 +1398,36 @@ void mxUT::SetClipboardText (const wxString & text) {
 	wxTheClipboard->Close();
 }
 
+//wxString mxUT::GetRunnerCommand (int wait, const wxString &workdir, const wxString &bin, const wxString &args, const wxString &pref) {
+//	
+//	wxString command(config->Files.terminal_command);
+//	command.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
+//	if (command.Len()!=0) {
+//		if (command==" ") command=""; // para que caso estaba esto?
+//		else if (command[command.Len()-1]!=' ') command<<" ";
+//	}
+//	command<<"\""<<config->Files.runner_command<<"\" ";
+//	command<<"-lang \""<<config->Init.language_file<<"\" ";
+//	if (config->Debug.enable_core_dump) command<<"-core ";
+//	if (wait==WKEY_ALWAYS) command<<"-waitkey ";
+//	else if (wait==WKEY_ON_ERROR) command<<"-waitkey-onerror ";
+//
+//	command<<"\""<<workdir<<(workdir.Last()=='\\'?"\\\" ":"\" "); // es raro que escape la ultima barra y no las anteriores... por que eso?
+//	
+//	if (pref.Len()) command<<pref<<" ";
+//	command<<Quotize(bin);
+//	if (args) command<<" "<<args;
+//	
+//	return command;
+//}
+
+wxString mxUT::GetRunnerBaseCommand(int wait_for_key) {
+	wxString command = Quotize(config->Files.runner_command);
+	command << " -lang \"" << config->Init.language_file << "\"";
+	if (config->Debug.enable_core_dump) command << " -core";
+	if (wait_for_key==WKEY_ALWAYS) command << " -waitkey ";
+	else if (wait_for_key==WKEY_ON_ERROR) command << " -waitkey-onerror ";
+	else command << " ";
+	return command;
+}
+

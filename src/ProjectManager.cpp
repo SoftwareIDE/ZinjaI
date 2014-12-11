@@ -1639,10 +1639,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 			else if (terminal_cmd[terminal_cmd.Len()-1]!=' ') terminal_cmd<<" ";
 		}
 		// invocar al runner
-		terminal_cmd<<mxUT::Quotize(config->Files.runner_command); 
-		terminal_cmd<<" -lang "<<mxUT::Quotize(config->Init.language_file)<<" ";
-		if (active_configuration->wait_for_key==WKEY_ALWAYS) terminal_cmd<<"-waitkey ";
-		else if (active_configuration->wait_for_key==WKEY_ON_ERROR) terminal_cmd<<"-waitkey-onerror ";
+		terminal_cmd<<mxUT::GetRunnerBaseCommand(active_configuration->wait_for_key);
 		terminal_cmd<<mxUT::Quotize(working_path)<<" ";
 		// corregir el comando final
 		command=terminal_cmd+command;

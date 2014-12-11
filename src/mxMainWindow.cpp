@@ -1752,9 +1752,8 @@ void mxMainWindow::RunSource (mxSource *source) {
 		else if (command[command.Len()-1]!=' ') 
 			command<<" ";
 	}
-	command<<"\""<<config->Files.runner_command<<"\" ";
-	command<<"-lang \""<<config->Init.language_file<<"\" ";
-	if (source->config_running.wait_for_key) command<<"-waitkey ";
+	command<<mxUT::GetRunnerBaseCommand(source->config_running.wait_for_key?WKEY_ALWAYS:WKEY_NEVER);
+	
 	command<<"\""<<source->working_folder.GetFullPath()<<(source->working_folder.GetFullPath().Last()=='\\'?"\\\" ":"\" ");
 
 	compiler->CheckForExecutablePermision(source->GetBinaryFileName().GetFullPath());
