@@ -39,13 +39,20 @@ public:
 				}
 				if (!comp_options.GetCount()) return;
 				if (comp_options.GetCount()==1) { SetText(comp_options[0]); return; }
+				else {
+					wxString common_part=comp_options[0];
+					for(unsigned int i=1;i<comp_options.GetCount();i++) { 
+						int j=0, l1=comp_options[i].Len(), l2=common_part.Len();
+						while (j<l1 && j<l2 && comp_options[i][j]==common_part[j]) j++;
+						if (j<l2) common_part=common_part.Mid(0,j);
+					}
+					if (common_part!=GetValue()) SetValue(common_part);
+				}
 				wxMenu menu("");
 				for(unsigned int i=0;i<comp_options.GetCount();i++)
 					menu.Append(wxID_HIGHEST+1000+i, comp_options[i]);
-				wxPoint pos=GetPosition();
-				pos.y+=GetSize().GetHeight();
-				PopupMenu(&menu,pos);
-				
+				wxRect r = GetScreenRect();
+				PopupMenu(&menu,0,r.height);
 			}
 		} else if (evt.GetKeyCode()==WXK_UP) {
 			if (input_history_pos>0) 
@@ -93,8 +100,8 @@ mxGdbCommandsPanel::mxGdbCommandsPanel():wxPanel(main_window) {
 	
 	
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(input,sizers->Exp0);
 	sizer->Add(output,sizers->Exp1);
+	sizer->Add(input,sizers->Exp0);
 	SetSizer(sizer);
 	SetSize(wxSize(400,200));
 	input->SetFocus();
@@ -134,8 +141,8 @@ void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
 	} while(ans.size());
 	if (reg_msg.Len()>1) {
 		if (reg_msg.Last()=='\n') reg_msg.RemoveLast();
-		reg_msg.Replace("\n","\n  ~ ");
-		reg_msg = wxString("  ~ ")<<reg_msg<<"\n";
+		reg_msg.Replace("\n","\n   ~ ");
+		reg_msg = wxString("   ~ ")<<reg_msg<<"\n";
 	}
 	AppendText(reg_msg+mi_msg);
 }
@@ -167,5 +174,6 @@ void mxGdbCommandsPanel::OnMarginClick (wxStyledTextEvent & e) {
 			output->ShowLines(l+1,l2);
 		}
 	}
+	input->SetFocus();
 }
 

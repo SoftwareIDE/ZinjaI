@@ -90,6 +90,15 @@ void mxInspectionGridCellEditorControl::Autocomplete() {
 	}
 	if (!comp_options.GetCount()) return;
 	if (comp_options.GetCount()==1) { SetText(comp_options[0]); return; }
+	else {
+		wxString common_part=comp_options[0];
+		for(unsigned int i=1;i<comp_options.GetCount();i++) { 
+			int j=0, l1=comp_options[i].Len(), l2=common_part.Len();
+			while (j<l1 && j<l2 && comp_options[i][j]==common_part[j]) j++;
+			if (j<l2) common_part=common_part.Mid(0,j);
+		}
+		if (common_part!=GetValue()) SetValue(common_part);
+	}
 	wxMenu menu("");
 	for(unsigned int i=0;i<comp_options.GetCount();i++)
 		menu.Append(mxID_LAST_ID+2000+i, comp_options[i]);
