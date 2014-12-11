@@ -98,7 +98,7 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray 
 bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words/*, int max_str_dist*/) {
 	UnTemplate(key);
 	unsigned int len=typed.Len();
-	if (len) return false;
+	if (!len) return false;
 	typed.MakeLower();
 	HashStringParserClass::iterator it=parser->h_classes.find(key);
 	if (it!=parser->h_classes.end()) {
