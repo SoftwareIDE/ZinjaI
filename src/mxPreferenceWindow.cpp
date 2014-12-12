@@ -291,8 +291,6 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 	sizer->Add(blacklist_sizer,sizers->BA5_Exp0);
 	debug_use_blacklist->SetValue(config->Debug.use_blacklist);
 	
-	
-	
 	panel->SetSizerAndFit(sizer);
 	return panel;
 

@@ -98,14 +98,13 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray 
 bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words/*, int max_str_dist*/) {
 	UnTemplate(key);
 	unsigned int len=typed.Len();
-	if (!len) return false;
 	typed.MakeLower();
 	HashStringParserClass::iterator it=parser->h_classes.find(key);
 	if (it!=parser->h_classes.end()) {
 		autocomp_list.Init();
 		pd_var *aux_var = it->second->first_attrib->next;
 		while (aux_var) {
-			if (ShouldAddToAutocomp(typed,len,aux_var->name)) {
+			if (!len||ShouldAddToAutocomp(typed,len,aux_var->name)) {
 				if (aux_var->properties&PD_CONST_PRIVATE)
 					autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
 				else if (aux_var->properties&PD_CONST_PROTECTED)
@@ -119,7 +118,7 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 		}
 		pd_func *aux_func = it->second->first_method->next;
 		while (aux_func) {
-			if (ShouldAddToAutocomp(typed,len,aux_func->name)) {
+			if (!len||ShouldAddToAutocomp(typed,len,aux_func->name)) {
 				if (aux_func->properties&PD_CONST_PRIVATE)
 					autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
 				else if (aux_func->properties&PD_CONST_PROTECTED)
@@ -165,7 +164,7 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 				if (it!=parser->h_classes.end()) {
 					pd_var *aux_var = it->second->first_attrib->next;
 					while (aux_var) {
-						if (ShouldAddToAutocomp(typed,len,aux_var->name)) {
+						if (!len||ShouldAddToAutocomp(typed,len,aux_var->name)) {
 							if (aux_var->properties&PD_CONST_PRIVATE)
 								autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
 							else if (aux_var->properties&PD_CONST_PROTECTED)
@@ -179,7 +178,7 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 					}
 					pd_func *aux_func = it->second->first_method->next;
 					while (aux_func) {
-						if (ShouldAddToAutocomp(typed,len,aux_func->name)) {
+						if (!len||ShouldAddToAutocomp(typed,len,aux_func->name)) {
 							if (aux_func->properties&PD_CONST_PRIVATE)
 								autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
 							else if (aux_func->properties&PD_CONST_PROTECTED)
