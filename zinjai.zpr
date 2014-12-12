@@ -10,6 +10,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=guihelp/ChangeLog.html
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -734,7 +735,8 @@ path=src/mxRealTimeInspectionEditor.h
 cursor=14:25
 [other]
 path=guihelp/ChangeLog.html
-cursor=22:119
+cursor=23:172
+open=true
 [other]
 path=guihelp/tips_spanish
 cursor=0:0

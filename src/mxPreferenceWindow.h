@@ -157,7 +157,6 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *debug_return_focus_on_continue;
 	wxCheckBox *debug_improve_inspections_by_type;
 	wxCheckBox *debug_use_blacklist;
-	wxCheckBox *debug_no_debug_heap;
 //#ifdef __WIN32__
 //	wxTextCtrl *files_mingw_dir;
 //#endif
