@@ -36,7 +36,8 @@ struct cfgDebug {
 	bool raise_main_window;
 	bool use_colours_for_inspections;
 	bool inspections_can_have_side_effects;
-	wxString blacklist;
+	bool use_blacklist;
+	wxArrayString blacklist;
 	wxString format;
 	wxString macros_file;
 	bool readnow;

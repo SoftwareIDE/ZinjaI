@@ -9,14 +9,17 @@ class wxComboBox;
 
 class mxEnumerationEditor : public wxDialog {
 private:
-	wxListBox *list;
-	wxTextCtrl *text;
-	wxComboBox *combo;
-	bool comma_splits;
+	wxListBox *m_list;
+	wxTextCtrl *m_text;
+	wxComboBox *m_combo;
+	wxArrayString *m_array;
+	bool m_comma_splits;
 public:
 	mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *text, bool comma_splits);
 	mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *combo, bool comma_splits);
+	mxEnumerationEditor(wxWindow *parent, wxString title, wxArrayString *combo);
 	void CreateCommonStuff(wxString value, bool comma_splits);
+	void CreateCommonStuff(const wxArrayString &value);
 	~mxEnumerationEditor();
 	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);

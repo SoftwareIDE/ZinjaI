@@ -914,8 +914,10 @@ BACKTRACE_GOTO_PRE
 Ir a 
 BACKTRACE_GOTO_POST
  : 
-BACKTRACE_BLACKLIST_THIS_ONE
+BACKTRACE_BLACKLIST_THIS_FILE
 Evitar detenerse este fuente (para step in)
+BACKTRACE_BLACKLIST_THIS_FUNCTION
+Evitar detenerse esta función (para step in)
 BACKTRACE_INSPECT_ARGS
 Inspeccionar Argumentos
 BACKTRACE_EXPLORE_ARGS
@@ -2396,8 +2398,10 @@ PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
 Mejorar inspecciones automáticamente segun tipo
 PREFERENCES_DEBUG_GDB_MACROS_FILE
 Archivo de definiciones de macros para gdb
-PREFERENCES_DEBUG_SOURCES_BLACKLIST
-Fuentes a evitar (para el step in)
+PREFERENCES_DEBUG_USE_BLACKLIST
+Utilizar lista negra en el paso a paso
+PREFERENCES_DEBUG_BLACKLIST_BUTTON
+Configurar...
 PREFERENCES_TOOLBARS_WICH
 Barra de herramientas a utilizar:
 PREFERENCES_TOOLBARS_DOCK_TOP
@@ -2564,6 +2568,8 @@ PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN
 La herramienta de compilación por defecto (pestaña Programa/Proyecto) no puede ser de tipo externa
 PREFERENCES_THEME_WILL_APPLY_ON_RESTART
 El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI
+PREFERENCES_DEBUG_SETUP_BLACKLIST
+Fuentes y funciones a omitir en el paso a paso
 PREFERENCES_OPEN_FILE
 &Buscar archivo...
 PREFERENCES_EDIT_FILE

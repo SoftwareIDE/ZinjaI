@@ -151,7 +151,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxTextCtrl *debug_macros_file;
 	wxCheckBox *debug_return_focus_on_continue;
 	wxCheckBox *debug_improve_inspections_by_type;
-	wxTextCtrl *debug_blacklist;
+	wxCheckBox *debug_use_blacklist;
 //#ifdef __WIN32__
 //	wxTextCtrl *files_mingw_dir;
 //#endif
@@ -163,6 +163,8 @@ class mxPreferenceWindow : public wxDialog {
 	wxListBox *skin_list;
 	wxStaticBitmap *skin_image;
 	wxPanel *panel_toolbars;
+	
+	wxArrayString temp_debug_blacklist;
 
 public:
 

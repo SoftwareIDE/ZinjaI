@@ -15,7 +15,8 @@ BEGIN_EVENT_TABLE(mxBacktraceGrid, wxGrid)
 	EVT_MENU(mxID_BACKTRACE_INSPECT_ARGS,mxBacktraceGrid::OnInspectArgs)
 	EVT_MENU(mxID_BACKTRACE_INSPECT_LOCALS,mxBacktraceGrid::OnInspectLocals)
 	EVT_MENU(mxID_BACKTRACE_EXPLORE_ARGS,mxBacktraceGrid::OnExploreArgs)
-	EVT_MENU(mxID_BACKTRACE_ADD_TO_BLACKLIST,mxBacktraceGrid::OnAddToBlackList)
+//	EVT_MENU(mxID_BACKTRACE_ADD_FUNCTION_TO_BLACKLIST,mxBacktraceGrid::OnAddFunctionToBlackList)
+	EVT_MENU(mxID_BACKTRACE_ADD_FILE_TO_BLACKLIST,mxBacktraceGrid::OnAddFileToBlackList)
 END_EVENT_TABLE()
 	
 
@@ -162,7 +163,10 @@ void mxBacktraceGrid::OnCellPopupMenu(int row, int col) {
 	wxMenu menu; 
 	if (GetCellValue(selected_row,BG_COL_LINE).Len()) {
 		menu.Append(mxID_BACKTRACE_GOTO_POS,wxString(LANG(BACKTRACE_GOTO_PRE,"Ir a "))+GetCellValue(selected_row,BG_COL_FILE)+LANG(BACKTRACE_GOTO_POST," : ")+GetCellValue(selected_row,BG_COL_LINE));
-		menu.Append(mxID_BACKTRACE_ADD_TO_BLACKLIST,LANG(BACKTRACE_BLACKLIST_THIS_ONE,"Evitar detenerse este fuente (para step in)"));
+		if (!debug->IsDebugging() || debug->CanTalkToGDB()) {
+			menu.Append(mxID_BACKTRACE_ADD_FILE_TO_BLACKLIST,LANG(BACKTRACE_BLACKLIST_THIS_FILE,"Evitar detenerse este fuente (para step in)"));
+//			menu.Append(mxID_BACKTRACE_ADD_FUNCTION_TO_BLACKLIST,LANG(BACKTRACE_BLACKLIST_THIS_FUNCTION,"Evitar detenerse esta función (para step in)"));
+		}
 	}
 	this->SetGridCursor(selected_row,col);
 	if (GetCellValue(selected_row,BG_COL_ARGS).Len()) {
@@ -177,12 +181,19 @@ void mxBacktraceGrid::OnCellPopupMenu(int row, int col) {
 }
 
 
-void mxBacktraceGrid::OnAddToBlackList(wxCommandEvent &event) {
-	int r = selected_row;
-	wxString file = GetCellValue(r,BG_COL_FILE);
-	if (file.Len()) {
-		debug->black_list.Add(file);
-		config->Debug.blacklist<<" \""<<file<<"\"";
+void mxBacktraceGrid::OnAddFunctionToBlackList(wxCommandEvent &event) {
+	AddToBlackList("function",GetCellValue(selected_row,BG_COL_FUNCTION));
+}
+
+void mxBacktraceGrid::OnAddFileToBlackList(wxCommandEvent &event) {
+	wxString file = GetCellValue(selected_row,BG_COL_FILE);
+}
+
+void mxBacktraceGrid::AddToBlackList(const wxString &type, const wxString &what) {
+	if (what.Len()) {
+		config->Debug.use_blacklist=true;
+		config->Debug.blacklist.Add(/*type+" "+mxUT::Quotize(*/what/*)*/);
+		debug->SetBlacklist(true);
 	}
 }
 

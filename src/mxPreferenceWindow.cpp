@@ -283,7 +283,16 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 	sizer->Add(type_replace_sizer,sizers->BA5_Exp0);
 	
 	debug_macros_file = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de definiciones de macros para gdb"),config->Debug.macros_file,mxID_DEBUG_MACROS);
-	debug_blacklist = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_SOURCES_BLACKLIST,"Fuentes a evitar (para el step in)"),config->Debug.blacklist,mxID_DEBUG_BLACKLIST);
+	
+	wxBoxSizer *blacklist_sizer = new wxBoxSizer(wxHORIZONTAL);
+	debug_use_blacklist = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_DEBUG_USE_BLACKLIST,"Utilizar lista negra en el paso a paso"))+_T("   "));
+	blacklist_sizer->Add(debug_use_blacklist,sizers->Center);
+	blacklist_sizer->Add(new wxButton(panel,mxID_DEBUG_BLACKLIST,LANG(PREFERENCES_DEBUG_BLACKLIST_BUTTON,"Configurar...")),sizers->Center);
+	sizer->Add(blacklist_sizer,sizers->BA5_Exp0);
+	debug_use_blacklist->SetValue(config->Debug.use_blacklist);
+	
+	
+	
 	panel->SetSizerAndFit(sizer);
 	return panel;
 
@@ -780,7 +789,9 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.return_focus_on_continue = debug_return_focus_on_continue->GetValue();
 	config->Debug.improve_inspections_by_type = debug_improve_inspections_by_type->GetValue();
 	config->Debug.macros_file = debug_macros_file->GetValue();
-	config->Debug.blacklist = debug_blacklist->GetValue();
+	config->Debug.blacklist = temp_debug_blacklist;
+	config->Debug.use_blacklist = debug_use_blacklist;
+	debug->SetBlacklist();
 	
 	old_config_styles=config->Styles;
 	config->Save();
@@ -989,7 +1000,7 @@ void mxPreferenceWindow::OnSelectTerminal(wxCommandEvent &event) {
 #endif
 
 void mxPreferenceWindow::OnDebugBlacklistButton(wxCommandEvent &event) {
-	new mxEnumerationEditor(this,_T("Parametros extra para el compilador"),debug_blacklist,true);
+	new mxEnumerationEditor(this,LANG(PREFERENCES_DEBUG_SETUP_BLACKLIST,"Fuentes y funciones a omitir en el paso a paso"),&temp_debug_blacklist);
 }
 
 void mxPreferenceWindow::OnAutocodesButton(wxCommandEvent &event) {
@@ -1259,7 +1270,8 @@ void mxPreferenceWindow::ResetChanges() {
 	debug_return_focus_on_continue->SetValue(config->Debug.return_focus_on_continue);
 	debug_improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
 	debug_macros_file->SetValue(config->Debug.macros_file);
-	debug_blacklist->SetValue(config->Debug.blacklist);
+	debug_use_blacklist->SetValue(config->Debug.use_blacklist);
+	temp_debug_blacklist=config->Debug.blacklist;
 	
 	ignore_styles_changes=false;
 }

@@ -20,7 +20,9 @@ public:
 	void OnInspectLocals(wxCommandEvent &event);
 	void OnGotoPos(wxCommandEvent &event);
 	void SelectFrame(int r);
-	void OnAddToBlackList(wxCommandEvent &event);
+	void OnAddFunctionToBlackList(wxCommandEvent &event);
+	void OnAddFileToBlackList(wxCommandEvent &event);
+	void AddToBlackList(const wxString &type,const wxString &what);
 	
 	void OnColumnHideOrUnhide(int col, bool visible);
 	void OnCellPopupMenu(int row, int col);

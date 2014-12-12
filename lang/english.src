@@ -912,8 +912,10 @@ BACKTRACE_GOTO_PRE
 Go to 
 BACKTRACE_GOTO_POST
  : 
-BACKTRACE_BLACKLIST_THIS_ONE
-Avoid stopping in this file (for step in)
+BACKTRACE_BLACKLIST_THIS_FILE
+Avoid stopping again in this file (blacklist for step-in)
+BACKTRACE_BLACKLIST_THIS_FUNCTION
+Avoid stopping again in this function (blacklist for step-in)
 BACKTRACE_INSPECT_ARGS
 Inspect Arguments
 BACKTRACE_EXPLORE_ARGS
@@ -2394,8 +2396,10 @@ PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
 Aumotatically improve inspections by type
 PREFERENCES_DEBUG_GDB_MACROS_FILE
 File containing macros for gdb
-PREFERENCES_DEBUG_SOURCES_BLACKLIST
-Sources blacklist (for stepping in)
+PREFERENCES_DEBUG_USE_BLACKLIST
+Use blacklist for step-in
+PREFERENCES_DEBUG_BLACKLIST_BUTTON
+Setup...
 PREFERENCES_TOOLBARS_WICH
 Toolbars to display:
 PREFERENCES_TOOLBARS_DOCK_TOP
@@ -2562,6 +2566,8 @@ PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN
 The default toolchain (Promgra/Proyect tab) cannot be an extern one.
 PREFERENCES_THEME_WILL_APPLY_ON_RESTART
 Current icon theme will apply on next ZinjaI start.
+PREFERENCES_DEBUG_SETUP_BLACKLIST
+Files and functions to ommit in step-in
 PREFERENCES_OPEN_FILE
 &Find file...
 PREFERENCES_EDIT_FILE

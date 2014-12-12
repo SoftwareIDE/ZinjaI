@@ -24,24 +24,37 @@ BEGIN_EVENT_TABLE(mxEnumerationEditor, wxDialog)
 END_EVENT_TABLE()
 	
 
-mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *acombo, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	text=NULL; combo=acombo;
-	CreateCommonStuff(combo->GetValue(),comma_splits);
+mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *combo, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+	m_text=NULL; m_combo=combo; m_array=NULL;
+	CreateCommonStuff(m_combo->GetValue(),comma_splits);
 }
 
-mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *atext, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	text=atext; combo=NULL;
+mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *text, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+	m_text=text; m_combo=NULL; m_array=NULL;
 	CreateCommonStuff(text->GetValue(),comma_splits);
 }
+
+mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxArrayString *array) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+	m_text=NULL; m_combo=NULL; m_array=array;
+	CreateCommonStuff(*array);
+}
+
 void mxEnumerationEditor::CreateCommonStuff(wxString value, bool comma_splits) {
+	wxArrayString array;
+	m_comma_splits=comma_splits;
+	mxUT::Split(value,array,m_comma_splits,false);
+	CreateCommonStuff(array);
+}
+
+void mxEnumerationEditor::CreateCommonStuff(const wxArrayString &array) {
 	
 	wxBoxSizer *mid_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	
-	list = new wxListBox(this,wxID_ANY);
-	mid_sizer->Add(list,sizers->BA5_Exp1);
+	m_list = new wxListBox(this,wxID_ANY);
+	mid_sizer->Add(m_list,sizers->BA5_Exp1);
 	wxButton *button_up = new wxButton(this,mxID_ENUMED_UP,LANG(ENUMEDITOR_MOVE_UP,"Mover Arriba"));
 	wxButton *button_down = new wxButton(this,mxID_ENUMED_DOWN,LANG(ENUMEDITOR_MOVE_DOWN,"Mover Abajo"));
 	wxButton *button_edit = new wxButton(this,mxID_ENUMED_EDIT,LANG(ENUMEDITOR_EDIT,"Editar..."));
@@ -61,11 +74,8 @@ void mxEnumerationEditor::CreateCommonStuff(wxString value, bool comma_splits) {
 	main_sizer->Add(mid_sizer,sizers->Exp1);
 	main_sizer->Add(bottom_sizer,sizers->Center);
 	
-	wxArrayString array;
-	this->comma_splits=comma_splits;
-	mxUT::Split(value,array,comma_splits,false);
-	list->InsertItems(array,0);
-	list->SetFocus();
+	m_list->InsertItems(array,0);
+	m_list->SetFocus();
 	SetSizer(main_sizer);
 	ShowModal();
 }
@@ -75,16 +85,22 @@ mxEnumerationEditor::~mxEnumerationEditor() {
 }
 
 void mxEnumerationEditor::OnOkButton(wxCommandEvent &evt) {
-	wxString str;
-	for (unsigned int i=0;i<list->GetCount();i++) {
-		if (comma_splits)
-			str<<mxUT::QuotizeEx(list->GetString(i))<<' ';
-		else
-			str<<mxUT::Quotize(list->GetString(i))<<' ';
+	if (m_array) {
+		m_array->Clear();
+		for (unsigned int i=0;i<m_list->GetCount();i++)
+			m_array->Add(m_list->GetString(i));
+	} else {
+		wxString str;
+		for (unsigned int i=0;i<m_list->GetCount();i++) {
+			if (m_comma_splits)
+				str<<mxUT::QuotizeEx(m_list->GetString(i))<<' ';
+			else
+				str<<mxUT::Quotize(m_list->GetString(i))<<' ';
+		}
+		if (str.Len()) str.RemoveLast();
+		if (m_text) m_text->SetValue(str);
+		if (m_combo) m_combo->SetValue(str);
 	}
-	if (str.Len()) str.RemoveLast();
-	if (text) text->SetValue(str);
-	if (combo) combo->SetValue(str);
 	Close();
 }
 
@@ -93,46 +109,46 @@ void mxEnumerationEditor::OnCancelButton(wxCommandEvent &evt) {
 }
 
 void mxEnumerationEditor::OnClose(wxCloseEvent &evt) {
-	if (text) text->SetFocus();
-	if (combo) combo->SetFocus();
+	if (m_text) m_text->SetFocus();
+	if (m_combo) m_combo->SetFocus();
 	EndModal(0);
 	Destroy();
 }
 
 void mxEnumerationEditor::OnAdd(wxCommandEvent &evt) {
-	new mxListItemEditor(this,LANG(ENUMEDITOR_NEW_ITEM,"Nuevo item"),list,wxNOT_FOUND);
+	new mxListItemEditor(this,LANG(ENUMEDITOR_NEW_ITEM,"Nuevo item"),m_list,wxNOT_FOUND);
 }
 
 void mxEnumerationEditor::OnDelete(wxCommandEvent &evt) {
 	wxArrayInt ai;
-	list->GetSelections(ai);
+	m_list->GetSelections(ai);
 	if (!ai.GetCount()) return;
 	for (int i=(int)ai.GetCount()-1;i>=0;i--)
-		list->Delete(ai[i]);
-	if (ai[0]<int(list->GetCount())) list->SetSelection(ai[0]);
+		m_list->Delete(ai[i]);
+	if (ai[0]<int(m_list->GetCount())) m_list->SetSelection(ai[0]);
 }
 
 void mxEnumerationEditor::OnEdit(wxCommandEvent &evt) {
-	if (list->GetSelection()!=wxNOT_FOUND) 
-		new mxListItemEditor(this,LANG(ENUMEDITOR_EDIT_ITEM,"Editar item"),list,list->GetSelection());
+	if (m_list->GetSelection()!=wxNOT_FOUND) 
+		new mxListItemEditor(this,LANG(ENUMEDITOR_EDIT_ITEM,"Editar item"),m_list,m_list->GetSelection());
 }
 
 void mxEnumerationEditor::OnUp(wxCommandEvent &evt) {
-	int n=list->GetSelection();
+	int n=m_list->GetSelection();
 	if (n!=wxNOT_FOUND && n>0) {
-		wxString aux = list->GetString(n);		
-		list->SetString(n,list->GetString(n-1));
-		list->SetString(n-1,aux);
-		list->SetSelection(n-1);
+		wxString aux = m_list->GetString(n);		
+		m_list->SetString(n,m_list->GetString(n-1));
+		m_list->SetString(n-1,aux);
+		m_list->SetSelection(n-1);
 	}
 }
 
 void mxEnumerationEditor::OnDown(wxCommandEvent &evt) {
-	int n=list->GetSelection();
-	if (n!=wxNOT_FOUND && n+1<(int)list->GetCount()) {
-		wxString aux = list->GetString(n);		
-		list->SetString(n,list->GetString(n+1));
-		list->SetString(n+1,aux);
-		list->SetSelection(n+1);
+	int n=m_list->GetSelection();
+	if (n!=wxNOT_FOUND && n+1<(int)m_list->GetCount()) {
+		wxString aux = m_list->GetString(n);		
+		m_list->SetString(n,m_list->GetString(n+1));
+		m_list->SetString(n+1,aux);
+		m_list->SetSelection(n+1);
 	}
 }

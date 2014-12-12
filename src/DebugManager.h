@@ -99,8 +99,8 @@ private:
 	bool has_symbols; ///< si cuando el debugger no inicia es porque no el ejecutable no tiene info de depuracion se baja esta bandera
 	bool recording_for_reverse; ///< indica si se ejecuto el comando "record" para habilitar luega la ejecucion hacia atras
 	bool attached; ///< indica si el programa se inicio en el depurador, o el depurador es "attacheo" mas tarde, para saber como salir
-	wxArrayString black_list;
-	bool stepping_in;
+//	wxArrayString black_list; // now gdb does that
+//	bool stepping_in;
 	bool inverse_exec;
 	bool gui_is_prepared;
 	long stack_depth; ///< profundidad del backtrace actual, ver current_frame
@@ -198,7 +198,6 @@ public:
 	* cualquiera de los dos argumentos identifica un frame, pasar uno y dejar el otro en -1 para que se calcule solo
 	**/
 	bool SelectFrame(long frame_id, long frame_level); 
-	bool ToggleInspectionFreeze(int n);
 	bool DoThat(wxString what);
 	void PopulateBreakpointsList(mxBreakList *break_list, bool also_watchpoints);
 
@@ -242,6 +241,9 @@ public:
 	void SendSignal(const wxString &signame);
 	bool GetSignals(vector<SignalHandlingInfo> &v);
 	bool SetSignalHandling(SignalHandlingInfo &si, int i=-1);
+	
+	/// @brief ejecuta en gdb los comandos necesarios para definir fuentes y funciones que debe evitar el step-in
+	void SetBlacklist(bool clear_first=false);
 	
 	/// @brief habilita o deshabilita el mostrado completo de arreglos (set print elements ... en gdb), para deshabilitar desde ventanas como mxInspectionPrint, normalmente debe estar habilitado
 	void SetFullOutput(bool on=false, bool force=false);

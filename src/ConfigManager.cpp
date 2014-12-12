@@ -174,7 +174,6 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("autohide_toolbars",Debug.autohide_toolbars);
 				else CFG_BOOL_READ_DN("allow_edition",Debug.allow_edition);
 				else CFG_GENERIC_READ_DN("format",Debug.format);
-				else CFG_GENERIC_READ_DN("blacklist",Debug.blacklist);
 				else CFG_GENERIC_READ_DN("macros_file",Debug.macros_file);
 				else CFG_BOOL_READ_DN("compile_again",Debug.compile_again);
 				else CFG_BOOL_READ_DN("use_colours_for_inspections",Debug.use_colours_for_inspections);
@@ -193,11 +192,12 @@ bool ConfigManager::Load() {
 #ifdef __linux__
 				else CFG_BOOL_READ_DN("enable_core_dump",Debug.enable_core_dump);
 #endif
+				else CFG_BOOL_READ_DN("use_blacklist",Debug.use_blacklist);
+				else if (key=="blacklist") Debug.blacklist.Add(value);
 				else if (key=="inspection_improving_template") {
 					Debug.inspection_improving_template_from.Add(value.BeforeFirst('|'));
 					Debug.inspection_improving_template_to.Add(value.AfterFirst('|'));
 				}
-				
 			} else if (section=="Running") {
 				CFG_GENERIC_READ_DN("compiler_options",Running.cpp_compiler_options); //just for backward compatibility
 				else CFG_GENERIC_READ_DN("cpp_compiler_options",Running.cpp_compiler_options);
@@ -396,6 +396,10 @@ bool ConfigManager::Load() {
 		Source.autocompFilters=true;
 	}
 #endif
+	if (Init.version<20141212 && Debug.blacklist.GetCount()==0) {
+		wxString orig = Debug.blacklist[0]; Debug.blacklist.Clear();
+		mxUT::Split(orig,config->Debug.blacklist,true,false);
+	}
 
 	Init.autohiding_panels=Init.autohide_panels;
 	
@@ -474,9 +478,10 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("raise_main_window",Debug.raise_main_window);
 	CFG_BOOL_WRITE_DN("compile_again",Debug.compile_again);
 	CFG_BOOL_WRITE_DN("always_debug",Debug.always_debug);
-//	CFG_BOOL_WRITE_DN("close_on_normal_exit",Debug.close_on_normal_exit);
+	CFG_BOOL_WRITE_DN("use_blacklist",Debug.use_blacklist);
 	if (Debug.format.Len()) CFG_GENERIC_WRITE_DN("format",Debug.format);
-	CFG_GENERIC_WRITE_DN("blacklist",Debug.blacklist);
+	for(unsigned int i=0;i<Debug.blacklist.GetCount();i++) 
+		CFG_GENERIC_WRITE_DN("blacklist",Debug.blacklist[i]);
 	CFG_GENERIC_WRITE_DN("macros_file",Debug.macros_file);
 	CFG_BOOL_WRITE_DN("show_do_that",Debug.show_do_that);
 	CFG_BOOL_WRITE_DN("show_thread_panel",Debug.show_thread_panel);
@@ -766,7 +771,6 @@ void ConfigManager::LoadDefaults(){
 	Debug.compile_again = true;
 	Debug.format = "";
 	Debug.macros_file = "debug_macros.gdb";
-	Debug.blacklist = "";
 	Debug.inspections_on_right = false;
 	Debug.show_thread_panel = false;
 	Debug.show_log_panel = false;
@@ -778,6 +782,7 @@ void ConfigManager::LoadDefaults(){
 #ifdef __linux__
 	Debug.enable_core_dump = false;
 #endif
+	Debug.use_blacklist = true;
 //	SetDefaultInspectionsImprovingTemplates(); // not needed, done (only on first run) in ConfigManager::Load when version<20140924
 	
 	for (int i=0;i<IG_COLS_COUNT;i++)

@@ -266,8 +266,8 @@ void DebugManager::ResetDebuggingStuff() {
 #ifndef __WIN32__
 	tty_pid = 0; tty_process=NULL;
 #endif
-	black_list.Clear(); stepping_in=false;
-	mxUT::Split(config->Debug.blacklist,black_list,true,false);
+//	black_list.Clear(); stepping_in=false;
+//	mxUT::Split(config->Debug.blacklist,black_list,true,false);
 	gui_is_prepared = false;
 	
 	// setear en -1 todos los ids de los pts de todos interrupcion, para evitar confusiones con depuraciones anteriores
@@ -570,13 +570,13 @@ void DebugManager::HowDoesItRuns() {
 			fname.Replace(_T("\\\\"),sep);
 			fname.Replace(wrong_sep,sep);
 			wxString line =  GetSubValueFromAns(ans,_T("frame"),_T("line"),true);
-			if (stepping_in && mark==mxSTC_MARK_EXECPOINT && black_list.Index(fname)!=wxNOT_FOUND)
-				StepIn();
-			else {
-				stepping_in=false;
+//			if (stepping_in && mark==mxSTC_MARK_EXECPOINT && black_list.Index(fname)!=wxNOT_FOUND)
+//				StepIn();
+//			else {
+//				stepping_in=false;
 				UpdateBacktrace();
 				UpdateInspections();
-			}
+//			}
 		} else {
 			BacktraceClean();
 			ThreadListClean();
@@ -870,7 +870,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 
 void DebugManager::StepIn() {
 	if (waiting || !debugging) return;
-	stepping_in=true; running=true;
+	/*stepping_in=true; */running=true;
 	wxString ans = SendCommand("-exec-step");
 	if (ans.Mid(1,7)="running") HowDoesItRuns();
 	else running = false;
@@ -1867,6 +1867,7 @@ void DebugManager::Start_ConfigureGdb ( ) {
 //	SendCommand("set print addr off"); // necesito las direcciones para los helpers de los arreglos
 	SendCommand(_T("set print repeats 0"));
 	SetFullOutput(false,true);
+	SetBlacklist();
 	// reiniciar sistema de inspecciones
 	DebuggerInspection::OnDebugStart();
 }
@@ -1907,5 +1908,14 @@ wxString DebugManager::AddWatchPoint (const wxString &expression, bool read, boo
 bool DebugManager::DeleteWatchPoint (const wxString & num) {
 	wxString ans = SendCommand("-break-delete ",num);
 	return ans.StartsWith("^done");
+}
+
+void DebugManager::SetBlacklist (bool clear_first) {
+	if (!CanTalkToGDB()) return;
+	if (clear_first) SendCommand("skip delete");
+	if (config->Debug.use_blacklist) {
+		for(unsigned int i=0;i<config->Debug.blacklist.GetCount();i++)
+			SendCommand("skip file",mxUT::Quotize(config->Debug.blacklist[i]));
+	}
 }
 
