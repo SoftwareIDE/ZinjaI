@@ -268,9 +268,6 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 #ifdef __linux__
 	debug_enable_core_dump = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ENABLE_CORE_DUMP,"Habilitar volcado de memoria al ejecutar sin depurador"),config->Debug.enable_core_dump);
 #endif
-#ifdef __WIN32__
-	debug_no_debug_heap = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_NO_DEBUG_HEAP,"Deshabilitar heap especial de widondows para deburación"),config->Debug.no_debug_heap);
-#endif
 	debug_readnow = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO,"Cargar toda la información de depuracion antes de comenzar"),config->Debug.readnow);
 	debug_auto_solibs = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO,"Cargar información de depuracion de bibliotecas externas"),config->Debug.auto_solibs);
 	debug_compile_again = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_RECOMPILE_AUTOMATICALLY,"Recompilar automaticamente antes de depurar si es necesario"),config->Debug.compile_again);
@@ -293,6 +290,11 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 	blacklist_sizer->Add(new wxButton(panel,mxID_DEBUG_BLACKLIST,LANG(PREFERENCES_DEBUG_BLACKLIST_BUTTON,"Configurar...")),sizers->Center);
 	sizer->Add(blacklist_sizer,sizers->BA5_Exp0);
 	debug_use_blacklist->SetValue(config->Debug.use_blacklist);
+	
+#ifdef __WIN32__
+	debug_no_debug_heap = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_NO_DEBUG_HEAP,"Deshabilitar heap especial de widondows para deburación"),config->Debug.no_debug_heap);
+#endif
+	
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
