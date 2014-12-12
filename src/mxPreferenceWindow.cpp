@@ -265,8 +265,11 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 		
-#ifdef __linux
+#ifdef __linux__
 	debug_enable_core_dump = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ENABLE_CORE_DUMP,"Habilitar volcado de memoria al ejecutar sin depurador"),config->Debug.enable_core_dump);
+#endif
+#ifdef __WIN32__
+	debug_no_debug_heap = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_NO_DEBUG_HEAP,"Deshabilitar heap especial de widondows para deburación"),config->Debug.no_debug_heap);
 #endif
 	debug_readnow = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO,"Cargar toda la información de depuracion antes de comenzar"),config->Debug.readnow);
 	debug_auto_solibs = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO,"Cargar información de depuracion de bibliotecas externas"),config->Debug.auto_solibs);
@@ -673,7 +676,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 #else
 	config->Init.lang_es = init_lang_es->GetValue();
 #endif
-	wxSetEnv(_T("LANG"),(config->Init.lang_es?_T("es_ES"):_T("en_US")));
+	wxSetEnv("LANG",(config->Init.lang_es?"es_ES":"en_US"));
 	config->Init.save_project = init_save_project->GetValue();
 	init_history_len->GetValue().ToLong(&l); config->Init.history_len=l;
 	if (config->Init.history_len>30) config->Init.history_len=30;
@@ -763,6 +766,9 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		
 #ifdef __linux__
 	config->Debug.enable_core_dump = debug_enable_core_dump->GetValue();
+#endif
+#ifdef __WIN32__
+	config->Debug.no_debug_heap = debug_no_debug_heap->GetValue();
 #endif
 	config->Debug.auto_solibs = debug_auto_solibs->GetValue();
 	config->Debug.readnow = debug_readnow->GetValue();
@@ -1250,6 +1256,9 @@ void mxPreferenceWindow::ResetChanges() {
 	// debug
 #ifdef __linux__
 	debug_enable_core_dump->SetValue(config->Debug.enable_core_dump);
+#endif
+#ifdef __WIN32__
+	debug_no_debug_heap->SetValue(config->Debug.no_debug_heap);
 #endif
 	debug_auto_solibs->SetValue(config->Debug.auto_solibs);
 	debug_readnow->SetValue(config->Debug.readnow);

@@ -1855,6 +1855,9 @@ void DebugManager::Start_ConfigureGdb ( ) {
 		}
 		i++;
 	}
+#ifdef __WIN32__
+	if (config->Debug.no_debug_heap) SendCommand("set environment _NO_DEBUG_HEAP 1");
+#endif
 	// configurar comportamiento ante señales
 	if (signal_handlers_state) {
 		for(unsigned int i=0;i<signal_handlers_state[0].size();i++) { 

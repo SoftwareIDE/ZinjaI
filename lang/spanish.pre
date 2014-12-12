@@ -2380,6 +2380,8 @@ PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE
 Devolver el foco a la aplicación en depuración luego de una pausa
 PREFERENCES_DEBUG_ENABLE_CORE_DUMP
 Habilitar volcado de memoria al ejecutar sin depurador
+PREFERENCES_DEBUG_NO_DEBUG_HEAP
+Deshabilitar heap especial de widondows para deburación
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
 Cargar toda la información de depuracion antes de comenzar
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO

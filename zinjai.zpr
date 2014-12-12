@@ -10,14 +10,13 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxPreferenceWindow.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
 cursor=37:112
 [source]
 path=src/ConfigManager.cpp
-cursor=194:40
+cursor=920:2
 [source]
 path=src/mxMainWindowTools.cpp
 cursor=80:2
@@ -35,7 +34,7 @@ path=src/mxMainWindow.cpp
 cursor=1090:2
 [source]
 path=src/DebugManager.cpp
-cursor=1912:31
+cursor=1858:82
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=6:40
@@ -58,7 +57,7 @@ path=src/mxNewWizard.cpp
 cursor=597:1
 [source]
 path=src/CodeHelper.cpp
-cursor=100:6
+cursor=180:16
 [source]
 path=src/HelpManager.cpp
 cursor=623:2
@@ -76,8 +75,7 @@ path=src/mxCompileConfigWindow.cpp
 cursor=32:88
 [source]
 path=src/mxPreferenceWindow.cpp
-cursor=1335:1
-open=true
+cursor=678:57
 [source]
 path=src/mxGotoLineWindow.cpp
 cursor=64:42
@@ -86,7 +84,7 @@ path=src/mxOpenSharedWindow.cpp
 cursor=157:35
 [source]
 path=src/mxProjectConfigWindow.cpp
-cursor=377:1
+cursor=248:85
 [source]
 path=src/mxShareSourceWindow.cpp
 cursor=109:0
@@ -95,7 +93,7 @@ path=src/mxTipsWindow.cpp
 cursor=53:1
 [source]
 path=src/ProjectManager.cpp
-cursor=3286:2
+cursor=2813:18
 marker=482
 [source]
 path=src/mxThreadGrid.cpp
@@ -163,7 +161,7 @@ path=src/mxOSD.cpp
 cursor=20:37
 [source]
 path=src/mxSource.cpp
-cursor=3094:5
+cursor=3001:3
 [source]
 path=src/mxDrawClasses.cpp
 cursor=131:31
@@ -370,7 +368,7 @@ path=src/CodeHelper.h
 cursor=39:16
 [header]
 path=src/ConfigManager.h
-cursor=52:5
+cursor=0:24
 [header]
 path=src/HelpManager.h
 cursor=0:0
@@ -397,7 +395,7 @@ path=src/mxCompileConfigWindow.h
 cursor=37:24
 [header]
 path=src/mxPreferenceWindow.h
-cursor=148:35
+cursor=149:35
 [header]
 path=src/mxGotoLineWindow.h
 cursor=6:14
@@ -1081,8 +1079,5 @@ suppress_file=
 suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useInitializationList
 inline_suppr=1
 exclude_list=
-[inspections]
-expr=key
-expr=typed
 [custom_tools]
 [end]

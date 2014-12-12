@@ -192,6 +192,9 @@ bool ConfigManager::Load() {
 #ifdef __linux__
 				else CFG_BOOL_READ_DN("enable_core_dump",Debug.enable_core_dump);
 #endif
+#ifdef __WIN32__
+				else CFG_BOOL_READ_DN("no_debug_heap",Debug.no_debug_heap);
+#endif
 				else CFG_BOOL_READ_DN("use_blacklist",Debug.use_blacklist);
 				else if (key=="blacklist") Debug.blacklist.Add(value);
 				else if (key=="inspection_improving_template") {
@@ -396,7 +399,7 @@ bool ConfigManager::Load() {
 		Source.autocompFilters=true;
 	}
 #endif
-	if (Init.version<20141212 && Debug.blacklist.GetCount()==0) {
+	if (Init.version<20141212 && Debug.blacklist.GetCount()==1) {
 		wxString orig = Debug.blacklist[0]; Debug.blacklist.Clear();
 		mxUT::Split(orig,config->Debug.blacklist,true,false);
 	}
@@ -493,6 +496,9 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("improve_inspections_by_type",Debug.improve_inspections_by_type);
 #ifdef __linux__
 	CFG_BOOL_WRITE_DN("enable_core_dump",Debug.enable_core_dump);
+#endif
+#ifdef __WIN32__
+	CFG_BOOL_WRITE_DN("no_debug_heap",Debug.no_debug_heap);
 #endif
 	for(unsigned int i=0;i<Debug.inspection_improving_template_from.GetCount();i++)
 		CFG_GENERIC_WRITE_DN("inspection_improving_template",Debug.inspection_improving_template_from[i]+"|"+Debug.inspection_improving_template_to[i]);
@@ -781,6 +787,9 @@ void ConfigManager::LoadDefaults(){
 	Debug.improve_inspections_by_type = true;
 #ifdef __linux__
 	Debug.enable_core_dump = false;
+#endif
+#ifdef __WIN32__
+	Debug.no_debug_heap = true;
 #endif
 	Debug.use_blacklist = true;
 //	SetDefaultInspectionsImprovingTemplates(); // not needed, done (only on first run) in ConfigManager::Load when version<20140924

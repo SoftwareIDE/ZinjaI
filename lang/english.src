@@ -2378,6 +2378,8 @@ PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE
 Return focus to debugged application when continuing after a breakpoint
 PREFERENCES_DEBUG_ENABLE_CORE_DUMP
 Enable core dumps when running without debugger
+PREFERENCES_DEBUG_NO_DEBUG_HEAP
+Disable Window's special debug heap
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
 Load all debugging symbols before running
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
