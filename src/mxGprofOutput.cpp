@@ -145,7 +145,7 @@ void mxGprofOutput::FillGraph ( ) {
 		grid_graph->SetCellValue(sum,3,data.graph[i].calls_to[j].called.c_str());
 		grid_graph->SetCellValue(sum,4,data.graph[i].calls_to[j].name.c_str());
 		sum++;
-	}	
+	}
 	grid_graph->AutoSizeColumns();
 }
 

@@ -213,7 +213,7 @@ void mxApplication::ShowSplash ( ) {
 			argv[i][0]='\0';
 			no_splash=true;
 		}
-	if (!no_splash && config->Init.show_splash && wxFileName(DIR_PLUS_FILE("imgs",SPLASH_FILE)).FileExists()) 
+	if (!no_splash && wxFileName(DIR_PLUS_FILE("imgs",SPLASH_FILE)).FileExists()) 
 			splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",_T(SPLASH_FILE)));
 }
 

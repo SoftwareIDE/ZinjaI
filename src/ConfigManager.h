@@ -114,7 +114,6 @@ struct cfgInit {
 	int version;
 	wxString proxy;
 	bool show_tip_on_startup;
-	bool show_splash;
 	bool show_welcome;
 	bool show_beginner_panel;
 	bool hide_splash;

@@ -206,7 +206,6 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (mxBookCtrl *notebook) {
 	int i_langs = a_langs.Index(config->Init.language_file);
 	if (i_langs==wxNOT_FOUND) { i_langs = a_langs.Index("spanish"); config->Init.language_file=_T("spanish"); }
 	init_lang_file = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_GENERAL_GUI_LANGUAGE,"Idioma de la interfaz (*)"),a_langs, i_langs);
-	init_show_splash = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_SPLASH,"Mostrar Splash mientras se carga el entorno"),config->Init.show_splash);
 	init_show_tip_on_startup = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_TOOLTIPS,"Mostrar sugerencias al inicio"),config->Init.show_tip_on_startup);
 	init_show_welcome = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_WELCOME_PANEL,"Mostrar panel de bienvenida"),config->Init.show_welcome);
 	init_show_extra_panels = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_HELP_TABS,"Mostrar pestañas de ayuda en cuadro de diálogo (*)"),config->Help.show_extra_panels);
@@ -672,7 +671,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		welcome_panel->Destroy();
 		welcome_panel=NULL;
 	}
-	config->Init.show_splash = init_show_splash->GetValue();
 	config->Init.always_add_extension = init_always_add_extension->GetValue();
 #ifdef __WIN32__
 #else
@@ -1215,7 +1213,6 @@ void mxPreferenceWindow::ResetChanges() {
 	init_max_jobs->SetValue(wxString()<<config->Init.max_jobs);
 	
 	// general
-	init_show_splash->SetValue(config->Init.show_splash);
 	init_show_extra_panels->SetValue(config->Help.show_extra_panels);
 	init_lang_file->SetValue(config->Init.language_file);
 	init_show_welcome->SetValue(config->Init.show_welcome);

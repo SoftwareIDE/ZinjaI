@@ -222,7 +222,6 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("show_beginner_panel",Init.show_beginner_panel);
 				else CFG_BOOL_READ_DN("show_welcome",Init.show_welcome);
 				else CFG_BOOL_READ_DN("show_tip_on_startup",Init.show_tip_on_startup);
-				else CFG_BOOL_READ_DN("show_splash",Init.show_splash);
 				else CFG_INT_READ_DN("new_file",Init.new_file);
 				else CFG_INT_READ_DN("version",Init.version);
 				else CFG_INT_READ_DN("pos_x",Init.pos_x);
@@ -429,7 +428,6 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("show_welcome",Init.show_welcome);
 	CFG_BOOL_WRITE_DN("show_beginner_panel",Init.show_beginner_panel);
 	CFG_BOOL_WRITE_DN("show_tip_on_startup",Init.show_tip_on_startup);
-	CFG_BOOL_WRITE_DN("show_splash",Init.show_splash);
 	CFG_GENERIC_WRITE_DN("new_file",Init.new_file);
 	CFG_GENERIC_WRITE_DN("version",Init.version);
 	CFG_GENERIC_WRITE_DN("pos_x",Init.pos_x);
@@ -676,7 +674,6 @@ void ConfigManager::LoadDefaults(){
 	Init.show_welcome=true;
 	Init.show_tip_on_startup=true;
 	Init.left_panels=false;
-	Init.show_splash=true;
 	Init.new_file=2;
 	Init.version=0;
 	Init.pos_x=Init.pos_y=0;

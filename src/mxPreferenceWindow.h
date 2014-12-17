@@ -77,7 +77,6 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *init_autohide_toolbars_fs;
 	wxCheckBox *init_autohide_panels_fs;
 	wxCheckBox *init_autohide_menus_fs;
-	wxCheckBox *init_show_splash;
 	wxComboBox *init_lang_file;
 	wxComboBox *init_new_file;
 	wxComboBox *init_wrap_mode;
