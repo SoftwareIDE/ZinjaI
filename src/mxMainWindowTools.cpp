@@ -612,13 +612,15 @@ wxString mxMainWindow::OnToolsGprofShowListAux(bool include_command) {
 	wxString gout = DIR_PLUS_FILE(config->temp_dir,"gprof.txt");
 	wxRemoveFile(gout); // eliminar resultados previos para evitar problemas
 	wxFFile fgout(gout,"w+");
-	wxArrayString output;
+	wxArrayString output, errors;
 	if (include_command) fgout.Write(wxString("> ")<<command+"\n\n");
-	int retval=mxExecute(command, output, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	int retval=mxExecute(command, output, errors, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	if (retval||!output.GetCount()) { // si hay algun error al ejecutar gprof
+		wxString msg = mxUT::UnSplit(errors,"\n");
+		if (msg.Len()) msg=wxString("\n\n")+msg;
 		osd.Hide(); 
 		mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))
-							 +(retval?" (error 1).":" (error 2)."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); 
+							 +(wxString(" (error ")<<retval<<").")+msg,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); 
 		return "";
 	}
 	for (unsigned int i=0;i<output.GetCount();i++)

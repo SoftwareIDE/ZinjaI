@@ -145,7 +145,7 @@ public:
 	static bool ToInt(const wxString &value, int &what) { static long l; if (value.ToLong(&l)) { what=int(l); return true; } else return false; }
 	/// devuelve verdadero si el dato value empieza con '1','V','v','T','t','S' o 's'
 	static bool IsTrue(const wxString &value) { return (value[0]=='1' || value[0]=='V' || value[0]=='v' || value[0]=='s' || value[0]=='S' || value[0]=='T' || value[0]=='t'); }
-	static wxString UnSplit(wxArrayString &array); ///< joins all strins in array into a single string using a single space as separator
+	static wxString UnSplit(const wxArrayString &array, const wxString &sep=" "); ///< joins all strins in array into a single string using a single space as separator
 	static wxString Split(wxString str, wxString pre);
 	static int Split(wxString str, wxArrayString &array, bool coma_splits=true,bool keep_quotes=true);
 	static int Execute(wxString path, wxString command, int sync);

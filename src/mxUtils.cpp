@@ -452,12 +452,12 @@ void mxUT::FindIncludes(wxString path, wxString filename, wxArrayString &already
 	}
 }
 
-wxString mxUT::UnSplit(wxArrayString &array) {
+wxString mxUT::UnSplit(const wxArrayString &array, const wxString &sep) {
 	wxString ret;
 	if (array.GetCount()) {
 		ret<<array[0];
 		for (unsigned int i=1;i<array.GetCount();i++) {
-			ret<<' '<<array[i];
+			ret<<sep<<array[i];
 		}
 	}
 	return ret;
