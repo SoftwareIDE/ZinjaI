@@ -654,6 +654,7 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	nodt.ToDouble(&edge_tres); edgt.ToDouble(&node_tres);
 	command<<mxUT::Quotize(gout)<<" -e "<<edge_tres<<" -n "<<node_tres<<" -o "<<mxUT::Quotize(pout);
 	int retval=mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
+	_IF_DEBUGMODE( command + (wxString("\nretval: ")<<retval) );
 	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 2).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
 	
 	// mostrar el grafo

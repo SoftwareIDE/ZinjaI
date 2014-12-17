@@ -1328,7 +1328,9 @@ int mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxSt
 #endif
 	command<<(use_fdp?" fdp ":" dot ");
 	command<<Quotize(graph_file)<<" -T"<<format<<" -o "<<Quotize(output);
-	if (mxExecute(command,wxEXEC_SYNC)) return 1;
+	int retval = mxExecute(command,wxEXEC_SYNC);
+	_IF_DEBUGMODE(command + (wxString("\nretval=")<<retval) );
+	if (retval) return 1;
 	if (show) {
 		wxString command2;
 		if (config->Files.xdot_command.Len()) {
@@ -1336,6 +1338,7 @@ int mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxSt
 		} else {
 			command2<<config->Files.img_browser<<" "<<Quotize(output)<<" \""<<title<<"\"";
 		}
+		_IF_DEBUGMODE(command2);
 		wxExecute(command2);
 	}
 	return 0;
