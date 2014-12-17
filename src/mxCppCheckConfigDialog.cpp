@@ -26,6 +26,8 @@ BEGIN_EVENT_TABLE(mxCppCheckConfigDialog,wxDialog)
 	EVT_BUTTON(mxID_CPPCHECK_SUPPRESS_IDS,mxCppCheckConfigDialog::OnButtonSuppressIds)
 	EVT_BUTTON(mxID_CPPCHECK_INCLUDE_FILE,mxCppCheckConfigDialog::OnButtonIncludeFile)
 	EVT_BUTTON(mxID_CPPCHECK_EXCLUDE_FILE,mxCppCheckConfigDialog::OnButtonExcludeFile)
+	EVT_BUTTON(mxID_CPPCHECK_ADDITIONAL_FILES,mxCppCheckConfigDialog::OnButtonAdditionalFiles)
+	EVT_CHECKBOX(mxID_CPPCHECK_EXCLUDE_HEADERS,mxCppCheckConfigDialog::OnButtonExcludeHeaders)
 	EVT_BUTTON(wxID_OK,mxCppCheckConfigDialog::OnButtonOk)
 	EVT_BUTTON(wxID_CANCEL,mxCppCheckConfigDialog::OnButtonCancel)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxCppCheckConfigDialog::OnButtonHelp)
@@ -103,6 +105,8 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	
 	wxSizer *src_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *szsrc_buttons = new wxBoxSizer(wxVERTICAL);
 	szsrc_buttons->Add(new wxButton(panel,mxID_CPPCHECK_INCLUDE_FILE,">>>",wxDefaultPosition,wxSize(50,-1)),sizers->BA10_Exp0);
@@ -119,18 +123,25 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	src_sizer->Add(szsrc_buttons,sizers->Center);
 	src_sizer->Add(szsrc_in,sizers->Exp1);
 	
-	wxArrayString array;
-	mxUT::Split(ccc->exclude_list,array,true,false);
-	LocalListIterator<project_file_item*> fi(&project->files_sources);
-	while(fi.IsValid()) {
-		if (array.Index(fi->name)==wxNOT_FOUND)
-			sources_in->Append(fi->name);
-		else 
-			sources_out->Append(fi->name);
-		fi.Next();
+	wxArrayString files,exclude_list;
+	mxUT::Split(project->cppcheck->additional_files,files,true,false);
+	mxUT::Split(project->cppcheck->exclude_list,exclude_list,true,false);
+	project->GetFileList(files,FT_SOURCE,true);
+	if (!project->cppcheck->exclude_headers) project->GetFileList(files,FT_HEADER,true);
+	for (unsigned int i=0;i<files.GetCount();i++) {
+		if (exclude_list.Index(files[i])==wxNOT_FOUND) {
+			sources_in->Append(files[i]);
+		} else {
+			sources_out->Append(files[i]);
+		}
 	}
 	
-	panel->SetSizer(src_sizer);
+	sizer->Add(src_sizer,sizers->Exp1);
+	
+	additional_files = mxUT::AddDirCtrl(sizer,panel,LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicioneles a analizar"),ccc->additional_files,mxID_CPPCHECK_ADDITIONAL_FILES);
+	exclude_headers = mxUT::AddCheckBox(sizer,panel,LANG(CPPCHECK_EXCLUDE_HEADERS,"Omitir archivos de cabeceras"),ccc->exclude_headers,mxID_CPPCHECK_EXCLUDE_HEADERS);
+	
+	panel->SetSizer(sizer);
 	return panel;
 	
 }
@@ -192,7 +203,7 @@ void mxCppCheckConfigDialog::OnButtonSuppressIds (wxCommandEvent & evt) {
 
 void mxCppCheckConfigDialog::OnButtonIncludeFile (wxCommandEvent & evt) {
 	sources_in->SetSelection(wxNOT_FOUND);
-	for (int i=sources_out->GetCount();i>=0;i--)
+	for (int i=sources_out->GetCount()-1;i>=0;i--)
 		if (sources_out->IsSelected(i)) {
 			sources_in->Append(sources_out->GetString(i));
 			sources_in->Select(sources_in->FindString(sources_out->GetString(i)));
@@ -202,7 +213,7 @@ void mxCppCheckConfigDialog::OnButtonIncludeFile (wxCommandEvent & evt) {
 
 void mxCppCheckConfigDialog::OnButtonExcludeFile (wxCommandEvent & evt) {
 	sources_out->SetSelection(wxNOT_FOUND);
-	for (int i=sources_in->GetCount();i>=0;i--)
+	for (int i=sources_in->GetCount()-1;i>=0;i--)
 		if (sources_in->IsSelected(i)) {
 			sources_out->Append(sources_in->GetString(i));
 			sources_out->Select(sources_out->FindString(sources_in->GetString(i)));
@@ -229,6 +240,8 @@ void mxCppCheckConfigDialog::OnButtonOk (wxCommandEvent & evt) {
 	ccc->suppress_ids=suppress_ids->GetValue();
 	ccc->inline_suppr=inline_suppr->GetValue();
 	ccc->save_in_project=save_in_project->GetValue();
+	ccc->exclude_headers=exclude_headers->GetValue();
+	ccc->additional_files=additional_files->GetValue();
 	Close();
 }
 
@@ -238,5 +251,32 @@ void mxCppCheckConfigDialog::OnButtonCancel (wxCommandEvent & evt) {
 
 void mxCppCheckConfigDialog::OnButtonHelp (wxCommandEvent & evt) {
 	mxHelpWindow::ShowHelp("cppcheck_config.html");
+}
+
+void mxCppCheckConfigDialog::OnButtonExcludeHeaders (wxCommandEvent & evt) {
+	wxArrayString files;
+	project->GetFileList(files,FT_HEADER,true);
+	if (exclude_headers->GetValue()) {
+		for(unsigned int i=0;i<files.GetCount();i++) { 
+			int p1 = sources_in->FindString(files[i]);
+			if (p1!=wxNOT_FOUND) { sources_in->Delete(p1); continue; }
+			int p2 = sources_out->FindString(files[i]);
+			if (p2!=wxNOT_FOUND) { sources_out->Delete(p2); }
+		}
+	} else {
+		wxArrayString exclude_list;
+		mxUT::Split(project->cppcheck->exclude_list,exclude_list,true,false);
+		for (unsigned int i=0;i<files.GetCount();i++) {
+			if (exclude_list.Index(files[i])==wxNOT_FOUND) {
+				sources_in->Append(files[i]);
+			} else {
+				sources_out->Append(files[i]);
+			}
+		}
+	}
+}
+
+void mxCppCheckConfigDialog::OnButtonAdditionalFiles (wxCommandEvent & evt) {
+	mxEnumerationEditor(this,LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicioneles a analizar"),additional_files,true);
 }
 

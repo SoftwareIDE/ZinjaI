@@ -191,6 +191,7 @@ struct wxfb_configuration {
 **/
 struct cppcheck_configuration {
 	bool copy_from_config; ///< indica si las configuraciones (-D -U) se toman del campo de macros de active_configuration, o de config_d y config_u
+	bool exclude_headers; ///< no pasarle los .h, que los encuentre por inclusion desde los cpps
 	wxString config_d; ///< macros a definir para el analisis (-D...)
 	wxString config_u; ///< macros a no definir para el analisis (-U...)
 	wxString style; ///< verificaciones adicionales (--enable=...)
@@ -200,9 +201,11 @@ struct cppcheck_configuration {
 	wxString suppress_ids; ///< lista de supresiones (--suppress=...)
 	bool inline_suppr; ///< activar supresiones inline (--inline-suppr)
 	wxString exclude_list; ///< lista de archivos del proyecto que no seran analizados
+	wxString additional_files; ///< lista de archivos no registrados en el proyecto a agregar para el analisis
 	bool save_in_project; ///< indica si hay que guardar esta configuración en el archivo de proyecto
 	//! inicializa la configuración con los valores por defecto
 	cppcheck_configuration() {
+		exclude_headers=true;
 		copy_from_config=true;
 		style="all";
 		inline_suppr=true;

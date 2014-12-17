@@ -332,6 +332,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_BOOL_READ_DN("extra_private",doxygen->extra_private);
 			} else if (section=="cppcheck") {
 				CFG_BOOL_READ_DN("copy_from_config",cppcheck->copy_from_config);
+				else CFG_BOOL_READ_DN("exclude_headers",cppcheck->exclude_headers);
 				else CFG_GENERIC_READ_DN("config_d",cppcheck->config_d);
 				else CFG_GENERIC_READ_DN("config_u",cppcheck->config_u);
 				else CFG_GENERIC_READ_DN("style",cppcheck->style);
@@ -339,6 +340,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_GENERIC_READ_DN("standard",cppcheck->standard);
 				else CFG_GENERIC_READ_DN("suppress_file",cppcheck->suppress_file);
 				else CFG_GENERIC_READ_DN("suppress_ids",cppcheck->suppress_ids);
+				else CFG_GENERIC_READ_DN("additional_files",cppcheck->additional_files);
 				else CFG_GENERIC_READ_DN("exclude_list",cppcheck->exclude_list);
 				else CFG_BOOL_READ_DN("inline_suppr",cppcheck->inline_suppr);
 			} else if (section=="inspections") {
@@ -837,6 +839,7 @@ bool ProjectManager::Save (bool as_template) {
 	if (cppcheck && cppcheck->save_in_project) {
 		fil.AddLine("[cppcheck]");
 		CFG_BOOL_WRITE_DN("copy_from_config",cppcheck->copy_from_config);
+		CFG_BOOL_WRITE_DN("exclude_headers",cppcheck->exclude_headers);
 		CFG_GENERIC_WRITE_DN("config_d",cppcheck->config_d);
 		CFG_GENERIC_WRITE_DN("config_u",cppcheck->config_u);
 		CFG_GENERIC_WRITE_DN("style",cppcheck->style);
@@ -845,6 +848,7 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("suppress_file",cppcheck->suppress_file);
 		CFG_GENERIC_WRITE_DN("suppress_ids",cppcheck->suppress_ids);
 		CFG_GENERIC_WRITE_DN("inline_suppr",cppcheck->inline_suppr);
+		CFG_GENERIC_WRITE_DN("additional_files",cppcheck->additional_files);
 		CFG_GENERIC_WRITE_DN("exclude_list",cppcheck->exclude_list);
 	}
 	

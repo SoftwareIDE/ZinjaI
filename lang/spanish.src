@@ -1206,6 +1206,10 @@ CPPCHECK_SOURCES_IN
 Files to analize
 CPPCHECK_SOURCES_OUT
 Files to exclude
+CPPCHECK_ADDITIONAL_FILES
+Archivos adicioneles a analizar
+CPPCHECK_EXCLUDE_HEADERS
+Omitir archivos de cabeceras
 CUSTOM_TOOLS_CAPTION
 Herramientas Personalizables
 CUSTOM_TOOLS_ITEM
@@ -2378,8 +2382,6 @@ PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE
 Devolver el foco a la aplicación en depuración luego de una pausa
 PREFERENCES_DEBUG_ENABLE_CORE_DUMP
 Habilitar volcado de memoria al ejecutar sin depurador
-PREFERENCES_DEBUG_NO_DEBUG_HEAP
-Deshabilitar heap especial de widondows para deburación
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
 Cargar toda la información de depuracion antes de comenzar
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
@@ -2402,6 +2404,8 @@ PREFERENCES_DEBUG_USE_BLACKLIST
 Utilizar lista negra en el paso a paso
 PREFERENCES_DEBUG_BLACKLIST_BUTTON
 Configurar...
+PREFERENCES_DEBUG_NO_DEBUG_HEAP
+Deshabilitar heap especial de widondows para deburación
 PREFERENCES_TOOLBARS_WICH
 Barra de herramientas a utilizar:
 PREFERENCES_TOOLBARS_DOCK_TOP

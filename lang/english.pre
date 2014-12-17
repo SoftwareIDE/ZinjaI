@@ -1208,6 +1208,10 @@ CPPCHECK_SOURCES_IN
 Files to analize
 CPPCHECK_SOURCES_OUT
 Files to exclude
+CPPCHECK_ADDITIONAL_FILES
+Additional files to analize
+CPPCHECK_EXCLUDE_HEADERS
+Exclude header files
 CUSTOM_TOOLS_CAPTION
 Custom Tools
 CUSTOM_TOOLS_ITEM
@@ -2380,8 +2384,6 @@ PREFERENCES_DEBUG_RETURN_FOCUS_ON_CONTINUE
 Return focus to debugged application when continuing after a breakpoint
 PREFERENCES_DEBUG_ENABLE_CORE_DUMP
 Enable core dumps when running without debugger
-PREFERENCES_DEBUG_NO_DEBUG_HEAP
-Disable Window's special debug heap
 PREFERENCES_DEBUG_LOAD_ALL_DEBUG_INFO
 Load all debugging symbols before running
 PREFERENCES_DEBUG_LOAD_SHARED_LIBS_INFO
@@ -2404,6 +2406,8 @@ PREFERENCES_DEBUG_USE_BLACKLIST
 Use blacklist for step-in
 PREFERENCES_DEBUG_BLACKLIST_BUTTON
 Setup...
+PREFERENCES_DEBUG_NO_DEBUG_HEAP
+Disable Window's special debug heap
 PREFERENCES_TOOLBARS_WICH
 Toolbars to display:
 PREFERENCES_TOOLBARS_DOCK_TOP

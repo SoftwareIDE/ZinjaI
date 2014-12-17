@@ -66,6 +66,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 		wxArrayString files,exclude_list;
 		mxUT::Split(project->cppcheck->exclude_list,exclude_list,true,false);
 		project->GetFileList(files,FT_SOURCE,true);
+		if (!project->cppcheck->exclude_headers) project->GetFileList(files,FT_HEADER,true);
 		wxString list(DIR_PLUS_FILE(config->temp_dir,"cppcheck.lst"));
 		wxFile flist(list,wxFile::write);
 		char el='\n';
@@ -146,6 +147,7 @@ void mxMainWindow::OnToolsCppCheckRun(wxCommandEvent &event) {
 	if (extra_args.Len()) args<<" "<<extra_args;
 	
 	wxString command = mxUT::Quotize(config->Files.cppcheck_command)<<" "<<cppargs<<" --template \"[{file}:{line}] ({severity},{id}) {message}\" "<<args<<" "<<file_args;
+	_IF_DEBUGMODE(command);
 	cppcheck->Launch(path,command);
 	
 }

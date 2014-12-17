@@ -22,6 +22,8 @@ private:
 	wxTextCtrl *suppress_ids;
 	wxCheckBox *inline_suppr;
 	wxCheckBox *save_in_project;
+	wxCheckBox *exclude_headers;
+	wxTextCtrl *additional_files;
 	cppcheck_configuration *ccc;
 protected:
 public:
@@ -39,6 +41,8 @@ public:
 	void OnButtonSuppressIds(wxCommandEvent &evt);
 	void OnButtonIncludeFile(wxCommandEvent &evt);
 	void OnButtonExcludeFile(wxCommandEvent &evt);
+	void OnButtonAdditionalFiles(wxCommandEvent &evt);
+	void OnButtonExcludeHeaders(wxCommandEvent &evt);
 	void OnButtonOk(wxCommandEvent &evt);
 	void OnButtonCancel(wxCommandEvent &evt);
 	void OnButtonHelp(wxCommandEvent &evt);
