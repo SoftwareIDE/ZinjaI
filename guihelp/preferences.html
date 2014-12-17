@@ -7,7 +7,6 @@
 <A name="general"><BR></A>
 <B>Pestaña General</B>: Muestra algunas opciones sobre el comportamiento del sistema.<UL>
 	<LI><B>Idioma de la interfaz</B>: Permite alternar el idioma entre español e ingles. Deber reiniciar el entorno para que el cambio tenga efecto. Nota: este idioma solo se aplica a la interfaz de <I>ZinjaI</I>, pero no a los mensajes del compilador y de otras herramientas externas. </LI>
-<!-- 	<LI><B>Mostrar Splash mientras se carga el entorno</B>: Si está activada se muestra una pantalla con el logo del programa y su versión mientras se carga el entorno.</LI> -->
 	<LI><B>Mostrar sugerencias al inicio</B>: Permite mostrar un cuadro de sugerencias cada vez que ingresa al sistema. Las sugerencias refieren mayormente al uso del entorno y presentan tips para facilitar y agilizar el desarrollo. Si se habilita el <I>Panel de Bienvenida</I>, la ventana de sugerencia no aparecerá y esta opcion no tendrá ningún efecto, ya que las sugerencias se muestran en la parte inferior de dicho panel.</LI>
 	<LI><B>Mostrar panel de bienvenida</B>: al iniciar, muestra en el área de código un panel con opciones para abrir archivos/proyectos recientes o crear nuevos.</LI>
 	<LI><B>Mostrar pestañas de ayuda en diálogos</B>: Muestra una pestaña o cuadro de texto con ayuda adicional en algunos cuadros de diálogo como <I>Preferencias</I>, <I>Opciones de Compilación y Ejecución de Proyectos</I>, <I>Asistente Para Nuevo Archivo/Proyecto</I>, etc.</LI>
@@ -17,8 +16,7 @@
 	<LI><B>Ocultar paneles automaticamente</B>: Si esta opción está seleccionada, los nombres de los paneles acoplables más comunes se visualizarán en los márgenes de la ventana principal, permitiendo desplegar dichos paneles con solo colocar el puntero del mouse sobre alguno de estos nombres, y haciendo que se oculten nuevamente al retirar el puntero de los mismos. De esta forma, el área de código se maximiza y todos los paneles usuales permanecen fácilmente accesibles, pudiendo además bloquearse temporalmente para que permanezcan siempre visibles en caso de ser necesario (recomendado para PC con pantallas pequeñas como netbooks y notebooks).</A></LI>
 	<LI><B>Utilizar una sola instancia de ZinjaI</B>: Cuando se abre un archivo fuente asociado a <I>Zinja</I> (pero no un proyecto) desde el explorador de archivos del sistema operativo, esta opción hace que si ya había una instancia de <I>ZinjaI</I> en ejecución (y no se encontraba en modo proyecto), el nuevo archivo se abra dentro de dicha instancia en lugar de crear una nueva.</A></LI>
 	<LI><B>Verificar si existen nuevas versiones al iniciar</B>: Si esta activado, cada vez que ingrese a <I>ZinjaI</I> este intentará conectarse a travez de Internet con su sitio web para verificar si existen nuevas versiones estables, y en caso afirmativo advertirá al usuario ofreciendo abrir el sitio de descarga.</LI>
-	<LI><B>Mostrar errores de compilacion en Español</B> (solo GNU/Linux): .</A></LI>
-	<LI><B>Crear/Actualizar icono de ZinjaI en el escritorio</B> (solo GNU/Linux): .</A></LI>
+	<LI><B>Personaliar atajos de teclado</B> Despliega un cuadro de diálogo que permite consultar y modificar las combinaciones de teclas asociadas a diferentes acciones de <I>ZinjaI</I> (comandos de los menúes de la ventana principal, acciones de edición especiales, etc.). Vea <A href="shortcuts_dialog.html">Personalizar Atajos de teclado</A></LI>
 </UL><BR><BR>
 	
 <A name="programa_simple"><BR></A>
@@ -28,37 +26,39 @@
 		<LI><B>Crear a partir de plantilla</B>: Crea un nuevo archivo a partir de la plantilla predeterminada. Esta plantilla se configura en la hoja <A href="new_wizard.html#templates">Nuevo desde Plantilla<A> del diálogo <I>Asistente Para Nuevo Archivo</I>.</LI>
 		<LI><B>Crear archivo en blanco</B>: Crea un nuevo archivo/programa completamente en vacío.</LI>
 	</UL></LI>
-	<LI><B>Parametros extra para el compilador</B>*: Permite especificar parametros adicionales para que <I>ZinjaI</I> utilice en la compilación. Por defecto, el valor es "-Wall -pedantic-errors" (para mostrar todos los warnings y ajustarse al estándar). El único parámetro que siempre se utiliza aunque no se explicite es "-g" el cual indica al compilador que debe incluir información de depuración en el ejecutable. Vea también <A href="gcc_index.html">Ayuda del Compilador Utilizado</A>.</LI>
+	<LI><B>Parametros extra para el compilador C++</B>: Permite especificar parametros adicionales para que <I>ZinjaI</I> utilice en la compilación de programas C++. Estas opciones son las utilizadas por defecto al crear un nuevo programa simple, pero pueden ser modificadas para cada programa en particular utilizando el <A href="compile_config.html">Diálogo Opciones de Compilación y Ejecución</A> o mediante el uso de ciertas plantillas. Por defecto, el valor es "-Wall -pedantic-errors" (para mostrar todos los warnings y ajustarse al estándar). El único parámetro que siempre se utiliza aunque no se explicite es "-g" el cual indica al compilador que debe incluir información de depuración en el ejecutable. Más argumentos implícitos pueden estar definidos en la configuración del <A href="toolchains.cpp">Toolchain<A> utilizado para la compilación. Puede consultar el significado de estos argumentos en <A href="gcc_index.html">Ayuda del Compilador Utilizado</A>-</LI>
+	<LI><B>Parametros extra para el compilador C</B>*: Ídem al punto anterior, pero aplicable a programas C.</LI>
 	<LI><B>Esperar una tecla luego de la ejecucion</B>*: Indica que se debe esperar a que el usuario presiones enter luego de finalizar la ejecución del programa para evitar que la ventana del mismo se cierre inmediatamente sin poder ver los resultados.</LI>
 	<LI><B>Siempre pedir argumentos al ejecutar</B>*: Permite hacer que <I>ZinjaI</I> solicite los argumentos que debe pasarle al ejecutable antes de cada ejecución. En caso contrario, se utilizarán siempre los mismos (se configuran en el <A href="compile_config.html">Diálogo Opciones de Compilación y Ejecución</A> y por defecto se encuentran vacíos).</LI>
 	<LI><B>Agregar la extensión cpp si se omite al guardar</B>: Si esta activo, cuando se intente guardar un archivo sin extensión <I>Zinjai</LI> añadirá automáticamente y sin pedir confirmación la extensión cpp al nombre del mismo. En caso contrario, se preguntará al usuario.</LI>
-	<LI><B>Ejecutar el ultimo cpp si se intenta ejecutar una cabecera</B>: Si esta activo, cuando se intente ejecutar un archivo de cabecera (por ejemplo, al presionar <I>F9</I> teniendo seleccionado un <I>.h</I>), se intentará en realidad volver a ejecutar el último cpp ejecutado. Esto se debe a que en general no tiene sentido intentar ejecutar un archivo de cabecera ya que no debería contener a un programa.</LI>
 	<LI><B>Cantidad de pasos en paralelo al compilar</B>: Define cuantas instancias de gcc se pueden lanzar en paralelo en la etapa de compilación. Esto permite reducir los tiempos de compilación de un proyecto en PCs multicore.</LI>
-	<LI><B>Detener la compilación de un proyecto al encontrar el primer error</B>: .</LI>
-	<LI><B>Guardar siempre el proyecto al salir</B>: Guarda automáticamente un proyecto al cerrarlo sin preguntar. Si esta opción no está activada <I>ZinjaI</I> preguntará si desea guardarlo cada vez que cierre un proyecto que haya sufrido modificaciones.</LI>
-	<LI><B>Cerrar todos los demas archivos al abrir un proyecto</B>: Cuando se crea o abre un proyecto <I>ZinjaI</I> puede cerrar automáticamente todos los fuentes y otros archivos que se encuentren abiertos antes de abrir el proyecto si esta opción está activada. En caso contrario, se preguntará al usuario antes de hacerlo.</LI>-->
+	<LI><B>Detener la compilación de un proyecto al encontrar el primer error</B>: Cuando se compila un proyecto compuesto por varios archivos fuentes, el proceso involucra la compilación individual de cada uno de ellos y una etapa final de enlazado. Esta opción indica si <I>Zinja</I> debe, al encontrar un error de compilación en uno de estos pasos, continuar intentando ejecutar los demás pasos (compilar los siguientes fuentes, solo omitirá el enlazado), o detener todo el proceso.</LI>
+	<LI><B>Guardar siempre el proyecto al salir</B>: Guarda automáticamente un proyecto al cerrarlo sin preguntar. Si esta opción no está activada <I>ZinjaI</I> preguntará si desea guardarlo cada vez que cierre un proyecto que haya sufrido modificaciones (es recomendable activar esta opción).</LI>
 	<LI><B>Mostrar el explorador de archivos al abrir un proyecto</B>: Si esta opción está activada, cuando se abra un proyecto, <I>ZinjaI</I> desplegará automáticamente el <A href="panel_explorer.html">panel del Explorador de Archivos</A> mostrando el árbol de archivos y subdirectorios del directorio del proyecto en lugar del panel del <A href="panel_project_tree.html">Arbol de Archivos</A></LI>
 	<LI><B>Herramientas de compilación</B>: Permite definir el <A href="toolchains.html">Toolchain</A> que <I>ZinjaI</I> utilizará para compilar programas simples y por defecto en proyectos.</LI>
 </UL><BR><BR>
-* Estas opciones son las utilizadas por defecto al crear un nuevo programa simple, pero pueden ser modificadas para cada programa en particular utilizando el <A href="compile_config.html">Diálogo Opciones de Compilación y Ejecución</A> o mediante el uso de ciertas plantilla.<BR>
 <BR>
 
 <A name="estilo"><BR></A>
 <B>Pestaña Estilo</B>: Permite definir el formato en que se visualiza el código fuente.<UL>
-	<LI><B>Colorear sintaxis</B>: Remaraca los distintos elementos del código fuente (operadores, constantes, palabras clave, comentarios, etc) con diferentes colores y atributos para facilitar su lectura. Ver <A href="syntax_colours.html">Coloreado de Sintaxis</A>.</LI>
-	<LI><B>Coloreares inversos</B>: Esta opción cambia el esquema de colores para el coloreado de sintaxis, por un esquema para fondo negro.</LI>
-	<LI><B>Ajuste de linea dinamico</B>: Muestra en varios renglones una linea si es más ancha que el área de código actual. Se indica con una flecha en comienzo de cada renglón que continúa una linea anterior.</LI>
-	<LI><B>Mostrar espacios y caracteres de fin de linea</B>: .</LI>
+	<LI><B>Colorear sintaxis</B>: Remaraca los distintos elementos del código fuente (operadores, constantes, palabras clave, comentarios, etc) con diferentes colores y atributos para facilitar su lectura. El botón <I>Definir Colores</I> permite elegir personalizar dichos colores y atributos, y ofrece además algunas combinaciones de colores predefinidas. Ver <A href="syntax_colours.html">Coloreado de Sintaxis</A>.</LI>
+	<LI><B>Ajuste de linea dinamico</B>: Muestra en varios renglones una linea de código si es más ancha que el área de código actual (si no se puede visualizar completa en la ventana). Se indica con una flecha en comienzo de cada renglón que continúa una linea anterior para distinguir esta situación fácilmente de un verdadero salto de línea.</LI>
+	<LI><B>Mostrar espacios y caracteres de fin de linea</B>: Utiliza símbolos gráphicos especiales en el código para enfatizar y distinguir claramente la presencia de caracteres que usualmente no tienen representación gráfica, como los espacios, el tabulado, o el salto de línea.</LI>
 	<LI><B>Mostrar numeros de linea</B>: Muestra los números de línea en del código fuente en el márgen izquierdo del área de código.</LI>
 	<LI><B>Habilitar plegado de codigo</B>: Muestra las marcas de plegado de código en el margen izquierdo del área de código. Ver <A href="code_folding.html">Plegado de Código</A>.</LI>
-	<LI><B>Ancho del tabulado</B>: Define a cuantos espacios en blanco equivale el caracter de tabulación (tecla TAB). Esta correspondencia es sólo para la visualización, ya que en los archivos fuente se guarda el caracter de tabulación y no los espacios en blanco.</LI>
-	<LI><B>Colocar espacios en lugar de tabs</B>: .</LI>
+	<LI><B>Ancho del tabulado</B>: Define a cuantos espacios en blanco equivale el caracter de tabulación (tecla TAB). Esta correspondencia es sólo para la visualización, ya que en los archivos fuente se guarda el caracter de tabulación y no los espacios en blanco. Esta configuración puede definirse por proyecto mediante el diálogo <A href="project_general_config.html">Configuración de Proyecto</A>, reemplazando en ese caso a la configuración general y por defecto establecida en estas preferencias.</LI>
+	<LI><B>Colocar espacios en lugar de tabs</B>: Al insertar un caracter de tabulación (Tab) inserta <I>ZinjaI</I> puede utilizar un verdadero caracter de tabulación, o un conjunto de espacios en blanco. Dado que no todos los editores muestran con el mismo ancho a los caracteres de tabulación, en ocasiones se prefiere utilizar espacios. Esta configuración puede definirse por proyecto mediante el diálogo <A href="project_general_config.html">Configuración de Proyecto</A>, reemplazando en ese caso a la configuración general y por defecto establecida en estas preferencias.</LI>
+	<LI><B>Fuente para el código</B>: Permite seleccionar con qué tipografía se muestra el código fuente en la ventana principal. Las tipografías listadas no son todas las instaladas en el sistema, sino solo las denominadas monospace (donde todos los caracteres tienen igual ancho).</LI>
 	<LI><B>Tamaño de la fuente en pantalla</B>: Define el tamaño con que se mostrarán los códigos fuentes. Este tamaño no afecta las fuentes de los paneles ni menúes. Es además, independiente del zoom que el usuario puede realizar sobre un fuente en particular con la tecla <I>Control</I> y la rueda del mouse.</LI>
-	<LI><B>Tamaño de la fuente para impresion</B>: .</LI>
+	<LI><B>Tamaño de la fuente para impresion</B>: Permite variar el tamaño de la fuente utilizada para imprimir un código fuente desde <I>ZinjaI</I>.</LI>
 	<LI><B>Ocultar barra de menues al pasar a pantalla completa</B>: Define si permanece o no visible la barra de menues cuando se visualiza un fuente a pantalla completa (con la opción <A href="menu_ver.html#ver_a_pantalla_completa">Ver a pantalla completa</A> del menu <A href="menu_ver.html">Ver</A>.</LI>
 	<LI><B>Ocultar barras de herramientas al pasar a pantalla completa</B>: Define si permanecen o no visibles las barras de herramientas cuando se visualiza un fuente a pantalla completa (con la opción <A href="menu_ver.html#ver_a_pantalla_completa">Ver a pantalla completa</A> del menu <A href="menu_ver.html">Ver</A>.</LI>
 	<LI><B>Ocultar paneles al pasar a pantalla completa</B>: Define si permanecen o no visibles los paneles que puedan estar mostrandose en el momento de pasar a pantallas completa (con la opción <A href="menu_ver.html#ver_a_pantalla_completa">Ver a pantalla completa</A> del menu <A href="menu_ver.html">Ver</A>. Notar que aunque esta opción esté activada, una vez ingresado al modo pantalla completa puede utilizar los comandos del menú <A href="menu_ver.html">Ver</A> para volver a mostrar un panel.</LI>
 </UL><BR><BR>
+
+
+
+
 
 <A name="asistencias"><BR></A>
 <B>Pestaña Asistencias</B>: Permite activar y desactivar las diferentes ayudas que <I>ZinjaI</I> ofrece a la hora de escribir un código.<UL>
@@ -70,9 +70,8 @@
 	<LI><B>Utilizar autocompletado mientras escribe</B>: Muestra los menúes con sugerencias de autocompletado cuando escribe su código. Ver <A href="autocompletion.html">Autocompletado</A>.</LI>
 	<LI><B>Mostrar ayuda de llamadas a funciones y metodos</B>: Muestras las ayudas de llamadas mientras escribe su código. Ver <A href="calltips.html">Ayuda Para Llamadas</A>.</LI>
 	<LI><B>Indices de autocompletado a utilizar</B>: Permite selecionar las bases de dato que se utilizarán para mostrar las listas de autocompletado y las ayudas de llamadas a funciones. Estas listas se encuentran en un directorio determinado por la opción <I>Ubicacion de los Indices de Autocompletado</I> de la pestaña <I>Rutas</I> de este mismo diálogo.</LI>
+	<LI><B>Mostrar errores de compilacion en Español</B> (solo GNU/Linux): .</A></LI>
 </UL><BR><BR>
-
-
 
 
 <A name="temas"><BR></A>
@@ -111,6 +110,7 @@
 	<LI><B>Índice de ayuda wxWidgets</B>: Dirección del archivo que debe abrir <I>ZinjaI</I> en un navegador web al seleccionar la opción "Referencia wxWidgets" del submenú "Diseñar Interfases" del menú "Herramientas", o su acceso rápido en la barra de herramientas.</LI>
 	<LI><B>Comando del depurador</B>: Ubicación del depurador a utilizar. Por defecto toma los valores "gdb", y no es necesario cambiarlo si la ruta "Directorio de MinGW" está correctamente especificada.</LI>
 	<LI><B>Comando de la terminal</B>: Especifica el comando que debe utilizar para lanzar un programa en una nueva terminal (esto es útil en sistemas GNU/Linux ya que por defecto los procesos hijos de un programa corren en su misma terminal en lugar de generar una nueva ventana). Este campo debería estar vacío en plataformas Windows, y tomar un valor como "xterm -e" o "konsole -e" en GNU/Linux (puede hacer click en el botón de los tres puntos para que <I>ZinjaI</I> intente determinar que terminales se encuentran en el sistema y muestre una lista de opciones).</LI>
+	<LI><B>Crear/Actualizar icono de ZinjaI en el escritorio</B> (solo GNU/Linux): .</A></LI>
 </UL><BR><BR>
 
 <A name="rutas2"><BR></A>

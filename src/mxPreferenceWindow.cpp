@@ -392,12 +392,10 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
 	running_wait_for_key = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING,"Esperar una tecla luego de la ejecución"),config->Running.wait_for_key);
 	running_always_ask_args = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),config->Running.always_ask_args);
 	init_always_add_extension = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ADD_CPP_EXTENSION,"Agregar la extension cpp si se omite al guardar"),config->Init.always_add_extension);
-	running_dont_run_headers = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_RUN_LAST_CPP_INSTEAD_HEADER,"Ejecutar el ultimo cpp si se intenta ejecutar una cabecera"),config->Running.dont_run_headers);
 	
 	init_max_jobs = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_GENERAL_MAX_JOBS,"Cantidad de pasos en paralelo al compilar"),wxString()<<config->Init.max_jobs,mxID_MAX_JOBS);
 	init_stop_compiling_on_error = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STOP_COMPILING_ON_ERROR,"Detener la compilación de un proyecto al encontrar el primer error"),config->Init.stop_compiling_on_error);
 	init_save_project = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE,"Guardar siempre el proyeto al salir"),config->Init.save_project);
-//	init_close_files_for_project = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING,"Cerrar todos los demas archivos al abrir un proyecto"),config->Init.close_files_for_project);
 	init_prefer_explorer_tree = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto"),config->Init.prefer_explorer_tree);
 	
 	wxArrayString tc_array; Toolchain::GetNames(tc_array,false); int tc_i=tc_array.Index(config->Files.toolchain);
@@ -429,8 +427,6 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	colours_sizer->Add(new wxButton(panel,mxID_COLORS_PICKER,LANG(PREFERENCES_STYLE_DEFINE_COLOURS,"Definir colores...")),sizers->Center);
 	sizer->Add(colours_sizer,sizers->BA5_Exp0);
 	source_syntaxEnable->SetValue(config->Source.syntaxEnable);
-	
-//	source_syntaxEnable = mxUT::AddCheckBox(sizer,panel,,config->Source.syntaxEnable);
 	
 	wxArrayString a_wrap;
 	a_wrap.Add(LANG(PREFERENCES_STYLE_WRAP_NONE,"Nunca"));
@@ -685,7 +681,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	if (config->Init.max_jobs<1) config->Init.max_jobs=1;
 	config->Init.autohide_panels_fs = init_autohide_panels_fs->GetValue();
 	config->Init.autohide_toolbars_fs = init_autohide_toolbars_fs->GetValue();
-//	config->Init.close_files_for_project = init_close_files_for_project->GetValue();
 	config->Init.prefer_explorer_tree = init_prefer_explorer_tree->GetValue();
 	config->Init.show_explorer_tree = init_show_explorer_tree->GetValue();
 	config->Init.wrap_mode = init_wrap_mode->GetSelection();
@@ -694,7 +689,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Running.always_ask_args = running_always_ask_args->GetValue();
 	config->Running.cpp_compiler_options = running_cpp_compiler_options->GetValue();
 	config->Running.c_compiler_options = running_c_compiler_options->GetValue();
-	config->Running.dont_run_headers = running_dont_run_headers->GetValue();
 	config->Init.singleton = init_singleton->GetValue();
 	if (!config->Init.singleton && singleton->IsRunning()) singleton->Stop();
 	else if (config->Init.singleton && !project && !singleton->IsRunning()) singleton->Start();
@@ -1206,7 +1200,6 @@ void mxPreferenceWindow::ResetChanges() {
 	running_wait_for_key->SetValue(config->Running.wait_for_key);
 	running_always_ask_args->SetValue(config->Running.always_ask_args);
 	init_always_add_extension->SetValue(config->Init.always_add_extension);
-	running_dont_run_headers->SetValue(config->Running.dont_run_headers);
 	init_autohide_panels->SetValue(config->Init.autohide_panels);
 	init_stop_compiling_on_error->SetValue(config->Init.stop_compiling_on_error);
 	init_singleton->SetValue(config->Init.singleton);

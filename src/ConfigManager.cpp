@@ -208,7 +208,6 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("wait_for_key",Running.wait_for_key);
 				else CFG_BOOL_READ_DN("always_ask_args",Running.always_ask_args);
 				else CFG_BOOL_READ_DN("check_includes",Running.check_includes);
-				else CFG_BOOL_READ_DN("dont_run_headers",Running.dont_run_headers);
 			
 			} else if (section=="Help") {
 //				CFG_GENERIC_READ_DN("quickhelp_index",Help.quickhelp_index);
@@ -536,7 +535,6 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("c_compiler_options",Running.c_compiler_options);
 	CFG_BOOL_WRITE_DN("wait_for_key",Running.wait_for_key);
 	CFG_BOOL_WRITE_DN("always_ask_args",Running.always_ask_args);
-	CFG_BOOL_WRITE_DN("dont_run_headers",Running.dont_run_headers);
 	CFG_BOOL_WRITE_DN("check_includes",Running.check_includes);
 	fil.AddLine("");
 
@@ -739,7 +737,6 @@ void ConfigManager::LoadDefaults(){
 	Running.c_compiler_options="-Wall -pedantic-errors -O0 -lm";
 	Running.wait_for_key=true;
 	Running.always_ask_args=false;
-	Running.dont_run_headers=false;
 	Running.check_includes=true;
 	
 #ifdef __WIN32__

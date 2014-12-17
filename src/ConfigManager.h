@@ -90,7 +90,6 @@ struct cfgSource {
 
 //! Elementos de la configuración relacionados a la ejecución
 struct cfgRunning {
-	bool dont_run_headers;
 	bool check_includes;
 	wxString cpp_compiler_options;
 	wxString c_compiler_options;
