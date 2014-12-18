@@ -134,6 +134,7 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	
 	wxString workdir = tool.workdir;
 	if (workdir.Len()) {
+		workdir.Replace("${WORKDIR}",bin_workdir);
 		workdir.Replace("${TEMP_DIR}",temp_dir);
 		workdir.Replace("${BIN_WORKDIR}",bin_workdir);
 		workdir.Replace("${CURRENT_DIR}",current_dir);
