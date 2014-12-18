@@ -435,7 +435,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("show_beginner_panel",Init.show_beginner_panel);
 	CFG_BOOL_WRITE_DN("show_tip_on_startup",Init.show_tip_on_startup);
 	CFG_GENERIC_WRITE_DN("new_file",Init.new_file);
-	CFG_GENERIC_WRITE_DN("version",Init.version);
+	CFG_GENERIC_WRITE_DN("version",VERSION);
 	CFG_GENERIC_WRITE_DN("pos_x",Init.pos_x);
 	CFG_GENERIC_WRITE_DN("pos_y",Init.pos_y);
 	CFG_GENERIC_WRITE_DN("size_x",Init.size_x);

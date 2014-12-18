@@ -85,7 +85,7 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	wxString name=tool.name; 
 	if (!name.Len()) name=" "; name.Replace("\"","\\\"");
 	
-	wxString project_path, project_bin, bin_workdir, current_source, current_dir, temp_dir;
+	wxString project_path, project_bin, bin_workdir, current_source, current_dir, temp_dir, args;
 	mxSource *src=main_window->GetCurrentSource();
 	if (src) {
 		current_source=src->GetFullPath();
@@ -95,17 +95,20 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 		project_bin=src->GetBinaryFileName().GetFullPath();
 		project_path=current_dir;
 		temp_dir=src->temp_filename.GetPath();
+		args=src->exec_args;
 	}
 	if (project) {
 		project_path = project->path;
 		project_bin = DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
 		bin_workdir=project->active_configuration->working_folder;
 		temp_dir=DIR_PLUS_FILE(project->path,project->active_configuration->temp_folder);
+		args=project->active_configuration->args;
 	}
 	if (bin_workdir.EndsWith("\\")||bin_workdir.EndsWith("/")) bin_workdir.RemoveLast();
 	if (project_path.EndsWith("\\")||project_path.EndsWith("/")) project_path.RemoveLast();
 	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
 	
+	cmd.Replace("${ARGS}",args);
 	cmd.Replace("${BIN_WORKDIR}",bin_workdir);
 	cmd.Replace("${CURRENT_SOURCE}",current_source);
 	cmd.Replace("${CURRENT_DIR}",current_dir);

@@ -1237,13 +1237,13 @@ Action before running
 CUSTOM_TOOLS_ASYNC_EXEC
 Asynchronous execution.
 CUSTOM_TOOLS_OUTPUT_HIDDEN
-Hidden.
+Hidden
 CUSTOM_TOOLS_OUTPUT_TERMINAL
 Terminal
 CUSTOM_TOOLS_OUTPUT_TERMINAL_WAIT
 Terminal (wait for a key)
 CUSTOM_TOOLS_OUTPUT_DIALOG
-ZinjaI's dialog.
+ZinjaI's dialog
 CUSTOM_TOOLS_OUTPUT
 Ouput handling (std and err)
 CUSTOM_TOOLS_POST_NONE
@@ -3022,6 +3022,8 @@ GENERAL_POPUP_INSERT_PROJECT_PATH
 insert project path
 GENERAL_POPUP_INSERT_PROJECT_BIN
 insert executable patth
+GENERAL_POPUP_INSERT_ARGS
+arguments for execution
 GENERAL_POPUP_INSERT_WORK_DIR
 insert working directory
 GENERAL_POPUP_INSERT_CURRENT_FILE

@@ -3022,6 +3022,8 @@ GENERAL_POPUP_INSERT_PROJECT_PATH
 insertar directorio del proyecto
 GENERAL_POPUP_INSERT_PROJECT_BIN
 insertar ruta del ejecutable
+GENERAL_POPUP_INSERT_ARGS
+argumentos para la ejecución
 GENERAL_POPUP_INSERT_WORK_DIR
 insertar directorio de trabajo
 GENERAL_POPUP_INSERT_CURRENT_FILE
