@@ -505,6 +505,10 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 		for (int i=0;i<configurations_count;i++)
 			if (configurations[i]->exec_method>0)
 				configurations[i]->exec_method++;
+		for(int i=0;i<custom_tools.GetCount();i++) { 
+			if (custom_tools[i].output_mode>=2)
+				custom_tools[i].output_mode++;
+		}
 	}
 	
 	if (version_required>VERSION) {

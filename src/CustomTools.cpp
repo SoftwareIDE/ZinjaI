@@ -155,14 +155,18 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	} else if (tool.output_mode==CT_OUTPUT_HIDDEN) {
 		Redirect();
 #endif
-	} else if (tool.output_mode==CT_OUTPUT_TERMINAL) {
+	} else if (tool.output_mode==CT_OUTPUT_TERMINAL || tool.output_mode==CT_OUTPUT_TERMINAL_WAIT) {
 		exec_flags |= wxEXEC_NOHIDE;
+		if (tool.output_mode==CT_OUTPUT_TERMINAL_WAIT) cmd = mxUT::GetRunnerBaseCommand(WKEY_ALWAYS) << ". " << cmd;
 #ifndef __WIN32__
 		wxString term_cmd = config->Files.terminal_command;
 		term_cmd.Replace("${TITLE}",name,true);
 		cmd = term_cmd+" "+cmd;
+		
 #endif
 	}
+	
+	_IF_DEBUGMODE(cmd);
 	
 	wxSetWorkingDirectory(workdir);
 	int pid = wxExecute(cmd,exec_flags,this);

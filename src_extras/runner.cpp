@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	if (cmd_start) {
-		chdir(dir.c_str());
+		if (dir!=".") chdir(dir.c_str());
 		
 #if defined(_WIN32) || defined(__WIN32__)
 

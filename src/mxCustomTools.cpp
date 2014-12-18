@@ -53,6 +53,7 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 	wxArrayString output_destinations;
 	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_HIDDEN,"Ocultas")); // (en windows requiere redirect al pedo)
 	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_TERMINAL,"En terminal")); // (en linux requiere lanzar con terminal)
+	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_TERMINAL_WAIT,"En terminal (esperar tecla)")); // (en linux requiere lanzar con terminal)
 	output_destinations.Add(LANG(CUSTOM_TOOLS_OUTPUT_DIALOG,"En cuadro de dialogo"));
 	output_mode_ctrl = mxUT::AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_OUTPUT,"Salidas (std y err)"),output_destinations,0);
 		

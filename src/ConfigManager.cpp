@@ -401,6 +401,13 @@ bool ConfigManager::Load() {
 		wxString orig = Debug.blacklist[0]; Debug.blacklist.Clear();
 		mxUT::Split(orig,config->Debug.blacklist,true,false);
 	}
+	
+	if (Init.version<20141218) {
+		for(int i=0;i<custom_tools.GetCount();i++) { 
+			if (custom_tools[i].output_mode>=2)
+				custom_tools[i].output_mode++;
+		}
+	}
 
 	Init.autohiding_panels=Init.autohide_panels;
 	

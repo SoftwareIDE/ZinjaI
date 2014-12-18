@@ -1240,6 +1240,8 @@ CUSTOM_TOOLS_OUTPUT_HIDDEN
 Ocultas
 CUSTOM_TOOLS_OUTPUT_TERMINAL
 En terminal
+CUSTOM_TOOLS_OUTPUT_TERMINAL_WAIT
+En terminal (esperar tecla)
 CUSTOM_TOOLS_OUTPUT_DIALOG
 En cuadro de dialogo
 CUSTOM_TOOLS_OUTPUT
@@ -2637,7 +2639,7 @@ Solo script (el script deberá lanzar el ejecutable)
 PROJECTCONFIG_GENERAL_EXEC_METHOD
 Mecanismo de ejecución
 PROJECTCONFIG_GENERAL_SCRIPT
-Script para ejecución
+Script para ejecución/comando wrapper
 PROJECTCONFIG_GENERAL_WORKDIR
 Directorio de trabajo
 PROJECTCONFIG_GENERAL_RUNNING_ARGS
