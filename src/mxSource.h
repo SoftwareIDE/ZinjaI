@@ -112,7 +112,6 @@ public:
 			}
 		}
 		MacroAction(int id=0):msg(id),wp(0),lp(0),for_sci(false),extra(NULL) { }
-		MacroAction(const MacroAction &other) { this->extra=other.extra; const_cast<MacroAction*>(&other)->extra=NULL; }
 		MacroAction &Get() { if (msg==2170) lp=(long)data; else if (msg>=2001&&msg<=2003) lp=(long)extra; return *this; }
 		~MacroAction() { delete [] extra; }
 	};

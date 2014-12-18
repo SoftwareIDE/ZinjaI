@@ -58,8 +58,9 @@ enum MakefileTypeEnum {
 /// mecanismo de ejecución para un proyecto
 enum ExecMethodEnum { 
 	EMETHOD_REGULAR=0, ///< zinjai launches executable directly
-	EMETHOD_INIT=1, ///< zinjai launches an script to setup environment and then launches the executable
-	EMETHOD_SCRIPT=2 ///< zinjai launches a script only, the script should launch the executable
+	EMETHOD_WRAPPER=1, ///< zinjai launches a executable that launches the process (something working like "time" or "valgrind")
+	EMETHOD_INIT=2, ///< zinjai launches an script to setup environment and then launches the executable
+	EMETHOD_SCRIPT=3 ///< zinjai launches a script only, the script should launch the executable
 };
 
 enum DebugSymbolsAction {

@@ -214,13 +214,14 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 	
 	wxArrayString exec_method_arr;
 	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR,"Regular (se lanza directamente el ejecutable)"));
+	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_WRAPPER,"Mediante un wrapper (otro programa lanza al ejecutable)"));
 	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_INI,"Con inicialización (se ejecuta un script antes)"));
 	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT,"Solo script (el script deberá lanzar el ejecutable)"));
 	general_exec_method = mxUT::AddComboBox(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD,"Mecanismo de ejecución"),exec_method_arr,configuration->exec_method,mxID_PROJECT_CONFIG_EXEC_METHOD);
 	
 	general_exec_script = mxUT::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_SCRIPT,"Script para ejecución"),configuration->exec_script,mxID_PROJECT_CONFIG_EXEC_SCRIPT);
+		LANG(PROJECTCONFIG_GENERAL_SCRIPT,"Script para ejecución/comando wrapper"),configuration->exec_script,mxID_PROJECT_CONFIG_EXEC_SCRIPT);
 	wx_noscript.Add(general_exec_script,true);
 	
 	general_working_folder = mxUT::AddDirCtrl(sizer,panel,

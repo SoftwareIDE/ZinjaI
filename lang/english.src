@@ -2336,8 +2336,6 @@ PREFERENCES_PATHS
 Paths
 PREFERENCES_GENERAL_GUI_LANGUAGE
 User Interface language (*)
-PREFERENCES_GENERAL_SHOW_SPLASH
-Show splash while loading ZinjaI
 PREFERENCES_GENERAL_SHOW_TOOLTIPS
 Show tips at startup
 PREFERENCES_GENERAL_SHOW_WELCOME_PANEL
@@ -2440,16 +2438,12 @@ PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
 Always ask for arguments before running
 PREFERENCES_SIMPLE_ADD_CPP_EXTENSION
 Add cpp extension if it is omitted on saving
-PREFERENCES_SIMPLE_RUN_LAST_CPP_INSTEAD_HEADER
-Run last cpp file if user try to run a header file
 PREFERENCES_GENERAL_MAX_JOBS
 Max simultaneous jobs when compiling
 PREFERENCES_STOP_COMPILING_ON_ERROR
 Stop compiling projects on first error
 PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE
 Always save project on close
-PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING
-Close all files before opening a project
 PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
 Prefer file explorer for projects
 PREFERENCES_TOOLCHAIN
@@ -2631,15 +2625,17 @@ Manifest file (Windows only)
 PROJECTCONFIG_GENERAL_EXE_PATH
 Path for executable file
 PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR
-Regular (ZinjaI launches executable)
+Regular (ZinjaI launches the executable)
+PROJECTCONFIG_GENERAL_EXEC_METHOD_WRAPPER
+Use a wrapper tool (other program launches the executable)
 PROJECTCONFIG_GENERAL_EXEC_METHOD_INI
-With initialization (runs a script befora launching executable)
+With initialization (runs a script befora launching the executable)
 PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT
 Only script (the script must launch the executable)
 PROJECTCONFIG_GENERAL_EXEC_METHOD
 Execution method
 PROJECTCONFIG_GENERAL_SCRIPT
-Execution script
+Execution script/wrapper command
 PROJECTCONFIG_GENERAL_WORKDIR
 Working directory
 PROJECTCONFIG_GENERAL_RUNNING_ARGS

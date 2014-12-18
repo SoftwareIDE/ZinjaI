@@ -497,6 +497,16 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 		WxfbSetFileProperties(true,wxfb->set_wxfb_sources_as_readonly,true,wxfb->dont_show_base_classes_in_goto);
 	}
 	
+	if (wxfb && version_saved<20140125) {
+		WxfbSetFileProperties(true,wxfb->set_wxfb_sources_as_readonly,true,wxfb->dont_show_base_classes_in_goto);
+	}
+	
+	if (wxfb && version_saved<20141218) { // arreglar cambios de significado, se agrego EMETHOD_WRAPPER
+		for (int i=0;i<configurations_count;i++)
+			if (configurations[i]->exec_method>0)
+				configurations[i]->exec_method++;
+	}
+	
 	if (version_required>VERSION) {
 		mxMessageDialog(main_window,LANG(PROJECT_REQUIRES_NEWER_ZINJAI,""
 			"El proyecto que esta abriendo requiere una version superior de ZinjaI\n"
@@ -1609,6 +1619,7 @@ long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
 #ifndef __WIN32__
 	// agregar el prefijo para valgrind
 	if (compile_and_run->valgrind_cmd.Len()) exe_pref = compile_and_run->valgrind_cmd+" ";
+	else if (active_configuration->exec_method==EMETHOD_WRAPPER) exe_pref = active_configuration->exec_script+" ";
 #endif
 	// armar la linea de comando para ejecutar
 	executable_name=wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetFullPath();
@@ -2767,7 +2778,7 @@ int ProjectManager::GetRequiredVersion() {
 	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,
 		 have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,
 		 have_env_vars=false,have_breakpoint_annotation=false,env_vars_autoref=false,exe_use_temp=false,
-		 copy_debug_symbols=false, use_ofast=false;
+		 copy_debug_symbols=false, use_ofast=false, exec_wrapper=false;
 	
 	// breakpoint options
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
@@ -2777,6 +2788,7 @@ int ProjectManager::GetRequiredVersion() {
 	}
 	// compiling and running options
 	for (int i=0;i<configurations_count;i++) {
+		if (configurations[i]->exec_method==EMETHOD_WRAPPER) exec_wrapper=true;
 		if (configurations[i]->strip_executable==DBSACTION_COPY) copy_debug_symbols=true;
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
 		if (configurations[i]->output_file.Contains("${TEMP_DIR}")) exe_use_temp=true;
@@ -2813,7 +2825,8 @@ int ProjectManager::GetRequiredVersion() {
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	
 	version_required=0;
-	if (use_ofast) version_required=20140507;
+	if (use_ofast) exec_wrapper=20141218;
+	else if (use_ofast) version_required=20140507;
 	else if (copy_debug_symbols) version_required=20140410;
 	else if (env_vars_autoref || exe_use_temp) version_required=20140318;
 	else if (have_breakpoint_annotation) version_required=20140213;

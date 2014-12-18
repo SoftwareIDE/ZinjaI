@@ -2336,8 +2336,6 @@ PREFERENCES_PATHS
 Rutas
 PREFERENCES_GENERAL_GUI_LANGUAGE
 Idioma de la interfaz (*)
-PREFERENCES_GENERAL_SHOW_SPLASH
-Mostrar Splash mientras se carga el entorno
 PREFERENCES_GENERAL_SHOW_TOOLTIPS
 Mostrar sugerencias al inicio
 PREFERENCES_GENERAL_SHOW_WELCOME_PANEL
@@ -2440,16 +2438,12 @@ PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
 Siempre pedir argumentos al ejecutar
 PREFERENCES_SIMPLE_ADD_CPP_EXTENSION
 Agregar la extension cpp si se omite al guardar
-PREFERENCES_SIMPLE_RUN_LAST_CPP_INSTEAD_HEADER
-Ejecutar el ultimo cpp si se intenta ejecutar una cabecera
 PREFERENCES_GENERAL_MAX_JOBS
 Cantidad de pasos en paralelo al compilar
 PREFERENCES_STOP_COMPILING_ON_ERROR
 Detener la compilación de un proyecto al encontrar el primer error
 PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE
 Guardar siempre el proyeto al salir
-PREFERENCES_GENERAL_CLOSE_FILES_ON_PROJECT_OPENING
-Cerrar todos los demas archivos al abrir un proyecto
 PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
 Mostrar el explorador de archivos al abrir un proyecto
 PREFERENCES_TOOLCHAIN
@@ -2632,6 +2626,8 @@ PROJECTCONFIG_GENERAL_EXE_PATH
 Ubicacion del ejecutable
 PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR
 Regular (se lanza directamente el ejecutable)
+PROJECTCONFIG_GENERAL_EXEC_METHOD_WRAPPER
+Mediante un wrapper (otro programa lanza al ejecutable)
 PROJECTCONFIG_GENERAL_EXEC_METHOD_INI
 Con inicialización (se ejecuta un script antes)
 PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT
