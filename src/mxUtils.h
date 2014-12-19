@@ -90,6 +90,35 @@ WX_DECLARE_STRING_HASH_MAP( wxTreeItemId, HashStringTreeItem );
 // /** @brief eliminar una lista (incluyendo al primer item ficticio) **/
 //#define ML_FREE(item) { typeof(item) ml_aifc; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
 
+// crappy workaround for the need of lambda functions (mac port use some old pre c++11 gcc)
+class GenericAction {
+public:
+	virtual void Do()=0;
+	virtual ~GenericAction(){};
+};
+#define _LAMBDA_0(Name,Action) \
+	class Name : public GenericAction {\
+	public: void Do() { Action } };
+
+#define _LAMBDA_1(Name,Type,Arg,Action) \
+	class Name : public GenericAction {\
+	public: Name(Type arg) : Arg(arg) {} \
+	public: void Do() { Action } \
+	private: Type Arg; };
+
+template<class T>
+class RaiiDelete {
+	T *&p;
+public:
+	RaiiDelete(T *&ptr) : p(ptr) {}
+	~RaiiDelete() { delete p; }
+};
+
+// fms stands for faked-move-semantics, this project should still compile in pre c++11 compilers
+template<class T> void fms_move(T *&des, T *&src) { des=src; src=NULL; }
+template<class T> T *fms_move(T *&src) { T *des=src; src=NULL; return des; }
+template<class T> T *&fms_delete(T *&des) { if (des) delete des; des=NULL; return des; }
+
 /**
 * @brief Clase para contener funciones varias de uso general
 **/

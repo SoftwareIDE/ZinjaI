@@ -1234,7 +1234,13 @@ void CodeHelper::AppendIndexes(wxString indexes) {
 #define EN_COMPOUT_UNDEFINED_REFERENCE ": undefined reference to "
 #define EN_COMPOUT_NO_SUCH_FILE_OR_DIRECTORY ": No such file or directory"
 
-void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayString &full_output, bool for_running) {
+/**
+* @brief on_end Si ecuentra una solucion y el usuario la acepta, le transfiere 
+*               esta accion al nuevo proceso de compilacion (y setea el argumento
+*               en NULL para indicarlo), sino lo deja como esta, no lo ejecuta, y
+*               sigue siendo responsabilidad de quien llamo
+**/
+void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayString &full_output, GenericAction *&on_end) {
 	
 	static bool dont_check=false; if (dont_check) return;
 
@@ -1350,8 +1356,7 @@ void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayStri
 	if (cual.Len()==0) return;
 	source->SetCompilerOptions(candidatos[cual]);
 	wxCommandEvent evt;
-	if (for_running) main_window->OnRunRun(evt);
-	else main_window->OnRunCompile(evt);
+	main_window->CompileSource(true,fms_move(on_end)); // null caller's compile_and_run_struct_single to avoid double-delete
 }
 
 void MyAutocompList::Add(const wxString &keyword, const wxString &icon, const wxString &help) {

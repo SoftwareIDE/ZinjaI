@@ -6,6 +6,8 @@
 class wxProcess;
 class mxSource;
 class wxTimer;
+class GenericAction
+	;
 
 //! Informacion asociada a un item del arbol de resultados de compilacion, para guardar los que no se ve (por ejemplo el path completo)
 class mxCompilerItemData:public wxTreeItemData {
@@ -40,16 +42,17 @@ enum CAR_ERROR_LINE { // information about last error line that may condicion cu
 
 //! Información acerca de una compilación en proceso (puede ser realmente una compilación, o un paso adicional, o hasta una ejecución... es decir, cualquier proceso relacionado a la construcción y/o ejecución)
 struct compile_and_run_struct_single {
+	GenericAction *on_end; ///< what to do after this process if it runs ok
 	bool parsing_errors_was_ok; ///< indica si hubo problemas al analizar/reacomodar la salida del compilador
 	bool killed; ///< indica si fue interrumpido adrede, para usar en OnProcessTerminate
-	bool for_debug; ///< indica si la compilacion fue para luego depurar en lugar de ejecutar normalmente
+//	bool for_debug; ///< indica si la compilacion fue para luego depurar en lugar de ejecutar normalmente
 	bool compiling; ///< indica si esta compilando/enlazando o ejecutando
 	wxString step_label; ///< nombre del paso especial que se esta ejecutando (para los extra step, usar con ouput_type=MXC_EXTRA)
 	MXC_OUTPUT output_type; ///< indica el tipo de salida
 	bool linking; ///< indica si esta compilando o enlazando (cuando compiling=true, parece que solo se usa para llamar a mxCompiler::CheckForExecutablePermision)
 	wxProcess *process; ///< puntero al proceso en ejecucion
 	long int pid; ///< process id del proceso en ejecucion, 0 si no se pudo lanzar
-	bool run_after_compile; ///< indica si hay que ejecutar cuando termine de compilar y enlazar
+//	bool run_after_compile; ///< indica si hay que ejecutar cuando termine de compilar y enlazar
 	wxArrayString pending_error_lines, pending_error_nices; ///< for child items in compiler tree that are generated before their fathers (like "In instantiation of..." lines)
 	bool last_error_item_IsOk; ///< indica si hay un ultimo item de error donde agregar "hijos"
 	CAR_LAST_LINE error_line_flag; ///< flag for mxCompiler::ParseSomeErrorsOneLine
@@ -57,8 +60,8 @@ struct compile_and_run_struct_single {
 	wxTreeItemId last_all_item; ///< ultima linea en la rama "toda la salida"
 	wxArrayString full_output; ///< guarda toda la salida sin procesar		
 	wxString valgrind_cmd; ///< prefijo para la ejecucion con la llamada a valgrind
-	compile_and_run_struct_single(const compile_and_run_struct_single *o);
 	compile_and_run_struct_single(const char *name);
+	compile_and_run_struct_single(const compile_and_run_struct_single *o); ///< para cuando compila en paralelo en un proceso, crea el segundo hilo a partir de un primero duplicando algunas propiedades
 	~compile_and_run_struct_single();
 	compile_and_run_struct_single *next, *prev;
 #ifdef _ZINJAI_DEBUG
@@ -79,8 +82,9 @@ public:
 	int NumCompilers();
 	wxString GetCompilingStatusText();
 	
-	void CompileSource (mxSource *source, bool run, bool debug);
-	void BuildOrRunProject(bool run, bool debug, bool prepared);
+	void CompileSource (mxSource *source, GenericAction *on_end=NULL);
+	void BuildOrRunProject(bool prepared, GenericAction *on_end=NULL);
+	void BuildOrRunProject(bool run, bool debug, bool prepared); /// @deprecated:
 	void ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run);
 	CAR_ERROR_LINE ParseSomeErrorsOneLine(compile_and_run_struct_single *compile_and_run, const wxString &error_line);
 	void SetWarningsAndErrorsNumbersOnTree();

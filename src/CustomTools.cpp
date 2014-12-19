@@ -5,6 +5,7 @@
 #include "mxMessageDialog.h"
 #include "ProjectManager.h"
 #include "Parser.h"
+#include "mxCompiler.h"
 
 CustomToolsPack::CustomToolsPack(int _cant) :tools(new OneCustomTool[_cant]),cant(_cant) {
 	
@@ -55,7 +56,12 @@ void CustomToolsPack::Run (int i) {
 		mxMessageDialog(main_window,LANG(MAINW_CUSTOM_TOOL_UNDEFINED,"Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\"."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 		return;
 	}
-	new mxCustomToolProcess(tools[i]);
+	if (tools[i].pre_action==CT_PRE_COMPILE) {
+		_LAMBDA_1( lmbRunTool, OneCustomTool *,tool, new mxCustomToolProcess(*tool); );
+		if (project) compiler->BuildOrRunProject(false, new lmbRunTool(&(tools[i])) );
+		else main_window->CompileSource( false, new lmbRunTool(&(tools[i])) );
+	} else 
+		new mxCustomToolProcess(tools[i]);
 }
 
 mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_tool), output_view(NULL) {
@@ -100,7 +106,7 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	if (project) {
 		project_path = project->path;
 		project_bin = DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
-		bin_workdir=project->active_configuration->working_folder;
+		bin_workdir=DIR_PLUS_FILE(project->path,project->active_configuration->working_folder);
 		temp_dir=DIR_PLUS_FILE(project->path,project->active_configuration->temp_folder);
 		args=project->active_configuration->args;
 	}
@@ -134,7 +140,6 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	
 	wxString workdir = tool.workdir;
 	if (workdir.Len()) {
-		workdir.Replace("${WORKDIR}",bin_workdir);
 		workdir.Replace("${TEMP_DIR}",temp_dir);
 		workdir.Replace("${BIN_WORKDIR}",bin_workdir);
 		workdir.Replace("${CURRENT_DIR}",current_dir);
@@ -187,11 +192,24 @@ void mxCustomToolProcess::OnTerminate (int pid, int status) {
 				mxSource *source = (mxSource*)(main_window->notebook_sources->GetPage(i));
 				if (!source->sin_titulo) source->UserReload();
 			}
-			mxSource *src=main_window->GetCurrentSource(); if (!src||!src->sin_titulo) break; // else salteo el break adrede
+			mxSource *src=main_window->GetCurrentSource(); 
+			if (!src||!src->sin_titulo) break; 
+			// else salteo el break adrede
 		}
 		case CT_POST_RELOAD_ONE: {
 			mxSource *src=main_window->GetCurrentSource();
 			if (src) src->UserReload();
+			break;
+		}
+		case CT_POST_RUN: {
+			wxCommandEvent evt;
+			main_window->OnRunRun(evt);
+			break;
+		}
+		case CT_POST_DEBUG: {
+			wxCommandEvent evt;
+			main_window->OnDebugRun(evt);
+			break;
 		}
 	}
 	if (output_view) output_view->OnProcessTerminateCommon(status);

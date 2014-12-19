@@ -725,7 +725,7 @@ void mxMainWindow::AuxCompileOne(project_file_item *item) {
 	wxString current;
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("OnProjectTreeCompileNow");
 	compile_and_run->pid = project->CompileNext(compile_and_run, current);
-	StartExecutionStuff(true,false,compile_and_run,current);
+	StartExecutionStuff(compile_and_run,current);
 }
 
 void mxMainWindow::OnProjectTreeOpen(wxCommandEvent &event) {
@@ -1620,14 +1620,11 @@ void mxMainWindow::OnRunClean (wxCommandEvent &event) {
 
 void mxMainWindow::OnRunBuild (wxCommandEvent &event) {
 	_prevent_execute_yield_execute_problem;
-	compiler->BuildOrRunProject(false,false,false);
+	compiler->BuildOrRunProject(false,NULL);
 }
 
 
-void mxMainWindow::StartExecutionStuff (bool compile, bool run, compile_and_run_struct_single *compile_and_run, wxString msg) {
-	// setear banderas
-	compile_and_run->compiling=compile;
-	compile_and_run->run_after_compile=(run&&compile);
+void mxMainWindow::StartExecutionStuff (compile_and_run_struct_single *compile_and_run, wxString msg) {
 //	compile_and_run.linking=(what==mES_LINK || what==mES_LINK_AND_RUN);
 	// ver si comenzo correctamente
 	if (compile_and_run->pid==0) {
@@ -1671,7 +1668,8 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 	}
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (project) { // si hay que ejecutar un proyecto
-		compiler->BuildOrRunProject(true,false,false);
+		_LAMBDA_0( lmbRunProject, if (project) project->Run(); );
+		compiler->BuildOrRunProject(false,new lmbRunProject());
 		
 	} else IF_THERE_IS_SOURCE { // si hay que ejecutar un ejercicio
 		mxSource *source=CURRENT_SOURCE;
@@ -1679,18 +1677,17 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 			if (source->GetLine(0).StartsWith("make me a sandwich")) { wxMessageBox("No way!"); return; }
 			else if (source->GetLine(0).StartsWith("sudo make me a sandwich")) source->SetText(wxString("/** Ok, you win! **/")+wxString(250,' ')+"#include <iostream>\n"+wxString(250,' ')+"int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n");
 		}
-		CompileOrRunSource(true,true,false);
+		_LAMBDA_1(lmdRunSource,mxSource *,src,main_window->RunSource(src););
+		CompileSource(false,new lmdRunSource(master_source?master_source:CURRENT_SOURCE));
 	}
 }
 
 void mxMainWindow::OnRunRunOld (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (project) { // si hay que ejecutar un proyecto
-		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("OnRunRunOld");
-		project->Run(compile_and_run);
-		StartExecutionStuff(false,true,compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
+		project->Run();
 	} else IF_THERE_IS_SOURCE { // si hay que ejecutar un ejercicio
-		CompileOrRunSource(false,true,false);
+		RunSource(master_source?master_source:CURRENT_SOURCE);
 	}
 }
 
@@ -1716,9 +1713,9 @@ void mxMainWindow::OnPreferences (wxCommandEvent &event) {
 void mxMainWindow::OnRunCompile (wxCommandEvent &event) {
 	_prevent_execute_yield_execute_problem;
 	if (project) {
-		compiler->BuildOrRunProject(false,false,false);
+		compiler->BuildOrRunProject(false,NULL);
 	} else IF_THERE_IS_SOURCE {
-		CompileOrRunSource(true,false,false);
+		CompileSource(true,NULL);
 	}
 }
 
@@ -1768,7 +1765,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 	compile_and_run->process=new wxProcess(this->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->pid=wxExecute(command, wxEXEC_NOHIDE|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);
 	if (exe_pref.Len()) compile_and_run->valgrind_cmd=exe_pref;
-	StartExecutionStuff (false,true, compile_and_run, LANG(GENERAL_RUNNING_DOTS,"Ejecutando...") );
+	StartExecutionStuff (compile_and_run, LANG(GENERAL_RUNNING_DOTS,"Ejecutando...") );
 	
 }
 
@@ -3227,7 +3224,13 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 			}
 			debug->Start(config->Debug.compile_again);
 		} else IF_THERE_IS_SOURCE {
-			CompileOrRunSource(config->Debug.compile_again,true,true);
+			mxSource *src = master_source?master_source:CURRENT_SOURCE;
+			if (config->Debug.compile_again) {
+				_LAMBDA_1(lmbDebugSource,mxSource*,src,debug->Start(src););
+				CompileSource(false,new lmbDebugSource(src));
+			} else {
+				debug->Start(src);
+			}
 		}
 	}
 //	st->Destroy();
@@ -4955,7 +4958,12 @@ void mxMainWindow::OnFileSetAsMaster (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE master_source=CURRENT_SOURCE;
 }
 
-void mxMainWindow::CompileOrRunSource (bool compile_if_needed, bool run, bool for_debug) {
+/**
+* @param action En cualquier caso se hacer cargo de esta accion, o la ejecuta
+*               o se la pasa al proceso de compilacion
+**/
+void mxMainWindow::CompileSource (bool force_compile, GenericAction *action) {
+	RaiiDelete<GenericAction> oe_del(action);
 	mxSource *source = CURRENT_SOURCE;
 	if (master_source) {
 		if (!source->sin_titulo && source->GetModify()) source->SaveSource(); // guardar el actual
@@ -4965,10 +4973,11 @@ void mxMainWindow::CompileOrRunSource (bool compile_if_needed, bool run, bool fo
 		if (source->GetLine(0).StartsWith("make me a sandwich")) { wxMessageBox("No way!"); return; }
 		else if (source->GetLine(0).StartsWith("sudo make me a sandwich")) source->SetText(wxString("/** Ok, you win! **/")+wxString(250,' ')+"#include <iostream>\n"+wxString(250,' ')+"int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n");
 		source->SaveTemp();
-		compiler->CompileSource(source,run,for_debug);
+		compiler->CompileSource(source,fms_move(action));
 	} else { // si estaba guardado ver si cambio
 		// si es un .h, avisar que probablemente sea un error intentar ejecutarlo
-		wxString ext=source->sin_titulo?wxString(""):source->source_filename.GetExt().MakeLower();
+		wxFileName source_filename = source->GetFullPath();
+		wxString ext=source->sin_titulo?wxString(""):source_filename.GetExt().MakeLower();
 		static bool ask=true;
 		if (ask && !master_source && mxUT::ExtensionIsH(ext)) {
 			int ans = mxMessageDialog(this,LANG(MAINW_RUN_HEADER_WARNING,""
@@ -4980,7 +4989,7 @@ void mxMainWindow::CompileOrRunSource (bool compile_if_needed, bool run, bool fo
 				"derecho sobre la pesataña del mismo."),
 				LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_WARNING,
 				LANG(MAINW_RUN_HEADER_CHECK,"No volver a mostrar este mensaje"),false).ShowModal();
-				if (ans&mxMD_NO) return;
+			if (ans&mxMD_NO) return;
 			if (ans&mxMD_CHECKED) ask=false;
 		}
 		// si cambio el fuente, guardarlo 
@@ -4988,15 +4997,12 @@ void mxMainWindow::CompileOrRunSource (bool compile_if_needed, bool run, bool fo
 		if (modified) source->SaveSource();
 		// ver si hay que recompilar
 		bool should_compile 
-			= !compile_if_needed // si no habia que recompilar se marca igual como que si solo para evitar los tests que siguen
-			|| !run // si no hay que ejecutar, es porque se invoco exclusivamente para compilar
+			= force_compile // si no habia que recompilar se marca igual como que si solo para evitar los tests que siguen
 			|| !source->GetBinaryFileName().FileExists() // si no hay binario, hay que recompilar
-			|| source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime() // si el binario es mas viejo que fuente
-			|| (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),CURRENT_SOURCE->source_filename)); // si el binario es mas viejo que algun include
+			|| source->GetBinaryFileName().GetModificationTime()<source_filename.GetModificationTime() // si el binario es mas viejo que fuente
+			|| (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source_filename)); // si el binario es mas viejo que algun include
 		// compilar, o depurar, o ejecutar, segun corresponda
-		if (should_compile && compile_if_needed) compiler->CompileSource(source,run,for_debug);
-		else if (for_debug) debug->Start(should_compile,source);
-		else RunSource(source);
+		if (should_compile) compiler->CompileSource(source,fms_move(action));
+		else if (action) action->Do();
 	}
 }
-

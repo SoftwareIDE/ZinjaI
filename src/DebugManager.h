@@ -151,7 +151,7 @@ public:
 	
 	void BacktraceClean();
 	bool Start(bool update); ///< starts debugging for current project
-	bool Start(bool update, mxSource *source); ///< starts debugging for a simple program
+	bool Start(mxSource *source); ///< starts debugging for a simple program
 	bool Start(wxString workdir, wxString exe, wxString args, bool show_console, bool wait_for_key); ///< common code Starting a program (the other two Starts will end up calling this one)
 	bool SpecialStart(mxSource *source, const wxString &gdb_command, const wxString &status_message, bool should_continue);
 	void Start_ConfigureGdb(); ///< sends commands to gdb to set its initial state (common code for Start, Attach and LoadCoreDump)

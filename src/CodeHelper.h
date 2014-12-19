@@ -7,6 +7,7 @@
 //#define CODE_HELP_MAP(c) (c>='a' && c<='z')?c-'a':((c>='A' && c<='Z')?c-'A':26)
 
 class mxSource;
+class GenericAction;
 
 #include <iostream>
 using namespace std;
@@ -99,7 +100,7 @@ public:
 	//! Agrega indices de autocompletado
 	void AppendIndexes(wxString indexes);
 	
-	void TryToSuggestTemplateSolutionForLinkingErrors(const wxArrayString &full_output, bool for_running);
+	void TryToSuggestTemplateSolutionForLinkingErrors(const wxArrayString &full_output, GenericAction *&on_end);
 	
 	/// @param mode  0=case-sensitive start, 1=case-insesitive start, 2=case-insensitive any, 3=case-insensitive Levenshtein
 	void SetAutocompletionMatchingMode(int mode);

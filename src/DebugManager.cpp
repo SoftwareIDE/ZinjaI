@@ -64,7 +64,8 @@ DebugManager::~DebugManager() {
 bool DebugManager::Start(bool update) {
 	_DBG_LOG_CALL(Open());
 	if (update && project->PrepareForBuilding()) { // ver si hay que recompilar antes
-		compiler->BuildOrRunProject(true,true,true);
+		_LAMBDA_0(lmbDebugProject, if (project) debug->Start(false); );
+		compiler->BuildOrRunProject(true,new lmbDebugProject());
 		return false;
 	}
 	
@@ -83,25 +84,9 @@ bool DebugManager::Start(bool update) {
 	return true;
 }
 
-bool DebugManager::Start(bool update, mxSource *source) {
+bool DebugManager::Start(mxSource *source) {
 	_DBG_LOG_CALL(Open());
 	if (source) {
-		// ver si hay que compilar antes
-		if (update) {
-			if (source->sin_titulo) { // si no esta guardado, siempre compilar
-				source->SaveTemp();
-				compiler->CompileSource(source,true,true);
-				return false;
-			} else if (source->GetModify() || !source->GetBinaryFileName().FileExists() || source->GetBinaryFileName().GetModificationTime()<source->source_filename.GetModificationTime()) {
-				source->SaveSource();
-				compiler->CompileSource(source,true,true);
-				return false;
-			} else if (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source->source_filename)) {
-				compiler->CompileSource(source,true,true);
-				return false;
-			}
-		}
-
 		SetStateText(LANG(DEBUG_STATUS_STARTING,"Iniciando depuracion..."),true);
 		wxString args;
 		if (source->config_running.always_ask_args) {

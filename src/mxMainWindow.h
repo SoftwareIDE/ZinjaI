@@ -428,7 +428,8 @@ public:
 	void UpdateCustomTools(bool for_project);
 
 	void ShowQuickHelp (wxString keyword, bool hide_compiler_tree=true);
-	void CompileOrRunSource(bool compile_if_needed, bool run, bool for_debug=false);
+	
+	void CompileSource(bool force_compile, GenericAction *action=NULL);
 	void RunSource(mxSource *source);
 	void UpdateSymbols();
 	
@@ -464,7 +465,7 @@ public:
 	//! cambia el titulo de la ventana
 	void SetOpenedFileName(wxString name);
 	
-	void StartExecutionStuff (bool compile, bool run, compile_and_run_struct_single *compile_and_run, wxString msg);
+	void StartExecutionStuff (compile_and_run_struct_single *compile_and_run, wxString msg); 
 	
 	//! Componentes del árbol del explorador de archivos
 	struct explorer_tree_struct {

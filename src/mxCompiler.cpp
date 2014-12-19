@@ -75,7 +75,8 @@ static bool EnsureCompilerNotRunning() {
 }
 
 compile_and_run_struct_single::compile_and_run_struct_single(const compile_and_run_struct_single *o) {
-	*this=*o;
+	*this=*o; 
+	on_end=NULL; // para evitar doble-delete, igual nunca deberia tener un on_end porque esto solo se usa para fuentes de un proyecto
 #ifdef _ZINJAI_DEBUG
 	cerr<<"compile_and_run: *"<<mname<<endl;
 	count++;
@@ -95,7 +96,8 @@ compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
 	cerr<<"compile_and_run: +"<<name<<endl;
 	count++;
 #endif
-	killed=for_debug=compiling=linking=run_after_compile=last_error_item_IsOk=false;
+	on_end=NULL;
+	killed=/*for_debug=*/compiling=linking=/*run_after_compile=*/last_error_item_IsOk=false;
 	parsing_errors_was_ok=true;
 	output_type=MXC_NULL;
 	process=NULL;
@@ -110,6 +112,7 @@ compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
 }
 
 compile_and_run_struct_single::~compile_and_run_struct_single() {
+	delete on_end;
 	mxMutexCompiler.Lock();
 	if (next) next->prev=prev;
 	if (prev)
@@ -133,8 +136,8 @@ wxString compile_and_run_struct_single::GetInfo() {
 	info<<pid<<" ";
 	if (compiling) info<<"c";
 	if (linking) info<<"l";
-	if (for_debug) info<<"d";
-	if (run_after_compile) info<<"r";
+//	if (for_debug) info<<"d";
+//	if (run_after_compile) info<<"r";
 #ifdef _ZINJAI_DEBUG
 	info<<" "<<mname;
 	info<<" "<<step_label;
@@ -153,15 +156,22 @@ mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTree
 	compile_and_run_single=NULL;
 }
 
-void mxCompiler::BuildOrRunProject(bool run, bool for_debug, bool prepared) {
+/**
+* @param on_end En cualquier caso se hacer cargo de esta accion. Si hay que 
+*               compilar se la transfiere al proyecto, si está todo listo
+*               la ejecuta y le hace luego el delete.
+**/
+void mxCompiler::BuildOrRunProject(bool prepared, GenericAction *on_end) {
+	RaiiDelete<GenericAction> ga_del(on_end);
 	if (project->GetWxfbActivated() && project->GetWxfbConfiguration()->working) return;
 	main_window->extern_compiler_output->Clear();
 	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
 DEBUG_INFO("wxYield:in  mxCompiler::BuildOrRunProject");
 	wxYield();
 DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
-	if (prepared || project->PrepareForBuilding()) { // si hay que compilar/enlazar
+	if (prepared || project->PrepareForBuilding(NULL)) { // si hay que compilar/enlazar
 		if (!EnsureCompilerNotRunning()) return;
+		fms_move( fms_delete(project->post_compile_action), on_end );
 //		project->AnalizeConfig(project->path,true,config->mingw_real_path);
 		wxString current;
 		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("BuildOrRunProject 1");
@@ -172,12 +182,10 @@ DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 		for (unsigned int i=0;i<project->warnings.GetCount();i++)
 			tree->AppendItem(warnings,project->warnings[i],7);
 		num_warnings=project->warnings.GetCount();
-		compile_and_run->run_after_compile=run; // hay que setearlo antes de CompileNext porque se va a duplicar ahi si hay paralelismo
 		compile_and_run->compiling=true;
-		compile_and_run->for_debug=for_debug;
 		compile_and_run->pid=project->CompileNext(compile_and_run,current); // mandar a compilar el primero
 		if (compile_and_run->pid) // si se puso a compilar algo
-			main_window->StartExecutionStuff(true,run,compile_and_run,current);
+			main_window->StartExecutionStuff(compile_and_run,current);
 		else {
 			main_window->SetStatusText(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida."));
 			delete compile_and_run;
@@ -185,10 +193,8 @@ DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 	} else {
 		compiler->CheckForExecutablePermision(project->GetExePath());
 		main_window->SetStatusText(LANG(MAINW_BINARY_ALREADY_UPDATED,"El binario ya esta actualizado."));
-		if (run) { // si ya esta actualizado, ejecutar si se debe
-			compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("BuildOrRunProject 2");;
-			project->Run(compile_and_run);
-			main_window->StartExecutionStuff(false,true,compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
+		if (on_end) { // si ya esta actualizado, ejecutar si se debe
+			on_end->Do(); 
 		} else {
 			tree->SetItemText(state,LANG(MAINW_BINARY_ALREADY_UPDATED,"El binario ya esta actualizado"));
 		}
@@ -536,7 +542,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			
 			wxString current;
 			if ((project->compile_was_ok||!config->Init.stop_compiling_on_error) && project->CompileNext(compile_and_run,current)) { // si se puso a compilar algo
-				main_window->StartExecutionStuff(true,compile_and_run->run_after_compile,compile_and_run,current);
+				main_window->StartExecutionStuff(compile_and_run,current);
 			} else {
 				if (compiler->IsCompiling()) { // si queda otro en paralelo
 					delete compile_and_run; return;
@@ -561,16 +567,8 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 					}
 					tree->SetItemText(state,LANG(MAINW_COMPILING_DONE,"Compilacion Finalizada"));
 					// ejecutar o depurar
-					if (compile_and_run->run_after_compile) {
-						if (compile_and_run->for_debug) {
-							delete compile_and_run;
-							debug->Start(false);
-						} else {
-							compile_and_run->pid = project->Run(compile_and_run);
-							main_window->StartExecutionStuff(false,true,compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
-						}
-					} else
-						delete compile_and_run;
+					if (compile_and_run->on_end) compile_and_run->on_end->Do();
+					delete compile_and_run;
 				} else {
 					compile_and_run->compiling=false;
 					tree->SetItemText(state,LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
@@ -589,15 +587,9 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 				tree->Expand(warnings);
 				main_window->ShowCompilerTreePanel();
 			}
-			if (compile_and_run->run_after_compile && last_compiled) { // ejecutar o depurar
-				if (compile_and_run->for_debug)
-					debug->Start(false,last_compiled);
-				else {
-					valgrind_cmd=compile_and_run->valgrind_cmd;
-					main_window->RunSource(last_compiled);
-					valgrind_cmd="";
-				}
-			}
+			valgrind_cmd=compile_and_run->valgrind_cmd;
+			if (compile_and_run->on_end) compile_and_run->on_end->Do();
+			valgrind_cmd="";
 			delete compile_and_run;
 		}
 	} else { // si fallo la compilacion
@@ -615,7 +607,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			tree->Expand(errors);
 			main_window->ShowCompilerTreePanel();
 			main_window->SetFocusToSourceAfterEvents();
-			if (!project) code_helper->TryToSuggestTemplateSolutionForLinkingErrors(compile_and_run->full_output,compile_and_run->run_after_compile);
+			if (!project) code_helper->TryToSuggestTemplateSolutionForLinkingErrors(compile_and_run->full_output,compile_and_run->on_end);
 		}
 		if (project) {
 			project->compile_was_ok=false;
@@ -623,8 +615,8 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 				wxString current;
 				 // mandar a compilar el que sigue
 				if (project->CompileNext(compile_and_run,current)) { // si se puso a compilar algo
-					main_window->StartExecutionStuff(true,compile_and_run->run_after_compile,compile_and_run,current);
-					return;
+					main_window->StartExecutionStuff(compile_and_run,current);
+					return; // avoid final delete
 				} else {
 					main_window->SetStatusProgress(0);
 					main_window->SetStatusText(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
@@ -635,10 +627,16 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 	}
 }
 
-void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
+/**
+* @param on_end Si puede ponerse a compilar, le pasa esta accion al proceso de 
+*               compilacion, sino la destruye, pero en cualquier caso ya no le
+*               pertenece a quien invoque a esta funcion.
+**/
+void mxCompiler::CompileSource (mxSource *source, GenericAction *on_end) {
+	RaiiDelete<GenericAction> oe_del(on_end);
 	if (!EnsureCompilerNotRunning()) return;
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
-	compile_and_run->for_debug=for_debug;
+	compile_and_run->on_end=on_end;
 	compile_and_run->output_type=MXC_GCC;
 	parser->ParseSource(source,true);
 	last_compiled=source;
@@ -659,14 +657,14 @@ void mxCompiler::CompileSource (mxSource *source, bool run, bool for_debug) {
 	if (debug->IsDebugging()) debug->GetPatcher()->AlterOuputFileName(output_file);
 	wxString command = wxString(cpp?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+z_opts+"\""+source->GetFullPath()+"\" "+comp_opts+_T(" -o \"")+output_file+"\"";
 	
-	
 	// lanzar la ejecucion
 	compile_and_run->process=new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	ResetCompileData();
 	compile_and_run->last_all_item = main_window->compiler_tree.treeCtrl->AppendItem(main_window->compiler_tree.all,command,2);
 	compile_and_run->pid = mxUT::Execute(source->GetPath(false),command,wxEXEC_ASYNC,compile_and_run->process);
-	main_window->StartExecutionStuff(true,run,compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
+	compile_and_run->compiling=true;
+	main_window->StartExecutionStuff(compile_and_run,LANG(MAINW_COMPILING_DOTS,"Compilando..."));
 	compile_and_run->full_output.Add("");
 	if (!project) compile_and_run->full_output.Add(wxString(_T("> "))+command); // lo hace el proyecto si hay
 	compile_and_run->full_output.Add("");

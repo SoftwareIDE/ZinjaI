@@ -38,6 +38,7 @@
 class BreakPointInfo;
 class mxSource;
 class mxOSD;
+class GenericAction;
 
 /// Posibles ubicaciones para un paso de compilación adicional en el proceso de construcción de un proceso
 enum ces_pos {
@@ -465,6 +466,7 @@ class ProjectManager {
 	
 	friend wxString doxygen_configuration::get_tag_index();
 public:
+	GenericAction *post_compile_action; ///< what to do if building finishes ok, is set in last CompileNext call
 	compile_step *first_compile_step;
 	bool loading; ///< indica que se esta cargando, para que otros eventos sepan
 	time_t compile_startup_time;
@@ -607,7 +609,7 @@ public:
 	/// sets environment variables for running/compiling the project (LD_LIBRARY_PATH, PROJECT_BIN, PROJECT_PATH)
 	void SetEnvironment(bool set, bool for_running);
 	/// Lanza el ejecutable
-	long int Run(compile_and_run_struct_single *compile_and_run);
+	long int Run();
 	/// not to be called directly, but trough DebugManager::Start(bool)
 	bool Debug(); 
 	///< remove temporary files for active configuration

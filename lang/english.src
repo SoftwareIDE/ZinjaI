@@ -1230,6 +1230,8 @@ CUSTOM_TOOLS_PRE_SAVE_ALL
 Save all openned files.
 CUSTOM_TOOLS_PRE_SAVE_PROJECT
 Save project.
+CUSTOM_TOOLS_PRE_COMPILE
+Compile program/proyect
 CUSTOM_TOOLS_PRE
 Action before running
 CUSTOM_TOOLS_ASYNC_EXEC
@@ -1250,6 +1252,10 @@ CUSTOM_TOOLS_POST_RELOAD_ONE
 Reload current file.
 CUSTOM_TOOLS_POST_RELOAD_ALL
 Reload all files.
+CUSTOM_TOOLS_POST_RUN
+Run program/project
+CUSTOM_TOOLS_POST_DEBUG
+Debug program/project
 CUSTOM_TOOLS_POST
 Action after running
 CUSTOM_TOOLS_ONTOOLBAR_LINUX

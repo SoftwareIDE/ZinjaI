@@ -46,6 +46,7 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ONE,"Guardar el fuente actual"));
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_ALL,"Guardar todos los fuentes abiertos"));
 	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_SAVE_PROJECT,"Guardar todo el proyecto"));
+	pre_actions.Add(LANG(CUSTOM_TOOLS_PRE_COMPILE,"Compilar el programa/proyecto"));
 	pre_action_ctrl = mxUT::AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_PRE,"Acción antes de ejecutar"),pre_actions,false);
 		
 	async_exec_ctrl = mxUT::AddCheckBox(sizer,this,LANG(CUSTOM_TOOLS_ASYNC_EXEC,"Ejecución asíncrona"),false);
@@ -61,6 +62,8 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 	post_actions.Add(LANG(CUSTOM_TOOLS_POST_NONE,"Ninguna"));
 	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ONE,"Recargar fuente actual"));
 	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RELOAD_ALL,"Recargar todos los fuentes"));
+	post_actions.Add(LANG(CUSTOM_TOOLS_POST_RUN,"Ejecutar el programa/proyecto"));
+	post_actions.Add(LANG(CUSTOM_TOOLS_POST_DEBUG,"Depurar el programa/proyecto"));
 	post_action_ctrl = mxUT::AddComboBox(sizer,this,LANG(CUSTOM_TOOLS_POST,"Acción luego de ejecutar:"),post_actions,0);
 	
 	
@@ -99,7 +102,7 @@ void mxCustomTools::OnCommandPopup(wxCommandEvent &event) {
 }
 
 void mxCustomTools::OnWorkdirPopup(wxCommandEvent &event) {
-	mxUT::ShowTextPopUp(this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),workdir_ctrl,"REPLACE|DIR|TEMP_DIR|MINGW_DIR|PROJECT_PATH|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR|WORK_DIR");
+	mxUT::ShowTextPopUp(this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),workdir_ctrl,"REPLACE|DIR|TEMP_DIR|MINGW_DIR|PROJECT_PATH|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR|BIN_WORKDIR");
 }
 
 

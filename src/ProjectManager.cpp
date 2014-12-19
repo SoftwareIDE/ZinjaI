@@ -71,6 +71,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	singleton->Stop();
 	
 	first_compile_step=NULL;
+	post_compile_action=NULL;
 	
 	project=this;
 	parser->CleanAll();
@@ -1563,6 +1564,7 @@ long int ProjectManager::CompileNext(compile_and_run_struct_single *compile_and_
 		first_compile_step = step->next;
 		delete step;
 	}
+	if (!compile_and_run->pid) fms_move(compile_and_run->on_end,post_compile_action);
 	return compile_and_run->pid;
 }
 
@@ -1602,13 +1604,17 @@ long int ProjectManager::Strip(compile_and_run_struct_single *compile_and_run, s
 	return mxUT::Execute(path, command, wxEXEC_ASYNC,compile_and_run->process);
 }
 
-long int ProjectManager::Run(compile_and_run_struct_single *compile_and_run) {
+long int ProjectManager::Run() {
 	// ver que no sea un proyecto sin ejecutable
 	if (active_configuration->dont_generate_exe) {
 		mxMessageDialog(main_window,LANG(PROJMNGR_RUNNING_NO_EXE,"Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return 0;
 	}
+	
+	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("ProjectManager::Run");
 	compile_and_run->linking=compile_and_run->compiling=false;
+	main_window->StartExecutionStuff(compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
+	
 	
 	// agregar los argumentos de ejecucion
 	if (active_configuration->always_ask_args) {
@@ -2829,7 +2835,7 @@ int ProjectManager::GetRequiredVersion() {
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	
 	version_required=0;
-	if (use_ofast) exec_wrapper=20141218;
+	if (exec_wrapper) exec_wrapper=20141218;
 	else if (use_ofast) version_required=20140507;
 	else if (copy_debug_symbols) version_required=20140410;
 	else if (env_vars_autoref || exe_use_temp) version_required=20140318;
