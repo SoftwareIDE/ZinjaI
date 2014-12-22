@@ -636,7 +636,7 @@ void mxCompiler::CompileSource (mxSource *source, GenericAction *on_end) {
 	RaiiDelete<GenericAction> oe_del(on_end);
 	if (!EnsureCompilerNotRunning()) return;
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
-	compile_and_run->on_end=on_end;
+	fms_move(compile_and_run->on_end,on_end);
 	compile_and_run->output_type=MXC_GCC;
 	parser->ParseSource(source,true);
 	last_compiled=source;

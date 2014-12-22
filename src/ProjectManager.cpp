@@ -1613,8 +1613,6 @@ long int ProjectManager::Run() {
 	
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("ProjectManager::Run");
 	compile_and_run->linking=compile_and_run->compiling=false;
-	main_window->StartExecutionStuff(compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
-	
 	
 	// agregar los argumentos de ejecucion
 	if (active_configuration->always_ask_args) {
@@ -1689,6 +1687,9 @@ long int ProjectManager::Run() {
 		pid = mxUT::Execute(working_path,command,wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);
 
 	SetEnvironment(false,true);
+	
+	main_window->StartExecutionStuff(compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
+	
 	return compile_and_run->pid=pid;
 }
 
