@@ -1940,15 +1940,15 @@ void ProjectManager::Clean() {
 		return;
 	}
 	
-	wxString file;
 	// preparar las rutas y nombres adecuados
 	AnalizeConfig(path,true,current_toolchain.mingw_dir);
 	// borrar los objetos
 	LocalListIterator<project_file_item*> item(&files_sources);
 	while(item.IsValid()) {
-		file=DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".o");
-		if (wxFileName::FileExists(file))
-			wxRemoveFile(file);
+		wxString file=DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".o");
+		wxString gcov_file=DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".gcno");
+		if (wxFileName::FileExists(file)) wxRemoveFile(file);
+		if (wxFileName::FileExists(gcov_file)) wxRemoveFile(gcov_file);
 		item.Next();
 	}
 	// borrar las salidas de los pasos adicionales
@@ -1962,9 +1962,8 @@ void ProjectManager::Clean() {
 #ifdef __WIN32__
 			mxUT::ParameterReplace(out,"${MINGW_DIR}",current_toolchain.mingw_dir);
 #endif
-			file=DIR_PLUS_FILE(path,out);
-			if (wxFileName::FileExists(file))
-				wxRemoveFile(file);
+			wxString file=DIR_PLUS_FILE(path,out);
+			if (wxFileName::FileExists(file)) wxRemoveFile(file);
 		}
 		step = step->next;
 	}
@@ -1977,7 +1976,7 @@ void ProjectManager::Clean() {
 	// borrar las bibliotecas
 	project_library *lib = active_configuration->libs_to_build;
 	while (lib) {
-		file=DIR_PLUS_FILE(path,lib->filename);
+		wxString file=DIR_PLUS_FILE(path,lib->filename);
 		if (wxFileName::FileExists(file)) wxRemoveFile(file);
 		if (wxFileName::FileExists(file+".dbg")) wxRemoveFile(file+".dbg");
 		lib = lib->next;

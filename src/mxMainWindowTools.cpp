@@ -1047,18 +1047,18 @@ void mxMainWindow::OnToolsGcovSet (wxCommandEvent & event) {
 void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
 	if (project) {
 		wxString path=project->GetTempFolder();
-		if (mxMD_NO==mxMessageDialog(this,wxString("Se eliminarán todos los archivos con extensión .gcov, .gcno y .gcda del\ndirectorio de temporales (")<<path<<")\n¿Desea Continuar?","gcov",(mxMD_YES_NO|mxMD_WARNING)).ShowModal()) return;
+		if (mxMD_NO==mxMessageDialog(this,wxString("Se eliminarán todos los archivos con extensión .gcov"/*, .gcno*/" y .gcda del\ndirectorio de temporales (")<<path<<")\n¿Desea Continuar?","gcov",(mxMD_YES_NO|mxMD_WARNING)).ShowModal()) return;
 		wxArrayString array;
 		mxUT::GetFilesFromDir(array,path,true);
 		for(unsigned int i=0;i<array.GetCount();i++) { 
-			if (array[i].EndsWith(".gcov")||array[i].EndsWith(".gcda")||array[i].EndsWith(".gcno"))
+			if (array[i].EndsWith(".gcov")||array[i].EndsWith(".gcda")/*||array[i].EndsWith(".gcno")*/)
 				wxRemoveFile(DIR_PLUS_FILE(path,array[i]));
 		}
 	} else IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
 		wxRemoveFile(DIR_PLUS_FILE(src->GetPath(false),src->GetFileName(true))+".gcov");
 		wxRemoveFile(DIR_PLUS_FILE(src->GetPath(false),src->GetFileName(false))+".gcda");
-		wxRemoveFile(DIR_PLUS_FILE(src->GetPath(false),src->GetFileName(false))+".gcno");
+//		wxRemoveFile(DIR_PLUS_FILE(src->GetPath(false),src->GetFileName(false))+".gcno");
 	}
 }
 
