@@ -1685,12 +1685,13 @@ long int ProjectManager::Run() {
 		pid = wxExecute(command, wxEXEC_NOHIDE|wxEXEC_MAKE_GROUP_LEADER, compile_and_run->process);
 	else
 		pid = mxUT::Execute(working_path,command,wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,compile_and_run->process);
-
+	compile_and_run->pid=pid;
+		
 	SetEnvironment(false,true);
 	
 	main_window->StartExecutionStuff(compile_and_run,LANG(GENERAL_RUNNING_DOTS,"Ejecutando..."));
 	
-	return compile_and_run->pid=pid;
+	return pid;
 }
 
 
