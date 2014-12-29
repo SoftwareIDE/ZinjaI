@@ -9,9 +9,8 @@ long mxExecute(wxString command, int sync, wxProcess *process) {
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Enters, command="<<command<<endl;
 	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
-#else
-	if (someone_is_running) return 0;
 #endif
+	if (someone_is_running) return 0;
 	someone_is_running=true;
 	long ret=wxExecute(command,sync,process);
 	someone_is_running=false;	
@@ -25,9 +24,8 @@ long mxExecute(const wxString& command, wxArrayString& output, int flags) {
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Enters, command="<<command<<endl;
 	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
-#else
-	if (someone_is_running) return 0;
 #endif
+	if (someone_is_running) return 0;
 	someone_is_running=true;
 	long ret=wxExecute(command,output,flags);
 	someone_is_running=false;

@@ -128,7 +128,8 @@ Toolchain &Toolchain::SelectToolchain ( ) {
 			current_toolchain=toolchains[i];
 			current_toolchain.SetArgumets();
 			current_toolchain.SetPaths();
-			toolchains[i].CheckVersion(false,0,0);
+			if (toolchains[i].CheckVersion(false,0,0)) current_toolchain.version_c=toolchains[i].version_c;
+			if (toolchains[i].CheckVersion(true,0,0)) current_toolchain.version_cpp=toolchains[i].version_cpp;
 			return current_toolchain;
 		}
 	}

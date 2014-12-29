@@ -111,6 +111,7 @@ void mxGotoFunctionDialog::OnGotoButton(wxCommandEvent &event) {
 	wxString key = list_ctrl->GetString(list_ctrl->GetSelection());
 	int i=0;
 	while (i<m_results.GetSize() && m_results[i].get_label()!=key) i++;
+	if (i==m_results.GetSize()) return; // no debería pasar, pero a veces pasa!!!
 	if (i==-1) return;
 	gotoff_result &r=m_results[i];
 	Close(); 
