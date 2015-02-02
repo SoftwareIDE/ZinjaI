@@ -162,7 +162,7 @@ struct DebuggerInspection {
 	static SingleList<DIPendingAction> pending_actions;
 	
 	static void AddPendingAction(DebuggerInspection *inspection, pending_action action, bool requires_debug_pause, bool dont_run_now=false) {
-		__debug_log_message__( "DI::AddPendingAction: "<<(void*)action<<"  insp="<<inspection );
+		__debug_log_message__( "DI::AddPendingAction: "/*<<(void*)action*/<<"  insp="<<inspection );
 		pending_actions.Add(DIPendingAction(inspection,action,requires_debug_pause,dont_run_now));
 	}
 	

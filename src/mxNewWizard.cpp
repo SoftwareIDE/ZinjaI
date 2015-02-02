@@ -776,6 +776,7 @@ void mxNewWizard::CreatePanelStart() {
 	sizer->Add(start_tooltip = new wxStaticText(panel_start,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE),sizers->BA5_Exp1);
 	
 	if (config->Help.show_extra_panels) {
+		start_tooltip->Hide();
 		wxHtmlWindow *html = new wxHtmlWindow(panel_start,wxID_ANY);
 		sizer->Add(html,sizers->Exp1);
 		html->LoadFile(DIR_PLUS_FILE(config->Help.guihelp_dir,wxString("new_help_")<<config->Init.language_file<<(".html")));
