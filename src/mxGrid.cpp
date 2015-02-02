@@ -78,14 +78,14 @@ void mxGrid::InitColumn (int col_idx, wxString name, int width/*, bool visible*/
 
 void mxGrid::DoCreate ( ) {
 	RecalcColumns(GetSize().GetWidth());
-	Connect(wxEVT_SIZE,wxSizeEventHandler(mxGrid::OnResize),NULL,this);
-	Connect(wxEVT_GRID_COL_SIZE,wxGridSizeEventHandler(mxGrid::OnColResize),NULL,this);
-	Connect(wxEVT_GRID_CELL_LEFT_CLICK,wxGridEventHandler(mxGrid::OnLeftClick),NULL,this);
-	Connect(wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEventHandler(mxGrid::OnDblClick),NULL,this);
-	Connect(wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnRightClick),NULL,this);
-	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),NULL,this);
-	Connect(wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(mxGrid::OnShowHideCol),NULL,this);
-	Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(mxGrid::OnKeyDown),NULL,this);
+	Connect(wxEVT_SIZE,wxSizeEventHandler(mxGrid::OnResize),nullptr,this);
+	Connect(wxEVT_GRID_COL_SIZE,wxGridSizeEventHandler(mxGrid::OnColResize),nullptr,this);
+	Connect(wxEVT_GRID_CELL_LEFT_CLICK,wxGridEventHandler(mxGrid::OnLeftClick),nullptr,this);
+	Connect(wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEventHandler(mxGrid::OnDblClick),nullptr,this);
+	Connect(wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnRightClick),nullptr,this);
+	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),nullptr,this);
+	Connect(wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(mxGrid::OnShowHideCol),nullptr,this);
+	Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(mxGrid::OnKeyDown),nullptr,this);
 	created=true;
 }
 

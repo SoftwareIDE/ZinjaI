@@ -25,17 +25,17 @@ END_EVENT_TABLE()
 	
 
 mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxComboBox *combo, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	m_text=NULL; m_combo=combo; m_array=NULL;
+	m_text=nullptr; m_combo=combo; m_array=nullptr;
 	CreateCommonStuff(m_combo->GetValue(),comma_splits);
 }
 
 mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxTextCtrl *text, bool comma_splits) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	m_text=text; m_combo=NULL; m_array=NULL;
+	m_text=text; m_combo=nullptr; m_array=nullptr;
 	CreateCommonStuff(text->GetValue(),comma_splits);
 }
 
 mxEnumerationEditor::mxEnumerationEditor(wxWindow *parent, wxString title, wxArrayString *array) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	m_text=NULL; m_combo=NULL; m_array=array;
+	m_text=nullptr; m_combo=nullptr; m_array=array;
 	CreateCommonStuff(*array);
 }
 

@@ -18,14 +18,14 @@ BEGIN_EVENT_TABLE(mxIconInstaller,wxDialog)
 	EVT_CLOSE(mxIconInstaller::OnClose)
 END_EVENT_TABLE()
 
-mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(NULL,wxID_ANY,LANG(XDG_CAPTION,"Iconos lanzadores")) {
+mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(nullptr,wxID_ANY,LANG(XDG_CAPTION,"Iconos lanzadores")) {
 	
 	xdg_not_found=icon_installed=false;
 	
 	wxString res = mxUT::GetOutput("xdg-desktop-menu --version");
 	if (!res.Len()||res.Find("bash")!=wxNOT_FOUND) { 
 		if (!first_run) 
-			mxMessageDialog(NULL,LANG(XDG_NO_XDG,"Debe instalar xdg-utils para tener acceso todas las funcionalidades"),LANG(XDG_CAPTION,"Iconos lanzadores"), mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(nullptr,LANG(XDG_NO_XDG,"Debe instalar xdg-utils para tener acceso todas las funcionalidades"),LANG(XDG_CAPTION,"Iconos lanzadores"), mxMD_OK|mxMD_INFO).ShowModal();
 		xdg_not_found=true;
 //		return;
 	}

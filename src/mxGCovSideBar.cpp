@@ -15,7 +15,7 @@ BEGIN_EVENT_TABLE(mxGCovSideBar, wxWindow)
 END_EVENT_TABLE()
 
 mxGCovSideBar::mxGCovSideBar(wxWindow *parent):wxWindow(parent,wxID_ANY) {
-	SetBackgroundColour(*wxWHITE); hits=NULL; SetSize(80,60); should_refresh=NULL;
+	SetBackgroundColour(*wxWHITE); hits=nullptr; SetSize(80,60); should_refresh=nullptr;
 }
 
 void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
@@ -70,14 +70,14 @@ bool mxGCovSideBar::ShouldLoadData(mxSource *src) {
 }
 
 void mxGCovSideBar::Refresh (mxSource *src) {
-	static int fvl=-1, cl=-1; static mxSource *lsrc=NULL;	
+	static int fvl=-1, cl=-1; static mxSource *lsrc=nullptr;	
 	if (lsrc!=src || src->GetCurrentLine()!=cl || src->GetFirstVisibleLine()!=fvl) {
 		lsrc=src;
 		cl=src->GetCurrentLine();
 		fvl=src->GetFirstVisibleLine();
 		if (ShouldLoadData(src)) {
 			class ReloadGCovAction:public mxMainWindow::AfterEventsAction {
-				public: void Do() { main_window->gcov_sidebar->LoadData(); }
+				public: void Do() override { main_window->gcov_sidebar->LoadData(); }
 			};
 			main_window->CallAfterEvents(new ReloadGCovAction);
 		} else wxWindow::Refresh();
@@ -86,7 +86,7 @@ void mxGCovSideBar::Refresh (mxSource *src) {
 
 void mxGCovSideBar::LoadData () {
 	static bool reloading=false;
-	if (hits) delete [] hits; hits=NULL;
+	if (hits) delete [] hits; hits=nullptr;
 	mxSource *src=main_window->GetCurrentSource();
 	if (!src) return;
 	

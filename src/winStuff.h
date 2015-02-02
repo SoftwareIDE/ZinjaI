@@ -20,14 +20,14 @@ bool winLoadDBP() {
 	dbp_checked=true;
 	
 	HINSTANCE hinstLib = LoadLibrary(TEXT("kernel32.dll"));
-	if (hinstLib == NULL) {
+	if (hinstLib == nullptr) {
 		dbp_present=false;
 		return false;
 	}
 	
 	// Get function pointer
 	dbp_function = (dbp_proto)GetProcAddress(hinstLib, "DebugBreakProcess");
-	if (dbp_function == NULL) {
+	if (dbp_function == nullptr) {
 		dbp_present=false;
 		return false;
 	}
@@ -66,7 +66,7 @@ bool winDebugBreak(long proc_id) {
 	BOOL break_result;
 	if (proc_id == 0) return false;
 	proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)proc_id);
-	if (proc == NULL) return false;
+	if (proc == nullptr) return false;
 //	break_result = DebugBreakProcess(proc);
 	break_result = dbp_function(proc);
 	if (!break_result) {

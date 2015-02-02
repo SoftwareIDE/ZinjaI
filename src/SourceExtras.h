@@ -22,7 +22,7 @@ public:
 	void AddBreakpoint(BreakPointInfo *bpi);
 	void FromSource(mxSource *src);
 	void ToSource(mxSource *src, bool set_ownership=false);
-	void ChangeSource(mxSource *src); ///< when a source that has breakpoints attached is closed, breakpoints's pointers to the source must be updated to NULL or other source (if there was more than one view)
+	void ChangeSource(mxSource *src); ///< when a source that has breakpoints attached is closed, breakpoints's pointers to the source must be updated to nullptr or other source (if there was more than one view)
 	void SetCurrentPos(wxString pos);
 	wxString GetCurrentPos();
 	const LocalList<BreakPointInfo*> &GetBreakpoints();

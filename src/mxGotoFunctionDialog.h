@@ -15,7 +15,7 @@ private:
 	struct gotoff_result {
 		int type; /// 1=macro, 2=class, 3=func
 		void *ptr;
-		gotoff_result():type(0),ptr(NULL) {}
+		gotoff_result():type(0),ptr(nullptr) {}
 		gotoff_result(pd_macro *p):type(1),ptr(p) {}
 		gotoff_result(pd_class *p):type(2),ptr(p) {}
 		gotoff_result(pd_func *p):type(3),ptr(p) {}

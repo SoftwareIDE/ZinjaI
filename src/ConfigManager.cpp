@@ -40,7 +40,7 @@ struct DelayedConfigLines {
 
 ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 	config=this;
-	delayed_config_lines = NULL; 
+	delayed_config_lines = nullptr; 
 	zinjai_dir = a_path;
 	LoadDefaults();
 	er_init(home_dir.char_str());
@@ -70,7 +70,7 @@ void ConfigManager::DoInitialChecks() {
 				if (LinuxTerminalInfo::list[i].warning) {
 					wxString chk_message; 
 					if (mxUT::GetOutput("apt-get --version").Len()) chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
-					int ans= mxMessageDialog(NULL,LANG1(CONFIG_TERMINAL_WARNING,"La aplicacion terminal que se ha encontrado instalada\n"
+					int ans= mxMessageDialog(nullptr,LANG1(CONFIG_TERMINAL_WARNING,"La aplicacion terminal que se ha encontrado instalada\n"
 						"es <{1}>. Algunas versiones de esta terminal pueden generar\n"
 						"problemas al intentar ejecutar un programa o proyecto. Si no logra\n"
 						"ejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\n"
@@ -86,7 +86,7 @@ void ConfigManager::DoInitialChecks() {
 			break;
 		}
 		if (Files.terminal_command=="<<sin configurar>>") {
-			mxMessageDialog(NULL,LANG(CONFIG_NO_TERMINAL_FOUND,""
+			mxMessageDialog(nullptr,LANG(CONFIG_NO_TERMINAL_FOUND,""
 							"No se ha encontrado una terminal conocida. Se recomienda instalar\n"
 			                "xterm; luego configure el parametro \"Comando del Terminal\" en la\n"
 							"seccion \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING).ShowModal();
@@ -103,7 +103,7 @@ void ConfigManager::DoInitialChecks() {
 			wxString chk_message; 
 			if (Files.terminal_command!="<<sin configurar>>" && mxUT::GetOutput("apt-get --version").Len())
 				chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
-			int ans = mxMessageDialog(NULL,LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
+			int ans = mxMessageDialog(nullptr,LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
 				"con el gestor de paquetes que corresponda a su distribucion\n"
 				"(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_COMPILER,"Compilador C++"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
 			if (ans&mxMD_CHECKED) wxExecute(Files.terminal_command+"sudo apt-get install build-essential");
@@ -114,7 +114,7 @@ void ConfigManager::DoInitialChecks() {
 		wxString chk_message; 
 		if (Files.terminal_command!="<<sin configurar>>" && mxUT::GetOutput("apt-get --version").Len())
 			chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
-		int ans = mxMessageDialog(NULL,LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
+		int ans = mxMessageDialog(nullptr,LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
 		                "el gestor de paquetes que corresponda a su distribucion\n"
 		                "(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_DEBUGGER,"Depurador"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
 		if (ans&mxMD_CHECKED) wxExecute(Files.terminal_command+"sudo apt-get install build-essential");
@@ -822,7 +822,7 @@ bool ConfigManager::CheckWxfbPresent() {
 	if (project->GetWxfbConfiguration(false)->ask_if_wxfb_is_missing && (out.Len()==0 || out.Find("bash")!=wxNOT_FOUND || out.Find("exec")!=wxNOT_FOUND)) {
 		class WxfbNotFoundWarning:public mxMainWindow::AfterEventsAction {
 		public: 
-			void Do() { 
+			void Do() override { 
 				int res = mxMessageDialog(main_window,LANG(PROJMNGR_WXFB_NOT_FOUND,"El proyecto utiliza wxFormBuilder, pero este software\n"
 					"no se ecuentra correctamente instalado/configurado en\n"
 					"su pc. Para descargar e instalar wxFormsBuilder dirijase\n"
@@ -927,7 +927,7 @@ void ConfigManager::FinishiLoading ( ) {
 	// load language translations
 	if (Init.language_file!="spanish") {
 		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(home_dir,"lang_cache").c_str()))
-			mxMessageDialog(NULL,"No se pudo cargar el diccionario del idioma seleccionado.\n"
+			mxMessageDialog(nullptr,"No se pudo cargar el diccionario del idioma seleccionado.\n"
 			"El sistema utilizará el predeterminado (spanish).\n"
 			"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
 	}
@@ -947,7 +947,7 @@ void ConfigManager::FinishiLoading ( ) {
 	if (delayed_config_lines) { // old way
 		for(unsigned int i=0;i<delayed_config_lines->toolbars_keys.GetCount();i++)
 			menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
-		delete delayed_config_lines; delayed_config_lines=NULL;
+		delete delayed_config_lines; delayed_config_lines=nullptr;
 	} else { // new way
 		menu_data->LoadShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc"));
 		menu_data->LoadToolbarsSettings(DIR_PLUS_FILE(home_dir,"toolbar.ztb"));

@@ -8,7 +8,7 @@
 #include "mxSizers.h"
 #include "mxHelpWindow.h"
 
-mxValgrindConfigDialog *valgrind_config=NULL;
+mxValgrindConfigDialog *valgrind_config=nullptr;
 
 BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 	EVT_BUTTON(wxID_OK,mxValgrindConfigDialog::OnButtonOk)

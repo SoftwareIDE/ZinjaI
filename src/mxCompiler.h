@@ -2,6 +2,7 @@
 #define MXCOMPILER_H
 #include <wx/treectrl.h>
 #include <wx/string.h>
+#include "Cpp11.h"
 
 class wxProcess;
 class mxSource;
@@ -82,8 +83,8 @@ public:
 	int NumCompilers();
 	wxString GetCompilingStatusText();
 	
-	void CompileSource (mxSource *source, GenericAction *on_end=NULL);
-	void BuildOrRunProject(bool prepared, GenericAction *on_end=NULL);
+	void CompileSource (mxSource *source, GenericAction *on_end=nullptr);
+	void BuildOrRunProject(bool prepared, GenericAction *on_end=nullptr);
 	void BuildOrRunProject(bool run, bool debug, bool prepared); /// @deprecated:
 	void ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run);
 	CAR_ERROR_LINE ParseSomeErrorsOneLine(compile_and_run_struct_single *compile_and_run, const wxString &error_line);

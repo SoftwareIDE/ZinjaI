@@ -11,9 +11,9 @@ class mxLocalsGrid : public mxGrid, public myDIGlobalEventHandler, public mxInsp
 public:
 	mxLocalsGrid(wxWindow *parent);
 	void Update();
-	void OnColumnHideOrUnhide (int col, bool visible) /*override*/ { Update(); }
-	void OnDebugPausePost() /*override*/ { Update(); }
-	void OnInspectionsPanelTabSelected() /*override*/ { Update(); }
+	void OnColumnHideOrUnhide (int col, bool visible) override { Update(); }
+	void OnDebugPausePost() override { Update(); }
+	void OnInspectionsPanelTabSelected() override { Update(); }
 	void OnCellPopupMenu(int row, int col);
 	
 	void OnAddToInspectionsGrid(wxCommandEvent &evt);

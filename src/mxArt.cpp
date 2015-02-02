@@ -11,12 +11,12 @@
 #include <iostream>
 using namespace std;
 	
-mxArt *bitmaps = NULL;
+mxArt *bitmaps = nullptr;
 
 mxArt::mxArt(wxString img_dir) {
 	
 //	// Esto se hace para tener una referencia de cuanto miden las cosas (tiene que haber algo mejor)
-//	wxDialog *dlg = new wxDialog(NULL,wxID_ANY,_T("Ventana de Prueba"),wxDefaultPosition,wxDefaultSize);
+//	wxDialog *dlg = new wxDialog(nullptr,wxID_ANY,_T("Ventana de Prueba"),wxDefaultPosition,wxDefaultSize);
 //	wxSizer *sz = new wxBoxSizer(wxHORIZONTAL);
 //	wxTextCtrl *tc = new wxTextCtrl(dlg,wxID_ANY,_T("Texto de Prueba"));
 //	sz->Add(tc);
@@ -57,7 +57,7 @@ mxArt::mxArt(wxString img_dir) {
 	icons.warning = new wxBitmap(SKIN_FILE(_T("icono_warning.png")),wxBITMAP_TYPE_PNG);
 	icons.question = new wxBitmap(SKIN_FILE(_T("icono_question.png")),wxBITMAP_TYPE_PNG);
 //#ifdef __WIN32__
-//	wxColour background_colour=wxButton(NULL,wxID_ANY,_T("lala")).GetBackgroundColour();
+//	wxColour background_colour=wxButton(nullptr,wxID_ANY,_T("lala")).GetBackgroundColour();
 //	wxMemoryDC dc;
 //	dc.SelectObject(*icons.question);
 //	if (dc.IsOk()) {

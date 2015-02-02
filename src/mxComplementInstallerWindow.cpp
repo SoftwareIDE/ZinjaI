@@ -156,7 +156,7 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 		memset(&sinfo, 0, sizeof(SHELLEXECUTEINFO));
 		sinfo.cbSize       = sizeof(SHELLEXECUTEINFO);
 		sinfo.fMask        = 0;
-		sinfo.hwnd         = NULL;
+		sinfo.hwnd         = nullptr;
 		sinfo.lpFile       = ccaller;
 		sinfo.lpParameters = cmd;
 		sinfo.lpVerb       = "runas"; // <<-- this is what makes a UAC prompt show up

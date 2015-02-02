@@ -16,7 +16,7 @@ END_EVENT_TABLE()
 
 mxSignalsSettings::mxSignalsSettings():wxDialog(main_window,wxID_ANY,"Singnals handling settings",wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
 	
-	checks_pass=checks_stop=NULL;
+	checks_pass=checks_stop=nullptr;
 	if (!debug->GetSignals(vsig)) return;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);

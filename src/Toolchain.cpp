@@ -8,7 +8,7 @@
 #include <iostream>
 using namespace std;
 
-Toolchain *Toolchain::toolchains=NULL;
+Toolchain *Toolchain::toolchains=nullptr;
 int Toolchain::toolchains_count=0;
 Toolchain current_toolchain;
 
@@ -256,6 +256,6 @@ wxString Toolchain::FixArgument (bool cpp, wxString arg) {
 Toolchain *Toolchain::GetToolchain (const wxString & name) {
 	for(int i=0;i<toolchains_count;i++) 
 		if (toolchains[i].file==name) return toolchains+i;
-	return NULL;
+	return nullptr;
 }
 

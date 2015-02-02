@@ -9,7 +9,7 @@
 #include "mxUtils.h"
 #include "Language.h"
 
-mxBeginnerPanel *beginner_panel=NULL;
+mxBeginnerPanel *beginner_panel=nullptr;
 
 enum BEGO_PANELS {
 	BEGO_FOR,BEGO_IF,BEGO_WHILE,BEGO_DO,BEGO_SWITCH,

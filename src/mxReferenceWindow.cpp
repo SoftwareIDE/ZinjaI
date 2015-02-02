@@ -11,7 +11,7 @@ using namespace std;
 #define _index "index.html"
 #define ERROR_PAGE(page) wxString(_T("<I>ERROR</I>: La pagina \""))<<page<<_T("\" no se encuentra.")
 
-mxReferenceWindow *mxReferenceWindow::instance=NULL;
+mxReferenceWindow *mxReferenceWindow::instance=nullptr;
 
 mxReferenceWindow::mxReferenceWindow(wxString page):mxGenericHelpWindow(LANG(CPPREF_CAPTION,"Referencia C/C++"),true) {
 	if (!PopulateInitialTree()) return;
@@ -20,7 +20,7 @@ mxReferenceWindow::mxReferenceWindow(wxString page):mxGenericHelpWindow(LANG(CPP
 }
 
 mxReferenceWindow::~mxReferenceWindow() {
-	instance=NULL;
+	instance=nullptr;
 }	
 
 void mxReferenceWindow::ShowPage(wxString page) {

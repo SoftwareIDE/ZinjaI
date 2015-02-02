@@ -3,8 +3,8 @@
 #include "mxSource.h"
 #include "mxMessageDialog.h"
 
-wxPrintDialogData *printDialogData = NULL;
-//wxPageSetupDialogData *pageSetupData = NULL;
+wxPrintDialogData *printDialogData = nullptr;
+//wxPageSetupDialogData *pageSetupData = nullptr;
 
 /**
 * @brief Gestiona la impresión de un fuente
@@ -19,13 +19,13 @@ mxPrintOut::mxPrintOut (mxSource *src, wxString title) : wxPrintout(title) {
 //	if (!printData) printData=new wxPrintData;
 //	if (!pageSetupData) {
 //		pageSetupData=new wxPageSetupDialogData;
-////		wxPageSetupDialog pageSetupDialog(NULL);
+////		wxPageSetupDialog pageSetupDialog(nullptr);
 ////		*printData = pageSetupDialog.GetPageSetupData().GetPrintData();
 ////		*pageSetupData = pageSetupDialog.GetPageSetupData();	
 //	}
 	source = src;
 	pages_len = m_printed = 0;
-	pages=NULL;
+	pages=nullptr;
 }
 
 bool mxPrintOut::OnPrintPage (int page) {

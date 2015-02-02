@@ -6,6 +6,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include "Cpp11.h"
 using namespace std;
 
 #define BACKTRACE_SIZE 100
@@ -66,7 +67,7 @@ public:
 	virtual void Close(){};
 	virtual ~DebuggerTalkLogger() {}
 	static void Set(DebuggerTalkLogger *logger) { if (the_logger) delete the_logger; the_logger = logger; }
-	static void UnSet() { if (the_logger) delete the_logger; the_logger = NULL; }
+	static void UnSet() { if (the_logger) delete the_logger; the_logger = nullptr; }
 };
 #  define _DBG_LOG_ST_CALL(x) DebuggerTalkLogger::x
 #  define _DBG_LOG_CALL(x) if (DebuggerTalkLogger::the_logger) DebuggerTalkLogger::the_logger->x 
@@ -88,7 +89,7 @@ class DebugManager {
 #endif
 private:
 	friend class DebugEventListener;
-	vector<SignalHandlingInfo> *signal_handlers_state; ///< signals states to be setted before running, first one has defaults, second one desired settings (if NULL no setting is required, will be created and modified my mxSignalsSettings)
+	vector<SignalHandlingInfo> *signal_handlers_state; ///< signals states to be setted before running, first one has defaults, second one desired settings (if nullptr no setting is required, will be created and modified my mxSignalsSettings)
 	DebugPatcher *debug_patcher;
 public:
 	DebugPatcher *GetPatcher() { return debug_patcher; } // retorna puntero y no instancia para poder poner en ese h solo una forward declaration y evitar tener que recompilar mucho al cambiar el patcher

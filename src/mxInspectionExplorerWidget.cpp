@@ -37,12 +37,12 @@ END_EVENT_TABLE()
 mxInspectionExplorerWidget::mxInspectionExplorerWidget (wxWindow * parent, const wxString &expression, bool frameless, bool expand_roots) 
 	: wxTreeCtrl(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTR_DEFAULT_STYLE|wxTR_HAS_BUTTONS|(expression==""?wxTR_HIDE_ROOT:0)), auto_expand_roots(expand_roots) 
 {
-	event_listener=NULL;
+	event_listener=nullptr;
 	AddRoot(expression); 
 	hidden_root = expression=="";
 	if (!hidden_root) {
 		DebuggerInspection *di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,frameless)|DIF_DONT_USE_HELPER,this,false);
-		/*int p =*/ AddItem(NULL,di,true);
+		/*int p =*/ AddItem(nullptr,di,true);
 //		wxTreeCtrl::Expand(GetRootItem());
 	}
 }

@@ -139,7 +139,7 @@ struct DebuggerInspection {
 	/// busca una instancia de esta clase DebuggerInspection a partir del nombre de su variable-object en gdb
 	static DebuggerInspection *GetFromVO(const wxString &variable_object) {
 		map<wxString,DebuggerInspection*>::iterator it=vo2di_map.find(variable_object);
-		if (it!=vo2di_map.end()) return it->second; else return NULL;
+		if (it!=vo2di_map.end()) return it->second; else return nullptr;
 	}
 	
 	
@@ -200,11 +200,11 @@ struct DebuggerInspection {
 				if (debug->debugging||!pa.requires_debug_pause)
 					(pa.inspection->*pa.action)();
 			} else {
-				delete pa.inspection; // action=NULL signfica que hay que eliminar el objeto
+				delete pa.inspection; // action=nullptr signfica que hay que eliminar el objeto
 				// delete all pending actions for this inspection to avoid future references
 				for(int j=0;j<pending_actions.GetSize();j++) { 
 					if (j!=i && pending_actions[j].inspection==pa.inspection) 
-						pending_actions[j].inspection=NULL;
+						pending_actions[j].inspection=nullptr;
 				}
 			}
 		}
@@ -309,9 +309,9 @@ private:
 	
 	void DeleteHelper() {
 		delete helper->consumer;
-		helper->consumer=NULL; 
+		helper->consumer=nullptr; 
 		helper->Destroy(); 
-		helper=NULL;
+		helper=nullptr;
 	}
 	
 	bool SetupChildInspection() {
@@ -429,14 +429,14 @@ private:
 	void RecreateAllFramelessInspections(const wxString &expression);
 	
 	/// las instancias de los clientes de esta clase se construyen solo a través de Create (que usará este ctor)
-	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, const Flag &flags, myDIEventHandler *event_handler=NULL) :
+	DebuggerInspection(DEBUG_INSPECTION_EXPRESSION_TYPE type, const wxString &expr, const Flag &flags, myDIEventHandler *event_handler=nullptr) :
 		dit_type(type),
 		expression(expr),
 		flags( FlagIf(DIF_REQUIRES_MANUAL_UPDATE,type==DIT_GDB_COMMAND) | flags.Get() | DIF_IN_SCOPE ),
 //		is_frozen(false),
 		consumer(event_handler),
-		helper(NULL),
-		parent(NULL),
+		helper(nullptr),
+		parent(nullptr),
 		di_children(0),
 		vo_value_format(GVF_NATURAL)
 		{ 
@@ -455,7 +455,7 @@ private:
 		consumer(_parent->consumer), 
 		value_type(type),
 		num_children(num_child),
-		helper(NULL),
+		helper(nullptr),
 		parent(_parent),
 		di_children(0),
 		vo_value_format(GVF_NATURAL)
@@ -465,7 +465,7 @@ private:
 	
 	void RemoveParentLink() {
 		if (--parent->di_children==0 && parent->dit_type==DIT_GHOST)  parent->Destroy(); 
-		parent=NULL;
+		parent=nullptr;
 	}
 	
 	/// las instancias se destruyen a través de Destroy, esto evita que alguien de afuera le quiera hacer delete
@@ -485,7 +485,7 @@ public:
 	*                 se debe llamar inmediatamente a Init con la instancia... esto es para que
 	*                 el que la crea pueda conocer el puntero antes de recibir los eventos
 	**/ 
-	static DebuggerInspection *Create(const wxString &expr, Flag flags, myDIEventHandler *event_handler=NULL, bool init_now=true) {
+	static DebuggerInspection *Create(const wxString &expr, Flag flags, myDIEventHandler *event_handler=nullptr, bool init_now=true) {
 		__debug_log_static_method__;
 		bool is_cmd = expr.size()&&expr[0]=='>';
 		DebuggerInspection *di = new DebuggerInspection(is_cmd?DIT_GDB_COMMAND:DIT_PENDING,expr,is_cmd?DIF_FRAMELESS:flags,event_handler);
@@ -523,7 +523,7 @@ public:
 		__debug_log_method__;
 		if (dit_type==DIT_VARIABLE_OBJECT||dit_type==DIT_GHOST) { // si tenia una vo asociado....
 			// si tenía otra inspección auxiliar asociada, eliminar esa también
-			if (helper) DeleteHelper(); // poner en NULL por si queda como DIT_GHOST
+			if (helper) DeleteHelper(); // poner en nullptr por si queda como DIT_GHOST
 			// si no tiene dependencias, eliminarla en gdb
 			if (di_children==0) {
 				if (debug->debugging) TryToExec(&DebuggerInspection::VODelete,true);
@@ -541,7 +541,7 @@ public:
 		if (dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
 		// si quedan hijos que dependen de este, dejar como fantasma, sino hacerle el delete
 		if (dit_type==DIT_VARIABLE_OBJECT && di_children!=0) dit_type=DIT_GHOST;
-		else AddPendingAction(this,NULL,false);
+		else AddPendingAction(this,nullptr,false);
 	}
 	
 	bool ModifyValue(const wxString &new_value) {
@@ -554,7 +554,7 @@ public:
 				OnPauseModifyInspectionValue(DebuggerInspection *di, const wxString &new_value) {
 					command = wxString("-var-assign ")<<di->variable_object<<" "<<mxUT::EscapeString(new_value,true);
 				}
-				void Do() { debug->SendCommand(command); }
+				void Do() override { debug->SendCommand(command); }
 			};
 			debug->PauseFor(new OnPauseModifyInspectionValue(this,new_value));
 			return true;

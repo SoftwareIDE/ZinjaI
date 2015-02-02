@@ -93,7 +93,7 @@ void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxSt
 		inSizer->Add(checkbox,sizers->BTR10_Right);
 		topSizer->Add(inSizer,sizers->Exp1);
 	} else {
-		checkbox = NULL;
+		checkbox = nullptr;
 		topSizer->Add( new wxStaticText(this,wxID_ANY,message), sizers->BA10_Exp1);
 	}
 	

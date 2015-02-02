@@ -11,7 +11,7 @@ private:
 	wxTextCtrl *text_type, *text_deps;
 	wxString fname;
 public:
-	mxSourceProperties(wxString fname,mxSource *src=NULL);
+	mxSourceProperties(wxString fname,mxSource *src=nullptr);
 	void OnOkButton(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
 	void OnTimer(wxTimerEvent &evt);

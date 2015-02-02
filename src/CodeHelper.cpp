@@ -40,7 +40,7 @@ static bool ShouldAddToAutocompFind(const wxString &typed, int len, const wxStri
 static bool (*ShouldAddToAutocomp)(const wxString &typed, int len, const wxString &candidate);
 
 
-CodeHelper *code_helper = NULL;
+CodeHelper *code_helper = nullptr;
 
 CodeHelper::CodeHelper(int ml, int mode) {
 	
@@ -711,8 +711,8 @@ bool CodeHelper::LoadData(wxString index) {
 	wxString header;
 	unsigned int tabs;
 	int pos;
-	pd_file *aux_file=NULL;
-	pd_class *aux_class=NULL;
+	pd_file *aux_file=nullptr;
+	pd_class *aux_class=nullptr;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (!str.Len()) 
 			continue;
@@ -1126,7 +1126,7 @@ bool CodeHelper::GenerateAutocompletionIndex(wxString path, wxString filename) {
 		idx.Write(wxString(_T("<"))<<fn.GetFullPath()<<_T(">\n"));
 		pd_ref *ref = fil->first_global->next;
 		while (ref) {
-			if (PD_UNREF(pd_var,ref)->space==NULL) {
+			if (PD_UNREF(pd_var,ref)->space==nullptr) {
 				if (PD_UNREF(pd_var,ref)->properties==PD_CONST_ENUM_CONST)
 					idx.Write(wxString(_T("\tenum const "))<<PD_UNREF(pd_var,ref)->proto<<"\n");
 				else if (PD_UNREF(pd_var,ref)->properties==PD_CONST_CONST)
@@ -1138,13 +1138,13 @@ bool CodeHelper::GenerateAutocompletionIndex(wxString path, wxString filename) {
 		}
 		ref = fil->first_func_dec->next;
 		while (ref) {
-			if (PD_UNREF(pd_func,ref)->space==NULL)
+			if (PD_UNREF(pd_func,ref)->space==nullptr)
 				idx.Write(wxString("\t")<<PD_UNREF(pd_func,ref)->proto<<"\n");
 			ref = ref->next;
 		}
 		ref = fil->first_func_def->next;
 		while (ref) {
-			if (PD_UNREF(pd_func,ref)->space==NULL && PD_UNREF(pd_func,ref)->file_dec==NULL)
+			if (PD_UNREF(pd_func,ref)->space==nullptr && PD_UNREF(pd_func,ref)->file_dec==nullptr)
 				idx.Write(wxString("\t")<<PD_UNREF(pd_func,ref)->proto<<"\n");
 			ref = ref->next;
 		}
@@ -1237,7 +1237,7 @@ void CodeHelper::AppendIndexes(wxString indexes) {
 /**
 * @brief on_end Si ecuentra una solucion y el usuario la acepta, le transfiere 
 *               esta accion al nuevo proceso de compilacion (y setea el argumento
-*               en NULL para indicarlo), sino lo deja como esta, no lo ejecuta, y
+*               en nullptr para indicarlo), sino lo deja como esta, no lo ejecuta, y
 *               sigue siendo responsabilidad de quien llamo
 **/
 void CodeHelper::TryToSuggestTemplateSolutionForLinkingErrors (const wxArrayString &full_output, GenericAction *&on_end) {

@@ -20,13 +20,13 @@ MenusAndToolsConfig *menu_data;
 #endif
 
 MenusAndToolsConfig::MenusAndToolsConfig () {
-	wx_menu_bar = NULL;
+	wx_menu_bar = nullptr;
 //	tools_custom_item=new wxMenuItem*[10];
-//	for (int i=0;i<10;i++) tools_custom_item[i] = NULL;
+//	for (int i=0;i<10;i++) tools_custom_item[i] = nullptr;
 	file_source_history = new wxMenuItem*[CM_HISTORY_MAX_LEN];
-	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) file_source_history[i]=NULL;
+	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) file_source_history[i]=nullptr;
 	file_project_history = new wxMenuItem*[CM_HISTORY_MAX_LEN];
-	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) file_project_history[i]=NULL;
+	for (int i=0;i<CM_HISTORY_MAX_LEN;i++) file_project_history[i]=nullptr;
 	
 	LoadMenuData();
 	LoadToolbarsData();
@@ -587,7 +587,7 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 	for(unsigned int j=0;j<items_size;j++) { 
 		myMenuItem &mi=menues[menu_id].items[j];
 		int props=mi.properties;
-		wxMenuItem *wx_item = NULL;
+		wxMenuItem *wx_item = nullptr;
 		if (props&maSEPARATOR) {
 			current_menu->AppendSeparator();
 		} else if (props&maBEGIN_SUBMENU) {
@@ -788,7 +788,7 @@ void MenusAndToolsConfig::UpdateToolbar(int tb_id, bool only_items) {
 		// destroy the previous one
 		main_window->aui_manager.DetachPane(toolbars[tb_id].wx_toolbar);
 		toolbars[tb_id].wx_toolbar->Destroy();
-		toolbars[tb_id].wx_toolbar=NULL;
+		toolbars[tb_id].wx_toolbar=nullptr;
 		CreateWxToolbar(tb_id);
 	} else {
 		toolbars[tb_id].wx_toolbar->ClearTools();
@@ -803,7 +803,7 @@ void MenusAndToolsConfig::CreateToolbars() {
 	
 	if (!wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,wxString()<<icon_size))) {
 		wxString icsz = wxString()<<icon_size<<"x"<<icon_size;
-		mxMessageDialog(NULL,
+		mxMessageDialog(nullptr,
 			wxString()<<LANG1(MAIN_WINDOW_NO_ICON_SIZE,""
 			"El tema de iconos seleccionado no tiene iconos del tamaño elegido (<{1}>)\n"
 			"Se utilizaran los iconos del tamaño predeterminado (16x16).\n"
@@ -933,7 +933,7 @@ MenusAndToolsConfig::myMenuItem *MenusAndToolsConfig::GetMyMenuItem (int menu_id
 	for(unsigned int i=0;i<v.size();i++) { 
 		if (v[i].wx_id==item_id) return &(v[i]);
 	}
-	return NULL;
+	return nullptr;
 }
 
 MenusAndToolsConfig::myToolbarItem *MenusAndToolsConfig::GetMyToolbarItem (int toolbar_id, int item_id) {
@@ -941,7 +941,7 @@ MenusAndToolsConfig::myToolbarItem *MenusAndToolsConfig::GetMyToolbarItem (int t
 	for(unsigned int i=0;i<v.size();i++) { 
 		if (v[i].wx_id==item_id) return &(v[i]);
 	}
-	return NULL;
+	return nullptr;
 }
 
 void MenusAndToolsConfig::TransferStatesFromConfig() {

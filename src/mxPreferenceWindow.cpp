@@ -39,7 +39,7 @@ static cfgStyles old_config_styles; // aquí para evitar tener que hacer el inclu
 
 #ifndef __WIN32__
 int LinuxTerminalInfo::count = 0;
-LinuxTerminalInfo *LinuxTerminalInfo::list = NULL;
+LinuxTerminalInfo *LinuxTerminalInfo::list = nullptr;
 void LinuxTerminalInfo::Initialize() {
 	const int term_count=9;
 	list = new LinuxTerminalInfo[term_count];
@@ -70,7 +70,7 @@ bool LinuxTerminalInfo::Test() {
 }
 #endif
 
-static mxPreferenceWindow *preference_window=NULL;
+static mxPreferenceWindow *preference_window=nullptr;
 
 BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxPreferenceWindow::OnOkButton)
@@ -130,13 +130,13 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 
 	ignore_styles_changes = true;
 	
-	toolbar_editor_file = NULL;
-	toolbar_editor_edit = NULL;
-	toolbar_editor_view = NULL;
-	toolbar_editor_tools = NULL;
-	toolbar_editor_debug = NULL;
-	toolbar_editor_run = NULL;
-	toolbar_editor_misc = NULL;
+	toolbar_editor_file = nullptr;
+	toolbar_editor_edit = nullptr;
+	toolbar_editor_view = nullptr;
+	toolbar_editor_tools = nullptr;
+	toolbar_editor_debug = nullptr;
+	toolbar_editor_run = nullptr;
+	toolbar_editor_misc = nullptr;
 	
 	old_config_styles=config->Styles;
 	
@@ -507,7 +507,7 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel2 (wxNotebook *notebook) {
 	source_callTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y métodos"),config->Source.callTips);
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Índices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
-	help_autocomp_indexes = new wxCheckListBox(panel,mxID_AUTOCOMP_LIST,wxDefaultPosition,wxSize(100,100),0,NULL,wxLB_SORT);
+	help_autocomp_indexes = new wxCheckListBox(panel,mxID_AUTOCOMP_LIST,wxDefaultPosition,wxSize(100,100),0,nullptr,wxLB_SORT);
 	
 	wxArrayString autocomp_array_all, autocomp_array_user;
 	mxUT::GetFilesFromBothDirs(autocomp_array_all,"autocomp");
@@ -533,7 +533,7 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (mxBookCtrl *notebook) {
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_SKIN_AVAILABLE_THEMES,"Temas disponibles"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
-	skin_list = new wxListBox(panel,mxID_SKIN_LIST,wxDefaultPosition,wxSize(100,100),0,NULL,0);
+	skin_list = new wxListBox(panel,mxID_SKIN_LIST,wxDefaultPosition,wxSize(100,100),0,nullptr,0);
 	wxDir dir(_T("skins"));
 	if ( dir.IsOpened() ) {
 		wxArrayString autocomp_array;
@@ -665,7 +665,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		main_window->ShowWelcome(false);
 		main_window->aui_manager.DetachPane(welcome_panel);
 		welcome_panel->Destroy();
-		welcome_panel=NULL;
+		welcome_panel=nullptr;
 	}
 	config->Init.always_add_extension = init_always_add_extension->GetValue();
 #ifdef __WIN32__
@@ -1322,7 +1322,7 @@ void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
 
 void mxPreferenceWindow::Delete ( ) {
 	if (preference_window) preference_window->Destroy();
-	preference_window=NULL;
+	preference_window=nullptr;
 }
 
 void mxPreferenceWindow::OnFontChange (wxCommandEvent & evt) {

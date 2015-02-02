@@ -12,7 +12,7 @@ BreakPointInfo::BreakPointInfo(project_file_item *_fitem, int _line_number) {
 		if (fname[i]=='\\') fname[i]='/';
 #endif
 	line_number=_line_number;
-	source=NULL;
+	source=nullptr;
 	marker_handle=-1;
 	enabled=true;
 //	only_once=false;
@@ -68,7 +68,7 @@ void BreakPointInfo::UpdateLineNumber() {
 	line_number = source->MarkerLineFromHandle(marker_handle);
 }
 
-/// @brief Updates its source_pointer, and ads the marker if its previous one was NULL
+/// @brief Updates its source_pointer, and ads the marker if its previous one was nullptr
 void BreakPointInfo::SetSource(mxSource *_source) {
 	source=_source; marker_handle=-1; 
 	if (_source) SetMarker();
@@ -95,7 +95,7 @@ void BreakPointInfo::SetMarker() {
 *
 * If use_gdb finds a breakpoint that matches gdb_id, else 
 * finds a breakpoint that matches zinjai_id. If there's no match
-* returns NULL.
+* returns nullptr.
 *
 * This method searchs first in opened files (main_window->notebook_sources)
 * starting by the current source, then searchs in project's files if there
@@ -108,7 +108,7 @@ BreakPointInfo *BreakPointInfo::FindFromNumber(int _id, bool use_gdb_id) {
 			return *bpi;
 		bpi.Next();
 	}
-	return NULL;
+	return nullptr;
 }
 
 GlobalListIterator<BreakPointInfo*> BreakPointInfo::GetGlobalIterator ( ) {

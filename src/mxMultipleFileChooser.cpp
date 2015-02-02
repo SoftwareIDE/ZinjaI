@@ -36,7 +36,7 @@ mxMultipleFileChooser::mxMultipleFileChooser(wxString apath, bool modal) : wxDia
 	
 	mxUT::AddStaticText(sizer,this,LANG(MULTIFILE_LIST,"Seleccione los archivos a agregar"));
 	list = new wxCheckListBox(this,wxID_ANY,wxDefaultPosition,wxSize(320,230));
-	list->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( mxMultipleFileChooser::OnListRightClick ), NULL, this );
+	list->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( mxMultipleFileChooser::OnListRightClick ), nullptr, this );
 	sizer->Add(list,sizers->BA5_Exp1);
 
 	wxArrayString awhere;

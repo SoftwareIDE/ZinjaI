@@ -25,7 +25,7 @@ mxToolchainOptions::mxToolchainOptions(wxWindow *parent, wxString toolchain_fnam
 	
 	int args_count=0;
 	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) {
-		if (tc.arguments[i][0]=="") { texts[i]=NULL; continue; }
+		if (tc.arguments[i][0]=="") { texts[i]=nullptr; continue; }
 		args_count++;
 		wxStaticText *st1=new wxStaticText(this,wxID_ANY,tc.arguments[i][0]); 
 		texts[i]=new wxTextCtrl(this,wxID_ANY,configuration->toolchain_arguments[i]);

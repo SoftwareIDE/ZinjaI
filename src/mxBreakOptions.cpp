@@ -47,7 +47,7 @@ mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxI
 		count_text = mxUT::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado"),debug->GetBreakHitCount(bpi->gdb_id),wxString(LANG(BREAKOPTS_HIT_TIMES_POST,"veces")));
 		count_text->SetEditable(false);
 	} else {
-		count_text = NULL;
+		count_text = nullptr;
 	}
 	cond_text = mxUT::AddTextCtrl(mySizer,this,LANG(BREAKOPTS_CONDITION,"Condicion"),bpi->cond);
 	wxArrayString actions_list;

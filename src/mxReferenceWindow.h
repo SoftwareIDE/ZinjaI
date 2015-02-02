@@ -27,7 +27,7 @@ class mxReferenceWindow:public mxGenericHelpWindow {
 public:
 	static void ShowPage(wxString page="");
 	static void ShowAndSearch(const wxString &keyword);
-	static wxString ProcessHTML(wxString fname, mxReferenceWindow *w=NULL);
+	static wxString ProcessHTML(wxString fname, mxReferenceWindow *w=nullptr);
 	
 	void LoadHelp(wxString file, bool update_history=true);
 	

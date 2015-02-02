@@ -137,7 +137,7 @@ void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {
 void mxProjectGeneralConfig::OnDebugMacrosEdit(wxCommandEvent &evt) {
 	wxString file=project_debug_macros->GetValue();
 	if (wxFileName(DIR_PLUS_FILE(project->path,file)).FileExists())
-		main_window->OpenFileFromGui(DIR_PLUS_FILE(project->path,file),NULL);
+		main_window->OpenFileFromGui(DIR_PLUS_FILE(project->path,file),nullptr);
 	else
 		mxMessageDialog(main_window,LANG(PROJECTGENERAL_FILE_NOT_EXISTS,"El archivo no existe"),LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros"), mxMD_OK|mxMD_WARNING).ShowModal();	
 }
@@ -161,7 +161,7 @@ void mxProjectGeneralConfig::OnDebugMacros(wxCommandEvent &evt) {
 void mxProjectGeneralConfig::OnAutocodesEdit(wxCommandEvent &evt) {
 	wxString file=project_autocodes->GetValue();
 	if (wxFileName(DIR_PLUS_FILE(project->path,file)).FileExists())
-		main_window->OpenFileFromGui(DIR_PLUS_FILE(project->path,file),NULL);
+		main_window->OpenFileFromGui(DIR_PLUS_FILE(project->path,file),nullptr);
 	else
 		mxMessageDialog(main_window,LANG(PROJECTGENERAL_FILE_NOT_EXISTS,"El archivo no existe"),LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo con definiciones de autocodigos"), mxMD_OK|mxMD_WARNING).ShowModal();	
 }

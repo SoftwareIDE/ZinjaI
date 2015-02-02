@@ -4,7 +4,7 @@
 #include "mxUtils.h"
 #include "ProjectManager.h"
 
-Autocoder *autocoder=NULL;
+Autocoder *autocoder=nullptr;
 
 Autocoder::Autocoder() {
 	if (!LoadFromFile(config->Files.autocodes_file)) {

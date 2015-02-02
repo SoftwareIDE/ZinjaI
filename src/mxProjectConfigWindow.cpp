@@ -350,7 +350,7 @@ void mxProjectConfigWindow::OnClose(wxCloseEvent &event){
 	for (int i=0;i<project->configurations_count;i++)
 		if (project->configurations[i]->bakup) {
 			delete project->configurations[i]->bakup;
-			project->configurations[i]->bakup=NULL;
+			project->configurations[i]->bakup=nullptr;
 		}
 	Destroy();
 }
@@ -900,7 +900,7 @@ void mxProjectConfigWindow::OnStepsDown(wxCommandEvent &evt) {
 }
 
 void mxProjectConfigWindow::OnStepsAdd(wxCommandEvent &evt) {
-	new mxExtraStepWindow(this,configuration,NULL);
+	new mxExtraStepWindow(this,configuration,nullptr);
 	if (mxExtraStepWindow::new_name.Len())
 		ReloadSteps(mxExtraStepWindow::new_name);
 }
@@ -1028,7 +1028,7 @@ void mxProjectConfigWindow::ReloadLibs(wxString selection) {
 }
 
 void mxProjectConfigWindow::OnLibsAdd(wxCommandEvent &evt) {
-	new mxLibToBuildWindow(this,configuration,NULL);
+	new mxLibToBuildWindow(this,configuration,nullptr);
 	if (mxLibToBuildWindow::new_name.Len())
 		ReloadLibs(mxLibToBuildWindow::new_name);
 }

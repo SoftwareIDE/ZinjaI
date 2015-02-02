@@ -44,7 +44,7 @@ public:
 	int line_number; ///< line number, base 0
 	int gdb_id; ///< id setted by gdb, -1 if not setted, only valid while debug->debugging (gdb)
 	BREAK_POINT_STATUS gdb_status; ///< status inside gdb (gdb)
-	mxSource *source; ///< if the file is oppened, it's that mxSource, else it's NULL 
+	mxSource *source; ///< if the file is oppened, it's that mxSource, else it's nullptr 
 	int marker_handle; ///< marker handle if it's open (mxSource)
 	int marker_type; ///< to know if current marker is red or grey, when marker_handle!=-1
 	bool enabled; ///< if it's marked as enabled in ZinjaI (mxBreakOptions)

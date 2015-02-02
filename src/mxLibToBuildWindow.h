@@ -1,6 +1,7 @@
 #ifndef MXLIBTOBUILDWINDOW_H
 #define MXLIBTOBUILDWINDOW_H
 #include <wx/dialog.h>
+#include "Cpp11.h"
 
 class project_configuration;
 class project_library;
@@ -26,7 +27,7 @@ private:
 	mxProjectConfigWindow *parent;
 public:
 	static wxString new_name;
-	mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_configuration *conf, project_library *alib=NULL);
+	mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_configuration *conf, project_library *alib=nullptr);
 	~mxLibToBuildWindow();
 	void OnClose(wxCloseEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);

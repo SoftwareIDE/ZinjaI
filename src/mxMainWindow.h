@@ -389,7 +389,7 @@ public:
 		mxSource *source; // fuente del cual depende, para no ejecutarla si se cierra ese fuente (do_do en false)
 	public:
 		virtual void Do()=0;
-		AfterEventsAction(mxSource *src=NULL):next(NULL),do_do(true),source(src){};
+		AfterEventsAction(mxSource *src=nullptr):next(nullptr),do_do(true),source(src){};
 		virtual ~AfterEventsAction(){};
 	};
 private:
@@ -415,8 +415,8 @@ public:
 	mxSource *NewFileFromText (wxString text, wxString name, int pos=0);
 	mxSource *OpenFile (const wxString &filename);
 	mxSource *OpenFile (const wxString &filename, bool add_to_project);
-	mxSource *FindSource(wxFileName filename, int *pos=NULL);
-	void OpenFileFromGui (wxFileName filename, int *multiple=NULL);
+	mxSource *FindSource(wxFileName filename, int *pos=nullptr);
+	void OpenFileFromGui (wxFileName filename, int *multiple=nullptr);
 	wxTreeItemId AddToProjectTreeSimple(wxFileName filename, eFileType where=FT_NULL);
 	wxTreeItemId AddToProjectTreeProject(wxString filename, eFileType where, bool sort=true);
 	mxSource *IsOpen (wxFileName filename);
@@ -429,7 +429,7 @@ public:
 
 	void ShowQuickHelp (wxString keyword, bool hide_compiler_tree=true);
 	
-	void CompileSource(bool force_compile, GenericAction *action=NULL);
+	void CompileSource(bool force_compile, GenericAction *action=nullptr);
 	void RunSource(mxSource *source);
 	void UpdateSymbols();
 	
@@ -516,7 +516,7 @@ public:
 //	wxMenuItem *view_quick_help;
 
 	wxHtmlWindow* quick_help;
-	wxHtmlWindow* CreateQuickHelp(wxWindow* parent = NULL);
+	wxHtmlWindow* CreateQuickHelp(wxWindow* parent = nullptr);
 	
 	void ShowWelcome(bool show=true); ///< alterna entre mostrar el notebook de fuentes y el panel de bienvenida
 

@@ -25,7 +25,7 @@ BEGIN_EVENT_TABLE(mxOpenSharedWindow, wxDialog)
 
 END_EVENT_TABLE()
 
-mxOpenSharedWindow *mxOpenSharedWindow::open_shared = NULL;
+mxOpenSharedWindow *mxOpenSharedWindow::open_shared = nullptr;
 	
 mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, LANG(OPENSHARED_CAPTION,"Abrir Compartido"), pos, size, style) {
 

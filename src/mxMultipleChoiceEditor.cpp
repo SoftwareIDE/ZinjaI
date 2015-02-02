@@ -3,7 +3,7 @@
 #include "mxMultipleChoiceEditor.h"
 #include "mxUtils.h"
 
-mxMultipleChoiceEditor *mxMultipleChoiceEditor::last_multiple_choice_editor=NULL;
+mxMultipleChoiceEditor *mxMultipleChoiceEditor::last_multiple_choice_editor=nullptr;
 
 /**
 * @brief Construye y muestra una ventana para seleccionar multiples opciones de una lista de posibles
@@ -57,6 +57,6 @@ mxMultipleChoiceEditor::mxMultipleChoiceEditor(wxWindow *parent, wxString title,
 }
 
 mxMultipleChoiceEditor::~mxMultipleChoiceEditor() {
-	if (this==last_multiple_choice_editor) last_multiple_choice_editor=NULL;
+	if (this==last_multiple_choice_editor) last_multiple_choice_editor=nullptr;
 }
 

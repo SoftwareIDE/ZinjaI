@@ -9,6 +9,7 @@
 #include <list>
 #include <wx/process.h>
 #include <wx/timer.h>
+#include "Cpp11.h"
 using namespace std;
 
 #include "paf_defs.h"
@@ -78,13 +79,13 @@ private:
 	wxString str; ///< if action_type needs a filename, its here
 	parserAction(ParserActionEnum _action, void *_ptr, bool _flag, wxString _str):action_type(_action),ptr(_ptr),flag(_flag),str(_str){}
 public:
-	static parserAction Null() { return parserAction(PA_NULL,NULL,false,""); }
-	static parserAction ClearAll() { return parserAction(PA_CLEAR_ALL,NULL,false,""); }
+	static parserAction Null() { return parserAction(PA_NULL,nullptr,false,""); }
+	static parserAction ClearAll() { return parserAction(PA_CLEAR_ALL,nullptr,false,""); }
 	static parserAction ParseSource(mxSource *src, bool dont_save) { return parserAction(PA_PARSE_OPENED_SOURCE,src,dont_save,""); }
 	static parserAction ParseProjectFile(ProjectManager *prj, wxString filename, bool hide_symbols) { return parserAction(PA_PARSE_PROJECT_FILE,prj,hide_symbols,filename); }
-	static parserAction DeleteFile(wxString filename) { return parserAction(PA_DELETE_FILE,NULL,false,filename); }
-	static parserAction ParseSavedFile(wxString filename) { return parserAction(PA_PARSE_SAVED_FILE,NULL,false,filename); }
-	static parserAction SetHideSymbols(wxString filename, bool hide_symbols) { return parserAction(PA_SET_HIDE_SYMBOLS,NULL,hide_symbols,filename); }
+	static parserAction DeleteFile(wxString filename) { return parserAction(PA_DELETE_FILE,nullptr,false,filename); }
+	static parserAction ParseSavedFile(wxString filename) { return parserAction(PA_PARSE_SAVED_FILE,nullptr,false,filename); }
+	static parserAction SetHideSymbols(wxString filename, bool hide_symbols) { return parserAction(PA_SET_HIDE_SYMBOLS,nullptr,hide_symbols,filename); }
 };
 
 
@@ -191,7 +192,7 @@ public:
 	pd_file *GetFile(wxString name);
 	/// Method for finding info for a class by its name
 	pd_class *GetClass(wxString name);
-	/// Method for finding ancestor classes for a class child (start with father=NULL an call until returns false to get all direct ancestor in father->father)
+	/// Method for finding ancestor classes for a class child (start with father=nullptr an call until returns false to get all direct ancestor in father->father)
 	bool GetFather(wxString child, pd_inherit *&father);
 	
 	
@@ -238,7 +239,7 @@ extern Parser *parser;
 class mxParserProcess:public wxProcess {
 public:
 	pd_file *file; pd_class *aux_class;
-	mxParserProcess():wxProcess(wxPROCESS_REDIRECT),file(NULL),aux_class(NULL){ parser->process_timer->Start(100,false); }
+	mxParserProcess():wxProcess(wxPROCESS_REDIRECT),file(nullptr),aux_class(nullptr){ parser->process_timer->Start(100,false); }
 	void OnTerminate(int pid, int status);
 	void ParseOutput();
 };

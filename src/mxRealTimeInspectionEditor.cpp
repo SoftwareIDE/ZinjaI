@@ -16,7 +16,7 @@ mxRealTimeInspectionEditor::mxRealTimeInspectionEditor(const wxString &expressio
 	: wxFrame(main_window,wxID_ANY,expression,wxGetMousePosition()-wxPoint(25,10),wxDefaultSize,wxDEFAULT_FRAME_STYLE|wxSTAY_ON_TOP) 
 {
 	SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
-	DebuggerInspection *di; mask_events=false;
+	DebuggerInspection *di;
 	(di = DebuggerInspection::Create(expression,DIF_DONT_USE_HELPER,this,false))->Init();
 	if (!di->GetDbiType()==DIT_VARIABLE_OBJECT) {
 		mxMessageDialog(main_window,LANG(REALTIMEINSP_ERROR_CREATING_INSPECTION,"Ha ocurrido un error al registrar la inspección"),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
@@ -46,8 +46,8 @@ void mxRealTimeInspectionEditor::Break (int num) {
 			int num;
 		public:
 			OnPauseBreak(mxRealTimeInspectionEditor *w, int n):win(w),num(n) {}
-			void Do() /*override*/ { win->Break(num); }
-			bool Invalidate(void *ptr) /*override*/ { return ptr==win; }
+			void Do() override { win->Break(num); }
+			bool Invalidate(void *ptr) override { return ptr==win; }
 		};
 		debug->PauseFor(new OnPauseBreak(this,num));
 		return;
@@ -67,16 +67,16 @@ void mxRealTimeInspectionEditor::OnClose (wxCloseEvent & evt) {
 }
 
 void mxRealTimeInspectionEditor::Add (int pos, int lev, DebuggerInspection * di) {
-	mask_events = true;
+	BoolFlagGuard fg(mask_events);
 	AuxRTIE aux; aux.di=di; wxString tabs(' ',2*lev); aux.level=lev;
 	aux.label = new wxStaticText(this,wxID_ANY,tabs+di->GetShortExpression()+": ");
 	sizer->Insert(2*pos,aux.label,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL);
 	wxControl *aux_control;
 	if (di->AskGDBIfIsEditable()) {
-		aux.button = NULL; 
+		aux.button = nullptr; 
 		aux_control = aux.text = new wxTextCtrl(this,wxID_ANY,di->GetValue(),wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
 	} else {
-		aux.text= NULL; 
+		aux.text = nullptr; 
 		aux_control = aux.button = new wxButton(this,wxID_ANY,di->GetValue(),wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_EXACTFIT);
 	}
 	
@@ -89,7 +89,6 @@ void mxRealTimeInspectionEditor::Add (int pos, int lev, DebuggerInspection * di)
 		sizer->Insert(2*pos+1,aux_control,sizers->Exp1);
 	
 	inspections.Insert(pos,aux);
-	mask_events = false;
 }
 
 void mxRealTimeInspectionEditor::OnButton (wxCommandEvent & evt) {
@@ -104,15 +103,8 @@ void mxRealTimeInspectionEditor::OnText (wxCommandEvent & evt) {
 	if (!debug->IsDebugging()) return;
 	for(int i=0;i<inspections.GetSize();i++) {
 		if (evt.GetEventObject()==inspections[i].text) {
-			mask_events = true;
+			BoolFlag fg(mask_events);
 			inspections[i].di->ModifyValue(inspections[i].text->GetValue());
-//			if (debug->IsPaused()) {
-//				if (!
-//					inspections[i].text->SetValue(inspections[i].di->GetValue());
-//			} else {
-//#warning TODO
-//			}
-			mask_events = false;
 			return;
 		}
 	}
@@ -170,8 +162,8 @@ void mxRealTimeInspectionEditor::OnUpdateValues (wxCommandEvent & evt) {
 			mxRealTimeInspectionEditor *win;
 		public:
 			OnPauseUpdateRTIEditor(mxRealTimeInspectionEditor *w) : win(w) {}
-			void Do() /*override*/ { wxCommandEvent evt; win->OnUpdateValues(evt); }
-			bool Invalidate(void *p) /*override*/ { return win==p; }
+			void Do() override { wxCommandEvent evt; win->OnUpdateValues(evt); }
+			bool Invalidate(void *p) override { return win==p; }
 		};
 		debug->PauseFor(new OnPauseUpdateRTIEditor(this));
 	} else {

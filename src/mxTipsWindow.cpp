@@ -16,7 +16,7 @@
 #include "Language.h"
 
 #define TIP_INITIAL_TEXT "<B>Sabias que...?</B><BR><BR>&nbsp;&nbsp;&nbsp;"
-mxTipsWindow *tips_window=NULL;
+mxTipsWindow *tips_window=nullptr;
 
 BEGIN_EVENT_TABLE(mxTipsWindow, wxDialog)
 	EVT_BUTTON(mxID_TIP_OTHERONE,mxTipsWindow::OnOtherOne)
@@ -29,16 +29,16 @@ BEGIN_EVENT_TABLE(mxTipsWindow, wxDialog)
 END_EVENT_TABLE()
 
 void mxTipsWindow::OnButtonClose(wxCommandEvent &event){
-	tips_window=NULL;
+	tips_window=nullptr;
 	Destroy();
 }
 void mxTipsWindow::OnClose(wxCloseEvent &event){
-	tips_window=NULL;
+	tips_window=nullptr;
 	Destroy();
 }
 
 mxTipsWindow::~mxTipsWindow() {
-	tips_window=NULL;
+	tips_window=nullptr;
 	file.Close();
 }
 

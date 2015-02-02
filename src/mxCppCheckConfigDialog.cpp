@@ -113,11 +113,11 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	szsrc_buttons->Add(new wxButton(panel,mxID_CPPCHECK_EXCLUDE_FILE,"<<<",wxDefaultPosition,wxSize(50,-1)),sizers->BA10_Exp0);
 	wxSizer *szsrc_in = new wxBoxSizer(wxVERTICAL);
 	szsrc_in->Add(new wxStaticText(panel,wxID_ANY,LANG(CPPCHECK_SOURCES_IN,"Files to analize")),sizers->Exp0);
-	sources_in = new wxListBox(panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
+	sources_in = new wxListBox(panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
 	szsrc_in->Add(sources_in,sizers->Exp1);
 	wxSizer *szsrc_out = new wxBoxSizer(wxVERTICAL);
 	szsrc_out->Add(new wxStaticText(panel,wxID_ANY,LANG(CPPCHECK_SOURCES_OUT,"Files to exclude")),sizers->Exp0);
-	sources_out = new wxListBox(panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
+	sources_out = new wxListBox(panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
 	szsrc_out->Add(sources_out,sizers->Exp1);
 	src_sizer->Add(szsrc_out,sizers->Exp1);
 	src_sizer->Add(szsrc_buttons,sizers->Center);

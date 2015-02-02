@@ -13,7 +13,7 @@
 #include "CodeHelper.h"
 using namespace std;
 
-HelpManager *help = NULL;
+HelpManager *help = nullptr;
 
 HelpManager::HelpManager() {
 //	HashStringString::iterator it;
@@ -145,7 +145,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 	// atributos
 	wxString attribs;
 	pd_var *avar = aclass->first_attrib->next;
-	while (avar!=NULL) {
+	while (avar!=nullptr) {
 		if (avar->properties&(PD_CONST_ENUM_CONST||PD_CONST_ENUM)) { avar = avar->next; continue; }
 		wxString one_attrib ="<LI>";
 		if (!aclass->is_union) {
@@ -173,7 +173,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 	// metodos
 	wxString methods;
 	pd_func *afunc = aclass->first_method->next;
-	while (afunc!=NULL) {
+	while (afunc!=nullptr) {
 		wxString one_method="<LI>";
 		if (afunc->properties&PD_CONST_PUBLIC) one_method<<"public ";
 		else if (afunc->properties&PD_CONST_PRIVATE) one_method<<"private ";
@@ -312,7 +312,7 @@ void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
 void HelpManager::HelpFor(pd_macro *amacro, wxString &content, wxString &index) {
 	if (amacro->props&(PD_CONST_ENUM_CONST|PD_CONST_ENUM)) {
 		wxString s;
-		pd_var aux(wxTreeItemId(),NULL,NULL,0,s,s,s,0,NULL);
+		pd_var aux(wxTreeItemId(),nullptr,nullptr,0,s,s,s,0,nullptr);
 		aux.file=amacro->file;
 		aux.line=amacro->line;
 		aux.properties=amacro->props;
@@ -368,7 +368,7 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 	
 	// buscar en las macros
 	pd_macro *amacro = parser->last_macro->next;
-	while (amacro!=NULL) {
+	while (amacro!=nullptr) {
 		if (amacro->name==keyword) {
 			HelpFor(amacro,ret,index);
 			cont++;
@@ -377,7 +377,7 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 	}
 	// buscar en las variable globales
 	pd_var *avar = parser->last_global->next;
-	while (avar!=NULL) {
+	while (avar!=nullptr) {
 		if (avar->name==keyword) {
 			HelpFor(avar,ret,index);
 			cont++;
@@ -386,7 +386,7 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 	}
 	// buscar en las funciones
 	pd_func *afunc = parser->last_function->next;
-	while (afunc!=NULL) {
+	while (afunc!=nullptr) {
 		if (afunc->name==keyword) {
 			HelpFor(afunc,ret,index);
 			cont++;
@@ -396,7 +396,7 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 
 	// buscar en las clases
 	pd_class *aclass = parser->last_class->next;
-	while (aclass!=NULL) {
+	while (aclass!=nullptr) {
 		// ver si es la clase
 		if (aclass->name==keyword) {
 			HelpFor(aclass,ret,index);
@@ -404,7 +404,7 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 		}
 		// buscar en los atributos
 		afunc = aclass->first_method;
-		while (afunc!=NULL) {
+		while (afunc!=nullptr) {
 			if (afunc->name==keyword || (afunc->name[0]=='~' && aclass->name==keyword)) {
 				HelpFor(afunc,ret,index);
 				cont++;
@@ -413,7 +413,7 @@ int HelpManager::GetParserHelp(wxString keyword, wxString &content) {
 		}
 		// buscar en los metodos
 		avar = aclass->first_attrib;
-		while (avar!=NULL) {
+		while (avar!=nullptr) {
 			if (avar->name==keyword) {
 				HelpFor(avar,ret,index);
 				cont++;
@@ -464,7 +464,7 @@ bool HelpManager::IsHelpForType(wxString what, wxString &link) {
 	}
 	link=what;
 	pd_class *aclass = parser->last_class->next;
-	while (aclass!=NULL) {
+	while (aclass!=nullptr) {
 		if (aclass->name==what) 
 			return true;
 		aclass = aclass->next;

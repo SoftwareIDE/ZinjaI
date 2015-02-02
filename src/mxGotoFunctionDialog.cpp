@@ -43,7 +43,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	
 	text_ctrl = new wxTextCtrl(this,wxID_ANY,"");
 	if (strict_compare) text_ctrl->Hide();
-	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,NULL,wxLB_SINGLE|wxLB_SORT);
+	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,nullptr,wxLB_SINGLE|wxLB_SORT);
 	case_sensitive = new wxCheckBox(this,wxID_ANY,LANG(GOTOFUNCTION_CASE_SENSITIVE,"&Distinguir mayusculas y minusculas"));
 	case_sensitive->SetValue(true);
 	if (strict_compare) case_sensitive->Hide();
@@ -66,7 +66,7 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	text_ctrl->SetSelection(-1,-1);
 	text_ctrl->SetFocus();
 	
-	if (!strict_compare) timer = new wxTimer(GetEventHandler(),mxID_TIMER_INPUT); else timer=NULL;
+	if (!strict_compare) timer = new wxTimer(GetEventHandler(),mxID_TIMER_INPUT); else timer=nullptr;
 	
 	if (text.Len()) {
 		text_ctrl->SetValue(text);

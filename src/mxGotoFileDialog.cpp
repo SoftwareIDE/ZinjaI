@@ -37,7 +37,7 @@ mxGotoFileDialog::mxGotoFileDialog(wxString text, wxWindow* parent, int _goto_li
 	goto_button->SetDefault(); 
 	
 	text_ctrl = new wxTextCtrl(this,wxID_ANY,"");
-	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,NULL,wxLB_SINGLE|wxLB_SORT);
+	list_ctrl = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(450,300),0,nullptr,wxLB_SINGLE|wxLB_SORT);
 	case_sensitive = new wxCheckBox(this,wxID_ANY,LANG(GOTOFILE_CASE_SENSITIVE,"&Distinguir mayusculas y minusculas"));
 	
 	bottomSizer->Add(new wxButton(this,mxID_EDIT_GOTO_FUNCTION,"Buscar clase/metodo/función...",wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);

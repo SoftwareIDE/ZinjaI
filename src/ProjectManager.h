@@ -96,7 +96,7 @@ struct compile_extra_step {
 	bool hide_window; ///< si debe ocultar la ventana/consola donde se ejecuta
 	bool delete_on_clean; ///< si debe eliminar este archivo al hacer un clean del proyecto
 	bool link_output; ///< si debe agregar el archivo de salida a la lista de objetos a enlazar
-	compile_extra_step():deps(""),out(""),command(""),name("<noname>"),pos(0),next(NULL),prev(NULL),check_retval(false),hide_window(true),delete_on_clean(true),link_output(false) {}
+	compile_extra_step():deps(""),out(""),command(""),name("<noname>"),pos(0),next(nullptr),prev(nullptr),check_retval(false),hide_window(true),delete_on_clean(true),link_output(false) {}
 };
 
 
@@ -106,7 +106,7 @@ struct compile_extra_step {
 * Estructura que representa la información para configurar doxygen. El archivo Doxyfile se regenera
 * cada vez que hay que generar la documentación, a partir de esta estructura. Existe, cuanto mucho 
 * una instancia (para el proyecto en curso). Se referencia con el puntero doxygen de
-* ProjectManager, que puede ser NULL si no se ha definido la configuarción Doxygen para dicho proyecto
+* ProjectManager, que puede ser nullptr si no se ha definido la configuarción Doxygen para dicho proyecto
 * Si el puntero es valido, y el atributo save es true, se graba en el archivo de proyecto
 **/
 struct doxygen_configuration {
@@ -188,7 +188,7 @@ struct wxfb_configuration {
 * 
 * Estructura que representa la información para configurar cppcheck. Existe, cuanto mucho 
 * una instancia (para el proyecto en curso). Se referencia con el puntero cppcheck de
-* ProjectManager, que puede ser NULL si no se ha definido la configuarción Doxygen para dicho proyecto
+* ProjectManager, que puede ser nullptr si no se ha definido la configuarción Doxygen para dicho proyecto
 * Si el puntero es valido, y el atributo save es true, se graba en el archivo de proyecto
 **/
 struct cppcheck_configuration {
@@ -232,10 +232,10 @@ struct project_library {
 	wxString filename; ///< archivo de salida (ruta completa del destino), para AnalizeConfig y PrepareForBuilding
 	project_library *next;
 	project_library *prev;
-	project_library(project_library *aprev=NULL) {
+	project_library(project_library *aprev=nullptr) {
 		is_static=true;
 		need_relink=false;
-		next=NULL;
+		next=nullptr;
 		prev=aprev;
 	}
 };
@@ -286,15 +286,15 @@ struct project_configuration {
 	wxString libraries; ///< librearias para enlazar (para pasar con -l)
 	int strip_executable; ///< que hacer durante el enlazado con la info de depuracion (las opciones estan en el enum DebugSymbolsAction)
 	bool console_program; ///< marcar como programa de consola (sino, no usar el runner y compilar con -mwindows)
-	compile_extra_step *extra_steps; ///< puntero al primer item de la lista de pasos adicionales para la compilacion (sin primer nodo ficticio), NULL si no hay pasos extra
+	compile_extra_step *extra_steps; ///< puntero al primer item de la lista de pasos adicionales para la compilacion (sin primer nodo ficticio), nullptr si no hay pasos extra
 	project_library *libs_to_build; ///< bibliotecas a construir, lista enlazada sin primer nodo ficticio
 	bool dont_generate_exe; ///< no generar ejecutable, solo bibliotecas
 	
 		
 	//! inicializa la configuración con los valores por defecto
 	project_configuration(wxString pname, wxString cname) {
-		libs_to_build=NULL;
-		bakup=NULL;
+		libs_to_build=nullptr;
+		bakup=nullptr;
 		name=cname;
 		working_folder="";
 		always_ask_args=false;
@@ -317,7 +317,7 @@ struct project_configuration {
 		strip_executable=DBSACTION_KEEP;
 		console_program=true;
 		dont_generate_exe=false;
-		extra_steps=NULL;
+		extra_steps=nullptr;
 		toolchain="";
 		std_c=std_cpp="";
 		for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) toolchain_arguments[i]="${DEFAULT}";
@@ -326,7 +326,7 @@ struct project_configuration {
 	/// inicializa una nueva configuracion a partir de una existente
 	project_configuration(wxString cname, project_configuration *copy_from) {
 		(*this)=*copy_from; // this copy is not correct, copies ptrs
-		bakup=NULL;
+		bakup=nullptr;
 		name=cname;
 		if (extra_steps) {
 			compile_extra_step *aux = extra_steps = new compile_extra_step(*extra_steps);
@@ -380,7 +380,7 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 		force_recompile=false;
 		read_only=false;
 		hide_symbols=false;
-		lib=NULL;
+		lib=nullptr;
 	}
 	project_file_item (const wxString &n, const wxTreeItemId &i, const eFileType w) {
 		Init();
@@ -424,7 +424,7 @@ struct compile_step {
 	void *what; ///< puntero al project_file_item si es un fuente, al compile_extra_step si es un paso personalizado, o basura si para enlazar
 	compile_step *next; ///< puntero al siguiente paso (lista simplemente enlazada)
 	//! constructor
-	compile_step(ces_type t, void *w) : type(t),start_parallel(false),what(w),next(NULL) {}
+	compile_step(ces_type t, void *w) : type(t),start_parallel(false),what(w),next(nullptr) {}
 };
 
 
@@ -457,7 +457,7 @@ struct stripping_info {
 * adicional, y encapsula todos los métodos específicos para admistrar, compilar y 
 * ejecutar proyectos. No se puede crear en blanco, sino que siempre a partir de un 
 * archivo. En la aplicación existe un puntero proyect que siempre apunta al proyecto 
-* actual; o es NULL si no hay proyecto abierto.
+* actual; o es nullptr si no hay proyecto abierto.
 **/
 class ProjectManager {
 	
@@ -476,10 +476,10 @@ public:
 	float actual_progress; ///< temporal para calcular el porcentaje de progreso segun las cuentas de pasos
 	float progress_step; ///< temporal para guardar de a cuanto avanza la barra de progreso al avanzar un paso
 	bool force_relink;	///< indica si debe reenlazar si o si en la proxima compilacion, aunque el exe esté al día
-	cppcheck_configuration *cppcheck; ///< configuracion para ejecutar cppcheck, NULL si no esta definido en el proyecto
+	cppcheck_configuration *cppcheck; ///< configuracion para ejecutar cppcheck, nullptr si no esta definido en el proyecto
 private:
-	wxfb_configuration *wxfb; ///< configuración de la integración con wxfb (si es NULL no está activada)
-	doxygen_configuration *doxygen; ///< configuracion para el Doxyfile, NULL si no esta definido en el proyecto
+	wxfb_configuration *wxfb; ///< configuración de la integración con wxfb (si es nullptr no está activada)
+	doxygen_configuration *doxygen; ///< configuracion para el Doxyfile, nullptr si no esta definido en el proyecto
 public:
 	doxygen_configuration* GetDoxygenConfiguration();
 	wxfb_configuration* GetWxfbConfiguration(bool create_activated=true);
@@ -519,7 +519,7 @@ public:
 	bool modified; ///< indica si algo cambió en la configuración del proyecto
 	wxArrayString warnings; ///< advertencias generadas por ZinjaI que deben agregarse mas tarde al arbol de resultados
 	
-	project_configuration *GetConfig(wxString name); ///< busca una configuracion por nombre, y devuelve un puntero si la encuentra, NULL si no
+	project_configuration *GetConfig(wxString name); ///< busca una configuracion por nombre, y devuelve un puntero si la encuentra, nullptr si no
 	
 	bool GenerateDoxyfile(wxString fname); ///< escribe el archivo de configuración para Doxygen
 	wxString WxfbGetSourceFile(wxString fbp_file); ///< funcion auxiliar que devuelve el nombre (path+nombre, sin extension) de los archivos que genera el archivo .fbp que recibe
@@ -546,7 +546,7 @@ public:
 	/// Determina si el archivo item usa alguna de las macros de la lista macros
 	bool DependsOnMacro(project_file_item *item, wxArrayString &macros);
 	/// Guarda todo y marca cuales archivos hay que recompilar, devuelve falso si no hay que compilar ninguno ni reenlazar el ejecutable
-	bool PrepareForBuilding(project_file_item *only_one=NULL);
+	bool PrepareForBuilding(project_file_item *only_one=nullptr);
 	/// Ejecuta el próximo paso para la construcción del proyecto
 	long int CompileNext(compile_and_run_struct_single *compile_and_run, wxString &object_name);
 	/// Compila el archivo de recursos temporal del proyecto (generado por PrepareForBuilding), se invoca a través de CompileNext, no directamente
@@ -581,7 +581,7 @@ public:
 	/// Sets read_only and hide_symbols properties for project_file_items from wxfb projects
 	void WxfbSetFileProperties(bool change_read_only, bool read_only_value, bool change_hide_symbols, bool hide_symbols_value);
 	/// Regenera uno o todos los proyecto wxFormBuilder
-	bool WxfbGenerate(bool show_osd=false, project_file_item *cual=NULL);
+	bool WxfbGenerate(bool show_osd=false, project_file_item *cual=nullptr);
 private:
 	/// Funcion auxiliar para el otro WxfbGenerate, esta es la que realmente hace el trabajo, la otra funcion de wrapper para seleccionar cuales proyectos
 	bool WxfbGenerate(wxString fbp_file, wxString fbase, bool force_regen, mxOSD **osd);
@@ -631,9 +631,9 @@ public:
 	project_library *GetLibToBuild(project_configuration *conf, wxString libname);
 	
 	/// @brief Asocia los fuenes a las bibliotecas de una configuracion (llena el puntero lib de project_file_item)
-	void AssociateLibsAndSources(project_configuration *conf=NULL);
+	void AssociateLibsAndSources(project_configuration *conf=nullptr);
 	/// @brief Guarda las asociaciones de los fuentes (puntero lib de project_file_item) en la configuracion que recibe
-	void SaveLibsAndSourcesAssociation(project_configuration *conf=NULL);
+	void SaveLibsAndSourcesAssociation(project_configuration *conf=nullptr);
 	
 	/** @brief Añade un paso de compilación personalizado a una configuración  **/
 	compile_extra_step *InsertExtraSteps(project_configuration *conf, wxString name, wxString cmd, int pos);

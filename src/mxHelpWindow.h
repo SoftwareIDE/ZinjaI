@@ -13,7 +13,7 @@ class mxHelpWindow:public mxGenericHelpWindow {
 	wxString GetHelpFile(wxString file);
 	
 public:
-	static void ShowHelp(wxString page="", wxDialog *from_modal=NULL);
+	static void ShowHelp(wxString page="", wxDialog *from_modal=nullptr);
 	
 	void LoadHelp(wxString file);
 	

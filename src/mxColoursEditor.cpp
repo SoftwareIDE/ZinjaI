@@ -15,7 +15,7 @@
 #include "ConfigManager.h"
 #include "mxSource.h"
 
-color_theme *ctheme = NULL;
+color_theme *ctheme = nullptr;
 
 BEGIN_EVENT_TABLE(mxColoursEditor,wxDialog)
 	EVT_BUTTON(wxID_SAVE,mxColoursEditor::OnSave)
@@ -106,7 +106,7 @@ void mxColoursEditor::Add(wxString name, wxColour *fore, wxColour *back, bool *i
 	sizer->Add(llabel[lcount] = new mxStaticText(scroll,name),sizers->BA5_Exp0);
 	llabel[lcount]->SetToolTip(name);
 	
-	ltfore[lcount]=ltback[lcount]=NULL;
+	ltfore[lcount]=ltback[lcount]=nullptr;
 	
 	if (fore) {
 		wxBoxSizer *btsizer = new wxBoxSizer(wxHORIZONTAL);
@@ -157,9 +157,9 @@ mxColoursEditor::~mxColoursEditor() {
 }
 
 #define MXCAdd(id,text) Add(text,&(ctheme->id##_FORE),&(ctheme->id##_BACK),&(ctheme->id##_ITALIC),&(ctheme->id##_BOLD));
-#define MXCAdd0(id,text) Add(text,&(ctheme->id##_FORE),&(ctheme->id##_BACK),NULL,NULL);
-#define MXCAdd1(id,text) Add(text,&(ctheme->id),NULL,NULL,NULL);
-#define MXCAdd2(id,text) Add(text,NULL,&(ctheme->id),NULL,NULL);
+#define MXCAdd0(id,text) Add(text,&(ctheme->id##_FORE),&(ctheme->id##_BACK),nullptr,nullptr);
+#define MXCAdd1(id,text) Add(text,&(ctheme->id),nullptr,nullptr,nullptr);
+#define MXCAdd2(id,text) Add(text,nullptr,&(ctheme->id),nullptr,nullptr);
 
 void mxColoursEditor::LoadList ( ) {
 	lcount=0;
@@ -387,7 +387,7 @@ BEGIN_EVENT_TABLE(mxStaticText,wxPanel)
 END_EVENT_TABLE()
 
 mxStaticText::mxStaticText (wxWindow *parent, wxString text):wxPanel(parent,wxID_ANY) {
-	this->text=text; fore=NULL;
+	this->text=text; fore=nullptr;
 }
 
 void mxStaticText::OnPaint(wxPaintEvent &evt) {

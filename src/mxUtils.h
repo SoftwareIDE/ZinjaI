@@ -29,6 +29,7 @@
 #define WILDCARD_ALL "*"
 #include "enums.h"
 #include "Language.h"
+#include "Cpp11.h"
 
 class wxBoxSizer;
 class wxTextCtrl;
@@ -78,46 +79,18 @@ WX_DECLARE_STRING_HASH_MAP( wxTreeItemId, HashStringTreeItem );
 * macros auxiliares para trabajar con mis listas enlazadas made in home
 **/
 // /** @brief eliminar un item de una lista doblemente enlazada **/
-//#define ML_REMOVE(item) if ((item->prev->next=item->next)!=NULL) item->next->prev=item->prev;
+//#define ML_REMOVE(item) if ((item->prev->next=item->next)!=nullptr) item->next->prev=item->prev;
 // /** @brief while (hay un item mas) **/
-//#define ML_WHILE(item) while(item->next!=NULL)
-/** @brief avanzar al siguiente item **/
-#define ML_NEXT(item) item=item->next;
+//#define ML_WHILE(item) while(item->next!=nullptr)
+// /** @brief avanzar al siguiente item **/
+//#define ML_NEXT(item) item=item->next;
 /** @brief iterar por una lista (de primer elemento ficticio) **/
 #define ML_ITERATE(item) while(item->next && (item=item->next))
 // /** @brief vaciar una lista (dejando al primer item ficticio) **/
-//#define ML_CLEAN(first) if (first->next) { typeof(first) ml_aifc; typeof(first) item=first->next; first->next=NULL; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
+//#define ML_CLEAN(first) if (first->next) { typeof(first) ml_aifc; typeof(first) item=first->next; first->next=nullptr; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
 // /** @brief eliminar una lista (incluyendo al primer item ficticio) **/
 //#define ML_FREE(item) { typeof(item) ml_aifc; while(item->next) { ml_aifc=item; item=item->next; delete ml_aifc; } delete item; }
 
-// crappy workaround for the need of lambda functions (mac port use some old pre c++11 gcc)
-class GenericAction {
-public:
-	virtual void Do()=0;
-	virtual ~GenericAction(){};
-};
-#define _LAMBDA_0(Name,Action) \
-	class Name : public GenericAction {\
-	public: void Do() { Action } };
-
-#define _LAMBDA_1(Name,Type,Arg,Action) \
-	class Name : public GenericAction {\
-	public: Name(Type arg) : Arg(arg) {} \
-	public: void Do() { Action } \
-	private: Type Arg; };
-
-template<class T>
-class RaiiDelete {
-	T *&p;
-public:
-	RaiiDelete(T *&ptr) : p(ptr) {}
-	~RaiiDelete() { delete p; }
-};
-
-// fms stands for faked-move-semantics, this project should still compile in pre c++11 compilers
-template<class T> void fms_move(T *&des, T *&src) { des=src; src=NULL; }
-template<class T> T *fms_move(T *&src) { T *des=src; src=NULL; return des; }
-template<class T> T *&fms_delete(T *&des) { if (des) delete des; des=NULL; return des; }
 
 /**
 * @brief Clase para contener funciones varias de uso general
@@ -261,7 +234,7 @@ public:
 	
 	/// popups para cuadros de texto con boton de "..."
 	static void ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxString options, wxString path="");
-	static void ProcessTextPopup(int id, wxWindow *parent=NULL, wxTextCtrl *t=NULL, wxString path="", wxString title="", bool replace=false, bool comma_splits=false);
+	static void ProcessTextPopup(int id, wxWindow *parent=nullptr, wxTextCtrl *t=nullptr, wxString path="", wxString title="", bool replace=false, bool comma_splits=false);
 	
 	/// determina el tipo de archivo segun su extension
 	static eFileType GetFileType(wxString name, bool recognize_projects=true);

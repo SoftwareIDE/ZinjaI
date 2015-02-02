@@ -4,6 +4,7 @@
 #include <wx/scrolwin.h>
 #include <wx/dcclient.h>
 #include <list>
+#include "Cpp11.h"
 using namespace std;
 
 
@@ -42,7 +43,7 @@ private:
 		int x,y;
 		wxString text;
 		wxColour *colour;
-		fc_text(int ax=0, int ay=0, wxString atext="", wxColour *acolour=NULL) {
+		fc_text(int ax=0, int ay=0, wxString atext="", wxColour *acolour=nullptr) {
 			x=ax; y=ay;
 			text = atext;
 			colour = acolour;

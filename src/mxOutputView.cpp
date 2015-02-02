@@ -28,7 +28,7 @@ END_EVENT_TABLE()
 * @param output_file   if output_mode!=mxVO_NULL, the full path for the output file
 **/
 mxOutputView::mxOutputView(wxString caption, mxOVmode extra_mode, wxString extra_label, wxString extra_command, mxVOmode output_mode, wxString output_file) : wxDialog(main_window, wxID_ANY, caption, wxDefaultPosition, wxSize(600,500) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	process = NULL;
+	process = nullptr;
 	working = false;
 	this->extra_mode=extra_mode;
 	this->extra_label=extra_label;
@@ -38,7 +38,7 @@ mxOutputView::mxOutputView(wxString caption, mxOVmode extra_mode, wxString extra
 	
 	if (output_mode!=mxVO_NULL) {
 		textfile=new wxFile(output_file,wxFile::write);
-	} else textfile=NULL;
+	} else textfile=nullptr;
 	
 	timer = new wxTimer(GetEventHandler(),mxID_TIMER_OUTPUT);
 	
@@ -122,7 +122,7 @@ void mxOutputView::Launched(wxProcess *_process, int _pid) {
 void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
 	OnProcessTerminateCommon(evt.GetExitCode());
 	delete process;
-	process=NULL;
+	process=nullptr;
 }
 
 void mxOutputView::OnProcessTerminateCommon(int exit_code) {

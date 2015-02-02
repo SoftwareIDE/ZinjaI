@@ -13,7 +13,7 @@ BEGIN_EVENT_TABLE(mxFlowWindow, wxFrame)
 END_EVENT_TABLE()
 
 
-mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (NULL,wxID_ANY,"",wxDefaultPosition,wxSize(500,500)) {
+mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (nullptr,wxID_ANY,"",wxDefaultPosition,wxSize(500,500)) {
 	source = src;
 	int s,ps = source->GetSelectionStart()<source->GetSelectionEnd()?source->GetSelectionStart():source->GetSelectionEnd();
 	int p=ps;

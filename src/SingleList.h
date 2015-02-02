@@ -1,6 +1,7 @@
 #ifndef SINGLELIST_H
 #define SINGLELIST_H
 #include <cstddef>
+#include "Cpp11.h"
 
 /** 
 * SingleList is a simple array based container, similar to std::vector, but here doesn't care about maintaining the order.
@@ -32,7 +33,7 @@ protected:
 	}
 public:
 	static int NotFound() { return -1; }
-	SingleList():m_vec(NULL),m_size(0),m_capacity(0) {
+	SingleList():m_vec(nullptr),m_size(0),m_capacity(0) {
 		
 	}
 	SingleList(int size):m_size(size),m_capacity(size) {
@@ -45,7 +46,7 @@ public:
 		m_vec=list->m_vec;
 		m_size=list->m_size;
 		m_capacity=list->m_capacity;
-		list->m_vec=NULL;
+		list->m_vec=nullptr;
 		list->m_size=list->m_capacity=0;
 	}
 	int GetSize() const { 
@@ -88,7 +89,7 @@ public:
 	/// reset completo, libera la memoria eliminando todos los datos
 	void Reset() {
 		delete []m_vec;
-		m_vec=NULL;
+		m_vec=nullptr;
 		m_capacity=m_size=0;
 	}
 	/// reset logico, no libera memoriaººº
@@ -141,10 +142,10 @@ template<class T>
 struct LocalListNodePtr {
 	LocalList<T> *m_list;
 	int m_pos;
-	LocalListNodePtr() : m_list(NULL) {}
+	LocalListNodePtr() : m_list(nullptr) {}
 	LocalListNodePtr(LocalList<T> *list, int pos): m_list(list), m_pos(pos) {}
-	bool IsNull() const { return m_list==NULL; }
-	void SetNull() { m_list=NULL; }
+	bool IsNull() const { return m_list==nullptr; }
+	void SetNull() { m_list=nullptr; }
 	LocalListNode<T>* operator->();
 };
 
@@ -234,7 +235,7 @@ class LocalList : private SingleList<LocalListNode<T> > {
 	LocalList(const LocalList &other) {} ///< it is not allowed to duplicate a LocalList
 public:
 	/// creates an not-initializaed local list (no global list attached, should call Init before using it)
-	LocalList():m_global_list(NULL) { }
+	LocalList():m_global_list(nullptr) { }
 	/// initialize a list created with the default null constructor (attachs a global list)
 	void Init(GlobalList<T> *global_list) {
 		m_global_list=global_list;

@@ -133,7 +133,7 @@ void er_init(const char *dir) {
 		er_dir+="/";
 #endif
 	}
-	er_first_source = new er_source_register(NULL,NULL,NULL);
+	er_first_source = new er_source_register(nullptr,nullptr,nullptr);
 #ifndef _ZINJAI_DEBUG
 	signal(SIGSEGV,er_sigsev);
 	signal(SIGPIPE,er_sigsev);
@@ -142,6 +142,6 @@ void er_init(const char *dir) {
 
 
 void er_uninit() {
-	signal(SIGSEGV,NULL);
-	signal(SIGPIPE,NULL);
+	signal(SIGSEGV,nullptr);
+	signal(SIGPIPE,nullptr);
 }

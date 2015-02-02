@@ -28,8 +28,8 @@ public:
 		sz->AddStretchSpacer(1);
 		SetSizer(sz);
 		ShowCurrent();
-		current->Connect( wxEVT_KEY_DOWN, wxKeyEventHandler( mxShortcutGrabber::OnKeyDown), NULL, this );
-		current->Connect( wxEVT_KEY_UP, wxKeyEventHandler( mxShortcutGrabber::OnKeyUp), NULL, this );
+		current->Connect( wxEVT_KEY_DOWN, wxKeyEventHandler( mxShortcutGrabber::OnKeyDown), nullptr, this );
+		current->Connect( wxEVT_KEY_UP, wxKeyEventHandler( mxShortcutGrabber::OnKeyUp), nullptr, this );
 	}
 	void ShowCurrent() {
 		wxString text;

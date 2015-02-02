@@ -4,7 +4,7 @@
 #include <wx/settings.h>
 
 #if defined(__APPLE__) || defined(__WIN32__)
-wxColour *mxBitmapButton::background_colour = NULL;
+wxColour *mxBitmapButton::background_colour = nullptr;
 #endif
 
 mxBitmapButton::mxBitmapButton(wxWindow *parent, wxWindowID id, wxBitmap *abmp, wxString atext, wxSize size) : wxBitmapButton(parent,id,mxBitmapButton::GenerateButtonImage(atext,abmp),wxDefaultPosition,size) {
@@ -32,7 +32,7 @@ wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, wxBitmap *bmp) {
 	
 #if defined(__APPLE__) || defined(__WIN32__)
 	if (!background_colour)
-		background_colour = new wxColour(wxButton(NULL,wxID_ANY,_T("lala")).GetBackgroundColour());
+		background_colour = new wxColour(wxButton(nullptr,wxID_ANY,_T("lala")).GetBackgroundColour());
 #endif
 
 	wxColour c(253,253,253);

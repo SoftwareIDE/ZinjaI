@@ -474,18 +474,18 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	
 	EXTERNAL_SOURCE=(mxSource*)this;
-	focus_source=NULL;
-	m_macro=NULL;
-	master_source=NULL;
+	focus_source=nullptr;
+	m_macro=nullptr;
+	master_source=nullptr;
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
 	untitled_count=0;
-	valgrind_panel=NULL; 
-	beginner_panel=NULL;
-	gcov_sidebar=NULL;
-	diff_sidebar=NULL;
+	valgrind_panel=nullptr; 
+	beginner_panel=nullptr;
+	gcov_sidebar=nullptr;
+	diff_sidebar=nullptr;
 	for (int i=0;i<ATH_COUNT;i++)
-		autohide_handlers[i]=NULL;
+		autohide_handlers[i]=nullptr;
 
 #ifndef __APPLE__
 	// esto genera el problema de "image file is not of type 9"?
@@ -505,7 +505,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 		left_panels->SetSelection(1);
 		SetExplorerPath(config->Files.last_dir);
 	} else {
-		left_panels=NULL;
+		left_panels=nullptr;
 		aui_manager.AddPane(CreateExplorerTree(), wxAuiPaneInfo().Name("explorer_tree").Caption(LANG(CAPTION_EXPLORER_TREE,"Explorador de Archivos")).Left().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
 		aui_manager.AddPane(CreateProjectTree(), wxAuiPaneInfo().Name("project_tree").Caption(LANG(CAPTION_PROJECT_TREE,"Arbol de Archivos")).Left().CloseButton(true).MaximizeButton(true).Hide().Position(1).MaximizeButton(!config->Init.autohiding_panels));
 		aui_manager.AddPane(CreateSymbolsTree(), wxAuiPaneInfo().Name("symbols_tree").Caption(LANG(CAPTION_SYMBOLS_TREE,"Arbol de Simbolos")).Left().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
@@ -526,7 +526,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_THREADS] = new mxHidenPanel(this,threadlist_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_THREADS,"Hilos"));
 	aui_manager.AddPane(CreateNotebookSources(), wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
-	aui_manager.AddPane(debug_log_panel=new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_HSCROLL),wxAuiPaneInfo().Name("debug_messages").Bottom().Caption(LANG(CAPTION_DEBUGGER_LOG,"Mensajes del Depurador")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
+	aui_manager.AddPane(debug_log_panel=new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr,wxLB_HSCROLL),wxAuiPaneInfo().Name("debug_messages").Bottom().Caption(LANG(CAPTION_DEBUGGER_LOG,"Mensajes del Depurador")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_DEBUG_LOG] = new mxHidenPanel(this,debug_log_panel,HP_BOTTOM,LANG(MAINW_AUTOHIDE_DEBUG_LOG,"Log Depurador"));
 	
@@ -572,17 +572,17 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 	compiler = new mxCompiler(compiler_tree.treeCtrl,compiler_tree.state,compiler_tree.errors,compiler_tree.warnings,compiler_tree.all);
 
-	wizard = NULL; //new mxNewWizard(this);
-	share = NULL; // new ShareManager();
+	wizard = nullptr; //new mxNewWizard(this);
+	share = nullptr; // new ShareManager();
 
 	parser_timer = new wxTimer(GetEventHandler(),mxID_PARSER_TIMER);
 	compiler->timer = new wxTimer(GetEventHandler(),mxID_COMPILER_TIMER);
-	find_replace_dialog = NULL; // new mxFindDialog(this,wxID_ANY);
+	find_replace_dialog = nullptr; // new mxFindDialog(this,wxID_ANY);
 	
-	current_after_events_action = call_after_events = NULL;
+	current_after_events_action = call_after_events = nullptr;
 	after_events_timer = new wxTimer(GetEventHandler(),mxID_TIMER_AFTER_EVENTS);
 	
-	SetDropTarget(new mxDropTarget(NULL));
+	SetDropTarget(new mxDropTarget(nullptr));
 	
 	if (config->Init.show_beginner_panel) {
 		CreateBeginnersPanel();
@@ -877,7 +877,7 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 	config->Save();
 	while (notebook_sources->GetPageCount()) notebook_sources->DeletePage(0); // close sources to avoid paint events and other calls that could use some just deleted objects
 	if (share) delete share;
-	main_window=NULL;
+	main_window=nullptr;
 	er_uninit();
 #ifdef __APPLE__
 	aui_manager.GetPane(_get_toolbar(tbFIND)).Hide();
@@ -891,7 +891,7 @@ void mxMainWindow::OnEditFind (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		find_replace_dialog->ShowFind(CURRENT_SOURCE);
 	} else
-		find_replace_dialog->ShowFind(NULL);
+		find_replace_dialog->ShowFind(nullptr);
 	return;
 }
 
@@ -924,7 +924,7 @@ void mxMainWindow::OnEditReplace (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		find_replace_dialog->ShowReplace(CURRENT_SOURCE);
 	} else
-		find_replace_dialog->ShowReplace(NULL);
+		find_replace_dialog->ShowReplace(nullptr);
 	return;
 }
 
@@ -978,7 +978,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 		mxSource *src=OpenFile(the_one);
 		if (src && src!=EXTERNAL_SOURCE) src->MarkError(line-1);
 	} else if (action=="gotopos") { // not used anymore?
-		mxSource *source=NULL;
+		mxSource *source=nullptr;
 		wxString the_one=post.BeforeLast(':').BeforeLast(':');
 		long int p1=0,p2=0;
 		event.GetLinkInfo().GetHref().BeforeLast(':').AfterLast(':').ToLong(&p1);
@@ -1000,7 +1000,7 @@ void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 			source->SetSelection(p1,p1+p2);
 		}
 	} else if (action=="gotolinepos") {
-		mxSource *source=NULL;
+		mxSource *source=nullptr;
 		wxString the_one=post.BeforeLast(':').BeforeLast(':').BeforeLast(':');
 		long int p1=0,p2=0,line=0;
 		event.GetLinkInfo().GetHref().BeforeLast(':').BeforeLast(':').AfterLast(':').ToLong(&line);
@@ -1247,7 +1247,7 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 			// colocar las opciones comunes al popup del arbol de proyecto
 			PopulateProjectFilePopupMenu(menu,fi,true);
 		} else {
-			PopulateProjectFilePopupMenu(menu,NULL,true);
+			PopulateProjectFilePopupMenu(menu,nullptr,true);
 		}
 	}
 	menu.AppendSeparator();
@@ -1326,9 +1326,9 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	if (event.pane->name == "compiler_tree") {
 		if (!config->Init.autohiding_panels) _menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
 	} else if (event.pane->name == "diff_sidebar") {
-		aui_manager.DetachPane(diff_sidebar); diff_sidebar->Destroy(); diff_sidebar=NULL;
+		aui_manager.DetachPane(diff_sidebar); diff_sidebar->Destroy(); diff_sidebar=nullptr;
 	} else if (event.pane->name == "gcov_sidebar") {
-		aui_manager.DetachPane(gcov_sidebar); gcov_sidebar->Destroy(); gcov_sidebar=NULL;
+		aui_manager.DetachPane(gcov_sidebar); gcov_sidebar->Destroy(); gcov_sidebar=nullptr;
 	} else if (event.pane->name == "left_panels")
 		_menu_item(mxID_VIEW_LEFT_PANELS)->Check(false);
 	else if (event.pane->name == "project_tree") {
@@ -1359,7 +1359,7 @@ void mxMainWindow::OnExit(wxCommandEvent &event) {
 
 
 mxMainWindow::~mxMainWindow() {
-	main_window=NULL;
+	main_window=nullptr;
     aui_manager.UnInit();
 }
 
@@ -1407,7 +1407,7 @@ void mxMainWindow::OnNotebookPanelsChanged(wxAuiNotebookEvent& event) {
 }
 
 wxAuiNotebook *mxMainWindow::CreateLeftPanels() {
-	explorer_tree.treeCtrl=symbols_tree.treeCtrl=project_tree.treeCtrl=NULL;
+	explorer_tree.treeCtrl=symbols_tree.treeCtrl=project_tree.treeCtrl=nullptr;
 //	wxSize client_size = GetClientSize();
 	left_panels = new wxAuiNotebook(this, mxID_LEFT_PANELS, wxDefaultPosition, wxSize(200,400), wxAUI_NB_BOTTOM | wxNO_BORDER);
 	return left_panels;
@@ -1620,7 +1620,7 @@ void mxMainWindow::OnRunClean (wxCommandEvent &event) {
 
 void mxMainWindow::OnRunBuild (wxCommandEvent &event) {
 	_prevent_execute_yield_execute_problem;
-	compiler->BuildOrRunProject(false,NULL);
+	compiler->BuildOrRunProject(false,nullptr);
 }
 
 
@@ -1713,9 +1713,9 @@ void mxMainWindow::OnPreferences (wxCommandEvent &event) {
 void mxMainWindow::OnRunCompile (wxCommandEvent &event) {
 	_prevent_execute_yield_execute_problem;
 	if (project) {
-		compiler->BuildOrRunProject(false,NULL);
+		compiler->BuildOrRunProject(false,nullptr);
 	} else IF_THERE_IS_SOURCE {
-		CompileSource(true,NULL);
+		CompileSource(true,nullptr);
 	}
 }
 
@@ -2434,14 +2434,14 @@ mxSource *mxMainWindow::IsOpen (wxFileName filename) {
 		if ( !((mxSource*)(notebook_sources->GetPage(i)))->sin_titulo && 
 			SameFile(((mxSource*)(notebook_sources->GetPage(i)))->source_filename,filename))
 				return (mxSource*)(notebook_sources->GetPage(i));
-	return NULL;
+	return nullptr;
 }
 
 mxSource *mxMainWindow::IsOpen (wxTreeItemId tree_item) {
 	for (int i=0,j=notebook_sources->GetPageCount();i<j;i++)
 		if ( ((mxSource*)(notebook_sources->GetPage(i)))->treeId == tree_item )
 			return (mxSource*)(notebook_sources->GetPage(i));
-	return NULL;
+	return nullptr;
 }
 
 // esta funcion solo se llama cuando no es proyecto
@@ -2491,11 +2491,11 @@ mxSource *mxMainWindow::FindSource(wxFileName filename, int *pos) {
 			return (mxSource*)(notebook_sources->GetPage(i));
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 /**
-* @return NULL si no encuentra el archivo, puntero al mxSource si lo abre en Zinjai, 
+* @return nullptr si no encuentra el archivo, puntero al mxSource si lo abre en Zinjai, 
 *         o puntero a main_window si se abre con un programa externo (como wxFormBuilder)
 *
 * @param filename 			path completo del archivo a abrir
@@ -2506,7 +2506,7 @@ mxSource *mxMainWindow::FindSource(wxFileName filename, int *pos) {
 mxSource *mxMainWindow::OpenFile (const wxString &filename, bool add_to_project) {
 	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	if (filename=="" || !wxFileName::FileExists(filename))
-		return NULL;
+		return nullptr;
 	
 	if (project && project->GetWxfbActivated() && filename.Len()>4 && filename.Mid(filename.Len()-4).CmpNoCase(".fbp")==0) {
 		if (add_to_project) {
@@ -2530,7 +2530,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		source->SetFocus();
 		not_opened=false;
 	} else {
-		project_file_item *fitem=project?project->FindFromName(filename):NULL;
+		project_file_item *fitem=project?project->FindFromName(filename):nullptr;
 		source = new mxSource(notebook_sources, AvoidDuplicatePageText(wxFileName(filename).GetFullName()),fitem);
 		source->sin_titulo=false;
 		source->LoadFile(filename);
@@ -2783,7 +2783,7 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 		}
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
 //		(*pageSetupData) = * printData;
-//		wxPageSetupDialog pageSetupDialog(NULL, pageSetupData);
+//		wxPageSetupDialog pageSetupDialog(nullptr, pageSetupData);
 //		if (wxID_OK!=pageSetupDialog.ShowModal()) return;
 //		*printData = pageSetupDialog.GetPageSetupData().GetPrintData();
 //		*pageSetupData = pageSetupDialog.GetPageSetupData();	
@@ -2843,7 +2843,7 @@ mxSource *mxMainWindow::NewFileFromText (wxString text, int pos) {
 mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 	if (project) {
 		mxMessageDialog(this,LANG(MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT,"No puede abrir un ejemplo mientras trabaja en un proyecto.\nCierre el proyecto e intente nuevamente."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();;
-		return NULL;
+		return nullptr;
 	}
 	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	mxSource* source = new mxSource(notebook_sources, SIN_TITULO);
@@ -3181,7 +3181,7 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 	if (!dpid) return;
 	wxString command = wxString("attach ")<<dpid;
 	wxString message = wxString(LANG(DEBUG_STATUS_ATTACHING_TO,"Depurador adjuntado al proceso "))<<dpid;
-	debug->SpecialStart(project?NULL:CURRENT_SOURCE,command,message,false);
+	debug->SpecialStart(project?nullptr:CURRENT_SOURCE,command,message,false);
 	if (debug->IsDebugging()) debug->SetChildPid(dpid);
 }
 
@@ -3197,7 +3197,7 @@ wxString mxMainWindow::DebugTargetCommon (wxString target, bool should_continue)
 	if (target.Len()) {
 		wxString command = wxString("target ")<<target;
 		wxString message = LANG(DEBUG_STATUS_TARGET_DONE,"Depuración iniciada correctamente.");
-		debug->SpecialStart(project?NULL:CURRENT_SOURCE,command,message,should_continue);
+		debug->SpecialStart(project?nullptr:CURRENT_SOURCE,command,message,should_continue);
 	}
 	return target;
 }
@@ -3257,7 +3257,7 @@ void mxMainWindow::OnDebugUpdateInspections ( wxCommandEvent &event ) {
 	if (debug->IsPaused()) debug->UpdateInspections();
 	class OnPauseUpdateInspections : public DebugManager::OnPauseAction {
 	public:
-		void Do() { debug->UpdateInspections(); }
+		void Do() override { debug->UpdateInspections(); }
 	};
 	debug->PauseFor(new OnPauseUpdateInspections());
 }
@@ -3448,7 +3448,7 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 		wxLog::SetActiveTarget(new wxLogStderr());
 		SetStatusText("DoThat: usando wxLogStrerr");
 	} else if (res=="kboom") {
-		int *p=NULL;
+		int *p=nullptr;
 		// cppcheck-suppress nullPointer
 		cout<<*p;
 	} else {
@@ -3677,7 +3677,7 @@ void mxMainWindow::OnToolbarFindEnter (wxCommandEvent &evt) {
 		NewFileFromText(_T(
 "#include <iostream>\n#include <cstdlib>\n#include <ctime>\nusing namespace std;\n"
 "char *cuack() {\nstatic char cuack[] = \"cuack\";\nfor (int i=0;i<4;i++)\nif (rand()%2)\ncuack[i]=cuack[i]|32;\nelse\ncuack[i]=cuack[i]&(~32);\nreturn cuack;\n}\n"
-"int main(int argc, char *argv[]) {\nsrand(time(0));\nwhile (true) {\nclock_t t1=clock();\nwhile (clock()==t1);\ncout<<string(rand()%50,' ')<<cuack()<<\"!\"<<endl;\n}\nreturn 0;\n}"
+"int main(int argc, char *argv[]) {\nsrand(time(NULL));\nwhile (true) {\nclock_t t1=clock();\nwhile (clock()==t1);\ncout<<string(rand()%50,' ')<<cuack()<<\"!\"<<endl;\n}\nreturn 0;\n}"
 			),"Cuack Attack!");
 		wxYield();
 		CURRENT_SOURCE->OnEditSelectAll(evt);
@@ -4095,7 +4095,7 @@ void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
 			wxString dir = project?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):CURRENT_SOURCE->working_folder.GetFullPath();
 			wxFileDialog dlg (this, _menu_item_2(mnDEBUG,mxID_DEBUG_LOAD_CORE_DUMP)->GetPlainLabel(), dir, " ", "Core dumps|core*|Todos los Archivos|*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (dlg.ShowModal() == wxID_OK)
-				debug->LoadCoreDump(dlg.GetPath(),project?NULL:CURRENT_SOURCE);
+				debug->LoadCoreDump(dlg.GetPath(),project?nullptr:CURRENT_SOURCE);
 		} else if (debug->CanTalkToGDB()) {
 			wxString sPath = project?project->path:(CURRENT_SOURCE->GetPath(true));
 			wxFileDialog dlg (this, _menu_item_2(mnDEBUG,mxID_DEBUG_SAVE_CORE_DUMP)->GetPlainLabel(),sPath,"core", "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -4432,7 +4432,7 @@ mxSource *mxMainWindow::GetCurrentSource() {
 	IF_THERE_IS_SOURCE
 		return CURRENT_SOURCE;
 	else 
-		return NULL;
+		return nullptr;
 }
 
 void mxMainWindow::OnEscapePressed(wxCommandEvent &event) {
@@ -4817,7 +4817,7 @@ void mxMainWindow::OnAfterEventsTimer (wxTimerEvent & event) {
 	}
 	AfterEventsAction * &current = current_after_events_action;
 	current = call_after_events; 
-	call_after_events = NULL;
+	call_after_events = nullptr;
 	while (current) {
 		AfterEventsAction *next = current->next;
 		if (current->do_do) current->Do(); delete current;
@@ -4828,7 +4828,7 @@ void mxMainWindow::OnAfterEventsTimer (wxTimerEvent & event) {
 
 void mxMainWindow::SetFocusToSourceAfterEvents () {
 	class SetFocusToSourceAfterEventsAction : public mxMainWindow::AfterEventsAction {
-		public: void Do() { main_window->SetFocusToSource(); }
+		public: void Do() override { main_window->SetFocusToSource(); }
 	};
 	CallAfterEvents(new SetFocusToSourceAfterEventsAction());
 }
@@ -4941,7 +4941,7 @@ void mxMainWindow::OnHighlightKeyword (wxCommandEvent & event) {
 }
 
 void mxMainWindow::UnregisterSource (mxSource * src) {
-	if (src==master_source) master_source=NULL;
+	if (src==master_source) master_source=nullptr;
 	AfterEventsAction *current = call_after_events;
 	for(int i=0;i<2;i++) {
 		while (current) {

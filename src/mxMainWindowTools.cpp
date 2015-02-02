@@ -414,7 +414,7 @@ class ToolsWxfbInheriterAction : public Parser::OnEndAction {
 	bool update;
 public:
 	ToolsWxfbInheriterAction(bool _update):update(_update){}
-	void Do() { new mxWxfbInheriter(main_window,"",update); }
+	void Do() override { new mxWxfbInheriter(main_window,"",update); }
 };
 
 void mxMainWindow::OnToolsWxfbInheritClass(wxCommandEvent &event) {
@@ -453,7 +453,7 @@ void mxMainWindow::OnToolsDiffNextMark(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsDiffTwoSources(wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()>1)
-		new mxDiffWindow(NULL);
+		new mxDiffWindow(nullptr);
 	else
 		mxMessageDialog(main_window,"Debe tener al menos dos archivos abiertos para poder compararlos",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
 }
@@ -739,7 +739,7 @@ void mxMainWindow::OnToolsDrawFlow(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsExeProps (wxCommandEvent &event) {
 	if (project)
-		new mxExeInfo(this,NULL);
+		new mxExeInfo(this,nullptr);
 	else IF_THERE_IS_SOURCE
 		new mxExeInfo(this,CURRENT_SOURCE);
 }
@@ -769,7 +769,7 @@ class ToolsCodeCopyFromHAction : public Parser::OnEndAction {
 	wxString the_one;
 public:
 	ToolsCodeCopyFromHAction(mxSource *_source,wxString _the_one):source(_source),the_one(_the_one){}
-	void Do() { main_window->ToolsCodeCopyFromH(source,the_one); }
+	void Do() override { main_window->ToolsCodeCopyFromH(source,the_one); }
 };
 
 void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
@@ -1031,7 +1031,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		template_file.Write(); template_file.Close();
 	}
 	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK).Show();
-	delete wizard; wizard=NULL;
+	delete wizard; wizard=nullptr;
 }
 
 void mxMainWindow::OnToolsExportMakefile (wxCommandEvent &event) {

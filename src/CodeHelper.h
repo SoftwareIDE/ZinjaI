@@ -10,6 +10,7 @@ class mxSource;
 class GenericAction;
 
 #include <iostream>
+#include "Cpp11.h"
 using namespace std;
 
 
@@ -75,7 +76,7 @@ public:
 	wxString GetInclude(wxString path, wxString key);
 	wxString GetIncludeForClass(wxString path, wxString key);
 	bool AutocompleteAutocode(mxSource *source, wxString key/*, int max_str_dist=3*/);
-	bool AutocompleteGeneral(mxSource *source, wxString scope, wxString key, wxString *args=NULL, int scope_start=-1);
+	bool AutocompleteGeneral(mxSource *source, wxString scope, wxString key, wxString *args=nullptr, int scope_start=-1);
 	void AutocompleteLocals(mxSource *source, wxString key, int scope_start);
 	bool AutocompleteScope(mxSource *source, wxString &key, wxString typed, bool consider_inherit, bool add_reserved_words/*, int max_str_dist=3*/);
 	wxString GetCalltip(wxString scope, wxString key, bool onlyScope, bool only_type=false);

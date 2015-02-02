@@ -28,17 +28,18 @@
 #include "MenusAndToolsConfig.h"
 #include "winStuff.h"
 #include "lnxStuff.h"
+#include "Cpp11.h"
 using namespace std;
 
 //#define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
 
-DebugManager *debug = NULL;
+DebugManager *debug = nullptr;
 
-DebuggerTalkLogger* DebuggerTalkLogger::the_logger = NULL;
+DebuggerTalkLogger* DebuggerTalkLogger::the_logger = nullptr;
 
 DebugManager::DebugManager() {
-	on_pause_action = NULL;
-	signal_handlers_state=NULL;
+	on_pause_action = nullptr;
+	signal_handlers_state=nullptr;
 	backtrace_shows_args=true;
 	status = DBGST_NULL;
 	current_handle = -1;
@@ -47,14 +48,14 @@ DebugManager::DebugManager() {
 //	backtrace_visible = false;
 	threadlist_visible = false;
 	waiting = debugging = running = false;
-	process = NULL;
-	input = NULL;
-	output = NULL;
+	process = nullptr;
+	input = nullptr;
+	output = nullptr;
 	pid = 0;
-	notitle_source = current_source = NULL;
+	notitle_source = current_source = nullptr;
 #ifndef __WIN32__
 	tty_pid = 0;
-	tty_process = NULL;
+	tty_process = nullptr;
 #endif
 }
 
@@ -146,7 +147,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		tty_process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 		tty_pid = wxExecute(tty_cmd,wxEXEC_ASYNC,tty_process);
 	} else {
-		tty_pid=0; tty_process=NULL;
+		tty_pid=0; tty_process=nullptr;
 	}
 #endif
 	wxString command(config->Files.debugger_command);
@@ -249,7 +250,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 void DebugManager::ResetDebuggingStuff() {
 	status=DBGST_STARTING;
 #ifndef __WIN32__
-	tty_pid = 0; tty_process=NULL;
+	tty_pid = 0; tty_process=nullptr;
 #endif
 //	black_list.Clear(); stepping_in=false;
 //	mxUT::Split(config->Debug.blacklist,black_list,true,false);
@@ -263,8 +264,8 @@ void DebugManager::ResetDebuggingStuff() {
 	buffer[6]='\0';
 	debugging = true;
 	child_pid = pid = 0;
-	input = NULL;
-	output = NULL;
+	input = nullptr;
+	output = nullptr;
 	recording_for_reverse=inverse_exec=false;
 	main_window->ClearDebugLog();
 	has_symbols=true;
@@ -272,7 +273,7 @@ void DebugManager::ResetDebuggingStuff() {
 	debug_patcher = new DebugPatcher();
 	current_thread_id = -1; current_frame_id = -1;
 	if (on_pause_action) delete on_pause_action;
-	on_pause_action = NULL;
+	on_pause_action = nullptr;
 	watchpoints.clear();
 }
 
@@ -351,11 +352,11 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 * de ejecutar el programa. Para generar estos dumps en GNU/Linux, ejecutar
 * "ulimit -c unlimited" en el shell; luego, al ejecutar un programa, si este
 * revienta por un segfault, genera un archivo core*. En esta función, si se
-* recibe un mxSource se asume que es un programa simple, sino (source==NULL)
+* recibe un mxSource se asume que es un programa simple, sino (source==nullptr)
 * que se trata de un proyecto. Esta opción no está disponible en la versión
 * para Windows.
 * @param core_file la ruta completa al archivo core
-* @param source puntero al mxSource si es un programa simple, NULL si es un proyecto
+* @param source puntero al mxSource si es un programa simple, nullptr si es un proyecto
 * @retval true si se cargo correctamente
 * @retval false si hay error
 **/
@@ -479,12 +480,12 @@ void DebugManager::HowDoesItRuns() {
 		if (on_pause_action) {// si se pauso solo para colocar un brekapoint o algo asi, hacerlo y setear banderas para que siga ejecutando
 			on_pause_action->Do(); 
 			delete on_pause_action; 
-			on_pause_action=NULL;
+			on_pause_action=nullptr;
 			should_pause=false; // la pausa no la generó el usuario, sino que era solo para colocar el brakpoint
 			should_continue=true;
 		}
 		
-		BreakPointInfo *bpi=NULL; int mark = 0;
+		BreakPointInfo *bpi=nullptr; int mark = 0;
 		if (how=="breakpoint-hit") {
 			wxString sbn = GetValueFromAns(ans,"bkptno",true);
 			if (sbn.Len()) {
@@ -598,8 +599,8 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 			BreakPointInfo *p;
 		public:
 			OnPauseRemoveBreakpoint(BreakPointInfo *bp) :p(bp) {}
-			void Do() /*override*/ { debug->DeleteBreakPoint(p); }
-			bool Invalidate(void *ptr) /*override*/ { return p==ptr; }
+			void Do() override { debug->DeleteBreakPoint(p); }
+			bool Invalidate(void *ptr) override { return p==ptr; }
 		};
 		PauseFor(new OnPauseRemoveBreakpoint(_bpi));
 		return false;
@@ -618,8 +619,8 @@ int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {
 			BreakPointInfo *p;
 		public:
 			OnPauseAddBreakpoint(BreakPointInfo *bp) :p(bp) {}
-			void Do() /*override*/ { debug->SetBreakPoint(p); }
-			bool Invalidate(void *ptr) /*override*/ { return p==ptr; }
+			void Do() override { debug->SetBreakPoint(p); }
+			bool Invalidate(void *ptr) override { return p==ptr; }
 		};
 		PauseFor(new OnPauseAddBreakpoint(_bpi));
 		_bpi->SetStatus(BPS_PENDING);
@@ -1106,7 +1107,7 @@ bool DebugManager::MarkCurrentPoint(wxString cfile, int cline, int cmark) {
 					current_source = main_window->OpenFile(cfile);
 			}
 		}
-		if (current_source==EXTERNAL_SOURCE) current_source=NULL;
+		if (current_source==EXTERNAL_SOURCE) current_source=nullptr;
 		if (current_source) {
 			int x=main_window->notebook_sources->GetPageIndex(current_source);
 			if (x!=main_window->notebook_sources->GetSelection())
@@ -1358,14 +1359,14 @@ void DebugManager::ProcessKilled() {
 	delete debug_patcher;
 	_DBG_LOG_CALL(Close());
 	MarkCurrentPoint();
-	notitle_source = NULL;
+	notitle_source = nullptr;
 	debugging=false;
 #ifndef __WIN32__
 	if (tty_process)
 		tty_process->Kill(tty_pid,wxSIGKILL);
 #endif
 	delete process;
-	process=NULL;
+	process=nullptr;
 	pid=0;
 	running = debugging = waiting = false;
 	status=DBGST_NULL;
@@ -1378,7 +1379,7 @@ void DebugManager::ProcessKilled() {
 void DebugManager::TtyProcessKilled() {
 	if (pid && debugging && status!=DBGST_STOPPING) Stop();
 	delete tty_process;
-	tty_process = NULL;
+	tty_process = nullptr;
 	tty_pid = 0;
 }
 #endif
@@ -1517,7 +1518,7 @@ void DebugManager::SetBreakPointEnable(int num, bool enable, bool once) {
 //*
 //* If use_gdb finds a breakpoint that matches gdb_id, else 
 //* finds a breakpoint that matches zinjai_id. If there's no match
-//* returns NULL.
+//* returns nullptr.
 //*
 //* This method searchs first in opened files (main_window->notebook_sources)
 //* starting by the current source, then searchs in project's files if there
@@ -1551,7 +1552,7 @@ void DebugManager::SetBreakPointEnable(int num, bool enable, bool once) {
 //			}
 //		}
 //	}
-//	return NULL;
+//	return nullptr;
 // }
 
 int DebugManager::GetBreakHitCount(int num) {
@@ -1647,8 +1648,8 @@ bool DebugManager::ToggleInverseExec() {
 }
 
 void DebugManager::UnregisterSource(mxSource *src) {
-	if (current_source==src) current_source=NULL;
-	if (notitle_source==src) notitle_source=NULL;
+	if (current_source==src) current_source=nullptr;
+	if (notitle_source==src) notitle_source=nullptr;
 }
 
 void DebugManager::UpdateThreads() {
@@ -1880,7 +1881,7 @@ bool DebugManager::PauseFor (OnPauseAction * action) {
 void DebugManager::InvalidatePauseEvent(void *ptr) {
 	if (!on_pause_action) return;
 	if (!on_pause_action->Invalidate(ptr)) return;
-	delete on_pause_action; on_pause_action=NULL;
+	delete on_pause_action; on_pause_action=nullptr;
 }
 
 /// @retval el numero id en gdb si lo agrego, "" si no pudo

@@ -11,7 +11,7 @@
 #include "mxSizers.h"
 #include "mxReferenceWindow.h"
 
-mxHelpWindow *mxHelpWindow::instance=NULL;
+mxHelpWindow *mxHelpWindow::instance=nullptr;
 
 mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(LANG(HELPW_CAPTION,"Ayuda de ZinjaI"),true) { 
 	ignore_tree_event=false;
@@ -58,12 +58,12 @@ mxHelpWindow::mxHelpWindow(wxString file) : mxGenericHelpWindow(LANG(HELPW_CAPTI
 	wxBoxSizer *forum_sizer = new wxBoxSizer(wxHORIZONTAL); wxButton *button;
 	forum_sizer->Add(new wxStaticText(this,wxID_ANY,LANG(HELPW_FORUM_TEXT,"¿Lo que buscas no está en la ayuda, está desactualizado, erróneo o incompleto? ")),sizers->Center);
 	forum_sizer->Add(button=new wxButton(this,mxID_HELPW_FORUM,LANG(HELPW_FORUM_BUTTON,"accede al Foro..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT),sizers->Center);
-	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(mxHelpWindow::OnForum),NULL,this);
+	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(mxHelpWindow::OnForum),nullptr,this);
 	general_sizer->Add(forum_sizer,sizers->Right);
 	Layout();
 }
 
-mxHelpWindow::~mxHelpWindow() { instance=NULL; }
+mxHelpWindow::~mxHelpWindow() { instance=nullptr; }
 
 void mxHelpWindow::OnSearch(wxString value) {
 	wxArrayString aresults, keywords;

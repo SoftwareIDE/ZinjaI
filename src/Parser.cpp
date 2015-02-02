@@ -23,7 +23,7 @@ Parser *parser;
 
 Parser::Parser (mxMainWindow *mainwin) {
 	data_age=0;
-	on_end = NULL;
+	on_end = nullptr;
 	wxString pd_aux;
 	symbol_tree=mainwin->symbols_tree.treeCtrl;
 	follow_includes=true;
@@ -36,12 +36,12 @@ Parser::Parser (mxMainWindow *mainwin) {
 
 	symbol_tree->ExpandAll();
 	
-	first_function = new pd_func(wxTreeItemId(), NULL, pd_aux, pd_aux, pd_aux, NULL);
-	first_class = new pd_class(NULL, NULL, 0, pd_aux, pd_aux, NULL);
-	first_file = new pd_file(NULL,pd_aux,wxDateTime::Now(),NULL);
-	first_macro = new pd_macro(NULL,NULL,0,pd_aux,0,NULL);
-	first_global = new pd_var(wxTreeItemId(), NULL,NULL,0,pd_aux,pd_aux,pd_aux,0,NULL);
-	first_inherit = new pd_inherit(NULL,pd_aux,pd_aux,0,NULL);
+	first_function = new pd_func(wxTreeItemId(), nullptr, pd_aux, pd_aux, pd_aux, nullptr);
+	first_class = new pd_class(nullptr, nullptr, 0, pd_aux, pd_aux, nullptr);
+	first_file = new pd_file(nullptr,pd_aux,wxDateTime::Now(),nullptr);
+	first_macro = new pd_macro(nullptr,nullptr,0,pd_aux,0,nullptr);
+	first_global = new pd_var(wxTreeItemId(), nullptr,nullptr,0,pd_aux,pd_aux,pd_aux,0,nullptr);
+	first_inherit = new pd_inherit(nullptr,pd_aux,pd_aux,0,nullptr);
 	
 	last_file = first_file;
 	last_class = first_class;
@@ -70,7 +70,7 @@ void Parser::ParseProject(bool show_progress) {
 			item.Next();
 		}
 	}
-	source=NULL;
+	source=nullptr;
 		
 //	if (project->use_wxfb && project->auto_wxfb) parser->OnEnd(POE_AUTOUPDATE_WXFB);
 
@@ -80,7 +80,7 @@ void Parser::ParseProject(bool show_progress) {
 
 void Parser::ParseSource(mxSource *src, bool dontsave) {
 	if (src->lexer!=wxSTC_LEX_CPP) return;
-	project_file_item *item=project?project->HasFile(src->source_filename):NULL;
+	project_file_item *item=project?project->HasFile(src->source_filename):nullptr;
 	if (project && (!item || item->where==FT_OTHER)) return; // if we are in project mode and the source is not attached to the project, don't parse
 	actions.insert(actions.end(),parserAction::ParseSource(src,dontsave));
 	Parse();
@@ -589,7 +589,7 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 
 void Parser::ParseNextFileEnd() { ///< to be called when an asyn process from ParseNextFile ends
 	process->file->Purge();
-	delete process; process=NULL;
+	delete process; process=nullptr;
 	ParseSomething(false);
 }
 
@@ -684,7 +684,7 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 		// se va a operar sobre una "copia" de on_end, para evitar que una de estas acciones 
 		// se introduzca a sí misma en esta lista y genere un loop infinito (pasaba al crear
 		// ventanas hijas al volver el foco desde wxfb)
-		OnEndAction *aux_oe = on_end; on_end=NULL;
+		OnEndAction *aux_oe = on_end; on_end=nullptr;
 		while (aux_oe) {
 			OnEndAction *aux_i=aux_oe;
 			aux_oe=aux_oe->next;
@@ -710,11 +710,11 @@ bool Parser::ParseNextCleanAll() {
 			PD_DELETE_FILE(item->name);
 		item=aux;
 	}
-	last_file->next=NULL;
-	last_class->next=NULL;
-	last_global->next=NULL;
-	last_macro->next=NULL;
-	last_function->next=NULL;
+	last_file->next=nullptr;
+	last_class->next=nullptr;
+	last_global->next=nullptr;
+	last_macro->next=nullptr;
+	last_function->next=nullptr;
 	return true;
 }
 
@@ -755,7 +755,7 @@ pd_file *Parser::GetFile(wxString name) {
 	if (it!=h_files.end())
 		return it->second;
 	else 
-		return NULL;
+		return nullptr;
 }
 
 pd_class *Parser::GetClass(wxString name) {
@@ -763,7 +763,7 @@ pd_class *Parser::GetClass(wxString name) {
 	if (it!=h_classes.end())
 		return it->second;
 	else 
-		return NULL;
+		return nullptr;
 }
 
 void Parser::ParseIfUpdated(wxFileName fname) {

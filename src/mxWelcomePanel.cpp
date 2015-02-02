@@ -100,7 +100,7 @@ void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 		config->Init.show_welcome=false;
 		main_window->ShowWelcome(false);
 		main_window->aui_manager.DetachPane(welcome_panel);
-		welcome_panel=NULL;
+		welcome_panel=nullptr;
 		Destroy();
 		if (config->Init.new_file==0)
 			main_window->NewFileFromText("");

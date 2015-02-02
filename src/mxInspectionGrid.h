@@ -5,6 +5,8 @@
 #include "SingleList.h"
 #include "Inspection.h"
 #include "mxInspectionsPanel.h"
+#include "Cpp11.h"
+#include "raii.h"
 
 enum {IG_COL_LEVEL=0,IG_COL_EXPR,IG_COL_TYPE,IG_COL_VALUE,IG_COLS_COUNT};
 
@@ -28,7 +30,7 @@ public:
 * @brief Representa a la grilla del panel de inspecciones
 **/
 class mxInspectionGrid : public mxGrid, public myDIEventHandler, public myDIGlobalEventHandler, public mxInspectionsPanelTab {
-	bool ignore_cell_change_event;
+	BoolFlag ignore_cell_change_event;
 	bool full_table_update_began; ///< para poder llamar dos veces a begin sin que la segunda haga nada (la primera desde aca, la segunda desde DebuggerInspection::UpdateAll)
 public:
 	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_UNFREEZE, IGRS_COUNT };
@@ -38,12 +40,12 @@ public:
 		mxGridCellRenderer *expression_renderer, *value_renderer;
 		// estado de la fila en la grilla, para no invocar metodos de grilla si no cambio nada... 
 		int status; long frame_level; bool on_thread, is_frozen; // frame_id==-1 para las frameless
-		InspectionGridRow(DebuggerInspection *_di=NULL) : di(_di),expression_renderer(NULL),value_renderer(NULL),status(IGRS_UNINIT),frame_level(-2),on_thread(true),is_frozen(false) {}
+		InspectionGridRow(DebuggerInspection *_di=nullptr) : di(_di),expression_renderer(nullptr),value_renderer(nullptr),status(IGRS_UNINIT),frame_level(-2),on_thread(true),is_frozen(false) {}
 		bool operator==(const InspectionGridRow &o) { return di==o.di; }
 		void operator=(DebuggerInspection *_di) { Reset(); di=_di; }
 		DebuggerInspection *operator->() { return di; }
-		bool IsNull() { return di==NULL; }
-		void Reset() { is_frozen=false; di=NULL; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar los renderer*/ }
+		bool IsNull() { return di==nullptr; }
+		void Reset() { is_frozen=false; di=nullptr; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar los renderer*/ }
 	};
 	
 private:
@@ -55,7 +57,6 @@ private:
 		return current_row!=inspections.NotFound();
 	}
 	
-	bool mask_cell_change_event;
 	bool last_return_had_shift_down;
 	
 public:

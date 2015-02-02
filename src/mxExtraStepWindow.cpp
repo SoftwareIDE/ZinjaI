@@ -44,7 +44,7 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 		pos_array[CES_AFTER_LINKING]=LANG(EXTRASTEP_AFTER_LINKING,"Despues de enlazar el ejecutable");
 		position = mxUT::AddComboBox(mySizer,this,LANG(EXTRASTEP_LOCATION_ON_SEQ,"Ubicacion en la secuencia"),pos_array,0);
 	} else
-		position = NULL;
+		position = nullptr;
 	link_output = mxUT::AddCheckBox(mySizer,this,LANG(EXTRASTEP_LINK_FORCE_RELINK,"Enlazar el archivo de salida en el ejecutable"),step?step->link_output:true);
 	delclean = mxUT::AddCheckBox(mySizer,this,LANG(EXTRASTEP_DELETE_ON_CLEAN,"Eliminar al limpiar el proyecto"),step?step->delete_on_clean:true);
 	check_rv = mxUT::AddCheckBox(mySizer,this,LANG(EXTRASTEP_CHECK_EXIT_CODE,"Verificar codigo de salida"),step?step->check_retval:false);

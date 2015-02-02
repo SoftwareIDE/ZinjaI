@@ -77,7 +77,7 @@ SourceExtras::~SourceExtras ( ) {
 BreakPointInfo * SourceExtras::FindBreakpointFromLine (mxSource *src, int l) {
 	for(int i=0;i<m_breakpoints.GetSize();i++)
 		if (src->MarkerLineFromHandle(m_breakpoints[i]->marker_handle)==l) return m_breakpoints[i];
-	return NULL;
+	return nullptr;
 }
 
 void SourceExtras::ChangeSource (mxSource * src) {

@@ -177,7 +177,7 @@ wxCheckBox *mxUT::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	} else 
 		sizer->Add(checkbox,sizers->BA5_Exp0);
 	checkbox->SetValue(value);
-	last_button=NULL;
+	last_button=nullptr;
 	return checkbox;	
 }
 
@@ -186,7 +186,7 @@ wxTextCtrl *mxUT::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp0);
 	textctrl->SetValue(value);
-	last_button=NULL;
+	last_button=nullptr;
 	return textctrl;
 }
 
@@ -195,7 +195,7 @@ wxTextCtrl *mxUT::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString 
 	sizer->Add(last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp1);
 	textctrl->SetValue(value);
-	last_button=NULL;
+	last_button=nullptr;
 	return textctrl;
 }
 
@@ -220,7 +220,7 @@ wxTextCtrl *mxUT::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
 	textctrl->SetValue(wxString::Format(_T("%d"), value));
-	last_button=NULL;
+	last_button=nullptr;
 	return textctrl;
 }
 
@@ -232,7 +232,7 @@ wxStaticText* mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString 
 	sizerRow->AddStretchSpacer(1);
 	sizerRow->Add(textctrl, sizers->Exp0);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
-	last_button=NULL;
+	last_button=nullptr;
 	return textctrl;	
 }
 
@@ -243,7 +243,7 @@ wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
-	last_button=NULL;
+	last_button=nullptr;
 	return textctrl;
 }
 
@@ -255,7 +255,7 @@ wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizerRow->Add(new wxStaticText(panel, wxID_ANY, wxString(" ")<<foot, wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
-	last_button=NULL;
+	last_button=nullptr;
 	return textctrl;
 }
 
@@ -268,7 +268,7 @@ wxComboBox *mxUT::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(combo, sizers->Exp1);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
-	last_button=NULL;
+	last_button=nullptr;
 	return combo;
 }
 
@@ -280,7 +280,7 @@ wxStaticText *mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString 
 
 wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem) {
 	const MenusAndToolsConfig::myMenuItem *mi = reinterpret_cast<const MenusAndToolsConfig::myMenuItem*>(a_myMenuItem);
-	if (!mi) return NULL;
+	if (!mi) return nullptr;
 	if (mi->properties&(MenusAndToolsConfig::maCHECKED|MenusAndToolsConfig::maCHECKEABLE))
 		return mxUT::AddCheckToMenu(menu,mi->wx_id,mi->label,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
 	else 
@@ -289,7 +289,7 @@ wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem) {
 
 wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem, const wxString &caption) {
 	const MenusAndToolsConfig::myMenuItem *mi = reinterpret_cast<const MenusAndToolsConfig::myMenuItem*>(a_myMenuItem);
-	if (!mi) return NULL;
+	if (!mi) return nullptr;
 	if (mi->properties&(MenusAndToolsConfig::maCHECKED|MenusAndToolsConfig::maCHECKEABLE))
 		return mxUT::AddCheckToMenu(menu,mi->wx_id,caption,mi->shortcut,mi->description,mi->properties&MenusAndToolsConfig::maCHECKED);
 	else 
@@ -518,7 +518,7 @@ int mxUT::Split(wxString str, wxArrayString &array, bool coma_splits, bool keep_
 
 int mxUT::Execute(wxString path, wxString command, int sync) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
-	static wxProcess *p=NULL;
+	static wxProcess *p=nullptr;
 	return Execute(path,command,sync,p);
 }
 
@@ -581,7 +581,7 @@ bool mxUT::XCopy(wxString src,wxString dst, bool ask, bool replace) {
 		wxString dest_file = JoinDirAndFile(dst,filename);
 		cont = (!ask&&replace)||!(wxFileName::FileExists(dest_file));
 		if (!cont && ask) { // si ya existe preguntar si hay que pisar
-			int ret = mxMessageDialog(NULL,LANG1(FILE_EXISTS_ASK_REPLACE,"El archivo \"<{1}>\" ya existe. Desea reemplazarlo?",dest_file),"Aviso",mxMD_YES_NO|mxMD_QUESTION,LANG(GENERAL_DONT_ASK_AGAIN,"No volver a preguntar"),false).ShowModal();
+			int ret = mxMessageDialog(nullptr,LANG1(FILE_EXISTS_ASK_REPLACE,"El archivo \"<{1}>\" ya existe. Desea reemplazarlo?",dest_file),"Aviso",mxMD_YES_NO|mxMD_QUESTION,LANG(GENERAL_DONT_ASK_AGAIN,"No volver a preguntar"),false).ShowModal();
 			cont = (ret&mxMD_YES);
 			if (ret&mxMD_CHECKED) {
 				ask=false;
@@ -1148,12 +1148,12 @@ void mxUT::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxS
 }
 
 void mxUT::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString path, wxString title, bool replace, bool comma_splits) {
-	static wxWindow *win = NULL;
+	static wxWindow *win = nullptr;
 	static wxString caption;
 	static wxString dir;
 	static bool comma = false;
 	static bool repl = false;
-	static wxTextCtrl *ctrl = NULL;
+	static wxTextCtrl *ctrl = nullptr;
 	if (id && ctrl) {
 		wxString text =	repl?ctrl->GetValue():ctrl->GetStringSelection();
 		if (id==mxID_POPUPS_INSERT_TEXT) {

@@ -8,11 +8,11 @@ BEGIN_EVENT_TABLE(mxSingleton,wxEvtHandler)
 	EVT_SOCKET(wxID_ANY,mxSingleton::OnSocket)
 END_EVENT_TABLE()
 
-mxSingleton *singleton=NULL;
+mxSingleton *singleton=nullptr;
 
-mxSingleton::mxSingleton():server(NULL) {
+mxSingleton::mxSingleton():server(nullptr) {
 	calls_count=0;
-	data=NULL;
+	data=nullptr;
 	gid=0;
 	ready=false;
 }
@@ -32,9 +32,9 @@ bool mxSingleton::Start() {
 	server->Notify(true);
 	if (!server->IsOk()) {
 		delete server;
-		server=NULL;
+		server=nullptr;
 	}
-	return server!=NULL;
+	return server!=nullptr;
 }
 
 bool mxSingleton::RemoteOpen(wxString fname) {
@@ -77,7 +77,7 @@ void mxSingleton::ProcessToOpenQueue() {
 
 void mxSingleton::Stop() {
 	if (server) delete server;
-	server=NULL;
+	server=nullptr;
 }
 
 void mxSingleton::OnSocket(wxSocketEvent &evt) {
@@ -137,5 +137,5 @@ void mxSingleton::OnSocket(wxSocketEvent &evt) {
 }
 
 bool mxSingleton::IsRunning() {
-	return server!=NULL;
+	return server!=nullptr;
 }

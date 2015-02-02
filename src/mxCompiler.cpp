@@ -64,7 +64,7 @@ using namespace std;
 
 wxMutex mxMutexCompiler;
 
-mxCompiler *compiler=NULL;
+mxCompiler *compiler=nullptr;
 
 static bool EnsureCompilerNotRunning() {
 	compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;
@@ -76,13 +76,13 @@ static bool EnsureCompilerNotRunning() {
 
 compile_and_run_struct_single::compile_and_run_struct_single(const compile_and_run_struct_single *o) {
 	*this=*o; 
-	on_end=NULL; // para evitar doble-delete, igual nunca deberia tener un on_end porque esto solo se usa para fuentes de un proyecto
+	on_end=nullptr; // para evitar doble-delete, igual nunca deberia tener un on_end porque esto solo se usa para fuentes de un proyecto
 #ifdef _ZINJAI_DEBUG
 	cerr<<"compile_and_run: *"<<mname<<endl;
 	count++;
 #endif
 	mxMutexCompiler.Lock();
-	prev=NULL;
+	prev=nullptr;
 	next=compiler->compile_and_run_single;
 	if (next) next->prev=this;
 	compiler->compile_and_run_single=this;
@@ -96,15 +96,15 @@ compile_and_run_struct_single::compile_and_run_struct_single(const char *name) {
 	cerr<<"compile_and_run: +"<<name<<endl;
 	count++;
 #endif
-	on_end=NULL;
+	on_end=nullptr;
 	killed=/*for_debug=*/compiling=linking=/*run_after_compile=*/last_error_item_IsOk=false;
 	parsing_errors_was_ok=true;
 	output_type=MXC_NULL;
-	process=NULL;
+	process=nullptr;
 	pid=0;
 	valgrind_cmd=compiler->valgrind_cmd;
 	mxMutexCompiler.Lock();
-	prev=NULL;
+	prev=nullptr;
 	next=compiler->compile_and_run_single;
 	if (next) next->prev=this;
 	compiler->compile_and_run_single=this;
@@ -151,9 +151,9 @@ int compile_and_run_struct_single::count=0;
 
 mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTreeItemId w, wxTreeItemId a) {
 	tree=atree; all=a; errors=e; warnings=w; state=s;
-	last_runned=NULL;
-	last_compiled=NULL;
-	compile_and_run_single=NULL;
+	last_runned=nullptr;
+	last_compiled=nullptr;
+	compile_and_run_single=nullptr;
 }
 
 /**
@@ -169,7 +169,7 @@ void mxCompiler::BuildOrRunProject(bool prepared, GenericAction *on_end) {
 DEBUG_INFO("wxYield:in  mxCompiler::BuildOrRunProject");
 	wxYield();
 DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
-	if (prepared || project->PrepareForBuilding(NULL)) { // si hay que compilar/enlazar
+	if (prepared || project->PrepareForBuilding(nullptr)) { // si hay que compilar/enlazar
 		if (!EnsureCompilerNotRunning()) return;
 		fms_move( fms_delete(project->post_compile_action), on_end );
 //		project->AnalizeConfig(project->path,true,config->mingw_real_path);
@@ -177,7 +177,7 @@ DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 		compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("BuildOrRunProject 1");
 		tree->DeleteChildren(all);
 		full_output.Clear();
-		project->compile_startup_time = time(NULL);
+		project->compile_startup_time = time(nullptr);
 		ResetCompileData();
 		for (unsigned int i=0;i<project->warnings.GetCount();i++)
 			tree->AppendItem(warnings,project->warnings[i],7);
@@ -532,7 +532,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
 	}
 	
-	delete compile_and_run->process; compile_and_run->process=NULL; // liberar el proceso
+	delete compile_and_run->process; compile_and_run->process=nullptr; // liberar el proceso
 	
 	// ver como sigue
 	if (success) { // si el proceso termino correctamente (no hay errores/problemas)
@@ -550,7 +550,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 				if (project->compile_was_ok) { // si esta todo listo, informar el resultado
 					if (compile_and_run->linking && !project->active_configuration->dont_generate_exe) CheckForExecutablePermision(project->GetExePath());
 					main_window->SetStatusProgress(0);
-					time_t elapsed_time = time(NULL)-project->compile_startup_time;
+					time_t elapsed_time = time(nullptr)-project->compile_startup_time;
 					if (elapsed_time>5) {
 						if (elapsed_time/60==0)
 							main_window->SetCompilingStatus(LANG1(MAINW_COMPILING_DONE_SECONDS,"Compilacion finalizada ( tiempo transcurrido: <{1}> segundos ).",wxString()<<elapsed_time));
@@ -681,7 +681,7 @@ void mxCompiler::ResetCompileData() {
 	if (!project)  {
 		tree->DeleteChildren(all);
 	} else {
-		project->compile_startup_time=time(NULL);
+		project->compile_startup_time=time(nullptr);
 	}
 	tree->Collapse(errors);
 	tree->Collapse(warnings);

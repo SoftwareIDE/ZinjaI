@@ -1,6 +1,7 @@
 #ifndef MXINSPECTIONSPANEL_H
 #define MXINSPECTIONSPANEL_H
 #include <wx/aui/auibook.h>
+#include "Cpp11.h"
 #include "SingleList.h"
 
 class mxInspectionsPanelTab {
@@ -20,7 +21,7 @@ class mxInspectionsPanel : public wxAuiNotebook {
 		enum { TYPE_NULL,TYPE_GRID, TYPE_LOCAL } type;
 		wxWindow *ctrl;
 		wxString name;
-		Tab():type(TYPE_NULL),ctrl(NULL) {}
+		Tab():type(TYPE_NULL),ctrl(nullptr) {}
 		Tab(mxInspectionGrid *g, const wxString &_name);
 		Tab(mxLocalsGrid *l, const wxString &_name);
 		void SetVisible(bool value, bool generate_event=true);

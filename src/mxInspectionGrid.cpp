@@ -67,16 +67,6 @@ struct mxIG_SideEffectUpdate {
 	}
 };
 	
-class FlagGuard {
-	bool *flag;
-public:
-	FlagGuard(bool &f, bool force):flag(&f) { *flag=true; }
-	FlagGuard(bool &f):flag(&f) { if (*flag) { flag=NULL; } else *flag=true; }
-	bool IsOk() { return flag!=NULL; }
-	void Release() { if (flag) *flag=false; flag=NULL; }
-	~FlagGuard() { if (flag) *flag=false; }
-};
-
 static struct mxIGStatusOpts {
 	wxColour color;
 	bool have_message;
@@ -91,9 +81,9 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	
 	full_table_update_began=false;
 	
-	FlagGuard icce_guard(ignore_cell_change_event,true);
+	BoolFlagGuard icce_guard(ignore_cell_change_event,true);
 	
-	last_return_had_shift_down = mask_cell_change_event = false;
+	last_return_had_shift_down = false;
 	
 	mxig_status_opts[IGRS_UNINIT].Init(false,wxColour(100,100,100),DebuggerInspection::GetUserStatusText(DIMSG_PENDING));
 	mxig_status_opts[IGRS_OUT_OF_SCOPE].Init(false,wxColour(100,100,100),DebuggerInspection::GetUserStatusText(DIMSG_OUT_OF_SCOPE));
@@ -151,7 +141,7 @@ bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
 }
 
 bool mxInspectionGrid::ModifyExpression (int row, const wxString & expression, bool is_frameless, bool do_update_cell) {
-	FlagGuard icce_guard(ignore_cell_change_event);
+	BoolFlagGuard icce_guard(ignore_cell_change_event);
 	if (row==-1) row = inspections.GetSize()-1;
 	if (do_update_cell) mxGrid::SetCellValue(row,IG_COL_EXPR,expression);
 	// caso especial, ayuda para las macros gdb
@@ -171,7 +161,7 @@ bool mxInspectionGrid::ModifyExpression (int row, const wxString & expression, b
 	return CreateInspection(row,expression,is_frameless);
 }
 
-bool AuxShouldExpand(const wxString &expr, wxArrayString *arr=NULL) {
+bool AuxShouldExpand(const wxString &expr, wxArrayString *arr=nullptr) {
 	int l=expr.Len();
 	for(int i=0;i<l-3;i++) { 
 		if (expr[i]=='\'') { if (expr[++i]=='\\') i++; }
@@ -201,7 +191,7 @@ bool AuxShouldExpand(const wxString &expr, wxArrayString *arr=NULL) {
 
 void mxInspectionGrid::OnCellChange(wxGridEvent &event) {
 	event.Skip();
-	FlagGuard icce_guard(ignore_cell_change_event);
+	BoolFlagGuard icce_guard(ignore_cell_change_event);
 	if (!icce_guard.IsOk()) return;
 	int col = event.GetCol(), row = event.GetRow(); 
 	wxString new_value = wxGrid::GetCellValue(event.GetRow(),event.GetCol());
@@ -268,7 +258,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	bool sel_is_single = sel.size()==1; // hay una sola inspeccion seleccionada
 	bool sel_is_empty = true; // la seleccion solo tiene filas vacias
 	bool sel_is_vo = sel_is_single && !inspections[row].IsNull() && inspections[row]->GetDbiType()==DIT_VARIABLE_OBJECT; // la seleccionada corresponde a una variable_object
-	DebuggerInspection *di = (sel_is_single)?inspections[row].di:NULL; // puntero a la seleccionada si es unica y valida
+	DebuggerInspection *di = (sel_is_single)?inspections[row].di:nullptr; // puntero a la seleccionada si es unica y valida
 	bool sel_has_vo = sel_is_vo; // si hay al menos una variable object seleccionada
 	bool sel_has_frozen = false, sel_has_unfrozen=false; // si hay inspecciones congeladas y descongeladas
 	bool sel_has_improved = false;
@@ -280,7 +270,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 		if (inspections[i].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
 	}
 	bool there_are_sources = main_window->notebook_sources->GetPageCount()!=0;
-	mxSource *current_source = there_are_sources?(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection())):NULL;
+	mxSource *current_source = there_are_sources?(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection())):nullptr;
 
 	wxMenu menu; 
 	if (sel_is_vo && di->IsClass()) menu.Append(mxID_INSPECTION_BREAK,LANG(INSPECTGRID_POPUP_SPLIT_CLASS,"&Separar clase en atributos"));
@@ -403,7 +393,7 @@ void mxInspectionGrid::OnClearOne(wxCommandEvent &evt) {
 }
 
 
-static void auxOnExplore(DebugManager::TemporaryScopeChange &scope, mxInspectionGrid::InspectionGridRow &row, mxInspectionExplorerDialog *dialog=NULL) {
+static void auxOnExplore(DebugManager::TemporaryScopeChange &scope, mxInspectionGrid::InspectionGridRow &row, mxInspectionExplorerDialog *dialog=nullptr) {
 	if (row.IsNull()) return;
 	DebuggerInspection *di = row.di;
 	scope.ChangeIfNeeded(di);
@@ -619,7 +609,7 @@ void mxInspectionGrid::InsertRows(int pos, int cant) {
 		pos=wxGrid::GetNumberRows(); 
 		wxGrid::AppendRows(cant,false);
 		for(int i=0;i<cant;i++) 
-			inspections.Add(NULL);
+			inspections.Add(nullptr);
 	} else {
 		wxGrid::InsertRows(pos,cant,false);
 		inspections.MakeRoomForMultipleInsert(pos,cant);
@@ -832,7 +822,7 @@ void mxInspectionGrid::ChangeFrameless (int r, bool frameless, bool full_table_u
 	// delete old inspection
 	DeleteInspection(r,true);
 	// create new one
-	mxIG_SideEffectUpdate sda(full_table_update?this:NULL); // la expresion podría haber modificado algo, esto actualiza toda la tabla
+	mxIG_SideEffectUpdate sda(full_table_update?this:nullptr); // la expresion podría haber modificado algo, esto actualiza toda la tabla
 	CreateInspection(r,old_expression,!was_frameless);
 }
 
@@ -906,7 +896,7 @@ void mxInspectionGrid::OnExposeImprovedExpression (wxCommandEvent & event) {
 
 void mxInspectionGrid::ExposeImprovedExpression (int r) {
 	if (inspections[r].IsNull()) return;
-	FlagGuard icce_guard(ignore_cell_change_event);
+	BoolFlagGuard icce_guard(ignore_cell_change_event);
 	DebuggerInspection *di = inspections[r].di;
 	wxString new_expr = di->GetHelperExpression();
 	if (!new_expr.Len()) return;

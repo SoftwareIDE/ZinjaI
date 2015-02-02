@@ -10,10 +10,10 @@ BEGIN_EVENT_TABLE(mxOSD, wxDialog)
 	EVT_TIMER(mxID_TIMER_OSD, mxOSD::OnTimer)
 END_EVENT_TABLE()
 	
-wxFont *mxOSD::font = NULL;
-wxColour *mxOSD::cb = NULL;
-wxColour *mxOSD::cf = NULL;
-wxBrush *mxOSD::br = NULL;
+wxFont *mxOSD::font = nullptr;
+wxColour *mxOSD::cb = nullptr;
+wxColour *mxOSD::cf = nullptr;
+wxBrush *mxOSD::br = nullptr;
 
 mxOSD::mxOSD(wxWindow *aparent, wxString str, int time, bool corner) : wxDialog(aparent?aparent:main_window,wxID_ANY,"",wxPoint(200,200),wxSize(400,100),(aparent?wxFRAME_FLOAT_ON_PARENT:wxSTAY_ON_TOP)|wxNO_3D|wxNO_BORDER) {
 	if (!font) {
@@ -24,7 +24,7 @@ mxOSD::mxOSD(wxWindow *aparent, wxString str, int time, bool corner) : wxDialog(
 	}
 	
 	parent = aparent;
-	timer = NULL;
+	timer = nullptr;
 	if (str.Len()) ShowText(str,time,corner);
 }
 

@@ -55,7 +55,7 @@ class NavigationHistory {
 		wxString file;
 		mxSource *src;
 		int line;
-		Location():src(NULL),line(0){}
+		Location():src(nullptr),line(0){}
 	};
 	Location locs[MAX_NAVIGATION_HISTORY_LEN];
 	int hsize, hcur, hbase; // hcur y hsize son relativos a hbase
@@ -64,13 +64,13 @@ class NavigationHistory {
 	void Goto(int i);
 	void Add(mxSource *src, int line);
 public:
-	NavigationHistory():hsize(1),hcur(0),hbase(0),focus_source(NULL),jumping(false) {}
+	NavigationHistory():hsize(1),hcur(0),hbase(0),focus_source(nullptr),jumping(false) {}
 	void OnFocus(mxSource *src);
 	void OnJump(mxSource *src, int current_line);
 	void OnClose(mxSource *src);
 	void Prev();
 	void Next();
-	void Reset() { hsize=1; hcur=0; hbase=0; focus_source=NULL; jumping=false; }
+	void Reset() { hsize=1; hcur=0; hbase=0; focus_source=nullptr; jumping=false; }
 };
 
 extern NavigationHistory navigation_history;
@@ -99,7 +99,7 @@ class mxSource: public wxStyledTextCtrl {
 public:
 	struct MacroAction { 
 		int msg; unsigned long wp; long lp; char data[2]; bool for_sci; char *extra;
-		MacroAction(int _msg, unsigned long _wp, long _lp):msg(_msg),wp(_wp),lp(_lp),for_sci(true),extra(NULL) { 
+		MacroAction(int _msg, unsigned long _wp, long _lp):msg(_msg),wp(_wp),lp(_lp),for_sci(true),extra(nullptr) { 
 			/// 2170 = replace selection, with a 16-bits keycode stored in the address pointed by lp
 			/// 2001/2003 = add/insert text, wp has lenght/position, lp points to a null-terminated string
 			/// 2002 = add styled text, wp has lenght, lp points to a some data buffer
@@ -111,7 +111,7 @@ public:
 				char *aux=(char*)_lp; extra=new char[wp]; for(unsigned int i=0;i<wp;i++) extra[i]=aux[i];
 			}
 		}
-		MacroAction(int id=0):msg(id),wp(0),lp(0),for_sci(false),extra(NULL) { }
+		MacroAction(int id=0):msg(id),wp(0),lp(0),for_sci(false),extra(nullptr) { }
 		MacroAction &Get() { if (msg==2170) lp=(long)data; else if (msg>=2001&&msg<=2003) lp=(long)extra; return *this; }
 		~MacroAction() { delete [] extra; }
 	};
@@ -157,7 +157,7 @@ public:
 	bool IsComment(int pos);
 	bool IsEmptyLine(int l, bool ignore_comments=true, bool ignore_preproc=true);
 
-	mxSource(wxWindow *parent, wxString ptext, project_file_item *fitem=NULL);
+	mxSource(wxWindow *parent, wxString ptext, project_file_item *fitem=nullptr);
 	
 	~mxSource ();
 	
@@ -250,7 +250,7 @@ public:
 	bool AddInclude(wxString header);
 	wxString FindTypeOf(wxString &key, int &pos); // en pos retorna los asteriscos y en key el scope de la funcion
 	wxString FindTypeOf(int pos, int &dims, bool first_call=true);
-	wxString FindScope(int pos, wxString *args=NULL, bool full_scope=false, int *scope_start=NULL);
+	wxString FindScope(int pos, wxString *args=nullptr, bool full_scope=false, int *scope_start=nullptr);
 	wxString WhereAmI();
 	
 	
@@ -378,9 +378,9 @@ struct DiffInfo {
 	wxString extra;
 	DiffInfo *prev,*next;
 	DiffInfo(mxSource *s, int *h, int l, int m, wxString e):
-		brother(NULL),src(s),handles(h),bhandles(NULL),len(l),marker(m),extra(e) {
+		brother(nullptr),src(s),handles(h),bhandles(nullptr),len(l),marker(m),extra(e) {
 			prev=src->last_diff_info;
-			next=NULL;
+			next=nullptr;
 			if (prev)
 				prev->next=this;
 			else
@@ -392,7 +392,7 @@ struct DiffInfo {
 		delete []bhandles;
 		if (src->first_diff_info==this) {
 			src->first_diff_info=next;
-			if (next) next->prev=NULL;
+			if (next) next->prev=nullptr;
 		} else {
 			prev->next=next;
 			if (next) next->prev=prev;

@@ -33,7 +33,7 @@ using namespace std;
 
 IMPLEMENT_APP(mxApplication)
 	
-mxApplication *app = NULL;
+mxApplication *app = nullptr;
 
 #ifdef _ZINJAI_DEBUG
 wxLongLong start_time = wxGetLocalTimeMillis();
@@ -52,7 +52,7 @@ bool mxApplication::OnInit() {
 #endif
 	
 	app=this;
-	srand(time(0));
+	srand(time(nullptr));
 	
 	sizers = new mxSizers();
 	
@@ -108,7 +108,7 @@ bool mxApplication::OnInit() {
 	CodeHelper::Initialize();
 
 	// inicialize ProjectManager
-	project = NULL;
+	project = nullptr;
 	
 	// verifica si hay compilador, terminal, etc instalado y configurado...
 	// ...y carga el resto de la configuracion (toolchains, colores, atajos, toolbars, etc)
@@ -116,9 +116,9 @@ bool mxApplication::OnInit() {
 	
 	// create main window
 	if (config->Init.size_x==0 || config->Init.size_y==0)
-		main_window = new mxMainWindow(NULL, wxID_ANY, "ZinjaI ", wxDefaultPosition, wxSize(800, 600));
+		main_window = new mxMainWindow(nullptr, wxID_ANY, "ZinjaI ", wxDefaultPosition, wxSize(800, 600));
 	else
-		main_window = new mxMainWindow(NULL, wxID_ANY, "ZinjaI", wxPoint(config->Init.pos_x,config->Init.pos_y), wxSize(config->Init.size_x,config->Init.size_y));
+		main_window = new mxMainWindow(nullptr, wxID_ANY, "ZinjaI", wxPoint(config->Init.pos_x,config->Init.pos_y), wxSize(config->Init.size_x,config->Init.size_y));
 
 	// inicialize debug manager
 	DebugManager::Initialize();

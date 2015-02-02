@@ -5,7 +5,7 @@
 #include "mxSource.h"
 #include <wx/msgdlg.h>
 
-mxSource *mxDropTarget::current_drag_source=NULL;
+mxSource *mxDropTarget::current_drag_source=nullptr;
 bool mxDropTarget::last_drag_cancel=false;
 
 mxDropTarget::mxDropTarget(mxSource *s) {
@@ -46,7 +46,7 @@ wxDragResult mxDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def) {
 		int ss=src->GetSelectionStart();
 		int se=src->GetSelectionEnd();
 		if (p==wxSTC_INVALID_POSITION || (p>=ss && p<=se) || (p>=se && p<=ss)) {
-			current_drag_source=NULL;
+			current_drag_source=nullptr;
 			last_drag_cancel=true;
 			return wxDragCancel;
 		}
@@ -70,7 +70,7 @@ wxDragResult mxDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def) {
 				src->ReplaceTarget("");
 			}
 			src->EndUndoAction();
-			current_drag_source=NULL;
+			current_drag_source=nullptr;
 		} else {
 			src->SetTargetStart(p); src->SetTargetEnd(p);
 			src->ReplaceTarget(str);

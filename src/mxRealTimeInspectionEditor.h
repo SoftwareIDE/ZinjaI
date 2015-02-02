@@ -2,6 +2,9 @@
 #define MXREALTIMEINSPECTIONEDITOR_H
 #include <wx/frame.h>
 #include "Inspection.h"
+#include "mxUtils.h"
+#include "Cpp11.h"
+#include "raii.h"
 
 class wxTextCtrl;
 class wxButton;
@@ -9,7 +12,7 @@ class wxFlexGridSizer;
 class wxStaticText;
 
 class mxRealTimeInspectionEditor : public wxFrame, public myDIEventHandler, public myDIGlobalEventHandler {
-	bool mask_events;
+	BoolFlag mask_events;
 	wxFlexGridSizer *sizer;
 	struct AuxRTIE {
 		DebuggerInspection *di;

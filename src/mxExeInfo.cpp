@@ -23,7 +23,7 @@ END_EVENT_TABLE()
 	
 mxExeInfo::mxExeInfo(wxWindow *parent, mxSource *src) : wxDialog(parent, wxID_ANY, LANG(EXEINFO_CAPTION,"Propiedades del Ejecutable"), wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
-	wait_for_parser = NULL;
+	wait_for_parser = nullptr;
 	
 	fname = src?src->GetBinaryFileName().GetFullPath():wxFileName(DIR_PLUS_FILE(project->path,project->active_configuration->output_file));
 	if (!fname.FileExists() || (src&&src->sin_titulo&&compiler->last_compiled!=src) ) {

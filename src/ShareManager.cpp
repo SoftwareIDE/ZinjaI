@@ -11,7 +11,7 @@
 #include "mxMessageDialog.h"
 #include "mxOpenSharedWindow.h"
 
-ShareManager *share=NULL;
+ShareManager *share=nullptr;
 
 /*
 	Breve explicacion del protocolo:
@@ -40,19 +40,19 @@ ShareManager *share=NULL;
 
 ShareManager::ShareManager () {
 	index_is_waiting=false;
-	index_server=NULL;
-//	open_shared_window=NULL;
-	broadcast_receiver=NULL;
+	index_server=nullptr;
+//	open_shared_window=nullptr;
+	broadcast_receiver=nullptr;
 }
 
 bool ShareManager::CheckServer() {
 	StartBroadcastListener(false);
-	if (index_server!=NULL) {
+	if (index_server!=nullptr) {
 		if(index_server->IsOk())
 			return true;
 		else {
 			index_server->Destroy();
-			index_server=NULL;
+			index_server=nullptr;
 		}
 	}
 	wxIPV4address serv_adrs;
@@ -166,7 +166,7 @@ bool ShareManager::GetList(wxString hostname, wxListBox *lst) {
 	if (index_is_waiting) {
 		index_client->Notify(false);
 		index_client->Destroy();
-		index_client=NULL;
+		index_client=nullptr;
 	} else
 		index_is_waiting=true;
 	list_hostname=hostname;
@@ -255,13 +255,13 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 					index_is_waiting=false;
 					index_client->Notify(false);
 					index_client->Destroy();
-					index_client=NULL;
+					index_client=nullptr;
 				}
 			} 
 		} else if (event->GetSocketEvent()==wxSOCKET_LOST) {
 			if (list_tot>0) delete [] list_buf;
 			index_client->Destroy();
-			index_client=NULL;
+			index_client=nullptr;
 			index_is_waiting=false;
 		}
 	} else

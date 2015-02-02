@@ -150,7 +150,7 @@ bool mxErrorRecovering::RecoverSomething() {
 					str = fil.GetNextLine();
 					if (str.Len() && !fil.Eof()) {
 						str = fil.GetNextLine();
-						mxSource *the_one=NULL;
+						mxSource *the_one=nullptr;
 						for (unsigned int i=0;i<main_window->notebook_sources->GetPageCount();i++) {
 							mxSource *src = ((mxSource*)(main_window->notebook_sources->GetPage(i)));
 							if (src->source_filename==str) { the_one=src; break; }

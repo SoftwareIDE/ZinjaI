@@ -1,6 +1,7 @@
 #ifndef MXDIFFWINDOW_H
 #define MXDIFFWINDOW_H
 #include <wx/dialog.h>
+#include "Cpp11.h"
 
 class wxCheckBox;
 class wxComboBox;
@@ -14,7 +15,7 @@ private:
 	mxSource *source;
 	wxString diff_to_name;
 public:
-	mxDiffWindow(mxSource *source=NULL, wxString fname="");
+	mxDiffWindow(mxSource *source=nullptr, wxString fname="");
 	void OnClose(wxCloseEvent &event);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

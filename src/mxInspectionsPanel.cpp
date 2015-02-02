@@ -52,7 +52,7 @@ mxInspectionsPanel::Tab::Tab(mxInspectionGrid *g, const wxString &_name):type(TY
 mxInspectionsPanel::Tab::Tab(mxLocalsGrid *l, const wxString &_name):type(TYPE_LOCAL),ctrl(l),name(_name) {}
 
 void mxInspectionsPanel::Tab::SetVisible(bool value, bool generate_event) {
-	mxInspectionsPanelTab *tab = NULL;
+	mxInspectionsPanelTab *tab = nullptr;
 	switch(type) {
 	case TYPE_GRID: tab = static_cast<mxInspectionsPanelTab*>(static_cast<mxInspectionGrid*>(ctrl)); break;
 	case TYPE_LOCAL: tab = static_cast<mxInspectionsPanelTab*>(static_cast<mxLocalsGrid*>(ctrl)); break;
@@ -81,7 +81,7 @@ mxInspectionGrid *mxInspectionsPanel::GetInspectionGrid(int p) {
 }
 
 mxInspectionGrid *mxInspectionsPanel::Reset ( ) {
-	mxInspectionGrid *first_grid = NULL;
+	mxInspectionGrid *first_grid = nullptr;
 	for(int i=0;i<tabs.GetSize();i++) { 
 		while (i<tabs.GetSize() && tabs[i].type==Tab::TYPE_GRID) {
 			if (!first_grid) {

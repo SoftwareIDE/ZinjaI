@@ -54,8 +54,8 @@ mxNewWizard::mxNewWizard(mxMainWindow* parent, wxWindowID id, const wxPoint& pos
 
 	
 	templates_default=-1;
-	project_internal_folder_change=true;
-	project_full_path=NULL;
+	FlagGuard<BoolFlag> fg(mask_folder_change_events);
+	project_full_path=nullptr;
 	
 	wxSize psize,msize(400,300);
 	panel = new wxPanel(this,wxID_ANY,wxDefaultPosition,wxDefaultSize);
@@ -129,7 +129,7 @@ mxNewWizard::mxNewWizard(mxMainWindow* parent, wxWindowID id, const wxPoint& pos
 	if (GetSize().y>y) y = GetSize().y;
 	SetSize(size_w=x,size_h=y);
 
-	project_internal_folder_change=false;
+	fg.Release();
 	UpdateProjectFullPath();
 	
 }
@@ -252,7 +252,7 @@ void mxNewWizard::OnProjectCreate() {
 			for (int i=0;i<config->Init.inherit_num;i++)
 				base_classes.Add(onproject_inherit_class[i]->GetValue());
 			for(unsigned int i=0;i<base_classes.GetCount();i++) {
-				pd_inherit *father=NULL;
+				pd_inherit *father=nullptr;
 				while (parser->GetFather(base_classes[i],father)) {
 					if (base_classes.Index(father->father)==wxNOT_FOUND)
 						base_classes.Add(father->father);
@@ -1190,7 +1190,7 @@ void mxNewWizard::OnButtonHelp(wxCommandEvent &event){
 
 
 void mxNewWizard::OnProjectPathRadio(wxCommandEvent &event){
-	project_internal_folder_change=true;
+	BoolFlagGuard fg(mask_folder_change_events);
 	switch (project_folder_radio->GetSelection()) {
 	case 0:
 		project_folder_create->SetValue(true);
@@ -1209,7 +1209,6 @@ void mxNewWizard::OnProjectPathRadio(wxCommandEvent &event){
 		OnButtonFolder(event);
 		break;
 	}
-	project_internal_folder_change=false;
 }
 
 void mxNewWizard::OnOnProjectNameChange(wxCommandEvent &evt) {
@@ -1225,7 +1224,7 @@ void mxNewWizard::OnOnProjectNameChange(wxCommandEvent &evt) {
 }
 
 void mxNewWizard::OnProjectFolderChange(wxCommandEvent &evt) {
-	if (!project_internal_folder_change) project_folder_radio->SetSelection(3);
+	if (!mask_folder_change_events) project_folder_radio->SetSelection(3);
 	UpdateProjectFullPath();
 }
 

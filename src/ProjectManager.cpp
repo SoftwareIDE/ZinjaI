@@ -41,7 +41,7 @@ using namespace std;
 #define ICON_LINE(filename) (wxString("0 ICON \"")<<filename<<"\"")
 #define MANIFEST_LINE(filename) (wxString("1 RT_MANIFEST \"")<<filename<<"\"")
 
-ProjectManager *project=NULL;
+ProjectManager *project=nullptr;
 extern char path_sep;
 
 wxString doxygen_configuration::get_tag_index() { 
@@ -70,14 +70,14 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	
 	singleton->Stop();
 	
-	first_compile_step=NULL;
-	post_compile_action=NULL;
+	first_compile_step=nullptr;
+	post_compile_action=nullptr;
 	
 	project=this;
 	parser->CleanAll();
-	cppcheck=NULL;
-	doxygen=NULL;
-	wxfb=NULL;
+	cppcheck=nullptr;
+	doxygen=nullptr;
+	wxfb=nullptr;
 	version_required=0;
 	custom_tabs=0;
 	tab_use_spaces=false;
@@ -125,22 +125,22 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	wxChar file_path_char='/';
 #endif
 	wxString section, key, value;
-	project_file_item *last_file = NULL;
-	BreakPointInfo *last_breakpoint = NULL;
+	project_file_item *last_file = nullptr;
+	BreakPointInfo *last_breakpoint = nullptr;
 	long l;
-	compile_extra_step *extra_step=NULL;
-	project_library *lib_to_build=NULL;
+	compile_extra_step *extra_step=nullptr;
+	project_library *lib_to_build=nullptr;
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		//wxYield();
 		if (str[0]=='#') {
 			continue;
 		} else if (str[0]=='[') {
-			last_file=NULL;
+			last_file=nullptr;
 			section=str.AfterFirst('[').BeforeFirst(']');
 			if (section=="config") { // agregar una configuracion en blanco a la lista
 				active_configuration=configurations[configurations_count++]=new project_configuration(name.GetName(),"");
-				extra_step = NULL;
-				lib_to_build = NULL;
+				extra_step = nullptr;
+				lib_to_build = nullptr;
 			} else if (section=="lib_to_build") { // agregar un paso de compilación adicional a la configuración actual del proyecto
 				if (lib_to_build) {
 					lib_to_build->next = new project_library;
@@ -285,7 +285,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 					value.ToLong(&l);
 					if (last_file && l>=0) {
 						last_breakpoint=new BreakPointInfo(last_file,l);
-					} else last_breakpoint=NULL;
+					} else last_breakpoint=nullptr;
 				} else if (key=="breakpoint_ignore") {
 					value.ToLong(&l);
 					if (last_breakpoint) last_breakpoint->ignore_count=l;
@@ -390,7 +390,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	
 	} else { // seleccionar la que corresponde si existe
 		active_configuration=GetConfig(conf_name);
-		if (active_configuration==NULL) // si no tenia seleccionada ninguna, seleccionar la primera
+		if (active_configuration==nullptr) // si no tenia seleccionada ninguna, seleccionar la primera
 			active_configuration = configurations[0];
 		
 		for (int i=0;i<configurations_count;i++) {
@@ -420,7 +420,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				active_configuration->name.Lower().Contains(cur2)
 			) ) {
 				
-				project_configuration *suggested_configuration=NULL;
+				project_configuration *suggested_configuration=nullptr;
 				for (int i=0;i<configurations_count;i++) {
 					if (configurations[i]->name.Lower().Contains(cur1)||configurations[i]->name.Lower().Contains(cur2)) {
 						if (!suggested_configuration || 
@@ -586,9 +586,9 @@ ProjectManager::~ProjectManager() {
 	
 	singleton->Start();
 	
-	project=NULL;
+	project=nullptr;
 	
-	Toolchain::SelectToolchain(); // keep after project=NULL
+	Toolchain::SelectToolchain(); // keep after project=nullptr
 	
 	navigation_history.Reset();
 }
@@ -601,7 +601,7 @@ project_file_item *ProjectManager::AddFile (eFileType where, wxFileName filename
 	wxString name=filename.GetFullPath();
 	
 	// check if the file already exists somewhere in the project, if not create it (also updates main_window->project_tree)
-	project_file_item *fitem=NULL;
+	project_file_item *fitem=nullptr;
 	GlobalListIterator<project_file_item*> git(&files_all);
 	while (git.IsValid()) { 
 		if (git->name==name) {
@@ -902,7 +902,7 @@ project_file_item *ProjectManager::FindFromItem(wxTreeItemId &tree_item) {
 		if (it->item==tree_item) return *it;
 		it.Next();
 	}
-	return NULL;
+	return nullptr;
 }
 
 project_file_item *ProjectManager::FindFromName(wxString name) {
@@ -912,7 +912,7 @@ project_file_item *ProjectManager::FindFromName(wxString name) {
 			return *it;
 		it.Next();
 	}
-	return NULL;
+	return nullptr;
 }
 
 wxString ProjectManager::GetNameFromItem(wxTreeItemId &tree_item, bool relative) {
@@ -927,7 +927,7 @@ wxString ProjectManager::GetNameFromItem(wxTreeItemId &tree_item, bool relative)
 }
 
 /**
-* @return puntero al project_file_item del archivo si lo encuenctra, NULL si no lo encuentra
+* @return puntero al project_file_item del archivo si lo encuenctra, nullptr si no lo encuentra
 **/
 project_file_item *ProjectManager::HasFile(wxFileName file) {
 	GlobalListIterator<project_file_item*> it(&files_all);
@@ -936,7 +936,7 @@ project_file_item *ProjectManager::HasFile(wxFileName file) {
 			return *it;
 		it.Next();
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -1074,8 +1074,8 @@ bool ProjectManager::DependsOnMacro(project_file_item *item, wxArrayString &macr
 
 
 /**
-* Si only_one es NULL se analiza todo el proyecto (fuentes, bibliotecas, pasos 
-* adicionales, ejecutable, etc). Si no es NULL se analiza solo lo relacionado 
+* Si only_one es nullptr se analiza todo el proyecto (fuentes, bibliotecas, pasos 
+* adicionales, ejecutable, etc). Si no es nullptr se analiza solo lo relacionado 
 * a ese archivo en particular, para recompilar un solo objeto manualmente desde
 * el menú contextual del arbol de proyecto.
 **/
@@ -1098,7 +1098,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 		current_step=0;
 		steps_count=1;
 		SaveAll(false);
-		first_compile_step = new compile_step(CNS_EXTERN,NULL);
+		first_compile_step = new compile_step(CNS_EXTERN,nullptr);
 		return true;
 	}
 	
@@ -1110,8 +1110,8 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	// prepara la info de las bibliotecas
 	AssociateLibsAndSources(active_configuration);
 	
-	compile_step *step=first_compile_step=new compile_step(CNS_VOID,NULL);
-	compile_extra_step *extra_step = only_one?NULL:active_configuration->extra_steps;
+	compile_step *step=first_compile_step=new compile_step(CNS_VOID,nullptr);
+	compile_extra_step *extra_step = only_one?nullptr:active_configuration->extra_steps;
 	current_step=steps_count=0;
 
 	LocalListIterator<project_file_item*> item(&files_sources);
@@ -1223,7 +1223,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 		item.Next();
 	}
 	if (prev_to_sources->next) prev_to_sources->next->start_parallel=true;
-	step = step->next = new compile_step(CNS_BARRIER,NULL);
+	step = step->next = new compile_step(CNS_BARRIER,nullptr);
 	if (!only_one) {
 		// agregar los items extra previos al enlazado de bibliotecas
 		while (extra_step && extra_step->pos==CES_BEFORE_LIBS) {
@@ -1258,7 +1258,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 		
 		// si hay que mover la info de depuracion afuera de los binarios, agregar esos pasos
 		if (active_configuration->strip_executable==DBSACTION_COPY) {
-			step = step->next = new compile_step(CNS_BARRIER,NULL);
+			step = step->next = new compile_step(CNS_BARRIER,nullptr);
 			for(int k=0;k<3;k++) {
 				lib = active_configuration->libs_to_build;
 				while (lib) {
@@ -1699,7 +1699,7 @@ project_configuration *ProjectManager::GetConfig(wxString name) {
 	for (int i=0;i<configurations_count;i++)
 		if (configurations[i]->name==name)
 			return configurations[i];
-	return NULL;
+	return nullptr;
 }
 
 wxString ProjectManager::GetCustomStepCommand(const compile_extra_step *step) {
@@ -2435,24 +2435,24 @@ void ProjectManager::WxfbGetFiles() {
 /**
 * Ask wxformbuilder to regenerate one or all fbp projects (i.e. to create .cpp and .h or .xrc files)
 *
-* It is called automatically when ZinjaI gets the focus (for all wxfb projects, cual=NULL), or 
+* It is called automatically when ZinjaI gets the focus (for all wxfb projects, cual=nullptr), or 
 * manually from tools menu (for a single wxfb project, specified in argument cual)
 **/
 bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 	if (!config->CheckWxfbPresent()) return false;
 	wxfb->working=true;
 	wxString old_compiler_tree_text = main_window->compiler_tree.treeCtrl->GetItemText(main_window->compiler_tree.state);
-	mxOSD *osd=NULL;
+	mxOSD *osd=nullptr;
 	main_window->SetCompilingStatus(LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 	
 	bool something_changed=false;
 	if (cual) {
 		wxString fbp_file=DIR_PLUS_FILE(path,cual->name);
 		wxString fbase = WxfbGetSourceFile(fbp_file);
-		something_changed=WxfbGenerate(fbp_file,fbase,true,show_osd?&osd:NULL);
+		something_changed=WxfbGenerate(fbp_file,fbase,true,show_osd?&osd:nullptr);
 	} else {
 		for(int i=0;i<wxfb->projects.GetSize();i++) { 
-			if (WxfbGenerate(wxfb->projects[i],wxfb->sources[i],false,show_osd?&osd:NULL)) something_changed=true;
+			if (WxfbGenerate(wxfb->projects[i],wxfb->sources[i],false,show_osd?&osd:nullptr)) something_changed=true;
 			if (!wxfb->autoupdate_projects) break;
 		}
 	}
@@ -2485,13 +2485,13 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 	bool regen = force_regen || (!wxFileName::FileExists(fflag) || dp>wxFileName(fflag).GetModificationTime());
 	if (!regen) return false;
 	
-	if (osd && *osd==NULL) *osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
+	if (osd && *osd==nullptr) *osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 	
 	int ret = mxExecute(wxString("\"")+config->Files.wxfb_command+"\" -g \""+fbp_file+"\"", wxEXEC_NODISABLE|wxEXEC_SYNC);
 
 	if (fbase.Len()) {
 		if (ret) {
-			if (osd) { delete *osd; *osd=NULL; }
+			if (osd) { delete *osd; *osd=nullptr; }
 			if (wxfb->autoupdate_projects) {
 				if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_1,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),"Error",mxMD_YES_NO|mxMD_ERROR).ShowModal())
 					wxfb->autoupdate_projects=false;
@@ -2547,7 +2547,7 @@ compile_extra_step *ProjectManager::InsertExtraSteps(project_configuration *conf
 	step->name=name;
 	step->pos=pos;
 	if (conf->extra_steps) {
-		compile_extra_step *s1=conf->extra_steps,*s1p=NULL;;
+		compile_extra_step *s1=conf->extra_steps,*s1p=nullptr;;
 		while (s1 && s1->pos<=step->pos) {
 			s1p=s1;
 			s1=s1->next;
@@ -2564,7 +2564,7 @@ compile_extra_step *ProjectManager::InsertExtraSteps(project_configuration *conf
 		}
 	} else {
 		conf->extra_steps=step;
-		step->next=step->prev=NULL;
+		step->next=step->prev=nullptr;
 	}
 	return step;
 }
@@ -2643,9 +2643,9 @@ bool ProjectManager::DeleteExtraStep(project_configuration *conf, compile_extra_
 /** 
 * Busca información correspondiente a un paso de compilación personalizado. La busqueda se hace
 * por nombre.
-* @param conf configuración en la cual buscar; si recibe NULL utiliza active_configuration
+* @param conf configuración en la cual buscar; si recibe nullptr utiliza active_configuration
 * @param name nombre del paso a buscar, case sensitive
-* @return puntero al paso, si es que existe, sino NULL
+* @return puntero al paso, si es que existe, sino nullptr
 **/
 
 compile_extra_step *ProjectManager::GetExtraStep(project_configuration *conf, wxString name) {
@@ -2918,7 +2918,7 @@ project_library *ProjectManager::GetLibToBuild(project_configuration *conf, wxSt
 			return lib;
 		lib=lib->next;
 	}
-	return NULL;
+	return nullptr;
 }
 
 void ProjectManager::SaveLibsAndSourcesAssociation(project_configuration *conf) {
@@ -2945,7 +2945,7 @@ void ProjectManager::SaveLibsAndSourcesAssociation(project_configuration *conf) 
 void ProjectManager::AssociateLibsAndSources(project_configuration *conf) {
 	if (!conf) conf=active_configuration;
 	LocalListIterator<project_file_item*> fi(&files_sources);
-	while (fi.IsValid()) { fi->lib=NULL; fi.Next(); }
+	while (fi.IsValid()) { fi->lib=nullptr; fi.Next(); }
 	project_library *lib = conf->libs_to_build;
 	wxArrayString srcs;
 	while (lib) {
@@ -3259,7 +3259,7 @@ void ProjectManager::WxfbAutoCheckStep1() {
 	
 	if (parser->working) {
 		class LaunchProjectWxfbAutoUpdateStep1Action : public Parser::OnEndAction {
-		public: void Do() { if (project) project->WxfbAutoCheckStep1(); }
+		public: void Do() override { if (project) project->WxfbAutoCheckStep1(); }
 		};
 		parser->OnEnd(new LaunchProjectWxfbAutoUpdateStep1Action());
 		return;
@@ -3284,7 +3284,7 @@ void ProjectManager::WxfbAutoCheckStep1() {
 	
 	class LaunchProjectWxfbAutoUpdateStep2Action : public Parser::OnEndAction {
 	private: WxfbAutoCheckData *data;
-	public: void Do() { if (project) project->WxfbAutoCheckStep2(data); delete data; }
+	public: void Do() override { if (project) project->WxfbAutoCheckStep2(data); delete data; }
 	public: LaunchProjectWxfbAutoUpdateStep2Action(WxfbAutoCheckData *_data):data(_data) {}
 	};
 	parser->Parse(false);

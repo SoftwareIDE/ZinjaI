@@ -3,12 +3,13 @@
 #include <wx/timer.h>
 #include <wx/dcmemory.h>
 #include<iostream>
+#include "Cpp11.h"
 using namespace std;
 
 #include "mxSplashScreen.h"
 #include "mxApplication.h" // for SHOW_MILLIS
 
-mxSplashScreen *splash = NULL;
+mxSplashScreen *splash = nullptr;
 
 BEGIN_EVENT_TABLE(mxSplashScreen, wxFrame)
 	EVT_PAINT(mxSplashScreen::OnPaint)
@@ -20,7 +21,7 @@ BEGIN_EVENT_TABLE(mxSplashScreen, wxFrame)
 #endif
 END_EVENT_TABLE()
 
-mxSplashScreen::mxSplashScreen(wxString image_path):wxFrame(NULL,wxID_ANY,_T("Cargando ZinjaI..."),wxDefaultPosition,wxDefaultSize, wxNO_BORDER | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR) {
+mxSplashScreen::mxSplashScreen(wxString image_path):wxFrame(nullptr,wxID_ANY,_T("Cargando ZinjaI..."),wxDefaultPosition,wxDefaultSize, wxNO_BORDER | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR) {
 	splash=this;
 	m_bmp = wxBitmap(image_path,wxBITMAP_TYPE_PNG);
 	w = m_bmp.GetWidth(); h = m_bmp.GetHeight();
@@ -36,7 +37,7 @@ mxSplashScreen::mxSplashScreen(wxString image_path):wxFrame(NULL,wxID_ANY,_T("Ca
 	timer_done=should_close=false;
 }
 
-mxSplashScreen::mxSplashScreen(const char *xpm[], int x, int y):wxFrame(NULL,wxID_ANY,"",wxPoint(x,y),wxDefaultSize, /*wxFRAME_SHAPED | */wxNO_BORDER | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR ) {
+mxSplashScreen::mxSplashScreen(const char *xpm[], int x, int y):wxFrame(nullptr,wxID_ANY,"",wxPoint(x,y),wxDefaultSize, /*wxFRAME_SHAPED | */wxNO_BORDER | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR ) {
 	m_bmp = wxBitmap(xpm);
 	SetSize(wxSize(m_bmp.GetWidth(), m_bmp.GetHeight()));
 //#ifndef __WXGTK__
@@ -44,7 +45,7 @@ mxSplashScreen::mxSplashScreen(const char *xpm[], int x, int y):wxFrame(NULL,wxI
 //	SetShape(region);
 //#endif
 	should_close=true;
-	timer=NULL;
+	timer=nullptr;
 	Show(true);
 	Refresh();
 	wxYield();
@@ -88,6 +89,6 @@ void mxSplashScreen::OnMouse(wxMouseEvent &evt) {
 
 void mxSplashScreen::OnClose(wxCloseEvent &evt) {
 	if (timer) timer->Stop();
-	if (this==splash) splash=NULL;
+	if (this==splash) splash=nullptr;
 	Destroy();
 }

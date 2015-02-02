@@ -15,7 +15,7 @@ BEGIN_EVENT_TABLE(mxHidenPanel,wxPanel)
 	EVT_SIZE(mxHidenPanel::OnResize)
 END_EVENT_TABLE()
 
-//mxHidenPanel *mxHidenPanel::lockeds[3]={NULL,NULL,NULL};
+//mxHidenPanel *mxHidenPanel::lockeds[3]={nullptr,nullptr,nullptr};
 
 int mxHidenPanel::used_bottom=0;
 int mxHidenPanel::used_bottom_left=0;

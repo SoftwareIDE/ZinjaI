@@ -64,7 +64,7 @@ void CustomToolsPack::Run (int i) {
 		new mxCustomToolProcess(tools[i]);
 }
 
-mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_tool), output_view(NULL) {
+mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_tool), output_view(nullptr) {
 	
 	wxString cmd=tool.command;
 	

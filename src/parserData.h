@@ -45,45 +45,45 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 #define CH_REGISTER_FILE(afile,aname) \
 	HashStringParserFile::iterator it=parser->h_files.find(aname); \
 	if (it==parser->h_files.end()) \
-		parser->h_files[aname] = parser->first_file->next = afile=new pd_file(NULL,aname,wxDateTime(),parser->first_file->next); \
+		parser->h_files[aname] = parser->first_file->next = afile=new pd_file(nullptr,aname,wxDateTime(),parser->first_file->next); \
 	else \
 		afile=it->second;
 //	DEBUG_INFO("Archivo: "<<aname);
 
 #define CH_REGISTER_CLASS(afile,aclass,aname) \
 	pd_class* &aux=parser->h_classes[aname]; \
-	if (!aux) aux=parser->first_class->next = new pd_class(NULL,afile,0,aname,"",parser->first_class->next); \
+	if (!aux) aux=parser->first_class->next = new pd_class(nullptr,afile,0,aname,"",parser->first_class->next); \
 	aclass=aux;
 //	DEBUG_INFO("   Clase: "<<aname<<"*");
 
 #define CH_REGISTER_INHERIT(afather, aprops, ason) \
-	parser->first_inherit->next = new pd_inherit(NULL,ason,afather,aprops,parser->first_inherit->next); \
+	parser->first_inherit->next = new pd_inherit(nullptr,ason,afather,aprops,parser->first_inherit->next); \
 
 // para macros, typedefs, enums (y enums_consts) globales (la diferencia es props)
 #define CH_REGISTER_MACRO(afile,aname, aprops) \
-	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,aprops,parser->first_macro->next);
+	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(nullptr,afile,0,aname,aprops,parser->first_macro->next);
 
 #define CH_REGISTER_MACRO_P(afile,aname,aproto,aprops) \
-	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(NULL,afile,0,aname,aprops,parser->first_macro->next);\
+	parser->h_macros[aname] = parser->first_macro->next = new pd_macro(nullptr,afile,0,aname,aprops,parser->first_macro->next);\
 	parser->first_macro->next->proto = aproto;\
 //	DEBUG_INFO("   Macro: "<<aname);
 
 #define CH_REGISTER_GLOBAL(afile, atype, aname, aproto, aprops) \
-	parser->h_globals[aname] = parser->first_global->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aprops,parser->first_global->next,NULL,""); \
+	parser->h_globals[aname] = parser->first_global->next = new pd_var(wxTreeItemId(),nullptr,afile,0,aname,atype,aproto,aprops,parser->first_global->next,nullptr,""); \
 //	DEBUG_INFO("   Global:  t:"<<atype<<"   n:"<<aname<<"   p:"<<aproto);
 
 // para atributos y enums/enums_const dentro de clases (la diferencia es props)
 #define CH_REGISTER_ATTRIB(afile, aclass, atype, aname, aproto, aprops) \
-	aclass->h_attribs[aname] = aclass->first_attrib->next = new pd_var(wxTreeItemId(),NULL,afile,0,aname,atype,aproto,aprops,aclass->first_attrib->next,aclass,aproto); \
+	aclass->h_attribs[aname] = aclass->first_attrib->next = new pd_var(wxTreeItemId(),nullptr,afile,0,aname,atype,aproto,aprops,aclass->first_attrib->next,aclass,aproto); \
 //	DEBUG_INFO("      Attrib:  t:"<<atype<<"   n:"<<aname<<"   p:"<<aproto);
 
 #define CH_REGISTER_FUNCTION(afile, atype, aname, aproto) \
-	parser->h_functions[aproto] = parser->first_function->next = new pd_func(wxTreeItemId(), NULL, aname, aproto, aproto, parser->first_function->next, NULL); \
+	parser->h_functions[aproto] = parser->first_function->next = new pd_func(wxTreeItemId(), nullptr, aname, aproto, aproto, parser->first_function->next, nullptr); \
 	parser->first_function->next->file_dec=afile; \
 //	DEBUG_INFO("   Function:  t:"<<atype<<"   n:"<<aname<<"  p:"<<aproto);
 
 #define CH_REGISTER_METHOD(afile, aclass, atype, aname, aproto) \
-	aclass->h_methods[aproto] = aclass->first_method->next = new pd_func(wxTreeItemId(), NULL, aname, aproto, aproto, aclass->first_method->next, aclass); \
+	aclass->h_methods[aproto] = aclass->first_method->next = new pd_func(wxTreeItemId(), nullptr, aname, aproto, aproto, aclass->first_method->next, aclass); \
 	aclass->first_method->next->properties = PD_CONST_PUBLIC;
 //	DEBUG_INFO("   Function:  t:"<<atype<<"   n:"<<aname<<"  p:"<<aproto);
 
@@ -185,13 +185,13 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 	delete ainh;
 
 #define PD_CLASS_IS_EMPTY(aclass) \
-	(aclass->file==NULL && aclass->first_method->next==NULL && aclass->first_attrib->next==NULL)
+	(aclass->file==nullptr && aclass->first_method->next==nullptr && aclass->first_attrib->next==nullptr)
 
 
 #define PD_REF_CLEAR(first) { \
 	pd_ref *aux; \
 	first=first->next; \
-	while (first!=NULL) { \
+	while (first!=nullptr) { \
 		aux=first; \
 		first=first->next; \
 		delete aux; \
@@ -305,7 +305,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 		pd_aux = it->second; \
 		pd_aux->full_proto = afullproto; \
 	} else { \
-		h_functions[aproto] = pd_aux = new pd_func(item_functions, last_function, aname, aproto, afullproto, last_function->next, NULL); \
+		h_functions[aproto] = pd_aux = new pd_func(item_functions, last_function, aname, aproto, afullproto, last_function->next, nullptr); \
 		PD_INSERT(last_function,pd_aux); \
 	} \
 	if (pd_aux->file_dec==afile) { \
@@ -331,7 +331,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \
 			aclass = pd_it->second; \
 		} else { \
-			aclass = new pd_class(last_class, NULL, 0, aspace, "", last_class->next); \
+			aclass = new pd_class(last_class, nullptr, 0, aspace, "", last_class->next); \
 			PD_INSERT(last_class,aclass); \
 			h_classes[aspace] = aclass; \
 		} \
@@ -371,7 +371,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \
 			aclass = pd_it->second; \
 		} else { \
-			aclass = new pd_class(last_class, NULL, 0, aspace, "", last_class->next); \
+			aclass = new pd_class(last_class, nullptr, 0, aspace, "", last_class->next); \
 			PD_INSERT(last_class,aclass); \
 			h_classes[aspace] = aclass; \
 		} \
@@ -408,7 +408,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 		pd_aux = it->second; \
 		pd_aux->full_proto = afullproto; \
 	} else { \
-		h_functions[aproto] = pd_aux = new pd_func(item_functions, last_function, aname, aproto, afullproto, last_function->next, NULL); \
+		h_functions[aproto] = pd_aux = new pd_func(item_functions, last_function, aname, aproto, afullproto, last_function->next, nullptr); \
 		PD_INSERT(last_function,pd_aux); \
 	} \
 	if (pd_aux->file_def==afile) { \
@@ -435,7 +435,7 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \
 			aclass = pd_it->second; \
 		} else { \
-			aclass = new pd_class(last_class, NULL, 0, aspace, "", last_class->next); \
+			aclass = new pd_class(last_class, nullptr, 0, aspace, "", last_class->next); \
 			PD_INSERT(last_class,aclass); \
 			h_classes[aspace] = aclass; \
 		} \
@@ -572,7 +572,7 @@ struct pd_ref { // para la lista de cosas asociadas a un archivo o clase
 };
 
 
-struct pd_func { // funciones y metodos (las func no tienen por space una clase, space==NULL || space->file_def==NULL, el segundo es namespace)
+struct pd_func { // funciones y metodos (las func no tienen por space una clase, space==nullptr || space->file_def==nullptr, el segundo es namespace)
 	HashStringParserFunction::iterator hash_it; // hay un hash por nombre de funcion para encontrar rapido si ya estan definidas o no
 	wxTreeItemId item; // este es el item del arbol de simbolos para borrarlo/actualizarlo rapidamente, o para recuperar
 	wxTreeItemId image; // es el icono que va en el arbol
@@ -590,7 +590,7 @@ struct pd_func { // funciones y metodos (las func no tienen por space una clase,
 	wxString proto; // prototipo completo
 	wxString full_proto; // prototipo completo
 	pd_class *space;
-	pd_func(wxTreeItemId fitem, pd_func *aprev, wxString &aname, wxString &aproto, wxString afullproto, pd_func *anext, pd_class *aspace=NULL){
+	pd_func(wxTreeItemId fitem, pd_func *aprev, wxString &aname, wxString &aproto, wxString afullproto, pd_func *anext, pd_class *aspace=nullptr){
 //		if ( (space=aspace) )
 //			full_proto=afullproto;
 //		else
@@ -604,8 +604,8 @@ struct pd_func { // funciones y metodos (las func no tienen por space una clase,
 		proto=aproto;
 		next=anext;
 		prev=aprev;
-		file_dec=file_def=NULL;
-		ref_dec=ref_def=NULL;
+		file_dec=file_def=nullptr;
+		ref_dec=ref_def=nullptr;
 //		if (prev) DEBUG_INFO(wxString("Creada Funcion ")<<name);
 	}
 	~pd_func() {
@@ -659,7 +659,7 @@ struct pd_var {
 	pd_ref *ref;
 	unsigned short properties;
 	int line;
-	pd_var(wxTreeItemId fitem, pd_var *aprev, pd_file *afile, int aline, wxString &aname, wxString &atype, wxString &aproto, int aproperties, pd_var *anext, pd_class *aspace = NULL, wxString afullproto="") {
+	pd_var(wxTreeItemId fitem, pd_var *aprev, pd_file *afile, int aline, wxString &aname, wxString &atype, wxString &aproto, int aproperties, pd_var *anext, pd_class *aspace = nullptr, wxString afullproto="") {
 		space=aspace;
 		proto=aproto;
 		properties=aproperties;
@@ -717,18 +717,18 @@ struct pd_class { // clases, namespaces y uniones (para el uso son exactamente l
 	pd_var *first_attrib;
 //	wxArrayString fathers;
 	pd_class(pd_class *aprev, pd_file *afile, int aline, wxString &aname, wxString atempl, pd_class *anext) {
-		ref=NULL;
+		ref=nullptr;
 		line=aline;
 		templ=atempl;
 		name=aname;
 		prev=aprev;
 		next=anext;
 		file=afile;
-//		space=NULL;
+//		space=nullptr;
 		is_union=false;
 		wxString s;
-		first_method=new pd_func(wxTreeItemId(), NULL,s,s,s,NULL);
-		first_attrib=new pd_var(wxTreeItemId(), NULL,NULL,0,s,s,s,0,NULL);
+		first_method=new pd_func(wxTreeItemId(), nullptr,s,s,s,nullptr);
+		first_attrib=new pd_var(wxTreeItemId(), nullptr,nullptr,0,s,s,s,0,nullptr);
 		if (prev) {
 			if (file)
 				item = PD_TREE_CTRL_ADD_CLASS(name);
@@ -773,16 +773,16 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 		time=atime;
 		next=anext;
 		prev=aprev;
-		first_class=new pd_ref(NULL,NULL,0,NULL);
-		first_inherit=new pd_ref(NULL,NULL,0,NULL);
-		first_func_def=new pd_ref(NULL,NULL,0,NULL);
-		first_func_dec=new pd_ref(NULL,NULL,0,NULL);
-		first_global=new pd_ref(NULL,NULL,0,NULL);
-		first_macro=new pd_ref(NULL,NULL,0,NULL);
-		first_include=new pd_ref(NULL,NULL,0,NULL);
-		first_method_def=first_func_def;//new pd_ref(NULL,NULL,0,NULL);
-		first_method_dec=first_func_dec;//new pd_ref(NULL,NULL,0,NULL);
-		first_attrib=first_global;//new pd_ref(NULL,NULL,0,NULL);
+		first_class=new pd_ref(nullptr,nullptr,0,nullptr);
+		first_inherit=new pd_ref(nullptr,nullptr,0,nullptr);
+		first_func_def=new pd_ref(nullptr,nullptr,0,nullptr);
+		first_func_dec=new pd_ref(nullptr,nullptr,0,nullptr);
+		first_global=new pd_ref(nullptr,nullptr,0,nullptr);
+		first_macro=new pd_ref(nullptr,nullptr,0,nullptr);
+		first_include=new pd_ref(nullptr,nullptr,0,nullptr);
+		first_method_def=first_func_def;//new pd_ref(nullptr,nullptr,0,nullptr);
+		first_method_dec=first_func_dec;//new pd_ref(nullptr,nullptr,0,nullptr);
+		first_attrib=first_global;//new pd_ref(nullptr,nullptr,0,nullptr);
 //		if (prev) DEBUG_INFO(wxString("Creado Archivo ")<<name);
 	}
 	
@@ -793,14 +793,14 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 		// purgar clases
 //DEBUG_INFO("Purgando clases... ");
 		item = first_class->next;
-		while(item!=NULL) {
+		while(item!=nullptr) {
 			aux=item->next;
 			if (PD_UNREF(pd_class,item)->file==this && item->counter!=counter) {
-				PD_UNREF(pd_class,item)->file=NULL;
+				PD_UNREF(pd_class,item)->file=nullptr;
 				if (PD_CLASS_IS_EMPTY(PD_UNREF(pd_class,item))) {
 					PD_DELETE_CLASS(parser->h_classes,PD_UNREF(pd_class,item));
 				} else
-					PD_UNREF(pd_class,item)->ref=NULL;
+					PD_UNREF(pd_class,item)->ref=nullptr;
 				PD_DEL_REF(item);
 			} else if (PD_UNREF(pd_class,item)->file!=this) {
 				PD_DEL_REF(item);
@@ -812,11 +812,11 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 		
 //DEBUG_INFO("Purgando funciones (def)... ");
 		item = first_func_def->next;
-		while(item!=NULL) {
+		while(item!=nullptr) {
 			aux=item->next;
 			if (PD_UNREF(pd_func,item)->file_def==this && item->counter!=counter) {
-				if (PD_UNREF(pd_func,item)->file_dec!=NULL) {
-						PD_UNREF(pd_func,item)->file_def=NULL;
+				if (PD_UNREF(pd_func,item)->file_dec!=nullptr) {
+						PD_UNREF(pd_func,item)->file_def=nullptr;
 				} else {
 					if (PD_UNREF(pd_func,item)->space) {
 						PD_DELETE_METHOD(PD_UNREF(pd_func,item)->space->h_methods,PD_UNREF(pd_func,item));
@@ -833,11 +833,11 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 
 //DEBUG_INFO("Purgando funciones (dec)... ");
 		item = first_func_dec->next;
-		while(item!=NULL) {
+		while(item!=nullptr) {
 			aux=item->next;
 			if (PD_UNREF(pd_func,item)->file_dec==this && item->counter!=counter) {
-				if (PD_UNREF(pd_func,item)->file_def!=NULL) {
-					PD_UNREF(pd_func,item)->file_dec=NULL;
+				if (PD_UNREF(pd_func,item)->file_def!=nullptr) {
+					PD_UNREF(pd_func,item)->file_dec=nullptr;
 				} else {
 					if (PD_UNREF(pd_func,item)->space) {
 						PD_DELETE_METHOD(PD_UNREF(pd_func,item)->space->h_methods,PD_UNREF(pd_func,item));
@@ -855,7 +855,7 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 //DEBUG_INFO("Purgando macros... ");
 		// purgar macros
 		item = first_macro->next;
-		while(item!=NULL) {
+		while(item!=nullptr) {
 			aux=item->next;
 			if (PD_UNREF(pd_macro,item)->file==this && item->counter!=counter) {
 				PD_DELETE_MACRO(parser->h_macros,PD_UNREF(pd_macro,item));
@@ -869,7 +869,7 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 //DEBUG_INFO("Purgando variables... ");
 		// purgar variables y atributos
 		item = first_global->next;
-		while(item!=NULL) {
+		while(item!=nullptr) {
 			aux=item->next;
 			if (PD_UNREF(pd_var,item)->file==this && item->counter!=counter) {
 				if (PD_UNREF(pd_var,item)->space) {
@@ -886,7 +886,7 @@ struct pd_file { // archivos, para que el parser sepa que borrar
 
 		// purgar herencias
 		item = first_inherit->next;
-		while(item!=NULL) {
+		while(item!=nullptr) {
 			aux=item->next;
 			if (item->counter!=counter) {
 				PD_DELETE_INHERIT(PD_UNREF(pd_inherit,item));

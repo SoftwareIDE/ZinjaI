@@ -22,11 +22,11 @@ BEGIN_EVENT_TABLE(mxLongTextEditor, wxDialog)
 END_EVENT_TABLE()
 
 mxLongTextEditor::mxLongTextEditor(wxWindow *parent, wxString title, wxComboBox *acombo) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,250) ,wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	text=NULL; combo=acombo;
+	text=nullptr; combo=acombo;
 	CreateCommonStuff(combo->GetValue());	
 }
 mxLongTextEditor::mxLongTextEditor(wxWindow *parent, wxString title, wxTextCtrl *atext) : wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxSize(450,250) ,wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	text=atext; combo=NULL;
+	text=atext; combo=nullptr;
 	CreateCommonStuff(text->GetValue());
 }
 

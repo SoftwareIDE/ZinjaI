@@ -1,10 +1,11 @@
-#include "Language.h"
 #include <fstream>
 #include <cstring>
+#include "Language.h"
+#include "Cpp11.h"
 using namespace std;
 
-char *language_buffer = NULL;
-int *language_index = NULL;
+char *language_buffer = nullptr;
+int *language_index = nullptr;
 
 /**
 * @brief Carga un archivo de lenguaje
@@ -22,7 +23,7 @@ LANGUAGE_ERROR load_language(string lang_in, string lang_cache) {
 	
 	if (language_buffer) delete [] language_buffer;
 	if (language_index) delete [] language_index;
-	language_buffer=NULL; language_index=NULL;
+	language_buffer=nullptr; language_index=nullptr;
 	
 	LANGUAGE_ERROR le = is_language_compiled(lang_in,lang_cache);
 	if (le!=LANGERR_OK) {

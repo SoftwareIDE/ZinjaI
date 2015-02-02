@@ -21,7 +21,7 @@ BEGIN_EVENT_TABLE(mxUpdatesChecker, wxDialog)
 	EVT_END_PROCESS(wxID_ANY,mxUpdatesChecker::OnProcessEnds)
 END_EVENT_TABLE()
 
-wxProcess *mxUpdatesChecker::process=NULL;
+wxProcess *mxUpdatesChecker::process=nullptr;
 	
 mxUpdatesChecker::mxUpdatesChecker(bool show) : wxDialog(main_window, wxID_ANY, LANG(UPDATE_CAPTION,"Buscar Actualizaciones"), wxDefaultPosition, wxSize(450,200) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 
@@ -110,7 +110,7 @@ void mxUpdatesChecker::CheckNow() {
 void mxUpdatesChecker::OnClose(wxCloseEvent &evt) {
 	config->Init.check_for_updates = check->GetValue();
 	if (process) process->Detach();
-	process=NULL;
+	process=nullptr;
 	Destroy();
 }
 
@@ -151,7 +151,7 @@ void mxUpdatesChecker::BackgroundCheck() {
 }
 
 void mxUpdatesChecker::OnProcessEnds(wxProcessEvent &evt) {
-	delete process; process=NULL;
+	delete process; process=nullptr;
 	wxString temp_file(DIR_PLUS_FILE(config->temp_dir,"updatem.res"));
 	wxTextFile fil(temp_file);
 	if (!fil.Exists() || !fil.Open() || !fil.GetLineCount()) {

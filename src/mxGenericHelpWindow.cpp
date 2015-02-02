@@ -30,13 +30,13 @@ BEGIN_EVENT_TABLE(mxGenericHelpWindow,wxFrame)
 	EVT_CHAR_HOOK(mxGenericHelpWindow::OnCharHookEvent)
 END_EVENT_TABLE();
 
-mxGenericHelpWindow::mxGenericHelpWindow(wxString title, bool use_tree):wxFrame (NULL,mxID_HELPW, title, wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
+mxGenericHelpWindow::mxGenericHelpWindow(wxString title, bool use_tree):wxFrame (nullptr,mxID_HELPW, title, wxDefaultPosition, wxSize(750,550),wxDEFAULT_FRAME_STYLE) {
 	
 #ifdef __WIN32__
 	SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
 #endif
 	
-	printer=NULL;
+	printer=nullptr;
 	
 	wxPanel *panel= new wxPanel(this);
 	wxBoxSizer *sizer = general_sizer = new wxBoxSizer(wxVERTICAL);
@@ -56,7 +56,7 @@ mxGenericHelpWindow::mxGenericHelpWindow(wxString title, bool use_tree):wxFrame 
 		wxBitmapButton *button_hide = new wxBitmapButton(panel, mxID_HELPW_HIDETREE, wxBitmap(SKIN_FILE(_T("ayuda_tree.png")),wxBITMAP_TYPE_PNG));
 		button_hide->SetToolTip(LANG(HELPW_TOGGLE_TREE,"Mostrar/Ocultar Indice"));
 		topSizer->Add(button_hide,sizers->BA2);
-	} else tree=NULL;
+	} else tree=nullptr;
 	
 	wxBitmapButton *button_home = new wxBitmapButton(panel, mxID_HELPW_HOME, wxBitmap(SKIN_FILE(_T("ayuda_indice.png")),wxBITMAP_TYPE_PNG));
 	button_home->SetToolTip(LANG(HELPW_INDEX,"Ir a la pagina de incio"));

@@ -5,7 +5,7 @@
 #include "mxUtils.h"
 
 widgetDisabler::widgetDisabler() {
-	first=NULL;
+	first=nullptr;
 }
 
 widgetDisabler::~widgetDisabler() {

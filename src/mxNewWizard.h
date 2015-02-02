@@ -3,6 +3,9 @@
 
 #include <wx/dialog.h>
 #include <wx/arrstr.h>
+#include "mxUtils.h"
+#include "Cpp11.h"
+#include "raii.h"
 
 class mxBitmapButton;
 class wxBoxSizer;
@@ -20,7 +23,7 @@ class mxNewWizard : public wxDialog {
 public:
 
 	bool only_for_project; ///< indica si el cuadro se abrio para la opcion "Nuevo..." (general) o "Nuevo Proyecto..."
-	bool project_internal_folder_change; ///< para evitar mover el radiobutton al cambiar el texto de la carpeta de proyecto por un click en el mismo radio button
+	BoolFlag mask_folder_change_events; ///< para evitar mover el radiobutton al cambiar el texto de la carpeta de proyecto por un click en el mismo radio button
 	
 	int size_w, size_h;
 	

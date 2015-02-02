@@ -31,7 +31,7 @@ public:
 	void OnDIInScope(DebuggerInspection *di);
 	void OnDINewType(DebuggerInspection *di);
 	// eventos globales de DebuggerInspection
-	void OnDebugPausePost() /*override*/;
+	void OnDebugPausePost() override;
 	DECLARE_EVENT_TABLE();
 };
 

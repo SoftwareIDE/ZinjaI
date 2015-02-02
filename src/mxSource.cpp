@@ -38,10 +38,10 @@ void NavigationHistory::OnClose(mxSource *src) {
 		if (locs[j].src==src) {
 			if (src->sin_titulo) locs[j].file.Clear();
 			else locs[j].file=src->GetFullPath(); 
-			locs[j].src=NULL;
+			locs[j].src=nullptr;
 		}
 	}
-	if (focus_source==src) focus_source=NULL;
+	if (focus_source==src) focus_source=nullptr;
 }
 
 void NavigationHistory::Goto(int i) {
@@ -220,7 +220,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	
 //	AutoCompSetDropRestOfWord(true); // esto se torna muy molesto en muchos casos (por ejemplo, intentar agregar unsigned antes de int), mejor no usar
 	
-	calltip = NULL;	calltip_mode = MXS_NULL; inspection_baloon = NULL;
+	calltip = nullptr;	calltip_mode = MXS_NULL; inspection_baloon = nullptr;
 	
 	old_current_line=-1000;
 	
@@ -229,7 +229,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	next_source_with_same_file=this;
 	
 	source_time_dont_ask = false; source_time_reload = false;
-	diff_brother=NULL; first_diff_info=last_diff_info=NULL;
+	diff_brother=nullptr; first_diff_info=last_diff_info=nullptr;
 	
 	readonly_mode = ROM_NONE;
 	
@@ -384,11 +384,11 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 
 
 mxSource::~mxSource () {
-	HideCalltip(); if (calltip) { calltip->Destroy(); calltip=NULL; }
+	HideCalltip(); if (calltip) { calltip->Destroy(); calltip=nullptr; }
 	
 	bool only_view=next_source_with_same_file==this; // there can be more than one view of the same source
 	
-	if (diff_brother) diff_brother->SetDiffBrother(NULL); diff_brother=NULL;
+	if (diff_brother) diff_brother->SetDiffBrother(nullptr); diff_brother=nullptr;
 	while (first_diff_info) delete first_diff_info;
 	
 	navigation_history.OnClose(this);
@@ -397,8 +397,8 @@ mxSource::~mxSource () {
 	if (main_window) main_window->UnregisterSource(this);
 	er_unregister_source(this);
 	if (main_window) {
-		if (compiler->last_compiled==this) compiler->last_compiled=NULL;
-		if (compiler->last_runned==this) compiler->last_runned=NULL;
+		if (compiler->last_compiled==this) compiler->last_compiled=nullptr;
+		if (compiler->last_runned==this) compiler->last_runned=nullptr;
 	}
 	
 	if (!only_view) {
@@ -410,7 +410,7 @@ mxSource::~mxSource () {
 		if (m_owns_extras) next_source_with_same_file->m_owns_extras=true;
 	} else {
 		// si no es un fuente de un proyecto, tiene la resposabilidad de liberar la memoria de los breakpoints
-		m_extras->ChangeSource(NULL);
+		m_extras->ChangeSource(nullptr);
 		if (m_owns_extras) delete m_extras; /// @todo: esto puede traer problemas en combinacion con el split
 	}
 	
@@ -3142,7 +3142,7 @@ DiffInfo *mxSource::MarkDiffs(int from, int to, MXS_MARKER marker, wxString extr
 			MarkerDelete(i,mxSTC_MARK_DIFF_CHANGE);	
 		}
 		while (first_diff_info) delete first_diff_info;
-		return NULL;
+		return nullptr;
 	} else {
 		int *handles = new int[to-from+1];
 		for (int i=from;i<=to;i++)
@@ -3192,8 +3192,8 @@ void mxSource::OnClick(wxMouseEvent &evt) {
 			mxDropTarget::current_drag_source=this;
 			mxDropTarget::last_drag_cancel=false;
 			wxDragResult result = dragSource.DoDragDrop(wxDrag_AllowMove|wxDrag_DefaultMove);
-			if (mxDropTarget::current_drag_source!=NULL && result==wxDragMove) {
-				mxDropTarget::current_drag_source=NULL;
+			if (mxDropTarget::current_drag_source!=nullptr && result==wxDragMove) {
+				mxDropTarget::current_drag_source=nullptr;
 				SetTargetStart(ss); SetTargetEnd(se); ReplaceTarget("");
 			} 
 			else if (result==wxDragCancel && ss==GetSelectionStart()) {
@@ -3284,7 +3284,7 @@ void mxSource::ApplyDiffChange() {
 					delete di->brother;
 					diff_brother->Refresh();
 				}
-				delete di; di=NULL; break;
+				delete di; di=nullptr; break;
 				
 			}
 		}
@@ -3312,7 +3312,7 @@ void mxSource::DiscardDiffChange() {
 					delete di->brother;
 					diff_brother->Refresh();
 				}
-				delete di; di=NULL; break;
+				delete di; di=nullptr; break;
 			}
 		}
 		if (di) di = di->next;
@@ -3362,7 +3362,7 @@ void mxSource::ShowDiffChange() {
 			if (MarkerLineFromHandle(di->handles[i])==cl) {
 				int l = MarkerLineFromHandle(di->handles[0]);
 				ShowBaloon(di->extra,PositionFromLine(l));
-				di=NULL; break;
+				di=nullptr; break;
 			}
 		}
 		if (di) di = di->next;
@@ -3491,7 +3491,7 @@ void mxSource::CheckForExternalModifications() {
 	class SourceModifAction:public mxMainWindow::AfterEventsAction {
 	public: 
 		SourceModifAction(mxSource *who):AfterEventsAction(who){}
-		void Do() { source->ThereAreExternalModifications(); }
+		void Do() override { source->ThereAreExternalModifications(); }
 	};
 	main_window->CallAfterEvents(new SourceModifAction(this));
 //	ThereAreExternalModifications();
@@ -4031,7 +4031,7 @@ void mxSource::OnEditRectangularEdition (wxCommandEvent & evt) {
 void mxSource::HideInspection ( ) {
 	if (!inspection_baloon) return;
 	inspection_baloon->Destroy();
-	inspection_baloon = NULL;
+	inspection_baloon = nullptr;
 }
 
 void mxSource::ShowInspection (const wxPoint &pos, const wxString &exp, const wxString &val) {

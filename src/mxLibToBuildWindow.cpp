@@ -51,11 +51,11 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 	szsrc_buttons->Add(new wxButton(this,mxID_LIBS_OUT,"<<<",wxDefaultPosition,wxSize(50,-1)),sizers->BA10_Exp0);
 	wxSizer *szsrc_in = new wxBoxSizer(wxVERTICAL);
 	szsrc_in->Add(new wxStaticText(this,wxID_ANY,LANG(LIBTOBUILD_SOURCES_IN,"Fuentes a incluir")),sizers->Exp0);
-	sources_in = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
+	sources_in = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
 	szsrc_in->Add(sources_in,sizers->Exp1);
 	wxSizer *szsrc_out = new wxBoxSizer(wxVERTICAL);
 	szsrc_out->Add(new wxStaticText(this,wxID_ANY,LANG(LIBTOBUILD_SOURCES_OUT,"Fuentes a excluir")),sizers->Exp0);
-	sources_out = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
+	sources_out = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr,wxLB_SORT|wxLB_EXTENDED|wxLB_NEEDED_SB);
 	szsrc_out->Add(sources_out,sizers->Exp1);
 	src_sizer->Add(szsrc_out,sizers->Exp1);
 	src_sizer->Add(szsrc_buttons,sizers->Center);
@@ -140,7 +140,7 @@ void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 		} else if (fi->lib == lib) {
 #ifndef __WIN32__
 			if (!fi->lib) fi->force_recompile=true; // por el fPIC
-			fi->lib=NULL;
+			fi->lib=nullptr;
 #endif
 		}
 		fi.Next();

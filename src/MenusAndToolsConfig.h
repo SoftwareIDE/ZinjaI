@@ -4,6 +4,8 @@
 #include <wx/menuitem.h>
 #include <wx/textfile.h>
 #include "ids.h"
+#include "Cpp11.h"
+
 #ifdef _ZINJAI_DEBUG
 #include<iostream>
 #endif
@@ -49,8 +51,8 @@ private:
 		int wx_id, properties/*, enabling_condition*/;
 		wxString key, label, description, icon, shortcut;
 		wxMenuItem *wx_item;
-		myMenuItem(int _id=0, int _props=0):wx_id(_id),properties(_props),/*enabling_condition(ecALWAYS),*/wx_item(NULL){}
-		myMenuItem(const wxString &_key, int _id, const wxString &_label):wx_id(_id),properties(maDEFAULT_SHORTCUT),key(_key),/*enabling_condition(ecALWAYS),*/label(_label),wx_item(NULL) {}
+		myMenuItem(int _id=0, int _props=0):wx_id(_id),properties(_props),/*enabling_condition(ecALWAYS),*/wx_item(nullptr){}
+		myMenuItem(const wxString &_key, int _id, const wxString &_label):wx_id(_id),properties(maDEFAULT_SHORTCUT),key(_key),/*enabling_condition(ecALWAYS),*/label(_label),wx_item(nullptr) {}
 		myMenuItem &Label(const wxString &_label) { label=_label; return *this; }
 		myMenuItem &ShortCut(const wxString &_shortcut) { shortcut=_shortcut; return *this; }
 		myMenuItem &Description(const wxString &_description) { description=_description; return *this; }
@@ -271,14 +273,14 @@ public:
 		for(unsigned int i=0;i<mapped_items.size();i++) { 
 			if (mapped_items[i].wx_id==wx_id) return mapped_items[i].something;
 		}
-		return NULL;
+		return nullptr;
 	}
 	myMenu &GetMyMenu(int menu_id) { return menues[menu_id]; }
 	wxMenu *GetMenu(int wx_id) {
 		for(unsigned int i=0;i<mapped_menues.size();i++) { 
 			if (mapped_menues[i].wx_id==wx_id) return mapped_menues[i].something;
 		}
-		return NULL;
+		return nullptr;
 	}
 //	void SaveMenuConfig(wxTextFile &file);
 	

@@ -15,12 +15,12 @@ BEGIN_EVENT_TABLE(mxInspectionHistory,wxListBox)
 END_EVENT_TABLE()
 	
 mxInspectionHistory::mxInspectionHistory(wxString expression, bool is_frameless) 
-	: wxListBox(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL, wxLB_MULTIPLE|wxLB_EXTENDED), lista(this)
+	: wxListBox(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr, wxLB_MULTIPLE|wxLB_EXTENDED), lista(this)
 //	: wxPanel(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize) 
 {
 //	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-//	lista = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,NULL, wxLB_MULTIPLE|wxLB_EXTENDED);
-//	lista->Connect(wxID_ANY,wxEVT_RIGHT_UP,wxMouseEventHandler(mxInspectionHistory::OnPopupMenu),NULL,this);
+//	lista = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr, wxLB_MULTIPLE|wxLB_EXTENDED);
+//	lista->Connect(wxID_ANY,wxEVT_RIGHT_UP,wxMouseEventHandler(mxInspectionHistory::OnPopupMenu),nullptr,this);
 //	sizer->Add(lista,sizers->Exp1);
 //	SetSizer(sizer);
 	wxSize sz(100,150);
