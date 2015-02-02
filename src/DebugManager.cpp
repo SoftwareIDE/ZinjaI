@@ -318,7 +318,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 		while (!ans.Contains("*stopped")) ans=WaitAnswer();
 		SetStateText(status_message);
 		UpdateBacktrace();
-		DebuggerInspection::OnDebugStart();
+		DebuggerInspection::OnDebugPause();
 //		long line;
 //		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
 //		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);
@@ -396,7 +396,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
 		UpdateBacktrace();
-		DebuggerInspection::OnDebugStart();
+		DebuggerInspection::OnDebugPause();
 //		long line;
 //		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
 //		wxString file = main_window->backtrace_ctrl->GetCellValue(0,BG_COL_FILE);

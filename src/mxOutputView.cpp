@@ -91,14 +91,6 @@ void mxOutputView::OnClose(wxCloseEvent &event) {
 	Destroy();
 }
 
-void mxOutputView::AppendError(wxString text) {
-	ctrl_err->AppendText(text);
-}
-
-void mxOutputView::AppendOutput(wxString text) {
-	ctrl_std->AppendText(text);
-}
-
 // cppcheck-suppress publicAllocationError
 void mxOutputView::Launch(wxString path, wxString command) {
 	process = new wxProcess(GetEventHandler(),wxID_ANY);

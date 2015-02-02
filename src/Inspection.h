@@ -99,31 +99,34 @@ public:
 struct DebuggerInspection {
 
 #ifdef _INSPECTION_LOG
+#	define __null_inspection__ (DebuggerInspection*)0xFFFFFFF
 	class CallLogger {
 		static int lev;
 		DebuggerInspection *di;
 		const char *method;
 	public:
-		CallLogger(const char *_method, DebuggerInspection *_di=NULL) : di(_di),method(_method) {
+		CallLogger(const char *_method, DebuggerInspection *_di=__null_inspection__) : di(_di),method(_method) {
 			stringstream cerr;
 			cerr<<"DI("<<di<<")::"<<string((++lev)*2,' ')<<method<<"  in";
-			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
+			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
 			inspection_log_file.Write(cerr.str().c_str()); inspection_log_file.Flush();
 		}
 		~CallLogger() { 
 			stringstream cerr;
 			cerr<<"DI("<<di<<")::"<<string((lev--)*2,' ')<<method<<" out";
-			if (di) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
+			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
 			inspection_log_file.Write(cerr.str().c_str()); inspection_log_file.Flush();
 		}
 	};
-	#define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
-	#define __debug_log_static_method__ CallLogger _call_logger_(__FUNCTION__)
+#	define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
+#	define __debug_log_static_method__ CallLogger _call_logger_(__FUNCTION__)
+#	define __debug_log_message__(msg) { stringstream cerr; cerr<<msg<<endl; inspection_log_file.Write(cerr.str().c_str()); } inspection_log_file.Flush()
 #else
-	#define __debug_log_method__ 
-	#define __debug_log_static_method__ 
+#	define __debug_log_method__ 
+#	define __debug_log_static_method__ 
+#	define __debug_log_message__(msg)
 #endif
 	
 	/// inspecciones a reestablecer al reiniciar la depuración, guarda todas las útiles para el usuario
@@ -159,6 +162,7 @@ struct DebuggerInspection {
 	static SingleList<DIPendingAction> pending_actions;
 	
 	static void AddPendingAction(DebuggerInspection *inspection, pending_action action, bool requires_debug_pause, bool dont_run_now=false) {
+		__debug_log_message__( "DI::AddPendingAction: "<<(void*)action<<"  insp="<<inspection );
 		pending_actions.Add(DIPendingAction(inspection,action,requires_debug_pause,dont_run_now));
 	}
 	
@@ -313,7 +317,8 @@ private:
 	bool SetupChildInspection() {
 		__debug_log_method__;
 		// si habia, borrar la inspeccion auxiliar previa
-		if (helper) DeleteHelper();
+		if (helper) 
+			DeleteHelper();
 		// si no hay que intentar simplificar esta
 		if (flags.Get(DIF_DONT_USE_HELPER)) return false;
 		// si hay una mejora automática para este tipo

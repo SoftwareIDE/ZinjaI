@@ -20,7 +20,7 @@ public:
 	~mxProjectGeneralConfig();
 	void OnClose(wxCloseEvent &event);
 	void OnOkButton(wxCommandEvent &evt);
-	void OnDoxigenConfigButton(wxCommandEvent &evt);
+	void OnDoxygenConfigButton(wxCommandEvent &evt);
 	void OnCompileConfigButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);

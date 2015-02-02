@@ -2689,6 +2689,7 @@ long int ProjectManager::CompileWithExternToolchain(compile_and_run_struct_singl
 	
 	// ejecutar
 	compile_and_run->output_type=MXC_EXTERN;
+	compile_and_run->compiling=true;
 	compile_and_run->full_output.Add("");
 	compile_and_run->full_output.Add(wxString("> ")+command);
 	compile_and_run->full_output.Add("");

@@ -21,7 +21,7 @@ BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES,mxProjectGeneralConfig::OnIndexesButton)
 	EVT_BUTTON(mxID_RUN_CONFIG,mxProjectGeneralConfig::OnCompileConfigButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_CUSTOM_TOOLS,mxProjectGeneralConfig::OnCustomToolsConfig)
-	EVT_BUTTON(mxID_TOOLS_DOXY_CONFIG,mxProjectGeneralConfig::OnDoxigenConfigButton)
+	EVT_BUTTON(mxID_TOOLS_DOXY_CONFIG,mxProjectGeneralConfig::OnDoxygenConfigButton)
 	EVT_BUTTON(mxID_DEBUG_MACROS,mxProjectGeneralConfig::OnDebugMacros)
 	EVT_MENU(mxID_DEBUG_MACROS_OPEN,mxProjectGeneralConfig::OnDebugMacrosOpen)
 	EVT_MENU(mxID_DEBUG_MACROS_EDIT,mxProjectGeneralConfig::OnDebugMacrosEdit)
@@ -113,7 +113,7 @@ void mxProjectGeneralConfig::OnCompileConfigButton(wxCommandEvent &evt) {
 	main_window->OnRunCompileConfig(evt);
 }
 
-void mxProjectGeneralConfig::OnDoxigenConfigButton(wxCommandEvent &evt) {
+void mxProjectGeneralConfig::OnDoxygenConfigButton(wxCommandEvent &evt) {
 	main_window->OnToolsDoxyConfig(evt);
 }
 
