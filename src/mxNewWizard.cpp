@@ -27,6 +27,7 @@
 #include "mxMultipleFileChooser.h"
 #include "parserData.h"
 #include "version.h"
+#include <wx/tooltip.h>
 
 mxNewWizard *wizard;
 
@@ -139,6 +140,7 @@ void mxNewWizard::OnStartRadio(wxCommandEvent &event){
 		nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
 	else
 		nextButton->SetThings(bitmaps->buttons.next,LANG(NEWWIZARD_CONTINUE," Continuar "));
+	start_tooltip->SetLabel(start_radio->GetItemToolTip(start_radio->GetSelection())->GetTip());
 }
 
 void mxNewWizard::OnProjectRadio(wxCommandEvent &event){
@@ -627,6 +629,15 @@ void mxNewWizard::OnButtonNext(wxCommandEvent &event){
 			case 2:
 				ShowPanelProject1();
 				break;
+			case 3:
+				ShowPanelProject1();
+				project_folder_radio->SetSelection(3);
+				project_folder_create->SetValue(false);
+				OnButtonFolder(event);
+				project_current_files->SetValue(false);
+				project_dir_files->SetValue(true);
+				project_dir_files->Hide();
+				break;
 		}
 	} else if (panel==panel_project_1) {
 		ShowPanelProject2();
@@ -731,9 +742,7 @@ void mxNewWizard::ShowPanelStart(bool show) {
 	panel=panel_start;
 	nextButton->SetThings(bitmaps->buttons.next,LANG(NEWWIZARD_CONTINUE," Continuar "));
 	SetSize(size_w,size_h); if (show) Show();
-	if (start_radio->GetSelection()==0) 
-		nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
-	cancelButton->SetThings(bitmaps->buttons.cancel,LANG(NEWWIZARD_CANCEL," Cancelar "));
+	wxCommandEvent evt; OnStartRadio(evt);
 	GetSizer()->Layout();
 	start_radio->SetFocus();
 }
@@ -743,11 +752,12 @@ void mxNewWizard::CreatePanelStart() {
 	panel_start = new wxPanel(this,wxID_ANY);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	wxString choices[3];
+	wxString choices[4];
 	choices[0] = LANG(NEWWIZARD_EMPTY_FILE,"Archivo en Blanco");
 	choices[1] = LANG(NEWWIZARD_USE_TEMPLATE,"Utilizar Plantilla");
 //	choices[2] = LANG(NEWWIZARD_TEMPLATE_WIZARD,"Asistente de Plantilla ");
-	choices[2] = LANG(NEWWIZARD_PROYECT,"Proyecto");
+	choices[2] = LANG(NEWWIZARD_PROYECT,"Proyecto Nuevo");
+	choices[3] = LANG(NEWWIZARD_PROYECT_FROM_FILES,"Proyecto Existente");
 	
 	start_radio = new wxRadioBox(panel_start, mxID_WIZARD_START_RADIO, LANG(NEWWIZARD_FILETYPE,"Tipo de Archivo:"),
 					wxDefaultPosition, wxDefaultSize,
@@ -758,9 +768,12 @@ void mxNewWizard::CreatePanelStart() {
 	start_radio->SetItemToolTip(1,LANG(NEWWIZARD_TIP_TEMPLATE,"Crea un nuevo archivo con un esqueleto basico de programa (crea la funcion main e incluye cabeceras acordes al tipo de programa seleccionado)."));
 //	start_radio->SetItemToolTip(2,LANG(NEWWIZARD_TIP_WIZARD,"Permite seleccionar que tipo de funciones y contenedores quiere utilizar ."));
 	start_radio->SetItemToolTip(2,LANG(NEWWIZARD_TIP_PROJECT,"Crea un nuevo proyecto. A diferencia de un programa simple, el proyecto puede constar de mas de un archivo fuente y guarda tambien otras configuraciones como bibliotecas utilizadas, parametros para el compilador, etc."));
+	start_radio->SetItemToolTip(3,LANG(NEWWIZARD_TIP_IMPORT,"Crea un archivo de proyecto para ZinjaI a partir de fuentes ya existentes. Utilice esta opción para migrar a ZinjaI proyectos creados con otros IDEs o basados en Makefiles o herramientas similares."));
 
 	start_radio->SetSelection(1);
 	sizer->Add(start_radio,sizers->Exp0);
+	
+	sizer->Add(start_tooltip = new wxStaticText(panel_start,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE),sizers->BA5_Exp1);
 	
 	if (config->Help.show_extra_panels) {
 		wxHtmlWindow *html = new wxHtmlWindow(panel_start,wxID_ANY);

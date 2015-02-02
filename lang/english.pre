@@ -822,6 +822,8 @@ PROJMNGR_STRIPING
 Moving debbuging information out of \"<{1}>\" - step <{2}> from 3...
 PROJMNGR_RUNNING_NO_EXE
 This project's settings defines that no executable file should\nbe built (only libraries). There's nothing to run.
+GENERAL_RUNNING_DOTS
+Running...
 PROJMNGR_REGENERATING_WXFB
 Regenerating wxFormBuilder project...
 PROJMNGR_REGENERATING_ERROR_1
@@ -1148,8 +1150,6 @@ MAINW_COMPILATION_INTERRUPTED
 Compilation Interrupted.
 MAINW_BINARY_ALREADY_UPDATED
 Binary file is up to date.
-GENERAL_RUNNING_DOTS
-Running...
 MAINW_COMPILER_OUTPUT_PARSING_ERROR
 There was an error when trying to reorganize compiler's output. Some errors may\nnot display correctly in compiler result's tree. To see the real output use right\nclick over the tree. If you like to help us improving ZinjaI, you're welcome to send\nthe code that produced that error to zaskar_84@yahoo.com.ar
 MAINW_COMPILING_DONE_SECONDS
@@ -2186,6 +2186,8 @@ NEWWIZARD_TEMPLATE_WIZARD
 Template Wizard
 NEWWIZARD_PROYECT
 Project
+NEWWIZARD_PROYECT_FROM_FILES
+Import Proyect
 NEWWIZARD_FILETYPE
 File Type:
 NEWWIZARD_TIP_EMPTY
@@ -2196,6 +2198,8 @@ NEWWIZARD_TIP_WIZARD
 Lets you choose wich kind of functions and containers would you like to include.
 NEWWIZARD_TIP_PROJECT
 Creates a new Project. Projecs can handle multiple files and very complex configuration profiles (compiling options, libraryies to link, external tools...)
+NEWWIZARD_TIP_IMPORT
+Creates a new ZinjaI's project file for an already existing set of source files. Use this option to migrate to ZinjaI proyects from other IDEs or base on Makefiles or similar tools.
 NEWWIZARD_SOURCE
 Source File
 NEWWIZARD_HEADER

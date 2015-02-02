@@ -822,6 +822,8 @@ PROJMNGR_STRIPING
 Extrayendo información de depuración de \"<{1}>\" - paso <{2}> de 3...
 PROJMNGR_RUNNING_NO_EXE
 Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas.
+GENERAL_RUNNING_DOTS
+Ejecutando...
 PROJMNGR_REGENERATING_WXFB
 Regenerando proyecto wxFormBuilder...
 PROJMNGR_REGENERATING_ERROR_1
@@ -1148,8 +1150,6 @@ MAINW_COMPILATION_INTERRUPTED
 Compilacion interrumpida.
 MAINW_BINARY_ALREADY_UPDATED
 El binario ya esta actualizado.
-GENERAL_RUNNING_DOTS
-Ejecutando...
 MAINW_COMPILER_OUTPUT_PARSING_ERROR
 ZinjaI ha intentado reacomodar la salida del compilador de forma incorrecta.\nPuede que algun error no se muestre correctamente en el arbol. Para ver la salida\ncompleta haga click con el boton derecho del raton en cualquier elemento del arbol\ny seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\nenviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar
 MAINW_COMPILING_DONE_SECONDS
@@ -2185,7 +2185,9 @@ Utilizar Plantilla
 NEWWIZARD_TEMPLATE_WIZARD
 Asistente de Plantilla 
 NEWWIZARD_PROYECT
-Proyecto
+Proyecto Nuevo
+NEWWIZARD_PROYECT_FROM_FILES
+Proyecto Existente
 NEWWIZARD_FILETYPE
 Tipo de Archivo:
 NEWWIZARD_TIP_EMPTY
@@ -2196,6 +2198,8 @@ NEWWIZARD_TIP_WIZARD
 Permite seleccionar que tipo de funciones y contenedores quiere utilizar .
 NEWWIZARD_TIP_PROJECT
 Crea un nuevo proyecto. A diferencia de un programa simple, el proyecto puede constar de mas de un archivo fuente y guarda tambien otras configuraciones como bibliotecas utilizadas, parametros para el compilador, etc.
+NEWWIZARD_TIP_IMPORT
+Crea un archivo de proyecto para ZinjaI a partir de fuentes ya existentes. Utilice esta opción para migrar a ZinjaI proyectos creados con otros IDEs o basados en Makefiles o herramientas similares.
 NEWWIZARD_SOURCE
 Archivo Fuente 
 NEWWIZARD_HEADER

@@ -36,6 +36,7 @@ public:
 	wxTextCtrl *onproject_inherit_class[5];
 	
 	wxRadioBox *start_radio;
+	wxStaticText *start_tooltip;
 	wxCheckBox *templates_check;
 	wxListBox *templates_list;
 	int templates_default;
