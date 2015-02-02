@@ -2658,7 +2658,7 @@ compile_extra_step *ProjectManager::GetExtraStep(project_configuration *conf, wx
 
 long int ProjectManager::CompileExtra(compile_and_run_struct_single *compile_and_run, compile_extra_step *step) {
 	wxString command = GetCustomStepCommand(step);
-	compile_and_run->compiling=compile_and_run->linking=false;
+	compile_and_run->compiling=true; compile_and_run->linking=false;
 	compile_and_run->process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_COMPILE);
 	compile_and_run->process->Redirect();
 	compile_and_run->output_type=MXC_EXTRA;

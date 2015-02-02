@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxMainWindow.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -32,10 +31,7 @@ path=src/mxHidenPanel.cpp
 cursor=142:1
 [source]
 path=src/mxMainWindow.cpp
-cursor=3248:0
-breakpoint=3248
-breakpoint_annotation=
-open=true
+cursor=0:0
 [source]
 path=src/DebugManager.cpp
 cursor=1386:1
