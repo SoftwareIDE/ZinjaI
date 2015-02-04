@@ -2918,7 +2918,7 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 						add=res&mxMD_YES;
 					}
 					if (add)
-						file.SetExt("cpp");
+						file.SetExt(source->IsCppOrJustC()?"cpp":"c");
 				}
 			}
 			if (source->SaveSource(file)) {
