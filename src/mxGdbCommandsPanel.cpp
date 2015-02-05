@@ -33,7 +33,7 @@ public:
 					ans=ans.AfterFirst('\n');
 					if (line.StartsWith("~\"")) {
 						wxString ue=mxUT::UnEscapeString(line.Mid(1));
-						if (ue.Len() && ue.Last()=='\n') ue.RemoveLast();
+						while (ue.Len() && (ue.Last()=='\n'||ue.Last()=='\r')) ue.RemoveLast();
 						comp_options.Add(ue);
 					}
 				}

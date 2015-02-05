@@ -44,8 +44,8 @@ bool mxApplication::OnInit() {
 		return false;
 	}
 	
-	wxLongLong start_time = wxGetLocalTimeMillis();
 #ifdef _ZINJAI_DEBUG
+//	wxLongLong start_time = wxGetLocalTimeMillis();
 	wxLog::SetActiveTarget(new wxLogStderr());
 #endif
 	
@@ -151,7 +151,7 @@ bool mxApplication::OnInit() {
 	if (tips_window) tips_window->Raise();
 	
 //#ifdef _ZINJAI_DEBUG
-	cerr<<"Initialization complete: "<<wxGetLocalTimeMillis()-start_time<<"ms"<<endl;
+//	cerr<<"Initialization complete: "<<wxGetLocalTimeMillis()-start_time<<"ms"<<endl;
 //#endif
 	
 	// recuperarse de un segfault y/o buscar actualizaciones

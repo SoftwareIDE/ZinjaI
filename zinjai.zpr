@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/DebugManager.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -32,13 +31,12 @@ path=src/mxHidenPanel.cpp
 cursor=0:0
 [source]
 path=src/mxMainWindow.cpp
-cursor=1428:1
+cursor=1083:106
 [source]
 path=src/DebugManager.cpp
 cursor=852:36
 breakpoint=1087
 breakpoint_annotation=
-open=true
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=6:40
@@ -72,7 +70,7 @@ path=src/mxAboutWindow.cpp
 cursor=64:6
 [source]
 path=src/mxApplication.cpp
-cursor=217:30
+cursor=153:71
 [source]
 path=src/mxCompileConfigWindow.cpp
 cursor=32:88
@@ -96,7 +94,7 @@ path=src/mxTipsWindow.cpp
 cursor=117:47
 [source]
 path=src/ProjectManager.cpp
-cursor=3284:74
+cursor=1188:24
 marker=485
 [source]
 path=src/mxThreadGrid.cpp
@@ -137,7 +135,7 @@ path=src/mxGotoFileDialog.cpp
 cursor=39:85
 [source]
 path=src/mxInspectionGrid.cpp
-cursor=575:8
+cursor=515:0
 [source]
 path=src/mxBacktraceGrid.cpp
 cursor=133:0
@@ -249,7 +247,7 @@ path=src/mxGrid.cpp
 cursor=183:29
 [source]
 path=src/mxUtils.cpp
-cursor=312:2
+cursor=384:32
 [source]
 path=src/mxTextDialog.cpp
 cursor=88:0
@@ -339,7 +337,7 @@ path=src/mxMainWindowMenues.cpp
 cursor=38:35
 [source]
 path=src/mxGdbCommandsPanel.cpp
-cursor=149:57
+cursor=35:57
 [source]
 path=src/mxSignalsSettings.cpp
 cursor=18:32
@@ -724,7 +722,7 @@ path=src/mxShortcutsDialog.h
 cursor=12:0
 [header]
 path=src/mxInspectionGridCellEditor.h
-cursor=106:29
+cursor=86:74
 [header]
 path=src/mxInspectionExplorerWidget.h
 cursor=12:48
