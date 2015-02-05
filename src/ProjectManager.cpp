@@ -2837,7 +2837,7 @@ int ProjectManager::GetRequiredVersion() {
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	
 	version_required=0;
-	if (exec_wrapper) exec_wrapper=20141218;
+	if (exec_wrapper) version_required=20141218;
 	else if (use_ofast) version_required=20140507;
 	else if (copy_debug_symbols) version_required=20140410;
 	else if (env_vars_autoref || exe_use_temp) version_required=20140318;

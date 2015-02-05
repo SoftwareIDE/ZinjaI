@@ -4,7 +4,7 @@
 #include <wx/arrstr.h>
 #include <wx/hashmap.h>
 
-/// @brief Handles information about one autocode template, to be used in Autocoder hast table
+/// @brief Handles information about one autocode template, to be used in Autocoder hash table
 struct auto_code {
 	wxString description; ///< one line description
 	wxString code; ///< template code
@@ -18,7 +18,7 @@ WX_DECLARE_STRING_HASH_MAP( auto_code, HashStringAutoCode );
 
 /**
 * @brief This class contains methods for loading, parsing, replacing and 
-*        whatever autocodes.
+*        whatevering autocodes.
 *
 * Autocodes works very similar to C++ macros, but are replaced when typing.
 * Use TAB key in ZinjaI to invoke the replacement

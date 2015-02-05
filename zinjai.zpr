@@ -4,12 +4,13 @@ project_name=ZinjaI
 autocodes_file=
 macros_file=
 autocomp_extra=wxWidgets
-active_configuration=Linux_Debug
+active_configuration=CppCheck
 version_saved=20150206
 version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=src/ProjectManager.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -94,8 +95,9 @@ path=src/mxTipsWindow.cpp
 cursor=117:47
 [source]
 path=src/ProjectManager.cpp
-cursor=1188:24
+cursor=2838:20
 marker=485
+open=true
 [source]
 path=src/mxThreadGrid.cpp
 cursor=29:36
@@ -617,7 +619,7 @@ path=src/mxCompiler.h
 cursor=4:18
 [header]
 path=src/Autocoder.h
-cursor=-1:0
+cursor=20:20
 [header]
 path=src/mxColoursEditor.h
 cursor=100:12
@@ -1092,7 +1094,7 @@ style=all
 platform=
 standard=
 suppress_file=
-suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useInitializationList
+suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useInitializationList noCopyConstructor
 inline_suppr=1
 additional_files=
 exclude_list=
