@@ -298,10 +298,8 @@ wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, const void *a_myMenuItem, const wx
 
 wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, const wxString &filename, int where) {
 	wxMenuItem *item = new wxMenuItem(menu,id,accel.Len()?caption+"\t"+accel:caption,help);
-	if (filename.Len()) {
-		wxString full_filename=SKIN_FILE_OPT(DIR_PLUS_FILE("16",filename));
-		if (wxFileName::FileExists(full_filename)) item->SetBitmap(wxBitmap(full_filename,wxBITMAP_TYPE_PNG));
-	}
+	if (filename.Len() && bitmaps->HasBitmap(DIR_PLUS_FILE("16",filename),true))
+		item->SetBitmap(bitmaps->GetBitmap(DIR_PLUS_FILE("16",filename),true));
 	if (where==-1) menu->Append (item);
 	else menu->Insert(where,item);
 	return item;
@@ -310,10 +308,8 @@ wxMenuItem *mxUT::AddItemToMenu(wxMenu *menu, wxWindowID id, const wxString &cap
 
 wxMenuItem *mxUT::AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, const wxString &caption, const wxString &help, const wxString &filename) {
 	wxMenuItem *item = 	menu->AppendSubMenu(menu_h, caption, help);
-	if (filename.Len()) {
-		wxString full_filename=SKIN_FILE(DIR_PLUS_FILE("16",filename));
-		if (wxFileName::FileExists(full_filename)) item->SetBitmap(wxBitmap(full_filename,wxBITMAP_TYPE_PNG));
-	}
+	if (filename.Len() && bitmaps->HasBitmap(DIR_PLUS_FILE("16",filename),true))
+		item->SetBitmap(bitmaps->GetBitmap(DIR_PLUS_FILE("16",filename),true));
 	return item;
 }
 

@@ -58,8 +58,8 @@ mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_AN
 	if (sel==wxNOT_FOUND) sel=color_profiles.GetCount()-1;
 	combo->SetSelection(sel);
 	
-	wxBitmapButton *open_button = new wxBitmapButton(this,wxID_OPEN,wxBitmap(SKIN_FILE(DIR_PLUS_FILE("16","abrir.png")),wxBITMAP_TYPE_PNG));
-	wxBitmapButton *save_button=new wxBitmapButton(this,wxID_SAVE,wxBitmap(SKIN_FILE(DIR_PLUS_FILE("16","guardar.png")),wxBITMAP_TYPE_PNG));
+	wxBitmapButton *open_button = new wxBitmapButton(this,wxID_OPEN,bitmaps->GetBitmap(DIR_PLUS_FILE("16","abrir.png")));
+	wxBitmapButton *save_button=new wxBitmapButton(this,wxID_SAVE,bitmaps->GetBitmap(DIR_PLUS_FILE("16","guardar.png")));
 	open_button->SetToolTip(LANG(COLOURS_TIP_OPEN,"Cargar un esquema de colores personalizado desde un archivo .zcs"));
 	save_button->SetToolTip(LANG(COLOURS_TIP_SAVE,"Guardar un esquema de colores personalizado en un archivo .zcs"));
 	bottomSizer->Add(open_button,sizers->BA5_Center);

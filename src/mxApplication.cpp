@@ -35,19 +35,17 @@ IMPLEMENT_APP(mxApplication)
 	
 mxApplication *app = nullptr;
 
-#ifdef _ZINJAI_DEBUG
-wxLongLong start_time = wxGetLocalTimeMillis();
-wxLongLong aux_start_time;
-#endif
 
 bool mxApplication::OnInit() {
+	
 	
 	if (argc==2 && wxString(argv[1])=="--version") {
 		cout<<"ZinjaI "<<VERSION<<endl;
 		return false;
 	}
 	
-#ifndef _ZINJAI_DEBUG
+	wxLongLong start_time = wxGetLocalTimeMillis();
+#ifdef _ZINJAI_DEBUG
 	wxLog::SetActiveTarget(new wxLogStderr());
 #endif
 	
@@ -152,6 +150,10 @@ bool mxApplication::OnInit() {
 	// devolver el foco a la ventana de sugerencias si existe, para que se pueda cerrar con Esc
 	if (tips_window) tips_window->Raise();
 	
+//#ifdef _ZINJAI_DEBUG
+	cerr<<"Initialization complete: "<<wxGetLocalTimeMillis()-start_time<<"ms"<<endl;
+//#endif
+	
 	// recuperarse de un segfault y/o buscar actualizaciones
 	if (!mxErrorRecovering::RecoverSomething()) {
 		if (config->Init.check_for_updates) 
@@ -214,7 +216,7 @@ void mxApplication::ShowSplash ( ) {
 			no_splash=true;
 		}
 	if (!no_splash && wxFileName(DIR_PLUS_FILE("imgs",SPLASH_FILE)).FileExists()) 
-			splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",_T(SPLASH_FILE)));
+			splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",SPLASH_FILE));
 }
 
 void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {

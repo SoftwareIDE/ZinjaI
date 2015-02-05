@@ -103,7 +103,7 @@ mxTipsWindow::mxTipsWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	bottomSizer->Add(otherone_button,sizers->BA5);
 	bottomSizer->Add(close_button,sizers->BA5);
 
-	topSizer->Add(new wxStaticBitmap(this,wxID_ANY, wxBitmap(SKIN_FILE("bigtip.png"), wxBITMAP_TYPE_PNG)), sizers->Center);
+	topSizer->Add(new wxStaticBitmap(this,wxID_ANY, bitmaps->GetBitmap("bigtip.png")), sizers->Center);
 	topSizer->Add(tooltip, sizers->Exp1);
 
 	mySizer->Add(topSizer, sizers->Exp1);

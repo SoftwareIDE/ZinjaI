@@ -8,13 +8,13 @@
 class mxBitmapButton:public wxBitmapButton {
 private:
 	static wxColour *background_colour;
-	wxBitmap *bmp;
+	const wxBitmap *bmp;
 	wxString text;
 public:
-	mxBitmapButton(wxWindow *parent, wxWindowID id, wxBitmap *abmp, wxString atext, wxSize size = wxDefaultSize);
-	bool SetThings(wxBitmap *abmp, wxString atext);
+	mxBitmapButton(wxWindow *parent, wxWindowID id, const wxBitmap *abmp, wxString atext, wxSize size = wxDefaultSize);
+	bool SetThings(const wxBitmap *abmp, wxString atext);
 	~mxBitmapButton();
-	static wxBitmap GenerateButtonImage(wxString text, wxBitmap *img);
+	static wxBitmap GenerateButtonImage(wxString text, const wxBitmap *img);
 
 };
 

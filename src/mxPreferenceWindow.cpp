@@ -143,15 +143,15 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	notebook = new mxBookCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxBK_LEFT);
 	wxImageList* imglist = new wxImageList(32, 32,true,8);
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_general.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_simple_program.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_style.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_writing.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_skin.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_toolbars.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_debug.png")),wxBITMAP_TYPE_PNG));
-	imglist->Add(wxBitmap(SKIN_FILE(_T("pref_paths.png")),wxBITMAP_TYPE_PNG));
-	if (config->Help.show_extra_panels) imglist->Add(wxBitmap(SKIN_FILE(_T("pref_help.png")),wxBITMAP_TYPE_PNG));
+	imglist->Add(bitmaps->GetBitmap("pref_general.png"));
+	imglist->Add(bitmaps->GetBitmap("pref_simple_program.png"));
+	imglist->Add(bitmaps->GetBitmap("pref_style.png"));
+	imglist->Add(bitmaps->GetBitmap("pref_writing.png"));
+	imglist->Add(bitmaps->GetBitmap("pref_skin.png"));
+	imglist->Add(bitmaps->GetBitmap("pref_toolbars.png"));
+	imglist->Add(bitmaps->GetBitmap("pref_debug.png"));
+	imglist->Add(bitmaps->GetBitmap("pref_paths.png"));
+	if (config->Help.show_extra_panels) imglist->Add(bitmaps->GetBitmap("pref_help.png"));
 	notebook->SetImageList(imglist);
 
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -560,10 +560,10 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (mxBookCtrl *notebook) {
 
 	skin_text = new wxTextCtrl(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_READONLY|wxTE_MULTILINE);
 	sizer->Add(skin_text,sizers->BA10_Exp0);
-	if (wxFileName::FileExists(SKIN_FILE_OPT(_T("skin_preview.png"))))
-		skin_image = new wxStaticBitmap(panel,wxID_ANY,wxBitmap(SKIN_FILE_OPT(_T("skin_preview.png")),wxBITMAP_TYPE_PNG));
+	if (bitmaps->HasBitmap("skin_preview.png",true))
+		skin_image = new wxStaticBitmap(panel,wxID_ANY,bitmaps->GetBitmap("skin_preview.png",true));
 	else
-		skin_image = new wxStaticBitmap(panel,wxID_ANY,wxBitmap(SKIN_FILE(_T("skin_no_preview.png")),wxBITMAP_TYPE_PNG));
+		skin_image = new wxStaticBitmap(panel,wxID_ANY,bitmaps->GetBitmap("skin_no_preview.png"));
 	sizer->Add(skin_image,sizers->BA10_Exp0);
 	wxButton *apply_button = new mxBitmapButton(panel,mxID_SKIN_APPLY,bitmaps->buttons.ok,LANG(PREFERENCES_SKIN_APPLY,"Aplicar"));
 	sizer->Add(apply_button,sizers->BA10_Exp0_Right);
@@ -1284,7 +1284,7 @@ void mxPreferenceWindow::OnSkinList(wxCommandEvent &event) {
 	if (wxFileName::FileExists(DIR_PLUS_FILE(skin_paths[selection],_T("skin_preview.png"))))
 		skin_image->SetBitmap(wxBitmap(DIR_PLUS_FILE(skin_paths[selection],_T("skin_preview.png")),wxBITMAP_TYPE_PNG));
 	else
-		skin_image->SetBitmap(wxBitmap(SKIN_FILE(_T("skin_no_preview.png")),wxBITMAP_TYPE_PNG));
+		skin_image->SetBitmap(bitmaps->GetBitmap("skin_no_preview.png"));
 }
 
 void mxPreferenceWindow::OnMaxJobsButton(wxCommandEvent &event) {

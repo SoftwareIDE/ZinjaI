@@ -147,6 +147,7 @@ void mxHidenPanel::ToggleFull() {
 
 void mxHidenPanel::ProcessClose() {
 	showing=false; 
+	mouse_in=control->GetScreenRect().Contains(wxGetMousePosition());
 	if (selected) { selected=false; Refresh(); }
 }
 

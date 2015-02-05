@@ -54,7 +54,7 @@ mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDia
 		"\"Instalar...\"; 3) seleccionar el archivo descargado.\n"
 		));
 	
-	iSizer->Add(new wxStaticBitmap(this,wxID_ANY, wxBitmap(SKIN_FILE(_T("upgrade.png")), wxBITMAP_TYPE_PNG)),sizers->BA10);
+	iSizer->Add(new wxStaticBitmap(this,wxID_ANY, bitmaps->GetBitmap("upgrade.png")),sizers->BA10);
 	iSizer->Add(tSizer,sizers->Exp1);
 	mySizer->Add(iSizer,sizers->Exp1);
 	mySizer->Add(bottomSizer,sizers->BA5_Exp0);

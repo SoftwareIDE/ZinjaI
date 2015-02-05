@@ -1,5 +1,5 @@
 If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-This is a test version, so it can contain bugs or unfinished features. The changes include many improvements to debugging system (most of them related to inspections handling and visualization), interface improvements for auto-completion system and calltips baloons, new user-defined settings (such as custom keyboard shortcuts), some new edition operations (such as rectangular edition, that allows modifying multiples lines at once), and more. Read the <A href="help:ChangeLog.html">full changelog</A>.
+Welcome a new ZinjaI release. The changes include many improvements to debugging system (most of them related to inspections handling and visualization), interface improvements for auto-completion system and calltips baloons, new user-defined settings (such as custom keyboard shortcuts and improved custom tools), some new edition operations (such as rectangular edition, that allows modifying multiples lines at once), and more. Read the <A href="help:ChangeLog.html">full changelog</A>.
 These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.

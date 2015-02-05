@@ -9,90 +9,53 @@
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
 #include <iostream>
+#include <wx/wfstream.h>
+#include <wx/image.h>
 using namespace std;
 	
 mxArt *bitmaps = nullptr;
 
 mxArt::mxArt(wxString img_dir) {
 	
-//	// Esto se hace para tener una referencia de cuanto miden las cosas (tiene que haber algo mejor)
-//	wxDialog *dlg = new wxDialog(nullptr,wxID_ANY,_T("Ventana de Prueba"),wxDefaultPosition,wxDefaultSize);
-//	wxSizer *sz = new wxBoxSizer(wxHORIZONTAL);
-//	wxTextCtrl *tc = new wxTextCtrl(dlg,wxID_ANY,_T("Texto de Prueba"));
-//	sz->Add(tc);
-//	dlg->SetSizerAndFit(sz);
-//	text_ref_x = tc->GetSize().GetWidth();
-//	text_ref_y = tc->GetSize().GetHeight();
-////	wxMessageBox(wxString()<<text_ref_x<<" "<<text_ref_y);
-//	dlg->Destroy();
+	files.source = &(GetBitmap("ap_source.png"));
+	files.header = &(GetBitmap("ap_header.png"));
+	files.other = &(GetBitmap("ap_other.png"));
+	files.blank = &(GetBitmap("ap_blank.png"));
 	
-	files.source = new wxBitmap(SKIN_FILE(_T("ap_source.png")),wxBITMAP_TYPE_PNG);
-	files.header = new wxBitmap(SKIN_FILE(_T("ap_header.png")),wxBITMAP_TYPE_PNG);
-	files.other = new wxBitmap(SKIN_FILE(_T("ap_other.png")),wxBITMAP_TYPE_PNG);
-	files.blank = new wxBitmap(SKIN_FILE(_T("ap_blank.png")),wxBITMAP_TYPE_PNG);
-	
-	parser.icon02_define =new wxBitmap(SKIN_FILE(_T("as_define.png")),wxBITMAP_TYPE_PNG);
-	parser.icon03_func = new wxBitmap(SKIN_FILE(_T("as_func.png")),wxBITMAP_TYPE_PNG);
-	parser.icon04_class = new wxBitmap(SKIN_FILE(_T("as_class.png")),wxBITMAP_TYPE_PNG);
-	parser.icon05_att_unk = new wxBitmap(SKIN_FILE(_T("as_att_unk.png")),wxBITMAP_TYPE_PNG);
-	parser.icon06_att_pri = new wxBitmap(SKIN_FILE(_T("as_att_pri.png")),wxBITMAP_TYPE_PNG);
-	parser.icon07_att_pro = new wxBitmap(SKIN_FILE(_T("as_att_pro.png")),wxBITMAP_TYPE_PNG);
-	parser.icon08_att_pub = new wxBitmap(SKIN_FILE(_T("as_att_pub.png")),wxBITMAP_TYPE_PNG);
-	parser.icon09_mem_unk = new wxBitmap(SKIN_FILE(_T("as_mem_unk.png")),wxBITMAP_TYPE_PNG);
-	parser.icon10_mem_pri = new wxBitmap(SKIN_FILE(_T("as_mem_pri.png")),wxBITMAP_TYPE_PNG);
-	parser.icon11_mem_pro = new wxBitmap(SKIN_FILE(_T("as_mem_pro.png")),wxBITMAP_TYPE_PNG);
-	parser.icon12_mem_pub = new wxBitmap(SKIN_FILE(_T("as_mem_pub.png")),wxBITMAP_TYPE_PNG);
-	parser.icon13_none = new wxBitmap(SKIN_FILE(_T("as_none.png")),wxBITMAP_TYPE_PNG);
-	parser.icon14_global_var = new wxBitmap(SKIN_FILE(_T("as_global.png")),wxBITMAP_TYPE_PNG);
-	parser.icon15_res_word = new wxBitmap(SKIN_FILE(_T("as_res_word.png")),wxBITMAP_TYPE_PNG);
-	parser.icon16_preproc = new wxBitmap(SKIN_FILE(_T("as_preproc.png")),wxBITMAP_TYPE_PNG);
-	parser.icon17_doxygen = new wxBitmap(SKIN_FILE(_T("as_doxygen.png")),wxBITMAP_TYPE_PNG);
-	parser.icon18_typedef = new wxBitmap(SKIN_FILE(_T("as_typedef.png")),wxBITMAP_TYPE_PNG);
-	parser.icon19_enum_const = new wxBitmap(SKIN_FILE(_T("as_enum_const.png")),wxBITMAP_TYPE_PNG);
-	parser.icon20_argument = new wxBitmap(SKIN_FILE(_T("as_arg.png")),wxBITMAP_TYPE_PNG);
-	parser.icon21_local = new wxBitmap(SKIN_FILE(_T("as_local.png")),wxBITMAP_TYPE_PNG);
+	parser.icon02_define =&(GetBitmap("as_define.png"));
+	parser.icon03_func = &(GetBitmap("as_func.png"));
+	parser.icon04_class = &(GetBitmap("as_class.png"));
+	parser.icon05_att_unk = &(GetBitmap("as_att_unk.png"));
+	parser.icon06_att_pri = &(GetBitmap("as_att_pri.png"));
+	parser.icon07_att_pro = &(GetBitmap("as_att_pro.png"));
+	parser.icon08_att_pub = &(GetBitmap("as_att_pub.png"));
+	parser.icon09_mem_unk = &(GetBitmap("as_mem_unk.png"));
+	parser.icon10_mem_pri = &(GetBitmap("as_mem_pri.png"));
+	parser.icon11_mem_pro = &(GetBitmap("as_mem_pro.png"));
+	parser.icon12_mem_pub = &(GetBitmap("as_mem_pub.png"));
+	parser.icon13_none = &(GetBitmap("as_none.png"));
+	parser.icon14_global_var = &(GetBitmap("as_global.png"));
+	parser.icon15_res_word = &(GetBitmap("as_res_word.png"));
+	parser.icon16_preproc = &(GetBitmap("as_preproc.png"));
+	parser.icon17_doxygen = &(GetBitmap("as_doxygen.png"));
+	parser.icon18_typedef = &(GetBitmap("as_typedef.png"));
+	parser.icon19_enum_const = &(GetBitmap("as_enum_const.png"));
+	parser.icon20_argument = &(GetBitmap("as_arg.png"));
+	parser.icon21_local = &(GetBitmap("as_local.png"));
 
-	icons.error = new wxBitmap(SKIN_FILE(_T("icono_error.png")),wxBITMAP_TYPE_PNG);
-	icons.info = new wxBitmap(SKIN_FILE(_T("icono_info.png")),wxBITMAP_TYPE_PNG);
-	icons.warning = new wxBitmap(SKIN_FILE(_T("icono_warning.png")),wxBITMAP_TYPE_PNG);
-	icons.question = new wxBitmap(SKIN_FILE(_T("icono_question.png")),wxBITMAP_TYPE_PNG);
-//#ifdef __WIN32__
-//	wxColour background_colour=wxButton(nullptr,wxID_ANY,_T("lala")).GetBackgroundColour();
-//	wxMemoryDC dc;
-//	dc.SelectObject(*icons.question);
-//	if (dc.IsOk()) {
-//		dc.SetBackground(wxBrush(background_colour));
-//		dc.Clear();
-//		dc.DrawBitmap(wxBitmap(SKIN_FILE(_T("icono_question.png")),wxBITMAP_TYPE_PNG),0,0);
-//	}
-//	dc.SelectObject(*icons.error);
-//	if (dc.IsOk()) {
-//		dc.SetBackground(wxBrush(background_colour));
-//		dc.Clear();
-//		dc.DrawBitmap(wxBitmap(SKIN_FILE(_T("icono_error.png")),wxBITMAP_TYPE_PNG),0,0);
-//	}
-//	dc.SelectObject(*icons.info);
-//	if (dc.IsOk()) {
-//		dc.SetBackground(wxBrush(background_colour));
-//		dc.Clear();
-//		dc.DrawBitmap(wxBitmap(SKIN_FILE(_T("icono_info.png")),wxBITMAP_TYPE_PNG),0,0);
-//	}
-//	dc.SelectObject(*icons.warning);
-//	if (dc.IsOk()) {
-//		dc.SetBackground(wxBrush(background_colour));
-//		dc.Clear();
-//		dc.DrawBitmap(wxBitmap(SKIN_FILE(_T("icono_warning.png")),wxBITMAP_TYPE_PNG),0,0);
-//	}
-//#endif
+	icons.error = &(GetBitmap("icono_error.png"));
+	icons.info = &(GetBitmap("icono_info.png"));
+	icons.warning = &(GetBitmap("icono_warning.png"));
+	icons.question = &(GetBitmap("icono_question.png"));
 	
-	buttons.ok = new wxBitmap(SKIN_FILE(_T("boton_ok.png")),wxBITMAP_TYPE_PNG);
-	buttons.cancel = new wxBitmap(SKIN_FILE(_T("boton_cancel.png")),wxBITMAP_TYPE_PNG);
-	buttons.help = new wxBitmap(SKIN_FILE(_T("boton_ayuda.png")),wxBITMAP_TYPE_PNG);
-	buttons.find = new wxBitmap(SKIN_FILE(_T("boton_buscar.png")),wxBITMAP_TYPE_PNG);
-	buttons.replace = new wxBitmap(SKIN_FILE(_T("boton_reemplazar.png")),wxBITMAP_TYPE_PNG);
-	buttons.next = new wxBitmap(SKIN_FILE(_T("boton_next.png")),wxBITMAP_TYPE_PNG);
-	buttons.prev = new wxBitmap(SKIN_FILE(_T("boton_prev.png")),wxBITMAP_TYPE_PNG);
-	buttons.stop = new wxBitmap(SKIN_FILE(_T("boton_stop.png")),wxBITMAP_TYPE_PNG);
+	buttons.ok = &(GetBitmap("boton_ok.png"));
+	buttons.cancel = &(GetBitmap("boton_cancel.png"));
+	buttons.help = &(GetBitmap("boton_ayuda.png"));
+	buttons.find = &(GetBitmap("boton_buscar.png"));
+	buttons.replace = &(GetBitmap("boton_reemplazar.png"));
+	buttons.next = &(GetBitmap("boton_next.png"));
+	buttons.prev = &(GetBitmap("boton_prev.png"));
+	buttons.stop = &(GetBitmap("boton_stop.png"));
 	
 }
 
@@ -139,8 +102,8 @@ mxArt::~mxArt() {
 	delete icons.question;
 }
 
-wxString mxArt::GetSkinImagePath(wxString fname, bool replace_if_missing) {
-	static wxString default_path=DIR_PLUS_FILE(config->zinjai_dir,_T("imgs"));
+wxString mxArt::GetSkinImagePath(const wxString &fname, bool replace_if_missing) {
+	static wxString default_path=DIR_PLUS_FILE(config->zinjai_dir,"imgs");
 	static wxString skin_path=DIR_PLUS_FILE(config->zinjai_dir,config->Files.skin_dir);
 	static bool is_default = default_path==skin_path;
 	if (is_default) {
@@ -169,5 +132,57 @@ wxString mxArt::GetSkinImagePath(wxString fname, bool replace_if_missing) {
 
 void mxArt::Initialize ( ) {
 	bitmaps = new mxArt(config->Files.skin_dir);
+}
+
+
+bool mxArt::HasBitmap (const wxString &fname, bool is_optional) {
+	static wxString last_fname;
+	static bool last_is_optional;
+	if (fname==last_fname && is_optional==last_is_optional) return last_bmp;
+	
+	static wxString skin_path=DIR_PLUS_FILE(config->zinjai_dir,config->Files.skin_dir);
+	static wxString default_path=DIR_PLUS_FILE(config->zinjai_dir,"imgs");
+	last_bmp = auxHasBitmap(DIR_PLUS_FILE(skin_path,fname));
+	if (!last_bmp && !is_optional)
+		last_bmp = auxHasBitmap(DIR_PLUS_FILE(default_path,fname));
+	return last_bmp;
+	
+}	
+	
+const wxBitmap *mxArt::auxHasBitmap (const wxFileName &fullpath) {
+	wxString path = fullpath.GetPath();
+	BitmapPack *&pack = packs[path];
+	if (!pack) pack=LoadPack(path);
+	wxBitmap *&bmp = pack->bitmaps[fullpath.GetFullPath()];
+	if (!bmp && !pack->pack_exists) {
+		if (fullpath.FileExists())
+			bmp = new wxBitmap(fullpath.GetFullPath(),wxBITMAP_TYPE_PNG);
+	}
+	return bmp;
+}
+
+const wxBitmap & mxArt::GetBitmap(const wxString &fname, bool is_optional) {
+	HasBitmap(fname,is_optional); 
+#ifdef _ZINJAI_DEBUG
+	if (!last_bmp)
+		cerr<<"MISSING IMAGE: "<<fname<<endl;
+#endif
+	return *last_bmp;
+}
+
+mxArt::BitmapPack *mxArt::LoadPack (const wxString & path) {
+	BitmapPack *pack = new BitmapPack();
+#ifdef _USE_PACKED_BITMAPS
+	wxTextFile fil(DIR_PLUS_FILE(path,"bitmaps.idx"));
+	if (fil.Exists()) {
+		wxFFileInputStream fpack(DIR_PLUS_FILE(path,"bitmaps.pack"));
+		fil.Open();
+		pack->pack_exists=true;
+		for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
+			pack->bitmaps[DIR_PLUS_FILE(path,str)]=new wxBitmap(wxImage(fpack,wxBITMAP_TYPE_PNG));
+		}
+	}
+#endif
+	return pack;
 }
 

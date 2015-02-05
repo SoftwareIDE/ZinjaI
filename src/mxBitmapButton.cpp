@@ -7,7 +7,7 @@
 wxColour *mxBitmapButton::background_colour = nullptr;
 #endif
 
-mxBitmapButton::mxBitmapButton(wxWindow *parent, wxWindowID id, wxBitmap *abmp, wxString atext, wxSize size) : wxBitmapButton(parent,id,mxBitmapButton::GenerateButtonImage(atext,abmp),wxDefaultPosition,size) {
+mxBitmapButton::mxBitmapButton(wxWindow *parent, wxWindowID id, const wxBitmap *abmp, wxString atext, wxSize size) : wxBitmapButton(parent,id,mxBitmapButton::GenerateButtonImage(atext,abmp),wxDefaultPosition,size) {
 	bmp = abmp;
 	text = atext;
 //	SetLabel(text);
@@ -16,7 +16,7 @@ mxBitmapButton::mxBitmapButton(wxWindow *parent, wxWindowID id, wxBitmap *abmp, 
 mxBitmapButton::~mxBitmapButton() {
 }
 
-bool mxBitmapButton::SetThings(wxBitmap *abmp,wxString atext) {
+bool mxBitmapButton::SetThings(const wxBitmap *abmp,wxString atext) {
 	if (bmp != abmp || text != atext) {
 		bmp = abmp;
 		text = atext;
@@ -28,7 +28,7 @@ bool mxBitmapButton::SetThings(wxBitmap *abmp,wxString atext) {
 }
 
 
-wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, wxBitmap *bmp) {
+wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, const wxBitmap *bmp) {
 	
 #if defined(__APPLE__) || defined(__WIN32__)
 	if (!background_colour)

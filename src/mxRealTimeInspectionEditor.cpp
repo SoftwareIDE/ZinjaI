@@ -83,7 +83,7 @@ void mxRealTimeInspectionEditor::Add (int pos, int lev, DebuggerInspection * di)
 	if (pos==0) {
 		wxBoxSizer *aux_sizer = new wxBoxSizer(wxHORIZONTAL);
 		aux_sizer->Add(aux_control,sizers->Exp1);
-		aux_sizer->Add(new wxBitmapButton(this,wxID_REDO,wxBitmap(SKIN_FILE("boton_recargar.png"),wxBITMAP_TYPE_PNG)));
+		aux_sizer->Add(new wxBitmapButton(this,wxID_REDO,bitmaps->GetBitmap("boton_recargar.png")));
 		sizer->Insert(2*pos+1,aux_sizer,sizers->Exp1);
 	} else 
 		sizer->Insert(2*pos+1,aux_control,sizers->Exp1);

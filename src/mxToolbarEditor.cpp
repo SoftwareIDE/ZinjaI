@@ -54,10 +54,10 @@ mxToolbarEditor::~mxToolbarEditor() {
 }
 
 void mxToolbarEditor::Add(wxString name, wxString file, bool &config_entry) {
-	if (!wxFileName::FileExists(SKIN_FILE(ipre+file))) return;
+	if (!bitmaps->HasBitmap(ipre+file,true)) return;
 	wxBoxSizer *btsizer = new wxBoxSizer(wxHORIZONTAL);
 	btsizer->Add(10,10);
-	btsizer->Add(new wxBitmapButton(scroll,wxID_ANY,wxBitmap(SKIN_FILE(ipre+file),wxBITMAP_TYPE_PNG)),sizers->BLRT5);
+	btsizer->Add(new wxBitmapButton(scroll,wxID_ANY,bitmaps->GetBitmap(ipre+file,true)),sizers->BLRT5);
 	booleans[count] = &config_entry;
 	checkboxs[count] = new wxCheckBox(scroll,wxID_ANY,name);
 	btsizer->Add(checkboxs[count],sizers->BA5);
