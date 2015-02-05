@@ -27,7 +27,7 @@ mxBacktraceGrid::mxBacktraceGrid(wxWindow *parent):mxGrid(parent,BG_COLS_COUNT,w
 	mxGrid::InitColumn(BG_COL_LINE,LANG(BACKTRACE_LINE,"Linea"),10);
 	mxGrid::InitColumn(BG_COL_ARGS,LANG(BACKTRACE_ARGS,"Argumentos"),36);
 	mxGrid::DoCreate();
-	InsertRows(0,BACKTRACE_SIZE);
+	InsertRows(0,BACKTRACE_SIZE); entries.Resize(BACKTRACE_SIZE);
 	mxGrid::SetRowSelectionMode();
 	EnableEditing(false);
 	EnableDragRowSize(false);
@@ -45,8 +45,8 @@ bool mxBacktraceGrid::OnCellDoubleClick(int row, int col) {
 void mxBacktraceGrid::SelectFrame(int r) {
 	if (debug->IsDebugging() && !debug->CanTalkToGDB()) return;
 	long line;
-	GetCellValue(r,BG_COL_LINE).ToLong(&line);
-	wxString file = GetCellValue(r,BG_COL_FILE);
+	entries[r].line.ToLong(&line);
+	wxString file = entries[r].fname;
 	if (file.Len()) {
 		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT))
 			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
@@ -200,5 +200,11 @@ void mxBacktraceGrid::AddToBlackList(const wxString &type, const wxString &what)
 void mxBacktraceGrid::OnColumnHideOrUnhide (int col, bool visible) {
 	if (col==BG_COL_ARGS) debug->backtrace_shows_args=visible;
 	if (visible) debug->UpdateBacktrace(false,false);
+}
+
+void mxBacktraceGrid::SetCellValue (int r, int c, const wxString & value) {
+	if (c==BG_COL_FILE) entries[r].fname=value;
+	else if (c==BG_COL_LINE) entries[r].line=value;
+	mxGrid::SetCellValue(r,c,value);
 }
 

@@ -844,7 +844,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 		SelectFrame(-1,to_select_level);
 		wxString file=main_window->backtrace_ctrl->GetCellValue(to_select_level,BG_COL_FILE);
 		wxString sline=main_window->backtrace_ctrl->GetCellValue(to_select_level,BG_COL_LINE);
-		long line=0; if (sline.ToLong(&line)) debug->MarkCurrentPoint(file,line,mxSTC_MARK_FUNCCALL);
+		long line=0; if (sline.ToLong(&line)) debug->MarkCurrentPoint(file,line,to_select_level>0?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT);
 	} else {
 		main_window->backtrace_ctrl->SelectRow(0);
 		current_frame_id = GetFrameID(0);
