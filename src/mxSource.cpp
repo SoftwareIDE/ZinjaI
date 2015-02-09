@@ -2890,7 +2890,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 			while ( s>2 && (GetTextRange(s-1,s)=="." || GetTextRange(s-2,s)=="->" || GetTextRange(s-2,s)=="::")) {
 				int s2=s-2; if (GetTextRange(s-1,s)!=".") s2--;
 				int s3 = WordStartPosition(s2,true);
-				if (s3<s2) s=s3;
+				if (s3<s2) s=s3; else break; // que significaria el caso del break?? (sin el break podria ser loop infinito)
 			}
 			wxString key = GetTextRange(s,e);
 			wxString ans = debug->InspectExpression(key);
