@@ -42,7 +42,17 @@ public:
 		int status; long frame_level; bool on_thread, is_frozen; // frame_id==-1 para las frameless
 		InspectionGridRow(DebuggerInspection *_di=nullptr) : di(_di),expression_renderer(nullptr),value_renderer(nullptr),status(IGRS_UNINIT),frame_level(-2),on_thread(true),is_frozen(false) {}
 		bool operator==(const InspectionGridRow &o) { return di==o.di; }
-		void operator=(DebuggerInspection *_di) { Reset(); di=_di; }
+		void operator=(DebuggerInspection *_di) { 
+			Reset(); 
+			mxGridCellRenderer *expr=expression_renderer, *valr=value_renderer;
+			di=_di;
+			expression_renderer=expr; value_renderer=valr; /*no cambiar los renderer*/
+		}
+		void CopyStatus(const InspectionGridRow &o) {
+			if (o.expression_renderer->HasIcon()) expression_renderer->SetIconPlus(); else expression_renderer->SetIconNull();
+			if (o.value_renderer->HasIcon()) value_renderer->SetIconPlus(); else value_renderer->SetIconNull();
+			status=o.status; frame_level=o.frame_level; on_thread=o.on_thread; is_frozen=o.is_frozen;
+		}
 		DebuggerInspection *operator->() { return di; }
 		bool IsNull() { return di==nullptr; }
 		void Reset() { is_frozen=false; di=nullptr; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar los renderer*/ }
