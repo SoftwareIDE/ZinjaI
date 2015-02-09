@@ -444,10 +444,10 @@ private:
 		};
 	
 	/// ctor para una vo hija, creada por VOBreak
-	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, const wxString &type, int num_child) : 
+	DebuggerInspection(DebuggerInspection *_parent, const wxString &vo_name, const wxString &expr, const wxString &type, int num_child, int extra_flags) : 
 		dit_type(DIT_VARIABLE_OBJECT),
 		expression(expr),
-		flags(DIF_IN_SCOPE|(_parent->IsFrameless()?DIF_FRAMELESS:0)),
+		flags(DIF_IN_SCOPE|(_parent->IsFrameless()?DIF_FRAMELESS:0)|extra_flags),
 		variable_object(vo_name),
 		thread_id(_parent->thread_id),
 		frame_id(_parent->frame_id),
@@ -601,7 +601,7 @@ public:
 	*                                   break those children vos, and return their
 	*									children instead.
 	**/
-	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance);
+	bool Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool improve_children_expressions=false);
 	
 	DEBUG_INSPECTION_EXPRESSION_TYPE GetDbiType() { return dit_type; }
 	const wxString &GetExpression() const { return expression; }

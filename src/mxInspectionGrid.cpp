@@ -811,7 +811,7 @@ void mxInspectionGrid::BreakCompoundInspection (int r) {
 	InspectionGridRow old=inspections[r];
 	if (!old->IsCompound()) return;
 	SingleList<DebuggerInspection *> children;
-	if (!old->Break(children,true,true)) return;
+	if (!old->Break(children,true,true,true)) return;
 	// delete the old one
 	wxString old_level = mxGrid::GetCellValue(r,IG_COL_LEVEL);
 	DeleteInspection(r,true);

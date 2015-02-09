@@ -91,7 +91,7 @@ void DebuggerInspection::UpdateAllVO(const wxString &voname) {
 	}
 }
 
-bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance) {
+bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool improve_children_expressions) {
 	__debug_log_method__;
 	if (!debug->CanTalkToGDB()) return false;
 	
@@ -123,7 +123,7 @@ bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool s
 				if (i==l || s[i-1]==']' || s[i]=='}') break; else i++;
 			}
 			// por cada hijo, crea una nueva inspección dependiente
-			DebuggerInspection *di = new DebuggerInspection(this,c.name,c.exp,c.type,c.num_children);
+			DebuggerInspection *di = new DebuggerInspection(this,c.name,c.exp,c.type,c.num_children,(improve_children_expressions?DIF_AUTO_IMPROVE:0));
 			di_children++;
 			all_inspections.Add(di);
 			vo2di_map[c.name] = di;
