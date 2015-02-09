@@ -53,7 +53,12 @@ void mxTipsWindow::ShowAnyTip() {
 	if (!file.IsOpened()) return;
 	if (config->Init.version!=VERSION) {
 		wxString tip(wxString("<B>")<<LANG(TIPS_WELCOME,"Bienvenido a ZinjaI ")<<VERSION<<"</B><BR><BR>");
+#ifdef __APPLE__
+		tip<<"[EN] Important notice: due to the lack of propper hardware, ZinjaI's Mac binaries are released without being properly tested, so you should expect to find some bugs. You can report them and ask for help in ZinjaI's forums.<BR><BR>";
+		tip<<"[ES] Importante: por falta de hardware adecuado, las versiones para Mac de ZinjaI se publican sin haber sido testeadas, por lo que seguramente encontrará bugs. Puede reportarlos y solicitar ayuda en los foros del sitio web de ZinjaI.<BR><BR>";
+#else
 		tip<<file[config->Init.version?1:0];
+#endif
 		changelog = config->Init.version;
 		tip<<"<BR><BR><CENTER>http://zinjai.sourceforge.net<BR>"<<LANG(TIP_EMAIL,"Correo")<<": zaskar_84@yahoo.com.ar</CENTER>";
 		tooltip->SetPage(tip);

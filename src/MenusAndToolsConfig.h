@@ -46,6 +46,9 @@ private:
 	
 	enum { ecALWAYS, ecPROJECT, ecSOURCE, ecPROJECT_OR_SOURCE, ecDEBUG, ecNOT_DEBUG, ecDEBUG_PAUSED, ecNOT_DEBUG_OR_DEBUG_PAUSED, ecDEBUG_NOT_PAUSED, ecCOUNT };
 	
+#ifdef __APPLE__
+public: /// there seems to be something wrong with nested friendship in my gcc for mac
+#endif
 	/// @brief for storing menues structure before really creating them, and for simplifing AddMenuItem interface (only one flexible parameter for that method)
 	struct myMenuItem {
 		int wx_id, properties/*, enabling_condition*/;
@@ -89,6 +92,7 @@ private:
 		}
 	};
 	
+private:
 	/// struct for storing wich items should be enabled/disabled when changing project mode or debug mode
 	struct AutoenabligItem { 
 		wxMenuItem *item; bool value; 

@@ -5,8 +5,11 @@
 #include "SingleList.h"
 
 class mxInspectionsPanelTab {
-	bool ipt_is_visible;
 	friend class mxInspectionsPanel;
+#ifdef __APPLE__
+public: /// there seems to be something wrong with nested friendship in my gcc for mac
+#endif
+	bool ipt_is_visible;
 public:
 	mxInspectionsPanelTab() : ipt_is_visible(false) {}
 	bool IsCurrentInspectionsTab() { return ipt_is_visible; }

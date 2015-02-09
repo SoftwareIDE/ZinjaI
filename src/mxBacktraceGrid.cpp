@@ -169,12 +169,13 @@ void mxBacktraceGrid::OnCellPopupMenu(int row, int col) {
 		}
 	}
 	this->SetGridCursor(selected_row,col);
+#warning Todo: restablecer los explorar
 	if (GetCellValue(selected_row,BG_COL_ARGS).Len()) {
-		menu.Append(mxID_BACKTRACE_INSPECT_ARGS,LANG(BACKTRACE_INSPECT_ARGS,"Inspeccionar Argumentos"));
-		menu.Append(mxID_BACKTRACE_EXPLORE_ARGS,LANG(BACKTRACE_EXPLORE_ARGS,"Explorar Argumentos"));
+//		menu.Append(mxID_BACKTRACE_INSPECT_ARGS,LANG(BACKTRACE_INSPECT_ARGS,"Inspeccionar Argumentos"));
+//		menu.Append(mxID_BACKTRACE_EXPLORE_ARGS,LANG(BACKTRACE_EXPLORE_ARGS,"Explorar Argumentos"));
 	}
-	menu.Append(mxID_BACKTRACE_INSPECT_LOCALS,LANG(BACKTRACE_INSPECT_LOCALS,"Inspeccionar Variables Locales"));
-	menu.Append(mxID_BACKTRACE_EXPLORE_LOCALS,LANG(BACKTRACE_EXPLORE_LOCALS,"Explorar Variables Locales"));
+//	menu.Append(mxID_BACKTRACE_INSPECT_LOCALS,LANG(BACKTRACE_INSPECT_LOCALS,"Inspeccionar Variables Locales"));
+//	menu.Append(mxID_BACKTRACE_EXPLORE_LOCALS,LANG(BACKTRACE_EXPLORE_LOCALS,"Explorar Variables Locales"));
 	menu.AppendSeparator();
 	menu.Append(mxID_BACKTRACE_UPDATE,LANG(BACKTRACE_UPDATE,"Actualizar"));
 	PopupMenu(&menu);
