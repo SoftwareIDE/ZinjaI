@@ -3,6 +3,7 @@
 #include "mxInspectionGrid.h"
 #include "mxLocalsGrid.h"
 #include "ids.h"
+#include "Cpp11.h"
 
 BEGIN_EVENT_TABLE(mxInspectionsPanel,wxAuiNotebook)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(mxID_NOTEBOOK_INSPECTIONS, mxInspectionsPanel::OnPageClosing)
@@ -105,5 +106,18 @@ mxInspectionGrid *mxInspectionsPanel::AddGrid (bool and_select) {
 	InsertPage(p,tabs[p].ctrl,tabs[p].name);
 	if (and_select) SetSelection(p);
 	return new_grid;
+}
+
+void mxInspectionsPanel::OnRedirectedEditEvent (wxCommandEvent & event) {
+	mxInspectionGrid *ptr = GetCurrentInspectionGrid();
+	if (ptr) ptr->OnRedirectedEditEvent(event);
+}
+
+
+mxInspectionGrid *mxInspectionsPanel::GetCurrentInspectionGrid() {
+	if (tabs[current_tab].type==Tab::TYPE_GRID) 
+		return GetInspectionGrid(current_tab);
+	else
+		return nullptr;
 }
 

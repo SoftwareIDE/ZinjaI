@@ -36,15 +36,18 @@ public:
 	void OnPageChanging(wxAuiNotebookEvent &event);
 	void OnPageChanged(wxAuiNotebookEvent &event);
 	void OnPageClosing(wxAuiNotebookEvent &event);
+	void OnRedirectedEditEvent(wxCommandEvent &event);
 	void SelectPage(int p);
 	
 	int GetTabsCount() { return tabs.GetSize(); }
 	wxString GetPageTitle(int p);
 	bool PageIsInspectionsGrid(int p);
 	mxInspectionGrid *GetInspectionGrid(int p);
+	mxInspectionGrid *GetCurrentInspectionGrid();
 	
 	mxInspectionGrid *AddGrid(bool and_select=false);
 	mxInspectionGrid *Reset();
+	
 	
 };
 

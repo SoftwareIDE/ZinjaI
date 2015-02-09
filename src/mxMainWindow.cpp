@@ -164,7 +164,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU_RANGE(mxID_FILE_PROJECT_HISTORY_0, mxID_FILE_PROJECT_HISTORY_30,mxMainWindow::OnFileProjectHistory)
 	EVT_MENU(mxID_FILE_SET_AS_MASTER, mxMainWindow::OnFileSetAsMaster)
 	
-	EVT_MENU(mxID_EDIT_SELECT_ALL, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_SELECT_ALL, mxMainWindow::OnEditNeedFocus)
 	EVT_MENU(mxID_EDIT_UNDO, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_REDO, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_MAKE_LOWERCASE, mxMainWindow::OnEdit)
@@ -179,18 +179,18 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_FIND_PREV, mxMainWindow::OnEditFindPrev)
 	EVT_MENU(mxID_EDIT_REPLACE, mxMainWindow::OnEditReplace)
 	EVT_MENU(mxID_EDIT_BRACEMATCH, mxMainWindow::OnEdit)
-	EVT_MENU(mxID_EDIT_INDENT, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_INDENT, mxMainWindow::OnEditNeedFocus)
 	EVT_MENU(mxID_EDIT_GOTO, mxMainWindow::OnEditGoto)
 	EVT_MENU(mxID_SOURCE_GOTO_DEFINITION, mxMainWindow::OnSourceGotoDefinition)
 	EVT_MENU(mxID_EDIT_GOTO_FUNCTION, mxMainWindow::OnEditGotoFunction)
 	EVT_MENU(mxID_EDIT_GOTO_FILE, mxMainWindow::OnEditGotoFile)
-	EVT_MENU(mxID_EDIT_COMMENT, mxMainWindow::OnEdit)
-	EVT_MENU(mxID_EDIT_UNCOMMENT, mxMainWindow::OnEdit)
-	EVT_MENU(mxID_EDIT_TOGGLE_LINES_UP, mxMainWindow::OnEdit)
-	EVT_MENU(mxID_EDIT_TOGGLE_LINES_DOWN, mxMainWindow::OnEdit)
-	EVT_MENU(mxID_EDIT_DUPLICATE_LINES, mxMainWindow::OnEdit)
-	EVT_MENU(mxID_EDIT_DELETE_LINES, mxMainWindow::OnEdit)
-	EVT_MENU(mxID_EDIT_MARK_LINES, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_COMMENT, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_UNCOMMENT, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_TOGGLE_LINES_UP, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_TOGGLE_LINES_DOWN, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_DUPLICATE_LINES, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_DELETE_LINES, mxMainWindow::OnEditNeedFocus)
+	EVT_MENU(mxID_EDIT_MARK_LINES, mxMainWindow::OnEditNeedFocus)
 	EVT_MENU(mxID_EDIT_LIST_MARKS, mxMainWindow::OnEditListMarks)
 	EVT_MENU(mxID_EDIT_GOTO_MARK, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_HIGHLIGHT_WORD, mxMainWindow::OnEdit)
@@ -1373,13 +1373,13 @@ void mxMainWindow::OnEdit (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnEditNeedFocus (wxCommandEvent &event) {
-#warning usar esto para las demas acciones de edicion que tambien tengan atajos compartidos
+//#warning usar esto para las demas acciones de edicion que tambien tengan atajos compartidos
 	_record_this_action_in_macro(event.GetId());
 	wxWindow *focus = main_window->FindFocus();
-	if (focus && focus->IsKindOf(menu_data->toolbar_find_text->GetClassInfo())) {
-		focus->ProcessEvent(event);
-	} else if (focus && (focus==inspection_ctrl || focus->GetParent()==inspection_ctrl)) {
-//		inspection_ctrl->OnRedirectedEditEvent(event);
+	if (focus && (focus==inspection_ctrl || focus->GetParent()==inspection_ctrl->GetCurrentInspectionGrid())) {
+		inspection_ctrl->OnRedirectedEditEvent(event);
+	} else if (focus && focus->IsKindOf(menu_data->toolbar_find_text->GetClassInfo())) {
+		if (event.GetId()<wxID_HIGHEST) focus->ProcessEvent(event); // redirect copy/past/cut, not others (duplicate lines, toggle mark, etc)
 	} else IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->ProcessEvent(event);
 	}

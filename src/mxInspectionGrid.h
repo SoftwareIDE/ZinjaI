@@ -66,6 +66,7 @@ public:
 	void OnFullTableUpdateEnd();
 //	void OnSelectCell(wxGridEvent &event);
 	void OnCellChange(wxGridEvent &event);
+	void OnEditFromKeyboard(wxCommandEvent &event); // F2 key
 	void OnFreeze(wxCommandEvent &evt);
 	void OnUnFreeze(wxCommandEvent &evt);
 	void SetFreezed(int row, bool freezed);

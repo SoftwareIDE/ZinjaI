@@ -53,6 +53,7 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_IMPR_EXPOSE,mxInspectionGrid::OnExposeImprovedExpression)
 	EVT_MENU(mxID_INSPECTION_IMPR_DISCARD,mxInspectionGrid::OnDiscardImprovedExpression)
 	EVT_MENU(mxID_INSPECTION_IMPR_CONF,mxInspectionGrid::OnInspectionsImprovingSettings)
+	EVT_MENU(mxID_INSPECTION_EDIT,mxInspectionGrid::OnEditFromKeyboard)
 END_EVENT_TABLE()
 	
 
@@ -109,6 +110,11 @@ mxInspectionGrid::mxInspectionGrid(wxWindow *parent) : mxGrid(parent,IG_COLS_COU
 	SetDropTarget(new mxInspectionDropTarget(this));
 	SetColLabelSize(wxGRID_AUTOSIZE);
 	
+	wxAcceleratorEntry aentries[1];
+	aentries[0].Set(0,WXK_F2,mxID_INSPECTION_EDIT);
+	wxAcceleratorTable accel(1,aentries);
+	SetAcceleratorTable(accel);
+	
 }
 
 bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
@@ -131,11 +137,11 @@ bool mxInspectionGrid::OnKey(int row, int col, int key, int modifiers) {
 	} else if (key==WXK_RETURN || key==WXK_NUMPAD_ENTER) {
 		last_return_had_shift_down=modifiers&wxMOD_SHIFT;
 		return false;
-	} else if (key==WXK_F2) {
-		if (mxGrid::SetGridCursor(row,IG_COL_EXPR)) {
-			EnableCellEditControl(true);
-			return true;
-		}
+//	} else if (key==WXK_F2) {
+//		if (mxGrid::SetGridCursor(row,IG_COL_EXPR)) {
+//			EnableCellEditControl(true);
+//			return true;
+//		}
 	}
 	return false;
 }
@@ -389,7 +395,9 @@ void mxInspectionGrid::OnClearAll(wxCommandEvent &evt) {
 
 void mxInspectionGrid::OnClearOne(wxCommandEvent &evt) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel,true);
+	if (sel.empty()) return; int min=sel.back();
 	for(unsigned int i=0;i<sel.size();i++) DeleteInspection(sel[i],false);
+	mxGrid::Select(min);
 }
 
 
@@ -478,8 +486,8 @@ void mxInspectionGrid::OnDuplicate(wxCommandEvent &evt) {
 		if (inspections[sel[i]].IsNull()) continue;
 		DebuggerInspection *di = inspections[sel[i]].di;
 		scope.ChangeIfNeeded(di);
-		InsertRows(sel[i],1);
-		CreateInspection(sel[i],di->GetExpression(),di->IsFrameless(),true);
+		InsertRows(sel[i]+1,1);
+		CreateInspection(sel[i]+1,di->GetExpression(),di->IsFrameless(),true);
 	}
 //	DebuggerInspection::OnDebugPause(); // la expresion podría haber modificado algo
 }
@@ -573,35 +581,59 @@ void mxInspectionGrid::OnClick(wxGridEvent &event) {
 }
 
 void mxInspectionGrid::OnRedirectedEditEvent (wxCommandEvent & event) {
-#warning probar esto
-//	selected_row=GetGridCursorRow();
-//	switch (event.GetId()) {
-//	case wxID_COPY: 
-//		OnCopyExpression(event); 
-//		break;
-//	case wxID_PASTE:
-//		OnPasteFromClipboard(event);
-//		break;
-//	case wxID_CUT:
-//		OnCopyExpression(event);
-//		OnClearOne(event);
-//		break;
-//	case mxID_EDIT_DUPLICATE_LINES:
-//		OnDuplicate(event);
-//		break;
-//	case mxID_EDIT_DELETE_LINES:
-//		OnClearOne(event);
-//		break;
-//	case mxID_EDIT_MARK_LINES:
-//		OnFreeze(event);
-//		break;
-//	case mxID_EDIT_INDENT:
-//		if (!debug->debugging || selected_row>=debug->inspections_count) return;
-//		if (debug->inspections[selected_row].frameless) OnReScope(event); else OnSetFrameless(event);
-//		break;
-//	default:
-//		event.Skip();
-//	}
+	switch (event.GetId()) {
+	case wxID_COPY: 
+		OnCopyExpression(event); 
+		break;
+	case wxID_PASTE:
+		OnPasteFromClipboard(event);
+		break;
+	case wxID_CUT:
+		OnCopyExpression(event);
+		OnClearOne(event);
+		break;
+	case mxID_EDIT_DUPLICATE_LINES:
+		OnDuplicate(event);
+		break;
+	case mxID_EDIT_DELETE_LINES:
+		OnClearOne(event);
+		break;
+	case mxID_EDIT_COMMENT:
+		OnFreeze(event);
+		break;
+	case mxID_EDIT_UNCOMMENT:
+		OnUnFreeze(event); 
+		break;
+	case mxID_EDIT_MARK_LINES:
+	case mxID_EDIT_INDENT:
+		if (debug->CanTalkToGDB()) {
+			vector<int> sels;
+			if (!mxGrid::GetSelectedRows(sels,false)) return;
+			if (inspections[sels[0]]->IsFrameless()) OnReScope(event); else OnSetFrameless(event);
+		}
+		break;
+	case mxID_EDIT_SELECT_ALL:
+		wxGrid::SelectAll();
+		break;
+	case mxID_EDIT_TOGGLE_LINES_UP: 
+		{
+			vector<int> sels;
+			if (!mxGrid::GetSelectedRows(sels,false) || sels[0]==0) return;
+			mxGrid::Select(sels.front()-1);
+			for(unsigned int i=0;i<sels.size();i++) { SwapInspections(sels[i],sels[i]-1); wxGrid::SelectRow(sels[i]-1,true); }
+		}
+		break;
+	case mxID_EDIT_TOGGLE_LINES_DOWN:
+		{
+			vector<int> sels;
+			if (!mxGrid::GetSelectedRows(sels,true) || sels[0]+1==inspections.GetSize()) return;
+			mxGrid::Select(sels.back()+1);
+			for(unsigned int i=0;i<sels.size();i++) { SwapInspections(sels[i],sels[i]+1); wxGrid::SelectRow(sels[i]+1,true); }
+		}
+		break;
+	default:
+		event.Skip();
+	}
 }
 
 void mxInspectionGrid::InsertRows(int pos, int cant) {
@@ -756,11 +788,13 @@ void mxInspectionGrid::DeleteInspection (int r, bool for_reuse) {
 }
 
 void mxInspectionGrid::UpdateValueColumn (int r) {
-	mxGrid::SetCellValue(r,IG_COL_VALUE,inspections[r]->GetValue());
+	DebuggerInspection *di = inspections[r].di;
+	mxGrid::SetCellValue(r,IG_COL_VALUE,di?di->GetValue():"");
 }
 
 void mxInspectionGrid::UpdateTypeColumn (int r) {
 	DebuggerInspection *di = inspections[r].di;
+	if (!di) { mxGrid::SetCellValue(r,IG_COL_TYPE,""); mxGrid::SetReadOnly(r,IG_COL_VALUE,true); return; }
 	mxGrid::SetCellValue(r,IG_COL_TYPE,di->GetValueType());
 	if (di->GetDbiType()==DIT_VARIABLE_OBJECT) {
 		if (di->IsCompound()) inspections[r].value_renderer->SetIconPlus();
@@ -993,5 +1027,9 @@ void mxInspectionGrid::OnDerefPtr (wxCommandEvent & evt) {
 				di->IsFrameless(),true);
 		}
 	}
+}
+
+void mxInspectionGrid::OnEditFromKeyboard (wxCommandEvent & event) {
+	if (mxGrid::SetGridCursor(GetGridCursorRow(),IG_COL_EXPR)) EnableCellEditControl(true);
 }
 

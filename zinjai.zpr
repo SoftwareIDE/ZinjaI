@@ -10,7 +10,6 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/ProjectManager.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -97,7 +96,6 @@ cursor=117:47
 path=src/ProjectManager.cpp
 cursor=2838:20
 marker=485
-open=true
 [source]
 path=src/mxThreadGrid.cpp
 cursor=29:36
@@ -751,7 +749,7 @@ path=src/raii.h
 cursor=49:12
 [other]
 path=guihelp/ChangeLog.html
-cursor=23:58
+cursor=31:59
 [other]
 path=guihelp/tips_spanish
 cursor=0:0
