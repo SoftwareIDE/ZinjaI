@@ -1075,6 +1075,8 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 }
 
 #define EN_COMPOUT_FILE_NOT_RECOGNIZED ".o: file not recognized"
+#define EN_COMPOUT_EXE_RUNNING_PRE "ld.exe: cannot open output file"
+#define EN_COMPOUT_EXE_RUNNING_POST ".exe: Permissino denied"
 
 void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 	// ver si es alguno de los mensajes de zinjai
@@ -1090,6 +1092,8 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 		wxString custom_step_name = item_text.Mid(n); 
 		mxProjectConfigWindow *pwin = new mxProjectConfigWindow(this);
 		pwin->SelectCustomStep(custom_step_name);
+	} else if (item_text.StartsWith(EN_COMPOUT_EXE_RUNNING_PRE) && item_text.StartsWith(EN_COMPOUT_EXE_RUNNING_POST)) {
+		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_cannotopenoutputfile.html"),false); return;
 	} else if (item_text.Contains(EN_COMPOUT_FILE_NOT_RECOGNIZED)) {
 		wxString obj_name = item_text.Mid(0,item_text.Find(EN_COMPOUT_FILE_NOT_RECOGNIZED));
 		LocalListIterator<project_file_item*> fi(&project->files_sources);
