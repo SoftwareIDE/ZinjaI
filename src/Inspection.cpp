@@ -137,7 +137,7 @@ bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool s
 				di->expression = base_exp+di->short_expression;
 			}
 			if (break_again) {
-				di->Break(children,skip_visibility_groups,recursive_on_inheritance);
+				di->Break(children,skip_visibility_groups,recursive_on_inheritance,improve_children_expressions);
 				di->Destroy();
 			} else { 
 				if (!di->SetupChildInspection()) di->VOEvaluate();
