@@ -72,6 +72,7 @@
 #include "MenusAndToolsConfig.h"
 #include "mxShortcutsDialog.h"
 #include "mxExternCompilerOutput.h"
+#include "mxBySourceCompilingOpts.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -411,6 +412,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_PROJECT_POPUP_PROPERTIES, mxMainWindow::OnProjectTreeProperties)
 	EVT_MENU(mxID_PROJECT_POPUP_OPEN, mxMainWindow::OnProjectTreeOpen)
 	EVT_MENU(mxID_PROJECT_POPUP_OPEN_ALL, mxMainWindow::OnProjectTreeOpenAll)
+	EVT_MENU(mxID_PROJECT_POPUP_COMPILING_OPTS, mxMainWindow::OnProjectTreeCompilingOpts)
 	EVT_MENU(mxID_PROJECT_POPUP_COMPILE_NOW, mxMainWindow::OnProjectTreeCompileNow)
 	EVT_MENU(mxID_PROJECT_POPUP_COMPILE_FIRST, mxMainWindow::OnProjectTreeCompileFirst)
 	EVT_MENU(mxID_PROJECT_POPUP_READONLY, mxMainWindow::OnProjectTreeToggleReadOnly)
@@ -623,6 +625,7 @@ void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item 
 			wxMenuItem *item=menu.AppendCheckItem(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"));
 			item->Enable(fi!=project->files_sources[0] && !compiler->IsCompiling()); item->Check(fi==project->files_sources[0]);
 			menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
+			menu.Append(mxID_PROJECT_POPUP_COMPILING_OPTS, LANG(MAINW_PROJECT_FILE_POPUP_COMPILING_OPTS,"Opciones de compilación..."))->Enable(!compiler->IsCompiling());
 		}
 		menu.AppendCheckItem(mxID_PROJECT_POPUP_READONLY, LANG(MAINW_PROJECT_FILE_POPUP_READONLY,"Solo lectura"))->Check(fi->read_only);
 		if (fi->where!=FT_OTHER) menu.AppendCheckItem(mxID_PROJECT_POPUP_HIDE_SYMBOLS, LANG(MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS,"Ignorar símbolos en búsquedas"))->Check(fi->hide_symbols);
@@ -716,6 +719,11 @@ void mxMainWindow::OnProjectTreeToggleHideSymbols(wxCommandEvent &event) {
 void mxMainWindow::OnProjectTreeCompileNow(wxCommandEvent &event) {
 	project_file_item *item = project->FindFromItem(project_tree.selected_item);
 	if (item) AuxCompileOne(item);
+}
+
+void mxMainWindow::OnProjectTreeCompilingOpts(wxCommandEvent &event) {
+	project_file_item *item = project->FindFromItem(project_tree.selected_item);
+	new mxBySourceCompilingOpts(this,item);
 }
 
 void mxMainWindow::AuxCompileOne(project_file_item *item) {

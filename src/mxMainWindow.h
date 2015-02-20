@@ -353,6 +353,7 @@ public:
 	void OnProjectTreeOpen(wxCommandEvent &event);
 	void OnProjectTreeOpenAll(wxCommandEvent &event);
 	void AuxCompileOne(project_file_item *item);
+	void OnProjectTreeCompilingOpts(wxCommandEvent &event);
 	void OnProjectTreeCompileNow(wxCommandEvent &event);
 	void OnProjectTreeCompileFirst(wxCommandEvent &event);
 	void OnProjectTreeToggleReadOnly(wxCommandEvent &event);

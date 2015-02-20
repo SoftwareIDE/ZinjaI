@@ -76,7 +76,7 @@ class mxProjectConfigWindow : public wxDialog {
 
 public:
 
-	mxProjectConfigWindow(wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
+	mxProjectConfigWindow(wxWindow* parent);
 	wxPanel *CreateQuickHelpPanel (wxNotebook *notebook);
 	wxPanel *CreateGeneralPanel (wxNotebook *notebook);
 	wxPanel *CreateCompilingPanel (wxNotebook *notebook);

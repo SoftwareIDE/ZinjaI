@@ -172,7 +172,7 @@ public:
 
 	mxBookCtrl *notebook;
 
-	mxPreferenceWindow(wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
+	mxPreferenceWindow(wxWindow* parent);
 	
 	wxPanel *CreateQuickHelpPanel (mxBookCtrl *notebook);
 	

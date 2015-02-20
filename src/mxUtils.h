@@ -199,6 +199,7 @@ public:
 	static wxMenuItem *AddCheckToMenu(wxMenu *menu, wxWindowID id, const wxString &caption, const wxString &accel, const wxString &help, bool value);
 	static void AddTool(wxToolBar *toolbar, wxWindowID id, const wxString &caption, const wxString &filename, const wxString &status_text, wxItemKind=wxITEM_NORMAL);
 	static wxMenuItem *AddSubMenuToMenu(wxMenu *menu, wxMenu *menu_h, const wxString &caption, const wxString &help, const wxString &filename);
+	static wxBoxSizer *MakeGenericButtonsSizer(wxWindow *parent, bool has_help=true);
 	/*@}*/
 	
 public:

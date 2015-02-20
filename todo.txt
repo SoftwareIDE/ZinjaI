@@ -7,6 +7,8 @@ bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonce
 
 Otras:
 
+opciones de compilación por fuente
+
 alguna forma de herencia de configuraciones de proyectos???? algo para los mil msuites con qt5s
 	opcion, una forma de decir que lo lea de un campo de un archivo tipo ini, que podria ser o no un zpr
 		de otro zpr: "${ZPR|msuite_qt.zpr|debug_win32}" // si se omite el "|debug_win32" se busca una config con el mismo nombre que la actual

@@ -1435,3 +1435,19 @@ wxString mxUT::GetRunnerBaseCommand(int wait_for_key) {
 	return command;
 }
 
+wxBoxSizer *mxUT::MakeGenericButtonsSizer (wxWindow *parent, bool has_help) {
+	wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+	
+	wxButton *cancel_button = new mxBitmapButton (parent,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
+	wxButton *ok_button = new mxBitmapButton (parent,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
+	ok_button->SetDefault(); 
+	if (has_help) {
+		wxBitmapButton *help_button = new wxBitmapButton (parent,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
+		sizer->Add(help_button,sizers->BA5_Exp0);
+		sizer->AddStretchSpacer();
+	}
+	sizer->Add(cancel_button,sizers->BA5);
+	sizer->Add(ok_button,sizers->BA5);
+	return sizer;
+}
+

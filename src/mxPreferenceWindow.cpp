@@ -126,7 +126,8 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_TEXT(mxID_PREFERENCES_FONTSIZE,mxPreferenceWindow::OnFontChange)
 END_EVENT_TABLE()
 
-mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, LANG(PREFERENCES_CAPTION,"Preferencias"), pos, size, style) {
+mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : wxDialog(parent, wxID_ANY, LANG(PREFERENCES_CAPTION,"Preferencias"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) 
+{
 
 	ignore_styles_changes = true;
 	
@@ -154,19 +155,6 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	if (config->Help.show_extra_panels) imglist->Add(bitmaps->GetBitmap("pref_help.png"));
 	notebook->SetImageList(imglist);
 
-	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
-
-	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	SetEscapeId(wxID_CANCEL);
-	wxButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	ok_button->SetDefault(); 
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
-
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(ok_button,sizers->BA5);
-
 	if (config->Help.show_extra_panels) 
 		notebook->AddPage(CreateQuickHelpPanel(notebook), LANG(PREFERENCES_QUICK_HELP,"Ayuda Rapida"),false,8);
 	notebook->AddPage(CreateGeneralPanel(notebook), LANG(PREFERENCES_GENERAL,"General"),false,0);
@@ -179,7 +167,8 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent, wxWindowID id, const wx
 	notebook->AddPage(CreatePathsPanels(notebook), LANG(PREFERENCES_PATHS,"Rutas"),false,7); 
 
 	mySizer->Add(notebook,sizers->Exp1);
-	mySizer->Add(bottomSizer,sizers->Exp0);
+	mySizer->Add(mxUT::MakeGenericButtonsSizer(this,true),sizers->Exp0);
+	SetEscapeId(wxID_CANCEL);
 
 	SetSizerAndFit(mySizer);
 

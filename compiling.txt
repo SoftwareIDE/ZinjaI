@@ -10,7 +10,7 @@ Building Zinjai
  have to compile it manually from source code. Just follow regular steps (./configure; make; sudo 
  make install) adding --enable-ansi --disable-unicode arguments when running configure. If you're 
  compiling wxWidgets 2.8 you should also run make and sudo make install in contrib/src/stc, if you're 
- compiling 2.9 version you should add --enable-scintilla, for building its Scintilla extension. 
+ compiling 2.9 version you should add --enable-stc, for building its Scintilla extension. 
  ZinjaI's Windows installer includes a suitable wxWidgets version, so you won't need anything else*.
 
  You can use Makefiles in directories src, src_extra and parser to build ZinjaI's executable files, 
