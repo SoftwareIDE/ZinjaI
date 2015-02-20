@@ -1046,6 +1046,8 @@ BREAKOPTS_ERROR_SETTING_CONDITION
 The entered breakpoint's condition is not valid. Do you wan't to set an unconditional breakpoint anyway?
 BYSRCOPTS_CAPTION
 Compiler arguments (by source)
+BYSRCOPTS_FILTER
+Filter
 BYSRCOPTS_FROM_PROFILE
 Use profile's settings
 PROJECTCONFIG_COMPILING_EXTRA_ARGS

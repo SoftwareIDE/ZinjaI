@@ -39,7 +39,13 @@ wxString debug_string;
 char path_sep = wxFileName::GetPathSeparator();
 
 static wxStaticText *last_label; ///< guarda la ultima etiqueta que se uso en alguno de los AddAlgo
+wxStaticText * mxUT::GetLastLabel ( ) { return last_label; }
+
 static wxButton *last_button; ///< guarda el ultimo boton colocado por AddDirCtrl
+wxButton * mxUT::GetLastButton ( ) { return last_button; }
+
+static wxBoxSizer *last_sizer; ///< guarda el último sizer creado por los AddAlgo
+wxSizer * mxUT::GetLastSizer ( ) { return last_sizer; }
 
 /** 
 * Concatena una ruta y un nombre de archivo. Si este es relativo, agregando la 
@@ -61,7 +67,7 @@ wxString mxUT::JoinDirAndFile(wxString dir, wxString fil) {
 }
 
 /*wxBoxSizer *mxUT::CreateSizerWithLabelAndText(wxWindow *win, wxWindowID id, wxTextCtrl * &text, wxString label) {
-	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	text = new wxTextCtrl(win, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	sizerRow->Add(new wxStaticText(win, wxID_ANY, label, wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
 	sizerRow->Add(text, sizers->Exp1);
@@ -170,7 +176,7 @@ void mxUT::SortArrayString(wxArrayString &array, int inf, int sup) {
 wxCheckBox *mxUT::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value, wxWindowID id, bool margin) {
 	wxCheckBox *checkbox = new wxCheckBox(panel, id, text+_T("   "));
 	if (margin) {
-		wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+		wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 		sizerRow->AddSpacer(15);
 		sizerRow->Add(checkbox, sizers->Exp1);
 		sizer->Add(sizerRow, sizers->BLRT5_Exp0);
@@ -201,7 +207,7 @@ wxTextCtrl *mxUT::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString 
 
 wxTextCtrl *mxUT::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text, bool margin) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
-	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *button = last_button = new wxButton(panel,id,button_text,wxDefaultPosition,button_text== _T("...")?wxSize(30,10):wxSize(-1,10));
 	if (margin) sizerRow->AddSpacer(15);
 	sizerRow->Add(textctrl, sizers->Exp1);
@@ -214,7 +220,7 @@ wxTextCtrl *mxUT::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text,
 
 wxTextCtrl *mxUT::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value, bool margin, int id) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
-	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(15);
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(textctrl, sizers->Exp1);
@@ -226,7 +232,7 @@ wxTextCtrl *mxUT::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text
 
 wxStaticText* mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
 	wxStaticText *textctrl = new wxStaticText(panel, wxID_ANY, str, wxDefaultPosition, wxDefaultSize);
-	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
 	sizerRow->Add(new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
 	sizerRow->AddStretchSpacer(1);
@@ -236,9 +242,9 @@ wxStaticText* mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString 
 	return textctrl;	
 }
 
-wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
-	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, str, wxDefaultPosition, wxDefaultSize);
-	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin, wxWindowID id) {
+	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, str, wxDefaultPosition, wxDefaultSize);
+	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(textctrl, sizers->Exp1);
@@ -249,7 +255,7 @@ wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString
 
 wxTextCtrl *mxUT::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString foot, bool margin) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxString()<<n, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
-	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+" ", wxDefaultPosition, wxDefaultSize, 0), sizers->Right);
 	sizerRow->Add(textctrl, sizers->Exp1);
@@ -263,7 +269,7 @@ wxComboBox *mxUT::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	wxString sdef=def==-1?"":values[def];
 	wxComboBox *combo = new wxComboBox(panel, id, sdef, wxDefaultPosition, wxDefaultSize, values, editable?0:wxCB_READONLY);
 	combo->SetSelection(def);
-	wxBoxSizer *sizerRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
 	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(combo, sizers->Exp1);
@@ -667,7 +673,7 @@ wxString mxUT::ToHtml(wxString text, bool full) {
 	return text;
 }
 
-void mxUT::ParameterReplace(wxString &str, wxString from, wxString to) {
+void mxUT::ParameterReplace(wxString &str, wxString from, wxString to, bool quotize) {
 	if (str.Find(' ')==wxNOT_FOUND)
 		str.Replace(from,to);
 	else {
@@ -685,7 +691,8 @@ void mxUT::ParameterReplace(wxString &str, wxString from, wxString to) {
 			if (str[p2]==' ' || str[p2]=='\t')
 				p2--;
 			final<<str.SubString(0,p1-1);
-			final<<mxUT::Quotize(str.SubString(p1,p-1)+to+str.SubString(p+from.Len(),p2));
+			wxString mid = str.SubString(p1,p-1)+to+str.SubString(p+from.Len(),p2);
+			final<<(quotize?mxUT::Quotize(mid):mid);
 			str=str.Mid(p2+1);
 			p=str.Find(from);
 			l=str.Len();
@@ -1375,14 +1382,6 @@ void mxUT::OpenZinjaiSite(wxString page) {
 	mxUT::OpenInBrowser(base);
 }
 
-wxStaticText * mxUT::GetLastLabel ( ) {
-	return last_label;
-}
-
-wxButton * mxUT::GetLastButton ( ) {
-	return last_button;
-}
-
 wxString mxUT::GetClipboardText ( ) {
 	wxString text;
 	if (wxTheClipboard->Open()) {
@@ -1450,4 +1449,6 @@ wxBoxSizer *mxUT::MakeGenericButtonsSizer (wxWindow *parent, bool has_help) {
 	sizer->Add(ok_button,sizers->BA5);
 	return sizer;
 }
+
+
 

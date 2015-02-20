@@ -265,7 +265,6 @@ struct project_configuration {
 	int wait_for_key; ///< esperar una tecla antes de cerrar la consola luego de la ejecución (0=nunca, 1=solo en caso de error, 2=siempre)
 	wxString env_vars; ///< lista con valores para asignar o reemplazar en las variables de entorno antes de ejecutar
 	
-	
 	wxString temp_folder; ///< directorio temporal donde poner los objetos de la compilacion
 	wxString output_file; ///< archivo de salida de la compilacion = ruta del ejecutable
 	wxString icon_file; ///< archivo con el icono para compilar como recurso (solo windows)
@@ -289,10 +288,11 @@ struct project_configuration {
 	compile_extra_step *extra_steps; ///< puntero al primer item de la lista de pasos adicionales para la compilacion (sin primer nodo ficticio), nullptr si no hay pasos extra
 	project_library *libs_to_build; ///< bibliotecas a construir, lista enlazada sin primer nodo ficticio
 	bool dont_generate_exe; ///< no generar ejecutable, solo bibliotecas
+	HashStringString *by_src_compiling_options; ///< argumentos de compilacion adicionales por fuente (solo guarda los fuentes que no usan la configuracion por defecto)
 	
-		
 	//! inicializa la configuración con los valores por defecto
 	project_configuration(wxString pname, wxString cname) {
+		by_src_compiling_options = new HashStringString();
 		libs_to_build=nullptr;
 		bakup=nullptr;
 		name=cname;
@@ -344,7 +344,10 @@ struct project_configuration {
 				aux=niu;
 			}
 		}
+		by_src_compiling_options = new HashStringString();
+		*by_src_compiling_options = *(copy_from->by_src_compiling_options);
 	}
+
 };
 
 //! Información acerca de una linea de código resaltada por el usuario
@@ -376,6 +379,7 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 	bool read_only; ///< indica que se debe abrir como solo lectura (porque es generado por una herramienta externa)
 	bool hide_symbols; ///< indica si sus métodos y funciones se deben tener en cuenta para el cuadro "Ir a funcion/clase/método"
 	eFileType where; ///< indica en qué categoria de archivos está asociado al proyecto (s=sources, h=headers, o=otros)
+	wxString compiling_options; ///< campo generado por AnaliceConfig, con las opciones finales y reales, ya procesadas
 	void Init() { // parte comun a ambos constructores
 		force_recompile=false;
 		read_only=false;
@@ -395,6 +399,9 @@ struct project_file_item { // para armar las listas (doblemente enlazadas) de ar
 	/// true=c++, false=c
 	bool IsCppOrJustC() {
 		return name.Len()<=2 || (name[name.Len()-1]!='c'&&name[name.Len()-1]!='C') || name[name.Len()-2]!='.';
+	}
+	wxString GetBinName(const wxString &temp_dir) {
+		return DIR_PLUS_FILE(temp_dir,wxFileName(name).GetName()+".o");
 	}
 };
 

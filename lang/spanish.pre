@@ -1048,6 +1048,8 @@ BREAKOPTS_ERROR_SETTING_CONDITION
 La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?.
 BYSRCOPTS_CAPTION
 Opciones de compilacion por fuente
+BYSRCOPTS_FILTER
+Filtrar
 BYSRCOPTS_FROM_PROFILE
 Tomar desde el perfil
 PROJECTCONFIG_COMPILING_EXTRA_ARGS

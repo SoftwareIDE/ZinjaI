@@ -625,7 +625,7 @@ void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item 
 			wxMenuItem *item=menu.AppendCheckItem(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"));
 			item->Enable(fi!=project->files_sources[0] && !compiler->IsCompiling()); item->Check(fi==project->files_sources[0]);
 			menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
-			menu.Append(mxID_PROJECT_POPUP_COMPILING_OPTS, LANG(MAINW_PROJECT_FILE_POPUP_COMPILING_OPTS,"Opciones de compilación..."))->Enable(!compiler->IsCompiling());
+			if (fi->where==FT_SOURCE) menu.Append(mxID_PROJECT_POPUP_COMPILING_OPTS, LANG(MAINW_PROJECT_FILE_POPUP_COMPILING_OPTS,"Opciones de compilación..."))->Enable(!compiler->IsCompiling());
 		}
 		menu.AppendCheckItem(mxID_PROJECT_POPUP_READONLY, LANG(MAINW_PROJECT_FILE_POPUP_READONLY,"Solo lectura"))->Check(fi->read_only);
 		if (fi->where!=FT_OTHER) menu.AppendCheckItem(mxID_PROJECT_POPUP_HIDE_SYMBOLS, LANG(MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS,"Ignorar símbolos en búsquedas"))->Check(fi->hide_symbols);

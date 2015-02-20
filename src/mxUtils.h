@@ -160,7 +160,7 @@ public:
 	//! Devuelve una cadena convertida a HTML
 	static wxString ToHtml(wxString text, bool full=false);
 	// reemplaza una cadena por otra, pero agregando comillas si necesita para mantener el parametro como uno solo
-	static void ParameterReplace(wxString &str, wxString from, wxString to);
+	static void ParameterReplace(wxString &str, wxString from, wxString to, bool quotize=true);
 //	void MakeDesktopIcon(wxString desk_dir);
 	
 	/** @brief Distancia entre cadenas **/
@@ -177,10 +177,11 @@ public:
 	/*@{*/
 	static wxStaticText *GetLastLabel(); ///< ultima etiqueta que se uso en alguno de los AddAlgo
 	static wxButton *GetLastButton(); ///< ultimo boton colocado por AddDirCtrl
+	static wxSizer *GetLastSizer(); ///< ultimo boton colocado por Add{algo}
 	static wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value=false, wxWindowID id = wxID_ANY,bool margin=false);
 	static wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", int id=wxID_ANY);
 	static wxTextCtrl *AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="");
-	static wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", bool margin=false);
+	static wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", bool margin=false, wxWindowID id=wxID_ANY);
 	static wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString tail, bool margin=false);
 	static wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value=0,bool margin=false, int id=wxID_ANY);
 	static wxTextCtrl *AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text = "...",bool margin=false);
