@@ -22,15 +22,16 @@ BEGIN_EVENT_TABLE(mxInspectionsImprovingEditor,wxDialog)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxInspectionsImprovingEditor::OnHelp)
 END_EVENT_TABLE()
 	
-mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, const wxString &type, const wxString &expr) 
+mxInspectionsImprovingEditor::mxInspectionsImprovingEditor(wxWindow *parent, wxArrayString &a_from, wxArrayString &a_to, const wxString &type, const wxString &expr) 
 	: wxDialog(parent,wxID_ANY,"Reemplaza automático de inspecciones",wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) 
 {
 	
 	wxSizer *sizer=new wxBoxSizer(wxVERTICAL);
 	wxSizer *sizer_top=new wxBoxSizer(wxVERTICAL);
 	
-	array_from=config->Debug.inspection_improving_template_from;
-	array_to=config->Debug.inspection_improving_template_to;
+	array_from=a_from; orig_array_from=&a_from;
+	array_to=a_to; orig_array_to=&a_to;
+	
 	list=new wxListBox(this,mxID_INSPECTION_TEMPLATES_LIST,wxDefaultPosition,wxDefaultSize,array_from);
 	sizer_top->Add(list,sizers->BA5_Exp1);
 	
@@ -129,8 +130,8 @@ void mxInspectionsImprovingEditor::OnDel (wxCommandEvent & evt) {
 }
 
 void mxInspectionsImprovingEditor::OnOk (wxCommandEvent & evt) {
-	config->Debug.inspection_improving_template_from = array_from;
-	config->Debug.inspection_improving_template_to = array_to;
+	(*orig_array_from) = array_from;
+	(*orig_array_to) = array_to;
 	EndModal(1);
 }
 

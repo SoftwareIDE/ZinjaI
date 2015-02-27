@@ -1296,7 +1296,8 @@ void mxPreferenceWindow::OnXdgButton(wxCommandEvent &evt) {
 }
 
 void mxPreferenceWindow::OnImproveInspectionsByTypeButton (wxCommandEvent & event) {
-	mxInspectionsImprovingEditor(this);
+	mxInspectionsImprovingEditor(this,
+		config->Debug.inspection_improving_template_from,config->Debug.inspection_improving_template_to);
 }
 
 void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {

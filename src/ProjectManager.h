@@ -504,6 +504,7 @@ public:
 	wxString autocomp_extra; ///< indices de autocompletado adicionales para este proyecto
 	wxString autocodes_file; ///< archivo con definiciones de autocodigos adicionales
 	wxString macros_file; ///< archivo con definiciones de macros para gdb
+	wxArrayString inspection_improving_template_from, inspection_improving_template_to;
 	CustomToolsPack custom_tools; ///< herramientas personalizables asociadas al proyecto
 private:
 	wxString temp_folder; ///< guarda la ruta de temporales (objetos) completa para la configuracion actual, solo para uso interno

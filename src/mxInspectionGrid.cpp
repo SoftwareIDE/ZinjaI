@@ -12,6 +12,7 @@
 #include "mxInspectionHistory.h"
 #include "mxRealTimeInspectionEditor.h"
 #include "mxMessageDialog.h"
+#include "ProjectManager.h"
 using namespace std;
 
 #warning no se toma en cuenta config->Debug.use_colours_for_inspections
@@ -49,10 +50,12 @@ BEGIN_EVENT_TABLE(mxInspectionGrid, wxGrid)
 	EVT_MENU(mxID_INSPECTION_FORMAT_OCT,mxInspectionGrid::OnFormatOctal)
 	EVT_MENU(mxID_INSPECTION_FORMAT_HEX,mxInspectionGrid::OnFormatHexadecimal)
 	
-	EVT_MENU(mxID_INSPECTION_IMPR_ADD,mxInspectionGrid::OnRegisterNewImprovedExpression)
+	EVT_MENU(mxID_INSPECTION_IMPR_ADD_GENERAL,mxInspectionGrid::OnRegisterNewImprovedExpressionGeneral)
+	EVT_MENU(mxID_INSPECTION_IMPR_ADD_PROJECT,mxInspectionGrid::OnRegisterNewImprovedExpressionProject)
 	EVT_MENU(mxID_INSPECTION_IMPR_EXPOSE,mxInspectionGrid::OnExposeImprovedExpression)
 	EVT_MENU(mxID_INSPECTION_IMPR_DISCARD,mxInspectionGrid::OnDiscardImprovedExpression)
-	EVT_MENU(mxID_INSPECTION_IMPR_CONF,mxInspectionGrid::OnInspectionsImprovingSettings)
+	EVT_MENU(mxID_INSPECTION_IMPR_CONF_GENERAL,mxInspectionGrid::OnInspectionsImprovingSettingsGeneral)
+	EVT_MENU(mxID_INSPECTION_IMPR_CONF_PROJECT,mxInspectionGrid::OnInspectionsImprovingSettingsProject)
 	EVT_MENU(mxID_INSPECTION_EDIT,mxInspectionGrid::OnEditFromKeyboard)
 END_EVENT_TABLE()
 	
@@ -335,8 +338,10 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 	wxMenu *imprv_submenu = new wxMenu;
 	if (sel_has_improved) imprv_submenu->Append(mxID_INSPECTION_IMPR_EXPOSE,LANG(INSPECTGRID_IMPRV_SHOW_IMPROVE,"Mostrar expresión mejorada"));
 	if (sel_has_improved) imprv_submenu->Append(mxID_INSPECTION_IMPR_DISCARD,LANG(INSPECTGRID_IMPRV_DONT_IMPROVE,"No mejorar expresión automáticamente"));
-	if (sel_is_single && sel_is_vo) imprv_submenu->Append(mxID_INSPECTION_IMPR_ADD,LANG(INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE,"Agregar mejora para este tipo..."));
-	imprv_submenu->Append(mxID_INSPECTION_IMPR_CONF,LANG(INSPECTGRID_IMPRV_CONF,"Configurar..."));
+	if (sel_is_single && sel_is_vo) imprv_submenu->Append(mxID_INSPECTION_IMPR_ADD_GENERAL,LANG(INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE_GENERAL,"Agregar mejora para este tipo (generales)..."));
+	if (project) if (sel_is_single && sel_is_vo) imprv_submenu->Append(mxID_INSPECTION_IMPR_ADD_PROJECT,LANG(INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE_PROJECT,"Agregar mejora para este tipo (proyecto)..."));
+	imprv_submenu->Append(mxID_INSPECTION_IMPR_CONF_GENERAL,LANG(INSPECTGRID_IMPRV_CONF_GENERAL,"Configurar (generales)..."));
+	if (project) imprv_submenu->Append(mxID_INSPECTION_IMPR_CONF_PROJECT,LANG(INSPECTGRID_IMPRV_CONF_PROYECT,"Configurar (proyecto)..."));
 	menu.AppendSubMenu(imprv_submenu,LANG(INSPECTGRID_IMPRV_SUBMENU,"Mejoras automáticas según tipo"));
 //	}
 	if (there_are_inspections) {
@@ -956,17 +961,37 @@ void mxInspectionGrid::ExposeImprovedExpression (int r) {
 	mxGrid::SetCellValue(r,IG_COL_EXPR,new_expr);
 }
 
-void mxInspectionGrid::OnRegisterNewImprovedExpression (wxCommandEvent & event) {
+static void aux_show_inspections_improving_settings(bool for_project,const wxString &type="", const wxString &expr="") {
+	mxInspectionsImprovingEditor(main_window,
+		for_project?project->inspection_improving_template_from:config->Debug.inspection_improving_template_from,
+		for_project?project->inspection_improving_template_to:config->Debug.inspection_improving_template_to,
+		type,expr);
+}
+
+void mxInspectionGrid::OnRegisterNewImprovedExpressionProject (wxCommandEvent & event) {
+	OnRegisterNewImprovedExpression(true);
+}
+
+void mxInspectionGrid::OnRegisterNewImprovedExpressionGeneral (wxCommandEvent & event) {
+	OnRegisterNewImprovedExpression(false);
+}
+
+void mxInspectionGrid::OnRegisterNewImprovedExpression (bool for_project) {
 	vector<int> sel; mxGrid::GetSelectedRows(sel); 
 	if (sel.size()!=1) return;
 	if (inspections[sel[0]].IsNull()) return;
 	if (inspections[sel[0]]->GetDbiType()==DIT_GDB_COMMAND) return;
 	if (inspections[sel[0]]->GetValueType().IsEmpty()) return;
-	mxInspectionsImprovingEditor(main_window,inspections[sel[0]]->GetValueType(),inspections[sel[0]]->GetExpression());
+	aux_show_inspections_improving_settings(for_project,
+		inspections[sel[0]]->GetValueType(),inspections[sel[0]]->GetExpression());
 }
 
-void mxInspectionGrid::OnInspectionsImprovingSettings (wxCommandEvent & event) {
-	mxInspectionsImprovingEditor(main_window,"");
+void mxInspectionGrid::OnInspectionsImprovingSettingsGeneral (wxCommandEvent & event) {
+	aux_show_inspections_improving_settings(false);
+}
+
+void mxInspectionGrid::OnInspectionsImprovingSettingsProject (wxCommandEvent & event) {
+	aux_show_inspections_improving_settings(true);
 }
 
 void mxInspectionGrid::GetInspectionsList (wxArrayString &expressions) {

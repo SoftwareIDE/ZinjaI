@@ -200,6 +200,10 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				// para compatibilidad hacia atrás con proyectos de zinjai viejos
 				else CFG_BOOL_READ_DN("use_wxfb",GetWxfbConfiguration()->activate_integration);
 				else CFG_BOOL_READ_DN("auto_wxfb",GetWxfbConfiguration()->autoupdate_projects);
+				else if (key=="inspection_improving_template") {
+					inspection_improving_template_from.Add(value.BeforeFirst('|'));
+					inspection_improving_template_to.Add(value.AfterFirst('|'));
+				}
 			} else if (section=="lib_to_build" && lib_to_build) {
 				CFG_GENERIC_READ_DN("path",lib_to_build->path);
 				else CFG_GENERIC_READ_DN("libname",lib_to_build->libname);
@@ -699,6 +703,8 @@ bool ProjectManager::Save (bool as_template) {
 	CFG_GENERIC_WRITE_DN("custom_tabs",custom_tabs);
 	CFG_BOOL_WRITE_DN("tab_use_spaces",tab_use_spaces);
 	CFG_GENERIC_WRITE_DN("explorer_path",mxUT::Relativize(main_window->explorer_tree.path,path));
+	for(unsigned int i=0;i<inspection_improving_template_from.GetCount();i++)
+		CFG_GENERIC_WRITE_DN("inspection_improving_template",inspection_improving_template_from[i]+"|"+inspection_improving_template_to[i]);
 	
 	if (main_window->notebook_sources->GetPageCount()>0) {
 		mxSource *source=(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection()));
@@ -2874,7 +2880,8 @@ int ProjectManager::GetRequiredVersion() {
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	
 	version_required=0;
-	if (by_src_args) version_required=20150220;
+	if (inspection_improving_template_to.GetCount()) version_required=20150227;
+	else if (by_src_args) version_required=20150220;
 	else if (exec_wrapper) version_required=20141218;
 	else if (use_ofast) version_required=20140507;
 	else if (copy_debug_symbols) version_required=20140410;

@@ -171,8 +171,11 @@ public:
 	
 	void OnExposeImprovedExpression(wxCommandEvent &event);
 	void OnDiscardImprovedExpression(wxCommandEvent &event);
-	void OnRegisterNewImprovedExpression(wxCommandEvent &event);
-	void OnInspectionsImprovingSettings(wxCommandEvent &event);
+	void OnRegisterNewImprovedExpression(bool for_project);
+	void OnRegisterNewImprovedExpressionGeneral(wxCommandEvent &event);
+	void OnRegisterNewImprovedExpressionProject(wxCommandEvent &event);
+	void OnInspectionsImprovingSettingsGeneral(wxCommandEvent &event);
+	void OnInspectionsImprovingSettingsProject(wxCommandEvent &event);
 	
 	void UpdateLevelColumn(int r);
 	void UpdateValueColumn(int r);

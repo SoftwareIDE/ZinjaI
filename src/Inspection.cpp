@@ -1,6 +1,7 @@
 #include "Inspection.h"
 #include "ConfigManager.h"
 #include "Language.h"
+#include "ProjectManager.h"
 
 DebuggerInspection::vo2di_type DebuggerInspection::vo2di_map;
 
@@ -272,15 +273,17 @@ bool DebuggerInspection::TryToImproveExpression (const wxString &pattern, wxStri
 }
 
 bool DebuggerInspection::TryToImproveExpression (wxString type, wxString &new_expr, const wxString &expr) {
-	wxArrayString &from=config->Debug.inspection_improving_template_from;
 	if (!config->Debug.improve_inspections_by_type) return false;
 	if (type.EndsWith(" &")) { type.RemoveLast(); type.RemoveLast(); }
 	if (type.StartsWith("const ")) { type=type.Mid(6); }
-	for(unsigned int i=0, n=from.GetCount(); i<n; i++) {
-		new_expr = config->Debug.inspection_improving_template_to[i];
-		if (TryToImproveExpression(from[i],type,new_expr,expr))
-			return true;
+#define _aux_trytoimprove_apply(x) \
+	for(unsigned int i=0, n=x##_from.GetCount(); i<n; i++) { \
+		new_expr = x##_to[i]; \
+		if (TryToImproveExpression(x##_from[i],type,new_expr,expr)) \
+			return true; \
 	}
+	if (project) _aux_trytoimprove_apply(project->inspection_improving_template);
+	_aux_trytoimprove_apply(config->Debug.inspection_improving_template);
 	return false;
 }
 

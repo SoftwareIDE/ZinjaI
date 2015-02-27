@@ -15,6 +15,7 @@
 #include "Autocoder.h"
 #include "mxMultipleChoiceEditor.h"
 #include "mxBySourceCompilingOpts.h"
+#include "mxInspectionsImprovingEditor.h"
 
 BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(wxID_OK,mxProjectGeneralConfig::OnOkButton)
@@ -27,6 +28,7 @@ BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(mxID_TOOLS_CPPCHECK_CONFIG,mxProjectGeneralConfig::OnCppCheckConfig)
 	EVT_BUTTON(mxID_TOOLS_WXFB_CONFIG,mxProjectGeneralConfig::OnWxfbConfig)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_BYSRC,mxProjectGeneralConfig::OnBySrcCompilingOts)
+	EVT_BUTTON(mxID_PROJECT_CONFIG_AUTOIMPROVE_TEMPLATES,mxProjectGeneralConfig::OnAutoimprovingInspections)
 	EVT_BUTTON(mxID_TOOLS_DRAW_PROJECT,mxProjectGeneralConfig::OnDrawGraph)
 	EVT_BUTTON(mxID_TOOLS_PROJECT_STATISTICS,mxProjectGeneralConfig::OnStatistics)
 	EVT_MENU(mxID_DEBUG_MACROS_OPEN,mxProjectGeneralConfig::OnDebugMacrosOpen)
@@ -62,7 +64,7 @@ wxPanel *mxProjectGeneralConfig::CreateTabGeneral(wxNotebook *notebook) {
 	project_debug_macros = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
 	tab_width->Enable(custom_tab->GetValue());
 	tab_use_spaces->Enable(custom_tab->GetValue());
-//	sizer->Add(new wxButton(panel,mxID_PROJECT_CONFIG_AUTOIMPROVE_TEMPLATES,LANG(PROJECTGENERAL_AUTOIMPROVE_TEMPLATES," Mejora de inspecciones según tipo ")),sizers->BA5);
+	sizer->Add(new wxButton(panel,mxID_PROJECT_CONFIG_AUTOIMPROVE_TEMPLATES,LANG(PROJECTGENERAL_AUTOIMPROVE_TEMPLATES," Mejora de inspecciones según tipo ")),sizers->BA5);
 	panel->SetSizer(sizer);
 	return panel;
 }
@@ -219,5 +221,10 @@ void mxProjectGeneralConfig::OnDrawGraph (wxCommandEvent & evt) {
 
 void mxProjectGeneralConfig::OnStatistics (wxCommandEvent & evt) {
 	main_window->OnToolsProjectStatistics(evt);
+}
+
+void mxProjectGeneralConfig::OnAutoimprovingInspections (wxCommandEvent & evt) {
+	mxInspectionsImprovingEditor(this,
+		project->inspection_improving_template_from,project->inspection_improving_template_to);
 }
 
