@@ -359,7 +359,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnHIDDEN, myMenuItem("help_code",mxID_HELP_CODE,LANG(MENUITEM_HIDDEN_HELP_CODE,"Ayuda rápida")).ShortCut("Shift+F1"));
 		AddMenuItem(mnHIDDEN, myMenuItem("history_prev",mxID_NAVIGATION_HISTORY_PREV,LANG(MENUITEM_HIDDEN_NAVIGATION_HISTORY_PREV,"Historial de navegación -> ubicación anterior")).ShortCut("Alt+Left"));
 		AddMenuItem(mnHIDDEN, myMenuItem("history_next",mxID_NAVIGATION_HISTORY_NEXT,LANG(MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT,"Historial de navegación -> ubicación siguiente")).ShortCut("Alt+Right"));
-		AddMenuItem(mnHIDDEN, myMenuItem("break_enable",mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT,LANG(MENUITEM_HIDDEN_ENABLE_BREAKPOINT,"Habilitar/deshabilitar punto de interrupcion")).ShortCut(""));
+		AddMenuItem(mnHIDDEN, myMenuItem("break_enable",mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT,LANG(MENUITEM_HIDDEN_ENABLE_BREAKPOINT,"Habilitar/deshabilitar punto de interrupcion")).ShortCut("").Checkeable(true));
 		AddMenuItem(mnHIDDEN, myMenuItem("update_inspections",mxID_DEBUG_UPDATE_INSPECTIONS, LANG(MENUITEM_DEBUG_UPDATE_INSPECTIONS,"Actualizar inspecciones")).Icon("inspect_update.png"));
 		for(int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) AddMenuItem(mnHIDDEN, myMenuItem(wxString("project_tool_")<<i,mxID_CUSTOM_PROJECT_TOOL_0+i,LANG1(MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL,"Herramienta personalizada de project <{1}>",wxString()<<i)).ShortCut(""));
 		AddMenuItem(mnHIDDEN, myMenuItem("change_shortcuts",mxID_CHANGE_SHORTCUTS, LANG(MENUITEM_HELP_SHORTCUTS,"Atajos de teclado...")).ShortCut("Ctrl+Alt+Z"));
