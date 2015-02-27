@@ -273,7 +273,7 @@ void mxInspectionGrid::OnCellPopupMenu(int row, int col) {
 		sel_is_empty = false;
 		DebuggerInspection *di = inspections[sel[i]].di;
 		if (di->GetDbiType()==DIT_VARIABLE_OBJECT) { sel_has_vo=true; if (!di->GetHelperExpression().IsEmpty()) sel_has_improved=true; }
-		if (inspections[i].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
+		if (inspections[sel[i]].is_frozen) sel_has_frozen=true; else sel_has_unfrozen=true; 
 	}
 	bool there_are_sources = main_window->notebook_sources->GetPageCount()!=0;
 	mxSource *current_source = there_are_sources?(mxSource*)(main_window->notebook_sources->GetPage(main_window->notebook_sources->GetSelection())):nullptr;

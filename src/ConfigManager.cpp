@@ -388,6 +388,8 @@ bool ConfigManager::Load() {
 #else
 		Files.img_browser = DIR_PLUS_FILE(zinjai_dir,"img_viewer.bin");
 #endif
+	}
+	if (Init.version<20150226) {
 		SetDefaultInspectionsImprovingTemplates();
 	}
 	
@@ -961,7 +963,11 @@ void ConfigManager::FinishiLoading ( ) {
 
 bool ConfigManager::Initialize(const wxString & a_path) {
 	config = new ConfigManager(a_path);
-	return !config->Load();
+	bool first_time = !config->Load();
+	if (first_time) {
+		config->SetDefaultInspectionsImprovingTemplates();
+	}
+	return first_time;
 }
 
 

@@ -3162,12 +3162,6 @@ void mxSource::JumpToCurrentSymbolDefinition() {
 }
 
 void mxSource::OnClick(wxMouseEvent &evt) {
-	// ¿por que no anda esto?
-//	if (evt.ControlDown() && evt.ShiftDown()) {
-//		SetSelectionMode(wxSTC_SEL_RECTANGLE);
-//		evt.Skip();
-//		return;
-//	}
 	if (evt.ControlDown()) {
 		int p=PositionFromPointClose(evt.GetX(),evt.GetY());
 		SetSelectionStart(p); SetSelectionEnd(p);
