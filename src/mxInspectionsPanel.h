@@ -41,6 +41,7 @@ public:
 	void OnPageClosing(wxAuiNotebookEvent &event);
 	void OnRedirectedEditEvent(wxCommandEvent &event);
 	void SelectPage(int p);
+	void SetFocus();
 	
 	int GetTabsCount() { return tabs.GetSize(); }
 	wxString GetPageTitle(int p);

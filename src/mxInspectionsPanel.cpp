@@ -121,3 +121,7 @@ mxInspectionGrid *mxInspectionsPanel::GetCurrentInspectionGrid() {
 		return nullptr;
 }
 
+void mxInspectionsPanel::SetFocus ( ) {
+	GetPage(GetSelection())->SetFocus();
+}
+

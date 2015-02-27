@@ -170,7 +170,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnDEBUG, myMenuItem("break_options",mxID_DEBUG_BREAKPOINT_OPTIONS, LANG(MENUITEM_DEBUG_BREAKPOINT_OPTIONS,"&Opciones del Breakpoint...")).ShortCut("Ctrl+F8").Icon("breakpoint_options.png").EnableIf(ecNOT_DEBUG_OR_DEBUG_PAUSED));
 		AddMenuItem(mnDEBUG, myMenuItem("break_list",mxID_DEBUG_LIST_BREAKPOINTS, LANG(MENUITEM_DEBUG_LIST_BREAKPOINTS,"&Listar Watch/Break points...")).ShortCut("Shift+F8").Icon("breakpoint_list.png").EnableIf(ecPROJECT_OR_SOURCE));
 		AddSeparator(mnDEBUG);
-		AddMenuItem(mnDEBUG, myMenuItem("inspections",mxID_DEBUG_INSPECT, LANG(MENUITEM_DEBUG_INSPECT,"Panel de In&specciones")).Icon("inspect.png"));
+		AddMenuItem(mnDEBUG, myMenuItem("inspections",mxID_DEBUG_INSPECT, LANG(MENUITEM_DEBUG_INSPECT,"Panel de In&specciones")).Icon("inspect.png").ShortCut("Shift+F2"));
 		AddMenuItem(mnDEBUG, myMenuItem("backtrace", mxID_DEBUG_BACKTRACE, LANG(MENUITEM_DEBUG_BACKTRACE,"&Trazado Inverso")).Icon("backtrace.png"));
 		AddMenuItem(mnDEBUG, myMenuItem("threadlist", mxID_DEBUG_THREADLIST, LANG(MENUITEM_DEBUG_THREADLIST,"&Hilos de Ejecucion")).Icon("threadlist.png"));
 		AddMenuItem(mnDEBUG, myMenuItem("log_panel", mxID_DEBUG_LOG_PANEL, LANG(MENUITEM_DEBUG_SHOW_LOG_PANEL,"&Mostrar mensajes del depurador")).Icon("debug_log_panel.png"));
