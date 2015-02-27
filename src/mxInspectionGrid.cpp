@@ -637,7 +637,7 @@ void mxInspectionGrid::OnRedirectedEditEvent (wxCommandEvent & event) {
 }
 
 void mxInspectionGrid::InsertRows(int pos, int cant) {
-	if (pos==-1) { 
+	if (pos==-1) {
 		pos=wxGrid::GetNumberRows(); 
 		wxGrid::AppendRows(cant,false);
 		for(int i=0;i<cant;i++) 
@@ -645,8 +645,10 @@ void mxInspectionGrid::InsertRows(int pos, int cant) {
 	} else {
 		wxGrid::InsertRows(pos,cant,false);
 		inspections.MakeRoomForMultipleInsert(pos,cant);
+		for(int i=pos;i<pos+cant;i++) inspections[i].Reset();
 	}
 	for(int i=pos;i<pos+cant;i++) {
+		inspections[i].Reset();
 		mxGrid::SetReadOnly(i,IG_COL_LEVEL,true);
 		mxGrid::SetCellEditor(i,IG_COL_EXPR,new gdbInspCtrl);
 		mxGrid::SetReadOnly(i,IG_COL_TYPE,true);
@@ -708,6 +710,13 @@ void mxInspectionGrid::SetRowStatus (int r, int status) {
 		mxGrid::SetCellValue(r,IG_COL_VALUE,mxig_status_opts[status].message);
 	if (mxig_status_opts[prev_status].editable_value!=mxig_status_opts[status].editable_value)
 		mxGrid::SetReadOnly(r,IG_COL_VALUE,!mxig_status_opts[status].editable_value);
+}
+
+void mxInspectionGrid::SetRowStatus (int r, int status, bool dummy_force) {
+	if (status!=IGRS_FREEZE) inspections[r].status=status;
+	mxGrid::SetCellColour(r,IG_COL_VALUE,mxig_status_opts[status].color);
+	mxGrid::SetCellValue(r,IG_COL_VALUE,mxig_status_opts[status].message);
+	mxGrid::SetReadOnly(r,IG_COL_VALUE,!mxig_status_opts[status].editable_value);
 }
 
 void mxInspectionGrid::OnFullTableUpdateBegin( ) {
@@ -861,11 +870,16 @@ void mxInspectionGrid::ChangeFrameless (int r, bool frameless, bool full_table_u
 }
 
 void mxInspectionGrid::SwapInspections (int r1, int r2) {
-	DebuggerInspection *dr1=inspections[r1].di;
-	DebuggerInspection *dr2=inspections[r2].di;
-	inspections[r1]=dr2; inspections[r2]=dr1;
-	UpdateExpressionColumn(r1); UpdateLevelColumn(r1); UpdateTypeColumn(r1); UpdateValueColumn(r1);
-	UpdateExpressionColumn(r2); UpdateLevelColumn(r2); UpdateTypeColumn(r2); UpdateValueColumn(r2);
+	wxString old_value1 = inspections[r1].is_frozen?mxGrid::GetCellValue(r1,IG_COL_VALUE):"";
+	wxString old_value2 = inspections[r2].is_frozen?mxGrid::GetCellValue(r2,IG_COL_VALUE):"";
+	int status1 = inspections[r1].GetVisibleStatus(), status2 = inspections[r2].GetVisibleStatus();
+	inspections[r1].Swap(inspections[r2]); 
+	bool one_frozen = (status1==IGRS_FREEZE||status2==IGRS_FREEZE)&&status1!=status2;
+	SetRowStatus(r1,status2,one_frozen); SetRowStatus(r2,status1,one_frozen);
+	UpdateExpressionColumn(r1); UpdateLevelColumn(r1); UpdateTypeColumn(r1); 
+	if (inspections[r1].is_frozen) mxGrid::SetCellValue(r1,IG_COL_VALUE,old_value2); else UpdateValueColumn(r1);
+	UpdateExpressionColumn(r2); UpdateLevelColumn(r2); UpdateTypeColumn(r2);
+	if (inspections[r2].is_frozen) mxGrid::SetCellValue(r2,IG_COL_VALUE,old_value1); else UpdateValueColumn(r2);
 }
 
 void mxInspectionGrid::UpdateExpressionColumn (int r, bool only_icon) {

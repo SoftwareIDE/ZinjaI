@@ -33,7 +33,7 @@ class mxInspectionGrid : public mxGrid, public myDIEventHandler, public myDIGlob
 	BoolFlag ignore_cell_change_event;
 	bool full_table_update_began; ///< para poder llamar dos veces a begin sin que la segunda haga nada (la primera desde aca, la segunda desde DebuggerInspection::UpdateAll)
 public:
-	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_UNFREEZE, IGRS_COUNT };
+	enum { IGRS_UNINIT, IGRS_OUT_OF_SCOPE, IGRS_IN_SCOPE, IGRS_NORMAL, IGRS_CHANGED, IGRS_ERROR, IGRS_FREEZE, IGRS_COUNT };
 
 	struct InspectionGridRow {
 		DebuggerInspection *di;
@@ -51,8 +51,30 @@ public:
 		void CopyStatus(const InspectionGridRow &o) {
 			if (o.expression_renderer->HasIcon()) expression_renderer->SetIconPlus(); else expression_renderer->SetIconNull();
 			if (o.value_renderer->HasIcon()) value_renderer->SetIconPlus(); else value_renderer->SetIconNull();
-			status=o.status; frame_level=o.frame_level; on_thread=o.on_thread; is_frozen=o.is_frozen;
+			status=o.status; // tal vez no debería copiar status ???
+			frame_level=o.frame_level; on_thread=o.on_thread; is_frozen=o.is_frozen;
 		}
+		void Swap(InspectionGridRow &o) {
+			DebuggerInspection *o_di=o.di; o.di=di; di=o_di;
+//			int o_status=o.status; o.status=status; status=o_status; // no copiar, porque esta asociado a la visualizacion de su columna y no a la inspeccion que contiene
+			long o_frame_level=o.frame_level; o.frame_level=frame_level; frame_level=o_frame_level;
+			bool o_on_thread=o.on_thread; o.on_thread=on_thread; on_thread=o_on_thread;
+			bool o_is_frozen=o.is_frozen; o.is_frozen=is_frozen; is_frozen=o_is_frozen;
+			if (o.expression_renderer->HasIcon()!=expression_renderer->HasIcon()) {
+				if (o.expression_renderer->HasIcon()) expression_renderer->SetIconPlus(); 
+				else expression_renderer->SetIconNull();
+				mxGridCellRenderer *o_expression_renderer=o.expression_renderer;
+				o.expression_renderer=expression_renderer; expression_renderer=o_expression_renderer;
+			}
+			if (o.value_renderer->HasIcon()!=value_renderer->HasIcon()) {
+				if (o.value_renderer->HasIcon()) value_renderer->SetIconPlus(); 
+				else value_renderer->SetIconNull();
+				mxGridCellRenderer *o_value_renderer=o.value_renderer;
+				o.value_renderer=value_renderer; value_renderer=o_value_renderer;
+			}
+			
+		}
+		int GetVisibleStatus() { if (is_frozen) return IGRS_FREEZE; else return status; }
 		DebuggerInspection *operator->() { return di; }
 		bool IsNull() { return di==nullptr; }
 		void Reset() { is_frozen=false; di=nullptr; status=IGRS_UNINIT; frame_level=-2; on_thread=true; /*no cambiar los renderer*/ }
@@ -156,6 +178,7 @@ public:
 	void UpdateValueColumn(int r);
 	void UpdateTypeColumn(int r);
 	void UpdateExpressionColumn(int r, bool only_icon=false);
+	void SetRowStatus(int r, int status, bool dummy_force);
 	void SetRowStatus(int r, int status);
 	void DeleteInspection(int r, bool for_reuse);
 	bool CreateInspection(int r, const wxString &expression, bool frameless, bool set_expr=false);
