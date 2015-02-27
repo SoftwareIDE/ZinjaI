@@ -2790,6 +2790,10 @@ PROJECTCONFIG_ASK_DELETE_LIB
 Eliminar la biblioteca: 
 PROJECTGENERAL_CAPTION
 Configuracion de Proyecto
+PROJECTCONFIG_TAB_GENERAL
+General
+PROJECTCONFIG_TAB_MORE
+Más
 PROJECTGENERAL_NAME
 Nombre del proyecto
 PROJECTGENERAL_CUSTOM_TABS
@@ -2800,14 +2804,24 @@ PROJECTGENERAL_TAB_SPACE
 Colocar espacios en lugar de tabs
 PROJECTGENERAL_AUTOCOMP_EXTRA
 Indices de autocompletado adicionales
+PROJECTGENERAL_AUTOIMPROVE_TEMPLATES
+ Mejora de inspecciones según tipo 
 PROJECTGENERAL_COMPILE_AND_RUN
- Compilacion y Ejecucion... 
+ Compilacion y Ejecucion (generales)... 
+PROJECTGENERAL_BYSRC_OPTIONS
+ Opciones de Compilacion (por fuente)... 
 PROJECTGENERAL_DOXYGEN
- Opciones Doxygen... 
+ Configuración Doxygen... 
+PROJECTGENERAL_CPPCHECK
+ Configuración CppCheck... 
+PROJECTGENERAL_WXFB
+ Integración con wxFormBuilder... 
 PROJECTGENERAL_CUSTOM_TOOLS
  Herramientas Personalizadas... 
-PROJECTGENERAL_ACTIVATE_WXFORMBUILDER
-Activar integracion con wxFormBuilder
+PROJECTGENERAL_STATISTICS
+ Estadísticas... 
+PROJECTGENERAL_GRAPH
+ Grafo de archivos... 
 PROJECTGENERAL_AUTOCOMPLETION
 Autocompletado
 PROJECTGENERAL_INDEXES

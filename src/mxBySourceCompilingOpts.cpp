@@ -77,7 +77,7 @@ mxBySourceCompilingOpts::mxBySourceCompilingOpts(wxWindow *parent, project_file_
 	
 	fg.Release(); wxCommandEvent e; OnList(e);
 	
-	Show();
+	Show(); SetFocus();
 	
 }
 
@@ -146,7 +146,7 @@ void mxBySourceCompilingOpts::OnFilter (wxCommandEvent & evt) {
 	// recargar la lista
 	list->Clear();
 	wxString filt = filter_sources->GetValue().MakeLower();
-	for(int i=0;i<sources_list.GetCount();i++) { 
+	for(unsigned int i=0;i<sources_list.GetCount();i++) { 
 		if (sources_list[i].Lower().Contains(filt))
 			list->Append(sources_list[i]);
 	}

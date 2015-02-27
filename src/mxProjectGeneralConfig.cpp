@@ -14,6 +14,7 @@
 #include "Language.h"
 #include "Autocoder.h"
 #include "mxMultipleChoiceEditor.h"
+#include "mxBySourceCompilingOpts.h"
 
 BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(wxID_OK,mxProjectGeneralConfig::OnOkButton)
@@ -23,51 +24,62 @@ BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_CUSTOM_TOOLS,mxProjectGeneralConfig::OnCustomToolsConfig)
 	EVT_BUTTON(mxID_TOOLS_DOXY_CONFIG,mxProjectGeneralConfig::OnDoxygenConfigButton)
 	EVT_BUTTON(mxID_DEBUG_MACROS,mxProjectGeneralConfig::OnDebugMacros)
+	EVT_BUTTON(mxID_TOOLS_CPPCHECK_CONFIG,mxProjectGeneralConfig::OnCppCheckConfig)
+	EVT_BUTTON(mxID_TOOLS_WXFB_CONFIG,mxProjectGeneralConfig::OnWxfbConfig)
+	EVT_BUTTON(mxID_PROJECT_CONFIG_BYSRC,mxProjectGeneralConfig::OnBySrcCompilingOts)
+	EVT_BUTTON(mxID_TOOLS_DRAW_PROJECT,mxProjectGeneralConfig::OnDrawGraph)
+	EVT_BUTTON(mxID_TOOLS_PROJECT_STATISTICS,mxProjectGeneralConfig::OnStatistics)
 	EVT_MENU(mxID_DEBUG_MACROS_OPEN,mxProjectGeneralConfig::OnDebugMacrosOpen)
 	EVT_MENU(mxID_DEBUG_MACROS_EDIT,mxProjectGeneralConfig::OnDebugMacrosEdit)
 	EVT_BUTTON(mxID_AUTOCODES_FILE,mxProjectGeneralConfig::OnAutocodes)
 	EVT_MENU(mxID_AUTOCODES_OPEN,mxProjectGeneralConfig::OnAutocodesOpen)
 	EVT_MENU(mxID_AUTOCODES_EDIT,mxProjectGeneralConfig::OnAutocodesEdit)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxProjectGeneralConfig::OnHelpButton)
+	EVT_CHECKBOX(mxID_PROJECT_CONFIG_CUSTOM_TABS,mxProjectGeneralConfig::OnCustomTabs)
 	EVT_CLOSE(mxProjectGeneralConfig::OnClose)
 END_EVENT_TABLE()
 
 mxProjectGeneralConfig::mxProjectGeneralConfig() : wxDialog(main_window, wxID_ANY, LANG(PROJECTGENERAL_CAPTION,"Configuracion de Proyecto"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-
-	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	
-	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	SetEscapeId(wxID_CANCEL);
-	wxButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	ok_button->SetDefault(); 
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
-	
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(ok_button,sizers->BA5);
-	
-	project_name = mxUT::AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_NAME,"Nombre del proyecto"),project->project_name);
-	custom_tab = mxUT::AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_CUSTOM_TABS,"Utilizar tabulado propio"),project->custom_tabs!=0);
-	tab_width = mxUT::AddTextCtrl(mySizer,this,LANG(PROJECTGENERAL_TAB_WIDTH,"Ancho del tabulado"),project->custom_tabs==0?config->Source.tabWidth:project->custom_tabs,true);
-	tab_use_spaces = mxUT::AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY);
-	project_autocomp = mxUT::AddDirCtrl(mySizer,this,LANG(PROJECTGENERAL_AUTOCOMP_EXTRA,"Indices de autocompletado adicionales"),project->autocomp_extra,mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES);
-	project_autocodes = mxUT::AddDirCtrl(mySizer,this,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de autocódigos"),project->autocodes_file,mxID_AUTOCODES_FILE);
-	project_debug_macros = mxUT::AddDirCtrl(mySizer,this,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
-	
-	mySizer->Add(new wxButton(this,mxID_RUN_CONFIG,LANG(PROJECTGENERAL_COMPILE_AND_RUN," Compilacion y Ejecucion... ")),sizers->BA5);
-	mySizer->Add(new wxButton(this,mxID_TOOLS_DOXY_CONFIG,LANG(PROJECTGENERAL_DOXYGEN," Opciones Doxygen... ")),sizers->BA5);
-	mySizer->Add(new wxButton(this,mxID_PROJECT_CONFIG_CUSTOM_TOOLS,LANG(PROJECTGENERAL_CUSTOM_TOOLS," Herramientas Personalizadas... ")),sizers->BA5);
-//	use_wxfb = mxUT::AddCheckBox(mySizer,this,LANG(PROJECTGENERAL_ACTIVATE_WXFORMBUILDER,"Activar integracion con wxFormBuilder"),project->use_wxfb,wxID_ANY);
-	
-	mySizer->Add(bottomSizer,sizers->Exp0);
-	
+	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);
+	notebook->AddPage(CreateTabGeneral(notebook), LANG(PROJECTCONFIG_TAB_GENERAL,"General"));
+	notebook->AddPage(CreateTabAdvanced(notebook), LANG(PROJECTCONFIG_TAB_MORE,"Más"));
+	mySizer->Add(notebook,sizers->Exp1);
+	mySizer->Add(mxUT::MakeGenericButtonsSizer(this,true),sizers->Exp0);
 	SetSizerAndFit(mySizer);
-	
-	SetFocus();
-	Show();
+	Show(); SetFocus();
+}
+
+wxPanel *mxProjectGeneralConfig::CreateTabGeneral(wxNotebook *notebook) {
+	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	project_name = mxUT::AddTextCtrl(sizer,panel,LANG(PROJECTGENERAL_NAME,"Nombre del proyecto"),project->project_name);
+	custom_tab = mxUT::AddCheckBox(sizer,panel,LANG(PROJECTGENERAL_CUSTOM_TABS,"Utilizar tabulado propio"),project->custom_tabs!=0,mxID_PROJECT_CONFIG_CUSTOM_TABS);
+	tab_width = mxUT::AddTextCtrl(sizer,panel,LANG(PROJECTGENERAL_TAB_WIDTH,"Ancho del tabulado"),project->custom_tabs==0?config->Source.tabWidth:project->custom_tabs,true);
+	tab_use_spaces = mxUT::AddCheckBox(sizer,panel,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY,true);
+	project_autocomp = mxUT::AddDirCtrl(sizer,panel,LANG(PROJECTGENERAL_AUTOCOMP_EXTRA,"Indices de autocompletado adicionales"),project->autocomp_extra,mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES);
+	project_autocodes = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de autocódigos"),project->autocodes_file,mxID_AUTOCODES_FILE);
+	project_debug_macros = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
+	tab_width->Enable(custom_tab->GetValue());
+	tab_use_spaces->Enable(custom_tab->GetValue());
+//	sizer->Add(new wxButton(panel,mxID_PROJECT_CONFIG_AUTOIMPROVE_TEMPLATES,LANG(PROJECTGENERAL_AUTOIMPROVE_TEMPLATES," Mejora de inspecciones según tipo ")),sizers->BA5);
+	panel->SetSizer(sizer);
+	return panel;
+}
+
+wxPanel *mxProjectGeneralConfig::CreateTabAdvanced(wxNotebook *notebook) {
+	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	sizer->Add(new wxButton(panel,mxID_RUN_CONFIG,LANG(PROJECTGENERAL_COMPILE_AND_RUN," Compilacion y Ejecucion (generales)... ")),sizers->BA5_Center);
+	sizer->Add(new wxButton(panel,mxID_PROJECT_CONFIG_BYSRC,LANG(PROJECTGENERAL_BYSRC_OPTIONS," Opciones de Compilacion (por fuente)... ")),sizers->BA5_Center);
+	sizer->Add(new wxButton(panel,mxID_TOOLS_DOXY_CONFIG,LANG(PROJECTGENERAL_DOXYGEN," Configuración Doxygen... ")),sizers->BA5_Center);
+	sizer->Add(new wxButton(panel,mxID_TOOLS_CPPCHECK_CONFIG,LANG(PROJECTGENERAL_CPPCHECK," Configuración CppCheck... ")),sizers->BA5_Center);
+	sizer->Add(new wxButton(panel,mxID_TOOLS_WXFB_CONFIG,LANG(PROJECTGENERAL_WXFB," Integración con wxFormBuilder... ")),sizers->BA5_Center);
+	sizer->Add(new wxButton(panel,mxID_PROJECT_CONFIG_CUSTOM_TOOLS,LANG(PROJECTGENERAL_CUSTOM_TOOLS," Herramientas Personalizadas... ")),sizers->BA5_Center);
+	sizer->Add(new wxButton(panel,mxID_TOOLS_PROJECT_STATISTICS,LANG(PROJECTGENERAL_STATISTICS," Estadísticas... ")),sizers->BA5_Center);
+	sizer->Add(new wxButton(panel,mxID_TOOLS_DRAW_PROJECT,LANG(PROJECTGENERAL_GRAPH," Grafo de archivos... ")),sizers->BA5_Center);
+	panel->SetSizer(sizer);
+	return panel;
 	
 }
 
@@ -126,12 +138,9 @@ void mxProjectGeneralConfig::OnHelpButton(wxCommandEvent &event) {
 }
 
 void mxProjectGeneralConfig::OnIndexesButton(wxCommandEvent &evt) {
-
 	wxArrayString autocomp_array_all;
 	mxUT::GetFilesFromBothDirs(autocomp_array_all,"autocomp");
-	
 	mxMultipleChoiceEditor(this,LANG(PROJECTGENERAL_AUTOCOMPLETION,"Autocompletado"),LANG(PROJECTGENERAL_INDEXES,"Indices:"),project_autocomp,autocomp_array_all);
-	
 }
 
 void mxProjectGeneralConfig::OnDebugMacrosEdit(wxCommandEvent &evt) {
@@ -184,5 +193,31 @@ void mxProjectGeneralConfig::OnAutocodes(wxCommandEvent &evt) {
 
 void mxProjectGeneralConfig::OnCustomToolsConfig (wxCommandEvent & evt) {
 	new mxCustomTools(true,-1);
+}
+
+void mxProjectGeneralConfig::OnCustomTabs (wxCommandEvent & evt) {
+	evt.Skip();
+	tab_width->Enable(custom_tab->GetValue());
+	tab_use_spaces->Enable(custom_tab->GetValue());
+}
+
+void mxProjectGeneralConfig::OnWxfbConfig (wxCommandEvent & evt) {
+	main_window->OnToolsWxfbConfig(evt);
+}
+
+void mxProjectGeneralConfig::OnCppCheckConfig (wxCommandEvent & evt) {
+	main_window->OnToolsCppCheckConfig(evt);
+}
+
+void mxProjectGeneralConfig::OnBySrcCompilingOts (wxCommandEvent & evt) {
+	new mxBySourceCompilingOpts(main_window,nullptr);
+}
+
+void mxProjectGeneralConfig::OnDrawGraph (wxCommandEvent & evt) {
+	main_window->OnToolsDrawProject(evt);
+}
+
+void mxProjectGeneralConfig::OnStatistics (wxCommandEvent & evt) {
+	main_window->OnToolsProjectStatistics(evt);
 }
 

@@ -4,6 +4,8 @@
 
 class wxTextCtrl;
 class wxCheckBox;
+class wxPanel;
+class wxNotebook;
 
 class mxProjectGeneralConfig : public wxDialog {
 private:
@@ -18,6 +20,8 @@ private:
 public:
 	mxProjectGeneralConfig();
 	~mxProjectGeneralConfig();
+	wxPanel *CreateTabGeneral(wxNotebook *notebook);
+	wxPanel *CreateTabAdvanced(wxNotebook *notebook);
 	void OnClose(wxCloseEvent &event);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnDoxygenConfigButton(wxCommandEvent &evt);
@@ -31,7 +35,13 @@ public:
 	void OnAutocodesEdit(wxCommandEvent &evt);
 	void OnAutocodes(wxCommandEvent &evt);
 	void OnIndexesButton(wxCommandEvent &evt);
+	void OnCustomTabs(wxCommandEvent &evt);
 	void OnCustomToolsConfig(wxCommandEvent &evt);
+	void OnWxfbConfig(wxCommandEvent &evt);
+	void OnCppCheckConfig(wxCommandEvent &evt);
+	void OnBySrcCompilingOts(wxCommandEvent &evt);
+	void OnDrawGraph(wxCommandEvent &evt);
+	void OnStatistics(wxCommandEvent &evt);
 	DECLARE_EVENT_TABLE();
 };
 

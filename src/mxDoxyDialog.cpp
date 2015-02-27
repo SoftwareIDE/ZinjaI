@@ -23,7 +23,6 @@ mxDoxyDialog::mxDoxyDialog() : wxDialog(main_window, wxID_ANY, LANG(DOXYCONF_CAP
 	dox = project->GetDoxygenConfiguration();
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
@@ -38,6 +37,7 @@ mxDoxyDialog::mxDoxyDialog() : wxDialog(main_window, wxID_ANY, LANG(DOXYCONF_CAP
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
+	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);
 	notebook->AddPage(CreateGeneralPanel(notebook), LANG(DOXYCONF_BASIC_OPTIONS,"Opciones Basicas"));
 	notebook->AddPage(CreateMorePanel(notebook), LANG(DOXYCONF_MORE_OPTIONS,"Mas Opciones"));
 	notebook->AddPage(CreateExtraPanel(notebook), LANG(DOXYCONF_EXTRA_TAB,"Campos Adicionales"));
