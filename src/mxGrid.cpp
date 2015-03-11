@@ -178,7 +178,7 @@ void mxGrid::CopyToClipboard (bool only_selected, int col) {
 	}
 	// obtener los datos a copiar
 	wxString data;
-	if (col==-1) {
+	if (col!=-1) {
 		for(unsigned int i=0;i<sel.size();i++) {
 			if (!data.IsEmpty()) data<<"\n";
 			data+=mxGrid::GetCellValue(i,col);
