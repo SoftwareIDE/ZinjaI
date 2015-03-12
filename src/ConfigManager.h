@@ -155,6 +155,7 @@ struct cfgInit {
 	int max_jobs; ///< cantidad máxima de procesos (pasos) corriendo en paralelo al compilar un proyecto
 	wxString colour_theme; ///< archivo de donde tomar el perfil de colores (si es "" se busca en .zinjai/colours.zcs, sino en zinjai/colours)
 	bool beautify_compiler_errors; ///< trata de arreglar los horribles mensajes de error del compilador cuando se usan templates (como todo stl) o cosas estándar de implemetación "rebuscada" (como strings)
+	bool use_cache_for_subcommands; ///< activa el uso de cache en mxUT::ExecComas, para no ejecutar a cada rato el mismo subcomando
 };
 
 //! Elementos de la configuración relacionados a rutas de archivos y directorios

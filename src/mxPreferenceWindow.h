@@ -126,6 +126,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *source_autocompFilters;
 	wxCheckBox *source_toolTips;
 	wxCheckBox *init_beautifyCompilerErrors;
+	wxCheckBox *init_use_cache_for_subcommands;
 	wxTextCtrl *styles_print_size;
 	wxTextCtrl *styles_font_size;
 	wxComboBox *styles_font_name;
@@ -215,6 +216,7 @@ public:
 	void OnOkButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);
 	void OnHelpButton(wxCommandEvent &event);
+	void OnClearSubcmdCache(wxCommandEvent &event);
 	void OnImproveInspectionsByTypeButton(wxCommandEvent &event);
 	void OnColoursButton(wxCommandEvent &event);
 	void OnMaxJobsButton(wxCommandEvent &event);

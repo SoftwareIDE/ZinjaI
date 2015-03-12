@@ -156,7 +156,7 @@ public:
 	//! Ejecuta los comandos entre acentos de una cadena y los reemplaza por su salida (simi Makefile)
 	static wxString ExecComas(wxString where, wxString line);
 	//! Ejecuta un comando de forma sincrónica y devuelve en una cadena su salida
-	static wxString GetOutput(wxString command, bool also_error=false);
+	static wxString GetOutput(wxString command, bool also_error=false, bool use_cache=false);
 	//! Devuelve una cadena convertida a HTML
 	static wxString ToHtml(wxString text, bool full=false);
 	// reemplaza una cadena por otra, pero agregando comillas si necesita para mantener el parametro como uno solo

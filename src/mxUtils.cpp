@@ -609,7 +609,7 @@ wxString mxUT::ExecComas(wxString where, wxString line) {
 				ret<<line.Mid(p,i-p);
 				p=i+1;
 			} else {
-				ret<<GetOutput(line.Mid(p,i-p));
+				ret<<GetOutput(line.Mid(p,i-p),false,config->Init.use_cache_for_subcommands);
 				// TODO: ver que pasa si la ejecucion sale mal!
 				p=i+1;
 				flag=true;
@@ -621,7 +621,15 @@ wxString mxUT::ExecComas(wxString where, wxString line) {
 	return ret;
 }
 
-wxString mxUT::GetOutput(wxString command, bool also_error) {
+wxString mxUT::GetOutput(wxString command, bool also_error, bool use_cache) {
+	
+	static HashStringString cache;
+	if (command=="") { cache.clear(); return ""; }
+	else if (use_cache) {
+		HashStringString::iterator it = cache.find(command);
+		if (it!=cache.end()) return it->second;
+	}
+		
 	wxString ret;
 	wxArrayString output,errors;
 	if (also_error)
@@ -640,6 +648,7 @@ wxString mxUT::GetOutput(wxString command, bool also_error) {
 			ret<<output[i];
 		else
 			ret<<"\n"<<output[i];
+	if (use_cache) cache[command]=ret;
 	return ret;
 }
 

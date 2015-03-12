@@ -108,6 +108,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_DEBUG,mxPreferenceWindow::OnToolbarsDebug)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_VIEW,mxPreferenceWindow::OnToolbarsView)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLBAR_RESET,mxPreferenceWindow::OnToolbarsReset)
+	EVT_BUTTON(mxID_PREFERENCES_CLEAR_SUBCMD_CACHE,mxPreferenceWindow::OnClearSubcmdCache)
 #ifdef __WIN32__
 //	EVT_BUTTON(mxID_MINGW_FOLDER,mxPreferenceWindow::OnMingwButton)
 #else
@@ -263,11 +264,12 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 	debug_always_debug = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_ALWAYS_RUN_IN_DEBUGGER,"Siempre ejecutar en el depurador"),config->Debug.always_debug);
 //	debug_use_colours_for_inspections = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_USE_COLOURS_FOR_INSPECTIONS,"Utilizar colores en la tabla de inspecciones"),config->Debug.use_colours_for_inspections);
 	debug_inspections_can_have_side_effects = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_DEBUG_INSPECTIONS_CAN_HAVE_SIDE_EFFECTS,"Considerar side-effects al evaluar inspecciones"),config->Debug.inspections_can_have_side_effects);
+	
 	wxBoxSizer *type_replace_sizer = new wxBoxSizer(wxHORIZONTAL);
 	debug_improve_inspections_by_type = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Mejorar inspecciones automáticamente segun tipo"))+_T("   "));
 	debug_improve_inspections_by_type->SetValue(config->Debug.improve_inspections_by_type);
 	type_replace_sizer->Add(debug_improve_inspections_by_type,sizers->Center);
-	type_replace_sizer->Add(new wxButton(panel,mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Configurar..."),sizers->Center);
+	type_replace_sizer->Add(new wxButton(panel,mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_SETTINGS,"Configurar...")),sizers->Center);
 	sizer->Add(type_replace_sizer,sizers->BA5_Exp0);
 	
 	debug_macros_file = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de definiciones de macros para gdb"),config->Debug.macros_file,mxID_DEBUG_MACROS);
@@ -395,6 +397,14 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
 	tc_sizer->Add(files_toolchain , sizers->Exp1);
 	tc_sizer->Add(new wxButton(panel,mxID_PREFERENCES_TOOLCHAIN_OPTIONS,"...",wxDefaultPosition,wxSize(30,10)),sizers->Exp0_Right);
 	sizer->Add(tc_sizer,sizers->BA5_Exp0);
+	
+	
+	wxBoxSizer *subcmd_cache_sizer = new wxBoxSizer(wxHORIZONTAL);
+	init_use_cache_for_subcommands = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_USE_CACHE_FOR_SUBCMD,"Usar cache para la ejecución de subcomandos"))+_T("   "));
+	init_use_cache_for_subcommands->SetValue(config->Init.use_cache_for_subcommands);
+	subcmd_cache_sizer->Add(init_use_cache_for_subcommands,sizers->Center);
+	subcmd_cache_sizer->Add(new wxButton(panel,mxID_PREFERENCES_CLEAR_SUBCMD_CACHE,LANG(PREFERENCES_USE_CLEAR_SUBCMD_CACHE,"Limpiar")),sizers->Center);
+	sizer->Add(subcmd_cache_sizer,sizers->BA5_Exp0);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
@@ -711,6 +721,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Source.whiteSpace = source_whiteSpace->GetValue();
 	config->Source.lineNumber = source_lineNumber->GetValue();
 	config->Source.toolTips = source_toolTips->GetValue();
+	config->Init.use_cache_for_subcommands = init_use_cache_for_subcommands->GetValue();
 	config->Init.beautify_compiler_errors = init_beautifyCompilerErrors->GetValue();
 	config->Source.callTips = source_callTips->GetValue();
 	config->Source.autocompTips = source_autocompTips->GetValue();
@@ -1152,6 +1163,7 @@ void mxPreferenceWindow::ResetChanges() {
 	source_indentPaste->SetValue(config->Source.indentPaste);
 	source_avoidNoNewLineWarning->SetValue(config->Source.avoidNoNewLineWarning);
 	source_toolTips->SetValue(config->Source.toolTips);
+	init_use_cache_for_subcommands->SetValue(config->Init.use_cache_for_subcommands);
 	init_beautifyCompilerErrors->SetValue(config->Init.beautify_compiler_errors);
 	source_autoCompletion->SetSelection(config->Source.autoCompletion);
 	source_autocloseStuff->SetValue(config->Source.autocloseStuff);
@@ -1329,3 +1341,6 @@ void mxPreferenceWindow::OnCustomizeShortcuts (wxCommandEvent & evt) {
 	mxShortcutsDialog(this);
 }
 
+void mxPreferenceWindow::OnClearSubcmdCache(wxCommandEvent &event) {
+	mxUT::GetOutput("",false,true);
+}

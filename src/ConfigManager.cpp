@@ -262,6 +262,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("singleton",Init.singleton);
 				else CFG_BOOL_READ_DN("stop_compiling_on_error",Init.stop_compiling_on_error);
 				else CFG_BOOL_READ_DN("autohide_panels",Init.autohide_panels);
+				else CFG_BOOL_READ_DN("use_cache_for_subcommands",Init.use_cache_for_subcommands);
 				else CFG_BOOL_READ_DN("beautify_compiler_errors",Init.beautify_compiler_errors);
 				else CFG_BOOL_READ_DN("fullpath_on_project_tree",Init.fullpath_on_project_tree);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
@@ -475,6 +476,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("stop_compiling_on_error",Init.stop_compiling_on_error);
 	CFG_BOOL_WRITE_DN("autohide_panels",Init.autohide_panels);
 	CFG_BOOL_WRITE_DN("fullpath_on_project_tree",Init.fullpath_on_project_tree);
+	CFG_BOOL_WRITE_DN("use_cache_for_subcommands",Init.use_cache_for_subcommands);
 	CFG_BOOL_WRITE_DN("beautify_compiler_errors",Init.beautify_compiler_errors);
 	CFG_GENERIC_WRITE_DN("colour_theme",Init.colour_theme);
 	fil.AddLine("");
@@ -715,6 +717,7 @@ void ConfigManager::LoadDefaults(){
 	Init.singleton=true;
 	Init.stop_compiling_on_error=true;
 	Init.autohide_panels=false;
+	Init.use_cache_for_subcommands=true;
 	Init.beautify_compiler_errors=true;
 	Init.fullpath_on_project_tree=false;
 

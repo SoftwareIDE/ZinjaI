@@ -2444,6 +2444,8 @@ PREFERENCES_DEBUG_INSPECTIONS_CAN_HAVE_SIDE_EFFECTS
 Considerar side-effects al evaluar inspecciones
 PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE
 Mejorar inspecciones automáticamente segun tipo
+PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_SETTINGS
+Configurar...
 PREFERENCES_DEBUG_GDB_MACROS_FILE
 Archivo de definiciones de macros para gdb
 PREFERENCES_DEBUG_USE_BLACKLIST
@@ -2496,6 +2498,10 @@ PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
 Mostrar el explorador de archivos al abrir un proyecto
 PREFERENCES_TOOLCHAIN
 Herramientas de compilación
+PREFERENCES_USE_CACHE_FOR_SUBCMD
+Usar cache para la ejecución de subcomandos
+PREFERENCES_USE_CLEAR_SUBCMD_CACHE
+Limpiar...
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
 PREFERENCES_STYLE_DEFINE_COLOURS
@@ -2564,10 +2570,10 @@ PREFERENCES_WRITING_AUTOCOMPLETION
 Autocompletado
 PREFERENCES_WRITING_AUTOCOM_FILTERS
 Filtrar resultados de autocompletado al continuar escribiendo
+PREFERENCES_WRITING_ENABLE_AUTOCOMP_CALLTIPS
+Mostrar info. adicional junto al menú de autocompletado
 PREFERENCES_WRITING_ENABLE_CALLTIPS
 Mostrar ayuda de llamadas a funciones y métodos
-PREFERENCES_WRITING_ENABLE_AUTOCOMP_CALLTIPS
-Mostrar información adicional del ítem seleccionado junto al menú de autocompletado
 PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES
 Índices de autocompletado a utilizar
 PREFERENCES_SKIN_AVAILABLE_THEMES
