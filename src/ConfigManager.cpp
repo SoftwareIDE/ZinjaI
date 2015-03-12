@@ -163,6 +163,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("overType",Source.overType);
 				else CFG_BOOL_READ_DN("autocompFilters",Source.autocompFilters);
 				else CFG_BOOL_READ_DN("callTips",Source.callTips);
+				else CFG_BOOL_READ_DN("autocompTips",Source.autocompTips);
 				else CFG_BOOL_READ_DN("autotextEnabled",Source.autotextEnabled);
 				else CFG_BOOL_READ_DN("autocloseStuff",Source.autocloseStuff);
 				else CFG_BOOL_READ_DN("toolTips",Source.toolTips);
@@ -529,6 +530,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("overType",Source.overType);
 	CFG_BOOL_WRITE_DN("autocompFilters",Source.autocompFilters);
 	CFG_BOOL_WRITE_DN("callTips",Source.callTips);
+	CFG_BOOL_WRITE_DN("autocompTips",Source.autocompTips);
 	CFG_BOOL_WRITE_DN("toolTips",Source.toolTips);
 	CFG_BOOL_WRITE_DN("autotextEnabled",Source.autotextEnabled);
 	CFG_BOOL_WRITE_DN("autocloseStuff",Source.autocloseStuff);
@@ -740,6 +742,7 @@ void ConfigManager::LoadDefaults(){
 	Source.autoCompletion=2;
 	Source.autocompFilters=true;
 	Source.callTips=true;
+	Source.autocompTips=true;
 	Source.avoidNoNewLineWarning=true;
 
 	Running.cpp_compiler_options="-Wall -pedantic-errors -O0";

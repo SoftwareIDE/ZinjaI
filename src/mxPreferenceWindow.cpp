@@ -493,6 +493,7 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel2 (wxNotebook *notebook) {
 	autocomp_methods.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_FUZZY,"Habilitado, por similaridad"));
 	source_autoCompletion = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCOMPLETION,"Autocompletado"),autocomp_methods,config->Source.autoCompletion);
 	source_autocompFilters = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_AUTOCOM_FILTERS,"Filtrar resultados de autocompletado al continuar escribiendo"),config->Source.autocompFilters);
+	source_autocompTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_AUTOCOMP_CALLTIPS,"Mostrar info. adicional junto al menú de autocompletado"),config->Source.autocompTips);
 	source_callTips = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y métodos"),config->Source.callTips);
 	
 	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Índices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
@@ -712,6 +713,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Source.toolTips = source_toolTips->GetValue();
 	config->Init.beautify_compiler_errors = init_beautifyCompilerErrors->GetValue();
 	config->Source.callTips = source_callTips->GetValue();
+	config->Source.autocompTips = source_autocompTips->GetValue();
 	config->Source.autoCompletion = source_autoCompletion->GetSelection();
 	code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
 	config->Source.autocompFilters = source_autocompFilters->GetValue();
@@ -1155,6 +1157,7 @@ void mxPreferenceWindow::ResetChanges() {
 	source_autocloseStuff->SetValue(config->Source.autocloseStuff);
 	source_autocompFilters->SetValue(config->Source.autocompFilters);
 	source_callTips->SetValue(config->Source.callTips);
+	source_autocompTips->SetValue(config->Source.autocompTips);
 	
 	help_autocomp_indexes->Clear();
 	wxArrayString autocomp_array_all, autocomp_array_user;

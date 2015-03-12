@@ -1758,10 +1758,14 @@ INSPECTGRID_IMPRV_SHOW_IMPROVE
 Show improved expression
 INSPECTGRID_IMPRV_DONT_IMPROVE
 Don't improve this inspection
-INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE
-Add improvement template for this type...
-INSPECTGRID_IMPRV_CONF
-Configure...
+INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE_GENERAL
+Add improvement template for this type (general)...
+INSPECTGRID_IMPRV_ADD_FOR_THIS_TYPE_PROJECT
+Add improvement template for this type (project)...
+INSPECTGRID_IMPRV_CONF_GENERAL
+Configure (general)...
+INSPECTGRID_IMPRV_CONF_PROYECT
+Configure (project)...
 INSPECTGRID_IMPRV_SUBMENU
 Type based automatic improvements
 INSPECTGRID_POPUP_CLEAN_TABLE
@@ -2562,6 +2566,8 @@ PREFERENCES_WRITING_AUTOCOM_FILTERS
 Filter autocompletion results when typing continues
 PREFERENCES_WRITING_ENABLE_CALLTIPS
 Enable calltips displaying
+PREFERENCES_WRITING_ENABLE_AUTOCOMP_CALLTIPS
+Display additional information for autocompletion menu's selected item
 PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES
 Autocompletion indexes
 PREFERENCES_SKIN_AVAILABLE_THEMES

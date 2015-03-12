@@ -3588,7 +3588,8 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 	} else {
 		evt.Skip();
 		// autocompletion list selected item could have been changed
-		if (calltip_mode==MXS_AUTOCOMP) autocomp_helper.Restart();
+		if (calltip_mode==MXS_AUTOCOMP && config_source.autocompTips) 
+			autocomp_helper.Restart();
 	}
 }
 
@@ -3895,7 +3896,7 @@ void mxSource::ShowAutoComp (int p, const wxString & s, bool is_filter) {
 	int pbase = GetCurrentPos()-p;
 	wxPoint pt1=PointFromPosition(pbase);
 	wxPoint pt2=GetScreenPosition();
-	if (calltip_mode==MXS_AUTOCOMP) 
+	if (calltip_mode==MXS_AUTOCOMP && config_source.autocompTips) 
 		autocomp_helper.Start(pbase,is_filter?-1:(pbase+p), pt1.x+pt2.x, pt1.y+pt2.y);
 }
 

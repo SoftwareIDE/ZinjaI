@@ -81,6 +81,7 @@ struct cfgSource {
 	int autoCompletion; ///< 0=none, 1=start, 2=find, 3=leventhein
 	bool autocompFilters;
 	bool callTips;
+	bool autocompTips;
 	bool avoidNoNewLineWarning;
 	bool toolTips;
 	bool autotextEnabled;

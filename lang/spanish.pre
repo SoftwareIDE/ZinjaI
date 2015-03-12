@@ -2566,6 +2566,8 @@ PREFERENCES_WRITING_AUTOCOM_FILTERS
 Filtrar resultados de autocompletado al continuar escribiendo
 PREFERENCES_WRITING_ENABLE_CALLTIPS
 Mostrar ayuda de llamadas a funciones y métodos
+PREFERENCES_WRITING_ENABLE_AUTOCOMP_CALLTIPS
+Mostrar información adicional del ítem seleccionado junto al menú de autocompletado
 PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES
 Índices de autocompletado a utilizar
 PREFERENCES_SKIN_AVAILABLE_THEMES
