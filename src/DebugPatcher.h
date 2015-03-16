@@ -26,7 +26,7 @@ public:
 public:
 	void Patch();
 	void Init(wxString bin_name) { exe_file=bin_name; }
-	void AlterOuputFileName(wxString &bin_name) {
+	void AlterOutputFileName(wxString &bin_name) {
 //#ifdef __WIN32__
 //		if (bin_name==exe_file) bin_name+=".for_patch";
 //#endif

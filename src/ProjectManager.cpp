@@ -1361,13 +1361,11 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	
 		// si ningun objeto esta desactualizado, ver si hay que relinkar
 		if (!active_configuration->dont_generate_exe) {
-			wxFileName fn_output(DIR_PLUS_FILE(path,active_configuration->output_file));
-			if (!wxFileName::DirExists(fn_output.GetPath()) ) // si el directorio del exe no existe, crearlo
-				wxFileName::Mkdir(fn_output.GetPath(),0777,wxPATH_MKDIR_FULL);
+			wxFileName exe_file(GetExePath());
+			if (!wxFileName::DirExists(exe_file.GetPath()) ) // si el directorio del exe no existe, crearlo
+				wxFileName::Mkdir(exe_file.GetPath(),0777,wxPATH_MKDIR_FULL);
 			if (!relink_exe) { // si no hay que actualizar ningun objeto, preguntar por el exe
-				executable_name=fn_output.GetFullPath();
-				wxFileName bin_name=executable_name;
-				if (force_relink || !bin_name.FileExists() || bin_name.GetModificationTime()<youngest_bin)
+				if (force_relink || !exe_file.FileExists() || exe_file.GetModificationTime()<youngest_bin)
 					relink_exe=true;
 			} else {
 				relink_exe=true;
@@ -1376,7 +1374,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 			if (relink_exe) {
 				AnalizeConfig(path,true,current_toolchain.mingw_dir,false);
 				wxString output_bin_file=executable_name;
-				if (debug->IsDebugging()) debug->GetPatcher()->AlterOuputFileName(output_bin_file);
+				if (debug->IsDebugging()) debug->GetPatcher()->AlterOutputFileName(output_bin_file);
 				step = step->next = new compile_step(CNS_LINK,
 													new linking_info(current_toolchain.linker+" -o",
 													output_bin_file,objects_list,linking_options,&force_relink));
@@ -1641,7 +1639,7 @@ long int ProjectManager::Run() {
 	else if (active_configuration->exec_method==EMETHOD_WRAPPER) exe_pref = active_configuration->exec_script+" ";
 #endif
 	// armar la linea de comando para ejecutar
-	executable_name=wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetFullPath();
+	executable_name=GetExePath();
 	
 	wxString working_path = active_configuration->working_folder.Len()?DIR_PLUS_FILE(path,active_configuration->working_folder):path;
 	if (working_path.Last()==path_sep) working_path.RemoveLast();
@@ -2128,8 +2126,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	else
 		linking_options<<" "<<linking_extra;
 
-	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",temp_folder_short);
-	executable_name=wxFileName(DIR_PLUS_FILE(path,executable_name)).GetFullPath();
+	/*executable_name = */GetExePath(); // GetExePath ya asigna en executable_name
 	
 	// bibliotecas
 	project_library *lib = active_configuration->libs_to_build;
@@ -2258,7 +2255,7 @@ bool ProjectManager::Debug() {
 		mxMessageDialog(main_window,LANG(PROJMNGR_RUNNING_NO_EXE,"Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return false;
 	}
-	wxString command ( wxFileName(DIR_PLUS_FILE(path,active_configuration->output_file)).GetShortPath() );
+	wxString command ( GetExePath(true) );
 	wxString args = active_configuration->args;
 	if (active_configuration->always_ask_args) {
 		int res = mxArgumentsDialog(main_window,active_configuration->args,active_configuration->working_folder).ShowModal();
@@ -2408,8 +2405,12 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	return true;
 }
 
-wxString ProjectManager::GetExePath() {
-	return DIR_PLUS_FILE(path,active_configuration->output_file);
+wxString ProjectManager::GetExePath(bool short_path) {
+	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",temp_folder_short);
+	return executable_name = 
+		( short_path
+		? wxFileName(DIR_PLUS_FILE(path,executable_name)).GetShortPath()
+		: wxFileName(DIR_PLUS_FILE(path,executable_name)).GetFullPath() );
 }
 
 wxString ProjectManager::GetPath() {
