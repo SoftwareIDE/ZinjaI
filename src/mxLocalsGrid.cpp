@@ -7,6 +7,7 @@
 #include "mxInspectionMatrix.h"
 #include <algorithm>
 #include "mxInspectionHistory.h"
+#include "gdbParser.h"
 
 BEGIN_EVENT_TABLE(mxLocalsGrid,wxGrid)
 	EVT_MENU(mxID_INSPECTION_SHOW_IN_TEXT,mxLocalsGrid::OnShowInText)
@@ -31,29 +32,6 @@ mxLocalsGrid::mxLocalsGrid(wxWindow *parent):mxGrid(parent,LG_COLS_COUNT) {
 	EnableDragRowSize(false);
 	SetColLabelSize(wxGRID_AUTOSIZE);
 	command = "-stack-list-variables";
-}
-
-static bool GdbParse_GetNext(const wxString &s, int &i, wxString &key, wxString &val) {
-	int l=s.Len();
-	while (i<l && (s[i]<='a'||s[i]>='z')) i++;
-	while(true) {
-		int p0=i; // posicion donde empieza el nombre del "campo"
-		while (i<l && s[i]!=']' && s[i]!='}' && s[i]!='=') i++;
-		int p1=i; // posicion del igual
-		if (++i>=l || s[i]!='\"') { // si no era un campo, termino la entrada
-			i=-1; return true;
-		}
-		while (++i<l && s[i]!='\"') { if (s[i]=='\\') i++; }
-		int p2=i; // posicion de la comilla que cierra
-		key=s.Mid(p0,p1-p0);
-		val=s.Mid(p1+2,p2-p1-2);
-		while (++i<l && s[i]!=',' && s[i]!=']' && s[i]!='}'); 
-		if (i==l || s[i]==']' || s[i]=='}') 
-			return true; 
-		else { 
-				i++; return false;
-			}
-	}
 }
 
 void mxLocalsGrid::Update () {

@@ -198,6 +198,8 @@ PARSERHELP_NO_RESULTS
 No se encontro ayuda rápida para la palabra seleccionada: <{1}>
 PARSERHELP_GOTO_CPPREFENCE
 Buscar \"<{1}>\" en la referencia C/C++...
+INSPECTION_ERROR_ON_OPERATOR_EVALUATION
+Ha ocurrido un error durante la evaluación de una o más inspecciones.\nPuede deberse a que la evaluación requiera la ejecución de código (por\nejemplo cuando involucra la sobrecarga de un operador) y esta ejecución\nse haya interrumpido por un error o por una señal. En ese caso, el stack\npuede haber cambiado (ver trazado inverso).
 INSPECTION_MSG_PENDING
 <<< evaluación pendiente >>>
 INSPECTION_MSG_PENDING_OUT_OF_SCOPE
@@ -2501,7 +2503,7 @@ Herramientas de compilación
 PREFERENCES_USE_CACHE_FOR_SUBCMD
 Usar cache para la ejecución de subcomandos
 PREFERENCES_USE_CLEAR_SUBCMD_CACHE
-Limpiar...
+Limpiar
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
 PREFERENCES_STYLE_DEFINE_COLOURS

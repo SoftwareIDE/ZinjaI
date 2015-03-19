@@ -256,6 +256,8 @@ private:
 	int di_children; ///< cantidad de vo hijos que dependen de este
 	GDB_VO_FORMAT vo_value_format; ///< con que formato debe gdb mostrar el valor, solo para tipos simples
 	
+	static void ErrorOnEvaluation(); ///< función auxiliar para mostrar el mensaje de error cuando al evaluar una expresion que requiere ejecucion de un operador esta ejecucion revienta
+	
 	void VODelete() {
 		__debug_log_method__;
 		debug->SendCommand("-var-delete ",variable_object);
@@ -268,6 +270,7 @@ private:
 		thread_id=debug->current_thread_id; frame_id=debug->current_frame_id;
 		wxString ans = debug->SendCommand(cmd,mxUT::EscapeString(expression,true));
 		if (ans.Left(5)!="^done") return false;
+		if (debug->GetValueFromAns(ans,"reason",true)!="") { ErrorOnEvaluation(); return false; }
 		flags.Set(DIF_IN_SCOPE); // si no existen en el scope actual gdb no la crea, aunque se frameless
 		variable_object = debug->GetValueFromAns(ans,"name",true);
 		value_type = debug->GetValueFromAns(ans,"type",true);

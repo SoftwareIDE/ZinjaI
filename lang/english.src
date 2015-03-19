@@ -196,6 +196,8 @@ PARSERHELP_NO_RESULTS
 No quickhelp results found for keyword "<{1}>".
 PARSERHELP_GOTO_CPPREFENCE
 Search "<{1}>" in C/C++ reference...
+INSPECTION_ERROR_ON_OPERATOR_EVALUATION
+There was an error while evaluating inspections. It can be due to the\nneed to execute an overloaded operator, and getting an error or signal\nin that execution. As a result, stack can be broken or modified (see\nbacktrace grid).
 INSPECTION_MSG_PENDING
 <<< not evaluated yet >>>
 INSPECTION_MSG_PENDING_OUT_OF_SCOPE

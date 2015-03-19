@@ -2,6 +2,9 @@
 #include "ConfigManager.h"
 #include "Language.h"
 #include "ProjectManager.h"
+#include "gdbParser.h"
+#include "mxMainWindow.h"
+#include "mxMessageDialog.h"
 
 DebuggerInspection::vo2di_type DebuggerInspection::vo2di_map;
 
@@ -31,10 +34,20 @@ void DebuggerInspection::UpdateAllVO(const wxString &voname) {
 	// struct para guardar los campos que interesan de cada vo actualizada
 	struct update { wxString name,value,in_scope,new_type,new_num_children; };
 	
+	bool there_was_an_error_evaluating_an_inspecction=false;
+	
 	// consulta cuales vo cambiaron
 	debug->SetFullOutput(false);
 	wxString s = debug->SendCommand("-var-update --all-values ",voname);
 	for(unsigned int i=6,l=s.Len();i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
+		if (s[i]=='f' && s[i+1]=='r' && s[i+2]=='a' && s[i+3]=='m' && s[i+4]=='e' && s[i+5]=='=') { // hubo un problema al evaluar una inspección que requería código
+			// la salida de gdb sera algo como: 
+			//		^done,changelist=[reason="signal-received",signal-name="SIGTRAP",signal-meaning= // indica que revento
+			//		"Trace/breakpoint trap",frame={..,args=[{name="...",value="..."},...},...,       // tipo backtrace, esos name= no son inspecciones
+			// 		{name="...",in_scope="...",type_changed="...",has_more="..."},...]               // pero puede haber inspecciones, name= fuera de frame={...}
+			while (i<l && s[i]!='{') i++; int ii=i; GdbParse_SkipList(s,ii,l); i=ii+1; // saltear la info del frame, y @TODO: avisar de alguna forma del problema
+			there_was_an_error_evaluating_an_inspecction=true;
+		} else
 		if (s[i]=='n' && s[i+1]=='a' && s[i+2]=='m' && s[i+3]=='e' && s[i+4]=='=') { // por cada "name=" empieza un vo...
 			// busca los campos del vo
 			update u;
@@ -88,8 +101,23 @@ void DebuggerInspection::UpdateAllVO(const wxString &voname) {
 //					di.parent->GenerateEvent(&myDIEventHandler::OnDIOutOfScope);
 //				}
 			}
+		} else {
+			while (i<l && ( (s[i]>='a'&&s[i]<='z')||s[i]=='-' )) i++; // saltar ese nombre de campo (no era de los que intersan)
+			if (s[i]=='=') { i++; if(s[i]=='\"') { int ii=i; GdbParse_SkipString(s,ii,l); i=ii; } } // si lo que sigue es una cadena, salterla (sino pude ser una lista y habra que meterse dentro y ver los campos)
 		}
 	}
+	
+	if (there_was_an_error_evaluating_an_inspecction) ErrorOnEvaluation();
+}
+
+void DebuggerInspection::ErrorOnEvaluation() {
+	mxMessageDialog(main_window,LANG(INSPECTION_ERROR_ON_OPERATOR_EVALUATION,""
+								"Ha ocurrido un error durante la evaluación de una o más inspecciones.\n"
+								"Puede deberse a que la evaluación requiera la ejecución de código (por\n"
+								"ejemplo cuando involucra la sobrecarga de un operador) y esta ejecución\n"
+								"se haya interrumpido por un error o por una señal. En ese caso, el stack\n"
+								"puede haber cambiado (ver trazado inverso)."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+	debug->UpdateBacktrace(true,false);
 }
 
 bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool improve_children_expressions) {

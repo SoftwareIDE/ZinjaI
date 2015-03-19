@@ -12,6 +12,7 @@
 #include "Inspection.h"
 #include <iostream>
 #include <wx/settings.h>
+#include "gdbParser.h"
 
 BEGIN_EVENT_TABLE(mxInspectionMatrix, wxPanel)
 	EVT_SIZE(mxInspectionMatrix::OnResize)
@@ -64,81 +65,6 @@ void mxInspectionMatrix::SetMatrixSize(int w, int h) {
 	else if (h>rows) grid->InsertRows(rows,h-rows);
 	cols=w; rows=h;
 	grid->SetColLabelSize(w>1?wxGRID_AUTOSIZE:0);
-}
-
-
-/**
-* @brief Saltea una cadena completa
-*
-* Dada una posición donde comienza una lista (donde hay un '{')
-* avanza la posición hasta llegar al final de la misma
-**/
-void GdbParse_SkipString(const wxString &s, int &i, int l) {
-	wxChar c=s[i++];
-	while (i<l && s[i]!=c) {
-		if (s[i]=='\\') i++;
-		i++;
-	}
-}
-
-/**
-* @brief Saltea una lista completa
-*
-* Dada una posición donde comienza una lista (donde hay un '{')
-* avanza la posición hasta llegar al final de la misma.
-* Para determinar los limites de la lista (y sublistas dentro
-* de esta), los delimitares validos son {..}, [..] y (..), y
-* son todos equivalentes.
-**/
-void GdbParse_SkipList(const wxString &s, int &i, int l) {
-	int balance=0;
-	do {
-		if (s[i]=='\"'||s[i]=='\'') GdbParse_SkipString(s,i,l);
-		else if (s[i]=='['||s[i]=='{'||s[i]=='(') balance++;
-		else if (s[i]==']'||s[i]=='}'||s[i]==')') balance--;
-	} while (balance && ++i<l);
-}
-
-/**
-* @brief Saltea espacios en blanco
-*
-* Avanza i mientras sea menor a la longitud de la cadena (l), y 
-* los caracteres sean enter, espacio o tab.
-**/
-static void GdbParse_SkipEmpty(const wxString &s, int &i, int l) {
-	while(i<l && (s[i]==' '||s[i]=='\t'||s[i]=='\n')) i++;
-}
-
-/**
-* @brief Determina si el siguiente elemento es el comienzo de una lista
-*
-* A partir de la posición i, busca el primer caracter que no nulo (nulo=enter,
-* tab,espacio) y returna true si este es una llave que abre una lisat ('{'), o
-* false si es otra cosa, o si se llegó al final de la cadena
-**/
-static bool GdbParse_IsList(const wxString &s, int &i, int l=-1) {
-	if (l==-1) l=s.Len(); 
-	GdbParse_SkipEmpty(s,i,l);
-	return i<l && s[i]=='{';
-}
-
-static bool GdbParse_GetPair(const wxString &s, int &i, int &pos_st, int &pos_eq, int &pos_end, int l=-1) {
-	if (l==-1) l=s.Len(); 
-	GdbParse_SkipEmpty(s,i,l);
-	if (i>=l || s[i]=='}' || s[i]==']' || s[i]==')') return false;
-	pos_st=i; pos_eq=-1;
-	while(i<l && s[i]!='}' && s[i]!=']' && s[i]!=')' && s[i]!=',') {
-		if (s[i]=='=') {
-			if (pos_eq==-1) pos_eq=i;
-		} else if (s[i]=='{'||s[i]=='('||s[i]=='[') {
-			GdbParse_SkipList(s,i,l);
-		} else if (s[i]=='\"'||s[i]=='\'') {
-			GdbParse_SkipString(s,i,l); 
-		}
-		i++;
-	}
-	pos_end=i;
-	return true;
 }
 
 void mxInspectionMatrix::UpdateMatrix() {
