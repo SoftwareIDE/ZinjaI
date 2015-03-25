@@ -3072,7 +3072,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 			if (c=='.') {
 				wxString type = FindTypeOf(p-1,dims);
 				if (dims==0) {
-					if (chr=='(' && config_source.callTips)
+					if (chr=='('/* && config_source.callTips*/)
 						code_helper->ShowFunctionCalltip(ctp,this,type,key);
 					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 						code_helper->AutocompleteScope(this,type,key,true,false);
@@ -3081,7 +3081,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				p--;
 				wxString type = FindTypeOf(p-1,dims);
 				if (dims==1) {
-					if (chr=='(' && config_source.callTips)
+					if (chr=='('/* && config_source.callTips*/)
 						code_helper->ShowFunctionCalltip(ctp,this,type,key);
 					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 						code_helper->AutocompleteScope(this,type,key,true,false);
@@ -3090,12 +3090,12 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				p-=2;
 				II_BACK(p,II_IS_NOTHING_4(p));
 				wxString type = GetTextRange(WordStartPosition(p,true),p+1);
-				if (chr=='(' && config_source.callTips)
+				if (chr=='('/* && config_source.callTips*/)
 					code_helper->ShowFunctionCalltip(ctp,this,type,key);
 				else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
 					code_helper->AutocompleteScope(this,type,key,true,false);
 			} else {
-				if (chr=='(' && config_source.callTips) {
+				if (chr=='('/* && config_source.callTips*/) {
 					if (!code_helper->ShowFunctionCalltip(ctp,this,FindScope(GetCurrentPos()),key,false)) {
 						// mostrar calltips para constructores
 						p=ctp-1;
