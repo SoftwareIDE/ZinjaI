@@ -855,7 +855,7 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 			}
 			if (remove_asterisco_barra||add_barra_asterisco) {
 				int p2=p,pl=GetLineEndPosition(i);
-				while (p2<pl && !(GetCharAt(p2=='*') && GetCharAt(p2+1)=='/') ) p2++;
+				while (p2<pl && !(GetCharAt(p2)=='*' && GetCharAt(p2+1)=='/') ) p2++;
 				if (p2!=pl) {
 					SetTargetStart(p2);
 					SetTargetEnd(p2+2);
