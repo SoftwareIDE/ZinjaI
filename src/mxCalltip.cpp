@@ -5,7 +5,7 @@
 #include "mxColoursEditor.h"
 #include "mxMainWindow.h"
 
-BEGIN_EVENT_TABLE(mxCalltip,wxFrame)
+BEGIN_EVENT_TABLE(mxCalltip,wxPopupWindow)
 	EVT_PAINT(mxCalltip::OnPaint)
 	EVT_SET_FOCUS(mxCalltip::OnFocus)
 	EVT_ACTIVATE(mxCalltip::OnActivate)
@@ -13,7 +13,7 @@ BEGIN_EVENT_TABLE(mxCalltip,wxFrame)
 END_EVENT_TABLE()
 
 mxCalltip::mxCalltip (mxSource * src) : 
-	wxFrame(src, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxFRAME_NO_TASKBAR|wxFRAME_FLOAT_ON_PARENT|wxBORDER_NONE), 
+	wxPopupWindow(src, /*wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxFRAME_NO_TASKBAR|wxFRAME_FLOAT_ON_PARENT|*/wxBORDER_NONE), 
 	parent(src), current_arg(-1)
 {
 	Disable(); // workaround para el no-efecto de AcceptsFocus, ver OnFocus
@@ -77,7 +77,7 @@ void mxCalltip::ShowCommon (wxString text) {
 	if (!text.IsEmpty()) entries.Add(text);
 	if (entries.GetSize()==0) return;
 	SetArg(-2);
-	wxFrame::Show();
+	wxPopupWindow::Show();
 	main_window->Raise();
 }
 
@@ -227,7 +227,7 @@ mxCalltip::entry::entry (const wxString & s) : line (s) {
 }
 
 void mxCalltip::Hide() {
-	wxFrame::Hide();
+	wxPopupWindow::Hide();
 }
 
 

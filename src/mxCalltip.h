@@ -1,11 +1,11 @@
 #ifndef MXCALLTIP_H
 #define MXCALLTIP_H
-#include <wx/frame.h>
+#include <wx/popupwin.h>
 #include "SingleList.h"
 
 class mxSource;
 
-class mxCalltip : public wxFrame {
+class mxCalltip : public wxPopupWindow {
 private:
 	struct wrap_info {
 		int from, to; // output
