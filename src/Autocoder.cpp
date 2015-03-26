@@ -276,22 +276,19 @@ bool Autocoder::Apply(mxSource *src) {
 		HashStringAutoCode::iterator it=list.find(line.Mid(i,e-i));
 		if (it==list.end()) {
 			char cping[6]="pung"; cping[1]='i';
+			mxSource::UndoActionGuard undo_action(src);
 			if (line.Mid(i,e-i)==cping) { // :)
 				src->SetTargetStart(st+i); src->SetTargetEnd(st+s+1);
 				cping[4]='\t'; cping[5]='\0';
 				src->ReplaceTarget(cping);
-				src->BeginUndoAction();
 				src->SetTargetStart(st+i); src->SetTargetEnd(st+s+2);
 				src->ReplaceTarget("pong");
-				src->EndUndoAction();
 				return true;
 			} else if (line.Mid(i,e-i)=="tic") { // X)
 				src->SetTargetStart(st+i); src->SetTargetEnd(st+s+1);
 				src->ReplaceTarget("tic\t");
-				src->BeginUndoAction();
 				src->SetTargetStart(st+i); src->SetTargetEnd(st+s+2);
 				src->ReplaceTarget("tac");
-				src->EndUndoAction();
 				return true;
 			}
 			return false;

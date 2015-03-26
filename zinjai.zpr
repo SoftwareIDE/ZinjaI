@@ -168,7 +168,7 @@ path=src/mxOSD.cpp
 cursor=26:16
 [source]
 path=src/mxSource.cpp
-cursor=3923:14
+cursor=857:40
 breakpoint=2017
 breakpoint_annotation=
 open=true
@@ -772,7 +772,7 @@ path=src/gdbParser.h
 cursor=0:0
 [other]
 path=guihelp/ChangeLog.html
-cursor=6:161
+cursor=15:125
 [other]
 path=guihelp/tips_spanish
 cursor=0:0
@@ -1120,10 +1120,9 @@ inline_suppr=1
 additional_files=
 exclude_list=
 [inspections]
-expr=s
-expr=key
-expr=s3
-expr=s2
-expr=ans
+expr=c
+expr=p
+expr=p2
+expr=pl
 [custom_tools]
 [end]

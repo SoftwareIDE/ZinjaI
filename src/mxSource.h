@@ -6,6 +6,8 @@
 #include <wx/treebase.h>
 #include "ConfigManager.h"
 //#include <wx/timer.h>
+#include "Cpp11.h"
+#include "raii.h"
 
 class er_source_register;
 
@@ -346,7 +348,31 @@ public:
 	
 	wxString GetCurrentKeyword(int pos=-1);
 	
+	
+	/// En lugar de llamar a BeginUndoAction y EndUndoAction, crear una instancia de esta clase, se encarga de todo y se asegura de que nunca se hagan dos Begin anidados o falte un End
+	class UndoActionGuard {
+		mxSource *src;
+	public:
+		UndoActionGuard(mxSource *source, bool begin=true) : src(source) { if (begin) Begin(); }
+		void Begin() { if (src->undo_action_guard==nullptr) src->BeginUndoAction(this); }
+		void End() { if (src->undo_action_guard==this) src->EndUndoAction(this); }
+		~UndoActionGuard() { End(); }
+	};
+	
+	NullInitializedPtr<UndoActionGuard> undo_action_guard; ///< si estamos en una "undo action" apunta al UndoActionGuard que hizo se hizo el BeginUndoAction, sino es null
+	
 private:
+	
+	void BeginUndoAction(); ///< solo prototipo, para evitar llamar al del wxStyledTextCtrl sin querer, ver UndoActionGuard a cambio
+	void EndUndoAction(); ///< solo prototipo, para evitar llamar al del wxStyledTextCtrl sin querer, ver UndoActionGuard a cambio
+	void BeginUndoAction(UndoActionGuard *guard) { ///< para ser invocado desde el UndoActionGuard
+		wxStyledTextCtrl::BeginUndoAction();
+		undo_action_guard = guard;
+	}
+	void EndUndoAction(UndoActionGuard *guard) { ///< para ser invocado desde el UndoActionGuard
+		wxStyledTextCtrl::EndUndoAction();
+		undo_action_guard = nullptr;
+	}
 	
 	int brace_1, brace_2;
 	void MyBraceHighLight(int b1=wxSTC_INVALID_POSITION, int b2=wxSTC_INVALID_POSITION);

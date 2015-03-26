@@ -576,10 +576,10 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	source->SetTargetStart(f);
 	source->SetTargetEnd(t);
 	int ret = source->SearchInTarget(last_search);
+	mxSource::UndoActionGuard undo_action(source,false);
 	while (ret!=wxSTC_INVALID_POSITION) {
+		undo_action.Begin();
 		int l = source->GetTargetEnd()-source->GetTargetStart(); // para saber si cambio el largo de la seleccion despues de reemplazar
-		if (c==0)
-			source->BeginUndoAction();
 		if (last_flags&wxSTC_FIND_REGEXP) // el remplazo propiamente dicho
 			source->ReplaceTargetRE(last_replace);
 		else
@@ -591,11 +591,8 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 		source->SetTargetEnd(t);
 		ret = source->SearchInTarget(last_search);
 	}
-	if (c!=0)
-		source->EndUndoAction();
-	if (only_selection) {
-		source->SetSelection(f,t);
-	}
+	undo_action.End();
+	if (only_selection) source->SetSelection(f,t);
 
 	if (c==0)
 		mxMessageDialog(this,LANG(FIND_NO_REPLACE_DONE,"No se realizo ningun reemplazo."), LANG(FIND_REPLACE_CAPTION,"Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();

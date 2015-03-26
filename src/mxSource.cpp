@@ -430,14 +430,13 @@ void mxSource::OnEditDeleteLines (wxCommandEvent &event) {
 		if (min>max) { int aux=min; min=max; max=aux; /*aux=ss; */ss=se; /*se=aux;*/}
 		if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 		GotoPos(ss);
-		BeginUndoAction();
+		UndoActionGuard undo_action(this);
 		for (int i=min;i<=max;i++)
 			LineDelete();
 		if (LineFromPosition(ss)!=min) 
 			GotoPos(GetLineEndPosition(min));
 		else 
 			GotoPos(ss);
-		EndUndoAction();
 	}
 }
 
@@ -491,7 +490,7 @@ void mxSource::OnEditDuplicateLines (wxCommandEvent &event) {
 	int ss,se;
 	int min=LineFromPosition(ss=GetSelectionStart());
 	int max=LineFromPosition(se=GetSelectionEnd());
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	if (max==min) {
 		LineDuplicate();
 	} else {
@@ -507,7 +506,6 @@ void mxSource::OnEditDuplicateLines (wxCommandEvent &event) {
 		InsertText(PositionFromLine(max+1),text);
 		SetSelection(ss,se);
 	}
-	EndUndoAction();
 }
 
 void mxSource::OnEditRedo (wxCommandEvent &event) {
@@ -557,7 +555,7 @@ void mxSource::OnEditPaste (wxCommandEvent &event) {
 	if (config_source.indentPaste && config_source.syntaxEnable) {
 		wxString str = mxUT::GetClipboardText();
 		if (str.IsEmpty()) return;
-		BeginUndoAction();
+		UndoActionGuard undo_action(this);
 		// borrar la seleccion previa
 		if (GetSelectionEnd()-GetSelectionStart()!=0)
 			DeleteBack();
@@ -595,7 +593,6 @@ void mxSource::OnEditPaste (wxCommandEvent &event) {
 			SetSelection(pos,pos);
 		} else
 			SetSelection(cp,cp);
-		EndUndoAction();
 		// is that the problem?
 		HideCalltip();
 	} else {
@@ -745,7 +742,7 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 	if (min>max) { int aux=min; min=max; max=aux; }
 	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
 	if (min>0) {
-		BeginUndoAction();
+		UndoActionGuard undo_action(this);
 		wxString line = GetLine(min-1);
 		if (max==GetLineCount()-1) AppendText("\n");
 		auxMarkersConserver aux_mc(this,min,max,true);
@@ -755,7 +752,6 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 		SetTargetStart(PositionFromLine(min-1));
 		SetTargetEnd(PositionFromLine(min));
 		ReplaceTarget("");
-		EndUndoAction();
 		EnsureVisibleEnforcePolicy(min);
 	}
 }
@@ -770,7 +766,7 @@ void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
 	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
 	if (max+1<GetLineCount()) {
 		auxMarkersConserver aux_mc(this,min,max,false);
-		BeginUndoAction();
+		UndoActionGuard undo_action(this);
 		wxString line = GetLine(max+1);
 		SetTargetStart(GetLineEndPosition(max));
 		SetTargetEnd(GetLineEndPosition(max+1));
@@ -780,7 +776,6 @@ void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
 		ReplaceTarget(line);
 		if (ss==-1) SetSelectionStart(PositionFromLine(min+1));
 		if (se==-1) SetSelectionStart(PositionFromLine(min+1));
-		EndUndoAction();
 		EnsureVisibleEnforcePolicy(max);
 	}	
 }
@@ -796,7 +791,7 @@ void mxSource::OnComment (wxCommandEvent &event) {
 	}
 	if (min>max) { int aux=min; min=max; max=aux; }
 	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	if (cpp_or_just_c) {
 		for (int i=min;i<=max;i++) {
 			//if (GetLine(i).Left(2)!="//") {
@@ -825,7 +820,6 @@ void mxSource::OnComment (wxCommandEvent &event) {
 			}
 		}
 	}
-	EndUndoAction();
 }
 
 void mxSource::OnUncomment (wxCommandEvent &event) {
@@ -834,7 +828,7 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 	
 	int max=LineFromPosition(GetSelectionEnd());
 	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	bool did_something=false;
 	for (int i=min;i<=max;i++) {
 		int s, p=GetLineIndentPosition(i); char c=GetCharAt(p+1);; // s y c se reutilizan para II_*
@@ -874,7 +868,6 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 	
 	// si no hizo nada por linea, recupera el funcionamiento original para comentarios con /* y */ dentro de una linea
 	if (!did_something && GetStyleAt(ss)==wxSTC_C_COMMENT && GetLine(min).Left((GetLineIndentPosition(min))-PositionFromLine(min)+2).Right(2)!="//") {
-		BeginUndoAction();
 		int se=ss, l=GetLength();
 		while (ss>0 && (GetCharAt(ss)!='/' || GetCharAt(ss+1)!='*') )
 			ss--;
@@ -893,11 +886,9 @@ void mxSource::OnUncomment (wxCommandEvent &event) {
 			ReplaceTarget("");
 		}
 		SetSelection(ss,se-3);
-		EndUndoAction();
 		return;
 	}
 	
-	EndUndoAction();
 }
 
 
@@ -1629,7 +1620,7 @@ void mxSource::Indent(int min, int max) {
 	config_source.autocloseStuff=false; 
 	bool old_autotext=config_source.autotextEnabled;
 	config_source.autotextEnabled=false; 
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	bool o_bracketInsertion = config_source.bracketInsertion;
 	config_source.bracketInsertion = false;
 	bool o_syntaxEnable = config_source.syntaxEnable, o_smartIndent = config_source.smartIndent;
@@ -1700,7 +1691,6 @@ void mxSource::Indent(int min, int max) {
 		Colourise(0,GetLength());
 	config_source.smartIndent = o_smartIndent;
 	config_source.bracketInsertion = o_bracketInsertion;
-	EndUndoAction();
   config_source.autocloseStuff=old_autoclose;
   config_source.autoCompletion=old_autocomp;
   config_source.autotextEnabled=old_autotext;
@@ -1881,7 +1871,7 @@ void mxSource::SelectError(int indic, int p1, int p2) {
 
 bool mxSource::AddInclude(wxString header) {
 	
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 
 //	bool using_namespace_std_present=false;
 	bool header_present=false;
@@ -1976,7 +1966,6 @@ bool mxSource::AddInclude(wxString header) {
 //		GotoPos(lp);
 //	}
 	
-	EndUndoAction();
 //	wxYield(); // sin esto no se ve el calltip (posiblemente un problema con el evento OnUpdateUI
 	if (!header_present /*|| (!using_namespace_std_present && header.Last()!='\"' && header.Right(3)!=_(".h>"))*/) {
 		int lse = GetEndStyled();
@@ -3241,7 +3230,7 @@ void mxSource::SetDiffBrother(mxSource *source) {
 void mxSource::ApplyDiffChange() {
 	int cl=GetCurrentLine();
 	DiffInfo *di = first_diff_info;
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	while (di) {
 		for (int i=0;i<di->len;i++) {
 			if (MarkerLineFromHandle(di->handles[i])==cl) {
@@ -3285,14 +3274,13 @@ void mxSource::ApplyDiffChange() {
 		}
 		if (di) di = di->next;
 	}
-	EndUndoAction();
 	Refresh();
 }
 
 void mxSource::DiscardDiffChange() {
 	int cl=GetCurrentLine();
 	DiffInfo *di = first_diff_info;
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	while (di) {
 		for (int i=0;i<di->len;i++) {
 			if (MarkerLineFromHandle(di->handles[i])==cl) {
@@ -3312,7 +3300,6 @@ void mxSource::DiscardDiffChange() {
 		}
 		if (di) di = di->next;
 	}
-	EndUndoAction();
 	Refresh();
 }
 
@@ -3351,7 +3338,7 @@ void mxSource::GotoDiffChange(bool forward) {
 void mxSource::ShowDiffChange() {
 	int cl=GetCurrentLine();
 	DiffInfo *di = first_diff_info;
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	while (di) {
 		for (int i=0;i<di->len;i++) {
 			if (MarkerLineFromHandle(di->handles[i])==cl) {
@@ -3362,7 +3349,6 @@ void mxSource::ShowDiffChange() {
 		}
 		if (di) di = di->next;
 	}
-	EndUndoAction();
 	Refresh();
 }
 
@@ -3375,7 +3361,7 @@ void mxSource::Reload() {
 }
 
 void mxSource::AlignComments (int col) {
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	config_source.alignComments=col;
 	int ss = GetSelectionStart();
 	int se = GetSelectionEnd();
@@ -3421,11 +3407,10 @@ void mxSource::AlignComments (int col) {
 		}
 		pl=p2;
 	}
-	EndUndoAction();
 }
 
 void mxSource::RemoveComments () {
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	int ss = GetSelectionStart();
 	int se = GetSelectionEnd();
 	if (ss>se) { int aux=ss; ss=se; se=aux; }
@@ -3454,7 +3439,6 @@ void mxSource::RemoveComments () {
 		ReplaceTarget("");
 		i--;
 	}
-	EndUndoAction();
 }
 
 bool mxSource::IsComment(int pos) {
@@ -3532,7 +3516,10 @@ void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 		if (ans&mxMD_CHECKED) {
 			config->Debug.allow_edition=true;
 			SetReadOnlyMode(ROM_NONE);
+			event.Skip();
 		}
+	} else {
+		event.Skip();
 	}
 }
 
@@ -3988,7 +3975,7 @@ void mxSource::ApplyRectEdit ( ) {
 	if (i==lr && lr==ln) return;
 	// cortar las partes que son diferentes de cada cadena de ref
 	wxString sfrom = ref_str.Mid(i,lr-i), sto = new_str.Mid(i,ln-i);
-	BeginUndoAction();
+	UndoActionGuard undo_action(this);
 	// ahora pbeg y pend acotan solo la parte modificada, en terminos de la cadena original
 	pbeg += i; /*pend = pbeg+sfrom.Len();*/
 	// traducir a columnas (por los tabs y otros caracteres que ocupan mas de un espacio)
@@ -4008,7 +3995,6 @@ void mxSource::ApplyRectEdit ( ) {
 	}
 	// la selección ya no será rectangular
 	rect_sel.was_rect_select=false;
-	EndUndoAction();
 	// guardar la linea modificada como nueva referencia para la próxima edición
 	ref_str=new_str;
 	

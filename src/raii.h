@@ -54,4 +54,17 @@ typedef FlagGuard<BoolFlag,bool,true,false> BoolFlagGuard;
 typedef FlagGuard<bool,bool,true,false> boolFlagGuard;
 
 
+/**
+* Wrapper class for ensuring class member variables initialization
+**/
+template<class T>
+class NullInitializedPtr {
+	T *ptr;
+public:
+	NullInitializedPtr() : ptr(nullptr) {}
+	operator T*&() { return ptr; }
+	operator const T*&() const { return ptr; }
+	T *&operator=(T *other) { ptr=other; return ptr; }
+};
+
 #endif

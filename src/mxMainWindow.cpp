@@ -4871,14 +4871,13 @@ void mxMainWindow::OnMacroReplay (wxCommandEvent & evt) {
 	if ((*m_macro)[0].msg==1) OnMacroRecord(evt);
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
-		src->BeginUndoAction();
+		mxSource::UndoActionGuard undo_action(src);
 		for(int i=1;i<m_macro->GetSize();i++) {
 			mxSource::MacroAction &m=(*m_macro)[i].Get();
 			if (m.for_sci) src->SendMsg(m.msg,m.wp,m.lp);
 			else { evt.SetId(m.msg); ProcessEvent(evt); }
 		}
 		evt.SetId(mxID_MACRO_REPLAY); // just to be sure
-		src->EndUndoAction();
 	}
 }
 

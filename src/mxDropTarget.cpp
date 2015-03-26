@@ -52,7 +52,7 @@ wxDragResult mxDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def) {
 		}
 		wxString str=text_data->GetText();
 		if (src==current_drag_source && def==wxDragMove) {
-			src->BeginUndoAction();
+			mxSource::UndoActionGuard undo_action(src);
 			def=wxDragCopy;
 			if (ss>p||se>p) {
 				src->SetTargetStart(ss); src->SetTargetEnd(se);
@@ -69,7 +69,6 @@ wxDragResult mxDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def) {
 				src->SetTargetStart(ss); src->SetTargetEnd(se);
 				src->ReplaceTarget("");
 			}
-			src->EndUndoAction();
 			current_drag_source=nullptr;
 		} else {
 			src->SetTargetStart(p); src->SetTargetEnd(p);

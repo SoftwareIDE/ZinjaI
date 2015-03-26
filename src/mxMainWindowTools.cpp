@@ -791,7 +791,7 @@ void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 void mxMainWindow::ToolsCodeCopyFromH(mxSource *source, wxString the_one) {
 	pd_file *file=parser->GetFile(the_one);
 	if (!file) return;
-	source->BeginUndoAction();
+	mxSource::UndoActionGuard undo_action(source);
 	pd_ref *func;
 	func=file->first_func_dec;
 	wxArrayString choices;
@@ -802,7 +802,7 @@ void mxMainWindow::ToolsCodeCopyFromH(mxSource *source, wxString the_one) {
 			}
 			func=func->prev;
 		}
-	source->EndUndoAction();
+	undo_action.End();
 	if (!choices.GetCount()) {
 		mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION,"No se encontraron funciones/metodos sin implementar."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return;
