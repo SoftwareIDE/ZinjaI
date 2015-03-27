@@ -92,7 +92,7 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 			}
 			if (bpi->enabled!=enable_check->GetValue() || bpi->action!=action->GetSelection()) { // enabled and only_once
 				bpi->enabled=enable_check->GetValue(); bpi->action=action->GetSelection();
-				debug->SetBreakPointEnable(bpi->gdb_id,bpi->enabled,bpi->action==BPA_STOP_ONCE);
+				debug->SetBreakPointEnable(bpi);
 			}
 			if (!bpi->enabled) status=BPS_USER_DISABLED;
 			if (bpi->cond!=cond_text->GetValue() || bpi->gdb_status==BPS_ERROR_CONDITION) { // condition

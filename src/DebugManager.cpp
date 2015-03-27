@@ -613,7 +613,7 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 	return true;
 }
 
-int DebugManager::SetLiveBreakPoint(BreakPointInfo *_bpi) {
+int DebugManager::LiveSetBreakPoint(BreakPointInfo *_bpi) {
 	if (debugging && waiting) {
 		class OnPauseAddBreakpoint : public OnPauseAction {
 			BreakPointInfo *p;
@@ -662,10 +662,10 @@ int DebugManager::SetBreakPoint(BreakPointInfo *_bpi, bool quiet) {
 	int id=-1;
 	BREAK_POINT_STATUS status=BPS_SETTED;
 	if (num.Len()) {
-		long l; num.ToLong(&l); id=l;
+		long l; num.ToLong(&l); _bpi->gdb_id=id=l; // seteo el id aca para que los SetXXX del DebugManager que reciben solo el _bpi sepan que id usar
 		// setear las opciones adicionales
 		if (_bpi->ignore_count) SetBreakPointOptions(id,_bpi->ignore_count);
-		if (_bpi->action==BPA_STOP_ONCE ||!_bpi->enabled) SetBreakPointEnable(id,_bpi->enabled,_bpi->action==BPA_STOP_ONCE);
+		if (_bpi->action==BPA_STOP_ONCE ||!_bpi->enabled) SetBreakPointEnable(_bpi);
 		if (!_bpi->enabled) status=BPS_USER_DISABLED;
 		if (_bpi->cond.Len()) if (!SetBreakPointOptions(id,_bpi->cond)) { status=BPS_ERROR_SETTING; ShowBreakPointConditionErrorMessage(_bpi); }
 	} else { // si no se pudo colocar correctamente
@@ -1489,28 +1489,44 @@ void DebugManager::PopulateBreakpointsList(mxBreakList *break_list, bool also_wa
 
 /// @brief Define the number of time the breakpoint should be ignored before actually stopping the execution
 void DebugManager::SetBreakPointOptions(int num, int ignore_count) {
-	wxString cmd(_T("-break-after "));
+	wxString cmd("-break-after ");
 	cmd<<num<<" "<<ignore_count;
 	SendCommand(cmd);
 }
 
 /// @brief Define the condition for a conditional breakpoint and returns true if the condition was correctly setted
 bool DebugManager::SetBreakPointOptions(int num, wxString condition) {
-	wxString cmd(_T("-break-condition "));
+	wxString cmd("-break-condition ");
 	cmd<<num<<" "<<mxUT::EscapeString(condition);
 	wxString ans = SendCommand(cmd);
 	return ans.Len()>4 && ans.Mid(1,4)=="done";
 }
 
-void DebugManager::SetBreakPointEnable(int num, bool enable, bool once) {
-	wxString cmd(_T("-break-"));
-	if (enable) {
-		cmd<<(once?_T("enable once "):_T("enable "));
+void DebugManager::SetBreakPointEnable(BreakPointInfo *_bpi) {
+	wxString cmd("-break-");
+	if (_bpi->enabled) {
+		cmd<<(_bpi->action==BPA_STOP_ONCE?"enable once ":"enable ");
 	} else {
-		cmd<<_T("disable ");
+		cmd<<"disable ";
 	}
-	cmd<<num;
+	cmd<<_bpi->gdb_id;
 	wxString ans = SendCommand(cmd);
+}
+
+
+void DebugManager::LiveSetBreakPointEnable(BreakPointInfo *_bpi) {
+	if (debugging && waiting) {
+		class OnPauseEnableBreakpoint : public OnPauseAction {
+			BreakPointInfo *p;
+		public:
+			OnPauseEnableBreakpoint(BreakPointInfo *bp) :p(bp) {}
+			void Do() override { debug->SetBreakPointEnable(p); }
+			bool Invalidate(void *ptr) override { return p==ptr; }
+		};
+		PauseFor(new OnPauseEnableBreakpoint(_bpi));
+	} else {
+		SetBreakPointEnable(_bpi);
+	}
 }
 
 // //**

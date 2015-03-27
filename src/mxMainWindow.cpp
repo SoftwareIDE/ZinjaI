@@ -3374,13 +3374,13 @@ void mxMainWindow::OnDebugToggleBreakpoint ( wxCommandEvent &event ) {
 }
 
 void mxMainWindow::OnDebugEnableDisableBreakpoint ( wxCommandEvent &event ) {
-	if (!debug->CanTalkToGDB()) return;
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
 		BreakPointInfo *bpi = source->m_extras->FindBreakpointFromLine(source,source->GetCurrentLine());
 		if (!bpi) return;
-		if (debug->debugging && bpi->IsInGDB()) debug->SetBreakPointEnable(bpi->gdb_id,!bpi->enabled,bpi->action==BPA_STOP_ONCE); // debugger state
 		bpi->SetEnabled(!bpi->enabled); // gui and bpi state
+		if (debug->IsDebugging() && bpi->IsInGDB())
+			debug->LiveSetBreakPointEnable(bpi); // debugger state
 	}
 }
 

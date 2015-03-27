@@ -171,9 +171,10 @@ public:
 	void HowDoesItRuns();
 	void SetStateText(wxString text, bool refresh=false);
 	void SetBreakPoints(mxSource *source, bool quiet=false);
-	int SetLiveBreakPoint(BreakPointInfo *_bpi);
+	int LiveSetBreakPoint(BreakPointInfo *_bpi);
 	int SetBreakPoint(BreakPointInfo *_bpi, bool quiet=false);
-	void SetBreakPointEnable(int num, bool enable, bool once=false);
+	void SetBreakPointEnable(BreakPointInfo *_bpi);
+	void LiveSetBreakPointEnable(BreakPointInfo *_bpi);
 	void SetBreakPointOptions(int num, int ignore_count);
 	bool SetBreakPointOptions(int num, wxString condition);
 	int GetBreakHitCount(int num);
