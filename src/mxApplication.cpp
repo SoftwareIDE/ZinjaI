@@ -35,14 +35,33 @@ IMPLEMENT_APP(mxApplication)
 	
 mxApplication *app = nullptr;
 
+#ifdef __linux__
+static void RestoreEnvVarsChangedByLauncher() {
+	wxString value;
+	if (wxGetEnv("ZINJAI_UBUNTU_TWEAKS",&value)) {
+		wxString val1,val2;
+		wxGetEnv("ZINJAI_UBUNTU_MENUPROXY",&val1);
+		wxGetEnv("ZINJAI_LIBOVERLAY_SCROLLBAR",&val2);
+		wxSetEnv("UBUNTU_MENUPROXY",val1.c_str());
+		wxSetEnv("LIBOVERLAY_SCROLLBAR",val2.c_str());
+	}
+}
+#endif
+
 
 bool mxApplication::OnInit() {
-	
 	
 	if (argc==2 && wxString(argv[1])=="--version") {
 		cout<<"ZinjaI "<<VERSION<<endl;
 		return false;
 	}
+	
+	// si el launcher cambio el entorno para desactivar los menues de unity,
+	// restablecer esas variables para los proyectos que ejecutemos
+#ifdef __linux__
+	RestoreEnvVarsChangedByLauncher();
+#endif
+	
 	
 #ifdef _ZINJAI_DEBUG
 //	wxLongLong start_time = wxGetLocalTimeMillis();

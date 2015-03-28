@@ -2529,7 +2529,10 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 	
 	if (osd && *osd==nullptr) *osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 	
-	int ret = mxExecute(wxString("\"")+config->Files.wxfb_command+"\" -g \""+fbp_file+"\"", wxEXEC_NODISABLE|wxEXEC_SYNC);
+	wxString command=mxUT::Quotize(config->Files.wxfb_command)+" -g "+mxUT::Quotize(fbp_file);
+	_IF_DEBUGMODE("command: "<<command);
+	int ret = mxExecute(command, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	_IF_DEBUGMODE("exit value: "<<ret);
 
 	if (fbase.Len()) {
 		if (ret) {

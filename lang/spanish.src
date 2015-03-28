@@ -2402,6 +2402,8 @@ PREFERENCES_SINGLETON
 Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos
 PREFERENCES_GENERAL_CHECK_FOR_UPDATES
 Verificar si existen nuevas versiones al iniciar
+PREFERENCES_GENERAL_DISABLE_UBUNTU_TWEAKS
+Deshabilitar la interfaz de menúes y scrollbars especial de Ubuntu
 PREFERENCES_CUSTOMIZE_SHORTCUTS
 Personalizar atajos de teclado...
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME

@@ -6,8 +6,10 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
-</UL><BR><B>Relase 20150XXX</B><BR><UL>
+</UL><BR><B>Relase 20150328</B><BR><UL>
 	<LI>New: En un proyecto, se pueden definir argumentos de compilación por archivo fuente (que modifican o reemplazan a los generales del perfil, con click derecho en el árbol de proyecto).</LI>
+	<LI>Imp: En distribuciones de GNU/Linux que utilicen el gestor de ventanas Unity (como Ubuntu), se puede configurar desde el cuadro de Preferencias si se permite o no que Unity aplique su interfáz especial en menúes y barras de desplazamiento.</LI>
+	<LI>Imp: En distribuciones de GNU/Linux que no disponen de la biblioteca libpng12 (necesaria para ejecutar ZinjaI), se utilizará una versión de la misma incluida entre los archivos de ZinjaI.</LI>
 	<LI>Imp: Se pueden habilitar y deshabilitar puntos de interrupción durante la depuración sin pausarla utlizando el menú contextual del mismo (click derecho en el punto rojo al márgen del código).</LI>
 	<LI>Imp: Se utiliza un cache para recordar las salidas de subcomandos en los argumentos de compilación y enlazado, desactivable desde el cuadro de Preferencias.</LI>
 	<LI>Imp: La nueva función para mostrar una ventana emergente junto al menú de autocompletada con información del ítem seleccionado se puede desactivar desde la ventana de preferencias.</LI>
@@ -21,7 +23,7 @@
 	<LI>Fix: Se corrigió la evaluación de inspecciones que involucran los operadores . y -&gt; al colocar el mouse sobre las mismas en el código sin que estén seleccionadas.</LI>
 	<LI>Fix: Varias correcciones en el funcionamiento de la tabla de inspecciones.</LI>
 	<LI>Fix: Corregida la inicialización por defecto de la lista de mejoras automáticas de inspecciones por tipo.</LI>
-	<LI>Fix: Corregido el problema por el cual la generación del grafo de jerarquía de siempre usaba el generador "dot".</LI>
+	<LI>Fix: Corregido el problema por el cual la generación del grafo de jerarquía de clases siempre usaba el generador "dot".</LI>
 
 </UL><BR><B>Release 20150209</B><BR><UL>
 	<LI>New: Al continuar la depuración luego de una interrupción, ZinjaI retorna el foco automáticamente a la ventana del proceso que está siendo depurado.</LI>
@@ -434,7 +436,7 @@
 	<LI>Fix: Corregido el automcopletado de métodos de atributos de clases con números en su nombre</LI>
 	<LI>Imp: Cuando se activa la opción para cerrar automáticamente llaves, paréntesis, corchetes, etc, se cierra también el signo menor con un mayor si la linea empieza con "#include"</LI>
 	<LI>Fix: Resuelto el conflicto entre el cierre automático de llaves, paréntesis, corchetes y comillas con operaciones de edición como pegar o aplicar autocódigos</LI>
-	<LI>Imp: El sistema de ayuda soporta traducciones (intenta cargar la ayuda en el lenguaje elegido y si no se ecuentra vuelve al español)</LI>
+	<LI>Imp: El sistema de ayuda soporta traducciones (intenta cargar la ayuda en el lenguaje elegido y si no se encuentra vuelve al español)</LI>
 	<LI>Imp: Ahora se pueden colocar links a paginas de la ayuda desde las sugerencias</LI>
 	<LI>Fix: Agregada una verificación para evitar la violación de segmento si se cierra un proyecto y queda alguno de los cuadros de configuración de proyecto abierto</LI>
 	<LI>Imp: Las definiciones de auto-códigos se recargan automáticamente al guardar el archivo</LI>

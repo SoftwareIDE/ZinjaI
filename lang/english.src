@@ -2402,6 +2402,8 @@ PREFERENCES_SINGLETON
 Use only one ZinjaI's instance when opening files from command line
 PREFERENCES_GENERAL_CHECK_FOR_UPDATES
 Check for updates on startup
+PREFERENCES_GENERAL_DISABLE_UBUNTU_TWEAKS
+Disable Unity's menu and scrollbar custom interface (*)
 PREFERENCES_CUSTOMIZE_SHORTCUTS
 Customize keyboard shortcuts...
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME

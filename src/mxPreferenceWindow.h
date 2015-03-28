@@ -70,6 +70,9 @@ class mxPreferenceWindow : public wxDialog {
 	
 	wxCheckBox *init_show_extra_panels;
 	wxCheckBox *init_left_panels;
+#ifdef __linux__
+	wxCheckBox *init_disable_ubuntu_tweaks;
+#endif
 	wxCheckBox *init_check_for_updates;
 	wxCheckBox *init_always_add_extension;
 	wxCheckBox *init_show_welcome;

@@ -1,20 +1,20 @@
-#define VERSION 20150326
+#define VERSION 20150329
 
 #ifdef __WIN32__
-#define ARCHITECTURE "w32"
+#	define ARCHITECTURE "w32"
 #elif defined(__WIN64__)
-#define ARCHITECTURE "w64"
+#	define ARCHITECTURE "w64"
 #elif defined(__APPLE__)
-#define ARCHITECTURE "mac"
+#	define ARCHITECTURE "mac"
 #elif defined(__linux__) && defined(__x86_64__)
-#define ARCHITECTURE "l64"
+#	define ARCHITECTURE "l64"
 #elif defined(__linux__) && defined(__i386__)
-#define ARCHITECTURE "l32"
+#	define ARCHITECTURE "l32"
 #elif defined(__x86_64__)
-#define ARCHITECTURE "?64"
+#	define ARCHITECTURE "?64"
 #elif defined(__i386__)
-#define ARCHITECTURE "?32"
+#	define ARCHITECTURE "?32"
 #else
-#define ARCHITECTURE "???"
+#	define ARCHITECTURE "???"
 #endif
 

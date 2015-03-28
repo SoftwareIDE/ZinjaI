@@ -205,6 +205,9 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (mxBookCtrl *notebook) {
 	init_autohide_panels = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_AUTOHIDE_PANELS,"Ocultar paneles automaticamente (*)"),config->Init.autohide_panels);
 	init_singleton = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SINGLETON,"Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comandos"),config->Init.singleton);
 	init_check_for_updates = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_CHECK_FOR_UPDATES,"Verificar si existen nuevas versiones al iniciar"),config->Init.check_for_updates);
+#ifdef __linux__
+	init_disable_ubuntu_tweaks = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_DISABLE_UBUNTU_TWEAKS,"Deshabilitar la interfaz de menúes y scrollbars especial de Unity (*)"),!wxFileExists(DIR_PLUS_FILE(config->home_dir,"ubuntu")));
+#endif
 	sizer->Add(new wxButton(panel,mxID_PREFERENCES_CUSTOMIZE_SHORTCUTS,LANG(PREFERENCES_CUSTOMIZE_SHORTCUTS,"Personalizar atajos de teclado...")),sizers->BA10);
 	sizer->AddStretchSpacer(1);
 	mxUT::AddStaticText(sizer,panel,LANG(PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME,"(*) tendrá efecto la proxima vez que inicie ZinjaI"));
@@ -649,6 +652,13 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		mxMessageDialog(this,LANG(PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN,"La herramienta de compilación por defecto (pestaña Programa/Proyecto) no puede ser de tipo externa"),LANG(PREFERENCES_CAPTION,"Preferencias"),mxMD_WARNING|mxMD_OK).ShowModal();
 		return;
 	}
+	
+#ifdef __linux__
+	if ( init_disable_ubuntu_tweaks->GetValue() == wxFileExists(DIR_PLUS_FILE(config->home_dir,"ubuntu")) ) {
+		if (init_disable_ubuntu_tweaks->GetValue()) wxRemoveFile( DIR_PLUS_FILE(config->home_dir,"ubuntu") );
+		else { wxTextFile fil( DIR_PLUS_FILE(config->home_dir,"ubuntu") ); fil.Create(); fil.Write(); }
+	}
+#endif
 	
 	long int l;
 	config->Init.left_panels = init_left_panels->GetValue();
@@ -1223,8 +1233,10 @@ void mxPreferenceWindow::ResetChanges() {
 	init_show_explorer_tree->SetValue(config->Init.show_explorer_tree);
 	init_left_panels->SetValue(config->Init.left_panels);
 	init_check_for_updates->SetValue(config->Init.check_for_updates);
-#ifdef __WIN32__
-#else
+#ifdef __linux__
+	init_disable_ubuntu_tweaks->SetValue(!wxFileExists(DIR_PLUS_FILE(config->home_dir,"ubuntu")));
+#endif
+#ifndef __WIN32__
 	init_lang_es->SetValue(config->Init.lang_es);
 //	desktop_icon->SetValue(false);
 #endif

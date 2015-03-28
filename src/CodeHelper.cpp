@@ -1235,7 +1235,7 @@ void CodeHelper::AppendIndexes(wxString indexes) {
 #define EN_COMPOUT_NO_SUCH_FILE_OR_DIRECTORY ": No such file or directory"
 
 /**
-* @brief on_end Si ecuentra una solucion y el usuario la acepta, le transfiere 
+* @brief on_end Si encuentra una solucion y el usuario la acepta, le transfiere 
 *               esta accion al nuevo proceso de compilacion (y setea el argumento
 *               en nullptr para indicarlo), sino lo deja como esta, no lo ejecuta, y
 *               sigue siendo responsabilidad de quien llamo
