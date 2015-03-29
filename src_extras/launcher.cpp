@@ -9,11 +9,11 @@ using namespace std;
 
 const char *binname="zinjai.bin";
 
-string my_getenv(const char *varname) {
-	string retval;
-	const char *res = getenv(varname);
-	if (res) retval = res;
-	return retval;
+void ReplaceEnvVar(const char *varname, const char *new_value) {
+	string zvname=string("ZINJAI_EV_")+varname;
+	const char *old_value = getenv(varname);
+	setenv(zvname.c_str(),old_value?old_value:"ZINJAI_UNSET",1);
+	setenv(varname,new_value,1);
 }
 
 void fix_argv(char *argv[]) {
@@ -27,12 +27,6 @@ void fix_argv(char *argv[]) {
 
 void FixUbuntuMenuTweaks() {
 	
-	string gtk_modules= my_getenv("GTK_MODULES");
-	string ubuntu_menuproxy = my_getenv("UBUNTU_MENUPROXY");
-	string liboverlay_scrollbar = my_getenv("LIBOVERLAY_SCROLLBAR");
-	if (gtk_modules.empty()&&ubuntu_menuproxy.empty()&&liboverlay_scrollbar.empty())
-		return; // seems not to be ubuntu, no difference then
-		
 	// check if ~/.zinjai/ubuntu file exists, this indicates if we should 
 	// disable ubuntu's especial menues and toolbars or not
 	string home_path = my_getenv("HOME");
@@ -40,15 +34,9 @@ void FixUbuntuMenuTweaks() {
 		home_path+="/";
 	home_path+=".zinjai/ubuntu";
 	if( access(home_path.c_str(),F_OK) == -1 ) {
-		// store old values so zinjai can restore them for the projects it runs
-		setenv("ZINJAI_UBUNTU_TWEAKS","1",1);
-		setenv("ZINJAI_UBUNTU_MENUPROXY",ubuntu_menuproxy.c_str(),1);
-		setenv("ZINJAI_GTK_MODULES",gtk_modules.c_str(),1);
-		setenv("ZINJAI_LIBOVERLAY_SCROLLBAR",liboverlay_scrollbar.c_str(),1);
 		// disable unity's customizations
-		setenv("GTK_MODULES","",1);
-		setenv("UBUNTU_MENUPROXY","",1);
-		setenv("LIBOVERLAY_SCROLLBAR","0",1);
+		ReplaceEnvVar("UBUNTU_MENUPROXY","");
+		ReplaceEnvVar("LIBOVERLAY_SCROLLBAR","0");
 	}
 }
 

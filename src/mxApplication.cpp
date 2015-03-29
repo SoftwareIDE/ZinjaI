@@ -36,17 +36,15 @@ IMPLEMENT_APP(mxApplication)
 mxApplication *app = nullptr;
 
 #ifdef __linux__
+static void RestoreEnvVar(const char *varname) {
+	wxString value, zvname=wxString("ZINJAI_EV_")+varname;
+	if (!wxGetEnv(zvname,&value)) return;
+	if (value=="ZINJAI_UNSET") wxUnsetEnv(varname);
+	else wxSetEnv(varname,value.c_str());
+}
 static void RestoreEnvVarsChangedByLauncher() {
-	wxString value;
-	if (wxGetEnv("ZINJAI_UBUNTU_TWEAKS",&value)) {
-		wxString val1,val2,val3;
-		wxGetEnv("ZINJAI_UBUNTU_MENUPROXY",&val1);
-		wxGetEnv("ZINJAI_LIBOVERLAY_SCROLLBAR",&val2);
-		wxGetEnv("ZINJAI_GTK_MODULES",&val3);
-		wxSetEnv("UBUNTU_MENUPROXY",val1.c_str());
-		wxSetEnv("LIBOVERLAY_SCROLLBAR",val2.c_str());
-		wxSetEnv("GTK_MODULES",val3.c_str());
-	}
+	RestoreEnvVar("UBUNTU_MENUPROXY");
+	RestoreEnvVar("LIBOVERLAY_SCROLLBAR");
 }
 #endif
 
