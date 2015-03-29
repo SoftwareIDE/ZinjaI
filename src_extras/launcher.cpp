@@ -27,9 +27,10 @@ void fix_argv(char *argv[]) {
 
 void FixUbuntuMenuTweaks() {
 	
+	string gtk_modules= my_getenv("GTK_MODULES");
 	string ubuntu_menuproxy = my_getenv("UBUNTU_MENUPROXY");
 	string liboverlay_scrollbar = my_getenv("LIBOVERLAY_SCROLLBAR");
-	if (ubuntu_menuproxy.empty()&&liboverlay_scrollbar.empty())
+	if (gtk_modules.empty()&&ubuntu_menuproxy.empty()&&liboverlay_scrollbar.empty())
 		return; // seems not to be ubuntu, no difference then
 		
 	// check if ~/.zinjai/ubuntu file exists, this indicates if we should 
@@ -42,8 +43,10 @@ void FixUbuntuMenuTweaks() {
 		// store old values so zinjai can restore them for the projects it runs
 		setenv("ZINJAI_UBUNTU_TWEAKS","1",1);
 		setenv("ZINJAI_UBUNTU_MENUPROXY",ubuntu_menuproxy.c_str(),1);
+		setenv("ZINJAI_GTK_MODULES",gtk_modules.c_str(),1);
 		setenv("ZINJAI_LIBOVERLAY_SCROLLBAR",liboverlay_scrollbar.c_str(),1);
 		// disable unity's customizations
+		setenv("GTK_MODULES","",1);
 		setenv("UBUNTU_MENUPROXY","",1);
 		setenv("LIBOVERLAY_SCROLLBAR","0",1);
 	}

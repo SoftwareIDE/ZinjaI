@@ -30,6 +30,7 @@ class FlagGuard {
 	T *flag;
 public:
 	FlagGuard(T &f, bool force):flag(&f) { *flag=SET_VALUE; }
+	FlagGuard(T *f):flag(f) { if (!flag || *flag==SET_VALUE) { flag=nullptr; } else *flag=SET_VALUE; }
 	FlagGuard(T &f):flag(&f) { if (*flag==SET_VALUE) { flag=nullptr; } else *flag=SET_VALUE; }
 	bool IsOk() { return flag!=nullptr; }
 	void Release() { if (flag) *flag=RESET_VALUE; flag=nullptr; }

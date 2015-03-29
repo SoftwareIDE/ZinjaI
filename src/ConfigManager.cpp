@@ -814,9 +814,10 @@ void ConfigManager::LoadDefaults(){
 
 bool ConfigManager::CheckWxfbPresent() {
 	if (config->Init.wxfb_seen && !config->Files.wxfb_command.IsEmpty()) return true;
+	boolFlagGuard wxfb_working_guard(project?&(project->GetWxfbConfiguration()->working):nullptr);
 	wxString out;
 	if (!config->Files.wxfb_command.IsEmpty())
-		out = mxUT::GetOutput(wxString("\"")<<config->Files.wxfb_command<<"\" -h",true);
+		out = mxUT::GetOutput(mxUT::Quotize(config->Files.wxfb_command)+" -h",true);
 #ifdef __WIN32__
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe"))

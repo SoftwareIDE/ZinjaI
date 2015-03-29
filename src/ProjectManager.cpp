@@ -2482,7 +2482,7 @@ void ProjectManager::WxfbGetFiles() {
 **/
 bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 	if (!config->CheckWxfbPresent()) return false;
-	wxfb->working=true;
+	boolFlagGuard wxfb_working_guard(wxfb->working);
 	wxString old_compiler_tree_text = main_window->compiler_tree.treeCtrl->GetItemText(main_window->compiler_tree.state);
 	mxOSD *osd=nullptr;
 	main_window->SetCompilingStatus(LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
@@ -2502,7 +2502,6 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 	/// @todo: reemplazar estas lineas por SetCompilingStatus, pero ver antes en que contexto se llega aca para saber que puede haber habido en status
 	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,old_compiler_tree_text);
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
-	wxfb->working=false;
 	if (osd) delete osd;
 	return something_changed;
 }
@@ -3341,7 +3340,7 @@ void ProjectManager::WxfbAutoCheckStep1() {
 }
 
 void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
-	wxfb->working=true;
+	boolFlagGuard wxfb_working_guard(wxfb->working);
 	WxfbAutoCheckData new_data;
 	if (wxfb->update_methods) { // update already present inherited classes' methods (with new events)
 		for(int i=0;i<new_data.user_classes.GetSize();i++) {
@@ -3414,8 +3413,6 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 			}
 		}
 	}
-		
-	wxfb->working=false;
 }
 
 

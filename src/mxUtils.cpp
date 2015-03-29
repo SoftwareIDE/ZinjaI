@@ -622,6 +622,8 @@ wxString mxUT::ExecComas(wxString where, wxString line) {
 }
 
 wxString mxUT::GetOutput(wxString command, bool also_error, bool use_cache) {
+
+	_IF_DEBUGMODE("mxUT::GetOutput: command: "<<command);
 	
 	static HashStringString cache;
 	if (command=="") { cache.clear(); return ""; }
@@ -649,6 +651,8 @@ wxString mxUT::GetOutput(wxString command, bool also_error, bool use_cache) {
 		else
 			ret<<"\n"<<output[i];
 	if (use_cache) cache[command]=ret;
+	
+	_IF_DEBUGMODE("mxUT::GetOutput: output: "<<ret);
 	return ret;
 }
 
