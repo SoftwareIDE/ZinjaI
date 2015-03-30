@@ -1,0 +1,2 @@
+libpng12.so.0 was copied from a regular ubuntu 10.10 installation, and will be used only if your system does not provides one.
+For authorship and license information, visit http://www.libpng.org/pub/png/libpng.html and http://www.libpng.org/pub/png/src/libpng-LICENSE.txt

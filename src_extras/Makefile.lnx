@@ -20,4 +20,4 @@ clean:
 	${GPP} draw.cpp -o $@
 
 ../zinjai: launcher.cpp
-	${GPP} launcher.cpp -O2 -o $@
+	${GPP} launcher.cpp -O2 -ldl -o $@

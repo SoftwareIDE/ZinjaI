@@ -5,9 +5,16 @@
 #include <cstring>
 #include <unistd.h>
 #include <fstream>
+#include <dlfcn.h>
 using namespace std;
 
 const char *binname="zinjai.bin";
+
+const char *my_getenv(const char *varname) {
+	char empty[]="";
+	const char *res = getenv(varname);
+	return res?res:empty;
+}
 
 void ReplaceEnvVar(const char *varname, const char *new_value) {
 	string zvname=string("ZINJAI_EV_")+varname;
@@ -45,10 +52,25 @@ void FixLocaleSettingsForScintilla() {
 	setenv("LC_CTYPE","",1); // workaround for the problem with ansi-wxstyledtext and utf8 locale
 }
 
+void FixMissingLibPNG12(string zinjai_path) {
+	void *handle = dlopen ("libpng12.so", RTLD_LAZY);
+	if (!handle) {
+		string ld_library_path = my_getenv("LD_LIBRARY_PATH");
+		if (!ld_library_path.empty()) ld_library_path+=":";
+		if (zinjai_path.find('/')==string::npos) zinjai_path="";
+		else zinjai_path=zinjai_path.substr(0,zinjai_path.rfind('/')+1);
+		ld_library_path+=zinjai_path+"libs";
+		setenv("LD_LIBRARY_PATH",ld_library_path.c_str(),1);
+	} else {
+		dlclose(handle);
+	}
+}
+
 int main(int argc, char *argv[]) {
 
 	FixUbuntuMenuTweaks();
 	FixLocaleSettingsForScintilla();
+	FixMissingLibPNG12(argv[0]);
 	
 	fix_argv(argv);
 	pid_t pid=fork();

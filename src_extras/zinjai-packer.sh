@@ -32,8 +32,9 @@ if [ "$1" = "prepare" ]; then
   mkdir zinjai/src_extras/complement
   mkdir zinjai/src_extras/img_viewer
   mkdir zinjai/lsdeps
+  mkdir zinjai/libs
 
-  echo "remember to copy manually graphviz binaries and deps"
+  echo "remember to copy manually graphviz binaries and deps, and populate libs"
 
 elif [ "$1" = "update" ]; then
 
@@ -93,6 +94,7 @@ elif [ "$1" = "update" ]; then
   scp $2/zinjai/lang/tools/mxLangTool/*.cpp		zinjai/lang/tools/mxLangTool/
   scp $2/zinjai/lang/tools/mxLangTool/*.h		zinjai/lang/tools/mxLangTool/
   scp $2/zinjai/lang/tools/mxLangTool/*.zpr		zinjai/lang/tools/mxLangTool/
+  scp $2/zinjai/libs/*.txt				zinjai/libs/
 
 elif [ "$1" = "compile" ]; then
 
