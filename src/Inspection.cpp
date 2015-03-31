@@ -157,9 +157,10 @@ bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool s
 			all_inspections.Add(di);
 			vo2di_map[c.name] = di;
 			// ver si hay que romper este tambien (porque es clase baso, o grupo de visibilidad)
-			bool break_again = (recursive_on_inheritance && c.type==c.exp) ||
-				(skip_visibility_groups && ((c.exp=="public"||c.exp=="private"||c.exp=="protected")&&c.type==""));
-			if (break_again) {
+			bool is_inheritance = c.type==c.exp;
+			bool is_visibility_group = (c.exp=="public"||c.exp=="private"||c.exp=="protected")&&c.type=="";
+			bool break_again = (recursive_on_inheritance && is_inheritance) || (skip_visibility_groups && is_visibility_group);
+			if (is_inheritance || is_visibility_group) {
 				di->expression = di->expression = base_exp; 
 			} else {
 				di->short_expression = base_pre+di->expression+base_post;

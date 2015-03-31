@@ -108,7 +108,7 @@ void mxInspectionExplorerWidget::OnItemExpanding (wxTreeEvent & event) {
 	int pos = inspections.Find(event.GetItem()); 
 	if (pos==0) SetItemText(inspections[0].item,inspections[0].MakeItemLabel());
 	if (pos==inspections.NotFound()) return; // no deberia pasar
-	mxIEWAux &aux = inspections[pos];
+	mxIEWAux aux = inspections[pos]; // no usar referencia, porque puede cambiar dentro del AddItem
 	if (aux.is_open) return; 
 	SingleList<DebuggerInspection*> children;
 	if (!aux.di->Break(children,true,false) || !children.GetSize()) return;

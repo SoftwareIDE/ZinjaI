@@ -42,6 +42,9 @@ void mxInspectionBaloon::OnTreeSize ( ) {
 		wxSystemSettings::GetMetric(wxSYS_HSCROLL_Y)+
 #endif
 		text->GetSize().GetHeight()+5);
+	wxSize mw_sz = main_window->GetClientSize();
+	if (sz.GetHeight()>mw_sz.GetHeight()) sz.SetHeight(mw_sz.GetHeight());
+	if (sz.GetWidth()>mw_sz.GetWidth()) sz.SetWidth(mw_sz.GetWidth());
 	SetSize(ClientToWindowSize(sz));
 }
 
