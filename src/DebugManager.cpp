@@ -546,7 +546,11 @@ void DebugManager::HowDoesItRuns() {
 			state_text=LANG(DEBUG_STATUS_TERMINAL_CLOSED,"La terminal del programa ha sido cerrada");
 		} 
 		else { 
-			_DBG_LOG_CALL(Log(wxString()<<"NEW REASON: "<<ans));
+//			_DBG_LOG_CALL(Log(wxString()<<"NEW REASON: "<<ans));
+			if (GetValueFromAns(ans,"frame").Len()) {
+				mark = mxSTC_MARK_EXECPOINT;
+				state_text=LANG(DEBUG_STATUS_PAUSE_UNKNOWN_REASON,"Ejecución interrumpida, causa desconocida.");
+			}
 		}
 		if (mark) {
 			wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true,true);

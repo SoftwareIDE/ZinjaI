@@ -21,15 +21,15 @@ No se ha encontrado el depurador (gdb). Debe instalarlo con\nel gestor de paquet
 CONFIG_DEBUGGER
 Depurador
 PROJMNGR_WXFB_NOT_FOUND
-El proyecto utiliza wxFormBuilder, pero este software\nno se ecuentra correctamente instalado/configurado en\nsu pc. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicacion en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
+El proyecto utiliza wxFormBuilder, pero este software\nno se encuentra correctamente instalado/configurado en\nsu pc. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicacion en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
 GENERAL_WARNING
 Advertencia
 PROJMNGR_WXFB_OPEN_HOMEPAGE
 Ir al sitio de wxFormBuilder ahora
 MAINW_DOXYGEN_MISSING
-Doxygen no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+Doxygen no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CPPCHECK_MISSING
-CppCheck no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+CppCheck no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CUSTOM_TOOL_UNDEFINED
 Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
 GENERAL_ERROR
@@ -86,6 +86,8 @@ DEBUG_STATUS_ABNORMAL_INTERRUPTION
 El programa se interrumpio anormalmente ( 
 DEBUG_STATUS_TERMINAL_CLOSED
 La terminal del programa ha sido cerrada
+DEBUG_STATUS_PAUSE_UNKNOWN_REASON
+Ejecución interrumpida, causa desconocida.
 BACKTRACE_NO_INFO
 <<Imposible determinar ubicacion>>
 BACKTRACE_NOT_AVAILABLE
@@ -2067,7 +2069,7 @@ Esta intentando compilar/ejecutar un archivo de cabecera.\nProbablemente deba in
 MAINW_RUN_HEADER_CHECK
 No volver a mostrar este mensaje
 MAINW_VALGRIND_MISSING
-Valgrind no se ecuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+Valgrind no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_GPROF_GPROF_ENABLED
 Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.
 MAINW_GPROF_GPROF_DISABLED
@@ -2405,7 +2407,7 @@ Utilizar una sola instancia de ZinjaI al abrir archivos desde la linea de comand
 PREFERENCES_GENERAL_CHECK_FOR_UPDATES
 Verificar si existen nuevas versiones al iniciar
 PREFERENCES_GENERAL_DISABLE_UBUNTU_TWEAKS
-Deshabilitar la interfaz de menúes y scrollbars especial de Ubuntu
+Deshabilitar la interfaz de menúes y scrollbars especial de Unity (*)
 PREFERENCES_CUSTOMIZE_SHORTCUTS
 Personalizar atajos de teclado...
 PREFERENCES_GENERAL_ASTERIX_WILL_APPLY_NEXT_TIME
