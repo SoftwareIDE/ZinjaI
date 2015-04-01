@@ -1,9 +1,14 @@
 #ifndef MXCALLTIP_H
 #define MXCALLTIP_H
-#include <wx/popupwin.h>
+#ifdef __APPLE__
+#define wxPopupWindow wxFrame
+#else
+#	include <wx/popupwin.h>
+#endif
 #include "SingleList.h"
 
 class mxSource;
+
 
 class mxCalltip : public wxPopupWindow {
 private:

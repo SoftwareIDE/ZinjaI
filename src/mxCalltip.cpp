@@ -12,8 +12,14 @@ BEGIN_EVENT_TABLE(mxCalltip,wxPopupWindow)
 //	EVT_LEFT_DOWN(wxSTCCallTip::OnLeftDown)
 END_EVENT_TABLE()
 
+#ifdef __APPLE__
+#	define _wxPopupWindow_ctor_args wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxFRAME_NO_TASKBAR|wxFRAME_FLOAT_ON_PARENT|wxBORDER_NONE
+#else
+#	define _wxPopupWindow_ctor_args wxBORDER_NONE
+#endif 
+	
 mxCalltip::mxCalltip (mxSource * src) : 
-	wxPopupWindow(src, /*wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxFRAME_NO_TASKBAR|wxFRAME_FLOAT_ON_PARENT|*/wxBORDER_NONE), 
+	wxPopupWindow(src,_wxPopupWindow_ctor_args), 
 	parent(src), current_arg(-1)
 {
 	Disable(); // workaround para el no-efecto de AcceptsFocus, ver OnFocus
