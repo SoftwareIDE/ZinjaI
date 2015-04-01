@@ -3012,10 +3012,16 @@ TOOLCHAINS_LINKER_C_OPTIONS
 C linker arguments
 TOOLCHAINS_LINKER_CPP_OPTIONS
 C++ linker arguments
+TOOLCHAINS_DYNAMIC_LIB_LINKER
+Command for linking a dynamic library:
+TOOLCHAINS_STATIC_LIB_LINKER
+Command for linking a static library:
 TOOLCHAINS_ARGUMENT_NAME
 Label (${ARG<{1}>})
 TOOLCHAINS_ARGUMENT_DEFAULT
    User argument's default value (${ARG<{1}>})
+TOOLCHAINS_GENERAL_SETTINGS
+General
 TOOLCHAINS_FIXED_SETTINGS
 Fixed settings
 TOOLCHAINS_USER_ARGUMENTS

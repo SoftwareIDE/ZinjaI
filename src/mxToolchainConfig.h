@@ -25,6 +25,8 @@ private:
 	wxTextCtrl *linker;
 	wxTextCtrl *c_linker_options;
 	wxTextCtrl *cpp_linker_options;
+	wxTextCtrl *dynamic_lib_linker;
+	wxTextCtrl *static_lib_linker;
 public:
 	mxToolchainConfig(wxWindow *parent, const wxString &tc_name);
 	void OnButtonOk(wxCommandEvent &event);

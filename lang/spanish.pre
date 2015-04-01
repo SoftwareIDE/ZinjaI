@@ -3012,10 +3012,16 @@ TOOLCHAINS_LINKER_C_OPTIONS
 Argumentos para el enlazado C
 TOOLCHAINS_LINKER_CPP_OPTIONS
 Argumentos para el enlazado C++
+TOOLCHAINS_DYNAMIC_LIB_LINKER
+Comando para enlazar libs. dinámicas
+TOOLCHAINS_STATIC_LIB_LINKER
+Comando para enlazar libs. estáticas
 TOOLCHAINS_ARGUMENT_NAME
 Nombre (${ARG<{1}>})
 TOOLCHAINS_ARGUMENT_DEFAULT
    Valor por defecto (${ARG<{1}>})
+TOOLCHAINS_GENERAL_SETTINGS
+General
 TOOLCHAINS_FIXED_SETTINGS
 Configuración fija
 TOOLCHAINS_USER_ARGUMENTS

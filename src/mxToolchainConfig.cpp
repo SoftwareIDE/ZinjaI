@@ -40,32 +40,41 @@ mxToolchainConfig::mxToolchainConfig(wxWindow *parent, const wxString &tc_name) 
 	for_extern.Add(build_command,true);
 	clean_command = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_CLEAN_COMMAND,"Comando de limpieza"),tc->clean_command);
 	for_extern.Add(clean_command,true);
-	c_compiler = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_C_COMMAND,"Comando del compilador C"),tc->c_compiler);
-	for_gcc.Add(c_compiler,true);
-	c_compiling_options = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_C_OPTIONS,"Argumentos para la compilación C"),tc->c_compiling_options);
-	for_gcc.Add(c_compiling_options,true);
-	cpp_compiler = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_CPP_COMMAND,"Comando del compilador C++"),tc->cpp_compiler);
-	for_gcc.Add(cpp_compiler,true);
-	cpp_compiling_options = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_CPP_OPTIONS,"Argumentos para la compilación C++"),tc->cpp_compiling_options);
-	for_gcc.Add(cpp_compiling_options,true);
-	linker = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_LINKER_COMMAND,"Comando del enlazador"),tc->linker);
-	for_gcc.Add(linker,true);
-	c_linker_options = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_LINKER_C_OPTIONS,"Argumentos para el enlazado C"),tc->c_linker_options);
-	for_gcc.Add(c_linker_options,true);
-	cpp_linker_options = mxUT::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_LINKER_CPP_OPTIONS,"Argumentos para el enlazado C++"),tc->cpp_linker_options);
-	for_gcc.Add(cpp_linker_options,true);
 	panel_1->SetSizer(sizer_1);
 	
 	wxPanel *panel_2 = new wxPanel(notebook, wxID_ANY );
 	wxBoxSizer *sizer_2 = new wxBoxSizer(wxVERTICAL);
-	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) { 
-		arguments[i][0] = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG1(TOOLCHAINS_ARGUMENT_NAME,"Nombre (${ARG<{1}>})",wxString()<<i+1),tc->arguments[i][0]);
-		arguments[i][1] = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG1(TOOLCHAINS_ARGUMENT_DEFAULT,"   Valor por defecto (${ARG<{1}>})",wxString()<<i+1),tc->arguments[i][1]);
-	}
+	c_compiler = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_C_COMMAND,"Comando del compilador C"),tc->c_compiler);
+	for_gcc.Add(c_compiler,true);
+	c_compiling_options = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_C_OPTIONS,"Argumentos para la compilación C"),tc->c_compiling_options);
+	for_gcc.Add(c_compiling_options,true);
+	cpp_compiler = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_CPP_COMMAND,"Comando del compilador C++"),tc->cpp_compiler);
+	for_gcc.Add(cpp_compiler,true);
+	cpp_compiling_options = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_CPP_OPTIONS,"Argumentos para la compilación C++"),tc->cpp_compiling_options);
+	for_gcc.Add(cpp_compiling_options,true);
+	linker = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_LINKER_COMMAND,"Comando del enlazador"),tc->linker);
+	for_gcc.Add(linker,true);
+	c_linker_options = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_LINKER_C_OPTIONS,"Argumentos para el enlazado C"),tc->c_linker_options);
+	for_gcc.Add(c_linker_options,true);
+	cpp_linker_options = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_LINKER_CPP_OPTIONS,"Argumentos para el enlazado C++"),tc->cpp_linker_options);
+	for_gcc.Add(cpp_linker_options,true);
+	dynamic_lib_linker = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_DYNAMIC_LIB_LINKER,"Comando para enlazar libs. dinámicas"),tc->dynamic_lib_linker);
+	for_gcc.Add(dynamic_lib_linker,true);
+	static_lib_linker = mxUT::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_STATIC_LIB_LINKER,"Comando para enlazar libs. estáticas"),tc->static_lib_linker);
+	for_gcc.Add(static_lib_linker,true);
 	panel_2->SetSizer(sizer_2);
 	
-	notebook->AddPage(panel_1, LANG(TOOLCHAINS_FIXED_SETTINGS,"Configuración fija"));
-	notebook->AddPage(panel_2, LANG(TOOLCHAINS_USER_ARGUMENTS,"Argumentos configurables"));
+	wxPanel *panel_3 = new wxPanel(notebook, wxID_ANY );
+	wxBoxSizer *sizer_3 = new wxBoxSizer(wxVERTICAL);
+	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) { 
+		arguments[i][0] = mxUT::AddShortTextCtrl(sizer_3,panel_3,LANG1(TOOLCHAINS_ARGUMENT_NAME,"Nombre (${ARG<{1}>})",wxString()<<i+1),tc->arguments[i][0]);
+		arguments[i][1] = mxUT::AddShortTextCtrl(sizer_3,panel_3,LANG1(TOOLCHAINS_ARGUMENT_DEFAULT,"   Valor por defecto (${ARG<{1}>})",wxString()<<i+1),tc->arguments[i][1]);
+	}
+	panel_3->SetSizer(sizer_3);
+	
+	notebook->AddPage(panel_1, LANG(TOOLCHAINS_GENERAL_SETTINGS,"General"));
+	notebook->AddPage(panel_2, LANG(TOOLCHAINS_FIXED_SETTINGS,"Configuración fija"));
+	notebook->AddPage(panel_3, LANG(TOOLCHAINS_USER_ARGUMENTS,"Argumentos configurables"));
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
@@ -111,6 +120,8 @@ void mxToolchainConfig::OnButtonOk (wxCommandEvent & event) {
 	tc.linker = linker->GetValue();
 	tc.c_linker_options = c_linker_options->GetValue();
 	tc.cpp_linker_options = cpp_linker_options->GetValue();
+	tc.dynamic_lib_linker = dynamic_lib_linker->GetValue();
+	tc.static_lib_linker = static_lib_linker->GetValue();
 	wxString dirname = DIR_PLUS_FILE(config->home_dir,"toolchains");
 	if (!wxFileName::DirExists(dirname)) wxMkdir(dirname);
 	tc.Save(DIR_PLUS_FILE(dirname,tc.file));

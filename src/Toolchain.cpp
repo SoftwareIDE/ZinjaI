@@ -53,6 +53,8 @@ void Toolchain::LoadToolchains ( ) {
 				else if (key=="linker") toolchains[i].linker = value;
 				else if (key=="c_linker_options") toolchains[i].c_linker_options = value;
 				else if (key=="cpp_linker_options") toolchains[i].cpp_linker_options = value;
+				else if (key=="dynamic_lib_linker") toolchains[i].dynamic_lib_linker = value;
+				else if (key=="static_lib_linker") toolchains[i].static_lib_linker = value;
 			}
 		}
 	}
@@ -65,16 +67,7 @@ void Toolchain::Save(const wxString &fname) {
 	else
 		fil.Create();
 	fil.Clear();
-				
-//	fil.AddLine(wxString("desc=")+desc);
-	fil.AddLine(wxString("base_path=")+base_path);
-	fil.AddLine(wxString("bin_path=")+bin_path);
-	fil.AddLine(wxString("build_command=")+build_command);
-	fil.AddLine(wxString("clean_command=")+clean_command);
-	for(int unsigned i=0;i<TOOLCHAIN_MAX_ARGS;i++) {  
-		if (arguments[i][0].Len())
-			fil.AddLine(wxString("argument")<<(i+1)<<"="<<arguments[i][0]<<"="<<arguments[i][1]);
-	}
+	
 	switch(type) {
 	case TC_GCC: fil.AddLine("type=gcc"); break;
 	case TC_GCC_LIKE: fil.AddLine("type=gcc-like"); break;
@@ -82,14 +75,28 @@ void Toolchain::Save(const wxString &fname) {
 	case TC_EXTERN: fil.AddLine("type=extern"); break;
 	case TC_COUNT:;
 	}
-	fil.AddLine(wxString("c_compiler=")+c_compiler);
-	fil.AddLine(wxString("c_compiling_options=")+c_compiling_options);
-	fil.AddLine(wxString("cpp_compiler=")+cpp_compiler);
-	fil.AddLine(wxString("cpp_compiling_options=")+cpp_compiling_options);
-	fil.AddLine(wxString("linker=")+linker);
-	fil.AddLine(wxString("c_linker_options=")+c_linker_options);
-	fil.AddLine(wxString("cpp_linker_options=")+cpp_linker_options);
-				
+	
+	fil.AddLine(wxString("base_path=")+base_path);
+	fil.AddLine(wxString("bin_path=")+bin_path);
+	if (type==TC_EXTERN) {
+		fil.AddLine(wxString("build_command=")+build_command);
+		fil.AddLine(wxString("clean_command=")+clean_command);
+	} else {
+		fil.AddLine(wxString("c_compiler=")+c_compiler);
+		fil.AddLine(wxString("cpp_compiler=")+cpp_compiler);
+		fil.AddLine(wxString("linker=")+linker);
+		fil.AddLine(wxString("c_compiling_options=")+c_compiling_options);
+		fil.AddLine(wxString("cpp_compiling_options=")+cpp_compiling_options);
+		fil.AddLine(wxString("c_linker_options=")+c_linker_options);
+		fil.AddLine(wxString("cpp_linker_options=")+cpp_linker_options);
+		fil.AddLine(wxString("dynamic_lib_linker=")+dynamic_lib_linker);
+		fil.AddLine(wxString("static_lib_linker=")+static_lib_linker);
+	}
+	for(int unsigned i=0;i<TOOLCHAIN_MAX_ARGS;i++) {  
+		if (arguments[i][0].Len())
+			fil.AddLine(wxString("argument")<<(i+1)<<"="<<arguments[i][0]<<"="<<arguments[i][1]);
+	}
+	
 	fil.Write();
 	fil.Close();
 	
