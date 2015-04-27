@@ -141,7 +141,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		if (wxFileName::FileExists(tty_file))
 			wxRemoveFile(tty_file);
 		tty_cmd<<config->Files.terminal_command<<" "<<config->Files.runner_command<<_T(" -tty ")<<tty_file;
-		tty_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
+		tty_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion")); // NO USAR ACENTOS, PUEDE ROMER EL X!!!! (me daba un segfault en la libICE al poner el ó en EjeuciÓn)
 		if (wait_for_key) tty_cmd<<_T(" -waitkey");
 	//	mxUT::ParameterReplace(tty_cmd,_T("${ZINJAI_DIR}"),wxGetCwd());
 		tty_process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
@@ -773,8 +773,11 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 			i+=12;
 			for (int c=0;c<cant_levels;c++) {
 				// chag+i = frame={level="0",args={{name="...
-				while (chag[i]!='[' && chag[i]!='{') 
+				while (chag[i]!='[' && chag[i]!='{') {
+					if (!chag[i]) break;
 					i++; 
+				}
+				if (!chag[i]) break;
 				int p=++i, arglev=0;
 				// chag+i = level="0",args={{name="...
 				while ((chag[i]!=']' && chag[i]!='}') || comillas || arglev>0) {
