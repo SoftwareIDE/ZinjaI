@@ -443,10 +443,10 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 					else res = mxMessageDialog(main_window,
 						LANG2(PROJMNGR_CHANGE_PROFILE_OPENNING,""
 						"Parece que esta abriendo un proyecto que tiene seleccionado un perfil\n"
-						"de compilacion y ejecucion para otro sistema operativo: \"<{1}>\"\n"
+						"de compilación y ejecución para otro sistema operativo: \"<{1}>\"\n"
 						"\n¿Desea cambiar el perfil activo por \"<{2}>\"?",
 						active_configuration->name,suggested_configuration->name),
-						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilacion y Ejecucion"),mxMD_YES_NO|mxMD_WARNING,
+						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilación y Ejecución"),mxMD_YES_NO|mxMD_WARNING,
 						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK,"Seleccionar otro perfil de la lista")
 						,false).ShowModal();
 					if (mxMD_YES&res) {
@@ -456,7 +456,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 								choices.Add(configurations[i]->name);
 							wxString res=wxGetSingleChoice(
 								LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CHOICE,"Seleccione el perfil a activar"),
-								LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilacion y Ejecucion"),
+								LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilación y Ejecución"),
 								choices,main_window);
 							if (res.Len())
 								for (int i=0;i<configurations_count;i++)
@@ -656,7 +656,7 @@ bool ProjectManager::Save (bool as_template) {
 		int res = mxMessageDialog(main_window,
 			wxString("El proyecto que esta por guardar fue creado con una version de ZinjaI superior\n")<<
 			"a la que esta utilizando. Si graba el proyecto ahora se convertira a su su\n"<<
-			"version. Algunas opciones de configuracion del mismo podrian perderse en la\n"<<
+			"version. Algunas opciones de configuración del mismo podrian perderse en la\n"<<
 			"conversion. Desea guardarlo de todas formas?","Version del Proyecto",mxMD_WARNING|mxMD_YES_NO/*,"Guardar con otro nombre",false*/).ShowModal();
 		if (res&mxMD_NO) return false;
 //		if (res&mxMD_CHECKED) {		
@@ -1202,7 +1202,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				wxFileName(full_path).Touch();
 				mxSource *src = main_window->IsOpen(item->item);
 				if (src) src->Reload();
-				warnings.Add(LANG1(PROJMNGR_FUTURE_SOURCE,"El fuente <{1}> tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.",full_path));
+				warnings.Add(LANG1(PROJMNGR_FUTURE_SOURCE,"El fuente <{1}> tenia fecha de modificación en el futuro. Se reemplazó por la fecha actual.",full_path));
 				mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array);
 				flag=true;
 			} else 
@@ -1213,7 +1213,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				if (src_date>bin_date) // si el objeto esta desactualizado respecto al fuente 
 					flag=true;
 				else if (bin_date.IsLaterThan(now)) { // si el objeto es del futuro (por las dudas)
-					warnings.Add(LANG1(PROJMNGR_FUTURE_OBJECT,"El objeto <{1}> tenia fecha de modificacion en el futuro. Se recompilara el fuente.",full_path));
+					warnings.Add(LANG1(PROJMNGR_FUTURE_OBJECT,"El objeto <{1}> tenia fecha de modificación en el futuro. Se recompilara el fuente.",full_path));
 					flag=true;
 				} else { // ver si el objeto esta desactualizado respecto a los includes del fuente
 					flag=mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array);
@@ -1665,7 +1665,7 @@ long int ProjectManager::Run() {
 	
 	if (active_configuration->console_program) { // si es de consola...
 		wxString terminal_cmd(config->Files.terminal_command);
-		terminal_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
+		terminal_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion")); // NO USAR ACENTOS, PUEDE ROMER EL X!!!! (me daba un segfault en la libICE al poner el ó en EjeuciÓn)
 		if (terminal_cmd.Len()!=0) { // corregir espacios al final del comando de la terminal
 			if (terminal_cmd==" " ) terminal_cmd="";
 			else if (terminal_cmd[terminal_cmd.Len()-1]!=' ') terminal_cmd<<" ";
@@ -2575,7 +2575,7 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 		return true;
 	}
 	fil.Clear();
-	fil.AddLine("Este archivo se utiliza para determinar la fecha y hora de la ultima compilacion del proyecto wxFormBuilder homonimo.");
+	fil.AddLine("Este archivo se utiliza para determinar la fecha y hora de la última compilación del proyecto wxFormBuilder homónimo.");
 	fil.AddLine("This is a dummy file to be used as timestamp for the generation of a wxFormBuilder project.");
 	fil.Write();
 	fil.Close();

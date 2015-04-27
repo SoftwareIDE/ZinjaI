@@ -97,7 +97,7 @@ public:
 	// compile_and_run_struct_common
 	mxSource *last_compiled; ///< ultimo fuente compilado
 	mxSource *last_runned; ///< ultimo fuente ejecutado
-	wxString last_caption; ///< titulo de la pestana del ultimo fuente ejecutado
+	wxString last_caption; ///< titulo de la pestaña del ultimo fuente ejecutado
 	wxTimer *timer; ///< timer que actualiza el arbol de compilacion mientras compila
 	int num_errors; ///< cantidad de errores de la compilacion
 	int num_warnings; ///< cantidad de avisos de la compilacion

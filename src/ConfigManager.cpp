@@ -70,13 +70,13 @@ void ConfigManager::DoInitialChecks() {
 				if (LinuxTerminalInfo::list[i].warning) {
 					wxString chk_message; 
 					if (mxUT::GetOutput("apt-get --version").Len()) chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
-					int ans= mxMessageDialog(nullptr,LANG1(CONFIG_TERMINAL_WARNING,"La aplicacion terminal que se ha encontrado instalada\n"
+					int ans= mxMessageDialog(nullptr,LANG1(CONFIG_TERMINAL_WARNING,"La aplicación terminal que se ha encontrado instalada\n"
 						"es <{1}>. Algunas versiones de esta terminal pueden generar\n"
 						"problemas al intentar ejecutar un programa o proyecto. Si no logra\n"
 						"ejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\n"
 						"que compile, intente configurar otra terminal (menú Archivo->Preferencias...\n"
 						"pestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\n"
-						"recomendada es xterm).",LinuxTerminalInfo::list[i].name),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
+						"recomendada es xterm).",LinuxTerminalInfo::list[i].name),LANG(CONFIG_TERMINAL,"Terminal de ejecución"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
 					if (ans&mxMD_CHECKED) {
 						wxExecute(Files.terminal_command+"sudo apt-get install xterm");
 						Files.terminal_command = LinuxTerminalInfo::list[0].run_command;
@@ -89,7 +89,7 @@ void ConfigManager::DoInitialChecks() {
 			mxMessageDialog(nullptr,LANG(CONFIG_NO_TERMINAL_FOUND,""
 							"No se ha encontrado una terminal conocida. Se recomienda instalar\n"
 			                "xterm; luego configure el parametro \"Comando del Terminal\" en la\n"
-							"seccion \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecucion"),mxMD_OK|mxMD_WARNING).ShowModal();
+							"pestaña \"Rutas 2\" del cuadro de \"Preferencias\"."),LANG(CONFIG_TERMINAL,"Terminal de ejecución"),mxMD_OK|mxMD_WARNING).ShowModal();
 		}
 	}
 	// verificar si hay compilador
@@ -104,7 +104,7 @@ void ConfigManager::DoInitialChecks() {
 			if (Files.terminal_command!="<<sin configurar>>" && mxUT::GetOutput("apt-get --version").Len())
 				chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 			int ans = mxMessageDialog(nullptr,LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
-				"con el gestor de paquetes que corresponda a su distribucion\n"
+				"con el gestor de paquetes que corresponda a su distribución\n"
 				"(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_COMPILER,"Compilador C++"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
 			if (ans&mxMD_CHECKED) wxExecute(Files.terminal_command+"sudo apt-get install build-essential");
 		}
@@ -115,7 +115,7 @@ void ConfigManager::DoInitialChecks() {
 		if (Files.terminal_command!="<<sin configurar>>" && mxUT::GetOutput("apt-get --version").Len())
 			chk_message=LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 		int ans = mxMessageDialog(nullptr,LANG(CONFIG_DEBUGGER_NOT_FOUND,"No se ha encontrado el depurador (gdb). Debe instalarlo con\n"
-		                "el gestor de paquetes que corresponda a su distribucion\n"
+		                "el gestor de paquetes que corresponda a su distribución\n"
 		                "(apt-get, yum, yast, installpkg, etc.)"),LANG(CONFIG_DEBUGGER,"Depurador"),mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal();
 		if (ans&mxMD_CHECKED) wxExecute(Files.terminal_command+"sudo apt-get install build-essential");
 	}
@@ -328,7 +328,7 @@ bool ConfigManager::Load() {
 		} 
 	}
 	
-	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}");
+	if (Init.version<20100806) Files.terminal_command.Replace("ZinjaI - Consola de Ejecucion","${TITLE}"); // NO USAR ACENTOS, PUEDE ROMER EL X!!!! (me daba un segfault en la libICE al poner el ó en EjeuciÓn)
 	if (Init.version<20101112 && Help.autocomp_indexes.Len()) Help.autocomp_indexes<<",STL_Iteradores";
 	if (Init.version<20110418) Debug.use_colours_for_inspections=true;
 	if (Init.version<20110420) Init.check_for_updates=true;
@@ -836,7 +836,7 @@ bool ConfigManager::CheckWxfbPresent() {
 					"no se encuentra correctamente instalado/configurado en\n"
 					"su pc. Para descargar e instalar wxFormsBuilder dirijase\n"
 					"a http://wxformbuilder.org. Si ya se encuentra instalado,\n"
-					"configure su ubicacion en la pestaña \"Rutas 2\" del\n"
+					"configure su ubicación en la pestaña \"Rutas 2\" del\n"
 					"dialogo de \"Preferencias\" (menu \"Archivo\")."),
 					LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING,
 					LANG(PROJMNGR_WXFB_OPEN_HOMEPAGE,"Ir al sitio de wxFormBuilder ahora"),
@@ -877,7 +877,7 @@ bool ConfigManager::CheckDoxygenPresent() {
 		mxMessageDialog(main_window,LANG(MAINW_DOXYGEN_MISSING,"Doxygen no se encuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
 			"http://www.doxygen.org. Si ya se encuentra instalado,\n"
-			"configure su ubiciacion en la pestaña \"Rutas 2\" del\n"
+			"configure su ubiciación en la pestaña \"Rutas 2\" del\n"
 			"dialog de \"Preferencias\" (menu \"Archivo\")."),
 			LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return false;
@@ -906,7 +906,7 @@ bool ConfigManager::CheckCppCheckPresent() {
 		mxMessageDialog(main_window,LANG(MAINW_CPPCHECK_MISSING,"CppCheck no se encuentra correctamente instalado/configurado\n"
 			"en su pc. Para descargar e instalar CppCheck dirijase a\n"
 			"http://cppcheck.sourceforge.net. Si ya se encuentra instalado,\n"
-			"configure su ubiciacion en la pestaña \"Rutas 2\" del\n"
+			"configure su ubiciación en la pestaña \"Rutas 2\" del\n"
 			"dialog de \"Preferencias\" (menu \"Archivo\")."),
 			LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();
 		return false;

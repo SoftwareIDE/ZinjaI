@@ -513,7 +513,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 		aui_manager.AddPane(CreateSymbolsTree(), wxAuiPaneInfo().Name("symbols_tree").Caption(LANG(CAPTION_SYMBOLS_TREE,"Arbol de Simbolos")).Left().CloseButton(true).MaximizeButton(true).Hide().Position(2).MaximizeButton(!config->Init.autohiding_panels));
 		if (config->Init.autohiding_panels) SetExplorerPath(config->Files.last_dir);
 	}
-	aui_manager.AddPane(CreateCompilerTree(), wxAuiPaneInfo().Name("compiler_tree").Bottom().Caption(LANG(CAPTION_COMPILER_OUTPUT,"Resultados de la Compilacion")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
+	aui_manager.AddPane(CreateCompilerTree(), wxAuiPaneInfo().Name("compiler_tree").Bottom().Caption(LANG(CAPTION_COMPILER_OUTPUT,"Resultados de la Compilación")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	aui_manager.AddPane(CreateQuickHelp(), wxAuiPaneInfo().Name("quick_help").Bottom().Caption(LANG(CAPTION_QUIKHELP,"Ayuda Rapida")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Debug.inspections_on_right)
 		aui_manager.AddPane((wxGrid*)(inspection_ctrl = new mxInspectionsPanel()), wxAuiPaneInfo().Name("inspection").Caption(LANG(CAPTION_INSPECTIONS,"Inspecciones")).Right().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
@@ -524,7 +524,7 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	aui_manager.AddPane((wxGrid*)(backtrace_ctrl = new mxBacktraceGrid(this)), wxAuiPaneInfo().Name("backtrace").Caption(LANG(CAPTION_BACKTRACE,"Trazado Inverso")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(1).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_BACKTRACE] = new mxHidenPanel(this,backtrace_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_BACKTRACE,"Trazado Inverso"));
-	aui_manager.AddPane((wxGrid*)(threadlist_ctrl = new mxThreadGrid(this)), wxAuiPaneInfo().Name("threadlist").Caption(LANG(CAPTION_THREADLIST,"Hilos de Ejecucion")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
+	aui_manager.AddPane((wxGrid*)(threadlist_ctrl = new mxThreadGrid(this)), wxAuiPaneInfo().Name("threadlist").Caption(LANG(CAPTION_THREADLIST,"Hilos de Ejecución")).Bottom().CloseButton(true).MaximizeButton(true).Hide().Position(0).MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_THREADS] = new mxHidenPanel(this,threadlist_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_THREADS,"Hilos"));
 	aui_manager.AddPane(CreateNotebookSources(), wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
@@ -681,7 +681,7 @@ void mxMainWindow::OnProjectTreePopup(wxTreeEvent &event) {
 void mxMainWindow::OnCompilerTreePopup(wxTreeEvent &event) {
 	mxHidenPanel::ignore_autohide=true;
 	wxMenu menu("");
-	menu.Append(mxID_COMPILER_POPUP_FULL, LANG(MAINW_OPEN_LAST_COMPILER_OUTPUT,"Abrir ultima salida"));
+	menu.Append(mxID_COMPILER_POPUP_FULL, LANG(MAINW_OPEN_LAST_COMPILER_OUTPUT,"Abrir última salida"));
 	project_tree.treeCtrl->PopupMenu(&menu);
 	mxHidenPanel::ignore_autohide=false;
 }
@@ -1091,7 +1091,7 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 	wxString item_text=(compiler_tree.treeCtrl->GetItemText(event.GetItem()));
 	if (item_text==LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución.")) {
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_noexecperm.html"),false); return;
-	} else if (item_text.EndsWith(LANG(PROJMNGR_FUTURE_SOURCE_POST," tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual."))) {
+	} else if (item_text.EndsWith(LANG(PROJMNGR_FUTURE_SOURCE_POST," tenia fecha de modificación en el futuro. Se reemplazo por la fecha actual."))) {
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_futuretimestamp.html"),false); return;
 	} else if (item_text==LANG(PROJMNGR_MANIFEST_NOT_FOUND,"No se ha encontrado el archivo manifest.xml.")) {
 		LoadInQuickHelpPanel(DIR_PLUS_FILE(config->Help.guihelp_dir,"zerror_missingiconmanifest.html"),false); return;
@@ -1538,7 +1538,7 @@ wxPanel* mxMainWindow::CreateCompilerTree() {
 	imglist->Add(bitmaps->GetBitmap("co_project_warning.png"));
 	compiler_tree.treeCtrl->AssignImageList(imglist);
 	
-	compiler_tree.root = compiler_tree.treeCtrl->AddRoot("Resultados de la Compilacion:", 0);
+	compiler_tree.root = compiler_tree.treeCtrl->AddRoot("Resultados de la Compilación:", 0);
 	wxArrayTreeItemIds items;
 	compiler_tree.state = compiler_tree.treeCtrl->AppendItem(compiler_tree.root, "ZinjaI",2);
 	compiler_tree.errors = compiler_tree.treeCtrl->AppendItem(compiler_tree.root, LANG(MAINW_CT_ERRORS,"Errores"), 0);
@@ -1603,7 +1603,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 	
 	// si es uno interrumpido adrede, liberar memoria y no hacer nada mas
 	if (compile_and_run->killed) { 
-		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
+		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecución Finalizada"));
 		delete compile_and_run; return;
 	}
 
@@ -1611,7 +1611,7 @@ void mxMainWindow::OnProcessTerminate (wxProcessEvent& event) {
 	if (compile_and_run->compiling) { // si termino la compilacion
 		compiler->ParseCompilerOutput(compile_and_run,event.GetExitCode()==0);
 	} else { // si termino la ejecucion
-		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecucion Finalizada"));
+		SetCompilingStatus(LANG(MAINW_STATUS_RUN_FINISHED,"Ejecución Finalizada"));
 		if (compile_and_run->valgrind_cmd.Len()) ShowValgrindPanel(mxVO_VALGRIND,DIR_PLUS_FILE(config->temp_dir,"valgrind.out"));
 		delete compile_and_run->process;
 		delete compile_and_run;
@@ -1644,7 +1644,7 @@ void mxMainWindow::StartExecutionStuff (compile_and_run_struct_single *compile_a
 		if (compile_and_run->compiling)
 			SetCompilingStatus(LANG(MAINW_COULDNOT_LAUNCH_PROCESS,"No se pudo lanzar el proceso"));
 		else
-			SetCompilingStatus(LANG(MAINW_COULDNOT_RUN,"No se pudo lanzar la ejecucion!"));
+			SetCompilingStatus(LANG(MAINW_COULDNOT_RUN,"No se pudo lanzar la ejecución!"));
 		delete compile_and_run;
 		return;
 	}
@@ -1754,7 +1754,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 #endif
 	
 	wxString command(config->Files.terminal_command);
-	command.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion"));
+	command.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion")); // NO USAR ACENTOS, PUEDE ROMER EL X!!!! (me daba un segfault en la libICE al poner el ó en EjeuciÓn)
 	if (command.Len()!=0) {
 		if (command==" ") 
 			command="";
@@ -3225,7 +3225,7 @@ void mxMainWindow::OnDebugRun ( wxCommandEvent &event ) {
 		if (debug->IsPaused())
 			debug->Continue();
 	} else {
-		SetCompilingStatus("Preparando depuracion...");
+		SetCompilingStatus("Preparando depuración...");
 DEBUG_INFO("wxYield:in mxMainWindow::OnDebugRun");
 		wxYield();
 DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
@@ -3330,7 +3330,7 @@ void mxMainWindow::OnDebugStepOver ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugReturn ( wxCommandEvent &event ) {
 	if (debug->CanTalkToGDB()) {
 		wxString res;
-		if (mxGetTextFromUser(res,LANG(DEBUG_RETURN_VALUE,"Valor de retorno:"), LANG(DEBUG_RETURN_FROM_FUNCTION,"Salir de la funcion") , "", this))
+		if (mxGetTextFromUser(res,LANG(DEBUG_RETURN_VALUE,"Valor de retorno:"), LANG(DEBUG_RETURN_FROM_FUNCTION,"Salir de la función") , "", this))
 			debug->Return(res);
 	}
 }
@@ -3810,7 +3810,7 @@ void mxMainWindow::OnSelectExplorerItem (wxTreeEvent &event) {
 	
 	if (explorer_tree.selected_item==explorer_tree.root) {
 		
-		wxDirDialog dlg(this,"Seleccione la ubicacion:",explorer_tree.path);
+		wxDirDialog dlg(this,"Seleccione la ubicación:",explorer_tree.path);
 		if (wxID_OK==dlg.ShowModal()) {
 			SetExplorerPath(dlg.GetPath());
 			config->Files.last_dir = dlg.GetPath();
@@ -3833,10 +3833,10 @@ void mxMainWindow::OnExplorerTreePopup(wxTreeEvent &event) {
 	
 	wxMenu menu("");
 	if (explorer_tree.selected_item==explorer_tree.root) {
-		menu.Append(mxID_EXPLORER_POPUP_CHANGE_PATH, LANG(MAINW_EXPLORER_POPUP_CHANGE_PATH,"&Cambiar Ubicacion..."));
+		menu.Append(mxID_EXPLORER_POPUP_CHANGE_PATH, LANG(MAINW_EXPLORER_POPUP_CHANGE_PATH,"&Cambiar Ubicación..."));
 		menu.Append(mxID_EXPLORER_POPUP_PATH_UP, LANG(MAINW_EXPLORER_POPUP_LEVEL_UP,"&Subir un Nivel"));
 		if (notebook_sources->GetPageCount())
-			menu.Append(mxID_FILE_EXPLORE_FOLDER, LANG(MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE,"Tomar Ubicacion del Archivo Abierto"));
+			menu.Append(mxID_FILE_EXPLORE_FOLDER, LANG(MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE,"Tomar Ubicación del Archivo Abierto"));
 		if (!explorer_tree.show_only_sources)
 			menu.Append(mxID_EXPLORER_POPUP_OPEN_ALL, LANG(MAINW_EXPLORER_POPUP_OPEN_ALL,"&Abrir Todos los Archivos"));
 		menu.Append(mxID_EXPLORER_POPUP_OPEN_SOURCES, LANG(MAINW_EXPLORER_POPUP_OPEN_SOURCES,"Abrir &Todos los Fuentes"));
@@ -3874,7 +3874,7 @@ void mxMainWindow::OnExplorerTreeUpdate(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnExplorerTreeChangePath(wxCommandEvent &evy) {
-	wxDirDialog dlg(this,LANG(MAINW_EXPLORER_SELECT_PATH,"Seleccione la ubicacion:"),explorer_tree.path);
+	wxDirDialog dlg(this,LANG(MAINW_EXPLORER_SELECT_PATH,"Seleccione la ubicación:"),explorer_tree.path);
 	if (wxID_OK==dlg.ShowModal()) {
 		SetExplorerPath(dlg.GetPath());
 		config->Files.last_dir = dlg.GetPath();

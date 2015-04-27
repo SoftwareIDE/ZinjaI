@@ -988,7 +988,7 @@ wxString mxUT::Relativize(wxString name, wxString path) {
 void mxUT::OpenFolder(wxString path) {
 	if (config->Files.explorer_command==_T("<<sin configurar>>")) {
 		wxMessageBox(LANG(CONFIG_EXPLORER_PROBLEM,"No se ha definido el explorador de archivos a utilizar\n"
-			                                       "Puede configurar el mismo en la pestana \"Rutas 2\" del\n"
+			                                       "Puede configurar el mismo en la pestaña \"Rutas 2\" del\n"
 												   "cuadro de Preferencias (menu Archivo->Preferencias)."),LANG(CONFIG_EXPLORER,"Explorador de archivos"));
 	} else {
 		wxString cmd = config->Files.explorer_command;

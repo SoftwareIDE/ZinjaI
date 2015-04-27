@@ -100,7 +100,7 @@ mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent) : wxDialog(parent
 	nameSizer->Add(new wxButton (this,mxID_PROJECT_CONFIG_RENAME,LANG(PROJECTCONFIG_RENAME_PROFILE,"Renombrar")));
 	nameSizer->Add(new wxButton (this,mxID_PROJECT_CONFIG_REMOVE,LANG(PROJECTCONFIG_DELETE_PROFILE,"Eliminar")));
 	
-	// crear las pestanas con las opciones de la configuracion
+	// crear las pestañas con las opciones de la configuracion
 	notebook = new wxNotebook(this,wxID_ANY);
 	if (config->Help.show_extra_panels)
 		notebook->AddPage(CreateQuickHelpPanel(notebook), LANG(PROJECTCONFIG_HELP,"Ayuda"));

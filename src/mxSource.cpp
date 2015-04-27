@@ -2805,7 +2805,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 //	if (FindFocus()!=this) // no mostrar tooltips si no se tiene el foco
 //		return;
 	
-	// no mostrar tooltips si no es la pestana del notebook seleccionada, o el foco no esta en esta ventana
+	// no mostrar tooltips si no es la pestaña del notebook seleccionada, o el foco no esta en esta ventana
 	if (!main_window->IsActive() || main_window->focus_source!=this) return; 
 	
 	// no mostrar si el mouse no está dentro del area del fuente
