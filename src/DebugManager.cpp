@@ -107,7 +107,7 @@ bool DebugManager::Start(mxSource *source) {
 
 		compiler->last_caption = source->page_text;
 		compiler->last_runned = current_source = source;
-		if (Start(source->working_folder.GetFullPath(),source->GetBinaryFileName().GetFullPath(),args,true,source->config_running.wait_for_key)) {
+		if (Start(source->working_folder.GetFullPath(),source->GetBinaryFileName().GetFullPath(),args,true,source->config_running.wait_for_key?WKEY_ALWAYS:WKEY_NEVER)) {
 			int cuantos_sources = main_window->notebook_sources->GetPageCount();
 			for (int i=0;i<cuantos_sources;i++) {
 				mxSource *src = (mxSource*)(main_window->notebook_sources->GetPage(i));
@@ -131,7 +131,7 @@ bool DebugManager::Start(mxSource *source) {
 	return false;
 }
 
-bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool show_console, bool wait_for_key) {
+bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool show_console, int wait_for_key) {
 	mxOSD osd(main_window,project?LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."):"");
 	ResetDebuggingStuff(); 
 	debug_patcher->Init(exe);
@@ -142,7 +142,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			wxRemoveFile(tty_file);
 		tty_cmd<<config->Files.terminal_command<<" "<<config->Files.runner_command<<_T(" -tty ")<<tty_file;
 		tty_cmd.Replace("${TITLE}",LANG(GENERA_CONSOLE_CAPTION,"ZinjaI - Consola de Ejecucion")); // NO USAR ACENTOS, PUEDE ROMER EL X!!!! (me daba un segfault en la libICE al poner el ó en EjeuciÓn)
-		if (wait_for_key) tty_cmd<<_T(" -waitkey");
+		wait_for_key_policy = wait_for_key;
 	//	mxUT::ParameterReplace(tty_cmd,_T("${ZINJAI_DIR}"),wxGetCwd());
 		tty_process = new wxProcess(main_window->GetEventHandler(),mxPROCESS_DEBUG);
 		tty_pid = wxExecute(tty_cmd,wxEXEC_ASYNC,tty_process);
@@ -175,9 +175,9 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		while (true) {
 			wxTextFile ftty(tty_file);
 			ftty.Open();
-			wxString tty_path = ftty.GetFirstLine();
-			if (tty_path.Len()) {
-				command<<_T(" -tty=")<<tty_path;
+			tty_dev = ftty.GetFirstLine();
+			if (tty_dev.Len()) {
+				command<<_T(" -tty=")<<tty_dev;
 				ftty.Close();
 				break;
 			}
@@ -250,7 +250,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 void DebugManager::ResetDebuggingStuff() {
 	status=DBGST_STARTING;
 #ifndef __WIN32__
-	tty_pid = 0; tty_process=nullptr;
+	tty_pid = 0; tty_process=nullptr; tty_dev.Clear();
 #endif
 //	black_list.Clear(); stepping_in=false;
 //	mxUT::Split(config->Debug.blacklist,black_list,true,false);
@@ -412,7 +412,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 	return false;
 }
 
-bool DebugManager::Stop() {
+bool DebugManager::Stop(bool waitkey) {
 	if (status==DBGST_STOPPING) return false; else status=DBGST_STOPPING;
 	if (waiting || !debugging) {
 #if defined(__APPLE__) || defined(__WIN32__)
@@ -425,6 +425,18 @@ bool DebugManager::Stop() {
 	waiting=true;
 	if (pid) {
 		last_command=_T("-gdb-exit\n");
+#ifndef __WIN32__
+		if (waitkey && !tty_dev.IsEmpty()) {
+			wxString cmd; 
+			cmd 
+				<< "shell " 
+				<< mxUT::Quotize(config->Files.runner_command)
+				<< " -lang \"" << config->Init.language_file << "\""
+				<< " -debug-end <> " 
+				<< tty_dev << " >&0 2>&1\n";
+			output->Write(cmd.c_str(),cmd.Len());
+		}
+#endif
 		output->Write("-exec-abort\n",12);
 		output->Write("-gdb-exit\n",10);
 	}
@@ -437,9 +449,7 @@ bool DebugManager::Run() {
 	wxString ans = SendCommand(_T("-exec-run"));
 	if (ans.Contains(_T("^running"))) {
 		SetStateText(LANG(DEBUG_STATUS_RUNNING,"Ejecutando..."));
-		HowDoesItRuns();
-		if (config->Debug.raise_main_window)
-			main_window->Raise();
+		HowDoesItRuns(true);
 		return true;
 	} else {
 		running = false;
@@ -447,7 +457,7 @@ bool DebugManager::Run() {
 	}
 }
 
-void DebugManager::HowDoesItRuns() {
+void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 #ifdef __WIN32__
 	static wxString sep="\\",wrong_sep="/";
 #else
@@ -571,7 +581,9 @@ void DebugManager::HowDoesItRuns() {
 			BacktraceClean();
 			ThreadListClean();
 			running = false; // es necesario esto?
-			Stop();
+			bool debug_ends = how=="exited-normally"||how=="exited";
+			if (debug_ends) raise_zinjai_window = false;
+			Stop(debug_ends&&(wait_for_key_policy==WKEY_ALWAYS||(wait_for_key_policy==WKEY_ON_ERROR&&how=="exited")));
 		}
 		if (bpi && bpi->action==BPA_STOP_ONCE) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
 		SetStateText(state_text); should_pause=false;
@@ -579,6 +591,7 @@ void DebugManager::HowDoesItRuns() {
 			wxYield();
 			current_source->ShowBaloon(bpi->annotation,current_source->PositionFromLine(current_source->GetCurrentLine()));
 		}
+		if (raise_zinjai_window && config->Debug.raise_main_window) main_window->Raise();
 		return;
 	}
 }
@@ -943,9 +956,7 @@ void DebugManager::Continue() {
 	MarkCurrentPoint();
 	wxString ans = SendCommand("-exec-continue");
 	if (ans.Mid(1,7)=="running") {
-		HowDoesItRuns();
-		if (config->Debug.raise_main_window)
-			main_window->Raise();
+		HowDoesItRuns(true);
 	} else 
 		running = false;
 }
@@ -1769,9 +1780,7 @@ void DebugManager::SendSignal (const wxString & signame) {
 	running = true; MarkCurrentPoint();
 	wxString ans = SendCommand("signal ",signame);
 	if (ans.Contains("^running")) {
-		HowDoesItRuns();
-		if (config->Debug.raise_main_window)
-			main_window->Raise();
+		HowDoesItRuns(true);
 	}
 	running = false;
 }

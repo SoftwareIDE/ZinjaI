@@ -113,6 +113,8 @@ private:
 #ifndef __WIN32__
 	wxProcess *tty_process; ///< puntero al proceso de la terminal (solo en GNU/Linux), 0 si no hay ninguno
 	long tty_pid; ///< pid del proceso de la terminal (solo en GNU/Linux), 0 si no hay ninguno
+	wxString tty_dev; ///< /dev/pts/xxx
+	int wait_for_key_policy;
 #endif
 //	wxString current_file;
 	mxSource *current_source; ///< el fuente en cual se marco la ultima posicion para ejecutar
@@ -153,10 +155,10 @@ public:
 	void BacktraceClean();
 	bool Start(bool update); ///< starts debugging for current project
 	bool Start(mxSource *source); ///< starts debugging for a simple program
-	bool Start(wxString workdir, wxString exe, wxString args, bool show_console, bool wait_for_key); ///< common code Starting a program (the other two Starts will end up calling this one)
+	bool Start(wxString workdir, wxString exe, wxString args, bool show_console, int wait_for_key); ///< common code Starting a program (the other two Starts will end up calling this one)
 	bool SpecialStart(mxSource *source, const wxString &gdb_command, const wxString &status_message, bool should_continue);
 	void Start_ConfigureGdb(); ///< sends commands to gdb to set its initial state (common code for Start, Attach and LoadCoreDump)
-	bool Stop();
+	bool Stop(bool waitkey=false);
 	bool Run();
 	void StepIn();
 	void StepOver();
@@ -168,7 +170,7 @@ public:
 	void Pause();
 	void Continue();
 	bool MarkCurrentPoint(wxString cf="", int cline=-1, int cmark=-1);
-	void HowDoesItRuns();
+	void HowDoesItRuns(bool raise_zinjai_window=false);
 	void SetStateText(wxString text, bool refresh=false);
 	void SetBreakPoints(mxSource *source, bool quiet=false);
 	int LiveSetBreakPoint(BreakPointInfo *_bpi);

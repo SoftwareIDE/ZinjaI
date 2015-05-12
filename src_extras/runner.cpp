@@ -94,6 +94,22 @@ void forward_signal(int s) {
 }
 #endif
 
+void do_waitkey() {
+#ifdef __WIN32__
+	getch();
+#else
+	cout<<"\033[?25l"<<flush;
+	struct termios oldt,newt;
+	tcgetattr( STDIN_FILENO, &oldt );
+	newt = oldt;
+	newt.c_lflag &= ~( ICANON | ECHO );
+	tcsetattr( STDIN_FILENO, TCSANOW, &newt );
+	char buf[256];
+	read(STDIN_FILENO,buf,255);
+	tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
+#endif
+}
+
 int main(int argc, char *argv[]) {
 	
 	bool tty=false;
@@ -115,6 +131,10 @@ int main(int argc, char *argv[]) {
 		} else if (strcmp(argv[i],"-core")==0) {
 			enable_core_dump();
 #endif
+		} else if (strcmp(argv[i],"-debug-end")==0) {
+			cerr<<endl<<endl<<lang_debug_finished[lang_idx]<<endl<<lang_press_key_to_close[lang_idx];
+			do_waitkey();
+			return 0;
 		} else if (strcmp(argv[i],"-lang")==0) {
 			i++;
 			if (strcmp(argv[i],"english")==0)
@@ -185,7 +205,7 @@ int main(int argc, char *argv[]) {
 		CloseHandle( pi.hThread );
 		if (waitkey==2 || (waitkey==1 && ret!=0)) {
 			cerr<<endl<<endl<<lang_program_finished[lang_idx]<<ret<<" >>"<<endl<<lang_press_key_to_close[lang_idx];
-			getch();
+			do_waitkey();
 		}
 #else
 
@@ -240,17 +260,7 @@ for(int i=0;i<32;i++) { signal(i,NULL); }
 				waitkey=2;
 			}
 		}
-		if (!received_sighup&&waitkey==2) {
-			cout<<"\033[?25l"<<flush;
-			struct termios oldt,newt;
-			tcgetattr( STDIN_FILENO, &oldt );
-			newt = oldt;
-			newt.c_lflag &= ~( ICANON | ECHO );
-			tcsetattr( STDIN_FILENO, TCSANOW, &newt );
-			char buf[256];
-			read(STDIN_FILENO,buf,255);
-			tcsetattr( STDIN_FILENO, TCSANOW, &oldt );
-		}
+		if (!received_sighup&&waitkey==2) do_waitkey();
 #endif
 
 //		int ret = system(command.c_str());
