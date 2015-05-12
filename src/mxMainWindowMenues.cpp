@@ -145,7 +145,7 @@ void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
 			if (project->configurations[i]==project->active_configuration) mi->Check(true);
 		}
 		
-	} else if ( 
+	} else if ( id==mxID_TOOLS_CUSTOM_TOOLS_SETTINGS || id==mxID_TOOLS_PROJECT_TOOLS_SETTINGS ||
 		(id>=mxID_CUSTOM_TOOL_0 && id<mxID_CUSTOM_TOOL_0+MAX_CUSTOM_TOOLS) || 
 		(id>=mxID_CUSTOM_PROJECT_TOOL_0 && id<mxID_CUSTOM_PROJECT_TOOL_0+MAX_PROJECT_CUSTOM_TOOLS) ) 
 	{
@@ -202,6 +202,11 @@ void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
 	)) {
 		;
 		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnDEBUG,
+		mxID_DEBUG_RUN, mxID_DEBUG_ATTACH,mxID_DEBUG_LOAD_CORE_DUMP,mxID_DEBUG_TARGET
+	)) {
+		;
+		
 	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnVIEW,
 		mxID_VIEW_CODE_COLOURS,mxID_VIEW_CODE_STYLE
 	)) {
@@ -213,7 +218,7 @@ void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
 		;
 		
 	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnFILE,
-		mxID_FILE_SAVE,mxID_FILE_SAVE_AS,mxID_FILE_SAVE_ALL,(project?mxID_FILE_SAVE_PROJECT:wxID_ANY)
+		mxID_FILE_SAVE,mxID_FILE_SAVE_AS,mxID_FILE_SAVE_ALL,(project?int(mxID_FILE_SAVE_PROJECT):int(wxID_ANY))
 	)) {
 		;
 		
