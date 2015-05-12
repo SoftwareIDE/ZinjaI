@@ -173,7 +173,7 @@ void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
 		;
 		
 	} else if ( project && auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
-		mxID_TOOLS_CPPCHECK_RUN,mxID_TOOLS_CPPCHECK_VIEW,mxID_TOOLS_CPPCHECK_HELP
+		mxID_TOOLS_CPPCHECK_RUN,mxID_TOOLS_CPPCHECK_CONFIG,mxID_TOOLS_CPPCHECK_VIEW,mxID_TOOLS_CPPCHECK_HELP
 	)) {
 		;
 		
