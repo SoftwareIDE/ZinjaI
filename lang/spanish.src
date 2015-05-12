@@ -5,29 +5,29 @@ Listo
 CONFIG_APTGET_BUILD_ESSENTIAL
 Intentar instalar ahora
 CONFIG_TERMINAL_WARNING
-La aplicacion terminal que se ha encontrado instalada\nes <{1}>. Algunas versiones de esta terminal pueden generar\nproblemas al intentar ejecutar un programa o proyecto. Si no logra\nejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\nque compile, intente configurar otra terminal (menú Archivo->Preferencias...\npestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\nrecomendada es xterm).
+La aplicación terminal que se ha encontrado instalada\nes <{1}>. Algunas versiones de esta terminal pueden generar\nproblemas al intentar ejecutar un programa o proyecto. Si no logra\nejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\nque compile, intente configurar otra terminal (menú Archivo->Preferencias...\npestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\nrecomendada es xterm).
 CONFIG_TERMINAL
-Terminal de ejecucion
+Terminal de ejecución
 CONFIG_NO_TERMINAL_FOUND
-No se ha encontrado una terminal conocida. Se recomienda instalar\nxterm; luego configure el parametro \"Comando del Terminal\" en la\nseccion \"Rutas 2\" del cuadro de \"Preferencias\".
+No se ha encontrado una terminal conocida. Se recomienda instalar\nxterm; luego configure el parametro \"Comando del Terminal\" en la\npestaña \"Rutas 2\" del cuadro de \"Preferencias\".
 CONFIG_COMPILER_NOT_FOUND
-No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
+No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribución\n(apt-get, yum, yast, installpkg, etc.)
 CONFIG_COMPILER
 Compilador C++
 CONFIG_DEBUGGER_NOT_FOUND
-No se ha encontrado el depurador (gdb). Debe instalarlo con\nel gestor de paquetes que corresponda a su distribucion\n(apt-get, yum, yast, installpkg, etc.)
+No se ha encontrado el depurador (gdb). Debe instalarlo con\nel gestor de paquetes que corresponda a su distribución\n(apt-get, yum, yast, installpkg, etc.)
 CONFIG_DEBUGGER
 Depurador
 PROJMNGR_WXFB_NOT_FOUND
-El proyecto utiliza wxFormBuilder, pero este software\nno se encuentra correctamente instalado/configurado en\nsu pc. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicacion en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
+El proyecto utiliza wxFormBuilder, pero este software\nno se encuentra correctamente instalado/configurado en\nsu pc. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicación en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
 GENERAL_WARNING
 Advertencia
 PROJMNGR_WXFB_OPEN_HOMEPAGE
 Ir al sitio de wxFormBuilder ahora
 MAINW_DOXYGEN_MISSING
-Doxygen no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+Doxygen no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciación en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CPPCHECK_MISSING
-CppCheck no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+CppCheck no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciación en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CUSTOM_TOOL_UNDEFINED
 Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
 GENERAL_ERROR
@@ -241,13 +241,13 @@ Cerrar &Todo
 MENUITEM_FILE_CLOSE_PROJECT
 Cerrar Pro&yecto
 MENUITEM_FILE_PROJECT_CONFIG
-&Configuracion del Proyecto...
+&Configuración del Proyecto...
 MENUITEM_FILE_PREFERENCES
 &Preferencias...
 MENUITEM_FILE_EXIT
 &Salir
 MENUITEM_EDIT
-&Edicion
+&Edición
 MENUITEM_EDIT_UNDO
 &Deshacer
 MENUITEM_EDIT_REDO
@@ -353,25 +353,25 @@ Mostrar &Explorardor de Archivos
 MENUITEM_VIEW_SYMBOLS_TREE
 Mostrar Arbol de &Simbolos
 MENUITEM_VIEW_COMPILER_TREE
-&Mostrar Resultados de la Compilacion
+&Mostrar Resultados de la Compilación
 MENUITEM_VIEW_TOOLBARS
 Barras de herramientas
 MENUITEM_VIEW_TOOLBAR_FILE
 &Mostrar Barra de Herramientas Archivo
 MENUITEM_VIEW_TOOLBAR_EDIT
-&Mostrar Barra de Herramientas Edicion
+&Mostrar Barra de Herramientas Edición
 MENUITEM_VIEW_TOOLBAR_VIEW
 &Mostrar Barra de Herramientas Ver
 MENUITEM_VIEW_TOOLBAR_FIND
 &Mostrar Barra de Busqueda Rapida
 MENUITEM_VIEW_TOOLBAR_RUN
-&Mostrar Barra de Herramientas Ejecucion
+&Mostrar Barra de Herramientas Ejecución
 MENUITEM_VIEW_TOOLBAR_TOOLS
 &Mostrar Barra de Herramientas Herramientas
 MENUITEM_VIEW_TOOLBAR_PROJECT
 &Mostrar Barra de Herramientas Proyecto
 MENUITEM_VIEW_TOOLBAR_DEBUG
-&Mostrar Barra de Herramientas Depuracion
+&Mostrar Barra de Herramientas Depuración
 MENUITEM_VIEW_TOOLBAR_MISC
 &Mostrar Barra de Herramientas Miscelanea
 MENUITEM_VIEW_TOOLBARS_CONFIG
@@ -381,7 +381,7 @@ MENUITEM_VIEW_PREV_ERROR
 MENUITEM_VIEW_NEXT_ERROR
 &Ir a siguiente error
 MENUITEM_RUN
-E&jecucion
+E&jecución
 MENUITEM_RUN_RUN
 &Ejecutar...
 MENUITEM_RUN_OLD
@@ -395,7 +395,7 @@ MENUITEM_RUN_STOP
 MENUITEM_RUN_OPTIONS
 &Opciones...
 MENUITEM_DEBUG
-&Depuracion
+&Depuración
 MENUITEM_DEBUG_START
 &Iniciar/Continuar
 MENUITEM_DEBUG_PAUSE
@@ -425,7 +425,7 @@ Panel de In&specciones
 MENUITEM_DEBUG_BACKTRACE
 &Trazado Inverso
 MENUITEM_DEBUG_THREADLIST
-&Hilos de Ejecucion
+&Hilos de Ejecución
 MENUITEM_DEBUG_SHOW_LOG_PANEL
 &Mostrar mensajes del depurador
 MENUITEM_DEBUG_MORE
@@ -439,7 +439,7 @@ Cargar &Volcado de Memoria...
 MENUITEM_SAVE_CORE_DUMP
 Guardar &Volcado de Memoria...
 MENUITEM_DEBUG_ENABLE_INVERSE
-Habilitar Ejecucion Hacia Atras
+Habilitar Ejecución Hacia Atras
 MENUITEM_DEBUG_INVERSE
 Ejecutar Hacia Atras
 MENUITEM_DEBUG_SET_SIGNALS
@@ -455,7 +455,7 @@ MENUITEM_TOOLS
 MENUITEM_TOOLS_DRAW_FLOWCHART
 Dibujar Diagrama de &Flujo...
 MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
-Dibujar &Jerarquia de Clases...
+Dibujar &Jerarquía de Clases...
 MENUITEM_TOOLS_CODE_COPY_FROM_H
 Implementar Métodos/Funciones faltantes...
 MENUITEM_TOOLS_COMMENTS
@@ -533,7 +533,7 @@ A&yuda...
 MENUITEM_TOOLS_WXFB
 Diseñar &Interfases (wxFormBuilder)
 MENUITEM_TOOLS_WXFB_CONFIG
-Configurar &Integracion con wxFormBuilder...
+Configurar &Integración con wxFormBuilder...
 MENUITEM_TOOLS_WXFB_NEW_RESOURCE
 &Adjuntar un Nuevo Proyecto wxFB...
 MENUITEM_TOOLS_WXFB_LOAD_RESOURCE
@@ -665,11 +665,13 @@ Historial de navegación -> ubicación anterior
 MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT
 Historial de navegación -> ubicación siguiente
 MENUITEM_HIDDEN_ENABLE_BREAKPOINT
-Habilitar/deshabilitar punto de interrupcion
+Habilitar/deshabilitar punto de interrupción
 MENUITEM_DEBUG_UPDATE_INSPECTIONS
 Actualizar inspecciones
 MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL
 Herramienta personalizada de project <{1}>
+MENUITEM_TOOLBAR_SETTINGS
+Configurar barras de herramientas...
 CAPTION_TOOLBAR_FILE
 Archivo
 CAPTION_TOOLBAR_EDIT
@@ -747,7 +749,7 @@ Descartar Cambio
 TOOLBAR_DESC_TOOLS_DIFF_DISCARD
 Herramientas -> Comparar Archivos -> Descartar Cambio
 TOOLBAR_CAPTION_TOOLS_DIFF_CLEAR
-Borrar Marcas de Comparacion
+Borrar Marcas de Comparación
 TOOLBAR_DESC_TOOLS_DIFF_CLEAR
 Herramientas -> Comparar Archivos -> Borrar Marcas
 TOOLBAR_CAPTION_TOOLS_CUSTOM_TOOL
@@ -779,9 +781,9 @@ OSD_LOADING_PROJECT_POST
 PROJMNGR_OPENING
 Abriendo
 PROJMNGR_CHANGE_PROFILE_OPENNING
-Parece que esta abriendo un proyecto que tiene seleccionado un perfil\nde compilacion y ejecucion para otro sistema operativo: \"<{1}>\"\n\n¿Desea cambiar el perfil activo por \"<{2}>\"?
+Parece que esta abriendo un proyecto que tiene seleccionado un perfil\nde compilación y ejecución para otro sistema operativo: \"<{1}>\"\n\n¿Desea cambiar el perfil activo por \"<{2}>\"?
 PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION
-Perfil de Compilacion y Ejecucion
+Perfil de Compilación y Ejecución
 PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK
 Seleccionar otro perfil de la lista
 PROJMNGR_CHANGE_PROFILE_OPENNING_CHOICE
@@ -801,9 +803,9 @@ Eliminar el archivo del disco
 PROJMNGR_CONFIRM_DETACH_FILE
 ¿Desea quitar el archivo del proyecto?
 PROJMNGR_FUTURE_SOURCE
-El fuente <{1}> tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.
+El fuente <{1}> tenia fecha de modificación en el futuro. Se reemplazó por la fecha actual.
 PROJMNGR_FUTURE_OBJECT
-El objeto <{1}> tenia fecha de modificacion en el futuro. Se recompilara el fuente.
+El objeto <{1}> tenia fecha de modificación en el futuro. Se recompilara el fuente.
 PROJMNGR_NO_LIB_FOR_THAT_SOURCE
 El fuente \"<{1}>\" no esta asociado a ninguna biblioteca.
 PROJMNGR_LIB_WITHOUT_SOURCES
@@ -1433,7 +1435,7 @@ No se encontraron clases para las condiciones seleccionadas.
 DRAW_CLASSES_SAVE
 Guardar grafo
 DRAW_CLASSES_TITLE
-Jerarquia de Clases
+Jerarquía de Clases
 ENUMEDITOR_MOVE_UP
 Mover Arriba
 ENUMEDITOR_MOVE_DOWN
@@ -1843,7 +1845,7 @@ Arbol de Archivos
 CAPTION_SYMBOLS_TREE
 Arbol de Simbolos
 CAPTION_COMPILER_OUTPUT
-Resultados de la Compilacion
+Resultados de la Compilación
 CAPTION_QUIKHELP
 Ayuda Rapida
 CAPTION_INSPECTIONS
@@ -1855,7 +1857,7 @@ Trazado Inverso
 MAINW_AUTOHIDE_BACKTRACE
 Trazado Inverso
 CAPTION_THREADLIST
-Hilos de Ejecucion
+Hilos de Ejecución
 MAINW_AUTOHIDE_THREADS
 Hilos
 CAPTION_DEBUGGER_LOG
@@ -1903,7 +1905,7 @@ Mostrar solo nombres de archivos
 MAINW_PROJECT_FILE_POPUP_TOGGLE_FULL_PATH_ON
 Mostrar rutas relativas completas
 MAINW_OPEN_LAST_COMPILER_OUTPUT
-Abrir ultima salida
+Abrir última salida
 MAINW_OPENING
 Abriendo
 MAINW_PROBLEM_RENAMING
@@ -1917,7 +1919,7 @@ Guardar cambios siempre al cerrar un proyecto
 MAINW_SAVE_CHANGES_BEFORE_EXIT_QUESTION
 Hay cambios sin guardar. Desea guardarlos antes de salir?
 PROJMNGR_FUTURE_SOURCE_POST
- tenia fecha de modificacion en el futuro. Se reemplazo por la fecha actual.
+ tenia fecha de modificación en el futuro. Se reemplazo por la fecha actual.
 MAINW_SAVE_LINK_ERROR_TRUNCATED_FILE
 Este error puede deberse a compilaciones interrumpidas, o a la presencia\nde objetos compilados en otros sistemas. Si este fuera el caso, podría\n solucionarse simplemente recompilando el fuente asociado. ¿Desea recompilar\n\"<{1}>\" ahora?
 QUICKHELP_WORDS_TO_SEARCH
@@ -1959,11 +1961,11 @@ Toda la salida
 MAINW_AUTOHIDE_COMPILER
 Compilador
 MAINW_STATUS_RUN_FINISHED
-Ejecucion Finalizada
+Ejecución Finalizada
 MAINW_COULDNOT_LAUNCH_PROCESS
 No se pudo lanzar el proceso
 MAINW_COULDNOT_RUN
-No se pudo lanzar la ejecucion!
+No se pudo lanzar la ejecución!
 MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION
 Desea guardar los cambios del proyecto anterior antes de cerrarlo?
 MAINW_CHANGE_CLOSE_ALL_QUESTION
@@ -2009,15 +2011,15 @@ Depuración iniciada correctamente.
 DEBUG_RETURN_VALUE
 Valor de retorno:
 DEBUG_RETURN_FROM_FUNCTION
-Salir de la funcion
+Salir de la función
 DEBUG_RUN_UNTIL_ERROR
 La dirección actual no es válida.
 MAINW_EXPLORER_POPUP_CHANGE_PATH
-&Cambiar Ubicacion...
+&Cambiar Ubicación...
 MAINW_EXPLORER_POPUP_LEVEL_UP
 &Subir un Nivel
 MAINW_EXPLORER_POPUP_TAKE_FROM_SOURCE
-Tomar Ubicacion del Archivo Abierto
+Tomar Ubicación del Archivo Abierto
 MAINW_EXPLORER_POPUP_OPEN_ALL
 &Abrir Todos los Archivos
 MAINW_EXPLORER_POPUP_OPEN_SOURCES
@@ -2035,7 +2037,7 @@ MAINW_EXPLORER_POPUP_SHOW_ALL
 MAINW_EXPLORER_POPUP_SHOW_SOURCES
 &Mostrar Solo los Fuentes
 MAINW_EXPLORER_SELECT_PATH
-Seleccione la ubicacion:
+Seleccione la ubicación:
 MAINW_GENERATE_AUTOCOMP_INDEX_EMPTY
 No hay fuentes para generar el índice. Abra uno \no más archivos para que ZinjaI analice y extraiga \nlos símbolos que conformarán el nuevo índice
 MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION
@@ -3061,7 +3063,7 @@ El archivo incluido <{1}> tenia fecha de modificacion en el futuro. Se reemplazo
 FILE_EXISTS_ASK_REPLACE
 El archivo \"<{1}>\" ya existe. Desea reemplazarlo?
 CONFIG_EXPLORER_PROBLEM
-No se ha definido el explorador de archivos a utilizar\nPuede configurar el mismo en la pestana \"Rutas 2\" del\ncuadro de Preferencias (menu Archivo->Preferencias).
+No se ha definido el explorador de archivos a utilizar\nPuede configurar el mismo en la pestaña \"Rutas 2\" del\ncuadro de Preferencias (menu Archivo->Preferencias).
 CONFIG_EXPLORER
 Explorador de archivos
 GENERAL_POPUP_INSERT_TEXT

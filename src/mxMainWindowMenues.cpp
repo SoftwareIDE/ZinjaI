@@ -122,34 +122,138 @@ void mxMainWindow::GetToolbarsPositions() {
 	}
 }
 
+static bool auxToolbarPopup(int tool_id, wxMenu &menu, int menu_id, int id1, int id2, int id3=wxID_ANY, int id4=wxID_ANY, int id5=wxID_ANY, int id6=wxID_ANY, int id7=wxID_ANY, int id8=wxID_ANY) {
+	if (tool_id!=id1 && tool_id!=id2 && tool_id!=id3 && tool_id!=id4 && tool_id!=id5) return false;
+	if (id1!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id1));
+	if (id2!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id2));
+	if (id3!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id3));
+	if (id4!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id4));
+	if (id5!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id5));
+	if (id6!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id6));
+	if (id7!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id7));
+	if (id8!=wxID_ANY) mxUT::AddItemToMenu(&menu,menu_data->GetMyMenuItem(menu_id,id8));
+	return true;
+}
+
 void mxMainWindow::OnToolRightClick(wxCommandEvent &evt) {
+	wxMenu menu;
 	int id=evt.GetId();
+	
 	if (project && id==mxID_RUN_CONFIG) {
-		wxMenu menu;
 		for(int i=0;i<project->configurations_count;i++) {
 			wxMenuItem *mi=menu.AppendRadioItem(mxID_LAST_ID+i,project->configurations[i]->name); // para mostrar en el dialogo
 			if (project->configurations[i]==project->active_configuration) mi->Check(true);
 		}
-		PopupMenu(&menu);
-		return;
+		
+	} else if ( 
+		(id>=mxID_CUSTOM_TOOL_0 && id<mxID_CUSTOM_TOOL_0+MAX_CUSTOM_TOOLS) || 
+		(id>=mxID_CUSTOM_PROJECT_TOOL_0 && id<mxID_CUSTOM_PROJECT_TOOL_0+MAX_PROJECT_CUSTOM_TOOLS) ) 
+	{
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CUSTOM_TOOLS_SETTINGS));
+		if (project) mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_PROJECT_TOOLS_SETTINGS));
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_VALGRIND_RUN,mxID_TOOLS_VALGRIND_DEBUG,mxID_TOOLS_VALGRIND_VIEW,mxID_TOOLS_VALGRIND_HELP
+	)) {
+		;
+		
+	} else if ( project && auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_DOXY_GENERATE,mxID_TOOLS_DOXY_CONFIG,mxID_TOOLS_DOXY_VIEW,mxID_TOOLS_DOXY_HELP
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_GPROF_SHOW,mxID_TOOLS_GPROF_LIST,mxID_TOOLS_GPROF_SET,mxID_TOOLS_GPROF_HELP
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_GCOV_SHOW,mxID_TOOLS_GCOV_RESET,mxID_TOOLS_GCOV_SET,mxID_TOOLS_GCOV_SHOW
+	)) {
+		;
+		
+	} else if ( project && auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_CPPCHECK_RUN,mxID_TOOLS_CPPCHECK_VIEW,mxID_TOOLS_CPPCHECK_HELP
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_DIFF_TWO,mxID_TOOLS_DIFF_DISK,mxID_TOOLS_DIFF_HIMSELF,mxID_TOOLS_DIFF_CLEAR,mxID_TOOLS_DIFF_HELP
+	)) {
+		;
+		
+	} else if ( project && auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_WXFB_CONFIG,mxID_TOOLS_WXFB_REGEN,mxID_TOOLS_WXFB_INHERIT_CLASS,mxID_TOOLS_WXFB_UPDATE_INHERIT,mxID_TOOLS_WXFB_NEW_RES,mxID_TOOLS_WXFB_LOAD_RES,mxID_TOOLS_WXFB_HELP_WX,mxID_TOOLS_WXFB_HELP_WX
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_SHARE_SHARE,mxID_TOOLS_SHARE_OPEN,mxID_TOOLS_SHARE_LIST,mxID_TOOLS_SHARE_HELP
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnTOOLS,
+		mxID_TOOLS_PREPROC_EXPAND_MACROS,mxID_TOOLS_PREPROC_MARK_VALID,mxID_TOOLS_PREPROC_UNMARK_ALL,mxID_TOOLS_PREPROC_HELP
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnRUN,
+		mxID_RUN_RUN,mxID_RUN_RUN_OLD,mxID_RUN_COMPILE,mxID_RUN_CLEAN,mxID_RUN_CONFIG
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnVIEW,
+		mxID_VIEW_CODE_COLOURS,mxID_VIEW_CODE_STYLE
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnFILE,
+		mxID_FILE_NEW,mxID_FILE_PROJECT
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnFILE,
+		mxID_FILE_SAVE,mxID_FILE_SAVE_AS,mxID_FILE_SAVE_ALL,(project?mxID_FILE_SAVE_PROJECT:wxID_ANY)
+	)) {
+		;
+		
+	} else if ( auxToolbarPopup(id,menu,MenusAndToolsConfig::mnFILE,
+		mxID_FILE_OPEN,mxID_FILE_RELOAD,mxID_FILE_SOURCE_RECENT,mxID_FILE_PROJECT_RECENT
+	)) {
+		;
+		
 	}
-	if (id>=mxID_CUSTOM_TOOL_0 && id<mxID_CUSTOM_TOOL_0+MAX_CUSTOM_TOOLS) {
-		new mxCustomTools(false,id-mxID_CUSTOM_TOOL_0);
-		return;
-	}
-	if (id>=mxID_CUSTOM_PROJECT_TOOL_0 && id<mxID_CUSTOM_PROJECT_TOOL_0+MAX_PROJECT_CUSTOM_TOOLS) {
-		new mxCustomTools(true,id-mxID_CUSTOM_PROJECT_TOOL_0);
-		return;
-	}
-	wxString stoolbar;
-	switch (menu_data->ToolbarFromTool(id)) {
-	case MenusAndToolsConfig::tbFILE: stoolbar="file"; break;
-	case MenusAndToolsConfig::tbEDIT: stoolbar="edit"; break;
-	case MenusAndToolsConfig::tbVIEW: stoolbar="view"; break;
-	case MenusAndToolsConfig::tbDEBUG: stoolbar="debug"; break;
-	case MenusAndToolsConfig::tbRUN: stoolbar="run"; break;
-	case MenusAndToolsConfig::tbMISC: stoolbar="misc"; break;
-	case MenusAndToolsConfig::tbTOOLS: stoolbar="tools"; break;
-	}
-	mxPreferenceWindow::ShowUp()->SetToolbarPage(stoolbar);
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_VALGRIND_DEBUG));
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_VALGRIND_VIEW));
+//	} else if (id==mxID_TOOLS_DOXY_GENERATE) {
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_DOXY_VIEW));
+//	} else if (id==mxID_TOOLS_DOXY_VIEW) {
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_DOXY_GENERATE));
+//	} else if (id==mxID_TOOLS_CPPCHECK_RUN) {
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CPPCHECK_CONFIG));
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CPPCHECK_VIEW));
+//	} else if (id==mxID_TOOLS_GPROF_SHOW) {
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_GPROF_SET));
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_GPROF_LIST));
+//	} else if (id==mxID_TOOLS_GPROF_LIST) {
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_GPROF_SET));
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_GPROF_SHOW));
+//	} else if (id==mxID_TOOLS_GCOV_SHOW) {
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_GCOV_RESET));
+//		mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_GCOV_SET));
+//	}
+	if (menu.GetMenuItemCount()) menu.AppendSeparator();
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_TOOLBAR_SETTINGS));
+	PopupMenu(&menu);
+//	wxString stoolbar;
+//	switch (menu_data->ToolbarFromTool(id)) {
+//	case MenusAndToolsConfig::tbFILE: stoolbar="file"; break;
+//	case MenusAndToolsConfig::tbEDIT: stoolbar="edit"; break;
+//	case MenusAndToolsConfig::tbVIEW: stoolbar="view"; break;
+//	case MenusAndToolsConfig::tbDEBUG: stoolbar="debug"; break;
+//	case MenusAndToolsConfig::tbRUN: stoolbar="run"; break;
+//	case MenusAndToolsConfig::tbMISC: stoolbar="misc"; break;
+//	case MenusAndToolsConfig::tbTOOLS: stoolbar="tools"; break;
+//	}
+	
 }

@@ -90,6 +90,7 @@ void mxGrid::DoCreate ( ) {
 }
 
 void mxGrid::OnColResize (wxGridSizeEvent & event) {
+//	cerr<<"COL RESIZE: "<<event.GetRowOrCol()<<endl;
 	cols[GetRealCol(event.GetRowOrCol())].width=GetColSize(event.GetRowOrCol());
 	event.Skip();
 }

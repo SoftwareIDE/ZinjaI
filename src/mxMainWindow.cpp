@@ -211,7 +211,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_RUN_RUN, mxMainWindow::OnRunRun)
 	EVT_MENU(mxID_RUN_RUN_OLD, mxMainWindow::OnRunRunOld)
 	EVT_MENU(mxID_RUN_STOP, mxMainWindow::OnRunStop)
-	EVT_MENU(mxID_RUN_BUILD, mxMainWindow::OnRunBuild)
+//	EVT_MENU(mxID_RUN_BUILD, mxMainWindow::OnRunBuild)
 	EVT_MENU(mxID_RUN_COMPILE, mxMainWindow::OnRunCompile)
 	EVT_MENU(mxID_RUN_CLEAN, mxMainWindow::OnRunClean)
 	EVT_MENU(mxID_RUN_CONFIG, mxMainWindow::OnRunCompileConfig)
@@ -427,6 +427,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_PROJECT_POPUP_TOGGLE_FULLPATH, mxMainWindow::OnProjectTreeToggleFullPath)
 	EVT_MENU(mxID_PROJECT_POPUP_ADD_SELECTED, mxMainWindow::OnProjectTreeAddSelected)
 	
+	EVT_MENU(mxID_TOOLBAR_SETTINGS, mxMainWindow::OnToolbarSettings)
+	
 	EVT_SOCKET(wxID_ANY,mxMainWindow::OnSocketEvent)
 	
 	EVT_TIMER(mxID_TIMER_AFTER_EVENTS, mxMainWindow::OnAfterEventsTimer)
@@ -437,6 +439,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 
 	EVT_TEXT(mxID_TOOLBAR_FIND, mxMainWindow::OnToolbarFindChange)
 	EVT_TEXT_ENTER(mxID_TOOLBAR_FIND, mxMainWindow::OnToolbarFindEnter)
+	
 	
 //	EVT_KEY_DOWN(mxMainWindow::OnKey)
 //	EVT_CHAR_HOOK(mxMainWindow::OnKey)
@@ -1630,10 +1633,10 @@ void mxMainWindow::OnRunClean (wxCommandEvent &event) {
 }
 
 
-void mxMainWindow::OnRunBuild (wxCommandEvent &event) {
-	_prevent_execute_yield_execute_problem;
-	compiler->BuildOrRunProject(false,nullptr);
-}
+//void mxMainWindow::OnRunBuild (wxCommandEvent &event) {
+//	_prevent_execute_yield_execute_problem;
+//	compiler->BuildOrRunProject(false,nullptr);
+//}
 
 
 void mxMainWindow::StartExecutionStuff (compile_and_run_struct_single *compile_and_run, wxString msg) {
@@ -5017,3 +5020,8 @@ void mxMainWindow::CompileSource (bool force_compile, GenericAction *action) {
 		else if (action) action->Do();
 	}
 }
+
+void mxMainWindow::OnToolbarSettings (wxCommandEvent & evt) {
+	mxPreferenceWindow::ShowUp()->SetToolbarPage();
+}
+
