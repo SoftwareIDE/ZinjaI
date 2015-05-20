@@ -1465,3 +1465,10 @@ wxBoxSizer *mxUT::MakeGenericButtonsSizer (wxWindow *parent, bool has_help) {
 
 
 
+wxString mxUT::GetCommandForRunningInTerminal (const wxString & title, const wxString &command) {
+	wxString full_cmd = config->Files.terminal_command;
+	full_cmd.Replace("${TITLE}",title,false);
+	full_cmd<<" "<<command;
+	return full_cmd;
+}
+

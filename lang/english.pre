@@ -4,32 +4,38 @@ HTMLEXPORT_STATUS
 Generating_html...
 GENERAL_READY
 Ready
-CONFIG_APTGET_BUILD_ESSENTIAL
-Try to install the compiler now.
+CONFIG_NO_TERMINAL_FOUND
+No known console application was found. Please\ninstall xterm, konsole or gnome-terminal; then\ngo to "Console application" field in "Paths 2"\ntabsin "Preferences" (from "File" menu) dialog\nand set it.
 CONFIG_TERMINAL_WARNING
 The only one known terminal application found in this system is <{1}>.\nSome versions of this app can cause problems when trying to run compiled\nprograms/projects from ZinjaI. If you cannot run any program/project, try to set\na different terminal application(from "File" menu, choose "Preferences..." and change\nthe files "Terminal Command" from "Paths 2" tab, recommended terminal is xterm).
 CONFIG_TERMINAL
 Console Application
-CONFIG_NO_TERMINAL_FOUND
-No known console application was found. Please\ninstall xterm, konsole or gnome-terminal; then\ngo to "Console application" field in "Paths 2"\ntabsin "Preferences" (from "File" menu) dialog\nand set it.
-CONFIG_COMPILER_NOT_FOUND
-C++ compiler (g++) was not found in your system. You must\ninstall it with your distribution's package maganer(aptitude,\nyum, yast, installpkg...).
 CONFIG_COMPILER
 C++ compiler
-CONFIG_DEBUGGER_NOT_FOUND
-GNU source-level debugger (gdb) was not found in your\nsystem. You must install it with your distribution's\npackage maganer(aptitude, yum, yast, installpkg...).
+CONFIG_COMPILER_NOT_FOUND
+C++ compiler (g++) was not found in your system. You must\ninstall it with your distribution's package maganer(aptitude,\nyum, yast, installpkg...).
 CONFIG_DEBUGGER
 Debugger
-PROJMNGR_WXFB_NOT_FOUND
-This projects need wxFormBuilder, but this ZinjaI can't find this\nsoftware. To download wxFormBuilder go to http://wxformbuilder.org.\nIf it is already installed enter the correct path in tab "Paths 2"\nin "Preference" windows (from "File" menu).
+CONFIG_DEBUGGER_NOT_FOUND
+GNU source-level debugger (gdb) was not found in your\nsystem. You must install it with your distribution's\npackage maganer(aptitude, yum, yast, installpkg...).
 GENERAL_WARNING
 Warning
-PROJMNGR_WXFB_OPEN_HOMEPAGE
-Open wxFormBuilder's site now
+PROJMNGR_WXFB_NOT_FOUND
+This projects need wxFormBuilder, but this ZinjaI can't find this\nsoftware. To download wxFormBuilder go to http://wxformbuilder.org.\nIf it is already installed enter the correct path in tab "Paths 2"\nin "Preference" windows (from "File" menu).
 MAINW_DOXYGEN_MISSING
 Doxygen isn't present in your system or its path isn't correctly defined\nin ZinjaI's settings. To download Doxygen go to http://www.doxygen.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
+MAINW_VALGRIND_MISSING
+Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_CPPCHECK_MISSING
 CppCheck isn't present in your system or its path isn't correctly defined\nin ZinjaI's settings. To download Doxygen go to http://cppcheck.sourceforge.net.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
+CONFIG_GOTO_PACKAGE_WEBSITE
+Open tool's website
+CONFIG_APTGET_FAILED
+Automatic installation failled.
+CONFIG_ABOUT_TO_APTGET
+The missing software will be installed next in a new terminal.\nThis action may require root password.\nZinjaI will continue when the new terminal is closed.
+CONFIG_APTGET_BUILD_ESSENTIAL
+Try to install the compiler now.
 MAINW_CUSTOM_TOOL_UNDEFINED
 This tool is not completelly configured.\nUse item "Settings..." in "Custom Tools" submenu from "Tools" menu.
 GENERAL_ERROR
@@ -2070,8 +2076,6 @@ MAINW_RUN_HEADER_WARNING
 You are trying to run a header file. It is probably a mistake\nand you might want to run a source file that includes this one\ninstead. Continue anyway?\n\nNote: you can force ZinjaI to run always the same source no\nmatter which one has the focus with right-click on its tab.\n
 MAINW_RUN_HEADER_CHECK
 Do not show this message again
-MAINW_VALGRIND_MISSING
-Valgrind isn't present in your syste or its path isn't correctly defined\nin ZinjaI's settings. To download Valgrind go to http://www.valgrind.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_GPROF_GPROF_ENABLED
 The required compiling arguments for <{1}> where added.
 MAINW_GPROF_GPROF_DISABLED

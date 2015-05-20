@@ -2,32 +2,38 @@ HTMLEXPORT_STATUS
 Exportando...
 GENERAL_READY
 Listo
-CONFIG_APTGET_BUILD_ESSENTIAL
-Intentar instalar ahora
+CONFIG_NO_TERMINAL_FOUND
+No se ha encontrado una terminal conocida. Se recomienda instalar\nxterm; luego configure el parametro \"Comando del Terminal\" en la\npestaña \"Rutas 2\" del cuadro de \"Preferencias\".
 CONFIG_TERMINAL_WARNING
 La aplicación terminal que se ha encontrado instalada\nes <{1}>. Algunas versiones de esta terminal pueden generar\nproblemas al intentar ejecutar un programa o proyecto. Si no logra\nejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\nque compile, intente configurar otra terminal (menú Archivo->Preferencias...\npestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\nrecomendada es xterm).
 CONFIG_TERMINAL
 Terminal de ejecución
-CONFIG_NO_TERMINAL_FOUND
-No se ha encontrado una terminal conocida. Se recomienda instalar\nxterm; luego configure el parametro \"Comando del Terminal\" en la\npestaña \"Rutas 2\" del cuadro de \"Preferencias\".
-CONFIG_COMPILER_NOT_FOUND
-No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribución\n(apt-get, yum, yast, installpkg, etc.)
 CONFIG_COMPILER
 Compilador C++
-CONFIG_DEBUGGER_NOT_FOUND
-No se ha encontrado el depurador (gdb). Debe instalarlo con\nel gestor de paquetes que corresponda a su distribución\n(apt-get, yum, yast, installpkg, etc.)
+CONFIG_COMPILER_NOT_FOUND
+No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\ncon el gestor de paquetes que corresponda a su distribución\n(apt-get, yum, yast, installpkg, etc.)
 CONFIG_DEBUGGER
 Depurador
-PROJMNGR_WXFB_NOT_FOUND
-El proyecto utiliza wxFormBuilder, pero este software\nno se encuentra correctamente instalado/configurado en\nsu pc. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicación en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
+CONFIG_DEBUGGER_NOT_FOUND
+No se ha encontrado el depurador (gdb). Debe instalarlo con\nel gestor de paquetes que corresponda a su distribución\n(apt-get, yum, yast, installpkg, etc.)
 GENERAL_WARNING
 Advertencia
-PROJMNGR_WXFB_OPEN_HOMEPAGE
-Ir al sitio de wxFormBuilder ahora
+PROJMNGR_WXFB_NOT_FOUND
+El proyecto utiliza wxFormBuilder, pero este software\nno se encuentra correctamente instalado/configurado en\nsu PC. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicación en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
 MAINW_DOXYGEN_MISSING
 Doxygen no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciación en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+MAINW_VALGRIND_MISSING
+Valgrind no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_CPPCHECK_MISSING
 CppCheck no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciación en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+CONFIG_GOTO_PACKAGE_WEBSITE
+Abrir sitio el web de esta herramienta
+CONFIG_APTGET_FAILED
+Falló la instalación automática.
+CONFIG_ABOUT_TO_APTGET
+A continuación se intentará instalar el software faltante en una nueva\nterminal. Podría requerir ingresar la contraseña del administrador.\nZinjaI continuará cuando se cierre dicha terminal.
+CONFIG_APTGET_BUILD_ESSENTIAL
+Intentar instalar ahora
 MAINW_CUSTOM_TOOL_UNDEFINED
 Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\".
 GENERAL_ERROR
@@ -2068,8 +2074,6 @@ MAINW_RUN_HEADER_WARNING
 Esta intentando compilar/ejecutar un archivo de cabecera.\nProbablemente deba intentar ejecutar un archivo fuente que\nincluya esta cabecera. ¿Desea continuar?\n\nNota: puede configurar un fuente para que se ejecute siempre\ndicho fuente sin importar cual otro tenga el foco con click\nderecho sobre la pesataña del mismo.
 MAINW_RUN_HEADER_CHECK
 No volver a mostrar este mensaje
-MAINW_VALGRIND_MISSING
-Valgrind no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
 MAINW_GPROF_GPROF_ENABLED
 Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.
 MAINW_GPROF_GPROF_DISABLED

@@ -175,15 +175,7 @@ void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 * vuelva a ser normal
 **/
 void mxMainWindow::OnToolsValgrindCommon(bool debug) {
-	if (!config->Init.valgrind_seen && !mxUT::GetOutput(wxString("\"")<<config->Files.valgrind_command<<"\" --version").Len()) {
-		mxMessageDialog(main_window,LANG(MAINW_VALGRIND_MISSING,"Valgrind no se encuentra correctamente instalado/configurado\n"
-			"en su pc. Para descargar e instalar Doxygen dirijase a\n"
-			"http://www.valgrind.org. Si ya se encuentra instalado,\n"
-			"configure su ubiciacion en la pestaña \"Rutas 2\" del\n"
-			"dialog de \"Preferencias\" (menu \"Archivo\")."),
-			LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();
-		return;
-	} else config->Init.valgrind_seen=true;
+	if (!config->CheckValgrindPresent()) return;
 	
 	if (!valgrind_config) valgrind_config=new mxValgrindConfigDialog(this);
 	valgrind_config->SetArg("--vgdb-error=0",debug);

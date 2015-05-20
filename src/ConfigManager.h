@@ -233,6 +233,17 @@ private:
 	void LoadDefaults();
 	void AddInspectionImprovingTemplate(const wxString &from, const wxString &to);
 	void SetDefaultInspectionsImprovingTemplates();
+
+	
+	/// verify is a linux package (xterm,g++,gdb,doxygen,etc) is installed, shows an error if not and offer an automatic installation when apt-get is present
+	bool CheckComplaintAndInstall(wxWindow *parent, const wxString &check_command, const wxString &what, const wxString &error_msg, const wxString &pkgname, const wxString &website="");
+	
+	/// verify is a linux package (xterm,g++,gdb,doxygen,etc) is installed, shows an error if not and offer an automatic installation when apt-get is present
+	void TryToInstallWithAptGet(wxWindow *parent, const wxString &what, const wxString &pkgname);
+	
+	/// returns a message for the checkbox in mxMessageDialog when saying that some package is not found and the check offers to install it (only if apt-get is available)
+	wxString GetTryToInstallCheckboxMessage();
+		
 	
 public:
 	/// @brief arma las cadenas (paths) que no se graban en la configuracion, pero que dependen de esta (ejemplo: temp_dir)
@@ -244,9 +255,12 @@ public:
 	bool CheckDoxygenPresent();
 	/// @brief Verifica si esta instalado y configurado el path para llamar a CppCheck
 	bool CheckCppCheckPresent();
+	/// @brief Verifica si esta instalado y configurado el path para llamar a valgrind
+	bool CheckValgrindPresent();
 	
 	/// @brief return default compiler arguments for simple programs (for_cpp=true: c++(g++) arguments, for_cpp=false, c(gcc) arguments)
 	wxString GetDefaultCompilerOptions(bool for_cpp) { return for_cpp?Running.cpp_compiler_options:Running.c_compiler_options; }
+	
 	
 };
 
