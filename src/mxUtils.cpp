@@ -278,9 +278,9 @@ wxComboBox *mxUT::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	return combo;
 }
 
-wxStaticText *mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text) {
+wxStaticText *mxUT::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool center) {
 	wxStaticText *statictext;
-	sizer->Add( statictext = new wxStaticText(panel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE), sizers->BA5_Center);
+	sizer->Add( statictext = new wxStaticText(panel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, center?wxALIGN_CENTRE:0), center?sizers->BA5_Center:sizers->BA5);
 	return statictext;
 }
 

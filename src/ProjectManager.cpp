@@ -115,6 +115,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	filename=name.GetFullName();
 	path=name.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR);
 	last_dir=path;
+	default_fext_source="cpp"; default_fext_header="h";
 	wxTextFile fil(DIR_PLUS_FILE(path,filename));
 	executable_name=DIR_PLUS_FILE(path,name.GetName()+_T(BINARY_EXTENSION));
 	if (!fil.Exists()) return;
@@ -190,6 +191,8 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_GENERIC_READ_DN("project_name",project_name);
 				else CFG_GENERIC_READ_DN("autocodes_file",autocodes_file);
 				else CFG_GENERIC_READ_DN("macros_file",macros_file);
+				else CFG_GENERIC_READ_DN("default_fext_source",default_fext_source);
+				else CFG_GENERIC_READ_DN("default_fext_header",default_fext_header);
 				else CFG_GENERIC_READ_DN("autocomp_extra",autocomp_extra);
 				else CFG_INT_READ_DN("version_saved",version_saved);
 				else CFG_INT_READ_DN("version_required",version_required);
@@ -696,6 +699,8 @@ bool ProjectManager::Save (bool as_template) {
 	CFG_GENERIC_WRITE_DN("project_name",project_name);
 	CFG_GENERIC_WRITE_DN("autocodes_file",autocodes_file);
 	CFG_GENERIC_WRITE_DN("macros_file",macros_file);
+	CFG_GENERIC_WRITE_DN("default_fext_source",default_fext_source);
+	CFG_GENERIC_WRITE_DN("default_fext_header",default_fext_header);
 	CFG_GENERIC_WRITE_DN("autocomp_extra",autocomp_extra);
 	CFG_GENERIC_WRITE_DN("active_configuration",active_configuration->name);
 	CFG_GENERIC_WRITE_DN("version_saved",VERSION);

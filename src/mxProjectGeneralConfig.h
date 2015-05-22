@@ -16,6 +16,8 @@ private:
 	wxCheckBox *custom_tab;
 	wxTextCtrl *tab_width;
 	wxCheckBox *tab_use_spaces;
+	wxTextCtrl *default_fext_source;
+	wxTextCtrl *default_fext_header;
 //	wxCheckBox *use_wxfb;
 public:
 	mxProjectGeneralConfig();

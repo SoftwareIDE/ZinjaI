@@ -504,6 +504,7 @@ public:
 	wxString autocomp_extra; ///< indices de autocompletado adicionales para este proyecto
 	wxString autocodes_file; ///< archivo con definiciones de autocodigos adicionales
 	wxString macros_file; ///< archivo con definiciones de macros para gdb
+	wxString default_fext_source, default_fext_header; ///< default extensions for new classes' filenames to be created with mxNewWizard
 	wxArrayString inspection_improving_template_from, inspection_improving_template_to;
 	CustomToolsPack custom_tools; ///< herramientas personalizables asociadas al proyecto
 private:

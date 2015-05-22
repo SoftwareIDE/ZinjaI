@@ -237,8 +237,8 @@ void mxNewWizard::OnProjectCreate() {
 			return;
 		}
 		// controlar que no exista
-		wxString cpp_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".cpp");
-		wxString h_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".h");
+		wxString cpp_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+"."+project->default_fext_source);
+		wxString h_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+"."+project->default_fext_header);
 		if (wxFileName::FileExists(cpp_name)) {
 			mxMessageDialog(this,LANG(NEWWIZARD_FILE_EXISTS,"Ya existe un archivo con ese nombre"),cpp_name,mxMD_OK|mxMD_ERROR).ShowModal();
 			return;
@@ -308,7 +308,7 @@ void mxNewWizard::OnProjectCreate() {
 			// crear el cpp
 			wxTextFile cpp_file(cpp_name);
 			cpp_file.Create();
-			cpp_file.AddLine(wxString("#include \"")+name+".h\"");
+			cpp_file.AddLine(wxString("#include \"")+name+"."+project->default_fext_header+"\"");
 			cpp_file.AddLine("");
 			if (onproject_const_def->GetValue()) { // constructor por defecto
 				cpp_file.AddLine(name+"::"+name+"() {");
@@ -424,9 +424,9 @@ void mxNewWizard::OnProjectCreate() {
 		wxFileName filename(DIR_PLUS_FILE(project->path,name));
 		if (filename.GetExt()=="") {
 			if (sel==0)
-				filename.SetExt("cpp");
+				filename.SetExt(project->default_fext_source);
 			else if (sel==1)
-				filename.SetExt("h");
+				filename.SetExt(project->default_fext_header);
 		}
 		if (filename.FileExists()) {
 			mxMessageDialog(this,LANG(NEWWIZARD_FILE_EXISTS,"Ya existe un archivo con ese nombre"),filename.GetFullPath(),mxMD_OK|mxMD_ERROR).ShowModal();				

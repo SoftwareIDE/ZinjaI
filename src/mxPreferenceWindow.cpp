@@ -57,7 +57,7 @@ void LinuxTerminalInfo::Initialize() {
 #ifdef _ZINJAI_DEBUG
 	if (term_count!=count) wxMessageBox("LinuxTerminalInfo::Init: term_count!=count");
 #endif
-};
+}
 bool LinuxTerminalInfo::Test() {
 	wxString out = mxUT::GetOutput(test_command);
 	if (extra_test.Len()) {

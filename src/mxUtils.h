@@ -186,7 +186,7 @@ public:
 	static wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value=0,bool margin=false, int id=wxID_ANY);
 	static wxTextCtrl *AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text = "...",bool margin=false);
 	static wxComboBox *AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID = wxID_ANY,bool margin=false, bool editable=false);
-	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text);
+	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool center=true);
 	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, bool margin=false);
 	/*@}*/
 	
