@@ -746,7 +746,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 		if (GetValueFromAns(s,"level",true)!=(wxString()<<(cant_levels)))
 			cerr<<"ERROR: DebugManager::Backtrace  wrong frame level!!!"<<endl;
 #endif
-		main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LEVEL,wxString()<<(cant_levels+1));
+		main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LEVEL,wxString()<<cant_levels);
 		wxString func = GetValueFromAns(s,"func",true);
 		if (func[0]=='?') {
 			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FUNCTION,LANG(BACKTRACE_NOT_AVAILABLE,"<<informacion no disponible>>"));

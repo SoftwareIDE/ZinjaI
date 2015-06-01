@@ -66,6 +66,7 @@ void mxLocalsGrid::Update () {
 			c++;
 		}
 	}
+	if (n>c) DeleteRows(c,n-c);
 	
 	if (mxGrid::IsColumnVisible(LG_COL_TYPE)) {
 		wxString s = debug->SendCommand(command," --simple-values");
