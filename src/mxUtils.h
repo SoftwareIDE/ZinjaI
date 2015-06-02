@@ -188,6 +188,8 @@ public:
 	static wxComboBox *AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID = wxID_ANY,bool margin=false, bool editable=false);
 	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool center=true);
 	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, bool margin=false);
+	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, const char *value, bool margin=false)
+		{ return AddStaticText(sizer,panel,text,wxString(value),margin); } // to avoid choosing the first overload instead of the second when using a literal
 	/*@}*/
 	
 	/**

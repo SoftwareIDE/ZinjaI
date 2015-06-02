@@ -885,6 +885,7 @@ bool ConfigManager::CheckDoxygenPresent() {
 	return config->Init.doxygen_seen;
 }
 
+#ifndef __WIN32__
 bool ConfigManager::CheckValgrindPresent() {
 	if (config->Init.valgrind_seen) return true;
 	if (!config->Files.valgrind_command.Len()) config->Files.valgrind_command="valgrind";
@@ -900,6 +901,7 @@ bool ConfigManager::CheckValgrindPresent() {
 		"valgrind","http://valgrind.org");
 	return config->Init.valgrind_seen;
 }
+#endif
 
 bool ConfigManager::CheckCppCheckPresent() {
 	if (config->Init.cppcheck_seen) return true;

@@ -583,7 +583,11 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 			running = false; // es necesario esto?
 			bool debug_ends = how=="exited-normally"||how=="exited";
 			if (debug_ends) raise_zinjai_window = false;
-			Stop(debug_ends&&(wait_for_key_policy==WKEY_ALWAYS||(wait_for_key_policy==WKEY_ON_ERROR&&how=="exited")));
+			Stop(
+#ifndef __WIN32__
+				debug_ends&&(wait_for_key_policy==WKEY_ALWAYS||(wait_for_key_policy==WKEY_ON_ERROR&&how=="exited"))
+#endif
+			);
 		}
 		if (bpi && bpi->action==BPA_STOP_ONCE) bpi->SetStatus(BPS_DISABLED_ONLY_ONCE);
 		SetStateText(state_text); should_pause=false;
