@@ -1589,6 +1589,10 @@ extern int function_operator( Declarator_t Declarator )
 			Declarator->z_const_or_volatile=True;
          step( 1 );
       }
+      else if( t == SN_OVERRIDE ) /* added by Zaskar for C++11 */
+      {
+         step( 1 );
+      }
       else
       {
          break;
@@ -1687,7 +1691,7 @@ extern int f_class( Declaration_t Declaration, Class_t Class )
    }
 
    step( 1 );
-
+	
    skip_macro_2();   /* 17.11.97 rigo */
 
    switch( token( 0 ))
@@ -1699,7 +1703,7 @@ extern int f_class( Declaration_t Declaration, Class_t Class )
       {
          step( 1 );  /* atlepjuk a G_EXP_IMP-et */
       }
-
+		
       lineno = f_lineno( 0 );
       charno = f_charno( 0 );
       Class->lineno_beg = lineno;
@@ -1708,6 +1712,11 @@ extern int f_class( Declaration_t Declaration, Class_t Class )
       LongStringIdAppend( &Class->name, ident( 0 ));
 
       step( 1 );
+		
+		if( token( 0 ) == SN_FINAL ) /* added by Zaskar for C++11 */
+		{
+			step( 1 ); 
+		}
 
       if( token( 0 ) == '<' )
       {
