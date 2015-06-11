@@ -1614,21 +1614,13 @@ void mxSource::Indent(int min, int max) {
 	int ds1=ps1-GetLineIndentPosition(ls1), ds2=ps2-GetLineIndentPosition(ls2);
 	if (ds1<0) ds1=0; if (ds2<0) ds2=0;
 	// para evitar que al llamar a charadd se autocomplete o cierre algo
-	bool old_autocomp = config_source.autoCompletion;
-	config_source.autoCompletion=0;
-	bool old_autoclose=config_source.autocloseStuff;
-	config_source.autocloseStuff=false; 
-	bool old_autotext=config_source.autotextEnabled;
-	config_source.autotextEnabled=false; 
+	RaiiRestoreValue<int> restore_autocomp(config_source.autoCompletion,0);
+	RaiiRestoreValue<bool> restore_autoclose(config_source.autocloseStuff,false);
+	RaiiRestoreValue<bool> restore_autotext(config_source.autotextEnabled,false);
+	RaiiRestoreValue<bool> restore_bracketinsertion(config_source.bracketInsertion,false);
+	RaiiRestoreValue<bool> restore_syntaxenable(config_source.syntaxEnable,true);
 	UndoActionGuard undo_action(this);
-	bool o_bracketInsertion = config_source.bracketInsertion;
-	config_source.bracketInsertion = false;
-	bool o_syntaxEnable = config_source.syntaxEnable, o_smartIndent = config_source.smartIndent;
-	config_source.syntaxEnable = config_source.smartIndent = true;
-	if (!o_syntaxEnable) {
-		SetLexer (wxSTC_LEX_CPP);
-		Colourise(0,GetLength());
-	}
+	if (!config_source.syntaxEnable) { SetLexer (wxSTC_LEX_CPP); Colourise(0,GetLength()); }
 	if (min>max) { int aux=min; min=max; max=aux; }
 	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 	wxStyledTextEvent evt, evt_n;
@@ -1685,17 +1677,12 @@ void mxSource::Indent(int min, int max) {
 		}
 	}
 		
-	if (!o_syntaxEnable)
+	if (!restore_syntaxenable.GetOriginalValue())
 		SetStyle(false);
 	else
 		Colourise(0,GetLength());
-	config_source.smartIndent = o_smartIndent;
-	config_source.bracketInsertion = o_bracketInsertion;
-  config_source.autocloseStuff=old_autoclose;
-  config_source.autoCompletion=old_autocomp;
-  config_source.autotextEnabled=old_autotext;
-  SetSelectionStart(GetLineIndentPosition(ls1)+ds1);
-  SetSelectionEnd(GetLineIndentPosition(ls2)+ds2);
+	SetSelectionStart(GetLineIndentPosition(ls1)+ds1);
+	SetSelectionEnd(GetLineIndentPosition(ls2)+ds2);
 }
 
 void mxSource::SetFolded(int level, bool folded) {
@@ -3353,9 +3340,8 @@ void mxSource::ShowDiffChange() {
 
 void mxSource::Reload() {
 	m_extras->FromSource(this);
-	bool old_sin_titulo=sin_titulo;
+	RaiiRestoreValue<bool> restore_sintitulo(sin_titulo);
 	LoadFile(GetFullPath());
-	sin_titulo=old_sin_titulo; // to keep as untitled when reloading an untitled source (usefull for custom tools such as clang-format)
 	m_extras->ToSource(this);
 }
 

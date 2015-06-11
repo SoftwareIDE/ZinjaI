@@ -68,4 +68,18 @@ public:
 	T *&operator=(T *other) { ptr=other; return ptr; }
 };
 
+template<class T>
+class RaiiRestoreValue {
+	T &variable;
+	T original_value;
+public:
+	RaiiRestoreValue(T &var, T value) 
+		: variable(var), original_value(var) 
+		{ variable = value; }
+	RaiiRestoreValue(T &var) 
+		: variable(var), original_value(var) {}
+	T GetOriginalValue() { return original_value; }
+	~RaiiRestoreValue() { variable = original_value; }
+};
+
 #endif
