@@ -7,7 +7,10 @@
 #include <wx/msgdlg.h>
 using namespace std;
 
-mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id, wxSize sz) : wxGrid(parent,id,wxDefaultPosition,sz,wxWANTS_CHARS), cols(number_of_cols) {
+mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id, wxSize sz) 
+	: wxGrid(parent,id,wxDefaultPosition,sz,wxWANTS_CHARS)
+	, evt_full_resize(this->GetEventHandler(),wxID_ANY), cols(number_of_cols) 
+{
 	created=false;
 	CreateGrid(0,number_of_cols);
 	SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
@@ -78,7 +81,6 @@ void mxGrid::InitColumn (int col_idx, wxString name, int width/*, bool visible*/
 
 void mxGrid::DoCreate ( ) {
 	RecalcColumns(GetSize().GetWidth());
-	Connect(wxEVT_SIZE,wxSizeEventHandler(mxGrid::OnResize),nullptr,this);
 	Connect(wxEVT_GRID_COL_SIZE,wxGridSizeEventHandler(mxGrid::OnColResize),nullptr,this);
 	Connect(wxEVT_GRID_CELL_LEFT_CLICK,wxGridEventHandler(mxGrid::OnLeftClick),nullptr,this);
 	Connect(wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEventHandler(mxGrid::OnDblClick),nullptr,this);
@@ -86,17 +88,26 @@ void mxGrid::DoCreate ( ) {
 	Connect(wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEventHandler(mxGrid::OnLabelPopup),nullptr,this);
 	Connect(wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(mxGrid::OnShowHideCol),nullptr,this);
 	Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(mxGrid::OnKeyDown),nullptr,this);
+	Connect(wxEVT_SIZE,wxSizeEventHandler(mxGrid::OnResize),nullptr,this);
+	Connect(wxEVT_TIMER,wxTimerEventHandler(mxGrid::OnResizeTimer),nullptr,this);
 	created=true;
 }
 
 void mxGrid::OnColResize (wxGridSizeEvent & event) {
-//	cerr<<"COL RESIZE: "<<event.GetRowOrCol()<<endl;
+	if (!created) { event.Skip(); return; }
+	evt_full_resize.Stop(); event.Skip(); 
+	cerr << "OnColResize("<<event.GetRowOrCol()<<")"<<endl;
 	cols[GetRealCol(event.GetRowOrCol())].width=GetColSize(event.GetRowOrCol());
-	event.Skip();
 }
 void mxGrid::OnResize (wxSizeEvent & event) {
-	RecalcColumns(event.GetSize().GetWidth());
+	if (!created) { event.Skip(); return; }
+	evt_full_resize.Start(200,true);
 	event.Skip();
+}
+
+void mxGrid::OnResizeTimer (wxTimerEvent &evt) {
+	cerr << "OnResize "<<endl;
+	RecalcColumns(GetSize().GetWidth());
 }
 
 void mxGrid::OnDblClick (wxGridEvent & event) {

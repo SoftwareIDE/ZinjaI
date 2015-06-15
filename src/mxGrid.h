@@ -4,6 +4,7 @@
 #include <vector>
 #include "SingleList.h"
 #include <wx/dc.h>
+#include <wx/timer.h>
 using namespace std;
 
 class mxGridCellRenderer : public wxGridCellStringRenderer {
@@ -42,9 +43,17 @@ private:
 		int real_pos; ///< column real position (may change when user hides other columns), or -1 if is hidden
 		float width; ///< column width in pixels, for reescaling
 	};
+	// when user resizes a column in a way such that horizontal scrollbar visibility 
+	// changes, a general Resize event is produced and so the column resize is 
+	// lost, overwriten by the overall resize... theres a timer now to avoid this,
+	// and it doesn't seem to be a better way since that overall event (at least
+	// on windows) is generated before the column event
+	wxTimer evt_full_resize;
+	
 	SingleList<mxGridCol> cols;
 	void RecalcColumns(int new_w);
 	
+	void OnResizeTimer(wxTimerEvent &evt);
 	void OnResize(wxSizeEvent &event);
 	void OnColResize(wxGridSizeEvent &evt);
 	void OnLeftClick(wxGridEvent &event);
