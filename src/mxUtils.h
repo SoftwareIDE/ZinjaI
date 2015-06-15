@@ -30,6 +30,7 @@
 #include "enums.h"
 #include "Language.h"
 #include "Cpp11.h"
+#include <map>
 
 class wxBoxSizer;
 class wxTextCtrl;
@@ -211,17 +212,21 @@ public:
 	**/
 	/*@{*/
 	/** @brief funcion interna que busca "inclusiones" (\#include...) en un fuente **/
-	static void FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive=true);
+	static void FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive=true, bool use_cache=false);
 	/** @brief Busca las dependencias de un fuente (en realidad del objeto que genera al compilarse, ya que incluye al propio fuente, para el makefile)**/
 	static wxString FindObjectDeps(wxFileName filename, wxString ref_path, wxArrayString &header_dirs);
 	/// @brief Devuelve una lista de includes directos (no recursivo) como wxArrayString (para el grafo del proyecto)
 	static void FindIncludes(wxArrayString &dest, wxFileName filename, wxString path, wxArrayString &header_dirs);
 
+	static std::map<wxString,wxArrayString> FindIncludes_cache;
+	static std::map<wxString,wxDateTime> AreIncludesUpdated_cache;
+	static void ClearIncludesCache();
+	
 	static wxString GetOnePath(wxString orig_path, wxString project_path, wxString fname, wxArrayString &dirs);
 	/// devuelve verdadero si alguno de los archivos incluidos por filename es mas nuevo que bin_date
 	static bool AreIncludesUpdated(wxDateTime bin_date, wxFileName filename);
 	/// devuelve verdadero si alguno de los archivos incluidos por filename es mas nuevo que bin_date
-	static bool AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs);
+	static bool AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs, bool use_cache=false);
 	
 	/// Busca los programas ejecutados desde zinjai
 	static void GetRunningChilds(wxArrayString &childs);

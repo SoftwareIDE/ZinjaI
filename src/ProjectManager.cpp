@@ -935,6 +935,16 @@ project_file_item *ProjectManager::FindFromName(wxString name) {
 	return nullptr;
 }
 
+project_file_item *ProjectManager::FindFromFullPath(wxString name) {
+	GlobalListIterator<project_file_item*> it(&files_all);
+	while (it.IsValid()) {
+		if (DIR_PLUS_FILE(path,it->name)==name)
+			return *it;
+		it.Next();
+	}
+	return nullptr;
+}
+
 wxString ProjectManager::GetNameFromItem(wxTreeItemId &tree_item, bool relative) {
 	project_file_item *item=FindFromItem(tree_item);
 	if (item)
@@ -1101,6 +1111,8 @@ bool ProjectManager::DependsOnMacro(project_file_item *item, wxArrayString &macr
 **/
 bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	
+	mxUT::ClearIncludesCache();
+	
 	// borrar los pasos que hayan quedado incompletos de compilaciones anteriores
 	// para preparar la nueva lista, se pone un nodo ficticio para facilitar la 
 	// "insersion", que siempre sera al final, se evita preguntar si es el primero
@@ -1208,7 +1220,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 				mxSource *src = main_window->IsOpen(item->item);
 				if (src) src->Reload();
 				warnings.Add(LANG1(PROJMNGR_FUTURE_SOURCE,"El fuente <{1}> tenia fecha de modificación en el futuro. Se reemplazó por la fecha actual.",full_path));
-				mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array);
+				mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array,true);
 				flag=true;
 			} else 
 			if (bin_name.FileExists()) {
@@ -1221,7 +1233,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 					warnings.Add(LANG1(PROJMNGR_FUTURE_OBJECT,"El objeto <{1}> tenia fecha de modificación en el futuro. Se recompilara el fuente.",full_path));
 					flag=true;
 				} else { // ver si el objeto esta desactualizado respecto a los includes del fuente
-					flag=mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array);
+					flag=mxUT::AreIncludesUpdated(bin_date,full_path,header_dirs_array,true);
 					if (!flag && dif_mac.GetCount()) flag=DependsOnMacro(*item,dif_mac); // si cambiaron las macros y el fuente las usa
 				}
 			} else { // si el objeto no existe, hay que compilar
@@ -1240,6 +1252,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 		}
 		item.Next();
 	}
+	
 	if (prev_to_sources->next) prev_to_sources->next->start_parallel=true;
 	step = step->next = new compile_step(CNS_BARRIER,nullptr);
 	if (!only_one) {

@@ -47,6 +47,10 @@ wxButton * mxUT::GetLastButton ( ) { return last_button; }
 static wxBoxSizer *last_sizer; ///< guarda el último sizer creado por los AddAlgo
 wxSizer * mxUT::GetLastSizer ( ) { return last_sizer; }
 
+
+std::map<wxString,wxArrayString> mxUT::FindIncludes_cache;
+std::map<wxString,wxDateTime> mxUT::AreIncludesUpdated_cache;
+
 /** 
 * Concatena una ruta y un nombre de archivo. Si este es relativo, agregando la 
 * barra si es necesario. Si el "archivo" era una ruta absoluta, la devuelve sin cambios.
@@ -368,25 +372,36 @@ bool mxUT::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename) {
 	return AreIncludesUpdated(bin_date,filename,header_dirs);
 }
 
-bool mxUT::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs) {
+void mxUT::ClearIncludesCache() { 
+	FindIncludes_cache.clear();
+	AreIncludesUpdated_cache.clear(); 
+}
+
+bool mxUT::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayString &header_dirs, bool use_cache) {
+	
+	if (!use_cache) ClearIncludesCache();
+	
 	// inicializar la lista
 	wxArrayString already_processed;
 	wxString my_path=filename.GetPathWithSep();
 	already_processed.Add(my_path); // el primer elemento (ficticio) guarda la ruta del archivo original
 	already_processed.Add(filename.GetFullPath());
 	// averiguar las dependencias
-	FindIncludes("",filename.GetFullName(),already_processed,header_dirs);
+	FindIncludes("",filename.GetFullName(),already_processed,header_dirs,true,true);
 	// comparar las fechas y liberar memoria
 	bool ret=false,future=false;
 	wxDateTime now=wxDateTime::Now();
 	for(unsigned int i=1;i<already_processed.GetCount();i++) { // saltea el elemento ficticio
 		if (!ret) {
 			if (project) {
-				project_file_item *fi=project->FindFromName(already_processed[i]);
+				project_file_item *fi=project->FindFromFullPath(already_processed[i]);
 				if (fi && fi->force_recompile) ret=true;
 			}
-			wxDateTime dt = wxFileName(already_processed[i]).GetModificationTime();
-			ret = wxFileName(already_processed[i]).GetModificationTime()>bin_date;
+			bool was_on_cache = AreIncludesUpdated_cache.count(already_processed[i]);
+			wxDateTime &dt = AreIncludesUpdated_cache[already_processed[i]];
+			if (!was_on_cache)
+				dt = wxFileName(already_processed[i]).GetModificationTime();
+			ret |= dt>bin_date;
 			if ((now-dt).GetSeconds().ToLong()<-3) { // si es del futuro, arreglar y recompilar
 				wxFileName(already_processed[i]).Touch();
 				future=true;
@@ -404,54 +419,72 @@ bool mxUT::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayS
 * Busca los includes del archivo filename que esta en el directorio path, relativo 
 * al directorio original first->name 
 **/
-void mxUT::FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive) {
-	wxTextFile text_file(DIR_PLUS_FILE(DIR_PLUS_FILE(already_processed[0],path),filename));
-	wxFileName file_name;
-	text_file.Open();
-	wxString line, this_one;
-	int ini, end;
-	// recorrer el fuente para buscar que incluye
-	for ( line = text_file.GetFirstLine(); !text_file.Eof(); line = text_file.GetNextLine() ) { 
-		// buscar donde comienza cada linea
-		int pos=0, len=line.Len();
-		while (pos<len && ( line[pos]==' ' || line[pos]=='\t' ))
-			pos++;
-		// si es una directiva de compilador
-		if (line[pos++]=='#') {
-			// buscar donde comienza la instruccion
+void mxUT::FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive, bool use_cache) {
+	
+	if (!use_cache) ClearIncludesCache();
+	wxString fullname = DIR_PLUS_FILE(DIR_PLUS_FILE(already_processed[0],path),filename);
+	bool was_on_cache = FindIncludes_cache.count(fullname);
+	wxArrayString results = FindIncludes_cache[fullname];
+	if (!was_on_cache) {
+		
+		wxTextFile text_file(fullname);
+		wxFileName file_name;
+		text_file.Open();
+		wxString line, this_one;
+		int ini, end;
+		
+		// recorrer el fuente para buscar que incluye
+		for ( line = text_file.GetFirstLine(); !text_file.Eof(); line = text_file.GetNextLine() ) { 
+			// buscar donde comienza cada linea
+			int pos=0, len=line.Len();
 			while (pos<len && ( line[pos]==' ' || line[pos]=='\t' ))
 				pos++;
-			// ver si es un include
-			if (pos+8<len && line[pos++]=='i' && line[pos++]=='n' 
-			&& line[pos++]=='c' && line[pos++]=='l' && line[pos++]=='u'
-			&& line[pos++]=='d' && line[pos++]=='e') {
-				// buscar donde comienza el nombre de archivo
+			// si es una directiva de compilador
+			if (line[pos++]=='#') {
+				// buscar donde comienza la instruccion
 				while (pos<len && ( line[pos]==' ' || line[pos]=='\t' ))
 					pos++;
-				// marcar el comienzo del nombre de archivo y buscar el final
-				ini=++pos; end=0;
-				while (pos<len && line[pos]!='>' && line[pos]!='\"' ) {
-					pos++;end++;
-				}
-				this_one=line.Mid(ini,end);
-				// si el archivo existe
-				if (this_one.Len())
-					this_one=GetOnePath(DIR_PLUS_FILE(already_processed[0],path),project?project->path:DIR_PLUS_FILE(already_processed[0],path),this_one,header_dirs);
-				if (this_one.Len()) {
-					file_name=this_one;
-					file_name.Normalize(wxPATH_NORM_DOTS);
-					this_one=file_name.GetFullPath();
-					if (already_processed.Index(this_one)==wxNOT_FOUND) {
-						// agregarlo a la lista de archivos ya considerados
-						already_processed.Add(this_one);
-						// buscar las dependencias recursivamente
-						if (recursive) 
-							FindIncludes(file_name.GetPathWithSep(),file_name.GetFullName(),already_processed,header_dirs);
+				// ver si es un include
+				if (pos+8<len && line[pos++]=='i' && line[pos++]=='n' 
+				   && line[pos++]=='c' && line[pos++]=='l' && line[pos++]=='u'
+				   && line[pos++]=='d' && line[pos++]=='e') {
+					// buscar donde comienza el nombre de archivo
+					while (pos<len && ( line[pos]==' ' || line[pos]=='\t' ))
+						pos++;
+					// marcar el comienzo del nombre de archivo y buscar el final
+					ini=++pos; end=0;
+					while (pos<len && line[pos]!='>' && line[pos]!='\"' ) {
+						pos++;end++;
+					}
+					this_one=line.Mid(ini,end);
+					// si el archivo existe
+					if (this_one.Len())
+						this_one=GetOnePath(DIR_PLUS_FILE(already_processed[0],path),project?project->path:DIR_PLUS_FILE(already_processed[0],path),this_one,header_dirs);
+					if (this_one.Len()) {
+						file_name=this_one;
+						file_name.Normalize(wxPATH_NORM_DOTS);
+						this_one=file_name.GetFullPath();
+						results.Add(this_one);
 					}
 				}
 			}
 		}
+		if (use_cache) FindIncludes_cache[fullname] = results;
 	}
+	
+	for(unsigned int i=0;i<results.GetCount();i++) {
+		wxString &this_one = results[i];
+		if (already_processed.Index(this_one)==wxNOT_FOUND) {
+			// agregarlo a la lista de archivos ya considerados
+			already_processed.Add(this_one);
+			// buscar las dependencias recursivamente
+			if (recursive) {
+				wxFileName file_name(this_one);
+				FindIncludes(file_name.GetPathWithSep(),file_name.GetFullName(),already_processed,header_dirs,true,true);
+			}
+		}
+	}
+	
 }
 
 wxString mxUT::UnSplit(const wxArrayString &array, const wxString &sep) {

@@ -537,6 +537,7 @@ public:
 	~ProjectManager();
 	wxString GetFileName();
 	int GetFileList(wxArrayString &array, eFileType cuales=FT_NULL, bool relative_paths=false);
+	project_file_item *FindFromFullPath(wxString name); ///< busca a partir del nombre de archivo (solo, sin path)
 	project_file_item *FindFromName(wxString name); ///< busca a partir del nombre de archivo (solo, sin path)
 	project_file_item *FindFromItem(wxTreeItemId &tree_item);
 	wxString GetNameFromItem(wxTreeItemId &tree_item, bool relative=false);
