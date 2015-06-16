@@ -8,10 +8,9 @@
 using namespace std;
 
 mxGrid::mxGrid(wxWindow *parent, int number_of_cols, wxWindowID id, wxSize sz) 
-	: wxGrid(parent,id,wxDefaultPosition,sz,wxWANTS_CHARS)
-	, evt_full_resize(this->GetEventHandler(),wxID_ANY), cols(number_of_cols) 
+	: wxGrid(parent,id,wxDefaultPosition,sz,wxWANTS_CHARS), created(false),
+	  evt_full_resize(this->GetEventHandler(),wxID_ANY), cols(number_of_cols) 
 {
-	created=false;
 	CreateGrid(0,number_of_cols);
 	SetColLabelAlignment(wxALIGN_CENTRE,wxALIGN_CENTRE);
 	SetRowLabelSize(0);
@@ -96,7 +95,6 @@ void mxGrid::DoCreate ( ) {
 void mxGrid::OnColResize (wxGridSizeEvent & event) {
 	if (!created) { event.Skip(); return; }
 	evt_full_resize.Stop(); event.Skip(); 
-	cerr << "OnColResize("<<event.GetRowOrCol()<<")"<<endl;
 	cols[GetRealCol(event.GetRowOrCol())].width=GetColSize(event.GetRowOrCol());
 }
 void mxGrid::OnResize (wxSizeEvent & event) {
@@ -106,7 +104,6 @@ void mxGrid::OnResize (wxSizeEvent & event) {
 }
 
 void mxGrid::OnResizeTimer (wxTimerEvent &evt) {
-	cerr << "OnResize "<<endl;
 	RecalcColumns(GetSize().GetWidth());
 }
 

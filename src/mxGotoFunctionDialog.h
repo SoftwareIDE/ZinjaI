@@ -4,13 +4,10 @@
 #include <wx/timer.h>
 #include "SingleList.h"
 #include "parserData.h"
+#include "mxGotoListDialog.h"
 
-class wxListBox;
-class wxTextCtrl;
-class wxButton;
-class wxCheckBox;
 
-class mxGotoFunctionDialog: public wxDialog {
+class mxGotoFunctionDialog: public mxGotoListDialog {
 private:
 	struct gotoff_result {
 		int type; /// 1=macro, 2=class, 3=func
@@ -60,26 +57,12 @@ private:
 	/// performs an interface-independent search, put results in m_results 
 	int FillResults(wxString key, bool ignore_case, bool strict_compare=false);
 	
-	wxTextCtrl *text_ctrl;
-	wxListBox *list_ctrl;
-	wxTimer *timer;
-	wxButton *goto_button;
-	wxButton *cancel_button;
-	wxCheckBox *case_sensitive;
 	bool strict_compare;
 public:
 	mxGotoFunctionDialog(wxString text, wxWindow* parent, wxString direct_goto="");
-	~mxGotoFunctionDialog();
-	void OnGotoFileButton(wxCommandEvent &event);
-	void OnGotoButton(wxCommandEvent &event);
-	void OnCancelButton(wxCommandEvent &event);
-	void OnClose(wxCloseEvent &event);
-	void OnTimerInput(wxTimerEvent &event);
-	void OnTextChange(wxCommandEvent &event);
-	void OnCharHook (wxKeyEvent &event);
-	void OnCaseCheck(wxCommandEvent &event);
-private:
-	DECLARE_EVENT_TABLE();
+	int OnSearch(wxString key, bool case_sensitive) override;
+	void OnGoto(int pos, wxString key) override; 
+	void OnExtraButton() override;
 };
 
 #endif
