@@ -47,7 +47,7 @@ void mxGotoFileDialog::OnGoto(int pos, wxString key) {
 
 
 int mxGotoFileDialog::OnSearch(wxString key, bool case_sensitive) {
-	bool ignore_case = case_sensitive;
+	bool ignore_case = !case_sensitive;
 	if (ignore_case) key.MakeUpper();
 	if (project) {
 		wxString path = project->GetPath();
