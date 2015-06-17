@@ -96,7 +96,6 @@ public:
 	~mxInspectionGrid();
 	void OnFullTableUpdateBegin();
 	void OnFullTableUpdateEnd();
-//	void OnSelectCell(wxGridEvent &event);
 	void OnCellChange(wxGridEvent &event);
 	void OnEditFromKeyboard(wxCommandEvent &event); // F2 key
 	void OnFreeze(wxCommandEvent &evt);

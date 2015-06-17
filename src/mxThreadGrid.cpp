@@ -2,14 +2,6 @@
 #include "DebugManager.h"
 #include "Language.h"
 
-BEGIN_EVENT_TABLE(mxThreadGrid, wxGrid)
-//	EVT_KEY_DOWN(mxThreadGrid::OnKey)
-//	EVT_GRID_CELL_LEFT_DCLICK(mxThreadGrid::OnDblClick)
-//	EVT_GRID_CELL_RIGHT_CLICK(mxThreadGrid::OnRightClick)
-//	EVT_MENU(mxID_Thread_GOTO_POS,mxThreadGrid::OnGotoPos)
-END_EVENT_TABLE()
-	
-	
 mxThreadGrid::mxThreadGrid(wxWindow *parent ):mxGrid(parent,TG_COLS_COUNT,wxID_ANY,wxSize(400,300)) {
 	mxGrid::InitColumn(TG_COL_ID,LANG(THREADS_ID,"Id"),5);
 	mxGrid::InitColumn(TG_COL_FUNCTION,LANG(THREADS_FUNCTION,"Funcion"),20);

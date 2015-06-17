@@ -8,9 +8,6 @@
 #include "mxMessageDialog.h"
 
 BEGIN_EVENT_TABLE(mxBacktraceGrid, wxGrid)
-//	EVT_KEY_DOWN(mxBacktraceGrid::OnKey)
-//	EVT_GRID_CELL_LEFT_DCLICK(mxBacktraceGrid::OnDblClick)
-//	EVT_GRID_CELL_RIGHT_CLICK(mxBacktraceGrid::OnRightClick)
 	EVT_MENU(mxID_BACKTRACE_GOTO_POS,mxBacktraceGrid::OnGotoPos)
 	EVT_MENU(mxID_BACKTRACE_INSPECT_ARGS,mxBacktraceGrid::OnInspectArgs)
 	EVT_MENU(mxID_BACKTRACE_INSPECT_LOCALS,mxBacktraceGrid::OnInspectLocals)

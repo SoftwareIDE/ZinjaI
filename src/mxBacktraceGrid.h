@@ -13,10 +13,6 @@ private:
 	SingleList<aux_bt_entry> entries; ///< to remember file and line column for doble-click event even if the columns are hidden
 public:
 	mxBacktraceGrid(wxWindow *parent);
-//	~mxBacktraceGrid();
-//	void OnKey(wxKeyEvent &event);
-//	void OnDblClick(wxGridEvent &event);
-//	void OnRightClick(wxGridEvent &event);
 	void OnExploreArgs(wxCommandEvent &event);
 	void OnExploreLocals(wxCommandEvent &event);
 	void OnInspectArgs(wxCommandEvent &event);
@@ -29,9 +25,7 @@ public:
 	void SetCellValue(int r, int c, const wxString &value);
 	void OnColumnHideOrUnhide(int col, bool visible);
 	void OnCellPopupMenu(int row, int col);
-//	bool OnCellClick(int row, int col);
 	bool OnCellDoubleClick(int row, int col);
-//	bool CanHideColumn(int col);
 	bool OnKey(int row, int col, int key, int modifiers);
 };
 

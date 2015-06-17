@@ -103,7 +103,7 @@ path=src/ProjectManager.cpp
 cursor=1463:33
 [source]
 path=src/mxThreadGrid.cpp
-cursor=29:36
+cursor=4:0
 [source]
 path=src/mxHelpWindow.cpp
 cursor=60:98
@@ -140,13 +140,13 @@ path=src/mxGotoFileDialog.cpp
 cursor=0:24
 [source]
 path=src/mxInspectionGrid.cpp
-cursor=17:8
+cursor=0:0
 breakpoint=877
 breakpoint_annotation=
 marker=802
 [source]
 path=src/mxBacktraceGrid.cpp
-cursor=209:1
+cursor=204:32
 [source]
 path=src/CodeExporter.cpp
 cursor=60:23
@@ -272,7 +272,7 @@ marker=609
 marker=634
 [source]
 path=src/Autocoder.cpp
-cursor=288:0
+cursor=290:12
 [source]
 path=src/mxIconInstaller.cpp
 cursor=40:54
@@ -373,7 +373,7 @@ path=src/mxShortcutsDialog.cpp
 cursor=15:0
 [source]
 path=src/mxLocalsGrid.cpp
-cursor=38:0
+cursor=9:0
 [source]
 path=src/mxInspectionsPanel.cpp
 cursor=124:37
@@ -415,7 +415,7 @@ path=src/ShareManager.h
 cursor=68:5
 [header]
 path=src/ids.h
-cursor=207:15
+cursor=634:43
 [header]
 path=src/mxAboutWindow.h
 cursor=-1:105
@@ -502,10 +502,10 @@ path=src/mxGotoFileDialog.h
 cursor=0:0
 [header]
 path=src/mxInspectionGrid.h
-cursor=79:2
+cursor=22:0
 [header]
 path=src/mxBacktraceGrid.h
-cursor=24:13
+cursor=15:0
 [header]
 path=src/CodeExporter.h
 cursor=16:20
@@ -613,7 +613,7 @@ path=src/mxBeginnerPanel.h
 cursor=-1:0
 [header]
 path=src/winStuff.h
-cursor=68:20
+cursor=29:1
 [header]
 path=src/mxDiffSideBar.h
 cursor=9:12
@@ -625,7 +625,7 @@ path=src/mxCustomTools.h
 cursor=4:21
 [header]
 path=src/mxThreadGrid.h
-cursor=20:17
+cursor=8:17
 [header]
 path=src/mxHidenPanel.h
 cursor=35:33
@@ -751,7 +751,7 @@ path=src/mxInspectionExplorerWidget.h
 cursor=18:3
 [header]
 path=src/mxLocalsGrid.h
-cursor=19:40
+cursor=0:0
 [header]
 path=src/mxInspectionsPanel.h
 cursor=14:1
@@ -781,7 +781,7 @@ path=src/mxGotoListDialog.h
 cursor=5:0
 [other]
 path=guihelp/ChangeLog.html
-cursor=13:88
+cursor=22:193
 [other]
 path=guihelp/tips_spanish
 cursor=0:0
