@@ -1052,7 +1052,11 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	if (ignore_char_added) return;
 	char chr = (char)event.GetKey();
-	if (calltip_mode==MXS_AUTOCOMP) {
+	// la siguiente condicion verifica contra el estado interno de wx porque si el 
+	// usuario estaba en un menu, se movió rápido a otro lugar y lanzó un segundo
+	// menu, puede que en el medio no se haya ejecutado ningún updateui como para
+	// que mi calltip_mode se entere de ese cambio... y en ese caso el filtro reventaría
+	if (calltip_mode==MXS_AUTOCOMP && wxStyledTextCtrl::AutoCompActive()) { 
 		if (!II_IS_KEYWORD_CHAR(chr)) HideCalltip();
 		else if (config_source.autocompFilters) 
 			code_helper->FilterAutocomp(this,GetTextRange(autocomp_helper.GetBasePos(),GetCurrentPos()));
@@ -3853,6 +3857,7 @@ void mxSource::HideCalltip () {
 		case MXS_BALOON: wxStyledTextCtrl::CallTipCancel(); break;
 		case MXS_AUTOCOMP: wxStyledTextCtrl::AutoCompCancel(); if (calltip) calltip->Hide(); break;
 	}
+	cerr<<"NULL!!"<<endl;
 	calltip_mode = MXS_NULL;
 }
 
