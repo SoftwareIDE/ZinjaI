@@ -9,7 +9,10 @@ include Makefile.common
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}
 	
-..\bin\cbrowser.exe: ${OBJS_DIR} ${OBJS}
+..\bin:
+	mkdir ..\bin
+	
+..\bin\cbrowser.exe: ..\bin ${OBJS_DIR} ${OBJS}
 	${GCC} ${OBJS} -o $@
 
 
