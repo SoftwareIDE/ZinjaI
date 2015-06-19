@@ -108,7 +108,6 @@ public:
 	void OnOpen(wxCommandEvent &evt);
 	void OnSave(wxCommandEvent &evt);
 	void SetValues();
-	~mxColoursEditor();
 	DECLARE_EVENT_TABLE();
 };
 

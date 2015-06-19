@@ -153,9 +153,6 @@ void mxColoursEditor::Add(wxString name, wxColour *fore, wxColour *back, bool *i
 }
 
 
-mxColoursEditor::~mxColoursEditor() {
-}
-
 #define MXCAdd(id,text) Add(text,&(ctheme->id##_FORE),&(ctheme->id##_BACK),&(ctheme->id##_ITALIC),&(ctheme->id##_BOLD));
 #define MXCAdd0(id,text) Add(text,&(ctheme->id##_FORE),&(ctheme->id##_BACK),nullptr,nullptr);
 #define MXCAdd1(id,text) Add(text,&(ctheme->id),nullptr,nullptr,nullptr);

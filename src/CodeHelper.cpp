@@ -53,10 +53,6 @@ CodeHelper::CodeHelper(int ml, int mode) {
 
 }
 
-CodeHelper::~CodeHelper() {
-
-}
-
 bool CodeHelper::AutocompletePreprocesorDirective(mxSource *source, wxString typed) {
 	return AutocompleteFromArray(source,preproc_directives,typed);
 }

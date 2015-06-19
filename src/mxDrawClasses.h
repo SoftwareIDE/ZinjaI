@@ -8,7 +8,6 @@ private:
 	wxComboBox *related_classes,*what_inside,*wich_command,*wich_file,*wich_class,*where_store;
 public:
 	mxDrawClasses();
-	~mxDrawClasses();
 	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

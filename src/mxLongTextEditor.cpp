@@ -60,11 +60,6 @@ void mxLongTextEditor::CreateCommonStuff(wxString value) {
 	
 }
 
-
-mxLongTextEditor::~mxLongTextEditor() {
-
-}
-
 void mxLongTextEditor::OnOkButton(wxCommandEvent &evt) {
 	wxString str = my_text->GetValue();
 	str.Replace("\n"," ");

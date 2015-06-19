@@ -22,7 +22,6 @@ public:
 	void OnHelpButton(wxCommandEvent &evt);
 	void DiffTwoSources(mxSource *src1, mxSource *src2);
 	void DiffSourceFile(mxSource *src, wxString fname);
-	~mxDiffWindow();
 	DECLARE_EVENT_TABLE();
 };
 

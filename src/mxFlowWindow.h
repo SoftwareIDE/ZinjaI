@@ -11,7 +11,6 @@ private:
 	mxFlowCanvas *canvas;
 public:
 	mxFlowWindow(mxSource *s, wxString title);
-	~mxFlowWindow();
 	void OnCharHook(wxKeyEvent &evt);
 	void OnClose(wxCloseEvent &evt);
 	DECLARE_EVENT_TABLE();

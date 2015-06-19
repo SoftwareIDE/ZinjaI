@@ -93,10 +93,6 @@ wxPanel *mxProjectGeneralConfig::CreateTabAdvanced(wxNotebook *notebook) {
 	
 }
 
-mxProjectGeneralConfig::~mxProjectGeneralConfig() {
-	
-}
-
 void mxProjectGeneralConfig::OnOkButton(wxCommandEvent &evt) {
 	if (!project) {Close(); return;}
 	if (project->project_name!=project_name->GetValue()) {

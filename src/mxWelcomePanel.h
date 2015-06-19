@@ -11,7 +11,6 @@ private:
 public:
 	bool IsVisible();
 	mxWelcomePanel(wxWindow *parent);
-	~mxWelcomePanel();
 	void Reload();
 	void OnLinkClicked (wxHtmlLinkEvent &event);
 	DECLARE_EVENT_TABLE();

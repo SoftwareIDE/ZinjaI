@@ -13,7 +13,6 @@ private:
 public:
 	mxBitmapButton(wxWindow *parent, wxWindowID id, const wxBitmap *abmp, wxString atext, wxSize size = wxDefaultSize);
 	bool SetThings(const wxBitmap *abmp, wxString atext);
-	~mxBitmapButton();
 	static wxBitmap GenerateButtonImage(wxString text, const wxBitmap *img);
 
 };

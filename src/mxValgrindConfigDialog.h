@@ -12,7 +12,6 @@ private:
 	wxTextCtrl *additional_args;
 public:
 	mxValgrindConfigDialog(wxWindow *parent);
-	~mxValgrindConfigDialog();
 	void OnButtonOk(wxCommandEvent &evt);
 	void OnButtonCancel(wxCommandEvent &evt);
 	void OnButtonHelp(wxCommandEvent &evt);

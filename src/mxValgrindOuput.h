@@ -30,7 +30,6 @@ public:
 	void OnReload(wxCommandEvent &evt);
 	void OnOpen(wxCommandEvent &evt);
 	void OnKey(wxKeyEvent &evt);
-	~mxValgrindOuput();
 	DECLARE_EVENT_TABLE();
 };
 

@@ -84,9 +84,6 @@ mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, wxString classname, bool upda
 	ShowModal();
 }
 
-mxWxfbInheriter::~mxWxfbInheriter() {
-}
-
 void mxWxfbInheriter::FillBaseArray() {
 	ProjectManager::WxfbAutoCheckData data;
 	wxfb_classes.Clear(); user_classes.Clear(); 

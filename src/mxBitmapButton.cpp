@@ -13,9 +13,6 @@ mxBitmapButton::mxBitmapButton(wxWindow *parent, wxWindowID id, const wxBitmap *
 //	SetLabel(text);
 }
 
-mxBitmapButton::~mxBitmapButton() {
-}
-
 bool mxBitmapButton::SetThings(const wxBitmap *abmp,wxString atext) {
 	if (bmp != abmp || text != atext) {
 		bmp = abmp;

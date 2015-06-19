@@ -21,7 +21,6 @@ public:
 	void OnLeave();
 	wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
 	mxDropTarget(mxSource *s);
-	~mxDropTarget();
 };
 
 #endif

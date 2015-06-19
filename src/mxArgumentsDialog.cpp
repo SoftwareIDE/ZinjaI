@@ -72,10 +72,6 @@ mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent, const wxString &def_args,
 	
 }
 
-mxArgumentsDialog::~mxArgumentsDialog() {
-	
-}
-
 void mxArgumentsDialog::OnYesButton(wxCommandEvent &evt) {
 	last_workdir=combo_work->GetValue();
 	if (list_for_combo_work.GetCount()==0 || list_for_combo_work.Last()!=last_workdir)

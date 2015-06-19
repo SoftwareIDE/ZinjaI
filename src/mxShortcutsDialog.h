@@ -31,7 +31,6 @@ public:
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);
-	~mxShortcutsDialog();
 	DECLARE_EVENT_TABLE();
 };
 

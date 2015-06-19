@@ -15,7 +15,6 @@ private:
 	wxTextCtrl *child_class;
 public:
 	mxWxfbInheriter(wxWindow *parent, wxString classname, bool update);
-	~mxWxfbInheriter();
 	void FillBaseArray();
 	void OnClose(wxCloseEvent &evt);
 	void OnButtonOk(wxCommandEvent &evt);

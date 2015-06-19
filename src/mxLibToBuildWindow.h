@@ -28,7 +28,6 @@ private:
 public:
 	static wxString new_name;
 	mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_configuration *conf, project_library *alib=nullptr);
-	~mxLibToBuildWindow();
 	void OnClose(wxCloseEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);

@@ -19,7 +19,6 @@ private:
 public:
 	static wxString new_name;
 	mxExtraStepWindow(wxWindow *parent, project_configuration *conf, compile_extra_step *astep=nullptr);
-	~mxExtraStepWindow();
 	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

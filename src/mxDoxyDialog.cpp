@@ -52,10 +52,6 @@ mxDoxyDialog::mxDoxyDialog() : wxDialog(main_window, wxID_ANY, LANG(DOXYCONF_CAP
 	
 }
 
-mxDoxyDialog::~mxDoxyDialog() {
-	
-}
-
 void mxDoxyDialog::OnOkButton(wxCommandEvent &evt) {
 	if (!project) { return; }
 	dox->destdir = destdir_ctrl->GetValue();

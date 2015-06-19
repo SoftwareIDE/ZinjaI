@@ -74,10 +74,6 @@ mxDiffWindow::mxDiffWindow(mxSource *asource, wxString fname) : wxDialog(main_wi
 	
 }
 
-mxDiffWindow::~mxDiffWindow() {
-	
-}
-
 void mxDiffWindow::OnOkButton(wxCommandEvent &evt) {
 	if (source) {
 		DiffSourceFile(source,diff_to_name);

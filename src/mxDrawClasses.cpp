@@ -100,10 +100,6 @@ mxDrawClasses::mxDrawClasses() : wxDialog(main_window, wxID_ANY, LANG(DRAWCLASSE
 	ShowModal();
 }
 
-mxDrawClasses::~mxDrawClasses() {
-	
-}
-
 void mxDrawClasses::OnCancelButton(wxCommandEvent &evt) {
 	Close();
 }

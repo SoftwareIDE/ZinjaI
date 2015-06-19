@@ -52,12 +52,6 @@ mxFlowWindow::mxFlowWindow(mxSource *src, wxString title) : wxFrame (nullptr,wxI
 
 }
 
-mxFlowWindow::~mxFlowWindow() {
-	
-}
-
-
-
 void mxFlowWindow::OnCharHook(wxKeyEvent &evt) {
 	if (evt.GetKeyCode()==WXK_NUMPAD_ADD) {
 		canvas->ChangeScale(1.25);

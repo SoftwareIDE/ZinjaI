@@ -9,10 +9,6 @@ CodeExporter::CodeExporter() {
 	
 }
 
-CodeExporter::~CodeExporter() {
-	
-}
-
 bool CodeExporter::ExportHtml(mxSource *src, wxString title, wxString fname) {
 	
 	wxFFile fil(fname,_T("w+"));

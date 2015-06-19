@@ -51,10 +51,6 @@ mxSplashScreen::mxSplashScreen(const char *xpm[], int x, int y):wxFrame(nullptr,
 	wxYield();
 }
 
-mxSplashScreen::~mxSplashScreen() {
-	
-}
-
 void mxSplashScreen::OnPaint(wxPaintEvent& WXUNUSED(evt)) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);

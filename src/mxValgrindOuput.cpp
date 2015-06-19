@@ -257,11 +257,6 @@ void mxValgrindOuput::OnKey(wxKeyEvent &evt) {
 	} else evt.Skip();
 }
 
-
-mxValgrindOuput::~mxValgrindOuput() {
-	
-}
-
 void mxValgrindOuput::SetMode (mxVOmode mode, wxString afilename) {
 	filename=afilename;
 	this->mode=mode;

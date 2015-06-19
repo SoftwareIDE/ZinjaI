@@ -68,10 +68,6 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 	ShowModal();
 }
 
-mxExtraStepWindow::~mxExtraStepWindow() {
-	
-}
-
 void mxExtraStepWindow::OnClose(wxCloseEvent &evt) {
 	Destroy();
 }

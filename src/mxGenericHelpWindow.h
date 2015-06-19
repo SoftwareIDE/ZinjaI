@@ -47,7 +47,7 @@ protected:
 	
 public:
 	mxGenericHelpWindow(wxString title, bool use_tree);
-	~mxGenericHelpWindow();
+	virtual ~mxGenericHelpWindow() {}
 	
 	virtual void OnPrev() { html->HistoryBack(); }
 	virtual void OnNext() { html->HistoryForward(); }

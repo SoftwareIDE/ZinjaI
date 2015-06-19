@@ -96,10 +96,6 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 	ShowModal();
 }
 
-mxLibToBuildWindow::~mxLibToBuildWindow() {
-	
-}
-
 void mxLibToBuildWindow::OnClose(wxCloseEvent &evt) {
 	Destroy();
 }

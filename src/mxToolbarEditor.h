@@ -19,7 +19,6 @@ private:
 	int count, toolbar_id;
 public:
 	mxToolbarEditor(wxWindow *parent, int toolbar_id, wxString name);
-	~mxToolbarEditor();
 	void Add(wxString name, wxString file, bool &config_entry);
 	void ShowUp();
 	void OnButtonOk(wxCommandEvent &evt);

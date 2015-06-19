@@ -17,10 +17,6 @@ mxDropTarget::mxDropTarget(mxSource *s) {
 	else SetDataObject (data);
 }
 
-mxDropTarget::~mxDropTarget() {
-	
-}
-
 bool mxDropTarget::OnDrop(wxCoord x, wxCoord y) {
 	return true;
 }

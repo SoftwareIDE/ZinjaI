@@ -66,9 +66,6 @@ bool ShareManager::CheckServer() {
 	return true;
 }
 
-ShareManager::~ShareManager () {
-}
-
 bool ShareManager::AskFor(wxString name) {
 	wxIPV4address adrs;
 	if (!adrs.Hostname(list_hostname)) {

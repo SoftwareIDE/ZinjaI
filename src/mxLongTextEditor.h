@@ -14,7 +14,6 @@ public:
 	mxLongTextEditor(wxWindow *parent, wxString title, wxTextCtrl *text);
 	mxLongTextEditor(wxWindow *parent, wxString title, wxComboBox *combo);
 	void CreateCommonStuff(wxString value);
-	~mxLongTextEditor();
 	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

@@ -20,7 +20,6 @@ public:
 	mxEnumerationEditor(wxWindow *parent, wxString title, wxArrayString *combo);
 	void CreateCommonStuff(wxString value, bool comma_splits);
 	void CreateCommonStuff(const wxArrayString &value);
-	~mxEnumerationEditor();
 	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

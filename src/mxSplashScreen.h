@@ -32,7 +32,6 @@ public:
 	void OnMouse(wxMouseEvent &evt);
 	void OnTimer(wxTimerEvent &evt); 
 	void OnClose(wxCloseEvent &evt); 
-	~mxSplashScreen();
 	DECLARE_EVENT_TABLE();
 };
 

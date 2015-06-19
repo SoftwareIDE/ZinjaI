@@ -49,10 +49,6 @@ mxToolbarEditor::mxToolbarEditor(wxWindow *parent, int toolbar_id, wxString name
 	
 }
 
-mxToolbarEditor::~mxToolbarEditor() {
-	
-}
-
 void mxToolbarEditor::Add(wxString name, wxString file, bool &config_entry) {
 	if (!bitmaps->HasBitmap(ipre+file,true)) return;
 	wxBoxSizer *btsizer = new wxBoxSizer(wxHORIZONTAL);

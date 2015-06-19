@@ -21,7 +21,6 @@ private:
 //	wxCheckBox *use_wxfb;
 public:
 	mxProjectGeneralConfig();
-	~mxProjectGeneralConfig();
 	wxPanel *CreateTabGeneral(wxNotebook *notebook);
 	wxPanel *CreateTabAdvanced(wxNotebook *notebook);
 	void OnClose(wxCloseEvent &event);

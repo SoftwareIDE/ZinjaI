@@ -242,10 +242,6 @@ mxShortcutsDialog::mxShortcutsDialog(wxWindow *parent) : wxDialog(parent,wxID_AN
 	ShowModal();
 }
 
-mxShortcutsDialog::~mxShortcutsDialog() {
-	
-}
-
 void mxShortcutsDialog::OnTimer (wxTimerEvent & evt) {
 	wxString text = filter->GetValue().Upper();
 	wxString keys = normalize(filter->GetValue());

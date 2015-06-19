@@ -59,11 +59,6 @@ mxListItemEditor::mxListItemEditor(wxWindow *parent, wxString title, wxListBox *
 	
 }
 
-
-mxListItemEditor::~mxListItemEditor() {
-	
-}
-
 void mxListItemEditor::OnOkButton(wxCommandEvent &evt) {
 	wxString str = my_text->GetValue();
 	str.Replace("\n"," ");

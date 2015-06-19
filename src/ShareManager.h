@@ -46,7 +46,6 @@ private:
 	wxString list_hostname; ///< hostname al que se le pidio la lista, para saber luego a quien pedirle los fuentes
 public:
 	ShareManager();
-	~ShareManager();
 	bool CheckServer();
 	bool Exists(wxString name);
 	bool Exists(mxSource *source);

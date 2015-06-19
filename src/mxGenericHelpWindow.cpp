@@ -96,9 +96,6 @@ void mxGenericHelpWindow::OnCloseEvent(wxCloseEvent &event) {
 	Hide();
 }
 
-mxGenericHelpWindow::~mxGenericHelpWindow() {
-}
-
 void mxGenericHelpWindow::OnHideTreeEvent(wxCommandEvent &event) {
 	if (bottomSizer->GetItem(index_sash)->GetMinSize().GetWidth()<10)
 		bottomSizer->SetItemMinSize(index_sash,200, 10);	

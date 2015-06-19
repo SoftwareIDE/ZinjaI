@@ -18,7 +18,6 @@ private:
 	wxTextCtrl *extra_conf;
 public:
 	mxDoxyDialog();
-	~mxDoxyDialog();
 	void OnClose(wxCloseEvent &event);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);

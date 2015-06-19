@@ -47,10 +47,6 @@ mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent
 	SetSizerAndFit(sizer);
 }
 
-mxValgrindConfigDialog::~mxValgrindConfigDialog() {
-	
-}
-
 void mxValgrindConfigDialog::OnButtonOk (wxCommandEvent & evt) {
 	EndModal(1);
 }

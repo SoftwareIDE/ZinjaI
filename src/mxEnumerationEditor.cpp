@@ -80,10 +80,6 @@ void mxEnumerationEditor::CreateCommonStuff(const wxArrayString &array) {
 	ShowModal();
 }
 
-mxEnumerationEditor::~mxEnumerationEditor() {
-	
-}
-
 void mxEnumerationEditor::OnOkButton(wxCommandEvent &evt) {
 	if (m_array) {
 		m_array->Clear();

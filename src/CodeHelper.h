@@ -70,7 +70,6 @@ private:
 	CodeHelper(int ml, int mode);
 public:
 	static void Initialize();
-	~CodeHelper();	
 	bool LoadData(wxString index);
 	void ResetStdData();
 	wxString GetInclude(wxString path, wxString key);

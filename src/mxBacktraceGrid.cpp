@@ -31,10 +31,6 @@ mxBacktraceGrid::mxBacktraceGrid(wxWindow *parent):mxGrid(parent,BG_COLS_COUNT,w
 	SetColLabelSize(wxGRID_AUTOSIZE);
 }
 
-//mxBacktraceGrid::~mxBacktraceGrid() {
-//	
-//}
-
 bool mxBacktraceGrid::OnCellDoubleClick(int row, int col) {
 	SelectFrame(row); return true;
 }

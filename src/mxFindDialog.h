@@ -35,7 +35,6 @@ public:
 	wxButton *replace_all_button;
 	wxStaticText *replace_static;
 	mxFindDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
-	~mxFindDialog();
 	void MyHide();
 	void OnClose(wxCloseEvent &event);
 	void OnCancel(wxCommandEvent &event);

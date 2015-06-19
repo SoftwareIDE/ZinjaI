@@ -84,10 +84,6 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	
 }
 
-mxFindDialog::~mxFindDialog() {
-	
-}
-
 void mxFindDialog::ShowFind(mxSource *source) {
 	replace_mode=false;
 	check_close->SetValue(true);

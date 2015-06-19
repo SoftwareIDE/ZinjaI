@@ -13,7 +13,6 @@ private:
 	int sel;
 public:
 	mxListItemEditor(wxWindow *parent, wxString title, wxListBox *list, int sel);
-	~mxListItemEditor();
 	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
