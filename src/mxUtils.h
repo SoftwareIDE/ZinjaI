@@ -292,6 +292,8 @@ public:
 //	static wxString GetRunnerCommand(int wait, const wxString &workdir, const wxString &bin, const wxString &args="", const wxString &pref="");
 	static wxString GetRunnerBaseCommand(int wait_for_key);
 	
+	static wxString GetFileTypeDescription(wxString file_path);
+	
 	/// builds the full command to launch the received command inside a terminal with config->Files.terminal_command)
 	static wxString GetCommandForRunningInTerminal(const wxString &title, const wxString &command);
 	

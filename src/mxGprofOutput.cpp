@@ -16,7 +16,11 @@ BEGIN_EVENT_TABLE(mxGprofOutput,wxDialog)
 	EVT_COMBOBOX(wxID_ANY,mxGprofOutput::OnComboChange)
 END_EVENT_TABLE()
 
-mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname):wxDialog(parent, wxID_ANY, "gprof output", wxDefaultPosition, wxSize(700,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER),data(fname.c_str()) {
+mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname)
+	: wxDialog(parent, wxID_ANY, "gprof output", wxDefaultPosition, wxSize(700,400),
+               wxALWAYS_SHOW_SB|wxALWAYS_SHOW_SB|wxDEFAULT_FRAME_STYLE|wxSUNKEN_BORDER),
+	data(fname.c_str()) 
+{
 	if (!data.graph.size()) { mxMessageDialog(parent,"No se han podido leer resultados.","gprof",mxMD_ERROR|mxMD_OK).ShowModal(); Destroy(); return; }
 	wxSizer *main_sizer=new wxBoxSizer(wxVERTICAL);
 	

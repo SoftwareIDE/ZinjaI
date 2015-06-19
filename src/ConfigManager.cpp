@@ -294,7 +294,7 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("temp_dir",Files.temp_dir);
 				else CFG_GENERIC_READ_DN("img_viewer",Files.img_viewer);
 				else CFG_GENERIC_READ_DN("xdot_command",Files.xdot_command);
-				else CFG_GENERIC_READ_DN("graphviz_dir",Files.graphviz_dir);
+//				else CFG_GENERIC_READ_DN("graphviz_dir",Files.graphviz_dir);
 				else CFG_GENERIC_READ_DN("browser_command",Files.browser_command);
 				else CFG_GENERIC_READ_DN("cppcheck_command",Files.cppcheck_command);
 #ifndef __WIN32__
@@ -586,7 +586,7 @@ bool ConfigManager::Save(){
 	CFG_GENERIC_WRITE_DN("doxygen_command",Files.doxygen_command);
 	CFG_GENERIC_WRITE_DN("wxfb_command",Files.wxfb_command);
 	CFG_GENERIC_WRITE_DN("browser_command",Files.browser_command);
-	CFG_GENERIC_WRITE_DN("graphviz_dir",Files.graphviz_dir);
+//	CFG_GENERIC_WRITE_DN("graphviz_dir",Files.graphviz_dir);
 	CFG_GENERIC_WRITE_DN("project_folder",Files.project_folder);
 	CFG_GENERIC_WRITE_DN("last_dir",Files.last_dir);
 	CFG_GENERIC_WRITE_DN("last_project_dir",Files.last_project_dir);
@@ -639,7 +639,7 @@ void ConfigManager::LoadDefaults(){
 	Files.temp_dir=DIR_PLUS_FILE(home_dir,"tmp");;
 	EnsurePathExists(temp_dir);
 	Files.skin_dir="imgs";
-	Files.graphviz_dir="graphviz";
+//	Files.graphviz_dir="graphviz";
 //	Files.mingw_dir="MinGW";
 #ifdef __WIN32__
 	Files.toolchain="gcc-mingw32";

@@ -25,17 +25,16 @@ function zmkdir {
 }
 
 zmkdir zinjai
-    cp -u $SRC/lsdeps.exe zinjai/ 
-    cp -u $SRC/lsdeps.exe zinjai/
-    cp -u $SRC/runner.exe zinjai/
-    cp -u $SRC/cbrowser.exe zinjai/
+    cp -u $SRC/lsdeps.exe zinjai/bin/
+    cp -u $SRC/runner.exe zinjai/bin/
+    cp -u $SRC/cbrowser.exe zinjai/bin/
     cp -u $SRC/zinjai.exe zinjai/
     cp -u $SRC/zinjai.dir zinjai/
-    cp -u $SRC/img_viewer.exe zinjai/
-    cp -u $SRC/complement.exe zinjai/
-    cp -u $SRC/complement_wrap.exe zinjai/
-    cp -u $SRC/shellexecute.exe zinjai/
-    cp -u $SRC/updatem.exe zinjai/
+    cp -u $SRC/img_viewer.exe zinjai/bin/
+    cp -u $SRC/complement.exe zinjai/bin/
+    cp -u $SRC/complement_wrap.exe zinjai/bin/
+    cp -u $SRC/shellexecute.exe zinjai/bin/
+    cp -u $SRC/updatem.exe zinjai/bin/
     cp -u $SRC/readme.txt zinjai/
     cp -u $SRC/debug_macros.gdb zinjai/
     zmkdir zinjai/imgs
@@ -73,8 +72,8 @@ zmkdir zinjai
     cp -Hru $SRC/autocomp/AAA* zinjai/autocomp/
 #    cp -Hru $SRC/autocomp/STL* zinjai/autocomp/
     cp -Hru $SRC/autocomp/Doc* zinjai/autocomp/
-  zmkdir zinjai/graphviz
-    cp -u $SRC/graphviz/*.exe zinjai/graphviz/
+#  zmkdir zinjai/graphviz
+#    cp -u $SRC/graphviz/*.exe zinjai/third/graphviz/
 
 zmkdir OpenGL
   zmkdir OpenGL/templates

@@ -16,11 +16,11 @@ private:
 	wxFileName fname;
 	wxTextCtrl *text_size, *text_type, *text_time, *ldd_ctrl;
 	wxTimer *wait_for_parser;
+	void UpdateTypeAndDeps();
 public:
 	mxExeInfo(wxWindow *parent, mxSource *src);
 	wxPanel *CreateGeneralPanel (wxNotebook *notebook);
 	wxPanel *CreateDependPanel (wxNotebook *notebook);
-	~mxExeInfo();
 	void OnClose(wxCloseEvent &event);
 	void OnCloseButton(wxCommandEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);

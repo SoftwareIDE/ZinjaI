@@ -39,7 +39,7 @@ mxSourceProperties::mxSourceProperties(wxString afname, mxSource *src) : wxDialo
 	mxUT::AddShortTextCtrl(mySizer,this,"Abierto",(src?"Si":"No"))->SetEditable(false);
 	if (src) mxUT::AddShortTextCtrl(mySizer,this,"Modificado",(src->GetModify()?"Si":"No"))->SetEditable(false);
 	
-	wxString file_type = mxUT::GetOutput(wxString("file -b \"")<<fname<<"\"");
+	wxString file_type = mxUT::GetFileTypeDescription(fname);
 	
 	mxUT::AddLongTextCtrl(mySizer,this,"Tipo de Archivo",file_type)->SetEditable(false);
 	

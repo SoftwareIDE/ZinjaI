@@ -23,8 +23,6 @@ END_EVENT_TABLE()
 	
 mxExeInfo::mxExeInfo(wxWindow *parent, mxSource *src) : wxDialog(parent, wxID_ANY, LANG(EXEINFO_CAPTION,"Propiedades del Ejecutable"), wxDefaultPosition, wxSize(450,400) ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	
-	wait_for_parser = nullptr;
-	
 	fname = src?src->GetBinaryFileName().GetFullPath():wxFileName(DIR_PLUS_FILE(project->path,project->active_configuration->output_file));
 	if (!fname.FileExists() || (src&&src->sin_titulo&&compiler->last_compiled!=src) ) {
 		mxMessageDialog(LANG(EXEINFO_NOT_FOUND,"No se encontro ejecutable. Compile el programa para crearlo."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK).ShowModal();
@@ -51,6 +49,14 @@ mxExeInfo::mxExeInfo(wxWindow *parent, mxSource *src) : wxDialog(parent, wxID_AN
 	
 	notebook->AddPage(CreateGeneralPanel(notebook), LANG(EXEINFO_GENERAL,"General"));
 	notebook->AddPage(CreateDependPanel(notebook), LANG(EXEINFO_DEPS,"Dependencias"));
+	
+	if (!parser->working) {
+		wait_for_parser = nullptr;
+		UpdateTypeAndDeps();
+	} else if (!wait_for_parser) {
+		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
+		wait_for_parser->Start(1000,true);
+	}
 	
 	mySizer->Add(notebook,sizers->Exp1);
 	mySizer->Add(buttonSizer,sizers->Exp0);
@@ -100,12 +106,7 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	}
 	
 	wxString file_type = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar el tipo mientras el parser esta analizando fuentes");
-	if (!parser->working) 
-		file_type = mxUT::GetOutput(wxString(_T("file -b \""))<<fname.GetFullPath()<<"\"");
-	else if (!wait_for_parser) {
-		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
-		wait_for_parser->Start(1000,true);
-	}
+	
 	text_type = mxUT::AddLongTextCtrl(sizer,panel,LANG(EXEINFO_FILE_TYPE,"Tipo de Archivo"),file_type);
 	text_type ->SetEditable(false);
 	
@@ -120,29 +121,8 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	
 	wxString ldd = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar esta informacion mientras el parser esta analizando fuentes");
 	
-	if (!parser->working) {
-#ifndef __WIN32__
-		ldd = mxUT::GetOutput(wxString("ldd \"")<<fname.GetFullPath()<<"\"");
-#else
-		ldd = mxUT::GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\"");
-#endif
-	} else if (!wait_for_parser) {
-		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
-		wait_for_parser->Start(1000,true);
-	}
-	
-#ifndef __WIN32__
-	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,"ldd",ldd);
-#else
-	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,"lsdeps",ldd);
-#endif
-	
 	panel->SetSizer(sizer);
 	return panel;
-}
-
-mxExeInfo::~mxExeInfo() {
-	
 }
 
 void mxExeInfo::OnClose(wxCloseEvent &event) {
@@ -165,7 +145,7 @@ void mxExeInfo::OnStripButton(wxCommandEvent &evt) {
 	}
 	tsize<<fname.GetSize()<<" B";
 	text_size->SetValue(tsize);	
-	text_type->SetValue(mxUT::GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
+	text_type->SetValue(mxUT::GetFileTypeDescription(fname.GetFullPath()));
 	text_time->SetValue(fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
 }
 
@@ -175,6 +155,12 @@ void mxExeInfo::OnHelpButton(wxCommandEvent &event){
 
 void mxExeInfo::OnTimer(wxTimerEvent &evt) {
 	if (parser->working) { wait_for_parser->Start(1000,true); return; }
-	ldd_ctrl->SetValue(mxUT::GetOutput(wxString("lsdeps \"")<<fname.GetFullPath()<<"\""));
-	text_type->SetValue(mxUT::GetOutput(wxString("file -b \"")<<fname.GetFullPath()<<"\""));
+	UpdateTypeAndDeps();
 }
+
+void mxExeInfo::UpdateTypeAndDeps ( ) {
+	wxString ldd_cmd = OSDEP_VAL( DIR_PLUS_FILE(config->zinjai_bin_dir,"lsdeps.exe"), "ldd" );
+	ldd_ctrl->SetValue(ldd_cmd+" "+mxUT::Quotize(fname.GetFullPath()));
+	text_type->SetValue(mxUT::GetFileTypeDescription(fname.GetFullPath()));
+}
+

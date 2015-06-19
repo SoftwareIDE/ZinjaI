@@ -1517,3 +1517,8 @@ int mxUT::LaunchGraphViewer (const wxString &window_title, const wxString &graph
 	return retval;
 }
 
+wxString mxUT::GetFileTypeDescription(wxString file_path) {
+	wxString command = OSDEP_VAL( DIR_PLUS_FILE(config->zinjai_third_dir,"gnuwin32\\bin\\file.exe") , "file" );
+	command << " -b " << mxUT::Quotize(file_path);
+	return mxUT::GetOutput(command);
+}
