@@ -58,7 +58,7 @@ mxErrorRecovering::mxErrorRecovering() : wxDialog(main_window, wxID_ANY, LANG(ER
 	
 	SetSizerAndFit(mid_sizer);
 	
-	wxTextFile fil(DIR_PLUS_FILE(config->home_dir,_T("recovery_log")));	
+	wxTextFile fil(DIR_PLUS_FILE(config->temp_dir,_T("recovery_log")));	
 	fil.Open();
 	fil.GetFirstLine();
 	wxString str;
@@ -82,7 +82,7 @@ mxErrorRecovering::mxErrorRecovering() : wxDialog(main_window, wxID_ANY, LANG(ER
 
 void mxErrorRecovering::OnAllButton(wxCommandEvent &evt) {
 	for (unsigned int i=0;i<files.GetCount();i++) {
-		mxSource *src =	main_window->OpenFile(DIR_PLUS_FILE(config->home_dir,files[i]));
+		mxSource *src =	main_window->OpenFile(DIR_PLUS_FILE(config->temp_dir,files[i]));
 		if (src!=EXTERNAL_SOURCE) {
 			src->SetPageText(names[i]);
 			src->SetModify(true);
@@ -95,7 +95,7 @@ void mxErrorRecovering::OnAllButton(wxCommandEvent &evt) {
 void mxErrorRecovering::OnSomeButton(wxCommandEvent &evt) {
 	for (unsigned int i=0;i<files.GetCount();i++) {
 		if (list->IsSelected(i)) {
-			mxSource *src =	main_window->OpenFile(DIR_PLUS_FILE(config->home_dir,files[i]));
+			mxSource *src =	main_window->OpenFile(DIR_PLUS_FILE(config->temp_dir,files[i]));
 			if (src && src!=EXTERNAL_SOURCE) {
 				src->SetPageText(names[i]);
 				src->SetModify(true);
@@ -111,7 +111,7 @@ void mxErrorRecovering::OnNoneButton(wxCommandEvent &evt) {
 }
 
 void mxErrorRecovering::OnClose(wxCloseEvent &evt) {
-	wxRemoveFile(DIR_PLUS_FILE(config->home_dir,_T("recovery_log")));
+	wxRemoveFile(DIR_PLUS_FILE(config->temp_dir,_T("recovery_log")));
 	Destroy();
 }
 
@@ -121,8 +121,8 @@ void mxErrorRecovering::OnHelpButton(wxCommandEvent &evt) {
 
 
 bool mxErrorRecovering::RecoverSomething() {
-	if (!wxFileName::FileExists(DIR_PLUS_FILE(config->home_dir,"recovery_log"))) return false;
-	if (wxFileName::FileExists(DIR_PLUS_FILE(config->home_dir,"kboom.zpr"))) {
+	if (!wxFileName::FileExists(DIR_PLUS_FILE(config->temp_dir,"recovery_log"))) return false;
+	if (wxFileName::FileExists(DIR_PLUS_FILE(config->temp_dir,"kboom.zpr"))) {
 		if (mxMD_YES == mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_MESSAGE,""
 			"ZinjaI no se cerro correctamente durante su ultima ejecucion.\n"
 			"El proyecto en el que trabajaba fue guardado automaticamente.\n"
@@ -131,7 +131,7 @@ bool mxErrorRecovering::RecoverSomething() {
 			"archivos. Se guardara una copia de su archivo de proyecto actual\n"
 			"antes de reescribirlo con la version restaurada)"
 			),LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos"), mxMD_YES_NO|mxMD_WARNING).ShowModal()) {
-				wxTextFile tf(DIR_PLUS_FILE(config->home_dir,_T("kboom.zpr")));
+				wxTextFile tf(DIR_PLUS_FILE(config->temp_dir,_T("kboom.zpr")));
 				tf.Open();
 				if (wxFileName::FileExists(tf[0])) wxCopyFile(tf[0],tf[0]+".backup");
 				if (!wxFileName::FileExists(tf[0]+".kaboom")) {
@@ -142,7 +142,7 @@ bool mxErrorRecovering::RecoverSomething() {
 				project->filename=tf[1];
 				tf.Close();
 				// abrir los archivos recuperados
-				wxTextFile fil(DIR_PLUS_FILE(config->home_dir,"recovery_log"));
+				wxTextFile fil(DIR_PLUS_FILE(config->temp_dir,"recovery_log"));
 				fil.Open();
 				fil.GetFirstLine();
 				wxString str;
@@ -184,8 +184,8 @@ bool mxErrorRecovering::RecoverSomething() {
 			// parsear los archivos recuperados
 			parser->ParseProject();
 		}
-		wxRemoveFile(DIR_PLUS_FILE(config->home_dir,"kboom.zpr"));
-		wxRemoveFile(DIR_PLUS_FILE(config->home_dir,"recovery_log"));
+		wxRemoveFile(DIR_PLUS_FILE(config->temp_dir,"kboom.zpr"));
+		wxRemoveFile(DIR_PLUS_FILE(config->temp_dir,"recovery_log"));
 	} else new mxErrorRecovering;
 	return true;
 }

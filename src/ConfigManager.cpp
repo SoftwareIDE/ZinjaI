@@ -637,7 +637,6 @@ void ConfigManager::LoadDefaults(){
 	
 	// establecer valores predeterminados para todas las estructuras
 	Files.temp_dir=DIR_PLUS_FILE(home_dir,"tmp");;
-	EnsurePathExists(temp_dir);
 	Files.skin_dir="imgs";
 //	Files.graphviz_dir="graphviz";
 //	Files.mingw_dir="MinGW";
@@ -931,6 +930,7 @@ bool ConfigManager::CheckCppCheckPresent() {
 void ConfigManager::RecalcStuff ( ) {
 	// setup some required paths
 	temp_dir = DIR_PLUS_FILE(zinjai_dir,Files.temp_dir);
+	EnsurePathExists(temp_dir);
 	if (zinjai_dir.EndsWith("\\")||zinjai_dir.EndsWith("/")) zinjai_dir.RemoveLast();
 	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
 	// poner el idioma del compilador en castellano

@@ -571,7 +571,7 @@ int mxUT::Execute(wxString path, wxString command, int sync, wxProcess *&process
 		else if (command[i]==' ') num_args++;
 	}
 	if (num_args>=127) {
-		wxString aux_file(DIR_PLUS_FILE(config->home_dir,"long_command"));
+		wxString aux_file(DIR_PLUS_FILE(config->temp_dir,"long_command"));
 		wxTextFile file(aux_file); 
 		file.Create();
 		file.AddLine(command);

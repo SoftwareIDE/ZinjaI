@@ -877,7 +877,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 	mxOSD osd(this,LANG(MAINW_PREPROC_OSD,"Preprocesando..."));
 	mxSource *src=CURRENT_SOURCE;
 	wxString bin_name;
-	bin_name = DIR_PLUS_FILE(config->home_dir,"preprocessed.tmp");
+	bin_name = DIR_PLUS_FILE(config->temp_dir,"preprocessed.tmp");
 	if (project) {
 		if (src->GetModify()) src->SaveSource();
 //		file_item *item = project->FindFromName(src->source_filename.GetFullPath());
