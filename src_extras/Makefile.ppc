@@ -1,19 +1,22 @@
 GPP=powerpc-apple-darwin8-g++
 
-all: ../updatem.bin ../runner.bin ../mac-terminal-wrapper.bin
+all: ../bin ../bin/updatem.bin ../bin/runner.bin ../bin/mac-terminal-wrapper.bin
 	$(MAKE) -f Makefile.ppc -C complement
 	$(MAKE) -f Makefile.ppc -C img_viewer
 
 clean:
-	rm -f ../updatem.bin ../runner.bin ../mac-terminal-wrapper.bin
+	rm -f ../bin/updatem.bin ../bin/runner.bin ../bin/mac-terminal-wrapper.bin
 	$(MAKE) -f Makefile.ppc -C complement clean
 	$(MAKE) -f Makefile.ppc -C img_viewer clean
 
-../runner.bin: runner.cpp
+../bin:
+	mkdir ../bin
+
+../bin/runner.bin: runner.cpp
 	${GPP} -O2 runner.cpp -o $@
 
-../updatem.bin: updatem.cpp zockets.cpp zockets.h
+../bin/updatem.bin: updatem.cpp zockets.cpp zockets.h
 	${GPP} -O2 updatem.cpp zockets.cpp -o $@
 
-../mac-terminal-wrapper.bin: mac-terminal-wrapper.cpp
+../bin/mac-terminal-wrapper.bin: mac-terminal-wrapper.cpp
 	${GPP} -O2 mac-terminal-wrapper.cpp -o $@

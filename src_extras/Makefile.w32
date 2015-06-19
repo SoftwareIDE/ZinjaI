@@ -3,14 +3,17 @@ GPP=mingw32-g++
 WINDRES=windres
 FLAGS=-static-libgcc -O2 -s -static-libstdc++
 
-all: ..\updatem.exe ..\runner.exe ..\shellexecute.exe ..\lsdeps.exe ..\graphviz\draw.exe
+all: ..\bin ..\bin\updatem.exe ..\bin\runner.exe ..\bin\shellexecute.exe ..\bin\lsdeps.exe
 	$(MAKE) -f Makefile.w32 -C complement
 	$(MAKE) -f Makefile.w32 -C img_viewer
 
 clean:
-	del ..\release.w32\xmlres.o ..\updatem.exe ..\runner.exe ..\shellexecute.exe ..\lsdeps.exe ..\graphviz\draw.exe
+	del ..\release.w32\xmlres.o ..\bin\updatem.exe ..\bin\runner.exe ..\bin\shellexecute.exe ..\bin\lsdeps.exe
 	$(MAKE) -f Makefile.w32 -C complement clean
 	$(MAKE) -f Makefile.w32 -C img_viewer clean
+
+..\bin:
+	mkdir ..\bin
 
 ..\release.w32:
 	mkdir ..\release.w32
@@ -18,17 +21,15 @@ clean:
 ..\release.w32\xmlres.o: ..\release.w32 xmlres.rc manifest.xml
 	${WINDRES} -i xmlres.rc -o xmlres.o
 
-..\lsdeps.exe: lsdeps.cpp itlib.cpp itlib.h peliberr.cpp peliberr.h stdafx.h
+..\bin\lsdeps.exe: lsdeps.cpp itlib.cpp itlib.h peliberr.cpp peliberr.h stdafx.h
 	${GPP} ${FLAGS} lsdeps.cpp itlib.cpp peliberr.cpp  -o $@
 
-..\runner.exe: runner.cpp
+..\bin\runner.exe: runner.cpp
 	${GPP} ${FLAGS} runner.cpp -o $@
 
-..\shellexecute.exe: shellexecute.cpp
+..\bin\shellexecute.exe: shellexecute.cpp
 	${GPP} ${FLAGS} -mwindows shellexecute.cpp -o $@
 
-..\updatem.exe: updatem.cpp zockets.cpp zockets.h ..\release.w32\xmlres.o
+..\bin\updatem.exe: updatem.cpp zockets.cpp zockets.h ..\release.w32\xmlres.o
 	${GPP} ${FLAGS} -mwindows updatem.cpp zockets.cpp -lwsock32 xmlres.o -o $@
 
-..\graphviz\draw.exe: draw.cpp
-	${GPP} ${FLAGS} draw.cpp -o $@ -mwindows

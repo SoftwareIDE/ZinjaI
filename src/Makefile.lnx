@@ -3,16 +3,20 @@ CXXFLAGS=-O2 `wx-config --cppflags --version=2.8 --unicode=no`
 LIBS=-s -lwx_gtk2_stc-2.8 `wx-config --version=2.8 --unicode=no --libs` -lX11
 OBJS_DIR=../release.lnx
 
-all: ../zinjai.bin
+all: ../bin ../bin/zinjai.bin
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../zinjai.bin
+	rm -rf ${OBJS} ../bin/zinjai.bin
 	rm -f core
 
-../zinjai.bin: ${OBJS_DIR} ${OBJS}
+../bin/zinjai.bin: ${OBJS_DIR} ${OBJS}
 	${GPP} ${OBJS} ${LIBS} -o $@
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}
+	
+../bin:
+	mkdir ../bin
+

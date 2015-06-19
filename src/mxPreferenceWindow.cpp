@@ -81,7 +81,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(mxID_GDB_PATH,mxPreferenceWindow::OnGdbButton)
 	EVT_BUTTON(mxID_XDOT_PATH,mxPreferenceWindow::OnXdotButton)
 	EVT_BUTTON(mxID_PREFERENCES_TOOLCHAIN_OPTIONS,mxPreferenceWindow::OnToolchainButton)
-	EVT_BUTTON(mxID_IMG_BROWSER_PATH,mxPreferenceWindow::OnImgBrowserButton)
+	EVT_BUTTON(mxID_IMG_VIEWER_PATH,mxPreferenceWindow::OnImgBrowserButton)
 	EVT_BUTTON(mxID_BROWSER_PATH,mxPreferenceWindow::OnBrowserButton)
 	EVT_BUTTON(mxID_VALGRIND_PATH,mxPreferenceWindow::OnValgrindButton)
 	EVT_BUTTON(mxID_CPPCHECK_PATH,mxPreferenceWindow::OnCppCheckButton)
@@ -625,7 +625,7 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel2 (wxNotebook *notebook) {
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 
 	files_explorer_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_EXPLORER,"Comando del explorador de archivos"),config->Files.explorer_command,mxID_EXPLORERS_BUTTON);
-	files_img_browser_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_IMAGE_VIEWER,"Comando del visor de imagenes"),config->Files.img_browser,mxID_IMG_BROWSER_PATH);
+	files_img_viewer_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_IMAGE_VIEWER,"Comando del visor de imagenes"),config->Files.img_viewer,mxID_IMG_VIEWER_PATH);
 	files_browser_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_BROWSER,"Comando del navegador Web"),config->Files.browser_command,mxID_BROWSER_PATH);
 	files_xdot_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_XDOT_COMMAND,"Comando del visor de grafos (xdot)"),config->Files.xdot_command,mxID_XDOT_PATH);
 	files_doxygen_command = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_COMMANDS_DOXYGEN,"Ubicación del ejecutable de Doxygen"),config->Files.doxygen_command,mxID_DOXYGEN_PATH);
@@ -710,7 +710,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Files.terminal_command = files_terminal_command->GetValue();
 	config->Files.explorer_command = files_explorer_command->GetValue();
 	config->Files.xdot_command = files_xdot_command->GetValue();
-	config->Files.img_browser = files_img_browser_command->GetValue();
+	config->Files.img_viewer = files_img_viewer_command->GetValue();
 	config->Files.browser_command = files_browser_command->GetValue();
 #ifdef __WIN32__
 	config->Files.valgrind_command = files_valgrind_command->GetValue();
@@ -890,9 +890,9 @@ void mxPreferenceWindow::OnGdbButton(wxCommandEvent &event){
 }
 
 void mxPreferenceWindow::OnImgBrowserButton(wxCommandEvent &event){
-	wxFileDialog dlg(this,_T("Comando del visor de imagenes"),files_img_browser_command->GetValue());
+	wxFileDialog dlg(this,_T("Comando del visor de imagenes"),files_img_viewer_command->GetValue());
 	if (wxID_OK==dlg.ShowModal())
-		files_img_browser_command->SetValue(dlg.GetPath());
+		files_img_viewer_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnXdotButton(wxCommandEvent &event){

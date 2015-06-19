@@ -3,15 +3,15 @@ CXXFLAGS=-O2 `/opt/mac/wx/bin/wx-config --cppflags`
 LDFLAGS=-lwx_mac_stc-2.8-i686-apple-darwin8 `/opt/mac/wx/bin/wx-config --libs --host=i686-apple-darwin8`
 OBJS_DIR=../../../../../release.m32/img_viewer
 
-all: ../../img_viewer.bin
+all: ../../bin/img_viewer.bin
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../../img_viewer.bin
+	rm -rf ${OBJS} ../../bin/img_viewer.bin
 	rm -f core
 
-../../img_viewer.bin: ${OBJS_DIR} ${OBJS}
+../../bin/img_viewer.bin: ${OBJS_DIR} ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 ${OBJS_DIR}:

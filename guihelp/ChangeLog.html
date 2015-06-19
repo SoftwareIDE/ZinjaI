@@ -7,6 +7,7 @@
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
 </UL><BR><B>Relase 20150XXX</B><BR><UL>
+	<LI>Imp: Se reorganizó la estructura de directorios de ZinjaI para agrupar todos los ejecutables auxiliares en dos carpeta (una con los propios de ZinjaI, otra con herramientas de terceros), y permitir además una mejor separación entre aquellos que deberían cambiar con el toolchain y aquellos que no.</LI>
 	<LI>Imp: Se mejoró la velocidad con la que se prepara la compilación de un proyecto cuando una gran cantidad de fuentes y cabeceras.</LI>
 	<LI>Imp: En las opciones generales de un proyecto se pueden definir las extensiones a usar por defecto al crear nuevos archivos fuentes y cabeceras.</LI>
 	<LI>Imp: Al finalizar la ejecución en depuración se respeta la configuración de ejecución para esperar una tecla antes de cerrar la terminal (solo en GNU/Linux).</LI>
@@ -29,6 +30,7 @@
 	<LI>Imp: Las plantillas para la mejora automática de inspecciones por tipo se pueden definir por generales y proyecto.</LI>
 	<LI>Imp: Se rediseñó el cuadro del diálogo de configuraciones generales del proyecto.</LI>
 	<LI>Imp: Si la evaluación de una inspección corrompe el estado del programa en depuración por incluir la ejecución de un operador y fallar esta ejecución, se muestra un mensaje advirtiendo al usuario y se actualiza el backtrace para reflejar el nuevo estado.</LI>
+	<LI>Fix: Se corrigió un segfault relacionado al menú de autocompletado.</LI>
 	<LI>Fix: Se corrigieron varios errores relacionados a la exploración de inspecciones.</LI>
 	<LI>Fix: Corregido el problema que anulaba la funcionalidad de deshacer en ciertos casos luego de utilizar el comando "Descomentar lineas".</LI>
 	<LI>Fix: Corregido un error al descomentar lineas que tienen anidados comentarios de diferente tipo ("//" dentro de "/*..*/").</LI>

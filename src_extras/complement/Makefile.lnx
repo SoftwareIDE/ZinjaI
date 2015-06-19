@@ -3,18 +3,18 @@ CXXFLAGS=-O2 `wx-config --cppflags --unicode=no --version=2.8`
 LDFLAGS=-s -lwx_gtk2_stc-2.8 `wx-config --unicode=no --libs --version=2.8` 
 OBJS_DIR=../../release.lnx/complement
 
-all: ../../complement.bin ../../complement_wrap.bin
+all: ../../bin/complement.bin ../../bin/complement_wrap.bin
 
 include Makefile.common
 
 clean:
-	rm -rf ${OBJS} ../../complement.bin ../../complement_wrap.bin
+	rm -rf ${OBJS} ../../bin/complement.bin ../../bin/complement_wrap.bin
 	rm -f core
 
-../../complement.bin: ${OBJS_DIR} ${OBJS}
+../../bin/complement.bin: ${OBJS_DIR} ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
-../../complement_wrap.bin: complement_wrap.cpp
+../../bin/complement_wrap.bin: complement_wrap.cpp
 	${GPP} complement_wrap.cpp -O2 -o $@
 
 ${OBJS_DIR}:

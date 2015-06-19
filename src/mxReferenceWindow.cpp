@@ -6,6 +6,7 @@
 #include "mxMessageDialog.h"
 #include "ConfigManager.h"
 #include "mxComplementInstallerWindow.h"
+#include "raii.h"
 using namespace std;
 
 #define _index "index.html"
@@ -53,9 +54,8 @@ void mxReferenceWindow::LoadHelp (wxString fname, bool update_history) {
 	current_page=fname;
 	current_path=fn.GetPath();
 	wxString old_path=wxGetCwd(); 
-	wxSetWorkingDirectory(fn.GetPath()); 
+	RaiiWorkDirChanger cwd_guard(fn.GetPath());
 	html->SetPage(ProcessHTML(fn.GetFullName(),this));
-	wxSetWorkingDirectory(old_path); 
 }
 
 void mxReferenceWindow::ShowIndex ( ) {

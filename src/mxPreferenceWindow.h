@@ -101,7 +101,7 @@ class mxPreferenceWindow : public wxDialog {
 	wxComboBox *files_toolchain;
 	wxTextCtrl *files_explorer_command;
 	wxTextCtrl *files_terminal_command;
-	wxTextCtrl *files_img_browser_command;
+	wxTextCtrl *files_img_viewer_command;
 	wxTextCtrl *files_xdot_command;
 	wxTextCtrl *files_debugger_command;
 	wxTextCtrl *files_project_folder;

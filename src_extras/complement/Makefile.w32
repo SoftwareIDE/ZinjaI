@@ -5,7 +5,7 @@ LIBS_BASE=-mwindows -s -static-libgcc -static-libstdc++
 LDFLAGS=${LIBS_BASE} -L"${MINGW_DIR}"\wx\lib -lwxmsw28_stc -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool
 OBJS_DIR=..\..\release.w32\complement
 
-all: ${OBJS_DIR} ..\..\complement.exe ..\..\complement_wrap.exe 
+all: ${OBJS_DIR} ..\..\bin\complement.exe ..\..\bin\complement_wrap.exe 
 
 include Makefile.common
 
@@ -18,12 +18,12 @@ ${OBJS_DIR}\resources_normal.o: resources_normal.rc manifest_normal.xml
 ${OBJS_DIR}\resources_root.o: resources_root.rc manifest_root.xml
 	windres -i resources_root.rc -o $@
 
-..\..\complement.exe: ${OBJS_DIR} ${OBJS_DIR}\resources_normal.o ${OBJS}
+..\..\bin\complement.exe: ${OBJS_DIR} ${OBJS_DIR}\resources_normal.o ${OBJS}
 	${GPP} ${OBJS} ${OBJS_DIR}\resources_normal.o ${LDFLAGS} -o $@
 
-..\..\complement_wrap.exe: ${OBJS_DIR} ${OBJS} ${OBJS_DIR}\resources_root.o complement_wrap.cpp
+..\..\bin\complement_wrap.exe: ${OBJS_DIR} ${OBJS} ${OBJS_DIR}\resources_root.o complement_wrap.cpp
 	${GPP} complement_wrap.cpp ${OBJS_DIR}\resources_root.o ${LIBS_BASE} -o $@
 
 clean:
-	del /Q ..\..\complement.exe ..\..\complement_wrap.exe ${OBJS_DIR}\*.o
+	del /Q ..\..\bin\complement.exe ..\..\bin\complement_wrap.exe ${OBJS_DIR}\*.o
 

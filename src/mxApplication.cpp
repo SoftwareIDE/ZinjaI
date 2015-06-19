@@ -83,19 +83,20 @@ bool mxApplication::OnInit() {
 	wxString zpath(f_zpath.GetPathWithSep());
 	bool flag=false;
 	if (f_zpath!=f_path) {
-		if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,"zinjai.dir")) ||wxFileName::FileExists(DIR_PLUS_FILE(zpath,"ZinjaI.dir"))) ) )
+		if ( ( flag = wxFileName::FileExists(DIR_PLUS_FILE(zpath,"zinjai.dir")) ) ) {
+			wxSetWorkingDirectory(zpath);
+		} else if ( ( flag = wxFileName::FileExists(DIR_PLUS_FILE(zpath,"../zinjai.dir")) ) ) {
+			zpath = DIR_PLUS_FILE(zpath,"../");
 			wxSetWorkingDirectory(zpath);
 #ifdef __APPLE__
-		else if ( (flag=(wxFileName::FileExists(DIR_PLUS_FILE(zpath,"../Resources/zinjai.dir")) ||wxFileName::FileExists(DIR_PLUS_FILE(zpath,"../Resources/ZinjaI.dir"))) ) ) {
+		} else if ( ( flag = wxFileName::FileExists(DIR_PLUS_FILE(zpath,"../Resources/zinjai.dir")) ) )  {
 			zpath = DIR_PLUS_FILE(zpath,"../Resources");
 			wxSetWorkingDirectory(zpath);
-		}
 #endif
-		else
-			zpath = cmd_path;
+		} else zpath = cmd_path;
 	}
 
-	if (!flag && !wxFileName::FileExists("zinjai.dir") && !wxFileName::FileExists("ZinjaI.dir")) {
+	if (!flag && !wxFileName::FileExists("zinjai.dir")) {
  		wxMessageBox("ZinjaI no pudo determinar el directorio donde fue instalado.\n"
 			            "Compruebe que el directorio de trabajo actual sea el correcto.\n"
 						"ZinjaI cannot determinate installation path. Please verify that\n"

@@ -3,33 +3,33 @@ GPP=wine "${MINGW_DIR}"/bin/mingw32-g++
 WINDRES=wine "${MINGW_DIR}"/bin/windres
 FLAGS=-O2 -s -static-libgcc -static-libstdc++
 
-all: ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/draw.exe 
+all: ../bin ../bin/updatem.exe ../bin/runner.exe ../bin/shellexecute.exe ../bin/lsdeps.exe
 	$(MAKE) -f Makefile.wine -C complement
 	$(MAKE) -f Makefile.wine -C img_viewer
 
 clean:
-	rm -f ../release.w32/xmlres.o ../updatem.exe ../runner.exe ../shellexecute.exe ../lsdeps.exe ../graphviz/draw.exe
+	rm -f ../release.w32/xmlres.o ../bin/updatem.exe ../bin/runner.exe ../bin/shellexecute.exe ../bin/lsdeps.exe
 	$(MAKE) -f Makefile.wine -C complement clean
 	$(MAKE) -f Makefile.wine -C img_viewer clean
 
 ../release.w32:
 	mkdir ../release.w32
 
+../bin:
+	mkdir ../bin
+
 ../release.w32/xmlres.o: ../release.w32 manifest.xml xmlres.rc
 	${WINDRES} -i xmlres.rc -o $@
 
-../lsdeps.exe: lsdeps.cpp itlib.cpp itlib.h peliberr.cpp peliberr.h stdafx.h
+../bin/lsdeps.exe: lsdeps.cpp itlib.cpp itlib.h peliberr.cpp peliberr.h stdafx.h
 	${GPP} ${FLAGS} -static-libgcc -O2 lsdeps.cpp itlib.cpp peliberr.cpp  -o $@
 
-../runner.exe: runner.cpp
+../bin/runner.exe: runner.cpp
 	${GPP} ${FLAGS} runner.cpp -o $@
 
-../shellexecute.exe: shellexecute.cpp
+../bin/shellexecute.exe: shellexecute.cpp
 	${GPP} ${FLAGS} -mwindows shellexecute.cpp -o $@
 
-../updatem.exe: updatem.cpp zockets.cpp zockets.h ../release.w32/xmlres.o
+../bin/updatem.exe: updatem.cpp zockets.cpp zockets.h ../release.w32/xmlres.o
 	${GPP} ${FLAGS} -mwindows updatem.cpp zockets.cpp -lwsock32 xmlres.o -o $@
-
-../graphviz/draw.exe: draw.cpp
-	${GPP} ${FLAGS} draw.cpp -o $@ -mwindows
 

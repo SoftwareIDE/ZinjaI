@@ -2,17 +2,17 @@ GCC=powerpc-apple-darwin8-gcc
 OPTS= -DZASKAR -Dpanic=printf -Dckfree=free -Dckalloc=malloc -Dckrealloc=realloc -DHAVE_CONFIG_H -Ihyper -Icommon -Imisc -Icpp/cpplib -I. -O2  
 OBJS_DIR=../../../../release.ppc/parser
 
-all: ../cbrowser
+all: ../bin/cbrowser
 
 include Makefile.common
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}
 
-../cbrowser: ${OBJS_DIR} ${OBJS}
+../bin/cbrowser: ${OBJS_DIR} ${OBJS}
 	${GCC} ${OBJS} -o $@
 
 
 clean:
-	rm -f ../cbrowser 
+	rm -f ../bin/cbrowser 
 	rm -f ${OBJS} 

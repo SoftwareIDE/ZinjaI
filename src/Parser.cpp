@@ -333,12 +333,20 @@ long Parser::ParseNextFileStart(wxFileName filename, wxString HashName, bool hid
 	process=new mxParserProcess;
 	PD_REGISTER_FILE(process->file, HashName,filename.GetModificationTime());
 	process->file->hide_symbols=hide_symbols;
-	return wxExecute(wxString(config->Files.parser_command)<<" \""<<filename.GetFullPath()<<"\"",wxEXEC_ASYNC,process);
+	static wxString parser_command = "";
+	if (parser_command.IsEmpty()) parser_command = DIR_PLUS_FILE(config->zinjai_bin_dir,
+#ifdef __WIN32__
+		"cbrowser.exe"
+#else
+		"cbrowser"
+#endif
+		);
+	return wxExecute(wxString(parser_command)<<" \""<<filename.GetFullPath()<<"\"",wxEXEC_ASYNC,process);
 }
 
 void Parser::ParseNextFileContinue(const wxString &s) {
 	
-	// toda linea de cbrowser empieza con un entero indicando que es, de 1 o 2 digitos, seguido por punto y coma
+	// toda linea de cbrowser empieza con un entero indicando qué es, de 1 o 2 digitos, seguido por punto y coma
 	int id, p[15]; int l=s.Len();
 	if (l>2 && s.GetChar(1)==';') {
 		id = s.GetChar(0)-'0';

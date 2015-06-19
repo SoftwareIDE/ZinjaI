@@ -2,6 +2,7 @@
 #define RAII_H
 
 #include "Cpp11.h"
+#include <wx/filefn.h>
 
 /**
 * @brief RAII wrapper for objects allocated on heap (new), but with a life-cycle
@@ -82,4 +83,12 @@ public:
 	~RaiiRestoreValue() { variable = original_value; }
 };
 
+class RaiiWorkDirChanger {
+	wxString old_dir;
+public:
+	RaiiWorkDirChanger(const wxString new_dir) 
+		: old_dir(wxGetCwd()) { wxSetWorkingDirectory(new_dir); }
+	void RestoreNow() { if (old_dir.Len()) wxSetWorkingDirectory(old_dir); old_dir=""; }
+	~RaiiWorkDirChanger() { if (old_dir.Len()) wxSetWorkingDirectory(old_dir); }
+};
 #endif

@@ -126,7 +126,7 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 							 LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_INFO).ShowModal()==mxMD_NO)
 			return;
 #ifdef __WIN32__
-		caller = DIR_PLUS_FILE(config->zinjai_dir,"complement_wrap.exe");
+		caller = DIR_PLUS_FILE(config->zinjai_bin_dir,"complement_wrap.exe");
 #else
 		wxString gksu = mxUT::GetOutput("gksu --version",true);
 		if (gksu.Contains("--message"))
@@ -134,12 +134,12 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 		else {
 			caller<<config->Files.terminal_command;
 			caller.Replace("${TITLE}",LANG(COMPLEMENTS_CAPTION,"Instalacion de Complementos"));
-			caller<<" "<<mxUT::Quotize(DIR_PLUS_FILE(config->zinjai_dir,"complement_wrap.bin"));
+			caller<<" "<<mxUT::Quotize(DIR_PLUS_FILE(config->zinjai_bin_dir,"complement_wrap.bin"));
 		}
 #endif
 	}
 	
-	wxCopyFile(DIR_PLUS_FILE(config->zinjai_dir,installer),DIR_PLUS_FILE(config->temp_dir,installer),true);
+	wxCopyFile(DIR_PLUS_FILE(config->zinjai_bin_dir,installer),DIR_PLUS_FILE(config->temp_dir,installer),true);
 	wxString zdir=config->zinjai_dir;
 #ifdef __WIN32__
 	if (zdir.Last()=='\\') zdir.RemoveLast(); // wx parsea mal los argumentos, si uno termina en \ lo pega con el que sigue

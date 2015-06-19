@@ -2,17 +2,17 @@ GCC=mingw32-gcc
 OPTS= -DZASKAR -Dpanic=printf -Dckfree=free -Dckalloc=malloc -Dckrealloc=realloc -DHAVE_CONFIG_H -Ihyper -Icommon -Imisc -Icpp\cpplib -I. -O2  
 OBJS_DIR=release.w32
 
-all: ..\cbrowser.exe
+all: ..\bin\cbrowser.exe
 
 include Makefile.common
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}
 	
-..\cbrowser.exe: ${OBJS_DIR} ${OBJS}
+..\bin\cbrowser.exe: ${OBJS_DIR} ${OBJS}
 	${GCC} ${OBJS} -o $@
 
 
 clean:
-	del ..\cbrowser.exe
+	del ..\bin\cbrowser.exe
 	del /Q ${OBJS_DIR}\*.o

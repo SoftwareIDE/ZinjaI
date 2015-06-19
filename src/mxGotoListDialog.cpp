@@ -137,15 +137,15 @@ void mxGotoListDialog::SetInputValue (wxString key) {
 	SearchNow();
 }
 
-void mxGotoListDialog::HideInput ( ) {
+void mxGotoListDialog::HideInput() {
 	case_sensitive->Hide(); 
 	label_ctrl->Hide();
-	text_ctrl->Hide(); 
-	Layout();
+	text_ctrl->Hide();
+	GetSizer()->Layout(); SetMinSize(wxDefaultSize); Fit();
 	list_ctrl->SetFocus();
 }
 
-void mxGotoListDialog::GotoNow ( ) {
+void mxGotoListDialog::GotoNow() {
 	// update results if needed
 	if (timer && timer->IsRunning()) {
 		timer->Stop();

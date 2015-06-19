@@ -14,12 +14,12 @@ mxGotoFunctionDialog::mxGotoFunctionDialog(wxString text, wxWindow* parent, wxSt
 	: mxGotoListDialog( parent,
 		LANG(GOTOFUNCTION_CAPTION,"Ir a..."), 
 		LANG(GOTOFUNCTION_ENTER_FUNC_NAME,"Ingrese el nombre de la funcion, clase o metodo:"),
-		"Buscar archivo...")
+		"Buscar archivo..."), strict_compare(direct_goto.Len())
 {
 	SetExtraButtonAccelerator(wxACCEL_CTRL|wxACCEL_SHIFT,'f');
 	case_sensitive->SetValue(true);
 	SetInputValue(text);
-	if (direct_goto.Len()) {
+	if (strict_compare) {
 		if (list_ctrl->GetCount()==1 && goto_button->IsEnabled()) {
 			GotoNow();
 #ifdef __WIN32__

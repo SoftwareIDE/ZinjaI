@@ -5,16 +5,16 @@ LIBS_BASE=-mwindows -s -static-libstdc++ -static-libgcc
 LDFLAGS=${LIBS_BASE} -L"${MINGW_DIR}"/wx/lib -lwxmsw28_stc -lwxmsw28_aui -lwxmsw28_html -lwxmsw28_core -lwxbase28_net -lwxbase28 -lwxmsw28_adv -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool 
 OBJS_DIR=../../release.w32/img_viewer
 
-all: ${OBJS_DIR}  ../../img_viewer.exe
+all: ${OBJS_DIR}  ../../bin/img_viewer.exe
 
 include Makefile.common
 
 ${OBJS_DIR}:
 	mkdir ${OBJS_DIR}
 
-../../img_viewer.exe: ${OBJS_DIR} ${OBJS}
+../../bin/img_viewer.exe: ${OBJS_DIR} ${OBJS}
 	${GPP} ${OBJS} ${LDFLAGS} -o $@
 
 clean:
-	rm -rf ${OBJS} ../../img_viewer.exe
+	rm -rf ${OBJS} ../../bin/img_viewer.exe
 

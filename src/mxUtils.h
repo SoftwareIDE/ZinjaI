@@ -68,11 +68,17 @@ class wxBitmapButton;
 #define LANG3(key,text,arg1,arg2,arg3) 	mxUT::ReplaceLangArgs(LANG(key,text),arg1,arg2,arg3)
 
 #ifdef __WIN32__
-#define BINARY_EXTENSION ".exe"
+#	define BINARY_EXTENSION ".exe"
 #else
-#define BINARY_EXTENSION ".bin"
+#	define BINARY_EXTENSION ".bin"
 #endif
 
+#ifdef __WIN32__
+#	define OSDEP_VAL(win,lnx) win
+#else
+#	define OSDEP_VAL(win,lnx) lnx
+#endif
+		
 WX_DECLARE_STRING_HASH_MAP( wxString, HashStringString );
 WX_DECLARE_STRING_HASH_MAP( wxTreeItemId, HashStringTreeItem );
 
@@ -288,6 +294,10 @@ public:
 	
 	/// builds the full command to launch the received command inside a terminal with config->Files.terminal_command)
 	static wxString GetCommandForRunningInTerminal(const wxString &title, const wxString &command);
+	
+	static int LaunchImageViewer(const wxString &window_title, const wxString &image_file);
+	
+	static int LaunchGraphViewer(const wxString &window_title, const wxString &graph_file);
 
 };
 

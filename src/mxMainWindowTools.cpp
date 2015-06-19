@@ -642,13 +642,11 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	// procesar salida con gprof2dot para obtener el grafo
 	status_bar->SetStatusText(LANG(MAINW_GPROF_DRAWING,"Dibujando grafo..."));
 	wxString pout = DIR_PLUS_FILE(config->temp_dir,"gprof.dot");
-#ifdef __WIN32__	
-	wxString command="graphviz/gprof2dot/gprof2dot.exe ";
-#else
-	wxString command="python graphviz/gprof2dot/gprof2dot.py ";
-#endif
+	wxString command = mxUT::Quotize(DIR_PLUS_FILE(
+		config->zinjai_third_dir,
+		OSDEP_VAL("gprof2dot/gprof2dot.exe","gprof2dot/gprof2dot.py") ));
 	nodt.ToDouble(&edge_tres); edgt.ToDouble(&node_tres);
-	command<<mxUT::Quotize(gout)<<" -e "<<edge_tres<<" -n "<<node_tres<<" -o "<<mxUT::Quotize(pout);
+	command<<" "<<mxUT::Quotize(gout)<<" -e "<<edge_tres<<" -n "<<node_tres<<" -o "<<mxUT::Quotize(pout);
 	int retval=mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
 	_IF_DEBUGMODE( command + (wxString("\nretval: ")<<retval) );
 	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 2).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }

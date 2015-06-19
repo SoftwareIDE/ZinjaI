@@ -559,7 +559,7 @@ int mxUT::Execute(wxString path, wxString command, int sync) {
 
 int mxUT::Execute(wxString path, wxString command, int sync, wxProcess *&process) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
-	wxSetWorkingDirectory(path);
+	RaiiWorkDirChanger cwd_guard(path); // set temp cwd
 #ifndef __WIN32__
 	// por alguna razon, con wx 2.8 no podemos tener mas de 127 argumentos (ver WXEXECUTE_NARGS en los fuentes de wx 2.8)
 	// asi que hacemos un script con el comando y llamamos al script si ese es el caso
@@ -581,7 +581,6 @@ int mxUT::Execute(wxString path, wxString command, int sync, wxProcess *&process
 	}
 #endif
 	int ret = (sync&wxEXEC_SYNC) ? mxExecute(command, sync, process) : wxExecute(command, sync, process);
-	wxSetWorkingDirectory(config->zinjai_dir);
 	return ret;
 }
 
@@ -631,7 +630,7 @@ bool mxUT::XCopy(wxString src,wxString dst, bool ask, bool replace) {
 }
 
 wxString mxUT::ExecComas(wxString where, wxString line) {
-	wxSetWorkingDirectory(where);
+	RaiiWorkDirChanger cwd_guard(where); // set temp cwd
 	wxString ret;
 	int p=0;
 	bool flag=true;
@@ -650,7 +649,6 @@ wxString mxUT::ExecComas(wxString where, wxString line) {
 		}
 	}
 	ret<<line.Mid(p);
-	wxSetWorkingDirectory(config->zinjai_dir);
 	return ret;
 }
 
@@ -1365,33 +1363,29 @@ void mxUT::SetArgument (wxString &full, const wxString &arg, bool add) {
 * @retval 3 xdot/viewer error
 **/
 int mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxString title) {
-	bool show=!output.Len();
+	bool show=!output.Len(), as_image=!config->Files.xdot_command.Len();
 	if (show) {
-		if (config->Files.xdot_command.Len())
-			output=DIR_PLUS_FILE(config->temp_dir,"temp.xdot");
-		else
+		if (as_image)
 			output=DIR_PLUS_FILE(config->temp_dir,"temp.png");
+		else
+			output=DIR_PLUS_FILE(config->temp_dir,"temp.xdot");
 	}
 	wxString format=output.AfterLast('.').Lower(); if (!format.Len()) return 1;
-#ifdef __WIN32__	
-	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,"draw.exe"));
-#else
-	wxString command(DIR_PLUS_FILE(config->Files.graphviz_dir,"draw.bin"));
+	wxString command =(use_fdp?"fdp":"dot");
+#ifdef __WIN32__
+	command = mxUT::Quotize(DIR_PLUS_FILE(config->zinjai_third_dir,wxString()<<"graphviz\\"<<command<<".exe"));
+	RaiiWorkDirChanger cwd_guard(DIR_PLUS_FILE(config->zinjai_third_dir,"graphviz\\")); // set temp cwd
 #endif
-	command<<(use_fdp?" fdp ":" dot ");
-	command<<Quotize(graph_file)<<" -T"<<format<<" -o "<<Quotize(output);
+	command<<" "<<Quotize(graph_file)<<" -T"<<format<<" -o "<<Quotize(output);
 	int retval = mxExecute(command,wxEXEC_SYNC);
 	_IF_DEBUGMODE(command + (wxString("\nretval=")<<retval) );
 	if (retval) return 1;
+#ifdef __WIN32__
+	cwd_guard.RestoreNow();
+#endif
 	if (show) {
-		wxString command2;
-		if (config->Files.xdot_command.Len()) {
-			command2<<config->Files.xdot_command<<" -n "<<Quotize(output);
-		} else {
-			command2<<config->Files.img_browser<<" "<<Quotize(output)<<" \""<<title<<"\"";
-		}
-		_IF_DEBUGMODE(command2);
-		wxExecute(command2);
+		if (as_image) LaunchImageViewer(title,output);
+		else          LaunchGraphViewer(title,output);
 	}
 	return 0;
 }
@@ -1498,10 +1492,28 @@ wxBoxSizer *mxUT::MakeGenericButtonsSizer (wxWindow *parent, bool has_help) {
 
 
 
-wxString mxUT::GetCommandForRunningInTerminal (const wxString & title, const wxString &command) {
+wxString mxUT::GetCommandForRunningInTerminal (const wxString &title, const wxString &command) {
 	wxString full_cmd = config->Files.terminal_command;
 	full_cmd.Replace("${TITLE}",title,false);
 	full_cmd<<" "<<command;
 	return full_cmd;
+}
+
+int mxUT::LaunchImageViewer (const wxString &window_title, const wxString &image_file) {
+	wxString command = config->Files.img_viewer;
+	if (command.IsEmpty()) command = mxUT::Quotize(DIR_PLUS_FILE(
+		config->zinjai_bin_dir,
+		OSDEP_VAL("img_viewer.exe","img_viewer.bin")));
+	command<<" "<<Quotize(image_file)<<" \""<<window_title<<"\"";
+	int retval = wxExecute(command);
+	_IF_DEBUGMODE(command+"\nretal="+(wxString()<<retval));
+	return retval;
+}
+
+int mxUT::LaunchGraphViewer (const wxString &window_title, const wxString &graph_file) {
+	wxString command = config->Files.xdot_command+" -n "<<Quotize(graph_file);
+	int retval = wxExecute(command);
+	_IF_DEBUGMODE(command+"\nretal="+(wxString()<<retval));
+	return retval;
 }
 

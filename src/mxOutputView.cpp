@@ -95,11 +95,11 @@ void mxOutputView::OnClose(wxCloseEvent &event) {
 void mxOutputView::Launch(wxString path, wxString command) {
 	process = new wxProcess(GetEventHandler(),wxID_ANY);
 	process->Redirect();
-	wxSetWorkingDirectory(path);
-//	cerr<<command<<endl<<endl<<command.Len();
+	RaiiWorkDirChanger cwd_guard(path); // set temp cwd
 	command=command.Mid(0,4000);
+	_IF_DEBUGMODE(command);
 	pid = wxExecute(command,wxEXEC_ASYNC,process);
-	wxSetWorkingDirectory(config->zinjai_dir);
+	cwd_guard.RestoreNow();
 	if (pid) { 
 		working=true;
 		if (extra_button) extra_button->Enable(true);

@@ -168,13 +168,12 @@ struct cfgFiles {
 	wxString toolchain;
 	wxString runner_command;
 	wxString debugger_command;
-	wxString parser_command;
 	wxString terminal_command; ///< comando para abrir un terminal y ejecutar algo en el
 	wxString explorer_command; ///< comando para abrir un explorador de archivos
 	wxString project_folder;
 	wxString graphviz_dir;
 	wxString xdot_command; ///< nice python app for displaying graphs
-	wxString img_browser;
+	wxString img_viewer;
 	wxString last_source[CM_HISTORY_MAX_LEN];
 	wxString last_project[CM_HISTORY_MAX_LEN];
 	wxString last_dir;
@@ -209,10 +208,12 @@ struct cfgCols {
 **/
 class ConfigManager {
 public:
-	wxString filename;
-	wxString home_dir;
-	wxString zinjai_dir;
-	wxString temp_dir;
+	wxString filename; ///< zinjai_dir+"/config.here" if exists, home_dir+"/config" by default
+	wxString home_dir; ///< path for user's settings (~/.zinjai)
+	wxString zinjai_dir; ///< zinjai's installation path
+	wxString zinjai_bin_dir; ///< zinjai's own binaries path (zinjai_dir+"/bin")
+	wxString zinjai_third_dir; ///< zinjai's third-part binaries path (zinjai_dir+"/third")
+	wxString temp_dir; ///< path for temporary files (home_dir+"/tmp")
 	cfgSource Source;
 	cfgRunning Running;
 	cfgHelp Help;

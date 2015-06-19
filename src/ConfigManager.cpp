@@ -42,6 +42,8 @@ ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 	config=this;
 	delayed_config_lines = nullptr; 
 	zinjai_dir = a_path;
+	zinjai_bin_dir = DIR_PLUS_FILE(zinjai_dir,"bin");
+	zinjai_third_dir = DIR_PLUS_FILE(zinjai_dir,"third");
 	LoadDefaults();
 	er_init(home_dir.char_str());
 }
@@ -290,7 +292,7 @@ bool ConfigManager::Load() {
 				else CFG_GENERIC_READ_DN("autocodes_file",Files.autocodes_file);
 				else CFG_GENERIC_READ_DN("skin_dir",Files.skin_dir);
 				else CFG_GENERIC_READ_DN("temp_dir",Files.temp_dir);
-				else CFG_GENERIC_READ_DN("img_browser",Files.img_browser);
+				else CFG_GENERIC_READ_DN("img_viewer",Files.img_viewer);
 				else CFG_GENERIC_READ_DN("xdot_command",Files.xdot_command);
 				else CFG_GENERIC_READ_DN("graphviz_dir",Files.graphviz_dir);
 				else CFG_GENERIC_READ_DN("browser_command",Files.browser_command);
@@ -300,7 +302,6 @@ bool ConfigManager::Load() {
 #endif
 				else CFG_GENERIC_READ_DN("doxygen_command",Files.doxygen_command);
 				else CFG_GENERIC_READ_DN("wxfb_command",Files.wxfb_command);
-				else CFG_GENERIC_READ_DN("parser_command",Files.parser_command);
 				else CFG_GENERIC_READ_DN("project_folder",Files.project_folder);
 				else CFG_GENERIC_READ_DN("last_project_dir",Files.last_project_dir);
 				else CFG_GENERIC_READ_DN("last_dir",Files.last_dir);
@@ -393,13 +394,6 @@ bool ConfigManager::Load() {
 	}
 	if (Init.version<20140704) {
 		if (Init.proxy=="") Init.proxy="$http_proxy";
-	}
-	if (Init.version<20140925) {
-#ifdef __WIN32__
-		Files.img_browser = "img_viewer.exe";
-#else
-		Files.img_browser = DIR_PLUS_FILE(zinjai_dir,"img_viewer.bin");
-#endif
 	}
 	if (Init.version<20150226) {
 		SetDefaultInspectionsImprovingTemplates();
@@ -570,10 +564,9 @@ bool ConfigManager::Save(){
 
 	fil.AddLine("[Files]");
 	CFG_GENERIC_WRITE_DN("temp_dir",Files.temp_dir);
-	CFG_GENERIC_WRITE_DN("img_browser",Files.img_browser);
+	CFG_GENERIC_WRITE_DN("img_viewer",Files.img_viewer);
 	CFG_GENERIC_WRITE_DN("xdot_command",Files.xdot_command);
 	CFG_GENERIC_WRITE_DN("skin_dir",Files.skin_dir);
-//	CFG_GENERIC_WRITE_DN("parser_command",Files.parser_command);
 	CFG_GENERIC_WRITE_DN("debugger_command",Files.debugger_command);
 	CFG_GENERIC_WRITE_DN("toolchain",Files.toolchain);
 //	CFG_GENERIC_WRITE_DN("compiler_command",Files.compiler_command);
@@ -625,6 +618,10 @@ bool ConfigManager::Save(){
 	return true;
 }
 	
+static void EnsurePathExists(const wxString path) {
+	if (!wxFileName::DirExists(path)) wxFileName::Mkdir(path);
+}
+
 void ConfigManager::LoadDefaults(){
 
 	// crear el directorio para zinjai si no existe
@@ -633,47 +630,45 @@ void ConfigManager::LoadDefaults(){
 #else
 	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),".zinjai");
 #endif
-	if (!wxFileName::DirExists(home_dir)) wxFileName::Mkdir(home_dir);
+	EnsurePathExists(home_dir);
 	filename = DIR_PLUS_FILE(zinjai_dir,"config.here");
 	if (!wxFileName::FileExists(filename)) 
 		filename = DIR_PLUS_FILE(home_dir,"config");
 	
 	// establecer valores predeterminados para todas las estructuras
-	Files.temp_dir=home_dir;
+	Files.temp_dir=DIR_PLUS_FILE(home_dir,"tmp");;
+	EnsurePathExists(temp_dir);
 	Files.skin_dir="imgs";
 	Files.graphviz_dir="graphviz";
 //	Files.mingw_dir="MinGW";
 #ifdef __WIN32__
 	Files.toolchain="gcc-mingw32";
-	Files.parser_command="cbrowser.exe";
 	Files.debugger_command="gdb";
-	Files.runner_command="runner.exe";
+	Files.runner_command=DIR_PLUS_FILE(zinjai_bin_dir,"runner.exe");
 	Files.terminal_command="";
 	Files.explorer_command="explorer";
-	Files.img_browser="img_viewer.exe";
+	Files.img_viewer="";
 	Files.doxygen_command="c:\\archivos de programa\\doxygen\\bin\\doxygen.exe";
 	Files.wxfb_command="";
 //	Files.browser_command="shellexecute.exe";
 	Files.browser_command="";
 #elif defined(__APPLE__)
 	Files.toolchain="gcc";
-	Files.parser_command="./cbrowser";
 	Files.debugger_command="gdb";
-	Files.runner_command="./runner.bin";
-	Files.terminal_command="./mac-terminal-wrapper.bin";
+	Files.runner_command=DIR_PLUS_FILE(zinjai_bin_dir,"runner.bin");
+	Files.terminal_command=DIR_PLUS_FILE(zinjai_bin_dir,"mac-terminal-wrapper.bin");
 	Files.explorer_command="open";
-	Files.img_browser="open";
+	Files.img_viewer="open";
 	Files.doxygen_command="/Applications/Doxygen.app/Contents/Resources/doxygen";
 	Files.wxfb_command="/Applications/wxFormBuilder.app/Contents/MacOS/wxformbuilder";
 	Files.browser_command="open";
 #else
 	Files.toolchain="gcc";
-	Files.parser_command=DIR_PLUS_FILE(zinjai_dir,"cbrowser");
 	Files.debugger_command="gdb";
-	Files.runner_command=DIR_PLUS_FILE(zinjai_dir,"runner.bin");
+	Files.runner_command=DIR_PLUS_FILE(zinjai_bin_dir,"runner.bin");
 	Files.explorer_command="<<sin configurar>>";
 	Files.terminal_command="<<sin configurar>>";
-	Files.img_browser=DIR_PLUS_FILE(zinjai_dir,"img_viewer.bin");
+	Files.img_viewer="";
 	Files.wxfb_command="wxformbuilder";
 	Files.cppcheck_command="cppcheck";
 	Files.valgrind_command="valgrind";

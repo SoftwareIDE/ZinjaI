@@ -6,6 +6,7 @@
 #include "ProjectManager.h"
 #include "Parser.h"
 #include "mxCompiler.h"
+#include "raii.h"
 
 CustomToolsPack::CustomToolsPack(int _cant) :tools(new OneCustomTool[_cant]),cant(_cant) {
 	
@@ -176,10 +177,9 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	}
 	
 	_IF_DEBUGMODE(cmd);
-	
-	wxSetWorkingDirectory(workdir);
+	RaiiWorkDirChanger cwd_guard(workdir); // set temp cwd
 	int pid = wxExecute(cmd,exec_flags,this);
-	wxSetWorkingDirectory(config->zinjai_dir);
+	cwd_guard.RestoreNow();
 	
 	if (tool.output_mode==CT_OUTPUT_DIALOG) output_view->Launched(this,pid);
 	else if (!tool.async_exec) OnTerminate(0,pid);
