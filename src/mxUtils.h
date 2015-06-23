@@ -62,6 +62,7 @@ class wxBitmapButton;
 #endif
 
 #define DIR_PLUS_FILE mxUT::JoinDirAndFile
+#define DIR_PLUS_FILE_2(a,b,c) mxUT::JoinDirAndFile(mxUT::JoinDirAndFile(a,b),c)
 	
 #define LANG1(key,text,arg1) 			mxUT::ReplaceLangArgs(LANG(key,text),arg1)
 #define LANG2(key,text,arg1,arg2) 		mxUT::ReplaceLangArgs(LANG(key,text),arg1,arg2)

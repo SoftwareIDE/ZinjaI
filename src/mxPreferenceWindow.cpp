@@ -548,9 +548,9 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (mxBookCtrl *notebook) {
 		skin_paths.Add(_T("imgs"));
 		skin_list->Select(0);
 		while ( cont ) {
-			if (wxFileName::FileExists(DIR_PLUS_FILE(DIR_PLUS_FILE(_T("skins"),filename),_T("descripcion.txt")))) {
+			if (wxFileName::FileExists(DIR_PLUS_FILE_2("skins",filename,"descripcion.txt"))) {
 				skin_list->Append(filename);
-				filename = DIR_PLUS_FILE(_T("skins"),filename);
+				filename = DIR_PLUS_FILE("skins",filename);
 				skin_paths.Add(filename);
 				if (filename==config->Files.skin_dir)
 					skin_list->SetSelection(skin_list->GetCount()-1);

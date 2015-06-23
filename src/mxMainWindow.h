@@ -272,6 +272,8 @@ public:
 	void OnToolsGprofHelp(wxCommandEvent &event);
 	void OnToolsGprofDot(wxCommandEvent &event);
 	void OnToolsGprofFdp(wxCommandEvent &event);
+	void OnToolsLizardRun(wxCommandEvent &event);
+	void OnToolsLizardHelp(wxCommandEvent &event);
 	void OnToolsGcovSet(wxCommandEvent &event);
 	void OnToolsGcovShow(wxCommandEvent &event);
 	void OnToolsGcovReset(wxCommandEvent &event);

@@ -1239,7 +1239,7 @@ void mxNewWizard::OnProjectNameChange(wxCommandEvent &evt) {
 void mxNewWizard::UpdateProjectFullPath() {
 	if (!project_full_path) return;
 	if (project_folder_create->GetValue())
-		project_full_path->SetValue(wxString(LANG(NEWWIZARD_FINAL_PATH,"Destino final: "))<<DIR_PLUS_FILE(DIR_PLUS_FILE(project_folder_path->GetValue(),project_name->GetValue()),project_name->GetValue())+"."+_T(PROJECT_EXT));
+		project_full_path->SetValue(wxString(LANG(NEWWIZARD_FINAL_PATH,"Destino final: "))<<DIR_PLUS_FILE_2(project_folder_path->GetValue(),project_name->GetValue(),project_name->GetValue())+"."+_T(PROJECT_EXT));
 	else
 		project_full_path->SetValue(wxString(LANG(NEWWIZARD_FINAL_PATH,"Destino final: "))<<DIR_PLUS_FILE(project_folder_path->GetValue(),project_name->GetValue())+"."+_T(PROJECT_EXT));	
 }

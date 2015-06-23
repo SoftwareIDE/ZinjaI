@@ -46,7 +46,7 @@ extern char path_sep;
 
 wxString doxygen_configuration::get_tag_index() { 
 	if (project && project->doxygen && project->doxygen->use_in_quickhelp)
-		return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,project->doxygen->destdir),"index-for-zinjai.tag");
+		return DIR_PLUS_FILE_2(project->path,project->doxygen->destdir,"index-for-zinjai.tag");
 	else return "";
 }
 

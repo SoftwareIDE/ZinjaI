@@ -504,7 +504,7 @@ MENUITEM_TOOLS_SHARE_SHARE
 &Compartir actual...
 MENUITEM_TOOLS_SHARE_LIST
 &Ver lista de compartidos propios...
-MENUITEM_TOOLS_SHARE_HELP
+MENUITEM_TOOLS_COMMON_HELP
 A&yuda...
 MENUITEM_TOOLS_DIFF
 &Comparar Archivos (diff)
@@ -526,8 +526,10 @@ MENUITEM_TOOLS_DIFF_DISCARD
 De&scartar Cambio
 MENUITEM_TOOLS_DIFF_CLEAR
 &Borrar Marcas
-MENUITEM_TOOLS_DIFF_HELP
-A&yuda...
+MENUITEM_TOOLS_LIZARD
+Medir complejidad (lizard)
+MENUITEM_TOOLS_LIZARD_RUN
+&Analizar ahora...
 MENUITEM_TOOLS_DOXYGEN
 Generar &Documentación (doxygen)
 MENUITEM_TOOLS_DOXYGEN_GENERATE
@@ -536,8 +538,6 @@ MENUITEM_TOOLS_DOXYGEN_CONFIGURE
 &Configurar...
 MENUITEM_TOOLS_DOXYGEN_VIEW
 &Ver...
-MENUITEM_TOOLS_DOXYGE_HELP
-A&yuda...
 MENUITEM_TOOLS_WXFB
 Diseñar &Interfases (wxFormBuilder)
 MENUITEM_TOOLS_WXFB_CONFIG
@@ -564,8 +564,6 @@ MENUITEM_TOOLS_CPPCHECK_CONFIG
 Configurar...
 MENUITEM_TOOLS_CPPCHECK_VIEW
 Mostrar Panel de Resultados
-MENUITEM_TOOLS_CPPCHECK_HELP
-A&yuda...
 MENUITEM_TOOLS_GPROF
 Perfil de Ejecución (gprof)
 MENUITEM_TOOLS_GPROF_ACTIVATE
@@ -580,8 +578,6 @@ MENUITEM_TOOLS_GPROF_SHOW
 Visualizar Resultados (grafo)...
 MENUITEM_TOOLS_GPROF_LIST
 Listar Resultados (texto)
-MENUITEM_TOOLS_GPROF_HELP
-A&yuda...
 MENUITEM_TOOLS_GCOV
 &Test de Cobertura (experimental, gcov)
 MENUITEM_TOOLS_GCOV_ACTIVATE
@@ -590,24 +586,18 @@ MENUITEM_TOOLS_GCOV_SHOW_BAR
 Mostrar barra de resultados
 MENUITEM_TOOLS_GCOV_RESET
 Eliminar resultados
-MENUITEM_TOOLS_GCOV_HELP
-A&yuda...
 MENUITEM_TOOLS_VALGRIND
 Análisis Dinámico (valgrind)
 MENUITEM_TOOLS_VALGRIND_RUN
 Ejecutar...
 MENUITEM_TOOLS_VALGRIND_VIEW
 Mostrar Panel de Resultados
-MENUITEM_TOOLS_VALGRIND_HELP
-A&yuda...
 MENUITEM_TOOLS_CUSTOM_TOOLS
 Herramientas Personalizables
 MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS
 &Configurar (generales)...
 MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS
 &Configurar (de proyecto)...
-MENUITEM_TOOLS_CUSTOM_HELP
-A&yuda...
 MENUITEM_TOOLS_CREATE_TEMPLATE
 Guardar como nueva plantilla...
 MENUITEM_TOOLS_INSTALL_COMPLEMENTS
@@ -1636,26 +1626,24 @@ HELPW_FIND
 Buscar...
 GOTOFILE_CAPTION
 Ir a...
-GENERAL_GOTO_BUTTON
-  &Ir  
-GOTOFILE_CASE_SENSITIVE
-&Distinguir mayusculas y minusculas
 GOTOFILE_ENTER_FILENAME
 Ingrese parte del nombre del archivo que desea abrir:
 GOTOFILE_NO_RESULTS
 <<no se encontraron coincidencias>>
 GOTOFUNCTION_CAPTION
 Ir a...
-GOTOFUNCTION_CASE_SENSITIVE
-&Distinguir mayusculas y minusculas
 GOTOFUNCTION_ENTER_FUNC_NAME
 Ingrese el nombre de la funcion, clase o metodo:
 GOTOFUNCTION_NO_RESULTS
 <<no se encontraron coincidencias>>
 GOTOLINE_CAPTION
 Ir a linea
+GENERAL_GOTO_BUTTON
+  &Ir  
 GOTOLINE_YOURE_HERE
 Estas en la linea <{1}> de <{2}>.
+GOTOFUNCTION_CASE_SENSITIVE
+&Distinguir mayusculas y minusculas
 MXGRID_SHOW_COL
 Mostrar Columna \"<{1}>\"
 HELPW_CAPTION
@@ -2082,12 +2070,12 @@ MAINW_GPROF_GPROF_DISABLED
 Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.
 MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
 Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
+MAINW_EXTERN_TOOL_ERROR
+Ha ocurrido un error al ejecutar <{1}>.
 MAINW_GPROF_OUTPUT_MISSING
 No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda.
 MAINW_GPROF_STATUS_ANALIZING
 Analizando informacion de perfilado...
-MAINW_GPROF_ERROR
-Ha ocurrido un error al intentar procesar la información de perfilado
 MAINW_GPROF_EDGE_THERSHOLD
 Eliminar arcos bajo este umbral (%):
 MAINW_GPROF_ASK_TITLE
@@ -2096,6 +2084,8 @@ MAINW_GPROF_NODE_THERSHOLD
 Eliminar nodos bajo este umbral (%):
 MAINW_GPROF_DRAWING
 Dibujando grafo...
+MAINW_GPROF_ERROR
+Ha ocurrido un error al intentar procesar la información de perfilado
 MAINW_GPROF_SHOWING
 Mostrando resultados...
 MAINW_GPROF_GRAPH_TITLE
@@ -2122,6 +2112,8 @@ MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Ingrese el nombre del archivo del nuevo template de programa simple
 MAINW_TEMPLATE_GENERATED
 Plantilla generada
+MAINW_GPROF_STATUS_LIZARD
+Ejecutando lizard...
 MAKEFILE_CAPTION
 Generar Makefile
 MAKEFILE_PROFILE

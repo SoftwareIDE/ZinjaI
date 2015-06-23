@@ -5,8 +5,10 @@
 
 long mxExecute(wxString command, int sync, wxProcess *process=nullptr);
 
-long mxExecute(const wxString& command, wxArrayString& output, int flags = 0);
+long mxExecute(wxString command, wxArrayString& output, int flags = 0);
 
-long mxExecute(const wxString& command, wxArrayString& output, wxArrayString& errors, int flags = 0);
+long mxExecute(wxString command, wxArrayString& output, wxArrayString& errors, int flags = 0);
+
+void fix_command_for_wxexecute(wxString &command);
 
 #endif

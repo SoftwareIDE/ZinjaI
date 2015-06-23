@@ -43,6 +43,7 @@
 #include "execution_workaround.h"
 #include "mxWxfbConfigDialog.h"
 #include "MenusAndToolsConfig.h"
+#include "mxLizardOutput.h"
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -576,6 +577,16 @@ void mxMainWindow::OnToolsGprofFdp (wxCommandEvent &event) {
 	config->Init.graphviz_dot=false;	
 }
 
+
+static void showExternToolErrorMessage(int retval, wxArrayString &errors, wxString tool) {
+	wxString msg = mxUT::UnSplit(errors,"\n");
+	if (msg.Len()) msg=wxString("\n\n")+msg;
+	mxOSD::HideCurrent();
+	mxMessageDialog(main_window,
+		LANG1(MAINW_EXTERN_TOOL_ERROR,"Ha ocurrido un error al ejecutar <{1}>.",tool)
+		+(wxString(" (error ")<<retval<<").")+msg,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); 
+}
+
 /**
 * Verifica que exita información de profiling para el fuente o proyecto actual,
 * y ejecuta gprof para extraerla un archivo de texto. Retorna el path del archivo
@@ -608,11 +619,7 @@ wxString mxMainWindow::OnToolsGprofShowListAux(bool include_command) {
 	if (include_command) fgout.Write(wxString("> ")<<command+"\n\n");
 	int retval=mxExecute(command, output, errors, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	if (retval||!output.GetCount()) { // si hay algun error al ejecutar gprof
-		wxString msg = mxUT::UnSplit(errors,"\n");
-		if (msg.Len()) msg=wxString("\n\n")+msg;
-		osd.Hide(); 
-		mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))
-							 +(wxString(" (error ")<<retval<<").")+msg,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); 
+		showExternToolErrorMessage(retval, errors,"gprof");
 		return "";
 	}
 	for (unsigned int i=0;i<output.GetCount();i++)
@@ -1058,4 +1065,36 @@ void mxMainWindow::OnToolsGcovShow (wxCommandEvent & event) {
 
 void mxMainWindow::OnToolsGcovHelp (wxCommandEvent & event) {
 	mxHelpWindow::ShowHelp("gcov.html");
+}
+
+void mxMainWindow::OnToolsLizardRun(wxCommandEvent &event) {
+	if (!project && notebook_sources->GetPageCount()==0) return;
+		
+	status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_LIZARD,"Ejecutando lizard..."));
+	mxOSD osd(this,LANG(MAINW_GPROF_STATUS_LIZARD,"Ejecutando lizard..."));
+	
+	// ejecutar lizard...
+	wxString command(DIR_PLUS_FILE_2(config->zinjai_third_dir,"lizard",OSDEP_VAL("lizard.exe","lizard.py")));
+	if (project) {
+		wxArrayString files;
+		project->GetFileList(files,FT_SOURCE,false);
+		project->GetFileList(files,FT_HEADER,false);
+		for (unsigned int i=0;i<files.GetCount();i++)
+			command << " " << mxUT::Quotize(files[i]);
+	} else {
+		command<<mxUT::Quotize(CURRENT_SOURCE->SaveSourceForSomeTool());
+	}
+	// ...y capturar salida 
+	wxArrayString output,errors;
+	int retval=mxExecute(command, output, errors, wxEXEC_NODISABLE|wxEXEC_SYNC);
+	if (/*retval||*/!output.GetCount()) { // si hay algun error al ejecutar lizard
+		showExternToolErrorMessage(retval, errors,"lizard");
+		return;
+	}
+	// si todo fue bien, mostrar la ventana de resultados
+	new mxLizardOutput(this,output);
+}
+
+void mxMainWindow::OnToolsLizardHelp(wxCommandEvent &event) {
+	mxHelpWindow::ShowHelp("lizard.html");
 }

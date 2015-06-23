@@ -512,7 +512,7 @@ void mxColoursEditor::OnSave (wxCommandEvent & evt) {
 	wxString fname=wxGetTextFromUser(LANG(COLOURS_ESCHEME,"Esquema:"),LANG(GENERAL_SAVE,"Guardar"),"custom_color_scheme", this);
 	if (fname.Len()) {
 		if (!fname.Upper().EndsWith(".ZCS")) fname<<".zcs";
-		ctheme->Save(DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"colours"),fname));
+		ctheme->Save(DIR_PLUS_FILE_2(config->home_dir,"colours",fname));
 #ifdef __WIN32__
 		bool os_case=false;
 #else

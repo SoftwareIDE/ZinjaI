@@ -333,6 +333,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_DIFF_APPLY, mxMainWindow::OnToolsDiffApply)
 	EVT_MENU(mxID_TOOLS_DIFF_DISCARD, mxMainWindow::OnToolsDiffDiscard)
 	EVT_MENU(mxID_TOOLS_DIFF_HELP, mxMainWindow::OnToolsDiffHelp)
+	EVT_MENU(mxID_TOOLS_LIZARD_RUN, mxMainWindow::OnToolsLizardRun)
+	EVT_MENU(mxID_TOOLS_LIZARD_HELP, mxMainWindow::OnToolsLizardHelp)
 	EVT_MENU(mxID_TOOLS_GPROF_SHOW, mxMainWindow::OnToolsGprofShow)
 	EVT_MENU(mxID_TOOLS_GPROF_LIST, mxMainWindow::OnToolsGprofList)
 	EVT_MENU(mxID_TOOLS_GPROF_SET, mxMainWindow::OnToolsGprofSet)
@@ -4010,7 +4012,7 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),
 		"",this);
 	if (!fname.Len()) return;
-	fname=DIR_PLUS_FILE(DIR_PLUS_FILE(config->home_dir,"autocomp"),fname);
+	fname=DIR_PLUS_FILE_2(config->home_dir,"autocomp",fname);
 	if (wxFileName::FileExists(fname)) {
 		if (mxMD_NO==mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE,"El indice ya existe, ¿desea reemplazarlo?"),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_YES_NO).ShowModal()) 
 			return;

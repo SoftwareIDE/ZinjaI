@@ -24,6 +24,7 @@
 #include "Language.h"
 #include "mxLongTextEditor.h"
 #include "mxEnumerationEditor.h"
+#include "execution_workaround.h"
 
 #define CTRL_BORDER 5
 
@@ -422,7 +423,7 @@ bool mxUT::AreIncludesUpdated(wxDateTime bin_date, wxFileName filename, wxArrayS
 void mxUT::FindIncludes(wxString path, wxString filename, wxArrayString &already_processed, wxArrayString &header_dirs, bool recursive, bool use_cache) {
 	
 	if (!use_cache) ClearIncludesCache();
-	wxString fullname = DIR_PLUS_FILE(DIR_PLUS_FILE(already_processed[0],path),filename);
+	wxString fullname = DIR_PLUS_FILE_2(already_processed[0],path,filename);
 	bool was_on_cache = FindIncludes_cache.count(fullname);
 	wxArrayString results = FindIncludes_cache[fullname];
 	if (!was_on_cache) {
@@ -560,26 +561,7 @@ int mxUT::Execute(wxString path, wxString command, int sync) {
 int mxUT::Execute(wxString path, wxString command, int sync, wxProcess *&process) {
 	while (command.Len() && command.Last()==' ') command.RemoveLast();
 	RaiiWorkDirChanger cwd_guard(path); // set temp cwd
-#ifndef __WIN32__
-	// por alguna razon, con wx 2.8 no podemos tener mas de 127 argumentos (ver WXEXECUTE_NARGS en los fuentes de wx 2.8)
-	// asi que hacemos un script con el comando y llamamos al script si ese es el caso
-	int num_args=0, i=0,l=command.Len();
-	while (++i<l) {
-		if (command[i]=='\'') { while (++i<l && command[i]!='\''); }
-		else if (command[i]=='\"') { while (++i<l && command[i]!='\'') if (command[i]=='\\') i++; }
-		else if (command[i]=='\\') i++;
-		else if (command[i]==' ') num_args++;
-	}
-	if (num_args>=127) {
-		wxString aux_file(DIR_PLUS_FILE(config->temp_dir,"long_command"));
-		wxTextFile file(aux_file); 
-		file.Create();
-		file.AddLine(command);
-		file.Write();
-		file.Close();
-		command=wxString("sh ")+aux_file;
-	}
-#endif
+	fix_command_for_wxexecute(command);
 	int ret = (sync&wxEXEC_SYNC) ? mxExecute(command, sync, process) : wxExecute(command, sync, process);
 	return ret;
 }
@@ -774,7 +756,7 @@ wxString mxUT::GetOnePath(wxString orig_path, wxString project_path, wxString fn
 	if (header_dirs.GetCount()) {
 		unsigned int hi=0;
 		do {
-			theone = DIR_PLUS_FILE(DIR_PLUS_FILE(project_path,header_dirs[hi++]),fname);
+			theone = DIR_PLUS_FILE_2(project_path,header_dirs[hi++],fname);
 			if (wxFileName::FileExists(theone))
 				return theone;
 		} while (hi<header_dirs.GetCount());

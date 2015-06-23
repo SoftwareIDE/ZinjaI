@@ -3857,7 +3857,6 @@ void mxSource::HideCalltip () {
 		case MXS_BALOON: wxStyledTextCtrl::CallTipCancel(); break;
 		case MXS_AUTOCOMP: wxStyledTextCtrl::AutoCompCancel(); if (calltip) calltip->Hide(); break;
 	}
-	cerr<<"NULL!!"<<endl;
 	calltip_mode = MXS_NULL;
 }
 

@@ -943,7 +943,7 @@ wxString CodeHelper::GetInclude(wxString path, wxString key) {
 					mxUT::Split(project->active_configuration->headers_dirs,header_dirs_array,true,false);
 					unsigned int i;
 					for (i=0;i<header_dirs_array.GetCount();i++) {
-						if (wxFileName(DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,header_dirs_array[i]),fn.GetFullName()))==fn)
+						if (wxFileName(DIR_PLUS_FILE_2(project->path,header_dirs_array[i],fn.GetFullName()))==fn)
 							return wxString("\"")+fn.GetFullName()+"\"";
 					}
 				}

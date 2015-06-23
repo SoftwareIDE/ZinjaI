@@ -14,22 +14,26 @@ wxFont *mxOSD::font = nullptr;
 wxColour *mxOSD::cb = nullptr;
 wxColour *mxOSD::cf = nullptr;
 wxBrush *mxOSD::br = nullptr;
+mxOSD *mxOSD::current_osd = nullptr;
 
-mxOSD::mxOSD(wxWindow *aparent, wxString str, int time, bool corner) : wxDialog(aparent?aparent:main_window,wxID_ANY,"",wxPoint(200,200),wxSize(400,100),(aparent?wxFRAME_FLOAT_ON_PARENT:wxSTAY_ON_TOP)|wxNO_3D|wxNO_BORDER) {
+mxOSD::mxOSD(wxWindow *aparent, wxString str, int time, bool corner) 
+	: wxDialog(aparent?aparent:main_window,wxID_ANY,"",wxPoint(200,200),wxSize(400,100),
+		(aparent?wxFRAME_FLOAT_ON_PARENT:wxSTAY_ON_TOP)|wxNO_3D|wxNO_BORDER),
+	timer(nullptr), parent(aparent)
+{
 	if (!font) {
 		font = new wxFont(12,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false);
 		cb = new wxColour("Z LIGHT YELLOW");
 		cf = new wxColour("RED");
 		br = new wxBrush(*mxOSD::cb);
 	}
-	
-	parent = aparent;
-	timer = nullptr;
 	if (str.Len()) ShowText(str,time,corner);
+	current_osd = this;
 }
 
 mxOSD::~mxOSD() {
 	if (timer) delete timer;
+	if (current_osd==this) current_osd = nullptr;
 }
 
 void mxOSD::ShowText(wxString str, int time, bool corner) {

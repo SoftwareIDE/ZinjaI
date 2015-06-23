@@ -504,8 +504,8 @@ MENUITEM_TOOLS_SHARE_SHARE
 Share Current File...
 MENUITEM_TOOLS_SHARE_LIST
 Show Shared Files List...
-MENUITEM_TOOLS_SHARE_HELP
-Help
+MENUITEM_TOOLS_COMMON_HELP
+Help...
 MENUITEM_TOOLS_DIFF
 Compare Files (diff)
 MENUITEM_TOOLS_DIFF_TWO
@@ -526,8 +526,10 @@ MENUITEM_TOOLS_DIFF_DISCARD
 Discard Change
 MENUITEM_TOOLS_DIFF_CLEAR
 Clear Marks
-MENUITEM_TOOLS_DIFF_HELP
-Help
+MENUITEM_TOOLS_LIZARD
+Measure complexity (lizard)
+MENUITEM_TOOLS_LIZARD_RUN
+Analize now...
 MENUITEM_TOOLS_DOXYGEN
 Generate Documentation (doxygen)
 MENUITEM_TOOLS_DOXYGEN_GENERATE
@@ -536,8 +538,6 @@ MENUITEM_TOOLS_DOXYGEN_CONFIGURE
 Configure...
 MENUITEM_TOOLS_DOXYGEN_VIEW
 Open Result...
-MENUITEM_TOOLS_DOXYGE_HELP
-Help
 MENUITEM_TOOLS_WXFB
 GUI Designer (wxFormBuilder)
 MENUITEM_TOOLS_WXFB_CONFIG
@@ -564,8 +564,6 @@ MENUITEM_TOOLS_CPPCHECK_CONFIG
 Configure...
 MENUITEM_TOOLS_CPPCHECK_VIEW
 Show Result's Panel
-MENUITEM_TOOLS_CPPCHECK_HELP
-&Help...
 MENUITEM_TOOLS_GPROF
 Execution Profiling (gprof)
 MENUITEM_TOOLS_GPROF_ACTIVATE
@@ -580,8 +578,6 @@ MENUITEM_TOOLS_GPROF_SHOW
 Show Results (graph)
 MENUITEM_TOOLS_GPROF_LIST
 List Results (text)
-MENUITEM_TOOLS_GPROF_HELP
-Help
 MENUITEM_TOOLS_GCOV
 Coverage &testing (gcov)
 MENUITEM_TOOLS_GCOV_ACTIVATE
@@ -590,24 +586,18 @@ MENUITEM_TOOLS_GCOV_SHOW_BAR
 Show results bar
 MENUITEM_TOOLS_GCOV_RESET
 Delete results
-MENUITEM_TOOLS_GCOV_HELP
-&Help...
 MENUITEM_TOOLS_VALGRIND
 Dynamic Analysis (valgrind)
 MENUITEM_TOOLS_VALGRIND_RUN
 Run...
 MENUITEM_TOOLS_VALGRIND_VIEW
 Show Result's Panel
-MENUITEM_TOOLS_VALGRIND_HELP
-Help...
 MENUITEM_TOOLS_CUSTOM_TOOLS
 Custom Tools
 MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS
 Settings (general)...
 MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS
 Settings (project)...
-MENUITEM_TOOLS_CUSTOM_HELP
-Help...
 MENUITEM_TOOLS_CREATE_TEMPLATE
 Save current project/file as new template...
 MENUITEM_TOOLS_INSTALL_COMPLEMENTS
@@ -1636,26 +1626,24 @@ HELPW_FIND
 Find...
 GOTOFILE_CAPTION
 Go To...
-GENERAL_GOTO_BUTTON
-  &Go   
-GOTOFILE_CASE_SENSITIVE
-Case sesitive search
 GOTOFILE_ENTER_FILENAME
 Enter part of the filename you want to open:
 GOTOFILE_NO_RESULTS
 <<no result found>>
 GOTOFUNCTION_CAPTION
 Go To...
-GOTOFUNCTION_CASE_SENSITIVE
-Case sesitive search
 GOTOFUNCTION_ENTER_FUNC_NAME
 Enter part of the class/method/function name:
 GOTOFUNCTION_NO_RESULTS
 <<no result found>>
 GOTOLINE_CAPTION
 Go To Line
+GENERAL_GOTO_BUTTON
+  &Go   
 GOTOLINE_YOURE_HERE
 You are in line <{1}> from <{2}>.
+GOTOFUNCTION_CASE_SENSITIVE
+Case sesitive search
 MXGRID_SHOW_COL
 Show "<{1}>" column
 HELPW_CAPTION
@@ -2082,12 +2070,12 @@ MAINW_GPROF_GPROF_DISABLED
 The required compiling arguments for <{1}> where removed.
 MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
 In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
+MAINW_EXTERN_TOOL_ERROR
+An error occurred running <{1}>.
 MAINW_GPROF_OUTPUT_MISSING
 Profilling information was not found.\nIn order to generate it go to ZinjaI's help.
 MAINW_GPROF_STATUS_ANALIZING
 Analizing profiling information...
-MAINW_GPROF_ERROR
-Error processing profiling information
 MAINW_GPROF_EDGE_THERSHOLD
 Eliminate edges under this threshold (%):
 MAINW_GPROF_ASK_TITLE
@@ -2096,6 +2084,8 @@ MAINW_GPROF_NODE_THERSHOLD
 Eliminate nodes under this threshold (%):
 MAINW_GPROF_DRAWING
 Generating graph...
+MAINW_GPROF_ERROR
+Error processing profiling information
 MAINW_GPROF_SHOWING
 Displaying results...
 MAINW_GPROF_GRAPH_TITLE
@@ -2122,6 +2112,8 @@ MAINW_ENTER_FILE_NAME_FOR_NEW_SIMPLE_PROGRAM_TEMPLATE
 Enter the template filename
 MAINW_TEMPLATE_GENERATED
 Template generated
+MAINW_GPROF_STATUS_LIZARD
+Running lizard...
 MAKEFILE_CAPTION
 Generate Makefil
 MAKEFILE_PROFILE

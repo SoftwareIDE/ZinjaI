@@ -228,7 +228,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("share_source",mxID_TOOLS_SHARE_SHARE, LANG(MENUITEM_TOOLS_SHARE_SHARE,"&Compartir actual...")).Description("Comparte el archivo en la red local.").Icon("compartir.png").EnableIf(ecSOURCE));
 			AddMenuItem(mnTOOLS, myMenuItem("share_list",mxID_TOOLS_SHARE_LIST, LANG(MENUITEM_TOOLS_SHARE_LIST,"&Ver lista de compartidos propios...")).Description("Comparte el archivo en la red local.").Icon("share_list.png"));
 			AddSeparator(mnTOOLS);
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_SHARE_HELP, LANG(MENUITEM_TOOLS_SHARE_HELP,"A&yuda...")).Description("Muestra ayuda acerca de la compartición de archivos en ZinjaI").Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_SHARE_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra ayuda acerca de la compartición de archivos en ZinjaI").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		AddSeparator(mnTOOLS);
@@ -245,7 +245,13 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("diff_discard",mxID_TOOLS_DIFF_DISCARD,LANG(MENUITEM_TOOLS_DIFF_DISCARD,"De&scartar Cambio")).ShortCut("Alt+Del").Description("Descarta el cambio marcado en la linea actual").Icon("diff_discard.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("diff_clear",mxID_TOOLS_DIFF_CLEAR,LANG(MENUITEM_TOOLS_DIFF_CLEAR,"&Borrar Marcas")).ShortCut("Alt+Shift+Del").Description("Quita los colores y marcas que se agregaron en un fuente producto de una comparación").Icon("diff_clear.png"));
 			AddSeparator(mnTOOLS);
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DIFF_HELP,LANG(MENUITEM_TOOLS_DIFF_HELP,"A&yuda...")).Description("Muestra ayuda acerca de la comparación de fuentes en ZinjaI").Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DIFF_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra ayuda acerca de la comparación de fuentes en ZinjaI").Icon("ayuda.png"));
+		EndSubMenu(mnTOOLS);
+		
+		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_LIZARD,"Medir complejidad (lizard)")).Description("Permite analizar la complejidad ciclomática por función.").Icon("doxy.png").EnableIf(ecPROJECT));
+			AddMenuItem(mnTOOLS, myMenuItem("doxy_generate",mxID_TOOLS_LIZARD_RUN,LANG(MENUITEM_TOOLS_LIZARD_RUN,"&Analizar ahora...")).ShortCut("").Icon("lizard_run.png"));
+			AddSeparator(mnTOOLS);
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DOXY_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra una breve ayuda acerca de la integración de Doxygen en ZinjaI").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_DOXYGEN,"Generar &Documentación (doxygen)")).Description("Doxygen permite generar automaticamente documentación a partir del codigo y sus comentarios").Icon("doxy.png").EnableIf(ecPROJECT));
@@ -253,7 +259,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("doxy_config",mxID_TOOLS_DOXY_CONFIG,LANG(MENUITEM_TOOLS_DOXYGEN_CONFIGURE,"&Configurar...")).Description("Permite establecer opciones para el archivo de configuración de doxygen").Icon("doxy_config.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("doxy_view",mxID_TOOLS_DOXY_VIEW,LANG(MENUITEM_TOOLS_DOXYGEN_VIEW,"&Ver...")).ShortCut("Ctrl+F1").Description("Abre un explorador y muestra la documentación generada").Icon("doxy_view.png"));
 			AddSeparator(mnTOOLS);
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DOXY_HELP,LANG(MENUITEM_TOOLS_DOXYGE_HELP,"A&yuda...")).Description("Muestra una breve ayuda acerca de la integración de Doxygen en ZinjaI").Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DOXY_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra una breve ayuda acerca de la integración de Doxygen en ZinjaI").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_WXFB,"Diseñar &Interfases (wxFormBuilder)")).Description("Diseño visual de interfaces con la biblioteca wxWidgets").Icon("wxfb.png").EnableIf(ecPROJECT));
@@ -273,7 +279,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("cppcheck_config",mxID_TOOLS_CPPCHECK_CONFIG, LANG(MENUITEM_TOOLS_CPPCHECK_CONFIG,"Configurar...")).Icon("cppcheck_config.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("cppcheck_view",mxID_TOOLS_CPPCHECK_VIEW, LANG(MENUITEM_TOOLS_CPPCHECK_VIEW,"Mostrar Panel de Resultados")).Icon("cppcheck_view.png"));
 			AddSeparator(mnTOOLS);
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_CPPCHECK_HELP,LANG(MENUITEM_TOOLS_CPPCHECK_HELP,"A&yuda...")).Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_CPPCHECK_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_GPROF,"Perfil de Ejecución (gprof)")).Description("Gprof permite analizar las llamadas a funciones y sus tiempos de ejecución.").Icon("gprof.png").EnableIf(ecPROJECT_OR_SOURCE));
@@ -285,7 +291,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("gprof_show_graph",mxID_TOOLS_GPROF_SHOW, LANG(MENUITEM_TOOLS_GPROF_SHOW,"Visualizar Resultados (grafo)...")).Description("Muestra graficamente la información de profiling de la ultima ejecución.").Icon("showgprof.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("gprof_list_output",mxID_TOOLS_GPROF_LIST, LANG(MENUITEM_TOOLS_GPROF_LIST,"Listar Resultados (texto)")).Description("Muestra la información de profiling de la ultima ejecución sin procesar.").Icon("listgprof.png"));
 			AddSeparator(mnTOOLS);
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_GPROF_HELP,LANG(MENUITEM_TOOLS_GPROF_HELP,"A&yuda...")).Description("Muestra ayuda acerca de como generar e interpretar la información de profiling").Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_GPROF_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra ayuda acerca de como generar e interpretar la información de profiling").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_GCOV,"&Test de Cobertura (experimental, gcov)")).Description("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente.").Icon("gcov.png").EnableIf(ecPROJECT_OR_SOURCE));
@@ -293,7 +299,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("gcov_show_bar",mxID_TOOLS_GCOV_SHOW, LANG(MENUITEM_TOOLS_GCOV_SHOW_BAR,"Mostrar barra de resultados")).Description("Muestra un panel con los conteos por linea en el margen izquierdo de la ventana.").Icon("gcov_show.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("gcov_reset",mxID_TOOLS_GCOV_RESET, LANG(MENUITEM_TOOLS_GCOV_RESET,"Eliminar resultados")).Description("Elimina los archivos de resultados generados por el test de cobertura.").Icon("gcov_reset.png"));
 			AddSeparator(mnTOOLS);
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_GCOV_HELP,LANG(MENUITEM_TOOLS_GCOV_HELP,"A&yuda...")).Description("Muestra ayuda acerca de como generar e interpretar la información del test de cobertura").Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_GCOV_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra ayuda acerca de como generar e interpretar la información del test de cobertura").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 	#ifndef __WIN32__
@@ -302,7 +308,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("valgrind_debug",mxID_TOOLS_VALGRIND_DEBUG, LANG(MENUITEM_TOOLS_VALGRIND_RUN,"Depurar...")).Icon("valgrind_debug.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("valgrind_view",mxID_TOOLS_VALGRIND_VIEW, LANG(MENUITEM_TOOLS_VALGRIND_VIEW,"Mostrar Panel de Resultados")).Icon("valgrind_view.png"));
 			AddSeparator(mnTOOLS);
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_VALGRIND_HELP, LANG(MENUITEM_TOOLS_VALGRIND_HELP,"A&yuda...")).Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_VALGRIND_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 	#endif
 		
@@ -312,7 +318,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddSeparator(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem("custom_settings",mxID_TOOLS_CUSTOM_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_CUSTOM_TOOLS_SETTINGS,"&Configurar (generales)...")).Icon("customToolsSettings.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("project_tools_settings",mxID_TOOLS_PROJECT_TOOLS_SETTINGS, LANG(MENUITEM_TOOLS_PROJECT_TOOLS_SETTINGS,"&Configurar (de proyecto)...")).Icon("projectToolsSettings.png").EnableIf(ecPROJECT));
-			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_CUSTOM_HELP,"A&yuda...")).Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_CUSTOM_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		AddSeparator(mnTOOLS);

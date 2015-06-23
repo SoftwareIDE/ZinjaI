@@ -623,7 +623,7 @@ wxString HelpManager::GetDoxyInfo(pd_class *aclass, wxString &desc) {
 			} else if ( str.Contains("name=\"_details\"")||str.Contains("name=\"details\"")) on_desc=true;
 		}
 		fil.Close();
-		return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html"))),it->second);
+		return DIR_PLUS_FILE_2(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html")),it->second);
 	}
 	return "";	
 }
@@ -639,7 +639,7 @@ wxString HelpManager::GetDoxyInfo(pd_func *afunc, wxString &desc) {
 	while (it!=doxy_index.end()) {
 		wxString auxp = ParseDoxyText(it->second,desc);
 		if (auxp==args)
-			return DIR_PLUS_FILE(DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html"))),it->second);
+			return DIR_PLUS_FILE_2(project->path,DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html")),it->second);
 		key<<"*";
 		it = doxy_index.find(key);
 	}
@@ -649,7 +649,7 @@ wxString HelpManager::GetDoxyInfo(pd_func *afunc, wxString &desc) {
 wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 	desc.Clear();
 //	cerr<<"FILE:  "<<link<<endl;
-	wxString file = DIR_PLUS_FILE(project->path,DIR_PLUS_FILE(DIR_PLUS_FILE(project->GetDoxygenConfiguration()->destdir,_T("html")),link.BeforeLast('#')));
+	wxString file = DIR_PLUS_FILE(project->path,DIR_PLUS_FILE_2(project->GetDoxygenConfiguration()->destdir,_T("html"),link.BeforeLast('#')));
 	if (!file.Len()) return "";
 	if (!wxFileName(file).FileExists()) return "";
 	wxString anchor=link.AfterLast('#');

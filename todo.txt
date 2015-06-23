@@ -5,6 +5,9 @@
 bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
 
 
+bajo: poder guardar y abrir resultados de gprof
+
+
 Otras:
 
 opciones de compilación por fuente
