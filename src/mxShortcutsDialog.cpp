@@ -42,6 +42,7 @@ public:
 		current->SetFocus();
 	}
 	wxString getName(int code) {
+		// #lizard forgives the complexity
 		if (code==WXK_BACK) return "Back";
 		if (code==WXK_TAB) return "Tab";
 		if (code==WXK_RETURN) return "Return";

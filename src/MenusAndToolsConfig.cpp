@@ -248,7 +248,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DIFF_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra ayuda acerca de la comparación de fuentes en ZinjaI").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
-		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_LIZARD,"Medir complejidad (lizard)")).Description("Permite analizar la complejidad ciclomática por función.").Icon("doxy.png").EnableIf(ecPROJECT));
+		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_LIZARD,"Medir complejidad (lizard)")).Description("Permite analizar la complejidad ciclomática por función.").Icon("lizard.png").EnableIf(ecPROJECT));
 			AddMenuItem(mnTOOLS, myMenuItem("doxy_generate",mxID_TOOLS_LIZARD_RUN,LANG(MENUITEM_TOOLS_LIZARD_RUN,"&Analizar ahora...")).ShortCut("").Icon("lizard_run.png"));
 			AddSeparator(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DOXY_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra una breve ayuda acerca de la integración de Doxygen en ZinjaI").Icon("ayuda.png"));
@@ -537,6 +537,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_DOXY_GENERATE).Visible());
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_DOXY_CONFIG));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_DOXY_VIEW));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_LIZARD_RUN));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_WXFB_CONFIG));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_WXFB_NEW_RES));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_WXFB_LOAD_RES));
@@ -621,6 +622,7 @@ void MenusAndToolsConfig::PopulateMenu(int menu_id) {
 
 
 int getKeyCode(const wxString &key) {
+	// #lizard forgives the complexity
 	if (key.Len()==1) return key[0];
 	if (key=="BACK") return WXK_BACK;
 	if (key=="TAB") return WXK_TAB;

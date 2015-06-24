@@ -48,10 +48,10 @@ void mxLizardOutput::ParseResults (wxArrayString & results) {
 	while (!results[i].StartsWith("=====")) i++;
 	i+=3;
 	wxArrayString functions_titles;
-	functions_titles.Add("NLOC");
+	functions_titles.Add("# LOC");
 	functions_titles.Add("CCN");
-	functions_titles.Add("token");
-	functions_titles.Add("PARAM");
+	functions_titles.Add("token #");
+	functions_titles.Add("params #");
 	functions_titles.Add("location");
 	functions_titles.Add("file");
 	mxPRTGenericTable<LizardFunctionRow> *functions = new mxPRTGenericTable<LizardFunctionRow>(functions_titles);
@@ -73,10 +73,10 @@ void mxLizardOutput::ParseResults (wxArrayString & results) {
 	while (!results[i].StartsWith("=====")) i++;
 	i+=3;
 	wxArrayString files_titles;
-	files_titles.Add("NLOC");
-	files_titles.Add("Avg. NLOC");
+	files_titles.Add("# LOC");
+	files_titles.Add("Avg. # LOC");
 	files_titles.Add("Avg. CCN");
-	files_titles.Add("Avg. ttoken");
+	files_titles.Add("Avg. token #");
 	files_titles.Add("functions count");
 	files_titles.Add("file");
 	mxPRTGenericTable<LizardFilesRow> *files= new mxPRTGenericTable<LizardFilesRow>(files_titles);

@@ -12,7 +12,6 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
-current_source=src/mxLizardOutput.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -217,7 +216,7 @@ path=src/mxSplashScreen.cpp
 cursor=27:33
 [source]
 path=src/mxToolbarEditor.cpp
-cursor=51:0
+cursor=44:9
 [source]
 path=src/mxProjectGeneralConfig.cpp
 cursor=94:0
@@ -359,7 +358,7 @@ path=src/mxSignalsSettings.cpp
 cursor=68:20
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=0:0
+cursor=540:54
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=44:17
@@ -372,7 +371,7 @@ path=src/mxCalltip.cpp
 cursor=239:35
 [source]
 path=src/mxShortcutsDialog.cpp
-cursor=244:0
+cursor=53:0
 [source]
 path=src/mxLocalsGrid.cpp
 cursor=9:0
@@ -399,8 +398,7 @@ path=src/mxGotoListDialog.cpp
 cursor=134:26
 [source]
 path=src/mxLizardOutput.cpp
-cursor=42:25
-open=true
+cursor=79:29
 [source]
 path=src/mxPlainResultsTable.cpp
 cursor=55:0

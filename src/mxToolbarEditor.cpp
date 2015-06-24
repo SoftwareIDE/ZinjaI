@@ -19,7 +19,9 @@ BEGIN_EVENT_TABLE(mxToolbarEditor, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxToolbarEditor::OnButtonCancel)
 END_EVENT_TABLE()
 
-mxToolbarEditor::mxToolbarEditor(wxWindow *parent, int toolbar_id, wxString name):wxDialog(parent,wxID_ANY,name,wxDefaultPosition,wxSize(350,400),wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
+mxToolbarEditor::mxToolbarEditor(wxWindow *parent, int toolbar_id, wxString name)
+	: wxDialog(parent,wxID_ANY,name,wxDefaultPosition,wxSize(350,500),wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) 
+{
 	
 	this->toolbar_id=toolbar_id;
 	ipre=DIR_PLUS_FILE(wxString()<<menu_data->GetToolbarIconSize(),"");
