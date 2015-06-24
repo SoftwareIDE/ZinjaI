@@ -81,6 +81,7 @@ void mxGotoListDialog::OnClose(wxCloseEvent &event) {
 }
 
 void mxGotoListDialog::OnTextChange(wxCommandEvent &event) {
+	cerr<< "CASE CHANGE!"<<endl;
 	if (timer) timer->Start(500,true);
 }
 
@@ -138,6 +139,7 @@ void mxGotoListDialog::SetInputValue (wxString key) {
 }
 
 void mxGotoListDialog::HideInput() {
+	if (timer) timer->Stop();
 	case_sensitive->Hide(); 
 	label_ctrl->Hide();
 	text_ctrl->Hide();
