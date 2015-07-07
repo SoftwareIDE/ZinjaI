@@ -25,16 +25,16 @@ function zmkdir {
 }
 
 zmkdir zinjai
-    cp -u $SRC/lsdeps.exe zinjai/bin/
-    cp -u $SRC/runner.exe zinjai/bin/
-    cp -u $SRC/cbrowser.exe zinjai/bin/
+    cp -u $SRC/bin/lsdeps.exe zinjai/bin/
+    cp -u $SRC/bin/runner.exe zinjai/bin/
+    cp -u $SRC/bin/cbrowser.exe zinjai/bin/
     cp -u $SRC/zinjai.exe zinjai/
     cp -u $SRC/zinjai.dir zinjai/
-    cp -u $SRC/img_viewer.exe zinjai/bin/
-    cp -u $SRC/complement.exe zinjai/bin/
-    cp -u $SRC/complement_wrap.exe zinjai/bin/
-    cp -u $SRC/shellexecute.exe zinjai/bin/
-    cp -u $SRC/updatem.exe zinjai/bin/
+    cp -u $SRC/bin/img_viewer.exe zinjai/bin/
+    cp -u $SRC/bin/complement.exe zinjai/bin/
+    cp -u $SRC/bin/complement_wrap.exe zinjai/bin/
+    cp -u $SRC/bin/shellexecute.exe zinjai/bin/
+    cp -u $SRC/bin/updatem.exe zinjai/bin/
     cp -u $SRC/readme.txt zinjai/
     cp -u $SRC/debug_macros.gdb zinjai/
     zmkdir zinjai/imgs
