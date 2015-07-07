@@ -270,9 +270,9 @@ void mxNewWizard::OnProjectCreate() {
 					if (func->properties&PD_CONST_PROTECTED) visib="protected ";
 					else if (func->properties&PD_CONST_PUBLIC) visib="public ";
 					if (func->properties&PD_CONST_VIRTUAL_PURE) {
-						virtual_methods.Add(visib+func->full_proto+(func->properties&PD_CONST_CONST?" const =0":" =0")); // const no deberia estar en el full proto?
+						virtual_methods.Add(visib+func->full_proto+((func->properties&PD_CONST_CONST)?" const =0":" =0")); // const no deberia estar en el full proto?
 					} else if (func->properties&PD_CONST_VIRTUAL) {
-						virtual_methods.Add(visib+func->full_proto+(func->properties&PD_CONST_CONST?" const":"")); // const no deberia estar en el full proto?
+						virtual_methods.Add(visib+func->full_proto+((func->properties&PD_CONST_CONST)?" const":"")); // const no deberia estar en el full proto?
 					}
 					func=func->prev;
 				}

@@ -708,14 +708,12 @@ mxFlowCanvas::~mxFlowCanvas() {
 }
 
 void mxFlowCanvas::GetTextSize(wxString text, wxDC *dc, int &m_ancho, int &alto) {
-	// cppcheck-suppress deadpointer
 	wxSize s = dc->GetTextExtent(text);
 	m_ancho = s.GetWidth()/2;
 	alto = s.GetHeight();
 }
 
 void mxFlowCanvas::OnPaint (wxPaintEvent &event) {
-	cerr<< "Paint IN...";
 	int w=GetRect().GetWidth();
 	wxPaintDC dc(this);
 	PrepareDC(dc);
@@ -728,7 +726,6 @@ void mxFlowCanvas::OnPaint (wxPaintEvent &event) {
 		Draw(dc,draw,int((w/2+(draw.izquierda-(draw.izquierda+draw.derecha)/2))/scale),FC_MARGIN_BETWEEN  /*draw.alto+FC_MARGIN_BETWEEN*/ );
 	else
 		Draw(dc,draw,draw.izquierda+FC_MARGIN_BETWEEN,FC_MARGIN_BETWEEN /*draw.alto+FC_MARGIN_BETWEEN*/ );
-	cerr<< "OUT "<<dc.GetSize().GetWidth()<<"x"<<dc.GetSize().GetHeight()<<" == "<<w<<"x?"<<endl;
 }
 
 void mxFlowCanvas::Draw(wxPaintDC &dc, draw_data &draw, int x, int y) {

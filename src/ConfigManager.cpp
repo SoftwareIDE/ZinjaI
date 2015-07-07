@@ -618,7 +618,7 @@ bool ConfigManager::Save(){
 	return true;
 }
 	
-static void EnsurePathExists(const wxString path) {
+static void EnsurePathExists(const wxString &path) {
 	if (!wxFileName::DirExists(path)) wxFileName::Mkdir(path);
 }
 

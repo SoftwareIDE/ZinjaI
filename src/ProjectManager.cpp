@@ -793,7 +793,7 @@ bool ProjectManager::Save (bool as_template) {
 		HashStringString::iterator it = configurations[i]->by_src_compiling_options->begin();
 		while (it!=configurations[i]->by_src_compiling_options->end()) {
 			CFG_GENERIC_WRITE_DN("by_src_comp_args",mxUT::Text2Line(it->first+"\n"+it->second));
-			it++;
+			++it;
 		}
 		project_library *lib_to_build = configurations[i]->libs_to_build;
 		while (lib_to_build) {

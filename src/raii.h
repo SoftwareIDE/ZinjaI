@@ -86,7 +86,7 @@ public:
 class RaiiWorkDirChanger {
 	wxString old_dir;
 public:
-	RaiiWorkDirChanger(const wxString new_dir) 
+	RaiiWorkDirChanger(const wxString &new_dir) 
 		: old_dir(wxGetCwd()) { wxSetWorkingDirectory(new_dir); }
 	void RestoreNow() { if (old_dir.Len()) wxSetWorkingDirectory(old_dir); old_dir=""; }
 	~RaiiWorkDirChanger() { if (old_dir.Len()) wxSetWorkingDirectory(old_dir); }

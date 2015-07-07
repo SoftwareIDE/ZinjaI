@@ -81,7 +81,6 @@ void mxGotoListDialog::OnClose(wxCloseEvent &event) {
 }
 
 void mxGotoListDialog::OnTextChange(wxCommandEvent &event) {
-	cerr<< "CASE CHANGE!"<<endl;
 	if (timer) timer->Start(500,true);
 }
 

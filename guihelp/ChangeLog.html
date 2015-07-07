@@ -9,11 +9,13 @@
 </UL><BR><B>Relase 20150XXX</B><BR><UL>
 	<LI>New: Se interó una nueva herramienta externa (lizard) en el menú de herramientas, que mide la complejidad (complejidad ciclomática y lineas de código) de archivos y funciones.</LI>
 	<LI>Imp: Se reorganizó la estructura de directorios de ZinjaI para agrupar todos los ejecutables auxiliares en dos carpeta (una con los propios de ZinjaI, otra con herramientas de terceros), y permitir además una mejor separación entre aquellos que deberían cambiar con el toolchain y aquellos que no.</LI>
+	<LI>Imp: Se agregaron argumentos de compilación adicionales en la configuración del toolchain de mingw32 para corregir las diferencias de charset entre el fuente y la consola de windows.</LI>
 	<LI>Imp: Se mejoró la velocidad con la que se prepara la compilación de un proyecto cuando una gran cantidad de fuentes y cabeceras.</LI>
 	<LI>Imp: En las opciones generales de un proyecto se pueden definir las extensiones a usar por defecto al crear nuevos archivos fuentes y cabeceras.</LI>
 	<LI>Imp: Al finalizar la ejecución en depuración se respeta la configuración de ejecución para esperar una tecla antes de cerrar la terminal (solo en GNU/Linux).</LI>
 	<LI>Imp: El click derecho en un elemento de la barra de herramientas muestra un menú contextual con más herramientas afines a la herramienta sobre la cual que se hizo el click.</LI>
 	<LI>Imp: Cuando una herramienta externa (g++,gdb,doxygen,cppcheck,valgrind,wxformbuilder) no se encuentra, en GNU/Linux se ofrece instalar automáticamente mediante apt-get (si apt-get está disponible en esa distribución), y en caso contrario o de falla durante la instalación se ofrece abrir automáticamente el sitio web de la herramienta.</LI>
+	<LI>Fix: Se corrigión un problema de redibujado en la ventana de diagrama de flujo.</LI>
 	<LI>Fix: Se corrigión el problema de comportamiento extraño al intentar redimensionar una columna en una tabla.</LI>
 	<LI>Fix: Corregido el parser para entender las palabras clave de C++11 final y override.</LI>
 	<LI>Fix: Corregida la detección de la terminal por defecto en GNU/Linux cuando no se encuentra xterm y la instalación de gcc y gdb automática en sistemas basados en Ubuntu.</LI>

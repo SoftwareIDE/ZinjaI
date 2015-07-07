@@ -230,14 +230,14 @@ void HelpManager::HelpFor(pd_func *afunc, wxString &content, wxString &index) {
 		content<<LANG(PARSERHELP_PROTOTYPE,"Prototipo:")<<_T(" <BR><UL><LI>");
 		if (afunc->properties&PD_CONST_STATIC) content<<_T("static ");
 		if (afunc->properties&PD_CONST_VIRTUAL) content<<_T("virtual ");
-		content<<proto<<(afunc->properties&PD_CONST_CONST?" const":"")<<(afunc->properties&PD_CONST_VIRTUAL_PURE?" = 0":"")<<_T("</LI></UL><BR><BR>");
+		content<<proto<<((afunc->properties&PD_CONST_CONST)?" const":"")<<((afunc->properties&PD_CONST_VIRTUAL_PURE)?" = 0":"")<<_T("</LI></UL><BR><BR>");
 		if (afunc->file_dec) AddDefRef(content,LANG(PARSERHELP_DECLARED_IN_PRE,"Declarado en"),afunc->file_dec->name,afunc->line_dec);
 		if (afunc->file_def) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definido en"),afunc->file_def->name,afunc->line_def);
 	} else {
 		wxString proto = MakeClassLinks(mxUT::ToHtml(afunc->proto)), link;
 		index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<LANG(PARSERHELP_FUNCTION,"Funcion")<<_T(" <I>")<<mxUT::ToHtml(afunc->proto)<<_T("</I></A></LI>");
 		content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<LANG(PARSERHELP_FUNCTION,"Funcion")<<_T(" <I><A href=\"#")<<id<<_T("\">")<<mxUT::ToHtml(afunc->proto)<<_T("</A></I></B><BR><BR>");
-		content<<LANG(PARSERHELP_PROTOTYPE,"Prototipo:")<<_T(" <BR><UL><LI>")<<proto<<(afunc->properties&PD_CONST_CONST?" const":"")<<_T("</LI></UL><BR><BR>");
+		content<<LANG(PARSERHELP_PROTOTYPE,"Prototipo:")<<_T(" <BR><UL><LI>")<<proto<<((afunc->properties&PD_CONST_CONST)?" const":"")<<_T("</LI></UL><BR><BR>");
 		if (afunc->file_dec) AddDefRef(content,LANG(PARSERHELP_DECLARED_IN_PRE,"Declarada en"),afunc->file_dec->name,afunc->line_dec);
 		if (afunc->file_def) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),afunc->file_def->name,afunc->line_def);
 	}
@@ -321,8 +321,8 @@ void HelpManager::HelpFor(pd_macro *amacro, wxString &content, wxString &index) 
 		return;
 	}
 	int id=index_ref_counter++;
-	index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<(amacro->props&PD_CONST_TYPEDEF?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
-	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<(amacro->props&PD_CONST_TYPEDEF?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
+	index<<_T("<LI><A href=\"#")<<id<<_T("\">")<<((amacro->props&PD_CONST_TYPEDEF)?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I>")<<amacro->name<<_T("</I></A></LI>");
+	content<<_T("<A name=\"")<<id<<_T("\"><HR></A><B>")<<((amacro->props&PD_CONST_TYPEDEF)?LANG(PARSERHELP_TYPEDEF,"Typedef"):LANG(PARSERHELP_MACRO,"Macro"))<<_T(" <I><A href=\"#")<<id<<_T("\">")<<amacro->name<<_T("</A></I></B><BR><BR>");
 	if (amacro->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),amacro->file->name,amacro->line);
 	
 	// incluir el contenido

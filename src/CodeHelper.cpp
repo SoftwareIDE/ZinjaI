@@ -316,7 +316,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	pd_var *aux_var = parser->first_global;
 	while (aux_var) {
 		if (ShouldAddToAutocomp(typed,len,aux_var->name)) {
-			autocomp_list.Add(aux_var->name,(aux_var->properties&(PD_CONST_ENUM_CONST|PD_CONST_ENUM)?"$19":"$14"),aux_var->full_proto);
+			autocomp_list.Add(aux_var->name,((aux_var->properties&(PD_CONST_ENUM_CONST|PD_CONST_ENUM))?"$19":"$14"),aux_var->full_proto);
 		}
 		aux_var = aux_var->next;
 	}
@@ -332,7 +332,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	pd_macro *aux_macro = parser->first_macro;
 	while (aux_macro) {
 		if (ShouldAddToAutocomp(typed,len,aux_macro->name)) {
-			autocomp_list.Add(aux_macro->name,(aux_macro->props&(PD_CONST_ENUM|PD_CONST_ENUM_CONST)?"$19":(aux_macro->props&PD_CONST_TYPEDEF?"$18":"$2")),aux_macro->proto);
+			autocomp_list.Add(aux_macro->name,((aux_macro->props&(PD_CONST_ENUM|PD_CONST_ENUM_CONST))?"$19":((aux_macro->props&PD_CONST_TYPEDEF)?"$18":"$2")),aux_macro->proto);
 		}
 		aux_macro = aux_macro->next;
 	}

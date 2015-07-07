@@ -324,8 +324,8 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 
 
 #define PD_REGISTER_METHOD_DEC(aclass,afile,aline,atype,aspace,aname,aparams,afullparams,aprops) { \
-	wxString aproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aname + " (" + aparams + ")"; \
-	wxString afullproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aspace + "::" + aname + " (" + afullparams + ")"; \
+	wxString aproto = ((props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR))?"":atype + " ") + aname + " (" + aparams + ")"; \
+	wxString afullproto = ((props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR))?"":atype + " ") + aspace + "::" + aname + " (" + afullparams + ")"; \
 	if (!aclass || aclass->name!=aspace) { \
 		HashStringParserClass::iterator pd_it = h_classes.find(aspace); \
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \
@@ -364,8 +364,8 @@ mediante las macros PD_ADD_*, pero las cosas se borran solas mediante su destruc
 
 
 #define PD_REGISTER_METHOD_DEF(aclass,afile,aline,atype,aspace,aname,aparams,afullparams,aprops) { \
-	wxString aproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aname + " (" + aparams + ")"; \
-	wxString afullproto = (props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR)?"":atype + " ") + aspace + "::" + aname + " (" + afullparams + ")"; \
+	wxString aproto = ((props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR))?"":atype + " ") + aname + " (" + aparams + ")"; \
+	wxString afullproto = ((props&(PD_CONST_DESTRUCTOR|PD_CONST_CONSTRUCTOR))?"":atype + " ") + aspace + "::" + aname + " (" + afullparams + ")"; \
 	if (!aclass || aclass->name!=aspace) { \
 		HashStringParserClass::iterator pd_it = h_classes.find(aspace); \
 		if (pd_it!=h_classes.end() && pd_it->second->prev) { \

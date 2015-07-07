@@ -78,6 +78,7 @@ bool ShareManager::AskFor(wxString name) {
 	sock->SetNotify(wxSOCKET_CONNECTION_FLAG|wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG);
 	sock->Notify(true);
 	share_conection_c scc;
+	scc.source=nullptr;
 	scc.len=-1;
 	scc.count=0;
 	scc.name=name;
