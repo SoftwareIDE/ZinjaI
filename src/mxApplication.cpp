@@ -31,6 +31,14 @@
 #include "mxSplashScreen.h"
 using namespace std;
 
+
+
+#ifdef _TIMED_INIT
+wxLongLong start_time = wxGetLocalTimeMillis();
+wxLongLong aux_start_time;
+#endif
+
+
 IMPLEMENT_APP(mxApplication)
 	
 mxApplication *app = nullptr;
@@ -56,6 +64,8 @@ bool mxApplication::OnInit() {
 		return false;
 	}
 	
+SHOW_MILLIS("Entering OnInit...");
+	
 	// si el launcher cambio el entorno para desactivar los menues de unity,
 	// restablecer esas variables para los proyectos que ejecutemos
 #ifdef __linux__
@@ -72,6 +82,8 @@ bool mxApplication::OnInit() {
 	srand(time(nullptr));
 	
 	sizers = new mxSizers();
+	
+SHOW_MILLIS("About to find out zinjai_dir...");
 	
 	wxFileName f_path = wxGetCwd(); 
 	f_path.MakeAbsolute();
@@ -103,6 +115,8 @@ bool mxApplication::OnInit() {
 						"working path is the right one.","Error");
 	}
 	
+SHOW_MILLIS("About to load ConfigManager...");
+	
 	// inicialize mxUtils and ConfigManager
 	bool first_run = ConfigManager::Initialize(zpath);
 	
@@ -112,6 +126,8 @@ bool mxApplication::OnInit() {
 	// si delega la carga a otra instancia termina inmediatamente
 	if (InitSingleton(cmd_path)) return false;
 
+SHOW_MILLIS("Initializing art...");
+	
 	// init image handlers and show splash screen
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImage::AddHandler(new wxXPMHandler);
@@ -119,12 +135,17 @@ bool mxApplication::OnInit() {
 	
 	// load art and help files
 	mxArt::Initialize();
+	
+SHOW_MILLIS("Initializing help system...");
+	
 	// inicialize HelpManager
 	HelpManager::Initialize();
 	
 	// inicialize CodeHelper
 	CodeHelper::Initialize();
 
+SHOW_MILLIS("Finishing config manager's initialization...");
+	
 	// inicialize ProjectManager
 	project = nullptr;
 	
@@ -132,17 +153,23 @@ bool mxApplication::OnInit() {
 	// ...y carga el resto de la configuracion (toolchains, colores, atajos, toolbars, etc)
 	config->FinishiLoading(); 
 	
+SHOW_MILLIS("Creating main window...");	
+	
 	// create main window
 	if (config->Init.size_x==0 || config->Init.size_y==0)
 		main_window = new mxMainWindow(nullptr, wxID_ANY, "ZinjaI ", wxDefaultPosition, wxSize(800, 600));
 	else
 		main_window = new mxMainWindow(nullptr, wxID_ANY, "ZinjaI", wxPoint(config->Init.pos_x,config->Init.pos_y), wxSize(config->Init.size_x,config->Init.size_y));
 
+SHOW_MILLIS("Initializing DebugManager...");	
+	
 	// inicialize debug manager
 	DebugManager::Initialize();
 	
 	// set top window and let the magic do the rest
 	SetTopWindow(main_window);
+
+SHOW_MILLIS("Icon installer and tips...");	
 	
 #if !defined(__WIN32__) && !defined(__APPLE__)
 	if (first_run) new mxIconInstaller(true);
@@ -159,7 +186,11 @@ bool mxApplication::OnInit() {
 		if (splash) splash->ShouldClose();
 	}
 	
+SHOW_MILLIS("Loading welcome panel...");	
+	
 	LoadFilesOrWelcomePanel(cmd_path);
+	
+SHOW_MILLIS("Welcome panel done...");	
 	
 	// si estaba abriendo un proyecto el usuario puede haber cerrado la ventana antes de que el parser termine
 	if (!main_window) return false;
@@ -174,11 +205,14 @@ bool mxApplication::OnInit() {
 //	cerr<<"Initialization complete: "<<wxGetLocalTimeMillis()-start_time<<"ms"<<endl;
 //#endif
 	
+SHOW_MILLIS("Checking for error recovery files...");	
 	// recuperarse de un segfault y/o buscar actualizaciones
 	if (!mxErrorRecovering::RecoverSomething()) {
 		if (config->Init.check_for_updates) 
 			mxUpdatesChecker::BackgroundCheck();
 	}
+	
+SHOW_MILLIS("ZinjaI's initialization complete, you're clear to take off!");	
 	
 	return true;
 }

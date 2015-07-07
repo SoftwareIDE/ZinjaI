@@ -12,13 +12,14 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=src
+current_source=src/mxFlowCanvas.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
 cursor=187:21
 [source]
 path=src/ConfigManager.cpp
-cursor=621:1
+cursor=47:8
 [source]
 path=src/mxMainWindowTools.cpp
 cursor=675:1
@@ -34,10 +35,10 @@ path=src/mxHidenPanel.cpp
 cursor=121:15
 [source]
 path=src/mxMainWindow.cpp
-cursor=4014:50
-breakpoint=850
+cursor=130:0
+breakpoint=863
 breakpoint_annotation=
-marker=1107
+marker=1120
 [source]
 path=src/DebugManager.cpp
 cursor=589:3
@@ -76,7 +77,7 @@ path=src/mxAboutWindow.cpp
 cursor=64:6
 [source]
 path=src/mxApplication.cpp
-cursor=0:0
+cursor=212:2
 [source]
 path=src/mxCompileConfigWindow.cpp
 cursor=32:88
@@ -109,7 +110,8 @@ path=src/mxHelpWindow.cpp
 cursor=60:98
 [source]
 path=src/mxFlowWindow.cpp
-cursor=54:15
+cursor=0:0
+open=true
 [source]
 path=src/mxDropTarget.cpp
 cursor=19:0
@@ -134,7 +136,7 @@ cursor=86:0
 marker=650
 [source]
 path=src/mxGotoFunctionDialog.cpp
-cursor=21:22
+cursor=21:0
 [source]
 path=src/mxGotoFileDialog.cpp
 cursor=0:24
@@ -167,10 +169,10 @@ path=src/mxBreakOptions.cpp
 cursor=94:34
 [source]
 path=src/mxOSD.cpp
-cursor=44:5
+cursor=20:15
 [source]
 path=src/mxSource.cpp
-cursor=3859:8
+cursor=380:12
 breakpoint=1625
 breakpoint_annotation=
 [source]
@@ -178,7 +180,8 @@ path=src/mxDrawClasses.cpp
 cursor=102:0
 [source]
 path=src/mxFlowCanvas.cpp
-cursor=697:15
+cursor=31:0
+open=true
 [source]
 path=src/mxArgumentsDialog.cpp
 cursor=74:20
@@ -196,10 +199,10 @@ path=src/mxSizers.cpp
 cursor=25:14
 [source]
 path=src/error_recovery.cpp
-cursor=30:21
+cursor=0:0
 [source]
 path=src/mxErrorRecovering.cpp
-cursor=0:0
+cursor=98:34
 [source]
 path=src/mxDiffWindow.cpp
 cursor=76:0
@@ -216,7 +219,7 @@ path=src/mxSplashScreen.cpp
 cursor=27:33
 [source]
 path=src/mxToolbarEditor.cpp
-cursor=44:9
+cursor=22:59
 [source]
 path=src/mxProjectGeneralConfig.cpp
 cursor=94:0
@@ -364,7 +367,7 @@ path=src/mxToolchainConfig.cpp
 cursor=44:17
 [source]
 path=src/CustomTools.cpp
-cursor=18:18
+cursor=60:12
 marker=61
 [source]
 path=src/mxCalltip.cpp
@@ -395,7 +398,9 @@ path=src/gdbParser.cpp
 cursor=0:0
 [source]
 path=src/mxGotoListDialog.cpp
-cursor=134:26
+cursor=141:26
+breakpoint=83
+breakpoint_annotation=
 [source]
 path=src/mxLizardOutput.cpp
 cursor=79:29
@@ -428,7 +433,7 @@ path=src/mxAboutWindow.h
 cursor=-1:105
 [header]
 path=src/mxApplication.h
-cursor=9:54
+cursor=5:7
 [header]
 path=src/mxCompileConfigWindow.h
 cursor=37:24
@@ -455,7 +460,7 @@ path=src/mxShareSourceWindow.h
 cursor=25:8
 [header]
 path=src/mxSource.h
-cursor=230:0
+cursor=129:33
 [header]
 path=src/mxTipsWindow.h
 cursor=11:0
@@ -503,7 +508,7 @@ path=src/mxFindDialog.h
 cursor=37:15
 [header]
 path=src/mxGotoFunctionDialog.h
-cursor=59:12
+cursor=9:48
 [header]
 path=src/mxGotoFileDialog.h
 cursor=0:0
@@ -533,7 +538,7 @@ path=src/mxBreakOptions.h
 cursor=0:0
 [header]
 path=src/mxOSD.h
-cursor=27:10
+cursor=0:0
 [header]
 path=src/mxInspectionMatrix.h
 cursor=41:13
@@ -557,10 +562,10 @@ path=src/mxSizers.h
 cursor=6:2
 [header]
 path=src/error_recovery.h
-cursor=-1:107
+cursor=22:5
 [header]
 path=src/mxErrorRecovering.h
-cursor=14:14
+cursor=0:0
 [header]
 path=src/mxDiffWindow.h
 cursor=24:12
@@ -575,7 +580,7 @@ path=src/mxSplashScreen.h
 cursor=34:19
 [header]
 path=src/mxToolbarEditor.h
-cursor=21:20
+cursor=17:44
 [header]
 path=src/mxProjectGeneralConfig.h
 cursor=23:15
@@ -713,7 +718,7 @@ path=src/enums.h
 cursor=9:13
 [header]
 path=src/SingleList.h
-cursor=84:1
+cursor=54:1
 [header]
 path=src/mxGenericHelpWindow.h
 cursor=49:34
@@ -773,7 +778,7 @@ path=src/mxRealTimeInspectionEditor.h
 cursor=14:21
 [header]
 path=src/Cpp11.h
-cursor=10:0
+cursor=0:0
 [header]
 path=src/raii.h
 cursor=88:19
@@ -826,7 +831,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=/mnt/ex/zinjai
 always_ask_args=0
-args=--last-project
+args=
 exec_method=0
 exec_script=
 env_vars=DISPLAY=:0.0
@@ -836,7 +841,7 @@ output_file=debug.lnx/zinjai.bin
 icon_file=
 manifest_file=
 compiling_extra=`wx-config --version=2.8 --unicode=no --cppflags --debug=no` -Wno-unused-local-typedefs -Wno-literal-suffix
-macros=_ZINJAI_DEBUG _INSPECTION_LOG="/mnt/rm/inspection.log"
+macros=_TIMED_INIT _ZINJAI_DEBUG _INSPECTION_LOG="/mnt/rm/inspection.log"
 warnings_level=2
 pedantic_errors=0
 std_c=

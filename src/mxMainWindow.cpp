@@ -479,6 +479,8 @@ bool PreventExecuteYieldExecuteProblem::flag=false;
 
 mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
 	
+SHOW_MILLIS("Entering mxMainWindow's constructor...");	
+	
 	
 	EXTERNAL_SOURCE=(mxSource*)this;
 	focus_source=nullptr;
@@ -499,10 +501,14 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	SetIcon(wxIcon(zinjai_xpm));
 #endif
 	
+SHOW_MILLIS("Initializing aui_manager, menues and toolbars...");	
+	
  	aui_manager.SetManagedWindow(this);
 	menu_data->CreateMenuesAndToolbars(this); 
 	CreateStatusBar(1,0);
 	status_bar->SetStatusText(LANG(MAINW_INITIALIZING,"Inicializando..."));	
+	
+SHOW_MILLIS("Initializing aui_manager, panels...");	
 
 	if (config->Init.left_panels && !config->Init.autohiding_panels) {
 		aui_manager.AddPane(CreateLeftPanels(), wxAuiPaneInfo().Name("left_panels").Left().CloseButton(true).MaximizeButton(true).Caption("Arboles").Hide());
@@ -572,6 +578,8 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 		OnViewExplorerTree(evt); // aui update
 	}
 	aui_manager.Update();
+	
+SHOW_MILLIS("Initializing parser and toolchain...");	
 
 	parser = new Parser(this);
 	code_helper->AppendIndexes(config->Help.autocomp_indexes);
@@ -586,8 +594,11 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	compiler->timer = new wxTimer(GetEventHandler(),mxID_COMPILER_TIMER);
 	find_replace_dialog = nullptr; // new mxFindDialog(this,wxID_ANY);
 	
+SHOW_MILLIS("Almost done with mxMainWindow...");	
+
 	current_after_events_action = call_after_events = nullptr;
 	after_events_timer = new wxTimer(GetEventHandler(),mxID_TIMER_AFTER_EVENTS);
+	
 	
 	SetDropTarget(new mxDropTarget(nullptr));
 	
@@ -601,6 +612,8 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	
 	Show(true); Maximize(config->Init.maximized);
+	
+SHOW_MILLIS("mxMainWindow construction finished...");	
 	
 }
 

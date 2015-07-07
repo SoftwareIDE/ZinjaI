@@ -17,8 +17,8 @@ wxBrush *mxOSD::br = nullptr;
 mxOSD *mxOSD::current_osd = nullptr;
 
 mxOSD::mxOSD(wxWindow *aparent, wxString str, int time, bool corner) 
-	: wxDialog(aparent?aparent:main_window,wxID_ANY,"",wxPoint(200,200),wxSize(400,100),
-		(aparent?wxFRAME_FLOAT_ON_PARENT:wxSTAY_ON_TOP)|wxNO_3D|wxNO_BORDER),
+	: wxDialog( aparent?aparent:main_window,wxID_ANY,"",wxPoint(200,200),wxSize(400,100),
+	            (aparent?wxFRAME_FLOAT_ON_PARENT:wxSTAY_ON_TOP)|wxNO_3D|wxNO_BORDER ),
 	timer(nullptr), parent(aparent)
 {
 	if (!font) {
