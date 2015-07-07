@@ -29,7 +29,7 @@ BEGIN_EVENT_TABLE(mxFlowCanvas, wxScrolledWindow)
 	EVT_MOTION(mxFlowCanvas::OnMouseMotion)
 END_EVENT_TABLE()
 
-mxFlowCanvas::mxFlowCanvas(wxWindow *parent, mxSource *src) : wxScrolledWindow (parent,wxID_ANY,wxDefaultPosition,wxSize(200,200)) {
+mxFlowCanvas::mxFlowCanvas(wxWindow *parent, mxSource *src) : wxScrolledWindow (parent,wxID_ANY,wxDefaultPosition,wxSize(200,200),wxFULL_REPAINT_ON_RESIZE) {
 	scale=1;
 	reference_index=0;
 	source=src;
@@ -715,6 +715,7 @@ void mxFlowCanvas::GetTextSize(wxString text, wxDC *dc, int &m_ancho, int &alto)
 }
 
 void mxFlowCanvas::OnPaint (wxPaintEvent &event) {
+	cerr<< "Paint IN...";
 	int w=GetRect().GetWidth();
 	wxPaintDC dc(this);
 	PrepareDC(dc);
@@ -727,6 +728,7 @@ void mxFlowCanvas::OnPaint (wxPaintEvent &event) {
 		Draw(dc,draw,int((w/2+(draw.izquierda-(draw.izquierda+draw.derecha)/2))/scale),FC_MARGIN_BETWEEN  /*draw.alto+FC_MARGIN_BETWEEN*/ );
 	else
 		Draw(dc,draw,draw.izquierda+FC_MARGIN_BETWEEN,FC_MARGIN_BETWEEN /*draw.alto+FC_MARGIN_BETWEEN*/ );
+	cerr<< "OUT "<<dc.GetSize().GetWidth()<<"x"<<dc.GetSize().GetHeight()<<" == "<<w<<"x?"<<endl;
 }
 
 void mxFlowCanvas::Draw(wxPaintDC &dc, draw_data &draw, int x, int y) {
