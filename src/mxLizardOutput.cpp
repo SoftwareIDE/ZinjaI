@@ -63,7 +63,7 @@ void mxLizardOutput::ParseResults (wxArrayString & results) {
 		r.Add(toInt(nextColum(s)));
 		r.Add(toInt(nextColum(s)));
 		r.Add(toInt(nextColum(s)));
-		wxString func = nextColum(s);
+		wxString func = s;
 		r.Add(func.BeforeFirst('@'));
 		r.Add(func.AfterLast('@')+":"+func.AfterFirst('@').BeforeFirst('-'));
 		functions->AddRow(r);
@@ -89,7 +89,7 @@ void mxLizardOutput::ParseResults (wxArrayString & results) {
 		r.Add(toInt(nextColum(s)));
 		r.Add(toInt(nextColum(s)));
 		r.Add(toInt(nextColum(s)));
-		r.Add(nextColum(s));
+		r.Add(s);
 		files->AddRow(r);
 		i++;
 	}

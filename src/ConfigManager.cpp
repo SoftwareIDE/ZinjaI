@@ -417,6 +417,12 @@ bool ConfigManager::Load() {
 				custom_tools[i].output_mode++;
 		}
 	}
+#ifdef __WIN32__
+	if (Init.version<20150708) {
+		cpp_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
+		c_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
+	}
+#endif
 
 	Init.autohiding_panels=Init.autohide_panels;
 	
@@ -755,8 +761,8 @@ void ConfigManager::LoadDefaults(){
 	Source.autocompTips=true;
 	Source.avoidNoNewLineWarning=true;
 
-	Running.cpp_compiler_options="-Wall -pedantic-errors -O0";
-	Running.c_compiler_options="-Wall -pedantic-errors -O0 -lm";
+	Running.cpp_compiler_options="-Wall -pedantic-errors -O0 -finput-charset=iso-8859-1 -fexec-charset=cp437";
+	Running.c_compiler_options="-Wall -pedantic-errors -O0 -lm -finput-charset=iso-8859-1 -fexec-charset=cp437";
 	Running.wait_for_key=true;
 	Running.always_ask_args=false;
 	Running.check_includes=true;
