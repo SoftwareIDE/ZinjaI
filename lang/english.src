@@ -2481,9 +2481,9 @@ Show wizard
 PREFERENCES_SIMPLE_NEW_ACTION
 Action for "New file" command
 PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS
-Extra arguments for C++ compiler
+Default extra arguments for C++ compiler
 PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS
-Extra arguments for C compiler
+Default extra arguments for C compiler
 PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING
 Wait for a key after execution ends
 PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS

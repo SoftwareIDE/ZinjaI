@@ -419,8 +419,8 @@ bool ConfigManager::Load() {
 	}
 #ifdef __WIN32__
 	if (Init.version<20150708) {
-		cpp_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
-		c_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
+		Runniung.cpp_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
+		Runniung.c_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
 	}
 #endif
 
