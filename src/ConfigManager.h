@@ -87,6 +87,7 @@ struct cfgSource {
 	bool autotextEnabled;
 	bool autocloseStuff;
 	int alignComments;
+	int edgeColumn; ///< abs(edgeColumn) es la posición de la linea gris que marca la columna 80, cuando es negativo no se muestra
 };
 
 //! Elementos de la configuración relacionados a la ejecución

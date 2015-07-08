@@ -117,6 +117,8 @@ class mxPreferenceWindow : public wxDialog {
 	wxCheckBox *source_indentPaste;
 	wxTextCtrl *source_tabWidth;
 	wxCheckBox *source_tabUseSpaces;
+	wxTextCtrl *source_edgeColumnPos;
+	wxCheckBox *source_edgeColumnCheck;
 	wxCheckBox *source_foldEnable;
 	wxCheckBox *source_whiteSpace;
 	wxCheckBox *source_lineNumber;

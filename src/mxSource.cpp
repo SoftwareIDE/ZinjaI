@@ -288,8 +288,6 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 //	SetViewEOL (false); // no mostrar fin de lineas
 //	SetIndentationGuides (true); 
 //	SetViewWhiteSpace(config_source.whiteSpace?wxSTC_WS_VISIBLEALWAYS:wxSTC_WS_INVISIBLE);
-	SetEdgeColumn (80);
-	SetEdgeMode (true?wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
 //	SetViewWhiteSpace (wxSTC_WS_INVISIBLE);
 	SetOvertype (config_source.overType);
 	config_source.wrapMode = config->Init.wrap_mode==2||(config->Init.wrap_mode==1&&!config_source.syntaxEnable);
@@ -1073,8 +1071,25 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			InsertText(pos++,">" );
 		} else if (chr=='(') { 
 			InsertText(pos++,")" );
-		} else if (chr=='{') { 
-			InsertText(pos++,"}" );
+		} else if (chr=='{') {
+			// ver si va o no además el punto y coma
+			int p_start = GetStatementStartPos(pos-2); // buscar donde empieza la declaración
+			if (GetStyleAt(p_start)==wxSTC_C_WORD && GetTextRange(p_start,p_start+8)=="template") { // si es template, saltear el template
+				int l=pos,s; char c; // auxiliares para II_*
+				p_start+=8;	II_FRONT(p_start,II_IS_NOTHING_4(p_start));
+				if (GetCharAt(p_start)=='<') {
+					int pos_close = BraceMatch(p_start);
+					if (p_start!=wxSTC_INVALID_POSITION) {
+						p_start=pos_close+1;
+						II_FRONT(p_start,II_IS_NOTHING_4(p_start));
+					}
+				}
+			}
+			if (GetStyleAt(p_start)==wxSTC_C_WORD && (
+				GetTextRange(p_start,p_start+5)=="class"
+				|| GetTextRange(p_start,p_start+6)=="struct") )
+					InsertText(pos++,"};");
+			else InsertText(pos++,"}");
 		} else if (chr=='[') { 
 			InsertText(pos++,"]" );
 		} else if (chr=='\"') { 
@@ -3198,6 +3213,8 @@ void mxSource::LoadSourceConfig() {
 	SetIndentationGuides(true);
 	SetLineNumbers();
 	SetMarginWidth (MARGIN_FOLD, config_source.foldEnable? 15: 0);
+	if (config_source.edgeColumn>0) SetEdgeColumn(config_source.edgeColumn);
+	SetEdgeMode(config_source.edgeColumn>0?wxSTC_EDGE_LINE: wxSTC_EDGE_NONE);
 }
 
 void mxSource::SetLineNumbers() {
@@ -4022,3 +4039,20 @@ void mxSource::OnMouseWheel (wxMouseEvent & event) {
 	} else
 		event.Skip();
 }
+
+int mxSource::GetStatementStartPos(int pos) {
+	char c=GetCharAt(pos); int s, l=pos; // l y s son auxiliares para II_*
+	while (pos>0 && (c!='{'&&c!='('&&c!='['&&c!='<'&&c!=';'&&c!=',')) {
+		if (c==')'||c=='}'||c==']'||c=='>') {
+			int pos_match = BraceMatch(pos);
+			if (pos_match!=wxSTC_INVALID_POSITION) 
+				pos=pos_match;
+		}
+		--pos;
+		II_BACK(pos,II_IS_NOTHING_4(pos)); // SIDE-EFFECT!! esto actualiza c
+	}
+	++pos;
+	II_FRONT(pos,II_IS_NOTHING_4(pos));
+	return pos;
+}
+

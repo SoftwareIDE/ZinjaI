@@ -227,7 +227,8 @@ wxTextCtrl *mxUT::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxBoxSizer *sizerRow = last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(15);
-	sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
+	if (!text.IsEmpty())
+		sizerRow->Add(last_label=new wxStaticText(panel, wxID_ANY, text+_T(": "), wxDefaultPosition, wxDefaultSize, 0), sizers->Center);
 	sizerRow->Add(textctrl, sizers->Exp1);
 	sizer->Add(sizerRow,sizers->BA5_Exp0);
 	textctrl->SetValue(wxString::Format(_T("%d"), value));

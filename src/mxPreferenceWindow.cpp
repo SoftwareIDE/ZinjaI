@@ -420,7 +420,7 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
 
 wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	
-	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
 	wxBoxSizer *colours_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -438,9 +438,17 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	source_whiteSpace = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_SHOW_EOF_AND_WHITE_SPACES,"Mostrar espacios y caracteres de fin de linea"),config->Source.whiteSpace);
 	source_lineNumber = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_SHOW_LINE_NUMBERS,"Mostrar numeros de linea"),config->Source.lineNumber);
 	source_foldEnable = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_ENABLE_CODE_FOLDING,"Habilitar plegado de código"),config->Source.foldEnable);
-	source_tabWidth = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_TAB_WIDTH,"Ancho del tabulado"),config->Source.tabWidth);
-	source_tabUseSpaces = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_SPACES_INTEAD_TABS,"Colocar espacios en lugar de tabs"),config->Source.tabUseSpaces);
-
+	
+	wxBoxSizer *tabs_sizer = new wxBoxSizer(wxHORIZONTAL);
+	source_tabWidth = mxUT::AddTextCtrl(tabs_sizer,panel,LANG(PREFERENCES_STYLE_TAB_WIDTH,"Ancho del tabulado"),config->Source.tabWidth);
+	source_tabUseSpaces = mxUT::AddCheckBox(tabs_sizer,panel,LANG(PREFERENCES_STYLE_SPACES_INTEAD_TABS,"Colocar espacios en lugar de tabs"),config->Source.tabUseSpaces);
+	sizer->Add(tabs_sizer,sizers->Exp0);
+	
+	wxBoxSizer *edge_sizer = new wxBoxSizer(wxHORIZONTAL);
+	source_edgeColumnCheck = mxUT::AddCheckBox(edge_sizer,panel,LANG(PREFERENCES_STYLE_EDGE_COLUM,"Mostrar linea guía en la columna"),config->Source.edgeColumn>0);
+	source_edgeColumnPos = mxUT::AddTextCtrl(edge_sizer,panel,"",abs(config->Source.edgeColumn),false);
+	sizer->Add(edge_sizer,sizers->Exp0);
+	
 	class mxFontEnumerator: public wxFontEnumerator {
 		wxArrayString *array;
 	public:
@@ -454,8 +462,12 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	};
 	wxArrayString fonts; mxFontEnumerator f(fonts); fonts.Sort(); int def_font=fonts.Index(config->Styles.font_name,false); if (def_font==wxNOT_FOUND) def_font=-1;
 	styles_font_name = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_STYLE_FONT_NAME,"Fuente para el código"),fonts,def_font,mxID_PREFERENCES_FONTNAME);
-	styles_font_size = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_SCREEN_FONT_SIZE,"Tamaño de la fuente en pantalla"),config->Styles.font_size,false,mxID_PREFERENCES_FONTSIZE);
-	styles_print_size = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_STYLE_PRINTING_FONT_SIZE,"Tamaño de la fuente para impresion"),config->Styles.print_size);
+	
+	wxBoxSizer *fonts_sizer = new wxBoxSizer(wxHORIZONTAL);
+	styles_font_size = mxUT::AddTextCtrl(fonts_sizer,panel,LANG(PREFERENCES_STYLE_SCREEN_FONT_SIZE,"Tamaño de la fuente en pantalla"),config->Styles.font_size,false,mxID_PREFERENCES_FONTSIZE);
+	styles_print_size = mxUT::AddTextCtrl(fonts_sizer,panel,LANG(PREFERENCES_STYLE_PRINTING_FONT_SIZE,"para impresion"),config->Styles.print_size);
+	sizer->Add(fonts_sizer,sizers->Exp0);
+	
 	init_autohide_menus_fs = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_HIDE_MENUS_ON_FULLSCREEN,"Ocultar barra de menues al pasar a pantalla completa"),config->Init.autohide_menus_fs);
 	init_autohide_toolbars_fs = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_HIDE_TOOLBARS_ON_FULLSCREEN,"Ocultar barras de herramientas al pasar a pantalla completa"),config->Init.autohide_toolbars_fs);
 	init_autohide_panels_fs = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STYLE_HIDE_PANELS_ON_FULLSCREEN,"Ocultar paneles al pasar a pantalla completa"),config->Init.autohide_panels_fs);
@@ -684,10 +696,10 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 #endif
 	wxSetEnv("LANG",(config->Init.lang_es?"es_ES":"en_US"));
 	config->Init.save_project = init_save_project->GetValue();
-	init_history_len->GetValue().ToLong(&l); config->Init.history_len=l;
+	if (init_history_len->GetValue().ToLong(&l)) config->Init.history_len=l;
 	if (config->Init.history_len>30) config->Init.history_len=30;
 	else if (config->Init.history_len<5) config->Init.history_len=5;
-	init_max_jobs->GetValue().ToLong(&l); config->Init.max_jobs=l;
+	if (init_max_jobs->GetValue().ToLong(&l)) config->Init.max_jobs=l;
 	if (config->Init.max_jobs<1) config->Init.max_jobs=1;
 	config->Init.autohide_panels_fs = init_autohide_panels_fs->GetValue();
 	config->Init.autohide_toolbars_fs = init_autohide_toolbars_fs->GetValue();
@@ -720,8 +732,10 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Files.doxygen_command = files_doxygen_command->GetValue();
 	config->Files.project_folder = files_project_folder->GetValue();
 	config->Source.syntaxEnable = source_syntaxEnable->GetValue();
-	source_tabWidth->GetValue().ToLong(&l); config->Source.tabWidth=l;
+	if (source_tabWidth->GetValue().ToLong(&l)) config->Source.tabWidth=l;
 	config->Source.tabUseSpaces = source_tabUseSpaces->GetValue();
+	if (source_edgeColumnPos->GetValue().ToLong(&l)) config->Source.edgeColumn=l;
+	if (!source_edgeColumnCheck->GetValue()) config->Source.edgeColumn = -config->Source.edgeColumn;
 	config->Source.foldEnable = source_foldEnable->GetValue();
 	config->Source.bracketInsertion = (source_smartIndent->GetValue() && source_bracketInsertion->GetValue());
 	config->Source.smartIndent = (source_smartIndent->GetValue() && source_syntaxEnable->GetValue());
@@ -759,8 +773,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 		code_helper->ReloadIndexes(autocomp_indexes);
 	}
 	
-	styles_print_size->GetValue().ToLong(&l); config->Styles.print_size=l;
-	styles_font_size->GetValue().ToLong(&l); config->Styles.font_size=l;
+	if (styles_print_size->GetValue().ToLong(&l)) config->Styles.print_size=l;
+	if (styles_font_size->GetValue().ToLong(&l)) config->Styles.font_size=l;
 	config->Styles.font_name=styles_font_name->GetValue();
 //#ifdef __WIN32__
 //	config->Files.mingw_dir = files_mingw_dir->GetValue();
@@ -1199,6 +1213,8 @@ void mxPreferenceWindow::ResetChanges() {
 	source_foldEnable->SetValue(config->Source.foldEnable);
 	source_tabWidth->SetValue(wxString()<<config->Source.tabWidth);
 	source_tabUseSpaces->SetValue(config->Source.tabUseSpaces);
+	source_edgeColumnCheck->SetValue(config->Source.edgeColumn>0);
+	source_edgeColumnPos->SetValue(wxString()<<abs(config->Source.edgeColumn));
 	styles_print_size->SetValue(wxString()<<int(config->Styles.print_size));
 	styles_font_size->SetValue(wxString()<<int(config->Styles.font_size));
 	styles_font_name->SetValue(config->Styles.font_name); 

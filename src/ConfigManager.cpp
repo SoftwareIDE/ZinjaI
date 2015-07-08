@@ -162,6 +162,7 @@ bool ConfigManager::Load() {
 				
 			} else if (section=="Source") {
 				CFG_INT_READ_DN("tabWidth",Source.tabWidth);
+				else CFG_INT_READ_DN("edgeColumn",Source.edgeColumn);
 				else CFG_INT_READ_DN("alignComments",Source.alignComments);
 				else CFG_BOOL_READ_DN("tabUseSpaces",Source.tabUseSpaces);
 				else CFG_BOOL_READ_DN("indentPaste",Source.indentPaste);
@@ -542,6 +543,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("autocloseStuff",Source.autocloseStuff);
 	CFG_GENERIC_WRITE_DN("autoCompletion",Source.autoCompletion);
 	CFG_BOOL_WRITE_DN("avoidNoNewLineWarning",Source.avoidNoNewLineWarning);
+	CFG_GENERIC_WRITE_DN("edgeColumn",Source.edgeColumn);
 	CFG_GENERIC_WRITE_DN("alignComments",Source.alignComments);
 	CFG_GENERIC_WRITE_DN("tabWidth",Source.tabWidth);
 	CFG_BOOL_WRITE_DN("tabUseSpaces",Source.tabUseSpaces);
@@ -743,6 +745,7 @@ void ConfigManager::LoadDefaults(){
 	Source.autocloseStuff=false;
 	Source.autotextEnabled=true;
 	Source.toolTips=true;
+	Source.edgeColumn=80;
 	Source.alignComments=80;
 	Source.tabWidth=4;
 	Source.tabUseSpaces=false;

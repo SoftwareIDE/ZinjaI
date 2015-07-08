@@ -250,6 +250,7 @@ public:
 	void GotoDiffChange(bool forward);
 	
 	bool AddInclude(wxString header);
+	int GetStatementStartPos(int pos); ///< given an absolute text position, finds where that statements starts (skkipping comments and indentation)
 	wxString FindTypeOf(wxString &key, int &pos); // en pos retorna los asteriscos y en key el scope de la funcion
 	wxString FindTypeOf(int pos, int &dims, bool first_call=true);
 	wxString FindScope(int pos, wxString *args=nullptr, bool full_scope=false, int *scope_start=nullptr);

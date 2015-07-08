@@ -857,7 +857,7 @@ Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?
 OPENSHARED_ERROR_GETTING_SOURCE
 Ha ocurrido un error al intentar obtener el fuente. Pruebe actualizar la lista de fuentes compartidos.
 ERRORRECOVERY_OOPS_MESSAGE
-Ha ocurrido un error grave y ZinjaI se cerrara.\nPor suerte, se han podido guardar todos sus\narchivos y proyectos para recuperarlos la proxima\nproxima vez que inicie el entorno.
+Ha ocurrido un error grave y ZinjaI se cerrara.\nPor suerte, se han podido guardar todos sus\narchivos y proyectos para recuperarlos la\nproxima vez que inicie el entorno.
 ABOUT_CAPTION
 Acerca de...
 ABOUT_CLOSE
@@ -2526,6 +2526,8 @@ PREFERENCES_STYLE_TAB_WIDTH
 Ancho del tabulado
 PREFERENCES_STYLE_SPACES_INTEAD_TABS
 Colocar espacios en lugar de tabs
+PREFERENCES_STYLE_EDGE_COLUM
+Mostrar linea guía en la columna 
 PREFERENCES_STYLE_FONT_NAME
 Fuente para el código
 PREFERENCES_STYLE_SCREEN_FONT_SIZE
