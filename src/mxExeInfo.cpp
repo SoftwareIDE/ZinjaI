@@ -121,6 +121,12 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	
 	wxString ldd = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar esta informacion mientras el parser esta analizando fuentes");
 	
+#if !defined(_WIN32) && !defined(__WIN32__)
+	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,_T("ldd..."),ldd);
+#else
+	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,_T("lsdeps..."),ldd);
+#endif
+	
 	panel->SetSizer(sizer);
 	return panel;
 }
@@ -160,7 +166,7 @@ void mxExeInfo::OnTimer(wxTimerEvent &evt) {
 
 void mxExeInfo::UpdateTypeAndDeps ( ) {
 	wxString ldd_cmd = OSDEP_VAL( DIR_PLUS_FILE(config->zinjai_bin_dir,"lsdeps.exe"), "ldd" );
-	ldd_ctrl->SetValue(ldd_cmd+" "+mxUT::Quotize(fname.GetFullPath()));
+	ldd_ctrl->SetValue(mxUT::GetOutput(ldd_cmd+" "+mxUT::Quotize(fname.GetFullPath()),true,false));
 	text_type->SetValue(mxUT::GetFileTypeDescription(fname.GetFullPath()));
 }
 
