@@ -8,7 +8,7 @@
 #include <dlfcn.h>
 using namespace std;
 
-const char *binname="zinjai.bin";
+const char *binname="bin/zinjai.bin";
 
 const char *my_getenv(const char *varname) {
 	char empty[]="";
