@@ -1239,20 +1239,18 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
 						return;
 					} else {
-						if (c!='}' && LineFromPosition(e)==cl) {
-							if ( (e=BraceMatch(p))==wxSTC_INVALID_POSITION || GetLineIndentation(LineFromPosition(e))<GetLineIndentation(cl-1)){
-								InsertText(PositionFromLine(cl+1),"}\n");
-								SetLineIndentation(cl+1,GetLineIndentation(cl-1));
-								// sacar la llave si ya estaba al final de la linea, porque la acabamos de agregar abajo
-								int pf = GetLineEndPosition(cl)-1; int opf=pf+1;
-								II_BACK(pf,II_SHOULD_IGNORE(pf)||II_IS_2(pf,' ','\t'));
-								if (GetCharAt(pf)=='}') {
-									pf--;
-									II_BACK(pf,II_SHOULD_IGNORE(pf)||II_IS_2(pf,' ','\t'));
-									SetTargetStart(pf+1);
-									SetTargetEnd(opf);
+						if (c!='}' && LineFromPosition(e)==cl) { // ver si corresponde mover/agregar la llave que cierra
+							if ( (e=BraceMatch(p))==wxSTC_INVALID_POSITION || GetLineIndentation(cl)<GetLineIndentation(cl-1)){
+								if ( e!=wxSTC_INVALID_POSITION && LineFromPosition(e)==cl ) {
+									int line_end = GetLineEndPosition(cl);
+									wxString s_aux = GetTextRange(e,line_end);
+									SetTargetStart(e); SetTargetEnd(line_end); 
 									ReplaceTarget("");
+									InsertText(PositionFromLine(cl+1),s_aux+"\n");
+								} else {
+									InsertText(PositionFromLine(cl+1),"}\n");
 								}
+								SetLineIndentation(cl+1,GetLineIndentation(cl-1));
 							}
 							SetLineIndentation(cl,GetLineIndentation(cl-1)+config_source.tabWidth);
 							wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
