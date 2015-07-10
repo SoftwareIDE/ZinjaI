@@ -53,9 +53,9 @@ mxExeInfo::mxExeInfo(wxWindow *parent, mxSource *src) : wxDialog(parent, wxID_AN
 	if (!parser->working) {
 		wait_for_parser = nullptr;
 		UpdateTypeAndDeps();
-	} else if (!wait_for_parser) {
+	} else {
 		wait_for_parser = new wxTimer(GetEventHandler(),wxID_ANY); 
-		wait_for_parser->Start(1000,true);
+		wait_for_parser->Start(1000,false);
 	}
 	
 	mySizer->Add(notebook,sizers->Exp1);
@@ -122,9 +122,9 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	wxString ldd = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar esta informacion mientras el parser esta analizando fuentes");
 	
 #if !defined(_WIN32) && !defined(__WIN32__)
-	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,_T("ldd..."),ldd);
+	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,_T("ldd"),ldd);
 #else
-	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,_T("lsdeps..."),ldd);
+	ldd_ctrl = mxUT::AddLongTextCtrl(sizer,panel,_T("lsdeps"),ldd);
 #endif
 	
 	panel->SetSizer(sizer);
@@ -160,8 +160,8 @@ void mxExeInfo::OnHelpButton(wxCommandEvent &event){
 }
 
 void mxExeInfo::OnTimer(wxTimerEvent &evt) {
-	if (parser->working) { wait_for_parser->Start(1000,true); return; }
-	UpdateTypeAndDeps();
+	if (parser->working) { return; }
+	wait_for_parser->Stop();  UpdateTypeAndDeps();
 }
 
 void mxExeInfo::UpdateTypeAndDeps ( ) {
