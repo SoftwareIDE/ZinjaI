@@ -774,8 +774,9 @@ void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
 		mxSource *source = CURRENT_SOURCE;
 		wxString the_one;
 		if (source->sin_titulo || !(the_one=mxUT::GetComplementaryFile(source->source_filename,FT_SOURCE)).Len()) {
-			mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_HEADER_FOUND,"No se pudo determinar el archivo de cabecera asociado."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
-			return;
+//			mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_HEADER_FOUND,"No se pudo determinar el archivo de cabecera asociado."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+//			return;
+			the_one = source->GetFullPath();
 		}
 		mxSource *other=IsOpen(the_one);
 		parser->ParseSource(source);
