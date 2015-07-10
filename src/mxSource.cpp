@@ -1954,7 +1954,7 @@ bool mxSource::AddInclude(wxString header) {
 //		GotoPos(lp);
 //	}
 	
-//	wxYield(); // sin esto no se ve el calltip (posiblemente un problema con el evento OnUpdateUI
+	wxYield(); // sin esto no se ve el calltip (posiblemente un problema con el evento OnUpdateUI)
 	if (!header_present /*|| (!using_namespace_std_present && header.Last()!='\"' && header.Right(3)!=_(".h>"))*/) {
 		int lse = GetEndStyled();
 		StartStyling(0,wxSTC_INDICS_MASK);
