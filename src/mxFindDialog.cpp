@@ -667,14 +667,15 @@ int mxFindDialog::FindInSource(mxSource *source,wxString &res) {
 }
 
 bool mxFindDialog::FindInProject(eFileType where) {
-	last_flags = wxSTC_FIND_MATCHCASE;
 	wxArrayString array;
 	project->GetFileList(array,where);
 	wxString res;
 	int p,count=0;
-	last_flags = check_case->GetValue()?wxSTC_FIND_MATCHCASE:0;
+	last_flags = 
+		(check_case->GetValue()?wxSTC_FIND_MATCHCASE:0) |
+		(check_word->GetValue()?wxSTC_FIND_WHOLEWORD:0) ;
 	wxString what=last_search;
-	if (!check_case->GetValue()) what.MakeUpper();
+	if (!(last_flags&wxSTC_FIND_MATCHCASE)) what.MakeUpper();
 	for (unsigned int i=0;i<array.GetCount();i++) {
 		mxSource *src=main_window->IsOpen(array[i]);
 		if (src) {
@@ -684,12 +685,19 @@ bool mxFindDialog::FindInProject(eFileType where) {
 			if (fil.Exists()) {
 				fil.Open();
 				int l=0;
-				for ( wxString str_orig, str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine()) {
+				for ( wxString str_orig, str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 					int ac=0; str_orig=str;
-					if (!check_case->GetValue()) str.MakeUpper();
+					if (!(last_flags&wxSTC_FIND_MATCHCASE)) str.MakeUpper();
 					while (wxNOT_FOUND!=(p=str.Find(what))) {
-						count++;
-						res<<GetHtmlEntry(array[i],l,ac+p,what.Len(),wxFileName(array[i]).GetFullName(),str_orig);
+						bool is_ok=true;
+						if (last_flags&wxSTC_FIND_WHOLEWORD) {
+							is_ok = is_ok && !(p>0&&(mxSource::IsKeywordChar(str[p-1])));
+							is_ok = is_ok && !(p+what.Len()<str.Len()&&(mxSource::IsKeywordChar(str[p+what.Len()])));
+						}
+						if (is_ok) {
+							count++;
+							res<<GetHtmlEntry(array[i],l,ac+p,what.Len(),wxFileName(array[i]).GetFullName(),str_orig);
+						}
 						int todel=p+what.Len(); ac+=todel; str.Remove(0,todel);
 					}
 					l++;
@@ -707,7 +715,7 @@ void mxFindDialog::OnComboScope(wxCommandEvent &event) {
 //		check_case->Enable(false);
 		check_regexp->Enable(false);
 		check_start->Enable(false);
-		check_word->Enable(false);
+//		check_word->Enable(false);
 		check_nocomments->Enable(false);
 		replace_button->Enable(false);
 		replace_all_button->Enable(false);
@@ -715,7 +723,7 @@ void mxFindDialog::OnComboScope(wxCommandEvent &event) {
 //		check_case->Enable(true);
 		check_regexp->Enable(true);
 		check_start->Enable(true);
-		check_word->Enable(true);
+//		check_word->Enable(true);
 		check_nocomments->Enable(true);
 		replace_button->Enable(false);
 		replace_all_button->Enable(false);
@@ -723,7 +731,7 @@ void mxFindDialog::OnComboScope(wxCommandEvent &event) {
 //		check_case->Enable(true);
 		check_regexp->Enable(true);
 		check_start->Enable(true);
-		check_word->Enable(true);
+//		check_word->Enable(true);
 		check_nocomments->Enable(true);
 		replace_button->Enable(true);
 		replace_all_button->Enable(true);
@@ -747,3 +755,14 @@ void mxFindDialog::MyHide() {
 	if (config->Init.autohiding_panels) main_window->Raise();
 	main_window->FocusToSource();
 }
+
+void mxFindDialog::FindAll (const wxString & what) {
+	combo_find->SetValue(what);
+	combo_scope->SetSelection(project?6:2);
+	check_case->SetValue(true);
+	check_regexp->SetValue(false);
+	check_word->SetValue(true);
+	wxCommandEvent evt;
+	OnFindNextButton(evt);
+}
+

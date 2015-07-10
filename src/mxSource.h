@@ -202,7 +202,9 @@ public:
 	void OnSetFocus (wxFocusEvent &event);
 	
 	void OnHighLightWord(wxCommandEvent &event);
+	void OnFindKeyword(wxCommandEvent &event);
 	void OnDoubleClick(wxStyledTextEvent &event);
+	static bool IsKeywordChar(char c);
 	
 	void OnKeyDown(wxKeyEvent &evt);
 

@@ -342,6 +342,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	
 	menues[mnHIDDEN].Init("hidden",LANG(MENUITEM_GLOBAL_SHORTCUTS,"Otros atajos")); {
 		AddMenuItem(mnHIDDEN, myMenuItem("highlight_keyword",mxID_EDIT_HIGHLIGHT_WORD,LANG(MENUITEM_HIDDEN_HIGHLIGHT_KEYWORD,"Resaltar identificador")));
+		AddMenuItem(mnHIDDEN, myMenuItem("find_keyword",mxID_EDIT_FIND_KEYWORD,LANG(MENUITEM_HIDDEN_FIND_KEYWORD,"Buscar identificador en todos los archivos")));
 		AddMenuItem(mnHIDDEN, myMenuItem("lowercase",mxID_EDIT_MAKE_LOWERCASE,LANG(MENUITEM_HIDDEN_MAKE_LOWERCASE,"Pasar a minúsuculas")).ShortCut("Ctrl+U"));
 		AddMenuItem(mnHIDDEN, myMenuItem("uppercase",mxID_EDIT_MAKE_UPPERCASE,LANG(MENUITEM_HIDDEN_MAKE_UPPERCASE,"Pasar a mayúsuculas")).ShortCut("Ctrl+Shift+U"));
 		AddMenuItem(mnHIDDEN, myMenuItem("update_symbols",mxID_VIEW_UPDATE_SYMBOLS,LANG(MENUITEM_HIDDEN_UPDATE_SYMBOLS,"Actualizar arbol de simbolos")).ShortCut("F2"));

@@ -40,6 +40,7 @@ public:
 	void OnCancel(wxCommandEvent &event);
 	void ShowFind(mxSource *source);
 	void ShowReplace(mxSource *source);
+	void FindAll(const wxString &what);
 	bool MultifindAux(int count, const wxString &res); ///< función auxiliar para presentar los resultados de FindInSources y FindInProject
 	void OnFindNextButton(wxCommandEvent &event);
 	void OnFindPrevButton(wxCommandEvent &event);

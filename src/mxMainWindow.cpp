@@ -198,6 +198,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EDIT_INSERT_HEADER, mxMainWindow::OnEditInsertInclude)
 	EVT_MENU(mxID_EDIT_AUTOCODE_AUTOCOMPLETE, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_FORCE_AUTOCOMPLETE, mxMainWindow::OnEdit)
+	EVT_MENU(mxID_EDIT_FIND_KEYWORD,mxMainWindow::OnEdit)
 	EVT_MENU(mxID_EDIT_RECTANGULAR_EDITION, mxMainWindow::OnEdit)
 //	EVT_MENU(mxID_EDIT_FUZZY_AUTOCOMPLETE, mxMainWindow::OnEdit)
 	EVT_MENU(mxID_NAVIGATION_HISTORY_PREV, mxMainWindow::OnNavigationHistoryPrev)
@@ -5038,5 +5039,11 @@ void mxMainWindow::CompileSource (bool force_compile, GenericAction *action) {
 
 void mxMainWindow::OnToolbarSettings (wxCommandEvent & evt) {
 	mxPreferenceWindow::ShowUp()->SetToolbarPage();
+}
+
+void mxMainWindow::FindAll (const wxString & what) {
+	if (!find_replace_dialog) find_replace_dialog = new mxFindDialog(this,wxID_ANY);
+	find_replace_dialog->FindAll(what);
+	return;
 }
 

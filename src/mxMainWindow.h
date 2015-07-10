@@ -184,7 +184,7 @@ public:
 	void OnRunRun (wxCommandEvent &event);
 	void OnRunRunOld (wxCommandEvent &event);
 	void OnRunCompile (wxCommandEvent &event);
-	void OnRunBuild (wxCommandEvent &event);
+//	void OnRunBuild (wxCommandEvent &event);
 	void OnRunCompileConfig (wxCommandEvent &event);
 	void OnToolsExportMakefile (wxCommandEvent &event);
 	void OnRunClean (wxCommandEvent &event);
@@ -465,6 +465,7 @@ public:
 	int untitled_count;
 
 	mxFindDialog *find_replace_dialog;
+	void FindAll(const wxString &what);
 
 	//! cambia el titulo de la ventana
 	void SetOpenedFileName(wxString name);

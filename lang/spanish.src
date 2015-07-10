@@ -622,6 +622,8 @@ MENUITEM_GLOBAL_SHORTCUTS
 Otros atajos
 MENUITEM_HIDDEN_HIGHLIGHT_KEYWORD
 Resaltar identificador
+MENUITEM_HIDDEN_FIND_KEYWORD
+Buscar identificador en todos los archivos
 MENUITEM_HIDDEN_MAKE_LOWERCASE
 Pasar a minúsuculas
 MENUITEM_HIDDEN_MAKE_UPPERCASE
@@ -2481,9 +2483,9 @@ Mostrar Asistente
 PREFERENCES_SIMPLE_NEW_ACTION
 Accion para Nuevo Archivo
 PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS
-Parámetros adicionales para el compilador C++
+Parámetros adicionales por defecto para el compilador C++
 PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS
-Parámetros adicionales para el compilador C
+Parámetros adicionales por defecto para el compilador C
 PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING
 Esperar una tecla luego de la ejecución
 PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
@@ -2527,13 +2529,13 @@ Ancho del tabulado
 PREFERENCES_STYLE_SPACES_INTEAD_TABS
 Colocar espacios en lugar de tabs
 PREFERENCES_STYLE_EDGE_COLUM
-Mostrar linea guía en la columna 
+Mostrar linea guía en la columna
 PREFERENCES_STYLE_FONT_NAME
 Fuente para el código
 PREFERENCES_STYLE_SCREEN_FONT_SIZE
 Tamaño de la fuente en pantalla
 PREFERENCES_STYLE_PRINTING_FONT_SIZE
-Tamaño de la fuente para impresion
+para impresion
 PREFERENCES_STYLE_HIDE_MENUS_ON_FULLSCREEN
 Ocultar barra de menues al pasar a pantalla completa
 PREFERENCES_STYLE_HIDE_TOOLBARS_ON_FULLSCREEN
@@ -2942,6 +2944,8 @@ SOURCE_POPUP_INSERT_INCLUDE
 Insertar #incl&ude correspondiente a \"<{1}>\"
 SOURCE_POPUP_HIGHLIGHT_WORD
 Resaltar identificador \"<{1}>\"
+SOURCE_POPUP_FIND_KEYWORD
+Buscar \"<{1}>\" en todos los archivos
 SOURCE_POPUP_OPEN_SELECTED
 &Abrir \"<{1}>\"
 SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION

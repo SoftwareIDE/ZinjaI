@@ -174,6 +174,7 @@ BEGIN_EVENT_TABLE (mxSource, wxStyledTextCtrl)
 	EVT_MENU (mxID_EDIT_BRACEMATCH, mxSource::OnBraceMatch)
 	EVT_MENU (mxID_EDIT_INDENT, mxSource::OnIndentSelection)
 	EVT_MENU (mxID_EDIT_HIGHLIGHT_WORD, mxSource::OnHighLightWord)
+	EVT_MENU (mxID_EDIT_FIND_KEYWORD, mxSource::OnFindKeyword)
 	EVT_MENU (mxID_EDIT_MAKE_LOWERCASE, mxSource::OnEditMakeLowerCase)
 	EVT_MENU (mxID_EDIT_MAKE_UPPERCASE, mxSource::OnEditMakeUpperCase)
 	// view
@@ -1208,12 +1209,6 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				int op=p; p=BraceMatch(p);
 				if (p!=wxSTC_INVALID_POSITION) {
 					SetLineIndentation(cl,GetLineIndentation(cl-1));
-//				if (cl>0){
-//					p = PositionFromLine(cl-1);
-//					II_FRONT_NC (p,II_IS_2(p,' ','\t'));
-//					if (c=='\r' || c=='\n')  // si agregar un nivel al indentado de la linea anterior
-//						SetLineIndentation(cl-1,GetLineIndentation(cl)+config_source.tabWidth);
-//				}
 					if (LineFromPosition(p)==cl-1) { // si estaban las dos llaves juntas, agregar un enter mas para quedar escribiendo entre medio
 						while (++p<op&&(II_IS_NOTHING_4(p)));
 						if (p==op) {
@@ -1240,6 +1235,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						return;
 					} else {
 						if (c!='}' && LineFromPosition(e)==cl) { // ver si corresponde mover/agregar la llave que cierra
+							UndoActionGuard ug(this);
 							if ( (e=BraceMatch(p))==wxSTC_INVALID_POSITION || GetLineIndentation(cl)<GetLineIndentation(cl-1)){
 								if ( e!=wxSTC_INVALID_POSITION && LineFromPosition(e)==cl ) {
 									int line_end = GetLineEndPosition(cl);
@@ -1562,9 +1558,6 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 
 void mxSource::SetModify (bool modif) {
 	if (modif) {
-//		SetTargetStart(0); 
-//		SetTargetEnd(1);
-//		ReplaceTarget(GetTextRange(0,1));
 		int p=GetLength()?GetSelectionStart()-1:0;
 		if (GetLength()&&p<1) p=1;
 		SetTargetStart(p); 
@@ -1592,8 +1585,6 @@ void mxSource::MarkError (int line, bool focus) {
 			LineScroll(0,line-l0-nl/2+1);
 		}
 	}
-//	main_window->notebook_sources->SetFocus();
-//	this->SetFocus();
 }
 
 void mxSource::MoveCursorTo(long pos, bool focus) {
@@ -1606,16 +1597,9 @@ void mxSource::OnIndentSelection(wxCommandEvent &event) {
 	main_window->SetStatusText(wxString("Indentando..."));
 	int min = LineFromPosition(GetSelectionStart());
 	int max = LineFromPosition(GetSelectionEnd());
-//  int pfl = PositionFromLine(min);
-//  int dind = ss-GetLineIndentPosition(min);
 	Indent(min,max);
 	if (min!=max)
 		SetSelection(PositionFromLine(min),GetLineEndPosition(max));
-//  else {
-//    int sel = GetLineIndentPosition(min)+dind;
-//    if (sel<pfl) sel=pfl;
-//    SetSelection(sel,sel);
-//  }
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 }
 
@@ -2043,13 +2027,16 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 
 	wxMenu menu("");
 	
-	int p=GetCurrentPos(); int s=GetStyleAt(p);
+	int p=GetCurrentPos(); int s=GetStyleAt(GetSelectionEnd()-1);
 	wxString key=GetCurrentKeyword(p);
 	if (key.Len()!=0) {
 		if (!key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
 		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
-		if (s==wxSTC_C_IDENTIFIER) mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
-		if (s==wxSTC_C_IDENTIFIER) menu.Append(mxID_EDIT_HIGHLIGHT_WORD, LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
+		if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS) {
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_HIGHLIGHT_WORD),LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_FIND_KEYWORD),LANG1(SOURCE_POPUP_FIND_KEYWORD,"Buscar \"<{1}>\" en todos los archivos",key));
+		}
 	}
 	
 	if (s==wxSTC_C_PREPROCESSOR || s==wxSTC_C_STRING) {
@@ -3779,12 +3766,17 @@ void mxSource::MyBraceHighLight (int b1, int b2) {
 	Refresh(false);
 }
 
+void mxSource::OnFindKeyword(wxCommandEvent &event) {
+	main_window->FindAll(GetCurrentKeyword());
+}
+
 void mxSource::OnHighLightWord (wxCommandEvent & event) {
-	int pos=GetCurrentPos();
-	int s=WordStartPosition(pos,true);
-	int e=WordEndPosition(pos,true);
-	wxString key = GetTextRange(s,e);
-	SetKeyWords(3,key);
+//	int pos=GetCurrentPos();
+//	int s=WordStartPosition(pos,true);
+//	int e=WordEndPosition(pos,true);
+//	wxString key = GetTextRange(s,e);
+//	SetKeyWords(3,key);
+	SetKeyWords(3,GetCurrentKeyword());
 	Colourise(0,GetLength());
 }
 
@@ -4052,5 +4044,9 @@ int mxSource::GetStatementStartPos(int pos) {
 	++pos;
 	II_FRONT(pos,II_IS_NOTHING_4(pos));
 	return pos;
+}
+
+bool mxSource::IsKeywordChar (char c) {
+	return II_IS_KEYWORD_CHAR(c);
 }
 

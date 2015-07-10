@@ -6,13 +6,13 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
-</UL><BR><B>Relase 201507XX</B><BR><UL>
+</UL><BR><B>Relase 20150712</B><BR><UL>
 	<LI>New: Se integró una nueva herramienta externa (lizard) en el menú de herramientas, que mide la complejidad (complejidad ciclomática y lineas de código) de archivos y funciones.</LI>
+	<LI>Imp: Se agregaró una nueva opción al menú contextual que aparece al hacer click derecho sobre un identificador en el código, que permite buscar todas las ocurrencias de dicho identificador en todos los archivos abiertos o del proyecto.</LI>
 	<LI>Imp: Se agregaron argumentos de compilación por defecto en programas simples en Windows para corregir la codificación de caracteres ("-finput-charset=iso-8859-1 -fexec-charset=cp437").</LI>
 	<LI>Imp: Se puede ocultar o mover desde el cuadro de preferencias la linea guía que marca la columna 80 en el código fuente.</LI>
 	<LI>Imp: Luego cerrar automáticamente una llave, si la llave pertenecía a la declaración de una clase o estructura, se agrega también un punto y coma.</LI>
 	<LI>Imp: Se reorganizó la estructura de directorios de ZinjaI para agrupar todos los ejecutables auxiliares en dos carpeta (una con los propios de ZinjaI, otra con herramientas de terceros), y permitir además una mejor separación entre aquellos que deberían cambiar con el toolchain y aquellos que no.</LI>
-	<LI>Imp: Se agregaron argumentos de compilación adicionales en la configuración del toolchain de mingw32 para corregir las diferencias de charset entre el fuente y la consola de windows.</LI>
 	<LI>Imp: Se mejoró la velocidad con la que se prepara la compilación de un proyecto cuando una gran cantidad de fuentes y cabeceras.</LI>
 	<LI>Imp: En las opciones generales de un proyecto se pueden definir las extensiones a usar por defecto al crear nuevos archivos fuentes y cabeceras.</LI>
 	<LI>Imp: Al finalizar la ejecución en depuración se respeta la configuración de ejecución para esperar una tecla antes de cerrar la terminal (solo en GNU/Linux).</LI>
