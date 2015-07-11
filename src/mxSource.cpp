@@ -1063,6 +1063,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	if (config_source.autocloseStuff) {
 		int pos=GetCurrentPos();
 		if ((chr==']'||chr==')'|| chr=='\''||chr=='}'||chr=='\"') && GetCharAt(pos)==chr) {
+			if (chr==')' && BraceMatch(pos)==calltip_brace) HideCalltip();
 			SetTargetStart(pos);
 			SetTargetEnd(pos+1);
 			ReplaceTarget(""); 
