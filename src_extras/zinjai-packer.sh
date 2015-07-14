@@ -8,10 +8,9 @@ if [ "$1" = "prepare" ]; then
   mkdir zinjai/colours
   mkdir zinjai/guihelp
 #   mkdir zinjai/cppreference
-  mkdir zinjai/graphviz
-  mkdir zinjai/graphviz/bin
-  mkdir zinjai/graphviz/lib
-  mkdir zinjai/graphviz/gprof2dot
+  mkdir zinjai/third
+  mkdir zinjai/third/gprof2dot
+  mkdir zinjai/third/lizard
   mkdir zinjai/parser
   mkdir zinjai/parser/common
   mkdir zinjai/parser/cpp
@@ -34,8 +33,6 @@ if [ "$1" = "prepare" ]; then
   mkdir zinjai/lsdeps
   mkdir zinjai/libs
 
-  echo "remember to copy manually graphviz binaries and deps, and populate libs"
-
 elif [ "$1" = "update" ]; then
 
   scp $2/zinjai/readme.txt				zinjai/
@@ -44,6 +41,8 @@ elif [ "$1" = "update" ]; then
   scp $2/zinjai/Makefile				zinjai/
 
   scp $2/zinjai/toolchains/*				zinjai/toolchains/
+  scp $2/zinjai/third/lizard/*				zinjai/third/lizard/
+  scp $2/zinjai/third/gprof2dot/*			zinjai/third/gprof2dot/
 
   scp $2/zinjai/parser/*				zinjai/parser/
   scp $2/zinjai/parser/common/*				zinjai/parser/common/

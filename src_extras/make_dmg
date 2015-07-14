@@ -21,6 +21,10 @@ mkdir zinjai.app/Contents/Resources/colours
 cp -u /mnt/ex/zinjai/colours/* zinjai.app/Contents/Resources/colours/
 mkdir zinjai.app/Contents/Resources/guihelp
 cp -u /mnt/ex/zinjai/guihelp/* zinjai.app/Contents/Resources/guihelp/
+mkdir zinjai.app/Contents/Resources/third/lizard
+cp -u /mnt/ex/zinjai/third/lizard/* zinjai.app/Contents/Resources/third/lizard/
+mkdir zinjai.app/Contents/Resources/third/gprof2dot
+cp -u /mnt/ex/zinjai/third/gprof2dot/* zinjai.app/Contents/Resources/third/gprof2dot/
 mkdir zinjai.app/Contents/Resources/imgs
 cp -u /mnt/ex/zinjai/imgs/*.png zinjai.app/Contents/Resources/imgs/
 cp -u /mnt/ex/zinjai/imgs/*.html zinjai.app/Contents/Resources/imgs/
@@ -53,10 +57,6 @@ mkdir zinjai.app/Contents/Resources/imgs/parser/hyper
 cp -ru /mnt/ex/zinjai/parser/hyper/* zinjai.app/Contents/Resources/parser/hyper/
 mkdir zinjai.app/Contents/Resources/imgs/parser/misc
 cp -ru /mnt/ex/zinjai/parser/misc/* zinjai.app/Contents/Resources/parser/misc/
-rm -f zinjai.app/Contents/Resources/graphviz/*.bin
-rm -f zinjai.app/Contents/Resources/graphviz/bin/*
-rm -f zinjai.app/Contents/Resources/graphviz/lib/*
-rm -f zinjai.app/Contents/Resources/graphviz/lib/graphviz/*
 rm -f zinjai.app/Contents/Resources/lang/spanish.*
 rm -f zinjai.app/Contents/Resources/lang/tools/mxLangTool/mxLangTool.exe
 cp /mnt/ex/zinjai/lang/*.sgn zinjai.app/Contents/Resources/lang/
