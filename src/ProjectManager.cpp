@@ -1644,7 +1644,7 @@ long int ProjectManager::Run() {
 	// agregar los argumentos de ejecucion
 	if (active_configuration->always_ask_args) {
 		int res = mxArgumentsDialog(main_window,active_configuration->args,active_configuration->working_folder).ShowModal();
-		if (res&AD_CANCEL) return 0;
+		if (res&AD_CANCEL) { delete compile_and_run; return 0; }
 		active_configuration->working_folder = mxArgumentsDialog::last_workdir;
 		active_configuration->args = (res&AD_EMPTY) ? "" : mxArgumentsDialog::last_arguments;
 		if (res&AD_REMEMBER) active_configuration->always_ask_args=false;

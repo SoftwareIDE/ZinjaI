@@ -1809,7 +1809,8 @@ void mxMainWindow::OnRunStop (wxCommandEvent &event) {
 			next=compile_and_run->next;
 			if (compile_and_run->pid!=0 && (compile_and_run->compiling || compile_and_run->linking) && compile_and_run->process->Exists(compile_and_run->pid)) {
 				compile_and_run->killed=true;
-				wxProcess::Kill(compile_and_run->pid,wxSIGKILL,wxKILL_CHILDREN);
+				if (compile_and_run->pid!=0)
+					wxProcess::Kill(compile_and_run->pid,wxSIGKILL,wxKILL_CHILDREN);
 			}
 			compile_and_run=next;
 		}
@@ -1817,7 +1818,8 @@ void mxMainWindow::OnRunStop (wxCommandEvent &event) {
 	} else if (compiler->compile_and_run_single) {
 		compile_and_run_struct_single *compile_and_run=compiler->compile_and_run_single;;
 		compile_and_run->killed=true;
-		wxProcess::Kill(compile_and_run->pid,wxSIGKILL,wxKILL_CHILDREN);
+		if (compile_and_run->pid!=0)
+			wxProcess::Kill(compile_and_run->pid,wxSIGKILL,wxKILL_CHILDREN);
 	}
 	_menu_item(mxID_RUN_STOP)->Enable(false);
 	_menu_item(mxID_RUN_COMPILE)->Enable(true);
