@@ -1164,8 +1164,9 @@ void mxMainWindow::OnToolsDissasembleOffline (wxCommandEvent & event) {
 						out_dialog->AppendLine("",false); 
 					}
 				}
-			} else if (line.IsEmpty()) scope_name.Clear();
-			if (on_scope) out_dialog->AppendLine(line,!is_asm);
+			} else if (line.IsEmpty()) { on_scope=false; scope_name.Clear(); }
+			if (on_scope) 
+				out_dialog->AppendLine(line,!is_asm);
 		}
 		// update gui
 		aui_manager.Update();

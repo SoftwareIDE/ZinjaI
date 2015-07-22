@@ -10,6 +10,7 @@ public:
 	void AppendLine(const wxString &str);
 	void AppendLine(const wxString &str, bool start_collapsible_section);
 	void OnMarginClick(wxStyledTextEvent &e);
+	void OnMouseWheel (wxMouseEvent & event);
 	virtual bool StartCollapsibleSection(const wxString &str) { return false; }
 	virtual void AfterMarginClick() {}
 	virtual ~mxStyledOutput() {}
