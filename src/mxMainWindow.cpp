@@ -73,6 +73,7 @@
 #include "mxShortcutsDialog.h"
 #include "mxExternCompilerOutput.h"
 #include "mxBySourceCompilingOpts.h"
+#include "mxRegistersGrid.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -222,6 +223,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_PATCH, mxMainWindow::OnDebugPatch)
 	EVT_MENU(mxID_DEBUG_SAVE_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
 	EVT_MENU(mxID_DEBUG_LOAD_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
+	EVT_MENU(mxID_DEBUG_SHOW_REGISTERS, mxMainWindow::OnDebugShowRegisters)
+//	EVT_MENU(mxID_DEBUG_SHOW_ASM, mxMainWindow::OnDebugShowAsm)
 	EVT_MENU(mxID_DEBUG_SEND_SIGNAL, mxMainWindow::OnDebugSendSignal)
 	EVT_MENU(mxID_DEBUG_SET_SIGNALS, mxMainWindow::OnDebugSetSignals)
 	EVT_MENU(mxID_DEBUG_GDB_COMMAND, mxMainWindow::OnDebugGdbCommand)
@@ -491,6 +494,7 @@ SHOW_MILLIS("Entering mxMainWindow's constructor...");
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
 	untitled_count=0;
+	registers_panel=nullptr;
 	valgrind_panel=nullptr; 
 	beginner_panel=nullptr;
 	gcov_sidebar=nullptr;
@@ -541,7 +545,7 @@ SHOW_MILLIS("Initializing aui_manager, panels...");
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_THREADS] = new mxHidenPanel(this,threadlist_ctrl,HP_BOTTOM,LANG(MAINW_AUTOHIDE_THREADS,"Hilos"));
 	aui_manager.AddPane(CreateNotebookSources(), wxAuiPaneInfo().Name("notebook_sources").CenterPane().PaneBorder(false));
-	aui_manager.AddPane(debug_log_panel=new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr,wxLB_HSCROLL),wxAuiPaneInfo().Name("debug_messages").Bottom().Caption(LANG(CAPTION_DEBUGGER_LOG,"Mensajes del Depurador")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
+	aui_manager.AddPane(debug_log_panel = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr,wxLB_HSCROLL),wxAuiPaneInfo().Name("debug_messages").Bottom().Caption(LANG(CAPTION_DEBUGGER_LOG,"Mensajes del Depurador")).CloseButton(true).MaximizeButton(true).Hide().MaximizeButton(!config->Init.autohiding_panels));
 	if (config->Init.autohiding_panels)
 		autohide_handlers[ATH_DEBUG_LOG] = new mxHidenPanel(this,debug_log_panel,HP_BOTTOM,LANG(MAINW_AUTOHIDE_DEBUG_LOG,"Log Depurador"));
 	
@@ -3657,6 +3661,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 				}
 				
 				aui_manager.GetPane(debug_log_panel).Hide();
+				if (registers_panel) aui_manager.GetPane(registers_panel).Hide();
 				
 			}
 		}
@@ -5051,4 +5056,21 @@ void mxMainWindow::FindAll (const wxString & what) {
 	find_replace_dialog->FindAll(what);
 	return;
 }
+
+
+void mxMainWindow::OnDebugShowRegisters (wxCommandEvent & event) {
+	if (!registers_panel) {
+		registers_panel = new mxRegistersGrid(this);
+		aui_manager.AddPane(registers_panel, wxAuiPaneInfo().Right().Layer(0).CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Registers").BestSize(300,300).Show());
+	} else {
+		aui_manager.GetPane(registers_panel).Show();
+	}
+	aui_manager.Update();
+}
+
+//void mxMainWindow::OnDebugShowAsm (wxCommandEvent & event) {
+//	mxGdbDissasembly *asm_dialog = new mxRegistersGrid(this);
+//	aui_manager.AddPane(asm_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Disassembly (gdb)").BestSize(300,300).Show());
+//	aui_manager.Update();
+//}
 

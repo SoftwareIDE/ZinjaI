@@ -38,6 +38,7 @@ class wxTextCtrl;
 class compile_and_run_struct_single;
 class project_file_item;
 class mxExternCompilerOutput;
+class mxRegistersGrid;
 
 template<class T> class SingleList;
 
@@ -69,6 +70,7 @@ public:
 	mxValgrindOuput *valgrind_panel;
 	void ShowValgrindPanel(int what, wxString file, bool force=true);
 	
+	mxRegistersGrid *registers_panel;
 	wxListBox *debug_log_panel;
 	void AddToDebugLog(wxString str);
 	void ClearDebugLog();
@@ -190,6 +192,8 @@ public:
 	void OnRunClean (wxCommandEvent &event);
 	void OnRunStop (wxCommandEvent &event);
 	
+	void OnDebugShowRegisters(wxCommandEvent &event);
+//	void OnDebugShowAsm(wxCommandEvent &event);
 	void OnDebugSendSignal(wxCommandEvent &event);
 	void OnDebugSetSignals(wxCommandEvent &event);
 	void OnDebugGdbCommand(wxCommandEvent &event);

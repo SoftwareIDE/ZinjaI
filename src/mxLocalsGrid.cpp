@@ -79,7 +79,6 @@ void mxLocalsGrid::Update () {
 	}
 	
 	EndBatch();
-	
 }
 
 
