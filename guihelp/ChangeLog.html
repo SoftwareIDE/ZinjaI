@@ -6,6 +6,11 @@
 <I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>
 
+</UL><BR><B>Relase 201507xx</B><BR><UL>
+	<LI>Fix: Se corrigió un error por el cual luego de cerrar una vista de un fuente con múltiples vistas ya no se actualizan correctamente los indicadores de breakpoints en los márgenes.</LI>
+	<LI>Fix: Se corrigieron algunos errores al posicionar los calltips y resaltar argumentos en llamadas a funciones/métodos que ocupan más de una línea de código.</LI>
+	<LI>Fix: Se corrigió un error que podía provocar la finalización de un proceso equivocado al utilizar el botón "Detener" luego de cancelar una ejecución en el cuadro de diálogo que pide argumentos y ruta de trabajo para la misma.</LI>
+
 </UL><BR><B>Relase 20150712</B><BR><UL>
 	<LI>New: Se integró una nueva herramienta externa (lizard) en el menú de herramientas, que mide la complejidad (complejidad ciclomática y lineas de código) de archivos y funciones.</LI>
 	<LI>Imp: El comando "Implementar métodos/funciones faltantes" del menú herramientas busca las declaraciones en el propio cpp si no hay un .h asociado.</LI>

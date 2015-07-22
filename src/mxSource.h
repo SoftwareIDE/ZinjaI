@@ -198,6 +198,7 @@ public:
 	void OnMarginClick (wxStyledTextEvent &event);
 	void OnCharAdded  (wxStyledTextEvent &event);
 	void OnUpdateUI (wxStyledTextEvent &event);
+	void UpdateCalltipArgHighlight(int current_pos);
 	void OnKillFocus (wxFocusEvent &event);
 	void OnSetFocus (wxFocusEvent &event);
 	

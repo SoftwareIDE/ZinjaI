@@ -986,6 +986,18 @@ bool mxSource::SaveSource (const wxFileName &filename) {
 	return false;
 }
 
+void mxSource::UpdateCalltipArgHighlight (int current_pos) {
+	int p=calltip_brace+1, cur_arg=0, par=0, l=current_pos; // s y l son para II_*
+	while (p<l) {
+		int s;
+		II_FRONT(p, II_SHOULD_IGNORE(p));
+		char c=GetCharAt(p++);
+		if (c==',' && par==0) { cur_arg++; }
+		else if (c=='(' || c=='[') { par++; }
+		else if (c==')' || c=='}') { par--; }
+	}
+	calltip->SetArg(cur_arg);
+}
 
 void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	if (calltip_mode==MXS_AUTOCOMP && calltip && !wxStyledTextCtrl::AutoCompActive()) HideCalltip();
@@ -996,22 +1008,14 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	} else {
 		if (calltip_mode==MXS_BALOON) HideCalltip();
 		else if (calltip_mode==MXS_CALLTIP) {
-			if (GetCurrentLine()!=calltip_line) HideCalltip();
+			if (GetCurrentLine()!=calltip_line) 
+				HideCalltip();
 			else {
-				int cp=GetCurrentPos();
+				int cp = GetCurrentPos();
 				if (cp<=calltip_brace) { 
 					HideCalltip();
 				} else {
-					int p=calltip_brace+1, cur_arg=0, par=0, l=cp/*+1*/; // s y l son para II_*
-					while (p<l) {
-						int s;
-						II_FRONT(p, II_SHOULD_IGNORE(p));
-						char c=GetCharAt(p++);
-						if (c==',' && par==0) { cur_arg++; }
-						else if (c=='(' || c=='[') { par++; }
-						else if (c==')' || c=='}') { par--; }
-					}
-					calltip->SetArg(cur_arg);
+					UpdateCalltipArgHighlight(cp);
 				}
 			}
 		}
@@ -2926,17 +2930,12 @@ void mxSource::OnEditAutoCompleteAutocode(wxCommandEvent &evt) {
 }
 
 
-//#ifndef _ZINJAI_DEBUG
 void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 	int p=GetCurrentPos();
 	char chr = p>0?GetCharAt(p-1):' ';
-
-//	CodeHelper::RAIAutocompModeChanger rai_acmc;
-//	if (calltip_mode==MXS_AUTOCOMP && p==AutoCompPosStart()) rai_acmc.Change(2);
-	
 	HideCalltip();
-	
-	int s=GetStyleAt(p-1);
+	int s=GetStyleAt(--p); char &c=chr;
+	II_BACK(p,II_IS_NOTHING_4(p)); p++; // por si estamos en una linea en blanco, y hay que completar algo que viene de la anterior (como una , en una lista de argumentos para una función)
 	if (s==wxSTC_C_PREPROCESSOR) {
 		int ws=WordStartPosition(p,true);
 		if (chr=='#')
@@ -3111,9 +3110,8 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 		}
 	}
 	if (calltip_mode==MXS_NULL)	ShowBaloon(LANG(SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION,"No se encontraron opciones para autocompletar"),p);
+	else if (calltip_mode==MXS_CALLTIP) UpdateCalltipArgHighlight(GetCurrentPos());
 }
-
-//#endif
 
 DiffInfo *mxSource::MarkDiffs(int from, int to, MXS_MARKER marker, wxString extra) {
 	if (mxSTC_MARK_DIFF_NONE==marker) {
@@ -3849,11 +3847,18 @@ void mxSource::UserReload ( ) {
 
 void mxSource::ShowCallTip (int brace_pos, int calltip_pos, const wxString & s) {
 	focus_helper.Mask();
+	int current_line = GetCurrentLine(); calltip_line = LineFromPosition(calltip_pos);
+	if (calltip_line!=current_line) { // move calltip down if cursor is not in calltip's line
+		int calltip_offset = calltip_pos-PositionFromLine(calltip_line);
+		calltip_pos=PositionFromLine(current_line)+calltip_offset;
+		int current_line_end_pos = GetLineEndPosition(current_line);
+		if (calltip_pos>current_line_end_pos) calltip_pos = current_line_end_pos;
+		calltip_line = current_line;
+	}
 	SetCalltipMode(MXS_CALLTIP);
 	last_failed_autocompletion.Reset(); 
 	if (!calltip) calltip = new mxCalltip(this);
 	calltip_brace = brace_pos;
-	calltip_line = LineFromPosition(brace_pos);
 	calltip->Show(calltip_pos,s);
 }
 
@@ -4050,4 +4055,5 @@ int mxSource::GetStatementStartPos(int pos) {
 bool mxSource::IsKeywordChar (char c) {
 	return II_IS_KEYWORD_CHAR(c);
 }
+
 
