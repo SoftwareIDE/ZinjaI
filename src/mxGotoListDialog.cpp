@@ -47,7 +47,7 @@ mxGotoListDialog::mxGotoListDialog(wxWindow* parent, wxString window_title,
 	
 	mySizer->Add(label_ctrl = new wxStaticText(this,wxID_ANY,input_label),sizers->BLRT5_Exp0);
 	mySizer->Add(text_ctrl,sizers->BA5_Exp0);
-	mySizer->Add(list_ctrl,sizers->BA5_Exp0);
+	mySizer->Add(list_ctrl,sizers->BA5_Exp1);
 	mySizer->Add(case_sensitive,sizers->BA5_Exp0);
 	mySizer->Add(bottomSizer,sizers->BA5_Exp0);
 	SetSizerAndFit(mySizer);
