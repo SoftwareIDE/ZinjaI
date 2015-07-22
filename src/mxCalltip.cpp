@@ -4,6 +4,7 @@
 #include "mxSource.h"
 #include "mxColoursEditor.h"
 #include "mxMainWindow.h"
+#include "gdbParser.h"
 
 BEGIN_EVENT_TABLE(mxCalltip,wxPopupWindow)
 	EVT_PAINT(mxCalltip::OnPaint)
@@ -192,13 +193,11 @@ void mxCalltip::SetArg (int cur_arg) {
 }
 
 mxCalltip::entry::entry (const wxString & s) : line (s) {
-	int i=0,l=len=s.Len(), par=0; argc=-1; bool comillas=false; 
+	int i=0,l=len=s.Len(), par=0; argc=-1;
 	int last_par_open=-1;
 	while(i<l) {
 		if (s[i]=='\''||s[i]=='\"') {
-			comillas=!comillas;
-		} else if (comillas) {
-			if (s[i]=='\\') i++;
+			GdbParse_SkipString(s,i,l);
 		} else {
 			if (s[i]=='(') {
 				if (par==0) last_par_open=i;
@@ -210,15 +209,14 @@ mxCalltip::entry::entry (const wxString & s) : line (s) {
 		i++;
 	}
 	if (last_par_open==-1) return;
-	par=0; comillas=false; i=last_par_open+1; argc=0;
+	par=0; i=last_par_open+1; argc=0;
 	argp[0]=last_par_open;
 	while(i<l) {
 		if (s[i]=='\''||s[i]=='\"') {
-			comillas=!comillas;
-		} else if (comillas) {
-			if (s[i]=='\\') i++;
+			GdbParse_SkipString(s,i,l);
 		} else {
-			if (s[i]=='(') {
+			if (s[i]=='<') GdbParse_SkipTemplate(s,i,l);
+			else if (s[i]=='(') {
 				par++;
 			} else if (par==0 && (s[i]==','||s[i]==')')) {
 				argp[++argc]=i;
