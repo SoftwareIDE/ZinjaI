@@ -994,7 +994,7 @@ void mxSource::UpdateCalltipArgHighlight (int current_pos) {
 		char c=GetCharAt(p++);
 		if (c==',' && par==0) { cur_arg++; }
 		else if (c=='(' || c=='[') { par++; }
-		else if (c==')' || c=='}') { par--; }
+		else if (c==')' || c==']') { par--; }
 	}
 	calltip->SetArg(cur_arg);
 }
@@ -1008,9 +1008,9 @@ void mxSource::OnUpdateUI (wxStyledTextEvent &event) {
 	} else {
 		if (calltip_mode==MXS_BALOON) HideCalltip();
 		else if (calltip_mode==MXS_CALLTIP) {
-			if (GetCurrentLine()!=calltip_line) 
+			if (GetCurrentLine()!=calltip_line) {
 				HideCalltip();
-			else {
+			} else {
 				int cp = GetCurrentPos();
 				if (cp<=calltip_brace) { 
 					HideCalltip();
@@ -2745,10 +2745,21 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scop
 				}
 			} else { // puede ser clase o struct
 				II_BACK(p,II_IS_NOTHING_4(p) || !II_IS_6(p,'{','}',':',';',')','('));
-				p++;
-				II_FRONT(p,II_IS_NOTHING_4(p));
+				if (p) p++;	II_FRONT(p,II_IS_NOTHING_4(p));
 				if (GetStyleAt(p)==wxSTC_C_WORD) {
 					bool some=false;
+					if (GetTextRange(p,p+8)=="template") {
+						p+=8; II_FRONT(p,II_IS_NOTHING_4(p)); 
+						if (c=='<') {
+							int temp_count=1;
+							while (p+1<p_llave_a && temp_count) {
+								c = GetCharAt(++p);
+								if(c=='<') temp_count++;
+								else if(c=='>') temp_count--;
+							}
+							p++; II_FRONT(p,II_IS_NOTHING_4(p)); 
+						}
+					}
 					if (GetTextRange(p,p+6)=="struct")
 					{ if (!type.Len()) type="struct"; p+=6; some=true; }
 					else if (GetTextRange(p,p+5)=="class")
@@ -2759,7 +2770,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scop
 						II_FRONT(p,II_IS_NOTHING_4(p));
 						wxString aux=code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
 						if (scope_start) *scope_start=p;
-						if (full_scope) scope=aux+"::"+scope; else { scope=scope; break; }
+						if (full_scope) scope=aux+"::"+scope; else { scope=aux; break; }
 					}
 				}
 			}
@@ -4055,5 +4066,3 @@ int mxSource::GetStatementStartPos(int pos) {
 bool mxSource::IsKeywordChar (char c) {
 	return II_IS_KEYWORD_CHAR(c);
 }
-
-

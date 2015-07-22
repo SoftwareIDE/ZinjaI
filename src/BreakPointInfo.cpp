@@ -127,4 +127,3 @@ void BreakPointInfo::SetEnabled (bool do_enable) {
 	gdb_status = enabled?BPS_SETTED:BPS_USER_DISABLED;
 	SetMarker();
 }
-

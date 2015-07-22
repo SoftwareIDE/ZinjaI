@@ -52,12 +52,16 @@ bool mxGrid::IsColumnVisible (int c) {
 void mxGrid::RecalcColumns(int new_w) {
 	if (new_w==0) return;
 	BeginBatch();
-	float old_w=0;
+	float old_w=0, old_sum=0, nl_factor=1.5f;
 	for(int i=0;i<cols.GetSize();i++) 
-		if (cols[i].real_pos!=-1) old_w+=cols[i].width;
-	float ratio=new_w/old_w;
+		if (cols[i].real_pos!=-1) {
+			old_w+=cols[i].width;
+			old_sum+=pow(cols[i].width,nl_factor);
+		}
+	float diff = new_w - old_w;
+	float ratio = diff/old_sum;
 	for(int i=0;i<cols.GetSize();i++) {
-		cols[i].width*=ratio;
+		cols[i].width+=pow(cols[i].width,nl_factor)*ratio;
 		if (cols[i].real_pos!=-1) {
 			SetColSize(cols[i].real_pos,int(cols[i].width));
 		}
