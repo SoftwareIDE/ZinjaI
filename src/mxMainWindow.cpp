@@ -352,6 +352,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_CONFIG, mxMainWindow::OnToolsCppCheckConfig)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_VIEW, mxMainWindow::OnToolsCppCheckView)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_HELP, mxMainWindow::OnToolsCppCheckHelp)
+	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_SELECTION, mxMainWindow::OnToolsDissasembleOffline)
 #ifndef __WIN32__
 	EVT_MENU(mxID_TOOLS_VALGRIND_RUN, mxMainWindow::OnToolsValgrindRun)
 	EVT_MENU(mxID_TOOLS_VALGRIND_DEBUG, mxMainWindow::OnToolsValgrindDebug)
@@ -3552,10 +3553,12 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 			if (config->Init.autohiding_panels) {
 				autohide_handlers[ATH_QUICKHELP]->Hide();
 				autohide_handlers[ATH_COMPILER]->Hide();
+				if (threads_visible && aui_manager.GetPane(autohide_handlers[ATH_THREADS]).IsShown()) {
+					autohide_handlers[ATH_THREADS]->Select();
+					debug->threadlist_visible=true;
+				}
 				if (backtrace_visible) autohide_handlers[ATH_BACKTRACE]->Select();
 				if (inspections_visible) autohide_handlers[ATH_INSPECTIONS]->Select();
-				if (threads_visible && aui_manager.GetPane(autohide_handlers[ATH_THREADS]).IsShown())
-					autohide_handlers[ATH_THREADS]->Select();
 				if (log_visible && aui_manager.GetPane(autohide_handlers[ATH_DEBUG_LOG]).IsShown())
 					autohide_handlers[ATH_DEBUG_LOG]->Select();
 			} else {

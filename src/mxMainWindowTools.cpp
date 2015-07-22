@@ -44,6 +44,9 @@
 #include "mxWxfbConfigDialog.h"
 #include "MenusAndToolsConfig.h"
 #include "mxLizardOutput.h"
+#include "mxStyledOutput.h"
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h>
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -1089,7 +1092,7 @@ void mxMainWindow::OnToolsLizardRun(wxCommandEvent &event) {
 	wxArrayString output,errors;
 	int retval=mxExecute(command, output, errors, wxEXEC_NODISABLE|wxEXEC_SYNC);
 	if (/*retval||*/!output.GetCount()) { // si hay algun error al ejecutar lizard
-		showExternToolErrorMessage(retval, errors,"lizard");
+		showExternToolErrorMessage(retval, errors, "lizard");
 		return;
 	}
 	// si todo fue bien, mostrar la ventana de resultados
@@ -1098,4 +1101,73 @@ void mxMainWindow::OnToolsLizardRun(wxCommandEvent &event) {
 
 void mxMainWindow::OnToolsLizardHelp(wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("lizard.html");
+}
+
+void mxMainWindow::OnToolsDissasembleOffline (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		
+		mxSource *src=CURRENT_SOURCE;
+		int lfrom = src->LineFromPosition(src->GetSelectionStart());
+		int lto = src->LineFromPosition(src->GetSelectionEnd());
+		if (lfrom>lto) std::swap(lfrom,lto);
+		wxString src_fname = src->GetFullPath();
+		
+		// inform user
+		status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_ANALIZING,"Desensamblando..."));
+		mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Desensamblando..."));
+		// compose required command
+		wxString command("sh -c \'objdump -d -C -l ");
+		if (project)
+			command<<mxUT::Quotize(project->GetExePath());
+		else
+			command<<mxUT::Quotize(src->GetBinaryFileName().GetFullPath());
+		wxString out_fname = DIR_PLUS_FILE(config->temp_dir,"objdump.txt");	
+		command<<" >"<<mxUT::Quotize(out_fname) << "\'";
+		// run the commmand
+		int retval = mxExecute(command, wxEXEC_NODISABLE|wxEXEC_SYNC/*, nullptr*/);
+		if (retval) {
+			wxArrayString aux;
+			showExternToolErrorMessage(retval, aux, "objdump");
+			return;
+		}
+		// create and display output panel
+		mxStyledOutput *out_dialog  = new mxStyledOutput(main_window,true,false);
+		out_dialog->SetTabWidth(8);
+		aui_manager.AddPane(out_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Dissasembly (objdump)").BestSize(500,300).Show());
+		// load and filter results to panel
+		wxFileInputStream input(out_fname);
+		wxTextInputStream text(input);
+		bool on_scope = false; wxString scope_name; // on_scope dice si actualmente estamos o no pasando por el desensamblado de alguna de las lineas que interesan
+		while(input.IsOk() && !input.Eof() ) {
+			wxString line = text.ReadLine();
+			bool is_asm = line.StartsWith(" ")||line.StartsWith("\t");
+			if (line.Len() && !is_asm) {
+				if (line.EndsWith(">:")) scope_name = line; // hay lineas "lineas0000004123412 <funcion_que_sigue>:" antes de las que dicen de que linea del fuente vienen
+				bool was_on_scope = on_scope;
+				if (line.StartsWith(src_fname)) { // si indica que lo que sigue corresponde a este fuente, ver que pasa con el nro de linea
+					wxString snum = line.Mid(src_fname.Len()).AfterFirst(':');
+					if (snum.Contains(' ')) snum = snum.BeforeFirst(' ');
+					long lnum=-1;
+					on_scope = (snum.ToLong(&lnum) && lnum-1>=lfrom && lnum-1<=lto); // el -1 por todos lados es por la base 0/1 de la numeración
+					if (on_scope) { line = wxString("")<<snum<<":\t"<<src->GetLine(lnum-1); line.Replace("\n",""); line.Replace("\r",""); }
+				} else {
+					on_scope=false;
+				}
+				if (on_scope!=was_on_scope) { // si cambio on_scope...
+					if (on_scope) { // ... poner cabecera (funcion que se esta desensamblando)...
+						if (!scope_name.IsEmpty()) {
+							out_dialog->AppendLine(scope_name,true); 
+							scope_name.Clear();
+						}
+					} else { // ...o dejar espacio (para separar distintas funciones)
+						out_dialog->AppendLine("",false); 
+						out_dialog->AppendLine("",false); 
+					}
+				}
+			} else if (line.IsEmpty()) scope_name.Clear();
+			if (on_scope) out_dialog->AppendLine(line,!is_asm);
+		}
+		// update gui
+		aui_manager.Update();
+	}
 }

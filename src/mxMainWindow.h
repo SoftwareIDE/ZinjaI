@@ -289,6 +289,7 @@ public:
 	void OnToolsValgrindView(wxCommandEvent &event);
 	void OnToolsValgrindHelp(wxCommandEvent &event);
 #endif
+	void OnToolsDissasembleOffline(wxCommandEvent &event);
 	void OnToolsCustomTool(wxCommandEvent &event);
 	void OnToolsCustomProjectTool(wxCommandEvent &event);
 	void OnToolsCustomToolsSettings(wxCommandEvent &event);

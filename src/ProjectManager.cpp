@@ -2424,7 +2424,7 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 }
 
 wxString ProjectManager::GetExePath(bool short_path) {
-	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",temp_folder_short);
+	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",GetTempFolder());
 	return executable_name = 
 		( short_path
 		? wxFileName(DIR_PLUS_FILE(path,executable_name)).GetShortPath()

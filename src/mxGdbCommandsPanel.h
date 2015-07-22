@@ -5,16 +5,15 @@
 
 class wxTextCtrl;
 class wxTimer;
-class wxStyledTextCtrl;
+class mxStyledOutput;
 
 class mxGdbCommandsPanel : public wxPanel {
 private:
 	wxTextCtrl *input;
-	wxStyledTextCtrl *output;
-	void AppendText(const wxString &str);
+	mxStyledOutput *output;
 public:
 	void OnInput(wxCommandEvent &event);
-	void OnMarginClick(wxStyledTextEvent &e);
+	void SetFocusToInput();
 	mxGdbCommandsPanel();
 	DECLARE_EVENT_TABLE();
 };
