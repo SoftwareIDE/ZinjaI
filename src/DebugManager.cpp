@@ -29,6 +29,7 @@
 #include "winStuff.h"
 #include "lnxStuff.h"
 #include "Cpp11.h"
+#include "gdbParser.h"
 using namespace std;
 
 //#define BACKTRACE_MACRO "define zframeaddress\nset $fi=0\nwhile $fi<$arg0\nprintf \"*zframe-%u={\",$fi\ninfo frame $fi\nprintf \"}\\n\"\nset $fi=$fi+1\nend\nend"
@@ -311,7 +312,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
 		wxString ans = SendCommand(gdb_command);
-		if (ans.StartsWith("^error")) {
+		if (ans.Contains("^error,")) {
 			mxMessageDialog(main_window,wxString(LANG(DEBUG_SPECIAL_START_FAILED,"Ha ocurrido un error al iniciar la depuración:"))+debug->GetValueFromAns(ans,"msg",true,true),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
 			Stop(); return false;
@@ -741,10 +742,10 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 	} else i+=7; 
 	int cant_levels=0, to_select_level=-1, sll=frames.Len();
 	while (cant_levels<BACKTRACE_SIZE) {
-		while (i<sll && chfr[i]!='{') i++; 
+		while (i<sll && chfr[i]!='{') i++;
 		if (i==sll) break;
 		int p=i+1;
-		while (chfr[i]!='}') i++; 
+		while (chfr[i]!='}') { i++; if (chfr[i]=='\''||chfr[i]=='\"') GdbParse_SkipString(chfr,i,sll); }
 		wxString s(frames.SubString(p,i-1));
 #ifdef _ZINJAI_DEBUG
 		if (GetValueFromAns(s,"level",true)!=(wxString()<<(cant_levels)))
@@ -754,7 +755,8 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 		wxString func = GetValueFromAns(s,"func",true);
 		if (func[0]=='?') {
 			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FUNCTION,LANG(BACKTRACE_NOT_AVAILABLE,"<<informacion no disponible>>"));
-			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FILE,"");
+			wxString from = GetValueFromAns(s,"from",true);
+			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_FILE,from.IsEmpty()?"":wxString("from: ")+from);
 			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_LINE,"");
 			main_window->backtrace_ctrl->SetCellValue(cant_levels,BG_COL_ARGS,"");
 		} else {
