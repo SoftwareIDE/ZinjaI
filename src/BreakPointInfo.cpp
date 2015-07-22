@@ -70,8 +70,15 @@ void BreakPointInfo::UpdateLineNumber() {
 
 /// @brief Updates its source_pointer, and ads the marker if its previous one was nullptr
 void BreakPointInfo::SetSource(mxSource *_source) {
-	source=_source; marker_handle=-1; 
-	if (_source) SetMarker();
+	if (_source==source) return;
+	if (source==nullptr) { // viene de null, pasa a !null
+		SetMarker(); // cuando se carga un source
+	} else if (_source==nullptr) { // viene de !null, pasa a null
+		marker_handle=-1;  // cuando se cierra un source
+	} else { // viene de !null, cambia a otro !null
+		// nada, esto pasa cuando se cierra un mxSource que tiene más de una vista
+	}	
+	source=_source;
 }
 
 /// @brief returs true if this breakpoint has a valid gdb_id, inspecting its gdb_status
