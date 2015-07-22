@@ -18,6 +18,7 @@
 #include "mxCompiler.h"
 #include "CodeHelper.h"
 #include "execution_workaround.h"
+#include "gdbParser.h"
 
 Parser *parser;
 
@@ -310,7 +311,8 @@ wxString Parser::JoinNames(wxString types, wxString names) {
 	int l1=types.Len(), l2=names.Len(),i1=0,i2=0,p1=0,p2=0;
 	wxString res;
 	while (true) {
-		while (i1<l1 && types[i1]!=',' && types[i1]!='[') i1++;
+		while (i1<l1 && types[i1]!=',' && types[i1]!='[')
+			if (types[++i1]=='<') GdbParse_SkipTemplate(types,i1,l1);
 		while (i2<l2 && names[i2]!=',') i2++;
 		res<<types.Mid(p1,i1-p1)<<" "<<names(p2,i2-p2);
 		if(i1<l1 && types[i1]!=',') {
@@ -322,6 +324,7 @@ wxString Parser::JoinNames(wxString types, wxString names) {
 		p2=i2+1; p1=i1+1;
 		i1=p1; i2=p2;
 	}
+	if (res.EndsWith(" , ... ...")) res.Replace(" , ... ...","..."); // fix for variadic templates
 	return res;
 }
 

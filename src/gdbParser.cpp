@@ -1,12 +1,5 @@
 #include "gdbParser.h"
 
-void GdbParse_SkipString(const wxString &s, int &i, int l) {
-	wxChar c=s[i++];
-	while (i<l && s[i]!=c) {
-		if (s[i]=='\\') i++;
-		i++;
-	}
-}
 
 void GdbParse_SkipList(const wxString &s, int &i, int l) {
 	int balance=0;
