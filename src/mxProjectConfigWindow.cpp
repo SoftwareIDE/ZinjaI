@@ -528,7 +528,7 @@ void mxProjectConfigWindow::LoadValues() {
 			{ toolchains_combo->SetSelection(i); break; }
 	
 	wx_noexe.EnableAll(!configuration->dont_generate_exe);
-	
+	wx_noscript.EnableAll(configuration->exec_method);
 }
 
 void mxProjectConfigWindow::OnSelectConfigInCombo(wxCommandEvent &event) {
