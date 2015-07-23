@@ -702,6 +702,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	if (init_max_jobs->GetValue().ToLong(&l)) config->Init.max_jobs=l;
 	if (config->Init.max_jobs<1) config->Init.max_jobs=1;
 	config->Init.autohide_panels_fs = init_autohide_panels_fs->GetValue();
+	config->Init.autohide_menus_fs = init_autohide_menus_fs->GetValue();
 	config->Init.autohide_toolbars_fs = init_autohide_toolbars_fs->GetValue();
 	config->Init.prefer_explorer_tree = init_prefer_explorer_tree->GetValue();
 	config->Init.show_explorer_tree = init_show_explorer_tree->GetValue();
