@@ -522,7 +522,7 @@ void mxSource::OnEditUndo (wxCommandEvent &event) {
 //void mxSource::OnEditClear (wxCommandEvent &event) {
 //    if (GetReadOnly()) return;
 //    Clear ();
-//}
+// }
 
 void mxSource::OnEditCut (wxCommandEvent &event) {
 //    if (GetReadOnly() || (GetSelectionEnd()-GetSelectionStart() <= 0)) return;
@@ -2502,8 +2502,6 @@ void mxSource::ShowBaloon(wxString str, int p) {
 	DEBUG_INFO("wxYield:out mxSource::ShowBaloon");
 }
 	
-	
-
 wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 	if (first_call)
 		dims=0;

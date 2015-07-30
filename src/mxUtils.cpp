@@ -1443,7 +1443,7 @@ void mxUT::SetClipboardText (const wxString & text) {
 //	if (args) command<<" "<<args;
 //	
 //	return command;
-//}
+// }
 
 wxString mxUT::GetRunnerBaseCommand(int wait_for_key) {
 	wxString command = Quotize(config->Files.runner_command);

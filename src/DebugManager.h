@@ -263,6 +263,7 @@ public:
 		virtual bool Invalidate(void *ptr){ return false; } /// to avoid action on deleted objects
 		virtual ~OnPauseAction(){}
 	};
+	
 	OnPauseAction *on_pause_action;
 	bool PauseFor(OnPauseAction *action);
 	void InvalidatePauseEvent(void *ptr);
@@ -288,6 +289,25 @@ public:
 	};
 	
 };
+
+
+
+#define _DEBUG_LAMBDA_0(Name,Action) \
+	class Name : public DebugManager::OnPauseAction {\
+	public: void Do() Action };
+
+#define _DEBUG_LAMBDA_1(Name,PtrType,Arg,Action) \
+	class Name : public DebugManager::OnPauseAction {\
+	public: Name(PtrType *arg) : Arg(arg) {} \
+	public: void Do() Action  \
+	public: bool Invalidate(void *ptr) { return ptr==Arg; } \
+	private: PtrType *Arg; };
+#define _DEBUG_LAMBDA_2(Name,PtrType1,Arg1,Type2,Arg2,Action) \
+	class Name : public DebugManager::OnPauseAction {\
+	public: Name(PtrType1 *arg1, Type2 arg2) : Arg1(arg1),Arg2(arg2) {} \
+	public: void Do() Action \
+	public: bool Invalidate(void *ptr) { return ptr==Arg1; } \
+	private: PtrType1 *Arg1; Type2 Arg2; };
 
 
 #endif

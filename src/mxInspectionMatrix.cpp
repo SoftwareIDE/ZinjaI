@@ -140,7 +140,7 @@ void mxInspectionMatrix::OnResize(wxSizeEvent &evt) {
 //	grid->EndBatch();
 //	grid->ForceRefresh();	
 ////	if (old_size) cols_sizes[evt.GetRowOrCol()]=grid->GetColSize(evt.GetRowOrCol());
-//}
+// }
 
 ////void mxInspectionMatrix::OnClose(wxCloseEvent &evt) {
 //////	debug->UnRegisterMatrix(this);
@@ -159,7 +159,7 @@ void mxInspectionMatrix::OnAdaptCheck(wxCommandEvent &evt) {
 //	mySizer->Add(st,sizers->BA5_Center);
 //	Layout();
 //	return true;
-//}
+// }
 
 void mxInspectionMatrix::OnDICreated (DebuggerInspection * di) {
 	this->di=di; UpdateMatrix();

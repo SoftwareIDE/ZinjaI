@@ -58,7 +58,7 @@ void CustomToolsPack::Run (int i) {
 		return;
 	}
 	if (tools[i].pre_action==CT_PRE_COMPILE) {
-		_LAMBDA_1( lmbRunTool, OneCustomTool *,tool, new mxCustomToolProcess(*tool); );
+		_LAMBDA_1( lmbRunTool, OneCustomTool *,tool, { new mxCustomToolProcess(*tool); } );
 		if (project) compiler->BuildOrRunProject(false, new lmbRunTool(&(tools[i])) );
 		else main_window->CompileSource( false, new lmbRunTool(&(tools[i])) );
 	} else 

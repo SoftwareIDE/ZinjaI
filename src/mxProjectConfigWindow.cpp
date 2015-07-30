@@ -1079,7 +1079,7 @@ void mxProjectConfigWindow::OnToolchainOptionsButton (wxCommandEvent & evt) {
 
 //void mxProjectConfigWindow::OnImportLibsButton (wxCommandEvent & evt) {
 //	
-//}
+// }
 
 void mxProjectConfigWindow::OnExecutionMethodButton (wxCommandEvent & evt) {
 	

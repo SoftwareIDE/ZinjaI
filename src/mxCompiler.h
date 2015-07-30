@@ -85,7 +85,6 @@ public:
 	
 	void CompileSource (mxSource *source, GenericAction *on_end=nullptr);
 	void BuildOrRunProject(bool prepared, GenericAction *on_end=nullptr);
-	void BuildOrRunProject(bool run, bool debug, bool prepared); /// @deprecated:
 	void ParseSomeExternErrors(compile_and_run_struct_single *compile_and_run);
 	CAR_ERROR_LINE ParseSomeErrorsOneLine(compile_and_run_struct_single *compile_and_run, const wxString &error_line);
 	void SetWarningsAndErrorsNumbersOnTree();

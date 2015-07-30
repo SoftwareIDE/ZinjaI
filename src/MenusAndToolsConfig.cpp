@@ -1037,7 +1037,7 @@ void MenusAndToolsConfig::TransferStatesFromConfig() {
 ////		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_CLEAN, LANG(MENUITEM_RUN_CLEAN,"&Limpiar")).ShortCut("Ctrl+Shift+F9").Description("Elimina los objetos y ejecutables compilados").Icon("limpiar.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
 ////		AddMenuItem(mnRUN, myMenuItem( mxID_RUN_STOP, LANG(MENUITEM_RUN_STOP,"&Detener")).Description("Detiene la ejecución del programa").Icon("detener.png").Map().EnableIf(ecPROJECT_OR_SOURCE));
 ////	}
-//}
+// }
 
 
 

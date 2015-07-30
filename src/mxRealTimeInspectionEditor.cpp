@@ -41,15 +41,8 @@ mxRealTimeInspectionEditor::~mxRealTimeInspectionEditor() {
 
 void mxRealTimeInspectionEditor::Break (int num) {
 	if (!debug->IsPaused()) {
-		class OnPauseBreak : public DebugManager::OnPauseAction {
-			mxRealTimeInspectionEditor *win;
-			int num;
-		public:
-			OnPauseBreak(mxRealTimeInspectionEditor *w, int n):win(w),num(n) {}
-			void Do() override { win->Break(num); }
-			bool Invalidate(void *ptr) override { return ptr==win; }
-		};
-		debug->PauseFor(new OnPauseBreak(this,num));
+		_DEBUG_LAMBDA_2( lmbBreakInspection, mxRealTimeInspectionEditor,win, int,num, { win->Break(num); } );
+		debug->PauseFor(new lmbBreakInspection(this,num));
 		return;
 	}
 	DebuggerInspection *di = inspections[num].di;
@@ -158,14 +151,9 @@ void mxRealTimeInspectionEditor::OnDIOutOfScope (DebuggerInspection * di) {
 // but do not now where, evaluations gives old value or nothing)
 void mxRealTimeInspectionEditor::OnUpdateValues (wxCommandEvent & evt) {
 	if (!debug->IsPaused()) {
-		class OnPauseUpdateRTIEditor : public DebugManager::OnPauseAction {
-			mxRealTimeInspectionEditor *win;
-		public:
-			OnPauseUpdateRTIEditor(mxRealTimeInspectionEditor *w) : win(w) {}
-			void Do() override { wxCommandEvent evt; win->OnUpdateValues(evt); }
-			bool Invalidate(void *p) override { return win==p; }
-		};
-		debug->PauseFor(new OnPauseUpdateRTIEditor(this));
+		_DEBUG_LAMBDA_1( lmbUpdateRTIEditor, mxRealTimeInspectionEditor,win, 
+			             { wxCommandEvent evt; win->OnUpdateValues(evt); } );
+		debug->PauseFor(new lmbUpdateRTIEditor(this));
 	} else {
 		inspections[0].di->ForceVOUpdate();
 	}

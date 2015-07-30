@@ -9,12 +9,12 @@ public:
 };
 #define _LAMBDA_0(Name,Action) \
 	class Name : public GenericAction {\
-	public: void Do() { Action } };
+	public: void Do() Action };
 
 #define _LAMBDA_1(Name,Type,Arg,Action) \
 	class Name : public GenericAction {\
 	public: Name(Type arg) : Arg(arg) {} \
-	public: void Do() { Action } \
+	public: void Do() Action \
 	private: Type Arg; };
 
 

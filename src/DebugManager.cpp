@@ -66,7 +66,7 @@ DebugManager::~DebugManager() {
 bool DebugManager::Start(bool update) {
 	_DBG_LOG_CALL(Open());
 	if (update && project->PrepareForBuilding()) { // ver si hay que recompilar antes
-		_LAMBDA_0(lmbDebugProject, if (project) debug->Start(false); );
+		_LAMBDA_0( lmbDebugProject, { if (project) debug->Start(false); } );
 		compiler->BuildOrRunProject(true,new lmbDebugProject());
 		return false;
 	}
@@ -617,14 +617,8 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 		return true;
 	}
 	if (waiting) { // si esta ejecutando, anotar para sacar y mandar a pausar
-		class OnPauseRemoveBreakpoint : public OnPauseAction {
-			BreakPointInfo *p;
-		public:
-			OnPauseRemoveBreakpoint(BreakPointInfo *bp) :p(bp) {}
-			void Do() override { debug->DeleteBreakPoint(p); }
-			bool Invalidate(void *ptr) override { return p==ptr; }
-		};
-		PauseFor(new OnPauseRemoveBreakpoint(_bpi));
+		_DEBUG_LAMBDA_1( lmbRemoveBreakpoint, BreakPointInfo,p, { debug->DeleteBreakPoint(p); } );
+		PauseFor(new lmbRemoveBreakpoint(_bpi));
 		return false;
 	} else {
 		// decirle a gdb que lo saque
@@ -637,14 +631,8 @@ bool DebugManager::DeleteBreakPoint(BreakPointInfo *_bpi) {
 
 int DebugManager::LiveSetBreakPoint(BreakPointInfo *_bpi) {
 	if (debugging && waiting) {
-		class OnPauseAddBreakpoint : public OnPauseAction {
-			BreakPointInfo *p;
-		public:
-			OnPauseAddBreakpoint(BreakPointInfo *bp) :p(bp) {}
-			void Do() override { debug->SetBreakPoint(p); }
-			bool Invalidate(void *ptr) override { return p==ptr; }
-		};
-		PauseFor(new OnPauseAddBreakpoint(_bpi));
+		_DEBUG_LAMBDA_1( lmbAddBreakpoint, BreakPointInfo,bp, { debug->SetBreakPoint(bp); } );
+		PauseFor(new lmbAddBreakpoint(_bpi));
 		_bpi->SetStatus(BPS_PENDING);
 		return -1;
 	} else {
@@ -1540,14 +1528,8 @@ void DebugManager::SetBreakPointEnable(BreakPointInfo *_bpi) {
 
 void DebugManager::LiveSetBreakPointEnable(BreakPointInfo *_bpi) {
 	if (debugging && waiting) {
-		class OnPauseEnableBreakpoint : public OnPauseAction {
-			BreakPointInfo *p;
-		public:
-			OnPauseEnableBreakpoint(BreakPointInfo *bp) :p(bp) {}
-			void Do() override { debug->SetBreakPointEnable(p); }
-			bool Invalidate(void *ptr) override { return p==ptr; }
-		};
-		PauseFor(new OnPauseEnableBreakpoint(_bpi));
+		_DEBUG_LAMBDA_1( lmbEnableBreakpoint, BreakPointInfo,p, { debug->SetBreakPointEnable(p); } );
+		PauseFor(new lmbEnableBreakpoint(_bpi));
 	} else {
 		SetBreakPointEnable(_bpi);
 	}

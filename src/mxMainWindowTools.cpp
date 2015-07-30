@@ -1142,7 +1142,7 @@ void mxMainWindow::OnToolsDissasembleOffline (wxCommandEvent & event) {
 			wxString line = text.ReadLine();
 			bool is_asm = line.StartsWith(" ")||line.StartsWith("\t");
 			if (line.Len() && !is_asm) {
-				if (line.EndsWith(">:")) scope_name = line; // hay lineas "lineas0000004123412 <funcion_que_sigue>:" antes de las que dicen de que linea del fuente vienen
+				if (line.EndsWith(">:")) scope_name = line; // hay lineas "0000004123412 <funcion_que_sigue>:" antes de las que dicen de que linea del fuente vienen
 				bool was_on_scope = on_scope;
 				if (line.StartsWith(src_fname)) { // si indica que lo que sigue corresponde a este fuente, ver que pasa con el nro de linea
 					wxString snum = line.Mid(src_fname.Len()).AfterFirst(':');

@@ -74,6 +74,7 @@
 #include "mxExternCompilerOutput.h"
 #include "mxBySourceCompilingOpts.h"
 #include "mxRegistersGrid.h"
+#include "Cpp11.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -1653,13 +1654,6 @@ void mxMainWindow::OnRunClean (wxCommandEvent &event) {
 	}
 }
 
-
-//void mxMainWindow::OnRunBuild (wxCommandEvent &event) {
-//	_prevent_execute_yield_execute_problem;
-//	compiler->BuildOrRunProject(false,nullptr);
-//}
-
-
 void mxMainWindow::StartExecutionStuff (compile_and_run_struct_single *compile_and_run, wxString msg) {
 //	compile_and_run.linking=(what==mES_LINK || what==mES_LINK_AND_RUN);
 	// ver si comenzo correctamente
@@ -1704,7 +1698,7 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 	}
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (project) { // si hay que ejecutar un proyecto
-		_LAMBDA_0( lmbRunProject, if (project) project->Run(); );
+		_LAMBDA_0( lmbRunProject, { if (project) project->Run(); } );
 		compiler->BuildOrRunProject(false,new lmbRunProject());
 		
 	} else IF_THERE_IS_SOURCE { // si hay que ejecutar un ejercicio
@@ -1713,7 +1707,7 @@ void mxMainWindow::OnRunRun (wxCommandEvent &event) {
 			if (source->GetLine(0).StartsWith("make me a sandwich")) { wxMessageBox("No way!"); return; }
 			else if (source->GetLine(0).StartsWith("sudo make me a sandwich")) source->SetText(wxString("/** Ok, you win! **/")+wxString(250,' ')+"#include <iostream>\n"+wxString(250,' ')+"int main(int argc, char *argv[]) {std::cout<<\"Here you are:\\n\\n   /-----------\\\\\\n  ~~~~~~~~~~~~~~~\\n   \\\\-----------/\\n\";return 0;}\n\n");
 		}
-		_LAMBDA_1(lmdRunSource,mxSource *,src,main_window->RunSource(src););
+		_LAMBDA_1( lmdRunSource, mxSource *,src, { main_window->RunSource(src); } );
 		CompileSource(false,new lmdRunSource(master_source?master_source:CURRENT_SOURCE));
 	}
 }
@@ -3264,7 +3258,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnDebugRun");
 		} else IF_THERE_IS_SOURCE {
 			mxSource *src = master_source?master_source:CURRENT_SOURCE;
 			if (config->Debug.compile_again) {
-				_LAMBDA_1(lmbDebugSource,mxSource*,src,debug->Start(src););
+				_LAMBDA_1( lmbDebugSource, mxSource*,src, { debug->Start(src); } );
 				CompileSource(false,new lmbDebugSource(src));
 			} else {
 				debug->Start(src);
@@ -3293,11 +3287,8 @@ void mxMainWindow::OnDebugStop ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugUpdateInspections ( wxCommandEvent &event ) {
 	if (!debug->IsDebugging()) return;
 	if (debug->IsPaused()) debug->UpdateInspections();
-	class OnPauseUpdateInspections : public DebugManager::OnPauseAction {
-	public:
-		void Do() override { debug->UpdateInspections(); }
-	};
-	debug->PauseFor(new OnPauseUpdateInspections());
+	_DEBUG_LAMBDA_0( lmbUpdateInspections, { debug->UpdateInspections(); } );
+	debug->PauseFor(new lmbUpdateInspections());
 }
 
 void mxMainWindow::OnDebugInspect ( wxCommandEvent &event ) {
@@ -4127,7 +4118,9 @@ wxString mxMainWindow::AvoidDuplicatePageText(wxString ptext) {
 }
 
 void mxMainWindow::OnDebugPatch (wxCommandEvent &event) {
-	if (debug->CanTalkToGDB()) debug->GetPatcher()->Patch();
+	_LAMBDA_0( lmbDebugPatch , { debug->Patch(); } );
+	if (project) compiler->BuildOrRunProject(false, new lmbDebugPatch);
+	else main_window->CompileSource(false, new lmbDebugPatch);
 }
 
 void mxMainWindow::OnDebugCoreDump (wxCommandEvent &event) {
@@ -5072,5 +5065,5 @@ void mxMainWindow::OnDebugShowRegisters (wxCommandEvent & event) {
 //	mxGdbDissasembly *asm_dialog = new mxRegistersGrid(this);
 //	aui_manager.AddPane(asm_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Disassembly (gdb)").BestSize(300,300).Show());
 //	aui_manager.Update();
-//}
+// }
 

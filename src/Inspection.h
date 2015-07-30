@@ -551,39 +551,18 @@ public:
 		__debug_log_method__;
 		if (dit_type!=DIT_VARIABLE_OBJECT) return false;
 		if (!debug->CanTalkToGDB()) {
-			class OnPauseModifyInspectionValue : public DebugManager::OnPauseAction {
-			wxString command;
-			public: 
-				OnPauseModifyInspectionValue(DebuggerInspection *di, const wxString &new_value) {
-					command = wxString("-var-assign ")<<di->variable_object<<" "<<mxUT::EscapeString(new_value,true);
-				}
-				void Do() override { debug->SendCommand(command); }
-			};
-			debug->PauseFor(new OnPauseModifyInspectionValue(this,new_value));
+			_DEBUG_LAMBDA_2( lmbModifyInspectionValue, DebuggerInspection,di, wxString,command, { debug->SendCommand(command); } );
+			wxString command = wxString("-var-assign ")<<this->variable_object<<" "<<mxUT::EscapeString(new_value,true);
+			debug->PauseFor(new lmbModifyInspectionValue(this,command));
 			return true;
 		}
 		return VOAssign(new_value);
 	}
 	
-//	void Freeze() {
-//		is_frozen=true;
-//		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) 
-//			TryToExec(&DebuggerInspection::VOSetFrozen,true);
-//	}
-
 	void SetFormat(GDB_VO_FORMAT format) { 
 		vo_value_format=format;
 		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) TryToExec(&DebuggerInspection::VOSetFormat,true);
 	}
-	
-//	void UnFreeze() {
-//		is_frozen=false;
-//		if (dit_type==DIT_VARIABLE_OBJECT && debug->debugging) {
-//			TryToExec(&DebuggerInspection::VOSetFrozen,true);
-////			TryToExec(&DebuggerInspection::VOEvaluate,true);
-//		}
-//		if (dit_type!=DIT_VARIABLE_OBJECT || helper) UpdateValue();
-//	}
 	
 	/**
 	* @brief break an inspections based on a compound vo, into its child vos
