@@ -2008,8 +2008,8 @@ MAINW_INSERT_HEADIR_CPP
  esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera.
 MAINW_NO_HEADER_FOR
 No se encontro cabecera correspondiente a \"<{1}>\".
-DEBUG_STATUS_ATTACHING_TO
-Depurador adjuntado al proceso 
+DEBUG_STATUS_ATTACHED_TO
+Depurador adjuntado al proceso <{[1]}>. Ejecución interrumpida.
 DEBUG_STATUS_TARGET_DONE
 Depuración iniciada correctamente.
 DEBUG_RETURN_VALUE
@@ -2122,6 +2122,8 @@ MAINW_TEMPLATE_GENERATED
 Plantilla generada
 MAINW_GPROF_STATUS_LIZARD
 Ejecutando lizard...
+OSD_DISASSEMBLING
+Desensamblando...
 MAKEFILE_CAPTION
 Generar Makefile
 MAKEFILE_PROFILE

@@ -1113,8 +1113,8 @@ void mxMainWindow::OnToolsDissasembleOffline (wxCommandEvent & event) {
 		wxString src_fname = src->GetFullPath();
 		
 		// inform user
-		status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_ANALIZING,"Desensamblando..."));
-		mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Desensamblando..."));
+		status_bar->SetStatusText(LANG(OSD_DISASSEMBLING,"Desensamblando..."));
+		mxOSD osd(this,LANG(OSD_DISASSEMBLING,"Desensamblando..."));
 		// compose required command
 		wxString command("sh -c \'objdump -d -C -l ");
 		if (project)

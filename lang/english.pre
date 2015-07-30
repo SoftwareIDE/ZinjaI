@@ -2010,8 +2010,8 @@ MAINW_INSERT_HEADIR_CPP
  is declared in a source file. Only header files should be included.
 MAINW_NO_HEADER_FOR
 Could'nt find a header file related to "<{1}>".
-DEBUG_STATUS_ATTACHING_TO
-Attaching...
+DEBUG_STATUS_ATTACHED_TO
+Debugger attached to process <{[1]}>. Execution paused.
 DEBUG_STATUS_TARGET_DONE
 Debugger started
 DEBUG_RETURN_VALUE
@@ -2124,6 +2124,8 @@ MAINW_TEMPLATE_GENERATED
 Template generated
 MAINW_GPROF_STATUS_LIZARD
 Running lizard...
+OSD_DISASSEMBLING
+Disassembling...
 MAKEFILE_CAPTION
 Generate Makefil
 MAKEFILE_PROFILE

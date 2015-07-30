@@ -3212,7 +3212,7 @@ void mxMainWindow::OnDebugAttach ( wxCommandEvent &event ) {
 		cual.BeforeFirst(' ').ToLong(&dpid);
 	if (!dpid) return;
 	wxString command = wxString("attach ")<<dpid;
-	wxString message = wxString(LANG(DEBUG_STATUS_ATTACHING_TO,"Depurador adjuntado al proceso "))<<dpid;
+	wxString message = LANG1(DEBUG_STATUS_ATTACHED_TO,"Depurador adjuntado al proceso <{[1]}>. Ejecución pausada.",(wxString()<<dpid));
 	debug->SpecialStart(project?nullptr:CURRENT_SOURCE,command,message,false);
 	if (debug->IsDebugging()) debug->SetChildPid(dpid);
 }
