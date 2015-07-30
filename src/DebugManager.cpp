@@ -1928,3 +1928,12 @@ void DebugManager::SetBlacklist (bool clear_first) {
 	}
 }
 
+void DebugManager::Patch ( ) {
+	if (CanTalkToGDB()) {
+		debug_patcher->Patch();
+	} else {
+		_DEBUG_LAMBDA_0( lmbPatch, { debug->GetPatcher()->Patch(); } );
+		PauseFor(new lmbPatch());
+	}
+}
+

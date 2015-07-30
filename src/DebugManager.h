@@ -92,6 +92,7 @@ private:
 	vector<SignalHandlingInfo> *signal_handlers_state; ///< signals states to be setted before running, first one has defaults, second one desired settings (if nullptr no setting is required, will be created and modified my mxSignalsSettings)
 	DebugPatcher *debug_patcher;
 public:
+	void Patch();
 	DebugPatcher *GetPatcher() { return debug_patcher; } // retorna puntero y no instancia para poder poner en ese h solo una forward declaration y evitar tener que recompilar mucho al cambiar el patcher
 
 private:
