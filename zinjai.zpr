@@ -8,11 +8,11 @@ default_fext_header=h
 autocomp_extra=wxWidgets
 active_configuration=Linux_Debug
 version_saved=20150722
-version_required=20141218
+version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/mxMainWindowTools.cpp
+current_source=guihelp/ChangeLog.html
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -22,9 +22,8 @@ path=src/ConfigManager.cpp
 cursor=558:52
 [source]
 path=src/mxMainWindowTools.cpp
-cursor=1172:2
+cursor=1168:29
 marker=178
-open=true
 [source]
 path=src/mxColoursEditor.cpp
 cursor=514:57
@@ -82,7 +81,7 @@ path=src/mxCompileConfigWindow.cpp
 cursor=32:88
 [source]
 path=src/mxPreferenceWindow.cpp
-cursor=384:65
+cursor=705:62
 [source]
 path=src/mxGotoLineWindow.cpp
 cursor=64:42
@@ -91,7 +90,7 @@ path=src/mxOpenSharedWindow.cpp
 cursor=27:61
 [source]
 path=src/mxProjectConfigWindow.cpp
-cursor=102:20
+cursor=0:0
 [source]
 path=src/mxShareSourceWindow.cpp
 cursor=109:0
@@ -444,7 +443,7 @@ path=src/mxOpenSharedWindow.h
 cursor=0:4
 [header]
 path=src/mxProjectConfigWindow.h
-cursor=55:10
+cursor=30:0
 [header]
 path=src/mxShareSourceWindow.h
 cursor=25:8
@@ -795,7 +794,8 @@ path=src/mxRegistersGrid.h
 cursor=0:0
 [other]
 path=guihelp/ChangeLog.html
-cursor=9:183
+cursor=9:164
+open=true
 [other]
 path=guihelp/tips_spanish
 cursor=0:24
@@ -828,7 +828,7 @@ toolchain_argument_4=${DEFAULT}
 working_folder=/mnt/ex/zinjai
 always_ask_args=0
 args=
-exec_method=1
+exec_method=0
 exec_script=
 env_vars=DISPLAY=:0.0
 wait_for_key=1

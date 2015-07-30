@@ -2335,6 +2335,12 @@ extern int _member_declaration( Class_t Class )
             Return( False )
          }
          break;
+			
+		/// added by Zaskar
+		case SN_TEMPLATE:
+			step(1);
+			template_argument_skip(NULL);
+			break;
 
       default         :
          Restore_d();
