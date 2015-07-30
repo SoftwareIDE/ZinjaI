@@ -2471,25 +2471,22 @@ void mxSource::ShowBaloon(wxString str, int p) {
 //			p = GetLineEndPosition(cl);
 //	}
 	
-	int x1 = PointFromPosition(p).x;
-	int x2 = PointFromPosition(p+1).x;
-	char c = GetCharAt(p);
-	if (x1!=x2 && c!='\n' && c!='\t' && c!='\r') {
-		int l=str.Len(), ll = (GetSize().GetWidth()-x1)/(x2-x1)-1;
-		if (ll>5) {
-			int ac=0;
-			for (int i = 0;i<l; i++) {
-				if (str[i]=='\n') ac=0;
-				else {
-					ac++;
-					if (ac>ll) {
-						int j=i;
-						while (j && ( str[j]!=' ' && str[j]!=',' && str[j]!='(' && str[j]!=')' ) ) j--;
-						if (j && !(j>2 && str[j]==' ' && str[j-1]==' ' && str[j-2]==' ' && str[j-3]=='\n') ) {
-							i=j;
-							str = str.SubString(0,j)+"\n   "+str.Mid(j+1);
-							l+=4;
-						}
+	int x1 = PointFromPosition(p).x, char_w = TextWidth(0,"W");
+	if (char_w<1) char_w=1;
+	int l=str.Len(), ll = (GetSize().GetWidth()-x1)/(char_w)-1;
+	if (ll>5) {
+		int ac=0;
+		for (int i = 0;i<l; i++) {
+			if (str[i]=='\n') ac=0;
+			else {
+				ac++;
+				if (ac>ll) {
+					int j=i;
+					while (j && ( str[j]!=' ' && str[j]!=',' && str[j]!='(' && str[j]!=')' ) ) j--;
+					if (j && !(j>2 && str[j]==' ' && str[j-1]==' ' && str[j-2]==' ' && str[j-3]=='\n') ) {
+						i=j;
+						str = str.SubString(0,j)+"\n   "+str.Mid(j+1);
+						l+=4;
 					}
 				}
 			}
