@@ -257,6 +257,7 @@ bool Autocoder::Apply(mxSource *src, auto_code *ac, bool args) {
 		src->SetSelection(src->GetTargetStart()+pos_cursor,src->GetTargetStart()+pos_cursor);
 	else
 		src->SetSelection(src->GetTargetEnd(),src->GetTargetEnd());
+	src->BraceHighlight(wxSTC_INVALID_POSITION,wxSTC_INVALID_POSITION);
 	if (src->config_source.syntaxEnable) {
 		src->Colourise(src->GetTargetStart(),src->GetTargetEnd());
 		if (l0<l1) src->Indent(l0+1,l1);

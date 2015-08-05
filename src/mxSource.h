@@ -400,6 +400,7 @@ private:
 	// helper functions for autocomp parsing
 	template<int N> bool TextRangeIs(int pos_start, int pos_end, const char (&word)[N]);
 	int SkipTemplateSpec(int pos_start, int pos_max=0);
+	int SkipTemplateSpecBack(int pos_start);
 	
 	DECLARE_EVENT_TABLE();
 };

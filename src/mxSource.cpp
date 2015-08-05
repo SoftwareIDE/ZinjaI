@@ -2086,9 +2086,8 @@ bool mxSource::IsKeywordChar (char c) {
 /// aux function for FindTypeOf
 int mxSource::SkipTemplateSpec(int pos_start, int pos_max) {
 	if (!pos_max) pos_max = GetLength();
-	int tplt_deep = 0, p=pos_start, s; // s es para II_IS_COMMENT
-	tplt_deep = 1; p++;
-	while (p<pos_max && tplt_deep!=0) {
+	int tplt_deep = 1, p=pos_start, s; // s es para II_IS_COMMENT
+	while (++p<pos_max && tplt_deep!=0) {
 		if (!II_IS_COMMENT(p)) {
 			char c = GetCharAt(p);
 			if (c=='>')
@@ -2096,7 +2095,21 @@ int mxSource::SkipTemplateSpec(int pos_start, int pos_max) {
 			else if (c=='<')
 				tplt_deep++;
 		}
-		p++;
+	}
+	if (!tplt_deep) return p;
+	else return wxSTC_INVALID_POSITION;
+}
+
+int mxSource::SkipTemplateSpecBack(int pos_start) {
+	int tplt_deep = 1, p=pos_start, s; // s es para II_IS_COMMENT
+	while (--p>=0 && tplt_deep!=0) {
+		if (!II_IS_COMMENT(p)) {
+			char c = GetCharAt(p);
+			if (c=='<')
+				tplt_deep--;
+			else if (c=='>')
+				tplt_deep++;
+		}
 	}
 	if (!tplt_deep) return p;
 	else return wxSTC_INVALID_POSITION;
@@ -2430,9 +2443,23 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 			p2=WordEndPosition(p_type,true);
 			ret=GetTextRange(p_type,p2);
 		}
-		if (include_template_spec && GetCharAt(p2)=='<') { 
-			int p3 = SkipTemplateSpec(p2);
-			if (p3!=wxSTC_INVALID_POSITION) ret+=GetTextRange(p2,p3);
+		if (include_template_spec) {
+			while (p_type>2 && GetCharAt(p_type-1)==':'&&GetCharAt(p_type-2)==':') { // include namespace (cannot accept templated namespaces yet)
+				int orig_ptype = p_type; p_type-=3; char c=GetCharAt(p_type);
+				while(p_type>=0 && c=='>' || II_IS_KEYWORD_CHAR(c)) {
+					if (c=='>') { // skip namespace's templates args
+						int p = SkipTemplateSpecBack(p_type);
+						if (p==wxSTC_INVALID_POSITION) break;
+						else p_type=p;
+					}
+					c=GetCharAt(--p_type);
+				}
+				ret = GetTextRange(++p_type,orig_ptype)+ret;
+			}
+			if (GetCharAt(p2)=='<') { // include template arguments
+				int p3 = SkipTemplateSpec(p2);
+				if (p3!=wxSTC_INVALID_POSITION) ret+=GetTextRange(p2,p3);
+			}
 		}
 
 		p_ocur+=key.Len();
