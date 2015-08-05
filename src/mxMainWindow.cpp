@@ -3140,7 +3140,7 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 		} else { // conseguir el h y darselo al source para que haga lo que corresponda
 			wxString header = code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),key);
 			if (!header.Len()) {
-				wxString bkey=key, type = source->FindTypeOf(e-1,s);
+				wxString bkey=key, type = source->FindTypeOfByPos(e-1,s);
 				if ( s!=SRC_PARSING_ERROR && type.Len() ) {
 					header = code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),type);
 				} else { // buscar el scope y averiguar si es algo de la clase

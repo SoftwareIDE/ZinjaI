@@ -1179,9 +1179,9 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				p--;
 			if (e>p)  {
 				char c; int s;
-				II_BACK(e,II_IS_4(e,' ','\t','\r','\n') || II_SHOULD_IGNORE(e));
+				II_BACK(e,II_IS_NOTHING_4(e));
 					if (c==')' && (e=BraceMatch(e))!=wxSTC_INVALID_POSITION) {
-					II_BACK(e,II_IS_4(e,' ','\t','\r','\n') || II_SHOULD_IGNORE(e));
+					II_BACK(e,II_IS_NOTHING_4(e));
 					SetLineIndentation(l,GetLineIndentation(LineFromPosition(e)));
 				}
 			}
@@ -1232,7 +1232,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				if (cl==GetLineCount()-1)
 					AppendText("\n");
 				int e=p+1, l=GetLength();
-				II_FRONT(e,II_IS_4(e,' ','\t','\r','\n') || II_SHOULD_IGNORE(e));
+				II_FRONT(e,II_IS_NOTHING_4(e));
 				if (LineFromPosition(e)==cl) {
 					if (c=='}') {
 						SetLineIndentation(cl,GetLineIndentation(cl-1));
@@ -1262,10 +1262,10 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					e=GetLineIndentPosition(cl-1);
 					if (GetTextRange(e,e+8)=="template" && GetStyleAt(e)==wxSTC_C_WORD) {
 						e+=8;
-						II_FRONT(e,II_IS_2(e,' ','\t') || II_SHOULD_IGNORE(e));
+						II_FRONT(e,II_IS_NOTHING_2(e));
 						if (c=='<' && (p=BraceMatch(e))!=wxSTC_INVALID_POSITION) {
 							e=p+1;
-							II_FRONT(e,II_IS_2(e,' ','\t') || II_SHOULD_IGNORE(e));
+							II_FRONT(e,II_IS_NOTHING_2(e));
 						}
 					}
 					if ( (GetTextRange(e,e+5)=="class" || GetTextRange(e,e+6)=="struct") && GetStyleAt(e)==wxSTC_C_WORD)
@@ -1280,7 +1280,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			}
 			p = GetCurrentPos()-1;
 
-			II_BACK(p, II_IS_4(p,' ','\t','\r','\n') || II_SHOULD_IGNORE(p) );
+			II_BACK(p, II_IS_NOTHING_4(p) );
 			if (p==0) { // si se llego al principio del documento no hay nada contra lo que indentar
 				SetLineIndentation(cl,GetLineIndentation(0));
 				wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
@@ -1291,7 +1291,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				int e = BraceMatch(p);
 				if (e!=wxSTC_INVALID_POSITION) {
 					e--;
-					II_BACK(e,II_IS_2(e,' ','\t') || II_SHOULD_IGNORE(e));
+					II_BACK(e,II_IS_NOTHING_2(e));
 					if (e>8 && GetStyleAt(e)==wxSTC_C_WORD && c=='e' && GetTextRange(e-7,e)=="templat") {
 						SetLineIndentation(cl,GetLineIndentation(LineFromPosition(e)));
 						wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
@@ -1302,7 +1302,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			
 			if (c=='{' /* || c==':' */ || (p>3 && s==wxSTC_C_WORD && GetCharAt(p-3)=='e' && GetCharAt(p-2)=='l' && GetCharAt(p-1)=='s' && GetCharAt(p)=='e') ) { // si abre llave, incrementar uno en el identado
 				int e=p+1, l=GetLength();
-				II_FRONT(e,II_IS_4(e,' ','\t','\r','\n') || II_SHOULD_IGNORE(e));
+				II_FRONT(e,II_IS_NOTHING_4(e));
 				if (c=='}' && cl==LineFromPosition(e) && cl-1!=LineFromPosition(p)) {
 					SetLineIndentation(cl-1,GetLineIndentation(LineFromPosition(p))+config_source.tabWidth);
 					SetLineIndentation(cl,GetLineIndentation(LineFromPosition(p)));
@@ -1332,12 +1332,12 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						p--;
 				}
 				p++;
-				II_FRONT_NC(p , p<cpm1 && (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p) ) );
+				II_FRONT_NC(p , p<cpm1 && (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) ) );
 				l=p;
 				// para que siga si encuentra un else
 				if ((flag=(s==wxSTC_C_WORD && GetCharAt(p)=='e' && GetCharAt(p+1)=='l' && GetCharAt(p+2)=='s' && GetCharAt(p+3)=='e'))) {
 					p--;
-					II_BACK(p,II_IS_4(p,' ','\t','\n','\r') || II_SHOULD_IGNORE(p));
+					II_BACK(p,II_IS_NOTHING_4(p));
 					if (GetCharAt(p)!='}') p--;
 				}
 			}
@@ -1358,13 +1358,13 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						flag=true;
 						l=p;
 						// avanzar hasta la linea/condicion
-						II_FRONT_NC(p , p<cpm1 && ( II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p) || s==wxSTC_C_WORD) );
+						II_FRONT_NC(p , p<cpm1 && ( II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) || s==wxSTC_C_WORD) );
 						// si va una condicion, saltearla
 						if ( flag && (s=BraceMatch(p))==wxSTC_INVALID_POSITION ) {
 							SetLineIndentation(cl,LineFromPosition(p)+config_source.tabWidth);
 						} else if (flag)
 							p=s+1;
-						II_FRONT_NC(p , p<cpm1 && (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) );
+						II_FRONT_NC(p , p<cpm1 && (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) );
 					}
 				if (l!=0) {
 					SetLineIndentation(cl,GetLineIndentation(LineFromPosition(l))+config_source.tabWidth);
@@ -1412,7 +1412,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			int p=GetCurrentPos()-2;
 			if (GetCharAt(p)=='-') {
 				int dims;
-				wxString type = FindTypeOf(p-1,dims);
+				wxString type = FindTypeOfByPos(p-1,dims);
 				if (dims==SRC_PARSING_ERROR) {
 					if (type.Len()!=0)
 						ShowBaloon(type);
@@ -1433,7 +1433,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			}
 			if (shouldComp) {
 				int dims;
-				wxString type = FindTypeOf(p,dims);
+				wxString type = FindTypeOfByPos(p,dims);
 				if (dims==SRC_PARSING_ERROR) {
 					if (type.Len()!=0)
 						ShowBaloon(type);
@@ -1501,7 +1501,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				p--;
 				II_BACK(p,II_IS_NOTHING_4(p));
 				if (c=='.') {
-					wxString type = FindTypeOf(p-1,dims);
+					wxString type = FindTypeOfByPos(p-1,dims);
 					if (dims==0) {
 						if (chr=='(' && config_source.callTips)
 							code_helper->ShowFunctionCalltip(ctp,this,type,key);
@@ -1510,7 +1510,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					}
 				} else if (c=='>' && GetCharAt(p-1)=='-') {
 					p--;
-					wxString type = FindTypeOf(p-1,dims);
+					wxString type = FindTypeOfByPos(p-1,dims);
 					if (dims==1) {
 						if (chr=='(' && config_source.callTips)
 							code_helper->ShowFunctionCalltip(ctp,this,type,key);
@@ -1543,7 +1543,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 							if (!code_helper->ShowConstructorCalltip(ctp,this,GetTextRange(p1,p))) {
 								if (!code_helper->ShowConstructorCalltip(ctp,this,key)) {
 									// mostrar sobrecarga del operador()
-									wxString type=FindTypeOf(key,p1);
+									wxString type=FindTypeOfByKey(key,p1);
 									if (type.Len()) {
 										code_helper->ShowFunctionCalltip(ctp,this,type,"operator()",true);
 									}
@@ -2078,6 +2078,39 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	
 }
 
+
+bool mxSource::IsKeywordChar (char c) {
+	return II_IS_KEYWORD_CHAR(c);
+}
+
+/// aux function for FindTypeOf
+int mxSource::SkipTemplateSpec(int pos_start, int pos_max) {
+	if (!pos_max) pos_max = GetLength();
+	int tplt_deep = 0, p=pos_start, s; // s es para II_IS_COMMENT
+	tplt_deep = 1; p++;
+	while (p<pos_max && tplt_deep!=0) {
+		if (!II_IS_COMMENT(p)) {
+			char c = GetCharAt(p);
+			if (c=='>')
+				tplt_deep--;
+			else if (c=='<')
+				tplt_deep++;
+		}
+		p++;
+	}
+	if (!tplt_deep) return p;
+	else return wxSTC_INVALID_POSITION;
+}
+
+/// aux function for FindTypeOf
+template<int N> bool mxSource::TextRangeIs(int pos_start, int pos_end, const char (&word)[N]) {
+	if (pos_end-pos_start!=N-1) return false;
+	for(int i=pos_start,j=0;i<pos_end;i++,j++) 
+		if (GetCharAt(i)!=word[j])
+			return false;
+	return true;
+}
+
 /**
 * Averigua el tipo de una variable dentro de un contexto. 
 * Primero busca en el código del archivo hacia atras y mira lo que parezca
@@ -2086,7 +2119,7 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 * clase, para que al final si no encontró nada le pueda preguntar al parser
 * por esa clase
 **/
-wxString mxSource::FindTypeOf(wxString &key, int &pos) {
+wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_template_spec) {
 	
 	int dims=0;
 	bool notSpace=true;
@@ -2120,7 +2153,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		}
 		int dims=WordStartPosition(e,true);
 		wxString space = GetTextRange(dims,e+1);
-		wxString type = FindTypeOf(space,dims);
+		wxString type = FindTypeOfByKey(space,dims,include_template_spec);
 		dims-=ddims;
 		if (dims==0) {
 			pos=-1;
@@ -2131,7 +2164,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 	} else if (c=='>' && e!=0 && GetCharAt(e-1)=='-') {
 		e-=2;
 		II_BACK(e,II_IS_NOTHING_4(e));
-		wxString space=FindTypeOf(e,dims);
+		wxString space=FindTypeOfByPos(e,dims,include_template_spec);
 		if (space.Len()) { // codigo nuevo, usar el otro FindTypeOf
 			pos=dims-1; // pos es argumento de entrada(posicion) y salida(dimension)
 			wxString type=code_helper->GetAttribType(space,key,pos);
@@ -2140,7 +2173,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		} else {// fin codigo nuevo, empieza codigo viejo, si no funca que siga como antes (todo: analizar si vale la pena o si con el nuevo ya reemplaza todo)
 			int dims=WordStartPosition(e,true);
 			wxString space = GetTextRange(dims,e+1);
-			wxString type = FindTypeOf(space,dims);
+			wxString type = FindTypeOfByKey(space,dims,include_template_spec);
 			if (dims==1) {
 				pos=-1;
 				type = code_helper->GetAttribType(type,key,pos);
@@ -2213,14 +2246,14 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 						p_ocur=p;
 						// contar las dimensiones (asteriscos)
 						p--;
-						while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
+						while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
 							p--;
 						}
 						if (c=='&') c=GetCharAt(--p); // alias de tipo puntero (foo *&var)
 						while (c=='*') {
 							p--;
 							dims++;
-							while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
+							while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
 								p--;
 							}
 						}
@@ -2228,24 +2261,24 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 					}
 					// buscar el scope de la funcion actual
 					p=p_to-1;
-					while (p>0 && ( II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p) ) ) {
+					while (p>0 && ( II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) ) ) {
 						p--;
 					}
 					c=GetCharAt(p);
-					while  ( p>0 && ( (c>='a' && c<='z') || (c>='0' && c<='9') || (c>='A' && c<='Z') || c=='_' || II_SHOULD_IGNORE(p) ) ) {
+					while  ( p>0 && ( II_IS_KEYWORD_CHAR(c) || II_SHOULD_IGNORE(p) ) ) {
 						c=GetCharAt(--p);
 					}
 					if (p>0&&c=='~') c=GetCharAt(--p); // por si era un destructor
-					while (p>0 && ( II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p) ) ) {
+					while (p>0 && ( II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) ) ) {
 						p--;
 					}
 					if (c==':' && GetCharAt(p-1)==':') {
 						p-=2;
-						while (p>0 && ( II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p) ) ) {
+						while (p>0 && ( II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) ) ) {
 							p--;
 						}
 						p2=p+1;
-						while  ( p>0 &&  ( (c>='a' && c<='z') || (c>='0' && c<='9') || (c>='A' && c<='Z') || c=='_' /*|| II_SHOULD_IGNORE(p)*/ ) ) {
+						while  ( p>0 &&  ( II_IS_KEYWORD_CHAR(c) /*|| II_SHOULD_IGNORE(p)*/ ) ) {
 							c=GetCharAt(--p);
 						}
 						p1=p+1;
@@ -2331,56 +2364,39 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 			}
 			// saltar el indentado
 			p++;
-			while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p) )
+			while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) )
 				p++;
 			// avanzar el hipotetico nombre de la clase (va a quedar entre p1 y p2)
 			int p3;
 			do {
 				p1=p;
-				while ( (c>='a' && c<='z') ||  (c>='A' && c<='Z') ||  (c>='0' && c<='9') || c=='_' || II_SHOULD_IGNORE(p) ) {
+				while ( II_IS_KEYWORD_CHAR(c) || II_SHOULD_IGNORE(p) ) {
 					p++;
 					c=GetCharAt(p);
 				}
 				p3=p2=p;
 				// avanzar espacios en blanco
-				while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
+				while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
 					p++;
 				}
-			} while (GetTextRange(p1,p2)=="const" || GetTextRange(p1,p2)=="volatile" || GetTextRange(p1,p2)=="static" || GetTextRange(p1,p2)=="extern");
+ 			} while (TextRangeIs(p1,p2,"const") || TextRangeIs(p1,p2,"volatile") || TextRangeIs(p1,p2,"static") || TextRangeIs(p1,p2,"extern"));
 			// saltar los parametros del template si es template (mejorar: aqui no se tienen en cuenta comentarios y literales)
-			int tplt_deep = 0;
-			if (c=='<' && GetCharAt(p+1)!='<') {
-				tplt_deep = 1; p++;
-				while (p<p_ocur && tplt_deep!=0) {
-					c = GetCharAt(p);
-					if (c=='>')
-						tplt_deep--;
-					else if (c=='<')
-						tplt_deep++;
-					p++;
-				}
-				p3=p;
-			}
-			if (tplt_deep==0) {
+			if (c=='<' && GetCharAt(p+1)!='<') p3=p=SkipTemplateSpec(p,p_ocur);
+			if (p!=wxSTC_INVALID_POSITION) {
 				// ver si lo que sigue tiene cara de nombres de variable para la declaracion ¿?
-				while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
-					p++;
-				}
-				if ( (c>='a' && c<='z') || (c>='0' && c<='9') || (c>='A' && c<='Z') || c=='_' || c=='&' || c=='*' || II_SHOULD_IGNORE(p) ) {
+				while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) p++;
+				if ( II_IS_KEYWORD_CHAR(c) || c=='&' || c=='*' /*|| II_SHOULD_IGNORE(p)*/) {
 					dims=0;
-					if (p1!=p2 
-						&& !(p2-p1==4 && GetCharAt(p1)=='e' && GetCharAt(p1+1)=='l' && GetCharAt(p1+2)=='s' && GetCharAt(p1+3)=='e')
-						&& !(p2-p1==6 && GetCharAt(p1)=='d' && GetCharAt(p1+1)=='e' && GetCharAt(p1+2)=='l' && GetCharAt(p1+3)=='e' && GetCharAt(p1+4)=='t' && GetCharAt(p1+5)=='e')
-						) {
+					if (p1!=p2 && !TextRangeIs(p1,p2,"else") && !TextRangeIs(p1,p2,"delete")) {
 						p=p_ocur-1;
-						while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
+						while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
 							p--;
 						}
-						if (c=='&') c=GetCharAt(--p); // por si es algo como "string *&p=..."
+						if (c=='&' && GetCharAt(p-1)=='*') { c='*'; --p; } // por si es algo como "string *&p=..."
 						while (c=='*') {
 							p--;
 							dims++;
-							while (II_IS_4(p,' ','\n','\t','\r') || II_SHOULD_IGNORE(p)) {
+							while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
 								p--;
 							}
 						}
@@ -2400,34 +2416,27 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 		
 	}
 	
-	if (p_type!=wxSTC_INVALID_POSITION) {
+	if (p_type!=wxSTC_INVALID_POSITION) { // significa que encontro donde se declara el tipo
 		
-		while (II_IS_4(p_type,' ','\t','\r','\n') || II_SHOULD_IGNORE(p_type)) {
-			p_type++;
-		}
+		while (II_IS_NOTHING_4(p_type)) p_type++;
+		
 		p2=WordEndPosition(p_type,true);
 		ret=GetTextRange(p_type,p2);
 		while ( !(ret!="unsigned" && ret!="const" && ret!="signed" && ret!="extern" && ret!="volatile" && ret!="long" && ret!="static" && (ret!="public" || GetCharAt(p2)!=':') && (ret!="protected" || GetCharAt(p2)!=':') && (ret!="private" || GetCharAt(p2)!=':') ) ) {
 			p_type=p2;
-			while (II_IS_4(p_type,' ','\t','\r','\n') || II_SHOULD_IGNORE(p_type)) {
+			while (II_IS_NOTHING_4(p_type)) {
 				p_type++;
 			}
 			p2=WordEndPosition(p_type,true);
 			ret=GetTextRange(p_type,p2);
 		}
-//		while (II_IS_4(p2,' ','\t','\r','\n') || II_SHOULD_IGNORE(p2)) {
-//			p2++;
-//		}
-//		while(GetCharAt(p2)=='*') {
-//			dims++;
-//			p2++;
-//			while (II_IS_4(p2,' ','\t','\r','\n') || II_SHOULD_IGNORE(p2)) {
-//				p2++;
-//			}
-//		}
+		if (include_template_spec && GetCharAt(p2)=='<') { 
+			int p3 = SkipTemplateSpec(p2);
+			if (p3!=wxSTC_INVALID_POSITION) ret+=GetTextRange(p2,p3);
+		}
 
 		p_ocur+=key.Len();
-		while (II_IS_4(p_ocur,' ','\t','\r','\n') || II_SHOULD_IGNORE(p_ocur)) {
+		while (II_IS_NOTHING_4(p_ocur)) {
 			p_ocur++;
 		}
 		while (GetCharAt(p_ocur)=='[') {
@@ -2436,7 +2445,7 @@ wxString mxSource::FindTypeOf(wxString &key, int &pos) {
 			if (p_ocur==wxSTC_INVALID_POSITION)
 				return ret;
 			p_ocur++;
-			while (II_IS_4(p_ocur,' ','\t','\r','\n') || II_SHOULD_IGNORE(p_ocur)) {
+			while (II_IS_NOTHING_4(p_ocur)) {
 				p_ocur++;
 			}
 		}
@@ -2502,7 +2511,7 @@ void mxSource::ShowBaloon(wxString str, int p) {
 	DEBUG_INFO("wxYield:out mxSource::ShowBaloon");
 }
 	
-wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
+wxString mxSource::FindTypeOfByPos(int p,int &dims, bool include_template_spec, bool first_call) {
 	if (first_call)
 		dims=0;
 	int s; char c;
@@ -2570,19 +2579,19 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 				--p; II_BACK(p,II_IS_NOTHING_4(p));
 				if (GetCharAt(p)=='.') {
 					--p; II_BACK(p,II_IS_NOTHING_4(p));
-					scope=FindTypeOf(p,dims);
+					scope=FindTypeOfByPos(p,dims,include_template_spec);
 				} else if (p&& GetCharAt(p)==':' && GetCharAt(p-1)==':') {
 					p-=2; II_BACK(p,II_IS_NOTHING_4(p));
 					scope=GetTextRange(WordStartPosition(p,true),p+1);
 				} else if (GetCharAt(p)=='>') {
 					p-=2; II_BACK(p,II_IS_NOTHING_4(p));
-					scope=FindTypeOf(p,dims); dims--;
+					scope=FindTypeOfByPos(p,dims,include_template_spec); dims--;
 				} else {
 					scope = FindScope(p+1);
 				}
 				wxString type=code_helper->GetCalltip(scope,func_name,false,true);
 				if (!type.Len()) { // sera sobrecarga del operator() ?
-					type=FindTypeOf(func_name,p0_name);
+					type=FindTypeOfByKey(func_name,p0_name,include_template_spec);
 					type=code_helper->GetCalltip(type,"operator()",true,true);
 				}
 				if (type.Len()) {
@@ -2632,13 +2641,13 @@ wxString mxSource::FindTypeOf(int p,int &dims, bool first_call) {
 			dims=SRC_PARSING_ERROR;
 			return "";
 		}
-		wxString ans = FindTypeOf(p,dims,false);
+		wxString ans = FindTypeOfByPos(p,dims,include_template_spec,false);
 		return ans;
 	} else {
 		if ( ( (c|32)>='a' && (c|32)<='z' ) || c=='_' ) {
 			s=p;
 			wxString key=GetTextRange(p,WordEndPosition(p,true));
-			wxString ans=FindTypeOf(key,s);
+			wxString ans=FindTypeOfByKey(key,s,include_template_spec);
 			if (ans.Len() && dims<0 && s==0) {
 				wxString type=code_helper->GetCalltip(ans,"operator[]",true,true);				
 				if (type.Len()) { 
@@ -2842,7 +2851,7 @@ void mxSource::OnToolTipTime (wxStyledTextEvent &event) {
 		if (s!=e) {
 			wxString key = GetTextRange(s,e);
 			// buscar en la funcion/metodo
-			wxString bkey=key, type = FindTypeOf(e-1,s);
+			wxString bkey=key, type = FindTypeOfByPos(e-1,s,true);
 			if ( s!=SRC_PARSING_ERROR && type.Len() ) {
 				while (s>0) {
 					type<<_("*");
@@ -2981,7 +2990,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 	} else if (chr=='>' && p>1 && GetCharAt(p-2)=='-') {
 		p-=2;
 		int dims;
-		wxString type = FindTypeOf(p-1,dims);
+		wxString type = FindTypeOfByPos(p-1,dims);
 		if (dims==SRC_PARSING_ERROR) {
 			ShowBaloon(LANG(SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION,"No se pudo determinar el ambito a autocompletar"));
 		} else if (dims==1) {
@@ -3004,7 +3013,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 		}
 		if (shouldComp) {
 			int dims;
-			wxString type = FindTypeOf(p,dims);
+			wxString type = FindTypeOfByPos(p,dims);
 			if (dims==SRC_PARSING_ERROR) {
 				ShowBaloon(LANG(SOURCE_UNDEFINED_SCOPE_AUTOCOMPLETION,"No se pudo determinar el ambito a autocompletar"));
 			} else	if (dims==0) {
@@ -3055,7 +3064,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 			p--;
 			II_BACK(p,II_IS_NOTHING_4(p));
 			if (c=='.') {
-				wxString type = FindTypeOf(p-1,dims);
+				wxString type = FindTypeOfByPos(p-1,dims);
 				if (dims==0) {
 					if (chr=='('/* && config_source.callTips*/)
 						code_helper->ShowFunctionCalltip(ctp,this,type,key);
@@ -3064,7 +3073,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				}
 			} else if (c=='>' && GetCharAt(p-1)=='-') {
 				p--;
-				wxString type = FindTypeOf(p-1,dims);
+				wxString type = FindTypeOfByPos(p-1,dims);
 				if (dims==1) {
 					if (chr=='('/* && config_source.callTips*/)
 						code_helper->ShowFunctionCalltip(ctp,this,type,key);
@@ -3097,7 +3106,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 						wxString key=GetTextRange(p1,p);
 						if (!code_helper->ShowConstructorCalltip(ctp,this,key)) {
 							// mostrar sobrecarga del operador()
-							wxString type=FindTypeOf(key,p1);
+							wxString type=FindTypeOfByKey(key,p1);
 							if (type.Len()) {
 								code_helper->ShowFunctionCalltip(ctp,this,type,"operator()",true);
 							}
@@ -3373,7 +3382,7 @@ void mxSource::AlignComments (int col) {
 			if (!II_IS_COMMENT(p1)) {
 				while (p1<p2 && !II_IS_COMMENT(p1)) p1++;
 				p3=p1;
-				while (p3<p2 && (II_IS_COMMENT(p3) || II_IS_2(p3,' ','\t')) ) p3++;
+				while (p3<p2 && II_IS_NOTHING_2(p3) ) p3++;
 			} else {
 				while (p1<p2 && II_IS_2(p1,' ','\t')) p1++;
 				p3=p2;
@@ -4058,6 +4067,3 @@ int mxSource::GetStatementStartPos(int pos) {
 	return pos;
 }
 
-bool mxSource::IsKeywordChar (char c) {
-	return II_IS_KEYWORD_CHAR(c);
-}

@@ -79,7 +79,10 @@ END_EVENT_TABLE()
 
 wxString mxExtraStepWindow::new_name;
 	
-mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent) : wxDialog(parent, wxID_ANY, LANG(PROJECTCONFIG_CAPTION,"Opciones de Compilacion y Ejecucion"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE| wxRESIZE_BORDER) {
+mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent) 
+	: wxDialog(parent, wxID_ANY, LANG(PROJECTCONFIG_CAPTION,"Opciones de Compilación y Ejecución"), 
+	           wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE| wxRESIZE_BORDER) 
+{
 	
 	discard=true;
 	

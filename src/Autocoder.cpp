@@ -74,8 +74,9 @@ void Autocoder::SetDefaults() {
 	{ auto_code a; a.code="for(unsigned int k=0;k<N;k++) { #here# }"; a.args.Add("N"); list["foruk"]=a; }
 	{ auto_code a; a.code="while(true) {\n#here#\n}"; list["whilet"]=a; }
 	{ auto_code a; a.code="if(cond) {\n\t#here#\n} else {\n\t\n}"; a.args.Add("cond"); list["ifel"]=a; }
-	{ auto_code a; a.code="cout<<x<<endl;"; a.args.Add("x"); list["cout"]=a; }
-	{ auto_code a; a.code="switch(x) {\ncase #here# :\n\tbreak;\ndefault:\n}"; a.args.Add("x"); list["switch"]=a; }
+	{ auto_code a; a.code="std::cout << x << std::endl;"; a.args.Add("x"); list["cout"]=a; }
+	{ auto_code a; a.code="std::cerr << x << std::endl;"; a.args.Add("x"); list["cerr"]=a; }
+	{ auto_code a; a.code="switch(x) {\ncase #here# :\n\tbreak;\ndefault:;\n}"; a.args.Add("x"); list["switch"]=a; }
 	{ auto_code a; a.code="class x {\nprivate:\n\t#here#\npublic:\n\tx();\n\t~x();\n};"; a.args.Add("x"); list["class"]=a; }
 	{ auto_code a; a.code="class x : public f {\nprivate:\n\t#here#\nprotected:\n\t\npublic:\n\tx();\n\t~x();\n};"; a.args.Add("x"); a.args.Add("f"); list["classh"]=a; }
 	{ auto_code a; a.description="dummy text"; 
@@ -85,7 +86,7 @@ void Autocoder::SetDefaults() {
 		"\"exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute \"\n"
 		"\"irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla \"\n"
 		"\"pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia \"\n"
-		"\"deserunt mollit anim id est laborum.\"";
+		"\"deserunt mollit anim id est laborum.\"#here#";
 	list["lorem_ipsum"]=a; }
 }
 
@@ -234,8 +235,17 @@ bool Autocoder::Apply(mxSource *src, auto_code *ac, bool args) {
 		}
 	} else 
 		if (args) return false; // sobran los argumentos
-	int p=code.Find("#here#");
-	if (p!=wxNOT_FOUND) code=code.Mid(0,p)+code.Mid(p+6);
+	int p;
+	while ( (p=code.find("#typeof("))!=wxNOT_FOUND ) {
+		int p2 = p+8; while(p2<int(code.Len())&&code[p2]!='#') ++p2;
+		if (p2==int(code.Len())) break;
+		int aux_pos = src->GetCurrentPos();
+		wxString key = code.Mid(p+8,p2-p-9);
+		wxString type = src->FindTypeOfByKey(key,aux_pos,true);
+		code=code.Mid(0,p)+(type.Len()?type:"???")+code.Mid(p2+1);
+	}
+	int pos_cursor=code.Find("#here#");
+	if (pos_cursor!=wxNOT_FOUND) code=code.Mid(0,pos_cursor)+code.Mid(pos_cursor+6);
 	src->ignore_char_added=true;
 	src->ReplaceTarget(src->GetTextRange(src->GetTargetStart(),src->GetTargetEnd())+"\t"); // para que ctrl+z sí ponga el tab
 	src->ReplaceTarget(code);
@@ -243,8 +253,8 @@ bool Autocoder::Apply(mxSource *src, auto_code *ac, bool args) {
 	// ubicar seleccion e indentar si es necesario (solo las linea agregadas, la primera no)
 	int l0=src->LineFromPosition(src->GetTargetStart());
 	int l1=src->LineFromPosition(src->GetTargetEnd());
-	if (p!=wxNOT_FOUND)
-		src->SetSelection(src->GetTargetStart()+p,src->GetTargetStart()+p);
+	if (pos_cursor!=wxNOT_FOUND)
+		src->SetSelection(src->GetTargetStart()+pos_cursor,src->GetTargetStart()+pos_cursor);
 	else
 		src->SetSelection(src->GetTargetEnd(),src->GetTargetEnd());
 	if (src->config_source.syntaxEnable) {
