@@ -8,6 +8,8 @@
 
 </UL><BR><B>Relase 201508xx</B><BR><UL>
 
+	<LI>Imp: Al colocar el mouse sobre una variable local para ver su tipo, en el tipo se muestra ahora también el namespace (si estaba en la declaración de la variable) y los argumentos del template (si era instancia de un template).</LI>
+	<LI>Imp: Al definir un autocódigo se puede utilizar #typeof(x)# para referirse al tipo del argumento x, y ZinjaI efectuará el reemplazo que corresponda.</LI>
 	<LI>Imp: El comando para actualizar el ejecutable durante la depuración compila automáticamente y puede ahora utilizarse sin pausar la ejecución.</LI>
 	<LI>Imp: Si el depurador no puede aportar información sobre la ubicación en el código fuente de una entrada (frame/fila) del trazado inverso, pero puede indicar en qué binario (usualmente biblioteca externa) se encuentra, se muestra en la tabla la ruta de dicho archivo.</LI>
 	<LI>Fix: Se corrigió un error en el parser que hacía que no se reconozcan algunos métodos en clases con métodos templatizados.</LI>	<LI>Fix: Se corrigieron errores en la determinación del ámbito para autocompletar dentro de un método definido inline en una clase.</LI>

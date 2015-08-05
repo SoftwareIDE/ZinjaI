@@ -37,11 +37,12 @@ void Autocoder::SetDefaults() {
 			"// linea no hace falta agregar \\ al final de cada una. Una definición de autocódigo\n"
 			"// termina donde empieza la siguiente, pero las lineas en blanco entre dos plantillas\n"
 			"// son ignoradas. Se puede usar la palabra clave #here# para indicar donde colocar el\n"
-			"// cursor de texto luego del reemplazo. Se debe notar que las lineas con comentarios\n"
-			"// se consideran parte de la plantilla y por lo tanto se incluyen al realizar el\n"
-			"// reemplazo, con la única excepción de los comentarios colocados en la primer línea\n"
-			"// (#autocode...) y que comienzan con //. En este caso, se considera a ese comentario\n"
-			"// como una descripción corta del autocódigo.\n"
+			"// cursor de texto luego del reemplazo. También se puede usar #typeof(x)# para indicar\n"
+			"// que allí debe ir el tipo de una variable (x). Se debe notar que las lineas con\n"
+			"// comentarios se consideran parte de la plantilla y por lo tanto se incluyen al\n"
+			"// realizar el reemplazo, con la única excepción de los comentarios colocados en la\n"
+			"// primer línea (#autocode...) y que comienzan con //. En este caso, se considera a\n"
+			"// ese comentario como una descripción corta del autocódigo.\n"
 			"// Si edita este archivo de definiciones con ZinjaI, al guardarlo los cambios se\n"
 			"// reacargan automáticamente.";
 	} else {
@@ -55,7 +56,8 @@ void Autocoder::SetDefaults() {
 			"// way you do for macros. To create a multiline autocode you dont need to add \\ at the\n"
 			"// end of each line. An autocode definition extends until next #autocode tag, but empty\n"
 			"// lines at the end are stripped. You can use char #here# to say where the text cursor\n"
-			"// should be placed after replacing the autocode. Note that comment lines will be\n"
+			"// should be placed after replacing the autocode. You can also use #typeof(x)# and it\n"
+			"// will be replaced by the typename of the variable x. Note that comment lines will be\n"
 			"// part of the autocode template and so won't be ignored when replacing the call,\n"
 			"// with the exception of any comment in the first #autocode line. In that case, that\n"
 			"// comment will be interpreted as that particular autocode's brief descripcion (only\n"
@@ -72,6 +74,7 @@ void Autocoder::SetDefaults() {
 	{ auto_code a; a.code="for(unsigned int i=0;i<N;i++) { #here# }"; a.args.Add("N"); list["forui"]=a; }
 	{ auto_code a; a.code="for(unsigned int j=0;j<N;j++) { #here# }"; a.args.Add("N"); list["foruj"]=a; }
 	{ auto_code a; a.code="for(unsigned int k=0;k<N;k++) { #here# }"; a.args.Add("N"); list["foruk"]=a; }
+	{ auto_code a; a.code="for( #typeof(v)#::iterator it=v.begin(); it!=v.end(); ++it) { #here# }"; a.args.Add("V"); list["forit"]=a; }
 	{ auto_code a; a.code="while(true) {\n#here#\n}"; list["whilet"]=a; }
 	{ auto_code a; a.code="if(cond) {\n\t#here#\n} else {\n\t\n}"; a.args.Add("cond"); list["ifel"]=a; }
 	{ auto_code a; a.code="std::cout << x << std::endl;"; a.args.Add("x"); list["cout"]=a; }
