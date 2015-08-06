@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
 	ofstream fout;
 	
 	int state=0;
-	for(int i=0;i<v.size();i++) { 
+	for(unsigned int i=0;i<v.size();i++) { 
 		string &s=v[i];
 		if (state==0) {
 			if (s.find("Standard library header ")==0) { 
@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
 			}
 		} else if (state==1) {
 			if (s.find("[edit] Synopsis")!=string::npos) state=2;
+			else if (s.find("Edit section: Synopsis")!=string::npos) state=2;
 		} else if (state==2) {
 			if (s.find("   Retrieved from")==0) state=4;
 			else if (s.find("[edit] Note")==0) state=3;

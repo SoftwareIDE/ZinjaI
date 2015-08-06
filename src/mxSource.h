@@ -253,7 +253,7 @@ public:
 	void GotoDiffChange(bool forward);
 	
 	bool AddInclude(wxString header);
-	int GetStatementStartPos(int pos); ///< given an absolute text position, finds where that statements starts (skkipping comments and indentation)
+	int GetStatementStartPos(int pos, bool skip_whites=true); ///< given an absolute text position, finds where that statements starts (skipping comments and indentation at the begginning unless skip_whites=false)
 	wxString FindTypeOfByKey(wxString &key, int &pos, bool include_template_spec=false); // en pos retorna los asteriscos y en key el scope de la funcion
 	wxString FindTypeOfByPos(int pos, int &dims, bool include_template_spec=false, bool first_call=true);
 	wxString FindScope(int pos, wxString *args=nullptr, bool full_scope=false, int *scope_start=nullptr);
@@ -398,6 +398,7 @@ private:
 	void ApplyRectEdit();
 	
 	// helper functions for autocomp parsing
+	template<int N> bool TextRangeIs(int pos_start, const char (&word)[N]);
 	template<int N> bool TextRangeIs(int pos_start, int pos_end, const char (&word)[N]);
 	int SkipTemplateSpec(int pos_start, int pos_max=0);
 	int SkipTemplateSpecBack(int pos_start);

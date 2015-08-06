@@ -1,4 +1,12 @@
 #!/bin/sh
+
+# Script for generating an index file for zinjai to display cpprefence's content
+
+# To update this reference, download the latest offline archive from http://en.cppreference.com/
+# in its html book version, uncompress it in zinjai/cpprefence (should write two subdir, en and common)
+# and invoke this scrip from en subdir redirecting its output to zinjai_index 
+#     cd en && sh ../make_index > zinjai_index
+
 for a in $(find -name "*.html"); do
 	grep -H \<title "$a" | sed 's/<title>//' | sed 's/<\/title>//' | sed 's/ - cppreference.com//' | sed 's/cppreference.com//'
 done
