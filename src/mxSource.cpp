@@ -1545,7 +1545,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (dims==1) {
 						if (chr=='(' && config_source.callTips)
 							code_helper->ShowFunctionCalltip(ctp,this,type,key);
-						else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
+						else if ( II_IS_KEYWORD_CHAR(chr) )
 							code_helper->AutocompleteScope(this,type,key,true,false);
 					}
 				} else if (c==':' && GetCharAt(p-1)==':') {
@@ -1554,7 +1554,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					wxString type = GetTextRange(WordStartPosition(p,true),p+1);
 					if (chr=='(' && config_source.callTips)
 						code_helper->ShowFunctionCalltip(ctp,this,type,key);
-					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
+					else if ( II_IS_KEYWORD_CHAR(chr) )
 						code_helper->AutocompleteScope(this,type,key,true,false);
 				} else {
 					if (chr=='(' && config_source.callTips) {
@@ -1570,7 +1570,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 							p++;
 							II_FRONT_NC(p,II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) || (s==wxSTC_C_WORD));
 							int p1=p;
-							II_FRONT_NC(p,(c=GetCharAt(p))=='_' || (c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9') );
+							II_FRONT_NC(p,(c=GetCharAt(p))=='_'||II_IS_KEYWORD_CHAR(c));
 							if (!code_helper->ShowConstructorCalltip(ctp,this,GetTextRange(p1,p))) {
 								if (!code_helper->ShowConstructorCalltip(ctp,this,key)) {
 									// mostrar sobrecarga del operador()
@@ -1581,9 +1581,9 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 								}
 							}
 						}
-					} else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') ) {
+					} else if ( II_IS_KEYWORD_CHAR(chr) ) {
 						wxString args; int scope_start;
-						wxString scope=FindScope(GetCurrentPos(),&args,false,&scope_start);
+						wxString scope = FindScope(GetCurrentPos(),&args,false,&scope_start);
 						code_helper->AutocompleteGeneral(this,scope,key,&args,scope_start);
 					}
 				}
@@ -2670,7 +2670,7 @@ wxString mxSource::FindTypeOfByPos(int p,int &dims, bool include_template_spec, 
 		}
 		
 	} else { // si la cosa no estaba entre parentesis, podemos encontrarnos con indices entre corchetes o el nombre
-		II_BACK(p, (II_IS_NOTHING_2(p) || ( ( (c|32)>='a' && (c|32)<='z' ) || (c>='0' && c<='9') || c=='_' )) && s!=wxSTC_C_WORD );
+		II_BACK(p, (II_IS_NOTHING_2(p) || II_IS_KEYWORD_CHAR(c)) && s!=wxSTC_C_WORD );
 		p++;
 	}
 	if (GetCharAt(p)=='(')
@@ -3117,7 +3117,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				if (dims==0) {
 					if (chr=='('/* && config_source.callTips*/)
 						code_helper->ShowFunctionCalltip(ctp,this,type,key);
-					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
+					else if ( II_IS_KEYWORD_CHAR(chr) )
 						code_helper->AutocompleteScope(this,type,key,true,false);
 				}
 			} else if (c=='>' && GetCharAt(p-1)=='-') {
@@ -3126,7 +3126,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				if (dims==1) {
 					if (chr=='('/* && config_source.callTips*/)
 						code_helper->ShowFunctionCalltip(ctp,this,type,key);
-					else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
+					else if ( II_IS_KEYWORD_CHAR(chr) )
 						code_helper->AutocompleteScope(this,type,key,true,false);
 				}
 			} else if (c==':' && GetCharAt(p-1)==':') {
@@ -3135,7 +3135,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 				wxString type = GetTextRange(WordStartPosition(p,true),p+1);
 				if (chr=='('/* && config_source.callTips*/)
 					code_helper->ShowFunctionCalltip(ctp,this,type,key);
-				else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') )
+				else if ( II_IS_KEYWORD_CHAR(chr) )
 					code_helper->AutocompleteScope(this,type,key,true,false);
 			} else {
 				if (chr=='('/* && config_source.callTips*/) {
@@ -3151,7 +3151,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 						p++;
 						II_FRONT_NC(p,II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) || (s==wxSTC_C_WORD));
 						int p1=p;
-						II_FRONT_NC(p,(c=GetCharAt(p))=='_' || (c>='a' && c<='z') || (c>='A' && c<='Z') || (c>='0' && c<='9') );
+						II_FRONT_NC(p,(c=GetCharAt(p))=='_' || II_IS_KEYWORD_CHAR(c) );
 						wxString key=GetTextRange(p1,p);
 						if (!code_helper->ShowConstructorCalltip(ctp,this,key)) {
 							// mostrar sobrecarga del operador()
@@ -3161,7 +3161,7 @@ void mxSource::OnEditForceAutoComplete(wxCommandEvent &evt) {
 							}
 						}
 					}
-				} else if ( ( (chr|32)>='a'&&(chr|32)<='z' ) || chr=='_' || (chr>='0'&&chr<='9') ) {
+				} else if ( II_IS_KEYWORD_CHAR(chr) ) {
 					wxString args; int scope_start;
 					wxString scope = FindScope(GetCurrentPos(),&args, false,&scope_start);
 					code_helper->AutocompleteGeneral(this,scope,key,&args,scope_start);

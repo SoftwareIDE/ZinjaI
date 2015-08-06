@@ -111,6 +111,9 @@ bool mxReferenceWindow::OnLink (wxString href) {
 	} else if (href.Contains("#")) {
 		LoadHelp(DIR_PLUS_FILE(current_path,href.BeforeFirst('#')));
 		html->ScrollToAnchor(href.AfterFirst('#'));
+	} else if (href.Contains("%23")) {
+		LoadHelp(DIR_PLUS_FILE(current_path,href.BeforeFirst('%')));
+		html->ScrollToAnchor(href.AfterFirst('%').Mid(2));
 	} else {
 		LoadHelp(DIR_PLUS_FILE(current_path,href));
 	}
