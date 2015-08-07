@@ -75,6 +75,7 @@
 #include "mxBySourceCompilingOpts.h"
 #include "mxRegistersGrid.h"
 #include "Cpp11.h"
+#include "LocalRefactory.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -305,6 +306,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_PREPROC_MARK_VALID, mxMainWindow::OnToolsPreprocMarkValid)
 	EVT_MENU(mxID_TOOLS_PREPROC_EXPAND_MACROS, mxMainWindow::OnToolsPreprocReplaceMacros)
 	EVT_MENU(mxID_TOOLS_PREPROC_HELP, mxMainWindow::OnToolsPreprocHelp)
+	EVT_MENU(mxID_TOOLS_CODE_GENERATE_FUNCTION, mxMainWindow::OnToolsCodeGenerateFunction)
 	EVT_MENU(mxID_TOOLS_CODE_COPY_FROM_H, mxMainWindow::OnToolsCodeCopyFromH)
 	EVT_MENU(mxID_TOOLS_CONSOLE, mxMainWindow::OnToolsConsole)
 	EVT_MENU(mxID_TOOLS_DRAW_PROJECT, mxMainWindow::OnToolsDrawProject)
@@ -5079,4 +5081,10 @@ void mxMainWindow::OnDebugShowRegisters (wxCommandEvent & event) {
 //	aui_manager.AddPane(asm_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Disassembly (gdb)").BestSize(300,300).Show());
 //	aui_manager.Update();
 // }
+
+void mxMainWindow::OnToolsCodeGenerateFunction (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::GenerateFunction(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
 

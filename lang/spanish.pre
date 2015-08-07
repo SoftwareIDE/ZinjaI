@@ -214,6 +214,8 @@ INSPECTION_MSG_PENDING_OUT_OF_SCOPE
 <<< fuera de ámbito >>>
 INSPECTION_MSG_ERROR
 <<< error >>>
+CODE_CANNOT_GENERATE_FUNCTION
+No se pudo determinar el prototipo de la función.
 MENUITEM_FILE
 &Archivo
 MENUITEM_FILE_NEW
@@ -468,7 +470,11 @@ MENUITEM_TOOLS_DRAW_FLOWCHART
 Dibujar Diagrama de &Flujo...
 MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
 Dibujar &Jerarquía de Clases...
+MENUITEM_TOOLS_CODE
+Generación de código
 MENUITEM_TOOLS_CODE_COPY_FROM_H
+Implementar Métodos/Funciones faltantes...
+MENUITEM_TOOLS_CODE_GENERATE_FUNCTION
 Implementar Métodos/Funciones faltantes...
 MENUITEM_TOOLS_COMMENTS
 Coment&arios
@@ -2011,7 +2017,7 @@ MAINW_INSERT_HEADIR_CPP
 MAINW_NO_HEADER_FOR
 No se encontro cabecera correspondiente a \"<{1}>\".
 DEBUG_STATUS_ATTACHED_TO
-Depurador adjuntado al proceso <{[1]}>. Ejecución interrumpida.
+Depurador adjuntado al proceso <{[1]}>. Ejecución pausada.
 DEBUG_STATUS_TARGET_DONE
 Depuración iniciada correctamente.
 DEBUG_RETURN_VALUE
@@ -2653,7 +2659,7 @@ Perdera todas las modificiaciones realizadas a las barras\n de herramientas. ¿De
 LANG_MAX_JOBS_TIP
 Este campo define la cantidad de objetos que se compilan en simultaneo al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad de nucleos, o la mitad son valores recomendables. Consulte la ayuda para más detalles. ZinjaI detecta en el sistema actual <{1}> nucleos
 PROJECTCONFIG_CAPTION
-Opciones de Compilacion y Ejecucion
+Opciones de Compilación y Ejecución
 PROJECTCONFIG_USE_PROFILE
 Utilizar
 PROJECTCONFIG_NEW_PROFILE
@@ -2958,6 +2964,8 @@ SOURCE_POPUP_HIGHLIGHT_WORD
 Resaltar identificador \"<{1}>\"
 SOURCE_POPUP_FIND_KEYWORD
 Buscar \"<{1}>\" en todos los archivos
+SOURCE_POPUP_GENERATE_FUNCTION
+Generar función \"<{1}>\"
 SOURCE_POPUP_OPEN_SELECTED
 &Abrir \"<{1}>\"
 SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION

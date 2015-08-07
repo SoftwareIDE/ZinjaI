@@ -200,7 +200,10 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnTOOLS, myMenuItem("draw_flow",mxID_TOOLS_DRAW_FLOW, LANG(MENUITEM_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de &Flujo...")).Description("Genera un diagrama de flujo a partir del bloque de codigo actual").Icon("flujo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnTOOLS, myMenuItem("draw_classes",mxID_TOOLS_DRAW_CLASSES, LANG(MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar &Jerarquía de Clases...")).Icon("clases.png").EnableIf(ecPROJECT_OR_SOURCE));
 		
-		AddMenuItem(mnTOOLS, myMenuItem("copy_code_from_h",mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Métodos/Funciones faltantes...")).ShortCut("Ctrl+Shift+H").Icon("copy_code_from_h.png").EnableIf(ecSOURCE));
+		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_CODE,"Generación de código")).Icon("code.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("copy_code_from_h",mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Métodos/Funciones faltantes...")).ShortCut("Ctrl+Shift+H").Icon("copy_code_from_h.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("generate_function",mxID_TOOLS_CODE_GENERATE_FUNCTION, LANG(MENUITEM_TOOLS_CODE_GENERATE_FUNCTION,"Generar definición de función a partir de llamada")).Icon("generate_function.png").EnableIf(ecSOURCE));
+		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_COMMENTS,"Coment&arios")).Description("Permite alinear o quitar los comentarios del codigo").Icon("comments.png").EnableIf(ecSOURCE));
 			AddMenuItem(mnTOOLS, myMenuItem("align_comments",mxID_TOOLS_ALIGN_COMMENTS, LANG(MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS,"&Alinear Comentarios...")).Description("Mueve todos los comentarios hacia una determinada columna").Icon("align_comments.png"));
@@ -522,6 +525,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_DRAW_FLOW));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_DRAW_CLASSES));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_COPY_FROM_H).Visible());
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_GENERATE_FUNCTION));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_ALIGN_COMMENTS));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_REMOVE_COMMENTS));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_PREPROC_MARK_VALID));

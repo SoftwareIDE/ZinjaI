@@ -213,7 +213,7 @@ public:
 	void OnClick(wxMouseEvent &evt);
 	void OnMouseWheel(wxMouseEvent & event);
 	void OnPopupMenu(wxMouseEvent &evt);
-	void OnPopupMenuInside(wxMouseEvent &evt);
+	void OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos=true);
 	void OnPopupMenuMargin(wxMouseEvent &evt);
 	void OnToolTipTime(wxStyledTextEvent &event);
 	void OnToolTipTimeOut(wxStyledTextEvent &event);
@@ -411,6 +411,12 @@ public:
 	int SkipTemplateSpecBack(int pos_start); 
 	
 	DECLARE_EVENT_TABLE();
+public:
+	
+	// helper functions for refactory operations
+	/// assuming pos is in a the name of function in a function call, returns that name and the actual arguments (args)
+	wxString GetCurrentCall(wxArrayString &args, int pos);
+	
 };
 
 

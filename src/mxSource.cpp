@@ -27,6 +27,7 @@
 #include "mxInspectionExplorerDialog.h"
 #include "mxInspectionBaloon.h"
 #include <wx/utils.h>
+#include "LocalRefactory.h"
 using namespace std;
 
 
@@ -1278,7 +1279,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						char c_next_line = c;
 						int ind_next = GetLineIndentation(LineFromPosition(p_next_line));
 						int ind_cur = GetLineIndentation(LineFromPosition(p_prev_ind));
-						if (p_next_line==l || (ind_cur >= ind_next && c_next_line!='}') ) {
+						if (p_next_line==l || (ind_cur >= ind_next && c_next_line!='}')) {
 							// ver primero si la llave ya estaba en la misma linea para simplemente bajarla
 							int p_otra_llave = BraceMatch(p_curr_last);
 							if (p_otra_llave!=wxSTC_INVALID_POSITION && LineFromPosition(p_otra_llave)==current_line) {
@@ -1319,13 +1320,10 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						if (p_aux && GetStyleAt(p_aux)==wxSTC_C_WORD && TextRangeIs(p_aux,"enum")) {
 							CopyIndentation(current_line,p_aux,true);
 						}
-					} else if (c_curr_last=='>') { // si era template corregir
-						int p_aux=SkipTemplateSpecBack('>');
-						if (p_aux!=wxSTC_INVALID_POSITION) {
-							II_BACK(p_aux,II_IS_NOTHING_4(p_aux));
-							if (s==wxSTC_C_WORD && TextRangeWas(p_aux,"template"))
-								CopyIndentation(current_line,p_aux,false);
-						}
+					} else if (c_curr_last=='>' && // si era template corregir
+							GetStyleAt(p_curr_beg)==wxSTC_C_WORD && TextRangeIs(p_curr_beg,"template") )
+					{ 
+						CopyIndentation(current_line,p_curr_beg,false);
 					}
 				}
 			}
@@ -1982,12 +1980,12 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	
 }
 
-void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
+void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 	
 	// mover el cursor a la posición del click (a menos que haya una selección y se clickeó dentro)
 	int p1=GetSelectionStart();
 	int p2=GetSelectionEnd();
-	if (p1==p2) {
+	if (fix_current_pos && p1==p2) {
 		int p = PositionFromPointClose(evt.GetX(),evt.GetY());
 		if (p!=wxSTC_INVALID_POSITION)
 			GotoPos(p);
@@ -2000,10 +1998,14 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	if (key.Len()!=0) {
 		if (!key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
 		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
-		if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS) {
+		if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS||s==wxSTC_C_DEFAULT) { // no se porque el primer char es default y los demas identifier????
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_HIGHLIGHT_WORD),LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_FIND_KEYWORD),LANG1(SOURCE_POPUP_FIND_KEYWORD,"Buscar \"<{1}>\" en todos los archivos",key));
+			int aux; wxString type = FindTypeOfByPos(p,aux,true);
+			if ( aux==SRC_PARSING_ERROR || !type.Len() )
+				mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION),LANG1(SOURCE_POPUP_GENERATE_FUNCTION,"Generar función \"<{1}>\"",key));
+			
 		}
 	}
 	
@@ -2037,8 +2039,7 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt) {
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_BRACEMATCH));
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_SELECT_ALL));
 	
-	main_window->PopupMenu(&menu);
-	
+	main_window->PopupMenu(&menu, main_window->ScreenToClient(this->ClientToScreen(wxPoint(evt.GetX(),evt.GetY()))) );
 }
 
 
@@ -3523,6 +3524,14 @@ bool mxSource::IsEmptyLine(int l, bool ignore_comments, bool ignore_preproc) {
 }
 
 void mxSource::OnKeyDown(wxKeyEvent &evt) {
+	int key_code = evt.GetKeyCode();
+	if (key_code == WXK_MENU) {
+		wxMouseEvent evt2;
+		wxPoint pt = PointFromPosition(GetCurrentPos());
+		evt2.m_x = pt.x; evt2.m_y=pt.y+TextHeight(0);
+		OnPopupMenuInside(evt2,false);
+		return;
+	}
 	if (calltip_mode==MXS_AUTOCOMP && evt.GetKeyCode()==WXK_BACK && config_source.autocompFilters) {
 		/*evt.Skip();*/
 		int cp = GetCurrentPos()-1;
@@ -4046,5 +4055,56 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
 	++pos;
 	if (skip_white) { II_FRONT(pos,II_IS_NOTHING_4(pos)); }
 	return pos;
+}
+
+wxString mxSource::GetCurrentCall (wxArrayString &args, int pos) {
+	int s=GetStyleAt(pos); if (s!=wxSTC_C_IDENTIFIER&&s!=wxSTC_C_GLOBALCLASS&&s!=wxSTC_C_DEFAULT) return ""; // if it is not an identifier, cannot be a function call
+	char c; int l=GetLength(), p0=pos,p1=pos+1;
+	II_BACK(p0,(c=GetCharAt(p0))&&II_IS_KEYWORD_CHAR(c)); p0++; // p0 is where the name starts
+	II_FRONT(p1,(c=GetCharAt(p1))&&II_IS_KEYWORD_CHAR(c)); // p1 is right after where the name ends
+	int p2 = p1; II_FRONT(p2,II_IS_NOTHING_2(p2)); // p2 should be where the arguments start
+	if (c!='(') return ""; 
+	int p3 = BraceMatch(p2); // p5 is where arguments list ends
+	
+	wxString one_arg;
+	int p=p1+1;
+	do {
+		if (!II_SHOULD_IGNORE(p)) {
+			c=GetCharAt(p);
+			if (c=='(') {
+				p=BraceMatch(p); // no hace falte verificar por pos invalida, porque p5 tiene match, eso garantiza que adentro todos tienen
+			} else if (c==','||p==p3) {
+				if (one_arg=="") one_arg="???"; else {
+					wxString type; int dims=0;
+					// see if the actual arg is expression or identifier (only the second could be the formal parameter's name)
+					for(unsigned int j=0;j<one_arg.Length();j++) {
+						bool is_keyword_char = IsKeywordChar(one_arg[j]);
+						if (j==0 && one_arg[0]>='0' && one_arg[0]<='9') is_keyword_char=false;
+						if (!is_keyword_char) {
+							type = LocalRefactory::GetLiteralType(one_arg);
+							one_arg="???";
+							break;
+						}
+					}
+					// find out argument type
+					if (one_arg!="" && type=="") {
+						type = FindTypeOfByPos(p-1,dims,true);
+						if (type=="") type="???";
+						else if (dims>0) { // array or ptr
+							one_arg = wxString("*")+one_arg;
+							while (--dims>0) one_arg<<"[]";
+						}
+					}
+					one_arg = type+" "+one_arg;
+				}
+				args.Add(one_arg);
+				one_arg.Clear();
+			} else {
+				one_arg<<c;
+			};
+		}
+	} while (p++<p3);
+	
+	return GetTextRange(p0,p1);
 }
 
