@@ -1064,6 +1064,12 @@ template<int N> bool mxSource::TextRangeIs(int pos_start, int pos_end, const cha
 	else return TextRangeIs(pos_start,word);
 }
 
+/// aux function for FindTypeOf and OnCharAdded
+template<int N> bool mxSource::TextRangeWas(int pos_end, const char (&word)[N]) {
+	if (pos_end<N-2) return false;
+	else return TextRangeIs(pos_end-(N-2),word);
+}
+
 
 
 void mxSource::OnCharAdded (wxStyledTextEvent &event) {
@@ -1216,189 +1222,113 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				event.Skip();
 			}
 			return;
+			
 		} else if (chr == '\n') { // si es un enter, es un viaje!!!
-			int s, cl=GetCurrentLine(), p = GetCurrentPos();
-			int p_back = GetStatementStartPos(GetLineEndPosition(cl-1),false); // posición donde termina la instruccion anterior
-			char c = GetCharAt(p_back?p_back-1:0);
-			while (p_back && c==',') { // si es una lista, buscar donde empieza
-				p_back = GetStatementStartPos(p_back-2,false);
-				c = GetCharAt(p_back?p_back-1:0);
-			}
-			if (c=='{') { // si la anterior termina en '{'.... ver que hay antes de eso (puede ser el prototipo de una func y estar 
-						  // en varias lineas), sino tomar el indentado de esa linea como referencia
-				int prev_indent_level = GetLineIndentation(LineFromPosition(GetStatementStartPos(p_back-2)));
-				SetLineIndentation(cl,prev_indent_level+config_source.tabWidth);
-				wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-				return;
-			} else if (c=='(' || c=='<') { // si es lista (argumentos para una func o template) indentar con el parentesis que abre....
-				int pos_line_start = PositionFromLine(LineFromPosition(p_back-1));
-				SetLineIndentation(cl,p_back-pos_line_start);
-				wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-				return;
-			}
-			// sino, indentar igual a lo que sea que había antes
-			int prev_indent_level = GetLineIndentation(LineFromPosition( p_back ));
-			// ver que había despues de donde estabamos, en esa linea
-			II_FRONT_NC(p,II_IS_2(p,' ','\t') );
-			if (c=='/' && TextRangeIs(p+1,"/\t'")) { // si era un comentario, de los que van a la izquierda (lo distingo por el tab), dejarlo a la izquierda
-				SetLineIndentation(GetCurrentLine(),0);
-				return;
-			} 
-			if (c=='{') { // si es la llave que abre, alguien que pone el prototipo en una linea y la llave en la que sigue...
-				SetLineIndentation(GetCurrentLine(),prev_indent_level); // la llave va a la atura de la funcion
-				return;
-			}
-			if (GetCharAt(p)=='}') { // si estaba justo antes de la llave que cierra, no agregar un nivel al indentado, mantener
-				wxStyledTextEvent evt;
-				int op=p; p=BraceMatch(p);
-				if (p!=wxSTC_INVALID_POSITION) {
-					SetLineIndentation(cl,prev_indent_level);
-					if (LineFromPosition(p)==cl-1) { // si estaban las dos llaves juntas, agregar un enter mas para quedar escribiendo entre medio
-						while (++p<op&&(II_IS_NOTHING_4(p)));
-						if (p==op) {
-							InsertText(PositionFromLine(cl),"\n");
-							SetLineIndentation(cl,prev_indent_level+config_source.tabWidth);
-						}
-					}
-				}
-				wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-				return;
-			}
-			// ver que había antes de donde estabamos, en esa linea
-			p=GetLineEndPosition(cl-1)-1;
-			II_BACK(p,II_IS_2(p,' ','\t') );
-			if (config_source.bracketInsertion && c=='{') { // si estaba en la llave que abre, agregar si se debe la que cierra
-				if (cl==GetLineCount()-1)
-					AppendText("\n");
-				int e=p+1, l=GetLength();
-				II_FRONT(e,II_IS_NOTHING_4(e));
-				if (LineFromPosition(e)==cl) {
-					if (c=='}') {
-						SetLineIndentation(cl,prev_indent_level);
-						wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-						return;
-					} else {
-						if (c!='}' && LineFromPosition(e)==cl) { // ver si corresponde mover/agregar la llave que cierra
-							UndoActionGuard ug(this);
-							if ( (e=BraceMatch(p))==wxSTC_INVALID_POSITION || GetLineIndentation(cl)<prev_indent_level){
-								if ( e!=wxSTC_INVALID_POSITION && LineFromPosition(e)==cl ) {
-									int line_end = GetLineEndPosition(cl);
-									wxString s_aux = GetTextRange(e,line_end);
-									SetTargetStart(e); SetTargetEnd(line_end); 
-									ReplaceTarget("");
-									InsertText(PositionFromLine(cl+1),s_aux+"\n");
-								} else {
-									InsertText(PositionFromLine(cl+1),"}\n");
-								}
-								SetLineIndentation(cl+1,prev_indent_level);
-							}
-							SetLineIndentation(cl,prev_indent_level+config_source.tabWidth);
-							wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-							return;
-						}
-					}
-				} else if (e==l || GetLineIndentation(LineFromPosition(e))<prev_indent_level || ( c!='}' && GetLineIndentation(LineFromPosition(e))==prev_indent_level  && GetTextRange(e,e+7)!="public:" && GetTextRange(e,e+8)!="private:" && GetTextRange(e,e+10)!="protected:" && GetTextRange(e,e+5)!="case " ) ) {
-					e=GetLineIndentPosition(cl-1);
-					if (GetTextRange(e,e+8)=="template" && GetStyleAt(e)==wxSTC_C_WORD) {
-						e+=8;
-						II_FRONT(e,II_IS_NOTHING_2(e));
-						if (c=='<' && (p=BraceMatch(e))!=wxSTC_INVALID_POSITION) {
-							e=p+1;
-							II_FRONT(e,II_IS_NOTHING_2(e));
-						}
-					}
-					if ( (GetTextRange(e,e+5)=="class" || GetTextRange(e,e+6)=="struct") && GetStyleAt(e)==wxSTC_C_WORD)
-						InsertText(PositionFromLine(cl),"\n};");
-					else
-						InsertText(PositionFromLine(cl),"\n}");
-					SetLineIndentation(cl+1,prev_indent_level);
-					SetLineIndentation(cl,prev_indent_level+config_source.tabWidth);
-					wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-					return;
-				}
-			}
-			p = GetCurrentPos()-1;
-
-			II_BACK(p, II_IS_NOTHING_4(p) );
-			if (p==0) { // si se llego al principio del documento no hay nada contra lo que indentar
-				SetLineIndentation(cl,GetLineIndentation(0));
-				wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-				return;
-			}
 			
-			if (c=='>') { // si era una declaracion de template, mantener el indentado
-				int e = BraceMatch(p);
-				if (e!=wxSTC_INVALID_POSITION) {
-					e--;
-					II_BACK(e,II_IS_NOTHING_2(e));
-					if (e>8 && GetStyleAt(e)==wxSTC_C_WORD && c=='e' && GetTextRange(e-7,e)=="templat") {
-						SetLineIndentation(cl,GetLineIndentation(LineFromPosition(e)));
-						wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-						return;
-					}
-				}
-			}
+			int current_pos = GetCurrentPos(), current_line = GetCurrentLine();
+			int s, l=GetLength(); char c='\n'; // auxiliares para los II_*
 			
-			if (c=='{' || (p>3 && s==wxSTC_C_WORD && TextRangeIs(p-3,"else")) ) { // si abre llave, incrementar uno en el indentado
-				prev_indent_level = GetLineIndentation(LineFromPosition(p));
-				int e=p+1, l=GetLength(); 
-				II_FRONT(e,II_IS_NOTHING_4(e));
-				if (c=='}' && cl==LineFromPosition(e) && cl-1!=LineFromPosition(p)) {
-					SetLineIndentation(cl-1,prev_indent_level+config_source.tabWidth);
-					SetLineIndentation(cl,prev_indent_level);
-				} else
-					SetLineIndentation(cl,prev_indent_level+config_source.tabWidth);
-				wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
-				return;
-			}
-			bool was_instruction=(c==';' || c=='}');
-			// buscar el comienzo de la instruccion
-			int l=p, cpm1=GetCurrentPos()-1;
-			if (GetCharAt(p)!='}') p--;
-			while (true) { 
-				// retroceder hasta el comienzo de la expresion
-				p = GetStatementStartPos(p);
-//				p++;
-				II_FRONT_NC(p , p<cpm1 && (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) ) );
-				l=p;
-				// para que siga si encuentra un else
-				if (s==wxSTC_C_WORD && TextRangeIs(p,"else"))  {
-					p--;
-					II_BACK(p,II_IS_NOTHING_4(p));
-					if (GetCharAt(p)!='}') p--;
-				} else break;
-			}
-			if (was_instruction) {
-				if (s==wxSTC_C_WORD && ( 
-					TextRangeIs(l,"public") ||TextRangeIs(l,"private")||TextRangeIs(l,"protected") || 
-					TextRangeIs(l,"case") || TextRangeIs(l,"default") ) ) 
-				{
-					SetLineIndentation(cl,GetLineIndentation(LineFromPosition(p))+config_source.tabWidth);
+			// curr_last: caracter no nulo previo al enter 
+			int p_curr_last = current_pos-1;
+			II_BACK(p_curr_last,II_IS_NOTHING_4(p_curr_last));
+			if (!p_curr_last) return;
+			char c_curr_last = c; // ultimo caracter antes del evento
+			
+			// next_char proximo caracter no nulo en la misma linea de current_pos (o \n)
+			int p_next_char = current_pos;
+			II_FRONT(p_next_char,II_IS_2(p_next_char,'\t',' '));
+			char c_next_char = l==p_next_char?' ':c;
+			
+			if (c_next_char=='{') { // si estaba antes de la llave que abre, la llave va a la altura del prototipo (previa instr.)
+				int p_prev_ind = GetStatementStartPos(p_curr_last,true);
+				CopyIndentation(current_line,p_prev_ind,c_curr_last=='{');
+				
+			} else if (c_next_char=='}') { // si esta justo antes de una llave que cierra, indentarla igual que la que abre
+				int p_otra_llave = BraceMatch(p_next_char);
+				if (p_otra_llave==wxSTC_INVALID_POSITION) {
+					int p_prev_ind = GetStatementStartPos(p_curr_last,true);
+					int ind = GetLineIndentation(p_prev_ind)-config_source.tabWidth;
+					SetLineIndentation(current_line,ind<0?0:ind);
 				} else {
-					SetLineIndentation(cl,GetLineIndentation(LineFromPosition(p)));
-				}
-			} else {
-				// si era if/for/while/do/else, volver hasta la instruccion posta
-				while (p<cpm1 && GetStyleAt(p)==wxSTC_C_WORD && ( 
-					   TextRangeIs(p,"while")||TextRangeIs(p,"for")||TextRangeIs(p,"if")
-					   || TextRangeIs(p,"do")|| TextRangeIs(p,"else")  ) )
-				{
-						l=p;
-						// avanzar hasta la linea/condicion
-						II_FRONT_NC(p , p<cpm1 && ( II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) || s==wxSTC_C_WORD) );
-						// si va una condicion, saltearla
-						if ( (s=BraceMatch(p))==wxSTC_INVALID_POSITION ) {
-							SetLineIndentation(cl,LineFromPosition(p)+config_source.tabWidth);
-						} else {
-							p=s+1;
-						}
-						II_FRONT_NC(p , p<cpm1 && (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) );
+					int p_prev_ind = GetStatementStartPos(p_otra_llave-1);
+					CopyIndentation(current_line,p_prev_ind);
+					if (c_curr_last=='{') { // si estaba justo entre las dos llaves {} poner un enter mas
+						InsertText(PositionFromLine(current_line),"\n");
+						CopyIndentation(current_line,p_prev_ind,true);
 					}
-				if (l!=0) {
-					SetLineIndentation(cl,GetLineIndentation(LineFromPosition(l))+config_source.tabWidth);
+				}
+			} else if (c_next_char=='/' && TextRangeIs(p_next_char+1,"/\t") &&
+			           current_line && PositionFromLine(current_line-1)==current_pos-1)
+			{ // si era un comentario, de los que van a la izquierda (lo distingo por el tab), dejarlo a la izquierda
+				; // no hacer nada
+			
+			} else if ( c_curr_last==';' || c_curr_last=='{' || c_curr_last=='}' ) { // nueva sentencia
+				// prev_ind: donde empieza realmente la instruccion anterior (salteando indentado)
+				if (c_curr_last=='}') p_curr_last++;
+				int p_prev_ind = GetStatementStartPos(p_curr_last-1,true);
+				bool increase_level = c_curr_last=='{' || (GetStyleAt(p_prev_ind)==wxSTC_C_WORD && ( // si abria una llave, o venia de una etiqueta, aumentar
+										TextRangeIs(p_prev_ind,"public:")||TextRangeIs(p_prev_ind,"private:")||
+										TextRangeIs(p_prev_ind,"protected:")||TextRangeIs(p_prev_ind,"case:")||
+										TextRangeIs(p_prev_ind,"default:") ) );
+				CopyIndentation(current_line,p_prev_ind,increase_level);
+				
+				if (c_curr_last=='{' && config_source.bracketInsertion) { // si estabamos despues de llave que abre, ver si agregar la que cierra
+						II_FRONT(p_next_char,II_IS_NOTHING_4(p_next_char));
+						int ind_next = GetLineIndentation(LineFromPosition(p_next_char));
+						int ind_cur = GetLineIndentation(LineFromPosition(p_prev_ind));
+						if (p_next_char==l || ind_cur >= ind_next) {
+							// ver primero si la llave ya estaba en la misma linea para simplemente bajarla
+							int p_otra_llave = BraceMatch(p_curr_last);
+							if (p_otra_llave!=wxSTC_INVALID_POSITION && LineFromPosition(p_otra_llave)==current_line) {
+								InsertText(p_otra_llave,"\n");
+								CopyIndentation(current_line+1,p_prev_ind);
+							} else { 
+								// no estaba, hay que agregarla, ver si va "}" o "};"
+								int p_aux = p_curr_last-1;
+								II_BACK(p_aux,II_IS_NOTHING_4(p_aux)); 
+								bool dont_add_semicolon = ( c==')' || // si antes de la llave esta la lista de argumentos...
+														( s==wxSTC_C_WORD && (TextRangeWas(p_aux,"const")  //.. o un calificativo de metodo...
+															|| TextRangeWas(p_aux,"override") || TextRangeWas(p_aux,"explicit")) )
+														|| (s==wxSTC_C_OPERATOR && (c==']'||c=='&')) ); // ...o para la sobrecarga por tipo de refencia, o atributos
+								InsertText(GetLineEndPosition(current_line),dont_add_semicolon?"\n}":"\n};");
+								CopyIndentation(current_line+1,p_prev_ind);
+							}
+						}
+					}
+				
+			} else { // continuacion de algo anterior
+				// curr_beg: donde empieza la instruccion actual (con espacios y tabs)
+				int p_curr_beg = GetStatementStartPos(p_curr_last,true,false);
+				char c_prev_last = GetCharAt(p_curr_beg?p_curr_beg-1:0);
+				
+				if (c_prev_last=='<'||c_prev_last=='(') { // argumentos de templates o funciones
+					int pos_line_start = PositionFromLine(LineFromPosition(p_curr_beg));
+					SetLineIndentation(current_line,p_curr_beg-pos_line_start);
+				
+				} else {
+					
+					// curr_ind: donde realmente empieza la instruccion actual (saltando espacios y tabs)
+					int p_curr_ind = p_curr_beg, l=current_pos;
+					II_FRONT(p_curr_ind,II_IS_NOTHING_4(p_curr_ind));
+					CopyIndentation(current_line,p_curr_ind,true);
+					
+					if (c_curr_last==',' && c_prev_last=='{' && p_curr_beg>2) { // si era enum, corregir
+						int p_aux = GetStatementStartPos(p_curr_beg-2);
+						if (p_aux && GetStyleAt(p_aux)==wxSTC_C_WORD && TextRangeIs(p_aux,"enum")) {
+							CopyIndentation(current_line,p_aux,true);
+						}
+					} else if (c_curr_last=='>') { // si era template corregir
+						int p_aux=SkipTemplateSpecBack('>');
+						if (p_aux!=wxSTC_INVALID_POSITION) {
+							II_BACK(p_aux,II_IS_NOTHING_4(p_aux));
+							if (s==wxSTC_C_WORD && TextRangeWas(p_aux,"template"))
+								CopyIndentation(current_line,p_aux,false);
+						}
+					}
 				}
 			}
-			wxStyledTextCtrl::GotoPos(GetLineIndentPosition(cl));
+
+			wxStyledTextCtrl::GotoPos(GetLineIndentPosition(current_line));
 			return;
 		}
 		
@@ -4100,9 +4030,9 @@ void mxSource::OnMouseWheel (wxMouseEvent & event) {
 		event.Skip();
 }
 
-int mxSource::GetStatementStartPos(int pos, bool skip_whites) {
+int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
 	char c=GetCharAt(pos); int s, l=pos; // l y s son auxiliares para II_*
-	while (pos>0 && (c!='{'&&c!='('&&c!='['&&c!='<'&&c!=';'&&c!=',')) {
+	while (pos>0 && (c!='{'&&c!='('&&c!='['&&c!='<'&&c!=';'&&(c!=','||skip_coma))) {
 		if (c==')'||c=='}'||c==']'||c=='>') {
 			int pos_match = BraceMatch(pos);
 			if (pos_match!=wxSTC_INVALID_POSITION) 
@@ -4112,7 +4042,7 @@ int mxSource::GetStatementStartPos(int pos, bool skip_whites) {
 		II_BACK(pos,II_IS_NOTHING_4(pos)); // SIDE-EFFECT!! esto actualiza c
 	}
 	++pos;
-	if (skip_whites) II_FRONT(pos,II_IS_NOTHING_4(pos));
+	if (skip_white) { II_FRONT(pos,II_IS_NOTHING_4(pos)); }
 	return pos;
 }
 

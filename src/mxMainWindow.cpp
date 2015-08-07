@@ -3125,11 +3125,24 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 		mxSource *source=CURRENT_SOURCE;
 		// separar la palabra
 		int pos=source->GetCurrentPos();
-		if (source->GetCharAt(pos)==')') pos=source->BraceMatch(pos)-1; // si esta en un parentesis que cierrar, puede ser donde termina una funcion, buscar el nombre
-		if (pos<0) { // si no hay palabra quejarse
-			mxMessageDialog(main_window,LANG(MAINW_INSERT_HEADIR_NO_WORD,"Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
-			return;
+		char c = source->GetCharAt(pos);
+		while (pos && !source->IsKeywordChar(c) && c!=')' & c!='>') {
+			c = source->GetCharAt(--pos);
 		}
+		if (c==')') {
+			int p2=source->BraceMatch(pos); // si esta en un parentesis que cierrar, puede ser donde termina una funcion, buscar el nombre
+			if (p2!=wxSTC_INVALID_POSITION) pos=p2-1;
+			c = source->GetCharAt(pos);
+		}
+		if (c=='>') { // si es template, saltear argumentos
+			int p2=source->SkipTemplateSpecBack(pos); 
+			if (p2!=wxSTC_INVALID_POSITION) pos=p2;
+			c = source->GetCharAt(pos);
+		}
+//		if (pos<0) { // si no hay palabra quejarse
+//			mxMessageDialog(main_window,LANG(MAINW_INSERT_HEADIR_NO_WORD,"Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
+//			return;
+//		}
 		int s=source->WordStartPosition(pos,true);
 		int e=source->WordEndPosition(pos,true);
 		wxString key = source->GetTextRange(s,e);
