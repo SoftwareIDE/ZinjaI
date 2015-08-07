@@ -1253,7 +1253,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				} else {
 					int p_prev_ind = GetStatementStartPos(p_otra_llave-1);
 					CopyIndentation(current_line,p_prev_ind);
-					if (c_curr_last=='{') { // si estaba justo entre las dos llaves {} poner un enter mas
+					if (c_curr_last=='{' && LineFromPosition(p_curr_last)==current_line-1) { // si estaba justo entre las dos llaves {} poner un enter mas
 						InsertText(PositionFromLine(current_line),"\n");
 						CopyIndentation(current_line,p_prev_ind,true);
 					}
@@ -1279,7 +1279,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						char c_next_line = c;
 						int ind_next = GetLineIndentation(LineFromPosition(p_next_line));
 						int ind_cur = GetLineIndentation(LineFromPosition(p_prev_ind));
-						if (p_next_line==l || (ind_cur >= ind_next && c_next_line!='}')) {
+						if (p_next_line==l || (ind_cur > ind_next || (ind_cur==ind_next && c_next_line!='}'))) {
 							// ver primero si la llave ya estaba en la misma linea para simplemente bajarla
 							int p_otra_llave = BraceMatch(p_curr_last);
 							if (p_otra_llave!=wxSTC_INVALID_POSITION && LineFromPosition(p_otra_llave)==current_line) {
@@ -1560,13 +1560,13 @@ void mxSource::MoveCursorTo(long pos, bool focus) {
 }
 
 void mxSource::OnIndentSelection(wxCommandEvent &event) {
-	main_window->SetStatusText(wxString("Indentando..."));
+//	main_window->SetStatusText(wxString("Indentando..."));
 	int min = LineFromPosition(GetSelectionStart());
 	int max = LineFromPosition(GetSelectionEnd());
 	Indent(min,max);
 	if (min!=max)
 		SetSelection(PositionFromLine(min),GetLineEndPosition(max));
-	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
+//	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 }
 
 /**
