@@ -10,16 +10,16 @@ void LocalRefactory::GenerateFunction (mxSource * src, int pos) {
 	mxMessageDialog(main_window,LANG(CODE_CANNOT_GENERATE_FUNCTION,"No se pudo determinar el prototipo de la función."), \
 					LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal(); return; }
 	// get the calll
-	wxArrayString args;
-	wxString func_name = src->GetCurrentCall(args, pos);
-	if (func_name=="") GenerateFunction_error;
+	wxArrayString args; wxString func_name, func_type;
+	if (!src->GetCurrentCall(func_type, func_name, args, pos))
+		GenerateFunction_error;
 	// get the scope, to insert the code right before
 	int scope_start = -1;
 	wxString scope_args, scope = src->FindScope(pos,&scope_args,true,&scope_start);
 	if (scope=="") GenerateFunction_error;
 	scope_start = src->GetStatementStartPos(scope_start);
 	// build function prototype
-	wxString func_proto = wxString()<<"void "<<func_name<<"(";
+	wxString func_proto = func_type + " " +  func_name + "(";
 	if (args.GetCount()) {
 		for(unsigned int i=0;i<args.GetCount();i++) {
 			func_proto<<args[i]<<", ";

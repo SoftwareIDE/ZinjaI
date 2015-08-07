@@ -2664,6 +2664,9 @@ wxString mxSource::FindTypeOfByPos(int p,int &dims, bool include_template_spec, 
 * analizarlos en el código y utilizar así el coloreado como ayuda. Si no hay
 * argumentos args no se modifica, por lo que debería entrar con valores
 * inválidos (como {-1,-1}) para saber desde afuera si el valor de retorno es real.
+*
+* En scope_start retorna las pos en algun punto del prototipo, que puede no ser
+* el comienzo... Usar GetStatementStartPos para tener el verdadero comieno.
 **/ 
 wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scope_start) {
 	if (scope_start) *scope_start=0;
@@ -4057,15 +4060,17 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
 	return pos;
 }
 
-wxString mxSource::GetCurrentCall (wxArrayString &args, int pos) {
-	int s=GetStyleAt(pos); if (s!=wxSTC_C_IDENTIFIER&&s!=wxSTC_C_GLOBALCLASS&&s!=wxSTC_C_DEFAULT) return ""; // if it is not an identifier, cannot be a function call
+bool mxSource::GetCurrentCall (wxString &ftype, wxString &fname, wxArrayString &args, int pos) {
+	int s=GetStyleAt(pos); if (s!=wxSTC_C_IDENTIFIER&&s!=wxSTC_C_GLOBALCLASS&&s!=wxSTC_C_DEFAULT) --pos;
+	s=GetStyleAt(pos); if (s!=wxSTC_C_IDENTIFIER&&s!=wxSTC_C_GLOBALCLASS&&s!=wxSTC_C_DEFAULT) return false; // if it is not an identifier, cannot be a function call
 	char c; int l=GetLength(), p0=pos,p1=pos+1;
 	II_BACK(p0,(c=GetCharAt(p0))&&II_IS_KEYWORD_CHAR(c)); p0++; // p0 is where the name starts
 	II_FRONT(p1,(c=GetCharAt(p1))&&II_IS_KEYWORD_CHAR(c)); // p1 is right after where the name ends
 	int p2 = p1; II_FRONT(p2,II_IS_NOTHING_2(p2)); // p2 should be where the arguments start
-	if (c!='(') return ""; 
+	if (c!='(') return false; 
 	int p3 = BraceMatch(p2); // p5 is where arguments list ends
 	
+	// get arguments list
 	wxString one_arg;
 	int p=p1+1;
 	do {
@@ -4074,7 +4079,7 @@ wxString mxSource::GetCurrentCall (wxArrayString &args, int pos) {
 			if (c=='(') {
 				p=BraceMatch(p); // no hace falte verificar por pos invalida, porque p5 tiene match, eso garantiza que adentro todos tienen
 			} else if (c==','||p==p3) {
-				if (one_arg=="") one_arg="???"; else {
+				if (one_arg!="") {
 					wxString type; int dims=0;
 					// see if the actual arg is expression or identifier (only the second could be the formal parameter's name)
 					for(unsigned int j=0;j<one_arg.Length();j++) {
@@ -4096,15 +4101,56 @@ wxString mxSource::GetCurrentCall (wxArrayString &args, int pos) {
 						}
 					}
 					one_arg = type+" "+one_arg;
+					args.Add(one_arg);
+					one_arg.Clear();
 				}
-				args.Add(one_arg);
-				one_arg.Clear();
 			} else {
 				one_arg<<c;
 			};
 		}
 	} while (p++<p3);
 	
-	return GetTextRange(p0,p1);
+	fname = GetTextRange(p0,p1);
+	
+	// get return type
+	p0--; II_BACK(p0,II_IS_NOTHING_4(p0)); ftype="???";
+	
+	if (c=='(') { // function call??? 
+		; // we don't handle this yet
+	
+	} else if (s==wxSTC_C_WORD && TextRangeWas(p0,"return")) { // return value for current scope
+		int scope_start = -1;
+		wxString scope_args, scope = FindScope(pos,&scope_args,true,&scope_start);
+		if (scope!="") {
+			int p = GetStatementStartPos(scope_start);
+			--scope_start; II_BACK(scope_start,II_IS_NOTHING_4(scope_start));
+			if (GetStyleAt(p)==wxSTC_C_WORD && TextRangeIs(p,"template")) { // saltear template
+				p+=8; II_FRONT(p,II_IS_NOTHING_4(p));
+				if (c=='<') p=SkipTemplateSpec('<',scope_start);
+				if (p==wxSTC_INVALID_POSITION) p=scope_start;
+			}
+			int pend = p, p_last_blank=-1;
+			while((c=GetCharAt(pend)!='(') || c=='{') { // avanzar hasta donde empiezan los argumentos
+				if (II_IS_NOTHING_4(pend)) {
+					p_last_blank = pend;
+				}
+				pend++;
+			}
+			if (p_last_blank!=-1) {
+				II_BACK(p_last_blank,II_IS_NOTHING_4(p_last_blank));
+				ftype = GetTextRange(p,p_last_blank+1);
+			}
+		};
+		
+	} else if (c=='=') { // assigment, lvalue type
+		int p=p0-1; II_BACK(p,II_IS_NOTHING_4(p));
+		wxString key = GetCurrentKeyword(p);
+		ftype = FindTypeOfByKey(key,++p,true);
+		if (ftype=="") ftype="???";
+	} else {
+		ftype="void";
+	};
+	
+	return true;
 }
 

@@ -414,8 +414,9 @@ public:
 public:
 	
 	// helper functions for refactory operations
-	/// assuming pos is in a the name of function in a function call, returns that name and the actual arguments (args)
-	wxString GetCurrentCall(wxArrayString &args, int pos);
+	/// assuming pos (only input arg) is in a the name of function in a function call, 
+	/// returns that name, the actual arguments (args), and the expected return type
+	bool GetCurrentCall (wxString &ftype, wxString &fname, wxArrayString &args, int pos);
 	
 };
 
