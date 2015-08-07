@@ -1273,10 +1273,12 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				CopyIndentation(current_line,p_prev_ind,increase_level);
 				
 				if (c_curr_last=='{' && config_source.bracketInsertion) { // si estabamos despues de llave que abre, ver si agregar la que cierra
-						II_FRONT(p_next_char,II_IS_NOTHING_4(p_next_char));
-						int ind_next = GetLineIndentation(LineFromPosition(p_next_char));
+						int p_next_line = GetLineEndPosition(current_line); 
+						l=GetLength(); II_FRONT(p_next_line,II_IS_NOTHING_4(p_next_line));
+						char c_next_line = c;
+						int ind_next = GetLineIndentation(LineFromPosition(p_next_line));
 						int ind_cur = GetLineIndentation(LineFromPosition(p_prev_ind));
-						if (p_next_char==l || ind_cur >= ind_next) {
+						if (p_next_line==l || (ind_cur >= ind_next && c_next_line!='}') ) {
 							// ver primero si la llave ya estaba en la misma linea para simplemente bajarla
 							int p_otra_llave = BraceMatch(p_curr_last);
 							if (p_otra_llave!=wxSTC_INVALID_POSITION && LineFromPosition(p_otra_llave)==current_line) {
