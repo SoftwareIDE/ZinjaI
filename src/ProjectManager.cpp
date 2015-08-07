@@ -1931,9 +1931,9 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 			header_dirs_array[i]=DIR_PLUS_FILE(path,header_dirs_array[i]);
 		
 		LocalListIterator<project_file_item*> item(&files_sources);
-		wxString bin_full_path; steps_current=0;
+		steps_current=0;
 		while(item.IsValid()) {
-			bin_full_path = mxUT::Quotize(item->GetBinName(temp_folder));
+			wxString bin_full_path = mxUT::Quotize(item->GetBinName(temp_folder));
 			fil.AddLine(bin_full_path+": "+mxUT::FindObjectDeps(DIR_PLUS_FILE(path,item->name),path,header_dirs_array));
 			bool cpp = (item->name[item->name.Len()-1]|32)!='c' || item->name[item->name.Len()-2]!='.';
 			
@@ -2144,7 +2144,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	else
 		linking_options<<" "<<linking_extra;
 
-	/*executable_name = */GetExePath(); // GetExePath ya asigna en executable_name
+	/*executable_name = */GetExePath(false,false); // GetExePath ya asigna en executable_name
 	
 	// bibliotecas
 	project_library *lib = active_configuration->libs_to_build;
@@ -2423,8 +2423,8 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	return true;
 }
 
-wxString ProjectManager::GetExePath(bool short_path) {
-	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",GetTempFolder());
+wxString ProjectManager::GetExePath(bool short_path, bool refresh_temp_folder) {
+	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",refresh_temp_folder?GetTempFolder():temp_folder);
 	return executable_name = 
 		( short_path
 		? wxFileName(DIR_PLUS_FILE(path,executable_name)).GetShortPath()
