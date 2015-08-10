@@ -2323,8 +2323,8 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 		if (p!=wxSTC_INVALID_POSITION) { // si se encuentra la palabra
 			// retroceder al comienzo de la instruccion
 			p_to=p_ocur; aux_bool=false;
-			while (p>0 && ( !II_IS_5(p,'}','{','(',';',':') || (aux_bool=II_SHOULD_IGNORE(p)) ) ) {
-				if (!aux_bool && c==')') {
+			while (p>0 && ( !II_IS_4(p,'{','(',';',':') || (aux_bool=II_SHOULD_IGNORE(p)) ) ) {
+				if (!aux_bool && (c==')'||c=='}')) {
 					p = BraceMatch(p);
 					if (p==wxSTC_INVALID_POSITION)
 						break;

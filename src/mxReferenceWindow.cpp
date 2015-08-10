@@ -1,5 +1,6 @@
 #include <fstream>
 #include <vector>
+#include <cctype>
 #include <wx/textfile.h>
 #include <wx/treectrl.h>
 #include "mxReferenceWindow.h"
@@ -7,7 +8,6 @@
 #include "ConfigManager.h"
 #include "mxComplementInstallerWindow.h"
 #include "raii.h"
-#include <cctype>
 using namespace std;
 
 #define _index "index.html"
