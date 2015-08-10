@@ -1320,10 +1320,11 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						if (p_aux && GetStyleAt(p_aux)==wxSTC_C_WORD && TextRangeIs(p_aux,"enum")) {
 							CopyIndentation(current_line,p_aux,true);
 						}
-					} else if (c_curr_last=='>' && // si era template corregir
-							GetStyleAt(p_curr_beg)==wxSTC_C_WORD && TextRangeIs(p_curr_beg,"template") )
-					{ 
-						CopyIndentation(current_line,p_curr_beg,false);
+					} else if (c_curr_last=='>') {
+						int p_curr_ind = p_curr_beg; II_FRONT(p_curr_ind,II_IS_NOTHING_4(p_curr_ind));
+						if (GetStyleAt(p_curr_ind)==wxSTC_C_WORD && TextRangeIs(p_curr_ind,"template") ) { 
+							CopyIndentation(current_line,p_curr_beg,false);
+						}
 					}
 				}
 			}
