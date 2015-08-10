@@ -7,6 +7,7 @@
 #include "ConfigManager.h"
 #include "mxComplementInstallerWindow.h"
 #include "raii.h"
+#include <cctype>
 using namespace std;
 
 #define _index "index.html"
@@ -102,6 +103,17 @@ void mxReferenceWindow::OnSearch (wxString value, bool update_history) {
 }
 
 bool mxReferenceWindow::OnLink (wxString href) {
+	while (href.Contains("%")) {
+		wxString pre = href.BeforeFirst('%');
+		wxString pos = href.AfterFirst('%');
+		if (pos.Len()<2) break;
+		map<char,int> h2d;
+		for(int i=0;i<10;i++) h2d['0'+i]=i;
+		for(int i=0;i<6;i++) h2d['a'+i]=10+i;
+		int c = h2d[tolower(pos[0])]*16 + h2d[tolower(pos[1])];
+		if (c<0||c>255) break;
+		href = pre << char(c) << pos.Mid(2);
+	}
 	if (href.StartsWith("http:")) {
 		mxUT::OpenInBrowser(href);
 	} else if (href.StartsWith("file:")) {
@@ -111,9 +123,6 @@ bool mxReferenceWindow::OnLink (wxString href) {
 	} else if (href.Contains("#")) {
 		LoadHelp(DIR_PLUS_FILE(current_path,href.BeforeFirst('#')));
 		html->ScrollToAnchor(href.AfterFirst('#'));
-	} else if (href.Contains("%23")) {
-		LoadHelp(DIR_PLUS_FILE(current_path,href.BeforeFirst('%')));
-		html->ScrollToAnchor(href.AfterFirst('%').Mid(2));
 	} else {
 		LoadHelp(DIR_PLUS_FILE(current_path,href));
 	}
