@@ -473,7 +473,7 @@ Generación de código
 MENUITEM_TOOLS_CODE_COPY_FROM_H
 Implementar Métodos/Funciones faltantes...
 MENUITEM_TOOLS_CODE_GENERATE_FUNCTION
-Implementar Métodos/Funciones faltantes...
+Generar definición de función a partir de llamada
 MENUITEM_TOOLS_COMMENTS
 Coment&arios
 MENUITEM_TOOLS_COMMENTS_ALIGN_COMMENTS
@@ -650,6 +650,8 @@ MENUITEM_HIDDEN_OPEN_SELECTED
 Abrir archivo seleccionado en el código
 MENUITEM_HIDDEN_RECTANGULAR_EDITION
 Activar edición rectangular
+MENUITEM_HIDDEN_HIGHLIGHTED_WORD_EDITION
+Editar identificador resaltado
 MENUITEM_HIDDEN_PREV_TAB
 Pestaña de código anterior
 MENUITEM_HIDDEN_NEXT_TAB

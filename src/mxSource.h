@@ -201,7 +201,10 @@ public:
 	void UpdateCalltipArgHighlight(int current_pos);
 	void OnKillFocus (wxFocusEvent &event);
 	void OnSetFocus (wxFocusEvent &event);
-	
+
+private:
+	wxString highlithed_word;
+public:
 	void OnHighLightWord(wxCommandEvent &event);
 	void OnFindKeyword(wxCommandEvent &event);
 	void OnDoubleClick(wxStyledTextEvent &event);
@@ -383,17 +386,36 @@ private:
 	
 	
 private:
-	struct RectSel {
+	struct MultiSel {
+		
+		struct EditPos { int line, offset; };
+		vector<EditPos> positions;
+		void Reset() { is_on=false; was_rect_select=false; keep_highlight=false; positions.clear(); }
+		void AddPos(mxSource *src, int line, int position) { 
+			EditPos e; e.line = line; 
+			e.offset = position-src->PositionFromLine(line); 
+			positions.push_back(e); 
+		}
+		
 		bool is_on; ///< si estamos o no editando "rectangularmente"
 		bool was_rect_select; ///< para saber al aplicar un cambio si habia en el estado anterior una seleccion rectangular (porque en ese caso se modicaron todas las lineas)
-		int offset_beg, offset_end; ///< dentro de la line, en que posicion estamos editando (posicion en la que empezaria ref_str, y cuanto mide)
-		int line_from, line_to; ///< cuales lineas estamos editando "rectangularmente" (desde line_from hasta line_to, incluidos ambos extremos)
+		bool keep_highlight; ///< si hay que marcar la nueva edicion como highlighted word
+		int line, offset_beg, offset_end; ///< dentro de la linea, en que posicion estamos editando (posicion en la que empezaria ref_str, y cuanto mide)
+//		int line_from, line_to; ///< cuales lineas estamos editando "rectangularmente" (desde line_from hasta line_to, incluidos ambos extremos)
 		wxString ref_str; ///< string de la primer linea de la seleccion rectangular, para comparar y ver como cambio y hacer lo mismo en las otras
-		RectSel():is_on(false){}
+		MultiSel():is_on(false){}
+		void SetEditRegion(mxSource *src, int line, int pbeg, int pend) {
+			this->line = line; 
+			offset_beg = pbeg-src->PositionFromLine(line);
+			offset_end = src->GetLineEndPosition(line)-pend;
+			ref_str = src->GetTextRange(pbeg,pend);
+		}
 		operator bool() { return is_on; }
-	} rect_sel;
+		
+	} multi_sel;
 	void OnClickUp(wxMouseEvent &evt);
 	void OnEditRectangularEdition(wxCommandEvent &evt);
+	void OnEditHighLightedWordEdition(wxCommandEvent &evt);
 	void InitRectEdit(bool keep_rect_select);
 	void ApplyRectEdit();
 	
