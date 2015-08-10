@@ -15,7 +15,7 @@ mxInspectionBaloon::mxInspectionBaloon (const wxPoint &pos, const wxString & exp
 	sizer->Add(exp,sizers->Exp1);
 	// create the text for the type
 	wxString type = exp->GetRootType(), new_expr;
-	text = new wxStaticText(this,wxID_ANY,type);
+	text = new wxStaticText(this,wxID_ANY,"X");
 	sizer->Add(text,sizers->Exp0);
 	// try to use automatic inspection improving, and show full value in root node
 	if (DebuggerInspection::TryToImproveExpression(type,new_expr,expression))
@@ -28,7 +28,9 @@ mxInspectionBaloon::mxInspectionBaloon (const wxPoint &pos, const wxString & exp
 	SetSizer(sizer);
 	OnTreeSize();
 	exp->SetEventListener(new EventListener(this));
-	Show();
+	Show(); 
+	// set label here (after show) and not in constructor because word wrapping can break OnTreeSize' calculation, so we use something that will not wrap, and then set the real text
+	if (text->GetLabel()=="X") text->SetLabel(type); 
 }
 
 void mxInspectionBaloon::AddExpression (wxString expression, bool frameless) {

@@ -1304,7 +1304,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				int p_curr_beg = GetStatementStartPos(p_curr_last,true,false);
 				char c_prev_last = GetCharAt(p_curr_beg?p_curr_beg-1:0);
 				
-				if (c_prev_last=='<'||c_prev_last=='(') { // argumentos de templates o funciones
+				if (c_prev_last=='(') { // argumentos de funcion
 					int pos_line_start = PositionFromLine(LineFromPosition(p_curr_beg));
 					SetLineIndentation(current_line,p_curr_beg-pos_line_start);
 				
@@ -1320,10 +1320,19 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						if (p_aux && GetStyleAt(p_aux)==wxSTC_C_WORD && TextRangeIs(p_aux,"enum")) {
 							CopyIndentation(current_line,p_aux,true);
 						}
-					} else if (c_curr_last=='>') {
+					} else if (c_curr_last=='>') { // si cerraba template, corregir (sigue el prototipo, pero al mismo nivel que el template)
 						int p_curr_ind = p_curr_beg; II_FRONT(p_curr_ind,II_IS_NOTHING_4(p_curr_ind));
 						if (GetStyleAt(p_curr_ind)==wxSTC_C_WORD && TextRangeIs(p_curr_ind,"template") ) { 
 							CopyIndentation(current_line,p_curr_beg,false);
+						}
+					} else if (c_curr_last==',' && GetStyleAt(p_curr_ind)==wxSTC_C_WORD && TextRangeIs(p_curr_ind,"template")) { // si estamos en la lista de argumentos del template
+						int p=p_curr_ind+8; II_FRONT(p,II_IS_NOTHING_4(p));
+						if (GetCharAt(p)=='<') { // verificar que efectivamente estemos en la lista
+							int p2 = BraceMatch(p);
+							if (p2==wxSTC_INVALID_POSITION||p2>current_pos) {
+								int pos_line_start = PositionFromLine(LineFromPosition(p));
+								SetLineIndentation(current_line,p-pos_line_start+1);
+							}
 						}
 					}
 				}
@@ -4047,8 +4056,8 @@ void mxSource::OnMouseWheel (wxMouseEvent & event) {
 
 int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
 	char c=GetCharAt(pos); int s, l=pos; // l y s son auxiliares para II_*
-	while (pos>0 && (c!='{'&&c!='('&&c!='['&&c!='<'&&c!=';'&&(c!=','||skip_coma))) {
-		if (c==')'||c=='}'||c==']'||c=='>') {
+	while (pos>0 && (c!='{'&&c!='('&&c!='['&&/*c!='<'&&*/c!=';'&&(c!=','||skip_coma))) {
+		if (c==')'||c=='}'||c==']'/*||c=='>'*/) {
 			int pos_match = BraceMatch(pos);
 			if (pos_match!=wxSTC_INVALID_POSITION) 
 				pos=pos_match;
