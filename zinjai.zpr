@@ -12,7 +12,7 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/mxReferenceWindow.cpp
+current_source=src/mxSource.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -166,8 +166,11 @@ path=src/mxOSD.cpp
 cursor=20:15
 [source]
 path=src/mxSource.cpp
-cursor=1324:10
+cursor=2326:38
+breakpoint=2632
+breakpoint_annotation=
 marker=3534
+open=true
 [source]
 path=src/mxDrawClasses.cpp
 cursor=102:0
@@ -324,8 +327,7 @@ path=src/mxGenericHelpWindow.cpp
 cursor=98:0
 [source]
 path=src/mxReferenceWindow.cpp
-cursor=2:17
-open=true
+cursor=7:26
 [source]
 path=src/Inspection.cpp
 cursor=335:25
@@ -1149,5 +1151,8 @@ additional_files=
 exclude_list=
 [inspections]
 expr=href
+expr=p
+expr=c
+expr=key
 [custom_tools]
 [end]
