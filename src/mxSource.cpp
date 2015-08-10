@@ -4080,8 +4080,17 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
 	while (pos>0 && (c!='{'&&c!='('&&c!='['&&/*c!='<'&&*/c!=';'&&(c!=','||skip_coma))) {
 		if (c==')'||c=='}'||c==']'/*||c=='>'*/) {
 			int pos_match = BraceMatch(pos);
-			if (pos_match!=wxSTC_INVALID_POSITION) 
-				pos=pos_match;
+			if (pos_match!=wxSTC_INVALID_POSITION) {
+				if (c=='}'); --pos_match;
+				II_BACK(pos_match,II_IS_NOTHING_4(pos_match));
+				if (c==')' || ( s==wxSTC_C_WORD && 
+				   (TextRangeWas(pos_match,"const") || TextRangeWas(pos_match,"override") 
+					|| TextRangeWas(pos_match,"explicit")) ) ) 
+				{
+					break; // si era el par de llaves de una funcion, no seguir.... faltaría contemplar "namespace bla {...}"
+				}
+				pos=pos_match+1;
+			}
 		}
 		--pos;
 		II_BACK(pos,II_IS_NOTHING_4(pos)); // SIDE-EFFECT!! esto actualiza c
