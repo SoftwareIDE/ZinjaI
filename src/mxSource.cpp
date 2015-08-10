@@ -2034,6 +2034,17 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 		if (wxFileName::FileExists(the_one.GetFullPath()))
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_OPEN_SELECTED),LANG1(SOURCE_POPUP_OPEN_SELECTED,"&Abrir \"<{1}>\"",GetTextRange(p1,p2)));
 	}
+	if (p1!=p2 && !highlithed_word.IsEmpty()) {
+		bool have_hl=false, have_no_hl=false;
+		for(int i=p1;i<p2;i++) {  
+			if (GetStyleAt(i)==wxSTC_C_GLOBALCLASS) {
+				have_hl=true; if (have_no_hl) break;
+			} else  {
+				have_no_hl=true; if (have_hl) break;
+			}
+		}
+		if (have_hl&&have_no_hl) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_HIGHLIGHTED_WORD_EDITION));
+	}
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_WHERE_AM_I));
 	menu.AppendSeparator();
 	
