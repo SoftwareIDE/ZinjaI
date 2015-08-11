@@ -404,12 +404,9 @@ private:
 //		int line_from, line_to; ///< cuales lineas estamos editando "rectangularmente" (desde line_from hasta line_to, incluidos ambos extremos)
 		wxString ref_str; ///< string de la primer linea de la seleccion rectangular, para comparar y ver como cambio y hacer lo mismo en las otras
 		MultiSel():is_on(false){}
-		void SetEditRegion(mxSource *src, int line, int pbeg, int pend) {
-			this->line = line; 
-			offset_beg = pbeg-src->PositionFromLine(line);
-			offset_end = src->GetLineEndPosition(line)-pend;
-			ref_str = src->GetTextRange(pbeg,pend);
-		}
+		void SetEditRegion(mxSource *src, int line, int pbeg, int pend);
+		void Begin(mxSource *src, bool was_rect_select, bool keep_highlight, bool notify=true);
+		void End(mxSource *src);
 		operator bool() { return is_on; }
 		
 	} multi_sel;
