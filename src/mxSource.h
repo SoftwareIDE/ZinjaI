@@ -65,8 +65,10 @@ class NavigationHistory {
 	bool jumping;
 	void Goto(int i);
 	void Add(mxSource *src, int line);
+	bool masked;
 public:
-	NavigationHistory():hsize(1),hcur(0),hbase(0),focus_source(nullptr),jumping(false) {}
+	class MaskGuard { public: MaskGuard(); ~MaskGuard(); void UnmaskNow(); };
+	NavigationHistory():hsize(1),hcur(0),hbase(0),focus_source(nullptr),jumping(false),masked(false) {}
 	void OnFocus(mxSource *src);
 	void OnJump(mxSource *src, int current_line);
 	void OnClose(mxSource *src);

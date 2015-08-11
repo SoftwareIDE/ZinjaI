@@ -233,6 +233,7 @@ public:
 	
 	void OnToolsCodeCopyFromH (wxCommandEvent &event);
 	void OnToolsCodeGenerateFunction (wxCommandEvent &event);
+	void OnToolsCodeHelp(wxCommandEvent &event);
 	void ToolsCodeCopyFromH (mxSource *source, wxString the_one);
 	void OnToolsConsole (wxCommandEvent &event);
 	void OnToolsExeProps (wxCommandEvent &event);
@@ -294,7 +295,9 @@ public:
 	void OnToolsValgrindView(wxCommandEvent &event);
 	void OnToolsValgrindHelp(wxCommandEvent &event);
 #endif
-	void OnToolsDissasembleOffline(wxCommandEvent &event);
+	void OnToolsDissasembleOfflineSel(wxCommandEvent &event);
+//	void OnToolsDissasembleOfflineFunc(wxCommandEvent &event);
+	void OnToolsDissasembleHelp(wxCommandEvent &event);
 	void OnToolsCustomTool(wxCommandEvent &event);
 	void OnToolsCustomProjectTool(wxCommandEvent &event);
 	void OnToolsCustomToolsSettings(wxCommandEvent &event);

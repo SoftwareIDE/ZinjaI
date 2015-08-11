@@ -97,6 +97,7 @@
 			0 draw_classes.html Jerarquia de Clases
 			0 proy_graph.html Grafo de Proyecto
 		0 tools.html Otras Herramientas Integradas
+			0 codetools.html Generación de código
 			0 share.html Compartición de Fuentes en una LAN
 			0 diff.html Comparación de Fuentes (diff)
 			0 doxygen.html Generación de Documentación (doxygen)
@@ -105,6 +106,7 @@
 			0 valgrind.html Análisis Dinámico (Valgrind)
 			0 cppcheck.html Análisis Estático (CppCheck)
 			0 wxformbuilder.html Diseño Rápido de Interfases (wxFormBuilder)
+			0 objdump.html Desensamblado (objdump)
 		0 toolchains.html Uso de toolchains alternativos
 		0 complements.html Complementos Adicionales Instalables
 	0 debug.html Debugging

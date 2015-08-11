@@ -359,7 +359,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_CONFIG, mxMainWindow::OnToolsCppCheckConfig)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_VIEW, mxMainWindow::OnToolsCppCheckView)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_HELP, mxMainWindow::OnToolsCppCheckHelp)
-	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_SELECTION, mxMainWindow::OnToolsDissasembleOffline)
+	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_SELECTION, mxMainWindow::OnToolsDissasembleOfflineSel)
 #ifndef __WIN32__
 	EVT_MENU(mxID_TOOLS_VALGRIND_RUN, mxMainWindow::OnToolsValgrindRun)
 	EVT_MENU(mxID_TOOLS_VALGRIND_DEBUG, mxMainWindow::OnToolsValgrindDebug)
@@ -1115,6 +1115,7 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 #define EN_COMPOUT_EXE_RUNNING_POST ".exe: Permissino denied"
 
 void mxMainWindow::OnSelectError (wxTreeEvent &event) {
+	NavigationHistory::MaskGuard nhg;
 	// ver si es alguno de los mensajes de zinjai
 	wxString item_text=(compiler_tree.treeCtrl->GetItemText(event.GetItem()));
 	if (item_text==LANG(MAINW_WARNING_NO_EXCUTABLE_PERMISSION,"El binario no tiene permisos de ejecución.")) {
@@ -3129,7 +3130,7 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 		// separar la palabra
 		int pos=source->GetCurrentPos();
 		char c = source->GetCharAt(pos);
-		while (pos && !source->IsKeywordChar(c) && c!=')' & c!='>') {
+		while (pos && !source->IsKeywordChar(c) && c!=')' && c!='>') {
 			c = source->GetCharAt(--pos);
 		}
 		if (c==')') {

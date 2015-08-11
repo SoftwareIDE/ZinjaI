@@ -33,6 +33,18 @@ using namespace std;
 
 NavigationHistory navigation_history;
 
+NavigationHistory::MaskGuard::MaskGuard() {
+	navigation_history.masked=true;
+}
+
+NavigationHistory::MaskGuard::~MaskGuard() {
+	navigation_history.masked=false;
+}
+
+void NavigationHistory::MaskGuard::UnmaskNow() {
+	navigation_history.masked=false;
+}
+
 void NavigationHistory::OnClose(mxSource *src) {
 	for(int i=0;i<hsize;i++) { 
 		int j=(hbase+i)%MAX_NAVIGATION_HISTORY_LEN;
@@ -46,6 +58,7 @@ void NavigationHistory::OnClose(mxSource *src) {
 }
 
 void NavigationHistory::Goto(int i) {
+	if (masked) return;
 	jumping=true;
 	Location &loc=locs[i%MAX_NAVIGATION_HISTORY_LEN];
 	if (!loc.src) {
@@ -89,6 +102,7 @@ void NavigationHistory::OnJump(mxSource *src, int current_line) {
 }
 
 void NavigationHistory::Add(mxSource *src, int line) {
+	if (masked) return;
 	Location &old_loc=locs[(hbase+hcur)%MAX_NAVIGATION_HISTORY_LEN];
 	if (old_loc.src==src&&old_loc.line==line) return;
 	if (hsize<MAX_NAVIGATION_HISTORY_LEN) hsize=(++hcur)+1;

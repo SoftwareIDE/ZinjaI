@@ -203,6 +203,8 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_CODE,"Generación de código")).Icon("code.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("copy_code_from_h",mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Métodos/Funciones faltantes...")).ShortCut("Ctrl+Shift+H").Icon("copy_code_from_h.png").EnableIf(ecSOURCE));
 			AddMenuItem(mnTOOLS, myMenuItem("generate_function",mxID_TOOLS_CODE_GENERATE_FUNCTION, LANG(MENUITEM_TOOLS_CODE_GENERATE_FUNCTION,"Generar definición de función a partir de llamada")).Icon("generate_function.png").EnableIf(ecSOURCE));
+			AddSeparator(mnTOOLS);
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_CODE_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_COMMENTS,"Coment&arios")).Description("Permite alinear o quitar los comentarios del codigo").Icon("comments.png").EnableIf(ecSOURCE));
@@ -317,9 +319,10 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		EndSubMenu(mnTOOLS);
 	#endif
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_OBJDUMP,"Desensamblar (objdump)")).Icon("asm.png"));
-			AddMenuItem(mnTOOLS, myMenuItem("objbdump_asm",mxID_TOOLS_OBJDUMP_DISASM_SELECTION, LANG(MENUITEM_TOOLS_OBJDUMP_DISASM_SELECTION,"Lineas seleccionadas...")).Icon("asm_offline.png"));
-//			AddSeparator(mnTOOLS);
-//			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_VALGRIND_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("objbdump_asm_sel",mxID_TOOLS_OBJDUMP_DISASM_SELECTION, LANG(MENUITEM_TOOLS_OBJDUMP_DISASM_SELECTION,"Lineas seleccionadas...")).Icon("asm_offline_sel.png"));
+//			AddMenuItem(mnTOOLS, myMenuItem("objbdump_asm_func",mxID_TOOLS_OBJDUMP_DISASM_FUNCTION, LANG(MENUITEM_TOOLS_OBJDUMP_DISASM_FUNCTION,"Función/Método actual...")).Icon("asm_offline_func.png"));
+			AddSeparator(mnTOOLS);
+			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_OBJDUMP_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS, LANG(MENUITEM_TOOLS_CUSTOM_TOOLS,"Herramientas Personalizables"),"","customTools.png",mxID_TOOLS_CUSTOM_TOOLS,maMAPPED);
@@ -573,6 +576,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_VALGRIND_VIEW));
 #endif
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_OBJDUMP_DISASM_SELECTION));
+//		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_OBJDUMP_DISASM_FUNCTION));
 		for (int i=0;i<MAX_CUSTOM_TOOLS;i++)
 			AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_CUSTOM_TOOL_0+i));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CUSTOM_TOOLS_SETTINGS));

@@ -1103,7 +1103,7 @@ void mxMainWindow::OnToolsLizardHelp(wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("lizard.html");
 }
 
-void mxMainWindow::OnToolsDissasembleOffline (wxCommandEvent & event) {
+void mxMainWindow::OnToolsDissasembleOfflineSel (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE {
 		
 		mxSource *src=CURRENT_SOURCE;
@@ -1171,4 +1171,12 @@ void mxMainWindow::OnToolsDissasembleOffline (wxCommandEvent & event) {
 		// update gui
 		aui_manager.Update();
 	}
+}
+
+void mxMainWindow::OnToolsCodeHelp(wxCommandEvent &event) {
+	mxHelpWindow::ShowHelp("codetools.html");	
+}
+
+void mxMainWindow::OnToolsDissasembleHelp(wxCommandEvent &event) {
+	mxHelpWindow::ShowHelp("objdump.html");	
 }

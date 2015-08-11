@@ -258,6 +258,7 @@ void Parser::OnPopupMenu (wxTreeEvent &event, wxAuiNotebook *notebook) {
 }
 
 void Parser::OnGotoDec(wxAuiNotebook *notebook) {
+	NavigationHistory::MaskGuard nhg; // to avoid two entries in navigation_history, one when selecting/opening the tab, other when reaching the line
 	wxFileName the_one = popup_file_dec;
 	int line = popup_line_dec;
 	for (int i=0,j=main_window->notebook_sources->GetPageCount();i<j;i++) {
@@ -268,14 +269,12 @@ void Parser::OnGotoDec(wxAuiNotebook *notebook) {
 			return;
 		}
 	}
-	// si no esta abierto
-//	int res = mxMessageDialog(main_window,wxString(_T("El archivo "))<<the_one.GetFullName()<<_T(" no esta cargado. Desea cargarlo?"), the_one.GetFullPath(), mxYES_NO|mxMD_QUESTION).ShowModal();
-//	if (res == mxMD_YES)
 	mxSource *src=main_window->OpenFile(the_one.GetFullPath());
 	if (src && source!=EXTERNAL_SOURCE) src->MarkError(line-1);
 }
 
 void Parser::OnGotoDef(wxAuiNotebook *notebook) {
+	NavigationHistory::MaskGuard nhg; // to avoid two entries in navigation_history, one when selecting/opening the tab, other when reaching the line
 	wxFileName the_one = popup_file_def;
 	int line = popup_line_def;
 	for (int i=0,j=main_window->notebook_sources->GetPageCount();i<j;i++) {
