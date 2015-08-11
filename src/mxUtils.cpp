@@ -32,6 +32,7 @@
 #include "execution_workaround.h"
 #include "MenusAndToolsConfig.h"
 
+
 bool zinjai_debug_mode=false;
 
 #ifdef _ZINJAI_DEBUG

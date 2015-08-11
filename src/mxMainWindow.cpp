@@ -491,7 +491,6 @@ mxMainWindow::mxMainWindow(wxWindow* parent, wxWindowID id, const wxString& titl
 	
 SHOW_MILLIS("Entering mxMainWindow's constructor...");	
 	
-	
 	EXTERNAL_SOURCE=(mxSource*)this;
 	focus_source=nullptr;
 	m_macro=nullptr;
