@@ -2611,7 +2611,7 @@ wxString mxSource::FindTypeOfByPos(int p,int &dims, bool include_template_spec, 
 				} else if (p&& GetCharAt(p)==':' && GetCharAt(p-1)==':') {
 					p-=2; II_BACK(p,II_IS_NOTHING_4(p));
 					scope=GetTextRange(WordStartPosition(p,true),p+1);
-				} else if (GetCharAt(p)=='>') {
+				} else if (GetCharAt(p)=='>' && p && GetCharAt(p-1)=='-') {
 					p-=2; II_BACK(p,II_IS_NOTHING_4(p));
 					scope=FindTypeOfByPos(p,dims,include_template_spec); dims--;
 				} else {
