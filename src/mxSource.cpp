@@ -2354,8 +2354,8 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 		p_ocur = p = FindText(p_from, p_to, key, wxSTC_FIND_WHOLEWORD|wxSTC_FIND_MATCHCASE);
 		if (p!=wxSTC_INVALID_POSITION) { // si se encuentra la palabra
 			// retroceder al comienzo de la instruccion
-			p_to=p_ocur; aux_bool=false;
-			while (p>0 && ( !II_IS_4(p,'{','(',';',':') || (aux_bool=II_SHOULD_IGNORE(p)) ) ) {
+			p_to=p_ocur; aux_bool=false; /// @todo: revisar y ver de usar el GetStatementStartPos
+			while (p>0 && ( !II_IS_5(p,'{','(',';',':','}') || (aux_bool=II_SHOULD_IGNORE(p)) ) ) {
 				if (!aux_bool && (c==')'||c=='}')) {
 					p = BraceMatch(p);
 					if (p==wxSTC_INVALID_POSITION)
@@ -2365,8 +2365,7 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 			}
 			// saltar el indentado
 			p++;
-			while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p) )
-				p++;
+			II_FRONT_NC(p,II_IS_NOTHING_4(p));
 			// avanzar el hipotetico nombre de la clase (va a quedar entre p1 y p2)
 			int p3;
 			do {
@@ -2377,7 +2376,7 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 				}
 				p3=p2=p;
 				// avanzar espacios en blanco
-				while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
+				while (II_IS_NOTHING_4(p)) {
 					p++;
 				}
  			} while (TextRangeIs(p1,p2,"const") || TextRangeIs(p1,p2,"volatile") || TextRangeIs(p1,p2,"static") || TextRangeIs(p1,p2,"extern"));
@@ -2385,19 +2384,19 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 			if (c=='<' && GetCharAt(p+1)!='<') p3=p=SkipTemplateSpec(p,p_ocur);
 			if (p!=wxSTC_INVALID_POSITION) {
 				// ver si lo que sigue tiene cara de nombres de variable para la declaracion ¿?
-				while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) p++;
+				while (II_IS_NOTHING_4(p)) p++;
 				if ( II_IS_KEYWORD_CHAR(c) || c=='&' || c=='*' /*|| II_SHOULD_IGNORE(p)*/) {
 					dims=0;
 					if (p1!=p2 && !TextRangeIs(p1,p2,"else") && !TextRangeIs(p1,p2,"delete")) {
 						p=p_ocur-1;
-						while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
+						while (II_IS_NOTHING_4(p)) {
 							p--;
 						}
 						if (c=='&' && GetCharAt(p-1)=='*') { c='*'; --p; } // por si es algo como "string *&p=..."
 						while (c=='*') {
 							p--;
 							dims++;
-							while (II_IS_NOTHING_4(p) || II_SHOULD_IGNORE(p)) {
+							while (II_IS_NOTHING_4(p)) {
 								p--;
 							}
 						}
