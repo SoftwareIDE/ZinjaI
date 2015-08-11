@@ -1117,10 +1117,16 @@ void mxMainWindow::OnToolsDissasembleOfflineSel (wxCommandEvent & event) {
 		mxOSD osd(this,LANG(OSD_DISASSEMBLING,"Desensamblando..."));
 		// compose required command
 		wxString command("sh -c \'objdump -d -C -l ");
-		if (project)
-			command<<mxUT::Quotize(project->GetExePath());
-		else
+		if (project) {
+			project_file_item *pi = project->FindFromItem(src->treeId);
+			if (pi && pi->where==FT_SOURCE) {
+				command<<mxUT::Quotize(src->GetBinaryFileName().GetFullPath());
+			} else {
+				command<<mxUT::Quotize(project->GetExePath());
+			}
+		} else {
 			command<<mxUT::Quotize(src->GetBinaryFileName().GetFullPath());
+		}
 		wxString out_fname = DIR_PLUS_FILE(config->temp_dir,"objdump.txt");	
 		command<<" >"<<mxUT::Quotize(out_fname) << "\'";
 		// run the commmand
