@@ -15,7 +15,7 @@ void LocalRefactory::GenerateFunction (mxSource * src, int pos) {
 		GenerateFunction_error;
 	// get the scope, to insert the code right before
 	int scope_start = -1;
-	wxString scope_args, scope = src->FindScope(pos,&scope_args,true,&scope_start);
+	wxString scope_args, scope = src->FindScope(pos,&scope_args,true,&scope_start,true);
 	if (scope=="") GenerateFunction_error;
 	scope_start = src->GetStatementStartPos(scope_start);
 	// build function prototype

@@ -8,6 +8,7 @@
 #include <wx/socket.h>
 #include <wx/html/htmlwin.h>
 
+#define IF_THERE_ISNT_SOURCE if (notebook_sources->GetPageCount()==0)
 #define IF_THERE_IS_SOURCE if (notebook_sources->GetPageCount()>0)
 #define CURRENT_SOURCE ((mxSource*)notebook_sources->GetPage(notebook_sources->GetSelection()))
 #include "mxCustomTools.h"
@@ -295,8 +296,10 @@ public:
 	void OnToolsValgrindView(wxCommandEvent &event);
 	void OnToolsValgrindHelp(wxCommandEvent &event);
 #endif
+	wxString AuxToolsDissasemble1(); ///< ejecuta objdump y retorna el path del archivo de salida
+	void AuxToolsDissasemble2(wxString out_fname, bool full_scope); ///< filtra la salida y muestra el panel con los resultados
 	void OnToolsDissasembleOfflineSel(wxCommandEvent &event);
-//	void OnToolsDissasembleOfflineFunc(wxCommandEvent &event);
+	void OnToolsDissasembleOfflineFunc(wxCommandEvent &event);
 	void OnToolsDissasembleHelp(wxCommandEvent &event);
 	void OnToolsCustomTool(wxCommandEvent &event);
 	void OnToolsCustomProjectTool(wxCommandEvent &event);

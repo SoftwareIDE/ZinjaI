@@ -2711,10 +2711,14 @@ wxString mxSource::FindTypeOfByPos(int p,int &dims, bool include_template_spec, 
 * argumentos args no se modifica, por lo que debería entrar con valores
 * inválidos (como {-1,-1}) para saber desde afuera si el valor de retorno es real.
 *
-* En scope_start retorna las pos en algun punto del prototipo, que puede no ser
-* el comienzo... Usar GetStatementStartPos para tener el verdadero comieno.
+* En scope_start retorna las pos en algun punto del prototipo, o donde empieza la
+* clase... Si es local_start==true es la función/método, sino puede ser el scope
+* de la clase... (para el autocompletado necesito el de la clase, para refactory y 
+* otras yerbas puedo necesitar el del método. Ojo que la pos puede no ser
+* el comienzo, sino estar a mitad del prototipo... Usar GetStatementStartPos para 
+* tener el verdadero comienzo.
 **/ 
-wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scope_start) {
+wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scope_start, bool local_start) {
 	if (scope_start) *scope_start=0;
 	wxString scope, type;
 	int l=pos,s;
@@ -2804,7 +2808,7 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scop
 					if (some) {
 						II_FRONT(p,II_IS_NOTHING_4(p));
 						wxString aux=code_helper->UnMacro(GetTextRange(p,WordEndPosition(p,true)));
-						if (scope_start) *scope_start=p;
+						if (scope_start && !local_start) *scope_start=p;
 						if (full_scope) scope=aux+"::"+scope; else { scope=aux; break; }
 					}
 				}

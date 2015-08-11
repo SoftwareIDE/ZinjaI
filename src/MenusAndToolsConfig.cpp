@@ -320,7 +320,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	#endif
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_OBJDUMP,"Desensamblar (objdump)")).Icon("asm.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("objbdump_asm_sel",mxID_TOOLS_OBJDUMP_DISASM_SELECTION, LANG(MENUITEM_TOOLS_OBJDUMP_DISASM_SELECTION,"Lineas seleccionadas...")).Icon("asm_offline_sel.png"));
-//			AddMenuItem(mnTOOLS, myMenuItem("objbdump_asm_func",mxID_TOOLS_OBJDUMP_DISASM_FUNCTION, LANG(MENUITEM_TOOLS_OBJDUMP_DISASM_FUNCTION,"Función/Método actual...")).Icon("asm_offline_func.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("objbdump_asm_func",mxID_TOOLS_OBJDUMP_DISASM_FUNCTION, LANG(MENUITEM_TOOLS_OBJDUMP_DISASM_FUNCTION,"Función/Método actual...")).Icon("asm_offline_func.png"));
 			AddSeparator(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_OBJDUMP_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
@@ -576,7 +576,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_VALGRIND_VIEW));
 #endif
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_OBJDUMP_DISASM_SELECTION));
-//		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_OBJDUMP_DISASM_FUNCTION));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_OBJDUMP_DISASM_FUNCTION));
 		for (int i=0;i<MAX_CUSTOM_TOOLS;i++)
 			AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_CUSTOM_TOOL_0+i));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CUSTOM_TOOLS_SETTINGS));

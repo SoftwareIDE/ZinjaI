@@ -360,6 +360,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_VIEW, mxMainWindow::OnToolsCppCheckView)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_HELP, mxMainWindow::OnToolsCppCheckHelp)
 	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_SELECTION, mxMainWindow::OnToolsDissasembleOfflineSel)
+	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_FUNCTION, mxMainWindow::OnToolsDissasembleOfflineFunc)
 #ifndef __WIN32__
 	EVT_MENU(mxID_TOOLS_VALGRIND_RUN, mxMainWindow::OnToolsValgrindRun)
 	EVT_MENU(mxID_TOOLS_VALGRIND_DEBUG, mxMainWindow::OnToolsValgrindDebug)

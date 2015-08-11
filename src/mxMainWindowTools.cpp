@@ -1103,80 +1103,147 @@ void mxMainWindow::OnToolsLizardHelp(wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("lizard.html");
 }
 
-void mxMainWindow::OnToolsDissasembleOfflineSel (wxCommandEvent & event) {
-	IF_THERE_IS_SOURCE {
+wxString mxMainWindow::AuxToolsDissasemble1() {
+	IF_THERE_ISNT_SOURCE return "";
+	
+	static wxString last_dissasembled_binary;
 		
-		mxSource *src=CURRENT_SOURCE;
-		int lfrom = src->LineFromPosition(src->GetSelectionStart());
-		int lto = src->LineFromPosition(src->GetSelectionEnd());
-		if (lfrom>lto) std::swap(lfrom,lto);
-		wxString src_fname = src->GetFullPath();
-		
-		// inform user
-		status_bar->SetStatusText(LANG(OSD_DISASSEMBLING,"Desensamblando..."));
-		mxOSD osd(this,LANG(OSD_DISASSEMBLING,"Desensamblando..."));
-		// compose required command
-		wxString command("sh -c \'objdump -d -C -l ");
-		if (project) {
-			project_file_item *pi = project->FindFromItem(src->treeId);
-			if (pi && pi->where==FT_SOURCE) {
-				command<<mxUT::Quotize(src->GetBinaryFileName().GetFullPath());
-			} else {
-				command<<mxUT::Quotize(project->GetExePath());
-			}
+	mxSource *src=CURRENT_SOURCE;
+	
+	// inform user
+	status_bar->SetStatusText(LANG(OSD_DISASSEMBLING,"Desensamblando..."));
+	mxOSD osd(this,LANG(OSD_DISASSEMBLING,"Desensamblando..."));
+	
+	// compose required command
+	wxString out_fname = DIR_PLUS_FILE(config->temp_dir,"objdump.txt"), in_fname;	
+	if (project) {
+		project_file_item *pi = project->FindFromItem(src->treeId);
+		if (pi && pi->where==FT_SOURCE) {
+			in_fname = src->GetBinaryFileName().GetFullPath();
 		} else {
-			command<<mxUT::Quotize(src->GetBinaryFileName().GetFullPath());
+			in_fname = project->GetExePath();
 		}
-		wxString out_fname = DIR_PLUS_FILE(config->temp_dir,"objdump.txt");	
-		command<<" >"<<mxUT::Quotize(out_fname) << "\'";
+	} else {
+		in_fname = src->GetBinaryFileName().GetFullPath();
+	}
+	
+	if (last_dissasembled_binary!=in_fname || (wxFileName::FileExists(out_fname) && 
+			wxFileName(in_fname).GetModificationTime()>wxFileName(out_fname).GetModificationTime()) ) 
+	{
+
+		wxString command("sh -c \'objdump -d -C -l ");
+		command << mxUT::Quotize(in_fname) << " >" << mxUT::Quotize(out_fname) << "\'";
+		
 		// run the commmand
 		int retval = mxExecute(command, wxEXEC_NODISABLE|wxEXEC_SYNC/*, nullptr*/);
 		if (retval) {
 			wxArrayString aux;
 			showExternToolErrorMessage(retval, aux, "objdump");
-			return;
+			return "";
 		}
-		// create and display output panel
-		mxStyledOutput *out_dialog  = new mxStyledOutput(main_window,true,false);
-		out_dialog->SetTabWidth(8);
-		aui_manager.AddPane(out_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Dissasembly (objdump)").BestSize(500,300).Show());
-		// load and filter results to panel
-		wxFileInputStream input(out_fname);
-		wxTextInputStream text(input);
-		bool on_scope = false; wxString scope_name; // on_scope dice si actualmente estamos o no pasando por el desensamblado de alguna de las lineas que interesan
-		while(input.IsOk() && !input.Eof() ) {
-			wxString line = text.ReadLine();
-			bool is_asm = line.StartsWith(" ")||line.StartsWith("\t");
-			if (line.Len() && !is_asm) {
-				if (line.EndsWith(">:")) scope_name = line; // hay lineas "0000004123412 <funcion_que_sigue>:" antes de las que dicen de que linea del fuente vienen
-				bool was_on_scope = on_scope;
-				if (line.StartsWith(src_fname)) { // si indica que lo que sigue corresponde a este fuente, ver que pasa con el nro de linea
-					wxString snum = line.Mid(src_fname.Len()).AfterFirst(':');
-					if (snum.Contains(' ')) snum = snum.BeforeFirst(' ');
-					long lnum=-1;
-					on_scope = (snum.ToLong(&lnum) && lnum-1>=lfrom && lnum-1<=lto); // el -1 por todos lados es por la base 0/1 de la numeración
-					if (on_scope) { line = wxString("")<<snum<<":\t"<<src->GetLine(lnum-1); line.Replace("\n",""); line.Replace("\r",""); }
-				} else {
-					on_scope=false;
-				}
-				if (on_scope!=was_on_scope) { // si cambio on_scope...
-					if (on_scope) { // ... poner cabecera (funcion que se esta desensamblando)...
-						if (!scope_name.IsEmpty()) {
-							out_dialog->AppendLine(scope_name,true); 
-							scope_name.Clear();
-						}
-					} else { // ...o dejar espacio (para separar distintas funciones)
-						out_dialog->AppendLine("",false); 
-						out_dialog->AppendLine("",false); 
-					}
-				}
-			} else if (line.IsEmpty()) { on_scope=false; scope_name.Clear(); }
-			if (on_scope) 
-				out_dialog->AppendLine(line,!is_asm);
-		}
-		// update gui
-		aui_manager.Update();
+		
 	}
+	
+	return out_fname;
+}
+
+void mxMainWindow::OnToolsDissasembleOfflineFunc (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		// first, try to select the whole scope
+		mxSource *src = CURRENT_SOURCE;
+		int ss;
+		if ( !src->FindScope(src->GetCurrentPos(),nullptr,true,&ss,true).IsEmpty()
+			 && src->LineFromPosition(ss)<src->GetCurrentLine() ) 
+		{
+			src->SetCurrentPos(src->PositionFromLine( src->LineFromPosition(ss)+1 ));
+		}
+		src->mxSource::OnBraceMatch(event);
+		// then run objdump
+		wxString out_fname = AuxToolsDissasemble1();
+		if (!out_fname.IsEmpty()) AuxToolsDissasemble2(out_fname,true);
+	};
+}
+
+void mxMainWindow::OnToolsDissasembleOfflineSel (wxCommandEvent & event) {
+	wxString out_fname = AuxToolsDissasemble1();
+	if (!out_fname.IsEmpty()) AuxToolsDissasemble2(out_fname,false);
+}
+
+/**
+* @param full_scope si es false muestra solo las lineas que correspondan a la selccion,
+*                   si es true muestra completa cualquier funcion que incluya al menos
+*                   una de esas lineas
+**/
+void mxMainWindow::AuxToolsDissasemble2(wxString out_fname, bool full_scope) {
+	
+	// create and display output panel
+	mxStyledOutput *out_dialog  = new mxStyledOutput(main_window,true,false);
+	out_dialog->SetTabWidth(8);
+	aui_manager.AddPane(out_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Dissasembly (objdump)").BestSize(500,300).Show());
+	aui_manager.Update();
+	
+	// get required source range
+	mxSource *src=CURRENT_SOURCE;
+	wxString src_fname = src->GetFullPath();
+	int lfrom = src->LineFromPosition(src->GetSelectionStart());
+	int lto = src->LineFromPosition(src->GetSelectionEnd());
+	if (lfrom>lto) std::swap(lfrom,lto);
+	
+	// load and filter results to panel
+	struct auxObjdumpLine { 
+		wxString s; bool f; auxObjdumpLine(); 
+		auxObjdumpLine(wxString _s, bool _f):s(_s),f(_f){} 
+	};
+	vector<auxObjdumpLine> full_scope_dump; // para el full_scope
+	wxFileInputStream input(out_fname);
+	wxTextInputStream text(input);
+	bool on_scope = false; wxString scope_name; // on_scope dice si actualmente estamos o no pasando por el desensamblado de alguna de las lineas que interesan
+	
+	do {
+		wxString line = (input.IsOk() && !input.Eof()) ? text.ReadLine() : ""; // ultima linea ficticia para no tener que repetir código afuera para el último scope
+		bool is_asm = line.StartsWith(" ")||line.StartsWith("\t");
+		if (line.Len() && !is_asm) {
+			if (line.EndsWith(">:")) scope_name = line; // hay lineas "0000004123412 <funcion_que_sigue>:" antes de las que dicen de que linea del fuente vienen
+			bool was_on_scope = on_scope;
+			if (line.StartsWith(src_fname)) { // si indica que lo que sigue corresponde a este fuente, ver que pasa con el nro de linea
+				wxString snum = line.Mid(src_fname.Len()).AfterFirst(':');
+				if (snum.Contains(' ')) snum = snum.BeforeFirst(' ');
+				long lnum=-1;
+				on_scope = (on_scope&&full_scope) || (snum.ToLong(&lnum) && lnum-1>=lfrom && lnum-1<=lto); // el -1 por todos lados es por la base 0/1 de la numeración
+				if (on_scope||full_scope) { line = wxString("")<<snum<<":\t"<<src->GetLine(lnum-1); line.Replace("\n",""); line.Replace("\r",""); }
+			} else {
+				if (!full_scope) on_scope=false;
+			}
+			if (!full_scope && on_scope!=was_on_scope) { // si cambio on_scope...
+				if (on_scope) { // ... poner cabecera (funcion que se esta desensamblando)...
+					if (!scope_name.IsEmpty()) {
+						out_dialog->AppendLine(scope_name,true); 
+						scope_name.Clear();
+					}
+				} else { // ...o dejar espacio (para separar distintas funciones)
+					out_dialog->AppendLine("",false); 
+					out_dialog->AppendLine("",false); 
+				}
+			}
+		} else if (line.IsEmpty()) {
+			if (full_scope_dump.size()) {
+				if (on_scope){
+					for(size_t i=0;i<full_scope_dump.size();i++) { 
+						out_dialog->AppendLine(full_scope_dump[i].s,full_scope_dump[i].f);
+					}
+					out_dialog->AppendLine("",false); 
+					out_dialog->AppendLine("",false); 
+				}
+			}
+			full_scope_dump.clear();
+			on_scope=false; scope_name.Clear(); 
+		}
+		if (full_scope) {
+			if (line.Len()) full_scope_dump.push_back(auxObjdumpLine(line,!is_asm));
+		} else if (on_scope)
+			out_dialog->AppendLine(line,!is_asm);
+	} while(input.IsOk() && !input.Eof());
+	
 }
 
 void mxMainWindow::OnToolsCodeHelp(wxCommandEvent &event) {
