@@ -1169,6 +1169,13 @@ void mxMainWindow::OnToolsDissasembleOfflineSel (wxCommandEvent & event) {
 	if (!out_fname.IsEmpty()) AuxToolsDissasemble2(out_fname,false);
 }
 
+// aux class for mxMainWindow::AuxToolsDissasemble2
+struct auxObjdumpLine { 
+	wxString s; bool f; 
+	auxObjdumpLine() {}
+	auxObjdumpLine(wxString _s, bool _f):s(_s),f(_f){} 
+};
+
 /**
 * @param full_scope si es false muestra solo las lineas que correspondan a la selccion,
 *                   si es true muestra completa cualquier funcion que incluya al menos
@@ -1190,10 +1197,6 @@ void mxMainWindow::AuxToolsDissasemble2(wxString out_fname, bool full_scope) {
 	if (lfrom>lto) std::swap(lfrom,lto);
 	
 	// load and filter results to panel
-	struct auxObjdumpLine { 
-		wxString s; bool f; auxObjdumpLine(); 
-		auxObjdumpLine(wxString _s, bool _f):s(_s),f(_f){} 
-	};
 	vector<auxObjdumpLine> full_scope_dump; // para el full_scope
 	wxFileInputStream input(out_fname);
 	wxTextInputStream text(input);
