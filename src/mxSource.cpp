@@ -1274,13 +1274,14 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 										TextRangeIs(p_prev_ind,"default:") ) );
 				CopyIndentation(current_line,p_prev_ind,increase_level);
 				
-				if (c_curr_last=='{' && config_source.bracketInsertion) { // si estabamos despues de llave que abre, ver si agregar la que cierra
+				if (c_curr_last=='{' && config_source.bracketInsertion && LineFromPosition(p_curr_last)==current_line-1) { // si estabamos despues de llave que abre, ver si agregar la que cierra
 						int p_next_line = GetLineEndPosition(current_line); 
 						l=GetLength(); II_FRONT(p_next_line,II_IS_NOTHING_4(p_next_line));
 						char c_next_line = c;
 						int ind_next = GetLineIndentation(LineFromPosition(p_next_line));
 						int ind_cur = GetLineIndentation(LineFromPosition(p_prev_ind));
 						if (p_next_line==l || (ind_cur > ind_next || (ind_cur==ind_next && c_next_line!='}'))) {
+							UndoActionGuard undo_action(this);
 							// ver primero si la llave ya estaba en la misma linea para simplemente bajarla
 							int p_otra_llave = BraceMatch(p_curr_last);
 							if (p_otra_llave!=wxSTC_INVALID_POSITION && LineFromPosition(p_otra_llave)==current_line) {
@@ -1290,11 +1291,21 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 								// no estaba, hay que agregarla, ver si va "}" o "};"
 								int p_aux = p_curr_last-1;
 								II_BACK(p_aux,II_IS_NOTHING_4(p_aux)); 
-								bool dont_add_semicolon = ( c==')' || // si antes de la llave esta la lista de argumentos...
-														( s==wxSTC_C_WORD && (TextRangeWas(p_aux,"const")  //.. o un calificativo de metodo...
-															|| TextRangeWas(p_aux,"override") || TextRangeWas(p_aux,"explicit")) )
-														|| (s==wxSTC_C_OPERATOR && (c==']'||c=='&')) ); // ...o para la sobrecarga por tipo de refencia, o atributos
-								InsertText(GetLineEndPosition(current_line),dont_add_semicolon?"\n}":"\n};");
+								wxString to_insert = "\n};";
+								if (c==')') to_insert = "\n}";
+								else if ( s==wxSTC_C_WORD) {
+									//.. o un else, o un calificativo de metodo...
+									if (TextRangeWas(p_aux,"const") || TextRangeWas(p_aux,"else") || 
+										TextRangeWas(p_aux,"override") || TextRangeWas(p_aux,"explicit") )
+									{
+										to_insert = "\n}";
+									} else if (TextRangeWas(p_aux,"do")) // si es "do" agregar tambien el "while(...);"
+										to_insert = "\n} while();";
+								} else if (s==wxSTC_C_OPERATOR && (c==']'||c=='&')) { // ...o para la sobrecarga por tipo de refencia, o atributos
+									to_insert="\n}";
+								}
+										
+								InsertText(GetLineEndPosition(current_line),to_insert);
 								CopyIndentation(current_line+1,p_prev_ind);
 							}
 						}
