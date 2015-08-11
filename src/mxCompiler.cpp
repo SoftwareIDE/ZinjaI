@@ -538,7 +538,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 	if (success) { // si el proceso termino correctamente (no hay errores/problemas)
 		if (project && (compile_and_run->compiling||compile_and_run->linking)) { // si es proyecto
 			
-//			compile_and_run->compiling=false; // para que se pone en falso?
+//z			compile_and_run->compiling=false; // para que se pone en falso?
 			
 			wxString current;
 			if ((project->compile_was_ok||!config->Init.stop_compiling_on_error) && project->CompileNext(compile_and_run,current)) { // si se puso a compilar algo
@@ -567,15 +567,18 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 					}
 					tree->SetItemText(state,LANG(MAINW_COMPILING_DONE,"Compilacion Finalizada"));
 					// ejecutar o depurar
-					if (compile_and_run->on_end) compile_and_run->on_end->Do();
-					delete compile_and_run;
+					GenericAction *on_end = fms_move(compile_and_run->on_end);
+					valgrind_cmd=compile_and_run->valgrind_cmd;
+					delete compile_and_run; compile_and_run=nullptr;
+					if (on_end) { on_end->Do(); delete on_end; }
+					valgrind_cmd="";
 				} else {
 					compile_and_run->compiling=false;
 					tree->SetItemText(state,LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
 					main_window->SetStatusProgress(0);
 					main_window->SetStatusText(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida!"));
 					main_window->ShowCompilerTreePanel();
-					delete compile_and_run;
+					delete compile_and_run; compile_and_run=nullptr;
 				}
 			}
 		} else { // si era un ejercicio simple, ver si hay que ejecutar
@@ -587,10 +590,11 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 				tree->Expand(warnings);
 				main_window->ShowCompilerTreePanel();
 			}
+			GenericAction *on_end = fms_move(compile_and_run->on_end);
 			valgrind_cmd=compile_and_run->valgrind_cmd;
-			if (compile_and_run->on_end) compile_and_run->on_end->Do();
+			delete compile_and_run; compile_and_run=nullptr;
+			if (on_end) { on_end->Do(); delete on_end; }
 			valgrind_cmd="";
-			delete compile_and_run;
 		}
 	} else { // si fallo la compilacion
 		// informar y no seguir
