@@ -802,11 +802,11 @@ path=src/LocalRefactory.h
 cursor=6:80
 [other]
 path=guihelp/ChangeLog.html
-cursor=0:6
+cursor=0:0
 open=true
 [other]
 path=guihelp/tips_spanish
-cursor=0:24
+cursor=1:442
 [other]
 path=src/version.h
 cursor=0:24
@@ -821,7 +821,7 @@ path=lang/spanish.src
 cursor=0:0
 [other]
 path=guihelp/tips_english
-cursor=1:350
+cursor=2:0
 [other]
 path=src/lang_index_macros.h
 cursor=29:22

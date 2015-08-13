@@ -1842,6 +1842,14 @@ void mxSource::SetStyle(int a_lexer) {
 void mxSource::SelectError(int indic, int p1, int p2) {
 	if (p1>=GetLength()||p2>GetLength()) return;
 	if (p1==p2) {
+		if (GetCharAt(p2)==')') {
+			p1 = BraceMatch(p2);
+			if (p1==wxSTC_INVALID_POSITION) p1=p2;
+			else {
+				int s; char c; --p1; II_BACK(p1,II_IS_NOTHING_2(p1));
+				p2=p1=WordStartPosition(p1,true); 
+			}
+		}
 		p2=WordEndPosition(p1,true);
 		while (p2>p1 && (GetCharAt(p2-1)==' ' || GetCharAt(p2-1)=='\t')) p2--;
 		if (p2==p1) { GotoPos(p1); return; }
