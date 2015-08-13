@@ -26,7 +26,7 @@ define pvector
 		while $i < $size
 			printf "%u=", $i
 			p *($arg0._M_impl._M_start + $i)
-			printf ","
+			printf ", "
 			set $i++
 		end
 	end
@@ -37,7 +37,7 @@ define pvector
 		else
 			printf "%u=", $idx
 			p *($arg0._M_impl._M_start + $idx)
-			printf ","
+			printf ", "
 		end
 	end
 	if $argc == 3
@@ -55,14 +55,14 @@ define pvector
 		while $i <= $stop_idx
 			printf "%u=", $i
 			p *($arg0._M_impl._M_start + $i)
-			printf ","
+			printf ", "
 			set $i++
 		end
 	  end
 	end
 	if $argc > 0
-		printf "size=%u,", $size
-		printf "capacity=%u,", $capacity
+		printf "size=%u, ", $size
+		printf "capacity=%u, ", $capacity
 		printf "Element="
 		whatis *$arg0._M_impl._M_start
 		printf "}\n"
@@ -86,13 +86,13 @@ define plist
 			if $argc == 2
 				printf "%u=", $size
 				p *($arg1*)($current + 1)
-				printf ","
+				printf ", "
 			end
 			if $argc == 3
 				if $size == $arg2
 					printf "%u=", $size
 					p *($arg1*)($current + 1)
-					printf ","
+					printf ", "
 				end
 			end
 			set $current = $current->_M_next
@@ -100,7 +100,7 @@ define plist
 		end
 		printf "size=%u", $size
 		if $argc == 1
-			printf ",Usar \"plist <nombre> <tipo_elemento>\" para ver el contenido"
+			printf ", Usar \"plist <nombre> <tipo_elemento>\" para ver el contenido"
 		end
 		printf "}\n"
 	end
@@ -126,7 +126,7 @@ define pmap
 				set $value = $value + 4
 				printf "="
 				p *($arg2*)$value
-				printf ","
+				printf ", "
 				if $node->_M_right != 0
 					set $node = $node->_M_right
 					while $node->_M_left != 0
@@ -155,7 +155,7 @@ define pmap
 					set $value = $value + 4
 					printf "="
 					p *($arg2*)$value
-					printf ","
+					printf ", "
 					set $ElementsFound++
 				end
 				if $node->_M_right != 0
@@ -175,7 +175,7 @@ define pmap
 				end
 				set $i++
 			end
-			printf "found=%u,", $ElementsFound
+			printf "found=%u, ", $ElementsFound
 		end
 		if $argc == 5
 			set $idx1 = $arg3
@@ -189,7 +189,7 @@ define pmap
 					p $valueLeft
 					printf "="
 					p $valueRight
-					printf ","
+					printf ", "
 					set $ElementsFound++
 				end
 				
@@ -211,11 +211,11 @@ define pmap
 				
 				set $i++
 			end
-			printf "found=%u,", $ElementsFound
+			printf "found=%u, ", $ElementsFound
 		end
 		printf "size=%u", $tree_size
 		if $argc == 1 || $argc==2
-			printf ",Usar \"pmap <nombre> <tipo_clave> <tipo_valor>\" para ver el contenido"
+			printf ", Usar \"pmap <nombre> <tipo_clave> <tipo_valor>\" para ver el contenido"
 		end
 		printf "}\n"
 	end
@@ -234,9 +234,9 @@ define pstack
 		set $size = $finish_cur - $start_cur
         set $i = $size - 1
         while $i >= 0
-			printf "%u=",$i
+			printf "%u=", $i
             p *($start_cur + $i)
-			printf ","
+			printf ", "
             set $i--
         end
 		printf "size=%u}\n", $size
@@ -261,7 +261,7 @@ define pset
 				set $value = (void *)($node + 1)
 				printf "%u=", $i
 				p *($arg1*)$value
-				printf ","
+				printf ", "
 				if $node->_M_right != 0
 					set $node = $node->_M_right
 					while $node->_M_left != 0
@@ -288,7 +288,7 @@ define pset
 				if *($arg1*)$value == $idx
 					printf "%u=", $i
 					p *($arg1*)$value
-					printf ","
+					printf ", "
 					set $ElementsFound++
 				end
 				if $node->_M_right != 0
@@ -308,11 +308,11 @@ define pset
 				end
 				set $i++
 			end
-			printf "found=%u,", $ElementsFound
+			printf "found=%u, ", $ElementsFound
 		end
 		printf "size=%u", $tree_size
 		if $argc==1
-			printf ",Usar \"pset <nombre> <tipo>\" para ver el contenido"
+			printf ", Usar \"pset <nombre> <tipo>\" para ver el contenido"
 		end
 		printf "}\n"
 	end
@@ -331,9 +331,9 @@ define pdeque
 		set $start_last = $arg0._M_impl._M_start._M_last
 		set $start_stop = $start_last
 		while $start_cur != $start_stop
-			printf "%u=",$size
+			printf "%u=", $size
 			p *$start_cur
-			printf ","
+			printf ", "
 			set $start_cur++
 			set $size++
 		end
@@ -346,9 +346,9 @@ define pdeque
 			set $finish_stop = $finish_last
 		end
 		while $finish_first != $finish_stop
-			printf "%u=",$size
+			printf "%u=", $size
 			p *$finish_first
-			printf ","
+			printf ", "
 			set $finish_first++
 			set $size++
 		end
@@ -369,9 +369,9 @@ define pqueue
 		set $size = $finish_cur - $start_cur
         set $i = 0
         while $i < $size
-            printf "%u=",$size
+            printf "%u=", $size
 			p *($start_cur + $i)
-			printf ","
+			printf ", "
             set $i++
         end
 		printf "size=%u}\n", $size
@@ -390,12 +390,12 @@ define ppqueue
 		set $capacity = $arg0.c._M_impl._M_end_of_storage - $arg0.c._M_impl._M_start
 		set $i = $size - 1
 		while $i >= 0
-            printf "%u=",$size
+            printf "%u=", $size
 			p *($arg0.c._M_impl._M_start + $i)
-			printf ","
+			printf ", "
 			set $i--
 		end
-		printf "size=%u,", $size
+		printf "size=%u, ", $size
 		printf "capacity=%u}\n", $capacity
 	end
 end
@@ -421,9 +421,9 @@ define pstring
 	else
 		printf "{
 		printf "string=\"%s\"", $arg0._M_data()
-		printf ",size/length=%u", $arg0._M_rep()->_M_length
-		printf ",capacity=%u", $arg0._M_rep()->_M_capacity
-		printf ",ref-count=%d", $arg0._M_rep()->_M_refcount
+		printf ", size/length=%u", $arg0._M_rep()->_M_length
+		printf ", capacity=%u", $arg0._M_rep()->_M_capacity
+		printf ", ref-count=%d", $arg0._M_rep()->_M_refcount
 		printf "}\n"
 	end
 end
@@ -437,9 +437,9 @@ define pwstring
 	else
 		printf "{"
 		call printf("string=\"%ls\"", $arg0._M_data())
-		printf ",size/length=%u", $arg0._M_rep()->_M_length
-		printf ",capacity=%u", $arg0._M_rep()->_M_capacity
-		printf ",ref-count=%d", $arg0._M_rep()->_M_refcount
+		printf ", size/length=%u", $arg0._M_rep()->_M_length
+		printf ", capacity=%u", $arg0._M_rep()->_M_capacity
+		printf ", ref-count=%d", $arg0._M_rep()->_M_refcount
 		printf "}\n"
 	end
 end

@@ -4025,7 +4025,7 @@ void mxSource::ApplyRectEdit ( ) {
 	}
 	// new_str es el nuevo contenido en esa linea, ref_str el viejo, ambos para toda la zona de edicion
 	wxString new_str = GetTextRange(pbeg,pend), &ref_str = multi_sel.ref_str;
-	if (new_str.Len()) { wxStyledTextEvent e; OnHighLightWord(e); }
+	if (multi_sel.keep_highlight && new_str.Len()) { wxStyledTextEvent e; OnHighLightWord(e); }
 	// lr y ln son los largos de ambos contenidos
 	int i=0, lr=ref_str.Len(), ln=new_str.Len(); 
 	// acotar la parte modificada, avanzando desde afuera hacia adentro mientras no haya cambio
@@ -4134,20 +4134,28 @@ bool mxSource::GetCurrentCall (wxString &ftype, wxString &fname, wxArrayString &
 	wxString one_arg;
 	int p=p1+1;
 	do {
-		if (!II_SHOULD_IGNORE(p)) {
+		if (!II_IS_4(p,' ','\n','\r','\t') && !II_IS_COMMENT(p)) {
 			c=GetCharAt(p);
 			if (c=='(') {
-				p=BraceMatch(p); // no hace falte verificar por pos invalida, porque p5 tiene match, eso garantiza que adentro todos tienen
+				p=BraceMatch(p); // no hace falta verificar por pos invalida, porque p5 tiene match, eso garantiza que adentro todos tienen
 			} else if (c==','||p==p3) {
 				if (one_arg!="") {
 					wxString type; int dims=0;
 					// see if the actual arg is expression or identifier (only the second could be the formal parameter's name)
-					for(unsigned int j=0;j<one_arg.Length();j++) {
+					unsigned int oalen = one_arg.Len();
+					for(unsigned int j=0;j<oalen;j++) {
 						bool is_keyword_char = IsKeywordChar(one_arg[j]);
 						if (j==0 && one_arg[0]>='0' && one_arg[0]<='9') is_keyword_char=false;
 						if (!is_keyword_char) {
 							type = LocalRefactory::GetLiteralType(one_arg);
-							one_arg="???";
+							if (!type.Len()) {
+								// get something for the name
+								unsigned int i0=0; while (i0<oalen && !IsKeywordChar(one_arg[i0])) i0++; // skip *?
+								unsigned int i1=i0; while (i1<oalen && IsKeywordChar(one_arg[i1])) i1++; // get the name
+								if (i0==i1) one_arg="???"; else one_arg=one_arg.Mid(i0,i1-i0);
+							} else {
+								one_arg="???";
+							}
 							break;
 						}
 					}

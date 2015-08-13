@@ -39,7 +39,7 @@ wxString LocalRefactory::GetLiteralType (wxString literal_expression) {
 	wxString &s=literal_expression; int l=s.Len(), i=0; if (!l) return "";
 	if (s[0]=='\'') return "char";
 	else if (s[0]=='\"') return "const char *";
-	else if (s[0]>='0'||s[0]<='1'||s[0]=='.') {
+	else if ((s[0]>='0'&&s[0]<='1')||s[0]=='.') {
 		bool is_real = s[0]=='.';
 		while(++i<l) {
 			if (s[i]=='.') is_real=true;
@@ -55,6 +55,6 @@ wxString LocalRefactory::GetLiteralType (wxString literal_expression) {
 		}
 		return is_real?"float":"int";
 	}
-	
+	else return "";
 }
 
