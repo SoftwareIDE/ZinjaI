@@ -1,5 +1,5 @@
 If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-Welcome a new ZinjaI release. The changes include many improvements and fixes. Among the most visible ones it is a new extern tool integrated in Tools menu (lizard, for measuring source code complexity), reduced times in the analisys phase before compiling/running a big project, and new contextual menus for toolbars' buttons with related commands. Read the <A href="help:ChangeLog.html">full changelog</A>.
+Welcome a new ZinjaI release. The changes include a few new features for low-level debugging, a new command to generate functions definitions from actual calls, a new quick way to rename identifiers in a given scope, some new rules for smart indention mechanism, more flexible autocodes, and, as always, many other minor improvements and fixes here and there. Read the <A href="help:ChangeLog.html">full changelog</A>.
 These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.
