@@ -43,7 +43,7 @@ mxInspectionPrint::mxInspectionPrint(wxString expression, bool is_frameless) : w
 
 void mxInspectionPrint::OnDICreated (DebuggerInspection * di) {
 	type->SetLabel(di->GetValueType());
-	value->SetValue(di->GetValue());
+	OnDIValueChanged(di);
 }
 
 void mxInspectionPrint::OnDIError (DebuggerInspection * di) {
@@ -51,7 +51,15 @@ void mxInspectionPrint::OnDIError (DebuggerInspection * di) {
 }
 
 void mxInspectionPrint::OnDIValueChanged (DebuggerInspection * di) {
-	value->SetValue(di->GetValue());
+	wxString val = di->GetValue();
+	if (val.StartsWith("0x")) { // si agun tipo de cadena, mostrarla sin comillas ni barras de escape
+		int p = val.Index(' ');
+		if (p!=wxNOT_FOUND && p+1<int(val.Len()) && val[p+1]=='\"') {
+			value->SetValue(mxUT::UnEscapeString(val.AfterFirst(' ')));
+			return;
+		}
+	}
+	value->SetValue(val);
 }
 
 void mxInspectionPrint::OnDIOutOfScope (DebuggerInspection * di) {
@@ -60,12 +68,12 @@ void mxInspectionPrint::OnDIOutOfScope (DebuggerInspection * di) {
 
 void mxInspectionPrint::OnDIInScope (DebuggerInspection * di) {
 	type->SetLabel(di->GetValueType());
-	value->SetValue(di->GetValue());
+	OnDIValueChanged(di);
 }
 
 void mxInspectionPrint::OnDINewType (DebuggerInspection * di) {
 	type->SetLabel(di->GetValueType());
-	value->SetValue(di->GetValue());
+	OnDIValueChanged(di);
 }
 
 mxInspectionPrint::~mxInspectionPrint ( ) {
