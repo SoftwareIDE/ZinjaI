@@ -1294,7 +1294,11 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 						char c_next_line = c;
 						int ind_next = GetLineIndentation(LineFromPosition(p_next_line));
 						int ind_cur = GetLineIndentation(LineFromPosition(p_prev_ind));
-						if (p_next_line==l || (ind_cur > ind_next || (ind_cur==ind_next && c_next_line!='}'))) {
+						if ( (p_next_line==l || (ind_cur > ind_next || (ind_cur==ind_next && c_next_line!='}'))) 
+							&& !(GetStyleAt(p_next_line)==wxSTC_C_WORD 
+									&& ( TextRangeIs(p_next_line,"public")||TextRangeIs(p_next_line,"protected")||TextRangeIs(p_next_line,"private")
+										 ||TextRangeIs(p_next_line,"case")||TextRangeIs(p_next_line,"default") ) )
+						) {
 							UndoActionGuard undo_action(this);
 							// ver primero si la llave ya estaba en la misma linea para simplemente bajarla
 							int p_otra_llave = BraceMatch(p_curr_last);
