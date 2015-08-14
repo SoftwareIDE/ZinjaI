@@ -9,11 +9,11 @@
 * as if it where on the stack (attached to a local scope)
 **/
 template<class T>
-class RaiiDelete {
+class RaiiDeletePtr {
 	T *&p;
 public:
-	RaiiDelete(T *&ptr) : p(ptr) {}
-	~RaiiDelete() { delete p; }
+	RaiiDeletePtr(T *&ptr) : p(ptr) {}
+	~RaiiDeletePtr() { delete p; }
 };
 
 // fms stands for faked-move-semantics, this project should still compile in pre c++11 compilers

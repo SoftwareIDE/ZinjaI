@@ -31,6 +31,7 @@
 #define min2(a,b) ((a)<(b)?(a):(b))
 #include "execution_workaround.h"
 #include "MenusAndToolsConfig.h"
+#include "mxOSD.h"
 
 
 bool zinjai_debug_mode=false;
@@ -1346,7 +1347,7 @@ void mxUT::SetArgument (wxString &full, const wxString &arg, bool add) {
 * @retval 2 graphviz error
 * @retval 3 xdot/viewer error
 **/
-int mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxString title) {
+void mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxString title) {
 	bool show=!output.Len(), as_image=!config->Files.xdot_command.Len();
 	if (show) {
 		if (as_image)
@@ -1354,24 +1355,33 @@ int mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxSt
 		else
 			output=DIR_PLUS_FILE(config->temp_dir,"temp.xdot");
 	}
-	wxString format=output.AfterLast('.').Lower(); if (!format.Len()) return 1;
+	wxString format=output.AfterLast('.').Lower(); if (!format.Len()) return;
 	wxString command =(use_fdp?"fdp":"dot");
 #ifdef __WIN32__
 	command = mxUT::Quotize(DIR_PLUS_FILE(config->zinjai_third_dir,wxString()<<"graphviz\\"<<command<<".exe"));
 	RaiiWorkDirChanger cwd_guard(DIR_PLUS_FILE(config->zinjai_third_dir,"graphviz\\")); // set temp cwd
 #endif
 	command<<" "<<Quotize(graph_file)<<" -T"<<format<<" -o "<<Quotize(output);
-	int retval = mxExecute(command,wxEXEC_SYNC);
-	_IF_DEBUGMODE(command + (wxString("\nretval=")<<retval) );
-	if (retval) return 1;
+		
+	_CAPTURELIST_5( s_lmbProcGraph,lmb_args, 
+				bool,show, bool,as_image, 
+				wxString,title, wxString,command, wxString,output );
+		
+	_LAMBDAEX_1( lmbProcGraph, int,retval, s_lmbProcGraph,args, {
+		_IF_DEBUGMODE(args.command + (wxString("\nretval=")<<retval) );
+		if (!retval && args.show) {
+			if (args.as_image) mxUT::LaunchImageViewer(args.title,args.output);
+			else               mxUT::LaunchGraphViewer(args.title,args.output);
+		} else if (retval) {
+			mxMessageDialog(main_window,LANG(MAINW_GRAPHVIZ_ERROR,"Ha ocurrido un error al procesar el grafo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		}
+		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
+	}; );
+	
+	mxOSD::Execute(command,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."),new lmbProcGraph(lmb_args));
 #ifdef __WIN32__
 	cwd_guard.RestoreNow();
 #endif
-	if (show) {
-		if (as_image) LaunchImageViewer(title,output);
-		else          LaunchGraphViewer(title,output);
-	}
-	return 0;
 }
 
 wxString mxUT::ReplaceLangArgs(wxString src, wxString arg1) {

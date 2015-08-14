@@ -663,10 +663,8 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	
 	// mostrar el grafo
 	status_bar->SetStatusText(LANG(MAINW_GPROF_SHOWING,"Mostrando resultados..."));
-	retval = mxUT::ProcessGraph(pout,!config->Init.graphviz_dot,"",LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling"));
-	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 3).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
-	status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
-	
+	osd.Hide(); // ProcessGraph will show its own one
+	mxUT::ProcessGraph(pout,!config->Init.graphviz_dot,"",LANG(MAINW_GPROF_GRAPH_TITLE,"Informacion de Profiling"));
 }
 
 void mxMainWindow::OnToolsGprofList (wxCommandEvent &event) {
@@ -1103,16 +1101,13 @@ void mxMainWindow::OnToolsLizardHelp(wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("lizard.html");
 }
 
-wxString mxMainWindow::AuxToolsDissasemble1() {
-	IF_THERE_ISNT_SOURCE return "";
+void mxMainWindow::AuxToolsDissasemble1(GenericActionEx<wxString> *on_end) {
+	RaiiDeletePtr<GenericActionEx<wxString> > oe_del(on_end);
+	IF_THERE_ISNT_SOURCE return;
 	
 	static wxString last_dissasembled_binary;
 		
 	mxSource *src=CURRENT_SOURCE;
-	
-	// inform user
-	status_bar->SetStatusText(LANG(OSD_DISASSEMBLING,"Desensamblando..."));
-	mxOSD osd(this,LANG(OSD_DISASSEMBLING,"Desensamblando..."));
 	
 	// compose required command
 	wxString out_fname = DIR_PLUS_FILE(config->temp_dir,"objdump.txt"), in_fname;	
@@ -1127,24 +1122,35 @@ wxString mxMainWindow::AuxToolsDissasemble1() {
 		in_fname = src->GetBinaryFileName().GetFullPath();
 	}
 	
-	if (last_dissasembled_binary!=in_fname || (wxFileName::FileExists(out_fname) && 
-			wxFileName(in_fname).GetModificationTime()>wxFileName(out_fname).GetModificationTime()) ) 
-	{
+	if (last_dissasembled_binary!=in_fname || !wxFileName::FileExists(out_fname) ||
+			wxFileName(in_fname).GetModificationTime()>wxFileName(out_fname).GetModificationTime() ) 
+	{ // si tiene que correr antes objdump
 
 		wxString command("sh -c \'objdump -d -C -l ");
 		command << mxUT::Quotize(in_fname) << " >" << mxUT::Quotize(out_fname) << "\'";
+
+		// grab all arguments the lambda will need
+		wxString *plast_dissasembled_binary=&last_dissasembled_binary; // to be used in _CAPTURELIST_4
+		_CAPTURELIST_4( s_lmbDasm2oe,lmb_arg,
+			wxString*,plast_dissasembled_binary,
+			wxString,in_fname, wxString,out_fname,
+			GenericActionEx<wxString>*,on_end );
+		on_end=nullptr; // avoid double delete, the lambda will do it now
 		
-		// run the commmand
-		int retval = mxExecute(command, wxEXEC_NODISABLE|wxEXEC_SYNC/*, nullptr*/);
-		if (retval) {
-			wxArrayString aux;
-			showExternToolErrorMessage(retval, aux, "objdump");
-			return "";
-		}
+		// define the lambda for after running the commmand
+		_LAMBDAEX_1( lmbDasm2oe, int,retval, s_lmbDasm2oe,args, {
+			if (retval==0) {
+				(*(args.plast_dissasembled_binary))=args.in_fname; // for memoization
+				args.on_end->Do(args.out_fname); delete args.on_end; 
+			}
+			else { wxArrayString aux; showExternToolErrorMessage(retval, aux, "objdump"); } 
+		} );
 		
-	}
-	
-	return out_fname;
+		// finally launch the process and show the osd message
+		mxOSD::Execute( command, LANG(OSD_DISASSEMBLING,"Desensamblando..."), new lmbDasm2oe(lmb_arg) );
+
+	} else // si no necesita volver a correr objdump
+		on_end->Do(out_fname); 
 }
 
 void mxMainWindow::OnToolsDissasembleOfflineFunc (wxCommandEvent & event) {
@@ -1159,14 +1165,18 @@ void mxMainWindow::OnToolsDissasembleOfflineFunc (wxCommandEvent & event) {
 		}
 		src->mxSource::OnBraceMatch(event);
 		// then run objdump
-		wxString out_fname = AuxToolsDissasemble1();
-		if (!out_fname.IsEmpty()) AuxToolsDissasemble2(out_fname,true);
+		_LAMBDAEX_0( lmbDasmFunc2, wxString,out_fname,
+			{ main_window->AuxToolsDissasemble2(out_fname,true); } 
+		);
+		AuxToolsDissasemble1( new lmbDasmFunc2() );
 	};
 }
 
 void mxMainWindow::OnToolsDissasembleOfflineSel (wxCommandEvent & event) {
-	wxString out_fname = AuxToolsDissasemble1();
-	if (!out_fname.IsEmpty()) AuxToolsDissasemble2(out_fname,false);
+	_LAMBDAEX_0( lmbDasmFunc2, wxString,out_fname, 
+		{ main_window->AuxToolsDissasemble2(out_fname,false); } 
+	);
+	AuxToolsDissasemble1( new lmbDasmFunc2() );
 }
 
 // aux class for mxMainWindow::AuxToolsDissasemble2

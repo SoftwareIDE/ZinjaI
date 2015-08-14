@@ -2,10 +2,12 @@
 #define MXOSD_H
 #include <wx/dialog.h>
 #include <wx/timer.h>
+#include "Cpp11.h"
 	
 class wxFont;
 class wxColour;
 class wxBrush;
+class wxButton;
 
 /**
 * @brief Clase para mostrar mensajes en pantalla tipo OSD
@@ -15,6 +17,8 @@ class wxBrush;
 **/
 class mxOSD : public wxDialog {
 private:
+	wxButton *cancel_button;
+	GenericAction *on_cancel; ///< if this message has a cancel button, this is its callback
 	wxTimer *timer;
 	wxString text;
 	wxWindow *parent;
@@ -24,14 +28,20 @@ private:
 	static mxOSD *current_osd;
 	bool corner;
 public:
-	mxOSD(wxWindow *aparent, wxString str="", int time=0, bool coner=false);
+	mxOSD(wxWindow *aparent, wxString str="", int time=0, bool coner=false, GenericAction *aon_cancel=nullptr);
 	~mxOSD();
 	void ShowText(wxString str, int time=0, bool corner=false);
 	void OnTimer(wxTimerEvent &evt);
 	void OnPaint (wxPaintEvent &event);
+	void OnCancel (wxCommandEvent &evt);
+	void OnResize (wxSizeEvent &evt);
 	static void HideCurrent() { if (current_osd) current_osd->Hide(); }
+	
+	static void Execute(wxString command, wxString message, GenericActionEx<int> *aon_end);
+	
 	DECLARE_EVENT_TABLE();
 };
+
 
 #endif
 

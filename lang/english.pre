@@ -3134,6 +3134,8 @@ GENERAL_POPUP_INSERT_BROWSER
 insert browser command
 GENERAL_POPUP_INSERT_SHELL_EXECUTE
 insert command for opening with associated program
+MAINW_GRAPHVIZ_ERROR
+There was an error while processing the graph
 VALGRIND_OUTPUT_MISSING
 Dynamic analysis' information was not found.\nIn order to generate it go to ZinjaI's help.
 VALGRIND_RELOAD_TREE

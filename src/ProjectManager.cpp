@@ -3165,7 +3165,7 @@ void ProjectManager::DrawGraph() {
 	fil.Close();
 	
 	delete [] dgi;
-	
+	osd.Hide(); // ProcessGraph will show its own one
 	mxUT::ProcessGraph(graph_file,true,"",LANG(PROJMNGR_PROJECT_GRAPH_TITLE,"Grafo de Proyecto"));
 
 }

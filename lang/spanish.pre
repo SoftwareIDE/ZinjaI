@@ -3134,6 +3134,8 @@ GENERAL_POPUP_INSERT_BROWSER
 insertar comando del navegador
 GENERAL_POPUP_INSERT_SHELL_EXECUTE
 insertar comando para abrir con el programa asociado
+MAINW_GRAPHVIZ_ERROR
+Ha ocurrido un error al procesar el grafo
 VALGRIND_OUTPUT_MISSING
 No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda.
 VALGRIND_RELOAD_TREE

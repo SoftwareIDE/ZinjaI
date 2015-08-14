@@ -12,7 +12,6 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=guihelp/ChangeLog.html
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -22,8 +21,11 @@ path=src/ConfigManager.cpp
 cursor=1063:0
 [source]
 path=src/mxMainWindowTools.cpp
-cursor=1130:43
+cursor=1171:2
 marker=178
+marker=1106
+marker=1115
+marker=1116
 [source]
 path=src/mxColoursEditor.cpp
 cursor=514:57
@@ -35,7 +37,7 @@ path=src/mxHidenPanel.cpp
 cursor=121:15
 [source]
 path=src/mxMainWindow.cpp
-cursor=5092:0
+cursor=5014:69
 marker=1125
 [source]
 path=src/DebugManager.cpp
@@ -99,7 +101,7 @@ path=src/mxTipsWindow.cpp
 cursor=57:0
 [source]
 path=src/ProjectManager.cpp
-cursor=1640:62
+cursor=1648:70
 [source]
 path=src/mxThreadGrid.cpp
 cursor=4:0
@@ -163,11 +165,11 @@ path=src/mxBreakOptions.cpp
 cursor=94:34
 [source]
 path=src/mxOSD.cpp
-cursor=20:15
+cursor=87:0
 [source]
 path=src/mxSource.cpp
-cursor=4188:52
-marker=2370
+cursor=3252:14
+marker=2378
 [source]
 path=src/mxDrawClasses.cpp
 cursor=102:0
@@ -258,7 +260,7 @@ path=src/mxMultipleFileChooser.cpp
 cursor=38:105
 [source]
 path=src/mxCompiler.cpp
-cursor=571:53
+cursor=164:0
 marker=197
 marker=613
 marker=638
@@ -414,7 +416,7 @@ path=src/Parser.h
 cursor=11:15
 [header]
 path=src/ProjectManager.h
-cursor=631:41
+cursor=495:61
 [header]
 path=src/ShareManager.h
 cursor=34:17
@@ -438,7 +440,7 @@ path=src/mxGotoLineWindow.h
 cursor=6:14
 [header]
 path=src/mxMainWindow.h
-cursor=55:10
+cursor=298:26
 marker=301
 [header]
 path=src/mxNewWizard.h
@@ -469,7 +471,7 @@ path=src/mxHelpWindow.h
 cursor=15:68
 [header]
 path=src/DebugManager.h
-cursor=265:3
+cursor=299:1
 [header]
 path=src/mxFlowWindow.h
 cursor=13:17
@@ -532,7 +534,7 @@ path=src/mxBreakOptions.h
 cursor=0:0
 [header]
 path=src/mxOSD.h
-cursor=0:0
+cursor=19:24
 [header]
 path=src/mxInspectionMatrix.h
 cursor=41:13
@@ -772,7 +774,7 @@ path=src/mxRealTimeInspectionEditor.h
 cursor=14:21
 [header]
 path=src/Cpp11.h
-cursor=3:0
+cursor=32:43
 [header]
 path=src/raii.h
 cursor=20:0
@@ -802,8 +804,7 @@ path=src/LocalRefactory.h
 cursor=6:80
 [other]
 path=guihelp/ChangeLog.html
-cursor=0:0
-open=true
+cursor=12:134
 [other]
 path=guihelp/tips_spanish
 cursor=1:442
@@ -1150,7 +1151,5 @@ suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useI
 inline_suppr=1
 additional_files=
 exclude_list=
-[inspections]
-expr=new_str
 [custom_tools]
 [end]

@@ -272,7 +272,7 @@ public:
 	static void SetArgument(wxString &full, const wxString &arg, bool add);
 	
 	/// takes a graph description, process it with graphviz and shows results (output=="") or save it to an image file(output)
-	static int ProcessGraph(wxString graph_file, bool use_fdp, wxString output, wxString title="");
+	static void ProcessGraph(wxString graph_file, bool use_fdp, wxString output, wxString title="");
 	
 	/// for replacing aguments in translate strings for gui messages (version for 1 argument)
 	static wxString ReplaceLangArgs(wxString src, wxString arg1);

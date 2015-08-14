@@ -296,7 +296,7 @@ public:
 	void OnToolsValgrindView(wxCommandEvent &event);
 	void OnToolsValgrindHelp(wxCommandEvent &event);
 #endif
-	wxString AuxToolsDissasemble1(); ///< ejecuta objdump y retorna el path del archivo de salida
+	void AuxToolsDissasemble1(GenericActionEx<wxString> *on_end); ///< ejecuta objdump y retorna el path del archivo de salida
 	void AuxToolsDissasemble2(wxString out_fname, bool full_scope); ///< filtra la salida y muestra el panel con los resultados
 	void OnToolsDissasembleOfflineSel(wxCommandEvent &event);
 	void OnToolsDissasembleOfflineFunc(wxCommandEvent &event);

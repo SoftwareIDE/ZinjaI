@@ -125,8 +125,7 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 		if (dlg.ShowModal() != wxID_OK) return;
 		output=dlg.GetPath();
 	}
-	/*int retval = */mxUT::ProcessGraph(gout,wich_command->GetStringSelection()=="fdp","",LANG(DRAW_CLASSES_TITLE,"Jerarquía de Clases"));
-	// todo: mostrar mensaje de error si falla retval
+	mxUT::ProcessGraph(gout,wich_command->GetStringSelection()=="fdp","",LANG(DRAW_CLASSES_TITLE,"Jerarquía de Clases"));
 }
 
 /**
@@ -185,9 +184,9 @@ int mxDrawClasses::GenerateGraph(wxString file, bool one_class, bool related, bo
 								added++;
 								if (pos==wxNOT_FOUND && classes.Index(item->son)==wxNOT_FOUND) 
 									sons.Add(item->son);
-								relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+								relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 							} else if (from==0)
-								relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+								relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 						}
 					}
 				}
@@ -209,9 +208,9 @@ int mxDrawClasses::GenerateGraph(wxString file, bool one_class, bool related, bo
 								added++;
 								if (pos==wxNOT_FOUND && classes.Index(item->father)==wxNOT_FOUND) 
 									fathers.Add(item->father);
-								relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+								relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 							} else if (from==0  && classes.Index(item->father)==wxNOT_FOUND)
-								relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+								relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 						}
 					}
 				}
@@ -236,18 +235,18 @@ int mxDrawClasses::GenerateGraph(wxString file, bool one_class, bool related, bo
 				if (classes.Index(item->father)==wxNOT_FOUND && fathers.Index(item->father)==wxNOT_FOUND) {
 					if (related) {
 						fathers.Add(item->father);
-						relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+						relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 					}
 				} else 
-					relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+					relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 			} else if (classes.Index(item->father)!=wxNOT_FOUND) {
 				if (classes.Index(item->son)==wxNOT_FOUND && fathers.Index(item->son)==wxNOT_FOUND) {
 					if (related) {
 						fathers.Add(item->son);
-						relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+						relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 					}
 				} else
-					relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+					relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 			}
 		}
 		
@@ -266,7 +265,7 @@ int mxDrawClasses::GenerateGraph(wxString file, bool one_class, bool related, bo
 								added++;
 								if (pos==wxNOT_FOUND) 
 									fathers.Add(item->father);
-								relationships.Add(wxString("\t")<<item->son<<_T("->")<<item->father<<_T("[arrowhead=onormal];"));
+								relationships.Add(wxString("\t\"")<<item->son<<_T("\"->\"")<<item->father<<_T("\"[arrowhead=onormal];"));
 							}
 						}
 					}
@@ -277,15 +276,15 @@ int mxDrawClasses::GenerateGraph(wxString file, bool one_class, bool related, bo
 	}
 	
 	for (unsigned int i=file.Len()?classes.GetCount():0;i<sons.GetCount();i++)
-		fil.AddLine(wxString("\t")<<sons[i]<<_T("[shape=box,color=gray];"));
+		fil.AddLine(wxString("\t\"")<<sons[i]<<_T("\"[shape=box,color=gray];"));
 	for (unsigned int i=file.Len()?classes.GetCount():0;i<fathers.GetCount();i++)
-		fil.AddLine(wxString("\t")<<fathers[i]<<_T("[shape=box,color=gray];"));
+		fil.AddLine(wxString("\t\"")<<fathers[i]<<_T("\"[shape=box,color=gray];"));
 	for (unsigned int i=0;i<classes.GetCount();i++) {
 		if (!inside)
-			fil.AddLine(wxString("\t")<<classes[i]<<_T("[shape=box];"));
+			fil.AddLine(wxString("\t\"")<<classes[i]<<_T("\"[shape=box];"));
 		else {
-			wxString str("\t");
-			str<<classes[i]<<_T("[shape=record,label=\"{")<<classes[i]<<_T("|");
+			wxString str("\t"), name=classes[i];
+			str<<"\""<<name<<"\"[shape=record,label=\"{"<<classes[i]<<"|";
 			pd_class *it_class= parser->last_class->next;
 			while (it_class) {
 				if (it_class->name==classes[i]) break;

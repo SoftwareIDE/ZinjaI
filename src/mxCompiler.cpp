@@ -162,7 +162,7 @@ mxCompiler::mxCompiler(wxTreeCtrl *atree, wxTreeItemId s, wxTreeItemId e, wxTree
 *               la ejecuta y le hace luego el delete.
 **/
 void mxCompiler::BuildOrRunProject(bool prepared, GenericAction *on_end) {
-	RaiiDelete<GenericAction> ga_del(on_end);
+	RaiiDeletePtr<GenericAction> ga_del(on_end);
 	if (project->GetWxfbActivated() && project->GetWxfbConfiguration()->working) return;
 	main_window->extern_compiler_output->Clear();
 	main_window->SetCompilingStatus(LANG(GENERAL_PREPARING_BUILDING,"Preparando compilacion..."));
@@ -637,7 +637,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 *               pertenece a quien invoque a esta funcion.
 **/
 void mxCompiler::CompileSource (mxSource *source, GenericAction *on_end) {
-	RaiiDelete<GenericAction> oe_del(on_end);
+	RaiiDeletePtr<GenericAction> oe_del(on_end);
 	if (!EnsureCompilerNotRunning()) return;
 	compile_and_run_struct_single *compile_and_run=new compile_and_run_struct_single("CompileSource");;
 	fms_move(compile_and_run->on_end,on_end);

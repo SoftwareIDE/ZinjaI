@@ -5013,7 +5013,7 @@ void mxMainWindow::OnFileSetAsMaster (wxCommandEvent & event) {
 *               o se la pasa al proceso de compilacion
 **/
 void mxMainWindow::CompileSource (bool force_compile, GenericAction *action) {
-	RaiiDelete<GenericAction> oe_del(action);
+	RaiiDeletePtr<GenericAction> oe_del(action);
 	mxSource *source = CURRENT_SOURCE;
 	if (master_source) {
 		if (!source->sin_titulo && source->GetModify()) source->SaveSource(); // guardar el actual
