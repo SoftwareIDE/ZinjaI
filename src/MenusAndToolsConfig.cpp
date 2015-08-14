@@ -57,7 +57,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnFILE, myMenuItem("close_all",mxID_FILE_CLOSE_ALL, LANG(MENUITEM_FILE_CLOSE_ALL,"Cerrar &Todo")).ShortCut("Ctrl+Alt+Shift+W").Description("Cierra todos los archivos abiertos").Icon("cerrarTodo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnFILE, myMenuItem("close_project",mxID_FILE_CLOSE_PROJECT, LANG(MENUITEM_FILE_CLOSE_PROJECT,"Cerrar Pro&yecto")).ShortCut("Ctrl+Shift+W").Description("Cierra el proyecto actual").Icon("cerrarProyecto.png").EnableIf(ecPROJECT));
 		AddSeparator(mnFILE);
-		AddMenuItem(mnFILE, myMenuItem("project_config",mxID_FILE_PROJECT_CONFIG, LANG(MENUITEM_FILE_PROJECT_CONFIG,"&Configuración del Proyecto...")).ShortCut("Ctrl+Shift+P").Description("Configurar las propiedades generales de un proyecto...").Icon("projectConfig.png").EnableIf(ecSOURCE));
+		AddMenuItem(mnFILE, myMenuItem("project_config",mxID_FILE_PROJECT_CONFIG, LANG(MENUITEM_FILE_PROJECT_CONFIG,"&Configuración del Proyecto...")).ShortCut("Ctrl+Shift+P").Description("Configurar las propiedades generales de un proyecto...").Icon("projectConfig.png").EnableIf(ecPROJECT));
 		AddMenuItem(mnFILE, myMenuItem("preferences",mxID_FILE_PREFERENCES, LANG(MENUITEM_FILE_PREFERENCES,"&Preferencias...")).ShortCut("Ctrl+P").Description("Configurar el entorno...").Icon("preferencias.png"));
 		AddSeparator(mnFILE);
 		AddMenuItem(mnFILE, myMenuItem("exit",mxID_FILE_EXIT, LANG(MENUITEM_FILE_EXIT,"&Salir")).ShortCut("Alt+F4").Description("Salir del programa!").Icon("salir.png"));

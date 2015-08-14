@@ -21,11 +21,7 @@ path=src/ConfigManager.cpp
 cursor=1063:0
 [source]
 path=src/mxMainWindowTools.cpp
-cursor=1171:2
-marker=178
-marker=1106
-marker=1115
-marker=1116
+cursor=1137:16
 [source]
 path=src/mxColoursEditor.cpp
 cursor=514:57
@@ -37,11 +33,11 @@ path=src/mxHidenPanel.cpp
 cursor=121:15
 [source]
 path=src/mxMainWindow.cpp
-cursor=5014:69
+cursor=5015:14
 marker=1125
 [source]
 path=src/DebugManager.cpp
-cursor=1931:22
+cursor=419:31
 marker=793
 marker=796
 [source]
@@ -101,7 +97,7 @@ path=src/mxTipsWindow.cpp
 cursor=57:0
 [source]
 path=src/ProjectManager.cpp
-cursor=1648:70
+cursor=3168:19
 [source]
 path=src/mxThreadGrid.cpp
 cursor=4:0
@@ -165,14 +161,14 @@ path=src/mxBreakOptions.cpp
 cursor=94:34
 [source]
 path=src/mxOSD.cpp
-cursor=87:0
+cursor=148:31
 [source]
 path=src/mxSource.cpp
-cursor=3252:14
-marker=2378
+cursor=1298:111
+marker=2382
 [source]
 path=src/mxDrawClasses.cpp
-cursor=102:0
+cursor=0:0
 [source]
 path=src/mxFlowCanvas.cpp
 cursor=710:33
@@ -250,8 +246,8 @@ path=src/mxGrid.cpp
 cursor=0:1
 [source]
 path=src/mxUtils.cpp
-cursor=33:0
-marker=1382
+cursor=1380:6
+marker=1392
 [source]
 path=src/mxTextDialog.cpp
 cursor=88:0
@@ -260,7 +256,7 @@ path=src/mxMultipleFileChooser.cpp
 cursor=38:105
 [source]
 path=src/mxCompiler.cpp
-cursor=164:0
+cursor=639:14
 marker=197
 marker=613
 marker=638
@@ -316,7 +312,7 @@ path=src/mxGCovSideBar.cpp
 cursor=79:32
 [source]
 path=src/execution_workaround.cpp
-cursor=38:0
+cursor=55:19
 [source]
 path=src/mxWxfbConfigDialog.cpp
 cursor=55:20
@@ -416,7 +412,7 @@ path=src/Parser.h
 cursor=11:15
 [header]
 path=src/ProjectManager.h
-cursor=495:61
+cursor=475:14
 [header]
 path=src/ShareManager.h
 cursor=34:17
@@ -462,7 +458,7 @@ path=src/mxTipsWindow.h
 cursor=11:0
 [header]
 path=src/mxUtils.h
-cursor=64:8
+cursor=274:13
 [header]
 path=src/paf_defs.h
 cursor=-1:142
@@ -534,7 +530,7 @@ path=src/mxBreakOptions.h
 cursor=0:0
 [header]
 path=src/mxOSD.h
-cursor=19:24
+cursor=20:25
 [header]
 path=src/mxInspectionMatrix.h
 cursor=41:13
@@ -774,10 +770,10 @@ path=src/mxRealTimeInspectionEditor.h
 cursor=14:21
 [header]
 path=src/Cpp11.h
-cursor=32:43
+cursor=4:0
 [header]
 path=src/raii.h
-cursor=20:0
+cursor=15:15
 [header]
 path=src/mxBySourceCompilingOpts.h
 cursor=32:1
@@ -836,7 +832,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=/mnt/ex/zinjai
 always_ask_args=0
-args=--last-source --no-splash
+args=--last-project --no-splash
 exec_method=0
 exec_script=
 env_vars=DISPLAY=:0.0
@@ -1151,5 +1147,13 @@ suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useI
 inline_suppr=1
 additional_files=
 exclude_list=
+[inspections]
+expr=b1
+expr=b2
+expr=b3
+expr=osd_win
+expr=p_next_char
+expr=c_next_char
+expr=p_next_line
 [custom_tools]
 [end]

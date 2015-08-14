@@ -130,8 +130,8 @@ void mxOSD::Execute(wxString command, wxString message, GenericActionEx<int> *ao
 			: ended(false), cancelled(false), osd_win(nullptr), on_end(aon_end) {}
 		void OnTerminate(int pid, int status) { 
 			ended=true;
-			if (on_end && !cancelled) on_end->Do(status);
 			if (osd_win) { osd_win->Destroy(); osd_win=nullptr; }
+			if (on_end && !cancelled) on_end->Do(status);
 			delete on_end; 
 		}
 	};
