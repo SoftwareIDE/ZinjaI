@@ -12,6 +12,7 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
+current_source=src/MenusAndToolsConfig.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -345,7 +346,8 @@ path=src/mxSignalsSettings.cpp
 cursor=68:20
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=578:0
+cursor=70:195
+open=true
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=44:17

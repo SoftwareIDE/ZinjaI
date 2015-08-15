@@ -1126,8 +1126,17 @@ void mxMainWindow::AuxToolsDissasemble1(GenericActionEx<wxString> *on_end) {
 			wxFileName(in_fname).GetModificationTime()>wxFileName(out_fname).GetModificationTime() ) 
 	{ // si tiene que correr antes objdump
 
+#ifdef __WIN32__
+		wxString command("cmd /c \"objdump -d -C -l ");
+#else
 		wxString command("sh -c \'objdump -d -C -l ");
-		command << mxUT::Quotize(in_fname) << " >" << mxUT::Quotize(out_fname) << "\'";
+#endif
+		command << mxUT::Quotize(in_fname) << " >" << mxUT::Quotize(out_fname);
+#ifdef __WIN32__
+		command << "\"";
+#else
+		command << "\'";
+#endif
 
 		// grab all arguments the lambda will need
 		wxString *plast_dissasembled_binary=&last_dissasembled_binary; // to be used in _CAPTURELIST_4
@@ -1202,6 +1211,9 @@ void mxMainWindow::AuxToolsDissasemble2(wxString out_fname, bool full_scope) {
 	// get required source range
 	mxSource *src=CURRENT_SOURCE;
 	wxString src_fname = src->GetFullPath();
+#ifdef __WIN32__
+	src_fname.Replace("\\","/");
+#endif
 	int lfrom = src->LineFromPosition(src->GetSelectionStart());
 	int lto = src->LineFromPosition(src->GetSelectionEnd());
 	if (lfrom>lto) std::swap(lfrom,lto);
@@ -1218,7 +1230,12 @@ void mxMainWindow::AuxToolsDissasemble2(wxString out_fname, bool full_scope) {
 		if (line.Len() && !is_asm) {
 			if (line.EndsWith(">:")) scope_name = line; // hay lineas "0000004123412 <funcion_que_sigue>:" antes de las que dicen de que linea del fuente vienen
 			bool was_on_scope = on_scope;
-			if (line.StartsWith(src_fname)) { // si indica que lo que sigue corresponde a este fuente, ver que pasa con el nro de linea
+#ifdef __WIN32__
+			wxString rline = line; rline.Replace("\\","/");
+#else
+			wxString &rline=line;
+#endif
+			if (rline.StartsWith(src_fname)) { // si indica que lo que sigue corresponde a este fuente, ver que pasa con el nro de linea
 				wxString snum = line.Mid(src_fname.Len()).AfterFirst(':');
 				if (snum.Contains(' ')) snum = snum.BeforeFirst(' ');
 				long lnum=-1;

@@ -2884,6 +2884,10 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	mxSource* source = new mxSource(notebook_sources, SIN_TITULO);
 	wxTextFile file(filename);
+	if (!file.Exists()) {
+		wxString def_fname = mxUT::WichOne("default.tpl","templates",true);
+		if (def_fname!=filename) return NewFileFromTemplate(def_fname);
+	}
 	file.Open();
 	if (file.IsOpened()) {
 		long pos=0;
