@@ -16,8 +16,8 @@ define pvector
 	if $argc == 0
 		printf "Usar \"pvector <objeto> [<desde> [<hasta>]]\n"
 	else
-		set $size = $arg0._M_impl._M_finish - $arg0._M_impl._M_start
-		set $capacity = $arg0._M_impl._M_end_of_storage - $arg0._M_impl._M_start
+		set $size = ($arg0)._M_impl._M_finish - ($arg0)._M_impl._M_start
+		set $capacity = ($arg0)._M_impl._M_end_of_storage - ($arg0)._M_impl._M_start
 		set $size_max = $size - 1
 		printf "{"
 	end
@@ -25,7 +25,7 @@ define pvector
 		set $i = 0
 		while $i < $size
 			printf "%u=", $i
-			p *($arg0._M_impl._M_start + $i)
+			p *(($arg0)._M_impl._M_start + $i)
 			printf ", "
 			set $i++
 		end
@@ -36,7 +36,7 @@ define pvector
 			printf "Rango incorrecto: [0..%u].\n", $size_max
 		else
 			printf "%u=", $idx
-			p *($arg0._M_impl._M_start + $idx)
+			p *(($arg0)._M_impl._M_start + $idx)
 			printf ", "
 		end
 	end
@@ -54,7 +54,7 @@ define pvector
 	    set $i = $start_idx
 		while $i <= $stop_idx
 			printf "%u=", $i
-			p *($arg0._M_impl._M_start + $i)
+			p *(($arg0)._M_impl._M_start + $i)
 			printf ", "
 			set $i++
 		end
@@ -64,7 +64,7 @@ define pvector
 		printf "size=%u, ", $size
 		printf "capacity=%u, ", $capacity
 		printf "Element="
-		whatis *$arg0._M_impl._M_start
+		whatis *($arg0)._M_impl._M_start
 		printf "}\n"
 	end
 end
@@ -79,8 +79,8 @@ define plist
 		printf "Usar \"plist <objeto> <tipo> [<indice>]\"\n"
 	else
 		printf "{"
-		set $head = &$arg0._M_impl._M_node
-		set $current = $arg0->_M_impl->_M_node->_M_next
+		set $head = &($arg0)._M_impl._M_node
+		set $current = ($arg0)->_M_impl->_M_node->_M_next
 		set $size = 0
 		while $current != $head
 			if $argc == 2
@@ -113,7 +113,7 @@ define pmap
 	if $argc == 0
 		printf "Use \"pmap <objeto> <tipo1> <tipo2>\".\n"
 	else
-		set $tree = $arg0
+		set $tree = ($arg0)
 		set $i = 0
 		set $node = $tree->_M_t->_M_impl->_M_header->_M_left
 		set $end = $tree->_M_t->_M_impl->_M_header
@@ -229,8 +229,8 @@ define pstack
 		printf "Usar \"pstack <objeto>\"\n"
 	else
 		printf "{"
-		set $start_cur = $arg0.c._M_impl._M_start._M_cur
-		set $finish_cur = $arg0.c._M_impl._M_finish._M_cur
+		set $start_cur = ($arg0).c._M_impl._M_start._M_cur
+		set $finish_cur = ($arg0).c._M_impl._M_finish._M_cur
 		set $size = $finish_cur - $start_cur
         set $i = $size - 1
         while $i >= 0
@@ -250,7 +250,7 @@ define pset
 	if $argc == 0
 		printf "Use \"pset <objeto> <tipo> [<elemento>]\"\n"
 	else
-		set $tree = $arg0
+		set $tree = ($arg0)
 		set $i = 0
 		set $node = $tree->_M_t->_M_impl->_M_header->_M_left
 		set $end = $tree->_M_t->_M_impl->_M_header
@@ -327,8 +327,8 @@ define pdeque
 	else
 		printf "{"
 		set $size = 0
-		set $start_cur = $arg0._M_impl._M_start._M_cur
-		set $start_last = $arg0._M_impl._M_start._M_last
+		set $start_cur = ($arg0)._M_impl._M_start._M_cur
+		set $start_last = ($arg0)._M_impl._M_start._M_last
 		set $start_stop = $start_last
 		while $start_cur != $start_stop
 			printf "%u=", $size
@@ -337,9 +337,9 @@ define pdeque
 			set $start_cur++
 			set $size++
 		end
-		set $finish_first = $arg0._M_impl._M_finish._M_first
-		set $finish_cur = $arg0._M_impl._M_finish._M_cur
-		set $finish_last = $arg0._M_impl._M_finish._M_last
+		set $finish_first = ($arg0)._M_impl._M_finish._M_first
+		set $finish_cur = ($arg0)._M_impl._M_finish._M_cur
+		set $finish_last = ($arg0)._M_impl._M_finish._M_last
 		if $finish_cur < $finish_last
 			set $finish_stop = $finish_cur
 		else
@@ -364,8 +364,8 @@ define pqueue
 		printf "Usar \"pqueue <objeto>\"\n"
 	else
 		printf "{"
-		set $start_cur = $arg0.c._M_impl._M_start._M_cur
-		set $finish_cur = $arg0.c._M_impl._M_finish._M_cur
+		set $start_cur = ($arg0).c._M_impl._M_start._M_cur
+		set $finish_cur = ($arg0).c._M_impl._M_finish._M_cur
 		set $size = $finish_cur - $start_cur
         set $i = 0
         while $i < $size
@@ -386,12 +386,12 @@ define ppqueue
 		printf "Usar \"ppqueue <objeto>\"\n"
 	else
 		printf "{"
-		set $size = $arg0.c._M_impl._M_finish - $arg0.c._M_impl._M_start
-		set $capacity = $arg0.c._M_impl._M_end_of_storage - $arg0.c._M_impl._M_start
+		set $size = ($arg0).c._M_impl._M_finish - ($arg0).c._M_impl._M_start
+		set $capacity = ($arg0).c._M_impl._M_end_of_storage - ($arg0).c._M_impl._M_start
 		set $i = $size - 1
 		while $i >= 0
             printf "%u=", $size
-			p *($arg0.c._M_impl._M_start + $i)
+			p *(($arg0).c._M_impl._M_start + $i)
 			printf ", "
 			set $i--
 		end
@@ -408,7 +408,7 @@ define pbitset
 	if $argc == 0
 		printf "Usar \"pbitset <objeto>\"\n"
 	else
-        p /t $arg0._M_w
+        p /t ($arg0)._M_w
 	end
 end
 document pbitset
@@ -420,10 +420,10 @@ define pstring
 		printf "Usar \"pstring <objeto>\"\n"
 	else
 		printf "{
-		printf "string=\"%s\"", $arg0._M_data()
-		printf ", size/length=%u", $arg0._M_rep()->_M_length
-		printf ", capacity=%u", $arg0._M_rep()->_M_capacity
-		printf ", ref-count=%d", $arg0._M_rep()->_M_refcount
+		printf "string=\"%s\"", ($arg0)._M_data()
+		printf ", size/length=%u", ($arg0)._M_rep()->_M_length
+		printf ", capacity=%u", ($arg0)._M_rep()->_M_capacity
+		printf ", ref-count=%d", ($arg0)._M_rep()->_M_refcount
 		printf "}\n"
 	end
 end
@@ -436,10 +436,10 @@ define pwstring
 		printf "Usar \"pwstring <objeto>\"\n"
 	else
 		printf "{"
-		call printf("string=\"%ls\"", $arg0._M_data())
-		printf ", size/length=%u", $arg0._M_rep()->_M_length
-		printf ", capacity=%u", $arg0._M_rep()->_M_capacity
-		printf ", ref-count=%d", $arg0._M_rep()->_M_refcount
+		call printf("string=\"%ls\"", ($arg0)._M_data())
+		printf ", size/length=%u", ($arg0)._M_rep()->_M_length
+		printf ", capacity=%u", ($arg0)._M_rep()->_M_capacity
+		printf ", ref-count=%d", ($arg0)._M_rep()->_M_refcount
 		printf "}\n"
 	end
 end

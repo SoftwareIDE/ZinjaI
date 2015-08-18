@@ -12,17 +12,17 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/MenusAndToolsConfig.cpp
+current_source=src/mxOSD.h
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
 cursor=187:21
 [source]
 path=src/ConfigManager.cpp
-cursor=1063:0
+cursor=773:0
 [source]
 path=src/mxMainWindowTools.cpp
-cursor=1137:16
+cursor=1214:29
 [source]
 path=src/mxColoursEditor.cpp
 cursor=514:57
@@ -34,7 +34,7 @@ path=src/mxHidenPanel.cpp
 cursor=121:15
 [source]
 path=src/mxMainWindow.cpp
-cursor=5015:14
+cursor=2889:2
 marker=1125
 [source]
 path=src/DebugManager.cpp
@@ -74,7 +74,7 @@ path=src/mxAboutWindow.cpp
 cursor=64:6
 [source]
 path=src/mxApplication.cpp
-cursor=212:2
+cursor=284:27
 [source]
 path=src/mxCompileConfigWindow.cpp
 cursor=0:0
@@ -162,7 +162,8 @@ path=src/mxBreakOptions.cpp
 cursor=94:34
 [source]
 path=src/mxOSD.cpp
-cursor=148:31
+cursor=140:67
+open=true
 [source]
 path=src/mxSource.cpp
 cursor=1298:111
@@ -347,7 +348,6 @@ cursor=68:20
 [source]
 path=src/MenusAndToolsConfig.cpp
 cursor=70:195
-open=true
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=44:17
@@ -532,7 +532,8 @@ path=src/mxBreakOptions.h
 cursor=0:0
 [header]
 path=src/mxOSD.h
-cursor=20:25
+cursor=0:0
+open=true
 [header]
 path=src/mxInspectionMatrix.h
 cursor=41:13
@@ -802,7 +803,7 @@ path=src/LocalRefactory.h
 cursor=6:80
 [other]
 path=guihelp/ChangeLog.html
-cursor=12:134
+cursor=9:178
 [other]
 path=guihelp/tips_spanish
 cursor=1:442
@@ -834,7 +835,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=/mnt/ex/zinjai
 always_ask_args=0
-args=--last-project --no-splash
+args=--no-splash
 exec_method=0
 exec_script=
 env_vars=DISPLAY=:0.0
