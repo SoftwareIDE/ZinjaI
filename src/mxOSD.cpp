@@ -137,7 +137,8 @@ void mxOSD::Execute(wxString command, wxString message, GenericActionEx<int> *ao
 	};
 	
 	mxOSDProcess *osd_proc = new mxOSDProcess(aon_end);
-	osd_proc->pid = mxExecute(command, wxEXEC_NODISABLE|wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,osd_proc); // el wxEXEC_MAKE_GROUP_LEADER es para que funcione el wxKILL_CHILDREN en linux
+	osd_proc->Redirect();
+	osd_proc->pid = mxExecute(command, /*wxEXEC_NODISABLE|*/wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER,osd_proc); // el wxEXEC_MAKE_GROUP_LEADER es para que funcione el wxKILL_CHILDREN en linux
 	if (!osd_proc->pid) { delete osd_proc; aon_end->Do(-1); delete aon_end; return; } // si no se lanzó
 	
 	osd_proc->Detach();
