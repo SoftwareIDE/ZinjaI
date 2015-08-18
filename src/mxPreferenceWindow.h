@@ -4,6 +4,7 @@
 #include <wx/dialog.h>
 
 #ifndef __WIN32__
+#include "widgetDisabler.h"
 struct LinuxTerminalInfo {
 	wxString name; ///< nombre para mostrar en el cuadro de preferencias
 	wxString test_command; ///< comando para probar si existe (usualmente ejecutable+" --version")
@@ -174,6 +175,8 @@ class mxPreferenceWindow : public wxDialog {
 	wxPanel *panel_toolbars;
 	
 	wxArrayString temp_debug_blacklist;
+	
+	widgetDisabler wx_toolbars_widgets;
 
 public:
 
@@ -258,6 +261,7 @@ public:
 	void ResetChanges();
 	void OnFontChange(wxCommandEvent &evt);
 	void OnCustomizeShortcuts(wxCommandEvent &evt);
+	void EnableOrDisableControls();
 private:
 	DECLARE_EVENT_TABLE()
 
