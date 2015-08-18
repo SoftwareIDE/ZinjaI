@@ -4108,7 +4108,10 @@ void mxSource::OnMouseWheel (wxMouseEvent & event) {
 }
 
 int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
-	char c=GetCharAt(pos); int s, l=pos; // l y s son auxiliares para II_*
+	int s, l=pos, pos_skip=-1; // l y s son auxiliares para II_*
+	char c=GetCharAt(pos); 
+	II_BACK_NC(pos,II_IS_NOTHING_4(pos)); // retroceder hasta el primer caracter no ignorable
+	l=pos;
 	while (pos>0 && (c!='{'&&c!='('&&c!='['&&/*c!='<'&&*/c!=';'&&(c!=','||skip_coma))) {
 		if (c==')'||c=='}'||c==']'/*||c=='>'*/) {
 			int pos_match = BraceMatch(pos);
@@ -4124,12 +4127,37 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
 				pos=pos_match+1;
 			}
 		}
-		--pos;
+		pos_skip=pos; --pos;
 		II_BACK(pos,II_IS_NOTHING_4(pos)); // SIDE-EFFECT!! esto actualiza c
+		if (s==wxSTC_C_WORD && (
+								TextRangeWas(pos,"public")||TextRangeWas(pos,"protected")||TextRangeWas(pos,"private")
+								||TextRangeWas(pos,"case")||TextRangeWas(pos,"default") ) ) 
+		{
+			int pos_dos_puntos = pos+1; // buscar los ':'
+			II_FRONT(pos_dos_puntos,II_IS_NOTHING_4(pos_dos_puntos)||GetCharAt(pos_dos_puntos)!=':');
+			if (pos_dos_puntos<l) { // si los ':' estan antes del pos de entrada, la instruccion que se busca es la siguiente
+				pos_skip = -1;
+				pos = pos_dos_puntos+1;;
+			} else { // sino es esta (el "public:", "case x:" o "lo-que-sea:")
+				pos_skip = WordStartPosition(pos,true);
+				pos = -1;
+			}
+			break;
+		}
 	}
-	++pos;
-	if (skip_white) { II_FRONT(pos,II_IS_NOTHING_4(pos)); }
-	return pos;
+	if (skip_white) {
+		if (pos_skip==-1) {
+			pos_skip=pos+1;
+			II_FRONT(pos_skip,II_IS_NOTHING_4(pos_skip));
+		}
+		return pos_skip;
+	} else {
+		if (pos==-1) {
+			pos = pos_skip-1;
+			II_BACK(pos,II_IS_NOTHING_4(pos));
+		}
+		return ++pos;
+	};
 }
 
 bool mxSource::GetCurrentCall (wxString &ftype, wxString &fname, wxArrayString &args, int pos) {
@@ -4195,7 +4223,9 @@ bool mxSource::GetCurrentCall (wxString &ftype, wxString &fname, wxArrayString &
 	// get return type
 	p0--; II_BACK(p0,II_IS_NOTHING_4(p0)); ftype="???";
 	
-	if (c=='(') { // function call??? 
+	if (c=='(') { // function call???
+		--p0; II_BACK(p0,II_IS_NOTHING_4(p0));
+		if (s==wxSTC_C_WORD && ( TextRangeWas(p0,"while")||TextRangeWas(p0,"if") )) ftype="bool";
 		; // we don't handle this yet
 	
 	} else if (s==wxSTC_C_WORD && TextRangeWas(p0,"return")) { // return value for current scope
