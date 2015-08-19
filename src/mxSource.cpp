@@ -1259,10 +1259,16 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			{ // si era un comentario, de los que van a la izquierda (lo distingo por el tab), dejarlo a la izquierda
 				; // no hacer nada
 			
-			} else if ( c_curr_last==';' || c_curr_last=='{' || c_curr_last=='}' ) { // nueva sentencia
+			} else if ( c_curr_last==';' || c_curr_last=='{' || c_curr_last=='}' )
+			{ // nueva sentencia
 				// prev_ind: donde empieza realmente la instruccion anterior (salteando indentado)
 				if (c_curr_last=='}') p_curr_last++;
 				int p_prev_ind = GetStatementStartPos(p_curr_last-1,true);
+				while (GetStyleAt(p_prev_ind)==wxSTC_C_WORD && TextRangeIs(p_prev_ind,"else")) { // si es un else, ir al if
+					--p_prev_ind;
+					II_BACK(p_prev_ind,II_IS_NOTHING_4(p_prev_ind));
+					p_prev_ind = GetStatementStartPos(p_prev_ind-1,true);
+				}
 				bool increase_level = c_curr_last=='{' || (GetStyleAt(p_prev_ind)==wxSTC_C_WORD && ( // si abria una llave, o venia de una etiqueta, aumentar
 										TextRangeIs(p_prev_ind,"public:")||TextRangeIs(p_prev_ind,"private:")||
 										TextRangeIs(p_prev_ind,"protected:")||TextRangeIs(p_prev_ind,"case:")||
@@ -1312,7 +1318,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				
 			} else { // continuacion de algo anterior
 				// curr_beg: donde empieza la instruccion actual (con espacios y tabs)
-				int p_curr_beg = GetStatementStartPos(p_curr_last,true,false);
+				int p_curr_beg = GetStatementStartPos(p_curr_last,true,false,true);
 				char c_prev_last = GetCharAt(p_curr_beg?p_curr_beg-1:0);
 				
 				if (c_prev_last=='(') { // argumentos de funcion
@@ -4129,7 +4135,7 @@ void mxSource::OnMouseWheel (wxMouseEvent & event) {
 		event.Skip();
 }
 
-int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
+int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white, bool first_stop) {
 	int s, l=pos, pos_skip=-1; // l y s son auxiliares para II_*
 	char c=GetCharAt(pos); 
 	II_BACK_NC(pos,II_IS_NOTHING_4(pos)); // retroceder hasta el primer caracter no ignorable
@@ -4150,21 +4156,28 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white) {
 			}
 		}
 		pos_skip=pos; --pos;
-		II_BACK(pos,II_IS_NOTHING_4(pos)); // SIDE-EFFECT!! esto actualiza c
-		if (s==wxSTC_C_WORD && (
-								TextRangeWas(pos,"public")||TextRangeWas(pos,"protected")||TextRangeWas(pos,"private")
-								||TextRangeWas(pos,"case")||TextRangeWas(pos,"default") ) ) 
-		{
-			int pos_dos_puntos = pos+1; // buscar los ':'
-			II_FRONT(pos_dos_puntos,II_IS_NOTHING_4(pos_dos_puntos)||GetCharAt(pos_dos_puntos)!=':');
-			if (pos_dos_puntos<l) { // si los ':' estan antes del pos de entrada, la instruccion que se busca es la siguiente
-				pos_skip = -1;
-				pos = pos_dos_puntos+1;;
-			} else { // sino es esta (el "public:", "case x:" o "lo-que-sea:")
+		II_BACK(pos,II_IS_NOTHING_4(pos)); // SIDE-EFFECT!! esto actualiza c y s
+		if (s==wxSTC_C_WORD) {
+			if (first_stop && (TextRangeWas(pos,"do")||TextRangeWas(pos,"while")||TextRangeWas(pos,"if")||TextRangeWas(pos,"for"))) {
 				pos_skip = WordStartPosition(pos,true);
-				pos = -1;
+				pos=-1;
+				break;
+			} else if (TextRangeWas(pos,"public")||TextRangeWas(pos,"protected")||TextRangeWas(pos,"private")
+					   ||TextRangeWas(pos,"case")||TextRangeWas(pos,"default") )
+			{
+				int pos_dos_puntos = pos+1; // buscar los ':'
+				II_FRONT(pos_dos_puntos,II_IS_NOTHING_4(pos_dos_puntos)||GetCharAt(pos_dos_puntos)!=':');
+				if (pos_dos_puntos<l) { // si los ':' estan antes del pos de entrada, la instruccion que se busca es la siguiente
+					pos_skip = -1;
+					pos = pos_dos_puntos+1;;
+				} else { // sino es esta (el "public:", "case x:" o "lo-que-sea:")
+					pos_skip = WordStartPosition(pos,true);
+					pos = -1;
+				}
+				break;
+			} else {
+				pos = WordStartPosition(pos,true);
 			}
-			break;
 		}
 	}
 	if (skip_white) {

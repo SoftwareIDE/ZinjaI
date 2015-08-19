@@ -265,7 +265,7 @@ public:
 	void GotoDiffChange(bool forward);
 	
 	bool AddInclude(wxString header);
-	int GetStatementStartPos(int pos, bool skip_coma=false, bool skip_white=true); ///< given an absolute text position, finds where that statements starts (skipping comments and indentation at the begginning unless skip_whites=false)
+	int GetStatementStartPos(int pos, bool skip_coma=false, bool skip_white=true, bool first_stop=false); ///< given an absolute text position, finds where that statements starts (skipping comments and indentation at the begginning unless skip_whites=false)
 	wxString FindTypeOfByKey(wxString &key, int &pos, bool include_template_spec=false); // en pos retorna los asteriscos y en key el scope de la funcion
 	wxString FindTypeOfByPos(int pos, int &dims, bool include_template_spec=false, bool first_call=true);
 	wxString FindScope(int pos, wxString *args=nullptr, bool full_scope=false, int *scope_start=nullptr, bool local_start=false);
