@@ -232,6 +232,7 @@ public:
 	
 	void OnToolsCreateTemplate (wxCommandEvent &event);
 	
+	void OnToolsCodePoupup(wxCommandEvent &event);
 	void OnToolsCodeCopyFromH (wxCommandEvent &event);
 	void OnToolsCodeGenerateFunctionDef (wxCommandEvent &event);
 	void OnToolsCodeGenerateFunctionDec (wxCommandEvent &event);

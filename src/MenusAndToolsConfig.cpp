@@ -392,6 +392,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		for(int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) AddMenuItem(mnHIDDEN, myMenuItem(wxString("project_tool_")<<i,mxID_CUSTOM_PROJECT_TOOL_0+i,LANG1(MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL,"Herramienta personalizada de project <{1}>",wxString()<<i)).ShortCut(""));
 		AddMenuItem(mnHIDDEN, myMenuItem("change_shortcuts",mxID_CHANGE_SHORTCUTS, LANG(MENUITEM_HELP_SHORTCUTS,"Atajos de teclado...")).ShortCut("Ctrl+Alt+Z"));
 		AddMenuItem(mnHIDDEN, myMenuItem("toolbar_settings",mxID_TOOLBAR_SETTINGS, LANG(MENUITEM_TOOLBAR_SETTINGS,"Configurar barras de herramientas...")).ShortCut(""));
+		AddMenuItem(mnHIDDEN, myMenuItem("codetools_popup",mxID_TOOLS_CODE_POPUP, LANG(MENUITEM_CODETOOLS_POPUP,"Mostrar menú de generación de código")).ShortCut("Ctrl+Shift+X"));
 	}
 	
 }

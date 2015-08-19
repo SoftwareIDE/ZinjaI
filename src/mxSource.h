@@ -223,6 +223,10 @@ public:
 	void OnPopupMenu(wxMouseEvent &evt);
 	void OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos=true);
 	void OnPopupMenuMargin(wxMouseEvent &evt);
+private:
+	void PopulatePopupMenuCodeTools(wxMenu &menu);
+public:
+	void PopupMenuCodeTools();
 	void OnToolTipTime(wxStyledTextEvent &event);
 	void OnToolTipTimeOut(wxStyledTextEvent &event);
 	void OnSavePointReached(wxStyledTextEvent &event);

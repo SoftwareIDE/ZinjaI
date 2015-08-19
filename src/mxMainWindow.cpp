@@ -307,6 +307,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_PREPROC_MARK_VALID, mxMainWindow::OnToolsPreprocMarkValid)
 	EVT_MENU(mxID_TOOLS_PREPROC_EXPAND_MACROS, mxMainWindow::OnToolsPreprocReplaceMacros)
 	EVT_MENU(mxID_TOOLS_PREPROC_HELP, mxMainWindow::OnToolsPreprocHelp)
+	EVT_MENU(mxID_TOOLS_CODE_POPUP, mxMainWindow::OnToolsCodePoupup)
 	EVT_MENU(mxID_TOOLS_CODE_EXTRACT_FUNCTION, mxMainWindow::OnToolsCodeExtractFunction)
 	EVT_MENU(mxID_TOOLS_CODE_GENERATE_FUNCTION_DEF, mxMainWindow::OnToolsCodeGenerateFunctionDef)
 	EVT_MENU(mxID_TOOLS_CODE_GENERATE_FUNCTION_DEC, mxMainWindow::OnToolsCodeGenerateFunctionDec)
@@ -5140,5 +5141,11 @@ void mxMainWindow::OnToolsCodeExtractFunction (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE {
 		LocalRefactory::ExtractFunction(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
 	}
+}
+
+void mxMainWindow::OnToolsCodePoupup (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		CURRENT_SOURCE->PopupMenuCodeTools();
+	};
 }
 

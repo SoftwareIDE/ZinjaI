@@ -1070,6 +1070,7 @@ template<int N> bool mxSource::TextRangeWas(int pos_end, const char (&word)[N]) 
 
 void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 	if (ignore_char_added) return;
+//	RaiiRestoreValue<SingleList<mxSource::MacroAction>*> mask_macro_events(main_window->m_macro,nullptr);
 	char chr = (char)event.GetKey();
 	// la siguiente condicion verifica contra el estado interno de wx porque si el 
 	// usuario estaba en un menu, se movió rápido a otro lugar y lanzó un segundo
@@ -2011,8 +2012,7 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 	
 	// mover el cursor a la posición del click (a menos que haya una selección y se clickeó dentro)
-	int p1=GetSelectionStart();
-	int p2=GetSelectionEnd();
+	int p1=GetSelectionStart(), p2=GetSelectionEnd();
 	if (fix_current_pos && p1==p2) {
 		int p = PositionFromPointClose(evt.GetX(),evt.GetY());
 		if (p!=wxSTC_INVALID_POSITION)
@@ -2027,14 +2027,9 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 		if (!key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
 		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
 		if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS||s==wxSTC_C_DEFAULT) { // no se porque el primer char es default y los demas identifier????
-			mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
+//			mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_HIGHLIGHT_WORD),LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_FIND_KEYWORD),LANG1(SOURCE_POPUP_FIND_KEYWORD,"Buscar \"<{1}>\" en todos los archivos",key));
-			int aux; wxString type = FindTypeOfByPos(p,aux,true);
-			if ( aux==SRC_PARSING_ERROR || !type.Len() ) {
-				mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION_DEC));
-				mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION_DEF));
-			}
 			
 		}
 	}
@@ -2065,6 +2060,7 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 		if (have_hl&&have_no_hl) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_HIGHLIGHTED_WORD_EDITION));
 	}
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_WHERE_AM_I));
+	PopulatePopupMenuCodeTools(*code_menu);
 	mxUT::AddSubMenuToMenu(&menu,code_menu,LANG(MENUITEM_TOOLS_CODE,"&Generación de código"),"","");
 	menu.AppendSeparator();
 	
@@ -2080,6 +2076,25 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_BRACEMATCH));
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_SELECT_ALL));
+	
+	main_window->PopupMenu(&menu, main_window->ScreenToClient(this->ClientToScreen(wxPoint(evt.GetX(),evt.GetY()))) );
+}
+
+void mxSource::PopulatePopupMenuCodeTools(wxMenu &menu) {
+	int p=GetCurrentPos(); int s=GetStyleAt(GetSelectionEnd()-1);
+	wxString key=GetCurrentKeyword(p);
+	if (key.Len()!=0) {
+		if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS||s==wxSTC_C_DEFAULT) { // no se porque el primer char es default y los demas identifier????
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));
+			int aux; wxString type = FindTypeOfByPos(p,aux,true);
+			if ( aux==SRC_PARSING_ERROR || !type.Len() ) {
+				mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION_DEC));
+				mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION_DEF));
+			}
+		}
+	}
+	
+	int p1=GetSelectionStart(), p2=GetSelectionEnd();
 	// determinar si toda la seleccion corresponde a un mismo scope como para poder hacer refactory local con esas lineas como grupo
 	bool single_scope = p1==p2;
 	if (!single_scope) {
@@ -2089,18 +2104,22 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 			while (single_scope && (a1>=p1&&a2<=p2) ) { // mientras esté totalmente contenido... ir un scope más "arriba"
 				single_scope = GetCurrentScopeLimits(a1-1,a1,a2,true);
 			}
-			single_scope = single_scope && ( (a1<=p1&&a2>=p2) ); // ahora el scope externo deberí contener totalmente a p1-p2
+			single_scope = single_scope && ( (a1<=p1&&a2>=p2) ); // ahora el scope externo debería contener totalmente a p1-p2
 		}
 	}
 	
-	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_IF));
-	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_WHILE));
-	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_DO));
-	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_FOR));
-	mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_IFDEF));
-	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_EXTRACT_FUNCTION));
-	
-	main_window->PopupMenu(&menu, main_window->ScreenToClient(this->ClientToScreen(wxPoint(evt.GetX(),evt.GetY()))) );
+	if (single_scope) mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_IF));
+	if (single_scope) mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_WHILE));
+	if (single_scope) mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_DO));
+	if (single_scope) mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_FOR));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_IFDEF));
+	if (single_scope) mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_EXTRACT_FUNCTION));
+}
+
+void mxSource::PopupMenuCodeTools() {
+	wxMenu menu("");
+	PopulatePopupMenuCodeTools(menu);
+	main_window->PopupMenu(&menu, main_window->ScreenToClient(this->ClientToScreen(PointFromPosition(GetCurrentPos()))));
 }
 
 

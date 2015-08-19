@@ -471,7 +471,7 @@ Dibujar Diagrama de &Flujo...
 MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY
 Dibujar &Jerarquía de Clases...
 MENUITEM_TOOLS_CODE
-Generación de código
+&Generación de código
 MENUITEM_TOOLS_CODE_COPY_FROM_H
 Implementar Métodos/Funciones faltantes...
 MENUITEM_TOOLS_CODE_GENERATE_FUNCTION_DEC
@@ -481,15 +481,15 @@ Generar declaración de función a partir de llamada
 MENUITEM_TOOLS_CODE_EXTRACT_FUNCTION
 Extraer código en nueva función
 MENUITEM_TOOLS_CODE_SURROUND_IF
-Rodear selección con if () { ... }
+Rodear selección con \"if () { ... }\"
 MENUITEM_TOOLS_CODE_SURROUND_WHILE
-Rodear selección con while () { ... }
+Rodear selección con \"while () { ... }\"
 MENUITEM_TOOLS_CODE_SURROUND_DO
-Rodear selección con do { ... } while();
+Rodear selección con \"do { ... } while();\"
 MENUITEM_TOOLS_CODE_SURROUND_FOR
-Rodear selección con for () { ... }
+Rodear selección con \"for () { ... }\"
 MENUITEM_TOOLS_CODE_SURROUND_IFDEF
-Rodear selección con #ifdef ... #endif
+Rodear selección con \"#ifdef ... #endif\"
 MENUITEM_TOOLS_COMMON_HELP
 A&yuda...
 MENUITEM_TOOLS_COMMENTS
@@ -704,6 +704,8 @@ MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL
 Herramienta personalizada de project <{1}>
 MENUITEM_TOOLBAR_SETTINGS
 Configurar barras de herramientas...
+MENUITEM_CODETOOLS_POPUP
+Mostrar menú de generación de código...
 CAPTION_TOOLBAR_FILE
 Archivo
 CAPTION_TOOLBAR_EDIT
