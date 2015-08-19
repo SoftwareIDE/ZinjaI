@@ -98,6 +98,7 @@ class mxSource: public wxStyledTextCtrl {
 	AutocompletionLocation last_failed_autocompletion;
 	
 	friend class NavigationHistory;
+	friend class LocalRefactory;
 	int old_current_line; ///< for detecting jumps long enought to record in navigation_history
 	
 public:
@@ -176,6 +177,7 @@ public:
 	void OnEditCut (wxCommandEvent &event);
 	void OnEditCopy (wxCommandEvent &event);
 	void OnEditPaste (wxCommandEvent &event);
+	void GetSelectedLinesRange(int &lmin, int &lmax);
 	void OnEditDuplicateLines (wxCommandEvent &event);
 	void OnEditDeleteLines (wxCommandEvent &event);
 	void OnEditToggleLinesUp (wxCommandEvent &event);
@@ -191,6 +193,7 @@ public:
 	// c++ specific
 	void OnComment (wxCommandEvent &event);
 	void OnUncomment (wxCommandEvent &event);
+	bool GetCurrentScopeLimits(int pos, int &pmin, int &pmax, bool only_curly_braces=false);
 	void OnBraceMatch (wxCommandEvent &event);
 	void OnIndentSelection (wxCommandEvent &event);
 	// view
@@ -392,7 +395,8 @@ private:
 		
 		struct EditPos { int line, offset; };
 		vector<EditPos> positions;
-		void Reset() { is_on=false; was_rect_select=false; keep_highlight=false; positions.clear(); }
+		GenericAction *on_end;
+		void Reset() { on_end=nullptr; is_on=false; was_rect_select=false; keep_highlight=false; positions.clear(); }
 		void AddPos(mxSource *src, int line, int position) { 
 			EditPos e; e.line = line; 
 			e.offset = position-src->PositionFromLine(line); 
@@ -407,7 +411,7 @@ private:
 		wxString ref_str; ///< string de la primer linea de la seleccion rectangular, para comparar y ver como cambio y hacer lo mismo en las otras
 		MultiSel():is_on(false){}
 		void SetEditRegion(mxSource *src, int line, int pbeg, int pend);
-		void Begin(mxSource *src, bool was_rect_select, bool keep_highlight, bool notify=true);
+		void Begin(mxSource *src, bool was_rect_select, bool keep_highlight, bool notify=true, GenericAction *aon_end=nullptr);
 		void End(mxSource *src);
 		operator bool() { return is_on; }
 		

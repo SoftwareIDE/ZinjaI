@@ -472,8 +472,22 @@ MENUITEM_TOOLS_CODE
 Code generation
 MENUITEM_TOOLS_CODE_COPY_FROM_H
 Implement Missing Functions/Methods...
-MENUITEM_TOOLS_CODE_GENERATE_FUNCTION
-Generate function definition from call
+MENUITEM_TOOLS_CODE_GENERATE_FUNCTION_DEC
+Gerate function definition from current call
+MENUITEM_TOOLS_CODE_GENERATE_FUNCTION_DEF
+Gerate function declaration from current call
+MENUITEM_TOOLS_CODE_EXTRACT_FUNCTION
+Extract code to a new function
+MENUITEM_TOOLS_CODE_SURROUND_IF
+Surround code with "if() { ... }"
+MENUITEM_TOOLS_CODE_SURROUND_WHILE
+Surround code with "while () { ... }"
+MENUITEM_TOOLS_CODE_SURROUND_DO
+Surround code with "do { ... } while();"
+MENUITEM_TOOLS_CODE_SURROUND_FOR
+Surround code with "for() { ... }"
+MENUITEM_TOOLS_CODE_SURROUND_IFDEF
+Surround code with "#ifdef ... #endif"
 MENUITEM_TOOLS_COMMON_HELP
 Help...
 MENUITEM_TOOLS_COMMENTS
@@ -2966,8 +2980,6 @@ SOURCE_POPUP_HIGHLIGHT_WORD
 Highligth identifier "<{1}>"
 SOURCE_POPUP_FIND_KEYWORD
 Find "<{1}>" in all files
-SOURCE_POPUP_GENERATE_FUNCTION
-Generate function "<{1}>"
 SOURCE_POPUP_OPEN_SELECTED
 Open "<{1}>"
 SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION

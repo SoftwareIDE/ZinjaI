@@ -200,9 +200,16 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnTOOLS, myMenuItem("draw_flow",mxID_TOOLS_DRAW_FLOW, LANG(MENUITEM_TOOLS_DRAW_FLOWCHART,"Dibujar Diagrama de &Flujo...")).Description("Genera un diagrama de flujo a partir del bloque de codigo actual").Icon("flujo.png").EnableIf(ecSOURCE));
 		AddMenuItem(mnTOOLS, myMenuItem("draw_classes",mxID_TOOLS_DRAW_CLASSES, LANG(MENUITEM_TOOLS_DRAW_CLASS_HIERARCHY,"Dibujar &Jerarquía de Clases...")).Icon("clases.png").EnableIf(ecPROJECT_OR_SOURCE));
 		
-		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_CODE,"Generación de código")).Icon("code.png"));
+		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_CODE,"&Generación de código")).Icon("code.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("copy_code_from_h",mxID_TOOLS_CODE_COPY_FROM_H, LANG(MENUITEM_TOOLS_CODE_COPY_FROM_H,"Implementar Métodos/Funciones faltantes...")).ShortCut("Ctrl+Shift+H").Icon("copy_code_from_h.png").EnableIf(ecSOURCE));
-			AddMenuItem(mnTOOLS, myMenuItem("generate_function",mxID_TOOLS_CODE_GENERATE_FUNCTION, LANG(MENUITEM_TOOLS_CODE_GENERATE_FUNCTION,"Generar definición de función a partir de llamada")).Icon("generate_function.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("generate_function_dec",mxID_TOOLS_CODE_GENERATE_FUNCTION_DEC, LANG(MENUITEM_TOOLS_CODE_GENERATE_FUNCTION_DEC,"Generar definición de función a partir de llamada")).Icon("generate_function_dec.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("generate_function_def",mxID_TOOLS_CODE_GENERATE_FUNCTION_DEF, LANG(MENUITEM_TOOLS_CODE_GENERATE_FUNCTION_DEF,"Generar declaración de función a partir de llamada")).Icon("generate_function_def.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("extract_function",mxID_TOOLS_CODE_EXTRACT_FUNCTION, LANG(MENUITEM_TOOLS_CODE_EXTRACT_FUNCTION,"Extraer código en nueva función")).Icon("extract_function.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("code_surround_if",mxID_TOOLS_CODE_SURROUND_IF, LANG(MENUITEM_TOOLS_CODE_SURROUND_IF,"Rodear selección con \"if () { ... }\"")).Icon("code_surround_if.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("code_surround_while",mxID_TOOLS_CODE_SURROUND_WHILE, LANG(MENUITEM_TOOLS_CODE_SURROUND_WHILE,"Rodear selección con \"while () { ... }\"")).Icon("code_surround_while.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("code_surround_do",mxID_TOOLS_CODE_SURROUND_DO, LANG(MENUITEM_TOOLS_CODE_SURROUND_DO,"Rodear selección con \"do { ... } while();\"")).Icon("code_surround_do.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("code_surround_for",mxID_TOOLS_CODE_SURROUND_FOR, LANG(MENUITEM_TOOLS_CODE_SURROUND_FOR,"Rodear selección con \"for () { ... }\"")).Icon("code_surround_for.png").EnableIf(ecSOURCE));
+			AddMenuItem(mnTOOLS, myMenuItem("code_surround_ifdef",mxID_TOOLS_CODE_SURROUND_IFDEF, LANG(MENUITEM_TOOLS_CODE_SURROUND_IFDEF,"Rodear selección con \"#ifdef ... #endif\"")).Icon("code_surround_ifdef.png").EnableIf(ecSOURCE));
 			AddSeparator(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_CODE_HELP, LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
@@ -529,7 +536,14 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_DRAW_FLOW));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_DRAW_CLASSES));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_COPY_FROM_H).Visible());
-		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_GENERATE_FUNCTION));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_GENERATE_FUNCTION_DEC));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_GENERATE_FUNCTION_DEF));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_EXTRACT_FUNCTION));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_SURROUND_IF));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_SURROUND_WHILE));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_SURROUND_DO));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_SURROUND_FOR));
+		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_CODE_SURROUND_IFDEF));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_ALIGN_COMMENTS));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_REMOVE_COMMENTS));
 		AddToolbarItem(tbTOOLS,myToolbarItem(menues[mnTOOLS],mxID_TOOLS_PREPROC_MARK_VALID));

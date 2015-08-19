@@ -432,9 +432,8 @@ mxSource::~mxSource () {
 }
 
 void mxSource::OnEditDeleteLines (wxCommandEvent &event) {
-	int ss,se;
-	int min=LineFromPosition(ss=GetSelectionStart());
-	int max=LineFromPosition(se=GetSelectionEnd());
+	int ss = GetSelectionStart();
+	int min,max; GetSelectedLinesRange(min,max);
 	if (max==min) {
 		LineDelete();
 		if (LineFromPosition(ss)!=min)
@@ -442,8 +441,6 @@ void mxSource::OnEditDeleteLines (wxCommandEvent &event) {
 		else
 			GotoPos(ss);
 	} else {
-		if (min>max) { int aux=min; min=max; max=aux; /*aux=ss; */ss=se; /*se=aux;*/}
-		if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 		GotoPos(ss);
 		UndoActionGuard undo_action(this);
 		for (int i=min;i<=max;i++)
@@ -476,16 +473,13 @@ void mxSource::OnEditGotoMark (wxCommandEvent &event) {
 }
 
 void mxSource::OnEditMarkLines (wxCommandEvent &event) {
-	int min=LineFromPosition(GetSelectionStart());
-	int max=LineFromPosition(GetSelectionEnd());
+	int min,max; GetSelectedLinesRange(min,max);
 	if (max==min) {
 		if (MarkerGet(min)&(1<<mxSTC_MARK_USER))
 			MarkerDelete(min,mxSTC_MARK_USER);
 		else
 			MarkerAdd(min,mxSTC_MARK_USER);
 	} else {
-			if (min>max) { int aux=min; min=max; max=aux; }
-			if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 			int mark=true;
 			for (int i=min;i<=max;i++)
 				if (MarkerGet(i)&(1<<mxSTC_MARK_USER)) {
@@ -502,19 +496,12 @@ void mxSource::OnEditMarkLines (wxCommandEvent &event) {
 }
 
 void mxSource::OnEditDuplicateLines (wxCommandEvent &event) {
-	int ss,se;
-	int min=LineFromPosition(ss=GetSelectionStart());
-	int max=LineFromPosition(se=GetSelectionEnd());
+	int ss = GetSelectionStart(), se = GetSelectionEnd();
+	int min,max; GetSelectedLinesRange(min,max);
 	UndoActionGuard undo_action(this);
 	if (max==min) {
 		LineDuplicate();
 	} else {
-		if (min>max) { 
-			int aux=min; 
-			min=max; 
-			max=aux;
-		}
-		if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
 		wxString text;
 		for (int i=min;i<=max;i++)
 			text+=GetLine(i);
@@ -615,38 +602,36 @@ void mxSource::OnEditPaste (wxCommandEvent &event) {
 	}
 }
 
+bool mxSource::GetCurrentScopeLimits(int pos, int &pmin, int &pmax, bool only_curly_braces) {
+	pmin=pos;
+	char c=GetCharAt(pmin);
+	if (c!='{' && c!='}' && (only_curly_braces || (c!='[' && c!=']' && c!='(' && c!=')' ) ) ) {
+		pmin--;  c=GetCharAt(pmin);
+	}
+	if (c!='{' && c!='}' && (only_curly_braces || (c!='(' && c!=')' &&  c!='[' && c!=']') ) ) {
+		int omin=pmin-1;
+		while (pmin>=0 && (c=GetCharAt(pmin))!='{' && (only_curly_braces || (c!='('&& c!='[') ) ) {
+			if ( (c=='}' || (!only_curly_braces && (c==')' || c==']') ) ) && omin!=pmin )
+				if ((pmin=BraceMatch(pmin))==wxSTC_INVALID_POSITION)
+					return false;
+		pmin--;
+		}
+		if (pmin<0) return false;
+	}
+	pmax = BraceMatch (pmin);
+	return pmax!=wxSTC_INVALID_POSITION;
+}
 
 void mxSource::OnBraceMatch (wxCommandEvent &event) {
-	int min = GetCurrentPos();
-	char c=GetCharAt(min);
-	if (c!='(' && c!=')' && c!='{' && c!='}' && c!='[' && c!=']') {
-		min--;  c=GetCharAt(min);
-	}
-	if (c!='(' && c!=')' && c!='{' && c!='}' && c!='[' && c!=']') {
-		int omin=min-1;
-		while (min>=0 && (c=GetCharAt(min))!='(' && c!='{'&& c!='[') {
-			if ( (c==']' || c==')' || c=='}') && omin!=min )
-				if ((min=BraceMatch(min))==wxSTC_INVALID_POSITION)
-					return;
-			min--;
-		}
-		if (min<0) return;
-	}
-	int max = BraceMatch (min);
-	if (max<0 && min>0) max = BraceMatch(--min);
-	if (max>0/* && max<min*/) {
-//		int aux=min; 
-//		min=max; 
-//		max=aux;
-//	}
-//	if (max > min) 
-		BraceHighlight (min+1, max);
-		if (max > min) 
-			SetSelection (min, max+1);
+	int pmin,pmax; 
+	if (GetCurrentScopeLimits(GetCurrentPos(),pmin,pmax)) {
+//		BraceHighlight (pmin+1, pmax);
+		if (pmax > pmin) 
+			SetSelection (pmin, pmax+1);
 		else
-			SetSelection (min+1, max);
+			SetSelection (pmin+1, pmax);
 	} else {
-		BraceBadLight (min);
+		if (pmin!=wxSTC_INVALID_POSITION) BraceBadLight (pmin);
 	}
 }
 
@@ -750,12 +735,16 @@ struct auxMarkersConserver {
 	}
 };
 
+void mxSource::GetSelectedLinesRange(int &lmin, int &lmax) {
+	int sel_end = GetSelectionEnd();
+	lmin = LineFromPosition(GetSelectionStart());
+	lmax = LineFromPosition(sel_end);
+	if (lmin>lmax) { int aux=lmin; lmin=lmax; lmax=aux; }
+	if (lmin<lmax && PositionFromLine(lmax)==sel_end) lmax--;
+}
+
 void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
-	int ss = GetSelectionStart(), se = GetSelectionEnd();
-	int min=LineFromPosition(ss);
-	int max=LineFromPosition(se);
-	if (min>max) { int aux=min; min=max; max=aux; }
-	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
+	int min,max; GetSelectedLinesRange(min,max);
 	if (min>0) {
 		UndoActionGuard undo_action(this);
 		wxString line = GetLine(min-1);
@@ -772,13 +761,10 @@ void mxSource::OnEditToggleLinesUp (wxCommandEvent &event) {
 }
 
 void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
+	int min,max; GetSelectedLinesRange(min,max);
 	int ss = GetSelectionStart(), se = GetSelectionEnd();
-	int min=LineFromPosition(ss);
-	int max=LineFromPosition(se);
 	if (PositionFromLine(min)==ss) ss=-1;
-	if (PositionFromLine(max)==se) se=-1;
-	if (min>max) { int aux=min; min=max; max=aux; }
-	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
+	if (GetLineEndPosition(max)==se||PositionFromLine(max+1)==se) se=-1;
 	if (max+1<GetLineCount()) {
 		auxMarkersConserver aux_mc(this,min,max,false);
 		UndoActionGuard undo_action(this);
@@ -797,15 +783,12 @@ void mxSource::OnEditToggleLinesDown (wxCommandEvent &event) {
 
 void mxSource::OnComment (wxCommandEvent &event) {
 	int ss = GetSelectionStart(), se = GetSelectionEnd();
-	int min=LineFromPosition(ss);
-	int max=LineFromPosition(se);
+	int min,max; GetSelectedLinesRange(min,max);
 	if (min==max && se!=ss) {
 		ReplaceSelection(wxString("/*")<<GetSelectedText()<<"*/");
 		SetSelection(ss,se+4);
 		return;
 	}
-	if (min>max) { int aux=min; min=max; max=aux; }
-	if (min<max && PositionFromLine(max)==GetSelectionEnd()) max--;
 	UndoActionGuard undo_action(this);
 	if (cpp_or_just_c) {
 		for (int i=min;i<=max;i++) {
@@ -839,10 +822,7 @@ void mxSource::OnComment (wxCommandEvent &event) {
 
 void mxSource::OnUncomment (wxCommandEvent &event) {
 	int ss = GetSelectionStart();
-	int min=LineFromPosition(ss);
-	
-	int max=LineFromPosition(GetSelectionEnd());
-	if (max>min && PositionFromLine(max)==GetSelectionEnd()) max--;
+	int min,max; GetSelectedLinesRange(min,max);
 	UndoActionGuard undo_action(this);
 	bool did_something=false;
 	for (int i=min;i<=max;i++) {
@@ -2039,7 +2019,7 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 			GotoPos(p);
 	}
 
-	wxMenu menu("");
+	wxMenu menu(""), *code_menu = new wxMenu("");
 	
 	int p=GetCurrentPos(); int s=GetStyleAt(GetSelectionEnd()-1);
 	wxString key=GetCurrentKeyword(p);
@@ -2051,8 +2031,10 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_HIGHLIGHT_WORD),LANG1(SOURCE_POPUP_HIGHLIGHT_WORD,"Resaltar identificador \"<{1}>\"",key));
 			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_FIND_KEYWORD),LANG1(SOURCE_POPUP_FIND_KEYWORD,"Buscar \"<{1}>\" en todos los archivos",key));
 			int aux; wxString type = FindTypeOfByPos(p,aux,true);
-			if ( aux==SRC_PARSING_ERROR || !type.Len() )
-				mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION),LANG1(SOURCE_POPUP_GENERATE_FUNCTION,"Generar función \"<{1}>\"",key));
+			if ( aux==SRC_PARSING_ERROR || !type.Len() ) {
+				mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION_DEC));
+				mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_GENERATE_FUNCTION_DEF));
+			}
 			
 		}
 	}
@@ -2083,6 +2065,7 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 		if (have_hl&&have_no_hl) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_EDIT_HIGHLIGHTED_WORD_EDITION));
 	}
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_WHERE_AM_I));
+	mxUT::AddSubMenuToMenu(&menu,code_menu,LANG(MENUITEM_TOOLS_CODE,"&Generación de código"),"","");
 	menu.AppendSeparator();
 	
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_UNDO));
@@ -2097,6 +2080,25 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INDENT));
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_BRACEMATCH));
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_SELECT_ALL));
+	// determinar si toda la seleccion corresponde a un mismo scope como para poder hacer refactory local con esas lineas como grupo
+	bool single_scope = p1==p2;
+	if (!single_scope) {
+		if (p2<p1) swap(p1,p2); int a1,a2; single_scope = true;
+		for(int i=0;i<2;i++) {
+			single_scope = single_scope &&GetCurrentScopeLimits(i?p1:p2,a1,a2,true); // scope mas interno de pX
+			while (single_scope && (a1>=p1&&a2<=p2) ) { // mientras esté totalmente contenido... ir un scope más "arriba"
+				single_scope = GetCurrentScopeLimits(a1-1,a1,a2,true);
+			}
+			single_scope = single_scope && ( (a1<=p1&&a2>=p2) ); // ahora el scope externo deberí contener totalmente a p1-p2
+		}
+	}
+	
+	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_IF));
+	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_WHILE));
+	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_DO));
+	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_FOR));
+	mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_SURROUND_IFDEF));
+	if (single_scope) mxUT::AddItemToMenu(code_menu,_menu_item_2(mnTOOLS,mxID_TOOLS_CODE_EXTRACT_FUNCTION));
 	
 	main_window->PopupMenu(&menu, main_window->ScreenToClient(this->ClientToScreen(wxPoint(evt.GetX(),evt.GetY()))) );
 }
@@ -3623,7 +3625,7 @@ void mxSource::OnKeyDown(wxKeyEvent &evt) {
 		}
 	}
 	if (evt.GetKeyCode()==WXK_ESCAPE) {
-		multi_sel.End(this);
+		if (multi_sel) multi_sel.End(this);
 		if (calltip_mode!=MXS_NULL) {
 			HideCalltip();
 		} else {
@@ -4067,6 +4069,7 @@ void mxSource::ApplyRectEdit ( ) {
 		// reemplazar desde tbeg a tend, con sto
 		SetTargetStart(tbeg); SetTargetEnd(tend); ReplaceTarget(sto);
 		delta_for_next += sto.Len()-sfrom.Len();
+		if (tbeg<pbeg) { pbeg+=sto.Len()-sfrom.Len(); pend+=sto.Len()-sfrom.Len(); } // por si la que editamos no es la primera que aparece
 	}
 	// la selección ya no será rectangular
 	multi_sel.was_rect_select=false;
@@ -4288,20 +4291,21 @@ void mxSource::OnEditHighLightedWordEdition (wxCommandEvent & evt) {
 	if (multi_sel.positions.size()) multi_sel.Begin(this,false,true);
 }
 
-
-
 void mxSource::MultiSel::SetEditRegion(mxSource *src, int line, int pbeg, int pend) {
 	this->line = line; 
 	offset_beg = pbeg-src->PositionFromLine(line);
 	offset_end = src->GetLineEndPosition(line)-pend;
 	ref_str = src->GetTextRange(pbeg,pend);
 }
-void mxSource::MultiSel::Begin(mxSource *src, bool was_rect_select, bool keep_highlight, bool notify) { 
+
+void mxSource::MultiSel::Begin(mxSource *src, bool was_rect_select, bool keep_highlight, bool notify, GenericAction *aon_end) { 
 	this->was_rect_select = was_rect_select;
 	this->keep_highlight = keep_highlight;
+	this->on_end=aon_end;
 	is_on=true; 
 	if (notify) main_window->SetStatusText(LANG(MAINW_PRESS_ESC_TO_FINISH_RECT_EDIT,"Presione ESC o mueva el cursor de texto a otra linea para volver al modo de edición normal."));
 }
+
 void mxSource::MultiSel::End(mxSource *src) {
 	if (keep_highlight) { 
 		src->SetKeyWords(3,src->highlithed_word=""); 
@@ -4309,4 +4313,10 @@ void mxSource::MultiSel::End(mxSource *src) {
 	}
 	is_on=false;
 	main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
+	if (on_end) {
+		on_end->Do();
+		delete on_end;
+		on_end = nullptr;
+	}
 }
+

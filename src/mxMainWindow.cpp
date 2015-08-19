@@ -307,7 +307,14 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_PREPROC_MARK_VALID, mxMainWindow::OnToolsPreprocMarkValid)
 	EVT_MENU(mxID_TOOLS_PREPROC_EXPAND_MACROS, mxMainWindow::OnToolsPreprocReplaceMacros)
 	EVT_MENU(mxID_TOOLS_PREPROC_HELP, mxMainWindow::OnToolsPreprocHelp)
-	EVT_MENU(mxID_TOOLS_CODE_GENERATE_FUNCTION, mxMainWindow::OnToolsCodeGenerateFunction)
+	EVT_MENU(mxID_TOOLS_CODE_EXTRACT_FUNCTION, mxMainWindow::OnToolsCodeExtractFunction)
+	EVT_MENU(mxID_TOOLS_CODE_GENERATE_FUNCTION_DEF, mxMainWindow::OnToolsCodeGenerateFunctionDef)
+	EVT_MENU(mxID_TOOLS_CODE_GENERATE_FUNCTION_DEC, mxMainWindow::OnToolsCodeGenerateFunctionDec)
+	EVT_MENU(mxID_TOOLS_CODE_SURROUND_IF, mxMainWindow::OnToolsCodeSurroundIf)
+	EVT_MENU(mxID_TOOLS_CODE_SURROUND_WHILE, mxMainWindow::OnToolsCodeSurroundWhile)
+	EVT_MENU(mxID_TOOLS_CODE_SURROUND_DO, mxMainWindow::OnToolsCodeSurroundDo)
+	EVT_MENU(mxID_TOOLS_CODE_SURROUND_FOR, mxMainWindow::OnToolsCodeSurroundFor)
+	EVT_MENU(mxID_TOOLS_CODE_SURROUND_IFDEF, mxMainWindow::OnToolsCodeSurroundIfdef)
 	EVT_MENU(mxID_TOOLS_CODE_COPY_FROM_H, mxMainWindow::OnToolsCodeCopyFromH)
 	EVT_MENU(mxID_TOOLS_CONSOLE, mxMainWindow::OnToolsConsole)
 	EVT_MENU(mxID_TOOLS_DRAW_PROJECT, mxMainWindow::OnToolsDrawProject)
@@ -5088,9 +5095,50 @@ void mxMainWindow::OnDebugShowRegisters (wxCommandEvent & event) {
 //	aui_manager.Update();
 // }
 
-void mxMainWindow::OnToolsCodeGenerateFunction (wxCommandEvent & event) {
+void mxMainWindow::OnToolsCodeGenerateFunctionDef (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE {
-		LocalRefactory::GenerateFunction(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+		LocalRefactory::GenerateFunctionDec(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
+void mxMainWindow::OnToolsCodeGenerateFunctionDec (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::GenerateFunctionDef(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
+
+void mxMainWindow::OnToolsCodeSurroundIf (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::SurroundIf(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
+
+void mxMainWindow::OnToolsCodeSurroundWhile (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::SurroundWhile(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
+
+void mxMainWindow::OnToolsCodeSurroundDo (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::SurroundDo(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
+
+void mxMainWindow::OnToolsCodeSurroundFor (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::SurroundFor(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
+
+void mxMainWindow::OnToolsCodeSurroundIfdef (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::SurroundIfdef(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
+	}
+}
+
+void mxMainWindow::OnToolsCodeExtractFunction (wxCommandEvent & event) {
+	IF_THERE_IS_SOURCE {
+		LocalRefactory::ExtractFunction(CURRENT_SOURCE,CURRENT_SOURCE->GetCurrentPos()); return;
 	}
 }
 

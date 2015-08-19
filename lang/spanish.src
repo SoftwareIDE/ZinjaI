@@ -472,8 +472,22 @@ MENUITEM_TOOLS_CODE
 Generación de código
 MENUITEM_TOOLS_CODE_COPY_FROM_H
 Implementar Métodos/Funciones faltantes...
-MENUITEM_TOOLS_CODE_GENERATE_FUNCTION
+MENUITEM_TOOLS_CODE_GENERATE_FUNCTION_DEC
 Generar definición de función a partir de llamada
+MENUITEM_TOOLS_CODE_GENERATE_FUNCTION_DEF
+Generar declaración de función a partir de llamada
+MENUITEM_TOOLS_CODE_EXTRACT_FUNCTION
+Extraer código en nueva función
+MENUITEM_TOOLS_CODE_SURROUND_IF
+Rodear selección con if () { ... }
+MENUITEM_TOOLS_CODE_SURROUND_WHILE
+Rodear selección con while () { ... }
+MENUITEM_TOOLS_CODE_SURROUND_DO
+Rodear selección con do { ... } while();
+MENUITEM_TOOLS_CODE_SURROUND_FOR
+Rodear selección con for () { ... }
+MENUITEM_TOOLS_CODE_SURROUND_IFDEF
+Rodear selección con #ifdef ... #endif
 MENUITEM_TOOLS_COMMON_HELP
 A&yuda...
 MENUITEM_TOOLS_COMMENTS
@@ -2966,8 +2980,6 @@ SOURCE_POPUP_HIGHLIGHT_WORD
 Resaltar identificador \"<{1}>\"
 SOURCE_POPUP_FIND_KEYWORD
 Buscar \"<{1}>\" en todos los archivos
-SOURCE_POPUP_GENERATE_FUNCTION
-Generar función \"<{1}>\"
 SOURCE_POPUP_OPEN_SELECTED
 &Abrir \"<{1}>\"
 SOURCE_NO_ITEMS_FOR_AUTOCOMPLETION

@@ -233,7 +233,14 @@ public:
 	void OnToolsCreateTemplate (wxCommandEvent &event);
 	
 	void OnToolsCodeCopyFromH (wxCommandEvent &event);
-	void OnToolsCodeGenerateFunction (wxCommandEvent &event);
+	void OnToolsCodeGenerateFunctionDef (wxCommandEvent &event);
+	void OnToolsCodeGenerateFunctionDec (wxCommandEvent &event);
+	void OnToolsCodeSurroundIf (wxCommandEvent &event);
+	void OnToolsCodeSurroundWhile (wxCommandEvent &event);
+	void OnToolsCodeSurroundDo (wxCommandEvent &event);
+	void OnToolsCodeSurroundFor (wxCommandEvent &event);
+	void OnToolsCodeSurroundIfdef(wxCommandEvent &event);
+	void OnToolsCodeExtractFunction(wxCommandEvent &event);
 	void OnToolsCodeHelp(wxCommandEvent &event);
 	void ToolsCodeCopyFromH (mxSource *source, wxString the_one);
 	void OnToolsConsole (wxCommandEvent &event);

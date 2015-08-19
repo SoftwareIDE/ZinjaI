@@ -12,7 +12,7 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/mxSource.h
+current_source=guihelp/ChangeLog.html
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -80,7 +80,7 @@ path=src/mxCompileConfigWindow.cpp
 cursor=0:0
 [source]
 path=src/mxPreferenceWindow.cpp
-cursor=705:62
+cursor=269:0
 [source]
 path=src/mxGotoLineWindow.cpp
 cursor=64:42
@@ -165,9 +165,8 @@ path=src/mxOSD.cpp
 cursor=140:67
 [source]
 path=src/mxSource.cpp
-cursor=4142:0
+cursor=4231:23
 marker=2382
-open=true
 [source]
 path=src/mxDrawClasses.cpp
 cursor=0:0
@@ -209,7 +208,7 @@ path=src/mxSplashScreen.cpp
 cursor=0:0
 [source]
 path=src/mxToolbarEditor.cpp
-cursor=0:21
+cursor=77:0
 [source]
 path=src/mxProjectGeneralConfig.cpp
 cursor=94:0
@@ -399,7 +398,7 @@ path=src/mxRegistersGrid.cpp
 cursor=0:0
 [source]
 path=src/LocalRefactory.cpp
-cursor=17:83
+cursor=35:40
 [header]
 path=src/CodeHelper.h
 cursor=72:16
@@ -432,7 +431,7 @@ path=src/mxCompileConfigWindow.h
 cursor=0:0
 [header]
 path=src/mxPreferenceWindow.h
-cursor=118:32
+cursor=178:15
 [header]
 path=src/mxGotoLineWindow.h
 cursor=6:14
@@ -454,8 +453,7 @@ path=src/mxShareSourceWindow.h
 cursor=25:8
 [header]
 path=src/mxSource.h
-cursor=280:31
-open=true
+cursor=292:58
 [header]
 path=src/mxTipsWindow.h
 cursor=11:0
@@ -803,7 +801,8 @@ path=src/LocalRefactory.h
 cursor=6:80
 [other]
 path=guihelp/ChangeLog.html
-cursor=9:178
+cursor=0:0
+open=true
 [other]
 path=guihelp/tips_spanish
 cursor=1:442
@@ -835,7 +834,7 @@ toolchain_argument_3=${DEFAULT}
 toolchain_argument_4=${DEFAULT}
 working_folder=/mnt/ex/zinjai
 always_ask_args=0
-args=--no-splash
+args=--no-splash --last-source
 exec_method=0
 exec_script=
 env_vars=DISPLAY=:0.0
@@ -1151,8 +1150,11 @@ inline_suppr=1
 additional_files=
 exclude_list=
 [inspections]
-expr=pos2
-expr=pos_orig
-expr=c
+expr=pos
+expr=l
+expr=p_curr_last
+expr=c_curr_last
+expr=pos_dos_puntos
+expr=l
 [custom_tools]
 [end]

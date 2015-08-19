@@ -43,6 +43,10 @@ public:
 	private: AType1 Attrib1; AType2 Attrib2; };
 
 
+#define _CAPTURELIST_3(LType,LName,VType1,VName1,VType2,VName2,VType3,VName3) \
+	struct LType { VType1 VName1; VType2 VName2; VType3 VName3; } LName; \
+	LName.VName1=VName1; LName.VName2=VName2; LName.VName3=VName3;
+
 #define _CAPTURELIST_4(LType,LName,VType1,VName1,VType2,VName2,VType3,VName3,VType4,VName4) \
 	struct LType { VType1 VName1; VType2 VName2; VType3 VName3; VType4 VName4; } LName; \
 	LName.VName1=VName1; LName.VName2=VName2; LName.VName3=VName3; LName.VName4=VName4;

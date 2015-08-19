@@ -414,9 +414,6 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
 }
 
 
-
-
-
 wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
