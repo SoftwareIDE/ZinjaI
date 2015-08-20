@@ -1014,7 +1014,6 @@ void ConfigManager::AddInspectionImprovingTemplate(const wxString &from, const w
 
 void ConfigManager::SetDefaultInspectionsImprovingTemplates (int version) {
 	if (version<20150226) {
-		AddInspectionImprovingTemplate("std::string","${EXP}._M_dataplus._M_p");
 		AddInspectionImprovingTemplate("std::vector<${T}, std::allocator<${T}> >",">pvector ${EXP}");
 		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">plist ${EXP} ${T}");
 		AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} ${T1} ${T2}");
@@ -1026,7 +1025,10 @@ void ConfigManager::SetDefaultInspectionsImprovingTemplates (int version) {
 		AddInspectionImprovingTemplate("std::bitset<${N}>",">pbitset ${EXP}");
 	}
 	if (version<20150820) {
-		AddInspectionImprovingTemplate("std::list<int, std::allocator<${T}> >::iterator","*((${T}*)(${EXP}._M_node+1))");
+		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >::iterator","*((${T}*)(${EXP}._M_node+1))"); // list<T>::iterator exp
+		AddInspectionImprovingTemplate("std::_List_iterator<${T}>","*((${T}*)(${EXP}._M_node+1))"); // auto exp = list<T>().begin();
+		AddInspectionImprovingTemplate("std::string","(${EXP})._M_dataplus._M_p"); // string exp
+		AddInspectionImprovingTemplate("std::basic_string<char, std::char_traits<char>, std::allocator<char> >","(${EXP})._M_dataplus._M_p"); // list<string>::iterator it, exp = *it
 	}
 }
 
