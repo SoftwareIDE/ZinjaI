@@ -1266,6 +1266,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				while (GetStyleAt(p_prev_ind)==wxSTC_C_WORD && TextRangeIs(p_prev_ind,"else")) { // si es un else, ir al if
 					--p_prev_ind;
 					II_BACK(p_prev_ind,II_IS_NOTHING_4(p_prev_ind));
+					if (GetCharAt(p_prev_ind)=='}') ++p_prev_ind;
 					p_prev_ind = GetStatementStartPos(p_prev_ind-1,true);
 				}
 				bool increase_level = c_curr_last=='{' || (GetStyleAt(p_prev_ind)==wxSTC_C_WORD && ( // si abria una llave, o venia de una etiqueta, aumentar

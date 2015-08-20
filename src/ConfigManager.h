@@ -234,7 +234,7 @@ private:
 	bool Load();
 	void LoadDefaults();
 	void AddInspectionImprovingTemplate(const wxString &from, const wxString &to);
-	void SetDefaultInspectionsImprovingTemplates();
+	void SetDefaultInspectionsImprovingTemplates(int version);
 
 	
 	/// verify is a linux package (xterm,g++,gdb,doxygen,etc) is installed, shows an error if not and offer an automatic installation when apt-get is present

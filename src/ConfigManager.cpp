@@ -396,10 +396,8 @@ bool ConfigManager::Load() {
 	if (Init.version<20140704) {
 		if (Init.proxy=="") Init.proxy="$http_proxy";
 	}
-	if (Init.version<20150226) {
-		SetDefaultInspectionsImprovingTemplates();
-	}
-	
+	SetDefaultInspectionsImprovingTemplates(Init.version);
+		
 #ifdef _STC_HAS_ZASKARS_RESHOW
 	if (Init.version<20141127) {
 		if (Source.autoCompletion) Source.autoCompletion=2;
@@ -1002,7 +1000,7 @@ bool ConfigManager::Initialize(const wxString & a_path) {
 	config = new ConfigManager(a_path);
 	bool first_time = !config->Load();
 	if (first_time) {
-		config->SetDefaultInspectionsImprovingTemplates();
+		config->SetDefaultInspectionsImprovingTemplates(0);
 	}
 	return first_time;
 }
@@ -1014,17 +1012,22 @@ void ConfigManager::AddInspectionImprovingTemplate(const wxString &from, const w
 	Debug.inspection_improving_template_to.Add(to);
 }
 
-void ConfigManager::SetDefaultInspectionsImprovingTemplates ( ) {
-	AddInspectionImprovingTemplate("std::string","${EXP}._M_dataplus._M_p");
-	AddInspectionImprovingTemplate("std::vector<${T}, std::allocator<${T}> >",">pvector ${EXP}");
-	AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">plist ${EXP} ${T}");
-	AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} ${T1} ${T2}");
-	AddInspectionImprovingTemplate("std::stack<${T}, std::deque<${T}, std::allocator<${T}> > >",">pstack ${EXP}");
-	AddInspectionImprovingTemplate("std::set<${T}, ${C}, std::allocator<${T}> >",">pset ${EXP} ${T}");
-	AddInspectionImprovingTemplate("std::deque<${T}, std::allocator<${T}> >",">pdeque ${EXP}");
-	AddInspectionImprovingTemplate("std::queue<${T}, std::deque<${T}, std::allocator<${T}> > >",">pqueue ${EXP}");
-	AddInspectionImprovingTemplate("std::priority_queue<${T}, std::vector<${T}, std::allocator<${T}> >, ${C} >",">ppqueue ${EXP}");
-	AddInspectionImprovingTemplate("std::bitset<${N}>",">pbitset ${EXP}");
+void ConfigManager::SetDefaultInspectionsImprovingTemplates (int version) {
+	if (version<20150226) {
+		AddInspectionImprovingTemplate("std::string","${EXP}._M_dataplus._M_p");
+		AddInspectionImprovingTemplate("std::vector<${T}, std::allocator<${T}> >",">pvector ${EXP}");
+		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">plist ${EXP} ${T}");
+		AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} ${T1} ${T2}");
+		AddInspectionImprovingTemplate("std::stack<${T}, std::deque<${T}, std::allocator<${T}> > >",">pstack ${EXP}");
+		AddInspectionImprovingTemplate("std::set<${T}, ${C}, std::allocator<${T}> >",">pset ${EXP} ${T}");
+		AddInspectionImprovingTemplate("std::deque<${T}, std::allocator<${T}> >",">pdeque ${EXP}");
+		AddInspectionImprovingTemplate("std::queue<${T}, std::deque<${T}, std::allocator<${T}> > >",">pqueue ${EXP}");
+		AddInspectionImprovingTemplate("std::priority_queue<${T}, std::vector<${T}, std::allocator<${T}> >, ${C} >",">ppqueue ${EXP}");
+		AddInspectionImprovingTemplate("std::bitset<${N}>",">pbitset ${EXP}");
+	}
+	if (version<20150820) {
+		AddInspectionImprovingTemplate("std::list<int, std::allocator<${T}> >::iterator","*((${T}*)(${EXP}._M_node+1))");
+	}
 }
 
 bool ConfigManager::CheckComplaintAndInstall(wxWindow *parent, const wxString &check_command, const wxString &what, const wxString &error_msg, const wxString &pkgname, const wxString &website) {
