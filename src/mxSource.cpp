@@ -1259,8 +1259,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			{ // si era un comentario, de los que van a la izquierda (lo distingo por el tab), dejarlo a la izquierda
 				; // no hacer nada
 			
-			} else if ( c_curr_last==';' || c_curr_last=='{' || c_curr_last=='}' )
-			{ // nueva sentencia
+			} else if ( c_curr_last==';' || c_curr_last=='{' || c_curr_last=='}' ) { // nueva sentencia
 				// prev_ind: donde empieza realmente la instruccion anterior (salteando indentado)
 				if (c_curr_last=='}') p_curr_last++;
 				int p_prev_ind = GetStatementStartPos(p_curr_last-1,true);
@@ -1318,7 +1317,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				
 			} else { // continuacion de algo anterior
 				// curr_beg: donde empieza la instruccion actual (con espacios y tabs)
-				int p_curr_beg = GetStatementStartPos(p_curr_last,true,false,true);
+				int p_curr_beg = GetStatementStartPos(p_curr_last,true,false,true); // el ultimo true es por los ifs anidados!
 				char c_prev_last = GetCharAt(p_curr_beg?p_curr_beg-1:0);
 				
 				if (c_prev_last=='(') { // argumentos de funcion

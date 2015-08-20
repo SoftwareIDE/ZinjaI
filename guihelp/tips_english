@@ -23,7 +23,6 @@ ZinjaI can automatically find and add to your code with #include line you need f
 Si pegas un bloque de codigo utilizando <I>Ctrl+C</I> teniendo la opcion <I>Corregir Indentado al Pegar</I> de la pestaña <I>Asitencias</I> del dialogo de <I>Preferencias</I>, ZinjaI ajusta automaticamente el indentando del bloque de codigo copiado de acuerdo al nuevo contexto en el cual es insertado.
 You can open one or more files by draging them to ZinjaI's window.
 You can highlight lines in your code with Ctrl+B keys. Later, you can go to highlighted lines very fast with Ctrl+Shift+B.
-Para dirigirte rapidamente a la declaración de una clase/funcion/macro/metodo/atributo puedes invocar a la ayuda rápida (<I>Shift+F1</I>) y seleccionar el hipervinculo a la declaracion y/o definicion en la misma.
 You can duplicate code lines just selecting them and pressing Ctrl+L (if its the current one, there is no need to select it). You can also delete them with Ctrl+Shift+L.
 You can go to fullscreen mode and hide all panels with F11 key.
 You can quickly go to a class/method/function definition with Ctrl+Shift+G shortcut.
@@ -34,7 +33,7 @@ Puedes utilizar el panel del Explorador de Archivos (menu <I>Ver</I>), para acce
 You can see the properties of your executable file (size, date, filetype, ...) with option "Executable File Properties" from "Tools" menu. In that window, you can also strip off debbuging symbols to reduce its size.
 You can move to a symbol definition by clicking over its name in the source code holding Ctrl key down.
 Puedes consultar la ayuda rápida sobre cualquier elemento del código fuente haciendo click sobre el mismo con la tecla <I>Alt</I> presionada, o utilizando el atajo de teclado <I>Alt+F1</I>.
-You can walk through compilation's errors and warning with the shortcuts Ctrl+&lt; y Ctrl+&gt;.
+You can walk through compilation's errors and warning with the shortcuts <I>Ctrl+&lt;</I> and <I>Ctrl+Shift+&lt;</I>.
 Se cambiar la apariencia de <I>ZinjaI</I> utilizando un "tema" diferente (menú <I>Archivo</I>-&gt;<I>Preferencias...</I>-&gt;<I>Tema de Iconos</I>).
 
 You can display a whole array or matrix, in a special dialog by clicking with right button over its inspection and selecting "Show in its own table" from the popup menu.
@@ -42,7 +41,7 @@ You can split one complex inspection (array, struct, class) into multiple sub-in
 Puede explorar  una inspección de una estructura de datos (un arreglo, una clase, etc.) para observar su composición en una estrucutra jerárquica haciendo click con el botón derecho sobre la misma y seleccionando la opción "Explorar inspección".
 You can set advanced breakpoint's properties by clicking on its mark (the red circle in the margin) holding Ctrl key.
 
-This software is still under development. If you find a bug, or something you'd like to see changed, you can write to <I>zaskar_84@yahoo.com.ar</I>, or leave a message in <I>Contact</I> web site's section (<A href="http://zinjai.sourceforge.net">http://zinjai.sourceforge.net</A>).
+This software is still under development. If you find a bug, or something you'd like to see changed, you can write to <I>zaskar_84@yahoo.com.ar</I>, or leave a message in <I>Contact</I> web site's section (<A href="http://zinjai.sourceforge.net">http://zinjai.sourceforge.net/index_en.php?page=contacto_en.php</A>).
 If you have a direct internet conection you can check for updates by clicking the <I>Check for updates...</I> option in <I>Help</I> menu.
 
 You can set shortcuts or toolbar buttons to launch your preferred tools or documents quickly from "Custom tools" submenu in "Tools" menu. <A href="help:custom_tools.html">Read more...</A>
@@ -63,3 +62,10 @@ On a debugging session, ZinjaI can present an special autocompletion menu for th
 You can change ZinjaI's shortcuts from "General" tab in Preference dialog ("File" menu->"Preferences....").
 Doble-clicking an identifier in your code will highlight all its occurrences in current file, so you can easily find where it's being referenced. To remove that highlight just doble-click in an empty space. You can hide this feature changing the color scheme.
 When ZinjaI starts, it is ready to work as soon as its main window is displayed. If this happens too fast, the splash screen will remain visible a few seconds, but you can hide it with a click and start working inmediatly.
+You can see how the compiler's preprocessor expand a line of code replacing constans and functions with <I>Ctrl+Shift+M</I>.
+You can edit all ocurrences of a single identifier in a block of code at once by highlighting the identifier (doble click on it), selecting the block of code and hitting <I>Alt+Shift+Enter</I> (or using the popup menu).
+ZinjaI can generate a function's definition or declaration from a function call. First, write the call, then right click the identifier, and chose the <I>Generate function's definition/declaration</I> item.
+You can get a contextual popup menu with commands from <I>Code generation</I> submenu (from <I>Tools</I>) menu with <I>Ctrl+Shit+X</I>.
+There is no need to pause the execution while debuggin in order to add, remove, enable or disable a breakpoint.
+You can define a special kind of breakpoint that will make ZinjaI update all inspections but won't pause the execution. You can define that behaviour from the Breakpoint Options dialog (<I>Shift+Click</I> or left margin, or <I>Ctrl+F8</I>).
+There are three methods available to filter the results shown in the autocompletion menu: you could see only options starting exactly as the typed part of the identifier, options that contain the type part as substring, or even options that contains a similar substring (this can tolerate a few typing errors). You can switch methods from <I>Writting</I> tab in <I>Preferences</I> dialog.
