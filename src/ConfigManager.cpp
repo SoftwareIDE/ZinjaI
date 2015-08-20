@@ -422,6 +422,11 @@ bool ConfigManager::Load() {
 		Running.cpp_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
 		Running.c_compiler_options += " -finput-charset=iso-8859-1 -fexec-charset=cp437";
 	}
+#else 
+	if (Init.version==20150817) { // fix a buggy default setting in previous version
+		Running.cpp_compiler_options.Replace("-finput-charset=iso-8859-1 -fexec-charset=cp437","");
+		Running.c_compiler_options.Replace("-finput-charset=iso-8859-1 -fexec-charset=cp437","");
+	}
 #endif
 
 	Init.autohiding_panels=Init.autohide_panels;
@@ -761,8 +766,12 @@ void ConfigManager::LoadDefaults(){
 	Source.autocompTips=true;
 	Source.avoidNoNewLineWarning=true;
 
-	Running.cpp_compiler_options="-Wall -pedantic-errors -O0 -finput-charset=iso-8859-1 -fexec-charset=cp437";
-	Running.c_compiler_options="-Wall -pedantic-errors -O0 -lm -finput-charset=iso-8859-1 -fexec-charset=cp437";
+	Running.cpp_compiler_options="-Wall -pedantic-errors -O0";
+	Running.c_compiler_options="-Wall -pedantic-errors -O0 -lm";
+#ifdef __WIN32__
+	Running.c_compiler_options+=" -finput-charset=iso-8859-1 -fexec-charset=cp437";
+	Running.cpp_compiler_options+=" -finput-charset=iso-8859-1 -fexec-charset=cp437";
+#endif
 	Running.wait_for_key=true;
 	Running.always_ask_args=false;
 	Running.check_includes=true;
