@@ -2,9 +2,9 @@
 #define MX_PREFERENCE_WINDOW_H
 
 #include <wx/dialog.h>
+#include "widgetDisabler.h"
 
 #ifndef __WIN32__
-#include "widgetDisabler.h"
 struct LinuxTerminalInfo {
 	wxString name; ///< nombre para mostrar en el cuadro de preferencias
 	wxString test_command; ///< comando para probar si existe (usualmente ejecutable+" --version")
