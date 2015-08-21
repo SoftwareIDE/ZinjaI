@@ -14,7 +14,7 @@
 
 define pvector
 	if $argc == 0
-		printf "Usar \"pvector <objeto> [<desde> [<hasta>]]\n"
+		help pvector
 	else
 		set $size = ($arg0)._M_impl._M_finish - ($arg0)._M_impl._M_start
 		set $capacity = ($arg0)._M_impl._M_end_of_storage - ($arg0)._M_impl._M_start
@@ -76,7 +76,7 @@ end
 
 define plist
 	if $argc == 0
-		printf "Usar \"plist <objeto> <tipo> [<indice>]\"\n"
+		help plist
 	else
 		printf "{"
 		set $head = &($arg0)._M_impl._M_node
@@ -100,7 +100,7 @@ define plist
 		end
 		printf "size=%u", $size
 		if $argc == 1
-			printf ", Usar \"plist <nombre> <tipo_elemento>\" para ver el contenido"
+			help plist
 		end
 		printf "}\n"
 	end
@@ -215,7 +215,7 @@ define pmap
 		end
 		printf "size=%u", $tree_size
 		if $argc == 1 || $argc==2
-			printf ", Usar \"pmap <nombre> <tipo_clave> <tipo_valor>\" para ver el contenido"
+			help pmap
 		end
 		printf "}\n"
 	end
@@ -226,7 +226,7 @@ end
 
 define pstack
 	if $argc == 0
-		printf "Usar \"pstack <objeto>\"\n"
+		help pstack
 	else
 		printf "{"
 		set $start_cur = ($arg0).c._M_impl._M_start._M_cur
@@ -248,7 +248,7 @@ end
 
 define pset
 	if $argc == 0
-		printf "Use \"pset <objeto> <tipo> [<elemento>]\"\n"
+		help pset
 	else
 		set $tree = ($arg0)
 		set $i = 0
@@ -311,19 +311,16 @@ define pset
 			printf "found=%u, ", $ElementsFound
 		end
 		printf "size=%u", $tree_size
-		if $argc==1
-			printf ", Usar \"pset <nombre> <tipo>\" para ver el contenido"
-		end
 		printf "}\n"
 	end
 end
 document pset
-Use: pset <set> <type> [<element>]
+Use: pset <set> [<type> [<element>]]
 end
 
 define pdeque
 	if $argc == 0
-		printf "Usar \"pdeque <objeto>\"\n"
+		help pdeque
 	else
 		printf "{"
 		set $size = 0
@@ -361,7 +358,7 @@ end
 
 define pqueue
 	if $argc == 0
-		printf "Usar \"pqueue <objeto>\"\n"
+		help pqueue
 	else
 		printf "{"
 		set $start_cur = ($arg0).c._M_impl._M_start._M_cur
@@ -383,7 +380,7 @@ end
 
 define ppqueue
 	if $argc == 0
-		printf "Usar \"ppqueue <objeto>\"\n"
+		help ppqueue
 	else
 		printf "{"
 		set $size = ($arg0).c._M_impl._M_finish - ($arg0).c._M_impl._M_start
@@ -406,7 +403,7 @@ end
 
 define pbitset
 	if $argc == 0
-		printf "Usar \"pbitset <objeto>\"\n"
+		help pbitset
 	else
         p /t ($arg0)._M_w
 	end
@@ -417,7 +414,7 @@ end
 
 define pstring
 	if $argc == 0
-		printf "Usar \"pstring <objeto>\"\n"
+		help pstring
 	else
 		printf "{
 		printf "string=\"%s\"", ($arg0)._M_data()
@@ -433,7 +430,7 @@ end
 
 define pwstring
 	if $argc == 0
-		printf "Usar \"pwstring <objeto>\"\n"
+		help pwstring
 	else
 		printf "{"
 		call printf("string=\"%ls\"", ($arg0)._M_data())

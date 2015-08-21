@@ -4150,7 +4150,12 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white, boo
 				   (TextRangeWas(pos_match,"const") || TextRangeWas(pos_match,"override") 
 					|| TextRangeWas(pos_match,"explicit")) ) ) 
 				{
-					break; // si era el par de llaves de una funcion, no seguir.... faltaría contemplar "namespace bla {...}"
+					int p_func_name = BraceMatch(pos_match);
+					if (p_func_name!=wxSTC_INVALID_POSITION) {
+						p_func_name--; II_BACK_NC(p_func_name,II_IS_NOTHING_4(p_func_name));
+						if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS) // para evitar if,while,for,lambdas, something else?
+							break; // si era el par de llaves de una funcion, no seguir.... faltaría contemplar "namespace bla {...}"
+					}
 				}
 				pos=pos_match+1;
 			}

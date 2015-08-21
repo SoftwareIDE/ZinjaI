@@ -1030,8 +1030,8 @@ void ConfigManager::SetDefaultInspectionsImprovingTemplates (int version) {
 		AddInspectionImprovingTemplate("std::set<${T}, ${C}, std::allocator<${T}> >",">pset ${EXP} \'${T}\'",true);
 		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">plist ${EXP} \'${T}\'",true);
 		AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} \'${T1}\' \'${T2}\'",true);
-		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >::iterator","*((${T}*)(${EXP}._M_node+1))",true); // list<T>::iterator exp
-		AddInspectionImprovingTemplate("std::_List_iterator<${T}>","*((${T}*)(${EXP}._M_node+1))",true); // auto exp = list<T>().begin();
+		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >::iterator","*((${T}*)(${EXP}._M_node+1)) @1",true); // list<T>::iterator exp
+		AddInspectionImprovingTemplate("std::_List_iterator<${T}>","*((${T}*)(${EXP}._M_node+1)) @1",true); // auto exp = list<T>().begin();
 		AddInspectionImprovingTemplate("std::string","(${EXP})._M_dataplus._M_p",true); // string exp
 		AddInspectionImprovingTemplate("std::basic_string<char, std::char_traits<char>, std::allocator<char> >","(${EXP})._M_dataplus._M_p",true); // list<string>::iterator it, exp = *it
 	}

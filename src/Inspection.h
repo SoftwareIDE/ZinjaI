@@ -357,9 +357,14 @@ private:
 	}
 	
 public:
-	void DeleteHelperInspection() {
-		if (helper) DeleteHelper();
-		UpdateValue(true);
+	void DeleteHelperInspection() { // for auto-improved expressions only
+		if (helper) { 
+			DeleteHelper(); // remove old helper (should came from DIF_AUTO_IMPROVE
+			flags.Unset(DIF_AUTO_IMPROVE); // do not auto-improve again
+			if (!SetupChildInspection()) // try to set an internal helper (just in case its a struct)
+				UpdateValue(false); // if SetupChildInspection return true, the update is already done, but no event was generated
+			GenerateEvent(&myDIEventHandler::OnDINewType); // generate the event to inform gui the new state
+		}
 	}
 	
 	bool AskGDBIfIsEditable() {

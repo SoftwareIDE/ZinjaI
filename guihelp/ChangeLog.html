@@ -6,15 +6,20 @@
 <!--<I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>-->
 
-</UL><BR><B>Relase 20150823</B><BR><UL>
+</UL><BR><B>Relase 2015082X</B><BR><UL>
 
-</UL><BR><B>Relase 20150817</B><BR><UL>
-	<LI>New: Nuevas opciones en el submenú de generación de código (ubicado en el menú Herramientas, y en menú contextual del area de código): para mover un conjunto de lineas seleccionadas dentro de una nueva estructura de control, o a una nueva función.</LI>
-	<LI>New: Ahora se pueden editar varias ocurrencias de un identificador en el código en simultáneo (hay que resaltarlo con doble click, luego seleccionar una región del código y presionar Alt+Shift+Enter).</LI>
-	<LI>New: Al hacer click derecho sobre una llamada a una función que aún no ha sido definida, el menú contextual ofrece una opción para generar la definición automáticamente (experimental).</LI>
+	<LI>New: Nuevas opciones en el submenú de generación de código para mover un conjunto de lineas seleccionadas dentro de una nueva estructura de control, o a una nueva función.</LI>
 	<LI>Imp: Las funcionalidad de mejora automática de inspecciones según tipo se aplica recursivamente (es decir, un resultado mejorado puede volverse a mejorar con otra plantilla).</LI>
 	<LI>Imp: Se agregaron algunas nuevas plantillas por defecto para mejorar automáticamente inspecciones para iteradores de listas (que muestran directamente el valor al que apuntan).</LI>
 	<LI>Imp: Se agregó un nuevo atajo de teclado (Ctrl+Shift+X) para mostrar la lista de herramientas de generación de código a modo de menú contextual.</LI>
+	<LI>Fix: Durante la depuración, cuando la ejecución finaliza y la terminal queda esperando una tecla para cerrarse (solo disponible en GNU/Linux), el botón "Detener" ahora también sirve para cerrarla.</LI>
+	<LI>Fix: Corregido el error por el cual no se podían editar las preferencias de las barras de herramientas luego de abrir el cuadro de preferencias por primera vez durante la depuración o en modo pantalla completa.</LI>
+	<LI>Fix: Los argumentos "-finput-charset=iso-8859-1 -fexec-charset=cp437" solo se aplican por defecto en Windows.</LI>
+	<LI>Fix: Se corrigieron varios errores en la nueva implementación del indentado inteligente.</LI>
+
+</UL><BR><B>Relase 20150817</B><BR><UL>
+	<LI>New: Ahora se pueden editar varias ocurrencias de un identificador en el código en simultáneo (hay que resaltarlo con doble click, luego seleccionar una región del código y presionar Alt+Shift+Enter).</LI>
+	<LI>New: Al hacer click derecho sobre una llamada a una función que aún no ha sido definida, el menú contextual ofrece una opción para generar la definición automáticamente (experimental).</LI>
 	<LI>Imp: La ejecución síncrona de herramientas externas que puedan llegar a tardar demasiado (como la generación de grafos con graphviz, o el desensamblado de objdump) es ahora cancelable.</LI>
 	<LI>Imp: Al mostrar una inspección que corresponda a una cadena "en ventana separada", se muestra la cadena que representa como texto plano (es decir, sin comillas y reemplazando los caracteres especiales \*).</LI>
 	<LI>Imp: Se mejoró la inteligencia del indentado automático para abarcar más estilos de codificación y corregir algunos errores.</LI>
@@ -22,7 +27,6 @@
 	<LI>Imp: Al definir un autocódigo se puede utilizar #typeof(x)# para referirse al tipo del argumento x, y ZinjaI efectuará el reemplazo que corresponda.</LI>
 	<LI>Imp: El comando para actualizar el ejecutable durante la depuración compila automáticamente y puede ahora utilizarse sin pausar la ejecución.</LI>
 	<LI>Imp: Si el depurador no puede aportar información sobre la ubicación en el código fuente de una entrada (frame/fila) del trazado inverso, pero puede indicar en qué binario (usualmente biblioteca externa) se encuentra, se muestra en la tabla la ruta de dicho archivo.</LI>
-	<LI>Fix: Corregido el error por el cual no se podían editar las preferencias de las barras de herramientas luego de abrir el cuadro de preferencias por primera vez durante la depuración o en modo pantalla completa.</LI>
 	<LI>Fix: Ya no se crean dos entradas consecutivas en el historial de navegación cuando se va directamente a una línea de un fuente con alguna acción como doble click sobre un mensaje de error, sobre una entrada en el backtrace, o ctrl+click sobre el nombre de una función.</LI>
 	<LI>Fix: Corregido el coloreado de sintaxis en constantes numéricas con separador de miles (c++11).</LI>
 	<LI>Fix: Se corrigió un error en el parser que hacía que no se reconozcan algunos métodos en clases con métodos templatizados.</LI>

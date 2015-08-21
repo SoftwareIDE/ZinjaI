@@ -414,6 +414,9 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 }
 
 bool DebugManager::Stop(bool waitkey) {
+#ifndef __WIN32__
+	if (status==DBGST_WAITINGKEY) { process->Kill(tty_pid,wxSIGKILL); status=DBGST_STOPPING; return false; }
+#endif
 	if (status==DBGST_STOPPING) return false; else status=DBGST_STOPPING;
 	if (waiting || !debugging) {
 #if defined(__APPLE__) || defined(__WIN32__)
@@ -429,6 +432,7 @@ bool DebugManager::Stop(bool waitkey) {
 #ifndef __WIN32__
 		if (waitkey && !tty_dev.IsEmpty()) {
 			wxString cmd; 
+			status = DBGST_WAITINGKEY; // to be able to kill it with Stop button
 			cmd 
 				<< "shell " 
 				<< mxUT::Quotize(config->Files.runner_command)
@@ -933,7 +937,7 @@ bool DebugManager::FindOutChildPid() {
 }
 
 void DebugManager::Continue() {
-	if (waiting || !debugging || status==DBGST_STOPPING) return;
+	if (waiting || !debugging || status==DBGST_STOPPING || status==DBGST_WAITINGKEY) return;
 	
 #if defined(__WIN32__) || defined(__unix__)
 	if (config->Debug.return_focus_on_continue && FindOutChildPid()) {
@@ -1764,7 +1768,7 @@ void DebugManager::ShowBreakPointConditionErrorMessage (BreakPointInfo *_bpi) {
 }
 
 void DebugManager::SendSignal (const wxString & signame) {
-	if (waiting || !debugging || status==DBGST_STOPPING) return;
+	if (waiting || !debugging || status==DBGST_STOPPING || status==DBGST_WAITINGKEY) return;
 	running = true; MarkCurrentPoint();
 	wxString ans = SendCommand("signal ",signame);
 	if (ans.Contains("^running")) {

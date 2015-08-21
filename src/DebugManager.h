@@ -17,23 +17,11 @@ class wxGrid;
 class project_file_item;
 class mxBreakList;
 
-enum {	DI_NONE, 
-		DI_CLASS, // clase A
-		DI_IN_CLASS, // A.private
-		DI_FATHER_CLASS, // A.B
-		DI_IN_FATHER_CLASS, // A.B.private
-		DI_POINTER, // int *p
-		DI_CLASS_POINTER, // clase *P
-		DI_IN_CLASS_POINTER, // P->private
-		DI_FATHER_POINTER, // P->B
-		DI_IN_FATHER_POINTER, // P->B.private
-		DI_ARRAY  // int a[10]
-	};
-
 enum DEBUG_STATUS { // stages of a debug session
 	DBGST_NULL, // no debugging session running
 	DBGST_STARTING, // debugging session is startig, program isn't running yet
 	DBGST_DEBUGGING, // debugging session running, but debugmanager talking to gdb
+	DBGST_WAITINGKEY,  // debugging session has ended, but gdb is still running, in the shell comand for waiting for a key
 	DBGST_STOPPING  // debugging session is terminating, waiting for process to end
 };
 
