@@ -1006,8 +1006,13 @@ bool ConfigManager::Initialize(const wxString & a_path) {
 }
 
 
-void ConfigManager::AddInspectionImprovingTemplate(const wxString &from, const wxString &to) {
-	if (Debug.inspection_improving_template_from.Index(from)!=wxNOT_FOUND) return;
+void ConfigManager::AddInspectionImprovingTemplate(const wxString &from, const wxString &to, bool replace) {
+	int pos = Debug.inspection_improving_template_from.Index(from);
+	if (pos!=wxNOT_FOUND) {
+		if (replace)
+			Debug.inspection_improving_template_to[pos] = to;
+		return;
+	}
 	Debug.inspection_improving_template_from.Add(from);
 	Debug.inspection_improving_template_to.Add(to);
 }
@@ -1015,20 +1020,20 @@ void ConfigManager::AddInspectionImprovingTemplate(const wxString &from, const w
 void ConfigManager::SetDefaultInspectionsImprovingTemplates (int version) {
 	if (version<20150226) {
 		AddInspectionImprovingTemplate("std::vector<${T}, std::allocator<${T}> >",">pvector ${EXP}");
-		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">plist ${EXP} ${T}");
-		AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} ${T1} ${T2}");
 		AddInspectionImprovingTemplate("std::stack<${T}, std::deque<${T}, std::allocator<${T}> > >",">pstack ${EXP}");
-		AddInspectionImprovingTemplate("std::set<${T}, ${C}, std::allocator<${T}> >",">pset ${EXP} ${T}");
 		AddInspectionImprovingTemplate("std::deque<${T}, std::allocator<${T}> >",">pdeque ${EXP}");
 		AddInspectionImprovingTemplate("std::queue<${T}, std::deque<${T}, std::allocator<${T}> > >",">pqueue ${EXP}");
 		AddInspectionImprovingTemplate("std::priority_queue<${T}, std::vector<${T}, std::allocator<${T}> >, ${C} >",">ppqueue ${EXP}");
 		AddInspectionImprovingTemplate("std::bitset<${N}>",">pbitset ${EXP}");
 	}
 	if (version<20150820) {
-		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >::iterator","*((${T}*)(${EXP}._M_node+1))"); // list<T>::iterator exp
-		AddInspectionImprovingTemplate("std::_List_iterator<${T}>","*((${T}*)(${EXP}._M_node+1))"); // auto exp = list<T>().begin();
-		AddInspectionImprovingTemplate("std::string","(${EXP})._M_dataplus._M_p"); // string exp
-		AddInspectionImprovingTemplate("std::basic_string<char, std::char_traits<char>, std::allocator<char> >","(${EXP})._M_dataplus._M_p"); // list<string>::iterator it, exp = *it
+		AddInspectionImprovingTemplate("std::set<${T}, ${C}, std::allocator<${T}> >",">pset ${EXP} \'${T}\'",true);
+		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >",">plist ${EXP} \'${T}\'",true);
+		AddInspectionImprovingTemplate("std::map<${T1}, ${T2}, ${C}, std::allocator<${P}> >",">pmap ${EXP} \'${T1}\' \'${T2}\'",true);
+		AddInspectionImprovingTemplate("std::list<${T}, std::allocator<${T}> >::iterator","*((${T}*)(${EXP}._M_node+1))",true); // list<T>::iterator exp
+		AddInspectionImprovingTemplate("std::_List_iterator<${T}>","*((${T}*)(${EXP}._M_node+1))",true); // auto exp = list<T>().begin();
+		AddInspectionImprovingTemplate("std::string","(${EXP})._M_dataplus._M_p",true); // string exp
+		AddInspectionImprovingTemplate("std::basic_string<char, std::char_traits<char>, std::allocator<char> >","(${EXP})._M_dataplus._M_p",true); // list<string>::iterator it, exp = *it
 	}
 }
 

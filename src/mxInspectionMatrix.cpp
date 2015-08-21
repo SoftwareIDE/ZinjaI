@@ -98,6 +98,7 @@ void mxInspectionMatrix::UpdateMatrix() {
 		}
 		// asegurarse que todas las filas tengan igual cantidad de columnas
 		if (h==1) w = aux_w;
+		else if (aux_w>w) w = aux_w;
 		else if (aux_w!=w) w = 1;
 	}
 	SetMatrixSize(w,h);

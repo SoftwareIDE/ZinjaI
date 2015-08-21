@@ -6,10 +6,14 @@
 <!--<I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>-->
 
+</UL><BR><B>Relase 20150823</B><BR><UL>
+
 </UL><BR><B>Relase 20150817</B><BR><UL>
 	<LI>New: Nuevas opciones en el submenú de generación de código (ubicado en el menú Herramientas, y en menú contextual del area de código): para mover un conjunto de lineas seleccionadas dentro de una nueva estructura de control, o a una nueva función.</LI>
 	<LI>New: Ahora se pueden editar varias ocurrencias de un identificador en el código en simultáneo (hay que resaltarlo con doble click, luego seleccionar una región del código y presionar Alt+Shift+Enter).</LI>
 	<LI>New: Al hacer click derecho sobre una llamada a una función que aún no ha sido definida, el menú contextual ofrece una opción para generar la definición automáticamente (experimental).</LI>
+	<LI>Imp: Las funcionalidad de mejora automática de inspecciones según tipo se aplica recursivamente (es decir, un resultado mejorado puede volverse a mejorar con otra plantilla).</LI>
+	<LI>Imp: Se agregaron algunas nuevas plantillas por defecto para mejorar automáticamente inspecciones para iteradores de listas (que muestran directamente el valor al que apuntan).</LI>
 	<LI>Imp: Se agregó un nuevo atajo de teclado (Ctrl+Shift+X) para mostrar la lista de herramientas de generación de código a modo de menú contextual.</LI>
 	<LI>Imp: La ejecución síncrona de herramientas externas que puedan llegar a tardar demasiado (como la generación de grafos con graphviz, o el desensamblado de objdump) es ahora cancelable.</LI>
 	<LI>Imp: Al mostrar una inspección que corresponda a una cadena "en ventana separada", se muestra la cadena que representa como texto plano (es decir, sin comillas y reemplazando los caracteres especiales \*).</LI>

@@ -349,7 +349,7 @@ private:
 		// intentar crear la expresion auxiliar
 		helper = /*DebuggerInspection::*/Create(
 			new_expression,
-			FlagIf(DIF_FRAMELESS,IsFrameless()) | FlagIf(DIF_FULL_OUTPUT,flags.Get(DIF_FULL_OUTPUT)),
+			FlagIf(DIF_FRAMELESS,IsFrameless()) | FlagIf(DIF_FULL_OUTPUT,flags.Get(DIF_FULL_OUTPUT)) | DIF_AUTO_IMPROVE,
 			new myUserHelperDIEH(this), true );
 		if (helper->dit_type==DIT_ERROR) { DeleteHelper(); return false; }
 		gdb_value = helper->gdb_value; // Create does a first evaluation

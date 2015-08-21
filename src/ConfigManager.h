@@ -233,7 +233,7 @@ private:
 	void DoInitialChecks();
 	bool Load();
 	void LoadDefaults();
-	void AddInspectionImprovingTemplate(const wxString &from, const wxString &to);
+	void AddInspectionImprovingTemplate(const wxString &from, const wxString &to, bool replace=false);
 	void SetDefaultInspectionsImprovingTemplates(int version);
 
 	
