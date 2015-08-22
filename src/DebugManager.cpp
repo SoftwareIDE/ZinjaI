@@ -1031,10 +1031,12 @@ wxString DebugManager::WaitAnswer() {
 				wxMilliSleep(50);
 			} else {
 				wxMilliSleep(10);
-				wxTimeSpan t2=t1-wxDateTime::Now();
-				if (t2.GetSeconds()>30 && mxMD_YES==mxMessageDialog(main_window,_T("Alguna operación en el depurador está tomando demasiado tiempo, desea interrumpirla?."),_T("UPS!"),(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
+				wxTimeSpan t2=wxDateTime::Now()-t1;
+				if (t2.GetSeconds()>30) {
+					if (mxMD_YES==mxMessageDialog(main_window,_T("Alguna operación en el depurador está tomando demasiado tiempo, desea interrumpirla?."),_T("UPS!"),(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
 						return "";
-				else t1=wxDateTime::Now();
+					else t1=wxDateTime::Now();
+				}
 			}
 		}
 		if (process && input->IsOk()) 
