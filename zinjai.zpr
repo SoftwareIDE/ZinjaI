@@ -12,7 +12,7 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/DebugManager.cpp
+current_source=src/version.h
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -800,13 +800,14 @@ path=src/LocalRefactory.h
 cursor=12:70
 [other]
 path=guihelp/ChangeLog.html
-cursor=0:6
+cursor=14:128
 [other]
 path=guihelp/tips_spanish
 cursor=72:511
 [other]
 path=src/version.h
 cursor=0:24
+open=true
 [other]
 path=todo.txt
 cursor=7:47
