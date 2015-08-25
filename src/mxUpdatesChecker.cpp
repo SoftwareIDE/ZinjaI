@@ -70,11 +70,13 @@ void mxUpdatesChecker::CheckNow() {
 	
 	text->SetLabel(LANG(UPDATE_CONSULTING_WEB,"Consultando web..."));
 
+	wxString command  = DIR_PLUS_FILE(config->zinjai_bin_dir,
 #ifdef __WIN32__
-	wxString command("updatem.exe ");
+								   "updatem.exe "
 #else
-	wxString command("./updatem.bin ");
+								   "updatem.bin "
 #endif
+								   );
 	
 	command<<"--version "<<VERSION<<" ";
 #ifdef __WIN32__
