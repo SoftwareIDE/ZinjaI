@@ -28,7 +28,7 @@ clean:
 	${GPP} ${FLAGS} runner.cpp -o $@
 
 ../bin/shellexecute.exe: shellexecute.cpp
-	${GPP} ${FLAGS} -mwindows shellexecute.cpp -o $@
+	${GPP} -s -static-libgcc -static-libstdc++ -mwindows shellexecute.cpp -o $@
 
 ../bin/updatem.exe: updatem.cpp zockets.cpp zockets.h ../release.w32/xmlres.o
 	${GPP} ${FLAGS} -mwindows updatem.cpp zockets.cpp -lwsock32 xmlres.o -o $@
