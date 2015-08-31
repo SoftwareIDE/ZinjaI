@@ -2125,7 +2125,9 @@ void mxSource::PopulatePopupMenuCodeTools(wxMenu &menu) {
 void mxSource::PopupMenuCodeTools() {
 	wxMenu menu("");
 	PopulatePopupMenuCodeTools(menu);
-	main_window->PopupMenu(&menu, main_window->ScreenToClient(this->ClientToScreen(PointFromPosition(GetCurrentPos()))));
+	wxPoint pos = this->ClientToScreen(PointFromPosition(GetCurrentPos()));
+	pos.y += GetCharHeight();
+	main_window->PopupMenu(&menu, main_window->ScreenToClient(pos));
 }
 
 
@@ -4171,10 +4173,13 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white, boo
 					   ||TextRangeWas(pos,"case")||TextRangeWas(pos,"default") )
 			{
 				int pos_dos_puntos = pos+1; // buscar los ':'
-				II_FRONT(pos_dos_puntos,II_IS_NOTHING_4(pos_dos_puntos)||GetCharAt(pos_dos_puntos)!=':');
+				II_FRONT(pos_dos_puntos,II_IS_NOTHING_4(pos_dos_puntos)||!(II_IS_2(pos_dos_puntos,':','{')));
+				if (c!=':'||GetCharAt(pos_dos_puntos+1)==':') { // ojo con "class boo : public lala {", por eso arriba corto en la '{';
+					continue;
+				}
 				if (pos_dos_puntos<l) { // si los ':' estan antes del pos de entrada, la instruccion que se busca es la siguiente
 					pos_skip = -1;
-					pos = pos_dos_puntos+1;;
+					pos = pos_dos_puntos+1;
 				} else { // sino es esta (el "public:", "case x:" o "lo-que-sea:")
 					pos_skip = WordStartPosition(pos,true);
 					pos = -1;
