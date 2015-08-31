@@ -1250,7 +1250,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					int p_prev_ind = GetStatementStartPos(p_otra_llave-1);
 					CopyIndentation(current_line,p_prev_ind);
 					if (c_curr_last=='{' && LineFromPosition(p_curr_last)==current_line-1) { // si estaba justo entre las dos llaves {} poner un enter mas
-						InsertText(PositionFromLine(current_line),"\n");
+						if (config_source.bracketInsertion) InsertText(PositionFromLine(current_line),"\n");
 						CopyIndentation(current_line,p_prev_ind,true);
 					}
 				}
@@ -1669,6 +1669,7 @@ void mxSource::Indent(int min, int max) {
 				OnCharAdded(evt);
 			}
 		}
+		Colourise(PositionFromLine(i),GetLineEndPosition(i));
 	}
 		
 	if (!restore_syntaxenable.GetOriginalValue())
