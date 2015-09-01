@@ -1323,7 +1323,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				
 				if (c_prev_last=='(') { // argumentos de funcion
 					int pos_line_start = PositionFromLine(LineFromPosition(p_curr_beg));
-					SetLineIndentation(current_line,p_curr_beg-pos_line_start);
+					SetLineIndentation(current_line,GetColumn(p_curr_beg));
 				
 				} else {
 					
