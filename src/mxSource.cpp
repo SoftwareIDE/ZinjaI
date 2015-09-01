@@ -4236,9 +4236,16 @@ bool mxSource::GetCurrentCall (wxString &ftype, wxString &fname, wxArrayString &
 							type = LocalRefactory::GetLiteralType(one_arg);
 							if (!type.Len()) {
 								// get something for the name
-								unsigned int i0=0; while (i0<oalen && !IsKeywordChar(one_arg[i0])) i0++; // skip *?
-								unsigned int i1=i0; while (i1<oalen && IsKeywordChar(one_arg[i1])) i1++; // get the name
-								if (i0==i1) one_arg="???"; else one_arg=one_arg.Mid(i0,i1-i0);
+								unsigned int pos_name = one_arg.Len();
+								while (pos_name>0 && 
+										(IsKeywordChar(one_arg[pos_name-1]) || one_arg[pos_name-1]=='[' || one_arg[pos_name-1]==']')
+									  ) pos_name--; // get the name
+								if (pos_name==one_arg.Len()) one_arg="???"; 
+								else {
+									one_arg=one_arg.Mid(pos_name);
+									one_arg.Replace("[","");
+									one_arg.Replace("]","");
+								}
 							} else {
 								one_arg="???";
 							}
