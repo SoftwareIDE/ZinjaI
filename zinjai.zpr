@@ -12,7 +12,7 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/mxNewWizard.cpp
+current_source=src/mxSource.cpp
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -59,7 +59,6 @@ cursor=338:48
 [source]
 path=src/mxNewWizard.cpp
 cursor=613:27
-open=true
 [source]
 path=src/CodeHelper.cpp
 cursor=1446:46
@@ -164,8 +163,11 @@ path=src/mxOSD.cpp
 cursor=140:67
 [source]
 path=src/mxSource.cpp
-cursor=1990:46
+cursor=4157:7
+breakpoint=4157
+breakpoint_annotation=
 marker=1245
+open=true
 [source]
 path=src/mxDrawClasses.cpp
 cursor=0:0
@@ -441,7 +443,6 @@ marker=309
 [header]
 path=src/mxNewWizard.h
 cursor=26:8
-open=true
 [header]
 path=src/mxOpenSharedWindow.h
 cursor=0:4
@@ -1149,7 +1150,9 @@ inline_suppr=1
 additional_files=
 exclude_list=
 [inspections]
+expr=pos_skip
 expr=pos
-expr=p_prev_ind
+expr=c
+expr=p_func_name
 [custom_tools]
 [end]
