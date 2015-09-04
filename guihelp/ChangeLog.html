@@ -6,8 +6,13 @@
 <!--<I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>-->
 
-</UL><BR><B>Relase 20150823</B><BR><UL>
-
+</UL><BR><B>Release 20150902</B><BR><UL>
+	<LI>Imp: Se mejoró la forma en que se obtienen los nombres para los argumentos formales de una función generada automáticamente a partir de una llamada.</LI>
+	<LI>Fix: Se corrigieron varios errores en el nuevo algoritmo de indentado inteligente.</LI>
+	<LI>Fix: Se corrigió un error por el cual la búsqueda de actualizaciones automáticas ya no funcionaba en instalaciones nuevas de ZinjaI.</LI>
+	<LI>Fix: Se cambiaron los argumentos de compilación para el ejecutable auxiliar shell_execute para que los antivirus dejen de confundirlo con un troyano.</LI>
+	
+</UL><BR><B>Release 20150823</B><BR><UL>
 	<LI>New: Nuevas opciones en el submenú de generación de código para mover un conjunto de lineas seleccionadas dentro de una nueva estructura de control, o a una nueva función.</LI>
 	<LI>Imp: Las funcionalidad de mejora automática de inspecciones según tipo se aplica recursivamente (es decir, un resultado mejorado puede volverse a mejorar con otra plantilla).</LI>
 	<LI>Imp: Se agregaron algunas nuevas plantillas por defecto para mejorar automáticamente inspecciones para iteradores de listas (que muestran directamente el valor al que apuntan).</LI>
@@ -19,7 +24,7 @@
 	<LI>Fix: Los argumentos "-finput-charset=iso-8859-1 -fexec-charset=cp437" solo se aplican por defecto en Windows.</LI>
 	<LI>Fix: Se corrigieron varios errores en la nueva implementación del indentado inteligente.</LI>
 
-</UL><BR><B>Relase 20150817</B><BR><UL>
+</UL><BR><B>Release 20150817</B><BR><UL>
 	<LI>New: Ahora se pueden editar varias ocurrencias de un identificador en el código en simultáneo (hay que resaltarlo con doble click, luego seleccionar una región del código y presionar Alt+Shift+Enter).</LI>
 	<LI>New: Al hacer click derecho sobre una llamada a una función que aún no ha sido definida, el menú contextual ofrece una opción para generar la definición automáticamente (experimental).</LI>
 	<LI>Imp: La ejecución síncrona de herramientas externas que puedan llegar a tardar demasiado (como la generación de grafos con graphviz, o el desensamblado de objdump) es ahora cancelable.</LI>
@@ -42,7 +47,7 @@
 	<LI>Fix: Se corrigieron algunos errores al posicionar los calltips y resaltar argumentos en llamadas a funciones/métodos que ocupan más de una línea de código.</LI>
 	<LI>Fix: Se corrigió un error que podía provocar la finalización de un proceso equivocado al utilizar el botón "Detener" luego de cancelar una ejecución en el cuadro de diálogo que pide argumentos y ruta de trabajo para la misma.</LI>
 
-</UL><BR><B>Relase 20150712</B><BR><UL>
+</UL><BR><B>Release 20150712</B><BR><UL>
 	<LI>New: Se integró una nueva herramienta externa (lizard) en el menú de herramientas, que mide la complejidad (complejidad ciclomática y lineas de código) de archivos y funciones.</LI>
 	<LI>Imp: El comando "Implementar métodos/funciones faltantes" del menú herramientas busca las declaraciones en el propio cpp si no hay un .h asociado.</LI>
 	<LI>Imp: Se agregaró una nueva opción al menú contextual que aparece al hacer click derecho sobre un identificador en el código, que permite buscar todas las ocurrencias de dicho identificador en todos los archivos abiertos o del proyecto.</LI>
@@ -63,7 +68,7 @@
 	<LI>Fix: Los niveles en el trazado inverson se muestran en base 0.</LI>
 	<LI>Fix: Corregido un problema por el cual el zinjai se cerraba cuando el backtrace debía mostrar ciertas funciones lambda.</LI>
 	
-</UL><BR><B>Relase 20150331</B><BR><UL>
+</UL><BR><B>Release 20150331</B><BR><UL>
 	<LI>New: En un proyecto, se pueden definir argumentos de compilación por archivo fuente (que modifican o reemplazan a los generales del perfil, con click derecho en el árbol de proyecto).</LI>
 	<LI>Imp: En distribuciones de GNU/Linux que utilicen el gestor de ventanas Unity (como Ubuntu), se puede configurar desde el cuadro de Preferencias si se permite o no que Unity aplique su interfáz especial en menúes y barras de desplazamiento.</LI>
 	<LI>Imp: En distribuciones de GNU/Linux que no disponen de la biblioteca libpng12 (necesaria para ejecutar ZinjaI), se utilizará una versión de la misma incluida entre los archivos de ZinjaI.</LI>

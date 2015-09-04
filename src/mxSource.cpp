@@ -1340,7 +1340,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					} else if (c_curr_last=='>') { // si cerraba template, corregir (sigue el prototipo, pero al mismo nivel que el template)
 						int p_curr_ind = p_curr_beg; II_FRONT(p_curr_ind,II_IS_NOTHING_4(p_curr_ind));
 						if (GetStyleAt(p_curr_ind)==wxSTC_C_WORD && TextRangeIs(p_curr_ind,"template") ) { 
-							CopyIndentation(current_line,p_curr_beg,false);
+							CopyIndentation(current_line,p_curr_ind,false);
 						}
 					} else if (c_curr_last==',' && GetStyleAt(p_curr_ind)==wxSTC_C_WORD && TextRangeIs(p_curr_ind,"template")) { // si estamos en la lista de argumentos del template
 						int p=p_curr_ind+8; II_FRONT(p,II_IS_NOTHING_4(p));
