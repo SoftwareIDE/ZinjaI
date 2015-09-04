@@ -1986,7 +1986,9 @@ void mxSource::OnPopupMenuMargin(wxMouseEvent &evt) {
 	
 	int x=10,p; for(int i=0;i<MARGIN_NULL;i++) { x+=GetMarginWidth(i); }
 	int l=LineFromPosition( p=PositionFromPointClose(x,evt.GetY()) );
-	if (GetCurrentLine()!=l) GotoPos(PositionFromLine(l));
+	int sls = LineFromPosition(GetSelectionStart()), sle = LineFromPosition(GetSelectionEnd());
+	if (sle<sls) swap(sle,sls);
+	if (GetCurrentLine()!=l && !(l>=sls&&l<=sle)) GotoPos(PositionFromLine(l));
 	wxMenu menu("");
 	
 	BreakPointInfo *bpi=m_extras->FindBreakpointFromLine(this,l);
