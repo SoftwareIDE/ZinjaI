@@ -660,8 +660,7 @@ void ConfigManager::LoadDefaults(){
 	Files.img_viewer="";
 	Files.doxygen_command="c:\\archivos de programa\\doxygen\\bin\\doxygen.exe";
 	Files.wxfb_command="";
-//	Files.browser_command="shellexecute.exe";
-	Files.browser_command="";
+	Files.browser_command=""; // use "bin\\shellexecute.exe";
 #elif defined(__APPLE__)
 	Files.toolchain="gcc";
 	Files.debugger_command="gdb";

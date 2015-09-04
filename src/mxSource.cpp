@@ -1322,7 +1322,6 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				char c_prev_last = GetCharAt(p_curr_beg?p_curr_beg-1:0);
 				
 				if (c_prev_last=='(') { // argumentos de funcion
-					int pos_line_start = PositionFromLine(LineFromPosition(p_curr_beg));
 					SetLineIndentation(current_line,GetColumn(p_curr_beg));
 				
 				} else {
@@ -2825,20 +2824,14 @@ wxString mxSource::FindScope(int pos, wxString *args, bool full_scope, int *scop
 					}
 				}
 			} else { // puede ser clase o struct
-				II_BACK(p,II_IS_NOTHING_4(p) || !II_IS_6(p,'{','}',':',';',')','('));
-				if (p) p++;	II_FRONT(p,II_IS_NOTHING_4(p));
+				p=GetStatementStartPos(p,false,true,true);
 				if (GetStyleAt(p)==wxSTC_C_WORD) {
 					bool some=false;
 					if (GetTextRange(p,p+8)=="template") {
 						p+=8; II_FRONT(p,II_IS_NOTHING_4(p)); 
-						if (c=='<') {
-							int temp_count=1;
-							while (p+1<p_llave_a && temp_count) {
-								c = GetCharAt(++p);
-								if(c=='<') temp_count++;
-								else if(c=='>') temp_count--;
-							}
-							p++; II_FRONT(p,II_IS_NOTHING_4(p)); 
+						if (c=='<') { 
+							p = SkipTemplateSpec(p,l)+1;
+							II_FRONT(p,II_IS_NOTHING_4(p)); 
 						}
 					}
 					if (GetTextRange(p,p+6)=="struct")
@@ -4188,6 +4181,7 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white, boo
 				break;
 			} else {
 				pos = WordStartPosition(pos,true);
+				pos_skip = pos;
 			}
 		}
 	}

@@ -977,7 +977,7 @@ void mxUT::GetRunningChilds(wxArrayString &childs) {
 
 void mxUT::OpenInBrowser(wxString url) {
 	if (config->Files.browser_command.Len()) {
-		if (config->Files.browser_command=="shellexecute.exe" && url.StartsWith("file://"))
+		if (config->Files.browser_command.EndsWith()=="shellexecute.exe" && url.StartsWith("file://"))
 			url=url.Mid(7);
 		wxExecute(config->Files.browser_command+" \""+url+"\"");	
 	} else
