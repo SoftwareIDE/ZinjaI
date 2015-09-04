@@ -1213,7 +1213,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				Colourise(p,p+1);
 				p=BraceMatch(p);
 				if (p!=wxSTC_INVALID_POSITION) {
-					int indent_level = GetLineIndentation(LineFromPosition(GetStatementStartPos(p-1)));
+					int indent_level = GetLineIndentation(LineFromPosition(GetStatementStartPos(p-1,true)));
 					SetLineIndentation(GetCurrentLine(),indent_level);
 				}
 				event.Skip();
@@ -1247,7 +1247,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					int ind = GetLineIndentation(p_prev_ind)-config_source.tabWidth;
 					SetLineIndentation(current_line,ind<0?0:ind);
 				} else {
-					int p_prev_ind = GetStatementStartPos(p_otra_llave-1);
+					int p_prev_ind = GetStatementStartPos(p_otra_llave-1,true);
 					CopyIndentation(current_line,p_prev_ind);
 					if (c_curr_last=='{' && LineFromPosition(p_curr_last)==current_line-1) { // si estaba justo entre las dos llaves {} poner un enter mas
 						if (config_source.bracketInsertion) InsertText(PositionFromLine(current_line),"\n");
@@ -4196,7 +4196,8 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white, boo
 			pos = pos_skip-1;
 			II_BACK(pos,II_IS_NOTHING_4(pos));
 		}
-		return ++pos;
+		if (pos) ++pos;
+		return pos;
 	};
 }
 
