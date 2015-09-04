@@ -19,8 +19,18 @@ class wxListBox;
 class wxTextCtrl;
 class wxStaticText;
 
+enum WizardModes { 
+	WM_Empty = 0,
+	WM_Simple = 1,
+	WM_Project = 2,
+	WM_Import = 3,
+	WM_NULL
+};
+
 class mxNewWizard : public wxDialog {
 public:
+	
+	WizardModes current_wizard_mode;
 
 	bool only_for_project; ///< indica si el cuadro se abrio para la opcion "Nuevo..." (general) o "Nuevo Proyecto..."
 	BoolFlag mask_folder_change_events; ///< para evitar mover el radiobutton al cambiar el texto de la carpeta de proyecto por un click en el mismo radio button
@@ -126,6 +136,8 @@ public:
 	void OnButtonNewFilePath(wxCommandEvent &evt);
 
 private:
+	void SetCurrentPanel(wxPanel *new_panel);
+	
 	DECLARE_EVENT_TABLE()
 
 };

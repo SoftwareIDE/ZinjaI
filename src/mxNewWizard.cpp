@@ -615,29 +615,23 @@ void mxNewWizard::OnButtonNext(wxCommandEvent &event){
 	if (panel==panel_onproject) {
 		OnProjectCreate();
 	} else if (panel==panel_start) {
-		switch (start_radio->GetSelection()) {
-			case 0:
+		current_wizard_mode = (WizardModes)start_radio->GetSelection();
+		switch (current_wizard_mode) {
+			case WM_Empty:
 				main_window->NewFileFromText("",0);
 				Close();
 				break;
-			case 1:
+			case WM_Simple:
 				ShowPanelTemplates();
 				break;
-//			case 2:
-//				ShowPanelWizard1();
-//				break;
-			case 2:
+			case WM_Project:
 				ShowPanelProject1();
 				break;
-			case 3:
+			case WM_Import:
 				ShowPanelProject1();
-				project_folder_radio->SetSelection(3);
-				project_folder_create->SetValue(false);
-				OnButtonFolder(event);
-				project_current_files->SetValue(false);
-				project_dir_files->SetValue(true);
-				project_dir_files->Hide();
 				break;
+		default:
+			; // should not happend
 		}
 	} else if (panel==panel_project_1) {
 		ShowPanelProject2();
@@ -736,10 +730,7 @@ void mxNewWizard::WizardCreate() {
 }
 
 void mxNewWizard::ShowPanelStart(bool show) {
-	panel->Hide();
-	panel_start->Show();
-	sizer_for_panel->Replace(panel,panel_start,false);
-	panel=panel_start;
+	SetCurrentPanel(panel_start);
 	nextButton->SetThings(bitmaps->buttons.next,LANG(NEWWIZARD_CONTINUE," Continuar "));
 	SetSize(size_w,size_h); if (show) Show();
 	wxCommandEvent evt; OnStartRadio(evt);
@@ -855,10 +846,7 @@ void mxNewWizard::CreatePanelOnProject() {
 }
 
 void mxNewWizard::ShowPanelTemplates() {
-	panel->Hide();
-	panel_templates->Show();
-	sizer_for_panel->Replace(panel,panel_templates,false);
-	panel=panel_templates;
+	SetCurrentPanel(panel_templates);
 	templates_list->SetSelection(templates_default);
 	templates_check->SetValue(false);
 	nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
@@ -920,10 +908,16 @@ void mxNewWizard::CreatePanelTemplates() {
 }
 
 void mxNewWizard::ShowPanelProject1() {
-	panel->Hide();
-	panel_project_1->Show();
-	sizer_for_panel->Replace(panel,panel_project_1,false);
-	panel=panel_project_1;
+	SetCurrentPanel(panel_project_1);
+	if (current_wizard_mode==WM_Import) {
+		project_folder_radio->SetSelection(3);
+		project_folder_create->SetValue(false);
+		project_folder_create->Hide();
+		project_folder_radio->Hide();
+	} else {
+		project_folder_create->Show();
+		project_folder_radio->Show();
+	}
 	project_check->SetValue(false);
 	project_list->SetSelection(project_default);
 	nextButton->SetThings(bitmaps->buttons.next,LANG(NEWWIZARD_NEXT," Siguiente "));
@@ -936,13 +930,11 @@ void mxNewWizard::ShowPanelProject1() {
 	UpdateProjectFullPath();
 	GetSizer()->Layout();
 	project_name->SetFocus();
+	if (current_wizard_mode==WM_Import) { wxCommandEvent event; OnButtonFolder(event); }
 }
 
 void mxNewWizard::ShowPanelProject2() {
-	panel->Hide();
-	panel_project_2->Show();
-	sizer_for_panel->Replace(panel,panel_project_2,false);
-	panel=panel_project_2;
+	SetCurrentPanel(panel_project_2);
 	project_check->SetValue(false);
 	project_list->SetSelection(project_default);
 	nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
@@ -955,17 +947,20 @@ void mxNewWizard::ShowPanelProject2() {
 	if (project_folder_create->GetValue()) {
 		project_dir_files->Hide();
 		project_dir_files->SetValue(false);
-	} else
+	} else if (current_wizard_mode==WM_Import) { // create zpr for a existing project
+		project_current_files->SetValue(false);
+		project_current_files->Hide();
+		project_dir_files->Hide();
+		project_dir_files->SetValue(true);
+	} else {
 		project_dir_files->Show();
+	}
 	GetSizer()->Layout();
 	project_list->SetFocus();
 }
 
 void mxNewWizard::ShowPanelOnProject() {
-	panel->Hide();
-	panel_onproject->Show();
-	sizer_for_panel->Replace(panel,panel_onproject,false);
-	panel=panel_onproject;
+	SetCurrentPanel(panel_onproject);
 	nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
 	cancelButton->SetThings(bitmaps->buttons.cancel,LANG(NEWWIZARD_CANCEL," Cancelar "));
 	GetSizer()->Layout();
@@ -1072,20 +1067,14 @@ void mxNewWizard::CreatePanelProject2() {
 }
 
 void mxNewWizard::ShowPanelWizard1() {
-	panel->Hide();
-	panel_wizard_1->Show();
+	SetCurrentPanel(panel_wizard_1);
 	cancelButton->SetThings(bitmaps->buttons.prev,LANG(NEWWIZARD_BACK," Volver "));
-	sizer_for_panel->Replace(panel,panel_wizard_1,false);
-	panel=panel_wizard_1;
 	nextButton->SetThings(bitmaps->buttons.next,LANG(NEWWIZARD_CONTINUE," Continuar "));
 	GetSizer()->Layout();
 }	
 
 void mxNewWizard::ShowPanelWizard2() {
-	panel->Hide();
-	panel_wizard_2->Show();
-	sizer_for_panel->Replace(panel,panel_wizard_2,false);
-	panel=panel_wizard_2;
+	SetCurrentPanel(panel_wizard_2);
 	nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
 	GetSizer()->Layout();
 }	
@@ -1271,3 +1260,11 @@ void mxNewWizard::OnProjectFilesOpenCheck(wxCommandEvent &evt) {
 void mxNewWizard::OnProjectFilesDirCheck(wxCommandEvent &evt) {
 	project_current_files->SetValue(false);
 }
+
+void mxNewWizard::SetCurrentPanel(wxPanel *new_panel) {
+	panel->Hide();
+	new_panel->Show();
+	sizer_for_panel->Replace(panel,new_panel,false);
+	panel=new_panel;
+}
+
