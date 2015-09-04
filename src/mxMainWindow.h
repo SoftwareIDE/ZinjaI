@@ -573,6 +573,7 @@ public:
 	void OnResize(wxSizeEvent &evt);
 	void ShowQuickHelpPanel(bool hide_compiler_tree=true);
 	void ShowCompilerTreePanel();
+	void HideCompilerTreePanel();
 	void ShowExplorerTreePanel();
 	void ShowBeginnersPanel();
 	

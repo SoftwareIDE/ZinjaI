@@ -53,8 +53,8 @@ void LinuxTerminalInfo::Initialize() {
 	list[count++]=LinuxTerminalInfo("konsole (kde3)","konsole --version","konsole --nomenubar --notoolbar -T \"${TITLE}\" -e",false,"KDE: 3");
 	list[count++]=LinuxTerminalInfo("mate-terminal","mate-terminal --version","mate-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x");
 	list[count++]=LinuxTerminalInfo("konsole (kde4)","konsole --version","konsole -e",true,"~KDE: 3");
-#warning Ver si sacar el --disable-factory, testear, segun comentario en el foro para fedora-22 gnome-3.16.2 no va
-	list[count++]=LinuxTerminalInfo("gnome-terminal","gnome-terminal --version","gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x",true);
+//	list[count++]=LinuxTerminalInfo("gnome-terminal","gnome-terminal --version","gnome-terminal --disable-factory --hide-menubar -t \"${TITLE}\" -x",true);
+	list[count++]=LinuxTerminalInfo("gnome-terminal","gnome-terminal --version","gnome-terminal --hide-menubar -t \"${TITLE}\" -x",true);
 #ifdef _ZINJAI_DEBUG
 	if (term_count!=count) wxMessageBox("LinuxTerminalInfo::Init: term_count!=count");
 #endif

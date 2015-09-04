@@ -1942,20 +1942,16 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	main_window->project_tree.treeCtrl->DeleteChildren(main_window->project_tree.headers);
 	main_window->project_tree.treeCtrl->DeleteChildren(main_window->project_tree.others);
 	delete project;
+	HideCompilerTreePanel();
 	if (config->Init.autohiding_panels) {
 		autohide_handlers[ATH_EXPLORER]->Hide();
 		autohide_handlers[ATH_PROJECT]->Hide();
 		autohide_handlers[ATH_SYMBOL]->Hide();
-		autohide_handlers[ATH_COMPILER]->Hide();
 	} else if (left_panels) {
 		aui_manager.GetPane(left_panels).Hide();
-		_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
-		aui_manager.GetPane(compiler_panel).Hide();
 	} else {
 		_menu_item(mxID_VIEW_SYMBOLS_TREE)->Check(false);
 		aui_manager.GetPane(symbols_tree.treeCtrl).Hide();
-		_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
-		aui_manager.GetPane(compiler_panel).Hide();
 		_menu_item(mxID_VIEW_PROJECT_TREE)->Check(false);
 		if (config->Init.show_explorer_tree) {
 			_menu_item(mxID_VIEW_EXPLORER_TREE)->Check(true);
@@ -2056,8 +2052,7 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 					aui_manager.GetPane(compiler_panel).Show();
 					_menu_item(mxID_VIEW_COMPILER_TREE)->Check(true);
 				} else {
-					aui_manager.GetPane(compiler_panel).Hide();
-					_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
+					HideCompilerTreePanel();
 				}
 			}
 			if ( fullscreen_panels_status[fspsHELP]!=aui_manager.GetPane(quick_help).IsShown() ) {
@@ -2155,8 +2150,7 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 		}
 		if (config->Init.autohide_panels_fs && !config->Init.autohiding_panels) { // reacomodar los paneles
 			if ( (fullscreen_panels_status[fspsCOMPILER]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
-				aui_manager.GetPane(compiler_panel).Hide();
-				_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
+				HideCompilerTreePanel();
 			}
 			if ( (fullscreen_panels_status[fspsHELP]=aui_manager.GetPane(quick_help).IsShown()) ) {
 				aui_manager.GetPane(quick_help).Hide();
@@ -2211,8 +2205,7 @@ DEBUG_INFO("wxYield:out mxMainWindow::OnViewFullScreen");
 
 void mxMainWindow::OnViewHideBottom (wxCommandEvent &event) {
 	if (aui_manager.GetPane(compiler_panel).IsShown()) {
-		_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
-		aui_manager.GetPane(compiler_panel).Hide();
+		HideCompilerTreePanel();
 	}
 	if (aui_manager.GetPane(quick_help).IsShown()) {
 		aui_manager.GetPane(quick_help).Hide();
@@ -2429,8 +2422,7 @@ void mxMainWindow::OnViewCompilerTree (wxCommandEvent &event) {
 			autohide_handlers[ATH_COMPILER]->ForceShow(false);
 	} else {	
 		if (!_menu_item(mxID_VIEW_COMPILER_TREE)->IsChecked()) {
-			_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
-			aui_manager.GetPane(compiler_panel).Hide();
+			HideCompilerTreePanel();
 		} else {
 			_menu_item(mxID_VIEW_COMPILER_TREE)->Check(true);
 			aui_manager.GetPane(compiler_panel).Show();
@@ -3587,8 +3579,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 					autohide_handlers[ATH_DEBUG_LOG]->Select();
 			} else {
 				if ( (debug_panels_status[dbpsCOMPILER]=aui_manager.GetPane(compiler_panel).IsShown()) ) {
-					aui_manager.GetPane(compiler_panel).Hide();
-					_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
+					HideCompilerTreePanel();
 				}
 				if ( (debug_panels_status[dbpsHELP]=aui_manager.GetPane(quick_help).IsShown()) ) {
 					aui_manager.GetPane(quick_help).Hide();
@@ -3655,8 +3646,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 						aui_manager.GetPane(compiler_panel).Show();
 						_menu_item(mxID_VIEW_COMPILER_TREE)->Check(true);
 					} else {
-						aui_manager.GetPane(compiler_panel).Hide();
-						_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
+						HideCompilerTreePanel();
 					}
 				}
 				if ( debug_panels_status[dbpsHELP]!=aui_manager.GetPane(quick_help).IsShown() ) {
@@ -4431,6 +4421,7 @@ void mxMainWindow::ClearDebugLog() {
 * @param file   archivo de donde leer los resultados
 **/
 void mxMainWindow::ShowValgrindPanel(int what, wxString file, bool force) {
+	HideCompilerTreePanel();
 	if (valgrind_panel) {
 		aui_manager.GetPane(valgrind_panel).Show();
 		valgrind_panel->SetMode((mxVOmode)what,file);
@@ -4504,8 +4495,7 @@ void mxMainWindow::OnEscapePressed(wxCommandEvent &event) {
 		if (config->Init.autohide_panels)
 			autohide_handlers[ATH_COMPILER]->Hide();
 		else {
-			_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
-			aui_manager.GetPane(compiler_panel).Hide();
+			HideCompilerTreePanel();
 		}
 		do_update=true;
 	}
@@ -4537,12 +4527,25 @@ void mxMainWindow::ShowQuickHelpPanel(bool hide_compiler_tree) {
 		if (!aui_manager.GetPane(quick_help).IsShown()) {
 			// hide compiler results pane
 			if (hide_compiler_tree) {
-				_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
-				aui_manager.GetPane(compiler_panel).Hide();
+				HideCompilerTreePanel();
 			}
 			// show quick help pane
 			aui_manager.GetPane(quick_help).Show();
 			aui_manager.Update();
+		}
+	}
+}
+
+void mxMainWindow::HideCompilerTreePanel() {
+	if (config->Init.autohiding_panels) {
+		if (aui_manager.GetPane(compiler_panel).IsShown()) {
+			autohide_handlers[ATH_COMPILER]->Hide();
+		}
+	} else {
+		wxAuiPaneInfo &info = aui_manager.GetPane(compiler_panel);
+		if (info.IsShown()) {
+			_menu_item(mxID_VIEW_COMPILER_TREE)->Check(false);
+			aui_manager.GetPane(compiler_panel).Hide();
 		}
 	}
 }

@@ -207,16 +207,16 @@ void mxValgrindOuput::OnSelect(wxTreeEvent &evt) {
 				if (fi) {
 					mxSource *source = main_window->OpenFile(DIR_PLUS_FILE(project->path,fi->name),false);
 					if (source && source!=EXTERNAL_SOURCE) source->MarkError(line-1);
-				} else {
-					for (int i=0,j=main_window->notebook_sources->GetPageCount();i<j;i++) {
-						mxSource *src = ((mxSource*)(main_window->notebook_sources->GetPage(i)));
-						if (src && ((!src->sin_titulo && src->source_filename.GetFullName()==text) || (src->temp_filename.GetFullName()==text && src==compiler->last_compiled)) ) {
-							main_window->notebook_sources->SetSelection(i);
-							src->MarkError(line-1);
-							main_window->SetFocusToSourceAfterEvents();
-							return;
-						}
-					}
+					return;
+				}
+			}
+			for (int i=0,j=main_window->notebook_sources->GetPageCount();i<j;i++) {
+				mxSource *src = ((mxSource*)(main_window->notebook_sources->GetPage(i)));
+				if (src && ((!src->sin_titulo && src->source_filename.GetFullName()==text) || (src->temp_filename.GetFullName()==text && src==compiler->last_compiled)) ) {
+					main_window->notebook_sources->SetSelection(i);
+					src->MarkError(line-1);
+					main_window->SetFocusToSourceAfterEvents();
+					return;
 				}
 			}
 		}
