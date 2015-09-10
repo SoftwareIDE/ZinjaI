@@ -2297,7 +2297,10 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 					if (p!=wxSTC_INVALID_POSITION) { // si es un parametro
 //						p=p_to;
 						p_to=p;
-						while (p_to>0 && !II_IS_2(p_to,',','(')) {
+						int template_level=0; // sino se confunde la , de un map<int,int> con el final del argumento
+						while (p_to>0 && (!II_IS_2(p_to,',','(')||template_level)) {
+							if (c=='>') template_level++;
+							else if (c=='<') template_level--;
 							p_to--;
 						}
 						p_type=p_to+1;
