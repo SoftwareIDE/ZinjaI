@@ -9,8 +9,8 @@ int main(int argc, char *argv[]) {
 	
 	getcwd(cwd,1024); // get current working dir
 	int lcwd=strlen(cwd); // remove the last /bin to go back to zinjai/resources directory
-	if (strncmp(cdw+lcwd-4,"/bin",4)==0) strncmp[cdw+lcwd-4]='\0';
-	else if (strncmp(cdw+lcwd-5,"/bin/",5)==0) strncmp[cdw+lcwd-5]='\0';
+	if (strncmp(cwd+lcwd-4,"/bin",4)==0) cwd[lcwd-4]='\0';
+	else if (strncmp(cwd+lcwd-5,"/bin/",5)==0) cwd[lcwd-5]='\0';
 	
 	// build a command to run tha auxiliar script
 	strcpy(path,"open ");

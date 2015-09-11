@@ -13,15 +13,14 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/ConfigManager.cpp
+current_source=src/mxNewWizard.h
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
 cursor=99:2
 [source]
 path=src/ConfigManager.cpp
-cursor=667:79
-open=true
+cursor=667:77
 [source]
 path=src/mxMainWindowTools.cpp
 cursor=1142:15
@@ -167,7 +166,6 @@ cursor=140:67
 path=src/mxSource.cpp
 cursor=2299:98
 marker=1245
-open=true
 [source]
 path=src/mxDrawClasses.cpp
 cursor=0:0
@@ -206,7 +204,8 @@ path=src/mxOutputView.cpp
 cursor=79:15
 [source]
 path=src/mxSplashScreen.cpp
-cursor=0:0
+cursor=9:38
+open=true
 [source]
 path=src/mxToolbarEditor.cpp
 cursor=77:0
@@ -442,7 +441,8 @@ cursor=575:28
 marker=309
 [header]
 path=src/mxNewWizard.h
-cursor=26:8
+cursor=31:1
+open=true
 [header]
 path=src/mxOpenSharedWindow.h
 cursor=0:4
@@ -455,7 +455,6 @@ cursor=25:8
 [header]
 path=src/mxSource.h
 cursor=415:7
-open=true
 [header]
 path=src/mxTipsWindow.h
 cursor=11:0
@@ -572,7 +571,8 @@ path=src/mxOutputView.h
 cursor=38:151
 [header]
 path=src/mxSplashScreen.h
-cursor=7:30
+cursor=0:0
+open=true
 [header]
 path=src/mxToolbarEditor.h
 cursor=17:44
@@ -803,7 +803,7 @@ path=src/LocalRefactory.h
 cursor=12:70
 [other]
 path=guihelp/ChangeLog.html
-cursor=19:111
+cursor=8:28
 [other]
 path=guihelp/tips_spanish
 cursor=58:59

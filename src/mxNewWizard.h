@@ -24,7 +24,7 @@ enum WizardModes {
 	WM_Simple = 1,
 	WM_Project = 2,
 	WM_Import = 3,
-	WM_NULL
+	WM_Null
 };
 
 class mxNewWizard : public wxDialog {
