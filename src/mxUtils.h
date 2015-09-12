@@ -301,6 +301,9 @@ public:
 	static int LaunchImageViewer(const wxString &window_title, const wxString &image_file);
 	
 	static int LaunchGraphViewer(const wxString &window_title, const wxString &graph_file);
+	
+	/// open a file with the system preferred application for this file type (shell_execute on windows, xdg-open on linux)
+	static bool ShellExecute(const wxString &path, const wxString &workdir="");
 
 };
 

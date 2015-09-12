@@ -1516,3 +1516,11 @@ wxString mxUT::GetFileTypeDescription(wxString file_path) {
 	command << " -b " << mxUT::Quotize(file_path);
 	return mxUT::GetOutput(command);
 }
+
+bool mxUT::ShellExecute (const wxString & path, const wxString &workdir) {
+	wxString command = OSDEP_VAL( DIR_PLUS_FILE(config->zinjai_bin_dir,"shellexecute.exe"), "xdg-open" );
+	command<<" "<<Quotize(path);
+	RaiiWorkDirChanger(workdir.IsEmpty()?".":workdir);
+	return wxExecute(command);
+}
+

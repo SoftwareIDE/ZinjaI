@@ -351,7 +351,8 @@ public:
 	void OnExplorerTreeUpdate(wxCommandEvent &evt);
 	void OnExplorerTreeChangePath(wxCommandEvent &evy);
 	void OnExplorerTreePathUp(wxCommandEvent &evy);
-	void OnExplorerTreeOpenOne(wxCommandEvent &evt);
+	void OnExplorerTreeOpenOneZinjaI(wxCommandEvent &evt);
+	void OnExplorerTreeOpenOneExtern(wxCommandEvent &evt);
 	void OnExplorerTreeOpenAll(wxCommandEvent &evt);
 	void OnExplorerTreeOpenSources(wxCommandEvent &evt);
 	void OnExplorerTreeShowOnlySources(wxCommandEvent &evt);

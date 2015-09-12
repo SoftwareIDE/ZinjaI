@@ -703,7 +703,7 @@ Herramienta personalizada de project <{1}>
 MENUITEM_TOOLBAR_SETTINGS
 Configurar barras de herramientas...
 MENUITEM_CODETOOLS_POPUP
-Mostrar menú de generación de código...
+Mostrar menú de generación de código
 CAPTION_TOOLBAR_FILE
 Archivo
 CAPTION_TOOLBAR_EDIT
@@ -2056,8 +2056,10 @@ MAINW_EXPLORER_POPUP_OPEN_SOURCES
 Abrir &Todos los Fuentes
 MAINW_EXPLORER_POPUP_UPDATE
 Ac&tualizar
-MAINW_EXPLORER_POPUP_OPEN_FILE
-&Abrir archivo
+MAINW_EXPLORER_POPUP_OPEN_FILE_ZINJAI
+&Abrir (en ZinjaI)
+MAINW_EXPLORER_POPUP_OPEN_FILE_EXTERN
+&Abrir (externo)
 MAINW_EXPLORER_POPUP_EXPAND
 &Expandir
 MAINW_EXPLORER_POPUP_SET_AS_ROOT

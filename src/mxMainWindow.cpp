@@ -418,7 +418,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_EXPLORER_POPUP_UPDATE, mxMainWindow::OnExplorerTreeUpdate)
 	EVT_MENU(mxID_EXPLORER_POPUP_CHANGE_PATH, mxMainWindow::OnExplorerTreeChangePath)
 	EVT_MENU(mxID_EXPLORER_POPUP_PATH_UP, mxMainWindow::OnExplorerTreePathUp)
-	EVT_MENU(mxID_EXPLORER_POPUP_OPEN_ONE, mxMainWindow::OnExplorerTreeOpenOne)
+	EVT_MENU(mxID_EXPLORER_POPUP_OPEN_ONE_ZINJAI, mxMainWindow::OnExplorerTreeOpenOneZinjaI)
+	EVT_MENU(mxID_EXPLORER_POPUP_OPEN_ONE_EXTERN, mxMainWindow::OnExplorerTreeOpenOneExtern)
 	EVT_MENU(mxID_EXPLORER_POPUP_OPEN_ALL, mxMainWindow::OnExplorerTreeOpenAll)
 	EVT_MENU(mxID_EXPLORER_POPUP_OPEN_SOURCES, mxMainWindow::OnExplorerTreeOpenSources)
 	EVT_MENU(mxID_EXPLORER_POPUP_SHOW_ONLY_SOURCES, mxMainWindow::OnExplorerTreeShowOnlySources)
@@ -3858,7 +3859,7 @@ void mxMainWindow::OnSelectExplorerItem (wxTreeEvent &event) {
 	} else {
 		
 		wxCommandEvent evt;
-		OnExplorerTreeOpenOne(evt);
+		OnExplorerTreeOpenOneZinjaI(evt);
 		
 	}
 	
@@ -3882,9 +3883,10 @@ void mxMainWindow::OnExplorerTreePopup(wxTreeEvent &event) {
 		menu.Append(mxID_EXPLORER_POPUP_UPDATE, LANG(MAINW_EXPLORER_POPUP_UPDATE,"Ac&tualizar"));
 	} else {
 		if (explorer_tree.treeCtrl->GetItemImage(explorer_tree.selected_item)) {
-			menu.Append(mxID_EXPLORER_POPUP_OPEN_ONE, LANG(MAINW_EXPLORER_POPUP_OPEN_FILE,"&Abrir archivo"));
+			menu.Append(mxID_EXPLORER_POPUP_OPEN_ONE_ZINJAI, LANG(MAINW_EXPLORER_POPUP_OPEN_FILE_ZINJAI,"&Abrir (en ZinjaI)"));
+			menu.Append(mxID_EXPLORER_POPUP_OPEN_ONE_EXTERN, LANG(MAINW_EXPLORER_POPUP_OPEN_FILE_EXTERN,"&Abrir (externo)"));
 		} else {
-			menu.Append(mxID_EXPLORER_POPUP_OPEN_ONE, LANG(MAINW_EXPLORER_POPUP_EXPAND,"&Expandir"));
+			menu.Append(mxID_EXPLORER_POPUP_OPEN_ONE_ZINJAI, LANG(MAINW_EXPLORER_POPUP_EXPAND,"&Expandir"));
 			menu.Append(mxID_EXPLORER_POPUP_UPDATE, LANG(MAINW_EXPLORER_POPUP_UPDATE,"Ac&tualizar"));
 			if (!explorer_tree.show_only_sources)
 				menu.Append(mxID_EXPLORER_POPUP_OPEN_ALL, LANG(MAINW_EXPLORER_POPUP_OPEN_ALL,"&Abrir Todos los Archivos"));
@@ -3908,7 +3910,7 @@ void mxMainWindow::OnExplorerTreeUpdate(wxCommandEvent &evt) {
 		SetExplorerPath(explorer_tree.path);
 	else {
 		wxCommandEvent evt;
-		OnExplorerTreeOpenOne(evt);
+		OnExplorerTreeOpenOneZinjaI(evt);
 	}
 }
 
@@ -3930,7 +3932,7 @@ void mxMainWindow::OnExplorerTreePathUp(wxCommandEvent &evy) {
 	SetExplorerPath(explorer_tree.path);
 }
 
-void mxMainWindow::OnExplorerTreeOpenOne(wxCommandEvent &evt) {
+void mxMainWindow::OnExplorerTreeOpenOneZinjaI(wxCommandEvent &evt) {
 	
 	
 	wxString path = GetExplorerItemPath(explorer_tree.selected_item);
@@ -3981,6 +3983,11 @@ void mxMainWindow::OnExplorerTreeOpenOne(wxCommandEvent &evt) {
 	
 }
 
+void mxMainWindow::OnExplorerTreeOpenOneExtern(wxCommandEvent &evt) {
+	wxString path = GetExplorerItemPath(explorer_tree.selected_item);
+	mxUT::ShellExecute(path,wxFileName(path).GetFullPath());
+}
+
 void mxMainWindow::OnExplorerTreeSetAsPath(wxCommandEvent &evt) {
 	SetExplorerPath(GetExplorerItemPath(explorer_tree.selected_item));
 }
@@ -3988,7 +3995,7 @@ void mxMainWindow::OnExplorerTreeSetAsPath(wxCommandEvent &evt) {
 void mxMainWindow::OnExplorerTreeOpenAll(wxCommandEvent &evt) {
 	if (!explorer_tree.treeCtrl->GetChildrenCount(explorer_tree.selected_item)) {
 		wxCommandEvent evt;
-		OnExplorerTreeOpenOne(evt);
+		OnExplorerTreeOpenOneZinjaI(evt);
 	}
 	wxString path = GetExplorerItemPath(explorer_tree.selected_item);
 	wxTreeItemIdValue cookie;
@@ -4003,7 +4010,7 @@ void mxMainWindow::OnExplorerTreeOpenAll(wxCommandEvent &evt) {
 void mxMainWindow::OnExplorerTreeOpenSources(wxCommandEvent &evt) {
 	if (!explorer_tree.treeCtrl->GetChildrenCount(explorer_tree.selected_item)) {
 		wxCommandEvent evt;
-		OnExplorerTreeOpenOne(evt);
+		OnExplorerTreeOpenOneZinjaI(evt);
 	}
 	wxString path = GetExplorerItemPath(explorer_tree.selected_item);
 	wxTreeItemIdValue cookie;
