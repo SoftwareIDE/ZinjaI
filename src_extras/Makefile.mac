@@ -5,7 +5,7 @@ all: ../bin ../bin/mac-terminal-wrapper.bin ../bin/runner.bin ../bin/updatem.bin
 	$(MAKE) -f Makefile.mac -C img_viewer
 
 clean:
-	rm -rf ../bin/zinjai mac-terminal-wrapper.bin ../bin/runner.bin ../bin/updatem.bin
+	rm -rf ../bin/zinjai ../bin/mac-terminal-wrapper.bin ../bin/runner.bin ../bin/updatem.bin
 	$(MAKE) -f Makefile.mac -C complement clean
 	$(MAKE) -f Makefile.mac -C img_viewer clean
 

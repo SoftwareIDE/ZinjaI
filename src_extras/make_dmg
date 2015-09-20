@@ -74,13 +74,13 @@ dd if=/dev/zero of=zinjai-ppc.dmg bs=512k count=84
 mkfs.hfsplus -v ZinjaI zinjai-ppc.dmg
 sudo mount -o loop zinjai-ppc.dmg mnt || exit 1
 rm -f zinjai.app/Contents/MacOS/zinjai
-rm -f zinjai.app/Contents/Resources/img_viewer.bin
-rm -f zinjai.app/Contents/Resources/complement.bin
-rm -f zinjai.app/Contents/Resources/complement_wrap.bin
-rm -f zinjai.app/Contents/Resources/cbrowser
-rm -f zinjai.app/Contents/Resources/runner.bin
-rm -f zinjai.app/Contents/Resources/mac-terminal-wrapper.bin
-rm -f zinjai.app/Contents/Resources/updatem.bin
+rm -f zinjai.app/Contents/Resources/bin/img_viewer.bin
+rm -f zinjai.app/Contents/Resources/bin/complement.bin
+rm -f zinjai.app/Contents/Resources/bin/complement_wrap.bin
+rm -f zinjai.app/Contents/Resources/bin/cbrowser
+rm -f zinjai.app/Contents/Resources/bin/runner.bin
+rm -f zinjai.app/Contents/Resources/bin/mac-terminal-wrapper.bin
+rm -f zinjai.app/Contents/Resources/bin/updatem.bin
 make -f Makefile.ppc -C zinjai.app/Contents/Resources/src || exit 1
 make -f Makefile.ppc -C zinjai.app/Contents/Resources/src_extras || exit 1
 make -f Makefile.ppc -C zinjai.app/Contents/Resources/parser || exit 1
@@ -93,13 +93,13 @@ dd if=/dev/zero of=zinjai-m32.dmg bs=512k count=84
 mkfs.hfsplus -v ZinjaI zinjai-m32.dmg
 sudo mount -o loop zinjai-m32.dmg mnt || exit 1
 rm -f zinjai.app/Contents/MacOS/zinjai
-rm -f zinjai.app/Contents/Resources/img_viewer.bin
-rm -f zinjai.app/Contents/Resources/complement.bin
-rm -f zinjai.app/Contents/Resources/complement_wrap.bin
-rm -f zinjai.app/Contents/Resources/cbrowser
-rm -f zinjai.app/Contents/Resources/runner.bin
-rm -f zinjai.app/Contents/Resources/mac-terminal-wrapper.bin
-rm -f zinjai.app/Contents/Resources/updatem.bin
+rm -f zinjai.app/Contents/Resources/bin/img_viewer.bin
+rm -f zinjai.app/Contents/Resources/bin/complement.bin
+rm -f zinjai.app/Contents/Resources/bin/complement_wrap.bin
+rm -f zinjai.app/Contents/Resources/bin/cbrowser
+rm -f zinjai.app/Contents/Resources/bin/runner.bin
+rm -f zinjai.app/Contents/Resources/bin/mac-terminal-wrapper.bin
+rm -f zinjai.app/Contents/Resources/bin/updatem.bin
 make -f Makefile.m32 -C zinjai.app/Contents/Resources/src || exit 1
 make -f Makefile.m32 -C zinjai.app/Contents/Resources/src_extras || exit 1
 make -f Makefile.m32 -C zinjai.app/Contents/Resources/parser || exit 1
