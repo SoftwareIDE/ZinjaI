@@ -105,10 +105,12 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 		args=src->exec_args;
 	}
 	if (project) {
-		project_path = project->path;
-		project_bin = DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
-		bin_workdir=DIR_PLUS_FILE(project->path,project->active_configuration->working_folder);
 		temp_dir=DIR_PLUS_FILE(project->path,project->active_configuration->temp_folder);
+		project_path = project->path;
+		project_bin = project->active_configuration->output_file;
+		project_bin.Replace("${TEMP_DIR}",temp_dir);
+		project_bin = DIR_PLUS_FILE(project->path,project_bin);
+		bin_workdir=DIR_PLUS_FILE(project->path,project->active_configuration->working_folder);
 		args=project->active_configuration->args;
 	}
 	if (bin_workdir.EndsWith("\\")||bin_workdir.EndsWith("/")) bin_workdir.RemoveLast();
@@ -120,8 +122,8 @@ mxCustomToolProcess::mxCustomToolProcess(const OneCustomTool &_tool) : tool(_too
 	cmd.Replace("${CURRENT_SOURCE}",current_source);
 	cmd.Replace("${CURRENT_DIR}",current_dir);
 	cmd.Replace("${PROJECT_PATH}",project_path);
-	cmd.Replace("${TEMP_DIR}",temp_dir);
 	cmd.Replace("${PROJECT_BIN}",project_bin);
+	cmd.Replace("${TEMP_DIR}",temp_dir);
 	cmd.Replace("${MINGW_DIR}",current_toolchain.mingw_dir);
 	if (config->Files.browser_command.Len())
 		cmd.Replace("${BROWSER}",config->Files.browser_command);

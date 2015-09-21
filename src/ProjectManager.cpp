@@ -1146,7 +1146,6 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	compile_extra_step *extra_step = only_one?nullptr:active_configuration->extra_steps;
 	current_step=steps_count=0;
 
-	LocalListIterator<project_file_item*> item(&files_sources);
 	wxString full_path;
 	wxDateTime bin_date, youngest_bin(wxDateTime::Now());
 	youngest_bin.SetYear(1900);
@@ -1204,6 +1203,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	for (unsigned int i=0;i<header_dirs_array.GetCount();i++) 
 		header_dirs_array[i]=DIR_PLUS_FILE(path,header_dirs_array[i]);
 	
+	LocalListIterator<project_file_item*> item(&files_sources);
 	compile_step *prev_to_sources=step;
 	wxDateTime now=wxDateTime::Now();
 	while(item.IsValid()) {
@@ -1442,6 +1442,13 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 	delete first_compile_step;
 	first_compile_step = step;
 	
+	// resetear los flags de force_recompile
+	GlobalListIterator<project_file_item*> gitem(&files_all);
+	while(gitem.IsValid()) {
+		gitem->force_recompile = false;
+		gitem.Next();
+	}
+	
 	retval|=relink_exe;
 	
 	return retval;
@@ -1472,7 +1479,7 @@ void ProjectManager::SaveAll(bool save_project) {
 long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_run, project_file_item *item) {
 	compile_and_run->step_label=item->name;
 	compile_and_run->compiling=true;
-	item->force_recompile=false;
+//	item->force_recompile=false;
 	
 	// preparar la linea de comando 
 	
