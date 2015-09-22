@@ -85,6 +85,8 @@ inline bool setFocus(int pid) {
 	// Start with the root window.
 	Display *display = XOpenDisplay(0);
 	
+	if (!display) return false; // it seems to fail sometimes with no apparent reason
+	
 	WindowsMatchingPid match(display, XDefaultRootWindow(display), pid);
 	
 	// Print the result.
