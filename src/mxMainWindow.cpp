@@ -5027,7 +5027,12 @@ void mxMainWindow::UnregisterSource (mxSource * src) {
 }
 
 void mxMainWindow::OnFileSetAsMaster (wxCommandEvent & event) {
-	IF_THERE_IS_SOURCE master_source=CURRENT_SOURCE;
+	IF_THERE_IS_SOURCE {
+		if (master_source==CURRENT_SOURCE)
+			master_source = nullptr;
+		else
+			master_source = CURRENT_SOURCE;
+	};
 }
 
 /**

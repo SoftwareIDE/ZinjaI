@@ -2295,7 +2295,6 @@ wxString mxSource::FindTypeOfByKey(wxString &key, int &pos, bool include_templat
 				if (GetStyleAt(p)!=wxSTC_C_WORD) { // si estamos en el prototipo de la funcion
 					p=FindText(p_from,p_to,key,wxSTC_FIND_WHOLEWORD|wxSTC_FIND_MATCHCASE);
 					if (p!=wxSTC_INVALID_POSITION) { // si es un parametro
-//						p=p_to;
 						p_to=p;
 						int template_level=0; // sino se confunde la , de un map<int,int> con el final del argumento
 						while (p_to>0 && (!II_IS_2(p_to,',','(')||template_level)) {
