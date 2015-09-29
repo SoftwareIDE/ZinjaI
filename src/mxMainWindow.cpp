@@ -2890,15 +2890,15 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 		if (def_fname!=filename) return NewFileFromTemplate(def_fname);
 	}
 	file.Open();
+	long caret_pos = 0;
 	if (file.IsOpened()) {
-		long pos=0;
 		wxString line = file.GetFirstLine();
 		while (line.Left(7)=="// !Z! ") {
 			if (line=="// !Z! Type: C") {
 				source->cpp_or_just_c=false;
 				source->temp_filename.SetExt("c");
 			} else if (line.Left(13)=="// !Z! Caret:") {
-				line.Mid(13).Trim(false).Trim(true).ToLong(&pos);
+				line.Mid(13).Trim(false).Trim(true).ToLong(&caret_pos);
 			} else if (line.Left(15)=="// !Z! Options:") {
 				wxString comp_opts=line.Mid(15).Trim(false).Trim(true);
 				// here we assume Type is before Options
@@ -2911,14 +2911,16 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 			source->AppendText(line+"\n");
 		while (!file.Eof()) 
 			source->AppendText(file.GetNextLine()+"\n");
-		source->MoveCursorTo(pos);
+//		source->MoveCursorTo(pos);
 		file.Close();
 	}
 	source->SetLineNumbers();
 	notebook_sources->AddPage(source, LAST_TITULO ,true, *bitmaps->files.blank);
 	if (!project) source->treeId = AddToProjectTreeSimple(LAST_TITULO,FT_SOURCE);
+	source->MoveCursorTo(0,false); // to avoid start with non-zero vertical scrolling on very short templates
 	source->SetModify(false);
-	source->SetFocus();
+	source->MoveCursorTo(caret_pos,true);
+//	source->SetFocus(); // done in previous line
 	return source;
 }
 
