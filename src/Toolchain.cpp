@@ -169,8 +169,7 @@ void Toolchain::SetPaths() {
 const Toolchain &Toolchain::GetInfo (const wxString &fname) {
 	for(int i=0;i<toolchains_count;i++) { 
 		if (toolchains[i].file==fname) {
-			current_toolchain=toolchains[i];
-			return current_toolchain;
+			return toolchains[i];
 		}
 	}
 	if (fname!=config->Files.toolchain) // if not found, returns default one

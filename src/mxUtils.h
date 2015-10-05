@@ -163,7 +163,7 @@ public:
 	static bool XCopy(wxString src, wxString dst, bool ask=true, bool replace=false);
 	//! Ejecuta los comandos entre acentos de una cadena y los reemplaza por su salida (simi Makefile)
 	static wxString ExecComas(wxString where, wxString line);
-	//! Ejecuta un comando de forma sincrónica y devuelve en una cadena su salida
+	//! Ejecuta un comando de forma sincrónica y devuelve en una cadena su salida (usar mxUT::GetOutput("") para limpiar el cache interno)
 	static wxString GetOutput(wxString command, bool also_error=false, bool use_cache=false);
 	//! Devuelve una cadena convertida a HTML
 	static wxString ToHtml(wxString text, bool full=false);
