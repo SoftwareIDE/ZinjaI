@@ -1,7 +1,6 @@
 
-Cuando compilo con extern tool y autohide panels, mostrar el panel ni bien empieza
 si el panel de compilacion tiene el foco, que con Esc se oculte y vuelva al código
-Que Stop pare también al make!
+Que Stop pare también al make! (lo para, pero si lanzo varios hilos con -j solo para el primero)
 borrar breakpoints que tengan linea 0 al cargarlos
 
 

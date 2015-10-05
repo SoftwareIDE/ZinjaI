@@ -1343,7 +1343,7 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 	if (!project) {
 		if (source->next_source_with_same_file==source) project_tree.treeCtrl->Delete(source->treeId);
 	} else {
-		source->UpdateExtras();
+		source->UpdateExtras(); // done in mxSource's destructor
 	}
 	if (share && share->Exists(source))  {
 		int ans =mxMessageDialog(main_window,LANG(MAINW_ASK_CLOSE_SHARED,"El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?"),source->page_text, mxMD_YES_NO,LANG(MAINW_SHARE_AFTER_CLOSE,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo."),false).ShowModal();

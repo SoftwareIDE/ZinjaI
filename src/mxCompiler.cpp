@@ -184,9 +184,10 @@ DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 		num_warnings=project->warnings.GetCount();
 		compile_and_run->compiling=true;
 		compile_and_run->pid=project->CompileNext(compile_and_run,current); // mandar a compilar el primero
-		if (compile_and_run->pid) // si se puso a compilar algo
+		if (compile_and_run->pid) { // si se puso a compilar algo
+			if (current_toolchain.IsExtern()) main_window->ShowCompilerTreePanel();
 			main_window->StartExecutionStuff(compile_and_run,current);
-		else {
+		} else {
 			main_window->SetStatusText(LANG(MAINW_COMPILATION_INTERRUPTED,"Compilacion interrumpida."));
 			delete compile_and_run;
 		}

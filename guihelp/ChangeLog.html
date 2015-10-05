@@ -7,11 +7,15 @@
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>-->
 
 </UL><BR><B>Release 201510XX</B><BR><UL>
-	<LI>Imp: Se agregó una item en el menú contextual del panel del explorador de archivos para abrir un archivo con la aplicación por defecto para su tipo.</LI>
+	<LI>Imp: Se agregó un item en el menú contextual del panel del explorador de archivos para abrir un archivo con la aplicación por defecto para su tipo.</LI>
+	<LI>Fix: Corregido el problema por el cual no se guardaban correctamente los breakpoints de un proyecto.</LI>
+	<LI>Fix: Se corrigió un problema por el cual se corrompían internamente los paths del toolchain al cancelar el cuadro de opciones de compilación de un proyecto (resultando en un valor nulo para ${MINGW_DIR} y en consecuencia errores de compilación/enlazado).</LI>
+	<LI>Fix: Se corrigió un problema por el cual no se guardaba correctamente la visibilidad del botón para ejecutar Doxygen desde la barra de herramientas.</LI>
+	<LI>Fix: Los nuevos archivos simples desde plantillas ya no aparecen desplazados verticalmente (scroll) si no es necesario.</LI>
 	<LI>Fix: La opción "compilar siempre este fuente" del menú contextual de las pestaña de código ahora también sirve para desactivar esta funcionalidad si el fuente sobre el que se elige ya era el que se compilaba siempre.</LI>
 	<LI>Fix: Ahora se reemplaza correctamente la variable TEMP_DIR si es parte de PROJECT_BIN en el comando de una herramienta personalizada.</LI>
 	<LI>Fix: Se corrigió el error por el cual el menú contextual de la tabla de inspecciones no utilizaba las filas correctas para las acciones del submenu Copiar.</LI>
-	<LI>Fix: Corregido un error que podía provacar un segfault en GNU/Linux al intentar devolver el foco al programa en depuración al continuar ejecutando.</LI>
+	<LI>Fix: Corregido un error que podía provocar un segfault en GNU/Linux al intentar devolver el foco al programa en depuración al continuar ejecutando.</LI>
 	
 </UL><BR><B>Release 20150910</B><BR><UL>
 	<LI>Imp: Se mejoró la forma en que se obtienen los nombres para los argumentos formales de una función generada automáticamente a partir de una llamada.</LI>

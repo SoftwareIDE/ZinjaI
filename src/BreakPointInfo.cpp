@@ -72,8 +72,10 @@ void BreakPointInfo::UpdateLineNumber() {
 void BreakPointInfo::SetSource(mxSource *_source) {
 	if (_source==source) return;
 	if (source==nullptr) { // viene de null, pasa a !null
+		source=_source; // redundante, pero para que funcion SetMarker
 		SetMarker(); // cuando se carga un source
 	} else if (_source==nullptr) { // viene de !null, pasa a null
+//		UpdateLineNumber(); // corregir nro de linea antes de perder la referencia
 		marker_handle=-1;  // cuando se cierra un source
 	} else { // viene de !null, cambia a otro !null
 		// nada, esto pasa cuando se cierra un mxSource que tiene más de una vista

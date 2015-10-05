@@ -254,6 +254,7 @@ mxSource::mxSource (wxWindow *parent, wxString ptext, project_file_item *fitem)
 	
 	if (fitem) {
 		m_extras = &fitem->extras;
+//		m_extras->ToSource(this); // not here, mxSource is still empty!!!
 		m_owns_extras=false;
 		treeId=fitem->item;
 		if (fitem->read_only) SetReadOnlyMode(ROM_ADD_PROJECT);

@@ -294,7 +294,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 						last_file->extras.AddHighlightedLine(l);
 				} else if (key=="breakpoint") {
 					value.ToLong(&l);
-					if (last_file && l>=0) {
+					if (last_file && l>0) {
 						last_breakpoint=new BreakPointInfo(last_file,l);
 					} else last_breakpoint=nullptr;
 				} else if (key=="breakpoint_ignore") {
