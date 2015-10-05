@@ -1,3 +1,10 @@
+
+Cuando compilo con extern tool y autohide panels, mostrar el panel ni bien empieza
+si el panel de compilacion tiene el foco, que con Esc se oculte y vuelva al código
+Que Stop pare también al make!
+borrar breakpoints que tengan linea 0 al cargarlos
+
+
 	* revisar el DIF_FULL_OUTPUT para tablas, y que pasa cuando el arreglo es char*
 
 	* IMPORTANTE: buscar todos los #warning

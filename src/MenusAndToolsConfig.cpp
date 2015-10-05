@@ -263,7 +263,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		EndSubMenu(mnTOOLS);
 		
 		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_LIZARD,"Medir complejidad (lizard)")).Description("Permite analizar la complejidad ciclomática por función.").Icon("lizard.png").EnableIf(ecPROJECT));
-			AddMenuItem(mnTOOLS, myMenuItem("doxy_generate",mxID_TOOLS_LIZARD_RUN,LANG(MENUITEM_TOOLS_LIZARD_RUN,"&Analizar ahora...")).ShortCut("").Icon("lizard_run.png"));
+			AddMenuItem(mnTOOLS, myMenuItem("lizard_run",mxID_TOOLS_LIZARD_RUN,LANG(MENUITEM_TOOLS_LIZARD_RUN,"&Analizar ahora...")).ShortCut("").Icon("lizard_run.png"));
 			AddSeparator(mnTOOLS);
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_DOXY_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra una breve ayuda acerca de la integración de Doxygen en ZinjaI").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
