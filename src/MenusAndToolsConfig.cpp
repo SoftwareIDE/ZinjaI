@@ -288,7 +288,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_WXFB_HELP,LANG(MENUITEM_TOOLS_WXFB_HELP,"A&yuda wxFB...")).Description("Muestra una breve ayuda acerca de la integración de wxFormBuilder en ZinjaI").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
-		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_CPPCHECK,"Análisis Estático (cppcheck)")).Icon("cppcheck.png").EnableIf(ecPROJECT));
+		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_CPPCHECK,"Análisis Estático (cppcheck)")).Icon("cppcheck.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("cppcheck_run",mxID_TOOLS_CPPCHECK_RUN, LANG(MENUITEM_TOOLS_CPPCHECK_RUN,"Iniciar...")).Icon("cppcheck_run.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("cppcheck_config",mxID_TOOLS_CPPCHECK_CONFIG, LANG(MENUITEM_TOOLS_CPPCHECK_CONFIG,"Configurar...")).Icon("cppcheck_config.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("cppcheck_view",mxID_TOOLS_CPPCHECK_VIEW, LANG(MENUITEM_TOOLS_CPPCHECK_VIEW,"Mostrar Panel de Resultados")).Icon("cppcheck_view.png"));

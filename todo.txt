@@ -1,14 +1,14 @@
 
+usar "cppcheck --errorlist --xml --xml-version=2" para los mensajes detallados de los errores?
+
 si el panel de compilacion tiene el foco, que con Esc se oculte y vuelva al código
 Que Stop pare también al make! (lo para, pero si lanzo varios hilos con -j solo para el primero)
-borrar breakpoints que tengan linea 0 al cargarlos
 
 
 	* revisar el DIF_FULL_OUTPUT para tablas, y que pasa cuando el arreglo es char*
 
 	* IMPORTANTE: buscar todos los #warning
-	
-bug: guardar como no le avisa al parser que cambio el nombre de archivo, entonces queda todo dos veces porque el proximo parseo se toma como archivo nuevo?
+
 
 
 bajo: poder guardar y abrir resultados de gprof
