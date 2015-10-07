@@ -8,6 +8,7 @@
 
 </UL><BR><B>Release 201510XX</B><BR><UL>
 	<LI>Imp: Se agregó un item en el menú contextual del panel del explorador de archivos para abrir un archivo con la aplicación por defecto para su tipo.</LI>
+	<LI>Fix: Se corrigió el parseo el grafo de llamadas de gprof para no omitir lineas con columnas vacias (por ejemplo, cuando hay llamadas recursivas).</LI>
 	<LI>Fix: Se permite utilizar CppCheck sobre programas simples (sin proyecto).</LI>
 	<LI>Fix: Corregido el problema por el cual no se guardaban correctamente los breakpoints de un proyecto.</LI>
 	<LI>Fix: Se corrigió un problema por el cual se corrompían internamente los paths del toolchain al cancelar el cuadro de opciones de compilación de un proyecto (resultando en un valor nulo para ${MINGW_DIR} y en consecuencia errores de compilación/enlazado).</LI>

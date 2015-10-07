@@ -21,6 +21,23 @@ struct GprofData {
 			i++;
 		}
 	}
+	void fix(string *v, int m=4) {
+		for(int i=0;i<m-1;i++) { 
+			bool is_ok = true;
+			for(size_t j=0;j<v[i].size();j++) { 
+				if ((v[i][j]<'0'||v[i][j]>'9')&&v[i][j]!='.'&&v[i][j]!='+'&&v[i][j]!='/'&&v[i][j]!='['&&v[i][j]!=']')
+					{ is_ok = false;  break; }
+			}
+			if (!is_ok) {
+				// concatenar desde i hacia adelante (puede haber cortado una funcion en los espacios de los argumentos)
+				for(int j=i+1;j<m;j++)
+					if (!v[j].empty()) { v[i]+=" "; v[i]+=v[j]; }
+				// amontonar los strings no vacios al final
+				for(int n=m-1;n>=0;n--,i--) v[n] = i>=0?v[i]:"";
+				break;
+			}
+		}
+	}
 	struct tm_item {
 		float percent_time,cumulative_seconds,self_seconds,self_s_calls,total_s_calls;
 		int calls;
@@ -94,6 +111,7 @@ struct GprofData {
 					// alguien llama al nodo actual
 					string vals[4];
 					cut(s,vals,4);
+					fix(vals); // corrige cuando hay campos en blanco (llamadas espontanes, sin info, recursivas, etc)
 					if (vals[3].size()) {
 						call_item ci;
 						ci.self=atof(vals[0].c_str());
@@ -112,6 +130,7 @@ struct GprofData {
 					// el nodo actual llama a alguien
 					string vals[4];
 					cut(s,vals,4);
+					fix(vals); // corrige cuando hay campos en blanco (llamadas espontanes, sin info, recursivas, etc)
 					if (vals[3].size()) {
 						call_item ci;
 						ci.self=atof(vals[0].c_str());
