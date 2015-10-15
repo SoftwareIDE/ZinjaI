@@ -1961,6 +1961,8 @@ void ProjectManager::ExportMakefile(wxString make_file, bool exec_comas, wxStrin
 	
 	active_configuration->temp_folder=old_temp_folder;
 	
+	config_analized = false; // avoid reusing this temporal and incomplete configuration
+	
 }
 
 void ProjectManager::Clean() {
@@ -2151,7 +2153,7 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	else
 		linking_options<<" "<<linking_extra;
 
-	/*executable_name = */GetExePath(false,false); // GetExePath ya asigna en executable_name
+	/*executable_name = */GetExePath(false,false,path); // GetExePath ya asigna en executable_name
 	
 	// bibliotecas
 	project_library *lib = active_configuration->libs_to_build;
@@ -2430,12 +2432,14 @@ bool ProjectManager::GenerateDoxyfile(wxString fname) {
 	return true;
 }
 
-wxString ProjectManager::GetExePath(bool short_path, bool refresh_temp_folder) {
-	executable_name=active_configuration->output_file; executable_name.Replace("${TEMP_DIR}",refresh_temp_folder?GetTempFolder():temp_folder);
-	return executable_name = 
-		( short_path
-		? wxFileName(DIR_PLUS_FILE(path,executable_name)).GetShortPath()
-		: wxFileName(DIR_PLUS_FILE(path,executable_name)).GetFullPath() );
+wxString ProjectManager::GetExePath(bool short_path, bool refresh_temp_folder, wxString path) {
+	executable_name=active_configuration->output_file; 
+	executable_name.Replace("${TEMP_DIR}",refresh_temp_folder?GetTempFolder():temp_folder);
+	if (path=="${PROJECT_DIR}") path = this->path;
+	if (!path.IsEmpty()) executable_name = DIR_PLUS_FILE(path,executable_name);
+	return executable_name = ( short_path
+							 ? wxFileName(executable_name).GetShortPath()
+							 : wxFileName(executable_name).GetFullPath() );
 }
 
 wxString ProjectManager::GetPath() {

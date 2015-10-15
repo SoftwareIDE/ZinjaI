@@ -629,7 +629,7 @@ public:
 	wxString GetPath();
 	/// Carga todos los breakpoints del proyecto en gdb
 	void SetBreakpoints();
-	wxString GetExePath(bool shortpath=false, bool refresh_temp_folder=true);
+	wxString GetExePath(bool shortpath=false, bool refresh_temp_folder=true, wxString path="${PROJECT_DIR}");
 	
 	/** @brief Agrega una biblioteca a construir de una configuración **/
 	project_library *AppendLibToBuild(project_configuration *conf);
