@@ -3035,14 +3035,33 @@ extern int qualified_name( LongString *plstr, int *plineno, int *pcharno )
    }
    else if( token( 0 ) == SN_IDENTIFIER && token( 1 ) == '<' )
    {
-      if( plstr )
+      
+		/* ORIGINAL CODE 
+		if( plstr )
       {
          LongStringIdAppend( plstr, ident( 0 ));
          LongStringMyAppend( plstr, "::" );
       }
-
       step( 1 );
-      template_argument_skip( plstr );
+      template_argument_skip( plstr ); */
+		
+		/* ALTERNATIVE VERSION BY ZASKAR, 
+		   TO CONSIDER CONSTRUCTORS WITH EXPLICIT TEMPLATE ARGUMENTS 
+		   template<typename T> class foo { foo<T>(); }; */
+		if( plstr )
+		{
+			LongStringIdAppend( plstr, ident( 0 ));
+		}
+		step(1);
+		if (token(0)=='<') {
+			template_argument_skip( NULL );
+			if (token(0)=='(') {
+				niveau--;
+				return True;
+			}
+		}
+		if( plstr ) LongStringMyAppend( plstr, "::" );
+		
       if( token( 0 ) == SN_CLCL )
       {
          step( 1 );
