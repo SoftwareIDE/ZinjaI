@@ -2871,6 +2871,7 @@ int ProjectManager::GetRequiredVersion() {
 		if (bpi->annotation.Len()) have_breakpoint_annotation=true;
 		bpi.Next();
 	}
+	
 	// compiling and running options
 	for (int i=0;i<configurations_count;i++) {
 		if (configurations[i]->exec_method==EMETHOD_WRAPPER) exec_wrapper=true;
