@@ -115,9 +115,9 @@ define pmap
 	else
 		set $tree = ($arg0)
 		set $i = 0
-		set $node = $tree->_M_t->_M_impl->_M_header->_M_left
-		set $end = $tree->_M_t->_M_impl->_M_header
-		set $tree_size = $tree->_M_t->_M_impl->_M_node_count
+		set $node = $tree._M_t._M_impl._M_header._M_left
+		set $end = $tree._M_t._M_impl._M_header
+		set $tree_size = $tree._M_t._M_impl._M_node_count
 		printf "{"
 		if $argc == 3
 			while $i < $tree_size
@@ -252,9 +252,9 @@ define pset
 	else
 		set $tree = ($arg0)
 		set $i = 0
-		set $node = $tree->_M_t->_M_impl->_M_header->_M_left
-		set $end = $tree->_M_t->_M_impl->_M_header
-		set $tree_size = $tree->_M_t->_M_impl->_M_node_count
+		set $node = $tree._M_t._M_impl._M_header._M_left
+		set $end = $tree._M_t._M_impl._M_header
+		set $tree_size = $tree._M_t._M_impl._M_node_count
 		printf "{"
 		if $argc == 2
 			while $i < $tree_size
