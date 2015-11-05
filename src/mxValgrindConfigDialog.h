@@ -21,7 +21,5 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern mxValgrindConfigDialog *valgrind_config;
-
 #endif
 

@@ -76,6 +76,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	project=this;
 	parser->CleanAll();
 	cppcheck=nullptr;
+	valgrind=nullptr;
 	doxygen=nullptr;
 	wxfb=nullptr;
 	version_required=0;
@@ -165,6 +166,8 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				cppcheck->save_in_project=true;
 			} else if (section=="doxygen" && !doxygen) { 
 				GetDoxygenConfiguration();
+			} else if (section=="valgrind" && !doxygen) { 
+				GetValgrindConfiguration();
 			} else if (section=="wxfb" && !wxfb) { 
 				GetWxfbConfiguration(true);
 			} else if (section=="inspections") { 
@@ -322,6 +325,9 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_BOOL_READ_DN("update_methods",wxfb->update_methods);
 				else CFG_BOOL_READ_DN("dont_show_base_classes_in_goto",wxfb->dont_show_base_classes_in_goto);
 				else CFG_BOOL_READ_DN("set_wxfb_sources_as_readonly",wxfb->set_wxfb_sources_as_readonly);
+			} else if (section=="valgrind") {
+				CFG_GENERIC_READ_DN("arguments",valgrind->arguments);
+				else CFG_GENERIC_READ_DN("suppressions",valgrind->suppressions);
 			} else if (section=="doxygen") {
 				CFG_GENERIC_READ_DN("name",doxygen->name);
 				else CFG_GENERIC_READ_DN("version",doxygen->version);
@@ -592,6 +598,7 @@ ProjectManager::~ProjectManager() {
 	// restaurar los indices de autocompletado
 	code_helper->ReloadIndexes(config->Help.autocomp_indexes);
 	
+	if (valgrind) delete valgrind;
 	if (doxygen) delete doxygen;
 	if (wxfb) delete wxfb;
 	
@@ -845,6 +852,13 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_BOOL_WRITE_DN("update_methods",wxfb->update_methods);
 		CFG_BOOL_WRITE_DN("dont_show_base_classes_in_goto",wxfb->dont_show_base_classes_in_goto);
 		CFG_BOOL_WRITE_DN("set_wxfb_sources_as_readonly",wxfb->set_wxfb_sources_as_readonly);
+	}
+	
+	// configuracion Valgrind
+	if (valgrind && !valgrind->IsEmpty()) {
+		fil.AddLine("[valgrind]");
+		CFG_GENERIC_WRITE_DN("arguments",valgrind->arguments);
+		CFG_GENERIC_WRITE_DN("suppressions",valgrind->suppressions);
 	}
 	
 	// configuracion Doxygen
@@ -3667,6 +3681,11 @@ void ProjectManager::CleanAll ( ) {
 doxygen_configuration * ProjectManager::GetDoxygenConfiguration ( ) {
 	if (!doxygen) doxygen=new doxygen_configuration(project_name);
 	return doxygen;
+}
+
+valgrind_configuration *ProjectManager::GetValgrindConfiguration ( ) {
+	if (!valgrind) valgrind=new valgrind_configuration();
+	return valgrind;
 }
 
 wxfb_configuration * ProjectManager::GetWxfbConfiguration (bool create_activated) {

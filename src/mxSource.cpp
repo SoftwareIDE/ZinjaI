@@ -1122,6 +1122,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 			InsertText(pos++,"\'" );
 		} 
 	}
+	
 	if (config_source.smartIndent && config_source.syntaxEnable) {
 		if (chr=='e') {
 			// si es una 'e', vemos si decia 'else' solo en esa linea y contamos cuantos ifs para atras empezo e indentamos igual que el if correspondiente
@@ -1153,6 +1154,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					if (p>0)
 						SetLineIndentation(GetCurrentLine(),GetLineIndentation(LineFromPosition(p)));
 			}
+			
 		} else if (chr==':') {
 			// si son dos puntos y decia public:, private:, protected:,  default: o case algo: quitamos uno al indentado
 			int s,e=GetCurrentPos(), p=PositionFromLine(GetCurrentLine());
@@ -1176,6 +1178,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 					}
 					SetLineIndentation(GetCurrentLine(),GetLineIndentation(LineFromPosition(e)));
 			}
+			
 		} else if (chr=='#') {
 			int p=GetCurrentPos()-2, l=GetCurrentLine();
 			int e=PositionFromLine(l);
@@ -1184,25 +1187,22 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 				p--;
 			if (e>p)
 				SetLineIndentation(GetCurrentLine(),0);
-//		} else if (chr=='#') {
-//			int p=GetCurrentPos()-1;
-//			Colourise(p,p+1);
-//			if (GetStyleAt(p)==wxSTC_C_PREPROCESSOR)
-//				SetLineIndentation(GetCurrentLine(),0);
+			
 		} else if (chr=='{') {
+			// llave que abre, si está sola en la linea, corregirle el indentado
 			int p=GetCurrentPos()-2, l=GetCurrentLine();
 			int e=PositionFromLine(l);
 			char c;
-			while (e<=p && ((c=GetCharAt(p))==' ' || c=='\t'))
-				p--;
-			if (e>p)  {
+			while (e<=p && ((c=GetCharAt(p))==' ' || c=='\t')) p--;
+			if (e>=p) {
 				char c; int s;
-				II_BACK(e,II_IS_NOTHING_4(e));
-					if (c==')' && (e=BraceMatch(e))!=wxSTC_INVALID_POSITION) {
-					II_BACK(e,II_IS_NOTHING_4(e));
-					SetLineIndentation(l,GetLineIndentation(LineFromPosition(e)));
+				II_BACK(p,II_IS_NOTHING_4(p));
+				if (c==')' && (p=BraceMatch(p))!=wxSTC_INVALID_POSITION) {
+					p = GetStatementStartPos(p-1,true,true,false);
+					CopyIndentation(l,p);
 				}
 			}
+			
 		} else if (chr=='}') {
 			// si es una llave que cierra y esta sola, la colocamos a la altura de la que abre
 			int p=GetCurrentPos(), s=PositionFromLine(GetCurrentLine());
@@ -1368,6 +1368,7 @@ void mxSource::OnCharAdded (wxStyledTextEvent &event) {
 		SetLineIndentation (currentLine, lineInd);
 		wxStyledTextCtrl::GotoPos(GetLineIndentPosition(currentLine));
 	}
+	
 	if (calltip_mode==MXS_CALLTIP && chr==')') {
 		int p=GetCurrentPos()-1;
 		Colourise(p,p+1);

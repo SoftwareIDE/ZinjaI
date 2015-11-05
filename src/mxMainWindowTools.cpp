@@ -180,14 +180,13 @@ void mxMainWindow::OnToolsProjectStatistics(wxCommandEvent &evt) {
 **/
 void mxMainWindow::OnToolsValgrindCommon(bool debug) {
 	if (!config->CheckValgrindPresent()) return;
-	
-	if (!valgrind_config) valgrind_config=new mxValgrindConfigDialog(this);
-	valgrind_config->SetArg("--vgdb-error=0",debug);
-	if (valgrind_config->ShowModal()==0) return;
+	mxValgrindConfigDialog valgrind_config(this);
+	valgrind_config.SetArg("--vgdb-error=0",debug);
+	if (valgrind_config.ShowModal()==0) return;
 	
 	wxString val_file = DIR_PLUS_FILE(config->temp_dir,"valgrind.out");
 	val_file.Replace(" ","\\ ");
-	compiler->valgrind_cmd = config->Files.valgrind_command+" "<<valgrind_config->GetArgs()<<" --log-file="+val_file;
+	compiler->valgrind_cmd = config->Files.valgrind_command+" "<<valgrind_config.GetArgs()<<" --log-file="+val_file;
 	wxCommandEvent event;
 	OnRunRun(event);
 	compiler->valgrind_cmd="";

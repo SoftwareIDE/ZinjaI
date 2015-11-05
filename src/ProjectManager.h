@@ -155,6 +155,15 @@ struct doxygen_configuration {
 };
 
 /** 
+* @brief Configuración para corridas en Valgrind de un proyecto
+**/
+struct valgrind_configuration {
+	wxString arguments; ///< argumentos adicionales para pasarle a valgrind
+	wxString suppressions; ///< archivo de suppressiones
+	bool IsEmpty() const { return arguments.IsEmpty()&&suppressions.IsEmpty(); }
+};
+
+/** 
 * @brief Configuración de la integración con wxFormBuilder para un proyecto
 **/
 struct wxfb_configuration {
@@ -487,8 +496,10 @@ public:
 private:
 	wxfb_configuration *wxfb; ///< configuración de la integración con wxfb (si es nullptr no está activada)
 	doxygen_configuration *doxygen; ///< configuracion para el Doxyfile, nullptr si no esta definido en el proyecto
+	valgrind_configuration *valgrind;
 public:
 	doxygen_configuration* GetDoxygenConfiguration();
+	valgrind_configuration* GetValgrindConfiguration();
 	wxfb_configuration* GetWxfbConfiguration(bool create_activated=true);
 	bool GetWxfbActivated() { return wxfb && wxfb->activate_integration; }
 	project_configuration *active_configuration; ///< puntero a la configuracion activa

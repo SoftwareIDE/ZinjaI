@@ -7,6 +7,7 @@
 #include "ids.h"
 #include "mxSizers.h"
 #include "mxHelpWindow.h"
+#include "ProjectManager.h"
 
 mxValgrindConfigDialog *valgrind_config=nullptr;
 
@@ -44,10 +45,21 @@ mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent
 	bottomSizer->Add(ok_button,sizers->BA5);
 	sizer->Add(bottomSizer,sizers->Right);
 	
+	if (project) {
+		valgrind_configuration *valgrind_config = project->GetValgrindConfiguration();
+		additional_args->SetValue(valgrind_config->arguments);
+		suppressions->SetValue(valgrind_config->suppressions);
+	}
+	
 	SetSizerAndFit(sizer);
 }
 
 void mxValgrindConfigDialog::OnButtonOk (wxCommandEvent & evt) {
+	if (project) {
+		valgrind_configuration *valgrind_config = project->GetValgrindConfiguration();
+		valgrind_config->arguments = additional_args->GetValue();
+		valgrind_config->suppressions = suppressions->GetValue();
+	}
 	EndModal(1);
 }
 
@@ -67,10 +79,9 @@ wxString mxValgrindConfigDialog::GetArgs() {
 	wxString tool = cmb_tool->GetValue();
 	wxString args = "--tool="; args<<tool;
 	if (tool=="memcheck") args<<" --leak-check=full";
-	if (suppressions->GetValue().Len()) 
-		args<<" "<<mxUT::Split(suppressions->GetValue(),"--suppressions=");
-	if (additional_args->GetValue().Len()) 
-		args<<" "<<additional_args->GetValue();
+	if (suppressions->GetValue().Len()) args<<" "<<mxUT::Split(suppressions->GetValue(),"--suppressions=");
+	if (additional_args->GetValue().Len()) args<<" "<<additional_args->GetValue();
+	if (project) mxUT::ParameterReplace(args,"${PROJECT_PATH}",project->path);
 	return args;
 }
 
