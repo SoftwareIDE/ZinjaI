@@ -5296,6 +5296,7 @@ extern int function_argument_declarator_one( Declarator_t Declarator )
       }
       if( t == '=' || t == '+' || t == '-' )
       {
+			if (token(1)=='{') skip_declaration(); else // ZASKAR: para saltear inicializaciones de argumentos por defecto con llaves (cosas como void "foo(Pixel p={1,2,3}, float x);"... saltea el "={1,2,3}")
          skip_expression();
          niveau--;
          return True;

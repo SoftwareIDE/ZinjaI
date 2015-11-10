@@ -990,8 +990,8 @@ void mxSource::UpdateCalltipArgHighlight (int current_pos) {
 		II_FRONT(p, II_SHOULD_IGNORE(p));
 		char c=GetCharAt(p++);
 		if (c==',' && par==0) { cur_arg++; }
-		else if (c=='(' || c=='[') { par++; }
-		else if (c==')' || c==']') { par--; }
+		else if (c=='(' || c=='[' || c=='{') { par++; }
+		else if (c==')' || c==']' || c=='}') { par--; }
 	}
 	calltip->SetArg(cur_arg);
 }
