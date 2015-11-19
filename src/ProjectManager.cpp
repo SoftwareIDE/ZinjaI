@@ -1292,7 +1292,7 @@ bool ProjectManager::PrepareForBuilding(project_file_item *only_one) {
 						DIR_PLUS_FILE(path,lib->filename),lib->objects_list,lib->parsed_extra,&(lib->need_relink)));
 					steps_count++;
 					lib->need_relink=true; // para que sepa el loop que sigue (el del strip_executable)
-					relink_exe=true;
+					if (lib->is_static) relink_exe=true;
 				} else {
 					lib->need_relink=false; // para que sepa el loop que sigue (el del strip_executable)
 					warnings.Add(LANG1(PROJMNGR_LIB_WITHOUT_SOURCES,"La biblioteca \"<{1}>\" no tiene ningun fuente asociado.",lib->libname));
