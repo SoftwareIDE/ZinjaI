@@ -984,7 +984,7 @@ void mxMainWindow::OnToolsInstallComplements(wxCommandEvent &evt) {
 }
 
 void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
-	wxString user_templates_dir=DIR_PLUS_FILE(config->home_dir,"templates");
+	wxString user_templates_dir=DIR_PLUS_FILE(config->config_dir,"templates");
 	if (!wxFileName::DirExists(user_templates_dir)) 
 		wxFileName::Mkdir(user_templates_dir);
 	if (project) {

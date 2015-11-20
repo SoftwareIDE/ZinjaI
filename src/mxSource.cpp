@@ -2034,7 +2034,7 @@ void mxSource::OnPopupMenuInside(wxMouseEvent &evt, bool fix_current_pos) {
 	int p=GetCurrentPos(); int s=GetStyleAt(GetSelectionEnd()-1);
 	wxString key=GetCurrentKeyword(p);
 	if (key.Len()!=0) {
-		if (!key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
+		if (key[0]!='#') mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_SOURCE_GOTO_DEFINITION));
 		if (!STYLE_IS_COMMENT(s) && !STYLE_IS_CONSTANT(s)) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_HELP_CODE),LANG1(SOURCE_POPUP_HELP_ON,"Ayuda sobre \"<{1}>\"...",key));
 		if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS||s==wxSTC_C_DEFAULT) { // no se porque el primer char es default y los demas identifier????
 //			mxUT::AddItemToMenu(&menu,_menu_item_2(mnEDIT,mxID_EDIT_INSERT_HEADER),LANG1(SOURCE_POPUP_INSERT_INCLUDE,"Insertar #incl&ude correspondiente a \"<{1}>\"",key));

@@ -18,7 +18,7 @@ mxRealTimeInspectionEditor::mxRealTimeInspectionEditor(const wxString &expressio
 	SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
 	DebuggerInspection *di;
 	(di = DebuggerInspection::Create(expression,DIF_DONT_USE_HELPER,this,false))->Init();
-	if (!di->GetDbiType()==DIT_VARIABLE_OBJECT) {
+	if (di->GetDbiType()!=DIT_VARIABLE_OBJECT) {
 		mxMessageDialog(main_window,LANG(REALTIMEINSP_ERROR_CREATING_INSPECTION,"Ha ocurrido un error al registrar la inspección"),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
 		Destroy(); return;
 	}

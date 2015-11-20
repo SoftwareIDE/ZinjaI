@@ -1293,7 +1293,7 @@ int mxUT::Unique (wxArrayString &array, bool do_sort) {
 }
 
 wxString mxUT::WichOne(wxString file, wxString dir_name, bool is_file) {
-	return WichOne(file,DIR_PLUS_FILE(config->home_dir,dir_name),DIR_PLUS_FILE(config->zinjai_dir,dir_name),is_file);
+	return WichOne(file,DIR_PLUS_FILE(config->config_dir,dir_name),DIR_PLUS_FILE(config->zinjai_dir,dir_name),is_file);
 }
 
 wxString mxUT::WichOne(wxString file, wxString path1, wxString path2, bool is_file) {
@@ -1308,7 +1308,7 @@ wxString mxUT::WichOne(wxString file, wxString path1, wxString path2, bool is_fi
 
 void mxUT::GetFilesFromBothDirs (wxArrayString & array, wxString dir_name, bool is_file, wxString extra_element) {
 	GetFilesFromDir(array,DIR_PLUS_FILE(config->zinjai_dir,dir_name),is_file);
-	GetFilesFromDir(array,DIR_PLUS_FILE(config->home_dir,dir_name),is_file);
+	GetFilesFromDir(array,DIR_PLUS_FILE(config->config_dir,dir_name),is_file);
 	mxUT::Unique(array,true);
 	if (extra_element.Len()) array.Add(extra_element);
 }

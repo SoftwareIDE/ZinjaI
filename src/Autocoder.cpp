@@ -99,7 +99,7 @@ void Autocoder::Clear() {
 }
 
 bool Autocoder::LoadFromFile(wxString filename) {
-	if (!filename.Len()) filename=DIR_PLUS_FILE(config->home_dir,"autocodes");
+	if (!filename.Len()) filename=DIR_PLUS_FILE(config->config_dir,"autocodes");
 	wxTextFile fil(filename);
 	if (!fil.Exists()) return false;
 	fil.Open(); auto_code ac; wxString name;
@@ -149,7 +149,7 @@ bool Autocoder::LoadFromFile(wxString filename) {
 }
 
 void Autocoder::SaveToFile(wxString filename) {
-	if (!filename.Len()) filename=DIR_PLUS_FILE(config->home_dir,"autocodes");
+	if (!filename.Len()) filename=DIR_PLUS_FILE(config->config_dir,"autocodes");
 	wxTextFile fil(filename);
 	if (fil.Exists())
 		fil.Open();

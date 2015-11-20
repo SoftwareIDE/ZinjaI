@@ -4055,7 +4055,7 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 		LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),
 		"",this);
 	if (!fname.Len()) return;
-	fname=DIR_PLUS_FILE_2(config->home_dir,"autocomp",fname);
+	fname=DIR_PLUS_FILE_2(config->config_dir,"autocomp",fname);
 	if (wxFileName::FileExists(fname)) {
 		if (mxMD_NO==mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE,"El indice ya existe, ¿desea reemplazarlo?"),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_YES_NO).ShowModal()) 
 			return;

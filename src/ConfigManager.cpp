@@ -45,7 +45,7 @@ ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 	zinjai_bin_dir = DIR_PLUS_FILE(zinjai_dir,"bin");
 	zinjai_third_dir = DIR_PLUS_FILE(zinjai_dir,"third");
 	LoadDefaults();
-	er_init(home_dir.char_str());
+	er_init(config_dir.char_str());
 }
 
 void ConfigManager::DoInitialChecks() {
@@ -621,7 +621,7 @@ bool ConfigManager::Save(){
 	fil.AddLine("");
 	
 //	menu_data->SaveShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc")); // se hace en e Ok del mxShortcutsDialog
-	menu_data->SaveToolbarsSettings(DIR_PLUS_FILE(home_dir,"toolbar.ztb"));
+	menu_data->SaveToolbarsSettings(DIR_PLUS_FILE(config_dir,"toolbar.ztb"));
 	
 	fil.Write();
 	fil.Close();
@@ -636,18 +636,16 @@ static void EnsurePathExists(const wxString &path) {
 void ConfigManager::LoadDefaults(){
 
 	// crear el directorio para zinjai si no existe
-#ifdef __WIN32__
-	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),"zinjai");
-#else
-	home_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),".zinjai");
-#endif
-	EnsurePathExists(home_dir);
-	filename = DIR_PLUS_FILE(zinjai_dir,"config.here");
-	if (!wxFileName::FileExists(filename)) 
-		filename = DIR_PLUS_FILE(home_dir,"config");
+	config_dir = "config.here";
+	if (!wxFileName::DirExists(config_dir))
+		config_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),_if_win32("zinjai",".zinjai"));
+	EnsurePathExists(config_dir);
+//	filename = DIR_PLUS_FILE(zinjai_dir,"config.here");
+//	if (!wxFileName::FileExists(filename)) 
+	filename = DIR_PLUS_FILE(config_dir,"config");
 	
 	// establecer valores predeterminados para todas las estructuras
-	Files.temp_dir=DIR_PLUS_FILE(home_dir,"tmp");;
+	Files.temp_dir=DIR_PLUS_FILE(config_dir,"tmp");;
 	Files.skin_dir="imgs";
 //	Files.graphviz_dir="graphviz";
 //	Files.mingw_dir="MinGW";
@@ -687,7 +685,7 @@ void ConfigManager::LoadDefaults(){
 	Files.project_folder=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
 	Files.default_template="default.tpl";
 	Files.default_project="<main>";
-	Files.autocodes_file=DIR_PLUS_FILE(home_dir,"autocodes");
+	Files.autocodes_file=DIR_PLUS_FILE(config_dir,"autocodes");
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
 		Files.last_source[i]="";
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)
@@ -962,7 +960,7 @@ void ConfigManager::FinishiLoading ( ) {
 	
 	// load language translations
 	if (Init.language_file!="spanish") {
-		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(home_dir,"lang_cache").c_str()))
+		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(config_dir,"lang_cache").c_str()))
 			mxMessageDialog(nullptr,"No se pudo cargar el diccionario del idioma seleccionado.\n"
 			"El sistema utilizará el predeterminado (spanish).\n"
 			"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
@@ -970,7 +968,7 @@ void ConfigManager::FinishiLoading ( ) {
 	
 	// load syntax highlighting colors' scheme
 	color_theme::Initialize();
-	if (Init.colour_theme.IsEmpty()) ctheme->Load(DIR_PLUS_FILE(home_dir,"colours.zcs"));
+	if (Init.colour_theme.IsEmpty()) ctheme->Load(DIR_PLUS_FILE(config_dir,"colours.zcs"));
 	else ctheme->Load(mxUT::WichOne(Init.colour_theme,"colours",true));
 	
 	// check if extern tools are present and set some paths
@@ -985,8 +983,8 @@ void ConfigManager::FinishiLoading ( ) {
 			menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
 		delete delayed_config_lines; delayed_config_lines=nullptr;
 	} else { // new way
-		menu_data->LoadShortcutsSettings(DIR_PLUS_FILE(home_dir,"shortcuts.zsc"));
-		menu_data->LoadToolbarsSettings(DIR_PLUS_FILE(home_dir,"toolbar.ztb"));
+		menu_data->LoadShortcutsSettings(DIR_PLUS_FILE(config_dir,"shortcuts.zsc"));
+		menu_data->LoadToolbarsSettings(DIR_PLUS_FILE(config_dir,"toolbar.ztb"));
 	}
 	if (Init.version<20141030) { 
 		menu_data->GetToolbarPosition(MenusAndToolsConfig::tbDEBUG)="t3";

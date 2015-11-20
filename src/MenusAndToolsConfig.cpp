@@ -8,16 +8,6 @@
 #include "DebugManager.h"
 
 MenusAndToolsConfig *menu_data;
-#ifdef __APPLE__
-	#define _if_not_apple(a,b) b
-#else
-	#define _if_not_apple(a,b) a
-#endif
-#ifdef __WIN32__
-	#define _if_win32(a,b) a
-#else
-	#define _if_win32(a,b) b
-#endif
 
 MenusAndToolsConfig::MenusAndToolsConfig () {
 	wx_menu_bar = nullptr;

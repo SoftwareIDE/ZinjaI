@@ -286,7 +286,7 @@ void mxShortcutsDialog::OnOkButton (wxCommandEvent & evt) {
 	
 	for(int i=0;i<actions.GetSize();i++) 
 		actions[i].menu_item->RedefineShortcut(actions[i].text->GetValue());
-	menu_data->SaveShortcutsSettings(DIR_PLUS_FILE(config->home_dir,"shortcuts.zsc"));
+	menu_data->SaveShortcutsSettings(DIR_PLUS_FILE(config->config_dir,"shortcuts.zsc"));
 	
 	menu_data->CreateMenues();
 	EndModal(1);

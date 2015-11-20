@@ -200,7 +200,7 @@ void mxColoursEditor::OnClose (wxCloseEvent & evt) {
 
 void mxColoursEditor::OnButtonOk (wxCommandEvent & evt) {
 	if (combo->GetSelection()==int(combo->GetCount())-1) {
-		ctheme->Save(DIR_PLUS_FILE(config->home_dir,"colours.zcs"));
+		ctheme->Save(DIR_PLUS_FILE(config->config_dir,"colours.zcs"));
 		config->Init.colour_theme="";
 	} else {
 		config->Init.colour_theme=combo->GetString(combo->GetSelection());
@@ -512,7 +512,7 @@ void mxColoursEditor::OnSave (wxCommandEvent & evt) {
 	wxString fname=wxGetTextFromUser(LANG(COLOURS_ESCHEME,"Esquema:"),LANG(GENERAL_SAVE,"Guardar"),"custom_color_scheme", this);
 	if (fname.Len()) {
 		if (!fname.Upper().EndsWith(".ZCS")) fname<<".zcs";
-		ctheme->Save(DIR_PLUS_FILE_2(config->home_dir,"colours",fname));
+		ctheme->Save(DIR_PLUS_FILE_2(config->config_dir,"colours",fname));
 #ifdef __WIN32__
 		bool os_case=false;
 #else

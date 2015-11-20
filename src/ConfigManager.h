@@ -210,7 +210,7 @@ struct cfgCols {
 class ConfigManager {
 public:
 	wxString filename; ///< zinjai_dir+"/config.here" if exists, home_dir+"/config" by default
-	wxString home_dir; ///< path for user's settings (~/.zinjai)
+	wxString config_dir; ///< path for user's settings (zinjai_dir+"/config.here" if exists, or ~/.zinjai by default)
 	wxString zinjai_dir; ///< zinjai's installation path
 	wxString zinjai_bin_dir; ///< zinjai's own binaries path (zinjai_dir+"/bin")
 	wxString zinjai_third_dir; ///< zinjai's third-part binaries path (zinjai_dir+"/third")

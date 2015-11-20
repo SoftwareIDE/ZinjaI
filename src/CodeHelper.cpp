@@ -1109,7 +1109,7 @@ void CodeHelper::AddReservedWords(wxString &typed/*, int max_str_dist*/) {
 }
 
 bool CodeHelper::GenerateAutocompletionIndex(wxString path, wxString filename) {
-	wxString autocomp_dir = DIR_PLUS_FILE(config->home_dir,"autocomp");
+	wxString autocomp_dir = DIR_PLUS_FILE(config->config_dir,"autocomp");
 	if (!wxFileName::DirExists(autocomp_dir)) wxFileName::Mkdir(autocomp_dir);
 	wxFFile idx(DIR_PLUS_FILE(autocomp_dir,filename),_T("w+"));
 	if (!idx.IsOpened()) 

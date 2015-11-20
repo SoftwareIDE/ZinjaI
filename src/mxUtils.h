@@ -9,20 +9,32 @@
 #ifndef MXUTILS_H
 #define MXUTILS_H
 
+#include <map>
 #include <wx/string.h>
 #include <wx/filename.h>
 #include <wx/treebase.h>
 
-#ifndef __WIN32__
-#define WILDCARD_SOURCE "*.cpp;*.c;*.c++;*.cxx;*.CPP;*.C;*.C++;*.CXX;*.cc;*.CC"
-#define WILDCARD_HEADER "*.h;*.hpp;*.hxx;*.H;*.HPP;*.HXX;*.hh;*.HH"
-#define WILDCARD_PROJECT "*.zpr;*.ZPR"
-#define WILDCARD_WXFB "*.fbp;*.FBP"
+#ifdef __APPLE__
+#	define _if_not_apple(a,b) b
 #else
-#define WILDCARD_SOURCE "*.cpp;*.c;*.c++;*.cxx;*.cc"
-#define WILDCARD_HEADER "*.h;*.hpp;*.hxx;*.hh"
-#define WILDCARD_PROJECT "*.zpr"
-#define WILDCARD_WXFB "*.fbp"
+#	define _if_not_apple(a,b) a
+#endif
+#ifdef __WIN32__
+#	define _if_win32(a,b) a
+#else
+#	define _if_win32(a,b) b
+#endif
+
+#ifndef __WIN32__
+#	define WILDCARD_SOURCE "*.cpp;*.c;*.c++;*.cxx;*.CPP;*.C;*.C++;*.CXX;*.cc;*.CC"
+#	define WILDCARD_HEADER "*.h;*.hpp;*.hxx;*.H;*.HPP;*.HXX;*.hh;*.HH"
+#	define WILDCARD_PROJECT "*.zpr;*.ZPR"
+#	define WILDCARD_WXFB "*.fbp;*.FBP"
+#else
+#	define WILDCARD_SOURCE "*.cpp;*.c;*.c++;*.cxx;*.cc"
+#	define WILDCARD_HEADER "*.h;*.hpp;*.hxx;*.hh"
+#	define WILDCARD_PROJECT "*.zpr"
+#	define WILDCARD_WXFB "*.fbp"
 #endif
 #define WILDCARD_CPP WILDCARD_SOURCE";"WILDCARD_HEADER
 #define WILDCARD_CPP_EXT WILDCARD_SOURCE";"WILDCARD_HEADER";"WILDCARD_PROJECT
@@ -30,7 +42,7 @@
 #include "enums.h"
 #include "Language.h"
 #include "Cpp11.h"
-#include <map>
+
 
 class wxBoxSizer;
 class wxTextCtrl;
