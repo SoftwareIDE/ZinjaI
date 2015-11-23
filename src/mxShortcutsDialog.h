@@ -13,7 +13,7 @@ class wxButton;
 class mxShortcutsDialog : public wxDialog {
 	wxSizer *sizer;
 	struct entry {
-		int id;
+//		int id;
 		MenusAndToolsConfig::myMenuItem *menu_item;
 		wxString search_text;
 		wxStaticText *label;

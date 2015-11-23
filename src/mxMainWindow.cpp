@@ -4263,11 +4263,25 @@ void mxMainWindow::OnKey(wxKeyEvent &evt) {
 }
 
 void mxMainWindow::OnProjectTreeProperties (wxCommandEvent &event) {
-	(new mxSourceProperties(project->GetNameFromItem(project_tree.selected_item)))->Show();
+	wxString fname;
+	if (project_tree.selected_item.IsOk()) {
+		fname = project->GetNameFromItem(project_tree.selected_item);
+	} else {
+		IF_THERE_ISNT_SOURCE return;
+		fname = CURRENT_SOURCE->source_filename.GetFullPath();
+	}
+	(new mxSourceProperties(fname))->Show();
 }
 
 void mxMainWindow::OnProjectTreeOpenFolder (wxCommandEvent &event) {
-	mxUT::OpenFolder(wxFileName(project->GetNameFromItem(project_tree.selected_item)).GetPath());
+	wxString path;
+	if (project_tree.selected_item.IsOk()) {
+		path = wxFileName(project->GetNameFromItem(project_tree.selected_item)).GetPath();
+	} else {
+		IF_THERE_ISNT_SOURCE return;
+		fname = CURRENT_SOURCE->source_filename.GetPath();
+	}
+	mxUT::OpenFolder(path);
 }
 
 void mxMainWindow::OnFileOpenFolder(wxCommandEvent &event) {
