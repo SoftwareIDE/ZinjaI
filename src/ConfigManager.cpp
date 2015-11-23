@@ -682,7 +682,7 @@ void ConfigManager::LoadDefaults(){
 	Files.doxygen_command="doxygen";
 	Files.browser_command="firefox";
 #endif
-	Files.project_folder=DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
+	Files.project_folder = (config_dir=="config.here")? "projects" : DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
 	Files.default_template="default.tpl";
 	Files.default_project="<main>";
 	Files.autocodes_file=DIR_PLUS_FILE(config_dir,"autocodes");

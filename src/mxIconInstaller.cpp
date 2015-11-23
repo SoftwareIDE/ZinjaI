@@ -53,7 +53,7 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(nullptr,wxID_ANY,LANG(
 	
 	SetSizerAndFit(sizer);
 	
-	Show(); desktop->SetFocus();
+	Show(); ok_button->SetFocus();
 	
 }
 

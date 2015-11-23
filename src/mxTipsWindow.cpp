@@ -116,7 +116,7 @@ mxTipsWindow::mxTipsWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 	SetSizerAndFit(mySizer);
 
 	tooltip->SetFocus();
-	Show();
+	Show(); close_button->SetFocus();
 	Raise();
 }
 
