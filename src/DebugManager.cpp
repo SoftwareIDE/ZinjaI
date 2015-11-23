@@ -715,8 +715,9 @@ bool DebugManager::UpdateBacktrace(bool and_threadlist, bool was_running) {
 	if (!GetValueFromAns(SendCommand("-stack-info-depth ",BACKTRACE_SIZE),"depth",true).ToLong(&current_stack.depth)) current_stack.depth=0;
 	current_stack.frames = current_stack.depth>0?SendCommand("-stack-list-frames 0 ",current_stack.depth-1):"";
 	
-	UpdateBacktrace(current_stack,true);
+	bool retval = UpdateBacktrace(current_stack,true);
 	if (was_running) for(int i=0;i<backtrace_consumers.GetSize();i++) backtrace_consumers[i]->OnBacktraceUpdated(was_running);
+	return retval;
 }
 	
 
