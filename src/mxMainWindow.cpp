@@ -4279,7 +4279,7 @@ void mxMainWindow::OnProjectTreeOpenFolder (wxCommandEvent &event) {
 		path = wxFileName(project->GetNameFromItem(project_tree.selected_item)).GetPath();
 	} else {
 		IF_THERE_ISNT_SOURCE return;
-		fname = CURRENT_SOURCE->source_filename.GetPath();
+		path = CURRENT_SOURCE->source_filename.GetPath();
 	}
 	mxUT::OpenFolder(path);
 }
