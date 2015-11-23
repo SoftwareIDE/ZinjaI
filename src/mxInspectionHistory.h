@@ -1,16 +1,13 @@
 #ifndef MXINSPECTIONHISTORY_H
 #define MXINSPECTIONHISTORY_H
 #include <wx/listbox.h>
-//#include <wx/panel.h>
 #include "Inspection.h"
-
-//class wxListBox;
 
 class mxInspectionHistory : public wxListBox, public myDIEventHandler, public myDIGlobalEventHandler {
 private:
-	wxListBox *lista;
 	DebuggerInspection *di;
 	wxString last_value;
+	enum { LM_Never, LM_Change, LM_Always };
 	int log_mode;
 public:
 	mxInspectionHistory(wxString expression, bool is_frameless);

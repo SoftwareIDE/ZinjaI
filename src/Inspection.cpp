@@ -117,7 +117,7 @@ void DebuggerInspection::ErrorOnEvaluation() {
 								"ejemplo cuando involucra la sobrecarga de un operador) y esta ejecución\n"
 								"se haya interrumpido por un error o por una señal. En ese caso, el stack\n"
 								"puede haber cambiado (ver trazado inverso)."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
-	debug->UpdateBacktrace(true,false);
+	debug->UpdateBacktrace(false);
 }
 
 bool DebuggerInspection::Break(SingleList<DebuggerInspection*> &children, bool skip_visibility_groups, bool recursive_on_inheritance, bool improve_children_expressions) {

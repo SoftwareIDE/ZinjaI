@@ -44,7 +44,8 @@ DebugManager::DebugManager() {
 	backtrace_shows_args=true;
 	status = DBGST_NULL;
 	current_handle = -1;
-	stack_depth = -1;
+	prev_stack.clear();
+	current_stack.clear();
 //	inspections_count = 0;
 //	backtrace_visible = false;
 	threadlist_visible = false;
@@ -319,7 +320,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 		}
 		while (!ans.Contains("*stopped")) ans=WaitAnswer();
 		SetStateText(status_message);
-		UpdateBacktrace();
+		UpdateBacktrace(true,true);
 		DebuggerInspection::OnDebugPause();
 //		long line;
 //		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
@@ -397,7 +398,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 //		SendCommand(_T(BACKTRACE_MACRO));
 		main_window->PrepareGuiForDebugging(gui_is_prepared=true);
 		// mostrar el backtrace y marcar el punto donde corto
-		UpdateBacktrace();
+		UpdateBacktrace(true,true);
 		DebuggerInspection::OnDebugPause();
 //		long line;
 //		main_window->backtrace_ctrl->GetCellValue(0,BG_COL_LINE).ToLong(&line);
@@ -538,7 +539,7 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 			} else 
 				state_text=LANG(DEBUG_STATUS_FUNCTION_ENDED,"La funcion ha finalizado.");
 		} else if (how==_T("end-stepping-range")) {
-			if (auto_step) { UpdateBacktrace(); _aux_repeat_step; }
+			if (auto_step) { UpdateBacktrace(true,true); _aux_repeat_step; }
 			mark = mxSTC_MARK_EXECPOINT;
 			state_text = LANG(DEBUG_STATUS_STEP_DONE,"Paso avanzado");
 		} else if (how==_T("exited-normally") || how==_T("exited")) {
@@ -581,7 +582,7 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 //				StepIn();
 //			else {
 //				stepping_in=false;
-				UpdateBacktrace();
+				UpdateBacktrace(true,true);
 				UpdateInspections();
 //			}
 		} else {
@@ -704,27 +705,38 @@ void DebugManager::SetBacktraceShowsArgs(bool show) {
 	UpdateBacktrace(false,false);
 }
 
-bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
+bool DebugManager::UpdateBacktrace(bool and_threadlist, bool was_running) {
 	if (and_threadlist && threadlist_visible) UpdateThreads();
+	if (waiting || !debugging) return false;
+	
+	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion V2 
+	// ya no se usan "direcciones", sino que simplemente se numeran desde el punto de entrada para "arriba"
+	prev_stack = current_stack;
+	if (!GetValueFromAns(SendCommand("-stack-info-depth ",BACKTRACE_SIZE),"depth",true).ToLong(&current_stack.depth)) current_stack.depth=0;
+	current_stack.frames = current_stack.depth>0?SendCommand("-stack-list-frames 0 ",current_stack.depth-1):"";
+	
+	UpdateBacktrace(current_stack,true);
+	if (was_running) for(int i=0;i<backtrace_consumers.GetSize();i++) backtrace_consumers[i]->OnBacktraceUpdated(was_running);
+}
+	
+
+bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
+
+	#warning EVITAR ACTUALIZAR INSPECCIONES SI NO IS_CURRENT
+	
 #ifdef __WIN32__
 	static wxString sep="\\",wrong_sep="/";
 #else
 	static wxString sep="/",wrong_sep="\\";
 #endif
-	if (waiting || !debugging) return false;
+	
+	int last_stack_depth = stack.depth>BACKTRACE_SIZE?BACKTRACE_SIZE:stack.depth; 
+	current_stack.depth = stack.depth;
+	
 	main_window->backtrace_ctrl->BeginBatch();
-	
-	int last_stack_depth = stack_depth>BACKTRACE_SIZE?BACKTRACE_SIZE:stack_depth; 
-	
-	// averiguar las direcciones de cada frame, para saber donde esta cada inspeccion V2 
-	// ya no se usan "direcciones", sino que simplemente se numeran desde el punto de entrada para "arriba"
-	if (!GetValueFromAns(SendCommand("-stack-info-depth ",BACKTRACE_SIZE),"depth",true).ToLong(&stack_depth)) stack_depth=0;
-	
-	wxString frames = stack_depth>0?SendCommand("-stack-list-frames 0 ",stack_depth-1):"";
-	
-	const wxChar * chfr = frames.c_str();
+	const wxChar * chfr = stack.frames.c_str();
 	// to_select* es para marcar el primer frame que tenga info de depuracion
-	int i=frames.Find("stack=");
+	int i = stack.frames.Find("stack=");
 	if (i==wxNOT_FOUND) {
 		current_frame_id=-1;
 		for (int c=0;c<last_stack_depth;c++) {
@@ -734,13 +746,13 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 		main_window->backtrace_ctrl->EndBatch();
 		return false;
 	} else i+=7; 
-	int cant_levels=0, to_select_level=-1, sll=frames.Len();
+	int cant_levels=0, to_select_level=-1, sll=stack.frames.Len();
 	while (cant_levels<BACKTRACE_SIZE) {
 		while (i<sll && chfr[i]!='{') i++;
 		if (i==sll) break;
 		int p=i+1;
 		while (chfr[i]!='}') { i++; if (chfr[i]=='\''||chfr[i]=='\"') GdbParse_SkipString(chfr,i,sll); }
-		wxString s(frames.SubString(p,i-1));
+		wxString s(stack.frames.SubString(p,i-1));
 #ifdef _ZINJAI_DEBUG
 		if (GetValueFromAns(s,"level",true)!=(wxString()<<(cant_levels)))
 			cerr<<"ERROR: DebugManager::Backtrace  wrong frame level!!!"<<endl;
@@ -771,89 +783,97 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 	}
 	
 	// completar la columna de argumentos si es que está visible
-	if (backtrace_shows_args) { 
-		debug->SetFullOutput(false);
-		wxString args ,args_list = cant_levels?SendCommand("-stack-list-arguments 1 0 ",cant_levels-1):"";
-		const wxChar * chag = args_list.c_str();
-	//cerr<<"CHAG="<<endl<<chag<<endl<<endl;
-		i=args_list.Find("stack-args=");
-		if (i==wxNOT_FOUND) {
-			for (int c=0;c<last_stack_depth;c++)
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,LANG(BACKTRACE_NO_ARGUMENTS,"<<Imposible determinar argumentos>>"));
-			main_window->backtrace_ctrl->EndBatch();
-		} else {
-			bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
-			i+=12;
+	if (backtrace_shows_args) {
+		
+		if (!is_current) { // history mode
 			for (int c=0;c<cant_levels;c++) {
-				// chag+i = frame={level="0",args={{name="...
-				while (chag[i]!='[' && chag[i]!='{') {
+				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,"???");
+			}
+		} else {
+		
+			debug->SetFullOutput(false);
+			wxString args ,args_list = cant_levels?SendCommand("-stack-list-arguments 1 0 ",cant_levels-1):"";
+			const wxChar * chag = args_list.c_str();
+		//cerr<<"CHAG="<<endl<<chag<<endl<<endl;
+			i=args_list.Find("stack-args=");
+			if (i==wxNOT_FOUND) {
+				for (int c=0;c<last_stack_depth;c++)
+					main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,LANG(BACKTRACE_NO_ARGUMENTS,"<<Imposible determinar argumentos>>"));
+				main_window->backtrace_ctrl->EndBatch();
+			} else {
+				bool comillas = false, cm_dtype=false; //cm_dtype indica el tipo de comillas en que estamos, inicializar en false es solo para evitar el warning
+				i+=12;
+				for (int c=0;c<cant_levels;c++) {
+					// chag+i = frame={level="0",args={{name="...
+					while (chag[i]!='[' && chag[i]!='{') {
+						if (!chag[i]) break;
+						i++; 
+					}
 					if (!chag[i]) break;
-					i++; 
-				}
-				if (!chag[i]) break;
-				int p=++i, arglev=0;
-				// chag+i = level="0",args={{name="...
-				while ((chag[i]!=']' && chag[i]!='}') || comillas || arglev>0) {
-					if (comillas) {
-						if (cm_dtype && chag[i]=='\"') 
-							comillas=false;
-						else if (!cm_dtype && chag[i]=='\'') 
-							comillas=false;
-						else if (chag[i]=='\\') i++;
-					} else {
-						if (chag[i]=='\"' || chag[i]=='\'')
-							{ comillas=true; cm_dtype=(chag[i]=='\"'); }
-						else if (!comillas && (chag[i]=='{' || chag[i]=='['))
-							arglev++;
-						else if (!comillas && (chag[i]==']' || chag[i]=='}'))
-							arglev--;
-						else if (chag[i]=='\\') i++;
-					}
-					i++;
-				}
-				wxString s(args_list.SubString(p,i-1));
-				wxString args, sub;
-				int j=0, l=s.Len();
-				const wxChar * choa = s.c_str();
-				// choa+j = level="0",args={{name="...
-				while (j<l && choa[j]!='{' && choa[j]!='[')	j++; j++;
-				// choa+j = {name="...
-				while (j<l) {
-					while (j<l && choa[j]!='{' && choa[j]!='[')
-						j++;
-					if (j==l)
-						break;
-					p=++j;
-					arglev=0; comillas=false;
-					while (choa[j]!='}' || comillas || arglev>0) {
+					int p=++i, arglev=0;
+					// chag+i = level="0",args={{name="...
+					while ((chag[i]!=']' && chag[i]!='}') || comillas || arglev>0) {
 						if (comillas) {
-							if (cm_dtype && choa[j]=='\"') 
+							if (cm_dtype && chag[i]=='\"') 
 								comillas=false;
-							else if (!cm_dtype && choa[j]=='\'') 
+							else if (!cm_dtype && chag[i]=='\'') 
 								comillas=false;
-							else if (choa[j]=='\\') j++;
+							else if (chag[i]=='\\') i++;
 						} else {
-							if (choa[j]=='\"' || choa[j]=='\'')
-							{ comillas=true; cm_dtype=(choa[j]=='\"'); }
-							else if (choa[j]=='{' || choa[j]=='[')
+							if (chag[i]=='\"' || chag[i]=='\'')
+								{ comillas=true; cm_dtype=(chag[i]=='\"'); }
+							else if (!comillas && (chag[i]=='{' || chag[i]=='['))
 								arglev++;
-							else if (choa[j]==']' || choa[j]=='}')
+							else if (!comillas && (chag[i]==']' || chag[i]=='}'))
 								arglev--;
-							else if (choa[j]=='\\') j++;
+							else if (chag[i]=='\\') i++;
 						}
-						j++;
+						i++;
 					}
-					sub=s.SubString(p,j-1);
-					if (args.Len()) args<<", ";
-					args<<GetValueFromAns(sub,"name",true)<<"="<<GetValueFromAns(sub,"value",true,true);
-				}
-				main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,args);
-			}	
+					wxString s(args_list.SubString(p,i-1));
+					wxString args, sub;
+					int j=0, l=s.Len();
+					const wxChar * choa = s.c_str();
+					// choa+j = level="0",args={{name="...
+					while (j<l && choa[j]!='{' && choa[j]!='[')	j++; j++;
+					// choa+j = {name="...
+					while (j<l) {
+						while (j<l && choa[j]!='{' && choa[j]!='[')
+							j++;
+						if (j==l)
+							break;
+						p=++j;
+						arglev=0; comillas=false;
+						while (choa[j]!='}' || comillas || arglev>0) {
+							if (comillas) {
+								if (cm_dtype && choa[j]=='\"') 
+									comillas=false;
+								else if (!cm_dtype && choa[j]=='\'') 
+									comillas=false;
+								else if (choa[j]=='\\') j++;
+							} else {
+								if (choa[j]=='\"' || choa[j]=='\'')
+								{ comillas=true; cm_dtype=(choa[j]=='\"'); }
+								else if (choa[j]=='{' || choa[j]=='[')
+									arglev++;
+								else if (choa[j]==']' || choa[j]=='}')
+									arglev--;
+								else if (choa[j]=='\\') j++;
+							}
+							j++;
+						}
+						sub=s.SubString(p,j-1);
+						if (args.Len()) args<<", ";
+						args<<GetValueFromAns(sub,"name",true)<<"="<<GetValueFromAns(sub,"value",true,true);
+					}
+					main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,args);
+				}	
+			}
 		}
 	}
 	
 	// "limpiar" los renglones que sobran
-	for (int c=stack_depth; c<last_stack_depth; c++) {
+	for (int c=current_stack.depth; c<last_stack_depth; c++) {
 		for (int i=0;i<BG_COLS_COUNT;i++)
 			main_window->backtrace_ctrl->SetCellValue(c,i,"");
 	}
@@ -864,7 +884,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 		SelectFrame(-1,to_select_level);
 		wxString file=main_window->backtrace_ctrl->GetCellValue(to_select_level,BG_COL_FILE);
 		wxString sline=main_window->backtrace_ctrl->GetCellValue(to_select_level,BG_COL_LINE);
-		long line=0; if (sline.ToLong(&line)) debug->MarkCurrentPoint(file,line,to_select_level>0?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT);
+		long line=0; if (sline.ToLong(&line)) debug->MarkCurrentPoint(file,line,is_current?(to_select_level>0?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT):mxSTC_MARK_HISTORY);
 	} else {
 		main_window->backtrace_ctrl->SelectRow(0);
 		current_frame_id = GetFrameID(0);
@@ -1270,12 +1290,12 @@ void DebugManager::SetStateText(wxString text, bool refresh) {
 
 
 void DebugManager::BacktraceClean() {
-	if (stack_depth>BACKTRACE_SIZE) stack_depth=BACKTRACE_SIZE;
-	for(int c=0;c<stack_depth;c++) {
+	if (current_stack.depth>BACKTRACE_SIZE) current_stack.depth=BACKTRACE_SIZE;
+	for(int c=0;c<current_stack.depth;c++) {
 		for (int i=0;i<BG_COLS_COUNT;i++)
 			main_window->backtrace_ctrl->SetCellValue(c,i,"");
 	}
-	stack_depth = 0;
+	current_stack.depth = 0;
 }
 
 /**
@@ -1320,7 +1340,7 @@ bool DebugManager::Jump(wxString fname, int line) {
 		wxString ans=SendCommand("-gdb-set $pc=",adr);
 		if (ans.SubString(1,5)!="error") {
 			MarkCurrentPoint(fname,line+1,mxSTC_MARK_EXECPOINT);
-			UpdateBacktrace(true,false);
+			UpdateBacktrace(false,true);
 			running = false;
 			return true;
 		}
@@ -1370,7 +1390,7 @@ bool DebugManager::Return(wxString what) {
 	long fline = -1;
 	line.ToLong(&fline);
 	MarkCurrentPoint(fname,fline,mxSTC_MARK_EXECPOINT);
-	UpdateBacktrace(true,false);
+	UpdateBacktrace(false,true);
 	UpdateInspections();
 	return true;
 }
@@ -1393,6 +1413,7 @@ void DebugManager::ProcessKilled() {
 	wxCommandEvent evt;
 	if (gui_is_prepared) main_window->PrepareGuiForDebugging(false);
 	DebuggerInspection::OnDebugStop();
+	for(int i=0;i<backtrace_consumers.GetSize();i++) backtrace_consumers[i]->OnDebugStop();
 }
 
 #ifndef __WIN32__
@@ -1887,6 +1908,7 @@ void DebugManager::Start_ConfigureGdb ( ) {
 	SetBlacklist();
 	// reiniciar sistema de inspecciones
 	DebuggerInspection::OnDebugStart();
+	for(int i=0;i<backtrace_consumers.GetSize();i++) backtrace_consumers[i]->OnDebugStart();
 }
 
 void DebugManager::Initialize() {
@@ -1947,5 +1969,30 @@ void DebugManager::Patch ( ) {
 
 bool DebugManager::ToggleAutoStep () {
 	return (auto_step = !auto_step);
+}
+
+myBTEventHandler::myBTEventHandler ( ) {
+	debug->backtrace_consumers.Add(this); 
+	registered=true;
+}
+
+void myBTEventHandler::UnRegister ( ) {
+	if (!registered) return;
+	int pos = debug->backtrace_consumers.Find(this); 
+	if (pos!=debug->backtrace_consumers.NotFound())
+		debug->backtrace_consumers.Remove(pos);
+	registered=false;
+}
+
+myBTEventHandler::~myBTEventHandler ( ) {
+	UnRegister();
+}
+
+wxString DebugManager::GetCurrentLocation ( ) {
+	return current_source ? ( wxString() 
+		<< current_source->source_filename.GetFullName() 
+		<< " : " 
+		<< current_source->MarkerLineFromHandle(current_handle)
+							 ) : "<<null>>";
 }
 

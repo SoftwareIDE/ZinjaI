@@ -21,6 +21,9 @@ public:
 	void SelectFrame(int r);
 	void OnAddFunctionToBlackList(wxCommandEvent &event);
 	void OnAddFileToBlackList(wxCommandEvent &event);
+	void OnUpdate(wxCommandEvent &event);
+	void OnHistory(wxCommandEvent &event);
+	void OnPrevious(wxCommandEvent &event);
 	void AddToBlackList(const wxString &type,const wxString &what);
 	void SetCellValue(int r, int c, const wxString &value);
 	void OnColumnHideOrUnhide(int col, bool visible);

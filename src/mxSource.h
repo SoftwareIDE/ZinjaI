@@ -33,6 +33,7 @@ enum MXS_MARKER {
 	mxSTC_MARK_BAD_BREAKPOINT,	///< marcar los puntos de interrupcion
 	mxSTC_MARK_EXECPOINT,	///< indicar donde esta actualmente la ejecucion
 	mxSTC_MARK_FUNCCALL,	///< indicar donde quedo una funcion a la espera de retornar de una llamada a otra
+	mxSTC_MARK_HISTORY,	///< indicar donde quedo una funcion a la espera de retornar de una llamada a otra
 	mxSTC_MARK_STOP,		///< indicar donde se interrumpio la ejecucion (por ej, por SegFault)
 	mxSTC_MARK_DIFF_ADD, mxSTC_MARK_DIFF_CHANGE, mxSTC_MARK_DIFF_DEL, mxSTC_MARK_DIFF_NONE
 };

@@ -3337,7 +3337,7 @@ void mxMainWindow::OnDebugBacktrace ( wxCommandEvent &event ) {
 		aui_manager.Update();
 	}
 //	debug->backtrace_visible=true;
-	debug->UpdateBacktrace(false,false);
+	debug->UpdateBacktrace(false);
 	backtrace_ctrl->SetFocus();
 //	backtrace_ctrl->SelectRow(0);
 }

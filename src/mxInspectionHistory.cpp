@@ -4,6 +4,9 @@
 #include "mxSizers.h"
 #include "ids.h"
 
+// por si mañana quiero que esta clase herede de un panel y contenga la lista
+#define lista this 
+
 BEGIN_EVENT_TABLE(mxInspectionHistory,wxListBox)
 	EVT_MENU(mxID_INSPHISTORY_LOG_ALL,mxInspectionHistory::OnLogAll)
 	EVT_MENU(mxID_INSPHISTORY_LOG_NONE,mxInspectionHistory::OnLogNone)
@@ -15,16 +18,10 @@ BEGIN_EVENT_TABLE(mxInspectionHistory,wxListBox)
 END_EVENT_TABLE()
 	
 mxInspectionHistory::mxInspectionHistory(wxString expression, bool is_frameless) 
-	: wxListBox(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr, wxLB_MULTIPLE|wxLB_EXTENDED), lista(this)
-//	: wxPanel(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize) 
+	: wxListBox(main_window,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr, wxLB_MULTIPLE|wxLB_EXTENDED)
 {
-//	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-//	lista = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,0,nullptr, wxLB_MULTIPLE|wxLB_EXTENDED);
-//	lista->Connect(wxID_ANY,wxEVT_RIGHT_UP,wxMouseEventHandler(mxInspectionHistory::OnPopupMenu),nullptr,this);
-//	sizer->Add(lista,sizers->Exp1);
-//	SetSizer(sizer);
 	wxSize sz(100,150);
-	log_mode = 1;
+	log_mode = LM_Change;
 	(di = DebuggerInspection::Create(expression,FlagIf(DIF_FRAMELESS,is_frameless)|DIF_AUTO_IMPROVE,this,false))->Init();
 	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
 	main_window->aui_manager.Update();	
@@ -59,7 +56,7 @@ void mxInspectionHistory::OnDINewType (DebuggerInspection * di) {
 }
 
 void mxInspectionHistory::OnNewValue (const wxString &new_value, bool force) {
-	if (force || (log_mode==1 && new_value!=last_value)) {
+	if (force || (log_mode==LM_Change && new_value!=last_value)) {
 		lista->Append(new_value);
 		lista->SetFirstItem(lista->GetCount()-1);
 	}
@@ -68,9 +65,9 @@ void mxInspectionHistory::OnNewValue (const wxString &new_value, bool force) {
 
 void mxInspectionHistory::OnPopupMenu (wxMouseEvent & evt) {
 	wxMenu menu("");
-	menu.AppendCheckItem(mxID_INSPHISTORY_LOG_NONE,LANG(INSPECTION_HISTORY_LOG_NONE,"No registrar"))->Check(log_mode==0);
-	menu.AppendCheckItem(mxID_INSPHISTORY_LOG_CHANGE,LANG(INSPECTION_HISTORY_LOG_CHANGE,"Registrar solo cuando cambia"))->Check(log_mode==1);
-	menu.AppendCheckItem(mxID_INSPHISTORY_LOG_ALL,LANG(INSPECTION_HISTORY_LOG_ALL,"Registrar en cada pausa"))->Check(log_mode==2);
+	menu.AppendCheckItem(mxID_INSPHISTORY_LOG_NONE,LANG(INSPECTION_HISTORY_LOG_NONE,"No registrar"))->Check(LM_Never==0);
+	menu.AppendCheckItem(mxID_INSPHISTORY_LOG_CHANGE,LANG(INSPECTION_HISTORY_LOG_CHANGE,"Registrar solo cuando cambia"))->Check(LM_Change==1);
+	menu.AppendCheckItem(mxID_INSPHISTORY_LOG_ALL,LANG(INSPECTION_HISTORY_LOG_ALL,"Registrar en cada pausa"))->Check(LM_Always==2);
 	menu.AppendSeparator();
 	menu.Append(wxID_SELECTALL,LANG(INSPECTION_HISTORY_SELECT_ALL,"Seleccionar todo"));
 	menu.Append(wxID_COPY,LANG(INSPECTION_HISTORY_COPY,"Copiar"));
@@ -79,15 +76,15 @@ void mxInspectionHistory::OnPopupMenu (wxMouseEvent & evt) {
 }
 
 void mxInspectionHistory::OnLogNone (wxCommandEvent & evt) {
-	log_mode=0;
+	log_mode=LM_Never;
 }
 
 void mxInspectionHistory::OnLogChange (wxCommandEvent & evt) {
-	log_mode=1;
+	log_mode=LM_Change;
 }
 
 void mxInspectionHistory::OnLogAll (wxCommandEvent & evt) {
-	log_mode=2;
+	log_mode=LM_Always;
 }
 
 void mxInspectionHistory::OnClearLog (wxCommandEvent & evt) {
@@ -111,6 +108,6 @@ void mxInspectionHistory::OnSelectAll (wxCommandEvent & evt) {
 }
 
 void mxInspectionHistory::OnDebugPausePost ( ) {
-	if (log_mode==2) OnNewValue(last_value,true);
+	if (log_mode==LM_Always) OnNewValue(last_value,true);
 }
 

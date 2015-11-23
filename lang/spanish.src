@@ -950,6 +950,10 @@ MAINW_FILE_NOT_FOUND
 No se encontro el archivo:
 BACKTRACE_UPDATE
 Actualizar
+BACKTRACE_HISTORY
+Generar Historial...
+BACKTRACE_PREVIOUS
+Ver trazado anterior...
 BACKTRACE_GOTO_PRE
 Ir a 
 BACKTRACE_GOTO_POST

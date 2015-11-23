@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include "Cpp11.h"
+#include "SingleList.h"
 using namespace std;
 
 #define BACKTRACE_SIZE 100
@@ -61,15 +62,34 @@ public:
 #  define _DBG_LOG_CALL(x) if (DebuggerTalkLogger::the_logger) DebuggerTalkLogger::the_logger->x 
 
 /**
+* @brief class for registering gui components for receiving notifications when backtrace changes
+**/
+class myBTEventHandler {
+	bool registered;
+public:
+	myBTEventHandler();
+	void UnRegister();
+	virtual ~myBTEventHandler();
+	/// debug session is starting
+	virtual void OnDebugStart() {}
+	/// debug session is ending
+	virtual void OnDebugStop() {}
+	/// debugger queried gdb for frames information, here is raw answer
+	virtual void OnBacktraceUpdated(bool was_running) {}
+};
+
+/**
 * @brief Administra la comunicación entre la interfaz y el depurador gdb
 **/
 class DebugManager {
+	friend class myBTEventHandler;
 	friend class mxApplication;
 	friend class mxMainWindow;
 	friend class mxInspectionGrid;
 	friend class mxBacktraceGrid;
 	friend class mxInspectionExplorer;
 	friend class mxInspectionMatrix;
+	friend class mxBacktraceHistory;
 	friend class DebuggerInspection;
 	friend class DebugPatcher;
 #ifdef _ZINJAI_DEBUG
@@ -94,11 +114,10 @@ private:
 	bool stepping_in; ///< to know when auto stepping, if we should continue with step in or step over
 	bool inverse_exec;
 	bool gui_is_prepared;
-	long stack_depth; ///< profundidad del backtrace actual, ver current_frame
 	// nota para identificaicion de frames: el id (interno de zinjai) tiene base 0, el level (usuario/gdb) tiene base 1
 	long current_frame_id; ///< id interno del frame actual, se usa un nro basado en su level en el backtrace, pero inverso (el main seria 0, que figura en la salida de gdb con level=stack_depth-1)
-	long GetFrameID(long level) { return stack_depth-level-1; } 
-	long GetFrameLevel(long id) { return stack_depth-id-1; }
+	long GetFrameID(long level) { return current_stack.depth-level-1; } 
+	long GetFrameLevel(long id) { return current_stack.depth-id-1; }
 	long current_thread_id; ///< id del thread actual, lo da gdb al detenerse o al cambiar de hilo
 #ifndef __WIN32__
 	wxProcess *tty_process; ///< puntero al proceso de la terminal (solo en GNU/Linux), 0 si no hay ninguno
@@ -142,6 +161,8 @@ public:
 	bool IsPaused() { return debugging && !running; }
 	bool IsDebugging() { return debugging; }
 	
+	wxString GetCurrentLocation(); ///< returns location (from current mark) in a human-readable way (for use in gui)
+	
 	void BacktraceClean();
 	bool Start(bool update); ///< starts debugging for current project
 	bool Start(mxSource *source); ///< starts debugging for a simple program
@@ -178,9 +199,13 @@ public:
 	wxString WaitAnswer();
 private:
 	bool backtrace_shows_args; ///< determine wheter backtrace table should show an extra column with arguments (with values) for each function in the stack
+	struct BTInfo { long depth; wxString frames; void clear() { depth=-1; frames.Clear(); } bool is_ok() { return depth!=-1; } };
+	BTInfo current_stack, prev_stack;
+	SingleList<myBTEventHandler*> backtrace_consumers;
+	bool UpdateBacktrace(const BTInfo &stack, bool is_current);
 public:
 	void SetBacktraceShowsArgs(bool show);
-	bool UpdateBacktrace(bool set_frame=true, bool and_threadlist=true);
+	bool UpdateBacktrace(bool and_threadlist=true, bool was_running = false);
 #ifndef __WIN32__
 	void TtyProcessKilled();
 #endif

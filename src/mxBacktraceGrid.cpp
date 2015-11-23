@@ -6,8 +6,12 @@
 #include "mxInspectionGrid.h"
 #include "Language.h"
 #include "mxMessageDialog.h"
+#include "mxBacktraceHistory.h"
 
 BEGIN_EVENT_TABLE(mxBacktraceGrid, wxGrid)
+	EVT_MENU(mxID_BACKTRACE_UPDATE,mxBacktraceGrid::OnUpdate)
+	EVT_MENU(mxID_BACKTRACE_HISTORY,mxBacktraceGrid::OnHistory)
+	EVT_MENU(mxID_BACKTRACE_PREVIOUS,mxBacktraceGrid::OnPrevious)
 	EVT_MENU(mxID_BACKTRACE_GOTO_POS,mxBacktraceGrid::OnGotoPos)
 	EVT_MENU(mxID_BACKTRACE_INSPECT_ARGS,mxBacktraceGrid::OnInspectArgs)
 	EVT_MENU(mxID_BACKTRACE_INSPECT_LOCALS,mxBacktraceGrid::OnInspectLocals)
@@ -150,6 +154,8 @@ void mxBacktraceGrid::OnCellPopupMenu(int row, int col) {
 	if (!GetCellValue(selected_row,BG_COL_LEVEL).Len()) {
 		wxMenu menu; 
 		menu.Append(mxID_BACKTRACE_UPDATE,LANG(BACKTRACE_UPDATE,"Actualizar"));
+		menu.Append(mxID_BACKTRACE_HISTORY,LANG(BACKTRACE_HISTORY,"Generar Historial..."));
+		menu.Append(mxID_BACKTRACE_PREVIOUS,LANG(BACKTRACE_PREVIOUS,"Ver trazado anterior"));
 		PopupMenu(&menu);
 		return;
 	}
@@ -171,6 +177,8 @@ void mxBacktraceGrid::OnCellPopupMenu(int row, int col) {
 //	menu.Append(mxID_BACKTRACE_EXPLORE_LOCALS,LANG(BACKTRACE_EXPLORE_LOCALS,"Explorar Variables Locales"));
 	menu.AppendSeparator();
 	menu.Append(mxID_BACKTRACE_UPDATE,LANG(BACKTRACE_UPDATE,"Actualizar"));
+	menu.Append(mxID_BACKTRACE_HISTORY,LANG(BACKTRACE_HISTORY,"Generar Historial..."));
+	menu.Append(mxID_BACKTRACE_PREVIOUS,LANG(BACKTRACE_PREVIOUS,"Ver trazado anterior"));
 	PopupMenu(&menu);
 }
 
@@ -193,12 +201,24 @@ void mxBacktraceGrid::AddToBlackList(const wxString &type, const wxString &what)
 
 void mxBacktraceGrid::OnColumnHideOrUnhide (int col, bool visible) {
 	if (col==BG_COL_ARGS) debug->backtrace_shows_args=visible;
-	if (visible) debug->UpdateBacktrace(false,false);
+	if (visible) debug->UpdateBacktrace(false);
 }
 
 void mxBacktraceGrid::SetCellValue (int r, int c, const wxString & value) {
 	if (c==BG_COL_FILE) entries[r].fname=value;
 	else if (c==BG_COL_LINE) entries[r].line=value;
 	mxGrid::SetCellValue(r,c,value);
+}
+
+void mxBacktraceGrid::OnUpdate (wxCommandEvent & event) {
+	debug->UpdateBacktrace(false);
+}
+
+void mxBacktraceGrid::OnHistory (wxCommandEvent & event) {
+	new mxBacktraceHistory();
+}
+
+void mxBacktraceGrid::OnPrevious (wxCommandEvent & event) {
+	if (debug->prev_stack.is_ok()) debug->UpdateBacktrace(debug->prev_stack,false);
 }
 
