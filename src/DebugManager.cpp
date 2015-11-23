@@ -58,6 +58,7 @@ DebugManager::DebugManager() {
 	tty_pid = 0;
 	tty_process = nullptr;
 #endif
+	auto_step = false;
 }
 
 DebugManager::~DebugManager() {
@@ -260,7 +261,6 @@ void DebugManager::ResetDebuggingStuff() {
 	// setear en -1 todos los ids de los pts de todos interrupcion, para evitar confusiones con depuraciones anteriores
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
 	while (bpi.IsValid()) { bpi->gdb_id=-1; bpi.Next(); }
-	
 	buffer[0]=buffer[1]=buffer[2]=buffer[3]=buffer[4]=buffer[5]=' ';
 	buffer[6]='\0';
 	debugging = true;
@@ -490,6 +490,7 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 		if (!thread_id.ToLong(&current_thread_id)) current_thread_id=-1;
 		
 #define _aux_continue SendCommand(_T("-exec-continue")); waiting=true; wxYield(); waiting=false; continue;
+#define _aux_repeat_step SendCommand(stepping_in?"-exec-step":"-exec-next"); waiting=true; wxYield(); waiting=false; continue;
 		bool should_continue=false; // cuando se pauso solo para colocar un brekapoint y seguir, esto indica que siga sin analizar la salida... puede ser how diga signal-received (lo normal) o que se haya pausado justo por un bp de los que solo actualizan la tabla de inspecciones
 		
 		if (on_pause_action) {// si se pauso solo para colocar un brekapoint o algo asi, hacerlo y setear banderas para que siga ejecutando
@@ -537,8 +538,9 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 			} else 
 				state_text=LANG(DEBUG_STATUS_FUNCTION_ENDED,"La funcion ha finalizado.");
 		} else if (how==_T("end-stepping-range")) {
+			if (auto_step) { UpdateBacktrace(); _aux_repeat_step; }
 			mark = mxSTC_MARK_EXECPOINT;
-			state_text=LANG(DEBUG_STATUS_STEP_DONE,"Paso avanzado");
+			state_text = LANG(DEBUG_STATUS_STEP_DONE,"Paso avanzado");
 		} else if (how==_T("exited-normally") || how==_T("exited")) {
 			if (how==_T("exited-normally"))
 				state_text=LANG(DEBUG_STATUS_ENDED_NORMALLY,"El programa finalizo con normalidad");
@@ -568,13 +570,13 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 			}
 		}
 		if (mark) {
-			wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true,true);
-			if (!fname.Len())
-				fname = GetSubValueFromAns(ans,_T("frame"),_T("file"),true,true);
-			fname.Replace(_T("//"),sep);
-			fname.Replace(_T("\\\\"),sep);
-			fname.Replace(wrong_sep,sep);
-			wxString line =  GetSubValueFromAns(ans,_T("frame"),_T("line"),true);
+//			wxString fname = GetSubValueFromAns(ans,_T("frame"),_T("fullname"),true,true);
+//			if (!fname.Len())
+//				fname = GetSubValueFromAns(ans,_T("frame"),_T("file"),true,true);
+//			fname.Replace(_T("//"),sep);
+//			fname.Replace(_T("\\\\"),sep);
+//			fname.Replace(wrong_sep,sep);
+//			wxString line =  GetSubValueFromAns(ans,_T("frame"),_T("line"),true);
 //			if (stepping_in && mark==mxSTC_MARK_EXECPOINT && black_list.Index(fname)!=wxNOT_FOUND)
 //				StepIn();
 //			else {
@@ -874,7 +876,7 @@ bool DebugManager::UpdateBacktrace(bool set_frame, bool and_threadlist) {
 
 void DebugManager::StepIn() {
 	if (waiting || !debugging) return;
-	/*stepping_in=true; */running=true;
+	stepping_in = true; running = true;
 	wxString ans = SendCommand("-exec-step");
 	if (ans.Mid(1,7)="running") HowDoesItRuns();
 	else running = false;
@@ -890,7 +892,7 @@ void DebugManager::StepOut() {
 
 void DebugManager::StepOver() {
 	if (waiting || !debugging) return;
-	running = true; 
+	stepping_in = false; running = true;
 	wxString ans = SendCommand("-exec-next");
 	if (ans.Mid(1,7)="running")	HowDoesItRuns();
 	else running = false;
@@ -1941,5 +1943,9 @@ void DebugManager::Patch ( ) {
 		_DEBUG_LAMBDA_0( lmbPatch, { debug->GetPatcher()->Patch(); } );
 		PauseFor(new lmbPatch());
 	}
+}
+
+bool DebugManager::ToggleAutoStep () {
+	return (auto_step = !auto_step);
 }
 

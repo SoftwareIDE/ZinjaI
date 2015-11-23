@@ -90,7 +90,8 @@ private:
 	bool recording_for_reverse; ///< indica si se ejecuto el comando "record" para habilitar luega la ejecucion hacia atras
 	bool attached; ///< indica si el programa se inicio en el depurador, o el depurador es "attacheo" mas tarde, para saber como salir
 //	wxArrayString black_list; // now gdb does that
-//	bool stepping_in;
+	bool auto_step; ///< if true, step in/ step over will automatically repeat
+	bool stepping_in; ///< to know when auto stepping, if we should continue with step in or step over
 	bool inverse_exec;
 	bool gui_is_prepared;
 	long stack_depth; ///< profundidad del backtrace actual, ver current_frame
@@ -149,6 +150,7 @@ public:
 	void Start_ConfigureGdb(); ///< sends commands to gdb to set its initial state (common code for Start, Attach and LoadCoreDump)
 	bool Stop(bool waitkey=false);
 	bool Run();
+	bool ToggleAutoStep();
 	void StepIn();
 	void StepOver();
 	void StepOut();

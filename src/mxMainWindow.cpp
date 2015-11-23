@@ -240,6 +240,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_RUN, mxMainWindow::OnDebugRun)
 	EVT_MENU(mxID_DEBUG_STEP_IN, mxMainWindow::OnDebugStepIn)
 	EVT_MENU(mxID_DEBUG_STEP_OUT, mxMainWindow::OnDebugStepOut)
+	EVT_MENU(mxID_DEBUG_AUTO_STEP, mxMainWindow::OnDebugAutoStep)
 	EVT_MENU(mxID_DEBUG_STEP_OVER, mxMainWindow::OnDebugStepOver)
 	EVT_MENU(mxID_DEBUG_BREAKPOINT_OPTIONS, mxMainWindow::OnDebugBreakpointOptions)
 	EVT_MENU(mxID_DEBUG_INSERT_WATCHPOINT, mxMainWindow::OnDebugInsertWatchpoint)
@@ -5178,5 +5179,11 @@ void mxMainWindow::OnToolsCodePoupup (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE {
 		CURRENT_SOURCE->PopupMenuCodeTools();
 	};
+}
+
+void mxMainWindow::OnDebugAutoStep (wxCommandEvent & event) {
+	bool autostep = debug->ToggleAutoStep();
+	_menu_item(mxID_DEBUG_AUTO_STEP)->Check(autostep);
+	_get_toolbar(tbDEBUG)->ToggleTool(mxID_DEBUG_AUTO_STEP,autostep);
 }
 

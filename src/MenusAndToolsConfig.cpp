@@ -152,6 +152,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnDEBUG, myMenuItem("step_in", mxID_DEBUG_STEP_IN, LANG(MENUITEM_DEBUG_STEP_IN,"Step &In")).ShortCut("F6").Icon("step_in.png").EnableIf(ecDEBUG_PAUSED));
 		AddMenuItem(mnDEBUG, myMenuItem("step_over", mxID_DEBUG_STEP_OVER, LANG(MENUITEM_DEBUG_STEP_OVER,"Step &Over")).ShortCut("F7").Icon("step_over.png").EnableIf(ecDEBUG_PAUSED));
 		AddMenuItem(mnDEBUG, myMenuItem("step_out", mxID_DEBUG_STEP_OUT, LANG(MENUITEM_DEBUG_STEP_OUT,"Step O&ut")).ShortCut("Shift+F6").Icon("step_out.png").EnableIf(ecDEBUG_PAUSED));
+		AddMenuItem(mnDEBUG, myMenuItem("auto_step", mxID_DEBUG_AUTO_STEP, LANG(MENUITEM_DEBUG_AUTO_STEP,"Repetir Step In/Over Automáticamente")).Icon("auto_step.png").Checkeable(false));
 		AddMenuItem(mnDEBUG, myMenuItem("run_until", mxID_DEBUG_RUN_UNTIL, LANG(MENUITEM_DEBUG_RUN_UNTIL,"Ejecutar &Hasta el Cursor")).ShortCut("Shift+F7").Icon("run_until.png").EnableIf(ecDEBUG_PAUSED));
 		AddMenuItem(mnDEBUG, myMenuItem("function_return", mxID_DEBUG_RETURN, LANG(MENUITEM_DEBUG_RETURN,"&Return")).ShortCut("Ctrl+F6").Icon("return.png").EnableIf(ecDEBUG_PAUSED));
 		AddMenuItem(mnDEBUG, myMenuItem("jump", mxID_DEBUG_JUMP, LANG(MENUITEM_DEBUG_JUMP,"Continuar Desde Aqui")).ShortCut("Ctrl+F5").Icon("debug_jump.png").EnableIf(ecDEBUG_PAUSED));
@@ -500,6 +501,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_RUN_UNTIL).Visible());
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_RETURN).Visible());
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_JUMP).Visible());
+		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_AUTO_STEP));
 #ifndef __WIN32__
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_ENABLE_INVERSE_EXEC).Checkeable());
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_INVERSE_EXEC).Checkeable());
