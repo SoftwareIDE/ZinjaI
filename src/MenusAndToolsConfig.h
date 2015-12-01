@@ -23,6 +23,7 @@ class MenusAndToolsConfig {
 	
 	friend class mxPreferenceWindow;
 	friend class mxShortcutsDialog;
+	friend class mxCommandFinderList;
 	friend class mxUT;
 private:
 	

@@ -324,6 +324,7 @@ public:
 	
 	void OnToolsInstallComplements( wxCommandEvent &event );
 	
+	void OnHelpFindCommand (wxCommandEvent &event);
 	void OnHelpShortcuts (wxCommandEvent &event);
 	void OnHelpOpinion (wxCommandEvent &event);
 	void OnHelpTutorial (wxCommandEvent &event);

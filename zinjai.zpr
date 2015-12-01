@@ -15,10 +15,10 @@ explorer_path=../zinjai
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
-cursor=0:0
+cursor=164:64
 [source]
 path=src/ConfigManager.cpp
-cursor=642:48
+cursor=764:55
 marker=623
 marker=985
 marker=986
@@ -36,14 +36,13 @@ path=src/mxHidenPanel.cpp
 cursor=188:45
 [source]
 path=src/mxMainWindow.cpp
-cursor=3539:43
-breakpoint=4305
+cursor=348:0
+breakpoint=4307
 breakpoint_annotation=
-marker=4284
+marker=4286
 [source]
 path=src/DebugManager.cpp
-cursor=727:40
-marker=724
+cursor=1997:20
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=6:40
@@ -145,7 +144,7 @@ path=src/mxInspectionGrid.cpp
 cursor=1023:65
 [source]
 path=src/mxBacktraceGrid.cpp
-cursor=146:14
+cursor=117:0
 [source]
 path=src/CodeExporter.cpp
 cursor=11:1
@@ -348,7 +347,7 @@ path=src/mxSignalsSettings.cpp
 cursor=68:20
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=496:67
+cursor=354:69
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=124:52
@@ -361,7 +360,7 @@ path=src/mxCalltip.cpp
 cursor=104:22
 [source]
 path=src/mxShortcutsDialog.cpp
-cursor=231:1
+cursor=226:115
 [source]
 path=src/mxLocalsGrid.cpp
 cursor=9:0
@@ -385,7 +384,7 @@ path=src/gdbParser.cpp
 cursor=0:0
 [source]
 path=src/mxGotoListDialog.cpp
-cursor=156:4
+cursor=82:33
 [source]
 path=src/mxLizardOutput.cpp
 cursor=91:9
@@ -403,6 +402,9 @@ path=src/LocalRefactory.cpp
 cursor=66:21
 [source]
 path=src/mxBacktraceHistory.cpp
+cursor=17:19
+[source]
+path=src/mxCommandFinder.cpp
 cursor=0:0
 [header]
 path=src/CodeHelper.h
@@ -424,7 +426,7 @@ path=src/ShareManager.h
 cursor=34:17
 [header]
 path=src/ids.h
-cursor=656:24
+cursor=404:1
 [header]
 path=src/mxAboutWindow.h
 cursor=-1:105
@@ -442,7 +444,7 @@ path=src/mxGotoLineWindow.h
 cursor=6:14
 [header]
 path=src/mxMainWindow.h
-cursor=220:20
+cursor=326:24
 marker=310
 [header]
 path=src/mxNewWizard.h
@@ -473,7 +475,7 @@ path=src/mxHelpWindow.h
 cursor=15:68
 [header]
 path=src/DebugManager.h
-cursor=204:21
+cursor=129:19
 [header]
 path=src/mxFlowWindow.h
 cursor=13:17
@@ -509,7 +511,7 @@ path=src/mxGotoFunctionDialog.h
 cursor=9:48
 [header]
 path=src/mxGotoFileDialog.h
-cursor=0:0
+cursor=4:40
 [header]
 path=src/mxInspectionGrid.h
 cursor=118:13
@@ -740,7 +742,7 @@ path=src/mxSignalsSettings.h
 cursor=25:0
 [header]
 path=src/MenusAndToolsConfig.h
-cursor=67:2
+cursor=35:11
 [header]
 path=src/mxToolchainConfig.h
 cursor=28:19
@@ -788,7 +790,7 @@ path=src/gdbParser.h
 cursor=0:0
 [header]
 path=src/mxGotoListDialog.h
-cursor=5:0
+cursor=15:22
 [header]
 path=src/mxLizardOutput.h
 cursor=8:14
@@ -807,9 +809,12 @@ cursor=12:70
 [header]
 path=src/mxBacktraceHistory.h
 cursor=0:0
+[header]
+path=src/mxCommandFinder.h
+cursor=10:21
 [other]
 path=guihelp/ChangeLog.html
-cursor=10:139
+cursor=10:173
 [other]
 path=guihelp/tips_spanish
 cursor=61:191
@@ -1156,5 +1161,10 @@ suppress_ids=missingIncludeSystem uninitMemberVar cstyleCast unusedFunction useI
 inline_suppr=1
 additional_files=
 exclude_list=
+[inspections]
+expr=map
+expr=full_label
+expr=label
+expr=item_label
 [custom_tools]
 [end]

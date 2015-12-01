@@ -20,7 +20,7 @@ mxBacktraceHistory::mxBacktraceHistory ( )
 
 void mxBacktraceHistory::OnBacktraceUpdated(bool was_running) {
 	if (!was_running || !logging) return;
-	data.Add(debug->current_stack);
+	data.Add(debug->GetCurrentStackRawData());
 	lista->Append(debug->GetCurrentLocation());
 }
 
@@ -41,7 +41,7 @@ void mxBacktraceHistory::OnSelect (wxCommandEvent & evt) {
 	evt.Skip();
 	int sel = lista->GetSelection();
 	if (sel>=0&&sel<data.GetSize())
-		debug->UpdateBacktrace(data[sel],false);
+		debug->SetFakeBacktrace(data[sel]);
 }
 
 mxBacktraceHistory::~mxBacktraceHistory ( ) {

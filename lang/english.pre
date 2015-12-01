@@ -640,6 +640,8 @@ MENUITEM_HELP_CPP
 C++ Help...
 MENUITEM_HELP_ZINJAI
 ZinjaI's Help...
+MENUITEM_HELP_FIND_COMMAND
+Find and run command...
 MENUITEM_HELP_TUTORIALS
 Tutorials...
 MENUITEM_HELP_SHORTCUTS
@@ -1200,6 +1202,10 @@ GENERAL_OPEN
 Open
 GENERAL_SAVE
 Save
+FINDCOMMAND_CAPTION
+Find Command
+FINDCOMMAND_HELP
+Type one or more keywords to search, and press Enter to select and run a command
 COMPILECONF_COMPILER_ARGS
 Extra arguments for compiler
 COMPILECONF_ALWAYS_ASK_ARGS

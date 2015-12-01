@@ -342,6 +342,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 	menues[mnHELP].Init("help",LANG(MENUITEM_HELP,"A&yuda")); {
 		AddMenuItem(mnHELP, myMenuItem("help_cpp",mxID_HELP_CPP, LANG(MENUITEM_HELP_CPP,"Referencia C/C++...")).ShortCut("Alt+F1").Description("Muestra una completa referencia sobre el lenguaje").Icon("referencia.png"));
 		AddMenuItem(mnHELP, myMenuItem("help_ide",mxID_HELP_GUI, LANG(MENUITEM_HELP_ZINJAI,"Ayuda sobre ZinjaI...")).ShortCut("F1").Description("Muestra la ayuda sobre el uso y las caracteristicas de este entorno...").Icon("ayuda.png"));
+		AddMenuItem(mnHELP, myMenuItem("find_command",mxID_HELP_FIND_COMMAND, LANG(MENUITEM_HELP_FIND_COMMAND,"Buscar y ejecutar comando...")).Icon("find_command.png").ShortCut("Ctrl+F2"));
 		AddMenuItem(mnHELP, myMenuItem("tutorials",mxID_HELP_TUTORIAL, LANG(MENUITEM_HELP_TUTORIALS,"Tutoriales...")).Description("Abre el cuadro de ayuda y muestra el indice de tutoriales disponibles").Icon("tutoriales.png"));
 		AddMenuItem(mnHELP, myMenuItem("shortcuts",mxID_HELP_SHORTCUTS, LANG(MENUITEM_HELP_SHORTCUTS,"Atajos de teclado...")).Description("Muestra en la ventana de ayuda la lista de atajos de teclado disponibles en ZinjaI").Icon("shortcuts.png"));
 		AddMenuItem(mnHELP, myMenuItem("show_tips",mxID_HELP_TIP, LANG(MENUITEM_HELP_TIPS,"&Mostrar sugerencias de uso...")).Description("Muestra sugerencias sobre el uso del programa...").Icon("tip.png"));
@@ -351,7 +352,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnHELP, myMenuItem("about",mxID_HELP_ABOUT, LANG(MENUITEM_HELP_ABOUT,"Acerca de...")).Description("Acerca de...").Icon("acercaDe.png"));
 	}
 	
-	menues[mnHIDDEN].Init("hidden",LANG(MENUITEM_GLOBAL_SHORTCUTS,"Otros atajos")); {
+	menues[mnHIDDEN].Init("hidden",LANG(MENUITEM_GLOBAL_SHORTCUTS,"Otros")); {
 		AddMenuItem(mnHIDDEN, myMenuItem("highlight_keyword",mxID_EDIT_HIGHLIGHT_WORD,LANG(MENUITEM_HIDDEN_HIGHLIGHT_KEYWORD,"Resaltar identificador")));
 		AddMenuItem(mnHIDDEN, myMenuItem("find_keyword",mxID_EDIT_FIND_KEYWORD,LANG(MENUITEM_HIDDEN_FIND_KEYWORD,"Buscar identificador en todos los archivos")));
 		AddMenuItem(mnHIDDEN, myMenuItem("lowercase",mxID_EDIT_MAKE_LOWERCASE,LANG(MENUITEM_HIDDEN_MAKE_LOWERCASE,"Pasar a minúsuculas")).ShortCut("Ctrl+U"));
@@ -592,6 +593,7 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 	
 	toolbars[tbMISC].Init("misc",LANG(CAPTION_TOOLBAR_MISC,"Miscelánea"),"T1"); {
 		AddToolbarItem(tbMISC,myToolbarItem(menues[mnFILE],mxID_FILE_PREFERENCES).Visible());
+		AddToolbarItem(tbMISC,myToolbarItem(menues[mnHELP],mxID_HELP_FIND_COMMAND).Visible());
 		AddToolbarItem(tbMISC,myToolbarItem(menues[mnHELP],mxID_HELP_CPP).Visible());
 		AddToolbarItem(tbMISC,myToolbarItem(menues[mnHELP],mxID_HELP_GUI).Visible());
 		AddToolbarItem(tbMISC,myToolbarItem(menues[mnHELP],mxID_HELP_TUTORIAL));

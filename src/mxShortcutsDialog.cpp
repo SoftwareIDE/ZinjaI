@@ -221,9 +221,14 @@ mxShortcutsDialog::mxShortcutsDialog(wxWindow *parent) : wxDialog(parent,wxID_AN
 		wxString label = menu.label + "->" , full_label = menu.label + "->";
 		for(unsigned int j=0;j<menu.items.size();j++) { 
 			int props=menu.items[j].properties;
-			if (props&MenusAndToolsConfig::maSEPARATOR) continue;
-			if (props&MenusAndToolsConfig::maBEGIN_SUBMENU) { full_label = label + menu.items[j].label + " -> "; continue; }
-			if (props&MenusAndToolsConfig::maEND_SUBMENU) { full_label = label; continue; }
+			if (props&MenusAndToolsConfig::maSEPARATOR) {
+				continue;
+			} else if (props&MenusAndToolsConfig::maBEGIN_SUBMENU) { 
+				if (full_label!=label) { while (!(menu.items[++j].properties&MenusAndToolsConfig::maEND_SUBMENU)); continue; } // gprof's sub-sub-menu
+				full_label = label + menu.items[j].label + " -> "; continue; 
+			} else if (props&MenusAndToolsConfig::maEND_SUBMENU) { 
+				full_label = label; continue; 
+			}
 			wxBoxSizer *btsizer = new wxBoxSizer(wxHORIZONTAL);
 			wxString item_label = full_label + menu.items[j].label;
 			item_label.Replace("&","",true);

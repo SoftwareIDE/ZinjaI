@@ -638,6 +638,8 @@ MENUITEM_HELP_CPP
 Referencia C/C++...
 MENUITEM_HELP_ZINJAI
 Ayuda sobre ZinjaI...
+MENUITEM_HELP_FIND_COMMAND
+Buscar y ejecutar comando...
 MENUITEM_HELP_TUTORIALS
 Tutoriales...
 MENUITEM_HELP_SHORTCUTS
@@ -953,7 +955,7 @@ Actualizar
 BACKTRACE_HISTORY
 Generar Historial...
 BACKTRACE_PREVIOUS
-Ver trazado anterior...
+Ver trazado anterior
 BACKTRACE_GOTO_PRE
 Ir a 
 BACKTRACE_GOTO_POST
@@ -1198,6 +1200,10 @@ GENERAL_OPEN
 Abrir
 GENERAL_SAVE
 Guardar
+FINDCOMMAND_CAPTION
+Buscar comando
+FINDCOMMAND_HELP
+Introduzca una o más palabras claves para buscar, y presione Enter para seleccionar un resultado
 COMPILECONF_COMPILER_ARGS
 Parametros extra para el compilador
 COMPILECONF_ALWAYS_ASK_ARGS

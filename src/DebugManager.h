@@ -89,7 +89,6 @@ class DebugManager {
 	friend class mxBacktraceGrid;
 	friend class mxInspectionExplorer;
 	friend class mxInspectionMatrix;
-	friend class mxBacktraceHistory;
 	friend class DebuggerInspection;
 	friend class DebugPatcher;
 #ifdef _ZINJAI_DEBUG
@@ -163,7 +162,6 @@ public:
 	
 	wxString GetCurrentLocation(); ///< returns location (from current mark) in a human-readable way (for use in gui)
 	
-	void BacktraceClean();
 	bool Start(bool update); ///< starts debugging for current project
 	bool Start(mxSource *source); ///< starts debugging for a simple program
 	bool Start(wxString workdir, wxString exe, wxString args, bool show_console, int wait_for_key); ///< common code Starting a program (the other two Starts will end up calling this one)
@@ -197,15 +195,25 @@ public:
 	wxString GetSubValueFromAns(wxString ans, wxString key1, wxString key2, bool crop=false, bool fix_slash=false);
 	wxString InspectExpression(wxString var, bool full=false);
 	wxString WaitAnswer();
+	
+	// backtrace
+	
+	struct BTInfo { long depth; wxString frames; void clear() { depth=-1; frames.Clear(); } bool is_ok() { return depth!=-1; } };
 private:
 	bool backtrace_shows_args; ///< determine wheter backtrace table should show an extra column with arguments (with values) for each function in the stack
-	struct BTInfo { long depth; wxString frames; void clear() { depth=-1; frames.Clear(); } bool is_ok() { return depth!=-1; } };
+	bool backtrace_is_current; ///< determine wheter the currently shown backtrace is the actual current one in gdb, or some fake one restored from history
 	BTInfo current_stack, prev_stack;
 	SingleList<myBTEventHandler*> backtrace_consumers;
 	bool UpdateBacktrace(const BTInfo &stack, bool is_current);
 public:
 	void SetBacktraceShowsArgs(bool show);
 	bool UpdateBacktrace(bool and_threadlist=true, bool was_running = false);
+	bool SetFakeBacktrace(const BTInfo &stack);
+	void BacktraceClean();
+	bool CurrentBacktraceIsReal();
+	const BTInfo &GetCurrentStackRawData();
+	
+	
 #ifndef __WIN32__
 	void TtyProcessKilled();
 #endif

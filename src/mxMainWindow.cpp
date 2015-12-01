@@ -76,6 +76,7 @@
 #include "mxRegistersGrid.h"
 #include "Cpp11.h"
 #include "LocalRefactory.h"
+#include "mxCommandFinder.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -383,6 +384,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CUSTOM_HELP, mxMainWindow::OnToolsCustomHelp)
 	EVT_MENU(mxID_TOOLS_INSTALL_COMPLEMENTS, mxMainWindow::OnToolsInstallComplements)
 	
+	EVT_MENU(mxID_HELP_FIND_COMMAND, mxMainWindow::OnHelpFindCommand)
 	EVT_MENU(mxID_HELP_SHORTCUTS, mxMainWindow::OnHelpShortcuts)
 	EVT_MENU(mxID_HELP_OPINION, mxMainWindow::OnHelpOpinion)
 	EVT_MENU(mxID_HELP_TUTORIAL, mxMainWindow::OnHelpTutorial)
@@ -5185,5 +5187,9 @@ void mxMainWindow::OnDebugAutoStep (wxCommandEvent & event) {
 	bool autostep = debug->ToggleAutoStep();
 	_menu_item(mxID_DEBUG_AUTO_STEP)->Check(autostep);
 	_get_toolbar(tbDEBUG)->ToggleTool(mxID_DEBUG_AUTO_STEP,autostep);
+}
+
+void mxMainWindow::OnHelpFindCommand (wxCommandEvent & event) {
+	mxCommandFinder().ShowModal();
 }
 

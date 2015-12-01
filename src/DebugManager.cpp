@@ -723,7 +723,7 @@ bool DebugManager::UpdateBacktrace(bool and_threadlist, bool was_running) {
 
 bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
 
-	#warning EVITAR ACTUALIZAR INSPECCIONES SI NO IS_CURRENT
+	backtrace_is_current = is_current;
 	
 #ifdef __WIN32__
 	static wxString sep="\\",wrong_sep="/";
@@ -889,6 +889,7 @@ bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
 	} else {
 		main_window->backtrace_ctrl->SelectRow(0);
 		current_frame_id = GetFrameID(0);
+		debug->MarkCurrentPoint();
 	}
 	
 	main_window->backtrace_ctrl->EndBatch();
@@ -1990,10 +1991,22 @@ myBTEventHandler::~myBTEventHandler ( ) {
 }
 
 wxString DebugManager::GetCurrentLocation ( ) {
-	return current_source ? ( wxString() 
+	return (current_source&&current_handle!=-1) ? ( wxString() 
 		<< current_source->source_filename.GetFullName() 
 		<< " : " 
 		<< current_source->MarkerLineFromHandle(current_handle)
-							 ) : "<<null>>";
+							 ) : wxString(LANG(BACKTRACE_NOT_AVAILABLE,"<<informacion no disponible>>"));
+}
+
+bool DebugManager::SetFakeBacktrace (const BTInfo & stack) {
+	return UpdateBacktrace(stack,false);
+}
+
+bool DebugManager::CurrentBacktraceIsReal ( ) {
+	return backtrace_is_current;
+}
+
+const DebugManager::BTInfo & DebugManager::GetCurrentStackRawData ( ) {
+	return current_stack;
 }
 
