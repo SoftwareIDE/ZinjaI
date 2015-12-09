@@ -12,6 +12,7 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
+current_source=src/mxOutputView.h
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -42,7 +43,7 @@ breakpoint_annotation=
 marker=4286
 [source]
 path=src/DebugManager.cpp
-cursor=1997:20
+cursor=454:45
 [source]
 path=src/mxDiffSideBar.cpp
 cursor=6:40
@@ -141,7 +142,7 @@ path=src/mxGotoFileDialog.cpp
 cursor=24:10
 [source]
 path=src/mxInspectionGrid.cpp
-cursor=1023:65
+cursor=321:44
 [source]
 path=src/mxBacktraceGrid.cpp
 cursor=117:0
@@ -205,7 +206,8 @@ path=src/mxDoxyDialog.cpp
 cursor=54:0
 [source]
 path=src/mxOutputView.cpp
-cursor=79:15
+cursor=0:0
+open=true
 [source]
 path=src/mxSplashScreen.cpp
 cursor=9:38
@@ -251,7 +253,7 @@ path=src/mxGrid.cpp
 cursor=183:33
 [source]
 path=src/mxUtils.cpp
-cursor=1522:1
+cursor=11:0
 marker=1392
 [source]
 path=src/mxTextDialog.cpp
@@ -347,7 +349,7 @@ path=src/mxSignalsSettings.cpp
 cursor=68:20
 [source]
 path=src/MenusAndToolsConfig.cpp
-cursor=354:69
+cursor=595:51
 [source]
 path=src/mxToolchainConfig.cpp
 cursor=124:52
@@ -405,7 +407,7 @@ path=src/mxBacktraceHistory.cpp
 cursor=17:19
 [source]
 path=src/mxCommandFinder.cpp
-cursor=0:0
+cursor=53:17
 [header]
 path=src/CodeHelper.h
 cursor=72:16
@@ -575,6 +577,7 @@ cursor=20:15
 [header]
 path=src/mxOutputView.h
 cursor=38:151
+open=true
 [header]
 path=src/mxSplashScreen.h
 cursor=0:0
