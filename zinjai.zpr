@@ -12,7 +12,6 @@ version_required=20131122
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=../zinjai
-current_source=src/mxOutputView.h
 path_char=/
 [source]
 path=src/mxInspectionMatrix.cpp
@@ -37,7 +36,7 @@ path=src/mxHidenPanel.cpp
 cursor=188:45
 [source]
 path=src/mxMainWindow.cpp
-cursor=348:0
+cursor=3194:18
 breakpoint=4307
 breakpoint_annotation=
 marker=4286
@@ -206,11 +205,11 @@ path=src/mxDoxyDialog.cpp
 cursor=54:0
 [source]
 path=src/mxOutputView.cpp
-cursor=0:0
-open=true
+cursor=32:21
 [source]
 path=src/mxSplashScreen.cpp
-cursor=9:38
+cursor=64:0
+open=true
 [source]
 path=src/mxToolbarEditor.cpp
 cursor=77:0
@@ -250,7 +249,7 @@ cursor=222:34
 marker=221
 [source]
 path=src/mxGrid.cpp
-cursor=183:33
+cursor=109:0
 [source]
 path=src/mxUtils.cpp
 cursor=11:0
@@ -576,11 +575,10 @@ path=src/mxDoxyDialog.h
 cursor=20:15
 [header]
 path=src/mxOutputView.h
-cursor=38:151
-open=true
+cursor=48:17
 [header]
 path=src/mxSplashScreen.h
-cursor=0:0
+cursor=16:0
 [header]
 path=src/mxToolbarEditor.h
 cursor=17:44
@@ -634,7 +632,7 @@ path=src/mxDiffSideBar.h
 cursor=9:12
 [header]
 path=src/mxGrid.h
-cursor=50:1
+cursor=97:13
 [header]
 path=src/mxCustomTools.h
 cursor=9:0
@@ -1165,9 +1163,7 @@ inline_suppr=1
 additional_files=
 exclude_list=
 [inspections]
-expr=map
-expr=full_label
-expr=label
-expr=item_label
+expr=diff
+expr=ratio
 [custom_tools]
 [end]

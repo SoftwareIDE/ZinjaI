@@ -91,7 +91,15 @@ public:
 	/// @brief key pressed
 	virtual bool OnKey(int row, int col, int key, int modifiers) { return false; }
 	
-	int GetRealCol(int col) { return cols[col].real_pos; }
+	/// @brief given a real col from a wxGrid event, find its position in cols
+	int FindRealCol(int wx_col) { 
+		for(int i=0;i<cols.GetSize();i++) 
+			if (cols[i].real_pos==wx_col) return i; 
+		return -1; 
+	}
+	
+	/// @brief given virtual col in this whole table, find its real position in the actual wxGrid
+	int GetRealCol(int mx_col) { return cols[mx_col].real_pos; }
 	
 	// wrappers for wxGrid methods, that considers column hidding
 	void SetCellValue(int r, int c, const wxString &value) {

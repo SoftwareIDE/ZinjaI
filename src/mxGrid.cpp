@@ -99,8 +99,9 @@ void mxGrid::DoCreate ( ) {
 void mxGrid::OnColResize (wxGridSizeEvent & event) {
 	if (!created) { event.Skip(); return; }
 	evt_full_resize.Stop(); event.Skip(); 
-	cols[GetRealCol(event.GetRowOrCol())].width=GetColSize(event.GetRowOrCol());
+	cols[FindRealCol(event.GetRowOrCol())].width=GetColSize(event.GetRowOrCol());
 }
+
 void mxGrid::OnResize (wxSizeEvent & event) {
 	if (!created) { event.Skip(); return; }
 	evt_full_resize.Start(200,true);
