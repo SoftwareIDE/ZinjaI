@@ -167,6 +167,6 @@ void mxArgumentsDialog::OnArgsEditList(wxCommandEvent &evt) {
 void mxArgumentsDialog::OnWorkdirButton (wxCommandEvent & evt) {
 	wxDirDialog dlg(this,LANG(COMPILECONF_WORKDIR_DLG,"Directorio de trabajo"),combo_args->GetValue());
 	if (wxID_OK==dlg.ShowModal())
-		combo_args->SetValue(dlg.GetPath());
+		combo_work->SetValue(dlg.GetPath());
 }
 
