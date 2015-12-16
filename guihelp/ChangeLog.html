@@ -6,13 +6,15 @@
 <!--<I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>-->
 
-</UL><BR><B>Release 201511XX</B><BR><UL>
+</UL><BR><B>Release 201512XX</B><BR><UL>
 	<LI>New: Se agregó un nuevo item en el menú ayuda para buscar y ejecutar comandos y atajos por palabras clave.</LI>
 	<LI>New: Se agregó un nuevo panel que permita registrar y recorrer un historial de trazados inversos (se accede desde el menú contextual del Panel de Trazado Inverso).</LI>
 	<LI>New: Se agregó una nueva opción al menú contextual del Panel de Trazado Inverso que permite volver a ver el trazado anterior al actual.</LI>
 	<LI>New: Se agregó un item en el menú "Depuración" para repetir automáticamente los comandos "Step In" y "Step Over".</LI>
 	<LI>New: Se agregó un item en el menú contextual del panel del explorador de archivos para abrir un archivo con la aplicación por defecto para su tipo.</LI>
 	<LI>Imp: El archivo de proyecto guarda la configuración de las ejecuciones de valgrind (archivo de supresiones y argumentos adicionales), y se puede usar ${PROJECT_PATH} para indicar la ruta del archivo de suppressiones.</LI>
+	<LI>Fix: La barra de herramientas especial para operar con los resultados de las comparaciones con diff ya no permanece visible al reiniciar ZinjaI.</LI>
+	<LI>Fix: Se corrigió el comportamiento del botón "..." para elegir el directorio de trabajo en el cuadro de diálogo de argumentos para la ejecución.</LI>
 	<LI>Fix: Las opciones del menú contextual de una pestaña para abrir la carpeta contenedora y ver las propiedades de un archivo abierto funcionan correctamente aunque el archivo no pertenezca al proyecto actual.</LI>
 	<LI>Fix: Se corrigieron en los toolchains los comandos para generar bibliotecas dinámicas y estáticas (estaban invertidos).</LI>
 	<LI>Fix: Se corrigieron errores de parseo para el autocompletado relacionados al uso de la sintaxis de inicialización uniforme (llaves) para valores por defecto en argumentos de funciones.</LI>
@@ -1577,7 +1579,7 @@
 
 	<LI>Comienza el registro de cambios <UL>
 		<LI>clase ShareManager (primer parte)</LI>
-		<LI>Recordar pocision de la ventana</LI>
+		<LI>Recordar posicion de la ventana</LI>
 		<LI>Archivo -> Abrir seleccionado</LI>
 		<LI>Asistente para nuevo archivo (primera parte: base, archivo en blanco y a partir de plantilla)</LI>
 		<LI>Arbol de simbolos</LI>
@@ -1598,7 +1600,7 @@
 		<LI>Arbol de Proyecto</LI>
 		<LI>Base (a partir de los ejemplos de aui y scintilla de la wx)</LI>
 		<LI><B>Trabajo Previo</B>: <UL>
-			<LI>Selección de la biblioteca para la GUI: wxWidgets (por potencia, portabilidad, orientacion a objetos, licensia, ...)</LI>
+			<LI>Selección de la biblioteca para la GUI: wxWidgets (por potencia, portabilidad, orientacion a objetos, licencia, ...)</LI>
 			<LI>Selección de un parser C++: cbrowser de SourceNavigator (opcion temporal)</LI>
 			<LI>Lectura de material <UL>
 				<LI>Documentación, referencia, tutoriales y ejemplos de wxWidgets</LI>

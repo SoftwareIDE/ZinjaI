@@ -50,19 +50,20 @@ Section "ZinjaI" SEC01
   File /R "zinjai\*"
   CreateShortCut "$SMPROGRAMS\ZinjaI.lnk" "$INSTDIR\zinjai.exe"
   CreateShortCut "$DESKTOP\ZinjaI.lnk" "$INSTDIR\zinjai.exe"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".zpr" "ZPR - Projecto ZinjaI" "$INSTDIR\zinjai.exe,4"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".zpr" "ZPR - ZinjaI project" "$INSTDIR\zinjai.exe,4"
 SectionEnd
 
 Section "Registrar Extensiones" SEC01b
   SetOutPath "$INSTDIR\"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".cpp" "CPP - Fuente C++" "$INSTDIR\zinjai.exe,3"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".c++" "C++ - Fuente C++" "$INSTDIR\zinjai.exe,3"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".cxx" "CXX - Fuente C++" "$INSTDIR\zinjai.exe,3"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".c" "C - Fuente C" "$INSTDIR\zinjai.exe,2"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".h" "H - Cabecera C/C++" "$INSTDIR\zinjai.exe,1"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".h++" "H++ - Cabecera C/C++" "$INSTDIR\zinjai.exe,1"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".hpp" "HPP - Cabecera C/C++" "$INSTDIR\zinjai.exe,1"
-  ${registerExtension} "$INSTDIR\zinjai.exe" ".hxx" "HXX - Cabecera C/C++" "$INSTDIR\zinjai.exe,1"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".cpp" "cpp - C++ source" "$INSTDIR\zinjai.exe,3"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".c++" "c++ - C++ source" "$INSTDIR\zinjai.exe,3"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".cxx" "cxx - C++ source" "$INSTDIR\zinjai.exe,3"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".cc" "cc - C/C++ source" "$INSTDIR\zinjai.exe,3"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".c" "C - C source" "$INSTDIR\zinjai.exe,2"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".h" "H - C/C++ header" "$INSTDIR\zinjai.exe,1"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".h++" "h++ - C/C++ header" "$INSTDIR\zinjai.exe,1"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".hpp" "hpp - C/C++ header" "$INSTDIR\zinjai.exe,1"
+  ${registerExtension} "$INSTDIR\zinjai.exe" ".hxx" "hxx - C/C++ header" "$INSTDIR\zinjai.exe,1"
 SectionEnd
 
 Section "MinGW" SEC02
