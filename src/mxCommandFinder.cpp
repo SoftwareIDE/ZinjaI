@@ -144,7 +144,7 @@ void mxCommandFinderText::OnKey (wxKeyEvent &evt) {
 }
 
 mxCommandFinderText::mxCommandFinderText (wxWindow * parent) 
-	: wxTextCtrl(parent,wxID_ANY,"",wxDefaultPosition,wxSize(300,-1)), list(parent) 
+	: wxTextCtrl(parent,wxID_ANY,"",wxDefaultPosition,wxSize(300,-1),wxTE_PROCESS_ENTER), list(parent) 
 {
 	SetToolTip(LANG(FINDCOMMAND_HELP,"Introduzca una o más palabras claves para buscar, y presione Enter para seleccionar un resultado"));
 }
