@@ -45,7 +45,7 @@ private:
 		maDEFAULT_SHORTCUT=2048 ///< if current shortcut is default one this setting won't de saved to shortcuts.zsc
 	};
 	
-	enum { ecALWAYS, ecPROJECT, ecSOURCE, ecPROJECT_OR_SOURCE, ecDEBUG, ecNOT_DEBUG, ecDEBUG_PAUSED, ecNOT_DEBUG_OR_DEBUG_PAUSED, ecDEBUG_NOT_PAUSED, ecCOUNT };
+	enum { ecALWAYS, ecPROJECT, ecSOURCE, ecPROJECT_OR_SOURCE, ecPROJECT_AND_SOURCE, ecDEBUG, ecNOT_DEBUG, ecDEBUG_PAUSED, ecNOT_DEBUG_OR_DEBUG_PAUSED, ecDEBUG_NOT_PAUSED, ecCOUNT };
 	
 #ifdef __APPLE__
 public: /// there seems to be something wrong with nested friendship in my gcc for mac

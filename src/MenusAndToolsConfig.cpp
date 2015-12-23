@@ -381,10 +381,34 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 		AddMenuItem(mnHIDDEN, myMenuItem("history_next",mxID_NAVIGATION_HISTORY_NEXT,LANG(MENUITEM_HIDDEN_NAVIGATION_HISTORY_NEXT,"Historial de navegación -> ubicación siguiente")).ShortCut("Alt+Right"));
 		AddMenuItem(mnHIDDEN, myMenuItem("break_enable",mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT,LANG(MENUITEM_HIDDEN_ENABLE_BREAKPOINT,"Habilitar/deshabilitar punto de interrupción")).ShortCut("").Checkeable(true));
 		AddMenuItem(mnHIDDEN, myMenuItem("update_inspections",mxID_DEBUG_UPDATE_INSPECTIONS, LANG(MENUITEM_DEBUG_UPDATE_INSPECTIONS,"Actualizar inspecciones")).Icon("inspect_update.png"));
-		for(int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) AddMenuItem(mnHIDDEN, myMenuItem(wxString("project_tool_")<<i,mxID_CUSTOM_PROJECT_TOOL_0+i,LANG1(MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL,"Herramienta personalizada de project <{1}>",wxString()<<i)).ShortCut(""));
+		
 		AddMenuItem(mnHIDDEN, myMenuItem("change_shortcuts",mxID_CHANGE_SHORTCUTS, LANG(MENUITEM_HELP_SHORTCUTS,"Atajos de teclado...")).ShortCut("Ctrl+Alt+Z"));
 		AddMenuItem(mnHIDDEN, myMenuItem("toolbar_settings",mxID_TOOLBAR_SETTINGS, LANG(MENUITEM_TOOLBAR_SETTINGS,"Configurar barras de herramientas...")).ShortCut(""));
 		AddMenuItem(mnHIDDEN, myMenuItem("codetools_popup",mxID_TOOLS_CODE_POPUP, LANG(MENUITEM_CODETOOLS_POPUP,"Mostrar menú de generación de código")).ShortCut("Ctrl+Shift+X"));
+		
+		AddMenuItem(mnHIDDEN, myMenuItem("source_properties",mxID_PROJECT_POPUP_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"Propiedades del archivo...")).EnableIf(ecSOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("open_folder",mxID_PROJECT_POPUP_OPEN_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER,"Abrir carpeta contenedora...")).EnableIf(ecSOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("explore_folder",mxID_FILE_EXPLORE_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER,"Explorar carpeta contenedora")).EnableIf(ecSOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("add_to_project",mxID_PROJECT_POPUP_ADD_SELECTED,LANG(MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT,"Agregar archivo al proyecto")).EnableIf(ecPROJECT_AND_SOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("rename_file",mxID_PROJECT_POPUP_RENAME,LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar archivo...")).EnableIf(ecSOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("detach_from_project",mxID_PROJECT_POPUP_DELETE,LANG(MAINW_PROJECT_FILE_POPUP_DETACH,"&Quitar archivo del proyecto")).EnableIf(ecPROJECT_AND_SOURCE));
+		
+		AddMenuItem(mnHIDDEN, myMenuItem("compile_first",mxID_PROJECT_POPUP_COMPILE_FIRST,LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar este fuente &primero")).EnableIf(ecPROJECT_AND_SOURCE).Checkeable(false));
+		AddMenuItem(mnHIDDEN, myMenuItem("recompile_one",mxID_PROJECT_POPUP_COMPILE_NOW,LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar este fuente a&hora")).EnableIf(ecPROJECT_AND_SOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("src_compiling_opts",mxID_PROJECT_POPUP_COMPILING_OPTS,LANG(MAINW_PROJECT_FILE_POPUP_COMPILING_OPTS,"Opciones de compilación por fuente...")).EnableIf(ecPROJECT));
+		AddMenuItem(mnHIDDEN, myMenuItem("read_only",mxID_PROJECT_POPUP_READONLY,LANG(MAINW_PROJECT_FILE_POPUP_READONLY,"Solo lectura")).EnableIf(ecPROJECT_AND_SOURCE).Checkeable(false));
+		AddMenuItem(mnHIDDEN, myMenuItem("hide_symbols",mxID_PROJECT_POPUP_HIDE_SYMBOLS,LANG(MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS,"Ignorar símbolos en búsquedas")).EnableIf(ecPROJECT_AND_SOURCE).Checkeable(false));
+		
+		AddMenuItem(mnHIDDEN, myMenuItem("move_to_sources",mxID_PROJECT_POPUP_MOVE_TO_SOURCES,LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES,"Mover a &Fuentes")).EnableIf(ecPROJECT_AND_SOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("move_to_headers",mxID_PROJECT_POPUP_MOVE_TO_HEADERS,LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS,"Mover a &Cabeceras")).EnableIf(ecPROJECT_AND_SOURCE));
+		AddMenuItem(mnHIDDEN, myMenuItem("move_to_others",mxID_PROJECT_POPUP_MOVE_TO_OTHERS,LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS,"Mover a &Otros")).EnableIf(ecPROJECT_AND_SOURCE));
+		
+		AddMenuItem(mnHIDDEN, myMenuItem("last_compiler_output",mxID_COMPILER_POPUP_FULL,LANG(MAINW_OPEN_LAST_COMPILER_OUTPUT,"Abrir última salida")));
+		AddMenuItem(mnHIDDEN, myMenuItem("attach_multiple_files",mxID_PROJECT_POPUP_ADD_MULTI,LANG(MAINW_PROJECT_FILE_POPUP_ADD_MULTI,"&Agregar Múltiples Archivos...")).EnableIf(ecPROJECT));
+		AddMenuItem(mnHIDDEN, myMenuItem("set_as_master",mxID_FILE_SET_AS_MASTER,LANG(MENUITEM_FILE_SET_AS_MASTER,"Ejecutar siempre este fuente")).EnableIf(ecSOURCE).Checkeable(false));
+	
+		for(int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) AddMenuItem(mnHIDDEN, myMenuItem(wxString("project_tool_")<<i,mxID_CUSTOM_PROJECT_TOOL_0+i,LANG1(MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL,"Herramienta personalizada de proyecto <{1}>",wxString()<<i)).ShortCut(""));
+		
 	}
 	
 }

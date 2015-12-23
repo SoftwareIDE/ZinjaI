@@ -597,7 +597,7 @@ public:
 	bool DeleteFile(wxTreeItemId tree_item);
 	project_file_item *AddFile (eFileType where, wxFileName name, bool sort_tree=true);
 	
-	/// Determina cuales son los projectos wxfb asociados al proyecto zinjai y sus respectivos fuentes (busca archivos .fbp en Otros, guarda los resultados en wxfb->projects y wxfb->sources)
+	/// Determina cuales son los proyectos wxfb asociados al proyecto zinjai y sus respectivos fuentes (busca archivos .fbp en Otros, guarda los resultados en wxfb->projects y wxfb->sources)
 	void WxfbGetFiles();
 	/// Sets read_only and hide_symbols properties for project_file_items from wxfb projects
 	void WxfbSetFileProperties(bool change_read_only, bool read_only_value, bool change_hide_symbols, bool hide_symbols_value);

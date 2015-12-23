@@ -654,35 +654,37 @@ void mxMainWindow::OnSymbolTreePopup(wxTreeEvent &event) {
 }
 
 void mxMainWindow::PopulateProjectFilePopupMenu(wxMenu &menu, project_file_item *fi, bool for_tab) {
-	if (!fi) menu.Append(mxID_PROJECT_POPUP_ADD_SELECTED, LANG(MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT,"Agregar al proyecto"));
+	if (!fi) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_ADD_SELECTED));
 	if (fi) project_tree.selected_parent = project_tree.treeCtrl->GetItemParent(project_tree.selected_item);
-	if (!for_tab) menu.Append(mxID_PROJECT_POPUP_OPEN, LANG(MAINW_PROJECT_FILE_POPUP_SHOW_FILE,"&Mostrar Archivo"));
-	if (fi) menu.Append(mxID_PROJECT_POPUP_RENAME, LANG(MAINW_PROJECT_FILE_POPUP_RENAME,"&Renombrar Archivo..."));
-	if (fi) menu.Append(mxID_PROJECT_POPUP_DELETE, LANG(MAINW_PROJECT_FILE_POPUP_DETACH,"&Quitar Archivo"));
+	if (!for_tab) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_OPEN));
+	if (fi) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_RENAME));
+	if (fi) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_DELETE));
 	if (fi) {
 		menu.AppendSeparator();
 		if (project_tree.selected_parent==project_tree.sources) {
 			wxMenuItem *item=menu.AppendCheckItem(mxID_PROJECT_POPUP_COMPILE_FIRST, LANG(MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST,"Compilar &Primero"));
 			item->Enable(fi!=project->files_sources[0] && !compiler->IsCompiling()); item->Check(fi==project->files_sources[0]);
-			menu.Append(mxID_PROJECT_POPUP_COMPILE_NOW, LANG(MAINW_PROJECT_FILE_POPUP_RECOMPILE,"Recompilar A&hora"))->Enable(!compiler->IsCompiling());
-			if (fi->where==FT_SOURCE) menu.Append(mxID_PROJECT_POPUP_COMPILING_OPTS, LANG(MAINW_PROJECT_FILE_POPUP_COMPILING_OPTS,"Opciones de compilación..."))->Enable(!compiler->IsCompiling());
+			
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_COMPILE_NOW))->Enable(!compiler->IsCompiling());
+			if (fi->where==FT_SOURCE) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_COMPILING_OPTS))->Enable(!compiler->IsCompiling());
 		}
-		menu.AppendCheckItem(mxID_PROJECT_POPUP_READONLY, LANG(MAINW_PROJECT_FILE_POPUP_READONLY,"Solo lectura"))->Check(fi->read_only);
-		if (fi->where!=FT_OTHER) menu.AppendCheckItem(mxID_PROJECT_POPUP_HIDE_SYMBOLS, LANG(MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS,"Ignorar símbolos en búsquedas"))->Check(fi->hide_symbols);
+		
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_READONLY))->Check(fi->read_only);
+		if (fi->where!=FT_OTHER) mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_HIDE_SYMBOLS))->Check(fi->hide_symbols);
 	}
 	menu.AppendSeparator();
 	if (!for_tab && fi) {
 		if (project_tree.selected_parent!=project_tree.sources)
-			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_SOURCES, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES,"Mover a &Fuentes"));
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_MOVE_TO_SOURCES));
 		if (project_tree.selected_parent!=project_tree.headers)
-			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_HEADERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS,"Mover a &Cabeceras"));
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_MOVE_TO_HEADERS));
 		if (project_tree.selected_parent!=project_tree.others)
-			menu.Append(mxID_PROJECT_POPUP_MOVE_TO_OTHERS, LANG(MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS,"Mover a &Otros"));
+			mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_MOVE_TO_OTHERS));
 		menu.AppendSeparator();
 	}
-	menu.Append(mxID_PROJECT_POPUP_OPEN_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER,"Abrir carpeta contenedora..."));
-	menu.Append(mxID_FILE_EXPLORE_FOLDER, LANG(MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER,"Explorar carpeta contenedora"));
-	menu.Append(mxID_PROJECT_POPUP_PROPERTIES, LANG(MAINW_PROJECT_FILE_POPUP_PROPERTIES,"Propiedades..."));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_OPEN_FOLDER));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_EXPLORE_FOLDER));
+	mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_PROPERTIES));
 }
 
 void mxMainWindow::OnProjectTreePopup(wxTreeEvent &event) {
