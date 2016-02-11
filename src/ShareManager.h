@@ -69,5 +69,5 @@ public:
 	bool SendBroadcast(const char *data);
 };
 
-extern ShareManager *share;
+extern ShareManager *g_share_manager;
 

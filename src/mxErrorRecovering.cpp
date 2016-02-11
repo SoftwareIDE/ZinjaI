@@ -163,7 +163,7 @@ bool mxErrorRecovering::RecoverSomething() {
 					}
 				}
 			fil.Close();
-			if (welcome_panel) main_window->ShowWelcome(false);
+			if (g_welcome_panel) main_window->ShowWelcome(false);
 			
 			if (main_window->left_panels) {
 				_menu_item(mxID_VIEW_LEFT_PANELS)->Check(true);

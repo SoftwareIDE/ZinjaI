@@ -40,7 +40,7 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 			// que por alguna razon no coincide con el mismo coeficiente (el color interpolado aca con el que pone scintilla), por eso aca uso 20%
 #define alpha 20/100
 #define base 255*80/100
-			wxColour color(base+ctheme->CURRENT_LINE.Red()*alpha,base+ctheme->CURRENT_LINE.Green()*alpha,base+ctheme->CURRENT_LINE.Blue()*alpha);
+			wxColour color(base+g_ctheme->CURRENT_LINE.Red()*alpha,base+g_ctheme->CURRENT_LINE.Green()*alpha,base+g_ctheme->CURRENT_LINE.Blue()*alpha);
 			dc.SetBrush(wxBrush(color));
 			dc.SetPen(wxPen(color));
 			dc.DrawRectangle(0,y,mw,lh);
@@ -76,8 +76,8 @@ void mxGCovSideBar::Refresh (mxSource *src) {
 		cl=src->GetCurrentLine();
 		fvl=src->GetFirstVisibleLine();
 		if (ShouldLoadData(src)) {
-			class ReloadGCovAction:public mxMainWindow::AfterEventsAction {
-				public: void Do() override { main_window->gcov_sidebar->LoadData(); }
+			class ReloadGCovAction : public mxMainWindow::AfterEventsAction {
+				public: void Run() override { main_window->gcov_sidebar->LoadData(); }
 			};
 			main_window->CallAfterEvents(new ReloadGCovAction);
 		} else wxWindow::Refresh();

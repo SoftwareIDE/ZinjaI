@@ -5,8 +5,8 @@ class wxTextCtrl;
 
 class mxTextDialog : public wxDialog {
 private:
-	wxString answer;
-	wxTextCtrl *text;
+	wxString m_answer;
+	wxTextCtrl *m_text;
 public:
 	mxTextDialog(wxWindow *parent, wxString title, wxString message, wxString value);
 	wxString GetAnswer();

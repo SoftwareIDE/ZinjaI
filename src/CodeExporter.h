@@ -18,7 +18,7 @@ private:
 			fgcolor="#000000";
 			used=false;
 		}
-	} styles[128];
+	} m_styles[128];
 	void DefineStyles(int lexer);
 public:
 	CodeExporter();

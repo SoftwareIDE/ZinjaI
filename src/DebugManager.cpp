@@ -495,7 +495,7 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 		bool should_continue=false; // cuando se pauso solo para colocar un brekapoint y seguir, esto indica que siga sin analizar la salida... puede ser how diga signal-received (lo normal) o que se haya pausado justo por un bp de los que solo actualizan la tabla de inspecciones
 		
 		if (on_pause_action) {// si se pauso solo para colocar un brekapoint o algo asi, hacerlo y setear banderas para que siga ejecutando
-			on_pause_action->Do(); 
+			on_pause_action->Run(); 
 			delete on_pause_action; 
 			on_pause_action=nullptr;
 			should_pause=false; // la pausa no la generó el usuario, sino que era solo para colocar el brakpoint
@@ -1051,7 +1051,7 @@ wxString DebugManager::WaitAnswer() {
 		wxDateTime t1=wxDateTime::Now();
 		while ( process && ! input->CanRead() && input->IsOk()) {
 			if (running) {
-				app->Yield(true);
+				g_application->Yield(true);
 				wxMilliSleep(50);
 			} else {
 				wxMilliSleep(10);
@@ -1923,7 +1923,7 @@ void DebugManager::TemporaryScopeChange::ChangeIfNeeded(DebuggerInspection *di) 
 
 bool DebugManager::PauseFor (OnPauseAction * action) {
 	if (!debugging) { delete action; return false; } // si no estamos depurando, no hacer nada (no deberia pasar)
-	if (!waiting) { action->Do(); delete action; return true; } // si esta en pausa ejecuta en el momento (no deberia pasar)
+	if (!waiting) { action->Run(); delete action; return true; } // si esta en pausa ejecuta en el momento (no deberia pasar)
 	if (on_pause_action) return false; // por ahora no se puede encolar mas de una accion
 	on_pause_action = action; // encolar la accion
 	Pause(); // pausar para que se ejecute

@@ -4,9 +4,6 @@
 
 class mxSource;
 
-extern wxPrintDialogData *printDialogData;
-//extern wxPageSetupDialogData *pageSetupData;
-
 /**
 * @brief Gestiona la impresión de un fuente
 * 
@@ -39,15 +36,18 @@ public:
 	void SetPageStart(int page, int start);
 	
 private:
-	mxSource *source; ///< fuente a imprimir
+	mxSource *m_source; ///< fuente a imprimir
 	int m_printed; ///< variable auxiliar para determinar hasta donde se "imprimió" en GetPageInfo
-	int *pages; ///< guarda en que indice del texto fuente comienza cada pagina
-	int pages_len; ///< tamaño en memoria del arreglo de indices de comienzo para cada pagina
+	int *m_pages; ///< guarda en que indice del texto fuente comienza cada pagina
+	int m_pages_len; ///< tamaño en memoria del arreglo de indices de comienzo para cada pagina
 	wxRect m_pageRect; ///< area de la página completa
 	wxRect m_printRect; ///< area de impresión
 	
 	bool PrintScaling (wxDC *dc);
 };
+
+extern wxPrintDialogData *g_printDialogData;
+
 
 #endif
 

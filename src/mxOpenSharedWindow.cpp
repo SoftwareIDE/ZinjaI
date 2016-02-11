@@ -29,7 +29,7 @@ mxOpenSharedWindow *mxOpenSharedWindow::open_shared = nullptr;
 	
 mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, LANG(OPENSHARED_CAPTION,"Abrir Compartido"), pos, size, style) {
 
-	if (!share) share = new ShareManager();
+	if (!g_share_manager) g_share_manager = new ShareManager();
 	
 	clients_list = new wxListBox(this,mxID_SHARE_CLIENTS_LIST,wxDefaultPosition, wxSize(200,150));
 	wxStaticText *help_text_1 = new wxStaticText(this,wxID_ANY,LANG(OPENSHARED_STEP_1,"1) Dirección de origen:"));
@@ -83,7 +83,7 @@ void mxOpenSharedWindow::OnGetListButton(wxCommandEvent &event){
 	if (!(hostname->GetValue().Len())) {
 		mxMessageDialog(this,LANG(OPENSHARED_ENTER_HOSTNAME_OR_IP,"Debe introducir primero el nombre de host o el IP de la pc que esta compartiendo el archivo."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
 	} else {
-		if (share->GetList(hostname->GetValue(),files_list))
+		if (g_share_manager->GetList(hostname->GetValue(),files_list))
 			files_list->SetFocus();
 		else 
 			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
@@ -108,7 +108,7 @@ void mxOpenSharedWindow::OnGetSourceButton(wxCommandEvent &event){
 			files_list->SetFocus();
 		}
 	} else {
-		if (share->AskFor(files_list->GetStringSelection()))
+		if (g_share_manager->AskFor(files_list->GetStringSelection()))
 			Close();
 		else
 			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
@@ -155,6 +155,6 @@ void mxOpenSharedWindow::Show ( ) {
 
 void mxOpenSharedWindow::DoShow ( ) {
 	wxDialog::Show();
-	share->StartBroadcastListener(true);
+	g_share_manager->StartBroadcastListener(true);
 }
 

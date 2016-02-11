@@ -29,10 +29,10 @@ mxCalltip::mxCalltip (mxSource * src) :
 void mxCalltip::OnPaint (wxPaintEvent & event) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
-	dc.SetBackground(ctheme->CALLTIP_BACK); dc.Clear(); 
+	dc.SetBackground(g_ctheme->CALLTIP_BACK); dc.Clear(); 
 	my_font.SetWeight(wxFONTWEIGHT_NORMAL); dc.SetFont(my_font);
 //	dc.SetTextBackground(*back);
-	dc.SetTextForeground(ctheme->CALLTIP_FORE);
+	dc.SetTextForeground(g_ctheme->CALLTIP_FORE);
 	int w,h; GetClientSize(&w,&h);
 	int cur_y=1; wrap_info wi;
 	for(int i=0;i<entries.GetSize();i++) {
@@ -65,7 +65,7 @@ void mxCalltip::OnPaint (wxPaintEvent & event) {
 //		dc.DrawText(entries[i].bold_line,2,cur_y); cur_y+=char_h;
 //	}
 	wxSize sz = dc.GetSize();
-	dc.SetPen(wxPen(ctheme->CALLTIP_FORE));
+	dc.SetPen(wxPen(g_ctheme->CALLTIP_FORE));
 	dc.DrawLine(0				,0					,sz.GetWidth()-1	,0);
 	dc.DrawLine(0				,sz.GetHeight()-1	,sz.GetWidth()-1	,sz.GetHeight()-1);
 	dc.DrawLine(0				,0					,0					,sz.GetHeight()-1);

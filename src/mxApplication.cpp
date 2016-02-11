@@ -41,7 +41,7 @@ wxLongLong aux_start_time;
 
 IMPLEMENT_APP(mxApplication)
 	
-mxApplication *app = nullptr;
+mxApplication *g_application = nullptr;
 
 #ifdef __linux__
 static void RestoreEnvVar(const char *varname) {
@@ -78,7 +78,7 @@ SHOW_MILLIS("Entering OnInit...");
 	wxLog::SetActiveTarget(new wxLogStderr());
 #endif
 	
-	app=this;
+	g_application =this;
 	srand(time(nullptr));
 	
 	sizers = new mxSizers();
@@ -182,8 +182,8 @@ SHOW_MILLIS("Icon installer and tips...");
 #endif
 	) {
 		main_window->Refresh();
-		tips_window = new mxTipsWindow(main_window, wxID_ANY);
-		if (splash) splash->ShouldClose();
+		g_tips_window = new mxTipsWindow(main_window, wxID_ANY);
+		if (g_splash) g_splash->ShouldClose();
 	}
 	
 SHOW_MILLIS("Loading welcome panel...");	
@@ -196,10 +196,10 @@ SHOW_MILLIS("Welcome panel done...");
 	if (!main_window) return false;
 	
 	// puede haber llegado algo para el singleton mientras cargabamos
-	if (singleton) singleton->ProcessToOpenQueue();
+	if (g_singleton) g_singleton->ProcessToOpenQueue();
 	
 	// devolver el foco a la ventana de sugerencias si existe, para que se pueda cerrar con Esc
-	if (tips_window) tips_window->Raise();
+	if (g_tips_window) g_tips_window->Raise();
 	
 //#ifdef _ZINJAI_DEBUG
 //	cerr<<"Initialization complete: "<<wxGetLocalTimeMillis()-start_time<<"ms"<<endl;
@@ -235,20 +235,20 @@ void mxApplication::SelectLanguage ( ) {
 
 bool mxApplication::InitSingleton(const wxString &cmd_path) {
 	// inicialize singleton manager
-	singleton = new mxSingleton; // siempre debe existir la instancia...
+	g_singleton = new mxSingleton; // siempre debe existir la instancia...
 	if (!config->Init.singleton) return false; // ...aunque no se use
-	singleton->Start();
-	if (singleton->IsRunning() || argc==1) return false; // si no hay otra instancia o no hay argumentos
+	g_singleton->Start();
+	if (g_singleton->IsRunning() || argc==1) return false; // si no hay otra instancia o no hay argumentos
 	// intentar cargar todo en la otra instancia
 	bool done=true;
 	for (int i=1; i<argc;i++) {
 		wxString name = argv[i];
 		if (name!="--last-source" && name!="--last-project" && name!="--no-splash" && name.AfterLast('.').Lower()!=PROJECT_EXT) {
-			bool opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
+			bool opened = g_singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
 			int ret=0;
 			while (!opened && ret<2) { // dos reintentos, por si estaba muy ocupado
 				wxMilliSleep(10*rand()%50); // delay aleatorio tip ethernet
-				opened = singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
+				opened = g_singleton->RemoteOpen(DIR_PLUS_FILE(cmd_path,name));
 				ret++;
 			}
 			if (opened)
@@ -270,7 +270,7 @@ void mxApplication::ShowSplash ( ) {
 			no_splash=true;
 		}
 	if (!no_splash && wxFileName(DIR_PLUS_FILE("imgs",SPLASH_FILE)).FileExists()) 
-			splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",SPLASH_FILE));
+		g_splash = new mxSplashScreen(DIR_PLUS_FILE("imgs",SPLASH_FILE));
 }
 
 void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {
@@ -285,11 +285,11 @@ void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {
 				main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
 			main_window->Refresh();
 		} 
-		if (splash) splash->ShouldClose();
+		if (g_splash) g_splash->ShouldClose();
 	} else {
 		main_window->Refresh();
 		wxYield();
-		if (splash) splash->ShouldClose();
+		if (g_splash) g_splash->ShouldClose();
 		for (int i=1; i<argc;i++) {
 			if (wxString(argv[i])=="--last-source" && config->Files.last_source[0].Len())
 				main_window->OpenFileFromGui(wxString(config->Files.last_source[0]));
@@ -307,9 +307,9 @@ void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {
 	
 	
 	if ( (project || main_window->notebook_sources->GetPageCount()>0) && config->Init.show_beginner_panel && !config->Init.autohide_panels) {
-		if (config->Init.show_beginner_panel && !beginner_panel) {
-			beginner_panel = new mxBeginnerPanel(main_window);
-			main_window->aui_manager.InsertPane(beginner_panel, wxAuiPaneInfo().Name("beginner_panel").Caption("Panel de Asistencias").Right().Layer(0).Show(), wxAUI_INSERT_ROW);
+		if (config->Init.show_beginner_panel && !g_beginner_panel) {
+			g_beginner_panel = new mxBeginnerPanel(main_window);
+			main_window->aui_manager.InsertPane(g_beginner_panel, wxAuiPaneInfo().Name("beginner_panel").Caption("Panel de Asistencias").Right().Layer(0).Show(), wxAUI_INSERT_ROW);
 			_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(true);
 			main_window->aui_manager.Update();
 		}

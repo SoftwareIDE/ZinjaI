@@ -43,19 +43,19 @@ mxTextDialog::mxTextDialog(wxWindow *parent, wxString message, wxString title, w
 	
 //	topSizer->Add( new wxStaticText(this,wxID_ANY,message), sizers->BA10_Exp1);
 	mySizer->Add( new wxStaticText(this,wxID_ANY,message), sizers->BA10_Exp1);
-	text=new wxTextCtrl(this,wxID_ANY,value);
-	mySizer->Add( text, sizers->BA10_Exp1);
+	m_text=new wxTextCtrl(this,wxID_ANY,value);
+	mySizer->Add( m_text, sizers->BA10_Exp1);
 	
 	mySizer->Add(bottomSizer,sizers->BA5_Right);
 	SetMinSize(GetSize());
 	SetSizerAndFit(mySizer);
-	text->SetFocus();
+	m_text->SetFocus();
 	
 }
 
 
 void mxTextDialog::OnOkButton(wxCommandEvent &event){
-	answer=text->GetValue();
+	m_answer = m_text->GetValue();
 	EndModal(wxID_OK);
 }
 
@@ -69,7 +69,7 @@ void mxTextDialog::OnClose(wxCloseEvent &event){
 
 void mxTextDialog::OnCharHook(wxKeyEvent &event) {
 	if (event.GetKeyCode()==WXK_RETURN) {
-		answer=text->GetValue();
+		m_answer = m_text->GetValue();
 		EndModal(wxID_OK);
 	} else
 		event.Skip();
@@ -78,7 +78,7 @@ void mxTextDialog::OnCharHook(wxKeyEvent &event) {
 
 
 wxString mxTextDialog::GetAnswer() {
-	return answer;
+	return m_answer;
 }
 
 wxString mxGetTextFromUser(wxString text, wxString title, wxString value, wxWindow *parent) {

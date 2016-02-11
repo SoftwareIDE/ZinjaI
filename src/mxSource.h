@@ -78,7 +78,7 @@ public:
 	void Reset() { hsize=1; hcur=0; hbase=0; focus_source=nullptr; jumping=false; }
 };
 
-extern NavigationHistory navigation_history;
+extern NavigationHistory g_navigation_history;
 
 /**
 * @brief Componente visual de edicion de texto para fuentes
@@ -100,7 +100,7 @@ class mxSource: public wxStyledTextCtrl {
 	
 	friend class NavigationHistory;
 	friend class LocalRefactory;
-	int old_current_line; ///< for detecting jumps long enought to record in navigation_history
+	int old_current_line; ///< for detecting jumps long enought to record in g_navigation_history
 	
 public:
 	struct MacroAction { 

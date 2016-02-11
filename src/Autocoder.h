@@ -25,8 +25,8 @@ WX_DECLARE_STRING_HASH_MAP( auto_code, HashStringAutoCode );
 **/
 class Autocoder {
 private:
-	wxString description;
-	HashStringAutoCode list;
+	wxString m_description;
+	HashStringAutoCode m_list;
 	friend class CodeHelper;
 public:
 	
@@ -56,7 +56,7 @@ public:
 	
 };
 
-extern Autocoder *autocoder;
+extern Autocoder *g_autocoder;
 
 #endif
 

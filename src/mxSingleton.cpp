@@ -8,33 +8,33 @@ BEGIN_EVENT_TABLE(mxSingleton,wxEvtHandler)
 	EVT_SOCKET(wxID_ANY,mxSingleton::OnSocket)
 END_EVENT_TABLE()
 
-mxSingleton *singleton=nullptr;
+mxSingleton *g_singleton=nullptr;
 
-mxSingleton::mxSingleton():server(nullptr) {
-	calls_count=0;
-	data=nullptr;
-	gid=0;
-	ready=false;
+mxSingleton::mxSingleton():m_server(nullptr) {
+	m_calls_count=0;
+	m_data=nullptr;
+	m_gid=0;
+	m_ready=false;
 }
 
 mxSingleton::~mxSingleton() {
-	if (server) server->Destroy();
-	if (data) free(data);
+	if (m_server) m_server->Destroy();
+	if (m_data) free(m_data);
 }
 
 bool mxSingleton::Start() {
 	wxIPV4address adrs;
 	adrs.Hostname(_T("127.0.0.1")); // esta linea era el problema por el cual no se aceptaban conexiones externas
 	adrs.Service(config->Init.zinjai_server_port+1);
-	server = new wxSocketServer(adrs);
-	server->SetEventHandler(*this, wxID_ANY);
-	server->SetNotify(wxSOCKET_CONNECTION_FLAG);
-	server->Notify(true);
-	if (!server->IsOk()) {
-		delete server;
-		server=nullptr;
+	m_server = new wxSocketServer(adrs);
+	m_server->SetEventHandler(*this, wxID_ANY);
+	m_server->SetNotify(wxSOCKET_CONNECTION_FLAG);
+	m_server->Notify(true);
+	if (!m_server->IsOk()) {
+		delete m_server;
+		m_server=nullptr;
 	}
-	return server!=nullptr;
+	return m_server!=nullptr;
 }
 
 bool mxSingleton::RemoteOpen(wxString fname) {
@@ -56,8 +56,8 @@ bool mxSingleton::RemoteOpen(wxString fname) {
 }
 
 void mxSingleton::LocalOpen(wxString fname) {
-	if (!ready) { 
-		to_open.Add(fname);
+	if (!m_ready) { 
+		m_to_open.Add(fname);
 	} else {
 		main_window->OpenFileFromGui(fname);
 		main_window->Raise();
@@ -65,50 +65,50 @@ void mxSingleton::LocalOpen(wxString fname) {
 }
 
 void mxSingleton::ProcessToOpenQueue() {
-	ready=true;
-	int n=to_open.GetCount();
+	m_ready = true;
+	int n = m_to_open.GetCount();
 	if (!n) return;
 	for(int i=0;i<n;i++) { 
-		main_window->OpenFileFromGui(to_open[i]);
+		main_window->OpenFileFromGui(m_to_open[i]);
 	}
-	to_open.Clear();
+	m_to_open.Clear();
 	main_window->Raise();
 }
 
 void mxSingleton::Stop() {
-	if (server) delete server;
-	server=nullptr;
+	if (m_server) delete m_server;
+	m_server=nullptr;
 }
 
 void mxSingleton::OnSocket(wxSocketEvent &evt) {
 	wxSocketBase *who = evt.GetSocket();
 	wxSocketNotify what = evt.GetSocketEvent();
-	if (who==server) {
-		wxSocketBase *sock = server->Accept(false);
-		if (data) {
-			if (calls_count+1==max_count) {
-				max_count*=2;
+	if (who==m_server) {
+		wxSocketBase *sock = m_server->Accept(false);
+		if (m_data) {
+			if (m_calls_count+1==m_max_count) {
+				m_max_count*=2;
 				// cppcheck-suppress memleakOnRealloc
-				data = (singleton_data*)realloc(data,sizeof(singleton_data)*max_count);
+				m_data = (singleton_data*)realloc(m_data,sizeof(singleton_data)*m_max_count);
 			}	
 		} else {
-			max_count=10;
-			data = (singleton_data*)malloc(sizeof(singleton_data)*max_count);
+			m_max_count=10;
+			m_data = (singleton_data*)malloc(sizeof(singleton_data)*m_max_count);
 		}
-		data[calls_count].socket=sock;
-		data[calls_count].data=new wxString;
-		data[calls_count].id=++gid;
-		calls_count++;
+		m_data[m_calls_count].socket=sock;
+		m_data[m_calls_count].data=new wxString;
+		m_data[m_calls_count].id=++m_gid;
+		m_calls_count++;
 		sock->SetEventHandler(*this, wxID_ANY);
 		sock->SetNotify(wxSOCKET_LOST_FLAG|wxSOCKET_INPUT_FLAG);
 		sock->Notify(true);
 	} else {
 		int cnum=0; // buscar cual llamada es
-		while (cnum<calls_count && data[cnum].socket!=who) cnum++;
-		if (cnum==calls_count) return;
+		while (cnum<m_calls_count && m_data[cnum].socket!=who) cnum++;
+		if (cnum==m_calls_count) return;
 		if (what==wxSOCKET_INPUT) {
-			wxString mdat=(*data[cnum].data);
-			int mid=data[cnum].id;
+			wxString mdat=(*m_data[cnum].data);
+			int mid = m_data[cnum].id;
 			static char buf[256];
 			who->Read(buf,255);
 			int lc = who->LastCount();
@@ -123,13 +123,13 @@ void mxSingleton::OnSocket(wxSocketEvent &evt) {
 				LocalOpen(fname);
 			}
 			// en el idle del openfromgui puede haber procesado el lost y borrado el data
-			if (mid==data[cnum].id) (*data[cnum].data)=mdat;
+			if (mid==m_data[cnum].id) (*m_data[cnum].data)=mdat;
 		} else if (what==wxSOCKET_LOST) {
-			delete data[cnum].data;
-			data[cnum].id=0;
-			calls_count--;
-			if (cnum!=calls_count && calls_count) {
-				data[cnum]=data[calls_count];
+			delete m_data[cnum].data;
+			m_data[cnum].id=0;
+			m_calls_count--;
+			if (cnum!=m_calls_count && m_calls_count) {
+				m_data[cnum]=m_data[m_calls_count];
 			}
 			delete who;
 		}
@@ -137,5 +137,5 @@ void mxSingleton::OnSocket(wxSocketEvent &evt) {
 }
 
 bool mxSingleton::IsRunning() {
-	return server!=nullptr;
+	return m_server!=nullptr;
 }

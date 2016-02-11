@@ -9,8 +9,6 @@
 #include "mxHelpWindow.h"
 #include "ProjectManager.h"
 
-mxValgrindConfigDialog *valgrind_config=nullptr;
-
 BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 	EVT_BUTTON(wxID_OK,mxValgrindConfigDialog::OnButtonOk)
 	EVT_BUTTON(wxID_CANCEL,mxValgrindConfigDialog::OnButtonCancel)

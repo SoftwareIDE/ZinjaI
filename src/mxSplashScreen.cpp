@@ -9,7 +9,7 @@ using namespace std;
 #include "mxSplashScreen.h"
 #include "mxApplication.h" // for SHOW_MILLIS
 
-mxSplashScreen *splash = nullptr;
+mxSplashScreen *g_splash = nullptr;
 
 BEGIN_EVENT_TABLE(mxSplashScreen, wxFrame)
 	EVT_PAINT(mxSplashScreen::OnPaint)
@@ -22,7 +22,7 @@ BEGIN_EVENT_TABLE(mxSplashScreen, wxFrame)
 END_EVENT_TABLE()
 
 mxSplashScreen::mxSplashScreen(wxString image_path):wxFrame(nullptr,wxID_ANY,_T("Cargando ZinjaI..."),wxDefaultPosition,wxDefaultSize, wxNO_BORDER | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR) {
-	splash=this;
+	g_splash = this;
 	m_bmp = wxBitmap(image_path,wxBITMAP_TYPE_PNG);
 	w = m_bmp.GetWidth(); h = m_bmp.GetHeight();
 //	m_cpu = wxBitmap(DIR_PLUS_FILE("imgs","splash_cpu.png"),wxBITMAP_TYPE_PNG);
@@ -55,7 +55,7 @@ void mxSplashScreen::OnPaint(wxPaintEvent& WXUNUSED(evt)) {
 	wxPaintDC dc(this);
 	PrepareDC(dc);
 	dc.DrawBitmap(m_bmp, 0, 0, true);
-//	if (splash==this) {
+//	if (g_splash==this) {
 //		for (int i=0;i<cpu_count;i++)
 //			dc.DrawBitmap(m_cpu,w-cpu_w*(i+1),h-cpu_h,true);
 //	}
@@ -85,6 +85,6 @@ void mxSplashScreen::OnMouse(wxMouseEvent &evt) {
 
 void mxSplashScreen::OnClose(wxCloseEvent &evt) {
 	if (timer) timer->Stop();
-	if (this==splash) splash=nullptr;
+	if (this==g_splash) g_splash=nullptr;
 	Destroy();
 }

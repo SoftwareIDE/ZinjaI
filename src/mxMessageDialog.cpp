@@ -29,7 +29,7 @@ mxMessageDialog::mxMessageDialog(wxString message, wxString title, unsigned int 
 
 void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxString title, unsigned int style, wxString check, bool bval) {
 	
-	if (splash) splash->Close();
+	if (g_splash) g_splash->Close();
 
 	buttons=style;
 	

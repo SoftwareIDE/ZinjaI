@@ -479,20 +479,20 @@ END_EVENT_TABLE()
 * para evitar procesar uno de esos eventos.
 **/
 class PreventExecuteYieldExecuteProblem {
-	static bool flag; 
-	bool owns_flag;
+	static bool m_flag; 
+	bool m_owns_flag;
 public:
 	PreventExecuteYieldExecuteProblem() {
-		owns_flag=!flag;
-		flag=true;
+		m_owns_flag=!m_flag;
+		m_flag=true;
 	}
 	~PreventExecuteYieldExecuteProblem() {
-		if (owns_flag) flag=false;
+		if (m_owns_flag) m_flag=false;
 	}
-	bool IsOk() { return owns_flag; }
+	bool IsOk() { return m_owns_flag; }
 };
 
-bool PreventExecuteYieldExecuteProblem::flag=false;
+bool PreventExecuteYieldExecuteProblem::m_flag=false;
 
 #define _prevent_execute_yield_execute_problem \
 	PreventExecuteYieldExecuteProblem prevent_execute_yield_execute_problem; \
@@ -512,7 +512,6 @@ SHOW_MILLIS("Entering mxMainWindow's constructor...");
 	untitled_count=0;
 	registers_panel=nullptr;
 	valgrind_panel=nullptr; 
-	beginner_panel=nullptr;
 	gcov_sidebar=nullptr;
 	diff_sidebar=nullptr;
 	for (int i=0;i<ATH_COUNT;i++)
@@ -589,8 +588,8 @@ SHOW_MILLIS("Initializing aui_manager, panels...");
 	}
 		
 	if (config->Init.show_welcome) {
-		welcome_panel=new mxWelcomePanel(this);
-		aui_manager.AddPane(welcome_panel, wxAuiPaneInfo().Name("welcome_panel").CenterPane().PaneBorder(false).Hide());
+		g_welcome_panel = new mxWelcomePanel(this);
+		aui_manager.AddPane(g_welcome_panel, wxAuiPaneInfo().Name("welcome_panel").CenterPane().PaneBorder(false).Hide());
 	}
 
 	aui_manager.SetFlags(aui_manager.GetFlags() | wxAUI_MGR_TRANSPARENT_DRAG | wxAUI_MGR_LIVE_RESIZE);
@@ -604,13 +603,10 @@ SHOW_MILLIS("Initializing aui_manager, panels...");
 SHOW_MILLIS("Initializing parser and toolchain...");	
 
 	parser = new Parser(this);
-	code_helper->AppendIndexes(config->Help.autocomp_indexes);
-	autocoder = new Autocoder;
+	g_code_helper->AppendIndexes(config->Help.autocomp_indexes);
+	g_autocoder = new Autocoder;
 	
 	compiler = new mxCompiler(compiler_tree.treeCtrl,compiler_tree.state,compiler_tree.errors,compiler_tree.warnings,compiler_tree.all);
-
-	wizard = nullptr; //new mxNewWizard(this);
-	share = nullptr; // new ShareManager();
 
 	parser_timer = new wxTimer(GetEventHandler(),mxID_PARSER_TIMER);
 	compiler->timer = new wxTimer(GetEventHandler(),mxID_COMPILER_TIMER);
@@ -926,7 +922,7 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 	config->Init.show_beginner_panel=_menu_item(mxID_VIEW_BEGINNER_PANEL)->IsChecked();
 	config->Save();
 	while (notebook_sources->GetPageCount()) notebook_sources->DeletePage(0); // close sources to avoid paint events and other calls that could use some just deleted objects
-	if (share) delete share;
+	if (g_share_manager) delete g_share_manager;
 	main_window=nullptr;
 	er_uninit();
 #ifdef __APPLE__
@@ -1003,7 +999,7 @@ void mxMainWindow::OnEditGotoFile (wxCommandEvent &event) {
 void mxMainWindow::OnQuickHelpLink (wxHtmlLinkEvent &event) {
 	wxString action(event.GetLinkInfo().GetHref().BeforeFirst(':')), post=event.GetLinkInfo().GetHref().AfterFirst(':');
 	if (action=="quickhelp")
-		quick_help->SetPage(help->GetQuickHelp( post ));
+		quick_help->SetPage(g_help->GetQuickHelp( post ));
 	else if (action=="doxygen")
 		mxUT::OpenInBrowser(wxString("file://")<<post);
 	else if (action=="cppreference")
@@ -1312,7 +1308,7 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 	}
 	
 	/*wxMenuItem *shared = */mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_SHARE_SHARE));
-//	shared->Check(share && share->Exists(src));
+//	shared->Check(g_share_manager && g_share_manager->Exists(src));
 		
 	mxUT::AddItemToMenu(&menu,_menu_item_2(mnVIEW,mxID_VIEW_DUPLICATE_TAB));
 	if (!project) menu.AppendCheckItem(mxID_FILE_SET_AS_MASTER, LANG(MENUITEM_FILE_SET_AS_MASTER,"Ejecutar siempre este fuente"))->Check(src==master_source);
@@ -1350,13 +1346,13 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 	} else {
 		source->UpdateExtras(); // done in mxSource's destructor
 	}
-	if (share && share->Exists(source))  {
+	if (g_share_manager && g_share_manager->Exists(source))  {
 		int ans =mxMessageDialog(main_window,LANG(MAINW_ASK_CLOSE_SHARED,"El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?"),source->page_text, mxMD_YES_NO,LANG(MAINW_SHARE_AFTER_CLOSE,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo."),false).ShowModal();
 		if (mxMD_YES&ans) {
 			if (mxMD_CHECKED&ans)
-				share->Freeze(source);
+				g_share_manager->Freeze(source);
 			else
-				share->Delete(source);
+				g_share_manager->Delete(source);
 		} else {
 			event.Veto();
 			return;
@@ -1367,7 +1363,7 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 	else
 		parser->ParseIfUpdated(source->source_filename);
 //	debug->OnSourceClosed(source); // supuestamente lo hace el destructor de mxSource llamando a debug->UnregisterSource
-	if (!project && welcome_panel && notebook_sources->GetPageCount()==1)
+	if (!project && g_welcome_panel && notebook_sources->GetPageCount()==1)
 		ShowWelcome(true);
 }
 
@@ -1969,7 +1965,7 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 		aui_manager.GetPane(project_tree.treeCtrl).Hide();
 	}
 	if (valgrind_panel) aui_manager.GetPane(valgrind_panel).Hide();
-	if (welcome_panel) 
+	if (g_welcome_panel) 
 		ShowWelcome(true);
 	else {
 		NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
@@ -2007,13 +2003,13 @@ bool mxMainWindow::CloseSource (mxSource *src) {
 
 bool mxMainWindow::CloseSource (int i) {
 	mxSource *source=(mxSource*)notebook_sources->GetPage(i);
-	if (share && share->Exists(source))  {
+	if (g_share_manager && g_share_manager->Exists(source))  {
 		int ans =mxMessageDialog(main_window,"El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\nRealmente desea cerrar el archivo?",source->page_text, mxMD_YES_NO,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo.",false).ShowModal();
 		if (mxMD_YES&ans) {
 			if (mxMD_CHECKED&ans)
-				share->Freeze(source);
+				g_share_manager->Freeze(source);
 			else
-				share->Delete(source);
+				g_share_manager->Delete(source);
 		} else {
 			return false;
 		}
@@ -2029,7 +2025,7 @@ bool mxMainWindow::CloseSource (int i) {
 	}
 //	debug->OnSourceClosed(source); // supuestamente lo hace el destructor de mxSource llamando a debug->UnregisterSource
 	notebook_sources->DeletePage(i);
-	if (!project && welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(true);
+	if (!project && g_welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(true);
 	return true;
 }
 
@@ -2112,12 +2108,12 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 					}
 				}
 			}
-			if ( beginner_panel && fullscreen_panels_status[fspsBEGINNER]!=aui_manager.GetPane(beginner_panel).IsShown() ) {
+			if ( g_beginner_panel && fullscreen_panels_status[fspsBEGINNER]!=aui_manager.GetPane(g_beginner_panel).IsShown() ) {
 				if (fullscreen_panels_status[fspsBEGINNER]) {
-					aui_manager.GetPane(beginner_panel).Show();
+					aui_manager.GetPane(g_beginner_panel).Show();
 					_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(true);
 				} else {
-					aui_manager.GetPane(beginner_panel).Hide();
+					aui_manager.GetPane(g_beginner_panel).Hide();
 					_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(false);
 				}
 			}
@@ -2184,8 +2180,8 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 					_menu_item(mxID_VIEW_EXPLORER_TREE)->Check(false);
 				}
 			}
-			if ( beginner_panel && (fullscreen_panels_status[fspsBEGINNER]=aui_manager.GetPane(beginner_panel).IsShown()) ) {
-				aui_manager.GetPane(beginner_panel).Hide();
+			if ( g_beginner_panel && (fullscreen_panels_status[fspsBEGINNER]=aui_manager.GetPane(g_beginner_panel).IsShown()) ) {
+				aui_manager.GetPane(g_beginner_panel).Hide();
 				_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(false);
 			}
 			if ( (fullscreen_panels_status[fspsTHREADS]=aui_manager.GetPane(threadlist_ctrl).IsShown()) ) {
@@ -2362,7 +2358,7 @@ void mxMainWindow::OnSymbolTreeIncludes (wxCommandEvent &event) {
 void mxMainWindow::ShowQuickHelp (wxString keyword, bool hide_compiler_tree) {
 	// load help text
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
-	quick_help->SetPage(help->GetQuickHelp(keyword));
+	quick_help->SetPage(g_help->GetQuickHelp(keyword));
 	ShowQuickHelpPanel(hide_compiler_tree);
 }
 
@@ -2546,7 +2542,7 @@ mxSource *mxMainWindow::FindSource(wxFileName filename, int *pos) {
 *							de haber uno) 
 **/
 mxSource *mxMainWindow::OpenFile (const wxString &filename, bool add_to_project) {
-	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
+	if (g_welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	if (filename=="" || !wxFileName::FileExists(filename))
 		return nullptr;
 	
@@ -2674,7 +2670,7 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 		if (project) { // eliminar el proyecto viejo de la memoria
 			delete project;
 		}
-		if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
+		if (g_welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 		// abrir el proyecto
 		project = new ProjectManager(filename);
 		// mostrar el arbol de proyecto
@@ -2813,9 +2809,9 @@ void mxMainWindow::OnFileProjectHistory (wxCommandEvent &event) {
 
 void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
-		if (!printDialogData) printDialogData=new wxPrintDialogData;
+		if (!g_printDialogData) g_printDialogData=new wxPrintDialogData;
 		mxSource *src=CURRENT_SOURCE;
-		wxPrinter printer(printDialogData);
+		wxPrinter printer(g_printDialogData);
 		mxPrintOut printout(src,src->page_text);
 		src->SetPrintMagnification(config->Styles.print_size-config->Styles.font_size);
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
@@ -2830,8 +2826,8 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 //		*printData = pageSetupDialog.GetPageSetupData().GetPrintData();
 //		*pageSetupData = pageSetupDialog.GetPageSetupData();	
 		
-//		wxPrintDialogData printDialogData(*printData);
-//		wxPrinter printer(&printDialogData);
+//		wxPrintDialogData g_printDialogData(*printData);
+//		wxPrinter printer(&g_printDialogData);
 //		if (!printer.Print(this, &printout, true)) {
 //			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
 //				mxMessageDialog(this,"Ha ocurrido un error al intentar imprimir",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();;
@@ -2841,14 +2837,14 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnFileNewProject (wxCommandEvent &event) {
-	if (!wizard) wizard = new mxNewWizard(this);
-	wizard->RunWizard("new_project");
+	if (!g_wizard) g_wizard = new mxNewWizard(this);
+	g_wizard->RunWizard("new_project");
 }
 
 void mxMainWindow::OnFileNew (wxCommandEvent &event) {
 	if (project) {
-		if (!wizard) wizard = new mxNewWizard(this);
-		wizard->RunWizard("on_project");
+		if (!g_wizard) g_wizard = new mxNewWizard(this);
+		g_wizard->RunWizard("on_project");
 	} else 
 		switch (config->Init.new_file){
 			case 0:
@@ -2858,15 +2854,15 @@ void mxMainWindow::OnFileNew (wxCommandEvent &event) {
 				main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
 				break;
 			default: {
-				if (!wizard) wizard = new mxNewWizard(this);
-				wizard->RunWizard();
+				if (!g_wizard) g_wizard = new mxNewWizard(this);
+				g_wizard->RunWizard();
 				break;
 			}
 		}	
 }
 
 mxSource *mxMainWindow::NewFileFromText (wxString text, wxString name, int pos) {
-	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
+	if (g_welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	mxSource* source = new mxSource(notebook_sources, AvoidDuplicatePageText(name));
 	source->AppendText(text);
 	source->MoveCursorTo(pos);
@@ -2887,7 +2883,7 @@ mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
 		mxMessageDialog(this,LANG(MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT,"No puede abrir un ejemplo mientras trabaja en un proyecto.\nCierre el proyecto e intente nuevamente."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();;
 		return nullptr;
 	}
-	if (welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
+	if (g_welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	mxSource* source = new mxSource(notebook_sources, SIN_TITULO);
 	wxTextFile file(filename);
 	if (!file.Exists()) {
@@ -3041,7 +3037,7 @@ void mxMainWindow::UpdateSymbols () {
 }
 
 void mxMainWindow::OnSocketEvent(wxSocketEvent &event){
-	if (share) share->OnSocketEvent(&event);
+	if (g_share_manager) g_share_manager->OnSocketEvent(&event);
 }
 
 void mxMainWindow::OnParseSourceTime(wxTimerEvent &event) {
@@ -3167,22 +3163,22 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 			mxMessageDialog(main_window,LANG(MAINW_INSERT_HEADIR_NO_WORD,"Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
 			return;
 		} else { // conseguir el h y darselo al source para que haga lo que corresponda
-			wxString header = code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),key);
+			wxString header = g_code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),key);
 			if (!header.Len()) {
 				wxString bkey=key, type = source->FindTypeOfByPos(e-1,s);
 				if ( s!=SRC_PARSING_ERROR && type.Len() ) {
-					header = code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),type);
+					header = g_code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),type);
 				} else { // buscar el scope y averiguar si es algo de la clase
 					type = source->FindScope(s);
 					if (type.Len()) {
-						type = code_helper->GetAttribType(type,bkey,s);
+						type = g_code_helper->GetAttribType(type,bkey,s);
 						if (!type.Len())
-							type=code_helper->GetGlobalType(bkey,s);
+							type=g_code_helper->GetGlobalType(bkey,s);
 					} else {
-						type=code_helper->GetGlobalType(bkey,s);
+						type=g_code_helper->GetGlobalType(bkey,s);
 					}
 					if (type.Len()) {
-						header=code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),type);
+						header=g_code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),type);
 					}
 				}
 			}
@@ -3488,10 +3484,10 @@ void mxMainWindow::OnDebugDoThat ( wxCommandEvent &event ) {
 			_DBG_LOG_ST_CALL(Set(new mxDbgLogFile(arg)));
 		}
 	} else if (res=="debug on") {
-		zinjai_debug_mode=true;
+		g_zinjai_debug_mode = true;
 		SetStatusText("DoThat: Modo debug activado");
 	} else if (res=="debug off") {
-		zinjai_debug_mode=false;
+		g_zinjai_debug_mode = false;
 		SetStatusText("DoThat: Modo debug desactivado");
 	} else if (res=="gdb cmd") {
 		wxMessageBox (debug->last_command);
@@ -4085,7 +4081,7 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 	
 	wxDirDialog dlg2(this,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR,"Directorio base (para formar las rutas relativas para los #includes):"),def_dir);
 	if (wxID_OK!=dlg2.ShowModal()) return;
-	if (code_helper->GenerateAutocompletionIndex(dlg2.GetPath(),fname)) {
+	if (g_code_helper->GenerateAutocompletionIndex(dlg2.GetPath(),fname)) {
 		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED,"Indice generado correctamente."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_INFO).ShowModal();
 		mxPreferenceWindow::Delete();
 	} else
@@ -4242,12 +4238,12 @@ void mxMainWindow::OnKeyEvent(wxWindow *who, wxKeyEvent &evt) {
 
 void mxMainWindow::ShowWelcome(bool show) {
 	wxAuiPaneInfo &pns = aui_manager.GetPane(notebook_sources);
-	wxAuiPaneInfo &pwp = aui_manager.GetPane(welcome_panel);
+	wxAuiPaneInfo &pwp = aui_manager.GetPane(g_welcome_panel);
 	if (show) {
 		aui_manager.GetPane(compiler_panel).Hide();
 		pns.Hide();
 		pwp.Show();
-		welcome_panel->Reload();
+		g_welcome_panel->Reload();
 	} else {
 		if (config->Init.show_beginner_panel && !config->Init.autohide_panels)
 			ShowBeginnersPanel();
@@ -4255,7 +4251,7 @@ void mxMainWindow::ShowWelcome(bool show) {
 		pns.Show();
 	}
 	aui_manager.Update();
-	if ((welcome_panel->is_visible=show)) welcome_panel->SetFocus();
+	if ((g_welcome_panel->is_visible=show)) g_welcome_panel->SetFocus();
 }
 
 void mxMainWindow::OnActivate (wxActivateEvent &event) {
@@ -4467,7 +4463,7 @@ void mxMainWindow::ShowValgrindPanel(int what, wxString file, bool force) {
 }
 
 void mxMainWindow::OnViewBeginnerPanel (wxCommandEvent &event) {
-	if (!beginner_panel) CreateBeginnersPanel();
+	if (!g_beginner_panel) CreateBeginnersPanel();
 	wxMenuItem *mitem = _menu_item(mxID_VIEW_BEGINNER_PANEL);
 	if (config->Init.autohide_panels) {
 		if (!mitem->IsChecked()) {
@@ -4482,10 +4478,10 @@ void mxMainWindow::OnViewBeginnerPanel (wxCommandEvent &event) {
 	} else {
 		if (!mitem->IsChecked()) {
 			mitem->Check(false);
-			aui_manager.GetPane(beginner_panel).Hide();
+			aui_manager.GetPane(g_beginner_panel).Hide();
 		} else {
 			mitem->Check(true);
-			aui_manager.GetPane(beginner_panel).Show();
+			aui_manager.GetPane(g_beginner_panel).Show();
 		}
 	}
 	aui_manager.Update();
@@ -4620,22 +4616,22 @@ void mxMainWindow::ShowExplorerTreePanel() {
 }
 
 void mxMainWindow::CreateBeginnersPanel() {
-	beginner_panel = new mxBeginnerPanel(this);
+	g_beginner_panel = new mxBeginnerPanel(this);
 	if (config->Init.autohiding_panels) {
-		autohide_handlers[ATH_BEGINNERS] = new mxHidenPanel(this,beginner_panel,HP_RIGHT,LANG(MAINW_BEGGINERS_PANEL,"Asistencias"));
+		autohide_handlers[ATH_BEGINNERS] = new mxHidenPanel(this,g_beginner_panel,HP_RIGHT,LANG(MAINW_BEGGINERS_PANEL,"Asistencias"));
 		aui_manager.AddPane(autohide_handlers[ATH_BEGINNERS], wxAuiPaneInfo().CaptionVisible(false).Right().Position(0).Show());
 	}
-	aui_manager.AddPane(beginner_panel, wxAuiPaneInfo().Name("beginner_panel").Caption(LANG(MAINW_BEGGINERS_PANEL,"Panel de Asistencias")).Right().Hide());
+	aui_manager.AddPane(g_beginner_panel, wxAuiPaneInfo().Name("beginner_panel").Caption(LANG(MAINW_BEGGINERS_PANEL,"Panel de Asistencias")).Right().Hide());
 	aui_manager.Update();
 }
 
 void mxMainWindow::ShowBeginnersPanel() {
-	if (!beginner_panel) CreateBeginnersPanel();
-	if (!aui_manager.GetPane(beginner_panel).IsShown()) {
+	if (!g_beginner_panel) CreateBeginnersPanel();
+	if (!aui_manager.GetPane(g_beginner_panel).IsShown()) {
 		if (config->Init.autohiding_panels) {
 			autohide_handlers[ATH_BEGINNERS]->ForceShow(false);
 		} else {
-			aui_manager.GetPane(beginner_panel).Show();
+			aui_manager.GetPane(g_beginner_panel).Show();
 			_menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(true);
 			aui_manager.Update();
 		}
@@ -4898,7 +4894,7 @@ void mxMainWindow::OnToolbarMenu (wxCommandEvent & evt) {
 
 void mxMainWindow::CallAfterEvents (AfterEventsAction * action) {
 	if (!after_events_timer) return; // main_window not initialized yet
-	action->next=call_after_events;
+	action->m_next=call_after_events;
 	call_after_events=action;
 	if (!current_after_events_action) 
 		after_events_timer->Start(50,true);
@@ -4913,8 +4909,8 @@ void mxMainWindow::OnAfterEventsTimer (wxTimerEvent & event) {
 	current = call_after_events; 
 	call_after_events = nullptr;
 	while (current) {
-		AfterEventsAction *next = current->next;
-		if (current->do_do) current->Do(); delete current;
+		AfterEventsAction *next = current->m_next;
+		if (current->m_do_run) current->Run(); delete current;
 		current = next;
 	}
 	if (call_after_events) after_events_timer->Start(50,true);
@@ -4922,7 +4918,7 @@ void mxMainWindow::OnAfterEventsTimer (wxTimerEvent & event) {
 
 void mxMainWindow::SetFocusToSourceAfterEvents () {
 	class SetFocusToSourceAfterEventsAction : public mxMainWindow::AfterEventsAction {
-		public: void Do() override { main_window->SetFocusToSource(); }
+		public: void Run() override { main_window->SetFocusToSource(); }
 	};
 	CallAfterEvents(new SetFocusToSourceAfterEventsAction());
 }
@@ -4964,11 +4960,11 @@ void mxMainWindow::OnMacroReplay (wxCommandEvent & evt) {
 }
 
 void mxMainWindow::OnNavigationHistoryNext (wxCommandEvent &evt) {
-	navigation_history.Next();
+	g_navigation_history.Next();
 }
 
 void mxMainWindow::OnNavigationHistoryPrev (wxCommandEvent &evt) {
-	navigation_history.Prev();
+	g_navigation_history.Prev();
 }
 
 void mxMainWindow::OnSourceGotoDefinition (wxCommandEvent & event) {
@@ -5038,11 +5034,11 @@ void mxMainWindow::UnregisterSource (mxSource * src) {
 	AfterEventsAction *current = call_after_events;
 	for(int i=0;i<2;i++) {
 		while (current) {
-			if (current->source==src) current->do_do=false;
-			current = current->next;
+			if (current->m_source==src) current->m_do_run=false;
+			current = current->m_next;
 		}
 		if (current_after_events_action) 
-			current = current_after_events_action->next;
+			current = current_after_events_action->m_next;
 		else break;
 	}
 }
@@ -5101,7 +5097,7 @@ void mxMainWindow::CompileSource (bool force_compile, GenericAction *action) {
 			|| (config->Running.check_includes && mxUT::AreIncludesUpdated(source->GetBinaryFileName().GetModificationTime(),source_filename)); // si el binario es mas viejo que algun include
 		// compilar, o depurar, o ejecutar, segun corresponda
 		if (should_compile) compiler->CompileSource(source,fms_move(action));
-		else if (action) action->Do();
+		else if (action) action->Run();
 	}
 }
 

@@ -13,7 +13,7 @@
 #include "CodeHelper.h"
 using namespace std;
 
-HelpManager *help = nullptr;
+HelpManager *g_help = nullptr;
 
 HelpManager::HelpManager() {
 //	HashStringString::iterator it;
@@ -156,7 +156,7 @@ void HelpManager::HelpFor(pd_class *aclass, wxString &content, wxString &index) 
 			if (avar->properties&PD_CONST_VOLATILE) one_attrib<<"volatile ";
 		}
 		wxString proto = mxUT::ToHtml(avar->proto),link;
-		if (help->IsHelpForType(avar->type,link))
+		if (g_help->IsHelpForType(avar->type,link))
 			proto.Replace(avar->type,wxString("<A href=\"quickhelp:")<<link<<"\">"<<avar->type<<"</A>",true);
 		one_attrib<<proto<<"</LI>";
 		attribs=one_attrib+attribs;
@@ -291,7 +291,7 @@ void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
 			if (avar->properties&PD_CONST_STATIC) content<<_T("static ");
 			if (avar->properties&PD_CONST_VOLATILE) content<<_T("volatile ");
 			wxString proto = avar->proto,link;
-			if (help->IsHelpForType(avar->type,link))
+			if (g_help->IsHelpForType(avar->type,link))
 				proto.Replace(avar->type,wxString(_T("<A href=\"quickhelp:"))<<link<<_T("\">")<<avar->type<<_T("</A>"),true);
 			content<<proto<<_T("</LI></UL><BR><BR>");
 			if (avar->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definido en"),avar->file->name,avar->line);
@@ -301,7 +301,7 @@ void HelpManager::HelpFor(pd_var *avar, wxString &content, wxString &index) {
 			wxString proto = avar->proto,link;
 			if (avar->properties&PD_CONST_VOLATILE) 
 				proto=wxString("volatile ")+proto;
-			if (help->IsHelpForType(avar->type,link))
+			if (g_help->IsHelpForType(avar->type,link))
 				proto.Replace(avar->type,wxString(_T("<A href=\"quickhelp:"))<<link<<_T("\">")<<avar->type<<_T("</A>"),true);
 			content<<LANG(PARSERHELP_DECLARATION,"Declaracion:")<<_T(" <BR><UL><LI>")<<proto<<_T("</LI></UL><BR><BR>");
 			if (avar->file) AddDefRef(content,LANG(PARSERHELP_DEFINED_IN_PRE,"Definida en"),avar->file->name,avar->line);
@@ -452,7 +452,7 @@ wxString HelpManager::GetQuickHelp(wxString keyword) {
 }
 
 bool HelpManager::IsHelpForType(wxString what, wxString &link) {
-	what = code_helper->UnMacro(what);
+	what = g_code_helper->UnMacro(what);
 	while (what.Len() && (what.Last()=='*' || what.Last()==']' || what.Last()==' ')) {
 		if (what.Last()==']') {
 			while (what.Len() && what.Last()!='[')
@@ -744,6 +744,6 @@ wxString HelpManager::ParseDoxyText(wxString link, wxString &desc) {
 }
 
 void HelpManager::Initialize ( ) {
-	help = new HelpManager();
+	g_help = new HelpManager();
 }
 

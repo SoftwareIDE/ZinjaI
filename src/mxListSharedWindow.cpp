@@ -23,8 +23,8 @@ mxListSharedWindow::mxListSharedWindow(wxWindow* parent, wxWindowID id, const wx
 	mySizer->Add(new wxStaticText(this, wxID_ANY, LANG(LISTSHARED_LIST_LABEL,"Lista de fuentes compartidos: "), wxDefaultPosition, wxDefaultSize, 0), sizers->BLRT5);
 	
 	wxArrayString array;
-	if (!share) share = new ShareManager();
-	share->GetSharedList(array);
+	if (!g_share_manager) g_share_manager = new ShareManager();
+	g_share_manager->GetSharedList(array);
 	list = new wxListBox(this,wxID_ANY,wxDefaultPosition, wxSize(150,150),array);
 	
 	mySizer->Add(list,sizers->BA5_Exp1);
@@ -50,7 +50,7 @@ void mxListSharedWindow::OnStopSharingButton(wxCommandEvent &event){
 	bool any=false;
 	for (int i=list->GetCount()-1;i>=0;i--) {
 		if (list->IsSelected(i)) {
-			share->Delete(list->GetString(i));
+			g_share_manager->Delete(list->GetString(i));
 			list->Delete(i);
 			any=true;
 		}

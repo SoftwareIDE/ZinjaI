@@ -409,7 +409,7 @@ class ToolsWxfbInheriterAction : public Parser::OnEndAction {
 	bool update;
 public:
 	ToolsWxfbInheriterAction(bool _update):update(_update){}
-	void Do() override { new mxWxfbInheriter(main_window,"",update); }
+	void Run() override { new mxWxfbInheriter(main_window,"",update); }
 };
 
 void mxMainWindow::OnToolsWxfbInheritClass(wxCommandEvent &event) {
@@ -766,7 +766,7 @@ class ToolsCodeCopyFromHAction : public Parser::OnEndAction {
 	wxString the_one;
 public:
 	ToolsCodeCopyFromHAction(mxSource *_source,wxString _the_one):source(_source),the_one(_the_one){}
-	void Do() override { main_window->ToolsCodeCopyFromH(source,the_one); }
+	void Run() override { main_window->ToolsCodeCopyFromH(source,the_one); }
 };
 
 void mxMainWindow::OnToolsCodeCopyFromH(wxCommandEvent &event) {
@@ -934,7 +934,7 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 	
 	if (id_command==1) {
 		src->IndicatorSetStyle(2,wxSTC_INDIC_STRIKE);
-		if (ctheme->DEFAULT_BACK.Green()+ctheme->DEFAULT_BACK.Blue()+ctheme->DEFAULT_BACK.Red()<256*3/2)
+		if (g_ctheme->DEFAULT_BACK.Green()+g_ctheme->DEFAULT_BACK.Blue()+g_ctheme->DEFAULT_BACK.Red()<256*3/2)
 			src->IndicatorSetForeground (2, wxColour(255,255,255));
 		else
 			src->IndicatorSetForeground (2, wxColour(0,0,0));
@@ -1029,7 +1029,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		template_file.Write(); template_file.Close();
 	}
 	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK).Show();
-	delete wizard; wizard=nullptr;
+	delete g_wizard; g_wizard =nullptr;
 }
 
 void mxMainWindow::OnToolsExportMakefile (wxCommandEvent &event) {

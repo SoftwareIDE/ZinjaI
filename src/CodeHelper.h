@@ -43,7 +43,7 @@ public:
 		return false;
 	}
 };
-extern MyAutocompList autocomp_list;
+extern MyAutocompList g_autocomp_list; /// @todo: move this inside CodeHelper
 
 
 /**
@@ -114,7 +114,7 @@ public:
 	
 };
 
-extern CodeHelper *code_helper;
+extern CodeHelper *g_code_helper;
 
 #endif
 

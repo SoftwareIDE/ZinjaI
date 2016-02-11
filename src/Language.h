@@ -4,7 +4,7 @@
 #include "lang_index_macros.h"
 using namespace std;
 
-#define LANG(key,text) (language_buffer?language_buffer+language_index[LANG_##key]:text)
+#define LANG(key,text) (g_language_buffer?g_language_buffer+g_language_index[LANG_##key]:text)
 
 /// Codigos de error para las funciones que administran el archivo y buffer de lenguaje
 enum LANGUAGE_ERROR { 
@@ -19,8 +19,8 @@ enum LANGUAGE_ERROR {
 	LANGERR_CACHE_OK ///< el archivo de cache se encuentra y su firma es correcta
 };
 
-extern char *language_buffer;
-extern int *language_index;
+extern char *g_language_buffer;
+extern int *g_language_index;
 
 LANGUAGE_ERROR load_language(string lang_in, string lang_cache);
 LANGUAGE_ERROR compile_language(string lang_in, string lang_cache);

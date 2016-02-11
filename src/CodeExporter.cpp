@@ -27,16 +27,16 @@ bool CodeExporter::ExportHtml(mxSource *src, wxString title, wxString fname) {
 	
 	DefineStyles(src->lexer);
 	for (int i=0;i<128;i++) {
-		if (styles[i].used) {
+		if (m_styles[i].used) {
 			header=_T("\t\t.SS");
 			header<<i<<_T(" { ");
-			if(styles[i].bold)
+			if(m_styles[i].bold)
 				header<<_T("font-weight: bold; ");
-			if(styles[i].italic)
+			if(m_styles[i].italic)
 				header<<_T("font-style: italic; ");
-			if(styles[i].underline)
+			if(m_styles[i].underline)
 				header<<_T("text-decoration: underline; ");
-			header<<_T("color:")<<styles[i].fgcolor<<_T("; ")<<_T("background-color:")<<styles[i].bgcolor<<_T("; }\n");
+			header<<_T("color:")<<m_styles[i].fgcolor<<_T("; ")<<_T("background-color:")<<m_styles[i].bgcolor<<_T("; }\n");
 			fil.Write(header);
 		}
 	}
@@ -52,7 +52,7 @@ bool CodeExporter::ExportHtml(mxSource *src, wxString title, wxString fname) {
 		while (p1<len && src->GetStyleAt(p1)==s)
 			p1++;
 			
-		if (styles[s].used) {
+		if (m_styles[s].used) {
 			wxString code(_T("<SPAN class=\"SS"));
 			code<<s<<_T("\">")<<mxUT::ToHtml(src->GetTextRange(p0,p1))<<_T("</SPAN>");
 			fil.Write(code);
@@ -133,11 +133,11 @@ void CodeExporter::DefineStyles(int lexer) {
 
 void CodeExporter::SetStyle(int idx, int fontSize, const wxChar *foreground, const wxChar *background, int fontStyle){
 	if (foreground) 
-		styles[idx].fgcolor = wxColour(foreground).GetAsString(wxC2S_HTML_SYNTAX);
+		m_styles[idx].fgcolor = wxColour(foreground).GetAsString(wxC2S_HTML_SYNTAX);
 	if (background)
-		styles[idx].bgcolor = wxColour(background).GetAsString(wxC2S_HTML_SYNTAX);
-	styles[idx].bold = fontStyle&mxSOURCE_BOLD;
-	styles[idx].italic = fontStyle&mxSOURCE_ITALIC;
-	styles[idx].underline = fontStyle&mxSOURCE_UNDERL;
-	styles[idx].used=true;
+		m_styles[idx].bgcolor = wxColour(background).GetAsString(wxC2S_HTML_SYNTAX);
+	m_styles[idx].bold = fontStyle&mxSOURCE_BOLD;
+	m_styles[idx].italic = fontStyle&mxSOURCE_ITALIC;
+	m_styles[idx].underline = fontStyle&mxSOURCE_UNDERL;
+	m_styles[idx].used=true;
 }

@@ -4,18 +4,18 @@
 /// crappy workaround for the need of lambda functions (mac port use some old pre c++11 gcc)
 class GenericAction {
 public:
-	virtual void Do()=0;
+	virtual void Run()=0;
 	virtual ~GenericAction(){};
 };
 
 #define _LAMBDA_0(Name,Action) \
 	class Name : public GenericAction {\
-	public: void Do() Action };
+	public: void Run() override Action };
 
 #define _LAMBDA_1(Name,Type,Arg,Action) \
 	class Name : public GenericAction {\
 	public: Name(Type arg) : Arg(arg) {} \
-	public: void Do() Action \
+	public: void Run() override Action \
 	private: Type Arg; };
 
 /// crappy workaround for the need of lambda functions (mac port use some old pre c++11 gcc)

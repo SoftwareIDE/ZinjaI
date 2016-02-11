@@ -32,19 +32,17 @@ wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, const wxBitmap *bmp)
 		background_colour = new wxColour(wxButton(nullptr,wxID_ANY,_T("lala")).GetBackgroundColour());
 #endif
 
-	wxColour c(253,253,253);
+	wxColour back_color = wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE );
 	wxBitmap full(200,100,32);
 	wxMemoryDC *dc=new wxMemoryDC(full);
 	wxRect r;
-	dc->SetBackground(wxBrush(c));
+	dc->SetBackground(wxBrush(back_color));
 	dc->Clear();
-	dc->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 	int p = text.Find('&');
-	if (p==wxNOT_FOUND) {
-		p=-1;
-	} else {
-		text.Remove(p++,1);
-	}
+	if (p==wxNOT_FOUND) p=-1;
+	else text.Remove(p++,1);
+	dc->SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
+	dc->SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 	dc->DrawLabel(wxString(" ")<<text,*bmp,wxRect(wxPoint(0,0),wxPoint(200,100)), wxALIGN_LEFT | wxALIGN_TOP,p,&r);
 	r.height = r.height>bmp->GetHeight()?r.height:bmp->GetHeight()+1;
 	r.height += r.y+1;
@@ -53,7 +51,7 @@ wxBitmap mxBitmapButton::GenerateButtonImage(wxString text, const wxBitmap *bmp)
 	r.x = 0;
 	delete dc;
 	wxMask *m=new wxMask();
-	m->Create(full,c);
+	m->Create(full,back_color);
 	full.SetMask(m);
 #ifdef __WIN32__
 	full.SetWidth(r.width);

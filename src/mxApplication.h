@@ -22,6 +22,6 @@ public:
 	virtual bool OnInit();
 };
 
-extern mxApplication *app;
+extern mxApplication *g_application;
 
 #endif

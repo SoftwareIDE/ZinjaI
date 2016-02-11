@@ -11,7 +11,7 @@
 #include "mxMessageDialog.h"
 #include "mxOpenSharedWindow.h"
 
-ShareManager *share=nullptr;
+ShareManager *g_share_manager = nullptr;
 
 /*
 	Breve explicacion del protocolo:
@@ -380,7 +380,7 @@ bool ShareManager::Freeze(mxSource *source) {
 int ShareManager::GetSharedList(wxArrayString &a) {
 	int count=0;
 	HashStringSource::iterator it;
-	for( it = share->data.begin(); it != share->data.end(); ++it ) {
+	for( it = g_share_manager->data.begin(); it != g_share_manager->data.end(); ++it ) {
 		a.Add(it->first); count++;
 	} 
 	return count;

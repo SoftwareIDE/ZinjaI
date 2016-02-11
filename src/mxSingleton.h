@@ -12,11 +12,11 @@ struct singleton_data {
 
 class mxSingleton: public wxEvtHandler {
 private:
-	wxArrayString to_open; ///< para encolar pedidos que llegan antes de inicializar main_window
-	bool ready; ///< para saber cuando dejar de encolar en to_open y empezar a abrir directamente
-	wxSocketServer *server;
-	singleton_data *data;
-	int calls_count, max_count, gid;
+	wxArrayString m_to_open; ///< para encolar pedidos que llegan antes de inicializar main_window
+	bool m_ready; ///< para saber cuando dejar de encolar en to_open y empezar a abrir directamente
+	wxSocketServer *m_server;
+	singleton_data *m_data;
+	int m_calls_count, m_max_count, m_gid;
 public:
 	mxSingleton();
 	bool Start();
@@ -30,7 +30,7 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern mxSingleton *singleton;
+extern mxSingleton *g_singleton;
 
 #endif
 

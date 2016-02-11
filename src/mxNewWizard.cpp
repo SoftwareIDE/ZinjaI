@@ -28,8 +28,9 @@
 #include "parserData.h"
 #include "version.h"
 #include <wx/tooltip.h>
+#include "Cpp11.h"
 
-mxNewWizard *wizard;
+mxNewWizard *g_wizard = nullptr;
 
 BEGIN_EVENT_TABLE(mxNewWizard, wxDialog)
 	EVT_BUTTON(wxID_OK,mxNewWizard::OnButtonNext)
@@ -362,7 +363,7 @@ void mxNewWizard::OnProjectCreate() {
 			for (int i=0;i<config->Init.inherit_num;i++) { // #includes para las clases bases
 				wxString aux = onproject_inherit_class[i]->GetValue();
 				if (aux.Len()) {
-					aux = code_helper->GetIncludeForClass(folder,aux);
+					aux = g_code_helper->GetIncludeForClass(folder,aux);
 					if (aux.Len())
 						h_file.AddLine(aux);
 				}

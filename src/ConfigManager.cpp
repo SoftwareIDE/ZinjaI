@@ -36,11 +36,11 @@ ConfigManager *config;
 struct DelayedConfigLines {
 	wxArrayString toolbars_keys;
 	wxArrayString toolbars_values;
-} *delayed_config_lines;
+} *s_delayed_config_lines;
 
 ConfigManager::ConfigManager(wxString a_path):custom_tools(MAX_CUSTOM_TOOLS) {
 	config=this;
-	delayed_config_lines = nullptr; 
+	s_delayed_config_lines = nullptr; 
 	zinjai_dir = a_path;
 	zinjai_bin_dir = DIR_PLUS_FILE(zinjai_dir,"bin");
 	zinjai_third_dir = DIR_PLUS_FILE(zinjai_dir,"third");
@@ -333,9 +333,9 @@ bool ConfigManager::Load() {
 				custom_tools.ParseConfigLine(key,value);
 				
 			} else if (section=="Toolbars") {
-				if (!delayed_config_lines) delayed_config_lines = new DelayedConfigLines;
-				delayed_config_lines->toolbars_keys.Add(key);
-				delayed_config_lines->toolbars_values.Add(value);
+				if (!s_delayed_config_lines) s_delayed_config_lines = new DelayedConfigLines;
+				s_delayed_config_lines->toolbars_keys.Add(key);
+				s_delayed_config_lines->toolbars_values.Add(value);
 			}
 		} 
 	}
@@ -968,8 +968,8 @@ void ConfigManager::FinishiLoading ( ) {
 	
 	// load syntax highlighting colors' scheme
 	color_theme::Initialize();
-	if (Init.colour_theme.IsEmpty()) ctheme->Load(DIR_PLUS_FILE(config_dir,"colours.zcs"));
-	else ctheme->Load(mxUT::WichOne(Init.colour_theme,"colours",true));
+	if (Init.colour_theme.IsEmpty()) g_ctheme->Load(DIR_PLUS_FILE(config_dir,"colours.zcs"));
+	else g_ctheme->Load(mxUT::WichOne(Init.colour_theme,"colours",true));
 	
 	// check if extern tools are present and set some paths
 	Toolchain::LoadToolchains();
@@ -978,10 +978,10 @@ void ConfigManager::FinishiLoading ( ) {
 	
 	// create regular menus and toolbars' data
 	menu_data = new MenusAndToolsConfig();
-	if (delayed_config_lines) { // old way
-		for(unsigned int i=0;i<delayed_config_lines->toolbars_keys.GetCount();i++)
-			menu_data->ParseToolbarConfigLine(delayed_config_lines->toolbars_keys[i],delayed_config_lines->toolbars_values[i]); 
-		delete delayed_config_lines; delayed_config_lines=nullptr;
+	if (s_delayed_config_lines) { // old way
+		for(unsigned int i=0;i<s_delayed_config_lines->toolbars_keys.GetCount();i++)
+			menu_data->ParseToolbarConfigLine(s_delayed_config_lines->toolbars_keys[i],s_delayed_config_lines->toolbars_values[i]); 
+		delete s_delayed_config_lines; s_delayed_config_lines=nullptr;
 	} else { // new way
 		menu_data->LoadShortcutsSettings(DIR_PLUS_FILE(config_dir,"shortcuts.zsc"));
 		menu_data->LoadToolbarsSettings(DIR_PLUS_FILE(config_dir,"toolbar.ztb"));

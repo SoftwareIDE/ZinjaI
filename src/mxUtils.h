@@ -57,10 +57,10 @@ class wxButton;
 class wxBitmapButton;
 
 #ifdef _ZINJAI_DEBUG
-	extern wxString debug_string;
-	#define DEBUG_QH_SET(lala) debug_string=""; debug_string<<mxUT::ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(debug_string);
-	#define DEBUG_QH_ADD(lala) debug_string<<mxUT::ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(debug_string);
-	#define DEBUG_QH_ADDNL(lala) debug_string<<mxUT::ToHtml(wxString()<<lala)<<"<BR> "; main_window->ShowInQuickHelpPanel(debug_string);
+//	extern wxString g_debug_string;
+//	#define DEBUG_QH_SET(lala) g_debug_string=""; g_debug_string<<mxUT::ToHtml(wxString()<<lala)<<"<BR>"; main_window->ShowInQuickHelpPanel(g_debug_string);
+//	#define DEBUG_QH_ADD(lala) g_debug_string<<mxUT::ToHtml(wxString()<<lala)<<"  "; main_window->ShowInQuickHelpPanel(g_debug_string);
+//	#define DEBUG_QH_ADDNL(lala) g_debug_string<<mxUT::ToHtml(wxString()<<lala)<<"<BR> "; main_window->ShowInQuickHelpPanel(g_debug_string);
 //	#ifdef __WIN32__
 //		#include <wx/msgdlg.h>
 //		#define DEBUG_INFO(info) wxMessageBox(wxString()<<info);
@@ -319,9 +319,9 @@ public:
 
 };
 
-extern bool zinjai_debug_mode; ///< cuando se pone en true zinjai muestra con wxMessageBox información interna, (ver _IF_DEBUGMODE), para ayudar a encontrar un error en version release, se activa desde Do That con "set verbose"
+extern bool g_zinjai_debug_mode; ///< cuando se pone en true zinjai muestra con wxMessageBox información interna, (ver _IF_DEBUGMODE), para ayudar a encontrar un error en version release, se activa desde Do That con "set verbose"
 
-#define _IF_DEBUGMODE(x) if (zinjai_debug_mode) wxMessageBox(wxString()<<x)
+#define _IF_DEBUGMODE(x) if (g_zinjai_debug_mode) wxMessageBox(wxString()<<x)
 
 #endif
 

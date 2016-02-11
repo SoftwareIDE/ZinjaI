@@ -16,7 +16,7 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern mxWelcomePanel *welcome_panel;
+extern mxWelcomePanel *g_welcome_panel;
 
 #endif
 

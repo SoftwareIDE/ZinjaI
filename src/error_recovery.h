@@ -12,9 +12,9 @@ struct er_source_register {
 	~er_source_register();
 };
 
-extern er_source_register *er_first_source;
+extern er_source_register *g_er_first_source;
 
-extern string er_dir;
+extern string g_er_dir;
 
 void er_register_source(mxSource *src);
 void er_unregister_source(mxSource *src);

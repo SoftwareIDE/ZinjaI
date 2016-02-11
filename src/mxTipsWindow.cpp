@@ -16,7 +16,7 @@
 #include "Language.h"
 
 #define TIP_INITIAL_TEXT "<B>Sabias que...?</B><BR><BR>&nbsp;&nbsp;&nbsp;"
-mxTipsWindow *tips_window=nullptr;
+mxTipsWindow *g_tips_window = nullptr;
 
 BEGIN_EVENT_TABLE(mxTipsWindow, wxDialog)
 	EVT_BUTTON(mxID_TIP_OTHERONE,mxTipsWindow::OnOtherOne)
@@ -29,16 +29,16 @@ BEGIN_EVENT_TABLE(mxTipsWindow, wxDialog)
 END_EVENT_TABLE()
 
 void mxTipsWindow::OnButtonClose(wxCommandEvent &event){
-	tips_window=nullptr;
+	g_tips_window = nullptr;
 	Destroy();
 }
 void mxTipsWindow::OnClose(wxCloseEvent &event){
-	tips_window=nullptr;
+	g_tips_window = nullptr;
 	Destroy();
 }
 
 mxTipsWindow::~mxTipsWindow() {
-	tips_window=nullptr;
+	g_tips_window = nullptr;
 	file.Close();
 }
 
@@ -81,8 +81,8 @@ void mxTipsWindow::ShowAnyTip() {
 	
 
 mxTipsWindow::mxTipsWindow(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, LANG(TIPS_CAPTION,"Sugerencias del dia"), pos, size, style) {
-	tips_window=this;
-	retry_num=0;
+	g_tips_window = this;
+	retry_num = 0;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);

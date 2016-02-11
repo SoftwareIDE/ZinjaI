@@ -42,6 +42,6 @@ private:
 
 };
 
-extern mxTipsWindow *tips_window;
+extern mxTipsWindow *g_tips_window;
 
 #endif

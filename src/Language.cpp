@@ -4,13 +4,13 @@
 #include "Cpp11.h"
 using namespace std;
 
-char *language_buffer = nullptr;
-int *language_index = nullptr;
+char *g_language_buffer = nullptr;
+int *g_language_index = nullptr;
 
 /**
 * @brief Carga un archivo de lenguaje
 *
-* Carga los arreglos language_buffer y language_index, eliminando su contenido
+* Carga los arreglos g_language_buffer y g_language_index, eliminando su contenido
 * si es que tenian y utilizando el cache de lenguaje si existe (sino se
 * regenera).
 * @param lang_in     nombre del archivo de idioma a cargar sin extension
@@ -21,9 +21,9 @@ int *language_index = nullptr;
 
 LANGUAGE_ERROR load_language(string lang_in, string lang_cache) {
 	
-	if (language_buffer) delete [] language_buffer;
-	if (language_index) delete [] language_index;
-	language_buffer=nullptr; language_index=nullptr;
+	if (g_language_buffer) delete [] g_language_buffer;
+	if (g_language_index) delete [] g_language_index;
+	g_language_buffer=nullptr; g_language_index=nullptr;
 	
 	LANGUAGE_ERROR le = is_language_compiled(lang_in,lang_cache);
 	if (le!=LANGERR_OK) {
@@ -36,8 +36,8 @@ LANGUAGE_ERROR load_language(string lang_in, string lang_cache) {
 	ifstream fin((lang_cache+".buf").c_str(),ios::binary|ios::ate);
 	int sz=fin.tellg();
 	fin.seekg(0,ios::beg);
-	language_buffer = new char[sz];
-	if (!fin.read(language_buffer,sz)) {
+	g_language_buffer = new char[sz];
+	if (!fin.read(g_language_buffer,sz)) {
 		fin.close();
 		return load_language(lang_in,"");
 	}
@@ -47,8 +47,8 @@ LANGUAGE_ERROR load_language(string lang_in, string lang_cache) {
 	ifstream fin2((lang_cache+".idx").c_str(),ios::binary|ios::ate);
 	sz=fin2.tellg()/sizeof(int);
 	fin2.seekg(0,ios::beg);
-	language_index = new int[sz];
-	if (!fin2.read((char*)language_index,(sz)*sizeof(int)) || sz!=int(LANGUAGE_MAX)) {
+	g_language_index = new int[sz];
+	if (!fin2.read((char*)g_language_index,(sz)*sizeof(int)) || sz!=int(LANGUAGE_MAX)) {
 		fin2.close();
 		return load_language(lang_in,"");
 	}
@@ -100,23 +100,23 @@ LANGUAGE_ERROR compile_language(string lang_in, string lang_cache) {
 	fin.close();
 	
 	// generar el buffer
-	language_buffer = new char[buflen];
-	language_index = new int[LANGUAGE_MAX];
+	g_language_buffer = new char[buflen];
+	g_language_index = new int[LANGUAGE_MAX];
 	buflen=0; 
 	for (int i=0;i<scount;i++) {
-		language_index[i]=buflen;
-		strcpy(language_buffer+buflen,texts[i].c_str());
+		g_language_index[i]=buflen;
+		strcpy(g_language_buffer+buflen,texts[i].c_str());
 		buflen+=texts[i].size()+1;
 	}
 	delete [] texts;
 	
 	// guardar el buffer
 	ofstream fout((lang_cache+".buf").c_str(),ios::binary|ios::trunc);
-	fout.write(language_buffer,buflen);
+	fout.write(g_language_buffer,buflen);
 	fout.close();
 	// guardar el indice
 	ofstream fout2((lang_cache+".idx").c_str(),ios::binary|ios::trunc);
-	fout2.write((char*)language_index,(LANGUAGE_MAX)*sizeof(int));
+	fout2.write((char*)g_language_index,(LANGUAGE_MAX)*sizeof(int));
 	fout2.close();
 	// guardar firma
 	ifstream fi((lang_in+".sgn").c_str());

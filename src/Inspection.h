@@ -31,7 +31,7 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 #ifdef _INSPECTION_LOG
 #include <sstream>
 #include <wx/ffile.h>
-	extern wxFFile inspection_log_file;
+	extern wxFFile g_inspection_log_file;
 #endif
 
 enum GDB_VO_FORMAT { GVF_NATURAL, GVF_BINARY, GVF_OCTAL, GVF_DECIMAL, GVF_HEXADECIMAL };
@@ -42,9 +42,9 @@ class DebuggerInspection;
 
 ///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de las inspecciones de forma individual
 class myDIEventHandler {
-	bool owned_by_the_inspection; ///< if true, the inspections will do the delete
+//	bool m_owned_by_the_inspection; ///< if true, the inspections will do the delete
 public:
-	myDIEventHandler(bool _owned_by_the_inspection=false) : owned_by_the_inspection(_owned_by_the_inspection) {}
+//	myDIEventHandler(bool owned_by_the_inspection=false) : m_owned_by_the_inspection(owned_by_the_inspection) {}
 	virtual void OnDICreated(DebuggerInspection *di) {}
 	virtual void OnDIError(DebuggerInspection *di) {}
 	virtual void OnDIValueChanged(DebuggerInspection *di) {}
@@ -56,7 +56,7 @@ public:
 
 ///< class base que heredarán los componentes visuales para ser notificados de los cambios en el estado de la depuracion
 class myDIGlobalEventHandler {
-	bool registered;
+	bool m_registered;
 public:
 	myDIGlobalEventHandler();
 	void UnRegister();
@@ -72,17 +72,17 @@ public:
 };
 
 class myCompoundHelperDIEH : public myDIEventHandler {
-	DebuggerInspection *helper_parent;
+	DebuggerInspection *m_helper_parent;
 	friend class DebuggerInspection;
 public:
-	myCompoundHelperDIEH(DebuggerInspection *parent):myDIEventHandler(true),helper_parent(parent) {}
+	myCompoundHelperDIEH(DebuggerInspection *parent):/*myDIEventHandler(true),*/m_helper_parent(parent) {}
 	virtual void OnDIValueChanged(DebuggerInspection *di);
 };
 
 class myUserHelperDIEH : public myDIEventHandler {
-	DebuggerInspection *helper_parent;
+	DebuggerInspection *m_helper_parent;
 public:
-	myUserHelperDIEH(DebuggerInspection *parent):myDIEventHandler(true),helper_parent(parent) {}
+	myUserHelperDIEH(DebuggerInspection *parent):/*myDIEventHandler(true),*/m_helper_parent(parent) {}
 	virtual void OnDIValueChanged(DebuggerInspection *di);
 };
 
@@ -110,19 +110,19 @@ struct DebuggerInspection {
 			cerr<<"DI("<<di<<")::"<<string((++lev)*2,' ')<<method<<"  in";
 			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
-			inspection_log_file.Write(cerr.str().c_str()); inspection_log_file.Flush();
+			g_inspection_log_file.Write(cerr.str().c_str()); g_inspection_log_file.Flush();
 		}
 		~CallLogger() { 
 			stringstream cerr;
 			cerr<<"DI("<<di<<")::"<<string((lev--)*2,' ')<<method<<" out";
 			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
-			inspection_log_file.Write(cerr.str().c_str()); inspection_log_file.Flush();
+			g_inspection_log_file.Write(cerr.str().c_str()); g_inspection_log_file.Flush();
 		}
 	};
 #	define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
 #	define __debug_log_static_method__ CallLogger _call_logger_(__FUNCTION__)
-#	define __debug_log_message__(msg) { stringstream cerr; cerr<<msg<<endl; inspection_log_file.Write(cerr.str().c_str()); } inspection_log_file.Flush()
+#	define __debug_log_message__(msg) { stringstream cerr; cerr<<msg<<endl; g_inspection_log_file.Write(cerr.str().c_str()); } g_inspection_log_file.Flush()
 #else
 #	define __debug_log_method__ 
 #	define __debug_log_static_method__ 
@@ -605,7 +605,7 @@ public:
 			if (helper) return helper->UpdateValue(true); // ...o bien tiene un helper (y el evento del helper actualiza this)...
 			if (flags.Get(DIF_IS_INTERNAL_HELPER)) { // ...o bien es el helper de un compuesto...
 				gdb_value = debug->InspectExpression(expression,flags.Get(DIF_FULL_OUTPUT));
-				DebuggerInspection *helper_parent = reinterpret_cast<myCompoundHelperDIEH*>(consumer)->helper_parent;
+				DebuggerInspection *helper_parent = reinterpret_cast<myCompoundHelperDIEH*>(consumer)->m_helper_parent;
 				if (helper_parent->gdb_value!=gdb_value) {
 					helper_parent->gdb_value=gdb_value;
 					if (generate_event) helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);

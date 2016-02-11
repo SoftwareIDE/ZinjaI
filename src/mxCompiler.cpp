@@ -195,7 +195,7 @@ DEBUG_INFO("wxYield:out mxCompiler::BuildOrRunProject");
 		compiler->CheckForExecutablePermision(project->GetExePath());
 		main_window->SetStatusText(LANG(MAINW_BINARY_ALREADY_UPDATED,"El binario ya esta actualizado."));
 		if (on_end) { // si ya esta actualizado, ejecutar si se debe
-			on_end->Do(); 
+			on_end->Run(); 
 		} else {
 			tree->SetItemText(state,LANG(MAINW_BINARY_ALREADY_UPDATED,"El binario ya esta actualizado"));
 		}
@@ -571,7 +571,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 					GenericAction *on_end = fms_move(compile_and_run->on_end);
 					valgrind_cmd=compile_and_run->valgrind_cmd;
 					delete compile_and_run; compile_and_run=nullptr;
-					if (on_end) { on_end->Do(); delete on_end; }
+					if (on_end) { on_end->Run(); delete on_end; }
 					valgrind_cmd="";
 				} else {
 					compile_and_run->compiling=false;
@@ -594,7 +594,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			GenericAction *on_end = fms_move(compile_and_run->on_end);
 			valgrind_cmd=compile_and_run->valgrind_cmd;
 			delete compile_and_run; compile_and_run=nullptr;
-			if (on_end) { on_end->Do(); delete on_end; }
+			if (on_end) { on_end->Run(); delete on_end; }
 			valgrind_cmd="";
 		}
 	} else { // si fallo la compilacion
@@ -612,7 +612,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			tree->Expand(errors);
 			main_window->ShowCompilerTreePanel();
 			main_window->SetFocusToSourceAfterEvents();
-			if (!project) code_helper->TryToSuggestTemplateSolutionForLinkingErrors(compile_and_run->full_output,compile_and_run->on_end);
+			if (!project) g_code_helper->TryToSuggestTemplateSolutionForLinkingErrors(compile_and_run->full_output,compile_and_run->on_end);
 		}
 		if (project) {
 			project->compile_was_ok=false;

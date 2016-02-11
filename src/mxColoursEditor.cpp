@@ -15,7 +15,7 @@
 #include "ConfigManager.h"
 #include "mxSource.h"
 
-color_theme *ctheme = nullptr;
+color_theme *g_ctheme = nullptr;
 
 BEGIN_EVENT_TABLE(mxColoursEditor,wxDialog)
 	EVT_BUTTON(wxID_SAVE,mxColoursEditor::OnSave)
@@ -32,7 +32,7 @@ END_EVENT_TABLE()
 
 
 mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_ANY,LANG(COLORS_CAPTION,"Definir Colores"),wxDefaultPosition,wxSize(700,400),wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
-	old_theme=custom_theme=*ctheme;
+	old_theme=custom_theme=*g_ctheme;
 	parent=aparent; setting=true;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
@@ -45,7 +45,7 @@ mxColoursEditor::mxColoursEditor(wxWindow *aparent):wxDialog(main_window,wxID_AN
 	apply_button->SetDefault(); 
 
 	inverted = new wxCheckBox(this,wxID_ANY,LANG(COLOURS_INVERTED,"Es un esquema de colores invertidos (texto claro sobre fondo oscuro)"));
-	inverted->SetValue(ctheme->inverted);
+	inverted->SetValue(g_ctheme->inverted);
 	
 	wxArrayString color_profiles;
 	mxUT::GetFilesFromBothDirs(color_profiles,"colours",true,"<personalizado>");
@@ -145,18 +145,18 @@ void mxColoursEditor::Add(wxString name, wxColour *fore, wxColour *back, bool *i
 	}
 	
 	llabel[lcount]->SetData(
-		fore?fore:&(ctheme->DEFAULT_FORE),
-		back?back:&(ctheme->DEFAULT_BACK),
+		fore?fore:&(g_ctheme->DEFAULT_FORE),
+		back?back:&(g_ctheme->DEFAULT_BACK),
 		italic,bold);
 	
 	lcount++;
 }
 
 
-#define MXCAdd(id,text) Add(text,&(ctheme->id##_FORE),&(ctheme->id##_BACK),&(ctheme->id##_ITALIC),&(ctheme->id##_BOLD));
-#define MXCAdd0(id,text) Add(text,&(ctheme->id##_FORE),&(ctheme->id##_BACK),nullptr,nullptr);
-#define MXCAdd1(id,text) Add(text,&(ctheme->id),nullptr,nullptr,nullptr);
-#define MXCAdd2(id,text) Add(text,nullptr,&(ctheme->id),nullptr,nullptr);
+#define MXCAdd(id,text) Add(text,&(g_ctheme->id##_FORE),&(g_ctheme->id##_BACK),&(g_ctheme->id##_ITALIC),&(g_ctheme->id##_BOLD));
+#define MXCAdd0(id,text) Add(text,&(g_ctheme->id##_FORE),&(g_ctheme->id##_BACK),nullptr,nullptr);
+#define MXCAdd1(id,text) Add(text,&(g_ctheme->id),nullptr,nullptr,nullptr);
+#define MXCAdd2(id,text) Add(text,nullptr,&(g_ctheme->id),nullptr,nullptr);
 
 void mxColoursEditor::LoadList ( ) {
 	lcount=0;
@@ -200,7 +200,7 @@ void mxColoursEditor::OnClose (wxCloseEvent & evt) {
 
 void mxColoursEditor::OnButtonOk (wxCommandEvent & evt) {
 	if (combo->GetSelection()==int(combo->GetCount())-1) {
-		ctheme->Save(DIR_PLUS_FILE(config->config_dir,"colours.zcs"));
+		g_ctheme->Save(DIR_PLUS_FILE(config->config_dir,"colours.zcs"));
 		config->Init.colour_theme="";
 	} else {
 		config->Init.colour_theme=combo->GetString(combo->GetSelection());
@@ -210,7 +210,7 @@ void mxColoursEditor::OnButtonOk (wxCommandEvent & evt) {
 }
 
 void mxColoursEditor::OnButtonCancel (wxCommandEvent & evt) {
-	(*ctheme)=old_theme;
+	(*g_ctheme)=old_theme;
 	main_window->UpdateStylesInSources();
 	Close();
 }
@@ -434,15 +434,15 @@ void color_theme::Initialize() {
 	wxTheColourDatabase->AddColour("Z DIFF YELLOW",wxColour(255,255,128));
 	wxTheColourDatabase->AddColour("Z CORNFLOWER BLUE",wxColour(100,150,240));
 	
-	ctheme = new color_theme;
+	g_ctheme = new color_theme;
 #if 0
 	// para generar los perfiles de color y que concuerden con los valores por defecto
-	ctheme->SetDefaults(true);
-	ctheme->Save(DIR_PLUS_FILE(("colours"),"inverted.zcs"));
-	ctheme->SetDefaults();
-	ctheme->Save(DIR_PLUS_FILE(("colours"),"default.zcs"));
+	g_ctheme->SetDefaults(true);
+	g_ctheme->Save(DIR_PLUS_FILE(("colours"),"inverted.zcs"));
+	g_ctheme->SetDefaults();
+	g_ctheme->Save(DIR_PLUS_FILE(("colours"),"default.zcs"));
 #else
-	ctheme->SetDefaults();
+	g_ctheme->SetDefaults();
 #endif
 }
 
@@ -454,8 +454,8 @@ void mxColoursEditor::OnCheck (wxCommandEvent & evt) {
 		else if (w==lcur[i]) (*lvalita[i])=lcur[i]->GetValue();
 	if (!setting) {
 		combo->SetSelection(combo->GetCount()-1); 
-		custom_theme=*ctheme;
-		ctheme->inverted=inverted->GetValue();
+		custom_theme=*g_ctheme;
+		g_ctheme->inverted=inverted->GetValue();
 	}
 	scroll->Refresh();
 }
@@ -468,25 +468,25 @@ void mxColoursEditor::OnText (wxCommandEvent & evt) {
 		else if (w==ltback[i]) (*lvalbak[i])=wxColour(ltback[i]->GetValue());
 	if (!setting) { 
 		combo->SetSelection(combo->GetCount()-1); 
-		custom_theme=*ctheme;
+		custom_theme=*g_ctheme;
 	}
 	scroll->Refresh();
 }
 
 void mxColoursEditor::OnCombo (wxCommandEvent & evt) {
 	if (combo->GetSelection()==int(combo->GetCount())-1) {
-		(*ctheme)=custom_theme;
+		(*g_ctheme)=custom_theme;
 	} else {
 		wxString filename = combo->GetString(combo->GetSelection());
 		wxString fullpath = mxUT::WichOne(filename,"colours",true);
-		ctheme->Load(fullpath);
+		g_ctheme->Load(fullpath);
 	}
 	SetValues();
 }
 
 void mxColoursEditor::SetValues() {
 	setting=true;
-	inverted->SetValue(ctheme->inverted);
+	inverted->SetValue(g_ctheme->inverted);
 	for (int i=0;i<lcount;i++) {
 		if (lvalfor[i]) ltfore[i]->SetValue(lvalfor[i]->GetAsString(wxC2S_HTML_SYNTAX));
 		if (lvalbak[i]) ltback[i]->SetValue(lvalbak[i]->GetAsString(wxC2S_HTML_SYNTAX));
@@ -501,9 +501,9 @@ void mxColoursEditor::OnOpen (wxCommandEvent & evt) {
 	wxFileDialog dlg (this, LANG(GENERAL_OPEN,"Abrir"),config->Files.last_dir,"", "Zinjai Colour Schemes (*.zcs)|*.zcs;*.ZCS|All files(*)|*", wxFD_OPEN);
 	if (dlg.ShowModal() == wxID_OK) {
 		config->Files.last_dir=wxFileName(dlg.GetPath()).GetPath();
-		ctheme->Load(dlg.GetPath());
+		g_ctheme->Load(dlg.GetPath());
 		combo->SetSelection(combo->GetCount()-1); 
-		custom_theme=*ctheme;
+		custom_theme=*g_ctheme;
 		SetValues();
 	}
 }
@@ -512,7 +512,7 @@ void mxColoursEditor::OnSave (wxCommandEvent & evt) {
 	wxString fname=wxGetTextFromUser(LANG(COLOURS_ESCHEME,"Esquema:"),LANG(GENERAL_SAVE,"Guardar"),"custom_color_scheme", this);
 	if (fname.Len()) {
 		if (!fname.Upper().EndsWith(".ZCS")) fname<<".zcs";
-		ctheme->Save(DIR_PLUS_FILE_2(config->config_dir,"colours",fname));
+		g_ctheme->Save(DIR_PLUS_FILE_2(config->config_dir,"colours",fname));
 #ifdef __WIN32__
 		bool os_case=false;
 #else

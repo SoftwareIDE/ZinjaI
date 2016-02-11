@@ -16,7 +16,7 @@ SingleList<myDIGlobalEventHandler*> DebuggerInspection::global_consumers;
 
 #ifdef _INSPECTION_LOG
 	int DebuggerInspection::CallLogger::lev=0;
-	wxFFile inspection_log_file(_INSPECTION_LOG,"w+");
+	wxFFile g_inspection_log_file(_INSPECTION_LOG,"w+");
 #endif
 
 static wxString &RemoveEscapeChar(wxString &s) {
@@ -229,13 +229,13 @@ void DebuggerInspection::OnDebugPause() {
 
 
 void myCompoundHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
-	di->MakeEvaluationExpressionForParent(helper_parent);
-	helper_parent->UpdateValue(true);
+	di->MakeEvaluationExpressionForParent(m_helper_parent);
+	m_helper_parent->UpdateValue(true);
 }
 
 void myUserHelperDIEH::OnDIValueChanged (DebuggerInspection * di) {
-	helper_parent->gdb_value=di->gdb_value;
-	/*if (!helper_parent->is_frozen) */helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);	
+	m_helper_parent->gdb_value=di->gdb_value;
+	/*if (!m_helper_parent->is_frozen) */m_helper_parent->GenerateEvent(&myDIEventHandler::OnDIValueChanged);	
 }
 
 /**
@@ -330,7 +330,7 @@ wxString DebuggerInspection::GetUserStatusText (DEBUG_INSPECTION_MESSAGE type) {
 
 myDIGlobalEventHandler::myDIGlobalEventHandler ( ) { 
 	DebuggerInspection::global_consumers.Add(this); 
-	registered=true;
+	m_registered=true;
 }
 
 myDIGlobalEventHandler::~myDIGlobalEventHandler ( ) { 
@@ -338,11 +338,11 @@ myDIGlobalEventHandler::~myDIGlobalEventHandler ( ) {
 }
 
 void myDIGlobalEventHandler::UnRegister ( ) {
-	if (!registered) return;
+	if (!m_registered) return;
 	int pos = DebuggerInspection::global_consumers.Find(this); 
 	if (pos!=DebuggerInspection::global_consumers.NotFound())
 		DebuggerInspection::global_consumers.Remove(pos);
-	registered=false;
+	m_registered=false;
 }
 
 void DebuggerInspection::UpdateAllManual ( ) {

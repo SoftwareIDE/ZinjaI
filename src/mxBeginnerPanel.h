@@ -49,7 +49,7 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern mxBeginnerPanel *beginner_panel;
+extern mxBeginnerPanel *g_beginner_panel;
 
 #endif
 

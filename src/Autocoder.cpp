@@ -4,7 +4,7 @@
 #include "mxUtils.h"
 #include "ProjectManager.h"
 
-Autocoder *autocoder=nullptr;
+Autocoder *g_autocoder=nullptr;
 
 Autocoder::Autocoder() {
 	if (!LoadFromFile(config->Files.autocodes_file)) {
@@ -24,7 +24,7 @@ void Autocoder::Reset(wxString pfile) {
 void Autocoder::SetDefaults() {
 	Clear();
 	if (config->Init.language_file=="spanish") {
-		description=
+		m_description=
 			"// Este archivo contiene las definiciones de las plantillas de autocódigo. Estas\n"
 			"// plantillas se invocan en zinjai typeando su nombre y sus argumentos de la misma\n"
 			"// manera en la que se llama a una macro de preprocesador o a una función, y\n"
@@ -46,7 +46,7 @@ void Autocoder::SetDefaults() {
 			"// Si edita este archivo de definiciones con ZinjaI, al guardarlo los cambios se\n"
 			"// reacargan automáticamente.";
 	} else {
-		description=
+		m_description=
 			"// This file contains autocodes definitions. Autocodes are some kind of code templates\n"
 			"// that you can invoke while coding in ZinjaI, calling them in exactly the same way you\n"
 			"// call a macro and pressing TAB key just after it. ZinjaI will inmediatly replace\n"
@@ -66,22 +66,22 @@ void Autocoder::SetDefaults() {
 			"// when you save the file.";
 	}
 	
-	{ auto_code a; a.code="for(int i=0;i<N;i++) { #here# }"; a.args.Add("i"); a.args.Add("N"); list["for2"]=a; }
-	{ auto_code a; a.code="for(int i=0;i<N;i++) { #here# }"; a.args.Add("N"); list["fori"]=a; }
-	{ auto_code a; a.code="for(int j=0;j<N;j++) { #here# }"; a.args.Add("N"); list["forj"]=a; }
-	{ auto_code a; a.code="for(int k=0;k<N;k++) { #here# }"; a.args.Add("N"); list["fork"]=a; }
-	{ auto_code a; a.code="for(unsigned int i=0;i<N;i++) { #here# }"; a.args.Add("i"); a.args.Add("N"); list["foru2"]=a; }
-	{ auto_code a; a.code="for(unsigned int i=0;i<N;i++) { #here# }"; a.args.Add("N"); list["forui"]=a; }
-	{ auto_code a; a.code="for(unsigned int j=0;j<N;j++) { #here# }"; a.args.Add("N"); list["foruj"]=a; }
-	{ auto_code a; a.code="for(unsigned int k=0;k<N;k++) { #here# }"; a.args.Add("N"); list["foruk"]=a; }
-	{ auto_code a; a.code="for( #typeof(v)#::iterator it=v.begin(); it!=v.end(); ++it) { #here# }"; a.args.Add("V"); list["forit"]=a; }
-	{ auto_code a; a.code="while(true) {\n#here#\n}"; list["whilet"]=a; }
-	{ auto_code a; a.code="if(cond) {\n\t#here#\n} else {\n\t\n}"; a.args.Add("cond"); list["ifel"]=a; }
-	{ auto_code a; a.code="std::cout << x << std::endl;"; a.args.Add("x"); list["cout"]=a; }
-	{ auto_code a; a.code="std::cerr << x << std::endl;"; a.args.Add("x"); list["cerr"]=a; }
-	{ auto_code a; a.code="switch(x) {\ncase #here# :\n\tbreak;\ndefault:;\n}"; a.args.Add("x"); list["switch"]=a; }
-	{ auto_code a; a.code="class x {\nprivate:\n\t#here#\npublic:\n\tx();\n\t~x();\n};"; a.args.Add("x"); list["class"]=a; }
-	{ auto_code a; a.code="class x : public f {\nprivate:\n\t#here#\nprotected:\n\t\npublic:\n\tx();\n\t~x();\n};"; a.args.Add("x"); a.args.Add("f"); list["classh"]=a; }
+	{ auto_code a; a.code="for(int i=0;i<N;i++) { #here# }"; a.args.Add("i"); a.args.Add("N"); m_list["for2"]=a; }
+	{ auto_code a; a.code="for(int i=0;i<N;i++) { #here# }"; a.args.Add("N"); m_list["fori"]=a; }
+	{ auto_code a; a.code="for(int j=0;j<N;j++) { #here# }"; a.args.Add("N"); m_list["forj"]=a; }
+	{ auto_code a; a.code="for(int k=0;k<N;k++) { #here# }"; a.args.Add("N"); m_list["fork"]=a; }
+	{ auto_code a; a.code="for(unsigned int i=0;i<N;i++) { #here# }"; a.args.Add("i"); a.args.Add("N"); m_list["foru2"]=a; }
+	{ auto_code a; a.code="for(unsigned int i=0;i<N;i++) { #here# }"; a.args.Add("N"); m_list["forui"]=a; }
+	{ auto_code a; a.code="for(unsigned int j=0;j<N;j++) { #here# }"; a.args.Add("N"); m_list["foruj"]=a; }
+	{ auto_code a; a.code="for(unsigned int k=0;k<N;k++) { #here# }"; a.args.Add("N"); m_list["foruk"]=a; }
+	{ auto_code a; a.code="for( #typeof(v)#::iterator it=v.begin(); it!=v.end(); ++it) { #here# }"; a.args.Add("V"); m_list["forit"]=a; }
+	{ auto_code a; a.code="while(true) {\n#here#\n}"; m_list["whilet"]=a; }
+	{ auto_code a; a.code="if(cond) {\n\t#here#\n} else {\n\t\n}"; a.args.Add("cond"); m_list["ifel"]=a; }
+	{ auto_code a; a.code="std::cout << x << std::endl;"; a.args.Add("x"); m_list["cout"]=a; }
+	{ auto_code a; a.code="std::cerr << x << std::endl;"; a.args.Add("x"); m_list["cerr"]=a; }
+	{ auto_code a; a.code="switch(x) {\ncase #here# :\n\tbreak;\ndefault:;\n}"; a.args.Add("x"); m_list["switch"]=a; }
+	{ auto_code a; a.code="class x {\nprivate:\n\t#here#\npublic:\n\tx();\n\t~x();\n};"; a.args.Add("x"); m_list["class"]=a; }
+	{ auto_code a; a.code="class x : public f {\nprivate:\n\t#here#\nprotected:\n\t\npublic:\n\tx();\n\t~x();\n};"; a.args.Add("x"); a.args.Add("f"); m_list["classh"]=a; }
 	{ auto_code a; a.description="dummy text"; 
 	a.code=
 		"\"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor \"\n"
@@ -90,12 +90,12 @@ void Autocoder::SetDefaults() {
 		"\"irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla \"\n"
 		"\"pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia \"\n"
 		"\"deserunt mollit anim id est laborum.\"#here#";
-	list["lorem_ipsum"]=a; }
+	m_list["lorem_ipsum"]=a; }
 }
 
 void Autocoder::Clear() {
-	list.clear();
-	description.Clear();
+	m_list.clear();
+	m_description.Clear();
 }
 
 bool Autocoder::LoadFromFile(wxString filename) {
@@ -106,8 +106,8 @@ bool Autocoder::LoadFromFile(wxString filename) {
 	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
 		if (str.StartsWith("#autocode ")) {
 			while (ac.code.Last()=='\r'||ac.code.Last()=='\n') ac.code.RemoveLast();
-			if (name.Len()) list[name]=ac;
-			else description=ac.description;
+			if (name.Len()) m_list[name]=ac;
+			else m_description=ac.description;
 			ac.Clear();
 			int i=10, l=str.Len();
 			while (i<l && (str[i]==' '||str[i]=='\t')) i++;
@@ -144,7 +144,7 @@ bool Autocoder::LoadFromFile(wxString filename) {
 		}
 	}
 	while (ac.code.Last()=='\r'||ac.code.Last()=='\n') ac.code.RemoveLast();
-	if (name.Len()) list[name]=ac;
+	if (name.Len()) m_list[name]=ac;
 	return true;
 }
 
@@ -157,11 +157,11 @@ void Autocoder::SaveToFile(wxString filename) {
 		fil.Create();
 	fil.Clear();
 	
-	fil.AddLine(description);
+	fil.AddLine(m_description);
 	fil.AddLine("");
 		
 	HashStringAutoCode::iterator it;
-	for( it = list.begin(); it != list.end(); ++it ) {
+	for( it = m_list.begin(); it != m_list.end(); ++it ) {
 		wxString head("#autocode ");
 		head<<it->first;
 		if (it->second.args.GetCount()) {
@@ -287,8 +287,8 @@ bool Autocoder::Apply(mxSource *src) {
 		while (i>=0 && (c=line[i]) && ((c>='0'&&c<='9')||(c>='a'&&c<='z')||(c>='A'&&c<='Z')||c=='_')) i--;
 		i++; c=line[i]; if (c>='0'&&c<='9') return false;  
 //		cerr<<line.Mid(i,e-i)<<endl;
-		HashStringAutoCode::iterator it=list.find(line.Mid(i,e-i));
-		if (it==list.end()) {
+		HashStringAutoCode::iterator it = m_list.find(line.Mid(i,e-i));
+		if (it==m_list.end()) {
 			char cping[6]="pung"; cping[1]='i';
 			mxSource::UndoActionGuard undo_action(src);
 			if (line.Mid(i,e-i)==cping) { // :)

@@ -12,8 +12,8 @@
 #include "mxCompiler.h"
 using namespace std;
 
-string er_dir;
-er_source_register *er_first_source;
+string g_er_dir;
+er_source_register *g_er_first_source = nullptr;
 
 #define ERR_REC_LOG_BOOL(what) fil1<<#what<<": "<<((what)?"true":"false")<<endl
 #define ERR_REC_LOG_NORM(what) fil1<<#what<<": "<<what<<endl
@@ -34,7 +34,7 @@ er_source_register::~er_source_register() {
 }
 
 void er_register_source(mxSource *src) {
-	src->er_register = new er_source_register(src,er_first_source,er_first_source->next);
+	src->er_register = new er_source_register(src,g_er_first_source,g_er_first_source->next);
 }
 void er_unregister_source(mxSource *src) {
 	delete src->er_register;
@@ -44,7 +44,7 @@ void er_sigsev(int sig) {
 	
 //cerr<<"ERROR RECOVERY 1"<<endl;
 	
-	ofstream fil1((er_dir+"error_log").c_str(),ios::ate|ios::app);
+	ofstream fil1((g_er_dir+"error_log").c_str(),ios::ate|ios::app);
 
 	fil1<<endl;
 
@@ -77,10 +77,10 @@ void er_sigsev(int sig) {
 	
 //cerr<<"ERROR RECOVERY 3"<<endl;
 	
-	ofstream fil2((er_dir+"recovery_log").c_str(),ios::trunc);
+	ofstream fil2((g_er_dir+"recovery_log").c_str(),ios::trunc);
 	fil2<<"Error date: "<<wxNow()<<endl;
 	
-	er_source_register *sr = er_first_source->next;
+	er_source_register *sr = g_er_first_source->next;
 	char kname[]="kabom-aaa.cpp";
 	while (sr) {
 		if (kname[6]=='z') {
@@ -95,8 +95,8 @@ void er_sigsev(int sig) {
 			kname[6]++;
 		fil2<<sr->src->page_text<<endl;
 		fil2<<sr->src->source_filename.GetFullPath()<<endl;
-		fil2<<(er_dir+kname).c_str()<<endl;
-		sr->src->wxStyledTextCtrl::SaveFile(wxString((er_dir+kname).c_str(),wxConvLibc));
+		fil2<<(g_er_dir+kname).c_str()<<endl;
+		sr->src->wxStyledTextCtrl::SaveFile(wxString((g_er_dir+kname).c_str(),wxConvLibc));
 		sr = sr->next;
 	}
 	
@@ -107,7 +107,7 @@ void er_sigsev(int sig) {
 		wxString pfile=project->filename;
 		project->filename<<_T(".kaboom");
 		project->Save();
-		ofstream zpr((er_dir+"kboom.zpr").c_str());
+		ofstream zpr((g_er_dir+"kboom.zpr").c_str());
 		zpr<<DIR_PLUS_FILE(project->path,pfile)<<endl;
 		zpr<<pfile<<endl;
 		zpr.close();
@@ -125,15 +125,15 @@ void er_sigsev(int sig) {
 }
 
 void er_init(const char *dir) {
-	er_dir = dir;
-	if (er_dir[er_dir.size()-1]!='/' && er_dir[er_dir.size()-1]!='\\') {
+	g_er_dir = dir;
+	if (g_er_dir[g_er_dir.size()-1]!='/' && g_er_dir[g_er_dir.size()-1]!='\\') {
 #ifdef __WIN32__
-		er_dir+="\\";
+		g_er_dir+="\\";
 #else
-		er_dir+="/";
+		g_er_dir+="/";
 #endif
 	}
-	er_first_source = new er_source_register(nullptr,nullptr,nullptr);
+	g_er_first_source = new er_source_register(nullptr,nullptr,nullptr);
 #ifndef _ZINJAI_DEBUG
 	signal(SIGSEGV,er_sigsev);
 	signal(SIGPIPE,er_sigsev);

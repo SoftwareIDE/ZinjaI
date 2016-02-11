@@ -14,7 +14,7 @@ private:
 	struct node {
 		wxControl *control;
 		node *next;
-	} *first;
+	} *m_first;
 public:
 	widgetDisabler();
 	void Add(wxControl *_control, bool _from_utils=false);

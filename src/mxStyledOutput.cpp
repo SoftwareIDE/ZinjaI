@@ -51,7 +51,7 @@ mxStyledOutput::mxStyledOutput (wxWindow * parent, bool read_only, bool wrap_lin
 	
 	MarkerDefine(0,wxSTC_MARK_MINUS, wxColour(255,255,255), wxColour(0,0,0));
 	MarkerDefine(1,wxSTC_MARK_PLUS, wxColour(255,255,255), wxColour(0,0,0));
-	wxColour mcolor = ctheme->CURRENT_LINE;
+	wxColour mcolor = g_ctheme->CURRENT_LINE;
 	float alpha=35.f/255.f; int white=255*(1-alpha);
 	mcolor.Set(white+mcolor.Red()*alpha,white+mcolor.Green()*alpha,white+mcolor.Blue()*alpha,255);
 	MarkerDefine(2,wxSTC_MARK_BACKGROUND,mcolor,mcolor);

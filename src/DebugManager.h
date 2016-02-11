@@ -283,7 +283,7 @@ public:
 	/// @ struct for executing tasks while debugger is runnin... the task is saved with this class, and a debugger pause is triggered, so the debugger can run it an continue
 	class OnPauseAction { 
 	public: 
-		virtual void Do()=0; /// action to perform on pause
+		virtual void Run()=0; /// action to perform on pause
 		virtual bool Invalidate(void *ptr){ return false; } /// to avoid action on deleted objects
 		virtual ~OnPauseAction(){}
 	};
@@ -318,18 +318,18 @@ public:
 
 #define _DEBUG_LAMBDA_0(Name,Action) \
 	class Name : public DebugManager::OnPauseAction {\
-	public: void Do() Action };
+	public: void Run() override Action };
 
 #define _DEBUG_LAMBDA_1(Name,PtrType,Arg,Action) \
 	class Name : public DebugManager::OnPauseAction {\
 	public: Name(PtrType *arg) : Arg(arg) {} \
-	public: void Do() Action  \
+	public: void Run() override Action  \
 	public: bool Invalidate(void *ptr) { return ptr==Arg; } \
 	private: PtrType *Arg; };
 #define _DEBUG_LAMBDA_2(Name,PtrType1,Arg1,Type2,Arg2,Action) \
 	class Name : public DebugManager::OnPauseAction {\
 	public: Name(PtrType1 *arg1, Type2 arg2) : Arg1(arg1),Arg2(arg2) {} \
-	public: void Do() Action \
+	public: void Run() override Action \
 	public: bool Invalidate(void *ptr) { return ptr==Arg1; } \
 	private: PtrType1 *Arg1; Type2 Arg2; };
 

@@ -576,8 +576,8 @@ void Parser::ParseNextFileContinue(const wxString &s) {
 		case PAF_CLASS_INHERIT: {
 			wxString name=PARSER_PARTE(1);
 			wxString key=PARSER_PARTE(0);
-			code_helper->UnMacro(name);
-			code_helper->UnTemplate(name);
+			g_code_helper->UnMacro(name);
+			g_code_helper->UnTemplate(name);
 			switch (s[p[5]+3]) {
 			case '4':
 				PD_REGISTER_INHERIT(process->file,name,key,PD_CONST_PUBLIC);
@@ -698,7 +698,7 @@ void Parser::ParseSomething(bool first, bool arg_show_progress) {
 		while (aux_oe) {
 			OnEndAction *aux_i=aux_oe;
 			aux_oe=aux_oe->next;
-			aux_i->Do();
+			aux_i->Run();
 			delete aux_i;
 		}
 		if (show_progress) main_window->SetStatusProgress(-1);
@@ -737,7 +737,7 @@ void Parser::ParseFile(wxString filename) {
 
 void Parser::OnEnd(OnEndAction *what, bool run_now_if_not_working) {
 	if (run_now_if_not_working && !parser->working) {
-		what->Do();
+		what->Run();
 		delete what;
 	} else {
 		what->next=on_end;

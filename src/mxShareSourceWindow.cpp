@@ -26,7 +26,7 @@ END_EVENT_TABLE()
 
 mxShareSourceWindow::mxShareSourceWindow(mxSource *source, wxString name, wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, LANG(SHARESOURCE_CAPTION,"Compartir Archivo"), pos, size, style) {
 	
-	if (!share) share = new ShareManager();
+	if (!g_share_manager) g_share_manager = new ShareManager();
 	
 	source_ctrl=source;
 	
@@ -34,7 +34,7 @@ mxShareSourceWindow::mxShareSourceWindow(mxSource *source, wxString name, wxWind
 	wxBoxSizer *bottomSizer= new wxBoxSizer(wxHORIZONTAL);
 
 	source_name = new wxComboBox(this, wxID_ANY);
-	share->GetMyList((wxControlWithItems*)source_name);
+	g_share_manager->GetMyList((wxControlWithItems*)source_name);
 	
 	freeze_check = new wxCheckBox(this, wxID_ANY, LANG(SHARESOURCE_SHARE_WITHOUT_MODIFICATIONS,"Compartir sin modificaciones"));
 	freeze_check->SetValue(false);
@@ -80,18 +80,18 @@ void mxShareSourceWindow::OnOkButton(wxCommandEvent &event) {
 		return;
 	}
 	
-	if (!share->CheckServer()) {
+	if (!g_share_manager->CheckServer()) {
 		mxMessageDialog(this,LANG(SHARESOURCE_COULDNT_START_SERVER,"No se pudo inciar el servidor. Compruebe que el puerto este correctamente configuardo y libre."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
 		return;
 	}
 	
-	if (share->Exists(name))
+	if (g_share_manager->Exists(name))
 		if (mxMD_YES==mxMessageDialog(this,LANG(SHARESOURCE_SOURCE_ALREADY_EXISTS_REPLACE,"Ya existe un archivo compartido con ese nombre. Desea reemplazarlo?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_WARNING).ShowModal() )
-			share->Replace(name,source_ctrl,freeze_check->GetValue());
+			g_share_manager->Replace(name,source_ctrl,freeze_check->GetValue());
 		else
 			return;
 	else
-		share->Insert(name,source_ctrl,freeze_check->GetValue());
+		g_share_manager->Insert(name,source_ctrl,freeze_check->GetValue());
 	Close();
 }
 

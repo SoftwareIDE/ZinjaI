@@ -113,12 +113,12 @@ void mxProjectGeneralConfig::OnOkButton(wxCommandEvent &evt) {
 	project->macros_file = project_debug_macros->GetValue();
 	if (project->autocomp_extra != project_autocomp->GetValue()) {
 		project->autocomp_extra = project_autocomp->GetValue();
-		code_helper->ReloadIndexes(config->Help.autocomp_indexes+" "+project->autocomp_extra);
+		g_code_helper->ReloadIndexes(config->Help.autocomp_indexes+" "+project->autocomp_extra);
 	}
 //	main_window->menu.tools_wxfb_activate->Check(project->use_wxfb);
 	if (project->autocodes_file != project_autocodes->GetValue()) {
 		project->autocodes_file = project_autocodes->GetValue();
-		autocoder->Reset(DIR_PLUS_FILE(project->path,project->autocodes_file));
+		g_autocoder->Reset(DIR_PLUS_FILE(project->path,project->autocodes_file));
 	}
 	project->default_fext_header = default_fext_header->GetValue();
 	project->default_fext_source = default_fext_source->GetValue();

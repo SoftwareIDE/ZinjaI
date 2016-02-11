@@ -35,7 +35,7 @@
 #include "MenusAndToolsConfig.h"
 #include "mxToolchainConfig.h"
 
-static cfgStyles old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
+static cfgStyles s_old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
 
 #ifndef __WIN32__
 int LinuxTerminalInfo::count = 0;
@@ -71,7 +71,7 @@ bool LinuxTerminalInfo::Test() {
 }
 #endif
 
-static mxPreferenceWindow *preference_window=nullptr;
+static mxPreferenceWindow *s_preference_window = nullptr;
 
 BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxPreferenceWindow::OnOkButton)
@@ -141,7 +141,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : wxDialog(parent, wxID
 	toolbar_editor_run = nullptr;
 	toolbar_editor_misc = nullptr;
 	
-	old_config_styles=config->Styles;
+	s_old_config_styles=config->Styles;
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	notebook = new mxBookCtrl(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxBK_LEFT);
@@ -676,15 +676,15 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Init.language_file = init_lang_file->GetValue();
 	config->Init.show_welcome= init_show_welcome->GetValue();
 	config->Init.show_tip_on_startup = init_show_tip_on_startup->GetValue();
-	if (config->Init.show_welcome && !welcome_panel) {
-		welcome_panel=new mxWelcomePanel(main_window);
-		main_window->aui_manager.AddPane(welcome_panel, wxAuiPaneInfo().Name("welcome_panel").CenterPane().PaneBorder(false).Hide());
+	if (config->Init.show_welcome && !g_welcome_panel) {
+		g_welcome_panel=new mxWelcomePanel(main_window);
+		main_window->aui_manager.AddPane(g_welcome_panel, wxAuiPaneInfo().Name("g_welcome_panel").CenterPane().PaneBorder(false).Hide());
 		if (!project && !main_window->notebook_sources->GetPageCount()) main_window->ShowWelcome(true);
-	} else if (!config->Init.show_welcome && welcome_panel) {
+	} else if (!config->Init.show_welcome && g_welcome_panel) {
 		main_window->ShowWelcome(false);
-		main_window->aui_manager.DetachPane(welcome_panel);
-		welcome_panel->Destroy();
-		welcome_panel=nullptr;
+		main_window->aui_manager.DetachPane(g_welcome_panel);
+		g_welcome_panel->Destroy();
+		g_welcome_panel=nullptr;
 	}
 	config->Init.always_add_extension = init_always_add_extension->GetValue();
 #ifdef __WIN32__
@@ -710,8 +710,8 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Running.cpp_compiler_options = running_cpp_compiler_options->GetValue();
 	config->Running.c_compiler_options = running_c_compiler_options->GetValue();
 	config->Init.singleton = init_singleton->GetValue();
-	if (!config->Init.singleton && singleton->IsRunning()) singleton->Stop();
-	else if (config->Init.singleton && !project && !singleton->IsRunning()) singleton->Start();
+	if (!config->Init.singleton && g_singleton->IsRunning()) g_singleton->Stop();
+	else if (config->Init.singleton && !project && !g_singleton->IsRunning()) g_singleton->Start();
 	config->Init.autohide_panels = init_autohide_panels->GetValue();
 	config->Init.stop_compiling_on_error = init_stop_compiling_on_error->GetValue();
 	config->Files.temp_dir = files_temp_dir->GetValue();
@@ -748,7 +748,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Source.callTips = source_callTips->GetValue();
 	config->Source.autocompTips = source_autocompTips->GetValue();
 	config->Source.autoCompletion = source_autoCompletion->GetSelection();
-	code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
+	g_code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
 	config->Source.autocompFilters = source_autocompFilters->GetValue();
 	config->Source.autocloseStuff = source_autocloseStuff->GetValue();
 	config->Help.wxhelp_index = help_wxhelp_index->GetValue();
@@ -768,7 +768,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	if (config->Help.autocomp_indexes != autocomp_indexes) {
 		config->Help.autocomp_indexes = autocomp_indexes;
 		if (project) autocomp_indexes<<" "<<project->autocomp_extra;
-		code_helper->ReloadIndexes(autocomp_indexes);
+		g_code_helper->ReloadIndexes(autocomp_indexes);
 	}
 	
 	if (styles_print_size->GetValue().ToLong(&l)) config->Styles.print_size=l;
@@ -807,7 +807,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 //	config->Debug.use_colours_for_inspections = debug_use_colours_for_inspections->GetValue();
 	config->Debug.inspections_can_have_side_effects = debug_inspections_can_have_side_effects->GetValue();
 	config->Files.autocodes_file = files_autocode->GetValue();
-	autocoder->Reset(project?project->autocodes_file:"");
+	g_autocoder->Reset(project?project->autocodes_file:"");
 	config->Debug.return_focus_on_continue = debug_return_focus_on_continue->GetValue();
 	config->Debug.improve_inspections_by_type = debug_improve_inspections_by_type->GetValue();
 	config->Debug.macros_file = debug_macros_file->GetValue();
@@ -815,7 +815,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Debug.use_blacklist = debug_use_blacklist;
 	debug->SetBlacklist();
 	
-	old_config_styles=config->Styles;
+	s_old_config_styles=config->Styles;
 	config->Save();
 	
 	bool toolbar_changed=false;
@@ -859,7 +859,7 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 }
 
 void mxPreferenceWindow::OnCancelButton(wxCommandEvent &event){
-	config->Styles=old_config_styles;
+	config->Styles=s_old_config_styles;
 	main_window->UpdateStylesInSources();
 	Close();
 }
@@ -1075,15 +1075,15 @@ void mxPreferenceWindow::OnDebugMacrosEdit(wxCommandEvent &event) {
 }
 
 mxPreferenceWindow *mxPreferenceWindow::ShowUp() {
-	if (preference_window) {
-		preference_window->ResetChanges();
-		preference_window->EnableOrDisableControls();
-		preference_window->Show();
-		preference_window->Raise();
+	if (s_preference_window) {
+		s_preference_window->ResetChanges();
+		s_preference_window->EnableOrDisableControls();
+		s_preference_window->Show();
+		s_preference_window->Raise();
 	} else {
-		preference_window = new mxPreferenceWindow(main_window);
+		s_preference_window = new mxPreferenceWindow(main_window);
 	}
-	return preference_window;
+	return s_preference_window;
 }
 
 void mxPreferenceWindow::OnToolbarsCommon(mxToolbarEditor *wx_toolbar, int tb_id) {
@@ -1165,7 +1165,7 @@ void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
 void mxPreferenceWindow::ResetChanges() {
 
 	ignore_styles_changes=true;
-	old_config_styles=config->Styles;
+	s_old_config_styles=config->Styles;
 	
 	// paths
 	help_wxhelp_index->SetValue(config->Help.wxhelp_index);
@@ -1353,8 +1353,8 @@ void mxPreferenceWindow::OnToolchainButton(wxCommandEvent &evt) {
 }
 
 void mxPreferenceWindow::Delete ( ) {
-	if (preference_window) preference_window->Destroy();
-	preference_window=nullptr;
+	if (s_preference_window) s_preference_window->Destroy();
+	s_preference_window = nullptr;
 }
 
 void mxPreferenceWindow::OnFontChange (wxCommandEvent & evt) {

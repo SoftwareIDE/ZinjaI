@@ -68,7 +68,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	loading=true;
 	mxOSD osd(main_window,wxString(LANG(OSD_LOADING_PROJECT_PRE,"Abriendo "))<<name.GetName()<<LANG(OSD_LOADING_PROJECT_POST,"..."));
 	
-	singleton->Stop();
+	g_singleton->Stop();
 	
 	first_compile_step=nullptr;
 	post_compile_action=nullptr;
@@ -384,10 +384,10 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	}
 	
 	// agregar los indices de autocompletado nuevos
-	code_helper->AppendIndexes(autocomp_extra);
+	g_code_helper->AppendIndexes(autocomp_extra);
 	
 	// cargar las inspecciones en la tabla
-	code_helper->AppendIndexes(autocomp_extra);
+	g_code_helper->AppendIndexes(autocomp_extra);
 	
 	if (configurations_count==0) { // si no tenia definida ninguna configuracion crear las dos predeterminadas
 		// crear configuracion Debug
@@ -490,7 +490,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	main_window->notebook_sources->Thaw();
 	main_window->notebook_sources->Fit();
 	
-	if (autocodes_file.Len()) autocoder->LoadFromFile(DIR_PLUS_FILE(path,autocodes_file));
+	if (autocodes_file.Len()) g_autocoder->LoadFromFile(DIR_PLUS_FILE(path,autocodes_file));
 	
 	if (version_saved<20140410) { // arreglar cambios de significado strip_executable (paso de bool a int)
 		for (int i=0;i<configurations_count;i++) {
@@ -548,7 +548,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 		project->ActivateWxfb(true); // para que marque en el menu y verifique si esta instalado
 	}
 	
-	navigation_history.Reset();
+	g_navigation_history.Reset();
 	
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
 	
@@ -576,7 +576,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 ProjectManager::~ProjectManager() {
 
 	parser->CleanAll();
-	autocoder->Reset("");
+	g_autocoder->Reset("");
 	
 	// configurar interface para modo proyecto
 	main_window->PrepareGuiForProject(false);
@@ -596,19 +596,19 @@ ProjectManager::~ProjectManager() {
 		delete configurations[i];
 	
 	// restaurar los indices de autocompletado
-	code_helper->ReloadIndexes(config->Help.autocomp_indexes);
+	g_code_helper->ReloadIndexes(config->Help.autocomp_indexes);
 	
 	if (valgrind) delete valgrind;
 	if (doxygen) delete doxygen;
 	if (wxfb) delete wxfb;
 	
-	singleton->Start();
+	g_singleton->Start();
 	
 	project=nullptr;
 	
 	Toolchain::SelectToolchain(); // keep after project=nullptr
 	
-	navigation_history.Reset();
+	g_navigation_history.Reset();
 }
 
 // devuelve verdadero si lo inserta, falso si ya estaba
@@ -3351,7 +3351,7 @@ void ProjectManager::WxfbAutoCheckStep1() {
 	
 	if (parser->working) {
 		class LaunchProjectWxfbAutoUpdateStep1Action : public Parser::OnEndAction {
-		public: void Do() override { if (project) project->WxfbAutoCheckStep1(); }
+		public: void Run() override { if (project) project->WxfbAutoCheckStep1(); }
 		};
 		parser->OnEnd(new LaunchProjectWxfbAutoUpdateStep1Action());
 		return;
@@ -3375,9 +3375,9 @@ void ProjectManager::WxfbAutoCheckStep1() {
 	if (!project->WxfbGenerate(true)) { delete old_data; return; }
 	
 	class LaunchProjectWxfbAutoUpdateStep2Action : public Parser::OnEndAction {
-	private: WxfbAutoCheckData *data;
-	public: void Do() override { if (project) project->WxfbAutoCheckStep2(data); delete data; }
-	public: LaunchProjectWxfbAutoUpdateStep2Action(WxfbAutoCheckData *_data):data(_data) {}
+	private: WxfbAutoCheckData *m_data;
+	public: void Run() override { if (project) project->WxfbAutoCheckStep2(m_data); delete m_data; }
+	public: LaunchProjectWxfbAutoUpdateStep2Action(WxfbAutoCheckData *_data):m_data(_data) {}
 	};
 	parser->Parse(false);
 	parser->OnEnd(new LaunchProjectWxfbAutoUpdateStep2Action(old_data),true);

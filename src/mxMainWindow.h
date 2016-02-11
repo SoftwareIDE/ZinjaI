@@ -43,7 +43,7 @@ class mxRegistersGrid;
 
 template<class T> class SingleList;
 
-extern mxSplashScreen *splash;
+extern mxSplashScreen *g_splash;
 
 enum autohide_ref {ATH_COMPILER=0,ATH_SYMBOL=1,ATH_PROJECT=2,ATH_EXPLORER=3,ATH_DEBUG_LOG=4,ATH_QUICKHELP=5,ATH_THREADS=6,ATH_INSPECTIONS=7,ATH_BACKTRACE=8,ATH_BEGINNERS=9,ATH_COUNT=10};
 
@@ -401,22 +401,27 @@ public:
 	void OnParseOutputTime(wxTimerEvent &event);
 	void OnParserContinueProcess(wxTimerEvent &event);
 	
-	// this is a mechanism for setting something to run after a current event loop
-	// example: if you call something that execute a subprocess or display a new dialog inside a 
-	// paint/update event, you may have problems with focus after that (easily seen in ubuntu).
-	// So, you must register the action with a derived object from this class and RunAfterEvents 
-	// function, and the timer will be used to launch a main window event later (outside 
-	// the event that registered the action), that will call all pending actions and will delete them
 public:
+	/**
+	* @brief lambda-like action to be run after all events are processed, 
+	*        to program delayed actions from within an event
+	*
+	* This is a mechanism for setting something to run after a current event loop
+	* example: if you call something that execute a subprocess or display a new dialog inside a 
+	* paint/update event, you may have problems with focus after that (easily seen in ubuntu).
+	* So, you must register the action with a derived object from this class and RunAfterEvents 
+	* function, and the timer will be used to launch a main window event later (outside 
+	* the event that registered the action), that will call all pending actions and will delete them
+	**/
 	class AfterEventsAction {
-		AfterEventsAction *next;
-		bool do_do;
+		AfterEventsAction *m_next; ///< to make a linked list of actions
+		bool m_do_run; ///< should be run? (or was cancelled)
 		friend class mxMainWindow;
 	protected:
-		mxSource *source; // fuente del cual depende, para no ejecutarla si se cierra ese fuente (do_do en false)
+		mxSource *m_source; ///< fuente del cual depende, para no ejecutarla si se cierra ese fuente (do_do en false)
 	public:
-		virtual void Do()=0;
-		AfterEventsAction(mxSource *src=nullptr):next(nullptr),do_do(true),source(src){};
+		virtual void Run()=0;
+		AfterEventsAction(mxSource *src=nullptr):m_next(nullptr),m_do_run(true),m_source(src){};
 		virtual ~AfterEventsAction(){};
 	};
 private:

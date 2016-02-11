@@ -16,7 +16,7 @@
 #include "mxHelpWindow.h"
 #include <wx/settings.h>
 
-mxWelcomePanel *welcome_panel;
+mxWelcomePanel *g_welcome_panel = nullptr;
 
 BEGIN_EVENT_TABLE(mxWelcomePanel, wxHtmlWindow)
 	EVT_HTML_LINK_CLICKED(wxID_ANY, mxWelcomePanel::OnLinkClicked)
@@ -80,11 +80,11 @@ void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 	} else if (action==_T("open")) {
 		main_window->OpenFileFromGui(event.GetLinkInfo().GetHref().AfterFirst(':') );
 	} else if (action==_T("new_simple")) {
-		if (!wizard) wizard = new mxNewWizard(main_window);
-		wizard->RunWizard(_T("templates"));
+		if (!g_wizard) g_wizard = new mxNewWizard(main_window);
+		g_wizard->RunWizard(_T("templates"));
 	} else if (action==_T("new_project")) {
-		if (!wizard) wizard = new mxNewWizard(main_window);
-		wizard->RunWizard(_T("new_project"));
+		if (!g_wizard) g_wizard = new mxNewWizard(main_window);
+		g_wizard->RunWizard(_T("new_project"));
 	} else if (action==_T("tip")) {
 		Freeze();
 		int x,y;
@@ -95,8 +95,8 @@ void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 	} else if (action==_T("never_again")) {
 		config->Init.show_welcome=false;
 		main_window->ShowWelcome(false);
-		main_window->aui_manager.DetachPane(welcome_panel);
-		welcome_panel=nullptr;
+		main_window->aui_manager.DetachPane(g_welcome_panel);
+		g_welcome_panel=nullptr;
 		Destroy();
 		if (config->Init.new_file==0)
 			main_window->NewFileFromText("");

@@ -38,6 +38,6 @@ public:
 	wxString MakeClassLinks(wxString what);
 };
 
-extern HelpManager *help;
+extern HelpManager *g_help;
 
 #endif

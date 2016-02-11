@@ -111,7 +111,7 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern color_theme *ctheme;
+extern color_theme *g_ctheme;
 
 #endif
 

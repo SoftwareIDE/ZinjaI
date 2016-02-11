@@ -3,7 +3,7 @@
 #include "mxSource.h"
 #include "mxMessageDialog.h"
 
-wxPrintDialogData *printDialogData = nullptr;
+wxPrintDialogData *g_printDialogData = nullptr;
 //wxPageSetupDialogData *pageSetupData = nullptr;
 
 /**
@@ -23,16 +23,16 @@ mxPrintOut::mxPrintOut (mxSource *src, wxString title) : wxPrintout(title) {
 ////		*printData = pageSetupDialog.GetPageSetupData().GetPrintData();
 ////		*pageSetupData = pageSetupDialog.GetPageSetupData();	
 //	}
-	source = src;
-	pages_len = m_printed = 0;
-	pages=nullptr;
+	m_source = src;
+	m_pages_len = m_printed = 0;
+	m_pages=nullptr;
 }
 
 bool mxPrintOut::OnPrintPage (int page) {
 	wxDC *dc = GetDC();
 	if (!dc) return false;
 	PrintScaling (dc);
-	source->FormatRange (1, pages[page-1], source->GetLength(),
+	m_source->FormatRange (1, m_pages[page-1], m_source->GetLength(),
 		dc, dc, m_printRect, m_pageRect);
 	return true;
 }
@@ -88,7 +88,7 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 	while (HasPage (*maxPage)) {
 		int last = m_printed;
 		SetPageStart(*maxPage,m_printed);
-		m_printed = source->FormatRange (0, m_printed, source->GetLength(), dc, dc, m_printRect, m_pageRect);
+		m_printed = m_source->FormatRange (0, m_printed, m_source->GetLength(), dc, dc, m_printRect, m_pageRect);
 		*maxPage += 1;
 		if (last==m_printed) {
 			mxMessageDialog(_T("Debe configurar la pagina antes de imprimir"),_T("Error"),mxMD_OK|mxMD_WARNING).ShowModal();
@@ -101,7 +101,7 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 }
 
 bool mxPrintOut::HasPage (int page) {
-	return (m_printed < source->GetLength());
+	return (m_printed < m_source->GetLength());
 }
 
 bool mxPrintOut::PrintScaling (wxDC *dc){
@@ -147,18 +147,18 @@ bool mxPrintOut::PrintScaling (wxDC *dc){
 *        comienza esta página
 **/
 void mxPrintOut::SetPageStart(int page, int start) {
-	if (!pages) pages=new int[pages_len=10];
-	if (page>=pages_len) {
-		int *p2=new int[pages_len*2];
-		for (int i=0;i<pages_len;i++)
-			p2[i]=pages[i];
-		delete [] pages;
-		pages=p2;
-		pages_len=pages_len*2;
+	if (!m_pages) m_pages=new int[m_pages_len=10];
+	if (page>=m_pages_len) {
+		int *p2=new int[m_pages_len*2];
+		for (int i=0;i<m_pages_len;i++)
+			p2[i]=m_pages[i];
+		delete [] m_pages;
+		m_pages=p2;
+		m_pages_len=m_pages_len*2;
 	}
-	pages[page]=start;
+	m_pages[page]=start;
 }
 
 mxPrintOut::~mxPrintOut() {
-	if (pages) delete []pages;
+	if (m_pages) delete []m_pages;
 }

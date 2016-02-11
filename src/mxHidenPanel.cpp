@@ -59,9 +59,9 @@ void mxHidenPanel::ToggleDock() {
 void mxHidenPanel::ShowFloat(bool set_focus) {
 	wxAuiPaneInfo &pane = main_window->aui_manager.GetPane(control);
 	int px,py,pw,ph,ax,ay,aw,ah;
-	if (welcome_panel && welcome_panel->IsVisible()) {
-		welcome_panel->GetScreenPosition(&px,&py);
-		welcome_panel->GetSize(&pw,&ph);
+	if (g_welcome_panel && g_welcome_panel->IsVisible()) {
+		g_welcome_panel->GetScreenPosition(&px,&py);
+		g_welcome_panel->GetSize(&pw,&ph);
 	} else {
 		main_window->notebook_sources->GetScreenPosition(&px,&py);
 		main_window->notebook_sources->GetSize(&pw,&ph);

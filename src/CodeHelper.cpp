@@ -15,7 +15,7 @@
 #include "mxCalltip.h"
 using namespace std;
 
-MyAutocompList autocomp_list;
+MyAutocompList g_autocomp_list;
 
 // comparacion con distancia de Levenshtein
 static bool ShouldAddToAutocompFuzzy(const wxString &typed, int len, const wxString &candidate) {
@@ -40,7 +40,7 @@ static bool ShouldAddToAutocompFind(const wxString &typed, int len, const wxStri
 static bool (*ShouldAddToAutocomp)(const wxString &typed, int len, const wxString &candidate);
 
 
-CodeHelper *code_helper = nullptr;
+CodeHelper *g_code_helper = nullptr;
 
 CodeHelper::CodeHelper(int ml, int mode) {
 	
@@ -64,12 +64,12 @@ bool CodeHelper::AutocompleteDoxygen(mxSource *source, wxString typed) {
 bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray &words, wxString typed) {
 	if (!words.keywords.GetCount()) return false;
 	
-	autocomp_list.Init();
+	g_autocomp_list.Init();
 	
 	if (!typed.Len()) {
 		for (unsigned int i=1;i<words.keywords.GetCount();i++)
-			autocomp_list.Add(words.keywords[i],words.icon,words.help);
-		source->ShowAutoComp(0,autocomp_list.GetResult());
+			g_autocomp_list.Add(words.keywords[i],words.icon,words.help);
+		source->ShowAutoComp(0,g_autocomp_list.GetResult());
 		return true;
 	}
 	
@@ -81,11 +81,11 @@ bool CodeHelper::AutocompleteFromArray(mxSource *source, CodeHelperSpecialArray 
 		unsigned int i=0;
 		while (i<l && (tolower(words.keywords[j][i])==typed[i]))
 			i++;
-		if (i==l) autocomp_list.Add(words.keywords[j],words.icon,words.help);
+		if (i==l) g_autocomp_list.Add(words.keywords[j],words.icon,words.help);
 	}
 	
-	if (autocomp_list.Empty()) return false;
-	source->ShowAutoComp(l,autocomp_list.GetResult(false));
+	if (g_autocomp_list.Empty()) return false;
+	source->ShowAutoComp(l,g_autocomp_list.GetResult(false));
 	return true;	
 }
 
@@ -97,18 +97,18 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 	typed.MakeLower();
 	HashStringParserClass::iterator it=parser->h_classes.find(key);
 	if (it!=parser->h_classes.end()) {
-		autocomp_list.Init();
+		g_autocomp_list.Init();
 		pd_var *aux_var = it->second->first_attrib->next;
 		while (aux_var) {
 			if (!len||ShouldAddToAutocomp(typed,len,aux_var->name)) {
 				if (aux_var->properties&PD_CONST_PRIVATE)
-					autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
 				else if (aux_var->properties&PD_CONST_PROTECTED)
-					autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
 				else if (aux_var->properties&PD_CONST_PUBLIC)
-					autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
 				else
-					autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
 			}
 			aux_var = aux_var->next;
 		}
@@ -116,13 +116,13 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 		while (aux_func) {
 			if (!len||ShouldAddToAutocomp(typed,len,aux_func->name)) {
 				if (aux_func->properties&PD_CONST_PRIVATE)
-					autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
 				else if (aux_func->properties&PD_CONST_PROTECTED)
-					autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
 				else if (aux_func->properties&PD_CONST_PUBLIC)
-					autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
 				else
-					autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
 			}
 			aux_func = aux_func->next;
 		}
@@ -162,13 +162,13 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 					while (aux_var) {
 						if (!len||ShouldAddToAutocomp(typed,len,aux_var->name)) {
 							if (aux_var->properties&PD_CONST_PRIVATE)
-								autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
 							else if (aux_var->properties&PD_CONST_PROTECTED)
-								autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
 							else if (aux_var->properties&PD_CONST_PUBLIC)
-								autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
 							else
-								autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
 						}
 						aux_var = aux_var->next;
 					}
@@ -176,13 +176,13 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 					while (aux_func) {
 						if (!len||ShouldAddToAutocomp(typed,len,aux_func->name)) {
 							if (aux_func->properties&PD_CONST_PRIVATE)
-								autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
 							else if (aux_func->properties&PD_CONST_PROTECTED)
-								autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
 							else if (aux_func->properties&PD_CONST_PUBLIC)
-								autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
 							else
-								autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
 						}
 						aux_func = aux_func->next;
 					}
@@ -193,8 +193,8 @@ bool CodeHelper::AutocompleteScope(mxSource *source, wxString &key, wxString typ
 		// agregar las palabras resevadas si corresponde
 		if (add_reserved_words) AddReservedWords(typed);
 		// mostrar la lista final
-		if (autocomp_list.Empty()) return false;
-		source->ShowAutoComp(len,autocomp_list.GetResult());
+		if (g_autocomp_list.Empty()) return false;
+		source->ShowAutoComp(len,g_autocomp_list.GetResult());
 		return true;
 	}
 
@@ -312,11 +312,11 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	UnTemplate(typed); UnTemplate(scope);
 	unsigned int len=typed.Len();
 	typed.MakeLower();
-	autocomp_list.Init();
+	g_autocomp_list.Init();
 	pd_var *aux_var = parser->first_global;
 	while (aux_var) {
 		if (ShouldAddToAutocomp(typed,len,aux_var->name)) {
-			autocomp_list.Add(aux_var->name,((aux_var->properties&(PD_CONST_ENUM_CONST|PD_CONST_ENUM))?"$19":"$14"),aux_var->full_proto);
+			g_autocomp_list.Add(aux_var->name,((aux_var->properties&(PD_CONST_ENUM_CONST|PD_CONST_ENUM))?"$19":"$14"),aux_var->full_proto);
 		}
 		aux_var = aux_var->next;
 	}
@@ -324,7 +324,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	pd_func *aux_func = parser->first_function;
 	while (aux_func) {
 		if (ShouldAddToAutocomp(typed,len,aux_func->name)) {
-			autocomp_list.Add(aux_func->name,"$3",aux_func->full_proto);
+			g_autocomp_list.Add(aux_func->name,"$3",aux_func->full_proto);
 		}
 		aux_func = aux_func->next;
 	}
@@ -332,7 +332,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	pd_macro *aux_macro = parser->first_macro;
 	while (aux_macro) {
 		if (ShouldAddToAutocomp(typed,len,aux_macro->name)) {
-			autocomp_list.Add(aux_macro->name,((aux_macro->props&(PD_CONST_ENUM|PD_CONST_ENUM_CONST))?"$19":((aux_macro->props&PD_CONST_TYPEDEF)?"$18":"$2")),aux_macro->proto);
+			g_autocomp_list.Add(aux_macro->name,((aux_macro->props&(PD_CONST_ENUM|PD_CONST_ENUM_CONST))?"$19":((aux_macro->props&PD_CONST_TYPEDEF)?"$18":"$2")),aux_macro->proto);
 		}
 		aux_macro = aux_macro->next;
 	}
@@ -341,9 +341,9 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	while (aux_class) {
 		if (ShouldAddToAutocomp(typed,len,aux_class->name)) {
 			if (aux_class->file) {
-				autocomp_list.Add(aux_class->name,"$4",wxString("class ")+aux_class->name);
+				g_autocomp_list.Add(aux_class->name,"$4",wxString("class ")+aux_class->name);
 			} else
-				autocomp_list.Add(aux_class->name,"$13",wxString("class ")+aux_class->name);
+				g_autocomp_list.Add(aux_class->name,"$13",wxString("class ")+aux_class->name);
 		}
 		aux_class = aux_class->next;
 	}
@@ -355,13 +355,13 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 		while (aux_var) {
 			if (ShouldAddToAutocomp(typed,len,aux_var->name)) {
 				if (aux_var->properties&PD_CONST_PRIVATE)
-					autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
 				else if (aux_var->properties&PD_CONST_PROTECTED)
-					autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
 				else if (aux_var->properties&PD_CONST_PUBLIC)
-					autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
 				else
-					autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
+					g_autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
 			}
 			aux_var = aux_var->next;
 		}
@@ -369,13 +369,13 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 		while (aux_func) {
 			if (ShouldAddToAutocomp(typed,len,aux_func->name)) {
 				if (aux_func->properties&PD_CONST_PRIVATE)
-					autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
 				else if (aux_func->properties&PD_CONST_PROTECTED)
-					autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
 				else if (aux_func->properties&PD_CONST_PUBLIC)
-					autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
 				else
-					autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
+					g_autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
 			}
 			aux_func = aux_func->next;
 		}
@@ -415,13 +415,13 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 					while (aux_var) {
 						if (ShouldAddToAutocomp(typed,len,aux_var->name)) {
 							if (aux_var->properties&PD_CONST_PRIVATE)
-								autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$6",aux_var->full_proto);
 							else if (aux_var->properties&PD_CONST_PROTECTED)
-								autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$7",aux_var->full_proto);
 							else if (aux_var->properties&PD_CONST_PUBLIC)
-								autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$8",aux_var->full_proto);
 							else
-								autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
+								g_autocomp_list.Add(aux_var->name,"$5",aux_var->full_proto);
 						}
 						aux_var = aux_var->next;
 					}
@@ -429,13 +429,13 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 					while (aux_func) {
 						if (ShouldAddToAutocomp(typed,len,aux_func->name)) {
 							if (aux_func->properties&PD_CONST_PRIVATE)
-								autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$10",aux_func->full_proto);
 							else if (aux_func->properties&PD_CONST_PROTECTED)
-								autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$11",aux_func->full_proto);
 							else if (aux_func->properties&PD_CONST_PUBLIC)
-								autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$12",aux_func->full_proto);
 							else
-								autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
+								g_autocomp_list.Add(aux_func->name,"$9",aux_func->full_proto);
 						}
 						aux_func = aux_func->next;
 					}
@@ -461,7 +461,7 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 					if (c=='='||(c==','&&!done)) { // consideramos identificador lo que esté antes de una coma o de un igual (valores por defecto)... el done es para no considerar ambos en un mismo argumento
 						wxString id=ExtractIdentifierFromDeclaration(s.Mid(la+1,i-la-1));
 //						unsigned int CH_COMPARE(typed,id,i,l,max_str_dist);
-						if (ShouldAddToAutocomp(typed,len,id)) autocomp_list.Add(id,"$20","");
+						if (ShouldAddToAutocomp(typed,len,id)) g_autocomp_list.Add(id,"$20","");
 					}
 					if (c==',') { done=false; la=i+1; }
 				}
@@ -470,27 +470,27 @@ bool CodeHelper::AutocompleteGeneral(mxSource *source, wxString scope, wxString 
 	}
 	
 	// agregar otras cosas que puedan parecer variables locales
-	if (scope_start!=-1) code_helper->AutocompleteLocals(source,typed,scope_start);
+	if (scope_start!=-1) g_code_helper->AutocompleteLocals(source,typed,scope_start);
 	
 	// mostrar la lista final
-	if (autocomp_list.Empty()) return false;
-	source->ShowAutoComp(len,autocomp_list.GetResult());
+	if (g_autocomp_list.Empty()) return false;
+	source->ShowAutoComp(len,g_autocomp_list.GetResult());
 	return true;
 }
 
 bool CodeHelper::AutocompleteAutocode(mxSource *source, wxString typed/*, int max_str_dist*/) {
-	autocomp_list.Init(); int t=0, len=typed.Len();
-	HashStringAutoCode::iterator it = autocoder->list.begin();
-	while (it!=autocoder->list.end()) {
+	g_autocomp_list.Init(); int t=0, len=typed.Len();
+	HashStringAutoCode::iterator it = g_autocoder->m_list.begin();
+	while (it!=g_autocoder->m_list.end()) {
 //		wxString &aux=it->first;
 //		int CH_COMPARE(typed,aux,i,l,max_str_dist);
-		if (ShouldAddToAutocomp(typed,len,it->first)) { ++t; autocomp_list.Add(it->first,"",""); }
+		if (ShouldAddToAutocomp(typed,len,it->first)) { ++t; g_autocomp_list.Add(it->first,"",""); }
 		++it;
 	}
 	
 	// mostrar la lista final
-	if (autocomp_list.Empty()) return false;
-	source->ShowAutoComp(len,autocomp_list.GetResult());
+	if (g_autocomp_list.Empty()) return false;
+	source->ShowAutoComp(len,g_autocomp_list.GetResult());
 	return true;
 }
 
@@ -1104,7 +1104,7 @@ void CodeHelper::AddReservedWords(wxString &typed/*, int max_str_dist*/) {
 	int len = typed.Len(), ll = reserved_words.keywords.GetCount();
 	for (int j=0;j<ll;j++) {
 //		int CH_COMPARE(typed,reserved_words.keywords[j],i,l,max_str_dist);
-		if (ShouldAddToAutocomp(typed,len,reserved_words.keywords[j])) autocomp_list.Add(reserved_words.keywords[j],reserved_words.icon,reserved_words.help);
+		if (ShouldAddToAutocomp(typed,len,reserved_words.keywords[j])) g_autocomp_list.Add(reserved_words.keywords[j],reserved_words.icon,reserved_words.help);
 	}
 }
 
@@ -1389,7 +1389,7 @@ wxString MyAutocompList::GetHelp (int sel) {
 }
 
 void CodeHelper::Initialize ( ) {
-	code_helper = new CodeHelper(config->Help.min_len_for_completion,config->Source.autoCompletion);
+	g_code_helper = new CodeHelper(config->Help.min_len_for_completion,config->Source.autoCompletion);
 }
 
 void CodeHelper::SetAutocompletionMatchingMode (int mode) {
@@ -1404,16 +1404,16 @@ CodeHelper::RAIAutocompModeChanger::RAIAutocompModeChanger () {
 }
 
 CodeHelper::RAIAutocompModeChanger::~RAIAutocompModeChanger ( ) {
-	code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
+	g_code_helper->SetAutocompletionMatchingMode(config->Source.autoCompletion);
 }
 
 void CodeHelper::RAIAutocompModeChanger::Change (int mode) {
-	code_helper->SetAutocompletionMatchingMode(mode);
+	g_code_helper->SetAutocompletionMatchingMode(mode);
 }
 
 void CodeHelper::FilterAutocomp (mxSource *source, const wxString & key, bool force_show) {
-	wxString old_res = autocomp_list.GetLastResult();
-	const wxString &new_res = autocomp_list.GetFiltered(key);
+	wxString old_res = g_autocomp_list.GetLastResult();
+	const wxString &new_res = g_autocomp_list.GetFiltered(key);
 	if (!force_show && new_res==old_res) return;
 	if (new_res.IsEmpty()) {
 		source->HideCalltip();
@@ -1448,7 +1448,7 @@ void CodeHelper::AutocompleteLocals (mxSource * source, wxString typed, int scop
 			int s = source->GetStyleAt(p);
 			if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS) { 
 				wxString word = source->GetTextRange(p,source->WordEndPosition(p,true));
-				if (!autocomp_list.Contains(word)) autocomp_list.Add(word,"$21","");
+				if (!g_autocomp_list.Contains(word)) g_autocomp_list.Add(word,"$21","");
 			}
 		}
 		p = source->FindText(p+typed.Len(),p_to,typed,0);

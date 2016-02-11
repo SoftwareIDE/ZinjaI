@@ -142,6 +142,6 @@ private:
 
 };
 
-extern mxNewWizard *wizard;
+extern mxNewWizard *g_wizard;
 
 #endif

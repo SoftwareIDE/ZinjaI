@@ -5,14 +5,14 @@
 #include "mxUtils.h"
 
 widgetDisabler::widgetDisabler() {
-	first=nullptr;
+	m_first = nullptr;
 }
 
 widgetDisabler::~widgetDisabler() {
-	while (first) {
-		node *next=first->next;
-		delete first;
-		first=next;
+	while (m_first) {
+		node *next = m_first->next;
+		delete m_first;
+		m_first = next;
 	}
 }
 
@@ -20,29 +20,29 @@ widgetDisabler::~widgetDisabler() {
 void widgetDisabler::Add (wxControl * _control, bool _from_utils) {
 	if (_from_utils && mxUT::GetLastButton()) Add(mxUT::GetLastButton(),false);
 	if (_from_utils && mxUT::GetLastLabel()) Add(mxUT::GetLastLabel(),false);
-	node *n=new node;
-	n->next=first;
-	n->control=_control;
-	first=n;
+	node *n = new node;
+	n->next = m_first;
+	n->control = _control;
+	m_first = n;
 }
 
 void widgetDisabler::operator+=(wxControl * _control) {
-	node *n=new node;
-	n->next=first;
-	n->control=_control;
-	first=n;
+	node *n = new node;
+	n->next = m_first;
+	n->control = _control;
+	m_first = n;
 }
 
 void widgetDisabler::EnableAll (bool _enable) {
-	node *n=first;
+	node *n = m_first;
 	while (n) {
 		n->control->Enable(_enable);
-		n=n->next;
+		n = n->next;
 	}
 }
 
 void widgetDisabler::DisableAll ( ) {
-	node *n=first;
+	node *n = m_first;
 	while (n) {
 		n->control->Disable();
 		n=n->next;

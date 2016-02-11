@@ -109,7 +109,7 @@ void mxOSD::OnTimer(wxTimerEvent &evt) {
 }
 
 void mxOSD::OnCancel(wxCommandEvent & evt) {
-	on_cancel->Do();
+	on_cancel->Run();
 }
 
 void mxOSD::OnResize (wxSizeEvent & evt) {

@@ -4,7 +4,7 @@
 #include "ConfigManager.h"
 using namespace std;
 
-static bool someone_is_running=false;
+static bool s_someone_is_running = false;
 
 void fix_command_for_wxexecute(wxString &command) {
 #ifndef __WIN32__
@@ -33,12 +33,12 @@ long mxExecute(wxString command, int sync, wxProcess *process) {
 	fix_command_for_wxexecute(command);
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Enters, command="<<command<<endl;
-	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
+	if (s_someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
 #endif
-	if (someone_is_running) return 0;
-	someone_is_running=true;
+	if (s_someone_is_running) return 0;
+	s_someone_is_running=true;
 	long ret=wxExecute(command,sync,process);
-	someone_is_running=false;	
+	s_someone_is_running=false;	
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Exits, command="<<command<<endl;
 	cerr<<"execution_workaround: Exits, retval="<<ret<<endl;
@@ -49,12 +49,12 @@ long mxExecute(wxString command, wxArrayString& output, int flags) {
 	fix_command_for_wxexecute(command);
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Enters, command="<<command<<endl;
-	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
+	if (s_someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
 #endif
-	if (someone_is_running) return 0;
-	someone_is_running=true;
+	if (s_someone_is_running) return 0;
+	s_someone_is_running=true;
 	long ret=wxExecute(command,output,flags);
-	someone_is_running=false;
+	s_someone_is_running=false;
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Exits, command="<<command<<endl;
 	cerr<<"execution_workaround: Exits, retval="<<ret<<endl;
@@ -66,13 +66,13 @@ long mxExecute(wxString command, wxArrayString& output, wxArrayString& errors, i
 	fix_command_for_wxexecute(command);
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Enters, command="<<command<<endl;
-	if (someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
+	if (s_someone_is_running) cerr<<"execution_workaround: COLLISION!"<<endl;
 #else
-	if (someone_is_running) return 0;
+	if (s_someone_is_running) return 0;
 #endif
-	someone_is_running=true;
+	s_someone_is_running=true;
 	long ret=wxExecute(command,output,errors,flags);
-	someone_is_running=false;
+	s_someone_is_running=false;
 #ifdef _ZINJAI_DEBUG
 	cerr<<"execution_workaround: Exits, command="<<command<<endl;
 	cerr<<"execution_workaround: Exits, retval="<<ret<<endl;

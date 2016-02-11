@@ -28,14 +28,14 @@ class BoolFlag;
 **/
 template<typename T, typename U=bool, U SET_VALUE=true, U RESET_VALUE=false>
 class FlagGuard {
-	T *flag;
+	T *m_flag;
 public:
-	FlagGuard(T &f, bool force):flag(&f) { *flag=SET_VALUE; }
-	FlagGuard(T *f):flag(f) { if (!flag || *flag==SET_VALUE) { flag=nullptr; } else *flag=SET_VALUE; }
-	FlagGuard(T &f):flag(&f) { if (*flag==SET_VALUE) { flag=nullptr; } else *flag=SET_VALUE; }
-	bool IsOk() { return flag!=nullptr; }
-	void Release() { if (flag) *flag=RESET_VALUE; flag=nullptr; }
-	~FlagGuard() { if (flag) *flag=RESET_VALUE; }
+	FlagGuard(T &f, bool force):m_flag(&f) { *m_flag=SET_VALUE; }
+	FlagGuard(T *f):m_flag(f) { if (!m_flag || *m_flag==SET_VALUE) { m_flag=nullptr; } else *m_flag=SET_VALUE; }
+	FlagGuard(T &f):m_flag(&f) { if (*m_flag==SET_VALUE) { m_flag=nullptr; } else *m_flag=SET_VALUE; }
+	bool IsOk() { return m_flag!=nullptr; }
+	void Release() { if (m_flag) *m_flag=RESET_VALUE; m_flag=nullptr; }
+	~FlagGuard() { if (m_flag) *m_flag=RESET_VALUE; }
 };
 
 /**
