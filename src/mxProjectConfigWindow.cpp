@@ -292,7 +292,7 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	std_sizer->Add(new wxStaticText(panel,wxID_ANY,"   C++: "),sizers->Center);
 	wxArrayString cpp_aux; cpp_aux.Add(LANG(PROJECTCONFIG_COMPILING_STD_DEFAULT,"<predeterminado>")); 
 	cpp_aux.Add("c++98"); cpp_aux.Add("gnu++98"); cpp_aux.Add("c++03"); cpp_aux.Add("gnu++03"); 
-	cpp_aux.Add("c++11"); cpp_aux.Add("gnu++11"); cpp_aux.Add("c++1y"); cpp_aux.Add("gnu++1y");
+	cpp_aux.Add("c++11"); cpp_aux.Add("gnu++11"); cpp_aux.Add("c++14"); cpp_aux.Add("gnu++14");  cpp_aux.Add("c++1z"); cpp_aux.Add("gnu++1z");
 	compiling_std_cpp = new wxComboBox(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, cpp_aux, wxCB_READONLY);
 	if (configuration->std_cpp.Len() && cpp_aux.Index(configuration->std_cpp)!=wxNOT_FOUND) 
 		compiling_std_cpp->SetSelection(cpp_aux.Index(configuration->std_cpp)); else compiling_std_cpp->SetSelection(0);
