@@ -52,22 +52,6 @@ public:
 	wxStaticText *start_tooltip;
 	wxCheckBox *templates_check;
 	wxListBox *templates_list;
-	int templates_default;
-	wxArrayString file_templates;	
-
-	wxCheckBox *wizard_cstring;
-	wxCheckBox *wizard_cmath;
-	wxCheckBox *wizard_rand;
-	wxCheckBox *wizard_fstream;
-	wxCheckBox *wizard_iomanip;
-	wxCheckBox *wizard_algorithm;
-	wxCheckBox *wizard_vector;
-	wxCheckBox *wizard_list;
-	wxCheckBox *wizard_map;
-	wxCheckBox *wizard_set;
-	wxCheckBox *wizard_queue;
-	wxCheckBox *wizard_deque;
-	wxCheckBox *wizard_stack;
 
 	wxTextCtrl *project_full_path;
 	wxTextCtrl *project_name;
@@ -101,12 +85,6 @@ public:
 	wxPanel *panel_project_2;
 	void CreatePanelProject2();
 	void ShowPanelProject2();
-	wxPanel *panel_wizard_1;
-	void CreatePanelWizard1();
-	void ShowPanelWizard1();
-	wxPanel *panel_wizard_2;
-	void CreatePanelWizard2();
-	void ShowPanelWizard2();
 
 	mxNewWizard(mxMainWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
 
@@ -122,7 +100,6 @@ public:
 	
 	void ProjectCreate();
 	void OnProjectCreate();
-	void WizardCreate();
 	
 	void OnOnProjectNameChange(wxCommandEvent &evt);
 	void OnProjectFolderCheck(wxCommandEvent &evt);

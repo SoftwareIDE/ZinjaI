@@ -279,10 +279,10 @@ void mxApplication::LoadFilesOrWelcomePanel(const wxString &cmd_path) {
 		if (config->Init.show_welcome) {
 			main_window->ShowWelcome(true);
 		} else {
-			if (config->Init.new_file==0)
+			if (config->Init.new_file==0) 
 				main_window->NewFileFromText("");
-			else
-				main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
+			else 
+				main_window->NewFileFromTemplate(config->Files.default_template);
 			main_window->Refresh();
 		} 
 		if (g_splash) g_splash->ShouldClose();

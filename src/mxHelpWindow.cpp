@@ -162,7 +162,7 @@ bool mxHelpWindow::OnLink (wxString href) {
 	if (href=="cppreference:") {
 		Close(); mxReferenceWindow::ShowPage();
 	} else if (href.StartsWith("foropen:")) {
-		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,href.AfterFirst(':')));
+		main_window->NewFileFromTemplate(DIR_PLUS_FILE(config->Help.guihelp_dir,href.AfterFirst(':')),true);
 	} else if (href.StartsWith("http://")) {
 		mxUT::OpenInBrowser(href);
 	} else {

@@ -77,6 +77,7 @@
 #include "Cpp11.h"
 #include "LocalRefactory.h"
 #include "mxCommandFinder.h"
+#include "SimpleTemplates.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -1968,7 +1969,7 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 	if (g_welcome_panel) 
 		ShowWelcome(true);
 	else {
-		NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
+		NewFileFromTemplate(config->Files.default_template);
 		aui_manager.Update();
 	}
 }
@@ -2572,6 +2573,8 @@ DEBUG_INFO("wxYield:out mxMainWindow::OpenFile");
 		source = new mxSource(notebook_sources, AvoidDuplicatePageText(wxFileName(filename).GetFullName()),fitem);
 		source->sin_titulo=false;
 		source->LoadFile(filename);
+		SimpleTemplates::Initialize(); // ensures g_templates!=null
+		source->SetCompilerOptions(g_templates->GetParsedCompilerArgs(source->IsCppOrJustC()));
 		if (project) source->m_extras->ToSource(source);
 	}
 	wxString ext=wxFileName(filename).GetExt().MakeLower();
@@ -2851,7 +2854,7 @@ void mxMainWindow::OnFileNew (wxCommandEvent &event) {
 				NewFileFromText("");
 				break;
 			case 1:
-				main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
+				main_window->NewFileFromTemplate(config->Files.default_template);
 				break;
 			default: {
 				if (!g_wizard) g_wizard = new mxNewWizard(this);
@@ -2878,50 +2881,53 @@ mxSource *mxMainWindow::NewFileFromText (wxString text, int pos) {
 	return NewFileFromText(text,SIN_TITULO,pos);
 }
 
-mxSource *mxMainWindow::NewFileFromTemplate (wxString filename) {
+mxSource *mxMainWindow::NewFileFromTemplate(wxString filename, bool is_full_path) {
 	if (project) {
 		mxMessageDialog(this,LANG(MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT,"No puede abrir un ejemplo mientras trabaja en un proyecto.\nCierre el proyecto e intente nuevamente."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();;
 		return nullptr;
 	}
 	if (g_welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
 	mxSource* source = new mxSource(notebook_sources, SIN_TITULO);
-	wxTextFile file(filename);
-	if (!file.Exists()) {
-		wxString def_fname = mxUT::WichOne("default.tpl","templates",true);
-		if (def_fname!=filename) return NewFileFromTemplate(def_fname);
-	}
+	
+	wxString full_path = is_full_path ? filename : mxUT::WichOne(filename,"templates",true);
+	
+	// parse template options
+	SimpleTemplates::Initialize(); // ensures g_templates!=nullptr
+	map<wxString,wxString> temp_opts;
+	int header_lines = g_templates->GetOptions(temp_opts,full_path);
+	
+	// copy the file's content (without header) to source
+	wxTextFile file(full_path);
+	if (!file.Exists() && filename!="default.tpl") return NewFileFromTemplate("default.tpl");
 	file.Open();
-	long caret_pos = 0;
 	if (file.IsOpened()) {
 		wxString line = file.GetFirstLine();
-		while (line.Left(7)=="// !Z! ") {
-			if (line=="// !Z! Type: C") {
-				source->cpp_or_just_c=false;
-				source->temp_filename.SetExt("c");
-			} else if (line.Left(13)=="// !Z! Caret:") {
-				line.Mid(13).Trim(false).Trim(true).ToLong(&caret_pos);
-			} else if (line.Left(15)=="// !Z! Options:") {
-				wxString comp_opts=line.Mid(15).Trim(false).Trim(true);
-				// here we assume Type is before Options
-				comp_opts.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(source->IsCppOrJustC()),true);
-				source->SetCompilerOptions(comp_opts); 
-			}
-			line = file.GetNextLine();
-		}
-		if (line!="")
-			source->AppendText(line+"\n");
-		while (!file.Eof()) 
-			source->AppendText(file.GetNextLine()+"\n");
-//		source->MoveCursorTo(pos);
+		for(int i=0;i<header_lines-1;i++) line = file.GetNextLine();
+		while (!file.Eof()) source->AppendText(file.GetNextLine()+"\n");
 		file.Close();
 	}
+	
+	// define some basic source's settings
 	source->SetLineNumbers();
 	notebook_sources->AddPage(source, LAST_TITULO ,true, *bitmaps->files.blank);
 	if (!project) source->treeId = AddToProjectTreeSimple(LAST_TITULO,FT_SOURCE);
 	source->MoveCursorTo(0,false); // to avoid start with non-zero vertical scrolling on very short templates
 	source->SetModify(false);
-	source->MoveCursorTo(caret_pos,true);
-//	source->SetFocus(); // done in previous line
+	
+	// apply other template dependat options
+	if (temp_opts.count("Caret")) {
+		long l; 
+		if (temp_opts["Caret"].ToLong(&l))
+			source->MoveCursorTo(l,true);
+	} else {
+		source->SetFocus();
+	}
+	if (temp_opts.count("Type") && temp_opts["Type"]=="C") {
+		source->cpp_or_just_c=false;
+		source->temp_filename.SetExt("c");
+	}
+	source->SetCompilerOptions(temp_opts["Options"]); 
+	
 	return source;
 }
 

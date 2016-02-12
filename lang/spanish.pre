@@ -655,7 +655,7 @@ MENUITEM_HELP_UPDATES
 MENUITEM_HELP_ABOUT
 Acerca de...
 MENUITEM_GLOBAL_SHORTCUTS
-Otros atajos
+Otros
 MENUITEM_HIDDEN_HIGHLIGHT_KEYWORD
 Resaltar identificador
 MENUITEM_HIDDEN_FIND_KEYWORD
@@ -704,12 +704,46 @@ MENUITEM_HIDDEN_ENABLE_BREAKPOINT
 Habilitar/deshabilitar punto de interrupción
 MENUITEM_DEBUG_UPDATE_INSPECTIONS
 Actualizar inspecciones
-MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL
-Herramienta personalizada de project <{1}>
 MENUITEM_TOOLBAR_SETTINGS
 Configurar barras de herramientas...
 MENUITEM_CODETOOLS_POPUP
 Mostrar menú de generación de código
+MAINW_PROJECT_FILE_POPUP_PROPERTIES
+Propiedades del archivo...
+MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER
+Abrir carpeta contenedora...
+MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER
+Explorar carpeta contenedora
+MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT
+Agregar archivo al proyecto
+MAINW_PROJECT_FILE_POPUP_RENAME
+&Renombrar archivo...
+MAINW_PROJECT_FILE_POPUP_DETACH
+&Quitar archivo del proyecto
+MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST
+Compilar este fuente &primero
+MAINW_PROJECT_FILE_POPUP_RECOMPILE
+Recompilar este fuente a&hora
+MAINW_PROJECT_FILE_POPUP_COMPILING_OPTS
+Opciones de compilación por fuente...
+MAINW_PROJECT_FILE_POPUP_READONLY
+Solo lectura
+MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS
+Ignorar símbolos en búsquedas
+MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES
+Mover a &Fuentes
+MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS
+Mover a &Cabeceras
+MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS
+Mover a &Otros
+MAINW_OPEN_LAST_COMPILER_OUTPUT
+Abrir última salida
+MAINW_PROJECT_FILE_POPUP_ADD_MULTI
+&Agregar Múltiples Archivos...
+MENUITEM_FILE_SET_AS_MASTER
+Ejecutar siempre este fuente
+MENUITEM_HIDDEN_PROJECT_CUSTOM_TOOL
+Herramienta personalizada de proyecto <{1}>
 CAPTION_TOOLBAR_FILE
 Archivo
 CAPTION_TOOLBAR_EDIT
@@ -1908,48 +1942,14 @@ CAPTION_DEBUGGER_LOG
 Mensajes del Depurador
 MAINW_AUTOHIDE_DEBUG_LOG
 Log Depurador
-MAINW_PROJECT_FILE_POPUP_ADD_TO_PROJECT
-Agregar al proyecto
-MAINW_PROJECT_FILE_POPUP_SHOW_FILE
-&Mostrar Archivo
-MAINW_PROJECT_FILE_POPUP_RENAME
-&Renombrar Archivo...
-MAINW_PROJECT_FILE_POPUP_DETACH
-&Quitar Archivo
-MAINW_PROJECT_FILE_POPUP_COMPILE_FIRST
-Compilar &Primero
-MAINW_PROJECT_FILE_POPUP_RECOMPILE
-Recompilar A&hora
-MAINW_PROJECT_FILE_POPUP_COMPILING_OPTS
-Opciones de compilación...
-MAINW_PROJECT_FILE_POPUP_READONLY
-Solo lectura
-MAINW_PROJECT_FILE_POPUP_HIDE_SYMBOLS
-Ignorar símbolos en búsquedas
-MAINW_PROJECT_FILE_POPUP_MOVE_TO_SOURCES
-Mover a &Fuentes
-MAINW_PROJECT_FILE_POPUP_MOVE_TO_HEADERS
-Mover a &Cabeceras
-MAINW_PROJECT_FILE_POPUP_MOVE_TO_OTHERS
-Mover a &Otros
-MAINW_PROJECT_FILE_POPUP_OPEN_FOLDER
-Abrir carpeta contenedora...
-MAINW_PROJECT_FILE_POPUP_EXPLORE_FOLDER
-Explorar carpeta contenedora
-MAINW_PROJECT_FILE_POPUP_PROPERTIES
-Propiedades...
 MAINW_PROJECT_FILE_POPUP_OPEN_ALL
 Abrir &Todos
 MAINW_PROJECT_FILE_POPUP_ADD
 &Agregar Archivo...
-MAINW_PROJECT_FILE_POPUP_ADD_MULTI
-&Agregar Múltiples Archivos...
 MAINW_PROJECT_FILE_POPUP_TOGGLE_FULL_PATH_OFF
 Mostrar solo nombres de archivos
 MAINW_PROJECT_FILE_POPUP_TOGGLE_FULL_PATH_ON
 Mostrar rutas relativas completas
-MAINW_OPEN_LAST_COMPILER_OUTPUT
-Abrir última salida
 MAINW_OPENING
 Abriendo
 MAINW_PROBLEM_RENAMING
@@ -1972,8 +1972,6 @@ CAPTION_QUICKHELP
 Ayuda Rapida
 MAINW_OPEN_FILENAME
 Abrir \"<{1}>\"
-MENUITEM_FILE_SET_AS_MASTER
-Ejecutar siempre este fuente
 MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION
 Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?
 MAINW_ASK_CLOSE_SHARED
@@ -2526,24 +2524,10 @@ PREFERENCES_TOOLBARS_RESET
 Reestablecer configuración por defecto
 PREFERENCES_TOOLBAR_ICON_SIZE
 Tamaño de icono
-PREFERENCES_SIMPLE_CREATE_EMPTY_FILE
-Crear archivo en blanco
-PREFERENCES_SIMPLE_CREATE_FROM_TEMPLATE
-Crear a partir de plantilla
-PREFERENCES_SIMPLE_SHOW_WIZARD
-Mostrar Asistente
-PREFERENCES_SIMPLE_NEW_ACTION
-Accion para Nuevo Archivo
-PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS
-Parámetros adicionales por defecto para el compilador C++
-PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS
-Parámetros adicionales por defecto para el compilador C
-PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING
-Esperar una tecla luego de la ejecución
-PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
-Siempre pedir argumentos al ejecutar
-PREFERENCES_SIMPLE_ADD_CPP_EXTENSION
-Agregar la extension cpp si se omite al guardar
+PREFERENCES_SIMPLE
+Programa simple
+PREFERENCES_PROJECT
+Proyecto
 PREFERENCES_GENERAL_MAX_JOBS
 Cantidad de pasos en paralelo al compilar
 PREFERENCES_STOP_COMPILING_ON_ERROR
@@ -2552,12 +2536,34 @@ PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE
 Guardar siempre el proyeto al salir
 PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT
 Mostrar el explorador de archivos al abrir un proyecto
-PREFERENCES_TOOLCHAIN
-Herramientas de compilación
 PREFERENCES_USE_CACHE_FOR_SUBCMD
 Usar cache para la ejecución de subcomandos
 PREFERENCES_USE_CLEAR_SUBCMD_CACHE
 Limpiar
+PREFERENCES_SIMPLE_CREATE_EMPTY_FILE
+Crear archivo en blanco
+PREFERENCES_SIMPLE_CREATE_FROM_TEMPLATE
+Crear a partir de plantilla
+PREFERENCES_SIMPLE_SHOW_WIZARD
+Mostrar Asistente
+PREFERENCES_SIMPLE_NEW_ACTION
+Accion para Nuevo Archivo
+PREFERENCES_SIMPLE_DEFAULT_CPP_TEMPLATE
+Plantilla por defecto para abrir fuentes C++
+PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS
+Parámetros adicionales para el compilador C++
+PREFERENCES_SIMPLE_DEFAULT_C_TEMPLATE
+Plantilla por defecto para abrir fuentes C
+PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS
+Parámetros adicionales para el compilador C
+PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING
+Esperar una tecla luego de la ejecución
+PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS
+Siempre pedir argumentos al ejecutar
+PREFERENCES_SIMPLE_ADD_CPP_EXTENSION
+Agregar la extension cpp si se omite al guardar
+PREFERENCES_TOOLCHAIN
+Herramientas de compilación
 PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
 PREFERENCES_STYLE_DEFINE_COLOURS

@@ -174,6 +174,9 @@ class mxPreferenceWindow : public wxDialog {
 	wxStaticBitmap *skin_image;
 	wxPanel *panel_toolbars;
 	
+	wxComboBox *simple_default_cpp_template;
+	wxComboBox *simple_default_c_template;
+	
 	wxArrayString temp_debug_blacklist;
 	
 	widgetDisabler wx_toolbars_widgets;
@@ -188,7 +191,9 @@ public:
 	
 	wxPanel *CreateGeneralPanel (mxBookCtrl *notebook);
 	
-	wxPanel *CreateSimplePanel (mxBookCtrl *notebook);
+	wxNotebook *CreateCompilePanel (mxBookCtrl *notebook);
+	wxPanel *CreateCompilePanelSimple (wxNotebook *notebook);
+	wxPanel *CreateCompilePanelProject (wxNotebook*notebook);
 	
 	wxPanel *CreateStylePanel (mxBookCtrl *notebook);
 	

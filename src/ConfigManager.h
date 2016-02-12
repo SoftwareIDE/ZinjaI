@@ -163,16 +163,16 @@ struct cfgInit {
 struct cfgFiles {
 	wxString temp_dir;
 	wxString skin_dir;
+	wxString c_template; 
+	wxString cpp_template; 
 	wxString default_template; 
 	wxString default_project; 
-//	wxString mingw_dir;
 	wxString toolchain;
 	wxString runner_command;
 	wxString debugger_command;
 	wxString terminal_command; ///< comando para abrir un terminal y ejecutar algo en el
 	wxString explorer_command; ///< comando para abrir un explorador de archivos
 	wxString project_folder;
-//	wxString graphviz_dir;
 	wxString xdot_command; ///< nice python app for displaying graphs
 	wxString img_viewer;
 	wxString last_source[CM_HISTORY_MAX_LEN];

@@ -29,6 +29,7 @@
 #include "version.h"
 #include <wx/tooltip.h>
 #include "Cpp11.h"
+#include "SimpleTemplates.h"
 
 mxNewWizard *g_wizard = nullptr;
 
@@ -53,8 +54,8 @@ END_EVENT_TABLE()
 
 mxNewWizard::mxNewWizard(mxMainWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, LANG(CAPTION_NEW_FILE_WIZARD,"Nuevo Archivo"), pos, size, style) {
 
+	SimpleTemplates::Initialize(); // ensure g_templates!=nullptr
 	
-	templates_default=-1;
 	FlagGuard<BoolFlag> fg(mask_folder_change_events);
 	project_full_path=nullptr;
 	
@@ -91,8 +92,6 @@ mxNewWizard::mxNewWizard(mxMainWindow* parent, wxWindowID id, const wxPoint& pos
 	CreatePanelProject1();
 	CreatePanelProject2();
 	CreatePanelOnProject();
-	CreatePanelWizard1();
-	CreatePanelWizard2();
 	
 	//	psize = panel_templates->GetSize();
 	//	if (psize.GetWidth()>msize.GetWidth()) msize.SetWidth(psize.GetWidth());
@@ -113,12 +112,6 @@ mxNewWizard::mxNewWizard(mxMainWindow* parent, wxWindowID id, const wxPoint& pos
 	ShowPanelTemplates(); Fit();
 	if (GetSize().x>x) x = GetSize().x;
 	if (GetSize().y>y) y = GetSize().y;
-//	ShowPanelWizard1(); Fit();
-//	if (GetSize().x>x) x = GetSize().x;
-//	if (GetSize().y>y) y = GetSize().y;
-//	ShowPanelWizard2(); Fit();
-//	if (GetSize().x>x) x = GetSize().x;
-//	if (GetSize().y>y) y = GetSize().y;
 	ShowPanelProject1(); Fit();
 	if (GetSize().x>x) x = GetSize().x;
 	if (GetSize().y>y) y = GetSize().y;
@@ -179,10 +172,6 @@ void mxNewWizard::OnButtonCancel(wxCommandEvent &event){
 		ShowPanelProject1();
 	else if (panel==panel_templates)
 		ShowPanelStart();
-	else if (panel==panel_wizard_1)
-		ShowPanelStart();
-	else if (panel==panel_wizard_2)
-		ShowPanelWizard1();
 }
 
 void mxNewWizard::OnClose(wxCloseEvent &event){
@@ -639,95 +628,21 @@ void mxNewWizard::OnButtonNext(wxCommandEvent &event){
 	} else if (panel==panel_project_2) {
 		ProjectCreate();
 	} else if (panel==panel_templates) {
-		int i=templates_list->GetSelection();
-		if (i<0 || i>=(int)file_templates.GetCount()) return;
-		mxSource *source = main_window->NewFileFromTemplate(file_templates[i]);
+		int i = templates_list->GetSelection();
+		if (i==wxNOT_FOUND) return;
+		wxArrayString templates_files; 
+		g_templates->GetFilesList(templates_files,true,true);
+		mxSource *source = main_window->NewFileFromTemplate(templates_files[i]);
 		if (templates_check->GetValue()) {
-			config->Files.default_template=wxFileName(file_templates[i]).GetFullName();
-			templates_default=i;
+			config->Files.default_template = templates_files[i];
+			if (g_templates->IsCpp(config->Files.default_template))
+				config->Files.cpp_template = config->Files.default_template;
+			else
+				config->Files.c_template = config->Files.default_template;
 		}
 		source->SetFocus();
 		Close();
-	} else if (panel==panel_wizard_1) {
-		ShowPanelWizard2();
-	} else if (panel==panel_wizard_2) {
-		WizardCreate();
 	}
-}
-
-void mxNewWizard::WizardCreate() {
-	int pos=78;
-	wxString source("#include <iostream>\n");
-	
-	if (wizard_fstream->GetValue()) {
-		source+="#include <fstream>\n";
-		pos+=19;
-	}
-	if (wizard_iomanip->GetValue()) {
-		source+="#include <iomanip>\n";
-		pos+=19;
-	}
-	if (wizard_cstring->GetValue()) {
-		source+="#include <cstring>\n";
-		pos+=19;
-	}
-	if (wizard_rand->GetValue()) {
-		source+="#include <ctime>\n";
-		source+="#include <cstdlib>\n";
-		pos+=36;
-	}
-	if (wizard_cmath->GetValue()) {
-		source+="#include <cmath>\n";
-		pos+=17;
-	}
-	if (wizard_algorithm->GetValue()) {
-		source+="#include <algorithm>\n";
-		pos+=21;
-	}
-	if (wizard_vector->GetValue()) {
-		source+="#include <vector>\n";
-		pos+=18;
-	}
-	if (wizard_list->GetValue()) {
-		source+="#include <list>\n";
-		pos+=16;
-	}
-	if (wizard_map->GetValue()) {
-		source+="#include <map>\n";
-		pos+=15;
-	}
-	if (wizard_set->GetValue()) {
-		source+="#include <set>\n";
-		pos+=15;
-	}
-	if (wizard_queue->GetValue()) {
-		source+="#include <queue>\n";
-		pos+=17;
-	}
-	if (wizard_deque->GetValue()) {
-		source+="#include <deque>\n";
-		pos+=17;
-	}
-	if (wizard_stack->GetValue()) {
-		source+="#include <stack>\n";
-		pos+=17;
-	}
-	
-	source+="using namespace std;\n\n";
-	
-	source+="int main(int argc, char *argv[]) {\n";
-	
-	if (wizard_rand->GetValue()) {
-		source+="\tsrand(time(NULL));\n";
-		pos+=20;
-	}
-	
-	source+="\t\n\treturn 0;\n}\n\n";
-	
-	main_window->NewFileFromText(source,pos);//->SetFocus();
-
-	Close();
-		
 }
 
 void mxNewWizard::ShowPanelStart(bool show) {
@@ -747,7 +662,6 @@ void mxNewWizard::CreatePanelStart() {
 	wxString choices[4];
 	choices[0] = LANG(NEWWIZARD_EMPTY_FILE,"Archivo en Blanco");
 	choices[1] = LANG(NEWWIZARD_USE_TEMPLATE,"Utilizar Plantilla");
-//	choices[2] = LANG(NEWWIZARD_TEMPLATE_WIZARD,"Asistente de Plantilla ");
 	choices[2] = LANG(NEWWIZARD_PROYECT,"Proyecto Nuevo");
 	choices[3] = LANG(NEWWIZARD_PROYECT_FROM_FILES,"Proyecto Existente");
 	
@@ -848,10 +762,16 @@ void mxNewWizard::CreatePanelOnProject() {
 
 void mxNewWizard::ShowPanelTemplates() {
 	SetCurrentPanel(panel_templates);
-	templates_list->SetSelection(templates_default);
+	// select default template
+	wxArrayString templates_files; 
+	g_templates->GetFilesList(templates_files,true,true);
+	int idx = templates_files.Index(config->Files.default_template);
+	if (idx!=wxNOT_FOUND) templates_list->SetSelection(idx);
+	// restor buttons and checkbox
 	templates_check->SetValue(false);
 	nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
 	cancelButton->SetThings(bitmaps->buttons.prev,LANG(NEWWIZARD_BACK," Volver "));
+	// fix sizers and set the focus to the list
 	GetSizer()->Layout();
 	templates_list->SetFocus();
 }
@@ -861,38 +781,12 @@ void mxNewWizard::CreatePanelTemplates() {
 	panel_templates = new wxPanel(this,wxID_ANY);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	wxArrayString templates;
-	mxUT::GetFilesFromBothDirs(templates,"templates",true);
-	
-	for (unsigned int i=0; i<templates.GetCount();i++) {
-		wxString name_prefix = wxString("// !Z! Name_")<<config->Init.language_file<<":";
-		wxString name = templates[i];
-		wxString local_name = "";
-		if (config->Files.default_template==name)	templates_default = i;
-		wxString filename = mxUT::WichOne(name,"templates",true);
-		wxTextFile file(filename);
-		file.Open();
-		if (file.IsOpened()) { 
-			// buscar si tiene nombre
-			wxString line = file.GetFirstLine();
-			while (!file.Eof() && line.Left(7)=="// !Z! ") {
-				if (line.StartsWith("// !Z! Name:")) {
-					name = line.Mid(12).Trim(false).Trim(true);
-				} else if (line.StartsWith(name_prefix)) {
-					local_name = line.Mid(13+config->Init.language_file.Len()).Trim(false).Trim(true);
-					break;
-				}
-				line = file.GetNextLine();
-			}
-			if (local_name.Len()) name=local_name;
-			file.Close();
-			file_templates.Add(filename); // para uso interno
-			templates[i]=name; // para mostrar en el dialogo
-		}	
-	}
-
-	templates_list = new wxListBox(panel_templates,wxID_ANY,wxDefaultPosition, wxDefaultSize,  templates);
-	templates_list->SetSelection(templates_default);
+	wxArrayString templates_names, templates_files;
+	g_templates->GetNamesList(templates_names,true,true);
+	g_templates->GetFilesList(templates_files,true,true);
+	int default_idx = templates_files.Index(config->Files.default_template);
+	templates_list = new wxListBox(panel_templates,wxID_ANY,wxDefaultPosition, wxDefaultSize, templates_names);
+	if (default_idx!=wxNOT_FOUND) templates_list->SetSelection(default_idx);
 	
 	templates_check = new wxCheckBox(panel_templates, wxID_ANY, LANG(NEWWIZARD_SET_DEFAULT,"Guardar como predeterminada"),wxDefaultPosition,wxSize(250,50));
 	templates_check->SetValue(false);
@@ -1066,77 +960,6 @@ void mxNewWizard::CreatePanelProject2() {
 	panel_project_2->Hide();
 	
 }
-
-void mxNewWizard::ShowPanelWizard1() {
-	SetCurrentPanel(panel_wizard_1);
-	cancelButton->SetThings(bitmaps->buttons.prev,LANG(NEWWIZARD_BACK," Volver "));
-	nextButton->SetThings(bitmaps->buttons.next,LANG(NEWWIZARD_CONTINUE," Continuar "));
-	GetSizer()->Layout();
-}	
-
-void mxNewWizard::ShowPanelWizard2() {
-	SetCurrentPanel(panel_wizard_2);
-	nextButton->SetThings(bitmaps->buttons.ok,LANG(NEWWIZARD_CREATE," Crear "));
-	GetSizer()->Layout();
-}	
-
-void mxNewWizard::CreatePanelWizard1() {
-	panel_wizard_1 = new wxPanel(this,wxID_ANY);
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-
-	sizer->Add(new wxStaticText(panel_wizard_1,wxID_ANY,"Selecciones las acciones que va a realizar\n en su programa:",wxDefaultPosition,wxDefaultSize),sizers->BB5);
-
-	wizard_cstring = new wxCheckBox(panel_wizard_1, wxID_ANY, "trabajar con cadenas de caracteres C",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_cstring,sizers->BLT5_Exp0);
-	wizard_cstring->SetToolTip("incluye <cstring> que contiene funciones como strcmp, strcat, strcpy, strlen, ...");
-	
-	wizard_rand = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar numeros aleatorios",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_rand,sizers->BLT5_Exp0);
-	wizard_rand->SetToolTip("inicializa la semilla del generador de numeros pseudoaleatorios: srand(time(NULL))");
-	
-	wizard_cmath = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar funciones matematicas",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_cmath,sizers->BLT5_Exp0);
-	wizard_cmath->SetToolTip("incluye <cmath> que contiene funciones sin, cos, tan, pow, sqrt, floor, ...");
-	
-	wizard_fstream = new wxCheckBox(panel_wizard_1, wxID_ANY, "trabajar con archivos",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_fstream,sizers->BLT5_Exp0);
-	wizard_fstream->SetToolTip("incluye <fstream> que contiene las clases fstream, ifstream y ofstream para lectura y escritura en archivos.");
-	
-	wizard_iomanip = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar manipuladores de flujo",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_iomanip,sizers->BLT5_Exp0);
-	wizard_iomanip->SetToolTip("incluye <iomanip> que permite formatear flujos con manipuladores como fixed, setprecision, setw, setfill, ...");
-	
-	wizard_algorithm = new wxCheckBox(panel_wizard_1, wxID_ANY, "utilizar algoritmos STL",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_algorithm,sizers->BLT5_Exp0);
-	wizard_algorithm->SetToolTip("incluye <algorithm> que contiene funciones de busqueda, ordenamiento, operaciones de conjuntos, etc");
-
-	panel_wizard_1->SetSizerAndFit(sizer);
-	panel_wizard_1->Hide();
-}
-
-void mxNewWizard::CreatePanelWizard2() {
-	panel_wizard_2 = new wxPanel(this,wxID_ANY);
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-
-	sizer->Add(new wxStaticText(panel_wizard_2,wxID_ANY,"Selecciones la(s) estructura(s) de datos STL\n que va a utilizar en su programa:",wxDefaultPosition,wxDefaultSize),sizers->BB5_Exp0);
-	wizard_vector = new wxCheckBox(panel_wizard_2, wxID_ANY, "vector (vector)",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_vector,sizers->BLT5_Exp0);
-	wizard_list = new wxCheckBox(panel_wizard_2, wxID_ANY, "listas enlazada (list)",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_list,sizers->BLT5_Exp0);
-	wizard_queue = new wxCheckBox(panel_wizard_2, wxID_ANY, "cola (queue)",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_queue,sizers->BLT5_Exp0);
-	wizard_deque = new wxCheckBox(panel_wizard_2, wxID_ANY, "doble cola (deque)",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_deque,sizers->BLT5_Exp0);
-	wizard_stack = new wxCheckBox(panel_wizard_2, wxID_ANY, "pila (stack)",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_stack,sizers->BLT5_Exp0);
-	wizard_map = new wxCheckBox(panel_wizard_2, wxID_ANY, "correspondencia (map)",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_map,sizers->BLT5_Exp0);
-	wizard_set = new wxCheckBox(panel_wizard_2, wxID_ANY, "conjunto (set)",wxDefaultPosition,wxDefaultSize);
-	sizer->Add(wizard_set,sizers->BLT5_Exp0);
-
-	panel_wizard_2->SetSizerAndFit(sizer);
-	panel_wizard_2->Hide();
-}	
 
 void mxNewWizard::RunWizard(wxString how) {
 	if (how=="new_project") {

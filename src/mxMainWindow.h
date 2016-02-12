@@ -442,7 +442,7 @@ public:
 	void SetStatusText(wxString text);
 	void SetStatusProgress(int prog);
 
-	mxSource *NewFileFromTemplate (wxString filename);
+	mxSource *NewFileFromTemplate (wxString filename, bool is_full_path = false);
 	mxSource *NewFileFromText (wxString text, int pos=0);
 	mxSource *NewFileFromText (wxString text, wxString name, int pos=0);
 	mxSource *OpenFile (const wxString &filename);

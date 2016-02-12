@@ -34,6 +34,7 @@
 #include <wx/fontenum.h>
 #include "MenusAndToolsConfig.h"
 #include "mxToolchainConfig.h"
+#include "SimpleTemplates.h"
 
 static cfgStyles s_old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
 
@@ -160,7 +161,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : wxDialog(parent, wxID
 	if (config->Help.show_extra_panels) 
 		notebook->AddPage(CreateQuickHelpPanel(notebook), LANG(PREFERENCES_QUICK_HELP,"Ayuda Rapida"),false,8);
 	notebook->AddPage(CreateGeneralPanel(notebook), LANG(PREFERENCES_GENERAL,"General"),false,0);
-	notebook->AddPage(CreateSimplePanel(notebook), LANG(PREFERENCES_SIMPLE_PROGRAM,"Programa/Proyecto"),false,1);
+	notebook->AddPage(CreateCompilePanel(notebook), LANG(PREFERENCES_SIMPLE_PROGRAM,"Programa/Proyecto"),false,1);
 	notebook->AddPage(CreateStylePanel(notebook), LANG(PREFERENCES_STYLE,"Estilo"),false,2);
 	notebook->AddPage(CreateWritingPanels(notebook), LANG(PREFERENCES_ASSIST,"Asistencias"),false,3);
 	notebook->AddPage(CreateSkinPanel(notebook), LANG(PREFERENCES_ICON_THEME,"Tema de Iconos"),false,4);
@@ -371,7 +372,36 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (mxBookCtrl *notebook) {
 
 }
 
-wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
+wxNotebook *mxPreferenceWindow::CreateCompilePanel(mxBookCtrl *notebook) {
+	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
+	nbk->AddPage(CreateCompilePanelSimple(nbk), LANG(PREFERENCES_SIMPLE,"Programa simple"),false);
+	nbk->AddPage(CreateCompilePanelProject(nbk), LANG(PREFERENCES_PROJECT,"Proyecto"),false);
+	return nbk;
+}
+
+wxPanel *mxPreferenceWindow::CreateCompilePanelProject (wxBookCtrl *notebook) {
+	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
+	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+	
+	init_max_jobs = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_GENERAL_MAX_JOBS,"Cantidad de pasos en paralelo al compilar"),wxString()<<config->Init.max_jobs,mxID_MAX_JOBS);
+	init_stop_compiling_on_error = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STOP_COMPILING_ON_ERROR,"Detener la compilación de un proyecto al encontrar el primer error"),config->Init.stop_compiling_on_error);
+	init_save_project = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE,"Guardar siempre el proyeto al salir"),config->Init.save_project);
+	init_prefer_explorer_tree = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto"),config->Init.prefer_explorer_tree);
+
+	wxBoxSizer *subcmd_cache_sizer = new wxBoxSizer(wxHORIZONTAL);
+	init_use_cache_for_subcommands = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_USE_CACHE_FOR_SUBCMD,"Usar cache para la ejecución de subcomandos"))+_T("   "));
+	init_use_cache_for_subcommands->SetValue(config->Init.use_cache_for_subcommands);
+	subcmd_cache_sizer->Add(init_use_cache_for_subcommands,sizers->Center);
+	subcmd_cache_sizer->Add(new wxButton(panel,mxID_PREFERENCES_CLEAR_SUBCMD_CACHE,LANG(PREFERENCES_USE_CLEAR_SUBCMD_CACHE,"Limpiar")),sizers->Center);
+	sizer->Add(subcmd_cache_sizer,sizers->BA5_Exp0);
+	
+	panel->SetSizerAndFit(sizer);
+	return panel;
+	
+	
+}
+
+wxPanel *mxPreferenceWindow::CreateCompilePanelSimple (wxNotebook *notebook) {
 	
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -381,18 +411,27 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_CREATE_FROM_TEMPLATE,"Crear a partir de plantilla"));
 	a_new_file.Add(LANG(PREFERENCES_SIMPLE_SHOW_WIZARD,"Mostrar Asistente"));
 	init_new_file = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_SIMPLE_NEW_ACTION,"Accion para Nuevo Archivo"),a_new_file, config->Init.new_file);
-	running_cpp_compiler_options = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS,"Parámetros adicionales por defecto para el compilador C++"),config->Running.cpp_compiler_options);
-	running_c_compiler_options = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS,"Parámetros adicionales por defecto para el compilador C"),config->Running.c_compiler_options);
+	
+	SimpleTemplates::Initialize(); // ensures g_templates!=nullptr
+	wxArrayString cpp_templates_names, cpp_templates_files;
+	g_templates->GetNamesList(cpp_templates_names,false,true);
+	g_templates->GetFilesList(cpp_templates_files,false,true);
+	int cpp_temp_id = cpp_templates_files.Index(config->Files.cpp_template);
+	simple_default_cpp_template = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_SIMPLE_DEFAULT_CPP_TEMPLATE,"Plantilla por defecto para abrir fuentes C++"),cpp_templates_names,cpp_temp_id);
+	running_cpp_compiler_options = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador C++"),config->Running.cpp_compiler_options);
+	
+	wxArrayString c_templates_names, c_templates_files;
+	g_templates->GetNamesList(c_templates_names,true,false);
+	g_templates->GetFilesList(c_templates_files,true,false);
+	int c_temp_id = c_templates_files.Index(config->Files.c_template);
+	simple_default_c_template = mxUT::AddComboBox(sizer,panel,LANG(PREFERENCES_SIMPLE_DEFAULT_C_TEMPLATE,"Plantilla por defecto para abrir fuentes C"),c_templates_names,c_temp_id);
+	running_c_compiler_options = mxUT::AddTextCtrl(sizer,panel,LANG(PREFERENCES_SIMPLE_EXTRA_C_COMPILER_ARGUMENTS,"Parámetros adicionales para el compilador C"),config->Running.c_compiler_options);
+	
 	running_wait_for_key = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_WAIT_KEY_AFTER_RUNNING,"Esperar una tecla luego de la ejecución"),config->Running.wait_for_key);
 	running_always_ask_args = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),config->Running.always_ask_args);
 	init_always_add_extension = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_SIMPLE_ADD_CPP_EXTENSION,"Agregar la extension cpp si se omite al guardar"),config->Init.always_add_extension);
 	
-	init_max_jobs = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_GENERAL_MAX_JOBS,"Cantidad de pasos en paralelo al compilar"),wxString()<<config->Init.max_jobs,mxID_MAX_JOBS);
-	init_stop_compiling_on_error = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_STOP_COMPILING_ON_ERROR,"Detener la compilación de un proyecto al encontrar el primer error"),config->Init.stop_compiling_on_error);
-	init_save_project = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SAVE_PROJECT_ON_CLOSE,"Guardar siempre el proyeto al salir"),config->Init.save_project);
-	init_prefer_explorer_tree = mxUT::AddCheckBox(sizer,panel,LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto"),config->Init.prefer_explorer_tree);
-	
-	wxArrayString tc_array; Toolchain::GetNames(tc_array,false); int tc_i=tc_array.Index(config->Files.toolchain);
+	wxArrayString tc_array; Toolchain::GetNames(tc_array,false); int tc_i = tc_array.Index(config->Files.toolchain);
 	files_toolchain = new wxComboBox(panel, wxID_ANY, config->Files.toolchain, wxDefaultPosition, wxDefaultSize, tc_array, wxCB_READONLY);
 	files_toolchain->SetSelection(tc_i);
 	wxBoxSizer *tc_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -400,14 +439,6 @@ wxPanel *mxPreferenceWindow::CreateSimplePanel (mxBookCtrl *notebook) {
 	tc_sizer->Add(files_toolchain , sizers->Exp1);
 	tc_sizer->Add(new wxButton(panel,mxID_PREFERENCES_TOOLCHAIN_OPTIONS,"...",wxDefaultPosition,wxSize(30,10)),sizers->Exp0_Right);
 	sizer->Add(tc_sizer,sizers->BA5_Exp0);
-	
-	
-	wxBoxSizer *subcmd_cache_sizer = new wxBoxSizer(wxHORIZONTAL);
-	init_use_cache_for_subcommands = new wxCheckBox(panel, wxID_ANY, wxString(LANG(PREFERENCES_USE_CACHE_FOR_SUBCMD,"Usar cache para la ejecución de subcomandos"))+_T("   "));
-	init_use_cache_for_subcommands->SetValue(config->Init.use_cache_for_subcommands);
-	subcmd_cache_sizer->Add(init_use_cache_for_subcommands,sizers->Center);
-	subcmd_cache_sizer->Add(new wxButton(panel,mxID_PREFERENCES_CLEAR_SUBCMD_CACHE,LANG(PREFERENCES_USE_CLEAR_SUBCMD_CACHE,"Limpiar")),sizers->Center);
-	sizer->Add(subcmd_cache_sizer,sizers->BA5_Exp0);
 	
 	panel->SetSizerAndFit(sizer);
 	return panel;
@@ -709,6 +740,13 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->Running.always_ask_args = running_always_ask_args->GetValue();
 	config->Running.cpp_compiler_options = running_cpp_compiler_options->GetValue();
 	config->Running.c_compiler_options = running_c_compiler_options->GetValue();
+	
+	wxArrayString cpp_templates; g_templates->GetFilesList(cpp_templates,false,true);
+	wxArrayString c_templates; g_templates->GetFilesList(c_templates,true,false);
+	int cpp_idx = simple_default_cpp_template->GetSelection(), c_idx = simple_default_c_template->GetSelection();
+	if (cpp_idx!=wxNOT_FOUND) config->Files.cpp_template = cpp_templates[cpp_idx];
+	if (c_idx!=wxNOT_FOUND) config->Files.c_template = c_templates[c_idx];
+		
 	config->Init.singleton = init_singleton->GetValue();
 	if (!config->Init.singleton && g_singleton->IsRunning()) g_singleton->Stop();
 	else if (config->Init.singleton && !project && !g_singleton->IsRunning()) g_singleton->Start();
@@ -1223,9 +1261,16 @@ void mxPreferenceWindow::ResetChanges() {
 	init_autohide_panels_fs->SetValue(config->Init.autohide_panels_fs);
 	files_autocode->SetValue(config->Files.autocodes_file);
 	
-	// simple
+	// compile
 	running_cpp_compiler_options->SetValue(config->Running.cpp_compiler_options);
 	running_c_compiler_options->SetValue(config->Running.c_compiler_options);
+	wxArrayString cpp_templates; g_templates->GetFilesList(cpp_templates,false,true);
+	int cpp_idx = cpp_templates.Index(config->Files.cpp_template);
+	if (cpp_idx!=wxNOT_FOUND) simple_default_cpp_template->SetSelection(cpp_idx);
+	wxArrayString c_templates; g_templates->GetFilesList(c_templates,true,false);
+	int c_idx = c_templates.Index(config->Files.c_template);
+	if (c_idx!=wxNOT_FOUND) simple_default_c_template->SetSelection(c_idx);
+	
 	running_wait_for_key->SetValue(config->Running.wait_for_key);
 	running_always_ask_args->SetValue(config->Running.always_ask_args);
 	init_always_add_extension->SetValue(config->Init.always_add_extension);

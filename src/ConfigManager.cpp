@@ -288,6 +288,8 @@ bool ConfigManager::Load() {
 //#endif
 				else CFG_GENERIC_READ_DN("terminal_command",Files.terminal_command);
 				else CFG_GENERIC_READ_DN("explorer_command",Files.explorer_command);
+				else CFG_GENERIC_READ_DN("c_template",Files.c_template);
+				else CFG_GENERIC_READ_DN("cpp_template",Files.cpp_template);
 				else CFG_GENERIC_READ_DN("default_template",Files.default_template);
 				else CFG_GENERIC_READ_DN("default_project",Files.default_project);
 				else CFG_GENERIC_READ_DN("autocodes_file",Files.autocodes_file);
@@ -591,6 +593,8 @@ bool ConfigManager::Save(){
 //	CFG_GENERIC_WRITE_DN("runner_command",Files.runner_command);
 	CFG_GENERIC_WRITE_DN("terminal_command",Files.terminal_command);
 	CFG_GENERIC_WRITE_DN("explorer_command",Files.explorer_command);
+	CFG_GENERIC_WRITE_DN("c_template",Files.c_template);
+	CFG_GENERIC_WRITE_DN("cpp_template",Files.cpp_template);
 	CFG_GENERIC_WRITE_DN("default_template",Files.default_template);
 	CFG_GENERIC_WRITE_DN("default_project",Files.default_project);
 	CFG_GENERIC_WRITE_DN("autocodes_file",Files.autocodes_file);
@@ -683,7 +687,8 @@ void ConfigManager::LoadDefaults(){
 	Files.browser_command="firefox";
 #endif
 	Files.project_folder = (config_dir=="config.here")? "projects" : DIR_PLUS_FILE(wxFileName::GetHomeDir(),"projects");
-	Files.default_template="default.tpl";
+	Files.cpp_template = Files.default_template="default.tpl";
+	Files.c_template = "default_c.tpl";
 	Files.default_project="<main>";
 	Files.autocodes_file=DIR_PLUS_FILE(config_dir,"autocodes");
 	for (int i=0;i<CM_HISTORY_MAX_LEN;i++)

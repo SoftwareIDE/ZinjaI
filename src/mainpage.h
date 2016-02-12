@@ -29,9 +29,8 @@
 * 
 * @subsection naming Naming
 *  - SourceFileName.cpp
-*  - HeaderFileName.hpp
-*  - mxGuiClassName
-*  - RegularClassName
+*  - HeaderFileName.h
+*  - ClassName
 *  - StructName
 *  - RegularMemberFunctionName
 *  - StaticMemberFunctionName
@@ -45,6 +44,11 @@
 *  - PREPROCESSOR_CONSTANT
 *  - t_typedef
 *  - EnumClassType::EnumValue
+*  - Use "mx" prefix for gui classes/files
+*    - mxGuiSourceFileName.cpp
+*    - mxGuiHeaderFileName.h
+*    - mxGuiClassName
+
 * 
 * @subsection braces Braces
 * @code

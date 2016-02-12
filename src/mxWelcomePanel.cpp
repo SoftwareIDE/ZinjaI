@@ -101,7 +101,7 @@ void mxWelcomePanel::OnLinkClicked (wxHtmlLinkEvent &event) {
 		if (config->Init.new_file==0)
 			main_window->NewFileFromText("");
 		else
-			main_window->NewFileFromTemplate(mxUT::WichOne(config->Files.default_template,"templates",true));
+			main_window->NewFileFromTemplate(config->Files.default_template);
 	} else if (action==_T("open_file")) {
 		wxCommandEvent evt;
 		main_window->OnFileOpen(evt);

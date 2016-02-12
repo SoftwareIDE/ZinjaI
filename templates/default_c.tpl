@@ -2,6 +2,7 @@
 // !Z! Name_spanish: Programa C en Blanco
 // !Z! Caret: 60
 // !Z! Type: C
+// !Z! Options: -lm
 
 #include <stdio.h>
 
