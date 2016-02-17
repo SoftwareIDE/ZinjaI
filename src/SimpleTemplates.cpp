@@ -74,7 +74,7 @@ int SimpleTemplates::GetOptions (map<wxString,wxString> &opts, wxString full_pat
 	file.Open();
 	if (file.IsOpened()) {
 		wxString line = file.GetFirstLine();
-		while (!file.Eof() && line.Left(7)=="// !Z! ") {
+		while (!file.Eof() && (line.Left(7)=="// !Z! "||line=="")) {
 			++headers_lines_count;
 			if (line.Contains(":")) {
 				line = line.Mid(7); // strip the "// !Z! "
