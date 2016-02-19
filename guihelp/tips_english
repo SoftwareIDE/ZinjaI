@@ -1,5 +1,5 @@
 If this is the first time you run ZinjaI, you can press F1 key to display help system and tutorials.
-Welcome a new ZinjaI release. The changes include a few new features for low-level debugging, a new command to generate functions definitions from actual calls, a new quick way to rename identifiers in a given scope, some new rules for smart indention mechanism, more flexible autocodes, and, as always, many other minor improvements and fixes here and there. Read the <A href="help:ChangeLog.html">full changelog</A>.
+Welcome a new ZinjaI release. The changes includes better use of simple-program's templates (now default template is used also when oppening a program), the ability to generate a history of backtraces while debugging, new commands for auto-stepping in Debug menu, a very simple way to search for ZinjaI commands by keyword (see help menu), and many more little improvements and errors fixes. Read the <A href="help:ChangeLog.html">full changelog</A>.
 These tips can be very anoying for some users. You can disable them by clicking the checkbox in to bottom of this window.
 
 You can change code zoom quickly by scrolling mouse will with Ctrl key down, or pressin +/- key also with ctrl key down.

@@ -32,6 +32,7 @@
 #include "execution_workaround.h"
 #include "MenusAndToolsConfig.h"
 #include "mxOSD.h"
+#include "mxThreeDotsUtils.h"
 
 
 bool g_zinjai_debug_mode = false;
@@ -993,6 +994,7 @@ wxString mxUT::Relativize(wxString name, wxString path) {
 	bool rr=false;
 	if (rr) name.RemoveLast();
 	wxFileName fname(name);
+	if (fname==path) return ".";
 	fname.MakeRelativeTo(path);
 	wxString rname = fname.GetFullPath();
 	if (rname.StartsWith(_T("../../..")) || rname.StartsWith(_T("..\\..\\..")))
@@ -1140,105 +1142,6 @@ wxString mxUT::UrlEncode(wxString str) {
 	str.Replace("¡","%A1");
 	str.Replace("=","%3D");
 	return str;
-}
-
-
-// options = "REPLACE|COMMA|TEXT|LIST|FILE|DIR|OUTPUT|DEPS|TEMP_DIR|MINGW_DIR|BROWSER|PROJECT_PATH|PROJECT_BIN|CURRENT_FILE|CURRENT_DIR"
-void mxUT::ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxString options, wxString path) {
-	wxString opt; bool replace=false, comma=false;
-	wxMenu menu;
-	do {
-		opt = options.BeforeFirst('|'); options=options.AfterFirst('|');
-		if (!opt.size()) { opt=options; options.Clear(); }
-		if (opt=="REPLACE") replace=true;
-		else if (opt=="COMMA") comma=true;
-		else if (opt=="TEXT") menu.Append(mxID_POPUPS_INSERT_TEXT,LANG(GENERAL_POPUP_INSERT_TEXT,"editar como texto..."));
-		else if (opt=="LIST") menu.Append(mxID_POPUPS_INSERT_LIST,LANG(GENERAL_POPUP_INSERT_LIST,"editar como lista..."));
-		else if (opt=="FILE") menu.Append(mxID_POPUPS_INSERT_FILE,LANG(GENERAL_POPUP_INSERT_FILE,"insertar archivo..."));
-		else if (opt=="DIR") menu.Append(mxID_POPUPS_INSERT_DIR,LANG(GENERAL_POPUP_REPLACE_INSERT_DIR,"insertar directorio..."));
-		else if (opt=="OUTPUT") menu.Append(mxID_POPUPS_INSERT_OUTPUT,LANG(GENERAL_POPUP_INSERT_OUTPUT,"insertar archivo de salida"));
-		else if (opt=="DEPS") menu.Append(mxID_POPUPS_INSERT_DEPS,LANG(GENERAL_POPUP_INSERT_DEPS,"insertar lista de dependencias"));
-		else if (opt=="TEMP_DIR") menu.Append(mxID_POPUPS_INSERT_TEMP_DIR,LANG(GENERAL_POPUP_INSERT_TEMP_DIR,"insertar directorio de temporales"));
-#ifdef __WIN32__
-		else if (opt=="MINGW_DIR") menu.Append(mxID_POPUPS_INSERT_MINGW_DIR,LANG(GENERAL_POPUP_INSERT_MINGW_DIR,"insertar directorio MinGW"));
-#else
-		else if (opt=="MINGW_DIR") menu.Append(mxID_POPUPS_INSERT_MINGW_DIR,LANG(GENERAL_POPUP_INSERT_MINGW_DIR,"insertar directorio del compilador"));
-#endif
-		else if (opt=="PROJECT_PATH") menu.Append(mxID_POPUPS_INSERT_PROJECT_PATH,LANG(GENERAL_POPUP_INSERT_PROJECT_PATH,"insertar directorio del proyecto"));
-		else if (opt=="PROJECT_BIN") menu.Append(mxID_POPUPS_INSERT_PROJECT_BIN,LANG(GENERAL_POPUP_INSERT_PROJECT_BIN,"insertar ruta del ejecutable"));
-		else if (opt=="ARGS") menu.Append(mxID_POPUPS_INSERT_ARGS,LANG(GENERAL_POPUP_INSERT_ARGS,"argumentos para la ejecución"));
-//		else if (opt=="WORK_DIR") menu.Append(mxID_POPUPS_INSERT_WORK_DIR,LANG(GENERAL_POPUP_INSERT_WORK_DIR,"insertar directorio de trabajo"));
-		else if (opt=="CURRENT_FILE") menu.Append(mxID_POPUPS_INSERT_CURRENT_FILE,LANG(GENERAL_POPUP_INSERT_CURRENT_FILE,"insertar archivo actual"));
-		else if (opt=="CURRENT_DIR") menu.Append(mxID_POPUPS_INSERT_CURRENT_DIR,LANG(GENERAL_POPUP_INSERT_CURRENT_DIR,"insertar directorio del archivo actual"));
-		else if (opt=="BIN_WORKDIR") menu.Append(mxID_POPUPS_INSERT_WORKDIR,LANG(GENERAL_POPUP_INSERT_WORKDIR,"insertar el directorio de trabajo"));
-		else if (opt=="ZINJAI_DIR") menu.Append(mxID_POPUPS_INSERT_ZINJAI_DIR,LANG(GENERAL_POPUP_INSERT_ZINJAI_DIR,"insertar el directorio de instalación de ZinjaI"));
-		else if (opt=="BROWSER") menu.Append(mxID_POPUPS_INSERT_BROWSER,LANG(GENERAL_POPUP_INSERT_BROWSER,"insertar comando del navegador"));
-		else if (opt=="SHELL_EXECUTE") menu.Append(mxID_POPUPS_INSERT_SHELL_EXECUTE,LANG(GENERAL_POPUP_INSERT_SHELL_EXECUTE,"insertar comando para abrir con el programa asociado"));
-	} while (options.Len());
-	ProcessTextPopup(0,parent,text,path,title,replace,comma);
-	parent->PopupMenu(&menu);
-}
-
-void mxUT::ProcessTextPopup(int id, wxWindow *parent, wxTextCtrl *t, wxString path, wxString title, bool replace, bool comma_splits) {
-	static wxWindow *win = nullptr;
-	static wxString caption;
-	static wxString dir;
-	static bool comma = false;
-	static bool repl = false;
-	static wxTextCtrl *ctrl = nullptr;
-	if (id && ctrl) {
-		wxString text =	repl?ctrl->GetValue():ctrl->GetStringSelection();
-		if (id==mxID_POPUPS_INSERT_TEXT) {
-			new mxLongTextEditor(win,caption,ctrl);
-		} else if (id==mxID_POPUPS_INSERT_LIST) {
-			new mxEnumerationEditor(win,caption,ctrl,comma);
-		} else if (id==mxID_POPUPS_INSERT_FILE) {
-			wxFileDialog dlg(win,caption,text.Len()?text:(project?project->last_dir:config->Files.last_dir));
-			if (wxID_OK!=dlg.ShowModal()) return;
-			(project?project->last_dir:config->Files.last_dir) = wxFileName(dlg.GetPath()).GetPath(); 
-			if (path.Len()) text = mxUT::Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
-			if (text.Contains(' ')) text = wxString("\"")<<text<<"\"";
-		} else if (id==mxID_POPUPS_INSERT_DIR) {
-			wxDirDialog dlg(win,caption,text.Len()?text:(project?project->last_dir:config->Files.last_dir));
-			if (wxID_OK!=dlg.ShowModal()) return;
-			(project?project->last_dir:config->Files.last_dir) = dlg.GetPath(); 
-			if (path.Len()) text = mxUT::Relativize(dlg.GetPath(),path); else text=dlg.GetPath();
-			if (text.Contains(' ')) text = wxString("\"")<<text<<"\"";
-		} else if (id==mxID_POPUPS_INSERT_MINGW_DIR) {
-			text="${MINGW_DIR}";
-		} else if (id==mxID_POPUPS_INSERT_TEMP_DIR) {
-			text="${TEMP_DIR}";
-		} else if (id==mxID_POPUPS_INSERT_BROWSER) {
-			text="${BROWSER}";
-		} else if (id==mxID_POPUPS_INSERT_SHELL_EXECUTE) {
-			text="${OPEN}";
-		} else if (id==mxID_POPUPS_INSERT_PROJECT_PATH) {
-			text="${PROJECT_PATH}";
-		} else if (id==mxID_POPUPS_INSERT_WORKDIR) {
-			text="${BIN_WORKDIR}";
-		} else if (id==mxID_POPUPS_INSERT_PROJECT_BIN) {
-			text="${PROJECT_BIN}";
-		} else if (id==mxID_POPUPS_INSERT_ARGS) {
-			text="${ARGS}";
-		} else if (id==mxID_POPUPS_INSERT_ZINJAI_DIR) {
-			text="${ZINJAI_DIR}";
-		} else if (id==mxID_POPUPS_INSERT_CURRENT_FILE) {
-			text="${CURRENT_SOURCE}";
-		} else if (id==mxID_POPUPS_INSERT_CURRENT_DIR) {
-			text="${CURRENT_DIR}";
-		} else if (id==mxID_POPUPS_INSERT_OUTPUT) {
-			text="${OUTPUT}";
-		} else if (id==mxID_POPUPS_INSERT_DEPS) {
-			text="${DEPS}";
-		}
-		if (repl) ctrl->SetValue(text); 
-		else {
-			long f,t;
-			ctrl->GetSelection(&f,&t);
-			ctrl->Replace(f,t,text);
-		}
-	}
-	ctrl=t; caption=title; comma=comma_splits; win=parent; dir=path; repl=replace;
 }
 
 eFileType mxUT::GetFileType(wxString name, bool recognize_projects) {

@@ -4,6 +4,7 @@
 #include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include "widgetDisabler.h"
+#include "mxCommonPopup.h"
 
 class project_configuration;
 class wxCheckBox;
@@ -15,16 +16,18 @@ class wxListBox;
 
 class mxProjectConfigWindow : public wxDialog {
 	
+	wxString last_dir;
+	wxTextCtrl *text_for_edit;
+	bool comma_splits_for_edit;
+
+	_use_common_popup;
+	
 	friend class mxLibToBuildWindow;
 	
 	static int last_page_index;
 	wxNotebook *notebook;
 	bool discard;
 	
-	wxTextCtrl *text_for_edit;
-	bool comma_splits_for_edit;
-	wxString last_dir;
-
 	wxComboBox *configuration_name;
 	project_configuration *configuration;
 
@@ -102,12 +105,6 @@ public:
 	void OnSelectConfigInCombo(wxCommandEvent &event);
 	void OnExecutionMethodButton(wxCommandEvent &evt);
 	void OnComboExecutionScript(wxCommandEvent &evt);
-	void OnArgsAddFile(wxCommandEvent &evt);
-	void OnArgsAddDir(wxCommandEvent &evt);
-	void OnArgsReplaceFile(wxCommandEvent &evt);
-	void OnArgsReplaceDir(wxCommandEvent &evt);
-	void OnArgsEditList(wxCommandEvent &evt);
-	void OnArgsEditText(wxCommandEvent &evt);
 	void OnGeneralArgsButton(wxCommandEvent &evt);
 	void OnCompilingExtraOptionsButton(wxCommandEvent &evt);
 	void OnCompilingHeadersDirsButton(wxCommandEvent &evt);

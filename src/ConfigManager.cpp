@@ -767,7 +767,7 @@ void ConfigManager::LoadDefaults(){
 	Source.avoidNoNewLineWarning=true;
 
 	Running.cpp_compiler_options="-Wall -pedantic-errors -O0";
-	Running.c_compiler_options="-Wall -pedantic-errors -O0 -lm";
+	Running.c_compiler_options="-Wall -pedantic-errors -O0";
 #ifdef __WIN32__
 	Running.c_compiler_options+=" -finput-charset=iso-8859-1 -fexec-charset=cp437";
 	Running.cpp_compiler_options+=" -finput-charset=iso-8859-1 -fexec-charset=cp437";

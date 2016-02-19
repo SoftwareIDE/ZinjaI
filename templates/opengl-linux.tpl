@@ -1,5 +1,5 @@
 // !Z! Name: OpenGL - Linux
-// !Z! Options: -O0 -lGL -lGLU -lglut
+// !Z! Options: ${DEFAULT} -lGL -lGLU -lglut
 // !Z! Includes: <GL/glut.h> <GL/gl.h> <GL/glu.h>
 
 #include <GL/glut.h>

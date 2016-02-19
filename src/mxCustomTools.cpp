@@ -23,7 +23,6 @@ BEGIN_EVENT_TABLE(mxCustomTools, wxDialog)
 	EVT_COMBOBOX(mxID_CUSTOM_TOOLS_COMBO,mxCustomTools::OnComboChange)
 	EVT_BUTTON(mxID_CUSTOM_TOOLS_COMMAND,mxCustomTools::OnCommandPopup)
 	EVT_BUTTON(mxID_CUSTOM_TOOLS_WORKDIR,mxCustomTools::OnWorkdirPopup)
-	EVT_MENU_RANGE(mxID_POPUPS_INSERT_FIRST, mxID_POPUPS_INSERT_LAST, mxCustomTools::OnPopup)
 	EVT_CLOSE(mxCustomTools::OnClose)
 END_EVENT_TABLE()
 
@@ -98,17 +97,21 @@ mxCustomTools::mxCustomTools(bool for_project, int cual):wxDialog(main_window,wx
 }
 
 void mxCustomTools::OnCommandPopup(wxCommandEvent &event) {
-	mxUT::ShowTextPopUp(this,LANG(CUSTOM_TOOLS_COMMAND,"Comando"),command_ctrl,"TEXT|LIST|FILE|DIR|TEMP_DIR|SHELL_EXECUTE|MINGW_DIR|BROWSER|PROJECT_PATH|PROJECT_BIN|ARGS|CURRENT_FILE|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR");
+	CommonPopup(command_ctrl).Caption(LANG(CUSTOM_TOOLS_COMMAND,"Comando"))
+		.AddEditAsText().AddEditAsList().AddFilename().AddPath()
+		.AddCurrentFile().AddCurrentDir().AddProjectBin().AddProjectDir()
+		.AddArgs().AddTempDir().AddMinGWDir().AddZinjaiDir()
+		.AddBrowerCommand().AddShellCommand()
+		.Run(this);
 }
 
 void mxCustomTools::OnWorkdirPopup(wxCommandEvent &event) {
-	mxUT::ShowTextPopUp(this,LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"),workdir_ctrl,"REPLACE|DIR|TEMP_DIR|MINGW_DIR|PROJECT_PATH|CURRENT_DIR|ZINJAI_DIR|MINGW_DIR|BIN_WORKDIR");
+	CommonPopup(workdir_ctrl).SelectAll().Caption(LANG(CUSTOM_TOOLS_WORKDIR,"Directorio de trabajo"))
+		.AddPath().AddCurrentDir().AddProjectDir()
+		.AddTempDir().AddMinGWDir().AddZinjaiDir().AddWorkDir()
+		.Run(this);
 }
 
-
-void mxCustomTools::OnPopup(wxCommandEvent &evt) {
-	mxUT::ProcessTextPopup(evt.GetId());
-}
 
 void mxCustomTools::OnButtonOk(wxCommandEvent &event) {
 	if (for_project && !project) { Close(); return; }

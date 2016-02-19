@@ -1664,7 +1664,7 @@ long int ProjectManager::Run() {
 	
 	// agregar los argumentos de ejecucion
 	if (active_configuration->always_ask_args) {
-		int res = mxArgumentsDialog(main_window,active_configuration->args,active_configuration->working_folder).ShowModal();
+		int res = mxArgumentsDialog(main_window,path,active_configuration->args,active_configuration->working_folder).ShowModal();
 		if (res&AD_CANCEL) { delete compile_and_run; return 0; }
 		active_configuration->working_folder = mxArgumentsDialog::last_workdir;
 		active_configuration->args = (res&AD_EMPTY) ? "" : mxArgumentsDialog::last_arguments;
@@ -2299,7 +2299,7 @@ bool ProjectManager::Debug() {
 	wxString command ( GetExePath(true) );
 	wxString args = active_configuration->args;
 	if (active_configuration->always_ask_args) {
-		int res = mxArgumentsDialog(main_window,active_configuration->args,active_configuration->working_folder).ShowModal();
+		int res = mxArgumentsDialog(main_window,path,active_configuration->args,active_configuration->working_folder).ShowModal();
 		if (res&AD_CANCEL) return false;
 		if (res&AD_ARGS) {
 			active_configuration->args = mxArgumentsDialog::last_arguments;

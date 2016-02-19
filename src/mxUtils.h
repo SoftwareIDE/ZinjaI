@@ -260,10 +260,6 @@ public:
 	
 	static wxString UrlEncode(wxString str);
 	
-	/// popups para cuadros de texto con boton de "..."
-	static void ShowTextPopUp(wxWindow *parent, wxString title, wxTextCtrl *text, wxString options, wxString path="");
-	static void ProcessTextPopup(int id, wxWindow *parent=nullptr, wxTextCtrl *t=nullptr, wxString path="", wxString title="", bool replace=false, bool comma_splits=false);
-	
 	/// determina el tipo de archivo segun su extension
 	static eFileType GetFileType(wxString name, bool recognize_projects=true);
 	

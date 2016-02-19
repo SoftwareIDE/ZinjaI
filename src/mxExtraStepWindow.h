@@ -2,6 +2,7 @@
 #define MXEXTRASTEPWINDOW_H
 #include <wx/dialog.h>
 #include "Cpp11.h"
+#include "mxCommonPopup.h"
 
 class wxCheckBox;
 class wxComboBox;
@@ -11,6 +12,7 @@ class project_configuration;
 
 class mxExtraStepWindow : public wxDialog {
 private:
+	_use_common_popup;
 	compile_extra_step *step;
 	wxComboBox *position;
 	wxTextCtrl *name, *command, *output, *deps;
@@ -26,7 +28,6 @@ public:
 	void OnCommandButton(wxCommandEvent &evt);
 	void OnDepsButton(wxCommandEvent &evt);
 	void OnOutputButton(wxCommandEvent &evt);
-	void OnPopup(wxCommandEvent &evt);
 	DECLARE_EVENT_TABLE();
 };
 

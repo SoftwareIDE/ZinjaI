@@ -85,7 +85,7 @@ int SimpleTemplates::GetOptions (map<wxString,wxString> &opts, wxString full_pat
 		file.Close();
 	}
 	if (replace_default) {
-		bool cpp = opts.count("Type")==0 || opts["Type"]=="C";
+		bool cpp = opts.count("Type")==0 || opts["Type"]!="C";
 		opts["Options"].Replace("${DEFAULT}",config->GetDefaultCompilerOptions(cpp),true);
 	}
 	return headers_lines_count;

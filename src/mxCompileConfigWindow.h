@@ -10,7 +10,11 @@ class wxCheckBox;
 
 class mxCompileConfigWindow : public wxDialog {
 	
-	wxTextCtrl *text_for_edit;
+	// auxiliars for avoid repeating same code for every popup menu after a text ctrl
+	wxTextCtrl *m_text_ctrl_for_popup; ///< ctrl that launched last popup
+	wxString m_base_dir_for_popup; ///< base directory for relative paths for file/dir pickers
+	wxString m_title_for_edit_helpers; ///< caption for mxListItemEditor and mxLongTextEditor
+	
 	wxArrayString opts_list;
 	
 public:
@@ -32,15 +36,16 @@ public:
 	void OnButtonFolder(wxCommandEvent &event);
 	void OnButtonCompilerOptions(wxCommandEvent &event);
 	void OnHelpButton(wxCommandEvent &event);
-	void OnArgsAddFile(wxCommandEvent &evt);
-	void OnArgsReplaceFile(wxCommandEvent &evt);
 	void OnArgsDefault(wxCommandEvent &evt);
 	void OnArgsFromTemplate(wxCommandEvent &evt);
-	void OnArgsAddDir(wxCommandEvent &evt);
-	void OnArgsReplaceDir(wxCommandEvent &evt);
 	void OnArgsButton(wxCommandEvent &evt);
-	void OnArgsEditList(wxCommandEvent &evt);
-	void OnArgsEditText(wxCommandEvent &evt);
+	
+	void OnPopupAddFile(wxCommandEvent &evt);
+	void OnPopupReplaceFile(wxCommandEvent &evt);
+	void OnPopupAddDir(wxCommandEvent &evt);
+	void OnPopupReplaceDir(wxCommandEvent &evt);
+	void OnPopupEditList(wxCommandEvent &evt);
+	void OnPopupEditText(wxCommandEvent &evt);
 
 private:
 	DECLARE_EVENT_TABLE()

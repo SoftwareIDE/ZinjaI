@@ -1,18 +1,20 @@
-#include "mxArgumentsDialog.h"
 #include <wx/sizer.h>
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
+#include <wx/menu.h>
 #include "mxBitmapButton.h"
 #include "ids.h"
-#include <wx/menu.h>
+#include "mxArgumentsDialog.h"
 #include "mxSizers.h"
 #include "mxLongTextEditor.h"
 #include "mxEnumerationEditor.h"
 #include "Language.h"
+#include "mxThreeDotsUtils.h"
+#include "mxUtils.h"
 
 wxString mxArgumentsDialog::last_arguments;
 wxString mxArgumentsDialog::last_workdir;
-wxString mxArgumentsDialog::last_dir;
+//wxString mxArgumentsDialog::last_dir;
 wxArrayString mxArgumentsDialog::list_for_combo_args;
 wxArrayString mxArgumentsDialog::list_for_combo_work;
 
@@ -34,7 +36,11 @@ BEGIN_EVENT_TABLE(mxArgumentsDialog, wxDialog)
 END_EVENT_TABLE()
 
 	
-mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent, const wxString &def_args, const wxString &def_dir) : wxDialog(parent,wxID_ANY,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),wxDefaultPosition,wxDefaultSize,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent, const wxString &base_path, const wxString &def_args, const wxString &def_dir) 
+	: wxDialog(parent,wxID_ANY,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),wxDefaultPosition,wxDefaultSize,
+			   wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER),
+      m_base_path (base_path)
+{
 
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	
@@ -109,43 +115,19 @@ void mxArgumentsDialog::OnArgsButton(wxCommandEvent &evt) {
 }
 
 void mxArgumentsDialog::OnArgsReplaceFile(wxCommandEvent &evt) {
-	wxString sel = combo_args->GetStringSelection();
-	wxFileDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE,"Reemplazar todo por archivo:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		last_dir = dlg.GetPath();
-		combo_args->SetValue(dlg.GetPath());
-	}
+	mxThreeDotsUtils::ReplaceAllWithFile(this,combo_args,DIR_PLUS_FILE(m_base_path,combo_work->GetValue()));
 }
 
 void mxArgumentsDialog::OnArgsAddFile(wxCommandEvent &evt) {
-	wxString sel = combo_args->GetStringSelection();
-	wxFileDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE,"Reemplazar seleccion por archivo:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		long p1,p2;
-		combo_args->GetSelection(&p1,&p2);
-		last_dir = dlg.GetPath();
-		combo_args->Replace(p1,p2,dlg.GetPath());
-	}
+	mxThreeDotsUtils::ReplaceSelectionWithFile(this,combo_args,DIR_PLUS_FILE(m_base_path,combo_work->GetValue()));
 }
 
 void mxArgumentsDialog::OnArgsReplaceDir(wxCommandEvent &evt) {
-	wxString sel = combo_args->GetStringSelection();
-	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER,"Reemplazar todo por directorio:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		last_dir = dlg.GetPath();
-		combo_args->SetValue(dlg.GetPath());
-	}
+	mxThreeDotsUtils::ReplaceSelectionWithDirectory(this,combo_args,DIR_PLUS_FILE(m_base_path,combo_work->GetValue()));
 }
 
 void mxArgumentsDialog::OnArgsAddDir(wxCommandEvent &evt) {
-	wxString sel = combo_args->GetStringSelection();
-	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER,"Reemplazar seleccion por directorio:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		long p1,p2;
-		combo_args->GetSelection(&p1,&p2);
-		last_dir = dlg.GetPath();
-		combo_args->Replace(p1,p2,dlg.GetPath());
-	}
+	mxThreeDotsUtils::ReplaceAllWithDirectory(this,combo_args,DIR_PLUS_FILE(m_base_path,combo_work->GetValue()));
 }
 	
 void mxArgumentsDialog::OnCharHook(wxKeyEvent &evt)	{
@@ -156,17 +138,15 @@ void mxArgumentsDialog::OnCharHook(wxKeyEvent &evt)	{
 }
 
 void mxArgumentsDialog::OnArgsEditText(wxCommandEvent &evt) {
-	new mxLongTextEditor(this,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),combo_args);
+	mxLongTextEditor(this,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),combo_args);
 }
 
 void mxArgumentsDialog::OnArgsEditList(wxCommandEvent &evt) {
-	new mxEnumerationEditor(this,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),combo_args,false);
+	mxEnumerationEditor(this,LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"),combo_args,false);
 }
 	
 
 void mxArgumentsDialog::OnWorkdirButton (wxCommandEvent & evt) {
-	wxDirDialog dlg(this,LANG(COMPILECONF_WORKDIR_DLG,"Directorio de trabajo"),combo_args->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		combo_work->SetValue(dlg.GetPath());
+	mxThreeDotsUtils::ReplaceAllWithDirectory(this,combo_work,m_base_path, LANG(COMPILECONF_WORKDIR_DLG,"Directorio de trabajo"));
 }
 

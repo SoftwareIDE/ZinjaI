@@ -108,7 +108,6 @@ void mxEnumerationEditor::OnClose(wxCloseEvent &evt) {
 	if (m_text) m_text->SetFocus();
 	if (m_combo) m_combo->SetFocus();
 	EndModal(0);
-	Destroy();
 }
 
 void mxEnumerationEditor::OnAdd(wxCommandEvent &evt) {

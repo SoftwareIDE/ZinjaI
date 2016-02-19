@@ -22,6 +22,7 @@
 #include "mxTextDialog.h"
 #include "Toolchain.h"
 #include "mxToolchainOptions.h"
+#include "mxThreeDotsUtils.h"
 
 int mxProjectConfigWindow::last_page_index=0;
 
@@ -43,12 +44,6 @@ BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_COMBOBOX(mxID_PROJECT_CONFIG_NAME,mxProjectConfigWindow::OnSelectConfigInCombo)
 	EVT_COMBOBOX(mxID_PROJECT_CONFIG_EXEC_METHOD,mxProjectConfigWindow::OnComboExecutionScript)
 	EVT_MENU(mxID_PROJECT_CONFIG_EXEC_SCRIPT,mxProjectConfigWindow::OnExecutionMethodButton)
-	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxProjectConfigWindow::OnArgsReplaceDir)
-	EVT_MENU(mxID_ARGS_ADD_DIR,mxProjectConfigWindow::OnArgsAddDir)
-	EVT_MENU(mxID_ARGS_REPLACE_FILE,mxProjectConfigWindow::OnArgsReplaceFile)
-	EVT_MENU(mxID_ARGS_ADD_FILE,mxProjectConfigWindow::OnArgsAddFile)
-	EVT_MENU(mxID_ARGS_EDIT_LIST,mxProjectConfigWindow::OnArgsEditList)
-	EVT_MENU(mxID_ARGS_EDIT_TEXT,mxProjectConfigWindow::OnArgsEditText)
 	
 	EVT_BUTTON(mxID_PROJECT_GENERAL_EXE_PATH,mxProjectConfigWindow::OnGeneralExePathButton)
 	EVT_BUTTON(mxID_PROJECT_CONFIG_ARGS_BUTTON,mxProjectConfigWindow::OnGeneralArgsButton)
@@ -383,9 +378,7 @@ void mxProjectConfigWindow::OnEnvVarsButton(wxCommandEvent &event){
 }
 
 void mxProjectConfigWindow::OnWorkingDirButton(wxCommandEvent &event) {
-	wxDirDialog dlg(this,"Carpeta de trabajo:",DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-	if (wxID_OK==dlg.ShowModal())
-		general_working_folder->SetValue(mxUT::Relativize(dlg.GetPath(),project->path));
+	mxThreeDotsUtils::ReplaceAllWithDirectory(this,general_working_folder,project->path,LANG(PROJECTCONFIG_GENERAL_WORKDIR,"Directorio de trabajo"));
 }
 
 
@@ -624,81 +617,39 @@ void mxProjectConfigWindow::OnHelpButton(wxCommandEvent &event){
 }
 
 void mxProjectConfigWindow::OnCompilingExtraOptionsButton(wxCommandEvent &evt) {
-	text_for_edit=compiling_extra_options;
-	comma_splits_for_edit=false;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
-	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
-	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
-	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
-	PopupMenu(&menu);
+	CommonPopup(compiling_extra_options).CommaSplit(false).BasePath(project->path)
+		.Caption( LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion") )
+		.AddEditAsText().AddEditAsList().AddFilename().AddPath().AddMinGWDir().Run(this);
 }
 
 void mxProjectConfigWindow::OnCompilingHeadersDirsButton(wxCommandEvent &evt) {
-	text_for_edit=compiling_headers_dirs;
-	comma_splits_for_edit=true;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-//	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
-//	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
-	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
-	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
-	PopupMenu(&menu);
+	CommonPopup(compiling_headers_dirs).CommaSplit(true).BasePath(project->path)
+		.Caption( LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras") )
+		.AddEditAsText().AddEditAsList().AddPath().AddMinGWDir().Run(this);
 }
 
 void mxProjectConfigWindow::OnLinkingExtraOptionsButton(wxCommandEvent &evt) {
-	text_for_edit=linking_extra_options;
-	comma_splits_for_edit=false;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
-	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
-	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
-	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
-	PopupMenu(&menu);
+	CommonPopup(linking_extra_options).CommaSplit(false).BasePath(project->path)
+		.Caption( LANG(PROJECTCONFIG_LINKING_EXTRA_ARGS,"Parametros extra para el enlazado") )
+		.AddEditAsText().AddEditAsList().AddFilename().AddPath().AddMinGWDir().Run(this);
 }
 
 void mxProjectConfigWindow::OnLinkingLibrariesDirsButton(wxCommandEvent &evt) {
-	text_for_edit=linking_libraries_dirs;
-	comma_splits_for_edit=true;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-//	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
-//	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
-	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
-	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
-	PopupMenu(&menu);
+	CommonPopup(linking_libraries_dirs).CommaSplit(true).BasePath(project->path)
+		.Caption( LANG(PROJECTCONFIG_LINKING_EXTRA_PATHS,"Directorios adicionales para buscar bibliotecas") )
+		.AddEditAsText().AddEditAsList().AddPath().AddMinGWDir().Run(this);
 }
 
 void mxProjectConfigWindow::OnLinkingLibrariesButton(wxCommandEvent &evt) {
-	text_for_edit=linking_libraries;
-	comma_splits_for_edit=true;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
-	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
-	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
-	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
-	PopupMenu(&menu);
+	CommonPopup(linking_libraries).CommaSplit(true)
+		.Caption( LANG(PROJECTCONFIG_LINKING_EXTRA_LIBS,"Bibliotecas a enlazar") )
+		.AddEditAsText().AddEditAsList().Run(this);
 }
 
 void mxProjectConfigWindow::OnGeneralArgsButton(wxCommandEvent &evt) {
-	text_for_edit=general_args;
-	comma_splits_for_edit=false;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-	menu.Append(mxID_ARGS_REPLACE_FILE,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FILE,"reemplazar todo por archivo"));
-	menu.Append(mxID_ARGS_ADD_FILE,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE,"reemplazar seleccion por archivo"));
-	menu.Append(mxID_ARGS_REPLACE_DIR,LANG(GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER,"reemplazar todo por directorio"));
-	menu.Append(mxID_ARGS_ADD_DIR,LANG(GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER,"reemplazar seleccion por directorio"));
-	PopupMenu(&menu);
+	CommonPopup(general_args).CommaSplit(false).BasePath(DIR_PLUS_FILE(project->path,general_working_folder->GetValue()))
+		.Caption( LANG(PROJECTCONFIG_GENERAL_RUNNING_ARGS,"Argumentos para la ejecucion") )
+		.AddEditAsText().AddEditAsList().AddFilename().AddPath().Run(this);
 }
 
 void mxProjectConfigWindow::OnGeneralExePathButton(wxCommandEvent &evt) {
@@ -707,63 +658,6 @@ void mxProjectConfigWindow::OnGeneralExePathButton(wxCommandEvent &evt) {
 	if (wxID_OK==dlg.ShowModal())
 		general_output_file->SetValue(mxUT::Relativize(dlg.GetPath(),project->path));
 }
-
-void mxProjectConfigWindow::OnArgsReplaceFile(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetValue();
-	wxFileDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE,"Reemplazar todo por archivo:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		last_dir = wxFileName(dlg.GetPath()).GetPath();
-		wxString file = mxUT::Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
-		text_for_edit->SetValue(file);
-	}
-}
-
-void mxProjectConfigWindow::OnArgsAddFile(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
-	wxFileDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE,"Reemplazar seleccion por archivo:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		long p1,p2;
-		text_for_edit->GetSelection(&p1,&p2);
-		last_dir = wxFileName(dlg.GetPath()).GetPath();
-		wxString file = mxUT::Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
-		text_for_edit->Replace(p1,p2,file);
-	}
-}
-
-void mxProjectConfigWindow::OnArgsReplaceDir(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetValue();
-	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER,"Reemplazar todo por directorio:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		last_dir = dlg.GetPath();
-		wxString file = mxUT::Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
-		text_for_edit->SetValue(file);
-	}
-}
-
-void mxProjectConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
-	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER,"Reemplazar seleccion por directorio:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		long p1,p2;
-		text_for_edit->GetSelection(&p1,&p2);
-		last_dir = dlg.GetPath();
-		wxString file = mxUT::Relativize(dlg.GetPath(),DIR_PLUS_FILE(project->path,general_working_folder->GetValue()));
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";		
-		text_for_edit->Replace(p1,p2,file);
-	}
-}
-void mxProjectConfigWindow::OnArgsEditText(wxCommandEvent &evt) {
-	new mxLongTextEditor(this,"Parametros extra para el compilador",text_for_edit);
-}
-
-void mxProjectConfigWindow::OnArgsEditList(wxCommandEvent &evt) {
-	new mxEnumerationEditor(this,"Parametros extra para el compilador",text_for_edit,comma_splits_for_edit);
-}
-
-
 
 wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	
@@ -1064,12 +958,9 @@ void mxProjectConfigWindow::OnLibsNoExe(wxCommandEvent &evt) {
 }
 
 void mxProjectConfigWindow::OnCompilingMacrosButton (wxCommandEvent & evt) {
-	text_for_edit=compiling_macros;
-	comma_splits_for_edit=true;
-	wxMenu menu;
-	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
-	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
-	PopupMenu(&menu);	
+	CommonPopup(compiling_macros).CommaSplit(true)
+		.Caption( LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir") )
+		.AddEditAsText().AddEditAsList().Run(this);
 }
 
 void mxProjectConfigWindow::OnComboToolchainChange(wxCommandEvent &evt) {

@@ -16,6 +16,7 @@
 #include "mxEnumerationEditor.h"
 #include "mxSizers.h"
 #include "Language.h"
+#include "mxThreeDotsUtils.h"
 
 BEGIN_EVENT_TABLE(mxCompileConfigWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxCompileConfigWindow::OnOkButton)
@@ -23,13 +24,13 @@ BEGIN_EVENT_TABLE(mxCompileConfigWindow, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxCompileConfigWindow::OnCancelButton)
 	EVT_BUTTON(mxID_WORKING_FOLDER,mxCompileConfigWindow::OnButtonFolder)
 	EVT_BUTTON(mxID_COMPILE_OPTIONS_COMP_EXTRA,mxCompileConfigWindow::OnButtonCompilerOptions)
-	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxCompileConfigWindow::OnArgsReplaceDir)
+	EVT_MENU(mxID_ARGS_REPLACE_DIR,mxCompileConfigWindow::OnPopupReplaceDir)
 	EVT_MENU(mxID_ARGS_DEFAULT,mxCompileConfigWindow::OnArgsDefault)
-	EVT_MENU(mxID_ARGS_ADD_DIR,mxCompileConfigWindow::OnArgsAddDir)
-	EVT_MENU(mxID_ARGS_REPLACE_FILE,mxCompileConfigWindow::OnArgsReplaceFile)
-	EVT_MENU(mxID_ARGS_ADD_FILE,mxCompileConfigWindow::OnArgsAddFile)
-	EVT_MENU(mxID_ARGS_EDIT_LIST,mxCompileConfigWindow::OnArgsEditList)
-	EVT_MENU(mxID_ARGS_EDIT_TEXT,mxCompileConfigWindow::OnArgsEditText)
+	EVT_MENU(mxID_ARGS_ADD_DIR,mxCompileConfigWindow::OnPopupAddDir)
+	EVT_MENU(mxID_ARGS_REPLACE_FILE,mxCompileConfigWindow::OnPopupReplaceFile)
+	EVT_MENU(mxID_ARGS_ADD_FILE,mxCompileConfigWindow::OnPopupAddFile)
+	EVT_MENU(mxID_ARGS_EDIT_LIST,mxCompileConfigWindow::OnPopupEditList)
+	EVT_MENU(mxID_ARGS_EDIT_TEXT,mxCompileConfigWindow::OnPopupEditText)
 	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxCompileConfigWindow::OnArgsFromTemplate)
 	EVT_BUTTON(mxID_ARGS_BUTTON,mxCompileConfigWindow::OnArgsButton)
 	EVT_CLOSE(mxCompileConfigWindow::OnClose)
@@ -120,7 +121,9 @@ void mxCompileConfigWindow::OnHelpButton(wxCommandEvent &evt) {
 }
 
 void mxCompileConfigWindow::OnArgsButton(wxCommandEvent &evt) {
-	text_for_edit=args_ctrl;
+	m_base_dir_for_popup = DIR_PLUS_FILE(source->GetPath(true),working_folder_ctrl->GetValue());
+	m_text_ctrl_for_popup = args_ctrl;
+	m_title_for_edit_helpers = LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion");
 	wxMenu menu;
 	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
 	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
@@ -131,56 +134,25 @@ void mxCompileConfigWindow::OnArgsButton(wxCommandEvent &evt) {
 	PopupMenu(&menu);
 }
 
-void mxCompileConfigWindow::OnArgsReplaceFile(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
-	wxFileDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE,"Reemplazar todo por archivo:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		last_dir = wxFileName(dlg.GetPath()).GetPath();
-		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
-		text_for_edit->SetValue(file);
-	}
+void mxCompileConfigWindow::OnPopupReplaceFile(wxCommandEvent &evt) {
+	mxThreeDotsUtils::ReplaceAllWithFile(this,m_text_ctrl_for_popup,m_base_dir_for_popup);
 }
 
-void mxCompileConfigWindow::OnArgsAddFile(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
-	wxFileDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE,"Reemplazar seleccion por archivo:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		long p1,p2;
-		text_for_edit->GetSelection(&p1,&p2);
-		last_dir = wxFileName(dlg.GetPath()).GetPath();
-		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
-		text_for_edit->Replace(p1,p2,file);
-	}
+void mxCompileConfigWindow::OnPopupAddFile(wxCommandEvent &evt) {
+	mxThreeDotsUtils::ReplaceSelectionWithFile(this,m_text_ctrl_for_popup,m_base_dir_for_popup);
 }
 
-void mxCompileConfigWindow::OnArgsReplaceDir(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
-	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER,"Reemplazar todo por directorio:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		last_dir = dlg.GetPath();
-		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
-		text_for_edit->SetValue(file);
-	}
+void mxCompileConfigWindow::OnPopupReplaceDir(wxCommandEvent &evt) {
+	mxThreeDotsUtils::ReplaceAllWithDirectory(this,m_text_ctrl_for_popup,m_base_dir_for_popup);
+}
+
+
+void mxCompileConfigWindow::OnPopupAddDir(wxCommandEvent &evt) {
+	mxThreeDotsUtils::ReplaceSelectionWithDirectory(this,m_text_ctrl_for_popup,m_base_dir_for_popup);
 }
 
 void mxCompileConfigWindow::OnArgsDefault(wxCommandEvent &evt) {
 	compiler_options_ctrl->SetValue(config->GetDefaultCompilerOptions(source->IsCppOrJustC()));
-}
-
-void mxCompileConfigWindow::OnArgsAddDir(wxCommandEvent &evt) {
-	wxString sel = text_for_edit->GetStringSelection();
-	wxDirDialog dlg(this,LANG(GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER,"Reemplazar seleccion por directorio:"),sel.Len()?sel:last_dir);
-	if (wxID_OK==dlg.ShowModal()) {
-		long p1,p2;
-		text_for_edit->GetSelection(&p1,&p2);
-		last_dir = dlg.GetPath();
-		wxString file=dlg.GetPath();
-		if (file.Contains(' ')) file = wxString("\"")<<file<<"\"";
-		text_for_edit->Replace(p1,p2,file);
-	}
 }
 
 void mxCompileConfigWindow::OnArgsFromTemplate(wxCommandEvent &evt) {
@@ -190,7 +162,9 @@ void mxCompileConfigWindow::OnArgsFromTemplate(wxCommandEvent &evt) {
 }
 
 void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {
-	text_for_edit=compiler_options_ctrl;
+	m_base_dir_for_popup = source->GetPath(true);
+	m_text_ctrl_for_popup = compiler_options_ctrl;
+	m_title_for_edit_helpers = LANG(COMPILECONF_COMPILER_ARGS_DLG,"Parametros extra para el compilador");
 	wxMenu menu;
 	menu.Append(mxID_ARGS_EDIT_TEXT,LANG(GENERAL_POPUP_EDIT_AS_TEXT,"editar como texto"));
 	menu.Append(mxID_ARGS_EDIT_LIST,LANG(GENERAL_POPUP_EDIT_AS_LIST,"editar como lista"));
@@ -233,10 +207,10 @@ void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {
 	PopupMenu(&menu);
 }
 
-void mxCompileConfigWindow::OnArgsEditText(wxCommandEvent &evt) {
-	new mxLongTextEditor(this,LANG(COMPILECONF_COMPILER_ARGS_DLG,"Parametros extra para el compilador"),text_for_edit);
+void mxCompileConfigWindow::OnPopupEditText(wxCommandEvent &evt) {
+	mxLongTextEditor(this,m_title_for_edit_helpers,m_text_ctrl_for_popup);
 }
 
-void mxCompileConfigWindow::OnArgsEditList(wxCommandEvent &evt) {
-	new mxEnumerationEditor(this,LANG(COMPILECONF_COMPILER_ARGS_DLG,"Parametros extra para el compilador"),text_for_edit,false);
+void mxCompileConfigWindow::OnPopupEditList(wxCommandEvent &evt) {
+	mxEnumerationEditor(this,m_title_for_edit_helpers,m_text_ctrl_for_popup,false);
 }

@@ -16,7 +16,6 @@ BEGIN_EVENT_TABLE(mxExtraStepWindow, wxDialog)
 	EVT_BUTTON(mxID_EXTRA_STEP_COMMAND,mxExtraStepWindow::OnCommandButton)
 	EVT_BUTTON(mxID_EXTRA_STEP_OUTPUT,mxExtraStepWindow::OnOutputButton)
 	EVT_BUTTON(mxID_EXTRA_STEP_DEPS,mxExtraStepWindow::OnDepsButton)
-	EVT_MENU_RANGE(mxID_POPUPS_INSERT_FIRST, mxID_POPUPS_INSERT_LAST, mxExtraStepWindow::OnPopup)
 	EVT_CLOSE(mxExtraStepWindow::OnClose)
 END_EVENT_TABLE()
 
@@ -118,18 +117,24 @@ void mxExtraStepWindow::OnHelpButton(wxCommandEvent &evt) {
 	mxHelpWindow::ShowHelp("compile_extra_steps.html",this);
 }
 
-void mxExtraStepWindow::OnPopup(wxCommandEvent &evt) {
-	mxUT::ProcessTextPopup(evt.GetId());
-}
-
 void mxExtraStepWindow::OnCommandButton(wxCommandEvent &evt) {
-	mxUT::ShowTextPopUp(this,LANG(EXTRASTEP_COMMAND,"Comando"),command,"TEXT|LIST|FILE|DIR|DEPS|OUTPUT|MINGW_DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
+	CommonPopup(command).Caption(LANG(EXTRASTEP_COMMAND,"Comando"))
+		.AddEditAsText().AddEditAsList().AddFilename().AddPath()
+		.AddDeps().AddOutFile().AddMinGWDir()
+		.AddProjectBin().AddProjectDir().AddTempDir()
+		.BasePath(project->path).Run(this);
 }
 
 void mxExtraStepWindow::OnDepsButton(wxCommandEvent &evt) {
-	mxUT::ShowTextPopUp(this,LANG(EXTRASTEP_DEPS,"Dependencias"),deps,"TEXT|LIST|FILE|DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
+	CommonPopup(deps).Caption(LANG(EXTRASTEP_DEPS,"Dependencias"))
+		.AddEditAsText().AddEditAsList().AddFilename().AddPath()
+		.AddProjectBin().AddProjectDir().AddTempDir()
+		.BasePath(project->path).Run(this);
 }
 
 void mxExtraStepWindow::OnOutputButton(wxCommandEvent &evt) {
-	mxUT::ShowTextPopUp(this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),output,"TEXT|LIST|FILE|DIR|PROJECT_PATH|PROJECT_BIN|TEMP_DIR");
+	CommonPopup(output).Caption(LANG(EXTRASTEP_OUTPUT,"Archivo de salida"))
+		.AddEditAsText().AddEditAsList().AddFilename().AddPath()
+		.AddProjectBin().AddProjectDir().AddTempDir()
+		.BasePath(project->path).Run(this);
 }

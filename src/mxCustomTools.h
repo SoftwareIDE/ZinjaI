@@ -1,6 +1,7 @@
 #ifndef MXCUSTOMTOOLS_H
 #define MXCUSTOMTOOLS_H
 #include <wx/dialog.h>
+#include "mxCommonPopup.h"
 
 class CustomToolsPack;
 
@@ -9,6 +10,7 @@ class wxTextCtrl;
 class wxCheckBox;
 class mxCustomTools : public wxDialog {
 private:
+	_use_common_popup;
 	wxComboBox *the_combo, *pre_action_ctrl, *post_action_ctrl, *output_mode_ctrl;
 	wxTextCtrl *command_ctrl, *name_ctrl, *workdir_ctrl;
 	wxCheckBox *ontoolbar_ctrl, *async_exec_ctrl;
@@ -26,7 +28,6 @@ public:
 	void OnButtonHelp(wxCommandEvent &event);
 	void OnCommandPopup(wxCommandEvent &event);
 	void OnWorkdirPopup(wxCommandEvent &event);
-	void OnPopup(wxCommandEvent &evt);
 	void OnComboChange(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);
 	DECLARE_EVENT_TABLE();

@@ -48,6 +48,8 @@
 *    - mxGuiSourceFileName.cpp
 *    - mxGuiHeaderFileName.h
 *    - mxGuiClassName
+*  - Use "st" prefix for static helper functions
+*    - stStaticFunction
 
 * 
 * @subsection braces Braces

@@ -77,7 +77,6 @@ void mxLongTextEditor::OnClose(wxCloseEvent &evt) {
 	if (text) text->SetFocus();
 	if (combo) combo->SetFocus();
 	EndModal(0);
-	Destroy();
 }
 
 

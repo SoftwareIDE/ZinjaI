@@ -1,5 +1,5 @@
 // !Z! Name: OpenGL - Windows
-// !Z! Options: -O0 -DFREEGLUT_STATIC -lfreeglut_static -lglu32 -lopengl32 -lwinmm -lgdi32 -L${MINGW_DIR}\OpenGl\lib -I${MINGW_DIR}\OpenGl\include
+// !Z! Options: ${DEFAULT} -DFREEGLUT_STATIC -lfreeglut_static -lglu32 -lopengl32 -lwinmm -lgdi32 -L${MINGW_DIR}\OpenGl\lib -I${MINGW_DIR}\OpenGl\include
 // !Z! Includes: <GL/glut.h> <GL/gl.h> <GL/glu.h>
 
 #include <GL/glut.h>

@@ -17,11 +17,12 @@ private:
 	wxComboBox *combo_args;
 	wxComboBox *combo_work;
 	wxCheckBox *check;
-	static wxString last_dir;
+//	static wxString last_dir;
+	wxString m_base_path;
 public:
 	static wxString last_workdir;
 	static wxString last_arguments;
-	mxArgumentsDialog(wxWindow *parent, const wxString &def_args, const wxString &def_dir);
+	mxArgumentsDialog(wxWindow *parent, const wxString &base_path, const wxString &def_args, const wxString &def_dir);
 	void OnYesButton(wxCommandEvent &evt);
 	void OnNoButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
