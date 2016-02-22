@@ -256,8 +256,8 @@ wxString Toolchain::FixArgument (bool cpp, wxString arg) {
 	if (arg=="-Og" && !CheckVersion(cpp,4,8)) return "-O0";
 	if (arg=="-std=c++11" && !CheckVersion(cpp,4,7)) return "-std=c++0x";
 	if (arg=="-std=gnu++11" && !CheckVersion(cpp,4,7)) return "-std=gnu++0x";
-	if (arg=="-std=c++14" && !CheckVersion(cpp,4,8)) return "-std=c++1y";
-	if (arg=="-std=gnu++14" && !CheckVersion(cpp,4,8)) return "-std=gnu++1y";
+	if (arg=="-std=c++14" && !CheckVersion(cpp,4,9)) return "-std=c++1y";
+	if (arg=="-std=gnu++14" && !CheckVersion(cpp,4,9)) return "-std=gnu++1y";
 	return arg;
 }
 
