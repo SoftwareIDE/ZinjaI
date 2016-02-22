@@ -1,10 +1,9 @@
 #include <wx/filedlg.h>
-#include "mxThreeDotsUtils.h"
-#include <forward_list>
-#include "mxUtils.h"
 #include <wx/textctrl.h>
 #include <wx/combobox.h>
 #include <wx/dirdlg.h>
+#include "mxThreeDotsUtils.h"
+#include "mxUtils.h"
 
 
 static void stGetPathAndName(wxString &def_path, wxString &def_name, const wxFileName &fname){

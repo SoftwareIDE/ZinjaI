@@ -4,6 +4,7 @@
 #include <wx/string.h>
 #include "ids.h"
 #include "Language.h"
+#include "Cpp11.h"
 
 class mxCommonPopup {
 	bool m_registered_in_event_handler;

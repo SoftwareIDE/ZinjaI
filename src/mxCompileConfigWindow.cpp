@@ -64,7 +64,7 @@ mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* paren
 	last_dir=source->working_folder.GetFullPath();
 	
 	args_ctrl->SetValue(source->exec_args);
-	compiler_options_ctrl->SetValue(source->GetCompilerOptions());
+	compiler_options_ctrl->SetValue(source->GetCompilerOptions(false));
 	always_ask_args_ctrl->SetValue(source->config_running.always_ask_args);
 	wait_for_key_ctrl->SetValue(source->config_running.wait_for_key);
 
