@@ -6,7 +6,8 @@
 <!--<I>Note 1: A more detailed and English changelog can be found in the <A href="http://sourceforge.net/p/zinjai/code/ci/master/log/?path=" target="_blank">git repository's history</A>.</I><BR><BR>
 <I>Nota 2: Nuevo código para categorizar los cambios: New=nueva funcionalidad, Imp=mejora sobre una funcionalidad existente, Fix=corrección de un bug</I><BR><UL>-->
 
-</UL><BR><B>Release 20160221</B><BR><UL>
+</UL><BR><B>Release 20160222</B><BR><UL>
+	<LI>New: La instalación de un complemento ahora puede modificar ciertas preferencias (por ejemplo: definir una plantilla por defecto, agregar una herramienta personalizada, o activar un nuevo índice de autocompletado).</LI>
 	<LI>New: Al abrir un fuente fuera de proyecto, se utiliza una plantilla para configurar las opciones de compilación. Las plantillas (una por defecto para fuentes C++ y otra para fuentes C) se configuran desde el cuadro de preferencias.</LI>
 	<LI>New: Se agregó un nuevo item en el menú ayuda para buscar y ejecutar comandos y atajos por palabras clave.</LI>
 	<LI>New: Se agregó un nuevo panel que permite registrar y recorrer un historial de trazados inversos (se accede desde el menú contextual del Panel de Trazado Inverso).</LI>
@@ -17,6 +18,7 @@
 	<LI>Imp: Se corrigieron varios errores en los menúes contextuales que se despliegan con los botones "..." luego de un cuadro de texto en muchos diálogos de configuracion.</LI>	
 	<LI>Imp: Se agregaron tres esquemas de colores nuevos para el coloreado de sintaxis, ports realizados por Jerónimo Navarro de los temas Apprentice (https://github.com/romainl/Apprentice/), gruvbox (https://github.com/morhetz/gruvbox) y one-light-sintax (https://github.com/atom/one-light-syntax), y se actualizaron los esquemas Solarized y Zenburn.</LI>	
 	<LI>Imp: El archivo de proyecto guarda la configuración de las ejecuciones de valgrind (archivo de supresiones y argumentos adicionales), y se puede usar ${PROJECT_PATH} para indicar la ruta del archivo de suppressiones.</LI>
+	<LI>Fix: Corregido el reemplazo de argumentos de plantillas para adaptarlos a versiones viejas de GCC (por ejemplo, cambiar --std=c++14 por --std=c++1y en versiones 4.8 o anterior).</LI>
 	<LI>Fix: Corregidos algunos errores en la visualización de botones con íconos y textos, mayormente visibles en temas de escritorio con textos claros sobre fondos oscuros.</LI>
 	<LI>Fix: La barra de herramientas especial para operar con los resultados de las comparaciones con diff ya no permanece visible al reiniciar ZinjaI.</LI>
 	<LI>Fix: Se corrigió el comportamiento del botón "..." para elegir el directorio de trabajo en el cuadro de diálogo de argumentos para la ejecución.</LI>

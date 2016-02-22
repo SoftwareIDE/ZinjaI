@@ -3607,7 +3607,7 @@ void ProjectManager::SetEnvironment (bool set, bool for_running) {
 	wxSetEnv("Z_PROJECT_BIN",executable_name);
 	wxSetEnv("Z_TEMP_DIR",temp_folder);
 	wxSetEnv("Z_ARGS",active_configuration->args);
-	
+
 	static HashStringString orig;
 	if (for_running) {
 		if (set) {

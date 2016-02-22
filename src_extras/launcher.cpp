@@ -48,8 +48,8 @@ void FixUbuntuMenuTweaks() {
 }
 
 void FixLocaleSettingsForScintilla() {
-	setenv("LANG","",1); // workaround for the problem with ansi-wxstyledtext and utf8 locale
-	setenv("LC_CTYPE","",1); // workaround for the problem with ansi-wxstyledtext and utf8 locale
+	setenv("LANG","C",1); // workaround for the problem with ansi-wxstyledtext and utf8 locale
+	setenv("LC_CTYPE","C",1); // workaround for the problem with ansi-wxstyledtext and utf8 locale
 }
 
 void FixMissingLibPNG12(string zinjai_path) {

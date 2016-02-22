@@ -74,12 +74,12 @@ elif [ "$1" = "update" ]; then
   scp $2/zinjai/colours/*				zinjai/colours/
   scp $2/zinjai/guihelp/*				zinjai/guihelp/
   scp $2/zinjai/autocomp/*				zinjai/autocomp/
-  scp -r $2/zinjai/templates-lnx/*			zinjai/templates/
+  scp -r $2/zinjai/templates/*				zinjai/templates/
 
-  scp $2/zinjai/graphviz/*.cpp				zinjai/graphviz/
-  scp $2/zinjai/graphviz/readme.txt			zinjai/graphviz/
-  scp $2/zinjai/graphviz/Makefile			zinjai/graphviz/
-  scp $2/zinjai/graphviz/gprof2dot/*			zinjai/graphviz/gprof2dot
+#  scp $2/zinjai/graphviz/*.cpp				zinjai/graphviz/
+#  scp $2/zinjai/graphviz/readme.txt			zinjai/graphviz/
+#  scp $2/zinjai/graphviz/Makefile			zinjai/graphviz/
+#  scp $2/zinjai/graphviz/gprof2dot/*			zinjai/graphviz/gprof2dot
   
   scp $2/zinjai/lsdeps/*				zinjai/lsdeps/
 
