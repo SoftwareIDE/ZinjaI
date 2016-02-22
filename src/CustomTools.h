@@ -45,6 +45,7 @@ public:
 	OneCustomTool &operator[](int i) { return tools[i]; }
 	OneCustomTool &GetTool(int i) { return tools[i]; }
 	int GetCount() { return cant; }
+	int GetFreeSpot(); ///< find an unused custom tool (to add one from complements installation)
 	void Run(int i); ///< execute tool's pre action and launchs tool's execution
 	~CustomToolsPack();
 };

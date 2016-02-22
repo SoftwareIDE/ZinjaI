@@ -222,3 +222,9 @@ void mxCustomToolProcess::SetOutputView (mxOutputView * _output_view) {
 	Redirect(); output_view=_output_view;
 }
 
+int CustomToolsPack::GetFreeSpot ( ) {
+	for(int i=0;i<cant;i++)
+		if (tools[i].command.IsEmpty()) return i;
+	return -1;
+}
+

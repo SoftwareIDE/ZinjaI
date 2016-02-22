@@ -137,7 +137,7 @@ void ConfigManager::DoInitialChecks() {
 }
 	
 bool ConfigManager::Load() {
-	wxTextFile fil(filename);
+	wxTextFile fil(m_filename);
 	if (!fil.Exists()) return false;
 	fil.Open();
 	wxString section, key, value;
@@ -279,6 +279,7 @@ bool ConfigManager::Load() {
 				else CFG_BOOL_READ_DN("beautify_compiler_errors",Init.beautify_compiler_errors);
 				else CFG_BOOL_READ_DN("fullpath_on_project_tree",Init.fullpath_on_project_tree);
 				else CFG_GENERIC_READ_DN("colour_theme",Init.colour_theme);
+				else CFG_GENERIC_READ_DN("complements_timestamp",Init.complements_timestamp);
 				
 			} else if (section=="Files") {
 				CFG_GENERIC_READ_DN("toolchain",Files.toolchain);
@@ -435,7 +436,7 @@ bool ConfigManager::Load() {
 }
 	
 bool ConfigManager::Save(){
-	wxTextFile fil(filename);
+	wxTextFile fil(m_filename);
 	if (fil.Exists())
 		fil.Open();
 	else
@@ -495,6 +496,7 @@ bool ConfigManager::Save(){
 	CFG_BOOL_WRITE_DN("use_cache_for_subcommands",Init.use_cache_for_subcommands);
 	CFG_BOOL_WRITE_DN("beautify_compiler_errors",Init.beautify_compiler_errors);
 	CFG_GENERIC_WRITE_DN("colour_theme",Init.colour_theme);
+	CFG_GENERIC_WRITE_DN("complements_timestamp",Init.complements_timestamp);
 	fil.AddLine("");
 
 	fil.AddLine("[Debug]");
@@ -644,9 +646,9 @@ void ConfigManager::LoadDefaults(){
 	if (!wxFileName::DirExists(config_dir))
 		config_dir = DIR_PLUS_FILE(wxFileName::GetHomeDir(),_if_win32("zinjai",".zinjai"));
 	EnsurePathExists(config_dir);
-//	filename = DIR_PLUS_FILE(zinjai_dir,"config.here");
-//	if (!wxFileName::FileExists(filename)) 
-	filename = DIR_PLUS_FILE(config_dir,"config");
+//	m_filename = DIR_PLUS_FILE(zinjai_dir,"config.here");
+//	if (!wxFileName::FileExists(m_filename)) 
+	m_filename = DIR_PLUS_FILE(config_dir,"config");
 	
 	// establecer valores predeterminados para todas las estructuras
 	Files.temp_dir=DIR_PLUS_FILE(config_dir,"tmp");;
@@ -953,11 +955,11 @@ void ConfigManager::RecalcStuff ( ) {
 	if (temp_dir.EndsWith("\\")||temp_dir.EndsWith("/")) temp_dir.RemoveLast();
 	// poner el idioma del compilador en castellano
 	if (config->Init.lang_es) {
-		wxSetEnv("LANG","es_ES");
-		wxSetEnv("LANGUAGE","es_ES");
+		wxSetEnv("LANG","es_ES.ISO8859-1");
+//		wxSetEnv("LANGUAGE","es_ES");
 	} else {
-		wxSetEnv("LANG","en_US");
-		wxSetEnv("LANGUAGE","en_US");
+		wxSetEnv("LANG","en_US.ISO8859-1");
+//		wxSetEnv("LANGUAGE","en_US");
 	}
 }
 
@@ -975,6 +977,9 @@ void ConfigManager::FinishiLoading ( ) {
 	color_theme::Initialize();
 	if (Init.colour_theme.IsEmpty()) g_ctheme->Load(DIR_PLUS_FILE(config_dir,"colours.zcs"));
 	else g_ctheme->Load(mxUT::WichOne(Init.colour_theme,"colours",true));
+	
+	// apply complement's patches to current config
+	ApplyPatchsFromComplements();
 	
 	// check if extern tools are present and set some paths
 	Toolchain::LoadToolchains();
@@ -1080,5 +1085,101 @@ wxString ConfigManager::GetTryToInstallCheckboxMessage ( ) {
 		return LANG(CONFIG_APTGET_BUILD_ESSENTIAL,"Intentar instalar ahora");
 #endif
 	return "";
+}
+
+/**
+* @brife Applies some changes to current configuration, changes that came from 
+*        a complement's installation
+*
+* Read the other overload of ApplyPatchsFromComplements first. That one finds out
+* wich files to parse, and calls this one for each one.
+*
+* The file can contains the following lines:
+*   - To change default template for opening/creating simple programs to template xxxxx:
+*      - set_default_template=xxxxx
+*      - set_cpp_template=xxxxx
+*      - set_c_template=xxxxx
+*   - To activate a new autocompletion index xxxxx:
+*      - add_to_autocomp_indexes=xxxxx
+*   - To add a new templato for automatic expression improvement while debugging:
+*       - add_inspection_improving_template=xxxxx
+*   - To add a nue general custom tool:
+*       - add_custom_tool
+*       - custom_tool_xxxxx=yyyyy 
+*       - custom_tool_xxxxx=yyyyy
+*       - custom_tool_xxxxx=yyyyy
+*       - ...
+*       - Note: the first line selects a free spot for the tool, the following
+*         lines will process lines "xxxxx_z=yyyyy" the same way the real config 
+*         file does where z in the added "_z" is the number of the free spot.
+**/
+
+void ConfigManager::ApplyPatchsFromComplements (wxString filename) {
+	wxTextFile fil(filename); if (!fil.Exists()) return; fil.Open();
+	int custom_tool_index = -1;
+	for ( wxString str = fil.GetFirstLine(); !fil.Eof(); str = fil.GetNextLine() ) {
+		if (str.StartsWith("set_default_template=")) {
+			config->Files.default_template = str.AfterFirst('=');
+		} else if (str.StartsWith("set_cpp_template=")) {
+			config->Files.cpp_template = str.AfterFirst('=');
+		} else if (str.StartsWith("set_c_template=")) {
+			config->Files.c_template = str.AfterFirst('=');
+		} else if (str.StartsWith("add_to_autocomp_indexes=")) {
+			config->Help.autocomp_indexes+=wxString(",")+str.AfterFirst('=');
+		} else if (str.StartsWith("add_inspection_improving_template=")) {
+			wxString value = str.AfterFirst('=');
+			Debug.inspection_improving_template_from.Add(value.BeforeFirst('|'));
+			Debug.inspection_improving_template_to.Add(value.AfterFirst('|'));
+		} else if (str=="add_custom_tool") {
+			custom_tool_index = custom_tools.GetFreeSpot();
+		} else if (str.StartsWith("custom_tool_")) {
+			str = str.Mid(wxString("custom_tool_").Len());
+			wxString key = str.BeforeFirst('='), value = str.AfterFirst('=');
+			if (custom_tool_index!=-1)
+				custom_tools.ParseConfigLine(key+(wxString("_")<<custom_tool_index),value);
+		}
+	}
+}
+
+static wxString stFill(int value, unsigned int len) {
+	wxString s;
+	s<<value;
+	while (s.Len()<len)
+		s = wxString("0")+s;
+	return s;
+}
+
+static wxString stDateTime2String(const wxDateTime &d) {
+	return wxString()
+		<<stFill(d.GetYear(),4)
+		<<stFill(d.GetMonth(),2)
+		<<stFill(d.GetDay(),2)
+		<<stFill(d.GetHour(),2)
+		<<stFill(d.GetMinute(),2)
+		<<stFill(d.GetSecond(),2)
+		;
+}
+
+/**
+* @brife Applies some changes to current configuration, changes that came from complements
+*
+* A complement can add a file to zinjai/complements/config with a few instructions
+* to modify zinjai's configuration. The first time zinjai runs after the complement's
+* installation will apply those changes. Te mechanism to avoid applying them more than
+* once is simply to compare config file date with dates from files in 
+* zinjai/complements/config and process only files that are newer than config.
+*
+* See the other overload of ApplyPatchsFromComplements for format details
+**/
+void ConfigManager::ApplyPatchsFromComplements ( ) {
+	wxString dir = DIR_PLUS_FILE(DIR_PLUS_FILE(config->zinjai_dir,"complements"),"config");
+	wxArrayString files;
+	if (!mxUT::GetFilesFromDir(files,dir,true)) return;
+	for(unsigned int i=0;i<files.Count();i++) { 
+		wxString fullname = DIR_PLUS_FILE(dir,files[i]);
+		if (stDateTime2String(wxFileName(fullname).GetModificationTime())>Init.complements_timestamp)
+			ApplyPatchsFromComplements(fullname);
+	}
+	Init.complements_timestamp = stDateTime2String(wxDateTime::Now());
 }
 

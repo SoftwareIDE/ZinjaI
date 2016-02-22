@@ -157,6 +157,7 @@ struct cfgInit {
 	wxString colour_theme; ///< archivo de donde tomar el perfil de colores (si es "" se busca en .zinjai/colours.zcs, sino en zinjai/colours)
 	bool beautify_compiler_errors; ///< trata de arreglar los horribles mensajes de error del compilador cuando se usan templates (como todo stl) o cosas estándar de implemetación "rebuscada" (como strings)
 	bool use_cache_for_subcommands; ///< activa el uso de cache en mxUT::ExecComas, para no ejecutar a cada rato el mismo subcomando
+	wxString complements_timestamp; ///< last time we applied complements patchs to configuration, to avoid doing twice
 };
 
 //! Elementos de la configuración relacionados a rutas de archivos y directorios
@@ -209,7 +210,7 @@ struct cfgCols {
 **/
 class ConfigManager {
 public:
-	wxString filename; ///< zinjai_dir+"/config.here" if exists, home_dir+"/config" by default
+	wxString m_filename; ///< zinjai_dir+"/config.here" if exists, home_dir+"/config" by default
 	wxString config_dir; ///< path for user's settings (zinjai_dir+"/config.here" if exists, or ~/.zinjai by default)
 	wxString zinjai_dir; ///< zinjai's installation path
 	wxString zinjai_bin_dir; ///< zinjai's own binaries path (zinjai_dir+"/bin")
@@ -233,6 +234,8 @@ private:
 	void DoInitialChecks();
 	bool Load();
 	void LoadDefaults();
+	void ApplyPatchsFromComplements();
+	void ApplyPatchsFromComplements(wxString filename);
 	void AddInspectionImprovingTemplate(const wxString &from, const wxString &to, bool replace=false);
 	void SetDefaultInspectionsImprovingTemplates(int version);
 
