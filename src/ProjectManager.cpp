@@ -259,12 +259,13 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_GENERIC_READ_DN("compiling_extra",active_configuration->compiling_extra);
 				else CFG_GENERIC_READ_DN("headers_dirs",active_configuration->headers_dirs);
 				else CFG_INT_READ_DN("warnings_level",active_configuration->warnings_level);
+				else CFG_BOOL_READ_DN("warnings_as_errors",active_configuration->warnings_as_errors);
 				else CFG_BOOL_READ_DN("pedantic_errors",active_configuration->pedantic_errors);
 				else CFG_GENERIC_READ_DN("std_c",active_configuration->std_c);
 				else CFG_GENERIC_READ_DN("std_cpp",active_configuration->std_cpp);
 				else CFG_INT_READ_DN("debug_level",active_configuration->debug_level);
 				else CFG_INT_READ_DN("optimization_level",active_configuration->optimization_level);
-				else CFG_INT_READ_DN("enable_lto",active_configuration->enable_lto);
+				else CFG_BOOL_READ_DN("enable_lto",active_configuration->enable_lto);
 				else CFG_GENERIC_READ_DN("linking_extra",active_configuration->linking_extra);
 				else CFG_GENERIC_READ_DN("libraries_dirs",active_configuration->libraries_dirs);
 				else CFG_GENERIC_READ_DN("libraries",active_configuration->libraries);
@@ -786,12 +787,13 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("compiling_extra",configurations[i]->compiling_extra);
 		CFG_GENERIC_WRITE_DN("macros",configurations[i]->macros);
 		CFG_GENERIC_WRITE_DN("warnings_level",configurations[i]->warnings_level);
+		CFG_BOOL_WRITE_DN("warnings_as_errors",configurations[i]->warnings_as_errors);
 		CFG_BOOL_WRITE_DN("pedantic_errors",configurations[i]->pedantic_errors);
 		CFG_GENERIC_WRITE_DN("std_c",configurations[i]->std_c);
 		CFG_GENERIC_WRITE_DN("std_cpp",configurations[i]->std_cpp);
 		CFG_GENERIC_WRITE_DN("debug_level",configurations[i]->debug_level);
 		CFG_GENERIC_WRITE_DN("optimization_level",configurations[i]->optimization_level);
-		CFG_GENERIC_WRITE_DN("enable_lto",configurations[i]->enable_lto);
+		CFG_BOOL_WRITE_DN("enable_lto",configurations[i]->enable_lto);
 		CFG_GENERIC_WRITE_DN("headers_dirs",configurations[i]->headers_dirs);
 		CFG_GENERIC_WRITE_DN("linking_extra",configurations[i]->linking_extra);
 		CFG_GENERIC_WRITE_DN("libraries_dirs",configurations[i]->libraries_dirs);
@@ -2089,8 +2091,12 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	wxString co_warnings;
 	if (active_configuration->warnings_level==0) 
 		co_warnings<<"-w";
-	else if (active_configuration->debug_level==2) 
+	else if (active_configuration->warnings_level==2) 
 		co_warnings<<"-Wall";
+	else if (active_configuration->warnings_level==3) 
+		co_warnings<<"-Wall -Wextra";
+	if (active_configuration->warnings_as_errors)
+		co_warnings<<" -Werror";
 	compiling_options<<co_warnings<<" ";
 	
 	// optimization_level
@@ -2884,7 +2890,7 @@ int ProjectManager::GetRequiredVersion() {
 	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,
 		 have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,
 		 have_env_vars=false,have_breakpoint_annotation=false,env_vars_autoref=false,exe_use_temp=false,
-		 copy_debug_symbols=false, use_ofast=false, exec_wrapper=false, by_src_args=false, use_lto=false;
+		 copy_debug_symbols=false, use_ofast=false, exec_wrapper=false, by_src_args=false, use_lto_or_werror=false;
 	
 	// breakpoint options
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
@@ -2895,7 +2901,7 @@ int ProjectManager::GetRequiredVersion() {
 	
 	// compiling and running options
 	for (int i=0;i<configurations_count;i++) {
-		if (configurations[i]->enable_lto) use_lto=true;
+		if (configurations[i]->enable_lto || configurations[i]->warnings_as_errors || configurations[i]->warnings_level==3) use_lto_or_werror=true;
 		if (configurations[i]->exec_method==EMETHOD_WRAPPER) exec_wrapper=true;
 		if (configurations[i]->strip_executable==DBSACTION_COPY) copy_debug_symbols=true;
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
@@ -2935,7 +2941,7 @@ int ProjectManager::GetRequiredVersion() {
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	
 	version_required=0;
-	if (use_lto) version_required=20160225;
+	if (use_lto_or_werror) version_required=20160225;
 	else if (inspection_improving_template_to.GetCount()) version_required=20150227;
 	else if (by_src_args) version_required=20150220;
 	else if (exec_wrapper) version_required=20141218;

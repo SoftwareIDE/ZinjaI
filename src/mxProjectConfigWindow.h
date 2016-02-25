@@ -49,6 +49,7 @@ class mxProjectConfigWindow : public wxDialog {
 	wxTextCtrl *compiling_extra_options;
 	wxTextCtrl *compiling_headers_dirs;
 	wxComboBox *compiling_warnings_level;
+	wxCheckBox *compiling_warnings_as_errors;
 	wxCheckBox *compiling_pedantic;
 	wxComboBox *compiling_debug_level;
 	wxCheckBox *compiling_enable_lto;

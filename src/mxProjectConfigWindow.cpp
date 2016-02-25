@@ -173,6 +173,13 @@ wxPanel *mxProjectConfigWindow::CreateLinkingPanel (wxNotebook *notebook) {
 		LANG(PROJECTCONFIG_DEBUG_INFO,"Información para depuración"),strip_array,configuration->strip_executable);
 	wx_noexe.Add(linking_strip_executable);
 	wx_extern.Add(linking_strip_executable);
+	
+	
+	compiling_enable_lto = mxUT::AddCheckBox(sizer,panel,
+											 LANG(PROJECTCONFIG_LTO,"Habilitar optimizaciones durante el enlazado (LTO)"),
+											 configuration->enable_lto);
+	wx_extern.Add(compiling_enable_lto);
+	wx_noexe.Add(compiling_enable_lto);
 
 	linking_console_program = mxUT::AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM,"Es un programa de consola"),configuration->console_program);
@@ -303,13 +310,25 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	wx_extern.Add(compiling_std_c,true);
 	wx_extern.Add(compiling_std_cpp,true);
 	
+	wxBoxSizer *warnings_sizer = new wxBoxSizer(wxHORIZONTAL);
+	warnings_sizer->Add(new wxStaticText(panel,wxID_ANY,wxString(LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"))+": "),sizers->Center);
 	wxArrayString a_warnings;
 	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_NONE,"Ninguna"));
 	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_DEFAULT,"Predeterminadas"));
 	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_ALL,"Todas"));
-	compiling_warnings_level = mxUT::AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"),a_warnings, configuration->warnings_level);
+	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_ALL,"Extra"));
+	compiling_warnings_level = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,a_warnings);
+	compiling_warnings_level->SetSelection(configuration->warnings_level);
+	warnings_sizer->Add(compiling_warnings_level,sizers->Exp1);
 	wx_extern.Add(compiling_warnings_level,true);
-
+	compiling_warnings_as_errors = new wxCheckBox(panel,wxID_ANY,LANG(PROJECTCONFIG_WARNINGS_AS_ERRORS,"como errores")); 
+	compiling_warnings_as_errors->SetValue(configuration->warnings_as_errors);
+	warnings_sizer->AddSpacer(10);
+	warnings_sizer->Add(compiling_warnings_as_errors,sizers->Center);
+	wx_extern.Add(compiling_warnings_as_errors,true);
+	sizer->Add(warnings_sizer,sizers->BA5_Exp0);
+	
+	
 	wxArrayString a_debug;
 	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_NONE,"Ninguna"));
 	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_1,"Nivel 1"));
@@ -318,8 +337,6 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	compiling_debug_level = mxUT::AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"),a_debug, configuration->debug_level);
 	wx_extern.Add(compiling_debug_level,true);
 	
-	wxBoxSizer *optimizer_sizer = new wxBoxSizer(wxHORIZONTAL);
-	optimizer_sizer->Add(new wxStaticText(panel,wxID_ANY,wxString(LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"))+": "),sizers->Center);
 	wxArrayString a_optimiz;
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_NONE,"Ninguna"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_1,"Nivel 1"));
@@ -328,16 +345,8 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_SIZE,"Reducir Tamaño"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_DEBUG,"Depuración"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_FAST,"Velocidad"));
-	compiling_optimization_level = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,a_optimiz);
-	compiling_optimization_level->SetSelection(configuration->optimization_level);
-	optimizer_sizer->Add(compiling_optimization_level,sizers->Exp1);
+	compiling_optimization_level = mxUT::AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"),a_optimiz, configuration->optimization_level);
 	wx_extern.Add(compiling_optimization_level,true);
-	compiling_enable_lto = new wxCheckBox(panel,wxID_ANY,LANG(PROJECTCONFIG_LTO,"LTO")); 
-	compiling_enable_lto->SetValue(configuration->enable_lto);
-	optimizer_sizer->AddSpacer(10);
-	optimizer_sizer->Add(compiling_enable_lto,sizers->Center);
-	wx_extern.Add(compiling_enable_lto,true);
-	sizer->Add(optimizer_sizer,sizers->BA5_Exp0);
 	
 	compiling_temp_folder = mxUT::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_TEMP_FOLDER,"Directorio para archivos temporales e intermedios"),configuration->temp_folder,mxID_PROJECT_CONFIG_TEMP_DIR);
@@ -520,6 +529,7 @@ void mxProjectConfigWindow::LoadValues() {
 	if (configuration->std_cpp.Len() && compiling_std_cpp->FindString(configuration->std_cpp)!=wxNOT_FOUND)
 		compiling_std_cpp->SetValue(configuration->std_cpp); else compiling_std_cpp->SetSelection(0);
 	compiling_warnings_level->SetSelection(configuration->warnings_level);
+	compiling_warnings_as_errors->SetValue(configuration->warnings_as_errors);
 	compiling_debug_level->SetSelection(configuration->debug_level);
 	compiling_optimization_level->SetSelection(configuration->optimization_level);
 	compiling_enable_lto->SetValue(configuration->enable_lto);
@@ -611,6 +621,7 @@ bool mxProjectConfigWindow::SaveValues() {
 	configuration->std_cpp=compiling_std_cpp->GetValue();
 	if (compiling_std_cpp->GetSelection()==0) configuration->std_cpp="";
 	configuration->warnings_level=compiling_warnings_level->GetSelection();
+	configuration->warnings_as_errors=compiling_warnings_as_errors->GetValue();
 	configuration->debug_level=compiling_debug_level->GetSelection();
 	configuration->optimization_level=compiling_optimization_level->GetSelection();
 	configuration->enable_lto=compiling_enable_lto->GetValue();
