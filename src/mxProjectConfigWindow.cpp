@@ -318,6 +318,8 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	compiling_debug_level = mxUT::AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"),a_debug, configuration->debug_level);
 	wx_extern.Add(compiling_debug_level,true);
 	
+	wxBoxSizer *optimizer_sizer = new wxBoxSizer(wxHORIZONTAL);
+	optimizer_sizer->Add(new wxStaticText(panel,wxID_ANY,wxString(LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"))+": "),sizers->Center);
 	wxArrayString a_optimiz;
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_NONE,"Ninguna"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_1,"Nivel 1"));
@@ -326,8 +328,16 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_SIZE,"Reducir Tamaño"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_DEBUG,"Depuración"));
 	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_FAST,"Velocidad"));
-	compiling_optimization_level = mxUT::AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"),a_optimiz, configuration->optimization_level);
+	compiling_optimization_level = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,a_optimiz);
+	compiling_optimization_level->SetSelection(configuration->optimization_level);
+	optimizer_sizer->Add(compiling_optimization_level,sizers->Exp1);
 	wx_extern.Add(compiling_optimization_level,true);
+	compiling_enable_lto = new wxCheckBox(panel,wxID_ANY,LANG(PROJECTCONFIG_LTO,"LTO")); 
+	compiling_enable_lto->SetValue(configuration->enable_lto);
+	optimizer_sizer->AddSpacer(10);
+	optimizer_sizer->Add(compiling_enable_lto,sizers->Center);
+	wx_extern.Add(compiling_enable_lto,true);
+	sizer->Add(optimizer_sizer,sizers->BA5_Exp0);
 	
 	compiling_temp_folder = mxUT::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_TEMP_FOLDER,"Directorio para archivos temporales e intermedios"),configuration->temp_folder,mxID_PROJECT_CONFIG_TEMP_DIR);
@@ -512,6 +522,7 @@ void mxProjectConfigWindow::LoadValues() {
 	compiling_warnings_level->SetSelection(configuration->warnings_level);
 	compiling_debug_level->SetSelection(configuration->debug_level);
 	compiling_optimization_level->SetSelection(configuration->optimization_level);
+	compiling_enable_lto->SetValue(configuration->enable_lto);
 	
 	ReloadSteps();
 	ReloadLibs();
@@ -602,6 +613,7 @@ bool mxProjectConfigWindow::SaveValues() {
 	configuration->warnings_level=compiling_warnings_level->GetSelection();
 	configuration->debug_level=compiling_debug_level->GetSelection();
 	configuration->optimization_level=compiling_optimization_level->GetSelection();
+	configuration->enable_lto=compiling_enable_lto->GetValue();
 	
 	configuration->dont_generate_exe = libtobuild_noexec->GetValue();
 	

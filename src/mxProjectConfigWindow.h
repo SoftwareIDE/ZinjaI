@@ -51,6 +51,7 @@ class mxProjectConfigWindow : public wxDialog {
 	wxComboBox *compiling_warnings_level;
 	wxCheckBox *compiling_pedantic;
 	wxComboBox *compiling_debug_level;
+	wxCheckBox *compiling_enable_lto;
 	wxComboBox *compiling_optimization_level;
 	wxComboBox *compiling_std_c;
 	wxComboBox *compiling_std_cpp;

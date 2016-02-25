@@ -264,6 +264,7 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 				else CFG_GENERIC_READ_DN("std_cpp",active_configuration->std_cpp);
 				else CFG_INT_READ_DN("debug_level",active_configuration->debug_level);
 				else CFG_INT_READ_DN("optimization_level",active_configuration->optimization_level);
+				else CFG_INT_READ_DN("enable_lto",active_configuration->enable_lto);
 				else CFG_GENERIC_READ_DN("linking_extra",active_configuration->linking_extra);
 				else CFG_GENERIC_READ_DN("libraries_dirs",active_configuration->libraries_dirs);
 				else CFG_GENERIC_READ_DN("libraries",active_configuration->libraries);
@@ -790,6 +791,7 @@ bool ProjectManager::Save (bool as_template) {
 		CFG_GENERIC_WRITE_DN("std_cpp",configurations[i]->std_cpp);
 		CFG_GENERIC_WRITE_DN("debug_level",configurations[i]->debug_level);
 		CFG_GENERIC_WRITE_DN("optimization_level",configurations[i]->optimization_level);
+		CFG_GENERIC_WRITE_DN("enable_lto",configurations[i]->enable_lto);
 		CFG_GENERIC_WRITE_DN("headers_dirs",configurations[i]->headers_dirs);
 		CFG_GENERIC_WRITE_DN("linking_extra",configurations[i]->linking_extra);
 		CFG_GENERIC_WRITE_DN("libraries_dirs",configurations[i]->libraries_dirs);
@@ -2107,7 +2109,9 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 		co_optim<<current_toolchain.FixArgument(true,"-Og");
 	else if (active_configuration->optimization_level==6) 
 		co_optim<<"-Ofast";
+	if (active_configuration->enable_lto) co_optim<<" -flto";
 	compiling_options<<co_optim<<" ";
+	
 	
 	// headers_dirs
 	wxString co_includes;
@@ -2143,6 +2147,9 @@ void ProjectManager::AnalizeConfig(wxString path, bool exec_comas, wxString ming
 	
 	linking_options=" ";
 	linking_options<<current_toolchain.cpp_linker_options<<" ";
+	if (active_configuration->enable_lto) {
+		linking_options<<co_optim<<" ";
+	}
 	// mwindows
 #ifdef __WIN32__
 	if (!active_configuration->console_program)
@@ -2877,7 +2884,7 @@ int ProjectManager::GetRequiredVersion() {
 	bool have_macros=false,have_icon=false,have_temp_dir=false,builds_libs=false,have_extra_vars=false,
 		 have_manifest=false,have_std=false,use_og=false,use_exec_script=false,have_custom_tools=false,
 		 have_env_vars=false,have_breakpoint_annotation=false,env_vars_autoref=false,exe_use_temp=false,
-		 copy_debug_symbols=false, use_ofast=false, exec_wrapper=false, by_src_args=false;
+		 copy_debug_symbols=false, use_ofast=false, exec_wrapper=false, by_src_args=false, use_lto=false;
 	
 	// breakpoint options
 	GlobalListIterator<BreakPointInfo*> bpi=BreakPointInfo::GetGlobalIterator();
@@ -2888,6 +2895,7 @@ int ProjectManager::GetRequiredVersion() {
 	
 	// compiling and running options
 	for (int i=0;i<configurations_count;i++) {
+		if (configurations[i]->enable_lto) use_lto=true;
 		if (configurations[i]->exec_method==EMETHOD_WRAPPER) exec_wrapper=true;
 		if (configurations[i]->strip_executable==DBSACTION_COPY) copy_debug_symbols=true;
 		if (configurations[i]->exec_method!=0) use_exec_script=true;
@@ -2927,7 +2935,8 @@ int ProjectManager::GetRequiredVersion() {
 	for (int i=0;i<MAX_PROJECT_CUSTOM_TOOLS;i++) if (custom_tools[i].command.Len()) have_custom_tools=true;
 	
 	version_required=0;
-	if (inspection_improving_template_to.GetCount()) version_required=20150227;
+	if (use_lto) version_required=20160225;
+	else if (inspection_improving_template_to.GetCount()) version_required=20150227;
 	else if (by_src_args) version_required=20150220;
 	else if (exec_wrapper) version_required=20141218;
 	else if (use_ofast) version_required=20140507;
