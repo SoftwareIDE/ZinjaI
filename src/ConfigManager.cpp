@@ -1048,11 +1048,11 @@ bool ConfigManager::CheckComplaintAndInstall(wxWindow *parent, const wxString &c
 	wxString check_output = mxUT::GetOutput(check_command,true);
 	if (check_output.Len() && !check_output.StartsWith("execvp")) return true; // si anda, ya esta instalada
 	wxString chk_message = GetTryToInstallCheckboxMessage(); // ver si tenemos apt-get
-	if (!chk_message && website.Len()) // si no lo tenemos, talvez tengamos el link al sitio de descarga
+	if (chk_message.IsEmpty() && website.Len()) // si no lo tenemos, talvez tengamos el link al sitio de descarga
 		chk_message = LANG(CONFIG_GOTO_PACKAGE_WEBSITE,"Abrir sitio el web de esta herramienta");
 	int ans = mxMessageDialog(parent,error_msg,what,mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal(); // informar/preguntar
 	if (ans&mxMD_CHECKED) {
-		if (GetTryToInstallCheckboxMessage()) { // si había apt-get, 
+		if (!GetTryToInstallCheckboxMessage().IsEmpty()) { // si había apt-get, 
 			TryToInstallWithAptGet(parent,what,pkgname); // intentar instalar
 			check_output = mxUT::GetOutput(check_command,true);
 			if (check_output.Len() && !check_output.StartsWith("execvp")) // si anda, ya esta instalada

@@ -1100,11 +1100,11 @@ void mxMainWindow::OnToolsLizardHelp(wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("lizard.html");
 }
 
-void mxMainWindow::AuxToolsDissasemble1(GenericActionEx<wxString> *on_end) {
+void mxMainWindow::AuxToolsDisassemble1(GenericActionEx<wxString> *on_end) {
 	RaiiDeletePtr<GenericActionEx<wxString> > oe_del(on_end);
 	IF_THERE_ISNT_SOURCE return;
 	
-	static wxString last_dissasembled_binary;
+	static wxString last_disassembled_binary;
 		
 	mxSource *src=CURRENT_SOURCE;
 	
@@ -1121,7 +1121,7 @@ void mxMainWindow::AuxToolsDissasemble1(GenericActionEx<wxString> *on_end) {
 		in_fname = src->GetBinaryFileName().GetFullPath();
 	}
 	
-	if (last_dissasembled_binary!=in_fname || !wxFileName::FileExists(out_fname) ||
+	if (last_disassembled_binary!=in_fname || !wxFileName::FileExists(out_fname) ||
 			wxFileName(in_fname).GetModificationTime()>wxFileName(out_fname).GetModificationTime() ) 
 	{ // si tiene que correr antes objdump
 
@@ -1138,9 +1138,9 @@ void mxMainWindow::AuxToolsDissasemble1(GenericActionEx<wxString> *on_end) {
 #endif
 
 		// grab all arguments the lambda will need
-		wxString *plast_dissasembled_binary=&last_dissasembled_binary; // to be used in _CAPTURELIST_4
+		wxString *plast_disassembled_binary=&last_disassembled_binary; // to be used in _CAPTURELIST_4
 		_CAPTURELIST_4( s_lmbDasm2oe,lmb_arg,
-			wxString*,plast_dissasembled_binary,
+			wxString*,plast_disassembled_binary,
 			wxString,in_fname, wxString,out_fname,
 			GenericActionEx<wxString>*,on_end );
 		on_end=nullptr; // avoid double delete, the lambda will do it now
@@ -1148,7 +1148,7 @@ void mxMainWindow::AuxToolsDissasemble1(GenericActionEx<wxString> *on_end) {
 		// define the lambda for after running the commmand
 		_LAMBDAEX_1( lmbDasm2oe, int,retval, s_lmbDasm2oe,args, {
 			if (retval==0) {
-				(*(args.plast_dissasembled_binary))=args.in_fname; // for memoization
+				(*(args.plast_disassembled_binary))=args.in_fname; // for memoization
 				args.on_end->Do(args.out_fname); delete args.on_end; 
 			}
 			else { wxArrayString aux; showExternToolErrorMessage(retval, aux, "objdump"); } 
@@ -1161,7 +1161,7 @@ void mxMainWindow::AuxToolsDissasemble1(GenericActionEx<wxString> *on_end) {
 		on_end->Do(out_fname); 
 }
 
-void mxMainWindow::OnToolsDissasembleOfflineFunc (wxCommandEvent & event) {
+void mxMainWindow::OnToolsDisassembleOfflineFunc (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE {
 		// first, try to select the whole scope
 		mxSource *src = CURRENT_SOURCE;
@@ -1174,20 +1174,20 @@ void mxMainWindow::OnToolsDissasembleOfflineFunc (wxCommandEvent & event) {
 		src->mxSource::OnBraceMatch(event);
 		// then run objdump
 		_LAMBDAEX_0( lmbDasmFunc2, wxString,out_fname,
-			{ main_window->AuxToolsDissasemble2(out_fname,true); } 
+			{ main_window->AuxToolsDisassemble2(out_fname,true); } 
 		);
-		AuxToolsDissasemble1( new lmbDasmFunc2() );
+		AuxToolsDisassemble1( new lmbDasmFunc2() );
 	};
 }
 
-void mxMainWindow::OnToolsDissasembleOfflineSel (wxCommandEvent & event) {
+void mxMainWindow::OnToolsDisassembleOfflineSel (wxCommandEvent & event) {
 	_LAMBDAEX_0( lmbDasmFunc2, wxString,out_fname, 
-		{ main_window->AuxToolsDissasemble2(out_fname,false); } 
+		{ main_window->AuxToolsDisassemble2(out_fname,false); } 
 	);
-	AuxToolsDissasemble1( new lmbDasmFunc2() );
+	AuxToolsDisassemble1( new lmbDasmFunc2() );
 }
 
-// aux class for mxMainWindow::AuxToolsDissasemble2
+// aux class for mxMainWindow::AuxToolsDisassemble2
 struct auxObjdumpLine { 
 	wxString s; bool f; 
 	auxObjdumpLine() {}
@@ -1199,12 +1199,12 @@ struct auxObjdumpLine {
 *                   si es true muestra completa cualquier funcion que incluya al menos
 *                   una de esas lineas
 **/
-void mxMainWindow::AuxToolsDissasemble2(wxString out_fname, bool full_scope) {
+void mxMainWindow::AuxToolsDisassemble2(wxString out_fname, bool full_scope) {
 	
 	// create and display output panel
 	mxStyledOutput *out_dialog  = new mxStyledOutput(main_window,true,false);
 	out_dialog->SetTabWidth(8);
-	aui_manager.AddPane(out_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Dissasembly (objdump)").BestSize(500,300).Show());
+	aui_manager.AddPane(out_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Disassembly (objdump)").BestSize(500,300).Show());
 	aui_manager.Update();
 	
 	// get required source range
@@ -1279,6 +1279,6 @@ void mxMainWindow::OnToolsCodeHelp(wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("codetools.html");	
 }
 
-void mxMainWindow::OnToolsDissasembleHelp(wxCommandEvent &event) {
+void mxMainWindow::OnToolsDisassembleHelp(wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("objdump.html");	
 }

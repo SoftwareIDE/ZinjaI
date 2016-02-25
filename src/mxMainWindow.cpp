@@ -78,6 +78,7 @@
 #include "LocalRefactory.h"
 #include "mxCommandFinder.h"
 #include "SimpleTemplates.h"
+#include "mxGdbAsmPanel.h"
 using namespace std;
 
 #define SIN_TITULO (wxString("<")<<LANG(UNTITLED,"sin_titulo_")<<(++untitled_count)<<">")
@@ -229,7 +230,7 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_DEBUG_SAVE_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
 	EVT_MENU(mxID_DEBUG_LOAD_CORE_DUMP, mxMainWindow::OnDebugCoreDump)
 	EVT_MENU(mxID_DEBUG_SHOW_REGISTERS, mxMainWindow::OnDebugShowRegisters)
-//	EVT_MENU(mxID_DEBUG_SHOW_ASM, mxMainWindow::OnDebugShowAsm)
+	EVT_MENU(mxID_DEBUG_SHOW_ASM, mxMainWindow::OnDebugShowAsm)
 	EVT_MENU(mxID_DEBUG_SEND_SIGNAL, mxMainWindow::OnDebugSendSignal)
 	EVT_MENU(mxID_DEBUG_SET_SIGNALS, mxMainWindow::OnDebugSetSignals)
 	EVT_MENU(mxID_DEBUG_GDB_COMMAND, mxMainWindow::OnDebugGdbCommand)
@@ -370,8 +371,8 @@ BEGIN_EVENT_TABLE(mxMainWindow, wxFrame)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_CONFIG, mxMainWindow::OnToolsCppCheckConfig)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_VIEW, mxMainWindow::OnToolsCppCheckView)
 	EVT_MENU(mxID_TOOLS_CPPCHECK_HELP, mxMainWindow::OnToolsCppCheckHelp)
-	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_SELECTION, mxMainWindow::OnToolsDissasembleOfflineSel)
-	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_FUNCTION, mxMainWindow::OnToolsDissasembleOfflineFunc)
+	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_SELECTION, mxMainWindow::OnToolsDisassembleOfflineSel)
+	EVT_MENU(mxID_TOOLS_OBJDUMP_DISASM_FUNCTION, mxMainWindow::OnToolsDisassembleOfflineFunc)
 #ifndef __WIN32__
 	EVT_MENU(mxID_TOOLS_VALGRIND_RUN, mxMainWindow::OnToolsValgrindRun)
 	EVT_MENU(mxID_TOOLS_VALGRIND_DEBUG, mxMainWindow::OnToolsValgrindDebug)
@@ -511,6 +512,7 @@ SHOW_MILLIS("Entering mxMainWindow's constructor...");
 	
 	gui_fullscreen_mode=gui_debug_mode=gui_project_mode=false;
 	untitled_count=0;
+	asm_panel=nullptr;
 	registers_panel=nullptr;
 	valgrind_panel=nullptr; 
 	gcov_sidebar=nullptr;
@@ -3682,6 +3684,7 @@ void mxMainWindow::PrepareGuiForDebugging(bool debug_mode) {
 				
 				aui_manager.GetPane(debug_log_panel).Hide();
 				if (registers_panel) aui_manager.GetPane(registers_panel).Hide();
+				if (asm_panel) aui_manager.GetPane(asm_panel).Hide();
 				
 			}
 		}
@@ -5128,11 +5131,11 @@ void mxMainWindow::OnDebugShowRegisters (wxCommandEvent & event) {
 	aui_manager.Update();
 }
 
-//void mxMainWindow::OnDebugShowAsm (wxCommandEvent & event) {
-//	mxGdbDissasembly *asm_dialog = new mxRegistersGrid(this);
-//	aui_manager.AddPane(asm_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Disassembly (gdb)").BestSize(300,300).Show());
-//	aui_manager.Update();
-// }
+void mxMainWindow::OnDebugShowAsm (wxCommandEvent & event) {
+	mxGdbAsmPanel *asm_panel = new mxGdbAsmPanel(this);
+	aui_manager.AddPane(asm_panel, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("ASM (gdb)").BestSize(400,300).Show());
+	aui_manager.Update();
+}
 
 void mxMainWindow::OnToolsCodeGenerateFunctionDef (wxCommandEvent & event) {
 	IF_THERE_IS_SOURCE {

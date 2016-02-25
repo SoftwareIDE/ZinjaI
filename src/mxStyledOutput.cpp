@@ -84,3 +84,10 @@ void mxStyledOutput::OnMouseWheel (wxMouseEvent & event) {
 	} else
 		event.Skip();
 }
+
+void mxStyledOutput::Clear ( ) {
+	if (is_read_only) SetReadOnly(false);
+	wxStyledTextCtrl::SetText("");
+	if (is_read_only) SetReadOnly(true);
+}
+

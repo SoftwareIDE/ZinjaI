@@ -964,14 +964,6 @@ GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER
 replace all with folder path
 GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER
 replace selection with folder path
-GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE
-Replace all with file path
-GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE
-Replace selection with file path
-GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER
-Replace all with folder path
-GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER
-Replace selection with folder path
 COMPILECONF_WORKDIR_DLG
 Working directory:
 BACKTRACE_LEVEL
@@ -1250,12 +1242,12 @@ COMPILECONF_SOURCE_CLOSED
 The source associated to this dialog was closed.
 COMPILECONF_INVALID_WORKDIR
 Working directory is not valid.
+COMPILECONF_COMPILER_ARGS_DLG
+Extra arguments for compilation
 COMPILECONF_POPUP_DEFAULT
 default value
 COMPILECONF_POPUP_COPY_FROM_TEMPLATE
 copy from template...
-COMPILECONF_COMPILER_ARGS_DLG
-Extra arguments for compilation
 GENERAL_PREPARING_BUILDING
 Preparing for compiling...
 MAINW_COMPILATION_INTERRUPTED
@@ -1690,6 +1682,10 @@ FIND_TOO_MANY_RESULTS
 too many results, showing only first 500
 FIND_LINE
 line
+GDBASM_STEP_MODE
+Step by instruction machine (for Step In and Step Over commands)
+PROJECTCONFIG_LTO
+LTO
 HELPW_TOGGLE_TREE
 Show/Hide Index tree
 HELPW_INDEX
@@ -1898,6 +1894,14 @@ LIBTOBUILD_NAME_REPEATED
 There is another library with that name.
 LONGTEXT_MORE_OPTIONS
 More options...
+GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE
+Replace all with file path
+GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE
+Replace selection with file path
+GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER
+Replace all with folder path
+GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER
+Replace selection with folder path
 LISTSHARED_CAPTION
 Shared Files
 LISTSHARED_LIST_LABEL
@@ -2268,8 +2272,6 @@ NEWWIZARD_EMPTY_FILE
 Empty File
 NEWWIZARD_USE_TEMPLATE
 From Template
-NEWWIZARD_TEMPLATE_WIZARD
-Template Wizard
 NEWWIZARD_PROYECT
 New Project
 NEWWIZARD_PROYECT_FROM_FILES
@@ -3132,42 +3134,6 @@ CONFIG_EXPLORER_PROBLEM
 There is no file's explorer defined. You can set it in\n "Paths 2" tab in Preference window (File menu->Preferences).
 CONFIG_EXPLORER
 File's Explorer
-GENERAL_POPUP_INSERT_TEXT
-edir as text...
-GENERAL_POPUP_INSERT_LIST
-edit as list...
-GENERAL_POPUP_INSERT_FILE
-insert file...
-GENERAL_POPUP_REPLACE_INSERT_DIR
-insert directory path...
-GENERAL_POPUP_INSERT_OUTPUT
-insert output file
-GENERAL_POPUP_INSERT_DEPS
-insert depencies
-GENERAL_POPUP_INSERT_TEMP_DIR
-insert temporary file's directory
-GENERAL_POPUP_INSERT_MINGW_DIR
-insert compilers directory
-GENERAL_POPUP_INSERT_PROJECT_PATH
-insert project path
-GENERAL_POPUP_INSERT_PROJECT_BIN
-insert executable patth
-GENERAL_POPUP_INSERT_ARGS
-arguments for execution
-GENERAL_POPUP_INSERT_WORK_DIR
-insert working directory
-GENERAL_POPUP_INSERT_CURRENT_FILE
-insert current file
-GENERAL_POPUP_INSERT_CURRENT_DIR
-insert current file's directory
-GENERAL_POPUP_INSERT_WORKDIR
-insert current working dir
-GENERAL_POPUP_INSERT_ZINJAI_DIR
-insert ZinjaI's instalation folder
-GENERAL_POPUP_INSERT_BROWSER
-insert browser command
-GENERAL_POPUP_INSERT_SHELL_EXECUTE
-insert command for opening with associated program
 MAINW_GRAPHVIZ_ERROR
 There was an error while processing the graph
 VALGRIND_OUTPUT_MISSING
@@ -3210,4 +3176,38 @@ WXFB_INHERITEDCLASS
 Inherited class:
 WXFB_CLASSNAME_MISSING
 Class name missing
+GENERAL_POPUP_INSERT_TEXT
+edir as text...
+GENERAL_POPUP_INSERT_LIST
+edit as list...
+GENERAL_POPUP_INSERT_FILE
+insert file...
+GENERAL_POPUP_REPLACE_INSERT_DIR
+insert directory path...
+GENERAL_POPUP_INSERT_OUTPUT
+insert output file
+GENERAL_POPUP_INSERT_DEPS
+insert depencies
+GENERAL_POPUP_INSERT_TEMP_DIR
+insert temporary file's directory
+GENERAL_POPUP_INSERT_MINGW_DIR
+insert compilers directory
+GENERAL_POPUP_INSERT_PROJECT_PATH
+insert project path
+GENERAL_POPUP_INSERT_PROJECT_BIN
+insert executable patth
+GENERAL_POPUP_INSERT_ARGS
+arguments for execution
+GENERAL_POPUP_INSERT_CURRENT_FILE
+insert current file
+GENERAL_POPUP_INSERT_CURRENT_DIR
+insert current file's directory
+GENERAL_POPUP_INSERT_WORKDIR
+insert current working dir
+GENERAL_POPUP_INSERT_ZINJAI_DIR
+insert ZinjaI's instalation folder
+GENERAL_POPUP_INSERT_BROWSER
+insert browser command
+GENERAL_POPUP_INSERT_SHELL_EXECUTE
+insert command for opening with associated program
 END

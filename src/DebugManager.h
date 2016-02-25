@@ -113,6 +113,7 @@ private:
 	bool stepping_in; ///< to know when auto stepping, if we should continue with step in or step over
 	bool inverse_exec;
 	bool gui_is_prepared;
+	bool step_by_asm_instruction; ///< default to false, enabled when asm panel is shown
 	// nota para identificaicion de frames: el id (interno de zinjai) tiene base 0, el level (usuario/gdb) tiene base 1
 	long current_frame_id; ///< id interno del frame actual, se usa un nro basado en su level en el backtrace, pero inverso (el main seria 0, que figura en la salida de gdb con level=stack_depth-1)
 	long GetFrameID(long level) { return current_stack.depth-level-1; } 
@@ -195,6 +196,9 @@ public:
 	wxString GetSubValueFromAns(wxString ans, wxString key1, wxString key2, bool crop=false, bool fix_slash=false);
 	wxString InspectExpression(wxString var, bool full=false);
 	wxString WaitAnswer();
+	
+	void SetStepMode(bool asm_mode_on);
+	bool IsAsmStepModeOn();
 	
 	// backtrace
 	

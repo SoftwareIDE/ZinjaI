@@ -268,6 +268,7 @@ void DebugManager::ResetDebuggingStuff() {
 	child_pid = pid = 0;
 	input = nullptr;
 	output = nullptr;
+	step_by_asm_instruction = false;
 	recording_for_reverse=inverse_exec=false;
 	main_window->ClearDebugLog();
 	has_symbols=true;
@@ -899,7 +900,7 @@ bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
 void DebugManager::StepIn() {
 	if (waiting || !debugging) return;
 	stepping_in = true; running = true;
-	wxString ans = SendCommand("-exec-step");
+	wxString ans = SendCommand(step_by_asm_instruction?"-exec-step-instruction":"-exec-step");
 	if (ans.Mid(1,7)="running") HowDoesItRuns();
 	else running = false;
 }
@@ -915,7 +916,7 @@ void DebugManager::StepOut() {
 void DebugManager::StepOver() {
 	if (waiting || !debugging) return;
 	stepping_in = false; running = true;
-	wxString ans = SendCommand("-exec-next");
+	wxString ans = SendCommand(step_by_asm_instruction?"-exec-next-instruction":"-exec-next");
 	if (ans.Mid(1,7)="running")	HowDoesItRuns();
 	else running = false;
 }
@@ -2008,5 +2009,13 @@ bool DebugManager::CurrentBacktraceIsReal ( ) {
 
 const DebugManager::BTInfo & DebugManager::GetCurrentStackRawData ( ) {
 	return current_stack;
+}
+
+void DebugManager::SetStepMode (bool asm_mode_on) {
+	step_by_asm_instruction = asm_mode_on;
+}
+
+bool DebugManager::IsAsmStepModeOn() {
+	return step_by_asm_instruction;
 }
 

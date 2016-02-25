@@ -964,14 +964,6 @@ GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER
 reemplazar todo por directorio
 GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER
 reemplazar seleccion por directorio
-GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE
-Reemplazar todo por archivo:
-GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE
-Reemplazar seleccion por archivo:
-GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER
-Reemplazar todo por directorio:
-GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER
-Reemplazar seleccion por directorio:
 COMPILECONF_WORKDIR_DLG
 Directorio de trabajo
 BACKTRACE_LEVEL
@@ -1250,12 +1242,12 @@ COMPILECONF_SOURCE_CLOSED
 El fuente en cual se debe aplicar esta configuracion ha sido cerrado.
 COMPILECONF_INVALID_WORKDIR
 El directorio de trabajo no es valido.
+COMPILECONF_COMPILER_ARGS_DLG
+Parametros extra para el compilador
 COMPILECONF_POPUP_DEFAULT
 valores por defecto
 COMPILECONF_POPUP_COPY_FROM_TEMPLATE
 copiar de plantilla...
-COMPILECONF_COMPILER_ARGS_DLG
-Parametros extra para el compilador
 GENERAL_PREPARING_BUILDING
 Preparando compilacion...
 MAINW_COMPILATION_INTERRUPTED
@@ -1690,6 +1682,10 @@ FIND_TOO_MANY_RESULTS
 demasiados resultados, solo se muestran los primeros 500
 FIND_LINE
 linea
+GDBASM_STEP_MODE
+Avanzar paso a paso por instrucción de máquina (para Step In y Step Over)
+PROJECTCONFIG_LTO
+LTO
 HELPW_TOGGLE_TREE
 Mostrar/Ocultar Indice
 HELPW_INDEX
@@ -1898,6 +1894,14 @@ LIBTOBUILD_NAME_REPEATED
 Ya existe una biblioteca con ese nombre.
 LONGTEXT_MORE_OPTIONS
 Mas opciones...
+GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE
+Reemplazar todo por archivo:
+GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE
+Reemplazar seleccion por archivo:
+GENERAL_FILEDLG_REPLACE_ALL_WITH_FOLDER
+Reemplazar todo por directorio:
+GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FOLDER
+Reemplazar seleccion por directorio:
 LISTSHARED_CAPTION
 Lista de Archivos Compartidos
 LISTSHARED_LIST_LABEL
@@ -2268,8 +2272,6 @@ NEWWIZARD_EMPTY_FILE
 Archivo en Blanco
 NEWWIZARD_USE_TEMPLATE
 Utilizar Plantilla
-NEWWIZARD_TEMPLATE_WIZARD
-Asistente de Plantilla 
 NEWWIZARD_PROYECT
 Proyecto Nuevo
 NEWWIZARD_PROYECT_FROM_FILES
@@ -3132,42 +3134,6 @@ CONFIG_EXPLORER_PROBLEM
 No se ha definido el explorador de archivos a utilizar\nPuede configurar el mismo en la pestaña \"Rutas 2\" del\ncuadro de Preferencias (menu Archivo->Preferencias).
 CONFIG_EXPLORER
 Explorador de archivos
-GENERAL_POPUP_INSERT_TEXT
-editar como texto...
-GENERAL_POPUP_INSERT_LIST
-editar como lista...
-GENERAL_POPUP_INSERT_FILE
-insertar archivo...
-GENERAL_POPUP_REPLACE_INSERT_DIR
-insertar directorio...
-GENERAL_POPUP_INSERT_OUTPUT
-insertar archivo de salida
-GENERAL_POPUP_INSERT_DEPS
-insertar lista de dependencias
-GENERAL_POPUP_INSERT_TEMP_DIR
-insertar directorio de temporales
-GENERAL_POPUP_INSERT_MINGW_DIR
-insertar directorio MinGW
-GENERAL_POPUP_INSERT_PROJECT_PATH
-insertar directorio del proyecto
-GENERAL_POPUP_INSERT_PROJECT_BIN
-insertar ruta del ejecutable
-GENERAL_POPUP_INSERT_ARGS
-argumentos para la ejecución
-GENERAL_POPUP_INSERT_WORK_DIR
-insertar directorio de trabajo
-GENERAL_POPUP_INSERT_CURRENT_FILE
-insertar archivo actual
-GENERAL_POPUP_INSERT_CURRENT_DIR
-insertar directorio del archivo actual
-GENERAL_POPUP_INSERT_WORKDIR
-insertar el directorio de trabajo
-GENERAL_POPUP_INSERT_ZINJAI_DIR
-insertar el directorio de instalación de ZinjaI
-GENERAL_POPUP_INSERT_BROWSER
-insertar comando del navegador
-GENERAL_POPUP_INSERT_SHELL_EXECUTE
-insertar comando para abrir con el programa asociado
 MAINW_GRAPHVIZ_ERROR
 Ha ocurrido un error al procesar el grafo
 VALGRIND_OUTPUT_MISSING
@@ -3210,4 +3176,38 @@ WXFB_INHERITEDCLASS
 Clase heredada:
 WXFB_CLASSNAME_MISSING
 Debe introducir el nombre de la clase
+GENERAL_POPUP_INSERT_TEXT
+editar como texto...
+GENERAL_POPUP_INSERT_LIST
+editar como lista...
+GENERAL_POPUP_INSERT_FILE
+insertar archivo...
+GENERAL_POPUP_REPLACE_INSERT_DIR
+insertar directorio...
+GENERAL_POPUP_INSERT_OUTPUT
+insertar archivo de salida
+GENERAL_POPUP_INSERT_DEPS
+insertar lista de dependencias
+GENERAL_POPUP_INSERT_TEMP_DIR
+insertar directorio de temporales
+GENERAL_POPUP_INSERT_MINGW_DIR
+insertar directorio MinGW
+GENERAL_POPUP_INSERT_PROJECT_PATH
+insertar directorio del proyecto
+GENERAL_POPUP_INSERT_PROJECT_BIN
+insertar ruta del ejecutable
+GENERAL_POPUP_INSERT_ARGS
+argumentos para la ejecución
+GENERAL_POPUP_INSERT_CURRENT_FILE
+insertar archivo actual
+GENERAL_POPUP_INSERT_CURRENT_DIR
+insertar directorio del archivo actual
+GENERAL_POPUP_INSERT_WORKDIR
+insertar el directorio de trabajo
+GENERAL_POPUP_INSERT_ZINJAI_DIR
+insertar el directorio de instalación de ZinjaI
+GENERAL_POPUP_INSERT_BROWSER
+insertar comando del navegador
+GENERAL_POPUP_INSERT_SHELL_EXECUTE
+insertar comando para abrir con el programa asociado
 END

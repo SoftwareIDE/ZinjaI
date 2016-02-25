@@ -178,7 +178,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnDEBUG, myMenuItem("send_signal",mxID_DEBUG_SEND_SIGNAL, LANG(MENUITEM_DEBUG_SEND_SIGNALS,"Enviar señal...")).Icon("debug_send_signal.png").EnableIf(ecDEBUG_PAUSED));
 #endif
 			AddMenuItem(mnDEBUG, myMenuItem("gdb_registers",mxID_DEBUG_SHOW_REGISTERS, LANG(MENUITEM_DEBUG_SHOW_REGISTERS,"Mostrar panel de registros...")).Icon("debug_registers.png").EnableIf(ecDEBUG_PAUSED));
-//			AddMenuItem(mnDEBUG, myMenuItem("gdb_asm",mxID_DEBUG_SHOW_ASM, LANG(MENUITEM_DEBUG_SHOW_ASM,"Mostrar desensamblado...")).Icon("debug_asm.png").EnableIf(ecDEBUG_PAUSED));
+			AddMenuItem(mnDEBUG, myMenuItem("gdb_asm",mxID_DEBUG_SHOW_ASM, LANG(MENUITEM_DEBUG_SHOW_ASM,"Mostrar desensamblado...")).Icon("debug_asm.png").EnableIf(ecDEBUG_PAUSED));
 			AddMenuItem(mnDEBUG, myMenuItem("gdb_command",mxID_DEBUG_GDB_COMMAND, LANG(MENUITEM_DEBUG_GDB_COMMAND,"Introducir comandos gdb...")).Icon("gdb_command.png").EnableIf(ecDEBUG_PAUSED));
 #ifndef __WIN32__
 			AddMenuItem(mnDEBUG, myMenuItem("gdb_patch",mxID_DEBUG_PATCH, LANG(MENUITEM_DEBUG_PATCH,"Actualizar ejecutable (experimental)...")).Icon("debug_patch.png").EnableIf(ecDEBUG_PAUSED));
@@ -542,6 +542,8 @@ void MenusAndToolsConfig::LoadToolbarsData ( ) {
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnHIDDEN],mxID_DEBUG_ENABLE_DISABLE_BREAKPOINT));
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_LIST_BREAKPOINTS).Visible());
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_LOG_PANEL));
+		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_SHOW_REGISTERS));
+		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_SHOW_ASM));
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_GDB_COMMAND));
 #ifndef __WIN32__
 		AddToolbarItem(tbDEBUG,myToolbarItem(menues[mnDEBUG],mxID_DEBUG_SAVE_CORE_DUMP));

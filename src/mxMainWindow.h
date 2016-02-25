@@ -40,6 +40,7 @@ class compile_and_run_struct_single;
 class project_file_item;
 class mxExternCompilerOutput;
 class mxRegistersGrid;
+class mxGdbAsmPanel;
 
 template<class T> class SingleList;
 
@@ -72,6 +73,7 @@ public:
 	void ShowValgrindPanel(int what, wxString file, bool force=true);
 	
 	mxRegistersGrid *registers_panel;
+	mxGdbAsmPanel *asm_panel;
 	wxListBox *debug_log_panel;
 	void AddToDebugLog(wxString str);
 	void ClearDebugLog();
@@ -194,7 +196,7 @@ public:
 	void OnRunStop (wxCommandEvent &event);
 	
 	void OnDebugShowRegisters(wxCommandEvent &event);
-//	void OnDebugShowAsm(wxCommandEvent &event);
+	void OnDebugShowAsm(wxCommandEvent &event);
 	void OnDebugSendSignal(wxCommandEvent &event);
 	void OnDebugSetSignals(wxCommandEvent &event);
 	void OnDebugGdbCommand(wxCommandEvent &event);
@@ -305,11 +307,11 @@ public:
 	void OnToolsValgrindView(wxCommandEvent &event);
 	void OnToolsValgrindHelp(wxCommandEvent &event);
 #endif
-	void AuxToolsDissasemble1(GenericActionEx<wxString> *on_end); ///< ejecuta objdump y retorna el path del archivo de salida
-	void AuxToolsDissasemble2(wxString out_fname, bool full_scope); ///< filtra la salida y muestra el panel con los resultados
-	void OnToolsDissasembleOfflineSel(wxCommandEvent &event);
-	void OnToolsDissasembleOfflineFunc(wxCommandEvent &event);
-	void OnToolsDissasembleHelp(wxCommandEvent &event);
+	void AuxToolsDisassemble1(GenericActionEx<wxString> *on_end); ///< ejecuta objdump y retorna el path del archivo de salida
+	void AuxToolsDisassemble2(wxString out_fname, bool full_scope); ///< filtra la salida y muestra el panel con los resultados
+	void OnToolsDisassembleOfflineSel(wxCommandEvent &event);
+	void OnToolsDisassembleOfflineFunc(wxCommandEvent &event);
+	void OnToolsDisassembleHelp(wxCommandEvent &event);
 	void OnToolsCustomTool(wxCommandEvent &event);
 	void OnToolsCustomProjectTool(wxCommandEvent &event);
 	void OnToolsCustomToolsSettings(wxCommandEvent &event);
