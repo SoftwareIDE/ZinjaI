@@ -16,7 +16,6 @@ class wxListBox;
 
 class mxProjectConfigWindow : public wxDialog {
 	
-	wxString last_dir;
 	wxTextCtrl *text_for_edit;
 	bool comma_splits_for_edit;
 

@@ -19,7 +19,7 @@ class mxCompileConfigWindow : public wxDialog {
 	
 public:
 
- 	mxSource *source;
+ 	mxSource *m_source;
 
 	wxTextCtrl *args_ctrl;
 	wxTextCtrl *compiler_options_ctrl;
@@ -27,8 +27,6 @@ public:
 	wxCheckBox *always_ask_args_ctrl;
 	wxCheckBox *wait_for_key_ctrl;
 	
-	wxString last_dir;
-
 	mxCompileConfigWindow(mxSource *a_source, wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
 	void OnOkButton(wxCommandEvent &event);
 	void OnClose(wxCloseEvent &event);

@@ -38,51 +38,39 @@ BEGIN_EVENT_TABLE(mxCompileConfigWindow, wxDialog)
 END_EVENT_TABLE()
 
 
-mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, a_source->page_text, pos, size, style) {
-	source=a_source;
-
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
-
-	wxButton *cancel_button = new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	SetEscapeId(wxID_CANCEL); 
-	wxButton *ok_button = new mxBitmapButton(this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	ok_button->SetDefault(); 
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
-
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(ok_button,sizers->BA5);
-
-	compiler_options_ctrl = mxCCC::AddDirCtrl(mySizer,this,LANG(COMPILECONF_COMPILER_ARGS,"Parametros extra para el compilador"),source->GetCompilerOptions(false),mxID_COMPILE_OPTIONS_COMP_EXTRA);
-	working_folder_ctrl = mxCCC::AddDirCtrl(mySizer,this,LANG(COMPILECONF_WORKDIR,"Directorio de trabajo"),source->working_folder.GetFullPath(),mxID_WORKING_FOLDER);
-	args_ctrl = mxCCC::AddDirCtrl(mySizer,this,LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion"),source->exec_args,mxID_ARGS_BUTTON);
-	always_ask_args_ctrl = mxCCC::AddCheckBox(mySizer,this,LANG(COMPILECONF_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),source->config_running.always_ask_args);
-	wait_for_key_ctrl = mxCCC::AddCheckBox(mySizer,this,LANG(COMPILECONF_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),source->config_running.wait_for_key);
-	mySizer->Add(new wxStaticText(this,wxID_ANY," "),sizers->Exp0);
-
-	last_dir=source->working_folder.GetFullPath();
+mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) 
+	: wxDialog(parent, id, a_source->page_text, pos, size, style), m_source(a_source)
+{
+	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(this);
 	
-	args_ctrl->SetValue(source->exec_args);
-	compiler_options_ctrl->SetValue(source->GetCompilerOptions(false));
-	always_ask_args_ctrl->SetValue(source->config_running.always_ask_args);
-	wait_for_key_ctrl->SetValue(source->config_running.wait_for_key);
-
-	mySizer->Add(bottomSizer,sizers->Exp0);
-
-	SetSizerAndFit(mySizer);
-
+	sizer.BeginText( LANG(COMPILECONF_COMPILER_ARGS,"Parametros extra para el compilador") )
+		.Value(m_source->GetCompilerOptions(false)).Button(mxID_COMPILE_OPTIONS_COMP_EXTRA).EndText(compiler_options_ctrl);
+	
+	sizer.BeginText( LANG(COMPILECONF_WORKDIR,"Directorio de trabajo") )
+		.Value(m_source->working_folder.GetFullPath()).Button(mxID_WORKING_FOLDER).EndText(working_folder_ctrl);
+	
+	sizer.BeginText( LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion") )
+		.Value(m_source->exec_args).Button(mxID_ARGS_BUTTON).EndText(args_ctrl); 
+	
+	sizer.BeginCheck( LANG(COMPILECONF_ALWAYS_ASK_ARGS,"Siempre pedir argumentos al ejecutar") )
+		.Value(m_source->config_running.always_ask_args).EndCheck(always_ask_args_ctrl);
+	
+	sizer.BeginCheck( LANG(COMPILECONF_WAIT_KEY,"Esperar una tecla luego de la ejecucion") )
+		.Value(m_source->config_running.wait_for_key).EndCheck(wait_for_key_ctrl);
+	
+	sizer
+		.BeginLabel(" ").EndLabel()
+		.BeginBottom().Ok().Cancel().Help().EndBottom(this)
+		.SetAndFit();
+	
 	args_ctrl->SetFocus();
-
 	Show();
-
 }
 
 
 void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 
-	if (wxNOT_FOUND==main_window->notebook_sources->GetPageIndex(source)) {
+	if (wxNOT_FOUND==main_window->notebook_sources->GetPageIndex(m_source)) {
 		mxMessageDialog(this,LANG(COMPILECONF_SOURCE_CLOSED,"El fuente en cual se debe aplicar esta configuracion ha sido cerrado."), LANG(GENERAL_ERROR,"Error"), mxMD_ERROR|mxMD_OK).ShowModal();
 		return;
 	}
@@ -94,11 +82,11 @@ void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 		return;
 	}
 
-	source->exec_args = args_ctrl->GetValue();
-	source->working_folder = working_folder_ctrl->GetValue();
-	source->SetCompilerOptions(compiler_options_ctrl->GetValue());
-	source->config_running.always_ask_args = always_ask_args_ctrl->GetValue();
-	source->config_running.wait_for_key = wait_for_key_ctrl->GetValue();
+	m_source->exec_args = args_ctrl->GetValue();
+	m_source->working_folder = working_folder_ctrl->GetValue();
+	m_source->SetCompilerOptions(compiler_options_ctrl->GetValue());
+	m_source->config_running.always_ask_args = always_ask_args_ctrl->GetValue();
+	m_source->config_running.wait_for_key = wait_for_key_ctrl->GetValue();
 	Destroy();
 
 }
@@ -122,7 +110,7 @@ void mxCompileConfigWindow::OnHelpButton(wxCommandEvent &evt) {
 }
 
 void mxCompileConfigWindow::OnArgsButton(wxCommandEvent &evt) {
-	m_base_dir_for_popup = DIR_PLUS_FILE(source->GetPath(true),working_folder_ctrl->GetValue());
+	m_base_dir_for_popup = DIR_PLUS_FILE(m_source->GetPath(true),working_folder_ctrl->GetValue());
 	m_text_ctrl_for_popup = args_ctrl;
 	m_title_for_edit_helpers = LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion");
 	wxMenu menu;
@@ -153,17 +141,17 @@ void mxCompileConfigWindow::OnPopupAddDir(wxCommandEvent &evt) {
 }
 
 void mxCompileConfigWindow::OnArgsDefault(wxCommandEvent &evt) {
-	compiler_options_ctrl->SetValue(config->GetDefaultCompilerOptions(source->IsCppOrJustC()));
+	compiler_options_ctrl->SetValue(config->GetDefaultCompilerOptions(m_source->IsCppOrJustC()));
 }
 
 void mxCompileConfigWindow::OnArgsFromTemplate(wxCommandEvent &evt) {
 	wxString val=opts_list[evt.GetId()-mxID_LAST_ID];
-	val.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(source->IsCppOrJustC()),true);
+	val.Replace("${DEFAULT}",config->GetDefaultCompilerOptions(m_source->IsCppOrJustC()),true);
 	compiler_options_ctrl->SetValue(val);
 }
 
 void mxCompileConfigWindow::OnButtonCompilerOptions(wxCommandEvent &evt) {
-	m_base_dir_for_popup = source->GetPath(true);
+	m_base_dir_for_popup = m_source->GetPath(true);
 	m_text_ctrl_for_popup = compiler_options_ctrl;
 	m_title_for_edit_helpers = LANG(COMPILECONF_COMPILER_ARGS_DLG,"Parametros extra para el compilador");
 	wxMenu menu;

@@ -48,8 +48,11 @@ mxProjectGeneralConfig::mxProjectGeneralConfig() : wxDialog(main_window, wxID_AN
 	notebook->AddPage(CreateTabGeneral(notebook), LANG(PROJECTCONFIG_TAB_GENERAL,"General"));
 	notebook->AddPage(CreateTabAdvanced(notebook), LANG(PROJECTCONFIG_TAB_MORE,"Más"));
 	mySizer->Add(notebook,sizers->Exp1);
-	mySizer->Add(mxUT::MakeGenericButtonsSizer(this,true),sizers->Exp0);
-	SetSizerAndFit(mySizer);
+	
+	mxCCC::MainSizer(this,mySizer)
+		.BeginBottom().Help().Ok().Cancel().EndBottom(this)
+		.SetAndFit();
+	
 	Show(); SetFocus();
 }
 

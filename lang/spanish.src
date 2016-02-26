@@ -2538,14 +2538,14 @@ PREFERENCES_USE_CACHE_FOR_SUBCMD
 Usar cache para la ejecución de subcomandos
 PREFERENCES_USE_CLEAR_SUBCMD_CACHE
 Limpiar
+PREFERENCES_SIMPLE_NEW_ACTION
+Accion para Nuevo Archivo
 PREFERENCES_SIMPLE_CREATE_EMPTY_FILE
 Crear archivo en blanco
 PREFERENCES_SIMPLE_CREATE_FROM_TEMPLATE
 Crear a partir de plantilla
 PREFERENCES_SIMPLE_SHOW_WIZARD
 Mostrar Asistente
-PREFERENCES_SIMPLE_NEW_ACTION
-Accion para Nuevo Archivo
 PREFERENCES_SIMPLE_DEFAULT_CPP_TEMPLATE
 Plantilla por defecto para abrir fuentes C++
 PREFERENCES_SIMPLE_EXTRA_CPP_COMPILER_ARGUMENTS
@@ -2566,14 +2566,14 @@ PREFERENCES_STYLE_SINTAX_HIGHLIGHT
 Colorear sintaxis
 PREFERENCES_STYLE_DEFINE_COLOURS
 Definir colores...
+PREFERENCES_STYLE_LINE_WRAP
+Ajuste de linea dinámico
 PREFERENCES_STYLE_WRAP_NONE
 Nunca
 PREFERENCES_STYLE_WRAP_ALL_BUT_SOURCES
 Todos menos fuentes
 PREFERENCES_STYLE_WRAP_ALWAYS
 Siempre
-PREFERENCES_STYLE_LINE_WRAP
-Ajuste de linea dinámico
 PREFERENCES_STYLE_SHOW_EOF_AND_WHITE_SPACES
 Mostrar espacios y caracteres de fin de linea
 PREFERENCES_STYLE_SHOW_LINE_NUMBERS
@@ -2620,6 +2620,8 @@ PREFERENCES_WRITTING_AUTOCODES_FILE
 Archivo de definiciones de plantillas de auto-código
 PREFERENCES_GENERAL_SPANISH_COMPILER_OUTPUT
 Mostrar errores de compilación en Español (Ver Ayuda!) (*)
+PREFERENCES_WRITING_AUTOCOMPLETION
+Autocompletado
 PREFERENCES_WRITTING_AUTOCOMP_NONE
 Deshabilitado
 PREFERENCES_WRITTING_AUTOCOMP_START
@@ -2628,8 +2630,6 @@ PREFERENCES_WRITTING_AUTOCOMP_FIND
 Habilitado, por cualquier parte de la palabra
 PREFERENCES_WRITTING_AUTOCOMP_FUZZY
 Habilitado, por similaridad
-PREFERENCES_WRITING_AUTOCOMPLETION
-Autocompletado
 PREFERENCES_WRITING_AUTOCOM_FILTERS
 Filtrar resultados de autocompletado al continuar escribiendo
 PREFERENCES_WRITING_ENABLE_AUTOCOMP_CALLTIPS
@@ -2648,22 +2648,18 @@ PREFERENCES_PATHS_1
 Rutas 1
 PREFERENCES_PATHS_TEMP
 Directorio temporal
-PREFERENCES_PATHS_MINGW
-Directorio de MinGW (requiere reiniciar ZinjaI)
 PREFERENCES_PATHS_PROJECTS
 Directorio de proyectos
 PREFERENCES_PATHS_WXWIDGETS_HELP_INDEX
 Indice de ayuda wxWidgets
-PREFERENCES_COMMANDS_GPP
-Comando del compilador C++
-PREFERENCES_COMMANDS_GCC
-Comando del compilador C
 PREFERENCES_COMMANDS_GDB
 Comando del depurador
 PREFERENCES_COMMANDS_CONSOLE
 Comando de la terminal
 PREFERENCES_CREATE_ICONS
 Crear/Actualizar accesos directos en el escritorio/menú del sistema...
+PREFERENCES_NOTE_GCC_PATHS
+Nota: Las configuración de las rutas relacionadas al compilador se realiza\ndesde la pestaña \"Programa/Proyecto\" utilizando el botón \"...\" de la\nopción \"Herramientas de compilación\".
 PREFERENCES_COMMANDS_EXPLORER
 Comando del explorador de archivos
 PREFERENCES_COMMANDS_IMAGE_VIEWER
@@ -2695,7 +2691,7 @@ Barra de Herramientas <{1}>
 PREFERENCES_TOOLBARS_RESET_WARNING
 Perdera todas las modificiaciones realizadas a las barras\n de herramientas. ¿Desea continuar?
 LANG_MAX_JOBS_TIP
-Este campo define la cantidad de objetos que se compilan en simultaneo al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad de nucleos, o la mitad son valores recomendables. Consulte la ayuda para más detalles. ZinjaI detecta en el sistema actual <{1}> nucleos
+Este campo define la cantidad de objetos que se compilan en simultaneo al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad de nucleos, o la mitad son valores recomendables. Consulte la ayuda para más detalles. ZinjaI detecta en el sistema actual <{1}> nucleos.
 PROJECTCONFIG_CAPTION
 Opciones de Compilación y Ejecución
 PROJECTCONFIG_USE_PROFILE
@@ -2724,14 +2720,16 @@ PROJECTCONFIG_LINKING_EXTRA_PATHS
 Directorios adicionales para buscar bibliotecas
 PROJECTCONFIG_LINKING_EXTRA_LIBS
 Bibliotecas a enlazar
+PROJECTCONFIG_DEBUG_INFO
+Información para depuración
 PROJECTCONFIG_DEBUG_INFO_KEEP
 Mantener en el binario
 PROJECTCONFIG_DEBUG_INFO_COPY
 Extraer a un archivo separado
 PROJECTCONFIG_DEBUG_INFO_STRIP
 Eliminar del binario
-PROJECTCONFIG_DEBUG_INFO
-Información para depuración
+PROJECTCONFIG_LTO
+Habilitar optimizaciones durante el enlazado (LTO)
 PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM
 Es un programa de consola
 PROJECTCONFIG_LINKING_FORCE_RELINK
@@ -2742,6 +2740,8 @@ PROJECTCONFIG_GENERAL_MANIFEST_PATH
 Archivo manifest.xml (solo Windows)
 PROJECTCONFIG_GENERAL_EXE_PATH
 Ubicacion del ejecutable
+PROJECTCONFIG_GENERAL_EXEC_METHOD
+Mecanismo de ejecución
 PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR
 Regular (se lanza directamente el ejecutable)
 PROJECTCONFIG_GENERAL_EXEC_METHOD_WRAPPER
@@ -2750,8 +2750,6 @@ PROJECTCONFIG_GENERAL_EXEC_METHOD_INI
 Con inicialización (se ejecuta un script antes)
 PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT
 Solo script (el script deberá lanzar el ejecutable)
-PROJECTCONFIG_GENERAL_EXEC_METHOD
-Mecanismo de ejecución
 PROJECTCONFIG_GENERAL_SCRIPT
 Script para ejecución/comando wrapper
 PROJECTCONFIG_GENERAL_WORKDIR
@@ -2760,14 +2758,14 @@ PROJECTCONFIG_GENERAL_RUNNING_ARGS
 Argumentos para la ejecucion
 PROJECTCONFIG_GENERAL_ASK_ARGS
 Siempre pedir argumentos al ejecutar
+PROJECTCONFIG_GENERAL_WAIT_KEY
+Esperar una tecla luego de la ejecucion
 PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER
 Nunca
 PROJECTCONFIG_GENERAL_WAIT_KEY_ERROR
 En caso de error
 PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS
 Siempre
-PROJECTCONFIG_GENERAL_WAIT_KEY
-Esperar una tecla luego de la ejecucion
 PROJECTCONFIG_GENERAL_ENV_VARS
 Variables de entorno
 PROJECTCONFIG_COMPILING_STD_DEFAULT
@@ -2804,8 +2802,6 @@ PROJECTCONFIG_COMPILING_OPTIM_DEBUG
 Depuración
 PROJECTCONFIG_COMPILING_OPTIM_FAST
 Velocidad
-PROJECTCONFIG_LTO
-LTO
 PROJECTCONFIG_GENERAL_TEMP_FOLDER
 Directorio para archivos temporales e intermedios
 PROJECTCONFIG_PROFILE_NAME

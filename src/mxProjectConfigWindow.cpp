@@ -148,115 +148,99 @@ wxPanel *mxProjectConfigWindow::CreateQuickHelpPanel (wxNotebook *notebook) {
 
 wxPanel *mxProjectConfigWindow::CreateLinkingPanel (wxNotebook *notebook) {
 
-	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	
+	sizer.BeginText( LANG(PROJECTCONFIG_LINKING_EXTRA_ARGS,"Parametros extra para el enlazado") )
+		.Value(configuration->linking_extra).Button(mxID_PROJECT_CONFIG_LINK_EXTRA_BUTTON)
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern).EndText(linking_extra_options);
+			
+	sizer.BeginText( LANG(PROJECTCONFIG_LINKING_EXTRA_PATHS,"Directorios adicionales para buscar bibliotecas") )
+		.Value(configuration->libraries_dirs).Button(mxID_PROJECT_CONFIG_LINK_DIRS_BUTTON)
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern).EndText(linking_libraries_dirs);
+			
+	sizer.BeginText( LANG(PROJECTCONFIG_LINKING_EXTRA_LIBS,"Bibliotecas a enlazar") )
+		.Value(configuration->libraries).Button(mxID_PROJECT_CONFIG_LINK_LIBS_BUTTON)
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern).EndText(linking_libraries);
 
-	linking_extra_options = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_LINKING_EXTRA_ARGS,"Parametros extra para el enlazado"),configuration->linking_extra,mxID_PROJECT_CONFIG_LINK_EXTRA_BUTTON);
-	wx_noexe.Add(linking_extra_options,true);
-	wx_extern.Add(linking_extra_options,true);
+	sizer.BeginCombo( LANG(PROJECTCONFIG_DEBUG_INFO,"Información para depuración") )
+		.Add(LANG(PROJECTCONFIG_DEBUG_INFO_KEEP,"Mantener en el binario"))
+		.Add(LANG(PROJECTCONFIG_DEBUG_INFO_COPY,"Extraer a un archivo separado"))
+		.Add(LANG(PROJECTCONFIG_DEBUG_INFO_STRIP,"Eliminar del binario"))
+		.Select(configuration->strip_executable)
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern)
+		.EndCombo(linking_strip_executable);
+			
 	
-	linking_libraries_dirs = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_LINKING_EXTRA_PATHS,"Directorios adicionales para buscar bibliotecas"),configuration->libraries_dirs,mxID_PROJECT_CONFIG_LINK_DIRS_BUTTON);
-	wx_noexe.Add(linking_libraries_dirs,true);
-	wx_extern.Add(linking_libraries_dirs,true);
-	
-	linking_libraries = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_LINKING_EXTRA_LIBS,"Bibliotecas a enlazar"),configuration->libraries,mxID_PROJECT_CONFIG_LINK_LIBS_BUTTON);
-	wx_noexe.Add(linking_libraries,true);
-	wx_extern.Add(linking_libraries,true);
+	sizer.BeginCheck( LANG(PROJECTCONFIG_LTO,"Habilitar optimizaciones durante el enlazado (LTO)") )
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern)
+		.Value(configuration->enable_lto).EndCheck(compiling_enable_lto);
 
-	wxArrayString strip_array;
-	strip_array.Add(LANG(PROJECTCONFIG_DEBUG_INFO_KEEP,"Mantener en el binario"));
-	strip_array.Add(LANG(PROJECTCONFIG_DEBUG_INFO_COPY,"Extraer a un archivo separado"));
-	strip_array.Add(LANG(PROJECTCONFIG_DEBUG_INFO_STRIP,"Eliminar del binario"));
-	linking_strip_executable = mxCCC::AddComboBox(sizer,panel,
-		LANG(PROJECTCONFIG_DEBUG_INFO,"Información para depuración"),strip_array,configuration->strip_executable);
-	wx_noexe.Add(linking_strip_executable);
-	wx_extern.Add(linking_strip_executable);
+	sizer.BeginCheck( LANG(PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM,"Es un programa de consola") )
+		.RegisterIn(wx_noexe) _if_win32( .RegisterIn(wx_extern), )
+		.Value(configuration->console_program).EndCheck(linking_console_program);
+				
+	sizer.BeginCheck( LANG(PROJECTCONFIG_LINKING_FORCE_RELINK,"Reenlazar obligatoriamente en la proxima compilacion/ejecucion") )
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern)
+		.Value(project->force_relink).EndCheck(linking_force_relink);
+			
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_ICON_PATH,"Icono del ejecutable (solo Windows)") )
+		.Value(configuration->icon_file).Button(mxID_PROJECT_CONFIG_ICON_DIR)
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern).EndText(linking_icon);
+			
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_MANIFEST_PATH,"Archivo manifest.xml (solo Windows)") )
+		.Value(configuration->manifest_file).Button(mxID_PROJECT_CONFIG_MANIFEST_DIR)
+		.RegisterIn(wx_noexe).RegisterIn(wx_extern).EndText(linking_manifest);
 	
-	
-	compiling_enable_lto = mxCCC::AddCheckBox(sizer,panel,
-											 LANG(PROJECTCONFIG_LTO,"Habilitar optimizaciones durante el enlazado (LTO)"),
-											 configuration->enable_lto);
-	wx_extern.Add(compiling_enable_lto);
-	wx_noexe.Add(compiling_enable_lto);
-
-	linking_console_program = mxCCC::AddCheckBox(sizer,panel,
-		LANG(PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM,"Es un programa de consola"),configuration->console_program);
-	wx_noexe.Add(linking_console_program);
-#ifdef __WIN32__
-	wx_extern.Add(linking_console_program);
-#endif
-
-	linking_force_relink = mxCCC::AddCheckBox(sizer,panel,
-		LANG(PROJECTCONFIG_LINKING_FORCE_RELINK,"Reenlazar obligatoriamente en la proxima compilacion/ejecucion"),project->force_relink);
-	wx_noexe.Add(linking_force_relink);
-	wx_extern.Add(linking_force_relink);
-	
-	linking_icon = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_ICON_PATH,"Icono del ejecutable (solo Windows)"),configuration->icon_file,mxID_PROJECT_CONFIG_ICON_DIR);
-	wx_noexe.Add(linking_icon);
-	wx_extern.Add(linking_icon);
-	linking_manifest = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_MANIFEST_PATH,"Archivo manifest.xml (solo Windows)"),configuration->manifest_file,mxID_PROJECT_CONFIG_MANIFEST_DIR);
-	wx_noexe.Add(linking_manifest);
-	wx_extern.Add(linking_manifest);
-	
-	panel->SetSizerAndFit(sizer);
+	sizer.SetAndFit();
 	return panel;
 
 }
 
 wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 	
-	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
+	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+		
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_EXE_PATH,"Ubicacion del ejecutable") )
+		.Value(configuration->output_file).Button(mxID_PROJECT_GENERAL_EXE_PATH)
+		.RegisterIn(wx_noexe).EndText(general_output_file);
+					
+	sizer.BeginCombo( LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD,"Mecanismo de ejecución") )
+		.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR,"Regular (se lanza directamente el ejecutable)"))
+		.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_WRAPPER,"Mediante un wrapper (otro programa lanza al ejecutable)"))
+		.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_INI,"Con inicialización (se ejecuta un script antes)"))
+		.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT,"Solo script (el script deberá lanzar el ejecutable)"))
+		.Select(configuration->exec_method).Id(mxID_PROJECT_CONFIG_EXEC_METHOD).EndCombo(general_exec_method);
+					
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_SCRIPT,"Script para ejecución/comando wrapper") )
+		.Value(configuration->exec_script).Button(mxID_PROJECT_CONFIG_EXEC_SCRIPT)
+		.RegisterIn(wx_noscript).EndText(general_exec_script);
+					
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_WORKDIR,"Directorio de trabajo") )
+		.Value(configuration->working_folder).Button(mxID_PROJECT_CONFIG_WORKING_DIR)
+		.RegisterIn(wx_noexe).EndText(general_working_folder);
+	
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_RUNNING_ARGS,"Argumentos para la ejecucion") )
+		.Value(configuration->args).Button(mxID_PROJECT_CONFIG_ARGS_BUTTON)
+		.RegisterIn(wx_noexe).EndText(general_args);
+	
+	sizer.BeginCheck( LANG(PROJECTCONFIG_GENERAL_ASK_ARGS,"Siempre pedir argumentos al ejecutar") )
+		.Value(configuration->always_ask_args).RegisterIn(wx_noexe).EndCheck(general_always_ask_args);
+	
 
-	general_output_file = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_EXE_PATH,"Ubicacion del ejecutable"),configuration->output_file,mxID_PROJECT_GENERAL_EXE_PATH);
-	wx_noexe.Add(general_output_file,true);
-	
-	
-	wxArrayString exec_method_arr;
-	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_REGULAR,"Regular (se lanza directamente el ejecutable)"));
-	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_WRAPPER,"Mediante un wrapper (otro programa lanza al ejecutable)"));
-	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_INI,"Con inicialización (se ejecuta un script antes)"));
-	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT,"Solo script (el script deberá lanzar el ejecutable)"));
-	general_exec_method = mxCCC::AddComboBox(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD,"Mecanismo de ejecución"),exec_method_arr,configuration->exec_method,mxID_PROJECT_CONFIG_EXEC_METHOD);
-	
-	general_exec_script = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_SCRIPT,"Script para ejecución/comando wrapper"),configuration->exec_script,mxID_PROJECT_CONFIG_EXEC_SCRIPT);
-	wx_noscript.Add(general_exec_script,true);
-	
-	general_working_folder = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_WORKDIR,"Directorio de trabajo"),configuration->working_folder,mxID_PROJECT_CONFIG_WORKING_DIR);
-	wx_noexe.Add(general_working_folder,true);
-	
-	last_dir=configuration->working_folder;
-	
-	general_args = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_RUNNING_ARGS,"Argumentos para la ejecucion"),configuration->args,mxID_PROJECT_CONFIG_ARGS_BUTTON);
-	wx_noexe.Add(general_args,true);
-	
-	general_always_ask_args = mxCCC::AddCheckBox(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),configuration->always_ask_args);
-	wx_noexe.Add(general_always_ask_args);
-	
-	wxArrayString wait_cmb_lab;
-	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER,"Nunca"));
-	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_ERROR,"En caso de error"));
-	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS,"Siempre"));
-	general_wait_for_key = mxCCC::AddComboBox(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),wait_cmb_lab,configuration->wait_for_key);
-	wx_noexe.Add(general_wait_for_key,true);
-	
-	general_env_vars = mxCCC::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_ENV_VARS,"Variables de entorno"),configuration->env_vars,mxID_PROJECT_CONFIG_ENV_VARS);
-	wx_noexe.Add(general_env_vars,true);
-	
-	panel->SetSizerAndFit(sizer);
+	sizer.BeginCombo( LANG(PROJECTCONFIG_GENERAL_WAIT_KEY,"Esperar una tecla luego de la ejecucion") )
+		.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER,"Nunca"))
+		.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_ERROR,"En caso de error"))
+		.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS,"Siempre"))
+		.Select(configuration->wait_for_key).RegisterIn(wx_noexe)
+		.EndCombo(general_wait_for_key);
+					
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_ENV_VARS,"Variables de entorno") )
+		.Value(configuration->env_vars).Button(mxID_PROJECT_CONFIG_ENV_VARS)
+		.RegisterIn(wx_noexe).EndText(general_env_vars);
+					
+	sizer.SetAndFit();
 
 	return panel;
 
@@ -342,7 +326,7 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 		.Value(configuration->temp_folder).Button(mxID_PROJECT_CONFIG_TEMP_DIR)
 		.RegisterIn(wx_extern).EndText(compiling_temp_folder);
 			
-	sizer.Done();
+	sizer.SetAndFit();
 	return panel;
 
 }

@@ -17,32 +17,18 @@ BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 	EVT_CLOSE(mxValgrindConfigDialog::OnClose)
 END_EVENT_TABLE()
 	
-mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent,wxID_ANY,"Valgrind Setup",wxDefaultPosition,wxDefaultSize) {
-	wxBoxSizer *sizer=new wxBoxSizer(wxVERTICAL);
+mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent)
+	: wxDialog(parent,wxID_ANY,"Valgrind Setup",wxDefaultPosition,wxDefaultSize) 
+{
 	
-	wxArrayString tools;
-	tools.Add("memcheck");
-	tools.Add("cachegrind");
-	tools.Add("callgrind");
-	tools.Add("massif");
-	tools.Add("helgrind");
-	tools.Add("drd");
+	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(this);
 	
-	cmb_tool=mxCCC::AddComboBox(sizer,this,"Tool",tools,0,wxID_ANY,false,true);
-	suppressions=mxCCC::AddTextCtrl(sizer,this,"Suppression files:","");
-	additional_args=mxCCC::AddTextCtrl(sizer,this,"Additional arguments:","");
-	
-	wxSizer *bottomSizer=new wxBoxSizer(wxHORIZONTAL);
-	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	SetEscapeId(wxID_CANCEL);
-	wxButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	ok_button->SetDefault(); 
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(ok_button,sizers->BA5);
-	sizer->Add(bottomSizer,sizers->Right);
+	sizer.BeginCombo("Tool")
+		.Add("memcheck").Add("cachegrind").Add("callgrind")
+		.Add("massif").Add("helgrind").Add("drd")
+		.Select(0).EndCombo(cmb_tool);
+	sizer.BeginText( "Suppression files" ).EndText(suppressions);
+	sizer.BeginText( "Additional arguments" ).EndText(additional_args);
 	
 	if (project) {
 		valgrind_configuration *valgrind_config = project->GetValgrindConfiguration();
@@ -50,7 +36,7 @@ mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent
 		suppressions->SetValue(valgrind_config->suppressions);
 	}
 	
-	SetSizerAndFit(sizer);
+	sizer.BeginBottom().Help().Ok().Cancel().EndBottom(this).SetAndFit();
 }
 
 void mxValgrindConfigDialog::OnButtonOk (wxCommandEvent & evt) {

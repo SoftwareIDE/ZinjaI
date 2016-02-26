@@ -72,9 +72,10 @@ mxBySourceCompilingOpts::mxBySourceCompilingOpts(wxWindow *parent, project_file_
 	top_sizer->Add(right_sizer,wxSizerFlags().Proportion(2).Expand());
 	
 	main_sizer->Add(top_sizer,sizers->Exp1);
-	main_sizer->Add(mxUT::MakeGenericButtonsSizer(this,true),sizers->Exp0);
-	SetEscapeId(wxID_CANCEL);
-	SetSizerAndFit(main_sizer);
+	
+	mxCCC::MainSizer(this,main_sizer)
+		.BeginBottom().Help().Ok().Cancel().EndBottom(this)
+		.SetAndFit();
 	
 	fg.Release(); wxCommandEvent e; OnList(e);
 	

@@ -8,6 +8,9 @@
 #include "mxSizers.h"
 #include <wx/valtext.h>
 #include "widgetDisabler.h"
+#include "mxBitmapButton.h"
+#include <wx/bmpbuttn.h>
+#include "Language.h"
 
 static wxStaticText *s_last_label; ///< guarda la ultima etiqueta que se uso en alguno de los AddAlgo
 wxStaticText * mxCCC::GetLastLabel ( ) { return s_last_label; }
@@ -148,17 +151,36 @@ void mxCCC::MainSizer::BaseControl<T1,T2>::RegisterInDisablers(wxControl *ctrl1,
 
 mxCCC::MainSizer &mxCCC::MainSizer::MainText::EndText(wxTextCtrl *&text_ctrl) {
 	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer; wxButton *button = nullptr;
-	text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize, 0);
+	if (!m_is_numeric) text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize, 0);
+	else text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize,  wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxStaticText *static_text = new wxStaticText(parent,wxID_ANY,m_label+":   ", wxDefaultPosition, wxDefaultSize, 0);
-	sizer->Add(static_text,sizers->BLRT5_Exp0);
-	if (m_button_id!=mxID_NULL) {
+	if (!m_one_line) sizer->Add(static_text,sizers->BLRT5_Exp0);
+	if (m_button_id!=mxID_NULL || m_one_line) {
 		wxBoxSizer *inner_sizer = new wxBoxSizer(wxHORIZONTAL);
+		if (m_one_line) inner_sizer->Add(static_text,sizers->Center);
 		inner_sizer->Add(text_ctrl, sizers->Exp1);
-		button = new wxButton(parent,m_button_id,m_button_text,wxDefaultPosition,m_button_text== _T("...")?wxSize(30,10):wxSize(-1,10));
-		inner_sizer->Add(button, sizers->Exp0_Right);
-		sizer->Add(inner_sizer, sizers->BLRB5_Exp0);
+		if (m_button_id!=mxID_NULL) {
+			button = new wxButton(parent,m_button_id,m_button_text,wxDefaultPosition,m_button_text== _T("...")?wxSize(30,10):wxSize(-1,10));
+			inner_sizer->Add(button, sizers->Exp0_Right);
+		}
+		sizer->Add(inner_sizer, m_one_line?sizers->BA5_Exp0:sizers->BLRB5_Exp0);
 	} else {
 		sizer->Add(text_ctrl, sizers->BLRB5_Exp0);
+	}
+	RegisterInDisablers(static_text,text_ctrl,button);
+	return *m_sizer;
+}
+
+mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerText::EndText(wxTextCtrl *&text_ctrl) {
+	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer; wxButton *button = nullptr;
+	if (!m_is_numeric) text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize, 0);
+	else text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize,  wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
+	wxStaticText *static_text = new wxStaticText(parent,wxID_ANY,m_label+":   ", wxDefaultPosition, wxDefaultSize, 0);
+	sizer->Add(static_text,sizers->Center);
+	sizer->Add(text_ctrl, sizers->Exp0);
+	if (m_button_id!=mxID_NULL) {
+		button = new wxButton(parent,m_button_id,m_button_text,wxDefaultPosition,m_button_text== _T("...")?wxSize(30,10):wxSize(-1,10));
+		sizer->Add(button, sizers->Exp0_Right);
 	}
 	RegisterInDisablers(static_text,text_ctrl,button);
 	return *m_sizer;
@@ -180,8 +202,12 @@ mxCCC::MainSizer &mxCCC::MainSizer::MainCombo::EndCombo(wxComboBox *&combo_box) 
 	return *m_sizer;
 }
 
-void mxCCC::MainSizer::Done() { 
-	if (m_set_and_fit) m_parent->SetSizerAndFit(m_sizer); 
+void mxCCC::MainSizer::SetAndFit() { 
+	m_parent->SetSizerAndFit(m_sizer); 
+}
+
+void mxCCC::MainSizer::Set() { 
+	m_parent->SetSizer(m_sizer); 
 }
 
 mxCCC::MainSizer &mxCCC::MainSizer::InnerSizer::EndInnerSizer() {
@@ -209,7 +235,7 @@ mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerCombo::EndCombo
 	sizer->Add(combo_box,sizers->Exp1);
 	RegisterInDisablers(static_text, combo_box);
 	return *m_sizer;
-}	
+}
 
 mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerCheck::EndCheck(wxCheckBox *&check_box) {
 	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer;
@@ -217,5 +243,54 @@ mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerCheck::EndCheck
 	check_box->SetValue(m_value);
 	sizer->Add(check_box, sizers->Center);
 	RegisterInDisablers(check_box);
+	return *m_sizer;
+}
+
+mxCCC::MainSizer &mxCCC::MainSizer::MainCheck::EndCheck(wxCheckBox *&check_box) {
+	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
+	check_box = new wxCheckBox(parent, m_id, m_label);
+	sizer->Add(check_box, sizers->BA5_Exp0);
+	check_box->SetValue(m_value);
+	RegisterInDisablers(check_box);
+	return *m_sizer;
+}
+
+mxCCC::MainSizer &mxCCC::MainSizer::MainLabel::EndLabel() {
+	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
+	wxStaticText *static_text = new wxStaticText(parent, m_id, m_label, wxDefaultPosition, wxDefaultSize, m_center?wxALIGN_CENTRE:0);
+	sizer->Add( static_text, m_center?sizers->BA5_Center:sizers->BA5);
+	return *m_sizer;
+}
+
+mxCCC::MainSizer &mxCCC::MainSizer::MainButton::EndButton() {
+	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
+	sizer->Add(new wxButton(parent,m_id,m_label,wxDefaultPosition), sizers->BA10);
+	return *m_sizer;
+}
+
+mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerButton::EndButton() {
+	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer;
+	sizer->Add(new wxButton(parent,m_id,m_label,wxDefaultPosition,m_label=="..."?wxSize(30,10):wxDefaultSize), sizers->Exp0);
+	return *m_sizer;
+}
+
+mxCCC::MainSizer &mxCCC::MainSizer::BottomSizer::EndBottom(wxDialog *dialog) {
+	wxBoxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
+	if (m_help_id!=mxID_NULL) {
+		wxBitmapButton *help_button = new wxBitmapButton(m_sizer->m_parent,m_help_id,*bitmaps->buttons.help);
+		bottom_sizer->Add(help_button,sizers->BA5_Exp0);
+	}
+	bottom_sizer->AddStretchSpacer();
+	if (m_cancel_id!=mxID_NULL) {
+		wxButton *cancel_button = new mxBitmapButton(m_sizer->m_parent,m_cancel_id,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
+		if (dialog) dialog->SetEscapeId(wxID_CANCEL);
+		bottom_sizer->Add(cancel_button,sizers->BA5);
+	}
+	if (m_ok_id!=mxID_NULL) {
+		wxButton *ok_button = new mxBitmapButton(m_sizer->m_parent,m_ok_id,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
+		ok_button->SetDefault(); 
+		bottom_sizer->Add(ok_button,sizers->BA5);
+	}
+	m_sizer->m_sizer->Add(bottom_sizer,sizers->Exp0);
 	return *m_sizer;
 }

@@ -493,7 +493,7 @@ void mxMainWindow::OnToolsDiffClear(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsDoxyConfig(wxCommandEvent &event) {
-	if (project) new mxDoxyDialog();
+	if (project) new mxDoxyDialog(this);
 }
 
 void mxMainWindow::OnToolsDoxyGenerate(wxCommandEvent &event) {
