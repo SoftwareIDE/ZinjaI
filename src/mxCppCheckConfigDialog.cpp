@@ -14,6 +14,7 @@
 #include "mxEnumerationEditor.h"
 #include "mxMultipleChoiceEditor.h"
 #include "mxHelpWindow.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxCppCheckConfigDialog,wxDialog)
 	EVT_CHECKBOX(mxID_CPPCHECK_COPYCONFIG,mxCppCheckConfigDialog::OnCheckCopyConfig)
@@ -78,23 +79,23 @@ wxPanel *mxCppCheckConfigDialog::CreateGeneralPanel(wxNotebook *notebook) {
 	
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	
-	copy_from_config = mxUT::AddCheckBox(mySizer,panel,LANG(CPPCHECK_COPY_FROM_CONFIG,"Copiar configuración (macros definidas) de las opciones del proyecto"),ccc->copy_from_config,mxID_CPPCHECK_COPYCONFIG);
-	config_d = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_D,"  Configuraciones a verificar"),ccc->config_d,mxID_CPPCHECK_CONFIG_D,"...",false);
-	config_u = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_U,"  Configuraciones a saltear"),ccc->config_u,mxID_CPPCHECK_CONFIG_U,"...",false);
+	copy_from_config = mxCCC::AddCheckBox(mySizer,panel,LANG(CPPCHECK_COPY_FROM_CONFIG,"Copiar configuración (macros definidas) de las opciones del proyecto"),ccc->copy_from_config,mxID_CPPCHECK_COPYCONFIG);
+	config_d = mxCCC::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_D,"  Configuraciones a verificar"),ccc->config_d,mxID_CPPCHECK_CONFIG_D,"...",false);
+	config_u = mxCCC::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_CONFIG_U,"  Configuraciones a saltear"),ccc->config_u,mxID_CPPCHECK_CONFIG_U,"...",false);
 	
 	config_u->Enable(!copy_from_config->GetValue()); config_d->Enable(!copy_from_config->GetValue());
 	
-	style = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STYLE,"Verificaciones adicionales"),ccc->style,mxID_CPPCHECK_STYLE,"...");
+	style = mxCCC::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STYLE,"Verificaciones adicionales"),ccc->style,mxID_CPPCHECK_STYLE,"...");
 	
-	platform = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_PLATFORM,"Verificaciones especificas de una plataforma"),ccc->platform,mxID_CPPCHECK_PLATFORM);
+	platform = mxCCC::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_PLATFORM,"Verificaciones especificas de una plataforma"),ccc->platform,mxID_CPPCHECK_PLATFORM);
 	
-	standard = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STANDARD,"Verificaciones especificas de un estándar"),ccc->standard,mxID_CPPCHECK_STANDARD);
+	standard = mxCCC::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_STANDARD,"Verificaciones especificas de un estándar"),ccc->standard,mxID_CPPCHECK_STANDARD);
 	
-	suppress_ids = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_IDS,"Supresiones"),ccc->suppress_ids,mxID_CPPCHECK_SUPPRESS_IDS);
-	suppress_file = mxUT::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_FILE,"Archivo con lista de supresiones"),ccc->suppress_file,mxID_CPPCHECK_SUPPRESS_FILE);
-	inline_suppr = mxUT::AddCheckBox(mySizer,panel,LANG(CPPCHECK_INLINE_SUPPR,"Habilitar supresiones inline"),ccc->inline_suppr);
+	suppress_ids = mxCCC::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_IDS,"Supresiones"),ccc->suppress_ids,mxID_CPPCHECK_SUPPRESS_IDS);
+	suppress_file = mxCCC::AddDirCtrl(mySizer,panel,LANG(CPPCHECK_SUPPRESS_FILE,"Archivo con lista de supresiones"),ccc->suppress_file,mxID_CPPCHECK_SUPPRESS_FILE);
+	inline_suppr = mxCCC::AddCheckBox(mySizer,panel,LANG(CPPCHECK_INLINE_SUPPR,"Habilitar supresiones inline"),ccc->inline_suppr);
 	
-	save_in_project = mxUT::AddCheckBox(mySizer,panel,LANG(CPPCHECK_SAVE,"Guardar esta configuración con el proyecto"),ccc->save_in_project);
+	save_in_project = mxCCC::AddCheckBox(mySizer,panel,LANG(CPPCHECK_SAVE,"Guardar esta configuración con el proyecto"),ccc->save_in_project);
 	
 	panel->SetSizer(mySizer);
 	return panel;
@@ -138,8 +139,8 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	
 	sizer->Add(src_sizer,sizers->Exp1);
 	
-	additional_files = mxUT::AddDirCtrl(sizer,panel,LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicioneles a analizar"),ccc->additional_files,mxID_CPPCHECK_ADDITIONAL_FILES);
-	exclude_headers = mxUT::AddCheckBox(sizer,panel,LANG(CPPCHECK_EXCLUDE_HEADERS,"Omitir archivos de cabeceras"),ccc->exclude_headers,mxID_CPPCHECK_EXCLUDE_HEADERS);
+	additional_files = mxCCC::AddDirCtrl(sizer,panel,LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicioneles a analizar"),ccc->additional_files,mxID_CPPCHECK_ADDITIONAL_FILES);
+	exclude_headers = mxCCC::AddCheckBox(sizer,panel,LANG(CPPCHECK_EXCLUDE_HEADERS,"Omitir archivos de cabeceras"),ccc->exclude_headers,mxID_CPPCHECK_EXCLUDE_HEADERS);
 	
 	panel->SetSizer(sizer);
 	return panel;

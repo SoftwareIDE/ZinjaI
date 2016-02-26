@@ -10,6 +10,7 @@
 #include "parserData.h"
 #include "Language.h"
 #include <wx/textfile.h>
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxProjectStatistics, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxProjectStatistics::OnCloseButton)
@@ -25,19 +26,19 @@ mxProjectStatistics::mxProjectStatistics(wxWindow *parent) : wxDialog(parent, wx
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	cant_total = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_TOTAL,"Archivos en el Proyecto"),"");
-	cant_headers = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_HEADERS,"Cabeceras"),"",true);
-	cant_sources = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_SOURCES,"Fuentes"),"",true);
-	cant_others = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_OTHERS,"Otros"),"",true);
-	total_size = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_DISK_USAGE,"Tamaño en Disco (*)"),"12");
-	mxUT::AddStaticText(mySizer,this,"");
-	cant_lines = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_LINES,"Lineas de Codigo"),"");
-	cant_class = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_CLASSES,"Clases Definidas"),"",true);
-	cant_funcs = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_FUNCTIONS,"Funciones Definidas"),"",true);
-	cant_globs = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_GLOBALS,"Objetos Globales"),"",true);
-	cant_defs = mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_MACROS,"Macros de Preprocesador"),"",true);
-	mxUT::AddStaticText(mySizer,this,"");
-	mxUT::AddStaticText(mySizer,this,LANG(PROYSTATS_NOTE_DISK_USAGE,"(*) no incluye binarios ni temporales"));
+	cant_total = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_TOTAL,"Archivos en el Proyecto"),"");
+	cant_headers = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_HEADERS,"Cabeceras"),"",true);
+	cant_sources = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_SOURCES,"Fuentes"),"",true);
+	cant_others = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_OTHERS,"Otros"),"",true);
+	total_size = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_DISK_USAGE,"Tamaño en Disco (*)"),"12");
+	mxCCC::AddStaticText(mySizer,this,"");
+	cant_lines = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_LINES,"Lineas de Codigo"),"");
+	cant_class = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_CLASSES,"Clases Definidas"),"",true);
+	cant_funcs = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_FUNCTIONS,"Funciones Definidas"),"",true);
+	cant_globs = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_GLOBALS,"Objetos Globales"),"",true);
+	cant_defs = mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NUM_MACROS,"Macros de Preprocesador"),"",true);
+	mxCCC::AddStaticText(mySizer,this,"");
+	mxCCC::AddStaticText(mySizer,this,LANG(PROYSTATS_NOTE_DISK_USAGE,"(*) no incluye binarios ni temporales"));
 	
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
 	wxButton *close_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.ok,LANG(GENERAL_CANCEL_BUTTON,"&Cerrar"));

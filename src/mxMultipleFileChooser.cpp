@@ -15,6 +15,7 @@
 #include "mxHidenPanel.h"
 #include "Parser.h"
 #include "mxOSD.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxMultipleFileChooser, wxDialog)
 	EVT_BUTTON(mxID_MULTIPLEFILE_ADD,mxMultipleFileChooser::OnButtonOk)
@@ -30,11 +31,11 @@ END_EVENT_TABLE()
 mxMultipleFileChooser::mxMultipleFileChooser(wxString apath, bool modal) : wxDialog(main_window, wxID_ANY, LANG(MULTIFILE_CAPTION,"Agregar Archivos al Proyecto"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	
-	basedir = mxUT::AddDirCtrl(sizer,this,LANG(MULTIFILE_DIR,"1) Seleccione el directorio donde buscar los archivos"),apath.Len()?apath:project->last_dir,mxID_MULTIPLEFILE_DIR);
-	subdirs = mxUT::AddCheckBox(sizer,this,LANG(MULTIFILE_SUBDIRS,"buscar tambien en subdirectorios"),true);
-	filter  = mxUT::AddDirCtrl(sizer,this,LANG(MULTIFILE_FILTER,"2) Ingrese un filtro para los nombres de archivos"),"*",mxID_MULTIPLEFILE_FIND,LANG(MULTIFILE_FIND," Buscar "));
+	basedir = mxCCC::AddDirCtrl(sizer,this,LANG(MULTIFILE_DIR,"1) Seleccione el directorio donde buscar los archivos"),apath.Len()?apath:project->last_dir,mxID_MULTIPLEFILE_DIR);
+	subdirs = mxCCC::AddCheckBox(sizer,this,LANG(MULTIFILE_SUBDIRS,"buscar tambien en subdirectorios"),true);
+	filter  = mxCCC::AddDirCtrl(sizer,this,LANG(MULTIFILE_FILTER,"2) Ingrese un filtro para los nombres de archivos"),"*",mxID_MULTIPLEFILE_FIND,LANG(MULTIFILE_FIND," Buscar "));
 	
-	mxUT::AddStaticText(sizer,this,LANG(MULTIFILE_LIST,"Seleccione los archivos a agregar"));
+	mxCCC::AddStaticText(sizer,this,LANG(MULTIFILE_LIST,"Seleccione los archivos a agregar"));
 	list = new wxCheckListBox(this,wxID_ANY,wxDefaultPosition,wxSize(320,230));
 	list->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( mxMultipleFileChooser::OnListRightClick ), nullptr, this );
 	sizer->Add(list,sizers->BA5_Exp1);
@@ -44,7 +45,7 @@ mxMultipleFileChooser::mxMultipleFileChooser(wxString apath, bool modal) : wxDia
 	awhere.Add(LANG(MAINW_PT_HEADERS,"Cabeceras"));
 	awhere.Add(LANG(MAINW_PT_OTHERS,"Otros"));
 	awhere.Add(LANG(MAINW_PT_AUTO,"<determinar por extension>"));
-	cmb_where = mxUT::AddComboBox(sizer,this,LANG(MULTIFILE_WHERE,"Agregar en categoría"),awhere,3);
+	cmb_where = mxCCC::AddComboBox(sizer,this,LANG(MULTIFILE_WHERE,"Agregar en categoría"),awhere,3);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	

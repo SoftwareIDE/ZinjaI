@@ -15,6 +15,7 @@
 #include "mxHelpWindow.h"
 #include "mxSizers.h"
 #include "Language.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxFindDialog, wxDialog)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxFindDialog::OnHelpButton)
@@ -41,11 +42,11 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	combo_replace = new wxComboBox(this, wxID_ANY);
 	optSizer->Add(combo_replace,sizers->BLB5_Exp0);
 	
-	check_word = mxUT::AddCheckBox(optSizer,this,LANG(FIND_WHOLE_WORD,"Solo palabras completas"),false);
-	check_start = mxUT::AddCheckBox(optSizer,this,LANG(FIND_BEGINNING_OF_WORD,"Solo al comienzo de la palabra"),false);
-	check_case = mxUT::AddCheckBox(optSizer,this,LANG(FIND_MATCH_CASE,"Distinguir mayusculas y minusculas"),false);
-	check_nocomments = mxUT::AddCheckBox(optSizer,this,LANG(FIND_IGNORE_COMMENTS,"Ignorar comentarios"),false);
-	check_regexp = mxUT::AddCheckBox(optSizer,this,LANG(FIND_USE_REGULAR_EXPRESSIONS,"Es una expresion regular"),false);
+	check_word = mxCCC::AddCheckBox(optSizer,this,LANG(FIND_WHOLE_WORD,"Solo palabras completas"),false);
+	check_start = mxCCC::AddCheckBox(optSizer,this,LANG(FIND_BEGINNING_OF_WORD,"Solo al comienzo de la palabra"),false);
+	check_case = mxCCC::AddCheckBox(optSizer,this,LANG(FIND_MATCH_CASE,"Distinguir mayusculas y minusculas"),false);
+	check_nocomments = mxCCC::AddCheckBox(optSizer,this,LANG(FIND_IGNORE_COMMENTS,"Ignorar comentarios"),false);
+	check_regexp = mxCCC::AddCheckBox(optSizer,this,LANG(FIND_USE_REGULAR_EXPRESSIONS,"Es una expresion regular"),false);
 	wxArrayString scopes;
 	scopes.Add(LANG(FIND_SELECTION,"Seleccion"));
 	scopes.Add(LANG(FIND_CURRENT_FILE,"Archivo actual"));
@@ -54,8 +55,8 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	scopes.Add(LANG(FIND_ALL_PROJECT_HEADERS,"Todas las Cabeceras del Proyecto"));
 	scopes.Add(LANG(FIND_ALL_PROJECT_OTHERS,"Todos los Otros Archivos del Proyecto"));
 	scopes.Add(LANG(FIND_ALL_PROJECT_FILES,"Todos los Archivos del Proyecto"));
-	combo_scope = mxUT::AddComboBox(optSizer,this,LANG(FIND_FIND_SCOPE,"Buscar en"),scopes,1,mxID_FIND_SCOPE);
-	check_close = mxUT::AddCheckBox(optSizer,this,LANG(FIND_CLOSE_AFTER_FIND,"Cerrar este dialogo después de encontrar"),true);
+	combo_scope = mxCCC::AddComboBox(optSizer,this,LANG(FIND_FIND_SCOPE,"Buscar en"),scopes,1,mxID_FIND_SCOPE);
+	check_close = mxCCC::AddCheckBox(optSizer,this,LANG(FIND_CLOSE_AFTER_FIND,"Cerrar este dialogo después de encontrar"),true);
 	
 	replace_button = new mxBitmapButton (this, mxID_FIND_REPLACE, bitmaps->buttons.replace, LANG(FIND_REPLACE,"Reemplazar"));
 	replace_all_button = new mxBitmapButton (this, mxID_FIND_REPLACE_ALL, bitmaps->buttons.replace, LANG(FIND_REPLACE_ALL,"Reemplazar Todo"));

@@ -23,6 +23,7 @@
 #include "Toolchain.h"
 #include "mxToolchainOptions.h"
 #include "mxThreeDotsUtils.h"
+#include "mxCommonConfigControls.h"
 
 int mxProjectConfigWindow::last_page_index=0;
 
@@ -150,17 +151,17 @@ wxPanel *mxProjectConfigWindow::CreateLinkingPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 
-	linking_extra_options = mxUT::AddDirCtrl(sizer,panel,
+	linking_extra_options = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_EXTRA_ARGS,"Parametros extra para el enlazado"),configuration->linking_extra,mxID_PROJECT_CONFIG_LINK_EXTRA_BUTTON);
 	wx_noexe.Add(linking_extra_options,true);
 	wx_extern.Add(linking_extra_options,true);
 	
-	linking_libraries_dirs = mxUT::AddDirCtrl(sizer,panel,
+	linking_libraries_dirs = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_EXTRA_PATHS,"Directorios adicionales para buscar bibliotecas"),configuration->libraries_dirs,mxID_PROJECT_CONFIG_LINK_DIRS_BUTTON);
 	wx_noexe.Add(linking_libraries_dirs,true);
 	wx_extern.Add(linking_libraries_dirs,true);
 	
-	linking_libraries = mxUT::AddDirCtrl(sizer,panel,
+	linking_libraries = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_EXTRA_LIBS,"Bibliotecas a enlazar"),configuration->libraries,mxID_PROJECT_CONFIG_LINK_LIBS_BUTTON);
 	wx_noexe.Add(linking_libraries,true);
 	wx_extern.Add(linking_libraries,true);
@@ -169,35 +170,35 @@ wxPanel *mxProjectConfigWindow::CreateLinkingPanel (wxNotebook *notebook) {
 	strip_array.Add(LANG(PROJECTCONFIG_DEBUG_INFO_KEEP,"Mantener en el binario"));
 	strip_array.Add(LANG(PROJECTCONFIG_DEBUG_INFO_COPY,"Extraer a un archivo separado"));
 	strip_array.Add(LANG(PROJECTCONFIG_DEBUG_INFO_STRIP,"Eliminar del binario"));
-	linking_strip_executable = mxUT::AddComboBox(sizer,panel,
+	linking_strip_executable = mxCCC::AddComboBox(sizer,panel,
 		LANG(PROJECTCONFIG_DEBUG_INFO,"Información para depuración"),strip_array,configuration->strip_executable);
 	wx_noexe.Add(linking_strip_executable);
 	wx_extern.Add(linking_strip_executable);
 	
 	
-	compiling_enable_lto = mxUT::AddCheckBox(sizer,panel,
+	compiling_enable_lto = mxCCC::AddCheckBox(sizer,panel,
 											 LANG(PROJECTCONFIG_LTO,"Habilitar optimizaciones durante el enlazado (LTO)"),
 											 configuration->enable_lto);
 	wx_extern.Add(compiling_enable_lto);
 	wx_noexe.Add(compiling_enable_lto);
 
-	linking_console_program = mxUT::AddCheckBox(sizer,panel,
+	linking_console_program = mxCCC::AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_IS_CONSOLE_PROGRAM,"Es un programa de consola"),configuration->console_program);
 	wx_noexe.Add(linking_console_program);
 #ifdef __WIN32__
 	wx_extern.Add(linking_console_program);
 #endif
 
-	linking_force_relink = mxUT::AddCheckBox(sizer,panel,
+	linking_force_relink = mxCCC::AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_LINKING_FORCE_RELINK,"Reenlazar obligatoriamente en la proxima compilacion/ejecucion"),project->force_relink);
 	wx_noexe.Add(linking_force_relink);
 	wx_extern.Add(linking_force_relink);
 	
-	linking_icon = mxUT::AddDirCtrl(sizer,panel,
+	linking_icon = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_ICON_PATH,"Icono del ejecutable (solo Windows)"),configuration->icon_file,mxID_PROJECT_CONFIG_ICON_DIR);
 	wx_noexe.Add(linking_icon);
 	wx_extern.Add(linking_icon);
-	linking_manifest = mxUT::AddDirCtrl(sizer,panel,
+	linking_manifest = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_MANIFEST_PATH,"Archivo manifest.xml (solo Windows)"),configuration->manifest_file,mxID_PROJECT_CONFIG_MANIFEST_DIR);
 	wx_noexe.Add(linking_manifest);
 	wx_extern.Add(linking_manifest);
@@ -212,7 +213,7 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 
-	general_output_file = mxUT::AddDirCtrl(sizer,panel,
+	general_output_file = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_EXE_PATH,"Ubicacion del ejecutable"),configuration->output_file,mxID_PROJECT_GENERAL_EXE_PATH);
 	wx_noexe.Add(general_output_file,true);
 	
@@ -222,24 +223,24 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_WRAPPER,"Mediante un wrapper (otro programa lanza al ejecutable)"));
 	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_INI,"Con inicialización (se ejecuta un script antes)"));
 	exec_method_arr.Add(LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD_SCRIPT,"Solo script (el script deberá lanzar el ejecutable)"));
-	general_exec_method = mxUT::AddComboBox(sizer,panel,
+	general_exec_method = mxCCC::AddComboBox(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_EXEC_METHOD,"Mecanismo de ejecución"),exec_method_arr,configuration->exec_method,mxID_PROJECT_CONFIG_EXEC_METHOD);
 	
-	general_exec_script = mxUT::AddDirCtrl(sizer,panel,
+	general_exec_script = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_SCRIPT,"Script para ejecución/comando wrapper"),configuration->exec_script,mxID_PROJECT_CONFIG_EXEC_SCRIPT);
 	wx_noscript.Add(general_exec_script,true);
 	
-	general_working_folder = mxUT::AddDirCtrl(sizer,panel,
+	general_working_folder = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_WORKDIR,"Directorio de trabajo"),configuration->working_folder,mxID_PROJECT_CONFIG_WORKING_DIR);
 	wx_noexe.Add(general_working_folder,true);
 	
 	last_dir=configuration->working_folder;
 	
-	general_args = mxUT::AddDirCtrl(sizer,panel,
+	general_args = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_RUNNING_ARGS,"Argumentos para la ejecucion"),configuration->args,mxID_PROJECT_CONFIG_ARGS_BUTTON);
 	wx_noexe.Add(general_args,true);
 	
-	general_always_ask_args = mxUT::AddCheckBox(sizer,panel,
+	general_always_ask_args = mxCCC::AddCheckBox(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_ASK_ARGS,"Siempre pedir argumentos al ejecutar"),configuration->always_ask_args);
 	wx_noexe.Add(general_always_ask_args);
 	
@@ -247,11 +248,11 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_NEVER,"Nunca"));
 	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_ERROR,"En caso de error"));
 	wait_cmb_lab.Add(LANG(PROJECTCONFIG_GENERAL_WAIT_KEY_ALWAYS,"Siempre"));
-	general_wait_for_key = mxUT::AddComboBox(sizer,panel,
+	general_wait_for_key = mxCCC::AddComboBox(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_WAIT_KEY,"Esperar una tecla luego de la ejecucion"),wait_cmb_lab,configuration->wait_for_key);
 	wx_noexe.Add(general_wait_for_key,true);
 	
-	general_env_vars = mxUT::AddDirCtrl(sizer,panel,
+	general_env_vars = mxCCC::AddDirCtrl(sizer,panel,
 		LANG(PROJECTCONFIG_GENERAL_ENV_VARS,"Variables de entorno"),configuration->env_vars,mxID_PROJECT_CONFIG_ENV_VARS);
 	wx_noexe.Add(general_env_vars,true);
 	
@@ -264,95 +265,84 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 
 wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 	
-	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	
-	compiling_extra_options = mxUT::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion"),configuration->compiling_extra,mxID_PROJECT_CONFIG_COMPILE_EXTRA_BUTTON);
-	wx_extern.Add(compiling_extra_options,true);
+	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+		
+	sizer.BeginText( LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion") )
+		.Value(configuration->compiling_extra).Button(mxID_PROJECT_CONFIG_COMPILE_EXTRA_BUTTON)
+		.RegisterIn(wx_extern).EndText(compiling_extra_options);
+						
+		
+	sizer.BeginText( LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir") )
+		.Value(configuration->macros).Button(mxID_PROJECT_CONFIG_COMPILE_MACROS_BUTTON)
+		.RegisterIn(wx_extern).EndText(compiling_macros);
+							
+		
+	sizer.BeginText( LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras") )
+		.Value(configuration->headers_dirs).Button(mxID_PROJECT_CONFIG_COMPILE_DIRS_BUTTON)
+		.RegisterIn(wx_extern).EndText(compiling_headers_dirs);
+							
 
-	compiling_macros = mxUT::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir"),configuration->macros,mxID_PROJECT_CONFIG_COMPILE_MACROS_BUTTON);
-	wx_extern.Add(compiling_macros,true);
-
-	compiling_headers_dirs = mxUT::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras"),configuration->headers_dirs,mxID_PROJECT_CONFIG_COMPILE_DIRS_BUTTON);
-	wx_extern.Add(compiling_headers_dirs,true);
-	
-
-	wxBoxSizer *std_sizer=new wxBoxSizer(wxHORIZONTAL);
-	// c dialect
-	std_sizer->Add(new wxStaticText(panel,wxID_ANY,wxString(LANG(PROJECTCONFIG_COMPILING_STD,"Estandar:"))+"   C: "),sizers->Center);
-	wxArrayString c_aux; c_aux.Add(LANG(PROJECTCONFIG_COMPILING_STD_DEFAULT,"<predeterminado>")); 
-	c_aux.Add("c90"); c_aux.Add("gnu90"); c_aux.Add("c99"); 
-	c_aux.Add("gnu99"); c_aux.Add("c11"); c_aux.Add("gnu11");
-	compiling_std_c = new wxComboBox(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, c_aux, wxCB_READONLY);
-	if (configuration->std_c.Len() && c_aux.Index(configuration->std_c)!=wxNOT_FOUND) 
-		compiling_std_c->SetSelection(c_aux.Index(configuration->std_c)); else compiling_std_c->SetSelection(0);
-	compiling_std_c->SetMinSize(wxSize(50,-1)); std_sizer->Add(compiling_std_c,sizers->Exp1);
-	// c++ dialect
-	std_sizer->Add(new wxStaticText(panel,wxID_ANY,"   C++: "),sizers->Center);
-	wxArrayString cpp_aux; cpp_aux.Add(LANG(PROJECTCONFIG_COMPILING_STD_DEFAULT,"<predeterminado>")); 
-	cpp_aux.Add("c++98"); cpp_aux.Add("gnu++98"); cpp_aux.Add("c++03"); cpp_aux.Add("gnu++03"); 
-	cpp_aux.Add("c++11"); cpp_aux.Add("gnu++11"); cpp_aux.Add("c++14"); cpp_aux.Add("gnu++14");  cpp_aux.Add("c++1z"); cpp_aux.Add("gnu++1z");
-	compiling_std_cpp = new wxComboBox(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, cpp_aux, wxCB_READONLY);
-	if (configuration->std_cpp.Len() && cpp_aux.Index(configuration->std_cpp)!=wxNOT_FOUND) 
-		compiling_std_cpp->SetSelection(cpp_aux.Index(configuration->std_cpp)); else compiling_std_cpp->SetSelection(0);
-	compiling_std_cpp->SetMinSize(wxSize(50,-1)); std_sizer->Add(compiling_std_cpp,sizers->Exp1);
-	// pedantic option
-	std_sizer->Add(new wxStaticText(panel,wxID_ANY,"  "),sizers->Center);
-	compiling_pedantic = new wxCheckBox(panel,wxID_ANY,LANG(PROJECTCONFIG_COMPILING_ONLY_ANSI,"estricto")); 
-	compiling_pedantic->SetValue(configuration->pedantic_errors);
-	std_sizer->Add(compiling_pedantic,sizers->Center);
-	// agregar
-	sizer->Add(std_sizer,sizers->BA5_Exp0);
-	wx_extern.Add(compiling_pedantic,true);
-	wx_extern.Add(compiling_std_c,true);
-	wx_extern.Add(compiling_std_cpp,true);
-	
-	wxBoxSizer *warnings_sizer = new wxBoxSizer(wxHORIZONTAL);
-	warnings_sizer->Add(new wxStaticText(panel,wxID_ANY,wxString(LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"))+": "),sizers->Center);
-	wxArrayString a_warnings;
-	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_NONE,"Ninguna"));
-	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_DEFAULT,"Predeterminadas"));
-	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_ALL,"Todas"));
-	a_warnings.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_ALL,"Extra"));
-	compiling_warnings_level = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,a_warnings);
-	compiling_warnings_level->SetSelection(configuration->warnings_level);
-	warnings_sizer->Add(compiling_warnings_level,sizers->Exp1);
-	wx_extern.Add(compiling_warnings_level,true);
-	compiling_warnings_as_errors = new wxCheckBox(panel,wxID_ANY,LANG(PROJECTCONFIG_WARNINGS_AS_ERRORS,"como errores")); 
-	compiling_warnings_as_errors->SetValue(configuration->warnings_as_errors);
-	warnings_sizer->AddSpacer(10);
-	warnings_sizer->Add(compiling_warnings_as_errors,sizers->Center);
-	wx_extern.Add(compiling_warnings_as_errors,true);
-	sizer->Add(warnings_sizer,sizers->BA5_Exp0);
-	
-	
-	wxArrayString a_debug;
-	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_NONE,"Ninguna"));
-	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_1,"Nivel 1"));
-	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_2,"Nivel 2"));
-	a_debug.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_3,"Nivel 3"));
-	compiling_debug_level = mxUT::AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"),a_debug, configuration->debug_level);
-	wx_extern.Add(compiling_debug_level,true);
-	
-	wxArrayString a_optimiz;
-	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_NONE,"Ninguna"));
-	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_1,"Nivel 1"));
-	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_2,"Nivel 2"));
-	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_3,"Nivel 3"));
-	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_SIZE,"Reducir Tamaño"));
-	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_DEBUG,"Depuración"));
-	a_optimiz.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_FAST,"Velocidad"));
-	compiling_optimization_level = mxUT::AddComboBox(sizer,panel,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"),a_optimiz, configuration->optimization_level);
-	wx_extern.Add(compiling_optimization_level,true);
-	
-	compiling_temp_folder = mxUT::AddDirCtrl(sizer,panel,
-		LANG(PROJECTCONFIG_GENERAL_TEMP_FOLDER,"Directorio para archivos temporales e intermedios"),configuration->temp_folder,mxID_PROJECT_CONFIG_TEMP_DIR);
-	wx_extern.Add(compiling_temp_folder,true);
-	
-	panel->SetSizerAndFit(sizer);
+	sizer.BeginInnerSizer()
+		.BeginLabel( LANG(PROJECTCONFIG_COMPILING_STD,"Estandar:") ).RegisterIn(wx_extern).EndLabel()
+		.Space(15)
+		.BeginCombo( "C" )
+			.Add(LANG(PROJECTCONFIG_COMPILING_STD_DEFAULT,"<predeterminado>"))
+			.Add("c90").Add("gnu90").Add("c99").Add("gnu99").Add("c11").Add("gnu11")
+			.Select(configuration->std_c).RegisterIn(wx_extern)
+			.EndCombo(compiling_std_c)
+		.Space(15)
+		.BeginCombo( "C++" )
+			.Add(LANG(PROJECTCONFIG_COMPILING_STD_DEFAULT,"<predeterminado>"))
+			.Add("c++98").Add("gnu++98").Add("c++03").Add("gnu++03")
+			.Add("c++11").Add("gnu++11").Add("c++14").Add("gnu++14")  
+			.Add("c++1z").Add("gnu++1z")
+			.Select(configuration->std_cpp).RegisterIn(wx_extern)
+			.EndCombo(compiling_std_cpp)
+		.Space(15)
+		.BeginCheck(LANG(PROJECTCONFIG_COMPILING_ONLY_ANSI,"estricto"))
+			.Value(configuration->pedantic_errors).RegisterIn(wx_extern)
+			.EndCheck(compiling_pedantic)
+		.EndInnerSizer();
+		
+	sizer.BeginInnerSizer()
+		.BeginCombo(LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"))
+			.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_NONE,"Ninguna"))
+			.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_DEFAULT,"Predeterminadas"))
+			.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_ALL,"Todas"))
+			.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_ALL,"Extra"))
+			.Select(configuration->warnings_level).RegisterIn(wx_extern)
+			.EndCombo(compiling_warnings_level)
+		.Space(15)
+		.BeginCheck(LANG(PROJECTCONFIG_WARNINGS_AS_ERRORS,"como errores"))
+			.Value(configuration->warnings_as_errors).RegisterIn(wx_extern)
+			.EndCheck(compiling_warnings_as_errors)
+		.EndInnerSizer();
+							
+	sizer.BeginCombo(LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_NONE,"Ninguna"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_1,"Nivel 1"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_2,"Nivel 2"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_LEVEL_3,"Nivel 3"))
+		.Select(configuration->debug_level).RegisterIn(wx_extern)
+		.EndCombo(compiling_debug_level);
+							
+	sizer.BeginCombo(LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_NONE,"Ninguna"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_1,"Nivel 1"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_2,"Nivel 2"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_LEVEL_3,"Nivel 3"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_SIZE,"Reducir Tamaño"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_DEBUG,"Depuración"))
+		.Add(LANG(PROJECTCONFIG_COMPILING_OPTIM_FAST,"Velocidad"))
+		.Select(configuration->optimization_level).RegisterIn(wx_extern)
+		.EndCombo(compiling_optimization_level);
+							
+	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_TEMP_FOLDER,"Directorio para archivos temporales e intermedios") )
+		.Value(configuration->temp_folder).Button(mxID_PROJECT_CONFIG_TEMP_DIR)
+		.RegisterIn(wx_extern).EndText(compiling_temp_folder);
+			
+	sizer.Done();
 	return panel;
 
 }
@@ -771,7 +761,7 @@ wxPanel *mxProjectConfigWindow::CreateLibsPanel (wxNotebook *notebook) {
 	sizer_h->Add(buttons,sizers->BA5_Center);
 	sizer->Add(sizer_h,sizers->BA5_Exp1);
 	
-	libtobuild_noexec = mxUT::AddCheckBox(sizer,panel,LANG(PROJECTCONFIG_LIBS_NOEXEC,"Generar solo bibliotecas (no generar ejecutable)"),configuration->dont_generate_exe,mxID_PROJECT_CONFIG_LIBS_DONT_EXE);
+	libtobuild_noexec = mxCCC::AddCheckBox(sizer,panel,LANG(PROJECTCONFIG_LIBS_NOEXEC,"Generar solo bibliotecas (no generar ejecutable)"),configuration->dont_generate_exe,mxID_PROJECT_CONFIG_LIBS_DONT_EXE);
 	wx_extern.Add(libtobuild_noexec);
 	
 	wxStaticText *st_warn1 = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_1,"Nota: estos cambios se aplican inmediatamente,"));

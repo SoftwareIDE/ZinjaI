@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include "mxCommonConfigControls.h"
 using namespace std;
 #include "mxComplementInstallerWindow.h"
 #include "mxBitmapButton.h"
@@ -41,13 +42,13 @@ mxComplementInstallerWindow::mxComplementInstallerWindow(wxWindow *parent):wxDia
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
-	mxUT::AddStaticText(tSizer,this,LANG(COMPLEMENTS_WHATIS,""
+	mxCCC::AddStaticText(tSizer,this,LANG(COMPLEMENTS_WHATIS,""
 		"Los complementos consisten en packs de archivos adicionales\n"
 		"para ZinjaI, que pueden incluir bibliotecas, documentación,\n"
 		"temas de íconos, plantillas de proyectos, indices para el \n"
 		"autocompletado, etc."
 		));
-	mxUT::AddStaticText(tSizer,this,LANG(COMPLEMENTS_INSTRUCCIONS,""
+	mxCCC::AddStaticText(tSizer,this,LANG(COMPLEMENTS_INSTRUCCIONS,""
 		"Para instalar un complemento debe: 1) descargarlo desde la\n"
 		"sección de descargas del sitio de ZinjaI (haga click\n"
 		"en el botón \"Descargar...\" para ir al sitio); 2) presionar\n"

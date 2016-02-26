@@ -16,6 +16,7 @@
 #include "mxMultipleChoiceEditor.h"
 #include "mxBySourceCompilingOpts.h"
 #include "mxInspectionsImprovingEditor.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxProjectGeneralConfig, wxDialog)
 	EVT_BUTTON(wxID_OK,mxProjectGeneralConfig::OnOkButton)
@@ -55,21 +56,21 @@ mxProjectGeneralConfig::mxProjectGeneralConfig() : wxDialog(main_window, wxID_AN
 wxPanel *mxProjectGeneralConfig::CreateTabGeneral(wxNotebook *notebook) {
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	project_name = mxUT::AddTextCtrl(sizer,panel,LANG(PROJECTGENERAL_NAME,"Nombre del proyecto"),project->project_name);
-	custom_tab = mxUT::AddCheckBox(sizer,panel,LANG(PROJECTGENERAL_CUSTOM_TABS,"Utilizar tabulado propio"),project->custom_tabs!=0,mxID_PROJECT_CONFIG_CUSTOM_TABS);
-	tab_width = mxUT::AddTextCtrl(sizer,panel,LANG(PROJECTGENERAL_TAB_WIDTH,"Ancho del tabulado"),project->custom_tabs==0?config->Source.tabWidth:project->custom_tabs,true);
-	tab_use_spaces = mxUT::AddCheckBox(sizer,panel,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY,true);
+	project_name = mxCCC::AddTextCtrl(sizer,panel,LANG(PROJECTGENERAL_NAME,"Nombre del proyecto"),project->project_name);
+	custom_tab = mxCCC::AddCheckBox(sizer,panel,LANG(PROJECTGENERAL_CUSTOM_TABS,"Utilizar tabulado propio"),project->custom_tabs!=0,mxID_PROJECT_CONFIG_CUSTOM_TABS);
+	tab_width = mxCCC::AddTextCtrl(sizer,panel,LANG(PROJECTGENERAL_TAB_WIDTH,"Ancho del tabulado"),project->custom_tabs==0?config->Source.tabWidth:project->custom_tabs,true);
+	tab_use_spaces = mxCCC::AddCheckBox(sizer,panel,LANG(PROJECTGENERAL_TAB_SPACE,"Colocar espacios en lugar de tabs"),project->custom_tabs==0?config->Source.tabUseSpaces:project->tab_use_spaces,wxID_ANY,true);
 	
-	mxUT::AddStaticText(sizer,panel,LANG(PROJECTGENERAL_PREFERRED_EXTENSIONS,"Extensiones preferidas:"),false);
+	mxCCC::AddStaticText(sizer,panel,LANG(PROJECTGENERAL_PREFERRED_EXTENSIONS,"Extensiones preferidas:"),false);
 	wxBoxSizer *ext_sizer = new wxBoxSizer(wxHORIZONTAL);
 	ext_sizer->AddSpacer(10);
-	default_fext_source = mxUT::AddShortTextCtrl(ext_sizer,panel,LANG(PROJECTGENERAL_DEFAULT_EXTENSIONS_SOURCE,"Fuentes"),project->default_fext_source);
-	default_fext_header = mxUT::AddShortTextCtrl(ext_sizer,panel,LANG(PROJECTGENERAL_DEFAULT_EXTENSIONS_HEADERS,"Cabeceras"),project->default_fext_header);
+	default_fext_source = mxCCC::AddShortTextCtrl(ext_sizer,panel,LANG(PROJECTGENERAL_DEFAULT_EXTENSIONS_SOURCE,"Fuentes"),project->default_fext_source);
+	default_fext_header = mxCCC::AddShortTextCtrl(ext_sizer,panel,LANG(PROJECTGENERAL_DEFAULT_EXTENSIONS_HEADERS,"Cabeceras"),project->default_fext_header);
 	sizer->Add(ext_sizer,sizers->Exp0);
 	
-	project_autocomp = mxUT::AddDirCtrl(sizer,panel,LANG(PROJECTGENERAL_AUTOCOMP_EXTRA,"Indices de autocompletado adicionales"),project->autocomp_extra,mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES);
-	project_autocodes = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de autocódigos"),project->autocodes_file,mxID_AUTOCODES_FILE);
-	project_debug_macros = mxUT::AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
+	project_autocomp = mxCCC::AddDirCtrl(sizer,panel,LANG(PROJECTGENERAL_AUTOCOMP_EXTRA,"Indices de autocompletado adicionales"),project->autocomp_extra,mxID_PROJECT_CONFIG_AUTOCOMP_INDEXES);
+	project_autocodes = mxCCC::AddDirCtrl(sizer,panel,LANG(PREFERENCES_WRITTING_AUTOCODES_FILE,"Archivo de definiciones de autocódigos"),project->autocodes_file,mxID_AUTOCODES_FILE);
+	project_debug_macros = mxCCC::AddDirCtrl(sizer,panel,LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"),project->macros_file,mxID_DEBUG_MACROS);
 	tab_width->Enable(custom_tab->GetValue());
 	tab_use_spaces->Enable(custom_tab->GetValue());
 	sizer->Add(new wxButton(panel,mxID_PROJECT_CONFIG_AUTOIMPROVE_TEMPLATES,LANG(PROJECTGENERAL_AUTOIMPROVE_TEMPLATES," Mejora de inspecciones según tipo ")),sizers->BA5);

@@ -8,6 +8,7 @@
 #include "mxSizers.h"
 #include "mxHelpWindow.h"
 #include "ProjectManager.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 	EVT_BUTTON(wxID_OK,mxValgrindConfigDialog::OnButtonOk)
@@ -27,9 +28,9 @@ mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent):wxDialog(parent
 	tools.Add("helgrind");
 	tools.Add("drd");
 	
-	cmb_tool=mxUT::AddComboBox(sizer,this,"Tool",tools,0,wxID_ANY,false,true);
-	suppressions=mxUT::AddTextCtrl(sizer,this,"Suppression files:","");
-	additional_args=mxUT::AddTextCtrl(sizer,this,"Additional arguments:","");
+	cmb_tool=mxCCC::AddComboBox(sizer,this,"Tool",tools,0,wxID_ANY,false,true);
+	suppressions=mxCCC::AddTextCtrl(sizer,this,"Suppression files:","");
+	additional_args=mxCCC::AddTextCtrl(sizer,this,"Additional arguments:","");
 	
 	wxSizer *bottomSizer=new wxBoxSizer(wxHORIZONTAL);
 	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));

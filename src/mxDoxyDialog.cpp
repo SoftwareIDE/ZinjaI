@@ -7,6 +7,7 @@
 #include "ConfigManager.h"
 #include "mxHelpWindow.h"
 #include "Language.h"
+#include "mxCommonConfigControls.h"
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxDoxyDialog, wxDialog)
@@ -92,9 +93,9 @@ wxPanel *mxDoxyDialog::CreateGeneralPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
-	name_ctrl = mxUT::AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_NAME,"Nombre del Proyecto"),dox->name);
-	version_ctrl = mxUT::AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_VER,"Version del proyecto"),dox->version);
-	destdir_ctrl = mxUT::AddDirCtrl(sizer,panel,LANG(DOXYCONF_DEST_DIR,"Directorio destino"),dox->destdir,mxID_DOXYDIALOG_DEST);
+	name_ctrl = mxCCC::AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_NAME,"Nombre del Proyecto"),dox->name);
+	version_ctrl = mxCCC::AddTextCtrl(sizer,panel,LANG(DOXYCONF_PROJECT_VER,"Version del proyecto"),dox->version);
+	destdir_ctrl = mxCCC::AddDirCtrl(sizer,panel,LANG(DOXYCONF_DEST_DIR,"Directorio destino"),dox->destdir,mxID_DOXYDIALOG_DEST);
 	
 	int idx;
 	wxArrayString array1;
@@ -109,12 +110,12 @@ wxPanel *mxDoxyDialog::CreateGeneralPanel (wxNotebook *notebook) {
 		else idx = 0;
 	} else
 		idx = 3;
-	base_files_ctrl = mxUT::AddComboBox(sizer,panel,LANG(DOXYCONF_WICH_FILES,"Archivos a procesar"),array1,idx);
+	base_files_ctrl = mxCCC::AddComboBox(sizer,panel,LANG(DOXYCONF_WICH_FILES,"Archivos a procesar"),array1,idx);
 	
-	extra_files_ctrl = mxUT::AddTextCtrl(sizer,panel,LANG(DOXYCONF_EXTRA_FILES,"Archivos adicionales a procesar"),dox->extra_files);
-	exclude_files_ctrl = mxUT::AddTextCtrl(sizer,panel,LANG(DOXYCONF_FILES_TO_EXCLUDE,"Archivos a excluir al procesar"),dox->exclude_files);
+	extra_files_ctrl = mxCCC::AddTextCtrl(sizer,panel,LANG(DOXYCONF_EXTRA_FILES,"Archivos adicionales a procesar"),dox->extra_files);
+	exclude_files_ctrl = mxCCC::AddTextCtrl(sizer,panel,LANG(DOXYCONF_FILES_TO_EXCLUDE,"Archivos a excluir al procesar"),dox->exclude_files);
 	
-	save_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_SAVE_WITH_PROJECT,"Guardar con el proyecto"),dox->save);
+	save_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_SAVE_WITH_PROJECT,"Guardar con el proyecto"),dox->save);
 	
 	panel->SetSizer(sizer);
 	return panel;
@@ -127,7 +128,7 @@ wxPanel *mxDoxyDialog::CreateExtraPanel (wxNotebook *notebook) {
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
 	extra_conf = new wxTextCtrl(panel,wxID_ANY,dox->extra_conf,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
-	mxUT::AddStaticText(sizer,panel,LANG(DOXYCONF_EXTRA_LABEL,"El texto de este campo se agregara sin cambios en el\n"
+	mxCCC::AddStaticText(sizer,panel,LANG(DOXYCONF_EXTRA_LABEL,"El texto de este campo se agregara sin cambios en el\n"
 																 "Doxyfile. Puede utilizarlo para definir parametros\n"
 																 "no contemplados en este cuadro de dialogo."));
 	sizer->Add(extra_conf,sizers->BA10_Exp1);
@@ -147,19 +148,19 @@ wxPanel *mxDoxyDialog::CreateMorePanel (wxNotebook *notebook) {
 	array2.Add(LANG(DOXYCONF_LANG_ES,"Espanol"));
 	array2.Add(LANG(DOXYCONF_LANG_EN,"Ingles"));
 	if (!dox || dox->lang==_T("Spanish")) idx = 0; else idx=1;
-	lang_ctrl = mxUT::AddComboBox(sizer,panel,LANG(DOXYCONF_LANG,"Idioma"),array2,idx);
+	lang_ctrl = mxCCC::AddComboBox(sizer,panel,LANG(DOXYCONF_LANG,"Idioma"),array2,idx);
 
-	base_path_ctrl = mxUT::AddDirCtrl(sizer,panel,LANG(DOXYCONF_BASE_DIR,"Directorio base"),dox->base_path,mxID_DOXYDIALOG_BASE);
+	base_path_ctrl = mxCCC::AddDirCtrl(sizer,panel,LANG(DOXYCONF_BASE_DIR,"Directorio base"),dox->base_path,mxID_DOXYDIALOG_BASE);
 	
-	preprocess_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_ENABLE_PREPROC,"Habilitar preprocesado"),dox->preprocess);
-	private_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_PRIVATE,"Incluir metodos/atributos privados"),dox->extra_private);
-	static_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_STATIC,"Incluir funciones/variables static"),dox->extra_static);
-	hideundocs_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_ONLY_DOC_ENTITIES,"Extraer solo las entidades documentadas"),dox->hideundocs);
-	latex_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_LATEX,"Generar documentacion Latex"),dox->latex);
-	html_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_HTML,"Generar documentacion HTML"),dox->html);
-	html_navtree_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_SHOW_NAV_TREE,"Mostrar arbol de navegacion (para doc HTML)"),dox->html_navtree);
-	html_searchengine_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_INCLUDE_SEARCH_ENGINE,"Incluir motor de busquedas (para doc HTML, requiere PHP)"),dox->html_searchengine);
-	use_in_quickhelp_ctrl = mxUT::AddCheckBox(sizer,panel,LANG(DOXYCONF_USE_IN_QUICKHELP,"Utilizar en ayuda rapida"),dox->use_in_quickhelp);
+	preprocess_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_ENABLE_PREPROC,"Habilitar preprocesado"),dox->preprocess);
+	private_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_PRIVATE,"Incluir metodos/atributos privados"),dox->extra_private);
+	static_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_EXTRA_STATIC,"Incluir funciones/variables static"),dox->extra_static);
+	hideundocs_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_ONLY_DOC_ENTITIES,"Extraer solo las entidades documentadas"),dox->hideundocs);
+	latex_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_LATEX,"Generar documentacion Latex"),dox->latex);
+	html_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_GENERATE_HTML,"Generar documentacion HTML"),dox->html);
+	html_navtree_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_SHOW_NAV_TREE,"Mostrar arbol de navegacion (para doc HTML)"),dox->html_navtree);
+	html_searchengine_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_INCLUDE_SEARCH_ENGINE,"Incluir motor de busquedas (para doc HTML, requiere PHP)"),dox->html_searchengine);
+	use_in_quickhelp_ctrl = mxCCC::AddCheckBox(sizer,panel,LANG(DOXYCONF_USE_IN_QUICKHELP,"Utilizar en ayuda rapida"),dox->use_in_quickhelp);
 	
 	panel->SetSizer(sizer);
 	return panel;

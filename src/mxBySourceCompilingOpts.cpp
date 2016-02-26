@@ -9,6 +9,7 @@
 #include "ProjectManager.h"
 #include <wx/combobox.h>
 #include "mxHelpWindow.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxBySourceCompilingOpts,wxDialog)
 	EVT_BUTTON(wxID_APPLY,mxBySourceCompilingOpts::OnButtonApply)
@@ -40,7 +41,7 @@ mxBySourceCompilingOpts::mxBySourceCompilingOpts(wxWindow *parent, project_file_
 	wxBoxSizer *top_sizer = new wxBoxSizer(wxHORIZONTAL);
 	
 	wxBoxSizer *left_sizer= new wxBoxSizer(wxVERTICAL);
-	filter_sources = mxUT::AddShortTextCtrl(left_sizer,this,LANG(BYSRCOPTS_FILTER,"Filtrar"),"",false,wxID_FIND);
+	filter_sources = mxCCC::AddShortTextCtrl(left_sizer,this,LANG(BYSRCOPTS_FILTER,"Filtrar"),"",false,wxID_FIND);
 	project->GetFileList(sources_list,FT_SOURCE,true);
 	list = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,sources_list,wxLB_MULTIPLE);
 	list->Select(sources_list.Index(last_source));
@@ -51,22 +52,22 @@ mxBySourceCompilingOpts::mxBySourceCompilingOpts(wxWindow *parent, project_file_
 	wxBoxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
 	wxStaticBoxSizer *fromprof_sizer = new wxStaticBoxSizer(wxVERTICAL,this,LANG(BYSRCOPTS_FROM_PROFILE,"Tomar desde el perfil"));
 	right_sizer->Add(fromprof_sizer,sizers->BA5_Exp0);
-	fp_extra = mxUT::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion"));
-	fp_macros = mxUT::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir"));
-	fp_includes = mxUT::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras"));
-	fp_std = mxUT::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_STD,"Estandar"));
-	fp_warnings = mxUT::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"));
-	fp_debug = mxUT::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"));
-	fp_optimizations = mxUT::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"));
-	additional_args = mxUT::AddLongTextCtrl(right_sizer,this,LANG(BYSRCOPTS_ADDITIONAL_ARGS,"Argumentos de compilación adicionales"));
+	fp_extra = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion"));
+	fp_macros = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir"));
+	fp_includes = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras"));
+	fp_std = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_STD,"Estandar"));
+	fp_warnings = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"));
+	fp_debug = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"));
+	fp_optimizations = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"));
+	additional_args = mxCCC::AddLongTextCtrl(right_sizer,this,LANG(BYSRCOPTS_ADDITIONAL_ARGS,"Argumentos de compilación adicionales"));
 
 	wxArrayString profiles_list;
 	for(int i=0;i<project->configurations_count;i++) profiles_list.Add(project->configurations[i]->name);
 	profiles_list.Add(LANG(BYSRCOPT_ALL_PROFILES,"<<todos los perfiles>>"));
 	int cur_profile = profiles_list.Index(project->active_configuration->name);
 	
-	profiles = mxUT::AddComboBox(right_sizer,this,LANG(BYSRCOPT_PROFILE,"Aplicar para el perfil: "),profiles_list,cur_profile,wxID_OPEN);
-	mxUT::GetLastSizer()->Add(new wxButton(this,wxID_APPLY,LANG(BYSRCOPT_APPLY_TO_SELECTED_FILES,"Aplicar cambios")),wxSizerFlags().Border(wxLEFT,10));
+	profiles = mxCCC::AddComboBox(right_sizer,this,LANG(BYSRCOPT_PROFILE,"Aplicar para el perfil: "),profiles_list,cur_profile,wxID_OPEN);
+	mxCCC::GetLastSizer()->Add(new wxButton(this,wxID_APPLY,LANG(BYSRCOPT_APPLY_TO_SELECTED_FILES,"Aplicar cambios")),wxSizerFlags().Border(wxLEFT,10));
 	
 	top_sizer->Add(right_sizer,wxSizerFlags().Proportion(2).Expand());
 	

@@ -9,6 +9,7 @@
 #include "ProjectManager.h"
 #include "mxHelpWindow.h"
 #include "mxMainWindow.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxWxfbConfigDialog, wxDialog)
 	EVT_BUTTON(wxID_OK,mxWxfbConfigDialog::OnOkButton)
@@ -37,16 +38,16 @@ mxWxfbConfigDialog::mxWxfbConfigDialog():wxDialog(main_window, wxID_ANY, LANG(WX
 	bottomSizer->Add(cancel_button,sizers->BA5);
 	bottomSizer->Add(ok_button,sizers->BA5);
 	
-	m_activate_integration=mxUT::AddCheckBox(mySizer,this,LANG(WXFBSETUP_ACTIVATE,"Activar integración con wxFormBuilder"),conf->activate_integration,wxID_FIND);
-	m_autoupdate_projects=mxUT::AddCheckBox(mySizer,this,LANG(WXFBSETUP_AUTOUPDATE,"Regenerar proyectos wxFormBuilder automáticamente"),conf->autoupdate_projects);
+	m_activate_integration=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_ACTIVATE,"Activar integración con wxFormBuilder"),conf->activate_integration,wxID_FIND);
+	m_autoupdate_projects=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_AUTOUPDATE,"Regenerar proyectos wxFormBuilder automáticamente"),conf->autoupdate_projects);
 	m_disabler.Add(m_autoupdate_projects);
-	m_update_class_list=mxUT::AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_CLASSES,"Crear/eliminar clases heredadas luego de regenerar"),conf->update_class_list);
+	m_update_class_list=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_CLASSES,"Crear/eliminar clases heredadas luego de regenerar"),conf->update_class_list);
 	m_disabler.Add(m_update_class_list);
-	m_update_methods=mxUT::AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_METHODS,"Actualizar clases heredadas automáticamente"),conf->update_methods);
+	m_update_methods=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_METHODS,"Actualizar clases heredadas automáticamente"),conf->update_methods);
 	m_disabler.Add(m_update_methods);
-	m_set_wxfb_sources_as_readonly=mxUT::AddCheckBox(mySizer,this,LANG(WXFBSETUP_READONLY,"Marcar fuentes generados por wxfb como solo-lectura"),conf->set_wxfb_sources_as_readonly);
+	m_set_wxfb_sources_as_readonly=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_READONLY,"Marcar fuentes generados por wxfb como solo-lectura"),conf->set_wxfb_sources_as_readonly);
 	m_disabler.Add(m_set_wxfb_sources_as_readonly);
-	m_dont_show_base_classes_in_goto=mxUT::AddCheckBox(mySizer,this,LANG(WXFBSETUP_HIDEONGOTO,"Ocultar métodos y clases generadas por wxfb en el cuadro \"Ir a Función/Clase/Método\""),conf->dont_show_base_classes_in_goto);
+	m_dont_show_base_classes_in_goto=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_HIDEONGOTO,"Ocultar métodos y clases generadas por wxfb en el cuadro \"Ir a Función/Clase/Método\""),conf->dont_show_base_classes_in_goto);
 	m_disabler.Add(m_dont_show_base_classes_in_goto);
 	
 	mySizer->Add(bottomSizer,sizers->Exp0);

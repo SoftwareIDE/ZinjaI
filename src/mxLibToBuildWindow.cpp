@@ -8,6 +8,7 @@
 #include "mxHelpWindow.h"
 #include "mxMessageDialog.h"
 #include "mxProjectConfigWindow.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxLibToBuildWindow, wxDialog)
 	
@@ -33,16 +34,16 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *butSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	name = mxUT::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_NAME,"Nombre"),lib?lib->libname:"");
-	path = mxUT::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_DIR,"Directorio de salida"),lib?lib->path:configuration->temp_folder);
-	filename = mxUT::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_FILE,"Archivo de salida"),"");
+	name = mxCCC::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_NAME,"Nombre"),lib?lib->libname:"");
+	path = mxCCC::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_DIR,"Directorio de salida"),lib?lib->path:configuration->temp_folder);
+	filename = mxCCC::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_FILE,"Archivo de salida"),"");
 	filename->SetEditable(false);
-	extra_link = mxUT::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_EXTRA_LINK,"Opciones de enlazado"),lib?lib->extra_link:"");
+	extra_link = mxCCC::AddTextCtrl(mySizer,this,LANG(LIBTOBUILD_EXTRA_LINK,"Opciones de enlazado"),lib?lib->extra_link:"");
 	
 	wxArrayString tipos;
 	tipos.Add(LANG(LIBTOBUILD_DYNAMIC,"Dinamica"));
 	tipos.Add(LANG(LIBTOBUILD_STATIC,"Estatica"));
-	type = mxUT::AddComboBox(mySizer,this,LANG(LIBTOBUILD_TYPE,"Tipo de biblioteca"),tipos,0);
+	type = mxCCC::AddComboBox(mySizer,this,LANG(LIBTOBUILD_TYPE,"Tipo de biblioteca"),tipos,0);
 	if (lib) type->SetSelection(lib->is_static?1:0);
 		
 	wxSizer *src_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -62,7 +63,7 @@ mxLibToBuildWindow::mxLibToBuildWindow(mxProjectConfigWindow *aparent, project_c
 	src_sizer->Add(szsrc_in,sizers->Exp1);
 	mySizer->Add(src_sizer,sizers->BA10_Exp1);
 	
-	default_lib = mxUT::AddCheckBox(mySizer,this,LANG(LIBTOBUILD_DEFAULT,"Biblioteca por defecto para nuevos fuentes"),lib?lib->default_lib:false);
+	default_lib = mxCCC::AddCheckBox(mySizer,this,LANG(LIBTOBUILD_DEFAULT,"Biblioteca por defecto para nuevos fuentes"),lib?lib->default_lib:false);
 	
 	wxBitmapButton *help_button = new wxBitmapButton(this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
 	butSizer->Add(help_button,sizers->BA5);

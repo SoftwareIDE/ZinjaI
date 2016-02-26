@@ -13,6 +13,7 @@
 #include "mxDiffSideBar.h"
 #include "Parser.h"
 #include "execution_workaround.h"
+#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxDiffWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxDiffWindow::OnOkButton)
@@ -47,8 +48,8 @@ mxDiffWindow::mxDiffWindow(mxSource *asource, wxString fname) : wxDialog(main_wi
 			array.Add(((mxSource*)(main_window->notebook_sources->GetPage(i)))->page_text);
 		}
 		
-		file1 = mxUT::AddComboBox(mySizer,this,LANG(DIFF_SOURCE_A,"Archivo A"),array,array.GetCount()-1);
-		file2 = mxUT::AddComboBox(mySizer,this,LANG(DIFF_SOURCE_B,"Archivo B"),array,array.GetCount()-1);
+		file1 = mxCCC::AddComboBox(mySizer,this,LANG(DIFF_SOURCE_A,"Archivo A"),array,array.GetCount()-1);
+		file2 = mxCCC::AddComboBox(mySizer,this,LANG(DIFF_SOURCE_B,"Archivo B"),array,array.GetCount()-1);
 		
 		if (main_window->notebook_sources->GetPageCount()) {
 			file1->SetSelection(main_window->notebook_sources->GetSelection());
