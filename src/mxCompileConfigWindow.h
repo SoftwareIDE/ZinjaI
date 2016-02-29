@@ -1,14 +1,14 @@
 #ifndef MX_COMPILE_CONFIG_WINDOW_H
 #define MX_COMPILE_CONFIG_WINDOW_H
 
-#include <wx/dialog.h>
+#include "mxCommonConfigControls.h"
 
 class mxSource;
 class wxAuiNotebook;
 class wxTextCtrl;
 class wxCheckBox;
 
-class mxCompileConfigWindow : public wxDialog {
+class mxCompileConfigWindow : public mxDialog {
 	
 	// auxiliars for avoid repeating same code for every popup menu after a text ctrl
 	wxTextCtrl *m_text_ctrl_for_popup; ///< ctrl that launched last popup
@@ -27,9 +27,8 @@ public:
 	wxCheckBox *always_ask_args_ctrl;
 	wxCheckBox *wait_for_key_ctrl;
 	
-	mxCompileConfigWindow(mxSource *a_source, wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
+	mxCompileConfigWindow(wxWindow* parent, mxSource *a_source);
 	void OnOkButton(wxCommandEvent &event);
-	void OnClose(wxCloseEvent &event);
 	void OnCancelButton(wxCommandEvent &event);
 	void OnButtonFolder(wxCommandEvent &event);
 	void OnButtonCompilerOptions(wxCommandEvent &event);

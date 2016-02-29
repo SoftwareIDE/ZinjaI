@@ -14,14 +14,12 @@ BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 	EVT_BUTTON(wxID_OK,mxValgrindConfigDialog::OnButtonOk)
 	EVT_BUTTON(wxID_CANCEL,mxValgrindConfigDialog::OnButtonCancel)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxValgrindConfigDialog::OnButtonHelp)
-	EVT_CLOSE(mxValgrindConfigDialog::OnClose)
 END_EVENT_TABLE()
 	
 mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent)
-	: wxDialog(parent,wxID_ANY,"Valgrind Setup",wxDefaultPosition,wxDefaultSize) 
+	: mxDialog(parent,"Valgrind Setup",false) 
 {
-	
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(this);
+	CreateSizer sizer(this);
 	
 	sizer.BeginCombo("Tool")
 		.Add("memcheck").Add("cachegrind").Add("callgrind")
@@ -54,10 +52,6 @@ void mxValgrindConfigDialog::OnButtonCancel (wxCommandEvent & evt) {
 
 void mxValgrindConfigDialog::OnButtonHelp (wxCommandEvent & evt) {
 	mxHelpWindow::ShowHelp("valgrind.html",this);
-}
-
-void mxValgrindConfigDialog::OnClose (wxCloseEvent & evt) {
-	EndModal(0);
 }
 
 wxString mxValgrindConfigDialog::GetArgs() {

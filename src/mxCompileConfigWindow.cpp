@@ -17,7 +17,6 @@
 #include "mxSizers.h"
 #include "Language.h"
 #include "mxThreeDotsUtils.h"
-#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxCompileConfigWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxCompileConfigWindow::OnOkButton)
@@ -34,14 +33,13 @@ BEGIN_EVENT_TABLE(mxCompileConfigWindow, wxDialog)
 	EVT_MENU(mxID_ARGS_EDIT_TEXT,mxCompileConfigWindow::OnPopupEditText)
 	EVT_MENU_RANGE(mxID_LAST_ID, mxID_LAST_ID+50,mxCompileConfigWindow::OnArgsFromTemplate)
 	EVT_BUTTON(mxID_ARGS_BUTTON,mxCompileConfigWindow::OnArgsButton)
-	EVT_CLOSE(mxCompileConfigWindow::OnClose)
 END_EVENT_TABLE()
 
 
-mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) 
-	: wxDialog(parent, id, a_source->page_text, pos, size, style), m_source(a_source)
+mxCompileConfigWindow::mxCompileConfigWindow(wxWindow* parent, mxSource *a_source)
+	: mxDialog(parent, a_source->page_text), m_source(a_source)
 {
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(this);
+	CreateSizer sizer(this);
 	
 	sizer.BeginText( LANG(COMPILECONF_COMPILER_ARGS,"Parametros extra para el compilador") )
 		.Value(m_source->GetCompilerOptions(false)).Button(mxID_COMPILE_OPTIONS_COMP_EXTRA).EndText(compiler_options_ctrl);
@@ -67,7 +65,6 @@ mxCompileConfigWindow::mxCompileConfigWindow(mxSource *a_source, wxWindow* paren
 	Show();
 }
 
-
 void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 
 	if (wxNOT_FOUND==main_window->notebook_sources->GetPageIndex(m_source)) {
@@ -87,16 +84,11 @@ void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 	m_source->SetCompilerOptions(compiler_options_ctrl->GetValue());
 	m_source->config_running.always_ask_args = always_ask_args_ctrl->GetValue();
 	m_source->config_running.wait_for_key = wait_for_key_ctrl->GetValue();
-	Destroy();
-
+	Close();
 }
 
 void mxCompileConfigWindow::OnCancelButton(wxCommandEvent &event){
-	Destroy();
-}
-
-void mxCompileConfigWindow::OnClose(wxCloseEvent &event){
-	Destroy();
+	Close();
 }
 
 void mxCompileConfigWindow::OnButtonFolder(wxCommandEvent &event){

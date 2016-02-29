@@ -1395,19 +1395,21 @@ Los archivos son iguales
 DOXYCONF_CAPTION
 Configuracion Doxygen
 DOXYCONF_BASIC_OPTIONS
-Opciones Basicas
+Opciones Básicas
 DOXYCONF_MORE_OPTIONS
-Mas Opciones
+Más Opciones
 DOXYCONF_EXTRA_TAB
 Campos Adicionales
 DOXYCONF_LANG_ES
-Espanol
+Español
 DOXYCONF_PROJECT_NAME
 Nombre del Proyecto
 DOXYCONF_PROJECT_VER
-Version del proyecto
+Versión del proyecto
 DOXYCONF_DEST_DIR
 Directorio destino
+DOXYCONF_WICH_FILES
+Archivos a procesar
 DOXYCONF_FILES_NONE
 Ninguno
 DOXYCONF_FILES_CPP
@@ -1416,8 +1418,6 @@ DOXYCONF_FILES_HEADERS
 Cabeceras
 DOXYCONF_FILES_H_AND_CPP
 Fuentes y Cabeceras
-DOXYCONF_WICH_FILES
-Archivos a procesar
 DOXYCONF_EXTRA_FILES
 Archivos adicionales a procesar
 DOXYCONF_FILES_TO_EXCLUDE
@@ -1425,31 +1425,31 @@ Archivos a excluir al procesar
 DOXYCONF_SAVE_WITH_PROJECT
 Guardar con el proyecto
 DOXYCONF_EXTRA_LABEL
-El texto de este campo se agregara sin cambios en el\nDoxyfile. Puede utilizarlo para definir parametros\nno contemplados en este cuadro de dialogo.
-DOXYCONF_LANG_EN
-Ingles
+El texto de este campo se agregará sin cambios en el\nDoxyfile. Puede utilizarlo para definir parámetros\nno contemplados en este cuadro de diálogo.
 DOXYCONF_LANG
 Idioma
+DOXYCONF_LANG_EN
+Ingles
 DOXYCONF_BASE_DIR
 Directorio base
 DOXYCONF_ENABLE_PREPROC
 Habilitar preprocesado
 DOXYCONF_EXTRA_PRIVATE
-Incluir metodos/atributos privados
+Incluir métodos/atributos privados
 DOXYCONF_EXTRA_STATIC
 Incluir funciones/variables static
 DOXYCONF_ONLY_DOC_ENTITIES
 Extraer solo las entidades documentadas
 DOXYCONF_GENERATE_LATEX
-Generar documentacion Latex
+Generar documentación Latex
 DOXYCONF_GENERATE_HTML
-Generar documentacion HTML
+Generar documentación HTML
 DOXYCONF_SHOW_NAV_TREE
-Mostrar arbol de navegacion (para doc HTML)
+Mostrar arbol de navegación (para doc HTML)
 DOXYCONF_INCLUDE_SEARCH_ENGINE
-Incluir motor de busquedas (para doc HTML, requiere PHP)
+Incluir motor de búsquedas (para doc HTML)
 DOXYCONF_USE_IN_QUICKHELP
-Utilizar en ayuda rapida
+Utilizar en ayuda rápida
 DRAWCLASSES_CAPTION
 Dibujar relaciones entre clases
 GENERAL_CLOSE_BUTTON
@@ -2661,7 +2661,7 @@ Comando de la terminal
 PREFERENCES_CREATE_ICONS
 Crear/Actualizar accesos directos en el escritorio/menú del sistema...
 PREFERENCES_NOTE_GCC_PATHS
-Nota: Las configuración de las rutas relacionadas al compilador se realiza\ndesde la pestaña \"Programa/Proyecto\" utilizando el botón \"...\" de la\nopción \"Herramientas de compilación\".
+Nota: La configuración de las rutas relacionadas al compilador\nse realiza desde la pestaña \"Programa/Proyecto\" utilizando\nel botón \"...\" de la opción \"Herramientas de compilación\".
 PREFERENCES_COMMANDS_EXPLORER
 Comando del explorador de archivos
 PREFERENCES_COMMANDS_IMAGE_VIEWER
@@ -2847,7 +2847,7 @@ Nota: estos cambios se aplican inmediatamente,
 PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_2
 aunque luego seleccione cancelar
 PROJECTCONFIG_LIBS_TO_GENERATE
-Bibliotecas a generar
+Bibliotecas a generar*
 PROJECTCONFIG_LIBS_ADD
 Agregar
 PROJECTCONFIG_LIBS_EDIT
@@ -2856,6 +2856,8 @@ PROJECTCONFIG_LIBS_DELETE
 Quitar
 PROJECTCONFIG_LIBS_NOEXEC
 Generar solo bibliotecas (no generar ejecutable)
+PROJECTCONFIG_STEPS_WARNING_APPLY_NOW
+* estos cambios se aplican inmediatamente,\naunque luego seleccione cancelar
 PROJECTCONFIG_ASK_DELETE_STEP
 Eliminar el paso: 
 PROJECTCONFIG_STEPS_COMPILE_SOURCES

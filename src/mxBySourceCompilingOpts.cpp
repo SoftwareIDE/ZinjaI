@@ -9,7 +9,6 @@
 #include "ProjectManager.h"
 #include <wx/combobox.h>
 #include "mxHelpWindow.h"
-#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxBySourceCompilingOpts,wxDialog)
 	EVT_BUTTON(wxID_APPLY,mxBySourceCompilingOpts::OnButtonApply)
@@ -17,17 +16,13 @@ BEGIN_EVENT_TABLE(mxBySourceCompilingOpts,wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxBySourceCompilingOpts::OnButtonCancel)
 	EVT_BUTTON(wxID_HELP,mxBySourceCompilingOpts::OnButtonHelp)
 	EVT_LISTBOX(wxID_ANY,mxBySourceCompilingOpts::OnList)
-	EVT_CLOSE(mxBySourceCompilingOpts::OnClose)
 	EVT_TEXT(wxID_FIND,mxBySourceCompilingOpts::OnFilter)
 	EVT_COMBOBOX(wxID_OPEN,mxBySourceCompilingOpts::OnProfile)
 END_EVENT_TABLE()
 
-#define _CAPTION LANG(BYSRCOPTS_CAPTION,"Opciones de compilacion por fuente")
-	
 mxBySourceCompilingOpts::mxBySourceCompilingOpts(wxWindow *parent, project_file_item *item) 
-	: wxDialog(parent,wxID_ANY,_CAPTION,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
+	: mxDialog( parent ,LANG(BYSRCOPTS_CAPTION,"Opciones de compilacion por fuente") )
 {
-	
 	BoolFlagGuard fg(mask_list_selection_event);
 	
 	last_source = (item?item:project->files_sources[0])->name;
@@ -37,50 +32,46 @@ mxBySourceCompilingOpts::mxBySourceCompilingOpts(wxWindow *parent, project_file_
 		config[i] = *(project->configurations[i]->by_src_compiling_options);
 	}
 	
-	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *top_sizer = new wxBoxSizer(wxHORIZONTAL);
+	CreateSizer main_sizer(this), right_sizer(this), left_sizer(this);
+	CreateHorizontalSizer top_sizer(this);
 	
-	wxBoxSizer *left_sizer= new wxBoxSizer(wxVERTICAL);
-	filter_sources = mxCCC::AddShortTextCtrl(left_sizer,this,LANG(BYSRCOPTS_FILTER,"Filtrar"),"",false,wxID_FIND);
+	left_sizer.BeginText( LANG(BYSRCOPTS_FILTER,"Filtrar") ).Short().Id(wxID_FIND).EndText(filter_sources);
 	project->GetFileList(sources_list,FT_SOURCE,true);
 	list = new wxListBox(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,sources_list,wxLB_MULTIPLE);
 	list->Select(sources_list.Index(last_source));
-	left_sizer->Add(list,sizers->BA5_Exp1);
-	top_sizer->Add(left_sizer,sizers->Exp1);
+	left_sizer.Add(list,sizers->BA5_Exp1);
 	
+	right_sizer.BeginSection( LANG(BYSRCOPTS_FROM_PROFILE,"Tomar desde el perfil") ) 
+		.BeginCheck( LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion")) .EndCheck(fp_extra)
+		.BeginCheck( LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir") ).EndCheck(fp_macros)
+		.BeginCheck( LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras") ).EndCheck(fp_includes)
+		.BeginCheck( LANG(PROJECTCONFIG_COMPILING_STD,"Estandar") ).EndCheck(fp_std)
+		.BeginCheck( LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias") ).EndCheck(fp_warnings)
+		.BeginCheck( LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion") ).EndCheck(fp_debug)
+		.BeginCheck( LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion") ).EndCheck(fp_optimizations)
+		.EndSection();
 	
-	wxBoxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
-	wxStaticBoxSizer *fromprof_sizer = new wxStaticBoxSizer(wxVERTICAL,this,LANG(BYSRCOPTS_FROM_PROFILE,"Tomar desde el perfil"));
-	right_sizer->Add(fromprof_sizer,sizers->BA5_Exp0);
-	fp_extra = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion"));
-	fp_macros = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_MACROS,"Macros a definir"));
-	fp_includes = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_EXTRA_PATHS,"Directorios adicionales para buscar cabeceras"));
-	fp_std = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_STD,"Estandar"));
-	fp_warnings = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"));
-	fp_debug = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"));
-	fp_optimizations = mxCCC::AddCheckBox(fromprof_sizer,this,LANG(PROJECTCONFIG_COMPILING_OPTIM,"Nivel de optimizacion"));
-	additional_args = mxCCC::AddLongTextCtrl(right_sizer,this,LANG(BYSRCOPTS_ADDITIONAL_ARGS,"Argumentos de compilación adicionales"));
+	right_sizer.BeginText( LANG(BYSRCOPTS_ADDITIONAL_ARGS,"Argumentos de compilación adicionales") ).MultiLine().EndText(additional_args);
 
 	wxArrayString profiles_list;
 	for(int i=0;i<project->configurations_count;i++) profiles_list.Add(project->configurations[i]->name);
 	profiles_list.Add(LANG(BYSRCOPT_ALL_PROFILES,"<<todos los perfiles>>"));
-	int cur_profile = profiles_list.Index(project->active_configuration->name);
+	right_sizer.BeginLine()
+			.BeginCombo( LANG(BYSRCOPT_PROFILE,"Aplicar para el perfil") )
+				.Add(profiles_list).Select(project->active_configuration->name).Id(wxID_OPEN).EndCombo(profiles)
+			.Space(10)
+			.BeginButton( LANG(BYSRCOPT_APPLY_TO_SELECTED_FILES,"Aplicar cambios") )
+				.Id(wxID_APPLY).EndButton()
+		.EndLine();
 	
-	profiles = mxCCC::AddComboBox(right_sizer,this,LANG(BYSRCOPT_PROFILE,"Aplicar para el perfil: "),profiles_list,cur_profile,wxID_OPEN);
-	mxCCC::GetLastSizer()->Add(new wxButton(this,wxID_APPLY,LANG(BYSRCOPT_APPLY_TO_SELECTED_FILES,"Aplicar cambios")),wxSizerFlags().Border(wxLEFT,10));
-	
-	top_sizer->Add(right_sizer,wxSizerFlags().Proportion(2).Expand());
-	
-	main_sizer->Add(top_sizer,sizers->Exp1);
-	
-	mxCCC::MainSizer(this,main_sizer)
+	top_sizer.Add(left_sizer,1).Add(right_sizer,2);
+	main_sizer.Add(top_sizer,sizers->Exp1);
+	main_sizer
 		.BeginBottom().Help().Ok().Cancel().EndBottom(this)
 		.SetAndFit();
 	
 	fg.Release(); wxCommandEvent e; OnList(e);
-	
 	Show(); SetFocus();
-	
 }
 
 void mxBySourceCompilingOpts::OnButtonCancel (wxCommandEvent & evt) {
@@ -89,10 +80,6 @@ void mxBySourceCompilingOpts::OnButtonCancel (wxCommandEvent & evt) {
 
 void mxBySourceCompilingOpts::OnButtonHelp (wxCommandEvent & evt) {
 	mxHelpWindow::ShowHelp("by_src_comp_args.html");
-}
-
-void mxBySourceCompilingOpts::OnClose (wxCloseEvent & evt) {
-	Destroy();
 }
 
 #define _auxByScr_ALL_OPTS "${EXT} ${DEF} ${INC} ${STD} ${WAR} ${DBG} ${OPT} "

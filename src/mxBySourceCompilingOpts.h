@@ -1,7 +1,8 @@
 #ifndef MXBYSOURCECOMPILINGOPTS_H
 #define MXBYSOURCECOMPILINGOPTS_H
-#include <wx/dialog.h>
+
 #include <wx/arrstr.h>
+#include "mxCommonConfigControls.h"
 #include "mxUtils.h"
 #include "SingleList.h"
 #include "raii.h"
@@ -12,7 +13,7 @@ class wxCheckBox;
 class wxComboBox;
 class project_file_item;
 
-class mxBySourceCompilingOpts : public wxDialog {
+class mxBySourceCompilingOpts : public mxDialog {
 private:
 	wxArrayString sources_list;
 	wxListBox *list;
@@ -40,7 +41,6 @@ protected:
 	void OnButtonOk(wxCommandEvent &evt);
 	void OnButtonCancel(wxCommandEvent &evt);
 	void OnButtonHelp(wxCommandEvent &evt);
-	void OnClose(wxCloseEvent &evt);
 	void OnFilter(wxCommandEvent &evt);
 	void OnProfile(wxCommandEvent &evt);
 	void Load(int prof, wxString src="");

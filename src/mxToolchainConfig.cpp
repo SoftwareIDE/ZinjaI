@@ -17,85 +17,20 @@ BEGIN_EVENT_TABLE(mxToolchainConfig, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxToolchainConfig::OnButtonCancel)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxToolchainConfig::OnButtonHelp)
 	EVT_COMBOBOX(mxID_TOOLCHAINS_TYPE_COMBO,mxToolchainConfig::OnComboChange)
-	EVT_CLOSE(mxToolchainConfig::OnClose)
 END_EVENT_TABLE()
 
-mxToolchainConfig::mxToolchainConfig(wxWindow *parent, const wxString &tc_name) :wxDialog(parent,wxID_ANY,LANG(TOOLCHAINS_CAPTION,"Personalizar herramientas de compilación"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
-	
-	Toolchain *tc = Toolchain::GetToolchain(tc_name);
-	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);
-	
-	wxPanel *panel_1 = new wxPanel(notebook, wxID_ANY );
-	wxBoxSizer *sizer_1 = new wxBoxSizer(wxVERTICAL);
-	wxArrayString array; for(int i=0;i<TC_COUNT;i++) array.Add("");
-	array[TC_CLANG] = "clang";
-	array[TC_EXTERN] = "extern";
-	array[TC_GCC] = "gcc";
-	array[TC_GCC_LIKE] = "gcc-like";
-//	description = mxCCC::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_DESCRIPTION,"Descripción"),tc->desc);
-	name = mxCCC::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_NAME,"Nombre de archivo"),tc->file);
-	type = mxCCC::AddComboBox(sizer_1,panel_1,LANG(TOOLCHAINS_TYPE,"Tipo de herramienta"),array,tc->type,mxID_TOOLCHAINS_TYPE_COMBO);
-	base_path = mxCCC::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_BASE_PATH,"Directorio del compilador"),tc->base_path);
-	bin_path = mxCCC::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_BIN_PATH,"Directorios con ejecutables"),tc->bin_path);
-	build_command = mxCCC::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_BUILD_COMMAND,"Comando de construcción"),tc->build_command);
-	for_extern.Add(build_command,true);
-	clean_command = mxCCC::AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_CLEAN_COMMAND,"Comando de limpieza"),tc->clean_command);
-	for_extern.Add(clean_command,true);
-	panel_1->SetSizer(sizer_1);
-	
-	wxPanel *panel_2 = new wxPanel(notebook, wxID_ANY );
-	wxBoxSizer *sizer_2 = new wxBoxSizer(wxVERTICAL);
-	c_compiler = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_C_COMMAND,"Comando del compilador C"),tc->c_compiler);
-	for_gcc.Add(c_compiler,true);
-	c_compiling_options = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_C_OPTIONS,"Argumentos para la compilación C"),tc->c_compiling_options);
-	for_gcc.Add(c_compiling_options,true);
-	cpp_compiler = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_CPP_COMMAND,"Comando del compilador C++"),tc->cpp_compiler);
-	for_gcc.Add(cpp_compiler,true);
-	cpp_compiling_options = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_CPP_OPTIONS,"Argumentos para la compilación C++"),tc->cpp_compiling_options);
-	for_gcc.Add(cpp_compiling_options,true);
-	linker = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_LINKER_COMMAND,"Comando del enlazador"),tc->linker);
-	for_gcc.Add(linker,true);
-	c_linker_options = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_LINKER_C_OPTIONS,"Argumentos para el enlazado C"),tc->c_linker_options);
-	for_gcc.Add(c_linker_options,true);
-	cpp_linker_options = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_LINKER_CPP_OPTIONS,"Argumentos para el enlazado C++"),tc->cpp_linker_options);
-	for_gcc.Add(cpp_linker_options,true);
-	dynamic_lib_linker = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_DYNAMIC_LIB_LINKER,"Comando para enlazar libs. dinámicas"),tc->dynamic_lib_linker);
-	for_gcc.Add(dynamic_lib_linker,true);
-	static_lib_linker = mxCCC::AddShortTextCtrl(sizer_2,panel_2,LANG(TOOLCHAINS_STATIC_LIB_LINKER,"Comando para enlazar libs. estáticas"),tc->static_lib_linker);
-	for_gcc.Add(static_lib_linker,true);
-	panel_2->SetSizer(sizer_2);
-	
-	wxPanel *panel_3 = new wxPanel(notebook, wxID_ANY );
-	wxBoxSizer *sizer_3 = new wxBoxSizer(wxVERTICAL);
-	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) { 
-		arguments[i][0] = mxCCC::AddShortTextCtrl(sizer_3,panel_3,LANG1(TOOLCHAINS_ARGUMENT_NAME,"Nombre (${ARG<{1}>})",wxString()<<i+1),tc->arguments[i][0]);
-		arguments[i][1] = mxCCC::AddShortTextCtrl(sizer_3,panel_3,LANG1(TOOLCHAINS_ARGUMENT_DEFAULT,"   Valor por defecto (${ARG<{1}>})",wxString()<<i+1),tc->arguments[i][1]);
-	}
-	panel_3->SetSizer(sizer_3);
-	
-	notebook->AddPage(panel_1, LANG(TOOLCHAINS_GENERAL_SETTINGS,"General"));
-	notebook->AddPage(panel_2, LANG(TOOLCHAINS_FIXED_SETTINGS,"Configuración fija"));
-	notebook->AddPage(panel_3, LANG(TOOLCHAINS_USER_ARGUMENTS,"Argumentos configurables"));
-	
-	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	SetEscapeId(wxID_CANCEL);
-	wxButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-//	wxButton *run_button = new mxBitmapButton (this,mxID_CUSTOM_TOOLS_RUN,bitmaps->buttons.ok,LANG(TOOLCHAINS_TEST,"&Ejecutar"));
-	ok_button->SetDefault(); 
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
-	
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(cancel_button,sizers->BA5);
-//	bottomSizer->Add(run_button,sizers->BA5);
-	bottomSizer->Add(ok_button,sizers->BA5);
-	
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(notebook,sizers->Exp1);
-	sizer->Add(bottomSizer,sizers->Exp0);
-	SetSizerAndFit(sizer);
-	
+mxToolchainConfig::mxToolchainConfig(wxWindow *parent, const wxString &tc_name) 
+	: mxDialog(parent, LANG(TOOLCHAINS_CAPTION,"Personalizar herramientas de compilación") ),
+	  m_toolchain(Toolchain::GetToolchain(tc_name))
+{
+	CreateSizer(this)
+		.BeginNotebook()
+			.AddPage(this,&mxToolchainConfig::CreatePanelGeneral, LANG(TOOLCHAINS_GENERAL_SETTINGS,"General"))
+			.AddPage(this,&mxToolchainConfig::CreatePanelFixed, LANG(TOOLCHAINS_FIXED_SETTINGS,"Configuración fija"))
+			.AddPage(this,&mxToolchainConfig::CreatePanelArgs, LANG(TOOLCHAINS_USER_ARGUMENTS,"Argumentos configurables"))
+		.EndNotebook()
+		.BeginBottom().Help().Cancel().Ok().EndBottom(this)
+		.SetAndFit();
 	wxCommandEvent evt;
 	OnComboChange(evt);
 }
@@ -139,13 +74,72 @@ void mxToolchainConfig::OnButtonHelp (wxCommandEvent & event) {
 	mxHelpWindow::ShowHelp("toolchains.html");
 }
 
-void mxToolchainConfig::OnClose (wxCloseEvent & event) {
-	Destroy();
-}
-
 void mxToolchainConfig::OnComboChange (wxCommandEvent & event) {
 	bool is_extern=type->GetSelection()==TC_EXTERN;
 	for_extern.EnableAll(is_extern);
 	for_gcc.EnableAll(!is_extern);
+}
+
+wxPanel * mxToolchainConfig::CreatePanelGeneral(wxNotebook *notebook) {
+	CreatePanelAndSizer sizer(notebook);
+	
+	wxArrayString array; for(int i=0;i<TC_COUNT;i++) array.Add("");
+	array[TC_CLANG] = "clang"; array[TC_EXTERN] = "extern"; array[TC_GCC] = "gcc"; array[TC_GCC_LIKE] = "gcc-like";
+	//	description = AddShortTextCtrl(sizer_1,panel_1,LANG(TOOLCHAINS_DESCRIPTION,"Descripción"),tc->desc);
+	sizer.BeginText( LANG(TOOLCHAINS_NAME,"Nombre de archivo") )
+		.Value(m_toolchain->file).Short().EndText(name);
+	sizer.BeginCombo( LANG(TOOLCHAINS_TYPE,"Tipo de herramienta") )
+		.Add(array).Select(m_toolchain->type).Id(mxID_TOOLCHAINS_TYPE_COMBO).EndCombo(type);
+	sizer.BeginText( LANG(TOOLCHAINS_BASE_PATH,"Directorio del compilador") )
+		.Value(m_toolchain->base_path).Short().EndText(base_path);
+	sizer.BeginText( LANG(TOOLCHAINS_BIN_PATH,"Directorios con ejecutables") )
+		.Value(m_toolchain->bin_path).Short().EndText(bin_path);
+	sizer.BeginText( LANG(TOOLCHAINS_BUILD_COMMAND,"Comando de construcción") )
+		.Value(m_toolchain->build_command).Short().RegisterIn(for_extern).EndText(build_command);
+	sizer.BeginText( LANG(TOOLCHAINS_CLEAN_COMMAND,"Comando de limpieza") )
+		.Value(m_toolchain->clean_command).Short().RegisterIn(for_extern).EndText(clean_command);
+	
+	sizer.Set();
+	return sizer.GetPanel();
+}
+
+wxPanel * mxToolchainConfig::CreatePanelFixed (wxNotebook *notebook) {
+	CreatePanelAndSizer sizer(notebook);
+	
+	sizer.BeginText( LANG(TOOLCHAINS_C_COMMAND,"Comando del compilador C") )
+		.Value(m_toolchain->c_compiler).Short().RegisterIn(for_gcc).EndText(c_compiler);
+	sizer.BeginText( LANG(TOOLCHAINS_C_OPTIONS,"Argumentos para la compilación C") )
+		.Value(m_toolchain->c_compiling_options).Short().RegisterIn(for_gcc).EndText(c_compiling_options);
+	sizer.BeginText( LANG(TOOLCHAINS_CPP_COMMAND,"Comando del compilador C++") )
+		.Value(m_toolchain->cpp_compiler).Short().RegisterIn(for_gcc).EndText(cpp_compiler);
+	sizer.BeginText( LANG(TOOLCHAINS_CPP_OPTIONS,"Argumentos para la compilación C++") )
+		.Value(m_toolchain->cpp_compiling_options).Short().RegisterIn(for_gcc).EndText(cpp_compiling_options);
+	sizer.BeginText( LANG(TOOLCHAINS_LINKER_COMMAND,"Comando del enlazador") )
+		.Value(m_toolchain->linker).Short().RegisterIn(for_gcc).EndText(linker);
+	sizer.BeginText( LANG(TOOLCHAINS_LINKER_C_OPTIONS,"Argumentos para el enlazado C") )
+		.Value(m_toolchain->c_linker_options).Short().RegisterIn(for_gcc).EndText(c_linker_options);
+	sizer.BeginText( LANG(TOOLCHAINS_LINKER_CPP_OPTIONS,"Argumentos para el enlazado C++") )
+		.Value(m_toolchain->cpp_linker_options).Short().RegisterIn(for_gcc).EndText(cpp_linker_options);
+	sizer.BeginText( LANG(TOOLCHAINS_DYNAMIC_LIB_LINKER,"Comando para enlazar libs. dinámicas") )
+		.Value(m_toolchain->dynamic_lib_linker).Short().RegisterIn(for_gcc).EndText(dynamic_lib_linker);
+	sizer.BeginText( LANG(TOOLCHAINS_STATIC_LIB_LINKER,"Comando para enlazar libs. estáticas") )
+		.Value(m_toolchain->static_lib_linker).Short().RegisterIn(for_gcc).EndText(static_lib_linker);
+	
+	sizer.Set();
+	return sizer.GetPanel();
+}
+
+wxPanel * mxToolchainConfig::CreatePanelArgs (wxNotebook * notebook) {
+	CreatePanelAndSizer sizer(notebook);
+	
+	for(int i=0;i<TOOLCHAIN_MAX_ARGS;i++) {
+		sizer.BeginText( LANG1(TOOLCHAINS_ARGUMENT_NAME,"Nombre (${ARG<{1}>})",wxString()<<i+1) )
+			.Short().Value(m_toolchain->arguments[i][0]).EndText(arguments[i][0]);
+		sizer.BeginText( LANG1(TOOLCHAINS_ARGUMENT_DEFAULT,"   Valor por defecto (${ARG<{1}>})",wxString()<<i+1) )
+			.Short().Value(m_toolchain->arguments[i][1]).EndText(arguments[i][1]);
+	}
+
+	sizer.Set();
+	return sizer.GetPanel();
 }
 

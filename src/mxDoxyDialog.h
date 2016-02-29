@@ -1,6 +1,7 @@
 #ifndef MXDOXYDIALOG_H
 #define MXDOXYDIALOG_H
-#include <wx/dialog.h>
+
+#include "mxCommonConfigControls.h"
 
 class wxPanel;
 class wxTextCtrl;
@@ -9,7 +10,7 @@ class wxComboBox;
 class wxNotebook;
 class doxygen_configuration;
 
-class mxDoxyDialog : public wxDialog {
+class mxDoxyDialog : public mxDialog {
 private:
 	doxygen_configuration *m_doxygen_config;
 	wxTextCtrl *name_ctrl, *version_ctrl, *destdir_ctrl, *extra_files_ctrl, *exclude_files_ctrl, *base_path_ctrl;
@@ -18,7 +19,6 @@ private:
 	wxTextCtrl *extra_conf;
 public:
 	mxDoxyDialog(wxWindow *parent);
-	void OnClose(wxCloseEvent &event);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);

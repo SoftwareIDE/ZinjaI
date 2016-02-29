@@ -8,7 +8,6 @@
 #include "mxHelpWindow.h"
 #include "mxMessageDialog.h"
 #include "Language.h"
-#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxExtraStepWindow, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxExtraStepWindow::OnCancelButton)
@@ -17,13 +16,10 @@ BEGIN_EVENT_TABLE(mxExtraStepWindow, wxDialog)
 	EVT_BUTTON(mxID_EXTRA_STEP_COMMAND,mxExtraStepWindow::OnCommandButton)
 	EVT_BUTTON(mxID_EXTRA_STEP_OUTPUT,mxExtraStepWindow::OnOutputButton)
 	EVT_BUTTON(mxID_EXTRA_STEP_DEPS,mxExtraStepWindow::OnDepsButton)
-	EVT_CLOSE(mxExtraStepWindow::OnClose)
 END_EVENT_TABLE()
 
-#define _CAPTION LANG(EXTRASTEP_CAPTION,"Paso de Compilacion Personalizado")
-	
 mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *conf, compile_extra_step *astep) 
-	: wxDialog(parent,wxID_ANY,_CAPTION,wxDefaultPosition,wxDefaultSize) 
+	: mxDialog(parent, LANG(EXTRASTEP_CAPTION,"Paso de Compilacion Personalizado") ) 
 {
 	configuration=conf;
 	step=astep;
@@ -31,10 +27,10 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 	wxBoxSizer *mySizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *butSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	name = mxCCC::AddTextCtrl(mySizer,this,LANG(EXTRASTEP_NAME,"Nombre"),step?step->name:"");
-	command = mxCCC::AddDirCtrl(mySizer,this,LANG(EXTRASTEP_COMMAND,"Comando"),step?step->command:"",mxID_EXTRA_STEP_COMMAND);
-	deps = mxCCC::AddDirCtrl(mySizer,this,LANG(EXTRASTEP_DEPS,"Dependencias"),step?step->deps:"",mxID_EXTRA_STEP_DEPS);
-	output = mxCCC::AddDirCtrl(mySizer,this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),step?step->out:"",mxID_EXTRA_STEP_OUTPUT);
+	name = AddTextCtrl(mySizer,this,LANG(EXTRASTEP_NAME,"Nombre"),step?step->name:"");
+	command = AddDirCtrl(mySizer,this,LANG(EXTRASTEP_COMMAND,"Comando"),step?step->command:"",mxID_EXTRA_STEP_COMMAND);
+	deps = AddDirCtrl(mySizer,this,LANG(EXTRASTEP_DEPS,"Dependencias"),step?step->deps:"",mxID_EXTRA_STEP_DEPS);
+	output = AddDirCtrl(mySizer,this,LANG(EXTRASTEP_OUTPUT,"Archivo de salida"),step?step->out:"",mxID_EXTRA_STEP_OUTPUT);
 	if (!step) {
 		wxArrayString pos_array;
 		pos_array.Add("",CES_COUNT);
@@ -42,13 +38,13 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 		pos_array[CES_BEFORE_LIBS]=LANG(EXTRASTEP_BEFORE_LIBS,"Antes de generar las bibliotecas");
 		pos_array[CES_BEFORE_EXECUTABLE]=LANG(EXTRASTEP_BEFORE_EXECUTABLE,"Antes de enlazar el ejecutable");
 		pos_array[CES_AFTER_LINKING]=LANG(EXTRASTEP_AFTER_LINKING,"Despues de enlazar el ejecutable");
-		position = mxCCC::AddComboBox(mySizer,this,LANG(EXTRASTEP_LOCATION_ON_SEQ,"Ubicacion en la secuencia"),pos_array,0);
+		position = AddComboBox(mySizer,this,LANG(EXTRASTEP_LOCATION_ON_SEQ,"Ubicacion en la secuencia"),pos_array,0);
 	} else
 		position = nullptr;
-	link_output = mxCCC::AddCheckBox(mySizer,this,LANG(EXTRASTEP_LINK_FORCE_RELINK,"Enlazar el archivo de salida en el ejecutable"),step?step->link_output:true);
-	delclean = mxCCC::AddCheckBox(mySizer,this,LANG(EXTRASTEP_DELETE_ON_CLEAN,"Eliminar al limpiar el proyecto"),step?step->delete_on_clean:true);
-	check_rv = mxCCC::AddCheckBox(mySizer,this,LANG(EXTRASTEP_CHECK_EXIT_CODE,"Verificar codigo de salida"),step?step->check_retval:false);
-	hide_win = mxCCC::AddCheckBox(mySizer,this,LANG(EXTRASTEP_HIDE_RUNNING_WINDOW,"Ocultar ventana de ejecucion"),step?step->hide_window:true);
+	link_output = AddCheckBox(mySizer,this,LANG(EXTRASTEP_LINK_FORCE_RELINK,"Enlazar el archivo de salida en el ejecutable"),step?step->link_output:true);
+	delclean = AddCheckBox(mySizer,this,LANG(EXTRASTEP_DELETE_ON_CLEAN,"Eliminar al limpiar el proyecto"),step?step->delete_on_clean:true);
+	check_rv = AddCheckBox(mySizer,this,LANG(EXTRASTEP_CHECK_EXIT_CODE,"Verificar codigo de salida"),step?step->check_retval:false);
+	hide_win = AddCheckBox(mySizer,this,LANG(EXTRASTEP_HIDE_RUNNING_WINDOW,"Ocultar ventana de ejecucion"),step?step->hide_window:true);
 	
 	wxBitmapButton *help_button = new wxBitmapButton(this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
 	butSizer->Add(help_button,sizers->BA5);
@@ -66,10 +62,6 @@ mxExtraStepWindow::mxExtraStepWindow(wxWindow *parent, project_configuration *co
 	SetEscapeId(wxID_CANCEL);
 	name->SetFocus();
 	ShowModal();
-}
-
-void mxExtraStepWindow::OnClose(wxCloseEvent &evt) {
-	Destroy();
 }
 
 void mxExtraStepWindow::OnOkButton(wxCommandEvent &evt) {

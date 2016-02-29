@@ -1,8 +1,9 @@
 #ifndef MXEXTRASTEPWINDOW_H
 #define MXEXTRASTEPWINDOW_H
-#include <wx/dialog.h>
+
 #include "Cpp11.h"
 #include "mxCommonPopup.h"
+#include "mxCommonConfigControls.h"
 
 class wxCheckBox;
 class wxComboBox;
@@ -10,7 +11,7 @@ class wxTextCtrl;
 class compile_extra_step;
 class project_configuration;
 
-class mxExtraStepWindow : public wxDialog {
+class mxExtraStepWindow : public mxDialog {
 private:
 	_use_common_popup;
 	compile_extra_step *step;
@@ -21,7 +22,6 @@ private:
 public:
 	static wxString new_name;
 	mxExtraStepWindow(wxWindow *parent, project_configuration *conf, compile_extra_step *astep=nullptr);
-	void OnClose(wxCloseEvent &evt);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);

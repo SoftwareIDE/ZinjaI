@@ -1,13 +1,16 @@
 #ifndef MXTOOLCHAINCONFIG_H
 #define MXTOOLCHAINCONFIG_H
-#include <wx/dialog.h>
+
+#include "mxCommonConfigControls.h"
 #include "Toolchain.h"
 #include "widgetDisabler.h"
 
 class wxTextCtrl;
 class wxComboBox;
+class wxPanel;
+class wxNotebook;
 
-class mxToolchainConfig : public wxDialog {
+class mxToolchainConfig : public mxDialog {
 private:
 	widgetDisabler for_extern, for_gcc;
 	wxTextCtrl *name;
@@ -27,12 +30,15 @@ private:
 	wxTextCtrl *cpp_linker_options;
 	wxTextCtrl *dynamic_lib_linker;
 	wxTextCtrl *static_lib_linker;
+	Toolchain *m_toolchain;
 public:
+	wxPanel *CreatePanelGeneral(wxNotebook *notebook);
+	wxPanel *CreatePanelFixed(wxNotebook *notebook);
+	wxPanel *CreatePanelArgs(wxNotebook *notebook);
 	mxToolchainConfig(wxWindow *parent, const wxString &tc_name);
 	void OnButtonOk(wxCommandEvent &event);
 	void OnButtonCancel(wxCommandEvent &event);
 	void OnButtonHelp(wxCommandEvent &event);
-	void OnClose(wxCloseEvent &event);
 	void OnComboChange(wxCommandEvent &event);
 	DECLARE_EVENT_TABLE();
 };

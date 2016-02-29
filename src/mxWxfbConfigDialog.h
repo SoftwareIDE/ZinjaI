@@ -1,12 +1,13 @@
 #ifndef MXWXFBCONFIGDIALOG_H
 #define MXWXFBCONFIGDIALOG_H
-#include <wx/dialog.h>
+
 #include "widgetDisabler.h"
+#include "mxCommonConfigControls.h"
 
 class wxCheckBox;
 class wxfb_configuration;
 	
-class mxWxfbConfigDialog : public wxDialog {
+class mxWxfbConfigDialog : public mxDialog {
 private:
 	wxfb_configuration *conf;
 	wxCheckBox *m_activate_integration;
@@ -18,7 +19,6 @@ private:
 	widgetDisabler m_disabler;
 public:
 	mxWxfbConfigDialog();
-	void OnClose(wxCloseEvent &event);
 	void OnOkButton(wxCommandEvent &evt);
 	void OnCancelButton(wxCommandEvent &evt);
 	void OnHelpButton(wxCommandEvent &evt);

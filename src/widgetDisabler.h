@@ -17,7 +17,7 @@ private:
 	} *m_first;
 public:
 	widgetDisabler();
-	void Add(wxControl *_control, bool _from_utils=false);
+	void Add(wxControl *_control);
 	void operator+=(wxControl *_control);
 	void EnableAll(bool _enable=true);
 	void DisableAll();

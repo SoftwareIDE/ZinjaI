@@ -5,6 +5,7 @@
 #include "widgetDisabler.h"
 
 #ifndef __WIN32__
+#include "mxCommonConfigControls.h"
 struct LinuxTerminalInfo {
 	wxString name; ///< nombre para mostrar en el cuadro de preferencias
 	wxString test_command; ///< comando para probar si existe (usualmente ejecutable+" --version")
@@ -39,7 +40,7 @@ class wxCheckListBox;
 class mxToolbarEditor;
 class wxStaticBitmap;
 
-class mxPreferenceWindow : public wxDialog {
+class mxPreferenceWindow : public mxDialog {
 	
 	bool ignore_styles_changes;
 
@@ -259,7 +260,6 @@ public:
 	void OnToolbarsReset(wxCommandEvent &evt);
 	void OnXdgButton(wxCommandEvent &evt);
 	void OnToolchainButton(wxCommandEvent &evt);
-	void OnClose(wxCloseEvent &event);
 	void SetToolbarPage(const wxString &edit_one="");
 	static mxPreferenceWindow *ShowUp();
 	static void Delete(); ///< to force reloading of some things that Reset won't redo, such as the list of autocompletion indexes

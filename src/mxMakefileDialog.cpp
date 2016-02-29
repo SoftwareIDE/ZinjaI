@@ -15,10 +15,11 @@ BEGIN_EVENT_TABLE(mxMakefileDialog, wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxMakefileDialog::OnCancelButton)
 	EVT_BUTTON(mxID_MAKEFILE_EXPLORE,mxMakefileDialog::OnExploreButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxMakefileDialog::OnHelpButton)
-	EVT_CLOSE(mxMakefileDialog::OnClose)
 END_EVENT_TABLE()
 	
-mxMakefileDialog::mxMakefileDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos , const wxSize& size , long style) : wxDialog(parent, id, LANG(MAKEFILE_CAPTION,"Generar Makefile"), pos, size, style) {
+mxMakefileDialog::mxMakefileDialog(wxWindow* parent) 
+	: mxDialog(parent, LANG(MAKEFILE_CAPTION,"Generar Makefile") ) 
+{
 	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *bottomSizer= new wxBoxSizer(wxHORIZONTAL);
@@ -30,23 +31,23 @@ mxMakefileDialog::mxMakefileDialog(wxWindow* parent, wxWindowID id, const wxPoin
 		if (project->configurations[i]==project->active_configuration)
 			sel=i;
 	}
-	configuration_name = mxCCC::AddComboBox(mySizer,this,LANG(MAKEFILE_PROFILE,"Perfil"),values,sel);
-	mingw_dir = mxCCC::AddTextCtrl(mySizer,this,LANG(MAKEFILE_REPLACE_MINGW,"Reemplazar \"${MINGW_DIR}\" con"),current_toolchain.mingw_dir);
+	configuration_name = AddComboBox(mySizer,this,LANG(MAKEFILE_PROFILE,"Perfil"),values,sel);
+	mingw_dir = AddTextCtrl(mySizer,this,LANG(MAKEFILE_REPLACE_MINGW,"Reemplazar \"${MINGW_DIR}\" con"),current_toolchain.mingw_dir);
 #ifdef __WIN32__
-	expand_comas = mxCCC::AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),true);
+	expand_comas = AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),true);
 #else
-	expand_comas = mxCCC::AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),false);
+	expand_comas = AddCheckBox(mySizer,this,LANG(MAKEFILE_EXPAND_SUBCOMMANDS,"Expandir subcomandos (comandos entre acentos)."),false);
 #endif
 	
-	file_path = mxCCC::AddDirCtrl(mySizer,this,LANG(MAKEFILE_DESTINATION_FILE,"Destino"),DIR_PLUS_FILE(project->path,"Makefile"),mxID_MAKEFILE_EXPLORE);
+	file_path = AddDirCtrl(mySizer,this,LANG(MAKEFILE_DESTINATION_FILE,"Destino"),DIR_PLUS_FILE(project->path,"Makefile"),mxID_MAKEFILE_EXPLORE);
 	
 	wxArrayString split_values;
 	split_values.Add(LANG(MAKEFILE_TYPE_FULL,"Completo"));
 	split_values.Add(LANG(MAKEFILE_TYPE_CONFIG,"Por partes: configuracion"));
 	split_values.Add(LANG(MAKEFILE_TYPE_OBJECTS,"Por partes: objetos"));
-	split_type = mxCCC::AddComboBox(mySizer,this,LANG(MAKEFILE_TYPE,"Formato"),split_values,0);
+	split_type = AddComboBox(mySizer,this,LANG(MAKEFILE_TYPE,"Formato"),split_values,0);
 	
-	cmake_style = mxCCC::AddCheckBox(mySizer,this,LANG(MAKEFILE_CMAKE_STYLE,"Mostrar progreso al compilar (estilo cmake)"),false);
+	cmake_style = AddCheckBox(mySizer,this,LANG(MAKEFILE_CMAKE_STYLE,"Mostrar progreso al compilar (estilo cmake)"),false);
 	
 	wxButton *cancel_button = new mxBitmapButton (this, wxID_CANCEL, bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, LANG(MAKEFILE_GENERATE,"Generar"));
@@ -95,10 +96,6 @@ void mxMakefileDialog::OnExploreButton(wxCommandEvent &event) {
 	wxFileDialog dlg (this, LANG(MAKEFILE_CAPTION,"Generar Makefile"),project->path,file_path->GetValue(), _T("Any file (*)|*"), wxFD_SAVE);
 	if (dlg.ShowModal() == wxID_OK)
 		file_path->SetValue(dlg.GetPath());
-}
-
-void mxMakefileDialog::OnClose(wxCloseEvent &event) {
-	Destroy();
 }
 
 void mxMakefileDialog::OnHelpButton(wxCommandEvent &event){

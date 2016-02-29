@@ -1,6 +1,7 @@
 #ifndef MXCPPCHECKCONFIGDIALOG_H
 #define MXCPPCHECKCONFIGDIALOG_H
-#include <wx/dialog.h>
+
+#include "mxCommonConfigControls.h"
 
 class wxListBox;
 class wxPanel;
@@ -9,7 +10,7 @@ class wxTextCtrl;
 class wxNotebook;
 class cppcheck_configuration;
 
-class mxCppCheckConfigDialog : public wxDialog {
+class mxCppCheckConfigDialog : public mxDialog {
 private:
 	wxListBox *sources_in, *sources_out;
 	wxCheckBox *copy_from_config;
@@ -46,7 +47,6 @@ public:
 	void OnButtonOk(wxCommandEvent &evt);
 	void OnButtonCancel(wxCommandEvent &evt);
 	void OnButtonHelp(wxCommandEvent &evt);
-	void OnClose(wxCloseEvent &evt);
 
 	DECLARE_EVENT_TABLE();
 };

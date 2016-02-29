@@ -35,7 +35,6 @@
 #include "MenusAndToolsConfig.h"
 #include "mxToolchainConfig.h"
 #include "SimpleTemplates.h"
-#include "mxCommonConfigControls.h"
 
 static cfgStyles s_old_config_styles; // aquí para evitar tener que hacer el include de ConfigManager en el .h
 
@@ -124,13 +123,13 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 	EVT_MENU(mxID_EXPLORERS_THUNAR,mxPreferenceWindow::OnExplorerThunar)
 	EVT_MENU(mxID_EXPLORERS_NAUTILUS,mxPreferenceWindow::OnExplorerNautilus)
 #endif
-	EVT_CLOSE(mxPreferenceWindow::OnClose)
 	EVT_LISTBOX(mxID_SKIN_LIST,mxPreferenceWindow::OnSkinList)
 	EVT_COMBOBOX(mxID_PREFERENCES_FONTNAME,mxPreferenceWindow::OnFontChange)
 	EVT_TEXT(mxID_PREFERENCES_FONTSIZE,mxPreferenceWindow::OnFontChange)
 END_EVENT_TABLE()
 
-mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : wxDialog(parent, wxID_ANY, LANG(PREFERENCES_CAPTION,"Preferencias"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) 
+mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : 
+	mxDialog(parent, LANG(PREFERENCES_CAPTION,"Preferencias"), false)
 {
 
 	ignore_styles_changes = true;
@@ -171,7 +170,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : wxDialog(parent, wxID
 	notebook->AddPage(CreatePathsPanels(notebook), LANG(PREFERENCES_PATHS,"Rutas"),false,7); 
 	mySizer->Add(notebook,sizers->Exp1);
 	
-	mxCCC::MainSizer(this,mySizer)
+	ReuseSizer(this,mySizer)
 		.BeginBottom().Help().Ok().Cancel().EndBottom(this)
 		.SetAndFit();
 
@@ -183,8 +182,7 @@ mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : wxDialog(parent, wxID
 }
 
 wxPanel *mxPreferenceWindow::CreateGeneralPanel (mxBookCtrl *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	wxArrayString langs; mxUT::GetFilesFromDir(langs,"lang",true);
 	for(unsigned int i=0;i<langs.GetCount();)
@@ -235,7 +233,7 @@ wxPanel *mxPreferenceWindow::CreateGeneralPanel (mxBookCtrl *notebook) {
 		.Center().EndLabel();
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxPanel *mxPreferenceWindow::CreateQuickHelpPanel(mxBookCtrl *notebook) {
@@ -249,16 +247,15 @@ wxPanel *mxPreferenceWindow::CreateQuickHelpPanel(mxBookCtrl *notebook) {
 }
 
 wxNotebook *mxPreferenceWindow::CreateDebugPanels (mxBookCtrl *notebook) {
-	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
-	nbk->AddPage(CreateDebugPanel1(nbk), LANG(PREFERENCES_DEBUG_1,"Interfaz"),false);
-	nbk->AddPage(CreateDebugPanel2(nbk), LANG(PREFERENCES_DEBUG_2,"Avanzado"),false);
-	return nbk;
+	return CreateNotebook(notebook)
+		.AddPage(this,&mxPreferenceWindow::CreateDebugPanel1, LANG(PREFERENCES_DEBUG_1,"Interfaz"))
+		.AddPage(this,&mxPreferenceWindow::CreateDebugPanel2, LANG(PREFERENCES_DEBUG_2,"Avanzado"))
+		.EndNotebook();
 }
 
 
 wxPanel *mxPreferenceWindow::CreateDebugPanel1 (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 		
 	sizer.BeginCheck( LANG(PREFERENCES_DEBUG_ALLOW_EDITION,"Permitir editar los fuentes durante la depuración") )
 		.Value(config->Debug.allow_edition).EndCheck(debug_allow_edition);
@@ -285,13 +282,11 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel1 (wxNotebook *notebook) {
 		.Value(config->Debug.return_focus_on_continue).EndCheck(debug_return_focus_on_continue);
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
-
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 		
 #ifdef __linux__
 	sizer.BeginCheck( LANG(PREFERENCES_DEBUG_ENABLE_CORE_DUMP,"Habilitar volcado de memoria al ejecutar sin depurador") )
@@ -318,24 +313,24 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 	sizer.BeginCheck( LANG(PREFERENCES_DEBUG_INSPECTIONS_CAN_HAVE_SIDE_EFFECTS,"Considerar side-effects al evaluar inspecciones") )
 		.Value(config->Debug.inspections_can_have_side_effects).EndCheck(debug_inspections_can_have_side_effects);
 	
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginCheck( LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE,"Mejorar inspecciones automáticamente segun tipo") )
 			.Value(config->Debug.improve_inspections_by_type).EndCheck(debug_improve_inspections_by_type)
 		.Space(15)
 		.BeginButton( LANG(PREFERENCES_DEBUG_IMPROVE_INSPECTIONS_SETTINGS,"Configurar...") )
 			.Id(mxID_DEBUG_IMPROVE_INSPECTIONS_BY_TYPE).EndButton()
-		.EndInnerSizer();
+		.EndLine();
 	
 	sizer.BeginText( LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de definiciones de macros para gdb") )
 		.Value(config->Debug.macros_file).Button(mxID_DEBUG_MACROS).EndText(debug_macros_file);
 	
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginCheck( LANG(PREFERENCES_DEBUG_USE_BLACKLIST,"Utilizar lista negra en el paso a paso") )
 			.Value(config->Debug.use_blacklist).EndCheck(debug_use_blacklist)
 		.Space(15)
 		.BeginButton( LANG(PREFERENCES_DEBUG_BLACKLIST_BUTTON,"Configurar...") )
 			.Id(mxID_DEBUG_BLACKLIST).EndButton()
-		.EndInnerSizer();
+		.EndLine();
 	
 #ifdef __WIN32__
 	sizer.BeginCheck( LANG(PREFERENCES_DEBUG_NO_DEBUG_HEAP,"Deshabilitar heap especial de widondows para deburación") )
@@ -343,32 +338,29 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 #endif
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxPanel *mxPreferenceWindow::CreateToolbarsPanel (mxBookCtrl *notebook) {
-
-	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	
-	sizer->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_TOOLBARS_WICH,"Barra de herramientas a utilizar:"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
+	CreatePanelAndSizer sizer(notebook); wxPanel *panel_toolbars = sizer.GetPanel();
+	sizer.BeginLabel(  LANG(PREFERENCES_TOOLBARS_WICH,"Barra de herramientas a utilizar:") ).EndLabel();
 	
 	wxBoxSizer *tbs_sizer = new wxBoxSizer(wxVERTICAL);
-	
+
 	wxArrayString poss; poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_TOP,"Arriba")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_LEFT,"Izquierda")); poss.Add(LANG(PREFERENCES_TOOLBARS_DOCK_RIGHT,"Derecha")); poss.Add(LANG(PREFERENCES_TOOLBARS_FLOAT,"Flotante"));
 #define _aux_ctp_1(name,ID,label) { \
 	MenusAndToolsConfig::toolbarPosition &position = menu_data->GetToolbarPosition(MenusAndToolsConfig::tb##ID); \
 	wxBoxSizer *sz= new wxBoxSizer(wxHORIZONTAL); \
 	sz->Add(20,1,0); \
-	toolbars_wich_##name = new wxCheckBox(panel,wxID_ANY,label); \
+	toolbars_wich_##name = new wxCheckBox(panel_toolbars,wxID_ANY,label); \
 	toolbars_wich_##name->SetValue(position.visible); \
 	wx_toolbars_widgets.Add(toolbars_wich_##name); \
-	wxButton *bt = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_##ID,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar...")); \
+	wxButton *bt = new wxButton(panel_toolbars,mxID_PREFERENCES_TOOLBAR_##ID,LANG(PREFERENCES_TOOLBARS_MODIFY,"Modificar...")); \
 	sz->Add(toolbars_wich_##name,sizers->BA5_Center); sz->AddStretchSpacer(); sz->Add(bt,sizers->BLR10); \
-	toolbars_side_##name = new wxComboBox(panel,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,poss,wxCB_READONLY); \
+	toolbars_side_##name = new wxComboBox(panel_toolbars,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,poss,wxCB_READONLY); \
 	toolbars_side_##name->SetSelection(position.top?0:(position.left?1:(position.right?2:3))); \
 	wx_toolbars_widgets.Add(toolbars_side_##name); \
-	sz->Add(new wxStaticText(panel,wxID_ANY,"Ubicación:"), sizers->BA5_Center); \
+	sz->Add(new wxStaticText(panel_toolbars,wxID_ANY,"Ubicación:"), sizers->BA5_Center); \
 	sz->Add(toolbars_side_##name,sizers->BA5_Center); \
 	tbs_sizer->Add(sz,sizers->Exp0); }
 	
@@ -380,56 +372,52 @@ wxPanel *mxPreferenceWindow::CreateToolbarsPanel (mxBookCtrl *notebook) {
 	_aux_ctp_1(tools,TOOLS,LANG(CAPTION_TOOLBAR_TOOLS,"Herramientas"));
 	_aux_ctp_1(misc,MISC,LANG(CAPTION_TOOLBAR_MISC,"Misceánea"));
 	
-	toolbars_wich_find = new wxCheckBox(panel,wxID_ANY,LANG(CAPTION_TOOLBAR_FIND,"Busqueda"));
+	toolbars_wich_find = new wxCheckBox(panel_toolbars,wxID_ANY,LANG(CAPTION_TOOLBAR_FIND,"Busqueda"));
 	toolbars_wich_find->SetValue(_toolbar_visible(tbFIND));
 	wxBoxSizer *szFind = new wxBoxSizer(wxHORIZONTAL);
 	szFind->Add(20,1,0);
 	szFind->Add(toolbars_wich_find,sizers->BA5_Center);
 	tbs_sizer->Add(szFind/*,sizers->BA5*/);
 	
-	toolbars_wich_project = new wxCheckBox(panel,wxID_ANY,LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"));
+	toolbars_wich_project = new wxCheckBox(panel_toolbars,wxID_ANY,LANG(CAPTION_TOOLBAR_PROJECT,"Proyecto"));
 	toolbars_wich_project->SetValue(_toolbar_visible(tbPROJECT));
 	wxBoxSizer *szProject = new wxBoxSizer(wxHORIZONTAL);
 	szProject->Add(20,1,0);
 	szProject->Add(toolbars_wich_project,sizers->BA5_Center);
 	tbs_sizer->Add(szProject/*,sizers->BA5*/);
 	
-	sizer->Add(tbs_sizer);
+	sizer.GetSizer()->Add(tbs_sizer);
 	
-	wxButton *btReset = new wxButton(panel,mxID_PREFERENCES_TOOLBAR_RESET,LANG(PREFERENCES_TOOLBARS_RESET,"Reestablecer configuración por defecto"));
-	sizer->Add(btReset,sizers->BA5);
+	sizer.BeginButton( LANG(PREFERENCES_TOOLBARS_RESET,"Reestablecer configuración por defecto") )
+		.Id(mxID_PREFERENCES_TOOLBAR_RESET).RegisterIn(wx_toolbars_widgets).EndButton();
 	
 	wxArrayString icon_sizes;
-	icon_sizes.Add("16x16");
-	if (wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"24"))) icon_sizes.Add("24x24");
-	if (wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"32"))) icon_sizes.Add("32x32");
-	if (wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"48"))) icon_sizes.Add("48x48");
-	if (wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"64"))) icon_sizes.Add("64x64");
 	wxString icsz = wxString()<<menu_data->icon_size<<"x"<<menu_data->icon_size;
-	unsigned int idx_icsz = icon_sizes.Index(icsz);
-	if (idx_icsz>=icon_sizes.GetCount()) idx_icsz=0;
-	toolbar_icon_size = mxCCC::AddComboBox(sizer,panel,LANG(PREFERENCES_TOOLBAR_ICON_SIZE,"Tamaño de icono"),icon_sizes,idx_icsz);
 	
+	sizer.BeginCombo( LANG(PREFERENCES_TOOLBAR_ICON_SIZE,"Tamaño de icono") )
+		.Add("16x16")
+		.AddIf(wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"24")),"24x24")
+		.AddIf(wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"32")),"32x32")
+		.AddIf(wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"48")),"48x48")
+		.AddIf(wxFileName::DirExists(DIR_PLUS_FILE(config->Files.skin_dir,"64")),"64x64")
+		.Add(icon_sizes).Select(icsz,0).RegisterIn(wx_toolbars_widgets).EndCombo(toolbar_icon_size);
 	
 	wx_toolbars_widgets.Add(toolbars_wich_find);
 	wx_toolbars_widgets.Add(toolbars_wich_project);
-	wx_toolbars_widgets.Add(toolbar_icon_size);
-	wx_toolbars_widgets.Add(btReset);
 	
-	panel->SetSizerAndFit(sizer);
-	return (panel_toolbars=panel);
+	sizer.SetAndFit();
+	return panel_toolbars;
 }
 
 wxNotebook *mxPreferenceWindow::CreateCompilePanel(mxBookCtrl *notebook) {
-	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
-	nbk->AddPage(CreateCompilePanelSimple(nbk), LANG(PREFERENCES_SIMPLE,"Programa simple"),false);
-	nbk->AddPage(CreateCompilePanelProject(nbk), LANG(PREFERENCES_PROJECT,"Proyecto"),false);
-	return nbk;
+	return CreateNotebook(notebook)
+		.AddPage(this,&mxPreferenceWindow::CreateCompilePanelSimple, LANG(PREFERENCES_SIMPLE,"Programa simple") )
+		.AddPage(this,&mxPreferenceWindow::CreateCompilePanelProject, LANG(PREFERENCES_PROJECT,"Proyecto") )
+		.EndNotebook();
 }
 
 wxPanel *mxPreferenceWindow::CreateCompilePanelProject (wxBookCtrl *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginText( LANG(PREFERENCES_GENERAL_MAX_JOBS,"Cantidad de pasos en paralelo al compilar") )
 		.Value(config->Init.max_jobs).Button(mxID_MAX_JOBS).EndText(init_max_jobs);
@@ -444,21 +432,20 @@ wxPanel *mxPreferenceWindow::CreateCompilePanelProject (wxBookCtrl *notebook) {
 	sizer.BeginCheck( LANG(PREFERENCES_GENERAL_SHOW_FILES_EXPLORER_ON_PROJECT,"Mostrar el explorador de archivos al abrir un proyecto") )
 			  .Value(config->Init.prefer_explorer_tree).EndCheck(init_prefer_explorer_tree);
 
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginCheck( LANG(PREFERENCES_USE_CACHE_FOR_SUBCMD,"Usar cache para la ejecución de subcomandos") )
 			.Value(config->Init.use_cache_for_subcommands).EndCheck(init_use_cache_for_subcommands)
 		.Space(15)
 		.BeginButton( LANG(PREFERENCES_USE_CLEAR_SUBCMD_CACHE,"Limpiar") )
 			.Id(mxID_PREFERENCES_CLEAR_SUBCMD_CACHE).EndButton()
-		.EndInnerSizer();
+		.EndLine();
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxPanel *mxPreferenceWindow::CreateCompilePanelSimple (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginCombo( LANG(PREFERENCES_SIMPLE_NEW_ACTION,"Accion para Nuevo Archivo") )
 		.Add(LANG(PREFERENCES_SIMPLE_CREATE_EMPTY_FILE,"Crear archivo en blanco"))
@@ -496,28 +483,26 @@ wxPanel *mxPreferenceWindow::CreateCompilePanelSimple (wxNotebook *notebook) {
 		.Value(config->Init.always_add_extension).EndCheck(init_always_add_extension);
 	
 	wxArrayString tc_array; Toolchain::GetNames(tc_array,false);	
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginCombo( LANG(PREFERENCES_TOOLCHAIN,"Herramientas de compilación") )
 			.Add(tc_array).Select(config->Files.toolchain).EndCombo(files_toolchain)
 		.BeginButton("...").Id(mxID_PREFERENCES_TOOLCHAIN_OPTIONS).EndButton()
-		.EndInnerSizer();
+		.EndLine();
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
-
 wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginCheck( LANG(PREFERENCES_STYLE_SINTAX_HIGHLIGHT,"Colorear sintaxis") )
 			.Value(config->Source.syntaxEnable).EndCheck(source_syntaxEnable)
 		.Space(15)
 		.BeginButton( LANG(PREFERENCES_STYLE_DEFINE_COLOURS,"Definir colores...") )
 			.Id(mxID_COLORS_PICKER).EndButton()
-		.EndInnerSizer();
+		.EndLine();
 	
 	sizer.BeginCombo( LANG(PREFERENCES_STYLE_LINE_WRAP,"Ajuste de linea dinámico") )
 		.Add(LANG(PREFERENCES_STYLE_WRAP_NONE,"Nunca"))
@@ -534,19 +519,19 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	sizer.BeginCheck( LANG(PREFERENCES_STYLE_ENABLE_CODE_FOLDING,"Habilitar plegado de código") )
 		.Value(config->Source.foldEnable).EndCheck(source_foldEnable);
 	
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginText( LANG(PREFERENCES_STYLE_TAB_WIDTH,"Ancho del tabulado") )
 			.Value(config->Source.tabWidth).EndText(source_tabWidth)
 		.Space(15)
 		.BeginCheck( LANG(PREFERENCES_STYLE_SPACES_INTEAD_TABS,"Colocar espacios en lugar de tabs") )
 			.Value(config->Source.tabUseSpaces).EndCheck(source_tabUseSpaces)
-		.EndInnerSizer();
+		.EndLine();
 	
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginCheck( LANG(PREFERENCES_STYLE_EDGE_COLUM,"Mostrar linea guía en la columna") )
 			.Value(config->Source.edgeColumn>0).EndCheck(source_edgeColumnCheck)
 		.BeginText(" ").Value(abs(config->Source.edgeColumn)).EndText(source_edgeColumnPos)
-		.EndInnerSizer();
+		.EndLine();
 	
 	class mxFontEnumerator: public wxFontEnumerator {
 		wxArrayString *array;
@@ -564,13 +549,13 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 	sizer.BeginCombo( LANG(PREFERENCES_STYLE_FONT_NAME,"Fuente para el código") )
 		.Add(fonts).Select(def_font).Id(mxID_PREFERENCES_FONTNAME).EndCombo(styles_font_name);
 	
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginText( LANG(PREFERENCES_STYLE_SCREEN_FONT_SIZE,"Tamaño de la fuente en pantalla") )
 			.Value(config->Styles.font_size).Id(mxID_PREFERENCES_FONTSIZE).EndText(styles_font_size)
 		.Space(15)
 		.BeginText( LANG(PREFERENCES_STYLE_PRINTING_FONT_SIZE,"para impresion") )
 			.Value(config->Styles.print_size).EndText(styles_print_size)
-		.EndInnerSizer();
+		.EndLine();
 	
 	sizer.BeginCheck( LANG(PREFERENCES_STYLE_HIDE_MENUS_ON_FULLSCREEN,"Ocultar barra de menues al pasar a pantalla completa") )
 		.Value(config->Init.autohide_menus_fs).EndCheck(init_autohide_menus_fs);
@@ -582,19 +567,18 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 		.Value(config->Init.autohide_panels_fs).EndCheck(init_autohide_panels_fs);
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxNotebook *mxPreferenceWindow::CreateWritingPanels (mxBookCtrl *notebook) {
-	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
-	nbk->AddPage(CreateWritingPanel1(nbk), LANG(PREFERENCES_ASSIST_1,"Generales"),false);
-	nbk->AddPage(CreateWritingPanel2(nbk), LANG(PREFERENCES_ASSIST_2,"Autocompletado"),false);
-	return nbk;
+	return CreateNotebook(notebook)
+		.AddPage(this,&mxPreferenceWindow::CreateWritingPanel1, LANG(PREFERENCES_ASSIST_1,"Generales") )
+		.AddPage(this,&mxPreferenceWindow::CreateWritingPanel2, LANG(PREFERENCES_ASSIST_2,"Autocompletado") )
+		.EndNotebook();
 }
 
 wxPanel *mxPreferenceWindow::CreateWritingPanel1 (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginCheck( LANG(PREFERENCES_WRITING_INTELLIGENT_EDITING,"Edición inteligente") )
 		.Value(config->Source.smartIndent).EndCheck(source_smartIndent);
@@ -626,12 +610,11 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel1 (wxNotebook *notebook) {
 #endif
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxPanel *mxPreferenceWindow::CreateWritingPanel2 (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook); wxPanel *panel = sizer.GetPanel();
 	
 	sizer.BeginCombo( LANG(PREFERENCES_WRITING_AUTOCOMPLETION,"Autocompletado") )
 		.Add(LANG(PREFERENCES_WRITTING_AUTOCOMP_NONE,"Deshabilitado"))
@@ -649,7 +632,7 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel2 (wxNotebook *notebook) {
 	sizer.BeginCheck( LANG(PREFERENCES_WRITING_ENABLE_CALLTIPS,"Mostrar ayuda de llamadas a funciones y métodos") )
 		.Value(config->Source.callTips).EndCheck(source_callTips);
 	
-	sizer.GetSizer()->Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Índices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
+	sizer.Add(new wxStaticText(panel, wxID_ANY, LANG(PREFERENCES_WRITING_AUTOCOMPLETION_INDEXES,"Índices de autocompletado a utilizar"), wxDefaultPosition, wxDefaultSize, 0), sizers->BA5);
 	help_autocomp_indexes = new wxCheckListBox(panel,mxID_AUTOCOMP_LIST,wxDefaultPosition,wxSize(100,100),0,nullptr,wxLB_SORT);
 	
 	wxArrayString autocomp_array_all, autocomp_array_user;
@@ -661,10 +644,10 @@ wxPanel *mxPreferenceWindow::CreateWritingPanel2 (wxNotebook *notebook) {
 		if (autocomp_array_user.Index(autocomp_array_all[i])!=wxNOT_FOUND) 
 			help_autocomp_indexes->Check(n,true);
 	}
-	sizer.GetSizer()->Add(help_autocomp_indexes,sizers->BA5_DL_Exp1);
+	sizer.Add(help_autocomp_indexes,sizers->BA5_DL_Exp1);
 
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 
@@ -715,17 +698,15 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (mxBookCtrl *notebook) {
 	return panel;
 }
 
-
 wxNotebook *mxPreferenceWindow::CreatePathsPanels (mxBookCtrl *notebook) {
-	wxNotebook *nbk = new wxNotebook(notebook,wxID_ANY,wxDefaultPosition,wxDefaultSize);
-	nbk->AddPage(CreatePathsPanel1(nbk), LANG(PREFERENCES_PATHS_1,"Rutas 1"),false);
-	nbk->AddPage(CreatePathsPanel2(nbk), LANG(PREFERENCES_PATHS_1,"Rutas 2"),false);
-	return nbk;
+	return CreateNotebook(notebook)
+		.AddPage(this,&mxPreferenceWindow::CreatePathsPanel1, LANG(PREFERENCES_PATHS_1,"Rutas 1") )
+		.AddPage(this,&mxPreferenceWindow::CreatePathsPanel2, LANG(PREFERENCES_PATHS_1,"Rutas 2") )
+		.EndNotebook();
 }
 
 wxPanel *mxPreferenceWindow::CreatePathsPanel1 (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 
 	sizer.BeginText( LANG(PREFERENCES_PATHS_TEMP,"Directorio temporal") )
 		.Value(config->Files.temp_dir).Button(mxID_TEMP_FOLDER).EndText(files_temp_dir);
@@ -754,12 +735,11 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel1 (wxNotebook *notebook) {
 						   "el botón \"...\" de la opción \"Herramientas de compilación\".") ).Center().EndLabel();
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxPanel *mxPreferenceWindow::CreatePathsPanel2 (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginText( LANG(PREFERENCES_COMMANDS_EXPLORER,"Comando del explorador de archivos") )
 		.Value(config->Files.explorer_command).Button(mxID_EXPLORERS_BUTTON).EndText(files_explorer_command);
@@ -788,7 +768,7 @@ wxPanel *mxPreferenceWindow::CreatePathsPanel2 (wxNotebook *notebook) {
 		.Value(config->Files.cppcheck_command).Button(mxID_CPPCHECK_PATH).EndText(files_cppcheck_command);
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 static void RecreateAllToolbars ( ) {
@@ -1010,11 +990,6 @@ void mxPreferenceWindow::OnCancelButton(wxCommandEvent &event){
 	Close();
 }
 
-void mxPreferenceWindow::OnClose(wxCloseEvent &event){
-	Hide();
-	event.Veto();
-}
-
 void mxPreferenceWindow::OnSkinButton(wxCommandEvent &event){
 	int selection = skin_list->GetSelection();
 	if (selection<0) return;
@@ -1023,70 +998,60 @@ void mxPreferenceWindow::OnSkinButton(wxCommandEvent &event){
 	mxMessageDialog(main_window,LANG(PREFERENCES_THEME_WILL_APPLY_ON_RESTART,"El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI"),LANG(PREFERENCES_CAPTION,"Preferencias"), mxMD_OK|mxMD_INFO).ShowModal();
 }
 
+#warning TODO: USAR THREEDOTS EN TODOS ESTOS METODOS
 void mxPreferenceWindow::OnWxHelpButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Indice de ayuda wxWidgets:"),help_wxhelp_index->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		help_wxhelp_index->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) help_wxhelp_index->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnTempButton(wxCommandEvent &event){
 	wxDirDialog dlg(this,_T("Directorio temporal:"),files_temp_dir->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_temp_dir->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_temp_dir->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnProjectButton(wxCommandEvent &event){
 	wxDirDialog dlg(this,_T("Directorio de proyectos:"),files_project_folder->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_project_folder->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_project_folder->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnGdbButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Comando del depurador"),files_debugger_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_debugger_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_debugger_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnImgBrowserButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Comando del visor de imagenes"),files_img_viewer_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_img_viewer_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_img_viewer_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnXdotButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Comando del visor de grafos xdot"),files_xdot_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_xdot_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_xdot_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnBrowserButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Comando del navegador Web"),files_browser_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_browser_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_browser_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnDoxygenButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de Doxygen"),files_doxygen_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_doxygen_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_doxygen_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnWxfbButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de wxFormBuilder"),files_wxfb_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_wxfb_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_wxfb_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnValgrindButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,_T("Ubicacion del ejecutable de Valgrind"),files_valgrind_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_valgrind_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_valgrind_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnCppCheckButton(wxCommandEvent &event){
 	wxFileDialog dlg(this,"Ubicacion del ejecutable de CppCheck",files_cppcheck_command->GetValue());
-	if (wxID_OK==dlg.ShowModal())
-		files_cppcheck_command->SetValue(dlg.GetPath());
+	if (wxID_OK==dlg.ShowModal()) files_cppcheck_command->SetValue(dlg.GetPath());
 }
 
 void mxPreferenceWindow::OnHelpButton(wxCommandEvent &event){

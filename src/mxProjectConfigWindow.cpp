@@ -76,61 +76,37 @@ END_EVENT_TABLE()
 wxString mxExtraStepWindow::new_name;
 	
 mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent) 
-	: wxDialog(parent, wxID_ANY, LANG(PROJECTCONFIG_CAPTION,"Opciones de Compilación y Ejecución"), 
-	           wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE| wxRESIZE_BORDER) 
+	: mxDialog(parent, LANG(PROJECTCONFIG_CAPTION,"Opciones de Compilación y Ejecución") ),
+	  discard(true), configuration(project->active_configuration)
 {
+	CreateSizer sizer(this);
 	
-	discard=true;
-	
-	configuration = project->active_configuration;
-
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-
-	// crear las opciones del nombre de la configuracion
-	wxBoxSizer *nameSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxArrayString values;
 	for (int i=0;i<project->configurations_count;i++)
 		values.Add(project->configurations[i]->name);
-	configuration_name = new wxComboBox(this, mxID_PROJECT_CONFIG_NAME, configuration->name, wxDefaultPosition, wxDefaultSize, values, wxCB_READONLY);
-	nameSizer->Add(configuration_name,sizers->Exp1);
-	
-	nameSizer->Add(new wxButton (this,mxID_PROJECT_CONFIG_SELECT,LANG(PROJECTCONFIG_USE_PROFILE,"Utilizar")));
-	nameSizer->Add(new wxButton (this,mxID_PROJECT_CONFIG_ADD,LANG(PROJECTCONFIG_NEW_PROFILE,"Nuevo")));
-	nameSizer->Add(new wxButton (this,mxID_PROJECT_CONFIG_RENAME,LANG(PROJECTCONFIG_RENAME_PROFILE,"Renombrar")));
-	nameSizer->Add(new wxButton (this,mxID_PROJECT_CONFIG_REMOVE,LANG(PROJECTCONFIG_DELETE_PROFILE,"Eliminar")));
+	sizer.BeginLine()
+		.BeginCombo().Add(values).Select(configuration->name).Id(mxID_PROJECT_CONFIG_NAME).EndCombo(configuration_name)
+		.BeginButton( LANG(PROJECTCONFIG_USE_PROFILE,"Utilizar") ).Id(mxID_PROJECT_CONFIG_SELECT).EndButton()
+		.BeginButton( LANG(PROJECTCONFIG_NEW_PROFILE,"Nuevo") ).Id(mxID_PROJECT_CONFIG_ADD).EndButton()
+		.BeginButton( LANG(PROJECTCONFIG_RENAME_PROFILE,"Renombrar") ).Id(mxID_PROJECT_CONFIG_RENAME).EndButton()
+		.BeginButton( LANG(PROJECTCONFIG_DELETE_PROFILE,"Eliminar") ).Id(mxID_PROJECT_CONFIG_REMOVE).EndButton()
+		.EndLine();
 	
 	// crear las pestañas con las opciones de la configuracion
-	notebook = new wxNotebook(this,wxID_ANY);
-	if (config->Help.show_extra_panels)
-		notebook->AddPage(CreateQuickHelpPanel(notebook), LANG(PROJECTCONFIG_HELP,"Ayuda"));
-	notebook->AddPage(CreateGeneralPanel(notebook), LANG(PROJECTCONFIG_GENERAL,"General"));
-	notebook->AddPage(CreateCompilingPanel(notebook), LANG(PROJECTCONFIG_COMPILING,"Compilacion"));
-	notebook->AddPage(CreateLinkingPanel(notebook), LANG(PROJECTCONFIG_LINKING,"Enlazado"));
-	notebook->AddPage(CreateStepsPanel(notebook), LANG(PROJECTCONFIG_SEQUENCE,"Secuencia"));
-	notebook->AddPage(CreateLibsPanel(notebook), LANG(PROJECTCONFIG_LIBRARIES,"Bibliotecas"));
+	sizer.BeginNotebook()
+		.AddPageIf(config->Help.show_extra_panels,this,&mxProjectConfigWindow::CreateQuickHelpPanel, LANG(PROJECTCONFIG_HELP,"Ayuda"))
+		.AddPage(this,&mxProjectConfigWindow::CreateGeneralPanel, LANG(PROJECTCONFIG_GENERAL,"General"))
+		.AddPage(this,&mxProjectConfigWindow::CreateCompilingPanel, LANG(PROJECTCONFIG_COMPILING,"Compilacion"))
+		.AddPage(this,&mxProjectConfigWindow::CreateLinkingPanel, LANG(PROJECTCONFIG_LINKING,"Enlazado"))
+		.AddPage(this,&mxProjectConfigWindow::CreateStepsPanel, LANG(PROJECTCONFIG_SEQUENCE,"Secuencia"))
+		.AddPage(this,&mxProjectConfigWindow::CreateLibsPanel, LANG(PROJECTCONFIG_LIBRARIES,"Bibliotecas"))
+		.EndNotebook(notebook);
 
 	wx_noexe.EnableAll(!configuration->dont_generate_exe);
 	wx_extern.EnableAll(!Toolchain::GetInfo(toolchains_combo->GetStringSelection()).IsExtern());
 	wx_noscript.EnableAll(configuration->exec_method);
 	
-	// crear los botones de aceptar y cancelar
-	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	SetEscapeId(wxID_CANCEL);
-	wxButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	ok_button->SetDefault(); 
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
-
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(ok_button,sizers->BA5);
-
-	// juntar todo y mostrar
-	mySizer->Add(nameSizer,sizers->BA5_Exp0);
-	mySizer->Add(notebook,sizers->Exp1);
-	mySizer->Add(bottomSizer,sizers->Exp0);
-	SetSizerAndFit(mySizer);
+	sizer.BeginBottom().Help().Ok().Cancel().EndBottom(this).SetAndFit();
 	notebook->SetSelection(last_page_index);
 	SetFocus();
 	Show();
@@ -147,9 +123,7 @@ wxPanel *mxProjectConfigWindow::CreateQuickHelpPanel (wxNotebook *notebook) {
 }
 
 wxPanel *mxProjectConfigWindow::CreateLinkingPanel (wxNotebook *notebook) {
-
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginText( LANG(PROJECTCONFIG_LINKING_EXTRA_ARGS,"Parametros extra para el enlazado") )
 		.Value(configuration->linking_extra).Button(mxID_PROJECT_CONFIG_LINK_EXTRA_BUTTON)
@@ -193,14 +167,11 @@ wxPanel *mxProjectConfigWindow::CreateLinkingPanel (wxNotebook *notebook) {
 		.RegisterIn(wx_noexe).RegisterIn(wx_extern).EndText(linking_manifest);
 	
 	sizer.SetAndFit();
-	return panel;
-
+	return sizer.GetPanel();
 }
 
 wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
-	
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 		
 	sizer.BeginText( LANG(PROJECTCONFIG_GENERAL_EXE_PATH,"Ubicacion del ejecutable") )
 		.Value(configuration->output_file).Button(mxID_PROJECT_GENERAL_EXE_PATH)
@@ -241,16 +212,12 @@ wxPanel *mxProjectConfigWindow::CreateGeneralPanel (wxNotebook *notebook) {
 		.RegisterIn(wx_noexe).EndText(general_env_vars);
 					
 	sizer.SetAndFit();
-
-	return panel;
-
+	return sizer.GetPanel();
 }
 
 
 wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
-	
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 		
 	sizer.BeginText( LANG(PROJECTCONFIG_COMPILING_EXTRA_ARGS,"Parametros extra para la compilacion") )
 		.Value(configuration->compiling_extra).Button(mxID_PROJECT_CONFIG_COMPILE_EXTRA_BUTTON)
@@ -267,7 +234,7 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 		.RegisterIn(wx_extern).EndText(compiling_headers_dirs);
 							
 
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginLabel( LANG(PROJECTCONFIG_COMPILING_STD,"Estandar:") ).RegisterIn(wx_extern).EndLabel()
 		.Space(15)
 		.BeginCombo( "C" )
@@ -287,9 +254,9 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 		.BeginCheck(LANG(PROJECTCONFIG_COMPILING_ONLY_ANSI,"estricto"))
 			.Value(configuration->pedantic_errors).RegisterIn(wx_extern)
 			.EndCheck(compiling_pedantic)
-		.EndInnerSizer();
+		.EndLine();
 		
-	sizer.BeginInnerSizer()
+	sizer.BeginLine()
 		.BeginCombo(LANG(PROJECTCONFIG_COMPILING_WARNINGS,"Nivel de advertencias"))
 			.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_NONE,"Ninguna"))
 			.Add(LANG(PROJECTCONFIG_COMPILING_WARNINGS_DEFAULT,"Predeterminadas"))
@@ -301,7 +268,7 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 		.BeginCheck(LANG(PROJECTCONFIG_WARNINGS_AS_ERRORS,"como errores"))
 			.Value(configuration->warnings_as_errors).RegisterIn(wx_extern)
 			.EndCheck(compiling_warnings_as_errors)
-		.EndInnerSizer();
+		.EndLine();
 							
 	sizer.BeginCombo(LANG(PROJECTCONFIG_COMPILING_DEBUG,"Informacion de depuracion"))
 		.Add(LANG(PROJECTCONFIG_COMPILING_DEBUG_NONE,"Ninguna"))
@@ -327,8 +294,7 @@ wxPanel *mxProjectConfigWindow::CreateCompilingPanel (wxNotebook *notebook) {
 		.RegisterIn(wx_extern).EndText(compiling_temp_folder);
 			
 	sizer.SetAndFit();
-	return panel;
-
+	return sizer.GetPanel();
 }
 
 void mxProjectConfigWindow::OnCancelButton(wxCommandEvent &event){
@@ -657,7 +623,6 @@ void mxProjectConfigWindow::OnGeneralExePathButton(wxCommandEvent &evt) {
 }
 
 wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
-	
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *sizer_h= new wxBoxSizer(wxHORIZONTAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
@@ -712,14 +677,11 @@ wxPanel *mxProjectConfigWindow::CreateStepsPanel (wxNotebook *notebook) {
 	panel->SetSizerAndFit(sizer);
 	
 	return panel;
-	
 }
 
 wxPanel *mxProjectConfigWindow::CreateLibsPanel (wxNotebook *notebook) {
+	CreatePanelAndSizer sizer(notebook); wxPanel *panel = sizer.GetPanel();
 	
-	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *sizer_h= new wxBoxSizer(wxHORIZONTAL);
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 
 //#warning LA FUNCIONALIDAD DEL BOTON PARA IMPORTAR BIBLIOTECAS NO ESTA IMPLEMENTADA
 //	wxBoxSizer *sizer_i = new wxBoxSizer(wxHORIZONTAL);
@@ -727,41 +689,37 @@ wxPanel *mxProjectConfigWindow::CreateLibsPanel (wxNotebook *notebook) {
 //	sizer_i->Add(new wxButton(panel,wxID_ANY," Importar configuración desde plantilla... "),sizers->BA10);
 //	sizer->Add(sizer_i,sizers->BB5_Exp0);
 	
-	wxStaticText *libtobuild_label = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_LIBS_TO_GENERATE,"Bibliotecas a generar"));
-	sizer->Add(libtobuild_label,sizers->BLRT5);
-	wx_extern.Add(libtobuild_label);
+	sizer.BeginLabel( LANG(PROJECTCONFIG_LIBS_TO_GENERATE,"Bibliotecas a generar*") ).RegisterIn(wx_extern).EndLabel();
 	
 	libtobuild_list = new wxListBox(panel,wxID_ANY);
-	sizer_h->Add(libtobuild_list,sizers->BA5_Exp1);
 	wx_extern.Add(libtobuild_list);
 	
-	wxBoxSizer *buttons = new wxBoxSizer(wxVERTICAL);
-	wxButton *button_add = new wxButton(panel,mxID_PROJECT_CONFIG_LIBS_ADD,LANG(PROJECTCONFIG_LIBS_ADD,"Agregar"));
-	buttons->Add(button_add,sizers->BA5); wx_extern.Add(button_add);
-	wxButton *button_edit = new wxButton(panel,mxID_PROJECT_CONFIG_LIBS_EDIT,LANG(PROJECTCONFIG_LIBS_EDIT,"Editar"));
-	buttons->Add(button_edit,sizers->BA5); wx_extern.Add(button_edit);
-	wxButton *button_delete = new wxButton(panel,mxID_PROJECT_CONFIG_LIBS_DEL,LANG(PROJECTCONFIG_LIBS_DELETE,"Quitar"));
-	buttons->Add(button_delete,sizers->BA5); wx_extern.Add(button_delete);
-	sizer_h->Add(buttons,sizers->BA5_Center);
-	sizer->Add(sizer_h,sizers->BA5_Exp1);
+	ReuseSizer sizer_h (panel,new wxBoxSizer(wxHORIZONTAL));
+	sizer_h.Add(libtobuild_list,sizers->BA5_Exp1);
 	
-	libtobuild_noexec = mxCCC::AddCheckBox(sizer,panel,LANG(PROJECTCONFIG_LIBS_NOEXEC,"Generar solo bibliotecas (no generar ejecutable)"),configuration->dont_generate_exe,mxID_PROJECT_CONFIG_LIBS_DONT_EXE);
-	wx_extern.Add(libtobuild_noexec);
+	CreateSizer sizer_buttons (panel);
+	sizer_buttons.BeginButton( LANG(PROJECTCONFIG_LIBS_ADD,"Agregar") )
+		.Id(mxID_PROJECT_CONFIG_LIBS_ADD).RegisterIn(wx_extern).Expand().EndButton();
+	sizer_buttons.BeginButton( LANG(PROJECTCONFIG_LIBS_EDIT,"Editar") )
+		.Id(mxID_PROJECT_CONFIG_LIBS_EDIT).RegisterIn(wx_extern).Expand().EndButton();
+	sizer_buttons.BeginButton( LANG(PROJECTCONFIG_LIBS_DELETE,"Quitar") )
+		.Id(mxID_PROJECT_CONFIG_LIBS_DEL).RegisterIn(wx_extern).Expand().EndButton();
+	sizer_h.Add(sizer_buttons,sizers->BA5_Center);
 	
-	wxStaticText *st_warn1 = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_1,"Nota: estos cambios se aplican inmediatamente,"));
-	sizer->Add(st_warn1,sizers->Center); wx_extern.Add(st_warn1);
-	wxStaticText *st_warn2 = new wxStaticText(panel,wxID_ANY,LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW_LINE_2,"aunque luego seleccione cancelar"));
-	sizer->Add(st_warn2,sizers->Center); wx_extern.Add(st_warn2);
+	sizer.Add(sizer_h,sizers->BA5_Exp1);
 	
-	panel->SetSizerAndFit(sizer);
+	sizer.BeginCheck( LANG(PROJECTCONFIG_LIBS_NOEXEC,"Generar solo bibliotecas (no generar ejecutable)") )
+		.Value(configuration->dont_generate_exe).Id(mxID_PROJECT_CONFIG_LIBS_DONT_EXE)
+		.RegisterIn(wx_extern).EndCheck(libtobuild_noexec);
+	
+	sizer.BeginLabel( LANG(PROJECTCONFIG_STEPS_WARNING_APPLY_NOW,"* estos cambios se aplican inmediatamente,\n"
+						                                               "aunque luego seleccione cancelar") )
+					 .Center().EndLabel();
 	
 	ReloadLibs();
-	
-	return panel;
-	
+	sizer.Set();
+	return sizer.GetPanel();
 }
-
-
 
 void mxProjectConfigWindow::OnStepsUp(wxCommandEvent &evt) {
 	bool orig_dir=true;

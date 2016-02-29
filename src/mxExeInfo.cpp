@@ -74,7 +74,7 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	wxBoxSizer *sizer= new wxBoxSizer(wxVERTICAL);
 	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
 	
-	mxCCC::AddTextCtrl(sizer,panel,LANG(EXEINFO_LOCATION,"Ubicacion"),fname.GetFullPath())->SetEditable(false);
+	mxDialog::AddTextCtrl(sizer,panel,LANG(EXEINFO_LOCATION,"Ubicacion"),fname.GetFullPath())->SetEditable(false);
 
 	double fsize = fname.GetSize().ToDouble();
 	wxString tsize;
@@ -86,10 +86,10 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 	}
 	tsize<<fname.GetSize()<<" B";
 	
-	text_size = mxCCC::AddTextCtrl(sizer,panel,LANG(EXEINFO_SIZE,"Tamaño"),tsize);
+	text_size = mxDialog::AddTextCtrl(sizer,panel,LANG(EXEINFO_SIZE,"Tamaño"),tsize);
 	text_size->SetEditable(false);
 	
-	text_time = mxCCC::AddTextCtrl(sizer,panel,LANG(EXEINFO_LAST_MOD_DATE,"Fecha ultima modifiacion"),fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
+	text_time = mxDialog::AddTextCtrl(sizer,panel,LANG(EXEINFO_LAST_MOD_DATE,"Fecha ultima modifiacion"),fname.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"));
 	text_time->SetEditable(false);
 
 	if (!source || !source->sin_titulo) {
@@ -103,12 +103,12 @@ wxPanel *mxExeInfo::CreateGeneralPanel (wxNotebook *notebook) {
 			if (project->PrepareForBuilding())
 				updated=false;
 		}
-		mxCCC::AddShortTextCtrl(sizer,panel,LANG(EXEINFO_UPDATED,"Actualizado"),updated?LANG(EXEINFO_YES,"Si"):LANG(EXEINFO_NO,"No"))->SetEditable(false);
+		mxDialog::AddShortTextCtrl(sizer,panel,LANG(EXEINFO_UPDATED,"Actualizado"),updated?LANG(EXEINFO_YES,"Si"):LANG(EXEINFO_NO,"No"))->SetEditable(false);
 	}
 	
 	wxString file_type = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar el tipo mientras el parser esta analizando fuentes");
 	
-	text_type = mxCCC::AddLongTextCtrl(sizer,panel,LANG(EXEINFO_FILE_TYPE,"Tipo de Archivo"),file_type);
+	text_type = mxDialog::AddLongTextCtrl(sizer,panel,LANG(EXEINFO_FILE_TYPE,"Tipo de Archivo"),file_type);
 	text_type ->SetEditable(false);
 	
 	panel->SetSizer(sizer);
@@ -123,9 +123,9 @@ wxPanel *mxExeInfo::CreateDependPanel (wxNotebook *notebook) {
 	wxString ldd = LANG(EXEINFO_WAIT_FOR_PARSER,"No se puede determinar esta informacion mientras el parser esta analizando fuentes");
 	
 #if !defined(_WIN32) && !defined(__WIN32__)
-	ldd_ctrl = mxCCC::AddLongTextCtrl(sizer,panel,_T("ldd"),ldd);
+	ldd_ctrl = mxDialog::AddLongTextCtrl(sizer,panel,_T("ldd"),ldd);
 #else
-	ldd_ctrl = mxCCC::AddLongTextCtrl(sizer,panel,_T("lsdeps"),ldd);
+	ldd_ctrl = mxDialog::AddLongTextCtrl(sizer,panel,_T("lsdeps"),ldd);
 #endif
 	
 	panel->SetSizer(sizer);

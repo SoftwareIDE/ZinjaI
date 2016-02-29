@@ -1,13 +1,13 @@
 #ifndef MX_MAKEFILE_DIALOG_H
 #define MX_MAKEFILE_DIALOG_H
 
-#include <wx/dialog.h>
+#include "mxCommonConfigControls.h"
 
 class wxCheckBox;
 class wxComboBox;
 class wxTextCtrl;
 
-class mxMakefileDialog : public wxDialog {
+class mxMakefileDialog : public mxDialog {
 private:
 	wxComboBox *configuration_name;
 	wxComboBox *split_type;
@@ -16,7 +16,7 @@ private:
 	wxCheckBox *expand_comas;
 	wxCheckBox *cmake_style;
 public:
-	mxMakefileDialog(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER);
+	mxMakefileDialog(wxWindow* parent);
 	void OnOkButton(wxCommandEvent &event);
 	void OnCancelButton(wxCommandEvent &event);
 	void OnExploreButton(wxCommandEvent &event);

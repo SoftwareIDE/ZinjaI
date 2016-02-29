@@ -32,34 +32,30 @@ BEGIN_EVENT_TABLE(mxCppCheckConfigDialog,wxDialog)
 	EVT_BUTTON(wxID_OK,mxCppCheckConfigDialog::OnButtonOk)
 	EVT_BUTTON(wxID_CANCEL,mxCppCheckConfigDialog::OnButtonCancel)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxCppCheckConfigDialog::OnButtonHelp)
-	EVT_CLOSE(mxCppCheckConfigDialog::OnClose)
 END_EVENT_TABLE()
 
+#warning FALTA TRADUCIR CAPTION
 mxCppCheckConfigDialog::mxCppCheckConfigDialog(wxWindow *parent)
-	: wxDialog(parent,wxID_ANY,"Configuración de CppCheck",wxDefaultPosition,wxDefaultSize,
-			    wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER)
+	: mxDialog(parent, "Configuración de CppCheck" )
 {
 	if (!project->cppcheck) { 
 		project->cppcheck = new cppcheck_configuration();
 		project->cppcheck->save_in_project=true;
 	}
 	ccc = project->cppcheck;
-	
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);
-	notebook->AddPage(CreateGeneralPanel(notebook), "General");
-	notebook->AddPage(CreateFilesPanel(notebook), "Files");
-	mySizer->Add(notebook,sizers->Exp1);
-	mxCCC::MainSizer(this,mySizer)
-		.BeginBottom().Help().Ok().Cancel().EndBottom(this).SetAndFit();
-	
+	CreateSizer(this)
+		.BeginNotebook()
+			.AddPage(this,&mxCppCheckConfigDialog::CreateGeneralPanel, "General")
+			.AddPage(this,&mxCppCheckConfigDialog::CreateFilesPanel, "Files")
+		.EndNotebook()
+		.BeginBottom().Help().Ok().Cancel().EndBottom(this)
+		.SetAndFit();
 	SetFocus();
 	Show();
 }
 
 wxPanel *mxCppCheckConfigDialog::CreateGeneralPanel(wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY);
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginCheck( LANG(CPPCHECK_COPY_FROM_CONFIG,"Copiar configuración (macros definidas) de las opciones del proyecto") )
 		.Value(ccc->copy_from_config).Id(mxID_CPPCHECK_COPYCONFIG).EndCheck(copy_from_config);
@@ -94,12 +90,11 @@ wxPanel *mxCppCheckConfigDialog::CreateGeneralPanel(wxNotebook *notebook) {
 		.Value(ccc->save_in_project).EndCheck(save_in_project);
 	
 	sizer.Set();
-	return panel;
+	return sizer.GetPanel();
 }
 
 wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook); wxPanel *panel = sizer.GetPanel();
 	
 	wxSizer *src_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *szsrc_buttons = new wxBoxSizer(wxVERTICAL);
@@ -132,14 +127,14 @@ wxPanel *mxCppCheckConfigDialog::CreateFilesPanel (wxNotebook * notebook) {
 	
 	sizer.GetSizer()->Add(src_sizer,sizers->Exp1);
 	
-	sizer.BeginText( LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicioneles a analizar") )
+	sizer.BeginText( LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicionales a analizar") )
 		.Value(ccc->additional_files).Button(mxID_CPPCHECK_ADDITIONAL_FILES).EndText(additional_files);
 	
 	sizer.BeginCheck( LANG(CPPCHECK_EXCLUDE_HEADERS,"Omitir archivos de cabeceras") )
 		.Value(ccc->exclude_headers).Id(mxID_CPPCHECK_EXCLUDE_HEADERS).EndCheck(exclude_headers);
 	
 	sizer.SetAndFit();
-	return panel;
+	return sizer.GetPanel();
 }
 
 void mxCppCheckConfigDialog::OnCheckCopyConfig (wxCommandEvent & evt) {
@@ -217,10 +212,6 @@ void mxCppCheckConfigDialog::OnButtonExcludeFile (wxCommandEvent & evt) {
 		}
 }
 
-void mxCppCheckConfigDialog::OnClose (wxCloseEvent & evt) {
-	Destroy();
-}
-
 void mxCppCheckConfigDialog::OnButtonOk (wxCommandEvent & evt) {
 	if (!project) return;
 	ccc->exclude_list.Clear();
@@ -273,6 +264,6 @@ void mxCppCheckConfigDialog::OnButtonExcludeHeaders (wxCommandEvent & evt) {
 }
 
 void mxCppCheckConfigDialog::OnButtonAdditionalFiles (wxCommandEvent & evt) {
-	mxEnumerationEditor(this,LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicioneles a analizar"),additional_files,true);
+	mxEnumerationEditor(this,LANG(CPPCHECK_ADDITIONAL_FILES,"Archivos adicionales a analizar"),additional_files,true);
 }
 

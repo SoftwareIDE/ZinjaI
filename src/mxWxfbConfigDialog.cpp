@@ -9,60 +9,45 @@
 #include "ProjectManager.h"
 #include "mxHelpWindow.h"
 #include "mxMainWindow.h"
-#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxWxfbConfigDialog, wxDialog)
 	EVT_BUTTON(wxID_OK,mxWxfbConfigDialog::OnOkButton)
 	EVT_BUTTON(wxID_CANCEL,mxWxfbConfigDialog::OnCancelButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxWxfbConfigDialog::OnHelpButton)
 	EVT_CHECKBOX(wxID_FIND,mxWxfbConfigDialog::OnActivateClick)
-	EVT_CLOSE(mxWxfbConfigDialog::OnClose)
 END_EVENT_TABLE()
 
-mxWxfbConfigDialog::mxWxfbConfigDialog():wxDialog(main_window, wxID_ANY, LANG(WXFBSETUP_CAPTION,"Configuracion wxFormBuilder"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
+mxWxfbConfigDialog::mxWxfbConfigDialog()
+	: mxDialog(main_window, LANG(WXFBSETUP_CAPTION,"Configuracion wxFormBuilder") ) 
+{
+	CreateSizer sizer(this);
 	
 	conf=project->GetWxfbConfiguration(false);
 	
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
+	sizer.BeginCheck( LANG(WXFBSETUP_ACTIVATE,"Activar integración con wxFormBuilder") )
+		.Value(conf->activate_integration).Id(wxID_FIND).EndCheck(m_activate_integration);
 	
-	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	sizer.BeginCheck( LANG(WXFBSETUP_AUTOUPDATE,"Regenerar proyectos wxFormBuilder automáticamente") )
+		.Value(conf->autoupdate_projects).RegisterIn(m_disabler).EndCheck(m_autoupdate_projects);
 	
-	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	SetEscapeId(wxID_CANCEL);
-	wxButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	ok_button->SetDefault(); 
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
+	sizer.BeginCheck( LANG(WXFBSETUP_UPDATE_CLASSES,"Crear/eliminar clases heredadas luego de regenerar") )
+		.Value(conf->update_class_list).RegisterIn(m_disabler).EndCheck(m_update_class_list);
 	
-	bottomSizer->Add(help_button,sizers->BA5_Exp0);
-	bottomSizer->AddStretchSpacer();
-	bottomSizer->Add(cancel_button,sizers->BA5);
-	bottomSizer->Add(ok_button,sizers->BA5);
+	sizer.BeginCheck( LANG(WXFBSETUP_UPDATE_METHODS,"Actualizar clases heredadas automáticamente") )
+		.Value(conf->update_methods).RegisterIn(m_disabler).EndCheck(m_update_methods);
 	
-	m_activate_integration=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_ACTIVATE,"Activar integración con wxFormBuilder"),conf->activate_integration,wxID_FIND);
-	m_autoupdate_projects=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_AUTOUPDATE,"Regenerar proyectos wxFormBuilder automáticamente"),conf->autoupdate_projects);
-	m_disabler.Add(m_autoupdate_projects);
-	m_update_class_list=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_CLASSES,"Crear/eliminar clases heredadas luego de regenerar"),conf->update_class_list);
-	m_disabler.Add(m_update_class_list);
-	m_update_methods=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_UPDATE_METHODS,"Actualizar clases heredadas automáticamente"),conf->update_methods);
-	m_disabler.Add(m_update_methods);
-	m_set_wxfb_sources_as_readonly=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_READONLY,"Marcar fuentes generados por wxfb como solo-lectura"),conf->set_wxfb_sources_as_readonly);
-	m_disabler.Add(m_set_wxfb_sources_as_readonly);
-	m_dont_show_base_classes_in_goto=mxCCC::AddCheckBox(mySizer,this,LANG(WXFBSETUP_HIDEONGOTO,"Ocultar métodos y clases generadas por wxfb en el cuadro \"Ir a Función/Clase/Método\""),conf->dont_show_base_classes_in_goto);
-	m_disabler.Add(m_dont_show_base_classes_in_goto);
+	sizer.BeginCheck( LANG(WXFBSETUP_READONLY,"Marcar fuentes generados por wxfb como solo-lectura") )
+		.Value(conf->set_wxfb_sources_as_readonly).RegisterIn(m_disabler).EndCheck(m_set_wxfb_sources_as_readonly);
 	
-	mySizer->Add(bottomSizer,sizers->Exp0);
+	sizer.BeginCheck( LANG(WXFBSETUP_HIDEONGOTO,"Ocultar métodos y clases generadas por wxfb en el cuadro \"Ir a Función/Clase/Método\"") )
+		.Value(conf->dont_show_base_classes_in_goto).RegisterIn(m_disabler).EndCheck(m_dont_show_base_classes_in_goto);
 	
-	SetSizerAndFit(mySizer);
+	sizer.BeginBottom().Help().Ok().Cancel().EndBottom(this).SetAndFit();
 	
 	m_disabler.EnableAll(conf->activate_integration);
 	
 	Show();
 	SetFocus();
-	
-}
-
-void mxWxfbConfigDialog::OnClose (wxCloseEvent & event) {
-	Destroy();
 }
 
 void mxWxfbConfigDialog::OnOkButton (wxCommandEvent & evt) {

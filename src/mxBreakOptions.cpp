@@ -38,31 +38,31 @@ mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxI
 	buttonSizer->Add(cancel_button,sizers->BA5);
 	buttonSizer->Add(ok_button,sizers->BA5);
 
-	mxCCC::AddTextCtrl(mySizer,this,LANG(BREAKOPTS_FILE,"Archivo"),bpi->fname)->SetEditable(false);
-	mxCCC::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_LINE,"Linea"),wxString()<<bpi->line_number+1)->SetEditable(false);
-	break_check = mxCCC::AddCheckBox(mySizer,this,LANG(BREAKOPTS_INSERT,"Insertar punto de interrupcion"),true,mxID_BREAK_OPTS_ENABLE);
-	enable_check = mxCCC::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ENABLE,"Habilitar punto de interrupcion"),bpi->enabled);
-//	once_check = mxCCC::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ONCE,"Interrumpir solo una vez"),bpi->only_once);
-	ignore_text = mxCCC::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_IGNORE_TIMES_PRE,"Ignorar"),bpi->ignore_count,wxString(LANG(BREAKOPTS_IGNORE_TIMES_POST,"veces")));
+	mxDialog::AddTextCtrl(mySizer,this,LANG(BREAKOPTS_FILE,"Archivo"),bpi->fname)->SetEditable(false);
+	mxDialog::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_LINE,"Linea"),wxString()<<bpi->line_number+1)->SetEditable(false);
+	break_check = mxDialog::AddCheckBox(mySizer,this,LANG(BREAKOPTS_INSERT,"Insertar punto de interrupcion"),true,mxID_BREAK_OPTS_ENABLE);
+	enable_check = mxDialog::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ENABLE,"Habilitar punto de interrupcion"),bpi->enabled);
+//	once_check = mxDialog::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ONCE,"Interrumpir solo una vez"),bpi->only_once);
+	ignore_text = mxDialog::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_IGNORE_TIMES_PRE,"Ignorar"),bpi->ignore_count,wxString(LANG(BREAKOPTS_IGNORE_TIMES_POST,"veces")));
 	if (debug->CanTalkToGDB() && bpi->IsInGDB()) {
-		count_text = mxCCC::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado"),debug->GetBreakHitCount(bpi->gdb_id),wxString(LANG(BREAKOPTS_HIT_TIMES_POST,"veces")));
+		count_text = mxDialog::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado"),debug->GetBreakHitCount(bpi->gdb_id),wxString(LANG(BREAKOPTS_HIT_TIMES_POST,"veces")));
 		count_text->SetEditable(false);
 	} else {
 		count_text = nullptr;
 	}
-	cond_text = mxCCC::AddTextCtrl(mySizer,this,LANG(BREAKOPTS_CONDITION,"Condicion"),bpi->cond);
+	cond_text = mxDialog::AddTextCtrl(mySizer,this,LANG(BREAKOPTS_CONDITION,"Condicion"),bpi->cond);
 	wxArrayString actions_list;
 	actions_list.Add(LANG(BREAKTOPS_ACTIONS_ALWAYS,"Detener siempre"));
 	actions_list.Add(LANG(BREAKTOPS_ACTIONS_ONCE,"Detener solo la primera vez"));
 	actions_list.Add(LANG(BREAKTOPS_ACTIONS_INSPECTIONS,"Solo actualizar inspecciones (no detener)"));
-	action = mxCCC::AddComboBox(mySizer,this,LANG(BREAKOPTS_ACTION,"Acción"),actions_list,bpi->action);
+	action = mxDialog::AddComboBox(mySizer,this,LANG(BREAKOPTS_ACTION,"Acción"),actions_list,bpi->action);
 	
 	if (bpi->gdb_status==BPS_ERROR_SETTING)
-		mxCCC::AddStaticText(mySizer,this,LANG(BREAKOPTS_ERROR_PLACING_BREAKPOINT,"Error al colocar breakpoint"));
+		mxDialog::AddStaticText(mySizer,this,LANG(BREAKOPTS_ERROR_PLACING_BREAKPOINT,"Error al colocar breakpoint"));
 	if (bpi->gdb_status==BPS_ERROR_CONDITION)
-			mxCCC::AddStaticText(mySizer,this,LANG(BREAKOPTS_INVALID_CONDITION,"La condicion actual no es valida"));
+			mxDialog::AddStaticText(mySizer,this,LANG(BREAKOPTS_INVALID_CONDITION,"La condicion actual no es valida"));
 	
-	annotation_text = mxCCC::AddLongTextCtrl(mySizer,this,LANG(BREAKOPTS_ANNTOATION,"Anotación"),bpi->annotation);
+	annotation_text = mxDialog::AddLongTextCtrl(mySizer,this,LANG(BREAKOPTS_ANNTOATION,"Anotación"),bpi->annotation);
 	
 	mySizer->Add(buttonSizer,sizers->Exp0);
 	

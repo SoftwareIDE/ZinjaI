@@ -1750,7 +1750,7 @@ void mxMainWindow::OnRunCompileConfig (wxCommandEvent &event) {
 	if (project)
 		new mxProjectConfigWindow(this);
 	else IF_THERE_IS_SOURCE	
-		new mxCompileConfigWindow(CURRENT_SOURCE,this);
+		new mxCompileConfigWindow(this,CURRENT_SOURCE);
 }
 
 void mxMainWindow::OnPreferences (wxCommandEvent &event) {

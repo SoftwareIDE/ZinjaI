@@ -1143,7 +1143,7 @@ Additional arguments
 BYSRCOPT_ALL_PROFILES
 <<all profiles>>
 BYSRCOPT_PROFILE
-Apply in profile:
+Apply in profile
 BYSRCOPT_APPLY_TO_SELECTED_FILES
 Apply changes
 COLORS_CAPTION
@@ -1408,6 +1408,8 @@ DOXYCONF_PROJECT_VER
 Project's version
 DOXYCONF_DEST_DIR
 Destination directory
+DOXYCONF_WICH_FILES
+Files to process
 DOXYCONF_FILES_NONE
 None
 DOXYCONF_FILES_CPP
@@ -1416,8 +1418,6 @@ DOXYCONF_FILES_HEADERS
 Headers
 DOXYCONF_FILES_H_AND_CPP
 Headers and sources
-DOXYCONF_WICH_FILES
-Files to process
 DOXYCONF_EXTRA_FILES
 Additional files to process
 DOXYCONF_FILES_TO_EXCLUDE
@@ -1426,10 +1426,10 @@ DOXYCONF_SAVE_WITH_PROJECT
 Save this configuration with the project
 DOXYCONF_EXTRA_LABEL
 Any text on this field will be appended as is in the\nDoxyfile, so you can use this to set parameters that\nare no present in this dialog.
-DOXYCONF_LANG_EN
-English
 DOXYCONF_LANG
 Language
+DOXYCONF_LANG_EN
+English
 DOXYCONF_BASE_DIR
 Base directory
 DOXYCONF_ENABLE_PREPROC
@@ -2856,6 +2856,8 @@ PROJECTCONFIG_LIBS_DELETE
   Del  
 PROJECTCONFIG_LIBS_NOEXEC
 Generate only libraries (don't generate executable)
+PROJECTCONFIG_STEPS_WARNING_APPLY_NOW
+*this changes will apply inmediatly, even if\nyou press Cancel button later.
 PROJECTCONFIG_ASK_DELETE_STEP
 Delete step: 
 PROJECTCONFIG_STEPS_COMPILE_SOURCES

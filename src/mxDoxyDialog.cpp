@@ -1,3 +1,4 @@
+#include <wx/notebook.h>
 #include "mxDoxyDialog.h"
 #include "mxBitmapButton.h"
 #include "mxSizers.h"
@@ -6,9 +7,8 @@
 #include "ConfigManager.h"
 #include "mxHelpWindow.h"
 #include "Language.h"
-#include "mxCommonConfigControls.h"
-#include <wx/notebook.h>
 #include "mxThreeDotsUtils.h"
+
 using namespace std;
 
 BEGIN_EVENT_TABLE(mxDoxyDialog, wxDialog)
@@ -17,22 +17,24 @@ BEGIN_EVENT_TABLE(mxDoxyDialog, wxDialog)
 	EVT_BUTTON(mxID_DOXYDIALOG_DEST,mxDoxyDialog::OnDestDirButton)
 	EVT_BUTTON(wxID_CANCEL,mxDoxyDialog::OnCancelButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxDoxyDialog::OnHelpButton)
-	EVT_CLOSE(mxDoxyDialog::OnClose)
 END_EVENT_TABLE()
 
 mxDoxyDialog::mxDoxyDialog(wxWindow *parent) 
-	: wxDialog(parent, wxID_ANY, LANG(DOXYCONF_CAPTION,"Configuracion Doxygen"), wxDefaultPosition,
-			   wxDefaultSize, wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER),
+	: mxDialog(parent, LANG(DOXYCONF_CAPTION,"Configuracion Doxygen") ),
 	  m_doxygen_config(project->GetDoxygenConfiguration())
 {
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-	wxNotebook *notebook = new wxNotebook(this,wxID_ANY);
-	notebook->AddPage(CreateGeneralPanel(notebook), LANG(DOXYCONF_BASIC_OPTIONS,"Opciones Básicas"));
-	notebook->AddPage(CreateMorePanel(notebook), LANG(DOXYCONF_MORE_OPTIONS,"Más Opciones"));
-	notebook->AddPage(CreateExtraPanel(notebook), LANG(DOXYCONF_EXTRA_TAB,"Campos Adicionales"));
-	mySizer->Add(notebook,sizers->Exp1);
-	mxCCC::MainSizer(this,mySizer)
-		.BeginBottom().Help().Ok().Cancel().EndBottom(this).SetAndFit();
+	CreateSizer sizer(this);
+	wxNotebook *nb;
+	sizer.BeginNotebook().EndNotebook(nb);
+		nb->AddPage(CreateGeneralPanel(nb), LANG(DOXYCONF_BASIC_OPTIONS,"Opciones Básicas"));
+		nb->AddPage(CreateMorePanel(nb), LANG(DOXYCONF_MORE_OPTIONS,"Más Opciones"));
+		nb->AddPage(CreateExtraPanel(nb), LANG(DOXYCONF_EXTRA_TAB,"Campos Adicionales"));
+//	sizer.BeginNotebook()
+//		.AddPage(this,&mxDoxyDialog::CreateGeneralPanel, LANG(DOXYCONF_BASIC_OPTIONS,"Opciones Básicas"))
+//		.AddPage(this,&mxDoxyDialog::CreateMorePanel, LANG(DOXYCONF_MORE_OPTIONS,"Más Opciones"))
+//		.AddPage(this,&mxDoxyDialog::CreateExtraPanel, LANG(DOXYCONF_EXTRA_TAB,"Campos Adicionales"))
+//		.EndNotebook();
+	sizer.BeginBottom().Help().Ok().Cancel().EndBottom(this).SetAndFit();
 	SetFocus();
 	Show();
 }
@@ -65,13 +67,8 @@ void mxDoxyDialog::OnCancelButton(wxCommandEvent &evt) {
 	Close();
 }
 
-void mxDoxyDialog::OnClose(wxCloseEvent &event) {
-	Destroy();
-}
-
 wxPanel *mxDoxyDialog::CreateGeneralPanel (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginText( LANG(DOXYCONF_PROJECT_NAME,"Nombre del Proyecto") )
 		.Value(m_doxygen_config->name).EndText(name_ctrl);
@@ -100,29 +97,23 @@ wxPanel *mxDoxyDialog::CreateGeneralPanel (wxNotebook *notebook) {
 		.Value(m_doxygen_config->save).EndCheck(save_ctrl);
 	
 	sizer.Set();
-	return panel;
+	return sizer.GetPanel();
 }
 
 
 wxPanel *mxDoxyDialog::CreateExtraPanel (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
-	
+	CreatePanelAndSizer sizer(notebook);
 	sizer.BeginLabel( LANG(DOXYCONF_EXTRA_LABEL,"El texto de este campo se agregará sin cambios en el\n"
 											    "Doxyfile. Puede utilizarlo para definir parámetros\n"
 											    "no contemplados en este cuadro de diálogo.") ).Center().EndLabel();
-	
-	extra_conf = new wxTextCtrl(panel,wxID_ANY,m_doxygen_config->extra_conf,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
-	sizer.GetSizer()->Add(extra_conf,sizers->BA10_Exp1);
-	
+	extra_conf = new wxTextCtrl(sizer.GetPanel(),wxID_ANY,m_doxygen_config->extra_conf,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
+	sizer.Add(extra_conf,sizers->BA10_Exp1);
 	sizer.Set();
-	return panel;
-	
+	return sizer.GetPanel();
 }
 
 wxPanel *mxDoxyDialog::CreateMorePanel (wxNotebook *notebook) {
-	wxPanel *panel = new wxPanel(notebook, wxID_ANY );
-	mxCCC::MainSizer sizer = mxCCC::CreateMainSizer(panel);
+	CreatePanelAndSizer sizer(notebook);
 	
 	sizer.BeginCombo( LANG(DOXYCONF_LANG,"Idioma") )
 		.Add(LANG(DOXYCONF_LANG_ES,"Español"))
@@ -161,7 +152,7 @@ wxPanel *mxDoxyDialog::CreateMorePanel (wxNotebook *notebook) {
 		.Value(m_doxygen_config->use_in_quickhelp).EndCheck(use_in_quickhelp_ctrl);
 	
 	sizer.Set();
-	return panel;
+	return sizer.GetPanel();
 }
 
 void mxDoxyDialog::OnHelpButton(wxCommandEvent &event) {

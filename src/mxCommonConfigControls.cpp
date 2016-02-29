@@ -1,28 +1,23 @@
-#include "mxCommonConfigControls.h"
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/checkbox.h>
 #include <wx/textctrl.h>
 #include <wx/combobox.h>
-#include "mxSizers.h"
 #include <wx/valtext.h>
+#include <wx/bmpbuttn.h>
+#include <wx/notebook.h>
+#include "mxCommonConfigControls.h"
+#include "mxSizers.h"
 #include "widgetDisabler.h"
 #include "mxBitmapButton.h"
-#include <wx/bmpbuttn.h>
 #include "Language.h"
 
 static wxStaticText *s_last_label; ///< guarda la ultima etiqueta que se uso en alguno de los AddAlgo
-wxStaticText * mxCCC::GetLastLabel ( ) { return s_last_label; }
-
 static wxButton *s_last_button; ///< guarda el ultimo boton colocado por AddDirCtrl
-wxButton * mxCCC::GetLastButton ( ) { return s_last_button; }
-
 static wxBoxSizer *s_last_sizer; ///< guarda el último sizer creado por los AddAlgo
-wxSizer * mxCCC::GetLastSizer ( ) { return s_last_sizer; }
 
-
-wxCheckBox *mxCCC::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value, wxWindowID id, bool margin) {
+wxCheckBox *mxDialog::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value, wxWindowID id, bool margin) {
 	wxCheckBox *checkbox = new wxCheckBox(panel, id, text+_T("   "));
 	if (margin) {
 		wxBoxSizer *sizerRow = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -36,7 +31,7 @@ wxCheckBox *mxCCC::AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString tex
 	return checkbox;	
 }
 
-wxTextCtrl *mxCCC::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, int id) {
+wxTextCtrl *mxDialog::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, int id) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	sizer->Add(s_last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp0);
@@ -45,7 +40,7 @@ wxTextCtrl *mxCCC::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString tex
 	return textctrl;
 }
 
-wxTextCtrl *mxCCC::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value) {
+wxTextCtrl *mxDialog::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
 	sizer->Add(s_last_label=new wxStaticText(panel,wxID_ANY,text+_T(":   "), wxDefaultPosition, wxDefaultSize, 0),sizers->BLRT5_Exp0);
 	sizer->Add(textctrl, sizers->BLRB5_Exp1);
@@ -54,7 +49,7 @@ wxTextCtrl *mxCCC::AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString
 	return textctrl;
 }
 
-wxTextCtrl *mxCCC::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text, bool margin) {
+wxTextCtrl *mxDialog::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value, wxWindowID id, wxString button_text, bool margin) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	wxBoxSizer *sizerRow = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxButton *button = s_last_button = new wxButton(panel,id,button_text,wxDefaultPosition,button_text== _T("...")?wxSize(30,10):wxSize(-1,10));
@@ -67,7 +62,7 @@ wxTextCtrl *mxCCC::AddDirCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text
 	return textctrl;
 }
 
-wxTextCtrl *mxCCC::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value, bool margin, int id) {
+wxTextCtrl *mxDialog::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value, bool margin, int id) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxBoxSizer *sizerRow = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(15);
@@ -80,7 +75,7 @@ wxTextCtrl *mxCCC::AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString tex
 	return textctrl;
 }
 
-wxStaticText* mxCCC::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
+wxStaticText* mxDialog::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin) {
 	wxStaticText *textctrl = new wxStaticText(panel, wxID_ANY, str, wxDefaultPosition, wxDefaultSize);
 	wxBoxSizer *sizerRow = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
@@ -92,7 +87,7 @@ wxStaticText* mxCCC::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString
 	return textctrl;	
 }
 
-wxTextCtrl *mxCCC::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin, wxWindowID id) {
+wxTextCtrl *mxDialog::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString str, bool margin, wxWindowID id) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, id, str, wxDefaultPosition, wxDefaultSize);
 	wxBoxSizer *sizerRow = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
@@ -103,7 +98,7 @@ wxTextCtrl *mxCCC::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStrin
 	return textctrl;
 }
 
-wxTextCtrl *mxCCC::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString foot, bool margin) {
+wxTextCtrl *mxDialog::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString foot, bool margin) {
 	wxTextCtrl *textctrl = new wxTextCtrl(panel, wxID_ANY, wxString()<<n, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxBoxSizer *sizerRow = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (margin) sizerRow->AddSpacer(10);
@@ -115,7 +110,7 @@ wxTextCtrl *mxCCC::AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxStrin
 	return textctrl;
 }
 
-wxComboBox *mxCCC::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID id, bool margin, bool editable) {
+wxComboBox *mxDialog::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxArrayString &values, int def, wxWindowID id, bool margin, bool editable) {
 	wxString sdef=def==-1?"":values[def];
 	wxComboBox *combo = new wxComboBox(panel, id, sdef, wxDefaultPosition, wxDefaultSize, values, editable?0:wxCB_READONLY);
 	combo->SetSelection(def);
@@ -128,7 +123,7 @@ wxComboBox *mxCCC::AddComboBox (wxBoxSizer *sizer, wxWindow *panel, wxString tex
 	return combo;
 }
 
-wxStaticText *mxCCC::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool center) {
+wxStaticText *mxDialog::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool center) {
 	wxStaticText *statictext;
 	sizer->Add( statictext = new wxStaticText(panel, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, center?wxALIGN_CENTRE:0), center?sizers->BA5_Center:sizers->BA5);
 	return statictext;
@@ -136,22 +131,22 @@ wxStaticText *mxCCC::AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString
 
 
 template<typename T1, typename T2>
-void mxCCC::MainSizer::BaseControl<T1,T2>::RegisterInDisablers(wxControl *ctrl1, wxControl *ctrl2, wxControl *ctrl3) {
+void mxDialog::MainSizer::BaseControl<T1,T2>::RegisterInDisablers(wxControl *ctrl1, wxControl *ctrl2, wxControl *ctrl3) {
 	if (m_disabler_1) {
-		if (ctrl1) m_disabler_1->Add(ctrl1,false);
-		if (ctrl2) m_disabler_1->Add(ctrl2,false);
-		if (ctrl3) m_disabler_1->Add(ctrl3,false);
+		if (ctrl1) m_disabler_1->Add(ctrl1);
+		if (ctrl2) m_disabler_1->Add(ctrl2);
+		if (ctrl3) m_disabler_1->Add(ctrl3);
 	}
 	if (m_disabler_2) {
-		if (ctrl1) m_disabler_2->Add(ctrl1,false);
-		if (ctrl2) m_disabler_2->Add(ctrl2,false);
-		if (ctrl3) m_disabler_2->Add(ctrl3,false);
+		if (ctrl1) m_disabler_2->Add(ctrl1);
+		if (ctrl2) m_disabler_2->Add(ctrl2);
+		if (ctrl3) m_disabler_2->Add(ctrl3);
 	}
 }
 
-mxCCC::MainSizer &mxCCC::MainSizer::MainText::EndText(wxTextCtrl *&text_ctrl) {
+mxDialog::MainSizer &mxDialog::MainSizer::MainText::EndText(wxTextCtrl *&text_ctrl) {
 	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer; wxButton *button = nullptr;
-	if (!m_is_numeric) text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize, 0);
+	if (!m_is_numeric) text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize, m_multiline?wxTE_MULTILINE:0);
 	else text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize,  wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
 	wxStaticText *static_text = new wxStaticText(parent,wxID_ANY,m_label+":   ", wxDefaultPosition, wxDefaultSize, 0);
 	if (!m_one_line) sizer->Add(static_text,sizers->BLRT5_Exp0);
@@ -165,13 +160,13 @@ mxCCC::MainSizer &mxCCC::MainSizer::MainText::EndText(wxTextCtrl *&text_ctrl) {
 		}
 		sizer->Add(inner_sizer, m_one_line?sizers->BA5_Exp0:sizers->BLRB5_Exp0);
 	} else {
-		sizer->Add(text_ctrl, sizers->BLRB5_Exp0);
+		sizer->Add(text_ctrl, m_multiline?sizers->BLRB5_Exp1:sizers->BLRB5_Exp0);
 	}
 	RegisterInDisablers(static_text,text_ctrl,button);
 	return *m_sizer;
 }
 
-mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerText::EndText(wxTextCtrl *&text_ctrl) {
+mxDialog::MainSizer::InnerSizer &mxDialog::MainSizer::InnerSizer::InnerText::EndText(wxTextCtrl *&text_ctrl) {
 	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer; wxButton *button = nullptr;
 	if (!m_is_numeric) text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize, 0);
 	else text_ctrl = new wxTextCtrl(parent, m_id, m_value, wxDefaultPosition, wxDefaultSize,  wxTE_RIGHT, wxTextValidator(wxFILTER_NUMERIC));
@@ -186,7 +181,7 @@ mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerText::EndText(w
 	return *m_sizer;
 }
 
-mxCCC::MainSizer &mxCCC::MainSizer::MainCombo::EndCombo(wxComboBox *&combo_box) {
+mxDialog::MainSizer &mxDialog::MainSizer::MainCombo::EndCombo(wxComboBox *&combo_box) {
 	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
 	wxBoxSizer *innter_sizer = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText *static_text = new wxStaticText(parent, wxID_ANY, m_label+_T(": "), wxDefaultPosition, wxDefaultSize, 0);
@@ -202,27 +197,28 @@ mxCCC::MainSizer &mxCCC::MainSizer::MainCombo::EndCombo(wxComboBox *&combo_box) 
 	return *m_sizer;
 }
 
-void mxCCC::MainSizer::SetAndFit() { 
+void mxDialog::BaseSizer::SetAndFit() { 
 	m_parent->SetSizerAndFit(m_sizer); 
 }
 
-void mxCCC::MainSizer::Set() { 
+void mxDialog::BaseSizer::Set() { 
 	m_parent->SetSizer(m_sizer); 
 }
 
-mxCCC::MainSizer &mxCCC::MainSizer::InnerSizer::EndInnerSizer() {
+mxDialog::MainSizer &mxDialog::MainSizer::InnerSizer::EndLine() {
 	m_outher_sizer->m_sizer->Add(m_inner_sizer, sizers->BA5_Exp0);
 	return *m_outher_sizer;
 }
 
-mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerLabel::EndLabel() {
+mxDialog::MainSizer::InnerSizer &mxDialog::MainSizer::InnerSizer::InnerLabel::EndLabel() {
 	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer;
 	wxStaticText *static_text = new wxStaticText(parent,m_id,m_label);
-	sizer->Add(static_text,sizers->Center); RegisterInDisablers(static_text);
+	sizer->Add(static_text,sizers->Center); 
+	RegisterInDisablers(static_text);
 	return *m_sizer;
 }
 
-mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerCombo::EndCombo(wxComboBox *&combo_box) {
+mxDialog::MainSizer::InnerSizer &mxDialog::MainSizer::InnerSizer::InnerCombo::EndCombo(wxComboBox *&combo_box) {
 	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer;
 	wxStaticText *static_text = m_label.IsEmpty() ? nullptr : new wxStaticText(parent,wxID_ANY,m_label+": ");
 	if (static_text) sizer->Add(static_text,sizers->Center);
@@ -237,7 +233,7 @@ mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerCombo::EndCombo
 	return *m_sizer;
 }
 
-mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerCheck::EndCheck(wxCheckBox *&check_box) {
+mxDialog::MainSizer::InnerSizer &mxDialog::MainSizer::InnerSizer::InnerCheck::EndCheck(wxCheckBox *&check_box) {
 	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer;
 	check_box = new wxCheckBox(parent,m_id,m_label); 
 	check_box->SetValue(m_value);
@@ -246,7 +242,7 @@ mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerCheck::EndCheck
 	return *m_sizer;
 }
 
-mxCCC::MainSizer &mxCCC::MainSizer::MainCheck::EndCheck(wxCheckBox *&check_box) {
+mxDialog::MainSizer &mxDialog::MainSizer::MainCheck::EndCheck(wxCheckBox *&check_box) {
 	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
 	check_box = new wxCheckBox(parent, m_id, m_label);
 	sizer->Add(check_box, sizers->BA5_Exp0);
@@ -255,26 +251,27 @@ mxCCC::MainSizer &mxCCC::MainSizer::MainCheck::EndCheck(wxCheckBox *&check_box) 
 	return *m_sizer;
 }
 
-mxCCC::MainSizer &mxCCC::MainSizer::MainLabel::EndLabel() {
+mxDialog::MainSizer &mxDialog::MainSizer::MainLabel::EndLabel() {
 	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
 	wxStaticText *static_text = new wxStaticText(parent, m_id, m_label, wxDefaultPosition, wxDefaultSize, m_center?wxALIGN_CENTRE:0);
-	sizer->Add( static_text, m_center?sizers->BA5_Center:sizers->BA5);
+	sizer->Add( static_text, m_center?sizers->BA5_Center:sizers->BA5); 
+	RegisterInDisablers(static_text);
 	return *m_sizer;
 }
 
-mxCCC::MainSizer &mxCCC::MainSizer::MainButton::EndButton() {
+mxDialog::MainSizer &mxDialog::MainSizer::MainButton::EndButton() {
 	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
-	sizer->Add(new wxButton(parent,m_id,m_label,wxDefaultPosition), sizers->BA10);
+	sizer->Add(new wxButton(parent,m_id,m_label,wxDefaultPosition), m_expand?sizers->BA10_Exp0:sizers->BA10);
 	return *m_sizer;
 }
 
-mxCCC::MainSizer::InnerSizer &mxCCC::MainSizer::InnerSizer::InnerButton::EndButton() {
+mxDialog::MainSizer::InnerSizer &mxDialog::MainSizer::InnerSizer::InnerButton::EndButton() {
 	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer;
 	sizer->Add(new wxButton(parent,m_id,m_label,wxDefaultPosition,m_label=="..."?wxSize(30,10):wxDefaultSize), sizers->Exp0);
 	return *m_sizer;
 }
 
-mxCCC::MainSizer &mxCCC::MainSizer::BottomSizer::EndBottom(wxDialog *dialog) {
+mxDialog::MainSizer &mxDialog::MainSizer::BottomSizer::EndBottom(wxDialog *dialog) {
 	wxBoxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
 	if (m_help_id!=mxID_NULL) {
 		wxBitmapButton *help_button = new wxBitmapButton(m_sizer->m_parent,m_help_id,*bitmaps->buttons.help);
@@ -286,6 +283,10 @@ mxCCC::MainSizer &mxCCC::MainSizer::BottomSizer::EndBottom(wxDialog *dialog) {
 		if (dialog) dialog->SetEscapeId(wxID_CANCEL);
 		bottom_sizer->Add(cancel_button,sizers->BA5);
 	}
+	if (m_extra_id!=mxID_NULL) {
+		wxButton *extra_button = new mxBitmapButton(m_sizer->m_parent,m_extra_id,m_extra_icon,m_extra_label);
+		bottom_sizer->Add(extra_button,sizers->BA5);
+	}
 	if (m_ok_id!=mxID_NULL) {
 		wxButton *ok_button = new mxBitmapButton(m_sizer->m_parent,m_ok_id,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
 		ok_button->SetDefault(); 
@@ -294,3 +295,53 @@ mxCCC::MainSizer &mxCCC::MainSizer::BottomSizer::EndBottom(wxDialog *dialog) {
 	m_sizer->m_sizer->Add(bottom_sizer,sizers->Exp0);
 	return *m_sizer;
 }
+
+mxDialog::MainSizer::MainNotebook mxDialog::MainSizer::BeginNotebook() {
+	return MainNotebook(this,new wxNotebook(m_parent,wxID_ANY));
+}
+
+wxNotebook *mxDialog::BaseNotebookAux::EndNotebook() {
+	if (m_selection!=-1) m_notebook->SetSelection(m_selection);
+	return m_notebook;
+}
+
+mxDialog::MainSizer &mxDialog::MainSizer::MainNotebook::EndNotebook() {
+	BaseNotebook::EndNotebook();
+	m_sizer->m_sizer->Add(m_notebook,sizers->Exp1);
+	return *m_sizer;
+}
+
+void mxDialog::BaseNotebookAux::AddPageHelper(wxString name, wxWindow *page) {
+	m_notebook->AddPage(page,name);
+}
+
+mxDialog::MainSizer &mxDialog::MainSizer::BeginSection(wxString label) {
+	m_real_sizer = m_sizer;
+	m_sizer = new wxStaticBoxSizer(wxVERTICAL,m_parent,label);
+	m_real_sizer->Add(m_sizer,sizers->BA5_Exp0);
+	return *this;
+}
+
+mxDialog::MainSizer &mxDialog::MainSizer::BeginSection(int margin) {
+	wxBoxSizer *sizer_horiz = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *sizer_vert = new wxBoxSizer(wxVERTICAL);
+	sizer_horiz->AddSpacer(margin);
+	sizer_horiz->Add(sizer_vert,sizers->Exp1);
+	m_sizer->Add(sizer_horiz,sizers->Exp0);
+	m_real_sizer = m_sizer; m_sizer = sizer_vert;
+	return *this;
+}
+
+mxDialog::HorizontalSizer &mxDialog::HorizontalSizer::Add(MainSizer &sizer, int proportion) {
+	m_sizer->Add(sizer.GetSizer(),wxSizerFlags().Proportion(proportion).Expand());
+	return *this;
+}
+
+mxDialog::ReuseSizer::ReuseSizer(wxWindow *parent, wxBoxSizer *sizer) : mxDialog::MainSizer(parent,sizer) {}
+mxDialog::CreateSizer::CreateSizer(wxWindow *parent) : mxDialog::MainSizer(parent) {}
+mxDialog::CreatePanelAndSizer::CreatePanelAndSizer(wxWindow *parent) : mxDialog::MainSizer(new wxPanel(parent)) {}
+mxDialog::FreeNotebook mxDialog::CreateNotebook(wxWindow *parent) { return FreeNotebook(new wxNotebook(parent,wxID_ANY)); }
+mxDialog::CreateHorizontalSizer::CreateHorizontalSizer(wxWindow *parent) : mxDialog::HorizontalSizer(parent,new wxBoxSizer(wxHORIZONTAL)) {}
+
+
+	

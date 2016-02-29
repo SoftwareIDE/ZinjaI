@@ -5,6 +5,7 @@
 #include <wx/listctrl.h>
 #include "widgetDisabler.h"
 #include "mxCommonPopup.h"
+#include "mxCommonConfigControls.h"
 
 class project_configuration;
 class wxCheckBox;
@@ -14,7 +15,7 @@ class wxNotebook;
 class wxPanel;
 class wxListBox;
 
-class mxProjectConfigWindow : public wxDialog {
+class mxProjectConfigWindow : public mxDialog {
 	
 	wxTextCtrl *text_for_edit;
 	bool comma_splits_for_edit;

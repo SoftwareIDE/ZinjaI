@@ -2,9 +2,10 @@
 #define MXCOMMONCONFIGCONTROLS_H
 #include <wx/string.h>
 #include <wx/arrstr.h>
-#include "ids.h"
-#include "Cpp11.h"
 #include <wx/sizer.h>
+#include <wx/dialog.h>
+#include "Cpp11.h"
+#include "ids.h"
 
 class wxCheckBox;
 class wxSizer;
@@ -14,16 +15,18 @@ class wxWindow;
 class wxComboBox;
 class wxStaticText;
 class wxButton;
+class wxNotebook;
 class widgetDisabler;
 
 /**
 * @brief Funciones de utilería para colocar controles en los cuadros de configuracion
 **/
-class mxCCC {
+class mxDialog : public wxDialog {
+protected:
+	void OnCloseDestroy(wxCloseEvent &evt) { Destroy(); }
+	void OnCloseHide(wxCloseEvent &evt) { EndModal(0); Hide(); }
+	wxString GetCaption() { return GetTitle(); }
 public:
-	static wxStaticText *GetLastLabel(); ///< ultima etiqueta que se uso en alguno de los AddAlgo
-	static wxButton *GetLastButton(); ///< ultimo boton colocado por AddDirCtrl
-	static wxSizer *GetLastSizer(); ///< ultimo boton colocado por Add{algo}
 	static wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value=false, wxWindowID id = wxID_ANY,bool margin=false);
 	static wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", int id=wxID_ANY);
 	static wxTextCtrl *AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="");
@@ -37,12 +40,62 @@ public:
 	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, const char *value, bool margin=false)
 		{ return AddStaticText(sizer,panel,text,wxString(value),margin); } // to avoid choosing the first overload instead of the second when using a literal
 		
+	mxDialog(wxWindow *parent, wxString caption, bool destroy_on_close = true) 
+		: wxDialog(parent,wxID_ANY,caption,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
+	{
+		if (destroy_on_close) this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseDestroy ) );
+		else                  this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseHide ) );
+	}
 		
-		
-	class MainSizer {
-		
+
+private:
+	class BaseNotebookAux {
+	protected:
+		wxNotebook *m_notebook;
+		void AddPageHelper(wxString name, wxWindow *page);
+		int m_selection, m_id;
+	public:
+		BaseNotebookAux(wxNotebook *notebook) 
+			: m_notebook(notebook), m_selection(0), m_id(wxID_ANY) {}
+		wxNotebook *EndNotebook();
+	};
+	
+	template<class TNotebook>
+	class BaseNotebook : public BaseNotebookAux {
+	protected:
+	public:
+		BaseNotebook(wxNotebook *notebook) : BaseNotebookAux(notebook) {}
+			template<typename class_t,typename method_t>
+			TNotebook &AddPageIf(bool condition, class_t _this_, method_t _ref_class__method_, wxString page_label) {
+				if (condition) AddPageHelper(page_label, (_this_->*_ref_class__method_)(m_notebook)); 
+				return *(static_cast<TNotebook*>(this));
+			}
+			template<typename class_t,typename method_t>
+			TNotebook &AddPage(class_t _this_, method_t _ref_class__method_, wxString page_label) {
+				AddPageHelper(page_label, (_this_->*_ref_class__method_)(m_notebook)); 
+				return *(static_cast<TNotebook*>(this));
+			}
+			TNotebook &Id(int id) { m_id= id; return *(static_cast<TNotebook*>(this)); }
+			TNotebook &Select(int page_id) { m_selection = page_id; return *(static_cast<TNotebook*>(this)); }
+	};
+	
+private:
+	
+	class BaseSizer {
+	protected:
 		wxWindow *m_parent;
 		wxBoxSizer *m_sizer;
+	public:
+		BaseSizer(wxWindow *parent, wxBoxSizer *sizer) : m_parent(parent), m_sizer(sizer) {}
+		wxBoxSizer *GetSizer() { return m_sizer; }
+		void SetAndFit();
+		void Set();
+	};
+	
+	class MainSizer : public BaseSizer {
+	
+	protected:	
+		wxBoxSizer *m_real_sizer;
 		
 		template<typename TSizer, typename TControl>
 		class BaseControl {
@@ -74,8 +127,9 @@ public:
 				: BaseControl<TSizer,BaseCombo<TSizer> >(sizer,label), m_selection(-1), m_editable(false) {}
 			BaseCombo &Add(wxArrayString &items) { for(unsigned int i=0;i<items.GetCount();++i) m_items.Add(items[i]); return *this; }
 			BaseCombo &Add(wxString item) { m_items.Add(item); return *this; }
+			BaseCombo &AddIf(bool condition, wxString item) { if (condition) m_items.Add(item); return *this; }
 			BaseCombo &Select(int index) { m_selection = index; return *this; }
-			BaseCombo &Select(wxString item) { m_selection = m_items.Index(item); if (m_selection==wxNOT_FOUND) m_selection=-1; return *this; }
+			BaseCombo &Select(wxString item, int default_idx=-1) { m_selection = m_items.Index(item); if (m_selection==wxNOT_FOUND) m_selection=default_idx; return *this; }
 			BaseCombo &Editable(bool editable=true) { m_editable = editable; return *this; }
 			virtual TSizer &EndCombo(wxComboBox *&combo_box) = 0;
 		};
@@ -85,14 +139,16 @@ public:
 		protected:
 			wxString m_value, m_button_text;
 			int m_button_id;
-			bool m_is_numeric, m_one_line;
+			bool m_is_numeric, m_one_line, m_multiline;
 		public:
 			BaseText(TSizer *sizer, wxString label) 
-				: BaseControl<TSizer,BaseText<TSizer> >(sizer,label), m_button_id(mxID_NULL), m_is_numeric(false), m_one_line(false) {}
+				: BaseControl<TSizer,BaseText<TSizer> >(sizer,label), 
+				  m_button_id(mxID_NULL), m_is_numeric(false), m_one_line(false), m_multiline(false) {}
 			BaseText &Button(int id, wxString label="...") { m_button_id = id; m_button_text = label; return *this; }
 			BaseText &Value(wxString value) { m_value = value; return *this; }
 			BaseText &Value(int value) { m_is_numeric = m_one_line = true; m_value = wxString()<<value; return *this; }
 			BaseText &Short(bool value_is_short=true) { m_one_line = value_is_short; return *this; }
+			BaseText &MultiLine(bool multiline=true) { m_multiline = multiline; return *this; }
 			virtual TSizer &EndText(wxTextCtrl *&text_ctrl) = 0;
 		};
 		
@@ -119,8 +175,12 @@ public:
 		
 		template<class TSizer>
 		class BaseButton : public BaseControl<TSizer,BaseButton<TSizer> > {
+		protected:
+			bool m_expand;
 		public:
-			BaseButton(TSizer *sizer, wxString label) : BaseControl<TSizer,BaseButton<TSizer> >(sizer,label) {}
+			BaseButton(TSizer *sizer, wxString label) 
+				: BaseControl<TSizer,BaseButton<TSizer> >(sizer,label), m_expand(false) {}
+			BaseButton &Expand(bool expand=true) { m_expand = expand; return *this; }
 			virtual TSizer &EndButton() = 0;
 		};
 		
@@ -152,6 +212,14 @@ public:
 		public:
 			MainButton(MainSizer *sizer, wxString label) : BaseButton<MainSizer>(sizer,label) {}
 			MainSizer &EndButton() override;
+		};
+		
+		class MainNotebook: public BaseNotebook<MainNotebook> {
+			MainSizer *m_sizer;	
+		public:
+			MainNotebook(MainSizer *sizer, wxNotebook *notebook) : BaseNotebook<MainNotebook>(notebook), m_sizer(sizer) {}
+			MainSizer &EndNotebook(wxNotebook *&notebook) { notebook = m_notebook; return EndNotebook(); }
+			MainSizer &EndNotebook();
 		};
 		
 		class InnerSizer {
@@ -191,45 +259,83 @@ public:
 		public:
 			InnerSizer(MainSizer *sizer) : m_outher_sizer(sizer),m_inner_sizer(new wxBoxSizer(wxHORIZONTAL)) {}
 			InnerLabel BeginLabel(wxString label) { return InnerLabel(this,label); }
-			InnerCombo BeginCombo(wxString label) { return InnerCombo(this,label); }
+			InnerCombo BeginCombo(wxString label="") { return InnerCombo(this,label); }
 			InnerCheck BeginCheck(wxString label) { return InnerCheck(this,label); }
 			InnerButton BeginButton(wxString label) { return InnerButton(this,label); }
 			InnerText BeginText(wxString label) { return InnerText(this,label); }
 			InnerSizer &Space(int width) { m_inner_sizer->AddSpacer(width); return *this; }
-			MainSizer &EndInnerSizer();
+			MainSizer &EndLine();
 		};
 		
 		class BottomSizer {
 			MainSizer *m_sizer;
 			int m_ok_id, m_cancel_id, m_help_id;
+			int m_extra_id; wxString m_extra_label; 
+			const wxBitmap *m_extra_icon;
 		public:
 			BottomSizer(MainSizer *sizer) 
-				: m_sizer(sizer), m_ok_id(mxID_NULL), m_cancel_id(mxID_NULL), m_help_id(mxID_NULL) {}
+				: m_sizer(sizer), m_ok_id(mxID_NULL), m_cancel_id(mxID_NULL), m_help_id(mxID_NULL),
+				  m_extra_id(mxID_NULL), m_extra_icon(nullptr) {}
 			BottomSizer &Ok(int id = wxID_OK) { m_ok_id = id; return *this; }
 			BottomSizer &Cancel(int id = wxID_CANCEL) { m_cancel_id = id; return *this; }
 			BottomSizer &Help(int id = mxID_HELP_BUTTON) { m_help_id = id; return *this; }
+			BottomSizer &Extra(int id, wxString label, const wxBitmap *icon) { 
+				m_extra_id = id; m_extra_label = label; m_extra_icon = icon; return *this; 
+			}
 			MainSizer &EndBottom(wxDialog *dialog);
 		};
 		
 	public:
 		
-		MainSizer(wxWindow *parent) : m_parent(parent), m_sizer(new wxBoxSizer(wxVERTICAL)) {}
-		MainSizer(wxWindow *parent, wxBoxSizer *sizer) : m_parent(parent), m_sizer(sizer) {}
+		MainSizer(wxWindow *parent) : BaseSizer(parent,new wxBoxSizer(wxVERTICAL)) {}
+		MainSizer(wxWindow *parent, wxBoxSizer *sizer) : BaseSizer(parent,sizer) {}
 		MainText BeginText(wxString label) { return MainText(this,label); }
 		MainCombo BeginCombo(wxString label) { return MainCombo(this,label); }
 		MainCheck BeginCheck(wxString label) { return MainCheck(this,label); }
 		MainButton BeginButton(wxString label) { return MainButton(this,label); }
 		MainLabel BeginLabel(wxString label) { return MainLabel(this,label); }
-		InnerSizer BeginInnerSizer() { return InnerSizer(this); }
+		MainNotebook BeginNotebook();
+		InnerSizer BeginLine() { return InnerSizer(this); }
 		MainSizer &Spacer() { m_sizer->AddStretchSpacer(); return *this; }
-		wxBoxSizer *GetSizer() { return m_sizer; }
+		MainSizer &Add(BaseSizer &main_sizer, const wxSizerFlags &flags) { m_sizer->Add(main_sizer.GetSizer(),flags); return *this; }
+		MainSizer &Add(wxWindow *control, const wxSizerFlags &flags) { m_sizer->Add(control,flags); return *this; }
+		MainSizer &BeginSection(wxString label);
+		MainSizer &BeginSection(int margin=15);
+		MainSizer &EndSection() { m_sizer = m_real_sizer; m_real_sizer = nullptr; return *this; }
 		BottomSizer BeginBottom() { return BottomSizer(this); }
-		void SetAndFit();
-		void Set();
-		
 	};
-		
-	static MainSizer CreateMainSizer(wxWindow *parent) { return MainSizer(parent); }
+	
+	class HorizontalSizer : public BaseSizer {
+	public:
+		HorizontalSizer(wxWindow *parent, wxBoxSizer *sizer) : BaseSizer(parent,sizer) {}
+		HorizontalSizer &Add(MainSizer &sizer, int proportion=1);
+	};
+	
+public:
+	class CreateHorizontalSizer : public HorizontalSizer { 	
+		public: CreateHorizontalSizer (wxWindow *parent); 
+	};
+	
+	class CreateSizer : public MainSizer { 	
+		public: CreateSizer (wxWindow *parent); 
+	};
+	
+	class CreatePanelAndSizer : public MainSizer { 	
+		public: CreatePanelAndSizer (wxWindow *parent);
+		public: wxPanel *GetPanel() { return static_cast<wxPanel*>(m_parent); }
+	};
+	
+	class ReuseSizer : public MainSizer {
+		public: ReuseSizer (wxWindow *parent, wxBoxSizer *sizer); 
+	};
+
+private:
+	class FreeNotebook: public BaseNotebook<FreeNotebook> {
+	public:
+		FreeNotebook(wxNotebook *notebook) : BaseNotebook<FreeNotebook>(notebook) {}
+	};
+public:
+	FreeNotebook CreateNotebook(wxWindow *parent);
 };
 
 #endif

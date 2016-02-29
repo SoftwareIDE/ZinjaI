@@ -35,11 +35,11 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(nullptr,wxID_ANY,LANG(
 	
 	if (first_run) sizer->Add(new wxStaticText(this,wxID_ANY,LANG(XDG_FIRST_TIME,"¿Desea crear un icono para acceder a ZinjaI desde el menu del sistema o el escritorio?")),sizers->BA5_Exp0);
 	
-	desktop = mxCCC::AddCheckBox(sizer,this,LANG(XDG_CREATE_DESKTOP,"Crear un icono en el escritorio"),false);
-	menu = mxCCC::AddCheckBox(sizer,this,LANG(XDG_CREATE_MENU,"Crear un icono en el menu (en la categoria Programacion/Desarrollo)"),!xdg_not_found);
+	desktop = mxDialog::AddCheckBox(sizer,this,LANG(XDG_CREATE_DESKTOP,"Crear un icono en el escritorio"),false);
+	menu = mxDialog::AddCheckBox(sizer,this,LANG(XDG_CREATE_MENU,"Crear un icono en el menu (en la categoria Programacion/Desarrollo)"),!xdg_not_found);
 	if (xdg_not_found) menu->Enable(false);
-//	zpr = mxCCC::AddCheckBox(sizer,this,"Asociar los archivos de proyecto (.zpr)",true);
-//	cpp = mxCCC::AddCheckBox(sizer,this,"Asociar archivos .c/.cc/.cpp/.cxx/.c++/.h/.hh/.hxx/.hpp/.h++",true);
+//	zpr = mxDialog::AddCheckBox(sizer,this,"Asociar los archivos de proyecto (.zpr)",true);
+//	cpp = mxDialog::AddCheckBox(sizer,this,"Asociar archivos .c/.cc/.cpp/.cxx/.c++/.h/.hh/.hxx/.hpp/.h++",true);
 	
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
