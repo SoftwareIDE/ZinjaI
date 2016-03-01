@@ -42,6 +42,8 @@ class wxStaticBitmap;
 
 class mxPreferenceWindow : public mxDialog {
 	
+	widgetBinder m_binder;
+	
 	bool ignore_styles_changes;
 
 	wxCheckBox *toolbars_wich_file;

@@ -46,7 +46,6 @@
 #include "mxPrintOut.h"
 #include "mxTreeCtrl.h"
 #include "mxWelcomePanel.h"
-#include "mxSourceProperties.h"
 #include "mxOpenRecentDialog.h"
 #include "Language.h"
 #include "mxOSD.h"
@@ -1303,11 +1302,15 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 		} else {
 			PopulateProjectFilePopupMenu(menu,nullptr,true);
 		}
+		menu.AppendSeparator();
 	}
-	menu.AppendSeparator();
 	if (!src->sin_titulo) { 
 		wxString comp = mxUT::GetComplementaryFile(src->source_filename); 
 		if (comp.Len()) menu.Append(mxID_FILE_OPEN_H, LANG1(MAINW_OPEN_FILENAME,"Abrir \"<{1}>\"",comp));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_OPEN_FOLDER));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_FILE_EXPLORE_FOLDER));
+		mxUT::AddItemToMenu(&menu,_menu_item_2(mnHIDDEN,mxID_PROJECT_POPUP_PROPERTIES));
+		menu.AppendSeparator();
 	}
 	
 	/*wxMenuItem *shared = */mxUT::AddItemToMenu(&menu,_menu_item_2(mnTOOLS,mxID_TOOLS_SHARE_SHARE));
@@ -4280,7 +4283,7 @@ void mxMainWindow::OnProjectTreeProperties (wxCommandEvent &event) {
 		IF_THERE_ISNT_SOURCE return;
 		fname = CURRENT_SOURCE->source_filename.GetFullPath();
 	}
-	(new mxSourceProperties(fname))->Show();
+	mxExeInfo::RunForSource(this,fname);
 }
 
 void mxMainWindow::OnProjectTreeOpenFolder (wxCommandEvent &event) {
@@ -4312,7 +4315,7 @@ void mxMainWindow::OnFileExploreFolder(wxCommandEvent &event) {
 void mxMainWindow::OnFileProperties (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src=CURRENT_SOURCE;
-		(new mxSourceProperties(src->GetFullPath(),src))->Show();
+		mxExeInfo::RunForSource(this,src);
 	}
 }
 

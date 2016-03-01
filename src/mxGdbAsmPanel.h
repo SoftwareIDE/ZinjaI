@@ -38,7 +38,7 @@ public:
 	mxGdbAsmPanel(wxWindow *parent);
 	void Update();
 	void OnDebugPausePost() override { Update(); }
-	void OnDebugStart() override { Update(); }
+	void OnDebugStart();
 	void OnCheckStepMove(wxCommandEvent &evt);
 	DECLARE_EVENT_TABLE();
 };

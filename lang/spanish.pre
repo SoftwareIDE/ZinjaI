@@ -1092,26 +1092,24 @@ BREAKOPTS_INSERT
 Insertar punto de interrupcion
 BREAKOPTS_ENABLE
 Habilitar punto de interrupcion
-BREAKOPTS_ONCE
-Interrumpir solo una vez
 BREAKOPTS_IGNORE_TIMES_PRE
 Ignorar
 BREAKOPTS_IGNORE_TIMES_POST
-veces
+ veces
 BREAKOPTS_HIT_TIMES_PRE
 Se ha alcanzado
 BREAKOPTS_HIT_TIMES_POST
 veces
 BREAKOPTS_CONDITION
 Condicion
+BREAKOPTS_ACTION
+Acción
 BREAKTOPS_ACTIONS_ALWAYS
 Detener siempre
 BREAKTOPS_ACTIONS_ONCE
 Detener solo la primera vez
 BREAKTOPS_ACTIONS_INSPECTIONS
 Solo actualizar inspecciones (no detener)
-BREAKOPTS_ACTION
-Acción
 BREAKOPTS_ERROR_PLACING_BREAKPOINT
 Error al colocar breakpoint
 BREAKOPTS_INVALID_CONDITION
@@ -1143,7 +1141,7 @@ Argumentos de compilación adicionales
 BYSRCOPT_ALL_PROFILES
 <<todos los perfiles>>
 BYSRCOPT_PROFILE
-Aplicar para el perfil: 
+Aplicar para el perfil
 BYSRCOPT_APPLY_TO_SELECTED_FILES
 Aplicar cambios
 COLORS_CAPTION
@@ -1232,6 +1230,8 @@ FINDCOMMAND_CAPTION
 Buscar comando
 FINDCOMMAND_HELP
 Introduzca una o más palabras claves para buscar, y presione Enter para seleccionar un resultado
+GENERAL_CLOSE_BUTTON
+&Cerrar
 COMPILECONF_COMPILER_ARGS
 Parametros extra para el compilador
 COMPILECONF_ALWAYS_ASK_ARGS
@@ -1313,7 +1313,7 @@ Files to analize
 CPPCHECK_SOURCES_OUT
 Files to exclude
 CPPCHECK_ADDITIONAL_FILES
-Archivos adicioneles a analizar
+Archivos adicionales a analizar
 CPPCHECK_EXCLUDE_HEADERS
 Omitir archivos de cabeceras
 CUSTOM_TOOLS_CAPTION
@@ -1328,6 +1328,8 @@ CUSTOM_TOOLS_COMMAND
 Comando
 CUSTOM_TOOLS_WORKDIR
 Directorio de trabajo
+CUSTOM_TOOLS_PRE
+Acción antes de ejecutar
 CUSTOM_TOOLS_PRE_NONE
 Ninguna
 CUSTOM_TOOLS_PRE_SAVE_ONE
@@ -1338,10 +1340,10 @@ CUSTOM_TOOLS_PRE_SAVE_PROJECT
 Guardar todo el proyecto
 CUSTOM_TOOLS_PRE_COMPILE
 Compilar el programa/proyecto
-CUSTOM_TOOLS_PRE
-Acción antes de ejecutar
 CUSTOM_TOOLS_ASYNC_EXEC
 Ejecución asíncrona
+CUSTOM_TOOLS_OUTPUT
+Salidas (std y err)
 CUSTOM_TOOLS_OUTPUT_HIDDEN
 Ocultas
 CUSTOM_TOOLS_OUTPUT_TERMINAL
@@ -1350,8 +1352,8 @@ CUSTOM_TOOLS_OUTPUT_TERMINAL_WAIT
 En terminal (esperar tecla)
 CUSTOM_TOOLS_OUTPUT_DIALOG
 En cuadro de dialogo
-CUSTOM_TOOLS_OUTPUT
-Salidas (std y err)
+CUSTOM_TOOLS_POST
+Acción luego de ejecutar:
 CUSTOM_TOOLS_POST_NONE
 Ninguna
 CUSTOM_TOOLS_POST_RELOAD_ONE
@@ -1362,8 +1364,6 @@ CUSTOM_TOOLS_POST_RUN
 Ejecutar el programa/proyecto
 CUSTOM_TOOLS_POST_DEBUG
 Depurar el programa/proyecto
-CUSTOM_TOOLS_POST
-Acción luego de ejecutar:
 CUSTOM_TOOLS_ONTOOLBAR_LINUX
 Mostrar en la barra de herramientas
 CUSTOM_TOOLS_TEST
@@ -1452,8 +1452,6 @@ DOXYCONF_USE_IN_QUICKHELP
 Utilizar en ayuda rápida
 DRAWCLASSES_CAPTION
 Dibujar relaciones entre clases
-GENERAL_CLOSE_BUTTON
-&Cerrar
 DRAWCLASSES_RELATED_NONE
 No incluir
 DRAWCLASSES_RELATED_DIRECT
@@ -1550,24 +1548,36 @@ EXEINFO_CAPTION
 Propiedades del Ejecutable
 EXEINFO_NOT_FOUND
 No se encontro ejecutable. Compile el programa para crearlo.
-EXEINFO_STRIP
-&Strip
 EXEINFO_GENERAL
 General
 EXEINFO_DEPS
 Dependencias
+EXEINFO_STRIP
+&Strip
 EXEINFO_LOCATION
 Ubicacion
 EXEINFO_SIZE
 Tamaño
 EXEINFO_LAST_MOD_DATE
 Fecha ultima modifiacion
-EXEINFO_UPDATED
-Actualizado
+EXEINFO_IS_OPEN
+Abierto
 EXEINFO_YES
 Si
 EXEINFO_NO
 No
+EXEINFO_IN_PROJECT
+En proyecto: 
+EXEINFO_IN_SOURCE
+Fuente
+EXEINFO_IN_HEADER
+Cabecera
+EXEINFO_IN_OTHER
+Otro
+EXEINFO_MODIFIED
+Modificado
+EXEINFO_UPDATED
+Actualizado
 EXEINFO_WAIT_FOR_PARSER
 No se puede determinar el tipo mientras el parser esta analizando fuentes
 EXEINFO_FILE_TYPE
@@ -3052,6 +3062,14 @@ TOOLBAREDITOR_SELECT_ICONS
 Seleccione los iconos que desea en la barra:
 TOOLCHAINS_CAPTION
 Personalizar herramientas de compilación
+TOOLCHAINS_GENERAL_SETTINGS
+General
+TOOLCHAINS_FIXED_SETTINGS
+Configuración fija
+TOOLCHAINS_USER_ARGUMENTS
+Argumentos configurables
+TOOLCHAINS_ERROR_EMPTY_NAME
+Debe completar el nombre.
 TOOLCHAINS_DESCRIPTION
 Descripción
 TOOLCHAINS_NAME
@@ -3088,16 +3106,6 @@ TOOLCHAINS_ARGUMENT_NAME
 Nombre (${ARG<{1}>})
 TOOLCHAINS_ARGUMENT_DEFAULT
    Valor por defecto (${ARG<{1}>})
-TOOLCHAINS_GENERAL_SETTINGS
-General
-TOOLCHAINS_FIXED_SETTINGS
-Configuración fija
-TOOLCHAINS_USER_ARGUMENTS
-Argumentos configurables
-TOOLCHAINS_TEST
-&Ejecutar
-TOOLCHAINS_ERROR_EMPTY_NAME
-Debe completar el nombre.
 UPDATE_CAPTION
 Buscar Actualizaciones
 UPDATE_CHECK_AT_STARTUP

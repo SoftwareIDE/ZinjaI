@@ -11,71 +11,61 @@
 #include "mxBitmapButton.h"
 #include "mxSource.h"
 #include "mxMessageDialog.h"
-#include "mxCommonConfigControls.h"
 
 BEGIN_EVENT_TABLE(mxBreakOptions, wxDialog)
 	EVT_BUTTON(wxID_OK,mxBreakOptions::OnOkButton)
 	EVT_BUTTON(wxID_CANCEL,mxBreakOptions::OnCancelButton)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxBreakOptions::OnHelpButton)
 	EVT_CHECKBOX(mxID_BREAK_OPTS_ENABLE,mxBreakOptions::OnBreakpointCheck)
-	EVT_CLOSE(mxBreakOptions::OnClose)
 END_EVENT_TABLE()
 	
-mxBreakOptions::mxBreakOptions(BreakPointInfo *_bpi) : wxDialog(main_window, wxID_ANY, LANG(BREAKOPTS_CAPTION,"Propiedades del Breakpoint"), wxDefaultPosition, wxDefaultSize ,wxALWAYS_SHOW_SB | wxALWAYS_SHOW_SB | wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER) {
-	
-	bpi=_bpi; bpi->UpdateLineNumber();
+mxBreakOptions::mxBreakOptions(BreakPointInfo *bpi) 
+	: mxDialog(main_window, LANG(BREAKOPTS_CAPTION,"Propiedades del Breakpoint") ),
+	  m_bpi(bpi)
+{
+	m_bpi->UpdateLineNumber();
 
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	CreateSizer sizer(this);
 	
-	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*bitmaps->buttons.help);
-	wxButton *cancel_button = new mxBitmapButton (this,wxID_CANCEL,bitmaps->buttons.cancel,LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
-	wxButton *ok_button = new mxBitmapButton (this,wxID_OK,bitmaps->buttons.ok,LANG(GENERAL_OK_BUTTON,"&Aceptar"));
-	SetEscapeId(wxID_CANCEL);
-	ok_button->SetDefault(); 
-	buttonSizer->Add(help_button,sizers->BA5_Exp0);
-	buttonSizer->AddStretchSpacer();
-	buttonSizer->Add(cancel_button,sizers->BA5);
-	buttonSizer->Add(ok_button,sizers->BA5);
-
-	mxDialog::AddTextCtrl(mySizer,this,LANG(BREAKOPTS_FILE,"Archivo"),bpi->fname)->SetEditable(false);
-	mxDialog::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_LINE,"Linea"),wxString()<<bpi->line_number+1)->SetEditable(false);
-	break_check = mxDialog::AddCheckBox(mySizer,this,LANG(BREAKOPTS_INSERT,"Insertar punto de interrupcion"),true,mxID_BREAK_OPTS_ENABLE);
-	enable_check = mxDialog::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ENABLE,"Habilitar punto de interrupcion"),bpi->enabled);
-//	once_check = mxDialog::AddCheckBox(mySizer,this,LANG(BREAKOPTS_ONCE,"Interrumpir solo una vez"),bpi->only_once);
-	ignore_text = mxDialog::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_IGNORE_TIMES_PRE,"Ignorar"),bpi->ignore_count,wxString(LANG(BREAKOPTS_IGNORE_TIMES_POST,"veces")));
-	if (debug->CanTalkToGDB() && bpi->IsInGDB()) {
-		count_text = mxDialog::AddShortTextCtrl(mySizer,this,LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado"),debug->GetBreakHitCount(bpi->gdb_id),wxString(LANG(BREAKOPTS_HIT_TIMES_POST,"veces")));
-		count_text->SetEditable(false);
+	sizer.BeginText( LANG(BREAKOPTS_FILE,"Archivo") ).Value(m_bpi->fname).ReadOnly().EndText();
+	sizer.BeginText( LANG(BREAKOPTS_LINE,"Linea") ).Value(m_bpi->line_number+1).ReadOnly().EndText();
+	
+	sizer.BeginCheck( LANG(BREAKOPTS_INSERT,"Insertar punto de interrupcion") )
+		.Id(mxID_BREAK_OPTS_ENABLE).Value(true).EndCheck(break_check);
+	sizer.BeginCheck( LANG(BREAKOPTS_ENABLE,"Habilitar punto de interrupcion") )
+		.Value(m_bpi->enabled).EndCheck(enable_check);
+	sizer.BeginLine()
+		.BeginText( LANG(BREAKOPTS_IGNORE_TIMES_PRE,"Ignorar") )
+			.Value(m_bpi->ignore_count).EndText(ignore_text)
+		.BeginLabel( LANG(BREAKOPTS_IGNORE_TIMES_POST," veces") ).EndLabel()
+		.EndLine();
+	if (debug->CanTalkToGDB() && m_bpi->IsInGDB()) {
+		sizer.BeginLine()
+			.BeginText( LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado") )
+			.Value(m_bpi->ignore_count).ReadOnly().EndText(count_text)
+		.BeginLabel( LANG(BREAKOPTS_HIT_TIMES_POST,"veces") ).EndLabel()
+			.EndLine();
 	} else {
 		count_text = nullptr;
 	}
-	cond_text = mxDialog::AddTextCtrl(mySizer,this,LANG(BREAKOPTS_CONDITION,"Condicion"),bpi->cond);
-	wxArrayString actions_list;
-	actions_list.Add(LANG(BREAKTOPS_ACTIONS_ALWAYS,"Detener siempre"));
-	actions_list.Add(LANG(BREAKTOPS_ACTIONS_ONCE,"Detener solo la primera vez"));
-	actions_list.Add(LANG(BREAKTOPS_ACTIONS_INSPECTIONS,"Solo actualizar inspecciones (no detener)"));
-	action = mxDialog::AddComboBox(mySizer,this,LANG(BREAKOPTS_ACTION,"Acción"),actions_list,bpi->action);
+	sizer.BeginText( LANG(BREAKOPTS_CONDITION,"Condicion") ).Value(m_bpi->cond).EndText(cond_text);
+	sizer.BeginCombo( LANG(BREAKOPTS_ACTION,"Acción") )
+		.Add(LANG(BREAKTOPS_ACTIONS_ALWAYS,"Detener siempre"))
+		.Add(LANG(BREAKTOPS_ACTIONS_ONCE,"Detener solo la primera vez"))
+		.Add(LANG(BREAKTOPS_ACTIONS_INSPECTIONS,"Solo actualizar inspecciones (no detener)"))
+		.Select(m_bpi->action).EndCombo(action);
+	if (m_bpi->gdb_status==BPS_ERROR_SETTING)
+		sizer.BeginLabel( LANG(BREAKOPTS_ERROR_PLACING_BREAKPOINT,"Error al colocar breakpoint") ).EndLabel();
+	if (m_bpi->gdb_status==BPS_ERROR_CONDITION)
+		sizer.BeginLabel( LANG(BREAKOPTS_INVALID_CONDITION,"La condicion actual no es valida") ).EndLabel();
+	sizer.BeginText( LANG(BREAKOPTS_ANNTOATION,"Anotación") )
+		.MultiLine().Value(m_bpi->annotation).EndText(annotation_text);
 	
-	if (bpi->gdb_status==BPS_ERROR_SETTING)
-		mxDialog::AddStaticText(mySizer,this,LANG(BREAKOPTS_ERROR_PLACING_BREAKPOINT,"Error al colocar breakpoint"));
-	if (bpi->gdb_status==BPS_ERROR_CONDITION)
-			mxDialog::AddStaticText(mySizer,this,LANG(BREAKOPTS_INVALID_CONDITION,"La condicion actual no es valida"));
-	
-	annotation_text = mxDialog::AddLongTextCtrl(mySizer,this,LANG(BREAKOPTS_ANNTOATION,"Anotación"),bpi->annotation);
-	
-	mySizer->Add(buttonSizer,sizers->Exp0);
-	
+	sizer.BeginBottom().Help().Ok().Cancel().EndBottom(this);
+	sizer.SetAndFit();
 	wxCommandEvent evt; OnBreakpointCheck(evt);
-	
-	SetSizerAndFit(mySizer);
-	
 	break_check->SetFocus();
 	ShowModal();
-}
-
-void mxBreakOptions::OnClose(wxCloseEvent &event) {
-	Destroy();
 }
 
 void mxBreakOptions::OnCancelButton(wxCommandEvent &evt) {
@@ -87,35 +77,35 @@ void mxBreakOptions::OnOkButton(wxCommandEvent &evt) {
 		if (debug->IsDebugging()) {
 			BREAK_POINT_STATUS status=BPS_SETTED;
 			long l;	ignore_text->GetValue().ToLong(&l); // ignore count
-			if (bpi->ignore_count!=l) {
-				bpi->ignore_count=l;
-				debug->SetBreakPointOptions(bpi->gdb_id,bpi->ignore_count);
+			if (m_bpi->ignore_count!=l) {
+				m_bpi->ignore_count=l;
+				debug->SetBreakPointOptions(m_bpi->gdb_id,m_bpi->ignore_count);
 			}
-			if (bpi->enabled!=enable_check->GetValue() || bpi->action!=action->GetSelection()) { // enabled and only_once
-				bpi->enabled=enable_check->GetValue(); bpi->action=action->GetSelection();
-				debug->SetBreakPointEnable(bpi);
+			if (m_bpi->enabled!=enable_check->GetValue() || m_bpi->action!=action->GetSelection()) { // enabled and only_once
+				m_bpi->enabled=enable_check->GetValue(); m_bpi->action=action->GetSelection();
+				debug->SetBreakPointEnable(m_bpi);
 			}
-			if (!bpi->enabled) status=BPS_USER_DISABLED;
-			if (bpi->cond!=cond_text->GetValue() || bpi->gdb_status==BPS_ERROR_CONDITION) { // condition
-				bpi->cond=cond_text->GetValue();
-				if (!debug->SetBreakPointOptions(bpi->gdb_id,bpi->cond)) status=BPS_ERROR_CONDITION;
+			if (!m_bpi->enabled) status=BPS_USER_DISABLED;
+			if (m_bpi->cond!=cond_text->GetValue() || m_bpi->gdb_status==BPS_ERROR_CONDITION) { // condition
+				m_bpi->cond=cond_text->GetValue();
+				if (!debug->SetBreakPointOptions(m_bpi->gdb_id,m_bpi->cond)) status=BPS_ERROR_CONDITION;
 			}
-			bpi->SetStatus(status,bpi->gdb_id);
+			m_bpi->SetStatus(status,m_bpi->gdb_id);
 		} else {
 			long l;	ignore_text->GetValue().ToLong(&l); // ignore count
-			bpi->ignore_count=l;
-			bpi->enabled=enable_check->GetValue(); 
-			bpi->action=action->GetSelection();
-			bpi->cond=cond_text->GetValue();
-			bpi->SetStatus(BPS_UNKNOWN);
+			m_bpi->ignore_count=l;
+			m_bpi->enabled=enable_check->GetValue(); 
+			m_bpi->action=action->GetSelection();
+			m_bpi->cond=cond_text->GetValue();
+			m_bpi->SetStatus(BPS_UNKNOWN);
 		}
-		bpi->annotation=annotation_text->GetValue();
+		m_bpi->annotation=annotation_text->GetValue();
 	} else {
 		if (debug->IsDebugging())
-			debug->DeleteBreakPoint(bpi);
-		else delete bpi;
+			debug->DeleteBreakPoint(m_bpi);
+		else delete m_bpi;
 	}
-	if (bpi->gdb_status==BPS_ERROR_CONDITION) {
+	if (m_bpi->gdb_status==BPS_ERROR_CONDITION) {
 		if (mxMD_NO==mxMessageDialog(this,LANG(BREAKOPTS_ERROR_SETTING_CONDITION,"La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?."),LANG(GENERAL_ERROR,"Advertencia"),mxMD_ERROR|mxMD_YES_NO).ShowModal())
 			return;
 	}

@@ -981,7 +981,6 @@ void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	config->RecalcStuff();
 	
 	Close();
-
 }
 
 void mxPreferenceWindow::OnCancelButton(wxCommandEvent &event){

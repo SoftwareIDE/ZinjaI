@@ -735,10 +735,10 @@ void mxMainWindow::OnToolsDrawFlow(wxCommandEvent &event) {
 }
 
 void mxMainWindow::OnToolsExeProps (wxCommandEvent &event) {
-	if (project)
-		new mxExeInfo(this,nullptr);
+	if (project) 
+		mxExeInfo::RunForProject(this);
 	else IF_THERE_IS_SOURCE
-		new mxExeInfo(this,CURRENT_SOURCE);
+		mxExeInfo::RunForSimpleProgram(this,CURRENT_SOURCE);
 }
 
 void mxMainWindow::OnToolsCustomToolsSettings(wxCommandEvent &evt) {

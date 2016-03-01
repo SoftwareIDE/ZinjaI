@@ -4,6 +4,9 @@
 #include <wx/arrstr.h>
 #include <wx/sizer.h>
 #include <wx/dialog.h>
+#ifdef __WIN32__
+#	include <wx/settings.h>
+#endif
 #include "Cpp11.h"
 #include "ids.h"
 
@@ -17,6 +20,7 @@ class wxStaticText;
 class wxButton;
 class wxNotebook;
 class widgetDisabler;
+class widgetBinder;
 
 /**
 * @brief Funciones de utilería para colocar controles en los cuadros de configuracion
@@ -29,7 +33,6 @@ protected:
 public:
 	static wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value=false, wxWindowID id = wxID_ANY,bool margin=false);
 	static wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", int id=wxID_ANY);
-	static wxTextCtrl *AddLongTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="");
 	static wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", bool margin=false, wxWindowID id=wxID_ANY);
 	static wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int n, wxString tail, bool margin=false);
 	static wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, int value=0,bool margin=false, int id=wxID_ANY);
@@ -43,10 +46,13 @@ public:
 	mxDialog(wxWindow *parent, wxString caption, bool destroy_on_close = true) 
 		: wxDialog(parent,wxID_ANY,caption,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
 	{
+#ifdef __WIN32__
+		SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
+#endif
 		if (destroy_on_close) this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseDestroy ) );
 		else                  this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseHide ) );
 	}
-		
+	
 
 private:
 	class BaseNotebookAux {
@@ -104,10 +110,15 @@ private:
 			wxString m_label;
 			TSizer *m_sizer;
 			int m_id;
+			widgetBinder *m_binder;
+			void *m_bind_value;
 			void RegisterInDisablers(wxControl *ctrl1, wxControl *ctrl2=nullptr, wxControl *ctrl3=nullptr);
+			template<typename T>
+			void SetBind(widgetBinder &binder, T &value) { m_binder = &binder; m_bind_value = &value; }
+			template<typename wxCtrl_t, typename value_t> void DoBind(wxCtrl_t *ctrl);
 		public:
-			BaseControl(TSizer *sizer, wxString label) 
-				: m_disabler_1(nullptr), m_disabler_2(nullptr), m_label(label), m_sizer(sizer), m_id(wxID_ANY) {}
+			BaseControl(TSizer *sizer, wxString label) : m_disabler_1(nullptr), m_disabler_2(nullptr),
+				  m_label(label), m_sizer(sizer), m_id(wxID_ANY), m_binder(nullptr),m_bind_value(nullptr) {}
 			TControl &RegisterIn(widgetDisabler &disabler) { 
 				if (!m_disabler_1) m_disabler_1=&disabler; 
 				else if (!m_disabler_2) m_disabler_2=&disabler; 
@@ -121,17 +132,20 @@ private:
 		protected:
 			int m_selection;
 			wxArrayString m_items;
-			bool m_editable;
+			bool m_editable, m_bind_by_pos;
 		public:
 			BaseCombo(TSizer *sizer, wxString label) 
-				: BaseControl<TSizer,BaseCombo<TSizer> >(sizer,label), m_selection(-1), m_editable(false) {}
+				: BaseControl<TSizer,BaseCombo<TSizer> >(sizer,label), m_selection(-1), m_editable(false), m_bind_by_pos(true) {}
 			BaseCombo &Add(wxArrayString &items) { for(unsigned int i=0;i<items.GetCount();++i) m_items.Add(items[i]); return *this; }
 			BaseCombo &Add(wxString item) { m_items.Add(item); return *this; }
 			BaseCombo &AddIf(bool condition, wxString item) { if (condition) m_items.Add(item); return *this; }
 			BaseCombo &Select(int index) { m_selection = index; return *this; }
 			BaseCombo &Select(wxString item, int default_idx=-1) { m_selection = m_items.Index(item); if (m_selection==wxNOT_FOUND) m_selection=default_idx; return *this; }
+			BaseCombo &Bind(widgetBinder &binder, int &index) { m_bind_by_pos=true; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,index); return Select(index); }
+			BaseCombo &Bind(widgetBinder &binder, wxString &item, int default_idx=-1) { m_bind_by_pos=false; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,index); return Select(item,default_idx); }
 			BaseCombo &Editable(bool editable=true) { m_editable = editable; return *this; }
 			virtual TSizer &EndCombo(wxComboBox *&combo_box) = 0;
+			TSizer &EndCombo() { wxComboBox *dummy; return EndCombo(dummy); }
 		};
 		
 		template<class TSizer>
@@ -139,17 +153,21 @@ private:
 		protected:
 			wxString m_value, m_button_text;
 			int m_button_id;
-			bool m_is_numeric, m_one_line, m_multiline;
+			bool m_is_numeric, m_one_line, m_multiline, m_readonly;
 		public:
 			BaseText(TSizer *sizer, wxString label) 
 				: BaseControl<TSizer,BaseText<TSizer> >(sizer,label), 
-				  m_button_id(mxID_NULL), m_is_numeric(false), m_one_line(false), m_multiline(false) {}
+				  m_button_id(mxID_NULL), m_is_numeric(false), m_one_line(false), m_multiline(false), m_readonly(false) {}
 			BaseText &Button(int id, wxString label="...") { m_button_id = id; m_button_text = label; return *this; }
 			BaseText &Value(wxString value) { m_value = value; return *this; }
 			BaseText &Value(int value) { m_is_numeric = m_one_line = true; m_value = wxString()<<value; return *this; }
+			BaseText &Bind(widgetBinder &binder, wxString &value) { BaseControl<TSizer,BaseText<TSizer> >::SetBind(binder,value); return Value(value); }
+			BaseText &Bind(widgetBinder &binder, int &value) { BaseControl<TSizer,BaseText<TSizer> >::SetBind(binder,value); return Value(value); }
 			BaseText &Short(bool value_is_short=true) { m_one_line = value_is_short; return *this; }
+			BaseText &ReadOnly(bool readonly=true) { m_readonly = readonly; return *this; }
 			BaseText &MultiLine(bool multiline=true) { m_multiline = multiline; return *this; }
 			virtual TSizer &EndText(wxTextCtrl *&text_ctrl) = 0;
+			TSizer &EndText() { wxTextCtrl *dummy; return EndText(dummy); }
 		};
 		
 		template<class TSizer>
@@ -160,7 +178,9 @@ private:
 			BaseCheck(TSizer *sizer, wxString label) 
 				: BaseControl<TSizer,BaseCheck<TSizer> >(sizer,label), m_value(false) {}
 			BaseCheck &Value(bool value) { m_value = value; return *this; }
+			BaseCheck &Bind(widgetBinder &binder, bool &value) { BaseControl<TSizer,BaseCheck<TSizer> >::SetBind(binder,value); return Value(value); }
 			virtual TSizer &EndCheck(wxCheckBox *&check_box) = 0;
+			TSizer &EndCheck() { wxCheckBox *dummy; return EndCheck(dummy); }
 		};
 		
 		template<class TSizer>
@@ -269,13 +289,14 @@ private:
 		
 		class BottomSizer {
 			MainSizer *m_sizer;
-			int m_ok_id, m_cancel_id, m_help_id;
+			int m_ok_id, m_cancel_id, m_help_id, m_close_id;
 			int m_extra_id; wxString m_extra_label; 
 			const wxBitmap *m_extra_icon;
 		public:
 			BottomSizer(MainSizer *sizer) 
 				: m_sizer(sizer), m_ok_id(mxID_NULL), m_cancel_id(mxID_NULL), m_help_id(mxID_NULL),
-				  m_extra_id(mxID_NULL), m_extra_icon(nullptr) {}
+				  m_close_id(mxID_NULL), m_extra_id(mxID_NULL), m_extra_icon(nullptr) {}
+			BottomSizer &Close(int id = wxID_CANCEL) { m_close_id = id; return *this; }
 			BottomSizer &Ok(int id = wxID_OK) { m_ok_id = id; return *this; }
 			BottomSizer &Cancel(int id = wxID_CANCEL) { m_cancel_id = id; return *this; }
 			BottomSizer &Help(int id = mxID_HELP_BUTTON) { m_help_id = id; return *this; }

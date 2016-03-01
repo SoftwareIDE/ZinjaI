@@ -33,7 +33,6 @@ void fix_argv(char *argv[]) {
 }
 
 void FixUbuntuMenuTweaks() {
-	
 	// check if ~/.zinjai/ubuntu file exists, this indicates if we should 
 	// disable ubuntu's especial menues and toolbars or not
 	string home_path = my_getenv("HOME");

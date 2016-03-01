@@ -9,6 +9,8 @@
 BEGIN_EVENT_TABLE(mxGdbAsmPanel,wxPanel)
 	EVT_CHECKBOX(wxID_ANY,mxGdbAsmPanel::OnCheckStepMove)
 END_EVENT_TABLE()
+	
+static bool dissasembly_flavor_setted = false;
 
 mxGdbAsmPanel::mxGdbAsmPanel (wxWindow * parent) : wxPanel(parent) {
 #ifdef __WIN32__
@@ -28,6 +30,11 @@ mxGdbAsmPanel::mxGdbAsmPanel (wxWindow * parent) : wxPanel(parent) {
 void mxGdbAsmPanel::Update ( ) {
 	m_asm_step_mode->SetValue(debug->IsAsmStepModeOn());
 	if (!debug->CanTalkToGDB()) return;
+	
+	if (!dissasembly_flavor_setted) {
+		debug->SendCommand("set dissasembly-flavor intel");
+		dissasembly_flavor_setted = true;
+	}
 	
 	wxString pc = debug->InspectExpression("$pc").BeforeFirst(' ');
 	AddressRange::addr_t addr = AddressRange::Parse(pc);
@@ -89,5 +96,9 @@ mxGdbAsmPanel::AddressRange mxGdbAsmPanel::ParseCode (wxString ans) {
 		}
 	} while(ans.size());
 	return range;
+}
+
+void mxGdbAsmPanel::OnDebugStart ( ) {
+	m_cache.clear(); m_addr_to_line.clear(); dissasembly_flavor_setted = false;
 }
 

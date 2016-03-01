@@ -14,16 +14,15 @@ END_EVENT_TABLE()
 mxSourceProperties::mxSourceProperties(wxString path, mxSource *src)
 	: mxDialog(main_window, "Propiedades del Archivo" ), m_fname(path)
 {
-#warning EL CTOR TENIA wxSize(450,400)
+	SetSize(wxSize(450,400));
 #warning FALTA TRADUCIR
+#warning AGREGAR BOTON PARA ABRIR CARPETA
+#warning AGREGAR DEPENDENCIAS???
 	
-	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
+	CreateSizer sizer(this);
 
 	wxFileName filename(m_fname);
 	filename.Normalize();
-	
-	wxTextCtrl *name_ctrl=AddTextCtrl(mySizer,this,"Ubicacion",filename.GetFullPath());
-	name_ctrl->SetEditable(false);
 	
 	double fsize = filename.GetSize().ToDouble();
 	wxString tsize;
@@ -34,30 +33,41 @@ mxSourceProperties::mxSourceProperties(wxString path, mxSource *src)
 			tsize<<int(fsize/1024)<<"."<<int(fsize/1.024)%1000<<" KB = ";
 	}
 	tsize<<filename.GetSize()<<" B";
-	AddTextCtrl(mySizer,this,"Tamaño",tsize)->SetEditable(false);
-	AddTextCtrl(mySizer,this,"Fecha ultima modifiacion",filename.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"))->SetEditable(false);
+	
+	sizer.BeginText( "Ubicacion" ).Value(filename.GetFullPath()).ReadOnly().EndText();
+	sizer.BeginText( "Tamaño" ).Short().Value(tsize).ReadOnly().EndText();
+	sizer.BeginText( "Fecha ultima modifiacion" )
+		.Value(filename.GetModificationTime().Format("%H:%M:%S - %d/%B/%Y"))
+		.Short().ReadOnly().EndText();
 	
 	if (!src) src=main_window->FindSource(m_fname);
-	AddShortTextCtrl(mySizer,this,"Abierto",(src?"Si":"No"))->SetEditable(false);
-	if (src) AddShortTextCtrl(mySizer,this,"Modificado",(src->GetModify()?"Si":"No"))->SetEditable(false);
+	sizer.BeginText( "Abierto" ).Value(src?"Si":"No").ReadOnly().Short().EndText();
+	if (src) sizer.BeginText( "Modificado" ).Value(src->GetModify()?"Si":"No").ReadOnly().Short().EndText();
+	
+	if (!m_source || !m_source->sin_titulo) {
+		bool updated=true;
+		if (m_source) {
+			if (m_source->GetModify() || !m_source->GetBinaryFileName().FileExists() || m_source->GetBinaryFileName().GetModificationTime()<m_source->source_filename.GetModificationTime())
+				updated=false;
+			else if (config->Running.check_includes && mxUT::AreIncludesUpdated(m_source->GetBinaryFileName().GetModificationTime(),m_source->source_filename))
+				updated=false;
+		} else {
+			if (project->PrepareForBuilding())
+				updated=false;
+		}
+		sizer.BeginText( LANG(EXEINFO_UPDATED,"Actualizado") )
+			.Value(updated?LANG(EXEINFO_YES,"Si"):LANG(EXEINFO_NO,"No"))
+			.ReadOnly().EndText();
+	}
+	
 	
 	wxString file_type = mxUT::GetFileTypeDescription(m_fname);
 	
-	AddLongTextCtrl(mySizer,this,"Tipo de Archivo",file_type)->SetEditable(false);
+	sizer.BeginText( "Tipo de Archivo" ).Value(file_type).ReadOnly().MultiLine().EndText();
 	
-	wxButton *ok_button = new mxBitmapButton (this, wxID_OK, bitmaps->buttons.ok, "Cerrar");
-
-	mySizer->Add(ok_button,sizers->BA5_Right);
-	
-	SetSizer(mySizer);
-	
-	SetEscapeId(wxID_OK);
-	ok_button->SetDefault();
-	
-	name_ctrl->SetFocus();
-		
+	sizer.BeginBottom().Close().EndBottom(this).Set();
+	SetFocus();
 	Show();
-
 }
 
 void mxSourceProperties::OnOkButton(wxCommandEvent &event) {
