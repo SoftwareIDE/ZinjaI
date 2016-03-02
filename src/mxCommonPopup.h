@@ -6,10 +6,29 @@
 #include "Language.h"
 #include "Cpp11.h"
 
+/**
+* @brief Provides functionality for very frequently used popup menus
+*
+* This class creates, displays, and process events of a popup menu for
+* the three-dots button in a text field. The text can be represented
+* by a wxTextCtrl or by a wxComboBox. The class will create the menu,
+* keep track of the control, register its events in the dialog's
+* event handler, and provides the methods for responding to these
+* events. 
+*
+* To use it in a dialog, all you have to do is to insert the macro 
+* "_use_common_popup;" inside the class definition, and then run the menu 
+* with "CommonPopup(some_ctrl).Bla().Bla()...Bla().Run(this);"
+*
+* Bla()... are methods to define wich items to show in the menu, and 
+* some other properties, such a base path transforming user selected
+* paths in file/dir pickers to relative ones.
+**/
 class mxCommonPopup {
 	bool m_registered_in_event_handler;
 	wxWindow *m_parent;
 	wxTextCtrl *m_text_ctrl;
+	wxComboBox *m_combo_box;
 	wxString m_caption;
 	wxString m_base_path;
 	bool m_comma_split;
@@ -17,18 +36,25 @@ class mxCommonPopup {
 	wxMenu m_menu;
 	void ReplaceSelectionWith(wxString text) {
 		long f,t;
-		m_text_ctrl->GetSelection(&f,&t);
-		m_text_ctrl->Replace(f,t,text);
-		m_text_ctrl->SetFocus();
+		if (m_text_ctrl) {
+			m_text_ctrl->GetSelection(&f,&t);
+			m_text_ctrl->Replace(f,t,text);
+			m_text_ctrl->SetFocus();
+		} else if (m_combo_box) {
+			m_combo_box->GetSelection(&f,&t);
+			m_combo_box->Replace(f,t,text);
+			m_combo_box->SetFocus();
+		}
 	}
 public:
-	mxCommonPopup() : m_registered_in_event_handler(false), m_text_ctrl(nullptr), m_comma_split(false) {}
+	mxCommonPopup() : m_registered_in_event_handler(false), m_text_ctrl(nullptr), m_combo_box(nullptr), m_comma_split(false) {}
 	
 	mxCommonPopup &ResetMenu() { 
-		m_base_path = m_caption = ""; m_comma_split = false; m_text_ctrl = nullptr; 
+		m_base_path = m_caption = ""; m_comma_split = false; m_text_ctrl = nullptr; m_combo_box = nullptr;
 		while(m_menu.GetMenuItemCount()) m_menu.Remove(m_menu.FindItemByPosition(0)); return *this;
 	}
 	mxCommonPopup &CommonPopup(wxTextCtrl *text_ctrl) { ResetMenu(); m_text_ctrl = text_ctrl; return *this; }
+	mxCommonPopup &CommonPopup(wxComboBox *combo_box) { ResetMenu(); m_combo_box = combo_box; return *this; }
 	template<typename wxDialog_t> void Run(wxDialog_t *dlg) {
 		if (!m_registered_in_event_handler) {
 			dlg->Connect(mxID_POPUPS_ID_BEGIN,mxID_POPUPS_ID_END,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(wxDialog_t::OnCommonPopup),nullptr,dlg);
@@ -38,7 +64,11 @@ public:
 		dlg->PopupMenu(&m_menu); 
 	}
 	
-	mxCommonPopup &SelectAll() { if (m_text_ctrl) m_text_ctrl->SetSelection(0,m_text_ctrl->GetValue().Len()); return *this; }
+	mxCommonPopup &SelectAll() { 
+		if (m_text_ctrl) m_text_ctrl->SetSelection(0,m_text_ctrl->GetValue().Len()); 
+		if (m_combo_box) m_combo_box->SetSelection(0,m_combo_box->GetValue().Len());
+		return *this; 
+	}
 	mxCommonPopup &CommaSplit(bool comma_split) { m_comma_split = comma_split; return *this; }
 	mxCommonPopup &Caption(const wxString &caption) { m_caption = caption; return *this; }
 	mxCommonPopup &BasePath(const wxString &base_path) { m_base_path = base_path; return *this; }
@@ -64,6 +94,10 @@ public:
 	mxCommonPopup &AddZinjaiDir() { m_menu.Append(mxID_POPUPS_INSERT_ZINJAI_DIR,LANG(GENERAL_POPUP_INSERT_ZINJAI_DIR,"insertar el directorio de instalación de ZinjaI")); return *this; }
 	mxCommonPopup &AddBrowerCommand() { m_menu.Append(mxID_POPUPS_INSERT_BROWSER,LANG(GENERAL_POPUP_INSERT_BROWSER,"insertar comando del navegador")); return *this; }
 	mxCommonPopup &AddShellCommand() { m_menu.Append(mxID_POPUPS_INSERT_SHELL_EXECUTE,LANG(GENERAL_POPUP_INSERT_SHELL_EXECUTE,"insertar comando para abrir con el programa asociado")); return *this; }
+	
+	mxCommonPopup &AddSeparator() { m_menu.AppendSeparator(); return *this; }
+	mxCommonPopup &Add(int id, wxString label) { m_menu.Append(id,label); return *this; }
+	mxCommonPopup &Add(wxMenu *submenu, wxString label) { m_menu.AppendSubMenu(submenu,label); return *this; }
 
 	void ProcessCommandEvent(wxCommandEvent &evt);
 };
@@ -80,6 +114,7 @@ public:
 	mxCommonPopup m_common_popup; \
 	void OnCommonPopup(wxCommandEvent &evt) { m_common_popup.ProcessCommandEvent(evt); } \
 	mxCommonPopup &CommonPopup(wxTextCtrl *text_ctrl) { return m_common_popup.CommonPopup(text_ctrl); } \
+	mxCommonPopup &CommonPopup(wxComboBox *combo_box) { return m_common_popup.CommonPopup(combo_box); } \
 	friend class mxCommonPopup
 
 /**
@@ -90,6 +125,7 @@ public:
 * esta función para autocompletar
 **/
 mxCommonPopup &CommonPopup(wxTextCtrl*); // si esto genera un "undefined reference...", falta "_use_common_popup;" en algún .h
+mxCommonPopup &CommonPopup(wxComboBox *); // si esto genera un "undefined reference...", falta "_use_common_popup;" en algún .h
 
 #endif
 

@@ -1774,7 +1774,7 @@ void mxMainWindow::RunSource (mxSource *source) {
 	
 	if (source->config_running.always_ask_args) {
 		int res = mxArgumentsDialog(this,source->GetPath(true),source->exec_args,source->working_folder.GetFullPath()).ShowModal();
-		if (res&AD_CANCEL) return;
+		if (res==0) return;
 		source->working_folder = mxArgumentsDialog::last_workdir;
 		source->exec_args = (res&AD_EMPTY) ? "" : mxArgumentsDialog::last_arguments;
 		if (res&AD_REMEMBER) source->config_running.always_ask_args=false;

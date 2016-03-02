@@ -49,6 +49,12 @@ public:
 	wxString GetParsedCompilerArgs(bool for_cpp);
 	
 	/**
+	* @brief 
+	*        
+	**/
+	wxString GetArgsFromFile(wxString file);
+	
+	/**
 	* @brief parses a template's header, fills a map with the defined options,
 	*        and return the number of header's lines
 	**/

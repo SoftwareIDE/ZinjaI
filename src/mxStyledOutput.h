@@ -5,7 +5,7 @@
 class mxStyledOutput : public wxStyledTextCtrl {
 	bool is_read_only;
 public:
-	const int next_available_marker = 3;
+	const int next_available_marker;
 	mxStyledOutput(wxWindow *parent, bool read_only=false, bool wrap_lines=true);
 	void AppendText(const wxString &str);
 	void AppendLine(const wxString &str);

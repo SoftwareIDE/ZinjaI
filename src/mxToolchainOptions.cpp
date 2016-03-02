@@ -13,10 +13,9 @@ BEGIN_EVENT_TABLE(mxToolchainOptions,wxDialog)
 	EVT_BUTTON(wxID_CANCEL,mxToolchainOptions::OnCancelButton)
 END_EVENT_TABLE()
 
-#warning FALTA TRADUCIR
 
 mxToolchainOptions::mxToolchainOptions(wxWindow *parent, wxString toolchain_fname, project_configuration *conf)
-	: mxDialog(parent,"Toolchain Options",false), m_configuration(conf) 
+	: mxDialog(parent,LANG(TOOLCHAIN_OPTIONS_CAPTION,"Opciones del Toolchain"),false), m_configuration(conf) 
 {
 	const Toolchain &tc=Toolchain::GetInfo(toolchain_fname);
 	
@@ -36,7 +35,7 @@ mxToolchainOptions::mxToolchainOptions(wxWindow *parent, wxString toolchain_fnam
 		sizer.GetSizer()->Add(st2,s2);
 	}
 	
-	if (args_count==0) sizer.BeginLabel("No hay argumentos configurables para este toolchain.").EndLabel();
+	if (args_count==0) sizer.BeginLabel( LANG(TOOLCHAIN_OPTIONS_NO_ARGS,"No hay argumentos configurables para este toolchain.") ).EndLabel();
 	
 	sizer.BeginBottom().Ok().Cancel().EndBottom(this);
 	sizer.SetAndFit();

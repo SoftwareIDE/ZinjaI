@@ -95,7 +95,7 @@ bool DebugManager::Start(mxSource *source) {
 		wxString args;
 		if (source->config_running.always_ask_args) {
 			int res = mxArgumentsDialog(main_window,source->GetPath(true),source->exec_args,source->working_folder.GetFullPath()).ShowModal();
-			if (res&AD_CANCEL) return 0;
+			if (res==0) return 0;
 			if (res&AD_ARGS) {
 				source->exec_args = mxArgumentsDialog::last_arguments;
 				source->working_folder = mxArgumentsDialog::last_workdir;

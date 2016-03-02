@@ -130,9 +130,11 @@ private:
 		template<class TSizer>
 		class BaseCombo: public BaseControl<TSizer,BaseCombo<TSizer> > {
 		protected:
-			int m_selection;
+			wxString m_value;
+			int m_selection; ///< -1 default, -2 use value (may not be in the items' list)
 			wxArrayString m_items;
 			bool m_editable, m_bind_by_pos;
+			void FixValueAndSelection();
 		public:
 			BaseCombo(TSizer *sizer, wxString label) 
 				: BaseControl<TSizer,BaseCombo<TSizer> >(sizer,label), m_selection(-1), m_editable(false), m_bind_by_pos(true) {}
@@ -141,8 +143,9 @@ private:
 			BaseCombo &AddIf(bool condition, wxString item) { if (condition) m_items.Add(item); return *this; }
 			BaseCombo &Select(int index) { m_selection = index; return *this; }
 			BaseCombo &Select(wxString item, int default_idx=-1) { m_selection = m_items.Index(item); if (m_selection==wxNOT_FOUND) m_selection=default_idx; return *this; }
+			BaseCombo &Value(wxString value) { m_selection = -2; m_value = value; return *this; }
 			BaseCombo &Bind(widgetBinder &binder, int &index) { m_bind_by_pos=true; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,index); return Select(index); }
-			BaseCombo &Bind(widgetBinder &binder, wxString &item, int default_idx=-1) { m_bind_by_pos=false; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,index); return Select(item,default_idx); }
+			BaseCombo &Bind(widgetBinder &binder, wxString &item, int default_idx=-1) { m_bind_by_pos=false; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,item); return Select(item,default_idx); }
 			BaseCombo &Editable(bool editable=true) { m_editable = editable; return *this; }
 			virtual TSizer &EndCombo(wxComboBox *&combo_box) = 0;
 			TSizer &EndCombo() { wxComboBox *dummy; return EndCombo(dummy); }

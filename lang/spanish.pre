@@ -946,24 +946,8 @@ COMPILECONF_WORKDIR
 Directorio de trabajo:
 GENERAL_DONT_ASK_AGAIN
 no volver a preguntar
-GENERAL_OK_BUTTON
-&Aceptar
 ARGUMENTS_WITHOUT_ARGUMENTS
 &Sin Argumentos
-GENERAL_CANCEL_BUTTON
-&Cancelar
-GENERAL_POPUP_EDIT_AS_TEXT
-editar como texto
-GENERAL_POPUP_EDIT_AS_LIST
-editar como list
-GENERAL_POPUP_REPLACE_ALL_WITH_FILE
-reemplazar todo por archivo
-GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE
-reemplazar seleccion por archivo
-GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER
-reemplazar todo por directorio
-GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER
-reemplazar seleccion por directorio
 COMPILECONF_WORKDIR_DLG
 Directorio de trabajo
 BACKTRACE_LEVEL
@@ -1146,6 +1130,10 @@ BYSRCOPT_APPLY_TO_SELECTED_FILES
 Aplicar cambios
 COLORS_CAPTION
 Definir Colores
+GENERAL_CANCEL_BUTTON
+&Cancelar
+GENERAL_OK_BUTTON
+&Aceptar
 GENERAL_APPLY_BUTTON
 A&plicar
 COLOURS_INVERTED
@@ -1288,6 +1276,8 @@ COMPLEMENTS_INSTRUCCIONS
 Para instalar un complemento debe: 1) descargarlo desde la\nsección de descargas del sitio de ZinjaI (haga click\nen el botón \"Descargar...\" para ir al sitio); 2) presionar\n\"Instalar...\"; 3) seleccionar el archivo descargado.\n
 COMPLEMENTS_SUDO_WARNING
 ZinjaI está instalado en un directorio para el cual su usuario no\ntiene permisos de escritura. Se le solicitará confirmación y/o contraseña\nde root/administrador para continuar con la instalación. ¿Continuar?
+CPPCHECK_CONFIG_CAPTION
+Configuración de CppCheck
 CPPCHECK_COPY_FROM_CONFIG
 Copiar configuración (macros definidas) de las opciones del proyecto
 CPPCHECK_CONFIG_D
@@ -1559,7 +1549,7 @@ Ubicacion
 EXEINFO_SIZE
 Tamaño
 EXEINFO_LAST_MOD_DATE
-Fecha ultima modifiacion
+Fecha última modifiación
 EXEINFO_IS_OPEN
 Abierto
 EXEINFO_YES
@@ -1567,13 +1557,13 @@ Si
 EXEINFO_NO
 No
 EXEINFO_IN_PROJECT
-En proyecto: 
+En proyecto
 EXEINFO_IN_SOURCE
-Fuente
+en Fuentes
 EXEINFO_IN_HEADER
-Cabecera
+en Cabeceras
 EXEINFO_IN_OTHER
-Otro
+en Otros
 EXEINFO_MODIFIED
 Modificado
 EXEINFO_UPDATED
@@ -1902,6 +1892,14 @@ LIBTOBUILD_NAME_REPEATED
 Ya existe una biblioteca con ese nombre.
 LONGTEXT_MORE_OPTIONS
 Mas opciones...
+GENERAL_POPUP_REPLACE_ALL_WITH_FILE
+reemplazar todo por archivo
+GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE
+reemplazar seleccion por archivo
+GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER
+reemplazar todo por directorio
+GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER
+reemplazar seleccion por directorio
 GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE
 Reemplazar todo por archivo:
 GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE
@@ -3106,6 +3104,10 @@ TOOLCHAINS_ARGUMENT_NAME
 Nombre (${ARG<{1}>})
 TOOLCHAINS_ARGUMENT_DEFAULT
    Valor por defecto (${ARG<{1}>})
+TOOLCHAIN_OPTIONS_CAPTION
+Opciones del Toolchain
+TOOLCHAIN_OPTIONS_NO_ARGS
+No hay argumentos configurables para este toolchain.
 UPDATE_CAPTION
 Buscar Actualizaciones
 UPDATE_CHECK_AT_STARTUP

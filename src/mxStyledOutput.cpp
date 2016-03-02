@@ -42,7 +42,7 @@ void mxStyledOutput::OnMarginClick (wxStyledTextEvent & e) {
 }
 
 mxStyledOutput::mxStyledOutput (wxWindow * parent, bool read_only, bool wrap_lines) 
-	: wxStyledTextCtrl(parent,wxID_ANY), is_read_only(read_only)
+	: wxStyledTextCtrl(parent,wxID_ANY), is_read_only(read_only), next_available_marker(3)
 {
 //	wxFont font(config->Styles.font_size, wxMODERN, wxNORMAL, wxNORMAL);
 //	StyleSetFont (wxSTC_STYLE_DEFAULT, font);

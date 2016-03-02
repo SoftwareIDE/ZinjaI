@@ -72,34 +72,9 @@ class mxPreferenceWindow : public mxDialog {
 	mxToolbarEditor *toolbar_editor_run;
 	mxToolbarEditor *toolbar_editor_view;
 	
-	wxCheckBox *init_show_extra_panels;
-	wxCheckBox *init_left_panels;
 #ifdef __linux__
 	wxCheckBox *init_disable_ubuntu_tweaks;
 #endif
-	wxCheckBox *init_check_for_updates;
-	wxCheckBox *init_always_add_extension;
-	wxCheckBox *init_show_welcome;
-	wxCheckBox *init_show_tip_on_startup;
-	wxCheckBox *init_autohide_toolbars_fs;
-	wxCheckBox *init_autohide_panels_fs;
-	wxCheckBox *init_autohide_menus_fs;
-	wxComboBox *init_lang_file;
-	wxComboBox *init_new_file;
-	wxComboBox *init_wrap_mode;
-	wxCheckBox *init_lang_es;
-	wxCheckBox *init_save_project;
-	wxCheckBox *init_show_explorer_tree;
-	wxCheckBox *init_prefer_explorer_tree;
-	wxTextCtrl *init_max_jobs;
-	wxTextCtrl *init_history_len;
-	wxCheckBox *init_stop_compiling_on_error;
-	wxCheckBox *init_autohide_panels;
-	wxCheckBox *init_singleton;
-	wxCheckBox *running_wait_for_key;
-	wxCheckBox *running_always_ask_args;
-	wxTextCtrl *running_cpp_compiler_options;
-	wxTextCtrl *running_c_compiler_options;
 	wxTextCtrl *files_autocode;
 	wxTextCtrl *files_temp_dir;
 	wxComboBox *files_toolchain;
@@ -116,55 +91,19 @@ class mxPreferenceWindow : public mxDialog {
 	wxTextCtrl *files_browser_command;
 	wxTextCtrl *help_wxhelp_index;
 	wxCheckListBox *help_autocomp_indexes;
-	wxCheckBox *source_bracketInsertion;
-	wxCheckBox *source_syntaxEnable;
-	wxCheckBox *source_indentPaste;
-	wxTextCtrl *source_tabWidth;
-	wxCheckBox *source_tabUseSpaces;
 	wxTextCtrl *source_edgeColumnPos;
 	wxCheckBox *source_edgeColumnCheck;
-	wxCheckBox *source_foldEnable;
 	wxCheckBox *source_whiteSpace;
-	wxCheckBox *source_lineNumber;
-	wxCheckBox *source_callTips;
-	wxCheckBox *source_autocompTips;
-	wxCheckBox *source_avoidNoNewLineWarning;
-	wxCheckBox *source_smartIndent;
-	wxCheckBox *source_autocloseStuff;
-	wxComboBox*source_autoCompletion;
-	wxCheckBox *source_autocompFilters;
 	wxCheckBox *source_toolTips;
-	wxCheckBox *init_beautifyCompilerErrors;
-	wxCheckBox *init_use_cache_for_subcommands;
-	wxTextCtrl *styles_print_size;
 	wxTextCtrl *styles_font_size;
 	wxComboBox *styles_font_name;
 	wxCheckBox *styles_dark;
 	wxTextCtrl *files_default_template;
-	wxCheckBox *debug_allow_edition;
-	wxCheckBox *debug_autohide_panels;
-	wxCheckBox *debug_autohide_toolbars;
 	wxCheckBox *debug_compile_again;
-	wxCheckBox *debug_close_on_normal_exit;
-	wxCheckBox *debug_always_debug;
-	wxCheckBox *debug_raise_main_window;
-	wxCheckBox *debug_use_colours_for_inspections;
-	wxCheckBox *debug_inspections_can_have_side_effects;
-	wxCheckBox *debug_show_thread_panel;
-	wxCheckBox *debug_show_log_panel;
-	wxCheckBox *debug_inspections_on_right;
-	wxCheckBox *debug_auto_solibs;
-#ifdef __linux__
-	wxCheckBox *debug_enable_core_dump;
-#endif
 #ifdef __WIN32__
 	wxCheckBox *debug_no_debug_heap;
 #endif
-	wxCheckBox *debug_readnow;
 	wxTextCtrl *debug_macros_file;
-	wxCheckBox *debug_return_focus_on_continue;
-	wxCheckBox *debug_improve_inspections_by_type;
-	wxCheckBox *debug_use_blacklist;
 //#ifdef __WIN32__
 //	wxTextCtrl *files_mingw_dir;
 //#endif

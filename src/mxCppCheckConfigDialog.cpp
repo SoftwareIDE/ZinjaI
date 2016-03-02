@@ -34,9 +34,8 @@ BEGIN_EVENT_TABLE(mxCppCheckConfigDialog,wxDialog)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxCppCheckConfigDialog::OnButtonHelp)
 END_EVENT_TABLE()
 
-#warning FALTA TRADUCIR CAPTION
 mxCppCheckConfigDialog::mxCppCheckConfigDialog(wxWindow *parent)
-	: mxDialog(parent, "Configuración de CppCheck" )
+	: mxDialog(parent, LANG(CPPCHECK_CONFIG_CAPTION,"Configuración de CppCheck") )
 {
 	if (!project->cppcheck) { 
 		project->cppcheck = new cppcheck_configuration();

@@ -944,24 +944,8 @@ COMPILECONF_WORKDIR
 Working directory
 GENERAL_DONT_ASK_AGAIN
 Don't ask again
-GENERAL_OK_BUTTON
-  &Ok   
 ARGUMENTS_WITHOUT_ARGUMENTS
 &Without Arguments
-GENERAL_CANCEL_BUTTON
-&Cancel
-GENERAL_POPUP_EDIT_AS_TEXT
-edit as text
-GENERAL_POPUP_EDIT_AS_LIST
-edit as list
-GENERAL_POPUP_REPLACE_ALL_WITH_FILE
-replace all with file path
-GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE
-replace selection with file path
-GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER
-replace all with folder path
-GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER
-replace selection with folder path
 COMPILECONF_WORKDIR_DLG
 Working directory:
 BACKTRACE_LEVEL
@@ -1144,6 +1128,10 @@ BYSRCOPT_APPLY_TO_SELECTED_FILES
 Apply changes
 COLORS_CAPTION
 Define Colours
+GENERAL_CANCEL_BUTTON
+&Cancel
+GENERAL_OK_BUTTON
+  &Ok   
 GENERAL_APPLY_BUTTON
 A&pply
 COLOURS_INVERTED
@@ -1286,6 +1274,8 @@ COMPLEMENTS_INSTRUCCIONS
 In order to install a complement you must: 1) download the\ncomplement file from ZinjaI's web site (use "Download..."\nbutton to open the site); 2) click on "Install..." button;\n3) select the downloaded file.
 COMPLEMENTS_SUDO_WARNING
 ZinjaI is installed in a directory where your user cannot write.\nIn order to continue with the installation, a confirmation and/or\nroot password will be requested. ¿Continue?
+CPPCHECK_CONFIG_CAPTION
+CppCheck Settings
 CPPCHECK_COPY_FROM_CONFIG
 Copy configuration (preprocessor macros) from compiling options
 CPPCHECK_CONFIG_D
@@ -1900,6 +1890,14 @@ LIBTOBUILD_NAME_REPEATED
 There is another library with that name.
 LONGTEXT_MORE_OPTIONS
 More options...
+GENERAL_POPUP_REPLACE_ALL_WITH_FILE
+replace all with file path
+GENERAL_POPUP_REPLACE_SELECTION_WITH_FILE
+replace selection with file path
+GENERAL_POPUP_REPLACE_ALL_WITH_FOLDER
+replace all with folder path
+GENERAL_POPUP_REPLACE_SELECTION_WITH_FOLDER
+replace selection with folder path
 GENERAL_FILEDLG_REPLACE_ALL_WITH_FILE
 Replace all with file path
 GENERAL_FILEDLG_REPLACE_SELECTION_WITH_FILE
@@ -3104,6 +3102,10 @@ TOOLCHAINS_ARGUMENT_NAME
 Label (${ARG<{1}>})
 TOOLCHAINS_ARGUMENT_DEFAULT
    User argument's default value (${ARG<{1}>})
+TOOLCHAIN_OPTIONS_CAPTION
+Toolchain Options
+TOOLCHAIN_OPTIONS_NO_ARGS
+There are no configurable arguments for this toolchain.
 UPDATE_CAPTION
 Check for Updates
 UPDATE_CHECK_AT_STARTUP

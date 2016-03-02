@@ -5,19 +5,23 @@
 #include "mxThreeDotsUtils.h"
 
 void mxCommonPopup::ProcessCommandEvent(wxCommandEvent &evt) {
-	if (!m_text_ctrl) return;
+	if (!m_text_ctrl && !m_combo_box) return;
 	switch (evt.GetId()) {
 	case mxID_POPUPS_EDIT_AS_TEXT:
-		mxLongTextEditor(m_parent,m_caption,m_text_ctrl);
+		if (m_text_ctrl) mxLongTextEditor(m_parent,m_caption,m_text_ctrl);
+		else             mxLongTextEditor(m_parent,m_caption,m_combo_box);
 		return;
 	case mxID_POPUPS_EDIT_AS_LIST:
-		mxEnumerationEditor(m_parent,m_caption,m_text_ctrl,m_comma_split);
+		if (m_text_ctrl) mxEnumerationEditor(m_parent,m_caption,m_text_ctrl,m_comma_split);
+		else             mxEnumerationEditor(m_parent,m_caption,m_text_ctrl,m_combo_box);
 		return;
 	case mxID_POPUPS_INSERT_FILE:
-		mxThreeDotsUtils::ReplaceSelectionWithFile(m_parent,m_text_ctrl,m_base_path); 
+		if (m_text_ctrl) mxThreeDotsUtils::ReplaceSelectionWithFile(m_parent,m_text_ctrl,m_base_path); 
+		else             mxThreeDotsUtils::ReplaceSelectionWithFile(m_parent,m_combo_box,m_base_path); 
 		return;
 	case mxID_POPUPS_INSERT_DIR:
-		mxThreeDotsUtils::ReplaceSelectionWithDirectory(m_parent,m_text_ctrl,m_base_path); 
+		if (m_text_ctrl) mxThreeDotsUtils::ReplaceSelectionWithDirectory(m_parent,m_text_ctrl,m_base_path); 
+		else             mxThreeDotsUtils::ReplaceSelectionWithDirectory(m_parent,m_combo_box,m_base_path); 
 		return;
 	case mxID_POPUPS_INSERT_MINGW_DIR:
 		ReplaceSelectionWith("${MINGW_DIR}");

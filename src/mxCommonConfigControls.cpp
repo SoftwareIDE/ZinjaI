@@ -182,15 +182,23 @@ mxDialog::MainSizer::InnerSizer &mxDialog::MainSizer::InnerSizer::InnerText::End
 	return *m_sizer;
 }
 
+template<class TSizer>
+void mxDialog::MainSizer::BaseCombo<TSizer>::FixValueAndSelection() {
+	if (m_selection == -2) return;              // m_value already has the appropiate value
+	else if (m_items.GetCount()==0)              { m_value = ""; m_selection = -1; }
+	else if (m_selection==-1)                      m_value = m_items[m_selection=0];
+	else if (m_selection<int(m_items.GetCount()))  m_value = m_items[m_selection];
+	else if (m_selection>=int(m_items.GetCount())) m_value = m_items[m_selection=m_items.GetCount()-1];
+}
+
 mxDialog::MainSizer &mxDialog::MainSizer::MainCombo::EndCombo(wxComboBox *&combo_box) {
 	wxWindow *parent = m_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_sizer;
 	wxBoxSizer *innter_sizer = s_last_sizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText *static_text = new wxStaticText(parent, wxID_ANY, m_label+_T(": "), wxDefaultPosition, wxDefaultSize, 0);
-	if (m_selection<0) m_selection=0; 
-	else if (m_selection>=int(m_items.GetCount())) m_selection=m_items.GetCount()-1;
-	combo_box = new wxComboBox(parent, m_id, m_items.GetCount()?m_items[m_selection]:"", 
-								wxDefaultPosition, wxDefaultSize, m_items, m_editable?0:wxCB_READONLY);
-	if (m_items.GetCount()) combo_box->SetSelection(m_selection);
+	FixValueAndSelection();
+	combo_box = new wxComboBox(parent, m_id, m_value, wxDefaultPosition, 
+							   wxDefaultSize, m_items, m_editable?0:wxCB_READONLY);
+	if (m_selection>=0) combo_box->SetSelection(m_selection);
 	innter_sizer->Add(static_text, sizers->Center);
 	innter_sizer->Add(combo_box, sizers->Exp1);
 	sizer->Add(innter_sizer, sizers->BA5_Exp0);
@@ -225,11 +233,10 @@ mxDialog::MainSizer::InnerSizer &mxDialog::MainSizer::InnerSizer::InnerCombo::En
 	wxWindow *parent = m_sizer->m_outher_sizer->m_parent; wxBoxSizer *sizer = m_sizer->m_inner_sizer;
 	wxStaticText *static_text = m_label.IsEmpty() ? nullptr : new wxStaticText(parent,wxID_ANY,m_label+": ");
 	if (static_text) sizer->Add(static_text,sizers->Center);
-	if (m_selection<0) m_selection=0; 
-	else if (m_selection>=int(m_items.GetCount())) m_selection=m_items.GetCount()-1;
-	combo_box = new wxComboBox(parent, m_id, m_items.GetCount()?m_items[m_selection]:"",
+	FixValueAndSelection();
+	combo_box = new wxComboBox(parent, m_id, m_value,
 								wxDefaultPosition, wxDefaultSize, m_items, m_editable?0:wxCB_READONLY);
-	if (m_items.GetCount()) combo_box->SetSelection(m_selection);
+	if (m_selection>=0) combo_box->SetSelection(m_selection);
 	combo_box->SetMinSize(wxSize(50,-1));
 	sizer->Add(combo_box,sizers->Exp1);
 	RegisterInDisablers(static_text, combo_box);

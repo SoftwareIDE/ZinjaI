@@ -40,6 +40,13 @@ wxString SimpleTemplates::GetNameFromFile (wxString file_name) {
 	return "";
 }
 
+wxString SimpleTemplates::GetArgsFromFile (wxString file_name) {
+	for(int i=0; i<m_templates.GetSize(); ++i)
+		if (m_templates[i].file_name == file_name) 
+			return m_templates[i].options;
+	return "";
+}
+
 void SimpleTemplates::GetFilesList (wxArrayString &list, bool c, bool cpp) {
 	for(int i=0; i<m_templates.GetSize(); ++i)
 		if ( m_templates[i].cpp?cpp:c ) 
