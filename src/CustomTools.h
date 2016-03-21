@@ -29,6 +29,7 @@ class mxCustomToolProcess:public wxProcess {
 	mxOutputView *output_view;
 public:
 	mxCustomToolProcess(const OneCustomTool &_tool);
+	~mxCustomToolProcess();
 	void OnTerminate(int pid, int status);
 	void SetOutputView(mxOutputView *_output_view);
 };

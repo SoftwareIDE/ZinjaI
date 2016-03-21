@@ -27,7 +27,7 @@ class mxGdbAsmPanel : public wxPanel, public myDIGlobalEventHandler {
 		bool operator<(const AddressRange &o) const { return m_to<o.m_from; }
 		bool Contains(addr_t ad) const { return ad>=m_from && ad<=m_to; }
 	};
-	int m_marker_handle=-1;
+	int m_marker_handle;
 	mxStyledOutput *m_code;
 	wxCheckBox *m_asm_step_mode;
 	AddressRange m_current_range;

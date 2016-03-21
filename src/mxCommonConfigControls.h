@@ -24,6 +24,8 @@ class widgetBinder;
 
 /**
 * @brief Funciones de utilería para colocar controles en los cuadros de configuracion
+*
+* http://cucarachasracing.blogspot.com.ar/2016/03/describiendo-los-cuadros-de-dialogo-de.html
 **/
 class mxDialog : public wxDialog {
 protected:
@@ -31,6 +33,9 @@ protected:
 	void OnCloseHide(wxCloseEvent &evt) { EndModal(0); Hide(); }
 	wxString GetCaption() { return GetTitle(); }
 public:
+	
+	// varias funciones deprecadas, que eliminaré cuando termine de reemplazar 
+	// todos sus usos por las nuevas interfases que agrega esta clase
 	static wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value=false, wxWindowID id = wxID_ANY,bool margin=false);
 	static wxTextCtrl *AddTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", int id=wxID_ANY);
 	static wxTextCtrl *AddShortTextCtrl (wxBoxSizer *sizer, wxWindow *panel, wxString text, wxString value="", bool margin=false, wxWindowID id=wxID_ANY);

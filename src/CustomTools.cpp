@@ -228,3 +228,7 @@ int CustomToolsPack::GetFreeSpot ( ) {
 	return -1;
 }
 
+mxCustomToolProcess::~mxCustomToolProcess ( ) {
+	DEBUG_INFO("mxCustomToolProcess::~mxCustomToolProcess");
+}
+

@@ -5065,7 +5065,7 @@ void mxMainWindow::OnFileSetAsMaster (wxCommandEvent & event) {
 }
 
 /**
-* @param action En cualquier caso se hacer cargo de esta accion, o la ejecuta
+* @param action En cualquier caso se hace cargo de esta accion, o la ejecuta
 *               o se la pasa al proceso de compilacion
 **/
 void mxMainWindow::CompileSource (bool force_compile, GenericAction *action) {

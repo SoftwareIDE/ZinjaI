@@ -120,9 +120,9 @@ void mxOutputView::Launched(wxProcess *_process, int _pid) {
 }
 
 void mxOutputView::OnProcessTerminate(wxProcessEvent &evt) {
+	wxProcess *ptr = process;
 	OnProcessTerminateCommon(evt.GetExitCode());
-	delete process;
-	process=nullptr;
+	delete ptr;
 }
 
 void mxOutputView::OnProcessTerminateCommon(int exit_code) {
@@ -152,6 +152,7 @@ void mxOutputView::OnProcessTerminateCommon(int exit_code) {
 			if (extra_mode==mxOV_EXTRA_NULL) Close();
 		}
 	}
+	process=nullptr;
 }
 
 void mxOutputView::OnTimer(wxTimerEvent &evt) {

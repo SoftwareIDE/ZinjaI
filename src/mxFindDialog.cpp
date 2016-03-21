@@ -61,7 +61,7 @@ mxFindDialog::mxFindDialog(wxWindow* parent, wxWindowID id, const wxPoint& pos ,
 	replace_button = new mxBitmapButton (this, mxID_FIND_REPLACE, bitmaps->buttons.replace, LANG(FIND_REPLACE,"Reemplazar"));
 	replace_all_button = new mxBitmapButton (this, mxID_FIND_REPLACE_ALL, bitmaps->buttons.replace, LANG(FIND_REPLACE_ALL,"Reemplazar Todo"));
 	next_button = new mxBitmapButton (this, mxID_FIND_FIND_NEXT, bitmaps->buttons.find, LANG(FIND_FIND_NEXT,"Buscar Siguiente"));
-	wxButton *prev_button = new mxBitmapButton (this, mxID_FIND_FIND_PREV, bitmaps->buttons.find, LANG(FIND_FIND_PREVIOUS,"Buscar Anterior"));
+	prev_button = new mxBitmapButton (this, mxID_FIND_FIND_PREV, bitmaps->buttons.find, LANG(FIND_FIND_PREVIOUS,"Buscar Anterior"));
 	wxButton *cancel_button = new mxBitmapButton (this, mxID_FIND_CANCEL, bitmaps->buttons.cancel, LANG(FIND_CANCEL,"Cancelar"));
 	wxBitmapButton *help_button = new wxBitmapButton (this,mxID_HELP_BUTTON,*(bitmaps->buttons.help));
 	
@@ -712,31 +712,13 @@ bool mxFindDialog::FindInProject(eFileType where) {
 
 void mxFindDialog::OnComboScope(wxCommandEvent &event) {
 	int scope = combo_scope->GetSelection();
-	if (scope>2) {
-//		check_case->Enable(false);
-		check_regexp->Enable(false);
-		check_start->Enable(false);
-//		check_word->Enable(false);
-		check_nocomments->Enable(false);
-		replace_button->Enable(false);
-		replace_all_button->Enable(false);
-	} else if (scope==2) {
-//		check_case->Enable(true);
-		check_regexp->Enable(true);
-		check_start->Enable(true);
-//		check_word->Enable(true);
-		check_nocomments->Enable(true);
-		replace_button->Enable(false);
-		replace_all_button->Enable(false);
-	} else {
-//		check_case->Enable(true);
-		check_regexp->Enable(true);
-		check_start->Enable(true);
-//		check_word->Enable(true);
-		check_nocomments->Enable(true);
-		replace_button->Enable(true);
-		replace_all_button->Enable(true);
-	}
+	check_regexp->Enable(scope<=2);
+	check_start->Enable(scope<=2);
+	check_nocomments->Enable(scope<=2);
+	next_button->Enable(scope<=2||project);
+	prev_button->Enable(scope<=2||project);
+	replace_button->Enable(scope<2);
+	replace_all_button->Enable(scope<2);
 }
 
 void mxFindDialog::OnHelpButton(wxCommandEvent &event) {

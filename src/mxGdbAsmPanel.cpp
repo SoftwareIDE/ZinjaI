@@ -12,7 +12,7 @@ END_EVENT_TABLE()
 	
 static bool dissasembly_flavor_setted = false;
 
-mxGdbAsmPanel::mxGdbAsmPanel (wxWindow * parent) : wxPanel(parent) {
+mxGdbAsmPanel::mxGdbAsmPanel (wxWindow * parent) : wxPanel(parent), m_marker_handle(-1) {
 #ifdef __WIN32__
 	SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
 #endif
