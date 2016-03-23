@@ -3,9 +3,9 @@
 
 #include <wx/dialog.h>
 #include "widgetDisabler.h"
+#include "mxCommonConfigControls.h"
 
 #ifndef __WIN32__
-#include "mxCommonConfigControls.h"
 struct LinuxTerminalInfo {
 	wxString name; ///< nombre para mostrar en el cuadro de preferencias
 	wxString test_command; ///< comando para probar si existe (usualmente ejecutable+" --version")

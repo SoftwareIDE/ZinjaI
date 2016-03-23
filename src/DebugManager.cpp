@@ -39,6 +39,7 @@ DebugManager *debug = nullptr;
 DebuggerTalkLogger* DebuggerTalkLogger::the_logger = nullptr;
 
 DebugManager::DebugManager() {
+	backtrace_rows_count = 0;
 	on_pause_action = nullptr;
 	signal_handlers_state=nullptr;
 	backtrace_shows_args=true;
@@ -732,8 +733,8 @@ bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
 	static wxString sep="/",wrong_sep="\\";
 #endif
 	
-	int last_stack_depth = stack.depth>BACKTRACE_SIZE?BACKTRACE_SIZE:stack.depth; 
-	current_stack.depth = stack.depth;
+	int last_stack_depth = backtrace_rows_count;
+	backtrace_rows_count = stack.depth>BACKTRACE_SIZE?BACKTRACE_SIZE:stack.depth; 
 	
 	main_window->backtrace_ctrl->BeginBatch();
 	const wxChar * chfr = stack.frames.c_str();
@@ -741,7 +742,7 @@ bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
 	int i = stack.frames.Find("stack=");
 	if (i==wxNOT_FOUND) {
 		current_frame_id=-1;
-		for (int c=0;c<last_stack_depth;c++) {
+		for (int c=0;c<stack.depth;c++) {
 			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FILE,LANG(BACKTRACE_NO_INFO,"<<Imposible determinar ubicacion>>"));
 			main_window->backtrace_ctrl->SetCellValue(c,BG_COL_FUNCTION,LANG(BACKTRACE_NO_INFO,"<<Imposible determinar ubicacion>>"));
 		}
@@ -799,7 +800,7 @@ bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
 		//cerr<<"CHAG="<<endl<<chag<<endl<<endl;
 			i=args_list.Find("stack-args=");
 			if (i==wxNOT_FOUND) {
-				for (int c=0;c<last_stack_depth;c++)
+				for (int c=0;c<stack.depth;c++)
 					main_window->backtrace_ctrl->SetCellValue(c,BG_COL_ARGS,LANG(BACKTRACE_NO_ARGUMENTS,"<<Imposible determinar argumentos>>"));
 				main_window->backtrace_ctrl->EndBatch();
 			} else {
@@ -875,7 +876,7 @@ bool DebugManager::UpdateBacktrace(const BTInfo &stack, bool is_current) {
 	}
 	
 	// "limpiar" los renglones que sobran
-	for (int c=current_stack.depth; c<last_stack_depth; c++) {
+	for (int c=stack.depth; c<last_stack_depth; c++) {
 		for (int i=0;i<BG_COLS_COUNT;i++)
 			main_window->backtrace_ctrl->SetCellValue(c,i,"");
 	}

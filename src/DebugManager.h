@@ -206,6 +206,7 @@ public:
 private:
 	bool backtrace_shows_args; ///< determine wheter backtrace table should show an extra column with arguments (with values) for each function in the stack
 	bool backtrace_is_current; ///< determine wheter the currently shown backtrace is the actual current one in gdb, or some fake one restored from history
+	int backtrace_rows_count; ///< how many lines have we filled in the backtrace's grid
 	BTInfo current_stack, prev_stack;
 	SingleList<myBTEventHandler*> backtrace_consumers;
 	bool UpdateBacktrace(const BTInfo &stack, bool is_current);

@@ -10,6 +10,8 @@
 	<LI>New: Durante la depuración se puede observar el código objeto (menu Depuración->Más...->Mostrar desensamblado...) y avanzar paso a paso por instrucciones de máquina.</LI>
 	<LI>Imp: Se agregó una opción en el diálogo de opciones de compilación de proyecto para que el compilador reporte los warnings como errores.</LI>
 	<LI>Imp: Se agregó una opción para activar las link-time optimizations (LTO) en el diálogo de opciones de compilación de un proyecto.</LI>
+	<LI>Imp: Si al ejecutar paso a paso la evaluación de alguna de las inspecciones genera un segfault se informa al usuario con un mensaje ad-hoc, ya que el backtrace puede quedar desactualizado o corrompido.</LI>
+	<LI>Fix: Corregido un error por el cual el trazado inverso no limpiaba correctamente las filas no utilizadas al reducirse el número de frames en una actualización.</LI>
 	<LI>Fix: Se corrigió el comportamiento del botón Cancelar del cuadro de preferencias (no todas las preferencias se reestablecían a sus valores anteriores).</LI>
 	<LI>Fix: Se corrigió la aplicación del nivel de advertencias de la configuración de un proyecto al comando generado para compilar sus fuentes (la opción "Todas" no siempre se aplicaba correctamente).</LI>
 

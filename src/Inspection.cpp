@@ -39,7 +39,8 @@ void DebuggerInspection::UpdateAllVO(const wxString &voname) {
 	// consulta cuales vo cambiaron
 	debug->SetFullOutput(false);
 	wxString s = debug->SendCommand("-var-update --all-values ",voname);
-	for(unsigned int i=6,l=s.Len();i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
+	if (!s.StartsWith("^done")) there_was_an_error_evaluating_an_inspecction=true;
+	else for(unsigned int i=6,l=s.Len();i<l-4;i++) { // empieza en 6 porque primero dice algo como "^done,...."
 		if (s[i]=='f' && s[i+1]=='r' && s[i+2]=='a' && s[i+3]=='m' && s[i+4]=='e' && s[i+5]=='=') { // hubo un problema al evaluar una inspección que requería código
 			// la salida de gdb sera algo como: 
 			//		^done,changelist=[reason="signal-received",signal-name="SIGTRAP",signal-meaning= // indica que revento
@@ -116,7 +117,8 @@ void DebuggerInspection::ErrorOnEvaluation() {
 								"Puede deberse a que la evaluación requiera la ejecución de código (por\n"
 								"ejemplo cuando involucra la sobrecarga de un operador) y esta ejecución\n"
 								"se haya interrumpido por un error o por una señal. En ese caso, el stack\n"
-								"puede haber cambiado (ver trazado inverso)."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+								"puede haber cambiado (ver trazado inverso).\n\n"
+								"Si el problema persiste, limpie la tabla de inspecciones y reinicie la\ndepuración."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
 	debug->UpdateBacktrace(false);
 }
 
