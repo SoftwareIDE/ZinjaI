@@ -10,6 +10,14 @@
 #include "Cpp11.h"
 #include "ids.h"
 
+#ifdef __APPLE__
+// old gcc versions are giving me errors with default arguments in the base class
+// remove all #ifdef __APPLE__ code and this macro-wrapper when updating the compiler
+#	define _if_not_mac_(x)
+#else
+#	define _if_not_mac_(x) x
+#endif
+
 class wxCheckBox;
 class wxSizer;
 class wxTextCtrl;
@@ -117,7 +125,11 @@ private:
 			int m_id;
 			widgetBinder *m_binder;
 			void *m_bind_value;
-			void RegisterInDisablers(wxControl *ctrl1, wxControl *ctrl2=nullptr, wxControl *ctrl3=nullptr);
+			void RegisterInDisablers(wxControl *ctrl1, wxControl *ctrl2 _if_not_mac_(=nullptr), wxControl *ctrl3 _if_not_mac_(=nullptr));
+#ifdef __APPLE__
+			void RegisterInDisablers(wxControl *ctrl1, wxControl *ctrl2) { RegisterInDisablers(ctrl1,ctrl2,nullptr); }
+			void RegisterInDisablers(wxControl *ctrl1) { RegisterInDisablers(ctrl1,nullptr,nullptr); }
+#endif
 			template<typename T>
 			void SetBind(widgetBinder &binder, T &value) { m_binder = &binder; m_bind_value = &value; }
 			template<typename wxCtrl_t, typename value_t> void DoBind(wxCtrl_t *ctrl);
@@ -147,11 +159,15 @@ private:
 			BaseCombo &Add(wxString item) { m_items.Add(item); return *this; }
 			BaseCombo &AddIf(bool condition, wxString item) { if (condition) m_items.Add(item); return *this; }
 			BaseCombo &Select(int index) { m_selection = index; return *this; }
-			BaseCombo &Select(wxString item, int default_idx=-1) { m_selection = m_items.Index(item); if (m_selection==wxNOT_FOUND) m_selection=default_idx; return *this; }
-			BaseCombo &Value(wxString value) { m_selection = -2; m_value = value; return *this; }
 			BaseCombo &Bind(widgetBinder &binder, int &index) { m_bind_by_pos=true; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,index); return Select(index); }
-			BaseCombo &Bind(widgetBinder &binder, wxString &item, int default_idx=-1) { m_bind_by_pos=false; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,item); return Select(item,default_idx); }
-			BaseCombo &Editable(bool editable=true) { m_editable = editable; return *this; }
+			BaseCombo &Select(wxString item, int default_idx _if_not_mac_(=-1)) { m_selection = m_items.Index(item); if (m_selection==wxNOT_FOUND) m_selection=default_idx; return *this; }
+			BaseCombo &Bind(widgetBinder &binder, wxString &item, int default_idx _if_not_mac_(=-1)) { m_bind_by_pos=false; BaseControl<TSizer,BaseCombo<TSizer> >::SetBind(binder,item); return Select(item,default_idx); }
+#ifdef __APPLE__
+			BaseCombo &Select(wxString item) { return Select(item,-1); }
+			BaseCombo &Bind(widgetBinder &binder, wxString &item) { return Bind(binder,item,-1); }
+#endif
+			BaseCombo &Value(wxString value) { m_selection = -2; m_value = value; return *this; }
+			BaseCombo &Editable() { m_editable = true; return *this; }
 			virtual TSizer &EndCombo(wxComboBox *&combo_box) = 0;
 			TSizer &EndCombo() { wxComboBox *dummy; return EndCombo(dummy); }
 		};
@@ -166,14 +182,17 @@ private:
 			BaseText(TSizer *sizer, wxString label) 
 				: BaseControl<TSizer,BaseText<TSizer> >(sizer,label), 
 				  m_button_id(mxID_NULL), m_is_numeric(false), m_one_line(false), m_multiline(false), m_readonly(false) {}
-			BaseText &Button(int id, wxString label="...") { m_button_id = id; m_button_text = label; return *this; }
+			BaseText &Button(int id, wxString label _if_not_mac_(="...")) { m_button_id = id; m_button_text = label; return *this; }
+#ifdef __APPLE__
+			BaseText &Button(int id) { return Button(id,"..."); }
+#endif
 			BaseText &Value(wxString value) { m_value = value; return *this; }
 			BaseText &Value(int value) { m_is_numeric = m_one_line = true; m_value = wxString()<<value; return *this; }
 			BaseText &Bind(widgetBinder &binder, wxString &value) { BaseControl<TSizer,BaseText<TSizer> >::SetBind(binder,value); return Value(value); }
 			BaseText &Bind(widgetBinder &binder, int &value) { BaseControl<TSizer,BaseText<TSizer> >::SetBind(binder,value); return Value(value); }
-			BaseText &Short(bool value_is_short=true) { m_one_line = value_is_short; return *this; }
-			BaseText &ReadOnly(bool readonly=true) { m_readonly = readonly; return *this; }
-			BaseText &MultiLine(bool multiline=true) { m_multiline = multiline; return *this; }
+			BaseText &Short() { m_one_line = true; return *this; }
+			BaseText &ReadOnly() { m_readonly = true; return *this; }
+			BaseText &MultiLine() { m_multiline = true; return *this; }
 			virtual TSizer &EndText(wxTextCtrl *&text_ctrl) = 0;
 			TSizer &EndText() { wxTextCtrl *dummy; return EndText(dummy); }
 		};
@@ -197,7 +216,7 @@ private:
 			bool m_center;
 		public:
 			BaseLabel(TSizer *sizer, wxString label) : BaseControl<TSizer,BaseLabel<TSizer> >(sizer,label), m_center(false) {}
-			BaseLabel &Center(bool center=true) { m_center = center; return *this; }
+			BaseLabel &Center() { m_center = true; return *this; }
 			virtual TSizer &EndLabel() = 0;
 		};
 		
@@ -208,7 +227,7 @@ private:
 		public:
 			BaseButton(TSizer *sizer, wxString label) 
 				: BaseControl<TSizer,BaseButton<TSizer> >(sizer,label), m_expand(false) {}
-			BaseButton &Expand(bool expand=true) { m_expand = expand; return *this; }
+			BaseButton &Expand() { m_expand = true; return *this; }
 			virtual TSizer &EndButton() = 0;
 		};
 		

@@ -325,7 +325,7 @@ wxNotebook *mxDialog::BaseNotebookAux::EndNotebook() {
 }
 
 mxDialog::MainSizer &mxDialog::MainSizer::MainNotebook::EndNotebook() {
-	BaseNotebook::EndNotebook();
+	BaseNotebook<MainNotebook>::EndNotebook();
 	m_sizer->m_sizer->Add(m_notebook,sizers->Exp1);
 	return *m_sizer;
 }
