@@ -492,6 +492,10 @@ void DebugManager::HowDoesItRuns(bool raise_zinjai_window) {
 		wxString thread_id = GetValueFromAns(ans,"thread-id",true);
 		if (!thread_id.ToLong(&current_thread_id)) current_thread_id=-1;
 		
+#ifndef __WIN32__
+		if (child_pid==0) FindOutChildPid(); // see Pause
+#endif
+		
 #define _aux_continue SendCommand(_T("-exec-continue")); waiting=true; wxYield(); waiting=false; continue;
 #define _aux_repeat_step SendCommand(stepping_in?"-exec-step":"-exec-next"); waiting=true; wxYield(); waiting=false; continue;
 		bool should_continue=false; // cuando se pauso solo para colocar un brekapoint y seguir, esto indica que siga sin analizar la salida... puede ser how diga signal-received (lo normal) o que se haya pausado justo por un bp de los que solo actualizan la tabla de inspecciones
@@ -933,7 +937,13 @@ void DebugManager::Pause() {
 	}
 	if (FindOutChildPid()) winDebugBreak(child_pid);
 #else
-	process->Kill(pid,wxSIGINT);
+	// for some reason, since some system-level updated sending SIGINT to gdb started working weird...
+	// was working only for the first time in each debug session, but being ignored (or causing other
+	// random issues) in the following times (not always, I suspect on multi-threaded processes, such
+	// as a wx project)... that's why next times I use the debuged process'id (child_pid) instead of 
+	// the debugger's pid (pid)... but not the first time cause I need to talk with gdb once the 
+	// program has started in order to find out that child_pid (see FindOutChildPid())
+	process->Kill(child_pid!=0?child_pid:pid,wxSIGINT);
 #endif
 }
 

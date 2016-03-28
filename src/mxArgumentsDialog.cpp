@@ -40,14 +40,14 @@ mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent, const wxString &base_path
 	sizer.BeginLabel( LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion:") ).EndLabel();
 	sizer.BeginLine()
 		.Space(15)
-		.BeginCombo().Add(list_for_combo_args).Editable(true).Value(def_args).EndCombo(combo_args)
+		.BeginCombo().Add(list_for_combo_args).Editable().Value(def_args).EndCombo(combo_args)
 		.BeginButton("...").Id(mxID_ARGS_BUTTON).EndButton()
 		.EndLine();
 	
 	sizer.BeginLabel( LANG(COMPILECONF_WORKDIR,"Directorio de trabajo:") ).EndLabel();
 	sizer.BeginLine()
 		.Space(15)
-		.BeginCombo().Add(list_for_combo_work).Editable(true).Value(def_dir).EndCombo(combo_work)
+		.BeginCombo().Add(list_for_combo_work).Editable().Value(def_dir).EndCombo(combo_work)
 		.BeginButton("...").Id(mxID_WORKING_FOLDER).EndButton()
 		.EndLine();
 		

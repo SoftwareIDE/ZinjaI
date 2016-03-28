@@ -37,13 +37,15 @@ mxBreakOptions::mxBreakOptions(BreakPointInfo *bpi)
 	sizer.BeginLine()
 		.BeginText( LANG(BREAKOPTS_IGNORE_TIMES_PRE,"Ignorar") )
 			.Value(m_bpi->ignore_count).EndText(ignore_text)
+		.Space(10)
 		.BeginLabel( LANG(BREAKOPTS_IGNORE_TIMES_POST," veces") ).EndLabel()
 		.EndLine();
 	if (debug->CanTalkToGDB() && m_bpi->IsInGDB()) {
 		sizer.BeginLine()
 			.BeginText( LANG(BREAKOPTS_HIT_TIMES_PRE,"Se ha alcanzado") )
-			.Value(m_bpi->ignore_count).ReadOnly().EndText(count_text)
-		.BeginLabel( LANG(BREAKOPTS_HIT_TIMES_POST,"veces") ).EndLabel()
+				.Value(debug->GetBreakHitCount(bpi->gdb_id)).ReadOnly().EndText(count_text)
+			.Space(10)
+			.BeginLabel( LANG(BREAKOPTS_HIT_TIMES_POST,"veces") ).EndLabel()
 			.EndLine();
 	} else {
 		count_text = nullptr;
