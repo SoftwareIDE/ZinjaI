@@ -282,7 +282,6 @@ public:
 	void OnToolsWxfbInheritClass(wxCommandEvent &event);
 	void OnToolsWxfbHelp(wxCommandEvent &event);
 	void OnToolsWxfbHelpWx(wxCommandEvent &event);
-	bool OnToolsGprofGcovSetAux(wxCommandEvent &event, wxString tool, wxString arg); ///< OnToolsGprofSet and OnToolsGcovSet are almost identical, so they are wrapper to this single method
 	void OnToolsGprofSet(wxCommandEvent &event);
 	wxString OnToolsGprofShowListAux(bool include_command=false); ///< OnToolsGprofShow and OnToolsGprofList have same common initial code here
 	void OnToolsGprofShow(wxCommandEvent &event);

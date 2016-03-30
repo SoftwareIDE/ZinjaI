@@ -1998,7 +1998,7 @@ void ProjectManager::Clean() {
 	LocalListIterator<project_file_item*> item(&files_sources);
 	while(item.IsValid()) {
 		wxString bin_name = item->GetBinName(temp_folder);
-		wxString gcov_file=DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".gcno");
+		wxString gcov_file = DIR_PLUS_FILE(temp_folder,wxFileName(item->name).GetName()+".gcno");
 		if (wxFileName::FileExists(bin_name)) wxRemoveFile(bin_name);
 		if (wxFileName::FileExists(gcov_file)) wxRemoveFile(gcov_file);
 		item.Next();

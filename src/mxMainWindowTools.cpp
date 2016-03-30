@@ -47,6 +47,7 @@
 #include "mxStyledOutput.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
+#include "mxCompilerArgEnabler.h"
 using namespace std;
 
 /// @brief Muestra el cuadro de configuración de cppcheck (mxCppCheckConfigDialog)
@@ -532,39 +533,22 @@ void mxMainWindow::OnToolsGprofHelp (wxCommandEvent &event) {
 	mxHelpWindow::ShowHelp("gprof.html");
 }
 
-bool mxMainWindow::OnToolsGprofGcovSetAux(wxCommandEvent &event,wxString tool, wxString arg) {
-	if (project) {
-		bool present = mxUT::IsArgumentPresent(project->active_configuration->compiling_extra,arg);
-		mxUT::SetArgument(project->active_configuration->compiling_extra,arg,!present);
-		mxUT::SetArgument(project->active_configuration->linking_extra,arg,!present);
-		if (mxMD_YES==mxMessageDialog(this,wxString(!present?
-			(LANG1(MAINW_GPROF_GPROF_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.",tool)):
-			(LANG1(MAINW_GPROF_GPROF_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.",tool))
-			)+"\n"+
-			LANG(MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION,"Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n"
-			"¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo)."),
-			tool,(mxMD_YES_NO|mxMD_INFO)).ShowModal()) {
-				project->Clean();
-				OnRunCompile(event);
-			}
-		return !present;
-	} else IF_THERE_IS_SOURCE {
-		mxSource *src=CURRENT_SOURCE; 
-		wxString comp_opts=src->GetCompilerOptions(false);
-		bool present = mxUT::IsArgumentPresent(comp_opts,arg);
-		mxUT::SetArgument(comp_opts,arg,!present);
-		src->SetCompilerOptions(comp_opts);
-		mxMessageDialog(this,wxString(!present?
-			(LANG1(MAINW_GPROF_GPROF_ENABLED,"Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.",tool)):
-			(LANG1(MAINW_GPROF_GPROF_DISABLED,"Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.",tool))
-			),tool,(mxMD_OK|mxMD_INFO)).ShowModal();
-		OnRunClean(event);
-		return !present;
-	} else
-		return false;
+static bool auxOnToolsGprofGcovSet(wxString tool, wxString arg) {
+	if (!project && main_window->notebook_sources->GetPageCount()==0) return false;
+	mxCompilerArgEnabler dlg(main_window,tool,
+							 LANG1(COMP_ARG_GENERIC_INFO,""
+								   "Para poder generar la información de profiling que\n"
+								   "analiza <{1}>, se deben utilizar argumentos específicos\n"
+								   "al compilar, luego recompilar todo el proyecto/programa\n"
+								   "para que estos cambios tengan efecto (si no lo hace ahora,\n"
+								   "deberá luego utilizar el comando \"Limpiar\" del menú \n"
+								   "\"Ejecución\") y finalmente ejecutar el programa.",tool),
+							 arg,arg);
+	return dlg.ShowModal() && dlg.GetUserSelection();
 }
+
 void mxMainWindow::OnToolsGprofSet (wxCommandEvent &event) {
-	OnToolsGprofGcovSetAux(event,"gprof","-pg");
+	auxOnToolsGprofGcovSet("GProf","-pg");
 }
 
 void mxMainWindow::OnToolsGprofDot (wxCommandEvent &event) {
@@ -1038,7 +1022,7 @@ void mxMainWindow::OnToolsExportMakefile (wxCommandEvent &event) {
 
 
 void mxMainWindow::OnToolsGcovSet (wxCommandEvent & event) {
-	if (OnToolsGprofGcovSetAux(event,"gcov","--coverage"))
+	if (auxOnToolsGprofGcovSet("GCov","--coverage"))
 		ShowGCovSideBar();
 }
 
