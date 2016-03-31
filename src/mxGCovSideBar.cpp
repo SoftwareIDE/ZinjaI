@@ -84,7 +84,7 @@ void mxGCovSideBar::Refresh (mxSource *src) {
 	}
 }
 
-void mxGCovSideBar::LoadData () {
+void mxGCovSideBar::LoadData (bool force) {
 	static bool reloading=false;
 	if (hits) delete [] hits; hits=nullptr;
 	mxSource *src=main_window->GetCurrentSource();
@@ -92,11 +92,13 @@ void mxGCovSideBar::LoadData () {
 	
 	if (reloading) return; reloading=true;
 	
-	mxOSD osd(main_window,"Generando y leyendo información de cobertura (gcov)");
+	mxOSD *osd = nullptr;
 	
-	wxFileName binary= src->GetBinaryFileName();
-	wxFileName fname= binary.GetFullPath().BeforeLast('.')+"."+src->GetFileName(true).AfterLast('.')+".gcov";
-	if (binary.FileExists() && (!fname.FileExists() || fname.GetModificationTime()<binary.GetModificationTime())) { 
+	wxFileName binary = src->GetBinaryFileName();
+	wxFileName gcda = binary.GetFullPath().BeforeLast('.')+".gcda";
+	wxFileName fname = binary.GetFullPath().BeforeLast('.')+"."+src->GetFileName(true).AfterLast('.')+".gcov";
+	if (force || (gcda.FileExists() && (!fname.FileExists() || fname.GetModificationTime()<=gcda.GetModificationTime()))) { 
+		osd = new mxOSD(main_window,"Generando y leyendo información de cobertura (gcov)");
 		wxString command="gcov "; command<<mxUT::Quotize(binary.GetName());
 		mxUT::Execute(binary.GetPath(),command,wxEXEC_SYNC);
 	}
@@ -121,6 +123,7 @@ void mxGCovSideBar::LoadData () {
 		}
 	}
 	wxWindow::Refresh();
+	if (osd) osd->Destroy();
 	src->SetFocus();
 	reloading=false;
 }
@@ -132,6 +135,6 @@ void mxGCovSideBar::OnPopup (wxMouseEvent & event) {
 }
 
 void mxGCovSideBar::OnRefresh (wxCommandEvent & event) {
-	LoadData();
+	LoadData(true);
 }
 

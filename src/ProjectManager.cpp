@@ -1500,7 +1500,6 @@ long int ProjectManager::CompileFile(compile_and_run_struct_single *compile_and_
 //	item->force_recompile=false;
 	
 	// preparar la linea de comando 
-	
 	wxString command = wxString(item->IsCppOrJustC()?current_toolchain.cpp_compiler:current_toolchain.c_compiler)+
 #ifndef __WIN32__
 		(item->lib?" -fPIC ":" ")+

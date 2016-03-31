@@ -37,13 +37,13 @@ mxCompilerArgEnabler::mxCompilerArgEnabler(wxWindow *parent, wxString title,
 }
 
 void mxCompilerArgEnabler::OnButtonOk (wxCommandEvent & evt) {
-	bool do_set = m_enable_arg->GetValue();
+	bool arg_enable = m_enable_arg->GetValue();
 	wxCommandEvent aux_event;
 	if (project) {
 		if (!m_comp_arg.IsEmpty())
-			mxUT::SetArgument(project->active_configuration->compiling_extra,m_comp_arg,do_set);
+			mxUT::SetArgument(project->active_configuration->compiling_extra,m_comp_arg,arg_enable);
 		if (!m_link_arg.IsEmpty())
-			mxUT::SetArgument(project->active_configuration->linking_extra,m_link_arg,do_set);
+			mxUT::SetArgument(project->active_configuration->linking_extra,m_link_arg,arg_enable);
 		if (!m_recompile || m_recompile->GetValue()) {
 			project->Clean();
 			main_window->OnRunCompile(aux_event);
@@ -52,9 +52,9 @@ void mxCompilerArgEnabler::OnButtonOk (wxCommandEvent & evt) {
 		mxSource *src = main_window->GetCurrentSource();
 		wxString src_comp_opts = src->GetCompilerOptions(false);
 		if (!m_comp_arg.IsEmpty())
-			mxUT::SetArgument(src_comp_opts,m_comp_arg,do_set);
+			mxUT::SetArgument(src_comp_opts,m_comp_arg,arg_enable);
 		if (!m_link_arg.IsEmpty() && m_link_arg!=m_comp_arg)
-			mxUT::SetArgument(src_comp_opts,m_link_arg,do_set);
+			mxUT::SetArgument(src_comp_opts,m_link_arg,arg_enable);
 		src->SetCompilerOptions(src_comp_opts);
 		if (!m_recompile || m_recompile->GetValue()) {
 			main_window->OnRunClean(aux_event);

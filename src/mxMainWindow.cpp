@@ -4514,7 +4514,7 @@ void mxMainWindow::ShowDiffSideBar(bool bar, bool map) {
 void mxMainWindow::ShowGCovSideBar() {
 	if (gcov_sidebar) return;
 	gcov_sidebar=new mxGCovSideBar(this);
-	aui_manager.AddPane(gcov_sidebar, wxAuiPaneInfo().Name("gcov_sidebar").Caption("gcov").Left().Row(3).Show());
+	aui_manager.AddPane(gcov_sidebar, wxAuiPaneInfo().Name("gcov_sidebar").Caption("gcov").Left().Row(10).Show());
 	aui_manager.Update();
 }
 

@@ -1103,7 +1103,8 @@ bool mxUT::IsArgumentPresent (const wxString &full, const wxString &arg) {
 
 void mxUT::SetArgument (wxString &full, const wxString &arg, bool add) {
 	if (add) {
-		full=mxUT::Quotize(arg)+" "+full;
+		if (!IsArgumentPresent(full,arg))
+			full = mxUT::Quotize(arg)+" "+full;
 	} else {
 		wxArrayString array;
 		Split(full,array,false,true);

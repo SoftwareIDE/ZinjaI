@@ -299,7 +299,7 @@ void MenusAndToolsConfig::LoadMenuData ( ) {
 			AddMenuItem(mnTOOLS, myMenuItem("",mxID_TOOLS_GPROF_HELP,LANG(MENUITEM_TOOLS_COMMON_HELP,"A&yuda...")).Description("Muestra ayuda acerca de como generar e interpretar la información de profiling").Icon("ayuda.png"));
 		EndSubMenu(mnTOOLS);
 		
-		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_GCOV,"&Test de Cobertura (experimental, gcov)")).Description("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente.").Icon("gcov.png").EnableIf(ecPROJECT_OR_SOURCE));
+		BeginSubMenu(mnTOOLS,myMenuItem("",wxID_ANY,LANG(MENUITEM_TOOLS_GCOV,"&Test de Cobertura (gcov)")).Description("Gcov permite contabilizar cuantas veces se ejecuta cada linea del código fuente.").Icon("gcov.png").EnableIf(ecPROJECT_OR_SOURCE));
 			AddMenuItem(mnTOOLS, myMenuItem("gcov_activate",mxID_TOOLS_GCOV_SET, LANG(MENUITEM_TOOLS_GCOV_ACTIVATE,"Habilitar/Deshabilitar")).Description("Añade/remueve los argumentos necesarios a la configuración de compilación y reconstruye el ejecutable.").Icon("gcov_set.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("gcov_show_bar",mxID_TOOLS_GCOV_SHOW, LANG(MENUITEM_TOOLS_GCOV_SHOW_BAR,"Mostrar barra de resultados")).Description("Muestra un panel con los conteos por linea en el margen izquierdo de la ventana.").Icon("gcov_show.png"));
 			AddMenuItem(mnTOOLS, myMenuItem("gcov_reset",mxID_TOOLS_GCOV_RESET, LANG(MENUITEM_TOOLS_GCOV_RESET,"Eliminar resultados")).Description("Elimina los archivos de resultados generados por el test de cobertura.").Icon("gcov_reset.png"));

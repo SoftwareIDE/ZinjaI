@@ -12,7 +12,7 @@ class mxGCovSideBar : public wxWindow {
 	mxSource *should_refresh;
 	mxSource *src_load;
 public:
-	void LoadData();
+	void LoadData(bool force=false);
 	mxGCovSideBar(wxWindow *parent);
 	void OnPaint(wxPaintEvent &event);
 	void OnPopup(wxMouseEvent &event);
