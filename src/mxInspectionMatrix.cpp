@@ -48,8 +48,7 @@ mxInspectionMatrix::mxInspectionMatrix(const wxString &expression, bool is_frame
 		}
 	}
 	
-	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
-	main_window->aui_manager.Update();
+	main_window->AttachPane(this,expression,wxGetMousePosition()-wxPoint(25,10),sz);
 	
 	grid->SetRowLabelSize(wxGRID_AUTOSIZE);
 	adapt->SetValue(true);

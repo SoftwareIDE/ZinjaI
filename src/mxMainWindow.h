@@ -336,8 +336,14 @@ public:
 	void OnHelpTip (wxCommandEvent &event);
 	void OnHelpUpdates (wxCommandEvent &event);
 
-	void OnClose (wxCloseEvent &event);
+
+private:
+	SingleList<wxWindow*> m_panes_to_destroy_on_close; // a wxaui pane content is not destroyed when the pane is closed... this will do it
+public:
+	void AttachPane(wxWindow *ctrl, wxString title, wxPoint position, wxSize size, bool handle_deletion=true);
 	void OnPaneClose (wxAuiManagerEvent &event);
+	
+	void OnClose (wxCloseEvent &event);
 	void OnNotebookRightClick(wxAuiNotebookEvent& event);
 	void OnNotebookPageClose(wxAuiNotebookEvent& event);
 	void OnNotebookPageChanged(wxAuiNotebookEvent& event);

@@ -17,6 +17,7 @@ enum DEBUG_INSPECTION_EXPRESSION_TYPE {
 	DIT_VARIABLE_OBJECT, ///< la expresion tienen un variable object asociado
 	DIT_PENDING, ///< la expresión creará un vo, pero su creación esta en cola para la próxima pausa
 	DIT_GHOST, ///< vo que no está en el mapa ni recibe actualizaciones, solo existe porque otras dependen de ella (num_children!=0, ver VOBreak)
+//	DIT_ABOUT_TO_BE_DELETED, ///< ya no debe ser procesada en la cola de eventos, porque está por ser efectivametne eliminada
 	DIT_ERROR ///< la expresión debía crear un vo, pero ocurrió un error al intentarlo
 };
 
@@ -108,17 +109,18 @@ struct DebuggerInspection {
 		CallLogger(const char *_method, DebuggerInspection *_di=__null_inspection__) : di(_di),method(_method) {
 			stringstream cerr;
 			cerr<<"DI("<<di<<")::"<<string((++lev)*2,' ')<<method<<"  in";
-			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
+			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<</*" vtype="<<di->value_type<<*/" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
 			cerr<<endl;
 			g_inspection_log_file.Write(cerr.str().c_str()); g_inspection_log_file.Flush();
 		}
-		~CallLogger() { 
-			stringstream cerr;
-			cerr<<"DI("<<di<<")::"<<string((lev--)*2,' ')<<method<<" out";
-			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
-			cerr<<endl;
-			g_inspection_log_file.Write(cerr.str().c_str()); g_inspection_log_file.Flush();
-		}
+		~CallLogger() { lev--; }
+//		~CallLogger() { 
+//			stringstream cerr;
+//			cerr<<"DI("<<di<<")::"<<string((lev--)*2,' ')<<method<<" out";
+//			if (di!=__null_inspection__) cerr<<": dtype="<<di->dit_type<<" vtype="<<di->value_type<<" expr="<<di->expression<<"  vo="<<di->variable_object<<" "<<(di->parent?"p":"")<<(di->helper?"h":"")<<(di->di_children?"c":"")<<(di->IsFrameless()?"f":"")<<(di->IsInScope()?"s":"");
+//			cerr<<endl;
+//			g_inspection_log_file.Write(cerr.str().c_str()); g_inspection_log_file.Flush();
+//		}
 	};
 #	define __debug_log_method__ CallLogger _call_logger_(__FUNCTION__,this)
 #	define __debug_log_static_method__ CallLogger _call_logger_(__FUNCTION__)
@@ -197,7 +199,7 @@ struct DebuggerInspection {
 				pa.dont_run_now=false;
 				pending_actions[dont_run_now_count++]=pa;
 			} else if (pa.action) {
-				if (debug->debugging||!pa.requires_debug_pause)
+				if ( (debug->debugging||!pa.requires_debug_pause) && pa.inspection->dit_type!=DIT_GHOST)
 					(pa.inspection->*pa.action)();
 			} else {
 				delete pa.inspection; // action=nullptr signfica que hay que eliminar el objeto
@@ -548,8 +550,9 @@ public:
 		// quitarla de la lista total de inspecciones a reestablecer al reiniciar la depuración
 		if (dit_type!=DIT_GHOST) all_inspections.Remove(all_inspections.Find(this));
 		// si quedan hijos que dependen de este, dejar como fantasma, sino hacerle el delete
-		if (dit_type==DIT_VARIABLE_OBJECT && di_children!=0) dit_type=DIT_GHOST;
-		else AddPendingAction(this,nullptr,false);
+		dit_type=DIT_GHOST; // marco como ghost en ambos casos para que no procese mas eventos en ProcessPendingActions
+		if (dit_type!=DIT_VARIABLE_OBJECT || di_children==0) 
+			AddPendingAction(this,nullptr,false);
 	}
 	
 	bool ModifyValue(const wxString &new_value) {

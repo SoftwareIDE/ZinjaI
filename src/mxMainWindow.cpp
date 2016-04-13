@@ -1386,9 +1386,9 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 		aui_manager.DetachPane(diff_sidebar); diff_sidebar->Destroy(); diff_sidebar=nullptr;
 	} else if (event.pane->name == "gcov_sidebar") {
 		aui_manager.DetachPane(gcov_sidebar); gcov_sidebar->Destroy(); gcov_sidebar=nullptr;
-	} else if (event.pane->name == "left_panels")
+	} else if (event.pane->name == "left_panels") {
 		_menu_item(mxID_VIEW_LEFT_PANELS)->Check(false);
-	else if (event.pane->name == "project_tree") {
+	} else if (event.pane->name == "project_tree") {
 		if (!config->Init.autohiding_panels) _menu_item(mxID_VIEW_PROJECT_TREE)->Check(false);
 	} else if (event.pane->name == "explorer_tree") {
 		if (!config->Init.autohiding_panels) _menu_item(mxID_VIEW_EXPLORER_TREE)->Check(false);
@@ -1407,6 +1407,13 @@ void mxMainWindow::OnPaneClose(wxAuiManagerEvent& event) {
 	else if (event.pane->name == "threadlist" && !config->Init.autohide_panels) debug->threadlist_visible=false;
 //	else if (event.pane->name == "backtrace") debug->backtrace_visible=false;
 	else if (event.pane->name == "beginner_panel") _menu_item(mxID_VIEW_BEGINNER_PANEL)->Check(false);
+	int iaux = m_panes_to_destroy_on_close.Find(event.pane->window);
+	if (iaux!=m_panes_to_destroy_on_close.NotFound()) {
+		DEBUG_INFO("Deleting pane "<<event.pane->name);
+		aui_manager.DetachPane(event.pane->window);
+		event.pane->window->Destroy();
+		m_panes_to_destroy_on_close.Remove(iaux);
+	}
 }
 
 
@@ -5013,8 +5020,7 @@ void mxMainWindow::OnDebugSetSignals (wxCommandEvent & event) {
 
 void mxMainWindow::OnDebugGdbCommand (wxCommandEvent & event) {
 	mxGdbCommandsPanel *gdb_cmd = new mxGdbCommandsPanel();
-	aui_manager.AddPane(gdb_cmd, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("gdb").Show());
-	aui_manager.Update();
+	AttachPane(gdb_cmd,"gdb",wxDefaultPosition,wxSize(300,100));
 	gdb_cmd->SetFocus();
 }
 
@@ -5135,9 +5141,7 @@ void mxMainWindow::OnDebugShowRegisters (wxCommandEvent & event) {
 }
 
 void mxMainWindow::OnDebugShowAsm (wxCommandEvent & event) {
-	mxGdbAsmPanel *asm_panel = new mxGdbAsmPanel(this);
-	aui_manager.AddPane(asm_panel, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("ASM (gdb)").BestSize(400,300).Show());
-	aui_manager.Update();
+	AttachPane(new mxGdbAsmPanel(this),"ASM (gdb)",wxDefaultPosition,wxSize(400,300));
 }
 
 void mxMainWindow::OnToolsCodeGenerateFunctionDef (wxCommandEvent & event) {
@@ -5201,5 +5205,15 @@ void mxMainWindow::OnDebugAutoStep (wxCommandEvent & event) {
 
 void mxMainWindow::OnHelpFindCommand (wxCommandEvent & event) {
 	mxCommandFinder().ShowModal();
+}
+
+void mxMainWindow::AttachPane (wxWindow *ctrl, wxString title, wxPoint position, wxSize size, bool handle_deletion) {
+	wxAuiPaneInfo pane_info;
+	pane_info.Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(title).Show();
+	if (position!=wxDefaultPosition) pane_info.FloatingPosition(position);
+	if (size!=wxDefaultSize) pane_info.BestSize(size);
+	aui_manager.AddPane(ctrl,pane_info);
+	aui_manager.Update();
+	if (handle_deletion) m_panes_to_destroy_on_close.Add(ctrl);
 }
 

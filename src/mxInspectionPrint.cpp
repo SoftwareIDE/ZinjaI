@@ -36,9 +36,8 @@ mxInspectionPrint::mxInspectionPrint(wxString expression, bool is_frameless) : w
 			h=sqrt(T/a); if (h>400) h=400; w=h*a;
 			sz = wxSize(w*cs,h*cs+h0);
 		}
-	}	
-	main_window->aui_manager.AddPane(this,wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption(expression).Show().FloatingPosition(wxGetMousePosition()-wxPoint(25,10)).BestSize(sz));
-	main_window->aui_manager.Update();
+	}
+	main_window->AttachPane(this,expression,wxGetMousePosition()-wxPoint(25,10),sz);
 }
 
 void mxInspectionPrint::OnDICreated (DebuggerInspection * di) {

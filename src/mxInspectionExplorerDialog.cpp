@@ -4,13 +4,13 @@
 #include "mxMainWindow.h"
 #include "mxSizers.h"
 
-mxInspectionExplorerDialog::mxInspectionExplorerDialog (const wxString & expression, bool frameless) 
-	:wxDialog(main_window,wxID_ANY,expression,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
+mxInspectionExplorerDialog::mxInspectionExplorerDialog (const wxString & expression, bool frameless) : wxPanel(main_window,wxID_ANY) 
+{
 	wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 	exp = new mxInspectionExplorerWidget(this,expression,frameless);
 	sizer->Add(exp,sizers->Exp1);
 	SetSizer(sizer);
-	Show();
+	main_window->AttachPane(this,expression,wxDefaultPosition,wxSize(250,200));
 }
 
 void mxInspectionExplorerDialog::AddExpression (wxString expression, bool frameless) {
