@@ -37,6 +37,8 @@ public:
 	wxPanel *CreatePanelArgs(wxNotebook *notebook);
 	mxToolchainConfig(wxWindow *parent, const wxString &tc_name);
 	void OnButtonOk(wxCommandEvent &event);
+	void OnButtonCompilerBinPaths(wxCommandEvent &event);
+	void OnButtonCompilerBasePath(wxCommandEvent &event);
 	void OnButtonCancel(wxCommandEvent &event);
 	void OnButtonHelp(wxCommandEvent &event);
 	void OnComboChange(wxCommandEvent &event);

@@ -4160,8 +4160,9 @@ int mxSource::GetStatementStartPos(int pos, bool skip_coma, bool skip_white, boo
 						if (s==wxSTC_C_IDENTIFIER||s==wxSTC_C_GLOBALCLASS) { // para evitar if,while,for,lambdas, something else?
 							II_BACK(p_func_name,II_IS_KEYWORD_CHAR(p_func_name));
 							II_BACK(p_func_name,II_IS_NOTHING_4(p_func_name));
-							if (c!=','&&c!=':') // que no sea una lista de inicializadores en un constructor
+							if (c!=','&&c!=':'&&c!='{') // que no sea una lista de inicializadores en un constructor
 								break; // si era el par de llaves de una funcion, no seguir.... faltaría contemplar "namespace bla {...}"
+							// el '{' del if anterior está para cuando no era algo válido, por ejemplo, era un if mal escrito y por eso parecia un identificador
 						}
 					}
 				}

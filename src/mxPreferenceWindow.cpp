@@ -545,10 +545,10 @@ wxPanel *mxPreferenceWindow::CreateStylePanel (mxBookCtrl *notebook) {
 			return true;
 		}
 	};
-	wxArrayString fonts; mxFontEnumerator f(fonts); fonts.Sort(); int def_font=fonts.Index(config->Styles.font_name,false); if (def_font==wxNOT_FOUND) def_font=-1;
-	
+	wxArrayString fonts; mxFontEnumerator f(fonts); fonts.Sort(); 
+//	int def_font=fonts.Index(config->Styles.font_name,false); if (def_font==wxNOT_FOUND) def_font=-1;
 	sizer.BeginCombo( LANG(PREFERENCES_STYLE_FONT_NAME,"Fuente para el código") )
-		.Add(fonts).Bind(m_binder,def_font).Id(mxID_PREFERENCES_FONTNAME).EndCombo(styles_font_name);
+		.Add(fonts).Bind(m_binder,config->Styles.font_name,-1).Id(mxID_PREFERENCES_FONTNAME).EndCombo(styles_font_name);
 	
 	sizer.BeginLine()
 		.BeginText( LANG(PREFERENCES_STYLE_SCREEN_FONT_SIZE,"Tamaño de la fuente en pantalla") )

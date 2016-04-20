@@ -55,7 +55,7 @@ Ha ocurrido un error al iniciar la terminal para la ejecucion.\nCompruebe que el
 DEBUG_STATUS_INIT_ERROR
 Error al iniciar depuracion
 DEBUG_NO_SYMBOLS
-El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depurarcion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar).
+El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depuracion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar).
 DEBUG_ERROR_STATING_GDB
 Ha ocurrido un error al ejecutar el depurador.
 DEBUG_ERROR_STARTING_GDB_LINUX
@@ -605,7 +605,7 @@ Visualizar Resultados (grafo)...
 MENUITEM_TOOLS_GPROF_LIST
 Listar Resultados (texto)
 MENUITEM_TOOLS_GCOV
-&Test de Cobertura (experimental, gcov)
+&Test de Cobertura (gcov)
 MENUITEM_TOOLS_GCOV_ACTIVATE
 Habilitar/Deshabilitar
 MENUITEM_TOOLS_GCOV_SHOW_BAR
@@ -1265,7 +1265,7 @@ El binario no tiene permisos de ejecución.
 MAINW_WARNING_EXCUTABLE_PERMISSION_CHANGED
 Se cambiaron los permisos del binario (chmod a+x).
 COMP_ARG_ADD_ARGS
-Agregar argumentos
+Incluir argumentos
 COMP_ARG_RECOMPILE
 Recompilar todo
 COMPLEMENTS_CAPTION
@@ -2126,14 +2126,8 @@ MAINW_RUN_HEADER_WARNING
 Esta intentando compilar/ejecutar un archivo de cabecera.\nProbablemente deba intentar ejecutar un archivo fuente que\nincluya esta cabecera. ¿Desea continuar?\n\nNota: puede configurar un fuente para que se ejecute siempre\ndicho fuente sin importar cual otro tenga el foco con click\nderecho sobre la pesataña del mismo.
 MAINW_RUN_HEADER_CHECK
 No volver a mostrar este mensaje
-MAINW_GPROF_GPROF_ENABLED
-Se agregaron los parámetros de compilación necesarios para utilizar <{1}>.
-MAINW_GPROF_GPROF_DISABLED
-Se quitaron los parámetros de compilación necesarios para utilizar <{1}>.
-MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
-Para que esta modificación tenga efecto probablemente deba recompilar todo su proyecto.\n¿Desea hacerlo ahora? (si elige no, deberá limpiar el proyecto manualmente más tarde para hacerlo).
 COMP_ARG_GENERIC_INFO
-Para poder generar la información de profiling que\nanaliza <1>, se deben agregar argumentos específicos\nal compilar, luego recompilar todo el proyecto/programa\npara que estos cambios tengan efecto (si no lo hace ahora,\ndeberá luego utilizar el comando \"Limpiar\" del menú \n\"Ejecución\") y finalmente ejecutar el programa.
+Para poder generar la información de profiling que\nanaliza <{1}>, se deben utilizar argumentos específicos\nal compilar, luego recompilar todo el proyecto/programa\npara que estos cambios tengan efecto (si no lo hace ahora,\ndeberá luego utilizar el comando \"Limpiar\" del menú \n\"Ejecución\") y finalmente ejecutar el programa.
 MAINW_EXTERN_TOOL_ERROR
 Ha ocurrido un error al ejecutar <{1}>.
 MAINW_GPROF_OUTPUT_MISSING

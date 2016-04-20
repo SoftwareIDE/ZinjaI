@@ -55,7 +55,7 @@ void mxGCovSideBar::OnPaint(wxPaintEvent &event) {
 			else if (h>=0) text<<h-1;
 			dc.SetTextForeground(wxColour(r,g,0));
 			int tw,th;
-			GetTextExtent(text,&tw,&th);
+			dc.GetTextExtent(text,&tw,&th);
 			dc.DrawText(text,mw-5-tw,y);
 		}
 		y+=lh;

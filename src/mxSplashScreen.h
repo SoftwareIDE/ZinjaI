@@ -33,7 +33,5 @@ public:
 	DECLARE_EVENT_TABLE();
 };
 
-extern mxSplashScreen *splash;
-
 #endif
 

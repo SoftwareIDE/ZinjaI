@@ -38,6 +38,7 @@
 		0 preferences.html Diálogo Preferencias
 			0 preferences.html#general Pestaña General
 			0 preferences.html#programa_simple Pestaña Programa/Proyecto
+				0 toolchain_config.html#estilo Personalización de un toolchain
 			0 preferences.html#estilo Pestaña Estilo
 			0 preferences.html#asistencias Pestaña Asistencias
 			0 preferences.html#temas Pestaña Tema de Iconos

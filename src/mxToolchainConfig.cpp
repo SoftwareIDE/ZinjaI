@@ -10,12 +10,15 @@
 #include "mxMessageDialog.h"
 #include "ConfigManager.h"
 #include "mxCommonConfigControls.h"
+#include "mxThreeDotsUtils.h"
 
 BEGIN_EVENT_TABLE(mxToolchainConfig, wxDialog)
 	EVT_BUTTON(wxID_OK,mxToolchainConfig::OnButtonOk)
 //	EVT_BUTTON(mxID_CUSTOM_TOOLS_RUN,mxToolchainConfig::OnButtonTest)
 	EVT_BUTTON(wxID_CANCEL,mxToolchainConfig::OnButtonCancel)
 	EVT_BUTTON(mxID_HELP_BUTTON,mxToolchainConfig::OnButtonHelp)
+	EVT_BUTTON(mxID_TOOLCHAINS_BIN_PATHS,mxToolchainConfig::OnButtonCompilerBinPaths)
+	EVT_BUTTON(mxID_TOOLCHAINS_BASE_PATH,mxToolchainConfig::OnButtonCompilerBasePath)
 	EVT_COMBOBOX(mxID_TOOLCHAINS_TYPE_COMBO,mxToolchainConfig::OnComboChange)
 END_EVENT_TABLE()
 
@@ -71,7 +74,7 @@ void mxToolchainConfig::OnButtonCancel (wxCommandEvent & event) {
 }
 
 void mxToolchainConfig::OnButtonHelp (wxCommandEvent & event) {
-	mxHelpWindow::ShowHelp("toolchains.html");
+	mxHelpWindow::ShowHelp("toolchains.html",this);
 }
 
 void mxToolchainConfig::OnComboChange (wxCommandEvent & event) {
@@ -90,10 +93,10 @@ wxPanel * mxToolchainConfig::CreatePanelGeneral(wxNotebook *notebook) {
 		.Value(m_toolchain->file).Short().EndText(name);
 	sizer.BeginCombo( LANG(TOOLCHAINS_TYPE,"Tipo de herramienta") )
 		.Add(array).Select(m_toolchain->type).Id(mxID_TOOLCHAINS_TYPE_COMBO).EndCombo(type);
-	sizer.BeginText( LANG(TOOLCHAINS_BASE_PATH,"Directorio del compilador") )
-		.Value(m_toolchain->base_path).Short().EndText(base_path);
+	sizer.BeginText( LANG(TOOLCHAINS_BASE_PATH,"Directorio base del compilador") )
+		.Value(m_toolchain->base_path).Short().Button(mxID_TOOLCHAINS_BASE_PATH).EndText(base_path);
 	sizer.BeginText( LANG(TOOLCHAINS_BIN_PATH,"Directorios con ejecutables") )
-		.Value(m_toolchain->bin_path).Short().EndText(bin_path);
+		.Value(m_toolchain->bin_path).Short().Button(mxID_TOOLCHAINS_BIN_PATHS).EndText(bin_path);
 	sizer.BeginText( LANG(TOOLCHAINS_BUILD_COMMAND,"Comando de construcción") )
 		.Value(m_toolchain->build_command).Short().RegisterIn(for_extern).EndText(build_command);
 	sizer.BeginText( LANG(TOOLCHAINS_CLEAN_COMMAND,"Comando de limpieza") )
@@ -141,5 +144,13 @@ wxPanel * mxToolchainConfig::CreatePanelArgs (wxNotebook * notebook) {
 
 	sizer.Set();
 	return sizer.GetPanel();
+}
+
+void mxToolchainConfig::OnButtonCompilerBinPaths (wxCommandEvent & event) {
+	mxThreeDotsUtils::ReplaceSelectionWithDirectory(this,bin_path,config->zinjai_dir,LANG(TOOLCHAINS_BIN_PATH,"Directorios con ejecutables"));
+}
+
+void mxToolchainConfig::OnButtonCompilerBasePath (wxCommandEvent & event) {
+	mxThreeDotsUtils::ReplaceAllWithDirectory(this,base_path,config->zinjai_dir,LANG(TOOLCHAINS_BASE_PATH,"Directorio base del compilador"));
 }
 

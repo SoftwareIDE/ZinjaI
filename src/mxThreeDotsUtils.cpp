@@ -15,7 +15,7 @@ static void stGetPathAndName(wxString &def_path, wxString &def_name, const wxFil
 }
 
 template<typename wxCtrl_t>
-static bool stHelperFunction1(wxWindow *parent, wxCtrl_t *text_ctrl, wxString relative_path, wxString message, bool file) {
+static bool stHelperFunction1(wxWindow *parent, wxCtrl_t *text_ctrl, wxString relative_path, wxString message, bool file, bool add_comillas) {
 	// obtain full previos value and selection
 	wxString orig_value = text_ctrl->GetValue();
 	long pbeg, pend; text_ctrl->GetSelection(&pbeg,&pend);
@@ -37,6 +37,7 @@ static bool stHelperFunction1(wxWindow *parent, wxCtrl_t *text_ctrl, wxString re
 	text_ctrl->SetFocus();
 	// build the new value, set it to the control, and fix selection
 	if (!relative_path.IsEmpty()) res = mxUT::Relativize(res,relative_path);
+	if (add_comillas) res = mxUT::Quotize(res);
 	wxString new_value = orig_value.Mid(0,pbeg) + res + orig_value.Mid(pend);
 	text_ctrl->SetValue(new_value);
 	text_ctrl->SetSelection(pbeg,pbeg+res.Len());
@@ -55,7 +56,7 @@ static bool stHelperFunction2 (wxWindow *parent, wxCtrl_t *text_ctrl, wxString r
 		}
 	}
 	if (all) text_ctrl->SetSelection(0,text_ctrl->GetValue().Len());
-	return stHelperFunction1(parent, text_ctrl, relative_path, message, file);
+	return stHelperFunction1(parent, text_ctrl, relative_path, message, file,!all);
 }
 
 bool mxThreeDotsUtils::ReplaceSelectionWithFile (wxWindow * parent, wxTextCtrl *text_ctrl, wxString relative_path, wxString message) {

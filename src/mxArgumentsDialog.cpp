@@ -23,7 +23,7 @@ wxArrayString mxArgumentsDialog::list_for_combo_work;
 
 
 BEGIN_EVENT_TABLE(mxArgumentsDialog, wxDialog)
-	EVT_BUTTON(wxID_YES,mxArgumentsDialog::OnYesButton)
+	EVT_BUTTON(wxID_OK,mxArgumentsDialog::OnYesButton)
 	EVT_BUTTON(wxID_NO,mxArgumentsDialog::OnNoButton)
 	EVT_BUTTON(wxID_CANCEL,mxArgumentsDialog::OnCancelButton)
 	EVT_CHAR_HOOK(mxArgumentsDialog::OnCharHook)
@@ -33,10 +33,11 @@ END_EVENT_TABLE()
 
 	
 mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent, const wxString &base_path, const wxString &def_args, const wxString &def_dir) 
-	: mxDialog(parent, LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion") ), m_base_path (base_path)
+	: mxDialog(parent, LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"), false ), // el false es porque al usarla va a ser siempre con instancias en el stack
+	  m_base_path (base_path)
 {
 	CreateSizer sizer(this);
-	
+	SetReturnCode(0);
 	sizer.BeginLabel( LANG(COMPILECONF_RUNNING_ARGS,"Argumentos para la ejecucion:") ).EndLabel();
 	sizer.BeginLine()
 		.Space(15)

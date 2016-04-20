@@ -1264,6 +1264,10 @@ MAINW_WARNING_NO_EXCUTABLE_PERMISSION
 Binary file doesn't have execute permission
 MAINW_WARNING_EXCUTABLE_PERMISSION_CHANGED
 Executable permissions changed for the binary file (chmod a+x)
+COMP_ARG_ADD_ARGS
+Incluir argumentos
+COMP_ARG_RECOMPILE
+Recompilar todo
 COMPLEMENTS_CAPTION
 Install Complements
 COMPLEMENTS_DOWNLOAD
@@ -2122,12 +2126,8 @@ MAINW_RUN_HEADER_WARNING
 You are trying to run a header file. It is probably a mistake\nand you might want to run a source file that includes this one\ninstead. Continue anyway?\n\nNote: you can force ZinjaI to run always the same source no\nmatter which one has the focus with right-click on its tab.\n
 MAINW_RUN_HEADER_CHECK
 Do not show this message again
-MAINW_GPROF_GPROF_ENABLED
-The required compiling arguments for <{1}> where added.
-MAINW_GPROF_GPROF_DISABLED
-The required compiling arguments for <{1}> where removed.
-MAINW_GCOV_GPROF_ENABLE_DISABLE_QUESTION
-In order to make this change effective you may need to rebuild the whole project.\n¿Do you want to do it now? (if you choose no, you may need to clean it manually later).
+COMP_ARG_GENERIC_INFO
+Para poder generar la información de profiling que\nanaliza <{1}>, se deben utilizar argumentos específicos\nal compilar, luego recompilar todo el proyecto/programa\npara que estos cambios tengan efecto (si no lo hace ahora,\ndeberá luego utilizar el comando \"Limpiar\" del menú \n\"Ejecución\") y finalmente ejecutar el programa.
 MAINW_EXTERN_TOOL_ERROR
 An error occurred running <{1}>.
 MAINW_GPROF_OUTPUT_MISSING

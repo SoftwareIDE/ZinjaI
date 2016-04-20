@@ -17,17 +17,18 @@
 #include "Toolchain.h"
 #include "MenusAndToolsConfig.h"
 #include "CustomTools.h"
+#include "mxSplashScreen.h"
 
 ConfigManager *config;
 
 /**
 * @brief Config lines from main config files related to toolbar settings, 
 *
-* important: it is still here just for backward compatibility, since 20140723
+* important: this is still here just for backward compatibility, since 20140723
 * these lines now belong to a different config file that is read later
 *
 * old toolbars and menus related config lines are processed in a delayed mode 
-* because  we need to have an initialized MenusAndToolsConfig instance to do it,
+* because we need to have an initialized MenusAndToolsConfig instance to do it,
 * but MenusAndToolsConfig needs an initialized ConfigManager to use the proper 
 * language
 *
@@ -967,10 +968,12 @@ void ConfigManager::FinishiLoading ( ) {
 	
 	// load language translations
 	if (Init.language_file!="spanish") {
-		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(config_dir,"lang_cache").c_str()))
+		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(config_dir,"lang_cache").c_str())) {
+			if (g_splash) g_splash->Hide(); // en window, si el splash esta visible, la llamada a ShowModal revienta
 			mxMessageDialog(nullptr,"No se pudo cargar el diccionario del idioma seleccionado.\n"
 			"El sistema utilizará el predeterminado (spanish).\n"
 			"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
+		}
 	}
 	
 	// load syntax highlighting colors' scheme
