@@ -17,7 +17,7 @@ BEGIN_EVENT_TABLE(mxValgrindConfigDialog,wxDialog)
 END_EVENT_TABLE()
 	
 mxValgrindConfigDialog::mxValgrindConfigDialog(wxWindow *parent)
-	: mxDialog(parent,"Valgrind Setup",false) 
+	: mxDialog(parent,"Valgrind Setup",mxDialog::OCP_HIDE) 
 {
 	CreateSizer sizer(this);
 	

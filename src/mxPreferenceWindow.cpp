@@ -130,7 +130,7 @@ BEGIN_EVENT_TABLE(mxPreferenceWindow, wxDialog)
 END_EVENT_TABLE()
 
 mxPreferenceWindow::mxPreferenceWindow(wxWindow* parent) : 
-	mxDialog(parent, LANG(PREFERENCES_CAPTION,"Preferencias"), false)
+	mxDialog(parent, LANG(PREFERENCES_CAPTION,"Preferencias"), mxDialog::OCP_HIDE)
 {
 
 	ignore_styles_changes = true;
@@ -343,7 +343,7 @@ wxPanel *mxPreferenceWindow::CreateDebugPanel2 (wxNotebook *notebook) {
 }
 
 wxPanel *mxPreferenceWindow::CreateToolbarsPanel (mxBookCtrl *notebook) {
-	CreatePanelAndSizer sizer(notebook); wxPanel *panel_toolbars = sizer.GetPanel();
+	CreatePanelAndSizer sizer(notebook); panel_toolbars = sizer.GetPanel();
 	sizer.BeginLabel(  LANG(PREFERENCES_TOOLBARS_WICH,"Barra de herramientas a utilizar:") ).EndLabel();
 	
 	wxBoxSizer *tbs_sizer = new wxBoxSizer(wxVERTICAL);

@@ -25,7 +25,7 @@
 #include "mxThreeDotsUtils.h"
 #include "mxCommonConfigControls.h"
 
-int mxProjectConfigWindow::last_page_index=0;
+unsigned int mxProjectConfigWindow::last_page_index=0;
 
 BEGIN_EVENT_TABLE(mxProjectConfigWindow, wxDialog)
 	EVT_BUTTON(wxID_OK,mxProjectConfigWindow::OnOkButton)
@@ -76,7 +76,7 @@ END_EVENT_TABLE()
 wxString mxExtraStepWindow::new_name;
 	
 mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent) 
-	: mxDialog(parent, LANG(PROJECTCONFIG_CAPTION,"Opciones de Compilación y Ejecución") ),
+	: mxDialog(parent, LANG(PROJECTCONFIG_CAPTION,"Opciones de Compilación y Ejecución"), mxDialog::OCP_NULL ),
 	  discard(true), configuration(project->active_configuration)
 {
 	CreateSizer sizer(this);
@@ -107,7 +107,8 @@ mxProjectConfigWindow::mxProjectConfigWindow(wxWindow* parent)
 	wx_noscript.EnableAll(configuration->exec_method);
 	
 	sizer.BeginBottom().Help().Ok().Cancel().EndBottom(this).SetAndFit();
-	notebook->SetSelection(last_page_index);
+	if (last_page_index<notebook->GetPageCount())
+		notebook->SetSelection(last_page_index);
 	SetFocus();
 	Show();
 }

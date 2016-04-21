@@ -33,7 +33,7 @@ END_EVENT_TABLE()
 
 	
 mxArgumentsDialog::mxArgumentsDialog(wxWindow *parent, const wxString &base_path, const wxString &def_args, const wxString &def_dir) 
-	: mxDialog(parent, LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"), false ), // el false es porque al usarla va a ser siempre con instancias en el stack
+	: mxDialog(parent, LANG(ARGUMENTS_CAPTION,"Argumentos para la ejecucion"), mxDialog::OCP_HIDE ), // el false es porque al usarla va a ser siempre con instancias en el stack
 	  m_base_path (base_path)
 {
 	CreateSizer sizer(this);

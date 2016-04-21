@@ -15,7 +15,7 @@ END_EVENT_TABLE()
 
 
 mxToolchainOptions::mxToolchainOptions(wxWindow *parent, wxString toolchain_fname, project_configuration *conf)
-	: mxDialog(parent,LANG(TOOLCHAIN_OPTIONS_CAPTION,"Opciones del Toolchain"),false), m_configuration(conf) 
+	: mxDialog(parent,LANG(TOOLCHAIN_OPTIONS_CAPTION,"Opciones del Toolchain"),mxDialog::OCP_HIDE), m_configuration(conf) 
 {
 	const Toolchain &tc=Toolchain::GetInfo(toolchain_fname);
 	

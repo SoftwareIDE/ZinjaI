@@ -42,6 +42,8 @@ protected:
 	wxString GetCaption() { return GetTitle(); }
 public:
 	
+	enum OnClosePolicy { OCP_NULL, OCP_HIDE, OCP_DESTROY };
+	
 	// varias funciones deprecadas, que eliminaré cuando termine de reemplazar 
 	// todos sus usos por las nuevas interfases que agrega esta clase
 	static wxCheckBox *AddCheckBox (wxBoxSizer *sizer, wxWindow *panel, wxString text, bool value=false, wxWindowID id = wxID_ANY,bool margin=false);
@@ -56,14 +58,14 @@ public:
 	static wxStaticText* AddStaticText (wxBoxSizer *sizer, wxWindow *panel, wxString text, const char *value, bool margin=false)
 		{ return AddStaticText(sizer,panel,text,wxString(value),margin); } // to avoid choosing the first overload instead of the second when using a literal
 		
-	mxDialog(wxWindow *parent, wxString caption, bool destroy_on_close = true) 
+	mxDialog(wxWindow *parent, wxString caption, OnClosePolicy on_close = OCP_DESTROY ) 
 		: wxDialog(parent,wxID_ANY,caption,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
 	{
 #ifdef __WIN32__
 		SetBackgroundColour(wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ));
 #endif
-		if (destroy_on_close) this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseDestroy ) );
-		else                  this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseHide ) );
+		if (on_close==OCP_DESTROY)   this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseDestroy ) );
+		else if (on_close==OCP_HIDE) this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( mxDialog::OnCloseHide ) );
 	}
 	
 

@@ -24,7 +24,7 @@ class mxProjectConfigWindow : public mxDialog {
 	
 	friend class mxLibToBuildWindow;
 	
-	static int last_page_index;
+	static unsigned int last_page_index;
 	wxNotebook *notebook;
 	bool discard;
 	
