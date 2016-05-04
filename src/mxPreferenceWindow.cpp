@@ -700,10 +700,11 @@ wxPanel *mxPreferenceWindow::CreateSkinPanel (mxBookCtrl *notebook) {
 }
 
 wxNotebook *mxPreferenceWindow::CreatePathsPanels (mxBookCtrl *notebook) {
-	return CreateNotebook(notebook)
+	panel_paths = CreateNotebook(notebook)
 		.AddPage(this,&mxPreferenceWindow::CreatePathsPanel1, LANG(PREFERENCES_PATHS_1,"Rutas 1") )
 		.AddPage(this,&mxPreferenceWindow::CreatePathsPanel2, LANG(PREFERENCES_PATHS_1,"Rutas 2") )
 		.EndNotebook();
+	return panel_paths;
 }
 
 wxPanel *mxPreferenceWindow::CreatePathsPanel1 (wxNotebook *notebook) {
@@ -1157,24 +1158,6 @@ void mxPreferenceWindow::OnToolbarsRun(wxCommandEvent &evt) {
 	OnToolbarsCommon(toolbar_editor_run,MenusAndToolsConfig::tbRUN);
 }
 
-void mxPreferenceWindow::SetToolbarPage(const wxString &edit_one) {
-	for (unsigned int i=0;i<notebook->GetPageCount();i++)
-		if (notebook->GetPage(i)==panel_toolbars) {
-			notebook->SetSelection(i);
-			break;
-		}
-	if (edit_one.Len()) {
-		wxCommandEvent evt;
-		if (edit_one=="file") OnToolbarsFile(evt);
-		else if (edit_one=="edit") OnToolbarsEdit(evt);
-		else if (edit_one=="view") OnToolbarsView(evt);
-		else if (edit_one=="debug") OnToolbarsDebug(evt);
-		else if (edit_one=="run") OnToolbarsRun(evt);
-		else if (edit_one=="misc") OnToolbarsMisc(evt);
-		else if (edit_one=="tools") OnToolbarsTools(evt);
-	}
-}
-
 void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
 	if ( mxMessageDialog(main_window,LANG(PREFERENCES_TOOLBARS_RESET_WARNING,""
 										  "Perdera todas las modificiaciones realizadas a las\n"
@@ -1335,3 +1318,46 @@ void mxPreferenceWindow::EnableOrDisableControls ( ) {
 		wx_toolbars_widgets.EnableAll();
 }
 
+template<typename Tnotebook>
+bool auxSelectPage(Tnotebook *notebook, wxWindow *win) {
+	for (unsigned int i=0;i<notebook->GetPageCount();i++) {
+		if (notebook->GetPage(i)==win) {
+			notebook->SetSelection(i);
+			win->SetFocus();
+			return true;
+		}
+	}
+	return false;
+}
+
+void mxPreferenceWindow::SetPathsPage (const wxString & select_one) {
+	wxYield(); // do not remove or SetFocus won't work because window is not visible yet, at least on linux
+	auxSelectPage(notebook,panel_paths);
+	if (select_one.Len()) {
+		wxTextCtrl *to_select = nullptr;
+		     if (select_one=="valgrind")      to_select = files_valgrind_command;
+		else if (select_one=="doxigen")       to_select = files_doxygen_command;
+		else if (select_one=="cppcheck")      to_select = files_cppcheck_command;
+		else if (select_one=="terminal")      to_select = files_terminal_command;
+		else if (select_one=="wxformbuilder") to_select = files_wxfb_command;
+		if (to_select) {
+			auxSelectPage(panel_paths,to_select->GetParent());
+			to_select->SetSelection(0,to_select->GetValue().Len());
+			to_select->SetFocus();
+		}
+	}
+}
+
+void mxPreferenceWindow::SetToolbarPage(const wxString &edit_one) {
+	auxSelectPage(notebook,panel_toolbars);
+	if (edit_one.Len()) {
+		wxCommandEvent evt;
+		     if (edit_one=="file")  OnToolbarsFile(evt);
+		else if (edit_one=="edit")  OnToolbarsEdit(evt);
+		else if (edit_one=="view")  OnToolbarsView(evt);
+		else if (edit_one=="debug") OnToolbarsDebug(evt);
+		else if (edit_one=="run")   OnToolbarsRun(evt);
+		else if (edit_one=="misc")  OnToolbarsMisc(evt);
+		else if (edit_one=="tools") OnToolbarsTools(evt);
+	}
+}

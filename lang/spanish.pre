@@ -7,7 +7,7 @@ Listo
 CONFIG_NO_TERMINAL_FOUND
 No se ha encontrado una terminal conocida. Se recomienda instalar\nxterm; luego configure el parametro \"Comando del Terminal\" en la\npestaña \"Rutas 2\" del cuadro de \"Preferencias\".
 CONFIG_TERMINAL_WARNING
-La aplicación terminal que se ha encontrado instalada\nes <{1}>. Algunas versiones de esta terminal pueden generar\nproblemas al intentar ejecutar un programa o proyecto. Si no logra\nejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\nque compile, intente configurar otra terminal (menú Archivo->Preferencias...\npestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\nrecomendada es xterm).
+La aplicación terminal que se ha encontrado instalada\nes <{1}>. Algunas versiones de esta terminal pueden generar\nproblemas al intentar ejecutar un programa o proyecto. Si no logra\nejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\nque compile, intente configurar otra terminal desde el cuadro de\n\"Preferencias\". La terminal recomendada es xterm).
 CONFIG_TERMINAL
 Terminal de ejecución
 CONFIG_COMPILER
@@ -18,18 +18,22 @@ CONFIG_DEBUGGER
 Depurador
 CONFIG_DEBUGGER_NOT_FOUND
 No se ha encontrado el depurador (gdb). Debe instalarlo con\nel gestor de paquetes que corresponda a su distribución\n(apt-get, yum, yast, installpkg, etc.)
+PROJMNGR_WXFB_NOT_FOUND
+El proyecto utiliza wxFormBuilder, pero este software\nno se encuentra correctamente instalado/configurado en\nsu PC. Si ya se encuentra instalado debe configurar su\nubicación en el cuadro de \"Preferencias\".
+PROJMNGR_REGENERATING_ERROR_2
+La actualización automática de estos proyectos de deshabilitará temporalmente.
 GENERAL_WARNING
 Advertencia
-PROJMNGR_WXFB_NOT_FOUND
-El proyecto utiliza wxFormBuilder, pero este software\nno se encuentra correctamente instalado/configurado en\nsu PC. Para descargar e instalar wxFormsBuilder dirijase\na http://wxformbuilder.org. Si ya se encuentra instalado,\nconfigure su ubicación en la pestaña \"Rutas 2\" del\ndialogo de \"Preferencias\" (menu \"Archivo\").
 MAINW_DOXYGEN_MISSING
-Doxygen no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.doxygen.org. Si ya se encuentra instalado,\nconfigure su ubiciación en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+Doxygen no se encuentra correctamente instalado/configurado\nen su pc. Si ya se encuentra instalado,debe configurar su\nubiciación en el cuadro de \"Preferencias\".
 MAINW_VALGRIND_MISSING
-Valgrind no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar Doxygen dirijase a\nhttp://www.valgrind.org. Si ya se encuentra instalado,\nconfigure su ubiciacion en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+Valgrind no se encuentra correctamente instalado/configurado\nen su pc. Si ya se encuentra instalado deve configurar su\nubiciacion en la pestaña en el cuadro de \"Preferencias\".
 MAINW_CPPCHECK_MISSING
-CppCheck no se encuentra correctamente instalado/configurado\nen su pc. Para descargar e instalar CppCheck dirijase a\nhttp://cppcheck.sourceforge.net. Si ya se encuentra instalado,\nconfigure su ubiciación en la pestaña \"Rutas 2\" del\ndialog de \"Preferencias\" (menu \"Archivo\").
+CppCheck no se encuentra correctamente instalado/configurado\nen su pc. Si ya se encuentra instalado debe configurar su\nubiciación en el cuadro de \"Preferencias\".
 CONFIG_GOTO_PACKAGE_WEBSITE
-Abrir sitio el web de esta herramienta
+Abrir sitio web (<{1}>)
+CONFIG_OPEN_PREFERENCES
+Abrir el cuadro de Preferencias
 CONFIG_APTGET_FAILED
 Falló la instalación automática.
 CONFIG_ABOUT_TO_APTGET
@@ -43,7 +47,7 @@ Error
 DEBUG_STATUS_STARTING
 Iniciando depuracion...
 DEBUG_ERROR_STARTING_SPACES
-Error al iniciar el proceso. Puede intentar mover el ejecutable o el proyecto a una ruta sin espacios.
+
 DEBUG_ERROR_STARTING
 Error al iniciar el proceso.
 OSD_STARTING_DEBUGGER
@@ -55,7 +59,7 @@ Ha ocurrido un error al iniciar la terminal para la ejecucion.\nCompruebe que el
 DEBUG_STATUS_INIT_ERROR
 Error al iniciar depuracion
 DEBUG_NO_SYMBOLS
-El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depuracion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar).
+El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depuracion este activada la informacion de\ndepuracion, verifique que no este seleccionada la opcion \"stripear el ejecutable\"\nen las opciones de enlazado, y recompile el proyecto si es necesario (Ejecucion->Limpiar\ny luego Ejecucion->Compilar).
 DEBUG_ERROR_STATING_GDB
 Ha ocurrido un error al ejecutar el depurador.
 DEBUG_ERROR_STARTING_GDB_LINUX
@@ -103,9 +107,9 @@ BACKTRACE_NO_ARGUMENTS
 DEBUG_STATUS_PREFIX
   Depuracion: 
 DEBUG_ERROR_REVERSE
-Ha ocurrido un error al intentar activar esta caracteristica.\nPara utilizarla debe instalar gdb version 7.0 o superior.\nAdema, no todas las plataformas soportan este tipo de ejecucion.
+Ha ocurrido un error al intentar activar esta caracteristica.\nPara utilizarla debe instalar gdb version 7.0 o superior.\nAdemás, no todas las plataformas soportan este tipo de ejecucion.
 DEBUG_REVERSE_DISABLED
-Solo se puede retroceder la ejecucion hasta el punto en donde la ejecucion hacia atras fue habilitada.\nActualmente esta caracteristica no esta habilitada. Utilice el comando \"Habilitar Ejecucion Hacia Atras\"\ndel menu de Depuracion para habilitarla.
+Solo se puede retroceder la ejecucion hasta el punto en donde la\nejecucion hacia atras fue habilitada. Actualmente esta caracteristica\nno esta habilitada. Utilice el comando \"Habilitar Ejecucion Hacia Atras\"\ndel menu de Depuracion para habilitarla.
 THREADS_NO_THREADS
 <<No hay hilos>>
 THREADS_NO_INFO
@@ -897,17 +901,13 @@ Enlazando \"
 PROJMNGR_STRIPING
 Extrayendo información de depuración de \"<{1}>\" - paso <{2}> de 3...
 PROJMNGR_RUNNING_NO_EXE
-Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas.
+Este proyecto no puede ejecutarse porque está configurado\npara generar solo bibliotecas.
 GENERAL_RUNNING_DOTS
 Ejecutando...
 PROJMNGR_REGENERATING_WXFB
 Regenerando proyecto wxFormBuilder...
 PROJMNGR_REGENERATING_ERROR_1
-No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?
-PROJMNGR_REGENERATING_ERROR_2
-No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").
-PROJMNGR_REGENERATING_ERROR_3
-No se pudo actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?
+No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no esté\ncorrectamente definida. Verifique esta propiedad en la pestaña \"Rutas 2\"\ndel cuadro de \"Preferencias\").
 PROJMNGR_REGENERATING_ERROR_4
 No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).
 OSD_GENERATING_GRAPH
@@ -931,7 +931,7 @@ El nombre de la clase no puede incluir ni espacios ni operadores
 PROJECT_WXFB_NEWFILE_EXISTS
 Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?
 OPENSHARED_ERROR_GETTING_SOURCE
-Ha ocurrido un error al intentar obtener el fuente. Pruebe actualizar la lista de fuentes compartidos.
+Ha ocurrido un error al intentar obtener el fuente.\nPruebe actualizar la lista de fuentes compartidos.
 ERRORRECOVERY_OOPS_MESSAGE
 Ha ocurrido un error grave y ZinjaI se cerrara.\nPor suerte, se han podido guardar todos sus\narchivos y proyectos para recuperarlos la\nproxima vez que inicie el entorno.
 ABOUT_CAPTION
@@ -1099,7 +1099,7 @@ Error al colocar breakpoint
 BREAKOPTS_INVALID_CONDITION
 La condicion actual no es valida
 BREAKOPTS_ERROR_SETTING_CONDITION
-La condición ingresada no es correcta. ¿Colocar el punto de control incondicionalmente?.
+La condición ingresada no es correcta.\n¿Colocar el punto de control incondicionalmente?.
 BYSRCOPTS_CAPTION
 Opciones de compilacion por fuente
 BYSRCOPTS_FILTER
@@ -1979,7 +1979,7 @@ Hay cambios sin guardar. Desea guardarlos antes de salir?
 PROJMNGR_FUTURE_SOURCE_POST
  tenia fecha de modificación en el futuro. Se reemplazo por la fecha actual.
 MAINW_SAVE_LINK_ERROR_TRUNCATED_FILE
-Este error puede deberse a compilaciones interrumpidas, o a la presencia\nde objetos compilados en otros sistemas. Si este fuera el caso, podría\n solucionarse simplemente recompilando el fuente asociado. ¿Desea recompilar\n\"<{1}>\" ahora?
+Este error puede deberse a compilaciones interrumpidas, o a la presencia\nde objetos compilados en otros sistemas. Si este fuera el caso, podría\nsolucionarse simplemente recompilando el fuente asociado. ¿Desea recompilar\n\"<{1}>\" ahora?
 QUICKHELP_WORDS_TO_SEARCH
 Palabra a buscar:
 CAPTION_QUICKHELP
@@ -1989,7 +1989,7 @@ Abrir \"<{1}>\"
 MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION
 Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?
 MAINW_ASK_CLOSE_SHARED
-El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?
+El archivo esta siendo compartido con modificaciones.\nSi lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?
 MAINW_SHARE_AFTER_CLOSE
 Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo.
 MAINW_QUICKHELP_INIT
@@ -2043,7 +2043,7 @@ MAINW_ADD_TO_PROJECT_QUESTION
 MAINW_ADD_TO_PROJECT_CHECK
 Hacer lo mismo para todos
 MAINW_MOVE_TO_PROJECT_PATH_QUESTION
-El archivo que intenta agregar no se encuentra en el directorio del proyecto.\n¿Desea copiar el archivo al directorio del proyecto?
+El archivo que intenta agregar no se encuentra en el directorio del\nproyecto. ¿Desea copiar el archivo al directorio del proyecto?
 MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION
 El archivo ya existe en el directorio de proyecto.\n¿Desea reemplazarlo?
 MAINW_ERROR_PRITING
@@ -2057,7 +2057,7 @@ Siempre agregar la extension sin preguntar.
 MAINW_INSERT_HEADIR_NO_WORD
 Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir.
 MAINW_INSERT_HEADIR_CPP
- esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera.
+ esta declarada en un archivo fuente.Solo deben realizarse #includes para archivos de cabecera.
 MAINW_NO_HEADER_FOR
 No se encontro cabecera correspondiente a \"<{1}>\".
 DEBUG_STATUS_ATTACHED_TO
@@ -2267,11 +2267,11 @@ La ubicacion seleccionada no es valida.
 NEWWIZARD_PROJECT_DIR_IS_FILE
 No se puede crear el proyecto porque ya existe un archivo con ese nombre en la ubicacion seleccionada. Elimine el archivo o modifique el nombre.
 NEWWIZARD_CONFIRM_REPLACE
-Ya existe un proyecto en esa ubicacion y con ese nombre. Desea reemplazarlo?
+Ya existe un proyecto en esa ubicacion y con ese nombre.\nDesea reemplazarlo?
 GENERIC_WARNING
 Aviso
 NEWWIZARD_CONFIRM_OVERWRITE_DIR
-Ya existe un directorio en esa ubicacion y con ese nombre. Desea utilizarlo de todos modos para el proyecto?
+Ya existe un directorio en esa ubicacion y con ese nombre.\nDesea utilizarlo de todos modos para el proyecto?
 NEWWIZARD_ERROR_ON_FILE_COPY
 Error al copiar los archivos del proyecto. Compruebe que la ubicacion sea correcta.
 NEWWIZARD_EMPTY_FILE
@@ -2389,9 +2389,9 @@ no encontrado
 RECENT_NO_RESULTS
 <<no se encontraron coincidencias>>
 RECENT_CONFIRM_CLEAR_PROJECT_HISTORY
-Desea eliminar la lista de proyectos recientes?
+¿Desea eliminar la lista de proyectos recientes?
 RECENT_CONFIRM_CLEAR_FILE_HISTORY
-Desea eliminar la lista de archivos recientes?
+¿Desea eliminar la lista de archivos recientes?
 OPENSHARED_CAPTION
 Abrir Compartido
 OPENSHARED_STEP_1
@@ -2687,9 +2687,9 @@ Ubicación del ejecutable de Valgrind
 PREFERENCES_COMMANDS_CPPCHECK
 Ubicación del ejecutable de CppCheck
 PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN
-La herramienta de compilación por defecto (pestaña Programa/Proyecto) no puede ser de tipo externa
+La herramienta de compilación por defecto (pestaña\nPrograma/Proyecto) no puede ser de tipo externa
 PREFERENCES_THEME_WILL_APPLY_ON_RESTART
-El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI
+El tema seleccionado se aplicara completamente\nla proxima vez que reinicie ZinjaI
 PREFERENCES_DEBUG_SETUP_BLACKLIST
 Fuentes y funciones a omitir en el paso a paso
 PREFERENCES_OPEN_FILE
@@ -2699,7 +2699,7 @@ PREFERENCES_EDIT_FILE
 PREFERENCES_EDIT_TOOLBAR
 Barra de Herramientas <{1}>
 PREFERENCES_TOOLBARS_RESET_WARNING
-Perdera todas las modificiaciones realizadas a las barras\n de herramientas. ¿Desea continuar?
+Perdera todas las modificiaciones realizadas a las\nbarras de herramientas. ¿Desea continuar?
 LANG_MAX_JOBS_TIP
 Este campo define la cantidad de objetos que se compilan en simultaneo al construir un proyecto. Si su pc tiene mas de un nucleo, la cantidad de nucleos, o la mitad son valores recomendables. Consulte la ayuda para más detalles. ZinjaI detecta en el sistema actual <{1}> nucleos.
 PROJECTCONFIG_CAPTION
@@ -2825,9 +2825,9 @@ PROJECTCONFIG_PROFILE_NULL
 PROJECTCONFIG_COPY_PROFILE_FROM
 Copiar de:
 PROJECTCONFIG_CANT_DELETE_LAST_PROFILE
-No puedes eliminar la unica configuracion existente
+No puede eliminar la única configuración existente
 PROJECTCONFIG_CONFIRM_DELETE_PRE
-Seguro que desea eliminar la configuracion 
+¿Seguro que desea eliminar la configuración 
 PROJECTCONFIG_PROFILE_NEW_NAME
 Nuevo nombre:
 PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE
@@ -2973,7 +2973,7 @@ El nombre no puede tener mas de 255 caracteres.
 SHARESOURCE_COULDNT_START_SERVER
 No se pudo inciar el servidor. Compruebe que el puerto este correctamente configuardo y libre.
 SHARESOURCE_SOURCE_ALREADY_EXISTS_REPLACE
-Ya existe un archivo compartido con ese nombre. Desea reemplazarlo?
+Ya existe un archivo compartido con ese nombre.\nDesea reemplazarlo?
 SHORCUTS_CAPTION
 Atajos de teclado
 SHORCUTS_FILTER
@@ -3075,7 +3075,7 @@ Nombre de archivo
 TOOLCHAINS_TYPE
 Tipo de herramienta
 TOOLCHAINS_BASE_PATH
-Directorio del compilador
+Directorio base del compilador
 TOOLCHAINS_BIN_PATH
 Directorios con ejecutables
 TOOLCHAINS_BUILD_COMMAND
@@ -3160,6 +3160,8 @@ WXFBSETUP_ACTIVATE
 Activar integración con wxFormBuilder
 WXFBSETUP_AUTOUPDATE
 Regenerar proyectos wxFormBuilder automáticamente
+WXFBSETUP_AUTOUPDATE_TEMP_DISABLED
+Deshabilitar temporalmente
 WXFBSETUP_UPDATE_CLASSES
 Crear/eliminar clases heredadas luego de regenerar
 WXFBSETUP_UPDATE_METHODS

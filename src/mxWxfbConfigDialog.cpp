@@ -30,6 +30,11 @@ mxWxfbConfigDialog::mxWxfbConfigDialog()
 	sizer.BeginCheck( LANG(WXFBSETUP_AUTOUPDATE,"Regenerar proyectos wxFormBuilder automáticamente") )
 		.Value(conf->autoupdate_projects).RegisterIn(m_disabler).EndCheck(m_autoupdate_projects);
 	
+	sizer.BeginLine().Space(15).
+		BeginCheck( LANG(WXFBSETUP_AUTOUPDATE_TEMP_DISABLED,"Deshabilitar temporalmente") )
+			.Value(conf->autoupdate_projects_temp_disabled).RegisterIn(m_disabler).EndCheck(m_autoupdate_projects_temp_disabled)
+		.EndLine();
+		
 	sizer.BeginCheck( LANG(WXFBSETUP_UPDATE_CLASSES,"Crear/eliminar clases heredadas luego de regenerar") )
 		.Value(conf->update_class_list).RegisterIn(m_disabler).EndCheck(m_update_class_list);
 	
@@ -57,6 +62,8 @@ void mxWxfbConfigDialog::OnOkButton (wxCommandEvent & evt) {
 	if (conf->activate_integration!=m_activate_integration->GetValue())
 		project->ActivateWxfb(m_activate_integration->GetValue());
 	conf->autoupdate_projects=m_autoupdate_projects->GetValue();
+	conf->autoupdate_projects_temp_disabled = 
+		conf->autoupdate_projects && m_autoupdate_projects_temp_disabled->GetValue();
 	conf->update_class_list=m_update_class_list->GetValue();
 	conf->update_methods=m_update_methods->GetValue();
 	conf->set_wxfb_sources_as_readonly=m_set_wxfb_sources_as_readonly->GetValue();

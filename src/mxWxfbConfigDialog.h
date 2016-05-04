@@ -12,6 +12,7 @@ private:
 	wxfb_configuration *conf;
 	wxCheckBox *m_activate_integration;
 	wxCheckBox *m_autoupdate_projects;
+	wxCheckBox *m_autoupdate_projects_temp_disabled;
 	wxCheckBox *m_update_class_list;
 	wxCheckBox *m_update_methods;
 	wxCheckBox *m_dont_show_base_classes_in_goto;

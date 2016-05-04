@@ -115,6 +115,7 @@ class mxPreferenceWindow : public mxDialog {
 	wxListBox *skin_list;
 	wxStaticBitmap *skin_image;
 	wxPanel *panel_toolbars;
+	wxNotebook *panel_paths;
 	
 	wxComboBox *simple_default_cpp_template;
 	wxComboBox *simple_default_c_template;
@@ -122,8 +123,6 @@ class mxPreferenceWindow : public mxDialog {
 	wxArrayString temp_debug_blacklist;
 	
 	widgetDisabler wx_toolbars_widgets;
-
-public:
 
 	mxBookCtrl *notebook;
 
@@ -201,13 +200,17 @@ public:
 	void OnToolbarsReset(wxCommandEvent &evt);
 	void OnXdgButton(wxCommandEvent &evt);
 	void OnToolchainButton(wxCommandEvent &evt);
-	void SetToolbarPage(const wxString &edit_one="");
-	static mxPreferenceWindow *ShowUp();
-	static void Delete(); ///< to force reloading of some things that Reset won't redo, such as the list of autocompletion indexes
 	void ResetChanges();
 	void OnFontChange(wxCommandEvent &evt);
 	void OnCustomizeShortcuts(wxCommandEvent &evt);
 	void EnableOrDisableControls();
+	
+public:
+	void SetPathsPage(const wxString &select_one="");
+	void SetToolbarPage(const wxString &edit_one="");
+	static mxPreferenceWindow *ShowUp();
+	static void Delete(); ///< to force reloading of some things that Reset won't redo, such as the list of autocompletion indexes
+	
 private:
 	DECLARE_EVENT_TABLE()
 

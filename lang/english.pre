@@ -18,10 +18,12 @@ CONFIG_DEBUGGER
 Debugger
 CONFIG_DEBUGGER_NOT_FOUND
 GNU source-level debugger (gdb) was not found in your\nsystem. You must install it with your distribution's\npackage maganer(aptitude, yum, yast, installpkg...).
-GENERAL_WARNING
-Warning
 PROJMNGR_WXFB_NOT_FOUND
 This projects need wxFormBuilder, but this ZinjaI can't find this\nsoftware. To download wxFormBuilder go to http://wxformbuilder.org.\nIf it is already installed enter the correct path in tab "Paths 2"\nin "Preference" windows (from "File" menu).
+PROJMNGR_REGENERATING_ERROR_2
+Automatic updates for this project will be temporarily disabled.
+GENERAL_WARNING
+Warning
 MAINW_DOXYGEN_MISSING
 Doxygen isn't present in your system or its path isn't correctly defined\nin ZinjaI's settings. To download Doxygen go to http://www.doxygen.org.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 MAINW_VALGRIND_MISSING
@@ -29,7 +31,9 @@ Valgrind isn't present in your syste or its path isn't correctly defined\nin Zin
 MAINW_CPPCHECK_MISSING
 CppCheck isn't present in your system or its path isn't correctly defined\nin ZinjaI's settings. To download Doxygen go to http://cppcheck.sourceforge.net.\nIf it is already installed, check the path in "Paths 2" tab in\nPreference's dialog (from "File" menu).
 CONFIG_GOTO_PACKAGE_WEBSITE
-Open tool's website
+Open website (<{1}>)
+CONFIG_OPEN_PREFERENCES
+Open Preferences' dialog
 CONFIG_APTGET_FAILED
 Automatic installation failled.
 CONFIG_ABOUT_TO_APTGET
@@ -903,11 +907,7 @@ Running...
 PROJMNGR_REGENERATING_WXFB
 Regenerating wxFormBuilder project...
 PROJMNGR_REGENERATING_ERROR_1
-There was an error regenerating a wxFormBuilder project\n(check your wxFormBuilder path in "Paths 2" tab in "Preferences" dialog).\nIf this error repeats, you should disable automatice regeneration for wxFormBuilder projects.\nDo you want to disable it now?
-PROJMNGR_REGENERATING_ERROR_2
-There was an error regenerating a wxFormBuilder project\n(check your wxFormBuilder path in "Paths 2" tab in "Preferences" dialog).\n
-PROJMNGR_REGENERATING_ERROR_3
-There was an error regenerating a wxFormBuilder project\n(check write permisions in your project's folder).\nIf this error repeats, you should disable automatice regeneration for wxFormBuilder projects.\nDo you want to disable it now?
+There was an error regenerating a wxFormBuilder project.\nCheck your wxFormBuilder path setting in "Preferences" dialog.
 PROJMNGR_REGENERATING_ERROR_4
 There was an error regenerating a wxFormBuilder project\n(check write permisions in your project's folder).
 OSD_GENERATING_GRAPH
@@ -1265,9 +1265,9 @@ Binary file doesn't have execute permission
 MAINW_WARNING_EXCUTABLE_PERMISSION_CHANGED
 Executable permissions changed for the binary file (chmod a+x)
 COMP_ARG_ADD_ARGS
-Incluir argumentos
+Include arguments
 COMP_ARG_RECOMPILE
-Recompilar todo
+Recompile all
 COMPLEMENTS_CAPTION
 Install Complements
 COMPLEMENTS_DOWNLOAD
@@ -2127,7 +2127,7 @@ You are trying to run a header file. It is probably a mistake\nand you might wan
 MAINW_RUN_HEADER_CHECK
 Do not show this message again
 COMP_ARG_GENERIC_INFO
-Para poder generar la información de profiling que\nanaliza <{1}>, se deben utilizar argumentos específicos\nal compilar, luego recompilar todo el proyecto/programa\npara que estos cambios tengan efecto (si no lo hace ahora,\ndeberá luego utilizar el comando \"Limpiar\" del menú \n\"Ejecución\") y finalmente ejecutar el programa.
+In order to generate the required profilling information for <{1}>,\nsome additional arguments need to be added to the compile command,\nand then rebuild the project/program (if you want to do it later use the\n"Clean" command from "Run" menu), and finally run the program.
 MAINW_EXTERN_TOOL_ERROR
 An error occurred running <{1}>.
 MAINW_GPROF_OUTPUT_MISSING
@@ -3160,6 +3160,8 @@ WXFBSETUP_ACTIVATE
 Activate wxFormBuilder integration
 WXFBSETUP_AUTOUPDATE
 Regenerate WxFormBuilder projects automatically
+WXFBSETUP_AUTOUPDATE_TEMP_DISABLED
+Temporarily disable
 WXFBSETUP_UPDATE_CLASSES
 Create/delete inherited classes after regenerating
 WXFBSETUP_UPDATE_METHODS

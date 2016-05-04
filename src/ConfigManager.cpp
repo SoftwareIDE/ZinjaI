@@ -77,12 +77,11 @@ void ConfigManager::DoInitialChecks() {
 				Files.terminal_command = LinuxTerminalInfo::list[i].run_command;
 				if (LinuxTerminalInfo::list[i].warning) {
 					xterm_error_msg = LANG1(CONFIG_TERMINAL_WARNING,"La aplicación terminal que se ha encontrado instalada\n"
-						"es <{1}>. Algunas versiones de esta terminal pueden generar\n"
-						"problemas al intentar ejecutar un programa o proyecto. Si no logra\n"
-						"ejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\n"
-						"que compile, intente configurar otra terminal (menú Archivo->Preferencias...\n"
-						"pestaña \"Rutas 1\", opción \"Comando de la terminal\", la terminal\n"
-						"recomendada es xterm).",LinuxTerminalInfo::list[i].name);
+																	"es <{1}>. Algunas versiones de esta terminal pueden generar\n"
+																	"problemas al intentar ejecutar un programa o proyecto. Si no logra\n"
+																	"ejecutar correctamente desde ZinjaI ninguno de los programas/proyectos\n"
+																	"que compile, intente configurar otra terminal desde el cuadro de\n"
+																	"\"Preferencias\". La terminal recomendada es xterm).",LinuxTerminalInfo::list[i].name);
 				} else 
 					xterm_error_msg = "";
 				break;
@@ -92,7 +91,7 @@ void ConfigManager::DoInitialChecks() {
 			if (CheckComplaintAndInstall(nullptr,
 				LinuxTerminalInfo::list[0].test_command,
 				LANG(CONFIG_TERMINAL,"Terminal de ejecución"),
-				xterm_error_msg, "xterm")) 
+				xterm_error_msg, "xterm","","terminal")) 
 			{
 				Files.terminal_command = LinuxTerminalInfo::list[0].run_command;
 			}
@@ -116,8 +115,8 @@ void ConfigManager::DoInitialChecks() {
 				Init.compiler_seen = CheckComplaintAndInstall(
 					nullptr,"g++ --version",LANG(CONFIG_COMPILER,"Compilador C++"),
 					LANG(CONFIG_COMPILER_NOT_FOUND,"No se ha encontrado un compilador para C++ (g++ o clang). Debe instalarlo\n"
-					"con el gestor de paquetes que corresponda a su distribución\n"
-					"(apt-get, yum, yast, installpkg, etc.)"), 
+												   "con el gestor de paquetes que corresponda a su distribución\n"
+												   "(apt-get, yum, yast, installpkg, etc.)"), 
 					"build-essential");
 			}
 		}
@@ -839,34 +838,46 @@ void ConfigManager::LoadDefaults(){
 
 bool ConfigManager::CheckWxfbPresent() {
 	if (config->Init.wxfb_seen && !config->Files.wxfb_command.IsEmpty()) return true;
-	boolFlagGuard wxfb_working_guard(project?&(project->GetWxfbConfiguration()->working):nullptr);
-	wxString out;
+	wxfb_configuration *wxfb_conf = project?project->GetWxfbConfiguration():nullptr;
+	boolFlagGuard wxfb_working_guard(project?&(wxfb_conf->working):nullptr);
+	wxString out, check_command = mxUT::Quotize(config->Files.wxfb_command)+" -h";
 #ifdef __WIN32__
 	if (!config->Files.wxfb_command.IsEmpty())
-		out = mxUT::GetOutput(mxUT::Quotize(config->Files.wxfb_command)+" -h",true);
+		out = mxUT::GetOutput(check_command,true);
 	if (!out.Len()) {
 		if (wxFileName::FileExists("c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe"))
-			out=config->Files.wxfb_command="c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe";
+			out = config->Files.wxfb_command="c:\\archivos de programa\\wxformbuilder\\wxformbuilder.exe";
 		else if (wxFileName::FileExists("c:\\Program Files\\wxformbuilder\\wxformbuilder.exe"))
-			out=config->Files.wxfb_command="c:\\Program Files\\wxformbuilder\\wxformbuilder.exe";
+			out = config->Files.wxfb_command="c:\\Program Files\\wxformbuilder\\wxformbuilder.exe";
 		else if (wxFileName::FileExists("c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe"))
-			out=config->Files.wxfb_command="c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe";
+			out = config->Files.wxfb_command="c:\\Program Files (x86)\\wxformbuilder\\wxformbuilder.exe";
 	}
 #else
 	if (config->Files.wxfb_command.IsEmpty()) config->Files.wxfb_command = "wxformbuilder";
 #endif
-	if (!project->GetWxfbConfiguration(false)->ask_if_wxfb_is_missing) return false;
-	config->Init.wxfb_seen = out.Len() || CheckComplaintAndInstall(
-		main_window,
-		mxUT::Quotize(config->Files.wxfb_command)+" -h",
-		LANG(GENERAL_WARNING,"Advertencia"),
-		LANG(PROJMNGR_WXFB_NOT_FOUND,"El proyecto utiliza wxFormBuilder, pero este software\n"
-		"no se encuentra correctamente instalado/configurado en\n"
-		"su PC. Para descargar e instalar wxFormsBuilder dirijase\n"
-		"a http://wxformbuilder.org. Si ya se encuentra instalado,\n"
-		"configure su ubicación en la pestaña \"Rutas 2\" del\n"
-		"dialogo de \"Preferencias\" (menu \"Archivo\")."),
-		"wxformbuilder", "http://wxformbuilder.org");
+	config->Init.wxfb_seen = out.Len();
+	if (config->Init.wxfb_seen) return true;
+	
+	// si no estaba
+	wxString message = LANG(PROJMNGR_WXFB_NOT_FOUND,"El proyecto utiliza wxFormBuilder, pero este software\n"
+							"no se encuentra correctamente instalado/configurado en\n"
+							"su PC. Si ya se encuentra instalado debe configurar su\n"
+							"ubicación en el cuadro de \"Preferencias\".");
+	if (wxfb_conf->autoupdate_projects && !wxfb_conf->autoupdate_projects_temp_disabled) {
+		wxfb_conf->autoupdate_projects_temp_disabled = true;
+		message += "\n\n";
+		message += LANG(PROJMNGR_REGENERATING_ERROR_2,""
+						"La actualización automática de estos proyectos\nse deshabilitará temporalmente.");
+		
+	}
+	bool just_installed =
+		CheckComplaintAndInstall(main_window, check_command, LANG(GENERAL_WARNING,"Advertencia"), 
+								 message, "wxformbuilder", "http://wxformbuilder.org","wxformbuilder");
+	// puede ser que lo acabe de instalar el CheckComplaintAndInstall con apt-get
+	if (just_installed) {
+		wxfb_conf->autoupdate_projects_temp_disabled = false;
+		config->Init.wxfb_seen = true;
+	}
 	return config->Init.wxfb_seen;
 }
 
@@ -892,11 +903,9 @@ bool ConfigManager::CheckDoxygenPresent() {
 		mxUT::Quotize(config->Files.doxygen_command)+" --version",
 		LANG(GENERAL_WARNING,"Advertencia"),
 		LANG(MAINW_DOXYGEN_MISSING,"Doxygen no se encuentra correctamente instalado/configurado\n"
-		"en su pc. Para descargar e instalar Doxygen dirijase a\n"
-		"http://www.doxygen.org. Si ya se encuentra instalado,\n"
-		"configure su ubiciación en la pestaña \"Rutas 2\" del\n"
-		"dialog de \"Preferencias\" (menu \"Archivo\")."),
-		"doxygen","http://www.doxygen.org");
+								   "en su pc. Si ya se encuentra instalado,debe configurar su\n"
+								   "ubiciación en el cuadro de \"Preferencias\"."),
+		"doxygen","http://www.doxygen.org","doxygen");
 	return config->Init.doxygen_seen;
 }
 
@@ -908,12 +917,11 @@ bool ConfigManager::CheckValgrindPresent() {
 		main_window,
 		mxUT::Quotize(config->Files.valgrind_command)+" --version",
 		LANG(GENERAL_WARNING,"Advertencia"),
-		LANG(MAINW_VALGRIND_MISSING,"Valgrind no se encuentra correctamente instalado/configurado\n"
-		"en su pc. Para descargar e instalar Doxygen dirijase a\n"
-		"http://www.valgrind.org. Si ya se encuentra instalado,\n"
-		"configure su ubiciacion en la pestaña \"Rutas 2\" del\n"
-		"dialog de \"Preferencias\" (menu \"Archivo\")."),
-		"valgrind","http://valgrind.org");
+		LANG(MAINW_VALGRIND_MISSING,""
+			 "Valgrind no se encuentra correctamente instalado/configurado\n"
+			 "en su pc. Si ya se encuentra instalado deve configurar su\n"
+			 "ubiciacion en la pestaña en el cuadro de \"Preferencias\"."),
+		"valgrind","http://valgrind.org","valgrind");
 	return config->Init.valgrind_seen;
 }
 #endif
@@ -940,11 +948,9 @@ bool ConfigManager::CheckCppCheckPresent() {
 		mxUT::Quotize(config->Files.cppcheck_command)+" --version",
 		LANG(GENERAL_WARNING,"Advertencia"),
 		LANG(MAINW_CPPCHECK_MISSING,"CppCheck no se encuentra correctamente instalado/configurado\n"
-		"en su pc. Para descargar e instalar CppCheck dirijase a\n"
-		"http://cppcheck.sourceforge.net. Si ya se encuentra instalado,\n"
-		"configure su ubiciación en la pestaña \"Rutas 2\" del\n"
-		"dialog de \"Preferencias\" (menu \"Archivo\")."),
-		"cppcheck","http://cppcheck.sourceforge.net");
+									"en su pc. Si ya se encuentra instalado debe configurar su\n"
+									"ubiciación en el cuadro de \"Preferencias\"."),
+		"cppcheck","http://cppcheck.sourceforge.net","cppcheck");
 	return config->Init.cppcheck_seen;
 }
 
@@ -1050,29 +1056,30 @@ void ConfigManager::SetDefaultInspectionsImprovingTemplates (int version) {
 
 bool ConfigManager::CheckComplaintAndInstall(wxWindow *parent, const wxString &check_command, const wxString &what,
 											 const wxString &error_msg, const wxString &pkgname, 
-											 const wxString &website, const wxString & preferences_field) 
+											 const wxString &website, const wxString &preferences_field) 
 {
 	wxString check_output = mxUT::GetOutput(check_command,true);
 	if (check_output.Len() && !check_output.StartsWith("execvp")) return true; // si anda, ya esta instalada
-	wxString chk_message = GetTryToInstallCheckboxMessage(); // ver si tenemos apt-get
-	if (chk_message.IsEmpty() && website.Len()) // si no lo tenemos, talvez tengamos el link al sitio de descarga
-		chk_message = LANG(CONFIG_GOTO_PACKAGE_WEBSITE,"Abrir sitio el web de esta herramienta");
-	mxMessageDialog::mdAns ans = mxMessageDialog(parent,error_msg).Title(what).IconWarning().Check1(chk_message,true).Run(); // informar/preguntar
-	if (ans.check1) {
-		if (!GetTryToInstallCheckboxMessage().IsEmpty()) { // si había apt-get, 
-			TryToInstallWithAptGet(parent,what,pkgname); // intentar instalar
-			check_output = mxUT::GetOutput(check_command,true);
-			if (check_output.Len() && !check_output.StartsWith("execvp")) // si anda, ya esta instalada
-				return true; 
-			// si falló apt-get, avisar e intentar abrir el sitio web de descarga
-			ans = mxMessageDialog(parent,LANG(CONFIG_APTGET_FAILED,"Falló la instalación automática."))
-					.Title(what).IconWarning()
-				    .Check1(website.Len()?(LANG(CONFIG_GOTO_PACKAGE_WEBSITE,"Abrir sitio el web de esta herramienta")):"",true)
-					.Run();
-		}
-		if (ans.check1) { // si no había apt-get, o si fallo (por eso repito la pregunta del if), abrir el sitio web
-			mxUT::OpenInBrowser(website);
-		}
+	wxString apt_message = GetTryToInstallCheckboxMessage(); // ver si tenemos apt-get
+	wxString web_msg = website.Len()?(LANG1(CONFIG_GOTO_PACKAGE_WEBSITE,"Abrir sitio web (<{1}>)",website)):"";
+	wxString pref_msg = preferences_field.Len()?(LANG(CONFIG_OPEN_PREFERENCES,"Abrir el cuadro de Preferencias")):"";
+	
+	mxMessageDialog::mdAns ans = mxMessageDialog(parent,error_msg).Title(what).IconWarning()
+		.Check1(pref_msg,apt_message.IsEmpty()).Check2(apt_message.IsEmpty()?web_msg:apt_message,true).Run(); // informar/preguntar
+	if (ans.check2 && !apt_message.IsEmpty()) { // si había apt-get, 
+		TryToInstallWithAptGet(parent,what,pkgname); // intentar instalar
+		check_output = mxUT::GetOutput(check_command,true);
+		if (check_output.Len() && !check_output.StartsWith("execvp")) // si anda, ya esta instalada
+			return true; 
+		// si falló apt-get, avisar e intentar abrir el sitio web de descarga
+		ans = mxMessageDialog(parent,LANG(CONFIG_APTGET_FAILED,"Falló la instalación automática."))
+				.Title(what).IconWarning().Check1(pref_msg,true).Check2(web_msg,true).Run();
+	}
+	if (ans.check2) { // si no había apt-get, o si fallo (por eso repito la pregunta del if), abrir el sitio web
+		mxUT::OpenInBrowser(website);
+	}
+	if (ans.check1) { // si no había apt-get, o si fallo (por eso repito la pregunta del if), abrir el sitio web
+		mxPreferenceWindow::ShowUp()->SetPathsPage(preferences_field);
 	}
 	return false;
 }

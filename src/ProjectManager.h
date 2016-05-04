@@ -169,6 +169,7 @@ struct valgrind_configuration {
 struct wxfb_configuration {
 	bool activate_integration;
 	bool autoupdate_projects;
+	bool autoupdate_projects_temp_disabled; ///< si no está bien configurado el path a wxfb, este pasa a true para que no muestre una y otra vez el mensaje de error al querer actualizar
 	bool update_class_list;
 	bool update_methods;
 	bool dont_show_base_classes_in_goto;
@@ -180,16 +181,16 @@ struct wxfb_configuration {
 	SingleList<wxString> sources; ///< nombres de archivos (sin extension, será .h o .cpp) asociados al proyecto generados automáticamente por wxfb, ordenados con relación a projects (se carga en Project::WxfbGetFiles, full paths)
 	
 	//! inicializa la configuración con los valores por defecto
-	wxfb_configuration(bool enabled=true) {
-		ask_if_wxfb_is_missing=true;
-		activate_integration=enabled;
-		autoupdate_projects=true;
-		update_class_list=true;
-		update_methods=true;
-		dont_show_base_classes_in_goto=true;
-		set_wxfb_sources_as_readonly=true;
-		working=false;
-	}
+	wxfb_configuration(bool enabled=true) :
+		activate_integration(enabled), 
+		autoupdate_projects(true),
+		autoupdate_projects_temp_disabled(false), 
+		update_class_list(true), update_methods(true),
+		dont_show_base_classes_in_goto(true),
+		set_wxfb_sources_as_readonly(true),
+		ask_if_wxfb_is_missing(true),
+		working(false) 
+		{}
 };
 
 /** 

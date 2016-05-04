@@ -2554,7 +2554,10 @@ void ProjectManager::WxfbGetFiles() {
 * manually from tools menu (for a single wxfb project, specified in argument cual)
 **/
 bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
-	if (!config->CheckWxfbPresent()) return false;
+	if (!config->CheckWxfbPresent()) {
+		wxfb->autoupdate_projects_temp_disabled = true;
+		return false;
+	}
 	boolFlagGuard wxfb_working_guard(wxfb->working);
 	wxString old_compiler_tree_text = main_window->compiler_tree.treeCtrl->GetItemText(main_window->compiler_tree.state);
 	mxOSDGuard osd;
@@ -2608,25 +2611,18 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 	if (fbase.Len()) {
 		if (ret) {
 			if (osd) osd->Hide();
-			if (wxfb->autoupdate_projects) {
-				if ( mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_1,""
-													  "No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
-													  "(probablemente la ruta al ejecutable de wxFormBuilder no este\n"
-													  "correctamente definida. Verifique esta propiedad en la pestaña \"Rutas 2\"\n"
-													  "del cuadro de \"Preferencias\").\n"
-													  "Si el error se repite puede desactivar la actualización automática.\n"
-													  "¿Desea desactivar la actualización automática ahora?"))
-						.Title(LANG(GENERAL_ERROR,"Error")).ButtonsYesNo().IconError().Run().yes )
-				{
-					wxfb->autoupdate_projects=false;
-				}
-			} else {
-				mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_2,""
-												 "No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
-												 "(probablemente la ruta al ejecutable de wxFormBuilder no este\n"
-												 "correctamente definida. Verifique esta propiedad en la pestaña \"Rutas 2\"\n"
-												 "del cuadro de \"Preferencias\").")).IconError().Run();
+			wxString message = LANG(PROJMNGR_REGENERATING_ERROR_1,""
+				 "No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
+				 "(probablemente la ruta al ejecutable de wxFormBuilder no esté\n"
+				 "correctamente definida. Verifique esta propiedad en la pestaña \"Rutas 2\"\n"
+				 "del cuadro de \"Preferencias\").");
+			if (wxfb->autoupdate_projects && !wxfb->autoupdate_projects_temp_disabled) {
+				wxfb->autoupdate_projects_temp_disabled = true;
+				message += "\n\n";
+				message += LANG(PROJMNGR_REGENERATING_ERROR_2,""
+								"La actualización automática de estos proyectos\nse deshabilitará temporalmente.");
 			}
+			mxMessageDialog(main_window,message).Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			return false;
 		}
 		
@@ -2651,22 +2647,17 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 	if (!fil.Exists()) fil.Create();
 	fil.Open();
 	if (!fil.IsOpened()) {
-		if (wxfb->autoupdate_projects) {
-			if ( mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_3,""
-												  "No se pudo actualizar correctamente los proyectos wxFormBuilder\n"
-												  "(probablemente no se puede escribir en la carpeta de proyecto).\n"
-												  "Si el error se repite puede desactivar la actualización automática.\n"
-												  "¿Desea desactivar la actualización automática ahora?"))
-					.Title(LANG(GENERAL_ERROR,"Error")).ButtonsYesNo().IconError().Run().yes )
-			{
-				wxfb->autoupdate_projects=false;
-			}
-		} else {
-			mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_4,""
-											 "No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
-											 "(probablemente no se puede escribir en la carpeta de proyecto)."))
-				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		if (osd) osd->Hide();
+		wxString message = LANG(PROJMNGR_REGENERATING_ERROR_4,""
+								"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
+								"(probablemente no se puede escribir en la carpeta de proyecto).");
+		if (wxfb->autoupdate_projects && !wxfb->autoupdate_projects_temp_disabled) {
+			wxfb->autoupdate_projects_temp_disabled = true;
+			message += "\n\n";
+			message += LANG(PROJMNGR_REGENERATING_ERROR_2,""
+							"La actualización automática de estos proyectos\nse deshabilitará temporalmente.");
 		}
+		mxMessageDialog(main_window,message).Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return true;
 	}
 	fil.Clear();
@@ -2904,7 +2895,7 @@ void ProjectManager::ActivateWxfb(bool do_activate) {
 	if (do_activate) {
 		WxfbGetFiles();
 		if (!config->CheckWxfbPresent()) {
-			GetWxfbConfiguration()->autoupdate_projects = false;
+			GetWxfbConfiguration()->autoupdate_projects_temp_disabled = true;
 		}
 	}
 	main_window->aui_manager.Update(); // para que se de cuenta de el cambio en la barra de herramientas
@@ -3405,7 +3396,7 @@ ProjectManager::WxfbAutoCheckData::WxfbAutoCheckData() {
 **/
 void ProjectManager::WxfbAutoCheckStep1() {
 	
-	if (loading || !wxfb || !wxfb->activate_integration || !wxfb->autoupdate_projects || wxfb->working) return;
+	if (loading || !wxfb || !wxfb->activate_integration || !wxfb->autoupdate_projects || wxfb->autoupdate_projects_temp_disabled || wxfb->working) return;
 	
 	if (parser->working) {
 		class LaunchProjectWxfbAutoUpdateStep1Action : public Parser::OnEndAction {

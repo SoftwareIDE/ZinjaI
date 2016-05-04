@@ -120,28 +120,28 @@ mxMessageDialog::mdAns mxMessageDialog::Run() {
 void mxMessageDialog::OnOkButton(wxCommandEvent &event){
 	m_result.ok = true;
 	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
-	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check2_ctrl && m_check2_ctrl->GetValue());
 	EndModal(1);
 }
 
 void mxMessageDialog::OnCancelButton(wxCommandEvent &event){
 	m_result.cancel = true;
 	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
-	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check2_ctrl && m_check2_ctrl->GetValue());
 	EndModal(0);
 }
 
 void mxMessageDialog::OnYesButton(wxCommandEvent &event){
 	m_result.yes = true;
 	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
-	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check2_ctrl && m_check2_ctrl->GetValue());
 	EndModal(1);
 }
 
 void mxMessageDialog::OnNoButton(wxCommandEvent &event){
 	m_result.no = true;
 	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
-	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check2_ctrl && m_check2_ctrl->GetValue());
 	EndModal(0);
 }
 
