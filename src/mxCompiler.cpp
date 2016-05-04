@@ -530,7 +530,7 @@ void mxCompiler::ParseCompilerOutput(compile_and_run_struct_single *compile_and_
 			"completa haga click con el boton derecho del raton en cualquier elemento del arbol\n"
 			"y seleccione \"abrir ultima salida\". Para contribuir al desarrollo de ZinjaI puede\n"
 			"enviar esta salida, o el codigo que la ocasiono a zaskar_84@yahoo.com.ar"
-			),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			)).Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 	}
 	
 	delete compile_and_run->process; compile_and_run->process=nullptr; // liberar el proceso

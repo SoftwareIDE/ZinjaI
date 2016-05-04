@@ -1047,10 +1047,13 @@ void mxInspectionGrid::OnSetWatch (wxCommandEvent & evt) {
 		if (inspections[sel[i]]->GetDbiType()==DIT_GDB_COMMAND) continue;
 		wxString expr= inspections[sel[i]]->GetExpression();
 		wxString num =debug->AddWatchPoint(expr,read,write);
-		if (!num.IsEmpty())
-			mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_OK,"Watchpoint insertado correctamente."),num+": "+expr,mxMD_OK|mxMD_INFO).ShowModal();
-		else
-			mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_ERROR,"Error al insertar watchpoint."),expr,mxMD_OK|mxMD_ERROR).ShowModal();
+		if (!num.IsEmpty()) {
+			mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_OK,"Watchpoint insertado correctamente."))
+				.Title(num+": "+expr).IconInfo().Run();
+		} else {
+			mxMessageDialog(main_window,LANG(INSPECTION_WATCH_ADDED_ERROR,"Error al insertar watchpoint."))
+				.Title(expr).IconError().Run();
+		}
 	}
 }
 

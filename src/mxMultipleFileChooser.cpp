@@ -80,9 +80,11 @@ mxMultipleFileChooser::mxMultipleFileChooser(wxString apath, bool modal) : wxDia
 void mxMultipleFileChooser::OnButtonOk(wxCommandEvent &event) {
 	int n=list->GetCount(); if (n==0) return;
 	int nn=0; for (int i=0;i<n;i++) if (list->IsChecked(i)) nn++;
-	int x=mxMessageDialog(this,LANG1(MULTIFILE_CONFIRM_ADD,"¿Desea agregar <{1}> archivos al proyecto?",wxString()<<nn),LANG(GENERAL_CONFIRM,"Confirmacion"),mxMD_YES_NO|mxMD_QUESTION).ShowModal();
-	if (mxMD_YES!=x) return;
-	mxOSD osd(main_window,LANG(OSD_ADDING_FILES,"Agregando archivos..."));
+	mxMessageDialog::mdAns x =
+		mxMessageDialog(this,LANG1(MULTIFILE_CONFIRM_ADD,"¿Desea agregar <{1}> archivos al proyecto?",wxString()<<nn))
+			.Title(LANG(GENERAL_CONFIRM,"Confirmacion")).ButtonsYesNo().IconQuestion().Run();
+	if (x.no) return;
+	mxOSDGuard osd(main_window,LANG(OSD_ADDING_FILES,"Agregando archivos..."));
 	int iw=cmb_where->GetSelection();
 	eFileType where=FT_NULL;
 	if (iw==0) where=FT_SOURCE;

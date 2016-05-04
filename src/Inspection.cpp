@@ -118,7 +118,8 @@ void DebuggerInspection::ErrorOnEvaluation() {
 								"ejemplo cuando involucra la sobrecarga de un operador) y esta ejecución\n"
 								"se haya interrumpido por un error o por una señal. En ese caso, el stack\n"
 								"puede haber cambiado (ver trazado inverso).\n\n"
-								"Si el problema persiste, limpie la tabla de inspecciones y reinicie la\ndepuración."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+								"Si el problema persiste, limpie la tabla de inspecciones y reinicie la\ndepuración."))
+		.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();		
 	debug->UpdateBacktrace(false);
 }
 

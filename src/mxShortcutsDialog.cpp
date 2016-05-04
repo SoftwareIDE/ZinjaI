@@ -281,7 +281,8 @@ void mxShortcutsDialog::OnOkButton (wxCommandEvent & evt) {
 		if (!norm.Len()) continue;
 		for(int j=i+1;j<actions.GetSize();j++) {
 			if (norm == normalize(actions[j].text->GetValue())) {
-				mxMessageDialog(this,LANG2(SHORCUTS_COLLISION,"Dos acciones tienen el mismo atajo:\n     <{1}>\n     <{2}>",actions[i].label->GetLabel(),actions[j].label->GetLabel()),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog(this,LANG2(SHORCUTS_COLLISION,"Dos acciones tienen el mismo atajo:\n     <{1}>\n     <{2}>",actions[i].label->GetLabel(),actions[j].label->GetLabel()))
+					.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 				filter->SetValue(actions[j].text->GetValue());
 				wxTimerEvent t_evt;	OnTimer(t_evt);
 				return;

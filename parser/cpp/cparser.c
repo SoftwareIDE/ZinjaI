@@ -1709,7 +1709,13 @@ extern int f_class( Declaration_t Declaration, Class_t Class )
       Class->lineno_beg = lineno;
       Class->charno_beg = charno;
 
-      LongStringIdAppend( &Class->name, ident( 0 ));
+      
+		/// ZASKAR - SCOPES - DESCOMENTAR ESTO PARA TENER SCOPES ANIDADOS COMPLETOS
+/*		if (Class->ClassParent) {*/
+/*			LongStringMyAppend(&Class->name,Class->ClassParent->name.buf);*/
+/*			LongStringMyAppend(&Class->name,"::");*/
+/*		}*/
+		LongStringIdAppend( &Class->name, ident( 0 ));
 
       step( 1 );
 		

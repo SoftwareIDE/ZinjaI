@@ -27,9 +27,9 @@ private:
 	static wxBrush *br;
 	static mxOSD *current_osd;
 	bool corner;
-public:
 	mxOSD(wxWindow *aparent, wxString str="", int time=0, bool coner=false, GenericAction *aon_cancel=nullptr);
 	~mxOSD();
+public:
 	void ShowText(wxString str, int time=0, bool corner=false);
 	void OnTimer(wxTimerEvent &evt);
 	void OnPaint (wxPaintEvent &event);
@@ -39,9 +39,33 @@ public:
 	
 	static void Execute(wxString command, wxString message, GenericActionEx<int> *aon_end);
 	
+	static void MakeTimed(wxWindow *aparent, wxString str,int time) { 
+		new mxOSD(aparent,str,time,true,nullptr); 
+	}
+	
+	friend class mxOSDGuard;
+	
 	DECLARE_EVENT_TABLE();
 };
 
+class mxOSDGuard {
+	mxOSD *m_osd;
+	// no copiable
+	mxOSDGuard(const mxOSDGuard&);
+	mxOSDGuard &operator=(const mxOSDGuard&);
+public:
+	mxOSDGuard() : m_osd(nullptr) {}
+	mxOSDGuard(wxWindow *aparent, wxString str/*, GenericAction *aon_cancel=nullptr*/) 
+		: m_osd (new mxOSD(aparent,str,0,false,nullptr)) {}
+		void Create(wxWindow *aparent, wxString str/*, GenericAction *aon_cancel=nullptr*/) {
+			GenericAction *aon_cancel=nullptr;
+			if (m_osd) m_osd->Destroy();
+			m_osd = new mxOSD(aparent,str,0,false,aon_cancel);
+		}
+		void Hide() { if (m_osd) m_osd->Hide(); }
+		void Dettach() { m_osd=nullptr; }
+		~mxOSDGuard() { if (m_osd) m_osd->Destroy(); }
+};
 
 #endif
 

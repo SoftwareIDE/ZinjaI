@@ -80,10 +80,14 @@ bool DebugManager::Start(bool update) {
 	if (!Run() && has_symbols) {
 #ifdef __WIN32__
 		if (wxFileName(DIR_PLUS_FILE(project->path,project->executable_name)).GetPath().Contains(' '))
-			mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING_SPACES,"Error al iniciar el proceso. Puede intentar mover el ejecutable o el proyecto a una ruta sin espacios."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
-		else
+			mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING_SPACES, ""
+											 "Error al iniciar el proceso. Puede intentar mover el\n"
+											 "ejecutable o el proyecto a una ruta sin espacios."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
+		else 
 #endif
-			mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING,"Error al iniciar el proceso."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+			mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING,"Error al iniciar el proceso."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 		return false;
 	}
 	return true;
@@ -123,10 +127,14 @@ bool DebugManager::Start(mxSource *source) {
 			if (!Run()) {
 #ifdef __WIN32__
 				if (source->GetBinaryFileName().GetFullPath().Contains(' '))
-					mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING_SPACES,"Error al iniciar el proceso. Puede intentar mover el ejecutable o el proyecto a una ruta sin espacios."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+					mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING_SPACES,""
+													 "Error al iniciar el proceso. Puede intentar mover\n"
+													 "el ejecutable o el proyecto a una ruta sin espacios."))
+						.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 				else
 #endif
-					mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING,"Error al iniciar el proceso."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+					mxMessageDialog(main_window,LANG(DEBUG_ERROR_STARTING,"Error al iniciar el proceso."))
+						.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 				return false;
 			}
 			return true;
@@ -136,7 +144,7 @@ bool DebugManager::Start(mxSource *source) {
 }
 
 bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool show_console, int wait_for_key) {
-	mxOSD osd(main_window,project?LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."):"");
+	mxOSDGuard osd(main_window,project?LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."):"");
 	ResetDebuggingStuff(); 
 	debug_patcher->Init(exe);
 #ifndef __WIN32__
@@ -170,9 +178,11 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 			{ wxYield(); wxMilliSleep(100); }
 		if (!tty_pid && !wxFileName::FileExists(tty_file)) {
 			debugging = false;
-			mxMessageDialog(main_window,LANG(DEBUG_ERROR_WITH_TERMINAL,"Ha ocurrido un error al iniciar la terminal para la ejecucion.\n"
-										   "Compruebe que el campo \"Comando del terminal\" de la pestaña\n"
-										   "\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(main_window,LANG(DEBUG_ERROR_WITH_TERMINAL,""
+											 "Ha ocurrido un error al iniciar la terminal para la ejecucion.\n"
+											 "Compruebe que el campo \"Comando del terminal\" de la pestaña\n"
+											 "\"Rutas 2\" del cuadro de \"Preferencias\" sea correcto."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
 			return false;
 		}
@@ -211,7 +221,13 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 		output = process->GetOutputStream();
 		wxString hello = WaitAnswer();
 		if (hello.Find(_T("no debugging symbols found"))!=wxNOT_FOUND) {
-			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,"El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depuracion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar)."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,""
+											 "El ejecutable que se intenta depurar no contiene informacion de depuracion.\n"
+											 "Compruebe que en las opciones de depuracion este activada la informacion de\n"
+											 "depuracion, verifique que no este seleccionada la opcion \"stripear el ejecutable\"\n"
+											 "en las opciones de enlazado, y recompile el proyecto si es necesario (Ejecucion->Limpiar\n"
+											 "y luego Ejecucion->Compilar)."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			SendCommand(_T("-gdb-exit"));
 			debugging = false; has_symbols=false;
 			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
@@ -235,7 +251,7 @@ bool DebugManager::Start(wxString workdir, wxString exe, wxString args, bool sho
 							"paquetes que corresponda a su distribucion\n"
 							"(apt-get, yum, yast, installpkg, etc.)")
 #endif
-				,"Error al iniciar depurador",mxMD_OK|mxMD_ERROR).ShowModal();
+				).Title("Error al iniciar depurador").IconError().Run();
 			main_window->PrepareGuiForDebugging(false);
 	}
 	pid=0;
@@ -284,7 +300,7 @@ void DebugManager::ResetDebuggingStuff() {
 
 bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, const wxString &status_message, bool should_continue) {
 	_DBG_LOG_CALL(Open());
-	mxOSD osd(main_window,LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."));
+	mxOSDGuard osd(main_window,LANG(OSD_STARTING_DEBUGGER,"Iniciando depuracion..."));
 	ResetDebuggingStuff();
 	wxString exe = source?source->GetBinaryFileName().GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
 	wxString command(config->Files.debugger_command);
@@ -304,7 +320,13 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 		output = process->GetOutputStream();
 		wxString hello = WaitAnswer();
 		if (hello.Find("no debugging symbols found")!=wxNOT_FOUND) {
-			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,"El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depuracion este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar)."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,""
+											 "El ejecutable que se intenta depurar no contiene informacion de depuracion.\n"
+											 "Compruebe que en las opciones de depuracion este activada la informacion de\n"
+											 "depuracion, verifique que no este seleccionada la opcion \"stripear el ejecutable\"\n"
+											 "en las opciones de enlazado, y recompile el proyecto si es necesario (Ejecucion->Limpiar\n"
+											 "y luego Ejecucion->Compilar)."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			SendCommand("-gdb-exit");
 			debugging = false;
 			return false;
@@ -316,7 +338,8 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 		// mostrar el backtrace y marcar el punto donde corto
 		wxString ans = SendCommand(gdb_command);
 		if (ans.Contains("^error,")) {
-			mxMessageDialog(main_window,wxString(LANG(DEBUG_SPECIAL_START_FAILED,"Ha ocurrido un error al iniciar la depuración:"))+debug->GetValueFromAns(ans,"msg",true,true),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(main_window,wxString(LANG(DEBUG_SPECIAL_START_FAILED,"Ha ocurrido un error al iniciar la depuración:"))+debug->GetValueFromAns(ans,"msg",true,true))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			main_window->SetCompilingStatus(LANG(DEBUG_STATUS_INIT_ERROR,"Error al iniciar depuracion"));
 			Stop(); return false;
 		}
@@ -368,7 +391,7 @@ bool DebugManager::SpecialStart(mxSource *source, const wxString &gdb_command, c
 bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 	_DBG_LOG_CALL(Open());
 	
-	mxOSD osd(main_window,project?LANG(OSD_LOADING_CORE_DUMP,"Cargando volcado de memoria..."):"");
+	mxOSDGuard osd(main_window,project?LANG(OSD_LOADING_CORE_DUMP,"Cargando volcado de memoria..."):"");
 	
 	ResetDebuggingStuff();
 	wxString exe = source?source->GetBinaryFileName().GetFullPath():DIR_PLUS_FILE(project->path,project->active_configuration->output_file);
@@ -390,7 +413,7 @@ bool DebugManager::LoadCoreDump(wxString core_file, mxSource *source) {
 		wxString hello = WaitAnswer();
 		/// @todo: el mensaje puede aparecer por las bibliotecas, ver como diferenciar
 //		if (hello.Find(_T("no debugging symbols found"))!=wxNOT_FOUND) {
-//			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,"El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depuracion que este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar)."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+//			mxMessageDialog(main_window,LANG(DEBUG_NO_SYMBOLS,"El ejecutable que se intenta depurar no contiene informacion de depuracion.\nCompruebe que en las opciones de depuracion que este activada la informacion de depuracion,\nverifique que no este seleccionada la opcion \"stripear el ejecutable\" en las opciones de enlazado,\n y recompile el proyecto si es necesario (Ejecucion->Limpiar y luego Ejecucion->Compilar).")).Title(LANG(GENERAL_ERROR,"Error").IconError().Run();
 //			SendCommand(_T("-gdb-exit"));
 //			debugging = false;
 //			return false;
@@ -932,7 +955,9 @@ void DebugManager::Pause() {
 	if (!waiting && !debugging) return;
 #ifdef __WIN32__
 	if (!winLoadDBP()) {
-		mxMessageDialog(main_window,"Esta caracteristica no se encuentra presente en versiones de Windows previas a XP-SP2",LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(main_window,"Esta caracteristica no se encuentra presente\n"
+									"en versiones de Windows previas a XP-SP2")
+			.Title(LANG(GENERAL_ERROR,"Error").IconError().Run();
 		return;
 	}
 	if (FindOutChildPid()) winDebugBreak(child_pid);
@@ -1069,9 +1094,13 @@ wxString DebugManager::WaitAnswer() {
 				wxMilliSleep(10);
 				wxTimeSpan t2=wxDateTime::Now()-t1;
 				if (t2.GetSeconds()>30) {
-					if (mxMD_YES==mxMessageDialog(main_window,_T("Alguna operación en el depurador está tomando demasiado tiempo, desea interrumpirla?."),_T("UPS!"),(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
+					if (mxMessageDialog(main_window,"Alguna operación en el depurador está tomando demasiado tiempo, desea interrumpirla?.")
+						.Title("UPS!").IconWarning().ButtonsYesNo().Run().yes ) 
+					{
 						return "";
-					else t1=wxDateTime::Now();
+					} else {
+						t1=wxDateTime::Now();
+					}
 				}
 			}
 		}
@@ -1694,7 +1723,11 @@ bool DebugManager::EnableInverseExec() {
 			recording_for_reverse=true;
 			return true;
 		} else 
-			mxMessageDialog(main_window,LANG(DEBUG_ERROR_REVERSE,"Ha ocurrido un error al intentar activar esta caracteristica.\nPara utilizarla debe instalar gdb version 7.0 o superior.\nAdema, no todas las plataformas soportan este tipo de ejecucion."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(main_window,LANG(DEBUG_ERROR_REVERSE,""
+											 "Ha ocurrido un error al intentar activar esta caracteristica.\n"
+											 "Para utilizarla debe instalar gdb version 7.0 o superior.\n"
+											 "Además, no todas las plataformas soportan este tipo de ejecucion."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 	}
 	return false;
 }
@@ -1705,9 +1738,12 @@ bool DebugManager::ToggleInverseExec() {
 		wxString ans=inverse_exec?SendCommand("-gdb-set exec-direction forward"):SendCommand("-gdb-set exec-direction reverse");
 		if (!ans.Contains("error")) inverse_exec=!inverse_exec;
 	} else {
-		mxMessageDialog(main_window,LANG(DEBUG_REVERSE_DISABLED,"Solo se puede retroceder la ejecucion hasta el punto en donde la ejecucion hacia atras fue habilitada.\n"
-			                           "Actualmente esta caracteristica no esta habilitada. Utilice el comando \"Habilitar Ejecucion Hacia Atras\"\n"
-										"del menu de Depuracion para habilitarla."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(main_window,LANG(DEBUG_REVERSE_DISABLED,""
+										 "Solo se puede retroceder la ejecucion hasta el punto en donde la\n"
+										 "ejecucion hacia atras fue habilitada. Actualmente esta caracteristica\n"
+										 "no esta habilitada. Utilice el comando \"Habilitar Ejecucion Hacia Atras\"\n"
+										 "del menu de Depuracion para habilitarla."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 	}
 	return inverse_exec;
 }
@@ -1780,30 +1816,31 @@ void DebugManager::SetFullOutput (bool on, bool force) {
 void DebugManager::ShowBreakPointLocationErrorMessage (BreakPointInfo *_bpi) {
 	static bool show_breakpoint_error=true;
 	if (!show_breakpoint_error) return;
-	int res=mxMessageDialog(main_window,
+	mxMessageDialog::mdAns res = mxMessageDialog(main_window,
 		wxString(LANG(DEBUG_BAD_BREAKPOINT_WARNING,"El depurador no pudo colocar un punto de interrupcion en:"))<<
 		"\n"<<_bpi->fname<<": "<<_bpi->line_number+1<<"\n"<<
 		LANG(DEBUG_BAD_BREAKPOINT_WARNING_LOCATION,"Las posibles causas son:\n"
-		"* Fue colocado en un archivo que no se compila en el proyecto/programa.\n"
-		"* Fue colocado en una linea que no genera codigo ejecutable (ej: comentario).\n"
-		"* Información de depuración desactualizada o inexistente. Intente recompilar\n"
-		"   completamente el programa/proyecto, utilizando el item Limpiar del menu Ejecucion\n"
-		"   antes de depurar.\n"
-		"* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n"
-		"   espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto.")
-		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
-	if (res&mxMD_CHECKED) show_breakpoint_error=false;
+			"* Fue colocado en un archivo que no se compila en el proyecto/programa.\n"
+			"* Fue colocado en una linea que no genera codigo ejecutable (ej: comentario).\n"
+			"* Información de depuración desactualizada o inexistente. Intente recompilar\n"
+			"   completamente el programa/proyecto, utilizando el item Limpiar del menu Ejecucion\n"
+			"   antes de depurar.\n"
+			"* Espacios o acentos en las rutas de los archivos fuente. Si sus directorios contienen\n"
+			"   espacios o acentos en sus nombres pruebe renombrarlos o mover el proyecto."))
+			.Title(LANG(GENERAL_WARNING,"Aviso")).IconWarning()
+			.Check1("No volver a mostrar este mensaje",false).Run();
+	if (res.check1) show_breakpoint_error=false;
 }
 
 void DebugManager::ShowBreakPointConditionErrorMessage (BreakPointInfo *_bpi) {
 	static bool show_breakpoint_error=true;
 	if (!show_breakpoint_error) return;
-	int res=mxMessageDialog(main_window,
+	mxMessageDialog::mdAns res = mxMessageDialog(main_window,
 		wxString(LANG(DEBUG_BAD_BREAKPOINT_WARNING,"El depurador no pudo colocar un punto de interrupcion en:"))<<
 		"\n"<<_bpi->fname<<": "<<_bpi->line_number+1<<"\n"<<
-		LANG(DEBUG_BAD_BREAKPOINT_WARNING_CONDITION,"La condición ingresada no es válida.")
-		,LANG(GENERAL_WARNING,"Aviso"),mxMD_WARNING|mxMD_OK,"No volver a mostrar este mensaje",false).ShowModal();
-	if (res&mxMD_CHECKED) show_breakpoint_error=false;
+		LANG(DEBUG_BAD_BREAKPOINT_WARNING_CONDITION,"La condición ingresada no es válida."))
+		.Title(LANG(GENERAL_WARNING,"Aviso")).IconWarning().Check1("No volver a mostrar este mensaje",false).Run();
+	if (res.check1) show_breakpoint_error=false;
 }
 
 void DebugManager::SendSignal (const wxString & signame) {
@@ -1820,7 +1857,9 @@ bool DebugManager::GetSignals(vector<SignalHandlingInfo> & v) {
 	wxString ans; v.clear();
 	if (debugging) {
 		if (waiting) {
-			mxMessageDialog(main_window,"Debe pausar o detener la ejecución para modificar el comportamiento ante señales.",LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal(); return false;
+			mxMessageDialog(main_window,"Debe pausar o detener la ejecución para modificar el comportamiento ante señales.")
+				.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run(); 
+			return false;
 		} else {
 			ans = SendCommand("info signals");
 			if (!ans.Contains("^done")) return false;

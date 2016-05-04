@@ -263,17 +263,21 @@ void mxMainWindow::OnToolsWxfbNewRes(wxCommandEvent &event) {
 		
 		if (wxNOT_FOUND!=name.Find('-') 
 			|| wxNOT_FOUND!=name.Find('<') || wxNOT_FOUND!=name.Find('?') 
-			|| wxNOT_FOUND!=name.Find('>') || wxNOT_FOUND!=name.Find('*') ) {
-				mxMessageDialog(this,"El nombre ingresado no es valido",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-				return;
-			}
+			|| wxNOT_FOUND!=name.Find('>') || wxNOT_FOUND!=name.Find('*') ) 
+		{
+			mxMessageDialog(this,"El nombre ingresado no es valido").Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+			return;
+		}
 		
 		// controlar que no exista
 		wxString cpp_name = fbase+".cpp";
 		wxString h_name = fbase+".h";
 		if (wxFileName::FileExists(fname)) {
-			if (mxMD_NO==mxMessageDialog(this,"Ya existe un archivo con ese nombre. Desea conservarlo?\nSi elige No se borrara su contenido.",name,(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
+			if (mxMessageDialog(this,"Ya existe un archivo con ese nombre. Desea conservarlo?\nSi elige No se borrara su contenido.")
+					.Title(name).IconWarning().Run().ok)
+			{
 				wxRemoveFile(fname);
+			}
 		} 
 		
 		// crear el cpp
@@ -396,7 +400,11 @@ void mxMainWindow::OnToolsWxfbHelp(wxCommandEvent &event) {
 void mxMainWindow::OnToolsWxfbHelpWx(wxCommandEvent &event) {
 	if (wxFileName::FileExists(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index)))
 		mxUT::OpenInBrowser(DIR_PLUS_FILE(config->zinjai_dir,config->Help.wxhelp_index));
-	else if (mxMD_OK==mxMessageDialog(this,"ZinjaI no pudo encontrar la ayuda de wxWidgets. A continuacion le permitira buscarla\nmanualmente y luego recordara esta seleccion (en cualquier momento se puede modificar\ndesde el cuadro de Preferencias). Usualmente, el archivo indice es \"wx_contents.html\".","Ayuda wxWidgets",(mxMD_INFO|mxMD_OK_CANCEL)).ShowModal()) {
+	else if (mxMessageDialog(this,"ZinjaI no pudo encontrar la ayuda de wxWidgets. A continuacion le permitira buscarla\n"
+								  "manualmente y luego recordara esta seleccion (en cualquier momento se puede modificar\n"
+								  "desde el cuadro de Preferencias). Usualmente, el archivo indice es \"wx_contents.html\".")
+				.Title("Ayuda wxWidgets").IconInfo().ButtonsOkCancel().Run().ok) 
+	{
 		wxFileDialog dlg(this,"Indice de ayuda wxWidgets:",config->Help.wxhelp_index);
 		if (wxID_OK==dlg.ShowModal()) {
 			config->Help.wxhelp_index=dlg.GetPath();
@@ -451,22 +459,26 @@ void mxMainWindow::OnToolsDiffTwoSources(wxCommandEvent &event) {
 	if (notebook_sources->GetPageCount()>1)
 		new mxDiffWindow(nullptr);
 	else
-		mxMessageDialog(main_window,"Debe tener al menos dos archivos abiertos para poder compararlos",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+		mxMessageDialog(main_window,"Debe tener al menos dos archivos abiertos para poder compararlos")
+			.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();		
 }
 
 void mxMainWindow::OnToolsDiffToHimself(wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE {
 		mxSource *src = CURRENT_SOURCE;
-		if (src->sin_titulo)
-			mxMessageDialog(main_window,"El archivo actual no ha sido guardado",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
-		else {
+		if (src->sin_titulo) {
+			mxMessageDialog(main_window,"El archivo actual no ha sido guardado")
+					.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();		
+		} else {
 			if (src->GetModify())
 				new mxDiffWindow(CURRENT_SOURCE,src->source_filename.GetFullPath());
 			else
-				mxMessageDialog(main_window,"El archivo actual no ha sido modificado",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+				mxMessageDialog(main_window,"El archivo actual no ha sido modificado")
+					.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();		
 		}
 	} else
-		mxMessageDialog(main_window,"Debe tener al menos un archivo abierto para poder compararlo",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();		
+		mxMessageDialog(main_window,"Debe tener al menos un archivo abierto para poder compararlo")
+			.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();		
 }
 
 void mxMainWindow::OnToolsDiffToDiskFile(wxCommandEvent &event) {
@@ -481,7 +493,8 @@ void mxMainWindow::OnToolsDiffToDiskFile(wxCommandEvent &event) {
 			new mxDiffWindow(CURRENT_SOURCE,dlg.GetPath());
 		}
 	} else
-		mxMessageDialog(main_window,"Debe tener al menos un archivo abierto para poder compararlo",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();				
+		mxMessageDialog(main_window,"Debe tener al menos un archivo abierto para poder compararlo")
+			.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();
 }
 
 void mxMainWindow::OnToolsDiffClear(wxCommandEvent &event) {
@@ -570,7 +583,8 @@ static void showExternToolErrorMessage(int retval, wxArrayString &errors, wxStri
 	mxOSD::HideCurrent();
 	mxMessageDialog(main_window,
 		LANG1(MAINW_EXTERN_TOOL_ERROR,"Ha ocurrido un error al ejecutar <{1}>.",tool)
-		+(wxString(" (error ")<<retval<<").")+msg,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); 
+		+(wxString(" (error ")<<retval<<").")+msg)
+		.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run(); 
 }
 
 /**
@@ -584,13 +598,16 @@ wxString mxMainWindow::OnToolsGprofShowListAux(bool include_command) {
 	// ver si hay informacion de profiling
 	wxString gmon = project ? (DIR_PLUS_FILE(project->active_configuration->working_folder.Len()?DIR_PLUS_FILE(project->path,project->active_configuration->working_folder):project->path,"gmon.out")) : (DIR_PLUS_FILE(CURRENT_SOURCE->working_folder.GetFullPath(),"gmon.out"));
 	if (!wxFile::Exists(gmon)) {
-		mxMessageDialog(this,LANG(MAINW_GPROF_OUTPUT_MISSING,"No se encontro informacion de profiling.\nPara saber como generarla consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(MAINW_GPROF_OUTPUT_MISSING,""
+								  "No se encontro informacion de profiling.\n"
+								  "Para saber como generarla consulte la ayuda."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return "";
 	}
 	
 	// ejecutar gprof...
 	status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_ANALIZING,"Analizando informacion de perfilado..."));
-	mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
+	mxOSDGuard osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
 	wxString command("gprof -b ");
 	if (project)
 		command<<mxUT::Quotize(project->GetExePath());
@@ -621,7 +638,7 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	wxString gout=OnToolsGprofShowListAux(); 
 	if (!gout.Len()) return;
 	
-	mxOSD osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
+	mxOSDGuard osd(this,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
 	
 	// pedir al usuario los limites para el grafo (arcos y nodos con poco peso se descartan)
 	static double edge_tres=0.1,node_tres=0.1;
@@ -642,7 +659,12 @@ void mxMainWindow::OnToolsGprofShow (wxCommandEvent &event) {
 	command<<" "<<mxUT::Quotize(gout)<<" -e "<<edge_tres<<" -n "<<node_tres<<" -o "<<mxUT::Quotize(pout);
 	int retval=mxExecute(command,wxEXEC_NODISABLE|wxEXEC_SYNC);
 	_IF_DEBUGMODE( command + (wxString("\nretval: ")<<retval) );
-	if (retval) { osd.Hide(); mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 2).",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal(); return; }
+	if (retval) { 
+		osd.Hide(); 
+		mxMessageDialog(this,wxString(LANG(MAINW_GPROF_ERROR,"Ha ocurrido un error al intentar procesar la información de perfilado"))+" (error 2).")
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run(); 
+		return; 
+	}
 	
 	// mostrar el grafo
 	status_bar->SetStatusText(LANG(MAINW_GPROF_SHOWING,"Mostrando resultados..."));
@@ -786,7 +808,8 @@ void mxMainWindow::ToolsCodeCopyFromH(mxSource *source, wxString the_one) {
 		}
 	undo_action.End();
 	if (!choices.GetCount()) {
-		mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION,"No se encontraron funciones/metodos sin implementar."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(MAINW_CODETOOLS_NO_NEW_METHOD_FUNCTION,"No se encontraron funciones/metodos sin implementar."))
+			.Title(LANG(GENERAL_WARNING,"Advertencia")).IconWarning().Run();
 		return;
 	}
 	wxArrayInt sels;
@@ -866,7 +889,7 @@ void mxMainWindow::OnToolsPreprocHelp ( wxCommandEvent &event ) {
 **/
 void mxMainWindow::ToolsPreproc( int id_command ) {
 	
-	mxOSD osd(this,LANG(MAINW_PREPROC_OSD,"Preprocesando..."));
+	mxOSDGuard osd(this,LANG(MAINW_PREPROC_OSD,"Preprocesando..."));
 	mxSource *src=CURRENT_SOURCE;
 	wxString bin_name;
 	bin_name = DIR_PLUS_FILE(config->temp_dir,"preprocessed.tmp");
@@ -884,7 +907,8 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		if (x!=0) { 
 			_IF_DEBUGMODE(x);
 			osd.Hide();
-			mxMessageDialog(this,LANG(MAINW_PREPROC_ERROR,"No se pudo preprocesar correctamente el fuente."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(this,LANG(MAINW_PREPROC_ERROR,"No se pudo preprocesar correctamente el fuente."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();;
 			return;
 		}
 	} else {
@@ -907,7 +931,8 @@ void mxMainWindow::ToolsPreproc( int id_command ) {
 		if (x!=0) {
 			_IF_DEBUGMODE(x);
 			osd.Hide();
-			mxMessageDialog(this,LANG(MAINW_PREPROC_ERROR,"No se pudo preprocesar correctamente el fuente."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(this,LANG(MAINW_PREPROC_ERROR,"No se pudo preprocesar correctamente el fuente."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();;
 			return;
 		}
 	}
@@ -976,7 +1001,7 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		if (!description.Len()) return; 
 		wxString filename=wxGetTextFromUser(LANG(MAINW_ENTER_FILE_NAME_FOR_NEW_PROJECT_TEMPLATE,"Ingrese el nombre del archivo del nuevo template de proyecto"),LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."),wxFileName(project->filename).GetName());
 		if (!filename.Len()) return; 
-		mxOSD osd(this,LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."));
+		mxOSDGuard osd(this,LANG(MAINW_GENERATING_TEMPLATE,"Generando plantilla..."));
 		project->Clean(); wxYield(); // remove temporals
 		wxString project_name=project->project_name; project->project_name=description; // replace project name with the new description
 		project->Save(true); // save in place as template
@@ -1012,7 +1037,8 @@ void mxMainWindow::OnToolsCreateTemplate(wxCommandEvent &evt) {
 		}
 		template_file.Write(); template_file.Close();
 	}
-	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"),LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla..."),mxMD_OK).Show();
+	mxMessageDialog(this,LANG(MAINW_TEMPLATE_GENERATED,"Plantilla generada"))
+		.Title(LANG(MENUITEM_TOOLS_CREATE_TEMPLATE,"Guardar como nueva plantilla...")).Run();
 	delete g_wizard; g_wizard =nullptr;
 }
 
@@ -1029,7 +1055,9 @@ void mxMainWindow::OnToolsGcovSet (wxCommandEvent & event) {
 void mxMainWindow::OnToolsGcovReset (wxCommandEvent & event) {
 	if (project) {
 		wxString path=project->GetTempFolder();
-		if (mxMD_NO==mxMessageDialog(this,wxString("Se eliminarán todos los archivos con extensión .gcov"/*, .gcno*/" y .gcda del\ndirectorio de temporales (")<<path<<")\n¿Desea Continuar?","gcov",(mxMD_YES_NO|mxMD_WARNING)).ShowModal()) return;
+		if ( mxMessageDialog(this,wxString("Se eliminarán todos los archivos con extensión .gcov"/*, .gcno*/" y .gcda del"
+										   "\ndirectorio de temporales (")<<path<<")\n¿Desea Continuar?")
+				.Title("gcov").ButtonsYesNo().IconWarning().Run().no) return;
 		wxArrayString array;
 		mxUT::GetFilesFromDir(array,path,true);
 		for(unsigned int i=0;i<array.GetCount();i++) { 
@@ -1056,7 +1084,7 @@ void mxMainWindow::OnToolsLizardRun(wxCommandEvent &event) {
 	if (!project && notebook_sources->GetPageCount()==0) return;
 		
 	status_bar->SetStatusText(LANG(MAINW_GPROF_STATUS_LIZARD,"Ejecutando lizard..."));
-	mxOSD osd(this,LANG(MAINW_GPROF_STATUS_LIZARD,"Ejecutando lizard..."));
+	mxOSDGuard osd(this,LANG(MAINW_GPROF_STATUS_LIZARD,"Ejecutando lizard..."));
 	
 	// ejecutar lizard...
 	wxString command(DIR_PLUS_FILE_2(config->zinjai_third_dir,"lizard",OSDEP_VAL("lizard.exe","lizard.py")));
@@ -1187,6 +1215,7 @@ void mxMainWindow::AuxToolsDisassemble2(wxString out_fname, bool full_scope) {
 	
 	// create and display output panel
 	mxStyledOutput *out_dialog  = new mxStyledOutput(main_window,true,false);
+	out_dialog->SetZoom(-1);
 	out_dialog->SetTabWidth(8);
 	aui_manager.AddPane(out_dialog, wxAuiPaneInfo().Float().CloseButton(true).MaximizeButton(true).Resizable(true).Caption("Disassembly (objdump)").BestSize(500,300).Show());
 	aui_manager.Update();

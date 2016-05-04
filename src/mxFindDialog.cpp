@@ -292,7 +292,8 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 
 	if (combo_scope->GetSelection()>2) {
 		if (!project) {
-			mxMessageDialog(this,LANG(FIND_NO_PROJECT,"No hay ningun proyecto abierto actualmente."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+			mxMessageDialog(this,LANG(FIND_NO_PROJECT,"No hay ningun proyecto abierto actualmente."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 			return;
 		}
 	} else {
@@ -322,7 +323,8 @@ void mxFindDialog::OnFindNextButton(wxCommandEvent &event) {
 				Raise(); combo_find->SetFocus();
 			}
 		} else {
-			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",last_search), LANG(FIND_FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",last_search))
+				.Title(LANG(FIND_FIND_CAPTION,"Buscar")).IconInfo().Run();
 			Raise();
 		}
 	} else if (scope==2) {
@@ -380,12 +382,14 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 	
 	if (combo_scope->GetSelection()>2) {
 		if (!project) {
-			mxMessageDialog(this,LANG(FIND_NO_PROJECT,"No hay ningun proyecto abierto actualmente."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+			mxMessageDialog(this,LANG(FIND_NO_PROJECT,"No hay ningun proyecto abierto actualmente."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 			return;
 		}
 	} else {
 		if (!main_window->notebook_sources->GetPageCount()) {
-			mxMessageDialog(this,LANG(FIND_NO_FILE,"No hay ningun archivo abierto actualmente."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+			mxMessageDialog(this,LANG(FIND_NO_FILE,"No hay ningun archivo abierto actualmente."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 			return;
 		}
 	}
@@ -412,8 +416,10 @@ void mxFindDialog::OnFindPrevButton(wxCommandEvent &event) {
 				Raise();
 				combo_find->SetFocus();
 			}
-		} else
-			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",last_search), LANG(FIND_FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+		} else {
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",last_search))
+				.Title(LANG(FIND_FIND_CAPTION,"Buscar")).IconInfo().Run();
+		}
 	} else if (scope==2) {
 		if (FindInSources() && check_close->GetValue()) {
 			MyHide(); /*main_window->Raise();*/
@@ -468,12 +474,16 @@ void mxFindDialog::OnReplaceButton(wxCommandEvent &event) {
 	}
 
 	if (combo_scope->GetSelection()>2) {
-		mxMessageDialog(this,LANG1(FIND_CANT_REPLACE_IN,"No es posible realizar reemplazos en \"<{1}>\",\nesta opcion aun no esta disponible.",combo_scope->GetValue()),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG1(FIND_CANT_REPLACE_IN,""
+								   "No es posible realizar reemplazos en \"<{1}>\",\n"
+								   "esta opcion aun no esta disponible.",combo_scope->GetValue()))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 		return;
 	}
 
 	if (!main_window->notebook_sources->GetPageCount()) {
-		mxMessageDialog(this,LANG(FIND_NO_FILE,"No hay ningun archivo abierto actualmente."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(FIND_NO_FILE,"No hay ningun archivo abierto actualmente."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 		return;
 	}
 	
@@ -520,12 +530,16 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	}
 
 	if (combo_scope->GetSelection()>2) {
-		mxMessageDialog(this,LANG1(FIND_CANT_REPLACE_IN,"No es posible realizar reemplazos en \"<{1}>\",\nesta opcion aun no esta disponible.",combo_scope->GetValue()),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG1(FIND_CANT_REPLACE_IN,""
+								   "No es posible realizar reemplazos en \"<{1}>\",\n"
+								   "esta opcion aun no esta disponible.",combo_scope->GetValue()))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 		return;
 	}
 
 	if (!main_window->notebook_sources->GetPageCount()) {
-		mxMessageDialog(this,LANG(FIND_NO_FILE,"No hay ningun archivo abierto actualmente."),LANG(GENERAL_ERROR,"Error"),mxMD_INFO|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(FIND_NO_FILE,"No hay ningun archivo abierto actualmente."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 		return;
 	}
 	
@@ -591,13 +605,16 @@ void mxFindDialog::OnReplaceAllButton(wxCommandEvent &event) {
 	undo_action.End();
 	if (only_selection) source->SetSelection(f,t);
 
-	if (c==0)
-		mxMessageDialog(this,LANG(FIND_NO_REPLACE_DONE,"No se realizo ningun reemplazo."), LANG(FIND_REPLACE_CAPTION,"Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();
-	else if (c==1)
-		mxMessageDialog(this,LANG(FIND_ONE_REPLACE_DONE,"Se realizo un remplazo."), LANG(FIND_REPLACE_CAPTION,"Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();
-	else
-		mxMessageDialog(this,LANG1(FIND_MANY_REPLACES,"Se realizaron <{1}> reemplazos.",wxString()<<c), LANG(FIND_REPLACE_CAPTION,"Reemplazar"), mxMD_OK|mxMD_INFO).ShowModal();
-	
+	if (c==0) {
+		mxMessageDialog(this,LANG(FIND_NO_REPLACE_DONE,"No se realizo ningun reemplazo."))
+			.Title(LANG(FIND_REPLACE_CAPTION,"Reemplazar")).IconInfo().Run();
+	} else if (c==1) {
+		mxMessageDialog(this,LANG(FIND_ONE_REPLACE_DONE,"Se realizo un remplazo."))
+			.Title(LANG(FIND_REPLACE_CAPTION,"Reemplazar")).IconInfo().Run();
+	} else {
+		mxMessageDialog(this,LANG1(FIND_MANY_REPLACES,"Se realizaron <{1}> reemplazos.",wxString()<<c))
+			.Title(LANG(FIND_REPLACE_CAPTION,"Reemplazar")).IconInfo().Run();
+	}
 	Raise();
 }
 
@@ -612,7 +629,8 @@ bool mxFindDialog::FindInSources() {
 	
 bool mxFindDialog::MultifindAux(int count, const wxString &res) {
 	if (count==0) {
-		mxMessageDialog(this,LANG(FIND_IN_FILES_NOT_FOUND,"No se encontraron coincidencias"),LANG(FIND_IN_FILES_CAPTION,"Buscar en archivos"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(FIND_IN_FILES_NOT_FOUND,"No se encontraron coincidencias"))
+			.Title(LANG(FIND_IN_FILES_CAPTION,"Buscar en archivos")).IconWarning().Run();
 		return false;
 	} else {
 		wxString html("<HTML><HEAD><TITLE>");

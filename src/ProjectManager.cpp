@@ -66,7 +66,7 @@ static void fix_path_char(wxChar file_path_char, wxString &value) {
 // abrir un proyecto existente
 ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_TOOLS) {
 	loading=true;
-	mxOSD osd(main_window,wxString(LANG(OSD_LOADING_PROJECT_PRE,"Abriendo "))<<name.GetName()<<LANG(OSD_LOADING_PROJECT_POST,"..."));
+	mxOSDGuard osd(main_window,wxString(LANG(OSD_LOADING_PROJECT_PRE,"Abriendo "))<<name.GetName()<<LANG(OSD_LOADING_PROJECT_POST,"..."));
 	
 	g_singleton->Stop();
 	
@@ -449,19 +449,22 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 					}
 				}
 				if (suggested_configuration) {
-					int res = 0;
-					if (project_template) res=mxMD_YES;
-					else res = mxMessageDialog(main_window,
-						LANG2(PROJMNGR_CHANGE_PROFILE_OPENNING,""
-						"Parece que esta abriendo un proyecto que tiene seleccionado un perfil\n"
-						"de compilación y ejecución para otro sistema operativo: \"<{1}>\"\n"
-						"\n¿Desea cambiar el perfil activo por \"<{2}>\"?",
-						active_configuration->name,suggested_configuration->name),
-						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilación y Ejecución"),mxMD_YES_NO|mxMD_WARNING,
-						LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK,"Seleccionar otro perfil de la lista")
-						,false).ShowModal();
-					if (mxMD_YES&res) {
-						if (res&mxMD_CHECKED) {
+					bool do_change = project_template, do_select = false;
+					if (!project_template) { 
+						mxMessageDialog::mdAns ans = 
+							mxMessageDialog(main_window,LANG2(PROJMNGR_CHANGE_PROFILE_OPENNING,""
+															  "Parece que esta abriendo un proyecto que tiene seleccionado un perfil\n"
+															  "de compilación y ejecución para otro sistema operativo: \"<{1}>\"\n"
+															  "\n¿Desea cambiar el perfil activo por \"<{2}>\"?",
+															  active_configuration->name,suggested_configuration->name))
+								.Title(LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CAPTION,"Perfil de Compilación y Ejecución"))
+								.Check1(LANG(PROJMNGR_CHANGE_PROFILE_OPENNING_CHECK,"Seleccionar otro perfil de la lista"),false)
+								.ButtonsYesNo().IconWarning().Run();
+						do_change = ans.yes;
+						do_select = ans.check1;
+					}
+					if (do_change) {
+						if (do_select) {
 							wxArrayString choices;
 							for (int i=0;i<configurations_count;i++)
 								choices.Add(configurations[i]->name);
@@ -533,11 +536,11 @@ ProjectManager::ProjectManager(wxFileName name):custom_tools(MAX_PROJECT_CUSTOM_
 	
 	if (version_required>VERSION) {
 		mxMessageDialog(main_window,LANG(PROJECT_REQUIRES_NEWER_ZINJAI,""
-			"El proyecto que esta abriendo requiere una version superior de ZinjaI\n"
-			"a la instalada actualmente para cargar todas las opciones de proyecto\n"
-			"correctamente. El proyecto se abrira de todas formas, pero podria encontrar\n"
-			"problemas posteriormente.\n"
-			),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+									"El proyecto que esta abriendo requiere una version superior de ZinjaI\n"
+									"a la instalada actualmente para cargar todas las opciones de proyecto\n"
+									"correctamente. El proyecto se abrira de todas formas, pero podria encontrar\n"
+									"problemas posteriormente.\n"))
+			.Title(LANG(GENERAL_WARNING,"Advertencia")).IconWarning().Run();
 	}
 	
 	
@@ -665,12 +668,13 @@ project_file_item *ProjectManager::AddFile (eFileType where, wxFileName filename
 bool ProjectManager::Save (bool as_template) {
 	
 	if (!as_template && version_required>VERSION) {
-		int res = mxMessageDialog(main_window,
-			wxString("El proyecto que esta por guardar fue creado con una version de ZinjaI superior\n")<<
-			"a la que esta utilizando. Si graba el proyecto ahora se convertira a su su\n"<<
-			"version. Algunas opciones de configuración del mismo podrian perderse en la\n"<<
-			"conversion. Desea guardarlo de todas formas?","Version del Proyecto",mxMD_WARNING|mxMD_YES_NO/*,"Guardar con otro nombre",false*/).ShowModal();
-		if (res&mxMD_NO) return false;
+		mxMessageDialog::mdAns res 
+			= mxMessageDialog(main_window,"El proyecto que esta por guardar fue creado con una version de ZinjaI superior\n"
+										  "a la que esta utilizando. Si graba el proyecto ahora se convertira a su su\n"
+										  "version. Algunas opciones de configuración del mismo podrian perderse en la\n"
+										  "conversion. Desea guardarlo de todas formas?")
+				.Title("Version del Proyecto").IconWarning().ButtonsYesNo().Run();
+		if (res.no) return false;
 //		if (res&mxMD_CHECKED) {		
 //			wxFileDialog dlg (this, "Guardar Proyecto",source->sin_titulo?wxString(wxFileName::GetHomeDir()):wxFileName(source->source_filename).GetPath(),source->sin_titulo?wxString(wxEmptyString):wxFileName(source->source_filename).GetFullName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 //			dlg.SetDirectory(source->sin_titulo?wxString(project?project->last_dir:config->Files.last_dir):wxFileName(source->source_filename).GetPath());
@@ -681,7 +685,7 @@ bool ProjectManager::Save (bool as_template) {
 //		}
 	}
 	
-	version_required=GetRequiredVersion();
+	version_required = GetRequiredVersion();
 	
 	
 	// abrir el archivo (crear o pisar)
@@ -996,7 +1000,12 @@ bool ProjectManager::RenameFile(wxTreeItemId &tree_item, wxString new_name) {
 		new_name=fname.GetFullPath();
 		wxString src = DIR_PLUS_FILE(path,item->name);
 		wxString dst = DIR_PLUS_FILE(path,new_name);
-		if (!HasFile(new_name) && !wxFileName::DirExists(dst) && (!wxFileName::FileExists(dst) || mxMD_YES == mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_REPLACE,"Ya existe un archivo con ese nombre. Desea Reemplazarlo?"),LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_WARNING).ShowModal()) ) { 
+		if ( !HasFile(new_name) && !wxFileName::DirExists(dst) && 
+			(!wxFileName::FileExists(dst) || 
+				mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_REPLACE,""
+												 "Ya existe un archivo con ese nombre. Desea Reemplazarlo?"))
+					.Title(LANG(GENERAL_WARNING,"Advertencia")).ButtonsYesNo().IconWarning().Run().yes) )
+		{ 
 			parser->RenameFile(DIR_PLUS_FILE(path,item->name),DIR_PLUS_FILE(path,new_name));
 			item->name=new_name;
 			modified=true;
@@ -1084,15 +1093,18 @@ bool ProjectManager::DeleteFile(wxTreeItemId tree_item) {
 		if (!item) return also;
 		mxSource *src = main_window->IsOpen(tree_item);
 		if (src) new SourceExtras(src); // "tranfers ownership" of extras to the mxSource
-		int ans;
-		if (also)
-			ans=mxMessageDialog(main_window,LANG1(PROJMNGR_CONFIRM_DETACH_ALSO,"¿Desea quitar tambien el archivo \"<{1}>\" del proyecto?",item->name),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
-		else
-			ans=mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_DETACH_FILE,"¿Desea quitar el archivo del proyecto?"),item->name,mxMD_QUESTION|mxMD_YES_NO,LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false).ShowModal();
-		if (ans&mxMD_CANCEL || ans&mxMD_NO)
-			return false;
+		mxMessageDialog::mdAns ans = also
+			? mxMessageDialog(main_window,LANG1(PROJMNGR_CONFIRM_DETACH_ALSO,""
+												"¿Desea quitar tambien el archivo \"<{1}>\" del proyecto?",item->name))
+				.Check1(LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false)
+				.Title(item->name).ButtonsYesNo().IconQuestion().Run()
+			: mxMessageDialog(main_window,LANG(PROJMNGR_CONFIRM_DETACH_FILE,""
+											   "¿Desea quitar el archivo del proyecto?"))
+				.Check1(LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false)
+				.Title(item->name).ButtonsYesNo().IconQuestion().Run();
+		if (ans.cancel || ans.no) return false;
 		wxString comp = mxUT::GetComplementaryFile(DIR_PLUS_FILE(project->path,item->name));
-		DeleteFile(item,ans&mxMD_CHECKED);
+		DeleteFile(item,ans.check1);
 		if (comp.Len()==0 || !HasFile(comp)) return true;
 		tree_item=HasFile(comp)->item; also=true;
 	}
@@ -1658,7 +1670,10 @@ long int ProjectManager::Strip(compile_and_run_struct_single *compile_and_run, s
 long int ProjectManager::Run() {
 	// ver que no sea un proyecto sin ejecutable
 	if (active_configuration->dont_generate_exe) {
-		mxMessageDialog(main_window,LANG(PROJMNGR_RUNNING_NO_EXE,"Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK|mxMD_WARNING).ShowModal();
+		mxMessageDialog(main_window,LANG(PROJMNGR_RUNNING_NO_EXE,""
+										 "Este proyecto no puede ejecutarse porque está configurado\n"
+										 "para generar solo bibliotecas."))
+			.Title(LANG(GENERAL_WARNING,"Aviso")).IconWarning().Run();
 		return 0;
 	}
 	
@@ -2305,7 +2320,10 @@ int ProjectManager::GetFileList(wxArrayString &array, eFileType cuales, bool rel
 
 bool ProjectManager::Debug() {
 	if (active_configuration->dont_generate_exe) {
-		mxMessageDialog(main_window,LANG(PROJMNGR_RUNNING_NO_EXE,"Este proyecto no puede ejecutarse porque esta configurado\npara generar solo bibliotecas."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK|mxMD_WARNING).ShowModal();
+		mxMessageDialog(main_window,LANG(PROJMNGR_RUNNING_NO_EXE,""
+										 "Este proyecto no puede ejecutarse porque está configurado\n"
+										 "para generar solo bibliotecas."))
+			.Title(LANG(GENERAL_WARNING,"Aviso")).IconWarning().Run();
 		return false;
 	}
 	wxString command ( GetExePath(true) );
@@ -2539,7 +2557,7 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 	if (!config->CheckWxfbPresent()) return false;
 	boolFlagGuard wxfb_working_guard(wxfb->working);
 	wxString old_compiler_tree_text = main_window->compiler_tree.treeCtrl->GetItemText(main_window->compiler_tree.state);
-	mxOSD *osd=nullptr;
+	mxOSDGuard osd;
 	main_window->SetCompilingStatus(LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 	
 	bool something_changed=false;
@@ -2557,7 +2575,6 @@ bool ProjectManager::WxfbGenerate(bool show_osd, project_file_item *cual) {
 	/// @todo: reemplazar estas lineas por SetCompilingStatus, pero ver antes en que contexto se llega aca para saber que puede haber habido en status
 	main_window->compiler_tree.treeCtrl->SetItemText(main_window->compiler_tree.state,old_compiler_tree_text);
 	main_window->SetStatusText(wxString(LANG(GENERAL_READY,"Listo")));
-	if (osd) delete osd;
 	return something_changed;
 }
 
@@ -2574,14 +2591,14 @@ void ProjectManager::WxfbSetFileProperties(bool change_read_only, bool read_only
 	}
 }
 
-bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_regen, mxOSD **osd) {
+bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_regen, mxOSDGuard *osd) {
 	// ver si hay que regenerar (comparando con fflag)
 	wxString fflag = fbp_file.Mid(0,fbp_file.Len()-4)+".flg";
 	wxDateTime dp = wxFileName(fbp_file).GetModificationTime();
 	bool regen = force_regen || (!wxFileName::FileExists(fflag) || dp>wxFileName(fflag).GetModificationTime());
 	if (!regen) return false;
 	
-	if (osd && *osd==nullptr) *osd=new mxOSD(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
+	if (osd) osd->Create(main_window,LANG(PROJMNGR_REGENERATING_WXFB,"Regenerando proyecto wxFormBuilder..."));
 	
 	wxString command=mxUT::Quotize(config->Files.wxfb_command)+" -g "+mxUT::Quotize(fbp_file);
 	_IF_DEBUGMODE("command: "<<command);
@@ -2590,12 +2607,25 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 
 	if (fbase.Len()) {
 		if (ret) {
-			if (osd) { delete *osd; *osd=nullptr; }
+			if (osd) osd->Hide();
 			if (wxfb->autoupdate_projects) {
-				if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_1,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\").\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),"Error",mxMD_YES_NO|mxMD_ERROR).ShowModal())
+				if ( mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_1,""
+													  "No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
+													  "(probablemente la ruta al ejecutable de wxFormBuilder no este\n"
+													  "correctamente definida. Verifique esta propiedad en la pestaña \"Rutas 2\"\n"
+													  "del cuadro de \"Preferencias\").\n"
+													  "Si el error se repite puede desactivar la actualización automática.\n"
+													  "¿Desea desactivar la actualización automática ahora?"))
+						.Title(LANG(GENERAL_ERROR,"Error")).ButtonsYesNo().IconError().Run().yes )
+				{
 					wxfb->autoupdate_projects=false;
+				}
 			} else {
-				mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_2,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente la ruta al ejecutable de wxFormBuilder no este correctamente\ndefinida. Verifique esta propiedad en la pestaña \"Rutas 2\" del cuadro de \"Preferencias\")."),"Error",mxMD_YES_NO|mxMD_ERROR).ShowModal();
+				mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_2,""
+												 "No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
+												 "(probablemente la ruta al ejecutable de wxFormBuilder no este\n"
+												 "correctamente definida. Verifique esta propiedad en la pestaña \"Rutas 2\"\n"
+												 "del cuadro de \"Preferencias\").")).IconError().Run();
 			}
 			return false;
 		}
@@ -2622,10 +2652,20 @@ bool ProjectManager::WxfbGenerate(wxString fbp_file, wxString fbase, bool force_
 	fil.Open();
 	if (!fil.IsOpened()) {
 		if (wxfb->autoupdate_projects) {
-			if (mxMD_YES==mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_3,"No se pudo actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto).\nSi el error se repite puede desactivar la actualización automática.\n¿Desea desactivar la actualización automática ahora?"),"Error",mxMD_YES_NO|mxMD_ERROR).ShowModal())
+			if ( mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_3,""
+												  "No se pudo actualizar correctamente los proyectos wxFormBuilder\n"
+												  "(probablemente no se puede escribir en la carpeta de proyecto).\n"
+												  "Si el error se repite puede desactivar la actualización automática.\n"
+												  "¿Desea desactivar la actualización automática ahora?"))
+					.Title(LANG(GENERAL_ERROR,"Error")).ButtonsYesNo().IconError().Run().yes )
+			{
 				wxfb->autoupdate_projects=false;
+			}
 		} else {
-			mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_4,"No se pudieron actualizar correctamente los proyectos wxFormBuilder\n(probablemente no se puede escribir en la carpeta de proyecto)."),"Error",mxMD_YES_NO|mxMD_ERROR).ShowModal();
+			mxMessageDialog(main_window,LANG(PROJMNGR_REGENERATING_ERROR_4,""
+											 "No se pudieron actualizar correctamente los proyectos wxFormBuilder\n"
+											 "(probablemente no se puede escribir en la carpeta de proyecto)."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		}
 		return true;
 	}
@@ -2863,7 +2903,9 @@ void ProjectManager::ActivateWxfb(bool do_activate) {
 	menu_data->UpdateToolbar(MenusAndToolsConfig::tbPROJECT,true);
 	if (do_activate) {
 		WxfbGetFiles();
-		config->CheckWxfbPresent();
+		if (!config->CheckWxfbPresent()) {
+			GetWxfbConfiguration()->autoupdate_projects = false;
+		}
 	}
 	main_window->aui_manager.Update(); // para que se de cuenta de el cambio en la barra de herramientas
 }
@@ -3098,7 +3140,7 @@ struct draw_graph_item {
 void ProjectManager::DrawGraph() {
 	
 	unsigned long Ml=0, ml=0, mm=0; // maxima, minima, mediana
-	mxOSD osd(main_window,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
+	mxOSDGuard osd(main_window,LANG(OSD_GENERATING_GRAPH,"Generando grafo..."));
 	
 	wxArrayString header_dirs_array;
 	mxUT::Split(active_configuration->headers_dirs,header_dirs_array,true,false);
@@ -3237,7 +3279,8 @@ bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 	pd_class *pdc_son = parser->GetClass(user_class);
 	wxString cfile = mxUT::GetComplementaryFile(pdc_son->file->name,FT_HEADER);
 	if (cfile.Len()==0) { // si tampoco hay "public:", no hay caso
-		mxMessageDialog(main_window,"No se pudo determinar donde definir los nuevos metodos.\nNo se encontró el archivo fuente complementario.","Error",mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(main_window,"No se pudo determinar donde definir los nuevos metodos.\nNo se encontró el archivo fuente complementario.")
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return false;
 	}
 	wxTextFile fil(pdc_son->file->name);
@@ -3263,7 +3306,8 @@ bool ProjectManager::WxfbUpdateClass(wxString wxfb_class, wxString user_class) {
 	}
 	if (inspos==-1) { // si no hay "protected:", se agrega antes de "public:"
 		if (pubpos==-1) { // si tampoco hay "public:", no hay caso
-			mxMessageDialog(main_window,"No se pudo determinar donde declarar los nuevos metodos.\nNo se encontraron la etiquetas public/protected en la clase.","Error",mxMD_OK|mxMD_ERROR).ShowModal();
+			mxMessageDialog(main_window,"No se pudo determinar donde declarar los nuevos metodos.\nNo se encontraron la etiquetas public/protected en la clase.")
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			return false;
 		}
 		inspos = pubpos;
@@ -3450,24 +3494,23 @@ void ProjectManager::WxfbAutoCheckStep2(WxfbAutoCheckData *old_data) {
 			if (!fitem2) fname2="";
 			// preguntar
 			wxString filenames; filenames<<fname1<<(fname1.Len()&&fname2.Len()?"\n":"")<<fname2;
-			int ans=mxMessageDialog(main_window,
-				LANG3(WXFB_ASK_BEFORE_AUTO_DELETING,""
-				"ZinjaI ha detectado que la clase <{1}> hereda de\n"
-				"otra clase anteriormente autogenerada por wxFormBuilder\n"
-				"(<{2}>) que ha sido eliminada en el diseñador.\n"
-				"¿Desea eliminar los fuentes correspondiente a dicha clase?\n"
-				"Los fuentes son: <{3}>\n"
-				"\n"
-				"Advertencia: debe estar seguro de que no contienen definiciones ajenas\n"
-				"a dicha clase, y de que la clase base no ha sido solo renombrada.",
-				children[i],fathers[i],filenames)
-				,LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_WARNING,
-				LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false
-				).ShowModal();
+			mxMessageDialog::mdAns ans =
+				mxMessageDialog(main_window,LANG3(WXFB_ASK_BEFORE_AUTO_DELETING,""
+											"ZinjaI ha detectado que la clase <{1}> hereda de\n"
+											"otra clase anteriormente autogenerada por wxFormBuilder\n"
+											"(<{2}>) que ha sido eliminada en el diseñador.\n"
+											"¿Desea eliminar los fuentes correspondiente a dicha clase?\n"
+											"Los fuentes son: <{3}>\n"
+											"\n"
+											"Advertencia: debe estar seguro de que no contienen definiciones ajenas\n"
+											"a dicha clase, y de que la clase base no ha sido solo renombrada.",
+											children[i],fathers[i],filenames))
+					.Check1(LANG(PROJMNGR_DELETE_FROM_DISK,"Eliminar el archivo del disco"),false)
+					.Title(LANG(GENERAL_WARNING,"Advertencia")).ButtonsYesNo().IconWarning().Run();
 			// eliminar
-			if (ans&mxMD_YES) {
-				if (fitem1) DeleteFile(fitem1,ans&mxMD_CHECKED);
-				if (fitem2) DeleteFile(fitem2,ans&mxMD_CHECKED);
+			if (ans.yes) {
+				if (fitem1) DeleteFile(fitem1,ans.check1);
+				if (fitem2) DeleteFile(fitem2,ans.check1);
 			}
 		}
 	}
@@ -3493,11 +3536,15 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 	if (folder.Len()) {
 		folder = DIR_PLUS_FILE(project->path,folder);
 		if (!wxFileName::DirExists(folder)) {
-			int ans = mxMessageDialog(main_window,LANG1(PROJECT_DIRNOTFOUND_CREATE,"El directorio \"<{1}>\" no existe. Desea crearlo?",folder),"Error",mxMD_YES|mxMD_NO|mxMD_QUESTION).ShowModal();
-			if (ans==mxMD_YES) {
+			mxMessageDialog::mdAns ans = 
+				mxMessageDialog(main_window,LANG1(PROJECT_DIRNOTFOUND_CREATE,""
+												  "El directorio \"<{1}>\" no existe. Desea crearlo?",folder))
+					.Title(LANG(GENERAL_ERROR,"Error")).ButtonsYesNo().IconQuestion().Run();
+			if (ans.yes) {
 				wxFileName::Mkdir(folder);
 				if (!wxFileName::DirExists(folder)) {
-					mxMessageDialog(main_window,LANG(PROJECT_CANT_CREATE_DIR,"No se pudo crear el directorio."),LANG(GENERAL_ERROR,"Error"),mxMD_YES|mxMD_NO|mxMD_ERROR).ShowModal();
+					mxMessageDialog(main_window,LANG(PROJECT_CANT_CREATE_DIR,"No se pudo crear el directorio."))
+						.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 					return false;
 				}
 			} else {
@@ -3509,16 +3556,22 @@ bool ProjectManager::WxfbNewClass(wxString base_name, wxString name) {
 	if (wxNOT_FOUND!=name.Find(' ') || wxNOT_FOUND!=name.Find('-') 
 		|| wxNOT_FOUND!=name.Find('<') || wxNOT_FOUND!=name.Find('?') 
 		|| wxNOT_FOUND!=name.Find('>') || wxNOT_FOUND!=name.Find('*') 
-		|| wxNOT_FOUND!=name.Find('.') || wxNOT_FOUND!=name.Find(':') ) {
-			mxMessageDialog(main_window,LANG(PROJECT_INVALID_CLASS_NAME,"El nombre de la clase no puede incluir ni espacios ni operadores"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-			return false;
-		}
+		|| wxNOT_FOUND!=name.Find('.') || wxNOT_FOUND!=name.Find(':') ) 
+	{
+		mxMessageDialog(main_window,LANG(PROJECT_INVALID_CLASS_NAME,""
+										 "El nombre de la clase no puede incluir ni espacios ni operadores"))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		return false;
+	}
 	// controlar que no exista
 	wxString cpp_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".cpp");
 	wxString h_name = DIR_PLUS_FILE(project->path,(folder.Len()?DIR_PLUS_FILE(folder,name):name)+".h");
 	if (wxFileName::FileExists(cpp_name) || wxFileName::FileExists(h_name)) {
-		int ans = mxMessageDialog(main_window,LANG(PROJECT_WXFB_NEWFILE_EXISTS,"Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?"),cpp_name,mxMD_YES_NO|mxMD_ERROR).ShowModal();
-		if (ans&mxMD_NO) return false;
+		mxMessageDialog::mdAns ans = 
+			mxMessageDialog(main_window,LANG(PROJECT_WXFB_NEWFILE_EXISTS,""
+											 "Ya existe un archivo con ese nombre. ¿Desea reemplazarlo?"))
+			.Title(cpp_name).ButtonsYesNo().IconError().Run();
+		if (ans.no) return false;
 	}
 	
 	wxArrayString methods;

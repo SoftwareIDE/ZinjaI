@@ -29,7 +29,8 @@ mxExeInfo::mxExeInfo(wxWindow *parent, ei_mode mode, wxFileName fname, mxSource 
 {
 	if (mode==mxEI_PROJECT||mode==mxEI_SIMPLE) {
 		if (!m_fname.FileExists() || (src&&src->sin_titulo&&compiler->last_compiled!=src) ) {
-			mxMessageDialog(LANG(EXEINFO_NOT_FOUND,"No se encontro ejecutable. Compile el programa para crearlo."),LANG(GENERAL_WARNING,"Aviso"),mxMD_OK).ShowModal();
+			mxMessageDialog(main_window,LANG(EXEINFO_NOT_FOUND,"No se encontro ejecutable. Compile el programa para crearlo."))
+				.Title(LANG(GENERAL_WARNING,"Aviso")).IconWarning().Run();
 			Close();
 			return;
 		}

@@ -70,17 +70,20 @@ void mxExtraStepWindow::OnOkButton(wxCommandEvent &evt) {
 	wxString sdeps = deps->GetValue().Trim(true).Trim(false);
 	wxString sout = output->GetValue().Trim(true).Trim(false);
 	if (!sname.Len()) {
-		mxMessageDialog(this,LANG(EXTRASTEP_NAME_MISSING,"Debe completar el nombre del paso."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(EXTRASTEP_NAME_MISSING,"Debe completar el nombre del paso."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	if (!scmd.Len()) {
-		mxMessageDialog(this,LANG(EXTRASTEP_COMMAND_MISSING,"Debe completar el comando del paso."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(EXTRASTEP_COMMAND_MISSING,"Debe completar el comando del paso."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	compile_extra_step *aux = configuration->extra_steps;
 	while (aux) {
 		if (aux->name==sname && (!step || step!=aux)) {
-			mxMessageDialog(this,LANG(EXTRASTEP_NAME_REPEATED,"Ya existe otro paso con ese nombre."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(this,LANG(EXTRASTEP_NAME_REPEATED,"Ya existe otro paso con ese nombre."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			return;
 		}
 		aux=aux->next;

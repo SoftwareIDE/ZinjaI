@@ -7,6 +7,7 @@
 #include "mxMessageDialog.h"
 #include "mxSource.h"
 #include "Language.h"
+#include "mxMainWindow.h"
 
 BEGIN_EVENT_TABLE(mxWxfbInheriter, wxDialog)
 	EVT_BUTTON(wxID_OK,mxWxfbInheriter::OnButtonOk)
@@ -30,13 +31,15 @@ mxWxfbInheriter::mxWxfbInheriter(wxWindow *parent, wxString classname, bool upda
 	else { mode=WXFBI_NEW_CLASS_ANY; FillBaseArray(); }
 		
 	if (mode==WXFBI_NEW_CLASS_ANY && wxfb_classes.GetCount()==0) {
-		mxMessageDialog(LANG(WXFB_NO_WXFB_CLASSES,"No se encontraron clases generadas por wxFormsBuilder."),LANG(WXFB_GENERATE_INHERITED_CLASS,"Heredar Clase wxFormsBuilder"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(main_window,LANG(WXFB_NO_WXFB_CLASSES,"No se encontraron clases generadas por wxFormsBuilder."))
+			.Title(LANG(WXFB_GENERATE_INHERITED_CLASS,"Heredar Clase wxFormsBuilder")).IconError().Run();
 		Close();
 		return;
 	}
 	
 	if (mode==WXFBI_UPDATE_EXISTING_CLASS && user_classes.GetCount()==0) {
-		mxMessageDialog(LANG(WXFB_NO_WXFB_INHERITED_CLASSES,"No se encontraron clases heredadas a partir de las generadas por wxFormBuilder."),LANG(WXFB_CAPTION_UPDATE,"wxFB - Actualizar Clase Heredada"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(main_window,LANG(WXFB_NO_WXFB_INHERITED_CLASSES,"No se encontraron clases heredadas a partir de las generadas por wxFormBuilder."))
+			.Title(LANG(WXFB_CAPTION_UPDATE,"wxFB - Actualizar Clase Heredada")).IconError().Run();
 		Close();
 		return;
 	}
@@ -123,7 +126,8 @@ void mxWxfbInheriter::OkNewClass() {
 	wxString base_name = base_class->GetValue();
 	wxString name = mxUT::LeftTrim(child_class->GetValue());
 	if (name=="") {
-		mxMessageDialog(LANG(WXFB_CLASSNAME_MISSING,"Debe introducir el nombre de la clase"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(main_window,LANG(WXFB_CLASSNAME_MISSING,"Debe introducir el nombre de la clase"))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	Hide();

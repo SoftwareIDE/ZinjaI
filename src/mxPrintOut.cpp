@@ -2,6 +2,7 @@
 #include "mxPrintOut.h"
 #include "mxSource.h"
 #include "mxMessageDialog.h"
+#include "mxMainWindow.h"
 
 wxPrintDialogData *g_printDialogData = nullptr;
 //wxPageSetupDialogData *pageSetupData = nullptr;
@@ -91,7 +92,8 @@ void mxPrintOut::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int 
 		m_printed = m_source->FormatRange (0, m_printed, m_source->GetLength(), dc, dc, m_printRect, m_pageRect);
 		*maxPage += 1;
 		if (last==m_printed) {
-			mxMessageDialog(_T("Debe configurar la pagina antes de imprimir"),_T("Error"),mxMD_OK|mxMD_WARNING).ShowModal();
+			mxMessageDialog(main_window,"Debe configurar la pagina antes de imprimir")
+				.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();
 			break;
 		}
 	}

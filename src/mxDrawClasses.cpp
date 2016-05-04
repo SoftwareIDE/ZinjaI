@@ -115,7 +115,8 @@ void mxDrawClasses::OnOkButton(wxCommandEvent &evt) {
 	bool only_name = what_inside->GetSelection()==1||what_inside->GetSelection()==3;
 	bool related = related_classes->GetSelection()>0, indirect = related_classes->GetSelection()>1;
 	if (!GenerateGraph(the_one,one_class,related,indirect,inside,only_public,only_name)) {
-		mxMessageDialog(this,LANG(DRAWCLASSES_NO_COINCIDENCE_FOR_CLASS,"No se encontraron clases para las condiciones seleccionadas."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(DRAWCLASSES_NO_COINCIDENCE_FOR_CLASS,"No se encontraron clases para las condiciones seleccionadas."))
+			.Title(LANG(GENERAL_WARNING,"Advertencia")).IconWarning().Run();
 		return;
 	}
 	// generar grafo con dot/fdp y guardar/mostrar

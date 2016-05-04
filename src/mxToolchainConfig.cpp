@@ -11,6 +11,7 @@
 #include "ConfigManager.h"
 #include "mxCommonConfigControls.h"
 #include "mxThreeDotsUtils.h"
+#include "mxMainWindow.h"
 
 BEGIN_EVENT_TABLE(mxToolchainConfig, wxDialog)
 	EVT_BUTTON(wxID_OK,mxToolchainConfig::OnButtonOk)
@@ -41,7 +42,11 @@ mxToolchainConfig::mxToolchainConfig(wxWindow *parent, const wxString &tc_name)
 void mxToolchainConfig::OnButtonOk (wxCommandEvent & event) {
 	Toolchain tc;
 	tc.file = name->GetValue();
-	if (!tc.file.Len()) { mxMessageDialog(LANG(TOOLCHAINS_ERROR_EMPTY_NAME,"Debe completar el nombre."),LANG(TOOLCHAINS_CAPTION,"Personalizar herramientas de compilación"),mxMD_ERROR|mxMD_OK).ShowModal(); return; }
+	if (!tc.file.Len()) { 
+		mxMessageDialog(this,LANG(TOOLCHAINS_ERROR_EMPTY_NAME,"Debe completar el nombre."))
+			.Title(LANG(TOOLCHAINS_CAPTION,"Personalizar herramientas de compilación")).IconError().Run(); 
+		return; 
+	}
 //	tc.desc = description->GetValue();
 	tc.base_path = base_path->GetValue();
 	tc.bin_path = bin_path->GetValue();

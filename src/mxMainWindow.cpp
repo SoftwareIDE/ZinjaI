@@ -782,9 +782,12 @@ void mxMainWindow::OnProjectTreeOpen(wxCommandEvent &event) {
 			notebook_sources->SetSelection(i);
 			return;
 		}
-	if (project)
-		if (!OpenFile(project->GetNameFromItem(project_tree.selected_item),false))
-			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<project->GetNameFromItem(project_tree.selected_item),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+	if (project) {
+		if (!OpenFile(project->GetNameFromItem(project_tree.selected_item),false)) {
+			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<project->GetNameFromItem(project_tree.selected_item))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		}
+	}
 }
 
 void mxMainWindow::OnProjectTreeOpenAll(wxCommandEvent &event) {
@@ -804,14 +807,16 @@ void mxMainWindow::OnProjectTreeRename(wxCommandEvent &event) {
 	wxFileDialog dlg (this, "Renombrar",fn.GetPath(),fn.GetFullName(), "Any file (*)|*", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	dlg.SetDirectory(fn.GetPath());
 	dlg.SetWildcard("Todos los archivos|"WILDCARD_ALL"|Archivos de C/C++|"WILDCARD_CPP"|Fuentes|"WILDCARD_SOURCE"|Cabeceras|"WILDCARD_HEADER);
-	if (dlg.ShowModal() == wxID_OK)
-		if (!project->RenameFile(project_tree.selected_item,dlg.GetPath()))
-			mxMessageDialog(main_window,LANG(MAINW_PROBLEM_RENAMING,"No se pudo renombrar el archivo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		
+	if (dlg.ShowModal() == wxID_OK) {
+		if (!project->RenameFile(project_tree.selected_item,dlg.GetPath())) {
+			mxMessageDialog(main_window,LANG(MAINW_PROBLEM_RENAMING,"No se pudo renombrar el archivo"))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		}
+	}
 //	wxString res = mxGetTextFromUser("Nuevo nombre:", "Renombrar archivo" , project->GetNameFromItem(project_tree.selected_item,true), this);
 //	if (res!="")
 //		if (!project->RenameFile(project_tree.selected_item,res))
-//			mxMessageDialog(main_window,"No se pudo renombrar el archivo",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+//			mxMessageDialog(main_window,"No se pudo renombrar el archivo").Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 }
 
 void mxMainWindow::OnProjectTreeDelete(wxCommandEvent &event) {
@@ -858,7 +863,9 @@ void mxMainWindow::OnProjectTreeAdd(wxCommandEvent &event) {
 		int multiple=1; // 1 en OpenFileFromGui significa always_attach
 		for (unsigned int i=0;i<paths.GetCount();i++) {
 			if (!wxFileName::FileExists(dlg.GetPath())) {
-				if (mxMD_YES==mxMessageDialog(main_window,LANG(MAINW_CREATE_FILE_QUESTION,"El archivo no existe, desea crearlo?"),dlg.GetPath(),mxMD_YES_NO).ShowModal()) {
+				if ( mxMessageDialog(main_window,LANG(MAINW_CREATE_FILE_QUESTION,"El archivo no existe, desea crearlo?"))
+						.Title(dlg.GetPath()).ButtonsYesNo().Run().yes) 
+				{
 					wxTextFile fil(dlg.GetPath());
 					fil.Create();
 					fil.Write();
@@ -878,17 +885,17 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 	if (parser->working) {
 		parser->Stop(true);
 	}
-	int pres=mxMD_OK;
-	if (project/* && project->modified*/) {
-		if (config->Init.save_project) {
-			project->Save();
-		} else {
-			pres = mxMessageDialog(main_window,LANG(MAINW_SAVE_PROJECT_BEFORE_CLOSING,"Desea guardar los cambios del proyecto antes de cerrarlo?"),project->GetFileName(),mxMD_YES_NO_CANCEL|mxMD_QUESTION,LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false).ShowModal();
-			if (pres&mxMD_CANCEL)
-				return;
-			if (pres&mxMD_CHECKED)
-				config->Init.save_project=true;
-		}
+	bool do_save_project = config->Init.save_project;
+	if (project && !do_save_project) {
+		mxMessageDialog::mdAns pres 
+			= mxMessageDialog(main_window,LANG(MAINW_SAVE_PROJECT_BEFORE_CLOSING,""
+											   "Desea guardar los cambios del proyecto antes de cerrarlo?"))
+				.Title(project->GetFileName()).ButtonsYesNoCancel().IconQuestion()
+				.Check1(LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false)
+				.Run();
+		do_save_project = (pres.yes);
+		if (pres.cancel) return;
+		if (pres.check1) config->Init.save_project=true;
 	}
 	if (IsMaximized()) {
 		config->Init.maximized=true;
@@ -905,22 +912,24 @@ void mxMainWindow::OnClose (wxCloseEvent &event) {
 			mxSource *source = (mxSource*)(notebook_sources->GetPage(i));
 			if (source->GetModify()) {
 				notebook_sources->SetSelection(i);
-				int res=mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_BEFORE_EXIT_QUESTION,"Hay cambios sin guardar. Desea guardarlos antes de salir?"), source->page_text, (mxMD_YES_NO_CANCEL|mxMD_QUESTION)).ShowModal();
-				if (res&mxMD_YES) {
-					if (!source->sin_titulo)
+				mxMessageDialog::mdAns res 
+					= mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_BEFORE_EXIT_QUESTION,""
+													   "Hay cambios sin guardar. Desea guardarlos antes de salir?"))
+						.Title(source->page_text).ButtonsYesNoCancel().IconQuestion().Run();
+				if (res.yes) {
+					if (!source->sin_titulo) {
 						source->SaveSource();
-					else {
+					} else {
 						wxCommandEvent evt;
 						OnFileSaveAs(evt);
 					}
 				}
-				if (res&mxMD_CANCEL || (res&mxMD_YES && source->sin_titulo) )
+				if (res.cancel || (res.yes && source->sin_titulo) )
 					return;
 			}
 		}
 	}
-	if (project && (config->Init.save_project || (/*project->modified && */pres&mxMD_YES)))
-		project->Save();
+	if (do_save_project) project->Save();
 	config->Init.show_beginner_panel=_menu_item(mxID_VIEW_BEGINNER_PANEL)->IsChecked();
 	config->Save();
 	while (notebook_sources->GetPageCount()) notebook_sources->DeletePage(0); // close sources to avoid paint events and other calls that could use some just deleted objects
@@ -948,8 +957,10 @@ void mxMainWindow::OnEditFindNext (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (!find_replace_dialog) find_replace_dialog = new mxFindDialog(this,wxID_ANY);
 	if (find_replace_dialog->last_search.Len()) {
-		if (!find_replace_dialog->FindNext())
-			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",find_replace_dialog->last_search), LANG(FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+		if (!find_replace_dialog->FindNext()) {
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",find_replace_dialog->last_search))
+				.Title(LANG(FIND_CAPTION,"Buscar")).IconInfo().Run();
+		}
 	} else {
 		OnEditFind(event);
 	}
@@ -960,8 +971,10 @@ void mxMainWindow::OnEditFindPrev (wxCommandEvent &event) {
 	IF_THERE_IS_SOURCE CURRENT_SOURCE->HideCalltip();
 	if (!find_replace_dialog) find_replace_dialog = new mxFindDialog(this,wxID_ANY);
 	if (find_replace_dialog->last_search.Len()) {
-		if (!find_replace_dialog->FindPrev())
-			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",find_replace_dialog->last_search), LANG(FIND_CAPTION,"Buscar"), mxMD_OK|mxMD_INFO).ShowModal();
+		if (!find_replace_dialog->FindPrev()) {
+			mxMessageDialog(main_window,LANG1(FIND_NOT_FOUND,"La cadena \"<{1}>\" no se encontro.",find_replace_dialog->last_search))
+				.Title(LANG(FIND_CAPTION,"Buscar")).IconInfo().Run();
+		}
 	} else {
 		OnEditFind(event);
 	}
@@ -1108,9 +1121,10 @@ void mxMainWindow::OnSelectSource (wxTreeEvent &event){
 			event.Skip(); return;
 		}
 		mxSource *source = OpenFile(project->GetNameFromItem(item),false);
-		if (!source)
-			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<project->GetNameFromItem(item),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-		else if (source!=EXTERNAL_SOURCE) {
+		if (!source) {
+			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<project->GetNameFromItem(item))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		} else if (source!=EXTERNAL_SOURCE) {
 			// el if de abajo se comento porque el "source->SetStyle(false)" ya estaba comentado, y lo del menu esta en OnNotebookPageChanged
 //			if (source && project_tree.treeCtrl->GetItemParent(item)==project_tree.others)
 				//source->SetStyle(false);
@@ -1149,11 +1163,14 @@ void mxMainWindow::OnSelectError (wxTreeEvent &event) {
 		while(fi.IsValid()) {
 			project_file_item *p = *fi;
 			if (obj_name == wxFileName(p->name).GetName()) {
-				int res=mxMessageDialog(main_window,LANG1(MAINW_SAVE_LINK_ERROR_TRUNCATED_FILE,"Este error puede deberse a compilaciones interrumpidas, o a la presencia\n"
-																								"de objetos compilados en otros sistemas. Si este fuera el caso, podría\n"
-																								" solucionarse simplemente recompilando el fuente asociado. ¿Desea recompilar\n"
-																								"\"<{1}>\" ahora?",p->name), p->name, mxMD_YES_NO|mxMD_QUESTION).ShowModal();
-				if (res==mxMD_YES) { AuxCompileOne(p); return; }
+				mxMessageDialog::mdAns ans = 
+					mxMessageDialog(main_window,LANG1(MAINW_SAVE_LINK_ERROR_TRUNCATED_FILE,""
+													  "Este error puede deberse a compilaciones interrumpidas, o a la presencia\n"
+													  "de objetos compilados en otros sistemas. Si este fuera el caso, podría\n"
+													  "solucionarse simplemente recompilando el fuente asociado. ¿Desea recompilar\n"
+													  "\"<{1}>\" ahora?",p->name))
+						.Title(p->name).ButtonsYesNo().IconQuestion().Run();
+				if (ans.yes) { AuxCompileOne(p); return; }
 				break;
 			}
 			fi.Next();
@@ -1330,12 +1347,15 @@ void mxMainWindow::OnNotebookRightClick(wxAuiNotebookEvent& event) {
 void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 	mxSource *source = (mxSource*)notebook_sources->GetPage(event.GetSelection());
 	if (source->GetModify() && source->next_source_with_same_file==source) {
-		int res=mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION,"Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?"), source->page_text, mxMD_YES_NO_CANCEL|mxMD_QUESTION).ShowModal();
-		if (res==mxMD_CANCEL) {
+		mxMessageDialog::mdAns res =
+			mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION,""
+											 "Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?"))
+				.Title(source->page_text).ButtonsYesNoCancel().IconQuestion().Run();
+		if (res.cancel) {
 			event.Veto();
 			return;
 		}
-		if (res==mxMD_YES) {
+		if (res.yes) {
 			if (source->sin_titulo) {
 				wxCommandEvent evt;
 				OnFileSaveAs(evt);
@@ -1353,9 +1373,15 @@ void mxMainWindow::OnNotebookPageClose(wxAuiNotebookEvent& event) {
 		source->UpdateExtras(); // done in mxSource's destructor
 	}
 	if (g_share_manager && g_share_manager->Exists(source))  {
-		int ans =mxMessageDialog(main_window,LANG(MAINW_ASK_CLOSE_SHARED,"El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\n¿Realmente desea cerrar el archivo?"),source->page_text, mxMD_YES_NO,LANG(MAINW_SHARE_AFTER_CLOSE,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo."),false).ShowModal();
-		if (mxMD_YES&ans) {
-			if (mxMD_CHECKED&ans)
+		mxMessageDialog::mdAns ans =
+			mxMessageDialog(main_window,LANG(MAINW_ASK_CLOSE_SHARED,""
+											 "El archivo esta siendo compartido con modificaciones.\n"
+											 "Si lo cierra dejara de estar disponible.\n"
+											 "¿Realmente desea cerrar el archivo?"))
+				.Check1(LANG(MAINW_SHARE_AFTER_CLOSE,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo."),false)
+				.Title(source->page_text).ButtonsYesNo().Run();
+		if (ans.yes) {
+			if (ans.check1)
 				g_share_manager->Freeze(source);
 			else
 				g_share_manager->Delete(source);
@@ -1885,10 +1911,13 @@ bool mxMainWindow::CloseFromGui (int i) {
 	mxSource *source=(mxSource*)notebook_sources->GetPage(i);
 	if (source->GetModify() && source->next_source_with_same_file==source) {
 		notebook_sources->SetSelection(i);
-		int res=mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION,"Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?"), source->page_text, mxMD_YES_NO_CANCEL|mxMD_QUESTION).ShowModal();
-		if (res==mxMD_CANCEL)
+		mxMessageDialog::mdAns res =
+			mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_BEFORE_CLOSING_QUESTION,""
+												 "Hay cambios sin guardar. Desea guardarlos antes de cerrar el archivo?"))
+				.Title(source->page_text).ButtonsYesNoCancel().IconQuestion().Run();
+		if (res.cancel)
 			return false;
-		else if (res==mxMD_YES) {
+		else if (res.yes) {
 			if (source->sin_titulo) {
 				wxCommandEvent evt;
 				OnFileSaveAs(evt);
@@ -1927,13 +1956,14 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 		if (config->Init.save_project) {
 			project->Save();
 		} else {
-			int ret = mxMessageDialog(main_window,LANG(MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION,"Desea guardar los cambios del proyecto anterior antes de cerrarlo?"),project->GetFileName(),mxMD_YES_NO_CANCEL|mxMD_QUESTION,LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false).ShowModal();
-			if (mxMD_CANCEL&ret)
-				return;
-			else if (mxMD_YES&ret)
-				project->Save();
-			if (ret&mxMD_CHECKED)
-				config->Init.save_project=true;
+			mxMessageDialog::mdAns ret = 
+				mxMessageDialog(main_window,LANG(MAINW_SAVE_PROJECT_BEFORE_CLOSING_QUESTION,""
+												 "Desea guardar los cambios del proyecto anterior antes de cerrarlo?"))
+					.Check1(LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false)
+					.Title(project->GetFileName()).ButtonsYesNoCancel().IconQuestion().Run();
+			if (ret.cancel)	return;
+			else if (ret.yes) project->Save();
+			if (ret.check1) config->Init.save_project=true;
 		}
 //	}
 	
@@ -1945,7 +1975,10 @@ void mxMainWindow::OnFileCloseProject (wxCommandEvent &event) {
 			break;
 		}
 	if (notebook_sources->GetPageCount()!=0) {
-		if (cerrar || mxMD_YES==mxMessageDialog(main_window,LANG(MAINW_CHANGE_CLOSE_ALL_QUESTION,"Hay cambios sin guardar. Se cerraran todos los archivos. Desea Continuar?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_QUESTION).ShowModal()) {
+		if (cerrar || mxMessageDialog(main_window,LANG(MAINW_CHANGE_CLOSE_ALL_QUESTION,""
+													   "Hay cambios sin guardar. Se cerraran todos los archivos. Desea Continuar?"))
+						.Title(LANG(GENERAL_WARNING,"Aviso")).ButtonsYesNo().IconQuestion().Run().yes )
+		{
 			for (int i=notebook_sources->GetPageCount()-1;i>=0;i--) {
 				((mxSource*)(notebook_sources->GetPage(i)))->UpdateExtras();
 				notebook_sources->DeletePage(i);;
@@ -1997,8 +2030,10 @@ void mxMainWindow::OnFileExportHtml (wxCommandEvent &event) {
 			wxString title = notebook_sources->GetPageText(notebook_sources->GetSelection());
 			if (title.Last()=='*') 
 				title.RemoveLast();
-			if (!ce.ExportHtml(source,title,dlg.GetPath()))
-				mxMessageDialog(this,LANG(MAINW_COULD_NOT_EXPORT_HTML,"No se pudo guardar el archivo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			if (!ce.ExportHtml(source,title,dlg.GetPath())) {
+				mxMessageDialog(this,LANG(MAINW_COULD_NOT_EXPORT_HTML,"No se pudo guardar el archivo"))
+								.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+			}
 		}
 	}
 }
@@ -2017,9 +2052,14 @@ bool mxMainWindow::CloseSource (mxSource *src) {
 bool mxMainWindow::CloseSource (int i) {
 	mxSource *source=(mxSource*)notebook_sources->GetPage(i);
 	if (g_share_manager && g_share_manager->Exists(source))  {
-		int ans =mxMessageDialog(main_window,"El archivo esta siendo compartido con modificaciones. Si lo cierra dejara de estar disponible.\nRealmente desea cerrar el archivo?",source->page_text, mxMD_YES_NO,"Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo.",false).ShowModal();
-		if (mxMD_YES&ans) {
-			if (mxMD_CHECKED&ans)
+		mxMessageDialog::mdAns ans = 
+			mxMessageDialog(main_window,"El archivo esta siendo compartido con modificaciones.\n"
+										 "Si lo cierra dejara de estar disponible.\n"
+										 "¿Realmente desea cerrar el archivo?")
+				.Check1("Continuar compartiendo (\"sin modificaciones\") despues de cerrarlo.",false)
+				.Title(source->page_text).ButtonsYesNo().Run();
+		if (ans.yes) {
+			if (ans.check1)
 				g_share_manager->Freeze(source);
 			else
 				g_share_manager->Delete(source);
@@ -2204,7 +2244,7 @@ void mxMainWindow::OnViewFullScreen(wxCommandEvent &event) {
 		}
 		
 		ShowFullScreen(true,(config->Init.autohide_menus_fs?wxFULLSCREEN_NOMENUBAR:0)|wxFULLSCREEN_NOTOOLBAR|wxFULLSCREEN_NOSTATUSBAR|wxFULLSCREEN_NOBORDER|wxFULLSCREEN_NOCAPTION );
-		new mxOSD(this,LANG(MAINW_FULLSCREEN_OUT_TIP,"Presione F11 para salir del modo pantalla completa"),3000,true);
+		mxOSD::MakeTimed(this,LANG(MAINW_FULLSCREEN_OUT_TIP,"Presione F11 para salir del modo pantalla completa"),3000);
 		Raise();
 DEBUG_INFO("wxYield:in  mxMainWindow::OnViewFullScreen");
 		wxYield();
@@ -2563,7 +2603,7 @@ mxSource *mxMainWindow::OpenFile (const wxString &filename, bool add_to_project)
 		if (add_to_project) {
 			project->AddFile(FT_OTHER,filename);
 		} else {
-			mxOSD osd(this,LANG(WXFB_OPENING,"Abriendo wxFormBuilder..."));
+			mxOSDGuard osd(this,LANG(WXFB_OPENING,"Abriendo wxFormBuilder..."));
 			wxExecute(wxString("\"")+config->Files.wxfb_command+"\" \""+filename+"\"");
 DEBUG_INFO("wxYield:in  mxMainWindow::OpenFile");
 			wxYield(); 
@@ -2649,8 +2689,10 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 		if (wxFileName::DirExists(DIR_PLUS_FILE(filename.GetFullPath(),"."))) {
 			SetExplorerPath(filename.GetFullPath());
 			ShowExplorerTreePanel();
-		} else 
-			mxMessageDialog(main_window,LANG(MAINW_FILE_NOT_EXISTS,"El archivo no existe."),filename.GetFullPath(),mxMD_OK|mxMD_INFO).ShowModal();
+		} else {
+			mxMessageDialog(main_window,LANG(MAINW_FILE_NOT_EXISTS,"El archivo no existe."))
+				.Title(filename.GetFullPath()).IconInfo().Run();
+		}
 		return;
 	}
 	status_bar->SetStatusText(wxString("Abriendo ")<<filename.GetFullPath());
@@ -2658,9 +2700,15 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 	if (filename.GetExt().CmpNoCase(_T(PROJECT_EXT))==0) { // si es un proyecto
 		// cerrar si habia un proyecto anterior
 		if (project && filename!=DIR_PLUS_FILE(project->path,project->filename)) { // la segunda condicion es porque puedo estar creando uno nuevo encima del abierto, en ese caso, si guardo el abiero pierdo el que creo el asistente
-			int ret=0;
-			if (config->Init.save_project || (/*project->modified && */mxMD_YES&(ret=mxMessageDialog(main_window,LANG(MAINW_ASK_SAVE_PREVIOUS_PROJECT,"Desea guardar los cambios del proyecto anterior antes de cerrarlo?"),project->GetFileName(),mxMD_YES_NO|mxMD_QUESTION,LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false).ShowModal()))) {
-				if (!config->Init.save_project && ret&mxMD_CHECKED)
+			mxMessageDialog::mdAns ret;
+			if (config->Init.save_project || 
+				(/*project->modified && */
+				 (ret=mxMessageDialog(main_window,LANG(MAINW_ASK_SAVE_PREVIOUS_PROJECT,""
+													   "Desea guardar los cambios del proyecto anterior antes de cerrarlo?"))
+						.Check1(LANG(MAINW_ALWAYS_SAVE_PROJECT_ON_CLOSE,"Guardar cambios siempre al cerrar un proyecto"),false)
+						.Title(project->GetFileName()).ButtonsYesNo().IconQuestion().Run()).yes) )
+				{
+				if (!config->Init.save_project && ret.check1)
 					config->Init.save_project=true;
 				project->Save();
 			}
@@ -2671,11 +2719,13 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 					mxSource *source = ((mxSource*)(notebook_sources->GetPage(i)));
 					if (source ->GetModify()) {
 						notebook_sources->SetSelection(i);
-						int res=mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_QUESTION,"Hay cambios sin guardar. Desea guardarlos?"), source->page_text, mxMD_QUESTION|mxMD_YES_NO_CANCEL).ShowModal();
-						if (mxMD_CANCEL==res) {
+						mxMessageDialog::mdAns res =
+							mxMessageDialog(main_window,LANG(MAINW_SAVE_CHANGES_QUESTION,"Hay cambios sin guardar. Desea guardarlos?"))
+								.Title(source->page_text).IconQuestion().ButtonsYesNoCancel().Run();
+						if (res.cancel) {
 							status_bar->SetStatusText(LANG(GENERAL_READY,"Listo"));
 							return;
-						} else if (mxMD_YES==res) {
+						} else if (res.yes) {
 							source->SaveSource();
 						}
 					} 
@@ -2736,9 +2786,12 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 			if (multiple && (*multiple)&(always_attach|never_attach)) {
 				attach=(*multiple)&always_attach;
 			} else {
-				int ans1=mxMessageDialog(main_window,LANG(MAINW_ADD_TO_PROJECT_QUESTION,"¿Desea agregar el archivo al proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",false).ShowModal();
-				attach=ans1&mxMD_YES;
-				if (multiple && ans1&mxMD_CHECKED) (*multiple)|=(attach?always_attach:never_attach);
+				mxMessageDialog::mdAns ans1 = 
+					mxMessageDialog(main_window,LANG(MAINW_ADD_TO_PROJECT_QUESTION,"¿Desea agregar el archivo al proyecto?"))
+						.Check1(multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",false)
+						.Title(filename.GetFullPath()).IconQuestion().ButtonsYesNo().Run();
+				attach = ans1.yes;
+				if (multiple && ans1.check1) (*multiple)|=(attach?always_attach:never_attach);
 			}
 			if (attach) {
 				// si no esta en la carpeta del proyecto, preguntar si hay que copiarlo ahí
@@ -2754,18 +2807,28 @@ void mxMainWindow::OpenFileFromGui (wxFileName filename, int *multiple) {
 					if (multiple && (*multiple)&(always_move|never_move)) {
 						move=(*multiple)&always_move;
 					} else {
-						int ans2=mxMessageDialog(main_window,LANG(MAINW_MOVE_TO_PROJECT_PATH_QUESTION,"El archivo que intenta agregar no se encuentra en el directorio del proyecto.\n¿Desea copiar el archivo al directorio del proyecto?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",false).ShowModal();
-						move=ans2&mxMD_YES;
-						if (multiple && ans2&mxMD_CHECKED) (*multiple)|=(move?always_move:never_move);
+						mxMessageDialog::mdAns ans2 =
+							mxMessageDialog(main_window,LANG(MAINW_MOVE_TO_PROJECT_PATH_QUESTION,""
+															 "El archivo que intenta agregar no se encuentra en el directorio del\n"
+															 "proyecto. ¿Desea copiar el archivo al directorio del proyecto?"))
+								.Check1(multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",false)
+								.Title(filename.GetFullPath()).IconQuestion().ButtonsYesNo().Run();
+						move = ans2.yes;
+						if (multiple && ans2.check1) (*multiple)|=(move?always_move:never_move);
 					}
 					if (move && wxFileExists(dest_filename)) {
 						bool replace=false;
 						if (multiple && (*multiple)|(always_replace|never_replace)) {
 							replace=(*multiple)|always_replace;
 						} else {
-							int ans3=mxMessageDialog(main_window,LANG(MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION,"El archivo ya existe en el directorio de proyecto.\n¿Desea reemplazarlo?"), filename.GetFullPath(), mxMD_QUESTION|mxMD_YES_NO,multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",true).ShowModal();
-							replace=(!(ans3&mxMD_YES));
-							if (multiple && ans3&mxMD_CHECKED) (*multiple)|=(replace?always_replace:never_replace);
+							mxMessageDialog::mdAns ans3 =
+								mxMessageDialog(main_window,LANG(MAINW_OVERWRITE_ON_PROJECT_PATH_QUESTION,""
+																 "El archivo ya existe en el directorio de proyecto.\n"
+																 "¿Desea reemplazarlo?"))
+									.Check1(multiple?LANG(MAINW_ADD_TO_PROJECT_CHECK,"Hacer lo mismo para todos"):"",true)
+									.Title(filename.GetFullPath()).IconQuestion().ButtonsYesNo().Run();
+							replace = ans3.yes;
+							if (multiple && ans3.check1) (*multiple)|=(replace?always_replace:never_replace);
 						}
 						if (!replace) move=false;
 					}
@@ -2831,8 +2894,10 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 		src->SetPrintMagnification(config->Styles.print_size-config->Styles.font_size);
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_NONE);
 		if (!printer.Print(this, &printout, true)) {
-			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
-				mxMessageDialog(this,LANG(MAINW_ERROR_PRITING,"Ha ocurrido un error al intentar imprimir"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			if (wxPrinter::GetLastError() == wxPRINTER_ERROR) {
+				mxMessageDialog(this,LANG(MAINW_ERROR_PRITING,"Ha ocurrido un error al intentar imprimir"))
+					.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+			}
 		}
 		src->SetWrapVisualFlags(wxSTC_WRAPVISUALFLAG_START|wxSTC_WRAPVISUALFLAG_END);
 //		(*pageSetupData) = * printData;
@@ -2845,7 +2910,7 @@ void mxMainWindow::OnFilePrint (wxCommandEvent &event) {
 //		wxPrinter printer(&g_printDialogData);
 //		if (!printer.Print(this, &printout, true)) {
 //			if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
-//				mxMessageDialog(this,"Ha ocurrido un error al intentar imprimir",LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();;
+//				mxMessageDialog(this,"Ha ocurrido un error al intentar imprimir").Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();;
 //		} else
 //			(*printData) = printer.GetPrintDialogData().GetPrintData();
 	}
@@ -2895,7 +2960,10 @@ mxSource *mxMainWindow::NewFileFromText (wxString text, int pos) {
 
 mxSource *mxMainWindow::NewFileFromTemplate(wxString filename, bool is_full_path) {
 	if (project) {
-		mxMessageDialog(this,LANG(MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT,"No puede abrir un ejemplo mientras trabaja en un proyecto.\nCierre el proyecto e intente nuevamente."),LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK|mxMD_WARNING).ShowModal();;
+		mxMessageDialog(this,LANG(MAINW_CANT_OPEN_TEMPLATE_WHILE_PROJECT,""
+								  "No puede abrir un ejemplo mientras trabaja en un proyecto.\n"
+								  "Cierre el proyecto e intente nuevamente."))
+			.Title(LANG(GENERAL_WARNING,"Advertencia")).IconWarning().Run();
 		return nullptr;
 	}
 	if (g_welcome_panel && notebook_sources->GetPageCount()==0) ShowWelcome(false);
@@ -2972,14 +3040,21 @@ void mxMainWindow::OnFileSaveAs (wxCommandEvent &event) {
 			wxFileName file = dlg.GetPath();
 			if (!project) {
 				if (file.GetExt().Len()==0) {
-					bool add=config->Init.always_add_extension;
-					if (!add) {
-						int res = mxMessageDialog(this,LANG(MAINW_NO_EXTENSION_ADD_CPP_QUESTION,"No ha definido una extension en el nombre de archivo indicado.\nSi es un codigo fuente se recomienda utilizar la extension cpp\npara que el compilador pueda identificar el lenguaje.\nDesea agregar la extension cpp al nombre?"),LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO,LANG(MAINW_ALWAYS_APPEND_EXTENSION,"Siempre agregar la extension sin preguntar."),false).ShowModal();;
-						if (res&mxMD_CHECKED)
+					bool do_add = config->Init.always_add_extension;
+					if (!do_add) {
+						mxMessageDialog::mdAns res =
+							mxMessageDialog(this,LANG(MAINW_NO_EXTENSION_ADD_CPP_QUESTION,""
+													  "No ha definido una extension en el nombre de archivo indicado.\n"
+													  "Si es un codigo fuente se recomienda utilizar la extension cpp\n"
+													  "para que el compilador pueda identificar el lenguaje.\n"
+													  "Desea agregar la extension cpp al nombre?"))
+								.Check1(LANG(MAINW_ALWAYS_APPEND_EXTENSION,"Siempre agregar la extension sin preguntar."),false)
+								.Title(LANG(GENERAL_WARNING,"Advertencia")).ButtonsYesNo().Run();
+						if (res.check1)
 							config->Init.always_add_extension=true;
-						add=res&mxMD_YES;
+						do_add=res.yes;
 					}
-					if (add)
+					if (do_add)
 						file.SetExt(source->IsCppOrJustC()?"cpp":"c");
 				}
 			}
@@ -3178,7 +3253,10 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 		wxString key = source->GetTextRange(s,e);
 		
 		if (key.Len()==0) { // si no hay palabra quejarse
-			mxMessageDialog(main_window,LANG(MAINW_INSERT_HEADIR_NO_WORD,"Debe colocar el cursor de texto sobre el nombre de la clase que desee incluir."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(main_window,LANG(MAINW_INSERT_HEADIR_NO_WORD,""
+											 "Debe colocar el cursor de texto sobre el\n"
+											 "nombre de la clase que desee incluir."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
 			return;
 		} else { // conseguir el h y darselo al source para que haga lo que corresponda
 			wxString header = g_code_helper->GetInclude(source->sin_titulo?wxString(""):source->source_filename.GetPathWithSep(),key);
@@ -3201,16 +3279,20 @@ void mxMainWindow::OnEditInsertInclude(wxCommandEvent &event) {
 				}
 			}
 			if (header.Len()) {
-				if (mxUT::GetFileType(header)==FT_SOURCE)
-					mxMessageDialog(main_window,key+LANG(MAINW_INSERT_HEADIR_CPP," esta declarada en un archivo fuente. Solo deben realizarse #includes para archivos de cabecera."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_INFO).ShowModal();
-				else {
+				if (mxUT::GetFileType(header)==FT_SOURCE) {
+					mxMessageDialog(main_window,key+LANG(MAINW_INSERT_HEADIR_CPP," esta declarada en un archivo fuente."
+														 "Solo deben realizarse #includes para archivos de cabecera."))
+						.Title(LANG(GENERAL_ERROR,"Error")).IconInfo().Run();
+				} else {
 					header.Replace("\\","/");
 					source->AddInclude(header);
 				}
-			} else if (key=="Clippo")
+			} else if (key=="Clippo") {
 				new mxSplashScreen(clpeg,GetPosition().x+GetSize().x-215,GetPosition().y+GetSize().y-230);
-			else
-				mxMessageDialog(main_window,LANG1(MAINW_NO_HEADER_FOR,"No se encontro cabecera correspondiente a \"<{1}>\".",key),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_WARNING).ShowModal();
+			} else {
+				mxMessageDialog(main_window,LANG1(MAINW_NO_HEADER_FOR,"No se encontro cabecera correspondiente a \"<{1}>\".",key))
+					.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();
+			}
 		}
 	}
 }
@@ -3405,8 +3487,10 @@ void mxMainWindow::OnDebugJump ( wxCommandEvent &event ) {
 void mxMainWindow::OnDebugRunUntil ( wxCommandEvent &event ) {
 	IF_THERE_IS_SOURCE {
 		mxSource *source = CURRENT_SOURCE;
-		if (!debug->RunUntil(source->GetFullPath(),source->GetCurrentLine()))
-			mxMessageDialog(main_window,LANG(DEBUG_RUN_UNTIL_ERROR,"La dirección actual no es válida."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		if (!debug->RunUntil(source->GetFullPath(),source->GetCurrentLine())) {
+			mxMessageDialog(main_window,LANG(DEBUG_RUN_UNTIL_ERROR,"La dirección actual no es válida."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		}
 	}
 }
 
@@ -4067,7 +4151,8 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 	if (!parser->last_file->next) {
 		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_EMPTY,"No hay fuentes para generar el índice. Abra uno \n"
 																			 "o más archivos para que ZinjaI analice y extraiga \n"
-																			 "los símbolos que conformarán el nuevo índice"),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_ERROR).ShowModal();
+																			 "los símbolos que conformarán el nuevo índice"))
+			.Title(LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado")).IconError().Run();
 	}
 	
 	wxString fname = wxGetTextFromUser(
@@ -4077,8 +4162,11 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 	if (!fname.Len()) return;
 	fname=DIR_PLUS_FILE_2(config->config_dir,"autocomp",fname);
 	if (wxFileName::FileExists(fname)) {
-		if (mxMD_NO==mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE,"El indice ya existe, ¿desea reemplazarlo?"),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_YES_NO).ShowModal()) 
+		if ( mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_OVERWRITE,"El indice ya existe, ¿desea reemplazarlo?"))
+			.Title(LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado")).ButtonsYesNo().IconQuestion().Run().no )
+		{
 			return;
+		}
 	}
 	
 	// buscar un buen valor por defecto para "diretorio base", buscando la parte
@@ -4101,10 +4189,13 @@ void mxMainWindow::OnSymbolsGenerateAutocompletionIndex(wxCommandEvent &evt) {
 	wxDirDialog dlg2(this,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_BASEDIR,"Directorio base (para formar las rutas relativas para los #includes):"),def_dir);
 	if (wxID_OK!=dlg2.ShowModal()) return;
 	if (g_code_helper->GenerateAutocompletionIndex(dlg2.GetPath(),fname)) {
-		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED,"Indice generado correctamente."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_INFO).ShowModal();
+		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_GENERATED,"Indice generado correctamente."))
+			.Title(LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado")).IconInfo().Run();
 		mxPreferenceWindow::Delete();
-	} else
-		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_ERROR,"Ha ocurrido un error al intentar generar el archivo."),LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado"),mxMD_OK|mxMD_ERROR).ShowModal();
+	} else {
+		mxMessageDialog(main_window,LANG(MAINW_GENERATE_AUTOCOMP_INDEX_ERROR,"Ha ocurrido un error al intentar generar el archivo."))
+			.Title(LANG(MAINW_GENERATE_AUTOCOMP_INDEX_CAPTION,"Generación de índice de autocompletado")).IconError().Run();
+	}
 }
 
 
@@ -4678,7 +4769,8 @@ void mxMainWindow::OnViewDuplicateTab(wxCommandEvent &evt) {
 	IF_THERE_IS_SOURCE {
 		mxSource *orig = CURRENT_SOURCE;
 		if (orig->sin_titulo) {
-			mxMessageDialog(main_window,LANG(MAINW_CANNOT_SPLIT_VIEW,"No se puede duplicar archivos sin nombre"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			mxMessageDialog(main_window,LANG(MAINW_CANNOT_SPLIT_VIEW,"No se puede duplicar archivos sin nombre"))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			return;
 		}
 		int opage=notebook_sources->GetSelection();
@@ -5092,17 +5184,18 @@ void mxMainWindow::CompileSource (bool force_compile, GenericAction *action) {
 		wxString ext=source->sin_titulo?wxString(""):source_filename.GetExt().MakeLower();
 		static bool ask=true;
 		if (ask && !master_source && mxUT::ExtensionIsH(ext)) {
-			int ans = mxMessageDialog(this,LANG(MAINW_RUN_HEADER_WARNING,""
-				"Esta intentando compilar/ejecutar un archivo de cabecera.\n"
-				"Probablemente deba intentar ejecutar un archivo fuente que\n"
-				"incluya esta cabecera. ¿Desea continuar?\n\n"
-				"Nota: puede configurar un fuente para que se ejecute siempre\n"
-				"dicho fuente sin importar cual otro tenga el foco con click\n"
-				"derecho sobre la pesataña del mismo."),
-				LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_WARNING,
-				LANG(MAINW_RUN_HEADER_CHECK,"No volver a mostrar este mensaje"),false).ShowModal();
-			if (ans&mxMD_NO) return;
-			if (ans&mxMD_CHECKED) ask=false;
+			mxMessageDialog::mdAns ans = 
+				mxMessageDialog(this,LANG(MAINW_RUN_HEADER_WARNING,""
+										  "Esta intentando compilar/ejecutar un archivo de cabecera.\n"
+										  "Probablemente deba intentar ejecutar un archivo fuente que\n"
+										  "incluya esta cabecera. ¿Desea continuar?\n\n"
+										  "Nota: puede configurar un fuente para que se ejecute siempre\n"
+										  "dicho fuente sin importar cual otro tenga el foco con click\n"
+										  "derecho sobre la pesataña del mismo."))
+					.Check1(LANG(MAINW_RUN_HEADER_CHECK,"No volver a mostrar este mensaje"),false)
+					.Title(LANG(GENERAL_WARNING,"Aviso")).ButtonsYesNo().IconWarning().Run();
+			if (ans.no) return;
+			if (ans.check1) ask=false;
 		}
 		// si cambio el fuente, guardarlo 
 		bool modified = source->GetModify();

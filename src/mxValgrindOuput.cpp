@@ -53,7 +53,9 @@ bool mxValgrindOuput::LoadOutputCppCheck() {
 		
 	wxTextFile fil(filename);
 	if (!fil.Exists()) {
-		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\n"
+														  "Para saber como generarlo consulte la ayuda."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return false;
 	}
 	fil.Open();
@@ -87,7 +89,9 @@ bool mxValgrindOuput::LoadOutputValgrind() {
 	root = AddRoot(_T("Salida"), -1);
 	is_last=false;
 	if (!wxFileName(filename).FileExists()) {
-		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\n"
+								                          "Para saber como generarlo consulte la ayuda."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return false;
 	}
 	wxFFileInputStream finput(filename);
@@ -121,7 +125,9 @@ bool mxValgrindOuput::LoadOutputDoxygen() {
 	root = AddRoot(_T("Salida"), 0);
 	is_last=false;
 	if (!wxFileName(filename).FileExists()) {
-		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\nPara saber como generarlo consulte la ayuda."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(VALGRIND_OUTPUT_MISSING,"No se encontro el archivo de salida.\n"
+								                          "Para saber como generarlo consulte la ayuda."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return false;
 	}
 	wxFFileInputStream finput(filename);

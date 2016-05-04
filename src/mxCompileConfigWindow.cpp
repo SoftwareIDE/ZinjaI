@@ -63,14 +63,16 @@ mxCompileConfigWindow::mxCompileConfigWindow(wxWindow* parent, mxSource *a_sourc
 void mxCompileConfigWindow::OnOkButton(wxCommandEvent &event){
 
 	if (wxNOT_FOUND==main_window->notebook_sources->GetPageIndex(m_source)) {
-		mxMessageDialog(this,LANG(COMPILECONF_SOURCE_CLOSED,"El fuente en cual se debe aplicar esta configuracion ha sido cerrado."), LANG(GENERAL_ERROR,"Error"), mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(COMPILECONF_SOURCE_CLOSED,"El fuente en cual se debe aplicar esta configuracion ha sido cerrado."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	
 	if (working_folder_ctrl->GetValue()=="")
 		working_folder_ctrl->SetValue(wxFileName::GetHomeDir());
 	else if (!wxFileName::DirExists(working_folder_ctrl->GetValue())) {
-		mxMessageDialog(this,LANG(COMPILECONF_INVALID_WORKDIR,"El directorio de trabajo no es valido."), LANG(GENERAL_ERROR,"Error"), mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(COMPILECONF_INVALID_WORKDIR,"El directorio de trabajo no es valido."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 

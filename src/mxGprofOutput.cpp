@@ -116,7 +116,10 @@ mxGprofOutput::mxGprofOutput(wxWindow *parent, wxString fname)
 {
 	BoolFlagGuard combo_guard(mask_combo_events);
 	
-	if (!data.graph.size()) { mxMessageDialog(parent,"No se han podido leer resultados.","gprof",mxMD_ERROR|mxMD_OK).ShowModal(); Destroy(); return; }
+	if (!data.graph.size()) { 
+		mxMessageDialog(parent,"No se han podido leer resultados.").Title("gprof").IconError().Run();
+		Destroy(); return; 
+	}
 	wxSizer *main_sizer=new wxBoxSizer(wxVERTICAL);
 	
 	notebook = new wxNotebook(this,wxID_ANY);

@@ -207,21 +207,21 @@ int     high_end_colpos)
 		}
 	}
 
-	switch (sym_type)
-	{
-	case	PAF_TYPE_DEF:
-	case	PAF_CLASS_DEF:
-	case	PAF_ENUM_DEF:
-	case	PAF_CONS_DEF:
-	case	PAF_MACRO_DEF:
-	case	PAF_FUNC_DEF:
-	case	PAF_GLOB_VAR_DEF:
-	case	PAF_FUNC_DCL:
-	case	PAF_UNION_DEF:
+/*	switch (sym_type)*/
+/*	{*/
+/*	case	PAF_TYPE_DEF:*/
+/*	case	PAF_CLASS_DEF:*/
+/*	case	PAF_ENUM_DEF:*/
+/*	case	PAF_CONS_DEF:*/
+/*	case	PAF_MACRO_DEF:*/
+/*	case	PAF_FUNC_DEF:*/
+/*	case	PAF_GLOB_VAR_DEF:*/
+/*	case	PAF_FUNC_DCL:*/
+/*	case	PAF_UNION_DEF:*/
 //	case	PAF_ENUM_CONST_DEF:
-		scope_name = NULL;
-		break;
-	}
+/*		scope_name = NULL;*/
+/*		break;*/
+/*	}*/
 
 	/* Skip leading blanks */
 	for (;scope_name && isspace(*scope_name); scope_name++);
@@ -260,6 +260,7 @@ int     high_end_colpos)
 // 		panic("put_symbol called when pipe is not open");
 // 	}
 
+	/// ZASKAR - SCOPES - AGREGAR UN SEPARATOR ENTRE SCOPE Y NAME
 	printf("%d%c%s%s%s%c%06d.%03d%c%s%c%d.%d%c0x%x%c{%s}%c{%s}%c{%s}%c{%s}\n",
 		sym_type,                        KEY_DATA_SEP_CHR,
 		scope_name ? scope_name : "",

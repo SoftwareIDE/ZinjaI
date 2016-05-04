@@ -781,7 +781,10 @@ static void RecreateAllToolbars ( ) {
 void mxPreferenceWindow::OnOkButton(wxCommandEvent &event) {
 	
 	if (Toolchain::GetToolchain(files_toolchain->GetValue())->IsExtern()) {
-		mxMessageDialog(this,LANG(PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN,"La herramienta de compilación por defecto (pestaña Programa/Proyecto) no puede ser de tipo externa"),LANG(PREFERENCES_CAPTION,"Preferencias"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(PREFERENCES_CANNOT_DEFAULT_EXTERN_TOOLCHAIN,""
+								  "La herramienta de compilación por defecto (pestaña\n"
+								  "Programa/Proyecto) no puede ser de tipo externa"))
+			.Title(LANG(PREFERENCES_CAPTION,"Preferencias")).IconWarning().Run();
 		return;
 	}
 	
@@ -908,7 +911,10 @@ void mxPreferenceWindow::OnSkinButton(wxCommandEvent &event){
 	if (selection<0) return;
 	config->Files.skin_dir=skin_paths[selection];
 	RecreateAllToolbars(); main_window->SortToolbars(true);
-	mxMessageDialog(main_window,LANG(PREFERENCES_THEME_WILL_APPLY_ON_RESTART,"El tema seleccionado se aplicara completamente la proxima vez que reinicie ZinjaI"),LANG(PREFERENCES_CAPTION,"Preferencias"), mxMD_OK|mxMD_INFO).ShowModal();
+	mxMessageDialog(main_window,LANG(PREFERENCES_THEME_WILL_APPLY_ON_RESTART,""
+									 "El tema seleccionado se aplicara completamente\n"
+									 "la proxima vez que reinicie ZinjaI"))
+		.Title(LANG(PREFERENCES_CAPTION,"Preferencias")).IconInfo().Run();
 }
 
 void mxPreferenceWindow::OnWxHelpButton(wxCommandEvent &event) {
@@ -996,7 +1002,8 @@ void mxPreferenceWindow::OnExplorerButton(wxCommandEvent &event) {
 	if (count) {
 		PopupMenu(&menu);
 	} else {
-		mxMessageDialog(main_window,_T("No se ha encontrado ningun explorador de archivos conocido."),_T("Explorador de archivos"), mxMD_OK|mxMD_WARNING).ShowModal();
+		mxMessageDialog(main_window,"No se ha encontrado ningun explorador de archivos conocido.")
+			.Title("Explorador de archivos").IconWarning().Run();
 	}	
 }
 
@@ -1028,7 +1035,11 @@ void mxPreferenceWindow::OnTerminalButton(wxCommandEvent &event) {
 	if (count) {
 		PopupMenu(&menu);
 	} else {
-		mxMessageDialog(main_window,"No se ha encontrado una terminal conocida.\nInstale xterm,konsole o gnome-terminal; o\nconfigure el parametro \"Comando del\nTerminal\" en el cuadro de Preferencias.\"","Terminal de ejecucion", mxMD_OK|mxMD_WARNING).ShowModal();
+		mxMessageDialog(main_window,"No se ha encontrado una terminal conocida.\n"
+						            "Instale xterm,konsole o gnome-terminal; o\n"
+									"configure el parametro \"Comando del\n"
+									"Terminal\" en el cuadro de Preferencias.\"")
+			.Title("Terminal de ejecucion").IconWarning().Run();
 	}	
 }
 
@@ -1060,10 +1071,12 @@ void mxPreferenceWindow::OnAutocodesOpen(wxCommandEvent &event) {
 void mxPreferenceWindow::OnAutocodesEdit(wxCommandEvent &event) {
 	int i=2;
 	wxString file=files_autocode->GetValue();
-	if (wxFileName(file).FileExists())
+	if (wxFileName(file).FileExists()) {
 		main_window->OpenFileFromGui(file,&i);
-	else
-		mxMessageDialog(main_window,_T("El archivo no existe"),_T("Archivo de definiciones de autocódigos"), mxMD_OK|mxMD_WARNING).ShowModal();	
+	} else {
+		mxMessageDialog(main_window,"El archivo no existe")
+			.Title("Archivo de definiciones de autocódigos").IconWarning().Run();
+	}
 }
 
 void mxPreferenceWindow::OnDebugMacrosButton(wxCommandEvent &event) {
@@ -1085,10 +1098,13 @@ void mxPreferenceWindow::OnDebugMacrosOpen(wxCommandEvent &event) {
 void mxPreferenceWindow::OnDebugMacrosEdit(wxCommandEvent &event) {
 	int i=2;
 	wxString file=debug_macros_file->GetValue();
-	if (wxFileName(file).FileExists())
+	if (wxFileName(file).FileExists()) {
 		main_window->OpenFileFromGui(file,&i);
-	else
-		mxMessageDialog(main_window,_T("El archivo no existe"),LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"), mxMD_OK|mxMD_WARNING).ShowModal();	
+	} else {
+		mxMessageDialog(main_window,"El archivo no existe")
+			.Title(LANG(PREFERENCES_DEBUG_GDB_MACROS_FILE,"Archivo de macros para gdb"))
+			.IconWarning().Run();	
+	}
 }
 
 mxPreferenceWindow *mxPreferenceWindow::ShowUp() {
@@ -1160,7 +1176,11 @@ void mxPreferenceWindow::SetToolbarPage(const wxString &edit_one) {
 }
 
 void mxPreferenceWindow::OnToolbarsReset(wxCommandEvent &evt) {
-	if (mxMD_YES == mxMessageDialog(main_window,LANG(PREFERENCES_TOOLBARS_RESET_WARNING,"Perdera todas las modificiaciones realizadas a las barras\n de herramientas. ¿Desea continuar?"),LANG(PREFERENCES_CAPTION,"Preferencias"), mxMD_YES_NO).ShowModal()) {
+	if ( mxMessageDialog(main_window,LANG(PREFERENCES_TOOLBARS_RESET_WARNING,""
+										  "Perdera todas las modificiaciones realizadas a las\n"
+										  "barras de herramientas. ¿Desea continuar?"))
+			.Title(LANG(PREFERENCES_CAPTION,"Preferencias")).ButtonsYesNo().Run().yes) 
+	{
 #define _aux_on_toolbar_reset(NAME,name) \
 		bool baux_##name = _toolbar_visible(tb##NAME); \
 		toolbars_wich_##name->SetValue(_toolbar_visible(tb##NAME)); \

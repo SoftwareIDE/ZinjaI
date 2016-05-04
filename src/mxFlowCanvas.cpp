@@ -19,6 +19,7 @@
 #define FC_MARGIN_IN 4
 #define FC_MARGIN_BETWEEN 12
 #define FC_MARGIN_ARROW 5
+#include "mxMainWindow.h"
 
 BEGIN_EVENT_TABLE(mxFlowCanvas, wxScrolledWindow)
     EVT_PAINT  (mxFlowCanvas::OnPaint)
@@ -52,7 +53,7 @@ mxFlowCanvas::mxFlowCanvas(wxWindow *parent, mxSource *src) : wxScrolledWindow (
     dc->SetTextForeground(*wxBLACK);
 	int r1=0,r2=0;
 	if (!Analize(source->GetSelectionStart(), source->GetSelectionEnd(),draw,dc,r1,r2))
-		mxMessageDialog(_T("El bloque de codigo no es correcto"),_T("Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(main_window,"El bloque de codigo no es correcto").Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 	// dibujar inicio y fin
 	wxString ini,fin;
 	ini<<_T("Lin ")<<source->LineFromPosition(source->GetSelectionStart())+1<<_T(" - Col ")<<source->GetSelectionStart()-source->PositionFromLine(source->LineFromPosition(source->GetSelectionStart()));

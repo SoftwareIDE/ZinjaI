@@ -119,7 +119,8 @@ void er_sigsev(int sig) {
 		mxMessageDialog(main_window,LANG(ERRORRECOVERY_OOPS_MESSAGE,"Ha ocurrido un error grave y ZinjaI se cerrara.\n"
 						"Por suerte, se han podido guardar todos sus\n"
 						"archivos y proyectos para recuperarlos la\n"
-						"proxima vez que inicie el entorno."),_T("OOOPS!!!"),mxMD_OK|mxMD_ERROR).ShowModal();
+						"proxima vez que inicie el entorno."))
+			.Title("OOOPS!!!").IconError().Run();
 	}
 	exit(sig);
 }

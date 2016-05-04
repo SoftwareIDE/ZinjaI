@@ -72,25 +72,32 @@ mxShareSourceWindow::mxShareSourceWindow(mxSource *source, wxString name, wxWind
 void mxShareSourceWindow::OnOkButton(wxCommandEvent &event) {
 	wxString name=source_name->GetValue();
 	if (!name.Len()) {
-		mxMessageDialog(this,LANG(SHARESOURCE_EMPTY_SHARING_NAME,"Debe ingresar un nombre para compartir el archivo."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(SHARESOURCE_EMPTY_SHARING_NAME,"Debe ingresar un nombre para compartir el archivo."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	if (name.Len()>255) {
-		mxMessageDialog(this,LANG(SHARESOURCE_NAME_TOO_LONG,"El nombre no puede tener mas de 255 caracteres."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(SHARESOURCE_NAME_TOO_LONG,"El nombre no puede tener mas de 255 caracteres."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	
 	if (!g_share_manager->CheckServer()) {
-		mxMessageDialog(this,LANG(SHARESOURCE_COULDNT_START_SERVER,"No se pudo inciar el servidor. Compruebe que el puerto este correctamente configuardo y libre."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(SHARESOURCE_COULDNT_START_SERVER,"No se pudo inciar el servidor. Compruebe que el puerto este correctamente configuardo y libre."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	
-	if (g_share_manager->Exists(name))
-		if (mxMD_YES==mxMessageDialog(this,LANG(SHARESOURCE_SOURCE_ALREADY_EXISTS_REPLACE,"Ya existe un archivo compartido con ese nombre. Desea reemplazarlo?"),LANG(GENERAL_WARNING,"Aviso"),mxMD_YES_NO|mxMD_WARNING).ShowModal() )
+	if (g_share_manager->Exists(name)) {
+		if ( mxMessageDialog(this,LANG(SHARESOURCE_SOURCE_ALREADY_EXISTS_REPLACE,""
+									   "Ya existe un archivo compartido con ese nombre.\n"
+									   "Desea reemplazarlo?"))
+				.Title(LANG(GENERAL_WARNING,"Aviso")).ButtonsYesNo().IconWarning().Run().yes )
+		{
 			g_share_manager->Replace(name,source_ctrl,freeze_check->GetValue());
-		else
+		} else
 			return;
-	else
+	} else
 		g_share_manager->Insert(name,source_ctrl,freeze_check->GetValue());
 	Close();
 }

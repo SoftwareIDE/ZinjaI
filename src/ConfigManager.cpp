@@ -971,8 +971,9 @@ void ConfigManager::FinishiLoading ( ) {
 		if (LANGERR_OK!=load_language(DIR_PLUS_FILE("lang",Init.language_file).c_str(),DIR_PLUS_FILE(config_dir,"lang_cache").c_str())) {
 			if (g_splash) g_splash->Hide(); // en window, si el splash esta visible, la llamada a ShowModal revienta
 			mxMessageDialog(nullptr,"No se pudo cargar el diccionario del idioma seleccionado.\n"
-			"El sistema utilizará el predeterminado (spanish).\n"
-			"Could not load language file. System will use default (spanish).","ZinjaI",mxMD_OK|mxMD_WARNING).ShowModal();
+			                        "El sistema utilizará el predeterminado (español).\n\n"
+									"Could not load language file. System will use default (spanish)."
+							).IconWarning().Run();
 		}
 	}
 	
@@ -1047,26 +1048,29 @@ void ConfigManager::SetDefaultInspectionsImprovingTemplates (int version) {
 	}
 }
 
-bool ConfigManager::CheckComplaintAndInstall(wxWindow *parent, const wxString &check_command, const wxString &what, const wxString &error_msg, const wxString &pkgname, const wxString &website) {
+bool ConfigManager::CheckComplaintAndInstall(wxWindow *parent, const wxString &check_command, const wxString &what,
+											 const wxString &error_msg, const wxString &pkgname, 
+											 const wxString &website, const wxString & preferences_field) 
+{
 	wxString check_output = mxUT::GetOutput(check_command,true);
 	if (check_output.Len() && !check_output.StartsWith("execvp")) return true; // si anda, ya esta instalada
 	wxString chk_message = GetTryToInstallCheckboxMessage(); // ver si tenemos apt-get
 	if (chk_message.IsEmpty() && website.Len()) // si no lo tenemos, talvez tengamos el link al sitio de descarga
 		chk_message = LANG(CONFIG_GOTO_PACKAGE_WEBSITE,"Abrir sitio el web de esta herramienta");
-	int ans = mxMessageDialog(parent,error_msg,what,mxMD_OK|mxMD_WARNING,chk_message,true).ShowModal(); // informar/preguntar
-	if (ans&mxMD_CHECKED) {
+	mxMessageDialog::mdAns ans = mxMessageDialog(parent,error_msg).Title(what).IconWarning().Check1(chk_message,true).Run(); // informar/preguntar
+	if (ans.check1) {
 		if (!GetTryToInstallCheckboxMessage().IsEmpty()) { // si había apt-get, 
 			TryToInstallWithAptGet(parent,what,pkgname); // intentar instalar
 			check_output = mxUT::GetOutput(check_command,true);
 			if (check_output.Len() && !check_output.StartsWith("execvp")) // si anda, ya esta instalada
 				return true; 
 			// si falló apt-get, avisar e intentar abrir el sitio web de descarga
-			ans = mxMessageDialog(
-				nullptr,LANG(CONFIG_APTGET_FAILED,"Falló la instalación automática."),what,mxMD_OK|mxMD_WARNING,
-				(website.Len()?(LANG(CONFIG_GOTO_PACKAGE_WEBSITE,"Abrir sitio el web de esta herramienta")):""),true
-				).ShowModal();
+			ans = mxMessageDialog(parent,LANG(CONFIG_APTGET_FAILED,"Falló la instalación automática."))
+					.Title(what).IconWarning()
+				    .Check1(website.Len()?(LANG(CONFIG_GOTO_PACKAGE_WEBSITE,"Abrir sitio el web de esta herramienta")):"",true)
+					.Run();
 		}
-		if (ans&mxMD_CHECKED) { // si no había apt-get, o si fallo (por eso repito la pregunta del if), abrir el sitio web
+		if (ans.check1) { // si no había apt-get, o si fallo (por eso repito la pregunta del if), abrir el sitio web
 			mxUT::OpenInBrowser(website);
 		}
 	}
@@ -1074,9 +1078,11 @@ bool ConfigManager::CheckComplaintAndInstall(wxWindow *parent, const wxString &c
 }
 
 void ConfigManager::TryToInstallWithAptGet (wxWindow * parent, const wxString & what, const wxString & pkgname) {
-	mxMessageDialog(parent,LANG(CONFIG_ABOUT_TO_APTGET,"A continuación se intentará instalar el software faltante en una nueva\n"
-		"terminal. Podría requerir ingresar la contraseña del administrador.\n"
-		"ZinjaI continuará cuando se cierre dicha terminal."),what).ShowModal();
+	mxMessageDialog(parent,
+					LANG(CONFIG_ABOUT_TO_APTGET,"A continuación se intentará instalar el software faltante en una nueva\n"
+												"terminal. Podría requerir ingresar la contraseña del administrador.\n"
+												"ZinjaI continuará cuando se cierre dicha terminal.")
+					).Title(what).Run();
 	wxExecute(mxUT::GetCommandForRunningInTerminal(
 		wxString("ZinjaI - sudo apt-get install ")+pkgname,
 		wxString("sudo apt-get install ")+pkgname ),wxEXEC_SYNC);

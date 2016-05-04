@@ -19,7 +19,8 @@ mxRealTimeInspectionEditor::mxRealTimeInspectionEditor(const wxString &expressio
 	DebuggerInspection *di;
 	(di = DebuggerInspection::Create(expression,DIF_DONT_USE_HELPER,this,false))->Init();
 	if (di->GetDbiType()!=DIT_VARIABLE_OBJECT) {
-		mxMessageDialog(main_window,LANG(REALTIMEINSP_ERROR_CREATING_INSPECTION,"Ha ocurrido un error al registrar la inspección"),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(main_window,LANG(REALTIMEINSP_ERROR_CREATING_INSPECTION,"Ha ocurrido un error al registrar la inspección"))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		Destroy(); return;
 	}
 	

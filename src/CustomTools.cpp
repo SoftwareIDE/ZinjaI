@@ -54,7 +54,8 @@ void CustomToolsPack::WriteConfig (wxTextFile & file) {
 
 void CustomToolsPack::Run (int i) {
 	if (tools[i].command.IsEmpty()) {
-		mxMessageDialog(main_window,LANG(MAINW_CUSTOM_TOOL_UNDEFINED,"Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\"."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(main_window,LANG(MAINW_CUSTOM_TOOL_UNDEFINED,"Esta herramienta no esta correctamente configurada.\nUtilice el comando \"Configuracion\" del submenu \"Herramientas Personalizadas\" del menu \"Herramientas\"."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	if (tools[i].pre_action==CT_PRE_COMPILE) {

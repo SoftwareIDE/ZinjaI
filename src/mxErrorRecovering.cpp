@@ -123,45 +123,47 @@ void mxErrorRecovering::OnHelpButton(wxCommandEvent &evt) {
 bool mxErrorRecovering::RecoverSomething() {
 	if (!wxFileName::FileExists(DIR_PLUS_FILE(config->temp_dir,"recovery_log"))) return false;
 	if (wxFileName::FileExists(DIR_PLUS_FILE(config->temp_dir,"kboom.zpr"))) {
-		if (mxMD_YES == mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_MESSAGE,""
-			"ZinjaI no se cerro correctamente durante su ultima ejecucion.\n"
-			"El proyecto en el que trabajaba fue guardado automaticamente.\n"
-			"Desea recuperarlo? (Atencion: al abrir el proyecto recuperado\n"
-			"podria sobreescribir la version en disco del proyecto y sus\n"
-			"archivos. Se guardara una copia de su archivo de proyecto actual\n"
-			"antes de reescribirlo con la version restaurada)"
-			),LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos"), mxMD_YES_NO|mxMD_WARNING).ShowModal()) {
-				wxTextFile tf(DIR_PLUS_FILE(config->temp_dir,_T("kboom.zpr")));
-				tf.Open();
-				if (wxFileName::FileExists(tf[0])) wxCopyFile(tf[0],tf[0]+".backup");
-				if (!wxFileName::FileExists(tf[0]+".kaboom")) {
-					mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_PROBLEM,"Ha ocurrido un error al intentar recuperar el proyecto."),LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos"),mxMD_OK|mxMD_ERROR).ShowModal();
-					return true;
-				}
-				project = new ProjectManager(tf[0]+".kaboom");
-				project->filename=tf[1];
-				tf.Close();
-				// abrir los archivos recuperados
-				wxTextFile fil(DIR_PLUS_FILE(config->temp_dir,"recovery_log"));
-				fil.Open();
-				fil.GetFirstLine();
-				wxString str;
-				while (!fil.Eof()) {
+		if (mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_MESSAGE,""
+											 "ZinjaI no se cerro correctamente durante su ultima ejecucion.\n"
+											 "El proyecto en el que trabajaba fue guardado automaticamente.\n"
+											 "Desea recuperarlo? (Atencion: al abrir el proyecto recuperado\n"
+											 "podria sobreescribir la version en disco del proyecto y sus\n"
+											 "archivos. Se guardara una copia de su archivo de proyecto actual\n"
+											 "antes de reescribirlo con la version restaurada)"))
+				.Title(LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos")).ButtonsYesNo().IconWarning().Run().yes )
+		{
+			wxTextFile tf(DIR_PLUS_FILE(config->temp_dir,_T("kboom.zpr")));
+			tf.Open();
+			if (wxFileName::FileExists(tf[0])) wxCopyFile(tf[0],tf[0]+".backup");
+			if (!wxFileName::FileExists(tf[0]+".kaboom")) {
+				mxMessageDialog(main_window,LANG(ERRORRECOVERY_PROJECT_PROBLEM,"Ha ocurrido un error al intentar recuperar el proyecto."))
+					.Title(LANG(ERRORRECOVERY_CAPTION,"Recuperacion ante fallos")).IconError().Run();
+				return true;
+			}
+			project = new ProjectManager(tf[0]+".kaboom");
+			project->filename=tf[1];
+			tf.Close();
+			// abrir los archivos recuperados
+			wxTextFile fil(DIR_PLUS_FILE(config->temp_dir,"recovery_log"));
+			fil.Open();
+			fil.GetFirstLine();
+			wxString str;
+			while (!fil.Eof()) {
+				str = fil.GetNextLine();
+				if (str.Len() && !fil.Eof()) {
 					str = fil.GetNextLine();
-					if (str.Len() && !fil.Eof()) {
-						str = fil.GetNextLine();
-						mxSource *the_one=nullptr;
-						for (unsigned int i=0;i<main_window->notebook_sources->GetPageCount();i++) {
-							mxSource *src = ((mxSource*)(main_window->notebook_sources->GetPage(i)));
-							if (src->source_filename==str) { the_one=src; break; }
-						}
-						str=fil.GetNextLine();
-						if (the_one && wxFileName::FileExists(str)) {
-							the_one->wxStyledTextCtrl::LoadFile(str);
-							the_one->SetModify(true);
-						}
+					mxSource *the_one=nullptr;
+					for (unsigned int i=0;i<main_window->notebook_sources->GetPageCount();i++) {
+						mxSource *src = ((mxSource*)(main_window->notebook_sources->GetPage(i)));
+						if (src->source_filename==str) { the_one=src; break; }
+					}
+					str=fil.GetNextLine();
+					if (the_one && wxFileName::FileExists(str)) {
+						the_one->wxStyledTextCtrl::LoadFile(str);
+						the_one->SetModify(true);
 					}
 				}
+			}
 			fil.Close();
 			if (g_welcome_panel) main_window->ShowWelcome(false);
 			

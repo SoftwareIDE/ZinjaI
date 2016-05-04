@@ -349,7 +349,8 @@ void mxProjectConfigWindow::OnAddConfigButton(wxCommandEvent &event) {
 	// check if the name is unique
 	for (int i=0;i<project->configurations_count;i++)
 		if (project->configurations[i]->name==new_name) {
-			mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuracion con ese nombre"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuracion con ese nombre"))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			return;
 		}
 	// ask for an old configuration to copy settings from
@@ -379,9 +380,12 @@ void mxProjectConfigWindow::OnSelectConfigButton(wxCommandEvent &event) {
 }
 
 void mxProjectConfigWindow::OnRemoveConfigButton(wxCommandEvent &event) {
-	if (project->configurations_count==1) 
-		mxMessageDialog(this,LANG(PROJECTCONFIG_CANT_DELETE_LAST_PROFILE,"No puedes eliminar la unica configuracion existente"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
-	else if (mxMD_YES==mxMessageDialog(this,wxString(LANG(PROJECTCONFIG_CONFIRM_DELETE_PRE,"Seguro que desea eliminar la configuracion "))+configuration->name,LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_WARNING).ShowModal()) {
+	if (project->configurations_count==1) {
+		mxMessageDialog(this,LANG(PROJECTCONFIG_CANT_DELETE_LAST_PROFILE,"No puede eliminar la única configuración existente"))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+	} else if (mxMessageDialog(this,wxString(LANG(PROJECTCONFIG_CONFIRM_DELETE_PRE,"¿Seguro que desea eliminar la configuración "))+configuration->name+"?")
+			       .Title(LANG(GENERAL_WARNING,"Advertencia")).IconWarning().ButtonsYesNo().Run().yes)
+	{
 		int i=0;
 		// buscar la que hay que eliminar
 		while (project->configurations[i]!=configuration)
@@ -422,11 +426,12 @@ void mxProjectConfigWindow::OnRemoveConfigButton(wxCommandEvent &event) {
 }
 
 void mxProjectConfigWindow::OnRenameConfigButton(wxCommandEvent &event) {
-	wxString res = mxGetTextFromUser(LANG(PROJECTCONFIG_PROFILE_NEW_NAME,"Nuevo nombre:"), LANG(PROJECTCONFIG_RENAME_PROFILE,"Renombrar configuracion:") , configuration->name, this);
+	wxString res = mxGetTextFromUser(LANG(PROJECTCONFIG_PROFILE_NEW_NAME,"Nuevo nombre:"), LANG(PROJECTCONFIG_RENAME_PROFILE,"Renombrar configuración:") , configuration->name, this);
 	if (res!="") {
 		for (int i=0;i<project->configurations_count;i++)
 			if (project->configurations[i]!=configuration && project->configurations[i]->name==res) {
-				mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuracion con ese nombre"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog(this,LANG(PROJECTCONFIG_PROFILE_NAME_REPEATED,"Ya existe otra configuración con ese nombre"))
+					.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 				return;
 			}
 		configuration->name=res;
@@ -507,10 +512,14 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 	project->force_relink=linking_force_relink->GetValue();
 	discard=false; // evitar que al cerrar revierta los cambios
 	if (!SaveValues()) return; // guardar los cambios de la conf actual en vista
-	if (project->active_configuration != configuration && mxMD_YES==mxMessageDialog(this,wxString()<<LANG1(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE,"Desea establecer la configuracion \"<{1}>\" como la configuracion a utilizar?",configuration->name),LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa"),mxMD_YES_NO|mxMD_QUESTION).ShowModal() )
+	if (project->active_configuration != configuration && 
+		mxMessageDialog(this,LANG1(PROJECTCONFIG_ASK_FOR_SETTING_CURRENT_PROFILE,"Desea establecer la configuracion \"<{1}>\" como la configuracion a utilizar?",configuration->name))
+			.Title(LANG(PROJECTCONFIG_CURRENT_PROFILE,"Configuracion activa")).ButtonsYesNo().IconQuestion().Run().yes )
+	{
 		project->SetActiveConfiguration(configuration);
-	else
+	} else {
 		main_window->SetToolchainMode(Toolchain::SelectToolchain().IsExtern());
+	}
 	Close();
 }
 
@@ -520,7 +529,8 @@ void mxProjectConfigWindow::OnOkButton(wxCommandEvent &event){
 bool mxProjectConfigWindow::SaveValues() {
 	
 	if (!mxUT::LeftTrim(general_output_file->GetValue()).Len()) {
-		mxMessageDialog(this,LANG(PROJECTCONFIG_EXE_NAME_MISSING,"No se ha definido ubicacion (primer campo en \"General\") para el ejecutable.\n Este campo no puede quedar vacio."),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(PROJECTCONFIG_EXE_NAME_MISSING,"No se ha definido ubicacion (primer campo en \"General\") para el ejecutable.\n Este campo no puede quedar vacio."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();
 		return false;
 	}
 	
@@ -776,8 +786,11 @@ void mxProjectConfigWindow::OnStepsDel(wxCommandEvent &evt) {
 	wxString sname = steps_list->GetString(sel), snext;
 	if (sel<count-1) snext=steps_list->GetString(sel+1);
 	else if (sel>0) snext=steps_list->GetString(sel-1);
-	if (mxMD_NO==mxMessageDialog(this,wxString(LANG(PROJECTCONFIG_ASK_DELETE_STEP,"Eliminar el paso: "))<<sname,LANG(GENERAL_CONFIRM,"Confirmacion"),(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
+	if (mxMessageDialog(this,wxString(LANG(PROJECTCONFIG_ASK_DELETE_STEP,"Eliminar el paso: "))<<sname)
+			.Title(LANG(GENERAL_CONFIRM,"Confirmacion")).ButtonsYesNo().IconWarning().Run().no )
+	{
 		return;
+	}
 	if (project->DeleteExtraStep(configuration,project->GetExtraStep(configuration,sname))) {
 		steps_list->Delete(sel);
 		ReloadSteps(snext);
@@ -900,8 +913,11 @@ void mxProjectConfigWindow::OnLibsDel(wxCommandEvent &evt) {
 	wxString lname = libtobuild_list->GetString(sel), snext;
 	if (sel<count-1) snext=libtobuild_list->GetString(sel+1);
 	else if (sel>0) snext=libtobuild_list->GetString(sel-1);
-	if (mxMD_NO==mxMessageDialog(this,wxString(LANG(PROJECTCONFIG_ASK_DELETE_LIB,"Eliminar la biblioteca: "))<<lname,LANG(GENERAL_CONFIRM,"Confirmacion"),(mxMD_YES_NO|mxMD_WARNING)).ShowModal())
+	if ( mxMessageDialog(this,wxString(LANG(PROJECTCONFIG_ASK_DELETE_LIB,"Eliminar la biblioteca: "))<<lname)
+			.Title(LANG(GENERAL_CONFIRM,"Confirmacion")).ButtonsYesNo().IconWarning().Run().no )
+	{
 		return;
+	}
 	if (project->DeleteLibToBuild(configuration,project->GetLibToBuild(configuration,lname))) {
 		libtobuild_list->Delete(sel);
 		ReloadLibs(snext);

@@ -110,8 +110,16 @@ mxGdbCommandsPanel::mxGdbCommandsPanel():wxPanel(main_window) {
 
 
 void mxGdbCommandsPanel::OnInput (wxCommandEvent & event) {
-	if (!debug->IsDebugging()) { mxMessageDialog("No puede enviar comandos mientras no haya una sesión de depuración en progreso.","Error",mxMD_ERROR).ShowModal(); return; }
-	if (!debug->CanTalkToGDB()) { mxMessageDialog("No puede enviar comandos sin antes interrumpir/pausar la ejecución.","Error",mxMD_ERROR).ShowModal(); return; }
+	if (!debug->IsDebugging()) { 
+		mxMessageDialog(main_window,"No puede enviar comandos mientras no haya una sesión de depuración en progreso.")
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		return;
+	}
+	if (!debug->CanTalkToGDB()) { 
+		mxMessageDialog(main_window,"No puede enviar comandos sin antes interrumpir/pausar la ejecución.")
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		return; 
+	}
 	wxString cmd=input->GetValue(); input->SetSelection(0,cmd.Len());
 	if (!cmd.Len()) return;
 	output->AppendText(wxString("> ")+cmd+"\n");

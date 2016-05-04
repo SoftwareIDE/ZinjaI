@@ -479,9 +479,12 @@ bool mxUT::XCopy(wxString src,wxString dst, bool ask, bool replace) {
 		wxString dest_file = JoinDirAndFile(dst,filename);
 		cont = (!ask&&replace)||!(wxFileName::FileExists(dest_file));
 		if (!cont && ask) { // si ya existe preguntar si hay que pisar
-			int ret = mxMessageDialog(nullptr,LANG1(FILE_EXISTS_ASK_REPLACE,"El archivo \"<{1}>\" ya existe. Desea reemplazarlo?",dest_file),"Aviso",mxMD_YES_NO|mxMD_QUESTION,LANG(GENERAL_DONT_ASK_AGAIN,"No volver a preguntar"),false).ShowModal();
-			cont = (ret&mxMD_YES);
-			if (ret&mxMD_CHECKED) {
+			mxMessageDialog::mdAns ret = 
+				mxMessageDialog(nullptr,LANG1(FILE_EXISTS_ASK_REPLACE,"El archivo \"<{1}>\" ya existe. Desea reemplazarlo?",dest_file))
+					.Check1(LANG(GENERAL_DONT_ASK_AGAIN,"No volver a preguntar"),false)
+					.Title(LANG(GENERAL_WARNING,"Aviso")).ButtonsYesNo().IconQuestion().Run();
+			cont = ret.yes;
+			if (ret.check1) {
 				ask=false;
 				replace=cont;
 			}
@@ -1155,7 +1158,8 @@ void mxUT::ProcessGraph (wxString graph_file, bool use_fdp, wxString output, wxS
 			if (args.as_image) mxUT::LaunchImageViewer(args.title,args.output);
 			else               mxUT::LaunchGraphViewer(args.title,args.output);
 		} else if (retval) {
-			mxMessageDialog(main_window,LANG(MAINW_GRAPHVIZ_ERROR,"Ha ocurrido un error al procesar el grafo"),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			mxMessageDialog(main_window,LANG(MAINW_GRAPHVIZ_ERROR,"Ha ocurrido un error al procesar el grafo"))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		}
 		main_window->SetStatusText(LANG(GENERAL_READY,"Listo"));
 	}; );

@@ -26,7 +26,8 @@ mxIconInstaller::mxIconInstaller(bool first_run):wxDialog(nullptr,wxID_ANY,LANG(
 	wxString res = mxUT::GetOutput("xdg-desktop-menu --version");
 	if (!res.Len()||res.Find("bash")!=wxNOT_FOUND) { 
 		if (!first_run) 
-			mxMessageDialog(nullptr,LANG(XDG_NO_XDG,"Debe instalar xdg-utils para tener acceso todas las funcionalidades"),LANG(XDG_CAPTION,"Iconos lanzadores"), mxMD_OK|mxMD_INFO).ShowModal();
+			mxMessageDialog(nullptr,LANG(XDG_NO_XDG,"Debe instalar xdg-utils para tener acceso todas las funcionalidades"))
+				.Title(LANG(XDG_CAPTION,"Iconos lanzadores")).IconInfo().Run();
 		xdg_not_found=true;
 //		return;
 	}

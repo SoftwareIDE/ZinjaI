@@ -113,10 +113,13 @@ void mxCustomTools::OnButtonOk(wxCommandEvent &event) {
 	int tb_id = m_for_project?MenusAndToolsConfig::tbPROJECT:MenusAndToolsConfig::tbTOOLS;
 	int wx_id = m_for_project?mxID_VIEW_TOOLBAR_PROJECT:mxID_VIEW_TOOLBAR_TOOLS;
 	if (someone_ontoolbar && !menu_data->GetToolbarPosition(tb_id).visible && 
-		mxMD_YES==mxMessageDialog(this,LANG(CUSTOM_TOOLS_SHOW_TOOLBAR,"La barra de herramientas \"Herramientas\" no esta visible.\n"
-		"¿Desea activarla para ver los controles personalizados?"),GetCaption(), mxMD_YES_NO).ShowModal()) {
-			main_window->OnToggleToolbar(wx_id,tb_id,true);
-		}
+		mxMessageDialog(this,
+						LANG(CUSTOM_TOOLS_SHOW_TOOLBAR,"La barra de herramientas \"Herramientas\" no esta visible.\n"
+													   "¿Desea activarla para ver los controles personalizados?")
+					    ).Title(GetCaption()).ButtonsYesNo().Run().ok )
+	{
+		main_window->OnToggleToolbar(wx_id,tb_id,true);
+	}
 	menu_data->TransferStatesFromConfig();
 	menu_data->UpdateToolbar(tb_id,true);
 	main_window->UpdateCustomTools(m_for_project);

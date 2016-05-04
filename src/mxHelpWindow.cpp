@@ -70,7 +70,8 @@ void mxHelpWindow::OnSearch(wxString value) {
 	mxUT::Split(value.MakeUpper(),keywords,true,false);
 	unsigned int kc=keywords.GetCount();
 	if (kc==0) {
-		mxMessageDialog(this,LANG(HELPW_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(HELPW_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();
 		return;
 	}
 	unsigned char *bfound = new unsigned char[keywords.GetCount()];
@@ -130,9 +131,12 @@ void mxHelpWindow::ShowIndex() {
 void mxHelpWindow::ShowHelp(wxString page, wxDialog *from_modal) {
 	
 	if (from_modal) {
-		if (mxMD_OK==mxMessageDialog(from_modal,"Se cerrará este cuadro de diálogo (perdiendo los cambios) para poder acceder a la ventana de ayuda.",LANG(GENERAL_WARNING,"Advertencia"),mxMD_OK_CANCEL|mxMD_WARNING).ShowModal())
+		if ( mxMessageDialog(from_modal,"Se cerrará este cuadro de diálogo (perdiendo los cambios)\n"
+										"para poder acceder a la ventana de ayuda.")
+				.Title(LANG(GENERAL_WARNING,"Advertencia")).ButtonsOkCancel().IconWarning().Run().ok ) 
+		{
 			from_modal->EndModal(0);
-		else
+		} else
 			return;
 	}
 	

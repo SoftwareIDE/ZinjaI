@@ -675,9 +675,9 @@ void mxSource::OnMarginClick (wxStyledTextEvent &event) {
 		} else { 
 			if (IsEmptyLine(l)) { // no dejar poner un pto de interrupción en una línea que no tiene código
 				mxMessageDialog(main_window,LANG(DEBUG_NO_BREAKPOINT_ON_EMPTY_LINE,""
-					"Los puntos de interrupcion no pueden colocarse en lineas vacias\n"
-					" que contengan solo comentarios o directivas de preprocesador"),
-					LANG(DEBUG_BREAKPOINT_CAPTION,"Puntos de Interrupcion"),mxMD_INFO|mxMD_OK).ShowModal();
+												 "Los puntos de interrupcion no pueden colocarse en lineas vacias\n"
+												 " que contengan solo comentarios o directivas de preprocesador"))
+					.Title(LANG(DEBUG_BREAKPOINT_CAPTION,"Puntos de Interrupcion")).IconInfo().Run();
 				return;
 			}
 			bpi=new BreakPointInfo(this,l);
@@ -3561,9 +3561,14 @@ void mxSource::ThereAreExternalModifications() {
 	wxDateTime dt = source_filename.GetModificationTime();
 	if (dt==source_time) return; else SetSourceTime(dt);
 	if (!source_time_dont_ask) {
-		int res=mxMessageDialog(main_window,LANG(SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD,"El archivo fue modificado por otro programa.\nDesea recargarlo para obtener las modificaciones?"), source_filename.GetFullPath(), mxMD_YES_NO|mxMD_WARNING,"No volver a preguntar",false).ShowModal();
-		source_time_reload=(res&mxMD_YES);
-		source_time_dont_ask=(res&mxMD_CHECKED);
+		mxMessageDialog::mdAns res =
+			mxMessageDialog(main_window,LANG(SOURCE_EXTERNAL_MODIFICATION_ASK_RELOAD,""
+												 "El archivo fue modificado por otro programa.\n"
+												 "Desea recargarlo para obtener las modificaciones?"))
+				.Title(source_filename.GetFullPath()).ButtonsYesNo().IconWarning()
+				.Check1("No volver a preguntar",false).Run();
+		source_time_reload = res.yes;
+		source_time_dont_ask = res.check1;
 	}
 	if (source_time_reload) {
 		Reload();
@@ -3585,16 +3590,17 @@ bool mxSource::MySaveFile(const wxString &fname) {
 void mxSource::OnModifyOnRO (wxStyledTextEvent &event) {
 	if (readonly_mode==ROM_DEBUG) {
 		ro_quejado=true;
-		int ans = mxMessageDialog(main_window,LANG(DEBUG_CANT_EDIT_WHILE_DEBUGGING,""
-			"Por defecto, no se puede modificar el fuente mientras se encuentra\n"
-			"depurando un programa, ya que de esta forma pierde la relación que\n"
-			"existe entre la información que brinda el depurador a partir del\n"
-			"archivo binario, y el fuente que está visualizando. Puede configurar\n"
-			"este comportamiento en la seccion Depuracion del cuadro de\n"
-			"Preferencias (desde menu Archivo)"),
-			LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK,
-			LANG(DEBUG_ALLOW_EDIT_WHILE_DEBUGGING,"Permitir editar igualemente"),config->Debug.allow_edition).ShowModal();
-		if (ans&mxMD_CHECKED) {
+		mxMessageDialog::mdAns ans =
+			mxMessageDialog(main_window,LANG(DEBUG_CANT_EDIT_WHILE_DEBUGGING,""
+											 "Por defecto, no se puede modificar el fuente mientras se encuentra\n"
+											 "depurando un programa, ya que de esta forma pierde la relación que\n"
+											 "existe entre la información que brinda el depurador a partir del\n"
+											 "archivo binario, y el fuente que está visualizando. Puede configurar\n"
+											 "este comportamiento en la seccion Depuracion del cuadro de\n"
+											 "Preferencias (desde menu Archivo)"))
+				.Check1(LANG(DEBUG_ALLOW_EDIT_WHILE_DEBUGGING,"Permitir editar igualemente"),config->Debug.allow_edition)
+				.Title(LANG(GENERAL_WARNING,"Advertencia")).IconWarning().Run();
+		if (ans.check1) {
 			config->Debug.allow_edition=true;
 			SetReadOnlyMode(ROM_NONE);
 			event.Skip();
@@ -3932,8 +3938,12 @@ int mxSource::GetMarginForThisX (int x) {
 void mxSource::UserReload ( ) {
 	if (!sin_titulo && GetModify()) {
 		main_window->notebook_sources->SetSelection(main_window->notebook_sources->GetPageIndex(this));
-		if (mxMD_NO==mxMessageDialog(this,LANG(MAINW_CHANGES_CONFIRM_RELOAD,"Hay Cambios sin guardar, desea recargar igualmente la version del disco?"),GetFullPath(),mxMD_YES_NO|mxMD_QUESTION).ShowModal()) 
+		if ( mxMessageDialog(this,LANG(MAINW_CHANGES_CONFIRM_RELOAD,""
+									   "Hay Cambios sin guardar, desea recargar igualmente la version del disco?"))
+				.Title(GetFullPath()).ButtonsYesNo().IconQuestion().Run().no ) 
+		{
 			return;
+		}
 	}
 	SetSourceTime((sin_titulo?temp_filename:source_filename).GetModificationTime());
 	Reload();

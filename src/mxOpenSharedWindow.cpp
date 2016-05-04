@@ -81,12 +81,15 @@ mxOpenSharedWindow::mxOpenSharedWindow(wxWindow* parent, wxWindowID id, const wx
 
 void mxOpenSharedWindow::OnGetListButton(wxCommandEvent &event){
 	if (!(hostname->GetValue().Len())) {
-		mxMessageDialog(this,LANG(OPENSHARED_ENTER_HOSTNAME_OR_IP,"Debe introducir primero el nombre de host o el IP de la pc que esta compartiendo el archivo."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
+		mxMessageDialog(this,LANG(OPENSHARED_ENTER_HOSTNAME_OR_IP,"Debe introducir primero el nombre de host o el IP de la pc que esta compartiendo el archivo."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 	} else {
-		if (g_share_manager->GetList(hostname->GetValue(),files_list))
+		if (g_share_manager->GetList(hostname->GetValue(),files_list)) {
 			files_list->SetFocus();
-		else 
-			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
+		} else {
+			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		}
 	}
 }
 
@@ -101,17 +104,21 @@ void mxOpenSharedWindow::OnCloseButton(wxCommandEvent &event){
 void mxOpenSharedWindow::OnGetSourceButton(wxCommandEvent &event){
 	if (!files_list->GetStringSelection().Len() ) {
 		if (files_list->GetCount()==0) {
-			mxMessageDialog(this,LANG(OPENSHARED_GET_SHARED_LIST_FIRST,"Debe obtener la lista de fuentes compartidas primero. Para ello ingrese el nombre de host\no el IP de la pc que esta compartiendo el archivo y seleccione \"Actualizar lista\"."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
+			mxMessageDialog(this,LANG(OPENSHARED_GET_SHARED_LIST_FIRST,"Debe obtener la lista de fuentes compartidas primero. Para ello ingrese el nombre de host\no el IP de la pc que esta compartiendo el archivo y seleccione \"Actualizar lista\"."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			hostname->SetFocus();
 		} else {
-			mxMessageDialog(this,LANG(OPENSHARED_SELECT_ONE_FIRST,"Debe seleccionar un fuente de la lista primero."), LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+			mxMessageDialog(this,LANG(OPENSHARED_SELECT_ONE_FIRST,"Debe seleccionar un fuente de la lista primero."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			files_list->SetFocus();
 		}
 	} else {
-		if (g_share_manager->AskFor(files_list->GetStringSelection()))
+		if (g_share_manager->AskFor(files_list->GetStringSelection())) {
 			Close();
-		else
-			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."), LANG(GENERAL_ERROR,"Error"), mxMD_OK|mxMD_ERROR).ShowModal();
+		} else {
+			mxMessageDialog(this,LANG(OPENSHARED_HOST_NOT_FOUND,"No se encontro el host especificado."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		}
 	}
 }
 

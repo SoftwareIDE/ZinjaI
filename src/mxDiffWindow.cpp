@@ -152,7 +152,8 @@ void mxDiffWindow::DiffSourceFile(mxSource *src, wxString fname) {
 		text_file.Close();
 		main_window->ShowDiffSideBar(show_sidebar->GetValue(),show_tools->GetValue());
 	} else {
-		mxMessageDialog(main_window,LANG(DIFF_FILES_EQUAL,"Los archivos son iguales"),LANG(DIFF_CAPTION,"Comparacion"),mxMD_OK|mxMD_INFO).ShowModal();		
+		mxMessageDialog(main_window,LANG(DIFF_FILES_EQUAL,"Los archivos son iguales"))
+			.Title(LANG(DIFF_CAPTION,"Comparacion")).IconInfo().Run();
 	}
 }
 
@@ -228,7 +229,8 @@ void mxDiffWindow::DiffTwoSources(mxSource *src1, mxSource *src2) {
 		}
 		main_window->ShowDiffSideBar(show_sidebar->GetValue(),show_tools->GetValue());
 	} else {
-		mxMessageDialog(this,LANG(DIFF_FILES_EQUAL,"Los archivos son iguales"),LANG(DIFF_CAPTION,"Comparacion"),mxMD_OK|mxMD_INFO).ShowModal();		
+		mxMessageDialog(this,LANG(DIFF_FILES_EQUAL,"Los archivos son iguales"))
+			.Title(LANG(DIFF_CAPTION,"Comparación")).IconInfo().Run();
 	}
 }
 

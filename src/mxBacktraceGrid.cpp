@@ -45,8 +45,10 @@ void mxBacktraceGrid::SelectFrame(int r) {
 	entries[r].line.ToLong(&line);
 	wxString file = entries[r].fname;
 	if (file.Len()) {
-		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT))
-			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file,LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+		if (!debug->MarkCurrentPoint(file,line,r?mxSTC_MARK_FUNCCALL:mxSTC_MARK_EXECPOINT)) {
+			mxMessageDialog(main_window,wxString()<<LANG(MAINW_FILE_NOT_FOUND,"No se encontro el archivo:")<<"\n"<<file)
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+		}
 		if (debug->CanTalkToGDB()) debug->SelectFrame(-1,r);
 		debug->UpdateInspections();
 	}

@@ -105,7 +105,7 @@ void mxOSD::OnPaint (wxPaintEvent &event) {
 }
 
 void mxOSD::OnTimer(wxTimerEvent &evt) {
-	Hide();
+	Destroy();
 }
 
 void mxOSD::OnCancel(wxCommandEvent & evt) {

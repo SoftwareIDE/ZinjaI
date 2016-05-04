@@ -104,12 +104,14 @@ void mxLibToBuildWindow::OnClose(wxCloseEvent &evt) {
 void mxLibToBuildWindow::OnOkButton(wxCommandEvent &evt) {
 	new_name = name->GetValue();
 	if (new_name.Len()==0) {
-		mxMessageDialog(this,LANG(LIBTOBUILD_NAME_MISSING,"Debe completar el nombre."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(LIBTOBUILD_NAME_MISSING,"Debe completar el nombre."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 		return;
 	}
 	if (!lib) {
 		if (project->GetLibToBuild(configuration,name->GetValue())) {
-			mxMessageDialog(this,LANG(LIBTOBUILD_NAME_REPEATED,"Ya existe una biblioteca con ese nombre."),LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal();
+			mxMessageDialog(this,LANG(LIBTOBUILD_NAME_REPEATED,"Ya existe una biblioteca con ese nombre."))
+				.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			return;
 		}
 		lib = project->AppendLibToBuild(configuration);

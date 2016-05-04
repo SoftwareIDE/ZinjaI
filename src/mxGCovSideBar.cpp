@@ -92,19 +92,19 @@ void mxGCovSideBar::LoadData (bool force) {
 	
 	if (reloading) return; reloading=true;
 	
-	mxOSD *osd = nullptr;
+	mxOSDGuard osd;
 	
 	wxFileName binary = src->GetBinaryFileName();
 	wxFileName gcda = binary.GetFullPath().BeforeLast('.')+".gcda";
 	wxFileName fname = binary.GetFullPath().BeforeLast('.')+"."+src->GetFileName(true).AfterLast('.')+".gcov";
 	if (force || (gcda.FileExists() && (!fname.FileExists() || fname.GetModificationTime()<=gcda.GetModificationTime()))) { 
-		osd = new mxOSD(main_window,"Generando y leyendo información de cobertura (gcov)");
+		osd.Create(main_window,"Generando y leyendo información de cobertura (gcov)");
 		wxString command="gcov "; command<<mxUT::Quotize(binary.GetName());
 		mxUT::Execute(binary.GetPath(),command,wxEXEC_SYNC);
 	}
 	
 	wxTextFile fil(fname.GetFullPath());
-	if (!fil.Exists()) { reloading=false; return; } else fil.Open();
+	if (!fil.Exists()) { reloading=false; src->SetFocus(); return; } else fil.Open();
 	if (!fil.GetLineCount()) { reloading=false; return; }
 	
 	// los valores de hits son los nros de gcov+1, para que 0 sea que la linea no existe (para poder inicializar todo con memset), entonces 1 es que existe pero no se ejecuta, y n es que se ejecuta n-1 veces
@@ -123,7 +123,6 @@ void mxGCovSideBar::LoadData (bool force) {
 		}
 	}
 	wxWindow::Refresh();
-	if (osd) osd->Destroy();
 	src->SetFocus();
 	reloading=false;
 }

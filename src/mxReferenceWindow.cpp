@@ -8,6 +8,7 @@
 #include "ConfigManager.h"
 #include "mxComplementInstallerWindow.h"
 #include "raii.h"
+#include "mxMainWindow.h"
 using namespace std;
 
 #define _index "index.html"
@@ -79,7 +80,8 @@ void mxReferenceWindow::OnSearch (wxString value, bool update_history) {
 	current_page=wxString(">")+value;
 	wxArrayString aresults;
 	if (!value.Len()) {
-		mxMessageDialog(this,LANG(HELPW_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"),LANG(GENERAL_ERROR,"Error"),mxMD_WARNING|mxMD_OK).ShowModal();
+		mxMessageDialog(this,LANG(HELPW_SEARCH_ERROR_EMPTY,"Debe introducir al menos una palabra clave para buscar"))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconWarning().Run();
 		return;
 	}
 	wxString Value=value.Upper();
@@ -266,15 +268,16 @@ bool mxReferenceWindow::PopulateInitialTree ( ) {
 	if (index_loaded) return true;
 	wxTextFile fil(DIR_PLUS_FILE(config->Help.cppreference_dir,_index));
 	if (!fil.Exists()) {
-		int res=mxMessageDialog(LANG(CPPREF_NOT_FOUND,""
-						"No se encontró el archivo indice. Es probable que la\n"
-						"referencia no está instalada, ya que no se incluye por\n"
-						"defecto en todas las versiones de ZinjaI.\n\n"
-						"Si dispone de acceso a internet puede descargarla e\n"
-						"instalarla como complemento ahora."),
-						"Referencia C/C++",mxMD_INFO|mxMD_OK,
-						LANG(CPPREF_INSTALL_NOW,"Descargar e instalar ahora"),true).ShowModal();
-		if (res&mxMD_CHECKED) {
+		mxMessageDialog::mdAns res = 
+			mxMessageDialog(main_window,LANG(CPPREF_NOT_FOUND,""
+								 "No se encontró el archivo indice. Es probable que la\n"
+								 "referencia no está instalada, ya que no se incluye por\n"
+								 "defecto en todas las versiones de ZinjaI.\n\n"
+								 "Si dispone de acceso a internet puede descargarla e\n"
+								 "instalarla como complemento ahora."))
+			.Check1(LANG(CPPREF_INSTALL_NOW,"Descargar e instalar ahora"),true)
+			.Title("Referencia C/C++").IconInfo().Run();
+		if (res.check1) {
 			new mxComplementInstallerWindow(this); wxYield();
 			mxUT::OpenZinjaiSite("cppreference.html");
 		}

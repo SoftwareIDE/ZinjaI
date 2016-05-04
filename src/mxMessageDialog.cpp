@@ -19,27 +19,23 @@ BEGIN_EVENT_TABLE(mxMessageDialog, wxDialog)
 	EVT_CLOSE(mxMessageDialog::OnClose)
 END_EVENT_TABLE()
 
-mxMessageDialog::mxMessageDialog(wxWindow *parent, wxString message, wxString title, unsigned int style, wxString check, bool bval) : wxDialog(parent,wxID_ANY,title,wxDefaultPosition,wxSize(400,100)) {
-	CommonConstructor(parent,message,title,style,check,bval);
+mxMessageDialog::mxMessageDialog(wxWindow *parent, wxString message) 
+	: wxDialog(parent,wxID_ANY,"ZinjaI",wxDefaultPosition,wxSize(400,100)),
+	  m_ok(true), m_cancel(false), m_yes(false), m_no(false), m_message(message), 
+	  m_icon(mxMDNull), m_check1_ctrl(nullptr), m_check2_ctrl(nullptr) 
+{ 
+	
 }
-
-mxMessageDialog::mxMessageDialog(wxString message, wxString title, unsigned int style, wxString check, bool bval) : wxDialog(main_window,wxID_ANY,title,wxDefaultPosition,wxSize(400,100)) {
-	CommonConstructor(main_window,message,title,style,check,bval);
-}
-
-void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxString title, unsigned int style, wxString check, bool bval) {
+	
+mxMessageDialog::mdAns mxMessageDialog::Run() {
 	
 	if (g_splash) g_splash->Close();
 
-	buttons=style;
-	
 	wxBoxSizer *mySizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer *bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	
-	if (!(style&(mxMD_YES_NO_CANCEL|mxMD_OK))) style|=mxMD_OK;
-	
-	if (style&mxMD_NO) {
+	if (m_no) {
 		mxBitmapButton *btn = new mxBitmapButton(this,wxID_NO,bitmaps->buttons.cancel, LANG(GENERAL_NO_BUTTON," &No "));
 		btn->SetMinSize(wxSize(btn->GetSize().GetWidth()<90?90:btn->GetSize().GetWidth(),btn->GetSize().GetHeight()<30?30:btn->GetSize().GetHeight()));
 		bottomSizer->Add( btn , sizers->BA5);
@@ -47,9 +43,9 @@ void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxSt
 		btn->SetFocus();
 	}
 	
-	if (style&mxMD_CANCEL) {
+	if (m_cancel) {
 		mxBitmapButton *btn;
-		if (style&mxMD_YES || style&mxMD_NO)
+		if (m_yes || m_no)
 			btn = new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.stop, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
 		else
 			btn = new mxBitmapButton(this,wxID_CANCEL,bitmaps->buttons.cancel, LANG(GENERAL_CANCEL_BUTTON,"&Cancelar"));
@@ -59,7 +55,7 @@ void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxSt
 		btn->SetFocus();
 	}
 	
-	if (style&mxMD_YES) {
+	if (m_yes) {
 		mxBitmapButton *btn = new mxBitmapButton(this,wxID_YES,bitmaps->buttons.ok, LANG(GENERAL_YES_BUTTON," &Si "));
 		btn->SetMinSize(wxSize(btn->GetSize().GetWidth()<90?90:btn->GetSize().GetWidth(),btn->GetSize().GetHeight()<30?30:btn->GetSize().GetHeight()));
 		bottomSizer->Add( btn , sizers->BA5);
@@ -67,7 +63,7 @@ void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxSt
 		btn->SetFocus();
 	}
 	
-	if (style&mxMD_OK) {
+	if (m_ok) {
 		mxBitmapButton *btn = new mxBitmapButton(this,wxID_OK,bitmaps->buttons.ok, LANG(GENERAL_OK_BUTTON,"&Aceptar"));
 		btn->SetMinSize(wxSize(btn->GetSize().GetWidth()<90?90:btn->GetSize().GetWidth(),btn->GetSize().GetHeight()<30?30:btn->GetSize().GetHeight()));
 		bottomSizer->Add( btn , sizers->BA5);
@@ -75,94 +71,101 @@ void mxMessageDialog::CommonConstructor(wxWindow *parent, wxString message, wxSt
 		btn->SetFocus();
 	}
 	
-	if (style&mxMD_ERROR)
+	if (m_icon==mxMDError)
 		topSizer->Add( new wxStaticBitmap(this,wxID_ANY,*bitmaps->icons.error) , sizers->BA10_Right);
-	if (style&mxMD_WARNING)
+	if (m_icon==mxMDWarning)
 		topSizer->Add( new wxStaticBitmap(this,wxID_ANY,*bitmaps->icons.warning), sizers->BA10_Right);
-	if (style&mxMD_QUESTION)
+	if (m_icon==mxMDQuestion)
 		topSizer->Add( new wxStaticBitmap(this,wxID_ANY,*bitmaps->icons.question), sizers->BA10_Right);
-	if (style&mxMD_INFO)
+	if (m_icon==mxMDInfo)
 		topSizer->Add( new wxStaticBitmap(this,wxID_ANY,*bitmaps->icons.info), sizers->BA10_Right);
 		
 
-	if ( check.Len() ) {
+	if ( m_check1_str.Len() || m_check2_str.Len() ) {
 		wxBoxSizer *inSizer = new wxBoxSizer(wxVERTICAL);
-		inSizer->Add( new wxStaticText(this,wxID_ANY,message), sizers->BA10_Exp1);
-		checkbox = new wxCheckBox(this, wxID_ANY, check);
-		checkbox->SetValue(bval);
-		inSizer->Add(checkbox,sizers->BTR10_Right);
+		inSizer->Add(new wxStaticText(this,wxID_ANY,m_message), sizers->BA10_Exp1);
+		if (m_check1_str.Len()) {
+			m_check1_ctrl = new wxCheckBox(this, wxID_ANY, m_check1_str);
+			m_check1_ctrl->SetValue(m_check1_val);
+			inSizer->Add(m_check1_ctrl,sizers->BTR10_Right);
+		}
+		if (m_check2_str.Len()) {
+			m_check2_ctrl = new wxCheckBox(this, wxID_ANY, m_check2_str);
+			m_check2_ctrl->SetValue(m_check2_val);
+			inSizer->Add(m_check2_ctrl,sizers->BTR10_Right);
+		}
 		topSizer->Add(inSizer,sizers->Exp1);
 	} else {
-		checkbox = nullptr;
-		topSizer->Add( new wxStaticText(this,wxID_ANY,message), sizers->BA10_Exp1);
+		topSizer->Add(new wxStaticText(this,wxID_ANY,m_message), sizers->BA10_Exp1);
 	}
 	
-	if (style&mxMD_CANCEL) 
-		SetReturnCode(mxMD_CANCEL);
-	else if(style&mxMD_NO)
-		SetReturnCode(mxMD_NO);
-	else 
-		SetReturnCode(mxMD_CANCEL);
+	SetReturnCode(0);
 	
 	mySizer->Add(topSizer,sizers->Exp0);
 	
 	mySizer->InsertStretchSpacer(1);
 	
 	mySizer->Add(bottomSizer,sizers->BA5_Right);
+	
+	if (m_title.Len()) SetTitle(m_title);
+	
 	SetMinSize(GetSize());
 	SetSizerAndFit(mySizer);
 	SetFocusFromKbd();
-	
+	ShowModal();
+	return m_result;
 }
 
 
 void mxMessageDialog::OnOkButton(wxCommandEvent &event){
-	if (checkbox && checkbox->GetValue())
-		EndModal(mxMD_OK|mxMD_CHECKED);
-	else
-		EndModal(mxMD_OK);
+	m_result.ok = true;
+	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	EndModal(1);
 }
 
 void mxMessageDialog::OnCancelButton(wxCommandEvent &event){
-	if (checkbox && checkbox->GetValue())
-		EndModal(mxMD_CANCEL|mxMD_CHECKED);
-	else
-		EndModal(mxMD_CANCEL);
+	m_result.cancel = true;
+	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	EndModal(0);
 }
 
 void mxMessageDialog::OnYesButton(wxCommandEvent &event){
-	if (checkbox && checkbox->GetValue())
-		EndModal(mxMD_YES|mxMD_CHECKED);
-	else
-		EndModal(mxMD_YES);
+	m_result.yes = true;
+	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	EndModal(1);
 }
 
 void mxMessageDialog::OnNoButton(wxCommandEvent &event){
-	if (checkbox && checkbox->GetValue())
-		EndModal(mxMD_NO|mxMD_CHECKED);
-	else
-		EndModal(mxMD_NO);
+	m_result.no = true;
+	m_result.check1 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	m_result.check2 = (m_check1_ctrl && m_check1_ctrl->GetValue());
+	EndModal(0);
 }
 
 void mxMessageDialog::OnClose(wxCloseEvent &event){
+	m_result.closed = true;
+	if (!(m_result.ok||m_result.yes)) m_result.cancel = m_result.no = true;
 	Destroy();
 }
 
 void mxMessageDialog::OnCharHook(wxKeyEvent &event) {
 	int c = event.GetKeyCode();
-	if ( (c|32)=='a' && (buttons&mxMD_OK) )
+	if ( (c|32)=='o' && (m_ok) )
 		EmulateButtonClickIfPresent(wxID_OK);
-	else if ( (c|32)=='s' && (buttons&mxMD_YES) )
+	if ( (c|32)=='a' && (m_ok) )
+		EmulateButtonClickIfPresent(wxID_OK);
+	else if ( (c|32)=='y' && (m_yes) )
 		EmulateButtonClickIfPresent(wxID_YES);
-	else if ( (c|32)=='c' && (buttons&mxMD_CANCEL) )
+	else if ( (c|32)=='s' && (m_yes) )
+		EmulateButtonClickIfPresent(wxID_YES);
+	else if ( (c|32)=='c' && (m_cancel) )
 		EmulateButtonClickIfPresent(wxID_CANCEL);
-	else if ( (c|32)=='n' && (buttons&mxMD_NO) )
+	else if ( (c|32)=='n' && (m_no) )
 		EmulateButtonClickIfPresent(wxID_NO);
 	else
 		event.Skip();
-}
-
-int mxMessageDialog::ShowModal ( ) {
-	return wxDialog::ShowModal();
 }
 

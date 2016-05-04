@@ -269,7 +269,10 @@ void ShareManager::OnSocketEvent(wxSocketEvent *event) {
 		wxSocketBase *sock = (wxSocketBase*)it->first;
 		if (event->GetSocketEvent()==wxSOCKET_LOST) {
 			if (it->second.len==-1||it->second.count<it->second.len) {
-				mxMessageDialog(main_window,LANG(OPENSHARED_ERROR_GETTING_SOURCE,"Ha ocurrido un error al intentar obtener el fuente. Pruebe actualizar la lista de fuentes compartidos."), LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+				mxMessageDialog(main_window,LANG(OPENSHARED_ERROR_GETTING_SOURCE,""
+												 "Ha ocurrido un error al intentar obtener el fuente.\n"
+												 "Pruebe actualizar la lista de fuentes compartidos."))
+					.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
 			}
 			// las lineas que siguen son las que estaban abajo en un else-if con la condicion repetida
 			if (it->second.len!=-1) delete [] it->second.source; 

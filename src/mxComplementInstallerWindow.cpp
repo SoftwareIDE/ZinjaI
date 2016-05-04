@@ -123,9 +123,11 @@ void mxComplementInstallerWindow::Install(wxString fname) {
 	if (!writable) {
 		if (mxMessageDialog(this,LANG(COMPLEMENTS_SUDO_WARNING,"ZinjaI está instalado en un directorio para el cual su usuario no\n"
 							 "tiene permisos de escritura. Se le solicitará confirmación y/o contraseña\n"
-							 "de root/administrador para continuar con la instalación. ¿Continuar?"),
-							 LANG(GENERAL_WARNING,"Advertencia"),mxMD_YES_NO|mxMD_INFO).ShowModal()==mxMD_NO)
+							 "de root/administrador para continuar con la instalación. ¿Continuar?"))
+				.Title(LANG(GENERAL_WARNING,"Advertencia")).IconInfo().Run().no )
+		{
 			return;
+		}
 #ifdef __WIN32__
 		caller = DIR_PLUS_FILE(config->zinjai_bin_dir,"complement_wrap.exe");
 #else

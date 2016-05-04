@@ -869,8 +869,8 @@ void MenusAndToolsConfig::CreateToolbars() {
 			wxString()<<LANG1(MAIN_WINDOW_NO_ICON_SIZE,""
 			"El tema de iconos seleccionado no tiene iconos del tamaño elegido (<{1}>)\n"
 			"Se utilizaran los iconos del tamaño predeterminado (16x16).\n"
-			"Para modificarlo utilice el cuadro de Preferencias (menu Archivo).",wxString()<<icsz),
-			LANG(GENERAL_WARNING,"Advertencia"),mxMD_WARNING|mxMD_OK).ShowModal();
+			"Para modificarlo utilice el cuadro de Preferencias (menu Archivo).",wxString()<<icsz))
+			.Title(LANG(GENERAL_WARNING,"Advertencia")).IconWarning().Run();
 		icon_size=16;
 		ipre=DIR_PLUS_FILE("16","");
 	}

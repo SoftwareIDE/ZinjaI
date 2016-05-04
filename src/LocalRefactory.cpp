@@ -6,8 +6,8 @@
 #include "mxMessageDialog.h"
 
 #define GenerateFunction_error(retval) { \
-	mxMessageDialog(main_window,LANG(CODE_CANNOT_GENERATE_FUNCTION,"No se pudo determinar el prototipo de la función."), \
-		LANG(GENERAL_ERROR,"Error"),mxMD_ERROR|mxMD_OK).ShowModal(); return retval; }
+	mxMessageDialog(main_window,LANG(CODE_CANNOT_GENERATE_FUNCTION,"No se pudo determinar el prototipo de la función.")) \
+		.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run(); return retval; }
 
 int LocalRefactory::GetScopeStart(mxSource * src, int pos) {
 	// get the scope, to insert the code right before

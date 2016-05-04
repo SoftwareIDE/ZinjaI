@@ -37,7 +37,7 @@
 #include "CustomTools.h"
 class BreakPointInfo;
 class mxSource;
-class mxOSD;
+class mxOSDGuard;
 class GenericAction;
 
 /// Posibles ubicaciones para un paso de compilación adicional en el proceso de construcción de un proceso
@@ -609,7 +609,7 @@ public:
 	bool WxfbGenerate(bool show_osd=false, project_file_item *cual=nullptr);
 private:
 	/// Funcion auxiliar para el otro WxfbGenerate, esta es la que realmente hace el trabajo, la otra funcion de wrapper para seleccionar cuales proyectos
-	bool WxfbGenerate(wxString fbp_file, wxString fbase, bool force_regen, mxOSD **osd);
+	bool WxfbGenerate(wxString fbp_file, wxString fbase, bool force_regen, mxOSDGuard *osd);
 public:
 	/// auxiliar struct for retrieving wxfb related data from parser data (used to send the old state from WxfbAutoCheckStep1 to WxfbAutoCheckStep2)
 	struct WxfbAutoCheckData {

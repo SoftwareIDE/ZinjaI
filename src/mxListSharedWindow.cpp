@@ -55,8 +55,10 @@ void mxListSharedWindow::OnStopSharingButton(wxCommandEvent &event){
 			any=true;
 		}
 	}
-	if (!any) 
-		mxMessageDialog(this,LANG(LISTSHARED_SELECT_SOMETHING,"Debe seleccionar uno o más fuentes compartidos de la lista."),LANG(GENERAL_ERROR,"Error"),mxMD_OK|mxMD_ERROR).ShowModal();
+	if (!any) {
+		mxMessageDialog(this,LANG(LISTSHARED_SELECT_SOMETHING,"Debe seleccionar uno o más fuentes compartidos de la lista."))
+			.Title(LANG(GENERAL_ERROR,"Error")).IconError().Run();
+	}
 }
 
 void mxListSharedWindow::OnHelpButton(wxCommandEvent &event){
